@@ -1,0 +1,61 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Ignacio <info@subwaydesign.com.ar>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#. Text in function
+#: psend/templates/pinboxes/template.php:1
+msgid "Available files"
+msgstr ""
+
+#. Text in echo
+#: psend/templates/pinboxes/template.php:159
+msgid "Download"
+msgstr ""
+
+#. Text in echo
+#: psend/templates/pinboxes/template.php:165
+msgid "File expired"
+msgstr ""
+
+#. Text in echo
+#: psend/templates/pinboxes/template.php:151
+msgid "File size:"
+msgstr ""
+
+#. Text in echo
+#: psend/templates/pinboxes/template.php:66
+msgid "Logout"
+msgstr ""
+
+#. Text in echo
+#: psend/templates/pinboxes/template.php:62
+msgid "Search"
+msgstr ""
+
+#. Text in echo
+#: psend/templates/pinboxes/template.php:61
+msgid "Search..."
+msgstr ""
+
+#. Text in echo
+#: psend/templates/pinboxes/template.php:78
+msgid "There are no files."
+msgstr ""
+
+#. Text in echo
+#: psend/templates/pinboxes/template.php:65
+msgid "Upload files"
+msgstr ""
+
+#. Text in echo
+#: psend/templates/pinboxes/template.php:56
+msgid "Welcome"
+msgstr ""

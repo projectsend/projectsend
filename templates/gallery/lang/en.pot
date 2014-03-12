@@ -1,0 +1,31 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Ignacio <info@subwaydesign.com.ar>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#. Text in echo
+#: psend/templates/gallery/template.php:99
+msgid "Download original"
+msgstr ""
+
+#. Text in echo
+#: psend/templates/gallery/template.php:80
+msgid "File expired"
+msgstr ""
+
+#. Text in function
+#: psend/templates/gallery/template.php:56
+msgid "Gallery"
+msgstr ""
+
+#. Text in echo
+#: psend/templates/gallery/template.php:56
+msgid "There are no files."
+msgstr ""

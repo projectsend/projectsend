@@ -1,0 +1,87 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Ignacio <info@subwaydesign.com.ar>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#. Text in echo
+#: psend/templates/default/template.php:89
+msgid "Date"
+msgstr ""
+
+#. Text in echo
+#: psend/templates/default/template.php:87
+msgid "Description"
+msgstr ""
+
+#. Text in echo
+#: psend/templates/default/template.php:91
+#: psend/templates/default/template.php:172
+msgid "Download"
+msgstr ""
+
+#. Text in function
+#: psend/templates/default/template.php:1
+msgid "File downloads"
+msgstr ""
+
+#. Text in echo
+#: psend/templates/default/template.php:148
+msgid "File expired"
+msgstr ""
+
+#. Text in echo
+#: psend/templates/default/template.php:190
+msgid "First"
+msgstr ""
+
+#. Text in echo
+#: psend/templates/default/template.php:90
+msgid "Image preview"
+msgstr ""
+
+#. Text in echo
+#: psend/templates/default/template.php:195
+msgid "Last"
+msgstr ""
+
+#. Text in echo
+#: psend/templates/default/template.php:194
+msgid "Next"
+msgstr ""
+
+#. Text in echo
+#: psend/templates/default/template.php:192
+msgid "Page"
+msgstr ""
+
+#. Text in echo
+#: psend/templates/default/template.php:191
+msgid "Prev."
+msgstr ""
+
+#. Text in echo
+#: psend/templates/default/template.php:196
+msgid "Show"
+msgstr ""
+
+#. Text in echo
+#: psend/templates/default/template.php:88
+msgid "Size"
+msgstr ""
+
+#. Text in function
+#: psend/templates/default/template.php:63
+msgid "There are no files available."
+msgstr ""
+
+#. Text in echo
+#: psend/templates/default/template.php:85
+msgid "Title"
+msgstr ""

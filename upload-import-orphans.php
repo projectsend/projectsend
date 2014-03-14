@@ -55,17 +55,23 @@ $work_folder = UPLOADED_FILES_FOLDER;
 			 * When a file doesn't correspond to a record, it can
 			 * be safely renamed.
 			 */
-			$sql = $database->query("SELECT url, id, public_allow FROM tbl_files WHERE public_allow='0'");
+			$sql = $database->query("SELECT url, id, public_allow FROM tbl_files");
 			$db_files = array();
 			while($row = mysql_fetch_array($sql)) {
 				$db_files[$row["url"]] = $row["id"];
+				if ($row['public_allow'] == 1) {$db_files_public[$row["url"]] = $row["id"];}
 			}
 
 			/** Make an array of already assigned files */
-			$sql = $database->query("SELECT DISTINCT file_id FROM tbl_files_relations");
+			$sql = $database->query("SELECT DISTINCT file_id FROM tbl_files_relations WHERE client_id IS NOT NULL OR group_id IS NOT NULL OR folder_id IS NOT NULL");
 			$assigned = array();
 			while($row = mysql_fetch_array($sql)) {
 				$assigned[] = $row["file_id"];
+			}
+			
+			/** We consider public file as assigned file */
+			foreach ($db_files_public as $file_id){
+				$assigned[] = $file_id;
 			}
 
 			/** Read the temp folder and list every allowed file */

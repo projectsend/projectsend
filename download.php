@@ -43,10 +43,10 @@ include('header-unlogged.php');
 		if ($can_download == true) {
 			$real_file_url	= $got_url['url'];
 
-			if (isset($_GET['download'])) {
+			if (isset($_POST['download'])) {
 				// DOWNLOAD
 				//Scarico se non ce la password, oppure se la password è uguale a quella impostata
-				if(($got_url['password']=='')||($got_url['password'] == $_GET['download'])) {
+				if(($got_url['password']=='')||($got_url['password'] == $_POST['download'])) {
 					$real_file = UPLOADED_FILES_FOLDER.$real_file_url;
 					if (file_exists($real_file)) {
 						while (ob_get_level()) ob_end_clean();
@@ -99,14 +99,14 @@ include('header-unlogged.php');
 							?>
 								<div class="text-center">
 									<p><?php _e('The following file is now ready for you to download:','cftp_admin'); ?><br /><strong><?php echo $real_file_url; ?></strong></p>
-									<form method="get" action="<?php echo BASE_URI . 'download.php' ?>">
+									<form method="post" action="<?php echo BASE_URI . 'download.php?id=' . $got_file_id . '&token=' . $got_token ?>">
 										<?php if($got_url['password']!=''): ?>
 											<input type="text" placeholder="Insert password" name="download"><br>
 										<?php else: ?>
 											<input type="hidden" name="download" value="1">
 										<?php endif ?>
-										<input type="hidden" name="id" value="<?php echo $got_file_id ?>">
-										<input type="hidden" name="token" value="<?php echo $got_token ?>">
+										<!--<input type="hidden" name="id" value="<?php echo $got_file_id ?>">
+										<input type="hidden" name="token" value="<?php echo $got_token ?>">-->
 										<button type="submit" class="btn btn-primary"><?php _e('Download file','cftp_admin'); ?></button>
 									</form>
 								</div>

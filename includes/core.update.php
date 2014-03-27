@@ -940,6 +940,9 @@ if (in_session_or_cookies($allowed_update)) {
 				}
 			}
 			$fk2 = $database->query('SET foreign_key_checks = 1');
+
+			//Add password field to table files
+			$newField = $database->query('ALTER TABLE tbl_files ADD COLUMN password VARCHAR(60) NULL');
 		}
 
 	}

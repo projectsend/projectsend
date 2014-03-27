@@ -43,24 +43,26 @@ include('header-unlogged.php');
 		if ($can_download == true) {
 			$real_file_url	= $got_url['url'];
 
-			if (!isset($_GET['download'])) {
-				$download_link = BASE_URI . 'download.php?id=' . $got_file_id . '&token=' . $got_token . '&download';
-			}
-			else {
+			if (isset($_GET['download'])) {
 				// DOWNLOAD
-				$real_file = UPLOADED_FILES_FOLDER.$real_file_url;
-				if (file_exists($real_file)) {
-					while (ob_get_level()) ob_end_clean();
-					header('Content-Type: application/octet-stream');
-					header('Content-Disposition: attachment; filename='.basename($real_file));
-					header('Expires: 0');
-					header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-					header('Pragma: public');
-					header('Cache-Control: private',false);
-					header('Content-Length: ' . get_real_size($real_file));
-					header('Connection: close');
-					readfile($real_file);
-					die();
+				//Scarico se non ce la password, oppure se la password è uguale a quella impostata
+				if(($got_url['password']=='')||($got_url['password'] == $_GET['download'])) {
+					$real_file = UPLOADED_FILES_FOLDER.$real_file_url;
+					if (file_exists($real_file)) {
+						while (ob_get_level()) ob_end_clean();
+						header('Content-Type: application/octet-stream');
+						header('Content-Disposition: attachment; filename='.basename($real_file));
+						header('Expires: 0');
+						header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+						header('Pragma: public');
+						header('Cache-Control: private',false);
+						header('Content-Length: ' . get_real_size($real_file));
+						header('Connection: close');
+						readfile($real_file);
+						die();
+					}
+				} else {
+					$errorstate = 'password_invalid';
 				}
 			}
 		}
@@ -85,18 +87,28 @@ include('header-unlogged.php');
 									case 'token_invalid':
 										$login_err_message = __("The request is not valid.",'cftp_admin');
 										break;
+									case 'password_invalid':
+										$login_err_message = __("The password is not valid.",'cftp_admin');
+										break;
 								}
 				
 								echo system_message('error',$login_err_message,'login_error');
 							}
 							
-							if (isset($download_link)) {
+							if ($can_download) {
 							?>
 								<div class="text-center">
 									<p><?php _e('The following file is now ready for you to download:','cftp_admin'); ?><br /><strong><?php echo $real_file_url; ?></strong></p>
-									<a href="<?php echo $download_link; ?>" class="btn btn-primary">
-										<?php _e('Download file','cftp_admin'); ?>
-									</a>
+									<form method="get" action="<?php echo BASE_URI . 'download.php' ?>">
+										<?php if($got_url['password']!=''): ?>
+											<input type="text" placeholder="Insert password" name="download"><br>
+										<?php else: ?>
+											<input type="hidden" name="download" value="1">
+										<?php endif ?>
+										<input type="hidden" name="id" value="<?php echo $got_file_id ?>">
+										<input type="hidden" name="token" value="<?php echo $got_token ?>">
+										<button type="submit" class="btn btn-primary"><?php _e('Download file','cftp_admin'); ?></button>
+									</form>
 								</div>
 							<?php
 							}

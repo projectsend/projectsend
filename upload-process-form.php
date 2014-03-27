@@ -197,6 +197,7 @@ while($row = mysql_fetch_array($sql)) {
 							$add_arguments['uploader_type'] = 'client';
 							$add_arguments['expires'] = '0';
 							$add_arguments['public'] = '0';
+							$add_arguments['password']	= '';
 						}
 						else {
 							$add_arguments['uploader_type'] = 'user';
@@ -206,6 +207,11 @@ while($row = mysql_fetch_array($sql)) {
 							}
 							if (!empty($file['public'])) {
 								$add_arguments['public'] = '1';
+							}
+							if (!empty($file['password'])) {
+								$add_arguments['password'] = $file['password'];
+							} else {
+								$add_arguments['password'] = '';
 							}
 						}
 						
@@ -503,6 +509,7 @@ while($row = mysql_fetch_array($sql)) {
 			
 															<h3><?php _e('Public downloading', 'cftp_admin');?></h3>
 															<label><input type="checkbox" name="file[<?php echo $i; ?>][public]" value="1" /> <?php _e('Allow public downloading of this file.', 'cftp_admin');?></label>
+															<input type="text" name="file[<?php echo $i; ?>][password]" class="file_title" placeholder="Insert password" value="">
 														</div>
 
 														<div class="span4 file_data assigns">

@@ -185,6 +185,12 @@ $current_level = get_current_user_level();
 								$add_arguments['public'] = '1';
 							}
 
+							if (!empty($file['password'])) {
+								$add_arguments['password'] = $file['password'];
+							} else {
+								$add_arguments['password'] = '';
+							}
+
 							if (!empty($file['assignments'])) {
 								/**
 								 * Remove already assigned clients/groups from the list.
@@ -367,6 +373,7 @@ $current_level = get_current_user_level();
 
 												<h3><?php _e('Public downloading', 'cftp_admin');?></h3>
 												<label><input type="checkbox" name="file[<?php echo $i; ?>][public]" value="1" <?php if ($row['public_allow']) { ?>checked="checked"<?php } ?> /> <?php _e('Allow public downloading of this file.', 'cftp_admin');?></label>
+												<input type="text" name="file[<?php echo $i; ?>][password]" class="file_title" placeholder="Insert password" <?= (isset($row['password']) ? 'value="' . $row['password'] . '"' : '') ?>>
 											</div>
 											<div class="span4 assigns file_data">
 												<?php

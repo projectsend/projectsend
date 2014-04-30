@@ -1,0 +1,3373 @@
+#
+# Translators:
+# vasikgreif <vasik@vasik.net>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: ProjectSend\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2014-04-01 12:59-0300\n"
+"Last-Translator: Ignacio <info@subwaydesign.com.ar>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/projectsend/"
+"language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#. Text in echo
+#: options.php:319
+msgid "\"From\" information"
+msgstr "\"Od\" informace"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "(client) downloaded the file"
+msgstr "(client) stáhnul soubor"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "(client) edited the file"
+msgstr "(client) editoval soubor"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "(client) uploaded the file"
+msgstr "(client) nahrál soubor"
+
+#. Text in function
+#: email-templates.php:91
+msgid "(to be used as href on a link tag)"
+msgstr "(bude použito jako href v odkazu)"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "(user) downloaded the file"
+msgstr "(user) stáhnul soubor"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "(user) edited the file"
+msgstr "(user) editoval soubor"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "(user) uploaded the file"
+msgstr "(user) nahrál soubor"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "1 lowercase character"
+msgstr ""
+
+#. Text in function
+#: includes/vars.php:1
+msgid "1 number"
+msgstr ""
+
+#. Text in function
+#: includes/vars.php:1
+msgid "1 special character"
+msgstr ""
+
+#. Text in function
+#: includes/vars.php:1
+msgid "1 uppercase character"
+msgstr ""
+
+#. Text in echo
+#: actions-log.php:160
+msgid "A client account was activated"
+msgstr "Účet klienta byl aktivován"
+
+#. Text in echo
+#: actions-log.php:161
+msgid "A client account was deactivated"
+msgstr "Účet klienta byl deaktivován"
+
+#. Text in echo
+#: actions-log.php:174
+msgid "A client edited a file."
+msgstr "Klient editoval soubor"
+
+#. Text in echo
+#: actions-log.php:145
+msgid "A client registers an account for himself"
+msgstr "Klient si zřídil účet"
+
+#. Text in echo
+#: actions-log.php:158
+msgid "A client was deleted"
+msgstr "Klient byl smazán"
+
+#. Text in echo
+#: actions-log.php:155
+msgid "A client was edited"
+msgstr "Klient byl upraven"
+
+#. Text in echo
+#: actions-log.php:153
+msgid "A file has been deleted"
+msgstr "Soubor byl smazán"
+
+#. Text in echo
+#: actions-log.php:151
+msgid "A file has been unassigned from a client."
+msgstr "Soubor byl odebrán klientovi."
+
+#. Text in echo
+#: actions-log.php:152
+msgid "A file has been unassigned from a group"
+msgstr "Soubor byl odebrán skupině."
+
+#. Text in echo
+#: actions-log.php:167
+msgid "A file is assigned to a client"
+msgstr "Soubor je přiřazený klientovi"
+
+#. Text in echo
+#: actions-log.php:168
+msgid "A file is assigned to a group"
+msgstr "Soubor je přiřazený skupině"
+
+#. Text in echo
+#: actions-log.php:149
+msgid "A file is downloaded by a client"
+msgstr "Soubor byl stažen klientem"
+
+#. Text in echo
+#: actions-log.php:148
+msgid "A file is downloaded by a user (on \"Client view\" mode)"
+msgstr "Soubor byl stažen uživatelem (v \"Zobrazení klienta\")"
+
+#. Text in echo
+#: actions-log.php:147
+msgid "A file is uploaded by a client"
+msgstr "Soubor byl nahrán klientem"
+
+#. Text in echo
+#: actions-log.php:146
+msgid "A file is uploaded by an user"
+msgstr "Soubor byl nahrán uživatelem"
+
+#. Text in echo
+#: actions-log.php:164
+msgid "A file was marked as hidden"
+msgstr "Soubor byl označen jako skrytý"
+
+#. Text in echo
+#: actions-log.php:165
+msgid "A file was marked as visible"
+msgstr "Soubor byl označen jako viditelný"
+
+#. Text in function
+#: register.php:89
+msgid ""
+"A folder for this account could not be created. Probably because of a server "
+"configuration."
+msgstr ""
+"Adresář pro tento účet nemohl být vytvořen. Pravděpodobně z důvodu "
+"konfigurace serveru."
+
+#. Text in echo
+#: actions-log.php:159
+msgid "A group was deleted"
+msgstr "Skupina byla smazána"
+
+#. Text in echo
+#: actions-log.php:156
+msgid "A group was edited"
+msgstr "Skupina byla upravena"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid ""
+"A new account was created for you. From now on, you can access the files "
+"that have been uploaded under your account using the following credentials:"
+msgstr ""
+"Byl Vám vytvořen nový účet. Od této chvíle můžete přistupovat k souborům, "
+"které byly nahrány k Vašema účtu, použitím následujících přihlašovacích "
+"údajů:"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid ""
+"A new account was created for you. From now on, you can access the system "
+"administrator using the following credentials:"
+msgstr ""
+"Byl Vám vytvořen nový účet. Od této chvíle můžete přistupovat do "
+"administrace systému použitím následujících přihlašovacích údajů:"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid ""
+"A new account was created using the self registration form on your site. "
+"Registration information:"
+msgstr ""
+"Byl vytvořen nový účet (použitím formuláře na Vaší stránce). Informace o "
+"účtu jsou:"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "A new client has registered."
+msgstr "zaregistroval se nový klient."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid ""
+"A request has been received to reset the password for the following account:"
+msgstr "Byl přijat požadavek na reset hesla následujícího účtu:"
+
+#. Text in function
+#: includes/updates.functions.php:1
+msgid ""
+"A safe chmod value couldn't be set for one or more system files. Please make "
+"sure that at least includes/sys.config.php has a chmod of 644 for security "
+"reasons."
+msgstr ""
+"Nebylo možné nastavit hodnotu chmod na jednom nebo více systémových "
+"souborech. Pro zajišťění bezpečnosti zkontrolujte, že alespoň soubor "
+"includes/sys.config.php má chmod 644."
+
+#. Text in echo
+#: actions-log.php:173
+msgid "A system user edited a file."
+msgstr "Systémový uživatel upravil soubor."
+
+#. Text in function
+#: includes/vars.php:1
+msgid "A system user or client with this e-mail address already exists."
+msgstr "Systémový uživatel nebo klient s touto emailovou adresou již existuje."
+
+#. Text in function
+#: includes/vars.php:1
+msgid "A system user or client with this login name already exists."
+msgstr ""
+"Systémový uživatel nebo klient s tímto přihlašovacím jménem již existuje."
+
+#. Text in echo
+#: actions-log.php:162
+msgid "A user account was activated"
+msgstr "Uživatelský účet byl aktivován"
+
+#. Text in echo
+#: actions-log.php:163
+msgid "A user account was deactivated"
+msgstr "Uživatelský účet byl deaktivován"
+
+#. Text in echo
+#: actions-log.php:169
+msgid "A user account was marked as active"
+msgstr "Uživatelský účet byl označen jako aktivní"
+
+#. Text in echo
+#: actions-log.php:170
+msgid "A user account was marked as inactive"
+msgstr "Uživatelský účet byl označen jako neaktivní"
+
+#. Text in echo
+#: actions-log.php:144
+msgid "A user creates a new client account"
+msgstr "Uživatel vytvořil nový klientský účet"
+
+#. Text in echo
+#: actions-log.php:166
+msgid "A user creates a new group"
+msgstr "Uživatel vytvořil novou skupinu"
+
+#. Text in echo
+#: actions-log.php:143
+msgid "A user creates a new user account"
+msgstr "Uživatel vytvořil nový uživatelský účet"
+
+#. Text in echo
+#: actions-log.php:157
+msgid "A user was deleted"
+msgstr "Uživatel byl smazán"
+
+#. Text in echo
+#: actions-log.php:154
+msgid "A user was edited"
+msgstr "Uživatel byl upraven"
+
+#. Text in echo
+#: actions-log.php:150
+msgid "A zip file was generated by a client"
+msgstr "Soubor zip byl generován klientem"
+
+#. Text in echo
+#: includes/userlevel_check.php:156
+msgid "Access denied"
+msgstr "Přístup zamítnut"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Access the system panel here"
+msgstr "Zde otevřete systémový panel"
+
+#. Text in echo
+#: actions-log.php:142
+msgid "Account (user or client) logs out"
+msgstr "Účet (uživatel nebo klient) se odhlásil"
+
+#. Text in function
+#: sys.vars.php:1 users.php:193
+msgid "Account Manager"
+msgstr "Správce účtů"
+
+#. Text in function
+#: register.php:89
+msgid "Account added correctly."
+msgstr "Účet byl úspěšně přidán."
+
+#. Text in echo
+#: actions-log.php:141
+msgid "Account logs in through cookies"
+msgstr "Účet byl přihlášen pomocí cookies"
+
+#. Text in echo
+#: actions-log.php:140
+msgid "Account logs in through the form"
+msgstr "Účet byl přihlášen použitím formuláře"
+
+#. Text in echo
+#: clients.php:237 groups.php:250 users.php:255 manage-files.php:478
+#: upload-process-form.php:338
+msgid "Actions"
+msgstr "Akce"
+
+#. Text in echo
+#: clients.php:180 users.php:213
+msgid "Activate"
+msgstr "Aktivovat"
+
+#. Text in echo
+#: clients.php:166 clients.php:307 users.php:199 users.php:282
+msgid "Active"
+msgstr "Aktivní"
+
+#. Text in echo
+#: clients-form.php:134
+msgid "Active (client can log in)"
+msgstr "Aktivní (klient se může přihlásit)"
+
+#. Text in echo
+#: users-form.php:116
+msgid "Active (user can log in)"
+msgstr "Aktivní (uživatel se může přihlásit)"
+
+#. Text in echo
+#: actions-log.php:185
+msgid "Activities actions"
+msgstr "Aktivity"
+
+#. Text in echo
+#: actions-log.php:228
+msgid "Activity"
+msgstr "Aktivity"
+
+#. Text in echo
+#: edit-file.php:413 groups-form.php:67 upload-process-form.php:546
+msgid "Add all"
+msgstr "Přidat vše"
+
+#. Text in function
+#: clients-form.php:58 clients-add.php:135
+msgid "Add client"
+msgstr "Přidat klienta"
+
+#. Text in function
+#: groups-add.php:102
+msgid "Add clients group"
+msgstr "Přidat skupinu klientů"
+
+#. Text in echo
+#: options.php:263
+msgid "Add clients to this group:"
+msgstr "Přidat klienty do této skupiny:"
+
+#. Text in echo
+#: header.php:251 header.php:273 header.php:308
+msgid "Add new"
+msgstr "Přidat"
+
+#. Text in function
+#: users-add.php:128
+msgid "Add system user"
+msgstr "Přidat systémového uživatele"
+
+#. Text in function
+#: users-form.php:59
+msgid "Add user"
+msgstr "Přidat uživatele"
+
+#. Text in echo
+#: clients.php:233 groups.php:249 users.php:254
+msgid "Added on"
+msgstr "Přidán"
+
+#. Text in echo
+#: clients.php:234 clients-form.php:119
+msgid "Address"
+msgstr "Adresa"
+
+#. Text in echo
+#: options.php:346
+msgid "Address supplied above (on \"From\")"
+msgstr "Adresa zadaná výše (v poli \"Od\")"
+
+#. Text in echo
+#: install/index.php:293
+msgid ""
+"After installing the system, you can go to the options page to set your "
+"timezone, prefered date display format and thubmnails parameters, besides "
+"being able to change the site options provided here."
+msgstr ""
+"Pro nastavení časového pásma, zobrazení datumu a času a ikon můžete po "
+"instalaci systému můžete přejít na stránku nastavení."
+
+#. Text in echo
+#: home.php:77 actions-log.php:138
+msgid "All activities"
+msgstr "Všechny aktivity"
+
+#. Text in echo
+#: upload-import-orphans.php:177
+msgid "All assignations were removed"
+msgstr "Všechna přiřazení byla odstraněna"
+
+#. Text in echo
+#: users.php:191
+msgid "All roles"
+msgstr "Všechny role"
+
+#. Text in echo
+#: clients.php:165 users.php:198 manage-files.php:359
+msgid "All statuses"
+msgstr "Všechny statusy"
+
+#. Text in echo
+#: edit-file.php:369 upload-process-form.php:505
+msgid "Allow public downloading of this file."
+msgstr "Povolit veřejné stahování tohoto souboru."
+
+#. Text in echo
+#: options.php:432
+msgid "Allowed file extensions"
+msgstr "Povolené přípony souborů"
+
+#. Text in echo
+#: install/index.php:105
+msgid "Already installed"
+msgstr "Již nainstalován"
+
+#. Text in echo
+#: options.php:350
+msgid "Also to this addresses"
+msgstr "Také na tuto adresu"
+
+#. Text in function
+#: users-add.php:75
+msgid "An e-mail notification with login information was sent to the new user."
+msgstr "Emailové upozornění s přístupovými údaji bylo zasláno uživateli."
+
+#. Text in function
+#: register.php:89
+msgid ""
+"An e-mail notification with login information was sent to the specified "
+"address."
+msgstr ""
+"Emailové upozornění s přístupovými údaji bylo zasláno na zadanou adresu."
+
+#. Text in function
+#: clients-add.php:83
+msgid "An e-mail notification with login information was sent to your client."
+msgstr "Emailové upozornění s přístupovými údaji bylo zasláno klientovi."
+
+#. Text in function
+#: reset-password.php:322
+msgid ""
+"An e-mail with further instructions has been sent. Please check your inbox "
+"to proceed."
+msgstr ""
+"Byl Vám odeslán email s dalšími instrukcemi. Prosím, zkontrolujte vaši "
+"příchozí poštu."
+
+#. Text in echo
+#: edit-file.php:379 upload-process-form.php:516
+msgid "Assign this file to"
+msgstr "Přiřadit soubor"
+
+#. Text in echo
+#: edit-file.php:378 upload-process-form.php:515
+msgid "Assignations"
+msgstr "Přiřazení"
+
+#. Text in echo
+#: options.php:415
+msgid "Authentication"
+msgstr ""
+
+#. Text in echo
+#: actions-log.php:227
+msgid "Author"
+msgstr "Autor"
+
+#. Text in echo
+#: options.php:259
+msgid "Auto approve new accounts"
+msgstr "Automaticky schvalovat nové účty"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Auto-approvals of new accounts are currently enabled."
+msgstr "Automatické schválení nových účtů je aktuálně zapnuto."
+
+#. Text in echo
+#: options.php:192
+msgid ""
+"Basic information to be shown around the site. The time format and zones "
+"values affect how the clients see the dates on their files lists."
+msgstr ""
+"Základní informace, které budou zobrazeny na stránce. Nastavení času a "
+"časového pásma ovlivňuje jak klienti uvidí datumy ve svém seznamu souborů."
+
+#. Text in echo
+#: install/index.php:249
+msgid "Basic system options"
+msgstr "Základní nastavení systému"
+
+#. Text in echo
+#: options.php:433
+msgid ""
+"Be careful when changing this options. They could affect not only the system "
+"but the whole server it is installed on."
+msgstr ""
+"Při změně těchto nastavení buďte opatrní. Mohou ovlivnit nejen celý systém, "
+"ale i server."
+
+#. Text in echo
+#: header.php:331 branding.php:26
+msgid "Branding"
+msgstr "Branding"
+
+#. Text in echo
+#: edit-file.php:432
+msgid "Cancel"
+msgstr "Zrušit"
+
+#. Text in echo
+#: actions-log.php:190
+msgid "Clear entire log"
+msgstr "Smazat celý log"
+
+#. Text in echo
+#: upload-from-computer.php:48
+msgid ""
+"Click on Add files to select all the files that you want to upload, and then "
+"click continue. On the next step, you will be able to set a name and "
+"description for each uploaded file. Remember that the maximum allowed file "
+"size (in mb.) is "
+msgstr ""
+"Klikněte na Add files, vyberte soubory, které chcete nahrát, a klikněte na "
+"pokračovat. V dalším kroku budete mít možnost zadat název a popis pro každý "
+"nahraný soubor. Maximálnní velikost souboru je (v mb.)"
+
+#. Text in echo
+#: manage-files.php:129
+msgid "Click to select"
+msgstr "Klikněte pro výběr"
+
+#. Text in function
+#: sys.vars.php:1
+msgid "Client"
+msgstr "klient"
+
+#. Text in function
+#: clients-add.php:83
+msgid "Client added correctly."
+msgstr "Klient byl úspěšně přidán."
+
+#. Text in function
+#: clients-edit.php:143
+msgid "Client edited correctly."
+msgstr "Klient byl úspěšně upraven."
+
+#. Text in function
+#: register.php:89
+msgid ""
+"Client self registration is not allowed. If you need an account, please "
+"contact a system administrator."
+msgstr ""
+"Registrace klientů není povolena. Pokud potřebujete účet, kontaktuje "
+"administrátora."
+
+#. Text in echo
+#: options.php:199
+msgid "Client's template"
+msgstr "Template klientů"
+
+#. Text in echo
+#: header.php:236 edit-file.php:381 home.php:159 upload-process-form.php:518
+#: options.php:178
+msgid "Clients"
+msgstr "Klienti"
+
+#. Text in function
+#: clients.php:57
+msgid "Clients Administration"
+msgstr "Administrace klientů"
+
+#. Text in echo
+#: options.php:255
+msgid "Clients can register themselves"
+msgstr "Klienti se mohou sami registrovat"
+
+#. Text in echo
+#: options.php:297
+msgid "Clients can upload files"
+msgstr "Umožnit klientům nahrávat soubory"
+
+#. Text in echo
+#: header.php:271
+msgid "Clients groups"
+msgstr "Skupiny klientů"
+
+#. Text in echo
+#: options.php:441
+msgid "Clients only"
+msgstr ""
+
+#. Text in echo
+#: home.php:83
+msgid "Clients self-registrations"
+msgstr "Registrace klientů"
+
+#. Text in echo
+#: manage-files.php:129
+msgid "Close"
+msgstr ""
+
+#. Text in echo
+#: options.php:182
+msgid "Company logo"
+msgstr "Logo společnosti"
+
+#. Text in function
+#: install/index.php:159
+msgid "Congratulations! Everything is up and running."
+msgstr "Blahopřejeme! Vše je nastaveno a funkční."
+
+#. Text in echo
+#: index.php:166 edit-file.php:433 upload-import-orphans.php:203
+#: reset-password.php:314 upload-process-form.php:585
+msgid "Continue"
+msgstr "Pokračovat"
+
+#. Text in echo
+#: upload-process-form.php:548
+msgid "Copy selections to other files"
+msgstr "Zkopírovat výběr na další soubory"
+
+#. Text in echo
+#: includes/functions.php:288
+msgid "Create a new one"
+msgstr "Vytvořit nový"
+
+#. Text in function
+#: groups-form.php:23
+msgid "Create group"
+msgstr "Vytvořit skupinu"
+
+#. Text in echo
+#: groups.php:248
+msgid "Created by"
+msgstr "vytvořeno"
+
+#. Text in echo
+#: branding.php:128
+msgid "Current logo"
+msgstr "Současné logo"
+
+#. Text in echo
+#: header.php:209
+msgid "Dashboard"
+msgstr "Nástěnka"
+
+#. Text in echo
+#: actions-log.php:226 manage-files.php:448
+msgid "Date"
+msgstr "Datum"
+
+#. Text in echo
+#: options.php:365
+msgid "Days before expiring"
+msgstr "Dnů před vypršením"
+
+#. Text in echo
+#: clients.php:181 users.php:214
+msgid "Deactivate"
+msgstr "Deaktivovat"
+
+#. Text in echo
+#: install/index.php:266
+msgid "Default system administrator options"
+msgstr "Výchozí nastavení systému"
+
+#. Text in echo
+#: options.php:343
+msgid ""
+"Define here who will receive copies of this emails. These are sent as BCC so "
+"neither recipient will see the other addresses."
+msgstr ""
+"Zde nastavte, kdo obdrží kopie emailu. Emaily jsou odesílány jako skryté "
+"kopie, takže příjemci neuvidí ostatní adresy."
+
+#. Text in echo
+#: options.php:362
+msgid "Define how many times will the system attemp to send each notification."
+msgstr "Nastavte, kolikrát se systém pokusí odeslat každou notifikaci."
+
+#. Text in echo
+#: clients.php:182 groups.php:199 users.php:215 manage-files.php:392
+msgid "Delete"
+msgstr "Smazat"
+
+#. Text in echo
+#: actions-log.php:189
+msgid "Delete selected"
+msgstr "Smazat vybrané"
+
+#. Text in echo
+#: groups.php:245 edit-file.php:338 groups-form.php:43
+#: upload-process-form.php:269 upload-process-form.php:476
+msgid "Description"
+msgstr "Popis"
+
+#. Text in echo
+#: includes/updates.messages.php:22
+msgid "Do you want to support ProjectSend?"
+msgstr "Chcete podpořit ProjectSend?"
+
+#. Text in echo
+#: manage-files.php:596
+msgid "Does not expire"
+msgstr "Nikdy nevyprší"
+
+#. Text in echo
+#: index.php:176
+msgid "Don't have an account yet?"
+msgstr "Nemáte účet?"
+
+#. Text in echo
+#: options.php:303
+msgid "Don't show it on the files list"
+msgstr "Nezobrazovat  v seznamu souborů"
+
+#. Text in function
+#: download.php:119
+msgid "Download"
+msgstr "Stáhnout"
+
+#. Text in echo
+#: actions-log.php:188
+msgid "Download as csv"
+msgstr "Stáhnout jhako csv"
+
+#. Text in echo
+#: manage-files.php:467
+msgid "Download count"
+msgstr "Počet stažení"
+
+#. Text in echo
+#: download.php:98
+msgid "Download file"
+msgstr "Stáhnout soubor"
+
+#. Text in echo
+#: templates/default/template.php:44
+msgid "Download zipped"
+msgstr "Stáhnout jako zip"
+
+#. Text in echo
+#: manage-files.php:110
+msgid "Downloaders of file:"
+msgstr "Počet stažení:"
+
+#. Text in echo
+#: home-statistics.php:178 home.php:46 home.php:79
+msgid "Downloads"
+msgstr "Stažení"
+
+#. Text in echo
+#: users-form.php:101 clients.php:227 clients-form.php:115
+#: reset-password.php:272 users.php:251
+msgid "E-mail"
+msgstr "E-mail"
+
+#. Text in echo
+#: install/index.php:274 options.php:322
+msgid "E-mail address"
+msgstr "E-mailová adresa"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "E-mail address is not valid"
+msgstr "E-mailová adresa není platná"
+
+#. Text in function
+#: reset-password.php:322
+msgid "E-mail couldn't be sent."
+msgstr "E-mail nebylo možné odeslat."
+
+#. Text in function
+#: register.php:89 users-add.php:75 clients-add.php:83
+msgid "E-mail notification couldn't be sent."
+msgstr "Upoznění e-mail nemohlo být odesláno"
+
+#. Text in echo
+#: options.php:179
+msgid "E-mail notifications"
+msgstr "E-mailové notifikace"
+
+#. Text in function
+#: upload-send-notifications.php:1
+msgid "E-mail notifications for inactive clients were not sent."
+msgstr "E-mailové notifikace nebyly odeslány neaktivním klientům"
+
+#. Text in function
+#: upload-send-notifications.php:1
+msgid "E-mail notifications have been sent."
+msgstr "E-mailové notifikace byly odeslány"
+
+#. Text in echo
+#: options.php:373
+msgid "E-mail sending options"
+msgstr "Možnosti zasílání e-mailů"
+
+#. Text in echo
+#: header.php:332 email-templates.php:1
+msgid "E-mail templates"
+msgstr "Šoblony emailů"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "E-mail was not completed"
+msgstr "E-mail nebyl dokončem"
+
+#. Text in echo
+#: clients.php:329 groups.php:293 users.php:296 manage-files.php:666
+msgid "Edit"
+msgstr "Upravit"
+
+#. Text in function
+#: clients-edit.php:208
+msgid "Edit client"
+msgstr "Upravit klienta"
+
+#. Text in function
+#: edit-file.php:1 upload-process-form.php:303 upload-process-form.php:355
+msgid "Edit file"
+msgstr "Upravit soubor"
+
+#. Text in function
+#: groups-edit.php:158
+msgid "Edit group"
+msgstr "Upravit skupinu"
+
+#. Text in function
+#: users-edit.php:216
+msgid "Edit system user"
+msgstr "Upravit systémového uživatele"
+
+#. Text in echo
+#: edit-file.php:337 upload-process-form.php:475
+msgid "Enter here the required file title."
+msgstr "Zde zadejte název souboru."
+
+#. Text in echo
+#: options.php:440
+msgid "Everyone"
+msgstr ""
+
+#. Text in echo
+#: options.php:357
+msgid "Expiration"
+msgstr "Expirace"
+
+#. Text in echo
+#: edit-file.php:357 upload-process-form.php:493
+msgid "Expiration date"
+msgstr "Datum expirace"
+
+#. Text in echo
+#: manage-files.php:604
+msgid "Expired on"
+msgstr "Vypršel"
+
+#. Text in echo
+#: manage-files.php:611
+msgid "Expires on"
+msgstr "Vyprší"
+
+#. Text in echo
+#: manage-files.php:457
+msgid "Expiry"
+msgstr "Expirace"
+
+#. Text in echo
+#: templates/default/template.php:82 manage-files.php:449
+msgid "Ext."
+msgstr "Ext."
+
+#. Text in echo
+#: upload-process-form.php:270 upload-process-form.php:608
+msgid "File Name"
+msgstr "Název souboru"
+
+#. Text in echo
+#: edit-file.php:358 upload-process-form.php:494
+msgid "File expires"
+msgstr "Soubor vyprší"
+
+#. Text in echo
+#: edit-file.php:332 upload-process-form.php:467
+msgid "File information"
+msgstr "Informace o souboru"
+
+#. Text in echo
+#: upload-import-orphans.php:177
+msgid "File is not public."
+msgstr ""
+
+#. Text in echo
+#: upload-import-orphans.php:159
+msgid "File name"
+msgstr "Název souboru"
+
+#. Text in echo
+#: upload-import-orphans.php:160
+msgid "File size"
+msgstr "Velikost souboru"
+
+#. Text in echo
+#: options.php:499
+msgid "File's path"
+msgstr "Cesta k souboru"
+
+#. Text in echo
+#: header.php:215 groups.php:247 home.php:158 options.php:290
+msgid "Files"
+msgstr "Soubory"
+
+#. Text in echo
+#: upload-process-form.php:604
+msgid "Files not uploaded"
+msgstr "Soubory nebyly nahrány"
+
+#. Text in echo
+#: upload-process-form.php:379
+msgid "Files ready to upload"
+msgstr "Soubory jsou připraveny k nahrátí"
+
+#. Text in echo
+#: upload-process-form.php:264
+msgid "Files uploaded correctly"
+msgstr "Soubory byly úspěšně nahrány"
+
+#. Text in echo
+#: clients.php:229
+msgid "Files: Groups"
+msgstr "Soubory: skupiny"
+
+#. Text in echo
+#: clients.php:228
+msgid "Files: Own"
+msgstr "Soubory: Vlastníci"
+
+#. Text in echo
+#: clients.php:169 actions-log.php:176 users.php:202 manage-files.php:363
+msgid "Filter"
+msgstr "Filtr"
+
+#. Text in echo
+#: header.php:220 upload-import-orphans.php:242
+msgid "Find orphan files"
+msgstr "Najít nepřiřazené soubory"
+
+#. Text in echo
+#: email-templates.php:223
+msgid "Footer"
+msgstr "Patička"
+
+#. Text in echo
+#: options.php:226
+msgid "For example, d/m/Y h:i:s will result in something like"
+msgstr "Například, zadáte-li d/m/Y h:i:s, výsledek bude"
+
+#. Text in echo
+#: options.php:227
+msgid "For the full list of available values, visit"
+msgstr "Pro kompletní seznam dostupných hodnot navštivte"
+
+#. Text in echo
+#: index.php:172
+msgid "Forgot your password?"
+msgstr "Zapomněli jste heslo?"
+
+#. Text in echo
+#: includes/functions.php:270
+msgid "Free software"
+msgstr "Svobodný software"
+
+#. Text in echo
+#: clients.php:225 install/index.php:270 includes/classes/send-email.php:1
+#: users.php:249
+msgid "Full name"
+msgstr "Celé jméno"
+
+#. Text in echo
+#: options.php:191
+msgid "General"
+msgstr "Obecné"
+
+#. Text in echo
+#: options.php:177
+msgid "General Options"
+msgstr "Obecná nastavení"
+
+#. Text in echo
+#: header.php:329
+msgid "General options"
+msgstr "Obecná nastavení"
+
+#. Text in echo
+#: reset-password.php:328 download.php:106 register.php:173
+msgid "Go back to the homepage."
+msgstr "Zpět na úvodní stránku."
+
+#. Text in function
+#: groups-add.php:63
+msgid "Group added correctly."
+msgstr "Skupina byla úspěšně přidána."
+
+#. Text in function
+#: groups-edit.php:104
+msgid "Group edited correctly."
+msgstr "skupina byla úspěšně upravena."
+
+#. Text in echo
+#: groups.php:244 groups-form.php:39
+msgid "Group name"
+msgstr "Název skupiny"
+
+#. Text in echo
+#: edit-file.php:396 home.php:160 upload-process-form.php:531
+msgid "Groups"
+msgstr "Skupiny"
+
+#. Text in function
+#: groups.php:76
+msgid "Groups administration"
+msgstr "Administrace skupiny"
+
+#. Text in echo
+#: clients.php:231
+msgid "Groups on"
+msgstr "Skupiny na"
+
+#. Text in function
+#: groups.php:76
+msgid "Groups where"
+msgstr "Skupiny kde"
+
+#. Text in echo
+#: email-templates.php:215
+msgid "Header"
+msgstr "Hlavička"
+
+#. Text in echo
+#: email-templates.php:187 email-templates.php:207
+msgid "Header / Footer"
+msgstr "Hlavička / patička"
+
+#. Text in echo
+#: options.php:374
+msgid ""
+"Here you can select which mail system will be used when sending the "
+"notifications. If you have a valid e-mail account, SMTP is the recommended "
+"option."
+msgstr ""
+"Zde můžete nastavit emailový systém pro zasílání notifikací. Pokud máte "
+"platný email, SMTP je doporučená volba."
+
+#. Text in echo
+#: email-templates.php:208
+msgid ""
+"Here you set up the header and footer of every email, or use the default "
+"ones available with the system. Use this to customize each part and include, "
+"for example, your own logo and markup."
+msgstr ""
+"Zde nastavte hlavičku a patičku každého emailu, nebo použijte výchozí "
+"nastavení dostupná v systému. Toto nastavení použijte pro úpravy každé části "
+"emailu, např. vložte vlastní logo."
+
+#. Text in echo
+#: manage-files.php:360 manage-files.php:645 upload-process-form.php:293
+msgid "Hidden"
+msgstr "Skrytý"
+
+#. Text in echo
+#: manage-files.php:386
+msgid "Hide"
+msgstr "Skrýt"
+
+#. Text in echo
+#: edit-file.php:420
+msgid "Hide from every already assigned clients and groups."
+msgstr "Skrýt všem již přiřazeným klientům a skupinám."
+
+#. Text in echo
+#: options.php:407
+msgid "Host"
+msgstr "Návštěvník"
+
+#. Text in function
+#: includes/updates.functions.php:1
+msgid ""
+"If images thumbnails aren't showing on your client's files lists (even your "
+"company logo there and on the branding page) please chmod the includes/"
+"timthumb/cache folder to 777 and then do the same with the 'index.html' and "
+"'timthumb_cacheLastCleanTime.touch' files inside that folder. Then try "
+"lowering each file to 644 and see if everything is still working."
+msgstr ""
+"Pokud se nezobrazují náhledy (nebo logo), prosím nastavte chmod adresáře "
+"includes/timthumb/cache na 777 a to samé udělejte se soubory 'index.html' a "
+"'timthumb_cacheLastCleanTime.touch' v tomto adresáři. Následně zkuste snížit "
+"oprávnění na 644 a zkontrolujte, zda náhledy fungují."
+
+#. Text in function
+#: reset-password.php:322
+msgid "If the problem persists, please contact an administrator."
+msgstr "Pokud tento problém přetrvá, prosím kontaktujte administrátora."
+
+#. Text in function
+#: branding.php:96
+msgid ""
+"If this doesn't solve the issue, try giving the same values to the "
+"directories above that one until it works."
+msgstr ""
+"Pokud to problém nevyřeší, zkuste nastavit stejné hodnoty nadřazeným "
+"adresářům."
+
+#. Text in echo
+#: options.php:500
+msgid ""
+"If thumbnails are not showing (your company logo and file's preview on the "
+"branding page and client's files lists) try setting this option ON. It they "
+"still don't work, a folders permission issue might be the cause."
+msgstr ""
+"Pokud se nezobrazují náhledy (logo společnosti a náhledy souborů), zkuste "
+"zapnout tuto volbu. Pokud se náhledy stále nezobrazují, pravděpodobně je "
+"problém s nastavením oprávnění adresářů."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "If you did not make this request, simply ignore this email."
+msgstr "Pokud jste požadavek neodeslali, prosím, ignorujte tento email."
+
+#. Text in function
+#: index.php:110
+msgid ""
+"If you just registered, please wait until a system administrator approves "
+"your account."
+msgstr ""
+"Pokud jste se právě registrovali, počkejte, až administrátor povolí Váš účet."
+
+#. Text in echo
+#: index.php:181
+msgid "If you need an account, please contact a server administrator."
+msgstr "Pokud chcete vytvořit účet, kontatujte prosím administrátora."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid ""
+"If you prefer not to be notified about new files, please go to My Account "
+"and deactivate the notifications checkbox."
+msgstr ""
+"Nechete-li dostávat notifikace při nahrání nových souborů, přejděte prosím "
+"na stránku Můj účet a deaktivujte zasílání notiifikací."
+
+#. Text in echo
+#: options.php:404
+msgid "If you selected SMTP as your mailer, please complete these options."
+msgstr "Pokud jste zvolili SMTP, vyplňte prosím následující údaje."
+
+#. Text in echo
+#: install/index.php:107
+msgid ""
+"If you want to reinstall, please delete the system tables from the database "
+"and come back to the installation form."
+msgstr ""
+"Pokud chcete reinstalovat, prosím smařte tabulky z databáze a spusťte znovu "
+"instalační formulář."
+
+#. Text in echo
+#: options.php:434
+msgid "Important"
+msgstr "Důležité"
+
+#. Text in echo
+#: clients.php:167 clients.php:307 users.php:200 users.php:282
+msgid "Inactive"
+msgstr "Neaktivní"
+
+#. Text in function
+#: install/index.php:311 install/index.php:289
+msgid "Install"
+msgstr "Instalovat"
+
+#. Text in echo
+#: clients.php:236
+msgid "Internal contact"
+msgstr "Interní jméno"
+
+#. Text in echo
+#: clients-form.php:130
+msgid "Internal contact name"
+msgstr "Interní jméno kontaktu"
+
+#. Text in echo
+#: install/index.php:106
+msgid "It seems that ProjectSend is already installed here."
+msgstr "Zdá se, že ProjectSend je již nainstalován."
+
+#. Text in echo
+#: options.php:492
+msgid "JPG Quality"
+msgstr "Kvalita JPG"
+
+#. Text in echo
+#: upload-import-orphans.php:161
+msgid "Last modified"
+msgstr "Naposled upraveno"
+
+#. Text in echo
+#: options.php:517
+msgid ""
+"Like the thumbnails options, these have to be changed taking into account "
+"the client's template design, since it can be shown there. The default "
+"template uses a fixed width for the logo, however the Gallery template uses "
+"this setting to show the image on top."
+msgstr ""
+"Stejně jako u náhledů je potřeba brát ohled na zvolenou šablonu klienta. "
+"Výchozí šablona používá logo s pevnou šířkou, ale šablona Gallery používá "
+"nastavení na této stránce pro zobrazení loga nahoře."
+
+#. Text in echo
+#: options.php:437
+msgid "Limit file types uploading to"
+msgstr ""
+
+#. Text in function
+#: index.php:196
+msgid "Log in"
+msgstr "Přihlásit"
+
+#. Text in echo
+#: users-form.php:91 clients.php:226 clients-form.php:105
+#: install/index.php:278 users.php:250
+msgid "Log in username"
+msgstr "Přihlašovací jméno"
+
+#. Text in echo
+#: home.php:78
+msgid "Logins"
+msgstr "Přihlášení"
+
+#. Text in echo
+#: branding.php:136
+msgid "Logo Placeholder"
+msgstr "Logo"
+
+#. Text in echo
+#: header.php:155 templates/gallery/template.php:48
+msgid "Logout"
+msgstr "Odhlásit"
+
+#. Text in function
+#: reset-password.php:341
+msgid "Lost password"
+msgstr "Ztracené heslo"
+
+#. Text in echo
+#: options.php:377
+msgid "Mailer"
+msgstr "Mailer"
+
+#. Text in echo
+#: header.php:252
+msgid "Manage clients"
+msgstr "Spravovat klienty"
+
+#. Text in echo
+#: header.php:219 header.php:346 clients.php:326 groups.php:292
+#: manage-files.php:689
+msgid "Manage files"
+msgstr "Spravovat soubory"
+
+#. Text in echo
+#: header.php:274
+msgid "Manage groups"
+msgstr "Spravovat skupiny"
+
+#. Text in echo
+#: header.php:309
+msgid "Manage system users"
+msgstr "Spravovat systémové uživatele"
+
+#. Text in echo
+#: edit-file.php:419
+msgid ""
+"Mark as hidden (will not send notifications) for new assigned clients and "
+"groups."
+msgstr ""
+"Označit jako skryté pro nově přiřazené klienty a skupiny (nebudou odeslány "
+"notifikace emailem)."
+
+#. Text in echo
+#: options.php:488 options.php:525
+msgid "Max height"
+msgstr "Maximální výška"
+
+#. Text in echo
+#: options.php:485 options.php:521
+msgid "Max width"
+msgstr "Maximální šířka"
+
+#. Text in echo
+#: options.php:360
+msgid "Maximum sending attemps"
+msgstr "Maximum pokusů o odeslání"
+
+#. Text in echo
+#: groups.php:246 groups-form.php:47
+msgid "Members"
+msgstr "Členové"
+
+#. Text in echo
+#: users-form.php:92 clients-form.php:106
+msgid "Must be alphanumeric"
+msgstr "Musí být alfanumerické"
+
+#. Text in echo
+#: users-form.php:102 clients-form.php:116
+msgid "Must be valid and unique"
+msgstr "Musí být unikátní a platný"
+
+#. Text in echo
+#: header.php:154
+msgid "My Account"
+msgstr "Můj účet"
+
+#. Text in function
+#: clients-edit.php:208 users-edit.php:216
+msgid "My account"
+msgstr "Můj účet"
+
+#. Text in echo
+#: users-form.php:87 clients-form.php:101 options.php:326
+msgid "Name"
+msgstr "Jméno"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "Name was not completed"
+msgstr "Jméno nebylo dokončeno"
+
+#. Text in echo
+#: upload-import-orphans.php:177
+msgid "Never assigned to any user or group"
+msgstr "Nepřiřazen k žádnému uživateli ani skupině"
+
+#. Text in function
+#: email-templates.php:91
+msgid "New client (self-registered)"
+msgstr "Nový klient (registrován)"
+
+#. Text in function
+#: email-templates.php:91
+msgid "New client (welcome)"
+msgstr "Nový klient (vítejte)"
+
+#. Text in echo
+#: options.php:285
+msgid ""
+"New clients will automatically be assigned to the group you have selected."
+msgstr ""
+"Noví klienti budou automaticky přiřazeni do skupiny, kterou jste zvolili."
+
+#. Text in function
+#: email-templates.php:91
+msgid "New file by client"
+msgstr "Nový soubor od klienta"
+
+#. Text in function
+#: email-templates.php:91
+msgid "New file by user"
+msgstr "Nový soubor od uživatele"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "New files has been uploaded by the following clients"
+msgstr "Nové soubory byly nahrány následujícím klientem"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "New files uploaded by clients"
+msgstr "Nové soubory byly nahrány klientem"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "New files uploaded for you"
+msgstr "Byly nahrány nové soubory"
+
+#. Text in echo
+#: reset-password.php:305
+msgid "New password"
+msgstr "Nové heslo"
+
+#. Text in echo
+#: options.php:251
+msgid "New registrations"
+msgstr "Nové registrace"
+
+#. Text in function
+#: email-templates.php:91
+msgid "New user (welcome)"
+msgstr "Nový uživatel (vítejte)"
+
+#. Text in echo
+#: clients.php:299
+msgid "No"
+msgstr "Ne"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "No client was selected"
+msgstr "Nebyl vybrán žádný klient"
+
+#. Text in function
+#: clients-edit.php:143
+msgid "No client was selected."
+msgstr "Nebyl vybrán žádný klient."
+
+#. Text in function
+#: groups-edit.php:104
+msgid "No group was selected."
+msgstr "Nebyla vybrána žádná skupina."
+
+#. Text in echo
+#: options.php:439
+msgid "No one"
+msgstr ""
+
+#. Text in echo
+#: edit-file.php:446 groups-form.php:81 upload-process-form.php:635
+msgid "No results where found."
+msgstr "Nebyly nalezeny žádné výsledky."
+
+#. Text in function
+#: users-edit.php:146
+msgid "No user was selected."
+msgstr "Nebyl vybrán žádný uživatel."
+
+#. Text in echo
+#: options.php:417
+msgid "None"
+msgstr ""
+
+#. Text in echo
+#: options.php:265
+msgid "None (does not enable this feature)"
+msgstr "Žádný (nepovolí tuto funkci)"
+
+#. Text in echo
+#: upload-process-form.php:385
+msgid "Note"
+msgstr "Poznámka"
+
+#. Text in echo
+#: home.php:63
+msgid "Note:"
+msgstr "Poznámka:"
+
+#. Text in echo
+#: options.php:367
+msgid "Notifications older than this will not be sent."
+msgstr "Upozornění starší než toto nebudou odeslány."
+
+#. Text in echo
+#: clients.php:232
+msgid "Notify"
+msgstr "Upozornit"
+
+#. Text in echo
+#: clients-form.php:141
+msgid "Notify new uploads by e-mail"
+msgstr "Upozorňovat na nové soubory emailem"
+
+#. Text in function
+#: upload-send-notifications.php:1
+msgid "One or more notifications couldn't be sent."
+msgstr "Jedno nebo více upozornění nebylo možné odeslat."
+
+#. Text in echo
+#: edit-file.php:339 upload-process-form.php:477
+msgid "Optionally, enter here a description for the file."
+msgstr "Zde můžete zadat popis souboru."
+
+#. Text in echo
+#: header.php:327
+msgid "Options"
+msgstr "Možnosti"
+
+#. Text in echo
+#: options.php:291
+msgid "Options related to the files that clients upload themselves."
+msgstr "Nastavení pro soubory, které nahráli klienti."
+
+#. Text in function
+#: email-templates.php:91 options.php:115
+msgid "Options updated succesfuly."
+msgstr "Možnosti byly aktualizovány."
+
+#. Text in echo
+#: users-form.php:96 index.php:156 clients-form.php:110 install/index.php:283
+#: includes/vars.php:1 options.php:397
+msgid "Password"
+msgstr "Heslo"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "Password does not meet the required characters rules"
+msgstr ""
+
+#. Text in function
+#: includes/vars.php:1
+msgid "Password must be alphanumeric (a-z,A-Z,0-9 allowed)"
+msgstr "Heslo musí být alfanumerické (povolené znaky jsou a-z,A-Z,0-9)"
+
+#. Text in function
+#: email-templates.php:91
+msgid "Password reset"
+msgstr "Heslo bylo vyresetováno"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Password reset instructions"
+msgstr "Instrukce k resetu hesla"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "Password verification was not completed"
+msgstr "Ověření hesla se nezdařilo"
+
+#. Text in echo
+#: index.php:143 includes/vars.php:1
+msgid "Password was not completed"
+msgstr "Heslo nebylo dokončeno"
+
+#. Text in echo
+#: options.php:451
+msgid "Passwords"
+msgstr ""
+
+#. Text in function
+#: includes/vars.php:1
+msgid "Passwords do not match"
+msgstr "Hesla se neshodují"
+
+#. Text in echo
+#: options.php:164 options.php:167
+msgid "Please complete all the fields."
+msgstr "Prosím, vyplňte všechna pole."
+
+#. Text in echo
+#: upload-process-form.php:380
+msgid ""
+"Please complete the following information to finish the uploading process. "
+"Remember that \"Title\" is a required field."
+msgstr ""
+
+#. Text in function
+#: register.php:89
+msgid "Please contact a system administrator."
+msgstr "Prosím kontaktuje systémového administrátora."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Please contact the administrator if you need further assistance."
+msgstr "Pokud potřebuje pomoc, kontaktujte systémového administrátora."
+
+#. Text in echo
+#: reset-password.php:275
+msgid ""
+"Please enter your account's e-mail address. You will receive a link to "
+"continue the process."
+msgstr "Prosím, zadejte Váš email. Obdržíte odkaz pro pokračování procesu."
+
+#. Text in echo
+#: reset-password.php:311
+msgid ""
+"Please enter your desired new password. After that, you will be able to log "
+"in normally."
+msgstr ""
+"Prosím, zadejte Vaše nové heslo. Poté se budete moci normálně přihlásit."
+
+#. Text in function
+#: edit-file.php:436
+msgid ""
+"Please go to the clients or groups administration page, select \"Manage files"
+"\" from any client and then click on \"Edit\" on any file to return here."
+msgstr ""
+"Pro návrat přejděte na stránku klienta nebo skupiny, zvolte \"Spravovat "
+"soubory\" a klikněte na \"Upravit\"."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Please log in to activate it."
+msgstr "Pro aktivaci se prosím přihlaště."
+
+#. Text in echo
+#: manage-files.php:684
+msgid ""
+"Please note that downloading a file from here will not add to the download "
+"count."
+msgstr "Stažení souboru z této stránky nebude započítáno do počtu stažení."
+
+#. Text in function
+#: upload-import-orphans.php:197
+msgid ""
+"Please note that the listed files will be renamed if they contain invalid "
+"characters."
+msgstr "Soubory budou přejmenovány, pokud obsahují neplátné znaky."
+
+#. Text in function
+#: register.php:89
+msgid ""
+"Please remember that an administrator needs to approve your account before "
+"you can log in."
+msgstr ""
+"Před tím, než se budete moci přihlásit, musí být účet schválen systémovým "
+"administrátorem."
+
+#. Text in echo
+#: includes/updates.messages.php:23
+msgid ""
+"Please remember that this tool is free software. If you find the system "
+"useful"
+msgstr "Tento software je poskytován zdarma. Pokud je pro Vás užitečný"
+
+#. Text in echo
+#: branding.php:85
+msgid "Please select an image file to upload"
+msgstr "Prosím zvolte obrázek pro nahrání"
+
+#. Text in echo
+#: actions-log.php:25
+msgid "Please select at least one activity to proceed."
+msgstr "Pro pokrařování vyberte alespoň jednu aktivitu."
+
+#. Text in function
+#: actions-log.php:64
+msgid "Please select at least one activity."
+msgstr "Prosím vyberte alespoň jednu aktivitu."
+
+#. Text in echo
+#: clients.php:35
+msgid "Please select at least one client to proceed."
+msgstr "Pro pokračování vyberte alespoň jednoho klienta."
+
+#. Text in function
+#: clients.php:57
+msgid "Please select at least one client."
+msgstr "Prosím vyberte alespoň jednoho klienta."
+
+#. Text in echo
+#: upload-import-orphans.php:212 templates/default/template.php:198
+#: manage-files.php:70
+msgid "Please select at least one file to proceed."
+msgstr "Pro pokračování vyberte alespoň jeden soubor."
+
+#. Text in function
+#: manage-files.php:689
+msgid "Please select at least one file."
+msgstr "Prosím vyberte alespoň jeden soubor."
+
+#. Text in echo
+#: groups.php:56
+msgid "Please select at least one group to proceed."
+msgstr "Pro pokračování vyberte alespoň jednu skupinu."
+
+#. Text in function
+#: groups.php:76
+msgid "Please select at least one group."
+msgstr "Prosím vyberte alespoň jednu skupinu."
+
+#. Text in echo
+#: users.php:24
+msgid "Please select at least one user to proceed."
+msgstr "Pro pokačování vyberte alespoň jednoho uživatele."
+
+#. Text in function
+#: users.php:47
+msgid "Please select at least one user."
+msgstr "Prosím vyberte alespoň jednoho uživatele."
+
+#. Text in echo
+#: home.php:181
+msgid "Please wait while the system generates the statistics graph."
+msgstr "Prosím vyčkejte, než systém vegeneruje grafy statistik."
+
+#. Text in echo
+#: home.php:205
+msgid "Please wait while the system gets the information from the log."
+msgstr "Prosím vyčkejte na získání informací z logu."
+
+#. Text in echo
+#: manage-files.php:103
+msgid "Please wait while the system gets the required information."
+msgstr "Prosím vyčkejte na získání informací."
+
+#. Text in echo
+#: templates/default/template.php:213 actions-log.php:51
+msgid "Please wait while your download is prepared."
+msgstr "Prosím vyčkejte, Vače stahování se připravuje."
+
+#. Text in echo
+#: options.php:411
+msgid "Port"
+msgstr "Port"
+
+#. Text in function
+#: manage-files.php:645
+msgid "Private"
+msgstr "Soukromý"
+
+#. Text in echo
+#: clients.php:184 groups.php:201 templates/default/template.php:46
+#: actions-log.php:192 users.php:217 manage-files.php:394
+msgid "Proceed"
+msgstr "Pokračovat"
+
+#. Text in echo
+#: actions-log.php:139
+msgid "ProjecSend has been installed"
+msgstr "ProjectSend byl nainstalován"
+
+#. Text in echo
+#: install/index.php:259
+msgid "ProjectSend URI (address)"
+msgstr "ProjectSend URL (adresa)"
+
+#. Text in function
+#: install/index.php:311
+msgid "ProjectSend URI was not completed."
+msgstr "ProjectSend URL nebyla zadána kompletně."
+
+#. Text in echo
+#: home-news-widget.php:2
+msgid "ProjectSend news"
+msgstr "Novinky ProjectSend"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "ProjectSend was installed"
+msgstr "ProjectSend byl nainstalován"
+
+#. Text in echo
+#: actions-log.php:172
+msgid "ProjectSend was updated"
+msgstr "ProjectSend byl aktualizován"
+
+#. Text in echo
+#: includes/functions.php:270
+msgid "Provided by"
+msgstr "Poskytnuto"
+
+#. Text in echo
+#: manage-files.php:456 manage-files.php:645
+msgid "Public"
+msgstr "Veřejný"
+
+#. Text in echo
+#: manage-files.php:577
+msgid "Public URL"
+msgstr "Veřejná adresa"
+
+#. Text in echo
+#: edit-file.php:368 upload-process-form.php:504
+msgid "Public downloading"
+msgstr "Veřejné stahování"
+
+#. Text in echo
+#: upload-import-orphans.php:162
+msgid "Reason"
+msgstr "Důvod"
+
+#. Text in echo
+#: home.php:74
+msgid "Recent activites"
+msgstr "Poslední aktivity"
+
+#. Text in function
+#: actions-log.php:64
+msgid "Recent activities log"
+msgstr "Log posledních aktivit"
+
+#. Text in function
+#: clients-form.php:58
+msgid "Register account"
+msgstr "Zaregistrovat účet"
+
+#. Text in echo
+#: index.php:176
+msgid "Register as a new client."
+msgstr "Zaregtrovat jako nový klient."
+
+#. Text in function
+#: register.php:183
+msgid "Register new account"
+msgstr "Zaregistrovat nový účet"
+
+#. Text in echo
+#: index.php:196
+msgid "Remember me"
+msgstr "Zapamatovat"
+
+#. Text in echo
+#: install/index.php:251
+msgid "Remember to edit the file"
+msgstr "Nezapomeňte upravit tento soubor"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid ""
+"Remember, your new client will not be able to log in until an administrator "
+"has approved their account."
+msgstr ""
+"Noví klienti se nebudou moci přihlásit, dokud administrátor nepovolí jejich "
+"účet."
+
+#. Text in echo
+#: edit-file.php:414 groups-form.php:68 upload-process-form.php:547
+msgid "Remove all"
+msgstr "Odebrat vše"
+
+#. Text in echo
+#: users-form.php:108 users.php:252
+msgid "Role"
+msgstr "Role"
+
+#. Text in echo
+#: options.php:389
+msgid "SMTP & Gmail shared options"
+msgstr "Nastavení SMTP a GMAILu"
+
+#. Text in echo
+#: options.php:403
+msgid "SMTP options"
+msgstr "Nastavení SMTP"
+
+#. Text in function
+#: clients-form.php:58
+msgid "Save client"
+msgstr "Uložit klienta"
+
+#. Text in function
+#: groups-form.php:23
+msgid "Save group"
+msgstr "Uložit skupinu"
+
+#. Text in function
+#: users-form.php:59
+msgid "Save user"
+msgstr "Uložit uživatele"
+
+#. Text in echo
+#: clients.php:160 groups.php:187 upload-import-orphans.php:147
+#: templates/default/template.php:33 actions-log.php:133 users.php:186
+#: manage-files.php:350
+msgid "Search"
+msgstr "Hledat"
+
+#. Text in echo
+#: options.php:180
+msgid "Security"
+msgstr "Bezpečnost"
+
+#. Text in echo
+#: edit-file.php:360 upload-process-form.php:496
+msgid "Select a date"
+msgstr "Vyberte datum"
+
+#. Text in echo
+#: groups.php:198 actions-log.php:187
+msgid "Select action"
+msgstr "Vyberte akci"
+
+#. Text in echo
+#: branding.php:148
+msgid "Select image to upload"
+msgstr "Vyberte obrázek pro nahrátí"
+
+#. Text in echo
+#: edit-file.php:380 groups-form.php:48 upload-process-form.php:517
+msgid "Select one or more options. Type to search."
+msgstr "Vyberte jednu nebo více možností. Pro vyhledávání začněte psát."
+
+#. Text in echo
+#: clients.php:178
+msgid "Selected clients actions"
+msgstr "Vybrané akce klientů"
+
+#. Text in echo
+#: templates/default/template.php:42 manage-files.php:380
+msgid "Selected files actions"
+msgstr "Vybrané akce souborů"
+
+#. Text in echo
+#: groups.php:196
+msgid "Selected groups actions"
+msgstr "Vybrané akce skupin"
+
+#. Text in echo
+#: users.php:211
+msgid "Selected users actions"
+msgstr "Vybrané akce uživatelů"
+
+#. Text in echo
+#: options.php:332
+msgid "Send copies"
+msgstr "Odeslat kopie"
+
+#. Text in echo
+#: manage-files.php:129
+msgid ""
+"Send this URL to someone to download the file without registering or logging "
+"in."
+msgstr "Tuto URL použijte pro stažení souboru bez registrace a přihlášení."
+
+#. Text in echo
+#: options.php:434
+msgid ""
+"Separate allowed file types with a comma. You can navigate the box with the "
+"left/right arrows, backspace and delete keys."
+msgstr ""
+"Přípony oddělte čárkami. V boxu se můžete pohybovat šipkami a klávesami "
+"backspace a delete."
+
+#. Text in echo
+#: options.php:352
+msgid "Separate e-mail addresses with a comma."
+msgstr "E-mailové adresy oddělte čárkami."
+
+#. Text in echo
+#: options.php:367
+msgid "Set to 0 to disable."
+msgstr "Pro vypnutí nastavte na 0."
+
+#. Text in echo
+#: index.php:172
+msgid "Set up a new one."
+msgstr "Nastavte nový."
+
+#. Text in echo
+#: manage-files.php:387
+msgid "Show"
+msgstr "Zobrazit"
+
+#. Text in echo
+#: options.php:304
+msgid "Show it anyway, but prevent download."
+msgstr "Zobrazit, ale nepovolit stažení."
+
+#. Text in echo
+#: clients.php:191 groups.php:208 templates/default/template.php:54
+#: actions-log.php:199 users.php:224 manage-files.php:405
+msgid "Showing"
+msgstr "Zobrazeno"
+
+#. Text in function
+#: email-templates.php:91
+msgid "Shows the list of files"
+msgstr "Zobrazit seznam souborů"
+
+#. Text in echo
+#: install/index.php:255 options.php:195
+msgid "Site name"
+msgstr "Název stránky"
+
+#. Text in function
+#: install/index.php:311
+msgid "Sitename was not completed."
+msgstr "Název stránky nebyl zadán kompletní."
+
+#. Text in echo
+#: manage-files.php:451
+msgid "Size"
+msgstr "Velikost"
+
+#. Text in echo
+#: options.php:516
+msgid "Size settings"
+msgstr "Nastavení velikosti"
+
+#. Text in function
+#: options.php:115
+msgid "Some fields were not completed. Options could not be saved."
+msgstr "Některá pole nebyla vyplněna. Nastavení nebylo uloženo."
+
+#. Text in echo
+#: home.php:36
+msgid "Statistics"
+msgstr "Statistiky"
+
+#. Text in echo
+#: clients.php:230 users.php:253 manage-files.php:466
+#: upload-process-form.php:274
+msgid "Status"
+msgstr "Status"
+
+#. Text in function
+#: header.php:367
+msgid "System Administration"
+msgstr "Administrace systému"
+
+#. Text in function
+#: sys.vars.php:1 users.php:192
+msgid "System Administrator"
+msgstr "Správce systému"
+
+#. Text in echo
+#: includes/updates.messages.php:16
+msgid "System Notice:"
+msgstr "Systémové upozornění:"
+
+#. Text in echo
+#: options.php:237
+msgid "System URI"
+msgstr "URL systému"
+
+#. Text in echo
+#: header.php:293
+msgid "System Users"
+msgstr "Uživatelé systému"
+
+#. Text in echo
+#: home.php:61
+msgid "System data"
+msgstr "Data systému"
+
+#. Text in echo
+#: options.php:233
+msgid "System location"
+msgstr "Umístění systému"
+
+#. Text in function
+#: options.php:546
+msgid "System options"
+msgstr "Nastavení systému"
+
+#. Text in echo
+#: clients.php:235 clients-form.php:123
+msgid "Telephone"
+msgstr "Tlefon"
+
+#. Text in echo
+#: email-templates.php:247
+msgid "Template text"
+msgstr "Text šablony"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Thank you for using ProjectSend."
+msgstr "Dekujeme, že používáte ProjectSend."
+
+#. Text in echo
+#: includes/updates.messages.php:25
+msgid "Thank you!"
+msgstr "Děkujeme!"
+
+#. Text in function
+#: register.php:89
+msgid ""
+"The account could not be created. A folder with this name already exists."
+msgstr "Účet nebyl vytvořen. Adresář s tímto jménem již existuje."
+
+#. Text in function
+#: includes/updates.functions.php:1
+msgid ""
+"The chmod values of the emails folder and the html templates inside couldn't "
+"be set. If ProjectSend isn't sending notifications emails, please set them "
+"manually to 777."
+msgstr ""
+"Nebylo možné změnit hodnoty chmod pro adresáře email html šablony uvnitř. "
+"Pokud ProjectSend neodesílá notifikace, nastavte je prosím manuálně na 777."
+
+#. Text in function
+#: groups.php:213
+msgid "The client does not exist."
+msgstr "Klient neexistuje."
+
+#. Text in echo
+#: includes/updates.messages.php:16
+msgid "The database was updated to support this version of the software."
+msgstr "Databáze byla aktualizována pro podporu této verze softwaru."
+
+#. Text in function
+#: branding.php:96
+msgid "The file could not be moved to the corresponding folder."
+msgstr "Soubor nemohl být přesunut do odpovídajícího adresáře."
+
+#. Text in function
+#: edit-file.php:436
+msgid "The file has been edited succesfuly."
+msgstr "Soubor byl úspěšně editován."
+
+#. Text in function
+#: branding.php:96
+msgid ""
+"The file you selected is not an allowed image format. Please upload your "
+"logo as a jpg, gif or png file."
+msgstr ""
+"Soubor, který jste vybrali, není povolený typ obrázku. Vyberte prosím logo "
+"ve formátu jpg, gif nebo png."
+
+#. Text in function
+#: clients.php:200 groups.php:213 actions-log.php:204 users.php:229
+#: manage-files.php:410
+msgid "The filters you selected returned no results."
+msgstr "Pro zadaný filtr nebyly nalezeny řádné výsledky."
+
+#. Text in function
+#: includes/classes/form-validation.php:1
+msgid "The following errors were found"
+msgstr "Byly nalezeny následující chyby"
+
+#. Text in echo
+#: download.php:96
+msgid "The following file is now ready for you to download:"
+msgstr "Následující soubor je připraven ke stažení:"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "The following files are now available for you to download."
+msgstr "Následující soubory jsou dostupné ke stažení."
+
+#. Text in echo
+#: email-templates.php:256
+msgid "The following tags can be used on this e-mails' body."
+msgstr "Následující tagy mohou být použity v těle emailu."
+
+#. Text in function
+#: email-templates.php:91
+msgid "The full name the client registered with"
+msgstr "Celé jméno, pod kterým se klient registroval"
+
+#. Text in function
+#: branding.php:96
+msgid "The image was uploaded correctly."
+msgstr "Obrázek byl úspěšně nahrán."
+
+#. Text in function
+#: email-templates.php:91
+msgid "The link to continue the process"
+msgstr "Odkaz pro pokračování"
+
+#. Text in function
+#: actions-log.php:64
+msgid ""
+"The log was cleared. Only data used for statistics remained. You can delete "
+"them manually if you want."
+msgstr ""
+"Log byl smazán. Byla zachována pouze data používaná pro statistiky. Pokud "
+"chcete, můžete je smazat manuálně."
+
+#. Text in function
+#: email-templates.php:91
+msgid "The login link"
+msgstr "Odkaz pro přihlášení"
+
+#. Text in echo
+#: actions-log.php:171
+msgid "The logo on \"Branding\" was changed"
+msgstr "Logo na stránce \"Branding\" bylo změněno"
+
+#. Text in function
+#: email-templates.php:91
+msgid "The new password for this account"
+msgstr "Nové heslo pro tento účet"
+
+#. Text in function
+#: email-templates.php:91
+msgid "The new username for this account"
+msgstr "Nové uživatelské jméno pro tento účet"
+
+#. Text in echo
+#: includes/functions.php:673
+msgid "The password must contain, at least:"
+msgstr ""
+
+#. Text in echo
+#: branding.php:129
+msgid ""
+"The picture on the right is not an actual representation of what they will "
+"see. The size on this preview is fixed, but remember that you can change the "
+"display size and picture quality for your client's pages on the"
+msgstr ""
+"Obrázek napravo není to co uvidíte. Velikost tohoto náhledu je nastavená "
+"pevně, ale můžete nastavit velikost a kvalitu loga, které uvidí klienti na "
+"stránce"
+
+#. Text in function
+#: reset-password.php:322 download.php:79
+msgid "The request is not valid."
+msgstr "Požadavek není platný"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "The request is valid only for 24 hours."
+msgstr "Požadavek je platný pouze 24 hodin."
+
+#. Text in function
+#: actions-log.php:64
+msgid "The selected activities were deleted."
+msgstr "Vybrané aktivity byly smazány."
+
+#. Text in function
+#: clients.php:57
+msgid "The selected clients were deleted."
+msgstr "Vybraní klienti byli smazáni."
+
+#. Text in function
+#: clients.php:57
+msgid "The selected clients were marked as active."
+msgstr "Vybraní klienti byly označeni jako aktivní."
+
+#. Text in function
+#: clients.php:57
+msgid "The selected clients were marked as inactive."
+msgstr "vybraní klienti byli označeni jako neaktivní."
+
+#. Text in function
+#: manage-files.php:689
+msgid "The selected files were deleted."
+msgstr "Vybrané soubory byly smazány."
+
+#. Text in function
+#: manage-files.php:689
+msgid "The selected files were marked as hidden."
+msgstr "Vybrané soubory byly označeny jako skryté."
+
+#. Text in function
+#: manage-files.php:689
+msgid "The selected files were marked as visible."
+msgstr "Vybrané soubory byly označeny jako viditelné."
+
+#. Text in function
+#: manage-files.php:689
+msgid "The selected files were unassigned from this client."
+msgstr "Vybrané soubory byly klientovi odebrány."
+
+#. Text in function
+#: groups.php:76
+msgid "The selected groups were deleted."
+msgstr "Vybrané skupiny byly smazány."
+
+#. Text in function
+#: users.php:47
+msgid "The selected users were deleted."
+msgstr "Vybraní uživatelé byli smazáni."
+
+#. Text in function
+#: users.php:47
+msgid "The selected users were marked as active."
+msgstr "vybraní uživatelé byly označeni jako aktivní."
+
+#. Text in function
+#: users.php:47
+msgid "The selected users were marked as inactive."
+msgstr "vybnraní uživatelé byli označenii jako neaktivní."
+
+#. Text in function
+#: index.php:110
+msgid "The supplied credentials are not valid."
+msgstr ""
+
+#. Text in function
+#: reset-password.php:322
+msgid "The supplied email address does not correspond to any user."
+msgstr "Zadaná adresa neodpovídá žádnému uživateli."
+
+#. Text in function
+#: index.php:110
+msgid "The supplied password is incorrect."
+msgstr "Zadané heslo není správné."
+
+#. Text in function
+#: index.php:110
+msgid "The supplied username doesn't exist."
+msgstr "Zadané uřivatelské jméno neexistuje."
+
+#. Text in function
+#: email-templates.php:91
+msgid "The text string unique to this request. Must be included somewhere."
+msgstr "Unikátní text pro tento požadavek. Musí být někde zadán."
+
+#. Text in function
+#: email-templates.php:91
+msgid "The username for this account"
+msgstr "Uživatelské jméno pro tento účet"
+
+#. Text in function
+#: reset-password.php:322
+msgid ""
+"There are 3 unused requests done in less than 24 hs. Please wait until one "
+"expires (1 day since made) to make a new one."
+msgstr ""
+"Během 24 hodin byly zadány 3 nepoužité požadavky. Prosím, vyčkejte, až "
+"některý z nich vyprší (1 den od jeho vytvoření)."
+
+#. Text in function
+#: actions-log.php:204
+msgid "There are no activities recorded."
+msgstr "Nejsou zaznamenány žádné aktivity."
+
+#. Text in function
+#: clients.php:200 includes/functions.php:287
+msgid "There are no clients at the moment"
+msgstr "Neexistují žádné účty klientů"
+
+#. Text in function
+#: manage-files.php:410
+msgid "There are no files assigned to this client."
+msgstr "Klientovi nejsou přiřazeny žádné soubory."
+
+#. Text in echo
+#: upload-import-orphans.php:226
+msgid "There are no files available to add right now."
+msgstr "Nejsou dostupné žádné soubory pro přidání."
+
+#. Text in function
+#: manage-files.php:410
+msgid "There are no files for this client."
+msgstr "Pro klienta nejsou dostupné žádné soubory."
+
+#. Text in function
+#: groups.php:213
+msgid "There are no groups created yet."
+msgstr "Ještě nebyly vytvořeny žádné skupiny."
+
+#. Text in function
+#: groups.php:213
+msgid "There are no groups where this client is member."
+msgstr "Klient není člen v žádné skupině."
+
+#. Text in echo
+#: home-log.php:62
+msgid "There are no results"
+msgstr "Žádné výsledky"
+
+#. Text in function
+#: clients-edit.php:143
+msgid "There is no client with that ID number."
+msgstr "Klient se zadaným ID neexistuje."
+
+#. Text in function
+#: groups-edit.php:104
+msgid "There is no group with that ID number."
+msgstr "Skupina se zadaným ID neexistuje."
+
+#. Text in function
+#: users-edit.php:146
+msgid "There is no user with that ID number."
+msgstr "Uživatel se zadaným ID neexistuje."
+
+#. Text in function
+#: edit-file.php:436
+msgid "There is not file with that ID number."
+msgstr "Soubor se zadaným ID neexistuje."
+
+#. Text in function
+#: install/index.php:203
+msgid "There seems to be an error. Please try again."
+msgstr "Vyskytla se chyba. Zkuste to prosím znovu."
+
+#. Text in function
+#: branding.php:96
+msgid "There was an error uploading the file. Please try again."
+msgstr "Při nahrávání souboru se vyskytla chyba. Zkuste to prosím znovu."
+
+#. Text in function
+#: email-templates.php:91 clients-edit.php:143 groups-add.php:63
+#: groups-edit.php:104 options.php:115 register.php:89 users-add.php:75
+#: users-edit.php:146 clients-add.php:83
+msgid "There was an error. Please try again."
+msgstr "Vyskytla se chyba. Zkuste to prosím znovu."
+
+#. Text in echo
+#: upload-process-form.php:333
+msgid "These files have not been assigned to any client or group."
+msgstr "Následující soubory nebyly přiřazeny žádnému klientovi nebo skupině."
+
+#. Text in echo
+#: options.php:234
+msgid ""
+"These options are to be changed only if you are moving the system to another "
+"place. Changes here can cause ProjectSend to stop working."
+msgstr ""
+"Toto nastavení změňte pouze pokud přesouváte ProjectSend do jiného umístění. "
+"Změna může způsobit nefunkčnost aplikace ProjectSend."
+
+#. Text in function
+#: users-form.php:128 clients-form.php:150
+msgid "This account information will be e-mailed to the address supplied above"
+msgstr "Informace o účtu bude odeslána na email uvedený výše"
+
+#. Text in function
+#: index.php:110
+msgid "This account is not active."
+msgstr "Tento účet není aktivní."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid ""
+"This email contains HTML formatting and cannot be displayed right now. "
+"Please use an HTML compatible reader."
+msgstr ""
+"Tento email obsahuje HTML formátování a nemůže býýt zobrazen. Použijte "
+"klienta kompaktibilního s HTML."
+
+#. Text in function
+#: email-templates.php:91
+msgid ""
+"This email will be sent to a client whenever a new file has been assigned to "
+"his account."
+msgstr "Tento email bude odeslán klientovi při přiřazení souboru k jeho účtu."
+
+#. Text in function
+#: email-templates.php:91
+msgid ""
+"This email will be sent to a user or client when they try to reset their "
+"password."
+msgstr "Tento email bude odeslán klientovi při resetu hesla."
+
+#. Text in function
+#: email-templates.php:91
+msgid ""
+"This email will be sent to the new client after an administrator has created "
+"his new account. It would be best to include the log in details (username "
+"and password)."
+msgstr ""
+"Tento email bude odeslán klientovi poté, co administrátor schválí jeho účet. "
+"Měl by obsahovat uživatelské jméno a heslo."
+
+#. Text in function
+#: email-templates.php:91
+msgid ""
+"This email will be sent to the new system user after an administrator has "
+"created his new account. It would be best to include the log in details "
+"(username and password)."
+msgstr ""
+"Tento email bude odeslán klientovi poté, co administrátor vytvoří jeho účet. "
+"Měl by obsahovat uživatelské jméno a heslo."
+
+#. Text in function
+#: email-templates.php:91
+msgid ""
+"This email will be sent to the system administrator after a new client has "
+"created a new account for himself."
+msgstr ""
+"Tento email bude odeslán administrátorovi poté, co se klient zaregistroval."
+
+#. Text in function
+#: email-templates.php:91
+msgid ""
+"This email will be sent to the system administrator whenever a client "
+"uploads a new file."
+msgstr ""
+"Tento email bude odeslán administrátorovi při nahrání souboru klientem."
+
+#. Text in echo
+#: home.php:63
+msgid ""
+"This graphic will help you get a relative view of the existing data, "
+"allowing you to see the relation between clients, users, groups and files."
+msgstr ""
+"tento graf Vám pomůže získat přehled o vztazích mezi klienty, uživateli, "
+"skupinami a soubory."
+
+#. Text in echo
+#: install/index.php:267
+msgid ""
+"This info will be used to create a default system user, which can't be "
+"deleted afterwards. Password should be between"
+msgstr ""
+"Zadané informace budou použity pro vytvoření výchozího systémového účtu, "
+"který není možné smazat. Heslo by mělo mít mezi"
+
+#. Text in function
+#: branding.php:96
+msgid ""
+"This is most likely a permissions issue. If that's the case, it can be "
+"corrected via FTP by setting the chmod value of the"
+msgstr ""
+"Jedná se pravděpodobně o problém s nastavením oprávnění adresářů. Pokud je "
+"to tak, problém může být opraven nastavením hodnot chmod"
+
+#. Text in echo
+#: upload-import-orphans.php:233
+msgid ""
+"This is the same folder where the files uploaded by the web interface will "
+"be stored. So if you finish uploading your files but do not assign them to "
+"any clients/groups, the files will still be there for later use."
+msgstr ""
+"Jedná se o stejný adresář, kam jsou nahrávány soubory přes webové rozhraní. "
+"Pokud tedy dokončíte nahrávání souborů, ale nepřiřadíte je k žádnému "
+"klientovi/skupině, soubory zůstanou dostupné pro pozdější použití."
+
+#. Text in function
+#: upload-import-orphans.php:220
+msgid ""
+"This list only shows the files that are allowed according to your security "
+"settings. If the file type you need to add is not listed here, add the "
+"extension to the \"Allowed file extensions\" box on the options page."
+msgstr ""
+"Tento seznam zobrazuje pouze soubory, které mají povolené přípony. Pokud "
+"potřebujete nahrát soubor s jinou příponou, přidejte ji do seznamu "
+"povolených přípon na stránce \"Povolené přípony\" v administraci."
+
+#. Text in echo
+#: options.php:306
+msgid ""
+"This only affects clients. On the admin side, you can still get the files."
+msgstr ""
+"Toto nastavení ovlivní jen klienty. Administrát stále bude moci stahovat "
+"soubory."
+
+#. Text in echo
+#: templates/default/template.php:214
+msgid ""
+"This operation could take a few minutes, depending on the size of the files."
+msgstr ""
+"Tato operace může trvat několik minut v závisloti na velikosti souborů."
+
+#. Text in function
+#: clients-edit.php:143 groups-edit.php:104 users-edit.php:146
+msgid "This page is not intended to be accessed directly."
+msgstr "Na stránku není povolen přímý přístup."
+
+#. Text in function
+#: reset-password.php:322
+msgid "This request has already been completed. Please make a new one."
+msgstr "Tento požadavek byl již dokončen. Prosím, zadejte nový."
+
+#. Text in function
+#: reset-password.php:322
+msgid "This request has expired. Please make a new one."
+msgstr "Tento požadavek vypršel. Prosím, zadejte nový."
+
+#. Text in echo
+#: index.php:180
+msgid "This server does not allow self registrations."
+msgstr "Tento server neumožňuje registrace."
+
+#. Text in function
+#: includes/updates.functions.php:1
+msgid ""
+"This version changes the way files-to-clients relationships are stored on "
+"the database making it possible to assign a file to multiple clients. "
+"However some files did not update successfully. The following files may need "
+"to be reassigned to their clients by using the \\\"Find orphan files\\\" "
+"tool:"
+msgstr ""
+"Tato verze mění způsob, jakým jsou ukládány vazby soubory-klient v databázi. "
+"Díky tomu je možné přiřadit jeden soubor více klientům. Některé soubory se "
+"ale nepodařilo aktualizovat. Následující soubory je potřeba znovu přiřadit "
+"klientům použitím nástroje \\\"Najít nepřiřazené soubory\\\":"
+
+#. Text in echo
+#: options.php:181 options.php:480
+msgid "Thumbnails"
+msgstr "Náhledy"
+
+#. Text in echo
+#: options.php:481
+msgid ""
+"Thumbnails are used on files lists. It is recommended to keep them small, "
+"unless you are using the system to upload only images, and will change the "
+"default client's template accordingly."
+msgstr ""
+"Náhledy jsou zobrazeny v seznamu souborů. Pokud nepoužíváte systém pouze pro "
+"nahrávání obrázků a neupravili jste šablonu klientů, doporučujeme je nechat "
+"malé."
+
+#. Text in echo
+#: options.php:224
+msgid "Time format"
+msgstr "Formát času"
+
+#. Text in echo
+#: options.php:214
+msgid "Timezone"
+msgstr "Časové pásmo"
+
+#. Text in echo
+#: edit-file.php:336 manage-files.php:450 upload-process-form.php:268
+#: upload-process-form.php:474
+msgid "Title"
+msgstr "Název"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "Title was not completed"
+msgstr "Název nebyl kompletní"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "To continue, please visit the following link"
+msgstr "Pro pokračování kliněte na následující odkaz"
+
+#. Text in echo
+#: upload-import-orphans.php:228
+msgid "To use this feature you need to upload your files via FTP to the folder"
+msgstr "Pro použití této funkce musíte nahrát soubory přes FTP do adresáře"
+
+#. Text in echo
+#: manage-files.php:473
+msgid "Total downloads"
+msgstr "Stažení celkem"
+
+#. Text in echo
+#: manage-files.php:388
+msgid "Unassign"
+msgstr "Odebrat"
+
+#. Text in echo
+#: upload-process-form.php:332
+msgid "Unassigned files"
+msgstr ""
+
+#. Text in function
+#: users-form.php:59 clients-form.php:58
+msgid "Update account"
+msgstr "Aktualizovat účet"
+
+#. Text in echo
+#: email-templates.php:285 options.php:536
+msgid "Update all options"
+msgstr "Aktualizovat nastavení"
+
+#. Text in echo
+#: includes/updates.messages.php:51
+msgid "Update available!"
+msgstr "Je dostupná aktualizace!"
+
+#. Text in echo
+#: header.php:217 header.php:342 branding.php:157
+msgid "Upload"
+msgstr "Nahrát"
+
+#. Text in function
+#: upload-from-computer.php:171 upload-from-computer.php:157
+#: templates/gallery/template.php:49 upload-process-form.php:693
+msgid "Upload files"
+msgstr "Nahrát soubory"
+
+#. Text in echo
+#: upload-process-form.php:553
+msgid "Upload hidden (will not send notifications)"
+msgstr "Nakrát skrytě (nebudou odeslány upozornění)"
+
+#. Text in function
+#: sys.vars.php:1 users.php:194 manage-files.php:455
+msgid "Uploader"
+msgstr "Nahrál"
+
+#. Text in echo
+#: home-statistics.php:174 home.php:45
+msgid "Uploads by clients"
+msgstr "Soubory nahrané klienty"
+
+#. Text in echo
+#: home-statistics.php:170 home.php:44
+msgid "Uploads by users"
+msgstr "Soubory nahrané uživateli"
+
+#. Text in echo
+#: email-templates.php:211
+msgid "Use custom header / footer"
+msgstr "Použít vlastní hlavičku / patičku"
+
+#. Text in echo
+#: email-templates.php:243
+msgid "Use custom template"
+msgstr "Použít vlastní šablonu"
+
+#. Text in echo
+#: options.php:503
+msgid "Use file's absolute path"
+msgstr "Použít absolutní cestu k souboru"
+
+#. Text in echo
+#: branding.php:124
+msgid ""
+"Use this page to upload your company logo, or update the currently assigned "
+"one. This image will be shown to your clients when they access their file "
+"list."
+msgstr ""
+"Na této stránce nahrajte nebo aktualizujte logo společnosti. Toto logo bude "
+"zobrazeno Vašim klientům v seznamu jejich souborů."
+
+#. Text in echo
+#: options.php:252
+msgid ""
+"Used only on self-registrations. These options will not apply to clients "
+"registered by system administrators."
+msgstr ""
+"Používá se pouze pro registrace prováděné klienty. Toto nastavení nebude "
+"uplatněno pro klienty zaregistrované administrátorem systému."
+
+#. Text in function
+#: users-add.php:75
+msgid "User added correctly."
+msgstr "Uživatel byl úspěšně přidán."
+
+#. Text in function
+#: users-edit.php:146
+msgid "User edited correctly."
+msgstr "Uživatel byl úspěšně editován."
+
+#. Text in function
+#: includes/vars.php:1
+msgid "User level was not specified"
+msgstr "Uživatelské oprávnění nebylo nastaveno"
+
+#. Text in echo
+#: index.php:153 includes/classes/send-email.php:1 includes/vars.php:1
+#: options.php:393
+msgid "Username"
+msgstr "Uživatelské jméno"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "Username must be alphanumeric (a-z,A-Z,0-9 allowed)"
+msgstr "Uživatelské jméno musí být alfanumerické  (a-z,A-Z,0-9)"
+
+#. Text in echo
+#: index.php:142 includes/vars.php:1
+msgid "Username was not completed"
+msgstr "Uživatelské jméno nebo kompletní"
+
+#. Text in echo
+#: home.php:161
+msgid "Users"
+msgstr "Uživatelé"
+
+#. Text in function
+#: users.php:47
+msgid "Users administration"
+msgstr "Správa uživatelů"
+
+#. Text in echo
+#: home.php:91
+msgid "View all"
+msgstr "Zobrazit vše"
+
+#. Text in echo
+#: clients.php:328
+msgid "View as client"
+msgstr "Zobrazit jako klient"
+
+#. Text in echo
+#: clients.php:194
+msgid "View full table"
+msgstr "Zobrazit celou tabulku"
+
+#. Text in echo
+#: clients.php:327
+msgid "View groups"
+msgstr "Zobrazit skoupiny"
+
+#. Text in echo
+#: header.php:347 upload-process-form.php:360
+msgid "View my files"
+msgstr "Zobrazit mé soubory"
+
+#. Text in echo
+#: clients.php:193
+msgid "View reduced table"
+msgstr "Zobrazit kompaktní seznam"
+
+#. Text in echo
+#: manage-files.php:361 manage-files.php:645 upload-process-form.php:293
+msgid "Visible"
+msgstr "Viditelný"
+
+#. Text in echo
+#: header.php:144
+msgid "Welcome"
+msgstr "Vítejte"
+
+#. Text in function
+#: home.php:221 includes/classes/send-email.php:1
+msgid "Welcome to ProjectSend"
+msgstr "Vítejte v ProjectSend"
+
+#. Text in echo
+#: options.php:339
+msgid "When a client uploads files"
+msgstr "Když klient nahraje soubor"
+
+#. Text in echo
+#: options.php:301
+msgid "When a file expires:"
+msgstr "Při vypršení souboru:"
+
+#. Text in echo
+#: options.php:335
+msgid "When a system user uploads files"
+msgstr "Když systémový uživatel nahraje soubor"
+
+#. Text in echo
+#: options.php:452
+msgid "When setting up a password for an account, requiere at least:"
+msgstr ""
+
+#. Text in function
+#: clients-form.php:58
+msgid "Will be visible on the client's file list"
+msgstr "Bude zobrazen v seznamu souborů klienta"
+
+#. Text in echo
+#: clients.php:299
+msgid "Yes"
+msgstr "Ano"
+
+#. Text in echo
+#: clients.php:41 groups.php:60 actions-log.php:29 users.php:30
+#: manage-files.php:76
+msgid "You are about to delete"
+msgstr "Chystáte se smazat"
+
+#. Text in echo
+#: actions-log.php:39
+msgid ""
+"You are about to delete all activities from the log. Only those used for "
+"statistics will remain. Are you sure you want to continue?"
+msgstr ""
+"Chystáte se smazat veškeré aktivity z historie. Budou zachovány pouze údaje "
+"pro statistiku. Chcete pokračovat?"
+
+#. Text in echo
+#: manage-files.php:85
+msgid "You are about to unassign"
+msgstr "Chystáte se odebrat"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "You can access a list of all your files or upload your own"
+msgstr ""
+"Po přihlášení můžete zobrazit seznam Vašich souborů nebo nahrát vlastní."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "You can log in following this link"
+msgstr "Přihlásit se můžete kliknutím na následující odkaz"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "You can log in to manually deactivate it."
+msgstr "Pro deaktivaci se můžete přihlásit manuálně."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "You can manage these files"
+msgstr "Můžete spravovat tyto soubory"
+
+#. Text in echo
+#: upload-process-form.php:385
+msgid ""
+"You can skip assigning if you want. The files are retained and you may add "
+"them to clients or groups later."
+msgstr ""
+"Přiřazení souborů můžete přeskočit. Soubory zůstanou nahrány a můžete je "
+"přiřadit klientům/skupinám později."
+
+#. Text in echo
+#: email-templates.php:227 email-templates.php:252
+msgid "You can use HTML tags here."
+msgstr "Můžete používat HTML tagy."
+
+#. Text in function
+#: users.php:47
+msgid "You cannot deactivate your own account."
+msgstr "Nemůžete deaktivovat svůj vlastní účet."
+
+#. Text in function
+#: users.php:47
+msgid "You cannot delete your own account."
+msgstr "Nemůžete smazat svůj vlastní účet."
+
+#. Text in function
+#: edit-file.php:436
+msgid "You don't have permission to edit this file."
+msgstr "Nemáta oprávnění pro úpravu toho souboru."
+
+#. Text in echo
+#: process.php:1
+msgid ""
+"You don't have the required permissions to view the requested information "
+"about this file."
+msgstr "Nemáte dostatečné oprávnění pro zobrazení informací o tomto souboru."
+
+#. Text in function
+#: manage-files.php:410
+msgid "You have not uploaded any files for this account."
+msgstr "Pro tento účet nebyly nahrány žádné soubory."
+
+#. Text in function
+#: register.php:89
+msgid "You may now log in with your new credentials."
+msgstr "Nyní se můžete přihlásit s Vašimi novými přihlašovacími údaji."
+
+#. Text in echo
+#: install/index.php:202
+msgid "You may proceed to"
+msgstr "Můžete pokračovat na"
+
+#. Text in echo
+#: upload-from-computer.php:141
+msgid "You must select at least one file to upload."
+msgstr "Musíte vybrat alespoň jeden soubor."
+
+#. Text in echo
+#: options.php:390
+msgid ""
+"You need to include your username (usually your e-mail address) and password "
+"if you have selected either SMTP or Gmail as your mailer."
+msgstr ""
+"Pokud jste zvolili SMTP nebo GMAIL, musíte zadat uživatelské jméno (obvykle "
+"email) a heslo."
+
+#. Text in echo
+#: install/index.php:250
+msgid ""
+"You need to provide this data for a correct system installation. The site "
+"name will be visible in the system panel, and the client's lists."
+msgstr ""
+"Pro správnou instalaci systému je potřeba zadat následující data. Název "
+"stránky bude zobrazen v systémovém panelu, a v seznamu souborů."
+
+#. Text in function
+#: clients-edit.php:143 users-edit.php:146
+msgid "Your account type doesn't allow you to access this feature."
+msgstr "Typ Vašeho účtu neumožňuje přístup k této funkci."
+
+#. Text in function
+#: includes/userlevel_check.php:158
+msgid ""
+"Your account type doesn't allow you to view this page. Please contact a "
+"system administrator if you need to access this function."
+msgstr ""
+"Pro zobrazení této stránky nemáte dostatečná oprávnění. Pokud potřebuje "
+"stránku zobrazit, kontaktujte správce systému."
+
+#. Text in echo
+#: upload-from-computer.php:153
+msgid ""
+"Your browser doesn't support HTML5, Flash or Silverlight. Please update your "
+"browser or install Adobe Flash or Silverlight to continue."
+msgstr ""
+"Váš prohlížeč nepodporuje HTML, Flash nebo Silverlight. Pro pokračování "
+"aktualizujte prohlížeč, nebo nainstalujte Adobe Flash nebo Silverlight."
+
+#. Text in echo
+#: upload-from-computer.php:160
+msgid ""
+"Your files are being uploaded! Progress indicators may take a while to "
+"update, but work is still being done behind the scenes."
+msgstr "Vaše soubory se nahrávají! "
+
+#. Text in function
+#: clients-form.php:58
+msgid "Your full name"
+msgstr "Vaše celé jméno"
+
+#. Text in function
+#: reset-password.php:322
+msgid "Your new password couldn't be set."
+msgstr "Nové heslo nebylo možné nastavit."
+
+#. Text in function
+#: reset-password.php:322
+msgid "Your new password has been set. You can now log in using it."
+msgstr "Nové heslo bylo nastaveno. Nyní se můžete přihlásit."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Your password"
+msgstr "Vaše heslo"
+
+#. Text in function
+#: includes/vars.php:1
+msgid ""
+"Your password can only contain letters, numbers and the following characters:"
+msgstr "Heslo může obsahovat pouze písmena, čísla a následující znaky:"
+
+#. Text in function
+#: clients.php:200 groups.php:213 templates/default/template.php:59
+#: users.php:229 manage-files.php:410
+msgid "Your search keywords returned no results."
+msgstr "Nebyly nalezeny žádné výsledky"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Your username"
+msgstr "Uživatelské jméno"
+
+#. Text in echo
+#: home-statistics.php:182 home.php:47
+msgid "Zip Downloads"
+msgstr "Stáhnout jako zip"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "activated the client"
+msgstr "aktivoval klienta"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "activated the user"
+msgstr "aktivoval uživatele"
+
+#. Text in echo
+#: actions-log.php:199
+msgid "activities"
+msgstr "aktivity"
+
+#. Text in echo
+#: actions-log.php:30
+msgid "activities. Are you sure you want to continue?"
+msgstr "aktivit. Opravdu chcete pokračovat?"
+
+#. Text in echo
+#: install/index.php:267 includes/vars.php:1
+msgid "and"
+msgstr "a"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "assigned the file"
+msgstr "přiiřadil soubor"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "assigned to:"
+msgstr "přiřazeno k:"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "by logging in here"
+msgstr "Přihlásit."
+
+#. Text in function
+#: includes/vars.php:1
+msgid "characters long"
+msgstr "znaků dlouhý"
+
+#. Text in echo
+#: install/index.php:267
+msgid "characters long."
+msgstr "znaků dlouhý."
+
+#. Text in echo
+#: clients.php:191
+msgid "clients"
+msgstr "klientů"
+
+#. Text in echo
+#: clients.php:42
+msgid ""
+"clients and all of the assigned files. Are you sure you want to continue?"
+msgstr "klientů a všech přiřazených souborů. Opravdu chcete pokračovat?"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "created a client account for themself."
+msgstr "sám vytvořil klientský účet."
+
+#. Text in function
+#: includes/functions.php:682
+msgid "created the client account "
+msgstr "vytvořil účet klienta"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "created the group"
+msgstr "vytvořil skupinu"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "created the user account"
+msgstr "vytvořil uživatelský účet"
+
+#. Text in echo
+#: home.php:39 home.php:40 home.php:41
+msgid "days"
+msgstr "dnů"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "deactivated the client"
+msgstr "deaktivoval klienta"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "deactivated the user"
+msgstr "deaktivoval uživatele"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "deleted the client"
+msgstr "smazal klienta"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "deleted the file"
+msgstr "smazal soubor"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "deleted the group"
+msgstr "smazal skupinu"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "deleted the user"
+msgstr "smazal uživatele"
+
+#. Text in function
+#: branding.php:96
+msgid "directory to 755, or 777 as a last resource."
+msgstr "adresář na 755, nebo 777."
+
+#. Text in echo
+#: manage-files.php:643 manage-files.php:657
+msgid "downloads"
+msgstr "stažení"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "edited the client"
+msgstr "upravil klienta"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "edited the group"
+msgstr "upravil skupinu"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "edited the user"
+msgstr "upravil uživatele"
+
+#. Text in echo
+#: templates/default/template.php:54 manage-files.php:405
+msgid "files"
+msgstr "souborů"
+
+#. Text in echo
+#: manage-files.php:86
+msgid "files from this account. Are you sure you want to continue?"
+msgstr "souborů z tohoto účtu. Opravduu chcete pokračovat?"
+
+#. Text in echo
+#: manage-files.php:77
+msgid ""
+"files permanently and for every client/group. Are you sure you want to "
+"continue?"
+msgstr ""
+"souborů nevratně a pro všechny klienty/skupiny. Opravdu chcete pokračovat?"
+
+#. Text in function
+#: manage-files.php:689
+msgid "for client"
+msgstr "pro klienta"
+
+#. Text in function
+#: manage-files.php:689
+msgid "for group"
+msgstr "pro skupinu"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "from the client:"
+msgstr "klientovi"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "from the group:"
+msgstr "skupině"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "generated a zip file"
+msgstr "vygeneroval soubor zip"
+
+#. Text in echo
+#: groups.php:208
+msgid "groups"
+msgstr "skupiny"
+
+#. Text in echo
+#: groups.php:61
+msgid "groups. Are you sure you want to continue?"
+msgstr "skupiny. Opravdu chcete pokračovat?"
+
+#. Text in echo
+#: includes/updates.messages.php:51
+msgid "has been released."
+msgstr "byla vydána."
+
+#. Text in function
+#: groups.php:76
+msgid "is member"
+msgstr "je člen"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "length should be between"
+msgstr "délka musí být mezi"
+
+#. Text in echo
+#: install/index.php:202
+msgid "log in"
+msgstr "přihlásit"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "logged in to the system."
+msgstr "se přihlásil do systému."
+
+#. Text in function
+#: includes/functions.php:682
+msgid "logged out of the system."
+msgstr "se odhlásil ze systému."
+
+#. Text in function
+#: includes/functions.php:682
+msgid "marked as hidden the file"
+msgstr "označil soubor jako skrytý"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "marked as visible the file"
+msgstr "označil soubor jako viditelný"
+
+#. Text in echo
+#: branding.php:129
+msgid "options"
+msgstr "možnosti"
+
+#. Text in echo
+#: includes/updates.messages.php:24
+msgid "please consider making a donation to support further development."
+msgstr "darujte prosím finanční částku na podporu dalšího vývoje."
+
+#. Text in echo
+#: branding.php:129
+msgid "section."
+msgstr "sekce."
+
+#. Text in echo
+#: install/index.php:87
+msgid "setup"
+msgstr "setup"
+
+#. Text in echo
+#: options.php:227
+msgid "this page"
+msgstr "tato stránka"
+
+#. Text in echo
+#: manage-files.php:114 manage-files.php:637
+msgid "times"
+msgstr "krát"
+
+#. Text in echo
+#: includes/functions.php:288
+msgid "to be able to upload files for that account."
+msgstr "pro povolení nahrávání souborů pro tento účet."
+
+#. Text in function
+#: includes/functions.php:682
+msgid "to the client:"
+msgstr "klientovi:"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "to the group:"
+msgstr "skupině:"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "to:"
+msgstr ":"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "unassigned the file"
+msgstr "odebral soubor"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "updated ProjectSend to version"
+msgstr "aktualizoval ProjectSend na verzi"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "uploaded a new logo on \"Branding\""
+msgstr "nahrál nové logo"
+
+#. Text in echo
+#: users.php:224
+msgid "users"
+msgstr "uživatelů"
+
+#. Text in echo
+#: users.php:31
+msgid "users. Are you sure you want to continue?"
+msgstr "uřivatelů. Opravdu chcete pokračovat?"
+
+#. Text in echo
+#: includes/updates.messages.php:51 includes/functions.php:270
+msgid "version"
+msgstr "verze"
+
+#. Text in echo
+#: install/index.php:251
+msgid ""
+"with your database settings before installing. If the file doesn't exist, "
+"you can create it by renaming the dummy file sys.config.sample.php."
+msgstr ""
+"s nastavením Vaší databáze před instalací. Pokud soubor neexistuje, můžete "
+"ho vytvořit přejmenováním souboru sys.config.sample.php."
+
+#. Text in echo
+#: install/index.php:202
+msgid "with your newely created username and password."
+msgstr "Vaším nově vytvořeným uživatelským jménem a heslem."

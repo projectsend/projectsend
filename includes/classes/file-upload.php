@@ -114,10 +114,11 @@ class PSend_Upload_File
 		$this->expiry_date = (!empty($arguments['expiry_date'])) ? date("Y-m-d", strtotime($arguments['expiry_date'])) : date("Y-m-d");
 		$this->is_public = (!empty($arguments['public'])) ? '1' : '0';
 		$this->public_token	= generateRandomString(32);
+		$this->password = (isset($arguments['password'])?$arguments['password']:'');
 		
 		if(isset($arguments['add_to_db'])) {
-			$result = $database->query("INSERT INTO tbl_files (url, filename, description, uploader, expires, expiry_date, public_allow, public_token)"
-										."VALUES ('$this->post_file', '$this->name', '$this->description', '$this->uploader', '$this->expires', '$this->expiry_date', '$this->is_public', '$this->public_token')");
+			$result = $database->query("INSERT INTO tbl_files (url, filename, description, uploader, expires, expiry_date, public_allow, public_token, password)"
+										."VALUES ('$this->post_file', '$this->name', '$this->description', '$this->uploader', '$this->expires', '$this->expiry_date', '$this->is_public', '$this->public_token', '$this->password')");
 			$this->file_id = mysql_insert_id();
 			$this->state['new_file_id'] = $this->file_id;
 
@@ -160,7 +161,8 @@ class PSend_Upload_File
 											expires = '$this->expires',
 											expiry_date = '$this->expiry_date',
 											public_allow = '$this->is_public',
-											public_token = '$this->public_token'
+											public_token = '$this->public_token',
+											password = '$this->password'
 											WHERE id = '$this->file_id'
 										");
 		}
@@ -185,6 +187,7 @@ class PSend_Upload_File
 		$this->uploader_id = $arguments['uploader_id'];
 		$this->groups = $arguments['all_groups'];
 		$this->users = $arguments['all_users'];
+		if (empty($arguments['assign_to'])) { $arguments['assign_to'] = array("c"); }
 
 		if (!empty($arguments['assign_to'])) {
 			$this->assign_to = $arguments['assign_to'];
@@ -203,8 +206,13 @@ class PSend_Upload_File
 						break;
 				}
 				$this->assignment = substr($this->assignment, 1);
+				if (empty($this->assignment)){
+					$assignment_sql = 'NULL';
+				}else{
+					$assignment_sql = "'$this->assignment'";
+				}
 				$assign_file = $database->query("INSERT INTO tbl_files_relations (file_id, $this->add_to, hidden)"
-											."VALUES ('$this->file_id', '$this->assignment', '$this->hidden')");
+											."VALUES ('$this->file_id', $assignment_sql, '$this->hidden')");
 				
 				if ($this->uploader_type == 'user') {
 					/** Record the action log */

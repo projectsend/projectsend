@@ -25,6 +25,7 @@ if (defined('TRY_INSTALL')) {
 	  `expiry_date` TIMESTAMP NOT NULL,
 	  `public_allow` INT(1) NOT NULL default \'0\',
 	  `public_token` varchar(32) NULL,
+	  `password` varchar(60) NULL,
 	  PRIMARY KEY (`id`)
 	) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 	',

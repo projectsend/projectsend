@@ -1,0 +1,37 @@
+#
+# Translators:
+# vasikgreif <vasik@vasik.net>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: ProjectSend\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2014-04-01 13:00-0300\n"
+"Last-Translator: Ignacio <info@subwaydesign.com.ar>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/projectsend/"
+"language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#. Text in echo
+#: psend/templates/gallery/template.php:99
+msgid "Download original"
+msgstr "Stáhnout originál"
+
+#. Text in echo
+#: psend/templates/gallery/template.php:80
+msgid "File expired"
+msgstr "Soubor vypršel"
+
+#. Text in function
+#: psend/templates/gallery/template.php:56
+msgid "Gallery"
+msgstr "Galerie"
+
+#. Text in echo
+#: psend/templates/gallery/template.php:56
+msgid "There are no files."
+msgstr "Nejsou dostupné žádné soubory."

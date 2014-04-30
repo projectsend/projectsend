@@ -1,0 +1,3477 @@
+#
+# Translators:
+# princebarre <princebarre@gmail.com>, 2013
+# droops, 2013
+# Philippe MALADJIAN <k.flipflip@gmail.com>, 2013
+# lenamtl, 2013-2014
+# matzeus <mathieu.noe@gmail.com>, 2013
+# evcwally <rdi@sovec-entreprises.fr>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: ProjectSend\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2014-04-01 12:59-0300\n"
+"Last-Translator: Ignacio <info@subwaydesign.com.ar>\n"
+"Language-Team: French (http://www.transifex.com/projects/p/projectsend/"
+"language/fr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#. Text in echo
+#: options.php:319
+msgid "\"From\" information"
+msgstr "Information \"De\""
+
+#. Text in function
+#: includes/functions.php:682
+msgid "(client) downloaded the file"
+msgstr "(client) a téléchargé le fichier"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "(client) edited the file"
+msgstr "(client) a édité le fichier"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "(client) uploaded the file"
+msgstr "(client) a tranféré le fichier"
+
+#. Text in function
+#: email-templates.php:91
+msgid "(to be used as href on a link tag)"
+msgstr "(pour être utilisé comme lien sur une balise href)"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "(user) downloaded the file"
+msgstr "(utilisateur) a téléchargé le fichier"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "(user) edited the file"
+msgstr "(utilisateur) a édité le fichier"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "(user) uploaded the file"
+msgstr "(utilisateur) a transféré le fichier"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "1 lowercase character"
+msgstr "1 lettre minuscule"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "1 number"
+msgstr "1 chiffre"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "1 special character"
+msgstr "1 caractère spécial"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "1 uppercase character"
+msgstr "1 lettre majuscule"
+
+#. Text in echo
+#: actions-log.php:160
+msgid "A client account was activated"
+msgstr "Le compte d'un client a été activé"
+
+#. Text in echo
+#: actions-log.php:161
+msgid "A client account was deactivated"
+msgstr "Le compte d'un client a été désactivé"
+
+#. Text in echo
+#: actions-log.php:174
+msgid "A client edited a file."
+msgstr "Un client a édité un fichier."
+
+#. Text in echo
+#: actions-log.php:145
+msgid "A client registers an account for himself"
+msgstr "Un client s'est inscrit"
+
+#. Text in echo
+#: actions-log.php:158
+msgid "A client was deleted"
+msgstr "Un client a été supprimé"
+
+#. Text in echo
+#: actions-log.php:155
+msgid "A client was edited"
+msgstr "Un client a été édité"
+
+#. Text in echo
+#: actions-log.php:153
+msgid "A file has been deleted"
+msgstr "Un fichier a été supprimé"
+
+#. Text in echo
+#: actions-log.php:151
+msgid "A file has been unassigned from a client."
+msgstr "Un fichier a été retiré  à un client"
+
+#. Text in echo
+#: actions-log.php:152
+msgid "A file has been unassigned from a group"
+msgstr "Un fichier a été retiré à un groupe"
+
+#. Text in echo
+#: actions-log.php:167
+msgid "A file is assigned to a client"
+msgstr "Un fichier a été assigné à un client"
+
+#. Text in echo
+#: actions-log.php:168
+msgid "A file is assigned to a group"
+msgstr "Un fichier a été assigné à un groupe"
+
+#. Text in echo
+#: actions-log.php:149
+msgid "A file is downloaded by a client"
+msgstr "Un fichier a été téléchargé par un client"
+
+#. Text in echo
+#: actions-log.php:148
+msgid "A file is downloaded by a user (on \"Client view\" mode)"
+msgstr ""
+"Un fichier a été téléchargé par un utilisateur (dans le mode \"vue client\")"
+
+#. Text in echo
+#: actions-log.php:147
+msgid "A file is uploaded by a client"
+msgstr "Un fichier a été transféré par un client"
+
+#. Text in echo
+#: actions-log.php:146
+msgid "A file is uploaded by an user"
+msgstr "Un fichier a été transféré par un utilisateur"
+
+#. Text in echo
+#: actions-log.php:164
+msgid "A file was marked as hidden"
+msgstr "Un fichier a été marqué comme caché"
+
+#. Text in echo
+#: actions-log.php:165
+msgid "A file was marked as visible"
+msgstr "Un fichier  a été marqué comme visible"
+
+#. Text in function
+#: register.php:89
+msgid ""
+"A folder for this account could not be created. Probably because of a server "
+"configuration."
+msgstr ""
+"Un dossier pour ce compte ne peut être créé. Probablement dû à la "
+"configuration du serveur."
+
+#. Text in echo
+#: actions-log.php:159
+msgid "A group was deleted"
+msgstr "Un groupe a été supprimé"
+
+#. Text in echo
+#: actions-log.php:156
+msgid "A group was edited"
+msgstr "Un groupe a été édité"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid ""
+"A new account was created for you. From now on, you can access the files "
+"that have been uploaded under your account using the following credentials:"
+msgstr ""
+"Un nouveau compte a été créé pour vous. Dès maintenant, vous pouvez accéder "
+"aux fichiers qui ont été transférés dans votre compte en utilisant les "
+"informations suivantes : "
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid ""
+"A new account was created for you. From now on, you can access the system "
+"administrator using the following credentials:"
+msgstr ""
+"Un nouveau compte a été créé pour vous. Dès maintenant vous pouvez accéder "
+"au système d'administration en utilisant les identifiants de connexion "
+"suivant : "
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid ""
+"A new account was created using the self registration form on your site. "
+"Registration information:"
+msgstr ""
+"Un nouveau compte  a été créé via un enregistrement personnel  depuis le "
+"formulaire de votre site. Information d'enregistrement :"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "A new client has registered."
+msgstr "Un nouveau client s'est inscrit"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid ""
+"A request has been received to reset the password for the following account:"
+msgstr ""
+"Une demande a été reçue pour réinitialiser le mot de passe du compte "
+"suivant : "
+
+#. Text in function
+#: includes/updates.functions.php:1
+msgid ""
+"A safe chmod value couldn't be set for one or more system files. Please make "
+"sure that at least includes/sys.config.php has a chmod of 644 for security "
+"reasons."
+msgstr ""
+"Une valeur de chmod n'a pu être réglée pour un ou plusieurs fichiers. "
+"Veuillez vérifier qu'au moins includes/sys.config.php  a la valeur de chmod "
+"644 pour des raisons de sécurité."
+
+#. Text in echo
+#: actions-log.php:173
+msgid "A system user edited a file."
+msgstr "Un utilisateur du système a édité un fichier"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "A system user or client with this e-mail address already exists."
+msgstr ""
+"Un utilisateur du système ou un client utilise déjà cette adresse courriel."
+
+#. Text in function
+#: includes/vars.php:1
+msgid "A system user or client with this login name already exists."
+msgstr ""
+"Ce nom d'utilisateur est déjà utilisé par un utilisateur du système ou un "
+"client."
+
+#. Text in echo
+#: actions-log.php:162
+msgid "A user account was activated"
+msgstr "Le compte d'un client a été activé"
+
+#. Text in echo
+#: actions-log.php:163
+msgid "A user account was deactivated"
+msgstr "Le compte d'un client a été désactivé"
+
+#. Text in echo
+#: actions-log.php:169
+msgid "A user account was marked as active"
+msgstr "Le compte d'un client a été activé"
+
+#. Text in echo
+#: actions-log.php:170
+msgid "A user account was marked as inactive"
+msgstr "Le compte d'un client a été désactivé"
+
+#. Text in echo
+#: actions-log.php:144
+msgid "A user creates a new client account"
+msgstr "Un utilisateur a créé un nouveau compte client"
+
+#. Text in echo
+#: actions-log.php:166
+msgid "A user creates a new group"
+msgstr "Un utilisateur a créé un nouveau groupe"
+
+#. Text in echo
+#: actions-log.php:143
+msgid "A user creates a new user account"
+msgstr "Un utilisateur a créé un nouvel utilisateur"
+
+#. Text in echo
+#: actions-log.php:157
+msgid "A user was deleted"
+msgstr "Un utilisateur a été supprimé"
+
+#. Text in echo
+#: actions-log.php:154
+msgid "A user was edited"
+msgstr "Un utilisateur a été édité"
+
+#. Text in echo
+#: actions-log.php:150
+msgid "A zip file was generated by a client"
+msgstr "Un fichier zip a été généré par un client"
+
+#. Text in echo
+#: includes/userlevel_check.php:156
+msgid "Access denied"
+msgstr "Accès refusé"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Access the system panel here"
+msgstr "Accédez à l'espace de partage en cliquant ici"
+
+#. Text in echo
+#: actions-log.php:142
+msgid "Account (user or client) logs out"
+msgstr "Déconnexion (d'un client ou d'un utilisateur)"
+
+#. Text in function
+#: sys.vars.php:1 users.php:193
+msgid "Account Manager"
+msgstr "Gestionnaire de compte"
+
+#. Text in function
+#: register.php:89
+msgid "Account added correctly."
+msgstr "Compte ajouté avec succès."
+
+#. Text in echo
+#: actions-log.php:141
+msgid "Account logs in through cookies"
+msgstr "Journaux par le biais des cookies"
+
+#. Text in echo
+#: actions-log.php:140
+msgid "Account logs in through the form"
+msgstr "Journaux par le biais du formulaire"
+
+#. Text in echo
+#: clients.php:237 groups.php:250 users.php:255 manage-files.php:478
+#: upload-process-form.php:338
+msgid "Actions"
+msgstr "Actions"
+
+#. Text in echo
+#: clients.php:180 users.php:213
+msgid "Activate"
+msgstr "Activer"
+
+#. Text in echo
+#: clients.php:166 clients.php:307 users.php:199 users.php:282
+msgid "Active"
+msgstr "Actif"
+
+#. Text in echo
+#: clients-form.php:134
+msgid "Active (client can log in)"
+msgstr "Actif (le client peut se connecter)"
+
+#. Text in echo
+#: users-form.php:116
+msgid "Active (user can log in)"
+msgstr "Actif (l'utilisateur peut se connecter)"
+
+#. Text in echo
+#: actions-log.php:185
+msgid "Activities actions"
+msgstr "Actions pour les activités sélectionnées"
+
+#. Text in echo
+#: actions-log.php:228
+msgid "Activity"
+msgstr "Activité"
+
+#. Text in echo
+#: edit-file.php:413 groups-form.php:67 upload-process-form.php:546
+msgid "Add all"
+msgstr "Ajouter tout"
+
+#. Text in function
+#: clients-form.php:58 clients-add.php:135
+msgid "Add client"
+msgstr "Ajouter un client"
+
+#. Text in function
+#: groups-add.php:102
+msgid "Add clients group"
+msgstr "Ajouter un groupe de clients"
+
+#. Text in echo
+#: options.php:263
+msgid "Add clients to this group:"
+msgstr "Ajouter des clients à ce groupe :"
+
+#. Text in echo
+#: header.php:251 header.php:273 header.php:308
+msgid "Add new"
+msgstr "Ajouter un nouveau"
+
+#. Text in function
+#: users-add.php:128
+msgid "Add system user"
+msgstr "Ajouter un utilisateur du système"
+
+#. Text in function
+#: users-form.php:59
+msgid "Add user"
+msgstr "Ajouter un utilisateur"
+
+#. Text in echo
+#: clients.php:233 groups.php:249 users.php:254
+msgid "Added on"
+msgstr "Ajouté le"
+
+#. Text in echo
+#: clients.php:234 clients-form.php:119
+msgid "Address"
+msgstr "Adresse"
+
+#. Text in echo
+#: options.php:346
+msgid "Address supplied above (on \"From\")"
+msgstr " Adresse fournie plus haut (dans \"De\")"
+
+#. Text in echo
+#: install/index.php:293
+msgid ""
+"After installing the system, you can go to the options page to set your "
+"timezone, prefered date display format and thubmnails parameters, besides "
+"being able to change the site options provided here."
+msgstr ""
+"Après avoir installé le système, vous pouvez aller à la page des options et "
+"paramétrer le fuseau horaire, le format de la date et de l'heure ainsi que "
+"les miniatures pour les images, afin de pouvoir modifier les options du site "
+"fournies ici."
+
+#. Text in echo
+#: home.php:77 actions-log.php:138
+msgid "All activities"
+msgstr "Toutes"
+
+#. Text in echo
+#: upload-import-orphans.php:177
+msgid "All assignations were removed"
+msgstr "Toutes les assignations ont été enlevées"
+
+#. Text in echo
+#: users.php:191
+msgid "All roles"
+msgstr "Tous les rôles"
+
+#. Text in echo
+#: clients.php:165 users.php:198 manage-files.php:359
+msgid "All statuses"
+msgstr "Tous les statuts"
+
+#. Text in echo
+#: edit-file.php:369 upload-process-form.php:505
+msgid "Allow public downloading of this file."
+msgstr "Autoriser le téléchargement public de ce fichier."
+
+#. Text in echo
+#: options.php:432
+msgid "Allowed file extensions"
+msgstr "Extensions de fichiers autorisées"
+
+#. Text in echo
+#: install/index.php:105
+msgid "Already installed"
+msgstr "Déjà installé"
+
+#. Text in echo
+#: options.php:350
+msgid "Also to this addresses"
+msgstr "Également à ces adresses"
+
+#. Text in function
+#: users-add.php:75
+msgid "An e-mail notification with login information was sent to the new user."
+msgstr ""
+"Une notification par courriel contenant les identifiants de connexion a été "
+"envoyé au nouvel utilisateur"
+
+#. Text in function
+#: register.php:89
+msgid ""
+"An e-mail notification with login information was sent to the specified "
+"address."
+msgstr ""
+"Une notification par courriel contenant les identifiants de connexion a été "
+"envoyée à l'adresse spécifiée."
+
+#. Text in function
+#: clients-add.php:83
+msgid "An e-mail notification with login information was sent to your client."
+msgstr ""
+"Une notification par courriel, contenant les identifiants de connexion, a "
+"été envoyée à votre client."
+
+#. Text in function
+#: reset-password.php:322
+msgid ""
+"An e-mail with further instructions has been sent. Please check your inbox "
+"to proceed."
+msgstr ""
+"Un message avec des instructions complètes vous a été envoyé. Merci de "
+"vérifier votre boite de réception pour procéder."
+
+#. Text in echo
+#: edit-file.php:379 upload-process-form.php:516
+msgid "Assign this file to"
+msgstr "Assigner ce fichier à"
+
+#. Text in echo
+#: edit-file.php:378 upload-process-form.php:515
+msgid "Assignations"
+msgstr "Assignations"
+
+#. Text in echo
+#: options.php:415
+msgid "Authentication"
+msgstr "Authentification"
+
+#. Text in echo
+#: actions-log.php:227
+msgid "Author"
+msgstr "Auteur"
+
+#. Text in echo
+#: options.php:259
+msgid "Auto approve new accounts"
+msgstr "Approuver automatiquement les nouveaux comptes"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Auto-approvals of new accounts are currently enabled."
+msgstr ""
+"L’approbation automatique des nouveaux comptes est actuellement activée."
+
+#. Text in echo
+#: options.php:192
+msgid ""
+"Basic information to be shown around the site. The time format and zones "
+"values affect how the clients see the dates on their files lists."
+msgstr ""
+"Informations qui seront affichées sur le site. Le format de la date et de "
+"l'heure ainsi que le fuseau horaire affectera la manière dont le client "
+"verra les dates dans leur liste de fichiers."
+
+#. Text in echo
+#: install/index.php:249
+msgid "Basic system options"
+msgstr "Options du système"
+
+#. Text in echo
+#: options.php:433
+msgid ""
+"Be careful when changing this options. They could affect not only the system "
+"but the whole server it is installed on."
+msgstr ""
+"Soyez prudent lorsque vous éditez ces options. Elles pourraient affecter non "
+"seulement le système mais tout le serveur sur lequel il est installé."
+
+#. Text in echo
+#: header.php:331 branding.php:26
+msgid "Branding"
+msgstr "Logo"
+
+#. Text in echo
+#: edit-file.php:432
+msgid "Cancel"
+msgstr "Annuler"
+
+#. Text in echo
+#: actions-log.php:190
+msgid "Clear entire log"
+msgstr "Effacer toutes les données du journal"
+
+#. Text in echo
+#: upload-from-computer.php:48
+msgid ""
+"Click on Add files to select all the files that you want to upload, and then "
+"click continue. On the next step, you will be able to set a name and "
+"description for each uploaded file. Remember that the maximum allowed file "
+"size (in mb.) is "
+msgstr ""
+"Cliquez sur le bouton \"Ajouter fichiers\" pour sélectionner tous les "
+"fichiers que vous voulez transférer, puis cliquer sur \"Transférer des "
+"fichiers\". A la prochaine étape, vous pourrez entrer un nom et une "
+"description pour chaque fichier transféré. Rappelez-vous que la taille de "
+"fichier maximale autorisée (en Mo) est "
+
+#. Text in echo
+#: manage-files.php:129
+msgid "Click to select"
+msgstr "Cliquer pour sélectionner"
+
+#. Text in function
+#: sys.vars.php:1
+msgid "Client"
+msgstr "Client"
+
+#. Text in function
+#: clients-add.php:83
+msgid "Client added correctly."
+msgstr "Client ajouté avec succès"
+
+#. Text in function
+#: clients-edit.php:143
+msgid "Client edited correctly."
+msgstr "Client édité avec succès"
+
+#. Text in function
+#: register.php:89
+msgid ""
+"Client self registration is not allowed. If you need an account, please "
+"contact a system administrator."
+msgstr ""
+"Si vous avez besoin d'un compte, veuillez contacter l'administrateur du "
+"système."
+
+#. Text in echo
+#: options.php:199
+msgid "Client's template"
+msgstr "Template client"
+
+#. Text in echo
+#: header.php:236 edit-file.php:381 home.php:159 upload-process-form.php:518
+#: options.php:178
+msgid "Clients"
+msgstr "Clients"
+
+#. Text in function
+#: clients.php:57
+msgid "Clients Administration"
+msgstr "Gestion des clients"
+
+#. Text in echo
+#: options.php:255
+msgid "Clients can register themselves"
+msgstr "Les clients peuvent s'enregistrer eux-mêmes."
+
+#. Text in echo
+#: options.php:297
+msgid "Clients can upload files"
+msgstr "Les clients peuvent transférer des fichiers"
+
+#. Text in echo
+#: header.php:271
+msgid "Clients groups"
+msgstr "Groupes de clients"
+
+#. Text in echo
+#: options.php:441
+msgid "Clients only"
+msgstr "Client seulement"
+
+#. Text in echo
+#: home.php:83
+msgid "Clients self-registrations"
+msgstr "Auto-inscriptions des clients"
+
+#. Text in echo
+#: manage-files.php:129
+msgid "Close"
+msgstr "Fermer"
+
+#. Text in echo
+#: options.php:182
+msgid "Company logo"
+msgstr "Logo de la compagnie"
+
+#. Text in function
+#: install/index.php:159
+msgid "Congratulations! Everything is up and running."
+msgstr "Félicitations ! Tout est installé et fonctionnel."
+
+#. Text in echo
+#: index.php:166 edit-file.php:433 upload-import-orphans.php:203
+#: reset-password.php:314 upload-process-form.php:585
+msgid "Continue"
+msgstr "Continuer"
+
+#. Text in echo
+#: upload-process-form.php:548
+msgid "Copy selections to other files"
+msgstr "Copier les sélections vers d’autres fichiers"
+
+#. Text in echo
+#: includes/functions.php:288
+msgid "Create a new one"
+msgstr "Créer un nouveau"
+
+#. Text in function
+#: groups-form.php:23
+msgid "Create group"
+msgstr "Créer un groupe"
+
+#. Text in echo
+#: groups.php:248
+msgid "Created by"
+msgstr "Créé par"
+
+#. Text in echo
+#: branding.php:128
+msgid "Current logo"
+msgstr "Logo actuel"
+
+#. Text in echo
+#: header.php:209
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#. Text in echo
+#: actions-log.php:226 manage-files.php:448
+msgid "Date"
+msgstr "Date"
+
+#. Text in echo
+#: options.php:365
+msgid "Days before expiring"
+msgstr "Jours avant l’expiration"
+
+#. Text in echo
+#: clients.php:181 users.php:214
+msgid "Deactivate"
+msgstr "Désactiver"
+
+#. Text in echo
+#: install/index.php:266
+msgid "Default system administrator options"
+msgstr "Les options par défaut de l'administrateur système"
+
+#. Text in echo
+#: options.php:343
+msgid ""
+"Define here who will receive copies of this emails. These are sent as BCC so "
+"neither recipient will see the other addresses."
+msgstr ""
+"Définir qui va recevoir une copie de ces courriels. Ils seront envoyés en "
+"tant que CCI alors aucun destinataire ne pourra voir les adresses courriel "
+"des autres.  "
+
+#. Text in echo
+#: options.php:362
+msgid "Define how many times will the system attemp to send each notification."
+msgstr ""
+"Définir combien de fois le système essayera d’envoyer chaque notification."
+
+#. Text in echo
+#: clients.php:182 groups.php:199 users.php:215 manage-files.php:392
+msgid "Delete"
+msgstr "Supprimer"
+
+#. Text in echo
+#: actions-log.php:189
+msgid "Delete selected"
+msgstr "Supprimer la sélection"
+
+#. Text in echo
+#: groups.php:245 edit-file.php:338 groups-form.php:43
+#: upload-process-form.php:269 upload-process-form.php:476
+msgid "Description"
+msgstr "Description"
+
+#. Text in echo
+#: includes/updates.messages.php:22
+msgid "Do you want to support ProjectSend?"
+msgstr "Est-ce que vous voulez supporter ProjectSend?"
+
+#. Text in echo
+#: manage-files.php:596
+msgid "Does not expire"
+msgstr "N’expire pas"
+
+#. Text in echo
+#: index.php:176
+msgid "Don't have an account yet?"
+msgstr "Vous n'avez par encore de compte ?"
+
+#. Text in echo
+#: options.php:303
+msgid "Don't show it on the files list"
+msgstr "Ne pas afficher dans la liste des fichiers"
+
+#. Text in function
+#: download.php:119
+msgid "Download"
+msgstr "Télécharger"
+
+#. Text in echo
+#: actions-log.php:188
+msgid "Download as csv"
+msgstr "Télécharger en csv"
+
+#. Text in echo
+#: manage-files.php:467
+msgid "Download count"
+msgstr "Téléchargé"
+
+#. Text in echo
+#: download.php:98
+msgid "Download file"
+msgstr "Télécharger le fichier"
+
+#. Text in echo
+#: templates/default/template.php:44
+msgid "Download zipped"
+msgstr "Compresser et télécharger les fichiers"
+
+#. Text in echo
+#: manage-files.php:110
+msgid "Downloaders of file:"
+msgstr "Outil de téléchargement de fichier :"
+
+#. Text in echo
+#: home-statistics.php:178 home.php:46 home.php:79
+msgid "Downloads"
+msgstr "Téléchargements"
+
+#. Text in echo
+#: users-form.php:101 clients.php:227 clients-form.php:115
+#: reset-password.php:272 users.php:251
+msgid "E-mail"
+msgstr "Courriel"
+
+#. Text in echo
+#: install/index.php:274 options.php:322
+msgid "E-mail address"
+msgstr "Adresse courriel"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "E-mail address is not valid"
+msgstr "L'adresse courriel n'est pas valide"
+
+#. Text in function
+#: reset-password.php:322
+msgid "E-mail couldn't be sent."
+msgstr "Le message ne peut pas être envoyé."
+
+#. Text in function
+#: register.php:89 users-add.php:75 clients-add.php:83
+msgid "E-mail notification couldn't be sent."
+msgstr "La notification par courriel ne peut pas être envoyée."
+
+#. Text in echo
+#: options.php:179
+msgid "E-mail notifications"
+msgstr "Notifications par courriel"
+
+#. Text in function
+#: upload-send-notifications.php:1
+msgid "E-mail notifications for inactive clients were not sent."
+msgstr ""
+"Les notifications par courriel pour les clients inactifs n'ont pas été "
+"envoyées."
+
+#. Text in function
+#: upload-send-notifications.php:1
+msgid "E-mail notifications have been sent."
+msgstr "Les notifications par courriel ont été envoyées."
+
+#. Text in echo
+#: options.php:373
+msgid "E-mail sending options"
+msgstr "Options d'envoi de courriel"
+
+#. Text in echo
+#: header.php:332 email-templates.php:1
+msgid "E-mail templates"
+msgstr "Modèles de message courriel"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "E-mail was not completed"
+msgstr "Le champ courriel n'est pas complété"
+
+#. Text in echo
+#: clients.php:329 groups.php:293 users.php:296 manage-files.php:666
+msgid "Edit"
+msgstr "Editer"
+
+#. Text in function
+#: clients-edit.php:208
+msgid "Edit client"
+msgstr "Editer un client"
+
+#. Text in function
+#: edit-file.php:1 upload-process-form.php:303 upload-process-form.php:355
+msgid "Edit file"
+msgstr "Editer le fichier"
+
+#. Text in function
+#: groups-edit.php:158
+msgid "Edit group"
+msgstr "Editer un groupe"
+
+#. Text in function
+#: users-edit.php:216
+msgid "Edit system user"
+msgstr "Editer un utilisateur du système"
+
+#. Text in echo
+#: edit-file.php:337 upload-process-form.php:475
+msgid "Enter here the required file title."
+msgstr "Entrer ici le titre du fichier."
+
+#. Text in echo
+#: options.php:440
+msgid "Everyone"
+msgstr "Tous"
+
+#. Text in echo
+#: options.php:357
+msgid "Expiration"
+msgstr "Expiration"
+
+#. Text in echo
+#: edit-file.php:357 upload-process-form.php:493
+msgid "Expiration date"
+msgstr "Date d’expiration"
+
+#. Text in echo
+#: manage-files.php:604
+msgid "Expired on"
+msgstr "Expiré le"
+
+#. Text in echo
+#: manage-files.php:611
+msgid "Expires on"
+msgstr "Expire le"
+
+#. Text in echo
+#: manage-files.php:457
+msgid "Expiry"
+msgstr "Expiration"
+
+#. Text in echo
+#: templates/default/template.php:82 manage-files.php:449
+msgid "Ext."
+msgstr "Ext."
+
+#. Text in echo
+#: upload-process-form.php:270 upload-process-form.php:608
+msgid "File Name"
+msgstr "Nom du fichier"
+
+#. Text in echo
+#: edit-file.php:358 upload-process-form.php:494
+msgid "File expires"
+msgstr "Le fichier expire"
+
+#. Text in echo
+#: edit-file.php:332 upload-process-form.php:467
+msgid "File information"
+msgstr "Information du fichier"
+
+#. Text in echo
+#: upload-import-orphans.php:177
+msgid "File is not public."
+msgstr "Fichier n’est pas public"
+
+#. Text in echo
+#: upload-import-orphans.php:159
+msgid "File name"
+msgstr "Nom du fichier"
+
+#. Text in echo
+#: upload-import-orphans.php:160
+msgid "File size"
+msgstr "Taille du fichier"
+
+#. Text in echo
+#: options.php:499
+msgid "File's path"
+msgstr "Chemin d'accès du fichier"
+
+#. Text in echo
+#: header.php:215 groups.php:247 home.php:158 options.php:290
+msgid "Files"
+msgstr "Fichiers"
+
+#. Text in echo
+#: upload-process-form.php:604
+msgid "Files not uploaded"
+msgstr "Fichiers non transférés"
+
+#. Text in echo
+#: upload-process-form.php:379
+msgid "Files ready to upload"
+msgstr "Fichiers prêts à être transférés"
+
+#. Text in echo
+#: upload-process-form.php:264
+msgid "Files uploaded correctly"
+msgstr "Les fichiers ont été transférés avec succès"
+
+#. Text in echo
+#: clients.php:229
+msgid "Files: Groups"
+msgstr "Fichiers : Groupes"
+
+#. Text in echo
+#: clients.php:228
+msgid "Files: Own"
+msgstr "Fichiers"
+
+#. Text in echo
+#: clients.php:169 actions-log.php:176 users.php:202 manage-files.php:363
+msgid "Filter"
+msgstr "Filtrer"
+
+#. Text in echo
+#: header.php:220 upload-import-orphans.php:242
+msgid "Find orphan files"
+msgstr "Chercher les fichiers orphelins"
+
+#. Text in echo
+#: email-templates.php:223
+msgid "Footer"
+msgstr "Pied de page"
+
+#. Text in echo
+#: options.php:226
+msgid "For example, d/m/Y h:i:s will result in something like"
+msgstr "Par exemple, le format d/m/Y h:i:s donnera "
+
+#. Text in echo
+#: options.php:227
+msgid "For the full list of available values, visit"
+msgstr "Pour voir la liste des valeurs disponibles, visitez"
+
+#. Text in echo
+#: index.php:172
+msgid "Forgot your password?"
+msgstr "Mot de passe oublié ?"
+
+#. Text in echo
+#: includes/functions.php:270
+msgid "Free software"
+msgstr "Logiciel libre"
+
+#. Text in echo
+#: clients.php:225 install/index.php:270 includes/classes/send-email.php:1
+#: users.php:249
+msgid "Full name"
+msgstr "Nom"
+
+#. Text in echo
+#: options.php:191
+msgid "General"
+msgstr "Général"
+
+#. Text in echo
+#: options.php:177
+msgid "General Options"
+msgstr "Options Générales"
+
+#. Text in echo
+#: header.php:329
+msgid "General options"
+msgstr "Options générales"
+
+#. Text in echo
+#: reset-password.php:328 download.php:106 register.php:173
+msgid "Go back to the homepage."
+msgstr "Retour à la page d'accueil"
+
+#. Text in function
+#: groups-add.php:63
+msgid "Group added correctly."
+msgstr "Groupe ajouté avec succès."
+
+#. Text in function
+#: groups-edit.php:104
+msgid "Group edited correctly."
+msgstr "Groupe édité avec succès."
+
+#. Text in echo
+#: groups.php:244 groups-form.php:39
+msgid "Group name"
+msgstr "Nom du groupe"
+
+#. Text in echo
+#: edit-file.php:396 home.php:160 upload-process-form.php:531
+msgid "Groups"
+msgstr "Groupes"
+
+#. Text in function
+#: groups.php:76
+msgid "Groups administration"
+msgstr "Gestionnaire des groupes"
+
+#. Text in echo
+#: clients.php:231
+msgid "Groups on"
+msgstr "Groupes"
+
+#. Text in function
+#: groups.php:76
+msgid "Groups where"
+msgstr "Groupes où"
+
+#. Text in echo
+#: email-templates.php:215
+msgid "Header"
+msgstr "En-tête"
+
+#. Text in echo
+#: email-templates.php:187 email-templates.php:207
+msgid "Header / Footer"
+msgstr "En-tête / Pied de page"
+
+#. Text in echo
+#: options.php:374
+msgid ""
+"Here you can select which mail system will be used when sending the "
+"notifications. If you have a valid e-mail account, SMTP is the recommended "
+"option."
+msgstr ""
+"Ici vous pouvez choisir quel système sera utilisé pour l'envoi de "
+"notification par courriel. Si vous avez une adresse courriel valide, le SMTP "
+"est recommandé"
+
+#. Text in echo
+#: email-templates.php:208
+msgid ""
+"Here you set up the header and footer of every email, or use the default "
+"ones available with the system. Use this to customize each part and include, "
+"for example, your own logo and markup."
+msgstr ""
+"Vous pouvez ici personnaliser l'en-tête et le pied de page de chaque message "
+"courriel, ou utiliser ceux fournis par défaut. Vous pouvez y inclure votre "
+"logo et slogan."
+
+#. Text in echo
+#: manage-files.php:360 manage-files.php:645 upload-process-form.php:293
+msgid "Hidden"
+msgstr "Caché"
+
+#. Text in echo
+#: manage-files.php:386
+msgid "Hide"
+msgstr "Cacher"
+
+#. Text in echo
+#: edit-file.php:420
+msgid "Hide from every already assigned clients and groups."
+msgstr "Cacher à tous les clients et groupes déjà assignés."
+
+#. Text in echo
+#: options.php:407
+msgid "Host"
+msgstr "Hôte"
+
+#. Text in function
+#: includes/updates.functions.php:1
+msgid ""
+"If images thumbnails aren't showing on your client's files lists (even your "
+"company logo there and on the branding page) please chmod the includes/"
+"timthumb/cache folder to 777 and then do the same with the 'index.html' and "
+"'timthumb_cacheLastCleanTime.touch' files inside that folder. Then try "
+"lowering each file to 644 and see if everything is still working."
+msgstr ""
+"Si les images miniatures ne s'affichent pas dans la liste des fichier (même "
+"chose pour votre logo de compagnie) veuillez changer la valeur de chmod du "
+"dossier includes/timthumb/cache à 777 et faire la même chose sur le fichier "
+"'index.html' et 'timthumb_cacheLastCleanTime.touch' qui sont situé dans ce "
+"dossier. Essayer de réduire la valeur jusqu'à 644 et voir si cela fonctionne "
+"toujours."
+
+#. Text in function
+#: reset-password.php:322
+msgid "If the problem persists, please contact an administrator."
+msgstr "Si le problème persiste, veuillez contacter l'administrateur."
+
+#. Text in function
+#: branding.php:96
+msgid ""
+"If this doesn't solve the issue, try giving the same values to the "
+"directories above that one until it works."
+msgstr ""
+"Si cela ne résout pas le problème, essayer la même valeur que le répertoire "
+"ci-dessus jusqu'à ce que cela fonctionne."
+
+#. Text in echo
+#: options.php:500
+msgid ""
+"If thumbnails are not showing (your company logo and file's preview on the "
+"branding page and client's files lists) try setting this option ON. It they "
+"still don't work, a folders permission issue might be the cause."
+msgstr ""
+"Si les miniatures (logo et miniatures) n'apparaissent pas essayer d'activer "
+"cette option. Si elles ne s'affichent toujours pas, il est possible que ce "
+"soit à cause d'un problème de permission."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "If you did not make this request, simply ignore this email."
+msgstr "Si vous n’avez pas fait cette demande, ignorez ce message."
+
+#. Text in function
+#: index.php:110
+msgid ""
+"If you just registered, please wait until a system administrator approves "
+"your account."
+msgstr ""
+"Si vous venez de vous enregistrer, merci de patienter jusqu’à la validation "
+"de votre compte par un administrateur."
+
+#. Text in echo
+#: index.php:181
+msgid "If you need an account, please contact a server administrator."
+msgstr ""
+"Si vous avez besoin d'un compte utilisateur, veuillez contacter "
+"l'administrateur du système."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid ""
+"If you prefer not to be notified about new files, please go to My Account "
+"and deactivate the notifications checkbox."
+msgstr ""
+"Si vous préférez ne pas être notifié au sujet des nouveaux fichiers, allez "
+"dans la section Mon Compte et décocher la case Notifier."
+
+#. Text in echo
+#: options.php:404
+msgid "If you selected SMTP as your mailer, please complete these options."
+msgstr ""
+"Si vous avez sélectionné SMTP comme protocole de transfert de mail, veuillez "
+"compléter ces options."
+
+#. Text in echo
+#: install/index.php:107
+msgid ""
+"If you want to reinstall, please delete the system tables from the database "
+"and come back to the installation form."
+msgstr ""
+"Si vous voulez réinstaller la base de données, veuillez supprimer les tables "
+"correspondantes dans la base de données et revenir au formulaire "
+"d'installation."
+
+#. Text in echo
+#: options.php:434
+msgid "Important"
+msgstr "Important"
+
+#. Text in echo
+#: clients.php:167 clients.php:307 users.php:200 users.php:282
+msgid "Inactive"
+msgstr "Inactif"
+
+#. Text in function
+#: install/index.php:311 install/index.php:289
+msgid "Install"
+msgstr "Installer"
+
+#. Text in echo
+#: clients.php:236
+msgid "Internal contact"
+msgstr "Contact interne"
+
+#. Text in echo
+#: clients-form.php:130
+msgid "Internal contact name"
+msgstr "Nom du contact interne"
+
+#. Text in echo
+#: install/index.php:106
+msgid "It seems that ProjectSend is already installed here."
+msgstr "Il semblerait que ProjectSend soit déjà installé ici."
+
+#. Text in echo
+#: options.php:492
+msgid "JPG Quality"
+msgstr "Qualité JPG"
+
+#. Text in echo
+#: upload-import-orphans.php:161
+msgid "Last modified"
+msgstr "Dernière modification"
+
+#. Text in echo
+#: options.php:517
+msgid ""
+"Like the thumbnails options, these have to be changed taking into account "
+"the client's template design, since it can be shown there. The default "
+"template uses a fixed width for the logo, however the Gallery template uses "
+"this setting to show the image on top."
+msgstr ""
+"Comme pour les miniatures, elles doivent être modifiées en tenant compte du "
+"template du client. Le template par défaut utilise une largeur fixe pour le "
+"logo, le template Gallery utilise ces paramètres pour afficher l'image du "
+"haut. "
+
+#. Text in echo
+#: options.php:437
+msgid "Limit file types uploading to"
+msgstr "Limiter les types de fichier à "
+
+#. Text in function
+#: index.php:196
+msgid "Log in"
+msgstr "Se connecter"
+
+#. Text in echo
+#: users-form.php:91 clients.php:226 clients-form.php:105
+#: install/index.php:278 users.php:250
+msgid "Log in username"
+msgstr "Nom d'utilisateur"
+
+#. Text in echo
+#: home.php:78
+msgid "Logins"
+msgstr "Connexions"
+
+#. Text in echo
+#: branding.php:136
+msgid "Logo Placeholder"
+msgstr "Emplacement du logo"
+
+#. Text in echo
+#: header.php:155 templates/gallery/template.php:48
+msgid "Logout"
+msgstr "Déconnexion"
+
+#. Text in function
+#: reset-password.php:341
+msgid "Lost password"
+msgstr "Mot de passe perdu"
+
+#. Text in echo
+#: options.php:377
+msgid "Mailer"
+msgstr "Protocole de transfert"
+
+#. Text in echo
+#: header.php:252
+msgid "Manage clients"
+msgstr "Gestion des clients"
+
+#. Text in echo
+#: header.php:219 header.php:346 clients.php:326 groups.php:292
+#: manage-files.php:689
+msgid "Manage files"
+msgstr "Gestion des fichiers"
+
+#. Text in echo
+#: header.php:274
+msgid "Manage groups"
+msgstr "Gestion des groupes"
+
+#. Text in echo
+#: header.php:309
+msgid "Manage system users"
+msgstr "Gestion des utilisateurs"
+
+#. Text in echo
+#: edit-file.php:419
+msgid ""
+"Mark as hidden (will not send notifications) for new assigned clients and "
+"groups."
+msgstr ""
+"Marquer comme caché (n'enverra pas de notification) aux nouveaux clients et "
+"groupes assignés."
+
+#. Text in echo
+#: options.php:488 options.php:525
+msgid "Max height"
+msgstr "Hauteur max."
+
+#. Text in echo
+#: options.php:485 options.php:521
+msgid "Max width"
+msgstr "Largeur max."
+
+#. Text in echo
+#: options.php:360
+msgid "Maximum sending attemps"
+msgstr "Nombre maximum de tentatives"
+
+#. Text in echo
+#: groups.php:246 groups-form.php:47
+msgid "Members"
+msgstr "Membres"
+
+#. Text in echo
+#: users-form.php:92 clients-form.php:106
+msgid "Must be alphanumeric"
+msgstr "Doit être alphanumérique"
+
+#. Text in echo
+#: users-form.php:102 clients-form.php:116
+msgid "Must be valid and unique"
+msgstr "Doit être valide et unique"
+
+#. Text in echo
+#: header.php:154
+msgid "My Account"
+msgstr "Mon Compte"
+
+#. Text in function
+#: clients-edit.php:208 users-edit.php:216
+msgid "My account"
+msgstr "Mon compte"
+
+#. Text in echo
+#: users-form.php:87 clients-form.php:101 options.php:326
+msgid "Name"
+msgstr "Nom"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "Name was not completed"
+msgstr "Le champs nom n'est pas complété."
+
+#. Text in echo
+#: upload-import-orphans.php:177
+msgid "Never assigned to any user or group"
+msgstr "N'est assigné à aucun utilisateur où groupe"
+
+#. Text in function
+#: email-templates.php:91
+msgid "New client (self-registered)"
+msgstr "Nouveau client (auto-enregistré)"
+
+#. Text in function
+#: email-templates.php:91
+msgid "New client (welcome)"
+msgstr "Nouveau client (bienvenue)"
+
+#. Text in echo
+#: options.php:285
+msgid ""
+"New clients will automatically be assigned to the group you have selected."
+msgstr ""
+"Les nouveaux clients seront automatiquement assignés au groupe que vous avez "
+"sélectionné."
+
+#. Text in function
+#: email-templates.php:91
+msgid "New file by client"
+msgstr "Nouveau fichier par client"
+
+#. Text in function
+#: email-templates.php:91
+msgid "New file by user"
+msgstr "Nouveau fichier par utilisateur"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "New files has been uploaded by the following clients"
+msgstr "Des nouveaux fichiers ont été transférés pour les clients suivants."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "New files uploaded by clients"
+msgstr "Nouveaux fichiers transférés par les clients"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "New files uploaded for you"
+msgstr "De nouveaux fichiers ont été transférés pour vous"
+
+#. Text in echo
+#: reset-password.php:305
+msgid "New password"
+msgstr "Nouveau mot de passe"
+
+#. Text in echo
+#: options.php:251
+msgid "New registrations"
+msgstr "Nouveaux inscrits"
+
+#. Text in function
+#: email-templates.php:91
+msgid "New user (welcome)"
+msgstr "Nouvel utilisateur (bienvenue)"
+
+#. Text in echo
+#: clients.php:299
+msgid "No"
+msgstr "Non"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "No client was selected"
+msgstr "Aucun client sélectionné"
+
+#. Text in function
+#: clients-edit.php:143
+msgid "No client was selected."
+msgstr "Aucun client sélectionné."
+
+#. Text in function
+#: groups-edit.php:104
+msgid "No group was selected."
+msgstr "Aucun groupe sélectionné."
+
+#. Text in echo
+#: options.php:439
+msgid "No one"
+msgstr "Personne"
+
+#. Text in echo
+#: edit-file.php:446 groups-form.php:81 upload-process-form.php:635
+msgid "No results where found."
+msgstr "Aucun résultat trouvé."
+
+#. Text in function
+#: users-edit.php:146
+msgid "No user was selected."
+msgstr "Aucun utilsateur sélectionné."
+
+#. Text in echo
+#: options.php:417
+msgid "None"
+msgstr "Aucun"
+
+#. Text in echo
+#: options.php:265
+msgid "None (does not enable this feature)"
+msgstr "Aucun (ne pas activer)"
+
+#. Text in echo
+#: upload-process-form.php:385
+msgid "Note"
+msgstr "Note"
+
+#. Text in echo
+#: home.php:63
+msgid "Note:"
+msgstr "Note:"
+
+#. Text in echo
+#: options.php:367
+msgid "Notifications older than this will not be sent."
+msgstr "Les notifications plus anciennes ne seront pas envoyées."
+
+#. Text in echo
+#: clients.php:232
+msgid "Notify"
+msgstr "Notifier"
+
+#. Text in echo
+#: clients-form.php:141
+msgid "Notify new uploads by e-mail"
+msgstr "Notifier les nouveaux transferts par courriel"
+
+#. Text in function
+#: upload-send-notifications.php:1
+msgid "One or more notifications couldn't be sent."
+msgstr "Une ou plusieurs notifications n'ont pu être envoyées."
+
+#. Text in echo
+#: edit-file.php:339 upload-process-form.php:477
+msgid "Optionally, enter here a description for the file."
+msgstr "Optionnel, entrer ici une description du fichier."
+
+#. Text in echo
+#: header.php:327
+msgid "Options"
+msgstr "Options"
+
+#. Text in echo
+#: options.php:291
+msgid "Options related to the files that clients upload themselves."
+msgstr "Options reliées aux fichiers que les clients transfèreront eux-mêmes."
+
+#. Text in function
+#: email-templates.php:91 options.php:115
+msgid "Options updated succesfuly."
+msgstr "Options mises à jour avec succès."
+
+#. Text in echo
+#: users-form.php:96 index.php:156 clients-form.php:110 install/index.php:283
+#: includes/vars.php:1 options.php:397
+msgid "Password"
+msgstr "Mot de passe"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "Password does not meet the required characters rules"
+msgstr "Le mot de passe ne rencontre pas les règles au sujet des caractères"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "Password must be alphanumeric (a-z,A-Z,0-9 allowed)"
+msgstr ""
+"Le mot de passe doit avoir des caractères alphanumériques ( a-z,A-A,0-9 sont "
+"autorisés)"
+
+#. Text in function
+#: email-templates.php:91
+msgid "Password reset"
+msgstr "Mot de passe réinitialisé"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Password reset instructions"
+msgstr "Instructions pour la réinitialisation du mot de passe"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "Password verification was not completed"
+msgstr "Le champ de vérification du mot de passe n'est pas complété."
+
+#. Text in echo
+#: index.php:143 includes/vars.php:1
+msgid "Password was not completed"
+msgstr "Le champ du mot de passe n'est pas complété"
+
+#. Text in echo
+#: options.php:451
+msgid "Passwords"
+msgstr "Mots de passe"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "Passwords do not match"
+msgstr "Les mots de passe ne correspondent pas"
+
+#. Text in echo
+#: options.php:164 options.php:167
+msgid "Please complete all the fields."
+msgstr "Veuillez compléter tous les champs."
+
+#. Text in echo
+#: upload-process-form.php:380
+msgid ""
+"Please complete the following information to finish the uploading process. "
+"Remember that \"Title\" is a required field."
+msgstr ""
+"Veuillez compléter les informations suivantes pour terminer le transfert. Le "
+"champ Titre est requis."
+
+#. Text in function
+#: register.php:89
+msgid "Please contact a system administrator."
+msgstr "Veuillez contacter l'administrateur du système."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Please contact the administrator if you need further assistance."
+msgstr "Veuillez contacter l'administrateur si vous avez besoin d'aide."
+
+#. Text in echo
+#: reset-password.php:275
+msgid ""
+"Please enter your account's e-mail address. You will receive a link to "
+"continue the process."
+msgstr ""
+"Merci d’entrer l’adresse courriel de votre compte. Vous recevrez un lien "
+"pour continuer."
+
+#. Text in echo
+#: reset-password.php:311
+msgid ""
+"Please enter your desired new password. After that, you will be able to log "
+"in normally."
+msgstr ""
+"Merci d’entrer le nouveau mot de passe. Ensuite, vous pourrez l’utiliser "
+"pour vous connecter."
+
+#. Text in function
+#: edit-file.php:436
+msgid ""
+"Please go to the clients or groups administration page, select \"Manage files"
+"\" from any client and then click on \"Edit\" on any file to return here."
+msgstr ""
+"Veuillez aller sur la page d'administration des clients et groupes, "
+"sélectionner \"gérer les fichiers\" pour tous les clients puis cliquer sur "
+"\"Editer\"sur chaque fichier et revenir ici."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Please log in to activate it."
+msgstr "Veuillez vous connecter pour l'activiter"
+
+#. Text in echo
+#: manage-files.php:684
+msgid ""
+"Please note that downloading a file from here will not add to the download "
+"count."
+msgstr "Lorsque vous téléchargez un fichier ici il ne sera pas comptabilisé."
+
+#. Text in function
+#: upload-import-orphans.php:197
+msgid ""
+"Please note that the listed files will be renamed if they contain invalid "
+"characters."
+msgstr ""
+"Les fichiers seront renommés automatiquement si leur nom comporte des "
+"caractères invalides."
+
+#. Text in function
+#: register.php:89
+msgid ""
+"Please remember that an administrator needs to approve your account before "
+"you can log in."
+msgstr ""
+"Un administrateur doit approuver votre compte avant que vous puissiez vous "
+"connecter."
+
+#. Text in echo
+#: includes/updates.messages.php:23
+msgid ""
+"Please remember that this tool is free software. If you find the system "
+"useful"
+msgstr "Ce logiciel est gratuit, alors si vous le trouvez utile"
+
+#. Text in echo
+#: branding.php:85
+msgid "Please select an image file to upload"
+msgstr "Veuillez sélectionner une image à transférer"
+
+#. Text in echo
+#: actions-log.php:25
+msgid "Please select at least one activity to proceed."
+msgstr "Veuillez sélectionner au moins une activité pour continuer."
+
+#. Text in function
+#: actions-log.php:64
+msgid "Please select at least one activity."
+msgstr "Veuillez sélectionner au moins une activité."
+
+#. Text in echo
+#: clients.php:35
+msgid "Please select at least one client to proceed."
+msgstr "Veuillez sélectionner au moins un client pour continuer."
+
+#. Text in function
+#: clients.php:57
+msgid "Please select at least one client."
+msgstr "Veuillez sélectionner au moins un client."
+
+#. Text in echo
+#: upload-import-orphans.php:212 templates/default/template.php:198
+#: manage-files.php:70
+msgid "Please select at least one file to proceed."
+msgstr "Veuillez sélectionner au moins un fichier pour continuer."
+
+#. Text in function
+#: manage-files.php:689
+msgid "Please select at least one file."
+msgstr "Veuillez sélectionner au moins un fichier."
+
+#. Text in echo
+#: groups.php:56
+msgid "Please select at least one group to proceed."
+msgstr "Veuillez sélectionner au moins un groupe pour continuer."
+
+#. Text in function
+#: groups.php:76
+msgid "Please select at least one group."
+msgstr "Veuillez sélectionner au moins un groupe."
+
+#. Text in echo
+#: users.php:24
+msgid "Please select at least one user to proceed."
+msgstr "Veuillez sélectionner au moins un utilisateur pour continuer."
+
+#. Text in function
+#: users.php:47
+msgid "Please select at least one user."
+msgstr "Veuillez sélectionner au moins un utilisateur."
+
+#. Text in echo
+#: home.php:181
+msgid "Please wait while the system generates the statistics graph."
+msgstr "Veuillez patienter, le système génère le graphique de statistiques"
+
+#. Text in echo
+#: home.php:205
+msgid "Please wait while the system gets the information from the log."
+msgstr "Veuillez patienter, le système charge les informations du journal."
+
+#. Text in echo
+#: manage-files.php:103
+msgid "Please wait while the system gets the required information."
+msgstr "Veuillez patienter, le système charge les informations."
+
+#. Text in echo
+#: templates/default/template.php:213 actions-log.php:51
+msgid "Please wait while your download is prepared."
+msgstr "Veuillez patienter, le téléchargement se prépare"
+
+#. Text in echo
+#: options.php:411
+msgid "Port"
+msgstr "Port"
+
+#. Text in function
+#: manage-files.php:645
+msgid "Private"
+msgstr "Privé"
+
+#. Text in echo
+#: clients.php:184 groups.php:201 templates/default/template.php:46
+#: actions-log.php:192 users.php:217 manage-files.php:394
+msgid "Proceed"
+msgstr "Procéder"
+
+#. Text in echo
+#: actions-log.php:139
+msgid "ProjecSend has been installed"
+msgstr "ProjectSend a été installé"
+
+#. Text in echo
+#: install/index.php:259
+msgid "ProjectSend URI (address)"
+msgstr "URI (adresse) de ProjectSend"
+
+#. Text in function
+#: install/index.php:311
+msgid "ProjectSend URI was not completed."
+msgstr "L'URI de ProjectSend n'a pas été complété."
+
+#. Text in echo
+#: home-news-widget.php:2
+msgid "ProjectSend news"
+msgstr "Nouvelles de ProjectSend"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "ProjectSend was installed"
+msgstr "ProjectSent a été installé"
+
+#. Text in echo
+#: actions-log.php:172
+msgid "ProjectSend was updated"
+msgstr "ProjectSend a été mis à jour"
+
+#. Text in echo
+#: includes/functions.php:270
+msgid "Provided by"
+msgstr "Fourni par"
+
+#. Text in echo
+#: manage-files.php:456 manage-files.php:645
+msgid "Public"
+msgstr "Public"
+
+#. Text in echo
+#: manage-files.php:577
+msgid "Public URL"
+msgstr "URL public"
+
+#. Text in echo
+#: edit-file.php:368 upload-process-form.php:504
+msgid "Public downloading"
+msgstr "Téléchargement public"
+
+#. Text in echo
+#: upload-import-orphans.php:162
+msgid "Reason"
+msgstr "Raison"
+
+#. Text in echo
+#: home.php:74
+msgid "Recent activites"
+msgstr "Activités récentes"
+
+#. Text in function
+#: actions-log.php:64
+msgid "Recent activities log"
+msgstr "Jounal des activités récentes"
+
+#. Text in function
+#: clients-form.php:58
+msgid "Register account"
+msgstr "S'inscrire"
+
+#. Text in echo
+#: index.php:176
+msgid "Register as a new client."
+msgstr "S'inscrire en tant que nouveau client"
+
+#. Text in function
+#: register.php:183
+msgid "Register new account"
+msgstr "S'inscrire"
+
+#. Text in echo
+#: index.php:196
+msgid "Remember me"
+msgstr "Se souvenir de moi"
+
+#. Text in echo
+#: install/index.php:251
+msgid "Remember to edit the file"
+msgstr "Se rappeler d'éditer le fichier"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid ""
+"Remember, your new client will not be able to log in until an administrator "
+"has approved their account."
+msgstr ""
+"Votre nouveau client ne sera pas capable de se connecter avant qu'un "
+"administrateur approuve son compte."
+
+#. Text in echo
+#: edit-file.php:414 groups-form.php:68 upload-process-form.php:547
+msgid "Remove all"
+msgstr "Retirer tout"
+
+#. Text in echo
+#: users-form.php:108 users.php:252
+msgid "Role"
+msgstr "Rôle"
+
+#. Text in echo
+#: options.php:389
+msgid "SMTP & Gmail shared options"
+msgstr "Option de partage STMP & Gmail"
+
+#. Text in echo
+#: options.php:403
+msgid "SMTP options"
+msgstr "Options SMTP"
+
+#. Text in function
+#: clients-form.php:58
+msgid "Save client"
+msgstr "Sauvegarder"
+
+#. Text in function
+#: groups-form.php:23
+msgid "Save group"
+msgstr "Sauvegarder"
+
+#. Text in function
+#: users-form.php:59
+msgid "Save user"
+msgstr "Sauvegarder"
+
+#. Text in echo
+#: clients.php:160 groups.php:187 upload-import-orphans.php:147
+#: templates/default/template.php:33 actions-log.php:133 users.php:186
+#: manage-files.php:350
+msgid "Search"
+msgstr "Chercher"
+
+#. Text in echo
+#: options.php:180
+msgid "Security"
+msgstr "Sécurité"
+
+#. Text in echo
+#: edit-file.php:360 upload-process-form.php:496
+msgid "Select a date"
+msgstr "Choisir une date"
+
+#. Text in echo
+#: groups.php:198 actions-log.php:187
+msgid "Select action"
+msgstr "Sélectionner une action"
+
+#. Text in echo
+#: branding.php:148
+msgid "Select image to upload"
+msgstr "Sélectionner une image à transférer"
+
+#. Text in echo
+#: edit-file.php:380 groups-form.php:48 upload-process-form.php:517
+msgid "Select one or more options. Type to search."
+msgstr "Sélectionnez une où plusieurs options. Ecrire pour chercher."
+
+#. Text in echo
+#: clients.php:178
+msgid "Selected clients actions"
+msgstr "Actions pour les clients sélectionnés"
+
+#. Text in echo
+#: templates/default/template.php:42 manage-files.php:380
+msgid "Selected files actions"
+msgstr "Actions pour les fichiers sélectionnés"
+
+#. Text in echo
+#: groups.php:196
+msgid "Selected groups actions"
+msgstr "Actions pour les groupes sélectionnés"
+
+#. Text in echo
+#: users.php:211
+msgid "Selected users actions"
+msgstr "Actions pour les utilisateurs sélectionnés"
+
+#. Text in echo
+#: options.php:332
+msgid "Send copies"
+msgstr "Envoyer copies"
+
+#. Text in echo
+#: manage-files.php:129
+msgid ""
+"Send this URL to someone to download the file without registering or logging "
+"in."
+msgstr ""
+"Envoyez cette URL à quelqu&#39;un pour qu&#39;il puisse télécharger le "
+"fichier sans avoir à s&#39;enregistrer."
+
+#. Text in echo
+#: options.php:434
+msgid ""
+"Separate allowed file types with a comma. You can navigate the box with the "
+"left/right arrows, backspace and delete keys."
+msgstr ""
+"Séparer les types de fichiers autorisés par des virgules. Vous pouvez "
+"naviguer dans la liste avec les flèches gauche/droite, suppr. et del."
+
+#. Text in echo
+#: options.php:352
+msgid "Separate e-mail addresses with a comma."
+msgstr "Séparer les adresses courriel par une virgule."
+
+#. Text in echo
+#: options.php:367
+msgid "Set to 0 to disable."
+msgstr "Entrer 0 pour désactiver."
+
+#. Text in echo
+#: index.php:172
+msgid "Set up a new one."
+msgstr "Choisir un nouveau."
+
+#. Text in echo
+#: manage-files.php:387
+msgid "Show"
+msgstr "Afficher"
+
+#. Text in echo
+#: options.php:304
+msgid "Show it anyway, but prevent download."
+msgstr "Afficher quand même, mais empêcher le téléchargement."
+
+#. Text in echo
+#: clients.php:191 groups.php:208 templates/default/template.php:54
+#: actions-log.php:199 users.php:224 manage-files.php:405
+msgid "Showing"
+msgstr "Résultat"
+
+#. Text in function
+#: email-templates.php:91
+msgid "Shows the list of files"
+msgstr "Affiche la liste des fichiers"
+
+#. Text in echo
+#: install/index.php:255 options.php:195
+msgid "Site name"
+msgstr "Nom du site"
+
+#. Text in function
+#: install/index.php:311
+msgid "Sitename was not completed."
+msgstr "Le champ nom du site n'est pas complété."
+
+#. Text in echo
+#: manage-files.php:451
+msgid "Size"
+msgstr "Taille"
+
+#. Text in echo
+#: options.php:516
+msgid "Size settings"
+msgstr "Paramètre de la taille"
+
+#. Text in function
+#: options.php:115
+msgid "Some fields were not completed. Options could not be saved."
+msgstr ""
+"Certains champs n'ont pas été complétés. Les options ne peuvent être "
+"sauvegardées."
+
+#. Text in echo
+#: home.php:36
+msgid "Statistics"
+msgstr "Statistiques"
+
+#. Text in echo
+#: clients.php:230 users.php:253 manage-files.php:466
+#: upload-process-form.php:274
+msgid "Status"
+msgstr "Statut"
+
+#. Text in function
+#: header.php:367
+msgid "System Administration"
+msgstr "Administration du système"
+
+#. Text in function
+#: sys.vars.php:1 users.php:192
+msgid "System Administrator"
+msgstr "Administrateur du système"
+
+#. Text in echo
+#: includes/updates.messages.php:16
+msgid "System Notice:"
+msgstr "Notice du Système:"
+
+#. Text in echo
+#: options.php:237
+msgid "System URI"
+msgstr "URI du système"
+
+#. Text in echo
+#: header.php:293
+msgid "System Users"
+msgstr "Utilisateurs du système"
+
+#. Text in echo
+#: home.php:61
+msgid "System data"
+msgstr "Donnée du système"
+
+#. Text in echo
+#: options.php:233
+msgid "System location"
+msgstr "Emplacement du système"
+
+#. Text in function
+#: options.php:546
+msgid "System options"
+msgstr "Options du système"
+
+#. Text in echo
+#: clients.php:235 clients-form.php:123
+msgid "Telephone"
+msgstr "Téléphone"
+
+#. Text in echo
+#: email-templates.php:247
+msgid "Template text"
+msgstr "Modèle de texte"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Thank you for using ProjectSend."
+msgstr "Merci d'utiliser ProjectSend."
+
+#. Text in echo
+#: includes/updates.messages.php:25
+msgid "Thank you!"
+msgstr "Merci!"
+
+#. Text in function
+#: register.php:89
+msgid ""
+"The account could not be created. A folder with this name already exists."
+msgstr "Le compte ne peut être créé. Un dossier du même nom existe déjà."
+
+#. Text in function
+#: includes/updates.functions.php:1
+msgid ""
+"The chmod values of the emails folder and the html templates inside couldn't "
+"be set. If ProjectSend isn't sending notifications emails, please set them "
+"manually to 777."
+msgstr ""
+"La valeur du chmod pour le dossier emails et pour le template à l'intérieur "
+"n'a pu être réglée. Si ProjectSend n'envoie pas de notification par "
+"courriel, veuillez changer la valeur du chmod pour 777."
+
+#. Text in function
+#: groups.php:213
+msgid "The client does not exist."
+msgstr "Le client n'existe pas."
+
+#. Text in echo
+#: includes/updates.messages.php:16
+msgid "The database was updated to support this version of the software."
+msgstr ""
+"La base de données a été mise à jour pour fonctionner avec cette version du "
+"logiciel."
+
+#. Text in function
+#: branding.php:96
+msgid "The file could not be moved to the corresponding folder."
+msgstr "Le fichier ne peut être déplacé vers le dossier correspondant."
+
+#. Text in function
+#: edit-file.php:436
+msgid "The file has been edited succesfuly."
+msgstr "Le fichier a été édité avec succès."
+
+#. Text in function
+#: branding.php:96
+msgid ""
+"The file you selected is not an allowed image format. Please upload your "
+"logo as a jpg, gif or png file."
+msgstr ""
+"Le fichier sélectionné n'est pas un format d'image autorisé. Veuillez "
+"transférer votre logo en format  jpg, gif ou png."
+
+#. Text in function
+#: clients.php:200 groups.php:213 actions-log.php:204 users.php:229
+#: manage-files.php:410
+msgid "The filters you selected returned no results."
+msgstr "Le filtre utilisé ne donne aucun résultat."
+
+#. Text in function
+#: includes/classes/form-validation.php:1
+msgid "The following errors were found"
+msgstr "Les erreurs suivantes ont été trouvées"
+
+#. Text in echo
+#: download.php:96
+msgid "The following file is now ready for you to download:"
+msgstr "Le fichier suivant est maintenant disponible en téléchargement:"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "The following files are now available for you to download."
+msgstr "Les fichiers suivants sont maintenant disponibles pour vous."
+
+#. Text in echo
+#: email-templates.php:256
+msgid "The following tags can be used on this e-mails' body."
+msgstr ""
+"Les balises suivants peuvent être utilisées dans le corps de ce message."
+
+#. Text in function
+#: email-templates.php:91
+msgid "The full name the client registered with"
+msgstr "Le nom complet avec lequel le client s’est enregistré"
+
+#. Text in function
+#: branding.php:96
+msgid "The image was uploaded correctly."
+msgstr "L'image a été transférée avec succès"
+
+#. Text in function
+#: email-templates.php:91
+msgid "The link to continue the process"
+msgstr "Le lien pour continuer le processus"
+
+#. Text in function
+#: actions-log.php:64
+msgid ""
+"The log was cleared. Only data used for statistics remained. You can delete "
+"them manually if you want."
+msgstr ""
+"Le journal a été vidé. Seules les données requises pour les statistiques "
+"subsisteront. Vous pouvez les supprimer manuellement si vous le désirez."
+
+#. Text in function
+#: email-templates.php:91
+msgid "The login link"
+msgstr "Lien de connexion"
+
+#. Text in echo
+#: actions-log.php:171
+msgid "The logo on \"Branding\" was changed"
+msgstr "Le logo dans \"Logo\" a été changé"
+
+#. Text in function
+#: email-templates.php:91
+msgid "The new password for this account"
+msgstr "Le nouveau mot de passe pour ce compte"
+
+#. Text in function
+#: email-templates.php:91
+msgid "The new username for this account"
+msgstr "Le nouveau nom d’utilisateur pour ce compte"
+
+#. Text in echo
+#: includes/functions.php:673
+msgid "The password must contain, at least:"
+msgstr "Le mot de passe doit contenir au moins:"
+
+#. Text in echo
+#: branding.php:129
+msgid ""
+"The picture on the right is not an actual representation of what they will "
+"see. The size on this preview is fixed, but remember that you can change the "
+"display size and picture quality for your client's pages on the"
+msgstr ""
+"L'image à droite n'est pas représentative de ce que vous allez voir. La "
+"taille de cette prévisualisation est fixe, mais rappellez-vous que vous "
+"pouvez modifier la taille et la qualité de celle-ci pour les pages de vos "
+"clients dans la section"
+
+#. Text in function
+#: reset-password.php:322 download.php:79
+msgid "The request is not valid."
+msgstr "Cette demande n’est pas valide."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "The request is valid only for 24 hours."
+msgstr "Cette demande est valide seulement pour 24 heures."
+
+#. Text in function
+#: actions-log.php:64
+msgid "The selected activities were deleted."
+msgstr "Les activités sélectionnées ont été éffacées."
+
+#. Text in function
+#: clients.php:57
+msgid "The selected clients were deleted."
+msgstr "Les clients sélectionnés ont été supprimés."
+
+#. Text in function
+#: clients.php:57
+msgid "The selected clients were marked as active."
+msgstr "Les clients sélectionnés ont été activés."
+
+#. Text in function
+#: clients.php:57
+msgid "The selected clients were marked as inactive."
+msgstr "Les clients sélectionnés ont été désactivés."
+
+#. Text in function
+#: manage-files.php:689
+msgid "The selected files were deleted."
+msgstr "Les fichiers sélectionnés ont été supprimés."
+
+#. Text in function
+#: manage-files.php:689
+msgid "The selected files were marked as hidden."
+msgstr "Les fichiers sélectionnés sont cachés."
+
+#. Text in function
+#: manage-files.php:689
+msgid "The selected files were marked as visible."
+msgstr "Les fichiers sélectionnés sont visibles."
+
+#. Text in function
+#: manage-files.php:689
+msgid "The selected files were unassigned from this client."
+msgstr "Les fichiers sélectionnés ne sont plus assignés à ce client."
+
+#. Text in function
+#: groups.php:76
+msgid "The selected groups were deleted."
+msgstr "Les groupes sélectionnés ont été supprimés."
+
+#. Text in function
+#: users.php:47
+msgid "The selected users were deleted."
+msgstr "Les utilisateurs sélectionnés ont été supprimés."
+
+#. Text in function
+#: users.php:47
+msgid "The selected users were marked as active."
+msgstr "Les utilisateurs sélectionnés sont actifs."
+
+#. Text in function
+#: users.php:47
+msgid "The selected users were marked as inactive."
+msgstr "Les utilisateurs sélectionnés sont inactifs."
+
+#. Text in function
+#: index.php:110
+msgid "The supplied credentials are not valid."
+msgstr "Les informations de connexion ne sont pas valides."
+
+#. Text in function
+#: reset-password.php:322
+msgid "The supplied email address does not correspond to any user."
+msgstr "L’adresse courriel fournie ne correspond à aucun utilisateur."
+
+#. Text in function
+#: index.php:110
+msgid "The supplied password is incorrect."
+msgstr "Le mot de passe entré est incorrect."
+
+#. Text in function
+#: index.php:110
+msgid "The supplied username doesn't exist."
+msgstr "Le nom d'utilisateur entré n'existe pas."
+
+#. Text in function
+#: email-templates.php:91
+msgid "The text string unique to this request. Must be included somewhere."
+msgstr "Le texte de cette demande. Doit être inclus quelque part."
+
+#. Text in function
+#: email-templates.php:91
+msgid "The username for this account"
+msgstr "Le nom d’utilisateur pour ce compte"
+
+#. Text in function
+#: reset-password.php:322
+msgid ""
+"There are 3 unused requests done in less than 24 hs. Please wait until one "
+"expires (1 day since made) to make a new one."
+msgstr ""
+"Il y a 3 demandes inutilisées en moins de 24 heures. Merci d'attendre "
+"jusqu’à l’expiration d’une des trois (1 jour à attendre) avant de faire une "
+"nouvelle demande."
+
+#. Text in function
+#: actions-log.php:204
+msgid "There are no activities recorded."
+msgstr "Il n'y a aucune activité enregistrée."
+
+#. Text in function
+#: clients.php:200 includes/functions.php:287
+msgid "There are no clients at the moment"
+msgstr "Il n'y a aucun client pour le moment"
+
+#. Text in function
+#: manage-files.php:410
+msgid "There are no files assigned to this client."
+msgstr "Il n'y a aucun fichier assigné à ce client"
+
+#. Text in echo
+#: upload-import-orphans.php:226
+msgid "There are no files available to add right now."
+msgstr "Il n'y a aucun fichier disponible à assigner pour le moment."
+
+#. Text in function
+#: manage-files.php:410
+msgid "There are no files for this client."
+msgstr "Il n'y a aucun fichier pour ce client."
+
+#. Text in function
+#: groups.php:213
+msgid "There are no groups created yet."
+msgstr "Il n'y a aucun groupe créé pour le moment."
+
+#. Text in function
+#: groups.php:213
+msgid "There are no groups where this client is member."
+msgstr "Ce client n'est membre d'aucun groupe."
+
+#. Text in echo
+#: home-log.php:62
+msgid "There are no results"
+msgstr "Il n'y a aucun résultat"
+
+#. Text in function
+#: clients-edit.php:143
+msgid "There is no client with that ID number."
+msgstr "Il n'y a aucun client avec cet ID."
+
+#. Text in function
+#: groups-edit.php:104
+msgid "There is no group with that ID number."
+msgstr "Il n'y a aucun groupe avec cet ID."
+
+#. Text in function
+#: users-edit.php:146
+msgid "There is no user with that ID number."
+msgstr "Il n'y a aucun utilisateur avec cet ID."
+
+#. Text in function
+#: edit-file.php:436
+msgid "There is not file with that ID number."
+msgstr "Il n'y a aucun fichier avec cet ID."
+
+#. Text in function
+#: install/index.php:203
+msgid "There seems to be an error. Please try again."
+msgstr "Il semble y avoir une erreur. Veuillez réessayer."
+
+#. Text in function
+#: branding.php:96
+msgid "There was an error uploading the file. Please try again."
+msgstr ""
+"Une erreur s'est produite lors du transfert du fichier. Veuillez réessayer."
+
+#. Text in function
+#: email-templates.php:91 clients-edit.php:143 groups-add.php:63
+#: groups-edit.php:104 options.php:115 register.php:89 users-add.php:75
+#: users-edit.php:146 clients-add.php:83
+msgid "There was an error. Please try again."
+msgstr "Une erreur s'est produite. Veuillez réessayer."
+
+#. Text in echo
+#: upload-process-form.php:333
+msgid "These files have not been assigned to any client or group."
+msgstr "Ces fichiers n'ont pas été assignés à aucun client ni à aucun groupe."
+
+#. Text in echo
+#: options.php:234
+msgid ""
+"These options are to be changed only if you are moving the system to another "
+"place. Changes here can cause ProjectSend to stop working."
+msgstr ""
+"Ne pas modifier cette option à moins que vous déplaciez le système sur un "
+"autre serveur. Un changement ici pourrait faire en sorte que ProjectSend "
+"cesse de fonctionner."
+
+#. Text in function
+#: users-form.php:128 clients-form.php:150
+msgid "This account information will be e-mailed to the address supplied above"
+msgstr ""
+"Les informations sur ce compte seront envoyées par courriel à l'adresse "
+"entrée ci-dessus"
+
+#. Text in function
+#: index.php:110
+msgid "This account is not active."
+msgstr "Ce compte est inactif."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid ""
+"This email contains HTML formatting and cannot be displayed right now. "
+"Please use an HTML compatible reader."
+msgstr ""
+"Cette courriel est au format HTML et ne peut être affiché. Veuillez utilisé "
+"un système compatible."
+
+#. Text in function
+#: email-templates.php:91
+msgid ""
+"This email will be sent to a client whenever a new file has been assigned to "
+"his account."
+msgstr ""
+"Ce message sera envoyé au client dès qu’un nouveau fichier sera assigné à "
+"son compte."
+
+#. Text in function
+#: email-templates.php:91
+msgid ""
+"This email will be sent to a user or client when they try to reset their "
+"password."
+msgstr ""
+"Ce message sera envoyé à un utilisateur ou à un client quand ils essaieront "
+"de réinitialiser leur mot de passe."
+
+#. Text in function
+#: email-templates.php:91
+msgid ""
+"This email will be sent to the new client after an administrator has created "
+"his new account. It would be best to include the log in details (username "
+"and password)."
+msgstr ""
+"Ce message sera envoyé au nouveau client lorsque l’administrateur aura créé "
+"un nouveau compte. Il est préférable d’inclure les identifiants de connexion "
+"(nom d’utilisateur et mot de passe)."
+
+#. Text in function
+#: email-templates.php:91
+msgid ""
+"This email will be sent to the new system user after an administrator has "
+"created his new account. It would be best to include the log in details "
+"(username and password)."
+msgstr ""
+"Ce message sera envoyé à l’utilisateur système après qu'un administrateur "
+"ait créé un nouveau compte. Il serait souhaitable d’inclure les identifiants "
+"de connexion (nom d’utilisateur et mot de passe)."
+
+#. Text in function
+#: email-templates.php:91
+msgid ""
+"This email will be sent to the system administrator after a new client has "
+"created a new account for himself."
+msgstr ""
+"Ce message sera envoyé à l’administrateur lorsque qu'un nouveau client aura "
+"créé un nouveau compte pour lui-même."
+
+#. Text in function
+#: email-templates.php:91
+msgid ""
+"This email will be sent to the system administrator whenever a client "
+"uploads a new file."
+msgstr ""
+"Ce message sera envoyé à l’administrateur lorsque qu’un client  transfèrera "
+"un nouveau fichier."
+
+#. Text in echo
+#: home.php:63
+msgid ""
+"This graphic will help you get a relative view of the existing data, "
+"allowing you to see the relation between clients, users, groups and files."
+msgstr ""
+"Ce graphique vous aidera à avoir une vue relative des données existantes, "
+"vous permettant ainsi de voir les relations entre les clients, les "
+"utilisateurs, les groupes et les fichiers."
+
+#. Text in echo
+#: install/index.php:267
+msgid ""
+"This info will be used to create a default system user, which can't be "
+"deleted afterwards. Password should be between"
+msgstr ""
+"Ces informations serviront pour la création de l'utilisateur système par "
+"défaut, lequel ne pourra pas être supprimé pas la suite. Le mot de passe "
+"doit être entre "
+
+#. Text in function
+#: branding.php:96
+msgid ""
+"This is most likely a permissions issue. If that's the case, it can be "
+"corrected via FTP by setting the chmod value of the"
+msgstr ""
+"Il semble que ce soit un problème de permission. Si c'est le cas, il peut "
+"être corrigé via FTP en réglant la valeur du chmod du"
+
+#. Text in echo
+#: upload-import-orphans.php:233
+msgid ""
+"This is the same folder where the files uploaded by the web interface will "
+"be stored. So if you finish uploading your files but do not assign them to "
+"any clients/groups, the files will still be there for later use."
+msgstr ""
+"C'est le même répertoire où seront transférés les fichiers par l'interface "
+"Web. Alors si vous avez terminé de transférer vos fichiers, mais que vous ne "
+"les assignez pas à un client ou à un groupe, les fichiers s'y trouveront "
+"pour plus tard."
+
+#. Text in function
+#: upload-import-orphans.php:220
+msgid ""
+"This list only shows the files that are allowed according to your security "
+"settings. If the file type you need to add is not listed here, add the "
+"extension to the \"Allowed file extensions\" box on the options page."
+msgstr ""
+"Cette liste affiche seulement les types de fichiers qui sont permis de "
+"transférer selon vos paramètres de sécurité. Si vous avez besoin d'ajouter "
+"un type de fichier qui n'est pas dans la liste, ajoutez l'extension à la "
+"liste des \"Extensions de Fichiers Permis\" sur la page d'options."
+
+#. Text in echo
+#: options.php:306
+msgid ""
+"This only affects clients. On the admin side, you can still get the files."
+msgstr ""
+"Ceci ne concerne que les clients. En tant qu’administrateur vous pouvez "
+"toujours accéder aux fichiers."
+
+#. Text in echo
+#: templates/default/template.php:214
+msgid ""
+"This operation could take a few minutes, depending on the size of the files."
+msgstr ""
+"Cette opération peut prendre quelques minutes, en fonction de la taille des "
+"fichiers."
+
+#. Text in function
+#: clients-edit.php:143 groups-edit.php:104 users-edit.php:146
+msgid "This page is not intended to be accessed directly."
+msgstr "Cette page n'est pas accessible directement."
+
+#. Text in function
+#: reset-password.php:322
+msgid "This request has already been completed. Please make a new one."
+msgstr ""
+"Cette demande a déjà été complété. Veuillez faire une nouvelle demande."
+
+#. Text in function
+#: reset-password.php:322
+msgid "This request has expired. Please make a new one."
+msgstr "Cette demande a expiré. Veuillez faire une nouvelle demande."
+
+#. Text in echo
+#: index.php:180
+msgid "This server does not allow self registrations."
+msgstr "Vous ne pouvez pas vous inscrire vous-même."
+
+#. Text in function
+#: includes/updates.functions.php:1
+msgid ""
+"This version changes the way files-to-clients relationships are stored on "
+"the database making it possible to assign a file to multiple clients. "
+"However some files did not update successfully. The following files may need "
+"to be reassigned to their clients by using the \\\"Find orphan files\\\" "
+"tool:"
+msgstr ""
+"Cette version change la relation entre les fichiers et les clients sont "
+"enregistrés dans la base de données en permettant d'assigner un fichier à "
+"plusieurs clients. Cependant, quelques fichiers n'ont pas été mis à jour "
+"correctement. Les fichiers suivants ont besoin d'être assigner à nouveau à "
+"leurs clients en utilisant l'outil pour  \\\"chercher les fichiers orphelins"
+"\\\" :"
+
+#. Text in echo
+#: options.php:181 options.php:480
+msgid "Thumbnails"
+msgstr "Miniatures"
+
+#. Text in echo
+#: options.php:481
+msgid ""
+"Thumbnails are used on files lists. It is recommended to keep them small, "
+"unless you are using the system to upload only images, and will change the "
+"default client's template accordingly."
+msgstr ""
+"Les miniatures seront utilisées sur la liste de fichiers. Il est recommandé "
+"qu'elles soient petites, à moins que vous utilisiez le système seulement "
+"pour des images, et cela va modifier le template du client en conséquence."
+
+#. Text in echo
+#: options.php:224
+msgid "Time format"
+msgstr "Format de l'heure"
+
+#. Text in echo
+#: options.php:214
+msgid "Timezone"
+msgstr "Fuseau horaire"
+
+#. Text in echo
+#: edit-file.php:336 manage-files.php:450 upload-process-form.php:268
+#: upload-process-form.php:474
+msgid "Title"
+msgstr "Titre"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "Title was not completed"
+msgstr "Le champ du titre n’est pas complété"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "To continue, please visit the following link"
+msgstr "Pour continuer, veuilez cliquer sur le lien suivant"
+
+#. Text in echo
+#: upload-import-orphans.php:228
+msgid "To use this feature you need to upload your files via FTP to the folder"
+msgstr ""
+"Pour utiliser cette fonction vous devez transférer vos fichiers via FTP dans "
+"votre dossier"
+
+#. Text in echo
+#: manage-files.php:473
+msgid "Total downloads"
+msgstr "Total des téléchargements"
+
+#. Text in echo
+#: manage-files.php:388
+msgid "Unassign"
+msgstr "Retirer"
+
+#. Text in echo
+#: upload-process-form.php:332
+msgid "Unassigned files"
+msgstr "Fichiers non assignés"
+
+#. Text in function
+#: users-form.php:59 clients-form.php:58
+msgid "Update account"
+msgstr "Mise à jour du compte"
+
+#. Text in echo
+#: email-templates.php:285 options.php:536
+msgid "Update all options"
+msgstr "Sauvegarder"
+
+#. Text in echo
+#: includes/updates.messages.php:51
+msgid "Update available!"
+msgstr "Mise à jour disponible !"
+
+#. Text in echo
+#: header.php:217 header.php:342 branding.php:157
+msgid "Upload"
+msgstr "Transférer"
+
+#. Text in function
+#: upload-from-computer.php:171 upload-from-computer.php:157
+#: templates/gallery/template.php:49 upload-process-form.php:693
+msgid "Upload files"
+msgstr "Transférer les fichiers"
+
+#. Text in echo
+#: upload-process-form.php:553
+msgid "Upload hidden (will not send notifications)"
+msgstr "Transférer caché (aucune notification ne sera envoyée)"
+
+#. Text in function
+#: sys.vars.php:1 users.php:194 manage-files.php:455
+msgid "Uploader"
+msgstr "Responsable des transferts"
+
+#. Text in echo
+#: home-statistics.php:174 home.php:45
+msgid "Uploads by clients"
+msgstr "Transferts par les clients"
+
+#. Text in echo
+#: home-statistics.php:170 home.php:44
+msgid "Uploads by users"
+msgstr "Transferts par les utilisateurs"
+
+#. Text in echo
+#: email-templates.php:211
+msgid "Use custom header / footer"
+msgstr "Utiliser En-tête / Pied de page personnalisés"
+
+#. Text in echo
+#: email-templates.php:243
+msgid "Use custom template"
+msgstr "Utiliser un modèle personnalisé"
+
+#. Text in echo
+#: options.php:503
+msgid "Use file's absolute path"
+msgstr "Utiliser le chemin absolu du fichier"
+
+#. Text in echo
+#: branding.php:124
+msgid ""
+"Use this page to upload your company logo, or update the currently assigned "
+"one. This image will be shown to your clients when they access their file "
+"list."
+msgstr ""
+"Utiliser cette page pour transférer le logo de votre compagnie, ou mettre à "
+"jour le logo actuel. Cette image sera affichée aux clients lorsqu'ils "
+"accèderont leur liste de fichiers."
+
+#. Text in echo
+#: options.php:252
+msgid ""
+"Used only on self-registrations. These options will not apply to clients "
+"registered by system administrators."
+msgstr ""
+"Utilisées seulement lors de l'inscription par le client lui-même. Ces "
+"options ne seront pas appliquées lorsque les clients seront inscrits par "
+"l'administrateur."
+
+#. Text in function
+#: users-add.php:75
+msgid "User added correctly."
+msgstr "Utilisateur ajouté avec succès"
+
+#. Text in function
+#: users-edit.php:146
+msgid "User edited correctly."
+msgstr "Utilisateur édité avec succès."
+
+#. Text in function
+#: includes/vars.php:1
+msgid "User level was not specified"
+msgstr "Le rôle de l'utilisateur n'a pas été spécifié"
+
+#. Text in echo
+#: index.php:153 includes/classes/send-email.php:1 includes/vars.php:1
+#: options.php:393
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "Username must be alphanumeric (a-z,A-Z,0-9 allowed)"
+msgstr ""
+"Le nom de l'utilisateur doit être alphanumérique (a-z,A-Z,0-9 sont les "
+"caractères autorisés)"
+
+#. Text in echo
+#: index.php:142 includes/vars.php:1
+msgid "Username was not completed"
+msgstr "Le nom d'utilisateur n'est pas complété"
+
+#. Text in echo
+#: home.php:161
+msgid "Users"
+msgstr "Utilisateurs"
+
+#. Text in function
+#: users.php:47
+msgid "Users administration"
+msgstr "Gestion des utilisateurs"
+
+#. Text in echo
+#: home.php:91
+msgid "View all"
+msgstr "Tout voir"
+
+#. Text in echo
+#: clients.php:328
+msgid "View as client"
+msgstr "Voir en tant que client"
+
+#. Text in echo
+#: clients.php:194
+msgid "View full table"
+msgstr "Voir tout le tableau"
+
+#. Text in echo
+#: clients.php:327
+msgid "View groups"
+msgstr "Voir les groupes"
+
+#. Text in echo
+#: header.php:347 upload-process-form.php:360
+msgid "View my files"
+msgstr "Voir mes fichiers"
+
+#. Text in echo
+#: clients.php:193
+msgid "View reduced table"
+msgstr "Voir le tableau réduit"
+
+#. Text in echo
+#: manage-files.php:361 manage-files.php:645 upload-process-form.php:293
+msgid "Visible"
+msgstr "Visible"
+
+#. Text in echo
+#: header.php:144
+msgid "Welcome"
+msgstr "Bienvenue"
+
+#. Text in function
+#: home.php:221 includes/classes/send-email.php:1
+msgid "Welcome to ProjectSend"
+msgstr "Bienvenue dans ProjectSend"
+
+#. Text in echo
+#: options.php:339
+msgid "When a client uploads files"
+msgstr "Quand un client transfert des fichiers"
+
+#. Text in echo
+#: options.php:301
+msgid "When a file expires:"
+msgstr "Quand un fichier expire : "
+
+#. Text in echo
+#: options.php:335
+msgid "When a system user uploads files"
+msgstr "Quand un utilisateur système transfert des fichiers"
+
+#. Text in echo
+#: options.php:452
+msgid "When setting up a password for an account, requiere at least:"
+msgstr "Les mots de passe nécessitent au minimum:"
+
+#. Text in function
+#: clients-form.php:58
+msgid "Will be visible on the client's file list"
+msgstr "Sera visible sur la liste des fichiers du client"
+
+#. Text in echo
+#: clients.php:299
+msgid "Yes"
+msgstr "Oui"
+
+#. Text in echo
+#: clients.php:41 groups.php:60 actions-log.php:29 users.php:30
+#: manage-files.php:76
+msgid "You are about to delete"
+msgstr "Vous êtes sur le point de supprimer"
+
+#. Text in echo
+#: actions-log.php:39
+msgid ""
+"You are about to delete all activities from the log. Only those used for "
+"statistics will remain. Are you sure you want to continue?"
+msgstr ""
+"Vous êtes sur le point de supprimer toutes les activités du journal. "
+"Seulement celles utilisées pour les statistiques subsisteront. Êtes-vous sûr "
+"de vouloir continuer?"
+
+#. Text in echo
+#: manage-files.php:85
+msgid "You are about to unassign"
+msgstr "Vous êtes sur le point de retirer"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "You can access a list of all your files or upload your own"
+msgstr ""
+"Vous pouvez accéder à la liste de tous vos fichiers, transférer des fichiers "
+"et accéder à votre compte"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "You can log in following this link"
+msgstr "Vous pouvez vous connecter directement en cliquant sur ce lien"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "You can log in to manually deactivate it."
+msgstr "Vous pouvez vous connecter pour le désactiver manuellement."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "You can manage these files"
+msgstr "Vous pouvez gérer ces fichiers"
+
+#. Text in echo
+#: upload-process-form.php:385
+msgid ""
+"You can skip assigning if you want. The files are retained and you may add "
+"them to clients or groups later."
+msgstr ""
+"Vous pouvez passer l'étape de l'assignation si vous voulez. Les fichiers "
+"seront conservés et pourront être assignés plus tard."
+
+#. Text in echo
+#: email-templates.php:227 email-templates.php:252
+msgid "You can use HTML tags here."
+msgstr "Ici vous pouvez utiliser des balises HTML."
+
+#. Text in function
+#: users.php:47
+msgid "You cannot deactivate your own account."
+msgstr "Vous ne pouvez pas désactiver votre propre compte."
+
+#. Text in function
+#: users.php:47
+msgid "You cannot delete your own account."
+msgstr "Vous ne pouvez pas supprimer votre propre compte."
+
+#. Text in function
+#: edit-file.php:436
+msgid "You don't have permission to edit this file."
+msgstr "Vous n'avez pas la permission d'éditer ce fichier."
+
+#. Text in echo
+#: process.php:1
+msgid ""
+"You don't have the required permissions to view the requested information "
+"about this file."
+msgstr ""
+"Votre compte ne permet pas de voir les informations demandées à propos de ce "
+"fichier."
+
+#. Text in function
+#: manage-files.php:410
+msgid "You have not uploaded any files for this account."
+msgstr "Vous n'avez chargé aucun fichier pour ce compte"
+
+#. Text in function
+#: register.php:89
+msgid "You may now log in with your new credentials."
+msgstr ""
+"Vous pouvez maintenant vous connecter avec vos nouvelles informations de "
+"connexion."
+
+#. Text in echo
+#: install/index.php:202
+msgid "You may proceed to"
+msgstr "Vous pouvez procéder à"
+
+#. Text in echo
+#: upload-from-computer.php:141
+msgid "You must select at least one file to upload."
+msgstr "Vous devez au moins sélectionner un fichier à transférer."
+
+#. Text in echo
+#: options.php:390
+msgid ""
+"You need to include your username (usually your e-mail address) and password "
+"if you have selected either SMTP or Gmail as your mailer."
+msgstr ""
+"Vous devez entrer votre nom d'utilisateur (habituellement votre adresse "
+"courriel) et votre mot de passe si vous avez sélectionné le protocole de "
+"transfert de mail SMTP ou GMAIL."
+
+#. Text in echo
+#: install/index.php:250
+msgid ""
+"You need to provide this data for a correct system installation. The site "
+"name will be visible in the system panel, and the client's lists."
+msgstr ""
+"Vous devez fournir ces données pour l'installation du système. Le nom du "
+"site sera visible dans le panneau d'administration et dans la liste des "
+"clients."
+
+#. Text in function
+#: clients-edit.php:143 users-edit.php:146
+msgid "Your account type doesn't allow you to access this feature."
+msgstr "Votre compte ne vous permet pas d'accéder à cette fonctionnalité."
+
+#. Text in function
+#: includes/userlevel_check.php:158
+msgid ""
+"Your account type doesn't allow you to view this page. Please contact a "
+"system administrator if you need to access this function."
+msgstr ""
+"Votre compte ne vous permet pas de voir cette page. Veuillez contacter votre "
+"administrateur si vous avez besoin d'accéder à cette fonction."
+
+#. Text in echo
+#: upload-from-computer.php:153
+msgid ""
+"Your browser doesn't support HTML5, Flash or Silverlight. Please update your "
+"browser or install Adobe Flash or Silverlight to continue."
+msgstr ""
+"Votre navigateur de supporte pas HTML5, Flash ou Silverlight. Veuillez "
+"mettre à jour votre navigateur ou installer Adobe Flash ou Silverlight pour "
+"continuer."
+
+#. Text in echo
+#: upload-from-computer.php:160
+msgid ""
+"Your files are being uploaded! Progress indicators may take a while to "
+"update, but work is still being done behind the scenes."
+msgstr ""
+"Vos fichiers ont été transférés avec succès ! L'indicateurs de progression "
+"peut prendre du temps pour ce mettre à jour, mais le travail est toujours en "
+"train de s'effectuer en fond."
+
+#. Text in function
+#: clients-form.php:58
+msgid "Your full name"
+msgstr "Votre nom complet"
+
+#. Text in function
+#: reset-password.php:322
+msgid "Your new password couldn't be set."
+msgstr "Votre nouveau mot de passe n’a pu être modifié."
+
+#. Text in function
+#: reset-password.php:322
+msgid "Your new password has been set. You can now log in using it."
+msgstr ""
+"Votre nouveau mot de passe a été modifié. Vous pouvez maintenant l’utiliser "
+"pour vous connecter."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Your password"
+msgstr "Votre mot de passe"
+
+#. Text in function
+#: includes/vars.php:1
+msgid ""
+"Your password can only contain letters, numbers and the following characters:"
+msgstr ""
+"Votre mot de passe ne peut contenir que des lettres, des chiffres et les "
+"caractères suivants : "
+
+#. Text in function
+#: clients.php:200 groups.php:213 templates/default/template.php:59
+#: users.php:229 manage-files.php:410
+msgid "Your search keywords returned no results."
+msgstr "Votre recherche n'a retourné aucun résultat."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Your username"
+msgstr "Votre nom d'utilisateur"
+
+#. Text in echo
+#: home-statistics.php:182 home.php:47
+msgid "Zip Downloads"
+msgstr "Téléchargements zippés"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "activated the client"
+msgstr "a activé le client"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "activated the user"
+msgstr "a activé l'utilisateur"
+
+#. Text in echo
+#: actions-log.php:199
+msgid "activities"
+msgstr "Activités"
+
+#. Text in echo
+#: actions-log.php:30
+msgid "activities. Are you sure you want to continue?"
+msgstr "activités. Êtes-vous sûr de vouloir continuer?"
+
+#. Text in echo
+#: install/index.php:267 includes/vars.php:1
+msgid "and"
+msgstr "et"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "assigned the file"
+msgstr "a assigné le fichier"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "assigned to:"
+msgstr "assigné à: "
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "by logging in here"
+msgstr "en vous connectant ici"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "characters long"
+msgstr "caractères"
+
+#. Text in echo
+#: install/index.php:267
+msgid "characters long."
+msgstr "caractères."
+
+#. Text in echo
+#: clients.php:191
+msgid "clients"
+msgstr "clients"
+
+#. Text in echo
+#: clients.php:42
+msgid ""
+"clients and all of the assigned files. Are you sure you want to continue?"
+msgstr ""
+"les clients et tous les fichiers assignés. Êtes vous sûr de vouloir "
+"continuer?"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "created a client account for themself."
+msgstr "s'est créé un compte pour lui-même."
+
+#. Text in function
+#: includes/functions.php:682
+msgid "created the client account "
+msgstr "a créé le compte du client"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "created the group"
+msgstr "a créé le groupe"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "created the user account"
+msgstr "a créé le compte utilisateur"
+
+#. Text in echo
+#: home.php:39 home.php:40 home.php:41
+msgid "days"
+msgstr "jours"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "deactivated the client"
+msgstr "a désactivé le client"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "deactivated the user"
+msgstr "a désactivivé l'utilisateur"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "deleted the client"
+msgstr "a supprimé le client"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "deleted the file"
+msgstr "a supprimé le fichier"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "deleted the group"
+msgstr "supprimé le groupe"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "deleted the user"
+msgstr "a supprimé l'utilisateur"
+
+#. Text in function
+#: branding.php:96
+msgid "directory to 755, or 777 as a last resource."
+msgstr "répertoire à 755, ou 777 en dernier recours."
+
+#. Text in echo
+#: manage-files.php:643 manage-files.php:657
+msgid "downloads"
+msgstr "Téléchargements"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "edited the client"
+msgstr "a édité le client"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "edited the group"
+msgstr "a édité le groupe"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "edited the user"
+msgstr "a édité l'utilisateur"
+
+#. Text in echo
+#: templates/default/template.php:54 manage-files.php:405
+msgid "files"
+msgstr "fichiers"
+
+#. Text in echo
+#: manage-files.php:86
+msgid "files from this account. Are you sure you want to continue?"
+msgstr "les fichiers de ce compte. Êtes vous sûr de vouloir continuer?"
+
+#. Text in echo
+#: manage-files.php:77
+msgid ""
+"files permanently and for every client/group. Are you sure you want to "
+"continue?"
+msgstr ""
+"fichiers de façon permanente et pour tous les clients/groupes. Êtes vous sûr "
+"de vouloir continuer?"
+
+#. Text in function
+#: manage-files.php:689
+msgid "for client"
+msgstr "pour le client"
+
+#. Text in function
+#: manage-files.php:689
+msgid "for group"
+msgstr "pour le groupe"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "from the client:"
+msgstr "du client : "
+
+#. Text in function
+#: includes/functions.php:682
+msgid "from the group:"
+msgstr "du groupe :"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "generated a zip file"
+msgstr "a généré un fichier zippé"
+
+#. Text in echo
+#: groups.php:208
+msgid "groups"
+msgstr "groupes"
+
+#. Text in echo
+#: groups.php:61
+msgid "groups. Are you sure you want to continue?"
+msgstr "groupes. Êtes vous sûr de vouloir continuer?"
+
+#. Text in echo
+#: includes/updates.messages.php:51
+msgid "has been released."
+msgstr "est sortie."
+
+#. Text in function
+#: groups.php:76
+msgid "is member"
+msgstr "est membre"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "length should be between"
+msgstr "doit être entre"
+
+#. Text in echo
+#: install/index.php:202
+msgid "log in"
+msgstr "Connexion"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "logged in to the system."
+msgstr "s'est connecté au système."
+
+#. Text in function
+#: includes/functions.php:682
+msgid "logged out of the system."
+msgstr "s'est déconnecté du système."
+
+#. Text in function
+#: includes/functions.php:682
+msgid "marked as hidden the file"
+msgstr "marqué comme fihié caché"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "marked as visible the file"
+msgstr "marqué comme fichier visible"
+
+#. Text in echo
+#: branding.php:129
+msgid "options"
+msgstr "options"
+
+#. Text in echo
+#: includes/updates.messages.php:24
+msgid "please consider making a donation to support further development."
+msgstr ""
+"veuillez considérer faire un don pour supporter le développement futur."
+
+#. Text in echo
+#: branding.php:129
+msgid "section."
+msgstr "section."
+
+#. Text in echo
+#: install/index.php:87
+msgid "setup"
+msgstr "réglages"
+
+#. Text in echo
+#: options.php:227
+msgid "this page"
+msgstr "cette page"
+
+#. Text in echo
+#: manage-files.php:114 manage-files.php:637
+msgid "times"
+msgstr "fois"
+
+#. Text in echo
+#: includes/functions.php:288
+msgid "to be able to upload files for that account."
+msgstr "à être autorisés à transférer des fichiers pour ce compte."
+
+#. Text in function
+#: includes/functions.php:682
+msgid "to the client:"
+msgstr "pour le client: "
+
+#. Text in function
+#: includes/functions.php:682
+msgid "to the group:"
+msgstr "pour le groupe: "
+
+#. Text in function
+#: includes/functions.php:682
+msgid "to:"
+msgstr "pour: "
+
+#. Text in function
+#: includes/functions.php:682
+msgid "unassigned the file"
+msgstr "a retiré le fichier"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "updated ProjectSend to version"
+msgstr "a mis à jour ProjectSend vers la version"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "uploaded a new logo on \"Branding\""
+msgstr "a transféré un nouveau logo "
+
+#. Text in echo
+#: users.php:224
+msgid "users"
+msgstr "utilisateurs"
+
+#. Text in echo
+#: users.php:31
+msgid "users. Are you sure you want to continue?"
+msgstr "utilisateurs. Êtes-vous sûr de vouloir continuer ?"
+
+#. Text in echo
+#: includes/updates.messages.php:51 includes/functions.php:270
+msgid "version"
+msgstr "version"
+
+#. Text in echo
+#: install/index.php:251
+msgid ""
+"with your database settings before installing. If the file doesn't exist, "
+"you can create it by renaming the dummy file sys.config.sample.php."
+msgstr ""
+"avec les paramètres de votre base de données avant l'installation. Si le "
+"fichier n'existe pas, vous pouvez le créer en renommant le fichier sys."
+"config.sample.php en sys.config.php."
+
+#. Text in echo
+#: install/index.php:202
+msgid "with your newely created username and password."
+msgstr "avec le nouveau nom d’utilisateur et mot de passe que vous avez créés."

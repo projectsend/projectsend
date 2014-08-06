@@ -930,6 +930,7 @@ if (in_session_or_cookies($allowed_update)) {
 		 * Change the database collations
 		 */
 		if ($last_update < 557) {
+			$dbsql = $database->query('ALTER DATABASE '.DB_NAME.' CHARACTER SET utf8 COLLATE utf8_general_ci');
 			$sql = $database->query('SHOW TABLES');
 			$fk1 = $database->query('SET foreign_key_checks = 0');
 			while ($tables = mysql_fetch_array($sql) ) {

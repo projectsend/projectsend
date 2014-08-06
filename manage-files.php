@@ -521,6 +521,9 @@ include('header.php');
 								}
 
 								$sql_this_file = $database->query($query_this_file);
+								
+								$file_id = 0;
+								$data_file = '1';
 
 								while($data_file = mysql_fetch_array($sql_this_file)) {
 									$file_id = $data_file['id'];

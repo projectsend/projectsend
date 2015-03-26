@@ -40,7 +40,7 @@ if($_POST) {
 	//$got_admin_pass2 = mysql_real_escape_string(md5($_POST['install_user_repeat']));
 }
 
-/** Define the installation text stirngs */
+/** Define the installation text strings */
 $page_title_install = __('Install','cftp_admin');
 $install_no_sitename = __('Sitename was not completed.','cftp_admin');
 $install_no_baseuri = __('ProjectSend URI was not completed.','cftp_admin');

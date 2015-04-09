@@ -290,7 +290,7 @@ $install_no_baseuri = __('ProjectSend URI was not completed.','cftp_admin');
 							</div>
 				
 							<div id="install_extra">
-								<p><?php _e('After installing the system, you can go to the options page to set your timezone, prefered date display format and thubmnails parameters, besides being able to change the site options provided here.','cftp_admin'); ?></p>
+								<p><?php _e('After installing the system, you can go to the options page to set your timezone, preferred date display format and thumbnails parameters, besides being able to change the site options provided here.','cftp_admin'); ?></p>
 							</div>
 				
 						</form>

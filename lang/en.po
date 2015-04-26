@@ -8,7 +8,8 @@ msgstr ""
 "Last-Translator: Ignacio <info@subwaydesign.com.ar>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.6.10\n"
+"Language: en\n"
 
 #. Text in echo
 #: options.php:319
@@ -402,7 +403,7 @@ msgstr ""
 #: install/index.php:293
 msgid ""
 "After installing the system, you can go to the options page to set your "
-"timezone, prefered date display format and thubmnails parameters, besides "
+"timezone, preferred date display format and thumbnails parameters, besides "
 "being able to change the site options provided here."
 msgstr ""
 

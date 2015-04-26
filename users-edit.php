@@ -19,11 +19,22 @@ $edit_user = new UserActions();
 /** Check if the id parameter is on the URI. */
 if (isset($_GET['id'])) {
 	$user_id = mysql_real_escape_string($_GET['id']);
-	/**
-	 * Check if the id corresponds to a real user.
-	 * Return 1 if true, 2 if false.
-	 **/
-	$page_status = (user_exists_id($user_id)) ? 1 : 2;
+    /**
+	 * FIX by Azannah
+     * Make sure we're getting an int
+     * This is a "better-than-nothing" fix for CVE-2015-2564
+     * Ideally, I would be using PDO and prepared statements     
+     */
+    if(filter_var($user_id, FILTER_VALIDATE_INT))
+    {
+		/**
+		 * Check if the id corresponds to a real user.
+		 * Return 1 if true, 2 if false.
+		 **/
+		$page_status = (user_exists_id($user_id)) ? 1 : 2;
+    } else {
+        $page_status = 0;
+    }
 }
 else {
 	/**

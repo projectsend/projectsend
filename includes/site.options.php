@@ -177,6 +177,8 @@ if(!empty($options_values)) {
 	 * of the options page.
 	 */
 	date_default_timezone_set(TIMEZONE_USE);
+} else {
+    define('BASE_URI', '/');
 }
 
 /**

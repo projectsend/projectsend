@@ -5,7 +5,7 @@
  * This file handles all the uploaded files, whether you are
  * coming from the "Upload from computer" or "Find orphan files"
  * pages. The only difference is from which POST array it takes
- * the information to list the avaiable files to process.
+ * the information to list the available files to process.
  *
  * It can display up tp 3 tables:
  * One that will list all the files that were brought in from

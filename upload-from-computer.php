@@ -114,35 +114,54 @@ $database->MySQLDB();
 						}
 						*/
 					});
-	
-					$('form').submit(function(e) {
-						var uploader = $('#uploader').pluploadQueue();
-	
-						if (uploader.files.length > 0) {
-							uploader.bind('StateChanged', function() {
-								if (uploader.files.length === (uploader.total.uploaded + uploader.total.failed)) {
-									$('form')[0].submit();
-								}
-							});
-								
-							uploader.start();
 
-							$("#btn-submit").hide();
-							$(".message_uploading").fadeIn();
+                    var uploader = $('#uploader').pluploadQueue();
 
-							uploader.bind('FileUploaded', function (up, file, info) {
-								var obj = JSON.parse(info.response);
-								var new_file_field = '<input type="hidden" name="finished_files[]" value="'+obj.NewFileName+'" />'
-								$('form').append(new_file_field);
-							});
-	
-							return false;
-						} else {
-							alert('<?php _e("You must select at least one file to upload.",'cftp_admin'); ?>');
-						}
-				
-						return false;
-					});
+                    $('form').submit(function(e) {
+
+                        if (uploader.files.length > 0) {
+                            uploader.bind('StateChanged', function() {
+                                if (uploader.files.length === (uploader.total.uploaded + uploader.total.failed)) {
+                                    $('form')[0].submit();
+                                }
+                            });
+
+                            uploader.start();
+
+                            $("#btn-submit").hide();
+                            $(".message_uploading").fadeIn();
+
+                            uploader.bind('FileUploaded', function (up, file, info) {
+                                var obj = JSON.parse(info.response);
+                                var new_file_field = '<input type="hidden" name="finished_files[]" value="'+obj.NewFileName+'" />'
+                                $('form').append(new_file_field);
+                            });
+
+                            return false;
+                        } else {
+                            alert('<?php _e("You must select at least one file to upload.",'cftp_admin'); ?>');
+                        }
+
+                        return false;
+                    });
+
+                    window.onbeforeunload = function (e) {
+                        var e = e || window.event;
+
+                        console.log('state? ' + uploader.state);
+
+                        // if uploading
+                        if(uploader.state === 2) {
+                            //IE & Firefox
+                            if (e) {
+                                e.returnValue = '<?php _e("Are you sure? Files currently being uploaded will be discarded if you leave this page.",'cftp_admin'); ?>';
+                            }
+
+                            // For Safari
+                            return '<?php _e("Are you sure? Files currently being uploaded will be discarded if you leave this page.",'cftp_admin'); ?>';
+                        }
+
+                    };
 				});
 			</script>
 			

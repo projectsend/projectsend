@@ -4,6 +4,9 @@
  */
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
+
+check_for_session();
+
 /**
  * upload.php
  *

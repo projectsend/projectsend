@@ -1,0 +1,93 @@
+#
+# Translators:
+# carles <carleslm@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: ProjectSend\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2015-05-25 20:03-0300\n"
+"Last-Translator: carles <carleslm@gmail.com>\n"
+"Language-Team: Catalan (Spain) (http://www.transifex.com/projects/p/"
+"projectsend/language/ca_ES/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ca_ES\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.6.10\n"
+
+#. Text in echo
+#: psend/templates/default/template.php:89
+msgid "Date"
+msgstr "Data"
+
+#. Text in echo
+#: psend/templates/default/template.php:87
+msgid "Description"
+msgstr "Descripció"
+
+#. Text in echo
+#: psend/templates/default/template.php:91
+#: psend/templates/default/template.php:172
+msgid "Download"
+msgstr "Descarga"
+
+#. Text in function
+#: psend/templates/default/template.php:1
+msgid "File downloads"
+msgstr "Descàrregues"
+
+#. Text in echo
+#: psend/templates/default/template.php:148
+msgid "File expired"
+msgstr "Arxiu expirat"
+
+#. Text in echo
+#: psend/templates/default/template.php:190
+msgid "First"
+msgstr "Primer"
+
+#. Text in echo
+#: psend/templates/default/template.php:90
+msgid "Image preview"
+msgstr "Previsualització d'imatge"
+
+#. Text in echo
+#: psend/templates/default/template.php:195
+msgid "Last"
+msgstr "Últim"
+
+#. Text in echo
+#: psend/templates/default/template.php:194
+msgid "Next"
+msgstr "Següent"
+
+#. Text in echo
+#: psend/templates/default/template.php:192
+msgid "Page"
+msgstr "Pàgina"
+
+#. Text in echo
+#: psend/templates/default/template.php:191
+msgid "Prev."
+msgstr "Previ"
+
+#. Text in echo
+#: psend/templates/default/template.php:196
+msgid "Show"
+msgstr "Mostrar"
+
+#. Text in echo
+#: psend/templates/default/template.php:88
+msgid "Size"
+msgstr "Mida"
+
+#. Text in function
+#: psend/templates/default/template.php:63
+msgid "There are no files available."
+msgstr "No hi ha arxius disponibles."
+
+#. Text in echo
+#: psend/templates/default/template.php:85
+msgid "Title"
+msgstr "Títol"

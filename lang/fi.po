@@ -1,0 +1,3397 @@
+#
+# Translators:
+# Björn Ericsson, 2015
+# Kari Söderholm <haprog@haprogszone.net>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: ProjectSend\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2015-05-25 20:02-0300\n"
+"Last-Translator: Björn Ericsson\n"
+"Language-Team: Finnish (http://www.transifex.com/projects/p/projectsend/"
+"language/fi/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fi\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.6.10\n"
+
+#. Text in echo
+#: options.php:319
+msgid "\"From\" information"
+msgstr "Lähettäjän tiedot"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "(client) downloaded the file"
+msgstr "(asiakas) latasi tiedoston"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "(client) edited the file"
+msgstr "(asiakas) muokkasi tiedostoa"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "(client) uploaded the file"
+msgstr "(asiakas) lähetti tiedoston"
+
+#. Text in function
+#: email-templates.php:91
+msgid "(to be used as href on a link tag)"
+msgstr ""
+
+#. Text in function
+#: includes/functions.php:682
+msgid "(user) downloaded the file"
+msgstr "(käyttäjä) latasi tiedoston"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "(user) edited the file"
+msgstr "(käyttäjä) muokkasi tiedostoa"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "(user) uploaded the file"
+msgstr "(käyttäjä) lähetti tiedoston"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "1 lowercase character"
+msgstr ""
+
+#. Text in function
+#: includes/vars.php:1
+msgid "1 number"
+msgstr ""
+
+#. Text in function
+#: includes/vars.php:1
+msgid "1 special character"
+msgstr ""
+
+#. Text in function
+#: includes/vars.php:1
+msgid "1 uppercase character"
+msgstr ""
+
+#. Text in echo
+#: actions-log.php:160
+msgid "A client account was activated"
+msgstr "Asiakastili aktivoitu"
+
+#. Text in echo
+#: actions-log.php:161
+msgid "A client account was deactivated"
+msgstr "Asiakastili deaktivoitu"
+
+#. Text in echo
+#: actions-log.php:174
+msgid "A client edited a file."
+msgstr "Asiakas muokkasi tiedostoa."
+
+#. Text in echo
+#: actions-log.php:145
+msgid "A client registers an account for himself"
+msgstr "Asiakas rekisteröi käyttäjätilin"
+
+#. Text in echo
+#: actions-log.php:158
+msgid "A client was deleted"
+msgstr "Asiakas poistettiin"
+
+#. Text in echo
+#: actions-log.php:155
+msgid "A client was edited"
+msgstr "Asiakasta muokattiin"
+
+#. Text in echo
+#: actions-log.php:153
+msgid "A file has been deleted"
+msgstr "Tiedosto on poistettu"
+
+#. Text in echo
+#: actions-log.php:151
+msgid "A file has been unassigned from a client."
+msgstr "Tiedosto on asetettu pois asiakkaalta."
+
+#. Text in echo
+#: actions-log.php:152
+msgid "A file has been unassigned from a group"
+msgstr "Tiedosto on asetettu pois ryhmästä"
+
+#. Text in echo
+#: actions-log.php:167
+msgid "A file is assigned to a client"
+msgstr "Tiedosto on asetettu asiakkaalle"
+
+#. Text in echo
+#: actions-log.php:168
+msgid "A file is assigned to a group"
+msgstr "Tiedosto on asetettu ryhmään"
+
+#. Text in echo
+#: actions-log.php:149
+msgid "A file is downloaded by a client"
+msgstr "Asiakas lataa tiedostoa"
+
+#. Text in echo
+#: actions-log.php:148
+msgid "A file is downloaded by a user (on \"Client view\" mode)"
+msgstr "Käyttäjä lataa tiedostoa (asiakasnäkymässä)"
+
+#. Text in echo
+#: actions-log.php:147
+msgid "A file is uploaded by a client"
+msgstr "Asiakas lähettää tiedosta"
+
+#. Text in echo
+#: actions-log.php:146
+msgid "A file is uploaded by an user"
+msgstr "Käyttäjä lähettää tiedostoa"
+
+#. Text in echo
+#: actions-log.php:164
+msgid "A file was marked as hidden"
+msgstr "Tiedosto merkittiin piilotetuksi"
+
+#. Text in echo
+#: actions-log.php:165
+msgid "A file was marked as visible"
+msgstr "Tiedosto merkittiin näkyväksi"
+
+#. Text in function
+#: register.php:89
+msgid ""
+"A folder for this account could not be created. Probably because of a server "
+"configuration."
+msgstr ""
+"Tälle käyttäjätilille ei voitu luoda hakemistoa. Tämä johtuu todennäköisesti "
+"palvelimen asetuksista."
+
+#. Text in echo
+#: actions-log.php:159
+msgid "A group was deleted"
+msgstr "Ryhmä poistettiin"
+
+#. Text in echo
+#: actions-log.php:156
+msgid "A group was edited"
+msgstr "Ryhmää muokattiin"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid ""
+"A new account was created for you. From now on, you can access the files "
+"that have been uploaded under your account using the following credentials:"
+msgstr ""
+"Sinulle on luotu uusi käyttäjätili. Tästä eteenpäin sinulla on pääsy "
+"käyttäjätiliisi liitettyihin tiedostoihin seuraavilla käyttäjätiedoilla:"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid ""
+"A new account was created for you. From now on, you can access the system "
+"administrator using the following credentials:"
+msgstr ""
+"Sinulle on luotu uusi käyttäjätili. Tästä eteenpäin sinulla on pääsy "
+"järjestelmän hallintaan seuraavilla käyttäjätiedoilla:"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid ""
+"A new account was created using the self registration form on your site. "
+"Registration information:"
+msgstr ""
+"Uusi käyttäjätili luotiin sivustosi rekisteröintilomakkeella. Rekisteröinnin "
+"tiedot:"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "A new client has registered."
+msgstr "Uusi asiakas on rekisteröity."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid ""
+"A request has been received to reset the password for the following account:"
+msgstr ""
+
+#. Text in function
+#: includes/updates.functions.php:1
+msgid ""
+"A safe chmod value couldn't be set for one or more system files. Please make "
+"sure that at least includes/sys.config.php has a chmod of 644 for security "
+"reasons."
+msgstr ""
+"Turvallista chmod-arvoa ei voitu asettaa yhdelle tai useammalle "
+"järjestelmätiedostolle. Varmista turvallisuussyistä, että ainakin includes/"
+"sys.config.php tiedoston chmod-arvo on 644."
+
+#. Text in echo
+#: actions-log.php:173
+msgid "A system user edited a file."
+msgstr "Järjestelmäkäyttäjä muokkasi tiedostoa."
+
+#. Text in function
+#: includes/vars.php:1
+msgid "A system user or client with this e-mail address already exists."
+msgstr ""
+"Tätä sähköpostiosoitetta käyttävä järjestelmäkäyttäjä tai asiakas on jo "
+"olemassa."
+
+#. Text in function
+#: includes/vars.php:1
+msgid "A system user or client with this login name already exists."
+msgstr ""
+"Tätä käyttäjätunnusta käyttävä järjestelmäkäyttäjä tai asiakas on jo "
+"olemassa."
+
+#. Text in echo
+#: actions-log.php:162
+msgid "A user account was activated"
+msgstr "Käyttäjätili aktivoitiin"
+
+#. Text in echo
+#: actions-log.php:163
+msgid "A user account was deactivated"
+msgstr "Käyttäjätili deaktivoitiin"
+
+#. Text in echo
+#: actions-log.php:169
+msgid "A user account was marked as active"
+msgstr "Käyttäjätunnus merkittiin aktiiviseksi"
+
+#. Text in echo
+#: actions-log.php:170
+msgid "A user account was marked as inactive"
+msgstr "Käyttäjätunnus merkittiin epäaktiiviseksi"
+
+#. Text in echo
+#: actions-log.php:144
+msgid "A user creates a new client account"
+msgstr "Käyttäjä luo uuden asiakastilin"
+
+#. Text in echo
+#: actions-log.php:166
+msgid "A user creates a new group"
+msgstr "Käyttäjä luo uuden ryhmän"
+
+#. Text in echo
+#: actions-log.php:143
+msgid "A user creates a new user account"
+msgstr "Käyttäjä luo uuden käyttäjätilin"
+
+#. Text in echo
+#: actions-log.php:157
+msgid "A user was deleted"
+msgstr "Käyttäjä poistettiin"
+
+#. Text in echo
+#: actions-log.php:154
+msgid "A user was edited"
+msgstr "Käyttäjää muokattiin"
+
+#. Text in echo
+#: actions-log.php:150
+msgid "A zip file was generated by a client"
+msgstr "Asiakas generoi ZIP-tiedoston"
+
+#. Text in echo
+#: includes/userlevel_check.php:156
+msgid "Access denied"
+msgstr "Pääsy estetty"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Access the system panel here"
+msgstr "Tästä pääsy järjestelmäpaneeliin"
+
+#. Text in echo
+#: actions-log.php:142
+msgid "Account (user or client) logs out"
+msgstr "Käyttäjätili (käyttäjä tai asiakas) kirjautuu ulos"
+
+#. Text in function
+#: sys.vars.php:1 users.php:193
+msgid "Account Manager"
+msgstr "Käyttäjätilivastaava"
+
+#. Text in function
+#: register.php:89
+msgid "Account added correctly."
+msgstr "Käyttäjätili lisätty."
+
+#. Text in echo
+#: actions-log.php:141
+msgid "Account logs in through cookies"
+msgstr "Käyttäjätili kirjautuu sisään evästeillä"
+
+#. Text in echo
+#: actions-log.php:140
+msgid "Account logs in through the form"
+msgstr "Käyttäjätili kirjautuu sisään lomakkeella"
+
+#. Text in echo
+#: clients.php:237 groups.php:250 users.php:255 manage-files.php:478
+#: upload-process-form.php:338
+msgid "Actions"
+msgstr "Toiminnot"
+
+#. Text in echo
+#: clients.php:180 users.php:213
+msgid "Activate"
+msgstr "Aktivoi"
+
+#. Text in echo
+#: clients.php:166 clients.php:307 users.php:199 users.php:282
+msgid "Active"
+msgstr "Aktiivinen"
+
+#. Text in echo
+#: clients-form.php:134
+msgid "Active (client can log in)"
+msgstr "Aktiivinen (asiakas voi kirjautua sisään)"
+
+#. Text in echo
+#: users-form.php:116
+msgid "Active (user can log in)"
+msgstr "Aktiivinen (käyttäjä voi kirjautua sisään)"
+
+#. Text in echo
+#: actions-log.php:185
+msgid "Activities actions"
+msgstr "Tapahtumien toiminnot"
+
+#. Text in echo
+#: actions-log.php:228
+msgid "Activity"
+msgstr "Tapahtuma"
+
+#. Text in echo
+#: edit-file.php:413 groups-form.php:67 upload-process-form.php:546
+msgid "Add all"
+msgstr "Lisää kaikki"
+
+#. Text in function
+#: clients-form.php:58 clients-add.php:135
+msgid "Add client"
+msgstr "Lisää asiakas"
+
+#. Text in function
+#: groups-add.php:102
+msgid "Add clients group"
+msgstr "Lisää asiakasryhmä"
+
+#. Text in echo
+#: options.php:263
+msgid "Add clients to this group:"
+msgstr "Lisää asiakkaita tähän ryhmään:"
+
+#. Text in echo
+#: header.php:251 header.php:273 header.php:308
+msgid "Add new"
+msgstr "Lisää uusi"
+
+#. Text in function
+#: users-add.php:128
+msgid "Add system user"
+msgstr "Lisää järjestelmäkäyttäjä"
+
+#. Text in function
+#: users-form.php:59
+msgid "Add user"
+msgstr "Lisää käyttäjä"
+
+#. Text in echo
+#: clients.php:233 groups.php:249 users.php:254
+msgid "Added on"
+msgstr "Lisätty"
+
+#. Text in echo
+#: clients.php:234 clients-form.php:119
+msgid "Address"
+msgstr "Osoite"
+
+#. Text in echo
+#: options.php:346
+msgid "Address supplied above (on \"From\")"
+msgstr "Osoite annettu yllä (lähettäjän tiedoissa)"
+
+#. Text in echo
+#: install/index.php:293
+msgid ""
+"After installing the system, you can go to the options page to set your "
+"timezone, prefered date display format and thubmnails parameters, besides "
+"being able to change the site options provided here."
+msgstr ""
+"Järjestelmän asennuksen jälkeen voit mennä asetussivulle asettaaksesi "
+"aikavyöhykkeesi, suosimasi päivämääräformaatin sekä esikatselukuvien "
+"parametrit sen lisäksi, että voit muuttaa tässä antamiasi sivuston asetuksia."
+
+#. Text in echo
+#: home.php:77 actions-log.php:138
+msgid "All activities"
+msgstr "Kaikki tapahtumat"
+
+#. Text in echo
+#: upload-import-orphans.php:177
+msgid "All assignations were removed"
+msgstr ""
+
+#. Text in echo
+#: users.php:191
+msgid "All roles"
+msgstr "Kaikki roolit"
+
+#. Text in echo
+#: clients.php:165 users.php:198 manage-files.php:359
+msgid "All statuses"
+msgstr "Kaikki statukset"
+
+#. Text in echo
+#: edit-file.php:369 upload-process-form.php:505
+msgid "Allow public downloading of this file."
+msgstr ""
+
+#. Text in echo
+#: options.php:432
+msgid "Allowed file extensions"
+msgstr "Sallitut tiedostopäätteet"
+
+#. Text in echo
+#: install/index.php:105
+msgid "Already installed"
+msgstr "Valmiiksi asennettu"
+
+#. Text in echo
+#: options.php:350
+msgid "Also to this addresses"
+msgstr "Myös näihin osoitteisiin"
+
+#. Text in function
+#: users-add.php:75
+msgid "An e-mail notification with login information was sent to the new user."
+msgstr ""
+"Uudelle käyttäjälle lähetettiin kirjautumistiedot sisältävä sähköposti-"
+"ilmoitus."
+
+#. Text in function
+#: register.php:89
+msgid ""
+"An e-mail notification with login information was sent to the specified "
+"address."
+msgstr ""
+"Kirjautumistiedot sisältävä sähköposti-ilmoitus lähetettiin annettuun "
+"osoitteeseen."
+
+#. Text in function
+#: clients-add.php:83
+msgid "An e-mail notification with login information was sent to your client."
+msgstr ""
+"Kirjautumistiedot sisältävä sähköposti-ilmoitus lähetettiin asiakkaalle."
+
+#. Text in function
+#: reset-password.php:322
+msgid ""
+"An e-mail with further instructions has been sent. Please check your inbox "
+"to proceed."
+msgstr ""
+
+#. Text in echo
+#: edit-file.php:379 upload-process-form.php:516
+msgid "Assign this file to"
+msgstr "Aseta tiedosto seuraaville"
+
+#. Text in echo
+#: edit-file.php:378 upload-process-form.php:515
+msgid "Assignations"
+msgstr ""
+
+#. Text in echo
+#: options.php:415
+msgid "Authentication"
+msgstr ""
+
+#. Text in echo
+#: actions-log.php:227
+msgid "Author"
+msgstr "Tekijä"
+
+#. Text in echo
+#: options.php:259
+msgid "Auto approve new accounts"
+msgstr "Hyväksy uudet käyttäjätilit automaattisesti"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Auto-approvals of new accounts are currently enabled."
+msgstr ""
+
+#. Text in echo
+#: options.php:192
+msgid ""
+"Basic information to be shown around the site. The time format and zones "
+"values affect how the clients see the dates on their files lists."
+msgstr ""
+"Sivustolla käytettäviä perustietoja. Aikaformaatti ja aikavyöhykkeen arvo "
+"vaikuttavat siihen miten päivämäärät näkyvät asiakkaille "
+"tiedostolistauksissa."
+
+#. Text in echo
+#: install/index.php:249
+msgid "Basic system options"
+msgstr "Järjestelmän perusasetukset"
+
+#. Text in echo
+#: options.php:433
+msgid ""
+"Be careful when changing this options. They could affect not only the system "
+"but the whole server it is installed on."
+msgstr ""
+"Ole varovainen muuttaessasi näitä asetuksia. Ne saattavat vaikuttaa koko "
+"palvelimeen, johon järjestelmä on asennettuna."
+
+#. Text in echo
+#: header.php:331 branding.php:26
+msgid "Branding"
+msgstr "Brändäys"
+
+#. Text in echo
+#: edit-file.php:432
+msgid "Cancel"
+msgstr "Peruuttaa"
+
+#. Text in echo
+#: actions-log.php:190
+msgid "Clear entire log"
+msgstr "Tyhjennä koko loki"
+
+#. Text in echo
+#: upload-from-computer.php:48
+msgid ""
+"Click on Add files to select all the files that you want to upload, and then "
+"click continue. On the next step, you will be able to set a name and "
+"description for each uploaded file. Remember that the maximum allowed file "
+"size (in mb.) is "
+msgstr ""
+"Klikkaa Lisää tiedostoja valitaksesi kaikki haluamasi tiedostot lähetystä "
+"varten, ja klikkaa sitten jatka. Seuraavassa vaiheessa voit asettaa "
+"jokaiselle lähetetylle tiedostolle nimen ja kuvauksen. Huomioi, että suurin "
+"sallittu tiedostokoko (megatavuina) on"
+
+#. Text in echo
+#: manage-files.php:129
+msgid "Click to select"
+msgstr ""
+
+#. Text in function
+#: sys.vars.php:1
+msgid "Client"
+msgstr "Asiakas"
+
+#. Text in function
+#: clients-add.php:83
+msgid "Client added correctly."
+msgstr "Asiakas lisätty."
+
+#. Text in function
+#: clients-edit.php:143
+msgid "Client edited correctly."
+msgstr "Asiakasta muokattu."
+
+#. Text in function
+#: register.php:89
+msgid ""
+"Client self registration is not allowed. If you need an account, please "
+"contact a system administrator."
+msgstr ""
+"Asiakkaan omatoiminen rekisteröinti on estetty. Jos tarvitset käyttäjätilin, "
+"ota yhteys järjestelmänvalvojaan."
+
+#. Text in echo
+#: options.php:199
+msgid "Client's template"
+msgstr "Asiakkaan sivupohja"
+
+#. Text in echo
+#: header.php:236 edit-file.php:381 home.php:159 upload-process-form.php:518
+#: options.php:178
+msgid "Clients"
+msgstr "Asiakkaat"
+
+#. Text in function
+#: clients.php:57
+msgid "Clients Administration"
+msgstr "Asiakkaiden hallinta"
+
+#. Text in echo
+#: options.php:255
+msgid "Clients can register themselves"
+msgstr "Asiakkaat voivat rekisteröityä omatoimisesti"
+
+#. Text in echo
+#: options.php:297
+msgid "Clients can upload files"
+msgstr "Asiakkaat voivat lähettää tiedostoja"
+
+#. Text in echo
+#: header.php:271
+msgid "Clients groups"
+msgstr "Asiakasryhmät"
+
+#. Text in echo
+#: options.php:441
+msgid "Clients only"
+msgstr ""
+
+#. Text in echo
+#: home.php:83
+msgid "Clients self-registrations"
+msgstr "Asiakkaiden omatoimiset rekisteröitymiset"
+
+#. Text in echo
+#: manage-files.php:129
+msgid "Close"
+msgstr "Sulje"
+
+#. Text in echo
+#: options.php:182
+msgid "Company logo"
+msgstr "Yrityksen logo"
+
+#. Text in function
+#: install/index.php:159
+msgid "Congratulations! Everything is up and running."
+msgstr "Onneksi olkoon! Kaikki on nyt toiminnassa."
+
+#. Text in echo
+#: index.php:166 edit-file.php:433 upload-import-orphans.php:203
+#: reset-password.php:314 upload-process-form.php:585
+msgid "Continue"
+msgstr "Jatka"
+
+#. Text in echo
+#: upload-process-form.php:548
+msgid "Copy selections to other files"
+msgstr ""
+
+#. Text in echo
+#: includes/functions.php:288
+msgid "Create a new one"
+msgstr "Luo uusi"
+
+#. Text in function
+#: groups-form.php:23
+msgid "Create group"
+msgstr "Luo ryhmä"
+
+#. Text in echo
+#: groups.php:248
+msgid "Created by"
+msgstr "Luonut"
+
+#. Text in echo
+#: branding.php:128
+msgid "Current logo"
+msgstr "Nykyinen logo"
+
+#. Text in echo
+#: header.php:209
+msgid "Dashboard"
+msgstr "Kojelauta"
+
+#. Text in echo
+#: actions-log.php:226 manage-files.php:448
+msgid "Date"
+msgstr "Päiväys"
+
+#. Text in echo
+#: options.php:365
+msgid "Days before expiring"
+msgstr ""
+
+#. Text in echo
+#: clients.php:181 users.php:214
+msgid "Deactivate"
+msgstr "Deaktivoi"
+
+#. Text in echo
+#: install/index.php:266
+msgid "Default system administrator options"
+msgstr "Järjestelmänvalvojan oletusasetukset"
+
+#. Text in echo
+#: options.php:343
+msgid ""
+"Define here who will receive copies of this emails. These are sent as BCC so "
+"neither recipient will see the other addresses."
+msgstr ""
+"Määrittele ketkä vastaanottavat kopion tästä sähköpostista. Nämä lähetetään "
+"piilokopioina, eli kopioiden vastaanottajat eivät näy muille."
+
+#. Text in echo
+#: options.php:362
+msgid "Define how many times will the system attemp to send each notification."
+msgstr ""
+
+#. Text in echo
+#: clients.php:182 groups.php:199 users.php:215 manage-files.php:392
+msgid "Delete"
+msgstr "Poista"
+
+#. Text in echo
+#: actions-log.php:189
+msgid "Delete selected"
+msgstr "Poista valitut"
+
+#. Text in echo
+#: groups.php:245 edit-file.php:338 groups-form.php:43
+#: upload-process-form.php:269 upload-process-form.php:476
+msgid "Description"
+msgstr "Kuvaus"
+
+#. Text in echo
+#: includes/updates.messages.php:22
+msgid "Do you want to support ProjectSend?"
+msgstr "Haluatko tukea ProjectSendiä?"
+
+#. Text in echo
+#: manage-files.php:596
+msgid "Does not expire"
+msgstr ""
+
+#. Text in echo
+#: index.php:176
+msgid "Don't have an account yet?"
+msgstr "Ei käyttäjätiliä?"
+
+#. Text in echo
+#: options.php:303
+msgid "Don't show it on the files list"
+msgstr ""
+
+#. Text in function
+#: download.php:119
+msgid "Download"
+msgstr ""
+
+#. Text in echo
+#: actions-log.php:188
+msgid "Download as csv"
+msgstr "Lataa CSV-tiedostona"
+
+#. Text in echo
+#: manage-files.php:467
+msgid "Download count"
+msgstr "Latausten lukumäärä"
+
+#. Text in echo
+#: download.php:98
+msgid "Download file"
+msgstr ""
+
+#. Text in echo
+#: templates/default/template.php:44
+msgid "Download zipped"
+msgstr "Lataa ZIP-pakettina"
+
+#. Text in echo
+#: manage-files.php:110
+msgid "Downloaders of file:"
+msgstr "Tiedoston lataajat:"
+
+#. Text in echo
+#: home-statistics.php:178 home.php:46 home.php:79
+msgid "Downloads"
+msgstr "Lataukset"
+
+#. Text in echo
+#: users-form.php:101 clients.php:227 clients-form.php:115
+#: reset-password.php:272 users.php:251
+msgid "E-mail"
+msgstr "Sähköposti"
+
+#. Text in echo
+#: install/index.php:274 options.php:322
+msgid "E-mail address"
+msgstr "Sähköpostiosoite"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "E-mail address is not valid"
+msgstr "Sähköpostiosoite on virheellinen"
+
+#. Text in function
+#: reset-password.php:322
+msgid "E-mail couldn't be sent."
+msgstr ""
+
+#. Text in function
+#: register.php:89 users-add.php:75 clients-add.php:83
+msgid "E-mail notification couldn't be sent."
+msgstr "Sähköposti-ilmoitusta ei voitu lähettää."
+
+#. Text in echo
+#: options.php:179
+msgid "E-mail notifications"
+msgstr "Sähköposti-ilmoitukset"
+
+#. Text in function
+#: upload-send-notifications.php:1
+msgid "E-mail notifications for inactive clients were not sent."
+msgstr "Inaktiivisille asiakkaille ei lähetetty sähköposti-ilmoituksia."
+
+#. Text in function
+#: upload-send-notifications.php:1
+msgid "E-mail notifications have been sent."
+msgstr "Sähköposti-ilmoitukset lähetettiin."
+
+#. Text in echo
+#: options.php:373
+msgid "E-mail sending options"
+msgstr "Sähköpostin lähetyksen asetukset"
+
+#. Text in echo
+#: header.php:332 email-templates.php:1
+msgid "E-mail templates"
+msgstr ""
+
+#. Text in function
+#: includes/vars.php:1
+msgid "E-mail was not completed"
+msgstr "Sähköpostia ei saatu valmiiksi"
+
+#. Text in echo
+#: clients.php:329 groups.php:293 users.php:296 manage-files.php:666
+msgid "Edit"
+msgstr "Muokkaa"
+
+#. Text in function
+#: clients-edit.php:208
+msgid "Edit client"
+msgstr "Muokkaa asiakasta"
+
+#. Text in function
+#: edit-file.php:1 upload-process-form.php:303 upload-process-form.php:355
+msgid "Edit file"
+msgstr "Muokkaa tiedostoa"
+
+#. Text in function
+#: groups-edit.php:158
+msgid "Edit group"
+msgstr "Muokkaa ryhmää"
+
+#. Text in function
+#: users-edit.php:216
+msgid "Edit system user"
+msgstr "Muokkaa järjestelmäkäyttäjää"
+
+#. Text in echo
+#: edit-file.php:337 upload-process-form.php:475
+msgid "Enter here the required file title."
+msgstr "Aseta tiedostolle pakollinen otsikko tässä."
+
+#. Text in echo
+#: options.php:440
+msgid "Everyone"
+msgstr "Kaikki"
+
+#. Text in echo
+#: options.php:357
+msgid "Expiration"
+msgstr ""
+
+#. Text in echo
+#: edit-file.php:357 upload-process-form.php:493
+msgid "Expiration date"
+msgstr ""
+
+#. Text in echo
+#: manage-files.php:604
+msgid "Expired on"
+msgstr ""
+
+#. Text in echo
+#: manage-files.php:611
+msgid "Expires on"
+msgstr ""
+
+#. Text in echo
+#: manage-files.php:457
+msgid "Expiry"
+msgstr ""
+
+#. Text in echo
+#: templates/default/template.php:82 manage-files.php:449
+msgid "Ext."
+msgstr "Pääte"
+
+#. Text in echo
+#: upload-process-form.php:270 upload-process-form.php:608
+msgid "File Name"
+msgstr "Tiedostonimi"
+
+#. Text in echo
+#: edit-file.php:358 upload-process-form.php:494
+msgid "File expires"
+msgstr ""
+
+#. Text in echo
+#: edit-file.php:332 upload-process-form.php:467
+msgid "File information"
+msgstr ""
+
+#. Text in echo
+#: upload-import-orphans.php:177
+msgid "File is not public."
+msgstr ""
+
+#. Text in echo
+#: upload-import-orphans.php:159
+msgid "File name"
+msgstr "Tiedostonimi"
+
+#. Text in echo
+#: upload-import-orphans.php:160
+msgid "File size"
+msgstr "Tiedoston koko"
+
+#. Text in echo
+#: options.php:499
+msgid "File's path"
+msgstr "Tiedoston polku"
+
+#. Text in echo
+#: header.php:215 groups.php:247 home.php:158 options.php:290
+msgid "Files"
+msgstr "Tiedostot"
+
+#. Text in echo
+#: upload-process-form.php:604
+msgid "Files not uploaded"
+msgstr "Lähettämättömät tiedostot"
+
+#. Text in echo
+#: upload-process-form.php:379
+msgid "Files ready to upload"
+msgstr "Lähetysvalmiit tiedostot"
+
+#. Text in echo
+#: upload-process-form.php:264
+msgid "Files uploaded correctly"
+msgstr "Lähetetyt tiedostot"
+
+#. Text in echo
+#: clients.php:229
+msgid "Files: Groups"
+msgstr "Tiedostot: Ryhmät"
+
+#. Text in echo
+#: clients.php:228
+msgid "Files: Own"
+msgstr "Tiedostot: Omat"
+
+#. Text in echo
+#: clients.php:169 actions-log.php:176 users.php:202 manage-files.php:363
+msgid "Filter"
+msgstr "Suodata"
+
+#. Text in echo
+#: header.php:220 upload-import-orphans.php:242
+msgid "Find orphan files"
+msgstr "Hae orvot tiedostot"
+
+#. Text in echo
+#: email-templates.php:223
+msgid "Footer"
+msgstr ""
+
+#. Text in echo
+#: options.php:226
+msgid "For example, d/m/Y h:i:s will result in something like"
+msgstr "Esimerkiksi d/m/Y h:i:s näyttää seuraavanlaiselta"
+
+#. Text in echo
+#: options.php:227
+msgid "For the full list of available values, visit"
+msgstr "Tarkista kaikki käytettävissä olevat muuttujat täältä:"
+
+#. Text in echo
+#: index.php:172
+msgid "Forgot your password?"
+msgstr "Unohditko salasanasi?"
+
+#. Text in echo
+#: includes/functions.php:270
+msgid "Free software"
+msgstr "Vapaa ohjelmisto"
+
+#. Text in echo
+#: clients.php:225 install/index.php:270 includes/classes/send-email.php:1
+#: users.php:249
+msgid "Full name"
+msgstr "Koko nimi"
+
+#. Text in echo
+#: options.php:191
+msgid "General"
+msgstr "Yleistä"
+
+#. Text in echo
+#: options.php:177
+msgid "General Options"
+msgstr "Yleiset asetukset"
+
+#. Text in echo
+#: header.php:329
+msgid "General options"
+msgstr "Yleiset asetukset"
+
+#. Text in echo
+#: reset-password.php:328 download.php:106 register.php:173
+msgid "Go back to the homepage."
+msgstr "Siirry takaisin etusivulle."
+
+#. Text in function
+#: groups-add.php:63
+msgid "Group added correctly."
+msgstr "Ryhmä lisätty."
+
+#. Text in function
+#: groups-edit.php:104
+msgid "Group edited correctly."
+msgstr "Ryhmää muokattu."
+
+#. Text in echo
+#: groups.php:244 groups-form.php:39
+msgid "Group name"
+msgstr "Ryhmän nimi"
+
+#. Text in echo
+#: edit-file.php:396 home.php:160 upload-process-form.php:531
+msgid "Groups"
+msgstr "Ryhmät"
+
+#. Text in function
+#: groups.php:76
+msgid "Groups administration"
+msgstr "Ryhmien hallinta"
+
+#. Text in echo
+#: clients.php:231
+msgid "Groups on"
+msgstr "Ryhmät"
+
+#. Text in function
+#: groups.php:76
+msgid "Groups where"
+msgstr "Ryhmät joissa"
+
+#. Text in echo
+#: email-templates.php:215
+msgid "Header"
+msgstr ""
+
+#. Text in echo
+#: email-templates.php:187 email-templates.php:207
+msgid "Header / Footer"
+msgstr ""
+
+#. Text in echo
+#: options.php:374
+msgid ""
+"Here you can select which mail system will be used when sending the "
+"notifications. If you have a valid e-mail account, SMTP is the recommended "
+"option."
+msgstr ""
+"Tästä voit valita mitä tapaa sähköposti-ilmoitusten lähetykseen käytetään. "
+"Mikäli sinulla on tähän soveltuvat sähköpostitunnukset, SMTP on suositeltu "
+"vaihtoehto."
+
+#. Text in echo
+#: email-templates.php:208
+msgid ""
+"Here you set up the header and footer of every email, or use the default "
+"ones available with the system. Use this to customize each part and include, "
+"for example, your own logo and markup."
+msgstr ""
+
+#. Text in echo
+#: manage-files.php:360 manage-files.php:645 upload-process-form.php:293
+msgid "Hidden"
+msgstr "Piilotettu"
+
+#. Text in echo
+#: manage-files.php:386
+msgid "Hide"
+msgstr "Piilota"
+
+#. Text in echo
+#: edit-file.php:420
+msgid "Hide from every already assigned clients and groups."
+msgstr "Piilota jo asetetuilta asiakkailta ja ryhmiltä."
+
+#. Text in echo
+#: options.php:407
+msgid "Host"
+msgstr "Palvelin"
+
+#. Text in function
+#: includes/updates.functions.php:1
+msgid ""
+"If images thumbnails aren't showing on your client's files lists (even your "
+"company logo there and on the branding page) please chmod the includes/"
+"timthumb/cache folder to 777 and then do the same with the 'index.html' and "
+"'timthumb_cacheLastCleanTime.touch' files inside that folder. Then try "
+"lowering each file to 644 and see if everything is still working."
+msgstr ""
+"Jos esikatselukuvat eivät näy asiakkaan tiedostolistauksissa (mukaanlukien "
+"yrityksesi logo listauksissa ja brändäyssivulla), ole hyvä ja muuta "
+"'includes/timthumb/cache' hakemiston käyttöoikeuksiksi chmod 777. Tee sama "
+"'index.html' ja 'timthumb_cacheLastCleanTime.touch' tiedostoille kyseisessä "
+"hakemistossa. Koita sitten vähentää chmod oikeudet arvoon 644 ja tarkista "
+"toimiiko kaikki vielä."
+
+#. Text in function
+#: reset-password.php:322
+msgid "If the problem persists, please contact an administrator."
+msgstr ""
+
+#. Text in function
+#: branding.php:96
+msgid ""
+"If this doesn't solve the issue, try giving the same values to the "
+"directories above that one until it works."
+msgstr ""
+"Jos tämä ei ratkaise ongelmaa, koita asettaa samat käyttöoikeudet ylemmän "
+"tason hakemistoihin kunnes kaikki toimii."
+
+#. Text in echo
+#: options.php:500
+msgid ""
+"If thumbnails are not showing (your company logo and file's preview on the "
+"branding page and client's files lists) try setting this option ON. It they "
+"still don't work, a folders permission issue might be the cause."
+msgstr ""
+"Jos esikatselukuvat eivät näy (yrityksesi logo tiedoston esikatselussa "
+"brändäyssivulla ja asiakkaan tiedostolistauksissa) koita asettaa tämä asetus "
+"ON asentoon. Mikäli ne eivät vieläkään toimi, syynä voi olla hakemiston "
+"virheelliset käyttöoikeudet."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "If you did not make this request, simply ignore this email."
+msgstr ""
+
+#. Text in function
+#: index.php:110
+msgid ""
+"If you just registered, please wait until a system administrator approves "
+"your account."
+msgstr ""
+
+#. Text in echo
+#: index.php:181
+msgid "If you need an account, please contact a server administrator."
+msgstr "Jos tarvitset käyttäjätiliä, ota yhteys järjestelmän ylläpitäjään."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid ""
+"If you prefer not to be notified about new files, please go to My Account "
+"and deactivate the notifications checkbox."
+msgstr ""
+"Mikäli et halua ilmoituksia uusista tiedostoista, mene Oma tili -sivulle ja "
+"ota rasti pois kyseisestä ruudusta."
+
+#. Text in echo
+#: options.php:404
+msgid "If you selected SMTP as your mailer, please complete these options."
+msgstr "Jos valitsit SMTP-lähetystavan, täytä seuraavat asetukset."
+
+#. Text in echo
+#: install/index.php:107
+msgid ""
+"If you want to reinstall, please delete the system tables from the database "
+"and come back to the installation form."
+msgstr ""
+"Jos haluat suorittaa asennuksen uudelleen, poista järjestelmän "
+"tietokantataulut ja tule takaisin asennuslomakkeelle."
+
+#. Text in echo
+#: options.php:434
+msgid "Important"
+msgstr "Tärkeä"
+
+#. Text in echo
+#: clients.php:167 clients.php:307 users.php:200 users.php:282
+msgid "Inactive"
+msgstr "Epäaktiivinen"
+
+#. Text in function
+#: install/index.php:311 install/index.php:289
+msgid "Install"
+msgstr "Asenna"
+
+#. Text in echo
+#: clients.php:236
+msgid "Internal contact"
+msgstr "Sisäinen kontakti"
+
+#. Text in echo
+#: clients-form.php:130
+msgid "Internal contact name"
+msgstr "Sisäisen kontaktin nimi"
+
+#. Text in echo
+#: install/index.php:106
+msgid "It seems that ProjectSend is already installed here."
+msgstr "ProjectSend näyttää jo olevan asennettuna täällä."
+
+#. Text in echo
+#: options.php:492
+msgid "JPG Quality"
+msgstr "JPG-kuvanlaatu"
+
+#. Text in echo
+#: upload-import-orphans.php:161
+msgid "Last modified"
+msgstr "Viimeksi muokattu"
+
+#. Text in echo
+#: options.php:517
+msgid ""
+"Like the thumbnails options, these have to be changed taking into account "
+"the client's template design, since it can be shown there. The default "
+"template uses a fixed width for the logo, however the Gallery template uses "
+"this setting to show the image on top."
+msgstr ""
+"Kuten esikatselukuvien asetuksien kanssa, näitä muutettaessa pitää ottaa "
+"huomioon asiakkaan sivupohjan muotoilu, koska tämä saatetaan näyttää siellä. "
+"Oletussivupohja käyttää vakiolevyistä logoa, mutta Galleria sivupohja "
+"käyttää tätä asetusta yläkuvan näyttämiseen."
+
+#. Text in echo
+#: options.php:437
+msgid "Limit file types uploading to"
+msgstr ""
+
+#. Text in function
+#: index.php:196
+msgid "Log in"
+msgstr "Kirjaudu"
+
+#. Text in echo
+#: users-form.php:91 clients.php:226 clients-form.php:105
+#: install/index.php:278 users.php:250
+msgid "Log in username"
+msgstr "Käyttäjätunnus"
+
+#. Text in echo
+#: home.php:78
+msgid "Logins"
+msgstr "Kirjautumisia"
+
+#. Text in echo
+#: branding.php:136
+msgid "Logo Placeholder"
+msgstr "Logon paikkamerkki"
+
+#. Text in echo
+#: header.php:155 templates/gallery/template.php:48
+msgid "Logout"
+msgstr "Kirjaudu ulos"
+
+#. Text in function
+#: reset-password.php:341
+msgid "Lost password"
+msgstr "Salasana hukassa?"
+
+#. Text in echo
+#: options.php:377
+msgid "Mailer"
+msgstr "Postittaja"
+
+#. Text in echo
+#: header.php:252
+msgid "Manage clients"
+msgstr "Hallitse asiakkaita"
+
+#. Text in echo
+#: header.php:219 header.php:346 clients.php:326 groups.php:292
+#: manage-files.php:689
+msgid "Manage files"
+msgstr "Hallitse tiedostoja"
+
+#. Text in echo
+#: header.php:274
+msgid "Manage groups"
+msgstr "Hallitse ryhmiä"
+
+#. Text in echo
+#: header.php:309
+msgid "Manage system users"
+msgstr "Hallitse järjestelmäkäyttäjiä"
+
+#. Text in echo
+#: edit-file.php:419
+msgid ""
+"Mark as hidden (will not send notifications) for new assigned clients and "
+"groups."
+msgstr ""
+"Merkitse piilotetuksi (ei lähetä ilmoitusta) uusille asetetuille asiakkaille "
+"ja ryhmille."
+
+#. Text in echo
+#: options.php:488 options.php:525
+msgid "Max height"
+msgstr "Maksimikorkeus"
+
+#. Text in echo
+#: options.php:485 options.php:521
+msgid "Max width"
+msgstr "Maksimileveys"
+
+#. Text in echo
+#: options.php:360
+msgid "Maximum sending attemps"
+msgstr ""
+
+#. Text in echo
+#: groups.php:246 groups-form.php:47
+msgid "Members"
+msgstr "Jäsenet"
+
+#. Text in echo
+#: users-form.php:92 clients-form.php:106
+msgid "Must be alphanumeric"
+msgstr "Täytyy olla aakkosnumeerinen"
+
+#. Text in echo
+#: users-form.php:102 clients-form.php:116
+msgid "Must be valid and unique"
+msgstr "Täytyy olla validi ja uniikki"
+
+#. Text in echo
+#: header.php:154
+msgid "My Account"
+msgstr "Oma tili"
+
+#. Text in function
+#: clients-edit.php:208 users-edit.php:216
+msgid "My account"
+msgstr "Oma tili"
+
+#. Text in echo
+#: users-form.php:87 clients-form.php:101 options.php:326
+msgid "Name"
+msgstr "Nimi"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "Name was not completed"
+msgstr "Nimeä ei annettu"
+
+#. Text in echo
+#: upload-import-orphans.php:177
+msgid "Never assigned to any user or group"
+msgstr ""
+
+#. Text in function
+#: email-templates.php:91
+msgid "New client (self-registered)"
+msgstr ""
+
+#. Text in function
+#: email-templates.php:91
+msgid "New client (welcome)"
+msgstr ""
+
+#. Text in echo
+#: options.php:285
+msgid ""
+"New clients will automatically be assigned to the group you have selected."
+msgstr "Uudet asiakkaat asetetaan automaattisesti valitsemaasi ryhmään."
+
+#. Text in function
+#: email-templates.php:91
+msgid "New file by client"
+msgstr ""
+
+#. Text in function
+#: email-templates.php:91
+msgid "New file by user"
+msgstr ""
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "New files has been uploaded by the following clients"
+msgstr "Seuraavat asiakkaat ovat lähettäneet uusia tiedostoja."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "New files uploaded by clients"
+msgstr "Asiakkaiden lähettämät uudet tiedostot"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "New files uploaded for you"
+msgstr "Sinulle lähetetyt uudet tiedostot"
+
+#. Text in echo
+#: reset-password.php:305
+msgid "New password"
+msgstr "Uusi salasana"
+
+#. Text in echo
+#: options.php:251
+msgid "New registrations"
+msgstr "Uudet rekisteröinnit"
+
+#. Text in function
+#: email-templates.php:91
+msgid "New user (welcome)"
+msgstr ""
+
+#. Text in echo
+#: clients.php:299
+msgid "No"
+msgstr "Ei"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "No client was selected"
+msgstr "Yhtään asiakasta ei valittu"
+
+#. Text in function
+#: clients-edit.php:143
+msgid "No client was selected."
+msgstr "Yhtään asiakasta ei valittu."
+
+#. Text in function
+#: groups-edit.php:104
+msgid "No group was selected."
+msgstr "Yhtään ryhmää ei valittu."
+
+#. Text in echo
+#: options.php:439
+msgid "No one"
+msgstr ""
+
+#. Text in echo
+#: edit-file.php:446 groups-form.php:81 upload-process-form.php:635
+msgid "No results where found."
+msgstr ""
+
+#. Text in function
+#: users-edit.php:146
+msgid "No user was selected."
+msgstr "Yhtään käyttäjää ei valittu."
+
+#. Text in echo
+#: options.php:417
+msgid "None"
+msgstr ""
+
+#. Text in echo
+#: options.php:265
+msgid "None (does not enable this feature)"
+msgstr "Ei mitään (ominaisuus pois käytöstä)"
+
+#. Text in echo
+#: upload-process-form.php:385
+msgid "Note"
+msgstr "Huomio"
+
+#. Text in echo
+#: home.php:63
+msgid "Note:"
+msgstr "Huom:"
+
+#. Text in echo
+#: options.php:367
+msgid "Notifications older than this will not be sent."
+msgstr ""
+
+#. Text in echo
+#: clients.php:232
+msgid "Notify"
+msgstr "Ilmoita"
+
+#. Text in echo
+#: clients-form.php:141
+msgid "Notify new uploads by e-mail"
+msgstr "Ilmoita uusista lähetyksistä sähköpostitse"
+
+#. Text in function
+#: upload-send-notifications.php:1
+msgid "One or more notifications couldn't be sent."
+msgstr "Yhtä tai useampaa ilmoitusta ei voitu lähettää."
+
+#. Text in echo
+#: edit-file.php:339 upload-process-form.php:477
+msgid "Optionally, enter here a description for the file."
+msgstr "Tiedoston vapaaehtoinen kuvaus."
+
+#. Text in echo
+#: header.php:327
+msgid "Options"
+msgstr "Asetukset"
+
+#. Text in echo
+#: options.php:291
+msgid "Options related to the files that clients upload themselves."
+msgstr "Asiakkaiden itse lähettämiinsä tiedostoihin liittyvät asetukset."
+
+#. Text in function
+#: email-templates.php:91 options.php:115
+msgid "Options updated succesfuly."
+msgstr "Asetukset päivitetty."
+
+#. Text in echo
+#: users-form.php:96 index.php:156 clients-form.php:110 install/index.php:283
+#: includes/vars.php:1 options.php:397
+msgid "Password"
+msgstr "Salasana"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "Password does not meet the required characters rules"
+msgstr ""
+
+#. Text in function
+#: includes/vars.php:1
+msgid "Password must be alphanumeric (a-z,A-Z,0-9 allowed)"
+msgstr ""
+"Salasanan tulee olla aakkosnumeerinen (merkit a-z, A-Z ja 0-9 sallittu)"
+
+#. Text in function
+#: email-templates.php:91
+msgid "Password reset"
+msgstr ""
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Password reset instructions"
+msgstr ""
+
+#. Text in function
+#: includes/vars.php:1
+msgid "Password verification was not completed"
+msgstr "Salasanan varmistusta ei tehty"
+
+#. Text in echo
+#: index.php:143 includes/vars.php:1
+msgid "Password was not completed"
+msgstr "Salasanaa ei annettu"
+
+#. Text in echo
+#: options.php:451
+msgid "Passwords"
+msgstr "Salasanat"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "Passwords do not match"
+msgstr "Salasanat eivät täsmää"
+
+#. Text in echo
+#: options.php:164 options.php:167
+msgid "Please complete all the fields."
+msgstr "Ole hyvä ja täytä kaikki kentät."
+
+#. Text in echo
+#: upload-process-form.php:380
+msgid ""
+"Please complete the following information to finish the uploading process. "
+"Remember that \"Title\" is a required field."
+msgstr ""
+
+#. Text in function
+#: register.php:89
+msgid "Please contact a system administrator."
+msgstr "Ota yhteys järjestelmänvalvojaan."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Please contact the administrator if you need further assistance."
+msgstr "Jos tarvitset lisätukea, ota yhteys ylläpitoon."
+
+#. Text in echo
+#: reset-password.php:275
+msgid ""
+"Please enter your account's e-mail address. You will receive a link to "
+"continue the process."
+msgstr ""
+
+#. Text in echo
+#: reset-password.php:311
+msgid ""
+"Please enter your desired new password. After that, you will be able to log "
+"in normally."
+msgstr ""
+
+#. Text in function
+#: edit-file.php:436
+msgid ""
+"Please go to the clients or groups administration page, select \"Manage files"
+"\" from any client and then click on \"Edit\" on any file to return here."
+msgstr ""
+"Mene asiakkaiden tai ryhmien hallintasivulle, valitse \"Hallitse tiedostoja"
+"\" miltä tahansa asiakkaalta, ja klikkaa sitten \"Muokkaa\" mistä tahansa "
+"tiedostosta palataksesi takaisin tänne."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Please log in to activate it."
+msgstr "Kirjaudu sisään aktivoidaksesi se."
+
+#. Text in echo
+#: manage-files.php:684
+msgid ""
+"Please note that downloading a file from here will not add to the download "
+"count."
+msgstr ""
+"Huomaa, että tiedoston lataaminen tätä kautta ei kasvata latausten "
+"lukumäärää."
+
+#. Text in function
+#: upload-import-orphans.php:197
+msgid ""
+"Please note that the listed files will be renamed if they contain invalid "
+"characters."
+msgstr ""
+"Huom: listatut tiedostot uudelleennimetään, mikäli tiedostonimessä on "
+"merkkejä, joita ei ole sallittu."
+
+#. Text in function
+#: register.php:89
+msgid ""
+"Please remember that an administrator needs to approve your account before "
+"you can log in."
+msgstr ""
+"Muista, että ylläpitäjän tulee hyväksyä käyttäjätilisi ennen kuin voit "
+"kirjautua sisään."
+
+#. Text in echo
+#: includes/updates.messages.php:23
+msgid ""
+"Please remember that this tool is free software. If you find the system "
+"useful"
+msgstr ""
+"Muista, että tämä työkalu on vapaa ohjelmisto. Jos koet sen hyödylliseksi"
+
+#. Text in echo
+#: branding.php:85
+msgid "Please select an image file to upload"
+msgstr "Valitse lähetettävä kuvatiedosto"
+
+#. Text in echo
+#: actions-log.php:25
+msgid "Please select at least one activity to proceed."
+msgstr "Valitse vähintään yksi toiminto jatkaaksesi."
+
+#. Text in function
+#: actions-log.php:64
+msgid "Please select at least one activity."
+msgstr "Valitse vähintään yksi toiminto."
+
+#. Text in echo
+#: clients.php:35
+msgid "Please select at least one client to proceed."
+msgstr "Valitse vähintään yksi asiakas jatkaaksesi."
+
+#. Text in function
+#: clients.php:57
+msgid "Please select at least one client."
+msgstr "Valitse vähintään yksi asiakas."
+
+#. Text in echo
+#: upload-import-orphans.php:212 templates/default/template.php:198
+#: manage-files.php:70
+msgid "Please select at least one file to proceed."
+msgstr "Valitse vähintään yksi tiedosto jatkaaksesi."
+
+#. Text in function
+#: manage-files.php:689
+msgid "Please select at least one file."
+msgstr "Valitse vähintään yksi tiedosto."
+
+#. Text in echo
+#: groups.php:56
+msgid "Please select at least one group to proceed."
+msgstr "Valitse vähintään yksi ryhmä jatkaaksesi."
+
+#. Text in function
+#: groups.php:76
+msgid "Please select at least one group."
+msgstr "Valitse vähintään yksi ryhmä."
+
+#. Text in echo
+#: users.php:24
+msgid "Please select at least one user to proceed."
+msgstr "Valitse vähintään yksi käyttäjä jatkaaksesi."
+
+#. Text in function
+#: users.php:47
+msgid "Please select at least one user."
+msgstr "Valitse vähintään yksi käyttäjä."
+
+#. Text in echo
+#: home.php:181
+msgid "Please wait while the system generates the statistics graph."
+msgstr ""
+"Ole hyvä ja odota sen aikaa kun järjestelmän generoi statistiikkagraafin."
+
+#. Text in echo
+#: home.php:205
+msgid "Please wait while the system gets the information from the log."
+msgstr ""
+"Ole hyvä ja odota sen aikaa kun järjestelmä hakee tapahtumalokin tietoja."
+
+#. Text in echo
+#: manage-files.php:103
+msgid "Please wait while the system gets the required information."
+msgstr "Ole hyvä ja odota sen aikaa kun järjestelmä hakee tarvittavia tietoja."
+
+#. Text in echo
+#: templates/default/template.php:213 actions-log.php:51
+msgid "Please wait while your download is prepared."
+msgstr "Ole hyvä ja odota sen aikaa kun lataustasi valmistellaan."
+
+#. Text in echo
+#: options.php:411
+msgid "Port"
+msgstr "Portti"
+
+#. Text in function
+#: manage-files.php:645
+msgid "Private"
+msgstr ""
+
+#. Text in echo
+#: clients.php:184 groups.php:201 templates/default/template.php:46
+#: actions-log.php:192 users.php:217 manage-files.php:394
+msgid "Proceed"
+msgstr "Jatka"
+
+#. Text in echo
+#: actions-log.php:139
+msgid "ProjecSend has been installed"
+msgstr "ProjectSend on nyt asennettu"
+
+#. Text in echo
+#: install/index.php:259
+msgid "ProjectSend URI (address)"
+msgstr "ProjectSend-järjestelmän URI (verkko-osoite)"
+
+#. Text in function
+#: install/index.php:311
+msgid "ProjectSend URI was not completed."
+msgstr "ProjectSendin verkko-osoitetta ei annettu."
+
+#. Text in echo
+#: home-news-widget.php:2
+msgid "ProjectSend news"
+msgstr "ProjectSend uutiset"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "ProjectSend was installed"
+msgstr "ProjectSend asennettiin"
+
+#. Text in echo
+#: actions-log.php:172
+msgid "ProjectSend was updated"
+msgstr "ProjectSend päivitettiin"
+
+#. Text in echo
+#: includes/functions.php:270
+msgid "Provided by"
+msgstr "Ohjelmisto:"
+
+#. Text in echo
+#: manage-files.php:456 manage-files.php:645
+msgid "Public"
+msgstr ""
+
+#. Text in echo
+#: manage-files.php:577
+msgid "Public URL"
+msgstr ""
+
+#. Text in echo
+#: edit-file.php:368 upload-process-form.php:504
+msgid "Public downloading"
+msgstr ""
+
+#. Text in echo
+#: upload-import-orphans.php:162
+msgid "Reason"
+msgstr ""
+
+#. Text in echo
+#: home.php:74
+msgid "Recent activites"
+msgstr "Viimeaikaiset tapahtumat"
+
+#. Text in function
+#: actions-log.php:64
+msgid "Recent activities log"
+msgstr "Viimeaikaisten tapahtumien loki"
+
+#. Text in function
+#: clients-form.php:58
+msgid "Register account"
+msgstr "Rekisteröi käyttäjätili"
+
+#. Text in echo
+#: index.php:176
+msgid "Register as a new client."
+msgstr "Rekisteröi uusi asiakas."
+
+#. Text in function
+#: register.php:183
+msgid "Register new account"
+msgstr "Rekisteröi uusi käyttäjätili"
+
+#. Text in echo
+#: index.php:196
+msgid "Remember me"
+msgstr "Muista minut"
+
+#. Text in echo
+#: install/index.php:251
+msgid "Remember to edit the file"
+msgstr "Muista muokata tiedostoa"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid ""
+"Remember, your new client will not be able to log in until an administrator "
+"has approved their account."
+msgstr ""
+"Muista, että uusi asiakkaasi ei voi kirjautua sisään ennen kuin ylläpitäjä "
+"on hyväksynyt käyttäjätilin."
+
+#. Text in echo
+#: edit-file.php:414 groups-form.php:68 upload-process-form.php:547
+msgid "Remove all"
+msgstr "Poista kaikki"
+
+#. Text in echo
+#: users-form.php:108 users.php:252
+msgid "Role"
+msgstr "Rooli"
+
+#. Text in echo
+#: options.php:389
+msgid "SMTP & Gmail shared options"
+msgstr "Yhteiset SMTP ja Gmail -asetukset"
+
+#. Text in echo
+#: options.php:403
+msgid "SMTP options"
+msgstr "SMTP-asetukset"
+
+#. Text in function
+#: clients-form.php:58
+msgid "Save client"
+msgstr "Tallenna asiakas"
+
+#. Text in function
+#: groups-form.php:23
+msgid "Save group"
+msgstr "Tallenna ryhmä"
+
+#. Text in function
+#: users-form.php:59
+msgid "Save user"
+msgstr "Tallenna käyttäjä"
+
+#. Text in echo
+#: clients.php:160 groups.php:187 upload-import-orphans.php:147
+#: templates/default/template.php:33 actions-log.php:133 users.php:186
+#: manage-files.php:350
+msgid "Search"
+msgstr "Hae"
+
+#. Text in echo
+#: options.php:180
+msgid "Security"
+msgstr "Tietoturva"
+
+#. Text in echo
+#: edit-file.php:360 upload-process-form.php:496
+msgid "Select a date"
+msgstr "Valitse päivä"
+
+#. Text in echo
+#: groups.php:198 actions-log.php:187
+msgid "Select action"
+msgstr "Valitse toiminto"
+
+#. Text in echo
+#: branding.php:148
+msgid "Select image to upload"
+msgstr "Valitse lähetettävä kuva"
+
+#. Text in echo
+#: edit-file.php:380 groups-form.php:48 upload-process-form.php:517
+msgid "Select one or more options. Type to search."
+msgstr ""
+
+#. Text in echo
+#: clients.php:178
+msgid "Selected clients actions"
+msgstr "Valittujen asiakkaiden toiminnot"
+
+#. Text in echo
+#: templates/default/template.php:42 manage-files.php:380
+msgid "Selected files actions"
+msgstr "Valittujen tiedostojen toiminnot"
+
+#. Text in echo
+#: groups.php:196
+msgid "Selected groups actions"
+msgstr "Valittujen ryhmien toiminnot"
+
+#. Text in echo
+#: users.php:211
+msgid "Selected users actions"
+msgstr "Valittujen käyttäjien toiminnot"
+
+#. Text in echo
+#: options.php:332
+msgid "Send copies"
+msgstr "Lähetä kopiot"
+
+#. Text in echo
+#: manage-files.php:129
+msgid ""
+"Send this URL to someone to download the file without registering or logging "
+"in."
+msgstr ""
+
+#. Text in echo
+#: options.php:434
+msgid ""
+"Separate allowed file types with a comma. You can navigate the box with the "
+"left/right arrows, backspace and delete keys."
+msgstr ""
+"Erottele sallityt tiedostomuodot pilkulla. Voit navigoida laatikossa "
+"käyttäen nuolinäppäimiä, sekä askelpalautin ja delete -painikkeita."
+
+#. Text in echo
+#: options.php:352
+msgid "Separate e-mail addresses with a comma."
+msgstr "Erottele sähköpostiosoitteet pilkulla."
+
+#. Text in echo
+#: options.php:367
+msgid "Set to 0 to disable."
+msgstr ""
+
+#. Text in echo
+#: index.php:172
+msgid "Set up a new one."
+msgstr ""
+
+#. Text in echo
+#: manage-files.php:387
+msgid "Show"
+msgstr "Näytä"
+
+#. Text in echo
+#: options.php:304
+msgid "Show it anyway, but prevent download."
+msgstr ""
+
+#. Text in echo
+#: clients.php:191 groups.php:208 templates/default/template.php:54
+#: actions-log.php:199 users.php:224 manage-files.php:405
+msgid "Showing"
+msgstr "Näytetään"
+
+#. Text in function
+#: email-templates.php:91
+msgid "Shows the list of files"
+msgstr ""
+
+#. Text in echo
+#: install/index.php:255 options.php:195
+msgid "Site name"
+msgstr "Sivuston nimi"
+
+#. Text in function
+#: install/index.php:311
+msgid "Sitename was not completed."
+msgstr "Sivuston nimeä ei annettu."
+
+#. Text in echo
+#: manage-files.php:451
+msgid "Size"
+msgstr "Koko"
+
+#. Text in echo
+#: options.php:516
+msgid "Size settings"
+msgstr "Koon asetukset"
+
+#. Text in function
+#: options.php:115
+msgid "Some fields were not completed. Options could not be saved."
+msgstr "Joitakin kenttiä ei täydennetty. Asetuksia ei voitu tallentaa."
+
+#. Text in echo
+#: home.php:36
+msgid "Statistics"
+msgstr "Statistiikka"
+
+#. Text in echo
+#: clients.php:230 users.php:253 manage-files.php:466
+#: upload-process-form.php:274
+msgid "Status"
+msgstr "Tila"
+
+#. Text in function
+#: header.php:367
+msgid "System Administration"
+msgstr "Järjestelmän ylläpito"
+
+#. Text in function
+#: sys.vars.php:1 users.php:192
+msgid "System Administrator"
+msgstr "Järjestelmänvalvoja"
+
+#. Text in echo
+#: includes/updates.messages.php:16
+msgid "System Notice:"
+msgstr "Järjestelmähuomautus:"
+
+#. Text in echo
+#: options.php:237
+msgid "System URI"
+msgstr "Järjestelmän URI"
+
+#. Text in echo
+#: header.php:293
+msgid "System Users"
+msgstr "Järjestelmäkäyttäjät"
+
+#. Text in echo
+#: home.php:61
+msgid "System data"
+msgstr "Järjestelmän data"
+
+#. Text in echo
+#: options.php:233
+msgid "System location"
+msgstr "Järjestelmän sijainti"
+
+#. Text in function
+#: options.php:546
+msgid "System options"
+msgstr "Järjestelmän asetukset"
+
+#. Text in echo
+#: clients.php:235 clients-form.php:123
+msgid "Telephone"
+msgstr "Puhelin"
+
+#. Text in echo
+#: email-templates.php:247
+msgid "Template text"
+msgstr ""
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Thank you for using ProjectSend."
+msgstr "Kiitos kun käytit ProjectSendiä."
+
+#. Text in echo
+#: includes/updates.messages.php:25
+msgid "Thank you!"
+msgstr "Kiitos!"
+
+#. Text in function
+#: register.php:89
+msgid ""
+"The account could not be created. A folder with this name already exists."
+msgstr "Käyttäjätiliä ei voitu luoda. Saman niminen hakemisto on jo olemassa."
+
+#. Text in function
+#: includes/updates.functions.php:1
+msgid ""
+"The chmod values of the emails folder and the html templates inside couldn't "
+"be set. If ProjectSend isn't sending notifications emails, please set them "
+"manually to 777."
+msgstr ""
+"emails-hakemiston ja sen sisältämien HTML-tiedostojen chmod käyttöoikeuksia "
+"ei voitu asettaa. Jos ProjectSend ei lähetä sähköposti-ilmoituksia, ole hyvä "
+"ja aseta näiden tiedostojen käyttöoikeudet manuaalisesti chmod arvoon 777."
+
+#. Text in function
+#: groups.php:213
+msgid "The client does not exist."
+msgstr "Asiakasta ei ole olemassa."
+
+#. Text in echo
+#: includes/updates.messages.php:16
+msgid "The database was updated to support this version of the software."
+msgstr "Tietokanta päivitettiin tukemaan tätä ohjelmistoversiota."
+
+#. Text in function
+#: branding.php:96
+msgid "The file could not be moved to the corresponding folder."
+msgstr "Tiedostoa ei voitu siirtää vastaavaan hakemistoon."
+
+#. Text in function
+#: edit-file.php:436
+msgid "The file has been edited succesfuly."
+msgstr ""
+
+#. Text in function
+#: branding.php:96
+msgid ""
+"The file you selected is not an allowed image format. Please upload your "
+"logo as a jpg, gif or png file."
+msgstr ""
+"Valitsemasi tiedosto ei ole sallitussa kuvaformaatissa. Ole hyvä ja lähetä "
+"logosi JPG, GIF tai PNG tiedostona."
+
+#. Text in function
+#: clients.php:200 groups.php:213 actions-log.php:204 users.php:229
+#: manage-files.php:410
+msgid "The filters you selected returned no results."
+msgstr "Valitsemillasi suodatusehdoilla ei löytynyt tuloksia."
+
+#. Text in function
+#: includes/classes/form-validation.php:1
+msgid "The following errors were found"
+msgstr "Seuraavat virheet havaittiin"
+
+#. Text in echo
+#: download.php:96
+msgid "The following file is now ready for you to download:"
+msgstr ""
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "The following files are now available for you to download."
+msgstr "Seuraavat tiedostot ovat nyt ladattavissasi."
+
+#. Text in echo
+#: email-templates.php:256
+msgid "The following tags can be used on this e-mails' body."
+msgstr ""
+
+#. Text in function
+#: email-templates.php:91
+msgid "The full name the client registered with"
+msgstr ""
+
+#. Text in function
+#: branding.php:96
+msgid "The image was uploaded correctly."
+msgstr "Kuva lähetettiin onnistuneesti."
+
+#. Text in function
+#: email-templates.php:91
+msgid "The link to continue the process"
+msgstr ""
+
+#. Text in function
+#: actions-log.php:64
+msgid ""
+"The log was cleared. Only data used for statistics remained. You can delete "
+"them manually if you want."
+msgstr ""
+"Tapahtumaloki tyhjennettiin. Vain statistiikkadata jäi jäljelle. Voit "
+"halutessasi tyhjentää ne manuaalisesti."
+
+#. Text in function
+#: email-templates.php:91
+msgid "The login link"
+msgstr ""
+
+#. Text in echo
+#: actions-log.php:171
+msgid "The logo on \"Branding\" was changed"
+msgstr "Brändäyksen logo muutettiin"
+
+#. Text in function
+#: email-templates.php:91
+msgid "The new password for this account"
+msgstr ""
+
+#. Text in function
+#: email-templates.php:91
+msgid "The new username for this account"
+msgstr ""
+
+#. Text in echo
+#: includes/functions.php:673
+msgid "The password must contain, at least:"
+msgstr ""
+
+#. Text in echo
+#: branding.php:129
+msgid ""
+"The picture on the right is not an actual representation of what they will "
+"see. The size on this preview is fixed, but remember that you can change the "
+"display size and picture quality for your client's pages on the"
+msgstr ""
+"Oikealla oleva kuva ei ole varsinainen esitys siitä mitä he näkevät. Tämän "
+"esikatselun koko on rajoitettu, mutta muista että voit muuttaa asiakkaasi "
+"sivuilla näkyvää esityskokoa ja kuvanlaatua"
+
+#. Text in function
+#: reset-password.php:322 download.php:79
+msgid "The request is not valid."
+msgstr ""
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "The request is valid only for 24 hours."
+msgstr ""
+
+#. Text in function
+#: actions-log.php:64
+msgid "The selected activities were deleted."
+msgstr "Valitut tapahtumat poistettiin."
+
+#. Text in function
+#: clients.php:57
+msgid "The selected clients were deleted."
+msgstr "Valitut asiakkaat poistettiin."
+
+#. Text in function
+#: clients.php:57
+msgid "The selected clients were marked as active."
+msgstr "Valitut asiakkaat merkittiin aktiivisiksi."
+
+#. Text in function
+#: clients.php:57
+msgid "The selected clients were marked as inactive."
+msgstr "Valitut asiakkaat merkittiin inaktiivisiksi."
+
+#. Text in function
+#: manage-files.php:689
+msgid "The selected files were deleted."
+msgstr "Valitut tiedostot poistettiin."
+
+#. Text in function
+#: manage-files.php:689
+msgid "The selected files were marked as hidden."
+msgstr "Valitut tiedostot merkittiin piilotetuiksi."
+
+#. Text in function
+#: manage-files.php:689
+msgid "The selected files were marked as visible."
+msgstr "Valitut tiedostot merkittiin näkyviksi."
+
+#. Text in function
+#: manage-files.php:689
+msgid "The selected files were unassigned from this client."
+msgstr "Valitut tiedostot asetettiin pois tältä asiakkaalta."
+
+#. Text in function
+#: groups.php:76
+msgid "The selected groups were deleted."
+msgstr "Valitut ryhmät poistettiin."
+
+#. Text in function
+#: users.php:47
+msgid "The selected users were deleted."
+msgstr "Valitut käyttäjät poistettiin."
+
+#. Text in function
+#: users.php:47
+msgid "The selected users were marked as active."
+msgstr "Valitut käyttäjät merkittiin aktiivisiksi."
+
+#. Text in function
+#: users.php:47
+msgid "The selected users were marked as inactive."
+msgstr "Valitut käyttäjät merkittiin inaktiivisiksi."
+
+#. Text in function
+#: index.php:110
+msgid "The supplied credentials are not valid."
+msgstr ""
+
+#. Text in function
+#: reset-password.php:322
+msgid "The supplied email address does not correspond to any user."
+msgstr ""
+
+#. Text in function
+#: index.php:110
+msgid "The supplied password is incorrect."
+msgstr "Virheellinen salasana."
+
+#. Text in function
+#: index.php:110
+msgid "The supplied username doesn't exist."
+msgstr "Virheellinen käyttäjätunnus."
+
+#. Text in function
+#: email-templates.php:91
+msgid "The text string unique to this request. Must be included somewhere."
+msgstr ""
+
+#. Text in function
+#: email-templates.php:91
+msgid "The username for this account"
+msgstr ""
+
+#. Text in function
+#: reset-password.php:322
+msgid ""
+"There are 3 unused requests done in less than 24 hs. Please wait until one "
+"expires (1 day since made) to make a new one."
+msgstr ""
+
+#. Text in function
+#: actions-log.php:204
+msgid "There are no activities recorded."
+msgstr "Tapahtumia ei ole tallennettu."
+
+#. Text in function
+#: clients.php:200 includes/functions.php:287
+msgid "There are no clients at the moment"
+msgstr "Asiakkaita ei ole."
+
+#. Text in function
+#: manage-files.php:410
+msgid "There are no files assigned to this client."
+msgstr "Tälle asiakkaalle ei ole asetettu yhtään tiedostoa."
+
+#. Text in echo
+#: upload-import-orphans.php:226
+msgid "There are no files available to add right now."
+msgstr "Lisättäviä tiedostoja ei ole saatavilla."
+
+#. Text in function
+#: manage-files.php:410
+msgid "There are no files for this client."
+msgstr "Tällä asiakkaalla ei ole tiedostoja."
+
+#. Text in function
+#: groups.php:213
+msgid "There are no groups created yet."
+msgstr "Ryhmiä ei vielä ole."
+
+#. Text in function
+#: groups.php:213
+msgid "There are no groups where this client is member."
+msgstr "Tämä asiakas ei ole minkään ryhmän jäsen."
+
+#. Text in echo
+#: home-log.php:62
+msgid "There are no results"
+msgstr "Ei hakutuloksia"
+
+#. Text in function
+#: clients-edit.php:143
+msgid "There is no client with that ID number."
+msgstr "Kyseisellä ID-numerolla ei ole asiakasta."
+
+#. Text in function
+#: groups-edit.php:104
+msgid "There is no group with that ID number."
+msgstr "Kyseisellä ID-numerolla ei ole ryhmää."
+
+#. Text in function
+#: users-edit.php:146
+msgid "There is no user with that ID number."
+msgstr "Kyseisellä ID-numerolla ei ole käyttäjää."
+
+#. Text in function
+#: edit-file.php:436
+msgid "There is not file with that ID number."
+msgstr "Kyseisellä ID-numerolla ei ole tiedostoa."
+
+#. Text in function
+#: install/index.php:203
+msgid "There seems to be an error. Please try again."
+msgstr "Virhe havaittu. Ole hyvä ja yritä myöhemmin uudelleen."
+
+#. Text in function
+#: branding.php:96
+msgid "There was an error uploading the file. Please try again."
+msgstr "Tiedoston lähetyksessä tapahtui virhe. Ole hyvä ja yritä uudelleen."
+
+#. Text in function
+#: email-templates.php:91 clients-edit.php:143 groups-add.php:63
+#: groups-edit.php:104 options.php:115 register.php:89 users-add.php:75
+#: users-edit.php:146 clients-add.php:83
+msgid "There was an error. Please try again."
+msgstr "Virhe havaittu. Ole hyvä ja yritä uudelleen."
+
+#. Text in echo
+#: upload-process-form.php:333
+msgid "These files have not been assigned to any client or group."
+msgstr "Näitä tiedostoja ei ole asetettu millekään asiakkaalle tai ryhmälle."
+
+#. Text in echo
+#: options.php:234
+msgid ""
+"These options are to be changed only if you are moving the system to another "
+"place. Changes here can cause ProjectSend to stop working."
+msgstr ""
+"Näitä asetuksia tulisi muuttaa vain, jos olet siirtämässä järjestelmää "
+"toiseen paikkaan. Täällä tehdyt muutokset voivat aiheuttaa sen, ettei "
+"ProjectSend enää toimi."
+
+#. Text in function
+#: users-form.php:128 clients-form.php:150
+msgid "This account information will be e-mailed to the address supplied above"
+msgstr ""
+"Nämä käyttäjätilin tiedot lähetetään yllä mainittuun sähköpostiosoitteeseen."
+
+#. Text in function
+#: index.php:110
+msgid "This account is not active."
+msgstr ""
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid ""
+"This email contains HTML formatting and cannot be displayed right now. "
+"Please use an HTML compatible reader."
+msgstr ""
+"Tämä sähköposti sisältää HTML-muotoiluja, joita ei voida näyttää tässä. Ole "
+"hyvä ja käytä sähköpostiohjelmaa, joka tukee HTML-muotoiluja sähköposteissa."
+
+#. Text in function
+#: email-templates.php:91
+msgid ""
+"This email will be sent to a client whenever a new file has been assigned to "
+"his account."
+msgstr ""
+
+#. Text in function
+#: email-templates.php:91
+msgid ""
+"This email will be sent to a user or client when they try to reset their "
+"password."
+msgstr ""
+
+#. Text in function
+#: email-templates.php:91
+msgid ""
+"This email will be sent to the new client after an administrator has created "
+"his new account. It would be best to include the log in details (username "
+"and password)."
+msgstr ""
+
+#. Text in function
+#: email-templates.php:91
+msgid ""
+"This email will be sent to the new system user after an administrator has "
+"created his new account. It would be best to include the log in details "
+"(username and password)."
+msgstr ""
+
+#. Text in function
+#: email-templates.php:91
+msgid ""
+"This email will be sent to the system administrator after a new client has "
+"created a new account for himself."
+msgstr ""
+
+#. Text in function
+#: email-templates.php:91
+msgid ""
+"This email will be sent to the system administrator whenever a client "
+"uploads a new file."
+msgstr ""
+
+#. Text in echo
+#: home.php:63
+msgid ""
+"This graphic will help you get a relative view of the existing data, "
+"allowing you to see the relation between clients, users, groups and files."
+msgstr ""
+"Tämä graafi näyttää suhteellisen näkymän olemassaolevasta datasta, ja auttaa "
+"hahmottamaan asiakkaiden, käyttäjien, ryhmien ja tiedostojen välisiä "
+"suhteita."
+
+#. Text in echo
+#: install/index.php:267
+msgid ""
+"This info will be used to create a default system user, which can't be "
+"deleted afterwards. Password should be between"
+msgstr ""
+"Näitä tietoja käytetään järjestelmän oletuskäyttäjätilin luontiin, jota ei "
+"voi myöhemmin poistaa. Salasanan tulisi olla väliltä"
+
+#. Text in function
+#: branding.php:96
+msgid ""
+"This is most likely a permissions issue. If that's the case, it can be "
+"corrected via FTP by setting the chmod value of the"
+msgstr ""
+"Tämä on todennäköisesti käyttöoikeuksiin liittyvä asia. Jos se pitää "
+"paikkansa, tämä voidaan korjata FTP:n avulla asettamalla chmod arvo"
+
+#. Text in echo
+#: upload-import-orphans.php:233
+msgid ""
+"This is the same folder where the files uploaded by the web interface will "
+"be stored. So if you finish uploading your files but do not assign them to "
+"any clients/groups, the files will still be there for later use."
+msgstr ""
+"Tämä on sama hakemisto johon web-käyttöliittymästä lähetetyt tiedostot "
+"tallennetaan. Eli jos tiedostojen lähetyksesi valmistuu, muttet aseta niitä "
+"mihihinkään asiakkaisiin/ryhmiin, tiedostot tallentuvat silti myöhempää "
+"käyttöä varten."
+
+#. Text in function
+#: upload-import-orphans.php:220
+msgid ""
+"This list only shows the files that are allowed according to your security "
+"settings. If the file type you need to add is not listed here, add the "
+"extension to the \"Allowed file extensions\" box on the options page."
+msgstr ""
+"Tämä lista näyttää vain tietoturva-asetustesi sallimat tiedostot. Jos "
+"tiedostotyyppi, joka sinun täytyy lisätä ei ole listalla, lisää "
+"tiedostopääte \"Sallitut tiedostopäätteet\" -laatikkoon asetussivulla."
+
+#. Text in echo
+#: options.php:306
+msgid ""
+"This only affects clients. On the admin side, you can still get the files."
+msgstr ""
+
+#. Text in echo
+#: templates/default/template.php:214
+msgid ""
+"This operation could take a few minutes, depending on the size of the files."
+msgstr ""
+"Tämä operaatio saattaa kestää joitakin minuutteja riippuen lähetettyjen "
+"tiedostojen koosta."
+
+#. Text in function
+#: clients-edit.php:143 groups-edit.php:104 users-edit.php:146
+msgid "This page is not intended to be accessed directly."
+msgstr "Tätä sivua ei ole tarkoitettu avattavaksi suoraan."
+
+#. Text in function
+#: reset-password.php:322
+msgid "This request has already been completed. Please make a new one."
+msgstr ""
+
+#. Text in function
+#: reset-password.php:322
+msgid "This request has expired. Please make a new one."
+msgstr ""
+
+#. Text in echo
+#: index.php:180
+msgid "This server does not allow self registrations."
+msgstr "Omatoiminen rekisteröinti ei ole sallittu tällä sivustolla."
+
+#. Text in function
+#: includes/updates.functions.php:1
+msgid ""
+"This version changes the way files-to-clients relationships are stored on "
+"the database making it possible to assign a file to multiple clients. "
+"However some files did not update successfully. The following files may need "
+"to be reassigned to their clients by using the \\\"Find orphan files\\\" "
+"tool:"
+msgstr ""
+"Tämä versio muuttaa tapaa kuinka tiedosto-asiakas suhteet tallennetaan "
+"tietokantaan mahdollistaen saman tiedoston asetuksen usealle eri "
+"asiakkaalle. Jotkin tiedostot eivät päivittyneet oikein. Seuraavat tiedostot "
+"voidaan joutua asettamaan uudelleen asiakkaille käyttäen \\\"Hae orvot "
+"tiedostot\\\" työkalua:"
+
+#. Text in echo
+#: options.php:181 options.php:480
+msgid "Thumbnails"
+msgstr "Esikatselukuvat"
+
+#. Text in echo
+#: options.php:481
+msgid ""
+"Thumbnails are used on files lists. It is recommended to keep them small, "
+"unless you are using the system to upload only images, and will change the "
+"default client's template accordingly."
+msgstr ""
+"Esikatselukuvia käytetään tiedostolistauksissa. Ne on suositeltavaa pitää "
+"pienikokoisina, paitsi jos käytät järjestelmää ainoastaan kuvien lähetykseen "
+"ja muokkaat asiakkaan sivupohjaa vastaavasti."
+
+#. Text in echo
+#: options.php:224
+msgid "Time format"
+msgstr "Aikaformaatti"
+
+#. Text in echo
+#: options.php:214
+msgid "Timezone"
+msgstr "Aikavyöhyke"
+
+#. Text in echo
+#: edit-file.php:336 manage-files.php:450 upload-process-form.php:268
+#: upload-process-form.php:474
+msgid "Title"
+msgstr "Otsikko"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "Title was not completed"
+msgstr "Otsikkoa ei annettu"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "To continue, please visit the following link"
+msgstr ""
+
+#. Text in echo
+#: upload-import-orphans.php:228
+msgid "To use this feature you need to upload your files via FTP to the folder"
+msgstr ""
+"Käyttääksesi tätä toimintoa sinun tulee lähettää tiedostosi FTP:n avulla "
+"hakemistoon"
+
+#. Text in echo
+#: manage-files.php:473
+msgid "Total downloads"
+msgstr "Latauksia yhteensä"
+
+#. Text in echo
+#: manage-files.php:388
+msgid "Unassign"
+msgstr "Aseta pois"
+
+#. Text in echo
+#: upload-process-form.php:332
+msgid "Unassigned files"
+msgstr ""
+
+#. Text in function
+#: users-form.php:59 clients-form.php:58
+msgid "Update account"
+msgstr "Päivitä käyttäjätili"
+
+#. Text in echo
+#: email-templates.php:285 options.php:536
+msgid "Update all options"
+msgstr "Päivitä kaikki asetukset"
+
+#. Text in echo
+#: includes/updates.messages.php:51
+msgid "Update available!"
+msgstr "Päivitys saatavilla!"
+
+#. Text in echo
+#: header.php:217 header.php:342 branding.php:157
+msgid "Upload"
+msgstr "Lähetä"
+
+#. Text in function
+#: upload-from-computer.php:171 upload-from-computer.php:157
+#: templates/gallery/template.php:49 upload-process-form.php:693
+msgid "Upload files"
+msgstr "Lähetä tiedostoja"
+
+#. Text in echo
+#: upload-process-form.php:553
+msgid "Upload hidden (will not send notifications)"
+msgstr "Lähetys piilotettu (ilmoituksia ei lähetetä)"
+
+#. Text in function
+#: sys.vars.php:1 users.php:194 manage-files.php:455
+msgid "Uploader"
+msgstr "Lähettäjä"
+
+#. Text in echo
+#: home-statistics.php:174 home.php:45
+msgid "Uploads by clients"
+msgstr "Asiakkaiden lähetykset"
+
+#. Text in echo
+#: home-statistics.php:170 home.php:44
+msgid "Uploads by users"
+msgstr "Käyttäjien lähetykset"
+
+#. Text in echo
+#: email-templates.php:211
+msgid "Use custom header / footer"
+msgstr ""
+
+#. Text in echo
+#: email-templates.php:243
+msgid "Use custom template"
+msgstr ""
+
+#. Text in echo
+#: options.php:503
+msgid "Use file's absolute path"
+msgstr "Käytä absoluuttista tiedostopolkua"
+
+#. Text in echo
+#: branding.php:124
+msgid ""
+"Use this page to upload your company logo, or update the currently assigned "
+"one. This image will be shown to your clients when they access their file "
+"list."
+msgstr ""
+"Käytä tätä sivua lähettääksesi yrityksesi logon tai päivittääksesi nykyistä "
+"logoa. Tämä kuva näytetään asiakkaillesi heidän tiedostolistauksissaan."
+
+#. Text in echo
+#: options.php:252
+msgid ""
+"Used only on self-registrations. These options will not apply to clients "
+"registered by system administrators."
+msgstr ""
+"Käytetään vain omatoimisissa rekisteröitymisissä. Nämä asetukset eivät "
+"vaikuta järjestelmänvalvojien luomiin asiakastileihin."
+
+#. Text in function
+#: users-add.php:75
+msgid "User added correctly."
+msgstr "Käyttäjä lisätty."
+
+#. Text in function
+#: users-edit.php:146
+msgid "User edited correctly."
+msgstr "Käyttäjää muokattu."
+
+#. Text in function
+#: includes/vars.php:1
+msgid "User level was not specified"
+msgstr "Käyttäjätasoa ei määritelty"
+
+#. Text in echo
+#: index.php:153 includes/classes/send-email.php:1 includes/vars.php:1
+#: options.php:393
+msgid "Username"
+msgstr "Käyttäjänimi"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "Username must be alphanumeric (a-z,A-Z,0-9 allowed)"
+msgstr ""
+"Käyttäjänimen tulee olla aakkosnumeerinen (merkit a-z, A-Z ja 0-9 sallittu)"
+
+#. Text in echo
+#: index.php:142 includes/vars.php:1
+msgid "Username was not completed"
+msgstr "Käyttäjänimeä ei annettu"
+
+#. Text in echo
+#: home.php:161
+msgid "Users"
+msgstr "Käyttäjät"
+
+#. Text in function
+#: users.php:47
+msgid "Users administration"
+msgstr "Käyttäjien hallinta"
+
+#. Text in echo
+#: home.php:91
+msgid "View all"
+msgstr "Näytä kaikki"
+
+#. Text in echo
+#: clients.php:328
+msgid "View as client"
+msgstr "Katsele asiakkaana"
+
+#. Text in echo
+#: clients.php:194
+msgid "View full table"
+msgstr "Näytä koko taulukko"
+
+#. Text in echo
+#: clients.php:327
+msgid "View groups"
+msgstr "Näytä ryhmät"
+
+#. Text in echo
+#: header.php:347 upload-process-form.php:360
+msgid "View my files"
+msgstr "Näytä omat tiedostoni"
+
+#. Text in echo
+#: clients.php:193
+msgid "View reduced table"
+msgstr "Näytä supistettu taulukko"
+
+#. Text in echo
+#: manage-files.php:361 manage-files.php:645 upload-process-form.php:293
+msgid "Visible"
+msgstr "Näkyvä"
+
+#. Text in echo
+#: header.php:144
+msgid "Welcome"
+msgstr "Tervetuloa"
+
+#. Text in function
+#: home.php:221 includes/classes/send-email.php:1
+msgid "Welcome to ProjectSend"
+msgstr "Tervetuloa ProjectSend ohjelmistoon"
+
+#. Text in echo
+#: options.php:339
+msgid "When a client uploads files"
+msgstr "Kun asiakas lähettää tiedostoja"
+
+#. Text in echo
+#: options.php:301
+msgid "When a file expires:"
+msgstr ""
+
+#. Text in echo
+#: options.php:335
+msgid "When a system user uploads files"
+msgstr "Kun järjestelmäkäyttäjä lähettää tiedostoja"
+
+#. Text in echo
+#: options.php:452
+msgid "When setting up a password for an account, requiere at least:"
+msgstr ""
+
+#. Text in function
+#: clients-form.php:58
+msgid "Will be visible on the client's file list"
+msgstr "Näkyy asiakkaan tiedostolistauksessa"
+
+#. Text in echo
+#: clients.php:299
+msgid "Yes"
+msgstr "Kyllä"
+
+#. Text in echo
+#: clients.php:41 groups.php:60 actions-log.php:29 users.php:30
+#: manage-files.php:76
+msgid "You are about to delete"
+msgstr "Olet aikeissa poistaa"
+
+#. Text in echo
+#: actions-log.php:39
+msgid ""
+"You are about to delete all activities from the log. Only those used for "
+"statistics will remain. Are you sure you want to continue?"
+msgstr ""
+"Olet aikeissa poistaa kaikki tapahtumat lokista. Vain statistiikkatiedot "
+"jätetään. Haluatko varmasti jatkaa?"
+
+#. Text in echo
+#: manage-files.php:85
+msgid "You are about to unassign"
+msgstr "Olet aikeissa poismerkitä"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "You can access a list of all your files or upload your own"
+msgstr "Voit käyttää kaikkien tiedostojesi listausta tai lähettää omasi"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "You can log in following this link"
+msgstr "Voit kirjautua sisään seuraamalla tätä linkkiä"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "You can log in to manually deactivate it."
+msgstr ""
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "You can manage these files"
+msgstr "Voit hallita seuraavia tiedostoja"
+
+#. Text in echo
+#: upload-process-form.php:385
+msgid ""
+"You can skip assigning if you want. The files are retained and you may add "
+"them to clients or groups later."
+msgstr ""
+"Voit halutessasi jättää tiedostot luovuttamatta. Tiedostot säilytetään, ja "
+"voit asettaa ne asiakkaille tai ryhmiin myöhemmin."
+
+#. Text in echo
+#: email-templates.php:227 email-templates.php:252
+msgid "You can use HTML tags here."
+msgstr ""
+
+#. Text in function
+#: users.php:47
+msgid "You cannot deactivate your own account."
+msgstr "Et voi deaktivoida omaa käyttäjätiliäsi."
+
+#. Text in function
+#: users.php:47
+msgid "You cannot delete your own account."
+msgstr "Et voi poistaa omaa käyttäjätiliäsi."
+
+#. Text in function
+#: edit-file.php:436
+msgid "You don't have permission to edit this file."
+msgstr "Sinulla ei ole oikeuksia muokata tätä tiedostoa."
+
+#. Text in echo
+#: process.php:1
+msgid ""
+"You don't have the required permissions to view the requested information "
+"about this file."
+msgstr ""
+"Sinulla ei ole tarvittavia käyttöoikeuksia katsella pyydettyjä tietoja tästä "
+"tiedostosta."
+
+#. Text in function
+#: manage-files.php:410
+msgid "You have not uploaded any files for this account."
+msgstr "Et ole lähettänyt yhtään tiedostoa tälle käyttäjätilille."
+
+#. Text in function
+#: register.php:89
+msgid "You may now log in with your new credentials."
+msgstr "Voit nyt kirjautua sisään uusilla käyttäjätiedoillasi."
+
+#. Text in echo
+#: install/index.php:202
+msgid "You may proceed to"
+msgstr "Voit jatkaa"
+
+#. Text in echo
+#: upload-from-computer.php:141
+msgid "You must select at least one file to upload."
+msgstr "Valitse vähintään yksi tiedosto lähetettäväksi."
+
+#. Text in echo
+#: options.php:390
+msgid ""
+"You need to include your username (usually your e-mail address) and password "
+"if you have selected either SMTP or Gmail as your mailer."
+msgstr ""
+"Sinun täytyy antaa käyttäjätunnuksesi (yleensä sama kuin sähköpostiosoite) "
+"ja salasanasi, mikäli olet valinnut sähköpostien lähetystavaksi joko SMTP "
+"tai Gmail vaihtoehdon."
+
+#. Text in echo
+#: install/index.php:250
+msgid ""
+"You need to provide this data for a correct system installation. The site "
+"name will be visible in the system panel, and the client's lists."
+msgstr ""
+"Sinun täytyy täyttää nämä tiedot järjestelmän asentamiseksi. Sivuston nimi "
+"tulee näkymään järjestelmäpaneelissa ja asiakkaan listauksissa."
+
+#. Text in function
+#: clients-edit.php:143 users-edit.php:146
+msgid "Your account type doesn't allow you to access this feature."
+msgstr "Käyttäjätilisi tyyppi ei salli sinun käyttää tätä toimintoa."
+
+#. Text in function
+#: includes/userlevel_check.php:158
+msgid ""
+"Your account type doesn't allow you to view this page. Please contact a "
+"system administrator if you need to access this function."
+msgstr ""
+"Käyttäjätilisi tyyppi ei salli sinun katsoa tätä sivua. Mikäli sinulla on "
+"tarve käyttää tätä toimintoa, ota yhteys järjestelmänvalvojaan."
+
+#. Text in echo
+#: upload-from-computer.php:153
+msgid ""
+"Your browser doesn't support HTML5, Flash or Silverlight. Please update your "
+"browser or install Adobe Flash or Silverlight to continue."
+msgstr ""
+"Selaimesi ei tue HTML 5, Flash tai Silverlight -tekniikoita. Ole hyvä ja "
+"päivitä selaimesi tai asenna Adobe Flash tai Silverlight jatkaaksesi."
+
+#. Text in echo
+#: upload-from-computer.php:160
+msgid ""
+"Your files are being uploaded! Progress indicators may take a while to "
+"update, but work is still being done behind the scenes."
+msgstr ""
+"Tiedostojasi lähetetään! Lähetyksen etenemisindikaattorin päivittyminen "
+"saattaa kestää hetken, mutta järjestelmä työskentelee silti taustalla."
+
+#. Text in function
+#: clients-form.php:58
+msgid "Your full name"
+msgstr "Koko nimesi"
+
+#. Text in function
+#: reset-password.php:322
+msgid "Your new password couldn't be set."
+msgstr ""
+
+#. Text in function
+#: reset-password.php:322
+msgid "Your new password has been set. You can now log in using it."
+msgstr ""
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Your password"
+msgstr "Salasanasi"
+
+#. Text in function
+#: includes/vars.php:1
+msgid ""
+"Your password can only contain letters, numbers and the following characters:"
+msgstr ""
+"Salasanasi voi sisältää vain kirjaimia, numeroita ja seuraavia merkkejä:"
+
+#. Text in function
+#: clients.php:200 groups.php:213 templates/default/template.php:59
+#: users.php:229 manage-files.php:410
+msgid "Your search keywords returned no results."
+msgstr "Antamillasi hakusanoilla ei löytynyt yhtään tuloksia."
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "Your username"
+msgstr "Käyttäjänimesi"
+
+#. Text in echo
+#: home-statistics.php:182 home.php:47
+msgid "Zip Downloads"
+msgstr "ZIP-lataukset"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "activated the client"
+msgstr "aktivoi asiakkaan"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "activated the user"
+msgstr "aktivoi käyttäjän"
+
+#. Text in echo
+#: actions-log.php:199
+msgid "activities"
+msgstr "tapahtumat"
+
+#. Text in echo
+#: actions-log.php:30
+msgid "activities. Are you sure you want to continue?"
+msgstr "tapahtumaa. Haluat varmasti jatkaa?"
+
+#. Text in echo
+#: install/index.php:267 includes/vars.php:1
+msgid "and"
+msgstr "ja"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "assigned the file"
+msgstr "luovutti tiedoston"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "assigned to:"
+msgstr "luovutettu näille:"
+
+#. Text in function
+#: includes/classes/send-email.php:1
+msgid "by logging in here"
+msgstr "kirjautumalla sisään täällä"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "characters long"
+msgstr "merkkiä pitkä"
+
+#. Text in echo
+#: install/index.php:267
+msgid "characters long."
+msgstr "merkkiä pitkä."
+
+#. Text in echo
+#: clients.php:191
+msgid "clients"
+msgstr "asiakasta"
+
+#. Text in echo
+#: clients.php:42
+msgid ""
+"clients and all of the assigned files. Are you sure you want to continue?"
+msgstr "asiakasta ja kaikki asetetut tiedostot. Haluatko varmasti jatkaa?"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "created a client account for themself."
+msgstr "loi itselleen asiakastilin."
+
+#. Text in function
+#: includes/functions.php:682
+msgid "created the client account "
+msgstr "loi asiakastilin"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "created the group"
+msgstr "loi ryhmän"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "created the user account"
+msgstr "loi käyttäjätilin"
+
+#. Text in echo
+#: home.php:39 home.php:40 home.php:41
+msgid "days"
+msgstr "päivää"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "deactivated the client"
+msgstr "deaktivoi asiakkaan"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "deactivated the user"
+msgstr "deaktivoi käyttäjän"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "deleted the client"
+msgstr "poisti asiakkaan"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "deleted the file"
+msgstr "poisti tiedoston"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "deleted the group"
+msgstr "poisti ryhmän"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "deleted the user"
+msgstr "poisti käyttäjän"
+
+#. Text in function
+#: branding.php:96
+msgid "directory to 755, or 777 as a last resource."
+msgstr "hakemistoon 755 tai viimeisenä vaihtoehtona 777."
+
+#. Text in echo
+#: manage-files.php:643 manage-files.php:657
+msgid "downloads"
+msgstr "lataukset"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "edited the client"
+msgstr "muokkasi asiakasta"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "edited the group"
+msgstr "muokkasi ryhmää"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "edited the user"
+msgstr "muokkasi käyttäjää"
+
+#. Text in echo
+#: templates/default/template.php:54 manage-files.php:405
+msgid "files"
+msgstr "tiedostoa"
+
+#. Text in echo
+#: manage-files.php:86
+msgid "files from this account. Are you sure you want to continue?"
+msgstr "tiedostoa tältä käyttäjätililtä. Haluatko varmasti jatkaa?"
+
+#. Text in echo
+#: manage-files.php:77
+msgid ""
+"files permanently and for every client/group. Are you sure you want to "
+"continue?"
+msgstr ""
+"tiedostoa pysyvästi ja jokaista asiakasta/ryhmää kohden. Haluatko varmasti "
+"jatkaa?"
+
+#. Text in function
+#: manage-files.php:689
+msgid "for client"
+msgstr "asiakkaalle"
+
+#. Text in function
+#: manage-files.php:689
+msgid "for group"
+msgstr "ryhmälle"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "from the client:"
+msgstr "asiakkaalta:"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "from the group:"
+msgstr "ryhmältä:"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "generated a zip file"
+msgstr "generoi ZIP-paketin"
+
+#. Text in echo
+#: groups.php:208
+msgid "groups"
+msgstr "ryhmää"
+
+#. Text in echo
+#: groups.php:61
+msgid "groups. Are you sure you want to continue?"
+msgstr "ryhmää. Haluatko varmasti jatkaa?"
+
+#. Text in echo
+#: includes/updates.messages.php:51
+msgid "has been released."
+msgstr "on vapautettu."
+
+#. Text in function
+#: groups.php:76
+msgid "is member"
+msgstr "on jäsen"
+
+#. Text in function
+#: includes/vars.php:1
+msgid "length should be between"
+msgstr "pituus tulee olla väliltä"
+
+#. Text in echo
+#: install/index.php:202
+msgid "log in"
+msgstr "kirjaudu sisään"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "logged in to the system."
+msgstr "kirjautui sisään järjestelmään."
+
+#. Text in function
+#: includes/functions.php:682
+msgid "logged out of the system."
+msgstr "kirjautui ulos järjestelmästä."
+
+#. Text in function
+#: includes/functions.php:682
+msgid "marked as hidden the file"
+msgstr "merkitsi piilotetuksi tiedoston"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "marked as visible the file"
+msgstr "merkitsi näkyväksi tiedoston"
+
+#. Text in echo
+#: branding.php:129
+msgid "options"
+msgstr "asetukset"
+
+#. Text in echo
+#: includes/updates.messages.php:24
+msgid "please consider making a donation to support further development."
+msgstr ""
+"harkitse lahjoituksen tekemistä kannattaaksesi tuotteen jatkokehitystä."
+
+#. Text in echo
+#: branding.php:129
+msgid "section."
+msgstr "osio."
+
+#. Text in echo
+#: install/index.php:87
+msgid "setup"
+msgstr "perustus"
+
+#. Text in echo
+#: options.php:227
+msgid "this page"
+msgstr "tämä sivu"
+
+#. Text in echo
+#: manage-files.php:114 manage-files.php:637
+msgid "times"
+msgstr "kertaa"
+
+#. Text in echo
+#: includes/functions.php:288
+msgid "to be able to upload files for that account."
+msgstr "voidaksesi lähettää tiedostoja kyseiselle tilille."
+
+#. Text in function
+#: includes/functions.php:682
+msgid "to the client:"
+msgstr "asiakkaalle:"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "to the group:"
+msgstr "ryhmälle:"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "to:"
+msgstr "tilille:"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "unassigned the file"
+msgstr "merkitsi pois tiedoston"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "updated ProjectSend to version"
+msgstr "päivitti ProjectSendin versioon"
+
+#. Text in function
+#: includes/functions.php:682
+msgid "uploaded a new logo on \"Branding\""
+msgstr "lähetty uuden brändäyslogon"
+
+#. Text in echo
+#: users.php:224
+msgid "users"
+msgstr "käyttäjää"
+
+#. Text in echo
+#: users.php:31
+msgid "users. Are you sure you want to continue?"
+msgstr "käyttäjää. Haluatko varmasti jatkaa?"
+
+#. Text in echo
+#: includes/updates.messages.php:51 includes/functions.php:270
+msgid "version"
+msgstr "versio"
+
+#. Text in echo
+#: install/index.php:251
+msgid ""
+"with your database settings before installing. If the file doesn't exist, "
+"you can create it by renaming the dummy file sys.config.sample.php."
+msgstr ""
+"tiedostoon tietokanta-asetuksiasi ennen asennusta. Jos kyseistä tiedostoa ei "
+"ole, voit luoda sen uudelleennimeämällä pohjaksi tiedoston sys.config.sample."
+"php."
+
+#. Text in echo
+#: install/index.php:202
+msgid "with your newely created username and password."
+msgstr "juuri luodulla käyttäjätunnuksella ja salasanallasi."

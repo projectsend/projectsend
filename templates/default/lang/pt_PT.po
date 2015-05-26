@@ -1,0 +1,93 @@
+#
+# Translators:
+# Rui Lourenco <rui.lourenco@plasfil.pt>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: ProjectSend\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2015-05-25 20:03-0300\n"
+"Last-Translator: Rui Lourenco <rui.lourenco@plasfil.pt>\n"
+"Language-Team: Portuguese (Portugal) (http://www.transifex.com/projects/p/"
+"projectsend/language/pt_PT/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_PT\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.6.10\n"
+
+#. Text in echo
+#: psend/templates/default/template.php:89
+msgid "Date"
+msgstr "Data"
+
+#. Text in echo
+#: psend/templates/default/template.php:87
+msgid "Description"
+msgstr "Descrição"
+
+#. Text in echo
+#: psend/templates/default/template.php:91
+#: psend/templates/default/template.php:172
+msgid "Download"
+msgstr "Descarga"
+
+#. Text in function
+#: psend/templates/default/template.php:1
+msgid "File downloads"
+msgstr "Descarga de ficheiros"
+
+#. Text in echo
+#: psend/templates/default/template.php:148
+msgid "File expired"
+msgstr "FIcheiro expirado"
+
+#. Text in echo
+#: psend/templates/default/template.php:190
+msgid "First"
+msgstr "Primeiro"
+
+#. Text in echo
+#: psend/templates/default/template.php:90
+msgid "Image preview"
+msgstr "Pré visualização de imagem"
+
+#. Text in echo
+#: psend/templates/default/template.php:195
+msgid "Last"
+msgstr "Último"
+
+#. Text in echo
+#: psend/templates/default/template.php:194
+msgid "Next"
+msgstr "Seguinte"
+
+#. Text in echo
+#: psend/templates/default/template.php:192
+msgid "Page"
+msgstr "Página"
+
+#. Text in echo
+#: psend/templates/default/template.php:191
+msgid "Prev."
+msgstr "Anterior"
+
+#. Text in echo
+#: psend/templates/default/template.php:196
+msgid "Show"
+msgstr "Mostrar"
+
+#. Text in echo
+#: psend/templates/default/template.php:88
+msgid "Size"
+msgstr "Tamanho"
+
+#. Text in function
+#: psend/templates/default/template.php:63
+msgid "There are no files available."
+msgstr "Não existem ficheiros disponíveis"
+
+#. Text in echo
+#: psend/templates/default/template.php:85
+msgid "Title"
+msgstr "Título"

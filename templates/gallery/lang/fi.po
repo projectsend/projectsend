@@ -1,0 +1,38 @@
+#
+# Translators:
+# Björn Ericsson, 2015
+# Kari Söderholm <haprog@haprogszone.net>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: ProjectSend\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2015-05-25 20:04-0300\n"
+"Last-Translator: Björn Ericsson\n"
+"Language-Team: Finnish (http://www.transifex.com/projects/p/projectsend/"
+"language/fi/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fi\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.6.10\n"
+
+#. Text in echo
+#: psend/templates/gallery/template.php:99
+msgid "Download original"
+msgstr "Lataa alkuperäinen"
+
+#. Text in echo
+#: psend/templates/gallery/template.php:80
+msgid "File expired"
+msgstr "Tiedosto umpeutunut"
+
+#. Text in function
+#: psend/templates/gallery/template.php:56
+msgid "Gallery"
+msgstr "Galleria"
+
+#. Text in echo
+#: psend/templates/gallery/template.php:56
+msgid "There are no files."
+msgstr "Tiedostoja ei ole."

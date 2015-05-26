@@ -1,0 +1,94 @@
+#
+# Translators:
+# Victor Bidnenko, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: ProjectSend\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2015-05-25 20:04-0300\n"
+"Last-Translator: Victor Bidnenko\n"
+"Language-Team: Ukrainian (http://www.transifex.com/projects/p/projectsend/"
+"language/uk/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 1.6.10\n"
+
+#. Text in echo
+#: psend/templates/default/template.php:89
+msgid "Date"
+msgstr "Дата"
+
+#. Text in echo
+#: psend/templates/default/template.php:87
+msgid "Description"
+msgstr "Опис"
+
+#. Text in echo
+#: psend/templates/default/template.php:91
+#: psend/templates/default/template.php:172
+msgid "Download"
+msgstr "Скачати"
+
+#. Text in function
+#: psend/templates/default/template.php:1
+msgid "File downloads"
+msgstr "Завантаження файлів"
+
+#. Text in echo
+#: psend/templates/default/template.php:148
+msgid "File expired"
+msgstr "Файл спливає"
+
+#. Text in echo
+#: psend/templates/default/template.php:190
+msgid "First"
+msgstr "Перший"
+
+#. Text in echo
+#: psend/templates/default/template.php:90
+msgid "Image preview"
+msgstr "Перегляд зображення"
+
+#. Text in echo
+#: psend/templates/default/template.php:195
+msgid "Last"
+msgstr "Останній"
+
+#. Text in echo
+#: psend/templates/default/template.php:194
+msgid "Next"
+msgstr "Наступний"
+
+#. Text in echo
+#: psend/templates/default/template.php:192
+msgid "Page"
+msgstr "Сторінка"
+
+#. Text in echo
+#: psend/templates/default/template.php:191
+msgid "Prev."
+msgstr "Попер."
+
+#. Text in echo
+#: psend/templates/default/template.php:196
+msgid "Show"
+msgstr "Показати"
+
+#. Text in echo
+#: psend/templates/default/template.php:88
+msgid "Size"
+msgstr "Розмір"
+
+#. Text in function
+#: psend/templates/default/template.php:63
+msgid "There are no files available."
+msgstr "Немає доступних файлів"
+
+#. Text in echo
+#: psend/templates/default/template.php:85
+msgid "Title"
+msgstr "Заголовок"

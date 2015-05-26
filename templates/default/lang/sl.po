@@ -1,0 +1,93 @@
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: ProjectSend\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2015-05-25 20:04-0300\n"
+"Last-Translator: Tadej Železnik <tadej.zeleznik@gmail.com>\n"
+"Language-Team: Slovenian (http://www.transifex.com/projects/p/projectsend/"
+"language/sl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sl\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
+"%100==4 ? 2 : 3);\n"
+"X-Generator: Poedit 1.6.10\n"
+
+#. Text in echo
+#: psend/templates/default/template.php:89
+msgid "Date"
+msgstr "Datum"
+
+#. Text in echo
+#: psend/templates/default/template.php:87
+msgid "Description"
+msgstr "Opis"
+
+#. Text in echo
+#: psend/templates/default/template.php:91
+#: psend/templates/default/template.php:172
+msgid "Download"
+msgstr "Prenos"
+
+#. Text in function
+#: psend/templates/default/template.php:1
+msgid "File downloads"
+msgstr "Prenosi datoteke"
+
+#. Text in echo
+#: psend/templates/default/template.php:148
+msgid "File expired"
+msgstr "Datoteka je potekla"
+
+#. Text in echo
+#: psend/templates/default/template.php:190
+msgid "First"
+msgstr "Prva"
+
+#. Text in echo
+#: psend/templates/default/template.php:90
+msgid "Image preview"
+msgstr "Predogled slike"
+
+#. Text in echo
+#: psend/templates/default/template.php:195
+msgid "Last"
+msgstr "Zadnja"
+
+#. Text in echo
+#: psend/templates/default/template.php:194
+msgid "Next"
+msgstr "Naslednja"
+
+#. Text in echo
+#: psend/templates/default/template.php:192
+msgid "Page"
+msgstr "Stran"
+
+#. Text in echo
+#: psend/templates/default/template.php:191
+msgid "Prev."
+msgstr "Prejšnja"
+
+#. Text in echo
+#: psend/templates/default/template.php:196
+msgid "Show"
+msgstr "Pokaži"
+
+#. Text in echo
+#: psend/templates/default/template.php:88
+msgid "Size"
+msgstr "Velikost"
+
+#. Text in function
+#: psend/templates/default/template.php:63
+msgid "There are no files available."
+msgstr "Nobena datoteka ni na voljo."
+
+#. Text in echo
+#: psend/templates/default/template.php:85
+msgid "Title"
+msgstr "Ime"

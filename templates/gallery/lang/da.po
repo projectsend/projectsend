@@ -1,0 +1,37 @@
+#
+# Translators:
+# Ulrik Johansen, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: ProjectSend\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2015-05-25 20:04-0300\n"
+"Last-Translator: Ulrik Johansen\n"
+"Language-Team: Danish (http://www.transifex.com/projects/p/projectsend/"
+"language/da/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: da\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.6.10\n"
+
+#. Text in echo
+#: psend/templates/gallery/template.php:99
+msgid "Download original"
+msgstr "Download original"
+
+#. Text in echo
+#: psend/templates/gallery/template.php:80
+msgid "File expired"
+msgstr "Fil udløbet"
+
+#. Text in function
+#: psend/templates/gallery/template.php:56
+msgid "Gallery"
+msgstr "Galleri"
+
+#. Text in echo
+#: psend/templates/gallery/template.php:56
+msgid "There are no files."
+msgstr "Der er ingen filer."

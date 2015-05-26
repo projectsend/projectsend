@@ -936,10 +936,20 @@ if (in_session_or_cookies($allowed_update)) {
 			while ($tables = mysql_fetch_array($sql) ) {
 				foreach ($tables as $key => $value) {
 					mysql_query("ALTER TABLE $value CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci");
-					$updates_made++;
 				}
 			}
+			$updates_made++;
 			$fk2 = $database->query('SET foreign_key_checks = 1');
+		}
+
+
+
+		/**
+		 * r572 updates
+		 * No DB changes
+		 */
+		if ($last_update < 572) {
+			$updates_made++;
 		}
 
 	}

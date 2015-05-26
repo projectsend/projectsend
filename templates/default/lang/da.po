@@ -1,0 +1,93 @@
+#
+# Translators:
+# Ulrik Johansen, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: ProjectSend\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2015-05-25 20:03-0300\n"
+"Last-Translator: Ulrik Johansen\n"
+"Language-Team: Danish (http://www.transifex.com/projects/p/projectsend/"
+"language/da/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: da\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.6.10\n"
+
+#. Text in echo
+#: psend/templates/default/template.php:89
+msgid "Date"
+msgstr "Dato"
+
+#. Text in echo
+#: psend/templates/default/template.php:87
+msgid "Description"
+msgstr "Beskrivelse"
+
+#. Text in echo
+#: psend/templates/default/template.php:91
+#: psend/templates/default/template.php:172
+msgid "Download"
+msgstr "Download"
+
+#. Text in function
+#: psend/templates/default/template.php:1
+msgid "File downloads"
+msgstr "Filhentninger"
+
+#. Text in echo
+#: psend/templates/default/template.php:148
+msgid "File expired"
+msgstr "Fil udløbet"
+
+#. Text in echo
+#: psend/templates/default/template.php:190
+msgid "First"
+msgstr "Første"
+
+#. Text in echo
+#: psend/templates/default/template.php:90
+msgid "Image preview"
+msgstr "Forhåndsvisning"
+
+#. Text in echo
+#: psend/templates/default/template.php:195
+msgid "Last"
+msgstr "Sidste"
+
+#. Text in echo
+#: psend/templates/default/template.php:194
+msgid "Next"
+msgstr "Næste"
+
+#. Text in echo
+#: psend/templates/default/template.php:192
+msgid "Page"
+msgstr "Side"
+
+#. Text in echo
+#: psend/templates/default/template.php:191
+msgid "Prev."
+msgstr "Forrige"
+
+#. Text in echo
+#: psend/templates/default/template.php:196
+msgid "Show"
+msgstr "Vis"
+
+#. Text in echo
+#: psend/templates/default/template.php:88
+msgid "Size"
+msgstr "Størrelse"
+
+#. Text in function
+#: psend/templates/default/template.php:63
+msgid "There are no files available."
+msgstr "Der er ingen filer tilgængelige."
+
+#. Text in echo
+#: psend/templates/default/template.php:85
+msgid "Title"
+msgstr "Titel"

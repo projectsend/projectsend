@@ -1,0 +1,37 @@
+#
+# Translators:
+# Levin Germann <levin.germann@gmail.com>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: ProjectSend\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2015-05-25 20:04-0300\n"
+"Last-Translator: Levin Germann <levin.germann@gmail.com>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/projectsend/"
+"language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.6.10\n"
+
+#. Text in echo
+#: psend/templates/gallery/template.php:99
+msgid "Download original"
+msgstr "Original herunterladen"
+
+#. Text in echo
+#: psend/templates/gallery/template.php:80
+msgid "File expired"
+msgstr "Datei abgelaufen"
+
+#. Text in function
+#: psend/templates/gallery/template.php:56
+msgid "Gallery"
+msgstr "Gallerie"
+
+#. Text in echo
+#: psend/templates/gallery/template.php:56
+msgid "There are no files."
+msgstr "Es sind keine Dateien vorhanden."

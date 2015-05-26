@@ -236,8 +236,8 @@ while($row = mysql_fetch_array($sql)) {
 							 */
 							$upload_finish[$n] = array(
 													'file' => $file['file'],
-													'name' => $file['name'],
-													'description' => $file['description'],
+													'name' => htmlspecialchars($file['name']),
+													'description' => htmlspecialchars($file['description']),
 													'new_file_id' => $process_file['new_file_id']
 												);
 							if (!empty($file['hidden'])) {
@@ -496,7 +496,7 @@ while($row = mysql_fetch_array($sql)) {
 															<label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
 
 															<div class="input-append date">
-																<input type="text" class="span8 datapick-field" readonly="readonly" id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" /><span class="add-on"><i class="icon-th"></i></span>
+																<input type="text" class="span8 datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" /><span class="add-on"><i class="icon-th"></i></span>
 															</div>
 		
 															<div class="divider"></div>

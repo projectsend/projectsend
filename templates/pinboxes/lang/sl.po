@@ -1,0 +1,68 @@
+#
+# Translators:
+# Tadej Železnik <tadej.zeleznik@gmail.com>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: ProjectSend\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2015-05-25 20:05-0300\n"
+"Last-Translator: Tadej Železnik <tadej.zeleznik@gmail.com>\n"
+"Language-Team: Slovenian (http://www.transifex.com/projects/p/projectsend/"
+"language/sl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sl\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
+"%100==4 ? 2 : 3);\n"
+"X-Generator: Poedit 1.6.10\n"
+
+#. Text in function
+#: psend/templates/pinboxes/template.php:1
+msgid "Available files"
+msgstr "Datoteke ki so na voljo"
+
+#. Text in echo
+#: psend/templates/pinboxes/template.php:159
+msgid "Download"
+msgstr "Prenesi"
+
+#. Text in echo
+#: psend/templates/pinboxes/template.php:165
+msgid "File expired"
+msgstr "Datoteka je potekla"
+
+#. Text in echo
+#: psend/templates/pinboxes/template.php:151
+msgid "File size:"
+msgstr "Velikost datoteke:"
+
+#. Text in echo
+#: psend/templates/pinboxes/template.php:66
+msgid "Logout"
+msgstr "Odjava"
+
+#. Text in echo
+#: psend/templates/pinboxes/template.php:62
+msgid "Search"
+msgstr "Išči"
+
+#. Text in echo
+#: psend/templates/pinboxes/template.php:61
+msgid "Search..."
+msgstr "Išči..."
+
+#. Text in echo
+#: psend/templates/pinboxes/template.php:78
+msgid "There are no files."
+msgstr "Ni datotek."
+
+#. Text in echo
+#: psend/templates/pinboxes/template.php:65
+msgid "Upload files"
+msgstr "Naloži datoteke"
+
+#. Text in echo
+#: psend/templates/pinboxes/template.php:56
+msgid "Welcome"
+msgstr "Dobrodošli"

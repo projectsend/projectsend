@@ -72,7 +72,7 @@ class process {
 							/** Then, check on the client's own or gruops files */
 							$files_own_query = 'SELECT * FROM tbl_files_relations WHERE (client_id="' . CURRENT_USER_ID . '"';
 							if (!empty($found_groups)) {
-								$files_own_query .= ' OR group_id IN ("' . $found_groups . '")';
+								$files_own_query .= ' OR group_id IN (' . $found_groups . ')';
 							}
 							$files_own_query .= ') AND file_id="' . (int)$_GET['id'] .'" AND hidden = "0"';
 

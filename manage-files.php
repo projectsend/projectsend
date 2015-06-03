@@ -156,8 +156,8 @@ include('header.php');
 		if(isset($_POST['do_action'])) {
 			/** Continue only if 1 or more files were selected. */
 			if(!empty($_POST['files'])) {
-				$selected_files = $_POST['files'];
-				$files_to_get = implode(',',array_unique($selected_files));
+				$selected_files = array_unique($_POST['files']);
+				$files_to_get = implode(',',$selected_files);
 	
 				/**
 				 * Make a list of files to avoid individual queries.
@@ -482,6 +482,7 @@ include('header.php');
 					<?php
 						if ($count > 0) {
 							while($row = mysql_fetch_array($sql_files)) {
+								$file_id = $row['id'];
 								/**
 								 * Construct the complete file URI to use on the download button.
 								 */

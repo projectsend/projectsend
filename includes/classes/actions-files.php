@@ -51,13 +51,7 @@ class FilesActions
 		if (isset($rel_id)) {
 			/** Do a permissions check */
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
-				/**
-				 * Get all the relevant file information using the id parameter
-				 */
-				$this->sql_id = $database->query('SELECT file_id FROM tbl_files_relations WHERE id="'.$rel_id.'"');
-				while($this->data_file = mysql_fetch_array($this->sql_id)) {
-					$this->file_id = $this->data_file['file_id'];
-				}
+				$this->file_id = $rel_id;
 				$this->sql_url = $database->query('SELECT url FROM tbl_files WHERE id="'.$this->file_id.'"');
 				while($this->data_file_2 = mysql_fetch_array($this->sql_url)) {
 					$this->file_url = $this->data_file_2['url'];

@@ -360,7 +360,7 @@ $current_level = get_current_user_level();
 												<label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
 
 												<div class="input-append date">
-													<input type="text" class="span8 datapick-field" readonly="readonly" id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" /><span class="add-on"><i class="icon-th"></i></span>
+													<input type="text" class="span8 datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" /><span class="add-on"><i class="icon-th"></i></span>
 												</div>
 												
 												<div class="divider"></div>
@@ -444,7 +444,8 @@ $current_level = get_current_user_level();
 	$(document).ready(function() {
 		$('.chosen-select').chosen({
 			no_results_text	: "<?php _e('No results where found.','cftp_admin'); ?>",
-			width			: "98%"
+			width			: "98%",
+			search_contains	: true
 		});
 
 		$('.input-append.date').datepicker({

@@ -632,8 +632,9 @@ while($row = mysql_fetch_array($sql)) {
 			if(!empty($uploaded_files)) {
 		?>
 				$('.chosen-select').chosen({
-					no_results_text: "<?php _e('No results where found.','cftp_admin'); ?>",
-					width: "98%"
+					no_results_text	: "<?php _e('No results where found.','cftp_admin'); ?>",
+					width			: "98%",
+					search_contains	: true
 				});
 
 				$('.input-append.date').datepicker({

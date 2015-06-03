@@ -78,7 +78,8 @@ switch ($groups_form_type) {
 <script type="text/javascript">
 	$(document).ready(function() {
 		$('.chosen-select').chosen({
-			no_results_text: "<?php _e('No results where found.','cftp_admin'); ?>",
+			no_results_text	: "<?php _e('No results where found.','cftp_admin'); ?>",
+			search_contains	: true
 		});
 
 		$('.add-all').click(function(){

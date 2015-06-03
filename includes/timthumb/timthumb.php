@@ -20,7 +20,7 @@
  * loaded by timthumb. This will save you having to re-edit these variables
  * everytime you download a new version
 */
-define ('VERSION', '2.8.13');																		// Version of this script 
+define ('VERSION', '2.8.14');																		// Version of this script 
 //Load a config file if it exists. Otherwise, use the values below
 if( file_exists(dirname(__FILE__) . '/timthumb-config.php'))	require_once('timthumb-config.php');
 if(! defined('DEBUG_ON') )					define ('DEBUG_ON', false);								// Enable debug logging to web server error log (STDERR)
@@ -582,6 +582,7 @@ class timthumb {
  		}
 
 		$canvas_color_R = hexdec (substr ($canvas_color, 0, 2));
+
 		$canvas_color_G = hexdec (substr ($canvas_color, 2, 2));
 		$canvas_color_B = hexdec (substr ($canvas_color, 4, 2));
 
@@ -950,9 +951,12 @@ class timthumb {
 		if(! preg_match('/^https?:\/\/[a-zA-Z0-9\.\-]+/i', $url)){
 			return $this->error("Invalid URL supplied.");
 		}
-		$url = preg_replace('/[^A-Za-z0-9\-\.\_\~:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=]+/', '', $url); //RFC 3986
-		//Very important we don't allow injection of shell commands here. URL is between quotes and we are only allowing through chars allowed by a the RFC 
-		// which AFAIKT can't be used for shell injection. 
+		$url = preg_replace('/[^A-Za-z0-9\-\.\_:\/\?\&\+\;\=]+/', '', $url); //RFC 3986 plus ()$ chars to prevent exploit below. Plus the following are also removed: @*!~#[]',
+		// 2014 update by Mark Maunder: This exploit: http://cxsecurity.com/issue/WLB-2014060134
+		// uses the $(command) shell execution syntax to execute arbitrary shell commands as the web server user. 
+		// So we're now filtering out the characters: '$', '(' and ')' in the above regex to avoid this. 
+		// We are also filtering out chars rarely used in URLs but legal accoring to the URL RFC which might be exploitable. These include: @*!~#[]',
+		// We're doing this because we're passing this URL to the shell and need to make very sure it's not going to execute arbitrary commands. 
 		if(WEBSHOT_XVFB_RUNNING){
 			putenv('DISPLAY=:100.0');
 			$command = "$cuty $proxy --max-wait=$timeout --user-agent=\"$ua\" --javascript=$jsOn --java=$javaOn --plugins=$pluginsOn --js-can-open-windows=off --url=\"$url\" --out-format=$format --out=$tempfile";

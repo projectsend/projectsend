@@ -952,6 +952,14 @@ if (in_session_or_cookies($allowed_update)) {
 			$updates_made++;
 		}
 
+		/**
+		 * r582 updates
+		 * No DB changes
+		 */
+		if ($last_update < 582) {
+			$updates_made++;
+		}
+
 	}
 }	
 ?>

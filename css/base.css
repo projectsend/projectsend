@@ -781,6 +781,17 @@ optgroup {
 	float:right;
 }
 
+.preview_button {
+	margin-top:25px;
+	text-align:center;
+}
+
+	.preview_button button {
+		margin-bottom:10px;
+	}
+	
+
+
 /* plupload */
 
 .plupload_button {

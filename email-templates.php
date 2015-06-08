@@ -206,6 +206,7 @@ if ($_POST) {
 								<li>
 									<h3><?php _e('Header / Footer','cftp_admin'); ?></h3>
 									<p class="text-warning"><?php _e('Here you set up the header and footer of every email, or use the default ones available with the system. Use this to customize each part and include, for example, your own logo and markup.','cftp_admin'); ?></p>
+									<p class="text-warning"><?php _e("Do not forget to also include -and close accordingly- the basic structural HTML tags (DOCTYPE, HTML, HEADER, BODY).",'cftp_admin'); ?></p>
 								</li>
 								<li>
 									<label for="email_header_footer_customize"><?php _e('Use custom header / footer','cftp_admin'); ?></label>
@@ -272,6 +273,11 @@ if ($_POST) {
 										</li>			
 						
 									</ul>
+									<hr />
+									<div class="preview_button">
+										<button type="button" data-preview="<?php echo $group['tab']; ?>" class="btn btn-wide btn-primary preview"><?php _e('Preview this template','cftp_admin'); ?></button>
+										<p><?php _e("Before trying this function, please save your changes to see them reflected on the preview.",'cftp_admin'); ?></p>
+									</div>
 								</div>
 							</div>
 					<?php
@@ -289,5 +295,16 @@ if ($_POST) {
 
 	<div class="clear"></div>
 </div>
+
+<script type="text/javascript">
+	$(document).ready(function(e) {
+		$('.preview').click(function(e) {
+			e.preventDefault();
+			var type	= jQuery(this).data('preview');
+			var theurl	= '<?php echo BASE_URI; ?>email-preview.php?t=' + type;
+		    window.open(theurl, "previewWindow", "width=800,height=600,scrollbars=yes");
+		});
+	});
+</script>
 
 <?php include('footer.php'); ?>

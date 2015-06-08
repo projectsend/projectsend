@@ -12,6 +12,7 @@ $page_title = __('E-mail templates','cftp_admin') . ': ' . __('Preview','cftp_ad
 
 $active_nav = 'options';
 
+/** Do a couple of functions that are in header.php */
 /** Check for an active session or cookie */
 check_for_session();
 
@@ -19,11 +20,13 @@ can_see_content($allowed_levels);
 
 $database->MySQLDB();
 
+
+/** Get the default header and footer */
 include_once(ROOT_DIR.'/includes/email-template.php');
 global $email_template_header;
 global $email_template_footer;
 
-
+/** Get the preview type */
 $type = $_GET['t'];
 
 switch ($type) {

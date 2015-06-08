@@ -2095,8 +2095,23 @@ msgid "The following files are now available for you to download."
 msgstr ""
 
 #. Text in echo
+#: email-templates.php:278
+msgid "Preview this template"
+msgstr ""
+
+#. Text in echo
+#: email-templates.php:279
+msgid "Before trying this function, please save your changes to see them reflected on the preview."
+msgstr ""
+
+#. Text in echo
 #: email-templates.php:256
 msgid "The following tags can be used on this e-mails' body."
+msgstr ""
+
+#. Text in echo
+#: email-templates.php:209
+msgid "Do not forget to also include -and close accordingly- the basic structural HTML tags (DOCTYPE, HTML, HEADER, BODY)."
 msgstr ""
 
 #. Text in function

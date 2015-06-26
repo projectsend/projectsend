@@ -123,7 +123,7 @@ $install_no_baseuri = __('ProjectSend URI was not completed.','cftp_admin');
 					/** Username validation */
 					$valid_me->validate('completed',$got_admin_username,$validation_no_user);
 					$valid_me->validate('length',$got_admin_username,$validation_length_user,MIN_USER_CHARS,MAX_USER_CHARS);
-					$valid_me->validate('alpha',$got_admin_username,$validation_alpha_user);
+					$valid_me->validate('alpha_dot',$got_admin_username,$validation_alpha_user);
 					/** Password fields validation */
 					$valid_me->validate('completed',$_POST['install_user_pass'],$validation_no_pass);
 					//$valid_me->validate('completed',$_POST['install_user_repeat'],$validation_no_pass2);
@@ -227,7 +227,7 @@ $install_no_baseuri = __('ProjectSend URI was not completed.','cftp_admin');
 									// username
 									is_complete(this.install_user_username,'<?php echo $validation_no_user; ?>');
 									is_length(this.install_user_username,<?php echo MIN_USER_CHARS; ?>,<?php echo MAX_USER_CHARS; ?>,'<?php echo $validation_length_user; ?>');
-									is_alpha(this.install_user_username,'<?php echo $validation_alpha_user; ?>');
+									is_alpha_or_dot(this.install_user_username,'<?php echo $validation_alpha_user; ?>');
 									// password fields
 									is_complete(this.install_user_pass,'<?php echo $validation_no_pass; ?>');
 									//is_complete(this.install_user_repeat,'<?php echo $validation_no_pass2; ?>');

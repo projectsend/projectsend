@@ -19,7 +19,7 @@
 			is_complete(this.add_user_form_level,'<?php echo $validation_no_level; ?>');
 			is_length(this.add_user_form_user,<?php echo MIN_USER_CHARS; ?>,<?php echo MAX_USER_CHARS; ?>,'<?php echo $validation_length_user; ?>');
 			is_email(this.add_user_form_email,'<?php echo $validation_invalid_mail; ?>');
-			is_alpha(this.add_user_form_user,'<?php echo $validation_alpha_user; ?>');
+			is_alpha_or_dot(this.add_user_form_user,'<?php echo $validation_alpha_user; ?>');
 			
 			<?php
 				/**

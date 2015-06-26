@@ -2663,7 +2663,7 @@ msgstr ""
 
 #. Text in function
 #: includes/vars.php:1
-msgid "Username must be alphanumeric (a-z,A-Z,0-9 allowed)"
+msgid "Username must be alphanumeric and may contain dot (a-z,A-Z,0-9 and . allowed)"
 msgstr ""
 
 #. Text in echo

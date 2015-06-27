@@ -51,7 +51,7 @@ class Validate_Form
 	/** Check if the field value is alphanumeric */
 	private function is_alpha($field, $err)
 	{
-		if(preg_match('/[^0-9A-Za-z]$/', $field)) {
+		if(preg_match('/[^0-9A-Za-z]/', $field)) {
 			$this->error_msg .= '<li>'.$err.'</li>';
 			$this->return_val = false;
 		}
@@ -60,7 +60,7 @@ class Validate_Form
 	/** Check if the field value is alphanumeric */
 	private function is_alpha_or_dot($field, $err)
 	{
-		if(preg_match('/[^0-9A-Za-z.]$/', $field)) {
+		if(preg_match('/[^0-9A-Za-z.]/', $field)) {
 			$this->error_msg .= '<li>'.$err.'</li>';
 			$this->return_val = false;
 		}

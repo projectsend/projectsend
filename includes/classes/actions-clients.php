@@ -51,7 +51,7 @@ class ClientActions
 			/** Username checks */
 			$valid_me->validate('user_exists',$this->username,$add_user_exists);
 			$valid_me->validate('completed',$this->username,$validation_no_user);
-			$valid_me->validate('alpha',$this->username,$validation_alpha_user);
+			$valid_me->validate('alpha_dot',$this->username,$validation_alpha_user);
 			$valid_me->validate('length',$this->username,$validation_length_user,MIN_USER_CHARS,MAX_USER_CHARS);
 			
 			$this->validate_password = true;

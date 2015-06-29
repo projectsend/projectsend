@@ -81,6 +81,13 @@ function is_alpha(field,error) {
 	}
 }
 
+function is_alpha_or_dor(field,error) {
+	var checkme = field.value;
+	if (!(checkme.match(/^[a-zA-Z0-9.]+$/))) {
+		add_error_to_field(field, error);
+	}
+}
+
 function is_password(field,error) {
 	var checkme = field.value;
 	if (!(checkme.match(/^[0-9a-zA-Z`!"?$%\^&*()_\-+={\[}\]:;@~#|<,>.'\/\\]+$/))) {

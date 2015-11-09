@@ -34,8 +34,8 @@ body, html {
 
 @media(max-width:767px){
 	body{
-		padding-right:0px !important;
-		padding-left:0px !important;
+		padding-right:0 !important;
+		padding-left:0 !important;
 	}
 }
 
@@ -69,8 +69,7 @@ body, html {
 #account a {
 	color:white;
 	display:inline-block;
-	padding:10px 20px;
-	padding-left:35px;
+	padding: 10px 20px 10px 35px;
 	background:transparent url(../img/logout.png) no-repeat 10px 7px;
 	text-decoration:none;
 	transition: all 0.8s ease-out;
@@ -117,14 +116,14 @@ body, html {
 	margin:0;
 }
 	.navbar-inner {
-		border-radius:0px;
-		-moz-border-radius:0px;
-		-webkit-border-radius:0px;
+		border-radius:0;
+		-moz-border-radius:0;
+		-webkit-border-radius:0;
 		background:#3c404b !important;
 	}
 	
 	.navbar .divider-vertical {
-		margin:0 0px;
+		margin:0;
 		border-left-color:#3a3e4a;
 		border-right-color:#373b48;
 	}
@@ -157,7 +156,6 @@ body, html {
 	background:#eee;
 	color:#888;
 	text-align:center;
-	padding:15px;
 
 	clear:both;
 	-moz-box-shadow:2px 2px 3px #E1E1E1;
@@ -471,7 +469,7 @@ textarea, select {
 	cursor:pointer;
 
 	background:#407FB6!important;
-	background:-moz-linear-gradient(center top , #FAFBFC, #E2E5E9)!important;
+	background:-moz-linear-gradient(top , #FAFBFC, #E2E5E9)!important;
 	background:-webkit-gradient(linear, left top, left bottom, from(#FAFBFC), to(#E2E5E9))!important;
 	border:1px solid #ccc!important;
 	box-shadow:0 1px 0 rgba(255, 255, 255, 0.3) inset, 0 0 0 1px rgba(255, 255, 255, 0.1) inset, 0 1px 0 rgba(255, 255, 255, 0.5)!important;
@@ -481,7 +479,7 @@ textarea, select {
 
 .button_form:hover {
 	background:#D8DBDF!important;
-	background:-moz-linear-gradient(center top , #EDEEEF, #D8DBDF)!important;
+	background:-moz-linear-gradient(top , #EDEEEF, #D8DBDF)!important;
 	background:-webkit-gradient(linear, left top, left bottom, from(#EDEEEF), to(#D8DBDF))!important;
 }
 
@@ -528,7 +526,7 @@ textarea, select {
 
 .button_gray {
 	background:#eee;
-	background:-moz-linear-gradient(center top , #f5f5f5, #eee)!important;
+	background:-moz-linear-gradient(top , #f5f5f5, #eee)!important;
 	background:-webkit-gradient(linear, left top, left bottom, from(#f5f5f5), to(#eee))!important;
 	border:1px solid #C4C2C2!important;
 	text-shadow:0 1px 1px #eee!important;
@@ -543,28 +541,28 @@ textarea, select {
 
 .button_green {
 	background:#639822;
-	background:-moz-linear-gradient(center top , #82B741, #639822)!important;
+	background:-moz-linear-gradient(top , #82B741, #639822)!important;
 	background:-webkit-gradient(linear, left top, left bottom, from(#82B741), to(#639822))!important;
 	border:1px solid #468000!important;
 }
 
 .button_blue {
 	background:#407FB6!important;
-	background:-moz-linear-gradient(center top , #407FB6, #236299)!important;
+	background:-moz-linear-gradient(top , #407FB6, #236299)!important;
 	background:-webkit-gradient(linear, left top, left bottom, from(#407FB6), to(#236299))!important;
 	border:1px solid #004380!important;
 }
 
 .button_red {
 	background:#D24244;
-	background:-moz-linear-gradient(center top , #D7575A, #D24244)!important;
+	background:-moz-linear-gradient(top , #D7575A, #D24244)!important;
 	background:-webkit-gradient(linear, left top, left bottom, from(#D7575A), to(#D24244))!important;
 	border:1px solid #BF3133!important;
 }
 
 .button_blue:hover {
 	background:#004B92!important;
-	background:-moz-linear-gradient(center top , #1C6EB5, #004B92)!important;
+	background:-moz-linear-gradient(top , #1C6EB5, #004B92)!important;
 	background:-webkit-gradient(linear, left top, left bottom, from(#1C6EB5), to(#004B92))!important;
 	border:1px solid #002170!important;
 }
@@ -604,7 +602,7 @@ textarea, select {
 .btn-primary:hover,
 .btn-primary:focus {
 	background:#004B92;
-	background:-moz-linear-gradient(center top , #1C6EB5, #004B92);
+	background:-moz-linear-gradient(top , #1C6EB5, #004B92);
 	background:-webkit-gradient(linear, left top, left bottom, from(#1C6EB5), to(#004B92));
 }
 
@@ -642,9 +640,9 @@ textarea, select {
 	-moz-border-radius: 7px;
 	border-radius: 7px;
 
-	-webkit-box-shadow: 0px 0px 23px rgba(0, 0, 0, 0.3);
-	-moz-box-shadow:    0px 0px 23px rgba(0, 0, 0, 0.3);
-	box-shadow:         0px 0px 23px rgba(0, 0, 0, 0.3);
+	-webkit-box-shadow: 0 0 23px rgba(0, 0, 0, 0.3);
+	-moz-box-shadow:    0 0 23px rgba(0, 0, 0, 0.3);
+	box-shadow:         0 0 23px rgba(0, 0, 0, 0.3);
 }
 
 .modal_content {
@@ -668,7 +666,7 @@ textarea, select {
 	text-align:right;
 	padding:10px;
 	background:#eee;
-	background:-moz-linear-gradient(center top , #f5f5f5, #eee)!important;
+	background:-moz-linear-gradient(top , #f5f5f5, #eee)!important;
 	background:-webkit-gradient(linear, left top, left bottom, from(#f5f5f5), to(#eee))!important;
 	text-shadow:0 1px 1px #eee;
 	color:#888;

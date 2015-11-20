@@ -79,6 +79,7 @@ function check_for_session()
 	if(!$is_logged_now) {
 		header("location:index.php");
 	}
+	return $is_logged_now;
 }
 
 /**

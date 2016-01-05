@@ -5,7 +5,13 @@
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 
-check_for_session();
+/**
+ * If there is no valid session/user block the upload of files
+ */
+if (! check_for_session() ) {
+	die();
+}
+
 
 /**
  * upload.php

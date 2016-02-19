@@ -158,7 +158,7 @@ include('header.php');
 			if(!empty($_POST['files'])) {
 				$selected_files = array_map('intval',array_unique($_POST['files']));
 				$files_to_get = implode(',',$selected_files);
-	            error_log("SELECT file_id FROM tbl_files_relations WHERE id IN ($files_to_get)");
+	            
 				/**
 				 * Make a list of files to avoid individual queries.
 				 * First, get all the different files under this account.

@@ -11,7 +11,7 @@
 		 */
 		if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest')) {
 			$max_show_log = 10;
-			$log_action = $_GET['action'];
+			$log_action = mysql_real_escape_string($_GET['action']);
 		
 			$log_query = "SELECT * FROM tbl_actions_log";
 		

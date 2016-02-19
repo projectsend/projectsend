@@ -156,9 +156,9 @@ include('header.php');
 		if(isset($_POST['do_action'])) {
 			/** Continue only if 1 or more files were selected. */
 			if(!empty($_POST['files'])) {
-				$selected_files = array_unique($_POST['files']);
+				$selected_files = array_map('intval',array_unique($_POST['files']));
 				$files_to_get = implode(',',$selected_files);
-	
+	            error_log("SELECT file_id FROM tbl_files_relations WHERE id IN ($files_to_get)");
 				/**
 				 * Make a list of files to avoid individual queries.
 				 * First, get all the different files under this account.
@@ -166,10 +166,10 @@ include('header.php');
 				$sql_distinct_files = $database->query("SELECT file_id FROM tbl_files_relations WHERE id IN ($files_to_get)");
 				
 				while($data_file_relations = mysql_fetch_array($sql_distinct_files)) {
-					$all_files_relations[] = $data_file_relations['file_id'];
+					$all_files_relations[] = $data_file_relations['file_id']; 
 					$files_to_get = implode(',',$all_files_relations);
 				}
-
+                
 				/**
 				 * Then get the files names to add to the log action.
 				 */
@@ -274,7 +274,7 @@ include('header.php');
 			/** Add the status filter */	
 			if(isset($_POST['status']) && $_POST['status'] != 'all') {
 				$set_and = true;
-				$status_filter = $_POST['status'];
+				$status_filter = mysql_real_escape_string($_POST['status']);
 				$cq .= " AND hidden='$status_filter'";
 				$no_results_error = 'filter';
 			}

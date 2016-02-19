@@ -12,7 +12,17 @@ $zip_file = tempnam("tmp", "zip");
 $zip = new ZipArchive();
 $zip->open($zip_file, ZipArchive::OVERWRITE);
 
-$files_to_zip = explode(',',substr($_GET['file'], 0, -1));
+$files_to_zip = explode(',',substr(mysql_real_escape_string($_GET['file']), 0, -1));
+
+foreach ($files_to_zip as $idx=>$file) {
+    $file = UPLOADED_FILES_FOLDER . $file;
+    error_log("Downloading $file");
+    if(!(realpath($file) && substr(realpath($file),0,strlen(UPLOADED_FILES_FOLDER)) === UPLOADED_FILES_FOLDER)){
+        error_log("Removing $file");
+       unset($files_to_zip[$idx]);
+    }
+}
+
 
 $added_files = 0;
 

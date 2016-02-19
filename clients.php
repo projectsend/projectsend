@@ -62,7 +62,7 @@ $(document).ready(function() {
 		/** Continue only if 1 or more clients were selected. */
 		if(!empty($_POST['selected_clients'])) {
 			$selected_clients = $_POST['selected_clients'];
-			$clients_to_get = mysql_real_escape_string(implode(',',array_unique($selected_clients)));
+			$clients_to_get = mysql_real_escape_string(implode(',',array_map('intval',array_unique($selected_clients))));
 
 			/**
 			 * Make a list of users to avoid individual queries.
@@ -143,7 +143,7 @@ $(document).ready(function() {
 
 	/** Add the status filter */	
 	if(isset($_POST['status']) && $_POST['status'] != 'all') {
-		$status_filter = $_POST['status'];
+		$status_filter = mysql_real_escape_string($_POST['status']);
 		$cq .= " AND active='$status_filter'";
 		$no_results_error = 'filter';
 	}

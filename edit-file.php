@@ -12,6 +12,11 @@ $datepicker		= 1;
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 
+//Add a session check here
+if(!check_for_session()) {
+    header("location:" . BASE_URI . "index.php");
+}
+
 $active_nav = 'files';
 
 $page_title = __('Edit file','cftp_admin');

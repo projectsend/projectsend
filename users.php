@@ -10,6 +10,10 @@ $footable = 1;
 $allowed_levels = array(9);
 require_once('sys.includes.php');
 
+if(!check_for_admin()) {
+    return;
+}
+
 $active_nav = 'users';
 
 $page_title = __('Users administration','cftp_admin');;

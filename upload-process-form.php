@@ -283,9 +283,9 @@ while($row = mysql_fetch_array($sql)) {
 				foreach($upload_finish as $uploaded) {
 			?>
 					<tr>
-						<td><?php echo $uploaded['name']; ?></td>
-						<td><?php echo $uploaded['description']; ?></td>
-						<td><?php echo $uploaded['file']; ?></td>
+						<td><?php echo html_output($uploaded['name']); ?></td>
+						<td><?php echo html_output($uploaded['description']); ?></td>
+						<td><?php echo html_output($uploaded['file']); ?></td>
 						<?php
 							if ($current_level != 0) {
 						?>
@@ -300,7 +300,7 @@ while($row = mysql_fetch_array($sql)) {
 							}
 						?>
 						<td>
-							<a href="edit-file.php?file_id=<?php echo $uploaded['new_file_id']; ?>" class="btn-primary btn btn-small"><?php _e('Edit file','cftp_admin'); ?></a>
+							<a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>" class="btn-primary btn btn-small"><?php _e('Edit file','cftp_admin'); ?></a>
 							<?php
 								/*
 								 * Show the "My files" button only to clients
@@ -343,7 +343,7 @@ while($row = mysql_fetch_array($sql)) {
 				foreach($upload_finish_orphans as $uploaded_orphan) {
 			?>
 					<tr>
-						<td><?php echo $uploaded_orphan; ?></td>
+						<td><?php echo html_output($uploaded_orphan); ?></td>
 						<td>
 							<?php
 								/*
@@ -352,7 +352,7 @@ while($row = mysql_fetch_array($sql)) {
 								 */
 								if ($current_level != 0) {
 							?>
-									<a href="edit-file.php?file_id=<?php echo $uploaded['new_file_id']; ?>" class="btn-primary btn btn-small"><?php _e('Edit file','cftp_admin'); ?></a>
+									<a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>" class="btn-primary btn btn-small"><?php _e('Edit file','cftp_admin'); ?></a>
 							<?php
 								}
 								else {
@@ -466,15 +466,15 @@ while($row = mysql_fetch_array($sql)) {
 														<div class="span12">
 															<h3><?php _e('File information', 'cftp_admin');?></h3>
 															<p class="on_disc_name">
-																<?php echo $file; ?>
+																<?php echo html_output($file); ?>
 															</p>
-															<input type="hidden" name="file[<?php echo $i; ?>][original]" value="<?php echo $file_original; ?>" />
-															<input type="hidden" name="file[<?php echo $i; ?>][file]" value="<?php echo $file; ?>" />
+															<input type="hidden" name="file[<?php echo $i; ?>][original]" value="<?php echo html_output($file_original); ?>" />
+															<input type="hidden" name="file[<?php echo $i; ?>][file]" value="<?php echo html_output($file); ?>" />
 	
 															<label><?php _e('Title', 'cftp_admin');?></label>
-															<input type="text" name="file[<?php echo $i; ?>][name]" value="<?php echo $file_title; ?>" class="file_title" placeholder="<?php _e('Enter here the required file title.', 'cftp_admin');?>" />
+															<input type="text" name="file[<?php echo $i; ?>][name]" value="<?php echo html_output($file_title); ?>" class="file_title" placeholder="<?php _e('Enter here the required file title.', 'cftp_admin');?>" />
 															<label><?php _e('Description', 'cftp_admin');?></label>
-															<textarea name="file[<?php echo $i; ?>][description]" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (isset($description)) ? $description : ''; ?></textarea>
+															<textarea name="file[<?php echo $i; ?>][description]" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (isset($description)) ? html_output($description) : ''; ?></textarea>
 															
 														</div>
 													</div>
@@ -523,7 +523,7 @@ while($row = mysql_fetch_array($sql)) {
 																		 */
 																		foreach($clients as $client => $client_name) {
 																		?>
-																			<option value="<?php echo 'c'.$client; ?>"><?php echo $client_name; ?></option>
+																			<option value="<?php echo html_output('c'.$client); ?>"><?php echo html_output($client_name); ?></option>
 																		<?php
 																		}
 																	?>
@@ -536,7 +536,7 @@ while($row = mysql_fetch_array($sql)) {
 																		 */
 																		foreach($groups as $group => $group_name) {
 																		?>
-																			<option value="<?php echo 'g'.$group; ?>"><?php echo $group_name; ?></option>
+																			<option value="<?php echo html_output('g'.$group); ?>"><?php echo html_output($group_name); ?></option>
 																		<?php
 																		}
 																	?>

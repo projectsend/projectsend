@@ -417,6 +417,13 @@ function mysql_real_escape_array($array)
     return array_map("mysql_real_escape_string",$array);
 }
 
+/**
+ * Wrapper for html_entities with default options
+ */
+function html_output($str,$flags=ENT_QUOTES,$encoding="utf8",$double_encode=false) {
+    return htmlentities($str,$flags,$encoding,$double_encode);
+}
+
 
 /**
  * Solution by Philippe Flipflip. Fixes an error that would not convert special

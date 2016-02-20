@@ -193,7 +193,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 									</li>
 									<li>
 										<label for="this_install_title"><?php _e('Site name','cftp_admin'); ?></label>
-										<input type="text" name="this_install_title" id="this_install_title" value="<?php echo THIS_INSTALL_SET_TITLE; ?>" />
+										<input type="text" name="this_install_title" id="this_install_title" value="<?php echo html_output(THIS_INSTALL_SET_TITLE); ?>" />
 									</li>
 									<li>
 										<label for="selected_clients_template"><?php _e("Client's template",'cftp_admin'); ?></label>
@@ -201,11 +201,11 @@ $allowed_file_types = implode(',',$allowed_file_types);
 											<?php
 												$templates = look_for_templates();
 												foreach ($templates as $template) {
-													echo '<option value="'.$template['folder'].'"';
+													echo '<option value="'.html_output($template['folder']).'"';
 														if($template['folder'] == TEMPLATE_USE) {
 															echo ' selected="selected"';
 														}
-													echo '>'.$template['name'].'</option>';
+													echo '>'.html_output($template['name']).'</option>';
 												}
 											?>
 										</select>
@@ -270,13 +270,13 @@ $allowed_file_types = implode(',',$allowed_file_types);
 											$sql = $database->query($cq);
 											while($grow = mysql_fetch_array($sql)) {
 												?>
-													<option value="<?php echo $grow["id"]; ?>"
+													<option value="<?php echo filter_var($grow["id"],FILTER_VALIDATE_INT); ?>"
 														<?php
 															if (CLIENTS_AUTO_GROUP == $grow["id"]) {
 																echo 'selected="selected"';
 															}
 														?>
-														><?php echo $grow["name"]; ?>
+														><?php echo html_output($grow["name"]); ?>
 													</option>
 												<?php
 											}
@@ -320,11 +320,11 @@ $allowed_file_types = implode(',',$allowed_file_types);
 									</li>
 									<li>
 										<label for="admin_email_address"><?php _e('E-mail address','cftp_admin'); ?></label>
-										<input type="text" name="admin_email_address" id="admin_email_address" value="<?php echo ADMIN_EMAIL_ADDRESS; ?>" />
+										<input type="text" name="admin_email_address" id="admin_email_address" value="<?php echo html_output(ADMIN_EMAIL_ADDRESS); ?>" />
 									</li>					
 									<li>
 										<label for="mail_from_name"><?php _e('Name','cftp_admin'); ?></label>
-										<input type="text" name="mail_from_name" id="mail_from_name" value="<?php echo MAIL_FROM_NAME; ?>" />
+										<input type="text" name="mail_from_name" id="mail_from_name" value="<?php echo html_output(MAIL_FROM_NAME); ?>" />
 									</li>					
 									<li class="options_divide"></li>
 
@@ -348,7 +348,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 									</li>
 									<li>
 										<label for="mail_copy_addresses"><?php _e('Also to this addresses','cftp_admin'); ?></label>
-										<input type="text" name="mail_copy_addresses" id="mail_copy_addresses" class="mail_data empty" value="<?php echo COPY_MAIL_ADDRESSES; ?>" />
+										<input type="text" name="mail_copy_addresses" id="mail_copy_addresses" class="mail_data empty" value="<?php echo html_output(COPY_MAIL_ADDRESSES); ?>" />
 										<p class="field_note"><?php _e('Separate e-mail addresses with a comma.','cftp_admin'); ?></p>
 									</li>					
 									<li class="options_divide"></li>
@@ -391,11 +391,11 @@ $allowed_file_types = implode(',',$allowed_file_types);
 									</li>
 									<li>
 										<label for="mail_smtp_user"><?php _e('Username','cftp_admin'); ?></label>
-										<input type="text" name="mail_smtp_user" id="mail_smtp_user" class="mail_data empty" value="<?php echo SMTP_USER; ?>" />
+										<input type="text" name="mail_smtp_user" id="mail_smtp_user" class="mail_data empty" value="<?php echo html_output(SMTP_USER); ?>" />
 									</li>					
 									<li>
 										<label for="mail_smtp_pass"><?php _e('Password','cftp_admin'); ?></label>
-										<input type="password" name="mail_smtp_pass" id="mail_smtp_pass" class="mail_data empty" value="<?php echo SMTP_PASS; ?>" />
+										<input type="password" name="mail_smtp_pass" id="mail_smtp_pass" class="mail_data empty" value="<?php echo html_output(SMTP_PASS); ?>" />
 									</li>					
 									<li class="options_divide"></li>
 
@@ -405,11 +405,11 @@ $allowed_file_types = implode(',',$allowed_file_types);
 									</li>
 									<li>
 										<label for="mail_smtp_host"><?php _e('Host','cftp_admin'); ?></label>
-										<input type="text" name="mail_smtp_host" id="mail_smtp_host" class="mail_data empty" value="<?php echo SMTP_HOST; ?>" />
+										<input type="text" name="mail_smtp_host" id="mail_smtp_host" class="mail_data empty" value="<?php echo html_output(SMTP_HOST); ?>" />
 									</li>					
 									<li>
 										<label for="mail_smtp_port"><?php _e('Port','cftp_admin'); ?></label>
-										<input type="text" name="mail_smtp_port" id="mail_smtp_port" class="mail_data empty" value="<?php echo SMTP_PORT; ?>" />
+										<input type="text" name="mail_smtp_port" id="mail_smtp_port" class="mail_data empty" value="<?php echo html_output(SMTP_PORT); ?>" />
 									</li>				
 									<li>
 										<label for="mail_smtp_auth"><?php _e('Authentication','cftp_admin'); ?></label>
@@ -483,14 +483,14 @@ $allowed_file_types = implode(',',$allowed_file_types);
 									<li class="options_column">
 										<div class="options_col_left">
 											<label for="max_thumbnail_width"><?php _e('Max width','cftp_admin'); ?></label>
-											<input type="text" name="max_thumbnail_width" id="max_thumbnail_width" value="<?php echo THUMBS_MAX_WIDTH; ?>" /><br />
+											<input type="text" name="max_thumbnail_width" id="max_thumbnail_width" value="<?php echo html_output(THUMBS_MAX_WIDTH); ?>" /><br />
 
 											<label for="max_thumbnail_height"><?php _e('Max height','cftp_admin'); ?></label>
-											<input type="text" name="max_thumbnail_height" id="max_thumbnail_height" value="<?php echo THUMBS_MAX_HEIGHT; ?>" /><br />
+											<input type="text" name="max_thumbnail_height" id="max_thumbnail_height" value="<?php echo html_output(THUMBS_MAX_HEIGHT); ?>" /><br />
 										</div>
 										<div class="options_col_right">
 											<label for="thumbnail_default_quality"><?php _e('JPG Quality','cftp_admin'); ?></label>
-											<input type="text" name="thumbnail_default_quality" id="thumbnail_default_quality" value="<?php echo THUMBS_QUALITY; ?>" />
+											<input type="text" name="thumbnail_default_quality" id="thumbnail_default_quality" value="<?php echo html_output(THUMBS_QUALITY); ?>" />
 										</div>
 									</li>
 					
@@ -519,11 +519,11 @@ $allowed_file_types = implode(',',$allowed_file_types);
 									<li class="options_column">
 										<div class="options_col_left">
 											<label for="max_logo_width"><?php _e('Max width','cftp_admin'); ?></label>
-											<input type="text" name="max_logo_width" id="max_logo_width" value="<?php echo LOGO_MAX_WIDTH; ?>" />
+											<input type="text" name="max_logo_width" id="max_logo_width" value="<?php echo html_output(LOGO_MAX_WIDTH); ?>" />
 										</div>
 										<div class="options_col_right">
 											<label for="max_logo_height"><?php _e('Max height','cftp_admin'); ?></label>
-											<input type="text" name="max_logo_height" id="max_logo_height" value="<?php echo LOGO_MAX_HEIGHT; ?>" />
+											<input type="text" name="max_logo_height" id="max_logo_height" value="<?php echo html_output(LOGO_MAX_HEIGHT); ?>" />
 										</div>
 									</li>
 								</ul>

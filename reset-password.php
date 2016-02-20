@@ -298,7 +298,7 @@ include('header-unlogged.php');
 										});
 									</script>
 									
-									<form action="reset-password.php?token=<?php echo $got_token; ?>&user=<?php echo $got_user; ?>" name="newpassword" method="post" role="form">
+									<form action="reset-password.php?token=<?php echo html_output($got_token); ?>&user=<?php echo html_output($got_user); ?>" name="newpassword" method="post" role="form">
 										<fieldset>
 											<input type="hidden" name="form_type" id="form_type" value="new_password" />
 

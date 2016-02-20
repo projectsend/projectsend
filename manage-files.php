@@ -345,8 +345,8 @@ include('header.php');
 	?>
 		<div class="form_actions_left">
 			<div class="form_actions_limit_results">
-				<form action="<?php echo $form_action_url; ?>" name="files_search" method="post" class="form-inline">
-					<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($search_terms)) { echo htmlspecialchars($search_terms); } ?>" class="txtfield form_actions_search_box" />
+				<form action="<?php echo html_output($form_action_url); ?>" name="files_search" method="post" class="form-inline">
+					<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($search_terms)) { echo html_output($search_terms); } ?>" class="txtfield form_actions_search_box" />
 					<button type="submit" id="btn_proceed_search" class="btn btn-small"><?php _e('Search','cftp_admin'); ?></button>
 				</form>
 
@@ -354,7 +354,7 @@ include('header.php');
 					/** Filters are not available for clients */
 					if($current_level != '0' && $results_type != 'global') {
 				?>
-						<form action="<?php echo $form_action_url; ?>" name="files_filters" method="post" class="form-inline">
+						<form action="<?php echo html_output($form_action_url); ?>" name="files_filters" method="post" class="form-inline">
 							<select name="status" id="status" class="txtfield">
 								<option value="all"><?php _e('All statuses','cftp_admin'); ?></option>
 								<option value="1"><?php _e('Hidden','cftp_admin'); ?></option>
@@ -369,7 +369,7 @@ include('header.php');
 		</div>
 
 
-		<form action="<?php echo $form_action_url; ?>" name="files_list" method="post" class="form-inline">
+		<form action="<?php echo html_output($form_action_url); ?>" name="files_list" method="post" class="form-inline">
 			<?php
 				/** Actions are not available for clients */
 				if($current_level != '0') {
@@ -534,7 +534,7 @@ include('header.php');
 										/** Actions are not available for clients */
 										if($current_level != '0') {
 									?>
-											<td><input type="checkbox" name="files[]" value="<?php echo $file_id; ?>" /></td>
+											<td><input type="checkbox" name="files[]" value="<?php echo filter_var($file_id,FILTER_VALIDATE_INT); ?>" /></td>
 									<?php
 										}
 									?>
@@ -545,7 +545,7 @@ include('header.php');
 										<?php
 											$pathinfo = pathinfo($row['url']);
 											$extension = strtolower($pathinfo['extension']);
-											echo $extension;
+											echo html_output($extension);
 										?>
 									</td>
 									<td class="file_name">
@@ -557,25 +557,25 @@ include('header.php');
 												$download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
 										?>
 												<a href="<?php echo $download_link; ?>" target="_blank">
-													<?php echo htmlentities($row['filename']); ?>
+													<?php echo html_output($row['filename']); ?>
 												</a>
 										<?php
 											}
 											else {
-												echo htmlentities($row['filename']);
+												echo html_output($row['filename']);
 											}
 										?>
 									</td>
-									<td data-value="<?php echo get_real_size($this_file_absolute); ?>"><?php $this_file_size = get_real_size($this_file_absolute); echo format_file_size($this_file_size); ?></td>
+									<td data-value="<?php echo get_real_size($this_file_absolute); ?>"><?php $this_file_size = get_real_size($this_file_absolute); echo html_output(format_file_size($this_file_size)); ?></td>
 									<?php
 										if($current_level != '0') {
 									?>
-											<td><?php echo $row['uploader']; ?></td>
+											<td><?php echo html_output($row['uploader']); ?></td>
 											<td>
 												<?php
 													if ($row['public_allow'] == '1') {
 												?>
-														<a href="javascript:void(0);" class="btn-primary btn btn-small public_link" data-id="<?php echo $row['id']; ?>" data-token="<?php echo $row['public_token']; ?>" data-placement="top" data-toggle="popover" data-original-title="<?php _e('Public URL','cftp_admin'); ?>">
+														<a href="javascript:void(0);" class="btn-primary btn btn-small public_link" data-id="<?php echo $row['id']; ?>" data-token="<?php echo html_output($row['public_token']); ?>" data-placement="top" data-toggle="popover" data-original-title="<?php _e('Public URL','cftp_admin'); ?>">
 												<?php
 													}
 													else {
@@ -640,7 +640,7 @@ include('header.php');
 				
 														case 'group':
 												?>
-															<a href="javascript:void(0);" class="<?php if ($download_count > 0) { echo 'downloaders btn-primary'; } else { echo 'disabled'; } ?> btn btn-small" rel="<?php echo $row["id"]; ?>" title="<?php echo htmlentities($row['filename']); ?>">
+															<a href="javascript:void(0);" class="<?php if ($download_count > 0) { echo 'downloaders btn-primary'; } else { echo 'disabled'; } ?> btn btn-small" rel="<?php echo $row["id"]; ?>" title="<?php echo html_output($row['filename']); ?>">
 																<?php echo $download_count; ?> <?php _e('downloads','cftp_admin'); ?>
 															</a>
 												<?php
@@ -654,7 +654,7 @@ include('header.php');
 											if($current_level != '0') {
 									?>
 												<td>
-													<a href="javascript:void(0);" class="<?php if ($download_count > 0) { echo 'downloaders btn-primary'; } else { echo 'disabled'; } ?> btn btn-small" rel="<?php echo $row["id"]; ?>" title="<?php echo htmlentities($row['filename']); ?>">
+													<a href="javascript:void(0);" class="<?php if ($download_count > 0) { echo 'downloaders btn-primary'; } else { echo 'disabled'; } ?> btn btn-small" rel="<?php echo $row["id"]; ?>" title="<?php echo html_output($row['filename']); ?>">
 														<?php echo $download_count; ?> <?php _e('downloads','cftp_admin'); ?>
 													</a>
 												</td>

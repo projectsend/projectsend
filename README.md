@@ -13,6 +13,8 @@ Main website:
 http://www.projectsend.org/
 
 Project:
+https://github.com/ignacionelson/ProjectSend/
+Old repository:
 http://code.google.com/p/clients-oriented-ftp/
 
 Translations:

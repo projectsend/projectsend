@@ -77,7 +77,7 @@ function check_for_session()
 		$is_logged_now = true;
 	}
 	if(!$is_logged_now) {
-		header("location:index.php");
+		header("location:" . BASE_URI . "index.php");
 	}
 	return $is_logged_now;
 }
@@ -101,8 +101,10 @@ function check_for_admin() {
 		$is_logged_admin = true;
 	}
 	if(!$is_logged_admin) {
-		header("location:index.php");
+	    ob_clean();
+		header("location:" . BASE_URI . "index.php");
 	}
+    return $is_logged_admin;
 }
 
 /**

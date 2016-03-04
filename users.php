@@ -10,6 +10,10 @@ $footable = 1;
 $allowed_levels = array(9);
 require_once('sys.includes.php');
 
+if(!check_for_admin()) {
+    return;
+}
+
 $active_nav = 'users';
 
 $page_title = __('Users administration','cftp_admin');;
@@ -182,7 +186,7 @@ include('header.php');
 	<div class="form_actions_left">
 		<div class="form_actions_limit_results">
 			<form action="users.php" name="users_search" method="post" class="form-inline">
-				<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo $_POST['search']; } ?>" class="txtfield form_actions_search_box" />
+				<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box" />
 				<button type="submit" id="btn_proceed_search" class="btn btn-small"><?php _e('Search','cftp_admin'); ?></button>
 			</form>
 
@@ -264,12 +268,12 @@ include('header.php');
 				<tr>
 					<td>
 						<?php if ($row["id"] != '1') { ?>
-							<input type="checkbox" name="users[]" value="<?php echo $row["id"]; ?>" />
+							<input type="checkbox" name="users[]" value="<?php echo html_output($row["id"]); ?>" />
 						<?php } ?>
 					</td>
-					<td><?php echo html_entity_decode($row["name"]); ?></td>
-					<td><?php echo html_entity_decode($row["user"]); ?></td>
-					<td><?php echo html_entity_decode($row["email"]); ?></td>
+					<td><?php echo html_output($row["name"]); ?></td>
+					<td><?php echo html_output($row["user"]); ?></td>
+					<td><?php echo html_output($row["email"]); ?></td>
 					<td><?php
 						switch(html_entity_decode($row["level"])) {
 							case '9': echo USER_ROLE_LVL_9; break;

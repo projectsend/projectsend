@@ -99,11 +99,11 @@ switch ($clients_form_type) {
 	<ul class="form_fields">
 		<li>
 			<label for="add_client_form_name"><?php _e('Name','cftp_admin'); ?></label>
-			<input type="text" name="add_client_form_name" id="add_client_form_name" class="required" value="<?php echo (isset($add_client_data_name)) ? stripslashes($add_client_data_name) : ''; ?>" placeholder="<?php echo $name_placeholder; ?>" />
+			<input type="text" name="add_client_form_name" id="add_client_form_name" class="required" value="<?php echo (isset($add_client_data_name)) ? html_output(stripslashes($add_client_data_name)) : ''; ?>" placeholder="<?php echo $name_placeholder; ?>" />
 		</li>
 		<li>
 			<label for="add_client_form_user"><?php _e('Log in username','cftp_admin'); ?></label>
-			<input type="text" name="add_client_form_user" id="add_client_form_user" class="<?php if (!$disable_user) { echo 'required'; } ?>" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($add_client_data_user)) ? stripslashes($add_client_data_user) : ''; ?>" <?php if ($disable_user) { echo 'readonly'; }?> placeholder="<?php _e("Must be alphanumeric",'cftp_admin'); ?>" />
+			<input type="text" name="add_client_form_user" id="add_client_form_user" class="<?php if (!$disable_user) { echo 'required'; } ?>" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($add_client_data_user)) ? html_output(stripslashes($add_client_data_user)) : ''; ?>" <?php if ($disable_user) { echo 'readonly'; }?> placeholder="<?php _e("Must be alphanumeric",'cftp_admin'); ?>" />
 		</li>
 		<li>
 			<button type="button" class="btn password_toggler pass_toggler_show"><i class="icon-eye-open"></i></button>
@@ -113,22 +113,22 @@ switch ($clients_form_type) {
 		</li>
 		<li>
 			<label for="add_client_form_email"><?php _e('E-mail','cftp_admin'); ?></label>
-			<input type="text" name="add_client_form_email" id="add_client_form_email" class="required" value="<?php echo (isset($add_client_data_email)) ? stripslashes($add_client_data_email) : ''; ?>" placeholder="<?php _e("Must be valid and unique",'cftp_admin'); ?>" />
+			<input type="text" name="add_client_form_email" id="add_client_form_email" class="required" value="<?php echo (isset($add_client_data_email)) ? html_output(stripslashes($add_client_data_email)) : ''; ?>" placeholder="<?php _e("Must be valid and unique",'cftp_admin'); ?>" />
 		</li>
 		<li>
 			<label for="add_client_form_address"><?php _e('Address','cftp_admin'); ?></label>
-			<input type="text" name="add_client_form_address" id="add_client_form_address" value="<?php echo (isset($add_client_data_addr)) ? stripslashes($add_client_data_addr) : ''; ?>" />
+			<input type="text" name="add_client_form_address" id="add_client_form_address" value="<?php echo (isset($add_client_data_addr)) ? html_output(stripslashes($add_client_data_addr)) : ''; ?>" />
 		</li>
 		<li>
 			<label for="add_client_form_phone"><?php _e('Telephone','cftp_admin'); ?></label>
-			<input type="text" name="add_client_form_phone" id="add_client_form_phone" value="<?php echo (isset($add_client_data_phone)) ? stripslashes($add_client_data_phone) : ''; ?>" />
+			<input type="text" name="add_client_form_phone" id="add_client_form_phone" value="<?php echo (isset($add_client_data_phone)) ? html_output(stripslashes($add_client_data_phone)) : ''; ?>" />
 		</li>
 		<?php
 			if ($extra_fields == true) {
 		?>
 				<li>
 					<label for="add_client_form_intcont"><?php _e('Internal contact name','cftp_admin'); ?></label>
-					<input type="text" name="add_client_form_intcont" id="add_client_form_intcont" value="<?php echo (isset($add_client_data_intcont)) ? stripslashes($add_client_data_intcont) : ''; ?>" />
+					<input type="text" name="add_client_form_intcont" id="add_client_form_intcont" value="<?php echo (isset($add_client_data_intcont)) ? html_output(stripslashes($add_client_data_intcont)) : ''; ?>" />
 				</li>
 				<li>
 					<label for="add_client_form_active"><?php _e('Active (client can log in)','cftp_admin'); ?></label>
@@ -144,7 +144,7 @@ switch ($clients_form_type) {
 	</ul>
 
 	<div class="inside_form_buttons">
-		<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php echo $submit_value; ?></button>
+		<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php echo html_output($submit_value); ?></button>
 	</div>
 
 	<?php

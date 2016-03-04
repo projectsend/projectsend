@@ -62,7 +62,7 @@ $(document).ready(function() {
 		/** Continue only if 1 or more clients were selected. */
 		if(!empty($_POST['selected_clients'])) {
 			$selected_clients = $_POST['selected_clients'];
-			$clients_to_get = mysql_real_escape_string(implode(',',array_unique($selected_clients)));
+			$clients_to_get = mysql_real_escape_string(implode(',',array_map('intval',array_unique($selected_clients))));
 
 			/**
 			 * Make a list of users to avoid individual queries.
@@ -143,7 +143,7 @@ $(document).ready(function() {
 
 	/** Add the status filter */	
 	if(isset($_POST['status']) && $_POST['status'] != 'all') {
-		$status_filter = $_POST['status'];
+		$status_filter = mysql_real_escape_string($_POST['status']);
 		$cq .= " AND active='$status_filter'";
 		$no_results_error = 'filter';
 	}
@@ -156,7 +156,7 @@ $(document).ready(function() {
 		<div class="form_actions_left">
 			<div class="form_actions_limit_results">
 				<form action="clients.php" name="clients_search" method="post" class="form-inline">
-					<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo $_POST['search']; } ?>" class="txtfield form_actions_search_box" />
+					<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box" />
 					<button type="submit" id="btn_proceed_search" class="btn btn-small"><?php _e('Search','cftp_admin'); ?></button>
 				</form>
 
@@ -188,7 +188,7 @@ $(document).ready(function() {
 			<div class="clear"></div>
 
 			<div class="form_actions_count">
-				<p class="form_count_total"><?php _e('Showing','cftp_admin'); ?>: <span><?php echo $count; ?> <?php _e('clients','cftp_admin'); ?></span></p>
+				<p class="form_count_total"><?php _e('Showing','cftp_admin'); ?>: <span><?php echo html_output($count); ?> <?php _e('clients','cftp_admin'); ?></span></p>
 				<ul id="table_view_modes">
 					<li><a href="#" id="view_reduced" class="active_view_button"><?php _e('View reduced table','cftp_admin'); ?></a></li><li>
 						<a href="#" id="view_full"><?php _e('View full table','cftp_admin'); ?></a></li>
@@ -255,10 +255,10 @@ $(document).ready(function() {
 								$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
 					?>
 								<tr>
-									<td><input type="checkbox" name="selected_clients[]" value="<?php echo $row["id"]; ?>" /></td>
-									<td><?php echo html_entity_decode($row["name"]); ?></td>
-									<td><?php echo html_entity_decode($row["user"]); ?></td>
-									<td><?php echo html_entity_decode($row["email"]); ?></td>
+									<td><input type="checkbox" name="selected_clients[]" value="<?php echo html_output($row["id"]); ?>" /></td>
+									<td><?php echo html_output($row["name"]); ?></td>
+									<td><?php echo html_output($row["user"]); ?></td>
+									<td><?php echo html_output($row["email"]); ?></td>
 									<td>
 										<?php
 											$own_files = 0;
@@ -279,10 +279,10 @@ $(document).ready(function() {
 												}
 											}
 											
-											echo $own_files;
+											echo html_output($own_files);
 										?>
 									</td>
-									<td><?php echo $groups_files; ?>
+									<td><?php echo html_output($groups_files); ?>
 									</td>
 									<td>
 										<?php
@@ -300,9 +300,9 @@ $(document).ready(function() {
 									<td data-value="<?php echo strtotime($row['timestamp']); ?>">
 										<?php echo $date; ?>
 									</td>
-									<td><?php echo html_entity_decode($row["address"]); ?></td>
-									<td><?php echo html_entity_decode($row["phone"]); ?></td>
-									<td><?php echo html_entity_decode($row["contact"]); ?></td>
+									<td><?php echo html_output($row["address"]); ?></td>
+									<td><?php echo html_output($row["phone"]); ?></td>
+									<td><?php echo html_output($row["contact"]); ?></td>
 									<td>
 										<?php
 											if ($own_files + $groups_files > 0) {
@@ -325,8 +325,8 @@ $(document).ready(function() {
 										?>
 										<a href="<?php echo $files_link; ?>" class="btn btn-small <?php echo $files_button; ?>"><?php _e('Manage files','cftp_admin'); ?></a>
 										<a href="<?php echo $groups_link; ?>" class="btn btn-small <?php echo $groups_button; ?>"><?php _e('View groups','cftp_admin'); ?></a>
-										<a href="my_files/?client=<?php echo $row["user"]; ?>" class="btn btn-primary btn-small" target="_blank"><?php _e('View as client','cftp_admin'); ?></a>
-										<a href="clients-edit.php?id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-small"><?php _e('Edit','cftp_admin'); ?></a>
+										<a href="my_files/?client=<?php echo html_output($row["user"]); ?>" class="btn btn-primary btn-small" target="_blank"><?php _e('View as client','cftp_admin'); ?></a>
+										<a href="clients-edit.php?id=<?php echo html_output($row["id"]); ?>" class="btn btn-primary btn-small"><?php _e('Edit','cftp_admin'); ?></a>
 									</td>
 								</tr>
 					<?php

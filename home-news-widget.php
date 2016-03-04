@@ -17,10 +17,10 @@
 						?>
 								<li>
 									<span class="date"><?php echo date(TIMEFORMAT_USE,strtotime($item->pubDate)); ?></span>
-									<a href="<?php echo $item->link; ?>" target="_blank">
-										<h5><?php echo $item->title; ?></h5>
+									<a href="<?php echo html_output($item->link); ?>" target="_blank">
+										<h5><?php echo html_output($item->title); ?></h5>
 									</a>
-									<p><?php echo make_excerpt(strip_tags($item->description, '<br />'),200); ?>
+									<p><?php echo make_excerpt(html_output(strip_tags($item->description, '<br />')),200); ?>
 								</li>
 						<?php
 								$n++;

@@ -12,6 +12,11 @@ $datepicker		= 1;
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 
+//Add a session check here
+if(!check_for_session()) {
+    header("location:" . BASE_URI . "index.php");
+}
+
 $active_nav = 'files';
 
 $page_title = __('Edit file','cftp_admin');
@@ -294,7 +299,7 @@ $current_level = get_current_user_level();
 			}
 			/** Validations OK, show the editor */
 	?>
-			<form action="edit-file.php?file_id=<?php echo $this_file_id; ?>" method="post" name="edit_file" id="edit_file">
+			<form action="edit-file.php?file_id=<?php echo filter_var($this_file_id,FILTER_VALIDATE_INT); ?>" method="post" name="edit_file" id="edit_file">
 				<?php
 					/** Reconstruct the current assignments arrays */
 					$file_on_clients = array();
@@ -331,12 +336,12 @@ $current_level = get_current_user_level();
 											<div class="span12">
 												<h3><?php _e('File information', 'cftp_admin');?></h3>
 												<p class="on_disc_name">
-													<?php echo $row['url']; ?>
+													<?php echo html_output($row['url']); ?>
 												</p>
 												<label><?php _e('Title', 'cftp_admin');?></label>
-												<input type="text" name="file[<?php echo $i; ?>][name]" value="<?php echo $row['filename']; ?>" class="file_title" placeholder="<?php _e('Enter here the required file title.', 'cftp_admin');?>" />
+												<input type="text" name="file[<?php echo $i; ?>][name]" value="<?php echo html_output($row['filename']); ?>" class="file_title" placeholder="<?php _e('Enter here the required file title.', 'cftp_admin');?>" />
 												<label><?php _e('Description', 'cftp_admin');?></label>
-												<textarea name="file[<?php echo $i; ?>][description]" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (!empty($row['description'])) ? $row['description'] : ''; ?></textarea>
+												<textarea name="file[<?php echo $i; ?>][description]" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (!empty($row['description'])) ? html_output($row['description']) : ''; ?></textarea>
 											</div>
 										</div>
 									</div>

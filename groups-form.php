@@ -33,15 +33,15 @@ switch ($groups_form_type) {
 }
 ?>
 
-<form action="<?php echo $form_action; ?>" name="addgroup" method="post">
+<form action="<?php echo html_output($form_action); ?>" name="addgroup" method="post">
 	<ul class="form_fields">
 		<li>
 			<label for="add_group_form_name"><?php _e('Group name','cftp_admin'); ?></label>
-			<input type="text" name="add_group_form_name" id="add_group_form_name" class="required" value="<?php echo (isset($add_group_data_name)) ? stripslashes($add_group_data_name) : ''; ?>" />
+			<input type="text" name="add_group_form_name" id="add_group_form_name" class="required" value="<?php echo (isset($add_group_data_name)) ? html_output(stripslashes($add_group_data_name)) : ''; ?>" />
 		</li>
 		<li>
 			<label for="add_group_form_description" class="textarea_label"><?php _e('Description','cftp_admin'); ?></label>
-			<textarea name="add_group_form_description" id="add_group_form_description"><?php echo (isset($add_group_data_description)) ? stripslashes($add_group_data_description) : ''; ?></textarea>
+			<textarea name="add_group_form_description" id="add_group_form_description"><?php echo (isset($add_group_data_description)) ? html_output($add_group_data_description) : ''; ?></textarea>
 		</li>
 		<li class="assigns">
 			<label for="add_group_form_members"><?php _e('Members','cftp_admin'); ?></label>
@@ -58,7 +58,7 @@ switch ($groups_form_type) {
 									}
 								}
 							?>
-						><?php echo $row["name"]; ?></option>
+						><?php echo html_output($row["name"]); ?></option>
 				<?php
 					}
 				?>
@@ -71,7 +71,7 @@ switch ($groups_form_type) {
 	</ul>
 
 	<div class="inside_form_buttons">
-		<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php echo $submit_value; ?></button>
+		<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php echo html_output($submit_value); ?></button>
 	</div>
 </form>
 

@@ -53,12 +53,12 @@ $count = count($my_files);
 		
 		<div id="menu">
 			<p class="welcome">
-				<?php _e('Welcome','pinboxes_template'); ?>, <?php echo $client_info['name']; ?>
+				<?php _e('Welcome','pinboxes_template'); ?>, <?php echo html_output($client_info['name']); ?>
 			</p>
 			<ul>
 				<li id="search_box">
 					<form action="" name="files_search" method="post">
-						<input type="text" name="search" id="search_text" value="<?php echo (isset($_POST['search']) && !empty($_POST['search'])) ? $_POST['search'] : ''; ?>" placeholder="<?php _e('Search...','pinboxes_template'); ?>">
+						<input type="text" name="search" id="search_text" value="<?php echo (isset($_POST['search']) && !empty($_POST['search'])) ? html_output($_POST['search']) : ''; ?>" placeholder="<?php _e('Search...','pinboxes_template'); ?>">
 						<input type="submit" id="search_go" value="<?php _e('Search','pinboxes_template'); ?>" />
 					</form>
 				</li><li>

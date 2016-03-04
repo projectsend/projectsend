@@ -182,14 +182,14 @@ include('header.php');
 
 	<div class="form_actions_left">
 		<div class="form_actions_limit_results">
-			<form action="groups.php<?php if(isset($member_exists)) { ?>?member=<?php echo $member; } ?>" name="groups_search" method="post" class="form-inline">
-				<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo $_POST['search']; } ?>" class="txtfield form_actions_search_box" />
+			<form action="groups.php<?php if(isset($member_exists)) { ?>?member=<?php echo html_output($member); } ?>" name="groups_search" method="post" class="form-inline">
+				<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box" />
 				<button type="submit" id="btn_proceed_search" class="btn btn-small"><?php _e('Search','cftp_admin'); ?></button>
 			</form>
 		</div>
 	</div>
 
-	<form action="groups.php<?php if(isset($member_exists)) { ?>?member=<?php echo $member; } ?>" name="groups_list" method="post" class="form-inline">
+	<form action="groups.php<?php if(isset($member_exists)) { ?>?member=<?php echo html_output($member); } ?>" name="groups_list" method="post" class="form-inline">
 		<div class="form_actions_right">
 			<div class="form_actions">
 				<div class="form_actions_submit">
@@ -262,8 +262,8 @@ include('header.php');
 							<input type="checkbox" name="groups[]" value="<?php echo $row["id"]; ?>" />
 						<?php } ?>
 					</td>
-					<td><?php echo html_entity_decode($row["name"]); ?></td>
-					<td><?php echo html_entity_decode($row["description"]); ?></td>
+					<td><?php echo html_output($row["name"]); ?></td>
+					<td><?php echo html_output($row["description"]); ?></td>
 					<td>
 						<?php
 							if (isset($members_amount[$row['id']])) {
@@ -284,8 +284,8 @@ include('header.php');
 							}
 						?>
 					</td>
-					<td><?php echo html_entity_decode($row["created_by"]); ?></td>
-					<td data-value="<?php echo strtotime($row['timestamp']); ?>">
+					<td><?php echo html_output($row["created_by"]); ?></td>
+					<td data-value="<?php echo html_output($row['timestamp']); ?>">
 						<?php echo $date; ?>
 					</td>
 					<td>

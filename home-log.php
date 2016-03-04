@@ -11,7 +11,7 @@
 		 */
 		if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest')) {
 			$max_show_log = 10;
-			$log_action = $_GET['action'];
+			$log_action = mysql_real_escape_string($_GET['action']);
 		
 			$log_query = "SELECT * FROM tbl_actions_log";
 		
@@ -39,17 +39,17 @@
 				?>
 					<li>
 						<div class="log_ico">
-							<img src="img/log_icons/<?php echo $rendered['icon']; ?>.png" alt="Action icon">
+							<img src="img/log_icons/<?php echo html_output($rendered['icon']); ?>.png" alt="Action icon">
 						</div>
 						<div class="home_log_text">
-							<div class="date"><?php echo $rendered['timestamp']; ?></div>
+							<div class="date"><?php echo html_output($rendered['timestamp']); ?></div>
 							<div class="action">
 								<?php
-									if (!empty($rendered['1'])) { echo '<span>'.$rendered['1'].'</span> '; }
-									echo $rendered['text'].' ';
-									if (!empty($rendered['2'])) { echo '<span class="secondary">'.$rendered['2'].'</span> '; }
-									if (!empty($rendered['3'])) { echo ' '.$rendered['3'].' '; }
-									if (!empty($rendered['4'])) { echo '<span>'.$rendered['4'].'</span> '; }
+									if (!empty($rendered['1'])) { echo '<span>'.html_output($rendered['1']).'</span> '; }
+									echo html_output($rendered['text']).' ';
+									if (!empty($rendered['2'])) { echo '<span class="secondary">'.html_output($rendered['2']).'</span> '; }
+									if (!empty($rendered['3'])) { echo ' '.html_output($rendered['3']).' '; }
+									if (!empty($rendered['4'])) { echo '<span>'.html_output($rendered['4']).'</span> '; }
 								?>
 							</div>
 						</div>

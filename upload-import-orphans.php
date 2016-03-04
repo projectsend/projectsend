@@ -149,7 +149,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 
 				<div class="form_actions_limit_results">
 					<form action="" name="files_search" method="post" class="form-inline">
-						<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo htmlspecialchars($_POST['search']); } ?>" class="txtfield form_actions_search_box" />
+						<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box" />
 						<button type="submit" id="btn_proceed_search" class="btn btn-small"><?php _e('Search','cftp_admin'); ?></button>
 					</form>
 				</div>
@@ -173,9 +173,9 @@ $work_folder = UPLOADED_FILES_FOLDER;
 								foreach ($files_to_add as $add_file) {
 									?>
 										<tr>
-											<td><input type="checkbox" name="add[]" value="<?php echo $add_file['name']; ?>" /></td>
-											<td><?php echo $add_file['name']; ?></td>
-											<td data-value="<?php echo filesize($add_file['path']); ?>"><?php echo format_file_size(filesize($add_file['path'])); ?></td>
+											<td><input type="checkbox" name="add[]" value="<?php echo html_output($add_file['name']); ?>" /></td>
+											<td><?php echo html_output($add_file['name']); ?></td>
+											<td data-value="<?php echo filesize($add_file['path']); ?>"><?php echo html_output(format_file_size(filesize($add_file['path']))); ?></td>
 											<td data-value="<?php echo filemtime($add_file['path']); ?>">
 												<?php echo date(TIMEFORMAT_USE, filemtime($add_file['path'])); ?>
 											</td>
@@ -233,7 +233,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 					<p>
 						<?php
 							_e('To use this feature you need to upload your files via FTP to the folder', 'cftp_admin');
-							echo ' <strong>'.$work_folder.'</strong>.';
+							echo ' <strong>'.html_output($work_folder).'</strong>.';
 						?>
 					</p>
 					<p><?php _e('This is the same folder where the files uploaded by the web interface will be stored. So if you finish uploading your files but do not assign them to any clients/groups, the files will still be there for later use.', 'cftp_admin'); ?></p>

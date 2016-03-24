@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-05-25 20:02-0300\n"
-"Last-Translator: Levin Germann <levin.germann@gmail.com>\n"
+"PO-Revision-Date: 2016-03-24 21:42+0100\n"
+"Last-Translator: Tim Schneider <tim.schneider@nb-dev.de>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/projectsend/"
 "language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 1.8.7\n"
 
 #. Text in echo
 #: options.php:319
@@ -440,6 +440,11 @@ msgstr ""
 "Nach der Systeminstallation können Sie zu den Einstellungen wechseln, um "
 "Ihre Zeitzone, Ihr bevorzugtes Datumsformat und die Vorschauparameter "
 "einzustellen."
+
+#. Text in echo
+#: home.php:70
+msgid "Used Disk Space"
+msgstr "Verwendeter Speicherplatz"
 
 #. Text in echo
 #: home.php:77 actions-log.php:138
@@ -1318,8 +1323,8 @@ msgid "Log in"
 msgstr "Anmelden"
 
 #. Text in echo
-#: users-form.php:91 clients.php:226 clients-form.php:105
-#: install/index.php:278 users.php:250
+#: users-form.php:91 clients.php:226 clients-form.php:105 install/index.php:278
+#: users.php:250
 msgid "Log in username"
 msgstr "Benutzername für Anmeldung"
 

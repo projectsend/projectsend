@@ -15,6 +15,18 @@ include('header.php');
 $database->MySQLDB();
 
 define('CAN_INCLUDE_FILES', true);
+
+/** Get the size of all files */
+$dir = new DirectoryIterator(UPLOADED_FILES_FOLDER);
+$total_file_size = 0;
+
+foreach($dir as $fileinfo){
+	if ($fileinfo->isFile()) {
+		$total_file_size += get_real_size($fileinfo->getPathname());
+	}
+}
+
+
 ?>
 
 <div id="main">
@@ -54,6 +66,9 @@ define('CAN_INCLUDE_FILES', true);
 						</div>
 						<div class="row-fluid">
 							<div class="span6">
+								<div class="widget">
+									<h4><?php _e('Used Disk Space','cftp_admin'); ?>: <?php echo html_output(format_file_size($total_file_size)); ?></h4>
+								</div>
 								<?php include(ROOT_DIR.'/home-news-widget.php'); ?>
 							</div>
 							<div class="span6">
@@ -115,6 +130,7 @@ define('CAN_INCLUDE_FILES', true);
 
 	$sql = $database->query("SELECT distinct user FROM tbl_users WHERE level != '0'");
 	$total_users = mysql_num_rows($sql);
+
 ?>
 <script type="text/javascript">
 	$(document).ready(function(){
@@ -167,6 +183,8 @@ define('CAN_INCLUDE_FILES', true);
 				}
 			}
 		);
+
+
 
 		// Generate the graphic		
 		$('.stats_days').click(function(e) {

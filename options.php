@@ -449,7 +449,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 
 									<li>
 										<h3><?php _e('Passwords','cftp_admin'); ?></h3>
-										<p><?php _e('When setting up a password for an account, requiere at least:','cftp_admin'); ?><br />
+										<p><?php _e('When setting up a password for an account, require at least:','cftp_admin'); ?><br />
 									</li>
 									<li>
 										<label for="pass_require_upper"><?php echo $validation_req_upper; ?></label>

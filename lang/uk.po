@@ -2893,7 +2893,7 @@ msgstr "Коли системний користувач завантажує ф
 
 #. Text in echo
 #: options.php:452
-msgid "When setting up a password for an account, requiere at least:"
+msgid "When setting up a password for an account, require at least:"
 msgstr "При встановленні паролю для облікового запису вимагати щонайменше:"
 
 #. Text in function

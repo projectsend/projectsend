@@ -122,7 +122,7 @@ define('CLIENT_UPLOADS_TEMP_FOLDER', ROOT_DIR.'/upload/temp');
  *
  */
 define('SYSTEM_URI','http://www.projectsend.org/');
-define('SYSTEM_URI_LABEL','ProjectSend on Google Code');
+define('SYSTEM_URI_LABEL','ProjectSend homepage');
 define('DONATIONS_URL','http://www.projectsend.org/donations/');
 /** Previously cFTP */
 define('SYSTEM_NAME','ProjectSend');

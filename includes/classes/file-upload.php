@@ -185,6 +185,7 @@ class PSend_Upload_File
 		$this->uploader_id = $arguments['uploader_id'];
 		$this->groups = $arguments['all_groups'];
 		$this->users = $arguments['all_users'];
+		if (empty($arguments['assign_to'])) { $arguments['assign_to'] = array("c"); }
 
 		if (!empty($arguments['assign_to'])) {
 			$this->assign_to = $arguments['assign_to'];
@@ -203,8 +204,13 @@ class PSend_Upload_File
 						break;
 				}
 				$this->assignment = substr($this->assignment, 1);
+				if (empty($this->assignment)){
+					$assignment_sql = 'NULL';
+				}else{
+					$assignment_sql = "'$this->assignment'";
+				}
 				$assign_file = $database->query("INSERT INTO tbl_files_relations (file_id, $this->add_to, hidden)"
-											."VALUES ('$this->file_id', '$this->assignment', '$this->hidden')");
+											."VALUES ('$this->file_id', $assignment_sql, '$this->hidden')");
 				
 				if ($this->uploader_type == 'user') {
 					/** Record the action log */

@@ -47,7 +47,7 @@ class FilesActions
 	function delete_files($rel_id)
 	{
 		global $database;
-		$this->check_level = array(9,8);
+		$this->check_level = array(9,8,7);
 		if (isset($rel_id)) {
 			/** Do a permissions check */
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {

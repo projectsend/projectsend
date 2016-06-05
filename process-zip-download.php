@@ -12,15 +12,14 @@ $zip_file = tempnam("tmp", "zip");
 $zip = new ZipArchive();
 $zip->open($zip_file, ZipArchive::OVERWRITE);
 
-$files_to_zip = explode(',',substr(mysql_real_escape_string($_GET['file']), 0, -1));
+$files_to_zip = explode( ',', $_GET['file'] );
 
-foreach ($files_to_zip as $idx=>$file) {
+foreach ($files_to_zip as $idx => $file) {
     $file = UPLOADED_FILES_FOLDER . $file;
-    if(!(realpath($file) && substr(realpath($file),0,strlen(UPLOADED_FILES_FOLDER)) === UPLOADED_FILES_FOLDER)){
-       unset($files_to_zip[$idx]);
+    if ( !( realpath( $file ) && substr( realpath( $file ),0, strlen( UPLOADED_FILES_FOLDER ) ) ) === UPLOADED_FILES_FOLDER ){
+       unset( $files_to_zip[$idx] );
     }
 }
-
 
 $added_files = 0;
 
@@ -30,13 +29,15 @@ $current_username = get_current_user_username();
 /**
  * Get the list of different groups the client belongs to.
  */
-$sql_groups = $database->query("SELECT DISTINCT group_id FROM tbl_members WHERE client_id='".$global_id."'");
-$count_groups = mysql_num_rows($sql_groups);
-if ($count_groups > 0) {
-	while($row_groups = mysql_fetch_array($sql_groups)) {
-		$groups_ids[] = $row_groups["group_id"];
+$statement = $dbh->prepare("SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE client_id = :client_id");
+$statement->bindParam(':client_id', $global_id, PDO::PARAM_INT);
+$statement->execute();
+if ( $statement->rowCount() > 0) {
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
+	while( $row = $statement->fetch() ) {
+		$groups_ids[] = $row["group_id"];
 	}
-	$found_groups = implode(',',$groups_ids);
+	$found_groups = implode(',', $groups_ids);
 }
 
 foreach ($files_to_zip as $file_to_zip) {
@@ -45,11 +46,15 @@ foreach ($files_to_zip as $file_to_zip) {
 	 * that only files under his account can be added.
 	 */
 	if ($current_level == 0) {
-		$sql_url = $database->query('SELECT id, expires, expiry_date FROM tbl_files WHERE url="' . $file_to_zip .'"');
-		$row_url = mysql_fetch_array($sql_url);
-		$this_file_id			= $row_url['id'];
-		$this_file_expires		= $row_url['expires'];
-		$this_file_expiry_date	= $row_url['expiry_date'];
+		$statement = $dbh->prepare("SELECT id, expires, expiry_date FROM " . TABLE_FILES . " WHERE url = :url");
+		$statement->bindParam(':url', $file_to_zip);
+		$statement->execute();
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
+		$row = $statement->fetch();
+
+		$this_file_id			= $row['id'];
+		$this_file_expires		= $row['expires'];
+		$this_file_expiry_date	= $row['expiry_date'];
 
 		$this_file_expired		= false;
 		if ($this_file_expires == '1' && time() > strtotime($this_file_expiry_date)) {
@@ -57,15 +62,23 @@ foreach ($files_to_zip as $file_to_zip) {
 		}
 		
 		if ($this_file_expires == '0' || $this_file_expired == false) {
-			$fq = 'SELECT * FROM tbl_files_relations WHERE (client_id="' . $global_id . '" OR group_id IN ("' . $found_groups . '")) AND file_id="' . $this_file_id .'" AND hidden = "0"';
-			//echo $fq.'<br />';
-			$sql = $database->query($fq);
-			$row = mysql_fetch_array($sql);
+			$statement = $dbh->prepare("SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE (client_id = :client_id OR FIND_IN_SET(group_id, :groups)) AND file_id = :file_id AND hidden = '0'");
+			$statement->bindParam(':client_id', $global_id, PDO::PARAM_INT);
+			$statement->bindParam(':groups', $found_groups);
+			$statement->bindParam(':file_id', $this_file_id, PDO::PARAM_INT);
+			$statement->execute();
+			$statement->setFetchMode(PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
+
 			/** Add the file */
 			$allowed_to_zip[$row['file_id']] = $file_to_zip;
 
 			/** Add the download row */
-			$sql_sum = $database->query('INSERT INTO tbl_downloads (user_id , file_id) VALUES ("' . CURRENT_USER_ID .'", "' . $this_file_id .'")');
+			$statement = $dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (user_id , file_id)"
+										." VALUES (:user_id, :file_id)");
+			$statement->bindValue(':user_id', CURRENT_USER_ID, PDO::PARAM_INT);
+			$statement->bindParam(':file_id', $this_file_id, PDO::PARAM_INT);
+			$statement->execute();
 		}
 	}
 	else {

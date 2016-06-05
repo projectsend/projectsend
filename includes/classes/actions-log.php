@@ -55,7 +55,7 @@ class LogActions
 	 */
 	function log_action_save($arguments)
 	{
-		global $database;
+		global $dbh;
 		global $global_name;
 		$this->state = array();
 
@@ -70,41 +70,55 @@ class LogActions
 		
 		/** Get the real name of the client or user */
 		if (!empty($arguments['get_user_real_name'])) {
-			$this->short_query = $database->query("SELECT name FROM tbl_users WHERE user = '$this->affected_account_name'");
-			while ($srow = mysql_fetch_array($this->short_query)) {
+			$this->short_query = $dbh->prepare( "SELECT name FROM " . TABLE_USERS . " WHERE user =:user" );
+			$params = array(
+							':user'		=> $this->affected_account_name,
+						);
+			$this->short_query->execute( $params );
+			$this->short_query->setFetchMode(PDO::FETCH_ASSOC);
+			while ( $srow = $this->short_query->fetch() ) {
 				$this->affected_account_name = $srow['name'];
 			}
 		}
 
-		/** Get the real name of the file on downloads */
+		/** Get the title of the file on downloads */
 		if (!empty($arguments['get_file_real_name'])) {
-			$this->short_query = $database->query("SELECT filename FROM tbl_files WHERE url = '$this->affected_file_name'");
-			while ($srow = mysql_fetch_array($this->short_query)) {
+			$this->short_query = $dbh->prepare( "SELECT filename FROM " . TABLE_FILES . " WHERE url =:file" );
+			$params = array(
+							':file'		=> $this->affected_file_name,
+						);
+			$this->short_query->execute( $params );
+			$this->short_query->setFetchMode(PDO::FETCH_ASSOC);
+			while ( $srow = $this->short_query->fetch() ) {
 				$this->affected_file_name = $srow['filename'];
 			}
 		}
 
 		/** Insert the client information into the database */
-		$lq = "INSERT INTO tbl_actions_log (action,owner_id,owner_user";
+		$lq = "INSERT INTO " . TABLE_LOG . " (action,owner_id,owner_user";
 		
 			if (!empty($this->affected_file)) { $lq .= ",affected_file"; }
 			if (!empty($this->affected_account)) { $lq .= ",affected_account"; }
 			if (!empty($this->affected_file_name)) { $lq .= ",affected_file_name"; }
 			if (!empty($this->affected_account_name)) { $lq .= ",affected_account_name"; }
 		
-		$lq .= ") VALUES ('$this->action', '$this->owner_id', '$this->owner_user'";
+		$lq .= ") VALUES (:action, :owner_id, :owner_user";
+
+			$params = array(
+							':action'		=> $this->action,
+							':owner_id'		=> $this->owner_id,
+							':owner_user'	=> $this->owner_user,
+						);
 		
-			if (!empty($this->affected_file)) { $lq .= ",$this->affected_file"; }
-			if (!empty($this->affected_account)) { $lq .= ",$this->affected_account"; }
-			if (!empty($this->affected_file_name)) { $lq .= ",'$this->affected_file_name'"; }
-			if (!empty($this->affected_account_name)) { $lq .= ",'$this->affected_account_name'"; }
+			if (!empty($this->affected_file)) {			$lq .= ", :file";		$params['file'] = $this->affected_file; }
+			if (!empty($this->affected_account)) {		$lq .= ", :account";	$params['account'] = $this->affected_account; }
+			if (!empty($this->affected_file_name)) {	$lq .= ", :title";		$params['title'] = $this->affected_file_name; }
+			if (!empty($this->affected_account_name)) {	$lq .= ", :name";		$params['name'] = $this->affected_account_name; }
 
 		$lq .= ")";
-		$this->sql_query = $database->query($lq);
-		
-		//echo $lq.'<br />'; echo mysql_error().'<br />'; exit;
+
+		$this->sql_query = $dbh->prepare( $lq );
+		$this->sql_query->execute( $params );
 	}
-
 }
-
 ?>

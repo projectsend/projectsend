@@ -28,24 +28,27 @@ define('CAN_INCLUDE_FILES', true);
  * The file's id is passed on the URI.
  */
 if (!empty($_GET['file_id'])) {
-	$this_file_id = mysql_real_escape_string($_GET['file_id']);
+	$this_file_id = $_GET['file_id'];
 }
 
 /** Fill the users array that will be used on the notifications process */
 $users = array();
-$cq = "SELECT id, name, level FROM tbl_users ORDER BY name ASC";
-$sql = $database->query($cq);
-while($row = mysql_fetch_array($sql)) {
+$statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . " ORDER BY name ASC");
+$statement->execute();
+$statement->setFetchMode(PDO::FETCH_ASSOC);
+while( $row = $statement->fetch() ) {
 	$users[$row["id"]] = $row["name"];
 	if ($row["level"] == '0') {
 		$clients[$row["id"]] = $row["name"];
 	}
 }
+
 /** Fill the groups array that will be used on the form */
 $groups = array();
-$cq = "SELECT id, name FROM tbl_groups ORDER BY name ASC";
-$sql = $database->query($cq);
-	while($row = mysql_fetch_array($sql)) {
+$statement = $dbh->prepare("SELECT id, name FROM " . TABLE_GROUPS . " ORDER BY name ASC");
+$statement->execute();
+$statement->setFetchMode(PDO::FETCH_ASSOC);
+while( $row = $statement->fetch() ) {
 	$groups[$row["id"]] = $row["name"];
 }
 
@@ -72,23 +75,24 @@ $current_level = get_current_user_level();
 			$no_results_error = 'no_id_passed';
 		}
 		else {
-			$database->MySQLDB();
-			$files_query = 'SELECT * FROM tbl_files WHERE id="' . $this_file_id . '"';
-	
+			$sql = $dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE id = :id");
+			$sql->bindParam(':id', $this_file_id, PDO::PARAM_INT);
+			$sql->execute();
+
 			/**
 			 * Count the files assigned to this client. If there is none, show
 			 * an error message.
 			 */
-			$sql = $database->query($files_query);
-			$count = mysql_num_rows($sql);
-			if (!$count) {
+			$count = $sql->rowCount();
+			if ( $count == 0 ) {
 				$no_results_error = 'id_not_exists';
 			}
 	
 			/**
 			 * Continue if client exists and has files under his account.
 			 */
-			while($row = mysql_fetch_array($sql)) {
+			$sql->setFetchMode(PDO::FETCH_ASSOC);
+			while( $row = $sql->fetch() ) {
 				$edit_file_info['url'] = $row['url'];
 				$edit_file_info['id'] = $row['id'];
 
@@ -128,13 +132,13 @@ $current_level = get_current_user_level();
 			$file_on_clients = array();
 			$file_on_groups = array();
 
-			if(isset($_POST['submit'])) {
+			if ( isset($_POST['submit'] ) ) {
 
-				$assignments_query = 'SELECT file_id, client_id, group_id FROM tbl_files_relations WHERE file_id="' . $this_file_id . '"';
-				$assignments_sql = $database->query($assignments_query);
-				$assignments_count = mysql_num_rows($assignments_sql);
-				if ($assignments_count > 0) {
-					while ($assignment_row = mysql_fetch_array($assignments_sql)) {
+				$assignments = $dbh->prepare("SELECT file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :id");
+				$assignments->bindParam(':id', $this_file_id, PDO::PARAM_INT);
+				$assignments->execute();
+				if ($assignments->rowCount() > 0) {
+					while ( $assignment_row = $assignments->fetch() ) {
 						if (!empty($assignment_row['client_id'])) {
 							$file_on_clients[] = $assignment_row['client_id'];
 						}
@@ -143,7 +147,7 @@ $current_level = get_current_user_level();
 						}
 					}
 				}
-	
+
 				$n = 0;
 				foreach ($_POST['file'] as $file) {
 					$n++;
@@ -304,11 +308,11 @@ $current_level = get_current_user_level();
 					/** Reconstruct the current assignments arrays */
 					$file_on_clients = array();
 					$file_on_groups = array();
-					$assignments_query = 'SELECT file_id, client_id, group_id FROM tbl_files_relations WHERE file_id="' . $this_file_id . '"';
-					$assignments_sql = $database->query($assignments_query);
-					$assignments_count = mysql_num_rows($assignments_sql);
-					if ($assignments_count > 0) {
-						while ($assignment_row = mysql_fetch_array($assignments_sql)) {
+					$assignments = $dbh->prepare("SELECT file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :id");
+					$assignments->bindParam(':id', $this_file_id, PDO::PARAM_INT);
+					$assignments->execute();
+					if ($assignments->rowCount() > 0) {
+						while ( $assignment_row = $assignments->fetch() ) {
 							if (!empty($assignment_row['client_id'])) {
 								$file_on_clients[] = $assignment_row['client_id'];
 							}
@@ -318,10 +322,12 @@ $current_level = get_current_user_level();
 						}
 					}
 
+
 					$i = 1;
-					$files_query = 'SELECT * FROM tbl_files WHERE id="' . $this_file_id . '"';
-					$sql = $database->query($files_query);
-					while($row = mysql_fetch_array($sql)) {
+					$statement = $dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE id = :id");
+					$statement->bindParam(':id', $this_file_id, PDO::PARAM_INT);
+					$statement->execute();
+					while( $row = $statement->fetch() ) {
 				?>
 						<div class="row-fluid edit_files">
 							<div class="span1">
@@ -440,8 +446,6 @@ $current_level = get_current_user_level();
 			</form>
 	<?php
 		}
-
-		$database->Close();
 	?>
 </div>
 

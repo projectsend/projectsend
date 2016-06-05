@@ -19,9 +19,13 @@ if (isset($_COOKIE['access']) && $_COOKIE['access'] == CURRENT_USER_USERNAME) { 
 
 /** In case a client has a session or cookie but is deactivated */
 if (isset($is_client)) {
-	$sql_client = $database->query("SELECT active FROM tbl_users WHERE user='CURRENT_USER_USERNAME'");
-	$row = mysql_fetch_array($sql_client);
-	if ($row['active'] == '0') {
+	global $dbh;
+	$sql_client = $dbh->query("SELECT active FROM " . TABLE_USERS . " WHERE user='" . CURRENT_USER_USERNAME ."'");
+	$sql_client->setFetchMode(PDO::FETCH_ASSOC);
+
+	$row = $sql_client->fetch();
+
+	if ( $row['active'] == '0' ) {
 		header("location:".BASE_URI.'process.php?do=logout');
 		exit;
 	}

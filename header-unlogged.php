@@ -29,9 +29,6 @@ if (!isset($dont_redirect_if_logged)) {
 	/** If client is logged in, redirect to the files list. */
 	check_for_client();
 }
-
-$database->MySQLDB();
-
 /**
  * Silent updates that are needed even if no user is logged in.
  */

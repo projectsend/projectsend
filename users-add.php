@@ -19,8 +19,6 @@ $page_title = __('Add system user','cftp_admin');
 
 include('header.php');
 
-$database->MySQLDB();
-
 /**
  * Set checkboxes as 1 to defaul them to checked when first entering
  * the form
@@ -130,6 +128,5 @@ if ($_POST) {
 </div>
 
 <?php
-	$database->Close();
 	include('footer.php');
 ?>

@@ -5,45 +5,53 @@
  * @package		ProjectSend
  * @subpackage	Install
  */
+define( 'IS_INSTALL', true );
 require_once('../sys.includes.php');
 
-$database->MySQLDB();
-
+global $dbh;
 /**
  * Function that takes an array of SQL queries and executes them in order.
  */
-function try_query($query)
+function try_query($queries)
 {
-	global $database;
+	global $dbh;
 
-	if (empty($error_str)) {
+	if ( empty( $error_str ) ) {
 		global $error_str;
 	}
-	foreach ($query as $i => $value) {
-		$result = $database->query($query[$i]);
-		if (mysql_error()) {
-			$error_str .= mysql_error().'<br />';
+	foreach ($queries as $i => $value) {
+		try {
+			$statement = $dbh->prepare( $queries[$i]['query'] );
+			$params = $queries[$i]['params'];
+			if ( !empty( $params ) ) {
+				foreach ( $params as $name => $value ) {
+					$statement->bindValue( $name, $value );
+				}
+			}
+			$statement->execute( $params );
+		} catch (Exception $e) {
+			$error_str .= $e . '<br>';
 		}
 	}
-	return $result;
+	return $statement;
 }
 
 /** Collect data from form */
 if($_POST) {
-	$this_install_title = mysql_real_escape_string($_POST['this_install_title']);
-	$base_uri = mysql_real_escape_string($_POST['base_uri']);
-	$got_admin_name = mysql_real_escape_string($_POST['install_user_fullname']);
-	$got_admin_username = mysql_real_escape_string($_POST['install_user_username']);
-	$got_admin_email = mysql_real_escape_string($_POST['install_user_mail']);
-	//$got_admin_pass = mysql_real_escape_string(md5($_POST['install_user_pass']));
-	$got_admin_pass = $hasher->HashPassword($_POST['install_user_pass']);
-	//$got_admin_pass2 = mysql_real_escape_string(md5($_POST['install_user_repeat']));
+	$this_install_title		= $_POST['this_install_title'];
+	$base_uri				= $_POST['base_uri'];
+	$got_admin_name			= $_POST['install_user_fullname'];
+	$got_admin_username		= $_POST['install_user_username'];
+	$got_admin_email		= $_POST['install_user_mail'];
+	$got_admin_pass			= $hasher->HashPassword($_POST['install_user_pass']);
+	//$got_admin_pass		= md5($_POST['install_user_pass']);
+	//$got_admin_pass2		= md5($_POST['install_user_repeat']);
 }
 
 /** Define the installation text strings */
-$page_title_install = __('Install','cftp_admin');
-$install_no_sitename = __('Sitename was not completed.','cftp_admin');
-$install_no_baseuri = __('ProjectSend URI was not completed.','cftp_admin');
+$page_title_install		= __('Install','cftp_admin');
+$install_no_sitename	= __('Sitename was not completed.','cftp_admin');
+$install_no_baseuri		= __('ProjectSend URI was not completed.','cftp_admin');
 ?>
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -170,9 +178,9 @@ $install_no_baseuri = __('ProjectSend URI was not completed.','cftp_admin');
 								 * errors later.
 								 */
 								$up_folders = array(
-														'main' => ROOT_DIR.'/upload',
-														'temp' => ROOT_DIR.'/upload/temp',
-														'files' => ROOT_DIR.'/upload/files'
+														'main'	=> ROOT_DIR.'/upload',
+														'temp'	=> ROOT_DIR.'/upload/temp',
+														'files'	=> ROOT_DIR.'/upload/files'
 													);
 								foreach ($up_folders as $work_folder) {
 									if (!file_exists($work_folder)) {
@@ -309,6 +317,5 @@ $install_no_baseuri = __('ProjectSend URI was not completed.','cftp_admin');
 </body>
 </html>
 <?php
-	$database->Close();
 	ob_end_flush();
 ?>

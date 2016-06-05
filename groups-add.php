@@ -16,8 +16,6 @@ $page_title = __('Add clients group','cftp_admin');
 
 include('header.php');
 
-$database->MySQLDB();
-
 if ($_POST) {
 	$new_group = new GroupActions();
 
@@ -100,6 +98,5 @@ if ($_POST) {
 </div>
 
 <?php
-	$database->Close();
 	include('footer.php');
 ?>

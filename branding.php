@@ -15,8 +15,6 @@ $page_title = __('Branding','cftp_admin');
 $active_nav = 'options';
 include('header.php');
 
-$database->MySQLDB();
-
 $logo_file_info = generate_logo_url();
 ?>
 
@@ -44,8 +42,12 @@ if ($_POST) {
 			 * new file name to the database.
 			 */
 			if (move_uploaded_file($_FILES['select_logo']['tmp_name'],LOGO_FOLDER.$safe_filename)) {
-				$q = 'UPDATE tbl_options SET value="'.$safe_filename.'" WHERE name="logo_filename"';
-				$sql = $database->query($q, $database->connection);
+				$sql = $dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name='logo_filename'" );
+				$sql->execute(
+							array(
+								':value'	=> $safe_filename
+							)
+						);
 				
 				$status = '1';
 

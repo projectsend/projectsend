@@ -63,11 +63,16 @@ include('header-unlogged.php');
 			 * is active.
 			 */
 			if (CLIENTS_AUTO_GROUP != '0') {
-				$admin_name = CURRENT_USER_USERNAME;
+				$admin_name = 'SELFREGISTERED';
 				$client_id = $new_response['new_id'];
 				$group_id = CLIENTS_AUTO_GROUP;
-				$database->query("INSERT INTO tbl_members (added_by,client_id,group_id)"
-												."VALUES ('$admin_name', '$client_id', '$group_id' )");
+
+				$add_to_group = $dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
+													." VALUES (:admin, :id, :group)");
+				$add_to_group->bindParam(':admin', $admin_name);
+				$add_to_group->bindParam(':id', $client_id, PDO::PARAM_INT);
+				$add_to_group->bindParam(':group', $group_id);
+				$add_to_group->execute();
 			}
 
 			$notify_admin = new PSend_Email();
@@ -181,6 +186,5 @@ include('header-unlogged.php');
 </body>
 </html>
 <?php
-	$database->Close();
 	ob_end_flush();
 ?>

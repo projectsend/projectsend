@@ -14,20 +14,27 @@ include('header-unlogged.php');
 	$show_form = 'enter_email';
 
 	if (!empty($_GET['token']) && !empty($_GET['user'])) {
-		$got_token	= mysql_real_escape_string($_GET['token']);
-		$got_user	= mysql_real_escape_string($_GET['user']);
+		$got_token	= $_GET['token'];
+		$got_user	= $_GET['user'];
 
 		/**
 		 * Get the user's id
 		 */
-		$query_user_id	= $database->query("SELECT id, user FROM tbl_users WHERE user = '$got_user'");
-		$result_user_id	= mysql_fetch_array($query_user_id);
+		$query_user_id	= $dbh->prepare("SELECT id, user FROM " . TABLE_USERS . " WHERE user = :user");
+		$query_user_id->bindParam(':user', $got_user);
+		$query_user_id->execute();
+		$result_user_id = $query_user_id->fetch();
 		$got_user_id	= $result_user_id['id'];
 
-		$sql_request = $database->query("SELECT * FROM tbl_password_reset WHERE BINARY token = '$got_token' AND user_id = '$got_user_id'");
-		$count_request = mysql_num_rows($sql_request);
-		if ($count_request > 0){
-			$token_info	= mysql_fetch_array($sql_request);
+		$sql_request = $dbh->prepare("SELECT * FROM " . TABLE_PASSWORD_RESET . " WHERE BINARY token = :token AND user_id = :id");
+		$sql_request->bindParam(':token', $got_token);
+		$sql_request->bindParam(':id', $got_user_id, PDO::PARAM_INT);
+		$sql_request->execute();
+		$count_request = $sql_request->rowCount();
+
+		if ( $count_request > 0 ) {
+			$sql_request->setFetchMode(PDO::FETCH_ASSOC);
+			$token_info = $sql_request->fetch();
 			$request_id = $token_info['id'];
 
 			/** Check if the token has been used already */
@@ -67,14 +74,15 @@ include('header-unlogged.php');
 			 * The form submited contains a new token request
 			 */
 			case 'new_request':
-
-				$reset_password_email = encode_html($_POST['reset_password_email']);
-
-				$sql_user = $database->query("SELECT id, user, email FROM tbl_users WHERE email='$reset_password_email'");
-				$count_user = mysql_num_rows($sql_user);
-				if ($count_user > 0){
+				$sql_user = $dbh->prepare("SELECT id, user, email FROM " . TABLE_USERS . " WHERE email = :email");
+				$sql_user->bindParam(':email', $_POST['reset_password_email']);
+				$sql_user->execute();
+				$count_user = $sql_user->rowCount();
+		
+				if ( $count_user > 0 ) {
 					/** Email exists on the database */
-					$row		= mysql_fetch_array($sql_user);
+					$sql_user->setFetchMode(PDO::FETCH_ASSOC);
+					$row = $sql_user->fetch();
 					$id			= $row['id'];
 					$username	= $row['user'];
 					$email		= $row['email'];
@@ -84,14 +92,19 @@ include('header-unlogged.php');
 					 * Count how many request were made by this user today.
 					 * No more than 3 unused should exist at a time.
 					 */
-					$sql_amount		= $database->query("SELECT * FROM tbl_password_reset WHERE user_id = '$id' AND used = '0' AND timestamp > NOW() - INTERVAL 1 DAY");
-					$count_requests	= mysql_num_rows($sql_amount);
+					$sql_amount = $dbh->prepare("SELECT * FROM " . TABLE_PASSWORD_RESET . " WHERE user_id = :id AND used = '0' AND timestamp > NOW() - INTERVAL 1 DAY");
+					$sql_amount->bindParam(':id', $id, PDO::PARAM_INT);
+					$sql_amount->execute();
+					$count_requests = $sql_amount->rowCount();
 					if ($count_requests >= 3){
 						$errorstate = 'too_many_today';
 					}
 					else {
-						$sql_pass = $database->query("INSERT INTO tbl_password_reset (user_id, token)"
-														."VALUES ('$id', '$token' )");
+						$sql_pass = $dbh->prepare("INSERT INTO " . TABLE_PASSWORD_RESET . " (user_id, token)"
+														."VALUES (:id, :token)");
+						$sql_pass->bindParam(':token', $token);
+						$sql_pass->bindParam(':id', $id, PDO::PARAM_INT);
+						$sql_pass->execute();
 			
 						/** Send email */
 						$notify_user = new PSend_Email();
@@ -123,7 +136,7 @@ include('header-unlogged.php');
 			 */
 			case 'new_password':
 				if (!empty($got_user_id)) {
-					$reset_password_new = mysql_real_escape_string($_POST['reset_password_new']);
+					$reset_password_new = $_POST['reset_password_new'];
 	
 					/** Password checks */
 					$valid_me->validate('completed',$reset_password_new,$validation_no_pass);
@@ -140,23 +153,25 @@ include('header-unlogged.php');
 							$state['hash'] = 1;
 				
 							/** SQL queries */
-							$edit_pass_query = "UPDATE tbl_users SET 
-												password = '$enc_password' 
-												WHERE id = $got_user_id";
-					
-							$sql_query = $database->query($edit_pass_query);
-							
-							
+
+							$sql_query = $dbh->prepare("UPDATE " . TABLE_USERS . " SET 
+														password = :password
+														WHERE id = :id"
+												);
+							$sql_query->bindParam(':password', $enc_password);
+							$sql_query->bindParam(':id', $got_user_id, PDO::PARAM_INT);
+							$sql_query->execute();							
 					
 							if ($sql_query) {
 								$state['reset'] = 1;
-		
-								$set_used_query = "UPDATE tbl_password_reset SET 
-													used = '1' 
-													WHERE id = $request_id";
-						
-								$sql_query = $database->query($set_used_query);
-			
+
+								$sql_query = $dbh->prepare("UPDATE " . TABLE_PASSWORD_RESET . " SET 
+															used = '1' 
+															WHERE id = :id"
+													);
+								$sql_query->bindParam(':id', $request_id, PDO::PARAM_INT);
+								$sql_query->execute();							
+
 								$show_form = 'none';
 							}
 							else {
@@ -339,6 +354,5 @@ include('header-unlogged.php');
 </body>
 </html>
 <?php
-	$database->Close();
 	ob_end_flush();
 ?>

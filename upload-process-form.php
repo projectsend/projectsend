@@ -34,8 +34,6 @@ define('CAN_INCLUDE_FILES', true);
 	<h2><?php echo $page_title; ?></h2>
 
 <?php
-$database->MySQLDB();
-
 /**
  * Get the user level to determine if the uploader is a
  * system user or a client.
@@ -85,28 +83,32 @@ $empty_fields = 0;
 
 /** Fill the users array that will be used on the notifications process */
 $users = array();
-$cq = "SELECT id, name, level FROM tbl_users ORDER BY name ASC";
-$sql = $database->query($cq);
-while($row = mysql_fetch_array($sql)) {
+$statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . " ORDER BY name ASC");
+$statement->execute();
+$statement->setFetchMode(PDO::FETCH_ASSOC);
+while( $row = $statement->fetch() ) {
 	$users[$row["id"]] = $row["name"];
 	if ($row["level"] == '0') {
 		$clients[$row["id"]] = $row["name"];
 	}
 }
+
 /** Fill the groups array that will be used on the form */
 $groups = array();
-$cq = "SELECT id, name FROM tbl_groups ORDER BY name ASC";
-$sql = $database->query($cq);
-	while($row = mysql_fetch_array($sql)) {
+$statement = $dbh->prepare("SELECT id, name FROM " . TABLE_GROUPS . " ORDER BY name ASC");
+$statement->execute();
+$statement->setFetchMode(PDO::FETCH_ASSOC);
+while( $row = $statement->fetch() ) {
 	$groups[$row["id"]] = $row["name"];
 }
 
 /**
  * Make an array of file urls that are on the DB already.
  */
-$sql = $database->query("SELECT DISTINCT url FROM tbl_files");
-$urls_db_files = array();
-while($row = mysql_fetch_array($sql)) {
+$statement = $dbh->prepare("SELECT DISTINCT url FROM " . TABLE_FILES);
+$statement->execute();
+$statement->setFetchMode(PDO::FETCH_ASSOC);
+while( $row = $statement->fetch() ) {
 	$urls_db_files[] = $row["url"];
 }
 
@@ -445,8 +447,11 @@ while($row = mysql_fetch_array($sql)) {
 							$file_title = str_replace('_',' ',$filename_no_ext);
 							if ($this_upload->is_filetype_allowed($file)) {
 								if (in_array($file,$urls_db_files)) {
-									$file_sql = $database->query("SELECT filename, description FROM tbl_files WHERE url = '$file'");
-									while($row = mysql_fetch_array($file_sql)) {
+									$statement = $dbh->prepare("SELECT filename, description FROM " . TABLE_FILES . " WHERE url = :url");
+									$statement->bindParam(':url', $file);
+									$statement->execute();
+
+									while( $row = $statement->fetch() ) {
 										$file_title = $row["filename"];
 										$description = $row["description"];
 									}
@@ -692,6 +697,5 @@ while($row = mysql_fetch_array($sql)) {
 </script>
 
 <?php
-	$database->Close();
 	include('footer.php');
 ?>

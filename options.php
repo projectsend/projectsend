@@ -11,8 +11,6 @@ $allowed_levels = array(9);
 require_once('sys.includes.php');
 $page_title = __('System options','cftp_admin');
 
-$database->MySQLDB();
-
 /** Uses TextBoxList for the allowed file types box. */
 $textboxlist = 1;
 
@@ -51,7 +49,6 @@ if ($_POST) {
 		$_POST[$checkbox] = (empty($_POST[$checkbox]) || !isset($_POST[$checkbox])) ? 0 : 1;
 	}
 
-	$_POST = mysql_real_escape_array($_POST);
 	$keys = array_keys($_POST);
 	 
 	$options_total = count($keys);
@@ -76,8 +73,12 @@ if ($_POST) {
 	if ($query_state == '0') {
 		$updated = 0;
 		for ($j = 0; $j < $options_total; $j++) {
-			$sql = $database->query('UPDATE tbl_options SET value="'.$_POST[$keys[$j]].'" WHERE name="'.$keys[$j].'"');
-			if ($sql) {
+			$save = $dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name=:name" );
+			$save->bindParam(':value', $_POST[$keys[$j]]);
+			$save->bindParam(':name', $keys[$j]);
+			$save->execute();
+
+			if ($save) {
 				$updated++;
 			}
 		}
@@ -266,9 +267,11 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										<?php
 											/** Fill the groups array that will be used on the form */
 											$groups = array();
-											$cq = "SELECT id, name FROM tbl_groups ORDER BY name ASC";
-											$sql = $database->query($cq);
-											while($grow = mysql_fetch_array($sql)) {
+											$sql = $dbh->prepare( "SELECT id, name FROM " . TABLE_GROUPS . " ORDER BY name ASC" );
+											$sql->execute();
+
+											$sql->setFetchMode(PDO::FETCH_ASSOC);
+											while ( $grow = $sql->fetch() ) {
 												?>
 													<option value="<?php echo filter_var($grow["id"],FILTER_VALIDATE_INT); ?>"
 														<?php
@@ -544,6 +547,5 @@ $allowed_file_types = implode(',',$allowed_file_types);
 </div>
 
 <?php
-	$database->Close();
 	include('footer.php');
 ?>

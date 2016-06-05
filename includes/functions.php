@@ -11,18 +11,16 @@
  * All tables must exist to verify the installation.
  * If any table is missing, the installation is considered corrupt.
  */
+
 function is_projectsend_installed() {
-	global $database;
 	global $current_tables;
 
-	$database->MySQLDB();
 	$tables_missing = 0;
 	/**
 	 * This table list is defined on sys.vars.php
 	 */
 	foreach ($current_tables as $table) {
-		$this_table = $database->query("SHOW TABLES LIKE '$table'");
-		if (mysql_num_rows($this_table) == 0) {
+		if ( !tableExists( $table ) ) {
 			$tables_missing++;
 		}
 	}
@@ -35,6 +33,27 @@ function is_projectsend_installed() {
 }
 
 /**
+ * Check if a table exists in the current database.
+ *
+ * @param string $table Table to search for.
+ * @return bool TRUE if table exists, FALSE if no table found.
+ * by esbite on http://stackoverflow.com/questions/1717495/check-if-a-database-table-exists-using-php-pdo
+ */
+function tableExists($table) {
+	global $dbh;
+
+    try {
+        $result = $dbh->prepare("SELECT 1 FROM $table LIMIT 1");
+		$result->execute();
+    } catch (Exception $e) {
+        return false;
+    }
+
+    // Result is either boolean FALSE (no table found) or PDOStatement Object (table found)
+    return $result !== false;
+}
+
+/**
  * Check if a client id exists on the database.
  * Used on the Edit client page.
  *
@@ -42,10 +61,11 @@ function is_projectsend_installed() {
  */
 function client_exists_id($id)
 {
-	global $database;
-	$id_exists = $database->query("SELECT * FROM tbl_users WHERE id='$id'");
-	$count_clients = mysql_num_rows($id_exists);
-	if($count_clients > 0){
+	global $dbh;
+	$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
+	$statement->bindParam(':id', $id, PDO::PARAM_INT);
+	$statement->execute();
+	if ( $statement->rowCount() > 0 ) {
 		return true;
 	}
 	else {
@@ -61,10 +81,11 @@ function client_exists_id($id)
  */
 function user_exists_id($id)
 {
-	global $database;
-	$id_exists = $database->query("SELECT * FROM tbl_users WHERE id='$id'");
-	$count_users = mysql_num_rows($id_exists);
-	if($count_users > 0){
+	global $dbh;
+	$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
+	$statement->bindParam(':id', $id, PDO::PARAM_INT);
+	$statement->execute();
+	if ( $statement->rowCount() > 0 ) {
 		return true;
 	}
 	else {
@@ -80,10 +101,11 @@ function user_exists_id($id)
  */
 function group_exists_id($id)
 {
-	global $database;
-	$id_exists = $database->query("SELECT * FROM tbl_groups WHERE id='$id'");
-	$count_groups = mysql_num_rows($id_exists);
-	if($count_groups > 0){
+	global $dbh;
+	$statement = $dbh->prepare("SELECT * FROM " . TABLE_GROUPS . " WHERE id=:id");
+	$statement->bindParam(':id', $id, PDO::PARAM_INT);
+	$statement->execute();
+	if ( $statement->rowCount() > 0 ) {
 		return true;
 	}
 	else {
@@ -99,23 +121,28 @@ function group_exists_id($id)
  */
 function get_client_by_id($client)
 {
-	global $database;
-	$get_client_info = $database->query("SELECT * FROM tbl_users WHERE id='$client'");
-	while ($row = mysql_fetch_assoc($get_client_info)) {
+	global $dbh;
+	$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
+	$statement->bindParam(':id', $client, PDO::PARAM_INT);
+	$statement->execute();
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
+
+	while ( $row = $statement->fetch() ) {
 		$information = array(
-							'id' => $row['id'],
-							'name' => $row['name'],
-							'username' => $row['user'],
-							'address' => $row['address'],
-							'phone' => $row['phone'],
-							'email' => $row['email'],
-							'notify' => $row['notify'],
-							'level' => $row['level'],
-							'contact' => $row['contact'],
-							'created_date' => $row['timestamp'],
-							'created_by' => $row['created_by']
+							'id'			=> $row['id'],
+							'name'			=> $row['name'],
+							'username'		=> $row['user'],
+							'address'		=> $row['address'],
+							'phone'			=> $row['phone'],
+							'email'			=> $row['email'],
+							'notify'		=> $row['notify'],
+							'level'			=> $row['level'],
+							'active'		=> $row['active'],
+							'contact'		=> $row['contact'],
+							'created_date'	=> $row['timestamp'],
+							'created_by'	=> $row['created_by']
 						);
-		if(!empty($information)) {
+		if ( !empty( $information ) ) {
 			return $information;
 		}
 		else {
@@ -132,24 +159,28 @@ function get_client_by_id($client)
  */
 function get_client_by_username($client)
 {
-	global $database;
-	$get_client_info = $database->query("SELECT * FROM tbl_users WHERE user='$client'");
-	while ($row = mysql_fetch_assoc($get_client_info)) {
+	global $dbh;
+	$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:username");
+	$statement->bindParam(':username', $client);
+	$statement->execute();
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
+
+	while ( $row = $statement->fetch() ) {
 		$information = array(
-							'id' => $row['id'],
-							'name' => $row['name'],
-							'username' => $row['user'],
-							'address' => $row['address'],
-							'phone' => $row['phone'],
-							'email' => $row['email'],
-							'notify' => $row['notify'],
-							'level' => $row['level'],
-							'active' => $row['active'],
-							'contact' => $row['contact'],
-							'created_date' => $row['timestamp'],
-							'created_by' => $row['created_by']
+							'id'			=> $row['id'],
+							'name'			=> $row['name'],
+							'username'		=> $row['user'],
+							'address'		=> $row['address'],
+							'phone'			=> $row['phone'],
+							'email'			=> $row['email'],
+							'notify'		=> $row['notify'],
+							'level'			=> $row['level'],
+							'active'		=> $row['active'],
+							'contact'		=> $row['contact'],
+							'created_date'	=> $row['timestamp'],
+							'created_by'	=> $row['created_by']
 						);
-		if(!empty($information)) {
+		if ( !empty( $information ) ) {
 			return $information;
 		}
 		else {
@@ -165,11 +196,18 @@ function get_client_by_username($client)
  */
 function get_logged_account_id($username)
 {
-	global $database;
-	$get_account_id = $database->query("SELECT id FROM tbl_users WHERE user='$username'");
-	while ($row = mysql_fetch_assoc($get_account_id)) {
+	global $dbh;
+	$statement = $dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE user=:user");
+	$statement->execute(
+						array(
+							':user'	=> $username
+						)
+					);
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
+
+	while ( $row = $statement->fetch() ) {
 		$return_id = $row['id'];
-		if(!empty($return_id)) {
+		if ( !empty( $return_id ) ) {
 			return $return_id;
 		}
 		else {
@@ -185,10 +223,17 @@ function get_logged_account_id($username)
  */
 function check_if_notify_client($client)
 {
-	global $database;
-	$get_notify = $database->query("SELECT notify, email FROM tbl_users WHERE user='$client'");
-	while ($row = mysql_fetch_assoc($get_notify)) {
-		if($row['notify'] === '1') {
+	global $dbh;
+	$statement = $dbh->prepare("SELECT notify, email FROM " . TABLE_USERS . " WHERE user=:user");
+	$statement->execute(
+						array(
+							':user'	=> $client
+						)
+					);
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
+
+	while ( $row = $statement->fetch() ) {
+		if ( $row['notify'] == '1' ) {
 			return $row['email'];
 		}
 		else {
@@ -205,20 +250,27 @@ function check_if_notify_client($client)
  */
 function get_user_by_username($user)
 {
-	global $database;
-	$get_client_info = $database->query("SELECT * FROM tbl_users WHERE user='$user'");
-	if (mysql_num_rows($get_client_info) > 0) {
-		while ($row = mysql_fetch_assoc($get_client_info)) {
+	global $dbh;
+	$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:user");
+	$statement->execute(
+						array(
+							':user'	=> $user
+						)
+					);
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
+
+	if ( $statement->rowCount() > 0 ) {
+		while ( $row = $statement->fetch() ) {
 			$information = array(
-								'id' => $row['id'],
-								'username' => $row['user'],
-								'name' => $row['name'],
-								'email' => $row['email'],
-								'level' => $row['level'],
-								'active' => $row['active'],
-								'created_date' => $row['timestamp']
+								'id'			=> $row['id'],
+								'username'		=> $row['user'],
+								'name'			=> $row['name'],
+								'email'			=> $row['email'],
+								'level'			=> $row['level'],
+								'active'		=> $row['active'],
+								'created_date'	=> $row['timestamp']
 							);
-			if(!empty($information)) {
+			if ( !empty( $information ) ) {
 				return $information;
 			}
 			else {
@@ -233,20 +285,24 @@ function get_user_by_username($user)
  *
  * @return array
  */
-function get_user_by_id($user)
+function get_user_by_id($id)
 {
-	global $database;
-	$get_client_info = $database->query("SELECT * FROM tbl_users WHERE id='$user'");
-	while ($row = mysql_fetch_assoc($get_client_info)) {
+	global $dbh;
+	$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
+	$statement->bindParam(':id', $id, PDO::PARAM_INT);
+	$statement->execute();
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
+
+	while ( $row = $statement->fetch() ) {
 		$information = array(
-							'id' => $row['id'],
-							'username' => $row['user'],
-							'name' => $row['name'],
-							'email' => $row['email'],
-							'level' => $row['level'],
-							'created_date' => $row['timestamp']
+							'id'			=> $row['id'],
+							'username'		=> $row['user'],
+							'name'			=> $row['name'],
+							'email'			=> $row['email'],
+							'level'			=> $row['level'],
+							'created_date'	=> $row['timestamp']
 						);
-		if(!empty($information)) {
+		if ( !empty( $information ) ) {
 			return $information;
 		}
 		else {
@@ -400,21 +456,11 @@ function get_current_user_username()
 		$user = $_COOKIE['loggedin'];
 	}
 	*/
-	/*else*/if (isset($_SESSION['loggedin'])) {
+	/*else*/
+	if (isset($_SESSION['loggedin'])) {
 		$user = $_SESSION['loggedin'];
 	}
 	return $user;
-}
-
-
-/**
- * @author		brian dot folts at gmail dot com
- * @copyright	06-Sep-2006
- * @link		http://php.net/manual/es/function.mysql-real-escape-string.php
- */
-function mysql_real_escape_array($array)
-{
-    return array_map("mysql_real_escape_string",$array);
 }
 
 /**

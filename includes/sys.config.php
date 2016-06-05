@@ -32,16 +32,16 @@
 define('DB_DRIVER', 'mysql');
 
 /** Database name */
-define('DB_NAME', 'database');
+define('DB_NAME', 'projectsend');
 
 /** Database host (in most cases it's localhost) */
-define('DB_HOST', 'localhost');
+define('DB_HOST', '127.0.0.1');
 
 /** Database username (must be assigned to the database) */
-define('DB_USER', 'username');
+define('DB_USER', 'root');
 
 /** Database password */
-define('DB_PASSWORD', 'password');
+define('DB_PASSWORD', '');
 
 /**
  * Prefix for the tables. Set to something other than tbl_ for increased

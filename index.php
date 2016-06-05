@@ -23,21 +23,27 @@ include('header-unlogged.php');
 	
 	/** The form was submitted */
 	if ($_POST) {
-		$sysuser_username = mysql_real_escape_string($_POST['login_form_user']);
-		//$sysuser_password = mysql_real_escape_string(md5($_POST['login_form_pass']));
+		global $dbh;
 		$sysuser_password = $_POST['login_form_pass'];
 	
 		/** Look up the system users table to see if the entered username exists */
-		$sql_user = $database->query("SELECT * FROM tbl_users WHERE BINARY user='$sysuser_username'");
-		$count_user = mysql_num_rows($sql_user);
+		$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE BINARY user= :username");
+		$statement->execute(
+						array(
+							':username'	=> $_POST['login_form_user'],
+						)
+					);
+		$count_user = $statement->rowCount();
 		if ($count_user > 0){
 			/** If the username was found on the users table */
-			while($row = mysql_fetch_array($sql_user)) {
-				$db_pass = $row['password'];
-				$user_level = $row["level"];
-				$active_status = $row['active'];
-				$logged_id = $row['id'];
-				$global_name = $row['name'];
+			$statement->setFetchMode(PDO::FETCH_ASSOC);
+			while ( $row = $statement->fetch() ) {
+				$sysuser_username	= $row['user'];
+				$db_pass			= $row['password'];
+				$user_level			= $row["level"];
+				$active_status		= $row['active'];
+				$logged_id			= $row['id'];
+				$global_name		= $row['name'];
 			}
 			$check_password = $hasher->CheckPassword($sysuser_password, $db_pass);
 			if ($check_password) {
@@ -194,6 +200,6 @@ include('header-unlogged.php');
 </body>
 </html>
 <?php
-	$database->Close();
+	$dbh = null;
 	ob_end_flush();
 ?>

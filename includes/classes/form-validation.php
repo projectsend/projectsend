@@ -24,6 +24,8 @@ class Validate_Form
 	var $return_val = true;
 
 	public function __construct() {
+		global $dbh;
+		$this->dbh = $dbh;
 		$this->allowed_upper	= range('A','Z');
 		$this->allowed_lower	= range('a','z');
 		$this->allowed_numbers	= array('0','1','2','3','4','5','6','7','8','9');
@@ -164,7 +166,14 @@ class Validate_Form
 	 */
 	private function is_user_exists($field, $err)
 	{
-		if (mysql_num_rows(mysql_query("SELECT * FROM tbl_users WHERE user = '$field'"))){
+		$this->statement = $this->dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE user = :user" );
+		$this->statement->execute(
+							array(
+								':user'	=> $field,
+							)
+						);
+
+		if ( $this->statement->rowCount() > 0 ) {
 			$this->error_msg .= '<li>'.$err.'</li>';
 			$this->return_val = false;
 		}
@@ -176,19 +185,25 @@ class Validate_Form
 	 */
 	private function is_email_exists($field, $err, $current_id)
 	{
-		$this->sql_users = "SELECT * FROM tbl_users WHERE email = '$field'";
+		$this->sql_users = "SELECT * FROM " . TABLE_USERS . " WHERE email = :email";
+		$this->params = array(
+							':email'	=> $field
+						);
 		/**
 		 * If the ID parameter is set, the validation is used when editing
 		 * a client or user, and prevents an error if the current user is
 		 * the owner of that e-mail address.
 		 */
 		if (!empty($current_id)) {
-			$this->sql_not_this = " AND id != $current_id";
-			$this->sql_clients .= $this->sql_not_this;
-			$this->sql_users .= $this->sql_not_this;
+			$this->sql_not_this	= " AND id != :id";
+			$this->sql_clients	.= $this->sql_not_this;
+			$this->sql_users	.= $this->sql_not_this;
+			$this->params[':id'] = $current_id;
 		}
 
-		if (mysql_num_rows(mysql_query($this->sql_users))){
+		$this->statement = $this->dbh->prepare( $this->sql_users );
+		$this->statement->execute( $this->params );
+		if ( $this->statement->rowCount() > 0 ) {
 			$this->error_msg .= '<li>'.$err.'</li>';
 			$this->return_val = false;
 		}

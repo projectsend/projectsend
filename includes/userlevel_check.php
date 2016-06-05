@@ -7,8 +7,6 @@
  *
  */
 
-$database->MySQLDB();
-
 /**
  * Create the phpass hash object
  */
@@ -21,36 +19,44 @@ $hasher = new PasswordHash(HASH_COST_LOG2, HASH_PORTABLE);
  */
 function check_valid_cookie()
 {
+	global $dbh;
 	if (isset($_COOKIE['password']) && isset($_COOKIE['loggedin']) && isset($_COOKIE['userlevel'])) {
-		$cookie_pass = mysql_real_escape_string($_COOKIE['password']);
-		$cookie_user = mysql_real_escape_string($_COOKIE['loggedin']);
-		$cookie_level = mysql_real_escape_string($_COOKIE['userlevel']);
+
+		$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user= :cookie_user AND password= :cookie_pass AND level= :cookie_level AND active = '1'");
+		$statement->execute(
+						array(
+							':cookie_user'	=> $_COOKIE['loggedin'],
+							':cookie_pass'	=> $_COOKIE['password'],
+							':cookie_level'	=> $_COOKIE['userlevel']
+						)
+					);
+		$count = $statement->rowCount();
+
 		/**
 		 * Compare the cookies to the database information. Level
 		 * and active are compared in case the cookie exists but
 		 * the client has been deactivated, or the user level has
 		 * changed.
 		 */
-		$sql_cookie = mysql_query("SELECT * FROM tbl_users WHERE user='$cookie_user' AND password='$cookie_pass' AND level='$cookie_level' AND active = '1'");
-		$count = mysql_num_rows($sql_cookie);
-		if($count>0){
-			if (!isset($_SESSION['loggedin'])) {
+		if ( $count > 0 ) {
+			if ( !isset( $_SESSION['loggedin'] ) ) {
 				/** Set SESSION values */
-				$_SESSION['loggedin'] = $_COOKIE['loggedin'];
-				$_SESSION['userlevel'] = $_COOKIE['userlevel'];
-				$_SESSION['access'] = $_COOKIE['access'];
+				$_SESSION['loggedin']	= $_COOKIE['loggedin'];
+				$_SESSION['userlevel']	= $_COOKIE['userlevel'];
+				$_SESSION['access']		= $_COOKIE['access'];
 				
-				while($row = mysql_fetch_array($sql_cookie)) {
-					$log_id = $row['id'];
-					$log_name = $row['name'];
+				$statement->setFetchMode(PDO::FETCH_ASSOC);
+				while ( $row = $statement->fetch() ) {
+					$log_id		= $row['id'];
+					$log_name	= $row['name'];
 				}
 
 				/** Record the action log */
 				$new_log_action = new LogActions();
 				$log_action_args = array(
-										'action' => 24,
-										'owner_id' => $log_id,
-										'owner_user' => $log_name
+										'action'		=> 24,
+										'owner_id'		=> $log_id,
+										'owner_user'	=> $log_name
 									);
 				$new_record_action = $new_log_action->log_action_save($log_action_args);
 			}
@@ -169,5 +175,4 @@ function can_see_content($allowed_levels) {
 		die();
 	}
 }
-
 ?>

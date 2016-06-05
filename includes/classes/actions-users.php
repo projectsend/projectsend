@@ -11,6 +11,11 @@ class UserActions
 {
 
 	var $user = '';
+
+	function __construct() {
+		global $dbh;
+		$this->dbh = $dbh;
+	}
 	
 	/**
 	 * Validate the information from the form.
@@ -95,38 +100,45 @@ class UserActions
 	function create_user($arguments)
 	{
 		global $hasher;
-		global $database;
 		$this->state = array();
 
 		/** Define the account information */
-		$this->username = $arguments['username'];
-		$this->password = $arguments['password'];
-		$this->name = $arguments['name'];
-		$this->email = $arguments['email'];
-		$this->role = $arguments['role'];
-		$this->active = $arguments['active'];
+		$this->username		= $arguments['username'];
+		$this->password		= $arguments['password'];
+		$this->name			= $arguments['name'];
+		$this->email		= $arguments['email'];
+		$this->role			= $arguments['role'];
+		$this->active		= $arguments['active'];
 		//$this->enc_password = md5(mysql_real_escape_string($this->password));
-		$this->enc_password = $hasher->HashPassword($this->password);
+		$this->enc_password	= $hasher->HashPassword($this->password);
 
 		if (strlen($this->enc_password) >= 20) {
 
 			$this->state['hash'] = 1;
 
 			$this->timestamp = time();
-			$this->sql_query = $database->query("INSERT INTO tbl_users (user,password,name,email,level,active)"
-												."VALUES ('$this->username', '$this->enc_password', '$this->name', '$this->email','$this->role', '$this->active')");
-	
+			$this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_USERS . " (user,password,name,email,level,active)"
+												." VALUES (:username, :password, :name, :email, :role, :active)");
+			$this->sql_query->bindParam(':username', $this->username);
+			$this->sql_query->bindParam(':password', $this->enc_password);
+			$this->sql_query->bindParam(':name', $this->name);
+			$this->sql_query->bindParam(':email', $this->email);
+			$this->sql_query->bindParam(':role', $this->role);
+			$this->sql_query->bindParam(':active', $this->active, PDO::PARAM_INT);
+
+			$this->sql_query->execute();
+
 			if ($this->sql_query) {
 				$this->state['query'] = 1;
-				$this->state['new_id'] = mysql_insert_id();
+				$this->state['new_id'] = $this->dbh->lastInsertId();
 	
 				/** Send account data by email */
 				$this->notify_user = new PSend_Email();
 				$this->email_arguments = array(
-												'type' => 'new_user',
-												'address' => $this->email,
-												'username' => $this->username,
-												'password' => $this->password
+												'type'		=> 'new_user',
+												'address'	=> $this->email,
+												'username'	=> $this->username,
+												'password'	=> $this->password
 											);
 				$this->notify_send = $this->notify_user->psend_send_email($this->email_arguments);
 	
@@ -154,17 +166,15 @@ class UserActions
 	function edit_user($arguments)
 	{
 		global $hasher;
-		global $database;
 		$this->state = array();
 
 		/** Define the account information */
-		$this->id = $arguments['id'];
-		$this->name = $arguments['name'];
-		$this->email = $arguments['email'];
-		$this->role = $arguments['role'];
-		$this->active = $arguments['active'];
-
-		$this->password = $arguments['password'];
+		$this->id			= $arguments['id'];
+		$this->name			= $arguments['name'];
+		$this->email		= $arguments['email'];
+		$this->role			= $arguments['role'];
+		$this->active		= ( $arguments['active'] == '1' ) ? 1 : 0;
+		$this->password		= $arguments['password'];
 		//$this->enc_password = md5(mysql_real_escape_string($this->password));
 		$this->enc_password = $hasher->HashPassword($this->password);
 
@@ -173,22 +183,31 @@ class UserActions
 			$this->state['hash'] = 1;
 
 			/** SQL query */
-			$this->edit_user_query = "UPDATE tbl_users SET 
-									name = '$this->name',
-									email = '$this->email',
-									level = '$this->role',
-									active = '";
-	
-			/** Add the active status value to the query '' */
-			$this->edit_user_query .= ($this->active == '1') ? "1'" : "0'";
+			$this->edit_user_query = "UPDATE " . TABLE_USERS . " SET 
+									name = :name,
+									email = :email,
+									level = :level,
+									active = :active";
 	
 			/** Add the password to the query if it's not the dummy value '' */
 			if (!empty($arguments['password'])) {
-				$this->edit_user_query .= ", password = '$this->enc_password'";
+				$this->edit_user_query .= ", password = :password";
 			}
 	
-			$this->edit_user_query .= " WHERE id = $this->id";
-			$this->sql_query = $database->query($this->edit_user_query);
+			$this->edit_user_query .= " WHERE id = :id";
+
+			$this->sql_query = $this->dbh->prepare( $this->edit_user_query );
+			$this->sql_query->bindParam(':name', $this->name);
+			$this->sql_query->bindParam(':email', $this->email);
+			$this->sql_query->bindParam(':level', $this->role);
+			$this->sql_query->bindParam(':active', $this->active, PDO::PARAM_INT);
+			$this->sql_query->bindParam(':id', $this->id, PDO::PARAM_INT);
+			if (!empty($arguments['password'])) {
+				$this->sql_query->bindParam(':password', $this->enc_password);
+			}
+
+			$this->sql_query->execute();
+
 	
 			if ($this->sql_query) {
 				$this->state['query'] = 1;
@@ -207,14 +226,15 @@ class UserActions
 	/**
 	 * Delete an existing user.
 	 */
-	function delete_user($user)
+	function delete_user($user_id)
 	{
-		global $database;
 		$this->check_level = array(9);
-		if (isset($user)) {
+		if (isset($user_id)) {
 			/** Do a permissions check */
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
-				$this->sql = $database->query('DELETE FROM tbl_users WHERE id="' . $user .'"');
+				$this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_USERS . ' WHERE id=:id');
+				$this->sql->bindParam(':id', $user_id, PDO::PARAM_INT);
+				$this->sql->execute();
 			}
 		}
 	}
@@ -224,12 +244,14 @@ class UserActions
 	 */
 	function change_user_active_status($user_id,$change_to)
 	{
-		global $database;
 		$this->check_level = array(9);
 		if (isset($user_id)) {
 			/** Do a permissions check */
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
-				$this->sql = $database->query('UPDATE tbl_users SET active='.$change_to.' WHERE id="' . $user_id . '"');
+				$this->sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active_state WHERE id=:id');
+				$this->sql->bindParam(':active_state', $change_to, PDO::PARAM_INT);
+				$this->sql->bindParam(':id', $user_id, PDO::PARAM_INT);
+				$this->sql->execute();
 			}
 		}
 	}

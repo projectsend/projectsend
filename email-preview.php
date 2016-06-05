@@ -18,9 +18,6 @@ check_for_session();
 
 can_see_content($allowed_levels);
 
-$database->MySQLDB();
-
-
 /** Get the default header and footer */
 include_once(ROOT_DIR.'/includes/email-template.php');
 global $email_template_header;

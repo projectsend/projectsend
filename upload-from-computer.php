@@ -27,8 +27,6 @@ include('header.php');
  * system user or a client.
  */
 $current_level = get_current_user_level();
-
-$database->MySQLDB();
 ?>
 
 <div id="main">
@@ -36,9 +34,10 @@ $database->MySQLDB();
 	
 	<?php
 		/** Count the clients to show an error or the form */
-		$sql = $database->query("SELECT * FROM tbl_users WHERE level = '0'");
-		$count = mysql_num_rows($sql);
-		if (!$count) {
+		$statement	= $dbh->query("SELECT * FROM " . TABLE_USERS . " WHERE level = '0'");
+		$count		= $statement->rowCount();
+
+		if ( !$count or $count < 1 ) {
 			/** Echo the no clients default message */
 			message_no_clients();
 		}
@@ -188,6 +187,5 @@ $database->MySQLDB();
 </div>
 
 <?php
-	$database->Close();
 	include('footer.php');
 ?>

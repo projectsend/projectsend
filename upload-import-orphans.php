@@ -21,8 +21,6 @@ $active_nav = 'files';
 $page_title = __('Find orphan files', 'cftp_admin');
 include('header.php');
 
-$database->MySQLDB();
-
 /**
  * Use the folder defined on sys.vars.php
  * Composed of the absolute path to that file plus the
@@ -43,8 +41,8 @@ $work_folder = UPLOADED_FILES_FOLDER;
 	
 	<?php
 		/** Count clients to show an error message, or the form */
-		$sql = $database->query("SELECT * FROM tbl_users WHERE level = '0'");
-		$count = mysql_num_rows($sql);
+		$sql = $dbh->query("SELECT * FROM " . TABLE_USERS . " WHERE level = '0'");
+		$count = $sql->rowCount();
 		if (!$count) {
 			/** Echo the "no clients" default message */
 			message_no_clients();
@@ -55,17 +53,19 @@ $work_folder = UPLOADED_FILES_FOLDER;
 			 * When a file doesn't correspond to a record, it can
 			 * be safely renamed.
 			 */
-			$sql = $database->query("SELECT url, id, public_allow FROM tbl_files");
+			$sql = $dbh->query("SELECT url, id, public_allow FROM " . TABLE_FILES );
 			$db_files = array();
-			while($row = mysql_fetch_array($sql)) {
+			$sql->setFetchMode(PDO::FETCH_ASSOC);
+			while ( $row = $sql->fetch() ) {
 				$db_files[$row["url"]] = $row["id"];
 				if ($row['public_allow'] == 1) {$db_files_public[$row["url"]] = $row["id"];}
 			}
 
 			/** Make an array of already assigned files */
-			$sql = $database->query("SELECT DISTINCT file_id FROM tbl_files_relations WHERE client_id IS NOT NULL OR group_id IS NOT NULL OR folder_id IS NOT NULL");
+			$sql = $dbh->query("SELECT DISTINCT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE client_id IS NOT NULL OR group_id IS NOT NULL OR folder_id IS NOT NULL");
 			$assigned = array();
-			while($row = mysql_fetch_array($sql)) {
+			$sql->setFetchMode(PDO::FETCH_ASSOC);
+			while ( $row = $sql->fetch() ) {
 				$assigned[] = $row["file_id"];
 			}
 			
@@ -116,7 +116,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 			}
 			
 			if (!empty($_POST['search'])) {
-				$search = mysql_real_escape_string($_POST['search']);
+				$search = htmlspecialchars($_POST['search']);
 				
 				function search_text($item) {
 					global $search;
@@ -246,6 +246,5 @@ $work_folder = UPLOADED_FILES_FOLDER;
 </div>
 
 <?php
-	$database->Close();
 	include('footer.php');
 ?>

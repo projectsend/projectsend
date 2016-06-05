@@ -6,55 +6,55 @@
  * @package		ProjectSend
  * @subpackage	Updates
  */
-	/** Remove "r" from version */
-	$current_version = substr(CURRENT_VERSION, 1);
+global $updates_made;
 
-	$version_query = "SELECT value FROM tbl_options WHERE name = 'last_update'";
-	$version_sql = $database->query($version_query);
+/** Remove "r" from version */
+$current_version = substr(CURRENT_VERSION, 1);
 
-	if(mysql_num_rows($version_sql)) {
-		while($vres = mysql_fetch_array($version_sql)) {
-			$last_update = $vres['value'];
+$statement = $dbh->prepare("SELECT value FROM " . TABLE_OPTIONS . " WHERE name = 'last_update'");
+$statement->execute();
+if ( $statement->rowCount() > 0 ) {
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
+	while( $row = $statement->fetch() ) {
+		$last_update = $row['value'];
+	}
+}
+
+if ($last_update < $current_version || !isset($last_update)) {
+	/**
+	 * r431 updates
+	 * A new database table was added.
+	 * Password reset support is now supported.
+	 */
+	if ($last_update < 431) {
+		if ( !tableExists( TABLE_PASSWORD_RESET ) ) {
+			$query = '
+			CREATE TABLE IF NOT EXISTS `' . TABLE_PASSWORD_RESET . '` (
+			  `id` int(11) NOT NULL AUTO_INCREMENT,
+			  `user_id` int(11) DEFAULT NULL,
+			  `token` varchar(32) NOT NULL,
+			  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+			  `used` int(1) DEFAULT \'0\',
+			  FOREIGN KEY (`user_id`) REFERENCES ' . TABLE_USERS . '(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+			  PRIMARY KEY (`id`)
+			) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+			';
+			$dbh->query($query);
+			$updates_made++;
 		}
 	}
-	
-	if ($last_update < $current_version || !isset($last_update)) {
 
-		/**
-		 * r431 updates
-		 * A new database table was added.
-		 * Password reset support is now supported.
-		 */
-		if ($last_update < 520) {
-			$q = $database->query("SELECT id FROM tbl_password_reset");
-			if (!$q) {
-				$q1 = '
-				CREATE TABLE IF NOT EXISTS `tbl_password_reset` (
-				  `id` int(11) NOT NULL AUTO_INCREMENT,
-				  `user_id` int(11) DEFAULT NULL,
-				  `token` varchar(32) NOT NULL,
-				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-				  `used` int(1) DEFAULT \'0\',
-				  FOREIGN KEY (`user_id`) REFERENCES tbl_users(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-				  PRIMARY KEY (`id`)
-				) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-				';
-				$database->query($q1);
-				$updates_made++;
-			}
-		}
-
-		/**
-		 * r437 updates
-		 * A new database table was added.
-		 * Password reset support is now supported.
-		 */
-		if ($last_update < 520) {
-			$q = $database->query("ALTER TABLE tbl_users MODIFY user VARCHAR(".MAX_USER_CHARS.") NOT NULL");
-			$q2 = $database->query("ALTER TABLE tbl_users MODIFY password VARCHAR(".MAX_PASS_CHARS.") NOT NULL");
-			if ($q && $q2) {
-				$updates_made++;
-			}
+	/**
+	 * r437 updates
+	 * A new database table was added.
+	 * Password reset support is now supported.
+	 */
+	if ($last_update < 520) {
+		$q = $dbh->query("ALTER TABLE " . TABLE_USERS . " MODIFY user VARCHAR(".MAX_USER_CHARS.") NOT NULL");
+		$q2 = $dbh->query("ALTER TABLE " . TABLE_USERS . " MODIFY password VARCHAR(".MAX_PASS_CHARS.") NOT NULL");
+		if ($q && $q2) {
+			$updates_made++;
 		}
 	}
+}
 ?>

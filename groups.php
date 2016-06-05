@@ -18,18 +18,27 @@ $page_title = __('Groups administration','cftp_admin');;
  * Used when viewing groups a certain client belongs to.
  */
 if(!empty($_GET['member'])) {
-	$member = mysql_real_escape_string($_GET['member']);
+	$member = $_GET['member'];
 	/** Add the name of the client to the page's title. */
-	$sql_name = $database->query("SELECT name from tbl_users WHERE id='$member'");
-	if (mysql_num_rows($sql_name) > 0) {
-		while($row_member = mysql_fetch_array($sql_name)) {
+	$sql_name = $dbh->prepare("SELECT name from " . TABLE_USERS . " WHERE id=:id");
+	$sql_name->bindParam(':id', $member, PDO::PARAM_INT);
+	$sql_name->execute();
+
+	if ( $sql_name->rowCount() > 0) {
+		$sql_name->setFetchMode(PDO::FETCH_ASSOC);
+		while ( $row_member = $sql_name->fetch() ) {
 			$page_title = ' '.__('Groups where','cftp_admin').' '.html_entity_decode($row_member['name']).' '.__('is member','cftp_admin');
 		}
 		$member_exists = 1;
+
 		/** Find groups where the client is member */
-		$sql_is_member = $database->query("SELECT DISTINCT group_id FROM tbl_members WHERE client_id='$member'");
-		if (mysql_num_rows($sql_is_member) > 0) {
-			while($row_groups = mysql_fetch_array($sql_is_member)) {
+		$sql_is_member = $dbh->prepare("SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE client_id=:id");
+		$sql_is_member->bindParam(':id', $member, PDO::PARAM_INT);
+		$sql_is_member->execute();
+
+		if ( $sql_is_member->rowCount() > 0) {
+			$sql_is_member->setFetchMode(PDO::FETCH_ASSOC);
+			while ( $row_groups = $sql_is_member->fetch() ) {
 				$groups_ids[] = $row_groups["group_id"];
 			}
 			$found_groups = implode(',',$groups_ids);
@@ -82,13 +91,16 @@ include('header.php');
 		/** Continue only if 1 or more users were selected. */
 		if(!empty($_POST['groups'])) {
 			$selected_groups = $_POST['groups'];
-			$groups_to_get = implode(',',array_unique($selected_groups));
+			$groups_to_get = implode( ',', array_map( 'intval', array_unique( $selected_groups ) ) );
 
 			/**
 			 * Make a list of groups to avoid individual queries.
 			 */
-			$sql_grps = $database->query("SELECT id, name FROM tbl_groups WHERE id IN ('$groups_to_get')");
-			while($data_group = mysql_fetch_array($sql_grps)) {
+			$sql_grps = $dbh->prepare("SELECT id, name FROM " . TABLE_GROUPS . " WHERE FIND_IN_SET(id, :groups)");
+			$sql_grps->bindParam(':groups', $groups_to_get);
+			$sql_grps->execute();
+			$sql_grps->setFetchMode(PDO::FETCH_ASSOC);
+			while( $data_group = $sql_grps->fetch() ) {
 				$all_groups[$data_group['id']] = $data_group['name'];
 			}
 
@@ -128,36 +140,47 @@ include('header.php');
 	 * Generate the list of available groups.
 	 */
 
-	$database->MySQLDB();
-
+	/**
+	 * Generate an array of file count per group
+	 */
 	$files_amount = array();
-	$count_files_query = "SELECT group_id, COUNT(file_id) as files FROM tbl_files_relations WHERE group_id IS NOT NULL GROUP BY group_id";
-	$count_files_sql = $database->query($count_files_query);
-	$count_files = mysql_num_rows($count_files_sql);
+	$count_files_sql = $dbh->prepare("SELECT group_id, COUNT(file_id) as files FROM " . TABLE_FILES_RELATIONS . " WHERE group_id IS NOT NULL GROUP BY group_id");
+	$count_files_sql->execute();
+	$count_files = $count_files_sql->rowCount();
 	if ($count_files > 0) {
-		while ($crow = mysql_fetch_array($count_files_sql)) {
+		$count_files_sql->setFetchMode(PDO::FETCH_ASSOC);
+		while ( $crow = $count_files_sql->fetch() ) {
 			$files_amount[$crow['group_id']] = $crow['files'];
 		}
 	}
 
+	/**
+	 * Generate an array of amount of users on each group
+	 */
 	$members_amount = array();
-	$count_members_query = "SELECT group_id, COUNT(client_id) as members FROM tbl_members GROUP BY group_id";
-	$count_members_sql = $database->query($count_members_query);
-	$count_members = mysql_num_rows($count_members_sql);
+	$count_members_sql = $dbh->prepare("SELECT group_id, COUNT(client_id) as members FROM " . TABLE_MEMBERS . " GROUP BY group_id");
+	$count_members_sql->execute();
+	$count_members = $count_members_sql->rowCount();
 	if ($count_members > 0) {
-		while ($mrow = mysql_fetch_array($count_members_sql)) {
+		while ( $mrow = $count_members_sql->fetch() ) {
 			$members_amount[$mrow['group_id']] = $mrow['members'];
 		}
 	}
 
-	$cq = "SELECT * FROM tbl_groups";
+
+
+	$params = array();
+	$cq = "SELECT * FROM " . TABLE_GROUPS;
 
 	/** Add the search terms */	
-	if(isset($_POST['search']) && !empty($_POST['search'])) {
-		$search_terms = mysql_real_escape_string($_POST['search']);
-		$cq .= " WHERE (name LIKE '%$search_terms%' OR description LIKE '%$search_terms%')";
+	if ( isset( $_POST['search'] ) && !empty( $_POST['search'] ) ) {
+		$cq .= " WHERE (name LIKE :name OR description LIKE :description)";
 		$next_clause = ' AND';
 		$no_results_error = 'search';
+
+		$search_terms			= '%'.$_POST['search'].'%';
+		$params[':name']		= $search_terms;
+		$params[':description']	= $search_terms;
 	}
 	else {
 		$next_clause = ' WHERE';
@@ -166,7 +189,8 @@ include('header.php');
 	/** Add the member */
 	if (isset($found_groups)) {
 		if ($found_groups != '') {
-			$cq .= $next_clause. " id IN ($found_groups)";
+			$cq .= $next_clause. " FIND_IN_SET(id, :groups)";
+			$params[':groups']		= $found_groups;
 		}
 		else {
 			$cq .= $next_clause. " id = NULL";
@@ -176,8 +200,9 @@ include('header.php');
 
 	$cq .= " ORDER BY name ASC";
 	
-	$sql = $database->query($cq);
-	$count = mysql_num_rows($sql);
+	$sql = $dbh->prepare( $cq );
+	$sql->execute( $params );
+	$count = $sql->rowCount();
 ?>
 
 	<div class="form_actions_left">
@@ -253,7 +278,8 @@ include('header.php');
 			<tbody>
 			
 			<?php
-				while($row = mysql_fetch_array($sql)) {
+				$sql->setFetchMode(PDO::FETCH_ASSOC);
+				while ( $row = $sql->fetch() ) {
 					$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
 				?>
 				<tr>
@@ -296,8 +322,6 @@ include('header.php');
 						
 				<?php
 				}
-			
-				$database->Close();
 			?>
 			
 			</tbody>

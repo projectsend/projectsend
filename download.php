@@ -15,7 +15,7 @@ $dont_redirect_if_logged = 1;
 include('header-unlogged.php');
 
 	if (!empty($_GET['token']) && !empty($_GET['id'])) {
-		$got_token		= mysql_real_escape_string($_GET['token']);
+		$got_token		= $_GET['token'];
 		$got_file_id	= $_GET['id'];
 
 		$can_download = true;
@@ -23,11 +23,14 @@ include('header-unlogged.php');
 		/**
 		 * Get the user's id
 		 */
-		$query_file		= $database->query("SELECT * FROM tbl_files WHERE id = '" . (int)$got_file_id . "' AND public_allow = '1' AND BINARY public_token = '" . $got_token . "'");
-		$count_request	= mysql_num_rows($query_file);
+		$statement = $dbh->prepare( "SELECT * FROM " . TABLE_FILES . " WHERE id = :file_id AND public_allow = '1' AND BINARY public_token = :token" );
+		$statement->bindParam(':token', $got_token);
+		$statement->bindParam(':file_id', $got_file_id, PDO::PARAM_INT);
+		$statement->execute();
 
-		if ($count_request > 0){
-			$got_url		= mysql_fetch_array($query_file);
+		if ( $statement->rowCount() > 0 ){
+			$statement->setFetchMode(PDO::FETCH_ASSOC);
+			$got_url	= $statement->fetch();
 
 			$expires		= $got_url['expires'];
 			$expiry_date	= $got_url['expiry_date'];
@@ -117,6 +120,5 @@ include('header-unlogged.php');
 </body>
 </html>
 <?php
-	$database->Close();
 	ob_end_flush();
 ?>

@@ -35,26 +35,33 @@ $notifications_inactive = array();
  *
  * UPDATE: 2 is now unused.
  */
-$notifications_query = "SELECT * FROM tbl_notifications WHERE sent_status = '0' AND times_failed < '" . (int)NOTIFICATIONS_MAX_TRIES . "'";
+$params = array();
+$query = "SELECT * FROM " . TABLE_NOTIFICATIONS . " WHERE sent_status = '0' AND times_failed < :times";
+$params[':times'] = NOTIFICATIONS_MAX_TRIES;
 /** Add the time limit */
 if (NOTIFICATIONS_MAX_DAYS != '0') {
-	$notifications_query .= " AND timestamp >= DATE_SUB(NOW(), INTERVAL " . (int)NOTIFICATIONS_MAX_DAYS . " DAY)";
+	$query .= " AND timestamp >= DATE_SUB(NOW(), INTERVAL :days DAY)";
+	$params[':days'] = NOTIFICATIONS_MAX_DAYS;
 }
-$notifications_sql = $database->query($notifications_query);
-while ($row = mysql_fetch_array($notifications_sql)) {
-	$get_file_info[] = $row['file_id'];
-	$get_client_info[] = $row['client_id'];
-	$found_notifications[] = array(
-									'id' => $row['id'],
-									'client_id' => $row['client_id'],
-									'file_id' => $row['file_id'],
-									'timestamp' => $row['timestamp'],
-									'upload_type' => $row['upload_type']
+
+$statement = $dbh->prepare( $query );
+$statement->execute( $params );
+
+$statement->setFetchMode(PDO::FETCH_ASSOC);
+while( $row = $statement->fetch() ) {
+	$get_file_info[]		= $row['file_id'];
+	$get_client_info[]		= $row['client_id'];
+	$found_notifications[]	= array(
+									'id'			=> $row['id'],
+									'client_id'		=> $row['client_id'],
+									'file_id'		=> $row['file_id'],
+									'timestamp'		=> $row['timestamp'],
+									'upload_type'	=> $row['upload_type']
 								);
 }
 
-$files_to_get = implode(',',array_unique($get_file_info));
-$clients_to_get = implode(',',array_unique($get_client_info));
+$files_to_get	= implode( ',', array_unique( $get_file_info) );
+$clients_to_get	= implode( ',', array_unique( $get_client_info) );
 
 /**
  * Continue if there are notifications to be sent.
@@ -63,45 +70,51 @@ if (!empty($found_notifications)) {
 	/**
 	 * Get the information of each file
 	 */
-	$files_query = "SELECT id, filename, description FROM tbl_files WHERE id IN ($files_to_get)";
-	$files_sql = $database->query($files_query);
-	while ($row = mysql_fetch_array($files_sql)) {
+	$statement = $dbh->prepare("SELECT id, filename, description FROM " . TABLE_FILES . " WHERE FIND_IN_SET(id, :files)");
+	$statement->bindParam(':files', $files_to_get);
+	$statement->execute();
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
+	while ( $row = $statement->fetch() ) {
 		$file_data[$row['id']] = array(
-									'id' => $row['id'],
-									'filename' => $row['filename'],
-									'description' => $row['description']
+									'id'			=> $row['id'],
+									'filename'		=> $row['filename'],
+									'description'	=> $row['description']
 								);
 	}
 	
 	/**
 	 * Get the information of each client
 	 */
-	$creators = '';
-	$clients_query = "SELECT id, user, name, email, level, notify, created_by, active FROM tbl_users WHERE id IN ($clients_to_get)";
-	$clients_sql = $database->query($clients_query);
-	while ($row = mysql_fetch_array($clients_sql)) {
+	$creators = array();
+	$statement = $dbh->prepare("SELECT id, user, name, email, level, notify, created_by, active FROM " . TABLE_USERS . " WHERE FIND_IN_SET(id, :clients)");
+	$statement->bindParam(':clients', $clients_to_get);
+	$statement->execute();
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
+	while ( $row = $statement->fetch() ) {
 		$clients_data[$row['id']] = array(
-									'id' => $row['id'],
-									'user' => $row['user'],
-									'name' => $row['name'],
-									'email' => $row['email'],
-									'level' => $row['level'],
-									'notify' => $row['notify'],
-									'created_by' => $row['created_by'],
-									'active' => $row['active']
+									'id'			=> $row['id'],
+									'user'			=> $row['user'],
+									'name'			=> $row['name'],
+									'email'			=> $row['email'],
+									'level'			=> $row['level'],
+									'notify'		=> $row['notify'],
+									'created_by'	=> $row['created_by'],
+									'active'		=> $row['active']
 								);
-		$creators .= "'".$row['created_by']."',";
+		$creators[] = $row['created_by'];
 		$mail_by_user[$row['user']] = $row['email'];
 	}
 	
 	/**
 	 * Add the creatros of the previous clients to the mails array.
 	 */
-	$creators = substr($creators, 0, -1);
+	$creators = implode( ',', $creators);
 	if (!empty($creators)) {
-		$creators_query = "SELECT id, name, user, email, active FROM tbl_users WHERE user IN ($creators)";
-		$creators_sql = $database->query($creators_query);
-		while ($row = mysql_fetch_array($creators_sql)) {
+		$statement = $dbh->prepare("SELECT id, name, user, email, active FROM " . TABLE_USERS . " WHERE FIND_IN_SET(user, :users)");
+		$statement->bindParam(':users', $creators);
+		$statement->execute();
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
+		while ( $row = $statement->fetch() ) {
 			$creators_data[$row['user']] = array(
 										'id' => $row['id'],
 										'user' => $row['user'],
@@ -257,8 +270,10 @@ if (!empty($found_notifications)) {
 	 */
 	if (!empty($notifications_sent) && count($notifications_sent) > 0) {
 		$notifications_sent = implode(',',array_unique($notifications_sent));
-		$notifications_sent_query = "UPDATE tbl_notifications SET sent_status = '1' WHERE id IN ($notifications_sent)";
-		$notifications_sent_sql = $database->query($notifications_sent_query);
+		$statement = $dbh->prepare("UPDATE " . TABLE_NOTIFICATIONS . " SET sent_status = '1' WHERE FIND_IN_SET(id, :sent)");
+		$statement->bindParam(':sent', $notifications_sent);
+		$statement->execute();
+
 		$msg = __('E-mail notifications have been sent.','cftp_admin');
 		echo system_message('ok',$msg);
 	}
@@ -269,8 +284,10 @@ if (!empty($found_notifications)) {
 	 */
 	if (!empty($notifications_failed) && count($notifications_failed) > 0) {
 		$notifications_failed = implode(',',array_unique($notifications_failed));
-		$notifications_errors_query = "UPDATE tbl_notifications SET sent_status = '0', times_failed = times_failed + 1 WHERE id IN ($notifications_failed)";
-		$notifications_errors_sql = $database->query($notifications_errors_query);
+		$statement = $dbh->prepare("UPDATE " . TABLE_NOTIFICATIONS . " SET sent_status = '0', times_failed = times_failed + 1 WHERE FIND_IN_SET(id, :failed)");
+		$statement->bindParam(':failed', $notifications_failed);
+		$statement->execute();
+
 		$msg = __("One or more notifications couldn't be sent.",'cftp_admin');
 		echo system_message('error',$msg);
 	}
@@ -282,8 +299,10 @@ if (!empty($found_notifications)) {
 	 */
 	if (!empty($notifications_inactive) && count($notifications_inactive) > 0) {
 		$notifications_inactive = implode(',',array_unique($notifications_inactive));
-		$notifications_inactive_query = "UPDATE tbl_notifications SET sent_status = '3' WHERE id IN ($notifications_inactive)";
-		$notifications_inactive_sql = $database->query($notifications_inactive_query);
+		$statement = $dbh->prepare("UPDATE " . TABLE_NOTIFICATIONS . " SET sent_status = '3' WHERE FIND_IN_SET(id, :inactive)");
+		$statement->bindParam(':inactive', $notifications_inactive);
+		$statement->execute();
+
 		if (CURRENT_USER_LEVEL == 0) {
 			/**
 			 * Clients do not need to know about the status of the

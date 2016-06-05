@@ -123,6 +123,7 @@ Many thanks to the authors of the following scripts, which are used on ProjectSe
 Also, thank you to the following people/communities that helped during development, either
 by giving support, sending code, translations, etc.
 
+- lenamtl
 - Alejandro D'Ambrosio
 - k.flipflip
 - Diego Carreira Vidal

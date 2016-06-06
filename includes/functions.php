@@ -477,7 +477,7 @@ function html_output($str,$flags=ENT_QUOTES,$encoding="utf8",$double_encode=fals
  */
 function encode_html($str) {
 	$str = htmlentities($str, ENT_QUOTES, $encoding='utf-8');
-	$str = mysql_real_escape_string($str);
+	//$str = mysql_real_escape_string($str);
 	$str = nl2br($str);
 	return $str;
 }

@@ -369,7 +369,7 @@ include('header.php');
 		<div class="form_actions_left">
 			<div class="form_actions_limit_results">
 				<form action="<?php echo html_output($form_action_url); ?>" name="files_search" method="post" class="form-inline">
-					<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($search_terms)) { echo $_POST['search']; } ?>" class="txtfield form_actions_search_box" />
+					<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($search_terms)) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box" />
 					<button type="submit" id="btn_proceed_search" class="btn btn-small"><?php _e('Search','cftp_admin'); ?></button>
 				</form>
 

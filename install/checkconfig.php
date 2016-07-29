@@ -102,7 +102,12 @@ $upload_temp_dir = ROOT_DIR.'/upload/temp';
 $upload_temp_dir_writable = is_writable($upload_temp_dir);
 
 // retrieve user data for web server
-$server_user = posix_getpwuid(posix_getuid());
+if (function_exists('posix_getpwuid')) {
+	$server_user_data = posix_getpwuid(posix_getuid());
+	$server_user = $server_user_data['name'] . ' (uid=' . $server_user_data['uid'] . ' gid=' . $server_user_data['gid'] . ')';
+} else {
+	$server_user = getenv('USERNAME');
+}
 
 // if everything is ok, we can proceed
 $ready_to_go = $pdo_connected && (!$table_exists || $reuse_tables) && $lang_ok && $config_file_writable && $upload_files_dir_writable && $upload_temp_dir_writable;
@@ -400,7 +405,7 @@ function table_exists($pdo, $table) {
 								</li>
 								<li>
 								  <label for="server_user">Server User</label>
-								  <input type="text" name="server_user" id="server_user" disabled value="<?php echo $server_user['name'] . ' (uid=' . $server_user['uid'] . ' gid=' . $server_user['gid'] . ')'; ?>" />
+								  <input type="text" name="server_user" id="server_user" disabled value="<?php echo $server_user; ?>" />
 								</li>
 								<li>
 								  <label for="phpversion">PHP Version</label>

@@ -48,22 +48,17 @@ define('NEWS_FEED_URI','http://www.projectsend.org/feed/');
 define('UPDATES_FEED_URI','http://projectsend.org/updates/versions.xml');
 
 /**
- * Include the personal configuration file
- * It must be created before installing ProjectSend.
+ * Check if the personal configuration file exists
+ * Otherwise will start a configuration page
  *
  * @see sys.config.sample.php
  */
-if(file_exists(ROOT_DIR.'/includes/sys.config.php')) {
-	include(ROOT_DIR.'/includes/sys.config.php');
+if(!file_exists(ROOT_DIR.'/includes/sys.config.php')) {
+	// the following script returns only after the creation of the configuration file
+	include(ROOT_DIR.'/install/checkconfig.php');
 }
-else {
-	echo '<h1>Missing a required file</h1>';
-	echo "<p>The system couldn't find the configuration file <strong>sys.config.php</strong> that should be located on the <strong>includes</strong> folder.</p>
-	<p>This file contains the database connection information, as well as the language and other important settings.</p>
-	<p>If this is the first time you are trying to run ProjectSend, you can edit the sample file <strong>includes/sys.config.sample.php</strong> to create your own configuration information.<br />
-		Then make sure to rename it to sys.config.php</p>";
-	exit;
-}
+
+include(ROOT_DIR.'/includes/sys.config.php');
 
 /**
  * Check for PDO extensions

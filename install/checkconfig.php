@@ -351,7 +351,7 @@ function table_exists($pdo, $table) {
 								</li>
 								<li>
 									<label for="lang">Language</label>
-									<select>
+									<select name="lang">
 										<?php foreach ($langs as $l) : ?>
 										<option value="<?php echo $l;?>" <?php echo $post_vars['lang']==$l ? 'selected' : ''; ?>><?php echo $l;?></option>
 										<?php endforeach?>

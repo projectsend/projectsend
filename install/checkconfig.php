@@ -169,21 +169,21 @@ function table_exists($pdo, $table) {
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<title>ProjectSend setup</title>
-	<link rel="shortcut icon" href="../favicon.ico" />
-	<script type="text/javascript" src="../includes/js/jquery-1.8.3.min.js"></script>
+	<link rel="shortcut icon" href="favicon.ico" />
+	<script type="text/javascript" src="includes/js/jquery-1.8.3.min.js"></script>
 
-	<link rel="stylesheet" media="all" type="text/css" href="../css/bootstrap.min.css" />
-	<link rel="stylesheet" media="all" type="text/css" href="../css/bootstrap-responsive.min.css" />
-	<script type="text/javascript" src="../includes/js/bootstrap/bootstrap.min.js"></script>
-	<script type="text/javascript" src="../includes/js/bootstrap/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+	<link rel="stylesheet" media="all" type="text/css" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" media="all" type="text/css" href="css/bootstrap-responsive.min.css" />
+	<script type="text/javascript" src="includes/js/bootstrap/bootstrap.min.js"></script>
+	<script type="text/javascript" src="includes/js/bootstrap/modernizr-2.6.2-respond-1.1.0.min.js"></script>
 
-	<link rel="stylesheet" media="all" type="text/css" href="../css/base.css" />
-	<link rel="stylesheet" media="all" type="text/css" href="../css/shared.css" />
+	<link rel="stylesheet" media="all" type="text/css" href="css/base.css" />
+	<link rel="stylesheet" media="all" type="text/css" href="css/shared.css" />
 
 	<link href='<?php echo PROTOCOL; ?>://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
 	<link href='<?php echo PROTOCOL; ?>://fonts.googleapis.com/css?family=Abel' rel='stylesheet' type='text/css'>
 
-	<script src="../includes/js/jquery.validations.js" type="text/javascript"></script>
+	<script src="includes/js/jquery.validations.js" type="text/javascript"></script>
 	<style>
 	.form_fields li label {
 		display:inline-block;

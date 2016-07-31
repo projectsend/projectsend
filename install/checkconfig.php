@@ -96,10 +96,11 @@ $lang_ok = in_array($post_vars['lang'], $langs);
 // check file & folders are writable
 $config_file = ROOT_DIR.'/includes/sys.config.php';
 $config_file_writable = is_writable($config_file) || is_writable(dirname($config_file));
+$upload_dir = ROOT_DIR.'/upload';
 $upload_files_dir = ROOT_DIR.'/upload/files';
-$upload_files_dir_writable = is_writable($upload_files_dir);
+$upload_files_dir_writable = is_writable($upload_files_dir) || is_writable($upload_dir);
 $upload_temp_dir = ROOT_DIR.'/upload/temp';
-$upload_temp_dir_writable = is_writable($upload_temp_dir);
+$upload_temp_dir_writable = is_writable($upload_temp_dir) || is_writable($upload_dir);
 
 // retrieve user data for web server
 if (function_exists('posix_getpwuid')) {

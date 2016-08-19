@@ -267,7 +267,7 @@ $install_no_baseuri		= __('ProjectSend URI was not completed.','cftp_admin');
 									<label for="base_uri"><?php _e('ProjectSend URI (address)','cftp_admin'); ?></label>
 									<input type="text" name="base_uri" id="base_uri" class="required" value="<?php echo (isset($base_uri) ? $base_uri : get_current_url()); ?>" />
 								</li>
-				
+
 								<li class="options_divide"></li>
 				
 								<li>

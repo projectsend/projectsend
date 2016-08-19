@@ -27,10 +27,11 @@ include('header-unlogged.php');
 		$sysuser_password = $_POST['login_form_pass'];
 	
 		/** Look up the system users table to see if the entered username exists */
-		$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE BINARY user= :username");
+		$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE BINARY user= :username OR BINARY email= :email");
 		$statement->execute(
 						array(
 							':username'	=> $_POST['login_form_user'],
+							':email'	=> $_POST['login_form_user'],
 						)
 					);
 		$count_user = $statement->rowCount();
@@ -156,7 +157,7 @@ include('header-unlogged.php');
 					
 						<form action="index.php" method="post" name="login_admin" role="form">
 							<fieldset>
-								<label for="login_form_user"><?php _e('Username','cftp_admin'); ?></label>
+								<label for="login_form_user"><?php _e('Username','cftp_admin'); ?> / <?php _e('E-mail','cftp_admin'); ?></label>
 								<input type="text" name="login_form_user" id="login_form_user" value="<?php if (isset($sysuser_username)) { echo htmlspecialchars($sysuser_username); } ?>" class="span3" />
 
 								<label for="login_form_pass"><?php _e('Password','cftp_admin'); ?></label>

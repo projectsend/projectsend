@@ -235,8 +235,9 @@ if (in_session_or_cookies($core_update_allowed)) {
 									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 										<?php _e('Clients', 'cftp_admin'); ?>
 										<?php
-											$sql_inactive = $database->query("SELECT DISTINCT user FROM tbl_users WHERE active = '0' AND level = '0'");
-											$count_inactive = mysql_num_rows($sql_inactive);
+											$sql_inactive = $dbh->prepare( "SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE active = '0' AND level = '0'" );
+											$sql_inactive->execute();
+											$count_inactive = $sql_inactive->rowCount();
 											if ($count_inactive > 0) {
 										?>
 												<span class="badge">
@@ -292,8 +293,9 @@ if (in_session_or_cookies($core_update_allowed)) {
 									<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 										<?php _e('System Users', 'cftp_admin'); ?>
 										<?php
-											$sql_inactive = $database->query("SELECT DISTINCT user FROM tbl_users WHERE active = '0' AND level != '0'");
-											$count_inactive = mysql_num_rows($sql_inactive);
+											$sql_inactive = $dbh->prepare( "SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE active = '0' AND level != '0'" );
+											$sql_inactive->execute();
+											$count_inactive = $sql_inactive->rowCount();
 											if ($count_inactive > 0) {
 										?>
 												<span class="badge">

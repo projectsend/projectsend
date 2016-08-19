@@ -11,29 +11,32 @@
 		 */
 		if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest')) {
 			$max_show_log = 10;
-			$log_action = mysql_real_escape_string($_GET['action']);
-		
-			$log_query = "SELECT * FROM tbl_actions_log";
-		
+			$log_action = $_GET['action'];
+
+			$params = array();
+			$log_query = "SELECT * FROM " . TABLE_LOG;
 			if (!empty($log_action)) {
-				$log_query .= " WHERE action = '$log_action'";
+				$log_query .= " WHERE action = :action";
+				$params[':action'] = $log_action;
 			}
-		
-			$log_query .= " ORDER BY id DESC LIMIT $max_show_log";
-			$sql_log = $database->query($log_query);
-			$log_count = mysql_num_rows($sql_log);
-			if ($log_count > 0) {
-				while($log = mysql_fetch_array($sql_log)) {
+			$log_query .= " ORDER BY id DESC LIMIT :max";
+			$params[':max'] = $max_show_log;
+
+			$sql_log = $dbh->prepare( $log_query );
+			$sql_log->execute( $params );
+			if ( $sql_log->rowCount() > 0 ) {
+				$sql_log->setFetchMode(PDO::FETCH_ASSOC);
+				while ( $log = $sql_log->fetch() ) {
 					$rendered = render_log_action(
 										array(
-											'action' => $log['action'],
-											'timestamp' => $log['timestamp'],
-											'owner_id' => $log['owner_id'],
-											'owner_user' => $log['owner_user'],
-											'affected_file' => $log['affected_file'],
-											'affected_file_name' => $log['affected_file_name'],
-											'affected_account' => $log['affected_account'],
-											'affected_account_name' => $log['affected_account_name']
+											'action'				=> $log['action'],
+											'timestamp'				=> $log['timestamp'],
+											'owner_id'				=> $log['owner_id'],
+											'owner_user'			=> $log['owner_user'],
+											'affected_file'			=> $log['affected_file'],
+											'affected_file_name'	=> $log['affected_file_name'],
+											'affected_account'		=> $log['affected_account'],
+											'affected_account_name'	=> $log['affected_account_name']
 										)
 					);
 				?>

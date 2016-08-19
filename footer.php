@@ -6,6 +6,9 @@
 	 * @package ProjectSend
 	 */
 	default_footer_info();
+	
+	//echo $dbh->GetCount(); // Print the total count of queries made by PDO
+
 	?>
 
 </body>

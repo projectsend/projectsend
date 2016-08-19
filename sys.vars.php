@@ -6,7 +6,7 @@
  * changed through the web interface, such as the version number,
  * php directives and the user and password length values.
  *
- * @package ProjectSend 
+ * @package ProjectSend
  * @subpackage Core
  */
 
@@ -14,7 +14,7 @@
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r583');
+define('CURRENT_VERSION', 'r611');
 
 /**
  * Fix for including external files when on HTTPS.
@@ -48,20 +48,44 @@ define('NEWS_FEED_URI','http://www.projectsend.org/feed/');
 define('UPDATES_FEED_URI','http://projectsend.org/updates/versions.xml');
 
 /**
- * Include the personal configuration file
- * It must be created before installing ProjectSend.
+ * Check if the personal configuration file exists
+ * Otherwise will start a configuration page
  *
  * @see sys.config.sample.php
  */
-if(file_exists(ROOT_DIR.'/includes/sys.config.php')) {
-	include(ROOT_DIR.'/includes/sys.config.php');
+if(!file_exists(ROOT_DIR.'/includes/sys.config.php')) {
+	// the following script returns only after the creation of the configuration file
+	include(ROOT_DIR.'/install/checkconfig.php');
 }
-else {
-	echo '<h1>Missing a required file</h1>';
-	echo "<p>The system couldn't find the configuration file <strong>sys.config.php</strong> that should be located on the <strong>includes</strong> folder.</p>
-	<p>This file contains the database connection information, as well as the language and other important settings.</p>
-	<p>If this is the first time you are trying to run ProjectSend, you can edit the sample file <strong>includes/sys.config.sample.php</strong> to create your own configuration information.<br />
-		Then make sure to rename it to sys.config.php</p>";
+
+include(ROOT_DIR.'/includes/sys.config.php');
+
+/**
+ * Check for PDO extensions
+ */
+$pdo_available_drivers = PDO::getAvailableDrivers();
+if( (DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND') ) {
+	echo '<h1>Missing a required extension</h1>';
+	echo "<p>The system couldn't find the configuration the <strong>PDO extension for mysql</strong>.</p>
+	<p>This extension is required for database comunication.</p>
+	<p>You can install this extension via the package manager of your linux distro, most likely with one of these commands:</p>
+	<ul>
+		<li>sudo apt-get install php5-mysql   	<strong># debian/ubuntu</strong></li>
+		<li>sudo yum install php-mysql   		<strong># centos/fedora</strong></li>
+	</ul>
+	<p>You also need to restart the webserver after the installation of PDO_mysql.</p>";
+	exit;
+}
+if( (DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers) ) {
+	echo '<h1>Missing a required extension</h1>';
+	echo "<p>The system couldn't find the configuration the <strong>PDO extension for MS SQL Server</strong>.</p>
+	<p>This extension is required for database comunication.</p>
+	<p>You can install this extension via the package manager of your linux distro, most likely with one of these commands:</p>
+	<ul>
+		<li>sudo apt-get install php5-sybase	<strong># debian/ubuntu</strong></li>
+		<li>sudo yum install php-mssql			<strong># centos/fedora (you need EPEL)</strong></li>
+	</ul>
+	<p>You also need to restart the webserver after the installation of PDO_mssql.</p>";
 	exit;
 }
 
@@ -73,6 +97,7 @@ if (!defined('TABLES_PREFIX')) {
 }
 define('TABLE_FILES', TABLES_PREFIX . 'files');
 define('TABLE_FILES_RELATIONS', TABLES_PREFIX . 'files_relations');
+define('TABLE_DOWNLOADS', TABLES_PREFIX . 'downloads');
 define('TABLE_NOTIFICATIONS', TABLES_PREFIX . 'notifications');
 define('TABLE_OPTIONS', TABLES_PREFIX . 'options');
 define('TABLE_USERS', TABLES_PREFIX . 'users');
@@ -80,7 +105,13 @@ define('TABLE_GROUPS', TABLES_PREFIX . 'groups');
 define('TABLE_MEMBERS', TABLES_PREFIX . 'members');
 define('TABLE_FOLDERS', TABLES_PREFIX . 'folders');
 define('TABLE_LOG', TABLES_PREFIX . 'actions_log');
-$current_tables = array(TABLE_FILES,TABLE_OPTIONS,TABLE_USERS);
+define('TABLE_PASSWORD_RESET', TABLES_PREFIX . 'password_reset');
+
+$current_tables = array(
+						TABLE_FILES,
+						TABLE_OPTIONS,
+						TABLE_USERS
+					);
 //$current_tables = array(TABLE_FILES,TABLE_FILES_RELATIONS,TABLE_OPTIONS,TABLE_USERS,TABLE_GROUPS,TABLE_MEMBERS,TABLE_FOLDERS,TABLE_LOG);
 
 /**
@@ -153,4 +184,12 @@ define('USER_ROLE_LVL_0', $user_role_0_name);
 /** phpass */
 define('HASH_COST_LOG2', 8);
 define('HASH_PORTABLE', false);
+
+
+/**
+ * Database connection driver
+ */
+if (!defined('DB_DRIVER')) {
+	define('DB_DRIVER', 'mysql');
+}
 ?>

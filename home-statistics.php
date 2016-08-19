@@ -17,14 +17,19 @@
 		/**
 		 * The graph will show only this actions
 		 */
-		$results = $database->query("SELECT action, timestamp, COUNT(*) as total
-										FROM tbl_actions_log
-										WHERE timestamp >= DATE_SUB( CURDATE(),INTERVAL $max_stats_days DAY)
+		$statement = $dbh->prepare("SELECT action, timestamp, COUNT(*) as total
+										FROM " . TABLE_LOG . " 
+										WHERE timestamp >= DATE_SUB( CURDATE(),INTERVAL :max_days DAY)
 										AND action IN ('5', '6', '8', '9')
 										GROUP BY DATE(timestamp), action
 									");
-		if (mysql_num_rows($results) > 0) {
-			while($res = mysql_fetch_array($results)) {
+		$params = array(
+						':max_days'	=> $max_stats_days,
+					);
+		$statement->execute( $params );
+		if ( $statement->rowCount() > 0 ) {
+			$statement->setFetchMode(PDO::FETCH_ASSOC);
+			while ( $res = $statement->fetch() ) {
 				$res['timestamp'] = strtotime($res['timestamp']);
 				switch ($res['action']) {
 					case 5:

@@ -6,7 +6,6 @@
  * @subpackage	Core
  *
  */
-$database->MySQLDB();
 
 /**
  * Gets the values from the options table, which has 2 columns.
@@ -15,13 +14,19 @@ $database->MySQLDB();
  * @return array
  */
 $options_values = array();
-$options = $database->query("SELECT * FROM tbl_options");
-if (mysql_num_rows($options) > 0) {
-	while ($row = mysql_fetch_array($options)) {
-		$options_values[$row['name']] = $row['value'];
+try {
+	$options = $dbh->query("SELECT * FROM " . TABLE_OPTIONS);
+	$options->setFetchMode(PDO::FETCH_ASSOC);
+
+	if ( $options->rowCount() > 0) {
+		while ( $row = $options->fetch() ) {
+			$options_values[$row['name']] = $row['value'];
+		}
 	}
 }
-$database->Close();
+catch ( Exception $e ) {
+	return FALSE;
+}
 
 /**
  * Set the options returned before as constants.

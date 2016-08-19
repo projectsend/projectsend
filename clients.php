@@ -62,13 +62,16 @@ $(document).ready(function() {
 		/** Continue only if 1 or more clients were selected. */
 		if(!empty($_POST['selected_clients'])) {
 			$selected_clients = $_POST['selected_clients'];
-			$clients_to_get = mysql_real_escape_string(implode(',',array_map('intval',array_unique($selected_clients))));
+			$clients_to_get = implode( ',', array_map( 'intval', array_unique( $selected_clients ) ) );
 
 			/**
 			 * Make a list of users to avoid individual queries.
 			 */
-			$sql_user = $database->query("SELECT id, name FROM tbl_users WHERE id IN ($clients_to_get)");
-			while($data_user = mysql_fetch_array($sql_user)) {
+			$sql_user = $dbh->prepare( "SELECT id, name FROM " . TABLE_USERS . " WHERE FIND_IN_SET(id, :clients)" );
+			$sql_user->bindParam(':clients', $clients_to_get);
+			$sql_user->execute();
+			$sql_user->setFetchMode(PDO::FETCH_ASSOC);
+			while ( $data_user = $sql_user->fetch() ) {
 				$all_users[$data_user['id']] = $data_user['name'];
 			}
 
@@ -131,27 +134,35 @@ $(document).ready(function() {
 	}
 
 	/** Query the clients */
-	$database->MySQLDB();
-	$cq = "SELECT * FROM tbl_users WHERE level='0'";
+	$cq = "SELECT * FROM " . TABLE_USERS . " WHERE level='0'";
 
 	/** Add the search terms */	
-	if(isset($_POST['search']) && !empty($_POST['search'])) {
-		$search_terms = mysql_real_escape_string($_POST['search']);
-		$cq .= " AND (name LIKE '%$search_terms%' OR user LIKE '%$search_terms%' OR address LIKE '%$search_terms%' OR phone LIKE '%$search_terms%' OR email LIKE '%$search_terms%' OR contact LIKE '%$search_terms%')";
+	if ( isset( $_POST['search'] ) && !empty( $_POST['search'] ) ) {
+		$cq .= " AND (name LIKE :name OR user LIKE :user OR address LIKE :address OR phone LIKE :phone OR email LIKE :email OR contact LIKE :contact)";
 		$no_results_error = 'search';
+
+		$search_terms		= '%'.$_POST['search'].'%';
+		$params[':name']	= $search_terms;
+		$params[':user']	= $search_terms;
+		$params[':address']	= $search_terms;
+		$params[':phone']	= $search_terms;
+		$params[':email']	= $search_terms;
+		$params[':contact']	= $search_terms;
 	}
 
 	/** Add the status filter */	
 	if(isset($_POST['status']) && $_POST['status'] != 'all') {
-		$status_filter = mysql_real_escape_string($_POST['status']);
-		$cq .= " AND active='$status_filter'";
+		$cq .= " AND active = :active";
 		$no_results_error = 'filter';
+
+		$params[':active']	= (int)$_POST['status'];
 	}
 	
 	$cq .= " ORDER BY name ASC";
 
-	$sql = $database->query($cq);
-	$count = mysql_num_rows($sql);
+	$sql = $dbh->prepare( $cq );
+	$sql->execute( $params );
+	$count = $sql->rowCount();
 ?>
 		<div class="form_actions_left">
 			<div class="form_actions_limit_results">
@@ -240,18 +251,25 @@ $(document).ready(function() {
 				<tbody>
 					<?php
 						if ($count > 0) {
-							while($row = mysql_fetch_array($sql)) {
-								$found_groups = '';
-								$client_user = $row["user"];
-								$client_id = $row["id"];
-								$sql_groups = $database->query("SELECT DISTINCT group_id FROM tbl_members WHERE client_id='$client_id'");
-								$count_groups = mysql_num_rows($sql_groups);
+							$sql->setFetchMode(PDO::FETCH_ASSOC);
+							while ( $row = $sql->fetch() ) {
+								$found_groups	= '';
+								$client_user	= $row["user"];
+								$client_id		= $row["id"];
+
+								$sql_groups = $dbh->prepare("SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE client_id=:id");
+								$sql_groups->bindParam(':id', $client_id, PDO::PARAM_INT);
+								$sql_groups->execute();
+								$count_groups	= $sql_groups->rowCount();
+
 								if ($count_groups > 0) {
-									while($row_groups = mysql_fetch_array($sql_groups)) {
+									$sql_groups->setFetchMode(PDO::FETCH_ASSOC);
+									while ( $row_groups = $sql_groups->fetch() ) {
 										$groups_ids[] = $row_groups["group_id"];
 									}
 									$found_groups = implode(',',$groups_ids);
 								}
+
 								$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
 					?>
 								<tr>
@@ -264,13 +282,21 @@ $(document).ready(function() {
 											$own_files = 0;
 											$groups_files = 0;
 
-											$fq = "SELECT DISTINCT id, file_id, client_id, group_id FROM tbl_files_relations WHERE client_id='$client_id'";
-											if (!empty($found_groups)) {
-												$fq .= " OR group_id IN ($found_groups)";
+											$files_query = "SELECT DISTINCT id, file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE client_id=:id";
+											if ( !empty( $found_groups ) ) {
+												$files_query .= " OR FIND_IN_SET(group_id, :group_id)";
 											}
-											$sql_files = $database->query($fq);
-											$count_files = mysql_num_rows($sql_files);
-											while($row_files = mysql_fetch_array($sql_files)) {
+											$sql_files = $dbh->prepare( $files_query );
+											$sql_files->bindParam(':id', $client_id, PDO::PARAM_INT);
+											if ( !empty( $found_groups ) ) {
+												$sql_files->bindParam(':group_id', $found_groups);
+											}
+
+											$sql_files->execute();
+											$count_files = $sql_files->rowCount();
+
+											$sql_files->setFetchMode(PDO::FETCH_ASSOC);
+											while ( $row_files = $sql_files->fetch() ) {
 												if (!is_null($row_files['client_id'])) {
 													$own_files++;
 												}
@@ -288,8 +314,8 @@ $(document).ready(function() {
 										<?php
 											$status_hidden	= __('Inactive','cftp_admin');
 											$status_visible	= __('Active','cftp_admin');
-											$label			= ($row['active'] === '0') ? $status_hidden : $status_visible;
-											$class			= ($row['active'] === '0') ? 'important' : 'success';
+											$label			= ($row['active'] === 0) ? $status_hidden : $status_visible;
+											$class			= ($row['active'] === 0) ? 'important' : 'success';
 										?>
 										<span class="label label-<?php echo $class; ?>">
 											<?php echo $label; ?>
@@ -331,7 +357,6 @@ $(document).ready(function() {
 								</tr>
 					<?php
 							}
-							$database->Close();
 						}
 					?>
 				</tbody>

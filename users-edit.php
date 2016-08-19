@@ -11,30 +11,13 @@ require_once('sys.includes.php');
 
 $active_nav = 'users';
 
-$database->MySQLDB();
-
 /** Create the object */
 $edit_user = new UserActions();
 
 /** Check if the id parameter is on the URI. */
 if (isset($_GET['id'])) {
-	$user_id = mysql_real_escape_string($_GET['id']);
-    /**
-	 * FIX by Azannah
-     * Make sure we're getting an int
-     * This is a "better-than-nothing" fix for CVE-2015-2564
-     * Ideally, I would be using PDO and prepared statements     
-     */
-    if(filter_var($user_id, FILTER_VALIDATE_INT))
-    {
-		/**
-		 * Check if the id corresponds to a real user.
-		 * Return 1 if true, 2 if false.
-		 **/
-		$page_status = (user_exists_id($user_id)) ? 1 : 2;
-    } else {
-        $page_status = 0;
-    }
+	$user_id = $_GET['id'];
+	$page_status = (user_exists_id($user_id)) ? 1 : 2;
 }
 else {
 	/**
@@ -47,8 +30,12 @@ else {
  * Get the user information from the database to use on the form.
  */
 if ($page_status === 1) {
-	$editing = $database->query("SELECT * FROM tbl_users WHERE id=$user_id");
-	while($data = mysql_fetch_array($editing)) {
+	$editing = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
+	$editing->bindParam(':id', $user_id, PDO::PARAM_INT);
+	$editing->execute();
+	$editing->setFetchMode(PDO::FETCH_ASSOC);
+
+	while ( $data = $editing->fetch() ) {
 		$add_user_data_name = $data['name'];
 		$add_user_data_user = $data['user'];
 		$add_user_data_email = $data['email'];
@@ -84,8 +71,8 @@ if ($_POST) {
 	 * validation failed, the new unsaved values are shown to avoid
 	 * having to type them again.
 	 */
-	$add_user_data_name = mysql_real_escape_string($_POST['add_user_form_name']);
-	$add_user_data_email = mysql_real_escape_string($_POST['add_user_form_email']);
+	$add_user_data_name = $_POST['add_user_form_name'];
+	$add_user_data_email = $_POST['add_user_form_email'];
 
 	/**
 	 * Edit level only when user is not Uploader (level 7) or when
@@ -102,18 +89,18 @@ if ($_POST) {
 	}
 	if ($edit_level_active === true) {
 		/** Default level to 7 just in case */
-		$add_user_data_level = (isset($_POST["add_user_form_level"])) ? mysql_real_escape_string($_POST['add_user_form_level']) : '7';
+		$add_user_data_level = (isset($_POST["add_user_form_level"])) ? $_POST['add_user_form_level'] : '7';
 		$add_user_data_active = (isset($_POST["add_user_form_active"])) ? 1 : 0;
 	}
 
 	/** Arguments used on validation and user creation. */
 	$edit_arguments = array(
-							'id' => $user_id,
-							'name' => $add_user_data_name,
-							'email' => $add_user_data_email,
-							'role' => $add_user_data_level,
-							'active' => $add_user_data_active,
-							'type' => 'edit_user'
+							'id'		=> $user_id,
+							'name'		=> $add_user_data_name,
+							'email'		=> $add_user_data_email,
+							'role'		=> $add_user_data_level,
+							'active'	=> $add_user_data_active,
+							'type'		=> 'edit_user'
 						);
 
 	/**
@@ -225,6 +212,5 @@ include('header.php');
 </div>
 
 <?php
-	$database->Close();
 	include('footer.php');
 ?>

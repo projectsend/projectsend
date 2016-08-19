@@ -72,18 +72,17 @@ include('header.php');
 				case 'delete':
 
 					$selected_actions = $_POST['activities'];
-					$deleted_actions = 0;
+					$delete_ids = implode( ',', $selected_actions );
 
-					if(!empty($_POST['activities'])) {
-						foreach ($selected_actions as $selected_action) {
-							$del_sql = $database->query("DELETE FROM tbl_actions_log WHERE id='$selected_action'");
-							$deleted_actions++;
-						}
+					if ( !empty( $_POST['activities'] ) ) {
+							$statement = $dbh->prepare("DELETE FROM " . TABLE_LOG . " WHERE FIND_IN_SET(id, :delete)");
+							$params = array(
+											':delete'	=> $delete_ids,
+										);
+							$statement->execute( $params );
 						
-						if ($deleted_actions > 0) {
 							$msg = __('The selected activities were deleted.','cftp_admin');
 							echo system_message('ok',$msg);
-						}
 					}
 					else {
 						$msg = __('Please select at least one activity.','cftp_admin');
@@ -92,22 +91,32 @@ include('header.php');
 				break;
 				case 'clear':
 					$keep = '5,8,9';
-					$del_sql = $database->query("DELETE FROM tbl_actions_log WHERE NOT (action IN ($keep))");
+					$statement = $dbh->prepare("DELETE FROM " . TABLE_LOG . " WHERE NOT ( FIND_IN_SET(action, :keep) ) ");
+					$params = array(
+									':keep'	=> $keep,
+								);
+					$statement->execute( $params );
+
 					$msg = __('The log was cleared. Only data used for statistics remained. You can delete them manually if you want.','cftp_admin');
 					echo system_message('ok',$msg);
 				break;
 			}
 	}
 
-	$database->MySQLDB();
-	$cq = "SELECT * FROM tbl_actions_log";
+	$params	= array();
+
+	$cq = "SELECT * FROM " . TABLE_LOG;
 
 	/** Add the search terms */	
-	if(isset($_POST['search']) && !empty($_POST['search'])) {
-		$search_terms = mysql_real_escape_string($_POST['search']);
-		$cq .= " WHERE (owner_user LIKE '%$search_terms%' OR affected_file_name LIKE '%$search_terms%' OR affected_account_name LIKE '%$search_terms%')";
+	if ( isset($_POST['search']) && !empty($_POST['search'] ) ) {
+		$cq .= " WHERE (owner_user LIKE :owner OR affected_file_name LIKE :file OR affected_account_name LIKE :account)";
 		$next_clause = ' AND';
 		$no_results_error = 'search';
+		
+		$search_terms		= '%'.$_POST['search'].'%';
+		$params[':owner']	= $search_terms;
+		$params[':file']	= $search_terms;
+		$params[':account']	= $search_terms;
 	}
 	else {
 		$next_clause = ' WHERE';
@@ -115,15 +124,19 @@ include('header.php');
 
 	/** Add the activities filter */	
 	if(isset($_POST['activity']) && $_POST['activity'] != 'all') {
-		$status_filter = $_POST['activity'];
-		$cq .= $next_clause. " action='$status_filter'";
+		$cq .= $next_clause. " action=:status";
+
+		$status_filter		= $_POST['activity'];
+		$params[':status']	= $status_filter;
+
 		$no_results_error = 'filter';
 	}
 
 	$cq .= " ORDER BY id DESC";
 	
-	$sql = $database->query($cq);
-	$count = mysql_num_rows($sql);
+	$sql = $dbh->prepare( $cq );
+	$sql->execute( $params );
+	$count = $sql->rowCount();
 ?>
 
 	<div class="form_actions_left">
@@ -234,17 +247,18 @@ include('header.php');
 			<tbody>
 			
 			<?php
-				while($log = mysql_fetch_array($sql)) {
+				$sql->setFetchMode(PDO::FETCH_ASSOC);
+				while ( $log = $sql->fetch() ) {
 					$this_action = render_log_action(
 										array(
-											'action' => $log['action'],
-											'timestamp' => $log['timestamp'],
-											'owner_id' => $log['owner_id'],
-											'owner_user' => $log['owner_user'],
-											'affected_file' => $log['affected_file'],
-											'affected_file_name' => $log['affected_file_name'],
-											'affected_account' => $log['affected_account'],
-											'affected_account_name' => $log['affected_account_name']
+											'action'				=> $log['action'],
+											'timestamp'				=> $log['timestamp'],
+											'owner_id'				=> $log['owner_id'],
+											'owner_user'			=> $log['owner_user'],
+											'affected_file'			=> $log['affected_file'],
+											'affected_file_name'	=> $log['affected_file_name'],
+											'affected_account'		=> $log['affected_account'],
+											'affected_account_name'	=> $log['affected_account_name']
 										)
 					);
 					$date = date(TIMEFORMAT_USE,strtotime($log['timestamp']));
@@ -263,8 +277,6 @@ include('header.php');
 						
 				<?php
 				}
-			
-				$database->Close();
 			?>
 			
 			</tbody>

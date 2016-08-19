@@ -3,45 +3,53 @@
  * Simple database connection and query class.
  * Uses the information defined on sys.config.php.
  *
- * @link http://www.evolt.org/PHP-Login-System-with-Admin-Features
  * @package		ProjectSend
  * @subpackage	Classes
  *
  */
 
-class MySQLDB
+/** Extension class to count the total of executed queries */
+class PDOEx extends PDO
 {
-	/** The MySQL database connection */
-	var $connection;
+	private $queries = 0;
+	
+	public function query($query) {
+		++$this->queries;
+		return parent::query($query);
+	}
 
-	/** Class constructor */
-	function MySQLDB()
-	{
-		/** Make connection to database */
-		$this->connection = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD) or die(mysql_error());
-		mysql_select_db(DB_NAME, $this->connection) or die(mysql_error());
-		//mysql_query("SET NAMES utf8");
+	public function prepare($statement) {
+		++$this->queries;
+		return parent::prepare($statement);
 	}
 	
-	/**
-	* query - Performs the given query on the database and
-	* returns the result, which may be false, true or a
-	* resource identifier.
-	*/
-	function query($query)
-	{
-		$a = mysql_query($query, $this->connection);
-		//echo mysql_error();
-		return $a;
-	}
-	
-	function Close()
-	{
-		mysql_close($this->connection);
+	public function GetCount() {
+		return $this->queries;
 	}
 }
 
-/** Create database connection */
-$database = new MySQLDB;
+/** Initiate the database connection */
+global $dbh;
+try {
+	switch ( DB_DRIVER ) {
+		default:
+		case 'mysql':
+			$dbh = new PDOEx("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
+			break;
 
+		case 'mssql':
+			$dbh = new PDOEx("mssql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
+			break;
+	}
+
+	$dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+	$dbh->setAttribute( PDO::ATTR_EMULATE_PREPARES, false );
+}
+catch(PDOException $e) {
+/*
+	print "Error!: " . $e->getMessage() . "<br/>";
+	die();
+*/
+	return false;
+}
 ?>

@@ -60,13 +60,13 @@ if (in_session_or_cookies($allowed_update)) {
 							 * Save the information from the new release
 							 * to the database.
 							 */
-							$database->query("UPDATE tbl_options SET value ='$release->version' WHERE name='version_new_number'");
-							$database->query("UPDATE tbl_options SET value ='$item->link' WHERE name='version_new_url'");
-							$database->query("UPDATE tbl_options SET value ='$release->changelog' WHERE name='version_new_chlog'");
-							$database->query("UPDATE tbl_options SET value ='$diff->security' WHERE name='version_new_security'");
-							$database->query("UPDATE tbl_options SET value ='$diff->features' WHERE name='version_new_features'");
-							$database->query("UPDATE tbl_options SET value ='$diff->important' WHERE name='version_new_important'");
-							$database->query("UPDATE tbl_options SET value ='1' WHERE name='version_new_found'");
+							$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :version WHERE name='version_new_number'");		$statement->bindParam(':version', $release->version); $statement->execute();
+							$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :link WHERE name='version_new_url'");				$statement->bindParam(':link', $item->link); $statement->execute();
+							$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :changelog WHERE name='version_new_chlog'");		$statement->bindParam(':changelog', $release->changelog); $statement->execute();
+							$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :security WHERE name='version_new_security'");		$statement->bindParam(':security', $diff->security); $statement->execute();
+							$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :features WHERE name='version_new_features'");		$statement->bindParam(':features', $diff->features); $statement->execute();
+							$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :important WHERE name='version_new_important'");	$statement->bindParam(':important', $diff->important); $statement->execute();
+							$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value ='1' WHERE name='version_new_found'");
 						 }
 						 else {
 							 reset_update_status();
@@ -76,7 +76,9 @@ if (in_session_or_cookies($allowed_update)) {
 						 * Change the date and versions values on the
 						 * database so it's not checked again today.
 						 */
-						$database->query("UPDATE tbl_options SET value ='$today' WHERE name='version_last_check'");
+						$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :today WHERE name='version_last_check'");
+						$statement->bindParam(':today', $today);
+						$statement->execute();
 
 						/** Stop the foreach loop */
 						$v++;
@@ -92,18 +94,16 @@ if (in_session_or_cookies($allowed_update)) {
 	 * running all this queries everytime a page is loaded.
 	 * Done on top for convenience.
 	 */
-	$version_query = "SELECT value FROM tbl_options WHERE name = 'last_update'";
-	$version_sql = $database->query($version_query);
-
-	if(!mysql_num_rows($version_sql)) {
-		$updates_made++;
-		$qv = "INSERT INTO tbl_options (name, value) VALUES ('last_update', '264')";
-		$sqlv = $database->query($qv);
+	$statement = $dbh->prepare("SELECT value FROM " . TABLE_OPTIONS . " WHERE name = 'last_update'");
+	$statement->execute();
+	if ( $statement->rowCount() == 0 ) {
+		$dbh->query( "INSERT INTO " . TABLE_OPTIONS . " (name, value) VALUES ('last_update', '264')" );
 		$updates_made++;
 	}
 	else {
-		while($vres = mysql_fetch_array($version_sql)) {
-			$last_update = $vres['value'];
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
+		while ( $row = $statement->fetch() ) {
+			$last_update = $row['value'];
 		}
 	}
 	
@@ -119,16 +119,10 @@ if (in_session_or_cookies($allowed_update)) {
 											'logo_filename' => 'logo.png'
 										);
 			
-			foreach($new_database_values as $row => $value) {
-				$q = "SELECT * FROM tbl_options WHERE name = '$row'";
-				$sql = $database->query($q);
-		
-				if(!mysql_num_rows($sql)) {
+			foreach ($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
 					$updates_made++;
-					$qi = "INSERT INTO tbl_options (name, value) VALUES ('$row', '$value')";
-					$sqli = $database->query($qi);
 				}
-				unset($q);
 			}
 		}
 
@@ -138,13 +132,18 @@ if (in_session_or_cookies($allowed_update)) {
 		 * user that created it.
 		 * If the column doesn't exist, create it.
 		 */
+		 /** DEPRECATED
+		 	table tbl_clients doesn't exist anymore
 		if ($last_update < 94) {
-			$q = $database->query("SELECT created_by FROM tbl_clients");
-			if (!$q) {
-				mysql_query("ALTER TABLE tbl_clients ADD created_by VARCHAR(".MAX_USER_CHARS.") NOT NULL");
+			$statement = $dbh->prepare("SELECT created_by FROM tbl_clients");
+			$statement->execute();
+	
+			if( $statement->rowCount() == 0 ) {
+				$statement = $dbh->query("ALTER TABLE tbl_clients ADD created_by VARCHAR(".MAX_USER_CHARS.") NOT NULL");
 				$updates_made++;
 			}
 		}
+		*/
 
 		/**
 		 * DEPRECATED
@@ -153,9 +152,9 @@ if (in_session_or_cookies($allowed_update)) {
 		 * If the "hidden" column on the files table doesn't exist, create it.
 		 */
 		/*
-		$q = $database->query("SELECT hidden FROM tbl_files");
-		if (!$q) {
-			mysql_query("ALTER TABLE tbl_files ADD hidden INT(1) NOT NULL");
+		$statement = $dbh->query("SELECT hidden FROM " . TABLE_FILES);
+		if ( $statement->rowCount() == 0 ) {
+			$statement = $dbh->query("ALTER TABLE " . TABLE_FILES . " ADD hidden INT(1) NOT NULL");
 			$updates_made++;
 		}
 		*/
@@ -167,8 +166,10 @@ if (in_session_or_cookies($allowed_update)) {
 		 * will default to the primary admin user's e-mail.
 		 */
 		if ($last_update < 135) {
-			$sql = $database->query('SELECT * FROM tbl_users WHERE id="1"');
-			while($row = mysql_fetch_array($sql)) {
+			$statement = $dbh->query("SELECT * FROM " . TABLE_USERS . " WHERE id = '1'");
+	
+			$statement->setFetchMode(PDO::FETCH_ASSOC);
+			while ( $row = $statement->fetch() ) {
 				$set_admin_email = $row['email'];
 			}
 		
@@ -177,15 +178,9 @@ if (in_session_or_cookies($allowed_update)) {
 										);
 			
 			foreach($new_database_values as $row => $value) {
-				$q = "SELECT * FROM tbl_options WHERE name = '$row'";
-				$sql = $database->query($q);
-		
-				if(!mysql_num_rows($sql)) {
+				if ( add_option_if_not_exists($row, $value) ) {
 					$updates_made++;
-					$qi = "INSERT INTO tbl_options (name, value) VALUES ('$row', '$value')";
-					$sqli = $database->query($qi);
 				}
-				unset($q);
 			}
 		}
 
@@ -197,6 +192,9 @@ if (in_session_or_cookies($allowed_update)) {
 		 * client as active (1).
 		 */
 		if ($last_update < 183) {
+		 /** DEPRECATED
+		 	table tbl_clients doesn't exist anymore
+
 			$q = $database->query("SELECT active FROM tbl_clients");
 			if (!$q) {
 				mysql_query("ALTER TABLE tbl_clients ADD active tinyint(1) NOT NULL");
@@ -205,24 +203,18 @@ if (in_session_or_cookies($allowed_update)) {
 					$database->query('UPDATE tbl_clients SET active = 1');
 				}
 				$updates_made++;
-		
-				/**
-				 * Add the "users can register" value to the options table.
-				 * Defaults to 0, since this is a new feature.
-				 * */
-				$new_database_values = array(
-												'clients_can_register' => '0'
-											);
-				foreach($new_database_values as $row => $value) {
-					$q = "SELECT * FROM tbl_options WHERE name = '$row'";
-					$sql = $database->query($q);
-			
-					if(!mysql_num_rows($sql)) {
-						$updates_made++;
-						$qi = "INSERT INTO tbl_options (name, value) VALUES ('$row', '$value')";
-						$sqli = $database->query($qi);
-					}
-					unset($q);
+			}
+		*/		
+			/**
+			 * Add the "users can register" value to the options table.
+			 * Defaults to 0, since this is a new feature.
+			 * */
+			$new_database_values = array(
+											'clients_can_register' => '0'
+										);
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
 				}
 			}
 		}
@@ -261,14 +253,15 @@ if (in_session_or_cookies($allowed_update)) {
 		 * Combine clients and users on the same table.
 		 */
 		if ($last_update < 202) {
-			$q = $database->query("SELECT created_by FROM tbl_users");
-			if (!$q) {
+			try {
+				$statement = $dbh->query("SELECT created_by FROM " . TABLE_USERS);
+			} catch( PDOException $e ) {
 				/* Mark existing users as active */
-				$database->query("ALTER TABLE tbl_users ADD address TEXT NULL, ADD phone varchar(32) NULL, ADD notify TINYINT(1) NOT NULL default='0', ADD contact TEXT NULL, ADD created_by varchar(32) NULL, ADD active TINYINT(1) NOT NULL default='1'");
-				$database->query("INSERT INTO tbl_users"
+				$dbh->query("ALTER TABLE " . TABLE_USERS . " ADD address TEXT NULL, ADD phone varchar(32) NULL, ADD notify TINYINT(1) NOT NULL default='0', ADD contact TEXT NULL, ADD created_by varchar(32) NULL, ADD active TINYINT(1) NOT NULL default='1'");
+				$dbh->query("INSERT INTO " . TABLE_USERS
 										." (user, password, name, email, timestamp, address, phone, notify, contact, created_by, active, level)"
 										." SELECT client_user, password, name, email, timestamp, address, phone, notify, contact, created_by, active, '0' FROM tbl_clients");
-				$database->query("UPDATE tbl_users SET active = 1");
+				$dbh->query("UPDATE " . TABLE_USERS . " SET active = 1");
 				$updates_made++;
 			}
 		}
@@ -278,11 +271,10 @@ if (in_session_or_cookies($allowed_update)) {
 		 * A new database table was added, that allows the creation of clients groups.
 		 */
 		if ($last_update < 210) {
-			$q = $database->query("SELECT id FROM tbl_groups");
-			if (!$q) {
+			if ( !tableExists( TABLE_GROUPS ) ) {
 				/** Create the GROUPS table */
-				$q1 = '
-				CREATE TABLE IF NOT EXISTS `tbl_groups` (
+				$query = "
+				CREATE TABLE IF NOT EXISTS `".TABLE_GROUPS."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 				  `created_by` varchar(32) NOT NULL,
@@ -290,8 +282,10 @@ if (in_session_or_cookies($allowed_update)) {
 				  `description` text NOT NULL,
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-				';
-				$database->query($q1);
+				";
+				$statement = $dbh->prepare($query);
+				$statement->execute();
+
 				$updates_made++;
 		
 				/**
@@ -302,7 +296,9 @@ if (in_session_or_cookies($allowed_update)) {
 				 * released version.
 				 */
 				foreach ($current_tables as $working_table) {
-					$q = $database->query("ALTER TABLE $working_table ENGINE = InnoDB");
+					$statement = $dbh->prepare("ALTER TABLE $working_table ENGINE = InnoDB");
+					$statement->execute();
+
 					$updates_made++;
 				}
 			}
@@ -314,23 +310,24 @@ if (in_session_or_cookies($allowed_update)) {
 		 * Folders are related to clients or groups.
 		 */
 		if ($last_update < 219) {
-			$q = $database->query("SELECT id FROM tbl_folders");
-			if (!$q) {
-				$q1 = '
-				CREATE TABLE IF NOT EXISTS `tbl_folders` (
+			if ( !tableExists( TABLE_FOLDERS ) ) {
+				$query = "
+				CREATE TABLE IF NOT EXISTS `".TABLE_FOLDERS."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `parent` int(11) DEFAULT NULL,
 				  `name` varchar(32) NOT NULL,
 				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 				  `client_id` int(11) DEFAULT NULL,
 				  `group_id` int(11) DEFAULT NULL,
-				  FOREIGN KEY (`parent`) REFERENCES tbl_folders(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-				  FOREIGN KEY (`client_id`) REFERENCES tbl_users(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-				  FOREIGN KEY (`group_id`) REFERENCES tbl_groups(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`parent`) REFERENCES ".TABLE_FOLDERS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`client_id`) REFERENCES ".TABLE_USERS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`group_id`) REFERENCES ".TABLE_GROUPS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-				';
-				$database->query($q1);
+				";
+				$statement = $dbh->prepare($query);
+				$statement->execute();
+
 				$updates_made++;
 			}
 		}
@@ -341,10 +338,9 @@ if (in_session_or_cookies($allowed_update)) {
 		 * with clients and groups.
 		 */
 		if ($last_update < 217) {
-			$q = $database->query("SELECT id FROM tbl_files_relations");
-			if (!$q) {
-				$q1 = '
-				CREATE TABLE IF NOT EXISTS `tbl_files_relations` (
+			if ( !tableExists( TABLE_FILES_RELATIONS ) ) {
+				$query = "
+				CREATE TABLE IF NOT EXISTS `".TABLE_FILES_RELATIONS."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 				  `file_id` int(11) NOT NULL,
@@ -352,15 +348,17 @@ if (in_session_or_cookies($allowed_update)) {
 				  `group_id` int(11) DEFAULT NULL,
 				  `folder_id` int(11) DEFAULT NULL,
 				  `hidden` int(1) NOT NULL,
-				  `download_count` int(16) NOT NULL default "0",
-				  FOREIGN KEY (`file_id`) REFERENCES tbl_files(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-				  FOREIGN KEY (`client_id`) REFERENCES tbl_users(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-				  FOREIGN KEY (`group_id`) REFERENCES tbl_groups(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-				  FOREIGN KEY (`folder_id`) REFERENCES tbl_folders(`id`) ON UPDATE CASCADE,
+				  `download_count` int(16) NOT NULL default '0',
+				  FOREIGN KEY (`file_id`) REFERENCES ".TABLE_FILES."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`client_id`) REFERENCES ".TABLE_USERS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`group_id`) REFERENCES ".TABLE_GROUPS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`folder_id`) REFERENCES ".TABLE_FOLDERS."(`id`) ON UPDATE CASCADE,
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-				';
-				$database->query($q1);
+				";
+				$statement = $dbh->prepare($query);
+				$statement->execute();
+
 				$updates_made++;
 			}
 		}
@@ -370,10 +368,9 @@ if (in_session_or_cookies($allowed_update)) {
 		 * A new database table was added, that stores users and clients actions.
 		 */
 		if ($last_update < 241) {
-			$q = $database->query("SELECT id FROM tbl_actions_log");
-			if (!$q) {
-				$q1 = '
-				CREATE TABLE IF NOT EXISTS `tbl_actions_log` (
+			if ( !tableExists( TABLE_LOG ) ) {
+				$query = "
+				CREATE TABLE IF NOT EXISTS `".TABLE_LOG."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 				  `action` int(2) NOT NULL,
@@ -385,8 +382,10 @@ if (in_session_or_cookies($allowed_update)) {
 				  `affected_account_name` text DEFAULT NULL,
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-				';
-				$database->query($q1);
+				";
+				$statement = $dbh->prepare($query);
+				$statement->execute();
+
 				$updates_made++;
 			}
 		}
@@ -396,14 +395,11 @@ if (in_session_or_cookies($allowed_update)) {
 		 * Set timestamp columns as real timestamp data, instead of INT
 		 */
 		if ($last_update < 266) {
-			$q1 = "ALTER TABLE `tbl_users` ADD COLUMN `timestamp2` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()";
-			$q2 = "UPDATE `tbl_users` SET `timestamp2` = FROM_UNIXTIME(`timestamp`)";
-			$q3 = "ALTER TABLE `tbl_users` DROP COLUMN `timestamp`";
-			$q4 = "ALTER TABLE `tbl_users` CHANGE `timestamp2` `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()";
-			$database->query($q1);
-			$database->query($q2);
-			$database->query($q3);
-			$database->query($q4);
+			$statement = $dbh->query("ALTER TABLE `" . TABLE_USERS . "` ADD COLUMN `timestamp2` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()");
+			$statement = $dbh->query("UPDATE `" . TABLE_USERS . "` SET `timestamp2` = FROM_UNIXTIME(`timestamp`)");
+			$statement = $dbh->query("ALTER TABLE `" . TABLE_USERS . "` DROP COLUMN `timestamp`");
+			$statement = $dbh->query("ALTER TABLE `" . TABLE_USERS . "` CHANGE `timestamp2` `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()");
+
 			$updates_made++;
 		}
 
@@ -414,10 +410,9 @@ if (in_session_or_cookies($allowed_update)) {
 		 * used on notifications.
 		 */
 		if ($last_update < 275) {
-			$q = $database->query("SELECT id FROM tbl_notifications");
-			if (!$q) {
-				$q1 = '
-				CREATE TABLE IF NOT EXISTS `tbl_notifications` (
+			if ( !tableExists( TABLE_NOTIFICATIONS ) ) {
+				$query = "
+				CREATE TABLE IF NOT EXISTS `".TABLE_NOTIFICATIONS."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 				  `file_id` int(11) NOT NULL,
@@ -425,8 +420,10 @@ if (in_session_or_cookies($allowed_update)) {
 				  `upload_type` int(11) NOT NULL,
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-				';
-				$database->query($q1);
+				";
+				$statement = $dbh->prepare($query);
+				$statement->execute();
+
 				$updates_made++;
 			}
 		}
@@ -436,14 +433,11 @@ if (in_session_or_cookies($allowed_update)) {
 		 * Set timestamp columns as real timestamp data, instead of INT
 		 */
 		if ($last_update < 278) {
-			$q1 = "ALTER TABLE `tbl_files` ADD COLUMN `timestamp2` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()";
-			$q2 = "UPDATE `tbl_files` SET `timestamp2` = FROM_UNIXTIME(`timestamp`)";
-			$q3 = "ALTER TABLE `tbl_files` DROP COLUMN `timestamp`";
-			$q4 = "ALTER TABLE `tbl_files` CHANGE `timestamp2` `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()";
-			$database->query($q1);
-			$database->query($q2);
-			$database->query($q3);
-			$database->query($q4);
+			$statement = $dbh->query("ALTER TABLE `" . TABLE_FILES . "` ADD COLUMN `timestamp2` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()");
+			$statement = $dbh->query("UPDATE `" . TABLE_FILES . "` SET `timestamp2` = FROM_UNIXTIME(`timestamp`)");
+			$statement = $dbh->query("ALTER TABLE `" . TABLE_FILES . "` DROP COLUMN `timestamp`");
+			$statement = $dbh->query("ALTER TABLE `" . TABLE_FILES . "` CHANGE `timestamp2` `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()");
+
 			$updates_made++;
 		}
 
@@ -463,15 +457,9 @@ if (in_session_or_cookies($allowed_update)) {
 										);
 			
 			foreach($new_database_values as $row => $value) {
-				$q = "SELECT * FROM tbl_options WHERE name = '$row'";
-				$sql = $database->query($q);
-		
-				if(!mysql_num_rows($sql)) {
+				if ( add_option_if_not_exists($row, $value) ) {
 					$updates_made++;
-					$qi = "INSERT INTO tbl_options (name, value) VALUES ('$row', '$value')";
-					$sqli = $database->query($qi);
 				}
-				unset($q);
 			}
 		}
 
@@ -480,22 +468,23 @@ if (in_session_or_cookies($allowed_update)) {
 		 * The Members table wasn't being created on existing installations.
 		 */
 		if ($last_update < 338) {
-			$q = $database->query("SELECT id FROM tbl_members");
-			if (!$q) {
+			if ( !tableExists( TABLE_MEMBERS ) ) {
 				/** Create the MEMBERS table */
-				$q2 = '
-				CREATE TABLE IF NOT EXISTS `tbl_members` (
+				$query = "
+				CREATE TABLE IF NOT EXISTS `".TABLE_MEMBERS."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 				  `added_by` varchar(32) NOT NULL,
 				  `client_id` int(11) NOT NULL,
 				  `group_id` int(11) NOT NULL,
 				  PRIMARY KEY (`id`),
-				  FOREIGN KEY (`client_id`) REFERENCES tbl_users(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-				  FOREIGN KEY (`group_id`) REFERENCES tbl_groups(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+				  FOREIGN KEY (`client_id`) REFERENCES ".TABLE_USERS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`group_id`) REFERENCES ".TABLE_GROUPS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 				) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-				';
-				$database->query($q2);
+				";
+				$statement = $dbh->prepare($query);
+				$statement->execute();
+
 				$updates_made++;
 			}
 		}
@@ -536,15 +525,9 @@ if (in_session_or_cookies($allowed_update)) {
 										);
 			
 			foreach($new_database_values as $row => $value) {
-				$q = "SELECT * FROM tbl_options WHERE name = '$row'";
-				$sql = $database->query($q);
-		
-				if(!mysql_num_rows($sql)) {
+				if ( add_option_if_not_exists($row, $value) ) {
 					$updates_made++;
-					$qi = "INSERT INTO tbl_options (name, value) VALUES ('$row', '$value')";
-					$sqli = $database->query($qi);
 				}
-				unset($q);
 			}
 		}
 
@@ -567,10 +550,11 @@ if (in_session_or_cookies($allowed_update)) {
 		 * If the columns don't exist, create them.
 		 */
 		if ($last_update < 358) {
-			$q = $database->query("SELECT sent_status FROM tbl_notifications");
-			if (!$q) {
-				$sql1 = $database->query("ALTER TABLE tbl_notifications ADD sent_status INT(2) NOT NULL");
-				$sql2 = $database->query("ALTER TABLE tbl_notifications ADD times_failed INT(11) NOT NULL");
+			try {
+				$statement = $dbh->query("SELECT sent_status FROM " . TABLE_NOTIFICATIONS);
+			} catch( PDOException $e ) {
+				$statement = $dbh->query("ALTER TABLE " . TABLE_NOTIFICATIONS . " ADD sent_status INT(2) NOT NULL");
+				$statement = $dbh->query("ALTER TABLE " . TABLE_NOTIFICATIONS . " ADD times_failed INT(11) NOT NULL");
 				$updates_made++;
 			}
 		}
@@ -590,20 +574,16 @@ if (in_session_or_cookies($allowed_update)) {
 										);
 			
 			foreach($new_database_values as $row => $value) {
-				$q = "SELECT * FROM tbl_options WHERE name = '$row'";
-				$sql = $database->query($q);
-		
-				if(!mysql_num_rows($sql)) {
+				if ( add_option_if_not_exists($row, $value) ) {
 					$updates_made++;
-					$qi = "INSERT INTO tbl_options (name, value) VALUES ('$row', '$value')";
-					$sqli = $database->query($qi);
 				}
-				unset($q);
 			}
 		}
 
 		/** Update the database */
-		$database->query("UPDATE tbl_options SET value ='$current_version' WHERE name='last_update'");
+		$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :version WHERE name='last_update'");
+		$statement->bindParam(':version', $current_version);
+		$statement->execute();
 
 		/** Record the action log */
 		$new_log_action = new LogActions();
@@ -634,15 +614,9 @@ if (in_session_or_cookies($allowed_update)) {
 										);
 			
 			foreach($new_database_values as $row => $value) {
-				$q = "SELECT * FROM tbl_options WHERE name = '$row'";
-				$sql = $database->query($q);
-		
-				if(!mysql_num_rows($sql)) {
+				if ( add_option_if_not_exists($row, $value) ) {
 					$updates_made++;
-					$qi = "INSERT INTO tbl_options (name, value) VALUES ('$row', '$value')";
-					$sqli = $database->query($qi);
 				}
-				unset($q);
 			}
 		}
 
@@ -660,15 +634,9 @@ if (in_session_or_cookies($allowed_update)) {
 										);
 			
 			foreach($new_database_values as $row => $value) {
-				$q = "SELECT * FROM tbl_options WHERE name = '$row'";
-				$sql = $database->query($q);
-		
-				if(!mysql_num_rows($sql)) {
+				if ( add_option_if_not_exists($row, $value) ) {
 					$updates_made++;
-					$qi = "INSERT INTO tbl_options (name, value) VALUES ('$row', '$value')";
-					$sqli = $database->query($qi);
 				}
-				unset($q);
 			}
 		}
 
@@ -700,15 +668,9 @@ if (in_session_or_cookies($allowed_update)) {
 										);
 			
 			foreach($new_database_values as $row => $value) {
-				$q = "SELECT * FROM tbl_options WHERE name = '$row'";
-				$sql = $database->query($q);
-		
-				if(!mysql_num_rows($sql)) {
+				if ( add_option_if_not_exists($row, $value) ) {
 					$updates_made++;
-					$qi = "INSERT INTO tbl_options (name, value) VALUES ('$row', '$value')";
-					$sqli = $database->query($qi);
 				}
-				unset($q);
 			}
 		}
 
@@ -724,15 +686,9 @@ if (in_session_or_cookies($allowed_update)) {
 									);
 			
 			foreach($new_database_values as $row => $value) {
-				$q = "SELECT * FROM tbl_options WHERE name = '$row'";
-				$sql = $database->query($q);
-		
-				if(!mysql_num_rows($sql)) {
+				if ( add_option_if_not_exists($row, $value) ) {
 					$updates_made++;
-					$qi = "INSERT INTO tbl_options (name, value) VALUES ('$row', '$value')";
-					$sqli = $database->query($qi);
 				}
-				unset($q);
 			}
 		}
 
@@ -747,15 +703,9 @@ if (in_session_or_cookies($allowed_update)) {
 									);
 			
 			foreach($new_database_values as $row => $value) {
-				$q = "SELECT * FROM tbl_options WHERE name = '$row'";
-				$sql = $database->query($q);
-		
-				if(!mysql_num_rows($sql)) {
+				if ( add_option_if_not_exists($row, $value) ) {
 					$updates_made++;
-					$qi = "INSERT INTO tbl_options (name, value) VALUES ('$row', '$value')";
-					$sqli = $database->query($qi);
 				}
-				unset($q);
 			}
 		}
 
@@ -767,10 +717,11 @@ if (in_session_or_cookies($allowed_update)) {
 		 * files to clients.
 		 */
 		if ($last_update < 464) {
-			$q = $database->query("SELECT expires FROM tbl_files");
-			if (!$q) {
-				$sql1 = $database->query("ALTER TABLE tbl_files ADD expires INT(1) NOT NULL default '0'");
-				$sql2 = $database->query("ALTER TABLE tbl_files ADD expiry_date TIMESTAMP NOT NULL");
+			try {
+				$statement = $dbh->query("SELECT expires FROM " . TABLE_FILES);
+			} catch( PDOException $e ) {
+				$statement = $dbh->query("ALTER TABLE " . TABLE_FILES . " ADD expires INT(1) NOT NULL default '0'");
+				$statement = $dbh->query("ALTER TABLE " . TABLE_FILES . " ADD expiry_date TIMESTAMP NOT NULL");
 				$updates_made++;
 			}
 
@@ -779,15 +730,9 @@ if (in_session_or_cookies($allowed_update)) {
 									);
 			
 			foreach($new_database_values as $row => $value) {
-				$q = "SELECT * FROM tbl_options WHERE name = '$row'";
-				$sql = $database->query($q);
-		
-				if(!mysql_num_rows($sql)) {
+				if ( add_option_if_not_exists($row, $value) ) {
 					$updates_made++;
-					$qi = "INSERT INTO tbl_options (name, value) VALUES ('$row', '$value')";
-					$sqli = $database->query($qi);
 				}
-				unset($q);
 			}
 		}
 
@@ -798,21 +743,22 @@ if (in_session_or_cookies($allowed_update)) {
 		 * Each download will now be saved here, to distinguish
 		 * individual downloads even if the origin is a group.
 		 */
-		if ($last_update < 474) {
-			$q = $database->query("SELECT id FROM tbl_downloads");
-			if (!$q) {
-				$q1 = '
-				CREATE TABLE IF NOT EXISTS `tbl_downloads` (
+		if ($last_update < 474 ) {
+			if ( !tableExists( TABLE_DOWNLOADS ) ) {
+				$query = "
+				CREATE TABLE IF NOT EXISTS `" . TABLE_DOWNLOADS . "` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `user_id` int(11) DEFAULT NULL,
 				  `file_id` int(11) NOT NULL,
 				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-				  FOREIGN KEY (`user_id`) REFERENCES tbl_users(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-				  FOREIGN KEY (`file_id`) REFERENCES tbl_files(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`user_id`) REFERENCES " . TABLE_USERS . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`file_id`) REFERENCES " . TABLE_FILES . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-				';
-				$database->query($q1);
+				";
+				$statement = $dbh->prepare($query);
+				$statement->execute();
+
 				$updates_made++;
 			}
 		}
@@ -824,10 +770,11 @@ if (in_session_or_cookies($allowed_update)) {
 		 * allow public downloads via a token.
 		 */
 		if ($last_update < 475) {
-			$q = $database->query("SELECT public_allow FROM tbl_files");
-			if (!$q) {
-				$sql1 = $database->query("ALTER TABLE tbl_files ADD public_allow INT(1) NOT NULL default '0'");
-				$sql2 = $database->query("ALTER TABLE tbl_files ADD public_token varchar(32) NULL");
+			try {
+				$statement = $dbh->query("SELECT public_allow FROM " . TABLE_FILES);
+			} catch( PDOException $e ) {
+				$sql1 = $dbh->query("ALTER TABLE " . TABLE_FILES . " ADD public_allow INT(1) NOT NULL default '0'");
+				$sql2 = $dbh->query("ALTER TABLE " . TABLE_FILES . " ADD public_token varchar(32) NULL");
 				$updates_made++;
 			}
 		}
@@ -840,20 +787,14 @@ if (in_session_or_cookies($allowed_update)) {
 		 */
 		if ($last_update < 487) {
 			$new_database_values = array(
-											'notifications_max_tries' => '2',
-											'notifications_max_days' => '15',
+											'notifications_max_tries'	=> '2',
+											'notifications_max_days'	=> '15',
 										);
 			
 			foreach($new_database_values as $row => $value) {
-				$q = "SELECT * FROM tbl_options WHERE name = '$row'";
-				$sql = $database->query($q);
-		
-				if(!mysql_num_rows($sql)) {
+				if ( add_option_if_not_exists($row, $value) ) {
 					$updates_made++;
-					$qi = "INSERT INTO tbl_options (name, value) VALUES ('$row', '$value')";
-					$sqli = $database->query($qi);
 				}
-				unset($q);
 			}
 		}
 
@@ -865,10 +806,10 @@ if (in_session_or_cookies($allowed_update)) {
 		 * before adding the keys.
 		 */
 		if ($last_update < 490) {
-			$sql = $database->query("DELETE FROM tbl_notifications WHERE file_id NOT IN (SELECT id FROM tbl_files)");
-			$sql = $database->query("DELETE FROM tbl_notifications WHERE client_id NOT IN (SELECT id FROM tbl_users)");
-			$sql = $database->query("ALTER TABLE tbl_notifications ADD FOREIGN KEY (`file_id`) REFERENCES tbl_files(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
-			$sql = $database->query("ALTER TABLE tbl_notifications ADD FOREIGN KEY (`client_id`) REFERENCES tbl_users(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
+			$statement = $dbh->query("DELETE FROM " . TABLE_NOTIFICATIONS . " WHERE file_id NOT IN (SELECT id FROM " . TABLE_FILES . ")");
+			$statement = $dbh->query("DELETE FROM " . TABLE_NOTIFICATIONS . " WHERE client_id NOT IN (SELECT id FROM " . TABLE_USERS . ")");
+			$statement = $dbh->query("ALTER TABLE " . TABLE_NOTIFICATIONS . " ADD FOREIGN KEY (`file_id`) REFERENCES " . TABLE_FILES . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
+			$statement = $dbh->query("ALTER TABLE " . TABLE_NOTIFICATIONS . " ADD FOREIGN KEY (`client_id`) REFERENCES " . TABLE_USERS . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
 			$updates_made++;
 		}
 
@@ -878,14 +819,19 @@ if (in_session_or_cookies($allowed_update)) {
 		 * Migrate the download count on each client to the new table.
 		 */
 		if ($last_update < 501) {
-			$sql = $database->query("SELECT * FROM tbl_files_relations WHERE client_id IS NOT NULL AND download_count > 0");
-			if(mysql_num_rows($sql)) {
-				while($row = mysql_fetch_array($sql)) {
+			$statement = $dbh->query("SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE client_id IS NOT NULL AND download_count > 0");
+			if( $statement->rowCount() > 0 ) {
+				$downloads = $statement->fetchAll(PDO::FETCH_ASSOC);
+				foreach ( $downloads as $key => $row ) {
 					$download_count	= $row['download_count'];
 					$client_id		= $row['client_id'];
 					$file_id		= $row['file_id'];
+
 					for ($i = 0; $i < $download_count; $i++) {
-						$sql_new = $database->query("INSERT INTO tbl_downloads (file_id, user_id) VALUES ('$file_id', '$client_id')");
+						$statement = $dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (file_id, user_id) VALUES (:file_id, :client_id)");
+						$statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
+						$statement->bindParam(':client_id', $client_id, PDO::PARAM_INT);
+						$statement->execute();
 					}
 				}
 				$updates_made++;
@@ -910,16 +856,9 @@ if (in_session_or_cookies($allowed_update)) {
 										);
 			
 			foreach($new_database_values as $row => $value) {
-				$q = "SELECT * FROM tbl_options WHERE name = '$row'";
-				$sql = $database->query($q);
-		
-				if(!mysql_num_rows($sql)) {
-					$updates_made++;
-					$qi = "INSERT INTO tbl_options (name, value) VALUES ('$row', '$value')";
-					$sqli = $database->query($qi);
+				if ( add_option_if_not_exists($row, $value) ) {
 					$updates_made++;
 				}
-				unset($q);
 			}
 		}
 
@@ -930,16 +869,21 @@ if (in_session_or_cookies($allowed_update)) {
 		 * Change the database collations
 		 */
 		if ($last_update < 557) {
-			$dbsql = $database->query('ALTER DATABASE '.DB_NAME.' CHARACTER SET utf8 COLLATE utf8_general_ci');
-			$sql = $database->query('SHOW TABLES');
-			$fk1 = $database->query('SET foreign_key_checks = 0');
-			while ($tables = mysql_fetch_array($sql) ) {
-				foreach ($tables as $key => $value) {
-					mysql_query("ALTER TABLE $value CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci");
-				}
+			$alter = array();			
+			$statement = $dbh->exec('ALTER DATABASE ' . DB_NAME . ' CHARACTER SET utf8 COLLATE utf8_general_ci');
+			$statement = $dbh->query('SET foreign_key_checks = 0');
+			$statement = $dbh->query('SHOW TABLES');
+			$tables = $statement->fetchAll(PDO::FETCH_COLUMN);
+			foreach ( $tables as $key => $table ) {
+				$alter[$key] = $table;
 			}
+			foreach ( $alter as $key => $value ) {
+				$statement = $dbh->prepare("ALTER TABLE $value DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci");
+				$statement->execute();
+			}
+			$statement = $dbh->query('SET foreign_key_checks = 1');
+
 			$updates_made++;
-			$fk2 = $database->query('SET foreign_key_checks = 1');
 		}
 
 

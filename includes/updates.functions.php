@@ -6,6 +6,26 @@
  * @subpackage	Functions
  */
 
+/** Add a new row to the options table */
+function add_option_if_not_exists ($row, $value) {
+	global $dbh;
+	$statement = $dbh->prepare("SELECT * FROM " . TABLE_OPTIONS . " WHERE name = :option");
+	$statement->bindParam(':option', $row);
+	$statement->execute();
+
+	if( $statement->rowCount() == 0 ) {
+		$statement = $dbh->prepare("INSERT INTO " . TABLE_OPTIONS . " (name, value) VALUES (:option, :value)");
+		$statement->bindParam(':option', $row);
+		$statement->bindValue(':value', $value);
+		$statement->execute();
+
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 /** Called on r346 */
 function update_chmod_timthumb()
 {
@@ -100,7 +120,7 @@ function chmod_main_files() {
 /** Called on r354 */
 function import_files_relations()
 {
-	global $database;
+	global $dbh;
 	global $updates_made;
 	global $updates_errors;
 	global $updates_error_messages;
@@ -109,18 +129,18 @@ function import_files_relations()
 	 * Prepare the variables to be used on this update
 	 */
 	$files_to_import = array();
-	$get_clients_info = '';
+	$get_clients_info = array();
 	$imported_ok = 0;
 	$imported_error = 0;
 	$unimported_files = array();
 	
 	/**
-	 * Get every file and it's important information from the 
-	 * tbl_files database table.
+	 * Get every file and it's important information from the files database table.
 	 */
-	$q = "SELECT id, filename, timestamp, client_user, hidden, download_count FROM tbl_files WHERE client_user != ''";
-	$sql = $database->query($q);
-	while ($row = mysql_fetch_array($sql)) {
+	$statement = $dbh->prepare("SELECT id, filename, timestamp, client_user, hidden, download_count FROM " . TABLE_FILES . " WHERE client_user != ''");
+	$statement->execute();
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
+	while( $row = $statement->fetch() ) {
 		$files_to_import[$row['id']] = array(
 								'file_id' => $row['id'],
 								'title' => $row['filename'],
@@ -129,22 +149,24 @@ function import_files_relations()
 								'hidden' => $row['hidden'],
 								'download_count' => $row['download_count']
 							);
-		$get_clients_info .= "'".$row['client_user']."',";
+		$get_clients_info[] = $row['client_user'];
 	}
 	
 	/**
 	 * Get the information of each client found on the
 	 * previous step.
 	 */
-	$get_clients_info = substr($get_clients_info, 0, -1);
-	$q2 = "SELECT id, user FROM tbl_users WHERE user IN ($get_clients_info)";
-	$sql2 = $database->query($q2);
-	while ($row = mysql_fetch_array($sql2)) {
+	$users = implode(',', $get_clients_info);
+	$statement = $dbh->prepare("SELECT id, user FROM " . TABLE_USERS . " WHERE FIND_IN_SET(user, :users)");
+	$statement->bindParam(':users', $users);
+	$statement->execute();
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
+	while( $row = $statement->fetch() ) {
 		$found_users[$row['user']] = $row['id'];
 	}
 	
 	/**
-	 * Create a new record on the tbl_files_relations table
+	 * Create a new record on the files_relations table
 	 * using the information from the previous 2 queries, to
 	 * relate every file to existing users/clients.
 	 */
@@ -153,18 +175,16 @@ function import_files_relations()
 		 * Only continue if the client exists on the database
 		 */
 		if (array_key_exists($this_file['client_id'],$found_users)) {
-			$qn = "INSERT INTO tbl_files_relations
-						(timestamp, file_id, client_id, hidden, download_count)
-					VALUES
-						(
-							'".$this_file['timestamp']."',
-							'".$this_file['file_id']."',
-							'".$found_users[$this_file['client_id']]."',
-							'".$this_file['hidden']."',
-							'".$this_file['download_count']."'
-						)";
-			$sqln = $database->query($qn);
-			if ($sqln) {
+			$statement = $dbh->prepare("INSERT INTO " . TABLE_FILES_RELATIONS . " (timestamp, file_id, client_id, hidden, download_count)"
+									." VALUES (:timestamp, :file_id, :client_id, :hidden, :download_count)");
+			$statement->bindParam(':timestamp', $this_file['timestamp']);
+			$statement->bindParam(':file_id', $this_file['file_id'], PDO::PARAM_INT);
+			$statement->bindParam(':client_id', $found_users[$this_file['client_id']], PDO::PARAM_INT);
+			$statement->bindParam(':hidden', $this_file['hidden'], PDO::PARAM_INT);
+			$statement->bindParam(':download_count', $this_file['download_count'], PDO::PARAM_INT);
+			$statement->execute();
+
+			if ($statement) {
 				$imported_ok++;
 			}
 			else {
@@ -196,13 +216,14 @@ function import_files_relations()
 
 function reset_update_status()
 {
-	global $database;
-	$database->query("UPDATE tbl_options SET value ='' WHERE name='version_new_number'");
-	$database->query("UPDATE tbl_options SET value ='' WHERE name='version_new_url'");
-	$database->query("UPDATE tbl_options SET value ='' WHERE name='version_new_chlog'");
-	$database->query("UPDATE tbl_options SET value ='' WHERE name='version_new_security'");
-	$database->query("UPDATE tbl_options SET value ='' WHERE name='version_new_features'");
-	$database->query("UPDATE tbl_options SET value ='' WHERE name='version_new_important'");
-	$database->query("UPDATE tbl_options SET value ='0' WHERE name='version_new_found'");
+	global $dbh;
+
+	$dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='' WHERE name='version_new_number'");
+	$dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='' WHERE name='version_new_url'");
+	$dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='' WHERE name='version_new_chlog'");
+	$dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='' WHERE name='version_new_security'");
+	$dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='' WHERE name='version_new_features'");
+	$dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='' WHERE name='version_new_important'");
+	$dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='0' WHERE name='version_new_found'");
 }
 ?>

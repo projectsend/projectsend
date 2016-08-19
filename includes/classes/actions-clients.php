@@ -12,6 +12,11 @@ class ClientActions
 
 	var $client = '';
 
+	function __construct() {
+		global $dbh;
+		$this->dbh = $dbh;
+	}
+
 	/**
 	 * Validate the information from the form.
 	 */
@@ -98,23 +103,21 @@ class ClientActions
 	function create_client($arguments)
 	{
 		global $hasher;
-		global $database;
 		$this->state = array();
 
 		/** Define the account information */
-		$this->id = $arguments['id'];
-		$this->name = $arguments['name'];
-		$this->email = $arguments['email'];
-		$this->username = $arguments['username'];
-		$this->password = $arguments['password'];
+		$this->id			= $arguments['id'];
+		$this->name			= $arguments['name'];
+		$this->email		= $arguments['email'];
+		$this->username		= $arguments['username'];
+		$this->password		= $arguments['password'];
 		//$this->password_repeat = $arguments['password_repeat'];
-		$this->address = $arguments['address'];
-		$this->phone = $arguments['phone'];
-		$this->contact = $arguments['contact'];
-		$this->notify = $arguments['notify'];
-		$this->active = $arguments['active'];
-		//$this->enc_password = md5(mysql_real_escape_string($this->password));
-		$this->enc_password = $hasher->HashPassword($this->password);
+		$this->address		= $arguments['address'];
+		$this->phone		= $arguments['phone'];
+		$this->contact		= $arguments['contact'];
+		$this->notify		= ( $arguments['notify'] == '1' ) ? 1 : 0;
+		$this->active		= ( $arguments['active'] == '1' ) ? 1 : 0;
+		$this->enc_password	= $hasher->HashPassword($this->password);
 
 		if (strlen($this->enc_password) >= 20) {
 
@@ -125,20 +128,32 @@ class ClientActions
 	
 			/** Insert the client information into the database */
 			$this->timestamp = time();
-			$this->sql_query = $database->query("INSERT INTO tbl_users (name,user,password,address,phone,email,notify,contact,created_by,active)"
-												."VALUES ('$this->name', '$this->username', '$this->enc_password', '$this->address', '$this->phone', '$this->email', '$this->notify', '$this->contact','$this->this_admin', '$this->active')");
+			$this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_USERS . " (name,user,password,address,phone,email,notify,contact,created_by,active)"
+												."VALUES (:name, :username, :password, :address, :phone, :email, :notify, :contact, :admin, :active)");
+			$this->sql_query->bindParam(':name', $this->name);
+			$this->sql_query->bindParam(':username', $this->username);
+			$this->sql_query->bindParam(':password', $this->enc_password);
+			$this->sql_query->bindParam(':address', $this->address);
+			$this->sql_query->bindParam(':phone', $this->phone);
+			$this->sql_query->bindParam(':email', $this->email);
+			$this->sql_query->bindParam(':notify', $this->notify, PDO::PARAM_INT);
+			$this->sql_query->bindParam(':contact', $this->contact);
+			$this->sql_query->bindParam(':admin', $this->this_admin);
+			$this->sql_query->bindParam(':active', $this->active, PDO::PARAM_INT);
+
+			$this->sql_query->execute();
 	
 			if ($this->sql_query) {
-				$this->state['actions'] = 1;
-				$this->state['new_id'] = mysql_insert_id();
+				$this->state['actions']	= 1;
+				$this->state['new_id']	= $this->dbh->lastInsertId();
 	
 				/** Send account data by email */
 				$this->notify_client = new PSend_Email();
 				$this->email_arguments = array(
-												'type' => 'new_client',
-												'address' => $this->email,
-												'username' => $this->username,
-												'password' => $this->password
+												'type'		=> 'new_client',
+												'address'	=> $this->email,
+												'username'	=> $this->username,
+												'password'	=> $this->password
 											);
 				$this->notify_send = $this->notify_client->psend_send_email($this->email_arguments);
 	
@@ -167,51 +182,59 @@ class ClientActions
 	function edit_client($arguments)
 	{
 		global $hasher;
-		global $database;
+		global $dbh;
 		$this->state = array();
 
 		/** Define the account information */
-		$this->id = $arguments['id'];
-		$this->name = $arguments['name'];
-		$this->email = $arguments['email'];
-		$this->password = $arguments['password'];
-		$this->address = $arguments['address'];
-		$this->phone = $arguments['phone'];
-		$this->contact = $arguments['contact'];
-		$this->notify = $arguments['notify'];
-		$this->active = $arguments['active'];
-		//$this->enc_password = md5(mysql_real_escape_string($this->password));
-		$this->enc_password = $hasher->HashPassword($this->password);
+		$this->id			= $arguments['id'];
+		$this->name			= $arguments['name'];
+		$this->email		= $arguments['email'];
+		$this->password		= $arguments['password'];
+		$this->address		= $arguments['address'];
+		$this->phone		= $arguments['phone'];
+		$this->contact		= $arguments['contact'];
+		$this->notify		= ( $arguments['notify'] == '1' ) ? 1 : 0;
+		$this->active		= ( $arguments['active'] == '1' ) ? 1 : 0;
+		$this->enc_password	= $hasher->HashPassword($arguments['password']);
 
 		if (strlen($this->enc_password) >= 20) {
 
 			$this->state['hash'] = 1;
 
 			/** SQL query */
-			$this->edit_client_query = "UPDATE tbl_users SET 
-										name = '$this->name',
-										address = '$this->address',
-										phone = '$this->phone',
-										email = '$this->email',
-										contact = '$this->contact',
-										notify = '";
-	
-	
-			/** Add the notify value to the query '' */
-			$this->edit_client_query .= ($this->notify == '1') ? "1'" : "0'";
-	
-			/** Add the active status value to the query '' */
-			$this->edit_client_query .= ", active = '";
-			$this->edit_client_query .= ($this->active == '1') ? "1'" : "0'";
+			$this->edit_client_query = "UPDATE " . TABLE_USERS . " SET 
+										name = :name,
+										address = :address,
+										phone = :phone,
+										email = :email,
+										contact = :contact,
+										notify = :notify,
+										active = :active
+										";
 	
 			/** Add the password to the query if it's not the dummy value '' */
 			if (!empty($arguments['password'])) {
-				$this->edit_client_query .= ", password = '$this->enc_password'";
+				$this->edit_client_query .= ", password = :password";
 			}
 	
-	
-			$this->edit_client_query .= " WHERE id = $this->id";
-			$this->sql_query = $database->query($this->edit_client_query);
+			$this->edit_client_query .= " WHERE id = :id";
+
+
+			$this->sql_query = $this->dbh->prepare( $this->edit_client_query );
+			$this->sql_query->bindParam(':name', $this->name);
+			$this->sql_query->bindParam(':address', $this->address);
+			$this->sql_query->bindParam(':phone', $this->phone);
+			$this->sql_query->bindParam(':email', $this->email);
+			$this->sql_query->bindParam(':contact', $this->contact);
+			$this->sql_query->bindParam(':notify', $this->notify, PDO::PARAM_INT);
+			$this->sql_query->bindParam(':active', $this->active, PDO::PARAM_INT);
+			$this->sql_query->bindParam(':id', $this->id, PDO::PARAM_INT);
+			if (!empty($arguments['password'])) {
+				$this->sql_query->bindParam(':password', $this->enc_password);
+			}
+
+			$this->sql_query->execute();
+
 	
 			if ($this->sql_query) {
 				$this->state['query'] = 1;
@@ -230,13 +253,14 @@ class ClientActions
 	/**
 	 * Delete an existing client.
 	 */
-	function delete_client($client) {
-		global $database;
+	function delete_client($client_id) {
 		$this->check_level = array(9,8);
-		if (isset($client)) {
+		if (isset($client_id)) {
 			/** Do a permissions check */
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
-				$this->sql = $database->query('DELETE FROM tbl_users WHERE id="' . $client .'"');
+				$this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_USERS . ' WHERE id=:id');
+				$this->sql->bindParam(':id', $client_id, PDO::PARAM_INT);
+				$this->sql->execute();
 			}
 		}
 	}
@@ -246,12 +270,14 @@ class ClientActions
 	 */
 	function change_client_active_status($client_id,$change_to)
 	{
-		global $database;
 		$this->check_level = array(9,8);
 		if (isset($client_id)) {
 			/** Do a permissions check */
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
-				$this->sql = $database->query('UPDATE tbl_users SET active='.$change_to.' WHERE id="' . $client_id . '"');
+				$this->sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active_state WHERE id=:id');
+				$this->sql->bindParam(':active_state', $change_to, PDO::PARAM_INT);
+				$this->sql->bindParam(':id', $client_id, PDO::PARAM_INT);
+				$this->sql->execute();
 			}
 		}
 	}

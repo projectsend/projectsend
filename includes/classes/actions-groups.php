@@ -12,6 +12,11 @@ class GroupActions
 
 	var $group = '';
 
+	function __construct() {
+		global $dbh;
+		$this->dbh = $dbh;
+	}
+
 	/**
 	 * Validate the information from the form.
 	 */
@@ -44,7 +49,6 @@ class GroupActions
 	 */
 	function create_group($arguments)
 	{
-		global $database;
 		$this->state = array();
 
 		/** Define the group information */
@@ -56,16 +60,25 @@ class GroupActions
 		/** Who is creating the group? */
 		$this->this_admin = get_current_user_username();
 
-		$this->sql_query = $database->query("INSERT INTO tbl_groups (name,description,created_by)"
-											."VALUES ('$this->name', '$this->description','$this->this_admin')");
+		$this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_GROUPS . " (name,description,created_by)"
+												." VALUES (:name, :description, :this_admin)");
+		$this->sql_query->bindParam(':name', $this->name);
+		$this->sql_query->bindParam(':description', $this->description);
+		$this->sql_query->bindParam(':this_admin', $this->this_admin);
+		$this->sql_query->execute();
 
-		$this->id = mysql_insert_id();
+
+		$this->id = $this->dbh->lastInsertId();
 		$this->state['new_id'] = $this->id;
 
 		/** Create the members records */
 		foreach ($this->members as $this->member) {
-			$this->sql_member = $database->query("INSERT INTO tbl_members (added_by,client_id,group_id)"
-											."VALUES ('$this->this_admin', '$this->member', '$this->id' )");
+			$this->sql_member = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
+													." VALUES (:admin, :member, :id)");
+			$this->sql_member->bindParam(':admin', $this->this_admin);
+			$this->sql_member->bindParam(':member', $this->member, PDO::PARAM_INT);
+			$this->sql_member->bindParam(':id', $this->id, PDO::PARAM_INT);
+			$this->sql_member->execute();
 		}
 
 		if ($this->sql_query) {
@@ -83,7 +96,6 @@ class GroupActions
 	 */
 	function edit_group($arguments)
 	{
-		global $database;
 		$this->state = array();
 
 		/** Define the group information */
@@ -97,17 +109,26 @@ class GroupActions
 		$this->this_admin = get_current_user_username();
 
 		/** SQL query */
-		$this->edit_group_query = "UPDATE tbl_groups SET name = '$this->name', description = '$this->description' WHERE id = $this->id";
-		$this->sql_query = $database->query($this->edit_group_query);
+		$this->sql_query = $this->dbh->prepare( "UPDATE " . TABLE_GROUPS . " SET name = :name, description = :description WHERE id = :id" );
+		$this->sql_query->bindParam(':name', $this->name);
+		$this->sql_query->bindParam(':description', $this->description);
+		$this->sql_query->bindParam(':id', $this->id, PDO::PARAM_INT);
+		$this->sql_query->execute();
 
 		/** Clean the memmbers table */
-		$this->sql_clean = $database->query("DELETE FROM tbl_members WHERE group_id = '$this->id'");
+		$this->sql_clean = $this->dbh->prepare("DELETE FROM " . TABLE_MEMBERS . " WHERE group_id = :id");
+		$this->sql_clean->bindParam(':id', $this->id, PDO::PARAM_INT);
+		$this->sql_clean->execute();
 		
 		/** Create the members records */
 		if (!empty($this->members)) {
 			foreach ($this->members as $this->member) {
-				$this->sql_member = $database->query("INSERT INTO tbl_members (added_by,client_id,group_id)"
-												."VALUES ('$this->this_admin', '$this->member', '$this->id' )");
+				$this->sql_member = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
+														." VALUES (:admin, :member, :id)");
+				$this->sql_member->bindParam(':admin', $this->this_admin);
+				$this->sql_member->bindParam(':member', $this->member, PDO::PARAM_INT);
+				$this->sql_member->bindParam(':id', $this->id, PDO::PARAM_INT);
+				$this->sql_member->execute();
 			}
 		}
 
@@ -126,12 +147,13 @@ class GroupActions
 	 */
 	function delete_group($group)
 	{
-		global $database;
 		$this->check_level = array(9,8);
 		if (isset($group)) {
 			/** Do a permissions check */
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
-				$this->sql = $database->query('DELETE FROM tbl_groups WHERE id="' . $group .'"');
+				$this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_GROUPS . ' WHERE id=:id');
+				$this->sql->bindParam(':id', $group, PDO::PARAM_INT);
+				$this->sql->execute();
 			}
 		}
 	}

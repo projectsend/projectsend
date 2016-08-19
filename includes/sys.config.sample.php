@@ -25,16 +25,22 @@
  * If you have doubts about this values, consult your web hosting provider.
  */
 
-/** MySQL database name */
+/**
+ * Database driver to use with PDO.
+ * Possible options: mysql, mssql
+*/
+define('DB_DRIVER', 'mysql');
+
+/** Database name */
 define('DB_NAME', 'database');
 
 /** Database host (in most cases it's localhost) */
 define('DB_HOST', 'localhost');
 
-/** MySQL username (must be assigned to the database) */
+/** Database username (must be assigned to the database) */
 define('DB_USER', 'username');
 
-/** MySQL password */
+/** Database password */
 define('DB_PASSWORD', 'password');
 
 /**

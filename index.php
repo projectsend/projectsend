@@ -23,21 +23,28 @@ include('header-unlogged.php');
 	
 	/** The form was submitted */
 	if ($_POST) {
-		$sysuser_username = mysql_real_escape_string($_POST['login_form_user']);
-		//$sysuser_password = mysql_real_escape_string(md5($_POST['login_form_pass']));
+		global $dbh;
 		$sysuser_password = $_POST['login_form_pass'];
 	
 		/** Look up the system users table to see if the entered username exists */
-		$sql_user = $database->query("SELECT * FROM tbl_users WHERE BINARY user='$sysuser_username'");
-		$count_user = mysql_num_rows($sql_user);
+		$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE BINARY user= :username OR BINARY email= :email");
+		$statement->execute(
+						array(
+							':username'	=> $_POST['login_form_user'],
+							':email'	=> $_POST['login_form_user'],
+						)
+					);
+		$count_user = $statement->rowCount();
 		if ($count_user > 0){
 			/** If the username was found on the users table */
-			while($row = mysql_fetch_array($sql_user)) {
-				$db_pass = $row['password'];
-				$user_level = $row["level"];
-				$active_status = $row['active'];
-				$logged_id = $row['id'];
-				$global_name = $row['name'];
+			$statement->setFetchMode(PDO::FETCH_ASSOC);
+			while ( $row = $statement->fetch() ) {
+				$sysuser_username	= $row['user'];
+				$db_pass			= $row['password'];
+				$user_level			= $row["level"];
+				$active_status		= $row['active'];
+				$logged_id			= $row['id'];
+				$global_name		= $row['name'];
 			}
 			$check_password = $hasher->CheckPassword($sysuser_password, $db_pass);
 			if ($check_password) {
@@ -150,7 +157,7 @@ include('header-unlogged.php');
 					
 						<form action="index.php" method="post" name="login_admin" role="form">
 							<fieldset>
-								<label for="login_form_user"><?php _e('Username','cftp_admin'); ?></label>
+								<label for="login_form_user"><?php _e('Username','cftp_admin'); ?> / <?php _e('E-mail','cftp_admin'); ?></label>
 								<input type="text" name="login_form_user" id="login_form_user" value="<?php if (isset($sysuser_username)) { echo htmlspecialchars($sysuser_username); } ?>" class="span3" />
 
 								<label for="login_form_pass"><?php _e('Password','cftp_admin'); ?></label>
@@ -194,6 +201,6 @@ include('header-unlogged.php');
 </body>
 </html>
 <?php
-	$database->Close();
+	$dbh = null;
 	ob_end_flush();
 ?>

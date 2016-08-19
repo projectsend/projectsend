@@ -47,8 +47,10 @@ switch ($groups_form_type) {
 			<label for="add_group_form_members"><?php _e('Members','cftp_admin'); ?></label>
 			<select multiple="multiple" id="members-select" class="form-control chosen-select" name="add_group_form_members[]" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
 				<?php
-					$sql = $database->query("SELECT * FROM tbl_users WHERE level = '0' ORDER BY name ASC");
-					while($row = mysql_fetch_array($sql)) {
+					$sql = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE level = '0' ORDER BY name ASC");
+					$sql->execute();
+					$sql->setFetchMode(PDO::FETCH_ASSOC);
+					while ( $row = $sql->fetch() ) {
 				?>
 						<option value="<?php echo $row["id"]; ?>"
 							<?php

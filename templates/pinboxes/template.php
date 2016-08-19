@@ -177,4 +177,3 @@ $count = count($my_files);
 	
 	</body>
 </html>
-<?php $database->Close(); ?>

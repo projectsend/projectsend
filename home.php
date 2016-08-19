@@ -12,7 +12,6 @@ $page_title = __('Welcome to ProjectSend', 'cftp_admin');
 $active_nav = 'dashboard';
 $flot = 1;
 include('header.php');
-$database->MySQLDB();
 
 define('CAN_INCLUDE_FILES', true);
 
@@ -119,18 +118,17 @@ foreach($dir as $fileinfo){
 
 <?php
 	/** Get the data to show on the bars graphic */
-	$sql = $database->query("SELECT distinct id FROM tbl_files");
-	$total_files = mysql_num_rows($sql);
+	$statement = $dbh->query("SELECT distinct id FROM " . TABLE_FILES );
+	$total_files = $statement->rowCount();
 
-	$sql = $database->query("SELECT distinct user FROM tbl_users WHERE level='0'");
-	$total_clients = mysql_num_rows($sql);
+	$statement = $dbh->query("SELECT distinct user FROM " . TABLE_USERS . " WHERE level = '0'");
+	$total_clients = $statement->rowCount();
 
-	$sql = $database->query("SELECT distinct id FROM tbl_groups");
-	$total_groups = mysql_num_rows($sql);
+	$statement = $dbh->query("SELECT distinct id FROM " . TABLE_GROUPS);
+	$total_groups = $statement->rowCount();
 
-	$sql = $database->query("SELECT distinct user FROM tbl_users WHERE level != '0'");
-	$total_users = mysql_num_rows($sql);
-
+	$statement = $dbh->query("SELECT distinct user FROM " . TABLE_USERS . " WHERE level != '0'");
+	$total_users = $statement->rowCount();
 ?>
 <script type="text/javascript">
 	$(document).ready(function(){
@@ -237,6 +235,5 @@ foreach($dir as $fileinfo){
 </script>
 
 <?php
-$database->Close();
 include('footer.php');
 ?>

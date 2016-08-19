@@ -9,8 +9,13 @@ require_once('sys.includes.php');
 require_once('header.php');
 
 class process {
+	function __construct() {
+		global $dbh;
+		$this->dbh = $dbh;
+		$this->process();
+	}
+
 	function process() {
-		$this->database = new MySQLDB;
 		switch ($_GET['do']) {
 			case 'download':
 				$this->download_file();
@@ -28,7 +33,6 @@ class process {
 				header('Location: '.BASE_URI);
 				break;
 		}
-		$this->database->Close();
 	}
 	
 	function download_file() {
@@ -40,12 +44,14 @@ class process {
 					/**
 					 * Get the file name
 					 */
-					$this->get_file_uri_sql	= 'SELECT url, expires, expiry_date FROM tbl_files WHERE id="' . (int)$_GET['id'] .'"';
-					$this->get_file_uri		= $this->database->query($this->get_file_uri_sql);
-					$this->got_url			= mysql_fetch_array($this->get_file_uri);
-					$this->real_file_url	= $this->got_url['url'];
-					$this->expires			= $this->got_url['expires'];
-					$this->expiry_date		= $this->got_url['expiry_date'];
+					$this->statement = $this->dbh->prepare("SELECT url, expires, expiry_date FROM " . TABLE_FILES . " WHERE id=:id");
+					$this->statement->bindParam(':id', $_GET['id'], PDO::PARAM_INT);
+					$this->statement->execute();
+					$this->statement->setFetchMode(PDO::FETCH_ASSOC);
+					$this->row = $this->statement->fetch();
+					$this->real_file_url	= $this->row['url'];
+					$this->expires			= $this->row['expires'];
+					$this->expiry_date		= $this->row['expiry_date'];
 					
 					$this->expired			= false;
 					if ($this->expires == '1' && time() > strtotime($this->expiry_date)) {
@@ -60,25 +66,38 @@ class process {
 							 * Does the client have permission to download the file?
 							 * First, get the list of different groups the client belongs to.
 							 */
-							$sql_groups = $this->database->query("SELECT DISTINCT group_id FROM tbl_members WHERE client_id='".CURRENT_USER_ID."'");
-							$count_groups = mysql_num_rows($sql_groups);
-							if ($count_groups > 0) {
-								while($row_groups = mysql_fetch_array($sql_groups)) {
-									$groups_ids[] = $row_groups["group_id"];
+							$this->groups = $this->dbh->prepare("SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE client_id=:id");
+							$this->groups->bindValue(':id', CURRENT_USER_ID, PDO::PARAM_INT);
+							$this->groups->execute();
+
+							if ( $this->groups->rowCount() > 0 ) {
+								$this->groups->setFetchMode(PDO::FETCH_ASSOC);
+								while ( $this->row_groups = $this->groups->fetch() ) {
+									$this->groups_ids[] = $this->row_groups["group_id"];
 								}
-								$found_groups = implode(',',$groups_ids);
+								if ( !empty( $this->groups_ids ) ) {
+									$this->found_groups = implode( ',', $this->groups_ids );
+								}
 							}
 
-							/** Then, check on the client's own or gruops files */
-							$files_own_query = 'SELECT * FROM tbl_files_relations WHERE (client_id="' . CURRENT_USER_ID . '"';
-							if (!empty($found_groups)) {
-								$files_own_query .= ' OR group_id IN (' . $found_groups . ')';
-							}
-							$files_own_query .= ') AND file_id="' . (int)$_GET['id'] .'" AND hidden = "0"';
 
-							$files_own = $this->database->query($files_own_query);
-							$count_files = mysql_num_rows($files_own);
-							if ($count_files > 0) {
+							$this->params = array(
+												':client_id'	=> CURRENT_USER_ID,
+											);
+							$this->fq = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE (client_id=:client_id";
+							// Add found groups, if any
+							if ( !empty( $this->found_groups ) ) {
+								$this->fq .= ' OR FIND_IN_SET(group_id, :groups)';
+								$this->params[':groups'] = $this->found_groups;
+							}
+							// Continue assembling the query
+							$this->fq .= ') AND file_id=:file_id AND hidden = "0"';
+							$this->params[':file_id'] = (int)$_GET['id'];
+
+							$this->files = $this->dbh->prepare( $this->fq );
+							$this->files->execute( $this->params );
+
+							if ( $this->files->rowCount() > 0 ) {
 								$this->can_download = true;
 							}
 							
@@ -88,8 +107,10 @@ class process {
 								 * If the file is being downloaded by a client, add +1 to
 								 * the download count
 								 */
-								$this->add_download_sql = 'INSERT INTO tbl_downloads (user_id , file_id) VALUES ("' . CURRENT_USER_ID .'", "' . (int)$_GET['id'] .'")';
-								$this->sql = $this->database->query($this->add_download_sql);
+								$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (user_id , file_id) VALUES (:user_id, :file_id)");
+								$this->statement->bindValue(':user_id', CURRENT_USER_ID, PDO::PARAM_INT);
+								$this->statement->bindParam(':file_id', $_GET['id'], PDO::PARAM_INT);
+								$this->statement->execute();
 
 								/**
 								 * The owner ID is generated here to prevent false results
@@ -112,14 +133,14 @@ class process {
 						/** Record the action log */
 						$new_log_action = new LogActions();
 						$log_action_args = array(
-												'action' => $log_action,
-												'owner_id' => $log_action_owner_id,
-												'affected_file' => (int)$_GET['id'],
-												'affected_file_name' => $this->real_file_url,
-												'affected_account' => (int)$_GET['client_id'],
-												'affected_account_name' => mysql_real_escape_string($_GET['client']),
-												'get_user_real_name' => true,
-												'get_file_real_name' => true
+												'action'				=> $log_action,
+												'owner_id'				=> $log_action_owner_id,
+												'affected_file'			=> (int)$_GET['id'],
+												'affected_file_name'	=> $this->real_file_url,
+												'affected_account'		=> (int)$_GET['client_id'],
+												'affected_account_name'	=> $_GET['client'],
+												'get_user_real_name'	=> true,
+												'get_file_real_name'	=> true
 											);
 						$new_record_action = $new_log_action->log_action_save($log_action_args);
 						$this->real_file = UPLOADED_FILES_FOLDER.$this->real_file_url;
@@ -150,18 +171,24 @@ class process {
 		if (isset($_GET['files']) && isset($_GET['client'])) {
 			// do a permissions check for logged in user
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
-				foreach($_GET['files'] as $file_id) {
-					$this->sql = $this->database->query('SELECT * FROM tbl_files WHERE id="' . (int)$file_id .'"');
-					$this->row = mysql_fetch_array($this->sql);
+				$file_list = array();
+				$requested_files = $_GET['files'];
+				foreach($requested_files as $file_id) {
+					echo $file_id;
+					$this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE id=:file_id");
+					$this->statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
+					$this->statement->execute();
+					$this->statement->setFetchMode(PDO::FETCH_ASSOC);
+					$this->row = $this->statement->fetch();
 					$this->url = $this->row['url'];
 					$file = UPLOADED_FILES_FOLDER.$this->url;
 					if (file_exists($file)) {
-						$file_list .= $this->url.',';
+						$file_list[] = $this->url;
 					}
 				}
 				ob_clean();
 				flush();
-				echo $file_list;
+				echo implode( ',', $file_list );
 			}
 		}
 	}
@@ -173,9 +200,11 @@ class process {
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
 				$file_id = (int)$_GET['file_id'];
 				$current_level = get_current_user_level();
-				
-				$this->sql = $this->database->query('SELECT id, uploader, filename FROM tbl_files WHERE id="' . $file_id .'"');
-				$this->row = mysql_fetch_array($this->sql);
+				$this->statement = $this->dbh->prepare("SELECT id, uploader, filename FROM " . TABLE_FILES . " WHERE id=:file_id");
+				$this->statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
+				$this->statement->execute();
+				$this->statement->setFetchMode(PDO::FETCH_ASSOC);
+				$this->row = $this->statement->fetch();
 				$this->uploader = $this->row['uploader'];
 
 				/** Uploaders can only generate this for their own files */
@@ -191,18 +220,29 @@ class process {
 				$this->filename = $this->row['filename'];
 
 				
-				$this->sql_who = $this->database->query('SELECT user_id, COUNT(*) AS downloads FROM tbl_downloads WHERE file_id="' . $file_id .'" GROUP BY user_id');
-				
-				while ($this->wrow = mysql_fetch_array($this->sql_who)) {
+
+				$this->sql_who = $this->dbh->prepare("SELECT user_id, COUNT(*) AS downloads FROM " . TABLE_DOWNLOADS . " WHERE file_id=:file_id GROUP BY user_id");
+				$this->sql_who->bindParam(':file_id', $file_id, PDO::PARAM_INT);
+				$this->sql_who->execute();
+				$this->sql_who->setFetchMode(PDO::FETCH_ASSOC);
+				while ( $this->wrow = $this->sql_who->fetch() ) {
 					$this->downloaders_ids[] = $this->wrow['user_id'];
 					$this->downloaders_count[$this->wrow['user_id']] = $this->wrow['downloads'];
 				}
+
 				$this->users_ids = implode(',',array_unique(array_filter($this->downloaders_ids)));
 
 				$this->downloaders_list = array();
-				$this->sql_who = $this->database->query("SELECT id, name, email, level FROM tbl_users WHERE id IN ($this->users_ids)");
+
+
+
+				$this->sql_who = $this->dbh->prepare("SELECT id, name, email, level FROM " . TABLE_USERS . " WHERE FIND_IN_SET(id,:users)");
+				$this->sql_who->bindParam(':users', $this->users_ids);
+				$this->sql_who->execute();
+				$this->sql_who->setFetchMode(PDO::FETCH_ASSOC);
+
 				$i = 0;
-				while ($this->urow = mysql_fetch_array($this->sql_who)) {
+				while ( $this->urow = $this->sql_who->fetch() ) {
 					$this->downloaders_list[$i] = array(
 														'name' => $this->urow['name'],
 														'email' => $this->urow['email']
@@ -235,8 +275,8 @@ class process {
 		/** Record the action log */
 		$new_log_action = new LogActions();
 		$log_action_args = array(
-								'action' => 31,
-								'owner_id' => $logged_id,
+								'action'	=> 31,
+								'owner_id'	=> CURRENT_USER_ID,
 								'affected_account_name' => $global_name
 							);
 		$new_record_action = $new_log_action->log_action_save($log_action_args);

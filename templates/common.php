@@ -39,7 +39,7 @@ include_once(ROOT_DIR.'/templates/session_check.php');
  */
 $this_template_css = BASE_URI.'templates/'.TEMPLATE_USE.'/main.css';
 
-$database->MySQLDB();
+global $dbh;
 
 /**
  * Get all the client's information
@@ -49,11 +49,15 @@ $client_info = get_client_by_username($this_user);
 /**
  * Get the list of different groups the client belongs to.
  */
-$sql_groups = $database->query("SELECT DISTINCT group_id FROM tbl_members WHERE client_id='".$client_info['id']."'");
-$count_groups = mysql_num_rows($sql_groups);
+$sql_groups = $dbh->prepare( "SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE client_id=:id" );
+$sql_groups->bindParam(':id', $client_info['id'], PDO::PARAM_INT);
+$sql_groups->execute();
+$count_groups = $sql_groups->rowCount();
+
 if ($count_groups > 0) {
-	while($row_groups = mysql_fetch_array($sql_groups)) {
-		$groups_ids[] = $row_groups["group_id"];
+	$sql_groups	->setFetchMode(PDO::FETCH_ASSOC);
+	while ( $row = $sql_groups->fetch() ) {
+		$groups_ids[] = $row["group_id"];
 	}
 	$found_groups = implode(',',$groups_ids);
 }
@@ -69,14 +73,23 @@ $found_group_files_temp	= array();
  * Get the client's own files
  * Construct the query first.
  */
-$files_query = "SELECT id, file_id, client_id, group_id FROM tbl_files_relations WHERE (client_id = '".$client_info['id']."'";
+$files_query = "SELECT id, file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE (client_id = :id";
 if (!empty($found_groups)) {
-	$files_query .= " OR group_id IN ($found_groups)";
+	$files_query .= " OR FIND_IN_SET(group_id, :groups)";
 }
 $files_query .= ") AND hidden = '0'";
 
-$files_sql = $database->query($files_query);
-while ($row_files = mysql_fetch_array($files_sql)) {
+$files_sql = $dbh->prepare($files_query);
+
+$files_sql->bindParam(':id', $client_info['id'], PDO::PARAM_INT);
+if (!empty($found_groups)) {
+	$files_sql->bindParam(':groups', $found_groups);
+}
+
+$files_sql->execute();
+$files_sql->setFetchMode(PDO::FETCH_ASSOC);
+
+while ( $row_files = $files_sql->fetch() ) {
 	if (!is_null($row_files['client_id'])) {
 		$found_all_files_array[]	= $row_files['file_id'];
 		$found_own_files_temp[]		= $row_files['file_id'];
@@ -98,18 +111,26 @@ $my_files = array();
 if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 	$f = 0;
 	$ids_to_search = implode(',', array_unique($found_all_files_array));
-	$files_query = "SELECT * FROM tbl_files WHERE id IN ($ids_to_search)";
+	$files_query = "SELECT * FROM " . TABLE_FILES . " WHERE FIND_IN_SET(id,:search_ids)";
+
+	$params		= array(
+						':search_ids' => $ids_to_search
+					);
 
 	/** Add the search terms */	
-	if(isset($_POST['search']) && !empty($_POST['search'])) {
-		$search_terms		= mysql_real_escape_string($_POST['search']);
-		$files_query		.= " AND (filename LIKE '%$search_terms%' OR description LIKE '%$search_terms%')";
+	if ( isset($_POST['search']) && !empty($_POST['search']) ) {
+		$files_query		.= " AND (filename LIKE :title OR description LIKE :description)";
 		$no_results_error	= 'search';
+
+		$params[':title']		= '%'.$_POST['search'].'%';
+		$params[':description']	= '%'.$_POST['search'].'%';
 	}
 	
-	$sql_files = $database->query($files_query);
-	while($data = mysql_fetch_array($sql_files)) {
+	$sql_files = $dbh->prepare( $files_query );
+	$sql_files->execute( $params );
 
+	$sql_files->setFetchMode(PDO::FETCH_ASSOC);
+	while ( $data = $sql_files->fetch() ) {
 		$add_file	= true;
 		$expired	= false;
 

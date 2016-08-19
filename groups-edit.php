@@ -16,14 +16,12 @@ $page_title = __('Edit group','cftp_admin');
 
 include('header.php');
 
-$database->MySQLDB();
-
 /** Create the object */
 $edit_group = new GroupActions();
 
 /** Check if the id parameter is on the URI. */
 if (isset($_GET['id'])) {
-	$group_id = mysql_real_escape_string($_GET['id']);
+	$group_id = $_GET['id'];
 	/**
 	 * Check if the id corresponds to a real group.
 	 * Return 1 if true, 2 if false.
@@ -41,8 +39,12 @@ else {
  * Get the group information from the database to use on the form.
  */
 if ($page_status === 1) {
-	$editing = $database->query("SELECT * FROM tbl_groups WHERE id=$group_id");
-	while($data = mysql_fetch_array($editing)) {
+	$editing = $dbh->prepare("SELECT * FROM " . TABLE_GROUPS . " WHERE id=:id");
+	$editing->bindParam(':id', $group_id, PDO::PARAM_INT);
+	$editing->execute();
+	$editing->setFetchMode(PDO::FETCH_ASSOC);
+
+	while ( $data = $editing->fetch() ) {
 		$add_group_data_name = $data['name'];
 		$add_group_data_description = $data['description'];
 	}
@@ -51,9 +53,13 @@ if ($page_status === 1) {
 	 * Make an array of members to use on the select field
 	 */
 	$current_members = array();
-	$members_sql = $database->query("SELECT client_id FROM tbl_members WHERE group_id = '$group_id'");
-	if (mysql_num_rows($members_sql) > 0) {
-		while($member_data = mysql_fetch_array($members_sql)) {
+	$members_sql = $dbh->prepare("SELECT client_id FROM " . TABLE_MEMBERS . " WHERE group_id = :id");
+	$members_sql->bindParam(':id', $group_id, PDO::PARAM_INT);
+	$members_sql->execute();
+
+	if ( $members_sql->rowCount() > 0) {
+		$members_sql->setFetchMode(PDO::FETCH_ASSOC);
+		while($member_data = $members_sql->fetch() ) {
 			$current_members[] = $member_data['client_id'];
 		}
 	}
@@ -67,8 +73,8 @@ if ($_POST) {
 	 * validation failed, the new unsaved values are shown to avoid
 	 * having to type them again.
 	 */
-	$add_group_data_name = mysql_real_escape_string($_POST['add_group_form_name']);
-	$add_group_data_description = mysql_real_escape_string($_POST['add_group_form_description']);
+	$add_group_data_name = $_POST['add_group_form_name'];
+	$add_group_data_description = $_POST['add_group_form_description'];
 	$add_group_data_members = (!empty($_POST['add_group_form_members']) ? $_POST['add_group_form_members'] : '');
 
 	/** Arguments used on validation and group creation. */
@@ -156,6 +162,5 @@ if ($_POST) {
 </div>
 
 <?php
-	$database->Close();
 	include('footer.php');
 ?>

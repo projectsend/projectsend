@@ -15,8 +15,6 @@ $page_title = __('E-mail templates','cftp_admin');
 $active_nav = 'options';
 include('header.php');
 
-$database->MySQLDB();
-
 if ($_POST) {
 	/** Checkboxes */
 	$checkboxes				= array(
@@ -36,15 +34,17 @@ if ($_POST) {
 	 * Escape all the posted values on a single function.
 	 * Defined on functions.php
 	 */
-	$_POST = mysql_real_escape_array($_POST);
 	$keys = array_keys($_POST);
 
 	$options_total = count($keys);
 
 	$updated = 0;
 	for ($j = 0; $j < $options_total; $j++) {
-		$q = 'UPDATE tbl_options SET value="'.$_POST[$keys[$j]].'" WHERE name="'.$keys[$j].'"';
-		$sql = mysql_query($q, $database->connection);
+		$save = $dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name=:name" );
+		$save->bindParam(':value', $_POST[$keys[$j]]);
+		$save->bindParam(':name', $keys[$j]);
+		$save->execute();
+
 		$updated++;
 	}
 	if ($updated > 0){

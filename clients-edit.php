@@ -11,30 +11,13 @@ require_once('sys.includes.php');
 
 $active_nav = 'clients';
 
-$database->MySQLDB();
-
 /** Create the object */
 $edit_client = new ClientActions();
 
 /** Check if the id parameter is on the URI. */
 if (isset($_GET['id'])) {
-	$client_id = mysql_real_escape_string($_GET['id']);
-    /**
-	 * FIX by Azannah
-     * Make sure we're getting an int
-     * This is a "better-than-nothing" fix for CVE-2015-2564
-     * Ideally, I would be using PDO and prepared statements     
-     */
-    if(filter_var($client_id, FILTER_VALIDATE_INT))
-    {
-		/**
-		 * Check if the id corresponds to a real client.
-		 * Return 1 if true, 2 if false.
-		 **/
-		$page_status = (client_exists_id($client_id)) ? 1 : 2;
-    } else {
-        $page_status = 0;
-    }
+	$client_id = $_GET['id'];
+	$page_status = (client_exists_id($client_id)) ? 1 : 2;
 }
 else {
 	/**
@@ -47,14 +30,18 @@ else {
  * Get the clients information from the database to use on the form.
  */
 if ($page_status === 1) {
-	$editing = $database->query("SELECT * FROM tbl_users WHERE id=$client_id");
-	while($data = mysql_fetch_array($editing)) {
-		$add_client_data_name = $data['name'];
-		$add_client_data_user = $data['user'];
-		$add_client_data_email = $data['email'];
-		$add_client_data_addr = $data['address'];
-		$add_client_data_phone = $data['phone'];
-		$add_client_data_intcont = $data['contact'];
+	$editing = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
+	$editing->bindParam(':id', $client_id, PDO::PARAM_INT);
+	$editing->execute();
+	$editing->setFetchMode(PDO::FETCH_ASSOC);
+
+	while ( $data = $editing->fetch() ) {
+		$add_client_data_name		= $data['name'];
+		$add_client_data_user		= $data['user'];
+		$add_client_data_email		= $data['email'];
+		$add_client_data_addr		= $data['address'];
+		$add_client_data_phone		= $data['phone'];
+		$add_client_data_intcont	= $data['contact'];
 		if ($data['notify'] == 1) { $add_client_data_notity = 1; } else { $add_client_data_notity = 0; }
 		if ($data['active'] == 1) { $add_client_data_active = 1; } else { $add_client_data_active = 0; }
 	}
@@ -87,31 +74,31 @@ if ($_POST) {
 	 * validation failed, the new unsaved values are shown to avoid
 	 * having to type them again.
 	 */
-	$add_client_data_name = mysql_real_escape_string($_POST['add_client_form_name']);
-	$add_client_data_user = mysql_real_escape_string($_POST['add_client_form_user']);
-	$add_client_data_email = mysql_real_escape_string($_POST['add_client_form_email']);
+	$add_client_data_name		= $_POST['add_client_form_name'];
+	$add_client_data_user		= $_POST['add_client_form_user'];
+	$add_client_data_email		= $_POST['add_client_form_email'];
 	/** Optional fields: Address, Phone, Internal Contact, Notify */
-	$add_client_data_addr = (isset($_POST["add_client_form_address"])) ? mysql_real_escape_string($_POST["add_client_form_address"]) : '';
-	$add_client_data_phone = (isset($_POST["add_client_form_phone"])) ? mysql_real_escape_string($_POST["add_client_form_phone"]) : '';
-	$add_client_data_intcont = (isset($_POST["add_client_form_intcont"])) ? mysql_real_escape_string($_POST["add_client_form_intcont"]) : '';
-	$add_client_data_notity = (isset($_POST["add_client_form_notify"])) ? 1 : 0;
+	$add_client_data_addr		= (isset($_POST["add_client_form_address"])) ? $_POST["add_client_form_address"] : '';
+	$add_client_data_phone		= (isset($_POST["add_client_form_phone"])) ? $_POST["add_client_form_phone"] : '';
+	$add_client_data_intcont	= (isset($_POST["add_client_form_intcont"])) ? $_POST["add_client_form_intcont"] : '';
+	$add_client_data_notity		= (isset($_POST["add_client_form_notify"])) ? 1 : 0;
 
 	if ($global_level != 0) {
-		$add_client_data_active = (isset($_POST["add_client_form_active"])) ? 1 : 0;
+		$add_client_data_active	= (isset($_POST["add_client_form_active"])) ? 1 : 0;
 	}
 
 	/** Arguments used on validation and client creation. */
 	$edit_arguments = array(
-							'id' => $client_id,
-							'username' => $add_client_data_user,
-							'name' => $add_client_data_name,
-							'email' => $add_client_data_email,
-							'address' => $add_client_data_addr,
-							'phone' => $add_client_data_phone,
-							'contact' => $add_client_data_intcont,
-							'notify' => $add_client_data_notity,
-							'active' => $add_client_data_active,
-							'type' => 'edit_client'
+							'id'		=> $client_id,
+							'username'	=> $add_client_data_user,
+							'name'		=> $add_client_data_name,
+							'email'		=> $add_client_data_email,
+							'address'	=> $add_client_data_addr,
+							'phone'		=> $add_client_data_phone,
+							'contact'	=> $add_client_data_intcont,
+							'notify'	=> $add_client_data_notity,
+							'active'	=> $add_client_data_active,
+							'type'		=> 'edit_client'
 						);
 
 	/**
@@ -217,6 +204,5 @@ include('header.php');
 </div>
 
 <?php
-	$database->Close();
 	include('footer.php');
 ?>

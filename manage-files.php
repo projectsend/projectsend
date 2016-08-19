@@ -28,7 +28,7 @@ $results_type = 'global';
  * Then get_client_by_id() gets all the other account values.
  */
 if (isset($_GET['client_id'])) {
-	$this_id = mysql_real_escape_string($_GET['client_id']);
+	$this_id = $_GET['client_id'];
 	$this_client = get_client_by_id($this_id);
 	/** Add the name of the client to the page's title. */
 	if(!empty($this_client)) {
@@ -43,10 +43,16 @@ if (isset($_GET['client_id'])) {
  * The group's id is passed on the URI also.
  */
 if (isset($_GET['group_id'])) {
-	$this_id = mysql_real_escape_string($_GET['group_id']);
-	$sql_name = $database->query("SELECT name from tbl_groups WHERE id='$this_id'");
-	if (mysql_num_rows($sql_name) > 0) {
-		while($row_group = mysql_fetch_array($sql_name)) {
+	$this_id = $_GET['group_id'];
+
+
+	$sql_name = $dbh->prepare("SELECT name from " . TABLE_GROUPS . " WHERE id=:id");
+	$sql_name->bindParam(':id', $this_id, PDO::PARAM_INT);
+	$sql_name->execute();							
+
+	if ( $sql_name->rowCount() > 0) {
+		$sql_name->setFetchMode(PDO::FETCH_ASSOC);
+		while( $row_group = $sql_name->fetch() ) {
 			$group_name = $row_group["name"];
 		}
 		/** Add the name of the client to the page's title. */
@@ -158,23 +164,29 @@ include('header.php');
 			if(!empty($_POST['files'])) {
 				$selected_files = array_map('intval',array_unique($_POST['files']));
 				$files_to_get = implode(',',$selected_files);
-	            
 				/**
 				 * Make a list of files to avoid individual queries.
 				 * First, get all the different files under this account.
 				 */
-				$sql_distinct_files = $database->query("SELECT file_id FROM tbl_files_relations WHERE id IN ($files_to_get)");
+				$sql_distinct_files = $dbh->prepare("SELECT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE FIND_IN_SET(id, :files)");
+				$sql_distinct_files->bindParam(':files', $files_to_get);
+				$sql_distinct_files->execute();
+				$sql_distinct_files->setFetchMode(PDO::FETCH_ASSOC);
 				
-				while($data_file_relations = mysql_fetch_array($sql_distinct_files)) {
+				while( $data_file_relations = $sql_distinct_files->fetch() ) {
 					$all_files_relations[] = $data_file_relations['file_id']; 
 					$files_to_get = implode(',',$all_files_relations);
 				}
-                
+				
 				/**
 				 * Then get the files names to add to the log action.
 				 */
-				$sql_file = $database->query("SELECT id, filename FROM tbl_files WHERE id IN ($files_to_get)");
-				while($data_file = mysql_fetch_array($sql_file)) {
+				$sql_file = $dbh->prepare("SELECT id, filename FROM " . TABLE_FILES . " WHERE FIND_IN_SET(id, :files)");
+				$sql_file->bindParam(':files', $files_to_get);
+				$sql_file->execute();
+				$sql_file->setFetchMode(PDO::FETCH_ASSOC);
+
+				while( $data_file = $sql_file->fetch() ) {
 					$all_files[$data_file['id']] = $data_file['filename'];
 				}
 				
@@ -188,7 +200,7 @@ include('header.php');
 						 */
 						foreach ($selected_files as $work_file) {
 							$this_file = new FilesActions();
-							$hide_file = $this_file->change_files_hide_status($work_file,'1');
+							$hide_file = $this_file->change_files_hide_status($work_file, '1', $_POST['modify_type'], $_POST['modify_id']);
 						}
 						$msg = __('The selected files were marked as hidden.','cftp_admin');
 						echo system_message('ok',$msg);
@@ -202,7 +214,7 @@ include('header.php');
 						 */
 						foreach ($selected_files as $work_file) {
 							$this_file = new FilesActions();
-							$show_file = $this_file->change_files_hide_status($work_file,'0');
+							$show_file = $this_file->change_files_hide_status($work_file, '0', $_POST['modify_type'], $_POST['modify_id']);
 						}
 						$msg = __('The selected files were marked as visible.','cftp_admin');
 						echo system_message('ok',$msg);
@@ -211,11 +223,11 @@ include('header.php');
 
 					case 'unassign':
 						/**
-						 * Remove the file from this client's account only.
+						 * Remove the file from this client or group only.
 						 */
 						foreach ($selected_files as $work_file) {
 							$this_file = new FilesActions();
-							$unassign_file = $this_file->unassign_file($work_file);
+							$unassign_file = $this_file->unassign_file($work_file, $_POST['modify_type'], $_POST['modify_id']);
 						}
 						$msg = __('The selected files were unassigned from this client.','cftp_admin');
 						echo system_message('ok',$msg);
@@ -265,31 +277,34 @@ include('header.php');
 		 */
 		$form_action_url = 'manage-files.php';
 
-		$database->MySQLDB();
-
 		if (isset($search_on)) {
-			$cq = "SELECT * FROM tbl_files_relations WHERE $search_on = '$this_id'";
+			$params = array();
+			$cq = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE $search_on = :id";
+			$params[':id'] = $this_id;
 			$form_action_url .= '?'.$search_on.'='.$this_id;
 
 			/** Add the status filter */	
-			if(isset($_POST['status']) && $_POST['status'] != 'all') {
+			if (isset($_POST['status']) && $_POST['status'] != 'all') {
 				$set_and = true;
-				$status_filter = mysql_real_escape_string($_POST['status']);
-				$cq .= " AND hidden='$status_filter'";
+				$cq .= " AND hidden = :status";
 				$no_results_error = 'filter';
+				
+				$params[':status'] = $_POST['status'];
 			}
 
 			/**
 			 * Count the files assigned to this client. If there is none, show
 			 * an error message.
 			 */
-			$sql = $database->query($cq);
+			$sql = $dbh->prepare($cq);
+			$sql->execute( $params );
 	
-			if (mysql_num_rows($sql) > 0) {
+			if ( $sql->rowCount() > 0) {
 				/**
 				 * Get the IDs of files that match the previous query.
 				 */
-				while($row_files = mysql_fetch_array($sql)) {
+				$sql->setFetchMode(PDO::FETCH_ASSOC);
+				while( $row_files = $sql->fetch() ) {
 					$files_ids[] = $row_files['file_id'];
 					$gotten_files = implode(',',$files_ids);
 				}
@@ -303,17 +318,22 @@ include('header.php');
 		/**
 		 * Get the files
 		 */
-		$fq = "SELECT * from tbl_files";
+		$params = array();
+		$fq = "SELECT * FROM " . TABLE_FILES;
 
 		if ( isset($search_on) && !empty($gotten_files) ) {
-			$conditions[] = "id IN ($gotten_files)";
+			$conditions[] = "FIND_IN_SET(id, :files)";
+			$params[':files'] = $gotten_files;
 		}
 
 		/** Add the search terms */	
 		if(isset($_POST['search']) && !empty($_POST['search'])) {
-			$search_terms = mysql_real_escape_string($_POST['search']);
-			$conditions[] = "(filename LIKE '%$search_terms%' OR description LIKE '%$search_terms%')";
+			$conditions[] = "(filename LIKE :name OR description LIKE :description)";
 			$no_results_error = 'search';
+
+			$search_terms			= '%'.$_POST['search'].'%';
+			$params[':name']		= $search_terms;
+			$params[':description']	= $search_terms;
 		}
 
 		/**
@@ -322,8 +342,10 @@ include('header.php');
 		*/
 		$current_level = get_current_user_level();
 		if ($current_level == '7' || $current_level == '0') {
-			$conditions[] = "uploader = '$global_user'";
+			$conditions[] = "uploader = :uploader";
 			$no_results_error = 'account_level';
+
+			$params[':uploader'] = $global_user;
 		}
 
 		/**
@@ -340,13 +362,14 @@ include('header.php');
 		//echo $fq;
 		//print_r( $conditions );
 
-		$sql_files = $database->query($fq);
-		$count = mysql_num_rows($sql_files);
+		$sql_files = $dbh->prepare($fq);
+		$sql_files->execute( $params );
+		$count = $sql_files->rowCount();
 	?>
 		<div class="form_actions_left">
 			<div class="form_actions_limit_results">
 				<form action="<?php echo html_output($form_action_url); ?>" name="files_search" method="post" class="form-inline">
-					<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($search_terms)) { echo html_output($search_terms); } ?>" class="txtfield form_actions_search_box" />
+					<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($search_terms)) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box" />
 					<button type="submit" id="btn_proceed_search" class="btn btn-small"><?php _e('Search','cftp_admin'); ?></button>
 				</form>
 
@@ -378,6 +401,14 @@ include('header.php');
 						<div class="form_actions">
 							<div class="form_actions_submit">
 								<label><?php _e('Selected files actions','cftp_admin'); ?>:</label>
+								<?php
+									if (isset($search_on)) {
+								?>
+									<input type="hidden" name="modify_type" id="modify_type" value="<?php echo $search_on; ?>" />
+									<input type="hidden" name="modify_id" id="modify_id" value="<?php echo $this_id; ?>" />
+								<?php
+									}
+								?>
 								<select name="files_actions" id="files_actions" class="txtfield">
 									<?php
 										/** Options only available when viewing a client/group files list */
@@ -481,7 +512,8 @@ include('header.php');
 				<tbody>
 					<?php
 						if ($count > 0) {
-							while($row = mysql_fetch_array($sql_files)) {
+							$sql_files->setFetchMode(PDO::FETCH_ASSOC);
+							while( $row = $sql_files->fetch() ) {
 								$file_id = $row['id'];
 								/**
 								 * Construct the complete file URI to use on the download button.
@@ -493,22 +525,31 @@ include('header.php');
 								 * Download count and visibility status are only available when
 								 * filtering by client or group.
 								 */
-								$query_this_file = "SELECT * FROM tbl_files_relations WHERE file_id='".$row['id']."'";
+								$params = array();
+								$query_this_file = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id";
+								$params[':file_id'] = $row['id'];
+
 								if (isset($search_on)) {
-									$query_this_file .= " AND $search_on = $this_id";
+									$query_this_file .= " AND $search_on = :id";
+									$params[':id'] = $this_id;
 									/**
 									 * Count how many times this file has been downloaded
 									 * Here, the download count is specific per user.
 									 */
 									switch ($results_type) {
 										case 'client':
-												$download_count_sql	= $database->query("SELECT user_id, file_id FROM tbl_downloads WHERE file_id = '".$row['id']."' AND user_id = '".$this_id."'");
-												$download_count		= mysql_num_rows($download_count_sql);
+												$download_count_sql	= $dbh->prepare("SELECT user_id, file_id FROM " . TABLE_DOWNLOADS . " WHERE file_id = :file_id AND user_id = :user_id");
+												$download_count_sql->bindParam(':file_id', $row['id'], PDO::PARAM_INT);
+												$download_count_sql->bindParam(':user_id', $this_id, PDO::PARAM_INT);
+												$download_count_sql->execute();
+												$download_count	= $download_count_sql->rowCount();
 											break;
 
 										case 'group':
-												$download_count_sql	= $database->query("SELECT file_id FROM tbl_downloads WHERE file_id = '".$row['id']."'");
-												$download_count		= mysql_num_rows($download_count_sql);
+												$download_count_sql	= $dbh->prepare("SELECT file_id FROM " . TABLE_DOWNLOADS . " WHERE file_id = :file_id");
+												$download_count_sql->bindParam(':file_id', $row['id'], PDO::PARAM_INT);
+												$download_count_sql->execute();
+												$download_count	= $download_count_sql->rowCount();
 											break;
 									}
 								}
@@ -517,13 +558,17 @@ include('header.php');
 									 * Count how many times this file has been downloaded
 									 * Here, the download count is general.
 									 */
-									$download_count_sql	= $database->query("SELECT file_id FROM tbl_downloads WHERE file_id = '".$row['id']."'");
-									$download_count		= mysql_num_rows($download_count_sql);
+									$download_count_sql	= $dbh->prepare("SELECT file_id FROM " . TABLE_DOWNLOADS . " WHERE file_id = :id");
+									$download_count_sql->bindParam(':id', $row['id'], PDO::PARAM_INT);
+									$download_count_sql->execute();
+									$download_count	= $download_count_sql->rowCount();
 								}
 
-								$sql_this_file = $database->query($query_this_file);
+								$sql_this_file = $dbh->prepare($query_this_file);
+								$sql_this_file->execute( $params );
+								$sql_this_file->setFetchMode(PDO::FETCH_ASSOC);
 
-								while($data_file = mysql_fetch_array($sql_this_file)) {
+								while( $data_file = $sql_this_file->fetch() ) {
 									$file_id = $data_file['id'];
 									$hidden = $data_file['hidden'];
 								}
@@ -534,7 +579,7 @@ include('header.php');
 										/** Actions are not available for clients */
 										if($current_level != '0') {
 									?>
-											<td><input type="checkbox" name="files[]" value="<?php echo filter_var($file_id,FILTER_VALIDATE_INT); ?>" /></td>
+											<td><input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" /></td>
 									<?php
 										}
 									?>
@@ -585,7 +630,7 @@ include('header.php');
 													}
 															$status_public	= __('Public','cftp_admin');
 															$status_private	= __('Private','cftp_admin');
-															echo ($row['public_allow'] === '1') ? $status_public : $status_private;
+															echo ($row['public_allow'] == 1) ? $status_public : $status_private;
 												?>
 												</a>
 											</td>
@@ -624,11 +669,11 @@ include('header.php');
 										 */
 										if (isset($search_on)) {
 									?>
-											<td class="<?php echo ($hidden === '1') ? 'file_status_hidden' : 'file_status_visible'; ?>">
+											<td class="<?php echo ($hidden == 1) ? 'file_status_hidden' : 'file_status_visible'; ?>">
 												<?php
 													$status_hidden = __('Hidden','cftp_admin');
 													$status_visible = __('Visible','cftp_admin');
-													echo ($hidden === '1') ? $status_hidden : $status_visible;
+													echo ($hidden == 1) ? $status_hidden : $status_visible;
 												?>
 											</td>
 											<td>
@@ -680,17 +725,12 @@ include('header.php');
 		</form>
 
 		<?php
-			if($current_level != '0') {
+			if ($current_level != '0') {
 		?>
 				<div class="message message_info"><?php _e('Please note that downloading a file from here will not add to the download count.','cftp_admin'); ?></div>
 		<?php
 			}
 		?>
-
-	<?php
-		$database->Close();
-	?>
-
 	</div>
 
 </div>

@@ -17,11 +17,13 @@ $.fn.psendmodal = function() {
 		return false;
 	}
 
-	$(".modal_close").click(function() {
+	$(".modal_close").click(function(e) {
+		e.preventDefault();
 		remove_modal();
 	});
 
-	$(".modal_overlay").click(function() {
+	$(".modal_overlay").click(function(e) {
+		e.preventDefault();
 		remove_modal();
 	});
 	

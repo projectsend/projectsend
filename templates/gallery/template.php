@@ -111,4 +111,3 @@ $count = count($img_files);
 
 </body>
 </html>
-<?php $database->Close(); ?>

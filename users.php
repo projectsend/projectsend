@@ -57,15 +57,19 @@ include('header.php');
 		/** Continue only if 1 or more users were selected. */
 		if(!empty($_POST['users'])) {
 			$selected_users = $_POST['users'];
-			$users_to_get = mysql_real_escape_string(implode(',',array_unique($selected_users)));
+			$users_to_get = implode( ',', array_map( 'intval', array_unique( $selected_users ) ) );
 
 			/**
 			 * Make a list of users to avoid individual queries.
 			 */
-			$sql_user = $database->query("SELECT id, name FROM tbl_users WHERE id IN ($users_to_get)");
-			while($data_user = mysql_fetch_array($sql_user)) {
+			$sql_user = $dbh->prepare( "SELECT id, name FROM " . TABLE_USERS . " WHERE FIND_IN_SET(id, :users)" );
+			$sql_user->bindParam(':users', $users_to_get);
+			$sql_user->execute();
+			$sql_user->setFetchMode(PDO::FETCH_ASSOC);
+			while ( $data_user = $sql_user->fetch() ) {
 				$all_users[$data_user['id']] = $data_user['name'];
 			}
+
 
 			$my_info = get_user_by_username(get_current_user_username());
 			$affected_users = 0;
@@ -153,34 +157,43 @@ include('header.php');
 		}
 	}
 
-	$database->MySQLDB();
-	$cq = "SELECT * FROM tbl_users WHERE level != '0'";
+	$params	= array();
+
+	$cq = "SELECT * FROM " . TABLE_USERS . " WHERE level != '0'";
 
 	/** Add the search terms */	
-	if(isset($_POST['search']) && !empty($_POST['search'])) {
-		$search_terms = mysql_real_escape_string($_POST['search']);
-		$cq .= " AND (name LIKE '%$search_terms%' OR user LIKE '%$search_terms%' OR email LIKE '%$search_terms%')";
+	if ( isset( $_POST['search'] ) && !empty( $_POST['search'] ) ) {
+		$cq .= " AND (name LIKE :name OR user LIKE :user OR email LIKE :email)";
 		$no_results_error = 'search';
+
+		$search_terms		= '%'.$_POST['search'].'%';
+		$params[':name']	= $search_terms;
+		$params[':user']	= $search_terms;
+		$params[':email']	= $search_terms;
 	}
 
 	/** Add the role filter */	
-	if(isset($_POST['role']) && $_POST['role'] != 'all') {
-		$role_filter = $_POST['role'];
-		$cq .= " AND level='$role_filter'";
+	if ( isset( $_POST['role'] ) && $_POST['role'] != 'all' ) {
+		$cq .= " AND level=:level";
 		$no_results_error = 'filter';
+
+		$params[':level']	= $_POST['role'];
 	}
 	
 	/** Add the status filter */	
-	if(isset($_POST['status']) && $_POST['status'] != 'all') {
-		$status_filter = $_POST['status'];
-		$cq .= " AND active='$status_filter'";
+	if ( isset( $_POST['status'] ) && $_POST['status'] != 'all' ) {
+		$cq .= " AND active = :active";
 		$no_results_error = 'filter';
+
+		$params[':active']	= (int)$_POST['status'];
 	}
 
 	$cq .= " ORDER BY name ASC";
-	
-	$sql = $database->query($cq);
-	$count = mysql_num_rows($sql);
+
+	$sql = $dbh->prepare( $cq );
+	$sql->execute( $params );
+	$count = $sql->rowCount();
+
 ?>
 
 	<div class="form_actions_left">
@@ -262,7 +275,8 @@ include('header.php');
 			<tbody>
 			
 			<?php
-				while($row = mysql_fetch_array($sql)) {
+				$sql->setFetchMode(PDO::FETCH_ASSOC);
+				while ( $row = $sql->fetch() ) {
 					$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
 				?>
 				<tr>
@@ -286,8 +300,8 @@ include('header.php');
 						<?php
 							$status_hidden	= __('Inactive','cftp_admin');
 							$status_visible	= __('Active','cftp_admin');
-							$label			= ($row['active'] === '0') ? $status_hidden : $status_visible;
-							$class			= ($row['active'] === '0') ? 'important' : 'success';
+							$label			= ($row['active'] === 0) ? $status_hidden : $status_visible;
+							$class			= ($row['active'] === 0) ? 'important' : 'success';
 						?>
 						<span class="label label-<?php echo $class; ?>">
 							<?php echo $label; ?>
@@ -303,8 +317,6 @@ include('header.php');
 						
 				<?php
 				}
-			
-				$database->Close();
 			?>
 			
 			</tbody>

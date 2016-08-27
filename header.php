@@ -98,6 +98,12 @@ if (in_session_or_cookies($core_update_allowed)) {
 	<?php
 		}
 
+		if (isset($jquery_tags_input)) {
+	?>
+		<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>includes/js/jquery-tags-input/jquery.tagsinput.css" />
+	<?php
+		}
+
 		if (isset($multiselect)) {
 	?>
 		<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>includes/js/chosen/chosen.min.css" />

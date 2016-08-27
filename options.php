@@ -6,12 +6,10 @@
  * @subpackage Options
  */
 $spinedit	= 1;
+$jquery_tags_input = 1;
 $allowed_levels = array(9);
 require_once('sys.includes.php');
 $page_title = __('System options','cftp_admin');
-
-/** Uses TextBoxList for the allowed file types box. */
-$textboxlist = 1;
 
 $active_nav = 'options';
 include('header.php');
@@ -150,8 +148,10 @@ $allowed_file_types = implode(',',$allowed_file_types);
 					numberOfDecimals: 0
 				});
 
-				$(function(){
-					var t = new $.TextboxList('#allowed_file_types', {unique: true, bitsOptions:{editable:{addKeys: 188}}});
+				$('#allowed_file_types').tagsInput({
+					'width'			: '95%',
+					'height'		: 'auto',
+					'defaultText'	: '',
 				});
 
 				$("form").submit(function() {
@@ -495,7 +495,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 									<div class="white-box-interior">
 										<h3><?php _e('Allowed file extensions','cftp_admin'); ?></h3>
 								<p><?php _e('Be careful when changing this options. They could affect not only the system but the whole server it is installed on.','cftp_admin'); ?><br />
-								<strong><?php _e('Important','cftp_admin'); ?></strong>: <?php _e('Separate allowed file types with a comma. You can navigate the box with the left/right arrows, backspace and delete keys.','cftp_admin'); ?></p>
+								<strong><?php _e('Important','cftp_admin'); ?></strong>: <?php _e('Separate allowed file types with a comma.','cftp_admin'); ?></p>
 	
 							   <div class="form-group">
 								   <label for="file_types_limit_to" class="col-sm-4 control-label"><?php _e('Limit file types uploading to','cftp_admin'); ?></label>

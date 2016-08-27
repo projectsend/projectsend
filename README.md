@@ -5,7 +5,7 @@ Clients are created and assigned a username and a password. Then you can
 upload as much files as you want under each account, and optionally add
 a name and description to them. 
 
-ProjectSend is hosted on Google Code.
+ProjectSend is hosted on github.
 
 Feel free to participate!
 
@@ -36,10 +36,11 @@ When those are steps are completed, follow this instructions:
 Congratulations! ProjectSend is now installed and ready for action!
 You may login with your new username and password.
 
-Important Note: for v.608 and later you will need to enable PDO extension from php.ini
+Important Note: for version r608 and later you will need to enable PDO extension from php.ini
 
 extension=php_pdo.dll
 extension=php_pdo_mysql.dll
+
 and restart the service if your are local.
 
 --------------------------------------------------------------------------------------------
@@ -64,12 +65,12 @@ shown under the main menu.
 
 Questions, ideas? Want to join the project?
 Send your message to contact@projectsend.org or join us on Facebook, on
-https://www.facebook.com/pages/ProjectSend/333455190044627
+https://www.facebook.com/projectsend/
 
 --------------------------------------------------------------------------------------------
 
 Thanks. Arigatō. Danke. Gracias. Grazie. Mahadsanid. Salamat po. Merci. אַ דאַנק.
-ProjectSend translators:
+ProjectSend original translators:
 
 - Raúl Elenes
   Spanish
@@ -83,9 +84,9 @@ ProjectSend translators:
 - Levin Germann
   German
 
-
 If you want to translate ProjectSend in your language, join the project on
 https://www.transifex.com/projects/p/projectsend/
+More languages are already available there.
 
 --------------------------------------------------------------------------------------------
 
@@ -95,10 +96,7 @@ Many thanks to the authors of the following scripts, which are used on ProjectSe
   http://www.jquery.com/
 
 - Bootstrap (custom download)
-  http://twitter.github.com/bootstrap/
-
-- EasyTabs.js
-  http://os.alfajango.com/easytabs/
+  http://getbootstrap.com/
 
 - hashchange
   http://benalman.com/projects/jquery-hashchange-plugin/
@@ -109,8 +107,8 @@ Many thanks to the authors of the following scripts, which are used on ProjectSe
 - Timthumb
   http://code.google.com/p/timthumb/
 
-- TextboxList.js
-  http://www.devthought.com/projects/mootools/textboxlist/
+- jQuery Tags Input
+  https://github.com/xoxco/jQuery-Tags-Input
 
 - footable
   https://github.com/bradvin/FooTable

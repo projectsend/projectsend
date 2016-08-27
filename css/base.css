@@ -848,7 +848,7 @@ a.plupload_start {
 }
 
 
-/* Override some bootstrap form rules */
+/* Override some bootstrap rules */
 
 .form-horizontal .control-label {
     text-align: left;
@@ -856,4 +856,8 @@ a.plupload_start {
 
 label input[type="checkbox"] {
     cursor: pointer;
+}
+
+span.label {
+	font-size:12px;
 }

@@ -677,10 +677,13 @@ include('header.php');
 									?>
 											<td class="<?php echo ($hidden == 1) ? 'file_status_hidden' : 'file_status_visible'; ?>">
 												<?php
-													$status_hidden = __('Hidden','cftp_admin');
-													$status_visible = __('Visible','cftp_admin');
-													echo ($hidden == 1) ? $status_hidden : $status_visible;
+													$status_hidden	= __('Hidden','cftp_admin');
+													$status_visible	= __('Visible','cftp_admin');
+													$class			= ($hidden == 1) ? 'danger' : 'success';
 												?>
+												<span class="label label-<?php echo $class; ?>">
+													<?php echo ($hidden == 1) ? $status_hidden : $status_visible; ?>
+												</span>
 											</td>
 											<td>
 												<?php
@@ -691,7 +694,7 @@ include('header.php');
 				
 														case 'group':
 												?>
-															<a href="javascript:void(0);" class="<?php if ($download_count > 0) { echo 'downloaders btn-primary'; } else { echo 'disabled'; } ?> btn btn-sm" rel="<?php echo $row["id"]; ?>" title="<?php echo html_output($row['filename']); ?>">
+															<a href="javascript:void(0);" class="<?php if ($download_count > 0) { echo 'downloaders btn-primary'; } else { echo 'btn-default disabled'; } ?> btn btn-sm" rel="<?php echo $row["id"]; ?>" title="<?php echo html_output($row['filename']); ?>">
 																<?php echo $download_count; ?> <?php _e('downloads','cftp_admin'); ?>
 															</a>
 												<?php

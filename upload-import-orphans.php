@@ -149,8 +149,10 @@ $work_folder = UPLOADED_FILES_FOLDER;
 
 				<div class="form_actions_limit_results">
 					<form action="" name="files_search" method="post" class="form-inline">
-						<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box" />
-						<button type="submit" id="btn_proceed_search" class="btn btn-small"><?php _e('Search','cftp_admin'); ?></button>
+						<div class="form-group group_float">
+							<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box form-control" />
+						</div>
+						<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default"><?php _e('Search','cftp_admin'); ?></button>
 					</form>
 				</div>
 				<div class="clear"></div>
@@ -198,7 +200,11 @@ $work_folder = UPLOADED_FILES_FOLDER;
 						</tbody>
 					</table>
 
-					<div class="pagination pagination-centered hide-if-no-paging"></div>
+					<nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
+						<div class="pagination_wrapper text-center">
+							<ul class="pagination hide-if-no-paging"></ul>
+						</div>
+					</nav>
 
 					<?php
 						$msg = __('Please note that the listed files will be renamed if they contain invalid characters.','cftp_admin');
@@ -228,15 +234,21 @@ $work_folder = UPLOADED_FILES_FOLDER;
 			else {
 			/** No files found */
 			?>
-				<div class="whitebox whiteform whitebox_text">
-					<p><?php _e('There are no files available to add right now.', 'cftp_admin'); ?></p>
-					<p>
-						<?php
-							_e('To use this feature you need to upload your files via FTP to the folder', 'cftp_admin');
-							echo ' <strong>'.html_output($work_folder).'</strong>.';
-						?>
-					</p>
-					<p><?php _e('This is the same folder where the files uploaded by the web interface will be stored. So if you finish uploading your files but do not assign them to any clients/groups, the files will still be there for later use.', 'cftp_admin'); ?></p>
+				<div class="container">
+					<div class="row">
+						<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
+							<div class="white-box-interior">
+								<p><?php _e('There are no files available to add right now.', 'cftp_admin'); ?></p>
+								<p>
+									<?php
+										_e('To use this feature you need to upload your files via FTP to the folder', 'cftp_admin');
+										echo ' <strong>'.html_output($work_folder).'</strong>.';
+									?>
+								</p>
+								<p><?php _e('This is the same folder where the files uploaded by the web interface will be stored. So if you finish uploading your files but do not assign them to any clients/groups, the files will still be there for later use.', 'cftp_admin'); ?></p>
+							</div>
+						</div>
+					</div>
 				</div>
 			<?php
 			}

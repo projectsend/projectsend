@@ -149,6 +149,7 @@ h4 {
 }
 
 .btn-inverse:hover {
+	color:white;
 	background:#555;
 }
 

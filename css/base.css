@@ -140,6 +140,18 @@ h4 {
 	Home
 */
 
+.btn-inverse,
+.btn-inverse:focus
+{
+	background:#333;
+	color:white;
+	border-color:#333;
+}
+
+.btn-inverse:hover {
+	background:#555;
+}
+
 .widget {
 	background:white;
 	display:block;
@@ -177,6 +189,10 @@ h4 {
 }
 
 /* Home log widget */
+
+.activities_log {
+	padding:0;
+}
 
 .activities_log li {
 	padding:7px;
@@ -684,7 +700,7 @@ h4 {
 /* options page */
 
 .field_note {
-	margin:-3px 0 15px 44%;
+	margin:2px 0 15px 0;
 	font-size:.9em;
 	color:#999;
 	padding-left:6px;
@@ -707,17 +723,18 @@ optgroup {
 }
 
 .options_box {
-	width:550px;
 	padding:20px;
 	margin:20px auto;
 }
 
 .options_box label {
+    /*
 	display:block;
 	float:left;
 	clear:left;
 	width:110px;
 	margin-right:20px;
+    */
 }
 
 .options_box input[type="text"],
@@ -726,11 +743,11 @@ optgroup {
 .options_box input[type="tel"],
 .options_box textarea,
 .options_box select {
-	width:290px;
+/*	width:290px;*/
 }
 
 .options_box textarea {
-	height:250px;
+/*	height:250px;*/
 }
 
 .options_box .form_fields p {
@@ -764,22 +781,23 @@ optgroup {
 	overflow:hidden;
 }
 
-.options_column label { width:80px; margin-right:10px; }
+/*.options_column label { width:80px; margin-right:10px; }
 
 .options_column input[type="text"],
 .options_column select {
 	width:100px !important;
 }
+*/
 
-.options_col_left {
-	width:47%;
-	float:left;
-}
-
-.options_col_right {
-	width:47%;
-	float:right;
-}
+	.options_col_left {
+		width:47%;
+		float:left;
+	}
+	
+	.options_col_right {
+		width:47%;
+		float:right;
+	}
 
 .preview_button {
 	margin-top:25px;
@@ -838,7 +856,13 @@ a.plupload_start {
 	Purchase to remove copyright
 */
 
-.textboxlist { width: 550px;; cursor: text; font-size:1.3em; }
+.textboxlist {
+	width: 90%;
+	margin:0 auto;
+	cursor: text;
+	font-size:1.3em;
+
+}
 .textboxlist-bits {
 	zoom: 1;
 	overflow: hidden;
@@ -873,3 +897,11 @@ a.plupload_start {
 	Make sure the border-width of the .textboxlist-bit-editable {} is equal to the border-width of the box (a border that matches the background is advisable for the input)
 	Feel free to edit the borders, fonts, backgrounds and radius.		
 */
+
+.form-horizontal .control-label {
+    text-align: left;
+}
+
+label input[type="checkbox"] {
+    cursor: pointer;
+}

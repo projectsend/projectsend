@@ -10,7 +10,7 @@
  * 
  */
 ?>
-<select id="timezone" name="timezone">
+<select class="form-control" id="timezone" name="timezone">
 	<?php
 		function timezonechoice($selectedzone) {
 

@@ -1,0 +1,33 @@
+@media ( max-width:768px ) {
+	.main_title {
+		text-align:center;
+		margin-bottom:20px;
+	}
+	
+	#header #account {
+		text-align:center;
+	}
+
+		#header #account span {
+			display:block;
+			margin-bottom:8px;
+		}
+	
+	.form_filters {
+		display:block;
+		clear:both;
+	}
+    
+    .form_filters select {
+        max-width: 300px;
+    }
+    
+    .form_actions_right {
+        float: none;
+    }
+	
+	.group_float {
+		float:left;
+		margin-right:5px;
+	}
+}

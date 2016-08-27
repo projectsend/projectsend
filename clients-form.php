@@ -95,53 +95,81 @@ switch ($clients_form_type) {
 }
 ?>
 
-<form action="<?php echo $form_action; ?>" name="addclient" method="post">
-	<ul class="form_fields">
-		<li>
-			<label for="add_client_form_name"><?php _e('Name','cftp_admin'); ?></label>
-			<input type="text" name="add_client_form_name" id="add_client_form_name" class="required" value="<?php echo (isset($add_client_data_name)) ? html_output(stripslashes($add_client_data_name)) : ''; ?>" placeholder="<?php echo $name_placeholder; ?>" />
-		</li>
-		<li>
-			<label for="add_client_form_user"><?php _e('Log in username','cftp_admin'); ?></label>
-			<input type="text" name="add_client_form_user" id="add_client_form_user" class="<?php if (!$disable_user) { echo 'required'; } ?>" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($add_client_data_user)) ? html_output(stripslashes($add_client_data_user)) : ''; ?>" <?php if ($disable_user) { echo 'readonly'; }?> placeholder="<?php _e("Must be alphanumeric",'cftp_admin'); ?>" />
-		</li>
-		<li>
-			<button type="button" class="btn password_toggler pass_toggler_show"><i class="icon-eye-open"></i></button>
-			<label for="add_client_form_pass"><?php _e('Password','cftp_admin'); ?></label>
-			<input name="add_client_form_pass" id="add_client_form_pass" class="<?php if ($require_pass) { echo 'required'; } ?> password_toggle" type="password" maxlength="<?php echo MAX_PASS_CHARS; ?>" />
+<form action="<?php echo $form_action; ?>" name="addclient" method="post" class="form-horizontal">
+	<div class="form-group">
+		<label for="add_client_form_name" class="col-sm-4 control-label"><?php _e('Name','cftp_admin'); ?></label>
+		<div class="col-sm-8">
+			<input type="text" name="add_client_form_name" id="add_client_form_name" class="form-control required" value="<?php echo (isset($add_client_data_name)) ? html_output(stripslashes($add_client_data_name)) : ''; ?>" placeholder="<?php echo $name_placeholder; ?>" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label for="add_client_form_user" class="col-sm-4 control-label"><?php _e('Log in username','cftp_admin'); ?></label>
+		<div class="col-sm-8">
+			<input type="text" name="add_client_form_user" id="add_client_form_user" class="form-control <?php if (!$disable_user) { echo 'required'; } ?>" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($add_client_data_user)) ? html_output(stripslashes($add_client_data_user)) : ''; ?>" <?php if ($disable_user) { echo 'readonly'; }?> placeholder="<?php _e("Must be alphanumeric",'cftp_admin'); ?>" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label for="add_client_form_pass" class="col-sm-4 control-label"><?php _e('Password','cftp_admin'); ?></label>
+		<div class="col-sm-8">
+			<div class="input-group">
+				<input name="add_client_form_pass" id="add_client_form_pass" class="form-control password_toggle <?php if ($require_pass) { echo 'required'; } ?>" type="password" maxlength="<?php echo MAX_PASS_CHARS; ?>" />
+				<div class="input-group-btn password_toggler">
+					<button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button>
+				</div>
+			</div>
 			<?php password_notes(); ?>
-		</li>
-		<li>
-			<label for="add_client_form_email"><?php _e('E-mail','cftp_admin'); ?></label>
-			<input type="text" name="add_client_form_email" id="add_client_form_email" class="required" value="<?php echo (isset($add_client_data_email)) ? html_output(stripslashes($add_client_data_email)) : ''; ?>" placeholder="<?php _e("Must be valid and unique",'cftp_admin'); ?>" />
-		</li>
-		<li>
-			<label for="add_client_form_address"><?php _e('Address','cftp_admin'); ?></label>
-			<input type="text" name="add_client_form_address" id="add_client_form_address" value="<?php echo (isset($add_client_data_addr)) ? html_output(stripslashes($add_client_data_addr)) : ''; ?>" />
-		</li>
-		<li>
-			<label for="add_client_form_phone"><?php _e('Telephone','cftp_admin'); ?></label>
-			<input type="text" name="add_client_form_phone" id="add_client_form_phone" value="<?php echo (isset($add_client_data_phone)) ? html_output(stripslashes($add_client_data_phone)) : ''; ?>" />
-		</li>
+		</div>		
+	</div>
+
+	<div class="form-group">
+		<label for="add_client_form_email" class="col-sm-4 control-label"><?php _e('E-mail','cftp_admin'); ?></label>
+		<div class="col-sm-8">
+			<input type="text" name="add_client_form_email" id="add_client_form_email" class="form-control required" value="<?php echo (isset($add_client_data_email)) ? html_output(stripslashes($add_client_data_email)) : ''; ?>" placeholder="<?php _e("Must be valid and unique",'cftp_admin'); ?>" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label for="add_client_form_address" class="col-sm-4 control-label"><?php _e('Address','cftp_admin'); ?></label>
+		<div class="col-sm-8">
+			<input type="text" name="add_client_form_address" id="add_client_form_address" class="form-control" value="<?php echo (isset($add_client_data_addr)) ? html_output(stripslashes($add_client_data_addr)) : ''; ?>" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label for="add_client_form_phone" class="col-sm-4 control-label"><?php _e('Telephone','cftp_admin'); ?></label>
+		<div class="col-sm-8">
+			<input type="text" name="add_client_form_phone" id="add_client_form_phone" class="form-control" value="<?php echo (isset($add_client_data_phone)) ? html_output(stripslashes($add_client_data_phone)) : ''; ?>" />
+		</div>
+	</div>
+
 		<?php
 			if ($extra_fields == true) {
 		?>
-				<li>
-					<label for="add_client_form_intcont"><?php _e('Internal contact name','cftp_admin'); ?></label>
-					<input type="text" name="add_client_form_intcont" id="add_client_form_intcont" value="<?php echo (isset($add_client_data_intcont)) ? html_output(stripslashes($add_client_data_intcont)) : ''; ?>" />
-				</li>
-				<li>
-					<label for="add_client_form_active"><?php _e('Active (client can log in)','cftp_admin'); ?></label>
-					<input type="checkbox" name="add_client_form_active" id="add_client_form_active" <?php echo (isset($add_client_data_active) && $add_client_data_active == 1) ? 'checked="checked"' : ''; ?> />
-				</li>
+				<div class="form-group">
+					<label for="add_client_form_intcont" class="col-sm-4 control-label"><?php _e('Internal contact name','cftp_admin'); ?></label>
+					<div class="col-sm-8">
+						<input type="text" name="add_client_form_intcont" id="add_client_form_intcont" class="form-control" value="<?php echo (isset($add_client_data_intcont)) ? html_output(stripslashes($add_client_data_intcont)) : ''; ?>" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-8 col-sm-offset-4">
+						<label for="add_client_form_active">
+							<input type="checkbox" name="add_client_form_active" id="add_client_form_active" <?php echo (isset($add_client_data_active) && $add_client_data_active == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Active (client can log in)','cftp_admin'); ?>
+						</label>
+					</div>
+				</div>
 		<?php
 			}
 		?>
-		<li>
-			<label for="add_client_form_notify"><?php _e('Notify new uploads by e-mail','cftp_admin'); ?></label>
-			<input type="checkbox" name="add_client_form_notify" id="add_client_form_notify" <?php echo (isset($add_client_data_notity) && $add_client_data_notity == 1) ? 'checked="checked"' : ''; ?> />
-		</li>
-	</ul>
+	<div class="form-group">
+		<div class="col-sm-8 col-sm-offset-4">
+			<label for="add_client_form_notify">
+				<input type="checkbox" name="add_client_form_notify" id="add_client_form_notify" <?php echo (isset($add_client_data_notity) && $add_client_data_notity == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Notify new uploads by e-mail','cftp_admin'); ?>
+			</label>
+		</div>
+	</div>
 
 	<div class="inside_form_buttons">
 		<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php echo html_output($submit_value); ?></button>

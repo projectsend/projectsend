@@ -30,4 +30,20 @@
 		float:left;
 		margin-right:5px;
 	}
+	
+	#current_logo {
+		text-align:center;
+	}
+
+		#current_logo_left,
+		#current_logo_right
+		{
+			width:auto;
+			float:none;
+		}
+	
+		#current_logo_right {
+			display:inline-block;
+			margin:20px auto;
+		}
 }

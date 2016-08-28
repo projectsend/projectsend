@@ -21,7 +21,7 @@ define('CAN_INCLUDE_FILES', true);
 
 	<div class="home">
 		<div class="container-fluid">
-			<div class="row-fluid">
+			<div class="row">
 			<?php
 				$log_allowed = array(9);
 				if (in_session_or_cookies($log_allowed)) {
@@ -29,7 +29,7 @@ define('CAN_INCLUDE_FILES', true);
 				}
 			?>
 					<div class="col-sm-8 <?php if ($show_log != true) { echo 'col-sm-offset-2'; } ?>">
-						<div class="row-fluid">
+						<div class="row">
 							<div class="col-sm-12">
 								<div class="widget">
 									<h4><?php _e('Statistics','cftp_admin'); ?></h4>
@@ -51,7 +51,7 @@ define('CAN_INCLUDE_FILES', true);
 								</div>
 							</div>
 						</div>
-						<div class="row-fluid">
+						<div class="row">
 							<div class="col-sm-6">
 								<?php include(ROOT_DIR.'/home-news-widget.php'); ?>
 							</div>

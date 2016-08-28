@@ -693,6 +693,7 @@ textarea, select {
 	list-style:none;
 	height:230px;
 	overflow:auto;
+	padding:0;
 }
 
 .downloaders_list li {

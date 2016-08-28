@@ -458,17 +458,17 @@ while( $row = $statement->fetch() ) {
 								}
 					?>
 								<div class="file_editor <?php if ($i%2) { echo 'f_e_odd'; } ?>">
-									<div class="row-fluid edit_files">
-										<div class="span1">
+									<div class="row edit_files">
+										<div class="col-sm-1">
 											<div class="file_number">
 												<p><?php echo $i; ?></p>
 											</div>
 										</div>
-										<div class="span11">
-											<div class="row-fluid">
-												<div class="<?php echo ($global_level != 0) ? 'span4' : 'span12'; ?> file_data">
-													<div class="row-fluid">
-														<div class="span12">
+										<div class="col-sm-11">
+											<div class="row">
+												<div class="<?php echo ($global_level != 0) ? 'col-sm-4' : 'col-sm-12'; ?> file_data">
+													<div class="row">
+														<div class="col-sm-12">
 															<h3><?php _e('File information', 'cftp_admin');?></h3>
 															<p class="on_disc_name">
 																<?php echo html_output($file); ?>
@@ -476,10 +476,15 @@ while( $row = $statement->fetch() ) {
 															<input type="hidden" name="file[<?php echo $i; ?>][original]" value="<?php echo html_output($file_original); ?>" />
 															<input type="hidden" name="file[<?php echo $i; ?>][file]" value="<?php echo html_output($file); ?>" />
 	
-															<label><?php _e('Title', 'cftp_admin');?></label>
-															<input type="text" name="file[<?php echo $i; ?>][name]" value="<?php echo html_output($file_title); ?>" class="file_title" placeholder="<?php _e('Enter here the required file title.', 'cftp_admin');?>" />
-															<label><?php _e('Description', 'cftp_admin');?></label>
-															<textarea name="file[<?php echo $i; ?>][description]" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (isset($description)) ? html_output($description) : ''; ?></textarea>
+															<div class="form-group">
+																<label><?php _e('Title', 'cftp_admin');?></label>
+																<input type="text" name="file[<?php echo $i; ?>][name]" value="<?php echo html_output($file_title); ?>" class="form-control file_title" placeholder="<?php _e('Enter here the required file title.', 'cftp_admin');?>" />
+															</div>
+															
+															<div class="form-group">
+																<label><?php _e('Description', 'cftp_admin');?></label>
+																<textarea name="file[<?php echo $i; ?>][description]" class="form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (isset($description)) ? html_output($description) : ''; ?></textarea>
+															</div>
 															
 														</div>
 													</div>
@@ -488,15 +493,19 @@ while( $row = $statement->fetch() ) {
 													/** The following options are available to users only */
 													if ($global_level != 0) {
 												?>
-														<div class="span4 file_data">
+														<div class="col-sm-4 file_data">
 															<?php
 																/**
-																* Only show the EXPIRY options if the current
+																* Only show the expiration options if the current
 																* uploader is a system user, and not a client.
 																*/
 															?>
 															<h3><?php _e('Expiration date', 'cftp_admin');?></h3>
-															<label><input type="checkbox" name="file[<?php echo $i; ?>][expires]" value="1" <?php if ($row['expiry_set']) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?></label>
+															<div class="checkbox">
+																<label for="exp_checkbox_<?php echo $i; ?>">
+																	<input type="checkbox" name="file[<?php echo $i; ?>][expires]" id="exp_checkbox_<?php echo $i; ?>" value="1" <?php if ($row['expiry_set']) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?>
+																</label>
+															</div>
 			
 															<label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
 
@@ -510,7 +519,7 @@ while( $row = $statement->fetch() ) {
 															<label><input type="checkbox" name="file[<?php echo $i; ?>][public]" value="1" /> <?php _e('Allow public downloading of this file.', 'cftp_admin');?></label>
 														</div>
 
-														<div class="span4 file_data assigns">
+														<div class="col-sm-4 file_data assigns">
 															<?php
 																/**
 																* Only show the CLIENTS select field if the current

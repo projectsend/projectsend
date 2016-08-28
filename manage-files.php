@@ -708,7 +708,7 @@ include('header.php');
 											if($current_level != '0') {
 									?>
 												<td>
-													<a href="javascript:void(0);" class="<?php if ($download_count > 0) { echo 'downloaders btn-primary'; } else { echo 'disabled'; } ?> btn btn-sm" rel="<?php echo $row["id"]; ?>" title="<?php echo html_output($row['filename']); ?>">
+													<a href="javascript:void(0);" class="<?php if ($download_count > 0) { echo 'downloaders btn-primary'; } else { echo 'btn-default disabled'; } ?> btn btn-sm" rel="<?php echo $row["id"]; ?>" title="<?php echo html_output($row['filename']); ?>">
 														<?php echo $download_count; ?> <?php _e('downloads','cftp_admin'); ?>
 													</a>
 												</td>

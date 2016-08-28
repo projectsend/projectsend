@@ -484,7 +484,8 @@ h4 {
 		-webkit-box-shadow:3px 3px 5px #dedede;
 		border-radius:5px;
 		box-shadow:3px 3px 5px #dedede;
-		padding:15px;
+		padding-top:15px;
+		padding-bottom:15px;
 	}
 	
 		.edit_files .file_data .file_data_column {
@@ -500,11 +501,9 @@ h4 {
 }
 
 .file_title {
-	width:96%!important;
 }
 
 .edit_files textarea {
-	width:96%!important;
 	height:70px!important;
 }
 
@@ -516,7 +515,7 @@ h4 {
 }
 
 .edit_files label {
-	margin:10px 0;
+/*	margin:10px 0;*/
 }
 
 .edit_files .ms-optgroup-label {
@@ -544,26 +543,26 @@ h4 {
 	position:relative;
 }
 
-.file_number:after {
-	content: ' ';
-	height: 0;
-	position: absolute;
-	width: 0;
-	border: 10px solid transparent;
-	border-left-color: #0094BB;
-	left: 100%;
-	top: 10px;
-}
-
-.file_number p {
-	padding:10px 15px;
-	margin:0;
-	background:#0094BB !important;
-	text-align:center;
-	font-weight:bold;
-	font-size:60px;
-	color:white;
-}
+	.file_number:after {
+		content: ' ';
+		height: 0;
+		position: absolute;
+		width: 0;
+		border: 10px solid transparent;
+		border-left-color: #0094BB;
+		left: 100%;
+		top: 10px;
+	}
+	
+	.file_number p {
+		padding:10px 15px;
+		margin:0;
+		background:#0094BB !important;
+		text-align:center;
+		font-weight:bold;
+		font-size:60px;
+		color:white;
+	}
 
 .edit_files .on_disc_name {
 	font-size:1.7em;
@@ -808,6 +807,10 @@ optgroup {
 
 
 /* plupload */
+
+.plupload_filelist_footer {
+	height:auto !important;
+}
 
 .plupload_button {
 	width:130px!important;

@@ -486,8 +486,20 @@ h4 {
 		box-shadow:3px 3px 5px #dedede;
 		padding:15px;
 	}
+
+		.edit_files .file_data:hover {
+			border:1px solid #888;
+			-moz-box-shadow:3px 3px 5px #ccc;
+			-webkit-box-shadow:3px 3px 5px #ccc;
+			box-shadow:3px 3px 5px #ccc;
+		}
 	
 		.edit_files .file_data .file_data_column {
+		}
+		
+		.edit_files .file_data h3 {
+			padding-top:0;
+			margin-top:0;
 		}
 
 .file_editor {

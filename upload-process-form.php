@@ -292,24 +292,28 @@ while( $row = $statement->fetch() ) {
 							if ($current_level != 0) {
 						?>
 								<td class="<?php echo (!empty($uploaded['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>">
+
 									<?php
-										$status_hidden = __('Hidden','cftp_admin');
-										$status_visible = __('Visible','cftp_admin');
-										echo (!empty($uploaded['hidden'])) ? $status_hidden : $status_visible;
+										$status_hidden	= __('Hidden','cftp_admin');
+										$status_visible	= __('Visible','cftp_admin');
+										$class			= (!empty($uploaded['hidden'])) ? 'danger' : 'success';
 									?>
+									<span class="label label-<?php echo $class; ?>">
+										<?php echo ($hidden == 1) ? $status_hidden : $status_visible; ?>
+									</span>
 								</td>
 						<?php
 							}
 						?>
 						<td>
-							<a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>" class="btn-primary btn btn-small"><?php _e('Edit file','cftp_admin'); ?></a>
+							<a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>" class="btn-primary btn btn-sm"><?php _e('Edit file','cftp_admin'); ?></a>
 							<?php
 								/*
 								 * Show the "My files" button only to clients
 								 */
 								if ($current_level == 0) {
 							?>
-									<a href="my_files/" class="btn-primary btn btn-small"><?php _e('View my files','cftp_admin'); ?></a>
+									<a href="my_files/" class="btn-primary btn btn-sm"><?php _e('View my files','cftp_admin'); ?></a>
 							<?php
 								}
 							?>
@@ -354,12 +358,12 @@ while( $row = $statement->fetch() ) {
 								 */
 								if ($current_level != 0) {
 							?>
-									<a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>" class="btn-primary btn btn-small"><?php _e('Edit file','cftp_admin'); ?></a>
+									<a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>" class="btn-primary btn btn-sm"><?php _e('Edit file','cftp_admin'); ?></a>
 							<?php
 								}
 								else {
 							?>
-									<a href="my_files/" class="btn-primary btn btn-small"><?php _e('View my files','cftp_admin'); ?></a>
+									<a href="my_files/" class="btn-primary btn btn-sm"><?php _e('View my files','cftp_admin'); ?></a>
 							<?php
 								}
 							?>
@@ -465,7 +469,7 @@ while( $row = $statement->fetch() ) {
 											</div>
 										</div>
 										<div class="col-sm-11">
-											<div class="row">
+											<div class="row edit_files_blocks">
 												<div class="<?php echo ($global_level != 0) ? 'col-sm-4' : 'col-sm-12'; ?>">
 													<div class="file_data">
 														<div class="row">

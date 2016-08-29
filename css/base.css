@@ -484,8 +484,7 @@ h4 {
 		-webkit-box-shadow:3px 3px 5px #dedede;
 		border-radius:5px;
 		box-shadow:3px 3px 5px #dedede;
-		padding-top:15px;
-		padding-bottom:15px;
+		padding:15px;
 	}
 	
 		.edit_files .file_data .file_data_column {
@@ -859,6 +858,10 @@ a.plupload_start {
 
 label input[type="checkbox"] {
     cursor: pointer;
+}
+
+.checkbox label {
+	line-height:20px;
 }
 
 span.label {

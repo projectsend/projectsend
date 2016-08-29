@@ -320,7 +320,7 @@ body, html {
 }
 
 .input[type="radio"], input[type="checkbox"] {
-	margin:0 5px 3px 0!important;
+/*	margin:0 5px 3px 0!important;*/
 }
 
 .form_submit_li {

@@ -593,20 +593,19 @@ textarea, select {
 
 /** Overwrite default bootstrap Main button colors */
 
-.btn {
-}
-
 .btn-wide {
 	padding:4px 20px !important;
 }
 
-.btn-primary,
-.btn-primary:hover,
-.btn-primary:focus {
+.btn-primary {
 	background:#004B92;
-	background:-moz-linear-gradient(center top , #1C6EB5, #004B92);
-	background:-webkit-gradient(linear, left top, left bottom, from(#1C6EB5), to(#004B92));
 }
+
+	.btn-primary:hover,
+	.btn-primary:focus
+	{
+		background:#1069bd;
+	}
 
 
 /** Modal content */

@@ -16,8 +16,8 @@
 				<p><strong><?php _e('System Notice:', 'cftp_admin');?></strong> <?php _e('The database was updated to support this version of the software.', 'cftp_admin'); ?></p>
 			</div>
 			<div class="container-fluid">
-				<div class="row-fluid">
-					<div class="span12">
+				<div class="row">
+					<div class="col-sm-12">
 						<div class="message message_info" id="donations_message">
 								<h3><strong><?php _e('Do you want to support ProjectSend?', 'cftp_admin');?></strong></h3>
 								<p><?php _e('Please remember that this tool is free software. If you find the system useful', 'cftp_admin'); ?>
@@ -46,14 +46,14 @@
 	?>
 					<div id="system_msg" class="update_msg">
 						<div class="container-fluid">
-							<div class="row-fluid">
-								<div class="span9">
+							<div class="row">
+								<div class="col-sm-9">
 									<p><strong><?php _e('Update available!', 'cftp_admin');?></strong> <?php _e('version', 'cftp_admin'); ?> <?php echo VERSION_NEW_NUMBER; ?> <?php _e('has been released.', 'cftp_admin');?></p>
 									<div class="buttons">
 										<a href="<?php echo VERSION_NEW_URL; ?>" class="btn btn-secondary btn-mini" target="_blank">Download</a> <a href="<?php echo VERSION_NEW_CHLOG; ?>" target="_blank" class="btn btn-secondary btn-mini">Changelog</a>
 									</div>
 								</div>
-								<div class="span3">
+								<div class="col-sm-3">
 									<ul>
 										<li id="update_features_<?php echo VERSION_NEW_FEATURES; ?>">
 											<div></div>
@@ -78,8 +78,8 @@
 	if(isset($updates_error_messages) && !empty($updates_error_messages)) {
 ?>
 		<div class="container-fluid">
-			<div class="row-fluid">
-				<div class="span12">
+			<div class="row">
+				<div class="col-sm-12">
 					<?php
 						foreach ($updates_error_messages as $updates_error_msg) {
 							echo system_message('error',$updates_error_msg);

@@ -77,7 +77,7 @@ include('header-unlogged.php');
 
 		<div class="container">
 			<div class="row">
-				<div class="span4 offset4 white-box">
+				<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-4 white-box">
 					<div class="white-box-interior">
 						<?php
 							/**

@@ -44,7 +44,7 @@ require_once(ROOT_DIR.'/includes/core.update.silent.php');
 
 	<title><?php echo $page_title; ?> &raquo; <?php echo THIS_INSTALL_SET_TITLE; ?></title>
 	<link rel="shortcut icon" href="<?php echo BASE_URI; ?>/favicon.ico" />
-	<script type="text/javascript" src="<?php echo BASE_URI; ?>includes/js/jquery.1.12.4.min.js"></script>
+	<script src="<?php echo BASE_URI; ?>includes/js/jquery.1.12.4.min.js"></script>
 
 	<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>assets/bootstrap/css/bootstrap.min.css" />
 
@@ -59,9 +59,8 @@ require_once(ROOT_DIR.'/includes/core.update.silent.php');
 	<link href='<?php echo PROTOCOL; ?>://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
 	<link href='<?php echo PROTOCOL; ?>://fonts.googleapis.com/css?family=Abel' rel='stylesheet' type='text/css'>
 
-	<script type="text/javascript" src="<?php echo BASE_URI; ?>assets/bootstrap/js/bootstrap.min.js"></script>
-
-	<script src="<?php echo BASE_URI; ?>includes/js/jquery.validations.js" type="text/javascript"></script>
+	<script src="<?php echo BASE_URI; ?>assets/bootstrap/js/bootstrap.min.js"></script>
+	<script src="<?php echo BASE_URI; ?>includes/js/jquery.validations.js"></script>
 
 	<script type="text/javascript">
 		$(document).ready(function() {

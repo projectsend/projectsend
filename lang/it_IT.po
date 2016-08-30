@@ -2930,7 +2930,7 @@ msgstr "Quando un utente di sistema carica file"
 
 #. Text in echo
 #: options.php:452
-msgid "When setting up a password for an account, requiere at least:"
+msgid "When setting up a password for an account, require at least:"
 msgstr "Quando crei una password per un account, è richiesto almeno:"
 
 #. Text in function

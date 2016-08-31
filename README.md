@@ -10,9 +10,7 @@ Uploaded files can be assigned to specific clients or clients groups.
 Other features include auto-expiration of upload, notifications, full logging of actions by users and clients, option to allow clients to also upload files, themes, multiple languages...
 
 Main website: [projectsend.org](http://www.projectsend.org)
-
 git: [project page](https://github.com/ignacionelson/ProjectSend)
-
 Old repository (unused): [Google Code](http://code.google.com/p/clients-oriented-ftp)
 
 Feel free to participate!
@@ -61,7 +59,6 @@ Thanks. Arigatō. Danke. Gracias. Grazie. Mahadsanid. Salamat po. Merci. אַ ד
 If you want to translate ProjectSend in your language, join the project on [Transifex](https://www.transifex.com/projects/p/projectsend)
 
 ProjectSend original translators:
-
 - Raúl Elenes (Spanish)
 - Vašík Greif (Czech)
 - Mathieu Noe (French)
@@ -77,7 +74,6 @@ ProjectSend is licensed under [GNU GPL v2](http://www.gnu.org/licenses/old-licen
 ## Scripts used by ProjectSend
 
 Many thanks to the authors of the following scripts:
-
 - [jQuery](http://www.jquery.com/)
 - [Bootstrap](http://getbootstrap.com/)
 - [hashchange](http://benalman.com/projects/jquery-hashchange-plugin/)
@@ -98,7 +94,6 @@ Also, thank you to the following people/communities that helped during developme
 - Diego Carreira Vidal
 - Scott Wright
 - Everyone that commented and gave suggestions on the issues and Facebook pages!
-
 - stackoverflow.com
 - iconfinder.com
 

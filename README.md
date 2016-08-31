@@ -5,23 +5,26 @@
 ## About
 ProjectSend (previously cFTP) is a free, clients-oriented, private file sharing web application.
 
-Clients are created and assigned a username and a password.
+Clients are created and assigned a username and a password.  
 Uploaded files can be assigned to specific clients or clients groups.
+
 Other features include auto-expiration of upload, notifications, full logging of actions by users and clients, option to allow clients to also upload files, themes, multiple languages...
 
-Main website: [projectsend.org](http://www.projectsend.org)
-git: [project page](https://github.com/ignacionelson/ProjectSend)
-Old repository (unused): [Google Code](http://code.google.com/p/clients-oriented-ftp)
+Main website: [projectsend.org](http://www.projectsend.org)  
+git: [project page](https://github.com/ignacionelson/ProjectSend)  
+~~Old repository (unused): [Google Code](http://code.google.com/p/clients-oriented-ftp)~~
 
 Feel free to participate!
 
 ## How to install on your server:
 
 Preparations:
+
 1. Download and unzip the lastest version of ProjectSend to a folder of your choice.
 2. Create a new database on your server. Create/assign a user to it.
 
 When those are steps are completed, follow this instructions:
+
 1. Rename includes/sys.config.sample.php to sys.config.php and set your database info there.
 2. Upload ProjectSend to your selected destination.
 3. Open your browser and go to http://your-projectsend-folder/install
@@ -30,7 +33,7 @@ When those are steps are completed, follow this instructions:
 Congratulations! ProjectSend is now installed and ready for action!
 You may login with your new username and password.
 
-Important Note: for version r608 and later you will need to enable PDO extension from php.ini
+**Important Note:** for version r608 and later you will need to enable PDO extension from php.ini
 
 ```
 extension=php_pdo.dll
@@ -56,13 +59,7 @@ Send your message to contact@projectsend.org or join us on Facebook, on https://
 
 Thanks. Arigatō. Danke. Gracias. Grazie. Mahadsanid. Salamat po. Merci. אַ דאַנק.
 
-If you want to translate ProjectSend in your language, join the project on [Transifex](https://www.transifex.com/projects/p/projectsend)
-
-ProjectSend original translators:
-- Raúl Elenes (Spanish)
-- Vašík Greif (Czech)
-- Mathieu Noe (French)
-- Levin Germann (German)
+If you want to translate ProjectSend in your language or download an existing translation, please join the project on [Transifex](https://www.transifex.com/projects/p/projectsend)
 
 ## License
 ProjectSend is licensed under [GNU GPL v2](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
@@ -96,5 +93,12 @@ Also, thank you to the following people/communities that helped during developme
 - Everyone that commented and gave suggestions on the issues and Facebook pages!
 - stackoverflow.com
 - iconfinder.com
+
+ProjectSend original translators:
+
+- Raúl Elenes (Spanish)
+- Vašík Greif (Czech)
+- Mathieu Noe (French)
+- Levin Germann (German)
 
 I know that there are more people that deserve to be on this list. I will keep adding them as I find their names/websites.

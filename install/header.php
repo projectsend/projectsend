@@ -49,5 +49,3 @@
 			include('../includes/updates.messages.php');
 		?>
 	</header>
-	
-	<div id="main">

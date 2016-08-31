@@ -34,9 +34,10 @@ You may login with your new username and password.
 
 Important Note: for version r608 and later you will need to enable PDO extension from php.ini
 
-`extension=php_pdo.dll
-
-extension=php_pdo_mysql.dll`
+```
+extension=php_pdo.dll
+extension=php_pdo_mysql.dll
+```
 
 and restart the service if your are local.
 

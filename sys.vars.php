@@ -53,7 +53,7 @@ define('UPDATES_FEED_URI','http://projectsend.org/updates/versions.xml');
  *
  * @see sys.config.sample.php
  */
-if(!file_exists(ROOT_DIR.'/includes/sys.config.php')) {
+if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') ) {
 	// the following script returns only after the creation of the configuration file
 	include(ROOT_DIR.'/install/checkconfig.php');
 }

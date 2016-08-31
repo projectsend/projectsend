@@ -12,7 +12,8 @@ Other features include auto-expiration of upload, notifications, full logging of
 Main website: [projectsend.org](http://www.projectsend.org)
 
 git: [project page](https://github.com/ignacionelson/ProjectSend)
-[Old repository](http://code.google.com/p/clients-oriented-ftp)
+
+Old repository (unused): [Google Code](http://code.google.com/p/clients-oriented-ftp)
 
 Feel free to participate!
 
@@ -33,8 +34,9 @@ You may login with your new username and password.
 
 Important Note: for version r608 and later you will need to enable PDO extension from php.ini
 
-extension=php_pdo.dll
-extension=php_pdo_mysql.dll
+`extension=php_pdo.dll
+
+extension=php_pdo_mysql.dll`
 
 and restart the service if your are local.
 

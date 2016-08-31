@@ -1,7 +1,8 @@
 # ProjectSend
 
-<img align="center" src="http://projectsend.org/projectsend-logo.png" alt="ProjectSend logo" width="200"/>
+<img align="center" src="http://projectsend.org/projectsend-logo.png" alt="ProjectSend logo" width="600"/>
 
+## About
 ProjectSend (previously cFTP) is a free, clients-oriented, private file sharing web application.
 
 Clients are created and assigned a username and a password.

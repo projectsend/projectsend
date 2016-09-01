@@ -19,9 +19,9 @@ $count = count($my_files);
 		<title><?php echo $client_info['name'].' | '.$window_title; ?> | <?php echo SYSTEM_NAME; ?></title>
 		<link rel="stylesheet" media="all" type="text/css" href="<?php echo $this_template; ?>main.css" />
 		<link rel="shortcut icon" href="<?php echo BASE_URI; ?>/favicon.ico" />
-		<link href='http://fonts.googleapis.com/css?family=Metrophobic' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Metrophobic' rel='stylesheet' type='text/css'>
 		
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
 		<script type="text/javascript" src="<?php echo $this_template; ?>/js/jquery.masonry.min.js"></script>
 		
 		<script type="text/javascript">

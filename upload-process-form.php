@@ -73,7 +73,6 @@ if(isset($upload_failed_hidden_post) && count($upload_failed_hidden_post) > 0) {
 /** Define the arrays */
 $upload_failed = array();
 $move_failed = array();
-$upload_finish_orphans = array();
 
 /**
  * $empty_fields counts the amount of "name" fields that
@@ -187,9 +186,10 @@ while( $row = $statement->fetch() ) {
 						
 						if (!empty($file['assignments'])) {
 							$add_arguments['assign_to'] = $file['assignments'];
+							$assignations_count	= count($file['assignments']);
 						}
 						else {
-							$upload_finish_orphans[] = $file['original'];
+							$assignations_count	= '0';
 						}
 						
 						/** Uploader is a client */
@@ -220,9 +220,9 @@ while( $row = $statement->fetch() ) {
 						 */
 						$process_file = $this_upload->upload_add_to_database($add_arguments);
 						if($process_file['database'] == true) {
-							$add_arguments['new_file_id'] = $process_file['new_file_id'];
-							$add_arguments['all_users'] = $users;
-							$add_arguments['all_groups'] = $groups;
+							$add_arguments['new_file_id']	= $process_file['new_file_id'];
+							$add_arguments['all_users']		= $users;
+							$add_arguments['all_groups']	= $groups;
 							/**
 							 * 2- Add the assignments to the database
 							 */
@@ -237,10 +237,11 @@ while( $row = $statement->fetch() ) {
 							 * 4- Mark is as correctly uploaded / assigned
 							 */
 							$upload_finish[$n] = array(
-													'file' => $file['file'],
-													'name' => htmlspecialchars($file['name']),
-													'description' => htmlspecialchars($file['description']),
-													'new_file_id' => $process_file['new_file_id']
+													'file'			=> $file['file'],
+													'name'			=> htmlspecialchars($file['name']),
+													'description'	=> htmlspecialchars($file['description']),
+													'new_file_id'	=> $process_file['new_file_id'],
+													'assignations'	=> $assignations_count,
 												);
 							if (!empty($file['hidden'])) {
 								$upload_finish[$n]['hidden'] = $file['hidden'];
@@ -277,6 +278,7 @@ while( $row = $statement->fetch() ) {
 					<?php
 						}
 					?>
+					<th data-hide="phone"><?php _e('Assignations','cftp_admin'); ?></th>
 					<th data-hide="phone" data-sort-ignore="true"><?php _e("Actions",'cftp_admin'); ?></th>
 				</tr>
 			</thead>
@@ -306,62 +308,18 @@ while( $row = $statement->fetch() ) {
 							}
 						?>
 						<td>
+							<?php $class = ($uploaded['assignations'] > 0) ? 'success' : 'danger'; ?>
+							<span class="label label-<?php echo $class; ?>">
+								<?php echo $uploaded['assignations']; ?>
+							</span>
+						</td>
+						<td>
 							<a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>" class="btn-primary btn btn-sm"><?php _e('Edit file','cftp_admin'); ?></a>
 							<?php
 								/*
 								 * Show the "My files" button only to clients
 								 */
 								if ($current_level == 0) {
-							?>
-									<a href="my_files/" class="btn-primary btn btn-sm"><?php _e('View my files','cftp_admin'); ?></a>
-							<?php
-								}
-							?>
-						</td>
-					</tr>
-			<?php
-				}
-			?>
-			</tbody>
-		</table>
-<?php
-	}
-
-	/**
-	 * Generate the table of files that were uploaded but not assigned
-	 * to any client or group on this last POST.
-	 * These files appear on this table only once, so if there is
-	 * another submition of the form, only the new files will be displayed.
-	 */
-	if(!empty($upload_finish_orphans)) {
-?>
-		<h3><?php _e('Unassigned files','cftp_admin'); ?></h3>
-		<p><?php _e('These files have not been assigned to any client or group.','cftp_admin'); ?></p>
-		<table id="orphan_files_tbl" class="footable" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
-			<thead>
-				<tr>
-					<th data-sort-initial="true"><?php _e('File Name','cftp_admin'); ?></th>
-					<th data-hide="phone" data-sort-ignore="true"><?php _e("Actions",'cftp_admin'); ?></th>
-				</tr>
-			</thead>
-			<tbody>
-			<?php
-				foreach($upload_finish_orphans as $uploaded_orphan) {
-			?>
-					<tr>
-						<td><?php echo html_output($uploaded_orphan); ?></td>
-						<td>
-							<?php
-								/*
-								 * Show the different actions buttons depending on the uploader
-								 * account type (user or client).
-								 */
-								if ($current_level != 0) {
-							?>
-									<a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>" class="btn-primary btn btn-sm"><?php _e('Edit file','cftp_admin'); ?></a>
-							<?php
-								}
-								else {
 							?>
 									<a href="my_files/" class="btn-primary btn btn-sm"><?php _e('View my files','cftp_admin'); ?></a>
 							<?php

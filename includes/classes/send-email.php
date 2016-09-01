@@ -264,7 +264,7 @@ class PSend_Email
 		global $email_strings_file_by_user;
 		$this->email_body = $this->email_prepare_body('new_file_by_user');
 		$this->email_body = str_replace(
-									array('%SUBJECT%','%BODY1%','%FILES%','%BODY2%','%BODY3%','%BODY4%','%LINK%'),
+									array('%SUBJECT%','%BODY1%','%FILES%','%BODY2%','%BODY3%','%BODY4%','%URI%'),
 									array(
 										$email_strings_file_by_user['subject'],
 										$email_strings_file_by_user['body'],
@@ -292,7 +292,7 @@ class PSend_Email
 		global $email_strings_file_by_client;
 		$this->email_body = $this->email_prepare_body('new_file_by_client');
 		$this->email_body = str_replace(
-									array('%SUBJECT%','%BODY1%','%FILES%','%BODY2%','%BODY3%','%LINK%'),
+									array('%SUBJECT%','%BODY1%','%FILES%','%BODY2%','%BODY3%','%URI%'),
 									array(
 										$email_strings_file_by_client['subject'],
 										$email_strings_file_by_client['body'],

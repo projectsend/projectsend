@@ -5,7 +5,6 @@
  * @package		ProjectSend
  * @subpackage	Install (config check)
  */
-
 error_reporting(E_ALL);
 
 define( 'IS_INSTALL', true );
@@ -162,7 +161,7 @@ function table_exists($pdo, $table) {
     return $result !== FALSE;
 }
 
-include_once('header.php');
+include_once('../header-unlogged.php');
 ?>
 
 		<div class="whitebox whiteform" id="install_form">

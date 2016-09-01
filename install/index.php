@@ -53,7 +53,7 @@ $page_title_install		= __('Install','cftp_admin');
 $install_no_sitename	= __('Sitename was not completed.','cftp_admin');
 $install_no_baseuri		= __('ProjectSend URI was not completed.','cftp_admin');
 
-include_once('header.php');
+include_once('../header-unlogged.php');
 ?>
 
 	<!-- #main opened on header.php -->

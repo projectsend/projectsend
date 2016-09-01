@@ -237,11 +237,14 @@ while( $row = $statement->fetch() ) {
 							 * 4- Mark is as correctly uploaded / assigned
 							 */
 							$upload_finish[$n] = array(
+													'file_id'		=> $add_arguments['new_file_id'],
 													'file'			=> $file['file'],
 													'name'			=> htmlspecialchars($file['name']),
 													'description'	=> htmlspecialchars($file['description']),
 													'new_file_id'	=> $process_file['new_file_id'],
 													'assignations'	=> $assignations_count,
+													'public'		=> $add_arguments['public'],
+													'public_token'	=> $process_file['public_token'],
 												);
 							if (!empty($file['hidden'])) {
 								$upload_finish[$n]['hidden'] = $file['hidden'];
@@ -275,10 +278,11 @@ while( $row = $statement->fetch() ) {
 						if ($current_level != 0) {
 					?>
 							<th data-hide="phone"><?php _e("Status",'cftp_admin'); ?></th>
+							<th data-hide="phone"><?php _e('Assignations','cftp_admin'); ?></th>
+							<th data-hide="phone"><?php _e('Public','cftp_admin'); ?></th>
 					<?php
 						}
 					?>
-					<th data-hide="phone"><?php _e('Assignations','cftp_admin'); ?></th>
 					<th data-hide="phone" data-sort-ignore="true"><?php _e("Actions",'cftp_admin'); ?></th>
 				</tr>
 			</thead>
@@ -304,15 +308,33 @@ while( $row = $statement->fetch() ) {
 										<?php echo ($hidden == 1) ? $status_hidden : $status_visible; ?>
 									</span>
 								</td>
+								<td>
+									<?php $class = ($uploaded['assignations'] > 0) ? 'success' : 'danger'; ?>
+									<span class="label label-<?php echo $class; ?>">
+										<?php echo $uploaded['assignations']; ?>
+									</span>
+								</td>
+								<td class="col_visibility">
+									<?php
+										if ($uploaded['public'] == '1') {
+									?>
+											<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-id="<?php echo $uploaded['file_id']; ?>" data-token="<?php echo html_output($uploaded['public_token']); ?>" data-placement="top" data-toggle="popover" data-original-title="<?php _e('Public URL','cftp_admin'); ?>">
+									<?php
+										}
+										else {
+									?>
+											<a href="javascript:void(0);" class="btn btn-default btn-sm disabled" rel="" title="">
+									<?php
+										}
+												$status_public	= __('Public','cftp_admin');
+												$status_private	= __('Private','cftp_admin');
+												echo ($uploaded['public'] == 1) ? $status_public : $status_private;
+									?>
+											</a>
+								</td>
 						<?php
 							}
 						?>
-						<td>
-							<?php $class = ($uploaded['assignations'] > 0) ? 'success' : 'danger'; ?>
-							<span class="label label-<?php echo $class; ?>">
-								<?php echo $uploaded['assignations']; ?>
-							</span>
-						</td>
 						<td>
 							<a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>" class="btn-primary btn btn-sm"><?php _e('Edit file','cftp_admin'); ?></a>
 							<?php
@@ -682,6 +704,29 @@ while( $row = $statement->fetch() ) {
 		<?php
 			}
 		?>
+
+		$('.public_link').popover({ 
+			html : true,
+			content: function() {
+				var id		= $(this).data('id');
+				var token	= $(this).data('token');
+				return '<strong><?php _e('Click to select','cftp_admin'); ?></strong><textarea class="input-large public_link_copy" rows="4"><?php echo BASE_URI; ?>download.php?id=' + id + '&token=' + token + '</textarea><small><?php _e('Send this URL to someone to download the file without registering or logging in.','cftp_admin'); ?></small><div class="close-popover"><button type="button" class="btn btn-inverse btn-sm"><?php _e('Close','cftp_admin'); ?></button></div>';
+			}
+		});
+
+		$(".col_visibility").on('click', '.close-popover button', function(e) {
+			var popped = $(this).parents('.col_visibility').find('.public_link');
+			popped.popover('hide');
+		});
+
+		$(".col_visibility").on('click', '.public_link_copy', function(e) {
+			$(this).select();
+			$(this).mouseup(function() {
+				$(this).unbind("mouseup");
+				return false;
+			});
+		});
+
 	});
 </script>
 

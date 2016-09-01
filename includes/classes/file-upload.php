@@ -161,7 +161,8 @@ class PSend_Upload_File
 				$this->file_id = $row["id"];
 				$this->state['new_file_id'] = $this->file_id;
 				if (!empty($row["public_token"])) {
-					$this->public_token	= $row["public_token"];
+					$this->public_token				= $row["public_token"];
+					$this->state['public_token']	= $row["public_token"];
 				}
 				/**
 				 * If a client is editing a file, the public settings should

@@ -18,7 +18,9 @@ require_once(ROOT_DIR.'/sys.vars.php');
 require_once(ROOT_DIR.'/includes/classes/database.php');
 
 /** Load the site options */
-require_once(ROOT_DIR.'/includes/site.options.php');
+if ( !defined( 'IS_MAKE_CONFIG' ) ) {
+	require_once(ROOT_DIR.'/includes/site.options.php');
+}
 
 /** Text strings used on various files */
 require_once(ROOT_DIR.'/includes/vars.php');

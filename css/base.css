@@ -788,6 +788,10 @@ optgroup {
 	overflow:hidden;
 }
 
+.textarea_high {
+	height:200px !important;
+}
+
 /*.options_column label { width:80px; margin-right:10px; }
 
 .options_column input[type="text"],

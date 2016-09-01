@@ -54,30 +54,10 @@ if (in_session_or_cookies($core_update_allowed)) {
 		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
 	
-	<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>css/shared.css" />
-
 	<link href='<?php echo PROTOCOL; ?>://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
 	<link href='<?php echo PROTOCOL; ?>://fonts.googleapis.com/css?family=Abel' rel='stylesheet' type='text/css'>
 
-	<?php
-		/**
-		 * Load a different css file when called from the admin, or
-		 * the default template.
-		 */
-		if (!isset($this_template_css)) {
-			/** Back-end */
-	?>
-			<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>css/base.css" />
-			<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>css/mobile.css" />
-	<?php
-		}
-		else {
-			/** Template */
-	?>
-			<link rel="stylesheet" media="all" type="text/css" href="<?php echo $this_template_css; ?>" />
-	<?php
-		}
-	
+	<?php	
 		if (isset($datepicker)) {
 	?>
 		<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>includes/js/bootstrap-datepicker/css/datepicker.css" />
@@ -113,6 +93,28 @@ if (in_session_or_cookies($core_update_allowed)) {
 		if (isset($plupload)) {
 	?>
 		<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>includes/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css" />
+	<?php
+		}
+	?>
+
+	<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>css/shared.css" />
+
+	<?php
+		/**
+		 * Load a different css file when called from the admin, or
+		 * the default template.
+		 */
+		if (!isset($this_template_css)) {
+			/** Back-end */
+	?>
+			<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>css/base.css" />
+			<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>css/mobile.css" />
+	<?php
+		}
+		else {
+			/** Template */
+	?>
+			<link rel="stylesheet" media="all" type="text/css" href="<?php echo $this_template_css; ?>" />
 	<?php
 		}
 	?>

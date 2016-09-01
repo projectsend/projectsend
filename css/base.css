@@ -1,10 +1,18 @@
-/* ProjectSend backend styles */
+/********************************************************************************************************************************************
+	BACKEND specific styles
+	Not shared with the default template
+********************************************************************************************************************************************/
 
-#wrapper {
+a {
+	color:#0099FF;
+	text-decoration:none;
 }
 
-a { color:#0099FF; text-decoration:none; }
-a:hover { text-decoration:underline; }
+a:hover,
+a:focus
+{
+	text-decoration:underline;
+}
 
 .clear { clear:both; }
 
@@ -13,36 +21,36 @@ h1, h2, h3, h4, h5, h6 {
 	font-family:'Open Sans', Arial, sans-serif;
 }
 
-h1 {
-	color:white;
-	font-size:32px;
-	line-height:32px;
-	margin:15px 0;
-	text-shadow:1px 1px 1px #000;
-}
-
-h2 {
-	color:#333333;
-	font-size:29px;
-	line-height:29px;
-	text-shadow:1px 1px 0 #fff;
-	margin:10px auto 35px;
-	text-align:center;
-}
-
-h3 {
-	font-size:19px;
-	line-height:19px;
-	padding-bottom:6px;
-	border-bottom:1px solid #E5E5E5;
-	margin-bottom:12px;
-}
-
-h4 {
-	font-size:13px;
-	margin-bottom:20px;
-	line-height:18px;
-}
+	h1 {
+		color:white;
+		font-size:32px;
+		line-height:32px;
+		margin:15px 0;
+		text-shadow:1px 1px 1px #000;
+	}
+	
+	h2 {
+		color:#333333;
+		font-size:29px;
+		line-height:29px;
+		text-shadow:1px 1px 0 #fff;
+		margin:10px auto 35px;
+		text-align:center;
+	}
+	
+	h3 {
+		font-size:19px;
+		line-height:19px;
+		padding-bottom:6px;
+		border-bottom:1px solid #E5E5E5;
+		margin-bottom:12px;
+	}
+	
+	h4 {
+		font-size:13px;
+		margin-bottom:20px;
+		line-height:18px;
+	}
 
 #system_msg {
 	padding:10px;
@@ -50,11 +58,21 @@ h4 {
 	border-bottom:1px solid #CCCCCC;
 }
 
-#system_msg p {
-	margin:0;
+	#system_msg p {
+		margin:0;
+	}
+
+.bold {
+	font-weight:bold;
 }
 
-/** Update available message bar */
+#main {
+	padding:30px;
+}
+
+/********************************************************************************************************************************************
+	UPDATE AVAILABLE message bar
+********************************************************************************************************************************************/
 
 .update_msg {
 	padding:5px !important;
@@ -96,6 +114,11 @@ h4 {
 	#update_important_0 div { background-position:-48px -24px !important; }
 	#update_important_1 div { background-position:-48px 0 !important; }
 	
+
+/********************************************************************************************************************************************
+	HEADER
+********************************************************************************************************************************************/
+
 #lonely_logo {
 	text-align:center;
 }
@@ -129,10 +152,6 @@ h4 {
 	width:400px;
 	margin:20px auto 0;
 }
-
-.bold { font-weight:bold; }
-
-#main { padding:30px; }
 
 /*
 	Home
@@ -421,7 +440,9 @@ h4 {
 }
 
 
-/* validation */
+/********************************************************************************************************************************************
+	VALIDATION
+********************************************************************************************************************************************/
 
 .field_error {
 /*
@@ -483,7 +504,9 @@ h4 {
 }
 
 
-/** EDIT FILE INFORMATION ON UPLOAD */
+/********************************************************************************************************************************************
+	Edit file information on UPLOAD
+********************************************************************************************************************************************/
 
 .edit_files {
 }
@@ -720,7 +743,9 @@ h4 {
 	text-align:right;
 }
 
-/* options page */
+/********************************************************************************************************************************************
+	OPTIONS page
+********************************************************************************************************************************************/
 
 .field_note {
 	margin:2px 0 15px 0;
@@ -804,14 +829,6 @@ optgroup {
 	height:200px !important;
 }
 
-/*.options_column label { width:80px; margin-right:10px; }
-
-.options_column input[type="text"],
-.options_column select {
-	width:100px !important;
-}
-*/
-
 	.options_col_left {
 		width:47%;
 		float:left;
@@ -833,31 +850,36 @@ optgroup {
 	
 
 
-/* plupload */
+/********************************************************************************************************************************************
+	Overwrite PLUPLOAD styles
+********************************************************************************************************************************************/
 
 .plupload_filelist_footer {
-	height:auto !important;
+	height:auto;
 }
 
 .plupload_button {
-	width:130px!important;
+	color:white;
+	background:#004B92;
 	margin-right: 4px;
-	padding:5px 0!important;
-	font-size:12px!important;
-	text-decoration: none!important;
+	padding:4px 30px;
+	font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size:14px;
+	line-height:20px;
+	text-decoration: none;
 	text-align:center;
-	color:white!important;
-	background:#407FB6!important;
-
-	background:-moz-linear-gradient(top , #407FB6, #236299)!important;
-	background:-webkit-gradient(linear, left top, left bottom, from(#407FB6), to(#236299))!important;
-	border:1px solid #004380!important;
-	box-shadow:0 1px 0 rgba(255, 255, 255, 0.3) inset, 0 0 0 1px rgba(255, 255, 255, 0.1) inset, 0 1px 0 rgba(255, 255, 255, 0.5)!important;
-	text-shadow:0 -1px 0 #000000!important;
-	-moz-border-radius:5px!important;
-	-webkit-border-radius:5px!important;
-	border-radius:5px!important;
+	border:1px solid #004380;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	border-radius:4px;
 }
+
+	.plupload_button:hover,
+	.plupload_button:focus
+	{
+		color:white;
+		background:#1069bd;
+	}
 
 .plupload_wrapper {
 	-moz-box-shadow:3px 3px 5px #dedede;
@@ -866,11 +888,11 @@ optgroup {
 }
 
 .plupload_container {
-	padding:1px!important;
+	padding:1px;
 }
 
 a.plupload_start {
-	display:none!important;
+	display:none;
 }
 
 .message_uploading {
@@ -878,7 +900,9 @@ a.plupload_start {
 }
 
 
-/* Override some bootstrap rules */
+/********************************************************************************************************************************************
+	Overwrite BOOTSTRAP styles
+********************************************************************************************************************************************/
 
 .form-horizontal .control-label {
     text-align: left;

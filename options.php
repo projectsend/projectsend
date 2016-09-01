@@ -242,7 +242,8 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										<div class="form-group">
 											<div class="col-sm-8 col-sm-offset-4">
 												<label for="use_browser_lang">
-													<input type="checkbox" value="1" name="use_browser_lang" id="use_browser_lang" class="checkbox_options" <?php echo (USE_BROWSER_LANG == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("If available, use the user's browser language instead of the default one",'cftp_admin'); ?>
+													<input type="checkbox" value="1" name="use_browser_lang" id="use_browser_lang" class="checkbox_options" <?php echo (USE_BROWSER_LANG == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Detect user browser language",'cftp_admin'); ?>
+													<p class="field_note"><?php _e("If available, will override the default one from the system configuration file. Affects all users and clients.",'cftp_admin'); ?></p>
 												</label>
 											</div>
 										</div>

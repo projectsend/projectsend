@@ -32,8 +32,8 @@ $count = count($img_files);
 	<title><?php echo $client_info['name'].' | '.$window_title; ?> | <?php echo SYSTEM_NAME; ?></title>
 	<link rel="stylesheet" media="all" type="text/css" href="<?php echo $this_template; ?>main.css" />
 	<link rel="shortcut icon" href="<?php echo BASE_URI; ?>/favicon.ico" />
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
-	<link href='http://fonts.googleapis.com/css?family=Sirin+Stencil' rel='stylesheet' type='text/css'>
+	<script src="<?php echo PROTOCOL; ?>://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
+	<link href='<?php echo PROTOCOL; ?>://fonts.googleapis.com/css?family=Sirin+Stencil' rel='stylesheet' type='text/css'>
 </head>
 
 <body>

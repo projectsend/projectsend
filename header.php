@@ -150,10 +150,6 @@ if (in_session_or_cookies($core_update_allowed)) {
 	
 		<script type="text/javascript">
 			$(document).ready(function() {
-				$('.button').click(function() {
-					$(this).blur();
-				});
-
 				<?php if (isset($footable)) { ?>
 					$("#select_all").click(function(){
 						var status = $(this).prop("checked");

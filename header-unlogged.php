@@ -83,14 +83,6 @@ else {
 
 	<script src="<?php echo $header_vars['base_url']; ?>assets/bootstrap/js/bootstrap.min.js"></script>
 	<script src="<?php echo $header_vars['base_url']; ?>includes/js/jquery.validations.js"></script>
-
-	<script type="text/javascript">
-		$(document).ready(function() {
-			$('.button').click(function() {
-				$(this).blur();
-			});
-		});
-	</script>
 </head>
 
 <body>

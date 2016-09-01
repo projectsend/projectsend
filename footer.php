@@ -16,7 +16,6 @@
 	<script src="<?php echo BASE_URI; ?>includes/js/jquery.psendmodal.js"></script>
 
 	<?php if (isset($datepicker)) { ?>
-		<script src="<?php echo BASE_URI; ?>includes/js/datepicker/bootstrap-datepicker.js"></script>
 		<script src="<?php echo BASE_URI; ?>includes/js/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
 	<?php } ?>
 

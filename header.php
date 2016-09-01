@@ -80,7 +80,6 @@ if (in_session_or_cookies($core_update_allowed)) {
 	
 		if (isset($datepicker)) {
 	?>
-		<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>includes/js/datepicker/datepicker.css" />
 		<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>includes/js/bootstrap-datepicker/css/datepicker.css" />
 	<?php
 		}

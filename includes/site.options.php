@@ -178,6 +178,13 @@ if(!empty($options_values)) {
 	}
 
 	/**
+	 * For versions 645 and up
+	 */	
+	if (isset($options_values['use_browser_lang'])) {
+		define('USE_BROWSER_LANG',$options_values['use_browser_lang']);
+	}
+
+	/**
 	 * Set the default timezone based on the value of the Timezone select box
 	 * of the options page.
 	 */

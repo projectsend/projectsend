@@ -904,6 +904,24 @@ if (in_session_or_cookies($allowed_update)) {
 			$updates_made++;
 		}
 
+
+		/**
+		 * r645 updates
+		 * Added an option to use the browser language instead of
+		 * the one on the config file.
+		 */
+		if ($last_update < 645) {
+			$new_database_values = array(
+											'use_browser_lang'	=> '0',
+										);
+			
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
+				}
+			}
+		}
+
 	}
 }	
 ?>

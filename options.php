@@ -30,6 +30,7 @@ if ($_POST) {
 
 	/** Checkboxes */
 	$checkboxes				= array(
+								'use_browser_lang',
 								'clients_can_register',
 								'clients_auto_approve',
 								'clients_can_upload',
@@ -230,6 +231,19 @@ $allowed_file_types = implode(',',$allowed_file_types);
 												<input type="text" class="form-control" name="timeformat" id="timeformat" value="<?php echo TIMEFORMAT_USE; ?>" />
 												<p class="field_note"><?php _e('For example, d/m/Y h:i:s will result in something like','cftp_admin'); ?> <strong><?php echo date('d/m/Y h:i:s'); ?></strong>.
 												<?php _e('For the full list of available values, visit','cftp_admin'); ?> <a href="http://php.net/manual/en/function.date.php" target="_blank"><?php _e('this page','cftp_admin'); ?></a>.</p>
+											</div>
+										</div>
+
+										<div class="options_divide"></div>
+
+
+										<h3><?php _e('Language','cftp_admin'); ?></h3>
+
+										<div class="form-group">
+											<div class="col-sm-8 col-sm-offset-4">
+												<label for="use_browser_lang">
+													<input type="checkbox" value="1" name="use_browser_lang" id="use_browser_lang" class="checkbox_options" <?php echo (USE_BROWSER_LANG == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("If available, use the user's browser language instead of the default one",'cftp_admin'); ?>
+												</label>
 											</div>
 										</div>
 			

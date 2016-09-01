@@ -14,7 +14,7 @@
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r638');
+define('CURRENT_VERSION', 'r645');
 
 /**
  * Fix for including external files when on HTTPS.
@@ -166,26 +166,6 @@ define('SYSTEM_NAME','ProjectSend');
 
 define('LOGO_FOLDER',ROOT_DIR.'/img/custom/logo/');
 define('LOGO_THUMB_FOLDER',ROOT_DIR.'/img/custom/thumbs/');
-
-/**
- * Current system language
- *
- * @see sys.config.sample.php
- */
-$lang = SITE_LANG;
-define('I18N_DEFAULT_DOMAIN', 'cftp_admin');
-require_once(ROOT_DIR.'/includes/classes/i18n.php');
-I18n::LoadDomain(ROOT_DIR."/lang/{$lang}.mo", 'cftp_admin' );
-
-/** System User Roles names */
-$user_role_9_name = __('System Administrator','cftp_admin');
-$user_role_8_name = __('Account Manager','cftp_admin');
-$user_role_7_name = __('Uploader','cftp_admin');
-$user_role_0_name = __('Client','cftp_admin');
-define('USER_ROLE_LVL_9', $user_role_9_name);
-define('USER_ROLE_LVL_8', $user_role_8_name);
-define('USER_ROLE_LVL_7', $user_role_7_name);
-define('USER_ROLE_LVL_0', $user_role_0_name);
 
 /** phpass */
 define('HASH_COST_LOG2', 8);

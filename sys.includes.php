@@ -22,6 +22,9 @@ if ( !defined( 'IS_MAKE_CONFIG' ) ) {
 	require_once(ROOT_DIR.'/includes/site.options.php');
 }
 
+/** Load the language class and translation file */
+require_once(ROOT_DIR.'/includes/language.php');
+
 /** Text strings used on various files */
 require_once(ROOT_DIR.'/includes/vars.php');
 

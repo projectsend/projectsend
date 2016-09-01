@@ -20,7 +20,7 @@ function clean_form(this_form) {
 function is_complete_all_options(this_form,error) {
 	var error_count_options = 0;
 	$(this_form).find(':input:not(.empty)').each(function() {
-		if ($(this).hasClass('textboxlist-bit-editable-input')) {
+		if ( $(this).attr('id') === 'allowed_file_types_tag' ) {
 			// Exclude every Textboxlist generated input
 		}
 		else {

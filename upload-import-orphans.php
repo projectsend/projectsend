@@ -168,6 +168,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 								<th data-type="numeric" data-hide="phone"><?php _e('File size','cftp_admin'); ?></th>
 								<th data-type="numeric" data-hide="phone"><?php _e('Last modified','cftp_admin'); ?></th>
 								<th data-hide="phone"><?php _e('Reason','cftp_admin'); ?></th>
+								<th><?php _e('Actions','cftp_admin'); ?></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -175,7 +176,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 								foreach ($files_to_add as $add_file) {
 									?>
 										<tr>
-											<td><input type="checkbox" name="add[]" value="<?php echo html_output($add_file['name']); ?>" /></td>
+											<td><input type="checkbox" name="add[]" class="select_file_checkbox" value="<?php echo html_output($add_file['name']); ?>" /></td>
 											<td><?php echo html_output($add_file['name']); ?></td>
 											<td data-value="<?php echo filesize($add_file['path']); ?>"><?php echo html_output(format_file_size(filesize($add_file['path']))); ?></td>
 											<td data-value="<?php echo filemtime($add_file['path']); ?>">
@@ -192,6 +193,11 @@ $work_folder = UPLOADED_FILES_FOLDER;
 															break;
 													}
 												?>
+											</td>
+											<td>
+												<button type="button" name="file_edit" class="btn btn-primary btn-sm btn-edit-file">
+													<?php _e('Edit','cftp_admin'); ?>
+												</a>
 											</td>
 										</tr>
 									<?php
@@ -224,6 +230,16 @@ $work_folder = UPLOADED_FILES_FOLDER;
 								alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
 								return false; 
 							} 
+						});
+						
+						/**
+						 * Only select the current file when clicking an "edit" button
+						 */
+						$('.btn-edit-file').click(function(e) {
+							$('#select_all').prop('checked', false);
+							$('td .select_file_checkbox').prop('checked', false);
+							$(this).parents('tr').find('td .select_file_checkbox').prop('checked', true);
+							$('#upload-continue').click();
 						});
 
 					});

@@ -140,6 +140,19 @@ h4 {
 	Home
 */
 
+.btn-inverse,
+.btn-inverse:focus
+{
+	background:#333;
+	color:white;
+	border-color:#333;
+}
+
+.btn-inverse:hover {
+	color:white;
+	background:#555;
+}
+
 .widget {
 	background:white;
 	display:block;
@@ -177,6 +190,10 @@ h4 {
 }
 
 /* Home log widget */
+
+.activities_log {
+	padding:0;
+}
 
 .activities_log li {
 	padding:7px;
@@ -229,14 +246,19 @@ h4 {
 
 /** home news widget */
 
-.home_news .date {
-	color:#999;
-	font-size:.9em;
+.home_news {
+	margin:0;
+	padding:0;
 }
 
-.home_news h5 {
-	margin:0 0 3px;
-}
+	.home_news .date {
+		color:#999;
+		font-size:.9em;
+	}
+	
+	.home_news h5 {
+		margin:0 0 3px;
+	}
 
 /** graphs */
 
@@ -469,8 +491,20 @@ h4 {
 		box-shadow:3px 3px 5px #dedede;
 		padding:15px;
 	}
+
+		.edit_files .file_data:hover {
+			border:1px solid #888;
+			-moz-box-shadow:3px 3px 5px #ccc;
+			-webkit-box-shadow:3px 3px 5px #ccc;
+			box-shadow:3px 3px 5px #ccc;
+		}
 	
 		.edit_files .file_data .file_data_column {
+		}
+		
+		.edit_files .file_data h3 {
+			padding-top:0;
+			margin-top:0;
 		}
 
 .file_editor {
@@ -483,11 +517,9 @@ h4 {
 }
 
 .file_title {
-	width:96%!important;
 }
 
 .edit_files textarea {
-	width:96%!important;
 	height:70px!important;
 }
 
@@ -499,7 +531,7 @@ h4 {
 }
 
 .edit_files label {
-	margin:10px 0;
+/*	margin:10px 0;*/
 }
 
 .edit_files .ms-optgroup-label {
@@ -527,26 +559,26 @@ h4 {
 	position:relative;
 }
 
-.file_number:after {
-	content: ' ';
-	height: 0;
-	position: absolute;
-	width: 0;
-	border: 10px solid transparent;
-	border-left-color: #0094BB;
-	left: 100%;
-	top: 10px;
-}
-
-.file_number p {
-	padding:10px 15px;
-	margin:0;
-	background:#0094BB !important;
-	text-align:center;
-	font-weight:bold;
-	font-size:60px;
-	color:white;
-}
+	.file_number:after {
+		content: ' ';
+		height: 0;
+		position: absolute;
+		width: 0;
+		border: 10px solid transparent;
+		border-left-color: #0094BB;
+		left: 100%;
+		top: 10px;
+	}
+	
+	.file_number p {
+		padding:10px 15px;
+		margin:0;
+		background:#0094BB !important;
+		text-align:center;
+		font-weight:bold;
+		font-size:60px;
+		color:white;
+	}
 
 .edit_files .on_disc_name {
 	font-size:1.7em;
@@ -684,7 +716,7 @@ h4 {
 /* options page */
 
 .field_note {
-	margin:-3px 0 15px 44%;
+	margin:2px 0 15px 0;
 	font-size:.9em;
 	color:#999;
 	padding-left:6px;
@@ -707,17 +739,18 @@ optgroup {
 }
 
 .options_box {
-	width:550px;
 	padding:20px;
 	margin:20px auto;
 }
 
 .options_box label {
+    /*
 	display:block;
 	float:left;
 	clear:left;
 	width:110px;
 	margin-right:20px;
+    */
 }
 
 .options_box input[type="text"],
@@ -726,11 +759,11 @@ optgroup {
 .options_box input[type="tel"],
 .options_box textarea,
 .options_box select {
-	width:290px;
+/*	width:290px;*/
 }
 
 .options_box textarea {
-	height:250px;
+/*	height:250px;*/
 }
 
 .options_box .form_fields p {
@@ -739,10 +772,6 @@ optgroup {
 
 .options_box .form_fields li {
 	clear:both;
-}
-
-.textboxlist li {
-	clear:none !important;
 }
 
 .options_box .form_fields li.options_nested_note {
@@ -764,22 +793,27 @@ optgroup {
 	overflow:hidden;
 }
 
-.options_column label { width:80px; margin-right:10px; }
+.textarea_high {
+	height:200px !important;
+}
+
+/*.options_column label { width:80px; margin-right:10px; }
 
 .options_column input[type="text"],
 .options_column select {
 	width:100px !important;
 }
+*/
 
-.options_col_left {
-	width:47%;
-	float:left;
-}
-
-.options_col_right {
-	width:47%;
-	float:right;
-}
+	.options_col_left {
+		width:47%;
+		float:left;
+	}
+	
+	.options_col_right {
+		width:47%;
+		float:right;
+	}
 
 .preview_button {
 	margin-top:25px;
@@ -793,6 +827,10 @@ optgroup {
 
 
 /* plupload */
+
+.plupload_filelist_footer {
+	height:auto !important;
+}
 
 .plupload_button {
 	width:130px!important;
@@ -832,44 +870,21 @@ a.plupload_start {
 	display:none;
 }
 
-/* 
-	This stylesheet belongs to TextboxList - Copyright Guillermo Rauch <http://devthought.com> 2009 
-	TextboxList is not priceless for commercial use. See <http://devthought.com/projects/mootools/textboxlist/> 
-	Purchase to remove copyright
-*/
 
-.textboxlist { width: 550px;; cursor: text; font-size:1.3em; }
-.textboxlist-bits {
-	zoom: 1;
-	overflow: hidden;
-	margin: 0;
-	padding: 3px 7px 7px;
-	border: 1px solid #999;
-	*padding-bottom: 3px;
-	border:1px solid #CCCCCC;
-	-moz-border-radius:5px;
-	-webkit-border-radius:5px;
-	border-radius:5px;
+/* Override some bootstrap rules */
+
+.form-horizontal .control-label {
+    text-align: left;
 }
-.textboxlist-bit { list-style-type: none; float: left; display: block; padding: 0; margin: 8px 8px 0 0; cursor: default; }
-.textboxlist-bit-editable { border: 1px solid #fff; }
-.textboxlist-bit-editable-input { border: 0!important; padding: 2px 0; *padding-bottom: 0; height: 14px; }
-.textboxlist-bit-editable-input:focus { outline: 0; }
-.textboxlist-bit-box { position: relative; line-height: 28px; padding: 0 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; border: 1px solid #BCD8F3; background: #E5F1FC; cursor: default; }
-.textboxlist-bit-box-deletable { padding-right: 15px; }
-.textboxlist-bit-box-deletebutton { position: absolute; right: 4px; top: 11px; display: block; width: 7px; height: 7px; font-size: 1px; background: url('../img/close.gif'); }
-.textboxlist-bit-box-deletebutton:hover { border: none; background-position: 7px; text-decoration: none; }
-.textboxlist-bit-box-hover { background: #D7EAFB; cursor:pointer; }
-.textboxlist-bit-box-focus { border-color: #366EA3; background: #3E7CB7; color: #fff; }
-.textboxlist-bit-box-focus .textboxlist-bit-box-deletebutton { background-position: bottom; }
 
-/*  TextboxList Style guidelines 
-	This style doesn't necessarily have to be in a separate file. 
-	It's advisable not to set widths and margins from here, but instead apply it to a particular object or class (#id .textboxlist { width: xxx } or .class .textboxlist { width: xxx })
-	The padding-top + padding-left + height of ".textboxlist-bit-editable-input {}" has to match the line-height of ".textboxlist-bit-box {}" for UI consistency. 
-	The font configuration has to be present in .textboxlist and .textboxlist-bit-editable-input (for IE reasons)
-	The *padding-bottom (notice the *) property of .textboxlist-bits {} has to be equal to the margin-bottom of .textboxlist-bit {} for IE reasons.
-	The padding-top of .textboxlist ul {} has to match the margin-bottom of .textboxlist-bit, and the padding-bottom has to be null.
-	Make sure the border-width of the .textboxlist-bit-editable {} is equal to the border-width of the box (a border that matches the background is advisable for the input)
-	Feel free to edit the borders, fonts, backgrounds and radius.		
-*/
+label input[type="checkbox"] {
+    cursor: pointer;
+}
+
+.checkbox label {
+	line-height:20px;
+}
+
+span.label {
+	font-size:12px;
+}

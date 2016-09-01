@@ -14,7 +14,7 @@
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r611');
+define('CURRENT_VERSION', 'r638');
 
 /**
  * Fix for including external files when on HTTPS.
@@ -53,12 +53,18 @@ define('UPDATES_FEED_URI','http://projectsend.org/updates/versions.xml');
  *
  * @see sys.config.sample.php
  */
-if(!file_exists(ROOT_DIR.'/includes/sys.config.php')) {
+if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') && !defined( 'IS_MAKE_CONFIG' ) ) {
 	// the following script returns only after the creation of the configuration file
-	include(ROOT_DIR.'/install/checkconfig.php');
+	if ( defined('IS_INSTALL') ) {
+		header('Location:make-config.php');
+	}
+	else {
+		header('Location:install/make-config.php');
+	}
 }
-
-include(ROOT_DIR.'/includes/sys.config.php');
+else {
+	include(ROOT_DIR.'/includes/sys.config.php');
+}
 
 /**
  * Check for PDO extensions
@@ -153,7 +159,7 @@ define('CLIENT_UPLOADS_TEMP_FOLDER', ROOT_DIR.'/upload/temp');
  *
  */
 define('SYSTEM_URI','http://www.projectsend.org/');
-define('SYSTEM_URI_LABEL','ProjectSend on Google Code');
+define('SYSTEM_URI_LABEL','ProjectSend on github');
 define('DONATIONS_URL','http://www.projectsend.org/donations/');
 /** Previously cFTP */
 define('SYSTEM_NAME','ProjectSend');

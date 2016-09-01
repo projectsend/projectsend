@@ -114,21 +114,22 @@ function show_form_errors() {
  */
 $(function () {
   $(".password_toggle").each(function (index, input) {
-    var $input = $(input);
-    $(".password_toggler").click(function () {
+    var $input		= $(input);
+    var $container	= $($input).next('.password_toggle');
+    $(".password_toggler button").click(function () {
       var change = "";
 	  var icon = $(this).find('i');
       if ($(this).hasClass('pass_toggler_show')) {
         $(this).removeClass('pass_toggler_show');
         $(this).addClass('pass_toggler_hide');
-        $(icon).removeClass('icon-eye-open');
-        $(icon).addClass('icon-eye-close');
+        $(icon).removeClass('glyphicon glyphicon-eye-open');
+        $(icon).addClass('glyphicon glyphicon-eye-close');
         change = "text";
       } else {
         $(this).removeClass('pass_toggler_hide');
         $(this).addClass('pass_toggler_show');
-        $(icon).removeClass('icon-eye-close');
-        $(icon).addClass('icon-eye-open');
+        $(icon).removeClass('glyphicon glyphicon-eye-close');
+        $(icon).addClass('glyphicon glyphicon-eye-open');
         change = "password";
       }
       var rep = $("<input type='" + change + "' />")
@@ -140,7 +141,7 @@ $(function () {
         .insertBefore($input);
       $input.remove();
       $input = rep;
-    }).insertBefore($input);
+    }).insertBefore($container);
   });
   return false;
 });

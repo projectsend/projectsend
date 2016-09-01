@@ -115,22 +115,23 @@ body, html {
 
 .navbar {
 	margin:0;
+	line-height:normal;
+	min-height:30px;
+	border-radius:0px;
+	-moz-border-radius:0px;
+	-webkit-border-radius:0px;
+	background:#3c404b !important;
 }
-	.navbar-inner {
-		border-radius:0px;
-		-moz-border-radius:0px;
-		-webkit-border-radius:0px;
-		background:#3c404b !important;
-	}
-	
 	.navbar .divider-vertical {
 		margin:0 0px;
 		border-left-color:#3a3e4a;
 		border-right-color:#373b48;
 	}
-	
+
 	.navbar .nav > li > a {
 		color:#f0f0f0;
+		padding-top:8px;
+		padding-bottom:8px;
 	}
 
 	.navbar .badge {
@@ -149,6 +150,7 @@ body, html {
 	.dropdown-menu > li > a:hover,
 	.dropdown-menu > li > a:focus {
 		background:#24272f !important;
+		color:white;
 	}
 
 /** FOOTER */
@@ -239,61 +241,58 @@ body, html {
 
 /* Tabs */
 
-.etabs {
-	text-align:center;
+.nav-tabs > li,
+.nav-pills > li
+{
+    float: none;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
 }
 
-.tab {
-	-webkit-border-top-left-radius: 5px;
-	-webkit-border-top-right-radius: 5px;
-	-moz-border-radius-topleft: 5px;
-	-moz-border-radius-topright: 5px;
-	border-top-left-radius: 5px;
-	border-top-right-radius: 5px;
+.nav-tabs,
+.nav-pills
+{
+    text-align: center;
+    border: none;
+}
 
+.nav-tabs li {
+    border: none;
+    padding-bottom: 3px;
+}
+
+    .nav-tabs li.active {
+        text-decoration:none;
+    }
+
+.nav-tabs li a {
 	background:#ededed;
-	border:solid 1px #ccc;
-	border-bottom:none;
-	display:inline-block;
-	*display:inline;
-	zoom:1;
-}
-
-.tab:first-child {
-	margin:0 0 0 30px;
-}
-
-.tab a {
-	color:#ccc;
-	display:block;
-	font-family:'Open Sans',sans-serif;
+    color:#ccc;
 	font-size:1.3em;
 	line-height:2em;
 	outline:none;
-	padding:0 10px;
-	text-decoration:none;
+    margin: 0;
+    padding: 2px 12px;
+    border:1px solid #ccc !important;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
 }
 
-.tab a:hover {
-	text-decoration:none;
-	color:#666 !important;
-}
+    .nav-tabs li a:hover {
+        color: #666 !important;
+    }
 
-.tab.active {
-	background:url(../img/bg-2-noise.jpg);
-	border-color:#ccc;
-	position:relative;
-	padding-top:1px;
-	top:1px;
-	text-decoration:none;
-}
 
-.tab a.active {
-	color:#333 !important;
-}
+    .nav-tabs li.active a {
+        color: #333 !important;
+        margin: 0;
+        background: white;
+    }
 
 .tab-container .panel-container {
-	border-top:solid #ccc 1px;
+	/*border-top:solid #ccc 1px;*/
 }
 
 .panel-container {
@@ -321,7 +320,7 @@ body, html {
 }
 
 .input[type="radio"], input[type="checkbox"] {
-	margin:0 5px 3px 0!important;
+/*	margin:0 5px 3px 0!important;*/
 }
 
 .form_submit_li {
@@ -330,8 +329,8 @@ body, html {
 }
 
 .required {
-	width:264px !important;
-	padding-right:50px !important;
+/*	width:264px !important;*/
+/*	padding-right:50px !important;*/
 	background:url(../img/req-text.png) no-repeat right -2px;
 }
 
@@ -345,14 +344,10 @@ li .required.password_toggle {
 
 
 .password_toggler {
-	float:right;
-	margin:0 5px 0 0;
-	width:40px;
 }
 
 
 #add_group_form_description {
-	width:308px;
 	height:150px;
 }
 
@@ -381,14 +376,14 @@ textarea, select {
 }
 
 .form_actions_left select, .form_actions_right select {
-	height:28px;
+	height:30px;
 	font-size:13px;
 }
 
 .form_actions_left input[type="text"] {
 	font-size:13px;
-	height:18px;
-	line-height:18px;
+	height:30px;
+	line-height:30px;
 }
 
 .inline_form {
@@ -413,7 +408,7 @@ textarea, select {
 }
 
 .form_actions .form_actions_submit select {
-	width:120px;
+	width:140px;
 }
 
 .form_actions .form_actions_submit select.large_select {
@@ -438,6 +433,7 @@ textarea, select {
 
 
 .form_actions_submit label {
+	/*
 	display:inline-block;
 	width:160px;
 	text-align:left;
@@ -445,6 +441,10 @@ textarea, select {
 	background:url(../img/checkbox.png) no-repeat left 4px;
 	padding:3px 0 3px 27px;
 	font-size:12px;
+	*/
+	font-size:14px;
+	margin-right:15px;
+	font-weight:normal;
 }
 
 .form_actions_submit .boton {
@@ -593,20 +593,19 @@ textarea, select {
 
 /** Overwrite default bootstrap Main button colors */
 
-.btn {
-}
-
 .btn-wide {
 	padding:4px 20px !important;
 }
 
-.btn-primary,
-.btn-primary:hover,
-.btn-primary:focus {
+.btn-primary {
 	background:#004B92;
-	background:-moz-linear-gradient(center top , #1C6EB5, #004B92);
-	background:-webkit-gradient(linear, left top, left bottom, from(#1C6EB5), to(#004B92));
 }
+
+	.btn-primary:hover,
+	.btn-primary:focus
+	{
+		background:#1069bd;
+	}
 
 
 /** Modal content */
@@ -693,6 +692,7 @@ textarea, select {
 	list-style:none;
 	height:230px;
 	overflow:auto;
+	padding:0;
 }
 
 .downloaders_list li {
@@ -762,7 +762,7 @@ p.downloaders_note {
 	background:#E5F1FC;
 	color:#2E8EB4;
 	font-size:12px;
-	width:95%;
+	width:100%;
 	border:1px solid #BCD8F3;
 	margin:7px auto !important;
 }
@@ -813,7 +813,6 @@ p.downloaders_note {
 #view_full {
 	background:url(../img/table_full.jpg) no-repeat;
 }
-
 
 .vertical_middle td, .vertical_middle th {
 	vertical-align:middle!important

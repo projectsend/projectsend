@@ -167,17 +167,21 @@ $(document).ready(function() {
 		<div class="form_actions_left">
 			<div class="form_actions_limit_results">
 				<form action="clients.php" name="clients_search" method="post" class="form-inline">
-					<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box" />
-					<button type="submit" id="btn_proceed_search" class="btn btn-small"><?php _e('Search','cftp_admin'); ?></button>
+					<div class="form-group group_float">
+						<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box form-control" />
+					</div>
+					<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default"><?php _e('Search','cftp_admin'); ?></button>
 				</form>
 
 				<form action="clients.php" name="clients_filters" method="post" class="form-inline">
-					<select name="status" id="status" class="txtfield">
-						<option value="all"><?php _e('All statuses','cftp_admin'); ?></option>
-						<option value="1"><?php _e('Active','cftp_admin'); ?></option>
-						<option value="0"><?php _e('Inactive','cftp_admin'); ?></option>
-					</select>
-					<button type="submit" id="btn_proceed_filter_clients" class="btn btn-small"><?php _e('Filter','cftp_admin'); ?></button>
+					<div class="form-group group_float">
+						<select name="status" id="status" class="txtfield form-control">
+							<option value="all"><?php _e('All statuses','cftp_admin'); ?></option>
+							<option value="1"><?php _e('Active','cftp_admin'); ?></option>
+							<option value="0"><?php _e('Inactive','cftp_admin'); ?></option>
+						</select>
+					</div>
+					<button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default"><?php _e('Filter','cftp_admin'); ?></button>
 				</form>
 			</div>
 		</div>
@@ -186,13 +190,15 @@ $(document).ready(function() {
 			<div class="form_actions_right">
 				<div class="form_actions">
 					<div class="form_actions_submit">
-						<label><?php _e('Selected clients actions','cftp_admin'); ?>:</label>
-						<select name="clients_actions" id="clients_actions" class="txtfield">
-							<option value="activate"><?php _e('Activate','cftp_admin'); ?></option>
-							<option value="deactivate"><?php _e('Deactivate','cftp_admin'); ?></option>
-							<option value="delete"><?php _e('Delete','cftp_admin'); ?></option>
-						</select>
-						<button type="submit" id="do_action" name="proceed" class="btn btn-small"><?php _e('Proceed','cftp_admin'); ?></button>
+						<div class="form-group group_float">
+							<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected clients actions','cftp_admin'); ?>:</label>
+							<select name="clients_actions" id="clients_actions" class="txtfield form-control">
+								<option value="activate"><?php _e('Activate','cftp_admin'); ?></option>
+								<option value="deactivate"><?php _e('Deactivate','cftp_admin'); ?></option>
+								<option value="delete"><?php _e('Delete','cftp_admin'); ?></option>
+							</select>
+						</div>
+						<button type="submit" id="do_action" name="proceed" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
 					</div>
 				</div>
 			</div>
@@ -315,7 +321,7 @@ $(document).ready(function() {
 											$status_hidden	= __('Inactive','cftp_admin');
 											$status_visible	= __('Active','cftp_admin');
 											$label			= ($row['active'] === 0) ? $status_hidden : $status_visible;
-											$class			= ($row['active'] === 0) ? 'important' : 'success';
+											$class			= ($row['active'] === 0) ? 'danger' : 'success';
 										?>
 										<span class="label label-<?php echo $class; ?>">
 											<?php echo $label; ?>
@@ -337,7 +343,7 @@ $(document).ready(function() {
 											}
 											else {
 												$files_link = 'javascript:void(0);';
-												$files_button = 'disabled';
+												$files_button = 'btn-default disabled';
 											}
 
 											if ($count_groups > 0) {
@@ -346,13 +352,13 @@ $(document).ready(function() {
 											}
 											else {
 												$groups_link = 'javascript:void(0);';
-												$groups_button = 'disabled';
+												$groups_button = 'btn-default disabled';
 											}
 										?>
-										<a href="<?php echo $files_link; ?>" class="btn btn-small <?php echo $files_button; ?>"><?php _e('Manage files','cftp_admin'); ?></a>
-										<a href="<?php echo $groups_link; ?>" class="btn btn-small <?php echo $groups_button; ?>"><?php _e('View groups','cftp_admin'); ?></a>
-										<a href="my_files/?client=<?php echo html_output($row["user"]); ?>" class="btn btn-primary btn-small" target="_blank"><?php _e('View as client','cftp_admin'); ?></a>
-										<a href="clients-edit.php?id=<?php echo html_output($row["id"]); ?>" class="btn btn-primary btn-small"><?php _e('Edit','cftp_admin'); ?></a>
+										<a href="<?php echo $files_link; ?>" class="btn btn-sm <?php echo $files_button; ?>"><?php _e('Manage files','cftp_admin'); ?></a>
+										<a href="<?php echo $groups_link; ?>" class="btn btn-sm <?php echo $groups_button; ?>"><?php _e('View groups','cftp_admin'); ?></a>
+										<a href="my_files/?client=<?php echo html_output($row["user"]); ?>" class="btn btn-primary btn-sm" target="_blank"><?php _e('View as client','cftp_admin'); ?></a>
+										<a href="clients-edit.php?id=<?php echo html_output($row["id"]); ?>" class="btn btn-primary btn-sm"><?php _e('Edit','cftp_admin'); ?></a>
 									</td>
 								</tr>
 					<?php
@@ -362,7 +368,11 @@ $(document).ready(function() {
 				</tbody>
 			</table>
 
-			<div class="pagination pagination-centered hide-if-no-paging"></div>
+			<nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
+				<div class="pagination_wrapper text-center">
+					<ul class="pagination hide-if-no-paging"></ul>
+				</div>
+			</nav>
 
 		</form>
 

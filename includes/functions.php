@@ -366,7 +366,7 @@ function system_message($type,$message,$div_id = '')
 			$close = true;
 			break;
 		case 'error':
-			$class = 'error';
+			$class = 'danger';
 			$close = true;
 			break;
 		case 'info':

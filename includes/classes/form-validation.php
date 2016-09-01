@@ -13,7 +13,7 @@
  * Prepare the error message mark up and content
  */
 $validation_errors_title = __('The following errors were found','cftp_admin');
-$before_error = '<div class="alert alert-error alert-block"><a href="#" class="close" data-dismiss="alert">&times;</a><p class="alert-title">'.$validation_errors_title.':</p><ol>';
+$before_error = '<div class="alert alert-danger alert-block"><a href="#" class="close" data-dismiss="alert">&times;</a><p class="alert-title">'.$validation_errors_title.':</p><ol>';
 $after_error = '</ol></div>';
 
 class Validate_Form

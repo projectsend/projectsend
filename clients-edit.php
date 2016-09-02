@@ -129,77 +129,83 @@ include('header.php');
 <div id="main">
 	<h2><?php echo $page_title; ?></h2>
 	
-	<div class="whiteform whitebox">
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
+				<div class="white-box-interior">
 		
-		<?php
-			/**
-			 * If the form was submited with errors, show them here.
-			 */
-			$valid_me->list_errors();
-		?>
-		
-		<?php
-			if (isset($edit_response)) {
-				/**
-				 * Get the process state and show the corresponding ok or error message.
-				 */
-				switch ($edit_response['query']) {
-					case 1:
-						$msg = __('Client edited correctly.','cftp_admin');
-						echo system_message('ok',$msg);
+					<?php
+						/**
+						 * If the form was submited with errors, show them here.
+						 */
+						$valid_me->list_errors();
+					?>
+					
+					<?php
+						if (isset($edit_response)) {
+							/**
+							 * Get the process state and show the corresponding ok or error message.
+							 */
+							switch ($edit_response['query']) {
+								case 1:
+									$msg = __('Client edited correctly.','cftp_admin');
+									echo system_message('ok',$msg);
+			
+									$saved_client = get_client_by_id($client_id);
+									/** Record the action log */
+									$new_log_action = new LogActions();
+									$log_action_args = array(
+															'action' => 14,
+															'owner_id' => $global_id,
+															'affected_account' => $client_id,
+															'affected_account_name' => $saved_client['username'],
+															'get_user_real_name' => true
+														);
+									$new_record_action = $new_log_action->log_action_save($log_action_args);
+								break;
+								case 0:
+									$msg = __('There was an error. Please try again.','cftp_admin');
+									echo system_message('error',$msg);
+								break;
+							}
+						}
+						else {
+						/**
+						 * If not $edit_response is set, it means we are just entering for the first time.
+						 */
+							$direct_access_error = __('This page is not intended to be accessed directly.','cftp_admin');
+							if ($page_status === 0) {
+								$msg = __('No client was selected.','cftp_admin');
+								echo system_message('error',$msg);
+								echo '<p>'.$direct_access_error.'</p>';
+							}
+							else if ($page_status === 2) {
+								$msg = __('There is no client with that ID number.','cftp_admin');
+								echo system_message('error',$msg);
+								echo '<p>'.$direct_access_error.'</p>';
+							}
+							else if ($page_status === 3) {
+								$msg = __("Your account type doesn't allow you to access this feature.",'cftp_admin');
+								echo system_message('error',$msg);
+							}
+							else {
+								/**
+								 * Include the form.
+								 */
+								if ($global_level != 0) {
+									$clients_form_type = 'edit_client';
+								}
+								else {
+									$clients_form_type = 'edit_client_self';
+								}
+								include('clients-form.php');
+							}
+						}
+					?>
 
-						$saved_client = get_client_by_id($client_id);
-						/** Record the action log */
-						$new_log_action = new LogActions();
-						$log_action_args = array(
-												'action' => 14,
-												'owner_id' => $global_id,
-												'affected_account' => $client_id,
-												'affected_account_name' => $saved_client['username'],
-												'get_user_real_name' => true
-											);
-						$new_record_action = $new_log_action->log_action_save($log_action_args);
-					break;
-					case 0:
-						$msg = __('There was an error. Please try again.','cftp_admin');
-						echo system_message('error',$msg);
-					break;
-				}
-			}
-			else {
-			/**
-			 * If not $edit_response is set, it means we are just entering for the first time.
-			 */
-			 	$direct_access_error = __('This page is not intended to be accessed directly.','cftp_admin');
-			 	if ($page_status === 0) {
-					$msg = __('No client was selected.','cftp_admin');
-					echo system_message('error',$msg);
-					echo '<p>'.$direct_access_error.'</p>';
-				}
-				else if ($page_status === 2) {
-					$msg = __('There is no client with that ID number.','cftp_admin');
-					echo system_message('error',$msg);
-					echo '<p>'.$direct_access_error.'</p>';
-				}
-				else if ($page_status === 3) {
-					$msg = __("Your account type doesn't allow you to access this feature.",'cftp_admin');
-					echo system_message('error',$msg);
-				}
-				else {
-					/**
-					 * Include the form.
-					 */
-					if ($global_level != 0) {
-						$clients_form_type = 'edit_client';
-					}
-					else {
-						$clients_form_type = 'edit_client_self';
-					}
-					include('clients-form.php');
-				}
-			}
-		?>
-
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 

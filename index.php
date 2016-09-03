@@ -20,6 +20,17 @@ require_once('sys.includes.php');
 $page_title = __('Log in','cftp_admin');
 
 include('header-unlogged.php');
+
+/**
+ * Google Sign-in
+ */
+$googleClient = new Google_Client();
+$googleClient->setApplicationName(THIS_INSTALL_SET_TITLE);
+$googleClient->setClientSecret(GOOGLE_CLIENT_SECRET);
+$googleClient->setClientId(GOOGLE_CLIENT_ID);
+$googleClient->setRedirectUri(BASE_URI . 'sociallogin/google/callback.php');
+$googleClient->setScopes(array('profile','email'));
+$auth_url = $googleClient->createAuthUrl();
 	
 	/** The form was submitted */
 	if ($_POST) {
@@ -106,7 +117,13 @@ include('header-unlogged.php');
 		}
 	
 	}
-	?>
+
+if(isset($_SESSION['errorstate'])) {
+	$errorstate = $_SESSION['errorstate'];
+	unset($_SESSION['errorstate']);
+}
+
+?>
 
 		<h2><?php echo $page_title; ?></h2>
 		
@@ -175,6 +192,7 @@ include('header-unlogged.php');
 */?>
 								<div class="inside_form_buttons">
 									<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Continue','cftp_admin'); ?></button>
+									<a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="google-login"><img src="<?php echo BASE_URI; ?>img/google/btn_google_signin_light_normal_web.png" alt="Google Signin" /></a>
 								</div>
 							</fieldset>
 						</form>

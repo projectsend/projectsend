@@ -185,6 +185,14 @@ if(!empty($options_values)) {
 	}
 
 	/**
+	 * For Google Login
+	 */
+	if (isset($options_values['google_client_id'])) {
+		define('GOOGLE_CLIENT_ID',$options_values['google_client_id']);
+		define('GOOGLE_CLIENT_SECRET',$options_values['google_client_secret']);
+	}
+
+	/**
 	 * Set the default timezone based on the value of the Timezone select box
 	 * of the options page.
 	 */

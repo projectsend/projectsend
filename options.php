@@ -153,7 +153,6 @@ $allowed_file_types = implode(',',$allowed_file_types);
 					'width'			: '95%',
 					'height'		: 'auto',
 					'defaultText'	: '',
-					'fakeInputClass' : 'empty',
 				});
 
 				$("form").submit(function() {

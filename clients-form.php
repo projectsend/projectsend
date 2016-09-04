@@ -119,7 +119,7 @@ switch ($clients_form_type) {
 					<button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button>
 				</div>
 			</div>
-			<?php password_notes(); ?>
+			<?php echo password_notes(); ?>
 		</div>		
 	</div>
 

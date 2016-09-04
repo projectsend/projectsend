@@ -104,7 +104,7 @@ switch ($user_form_type) {
 				<div class="input-group-btn password_toggler">
 					<button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button>
 				</div>
-				<?php password_notes(); ?>
+				<?php echo password_notes(); ?>
 			</div>
 		</div>
 	</div>

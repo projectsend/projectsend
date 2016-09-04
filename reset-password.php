@@ -328,7 +328,7 @@ include('header-unlogged.php');
 													</div>
 												</div>
 											</div>
-											<?php password_notes(); ?>
+											<?php echo password_notes(); ?>
 											
 											<p><?php _e("Please enter your desired new password. After that, you will be able to log in normally.",'cftp_admin'); ?></p>
 

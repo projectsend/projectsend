@@ -690,6 +690,8 @@ function prevent_direct_access()
  */
 function password_notes()
 {
+	$pass_notes_output = '';
+
 	global $validation_req_upper;
 	global $validation_req_lower;
 	global $validation_req_number;
@@ -722,18 +724,14 @@ function password_notes()
 	}
 	
 	if ( count( $rules_active ) > 0 ) {
-?>
-		<p class="field_note"><?php _e('The password must contain, at least:','cftp_admin'); ?></strong><br />
-<?php
+		$pass_notes_output = '<p class="field_note">' . __('The password must contain, at least:','cftp_admin') . '</strong><br />';
 			foreach ( $rules_active as $rule => $text ) {
-?>
-				- <?php echo $text; ?><br />
-<?php
+				$pass_notes_output .= '- ' . $text . '<br>';
 			}
-?>
-		</p>
-<?php
+		$pass_notes_output .= '</p>';
 	}
+	
+	return $pass_notes_output;
 }
 
 

@@ -61,8 +61,4 @@ require_once(ROOT_DIR.'/includes/classes/actions-users.php');
 require_once(ROOT_DIR.'/includes/classes/file-upload.php');
 require_once(ROOT_DIR.'/includes/classes/form-validation.php');
 require_once(ROOT_DIR.'/includes/classes/send-email.php');
-
-/**
- * Google Login
- */
-require_once(ROOT_DIR.'/includes/google-api-php-client/vendor/autoload.php');
+?>

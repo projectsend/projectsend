@@ -20,17 +20,6 @@ require_once('sys.includes.php');
 $page_title = __('Log in','cftp_admin');
 
 include('header-unlogged.php');
-
-/**
- * Google Sign-in
- */
-$googleClient = new Google_Client();
-$googleClient->setApplicationName(THIS_INSTALL_SET_TITLE);
-$googleClient->setClientSecret(GOOGLE_CLIENT_SECRET);
-$googleClient->setClientId(GOOGLE_CLIENT_ID);
-$googleClient->setRedirectUri(BASE_URI . 'sociallogin/google/callback.php');
-$googleClient->setScopes(array('profile','email'));
-$auth_url = $googleClient->createAuthUrl();
 	
 	/** The form was submitted */
 	if ($_POST) {
@@ -117,13 +106,7 @@ $auth_url = $googleClient->createAuthUrl();
 		}
 	
 	}
-
-if(isset($_SESSION['errorstate'])) {
-	$errorstate = $_SESSION['errorstate'];
-	unset($_SESSION['errorstate']);
-}
-
-?>
+	?>
 
 		<h2><?php echo $page_title; ?></h2>
 		
@@ -152,11 +135,6 @@ if(isset($_SESSION['errorstate'])) {
 											$login_err_message .= ' '.__("If you just registered, please wait until a system administrator approves your account.",'cftp_admin');
 										}
 										break;
-									case 'no_self_registration':
-										$login_err_message = __('Client self registration is not allowed. If you need an account, please contact a system administrator.','cftp_admin');
-										break;
-									case 'no_account':
-										$login_err_message = __('Sign-in with Google cannot be used to create new accounts at this time.','cftp_admin');
 								}
 				
 								echo system_message('error',$login_err_message,'login_error');
@@ -176,12 +154,6 @@ if(isset($_SESSION['errorstate'])) {
 								});
 							});
 						</script>
-
-						<div class="social-login">
-							<?php if(GOOGLE_SIGNIN_ENABLED == '1'): ?>
-								<a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="google-login"><img src="<?php echo BASE_URI; ?>img/google/btn_google_signin_light_normal_web.png" alt="Google Signin" /></a>
-							<?php endif; ?>
-						</div>
 					
 						<form action="index.php" method="post" name="login_admin" role="form">
 							<fieldset>

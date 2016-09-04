@@ -5,15 +5,14 @@
 	 *
 	 * @package ProjectSend
 	 */
-	default_footer_info();
-	
-	//echo $dbh->GetCount(); // Print the total count of queries made by PDO
-
+		default_footer_info();
+		//echo $dbh->GetCount(); // Print the total count of queries made by PDO
 	?>
 
 	<script src="<?php echo BASE_URI; ?>assets/bootstrap/js/bootstrap.min.js"></script>
 	<script src="<?php echo BASE_URI; ?>includes/js/jquery.validations.js"></script>
 	<script src="<?php echo BASE_URI; ?>includes/js/jquery.psendmodal.js"></script>
+	<script src="<?php echo BASE_URI; ?>includes/js/jen/jen.js"></script>
 	<script src="<?php echo BASE_URI; ?>includes/js/main.js"></script>
 
 	<?php if (isset($datepicker)) { ?>

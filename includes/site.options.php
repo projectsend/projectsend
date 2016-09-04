@@ -190,6 +190,7 @@ if(!empty($options_values)) {
 	if (isset($options_values['google_client_id'])) {
 		define('GOOGLE_CLIENT_ID',$options_values['google_client_id']);
 		define('GOOGLE_CLIENT_SECRET',$options_values['google_client_secret']);
+		define('GOOGLE_SIGNIN_ENABLED', $options_values['google_signin_enabled']);
 	}
 
 	/**

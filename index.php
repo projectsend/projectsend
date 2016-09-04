@@ -192,7 +192,9 @@ if(isset($_SESSION['errorstate'])) {
 */?>
 								<div class="inside_form_buttons">
 									<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Continue','cftp_admin'); ?></button>
-									<a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="google-login"><img src="<?php echo BASE_URI; ?>img/google/btn_google_signin_light_normal_web.png" alt="Google Signin" /></a>
+									<?php if(GOOGLE_SIGNIN_ENABLED == '1'): ?>
+										<a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="google-login"><img src="<?php echo BASE_URI; ?>img/google/btn_google_signin_light_normal_web.png" alt="Google Signin" /></a>
+									<?php endif; ?>
 								</div>
 							</fieldset>
 						</form>

@@ -152,6 +152,11 @@ if(isset($_SESSION['errorstate'])) {
 											$login_err_message .= ' '.__("If you just registered, please wait until a system administrator approves your account.",'cftp_admin');
 										}
 										break;
+									case 'no_self_registration':
+										$login_err_message = __('Client self registration is not allowed. If you need an account, please contact a system administrator.','cftp_admin');
+										break;
+									case 'no_account':
+										$login_err_message = __('Sign-in with Google cannot be used to create new accounts at this time.','cftp_admin');
 								}
 				
 								echo system_message('error',$login_err_message,'login_error');
@@ -171,6 +176,12 @@ if(isset($_SESSION['errorstate'])) {
 								});
 							});
 						</script>
+
+						<div class="social-login">
+							<?php if(GOOGLE_SIGNIN_ENABLED == '1'): ?>
+								<a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="google-login"><img src="<?php echo BASE_URI; ?>img/google/btn_google_signin_light_normal_web.png" alt="Google Signin" /></a>
+							<?php endif; ?>
+						</div>
 					
 						<form action="index.php" method="post" name="login_admin" role="form">
 							<fieldset>
@@ -192,9 +203,6 @@ if(isset($_SESSION['errorstate'])) {
 */?>
 								<div class="inside_form_buttons">
 									<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Continue','cftp_admin'); ?></button>
-									<?php if(GOOGLE_SIGNIN_ENABLED == '1'): ?>
-										<a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="google-login"><img src="<?php echo BASE_URI; ?>img/google/btn_google_signin_light_normal_web.png" alt="Google Signin" /></a>
-									<?php endif; ?>
 								</div>
 							</fieldset>
 						</form>

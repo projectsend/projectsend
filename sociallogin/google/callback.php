@@ -75,7 +75,12 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']['id_
       }
     }
     else {
-      $_SESSION['errorstate'] = 'invalid_credentials';
+      $_SESSION['errorstate'] = 'no_account'; //TODO: create new account
+      if(CLIENTS_CAN_REGISTER == '0') {
+        $_SESSION['errorstate'] = 'no_self_registration';
+      }
+      header("location:" . BASE_URI);
+      return;
     }
   }
   $_SESSION['errorstate'] = 'invalid_credentials';

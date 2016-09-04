@@ -77,7 +77,6 @@ else {
 
 	<link rel="stylesheet" media="all" type="text/css" href="<?php echo $header_vars['base_url']; ?>css/base.css" />
 	<link rel="stylesheet" media="all" type="text/css" href="<?php echo $header_vars['base_url']; ?>css/shared.css" />
-	<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>css/social-login.css" />
 	
 	<link href='<?php echo PROTOCOL; ?>://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
 	<link href='<?php echo PROTOCOL; ?>://fonts.googleapis.com/css?family=Abel' rel='stylesheet' type='text/css'>

@@ -453,12 +453,11 @@ h1, h2, h3, h4, h5, h6 {
 	border:1px solid #B94A48 !important;
 }
 
-.field_error_msg {
-	margin:10px 0 15px 40%;
+.field_error_msg ul {
 	font-size:.95em;
 	color:#B94A48;
 	background:#F2DEDE;
-	padding:8px;
+	padding:10px !important;
 	border:1px solid #EED3D7;
 	position:relative;
 	-webkit-border-radius: 3px;
@@ -483,7 +482,8 @@ h1, h2, h3, h4, h5, h6 {
 
 
 .field_error_msg ul {
-	margin:0!important;
+	margin:0;
+	padding:0;
 }
 
 .field_error_msg ul li {

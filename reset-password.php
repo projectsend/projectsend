@@ -301,8 +301,15 @@ include('header-unlogged.php');
 								case 'enter_new_password':
 						?>
 									<script type="text/javascript">
+										/**
+										 * Quick hack to ignore the col-sm-* classes
+										 * when adding the errors to the form
+										 */
+										var ignore_columns = true;
+
 										$(document).ready(function() {
 											$("form").submit(function() {
+
 												clean_form(this);
 									
 												is_complete(this.reset_password_new,'<?php echo $validation_no_pass; ?>');
@@ -327,6 +334,7 @@ include('header-unlogged.php');
 														<button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button>
 													</div>
 												</div>
+												<button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="reset_password_new" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate','cftp_admin'); ?></button>
 											</div>
 											<?php echo password_notes(); ?>
 											

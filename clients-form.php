@@ -59,6 +59,7 @@
 $name_placeholder = __("Will be visible on the client's file list",'cftp_admin');
 
 switch ($clients_form_type) {
+	/** User is creating a new client */
 	case 'new_client':
 		$submit_value = __('Add client','cftp_admin');
 		$disable_user = false;
@@ -67,6 +68,7 @@ switch ($clients_form_type) {
 		$info_box = true;
 		$extra_fields = true;
 		break;
+	/** User is editing an existing client */
 	case 'edit_client':
 		$submit_value = __('Save client','cftp_admin');
 		$disable_user = true;
@@ -75,6 +77,7 @@ switch ($clients_form_type) {
 		$info_box = false;
 		$extra_fields = true;
 		break;
+	/** A client is creating a new account for himself */
 	case 'new_client_self':
 		$submit_value = __('Register account','cftp_admin');
 		$disable_user = false;
@@ -84,6 +87,7 @@ switch ($clients_form_type) {
 		$extra_fields = false;
 		$name_placeholder = __("Your full name",'cftp_admin');
 		break;
+	/** A client is editing his profile */
 	case 'edit_client_self':
 		$submit_value = __('Update account','cftp_admin');
 		$disable_user = true;
@@ -119,6 +123,7 @@ switch ($clients_form_type) {
 					<button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button>
 				</div>
 			</div>
+			<button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="add_client_form_pass" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate','cftp_admin'); ?></button>
 			<?php echo password_notes(); ?>
 		</div>		
 	</div>

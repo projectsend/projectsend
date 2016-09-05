@@ -334,10 +334,12 @@ li .required.password_toggle {
 	width:214px !important;
 }
 
-
 .password_toggler {
 }
 
+.btn_generate_password {
+	margin-top:5px;
+}
 
 #add_group_form_description {
 	height:150px;

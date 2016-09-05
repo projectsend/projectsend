@@ -129,6 +129,8 @@ define('MAX_USER_CHARS', 60);
 define('MIN_PASS_CHARS', 5);
 define('MAX_PASS_CHARS', 60);
 
+define('MIN_GENERATE_PASS_CHARS', 10);
+define('MAX_GENERATE_PASS_CHARS', 20);
 /*
  * Cookie expiration time (in seconds).
  * Set by default to 30 days (60*60*24*30).

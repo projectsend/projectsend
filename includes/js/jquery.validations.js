@@ -1,5 +1,6 @@
 var error_count = 0;
 var error_count_options = 0;
+var ignore_columns;
 
 $(document).ready(function() {
 	$('input:first').focus();
@@ -11,7 +12,7 @@ function clean_form(this_form) {
 			$(this).removeClass('field_error');
 		}
 	});
-	$(this_form).find('.field_error_msg').each(function() {
+	$(this_form).find('.validation_error_group').each(function() {
 		$(this).remove();
 	});
 }
@@ -42,7 +43,15 @@ function add_error_to_field(field, error) {
 	this_field_msg_name = this_field_name.replace(/\[/g,'_');
 	this_field_msg_name = this_field_msg_name.replace(/\]/g,'_');
 	if ($('#error_for_'+this_field_name).length == 0) {
-		$(field).after('<div class="field_error_msg" id="error_for_'+this_field_msg_name+'"><ul></ul></div>');
+		var location = $(field).parents('.form-group');
+
+		var classes = 'field_error_msg'; 
+
+		if ( ignore_columns == null ) {
+			classes = classes + ' col-sm-8 col-sm-offset-4';
+		}
+
+		$(location).after('<div class="form-group validation_error_group"><div class="' + classes + '" id="error_for_'+this_field_msg_name+'"><ul></ul></div></div>');
 	}
 	$('#error_for_'+this_field_msg_name+' ul').append('<li>'+error+'</li>');
 }

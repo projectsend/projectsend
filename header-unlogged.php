@@ -83,6 +83,9 @@ else {
 
 	<script src="<?php echo $header_vars['base_url']; ?>assets/bootstrap/js/bootstrap.min.js"></script>
 	<script src="<?php echo $header_vars['base_url']; ?>includes/js/jquery.validations.js"></script>
+
+	<script src="<?php echo $header_vars['base_url']; ?>includes/js/jen/jen.js"></script>
+	<script src="<?php echo $header_vars['base_url']; ?>includes/js/main.js"></script>
 </head>
 
 <body>

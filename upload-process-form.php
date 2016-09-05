@@ -15,9 +15,11 @@
  * @package ProjectSend
  * @subpackage Upload
  */
-$multiselect	= 1;
-$footable		= 1;
-$datepicker		= 1;
+$load_scripts	= array(
+						'datepicker',
+						'footable',
+						'chosen',
+					); 
 
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');

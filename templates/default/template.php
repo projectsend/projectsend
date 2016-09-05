@@ -9,8 +9,11 @@ include_once(ROOT_DIR.'/templates/common.php'); // include the required function
 
 $window_title = __('File downloads','cftp_template');
 
-$footable = 1;
-include_once(ROOT_DIR.'/header.php'); // include the required functions for every template
+$load_scripts	= array(
+						'footable',
+					); 
+
+include_once(ROOT_DIR.'/header.php');
 
 $count = count($my_files);
 ?>

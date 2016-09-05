@@ -6,7 +6,10 @@
  * @subpackage	Groups
  *
  */
-$footable = 1;
+$load_scripts	= array(
+						'footable',
+					); 
+
 $allowed_levels = array(9,8);
 require_once('sys.includes.php');
 

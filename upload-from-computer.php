@@ -9,7 +9,10 @@
  * @package ProjectSend
  * @subpackage Upload
  */
-$plupload = 1;
+$load_scripts	= array(
+						'plupload',
+					); 
+
 require_once('sys.includes.php');
 
 $active_nav = 'files';

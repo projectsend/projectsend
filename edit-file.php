@@ -5,9 +5,10 @@
  *
  * @package ProjectSend
  */
- 
-$multiselect	= 1;
-$datepicker		= 1;
+$load_scripts	= array(
+						'datepicker',
+						'chosen',
+					); 
 
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');

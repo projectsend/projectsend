@@ -54,68 +54,96 @@ if (in_session_or_cookies($core_update_allowed)) {
 		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
 	
-	<link href='<?php echo PROTOCOL; ?>://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
-	<link href='<?php echo PROTOCOL; ?>://fonts.googleapis.com/css?family=Abel' rel='stylesheet' type='text/css'>
-
-	<?php	
-		if (isset($datepicker)) {
-	?>
-		<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>includes/js/bootstrap-datepicker/css/datepicker.css" />
 	<?php
+		/**
+		 * Generates the list of CSS and JS files to load
+		 * base on the $load_scripts array defined on each
+		 * page.
+		 */
+		$load_css_files			= array();
+		$load_js_files			= array();
+		$load_compat_js_files	= array();
+
+		/** JS */
+		$load_js_files[]	= BASE_URI . 'assets/bootstrap/js/bootstrap.min.js';
+		$load_js_files[]	= BASE_URI . 'includes/js/jquery.validations.js';
+		$load_js_files[]	= BASE_URI . 'includes/js/jquery.psendmodal.js';
+		$load_js_files[]	= BASE_URI . 'includes/js/jen/jen.js';
+		$load_js_files[]	= BASE_URI . 'includes/js/main.js';
+
+		/** CSS */
+
+		/** Fonts*/
+		$load_css_files[]	= PROTOCOL . '://fonts.googleapis.com/css?family=Open+Sans:400,700,300';
+		$load_css_files[]	= PROTOCOL . '://fonts.googleapis.com/css?family=Abel';
+
+		if ( !empty( $load_scripts ) ) {
+			foreach ( $load_scripts as $script ) {
+				switch ( $script ) {
+					case 'datepicker':
+						$load_css_files[]		= BASE_URI . 'includes/js/bootstrap-datepicker/css/datepicker.css';
+						$load_js_files[]		= BASE_URI . 'includes/js/bootstrap-datepicker/js/bootstrap-datepicker.js';
+						break;
+					case 'spinedit':
+						$load_css_files[]		= BASE_URI . 'includes/js/bootstrap-spinedit/bootstrap-spinedit.css';
+						$load_js_files[]		= BASE_URI . 'includes/js/bootstrap-spinedit/bootstrap-spinedit.js';
+						break;
+					case 'footable':
+						$load_css_files[]		= BASE_URI . 'includes/js/footable/css/footable.core.css';
+						$load_css_files[]		= BASE_URI . 'includes/js/footable/css/footable.projectsend.css';
+						$load_js_files[]		= BASE_URI . 'includes/js/footable/footable.all.min.js';
+						break;
+					case 'jquery_tags_input':
+						$load_css_files[]		= BASE_URI . 'includes/js/jquery-tags-input/jquery.tagsinput.css';
+						$load_js_files[]		= BASE_URI . 'includes/js/jquery-tags-input/jquery.tagsinput.min.js';
+						break;
+					case 'chosen':
+						$load_css_files[]		= BASE_URI . 'includes/js/chosen/chosen.min.css';
+						$load_css_files[]		= BASE_URI . 'includes/js/chosen/chosen.bootstrap.css';
+						$load_js_files[]		= BASE_URI . 'includes/js/chosen/chosen.jquery.min.js';
+						break;
+					case 'plupload':
+						$load_css_files[]		= BASE_URI . 'includes/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css';
+						$load_js_files[]		= BASE_URI . 'includes/js/browserplus-min.js';
+						$load_js_files[]		= BASE_URI . 'includes/plupload/js/plupload.full.js';
+						$load_js_files[]		= BASE_URI . 'includes/plupload/js/jquery.plupload.queue/jquery.plupload.queue.js';
+						break;
+					case 'flot':
+						$load_js_files[]		= BASE_URI . 'includes/flot/jquery.flot.min.js';
+						$load_js_files[]		= BASE_URI . 'includes/flot/jquery.flot.resize.min.js';
+						$load_js_files[]		= BASE_URI . 'includes/flot/jquery.flot.time.min.js';
+						$load_compat_js_files[]	= array(
+														'file'	=> BASE_URI . 'includes/flot/excanvas.js',
+														'cond'	=> 'lt IE 9',
+													);
+						break;
+				}
+			}
 		}
+
+		/** Add ProjectSend's styles */
+		$load_css_files[]	= BASE_URI . 'css/shared.css';
 		
-		if (isset($spinedit)) {
-	?>
-		<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>includes/js/bootstrap-spinedit/bootstrap-spinedit.css" />
-	<?php
-		}
-		
-		if (isset($footable)) {
-	?>
-		<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>includes/js/footable/css/footable.core.css" />
-		<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>includes/js/footable/css/footable.projectsend.css" />
-	<?php
-		}
-
-		if (isset($jquery_tags_input)) {
-	?>
-		<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>includes/js/jquery-tags-input/jquery.tagsinput.css" />
-	<?php
-		}
-
-		if (isset($multiselect)) {
-	?>
-		<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>includes/js/chosen/chosen.min.css" />
-		<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>includes/js/chosen/chosen.bootstrap.css" />
-	<?php
-		}
-
-		if (isset($plupload)) {
-	?>
-		<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>includes/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css" />
-	<?php
-		}
-	?>
-
-	<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>css/shared.css" />
-
-	<?php
 		/**
 		 * Load a different css file when called from the admin, or
 		 * the default template.
 		 */
-		if (!isset($this_template_css)) {
+		if ( !isset( $this_template_css ) ) {
 			/** Back-end */
-	?>
-			<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>css/base.css" />
-			<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>css/mobile.css" />
-	<?php
+			$load_css_files[]	= BASE_URI . 'css/base.css';
+			$load_css_files[]	= BASE_URI . 'css/mobile.css';
 		}
 		else {
 			/** Template */
+			$load_css_files[]	= $this_template_css;
+		}
+		
+		if ( !empty( $load_css_files ) ) {
+			foreach ( $load_css_files as $file ) {
 	?>
-			<link rel="stylesheet" media="all" type="text/css" href="<?php echo $this_template_css; ?>" />
+				<link rel="stylesheet" media="all" type="text/css" href="<?php echo $file; ?>" />
 	<?php
+			}
 		}
 	?>
 </head>
@@ -151,16 +179,20 @@ if (in_session_or_cookies($core_update_allowed)) {
 	
 		<script type="text/javascript">
 			$(document).ready(function() {
-				<?php if (isset($footable)) { ?>
-					$("#select_all").click(function(){
-						var status = $(this).prop("checked");
-						/** Uncheck all first in case you used pagination */
-						$("tr td input[type=checkbox]").prop("checked",false);
-						$("tr:visible td input[type=checkbox]").prop("checked",status);
-					});
-
-					$('.footable').footable().find('> tbody > tr:not(.footable-row-detail):nth-child(even)').addClass('odd');
-				<?php } ?>
+				<?php
+					if ( !empty( $load_scripts ) && in_array( 'footable', $load_scripts ) ) {
+				?>
+						$("#select_all").click(function(){
+							var status = $(this).prop("checked");
+							/** Uncheck all first in case you used pagination */
+							$("tr td input[type=checkbox]").prop("checked",false);
+							$("tr:visible td input[type=checkbox]").prop("checked",status);
+						});
+	
+						$('.footable').footable().find('> tbody > tr:not(.footable-row-detail):nth-child(even)').addClass('odd');
+				<?php
+					}
+				?>
 			});
 
 			var dataExtraction = function(node) {

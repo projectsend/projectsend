@@ -5,8 +5,11 @@
  * @package ProjectSend
  * @subpackage Options
  */
-$spinedit	= 1;
-$jquery_tags_input = 1;
+$load_scripts	= array(
+						'jquery_tags_input',
+						'spinedit',
+					); 
+
 $allowed_levels = array(9);
 require_once('sys.includes.php');
 $page_title = __('System options','cftp_admin');

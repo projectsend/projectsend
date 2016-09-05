@@ -6,7 +6,10 @@
  * @subpackage	Groups
  *
  */
-$multiselect = 1;
+$load_scripts	= array(
+						'chosen',
+					); 
+
 $allowed_levels = array(9,8);
 require_once('sys.includes.php');
 

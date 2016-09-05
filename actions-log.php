@@ -6,7 +6,10 @@
  * @subpackage	Log
  *
  */
-$footable = 1;
+$load_scripts	= array(
+						'footable',
+					); 
+
 $allowed_levels = array(9);
 require_once('sys.includes.php');
 $page_title = __('Recent activities log','cftp_admin');;

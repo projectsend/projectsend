@@ -5,12 +5,16 @@
  * @package		ProjectSend
  *
  */
+$load_scripts	= array(
+						'flot',
+					); 
+
 $allowed_levels = array(9,8,7);
 require_once('sys.includes.php');
 $page_title = __('Welcome to ProjectSend', 'cftp_admin');
 
 $active_nav = 'dashboard';
-$flot = 1;
+
 include('header.php');
 
 define('CAN_INCLUDE_FILES', true);

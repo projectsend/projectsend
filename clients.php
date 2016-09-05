@@ -206,10 +206,6 @@ $(document).ready(function() {
 
 			<div class="form_actions_count">
 				<p class="form_count_total"><?php _e('Showing','cftp_admin'); ?>: <span><?php echo html_output($count); ?> <?php _e('clients','cftp_admin'); ?></span></p>
-				<ul id="table_view_modes">
-					<li><a href="#" id="view_reduced" class="active_view_button"><?php _e('View reduced table','cftp_admin'); ?></a></li><li>
-						<a href="#" id="view_full"><?php _e('View full table','cftp_admin'); ?></a></li>
-				</ul>
 			</div>
 
 			<div class="clear"></div>

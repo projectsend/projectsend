@@ -1,6 +1,6 @@
 /********************************************************************************************************************************************
-	BACKEND specific styles
-	Not shared with the default template
+	BACKEND specific styles 
+	Not shared with the DEFAULT TEMPLATE
 ********************************************************************************************************************************************/
 
 a {
@@ -14,7 +14,9 @@ a:focus
 	text-decoration:underline;
 }
 
-.clear { clear:both; }
+.clear {
+	clear:both;
+}
 
 h1, h2, h3, h4, h5, h6 {
 	font-weight:normal !important;
@@ -61,10 +63,6 @@ h1, h2, h3, h4, h5, h6 {
 	#system_msg p {
 		margin:0;
 	}
-
-.bold {
-	font-weight:bold;
-}
 
 #main {
 	padding:30px;
@@ -153,22 +151,9 @@ h1, h2, h3, h4, h5, h6 {
 	margin:20px auto 0;
 }
 
-/*
-	Home
-*/
-
-.btn-inverse,
-.btn-inverse:focus
-{
-	background:#333;
-	color:white;
-	border-color:#333;
-}
-
-.btn-inverse:hover {
-	color:white;
-	background:#555;
-}
+/********************************************************************************************************************************************
+	HOME widgets
+********************************************************************************************************************************************/
 
 .widget {
 	background:white;
@@ -206,53 +191,55 @@ h1, h2, h3, h4, h5, h6 {
 	border-radius:5px 5px 0 0;
 }
 
-/* Home log widget */
+/********************************************************************************************************************************************
+	Home LOG widget
+********************************************************************************************************************************************/
 
 .activities_log {
 	padding:0;
 }
 
-.activities_log li {
-	padding:7px;
-	border-bottom:1px solid #EFEFEF;
-	overflow:hidden;
-}
+	.activities_log li {
+		padding:7px;
+		border-bottom:1px solid #EFEFEF;
+		overflow:hidden;
+	}
+	
+	.activities_log li:nth-child(odd) {
+		background:#fafafa;
+	}
+	
+	.activities_log li:last-child {
+		border-bottom:none !important;
+	}
+	
+		.activities_log li .date {
+			font-size:.9em;
+			color:#999;
+		}
+		
+		.activities_log li .log_ico {
+			width:45px;
+			float:left;
+			opacity:.1;
+		}
+	
+		.activities_log li:hover .log_ico {
+			opacity:.7;
+		}
 
-.activities_log li:nth-child(odd) {
-	background:#fafafa;
-}
-
-.activities_log li:last-child {
-	border-bottom:none !important;
-}
-
-.activities_log li .date {
-	font-size:.9em;
-	color:#999;
-}
-
-.activities_log li .log_ico {
-	width:45px;
-	float:left;
-	opacity:.1;
-}
-
-.activities_log li:hover .log_ico {
-	opacity:.7;
-}
-
-.home_log_text {
-	margin-left:45px;
-}
-
-.activities_log li span {
-	font-weight:bold;
-	color:#2a69a0;
-}
-
-.activities_log li span.secondary {
-	color:#86AE00;
-}
+		.activities_log li span {
+			font-weight:bold;
+			color:#2a69a0;
+		}
+		
+		.activities_log li span.secondary {
+			color:#86AE00;
+		}
+	
+	.home_log_text {
+		margin-left:45px;
+	}
 
 .view_full_log {
 	text-align:right;
@@ -261,7 +248,9 @@ h1, h2, h3, h4, h5, h6 {
 	border-top:1px solid #EFEFEF;
 }
 
-/** home news widget */
+/********************************************************************************************************************************************
+	Home NEWS widget
+********************************************************************************************************************************************/
 
 .home_news {
 	margin:0;
@@ -277,7 +266,9 @@ h1, h2, h3, h4, h5, h6 {
 		margin:0 0 3px;
 	}
 
-/** graphs */
+/********************************************************************************************************************************************
+	Home graphs
+********************************************************************************************************************************************/
 
 .loading-graph {
 	text-align:center;
@@ -297,9 +288,6 @@ h1, h2, h3, h4, h5, h6 {
 .graph_legend {
 	text-align:right;
 	padding-top:5px;
-/*
-	border-top:1px solid #EFEFEF;
-*/
 	display:none;
 	float:right;
 	zoom:1;
@@ -329,7 +317,9 @@ h1, h2, h3, h4, h5, h6 {
 	margin-bottom:2em;
 }
 
-/** Home statistics tooltip */
+/********************************************************************************************************************************************
+	Home statistics tooltip
+********************************************************************************************************************************************/
 
 #stats_tooltip {
 	position:absolute;
@@ -337,25 +327,6 @@ h1, h2, h3, h4, h5, h6 {
 	background:black;
 	color:#FFFFFF;
 	padding:5px;
-}
-
-/**/
-
-#center { width:370px; margin:0 auto 0 auto; }
-
-#main_login { margin:0 0 30px 0; }
-
-#loginform { width:340px; margin-top:40px; padding-top:20px; }
-
-#loginform .field {
-	width:175px !important;
-	font-size:11px;
-	padding:4px;
-	margin-bottom:7px;
-	border:1px solid #CCCCCC;
-	-moz-border-radius:5px;
-	-webkit-border-radius:5px;
-	border-radius:5px;
 }
 
 .login_form_links {
@@ -368,8 +339,10 @@ h1, h2, h3, h4, h5, h6 {
 		margin:10px 0 0;
 	}
 
-	#register_link {
-	}
+
+/********************************************************************************************************************************************
+	Main white content boxes
+********************************************************************************************************************************************/
 
 .whitebox {
 	background-color:white;
@@ -398,21 +371,7 @@ h1, h2, h3, h4, h5, h6 {
 
 	.white-box-interior {
 		padding:15px;
-	}
-
-
-		.white-box-interior input[type="text"],
-		.white-box-interior input[type="email"],
-		.white-box-interior input[type="password"],
-		.white-box-interior input[type="tel"],
-		.white-box-interior select,
-		.white-box-interior textarea {
-			/*max-width:96% !important;*/
-		}
-
-		.white-box-interior label {
-		}
-	
+	}	
 
 .whiteform {
 	margin:0 auto 0 auto;
@@ -421,13 +380,15 @@ h1, h2, h3, h4, h5, h6 {
 	padding:20px;
 }
 
-.whiteform td { height:25px; }
+	.whiteform td { height:25px; }
 
 .whitebox_text {
 	padding-top:25px;
 }
 
-/* file managment */
+/********************************************************************************************************************************************
+	File management
+********************************************************************************************************************************************/
 
 .file_status_visible, .account_status_active {
 	color:#639822!important;
@@ -445,11 +406,6 @@ h1, h2, h3, h4, h5, h6 {
 ********************************************************************************************************************************************/
 
 .field_error {
-/*
-	background-image:url(../img/req-field.png);
-	background-position:right -6px;
-	background-repeat:no-repeat;
-*/
 	border:1px solid #B94A48 !important;
 }
 
@@ -503,7 +459,6 @@ h1, h2, h3, h4, h5, h6 {
 	margin-left:0;
 }
 
-
 /********************************************************************************************************************************************
 	Edit file information on UPLOAD
 ********************************************************************************************************************************************/
@@ -539,15 +494,8 @@ h1, h2, h3, h4, h5, h6 {
 		}
 
 .file_editor {
-/*	border-bottom:3px dotted #ccc;*/
 	padding-top:15px;
 	margin-bottom:15px;
-}
-
-.f_e_odd {
-}
-
-.file_title {
 }
 
 .edit_files textarea {
@@ -559,10 +507,6 @@ h1, h2, h3, h4, h5, h6 {
 	margin:0 !important;
 	border:none !important;
 	padding:10px 0;
-}
-
-.edit_files label {
-/*	margin:10px 0;*/
 }
 
 .edit_files .ms-optgroup-label {
@@ -640,7 +584,8 @@ h1, h2, h3, h4, h5, h6 {
 		margin-left:15px;
 	}
 	
-/****************/
+/********************************************************************************************************************************************
+********************************************************************************************************************************************/
 
 .td_checkbox {
 	width:50px;
@@ -688,7 +633,9 @@ h1, h2, h3, h4, h5, h6 {
 	color:#111!important;
 }
 
-/* logo config page */
+/********************************************************************************************************************************************
+	Branding
+********************************************************************************************************************************************/
 
 #current_logo_h2 {
 	margin:30px 0 10px;
@@ -707,11 +654,11 @@ h1, h2, h3, h4, h5, h6 {
 	text-align:left;
 }
 
-#current_logo_left .logo_note {
-	font-size:.85em;
-	line-height:1.35em!important;
-	color:#888;
-}
+	#current_logo_left .logo_note {
+		font-size:.85em;
+		line-height:1.35em!important;
+		color:#888;
+	}
 
 #current_logo_right {
 	float:right;
@@ -726,21 +673,9 @@ h1, h2, h3, h4, h5, h6 {
 	vertical-align:middle;
 }
 
-#form_logo {
-	padding:0;
-	line-height:21px;
-}
-
 #form_upload_logo {
 	padding:30px 0 10px;
 	border-top:1px dotted #CCCCCC;
-}
-
-#form_upload_logo label {
-}
-
-#form_btns {
-	text-align:right;
 }
 
 /********************************************************************************************************************************************
@@ -773,25 +708,6 @@ optgroup {
 .options_box {
 	padding:20px;
 	margin:20px auto;
-}
-
-.options_box label {
-    /*
-	display:block;
-	float:left;
-	clear:left;
-	width:110px;
-	margin-right:20px;
-    */
-}
-
-.options_box input[type="text"],
-.options_box input[type="password"],
-.options_box input[type="email"],
-.options_box input[type="tel"],
-.options_box textarea,
-.options_box select {
-/*	width:290px;*/
 }
 
 .options_box textarea {
@@ -847,7 +763,6 @@ optgroup {
 	.preview_button button {
 		margin-bottom:10px;
 	}
-	
 
 
 /********************************************************************************************************************************************
@@ -899,7 +814,6 @@ a.plupload_start {
 	display:none;
 }
 
-
 /********************************************************************************************************************************************
 	Overwrite BOOTSTRAP styles
 ********************************************************************************************************************************************/
@@ -918,4 +832,21 @@ label input[type="checkbox"] {
 
 span.label {
 	font-size:12px;
+}
+
+/********************************************************************************************************************************************
+	Recreate the dark, inverted button from Bootstrap 2
+********************************************************************************************************************************************/
+
+.btn-inverse,
+.btn-inverse:focus
+{
+	background:#333;
+	color:white;
+	border-color:#333;
+}
+
+.btn-inverse:hover {
+	color:white;
+	background:#555;
 }

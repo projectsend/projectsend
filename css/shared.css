@@ -1,18 +1,24 @@
+/********************************************************************************************************************************************
+	Styles share between the BACKEND and the DEFAULT TEMPLATE
+********************************************************************************************************************************************/
+
+:focus { outline:none !important; }
+::-moz-focus-inner { border:0 !important; }
+
 ul {
 	margin:0 !important;
 	list-style:none; 
 }
 
-strong {
+strong,
+.bold
+{
 	font-weight:bold;
 }
 
 em {
 	font-style:italic;
 }
-
-:focus { outline:none !important; }
-::-moz-focus-inner { border:0 !important; }
 
 p {
 	margin-bottom:1.2em;
@@ -23,7 +29,9 @@ a img {	border:none; }
 
 .clear { clear:both; }
 
-body, html {
+body,
+html
+{
 	color:#666666;
 	font-size:.9em !important;
 	line-height:1.2em;
@@ -40,14 +48,14 @@ body, html {
 	padding:25px 15px 20px;
 }
 
-#header h1 {
-	color:white;
-	font-size:35px;
-	margin:0;
-	text-shadow:1px 1px 1px #000;
-	font-family:'Abel', Arial, sans-serif;
-	line-height:32px;
-}
+	#header h1 {
+		color:white;
+		font-size:35px;
+		margin:0;
+		text-shadow:1px 1px 1px #000;
+		font-family:'Abel', Arial, sans-serif;
+		line-height:32px;
+	}
 
 #account {
 	font-size:.85em;
@@ -55,64 +63,45 @@ body, html {
 	text-align:right
 }
 
-#account span {
-	color:#999999;
-}
+	#account span {
+		color:#999999;
+	}
+	
+	#account a {
+		color:white;
+		display:inline-block;
+		padding: 10px 20px 10px 35px;
+		background:transparent url(../img/logout.png) no-repeat 10px 7px;
+		text-decoration:none;
+		transition: all 0.8s ease-out;
+		-moz-transition: all 0.8s ease-out;
+		-webkit-transition: all 0.8s ease-out;
+		-webkit-border-radius: 3px;
+		-moz-border-radius: 3px;
+		border-radius: 3px;
+	}
 
-#account a {
-	color:white;
-	display:inline-block;
-	padding: 10px 20px 10px 35px;
-	background:transparent url(../img/logout.png) no-repeat 10px 7px;
-	text-decoration:none;
-	transition: all 0.8s ease-out;
-	-moz-transition: all 0.8s ease-out;
-	-webkit-transition: all 0.8s ease-out;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
-}
+		#account a:hover {
+			background-color:#000;
+		}
+	
+	#account a.my_account {
+		background:transparent url(../img/my_account.png) no-repeat 10px 7px;
+		margin-left:15px;
+	}
 
-#account a.my_account {
-	background:transparent url(../img/my_account.png) no-repeat 10px 7px;
-	margin-left:15px;
-}
-
-#account a:hover {
-	background-color:#000;
-}
-
-/** MENU */
-
-#top_menu {
-	background: #3c404b; 
-	-moz-box-shadow:0 5px 5px #E1E1E1;
-	-webkit-box-shadow:0 5px 5px #E1E1E1;
-	box-shadow:0 5px 5px #E1E1E1;
-}
-
-.mnu_inactive_msg {
-	background:#000;
-	color:#ccc;
-	text-align:center;
-	padding:2px 8px;
-	margin:0 0 0 5px;
-
-	-webkit-border-radius: 30px;
-	-moz-border-radius: 30px;
-	border-radius: 30px;
-}
-
-/** Main menu */
+/********************************************************************************************************************************************
+	Main menu
+********************************************************************************************************************************************/
 
 .navbar {
 	margin:0;
+	background:#3c404b;
 	line-height:normal;
 	min-height:30px;
-	border-radius:0;
 	-moz-border-radius:0;
 	-webkit-border-radius:0;
-	background:#3c404b !important;
+	border-radius:0;
 }
 	.navbar .divider-vertical {
 		margin:0;
@@ -145,7 +134,9 @@ body, html {
 		color:white;
 	}
 
-/** FOOTER */
+/********************************************************************************************************************************************
+	Footer
+********************************************************************************************************************************************/
 
 #footer {
 	background:#eee;
@@ -168,7 +159,9 @@ body, html {
 	color:#666;
 }
 
-/* Messages */
+/********************************************************************************************************************************************
+	Messages
+********************************************************************************************************************************************/
 
 .message {
 	padding:10px;
@@ -179,20 +172,16 @@ body, html {
 	line-height:1.4em;
 }
 
-.message p {
-	margin:0;
-}
-
-.message ol {
-	margin:20px 0 0 0;
-	padding-left:2em;
-}
-
-.message li {
-}
+	.message p {
+		margin:0;
+	}
+	
+	.message ol {
+		margin:20px 0 0 0;
+		padding-left:2em;
+	}
 
 #login_error {
-	/*width:310px;*/
 	margin:0 auto 20px auto;
 }
 
@@ -231,7 +220,10 @@ body, html {
 	border:none;
 }
 
-/* Tabs */
+/********************************************************************************************************************************************
+	Override bootstrap's TABS styles
+	Used on the options pages
+********************************************************************************************************************************************/
 
 .nav-tabs > li,
 .nav-pills > li
@@ -283,10 +275,6 @@ body, html {
         background: white;
     }
 
-.tab-container .panel-container {
-	/*border-top:solid #ccc 1px;*/
-}
-
 .panel-container {
 	margin-bottom:10px;
 }
@@ -295,13 +283,10 @@ body, html {
 	margin:0 auto;
 }
 
-/* forms */
-/*
-.form_fields li:not(.form_submit_li) {
-	margin-bottom:4px;
-	padding-bottom:4px;
-}
-*/
+/********************************************************************************************************************************************
+	Forms
+********************************************************************************************************************************************/
+
 .form_fields li label {
 	display:inline-block;
 	width:40%;
@@ -311,18 +296,12 @@ body, html {
 	vertical-align:top;
 }
 
-.input[type="radio"], input[type="checkbox"] {
-/*	margin:0 5px 3px 0!important;*/
-}
-
 .form_submit_li {
 	margin-top:25px;
 	text-align:center;
 }
 
 .required {
-/*	width:264px !important;*/
-/*	padding-right:50px !important;*/
 	background:url(../img/req-text.png) no-repeat right -2px;
 }
 
@@ -334,9 +313,6 @@ li .required.password_toggle {
 	width:214px !important;
 }
 
-.password_toggler {
-}
-
 .btn_generate_password {
 	margin-top:5px;
 }
@@ -345,12 +321,9 @@ li .required.password_toggle {
 	height:150px;
 }
 
-
-textarea, select {
-	width:308px;
-}
-
-/* Files actions */
+/********************************************************************************************************************************************
+	Files actions
+********************************************************************************************************************************************/
 
 .form_actions_left {
 	display:inline-block;
@@ -409,10 +382,6 @@ textarea, select {
 	width:320px !important;
 }
 
-.form_actions_limit_results {
-
-}
-
 .form_actions_limit_results .txtfield {
 	width:140px;
 }
@@ -425,27 +394,15 @@ textarea, select {
 	margin-right:10px !important;
 }
 
-
 .form_actions_submit label {
-	/*
-	display:inline-block;
-	width:160px;
-	text-align:left;
-	cursor:pointer;
-	background:url(../img/checkbox.png) no-repeat left 4px;
-	padding:3px 0 3px 27px;
-	font-size:12px;
-	*/
 	font-size:14px;
 	margin-right:15px;
 	font-weight:normal;
 }
 
-.form_actions_submit .boton {
-	margin:0!important;
-}
-
-/* Buttons */
+/********************************************************************************************************************************************
+	Buttons
+********************************************************************************************************************************************/
 
 .close-popover {
 	text-align:center;
@@ -474,7 +431,9 @@ textarea, select {
 	font-size:17px;
 }
 
-/** Overwrite default bootstrap Main button colors */
+/********************************************************************************************************************************************
+	Override default bootstrap Main button colors
+********************************************************************************************************************************************/
 
 .btn-wide {
 	padding:4px 20px !important;
@@ -491,7 +450,9 @@ textarea, select {
 	}
 
 
-/** Modal content */
+/********************************************************************************************************************************************
+	Modal content
+********************************************************************************************************************************************/
 
 .modal_overlay {
 	display:none;
@@ -569,7 +530,9 @@ textarea, select {
 }
 
 
-/** Downloaders list */
+/********************************************************************************************************************************************
+	Downloaders list (shown on modal)
+********************************************************************************************************************************************/
 
 .downloaders_list {
 	list-style:none;
@@ -625,21 +588,25 @@ p.downloaders_note {
 	color:#666666;
 }
 
-/** Datepicker */
+/********************************************************************************************************************************************
+	Datepicker
+********************************************************************************************************************************************/
 
 .datapick-field {
 	cursor:pointer !important;
 }
 
-/** Files list view (File Manager) */
+/********************************************************************************************************************************************
+	Files list view (File Manager)
+********************************************************************************************************************************************/
 
 .file_name {
 	font-weight:bold;
 }
 
-.file_name a {
-	text-decoration:underline;
-}
+	.file_name a {
+		text-decoration:underline;
+	}
 
 .public_link_copy {
 	background:#E5F1FC;
@@ -648,55 +615,4 @@ p.downloaders_note {
 	width:100%;
 	border:1px solid #BCD8F3;
 	margin:7px auto !important;
-}
-
-/* Table sorter for jquery */
-
-.extra_columns_table .extra {
-/*	display:none;*/
-}
-
-#table_view_modes {
-	display:none; /** While changing tablesorter to footable */
-	width:144px;
-	float:right;
-	text-align:right;
-	font-size:.8em;
-}
-
-#table_view_modes li {
-	display:inline-block;
-	zoom:1;
-}
-
-#table_view_modes li a {
-	display:block;
-	width:20px;
-	height:20px;
-	text-align:left;
-	text-indent:-999em;
-	border:1px solid #fff;
-	transition: all 0.4s ease-out;
-	-moz-transition: all 0.4s ease-out;
-	-webkit-transition: all 0.4s ease-out;
-}
-
-.active_view_button {
-	-webkit-box-shadow: 2px 2px 4px rgba(50, 50, 50, 0.15);
-	-moz-box-shadow:    2px 2px 4px rgba(50, 50, 50, 0.15);
-	box-shadow:         2px 2px 4px rgba(50, 50, 50, 0.15);
-	border:1px solid #ccc !important;
-}
-
-#view_reduced {
-	background:url(../img/table_reduced.jpg) no-repeat;
-	margin-right:7px;
-}
-
-#view_full {
-	background:url(../img/table_full.jpg) no-repeat;
-}
-
-.vertical_middle td, .vertical_middle th {
-	vertical-align:middle!important
 }

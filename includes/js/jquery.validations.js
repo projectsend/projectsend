@@ -53,7 +53,7 @@ function add_error_to_field(field, error) {
 
 		$(location).after('<div class="form-group validation_error_group"><div class="' + classes + '" id="error_for_'+this_field_msg_name+'"><ul></ul></div></div>');
 	}
-	$('#error_for_'+this_field_msg_name+' ul').append('<li>'+error+'</li>');
+	$('#error_for_'+this_field_msg_name+' ul').append('<li><i class="glyphicon glyphicon-exclamation-sign"></i> '+error+'</li>');
 }
 
 function is_complete(field,error) {

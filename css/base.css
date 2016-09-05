@@ -424,7 +424,7 @@ h1, h2, h3, h4, h5, h6 {
 		-webkit-border-radius: 3px;
 		-moz-border-radius: 3px;
 		border-radius: 3px;
-		text-shadow:1px 1px 1px white;
+		/*text-shadow:1px 1px 1px white;*/
 	}
 	
 	.field_error_msg:after,

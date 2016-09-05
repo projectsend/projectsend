@@ -266,7 +266,9 @@ if (defined('TRY_INSTALL')) {
 								('pass_require_lower', '0'),
 								('pass_require_number', '0'),
 								('pass_require_special', '0'),
-								('mail_smtp_auth', 'none')",
+								('mail_smtp_auth', 'none'),
+								('use_browser_lang', '0'),
+								",
 					'params' => array(
 										':base_uri'	=> $base_uri,
 										':title'	=> $this_install_title,

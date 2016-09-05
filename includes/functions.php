@@ -465,9 +465,13 @@ function get_current_user_username()
 
 /**
  * Wrapper for html_entities with default options
+ * 
  */
-function html_output($str,$flags=ENT_QUOTES,$encoding="utf8",$double_encode=false) {
-    return htmlentities($str,$flags,$encoding,$double_encode);
+function html_output($str, $flags = ENT_QUOTES, $encoding = 'UTF-8', $double_encode = false)
+{
+
+   return htmlentities($str, $flags, $encoding, $double_encode);
+
 }
 
 

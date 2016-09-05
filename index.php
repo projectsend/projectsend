@@ -27,7 +27,7 @@ include('header-unlogged.php');
 		$sysuser_password = $_POST['login_form_pass'];
 	
 		/** Look up the system users table to see if the entered username exists */
-		$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE BINARY user= :username OR BINARY email= :email");
+		$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user= :username OR email= :email");
 		$statement->execute(
 						array(
 							':username'	=> $_POST['login_form_user'],

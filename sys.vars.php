@@ -14,7 +14,8 @@
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r645');
+define('CURRENT_VERSION', 'r670');
+// corresponds to "Make username and email case insensitive for logins"
 
 /**
  * Fix for including external files when on HTTPS.

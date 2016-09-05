@@ -117,7 +117,7 @@ while( $row = $statement->fetch() ) {
  * A posted form will include information of the uploaded files
  * (name, description and client).
  */
-	if(isset($_POST['submit'])) {
+	if (isset($_POST['submit'])) {
 		/**
 		 * Get the ID of the current client that is uploading files.
 		 */

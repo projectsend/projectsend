@@ -55,7 +55,7 @@ class PSend_Upload_File
 	function safe_rename($name)
 	{
 		$this->name = $name;
-		$this->safe_filename = preg_replace('/[^\w\._]+/', $this->separator, $this->name);
+		$this->safe_filename = preg_replace('#[^A-Za-z0-9-./]#', $this->separator, $this->name);
 		return $this->safe_filename;
 	}
 	
@@ -71,7 +71,7 @@ class PSend_Upload_File
 	{
 		$this->name = $name;
 		$this->folder = $folder;
-		$this->new_filename = preg_replace('/[^\w\._]+/', $this->separator, $this->name);
+		$this->new_filename = preg_replace('#[^A-Za-z0-9-./]#', $this->separator, $this->name);
 		if(rename($this->folder.'/'.$this->name, $this->folder.'/'.$this->new_filename)) {
 			return $this->new_filename;
 		}

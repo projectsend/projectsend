@@ -409,47 +409,46 @@ h1, h2, h3, h4, h5, h6 {
 	border:1px solid #B94A48 !important;
 }
 
-.field_error_msg ul {
-	font-size:.95em;
-	color:#B94A48;
-	background:#F2DEDE;
-	padding:10px !important;
-	border:1px solid #EED3D7;
+.field_error_msg {
 	position:relative;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
-	text-shadow:1px 1px 1px white;
 }
 
-.field_error_msg:after,
-.field_error_msg:before
-{
-	bottom: 100%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute; pointer-events: none;
-}
-
-.field_error_msg:after {
-	border-color: rgba(45, 237, 14, 0); border-bottom-color: #F2DEDE; border-width: 10px; right: 5%; margin-left: -10px;
-}
-
-.field_error_msg:before {
-	border-color: rgba(238, 211, 215, 0); border-bottom-color: #EED3D7; border-width: 11px; right: 5%; margin-left: -11px;
-}
-
-
-.field_error_msg ul {
-	margin:0;
-	padding:0;
-}
-
-.field_error_msg ul li {
-	padding:3px 0;
-	border-bottom:1px dotted #AC6760;
-}
-
-.field_error_msg ul li:last-child {
-	border-bottom:none !important;
-}
+	.field_error_msg ul {
+		font-size:.95em;
+		color:#B94A48;
+		background:#F2DEDE;
+		margin:0;
+		padding:10px;
+		border:1px solid #EED3D7;
+		position:relative;
+		-webkit-border-radius: 3px;
+		-moz-border-radius: 3px;
+		border-radius: 3px;
+		text-shadow:1px 1px 1px white;
+	}
+	
+	.field_error_msg:after,
+	.field_error_msg:before
+	{
+		bottom: 100%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute; pointer-events: none;
+	}
+	
+	.field_error_msg:after {
+		border-color: rgba(45, 237, 14, 0); border-bottom-color: #F2DEDE; border-width: 10px; right: 5%; margin-left: -10px;
+	}
+	
+	.field_error_msg:before {
+		border-color: rgba(238, 211, 215, 0); border-bottom-color: #EED3D7; border-width: 11px; right: 5%; margin-left: -11px;
+	}
+	
+		.field_error_msg ul li {
+			padding:3px 0;
+			border-bottom:1px dotted #AC6760;
+		}
+		
+		.field_error_msg ul li:last-child {
+			border-bottom:none !important;
+		}
 
 .options_box .field_error_msg {
 	margin-left:44%;

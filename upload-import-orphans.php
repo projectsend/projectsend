@@ -84,7 +84,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 							/** Check types of files that are not on the database */							
 							if (!array_key_exists($filename,$db_files)) {
 								$file_object = new PSend_Upload_File();
-								$new_filename = $file_object->safe_rename_on_disc($filename,$work_folder);
+								$new_filename = $file_object->safe_rename_on_disk($filename,$work_folder);
 								/** Check if the filetype is allowed */
 								if ($file_object->is_filetype_allowed($new_filename)) {
 									/** Add it to the array of available files */

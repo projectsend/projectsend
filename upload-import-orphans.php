@@ -1,12 +1,10 @@
 <?php
 /**
- * Find files that where uploaded but not assigned, step 1
- * Shows a list of files found on the upload/ folder,
- * if they are allowed according to the sytem settings.
- * Files uploaded by the "Upload from computer" form also
- * remain on this folder until assigned to a client, so if
- * that form was not completed, the files can be imported
- * from here later on.
+ * Shows a list of files found on the upload/ folder that
+ * are not yet on the database, meaning they were uploaded
+ * via FTP.
+ * Only shows files that are allowed according to the sytem
+ * settings.
  * Submits an array of file names.
  *
  * @package ProjectSend
@@ -99,19 +97,6 @@ $work_folder = UPLOADED_FILES_FOLDER;
 														);
 								}
 							}
-							else {
-								/**
-								 * These following files EXIST on DB ($db_files)
-								 * but not on the assigned table ($assigned)
-								 */
-								if(!in_array($db_files[$filename],$assigned)) {
-									$files_to_add[] = array(
-															'path'		=> $filename_path,
-															'name'		=> $filename,
-															'reason'	=> 'not_assigned',
-														);
-								}
-							}
 						}
 					}
 				}
@@ -158,6 +143,13 @@ $work_folder = UPLOADED_FILES_FOLDER;
 						<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default"><?php _e('Search','cftp_admin'); ?></button>
 					</form>
 				</div>
+
+				<div class="clear"></div>
+		
+				<div class="form_actions_count">
+					<p class="form_count_total"><?php _e('Showing','cftp_admin'); ?>: <span><?php echo count($files_to_add); ?> <?php _e('files','cftp_admin'); ?></span></p>
+				</div>
+		
 				<div class="clear"></div>
 
 				<form action="upload-process-form.php" name="upload_by_ftp" id="upload_by_ftp" method="post" enctype="multipart/form-data">
@@ -170,7 +162,6 @@ $work_folder = UPLOADED_FILES_FOLDER;
 								<th data-sort-initial="true"><?php _e('File name','cftp_admin'); ?></th>
 								<th data-type="numeric" data-hide="phone"><?php _e('File size','cftp_admin'); ?></th>
 								<th data-type="numeric" data-hide="phone"><?php _e('Last modified','cftp_admin'); ?></th>
-								<th data-hide="phone"><?php _e('Reason','cftp_admin'); ?></th>
 								<th><?php _e('Actions','cftp_admin'); ?></th>
 							</tr>
 						</thead>
@@ -184,18 +175,6 @@ $work_folder = UPLOADED_FILES_FOLDER;
 											<td data-value="<?php echo filesize($add_file['path']); ?>"><?php echo html_output(format_file_size(filesize($add_file['path']))); ?></td>
 											<td data-value="<?php echo filemtime($add_file['path']); ?>">
 												<?php echo date(TIMEFORMAT_USE, filemtime($add_file['path'])); ?>
-											</td>
-											<td>
-												<?php
-													switch($add_file['reason']) {
-														case 'not_on_db':
-															_e('Never assigned to any user or group','cftp_admin');
-															break;
-														case 'not_assigned':
-															_e('All assignations were removed','cftp_admin'); echo ' / '; _e('File is not public.','cftp_admin');
-															break;
-													}
-												?>
 											</td>
 											<td>
 												<button type="button" name="file_edit" class="btn btn-primary btn-sm btn-edit-file">
@@ -258,13 +237,15 @@ $work_folder = UPLOADED_FILES_FOLDER;
 						<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
 							<div class="white-box-interior">
 								<p><?php _e('There are no files available to add right now.', 'cftp_admin'); ?></p>
-								<p>
+								<p class="margin_0">
 									<?php
 										_e('To use this feature you need to upload your files via FTP to the folder', 'cftp_admin');
 										echo ' <strong>'.html_output($work_folder).'</strong>.';
 									?>
 								</p>
+								<?php /*
 								<p><?php _e('This is the same folder where the files uploaded by the web interface will be stored. So if you finish uploading your files but do not assign them to any clients/groups, the files will still be there for later use.', 'cftp_admin'); ?></p>
+								*/ ?>
 							</div>
 						</div>
 					</div>

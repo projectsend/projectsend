@@ -493,6 +493,13 @@ include('header.php');
 							if($current_level != '0') {
 						?>
 								<th data-hide="phone,tablet"><?php _e('Uploader','cftp_admin'); ?></th>
+								<?php
+									if ( !isset( $search_on ) ) {
+								?>
+										<th data-hide="phone"><?php _e('Assigned','cftp_admin'); ?></th>
+								<?php
+									}
+								?>
 								<th data-hide="phone"><?php _e('Public','cftp_admin'); ?></th>
 								<th data-hide="phone"><?php _e('Expiry','cftp_admin'); ?></th>
 						<?php
@@ -577,6 +584,8 @@ include('header.php');
 								$sql_this_file->execute( $params );
 								$sql_this_file->setFetchMode(PDO::FETCH_ASSOC);
 
+								$count_assignations = $sql_this_file->rowCount();
+
 								while( $data_file = $sql_this_file->fetch() ) {
 									$file_id = $data_file['id'];
 									$hidden = $data_file['hidden'];
@@ -625,6 +634,21 @@ include('header.php');
 										if($current_level != '0') {
 									?>
 											<td><?php echo html_output($row['uploader']); ?></td>
+											<?php
+												if ( !isset( $search_on ) ) {
+											?>
+													<td>
+														<?php
+															$class	= ($count_assignations == 0) ? 'danger' : 'success';
+															$status	= ($count_assignations == 0) ? __('No','cftp_admin') : __('Yes','cftp_admin');
+														?>
+														<span class="label label-<?php echo $class; ?>">
+															<?php echo $status; ?>
+														</span>
+													</td>
+											<?php
+												}
+											?>
 											<td class="col_visibility">
 												<?php
 													if ($row['public_allow'] == '1') {
@@ -742,9 +766,8 @@ include('header.php');
 
 		<?php
 			if ($current_level != '0') {
-		?>
-				<div class="message message_info"><?php _e('Please note that downloading a file from here will not add to the download count.','cftp_admin'); ?></div>
-		<?php
+				$msg = __('Please note that downloading a file from here will not add to the download count.','cftp_admin');
+				echo system_message('info',$msg);
 			}
 		?>
 	</div>

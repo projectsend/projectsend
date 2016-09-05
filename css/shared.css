@@ -29,6 +29,10 @@ a img {	border:none; }
 
 .clear { clear:both; }
 
+.margin_0 {
+	margin:0;
+}
+
 body,
 html
 {

@@ -14,8 +14,8 @@
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r670');
-// corresponds to "Make username and email case insensitive for logins"
+define('CURRENT_VERSION', 'r672');
+// corresponds to: "Allow clients to delete their own files (optional)"
 
 /**
  * Fix for including external files when on HTTPS.

@@ -922,6 +922,22 @@ if (in_session_or_cookies($allowed_update)) {
 			}
 		}
 
+		/**
+		 * r672 updates
+		 * Added an option to allow clients to delete their own uploads
+		 */
+		if ($last_update < 672) {
+			$new_database_values = array(
+											'clients_can_delete_own_files'	=> '0',
+										);
+			
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
+				}
+			}
+		}
+
 	}
 }	
 ?>

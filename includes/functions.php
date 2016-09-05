@@ -594,7 +594,7 @@ function get_real_size($file)
  * Delete just one file.
  * Used on the files managment page.
  */
-function delete_file($filename)
+function delete_file_from_disk($filename)
 {
 	chmod($filename, 0777);
 	unlink($filename);

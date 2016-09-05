@@ -243,13 +243,32 @@ include('header.php');
 						break;
 
 					case 'delete':
-						foreach ($selected_files as $work_file) {
-							$this_file = new FilesActions();
-							$delete_file = $this_file->delete_files($work_file);
+						$delete_results	= array(
+												'ok'		=> 0,
+												'errors'	=> 0,
+											);
+						foreach ($selected_files as $index => $file_id) {
+							$this_file		= new FilesActions();
+							$delete_status	= $this_file->delete_files($file_id);
+
+							if ( $delete_status == true ) {
+								$delete_results['ok']++;
+							}
+							else {
+								$delete_results['errors']++;
+								unset($all_files[$file_id]);
+							}
 						}
-						$msg = __('The selected files were deleted.','cftp_admin');
-						echo system_message('ok',$msg);
-						$log_action_number = 12;
+
+						if ( $delete_results['ok'] > 0 ) {
+							$msg = __('The selected files were deleted.','cftp_admin');
+							echo system_message('ok',$msg);
+							$log_action_number = 12;
+						}
+						if ( $delete_results['errors'] > 0 ) {
+							$msg = __('Some files could not be deleted.','cftp_admin');
+							echo system_message('error',$msg);
+						}
 						break;
 				}
 
@@ -402,7 +421,7 @@ include('header.php');
 		<form action="<?php echo html_output($form_action_url); ?>" name="files_list" method="post" class="form-inline">
 			<?php
 				/** Actions are not available for clients */
-				if($current_level != '0') {
+				if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
 			?>
 					<div class="form_actions_right">
 						<div class="form_actions">
@@ -476,8 +495,8 @@ include('header.php');
 				<thead>
 					<tr>
 						<?php
-							/** Actions are not available for clients */
-							if($current_level != '0') {
+							/** Actions are not available for clients if delete own files is false */
+							if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
 						?>
 								<th class="td_checkbox" data-sort-ignore="true">
 									<input type="checkbox" name="select_all" id="select_all" value="0" />
@@ -595,7 +614,7 @@ include('header.php');
 								<tr>
 									<?php
 										/** Actions are not available for clients */
-										if($current_level != '0') {
+										if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
 									?>
 											<td><input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" /></td>
 									<?php

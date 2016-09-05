@@ -33,6 +33,7 @@ if ($_POST) {
 
 	/** Checkboxes */
 	$checkboxes				= array(
+								'clients_can_delete_own_files',
 								'use_browser_lang',
 								'clients_can_register',
 								'clients_auto_approve',
@@ -334,6 +335,14 @@ $allowed_file_types = implode(',',$allowed_file_types);
 									<div class="col-sm-8 col-sm-offset-4">
 										<label for="clients_can_upload">
 											<input type="checkbox" value="1" name="clients_can_upload" id="clients_can_upload" class="checkbox_options" <?php echo (CLIENTS_CAN_UPLOAD == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Clients can upload files','cftp_admin'); ?>
+										</label>
+									</div>
+								</div>
+	
+								<div class="form-group">
+									<div class="col-sm-8 col-sm-offset-4">
+										<label for="clients_can_delete_own_files">
+											<input type="checkbox" value="1" name="clients_can_delete_own_files" id="clients_can_delete_own_files" class="checkbox_options" <?php echo (CLIENTS_CAN_DELETE_OWN_FILES == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Clients can delete their own uploaded files','cftp_admin'); ?>
 										</label>
 									</div>
 								</div>

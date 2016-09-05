@@ -268,6 +268,7 @@ if (defined('TRY_INSTALL')) {
 								('pass_require_special', '0'),
 								('mail_smtp_auth', 'none'),
 								('use_browser_lang', '0'),
+								('clients_can_delete_own_files', '0')
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,

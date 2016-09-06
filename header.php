@@ -19,16 +19,12 @@ check_for_session();
 //check_for_admin();
 
 /** If no page title is defined, revert to a default one */
-if (!isset($page_title)) {
-
-	$page_title = __('System Administration','cftp_admin');
-
-}
+if (!isset($page_title)) { $page_title = __('System Administration','cftp_admin'); }
 
 /**
  * Silent updates that are needed even if no user is logged in.
  */
-require_once(ROOT_DIR . '/includes/core.update.silent.php');
+require_once(ROOT_DIR.'/includes/core.update.silent.php');
 
 /**
  * Call the database update file to see if any change is needed,
@@ -39,7 +35,6 @@ if (in_session_or_cookies($core_update_allowed)) {
 	require_once(ROOT_DIR.'/includes/core.update.php');
 }
 ?>
-
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->

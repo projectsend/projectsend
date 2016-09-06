@@ -52,20 +52,9 @@ define('CAN_INCLUDE_FILES', true);
 							</div>
 						</div>
 						<div class="row-fluid">
-						
-						<?PHP
-						
-							if (defined('HOME_NEWS') && (HOME_NEWS === true)) {
-							
-								echo '<div class="span6">' . "\n";
-								
-								include(ROOT_DIR . '/home-news-widget.php');
-								
-								echo '</div>' . "\n";
-							
-							}
-							
-						?>
+							<div class="span6">
+								<?php include(ROOT_DIR.'/home-news-widget.php'); ?>
+							</div>
 							<div class="span6">
 								<div class="widget">
 									<h4><?php _e('System data','cftp_admin'); ?></h4>

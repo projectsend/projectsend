@@ -1,100 +1,147 @@
 <?php
+
 /**
  * Options page and form.
  *
  * @package ProjectSend
  * @subpackage Options
  */
-$easytabs	= 1;
-$spinedit	= 1;
+$easytabs = 1;
+$spinedit = 1;
 $allowed_levels = array(9);
+
 require_once('sys.includes.php');
-$page_title = __('System options','cftp_admin');
+
+$page_title = __('System options', 'cftp_admin');
 
 /** Uses TextBoxList for the allowed file types box. */
 $textboxlist = 1;
 
 $active_nav = 'options';
+
 include('header.php');
 
 if ($_POST) {
+
 	/**
 	 * Escape all the posted values on a single function.
 	 * Defined on functions.php
 	 */
+	
 	/** Values that can be empty */
-	$allowed_empty_values	= array(
-								'mail_copy_addresses',
-								'mail_smtp_host',
-								'mail_smtp_port',
-								'mail_smtp_user',
-								'mail_smtp_pass',
-							);
-
+	$allowed_empty_values = array(
+		'mail_copy_addresses',
+		'mail_smtp_host',
+		'mail_smtp_port',
+		'mail_smtp_user',
+		'mail_smtp_pass',
+	);
+	
 	/** Checkboxes */
-	$checkboxes				= array(
-								'clients_can_register',
-								'clients_auto_approve',
-								'clients_can_upload',
-								'mail_copy_user_upload',
-								'mail_copy_client_upload',
-								'mail_copy_main_user',
-								'thumbnails_use_absolute',
-								'pass_require_upper',
-								'pass_require_lower',
-								'pass_require_number',
-								'pass_require_special',
-							);
+	$checkboxes = array(
+		'clients_can_register',
+		'clients_auto_approve',
+		'clients_can_upload',
+		'mail_copy_user_upload',
+		'mail_copy_client_upload',
+		'mail_copy_main_user',
+		'thumbnails_use_absolute',
+		'pass_require_upper',
+		'pass_require_lower',
+		'pass_require_number',
+		'pass_require_special',
+	);
+	
 	foreach ($checkboxes as $checkbox) {
-		$_POST[$checkbox] = (empty($_POST[$checkbox]) || !isset($_POST[$checkbox])) ? 0 : 1;
+	
+		$value = 0;
+		
+		if (isset($_POST[$checkbox])) {
+		
+			if ($_POST[$checkbox] === '1') {
+			
+				$value = 1;
+			
+			}
+		
+		}
+		
+		$_POST[$checkbox] = $value;
+		
+		unset($value);
+	
 	}
-
+	
 	$keys = array_keys($_POST);
-	 
+	
 	$options_total = count($keys);
 	$options_filled = 0;
 	$query_state = '0';
-
+	
 	/**
 	 * Check if all the options are filled.
 	 */
 	for ($i = 0; $i < $options_total; $i++) {
+	
 		if (!in_array($keys[$i], $allowed_empty_values)) {
+		
 			if (empty($_POST[$keys[$i]]) && $_POST[$keys[$i]] != '0') {
+			
 				$query_state = '3';
+			
+			} else {
+			
+				$options_filled ++;
+			
 			}
-			else {
-				$options_filled++;
-			}
+		
 		}
+	
 	}
 	
 	/** If every option is completed, continue */
 	if ($query_state == '0') {
+	
 		$updated = 0;
+		
 		for ($j = 0; $j < $options_total; $j++) {
+		
 			$save = $dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name=:name" );
 			$save->bindParam(':value', $_POST[$keys[$j]]);
 			$save->bindParam(':name', $keys[$j]);
 			$save->execute();
-
+			
 			if ($save) {
+			
 				$updated++;
+			
 			}
+		
 		}
+		
 		if ($updated > 0){
+		
 			$query_state = '1';
-		}
-		else {
+		
+		} else {
+		
 			$query_state = '2';
+		
 		}
+	
 	}
-
+	
 	/** Redirect so the options are reflected immediatly */
-	while (ob_get_level()) ob_end_clean();
+	while (ob_get_level()) {
+	
+		ob_end_clean();
+	
+	}
+	
 	$location = BASE_URI . 'options.php?status=' . $query_state;
-	header("Location: $location");
+	header('Location: ' . $location);
 	die();
+
 }
 
 /**
@@ -102,10 +149,13 @@ if ($_POST) {
  * the allowed filetypes on the form. This value comes from
  * site.options.php
 */
-$allowed_file_types = str_replace('|',',',$allowed_file_types);
+$allowed_file_types = str_replace('|', ',', $allowed_file_types);
+
 /** Explode, sort, and implode the values to list them alphabetically */
-$allowed_file_types = explode(',',$allowed_file_types);
+$allowed_file_types = explode(',', $allowed_file_types);
+
 sort($allowed_file_types);
+
 $allowed_file_types = implode(',',$allowed_file_types);
 
 ?>

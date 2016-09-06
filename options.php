@@ -177,6 +177,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 			<li><a href="#tab_security" aria-controls="tab_security" role="tab" data-toggle="tab"><?php _e('Security','cftp_admin'); ?></a></li>
 			<li><a href="#tab_thumbs" aria-controls="tab_thumbs" role="tab" data-toggle="tab"><?php _e('Thumbnails','cftp_admin'); ?></a></li>
 			<li><a href="#tab_logo" aria-controls="tab_logo" role="tab" data-toggle="tab"><?php _e('Company logo','cftp_admin'); ?></a></li>
+			<li><a href="#tab_sociallogin" aria-controls="tab_sociallogin" role="tab" data-toggle="tab"><?php _e('Social Login', 'cftp_admin'); ?></a></li>
 		</ul>
 
 		<form action="options.php" name="optionsform" method="post" class="form-horizontal">
@@ -656,6 +657,41 @@ $allowed_file_types = implode(',',$allowed_file_types);
 													<div class="col-sm-6">
 														<input type="text" name="max_logo_height" id="max_logo_height" class="form-control" value="<?php echo html_output(LOGO_MAX_HEIGHT); ?>" />
 													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div role="tabpanel" class="tab-pane fade" id="tab_sociallogin">
+							<div class="row">
+								<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
+									<div class="white-box-interior">
+										<h3><?php _e('Google','cftp_admin'); ?></h3>
+										<p><?php _e('Add ' . BASE_URI . 'sociallogin/google/callback.php as an Authorized redirect URI.','cftp_admin'); ?></p>
+
+										<div class="options_column">
+											<div class="form-group">
+												<label for="google_signin_enabled" class="col-sm-3 control-label"><?php _e('Enabled','cftp_admin'); ?></label>
+												<div class="col-sm-9">
+													<select name="google_signin_enabled" id="google_signin_enabled" class="form-control">
+														<option value="1" <?php echo (GOOGLE_SIGNIN_ENABLED == '1') ? 'selected="selected"' : ''; ?>>Yes</option>
+														<option value="0" <?php echo (GOOGLE_SIGNIN_ENABLED == '0') ? 'selected="selected"' : ''; ?>>No</option>
+													</select>
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="google_client_id" class="col-sm-3 control-label"><?php _e('Client ID','cftp_admin'); ?></label>
+												<div class="col-sm-9">
+													<input type="text" name="google_client_id" id="google_client_id" class="form-control empty" value="<?php echo html_output(GOOGLE_CLIENT_ID); ?>" />
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="google_client_secret" class="col-sm-3 control-label"><?php _e('Client Secret','cftp_admin'); ?></label>
+												<div class="col-sm-9">
+													<input type="text" name="google_client_secret" id="google_client_secret" class="form-control empty" value="<?php echo html_output(GOOGLE_CLIENT_SECRET); ?>" />
 												</div>
 											</div>
 										</div>

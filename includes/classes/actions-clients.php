@@ -17,6 +17,31 @@ class ClientActions
 		$this->dbh = $dbh;
 	}
 
+	public function generateUsername($string, $i = 1) {
+		$string = preg_replace('/[^A-Za-z0-9]/', "", $string);
+		$username = $string;
+		while(!$this->isUniqueUsername($username)) {
+			$username = $string . $i;
+			$i++;
+		}
+		return $username;
+	}
+
+	public function generatePassword() {
+		$password_string = '!@#$%*&abcdefghijklmnpqrstuwxyzABCDEFGHJKLMNPQRSTUWXYZ23456789';
+		$password = substr(str_shuffle($password_string), 0, 16);
+		return $password;
+	}
+
+	private function isUniqueUsername($string) {
+		$statement = $this->dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE user = :user" );
+		$statement->execute(array(':user'	=> $string));
+		if($statement->rowCount() > 0) {
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * Validate the information from the form.
 	 */

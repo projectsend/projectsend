@@ -5,9 +5,10 @@
  *
  * @package ProjectSend
  */
- 
-$multiselect	= 1;
-$datepicker		= 1;
+$load_scripts	= array(
+						'datepicker',
+						'chosen',
+					); 
 
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
@@ -304,144 +305,179 @@ $current_level = get_current_user_level();
 			/** Validations OK, show the editor */
 	?>
 			<form action="edit-file.php?file_id=<?php echo filter_var($this_file_id,FILTER_VALIDATE_INT); ?>" method="post" name="edit_file" id="edit_file">
-				<?php
-					/** Reconstruct the current assignments arrays */
-					$file_on_clients = array();
-					$file_on_groups = array();
-					$assignments = $dbh->prepare("SELECT file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :id");
-					$assignments->bindParam(':id', $this_file_id, PDO::PARAM_INT);
-					$assignments->execute();
-					if ($assignments->rowCount() > 0) {
-						while ( $assignment_row = $assignments->fetch() ) {
-							if (!empty($assignment_row['client_id'])) {
-								$file_on_clients[] = $assignment_row['client_id'];
-							}
-							elseif (!empty($assignment_row['group_id'])) {
-								$file_on_groups[] = $assignment_row['group_id'];
+				<div class="container-fluid">
+					<?php
+						/** Reconstruct the current assignments arrays */
+						$file_on_clients = array();
+						$file_on_groups = array();
+						$assignments = $dbh->prepare("SELECT file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :id");
+						$assignments->bindParam(':id', $this_file_id, PDO::PARAM_INT);
+						$assignments->execute();
+						if ($assignments->rowCount() > 0) {
+							while ( $assignment_row = $assignments->fetch() ) {
+								if (!empty($assignment_row['client_id'])) {
+									$file_on_clients[] = $assignment_row['client_id'];
+								}
+								elseif (!empty($assignment_row['group_id'])) {
+									$file_on_groups[] = $assignment_row['group_id'];
+								}
 							}
 						}
-					}
-
-
-					$i = 1;
-					$statement = $dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE id = :id");
-					$statement->bindParam(':id', $this_file_id, PDO::PARAM_INT);
-					$statement->execute();
-					while( $row = $statement->fetch() ) {
-				?>
-						<div class="row-fluid edit_files">
-							<div class="span1">
-								<div class="file_number">
-									<p><?php echo $i; ?></p>
+	
+	
+						$i = 1;
+						$statement = $dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE id = :id");
+						$statement->bindParam(':id', $this_file_id, PDO::PARAM_INT);
+						$statement->execute();
+						while( $row = $statement->fetch() ) {
+					?>
+							<div class="row edit_files">
+								<div class="col-sm-1">
+									<div class="file_number">
+										<p><?php echo $i; ?></p>
+									</div>
 								</div>
-							</div>
-							<div class="span11">
-								<div class="row-fluid">
-									<div class="<?php echo ($global_level != 0) ? 'span4' : 'span12'; ?> file_data">
-										<div class="row-fluid">
-											<div class="span12">
-												<h3><?php _e('File information', 'cftp_admin');?></h3>
-												<p class="on_disc_name">
-													<?php echo html_output($row['url']); ?>
-												</p>
-												<label><?php _e('Title', 'cftp_admin');?></label>
-												<input type="text" name="file[<?php echo $i; ?>][name]" value="<?php echo html_output($row['filename']); ?>" class="file_title" placeholder="<?php _e('Enter here the required file title.', 'cftp_admin');?>" />
-												<label><?php _e('Description', 'cftp_admin');?></label>
-												<textarea name="file[<?php echo $i; ?>][description]" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (!empty($row['description'])) ? html_output($row['description']) : ''; ?></textarea>
+								<div class="col-sm-11">
+									<div class="row edit_files_blocks">
+										<div class="<?php echo ($global_level != 0) ? 'col-sm-4' : 'col-sm-12'; ?>">
+											<div class="file_data">
+												<div class="row">
+													<div class="col-sm-12">
+														<h3><?php _e('File information', 'cftp_admin');?></h3>
+														<p class="on_disc_name">
+															<?php echo html_output($row['url']); ?>
+														</p>
+														
+														<div class="form-group">
+															<label><?php _e('Title', 'cftp_admin');?></label>
+															<input type="text" name="file[<?php echo $i; ?>][name]" value="<?php echo html_output($row['filename']); ?>" class="form-control file_title" placeholder="<?php _e('Enter here the required file title.', 'cftp_admin');?>" />
+														</div>
+
+														<div class="form-group">
+															<label><?php _e('Description', 'cftp_admin');?></label>
+															<textarea name="file[<?php echo $i; ?>][description]" class="form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (!empty($row['description'])) ? html_output($row['description']) : ''; ?></textarea>
+														</div>
+													</div>
+												</div>
 											</div>
 										</div>
+										<?php
+											/** The following options are available to users only */
+											if ($global_level != 0) {
+										?>
+												<div class="col-sm-4">
+													<div class="file_data">
+														<?php
+															/**
+															* Only show the EXPIRY options if the current
+															* uploader is a system user, and not a client.
+															*/
+															if (!empty($row['expiry_date'])) {
+																$expiry_date = date('d-m-Y', strtotime($row['expiry_date']));
+															}
+														?>
+														<h3><?php _e('Expiration date', 'cftp_admin');?></h3>
+														<div class="checkbox">
+															<label for="exp_checkbox">
+																<input type="checkbox" id="exp_checkbox" name="file[<?php echo $i; ?>][expires]" value="1" <?php if ($row['expires']) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?>
+															</label>
+														</div>
+		
+														<div class="form-group">
+															<label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
+															<div class="input-group date-container">
+																<input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" />
+																<div class="input-group-addon">
+																	<i class="glyphicon glyphicon-time"></i>
+																</div>
+															</div>
+														</div>
+		
+														<div class="divider"></div>
+		
+														<h3><?php _e('Public downloading', 'cftp_admin');?></h3>
+														<div class="checkbox">
+															<label for="pub_checkbox">
+																<input type="checkbox" id="pub_checkbox" name="file[<?php echo $i; ?>][public]" value="1" <?php if ($row['public_allow']) { ?>checked="checked"<?php } ?> /> <?php _e('Allow public downloading of this file.', 'cftp_admin');?>
+															</label>
+														</div>
+													</div>
+												</div>
+
+												<div class="col-sm-4 assigns">
+													<div class="file_data">
+														<?php
+															/**
+															* Only show the CLIENTS select field if the current
+															* uploader is a system user, and not a client.
+															*/
+														?>
+														<h3><?php _e('Assignations', 'cftp_admin');?></h3>
+														<label><?php _e('Assign this file to', 'cftp_admin');?>:</label>
+														<select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+															<optgroup label="<?php _e('Clients', 'cftp_admin');?>">
+																<?php
+																	/**
+																	 * The clients list is generated early on the file so the
+																	 * array doesn't need to be made once on every file.
+																	 */
+																	foreach($clients as $client => $client_name) {
+																	?>
+																		<option value="<?php echo 'c'.$client; ?>"<?php if (in_array($client,$file_on_clients)) { echo ' selected="selected"'; } ?>>
+																			<?php echo $client_name; ?>
+																		</option>
+																	<?php
+																	}
+																?>
+															</optgroup>
+															<optgroup label="<?php _e('Groups', 'cftp_admin');?>">
+																<?php
+																	/**
+																	 * The groups list is generated early on the file so the
+																	 * array doesn't need to be made once on every file.
+																	 */
+																	foreach($groups as $group => $group_name) {
+																	?>
+																		<option value="<?php echo 'g'.$group; ?>"<?php if (in_array($group,$file_on_groups)) { echo ' selected="selected"'; } ?>>
+																			<?php echo $group_name; ?>
+																		</option>
+																	<?php
+																	}
+																?>
+															</optgroup>
+														</select>
+														<div class="list_mass_members">
+															<a href="#" class="btn btn-info add-all"><?php _e('Add all','cftp_admin'); ?></a>
+															<a href="#" class="btn btn-info remove-all"><?php _e('Remove all','cftp_admin'); ?></a>
+														</div>
+		
+														<div class="divider"></div>
+			
+														<div class="checkbox">
+															<label for="hid_checkbox">
+																<input type="checkbox" id="hid_checkbox" name="file[<?php echo $i; ?>][hidden]" value="1" /> <?php _e('Mark as hidden (will not send notifications) for new assigned clients and groups.', 'cftp_admin');?>
+															</label>
+														</div>
+														<div class="checkbox">
+															<label for="hid_existing_checkbox">
+																<input type="checkbox" id="hid_existing_checkbox" name="file[<?php echo $i; ?>][hideall]" value="1" /> <?php _e('Hide from every already assigned clients and groups.', 'cftp_admin');?>
+															</label>
+														</div>
+													</div>
+												</div>
+										<?php
+											} /** Close $current_level check */
+										?>
 									</div>
-									<?php
-										/** The following options are available to users only */
-										if ($global_level != 0) {
-									?>
-											<div class="span4 file_data">
-												<?php
-													/**
-													* Only show the EXPIRY options if the current
-													* uploader is a system user, and not a client.
-													*/
-													if (!empty($row['expiry_date'])) {
-														$expiry_date = date('d-m-Y', strtotime($row['expiry_date']));
-													}
-												?>
-												<h3><?php _e('Expiration date', 'cftp_admin');?></h3>
-												<label><input type="checkbox" name="file[<?php echo $i; ?>][expires]" value="1" <?php if ($row['expires']) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?></label>
-
-												<label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
-
-												<div class="input-append date">
-													<input type="text" class="span8 datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" /><span class="add-on"><i class="icon-th"></i></span>
-												</div>
-												
-												<div class="divider"></div>
-
-												<h3><?php _e('Public downloading', 'cftp_admin');?></h3>
-												<label><input type="checkbox" name="file[<?php echo $i; ?>][public]" value="1" <?php if ($row['public_allow']) { ?>checked="checked"<?php } ?> /> <?php _e('Allow public downloading of this file.', 'cftp_admin');?></label>
-											</div>
-											<div class="span4 assigns file_data">
-												<?php
-													/**
-													* Only show the CLIENTS select field if the current
-													* uploader is a system user, and not a client.
-													*/
-												?>
-												<h3><?php _e('Assignations', 'cftp_admin');?></h3>
-												<label><?php _e('Assign this file to', 'cftp_admin');?>:</label>
-												<select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
-													<optgroup label="<?php _e('Clients', 'cftp_admin');?>">
-														<?php
-															/**
-															 * The clients list is generated early on the file so the
-															 * array doesn't need to be made once on every file.
-															 */
-															foreach($clients as $client => $client_name) {
-															?>
-																<option value="<?php echo 'c'.$client; ?>"<?php if (in_array($client,$file_on_clients)) { echo ' selected="selected"'; } ?>>
-																	<?php echo $client_name; ?>
-																</option>
-															<?php
-															}
-														?>
-													</optgroup>
-													<optgroup label="<?php _e('Groups', 'cftp_admin');?>">
-														<?php
-															/**
-															 * The groups list is generated early on the file so the
-															 * array doesn't need to be made once on every file.
-															 */
-															foreach($groups as $group => $group_name) {
-															?>
-																<option value="<?php echo 'g'.$group; ?>"<?php if (in_array($group,$file_on_groups)) { echo ' selected="selected"'; } ?>>
-																	<?php echo $group_name; ?>
-																</option>
-															<?php
-															}
-														?>
-													</optgroup>
-												</select>
-												<div class="list_mass_members">
-													<a href="#" class="btn add-all"><?php _e('Add all','cftp_admin'); ?></a>
-													<a href="#" class="btn remove-all"><?php _e('Remove all','cftp_admin'); ?></a>
-												</div>
-
-												<div class="divider"></div>
-	
-												<label><input type="checkbox" name="file[<?php echo $i; ?>][hidden]" value="1" /> <?php _e('Mark as hidden (will not send notifications) for new assigned clients and groups.', 'cftp_admin');?></label>
-												<label><input type="checkbox" name="file[<?php echo $i; ?>][hideall]" value="1" /> <?php _e('Hide from every already assigned clients and groups.', 'cftp_admin');?></label>
-											</div>
-									<?php
-										} /** Close $current_level check */
-									?>
 								</div>
 							</div>
-						</div>
-				<?php
-					}
-				?>
-				<div class="after_form_buttons">
-					<a href="<?php echo BASE_URI; ?>manage-files.php" name="cancel" class="btn btn-wide"><?php _e('Cancel','cftp_admin'); ?></a>
-					<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Continue','cftp_admin'); ?></button>
+					<?php
+						}
+					?>
+					<div class="after_form_buttons">
+						<a href="<?php echo BASE_URI; ?>manage-files.php" name="cancel" class="btn btn-default btn-wide"><?php _e('Cancel','cftp_admin'); ?></a>
+						<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Continue','cftp_admin'); ?></button>
+					</div>
 				</div>
 			</form>
 	<?php
@@ -457,7 +493,7 @@ $current_level = get_current_user_level();
 			search_contains	: true
 		});
 
-		$('.input-append.date').datepicker({
+		$('.date-container .date-field').datepicker({
 			format			: 'dd-mm-yyyy',
 			autoclose		: true,
 			todayHighlight	: true

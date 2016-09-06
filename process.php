@@ -145,6 +145,7 @@ class process {
 						$new_record_action = $new_log_action->log_action_save($log_action_args);
 						$this->real_file = UPLOADED_FILES_FOLDER.$this->real_file_url;
 						if (file_exists($this->real_file)) {
+							session_write_close();
 							while (ob_get_level()) ob_end_clean();
 							header('Content-Type: application/octet-stream');
 							header('Content-Disposition: attachment; filename='.basename($this->real_file));

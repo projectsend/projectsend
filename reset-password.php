@@ -193,7 +193,7 @@ include('header-unlogged.php');
 
 		<div class="container">
 			<div class="row">
-				<div class="span4 offset4 white-box">
+				<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-4 white-box">
 					<div class="white-box-interior box-reset-password">
 						<?php
 							/**
@@ -284,8 +284,10 @@ include('header-unlogged.php');
 										<fieldset>
 											<input type="hidden" name="form_type" id="form_type" value="new_request" />
 
-											<label class="control-label" for="reset_password_email"><?php _e('E-mail','cftp_admin'); ?></label>
-											<input type="text" name="reset_password_email" id="reset_password_email" class="span3" />
+											<div class="form-group">
+												<label for="reset_password_email"><?php _e('E-mail','cftp_admin'); ?></label>
+												<input type="text" name="reset_password_email" id="reset_password_email" class="form-control" />
+											</div>
 
 											<p><?php _e("Please enter your account's e-mail address. You will receive a link to continue the process.",'cftp_admin'); ?></p>
 
@@ -299,8 +301,15 @@ include('header-unlogged.php');
 								case 'enter_new_password':
 						?>
 									<script type="text/javascript">
+										/**
+										 * Quick hack to ignore the col-sm-* classes
+										 * when adding the errors to the form
+										 */
+										var ignore_columns = true;
+
 										$(document).ready(function() {
 											$("form").submit(function() {
+
 												clean_form(this);
 									
 												is_complete(this.reset_password_new,'<?php echo $validation_no_pass; ?>');
@@ -317,11 +326,17 @@ include('header-unlogged.php');
 										<fieldset>
 											<input type="hidden" name="form_type" id="form_type" value="new_password" />
 
-											<label class="control-label" for="reset_password_new"><?php _e('New password','cftp_admin'); ?></label>
-
-											<input type="password" name="reset_password_new" id="reset_password_new" class="span3 password_toggle" />
-											<button type="button" class="btn password_toggler pass_toggler_show"><i class="icon-eye-open"></i></button>
-											<?php password_notes(); ?>
+											<div class="form-group">
+												<label for="reset_password_new"><?php _e('New password','cftp_admin'); ?></label>
+												<div class="input-group">
+													<input type="password" name="reset_password_new" id="reset_password_new" class="form-control password_toggle" />
+													<div class="input-group-btn password_toggler">
+														<button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button>
+													</div>
+												</div>
+												<button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="reset_password_new" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate','cftp_admin'); ?></button>
+											</div>
+											<?php echo password_notes(); ?>
 											
 											<p><?php _e("Please enter your desired new password. After that, you will be able to log in normally.",'cftp_admin'); ?></p>
 

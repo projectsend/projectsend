@@ -19,31 +19,49 @@ class FilesActions
 
 	function delete_files($rel_id)
 	{
-		$this->check_level = array(9,8);
+		$this->can_delete		= false;
+		$this->result			= '';
+		$this->check_level		= array(9,8,0);
+
 		if (isset($rel_id)) {
 			/** Do a permissions check */
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
 				$this->file_id = $rel_id;
-				$this->sql = $this->dbh->prepare("SELECT url FROM " . TABLE_FILES . " WHERE id = :file_id");
+				$this->sql = $this->dbh->prepare("SELECT url, uploader FROM " . TABLE_FILES . " WHERE id = :file_id");
 				$this->sql->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
 				$this->sql->execute();
 				$this->sql->setFetchMode(PDO::FETCH_ASSOC);
 				while( $this->row = $this->sql->fetch() ) {
+					if ( CURRENT_USER_LEVEL == '0' ) {
+						if ( CLIENTS_CAN_DELETE_OWN_FILES == '1' && $this->row['uploader'] == CURRENT_USER_USERNAME ) {
+							$this->can_delete	= true;
+						}
+					}
+					else {
+						$this->can_delete	= true;
+					}
+
 					$this->file_url = $this->row['url'];
 				}
 
 				/** Delete the reference to the file on the database */
-				$this->sql = $this->dbh->prepare("DELETE FROM " . TABLE_FILES . " WHERE id = :file_id");
-				$this->sql->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
-				$this->sql->execute();
-				/**
-				 * Use the id and uri information to delete the file.
-				 *
-				 * @see delete_file
-				 */
-				delete_file(UPLOADED_FILES_FOLDER . $this->file_url);
+				if ( true === $this->can_delete ) {
+					$this->sql = $this->dbh->prepare("DELETE FROM " . TABLE_FILES . " WHERE id = :file_id");
+					$this->sql->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+					$this->sql->execute();
+					/**
+					 * Use the id and uri information to delete the file.
+					 *
+					 * @see delete_file_from_disk
+					 */
+					delete_file_from_disk(UPLOADED_FILES_FOLDER . $this->file_url);
+					$this->result = true;
+				}
+				else {
+					$this->result = false;
+				}
 				
-				return $this->file_url;
+				return $this->result;
 			}
 		}
 	}

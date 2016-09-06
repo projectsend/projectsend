@@ -9,7 +9,10 @@
  * @package ProjectSend
  * @subpackage Upload
  */
-$plupload = 1;
+$load_scripts	= array(
+						'plupload',
+					); 
+
 require_once('sys.includes.php');
 
 $active_nav = 'files';
@@ -151,13 +154,16 @@ $current_level = get_current_user_level();
 
                         // if uploading
                         if(uploader.state === 2) {
+							<?php
+								$confirmation_msg = "Are you sure? Files currently being uploaded will be discarded if you leave this page.";
+							?>
                             //IE & Firefox
                             if (e) {
-                                e.returnValue = '<?php _e("Are you sure? Files currently being uploaded will be discarded if you leave this page.",'cftp_admin'); ?>';
+                                e.returnValue = '<?php _e($confirmation_msg,'cftp_admin'); ?>';
                             }
 
                             // For Safari
-                            return '<?php _e("Are you sure? Files currently being uploaded will be discarded if you leave this page.",'cftp_admin'); ?>';
+                            return '<?php _e($confirmation_msg,'cftp_admin'); ?>';
                         }
 
                     };

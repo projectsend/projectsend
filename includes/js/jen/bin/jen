@@ -1,0 +1,80 @@
+#!/usr/bin/env node
+
+/*
+ Jen is a portable password generator using cryptographic approach
+ Copyright (C) 2015  Michael VERGOZ @mykiimike
+ 
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ */
+ 
+ // example ./bin/jen --min=15 --max=30 --nh --regex="[A-Z]"
+ 
+var path = require("path"),
+	fs =  require("fs"),
+	Jen = require(path.join(path.dirname(fs.realpathSync(__filename)), '../jen'));
+
+
+/* get options */
+var options = {};
+for(var a=2; a<process.argv.length; a++) {
+	var el = process.argv[a];
+	var iOf = el.indexOf('=');
+	if(iOf > -1)
+		options[el.substr(0, iOf)] = el.substr(iOf+1);
+	else
+		options[el] = true;
+}
+
+
+var cMin = 15;
+var cMax = cMin*2;
+var cHard = true;
+var cRegex = null;
+var hdl = Jen(cHard);
+
+if(options.hasOwnProperty("--help")) {
+	console.log("Help:");
+	console.log("\t--min: Minimum String length (must be upper to 4)");
+	console.log("\t--max: Maximum String length");
+	console.log("\t--version: Information about the software version"); 
+	console.log("\t--nh: No hardening");
+	console.log("\t--regex: Apply a regex");
+	console.log("\t--help: This message");
+	process.exit(0);
+}
+
+if(options.hasOwnProperty("--version")) {
+	console.log(
+		"Jen version "+hdl.version+"\n"+
+		'V8 v'+process.versions.v8+"\n"+
+		"nodejs v"+process.versions.node+"\n"+
+		'openssl v'+process.versions.openssl+"\n"+
+		'libuv v'+process.versions.uv
+	);
+	process.exit(0);
+}
+
+if(options.hasOwnProperty("--min"))
+	cMin = options["--min"];
+if(options.hasOwnProperty("--max"))
+	cMax = options["--max"];
+if(options.hasOwnProperty("--nh"))
+	cHard = false;
+if(options.hasOwnProperty("--regex"))
+	cRegex = new RegExp(options["--regex"]);
+	
+hdl.hardening(cHard);
+
+console.log(hdl.password(cMin, cMax, cRegex));

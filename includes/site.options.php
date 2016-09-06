@@ -178,6 +178,21 @@ if(!empty($options_values)) {
 	}
 
 	/**
+	 * For versions 645 and up
+	 */	
+	if (isset($options_values['use_browser_lang'])) {
+		define('USE_BROWSER_LANG',$options_values['use_browser_lang']);
+	}
+	
+	/**
+	 * For versions 672 and up
+	 */	
+	if (isset($options_values['clients_can_delete_own_files'])) {
+		define('CLIENTS_CAN_DELETE_OWN_FILES',$options_values['clients_can_delete_own_files']);
+	}
+
+
+	/**
 	 * Set the default timezone based on the value of the Timezone select box
 	 * of the options page.
 	 */

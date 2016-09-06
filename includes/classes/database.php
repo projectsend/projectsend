@@ -8,6 +8,26 @@
  *
  */
 
+/** Extension class to count the total of executed queries */
+class PDOEx extends PDO
+{
+	private $queries = 0;
+	
+	public function query($query) {
+		++$this->queries;
+		return parent::query($query);
+	}
+
+	public function prepare($statement) {
+		++$this->queries;
+		return parent::prepare($statement);
+	}
+	
+	public function GetCount() {
+		return $this->queries;
+	}
+}
+
 /** Initiate the database connection */
 global $dbh;
 try {
@@ -31,26 +51,5 @@ catch(PDOException $e) {
 	die();
 */
 	return false;
-}
-
-
-/** Extension class to count the total of executed queries */
-class PDOEx extends PDO
-{
-	private $queries = 0;
-	
-	public function query($query) {
-		++$this->queries;
-		return parent::query($query);
-	}
-
-	public function prepare($statement) {
-		++$this->queries;
-		return parent::prepare($statement);
-	}
-	
-	public function GetCount() {
-		return $this->queries;
-	}
 }
 ?>

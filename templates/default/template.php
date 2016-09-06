@@ -9,8 +9,11 @@ include_once(ROOT_DIR.'/templates/common.php'); // include the required function
 
 $window_title = __('File downloads','cftp_template');
 
-$footable = 1;
-include_once(ROOT_DIR.'/header.php'); // include the required functions for every template
+$load_scripts	= array(
+						'footable',
+					); 
+
+include_once(ROOT_DIR.'/header.php');
 
 $count = count($my_files);
 ?>
@@ -29,8 +32,10 @@ $count = count($my_files);
 			<div class="form_actions_left">
 				<div class="form_actions_limit_results">
 					<form action="" name="files_search" method="post" class="form-inline">
-						<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box" />
-						<button type="submit" id="btn_proceed_search" class="btn btn-small"><?php _e('Search','cftp_admin'); ?></button>
+						<div class="form-group group_float">
+							<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box form-control" />
+						</div>
+						<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default"><?php _e('Search','cftp_admin'); ?></button>
 					</form>
 				</div>
 			</div>
@@ -39,11 +44,13 @@ $count = count($my_files);
 				<div class="form_actions_right">
 					<div class="form_actions">
 						<div class="form_actions_submit">
-							<label><?php _e('Selected files actions','cftp_admin'); ?>:</label>
-							<select name="files_actions" id="files_actions" class="txtfield">
-								<option value="zip"><?php _e('Download zipped','cftp_admin'); ?></option>
-							</select>
-							<button type="submit" id="do_action" name="proceed" class="btn btn-small"><?php _e('Proceed','cftp_admin'); ?></button>
+							<div class="form-group group_float">
+								<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected files actions','cftp_admin'); ?>:</label>
+								<select name="files_actions" id="files_actions" class="txtfield form-control">
+									<option value="zip"><?php _e('Download zipped','cftp_admin'); ?></option>
+								</select>
+								<button type="submit" id="do_action" name="proceed" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -139,7 +146,7 @@ $count = count($my_files);
 										?>
 											<td class="extra"></td>
 											<td class="text-center">
-												<a href="javascript:void(0);" class="btn btn-danger disabled btn-small">
+												<a href="javascript:void(0);" class="btn btn-danger disabled btn-sm">
 													<?php _e('File expired','cftp_template'); ?>
 												</a>
 											</td>
@@ -165,7 +172,7 @@ $count = count($my_files);
 													<?php } ?>
 												</td>
 												<td>
-													<a href="<?php echo $download_link; ?>" target="_blank" class="btn btn-primary btn-small btn-wide">
+													<a href="<?php echo $download_link; ?>" target="_blank" class="btn btn-primary btn-sm btn-wide">
 														<?php _e('Download','cftp_template'); ?>
 													</a>
 												</td>
@@ -180,7 +187,11 @@ $count = count($my_files);
 					</tbody>
 				</table>
 
-				<div class="pagination pagination-centered hide-if-no-paging"></div>
+				<nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
+					<div class="pagination_wrapper text-center">
+						<ul class="pagination hide-if-no-paging"></ul>
+					</div>
+				</nav>
 			</form>
 		
 		</div> <!-- right_column -->
@@ -230,5 +241,6 @@ $count = count($my_files);
 		});
 	</script>
 
+	<script src="<?php echo BASE_URI; ?>includes/js/footable/footable.all.min.js"></script>
 </body>
 </html>

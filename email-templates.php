@@ -6,7 +6,6 @@
  * @package ProjectSend
  * @subpackage Options
  */
-$easytabs = 1;
 $allowed_levels = array(9);
 require_once('sys.includes.php');
 
@@ -79,14 +78,6 @@ if ($_POST) {
 		}
 
 	?>
-		
-	<script type="text/javascript">
-		$(document).ready(function() {
-			$('#tab-container').easytabs({
-				updateHash: false
-			});
-		});
-	</script>
 	
 	<?php
 		$href_string = ' ' . __('(to be used as href on a link tag)','cftp_admin');
@@ -177,83 +168,90 @@ if ($_POST) {
 							);
 	?>
 
-	<form action="email-templates.php" name="templatesform" method="post">
-		<div id="outer_tabs_wrapper">
 
-			<div id="tab-container" class="tab-container">
-				<ul class="etabs">
-					<li class="tab">
-						<a href="#tab_header_footer">
-							<?php _e('Header / Footer','cftp_admin'); ?>
-						</a>
-					</li>
-					<?php
-						foreach ($options_groups as $group) {
-					?>
-							<li class="tab">
-								<a href="#tab_<?php echo $group['tab']; ?>">
-									<?php echo $group['name']; ?>
-								</a>
-							</li>
-					<?php
-						}
-					?>
-				</ul>
-				<div class="panel-container">
-					<div id="tab_header_footer">
-						<div class="options_box whitebox">
-							<ul class="form_fields">
-								<li>
+	<ul class="nav nav-tabs" role="tablist">
+		<li class="active"><a href="#tab_header_footer" aria-controls="tab_header_footer" role="tab" data-toggle="tab"><?php _e('Header / Footer','cftp_admin'); ?></a></li>
+		<?php
+			foreach ($options_groups as $group) {
+		?>
+				<li>
+					<a href="#tab_<?php echo $group['tab']; ?>" aria-controls="tab_<?php echo $group['tab']; ?>" role="tab" data-toggle="tab">
+						<?php echo $group['name']; ?>
+					</a>
+				</li>
+		<?php
+			}
+		?>
+	</ul>
+
+	<form action="email-templates.php" name="templatesform" method="post" class="form-horizontal">
+		<div class="container">
+	
+			<div id="outer_tabs_wrapper">
+				<div class="tab-content">
+	
+					<div role="tabpanel" class="tab-pane fade in active" id="tab_header_footer">
+						<div class="row">
+							<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
+								<div class="white-box-interior">
 									<h3><?php _e('Header / Footer','cftp_admin'); ?></h3>
 									<p class="text-warning"><?php _e('Here you set up the header and footer of every email, or use the default ones available with the system. Use this to customize each part and include, for example, your own logo and markup.','cftp_admin'); ?></p>
 									<p class="text-warning"><?php _e("Do not forget to also include -and close accordingly- the basic structural HTML tags (DOCTYPE, HTML, HEADER, BODY).",'cftp_admin'); ?></p>
-								</li>
-								<li>
-									<label for="email_header_footer_customize"><?php _e('Use custom header / footer','cftp_admin'); ?></label>
-									<input type="checkbox" value="1" name="email_header_footer_customize" class="checkbox_options" <?php echo (EMAILS_HEADER_FOOTER_CUSTOM == 1) ? 'checked="checked"' : ''; ?> />
-								</li>
-								<li>
-									<label for="email_header_text"><?php _e('Header','cftp_admin'); ?></label>
-									<textarea name="email_header_text" id="email_header_text"><?php echo EMAILS_HEADER_TEXT; ?></textarea>
-								</li>	
-								<li>
-									<p class="field_note"><?php _e('You can use HTML tags here.','cftp_admin'); ?></p>
-								</li>	
 
-								<li>
-									<label for="email_footer_text"><?php _e('Footer','cftp_admin'); ?></label>
-									<textarea name="email_footer_text" id="email_footer_text"><?php echo EMAILS_FOOTER_TEXT; ?></textarea>
-								</li>	
-								<li>
-									<p class="field_note"><?php _e('You can use HTML tags here.','cftp_admin'); ?></p>
-								</li>	
-							</ul>
+									<div class="options_divide"></div>
+
+									<div class="form-group">
+										<div class="text-center">
+											<label for="email_header_footer_customize">
+												<input type="checkbox" value="1" name="email_header_footer_customize" <?php echo (EMAILS_HEADER_FOOTER_CUSTOM == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Use custom header / footer','cftp_admin'); ?>
+											</label>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label for="email_header_text"><?php _e('Header','cftp_admin'); ?></label>
+										<textarea name="email_header_text" id="email_header_text" class="form-control textarea_high"><?php echo EMAILS_HEADER_TEXT; ?></textarea>
+										<p class="field_note"><?php _e('You can use HTML tags here.','cftp_admin'); ?></p>
+									</div>
+
+									<div class="form-group">
+										<label for="email_footer_text"><?php _e('Footer','cftp_admin'); ?></label>
+										<textarea name="email_footer_text" id="email_footer_text" class="form-control textarea_high"><?php echo EMAILS_FOOTER_TEXT; ?></textarea>
+										<p class="field_note"><?php _e('You can use HTML tags here.','cftp_admin'); ?></p>
+									</div>
+
+								</div>
+							</div>
 						</div>
 					</div>
+	
 					<?php
 						foreach ($options_groups as $group) {
 					?>
-							<div id="tab_<?php echo $group['tab']; ?>">
-								<div class="options_box whitebox">
-									<ul class="form_fields">
-										<li>
+							<div role="tabpanel" class="tab-pane fade" id="tab_<?php echo $group['tab']; ?>">
+								<div class="row">
+									<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
+										<div class="white-box-interior">
+
 											<h3><?php echo $group['name']; ?></h3>
 											<p class="text-warning"><?php echo $group['description']; ?></p>
-										</li>
-										<li>
-											<label for="<?php echo $group['checkbox']; ?>"><?php _e('Use custom template','cftp_admin'); ?></label>
-											<input type="checkbox" value="1" name="<?php echo $group['checkbox']; ?>" class="checkbox_options" <?php echo ($group['option_check'] == 1) ? 'checked="checked"' : ''; ?> />
-										</li>
-										<li>
-											<label for="<?php echo $group['textarea']; ?>"><?php _e('Template text','cftp_admin'); ?></label>
-											<textarea name="<?php echo $group['textarea']; ?>" id="<?php echo $group['textarea']; ?>"><?php echo $group['option_text']; ?></textarea>
-										</li>	
-										
-										<li>
-											<p class="field_note"><?php _e('You can use HTML tags here.','cftp_admin'); ?></p>
-										</li>	
-										
-										<li class="email_available_tags">
+
+											<div class="options_divide"></div>
+
+											<div class="form-group">
+												<div class="text-center">
+													<label for="<?php echo $group['checkbox']; ?>">
+														<input type="checkbox" value="1" name="<?php echo $group['checkbox']; ?>" class="checkbox_options" <?php echo ($group['option_check'] == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Use custom template','cftp_admin'); ?>
+													</label>
+												</div>
+											</div>
+
+											<div class="form-group">
+												<label for="<?php echo $group['textarea']; ?>"><?php _e('Template text','cftp_admin'); ?></label>
+												<textarea name="<?php echo $group['textarea']; ?>" id="<?php echo $group['textarea']; ?>"  class="form-control textarea_high"><?php echo $group['option_text']; ?></textarea>
+												<p class="field_note"><?php _e('You can use HTML tags here.','cftp_admin'); ?></p>
+											</div>	
+			
 											<p><strong><?php _e("The following tags can be used on this e-mails' body.",'cftp_admin'); ?></strong></p>
 											<?php
 												if (!empty($group['tags'])) {
@@ -270,25 +268,29 @@ if ($_POST) {
 											<?php
 												}
 											?>
-										</li>			
-						
-									</ul>
-									<hr />
-									<div class="preview_button">
-										<button type="button" data-preview="<?php echo $group['tab']; ?>" class="btn btn-wide btn-primary preview"><?php _e('Preview this template','cftp_admin'); ?></button>
-										<p><?php _e("Before trying this function, please save your changes to see them reflected on the preview.",'cftp_admin'); ?></p>
+
+											<hr />
+											<div class="preview_button">
+												<button type="button" data-preview="<?php echo $group['tab']; ?>" class="btn btn-wide btn-primary preview"><?php _e('Preview this template','cftp_admin'); ?></button>
+												<?php
+													$message = __("Before trying this function, please save your changes to see them reflected on the preview.",'cftp_admin');
+													echo system_message('info', $message);
+												?>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
 					<?php
 						}
 					?>
+	
 				</div>
 			</div>
-		</div>
-
-		<div class="after_form_buttons">
-			<button type="submit" name="submit" class="btn btn-wide btn-primary empty"><?php _e('Update all options','cftp_admin'); ?></button>
+	
+			<div class="after_form_buttons">
+				<button type="submit" name="submit" class="btn btn-wide btn-primary empty"><?php _e('Update all options','cftp_admin'); ?></button>
+			</div>
 		</div>
 	</form>
 </div>

@@ -6,7 +6,10 @@
  * @subpackage	Groups
  *
  */
-$footable = 1;
+$load_scripts	= array(
+						'footable',
+					); 
+
 $allowed_levels = array(9,8);
 require_once('sys.includes.php');
 
@@ -208,8 +211,10 @@ include('header.php');
 	<div class="form_actions_left">
 		<div class="form_actions_limit_results">
 			<form action="groups.php<?php if(isset($member_exists)) { ?>?member=<?php echo html_output($member); } ?>" name="groups_search" method="post" class="form-inline">
-				<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box" />
-				<button type="submit" id="btn_proceed_search" class="btn btn-small"><?php _e('Search','cftp_admin'); ?></button>
+				<div class="form-group group_float">
+					<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box form-control" />
+				</div>
+				<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default"><?php _e('Search','cftp_admin'); ?></button>
 			</form>
 		</div>
 	</div>
@@ -218,12 +223,14 @@ include('header.php');
 		<div class="form_actions_right">
 			<div class="form_actions">
 				<div class="form_actions_submit">
-					<label><?php _e('Selected groups actions','cftp_admin'); ?>:</label>
-					<select name="groups_actions" id="groups_actions" class="txtfield">
-						<option value="none"><?php _e('Select action','cftp_admin'); ?></option>
-						<option value="delete"><?php _e('Delete','cftp_admin'); ?></option>
-					</select>
-					<button type="submit" id="do_action" name="proceed" class="btn btn-small"><?php _e('Proceed','cftp_admin'); ?></button>
+					<div class="form-group group_float">
+						<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected groups actions','cftp_admin'); ?>:</label>
+						<select name="groups_actions" id="groups_actions" class="txtfield form-control">
+							<option value="none"><?php _e('Select action','cftp_admin'); ?></option>
+							<option value="delete"><?php _e('Delete','cftp_admin'); ?></option>
+						</select>
+					</div>
+					<button type="submit" id="do_action" name="proceed" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
 				</div>
 			</div>
 		</div>
@@ -315,8 +322,8 @@ include('header.php');
 						<?php echo $date; ?>
 					</td>
 					<td>
-						<a href="manage-files.php?group_id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-small"><?php _e('Manage files','cftp_admin'); ?></a>
-						<a href="groups-edit.php?id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-small"><?php _e('Edit','cftp_admin'); ?></a>
+						<a href="manage-files.php?group_id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm"><?php _e('Manage files','cftp_admin'); ?></a>
+						<a href="groups-edit.php?id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm"><?php _e('Edit','cftp_admin'); ?></a>
 					</td>
 				</tr>
 						
@@ -327,7 +334,11 @@ include('header.php');
 			</tbody>
 		</table>
 
-		<div class="pagination pagination-centered hide-if-no-paging"></div>
+		<nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
+			<div class="pagination_wrapper text-center">
+				<ul class="pagination hide-if-no-paging"></ul>
+			</div>
+		</nav>
 	</form>
 	
 </div>

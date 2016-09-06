@@ -6,7 +6,7 @@
  * changed through the web interface, such as the version number,
  * php directives and the user and password length values.
  *
- * @package ProjectSend 
+ * @package ProjectSend
  * @subpackage Core
  */
 
@@ -14,7 +14,8 @@
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r608');
+define('CURRENT_VERSION', 'r672');
+// corresponds to: "Allow clients to delete their own files (optional)"
 
 /**
  * Fix for including external files when on HTTPS.
@@ -48,20 +49,50 @@ define('NEWS_FEED_URI','http://www.projectsend.org/feed/');
 define('UPDATES_FEED_URI','http://projectsend.org/updates/versions.xml');
 
 /**
- * Include the personal configuration file
- * It must be created before installing ProjectSend.
+ * Check if the personal configuration file exists
+ * Otherwise will start a configuration page
  *
  * @see sys.config.sample.php
  */
-if(file_exists(ROOT_DIR.'/includes/sys.config.php')) {
-	include(ROOT_DIR.'/includes/sys.config.php');
+if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') && !defined( 'IS_MAKE_CONFIG' ) ) {
+	// the following script returns only after the creation of the configuration file
+	if ( defined('IS_INSTALL') ) {
+		header('Location:make-config.php');
+	}
+	else {
+		header('Location:install/make-config.php');
+	}
 }
 else {
-	echo '<h1>Missing a required file</h1>';
-	echo "<p>The system couldn't find the configuration file <strong>sys.config.php</strong> that should be located on the <strong>includes</strong> folder.</p>
-	<p>This file contains the database connection information, as well as the language and other important settings.</p>
-	<p>If this is the first time you are trying to run ProjectSend, you can edit the sample file <strong>includes/sys.config.sample.php</strong> to create your own configuration information.<br />
-		Then make sure to rename it to sys.config.php</p>";
+	include(ROOT_DIR.'/includes/sys.config.php');
+}
+
+/**
+ * Check for PDO extensions
+ */
+$pdo_available_drivers = PDO::getAvailableDrivers();
+if( (DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND') ) {
+	echo '<h1>Missing a required extension</h1>';
+	echo "<p>The system couldn't find the configuration the <strong>PDO extension for mysql</strong>.</p>
+	<p>This extension is required for database comunication.</p>
+	<p>You can install this extension via the package manager of your linux distro, most likely with one of these commands:</p>
+	<ul>
+		<li>sudo apt-get install php5-mysql   	<strong># debian/ubuntu</strong></li>
+		<li>sudo yum install php-mysql   		<strong># centos/fedora</strong></li>
+	</ul>
+	<p>You also need to restart the webserver after the installation of PDO_mysql.</p>";
+	exit;
+}
+if( (DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers) ) {
+	echo '<h1>Missing a required extension</h1>';
+	echo "<p>The system couldn't find the configuration the <strong>PDO extension for MS SQL Server</strong>.</p>
+	<p>This extension is required for database comunication.</p>
+	<p>You can install this extension via the package manager of your linux distro, most likely with one of these commands:</p>
+	<ul>
+		<li>sudo apt-get install php5-sybase	<strong># debian/ubuntu</strong></li>
+		<li>sudo yum install php-mssql			<strong># centos/fedora (you need EPEL)</strong></li>
+	</ul>
+	<p>You also need to restart the webserver after the installation of PDO_mssql.</p>";
 	exit;
 }
 
@@ -99,6 +130,8 @@ define('MAX_USER_CHARS', 60);
 define('MIN_PASS_CHARS', 5);
 define('MAX_PASS_CHARS', 60);
 
+define('MIN_GENERATE_PASS_CHARS', 10);
+define('MAX_GENERATE_PASS_CHARS', 20);
 /*
  * Cookie expiration time (in seconds).
  * Set by default to 30 days (60*60*24*30).
@@ -129,33 +162,13 @@ define('CLIENT_UPLOADS_TEMP_FOLDER', ROOT_DIR.'/upload/temp');
  *
  */
 define('SYSTEM_URI','http://www.projectsend.org/');
-define('SYSTEM_URI_LABEL','ProjectSend on Google Code');
+define('SYSTEM_URI_LABEL','ProjectSend on github');
 define('DONATIONS_URL','http://www.projectsend.org/donations/');
 /** Previously cFTP */
 define('SYSTEM_NAME','ProjectSend');
 
 define('LOGO_FOLDER',ROOT_DIR.'/img/custom/logo/');
 define('LOGO_THUMB_FOLDER',ROOT_DIR.'/img/custom/thumbs/');
-
-/**
- * Current system language
- *
- * @see sys.config.sample.php
- */
-$lang = SITE_LANG;
-define('I18N_DEFAULT_DOMAIN', 'cftp_admin');
-require_once(ROOT_DIR.'/includes/classes/i18n.php');
-I18n::LoadDomain(ROOT_DIR."/lang/{$lang}.mo", 'cftp_admin' );
-
-/** System User Roles names */
-$user_role_9_name = __('System Administrator','cftp_admin');
-$user_role_8_name = __('Account Manager','cftp_admin');
-$user_role_7_name = __('Uploader','cftp_admin');
-$user_role_0_name = __('Client','cftp_admin');
-define('USER_ROLE_LVL_9', $user_role_9_name);
-define('USER_ROLE_LVL_8', $user_role_8_name);
-define('USER_ROLE_LVL_7', $user_role_7_name);
-define('USER_ROLE_LVL_0', $user_role_0_name);
 
 /** phpass */
 define('HASH_COST_LOG2', 8);

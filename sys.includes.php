@@ -18,7 +18,12 @@ require_once(ROOT_DIR.'/sys.vars.php');
 require_once(ROOT_DIR.'/includes/classes/database.php');
 
 /** Load the site options */
-require_once(ROOT_DIR.'/includes/site.options.php');
+if ( !defined( 'IS_MAKE_CONFIG' ) ) {
+	require_once(ROOT_DIR.'/includes/site.options.php');
+}
+
+/** Load the language class and translation file */
+require_once(ROOT_DIR.'/includes/language.php');
 
 /** Text strings used on various files */
 require_once(ROOT_DIR.'/includes/vars.php');
@@ -48,12 +53,21 @@ require_once(ROOT_DIR.'/includes/timezone_identifiers_list.php');
  * on other files.
  *
  */
-require_once(ROOT_DIR.'/includes/classes/actions-clients.php');
-require_once(ROOT_DIR.'/includes/classes/actions-files.php');
-require_once(ROOT_DIR.'/includes/classes/actions-groups.php');
-require_once(ROOT_DIR.'/includes/classes/actions-log.php');
-require_once(ROOT_DIR.'/includes/classes/actions-users.php');
-require_once(ROOT_DIR.'/includes/classes/file-upload.php');
-require_once(ROOT_DIR.'/includes/classes/form-validation.php');
-require_once(ROOT_DIR.'/includes/classes/send-email.php');
+$classes_files = array(
+						'actions-clients.php',
+						'actions-files.php',
+						'actions-groups.php',
+						'actions-log.php',
+						'actions-users.php',
+						'file-upload.php',
+						'form-validation.php',
+						'send-email.php',
+						'generate-form.php',
+					);
+foreach ( $classes_files as $filename ) {
+	$location = ROOT_DIR . '/includes/classes/' . $filename;
+	if ( file_exists( $location ) ) {
+		require_once( $location );
+	}
+}
 ?>

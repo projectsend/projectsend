@@ -1,18 +1,19 @@
 <?php
 /**
- * Find files that where uploaded but not assigned, step 1
- * Shows a list of files found on the upload/ folder,
- * if they are allowed according to the sytem settings.
- * Files uploaded by the "Upload from computer" form also
- * remain on this folder until assigned to a client, so if
- * that form was not completed, the files can be imported
- * from here later on.
+ * Shows a list of files found on the upload/ folder that
+ * are not yet on the database, meaning they were uploaded
+ * via FTP.
+ * Only shows files that are allowed according to the sytem
+ * settings.
  * Submits an array of file names.
  *
  * @package ProjectSend
  * @subpackage Upload
  */
-$footable = 1;
+$load_scripts	= array(
+						'footable',
+					); 
+
 $allowed_levels = array(9,8,7);
 require_once('sys.includes.php');
 
@@ -83,7 +84,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 							/** Check types of files that are not on the database */							
 							if (!array_key_exists($filename,$db_files)) {
 								$file_object = new PSend_Upload_File();
-								$new_filename = $file_object->safe_rename_on_disc($filename,$work_folder);
+								$new_filename = $file_object->safe_rename_on_disk($filename,$work_folder);
 								/** Check if the filetype is allowed */
 								if ($file_object->is_filetype_allowed($new_filename)) {
 									/** Add it to the array of available files */
@@ -93,19 +94,6 @@ $work_folder = UPLOADED_FILES_FOLDER;
 															'path'		=> $new_filename_path,
 															'name'		=> $new_filename,
 															'reason'	=> 'not_on_db',
-														);
-								}
-							}
-							else {
-								/**
-								 * These following files EXIST on DB ($db_files)
-								 * but not on the assigned table ($assigned)
-								 */
-								if(!in_array($db_files[$filename],$assigned)) {
-									$files_to_add[] = array(
-															'path'		=> $filename_path,
-															'name'		=> $filename,
-															'reason'	=> 'not_assigned',
 														);
 								}
 							}
@@ -149,10 +137,19 @@ $work_folder = UPLOADED_FILES_FOLDER;
 
 				<div class="form_actions_limit_results">
 					<form action="" name="files_search" method="post" class="form-inline">
-						<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box" />
-						<button type="submit" id="btn_proceed_search" class="btn btn-small"><?php _e('Search','cftp_admin'); ?></button>
+						<div class="form-group group_float">
+							<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box form-control" />
+						</div>
+						<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default"><?php _e('Search','cftp_admin'); ?></button>
 					</form>
 				</div>
+
+				<div class="clear"></div>
+		
+				<div class="form_actions_count">
+					<p class="form_count_total"><?php _e('Showing','cftp_admin'); ?>: <span><?php echo count($files_to_add); ?> <?php _e('files','cftp_admin'); ?></span></p>
+				</div>
+		
 				<div class="clear"></div>
 
 				<form action="upload-process-form.php" name="upload_by_ftp" id="upload_by_ftp" method="post" enctype="multipart/form-data">
@@ -165,7 +162,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 								<th data-sort-initial="true"><?php _e('File name','cftp_admin'); ?></th>
 								<th data-type="numeric" data-hide="phone"><?php _e('File size','cftp_admin'); ?></th>
 								<th data-type="numeric" data-hide="phone"><?php _e('Last modified','cftp_admin'); ?></th>
-								<th data-hide="phone"><?php _e('Reason','cftp_admin'); ?></th>
+								<th><?php _e('Actions','cftp_admin'); ?></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -173,23 +170,16 @@ $work_folder = UPLOADED_FILES_FOLDER;
 								foreach ($files_to_add as $add_file) {
 									?>
 										<tr>
-											<td><input type="checkbox" name="add[]" value="<?php echo html_output($add_file['name']); ?>" /></td>
+											<td><input type="checkbox" name="add[]" class="select_file_checkbox" value="<?php echo html_output($add_file['name']); ?>" /></td>
 											<td><?php echo html_output($add_file['name']); ?></td>
 											<td data-value="<?php echo filesize($add_file['path']); ?>"><?php echo html_output(format_file_size(filesize($add_file['path']))); ?></td>
 											<td data-value="<?php echo filemtime($add_file['path']); ?>">
 												<?php echo date(TIMEFORMAT_USE, filemtime($add_file['path'])); ?>
 											</td>
 											<td>
-												<?php
-													switch($add_file['reason']) {
-														case 'not_on_db':
-															_e('Never assigned to any user or group','cftp_admin');
-															break;
-														case 'not_assigned':
-															_e('All assignations were removed','cftp_admin'); echo ' / '; _e('File is not public.','cftp_admin');
-															break;
-													}
-												?>
+												<button type="button" name="file_edit" class="btn btn-primary btn-sm btn-edit-file">
+													<?php _e('Edit','cftp_admin'); ?>
+												</a>
 											</td>
 										</tr>
 									<?php
@@ -198,7 +188,11 @@ $work_folder = UPLOADED_FILES_FOLDER;
 						</tbody>
 					</table>
 
-					<div class="pagination pagination-centered hide-if-no-paging"></div>
+					<nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
+						<div class="pagination_wrapper text-center">
+							<ul class="pagination hide-if-no-paging"></ul>
+						</div>
+					</nav>
 
 					<?php
 						$msg = __('Please note that the listed files will be renamed if they contain invalid characters.','cftp_admin');
@@ -219,6 +213,16 @@ $work_folder = UPLOADED_FILES_FOLDER;
 								return false; 
 							} 
 						});
+						
+						/**
+						 * Only select the current file when clicking an "edit" button
+						 */
+						$('.btn-edit-file').click(function(e) {
+							$('#select_all').prop('checked', false);
+							$('td .select_file_checkbox').prop('checked', false);
+							$(this).parents('tr').find('td .select_file_checkbox').prop('checked', true);
+							$('#upload-continue').click();
+						});
 
 					});
 				</script>
@@ -228,15 +232,23 @@ $work_folder = UPLOADED_FILES_FOLDER;
 			else {
 			/** No files found */
 			?>
-				<div class="whitebox whiteform whitebox_text">
-					<p><?php _e('There are no files available to add right now.', 'cftp_admin'); ?></p>
-					<p>
-						<?php
-							_e('To use this feature you need to upload your files via FTP to the folder', 'cftp_admin');
-							echo ' <strong>'.html_output($work_folder).'</strong>.';
-						?>
-					</p>
-					<p><?php _e('This is the same folder where the files uploaded by the web interface will be stored. So if you finish uploading your files but do not assign them to any clients/groups, the files will still be there for later use.', 'cftp_admin'); ?></p>
+				<div class="container">
+					<div class="row">
+						<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
+							<div class="white-box-interior">
+								<p><?php _e('There are no files available to add right now.', 'cftp_admin'); ?></p>
+								<p class="margin_0">
+									<?php
+										_e('To use this feature you need to upload your files via FTP to the folder', 'cftp_admin');
+										echo ' <strong>'.html_output($work_folder).'</strong>.';
+									?>
+								</p>
+								<?php /*
+								<p><?php _e('This is the same folder where the files uploaded by the web interface will be stored. So if you finish uploading your files but do not assign them to any clients/groups, the files will still be there for later use.', 'cftp_admin'); ?></p>
+								*/ ?>
+							</div>
+						</div>
+					</div>
 				</div>
 			<?php
 			}

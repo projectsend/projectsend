@@ -21,18 +21,20 @@ $page_title = __('Log in','cftp_admin');
 
 include('header-unlogged.php');
 	
-/**
- * Google Sign-in
- */
-$googleClient = new Google_Client();
-$googleClient->setApplicationName(THIS_INSTALL_SET_TITLE);
-$googleClient->setClientSecret(GOOGLE_CLIENT_SECRET);
-$googleClient->setClientId(GOOGLE_CLIENT_ID);
-$googleClient->setAccessType('online');
-$googleClient->setApprovalPrompt('auto');
-$googleClient->setRedirectUri(BASE_URI . 'sociallogin/google/callback.php');
-$googleClient->setScopes(array('profile','email'));
-$auth_url = $googleClient->createAuthUrl();
+	/**
+	 * Google Sign-in
+	 */
+	if ( GOOGLE_SIGNIN_ENABLED == '1' ) {
+		$googleClient = new Google_Client();
+		$googleClient->setApplicationName(THIS_INSTALL_SET_TITLE);
+		$googleClient->setClientSecret(GOOGLE_CLIENT_SECRET);
+		$googleClient->setClientId(GOOGLE_CLIENT_ID);
+		$googleClient->setAccessType('online');
+		$googleClient->setApprovalPrompt('auto');
+		$googleClient->setRedirectUri(BASE_URI . 'sociallogin/google/callback.php');
+		$googleClient->setScopes(array('profile','email'));
+		$auth_url = $googleClient->createAuthUrl();
+	}
 	
 	/** The form was submitted */
 	if ($_POST) {
@@ -183,12 +185,6 @@ if(isset($_SESSION['errorstate'])) {
 							});
 						</script>
 					
-						<div class="social-login">
-							<?php if(GOOGLE_SIGNIN_ENABLED == '1'): ?>
-								<a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="google-login"><img src="<?php echo BASE_URI; ?>img/google/btn_google_signin_light_normal_web.png" alt="Google Signin" /></a>
-							<?php endif; ?>
-						</div>
-					
 						<form action="index.php" method="post" name="login_admin" role="form">
 							<fieldset>
 								<div class="form-group">
@@ -209,6 +205,12 @@ if(isset($_SESSION['errorstate'])) {
 */?>
 								<div class="inside_form_buttons">
 									<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Continue','cftp_admin'); ?></button>
+								</div>
+
+								<div class="social-login">
+									<?php if(GOOGLE_SIGNIN_ENABLED == '1'): ?>
+										<a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="google-login"><img src="<?php echo BASE_URI; ?>img/google/btn_google_signin_light_normal_web.png" alt="Google Signin" /></a>
+									<?php endif; ?>
 								</div>
 							</fieldset>
 						</form>

@@ -14,7 +14,7 @@
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r672');
+define('CURRENT_VERSION', 'r674');
 // corresponds to: "Allow clients to delete their own files (optional)"
 
 /**

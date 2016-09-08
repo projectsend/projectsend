@@ -938,6 +938,24 @@ if (in_session_or_cookies($allowed_update)) {
 			}
 		}
 
+		/**
+		 * r674 updates
+		 * Add the Google Sign in options to the database
+		 */
+		if ($last_update < 674) {
+			$new_database_values = array(
+											'google_client_id'		=> '',
+											'google_client_secret'	=> '',
+											'google_signin_enabled'	=> '0',
+										);
+			
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
+				}
+			}
+		}
+
 	}
 }	
 ?>

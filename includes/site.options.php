@@ -192,6 +192,7 @@ if(!empty($options_values)) {
 	}
 
 	/**
+	 * For versions 673 and up
 	 * For Google Login
 	 */
 	if (isset($options_values['google_client_id'])) {

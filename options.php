@@ -31,6 +31,11 @@ if ($_POST) {
 								'mail_smtp_pass',
 							);
 
+	if ( $_POST['google_signin_enabled'] == '0' ) {
+		$allowed_empty_values[] = 'google_client_id';
+		$allowed_empty_values[] = 'google_client_secret';
+	}
+
 	/** Checkboxes */
 	$checkboxes				= array(
 								'clients_can_delete_own_files',

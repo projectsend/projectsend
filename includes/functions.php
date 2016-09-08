@@ -32,6 +32,29 @@ function is_projectsend_installed() {
 	}
 }
 
+function generate_password() {
+	/**
+	 * Random compat library, a polyfill for PHP 7's random_bytes();
+	 * @link: https://github.com/paragonie/random_compat
+	 */
+	require_once(ROOT_DIR . '/includes/random_compat/random_compat.phar' );
+	$error_unexpected	= __('An unexpected error has occurred', 'cftp_admin');
+	$error_os_fail		= __('Could not generate a random password', 'cftp_admin');
+
+	try {
+		$password = random_bytes(12);
+	} catch (TypeError $e) {
+		die($error_unexpected); 
+	} catch (Error $e) {
+		die($error_unexpected); 
+	} catch (Exception $e) {
+		die($error_os_fail); 
+	}
+	
+	return bin2hex($password);
+}
+
+
 /**
  * Check if a table exists in the current database.
  *

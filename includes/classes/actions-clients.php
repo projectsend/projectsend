@@ -27,12 +27,6 @@ class ClientActions
 		return $username;
 	}
 
-	public function generatePassword() {
-		$password_string = '!@#$%*&abcdefghijklmnpqrstuwxyzABCDEFGHJKLMNPQRSTUWXYZ23456789';
-		$password = substr(str_shuffle($password_string), 0, 16);
-		return $password;
-	}
-
 	private function isUniqueUsername($string) {
 		$statement = $this->dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE user = :user" );
 		$statement->execute(array(':user'	=> $string));

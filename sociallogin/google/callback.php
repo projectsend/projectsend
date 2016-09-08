@@ -102,7 +102,7 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']->id_
         $_SESSION['errorstate'] = 'no_account'; //TODO: create new account
         $new_client = new ClientActions();
         $username = $new_client->generateUsername($userData['name']);
-        $password = $new_client->generatePassword();
+        $password = generate_password();
 
         $clientData = array(
           'id' => '',

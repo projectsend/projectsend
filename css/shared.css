@@ -27,6 +27,14 @@ p {
 
 a img {	border:none; }
 
+.external_link:before {
+	content:'\e144';
+	margin-right:3px;
+	font-family:"Glyphicons Halflings";
+	line-height:1px;
+	color:black;
+}
+
 .clear { clear:both; }
 
 .margin_0 {

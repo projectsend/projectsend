@@ -675,7 +675,6 @@ $allowed_file_types = implode(',',$allowed_file_types);
 								<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
 									<div class="white-box-interior">
 										<h3><?php _e('Google','cftp_admin'); ?></h3>
-										<p><?php _e('Add ' . BASE_URI . 'sociallogin/google/callback.php as an Authorized redirect URI.','cftp_admin'); ?></p>
 
 										<div class="options_column">
 											<div class="form-group">
@@ -697,6 +696,22 @@ $allowed_file_types = implode(',',$allowed_file_types);
 												<label for="google_client_secret" class="col-sm-3 control-label"><?php _e('Client Secret','cftp_admin'); ?></label>
 												<div class="col-sm-9">
 													<input type="text" name="google_client_secret" id="google_client_secret" class="form-control empty" value="<?php echo html_output(GOOGLE_CLIENT_SECRET); ?>" />
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="col-sm-9 col-sm-offset-3">
+													<?php
+														$doc_link_google = 'https://developers.google.com/identity/protocols/OpenIDConnect';
+													?>
+													<a href="<?php echo $doc_link_google; ?>" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="col-sm-3">
+													<?php _e('Callback URI','cftp_admin'); ?>
+												</div>
+												<div class="col-sm-9">
+													<?php echo BASE_URI . 'sociallogin/google/callback.php'; ?>
 												</div>
 											</div>
 										</div>

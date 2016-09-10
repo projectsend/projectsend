@@ -150,6 +150,8 @@ if (in_session_or_cookies($core_update_allowed)) {
 										<li class="divider"></li>
 										<li><a href="<?php echo BASE_URI; ?>manage-files.php"><?php _e('Manage files', 'cftp_admin'); ?></a></li>
 										<li><a href="<?php echo BASE_URI; ?>upload-import-orphans.php"><?php _e('Find orphan files', 'cftp_admin'); ?></a></li>
+										<li class="divider"></li>
+										<li><a href="<?php echo BASE_URI; ?>categories.php"><?php _e('Categories', 'cftp_admin'); ?></a></li>
 									</ul>
 								</li>
 	

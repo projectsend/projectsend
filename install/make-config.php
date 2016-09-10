@@ -65,6 +65,7 @@ if ($pdo_driver_available) {
 // names of reserved tables
 $table_names = array(
 	'actions_log',
+	'categories',
 	'downloads',
 	'files',
 	'files_relations',

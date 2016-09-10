@@ -956,6 +956,33 @@ if (in_session_or_cookies($allowed_update)) {
 			}
 		}
 
+
+		/**
+		 * r678 updates
+		 * A new database table was added.
+		 * Files categories.
+		 */
+		if ($last_update < 678) {
+			if ( !tableExists( TABLE_CATEGORIES ) ) {
+				$query = "
+				CREATE TABLE IF NOT EXISTS `".TABLE_CATEGORIES."` (
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+				  `name` varchar(32) NOT NULL,
+				  `parent` int(11) DEFAULT NULL,
+				  `description` text NULL,
+				  `created_by` varchar(".MAX_USER_CHARS.") NULL,
+				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+				  FOREIGN KEY (`parent`) REFERENCES ".TABLE_CATEGORIES."(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+				  PRIMARY KEY (`id`)
+				) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+				";
+				$statement = $dbh->prepare($query);
+				$statement->execute();
+
+				$updates_made++;
+			}
+		}
+
 	}
 }	
 ?>

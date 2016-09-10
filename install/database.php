@@ -294,6 +294,23 @@ if (defined('TRY_INSTALL')) {
 										':email'	=> $got_admin_email,
 						),
 		),
+
+		'13' =>  array(
+					'table'	=> TABLE_CATEGORIES,
+					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_CATEGORIES.'` (
+								  `id` int(11) NOT NULL AUTO_INCREMENT,
+								  `name` varchar(32) NOT NULL,
+								  `parent` int(11) DEFAULT NULL,
+								  `description` text NULL,
+								  `created_by` varchar('.MAX_USER_CHARS.') NULL,
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+								  FOREIGN KEY (`parent`) REFERENCES '.TABLE_CATEGORIES.'(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+								  PRIMARY KEY (`id`)
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+								',
+					'params' => array(),
+		),
+		
 	);
 }
 ?>

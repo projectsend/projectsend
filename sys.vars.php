@@ -14,7 +14,7 @@
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r674');
+define('CURRENT_VERSION', 'r678');
 // corresponds to: "Allow clients to delete their own files (optional)"
 
 /**
@@ -111,6 +111,7 @@ define('TABLE_USERS', TABLES_PREFIX . 'users');
 define('TABLE_GROUPS', TABLES_PREFIX . 'groups');
 define('TABLE_MEMBERS', TABLES_PREFIX . 'members');
 define('TABLE_FOLDERS', TABLES_PREFIX . 'folders');
+define('TABLE_CATEGORIES', TABLES_PREFIX . 'categories');
 define('TABLE_LOG', TABLES_PREFIX . 'actions_log');
 define('TABLE_PASSWORD_RESET', TABLES_PREFIX . 'password_reset');
 
@@ -119,7 +120,7 @@ $current_tables = array(
 						TABLE_OPTIONS,
 						TABLE_USERS
 					);
-//$current_tables = array(TABLE_FILES,TABLE_FILES_RELATIONS,TABLE_OPTIONS,TABLE_USERS,TABLE_GROUPS,TABLE_MEMBERS,TABLE_FOLDERS,TABLE_LOG);
+//$current_tables = array(TABLE_FILES,TABLE_FILES_RELATIONS,TABLE_OPTIONS,TABLE_USERS,TABLE_GROUPS,TABLE_MEMBERS,TABLE_FOLDERS,TABLES_PREFIX,TABLE_LOG);
 
 /**
  * This values affect both validation methods (client and server side)

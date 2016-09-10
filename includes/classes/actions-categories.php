@@ -142,7 +142,7 @@ class CategoriesActions
 			/** Do a permissions check */
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
 				$this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_CATEGORIES . ' WHERE id=:id');
-				$this->sql->bindParam(':id', $client_id, PDO::PARAM_INT);
+				$this->sql->bindParam(':id', $cat_id, PDO::PARAM_INT);
 				$this->sql->execute();
 			}
 		}

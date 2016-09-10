@@ -32,7 +32,7 @@ include('header.php');
 				return false; 
 			}
 			else {
-				var action = $('#users_actions').val();
+				var action = $('#categories_actions').val();
 				if (action == 'delete') {
 					var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
 					var msg_2 = '<?php _e("categories. Are you sure you want to continue?",'cftp_admin'); ?>';
@@ -86,7 +86,7 @@ include('header.php');
 	 */
 	if ( isset( $_POST['categories_actions'] ) ) {
 		/** Continue only if 1 or more categories were selected. */
-		if(!empty($_POST['categories'])) {
+		if ( !empty($_POST['categories'] ) ) {
 			$selected_categories = $_POST['categories'];
 			$categories_to_get = implode( ',', array_map( 'intval', array_unique( $selected_categories ) ) );
 
@@ -110,7 +110,7 @@ include('header.php');
 						$this_category		= new CategoriesActions();
 						$delete_category	= $this_category->delete_category($category);
 					}
-					$msg = __('The selected files were deleted.','cftp_admin');
+					$msg = __('The selected categories were deleted.','cftp_admin');
 					echo system_message('ok',$msg);
 					$log_action_number = 12;
 					break;

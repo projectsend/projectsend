@@ -236,7 +236,11 @@ if(isset($_SESSION['errorstate'])) {
 		</div> <!-- container -->
 	</div> <!-- main (from header) -->
 
-	<?php default_footer_info(false); ?>
+	<?php
+		default_footer_info( false );
+
+		load_js_files();
+	?>
 
 </body>
 </html>

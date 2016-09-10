@@ -289,8 +289,11 @@ include_once('../header-unlogged.php');
 		</div>
 	</div><!-- main -->
 
-	<?php default_footer_info(); ?>
+	<?php
+		default_footer_info();
 
+		load_js_files();
+	?>
 </body>
 </html>
 <?php

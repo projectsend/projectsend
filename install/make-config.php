@@ -149,7 +149,6 @@ if (isset($_POST['submit-start']) && $ready_to_go) {
 	}
 }
 
-
 /**
  * Check if a table exists in the current database.
  * (taken from stackoverflow)
@@ -207,33 +206,6 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 							else {
 						?>
 	
-								<script type="text/javascript">
-									$(document).ready(function() {
-									/*	$("form").submit(function() {
-											clean_form(this);
-					
-											is_complete(this.this_install_title,'<?php echo $install_no_sitename; ?>');
-											is_complete(this.base_uri,'<?php echo $install_no_baseuri; ?>');
-											is_complete(this.install_user_fullname,'<?php echo $validation_no_name; ?>');
-											is_complete(this.install_user_mail,'<?php echo $validation_no_email; ?>');
-											// username
-											is_complete(this.install_user_username,'<?php echo $validation_no_user; ?>');
-											is_length(this.install_user_username,<?php echo MIN_USER_CHARS; ?>,<?php echo MAX_USER_CHARS; ?>,'<?php echo $validation_length_user; ?>');
-											is_alpha_or_dot(this.install_user_username,'<?php echo $validation_alpha_user; ?>');
-											// password fields
-											is_complete(this.install_user_pass,'<?php echo $validation_no_pass; ?>');
-											//is_complete(this.install_user_repeat,'<?php echo $validation_no_pass2; ?>');
-											is_email(this.install_user_mail,'<?php echo $validation_invalid_mail; ?>');
-											is_length(this.install_user_pass,<?php echo MIN_USER_CHARS; ?>,<?php echo MAX_USER_CHARS; ?>,'<?php echo $validation_length_pass; ?>');
-											is_password(this.install_user_pass,'<?php $chars = addslashes($validation_valid_chars); echo $validation_valid_pass." ".$chars; ?>');
-											//is_match(this.install_user_pass,this.install_user_repeat,'<?php echo $validation_match_pass; ?>');
-					
-											// show the errors or continue if everything is ok
-											if (show_form_errors() == false) { return false; }
-										}); */
-									});
-								</script>
-					
 								<form action="make-config.php" name="installform" method="post" class="form-horizontal">
 					
 									<h3><?php _e('Database configuration','cftp_admin'); ?></h3>
@@ -472,7 +444,11 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 
 	</div> <!--main-->
 
-	<?php default_footer_info(); ?>
+	<?php
+		default_footer_info();
+
+		load_js_files();
+	?>
 
 </body>
 </html>

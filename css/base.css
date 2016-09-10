@@ -126,8 +126,7 @@ h1, h2, h3, h4, h5, h6 {
 	text-align:center;
 }
 
-#login_header_low {
-	background:#3c404b;
+.header_shadow {
 	clear:both;
 	border-bottom:7px solid #CCCCCC;
 	-moz-box-shadow:0 5px 5px #E1E1E1;

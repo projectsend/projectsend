@@ -11,11 +11,11 @@
  * where is it being called from.
  */
 if ( defined('IS_INSTALL') ) {
+	define( 'BASE_URI', '../' );
 	$header_vars = array(
-						'base_url'	=> '../',
-						'html_lang'	=> 'en',
-						'title'		=> $page_title_install . ' &raquo ' . SYSTEM_NAME,
-						'header'	=> SYSTEM_NAME . ' ' . __('setup','cftp_admin'),
+						'html_lang'		=> 'en',
+						'title'			=> $page_title_install . ' &raquo ' . SYSTEM_NAME,
+						'header_title'	=> SYSTEM_NAME . ' ' . __('setup','cftp_admin'),
 					);
 }
 
@@ -26,17 +26,19 @@ else {
 	 * is set.
 	 */
 	$header_vars = array(
-						'base_url'	=> BASE_URI,
-						'html_lang'	=> SITE_LANG,
-						'title'		=> $page_title . ' &raquo ' . THIS_INSTALL_SET_TITLE,
-						'header'	=> THIS_INSTALL_SET_TITLE,
+						'html_lang'		=> SITE_LANG,
+						'title'			=> $page_title . ' &raquo ' . THIS_INSTALL_SET_TITLE,
+						'header_title'	=> THIS_INSTALL_SET_TITLE,
 					);
-
 
 	if ( !is_projectsend_installed() ) {
 		header("Location:install/index.php");
 		exit;
 	}
+	
+	$load_scripts = array(
+						'social_login',
+					);
 	
 	/**
 	 * This is defined on the public download page.
@@ -57,7 +59,7 @@ else {
 	require_once(ROOT_DIR.'/includes/core.update.silent.php');
 }
 ?>
-<!DOCTYPE html>
+<!doctype html>
 <html lang="<?php echo $header_vars['html_lang']; ?>">
 <head>
 	<meta charset="utf-8">
@@ -65,39 +67,29 @@ else {
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<title><?php echo $header_vars['title']; ?></title>
-	<link rel="shortcut icon" href="<?php echo $header_vars['base_url']; ?>/favicon.ico" />
-	<script src="<?php echo $header_vars['base_url']; ?>includes/js/jquery.1.12.4.min.js"></script>
+	<link rel="shortcut icon" href="<?php echo BASE_URI; ?>favicon.ico" />
+	<script src="<?php echo BASE_URI; ?>includes/js/jquery.1.12.4.min.js"></script>
 
-	<link rel="stylesheet" media="all" type="text/css" href="<?php echo $header_vars['base_url']; ?>assets/bootstrap/css/bootstrap.min.css" />
+	<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>assets/bootstrap/css/bootstrap.min.css" />
 
 	<!--[if lt IE 9]>
 		<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
 
-	<link rel="stylesheet" media="all" type="text/css" href="<?php echo $header_vars['base_url']; ?>css/base.css" />
-	<link rel="stylesheet" media="all" type="text/css" href="<?php echo $header_vars['base_url']; ?>css/shared.css" />
-	<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>css/social-login.css" />
-	
-	<link href='<?php echo PROTOCOL; ?>://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
-	<link href='<?php echo PROTOCOL; ?>://fonts.googleapis.com/css?family=Abel' rel='stylesheet' type='text/css'>
+	<?php
+		require_once( 'assets.php' );
 
-	<script src="<?php echo $header_vars['base_url']; ?>assets/bootstrap/js/bootstrap.min.js"></script>
-	<script src="<?php echo $header_vars['base_url']; ?>includes/js/jquery.validations.js"></script>
-
-	<script src="<?php echo $header_vars['base_url']; ?>includes/js/jen/jen.js"></script>
-	<script src="<?php echo $header_vars['base_url']; ?>includes/js/main.js"></script>
+		load_css_files();
+	?>
 </head>
 
 <body>
-
 	<header>
-		<div id="header">
+		<div id="header" class="header_shadow">
 			<div id="lonely_logo">
-				<h1><?php echo $header_vars['header']; ?></h1>
+				<h1><?php echo $header_vars['header_title']; ?></h1>
 			</div>
-		</div>
-		<div id="login_header_low">
 		</div>
 	</header>
 

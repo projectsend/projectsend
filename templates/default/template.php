@@ -241,6 +241,8 @@ $count = count($my_files);
 		});
 	</script>
 
-	<script src="<?php echo BASE_URI; ?>includes/js/footable/footable.all.min.js"></script>
+	<?php
+		load_js_files();
+	?>
 </body>
 </html>

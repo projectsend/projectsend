@@ -70,6 +70,8 @@ include('header-unlogged.php');
 		else {
 			$errorstate = 'token_invalid';
 		}
+	} else {
+		$errorstate = 'token_invalid';
 	}
 ?>
 
@@ -115,7 +117,11 @@ include('header-unlogged.php');
 		</div> <!-- container -->
 	</div> <!-- main (from header) -->
 
-	<?php default_footer_info(false); ?>
+	<?php
+		default_footer_info( false );
+
+		load_js_files();
+	?>
 
 </body>
 </html>

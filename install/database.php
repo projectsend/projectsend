@@ -311,6 +311,21 @@ if (defined('TRY_INSTALL')) {
 					'params' => array(),
 		),
 		
+		'14' =>  array(
+					'table'	=> TABLE_CATEGORIES_RELATIONS,
+					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_CATEGORIES_RELATIONS.'` (
+								  `id` int(11) NOT NULL AUTO_INCREMENT,
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+								  `file_id` int(11) NOT NULL,
+								  `cat_id` int(11) NOT NULL,
+								  FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+								  FOREIGN KEY (`cat_id`) REFERENCES '.TABLE_CATEGORIES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+								  PRIMARY KEY (`id`)
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+								',
+					'params' => array(),
+		),
+		
 	);
 }
 ?>

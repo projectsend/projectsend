@@ -296,7 +296,6 @@ include('header.php');
 									<th data-sort-initial="true"><?php _e('Name','cftp_admin'); ?></th>
 									<th><?php _e('Files','cftp_admin'); ?></th>
 									<th data-hide="phone" data-sort-ignore="true"><?php _e('Description','cftp_admin'); ?></th>
-									<th data-hide="phone, tablet" data-type="numeric"><?php _e('Added on','cftp_admin'); ?></th>
 									<th data-hide="phone" data-sort-ignore="true"><?php _e('Actions','cftp_admin'); ?></th>
 								</tr>
 							</thead>
@@ -304,7 +303,6 @@ include('header.php');
 								<?php
 									if ( $count > 0 ) {
 										foreach ( $existing_categories as $cat ) {
-											$date = date(TIMEFORMAT_USE,strtotime($cat['timestamp']));
 									?>
 											<tr>
 												<td>
@@ -313,9 +311,6 @@ include('header.php');
 												<td><?php echo html_output($cat["name"]); ?></td>
 												<td>0</td>
 												<td><?php echo html_output($cat["description"]); ?></td>
-												<td data-value="<?php echo strtotime($cat['timestamp']); ?>">
-													<?php echo $date; ?>
-												</td>
 												<td>
 													<a href="categories.php?action=edit&id=<?php echo $cat["id"]; ?>" class="btn btn-primary btn-small"><?php _e('Edit','cftp_admin'); ?></a>
 												</td>

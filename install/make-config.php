@@ -66,6 +66,7 @@ if ($pdo_driver_available) {
 $table_names = array(
 	'actions_log',
 	'categories',
+	'categories_relations',
 	'downloads',
 	'files',
 	'files_relations',

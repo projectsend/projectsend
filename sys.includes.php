@@ -56,6 +56,7 @@ require_once(ROOT_DIR.'/includes/timezone_identifiers_list.php');
 $classes_files = array(
 						'actions-clients.php',
 						'actions-files.php',
+						'actions-categories.php',
 						'actions-groups.php',
 						'actions-log.php',
 						'actions-users.php',

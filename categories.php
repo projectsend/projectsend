@@ -62,6 +62,26 @@ include('header.php');
 
 	<?php
 	/**
+	 * Messages set when adding or editing a category
+	 */
+	if ( !empty( $_GET['status'] ) ) {
+		$result_status = $_GET['status'];
+		switch ( $result_status ) {
+			case 'added':
+					$msg_text	= __('The category was successfully created.','cftp_admin');
+					$msg_type	= 'ok';
+				break;
+			case 'edited':
+					$msg_text	= __('The category was successfully edited.','cftp_admin');
+					$msg_type	= 'ok';
+				break;
+		}
+
+		echo system_message( $msg_type, $msg_text );
+	}
+
+
+	/**
 	 * Apply the corresponding action to the selected categories.
 	 */
 	if ( isset( $_POST['categories_actions'] ) ) {
@@ -181,21 +201,25 @@ include('header.php');
 	/** Loading the form in EDIT mode */
 	if (
 		( !empty( $_GET['action'] ) && $_GET['action'] == 'edit' ) or
-		!empty( $_POST['processing'] )
+		!empty( $_POST['editing_id'] )
 	) {
 		$action				= 'edit';
-		$editing			= $_GET['id'];
+		$editing			= !empty( $_POST['editing_id'] ) ? $_POST['editing_id'] : $_GET['id'];
 		$form_information	= array(
 									'type'	=> 'edit_category',
 									'title'	=> __('Edit category','cftp_admin'),
 								);
+
+		/**
+		 * Get the current information if just entering edit mode
+		 */
+		$category_name			= $existing_categories[$editing]['name'];
+		$category_parent		= $existing_categories[$editing]['parent'];
+		$category_description	= $existing_categories[$editing]['description'];
 	}
 
 
-	/**
-	 * Process the action
-	 */
-	if ( $form_information['type'] == 'edit_category' ) {
+	if ( !empty( $_POST ) ) {
 		/**
 		 * Applies for both ADDING a new category as well
 		 * as editing one but with the form already sent.
@@ -203,25 +227,56 @@ include('header.php');
 		$category_name			= $_POST['category_name'];
 		$category_parent		= $_POST['category_parent'];
 		$category_description	= $_POST['category_description'];
+	}
 
+	/**
+	 * Process the action
+	 */
+	if ( isset( $_POST['btn_process'] ) ) {
+		$category_object = new CategoriesActions();
+
+		$arguments = array(
+							'name'			=> $category_name,
+							'parent'		=> $category_parent,
+							'description'	=> $category_description,
+						);
+
+		$validate = $category_object->validate_category( $arguments );
 
 		switch ( $form_information['type'] ) {
 			case 'new_category':
+					$arguments['action']	= 'add';
+					$redirect_status		= 'added';				
 				break;
 			case 'edit_category':
-				if ( $_POST ) {
-					$edit_id = $_POST['editing'];
-				}
-				else {
-					$edit_id = $_GET['id'];
-					/**
-					 * Get the current information if just entering edit mode
-					 */
-					$category_name			= $existing_categories[$edit_id]['name'];
-					$category_parent		= $existing_categories[$edit_id]['parent'];
-					$category_description	= $existing_categories[$edit_id]['description'];
-				}				
+					$arguments['action']	= 'edit';
+					$redirect_status		= 'edited';
+					$arguments['id']		= ( $_POST ) ? $_POST['editing_id'] : $_GET['id'];
 				break;
+		}
+
+		if ( $validate === 1 ) {
+			$process = $category_object->save_category( $arguments );
+			if ( $process['query'] === 1 ) {
+				$redirect = true;
+				$status = $redirect_status;
+			}
+			else {
+				$msg = __('There was a problem savint to the database.','cftp_admin');
+				echo system_message('error', $msg);
+			}
+		}
+		else {
+			$msg = __('Please complete all the required fields.','cftp_admin');
+			echo system_message('error', $msg);
+		}
+
+		/** Redirect so the actions are reflected immediatly */
+		if ( isset( $redirect ) && $redirect === true ) {
+			while (ob_get_level()) ob_end_clean();
+			$location = BASE_URI . 'categories.php?status=' . $status;
+			header("Location: $location");
+			die();
 		}
 	}
 ?>
@@ -337,7 +392,7 @@ include('header.php');
 			<?php
 				if ( !empty( $action ) && $action == 'edit' ) {
 			?>
-					<input type="hidden" name="editing" id="editing" value="<?php echo $edit_id; ?>">
+					<input type="hidden" name="editing_id" id="editing_id" value="<?php echo $editing; ?>">
 			<?php
 				}
 			?>

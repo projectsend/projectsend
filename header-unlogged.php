@@ -12,8 +12,11 @@
  */
 if ( defined('IS_INSTALL') ) {
 	define( 'BASE_URI', '../' );
+
+	$lang = ( defined('SITE_LANG') ) ? SITE_LANG : 'en';
+
 	$header_vars = array(
-						'html_lang'		=> 'en',
+						'html_lang'		=> $lang,
 						'title'			=> $page_title_install . ' &raquo ' . SYSTEM_NAME,
 						'header_title'	=> SYSTEM_NAME . ' ' . __('setup','cftp_admin'),
 					);

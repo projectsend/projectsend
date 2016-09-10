@@ -24,25 +24,10 @@ $load_js_files[]	= BASE_URI . 'includes/js/jen/jen.js';
 $load_js_files[]	= BASE_URI . 'includes/js/main.js';
 
 /** CSS */
-$load_css_files[]	= BASE_URI . 'css/shared.css';
 
 /** Fonts*/
 $load_css_files[]	= PROTOCOL . '://fonts.googleapis.com/css?family=Open+Sans:400,700,300';
 $load_css_files[]	= PROTOCOL . '://fonts.googleapis.com/css?family=Abel';
-
-/**
- * Load a different css file when called from the admin, or
- * the default template.
- */
-if ( !isset( $this_template_css ) ) {
-	/** Back-end */
-	$load_css_files[]	= BASE_URI . 'css/base.css';
-	$load_css_files[]	= BASE_URI . 'css/mobile.css';
-}
-else {
-	/** Template */
-	$load_css_files[]	= $this_template_css;
-}
 
 /**
  * Optional scripts
@@ -92,6 +77,21 @@ if ( !empty( $load_scripts ) ) {
 				break;
 		}
 	}
+}
+
+$load_css_files[]	= BASE_URI . 'css/shared.css';
+/**
+ * Load a different css file when called from the admin, or
+ * the default template.
+ */
+if ( !isset( $this_template_css ) ) {
+	/** Back-end */
+	$load_css_files[]	= BASE_URI . 'css/base.css';
+	$load_css_files[]	= BASE_URI . 'css/mobile.css';
+}
+else {
+	/** Template */
+	$load_css_files[]	= $this_template_css;
 }
 
 /**

@@ -526,6 +526,69 @@ class PSend_Upload_File
 			}
 		}
 	}
+
+	/**
+	 * Used to save the categories relations
+	 */
+	function upload_save_categories($arguments)
+	{
+		$this->file_id		= $arguments['file_id'];
+		$this->categories	= $arguments['categories'];
+		
+		if ( !empty( $this->categories ) ) {
+			$this->categories_current	= array();
+			$this->categories_to_delete	= array();
+			
+			$this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE file_id = :file_id");
+			$this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+			$this->statement->execute();
+			$this->statement->setFetchMode(PDO::FETCH_ASSOC);
+			while( $this->row = $this->statement->fetch() ) {
+				$this->categories_current[$this->row['cat_id']] = $this->row['cat_id'];
+			}
+	
+			/**
+			 * Add existing -on DB- but not selected on the form to
+			 * the delete array. This uses the ID of the record.
+			 */
+			if ( !empty( $this->categories_current ) ) {
+				foreach ( $this->categories_current as $cat ) {
+					if ( !in_array( $cat, $this->categories ) ) {
+						$this->categories_to_delete[$cat] = $cat;
+					}
+				}
+
+				$this->categories_to_delete = implode( ',', array_unique($this->categories_to_delete ) );
+
+				$this->statement = $this->dbh->prepare("DELETE FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE file_id = :file_id AND FIND_IN_SET(cat_id, :categories)");
+				$this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+				$this->statement->bindParam(':categories', $this->categories_to_delete);
+				$this->statement->execute();
+			}
+	
+			/**
+			 * Compare the ones passed through the form to the
+			 * ones that are already on the database.
+			 * If it's not in the current array, add the row.
+			 */
+			foreach ( $this->categories as $cat ) {
+				if ( !in_array( $cat, $this->categories_current ) ) {
+					$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_CATEGORIES_RELATIONS . " (file_id, cat_id)"
+															."VALUES (:file_id, :cat_id)");
+					$this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+					$this->statement->bindParam(':cat_id', $cat, PDO::PARAM_INT);
+					$this->statement->execute();
+				}
+			}
+		}
+		else {
+			/** No value came from the form, so delete all existing */
+			$this->statement = $this->dbh->prepare("DELETE FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE file_id = :file_id");
+			$this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+			$this->statement->execute();
+		}
+
+	}
 }
 
 ?>

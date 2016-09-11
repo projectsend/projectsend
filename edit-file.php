@@ -250,6 +250,12 @@ $current_level = get_current_user_level();
 													);
 								$clean_assignments = $this_upload->clean_assignments($clean_arguments);
 							}
+
+							$categories_arguments = array(
+														'file_id'		=> $this_file_id,
+														'categories'	=> !empty( $file['categories'] ) ? $file['categories'] : '',
+													);
+							$this_upload->upload_save_categories( $categories_arguments );
 						}
 						
 						/** Uploader is a client */
@@ -332,6 +338,17 @@ $current_level = get_current_user_level();
 								}
 							}
 						}
+
+						/** Get the current assigned categories */
+						$current_categories = array();
+						$current_statemente = $dbh->prepare("SELECT cat_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE file_id = :id");
+						$current_statemente->bindParam(':id', $this_file_id, PDO::PARAM_INT);
+						$current_statemente->execute();
+						if ($current_statemente->rowCount() > 0) {
+							while ( $assignment_row = $current_statemente->fetch() ) {
+								$current_categories[] = $assignment_row['cat_id'];
+							}
+						}
 	
 	
 						$i = 1;
@@ -340,169 +357,173 @@ $current_level = get_current_user_level();
 						$statement->execute();
 						while( $row = $statement->fetch() ) {
 					?>
-							<div class="row">
-								<div class="col-sm-12">
-									<div class="file_number">
-										<p><span class="glyphicon glyphicon-saved" aria-hidden="true"></span><?php echo html_output($row['url']); ?></p>
+							<div class="file_editor <?php if ($i%2) { echo 'f_e_odd'; } ?>">
+								<div class="row">
+									<div class="col-sm-12">
+										<div class="file_number">
+											<p><span class="glyphicon glyphicon-saved" aria-hidden="true"></span><?php echo html_output($row['url']); ?></p>
+										</div>
 									</div>
 								</div>
-							</div>
-							<div class="row edit_files">
-								<div class="col-sm-12">
-									<div class="row edit_files_blocks">
-										<div class="<?php echo ($global_level != 0) ? 'col-sm-6 col-md-3' : 'col-sm-12 col-md-12'; ?>  column">
-											<div class="file_data">
-												<div class="row">
-													<div class="col-sm-12">
-														<h3><?php _e('File information', 'cftp_admin');?></h3>
-														
-														<div class="form-group">
-															<label><?php _e('Title', 'cftp_admin');?></label>
-															<input type="text" name="file[<?php echo $i; ?>][name]" value="<?php echo html_output($row['filename']); ?>" class="form-control file_title" placeholder="<?php _e('Enter here the required file title.', 'cftp_admin');?>" />
-														</div>
-
-														<div class="form-group">
-															<label><?php _e('Description', 'cftp_admin');?></label>
-															<textarea name="file[<?php echo $i; ?>][description]" class="form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (!empty($row['description'])) ? html_output($row['description']) : ''; ?></textarea>
+								<div class="row edit_files">
+									<div class="col-sm-12">
+										<div class="row edit_files_blocks">
+											<div class="<?php echo ($global_level != 0) ? 'col-sm-6 col-md-3' : 'col-sm-12 col-md-12'; ?>  column">
+												<div class="file_data">
+													<div class="row">
+														<div class="col-sm-12">
+															<h3><?php _e('File information', 'cftp_admin');?></h3>
+															
+															<div class="form-group">
+																<label><?php _e('Title', 'cftp_admin');?></label>
+																<input type="text" name="file[<?php echo $i; ?>][name]" value="<?php echo html_output($row['filename']); ?>" class="form-control file_title" placeholder="<?php _e('Enter here the required file title.', 'cftp_admin');?>" />
+															</div>
+	
+															<div class="form-group">
+																<label><?php _e('Description', 'cftp_admin');?></label>
+																<textarea name="file[<?php echo $i; ?>][description]" class="form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (!empty($row['description'])) ? html_output($row['description']) : ''; ?></textarea>
+															</div>
 														</div>
 													</div>
 												</div>
 											</div>
-										</div>
-										<?php
-											/** The following options are available to users only */
-											if ($global_level != 0) {
-										?>
-												<div class="col-sm-6 col-md-3 column_even column">
-													<div class="file_data">
-														<?php
-															/**
-															* Only show the EXPIRY options if the current
-															* uploader is a system user, and not a client.
-															*/
-															if (!empty($row['expiry_date'])) {
-																$expiry_date = date('d-m-Y', strtotime($row['expiry_date']));
-															}
-														?>
-														<h3><?php _e('Expiration date', 'cftp_admin');?></h3>
-		
-														<div class="form-group">
-															<label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
-															<div class="input-group date-container">
-																<input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" />
-																<div class="input-group-addon">
-																	<i class="glyphicon glyphicon-time"></i>
-																</div>
-															</div>
-														</div>
-
-														<div class="checkbox">
-															<label for="exp_checkbox">
-																<input type="checkbox" id="exp_checkbox" name="file[<?php echo $i; ?>][expires]" value="1" <?php if ($row['expires']) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?>
-															</label>
-														</div>
-		
-														<div class="divider"></div>
-		
-														<h3><?php _e('Public downloading', 'cftp_admin');?></h3>
-														<div class="checkbox">
-															<label for="pub_checkbox">
-																<input type="checkbox" id="pub_checkbox" name="file[<?php echo $i; ?>][public]" value="1" <?php if ($row['public_allow']) { ?>checked="checked"<?php } ?> /> <?php _e('Allow public downloading of this file.', 'cftp_admin');?>
-															</label>
-														</div>
-													</div>
-												</div>
-
-												<div class="col-sm-6 col-md-3 assigns column">
-													<div class="file_data">
-														<?php
-															/**
-															* Only show the CLIENTS select field if the current
-															* uploader is a system user, and not a client.
-															*/
-														?>
-														<h3><?php _e('Assignations', 'cftp_admin');?></h3>
-														<label><?php _e('Assign this file to', 'cftp_admin');?>:</label>
-														<select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
-															<optgroup label="<?php _e('Clients', 'cftp_admin');?>">
-																<?php
-																	/**
-																	 * The clients list is generated early on the file so the
-																	 * array doesn't need to be made once on every file.
-																	 */
-																	foreach($clients as $client => $client_name) {
-																	?>
-																		<option value="<?php echo 'c'.$client; ?>"<?php if (in_array($client,$file_on_clients)) { echo ' selected="selected"'; } ?>>
-																			<?php echo $client_name; ?>
-																		</option>
-																	<?php
-																	}
-																?>
-															</optgroup>
-															<optgroup label="<?php _e('Groups', 'cftp_admin');?>">
-																<?php
-																	/**
-																	 * The groups list is generated early on the file so the
-																	 * array doesn't need to be made once on every file.
-																	 */
-																	foreach($groups as $group => $group_name) {
-																	?>
-																		<option value="<?php echo 'g'.$group; ?>"<?php if (in_array($group,$file_on_groups)) { echo ' selected="selected"'; } ?>>
-																			<?php echo $group_name; ?>
-																		</option>
-																	<?php
-																	}
-																?>
-															</optgroup>
-														</select>
-														<div class="list_mass_members">
-															<a href="#" class="btn btn-xs btn-primary add-all" data-type="assigns"><?php _e('Add all','cftp_admin'); ?></a>
-															<a href="#" class="btn btn-xs btn-primary remove-all" data-type="assigns"><?php _e('Remove all','cftp_admin'); ?></a>
-														</div>
-		
-														<div class="divider"></div>
-			
-														<div class="checkbox">
-															<label for="hid_checkbox">
-																<input type="checkbox" id="hid_checkbox" name="file[<?php echo $i; ?>][hidden]" value="1" /> <?php _e('Mark as hidden (will not send notifications) for new assigned clients and groups.', 'cftp_admin');?>
-															</label>
-														</div>
-														<div class="checkbox">
-															<label for="hid_existing_checkbox">
-																<input type="checkbox" id="hid_existing_checkbox" name="file[<?php echo $i; ?>][hideall]" value="1" /> <?php _e('Hide from every already assigned clients and groups.', 'cftp_admin');?>
-															</label>
-														</div>
-													</div>
-												</div>
-
-
-												<div class="col-sm-6 col-md-3 categories column">
-													<div class="file_data">
-														<h3><?php _e('Categories', 'cftp_admin');?></h3>
-														<label><?php _e('Add to', 'cftp_admin');?>:</label>
-														<select multiple="multiple" name="file[<?php echo $i; ?>][categories][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+											<?php
+												/** The following options are available to users only */
+												if ($global_level != 0) {
+											?>
+													<div class="col-sm-6 col-md-3 column_even column">
+														<div class="file_data">
 															<?php
 																/**
-																 * The categories list is generated early on the file so the
-																 * array doesn't need to be made once on every file.
-																 */
-																foreach($categories as $cat_id => $cat_name) {
-																?>
-																	<option value="<?php echo $cat_id; ?>"><?php echo html_output($cat_name); ?></option>
-																<?php
+																* Only show the EXPIRY options if the current
+																* uploader is a system user, and not a client.
+																*/
+																if (!empty($row['expiry_date'])) {
+																	$expiry_date = date('d-m-Y', strtotime($row['expiry_date']));
 																}
 															?>
-														</select>
-														<div class="list_mass_members">
-															<a href="#" class="btn btn-xs btn-primary add-all" data-type="categories"><?php _e('Add all','cftp_admin'); ?></a>
-															<a href="#" class="btn btn-xs btn-primary remove-all" data-type="categories"><?php _e('Remove all','cftp_admin'); ?></a>
+															<h3><?php _e('Expiration date', 'cftp_admin');?></h3>
+			
+															<div class="form-group">
+																<label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
+																<div class="input-group date-container">
+																	<input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" />
+																	<div class="input-group-addon">
+																		<i class="glyphicon glyphicon-time"></i>
+																	</div>
+																</div>
+															</div>
+	
+															<div class="checkbox">
+																<label for="exp_checkbox">
+																	<input type="checkbox" id="exp_checkbox" name="file[<?php echo $i; ?>][expires]" value="1" <?php if ($row['expires']) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?>
+																</label>
+															</div>
+			
+															<div class="divider"></div>
+			
+															<h3><?php _e('Public downloading', 'cftp_admin');?></h3>
+															<div class="checkbox">
+																<label for="pub_checkbox">
+																	<input type="checkbox" id="pub_checkbox" name="file[<?php echo $i; ?>][public]" value="1" <?php if ($row['public_allow']) { ?>checked="checked"<?php } ?> /> <?php _e('Allow public downloading of this file.', 'cftp_admin');?>
+																</label>
+															</div>
 														</div>
 													</div>
-												</div>
-
-										<?php
-											} /** Close $current_level check */
-										?>
+	
+													<div class="col-sm-6 col-md-3 assigns column">
+														<div class="file_data">
+															<?php
+																/**
+																* Only show the CLIENTS select field if the current
+																* uploader is a system user, and not a client.
+																*/
+															?>
+															<h3><?php _e('Assignations', 'cftp_admin');?></h3>
+															<label><?php _e('Assign this file to', 'cftp_admin');?>:</label>
+															<select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+																<optgroup label="<?php _e('Clients', 'cftp_admin');?>">
+																	<?php
+																		/**
+																		 * The clients list is generated early on the file so the
+																		 * array doesn't need to be made once on every file.
+																		 */
+																		foreach($clients as $client => $client_name) {
+																		?>
+																			<option value="<?php echo 'c'.$client; ?>"<?php if (in_array($client,$file_on_clients)) { echo ' selected="selected"'; } ?>>
+																				<?php echo $client_name; ?>
+																			</option>
+																		<?php
+																		}
+																	?>
+																</optgroup>
+																<optgroup label="<?php _e('Groups', 'cftp_admin');?>">
+																	<?php
+																		/**
+																		 * The groups list is generated early on the file so the
+																		 * array doesn't need to be made once on every file.
+																		 */
+																		foreach($groups as $group => $group_name) {
+																		?>
+																			<option value="<?php echo 'g'.$group; ?>"<?php if (in_array($group,$file_on_groups)) { echo ' selected="selected"'; } ?>>
+																				<?php echo $group_name; ?>
+																			</option>
+																		<?php
+																		}
+																	?>
+																</optgroup>
+															</select>
+															<div class="list_mass_members">
+																<a href="#" class="btn btn-xs btn-primary add-all" data-type="assigns"><?php _e('Add all','cftp_admin'); ?></a>
+																<a href="#" class="btn btn-xs btn-primary remove-all" data-type="assigns"><?php _e('Remove all','cftp_admin'); ?></a>
+															</div>
+			
+															<div class="divider"></div>
+				
+															<div class="checkbox">
+																<label for="hid_checkbox">
+																	<input type="checkbox" id="hid_checkbox" name="file[<?php echo $i; ?>][hidden]" value="1" /> <?php _e('Mark as hidden (will not send notifications) for new assigned clients and groups.', 'cftp_admin');?>
+																</label>
+															</div>
+															<div class="checkbox">
+																<label for="hid_existing_checkbox">
+																	<input type="checkbox" id="hid_existing_checkbox" name="file[<?php echo $i; ?>][hideall]" value="1" /> <?php _e('Hide from every already assigned clients and groups.', 'cftp_admin');?>
+																</label>
+															</div>
+														</div>
+													</div>
+	
+	
+													<div class="col-sm-6 col-md-3 categories column">
+														<div class="file_data">
+															<h3><?php _e('Categories', 'cftp_admin');?></h3>
+															<label><?php _e('Add to', 'cftp_admin');?>:</label>
+															<select multiple="multiple" name="file[<?php echo $i; ?>][categories][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+																<?php
+																	/**
+																	 * The categories list is generated early on the file so the
+																	 * array doesn't need to be made once on every file.
+																	 */
+																	foreach($categories as $cat_id => $cat_name) {
+																	?>
+																		<option value="<?php echo $cat_id; ?>" <?php if (in_array($cat_id, $current_categories)) { echo 'selected="selected"'; } ?>>
+																			<?php echo html_output($cat_name); ?>
+																		</option>
+																	<?php
+																	}
+																?>
+															</select>
+															<div class="list_mass_members">
+																<a href="#" class="btn btn-xs btn-primary add-all" data-type="categories"><?php _e('Add all','cftp_admin'); ?></a>
+																<a href="#" class="btn btn-xs btn-primary remove-all" data-type="categories"><?php _e('Remove all','cftp_admin'); ?></a>
+															</div>
+														</div>
+													</div>
+	
+											<?php
+												} /** Close $current_level check */
+											?>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -535,7 +556,8 @@ $current_level = get_current_user_level();
 		});
 
 		$('.add-all').click(function(){
-			var selector = $(this).closest('.assigns').find('select');
+			var type = $(this).data('type');
+			var selector = $(this).closest('.' + type).find('select');
 			$(selector).find('option').each(function(){
 				$(this).prop('selected', true);
 			});
@@ -544,7 +566,8 @@ $current_level = get_current_user_level();
 		});
 
 		$('.remove-all').click(function(){
-			var selector = $(this).closest('.assigns').find('select');
+			var type = $(this).data('type');
+			var selector = $(this).closest('.' + type).find('select');
 			$(selector).find('option').each(function(){
 				$(this).prop('selected', false);
 			});

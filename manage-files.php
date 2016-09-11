@@ -555,7 +555,7 @@ include('header.php');
 								 */
 								$this_file_absolute = UPLOADED_FILES_FOLDER.$row['url'];
 								$this_file_uri = BASE_URI.UPLOADED_FILES_URL.$row['url'];
-								
+																
 								/**
 								 * Download count and visibility status are only available when
 								 * filtering by client or group.
@@ -610,6 +610,18 @@ include('header.php');
 									$hidden = $data_file['hidden'];
 								}
 								$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
+
+								/**
+								 * Get file size only if the file exists
+								 */
+								if ( file_exists( $this_file_absolute ) ) {
+									$this_file_size = get_real_size($this_file_absolute);
+									$formatted_size = html_output(format_file_size($this_file_size));
+								}
+								else {
+									$this_file_size = '0';
+									$formatted_size = '-';
+								}
 					?>
 								<tr>
 									<?php
@@ -648,7 +660,7 @@ include('header.php');
 											}
 										?>
 									</td>
-									<td data-value="<?php echo get_real_size($this_file_absolute); ?>"><?php $this_file_size = get_real_size($this_file_absolute); echo html_output(format_file_size($this_file_size)); ?></td>
+									<td data-value="<?php echo $this_file_size; ?>"><?php echo $formatted_size; ?></td>
 									<?php
 										if($current_level != '0') {
 									?>

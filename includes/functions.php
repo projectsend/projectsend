@@ -554,24 +554,26 @@ function format_file_size($file)
 {
 	if ($file < 1024) {
 		 /** No digits so put a ? much better than just seeing Byte */
-		echo (ctype_digit($file))? $file . ' Byte' :  ' ? ' ;
+		$formatted = (ctype_digit($file))? $file . ' Byte' :  ' ? ' ;
 	} elseif ($file < 1048576) {
-		echo round($file / 1024, 2) . ' KB';
+		$formatted = round($file / 1024, 2) . ' KB';
 	} elseif ($file < 1073741824) {
-		echo round($file / 1048576, 2) . ' MB';
+		$formatted = round($file / 1048576, 2) . ' MB';
 	} elseif ($file < 1099511627776) {
-		echo round($file / 1073741824, 2) . ' GB';
+		$formatted = round($file / 1073741824, 2) . ' GB';
 	} elseif ($file < 1125899906842624) {
-		echo round($file / 1099511627776, 2) . ' TB';
+		$formatted = round($file / 1099511627776, 2) . ' TB';
 	} elseif ($file < 1152921504606846976) {
-		echo round($file / 1125899906842624, 2) . ' PB';
+		$formatted = round($file / 1125899906842624, 2) . ' PB';
 	} elseif ($file < 1180591620717411303424) {
-		echo round($file / 1152921504606846976, 2) . ' EB';
+		$formatted = round($file / 1152921504606846976, 2) . ' EB';
 	} elseif ($file < 1208925819614629174706176) {
-		echo round($file / 1180591620717411303424, 2) . ' ZB';
+		$formatted = round($file / 1180591620717411303424, 2) . ' ZB';
 	} else {
-		echo round($file / 1208925819614629174706176, 2) . ' YB';
+		$formatted = round($file / 1208925819614629174706176, 2) . ' YB';
 	}
+	
+	return $formatted;
 }
 
 

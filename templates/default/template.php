@@ -137,7 +137,18 @@ $count = count($my_files);
 											</span>
 										</td>
 										<td class="description"><?php echo htmlentities($file['description']); ?></td>
-										<td><?php $this_file_size = get_real_size(UPLOADED_FILES_FOLDER.$file['url']); echo format_file_size($this_file_size); ?></td>
+										<td>
+											<?php
+												$file_absolute_path = UPLOADED_FILES_FOLDER . $file['url'];
+												if ( file_exists( $file_absolute_path ) ) {
+													$this_file_size = get_real_size(UPLOADED_FILES_FOLDER.$file['url']);
+													echo format_file_size($this_file_size);
+												}
+												else {
+													echo '-';
+												}
+											?>
+										</td>
 										<td data-value="<?php echo strtotime($file['timestamp']); ?>">
 											<?php echo $date; ?>
 										</td>
@@ -163,13 +174,17 @@ $count = count($my_files);
 															$extension == "jpeg" ||
 															$extension == "png"
 														) {
-															$this_thumbnail_url = UPLOADED_FILES_URL.$file['url'];
-															if (THUMBS_USE_ABSOLUTE == '1') {
-																$this_thumbnail_url = BASE_URI.$this_thumbnail_url;
-															}
-														?>
+															if ( file_exists( $file_absolute_path ) ) {
+																$this_thumbnail_url = UPLOADED_FILES_URL.$file['url'];
+																if (THUMBS_USE_ABSOLUTE == '1') {
+																	$this_thumbnail_url = BASE_URI.$this_thumbnail_url;
+																}
+													?>
 																<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $this_thumbnail_url; ?>&amp;w=<?php echo THUMBS_MAX_WIDTH; ?>&amp;q=<?php echo THUMBS_QUALITY; ?>" class="thumbnail" alt="<?php echo htmlentities($this_file['name']); ?>" />
-													<?php } ?>
+													<?php
+															}
+														}
+													?>
 												</td>
 												<td>
 													<a href="<?php echo $download_link; ?>" target="_blank" class="btn btn-primary btn-sm btn-wide">

@@ -350,13 +350,24 @@ include('header.php');
 									</th>
 									<th data-sort-initial="true"><?php _e('Name','cftp_admin'); ?></th>
 									<th><?php _e('Files','cftp_admin'); ?></th>
-									<th data-hide="phone" data-sort-ignore="true"><?php _e('Description','cftp_admin'); ?></th>
+									<th data-hide="phone" ><?php _e('Description','cftp_admin'); ?></th>
 									<th data-hide="phone" data-sort-ignore="true"><?php _e('Actions','cftp_admin'); ?></th>
 								</tr>
 							</thead>
 							<tbody>
 								<?php
 									if ( $count > 0 ) {
+
+										$files_count = array();
+
+										$sql_count = $dbh->prepare("SELECT cat_id, COUNT(file_id) as count FROM " . TABLE_CATEGORIES_RELATIONS . " GROUP BY cat_id");
+										$sql_count->execute();
+
+										$sql_count->setFetchMode(PDO::FETCH_ASSOC);
+										while ( $row_count = $sql_count->fetch() ) {
+											$files_count[$row_count["cat_id"]] = $row_count["count"];
+										}
+
 										foreach ( $existing_categories as $cat ) {
 									?>
 											<tr>
@@ -364,9 +375,28 @@ include('header.php');
 													<input type="checkbox" name="categories[]" value="<?php echo html_output($cat["id"]); ?>" />
 												</td>
 												<td><?php echo html_output($cat["name"]); ?></td>
-												<td>0</td>
+												<td>
+													<?php
+														if ( array_key_exists( $cat['id'], $files_count ) ) {
+															$class			= 'success';
+															$total			= $files_count[$cat['id']];
+															$files_link 	= 'manage-files.php?category=' . $cat['id'];
+															$files_button	= 'btn-primary';
+														}
+														else {
+															$class			= 'danger';
+															$total			= '0';
+															$files_link		= 'javascript:void(0);';
+															$files_button	= 'btn-default disabled';
+														}
+													?>
+													<span class="label label-<?php echo $class; ?>">
+														<?php echo $total; ?>
+													</span>
+												</td>
 												<td><?php echo html_output($cat["description"]); ?></td>
 												<td>
+													<?php /*<a href="<?php echo $files_link; ?>" class="btn btn-sm <?php echo $files_button; ?>"><?php _e('Manage files','cftp_admin'); ?></a> TODO: manage files for this category */ ?>
 													<a href="categories.php?action=edit&id=<?php echo $cat["id"]; ?>" class="btn btn-primary btn-small"><?php _e('Edit','cftp_admin'); ?></a>
 												</td>
 											</tr>

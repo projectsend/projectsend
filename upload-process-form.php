@@ -238,14 +238,24 @@ while( $row = $statement->fetch() ) {
 							 * 2- Add the assignments to the database
 							 */
 							$process_assignment = $this_upload->upload_add_assignment($add_arguments);
+
 							/**
-							 * 3- Add the notifications to the database
+							 * 3- Add the assignments to the database
+							 */
+							$categories_arguments = array(
+														'file_id'		=> $process_file['new_file_id'],
+														'categories'	=> !empty( $file['categories'] ) ? $file['categories'] : '',
+													);
+							$this_upload->upload_save_categories( $categories_arguments );
+
+							/**
+							 * 4- Add the notifications to the database
 							 */
 							if ($send_notifications == true) {
 								$process_notifications = $this_upload->upload_add_notifications($add_arguments);
 							}
 							/**
-							 * 4- Mark is as correctly uploaded / assigned
+							 * 5- Mark is as correctly uploaded / assigned
 							 */
 							$upload_finish[$n] = array(
 													'file_id'		=> $add_arguments['new_file_id'],
@@ -254,7 +264,7 @@ while( $row = $statement->fetch() ) {
 													'description'	=> htmlspecialchars($file['description']),
 													'new_file_id'	=> $process_file['new_file_id'],
 													'assignations'	=> $assignations_count,
-													'public'		=> $add_arguments['public'],
+													'public'		=> !empty( $add_arguments['public'] ) ? $add_arguments['public'] : 0,
 													'public_token'	=> $process_file['public_token'],
 												);
 							if (!empty($file['hidden'])) {
@@ -316,7 +326,7 @@ while( $row = $statement->fetch() ) {
 										$class			= (!empty($uploaded['hidden'])) ? 'danger' : 'success';
 									?>
 									<span class="label label-<?php echo $class; ?>">
-										<?php echo ($hidden == 1) ? $status_hidden : $status_visible; ?>
+										<?php echo ( !empty( $hidden ) && $hidden == 1) ? $status_hidden : $status_visible; ?>
 									</span>
 								</td>
 								<td>

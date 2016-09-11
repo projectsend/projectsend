@@ -1009,6 +1009,24 @@ function render_log_action($params)
 			$action_text = __('(client) edited the file','cftp_admin');
 			$part2 = $affected_file_name;
 			break;
+		case 34:
+			$action_ico = 'category-add';
+			$part1 = $owner_user;
+			$action_text = __('created the category','cftp_admin');
+			$part2 = $affected_account_name;
+			break;
+		case 35:
+			$action_ico = 'category-edit';
+			$part1 = $owner_user;
+			$action_text = __('edited the category','cftp_admin');
+			$part2 = $affected_account_name;
+			break;
+		case 36:
+			$action_ico = 'category-delete';
+			$part1 = $owner_user;
+			$action_text = __('deleted the category','cftp_admin');
+			$part2 = $affected_account_name;
+			break;
 	}
 	
 	$date = date(TIMEFORMAT_USE,strtotime($timestamp));

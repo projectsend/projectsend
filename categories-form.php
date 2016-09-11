@@ -12,7 +12,7 @@ switch ( $form_information['type'] ) {
 		$submit_value = __('Create','cftp_admin');
 		break;
 	case 'edit_category':
-		$submit_value = __('Edit','cftp_admin');
+		$submit_value = __('Save','cftp_admin');
 		break;
 }
 

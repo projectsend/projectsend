@@ -41,6 +41,9 @@
  * 31-	Account (user or client) logs out.
  * 32-	A system user edited a file.
  * 33-	A client edited a file.
+ * 34-	A user created a category.
+ * 35-	A user edited a category.
+ * 36-	A user deleted a category.
  *
  * More to be added soon.
  */

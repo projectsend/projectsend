@@ -194,6 +194,9 @@ include('header.php');
 												30	=> 'ProjectSend was updated',
 												32	=> 'A system user edited a file.',
 												33	=> 'A client edited a file.',
+												34	=> 'A client created a category.',
+												35	=> 'A client edited a category.',
+												36	=> 'A client deleted a category.',
 											);
 								foreach ( $activities as $val => $text ) {
 							?>

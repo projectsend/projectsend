@@ -87,6 +87,17 @@ class CategoriesActions
 				if ($this->sql_query) {
 					$this->state['query']	= 1;
 					$this->state['new_id']	= $this->dbh->lastInsertId();
+
+
+					/** Record the action log */
+					$new_log_action = new LogActions();
+					$log_action_args = array(
+											'action'				=> 34,
+											'owner_id'				=> CURRENT_USER_ID,
+											'affected_account'		=> $this->state['new_id'],
+											'affected_account_name'	=> $this->name
+										);
+					$new_record_action = $new_log_action->log_action_save($log_action_args);
 				}
 				else {
 					/** Query couldn't be executed */
@@ -122,6 +133,16 @@ class CategoriesActions
 		
 				if ($this->sql_query) {
 					$this->state['query'] = 1;
+
+					/** Record the action log */
+					$new_log_action = new LogActions();
+					$log_action_args = array(
+											'action'				=> 35,
+											'owner_id'				=> CURRENT_USER_ID,
+											'affected_account'		=> $arguments['id'],
+											'affected_account_name'	=> $this->name
+										);
+					$new_record_action = $new_log_action->log_action_save($log_action_args);
 				}
 				else {
 					$this->state['query'] = 0;

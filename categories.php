@@ -112,7 +112,7 @@ include('header.php');
 					}
 					$msg = __('The selected categories were deleted.','cftp_admin');
 					echo system_message('ok',$msg);
-					$log_action_number = 12;
+					$log_action_number = 36;
 					break;
 			}
 
@@ -120,9 +120,9 @@ include('header.php');
 			foreach ($selected_categories as $category) {
 				$new_log_action = new LogActions();
 				$log_action_args = array(
-										'action' => $log_action_number,
-										'owner_id' => $global_id,
-										'affected_account_name' => $all_categories[$category]
+										'action'				=> $log_action_number,
+										'owner_id'				=> CURRENT_USER_ID,
+										'affected_account_name'	=> $all_categories[$category]
 									);
 				$new_record_action = $new_log_action->log_action_save($log_action_args);
 			}
@@ -219,7 +219,10 @@ include('header.php');
 	}
 
 
-	if ( !empty( $_POST ) ) {
+	/**
+	 * Process the action
+	 */
+	if ( isset( $_POST['btn_process'] ) ) {
 		/**
 		 * Applies for both ADDING a new category as well
 		 * as editing one but with the form already sent.
@@ -227,12 +230,7 @@ include('header.php');
 		$category_name			= $_POST['category_name'];
 		$category_parent		= $_POST['category_parent'];
 		$category_description	= $_POST['category_description'];
-	}
 
-	/**
-	 * Process the action
-	 */
-	if ( isset( $_POST['btn_process'] ) ) {
 		$category_object = new CategoriesActions();
 
 		$arguments = array(

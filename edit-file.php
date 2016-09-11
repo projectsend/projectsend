@@ -53,6 +53,15 @@ while( $row = $statement->fetch() ) {
 	$groups[$row["id"]] = $row["name"];
 }
 
+/** Fill the categories array that will be used on the form */
+$categories = array();
+$statement = $dbh->prepare("SELECT id, name FROM " . TABLE_CATEGORIES . " ORDER BY name ASC");
+$statement->execute();
+$statement->setFetchMode(PDO::FETCH_ASSOC);
+while( $row = $statement->fetch() ) {
+	$categories[$row["id"]] = $row["name"];
+}
+
 /**
  * Get the user level to determine if the uploader is a
  * system user or a client.
@@ -331,22 +340,21 @@ $current_level = get_current_user_level();
 						$statement->execute();
 						while( $row = $statement->fetch() ) {
 					?>
-							<div class="row edit_files">
-								<div class="col-sm-1">
+							<div class="row">
+								<div class="col-sm-12">
 									<div class="file_number">
-										<p><?php echo $i; ?></p>
+										<p><span class="glyphicon glyphicon-saved" aria-hidden="true"></span><?php echo html_output($row['url']); ?></p>
 									</div>
 								</div>
-								<div class="col-sm-11">
+							</div>
+							<div class="row edit_files">
+								<div class="col-sm-12">
 									<div class="row edit_files_blocks">
-										<div class="<?php echo ($global_level != 0) ? 'col-sm-4' : 'col-sm-12'; ?>">
+										<div class="<?php echo ($global_level != 0) ? 'col-sm-6 col-md-3' : 'col-sm-12 col-md-12'; ?>  column">
 											<div class="file_data">
 												<div class="row">
 													<div class="col-sm-12">
 														<h3><?php _e('File information', 'cftp_admin');?></h3>
-														<p class="on_disc_name">
-															<?php echo html_output($row['url']); ?>
-														</p>
 														
 														<div class="form-group">
 															<label><?php _e('Title', 'cftp_admin');?></label>
@@ -365,7 +373,7 @@ $current_level = get_current_user_level();
 											/** The following options are available to users only */
 											if ($global_level != 0) {
 										?>
-												<div class="col-sm-4">
+												<div class="col-sm-6 col-md-3 column_even column">
 													<div class="file_data">
 														<?php
 															/**
@@ -377,11 +385,6 @@ $current_level = get_current_user_level();
 															}
 														?>
 														<h3><?php _e('Expiration date', 'cftp_admin');?></h3>
-														<div class="checkbox">
-															<label for="exp_checkbox">
-																<input type="checkbox" id="exp_checkbox" name="file[<?php echo $i; ?>][expires]" value="1" <?php if ($row['expires']) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?>
-															</label>
-														</div>
 		
 														<div class="form-group">
 															<label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
@@ -391,6 +394,12 @@ $current_level = get_current_user_level();
 																	<i class="glyphicon glyphicon-time"></i>
 																</div>
 															</div>
+														</div>
+
+														<div class="checkbox">
+															<label for="exp_checkbox">
+																<input type="checkbox" id="exp_checkbox" name="file[<?php echo $i; ?>][expires]" value="1" <?php if ($row['expires']) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?>
+															</label>
 														</div>
 		
 														<div class="divider"></div>
@@ -404,7 +413,7 @@ $current_level = get_current_user_level();
 													</div>
 												</div>
 
-												<div class="col-sm-4 assigns">
+												<div class="col-sm-6 col-md-3 assigns column">
 													<div class="file_data">
 														<?php
 															/**
@@ -447,8 +456,8 @@ $current_level = get_current_user_level();
 															</optgroup>
 														</select>
 														<div class="list_mass_members">
-															<a href="#" class="btn btn-info add-all"><?php _e('Add all','cftp_admin'); ?></a>
-															<a href="#" class="btn btn-info remove-all"><?php _e('Remove all','cftp_admin'); ?></a>
+															<a href="#" class="btn btn-xs btn-primary add-all" data-type="assigns"><?php _e('Add all','cftp_admin'); ?></a>
+															<a href="#" class="btn btn-xs btn-primary remove-all" data-type="assigns"><?php _e('Remove all','cftp_admin'); ?></a>
 														</div>
 		
 														<div class="divider"></div>
@@ -465,6 +474,32 @@ $current_level = get_current_user_level();
 														</div>
 													</div>
 												</div>
+
+
+												<div class="col-sm-6 col-md-3 categories column">
+													<div class="file_data">
+														<h3><?php _e('Categories', 'cftp_admin');?></h3>
+														<label><?php _e('Add to', 'cftp_admin');?>:</label>
+														<select multiple="multiple" name="file[<?php echo $i; ?>][categories][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+															<?php
+																/**
+																 * The categories list is generated early on the file so the
+																 * array doesn't need to be made once on every file.
+																 */
+																foreach($categories as $cat_id => $cat_name) {
+																?>
+																	<option value="<?php echo $cat_id; ?>"><?php echo html_output($cat_name); ?></option>
+																<?php
+																}
+															?>
+														</select>
+														<div class="list_mass_members">
+															<a href="#" class="btn btn-xs btn-primary add-all" data-type="categories"><?php _e('Add all','cftp_admin'); ?></a>
+															<a href="#" class="btn btn-xs btn-primary remove-all" data-type="categories"><?php _e('Remove all','cftp_admin'); ?></a>
+														</div>
+													</div>
+												</div>
+
 										<?php
 											} /** Close $current_level check */
 										?>

@@ -41,11 +41,13 @@ h1, h2, h3, h4, h5, h6 {
 	}
 	
 	h3 {
-		font-size:19px;
+		font-size:17px;
 		line-height:19px;
-		padding-bottom:6px;
-		border-bottom:1px solid #E5E5E5;
-		margin-bottom:12px;
+		padding:0;
+		/*border-bottom:1px solid #E5E5E5;*/
+		font-weight:900 !important;
+		margin-bottom:20px;
+		text-transform:uppercase;
 	}
 	
 	h4 {
@@ -464,7 +466,7 @@ h1, h2, h3, h4, h5, h6 {
 .edit_files {
 }
 
-	.edit_files .file_data {
+	.edit_files .edit_files_blocks {
 		background:white;
 		border:1px solid #ccc;
 		-moz-border-radius:5px;
@@ -473,10 +475,10 @@ h1, h2, h3, h4, h5, h6 {
 		-webkit-box-shadow:3px 3px 5px #dedede;
 		border-radius:5px;
 		box-shadow:3px 3px 5px #dedede;
-		padding:15px;
+		padding:30px 15px;
 	}
 
-		.edit_files .file_data:hover {
+		.edit_files .edit_files_blocks:hover {
 			border:1px solid #888;
 			-moz-box-shadow:3px 3px 5px #ccc;
 			-webkit-box-shadow:3px 3px 5px #ccc;
@@ -491,9 +493,12 @@ h1, h2, h3, h4, h5, h6 {
 			margin-top:0;
 		}
 
+	.edit_files .column_even {
+	}
+
 .file_editor {
 	padding-top:15px;
-	margin-bottom:15px;
+	margin-bottom:40px;
 }
 
 .edit_files textarea {
@@ -532,6 +537,7 @@ h1, h2, h3, h4, h5, h6 {
 	position:relative;
 }
 
+/*
 	.file_number:after {
 		content: ' ';
 		height: 0;
@@ -542,32 +548,48 @@ h1, h2, h3, h4, h5, h6 {
 		left: 100%;
 		top: 10px;
 	}
-	
-	.file_number p {
-		padding:10px 15px;
+*/
+	.file_number {
 		margin:0;
-		background:#0094BB !important;
-		text-align:center;
-		font-weight:bold;
-		font-size:60px;
+		padding:10px;
+		background:#232835;
 		color:white;
+		font-size:18px;
+		display:inline-block;
+		-moz-border-radius:5px 5px 0 0;
+		-webkit-border-radius:5px 5px 0 0;
+		border-radius:5px 5px 0 0;
 	}
 
-.edit_files .on_disc_name {
-	font-size:1.7em;
-	margin:0 0 20px;
-	word-wrap:break-word;
+		.file_number p {
+			padding:0 15px;
+			margin:0;
+			display:inline-block;
+			word-wrap:break-word;
+		}
+	
+			.file_number p span {
+				display:inline-block;
+				color:#888;
+				margin:0 15px 0 0;
+			}
+
+.edit_files .column {
+	/*border-right:1px solid #dedede;*/
+	padding:0 30px;
 }
 
+	.edit_files .column:last-child {
+		border:none;
+	}
+
 .edit_files .divider {
-	border-bottom:1px dotted #e5e5e5;
-	margin:20px auto;
+	margin:40px auto;
 }
 
 .list_mass_members {
-	margin:8px 0 0;
-	padding:8px 0 0;
-	border-top:1px dotted #ccc;
+	margin:10px 0 0;
+	padding:0;
 }
 
 	.list_mass_members a {
@@ -576,10 +598,6 @@ h1, h2, h3, h4, h5, h6 {
 	
 	.list_mass_members a:last-child {
 		margin-right:0;
-	}
-	
-	.list_mass_members  a.copy-all {
-		margin-left:15px;
 	}
 	
 /********************************************************************************************************************************************

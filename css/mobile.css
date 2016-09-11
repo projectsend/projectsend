@@ -1,4 +1,10 @@
-@media ( max-width:768px ) {
+@media (max-width:1024px) {
+	.edit_files .column {
+		margin-bottom:50px;
+	}
+}
+
+@media (max-width:768px) {
 	.main_title {
 		text-align:center;
 		margin-bottom:20px;
@@ -49,40 +55,11 @@
 
 	.edit_files .file_data {
 		background:white;
-		border:solid #ccc;
-		border-width:0 1px;
-		-moz-border-radius:0px;
-		-moz-box-shadow:none;
-		-webkit-border-radius:0px;
-		-webkit-box-shadow:none;
-		border-radius:0px;
-		box-shadow:none;
-		padding:15px;
+		margin-bottom:25px;
 	}
-
-		.edit_files .file_data:hover {
-			border:solid #ccc;
-			border-width:0 1px;
-			-moz-box-shadow:none;
-			-webkit-box-shadow:none;
-			box-shadow:none;
-		}
 
 	.edit_files .col-sm-4:last-child .file_data {
 		border-bottom:1px solid #ccc;
-	}
-
-	.file_number:after {
-		content: ' ';
-		height: 0;
-		position: absolute;
-		width: 0;
-		border: 10px solid transparent;
-		border-top-color: #0094BB;
-		left:auto;
-		right: 20px;
-		top: 100%;
-		z-index:100;
 	}
 
 }

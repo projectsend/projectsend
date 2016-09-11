@@ -103,6 +103,15 @@ while( $row = $statement->fetch() ) {
 	$groups[$row["id"]] = $row["name"];
 }
 
+/** Fill the categories array that will be used on the form */
+$categories = array();
+$statement = $dbh->prepare("SELECT id, name FROM " . TABLE_CATEGORIES . " ORDER BY name ASC");
+$statement->execute();
+$statement->setFetchMode(PDO::FETCH_ASSOC);
+while( $row = $statement->fetch() ) {
+	$categories[$row["id"]] = $row["name"];
+}
+
 /**
  * Make an array of file urls that are on the DB already.
  */
@@ -444,22 +453,21 @@ while( $row = $statement->fetch() ) {
 								}
 					?>
 								<div class="file_editor <?php if ($i%2) { echo 'f_e_odd'; } ?>">
-									<div class="row edit_files">
-										<div class="col-sm-1">
+									<div class="row">
+										<div class="col-sm-12">
 											<div class="file_number">
-												<p><?php echo $i; ?></p>
+												<p><span class="glyphicon glyphicon-saved" aria-hidden="true"></span><?php echo html_output($file); ?></p>
 											</div>
 										</div>
-										<div class="col-sm-11">
+									</div>
+									<div class="row edit_files">
+										<div class="col-sm-12">
 											<div class="row edit_files_blocks">
-												<div class="<?php echo ($global_level != 0) ? 'col-sm-4' : 'col-sm-12'; ?>">
+												<div class="<?php echo ($global_level != 0) ? 'col-sm-6 col-md-3' : 'col-sm-12'; ?> column">
 													<div class="file_data">
 														<div class="row">
 															<div class="col-sm-12">
 																<h3><?php _e('File information', 'cftp_admin');?></h3>
-																<p class="on_disc_name">
-																	<?php echo html_output($file); ?>
-																</p>
 																<input type="hidden" name="file[<?php echo $i; ?>][original]" value="<?php echo html_output($file_original); ?>" />
 																<input type="hidden" name="file[<?php echo $i; ?>][file]" value="<?php echo html_output($file); ?>" />
 		
@@ -481,7 +489,7 @@ while( $row = $statement->fetch() ) {
 													/** The following options are available to users only */
 													if ($global_level != 0) {
 												?>
-														<div class="col-sm-4">
+														<div class="col-sm-6 col-md-3 column_even column">
 															<div class="file_data">
 																<?php
 																	/**
@@ -490,12 +498,7 @@ while( $row = $statement->fetch() ) {
 																	*/
 																?>
 																<h3><?php _e('Expiration date', 'cftp_admin');?></h3>
-																<div class="checkbox">
-																	<label for="exp_checkbox_<?php echo $i; ?>">
-																		<input type="checkbox" name="file[<?php echo $i; ?>][expires]" id="exp_checkbox_<?php echo $i; ?>" value="1" <?php if ($row['expiry_set']) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?>
-																	</label>
-																</div>
-				
+
 																<div class="form-group">
 																	<label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
 																	<div class="input-group date-container">
@@ -504,6 +507,12 @@ while( $row = $statement->fetch() ) {
 																			<i class="glyphicon glyphicon-time"></i>
 																		</div>
 																	</div>
+																</div>
+
+																<div class="checkbox">
+																	<label for="exp_checkbox_<?php echo $i; ?>">
+																		<input type="checkbox" name="file[<?php echo $i; ?>][expires]" id="exp_checkbox_<?php echo $i; ?>" value="1" <?php if ($row['expiry_set']) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?>
+																	</label>
 																</div>
 			
 																<div class="divider"></div>
@@ -517,7 +526,7 @@ while( $row = $statement->fetch() ) {
 															</div>
 														</div>
 
-														<div class="col-sm-4 assigns">
+														<div class="col-sm-6 col-md-3 assigns column">
 															<div class="file_data">
 																<?php
 																	/**
@@ -556,9 +565,9 @@ while( $row = $statement->fetch() ) {
 																	</optgroup>
 																</select>
 																<div class="list_mass_members">
-																	<a href="#" class="btn btn-info add-all"><?php _e('Add all','cftp_admin'); ?></a>
-																	<a href="#" class="btn btn-info remove-all"><?php _e('Remove all','cftp_admin'); ?></a>
-																	<a href="#" class="btn btn-danger copy-all"><?php _e('Copy selections to other files','cftp_admin'); ?></a>
+																	<a href="#" class="btn btn-xs btn-primary add-all" data-type="assigns"><?php _e('Add all','cftp_admin'); ?></a>
+																	<a href="#" class="btn btn-xs btn-primary remove-all" data-type="assigns"><?php _e('Remove all','cftp_admin'); ?></a>
+																	<a href="#" class="btn btn-xs btn-danger copy-all" data-type="assigns"><?php _e('Copy selections to other files','cftp_admin'); ?></a>
 																</div>
 	
 																<div class="divider"></div>
@@ -567,6 +576,32 @@ while( $row = $statement->fetch() ) {
 																	<label for="hid_checkbox_<?php echo $i; ?>">
 																		<input type="checkbox" id="hid_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][hidden]" value="1" /> <?php _e('Upload hidden (will not send notifications)', 'cftp_admin');?>
 																	</label>
+																</div>
+															</div>
+														</div>
+
+
+														<div class="col-sm-6 col-md-3 categories column">
+															<div class="file_data">
+																<h3><?php _e('Categories', 'cftp_admin');?></h3>
+																<label><?php _e('Add to', 'cftp_admin');?>:</label>
+																<select multiple="multiple" name="file[<?php echo $i; ?>][categories][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+																	<?php
+																		/**
+																		 * The categories list is generated early on the file so the
+																		 * array doesn't need to be made once on every file.
+																		 */
+																		foreach($categories as $cat_id => $cat_name) {
+																		?>
+																			<option value="<?php echo $cat_id; ?>"><?php echo html_output($cat_name); ?></option>
+																		<?php
+																		}
+																	?>
+																</select>
+																<div class="list_mass_members">
+																	<a href="#" class="btn btn-xs btn-primary add-all" data-type="categories"><?php _e('Add all','cftp_admin'); ?></a>
+																	<a href="#" class="btn btn-xs btn-primary remove-all" data-type="categories"><?php _e('Remove all','cftp_admin'); ?></a>
+																	<a href="#" class="btn btn-xs btn-danger copy-all" data-type="categories"><?php _e('Copy selections to other files','cftp_admin'); ?></a>
 																</div>
 															</div>
 														</div>
@@ -662,7 +697,8 @@ while( $row = $statement->fetch() ) {
 				});
 
 				$('.add-all').click(function(){
-					var selector = $(this).closest('.assigns').find('select');
+					var type = $(this).data('type');
+					var selector = $(this).closest('.' + type).find('select');
 					$(selector).find('option').each(function(){
 						$(this).prop('selected', true);
 					});
@@ -671,7 +707,8 @@ while( $row = $statement->fetch() ) {
 				});
 		
 				$('.remove-all').click(function(){
-					var selector = $(this).closest('.assigns').find('select');
+					var type = $(this).data('type');
+					var selector = $(this).closest('.' + type).find('select');
 					$(selector).find('option').each(function(){
 						$(this).prop('selected', false);
 					});
@@ -680,24 +717,28 @@ while( $row = $statement->fetch() ) {
 				});
 
 				$('.copy-all').click(function() {
-					var selector = $(this).closest('.assigns').find('select');
-
-					var selected = new Array();
-					$(selector).find('option:selected').each(function() {
-						selected.push($(this).val());
-					});
-
-					$('.chosen-select').each(function() {
-						$(this).find('option').each(function() {
-							if ($.inArray($(this).val(), selected) === -1) {
-								$(this).removeAttr('selected');
-							}
-							else {
-								$(this).attr('selected', 'selected');
-							}
+					if ( confirm( "<?php _e('Copy selection to all files?','cftp_admin'); ?>" ) ) {
+						var type = $(this).data('type');
+						var selector = $(this).closest('.' + type).find('select');
+	
+						var selected = new Array();
+						$(selector).find('option:selected').each(function() {
+							selected.push($(this).val());
 						});
-					});
-					$('select').trigger('chosen:updated');
+	
+						$('.' + type + ' .chosen-select').each(function() {
+							$(this).find('option').each(function() {
+								if ($.inArray($(this).val(), selected) === -1) {
+									$(this).removeAttr('selected');
+								}
+								else {
+									$(this).attr('selected', 'selected');
+								}
+							});
+						});
+						$('select').trigger('chosen:updated');
+					}
+
 					return false;
 				});
 		

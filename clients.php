@@ -137,6 +137,8 @@ $(document).ready(function() {
 	}
 
 	/** Query the clients */
+	$params = array();
+
 	$cq = "SELECT * FROM " . TABLE_USERS . " WHERE level='0'";
 
 	/** Add the search terms */	

@@ -135,10 +135,7 @@ include('header.php');
 	}
 	
 	/** Get all the existing categories */
-	$params	= array(
-					'arranged'	=> true,
-				);
-	$get_categories = get_categories( $params );
+	$get_categories = get_categories();
 	$categories	= $get_categories['categories'];
 	$arranged	= $get_categories['arranged'];
 
@@ -303,17 +300,6 @@ include('header.php');
 							<tbody>
 								<?php
 									if ( $get_categories['count'] > 0 ) {
-
-										$files_count = array();
-
-										$sql_count = $dbh->prepare("SELECT cat_id, COUNT(file_id) as count FROM " . TABLE_CATEGORIES_RELATIONS . " GROUP BY cat_id");
-										$sql_count->execute();
-
-										$sql_count->setFetchMode(PDO::FETCH_ASSOC);
-										while ( $row_count = $sql_count->fetch() ) {
-											$files_count[$row_count["cat_id"]] = $row_count["count"];
-										}
-
 										foreach ( $categories as $cat ) {
 									?>
 											<tr>
@@ -323,15 +309,14 @@ include('header.php');
 												<td><?php echo html_output($cat["name"]); ?></td>
 												<td>
 													<?php
-														if ( array_key_exists( $cat['id'], $files_count ) ) {
+														$total = $cat['file_count'];
+														if ( $total > 0 ) {
 															$class			= 'success';
-															$total			= $files_count[$cat['id']];
 															$files_link 	= 'manage-files.php?category=' . $cat['id'];
 															$files_button	= 'btn-primary';
 														}
 														else {
 															$class			= 'danger';
-															$total			= '0';
 															$files_link		= 'javascript:void(0);';
 															$files_button	= 'btn-default disabled';
 														}

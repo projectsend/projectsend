@@ -500,13 +500,7 @@ $current_level = get_current_user_level();
 																	 * The categories list is generated early on the file so the
 																	 * array doesn't need to be made once on every file.
 																	 */
-																	foreach ( $get_categories['categories'] as $cat ) {
-																	?>
-																		<option value="<?php echo $cat['id']; ?>" <?php if (in_array($cat['id'], $current_categories)) { echo 'selected="selected"'; } ?>>
-																			<?php echo html_output($cat['name']); ?>
-																		</option>
-																	<?php
-																	}
+																	echo generate_categories_options( $get_categories['arranged'], 0, $current_categories );
 																?>
 															</select>
 															<div class="list_mass_members">

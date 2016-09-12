@@ -37,7 +37,7 @@ switch ( $form_information['type'] ) {
 				<option value="0" <?php echo (isset($category_parent) && $category_parent == '0') ? 'selected="selected"' : ''; ?>><?php _e('None','cftp_admin'); ?></option>
 				<?php
 					$ignore				= ( $form_information['type'] == 'edit_category' ) ? $editing : 0;
-					$selected_parent	= ( isset($category_parent) ) ? $category_parent : null;
+					$selected_parent	= ( isset($category_parent) ) ? array( $category_parent ) : null;
 					echo generate_categories_options( $get_categories['arranged'], 0, $selected_parent, $ignore );
 				?>
 			</select>

@@ -48,6 +48,9 @@ if ( !defined( 'IS_INSTALL' ) ) {
 /** Recreate the function if it doesn't exist. By Alan Reiblein */
 require_once(ROOT_DIR.'/includes/timezone_identifiers_list.php');
 
+/** Categories functions */
+require_once(ROOT_DIR.'/includes/functions.categories.php');
+
 /**
  * Always require this classes to avoid repetition of code
  * on other files.

@@ -87,18 +87,19 @@ include('header.php');
 	if ( isset( $_POST['categories_actions'] ) ) {
 		/** Continue only if 1 or more categories were selected. */
 		if ( !empty($_POST['categories'] ) ) {
-			$selected_categories = $_POST['categories'];
-			$categories_to_get = implode( ',', array_map( 'intval', array_unique( $selected_categories ) ) );
 
 			/**
 			 * Make a list of categories to avoid individual queries.
 			 */
-			$statement = $dbh->prepare( "SELECT id, name FROM " . TABLE_CATEGORIES . " WHERE FIND_IN_SET(id, :categories)" );
-			$statement->bindParam(':categories', $categories_to_get);
-			$statement->execute();
-			$statement->setFetchMode(PDO::FETCH_ASSOC);
-			while ( $row = $statement->fetch() ) {
-				$all_categories[$row['id']] = $row['name'];
+			$selected_categories	= $_POST['categories'];
+
+			$get_categories_delete	= get_categories(
+													array(
+														'id' => $selected_categories,
+													)
+												);
+			foreach ( $get_categories_delete['categories'] as $delete_cat ) {
+				$all_categories[$delete_cat['id']] = $delete_cat['name'];
 			}
 
 			$my_info = get_user_by_username(get_current_user_username());
@@ -132,61 +133,13 @@ include('header.php');
 			echo system_message('error',$msg);
 		}
 	}
-		
-	$params	= array();
-
-	$cq = "SELECT * FROM " . TABLE_CATEGORIES;
 	
-	/** Add the search terms */	
-	if ( isset( $_POST['search'] ) && !empty( $_POST['search'] ) ) {
-		$conditions[] = "(name LIKE :name)";
-		$no_results_error = 'search';
-
-		$search_terms		= '%'.$_POST['search'].'%';
-		$params[':name']	= $search_terms;
-	}
-	
-	/** Clients can only manage their own categories */	
-	if ($current_level == '0') {
-		$conditions[] = "created_by = :user_id";
-		$params[':user_id']	= $global_user;
-	}
-
-	/**
-	 * Build the final query
-	 */
-	if ( !empty( $conditions ) ) {
-		foreach ( $conditions as $index => $condition ) {
-			$cq .= ( $index == 0 ) ? ' WHERE ' : ' AND ';
-			$cq .= $condition;
-		}
-	}
-
-	$cq .= " ORDER BY name ASC";
-
-	$sql = $dbh->prepare( $cq );
-	$sql->execute( $params );
-	$count = $sql->rowCount();
-
-	if ( $count > 0 ) {
-		$sql->setFetchMode(PDO::FETCH_ASSOC);
-		
-		/**
-		 * Fetch all initially to only do it once.
-		 */
-		$rows = $sql->fetchAll();
-		$existing_categories = array();
-	
-		foreach ($rows as $r) {
-			$existing_categories[$r['id']] = array(
-													'id'			=> $r['id'],
-													'name'			=> $r['name'],
-													'parent'		=> $r['parent'],
-													'description'	=> $r['description'],
-													'timestamp'		=> $r['timestamp'],
-												);
-		}
-	}
+	/** Get all the existing categories */
+	$params	= array(
+					'arrange'	=> false,
+				);
+	$get_categories = get_categories( $params );
+	$categories = $get_categories['categories'];
 
 	/**
 	 * Adding or editing a category
@@ -213,9 +166,9 @@ include('header.php');
 		/**
 		 * Get the current information if just entering edit mode
 		 */
-		$category_name			= $existing_categories[$editing]['name'];
-		$category_parent		= $existing_categories[$editing]['parent'];
-		$category_description	= $existing_categories[$editing]['description'];
+		$category_name			= $categories[$editing]['name'];
+		$category_parent		= $categories[$editing]['parent'];
+		$category_description	= $categories[$editing]['description'];
 	}
 
 
@@ -310,30 +263,24 @@ include('header.php');
 			<div class="clear"></div>
 	
 			<div class="form_actions_count">
-				<p class="form_count_total"><?php _e('Showing','cftp_admin'); ?>: <span><?php echo $count; ?> <?php _e('categories','cftp_admin'); ?></span></p>
+				<p class="form_count_total"><?php _e('Showing','cftp_admin'); ?>: <span><?php echo $get_categories['count']; ?> <?php _e('categories','cftp_admin'); ?></span></p>
 			</div>
 	
 			<div class="clear"></div>
 
 			<?php
-				if (!$count) {
-					if (isset($no_results_error)) {
-						switch ($no_results_error) {
+				if ( $get_categories['count'] == 0 ) {
+					if ( !empty( $get_categories['no_results_type'] ) ) {
+						switch ( $get_categories['no_results_type'] ) {
 							case 'search':
 								$no_results_message = __('Your search keywords returned no results.','cftp_admin');;
-								break;
-							case 'filter':
-								$no_results_message = __('The filters you selected returned no results.','cftp_admin');;
-								break;
-							case 'account_level':
-								$no_results_message = __('There are no categories created.','cftp_admin');;
 								break;
 						}
 					}
 					else {
-						$no_results_message = __('There are no categories created.','cftp_admin');;
+						$no_results_message = __('There are no categories yet.','cftp_admin');;
 					}
-					echo system_message('error',$no_results_message);
+					echo system_message('error', $no_results_message);
 				}
 			?>
 
@@ -354,7 +301,7 @@ include('header.php');
 							</thead>
 							<tbody>
 								<?php
-									if ( $count > 0 ) {
+									if ( $get_categories['count'] > 0 ) {
 
 										$files_count = array();
 
@@ -366,7 +313,7 @@ include('header.php');
 											$files_count[$row_count["cat_id"]] = $row_count["count"];
 										}
 
-										foreach ( $existing_categories as $cat ) {
+										foreach ( $categories as $cat ) {
 									?>
 											<tr>
 												<td>

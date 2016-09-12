@@ -55,12 +55,8 @@ while( $row = $statement->fetch() ) {
 
 /** Fill the categories array that will be used on the form */
 $categories = array();
-$statement = $dbh->prepare("SELECT id, name FROM " . TABLE_CATEGORIES . " ORDER BY name ASC");
-$statement->execute();
-$statement->setFetchMode(PDO::FETCH_ASSOC);
-while( $row = $statement->fetch() ) {
-	$categories[$row["id"]] = $row["name"];
-}
+$get_categories = get_categories();
+
 
 /**
  * Get the user level to determine if the uploader is a
@@ -504,10 +500,10 @@ $current_level = get_current_user_level();
 																	 * The categories list is generated early on the file so the
 																	 * array doesn't need to be made once on every file.
 																	 */
-																	foreach($categories as $cat_id => $cat_name) {
+																	foreach ( $get_categories['categories'] as $cat ) {
 																	?>
-																		<option value="<?php echo $cat_id; ?>" <?php if (in_array($cat_id, $current_categories)) { echo 'selected="selected"'; } ?>>
-																			<?php echo html_output($cat_name); ?>
+																		<option value="<?php echo $cat['id']; ?>" <?php if (in_array($cat['id'], $current_categories)) { echo 'selected="selected"'; } ?>>
+																			<?php echo html_output($cat['name']); ?>
 																		</option>
 																	<?php
 																	}

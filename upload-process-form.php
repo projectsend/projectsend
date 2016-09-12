@@ -105,12 +105,7 @@ while( $row = $statement->fetch() ) {
 
 /** Fill the categories array that will be used on the form */
 $categories = array();
-$statement = $dbh->prepare("SELECT id, name FROM " . TABLE_CATEGORIES . " ORDER BY name ASC");
-$statement->execute();
-$statement->setFetchMode(PDO::FETCH_ASSOC);
-while( $row = $statement->fetch() ) {
-	$categories[$row["id"]] = $row["name"];
-}
+$get_categories = get_categories();
 
 /**
  * Make an array of file urls that are on the DB already.
@@ -265,7 +260,7 @@ while( $row = $statement->fetch() ) {
 													'new_file_id'	=> $process_file['new_file_id'],
 													'assignations'	=> $assignations_count,
 													'public'		=> !empty( $add_arguments['public'] ) ? $add_arguments['public'] : 0,
-													'public_token'	=> $process_file['public_token'],
+													'public_token'	=> !empty( $process_file['public_token'] ) ? $process_file['public_token'] : null,
 												);
 							if (!empty($file['hidden'])) {
 								$upload_finish[$n]['hidden'] = $file['hidden'];
@@ -601,9 +596,9 @@ while( $row = $statement->fetch() ) {
 																		 * The categories list is generated early on the file so the
 																		 * array doesn't need to be made once on every file.
 																		 */
-																		foreach($categories as $cat_id => $cat_name) {
+																		foreach ( $get_categories['categories'] as $cat ) {
 																		?>
-																			<option value="<?php echo $cat_id; ?>"><?php echo html_output($cat_name); ?></option>
+																			<option value="<?php echo $cat['id']; ?>"><?php echo html_output($cat['name']); ?></option>
 																		<?php
 																		}
 																	?>

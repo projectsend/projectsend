@@ -14,7 +14,7 @@ function get_categories( $params = array() ) {
 	$orderby	= ( !empty( $params['orderby'] ) ) ? $params['orderby'] : 'name';
 	$order		= ( !empty( $params['order'] ) ) ? $params['order'] : 'ASC';
 	$parent		= ( !empty( $params['parent'] ) ) ? $params['parent'] : false;
-	$arrange	= ( !empty( $params['arrange'] ) ) ? $params['arrange'] : false;
+	$arranged	= ( !empty( $params['arranged'] ) ) ? $params['arranged'] : false;
 	$id			= ( !empty( $params['id'] ) ) ? $params['id'] : false;
 	
 	/**
@@ -90,26 +90,69 @@ function get_categories( $params = array() ) {
 			$found_categories[$row['id']] = array(
 												'id'			=> $row['id'],
 												'name'			=> $row['name'],
-												'parent'		=> $row['parent'],
+												'parent'		=> (empty( $row['parent'] ) ) ? 0 : $row['parent'],
 												'description'	=> $row['description'],
 												'created_by'	=> $row['created_by'],
 												'timestamp'		=> $row['timestamp'],
+												'depth'			=> 0,
+												'children'		=> null,
 											);
 		}
 		
-		if ( $arrange == true ) {
+		if ( $arranged == true ) {
 			$return['arranged'] = arrange_categories( $found_categories );
 		}
-		else {
-			$return['categories'] = $found_categories;
-		}
+
+		$return['categories'] = $found_categories;
 	}
 
 	return $return;	
 }
 
-function arrange_categories( $categories ) {
-	/** Return an array of categories nested by parent */
-	// TODO: All
+/**
+ * Arrange is an external function so it can be called from anywhere.
+ * Returns an array of categories nested by parent
+ */
+function arrange_categories(array &$elements, $parent = 0, $depth = 0) {
+    $branch = array();
+    foreach ($elements as $element) {
+        if ($element['parent'] == $parent) {
+			$element['depth'] = $depth++;
+            $children = arrange_categories($elements, $element['id'], $depth);
+
+            if ($children) {
+                $element['children'] = $children;
+            }
+
+            $branch[$element['id']] = $element;
+			$element['depth'] = $depth--;
+        }
+    }
+    return $branch;
+}
+
+
+function generate_categories_options( $categories, $parent = 0, $selected_parent = '', $ignore = 0 ) {
+	$return = '';
+
+	if ( !empty( $categories ) ) {
+		foreach ( $categories as $category ) {
+			$depth = ( $category['depth'] > 0 ) ? str_repeat( '--', $category['depth'] ) : false;
+
+			$selected = ( $category['id'] == $selected_parent ) ? " selected='selected'" : '';
+
+			if ( $category['id'] != $ignore ) {
+				$format = "<option value='%s'%s>%s%s</option>\n";
+				$return .= sprintf( $format, $category['id'], $selected, $depth, html_output($category['name']) );
+			}
+
+			$children = $category['children'];
+			if ( !empty( $children ) ) {
+				$return .= generate_categories_options( $children, $category['parent'], $selected_parent, $ignore );
+			}
+		}
+	}
+	
+	return $return;
 }
 ?>

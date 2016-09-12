@@ -36,16 +36,9 @@ switch ( $form_information['type'] ) {
 			<select name="category_parent" id="category_parent" class="form-control">
 				<option value="0" <?php echo (isset($category_parent) && $category_parent == '0') ? 'selected="selected"' : ''; ?>><?php _e('None','cftp_admin'); ?></option>
 				<?php
-					if ( $count > 0 ) {
-						foreach ( $existing_categories as $cat ) {
-							if ( $form_information['type'] == 'edit_category' && $cat['id'] == $edit_id ) {
-								continue;
-							}
-				?>
-							<option value="<?php echo $cat['id']; ?>" <?php echo (isset($category_parent) && $category_parent == $cat['id']) ? 'selected="selected"' : ''; ?>><?php echo html_output($cat['name']); ?></option>
-				<?php
-						}
-					}
+					$ignore				= ( $form_information['type'] == 'edit_category' ) ? $editing : 0;
+					$selected_parent	= ( isset($category_parent) ) ? $category_parent : null;
+					echo generate_categories_options( $get_categories['arranged'], 0, $selected_parent, $ignore );
 				?>
 			</select>
 		</div>

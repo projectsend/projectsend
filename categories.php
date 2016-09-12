@@ -136,10 +136,11 @@ include('header.php');
 	
 	/** Get all the existing categories */
 	$params	= array(
-					'arrange'	=> false,
+					'arranged'	=> true,
 				);
 	$get_categories = get_categories( $params );
-	$categories = $get_categories['categories'];
+	$categories	= $get_categories['categories'];
+	$arranged	= $get_categories['arranged'];
 
 	/**
 	 * Adding or editing a category

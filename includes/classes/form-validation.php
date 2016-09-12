@@ -113,6 +113,7 @@ class Validate_Form
 										),
 					);
 	
+		$rules_active = array();
 		foreach ( $rules as $rule => $data ) {
 			if ( $data['value'] == '1' ) {
 				$rules_active[$rule] = $data['chars'];

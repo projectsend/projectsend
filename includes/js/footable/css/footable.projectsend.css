@@ -19,30 +19,13 @@
 .footable > thead > tr > th,
 .footable > thead > tr > td {
 	font-size: .9em;
-	background-color: #E2E5E9;
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#FAFBFC), to(#E2E5E9));
-	background-image: -webkit-linear-gradient(top, #FAFBFC, #E2E5E9);
-	background-image: -moz-linear-gradient(top, #FAFBFC, #E2E5E9);
-	background-image: -ms-linear-gradient(top, #FAFBFC, #E2E5E9);
-	background-image: -o-linear-gradient(top, #FAFBFC, #E2E5E9);
-	background-image: linear-gradient(to bottom, #FAFBFC, #E2E5E9);
-	-webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
-	-moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
-	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
-	text-shadow:1px 1px 1px white;
+	background: #E2E5E9;
 	vertical-align: middle;
 }
 .footable-sorted,
 .footable-sorted-desc {
-	background-color: #236299 !important;
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#407FB6), to(#236299)) !important;
-	background-image: -webkit-linear-gradient(top, #407FB6, #236299) !important;
-	background-image: -moz-linear-gradient(top, #407FB6, #236299) !important;
-	background-image: -ms-linear-gradient(top, #407FB6, #236299) !important;
-	background-image: -o-linear-gradient(top, #407FB6, #236299) !important;
-	background-image: linear-gradient(to bottom, #407FB6, #236299) !important;
+	background-color: #004b92 !important;
 	color:white !important;
-	text-shadow:0 -1px 0 #000000 !important;
 }
 
 .footable > thead > tr > th.footable-first-column,

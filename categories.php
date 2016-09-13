@@ -291,51 +291,68 @@ include('header.php');
 									<th class="td_checkbox" data-sort-ignore="true">
 										<input type="checkbox" name="select_all" id="select_all" value="0" />
 									</th>
-									<th data-sort-initial="true"><?php _e('Name','cftp_admin'); ?></th>
-									<th><?php _e('Files','cftp_admin'); ?></th>
-									<th data-hide="phone" ><?php _e('Description','cftp_admin'); ?></th>
+									<th data-sort-ignore="true"><?php _e('Name','cftp_admin'); ?></th>
+									<th data-sort-ignore="true"><?php _e('Files','cftp_admin'); ?></th>
+									<th data-hide="phone" data-sort-ignore="true"><?php _e('Description','cftp_admin'); ?></th>
 									<th data-hide="phone" data-sort-ignore="true"><?php _e('Actions','cftp_admin'); ?></th>
 								</tr>
 							</thead>
 							<tbody>
 								<?php
-									if ( $get_categories['count'] > 0 ) {
-										foreach ( $categories as $cat ) {
-									?>
-											<tr>
-												<td>
-													<input type="checkbox" name="categories[]" value="<?php echo html_output($cat["id"]); ?>" />
-												</td>
-												<td><?php echo html_output($cat["name"]); ?></td>
-												<td>
-													<?php
-														$total = $cat['file_count'];
-														if ( $total > 0 ) {
-															$class			= 'success';
-															$files_link 	= 'manage-files.php?category=' . $cat['id'];
-															$files_button	= 'btn-primary';
-														}
-														else {
-															$class			= 'danger';
-															$files_link		= 'javascript:void(0);';
-															$files_button	= 'btn-default disabled';
-														}
-													?>
-													<span class="label label-<?php echo $class; ?>">
-														<?php echo $total; ?>
-													</span>
-												</td>
-												<td><?php echo html_output($cat["description"]); ?></td>
-												<td>
-													<?php /*<a href="<?php echo $files_link; ?>" class="btn btn-sm <?php echo $files_button; ?>"><?php _e('Manage files','cftp_admin'); ?></a> TODO: manage files for this category */ ?>
-													<a href="categories.php?action=edit&id=<?php echo $cat["id"]; ?>" class="btn btn-primary btn-small"><?php _e('Edit','cftp_admin'); ?></a>
-												</td>
-											</tr>
-											
-									<?php
+									/**
+									 * Having the formatting function here seems more convenient
+									 * as the HTML layout is easier to edit on it's real context.
+									 */
+									$c = 0;
+									function format_category_row( $categories ) {
+										global $c;
+										$c++;
+										if ( !empty( $categories ) ) {
+											foreach ( $categories as $category ) {
+												$depth = ( $category['depth'] > 0 ) ? str_repeat( '&mdash;', $category['depth'] ) . ' ' : false;
+								?>
+												<tr>
+													<td>
+														<input type="checkbox" name="categories[]" value="<?php echo html_output($category["id"]); ?>" />
+													</td>
+													<td data-value="<?php echo $c; ?>"><?php echo $depth . html_output($category["name"]); ?></td>
+													<td>
+														<?php
+															$total = $category['file_count'];
+															if ( $total > 0 ) {
+																$class			= 'success';
+																$files_link 	= 'manage-files.php?category=' . $category['id'];
+																$files_button	= 'btn-primary';
+															}
+															else {
+																$class			= 'danger';
+																$files_link		= 'javascript:void(0);';
+																$files_button	= 'btn-default disabled';
+															}
+														?>
+														<span class="label label-<?php echo $class; ?>">
+															<?php echo $total; ?>
+														</span>
+													</td>
+													<td><?php echo html_output($category["description"]); ?></td>
+													<td>
+														<?php /*<a href="<?php echo $files_link; ?>" class="btn btn-sm <?php echo $files_button; ?>"><?php _e('Manage files','cftp_admin'); ?></a> TODO: manage files for this category */ ?>
+														<a href="categories.php?action=edit&id=<?php echo $category["id"]; ?>" class="btn btn-primary btn-small"><?php _e('Edit','cftp_admin'); ?></a>
+													</td>
+												</tr>
+								<?php
+												$children = $category['children'];
+												if ( !empty( $children ) ) {
+													format_category_row( $children );
+												}
+											}
 										}
 									}
-								?>							
+
+									if ( $get_categories['count'] > 0 ) {
+										format_category_row( $get_categories['arranged'] );
+									}
+								?>											
 							</tbody>
 						</table>
 			

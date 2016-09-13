@@ -149,7 +149,8 @@ function generate_categories_options( $categories, $parent = 0, $selected = arra
 
 	if ( !empty( $categories ) ) {
 		foreach ( $categories as $category ) {
-			$depth = ( $category['depth'] > 0 ) ? str_repeat( '--', $category['depth'] ) : false;
+			$depth = ( $category['depth'] > 0 ) ? str_repeat( '&#160;&#160;&#160;&#160;', $category['depth'] ) : false;
+			//$depth_style = " style='padding-left:" . $category['depth'] . "em;'";
 
 			$is_selected = ( in_array( $category['id'], $selected ) ) ? " selected='selected'" : '';
 

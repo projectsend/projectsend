@@ -103,14 +103,55 @@ while ( $row_files = $files_sql->fetch() ) {
 $found_own_files_ids	= (!empty($found_own_files_temp)) ? implode(',', array_unique($found_own_files_temp)) : '';
 $found_group_files_ids	= (!empty($found_group_files_temp)) ? implode(',', array_unique($found_group_files_temp)) : '';
 
+$found_unique_files_ids = array_unique($found_all_files_array);
 
+/**
+ * Make an array of the categories containing the
+ * files found for this account.
+ */
+$cat_ids	= array();
+$file_ids	= array();
+$files_keep	= array();
+
+$files_ids_to_search = implode(',', $found_unique_files_ids);
+$sql_sentence = "SELECT file_id, cat_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE FIND_IN_SET(file_id, :files)";
+$sql_client_categories = $dbh->prepare( $sql_sentence );
+$sql_client_categories->bindParam(':files', $files_ids_to_search);
+$sql_client_categories->execute();
+$sql_client_categories->setFetchMode(PDO::FETCH_ASSOC);
+
+while ( $row = $sql_client_categories->fetch() ) {
+	$cat_ids[$row['cat_id']]		= $row['cat_id'];
+	$files_keep[$row['file_id']][]	= $row['cat_id'];
+}
+
+if ( !empty( $cat_ids ) ) {
+	$get_categories	= get_categories();
+}
+
+/**
+ * With the categories generated, keep only the files
+ * that are assigned to the selected one.
+ */
+if ( !empty( $category_filter ) && $category_filter != '0' ) {
+	$filtered_file_ids = array();
+	foreach ( $files_keep as $keep_file_id => $keep_cat_ids ) {
+		if ( in_array( $category_filter, $keep_cat_ids ) ) {
+			$filtered_file_ids[] = $keep_file_id;
+		}
+	}
+	$ids_to_search = implode(',', $filtered_file_ids);
+}
+else {
+	$ids_to_search = implode(',', $found_unique_files_ids);
+}
 
 /** Create the files list */
 $my_files = array();
 
+
 if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 	$f = 0;
-	$ids_to_search = implode(',', array_unique($found_all_files_array));
 	$files_query = "SELECT * FROM " . TABLE_FILES . " WHERE FIND_IN_SET(id,:search_ids)";
 
 	$params		= array(
@@ -167,24 +208,6 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 		}
 	}
 	
-}
-
-/**
- * Make an array of the categories containing the
- * files found for this account.
- */
-$cat_ids = array();
-$sql_client_categories = $dbh->prepare( "SELECT cat_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE FIND_IN_SET(file_id, :search_ids)" );
-$sql_client_categories->bindParam(':search_ids', $ids_to_search);
-$sql_client_categories->execute( $params );
-
-$sql_client_categories->setFetchMode(PDO::FETCH_ASSOC);
-while ( $row = $sql_client_categories->fetch() ) {
-	$cat_ids[$row['cat_id']] = $row['cat_id'];
-}
-
-if ( !empty( $cat_ids ) ) {
-	$get_categories	= get_categories( $params );
 }
 
 // DEBUG

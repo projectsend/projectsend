@@ -5,6 +5,11 @@ Default
 */
 
 $ld = 'cftp_template'; // specify the language domain for this template
+
+if ( !empty( $_POST['category'] ) ) {
+	$category_filter = $_POST['category'];
+}
+
 include_once(ROOT_DIR.'/templates/common.php'); // include the required functions for every template
 
 $window_title = __('File downloads','cftp_template');
@@ -44,9 +49,10 @@ $count = count($my_files);
 							<form action="" name="files_filters" method="post" class="form-inline form_filters">
 								<div class="form-group group_float">
 									<select name="category" id="category" class="txtfield form-control">
-										<option value="all"><?php _e('All categories','cftp_admin'); ?></option>
+										<option value="0"><?php _e('All categories','cftp_admin'); ?></option>
 										<?php
-											echo generate_categories_options( $get_categories['arranged'], 0, array(), 'include', $cat_ids );
+											$selected_parent = ( isset($category_filter) ) ? array( $category_filter ) : array();
+											echo generate_categories_options( $get_categories['arranged'], 0, $selected_parent, 'include', $cat_ids );
 										?>
 									</select>
 								</div>

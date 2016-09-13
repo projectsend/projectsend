@@ -171,22 +171,21 @@ function generate_categories_options( $categories, $parent = 0, $selected = arra
 
 			$is_selected = ( in_array( $category['id'], $selected ) ) ? " selected='selected'" : '';
 
-			$add_to_results = false;
+			$add_to_results = true;
 			if ( !empty( $filter_type ) ) {
 				switch ( $filter_type ) {
 					case 'include':
-							if ( in_array( $category['id'], $filter_values ) ) {
-								$add_to_results = true;
+							if ( !in_array( $category['id'], $filter_values ) ) {
+								$add_to_results = false;
 							}
 						break;
 					case 'exclude':
-							if ( !in_array( $category['id'], $filter_values ) ) {
-								$add_to_results = true;
+							if ( in_array( $category['id'], $filter_values ) ) {
+								$add_to_results = false;
 							}
 						break;
 				}
 			}
-
 			
 			if ( $add_to_results === true ) {
 				$format = "<option value='%s'%s>%s%s</option>\n";

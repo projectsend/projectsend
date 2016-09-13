@@ -171,7 +171,8 @@ function generate_categories_options( $categories, $parent = 0, $selected = arra
 
 			$is_selected = ( in_array( $category['id'], $selected ) ) ? " selected='selected'" : '';
 
-			$add_to_results = true;
+			$add_children	= true;
+			$add_to_results	= true;
 			if ( !empty( $filter_type ) ) {
 				switch ( $filter_type ) {
 					case 'include':
@@ -183,6 +184,11 @@ function generate_categories_options( $categories, $parent = 0, $selected = arra
 							if ( in_array( $category['id'], $filter_values ) ) {
 								$add_to_results = false;
 							}
+					case 'exclude_and_children':
+							if ( in_array( $category['id'], $filter_values ) ) {
+								$add_to_results = false;
+								$add_children	= false;
+							}
 						break;
 				}
 			}
@@ -192,9 +198,11 @@ function generate_categories_options( $categories, $parent = 0, $selected = arra
 				$return .= sprintf( $format, $category['id'], $is_selected, $depth, html_output($category['name']) );
 			}
 
-			$children = $category['children'];
-			if ( !empty( $children ) ) {
-				$return .= generate_categories_options( $children, $category['parent'], $selected, $filter_type, $filter_values );
+			if ( $add_children === true ) {
+				$children = $category['children'];
+				if ( !empty( $children ) ) {
+					$return .= generate_categories_options( $children, $category['parent'], $selected, $filter_type, $filter_values );
+				}
 			}
 		}
 	}

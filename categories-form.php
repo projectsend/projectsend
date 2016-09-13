@@ -38,7 +38,7 @@ switch ( $form_information['type'] ) {
 				<?php
 					$ignore				= ( $form_information['type'] == 'edit_category' ) ? $editing : 0;
 					$selected_parent	= ( isset($category_parent) ) ? array( $category_parent ) : array();
-					echo generate_categories_options( $get_categories['arranged'], 0, $selected_parent, 'exclude', array( $ignore ) );
+					echo generate_categories_options( $get_categories['arranged'], 0, $selected_parent, 'exclude_and_children', array( $ignore ) );
 				?>
 			</select>
 		</div>

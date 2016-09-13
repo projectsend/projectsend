@@ -6,6 +6,41 @@
  * 
  */
 
+function get_category( $id ) {
+	global $dbh;
+	
+	$return = '';
+
+	$file_count = 0;
+	$statement = $dbh->prepare("SELECT COUNT(file_id) as count FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE cat_id = :cat_id GROUP BY cat_id");
+	$statement->bindParam(':cat_id', $id, PDO::PARAM_INT);
+	$statement->execute();
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
+	$file_count = $statement->rowCount();
+
+	$statement = $dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES . " WHERE id = :id");
+	$statement->bindParam(':id', $id, PDO::PARAM_INT);
+	$statement->execute();
+	if ( $statement->rowCount() > 0) {
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
+		while( $row = $statement->fetch() ) {
+			$return = array(
+							'id'			=> $row['id'],
+							'name'			=> $row['name'],
+							'parent'		=> (empty( $row['parent'] ) ) ? 0 : $row['parent'],
+							'description'	=> $row['description'],
+							'created_by'	=> $row['created_by'],
+							'timestamp'		=> $row['timestamp'],
+							'depth'			=> 0,
+							'file_count'	=> $file_count,
+							'children'		=> null,
+						);
+		}
+	}
+	
+	return $return;
+}
+
 function get_categories( $params = array() ) {
 	global $dbh;
 	$sql_params = array();

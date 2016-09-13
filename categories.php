@@ -336,8 +336,8 @@ include('header.php');
 													</td>
 													<td><?php echo html_output($category["description"]); ?></td>
 													<td>
-														<?php /*<a href="<?php echo $files_link; ?>" class="btn btn-sm <?php echo $files_button; ?>"><?php _e('Manage files','cftp_admin'); ?></a> TODO: manage files for this category */ ?>
-														<a href="categories.php?action=edit&id=<?php echo $category["id"]; ?>" class="btn btn-primary btn-small"><?php _e('Edit','cftp_admin'); ?></a>
+														<a href="<?php echo $files_link; ?>" class="btn btn-sm <?php echo $files_button; ?>"><?php _e('Manage files','cftp_admin'); ?></a>
+														<a href="categories.php?action=edit&id=<?php echo $category["id"]; ?>" class="btn btn-primary btn-sm"><?php _e('Edit','cftp_admin'); ?></a>
 													</td>
 												</tr>
 								<?php

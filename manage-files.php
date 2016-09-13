@@ -68,6 +68,20 @@ if (isset($_GET['group_id'])) {
 	}
 }
 
+/**
+ * Filtering by category
+ */
+if (isset($_GET['category'])) {
+	$this_id = $_GET['category'];
+	$this_category = get_category($this_id);
+	/** Add the name of the client to the page's title. */
+	if(!empty($this_category)) {
+		$page_title .= ' '.__('on category','cftp_admin').' '.html_entity_decode($this_category['name']);
+		$name_for_actions = $this_category['name'];
+		$results_type = 'category';
+	}
+}
+
 include('header.php');
 ?>
 
@@ -369,6 +383,27 @@ include('header.php');
 
 			$params[':uploader'] = $global_user;
 		}
+		
+		/**
+		 * Add the category filter
+		 */
+		if ( isset( $results_type ) && $results_type = 'category' ) {
+			$files_id_by_cat = array();
+			$statement = $dbh->prepare("SELECT file_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE cat_id = :cat_id");
+			$statement->bindParam(':cat_id', $this_category['id'], PDO::PARAM_INT);
+			$statement->execute();
+			$statement->setFetchMode(PDO::FETCH_ASSOC);
+			while ( $file_data = $statement->fetch() ) {
+				$files_id_by_cat[] = $file_data['file_id'];
+			}
+			$files_id_by_cat = implode(',',$files_id_by_cat);
+
+			/** Overwrite the parameter set previously */
+			$conditions[] = "FIND_IN_SET(id, :files)";
+			$params[':files'] = $files_id_by_cat;
+			
+			$no_results_error = 'category';
+		}
 
 		/**
 		 * Build the final query
@@ -472,6 +507,9 @@ include('header.php');
 						switch ($no_results_error) {
 							case 'search':
 								$no_results_message = __('Your search keywords returned no results.','cftp_admin');;
+								break;
+							case 'category':
+								$no_results_message = __('There are no files assigned to this category.','cftp_admin');;
 								break;
 							case 'filter':
 								$no_results_message = __('The filters you selected returned no results.','cftp_admin');;
@@ -581,6 +619,7 @@ include('header.php');
 											break;
 
 										case 'group':
+										case 'category':
 												$download_count_sql	= $dbh->prepare("SELECT file_id FROM " . TABLE_DOWNLOADS . " WHERE file_id = :file_id");
 												$download_count_sql->bindParam(':file_id', $row['id'], PDO::PARAM_INT);
 												$download_count_sql->execute();
@@ -751,6 +790,7 @@ include('header.php');
 															break;
 				
 														case 'group':
+														case 'category':
 												?>
 															<a href="javascript:void(0);" class="<?php if ($download_count > 0) { echo 'downloaders btn-primary'; } else { echo 'btn-default disabled'; } ?> btn btn-sm" rel="<?php echo $row["id"]; ?>" title="<?php echo html_output($row['filename']); ?>">
 																<?php echo $download_count; ?> <?php _e('downloads','cftp_admin'); ?>

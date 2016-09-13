@@ -169,6 +169,24 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 	
 }
 
+/**
+ * Make an array of the categories containing the
+ * files found for this account.
+ */
+$cat_ids = array();
+$sql_client_categories = $dbh->prepare( "SELECT cat_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE FIND_IN_SET(file_id, :search_ids)" );
+$sql_client_categories->bindParam(':search_ids', $ids_to_search);
+$sql_client_categories->execute( $params );
+
+$sql_client_categories->setFetchMode(PDO::FETCH_ASSOC);
+while ( $row = $sql_client_categories->fetch() ) {
+	$cat_ids[$row['cat_id']] = $row['cat_id'];
+}
+
+if ( !empty( $cat_ids ) ) {
+	$get_categories	= get_categories( $params );
+}
+
 // DEBUG
 //echo '<pre>'; print_r($my_files); echo '</pre>';
 

@@ -37,6 +37,24 @@ $count = count($my_files);
 						</div>
 						<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default"><?php _e('Search','cftp_admin'); ?></button>
 					</form>
+
+					<?php
+						if ( !empty( $cat_ids ) ) {
+					?>
+							<form action="" name="files_filters" method="post" class="form-inline form_filters">
+								<div class="form-group group_float">
+									<select name="category" id="category" class="txtfield form-control">
+										<option value="all"><?php _e('All categories','cftp_admin'); ?></option>
+										<?php
+											echo generate_categories_options( $get_categories['arranged'], 0, array(), 'include', $cat_ids );
+										?>
+									</select>
+								</div>
+								<button type="submit" id="btn_proceed_filter_files" class="btn btn-sm btn-default"><?php _e('Filter','cftp_admin'); ?></button>
+							</form>
+					<?php
+						}
+					?>
 				</div>
 			</div>
 		

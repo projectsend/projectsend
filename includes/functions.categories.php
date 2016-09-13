@@ -14,7 +14,7 @@ function get_categories( $params = array() ) {
 	$orderby	= ( !empty( $params['orderby'] ) ) ? $params['orderby'] : 'name';
 	$order		= ( !empty( $params['order'] ) ) ? $params['order'] : 'ASC';
 	$parent		= ( !empty( $params['parent'] ) ) ? $params['parent'] : false;
-	$id			= ( !empty( $params['id'] ) ) ? $params['id'] : false;
+	$id			= ( !empty( $params['id'] ) ) ? $params['id'] : array();
 
 	/**
 	 * By default, count files assigned to each category.
@@ -31,6 +31,7 @@ function get_categories( $params = array() ) {
 	/**
 	 * Parameter ID can be an array or a single category ID
 	 */
+/*
 	if ( $id ) {
 		if ( is_array( $id ) ) {
 			$set_id = implode( ',', array_map( 'intval', array_unique( $id ) ) );
@@ -42,7 +43,8 @@ function get_categories( $params = array() ) {
 			$sql_params[':id']	= $id;
 		}
 	}
-	
+*/
+
 	$return		= array(
 						'count'				=> 0,
 						'no_results_type'	=> '',
@@ -63,11 +65,13 @@ function get_categories( $params = array() ) {
 	/**
 		Clients can only manage their own categories
 		TODO: Implement this
-	*/	
+	*/
+	/*
 	if (CURRENT_USER_LEVEL == '0') {
 		$conditions[] = "created_by = :username";
 		$sql_params[':username'] = CURRENT_USER_USERNAME;
 	}
+	*/
 
 	/**
 	 * Apply the conditions to the SQL sentence
@@ -87,7 +91,7 @@ function get_categories( $params = array() ) {
 	/** Count results and add the value to the response array */
 	$count				= $statement->rowCount();
 	$return['count']	= $count;
-
+	
 	if ( $count > 0 ) {
 		$statement->setFetchMode(PDO::FETCH_ASSOC);
 		
@@ -99,17 +103,29 @@ function get_categories( $params = array() ) {
 		foreach ($rows as $row) {
 			$file_count = ( !empty( $files_count ) && array_key_exists( $row['id'], $files_count ) ) ? $files_count[$row['id']] : 0;
 
-			$found_categories[$row['id']] = array(
-												'id'			=> $row['id'],
-												'name'			=> $row['name'],
-												'parent'		=> (empty( $row['parent'] ) ) ? 0 : $row['parent'],
-												'description'	=> $row['description'],
-												'created_by'	=> $row['created_by'],
-												'timestamp'		=> $row['timestamp'],
-												'depth'			=> 0,
-												'file_count'	=> $file_count,
-												'children'		=> null,
-											);
+			$continue = false;
+			if ( empty( $id ) ) {
+				$continue = true;
+			}
+			else {
+				if ( in_array( $row['id'], $id ) ) {
+					$continue = true;
+				}
+			}
+			
+			if ( $continue === true ) {
+				$found_categories[$row['id']] = array(
+													'id'			=> $row['id'],
+													'name'			=> $row['name'],
+													'parent'		=> (empty( $row['parent'] ) ) ? 0 : $row['parent'],
+													'description'	=> $row['description'],
+													'created_by'	=> $row['created_by'],
+													'timestamp'		=> $row['timestamp'],
+													'depth'			=> 0,
+													'file_count'	=> $file_count,
+													'children'		=> null,
+												);
+			}
 		}
 		
 		$return['arranged'] = arrange_categories( $found_categories );
@@ -118,15 +134,15 @@ function get_categories( $params = array() ) {
 	}
 
 	return $return;	
-	print_r($return);
 }
 
 /**
- * Arrange is an external function so it can be called from anywhere.
+ * Arrange is an external recursive function
  * Returns an array of categories nested by parent
  */
 function arrange_categories(array &$elements, $parent = 0, $depth = 0) {
     $branch = array();
+
     foreach ($elements as $element) {
         if ($element['parent'] == $parent) {
 			$element['depth'] = $depth++;
@@ -140,11 +156,12 @@ function arrange_categories(array &$elements, $parent = 0, $depth = 0) {
 			$element['depth'] = $depth--;
         }
     }
+
     return $branch;
 }
 
 
-function generate_categories_options( $categories, $parent = 0, $selected = array(), $ignore = 0 ) {
+function generate_categories_options( $categories, $parent = 0, $selected = array(), $filter_type = '', $filter_values = array(0) ) {
 	$return = '';
 
 	if ( !empty( $categories ) ) {
@@ -154,14 +171,31 @@ function generate_categories_options( $categories, $parent = 0, $selected = arra
 
 			$is_selected = ( in_array( $category['id'], $selected ) ) ? " selected='selected'" : '';
 
-			if ( $category['id'] != $ignore ) {
+			$add_to_results = false;
+			if ( !empty( $filter_type ) ) {
+				switch ( $filter_type ) {
+					case 'include':
+							if ( in_array( $category['id'], $filter_values ) ) {
+								$add_to_results = true;
+							}
+						break;
+					case 'exclude':
+							if ( !in_array( $category['id'], $filter_values ) ) {
+								$add_to_results = true;
+							}
+						break;
+				}
+			}
+
+			
+			if ( $add_to_results === true ) {
 				$format = "<option value='%s'%s>%s%s</option>\n";
 				$return .= sprintf( $format, $category['id'], $is_selected, $depth, html_output($category['name']) );
 			}
 
 			$children = $category['children'];
 			if ( !empty( $children ) ) {
-				$return .= generate_categories_options( $children, $category['parent'], $selected, $ignore );
+				$return .= generate_categories_options( $children, $category['parent'], $selected, $filter_type, $filter_values );
 			}
 		}
 	}

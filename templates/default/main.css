@@ -119,3 +119,8 @@ table.tablesorter tbody td {
 .txtfield {
 	width:160px !important;
 }
+
+.label_exp_date {
+	font-size:1em;
+	font-weight:normal;
+}

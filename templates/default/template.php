@@ -114,6 +114,7 @@ $count = count($my_files);
 							<th data-hide="phone" class="description"><?php _e('Description','cftp_template'); ?></th>
 							<th data-hide="phone"><?php _e('Size','cftp_template'); ?></th>
 							<th data-type="numeric" data-sort-initial="descending"><?php _e('Date','cftp_template'); ?></th>
+							<th data-hide="phone" data-sort-ignore="true"><?php _e('Expiration date','cftp_template'); ?></th>
 							<th data-hide="phone,tablet" data-sort-ignore="true"><?php _e('Image preview','cftp_template'); ?></th>
 							<th data-hide="phone" data-sort-ignore="true"><?php _e('Download','cftp_template'); ?></th>
 						</tr>
@@ -175,6 +176,25 @@ $count = count($my_files);
 										</td>
 										<td data-value="<?php echo strtotime($file['timestamp']); ?>">
 											<?php echo $date; ?>
+										</td>
+										<td>
+											<?php
+												if ( $file['expires'] == '1' ) {
+													if ( $file['expired'] == false ) {
+														$class = 'primary';
+													} else {
+														$class = 'danger';
+													}
+													
+													$value = date( TIMEFORMAT_USE, strtotime( $file['expiry_date'] ) );
+												} else {
+													$class = 'success';
+													$value = __('Never','cftp_template');
+												}
+											?>
+											<span class="label label-<?php echo $class; ?> label_exp_date">
+												<?php echo $value; ?>
+											</span>
 										</td>
 										<?php
 											if ($file['expired'] == true) {

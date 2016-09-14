@@ -202,6 +202,8 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 								'name'			=> $data['filename'],
 								'description'	=> $data['description'],
 								'timestamp'		=> $data['timestamp'],
+								'expires'		=> $data['expires'],
+								'expiry_date'	=> $data['expiry_date'],
 								'expired'		=> $expired,
 							);
 			$f++;

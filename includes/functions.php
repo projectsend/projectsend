@@ -361,12 +361,8 @@ function default_footer_info($logged = true)
  */
 function message_no_clients()
 {
-?>
-	<div class="whitebox whiteform whitebox_text">
-		<p><?php _e('There are no clients at the moment', 'cftp_admin'); ?></p>
-		<p><a href="clients-add.php" target="_self"><?php _e('Create a new one', 'cftp_admin'); ?></a> <?php _e('to be able to upload files for that account.', 'cftp_admin'); ?></p>
-	</div>
-<?php
+	$msg = '<strong>' . __('Important:','cftp_admin') . '</strong> ' . __('There are no clients or groups at the moment. You can still upload files and assign them later.','cftp_admin');
+	echo system_message('warning', $msg);
 }
 
 

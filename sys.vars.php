@@ -14,8 +14,7 @@
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r680');
-// corresponds to: "Allow clients to delete their own files (optional)"
+define('CURRENT_VERSION', 'r730');
 
 /**
  * Fix for including external files when on HTTPS.

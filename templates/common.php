@@ -126,9 +126,12 @@ while ( $row = $sql_client_categories->fetch() ) {
 }
 
 if ( !empty( $cat_ids ) ) {
-	$get_categories	= get_categories();
+	$get_categories	= get_categories(
+									array(
+										'id'	=> $cat_ids,
+									)
+								);
 }
-
 /**
  * With the categories generated, keep only the files
  * that are assigned to the selected one.

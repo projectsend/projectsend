@@ -29,7 +29,7 @@ $count = count($img_files);
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title><?php echo $client_info['name'].' | '.$window_title; ?> | <?php echo SYSTEM_NAME; ?></title>
+	<title><?php echo html_output( $client_info['name'].' | '.$window_title . ' &raquo; ' . SYSTEM_NAME ); ?></title>
 	<link rel="stylesheet" media="all" type="text/css" href="<?php echo $this_template; ?>main.css" />
 	<link rel="shortcut icon" href="<?php echo BASE_URI; ?>/favicon.ico" />
 	<script src="<?php echo PROTOCOL; ?>://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>

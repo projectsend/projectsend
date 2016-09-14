@@ -17,7 +17,7 @@ if ( defined('IS_INSTALL') ) {
 
 	$header_vars = array(
 						'html_lang'		=> $lang,
-						'title'			=> $page_title_install . ' &raquo ' . SYSTEM_NAME,
+						'title'			=> $page_title_install . ' &raquo; ' . SYSTEM_NAME,
 						'header_title'	=> SYSTEM_NAME . ' ' . __('setup','cftp_admin'),
 					);
 }
@@ -30,7 +30,7 @@ else {
 	 */
 	$header_vars = array(
 						'html_lang'		=> SITE_LANG,
-						'title'			=> $page_title . ' &raquo ' . THIS_INSTALL_SET_TITLE,
+						'title'			=> $page_title . ' &raquo; ' . THIS_INSTALL_SET_TITLE,
 						'header_title'	=> THIS_INSTALL_SET_TITLE,
 					);
 
@@ -69,7 +69,7 @@ else {
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<title><?php echo $header_vars['title']; ?></title>
+	<title><?php echo html_output( $header_vars['title'] ); ?></title>
 	<link rel="shortcut icon" href="<?php echo BASE_URI; ?>favicon.ico" />
 	<script src="<?php echo BASE_URI; ?>includes/js/jquery.1.12.4.min.js"></script>
 

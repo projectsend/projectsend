@@ -387,7 +387,7 @@ include('header.php');
 		/**
 		 * Add the category filter
 		 */
-		if ( isset( $results_type ) && $results_type = 'category' ) {
+		if ( isset( $results_type ) && $results_type == 'category' ) {
 			$files_id_by_cat = array();
 			$statement = $dbh->prepare("SELECT file_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE cat_id = :cat_id");
 			$statement->bindParam(':cat_id', $this_category['id'], PDO::PARAM_INT);

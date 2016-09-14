@@ -53,6 +53,7 @@ include('header-unlogged.php');
 				// DOWNLOAD
 				$real_file = UPLOADED_FILES_FOLDER.$real_file_url;
 				if (file_exists($real_file)) {
+					session_write_close(); 
 					while (ob_get_level()) ob_end_clean();
 					header('Content-Type: application/octet-stream');
 					header('Content-Disposition: attachment; filename='.basename($real_file));
@@ -62,7 +63,16 @@ include('header-unlogged.php');
 					header('Cache-Control: private',false);
 					header('Content-Length: ' . get_real_size($real_file));
 					header('Connection: close');
-					readfile($real_file);
+					//readfile($real_file);
+					
+					$context = stream_context_create();
+					$file = fopen($real_file, 'rb', FALSE, $context);
+					while ( !feof( $file ) ) {
+						//usleep(1000000); //Reduce download speed
+						echo stream_get_contents($file, 2014);
+					}
+					
+					fclose( $file );
 					die();
 				}
 			}

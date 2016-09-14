@@ -155,7 +155,16 @@ class process {
 							header('Cache-Control: private',false);
 							header('Content-Length: ' . get_real_size($this->real_file));
 							header('Connection: close');
-							readfile($this->real_file);
+							//readfile($this->real_file);
+							
+							$context = stream_context_create();
+							$file = fopen($this->real_file, 'rb', FALSE, $context);
+							while( !feof( $file ) ) {
+								//usleep(1000000); //Reduce download speed
+								echo stream_get_contents($file, 2014);
+							}
+							
+							fclose( $file );
 							exit;
 						}
 						else {

@@ -173,7 +173,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 									<tr>
 										<td><input type="checkbox" name="add[]" class="select_file_checkbox" value="<?php echo html_output($add_file['name']); ?>" /></td>
 										<td><?php echo html_output($add_file['name']); ?></td>
-										<td data-value="<?php echo filesize($add_file['path']); ?>"><?php echo html_output(format_file_size(filesize($add_file['path']))); ?></td>
+										<td data-value="<?php echo filesize($add_file['path']); ?>"><?php echo html_output(format_file_size(get_real_size($add_file['path']))); ?></td>
 										<td data-value="<?php echo filemtime($add_file['path']); ?>">
 											<?php echo date(TIMEFORMAT_USE, filemtime($add_file['path'])); ?>
 										</td>

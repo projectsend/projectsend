@@ -1008,6 +1008,25 @@ if (in_session_or_cookies($allowed_update)) {
 			}
 		}
 
+
+		/**
+		 * r737 updates
+		 * Add the reCAPTCHA options to the database
+		 */
+		if ($last_update < 737) {
+			$new_database_values = array(
+											'recaptcha_enabled'		=> '0',
+											'recaptcha_site_key'	=> '',
+											'recaptcha_secret_key'	=> '',
+										);
+			
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
+				}
+			}
+		}
+
 	}
 }	
 ?>

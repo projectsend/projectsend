@@ -22,6 +22,7 @@ define('USER_ROLE_LVL_0', $user_role_0_name);
 /**
  * Validation class strings
  */
+$validation_recaptcha = __('reCAPTCHA verification failed','cftp_admin');
 $validation_no_name = __('Name was not completed','cftp_admin');
 $validation_no_client = __('No client was selected','cftp_admin');
 $validation_no_user = __('Username was not completed','cftp_admin');

@@ -175,6 +175,21 @@ switch ($clients_form_type) {
 			</label>
 		</div>
 	</div>
+	
+	<?php
+		if ( $clients_form_type == 'new_client_self' ) {
+			if ( defined('RECAPTCHA_AVAILABLE') ) {
+	?>
+				<div class="form-group">
+					<label class="col-sm-4 control-label"><?php _e('Verification','cftp_admin'); ?></label>
+					<div class="col-sm-8">
+						<div class="g-recaptcha" data-sitekey="<?php echo RECAPTCHA_SITE_KEY; ?>"></div>
+					</div>
+				</div>
+	<?php
+			}
+		}
+	?>
 
 	<div class="inside_form_buttons">
 		<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php echo html_output($submit_value); ?></button>

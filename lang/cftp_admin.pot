@@ -1,7 +1,8 @@
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend admin\n"
-"POT-Creation-Date: 2016-09-14 14:34-0300\n"
+"POT-Creation-Date: 2016-09-15 01:28-0300\n"
 "PO-Revision-Date: 2016-09-14 15:19-0300\n"
 "Last-Translator: \n"
 "Language-Team: ProjectSend <contact@projectsend.org>\n"
@@ -239,7 +240,7 @@ msgid "Save"
 msgstr ""
 
 #: categories-form.php:27 categories.php:294 clients-form.php:104
-#: options.php:387 users-form.php:86
+#: options.php:394 users-form.php:86
 msgid "Name"
 msgstr ""
 
@@ -247,13 +248,13 @@ msgstr ""
 msgid "Parent"
 msgstr ""
 
-#: categories-form.php:37 options.php:512
+#: categories-form.php:37 options.php:519
 msgid "None"
 msgstr ""
 
 #: categories-form.php:48 categories.php:296 edit-file.php:379
-#: groups-form.php:45 groups.php:277 upload-process-form.php:291
-#: upload-process-form.php:485
+#: groups-form.php:45 groups.php:277 upload-process-form.php:293
+#: upload-process-form.php:487
 msgid "Description"
 msgstr ""
 
@@ -328,12 +329,12 @@ msgid "There are no categories yet."
 msgstr ""
 
 #: categories.php:295 groups.php:279 header-menu.php:41 home.php:161
-#: options.php:334
+#: options.php:339
 msgid "Files"
 msgstr ""
 
 #: categories.php:297 clients.php:255 groups.php:282 manage-files.php:582
-#: upload-import-orphans.php:166 upload-process-form.php:302 users.php:283
+#: upload-import-orphans.php:166 upload-process-form.php:304 users.php:283
 msgid "Actions"
 msgstr ""
 
@@ -356,7 +357,7 @@ msgid "Client added correctly."
 msgstr ""
 
 #: clients-add.php:105 clients-edit.php:167 email-templates.php:74
-#: groups-add.php:88 groups-edit.php:137 options.php:131 register.php:137
+#: groups-add.php:88 groups-edit.php:137 options.php:136 register.php:141
 #: users-add.php:102 users-edit.php:170
 msgid "There was an error. Please try again."
 msgstr ""
@@ -365,7 +366,7 @@ msgstr ""
 msgid "An e-mail notification with login information was sent to your client."
 msgstr ""
 
-#: clients-add.php:118 register.php:161 users-add.php:115
+#: clients-add.php:118 register.php:165 users-add.php:115
 msgid "E-mail notification couldn't be sent."
 msgstr ""
 
@@ -426,8 +427,8 @@ msgstr ""
 msgid "Must be alphanumeric"
 msgstr ""
 
-#: clients-form.php:118 includes/vars.php:48 index.php:196
-#: install/index.php:258 install/make-config.php:272 options.php:483
+#: clients-form.php:118 includes/vars.php:49 index.php:196
+#: install/index.php:258 install/make-config.php:272 options.php:490
 #: users-form.php:100
 msgid "Password"
 msgstr ""
@@ -466,7 +467,11 @@ msgstr ""
 msgid "Notify new uploads by e-mail"
 msgstr ""
 
-#: clients-form.php:185 users-form.php:151
+#: clients-form.php:184
+msgid "Verification"
+msgstr ""
+
+#: clients-form.php:200 users-form.php:151
 msgid "This account information will be e-mailed to the address supplied above"
 msgstr ""
 
@@ -544,7 +549,7 @@ msgstr ""
 msgid "Files: Groups"
 msgstr ""
 
-#: clients.php:248 manage-files.php:570 upload-process-form.php:296
+#: clients.php:248 manage-files.php:570 upload-process-form.php:298
 #: users.php:281
 msgid "Status"
 msgstr ""
@@ -585,23 +590,23 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
-#: download.php:91 reset-password.php:215
+#: download.php:101 reset-password.php:215
 msgid "The request is not valid."
 msgstr ""
 
-#: download.php:101
+#: download.php:111
 msgid "The following file is now ready for you to download:"
 msgstr ""
 
-#: download.php:103
+#: download.php:113
 msgid "Download file"
 msgstr ""
 
-#: download.php:111 register.php:178 reset-password.php:358
+#: download.php:121 register.php:182 reset-password.php:358
 msgid "Go back to the homepage."
 msgstr ""
 
-#: edit-file.php:23 upload-process-form.php:355
+#: edit-file.php:23 upload-process-form.php:357
 msgid "Edit file"
 msgstr ""
 
@@ -623,72 +628,72 @@ msgstr ""
 msgid "The file has been edited succesfuly."
 msgstr ""
 
-#: edit-file.php:371 upload-process-form.php:475
+#: edit-file.php:371 upload-process-form.php:477
 msgid "File information"
 msgstr ""
 
-#: edit-file.php:374 manage-files.php:547 upload-process-form.php:290
-#: upload-process-form.php:480
+#: edit-file.php:374 manage-files.php:547 upload-process-form.php:292
+#: upload-process-form.php:482
 msgid "Title"
 msgstr ""
 
-#: edit-file.php:375 upload-process-form.php:481
+#: edit-file.php:375 upload-process-form.php:483
 msgid "Enter here the required file title."
 msgstr ""
 
-#: edit-file.php:380 upload-process-form.php:486
+#: edit-file.php:380 upload-process-form.php:488
 msgid "Optionally, enter here a description for the file."
 msgstr ""
 
-#: edit-file.php:401 upload-process-form.php:505
+#: edit-file.php:401 upload-process-form.php:507
 msgid "Expiration date"
 msgstr ""
 
-#: edit-file.php:404 upload-process-form.php:508
+#: edit-file.php:404 upload-process-form.php:510
 msgid "Select a date"
 msgstr ""
 
-#: edit-file.php:415 upload-process-form.php:519
+#: edit-file.php:415 upload-process-form.php:521
 msgid "File expires"
 msgstr ""
 
-#: edit-file.php:421 upload-process-form.php:525
+#: edit-file.php:421 upload-process-form.php:527
 msgid "Public downloading"
 msgstr ""
 
-#: edit-file.php:424 upload-process-form.php:528
+#: edit-file.php:424 upload-process-form.php:530
 msgid "Allow public downloading of this file."
 msgstr ""
 
-#: edit-file.php:438 upload-process-form.php:297 upload-process-form.php:542
+#: edit-file.php:438 upload-process-form.php:299 upload-process-form.php:544
 msgid "Assignations"
 msgstr ""
 
-#: edit-file.php:439 upload-process-form.php:543
+#: edit-file.php:439 upload-process-form.php:545
 msgid "Assign this file to"
 msgstr ""
 
 #: edit-file.php:440 edit-file.php:497 groups-form.php:54
-#: upload-process-form.php:544 upload-process-form.php:593
+#: upload-process-form.php:546 upload-process-form.php:595
 msgid "Select one or more options. Type to search."
 msgstr ""
 
-#: edit-file.php:441 header-menu.php:73 home.php:162 options.php:180
-#: upload-process-form.php:545
+#: edit-file.php:441 header-menu.php:73 home.php:162 options.php:185
+#: upload-process-form.php:547
 msgid "Clients"
 msgstr ""
 
-#: edit-file.php:456 home.php:163 upload-process-form.php:558
+#: edit-file.php:456 home.php:163 upload-process-form.php:560
 msgid "Groups"
 msgstr ""
 
 #: edit-file.php:473 edit-file.php:507 groups-form.php:75
-#: upload-process-form.php:573 upload-process-form.php:603
+#: upload-process-form.php:575 upload-process-form.php:605
 msgid "Add all"
 msgstr ""
 
 #: edit-file.php:474 edit-file.php:508 groups-form.php:76
-#: upload-process-form.php:574 upload-process-form.php:604
+#: upload-process-form.php:576 upload-process-form.php:606
 msgid "Remove all"
 msgstr ""
 
@@ -702,21 +707,21 @@ msgstr ""
 msgid "Hide from every already assigned clients and groups."
 msgstr ""
 
-#: edit-file.php:495 header-menu.php:63 upload-process-form.php:591
+#: edit-file.php:495 header-menu.php:63 upload-process-form.php:593
 msgid "Categories"
 msgstr ""
 
-#: edit-file.php:496 upload-process-form.php:592
+#: edit-file.php:496 upload-process-form.php:594
 msgid "Add to"
 msgstr ""
 
 #: edit-file.php:525 index.php:207 reset-password.php:295
 #: reset-password.php:344 upload-import-orphans.php:204
-#: upload-process-form.php:639
+#: upload-process-form.php:641
 msgid "Continue"
 msgstr ""
 
-#: edit-file.php:537 groups-form.php:89 upload-process-form.php:689
+#: edit-file.php:537 groups-form.php:89 upload-process-form.php:691
 msgid "No results where found."
 msgstr ""
 
@@ -728,7 +733,7 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: email-templates.php:70 options.php:127
+#: email-templates.php:70 options.php:132
 msgid "Options updated succesfuly."
 msgstr ""
 
@@ -886,7 +891,7 @@ msgid ""
 "on the preview."
 msgstr ""
 
-#: email-templates.php:292 options.php:726
+#: email-templates.php:292 options.php:770
 msgid "Update all options"
 msgstr ""
 
@@ -1022,7 +1027,7 @@ msgstr ""
 msgid "General options"
 msgstr ""
 
-#: header-menu.php:180 upload-process-form.php:362
+#: header-menu.php:180 upload-process-form.php:364
 msgid "View my files"
 msgstr ""
 
@@ -1200,8 +1205,8 @@ msgid ""
 msgstr ""
 
 #: includes/classes/send-email.php:60 includes/classes/send-email.php:90
-#: includes/vars.php:47 index.php:191 install/make-config.php:262
-#: options.php:476
+#: includes/vars.php:48 index.php:191 install/make-config.php:262
+#: options.php:483
 msgid "Username"
 msgstr ""
 
@@ -1550,96 +1555,100 @@ msgid "Client"
 msgstr ""
 
 #: includes/vars.php:25
-msgid "Name was not completed"
+msgid "reCAPTCHA verification failed"
 msgstr ""
 
 #: includes/vars.php:26
+msgid "Name was not completed"
+msgstr ""
+
+#: includes/vars.php:27
 msgid "No client was selected"
 msgstr ""
 
-#: includes/vars.php:27 index.php:179
+#: includes/vars.php:28 index.php:179
 msgid "Username was not completed"
 msgstr ""
 
-#: includes/vars.php:28 index.php:180
+#: includes/vars.php:29 index.php:180
 msgid "Password was not completed"
 msgstr ""
 
-#: includes/vars.php:29
+#: includes/vars.php:30
 msgid "Password verification was not completed"
 msgstr ""
 
-#: includes/vars.php:30
+#: includes/vars.php:31
 msgid "E-mail was not completed"
 msgstr ""
 
-#: includes/vars.php:31
+#: includes/vars.php:32
 msgid "E-mail address is not valid"
 msgstr ""
 
-#: includes/vars.php:32
+#: includes/vars.php:33
 msgid ""
 "Username must be alphanumeric and may contain dot (a-z,A-Z,0-9 and . allowed)"
 msgstr ""
 
-#: includes/vars.php:33
+#: includes/vars.php:34
 msgid "Password must be alphanumeric (a-z,A-Z,0-9 allowed)"
 msgstr ""
 
-#: includes/vars.php:34
+#: includes/vars.php:35
 msgid "Passwords do not match"
 msgstr ""
 
-#: includes/vars.php:35
+#: includes/vars.php:36
 msgid "Password does not meet the required characters rules"
 msgstr ""
 
-#: includes/vars.php:36
+#: includes/vars.php:37
 msgid "User level was not specified"
 msgstr ""
 
-#: includes/vars.php:37
+#: includes/vars.php:38
 msgid "A system user or client with this login name already exists."
 msgstr ""
 
-#: includes/vars.php:38
+#: includes/vars.php:39
 msgid "A system user or client with this e-mail address already exists."
 msgstr ""
 
-#: includes/vars.php:39
+#: includes/vars.php:40
 msgid ""
 "Your password can only contain letters, numbers and the following characters:"
 msgstr ""
 
-#: includes/vars.php:41
+#: includes/vars.php:42
 msgid "Title was not completed"
 msgstr ""
 
-#: includes/vars.php:49
+#: includes/vars.php:50
 msgid "length should be between"
 msgstr ""
 
-#: includes/vars.php:50 install/index.php:233
+#: includes/vars.php:51 install/index.php:233
 msgid "and"
 msgstr ""
 
-#: includes/vars.php:51
+#: includes/vars.php:52
 msgid "characters long"
 msgstr ""
 
-#: includes/vars.php:55
+#: includes/vars.php:56
 msgid "1 uppercase character"
 msgstr ""
 
-#: includes/vars.php:56
+#: includes/vars.php:57
 msgid "1 lowercase character"
 msgstr ""
 
-#: includes/vars.php:57
+#: includes/vars.php:58
 msgid "1 number"
 msgstr ""
 
-#: includes/vars.php:58
+#: includes/vars.php:59
 msgid "1 special character"
 msgstr ""
 
@@ -1669,7 +1678,7 @@ msgid ""
 "your account."
 msgstr ""
 
-#: index.php:160 register.php:96
+#: index.php:160 register.php:100
 msgid ""
 "Client self registration is not allowed. If you need an account, please "
 "contact a system administrator."
@@ -1773,7 +1782,7 @@ msgid ""
 "you can create it by renaming the dummy file sys.config.sample.php."
 msgstr ""
 
-#: install/index.php:217 options.php:201
+#: install/index.php:217 options.php:206
 msgid "Site name"
 msgstr ""
 
@@ -1795,7 +1804,7 @@ msgstr ""
 msgid "characters long."
 msgstr ""
 
-#: install/index.php:243 options.php:380
+#: install/index.php:243 options.php:387
 msgid "E-mail address"
 msgstr ""
 
@@ -1830,7 +1839,7 @@ msgstr ""
 msgid "(not supported)"
 msgstr ""
 
-#: install/make-config.php:242 options.php:495
+#: install/make-config.php:242 options.php:502
 msgid "Host"
 msgstr ""
 
@@ -1854,7 +1863,7 @@ msgstr ""
 msgid "Language selection"
 msgstr ""
 
-#: install/make-config.php:324 options.php:250
+#: install/make-config.php:324 options.php:255
 msgid "Language"
 msgstr ""
 
@@ -1928,17 +1937,17 @@ msgstr ""
 msgid "times"
 msgstr ""
 
-#: manage-files.php:152 upload-process-form.php:757
+#: manage-files.php:152 upload-process-form.php:759
 msgid "Click to select"
 msgstr ""
 
-#: manage-files.php:152 upload-process-form.php:757
+#: manage-files.php:152 upload-process-form.php:759
 msgid ""
 "Send this URL to someone to download the file without registering or logging "
 "in."
 msgstr ""
 
-#: manage-files.php:152 upload-process-form.php:757
+#: manage-files.php:152 upload-process-form.php:759
 msgid "Close"
 msgstr ""
 
@@ -1966,11 +1975,11 @@ msgstr ""
 msgid "Please select at least one file."
 msgstr ""
 
-#: manage-files.php:443 manage-files.php:777 upload-process-form.php:319
+#: manage-files.php:443 manage-files.php:777 upload-process-form.php:321
 msgid "Hidden"
 msgstr ""
 
-#: manage-files.php:444 manage-files.php:778 upload-process-form.php:320
+#: manage-files.php:444 manage-files.php:778 upload-process-form.php:322
 msgid "Visible"
 msgstr ""
 
@@ -2022,8 +2031,8 @@ msgstr ""
 msgid "Assigned"
 msgstr ""
 
-#: manage-files.php:560 manage-files.php:734 upload-process-form.php:298
-#: upload-process-form.php:345
+#: manage-files.php:560 manage-files.php:734 upload-process-form.php:300
+#: upload-process-form.php:347
 msgid "Public"
 msgstr ""
 
@@ -2039,11 +2048,11 @@ msgstr ""
 msgid "Total downloads"
 msgstr ""
 
-#: manage-files.php:726 upload-process-form.php:337
+#: manage-files.php:726 upload-process-form.php:339
 msgid "Public URL"
 msgstr ""
 
-#: manage-files.php:735 upload-process-form.php:346
+#: manage-files.php:735 upload-process-form.php:348
 msgid "Private"
 msgstr ""
 
@@ -2073,332 +2082,356 @@ msgstr ""
 msgid "System options"
 msgstr ""
 
-#: options.php:135
+#: options.php:140
 msgid "Some fields were not completed. Options could not be saved."
 msgstr ""
 
-#: options.php:170 options.php:173
+#: options.php:175 options.php:178
 msgid "Please complete all the fields."
 msgstr ""
 
-#: options.php:179
+#: options.php:184
 msgid "General Options"
 msgstr ""
 
-#: options.php:181
+#: options.php:186
 msgid "E-mail notifications"
 msgstr ""
 
-#: options.php:182
+#: options.php:187
 msgid "Security"
 msgstr ""
 
-#: options.php:183 options.php:595
+#: options.php:188 options.php:639
 msgid "Thumbnails"
 msgstr ""
 
-#: options.php:184
+#: options.php:189
 msgid "Company logo"
 msgstr ""
 
-#: options.php:185
+#: options.php:190
 msgid "Social Login"
 msgstr ""
 
-#: options.php:197
+#: options.php:202
 msgid "General"
 msgstr ""
 
-#: options.php:198
+#: options.php:203
 msgid ""
 "Basic information to be shown around the site. The time format and zones "
 "values affect how the clients see the dates on their files lists."
 msgstr ""
 
-#: options.php:208
+#: options.php:213
 msgid "Client's template"
 msgstr ""
 
-#: options.php:226
+#: options.php:231
 msgid "Timezone"
 msgstr ""
 
-#: options.php:239
+#: options.php:244
 msgid "Time format"
 msgstr ""
 
-#: options.php:242
+#: options.php:247
 msgid "For example, d/m/Y h:i:s will result in something like"
 msgstr ""
 
-#: options.php:243
+#: options.php:248
 msgid "For the full list of available values, visit"
 msgstr ""
 
-#: options.php:243
+#: options.php:248
 msgid "this page"
 msgstr ""
 
-#: options.php:255
+#: options.php:260
 msgid "Detect user browser language"
 msgstr ""
 
-#: options.php:256
+#: options.php:261
 msgid ""
 "If available, will override the default one from the system configuration "
 "file. Affects all users and clients."
 msgstr ""
 
-#: options.php:263
+#: options.php:268
 msgid "System location"
 msgstr ""
 
-#: options.php:264
+#: options.php:269
 msgid ""
 "These options are to be changed only if you are moving the system to another "
 "place. Changes here can cause ProjectSend to stop working."
 msgstr ""
 
-#: options.php:267
+#: options.php:272
 msgid "System URI"
 msgstr ""
 
-#: options.php:283
+#: options.php:288
 msgid "New registrations"
 msgstr ""
 
-#: options.php:284
+#: options.php:289
 msgid ""
 "Used only on self-registrations. These options will not apply to clients "
 "registered by system administrators."
 msgstr ""
 
-#: options.php:289
+#: options.php:294
 msgid "Clients can register themselves"
 msgstr ""
 
-#: options.php:297
+#: options.php:302
 msgid "Auto approve new accounts"
 msgstr ""
 
-#: options.php:303
+#: options.php:308
 msgid "Add clients to this group:"
 msgstr ""
 
-#: options.php:306
+#: options.php:311
 msgid "None (does not enable this feature)"
 msgstr ""
 
-#: options.php:328
+#: options.php:333
 msgid ""
 "New clients will automatically be assigned to the group you have selected."
 msgstr ""
 
-#: options.php:343
+#: options.php:348
 msgid "Clients can upload files"
 msgstr ""
 
-#: options.php:351
+#: options.php:356
 msgid "Clients can delete their own uploaded files"
 msgstr ""
 
-#: options.php:357
+#: options.php:362
 msgid "When a file expires:"
 msgstr ""
 
-#: options.php:360
+#: options.php:365
 msgid "Don't show it on the files list"
 msgstr ""
 
-#: options.php:361
+#: options.php:366
 msgid "Show it anyway, but prevent download."
 msgstr ""
 
-#: options.php:363
+#: options.php:368
 msgid ""
 "This only affects clients. On the admin side, you can still get the files."
 msgstr ""
 
-#: options.php:377
+#: options.php:384
 msgid "\"From\" information"
 msgstr ""
 
-#: options.php:395
+#: options.php:402
 msgid "Send copies"
 msgstr ""
 
-#: options.php:400
+#: options.php:407
 msgid "When a system user uploads files"
 msgstr ""
 
-#: options.php:408
+#: options.php:415
 msgid "When a client uploads files"
 msgstr ""
 
-#: options.php:414
+#: options.php:421
 msgid ""
 "Define here who will receive copies of this emails. These are sent as BCC so "
 "neither recipient will see the other addresses."
 msgstr ""
 
-#: options.php:420
+#: options.php:427
 msgid "Address supplied above (on \"From\")"
 msgstr ""
 
-#: options.php:426
+#: options.php:433
 msgid "Also to this addresses"
 msgstr ""
 
-#: options.php:429
+#: options.php:436
 msgid "Separate e-mail addresses with a comma."
 msgstr ""
 
-#: options.php:435
+#: options.php:442
 msgid "Expiration"
 msgstr ""
 
-#: options.php:438
+#: options.php:445
 msgid "Maximum sending attemps"
 msgstr ""
 
-#: options.php:441
+#: options.php:448
 msgid "Define how many times will the system attemp to send each notification."
 msgstr ""
 
-#: options.php:446
+#: options.php:453
 msgid "Days before expiring"
 msgstr ""
 
-#: options.php:449
+#: options.php:456
 msgid "Notifications older than this will not be sent."
 msgstr ""
 
-#: options.php:449
+#: options.php:456
 msgid "Set to 0 to disable."
 msgstr ""
 
-#: options.php:455
+#: options.php:462
 msgid "E-mail sending options"
 msgstr ""
 
-#: options.php:456
+#: options.php:463
 msgid ""
 "Here you can select which mail system will be used when sending the "
 "notifications. If you have a valid e-mail account, SMTP is the recommended "
 "option."
 msgstr ""
 
-#: options.php:459
+#: options.php:466
 msgid "Mailer"
 msgstr ""
 
-#: options.php:472
+#: options.php:479
 msgid "SMTP & Gmail shared options"
 msgstr ""
 
-#: options.php:473
+#: options.php:480
 msgid ""
 "You need to include your username (usually your e-mail address) and password "
 "if you have selected either SMTP or Gmail as your mailer."
 msgstr ""
 
-#: options.php:491
+#: options.php:498
 msgid "SMTP options"
 msgstr ""
 
-#: options.php:492
+#: options.php:499
 msgid "If you selected SMTP as your mailer, please complete these options."
 msgstr ""
 
-#: options.php:502
+#: options.php:509
 msgid "Port"
 msgstr ""
 
-#: options.php:509
+#: options.php:516
 msgid "Authentication"
 msgstr ""
 
-#: options.php:529
+#: options.php:536
 msgid "Allowed file extensions"
 msgstr ""
 
-#: options.php:530
+#: options.php:537
 msgid ""
 "Be careful when changing this options. They could affect not only the system "
 "but the whole server it is installed on."
 msgstr ""
 
-#: options.php:531
+#: options.php:538
 msgid "Important"
 msgstr ""
 
-#: options.php:531
+#: options.php:538
 msgid "Separate allowed file types with a comma."
 msgstr ""
 
-#: options.php:534
+#: options.php:541
 msgid "Limit file types uploading to"
 msgstr ""
 
-#: options.php:537
+#: options.php:544
 msgid "No one"
 msgstr ""
 
-#: options.php:538
+#: options.php:545
 msgid "Everyone"
 msgstr ""
 
-#: options.php:539
+#: options.php:546
 msgid "Clients only"
 msgstr ""
 
-#: options.php:550
+#: options.php:557
 msgid "Passwords"
 msgstr ""
 
-#: options.php:551
+#: options.php:558
 msgid "When setting up a password for an account, requiere at least:"
 msgstr ""
 
 #: options.php:596
+msgid "reCAPTCHA"
+msgstr ""
+
+#: options.php:597
+msgid "Helps prevent SPAM on your registration form."
+msgstr ""
+
+#: options.php:602
+msgid "Use reCAPTCHA"
+msgstr ""
+
+#: options.php:608
+msgid "Site key"
+msgstr ""
+
+#: options.php:615
+msgid "Secret key"
+msgstr ""
+
+#: options.php:626 options.php:750
+msgid "How do I obtain this credentials?"
+msgstr ""
+
+#: options.php:640
 msgid ""
 "Thumbnails are used on files lists. It is recommended to keep them small, "
 "unless you are using the system to upload only images, and will change the "
 "default client's template accordingly."
 msgstr ""
 
-#: options.php:601 options.php:653
+#: options.php:645 options.php:697
 msgid "Max width"
 msgstr ""
 
-#: options.php:608 options.php:661
+#: options.php:652 options.php:705
 msgid "Max height"
 msgstr ""
 
-#: options.php:616
+#: options.php:660
 msgid "JPG Quality"
 msgstr ""
 
-#: options.php:626
+#: options.php:670
 msgid "File's path"
 msgstr ""
 
-#: options.php:627
+#: options.php:671
 msgid ""
 "If thumbnails are not showing (your company logo and file's preview on the "
 "branding page and client's files lists) try setting this option ON. It they "
 "still don't work, a folders permission issue might be the cause."
 msgstr ""
 
-#: options.php:632
+#: options.php:676
 msgid "Use file's absolute path"
 msgstr ""
 
-#: options.php:647
+#: options.php:691
 msgid "Size settings"
 msgstr ""
 
-#: options.php:648
+#: options.php:692
 msgid ""
 "Like the thumbnails options, these have to be changed taking into account "
 "the client's template design, since it can be shown there. The default "
@@ -2406,31 +2439,27 @@ msgid ""
 "this setting to show the image on top."
 msgstr ""
 
-#: options.php:677
+#: options.php:721
 msgid "Google"
 msgstr ""
 
-#: options.php:681
+#: options.php:725
 msgid "Enabled"
 msgstr ""
 
-#: options.php:690
+#: options.php:734
 msgid "Client ID"
 msgstr ""
 
-#: options.php:696
+#: options.php:740
 msgid "Client Secret"
 msgstr ""
 
-#: options.php:706
-msgid "How do I obtain this credentials?"
-msgstr ""
-
-#: options.php:711
+#: options.php:755
 msgid "Callback URI"
 msgstr ""
 
-#: process.php:216
+#: process.php:225
 msgid ""
 "You don't have the required permissions to view the requested information "
 "about this file."
@@ -2440,36 +2469,36 @@ msgstr ""
 msgid "Register new account"
 msgstr ""
 
-#: register.php:111
+#: register.php:115
 msgid "Please contact a system administrator."
 msgstr ""
 
-#: register.php:115
+#: register.php:119
 msgid "Account added correctly."
 msgstr ""
 
-#: register.php:119
+#: register.php:123
 msgid ""
 "Please remember that an administrator needs to approve your account before "
 "you can log in."
 msgstr ""
 
-#: register.php:122
+#: register.php:126
 msgid "You may now log in with your new credentials."
 msgstr ""
 
-#: register.php:142
+#: register.php:146
 msgid ""
 "A folder for this account could not be created. Probably because of a server "
 "configuration."
 msgstr ""
 
-#: register.php:147
+#: register.php:151
 msgid ""
 "The account could not be created. A folder with this name already exists."
 msgstr ""
 
-#: register.php:157
+#: register.php:161
 msgid ""
 "An e-mail notification with login information was sent to the specified "
 "address."
@@ -2597,47 +2626,47 @@ msgstr ""
 msgid "To use this feature you need to upload your files via FTP to the folder"
 msgstr ""
 
-#: upload-process-form.php:286
+#: upload-process-form.php:288
 msgid "Files uploaded correctly"
 msgstr ""
 
-#: upload-process-form.php:292 upload-process-form.php:662
+#: upload-process-form.php:294 upload-process-form.php:664
 msgid "File Name"
 msgstr ""
 
-#: upload-process-form.php:381
+#: upload-process-form.php:383
 msgid "Files ready to upload"
 msgstr ""
 
-#: upload-process-form.php:382
+#: upload-process-form.php:384
 msgid ""
 "Please complete the following information to finish the uploading process. "
 "Remember that \"Title\" is a required field."
 msgstr ""
 
-#: upload-process-form.php:387
+#: upload-process-form.php:389
 msgid "Note"
 msgstr ""
 
-#: upload-process-form.php:387
+#: upload-process-form.php:389
 msgid ""
 "You can skip assigning if you want. The files are retained and you may add "
 "them to clients or groups later."
 msgstr ""
 
-#: upload-process-form.php:575 upload-process-form.php:605
+#: upload-process-form.php:577 upload-process-form.php:607
 msgid "Copy selections to other files"
 msgstr ""
 
-#: upload-process-form.php:582
+#: upload-process-form.php:584
 msgid "Upload hidden (will not send notifications)"
 msgstr ""
 
-#: upload-process-form.php:658
+#: upload-process-form.php:660
 msgid "Files not uploaded"
 msgstr ""
 
-#: upload-process-form.php:721
+#: upload-process-form.php:723
 msgid "Copy selection to all files?"
 msgstr ""
 

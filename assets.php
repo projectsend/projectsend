@@ -26,8 +26,8 @@ $load_js_files[]	= BASE_URI . 'includes/js/main.js';
 /** CSS */
 
 /** Fonts*/
-$load_css_files[]	= PROTOCOL . '://fonts.googleapis.com/css?family=Open+Sans:400,700,300';
-$load_css_files[]	= PROTOCOL . '://fonts.googleapis.com/css?family=Abel';
+$load_css_files[]	= 'https://fonts.googleapis.com/css?family=Open+Sans:400,700,300';
+$load_css_files[]	= 'https://fonts.googleapis.com/css?family=Abel';
 
 /**
  * Optional scripts
@@ -35,6 +35,9 @@ $load_css_files[]	= PROTOCOL . '://fonts.googleapis.com/css?family=Abel';
 if ( !empty( $load_scripts ) ) {
 	foreach ( $load_scripts as $script ) {
 		switch ( $script ) {
+			case 'recaptcha':
+				$load_js_files[]		= 'https://www.google.com/recaptcha/api.js';
+				break;
 			case 'social_login':
 				$load_css_files[]		= BASE_URI . 'css/social-login.css';
 				break;

@@ -41,6 +41,7 @@ else {
 	
 	$load_scripts = array(
 						'social_login',
+						'recaptcha',
 					);
 	
 	/**

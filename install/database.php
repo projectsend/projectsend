@@ -271,7 +271,10 @@ if (defined('TRY_INSTALL')) {
 								('clients_can_delete_own_files', '0'),
 								('google_client_id', ''),
 								('google_client_secret', ''),
-								('google_signin_enabled', '0')
+								('google_signin_enabled', '0'),
+								('recaptcha_enabled', '0'),
+								('recaptcha_site_key', ''),
+								('recaptcha_secret_key', '')
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,

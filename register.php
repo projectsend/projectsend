@@ -15,6 +15,13 @@ include('header-unlogged.php');
 
 	/** The form was submitted */
 	if ($_POST) {
+		if ( defined('RECAPTCHA_AVAILABLE') ) {
+			$recaptcha_user_ip		= $_SERVER["REMOTE_ADDR"];
+			$recaptcha_response		= $_POST['g-recaptcha-response'];
+			$recaptcha_secret_key	= RECAPTCHA_SECRET_KEY;
+			$recaptcha_request		= file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptcha_secret_key}&response={$recaptcha_response}&remoteip={$recaptcha_user_ip}");
+		}
+
 		$new_client = new ClientActions();
 	
 		/**
@@ -32,24 +39,21 @@ include('header-unlogged.php');
 	
 		/** Arguments used on validation and client creation. */
 		$new_arguments = array(
-								'id' => '',
-								'username' => $add_client_data_user,
-								'password' => $_POST['add_client_form_pass'],
+								'id'		=> '',
+								'username'	=> $add_client_data_user,
+								'password'	=> $_POST['add_client_form_pass'],
 								//'password_repeat' => $_POST['add_client_form_pass2'],
-								'name' => $add_client_data_name,
-								'email' => $add_client_data_email,
-								'address' => $add_client_data_addr,
-								'phone' => $add_client_data_phone,
-								'contact' => $add_client_data_intcont,
-								'notify' => $add_client_data_notity,
-								'type' => 'new_client'
+								'name'		=> $add_client_data_name,
+								'email'		=> $add_client_data_email,
+								'address'	=> $add_client_data_addr,
+								'phone'		=> $add_client_data_phone,
+								'contact'	=> $add_client_data_intcont,
+								'notify'	=> $add_client_data_notity,
+								'type'		=> 'new_client',
 							);
-		if (CLIENTS_AUTO_APPROVE == 0) {
-			$new_arguments['active'] = 0;
-		}
-		else {
-			$new_arguments['active'] = 1;
-		}
+
+		$new_arguments['active']	= (CLIENTS_AUTO_APPROVE == 0) ? 0 : 1;
+		$new_arguments['recaptcha']	= ( defined('RECAPTCHA_AVAILABLE') ) ? $recaptcha_request : null;
 	
 		/** Validate the information from the posted form. */
 		$new_validate = $new_client->validate_client($new_arguments);
@@ -121,7 +125,7 @@ include('header-unlogged.php');
 							else {
 								$msg = __('You may now log in with your new credentials.','cftp_admin');
 							}
-							echo system_message('note',$msg);
+							echo system_message('info',$msg);
 
 							/** Record the action log */
 							$new_log_action = new LogActions();

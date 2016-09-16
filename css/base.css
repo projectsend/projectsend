@@ -294,26 +294,31 @@ h1, h2, h3, h4, h5, h6 {
 	zoom:1;
 }
 
-.graph_legend li {
-	display:inline-block;
-	zoom:1;
-	color:#666666;
-	margin-left:15px;
-	font-size:.9em;
-}
+	.graph_legend li {
+		display:inline-block;
+		zoom:1;
+		color:#fff;
+		margin-left:5px;
+		font-size:.9em;
+		padding:4px;
+		-moz-border-radius:3px;
+		-webkit-border-radius:3px;
+		-o-border-radius:3px;
+		border-radius:3px;
+	}
+	
+		.graph_legend li .legend_color {
+			width:12px;
+			height:12px;
+			float:left;
+			margin: 2px 5px 0 0;
+		}
 
-.graph_legend li .legend_color {
-	width:12px;
-	height:12px;
-	float:left;
-	margin: 2px 5px 0 0;
-}
-
-.graph_legend li .legend_color1 { background:#0094bb; }
-.graph_legend li .legend_color2 { background:#86ae00; }
-.graph_legend li .legend_color3 { background:#C60F13; }
-.graph_legend li .legend_color4 { background:#f2b705; }
-.graph_legend li .legend_color5 { background:#1ec4a7; }
+	.graph_legend li.legend_color1 { background:#0094bb; }
+	.graph_legend li.legend_color2 { background:#86ae00; }
+	.graph_legend li.legend_color3 { background:#C60F13; }
+	.graph_legend li.legend_color4 { background:#f2b705; }
+	.graph_legend li.legend_color5 { background:#1ec4a7; }
 
 .stats_change_data, .log_change_action {
 	margin-bottom:2em;

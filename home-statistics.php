@@ -20,7 +20,7 @@
 		$statement = $dbh->prepare("SELECT action, timestamp, COUNT(*) as total
 										FROM " . TABLE_LOG . " 
 										WHERE timestamp >= DATE_SUB( CURDATE(),INTERVAL :max_days DAY)
-										AND action IN ('5', '6', '8', '9')
+										AND action IN ('5', '6', '8', '9', '37')
 										GROUP BY DATE(timestamp), action
 									");
 		$params = array(
@@ -44,6 +44,9 @@
 					case 9:
 						$actions_to_graph['d9'][$res['timestamp']] = $res['total'];
 						break;
+					case 37:
+						$actions_to_graph['d37'][$res['timestamp']] = $res['total'];
+						break;
 				}
 			}
 			$continue = true;
@@ -55,7 +58,7 @@
 	
 	<script type="text/javascript">
 	<?php	
-			$data_logs = array('d5','d6','d8','d9');
+			$data_logs = array('d5','d6','d8','d9','d37');
 			foreach ($data_logs as $gen_log) {
 				echo 'var '.$gen_log.' = [';
 				$i = 0;
@@ -165,7 +168,7 @@
 				sorted: true,
 				show: false
 			},
-			colors: ["#0094bb","#86ae00","#C60F13","#f2b705"]
+			colors: ["#0094bb","#86ae00","#C60F13","#f2b705","#1ec4a7"]
 		};
 	
 		$.plot(
@@ -185,6 +188,10 @@
 				{
 					data: d9,
 					label: '<?php _e('Zip Downloads','cftp_admin'); ?>'
+				},
+				{
+					data: d37,
+					label: '<?php _e('Public downloads','cftp_admin'); ?>'
 				}
 			], options
 		);

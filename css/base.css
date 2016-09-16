@@ -313,6 +313,7 @@ h1, h2, h3, h4, h5, h6 {
 .graph_legend li .legend_color2 { background:#86ae00; }
 .graph_legend li .legend_color3 { background:#C60F13; }
 .graph_legend li .legend_color4 { background:#f2b705; }
+.graph_legend li .legend_color5 { background:#1ec4a7; }
 
 .stats_change_data, .log_change_action {
 	margin-bottom:2em;

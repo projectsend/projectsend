@@ -74,10 +74,12 @@ foreach ($files_to_zip as $file_to_zip) {
 			$allowed_to_zip[$row['file_id']] = $file_to_zip;
 
 			/** Add the download row */
-			$statement = $dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (user_id , file_id)"
-										." VALUES (:user_id, :file_id)");
+			$statement = $dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (user_id , file_id, remote_ip, remote_host)"
+										." VALUES (:user_id, :file_id, :remote_ip, :remote_host)");
 			$statement->bindValue(':user_id', CURRENT_USER_ID, PDO::PARAM_INT);
 			$statement->bindParam(':file_id', $this_file_id, PDO::PARAM_INT);
+			$statement->bindParam(':remote_ip', $_SERVER['REMOTE_ADDR']);
+			$statement->bindParam(':remote_host', $_SERVER['REMOTE_HOST']);
 			$statement->execute();
 		}
 	}

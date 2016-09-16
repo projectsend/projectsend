@@ -193,6 +193,9 @@ if (defined('TRY_INSTALL')) {
 								  `user_id` int(11) DEFAULT NULL,
 								  `file_id` int(11) NOT NULL,
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+								  `remote_ip` varchar(45) DEFAULT NULL,
+								  `remote_host` text NULL,
+								  `anonymous` tinyint(1) DEFAULT \'0\',
 								  FOREIGN KEY (`user_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)

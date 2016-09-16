@@ -47,7 +47,8 @@ define('CAN_INCLUDE_FILES', true);
 											<li><div class="legend_color legend_color1"></div><?php _e('Uploads by users','cftp_admin'); ?></li><li>
 											<div class="legend_color legend_color2"></div><?php _e('Uploads by clients','cftp_admin'); ?></li><li>
 											<div class="legend_color legend_color3"></div><?php _e('Downloads','cftp_admin'); ?></li><li>
-											<div class="legend_color legend_color4"></div><?php _e('Zip Downloads','cftp_admin'); ?></li>
+											<div class="legend_color legend_color4"></div><?php _e('Zip Downloads','cftp_admin'); ?></li><li>
+											<div class="legend_color legend_color5"></div><?php _e('Public Downloads','cftp_admin'); ?></li>
 										</ul>
 
 										<div id="statistics" style="height:320px;width:100%;"></div>

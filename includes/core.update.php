@@ -1027,6 +1027,24 @@ if (in_session_or_cookies($allowed_update)) {
 			}
 		}
 
+
+		/**
+		 * r738 updates
+		 * New columns where added to the downloads table, to
+		 * store the ip and hostname of the user, and a boolean
+		 * fieled set to true for anonymous downloads (public files)
+		 */
+		if ($last_update < 738) {
+			try {
+				$statement = $dbh->query("SELECT remote_ip FROM " . TABLE_DOWNLOADS);
+			} catch( PDOException $e ) {
+				$statement = $dbh->query("ALTER TABLE " . TABLE_DOWNLOADS . " ADD remote_ip varchar(45) NULL");
+				$statement = $dbh->query("ALTER TABLE " . TABLE_DOWNLOADS . " ADD remote_host text NULL");
+				$statement = $dbh->query("ALTER TABLE " . TABLE_DOWNLOADS . " ADD anonymous tinyint(1) NULL");
+				$updates_made++;
+			}
+		}
+
 	}
 }	
 ?>

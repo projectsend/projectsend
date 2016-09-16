@@ -57,7 +57,7 @@ class PSend_Upload_File
 		$url = str_replace($find, '-', $url);
 	
 		//delete and replace rest of special chars
-		$find = array('/[^a-z0-9\-<>]/', '/[\-]+/', '/<[^>]*>/');
+		$find = array('/[^a-z0-9\-<>_]/', '/[\-]+/', '/<[^>]*>/');
 		$replace = array('', '-', '');
 		$uri = preg_replace($find, $replace, $url);
 	

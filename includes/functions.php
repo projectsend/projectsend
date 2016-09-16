@@ -56,6 +56,47 @@ function generate_password() {
 
 
 /**
+ * Get the total count of downloads grouped by file
+ * Data returned:
+ * - Count anonymous downloads (Public downloads)
+ * - Unique logged in clients downloads
+ * - Total count
+ */
+function generate_downloads_count( $id = null ) {
+	global $dbh;
+
+	$data = array();
+
+	$sql = "SELECT file_id, COUNT(*) as downloads, SUM( ISNULL(user_id) ) AS anonymous_users, COUNT(DISTINCT user_id) as unique_clients FROM " . TABLE_DOWNLOADS;
+	if ( !empty( $id ) ) {
+		$sql .= ' WHERE file_id = :id';
+	}
+	
+	$sql .=  " GROUP BY file_id";
+	
+	$statement	= $dbh->prepare( $sql );
+
+	if ( !empty( $id ) ) {
+		$statement->bindValue(':id', $id, PDO::PARAM_INT);
+	}
+
+	$statement->execute();
+
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
+
+	while ( $row = $statement->fetch() ) {
+		$data[$row['file_id']] = array(
+									'file_id'			=> $row['file_id'],
+									'total'				=> $row['downloads'],
+									'unique_clients'	=> $row['unique_clients'],
+									'anonymous_users'	=> $row['anonymous_users'],
+								);
+	}
+	
+	return $data;
+}
+
+/**
  * Check if a table exists in the current database.
  *
  * @param string $table Table to search for.
@@ -75,6 +116,27 @@ function tableExists($table) {
     // Result is either boolean FALSE (no table found) or PDOStatement Object (table found)
     return $result !== false;
 }
+
+/**
+ * Check if a file id exists on the database.
+ * Used on the download information page.
+ *
+ * @return bool
+ */
+function download_information_exists($id)
+{
+	global $dbh;
+	$statement = $dbh->prepare("SELECT id FROM " . TABLE_DOWNLOADS . " WHERE file_id = :id");
+	$statement->bindParam(':id', $id, PDO::PARAM_INT);
+	$statement->execute();
+	if ( $statement->rowCount() > 0 ) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 
 /**
  * Check if a client id exists on the database.
@@ -324,6 +386,36 @@ function get_user_by_id($id)
 							'email'			=> $row['email'],
 							'level'			=> $row['level'],
 							'created_date'	=> $row['timestamp']
+						);
+		if ( !empty( $information ) ) {
+			return $information;
+		}
+		else {
+			return false;
+		}
+	}
+}
+
+
+/**
+ * Get all the file information knowing only the id
+ * Used on the Download information page.
+ *
+ * @return array
+ */
+function get_file_by_id($id)
+{
+	global $dbh;
+	$statement = $dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE id=:id");
+	$statement->bindParam(':id', $id, PDO::PARAM_INT);
+	$statement->execute();
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
+
+	while ( $row = $statement->fetch() ) {
+		$information = array(
+							'id'			=> $row['id'],
+							'url'			=> $row['url'],
+							'title'			=> $row['filename'],
 						);
 		if ( !empty( $information ) ) {
 			return $information;

@@ -1,4 +1,4 @@
-	<?php
+<?php
 /**
  * Allows to hide, show or delete the files assigend to the
  * selected client.
@@ -17,6 +17,12 @@ $active_nav = 'files';
 $page_title = __('Manage files','cftp_admin');
 
 $current_level = get_current_user_level();
+
+/*
+ * Get the total downloads count here. The results are then
+ * referenced on the results table.
+ */
+$downloads_information = generate_downloads_count();
 
 /**
  * Used to distinguish the current page results.
@@ -118,6 +124,7 @@ include('header.php');
 		
 		<?php
 			if ($results_type != 'client') {
+				/*
 		?>
 				$(".downloaders").click(function() {
 					$(document).psendmodal();
@@ -141,6 +148,7 @@ include('header.php');
 					return false;
 				});
 		<?php
+				*/
 			}
 		?>
 
@@ -627,16 +635,6 @@ include('header.php');
 											break;
 									}
 								}
-								else {
-									/**
-									 * Count how many times this file has been downloaded
-									 * Here, the download count is general.
-									 */
-									$download_count_sql	= $dbh->prepare("SELECT file_id FROM " . TABLE_DOWNLOADS . " WHERE file_id = :id");
-									$download_count_sql->bindParam(':id', $row['id'], PDO::PARAM_INT);
-									$download_count_sql->execute();
-									$download_count	= $download_count_sql->rowCount();
-								}
 
 								$sql_this_file = $dbh->prepare($query_this_file);
 								$sql_this_file->execute( $params );
@@ -803,11 +801,20 @@ include('header.php');
 									<?php
 										}
 										else {
-											if($current_level != '0') {
+											if ($current_level != '0') {
+												if ( isset( $downloads_information[$row["id"]] ) ) {
+													$download_info	= $downloads_information[$row["id"]];
+													$btn_class		= ( $download_info['total'] > 0 ) ? 'downloaders btn-primary' : 'btn-default disabled';
+													$total_count	= $download_info['total'];
+												}
+												else {
+													$btn_class		= 'btn-default disabled';
+													$total_count	= 0;
+												}
 									?>
 												<td>
-													<a href="javascript:void(0);" class="<?php if ($download_count > 0) { echo 'downloaders btn-primary'; } else { echo 'btn-default disabled'; } ?> btn btn-sm" rel="<?php echo $row["id"]; ?>" title="<?php echo html_output($row['filename']); ?>">
-														<?php echo $download_count; ?> <?php _e('downloads','cftp_admin'); ?>
+													<a href="<?php echo BASE_URI; ?>download-information.php?id=<?php echo $row['id']; ?>" class="<?php echo $btn_class; ?> btn btn-sm" rel="<?php echo $row["id"]; ?>" title="<?php echo html_output($row['filename']); ?>">
+														<?php echo $total_count; ?> <?php _e('downloads','cftp_admin'); ?>
 													</a>
 												</td>
 									<?php

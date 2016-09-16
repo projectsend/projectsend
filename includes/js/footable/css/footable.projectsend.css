@@ -10,6 +10,9 @@
 	-webkit-box-shadow:3px 3px 5px #dedede;
 	box-shadow:3px 3px 5px #dedede;
 }
+.footable > tfoot > tr > td {
+	padding:20px 0;
+}
 .footable > thead > tr > th {
   border-left: 1px solid #fff;
   padding: 7px 4px;

@@ -91,6 +91,16 @@ include('header.php');
 									<th data-hide="phone"><?php _e("Client's hostname",'cftp_admin'); ?></th>
 								</tr>
 							</thead>
+							<tfoot>
+								<tr>
+									<td></td>
+									<td></td>
+									<td><?php _e('Unique logged in clients/users','cftp_admin'); ?>: <span class="label label-primary"><?php echo $file_stats['unique_clients']; ?></span></td>
+									<td><?php _e('Total public downloads','cftp_admin'); ?>: <span class="label label-primary"><?php echo $file_stats['anonymous_users']; ?></span></td>
+									<td></td>
+									<td></td>
+								</tr>
+							</tfoot>
 							<tbody>
 								<?php
 									$statement = $dbh->prepare("SELECT * FROM " . TABLE_DOWNLOADS . " WHERE file_id = :id");
@@ -128,16 +138,6 @@ include('header.php');
 									}
 								?>
 							</tbody>
-							<tfoot>
-								<tr>
-									<td></td>
-									<td></td>
-									<td><?php _e('Unique logged in clients/users','cftp_admin'); ?>: <span class="label label-primary"><?php echo $file_stats['unique_clients']; ?></span></td>
-									<td><?php _e('Total public downloads','cftp_admin'); ?>: <span class="label label-primary"><?php echo $file_stats['anonymous_users']; ?></span></td>
-									<td></td>
-									<td></td>
-								</tr>
-							</tfoot>
 						</table>
 			
 						<nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">

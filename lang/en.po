@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend admin\n"
-"POT-Creation-Date: 2016-09-15 01:28-0300\n"
-"PO-Revision-Date: 2016-09-15 01:28-0300\n"
+"POT-Creation-Date: 2016-09-17 11:33-0300\n"
+"PO-Revision-Date: 2016-09-17 11:34-0300\n"
 "Last-Translator: \n"
 "Language-Team: ProjectSend <contact@projectsend.org>\n"
 "Language: en\n"
@@ -41,7 +41,7 @@ msgid "Please select at least one activity to proceed."
 msgstr ""
 
 #: actions-log.php:32 categories.php:37 clients.php:44 groups.php:72
-#: manage-files.php:99 users.php:37
+#: manage-files.php:105 users.php:37
 msgid "You are about to delete"
 msgstr ""
 
@@ -74,7 +74,7 @@ msgid ""
 msgstr ""
 
 #: actions-log.php:151 categories.php:239 clients.php:178 groups.php:217
-#: manage-files.php:432 upload-import-orphans.php:144 users.php:208
+#: manage-files.php:440 upload-import-orphans.php:144 users.php:208
 msgid "Search"
 msgstr ""
 
@@ -82,71 +82,72 @@ msgstr ""
 msgid "Filter activities"
 msgstr ""
 
-#: actions-log.php:158 home.php:80
+#: actions-log.php:158 home.php:81
 msgid "All activities"
 msgstr ""
 
-#: actions-log.php:209 clients.php:189 manage-files.php:447 users.php:228
+#: actions-log.php:169 clients.php:189 manage-files.php:455 users.php:228
 msgid "Filter"
 msgstr ""
 
-#: actions-log.php:219
+#: actions-log.php:179
 msgid "Activities actions"
 msgstr ""
 
-#: actions-log.php:221 groups.php:229
+#: actions-log.php:181 groups.php:229
 msgid "Select action"
 msgstr ""
 
-#: actions-log.php:222
+#: actions-log.php:182
 msgid "Download as csv"
 msgstr ""
 
-#: actions-log.php:223
+#: actions-log.php:183
 msgid "Delete selected"
 msgstr ""
 
-#: actions-log.php:224
+#: actions-log.php:184
 msgid "Clear entire log"
 msgstr ""
 
-#: actions-log.php:227 categories.php:256 clients.php:206 groups.php:233
-#: manage-files.php:488 users.php:245
+#: actions-log.php:187 categories.php:256 clients.php:206 groups.php:233
+#: manage-files.php:496 users.php:245
 msgid "Proceed"
 msgstr ""
 
-#: actions-log.php:234 categories.php:264 clients.php:213 groups.php:240
-#: manage-files.php:499 upload-import-orphans.php:151 users.php:252
+#: actions-log.php:194 categories.php:264 clients.php:213 groups.php:240
+#: manage-files.php:507 upload-import-orphans.php:151 users.php:252
 msgid "Showing"
 msgstr ""
 
-#: actions-log.php:234
+#: actions-log.php:194
 msgid "activities"
 msgstr ""
 
-#: actions-log.php:244 clients.php:226 groups.php:253 manage-files.php:515
+#: actions-log.php:204 clients.php:226 groups.php:253 manage-files.php:523
 #: users.php:264
 msgid "The filters you selected returned no results."
 msgstr ""
 
-#: actions-log.php:249
+#: actions-log.php:209
 msgid "There are no activities recorded."
 msgstr ""
 
-#: actions-log.php:261 manage-files.php:545
+#: actions-log.php:221 download-information.php:86 manage-files.php:553
 msgid "Date"
 msgstr ""
 
-#: actions-log.php:262
+#: actions-log.php:222
 msgid "Author"
 msgstr ""
 
-#: actions-log.php:263
+#: actions-log.php:223
 msgid "Activity"
 msgstr ""
 
-#: actions-log.php:307 categories.php:360 clients.php:372 groups.php:337
-#: manage-files.php:830 upload-import-orphans.php:192 users.php:336
+#: actions-log.php:267 categories.php:360 clients.php:372
+#: download-information.php:143 groups.php:337 manage-files.php:837
+#: upload-import-orphans.php:192 users.php:336
 msgid "Results navigation"
 msgstr ""
 
@@ -252,8 +253,8 @@ msgid "None"
 msgstr ""
 
 #: categories-form.php:48 categories.php:296 edit-file.php:379
-#: groups-form.php:45 groups.php:277 upload-process-form.php:293
-#: upload-process-form.php:487
+#: groups-form.php:45 groups.php:277 upload-process-form.php:291
+#: upload-process-form.php:485
 msgid "Description"
 msgstr ""
 
@@ -309,7 +310,7 @@ msgstr ""
 msgid "Selected categories actions"
 msgstr ""
 
-#: categories.php:253 clients.php:203 groups.php:230 manage-files.php:485
+#: categories.php:253 clients.php:203 groups.php:230 manage-files.php:493
 #: users.php:242
 msgid "Delete"
 msgstr ""
@@ -318,7 +319,7 @@ msgstr ""
 msgid "categories"
 msgstr ""
 
-#: categories.php:274 clients.php:223 groups.php:250 manage-files.php:509
+#: categories.php:274 clients.php:223 groups.php:250 manage-files.php:517
 #: users.php:261
 msgid "Your search keywords returned no results."
 msgstr ""
@@ -327,13 +328,13 @@ msgstr ""
 msgid "There are no categories yet."
 msgstr ""
 
-#: categories.php:295 groups.php:279 header-menu.php:41 home.php:161
+#: categories.php:295 groups.php:279 header-menu.php:41 home.php:162
 #: options.php:339
 msgid "Files"
 msgstr ""
 
-#: categories.php:297 clients.php:255 groups.php:282 manage-files.php:582
-#: upload-import-orphans.php:166 upload-process-form.php:304 users.php:283
+#: categories.php:297 clients.php:255 groups.php:282 manage-files.php:590
+#: upload-import-orphans.php:166 upload-process-form.php:302 users.php:283
 msgid "Actions"
 msgstr ""
 
@@ -342,7 +343,7 @@ msgstr ""
 msgid "Manage files"
 msgstr ""
 
-#: categories.php:340 clients.php:362 groups.php:326 manage-files.php:819
+#: categories.php:340 clients.php:362 groups.php:326 manage-files.php:826
 #: upload-import-orphans.php:182 users.php:325
 msgid "Edit"
 msgstr ""
@@ -426,8 +427,8 @@ msgstr ""
 msgid "Must be alphanumeric"
 msgstr ""
 
-#: clients-form.php:118 includes/vars.php:49 index.php:196
-#: install/index.php:258 install/make-config.php:272 options.php:490
+#: clients-form.php:118 includes/vars.php:49 index.php:209
+#: install/index.php:258 install/make-config.php:268 options.php:490
 #: users-form.php:100
 msgid "Password"
 msgstr ""
@@ -437,7 +438,7 @@ msgstr ""
 msgid "Generate"
 msgstr ""
 
-#: clients-form.php:132 clients.php:245 index.php:191 reset-password.php:288
+#: clients-form.php:132 clients.php:245 index.php:204 reset-password.php:288
 #: users-form.php:114 users.php:279
 msgid "E-mail"
 msgstr ""
@@ -503,7 +504,7 @@ msgstr ""
 msgid "Please select at least one client."
 msgstr ""
 
-#: clients.php:184 manage-files.php:442 users.php:223
+#: clients.php:184 manage-files.php:450 users.php:223
 msgid "All statuses"
 msgstr ""
 
@@ -548,7 +549,7 @@ msgstr ""
 msgid "Files: Groups"
 msgstr ""
 
-#: clients.php:248 manage-files.php:570 upload-process-form.php:298
+#: clients.php:248 manage-files.php:578 upload-process-form.php:296
 #: users.php:281
 msgid "Status"
 msgstr ""
@@ -569,11 +570,11 @@ msgstr ""
 msgid "Internal contact"
 msgstr ""
 
-#: clients.php:332 manage-files.php:713
+#: clients.php:332 download-information.php:125 manage-files.php:711
 msgid "Yes"
 msgstr ""
 
-#: clients.php:332 manage-files.php:713
+#: clients.php:332 download-information.php:126 manage-files.php:711
 msgid "No"
 msgstr ""
 
@@ -585,27 +586,71 @@ msgstr ""
 msgid "View as client"
 msgstr ""
 
+#: download-information.php:17
+msgid "Download information"
+msgstr ""
+
+#: download-information.php:64
+msgid "No file was selected."
+msgstr ""
+
+#: download-information.php:69
+msgid "There is no information with that file ID number."
+msgstr ""
+
+#: download-information.php:78 manage-files.php:585
+msgid "Total downloads"
+msgstr ""
+
+#: download-information.php:87
+msgid "Time"
+msgstr ""
+
+#: download-information.php:88 includes/vars.php:16
+msgid "Client"
+msgstr ""
+
+#: download-information.php:89
+msgid "Anonymous"
+msgstr ""
+
+#: download-information.php:90
+msgid "Client's IP"
+msgstr ""
+
+#: download-information.php:91
+msgid "Client's hostname"
+msgstr ""
+
+#: download-information.php:98
+msgid "Unique logged in clients/users"
+msgstr ""
+
+#: download-information.php:99
+msgid "Total public downloads"
+msgstr ""
+
 #: download.php:11
 msgid "Download"
 msgstr ""
 
-#: download.php:101 reset-password.php:215
+#: download.php:120 reset-password.php:215
 msgid "The request is not valid."
 msgstr ""
 
-#: download.php:111
+#: download.php:130
 msgid "The following file is now ready for you to download:"
 msgstr ""
 
-#: download.php:113
+#: download.php:132
 msgid "Download file"
 msgstr ""
 
-#: download.php:121 register.php:182 reset-password.php:358
+#: download.php:140 register.php:182 reset-password.php:358
 msgid "Go back to the homepage."
 msgstr ""
 
-#: edit-file.php:23 upload-process-form.php:357
+#: edit-file.php:23 upload-process-form.php:355
 msgid "Edit file"
 msgstr ""
 
@@ -627,72 +672,72 @@ msgstr ""
 msgid "The file has been edited succesfuly."
 msgstr ""
 
-#: edit-file.php:371 upload-process-form.php:477
+#: edit-file.php:371 upload-process-form.php:475
 msgid "File information"
 msgstr ""
 
-#: edit-file.php:374 manage-files.php:547 upload-process-form.php:292
-#: upload-process-form.php:482
+#: edit-file.php:374 manage-files.php:555 upload-process-form.php:290
+#: upload-process-form.php:480
 msgid "Title"
 msgstr ""
 
-#: edit-file.php:375 upload-process-form.php:483
+#: edit-file.php:375 upload-process-form.php:481
 msgid "Enter here the required file title."
 msgstr ""
 
-#: edit-file.php:380 upload-process-form.php:488
+#: edit-file.php:380 upload-process-form.php:486
 msgid "Optionally, enter here a description for the file."
 msgstr ""
 
-#: edit-file.php:401 upload-process-form.php:507
+#: edit-file.php:401 upload-process-form.php:505
 msgid "Expiration date"
 msgstr ""
 
-#: edit-file.php:404 upload-process-form.php:510
+#: edit-file.php:404 upload-process-form.php:508
 msgid "Select a date"
 msgstr ""
 
-#: edit-file.php:415 upload-process-form.php:521
+#: edit-file.php:415 upload-process-form.php:519
 msgid "File expires"
 msgstr ""
 
-#: edit-file.php:421 upload-process-form.php:527
+#: edit-file.php:421 upload-process-form.php:525
 msgid "Public downloading"
 msgstr ""
 
-#: edit-file.php:424 upload-process-form.php:530
+#: edit-file.php:424 upload-process-form.php:528
 msgid "Allow public downloading of this file."
 msgstr ""
 
-#: edit-file.php:438 upload-process-form.php:299 upload-process-form.php:544
+#: edit-file.php:438 upload-process-form.php:297 upload-process-form.php:542
 msgid "Assignations"
 msgstr ""
 
-#: edit-file.php:439 upload-process-form.php:545
+#: edit-file.php:439 upload-process-form.php:543
 msgid "Assign this file to"
 msgstr ""
 
 #: edit-file.php:440 edit-file.php:497 groups-form.php:54
-#: upload-process-form.php:546 upload-process-form.php:595
+#: upload-process-form.php:544 upload-process-form.php:593
 msgid "Select one or more options. Type to search."
 msgstr ""
 
-#: edit-file.php:441 header-menu.php:73 home.php:162 options.php:185
-#: upload-process-form.php:547
+#: edit-file.php:441 header-menu.php:73 home.php:163 options.php:185
+#: upload-process-form.php:545
 msgid "Clients"
 msgstr ""
 
-#: edit-file.php:456 home.php:163 upload-process-form.php:560
+#: edit-file.php:456 home.php:164 upload-process-form.php:558
 msgid "Groups"
 msgstr ""
 
 #: edit-file.php:473 edit-file.php:507 groups-form.php:75
-#: upload-process-form.php:575 upload-process-form.php:605
+#: upload-process-form.php:573 upload-process-form.php:603
 msgid "Add all"
 msgstr ""
 
 #: edit-file.php:474 edit-file.php:508 groups-form.php:76
-#: upload-process-form.php:576 upload-process-form.php:606
+#: upload-process-form.php:574 upload-process-form.php:604
 msgid "Remove all"
 msgstr ""
 
@@ -706,21 +751,21 @@ msgstr ""
 msgid "Hide from every already assigned clients and groups."
 msgstr ""
 
-#: edit-file.php:495 header-menu.php:63 upload-process-form.php:593
+#: edit-file.php:495 header-menu.php:63 upload-process-form.php:591
 msgid "Categories"
 msgstr ""
 
-#: edit-file.php:496 upload-process-form.php:594
+#: edit-file.php:496 upload-process-form.php:592
 msgid "Add to"
 msgstr ""
 
-#: edit-file.php:525 index.php:207 reset-password.php:295
+#: edit-file.php:525 index.php:242 reset-password.php:295
 #: reset-password.php:344 upload-import-orphans.php:204
-#: upload-process-form.php:641
+#: upload-process-form.php:639
 msgid "Continue"
 msgstr ""
 
-#: edit-file.php:537 groups-form.php:89 upload-process-form.php:691
+#: edit-file.php:537 groups-form.php:89 upload-process-form.php:689
 msgid "No results where found."
 msgstr ""
 
@@ -1026,7 +1071,7 @@ msgstr ""
 msgid "General options"
 msgstr ""
 
-#: header-menu.php:180 upload-process-form.php:364
+#: header-menu.php:180 upload-process-form.php:362
 msgid "View my files"
 msgstr ""
 
@@ -1062,20 +1107,24 @@ msgstr ""
 msgid "ProjectSend news"
 msgstr ""
 
-#: home-statistics.php:175 home.php:47
+#: home-statistics.php:178 home.php:47
 msgid "Uploads by users"
 msgstr ""
 
-#: home-statistics.php:179 home.php:48
+#: home-statistics.php:182 home.php:48
 msgid "Uploads by clients"
 msgstr ""
 
-#: home-statistics.php:183 home.php:49 home.php:82
+#: home-statistics.php:186 home.php:49 home.php:83
 msgid "Downloads"
 msgstr ""
 
-#: home-statistics.php:187 home.php:50
+#: home-statistics.php:190 home.php:50
 msgid "Zip Downloads"
+msgstr ""
+
+#: home-statistics.php:194
+msgid "Public downloads"
 msgstr ""
 
 #: home.php:14 includes/classes/send-email.php:44
@@ -1091,46 +1140,210 @@ msgstr ""
 msgid "days"
 msgstr ""
 
-#: home.php:64
+#: home.php:51
+msgid "Public Downloads"
+msgstr ""
+
+#: home.php:65
 msgid "System data"
 msgstr ""
 
-#: home.php:66
+#: home.php:67
 msgid "Note:"
 msgstr ""
 
-#: home.php:66
+#: home.php:67
 msgid ""
 "This graphic will help you get a relative view of the existing data, "
 "allowing you to see the relation between clients, users, groups and files."
 msgstr ""
 
-#: home.php:77
+#: home.php:78
 msgid "Recent activites"
 msgstr ""
 
-#: home.php:81
+#: home.php:82
 msgid "Logins"
 msgstr ""
 
-#: home.php:86
+#: home.php:87
 msgid "Clients self-registrations"
 msgstr ""
 
-#: home.php:94
+#: home.php:95
 msgid "View all"
 msgstr ""
 
-#: home.php:164
+#: home.php:165
 msgid "Users"
 msgstr ""
 
-#: home.php:184
+#: home.php:185
 msgid "Please wait while the system generates the statistics graph."
 msgstr ""
 
-#: home.php:208
+#: home.php:209
 msgid "Please wait while the system gets the information from the log."
+msgstr ""
+
+#: includes/classes/actions-log.php:11
+msgid "ProjecSend has been installed"
+msgstr ""
+
+#: includes/classes/actions-log.php:12
+msgid "Account logs in through the form"
+msgstr ""
+
+#: includes/classes/actions-log.php:13
+msgid "Account logs in through cookies"
+msgstr ""
+
+#: includes/classes/actions-log.php:14
+msgid "Account (user or client) logs out"
+msgstr ""
+
+#: includes/classes/actions-log.php:15
+msgid "A user creates a new user account"
+msgstr ""
+
+#: includes/classes/actions-log.php:16
+msgid "A user creates a new client account"
+msgstr ""
+
+#: includes/classes/actions-log.php:17
+msgid "A client registers an account for himself"
+msgstr ""
+
+#: includes/classes/actions-log.php:18
+msgid "A file is uploaded by an user"
+msgstr ""
+
+#: includes/classes/actions-log.php:19
+msgid "A file is uploaded by a client"
+msgstr ""
+
+#: includes/classes/actions-log.php:20
+msgid "A file is downloaded by a user (on \"Client view\" mode)"
+msgstr ""
+
+#: includes/classes/actions-log.php:21
+msgid "A file is downloaded by a client"
+msgstr ""
+
+#: includes/classes/actions-log.php:22
+msgid "A zip file was generated by a client"
+msgstr ""
+
+#: includes/classes/actions-log.php:23
+msgid "A file has been unassigned from a client."
+msgstr ""
+
+#: includes/classes/actions-log.php:24
+msgid "A file has been unassigned from a group"
+msgstr ""
+
+#: includes/classes/actions-log.php:25
+msgid "A file has been deleted"
+msgstr ""
+
+#: includes/classes/actions-log.php:26
+msgid "A user was edited"
+msgstr ""
+
+#: includes/classes/actions-log.php:27
+msgid "A client was edited"
+msgstr ""
+
+#: includes/classes/actions-log.php:28
+msgid "A group was edited"
+msgstr ""
+
+#: includes/classes/actions-log.php:29
+msgid "A user was deleted"
+msgstr ""
+
+#: includes/classes/actions-log.php:30
+msgid "A client was deleted"
+msgstr ""
+
+#: includes/classes/actions-log.php:31
+msgid "A group was deleted"
+msgstr ""
+
+#: includes/classes/actions-log.php:32
+msgid "A client account was activated"
+msgstr ""
+
+#: includes/classes/actions-log.php:33
+msgid "A client account was deactivated"
+msgstr ""
+
+#: includes/classes/actions-log.php:34
+msgid "A user account was activated"
+msgstr ""
+
+#: includes/classes/actions-log.php:35
+msgid "A user account was deactivated"
+msgstr ""
+
+#: includes/classes/actions-log.php:36
+msgid "A file was marked as hidden"
+msgstr ""
+
+#: includes/classes/actions-log.php:37
+msgid "A file was marked as visible"
+msgstr ""
+
+#: includes/classes/actions-log.php:38
+msgid "A user creates a new group"
+msgstr ""
+
+#: includes/classes/actions-log.php:39
+msgid "A file is assigned to a client"
+msgstr ""
+
+#: includes/classes/actions-log.php:40
+msgid "A file is assigned to a group"
+msgstr ""
+
+#: includes/classes/actions-log.php:41
+msgid "A user account was marked as active"
+msgstr ""
+
+#: includes/classes/actions-log.php:42
+msgid "A user account was marked as inactive"
+msgstr ""
+
+#: includes/classes/actions-log.php:43
+msgid "The logo on \"Branding\" was changed"
+msgstr ""
+
+#: includes/classes/actions-log.php:44
+msgid "ProjectSend was updated"
+msgstr ""
+
+#: includes/classes/actions-log.php:45
+msgid "A system user edited a file."
+msgstr ""
+
+#: includes/classes/actions-log.php:46
+msgid "A client edited a file."
+msgstr ""
+
+#: includes/classes/actions-log.php:47
+msgid "A client created a category."
+msgstr ""
+
+#: includes/classes/actions-log.php:48
+msgid "A client edited a category."
+msgstr ""
+
+#: includes/classes/actions-log.php:49
+msgid "A client deleted a category."
+msgstr ""
+
+#: includes/classes/actions-log.php:50
+msgid "An anonymous user downloaded a public file."
 msgstr ""
 
 #: includes/classes/form-validation.php:15
@@ -1204,7 +1417,7 @@ msgid ""
 msgstr ""
 
 #: includes/classes/send-email.php:60 includes/classes/send-email.php:90
-#: includes/vars.php:48 index.php:191 install/make-config.php:262
+#: includes/vars.php:48 index.php:204 install/make-config.php:258
 #: options.php:483
 msgid "Username"
 msgstr ""
@@ -1276,190 +1489,198 @@ msgstr ""
 msgid "Could not generate a random password"
 msgstr ""
 
-#: includes/functions.php:349
+#: includes/functions.php:472
 msgid "Provided by"
 msgstr ""
 
-#: includes/functions.php:349 includes/updates.messages.php:51
+#: includes/functions.php:472 includes/updates.messages.php:51
 msgid "version"
 msgstr ""
 
-#: includes/functions.php:349
+#: includes/functions.php:472
 msgid "Free software"
 msgstr ""
 
-#: includes/functions.php:364
+#: includes/functions.php:487
 msgid "Important:"
 msgstr ""
 
-#: includes/functions.php:364
+#: includes/functions.php:487
 msgid ""
 "There are no clients or groups at the moment. You can still upload files and "
 "assign them later."
 msgstr ""
 
-#: includes/functions.php:752
+#: includes/functions.php:875
 msgid "The password must contain, at least:"
 msgstr ""
 
-#: includes/functions.php:802
+#: includes/functions.php:925
 msgid "ProjectSend was installed"
 msgstr ""
 
-#: includes/functions.php:807 includes/functions.php:952
+#: includes/functions.php:930 includes/functions.php:1075
 msgid "logged in to the system."
 msgstr ""
 
-#: includes/functions.php:812
+#: includes/functions.php:935
 msgid "created the user account"
 msgstr ""
 
-#: includes/functions.php:818
+#: includes/functions.php:941
 msgid "created the client account "
 msgstr ""
 
-#: includes/functions.php:824
+#: includes/functions.php:947
 msgid "created a client account for themself."
 msgstr ""
 
-#: includes/functions.php:829
+#: includes/functions.php:952
 msgid "(user) uploaded the file"
 msgstr ""
 
-#: includes/functions.php:835
+#: includes/functions.php:958
 msgid "(client) uploaded the file"
 msgstr ""
 
-#: includes/functions.php:841
+#: includes/functions.php:964
 msgid "(user) downloaded the file"
 msgstr ""
 
-#: includes/functions.php:843
+#: includes/functions.php:966
 msgid "assigned to:"
 msgstr ""
 
-#: includes/functions.php:849
+#: includes/functions.php:972
 msgid "(client) downloaded the file"
 msgstr ""
 
-#: includes/functions.php:855
+#: includes/functions.php:978
 msgid "generated a zip file"
 msgstr ""
 
-#: includes/functions.php:860 includes/functions.php:868
+#: includes/functions.php:983 includes/functions.php:991
 msgid "unassigned the file"
 msgstr ""
 
-#: includes/functions.php:862
+#: includes/functions.php:985
 msgid "from the client:"
 msgstr ""
 
-#: includes/functions.php:870
+#: includes/functions.php:993
 msgid "from the group:"
 msgstr ""
 
-#: includes/functions.php:876
+#: includes/functions.php:999
 msgid "deleted the file"
 msgstr ""
 
-#: includes/functions.php:882
+#: includes/functions.php:1005
 msgid "edited the user"
 msgstr ""
 
-#: includes/functions.php:888
+#: includes/functions.php:1011
 msgid "edited the client"
 msgstr ""
 
-#: includes/functions.php:894
+#: includes/functions.php:1017
 msgid "edited the group"
 msgstr ""
 
-#: includes/functions.php:900
+#: includes/functions.php:1023
 msgid "deleted the user"
 msgstr ""
 
-#: includes/functions.php:906
+#: includes/functions.php:1029
 msgid "deleted the client"
 msgstr ""
 
-#: includes/functions.php:912
+#: includes/functions.php:1035
 msgid "deleted the group"
 msgstr ""
 
-#: includes/functions.php:918
+#: includes/functions.php:1041
 msgid "activated the client"
 msgstr ""
 
-#: includes/functions.php:924
+#: includes/functions.php:1047
 msgid "deactivated the client"
 msgstr ""
 
-#: includes/functions.php:930
+#: includes/functions.php:1053
 msgid "marked as hidden the file"
 msgstr ""
 
-#: includes/functions.php:932 includes/functions.php:940
+#: includes/functions.php:1055 includes/functions.php:1063
 msgid "to:"
 msgstr ""
 
-#: includes/functions.php:938
+#: includes/functions.php:1061
 msgid "marked as visible the file"
 msgstr ""
 
-#: includes/functions.php:946
+#: includes/functions.php:1069
 msgid "created the group"
 msgstr ""
 
-#: includes/functions.php:957 includes/functions.php:965
+#: includes/functions.php:1080 includes/functions.php:1088
 msgid "assigned the file"
 msgstr ""
 
-#: includes/functions.php:959
+#: includes/functions.php:1082
 msgid "to the client:"
 msgstr ""
 
-#: includes/functions.php:967
+#: includes/functions.php:1090
 msgid "to the group:"
 msgstr ""
 
-#: includes/functions.php:973
+#: includes/functions.php:1096
 msgid "activated the user"
 msgstr ""
 
-#: includes/functions.php:979
+#: includes/functions.php:1102
 msgid "deactivated the user"
 msgstr ""
 
-#: includes/functions.php:985
+#: includes/functions.php:1108
 msgid "uploaded a new logo on \"Branding\""
 msgstr ""
 
-#: includes/functions.php:990
+#: includes/functions.php:1113
 msgid "updated ProjectSend to version"
 msgstr ""
 
-#: includes/functions.php:996
+#: includes/functions.php:1119
 msgid "logged out of the system."
 msgstr ""
 
-#: includes/functions.php:1001
+#: includes/functions.php:1124
 msgid "(user) edited the file"
 msgstr ""
 
-#: includes/functions.php:1007
+#: includes/functions.php:1130
 msgid "(client) edited the file"
 msgstr ""
 
-#: includes/functions.php:1013
+#: includes/functions.php:1136
 msgid "created the category"
 msgstr ""
 
-#: includes/functions.php:1019
+#: includes/functions.php:1142
 msgid "edited the category"
 msgstr ""
 
-#: includes/functions.php:1025
+#: includes/functions.php:1148
 msgid "deleted the category"
+msgstr ""
+
+#: includes/functions.php:1153
+msgid "An anonymous user"
+msgstr ""
+
+#: includes/functions.php:1154
+msgid "downloaded the file"
 msgstr ""
 
 #: includes/updates.functions.php:55
@@ -1545,12 +1766,8 @@ msgstr ""
 msgid "Account Manager"
 msgstr ""
 
-#: includes/vars.php:15 manage-files.php:552 users.php:217
+#: includes/vars.php:15 manage-files.php:560 users.php:217
 msgid "Uploader"
-msgstr ""
-
-#: includes/vars.php:16
-msgid "Client"
 msgstr ""
 
 #: includes/vars.php:25
@@ -1565,11 +1782,11 @@ msgstr ""
 msgid "No client was selected"
 msgstr ""
 
-#: includes/vars.php:28 index.php:179
+#: includes/vars.php:28 index.php:192
 msgid "Username was not completed"
 msgstr ""
 
-#: includes/vars.php:29 index.php:180
+#: includes/vars.php:29 index.php:193
 msgid "Password was not completed"
 msgstr ""
 
@@ -1655,63 +1872,71 @@ msgstr ""
 msgid "Log in"
 msgstr ""
 
-#: index.php:145
+#: index.php:158
 msgid "The supplied credentials are not valid."
 msgstr ""
 
-#: index.php:148
+#: index.php:161
 msgid "The supplied username doesn't exist."
 msgstr ""
 
-#: index.php:151
+#: index.php:164
 msgid "The supplied password is incorrect."
 msgstr ""
 
-#: index.php:154
+#: index.php:167
 msgid "This account is not active."
 msgstr ""
 
-#: index.php:156
+#: index.php:169
 msgid ""
 "If you just registered, please wait until a system administrator approves "
 "your account."
 msgstr ""
 
-#: index.php:160 register.php:100
+#: index.php:173 register.php:100
 msgid ""
 "Client self registration is not allowed. If you need an account, please "
 "contact a system administrator."
 msgstr ""
 
-#: index.php:163
+#: index.php:176
 msgid "Sign-in with Google cannot be used to create new accounts at this time."
 msgstr ""
 
-#: index.php:166
+#: index.php:179
 msgid "You must approve the requested permissions to sign in with Google."
 msgstr ""
 
-#: index.php:219
+#: index.php:214 install/make-config.php:324 options.php:255
+msgid "Language"
+msgstr ""
+
+#: index.php:225
+msgid "[System default]"
+msgstr ""
+
+#: index.php:254
 msgid "Forgot your password?"
 msgstr ""
 
-#: index.php:219
+#: index.php:254
 msgid "Set up a new one."
 msgstr ""
 
-#: index.php:223
+#: index.php:258
 msgid "Don't have an account yet?"
 msgstr ""
 
-#: index.php:223
+#: index.php:258
 msgid "Register as a new client."
 msgstr ""
 
-#: index.php:227
+#: index.php:262
 msgid "This server does not allow self registrations."
 msgstr ""
 
-#: index.php:228
+#: index.php:263
 msgid "If you need an account, please contact a server administrator."
 msgstr ""
 
@@ -1838,15 +2063,15 @@ msgstr ""
 msgid "(not supported)"
 msgstr ""
 
-#: install/make-config.php:242 options.php:502
+#: install/make-config.php:238 options.php:502
 msgid "Host"
 msgstr ""
 
-#: install/make-config.php:252
+#: install/make-config.php:248
 msgid "Database name"
 msgstr ""
 
-#: install/make-config.php:282
+#: install/make-config.php:278
 msgid "Table prefix"
 msgstr ""
 
@@ -1854,16 +2079,12 @@ msgstr ""
 msgid "The database is already populated"
 msgstr ""
 
-#: install/make-config.php:306
+#: install/make-config.php:308
 msgid "Reuse existing tables"
 msgstr ""
 
 #: install/make-config.php:321
 msgid "Language selection"
-msgstr ""
-
-#: install/make-config.php:324 options.php:255
-msgid "Language"
 msgstr ""
 
 #: install/make-config.php:336
@@ -1894,184 +2115,172 @@ msgstr ""
 msgid "Check"
 msgstr ""
 
-#: manage-files.php:38
+#: manage-files.php:44
 msgid "for client"
 msgstr ""
 
-#: manage-files.php:63
+#: manage-files.php:69
 msgid "for group"
 msgstr ""
 
-#: manage-files.php:79
+#: manage-files.php:85
 msgid "on category"
 msgstr ""
 
-#: manage-files.php:93 upload-import-orphans.php:213
+#: manage-files.php:99 upload-import-orphans.php:213
 msgid "Please select at least one file to proceed."
 msgstr ""
 
-#: manage-files.php:100
+#: manage-files.php:106
 msgid ""
 "files permanently and for every client/group. Are you sure you want to "
 "continue?"
 msgstr ""
 
-#: manage-files.php:108
+#: manage-files.php:114
 msgid "You are about to unassign"
 msgstr ""
 
-#: manage-files.php:109
+#: manage-files.php:115
 msgid "files from this account. Are you sure you want to continue?"
 msgstr ""
 
-#: manage-files.php:126
-msgid "Please wait while the system gets the required information."
-msgstr ""
-
-#: manage-files.php:133
-msgid "Downloaders of file:"
-msgstr ""
-
-#: manage-files.php:137 manage-files.php:789
-msgid "times"
-msgstr ""
-
-#: manage-files.php:152 upload-process-form.php:759
+#: manage-files.php:160 upload-process-form.php:757
 msgid "Click to select"
 msgstr ""
 
-#: manage-files.php:152 upload-process-form.php:759
+#: manage-files.php:160 upload-process-form.php:757
 msgid ""
 "Send this URL to someone to download the file without registering or logging "
 "in."
 msgstr ""
 
-#: manage-files.php:152 upload-process-form.php:759
+#: manage-files.php:160 upload-process-form.php:757
 msgid "Close"
 msgstr ""
 
-#: manage-files.php:222
+#: manage-files.php:230
 msgid "The selected files were marked as hidden."
 msgstr ""
 
-#: manage-files.php:236
+#: manage-files.php:244
 msgid "The selected files were marked as visible."
 msgstr ""
 
-#: manage-files.php:249
+#: manage-files.php:257
 msgid "The selected files were unassigned from this client."
 msgstr ""
 
-#: manage-files.php:278
+#: manage-files.php:286
 msgid "The selected files were deleted."
 msgstr ""
 
-#: manage-files.php:283
+#: manage-files.php:291
 msgid "Some files could not be deleted."
 msgstr ""
 
-#: manage-files.php:306
+#: manage-files.php:314
 msgid "Please select at least one file."
 msgstr ""
 
-#: manage-files.php:443 manage-files.php:777 upload-process-form.php:321
+#: manage-files.php:451 manage-files.php:775 upload-process-form.php:319
 msgid "Hidden"
 msgstr ""
 
-#: manage-files.php:444 manage-files.php:778 upload-process-form.php:322
+#: manage-files.php:452 manage-files.php:776 upload-process-form.php:320
 msgid "Visible"
 msgstr ""
 
-#: manage-files.php:465
+#: manage-files.php:473
 msgid "Selected files actions"
 msgstr ""
 
-#: manage-files.php:479
+#: manage-files.php:487
 msgid "Hide"
 msgstr ""
 
-#: manage-files.php:480
+#: manage-files.php:488
 msgid "Show"
 msgstr ""
 
-#: manage-files.php:481
+#: manage-files.php:489
 msgid "Unassign"
 msgstr ""
 
-#: manage-files.php:499 upload-import-orphans.php:151
+#: manage-files.php:507 upload-import-orphans.php:151
 msgid "files"
 msgstr ""
 
-#: manage-files.php:512
+#: manage-files.php:520
 msgid "There are no files assigned to this category."
 msgstr ""
 
-#: manage-files.php:518
+#: manage-files.php:526
 msgid "There are no files assigned to this client."
 msgstr ""
 
-#: manage-files.php:521
+#: manage-files.php:529
 msgid "You have not uploaded any files for this account."
 msgstr ""
 
-#: manage-files.php:526
+#: manage-files.php:534
 msgid "There are no files for this client."
 msgstr ""
 
-#: manage-files.php:546
+#: manage-files.php:554
 msgid "Ext."
 msgstr ""
 
-#: manage-files.php:548
+#: manage-files.php:556
 msgid "Size"
 msgstr ""
 
-#: manage-files.php:556
+#: manage-files.php:564
 msgid "Assigned"
 msgstr ""
 
-#: manage-files.php:560 manage-files.php:734 upload-process-form.php:300
-#: upload-process-form.php:347
+#: manage-files.php:568 manage-files.php:732 upload-process-form.php:298
+#: upload-process-form.php:345
 msgid "Public"
 msgstr ""
 
-#: manage-files.php:561
+#: manage-files.php:569
 msgid "Expiry"
 msgstr ""
 
-#: manage-files.php:571
+#: manage-files.php:579
 msgid "Download count"
 msgstr ""
 
-#: manage-files.php:577
-msgid "Total downloads"
-msgstr ""
-
-#: manage-files.php:726 upload-process-form.php:339
+#: manage-files.php:724 upload-process-form.php:337
 msgid "Public URL"
 msgstr ""
 
-#: manage-files.php:735 upload-process-form.php:348
+#: manage-files.php:733 upload-process-form.php:346
 msgid "Private"
 msgstr ""
 
-#: manage-files.php:745
+#: manage-files.php:743
 msgid "Does not expire"
 msgstr ""
 
-#: manage-files.php:753
+#: manage-files.php:751
 msgid "Expired on"
 msgstr ""
 
-#: manage-files.php:760
+#: manage-files.php:758
 msgid "Expires on"
 msgstr ""
 
-#: manage-files.php:796 manage-files.php:810
+#: manage-files.php:787
+msgid "times"
+msgstr ""
+
+#: manage-files.php:794 manage-files.php:817
 msgid "downloads"
 msgstr ""
 
-#: manage-files.php:840
+#: manage-files.php:847
 msgid ""
 "Please note that downloading a file from here will not add to the download "
 "count."
@@ -2458,7 +2667,7 @@ msgstr ""
 msgid "Callback URI"
 msgstr ""
 
-#: process.php:225
+#: process.php:227
 msgid ""
 "You don't have the required permissions to view the requested information "
 "about this file."
@@ -2625,47 +2834,47 @@ msgstr ""
 msgid "To use this feature you need to upload your files via FTP to the folder"
 msgstr ""
 
-#: upload-process-form.php:288
+#: upload-process-form.php:286
 msgid "Files uploaded correctly"
 msgstr ""
 
-#: upload-process-form.php:294 upload-process-form.php:664
+#: upload-process-form.php:292 upload-process-form.php:662
 msgid "File Name"
 msgstr ""
 
-#: upload-process-form.php:383
+#: upload-process-form.php:381
 msgid "Files ready to upload"
 msgstr ""
 
-#: upload-process-form.php:384
+#: upload-process-form.php:382
 msgid ""
 "Please complete the following information to finish the uploading process. "
 "Remember that \"Title\" is a required field."
 msgstr ""
 
-#: upload-process-form.php:389
+#: upload-process-form.php:387
 msgid "Note"
 msgstr ""
 
-#: upload-process-form.php:389
+#: upload-process-form.php:387
 msgid ""
 "You can skip assigning if you want. The files are retained and you may add "
 "them to clients or groups later."
 msgstr ""
 
-#: upload-process-form.php:577 upload-process-form.php:607
+#: upload-process-form.php:575 upload-process-form.php:605
 msgid "Copy selections to other files"
 msgstr ""
 
-#: upload-process-form.php:584
+#: upload-process-form.php:582
 msgid "Upload hidden (will not send notifications)"
 msgstr ""
 
-#: upload-process-form.php:660
+#: upload-process-form.php:658
 msgid "Files not uploaded"
 msgstr ""
 
-#: upload-process-form.php:723
+#: upload-process-form.php:721
 msgid "Copy selection to all files?"
 msgstr ""
 

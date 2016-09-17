@@ -802,22 +802,43 @@ function generateRandomString($length = 10)
 
 
 /**
- * Prepare the logo file using the database options
+ * Prepare the branding image file using the database options
  * for the file name and the thumbnails path value.
  */
 function generate_logo_url()
 {
-	$logo_file = array();
-	$logo_file['exists'] = false;
+	$branding = array();
+	$branding['exists'] = false;
 
-	$logo_file['url'] = '/img/custom/logo/'.LOGO_FILENAME;
-	if (file_exists(ROOT_DIR.$logo_file['url'])) {
-		$logo_file['exists'] = true;
+	$branding['url'] = '/img/custom/logo/'.LOGO_FILENAME;
+	if (file_exists(ROOT_DIR.$branding['url'])) {
+		$branding['exists'] = true;
 		if (THUMBS_USE_ABSOLUTE == '1') {
-			$logo_file['url'] = BASE_URI.$logo_file['url'];
+			$branding['url'] = BASE_URI.$branding['url'];
 		}
 	}
-	return $logo_file;
+	return $branding;
+}
+
+
+/**
+ * Returns the full layout with the branding image.
+ * Used on the unlogged header file.
+ */
+function generate_branding_layout()
+{
+	$branding	= generate_logo_url();
+	$layout		= '';
+
+	if ($branding['exists'] === true) {
+		$layout = '<div class="row">
+						<div class="col-xs-12 branding_unlogged">
+							<img src="' . $branding['url'] . '" alt="' . THIS_INSTALL_SET_TITLE . '" />
+						</div>
+					</div>';
+	}
+
+	return $layout;
 }
 
 

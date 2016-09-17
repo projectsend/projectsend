@@ -135,16 +135,17 @@ include('header-unlogged.php');
 	
 	}
 
-if(isset($_SESSION['errorstate'])) {
+if ( isset($_SESSION['errorstate'] ) ) {
 	$errorstate = $_SESSION['errorstate'];
 	unset($_SESSION['errorstate']);
 }
+?>
+		<h2 class="hidden"><?php echo $page_title; ?></h2>
 
-	?>
-
-		<h2><?php echo $page_title; ?></h2>
-		
 		<div class="container">
+
+			<?php echo generate_branding_layout(); ?>
+
 			<div class="row">
 				<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-4 white-box">
 					<div class="white-box-interior">
@@ -239,7 +240,7 @@ if(isset($_SESSION['errorstate'])) {
 								</label>
 */?>
 								<div class="inside_form_buttons">
-									<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Continue','cftp_admin'); ?></button>
+									<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Log in','cftp_admin'); ?></button>
 								</div>
 
 								<div class="social-login">

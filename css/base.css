@@ -123,6 +123,16 @@ h1, h2, h3, h4, h5, h6 {
 	text-align:center;
 }
 
+.branding_unlogged {
+	text-align:center;
+}
+
+	.branding_unlogged img {
+		height:auto;
+		width:100%;
+		max-width:250px;
+	}
+
 #login_logo {
 	margin:15px auto;
 	text-align:center;

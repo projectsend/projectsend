@@ -189,9 +189,12 @@ include('header-unlogged.php');
 	}
 	?>
 
-		<h2><?php echo $page_title; ?></h2>
+		<h2 class="hidden"><?php echo $page_title; ?></h2>
 
 		<div class="container">
+
+			<?php echo generate_branding_layout(); ?>
+
 			<div class="row">
 				<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-4 white-box">
 					<div class="white-box-interior box-reset-password">
@@ -292,7 +295,7 @@ include('header-unlogged.php');
 											<p><?php _e("Please enter your account's e-mail address. You will receive a link to continue the process.",'cftp_admin'); ?></p>
 
 											<div class="inside_form_buttons">
-												<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Continue','cftp_admin'); ?></button>
+												<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Get a new password','cftp_admin'); ?></button>
 											</div>
 										</fieldset>
 									</form>
@@ -341,7 +344,7 @@ include('header-unlogged.php');
 											<p><?php _e("Please enter your desired new password. After that, you will be able to log in normally.",'cftp_admin'); ?></p>
 
 											<div class="inside_form_buttons">
-												<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Continue','cftp_admin'); ?></button>
+												<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Set new password','cftp_admin'); ?></button>
 											</div>
 										</fieldset>
 									</form>

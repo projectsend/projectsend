@@ -222,7 +222,7 @@ if(isset($_SESSION['errorstate'])) {
 													<?php
 														echo $lang_name;
 														if ( $filename == SITE_LANG ) {
-															echo ' ' . __('[System default]','cftp_admin');
+															echo ' [' . __('default','cftp_admin') . ']';
 														}
 													?>
 												</option>

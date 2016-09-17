@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend admin\n"
-"POT-Creation-Date: 2016-09-17 11:33-0300\n"
+"POT-Creation-Date: 2016-09-17 11:37-0300\n"
 "PO-Revision-Date: 2016-09-14 15:19-0300\n"
 "Last-Translator: \n"
 "Language-Team: ProjectSend <contact@projectsend.org>\n"
@@ -1914,7 +1914,7 @@ msgid "Language"
 msgstr ""
 
 #: index.php:225
-msgid "[System default]"
+msgid "default"
 msgstr ""
 
 #: index.php:254

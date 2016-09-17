@@ -194,7 +194,7 @@ class process {
 				$requested_files = $_GET['files'];
 				foreach($requested_files as $file_id) {
 					echo $file_id;
-					$this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE id=:file_id");
+					$this->statement = $this->dbh->prepare("SELECT url FROM " . TABLE_FILES . " WHERE id=:file_id");
 					$this->statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
 					$this->statement->execute();
 					$this->statement->setFetchMode(PDO::FETCH_ASSOC);

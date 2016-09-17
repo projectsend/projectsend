@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend admin\n"
-"POT-Creation-Date: 2016-09-17 14:54-0300\n"
+"POT-Creation-Date: 2016-09-17 15:45-0300\n"
 "PO-Revision-Date: 2016-09-14 15:19-0300\n"
 "Last-Translator: \n"
 "Language-Team: ProjectSend <contact@projectsend.org>\n"
@@ -358,7 +358,7 @@ msgid "Client added correctly."
 msgstr ""
 
 #: clients-add.php:105 clients-edit.php:167 email-templates.php:74
-#: groups-add.php:88 groups-edit.php:137 options.php:136 register.php:141
+#: groups-add.php:88 groups-edit.php:137 options.php:136 register.php:147
 #: users-add.php:102 users-edit.php:170
 msgid "There was an error. Please try again."
 msgstr ""
@@ -367,7 +367,7 @@ msgstr ""
 msgid "An e-mail notification with login information was sent to your client."
 msgstr ""
 
-#: clients-add.php:118 register.php:165 users-add.php:115
+#: clients-add.php:118 register.php:171 users-add.php:115
 msgid "E-mail notification couldn't be sent."
 msgstr ""
 
@@ -428,18 +428,18 @@ msgstr ""
 msgid "Must be alphanumeric"
 msgstr ""
 
-#: clients-form.php:118 includes/vars.php:49 index.php:209
+#: clients-form.php:118 includes/vars.php:49 index.php:210
 #: install/index.php:258 install/make-config.php:268 options.php:490
 #: users-form.php:100
 msgid "Password"
 msgstr ""
 
-#: clients-form.php:126 install/index.php:266 reset-password.php:337
+#: clients-form.php:126 install/index.php:266 reset-password.php:340
 #: users-form.php:108
 msgid "Generate"
 msgstr ""
 
-#: clients-form.php:132 clients.php:245 index.php:204 reset-password.php:288
+#: clients-form.php:132 clients.php:245 index.php:205 reset-password.php:291
 #: users-form.php:114 users.php:279
 msgid "E-mail"
 msgstr ""
@@ -635,7 +635,7 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
-#: download.php:120 reset-password.php:215
+#: download.php:120 reset-password.php:218
 msgid "The request is not valid."
 msgstr ""
 
@@ -647,7 +647,7 @@ msgstr ""
 msgid "Download file"
 msgstr ""
 
-#: download.php:140 register.php:182 reset-password.php:358
+#: download.php:140 register.php:188 reset-password.php:361
 msgid "Go back to the homepage."
 msgstr ""
 
@@ -760,9 +760,7 @@ msgstr ""
 msgid "Add to"
 msgstr ""
 
-#: edit-file.php:525 index.php:242 reset-password.php:295
-#: reset-password.php:344 upload-import-orphans.php:204
-#: upload-process-form.php:639
+#: edit-file.php:525 upload-import-orphans.php:204 upload-process-form.php:639
 msgid "Continue"
 msgstr ""
 
@@ -1418,7 +1416,7 @@ msgid ""
 msgstr ""
 
 #: includes/classes/send-email.php:60 includes/classes/send-email.php:90
-#: includes/vars.php:48 index.php:204 install/make-config.php:258
+#: includes/vars.php:48 index.php:205 install/make-config.php:258
 #: options.php:483
 msgid "Username"
 msgstr ""
@@ -1512,175 +1510,175 @@ msgid ""
 "assign them later."
 msgstr ""
 
-#: includes/functions.php:875
+#: includes/functions.php:896
 msgid "The password must contain, at least:"
 msgstr ""
 
-#: includes/functions.php:925
+#: includes/functions.php:946
 msgid "ProjectSend was installed"
 msgstr ""
 
-#: includes/functions.php:930 includes/functions.php:1075
+#: includes/functions.php:951 includes/functions.php:1096
 msgid "logged in to the system."
 msgstr ""
 
-#: includes/functions.php:935
+#: includes/functions.php:956
 msgid "created the user account"
 msgstr ""
 
-#: includes/functions.php:941
+#: includes/functions.php:962
 msgid "created the client account "
 msgstr ""
 
-#: includes/functions.php:947
+#: includes/functions.php:968
 msgid "created a client account for themself."
 msgstr ""
 
-#: includes/functions.php:952
+#: includes/functions.php:973
 msgid "(user) uploaded the file"
 msgstr ""
 
-#: includes/functions.php:958
+#: includes/functions.php:979
 msgid "(client) uploaded the file"
 msgstr ""
 
-#: includes/functions.php:964
+#: includes/functions.php:985
 msgid "(user) downloaded the file"
 msgstr ""
 
-#: includes/functions.php:966
+#: includes/functions.php:987
 msgid "assigned to:"
 msgstr ""
 
-#: includes/functions.php:972
+#: includes/functions.php:993
 msgid "(client) downloaded the file"
 msgstr ""
 
-#: includes/functions.php:978
+#: includes/functions.php:999
 msgid "generated a zip file"
 msgstr ""
 
-#: includes/functions.php:983 includes/functions.php:991
+#: includes/functions.php:1004 includes/functions.php:1012
 msgid "unassigned the file"
 msgstr ""
 
-#: includes/functions.php:985
+#: includes/functions.php:1006
 msgid "from the client:"
 msgstr ""
 
-#: includes/functions.php:993
+#: includes/functions.php:1014
 msgid "from the group:"
 msgstr ""
 
-#: includes/functions.php:999
+#: includes/functions.php:1020
 msgid "deleted the file"
 msgstr ""
 
-#: includes/functions.php:1005
+#: includes/functions.php:1026
 msgid "edited the user"
 msgstr ""
 
-#: includes/functions.php:1011
+#: includes/functions.php:1032
 msgid "edited the client"
 msgstr ""
 
-#: includes/functions.php:1017
+#: includes/functions.php:1038
 msgid "edited the group"
 msgstr ""
 
-#: includes/functions.php:1023
+#: includes/functions.php:1044
 msgid "deleted the user"
 msgstr ""
 
-#: includes/functions.php:1029
+#: includes/functions.php:1050
 msgid "deleted the client"
 msgstr ""
 
-#: includes/functions.php:1035
+#: includes/functions.php:1056
 msgid "deleted the group"
 msgstr ""
 
-#: includes/functions.php:1041
+#: includes/functions.php:1062
 msgid "activated the client"
 msgstr ""
 
-#: includes/functions.php:1047
+#: includes/functions.php:1068
 msgid "deactivated the client"
 msgstr ""
 
-#: includes/functions.php:1053
+#: includes/functions.php:1074
 msgid "marked as hidden the file"
 msgstr ""
 
-#: includes/functions.php:1055 includes/functions.php:1063
+#: includes/functions.php:1076 includes/functions.php:1084
 msgid "to:"
 msgstr ""
 
-#: includes/functions.php:1061
+#: includes/functions.php:1082
 msgid "marked as visible the file"
 msgstr ""
 
-#: includes/functions.php:1069
+#: includes/functions.php:1090
 msgid "created the group"
 msgstr ""
 
-#: includes/functions.php:1080 includes/functions.php:1088
+#: includes/functions.php:1101 includes/functions.php:1109
 msgid "assigned the file"
 msgstr ""
 
-#: includes/functions.php:1082
+#: includes/functions.php:1103
 msgid "to the client:"
 msgstr ""
 
-#: includes/functions.php:1090
+#: includes/functions.php:1111
 msgid "to the group:"
 msgstr ""
 
-#: includes/functions.php:1096
+#: includes/functions.php:1117
 msgid "activated the user"
 msgstr ""
 
-#: includes/functions.php:1102
+#: includes/functions.php:1123
 msgid "deactivated the user"
 msgstr ""
 
-#: includes/functions.php:1108
+#: includes/functions.php:1129
 msgid "uploaded a new logo on \"Branding\""
 msgstr ""
 
-#: includes/functions.php:1113
+#: includes/functions.php:1134
 msgid "updated ProjectSend to version"
 msgstr ""
 
-#: includes/functions.php:1119
+#: includes/functions.php:1140
 msgid "logged out of the system."
 msgstr ""
 
-#: includes/functions.php:1124
+#: includes/functions.php:1145
 msgid "(user) edited the file"
 msgstr ""
 
-#: includes/functions.php:1130
+#: includes/functions.php:1151
 msgid "(client) edited the file"
 msgstr ""
 
-#: includes/functions.php:1136
+#: includes/functions.php:1157
 msgid "created the category"
 msgstr ""
 
-#: includes/functions.php:1142
+#: includes/functions.php:1163
 msgid "edited the category"
 msgstr ""
 
-#: includes/functions.php:1148
+#: includes/functions.php:1169
 msgid "deleted the category"
 msgstr ""
 
-#: includes/functions.php:1153
+#: includes/functions.php:1174
 msgid "An anonymous user"
 msgstr ""
 
-#: includes/functions.php:1154
+#: includes/functions.php:1175
 msgid "downloaded the file"
 msgstr ""
 
@@ -1783,11 +1781,11 @@ msgstr ""
 msgid "No client was selected"
 msgstr ""
 
-#: includes/vars.php:28 index.php:192
+#: includes/vars.php:28 index.php:193
 msgid "Username was not completed"
 msgstr ""
 
-#: includes/vars.php:29 index.php:193
+#: includes/vars.php:29 index.php:194
 msgid "Password was not completed"
 msgstr ""
 
@@ -1869,75 +1867,75 @@ msgstr ""
 msgid "1 special character"
 msgstr ""
 
-#: index.php:20
+#: index.php:20 index.php:243
 msgid "Log in"
 msgstr ""
 
-#: index.php:158
+#: index.php:159
 msgid "The supplied credentials are not valid."
 msgstr ""
 
-#: index.php:161
+#: index.php:162
 msgid "The supplied username doesn't exist."
 msgstr ""
 
-#: index.php:164
+#: index.php:165
 msgid "The supplied password is incorrect."
 msgstr ""
 
-#: index.php:167
+#: index.php:168
 msgid "This account is not active."
 msgstr ""
 
-#: index.php:169
+#: index.php:170
 msgid ""
 "If you just registered, please wait until a system administrator approves "
 "your account."
 msgstr ""
 
-#: index.php:173 register.php:100
+#: index.php:174 register.php:106
 msgid ""
 "Client self registration is not allowed. If you need an account, please "
 "contact a system administrator."
 msgstr ""
 
-#: index.php:176
+#: index.php:177
 msgid "Sign-in with Google cannot be used to create new accounts at this time."
 msgstr ""
 
-#: index.php:179
+#: index.php:180
 msgid "You must approve the requested permissions to sign in with Google."
 msgstr ""
 
-#: index.php:214 install/make-config.php:324 options.php:255
+#: index.php:215 install/make-config.php:324 options.php:255
 msgid "Language"
 msgstr ""
 
-#: index.php:225
+#: index.php:226
 msgid "default"
 msgstr ""
 
-#: index.php:254
+#: index.php:255
 msgid "Forgot your password?"
 msgstr ""
 
-#: index.php:254
+#: index.php:255
 msgid "Set up a new one."
 msgstr ""
 
-#: index.php:258
+#: index.php:259
 msgid "Don't have an account yet?"
 msgstr ""
 
-#: index.php:258
+#: index.php:259
 msgid "Register as a new client."
 msgstr ""
 
-#: index.php:262
+#: index.php:263
 msgid "This server does not allow self registrations."
 msgstr ""
 
-#: index.php:263
+#: index.php:264
 msgid "If you need an account, please contact a server administrator."
 msgstr ""
 
@@ -2682,36 +2680,36 @@ msgstr ""
 msgid "Register new account"
 msgstr ""
 
-#: register.php:115
+#: register.php:121
 msgid "Please contact a system administrator."
 msgstr ""
 
-#: register.php:119
+#: register.php:125
 msgid "Account added correctly."
 msgstr ""
 
-#: register.php:123
+#: register.php:129
 msgid ""
 "Please remember that an administrator needs to approve your account before "
 "you can log in."
 msgstr ""
 
-#: register.php:126
+#: register.php:132
 msgid "You may now log in with your new credentials."
 msgstr ""
 
-#: register.php:146
+#: register.php:152
 msgid ""
 "A folder for this account could not be created. Probably because of a server "
 "configuration."
 msgstr ""
 
-#: register.php:151
+#: register.php:157
 msgid ""
 "The account could not be created. A folder with this name already exists."
 msgstr ""
 
-#: register.php:161
+#: register.php:167
 msgid ""
 "An e-mail notification with login information was sent to the specified "
 "address."
@@ -2721,60 +2719,68 @@ msgstr ""
 msgid "Lost password"
 msgstr ""
 
-#: reset-password.php:212
+#: reset-password.php:215
 msgid "The supplied email address does not correspond to any user."
 msgstr ""
 
-#: reset-password.php:218
+#: reset-password.php:221
 msgid "This request has expired. Please make a new one."
 msgstr ""
 
-#: reset-password.php:221
+#: reset-password.php:224
 msgid "This request has already been completed. Please make a new one."
 msgstr ""
 
-#: reset-password.php:224
+#: reset-password.php:227
 msgid ""
 "There are 3 unused requests done in less than 24 hs. Please wait until one "
 "expires (1 day since made) to make a new one."
 msgstr ""
 
-#: reset-password.php:237
+#: reset-password.php:240
 msgid ""
 "An e-mail with further instructions has been sent. Please check your inbox "
 "to proceed."
 msgstr ""
 
-#: reset-password.php:241
+#: reset-password.php:244
 msgid "E-mail couldn't be sent."
 msgstr ""
 
-#: reset-password.php:242 reset-password.php:259
+#: reset-password.php:245 reset-password.php:262
 msgid "If the problem persists, please contact an administrator."
 msgstr ""
 
-#: reset-password.php:254
+#: reset-password.php:257
 msgid "Your new password has been set. You can now log in using it."
 msgstr ""
 
-#: reset-password.php:258
+#: reset-password.php:261
 msgid "Your new password couldn't be set."
 msgstr ""
 
-#: reset-password.php:292
+#: reset-password.php:295
 msgid ""
 "Please enter your account's e-mail address. You will receive a link to "
 "continue the process."
 msgstr ""
 
-#: reset-password.php:330
+#: reset-password.php:298
+msgid "Get a new password"
+msgstr ""
+
+#: reset-password.php:333
 msgid "New password"
 msgstr ""
 
-#: reset-password.php:341
+#: reset-password.php:344
 msgid ""
 "Please enter your desired new password. After that, you will be able to log "
 "in normally."
+msgstr ""
+
+#: reset-password.php:347
+msgid "Set new password"
 msgstr ""
 
 #: upload-from-computer.php:20 upload-from-computer.php:181

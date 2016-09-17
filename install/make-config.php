@@ -95,7 +95,7 @@ $reuse_tables =  $post_vars['dbreuse'] == 'reuse';
 $langs = get_available_languages();
 
 // ok if selected language has a .po file associated
-$lang_ok = in_array($post_vars['lang'], $langs);
+$lang_ok = array_key_exists($post_vars['lang'], $langs);
 
 // check file & folders are writable
 $config_file = ROOT_DIR.'/includes/sys.config.php';
@@ -358,7 +358,7 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 											<div class="form-group">
 												<label class="col-sm-4 control-label"><?php _e($values['label'], 'cftp_admin'); ?></label>
 												<div class="col-sm-6">
-													<?php echo $values['file']; ?>
+													<span class="format_url"><?php echo $values['file']; ?></span>
 												</div>
 												<div class="col-sm-2">
 													<?php if ( $values['status'] ) : ?>

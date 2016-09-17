@@ -64,7 +64,7 @@ html
 		color:white;
 		font-size:35px;
 		margin:0;
-		text-shadow:1px 1px 1px #000;
+		/*text-shadow:1px 1px 1px #000;*/
 		font-family:'Abel', Arial, sans-serif;
 		line-height:32px;
 	}
@@ -201,14 +201,14 @@ html
 	color:#849F4F;
 	background:#ECF5DA;
 	border:1px solid #B1C786;
-	text-shadow:1px 1px 1px white;
+	/*text-shadow:1px 1px 1px white;*/
 }
 
 .message_error {
 	color:#B94A48;
 	background:#F2DEDE;
 	border:1px solid #EED3D7;
-	text-shadow:1px 1px 1px white;
+	/*text-shadow:1px 1px 1px white;*/
 }
 
 .message_info {
@@ -534,7 +534,7 @@ li .required.password_toggle {
 	background:#eee;
 	background:-moz-linear-gradient(top , #f5f5f5, #eee)!important;
 	background:-webkit-gradient(linear, left top, left bottom, from(#f5f5f5), to(#eee))!important;
-	text-shadow:0 1px 1px #eee;
+	/*text-shadow:0 1px 1px #eee;*/
 	color:#888;
 
 	-webkit-border-top-left-radius: 7px;

@@ -51,7 +51,7 @@ if ( !empty( $load_scripts ) ) {
 				break;
 			case 'footable':
 				$load_css_files[]		= BASE_URI . 'includes/js/footable/css/footable.core.css';
-				$load_css_files[]		= BASE_URI . 'includes/js/footable/css/footable.projectsend.css';
+				$load_css_files[]		= BASE_URI . 'css/footable.css';
 				$load_js_files[]		= BASE_URI . 'includes/js/footable/footable.all.min.js';
 				break;
 			case 'jquery_tags_input':

@@ -28,14 +28,14 @@ h1, h2, h3, h4, h5, h6 {
 		font-size:32px;
 		line-height:32px;
 		margin:15px 0;
-		text-shadow:1px 1px 1px #000;
+		/*text-shadow:1px 1px 1px #000;*/
 	}
 	
 	h2 {
 		color:#333333;
 		font-size:29px;
 		line-height:29px;
-		text-shadow:1px 1px 0 #fff;
+		/*text-shadow:1px 1px 0 #fff;*/
 		margin:10px auto 35px;
 		text-align:center;
 	}
@@ -173,24 +173,27 @@ h1, h2, h3, h4, h5, h6 {
 	box-shadow:3px 3px 5px #dedede;
 }
 
-.widget .widget_int {
-	padding:15px;
-}
+	.widget .widget_int {
+		padding:15px;
+	}
+	
+	.widget h4 {
+		text-align:left;
+		padding:10px;
+		font-size:18px;
+		/*text-shadow:1px 1px 0 #fff;*/
+		margin:0 !important;
+		color:#42454a;
+		background: #e2e5e9;
+		-moz-border-radius:5px 5px 0 0;
+		-webkit-border-radius:5px 5px 0 0;
+		-o-border-radius:5px 5px 0 0;
+		border-radius:5px 5px 0 0;
+	}
 
-.widget h4 {
-	text-align:left;
-	padding:10px;
-	font-size:18px;
-	text-shadow:1px 1px 0 #fff;
-	margin:0 !important;
-	background: #FAFBFC;
-	background-image:-moz-linear-gradient(center top , #FAFBFC, #E2E5E9);
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#FAFBFC), to(#E2E5E9));
-	-moz-border-radius:5px 5px 0 0;
-	-webkit-border-radius:5px 5px 0 0;
-	-o-border-radius:5px 5px 0 0;
-	border-radius:5px 5px 0 0;
-}
+	.widget:hover h4 {
+		background: #d3d7dc;
+	}
 
 /********************************************************************************************************************************************
 	Home LOG widget
@@ -607,55 +610,6 @@ h1, h2, h3, h4, h5, h6 {
 	}
 	
 /********************************************************************************************************************************************
-********************************************************************************************************************************************/
-
-.td_checkbox {
-	width:50px;
-}
-
-#uploaded_files_tbl {
-	margin-bottom:70px;
-}
-
-#upload_continue {
-	margin-top:-50px;
-	margin-bottom:70px;
-}
-
-#button_login {
-	margin:0 auto!important;
-}
-
-.button_submit {
-	width:130px!important;
-	margin-top:25px!important;
-	font-weight:normal!important;
-	font-size:12px!important;
-	padding:7px 0!important;
-	text-shadow:0 -1px 0 #000000!important;
-}
-
-.btn_link {
-	width:120px;
-	display:block;
-	-moz-border-radius:5px;
-	-webkit-border-radius:5px;
-	border-radius:5px;
-	padding:2px 0;
-	font-size:11px!important;
-	text-align:center;
-	text-decoration:none!important;
-	margin:0 auto!important;
-	background:#407FB6!important;
-	background:-moz-linear-gradient(top , #FAFBFC, #E2E5E9)!important;
-	background:-webkit-gradient(linear, left top, left bottom, from(#FAFBFC), to(#E2E5E9))!important;
-	border:1px solid #ccc!important;
-	box-shadow:0 1px 0 rgba(255, 255, 255, 0.3) inset, 0 0 0 1px rgba(255, 255, 255, 0.1) inset, 0 1px 0 rgba(255, 255, 255, 0.5)!important;
-	text-shadow:0 -1px 0 #f0f0f0!important;
-	color:#111!important;
-}
-
-/********************************************************************************************************************************************
 	Branding
 ********************************************************************************************************************************************/
 
@@ -791,6 +745,10 @@ optgroup {
 	Overwrite PLUPLOAD styles
 ********************************************************************************************************************************************/
 
+.plupload_filelist_header, .plupload_filelist_footer {
+	background: #e2e5e9;
+}
+
 .plupload_filelist_footer {
 	height:auto;
 }
@@ -897,3 +855,15 @@ span.label {
 	.categories_form h3 {
 		margin:0 0 30px;
 	}
+
+/********************************************************************************************************************************************
+	Misc
+********************************************************************************************************************************************/
+
+.td_checkbox {
+	width:50px;
+}
+
+#uploaded_files_tbl {
+	margin-bottom:70px;
+}

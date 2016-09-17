@@ -153,7 +153,7 @@ $count = count($my_files);
 											?>
 										</td>
 										<td class="extra">
-											<span class="label label-important">
+											<span class="label label-success label_big">
 												<?php		
 													$pathinfo = pathinfo($file['url']);	
 													$extension = strtolower($pathinfo['extension']);					
@@ -192,7 +192,7 @@ $count = count($my_files);
 													$value = __('Never','cftp_template');
 												}
 											?>
-											<span class="label label-<?php echo $class; ?> label_exp_date">
+											<span class="label label-<?php echo $class; ?> label_big">
 												<?php echo $value; ?>
 											</span>
 										</td>

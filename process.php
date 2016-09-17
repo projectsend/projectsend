@@ -171,6 +171,13 @@ class process {
 						}
 						else {
 							header("HTTP/1.1 404 Not Found");
+							?>
+								<div id="main">
+									<div class="file_404">
+										<h2><?php _e('File not found','cftp_admin'); ?></h2>
+									</div>
+								</div>
+							<?php
 							exit;
 						}
 					}

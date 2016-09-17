@@ -831,12 +831,17 @@ function generate_branding_layout()
 	$layout		= '';
 
 	if ($branding['exists'] === true) {
-		$layout = '<div class="row">
-						<div class="col-xs-12 branding_unlogged">
-							<img src="' . $branding['url'] . '" alt="' . THIS_INSTALL_SET_TITLE . '" />
-						</div>
-					</div>';
+		$branding_image = BASE_URI . $branding['url'];
 	}
+	else {
+		$branding_image = BASE_URI . 'img/projectsend-logo.png';
+	}
+
+	$layout = '<div class="row">
+					<div class="col-xs-12 branding_unlogged">
+						<img src="' . $branding_image . '" alt="' . THIS_INSTALL_SET_TITLE . '" />
+					</div>
+				</div>';
 
 	return $layout;
 }

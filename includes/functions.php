@@ -831,7 +831,7 @@ function generate_branding_layout()
 	$layout		= '';
 
 	if ($branding['exists'] === true) {
-		$branding_image = BASE_URI . $branding['url'];
+		$branding_image = $branding['url'];
 	}
 	else {
 		$branding_image = BASE_URI . 'img/projectsend-logo.png';

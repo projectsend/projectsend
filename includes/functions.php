@@ -56,6 +56,37 @@ function generate_password() {
 
 
 /**
+ * Reads the lang folder and scans for .mo files. 
+ * Returns an array of avaiable languages.
+ */
+function get_available_languages() {
+	global $locales_names;
+
+	$langs = array();
+
+	$mo_files = scandir(ROOT_DIR.'/lang/');
+	foreach ($mo_files as $file) {
+		$lang_file	= pathinfo($file, PATHINFO_FILENAME);
+		$extension	= pathinfo($file, PATHINFO_EXTENSION);
+		if ( $extension == 'mo' ) {
+			if ( array_key_exists( $lang_file, $locales_names ) ) {
+				$lang_name = $locales_names[$lang_file];
+			}
+			else {
+				$lang_name = $lang_file;
+			}
+	
+			$langs[$lang_file] = $lang_name;
+		}
+	}
+
+	/** Sort alphabetically */
+	asort($langs, SORT_STRING);
+
+	return $langs;
+}
+
+/**
  * Get the total count of downloads grouped by file
  * Data returned:
  * - Count anonymous downloads (Public downloads)

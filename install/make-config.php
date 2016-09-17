@@ -92,23 +92,7 @@ if ($pdo_connected) {
 $reuse_tables =  $post_vars['dbreuse'] == 'reuse';
 
 // scan for language files
-$mo_files = scandir(ROOT_DIR.'/lang/');
-$langs = array();
-foreach ($mo_files as $file) {
-	$lang_file	= pathinfo($file, PATHINFO_FILENAME);
-	$extension	= pathinfo($file, PATHINFO_EXTENSION);
-	if ( $extension == 'mo' ) {
-		if ( array_key_exists( $lang_file, $locales_names ) ) {
-			$lang_name = $locales_names[$lang_file];
-		}
-		else {
-			$lang_name = $lang_file;
-		}
-
-		$langs[$lang_file] = $lang_name;
-	}
-}
-asort($langs, SORT_STRING);
+$langs = get_available_languages();
 
 // ok if selected language has a .po file associated
 $lang_ok = in_array($post_vars['lang'], $langs);
@@ -340,8 +324,8 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 										<label for="lang" class="col-sm-4 control-label"><?php _e('Language','cftp_admin'); ?></label>
 										<div class="col-sm-6">
 											<select name="lang" class="form-control">
-												<?php foreach ($langs as $locale => $name) : ?>
-													<option value="<?php echo $locale;?>" <?php echo $post_vars['lang']==$locale ? 'selected' : ''; ?>><?php echo $name;?></option>
+												<?php foreach ($langs as $filename => $name) : ?>
+													<option value="<?php echo $filename;?>" <?php echo $post_vars['lang']==$filename ? 'selected' : ''; ?>><?php echo $name;?></option>
 												<?php endforeach?>
 											</select>
 										</div>

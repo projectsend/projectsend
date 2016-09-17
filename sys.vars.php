@@ -9,7 +9,7 @@
  * @package ProjectSend
  * @subpackage Core
  */
-
+session_start();
 /**
  * Current version.
  * Updated only when releasing a new downloadable complete version.

@@ -276,6 +276,7 @@ class process {
 		unset($_SESSION['loggedin']);
 		unset($_SESSION['access']);
 		unset($_SESSION['userlevel']);
+		unset($_SESSION['lang']);
 		session_destroy();
 
 		/** If there is a cookie, unset it */
@@ -283,6 +284,13 @@ class process {
 		setcookie("password","",time()-COOKIE_EXP_TIME);
 		setcookie("access","",time()-COOKIE_EXP_TIME);
 		setcookie("userlevel","",time()-COOKIE_EXP_TIME);
+
+		/*
+		$language_cookie = 'projectsend_language';
+		setcookie ($language_cookie, "", 1);
+		setcookie ($language_cookie, false);
+		unset($_COOKIE[$language_cookie]);
+		*/
 
 		/** Record the action log */
 		$new_log_action = new LogActions();

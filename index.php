@@ -39,7 +39,8 @@ include('header-unlogged.php');
 	/** The form was submitted */
 	if ($_POST) {
 		global $dbh;
-		$sysuser_password = $_POST['login_form_pass'];
+		$sysuser_password	= $_POST['login_form_pass'];
+		$selected_form_lang	= $_POST['login_form_lang'];
 	
 		/** Look up the system users table to see if the entered username exists */
 		$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user= :username OR email= :email");
@@ -68,6 +69,18 @@ include('header-unlogged.php');
 					/** Set SESSION values */
 					$_SESSION['loggedin'] = $sysuser_username;
 					$_SESSION['userlevel'] = $user_level;
+					$_SESSION['lang'] = $selected_form_lang;
+
+					/**
+					 * Language cookie
+					 * TODO: Implement.
+					 * Must decide how to refresh language in the form when the user
+					 * changes the language <select> field.
+					 * By using a cookie and not refreshing here, the user is
+					 * stuck in a language and must use it to recover password or
+					 * create account, since the lang cookie is only at login now.
+					 */
+					//setcookie('projectsend_language', $selected_form_lang, time() + (86400 * 30), '/');
 
 					if ($user_level != '0') {
 						$access_string = 'admin';
@@ -195,6 +208,28 @@ if(isset($_SESSION['errorstate'])) {
 								<div class="form-group">
 									<label for="login_form_pass"><?php _e('Password','cftp_admin'); ?></label>
 									<input type="password" name="login_form_pass" id="login_form_pass" class="form-control" />
+								</div>
+
+								<div class="form-group">
+									<label for="login_form_lang"><?php _e('Language','cftp_admin'); ?></label>
+									<select name="login_form_lang" id="login_form_lang" class="form-control">
+										<?php
+											// scan for language files
+											$available_langs = get_available_languages();
+											foreach ($available_langs as $filename => $lang_name) {
+										?>
+												<option value="<?php echo $filename;?>" <?php echo ( LOADED_LANG == $filename ) ? 'selected' : ''; ?>>
+													<?php
+														echo $lang_name;
+														if ( $filename == SITE_LANG ) {
+															echo ' ' . __('[System default]','cftp_admin');
+														}
+													?>
+												</option>
+										<?php
+											}
+										?>
+									</select>
 								</div>
 <?php
 /*

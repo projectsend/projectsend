@@ -73,8 +73,8 @@ $count = count($my_files);
 								<select name="files_actions" id="files_actions" class="txtfield form-control">
 									<option value="zip"><?php _e('Download zipped','cftp_admin'); ?></option>
 								</select>
-								<button type="submit" id="do_action" name="proceed" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
 							</div>
+							<button type="submit" id="do_action" name="proceed" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
 						</div>
 					</div>
 				</div>

@@ -28,7 +28,9 @@
         max-width: 300px;
     }
     
-    .form_actions_right {
+    .form_actions_left,
+	.form_actions_right
+	{
         float: none;
     }
 	

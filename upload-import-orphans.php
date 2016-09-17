@@ -240,7 +240,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 							<p class="margin_0">
 								<?php
 									_e('To use this feature you need to upload your files via FTP to the folder', 'cftp_admin');
-									echo ' <strong>'.html_output($work_folder).'</strong>.';
+									echo ' <span class="format_url"><strong>'.html_output($work_folder).'</strong></span>.';
 								?>
 							</p>
 							<?php /*

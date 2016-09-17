@@ -319,6 +319,7 @@ form .alert {
 
 .required {
 	background:url(../img/req-text.png) no-repeat right -2px;
+	padding-right: 50px;
 }
 
 li .password_toggle {
@@ -450,6 +451,10 @@ li .required.password_toggle {
 /********************************************************************************************************************************************
 	Override default bootstrap Main button colors
 ********************************************************************************************************************************************/
+
+.btn {
+	white-space: normal;
+}
 
 .btn-wide {
 	padding:4px 20px !important;
@@ -639,4 +644,8 @@ p.downloaders_note {
 
 .pagination_wrapper {
 	margin:2em auto;
+}
+
+.format_url {
+	word-break:break-all;
 }

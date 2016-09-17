@@ -132,7 +132,7 @@ include('header.php');
 												</span>
 											</td>
 											<td><?php echo $row['remote_ip']; ?></td>
-											<td><?php echo $row['remote_host']; ?></td>
+											<td><span class="format_url"><?php echo $row['remote_host']; ?></span></td>
 										</tr>
 								<?php
 									}

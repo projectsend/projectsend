@@ -83,6 +83,7 @@ if ( !empty( $load_scripts ) ) {
 }
 
 $load_css_files[]	= BASE_URI . 'css/shared.css';
+$load_css_files[]	= BASE_URI . 'css/mobile.css';
 /**
  * Load a different css file when called from the admin, or
  * the default template.
@@ -90,7 +91,6 @@ $load_css_files[]	= BASE_URI . 'css/shared.css';
 if ( !isset( $this_template_css ) ) {
 	/** Back-end */
 	$load_css_files[]	= BASE_URI . 'css/base.css';
-	$load_css_files[]	= BASE_URI . 'css/mobile.css';
 }
 else {
 	/** Template */

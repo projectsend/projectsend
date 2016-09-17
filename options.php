@@ -755,7 +755,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 													<?php _e('Callback URI','cftp_admin'); ?>
 												</div>
 												<div class="col-sm-8">
-													<?php echo BASE_URI . 'sociallogin/google/callback.php'; ?>
+													<span class="format_url"><?php echo BASE_URI . 'sociallogin/google/callback.php'; ?></span>
 												</div>
 											</div>
 										</div>

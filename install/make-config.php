@@ -50,8 +50,11 @@ if (!$pdo_mysql_available && $pdo_mssql_available) {
 	$post_vars['dbdriver'] = 'mssql';
 }
 
+/**
+ * Check host connection
+ * This function can take a few seconds to respond
+ */
 if ($pdo_driver_available) {
-	// check host connection
 	$dsn = $post_vars['dbdriver'] . ':host=' . $post_vars['dbhost'] . ';dbname=' . $post_vars['dbname'];
 	try{
 		$db = new PDO($dsn, $post_vars['dbuser'], $post_vars['dbpassword'], array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
@@ -89,14 +92,23 @@ if ($pdo_connected) {
 $reuse_tables =  $post_vars['dbreuse'] == 'reuse';
 
 // scan for language files
-$po_files = scandir(ROOT_DIR.'/lang/');
+$mo_files = scandir(ROOT_DIR.'/lang/');
 $langs = array();
-foreach ($po_files as $file) {
-  if (preg_match("/\.po$/", $file)) {
-	  $langs[] = substr($file,0,-3); // removes last 3 characters
-  }
+foreach ($mo_files as $file) {
+	$lang_file	= pathinfo($file, PATHINFO_FILENAME);
+	$extension	= pathinfo($file, PATHINFO_EXTENSION);
+	if ( $extension == 'mo' ) {
+		if ( array_key_exists( $lang_file, $locales_names ) ) {
+			$lang_name = $locales_names[$lang_file];
+		}
+		else {
+			$lang_name = $lang_file;
+		}
+
+		$langs[$lang_file] = $lang_name;
+	}
 }
-sort($langs, SORT_STRING);
+asort($langs, SORT_STRING);
 
 // ok if selected language has a .po file associated
 $lang_ok = in_array($post_vars['lang'], $langs);
@@ -174,16 +186,20 @@ function table_exists($pdo, $table) {
     return $result !== FALSE;
 }
 
+global $status_indicator_ok;
+global $status_indicator_error;
+$status_indicator_ok	= '<span class="label label-success"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></span>';
+$status_indicator_error	= '<span class="label label-danger"><span class="glyphicon glyphicon-alert" aria-hidden="true"></span></span>';
+
 function pdo_status_label() {
 	global $pdo_connected;
+	global $status_indicator_ok;
+	global $status_indicator_error;
+
 	if ($pdo_connected) {
-?>
-		<span class="label label-success">OK</span>
-<?php
+		echo $status_indicator_ok;
 	} else {
-?>
-		<span class="label label-danger">!</span>
-<?php
+		echo $status_indicator_error;
 	}
 }
 
@@ -230,11 +246,7 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 											</div>
 										</div>
 										<div class="col-sm-2">
-											<?php if ($pdo_driver_available) : ?>
-												<span class="label label-success">OK</span>
-											<?php else : ?>
-												<span class="label label-danger">!</span>
-											<?php endif; ?>
+											<?php echo ($pdo_driver_available) ? $status_indicator_ok : $status_indicator_error; ?>
 										</div>
 									</div>
 		
@@ -284,16 +296,22 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 											<input type="text" name="dbprefix" id="dbprefix" <?php echo !$pdo_driver_available ? 'disabled' : ''; ?> class="required form-control" value="<?php echo $post_vars['dbprefix']; ?>" />
 										</div>
 										<div class="col-sm-2">
-											<?php if ($pdo_connected) : ?>
-												<?php if (!$table_exists || $reuse_tables) : ?>
-													<span class="label label-success">OK</span>
-												<?php else : ?>
-													<span class="label label-danger">!</span>
-												<?php endif; ?>
-												<?php if ($table_exists) : ?>
-													<p class="label label-danger"><?php _e('The database is already populated','cftp_admin'); ?></p>
-												<?php endif; ?>
-											<?php endif; ?>
+											<?php
+												if ( $pdo_connected ) {
+													if ( !$table_exists || $reuse_tables ) {
+														echo $status_indicator_ok;
+													}
+													else {
+														echo $status_indicator_error;
+													}
+													
+													if ($table_exists) {
+											?>
+														<p class="label label-danger"><?php _e('The database is already populated','cftp_admin'); ?></p>
+											<?php
+													}
+												}
+											?>
 										</div>
 									</div>
 					
@@ -308,9 +326,7 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 													</div>
 												</div>
 												<div class="col-sm-2">
-													<?php if ($reuse_tables) : ?>
-														<span class="label label-success">OK</span>
-													<?php endif; ?>
+													<?php if ($reuse_tables) { echo $status_indicator_ok; } ?>
 												</div>
 											</div>
 										<?php endif; ?>
@@ -324,8 +340,8 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 										<label for="lang" class="col-sm-4 control-label"><?php _e('Language','cftp_admin'); ?></label>
 										<div class="col-sm-6">
 											<select name="lang" class="form-control">
-												<?php foreach ($langs as $l) : ?>
-													<option value="<?php echo $l;?>" <?php echo $post_vars['lang']==$l ? 'selected' : ''; ?>><?php echo $l;?></option>
+												<?php foreach ($langs as $locale => $name) : ?>
+													<option value="<?php echo $locale;?>" <?php echo $post_vars['lang']==$locale ? 'selected' : ''; ?>><?php echo $name;?></option>
 												<?php endforeach?>
 											</select>
 										</div>

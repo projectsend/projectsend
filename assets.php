@@ -68,6 +68,18 @@ if ( !empty( $load_scripts ) ) {
 				$load_js_files[]		= BASE_URI . 'includes/js/browserplus-min.js';
 				$load_js_files[]		= BASE_URI . 'includes/plupload/js/plupload.full.js';
 				$load_js_files[]		= BASE_URI . 'includes/plupload/js/jquery.plupload.queue/jquery.plupload.queue.js';
+				/**
+				 * Load a plupload translation file, if the ProjectSend language
+				 * on sys.config.php is set to anything other than "en", and the
+				 * corresponding plupload file exists.
+				 */
+				if ( SITE_LANG != 'en' ) {
+					$plupload_lang_file = 'includes/plupload/js/i18n/'.SITE_LANG.'.js';
+					if ( file_exists( $plupload_lang_file ) ) {
+						$load_js_files[] = BASE_URI . $plupload_lang_file;
+					}
+				}
+
 				break;
 			case 'flot':
 				$load_js_files[]		= BASE_URI . 'includes/flot/jquery.flot.min.js';

@@ -4,91 +4,134 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-05-25 20:04-0300\n"
+"POT-Creation-Date: 2016-09-18 20:29-0300\n"
+"PO-Revision-Date: 2016-09-18 20:29-0300\n"
 "Last-Translator: Victor Bidnenko\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/projectsend/"
 "language/uk/)\n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: uk\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 1.8.8\n"
 
-#. Text in echo
-#: psend/templates/default/template.php:89
-msgid "Date"
-msgstr "Дата"
-
-#. Text in echo
-#: psend/templates/default/template.php:87
-msgid "Description"
-msgstr "Опис"
-
-#. Text in echo
-#: psend/templates/default/template.php:91
-#: psend/templates/default/template.php:172
-msgid "Download"
-msgstr "Скачати"
-
-#. Text in function
-#: psend/templates/default/template.php:1
+#: template.php:15
 msgid "File downloads"
 msgstr "Завантаження файлів"
 
-#. Text in echo
-#: psend/templates/default/template.php:148
-msgid "File expired"
-msgstr "Файл спливає"
+#: template.php:43
+msgid "Search"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:190
-msgid "First"
-msgstr "Перший"
+#: template.php:52
+msgid "All categories"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:90
-msgid "Image preview"
-msgstr "Перегляд зображення"
+#: template.php:59
+msgid "Filter"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:195
-msgid "Last"
-msgstr "Останній"
+#: template.php:72
+msgid "Selected files actions"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:194
-msgid "Next"
-msgstr "Наступний"
+#: template.php:74
+msgid "Download zipped"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:192
-msgid "Page"
-msgstr "Сторінка"
+#: template.php:76
+msgid "Proceed"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:191
-msgid "Prev."
-msgstr "Попер."
+#: template.php:85
+msgid "Showing"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:196
-msgid "Show"
-msgstr "Показати"
+#: template.php:85
+msgid "files"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:88
-msgid "Size"
-msgstr "Розмір"
+#: template.php:95
+msgid "Your search keywords returned no results."
+msgstr ""
 
-#. Text in function
-#: psend/templates/default/template.php:63
+#: template.php:100
 msgid "There are no files available."
 msgstr "Немає доступних файлів"
 
-#. Text in echo
-#: psend/templates/default/template.php:85
+#: template.php:112
 msgid "Title"
 msgstr "Заголовок"
+
+#: template.php:113
+msgid "Ext."
+msgstr ""
+
+#: template.php:114
+msgid "Description"
+msgstr "Опис"
+
+#: template.php:115
+msgid "Size"
+msgstr "Розмір"
+
+#: template.php:116
+msgid "Date"
+msgstr "Дата"
+
+#: template.php:117
+msgid "Expiration date"
+msgstr ""
+
+#: template.php:118
+msgid "Image preview"
+msgstr "Перегляд зображення"
+
+#: template.php:119 template.php:235
+msgid "Download"
+msgstr "Скачати"
+
+#: template.php:192
+msgid "Never"
+msgstr ""
+
+#: template.php:205
+msgid "File expired"
+msgstr "Файл спливає"
+
+#: template.php:249
+msgid "Results navigation"
+msgstr ""
+
+#: template.php:268
+msgid "Please select at least one file to proceed."
+msgstr ""
+
+#: template.php:283
+msgid "Please wait while your download is prepared."
+msgstr ""
+
+#: template.php:284
+msgid ""
+"This operation could take a few minutes, depending on the size of the files."
+msgstr ""
+
+#~ msgid "First"
+#~ msgstr "Перший"
+
+#~ msgid "Last"
+#~ msgstr "Останній"
+
+#~ msgid "Next"
+#~ msgstr "Наступний"
+
+#~ msgid "Page"
+#~ msgstr "Сторінка"
+
+#~ msgid "Prev."
+#~ msgstr "Попер."
+
+#~ msgid "Show"
+#~ msgstr "Показати"

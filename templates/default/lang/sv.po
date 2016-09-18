@@ -5,90 +5,133 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-05-25 20:04-0300\n"
+"POT-Creation-Date: 2016-09-18 20:29-0300\n"
+"PO-Revision-Date: 2016-09-18 20:29-0300\n"
 "Last-Translator: Björn Ericsson\n"
 "Language-Team: Swedish (http://www.transifex.com/projects/p/projectsend/"
 "language/sv/)\n"
+"Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: sv\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 1.8.8\n"
 
-#. Text in echo
-#: psend/templates/default/template.php:89
-msgid "Date"
-msgstr "Datum"
-
-#. Text in echo
-#: psend/templates/default/template.php:87
-msgid "Description"
-msgstr "Beskrivning"
-
-#. Text in echo
-#: psend/templates/default/template.php:91
-#: psend/templates/default/template.php:172
-msgid "Download"
-msgstr "Ladda ner"
-
-#. Text in function
-#: psend/templates/default/template.php:1
+#: template.php:15
 msgid "File downloads"
 msgstr "Filhämtningar"
 
-#. Text in echo
-#: psend/templates/default/template.php:148
-msgid "File expired"
-msgstr "Utgånget dokument"
+#: template.php:43
+msgid "Search"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:190
-msgid "First"
-msgstr "Först"
+#: template.php:52
+msgid "All categories"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:90
-msgid "Image preview"
-msgstr "Förhandsvisning av bild"
+#: template.php:59
+msgid "Filter"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:195
-msgid "Last"
-msgstr "Sist"
+#: template.php:72
+msgid "Selected files actions"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:194
-msgid "Next"
-msgstr "Nästa"
+#: template.php:74
+msgid "Download zipped"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:192
-msgid "Page"
-msgstr "Sida"
+#: template.php:76
+msgid "Proceed"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:191
-msgid "Prev."
-msgstr "Föreg."
+#: template.php:85
+msgid "Showing"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:196
-msgid "Show"
-msgstr "Visa"
+#: template.php:85
+msgid "files"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:88
-msgid "Size"
-msgstr "Storlek"
+#: template.php:95
+msgid "Your search keywords returned no results."
+msgstr ""
 
-#. Text in function
-#: psend/templates/default/template.php:63
+#: template.php:100
 msgid "There are no files available."
 msgstr "Det finns inga filer tillgängliga."
 
-#. Text in echo
-#: psend/templates/default/template.php:85
+#: template.php:112
 msgid "Title"
 msgstr "Titel"
+
+#: template.php:113
+msgid "Ext."
+msgstr ""
+
+#: template.php:114
+msgid "Description"
+msgstr "Beskrivning"
+
+#: template.php:115
+msgid "Size"
+msgstr "Storlek"
+
+#: template.php:116
+msgid "Date"
+msgstr "Datum"
+
+#: template.php:117
+msgid "Expiration date"
+msgstr ""
+
+#: template.php:118
+msgid "Image preview"
+msgstr "Förhandsvisning av bild"
+
+#: template.php:119 template.php:235
+msgid "Download"
+msgstr "Ladda ner"
+
+#: template.php:192
+msgid "Never"
+msgstr ""
+
+#: template.php:205
+msgid "File expired"
+msgstr "Utgånget dokument"
+
+#: template.php:249
+msgid "Results navigation"
+msgstr ""
+
+#: template.php:268
+msgid "Please select at least one file to proceed."
+msgstr ""
+
+#: template.php:283
+msgid "Please wait while your download is prepared."
+msgstr ""
+
+#: template.php:284
+msgid ""
+"This operation could take a few minutes, depending on the size of the files."
+msgstr ""
+
+#~ msgid "First"
+#~ msgstr "Först"
+
+#~ msgid "Last"
+#~ msgstr "Sist"
+
+#~ msgid "Next"
+#~ msgstr "Nästa"
+
+#~ msgid "Page"
+#~ msgstr "Sida"
+
+#~ msgid "Prev."
+#~ msgstr "Föreg."
+
+#~ msgid "Show"
+#~ msgstr "Visa"

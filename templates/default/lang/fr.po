@@ -5,90 +5,133 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-05-25 20:03-0300\n"
+"POT-Creation-Date: 2016-09-18 20:28-0300\n"
+"PO-Revision-Date: 2016-09-18 20:28-0300\n"
 "Last-Translator: Benjamin Azenstarck <princebarre@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/projectsend/"
 "language/fr/)\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 1.8.8\n"
 
-#. Text in echo
-#: psend/templates/default/template.php:89
-msgid "Date"
-msgstr "Date"
-
-#. Text in echo
-#: psend/templates/default/template.php:87
-msgid "Description"
-msgstr "Description"
-
-#. Text in echo
-#: psend/templates/default/template.php:91
-#: psend/templates/default/template.php:172
-msgid "Download"
-msgstr "Télécharger"
-
-#. Text in function
-#: psend/templates/default/template.php:1
+#: template.php:15
 msgid "File downloads"
 msgstr "Téléchargements de fichier"
 
-#. Text in echo
-#: psend/templates/default/template.php:148
-msgid "File expired"
-msgstr "Fichier expiré"
+#: template.php:43
+msgid "Search"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:190
-msgid "First"
-msgstr "Premier"
+#: template.php:52
+msgid "All categories"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:90
-msgid "Image preview"
-msgstr "Prévisualiser l'image"
+#: template.php:59
+msgid "Filter"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:195
-msgid "Last"
-msgstr "Dernier"
+#: template.php:72
+msgid "Selected files actions"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:194
-msgid "Next"
-msgstr "Suivant"
+#: template.php:74
+msgid "Download zipped"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:192
-msgid "Page"
-msgstr "Page"
+#: template.php:76
+msgid "Proceed"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:191
-msgid "Prev."
-msgstr "Préc."
+#: template.php:85
+msgid "Showing"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:196
-msgid "Show"
-msgstr "Voir"
+#: template.php:85
+msgid "files"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/default/template.php:88
-msgid "Size"
-msgstr "Taille"
+#: template.php:95
+msgid "Your search keywords returned no results."
+msgstr ""
 
-#. Text in function
-#: psend/templates/default/template.php:63
+#: template.php:100
 msgid "There are no files available."
 msgstr "Aucun fichier disponible."
 
-#. Text in echo
-#: psend/templates/default/template.php:85
+#: template.php:112
 msgid "Title"
 msgstr "Titre"
+
+#: template.php:113
+msgid "Ext."
+msgstr ""
+
+#: template.php:114
+msgid "Description"
+msgstr "Description"
+
+#: template.php:115
+msgid "Size"
+msgstr "Taille"
+
+#: template.php:116
+msgid "Date"
+msgstr "Date"
+
+#: template.php:117
+msgid "Expiration date"
+msgstr ""
+
+#: template.php:118
+msgid "Image preview"
+msgstr "Prévisualiser l'image"
+
+#: template.php:119 template.php:235
+msgid "Download"
+msgstr "Télécharger"
+
+#: template.php:192
+msgid "Never"
+msgstr ""
+
+#: template.php:205
+msgid "File expired"
+msgstr "Fichier expiré"
+
+#: template.php:249
+msgid "Results navigation"
+msgstr ""
+
+#: template.php:268
+msgid "Please select at least one file to proceed."
+msgstr ""
+
+#: template.php:283
+msgid "Please wait while your download is prepared."
+msgstr ""
+
+#: template.php:284
+msgid ""
+"This operation could take a few minutes, depending on the size of the files."
+msgstr ""
+
+#~ msgid "First"
+#~ msgstr "Premier"
+
+#~ msgid "Last"
+#~ msgstr "Dernier"
+
+#~ msgid "Next"
+#~ msgstr "Suivant"
+
+#~ msgid "Page"
+#~ msgstr "Page"
+
+#~ msgid "Prev."
+#~ msgstr "Préc."
+
+#~ msgid "Show"
+#~ msgstr "Voir"

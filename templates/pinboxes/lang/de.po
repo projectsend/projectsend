@@ -4,64 +4,65 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-05-25 20:05-0300\n"
+"POT-Creation-Date: 2016-09-18 20:31-0300\n"
+"PO-Revision-Date: 2016-09-18 20:31-0300\n"
 "Last-Translator: Levin Germann <levin.germann@gmail.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/projectsend/"
 "language/de/)\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 1.8.8\n"
 
-#. Text in function
-#: psend/templates/pinboxes/template.php:1
+#: template.php:16
 msgid "Available files"
 msgstr "Vorhandene Dateien"
 
-#. Text in echo
-#: psend/templates/pinboxes/template.php:159
-msgid "Download"
-msgstr "Runterladen"
+#: template.php:89
+msgid "Welcome"
+msgstr "Willkommen"
 
-#. Text in echo
-#: psend/templates/pinboxes/template.php:165
-msgid "File expired"
-msgstr "Datei abgelaufen"
-
-#. Text in echo
-#: psend/templates/pinboxes/template.php:151
-msgid "File size:"
-msgstr "Dateigrösse:"
-
-#. Text in echo
-#: psend/templates/pinboxes/template.php:66
-msgid "Logout"
-msgstr "Abmelden"
-
-#. Text in echo
-#: psend/templates/pinboxes/template.php:62
-msgid "Search"
-msgstr "Suchen"
-
-#. Text in echo
-#: psend/templates/pinboxes/template.php:61
+#: template.php:94
 msgid "Search..."
 msgstr "Suchen..."
 
-#. Text in echo
-#: psend/templates/pinboxes/template.php:78
-msgid "There are no files."
-msgstr "Es sind keine Dateien vorhanden."
+#: template.php:104
+msgid "Categories"
+msgstr ""
 
-#. Text in echo
-#: psend/templates/pinboxes/template.php:65
+#: template.php:106
+msgid "All files"
+msgstr ""
+
+#: template.php:125
 msgid "Upload files"
 msgstr "Datei hochladen"
 
-#. Text in echo
-#: psend/templates/pinboxes/template.php:56
-msgid "Welcome"
-msgstr "Willkommen"
+#: template.php:128
+msgid "Logout"
+msgstr "Abmelden"
+
+#: template.php:142
+msgid "There are no files."
+msgstr "Es sind keine Dateien vorhanden."
+
+#: template.php:206
+msgid "File size:"
+msgstr "Dateigrösse:"
+
+#: template.php:216
+msgid "Expiration date:"
+msgstr ""
+
+#: template.php:227
+msgid "Download"
+msgstr "Runterladen"
+
+#: template.php:233
+msgid "File expired"
+msgstr "Datei abgelaufen"
+
+#~ msgid "Search"
+#~ msgstr "Suchen"

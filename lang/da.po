@@ -4,1112 +4,907 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-05-25 20:02-0300\n"
+"POT-Creation-Date: 2016-09-18 20:25-0300\n"
+"PO-Revision-Date: 2016-09-18 20:25-0300\n"
 "Last-Translator: Ulrik Johansen\n"
 "Language-Team: Danish (http://www.transifex.com/projects/p/projectsend/"
 "language/da/)\n"
+"Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: da\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 1.8.8\n"
 
-#. Text in echo
-#: options.php:319
-msgid "\"From\" information"
-msgstr "\"Fra\"-information"
+#: actions-log.php:15
+msgid "Recent activities log"
+msgstr "Nylig aktivitetslog"
 
-#. Text in function
-#: includes/functions.php:682
-msgid "(client) downloaded the file"
-msgstr "(klient) downloadede filen"
+#: actions-log.php:28
+msgid "Please select at least one activity to proceed."
+msgstr "Vælg venligst mindst én aktivitet for at fortsætte"
 
-#. Text in function
-#: includes/functions.php:682
-msgid "(client) edited the file"
-msgstr "(klient) redigerede filen"
+#: actions-log.php:32 categories.php:37 clients.php:44 groups.php:72
+#: manage-files.php:105 users.php:37
+msgid "You are about to delete"
+msgstr "Du er ved at slette"
 
-#. Text in function
-#: includes/functions.php:682
-msgid "(client) uploaded the file"
-msgstr "(klient) uploadede filen"
+#: actions-log.php:33
+msgid "activities. Are you sure you want to continue?"
+msgstr "aktiviteter. Er du sikker på, at du ønsker at fortsætte?"
 
-#. Text in function
-#: email-templates.php:91
-msgid "(to be used as href on a link tag)"
-msgstr "(til brug som href i et link-tag)"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "(user) downloaded the file"
-msgstr "(systembruger) downloadede filen"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "(user) edited the file"
-msgstr "(systembruger) redigerede filen"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "(user) uploaded the file"
-msgstr "(systembruger) uploadede filen"
-
-#. Text in function
-#: includes/vars.php:1
-msgid "1 lowercase character"
-msgstr "1 lille bogstav"
-
-#. Text in function
-#: includes/vars.php:1
-msgid "1 number"
-msgstr "1 tal"
-
-#. Text in function
-#: includes/vars.php:1
-msgid "1 special character"
-msgstr "1 specialtegn"
-
-#. Text in function
-#: includes/vars.php:1
-msgid "1 uppercase character"
-msgstr "1 stort bogstav"
-
-#. Text in echo
-#: actions-log.php:160
-msgid "A client account was activated"
-msgstr "En klientbruger blev aktiveret"
-
-#. Text in echo
-#: actions-log.php:161
-msgid "A client account was deactivated"
-msgstr "En klientbruger blev deaktiveret"
-
-#. Text in echo
-#: actions-log.php:174
-msgid "A client edited a file."
-msgstr "En klient redigerede en fil."
-
-#. Text in echo
-#: actions-log.php:145
-msgid "A client registers an account for himself"
-msgstr "En klient oprettede selv en bruger"
-
-#. Text in echo
-#: actions-log.php:158
-msgid "A client was deleted"
-msgstr "En klient blev slettet"
-
-#. Text in echo
-#: actions-log.php:155
-msgid "A client was edited"
-msgstr "En klient blev redigeret"
-
-#. Text in echo
-#: actions-log.php:153
-msgid "A file has been deleted"
-msgstr "En fil blev slettet"
-
-#. Text in echo
-#: actions-log.php:151
-msgid "A file has been unassigned from a client."
-msgstr "En fils tildeling til en klient blev fjernet"
-
-#. Text in echo
-#: actions-log.php:152
-msgid "A file has been unassigned from a group"
-msgstr "En fils tildeling til en gruppe blev fjernet"
-
-#. Text in echo
-#: actions-log.php:167
-msgid "A file is assigned to a client"
-msgstr "En fil blev tildelt en klient"
-
-#. Text in echo
-#: actions-log.php:168
-msgid "A file is assigned to a group"
-msgstr "En fil blev tildelt en gruppe"
-
-#. Text in echo
-#: actions-log.php:149
-msgid "A file is downloaded by a client"
-msgstr "En fil blev downloadet af en klient"
-
-#. Text in echo
-#: actions-log.php:148
-msgid "A file is downloaded by a user (on \"Client view\" mode)"
-msgstr ""
-"En fil blev downloadet af en systembruger (i \"Klientvisning\"-tilstand)"
-
-#. Text in echo
-#: actions-log.php:147
-msgid "A file is uploaded by a client"
-msgstr "En fil blev uploadet af en klient"
-
-#. Text in echo
-#: actions-log.php:146
-msgid "A file is uploaded by an user"
-msgstr "En fil blev uploadet af en systembruger"
-
-#. Text in echo
-#: actions-log.php:164
-msgid "A file was marked as hidden"
-msgstr "En fil blev markeret som skjult"
-
-#. Text in echo
-#: actions-log.php:165
-msgid "A file was marked as visible"
-msgstr "En fil blev markeret som synlig"
-
-#. Text in function
-#: register.php:89
+#: actions-log.php:42
 msgid ""
-"A folder for this account could not be created. Probably because of a server "
-"configuration."
+"You are about to delete all activities from the log. Only those used for "
+"statistics will remain. Are you sure you want to continue?"
 msgstr ""
-"En mappe til denne bruger kunne ikke oprettes. Dette kan skyldes en "
-"serverkonfiguration."
+"Du er ved at slette alle aktiviteter fra loggen. Kun dem, der anvendes til "
+"statistik vil forblive. Er du sikker på du vil fortsætte?"
 
-#. Text in echo
-#: actions-log.php:159
-msgid "A group was deleted"
-msgstr "En gruppe blev slettet"
+#: actions-log.php:54
+msgid "Please wait while your download is prepared."
+msgstr "Vent venligst mens din download forberedes"
 
-#. Text in echo
+#: actions-log.php:87
+msgid "The selected activities were deleted."
+msgstr "De valgte aktiviteter blev slettet."
+
+#: actions-log.php:91
+msgid "Please select at least one activity."
+msgstr "Vælg venligst mindst én aktivitet"
+
+#: actions-log.php:103
+msgid ""
+"The log was cleared. Only data used for statistics remained. You can delete "
+"them manually if you want."
+msgstr ""
+"Loggen blev ryddet. Kun statistikdata er tilbage. Du kan slette dem manuelt "
+"hvis du ønsker."
+
+#: actions-log.php:151 categories.php:239 clients.php:178 groups.php:217
+#: manage-files.php:440 upload-import-orphans.php:144 users.php:208
+msgid "Search"
+msgstr "Søg"
+
 #: actions-log.php:156
-msgid "A group was edited"
-msgstr "En gruppe blev redigeret"
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid ""
-"A new account was created for you. From now on, you can access the files "
-"that have been uploaded under your account using the following credentials:"
+msgid "Filter activities"
 msgstr ""
-"En ny bruger er oprettet til dig. Fra nu af kan du få adgang til filer, der "
-"er blevet uploadet under din bruger ved hjælp af følgende "
-"legitimationsoplysninger:"
 
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid ""
-"A new account was created for you. From now on, you can access the system "
-"administrator using the following credentials:"
-msgstr ""
-"En ny bruger er oprettet til dig. Fra nu af kan du få adgang til "
-"systemadministratoren ved hjælp af følgende legitimationsoplysninger:"
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid ""
-"A new account was created using the self registration form on your site. "
-"Registration information:"
-msgstr ""
-"En ny bruger blev oprettet ved hjælp af selvtilmeldingsformularen på dit "
-"websted. Tilmeldingsoplysninger:"
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid "A new client has registered."
-msgstr "En ny klient blev oprettet."
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid ""
-"A request has been received to reset the password for the following account:"
-msgstr "En anmodning om adgangskodenulstilling er modtaget fra brugeren:"
-
-#. Text in function
-#: includes/updates.functions.php:1
-msgid ""
-"A safe chmod value couldn't be set for one or more system files. Please make "
-"sure that at least includes/sys.config.php has a chmod of 644 for security "
-"reasons."
-msgstr ""
-"En sikker chmod-værdi kunne ikke indstilles for én eller flere systemfiler. "
-"Sørg for, at i det mindste includes/sys.config.php har en chmod på 644 af "
-"sikkerhedsmæssige årsager."
-
-#. Text in echo
-#: actions-log.php:173
-msgid "A system user edited a file."
-msgstr "En systembruger redigerede en fil."
-
-#. Text in function
-#: includes/vars.php:1
-msgid "A system user or client with this e-mail address already exists."
-msgstr "Et systembruger eller klient med denne e-mail-adresse findes allerede."
-
-#. Text in function
-#: includes/vars.php:1
-msgid "A system user or client with this login name already exists."
-msgstr "Et systembruger eller klient med dette login-navn findes allerede."
-
-#. Text in echo
-#: actions-log.php:162
-msgid "A user account was activated"
-msgstr "En systembruger blev aktiveret"
-
-#. Text in echo
-#: actions-log.php:163
-msgid "A user account was deactivated"
-msgstr "En systembruger blev deaktiveret"
-
-#. Text in echo
-#: actions-log.php:169
-msgid "A user account was marked as active"
-msgstr "En systembruger blev markeret som aktiv"
-
-#. Text in echo
-#: actions-log.php:170
-msgid "A user account was marked as inactive"
-msgstr "En systembruger blev markeret som inaktiv"
-
-#. Text in echo
-#: actions-log.php:144
-msgid "A user creates a new client account"
-msgstr "En systembruger oprettede en ny klientkonto"
-
-#. Text in echo
-#: actions-log.php:166
-msgid "A user creates a new group"
-msgstr "En systembruger oprettede en ny gruppe"
-
-#. Text in echo
-#: actions-log.php:143
-msgid "A user creates a new user account"
-msgstr "En systembruger oprettede en ny systembruger"
-
-#. Text in echo
-#: actions-log.php:157
-msgid "A user was deleted"
-msgstr "En systembruger blev slettet"
-
-#. Text in echo
-#: actions-log.php:154
-msgid "A user was edited"
-msgstr "En systembruger blev redigeret"
-
-#. Text in echo
-#: actions-log.php:150
-msgid "A zip file was generated by a client"
-msgstr "En zip-fil blev genereret af en klient"
-
-#. Text in echo
-#: includes/userlevel_check.php:156
-msgid "Access denied"
-msgstr "Adgang nægtet"
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid "Access the system panel here"
-msgstr "Gå til systempanelet her"
-
-#. Text in echo
-#: actions-log.php:142
-msgid "Account (user or client) logs out"
-msgstr "Bruger (system eller klient) loggede ud"
-
-#. Text in function
-#: sys.vars.php:1 users.php:193
-msgid "Account Manager"
-msgstr "Brugeradministrator"
-
-#. Text in function
-#: register.php:89
-msgid "Account added correctly."
-msgstr "Bruger tilføjet"
-
-#. Text in echo
-#: actions-log.php:141
-msgid "Account logs in through cookies"
-msgstr "Bruger loggede ind vha. cookies"
-
-#. Text in echo
-#: actions-log.php:140
-msgid "Account logs in through the form"
-msgstr "Bruger loggede ind vha. formularen"
-
-#. Text in echo
-#: clients.php:237 groups.php:250 users.php:255 manage-files.php:478
-#: upload-process-form.php:338
-msgid "Actions"
-msgstr "Handlinger"
-
-#. Text in echo
-#: clients.php:180 users.php:213
-msgid "Activate"
-msgstr "Aktivér"
-
-#. Text in echo
-#: clients.php:166 clients.php:307 users.php:199 users.php:282
-msgid "Active"
-msgstr "Aktiv"
-
-#. Text in echo
-#: clients-form.php:134
-msgid "Active (client can log in)"
-msgstr "Aktiv (klient kan logge ind)"
-
-#. Text in echo
-#: users-form.php:116
-msgid "Active (user can log in)"
-msgstr "Aktiv (systembruger kan logge ind)"
-
-#. Text in echo
-#: actions-log.php:185
-msgid "Activities actions"
-msgstr "Aktivitetshandlinger"
-
-#. Text in echo
-#: actions-log.php:228
-msgid "Activity"
-msgstr "Aktivitet"
-
-#. Text in echo
-#: edit-file.php:413 groups-form.php:67 upload-process-form.php:546
-msgid "Add all"
-msgstr "Tilføj alle"
-
-#. Text in function
-#: clients-form.php:58 clients-add.php:135
-msgid "Add client"
-msgstr "Tilføj klient"
-
-#. Text in function
-#: groups-add.php:102
-msgid "Add clients group"
-msgstr "Tilføj klientgruppe"
-
-#. Text in echo
-#: options.php:263
-msgid "Add clients to this group:"
-msgstr "Tilføj klienter til denne gruppe:"
-
-#. Text in echo
-#: header.php:251 header.php:273 header.php:308
-msgid "Add new"
-msgstr "Tilføj ny"
-
-#. Text in function
-#: users-add.php:128
-msgid "Add system user"
-msgstr "Tilføj systembruger"
-
-#. Text in function
-#: users-form.php:59
-msgid "Add user"
-msgstr "Tilføj bruger"
-
-#. Text in echo
-#: clients.php:233 groups.php:249 users.php:254
-msgid "Added on"
-msgstr "Tilføjet den"
-
-#. Text in echo
-#: clients.php:234 clients-form.php:119
-msgid "Address"
-msgstr "Adresse"
-
-#. Text in echo
-#: options.php:346
-msgid "Address supplied above (on \"From\")"
-msgstr "Adressen ovenover (i \"Fra\")"
-
-#. Text in echo
-#: install/index.php:293
-msgid ""
-"After installing the system, you can go to the options page to set your "
-"timezone, prefered date display format and thubmnails parameters, besides "
-"being able to change the site options provided here."
-msgstr ""
-"Efter installationen af systemet, kan du også gå til siden Indstillinger for "
-"at indstille din tidszone, foretrukne datovisningsformat og miniature-"
-"parametre."
-
-#. Text in echo
-#: home.php:77 actions-log.php:138
+#: actions-log.php:158 home.php:81
 msgid "All activities"
 msgstr "Alle aktiviteter"
 
-#. Text in echo
-#: upload-import-orphans.php:177
-msgid "All assignations were removed"
-msgstr "Alle tildelninger blev fjernet"
+#: actions-log.php:169 clients.php:189 manage-files.php:455 users.php:228
+msgid "Filter"
+msgstr "Filtrer"
 
-#. Text in echo
-#: users.php:191
-msgid "All roles"
-msgstr "Alle roller"
+#: actions-log.php:179
+msgid "Activities actions"
+msgstr "Aktivitetshandlinger"
 
-#. Text in echo
-#: clients.php:165 users.php:198 manage-files.php:359
-msgid "All statuses"
-msgstr "Alle statusser"
+#: actions-log.php:181 groups.php:229
+msgid "Select action"
+msgstr "Vælg handling"
 
-#. Text in echo
-#: edit-file.php:369 upload-process-form.php:505
-msgid "Allow public downloading of this file."
-msgstr "Tillad offentlig download af denne fil."
+#: actions-log.php:182
+msgid "Download as csv"
+msgstr "Download som csv"
 
-#. Text in echo
-#: options.php:432
-msgid "Allowed file extensions"
-msgstr "Tilladte filendelser"
+#: actions-log.php:183
+msgid "Delete selected"
+msgstr "Slet valgte"
 
-#. Text in echo
-#: install/index.php:105
-msgid "Already installed"
-msgstr "Allerede installeret"
+#: actions-log.php:184
+msgid "Clear entire log"
+msgstr "Ryd hele loggen"
 
-#. Text in echo
-#: options.php:350
-msgid "Also to this addresses"
-msgstr "Også til disse adresser"
+#: actions-log.php:187 categories.php:256 clients.php:206 groups.php:233
+#: manage-files.php:496 users.php:245
+msgid "Proceed"
+msgstr "Udfør"
 
-#. Text in function
-#: users-add.php:75
-msgid "An e-mail notification with login information was sent to the new user."
+#: actions-log.php:194 categories.php:264 clients.php:213 groups.php:240
+#: manage-files.php:507 upload-import-orphans.php:151 users.php:252
+msgid "Showing"
+msgstr "Viser"
+
+#: actions-log.php:194
+msgid "activities"
+msgstr "aktiviteter"
+
+#: actions-log.php:204 clients.php:226 groups.php:253 manage-files.php:523
+#: users.php:264
+msgid "The filters you selected returned no results."
+msgstr "De valgte filtre gav ingen resultater."
+
+#: actions-log.php:209
+msgid "There are no activities recorded."
+msgstr "Der er ingen registrerede aktiviteter."
+
+#: actions-log.php:221 download-information.php:86 manage-files.php:553
+msgid "Date"
+msgstr "Dato"
+
+#: actions-log.php:222
+msgid "Author"
+msgstr "Forfatter"
+
+#: actions-log.php:223
+msgid "Activity"
+msgstr "Aktivitet"
+
+#: actions-log.php:267 categories.php:360 clients.php:372
+#: download-information.php:143 groups.php:337 manage-files.php:837
+#: upload-import-orphans.php:192 users.php:336
+msgid "Results navigation"
 msgstr ""
-"En email-underretning med login-informationen blev sendt til den nye bruger."
 
-#. Text in function
-#: register.php:89
+#: branding.php:13 header-menu.php:140
+msgid "Branding"
+msgstr "Markedsføring"
+
+#: branding.php:87
+msgid "Please select an image file to upload"
+msgstr "Vælg venligst en billedfil til upload"
+
+#: branding.php:105
+msgid "The image was uploaded correctly."
+msgstr "Billedet blev uploadet."
+
+#: branding.php:109
+msgid "The file could not be moved to the corresponding folder."
+msgstr "Filen kunne ikke flyttes til den tilsvarende mappe."
+
+#: branding.php:110
 msgid ""
-"An e-mail notification with login information was sent to the specified "
-"address."
+"This is most likely a permissions issue. If that's the case, it can be "
+"corrected via FTP by setting the chmod value of the"
 msgstr ""
-"En email-underretning med login-informationen blev sendt til den "
-"specificerede adresse."
+"Dette er sandsynligvis et problem med tilladelser. Hvis det er tilfældet, "
+"kan det løses via FTP ved at indstille chmod-værdien af"
 
-#. Text in function
-#: clients-add.php:83
+#: branding.php:112
+msgid "directory to 755, or 777 as a last resource."
+msgstr "mappe til 755, eller 777 som en sidste udvej."
+
+#: branding.php:113
+msgid ""
+"If this doesn't solve the issue, try giving the same values to the "
+"directories above that one until it works."
+msgstr ""
+"Hvis dette ikke løser problemet, kan du prøve at give de samme værdier til "
+"mapper over denne indtil det virker."
+
+#: branding.php:117
+msgid ""
+"The file you selected is not an allowed image format. Please upload your "
+"logo as a jpg, gif or png file."
+msgstr ""
+"Filen du har valgt er ikke et tilladt billedformat. Upload venligst dit logo "
+"som en jpg, gif eller png-fil."
+
+#: branding.php:121
+msgid "There was an error uploading the file. Please try again."
+msgstr "Der opstod en fejl under upload af filen. Prøv igen."
+
+#: branding.php:129
+msgid ""
+"Use this page to upload your company logo, or update the currently assigned "
+"one. This image will be shown to your clients when they access their file "
+"list."
+msgstr ""
+"Brug denne side til at uploade dit firmalogo eller opdatere det nuværende "
+"logo. Dette billede vil blive vist til dine klienter når de bruger deres "
+"filliste."
+
+#: branding.php:133
+msgid "Current logo"
+msgstr "Nuværende logo"
+
+#: branding.php:134
+msgid ""
+"The picture on the right is not an actual representation of what they will "
+"see. The size on this preview is fixed, but remember that you can change the "
+"display size and picture quality for your client's pages on the"
+msgstr ""
+"Billedet til højre er ikke en egentlig repræsentation af, hvad dine klienter "
+"vil se. Størrelsen på denne forhåndsvisning er fast, men husk at du kan "
+"ændre skærmstørrelse og billedkvalitet for din klients sider i"
+
+#: branding.php:134
+msgid "options"
+msgstr "indstillinger"
+
+#: branding.php:134
+msgid "section."
+msgstr "-sektionen."
+
+#: branding.php:141
+msgid "Logo Placeholder"
+msgstr "Logopladsholder"
+
+#: branding.php:152
+msgid "Select image to upload"
+msgstr "Vælg billede til upload"
+
+#: branding.php:164 header-menu.php:45 header-menu.php:161
+msgid "Upload"
+msgstr "Upload"
+
+#: categories-form.php:14
+msgid "Create"
+msgstr ""
+
+#: categories-form.php:17
+msgid "Save"
+msgstr ""
+
+#: categories-form.php:27 categories.php:294 clients-form.php:104
+#: options.php:394 users-form.php:86
+msgid "Name"
+msgstr "Navn"
+
+#: categories-form.php:34
+msgid "Parent"
+msgstr ""
+
+#: categories-form.php:37 options.php:519
+msgid "None"
+msgstr "Ingen"
+
+#: categories-form.php:48 categories.php:296 edit-file.php:379
+#: groups-form.php:45 groups.php:277 upload-process-form.php:291
+#: upload-process-form.php:485
+msgid "Description"
+msgstr "Beskrivelse"
+
+#: categories-form.php:56 edit-file.php:524
+msgid "Cancel"
+msgstr "Annuller"
+
+#: categories.php:18
+msgid "Categories administration"
+msgstr ""
+
+#: categories.php:31
+msgid "Please select at least one category to proceed."
+msgstr ""
+
+#: categories.php:38
+msgid "categories. Are you sure you want to continue?"
+msgstr ""
+
+#: categories.php:71
+msgid "The category was successfully created."
+msgstr ""
+
+#: categories.php:75
+msgid "The category was successfully edited."
+msgstr ""
+
+#: categories.php:114
+msgid "The selected categories were deleted."
+msgstr ""
+
+#: categories.php:132
+msgid "Please select at least one category."
+msgstr ""
+
+#: categories.php:149
+msgid "Create new category"
+msgstr ""
+
+#: categories.php:161
+msgid "Edit category"
+msgstr ""
+
+#: categories.php:214
+msgid "There was a problem savint to the database."
+msgstr ""
+
+#: categories.php:219
+msgid "Please complete all the required fields."
+msgstr ""
+
+#: categories.php:251
+msgid "Selected categories actions"
+msgstr ""
+
+#: categories.php:253 clients.php:203 groups.php:230 manage-files.php:493
+#: users.php:242
+msgid "Delete"
+msgstr "Slet"
+
+#: categories.php:264
+msgid "categories"
+msgstr ""
+
+#: categories.php:274 clients.php:223 groups.php:250 manage-files.php:517
+#: users.php:261
+msgid "Your search keywords returned no results."
+msgstr "Din søgning gav ingen resultater."
+
+#: categories.php:279
+msgid "There are no categories yet."
+msgstr ""
+
+#: categories.php:295 groups.php:279 header-menu.php:41 home.php:162
+#: options.php:339
+msgid "Files"
+msgstr "Filer"
+
+#: categories.php:297 clients.php:255 groups.php:282 manage-files.php:590
+#: upload-import-orphans.php:166 upload-process-form.php:302 users.php:283
+msgid "Actions"
+msgstr "Handlinger"
+
+#: categories.php:339 clients.php:359 groups.php:325 header-menu.php:52
+#: header-menu.php:171 manage-files.php:17
+msgid "Manage files"
+msgstr "Administrer filer"
+
+#: categories.php:340 clients.php:362 groups.php:326 manage-files.php:826
+#: upload-import-orphans.php:182 users.php:325
+msgid "Edit"
+msgstr "Rediger"
+
+#: clients-add.php:14 clients-form.php:64
+msgid "Add client"
+msgstr "Tilføj klient"
+
+#: clients-add.php:91
+msgid "Client added correctly."
+msgstr "Klient tilføjet"
+
+#: clients-add.php:105 clients-edit.php:167 email-templates.php:74
+#: groups-add.php:88 groups-edit.php:137 options.php:136 register.php:147
+#: users-add.php:102 users-edit.php:170
+msgid "There was an error. Please try again."
+msgstr "Der var en fejl. Prøv igen."
+
+#: clients-add.php:114
 msgid "An e-mail notification with login information was sent to your client."
 msgstr ""
 "En email-underretning med login-informationen blev sendt til din klient."
 
-#. Text in function
-#: reset-password.php:322
-msgid ""
-"An e-mail with further instructions has been sent. Please check your inbox "
-"to proceed."
-msgstr ""
-"En email med yderligere instruktioner er blevet sendt. Tjek din inbox for at "
-"fortsætte."
-
-#. Text in echo
-#: edit-file.php:379 upload-process-form.php:516
-msgid "Assign this file to"
-msgstr "Tildel denne fil til"
-
-#. Text in echo
-#: edit-file.php:378 upload-process-form.php:515
-msgid "Assignations"
-msgstr "Tildelninger"
-
-#. Text in echo
-#: options.php:415
-msgid "Authentication"
-msgstr "Godkendelse"
-
-#. Text in echo
-#: actions-log.php:227
-msgid "Author"
-msgstr "Forfatter"
-
-#. Text in echo
-#: options.php:259
-msgid "Auto approve new accounts"
-msgstr "Auto-godkend nye brugere"
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid "Auto-approvals of new accounts are currently enabled."
-msgstr "Auto-godkendelse af nye brugere er slået til."
-
-#. Text in echo
-#: options.php:192
-msgid ""
-"Basic information to be shown around the site. The time format and zones "
-"values affect how the clients see the dates on their files lists."
-msgstr ""
-"Grundlæggende oplysninger, der skal vises rundt på siden. Tidsformat og "
-"zoneværdier påvirker, hvordan klienter ser datoerne på deres fillister."
-
-#. Text in echo
-#: install/index.php:249
-msgid "Basic system options"
-msgstr "Grundlæggende systemindstillinger"
-
-#. Text in echo
-#: options.php:433
-msgid ""
-"Be careful when changing this options. They could affect not only the system "
-"but the whole server it is installed on."
-msgstr ""
-"Vær forsigtig når du ændrer denne indstilling. Ændringer kan påvirke hele "
-"serveren."
-
-#. Text in echo
-#: header.php:331 branding.php:26
-msgid "Branding"
-msgstr "Markedsføring"
-
-#. Text in echo
-#: edit-file.php:432
-msgid "Cancel"
-msgstr "Annuller"
-
-#. Text in echo
-#: actions-log.php:190
-msgid "Clear entire log"
-msgstr "Ryd hele loggen"
-
-#. Text in echo
-#: upload-from-computer.php:48
-msgid ""
-"Click on Add files to select all the files that you want to upload, and then "
-"click continue. On the next step, you will be able to set a name and "
-"description for each uploaded file. Remember that the maximum allowed file "
-"size (in mb.) is "
-msgstr ""
-"Klik på Tilføj filer for at vælge de filer, du vil uploade, og klik derefter "
-"på Upload filer. På det næste trin, kan du angive et navn og en beskrivelse "
-"til hver uploadede fil. Husk, at den maksimalt tilladte filstørrelse (i MB) "
-"er "
-
-#. Text in echo
-#: manage-files.php:129
-msgid "Click to select"
-msgstr "Klik for at vælge"
-
-#. Text in function
-#: sys.vars.php:1
-msgid "Client"
-msgstr "Klient"
-
-#. Text in function
-#: clients-add.php:83
-msgid "Client added correctly."
-msgstr "Klient tilføjet"
-
-#. Text in function
-#: clients-edit.php:143
-msgid "Client edited correctly."
-msgstr "Klient tilføjet"
-
-#. Text in function
-#: register.php:89
-msgid ""
-"Client self registration is not allowed. If you need an account, please "
-"contact a system administrator."
-msgstr ""
-"Selvregistrering for klienter er ikke tilladt. Har du brug for en bruger, "
-"kan du kontakte systemadministratoren."
-
-#. Text in echo
-#: options.php:199
-msgid "Client's template"
-msgstr "Klienters udseende"
-
-#. Text in echo
-#: header.php:236 edit-file.php:381 home.php:159 upload-process-form.php:518
-#: options.php:178
-msgid "Clients"
-msgstr "Klienter"
-
-#. Text in function
-#: clients.php:57
-msgid "Clients Administration"
-msgstr "Klientadministration"
-
-#. Text in echo
-#: options.php:255
-msgid "Clients can register themselves"
-msgstr "Klienter kan registrere sig selv"
-
-#. Text in echo
-#: options.php:297
-msgid "Clients can upload files"
-msgstr "Klienter kan uploade filer"
-
-#. Text in echo
-#: header.php:271
-msgid "Clients groups"
-msgstr "Klientgrupper"
-
-#. Text in echo
-#: options.php:441
-msgid "Clients only"
-msgstr "Kun klienter"
-
-#. Text in echo
-#: home.php:83
-msgid "Clients self-registrations"
-msgstr "Klient-selvregistreringer"
-
-#. Text in echo
-#: manage-files.php:129
-msgid "Close"
-msgstr "Luk"
-
-#. Text in echo
-#: options.php:182
-msgid "Company logo"
-msgstr "Firmalogo"
-
-#. Text in function
-#: install/index.php:159
-msgid "Congratulations! Everything is up and running."
-msgstr "Tillykke! Alt kører som det skal."
-
-#. Text in echo
-#: index.php:166 edit-file.php:433 upload-import-orphans.php:203
-#: reset-password.php:314 upload-process-form.php:585
-msgid "Continue"
-msgstr "Fortsæt"
-
-#. Text in echo
-#: upload-process-form.php:548
-msgid "Copy selections to other files"
-msgstr "Kopier valg til andre filer"
-
-#. Text in echo
-#: includes/functions.php:288
-msgid "Create a new one"
-msgstr "Opret en ny"
-
-#. Text in function
-#: groups-form.php:23
-msgid "Create group"
-msgstr "Opret gruppe"
-
-#. Text in echo
-#: groups.php:248
-msgid "Created by"
-msgstr "Oprettet af"
-
-#. Text in echo
-#: branding.php:128
-msgid "Current logo"
-msgstr "Nuværende logo"
-
-#. Text in echo
-#: header.php:209
-msgid "Dashboard"
-msgstr "Betjeningspanel"
-
-#. Text in echo
-#: actions-log.php:226 manage-files.php:448
-msgid "Date"
-msgstr "Dato"
-
-#. Text in echo
-#: options.php:365
-msgid "Days before expiring"
-msgstr "Antal dage til udløb"
-
-#. Text in echo
-#: clients.php:181 users.php:214
-msgid "Deactivate"
-msgstr "Deaktivér"
-
-#. Text in echo
-#: install/index.php:266
-msgid "Default system administrator options"
-msgstr "Standard systemadministratorindstillinger"
-
-#. Text in echo
-#: options.php:343
-msgid ""
-"Define here who will receive copies of this emails. These are sent as BCC so "
-"neither recipient will see the other addresses."
-msgstr ""
-"Definér her hvem der skal modtage kopier af disse emails. De sendes som BCC, "
-"så ingen modtagere kan se de andres adresser."
-
-#. Text in echo
-#: options.php:362
-msgid "Define how many times will the system attemp to send each notification."
-msgstr ""
-"Vælg hvor mange gange systemet skal forsøge at sende hver underretning."
-
-#. Text in echo
-#: clients.php:182 groups.php:199 users.php:215 manage-files.php:392
-msgid "Delete"
-msgstr "Slet"
-
-#. Text in echo
-#: actions-log.php:189
-msgid "Delete selected"
-msgstr "Slet valgte"
-
-#. Text in echo
-#: groups.php:245 edit-file.php:338 groups-form.php:43
-#: upload-process-form.php:269 upload-process-form.php:476
-msgid "Description"
-msgstr "Beskrivelse"
-
-#. Text in echo
-#: includes/updates.messages.php:22
-msgid "Do you want to support ProjectSend?"
-msgstr "Har du lyst til at støtte ProjectSend?"
-
-#. Text in echo
-#: manage-files.php:596
-msgid "Does not expire"
-msgstr "Udløber ikke"
-
-#. Text in echo
-#: index.php:176
-msgid "Don't have an account yet?"
-msgstr "Har du ikke en bruger endnu?"
-
-#. Text in echo
-#: options.php:303
-msgid "Don't show it on the files list"
-msgstr "Vis den ikke på fillisten"
-
-#. Text in function
-#: download.php:119
-msgid "Download"
-msgstr "Download"
-
-#. Text in echo
-#: actions-log.php:188
-msgid "Download as csv"
-msgstr "Download som csv"
-
-#. Text in echo
-#: manage-files.php:467
-msgid "Download count"
-msgstr "Downloadtæller"
-
-#. Text in echo
-#: download.php:98
-msgid "Download file"
-msgstr "Download fil"
-
-#. Text in echo
-#: templates/default/template.php:44
-msgid "Download zipped"
-msgstr "Download som zip"
-
-#. Text in echo
-#: manage-files.php:110
-msgid "Downloaders of file:"
-msgstr "Downloadere af filen:"
-
-#. Text in echo
-#: home-statistics.php:178 home.php:46 home.php:79
-msgid "Downloads"
-msgstr "Downloads"
-
-#. Text in echo
-#: users-form.php:101 clients.php:227 clients-form.php:115
-#: reset-password.php:272 users.php:251
-msgid "E-mail"
-msgstr "Email"
-
-#. Text in echo
-#: install/index.php:274 options.php:322
-msgid "E-mail address"
-msgstr "Email-adresse"
-
-#. Text in function
-#: includes/vars.php:1
-msgid "E-mail address is not valid"
-msgstr "Email-adressen er ikke gyldig"
-
-#. Text in function
-#: reset-password.php:322
-msgid "E-mail couldn't be sent."
-msgstr "Email kunne ikke afsendes."
-
-#. Text in function
-#: register.php:89 users-add.php:75 clients-add.php:83
+#: clients-add.php:118 register.php:171 users-add.php:115
 msgid "E-mail notification couldn't be sent."
 msgstr "Email-underretningen kunne ikke sendes."
 
-#. Text in echo
-#: options.php:179
-msgid "E-mail notifications"
-msgstr "Email-underretninger"
-
-#. Text in function
-#: upload-send-notifications.php:1
-msgid "E-mail notifications for inactive clients were not sent."
-msgstr "Email-underretninger for inaktive klienter blev ikke sendt."
-
-#. Text in function
-#: upload-send-notifications.php:1
-msgid "E-mail notifications have been sent."
-msgstr "Email-underretninger blev sendt."
-
-#. Text in echo
-#: options.php:373
-msgid "E-mail sending options"
-msgstr "Email-afsendingsindstillinger"
-
-#. Text in echo
-#: header.php:332 email-templates.php:1
-msgid "E-mail templates"
-msgstr "Email-skabeloner"
-
-#. Text in function
-#: includes/vars.php:1
-msgid "E-mail was not completed"
-msgstr "Email blev ikke udfyldt"
-
-#. Text in echo
-#: clients.php:329 groups.php:293 users.php:296 manage-files.php:666
-msgid "Edit"
-msgstr "Rediger"
-
-#. Text in function
-#: clients-edit.php:208
+#: clients-edit.php:120
 msgid "Edit client"
 msgstr "Rediger klient"
 
-#. Text in function
-#: edit-file.php:1 upload-process-form.php:303 upload-process-form.php:355
-msgid "Edit file"
-msgstr "Rediger fil"
+#: clients-edit.php:122 users-edit.php:125
+msgid "My account"
+msgstr "Min bruger"
 
-#. Text in function
-#: groups-edit.php:158
-msgid "Edit group"
-msgstr "Rediger gruppe"
+#: clients-edit.php:151
+msgid "Client edited correctly."
+msgstr "Klient tilføjet"
 
-#. Text in function
-#: users-edit.php:216
-msgid "Edit system user"
-msgstr "Rediger systembruger"
+#: clients-edit.php:176 groups-edit.php:146 users-edit.php:179
+msgid "This page is not intended to be accessed directly."
+msgstr "Denne side er ikke beregnet til at blive tilgået direkte."
 
-#. Text in echo
-#: edit-file.php:337 upload-process-form.php:475
-msgid "Enter here the required file title."
-msgstr "Skriv filtitel her"
+#: clients-edit.php:178
+msgid "No client was selected."
+msgstr "Ingen klient valgt"
 
-#. Text in echo
-#: options.php:440
-msgid "Everyone"
-msgstr "Alle"
+#: clients-edit.php:183
+msgid "There is no client with that ID number."
+msgstr "Der er ingen klient med det ID-nummer."
 
-#. Text in echo
-#: options.php:357
-msgid "Expiration"
-msgstr "Udløb"
+#: clients-edit.php:188 users-edit.php:191
+msgid "Your account type doesn't allow you to access this feature."
+msgstr "Din brugertype tillader dig ikke adgang til denne funktion."
 
-#. Text in echo
-#: edit-file.php:357 upload-process-form.php:493
-msgid "Expiration date"
-msgstr "Udløbsdato"
+#: clients-form.php:59
+msgid "Will be visible on the client's file list"
+msgstr "Vil være synlig på klientens filliste"
 
-#. Text in echo
-#: manage-files.php:604
-msgid "Expired on"
-msgstr "Udløb"
+#: clients-form.php:73
+msgid "Save client"
+msgstr "Gem klient"
 
-#. Text in echo
-#: manage-files.php:611
-msgid "Expires on"
-msgstr "Udløber"
+#: clients-form.php:82
+msgid "Register account"
+msgstr "Registrer bruger"
 
-#. Text in echo
-#: manage-files.php:457
-msgid "Expiry"
-msgstr "Udløb"
+#: clients-form.php:88
+msgid "Your full name"
+msgstr "Dit fulde navn"
 
-#. Text in echo
-#: templates/default/template.php:82 manage-files.php:449
-msgid "Ext."
-msgstr "Endelse"
+#: clients-form.php:92 users-form.php:76
+msgid "Update account"
+msgstr "Opdater bruger"
 
-#. Text in echo
-#: upload-process-form.php:270 upload-process-form.php:608
-msgid "File Name"
-msgstr "Filnavn"
+#: clients-form.php:111 clients.php:244 install/index.php:250 users-form.php:93
+#: users.php:278
+msgid "Log in username"
+msgstr "Login-brugernavn"
 
-#. Text in echo
-#: edit-file.php:358 upload-process-form.php:494
-msgid "File expires"
-msgstr "Fil udløber"
+#: clients-form.php:113 users-form.php:95
+msgid "Must be alphanumeric"
+msgstr "Skal være alfanumerisk"
 
-#. Text in echo
-#: edit-file.php:332 upload-process-form.php:467
-msgid "File information"
-msgstr "Filinformation"
+#: clients-form.php:118 includes/vars.php:49 index.php:210
+#: install/index.php:258 install/make-config.php:268 options.php:490
+#: users-form.php:100
+msgid "Password"
+msgstr "Adgangskode"
 
-#. Text in echo
-#: upload-import-orphans.php:177
-msgid "File is not public."
-msgstr "Fil er ikke offentlig."
+#: clients-form.php:126 install/index.php:266 reset-password.php:340
+#: users-form.php:108
+msgid "Generate"
+msgstr ""
 
-#. Text in echo
-#: upload-import-orphans.php:159
-msgid "File name"
-msgstr "Filnavn"
+#: clients-form.php:132 clients.php:245 index.php:205 reset-password.php:291
+#: users-form.php:114 users.php:279
+msgid "E-mail"
+msgstr "Email"
 
-#. Text in echo
-#: upload-import-orphans.php:160
-msgid "File size"
-msgstr "Filstørrelse"
+#: clients-form.php:134 users-form.php:116
+msgid "Must be valid and unique"
+msgstr "Skal være gyldigt og unikt"
 
-#. Text in echo
-#: options.php:499
-msgid "File's path"
-msgstr "Filsti"
+#: clients-form.php:139 clients.php:252
+msgid "Address"
+msgstr "Adresse"
 
-#. Text in echo
-#: header.php:215 groups.php:247 home.php:158 options.php:290
-msgid "Files"
-msgstr "Filer"
+#: clients-form.php:146 clients.php:253
+msgid "Telephone"
+msgstr "Telefon"
 
-#. Text in echo
-#: upload-process-form.php:604
-msgid "Files not uploaded"
-msgstr "Filer ikke uploadet"
+#: clients-form.php:156
+msgid "Internal contact name"
+msgstr "Internt kontaktnavn"
 
-#. Text in echo
-#: upload-process-form.php:379
-msgid "Files ready to upload"
-msgstr "Filer klar til upload"
+#: clients-form.php:164
+msgid "Active (client can log in)"
+msgstr "Aktiv (klient kan logge ind)"
 
-#. Text in echo
-#: upload-process-form.php:264
-msgid "Files uploaded correctly"
-msgstr "Filer blev uploadet"
+#: clients-form.php:174
+msgid "Notify new uploads by e-mail"
+msgstr "Underret om nye uploads med email"
 
-#. Text in echo
-#: clients.php:229
-msgid "Files: Groups"
-msgstr "Filer: Grupper"
+#: clients-form.php:184
+msgid "Verification"
+msgstr ""
 
-#. Text in echo
-#: clients.php:228
-msgid "Files: Own"
-msgstr "Filer: Ejet"
+#: clients-form.php:200 users-form.php:151
+msgid "This account information will be e-mailed to the address supplied above"
+msgstr "Disse kontooplysninger vil blive sendt til email-adressen ovenover"
 
-#. Text in echo
-#: clients.php:169 actions-log.php:176 users.php:202 manage-files.php:363
-msgid "Filter"
-msgstr "Filtrer"
+#: clients.php:18
+msgid "Clients Administration"
+msgstr "Klientadministration"
 
-#. Text in echo
-#: header.php:220 upload-import-orphans.php:242
-msgid "Find orphan files"
-msgstr "Find hjemløse filer"
+#: clients.php:38
+msgid "Please select at least one client to proceed."
+msgstr "Vælg venligst mindst en klient for at fortsætte"
 
-#. Text in echo
-#: email-templates.php:223
-msgid "Footer"
-msgstr "Sidefod"
+#: clients.php:45
+msgid ""
+"clients and all of the assigned files. Are you sure you want to continue?"
+msgstr ""
+"klienter og alle de tildelte filer. Er du sikker på, at du ønsker at "
+"fortsætte?"
 
-#. Text in echo
-#: options.php:226
-msgid "For example, d/m/Y h:i:s will result in something like"
-msgstr "For eksempel vil d/m/Y h:i:s resultere i noget ligende dette"
+#: clients.php:91
+msgid "The selected clients were marked as active."
+msgstr "De valgte klienter blev markeret som aktive."
 
-#. Text in echo
-#: options.php:227
-msgid "For the full list of available values, visit"
-msgstr "Vi anbefaler at bruge \"d/m/Y - H:i:s\". For mere information se"
+#: clients.php:105
+msgid "The selected clients were marked as inactive."
+msgstr "De valgte klienter blev markeret som inaktive."
 
-#. Text in echo
-#: index.php:172
-msgid "Forgot your password?"
-msgstr "Glemt adgangskode?"
+#: clients.php:116
+msgid "The selected clients were deleted."
+msgstr "De valgte klienter blev slettet."
 
-#. Text in echo
-#: includes/functions.php:270
-msgid "Free software"
-msgstr "Gratis software"
+#: clients.php:134
+msgid "Please select at least one client."
+msgstr "Vælg venligst mindst én klient"
 
-#. Text in echo
-#: clients.php:225 install/index.php:270 includes/classes/send-email.php:1
-#: users.php:249
+#: clients.php:184 manage-files.php:450 users.php:223
+msgid "All statuses"
+msgstr "Alle statusser"
+
+#: clients.php:185 clients.php:323 users.php:224 users.php:313
+msgid "Active"
+msgstr "Aktiv"
+
+#: clients.php:186 clients.php:322 users.php:225 users.php:312
+msgid "Inactive"
+msgstr "Inaktiv"
+
+#: clients.php:199
+msgid "Selected clients actions"
+msgstr "Handlinger for valgte klienter"
+
+#: clients.php:201 users.php:240
+msgid "Activate"
+msgstr "Aktivér"
+
+#: clients.php:202 users.php:241
+msgid "Deactivate"
+msgstr "Deaktivér"
+
+#: clients.php:213
+msgid "clients"
+msgstr "klienter"
+
+#: clients.php:231
+msgid "There are no clients at the moment"
+msgstr "Der er ingen klienter i øjeblikket"
+
+#: clients.php:243 includes/classes/send-email.php:59 install/index.php:236
+#: users.php:277
 msgid "Full name"
 msgstr "Fulde navn"
 
-#. Text in echo
-#: options.php:191
-msgid "General"
-msgstr "Generelt"
+#: clients.php:246
+msgid "Files: Own"
+msgstr "Filer: Ejet"
 
-#. Text in echo
-#: options.php:177
-msgid "General Options"
-msgstr "Grundlæggende indstillinger"
+#: clients.php:247
+msgid "Files: Groups"
+msgstr "Filer: Grupper"
 
-#. Text in echo
-#: header.php:329
-msgid "General options"
-msgstr "Grundlæggende indstillinger"
+#: clients.php:248 manage-files.php:578 upload-process-form.php:296
+#: users.php:281
+msgid "Status"
+msgstr "Status"
 
-#. Text in echo
-#: reset-password.php:328 download.php:106 register.php:173
-msgid "Go back to the homepage."
-msgstr "Gå tilbage til hjemmesiden."
-
-#. Text in function
-#: groups-add.php:63
-msgid "Group added correctly."
-msgstr "Gruppen blev tilføjet"
-
-#. Text in function
-#: groups-edit.php:104
-msgid "Group edited correctly."
-msgstr "Gruppen blev redigeret"
-
-#. Text in echo
-#: groups.php:244 groups-form.php:39
-msgid "Group name"
-msgstr "Gruppenavn"
-
-#. Text in echo
-#: edit-file.php:396 home.php:160 upload-process-form.php:531
-msgid "Groups"
-msgstr "Grupper"
-
-#. Text in function
-#: groups.php:76
-msgid "Groups administration"
-msgstr "Gruppeadministration"
-
-#. Text in echo
-#: clients.php:231
+#: clients.php:249
 msgid "Groups on"
 msgstr "Grupper i"
 
-#. Text in function
-#: groups.php:76
-msgid "Groups where"
-msgstr "Grupper hvor"
+#: clients.php:250
+msgid "Notify"
+msgstr "Underret"
 
-#. Text in echo
-#: email-templates.php:215
-msgid "Header"
-msgstr "Sidehoved"
+#: clients.php:251 groups.php:281 users.php:282
+msgid "Added on"
+msgstr "Tilføjet den"
 
-#. Text in echo
-#: email-templates.php:187 email-templates.php:207
+#: clients.php:254
+msgid "Internal contact"
+msgstr "Intern kontakt"
+
+#: clients.php:332 download-information.php:125 manage-files.php:711
+msgid "Yes"
+msgstr "Ja"
+
+#: clients.php:332 download-information.php:126 manage-files.php:711
+msgid "No"
+msgstr "Nej"
+
+#: clients.php:360
+msgid "View groups"
+msgstr "Vis grupper"
+
+#: clients.php:361
+msgid "View as client"
+msgstr "Vis som klient"
+
+#: download-information.php:17
+msgid "Download information"
+msgstr ""
+
+#: download-information.php:64
+msgid "No file was selected."
+msgstr ""
+
+#: download-information.php:69
+msgid "There is no information with that file ID number."
+msgstr ""
+
+#: download-information.php:78 manage-files.php:585
+msgid "Total downloads"
+msgstr "Totalt antal downloads"
+
+#: download-information.php:87
+msgid "Time"
+msgstr ""
+
+#: download-information.php:88 includes/vars.php:16
+msgid "Client"
+msgstr "Klient"
+
+#: download-information.php:89
+msgid "Anonymous"
+msgstr ""
+
+#: download-information.php:90
+msgid "Client's IP"
+msgstr ""
+
+#: download-information.php:91
+msgid "Client's hostname"
+msgstr ""
+
+#: download-information.php:98
+msgid "Unique logged in clients/users"
+msgstr ""
+
+#: download-information.php:99
+msgid "Total public downloads"
+msgstr ""
+
+#: download.php:11
+msgid "Download"
+msgstr "Download"
+
+#: download.php:120 reset-password.php:218
+msgid "The request is not valid."
+msgstr "Anmodningen er ikke gyldig."
+
+#: download.php:130
+msgid "The following file is now ready for you to download:"
+msgstr "Den følgende fil er nu klar til at du kan downloade den:"
+
+#: download.php:132
+msgid "Download file"
+msgstr "Download fil"
+
+#: download.php:140 register.php:188 reset-password.php:361
+msgid "Go back to the homepage."
+msgstr "Gå tilbage til hjemmesiden."
+
+#: edit-file.php:23 upload-process-form.php:355
+msgid "Edit file"
+msgstr "Rediger fil"
+
+#: edit-file.php:118
+msgid ""
+"Please go to the clients or groups administration page, select \"Manage files"
+"\" from any client and then click on \"Edit\" on any file to return here."
+msgstr ""
+"Gå venligst til klient- eller gruppeadministrationssiden og vælg "
+"\"Administrer filer\" fra enhver klient, og klik derefter på \"Rediger\" på "
+"enhver fil at vende tilbage her."
+
+#: edit-file.php:121
+msgid "There is not file with that ID number."
+msgstr "Der er ingen fil med det ID-nummer."
+
+#: edit-file.php:124
+msgid "You don't have permission to edit this file."
+msgstr "Du har ikke rettigheder til at redigere denne fil."
+
+#: edit-file.php:308
+msgid "The file has been edited succesfuly."
+msgstr "Filen blev redigeret."
+
+#: edit-file.php:371 upload-process-form.php:475
+msgid "File information"
+msgstr "Filinformation"
+
+#: edit-file.php:374 manage-files.php:555 upload-process-form.php:290
+#: upload-process-form.php:480
+msgid "Title"
+msgstr "Titel"
+
+#: edit-file.php:375 upload-process-form.php:481
+msgid "Enter here the required file title."
+msgstr "Skriv filtitel her"
+
+#: edit-file.php:380 upload-process-form.php:486
+msgid "Optionally, enter here a description for the file."
+msgstr "Filbeskrivelse, dette er valgfrit"
+
+#: edit-file.php:401 upload-process-form.php:505
+msgid "Expiration date"
+msgstr "Udløbsdato"
+
+#: edit-file.php:404 upload-process-form.php:508
+msgid "Select a date"
+msgstr "Vælg en dato"
+
+#: edit-file.php:415 upload-process-form.php:519
+msgid "File expires"
+msgstr "Fil udløber"
+
+#: edit-file.php:421 upload-process-form.php:525
+msgid "Public downloading"
+msgstr "Offentlig download"
+
+#: edit-file.php:424 upload-process-form.php:528
+msgid "Allow public downloading of this file."
+msgstr "Tillad offentlig download af denne fil."
+
+#: edit-file.php:438 upload-process-form.php:297 upload-process-form.php:542
+msgid "Assignations"
+msgstr "Tildelninger"
+
+#: edit-file.php:439 upload-process-form.php:543
+msgid "Assign this file to"
+msgstr "Tildel denne fil til"
+
+#: edit-file.php:440 edit-file.php:497 groups-form.php:54
+#: upload-process-form.php:544 upload-process-form.php:593
+msgid "Select one or more options. Type to search."
+msgstr "Vælg én eller flere valgmuligheder. Indtast for at søge."
+
+#: edit-file.php:441 header-menu.php:73 home.php:163 options.php:185
+#: upload-process-form.php:545
+msgid "Clients"
+msgstr "Klienter"
+
+#: edit-file.php:456 home.php:164 upload-process-form.php:558
+msgid "Groups"
+msgstr "Grupper"
+
+#: edit-file.php:473 edit-file.php:507 groups-form.php:75
+#: upload-process-form.php:573 upload-process-form.php:603
+msgid "Add all"
+msgstr "Tilføj alle"
+
+#: edit-file.php:474 edit-file.php:508 groups-form.php:76
+#: upload-process-form.php:574 upload-process-form.php:604
+msgid "Remove all"
+msgstr "Fjern alle"
+
+#: edit-file.php:481
+msgid ""
+"Mark as hidden (will not send notifications) for new assigned clients and "
+"groups."
+msgstr ""
+"Markér som skjult (vil ikke sende underretninger) for nye tildelte klienter "
+"og grupper."
+
+#: edit-file.php:486
+msgid "Hide from every already assigned clients and groups."
+msgstr "Skjul fra alle allerede tildelte klienter og grupper."
+
+#: edit-file.php:495 header-menu.php:63 upload-process-form.php:591
+msgid "Categories"
+msgstr ""
+
+#: edit-file.php:496 upload-process-form.php:592
+msgid "Add to"
+msgstr ""
+
+#: edit-file.php:525 upload-import-orphans.php:204 upload-process-form.php:639
+msgid "Continue"
+msgstr "Fortsæt"
+
+#: edit-file.php:537 groups-form.php:89 upload-process-form.php:689
+msgid "No results where found."
+msgstr "Ingen resultater fundet."
+
+#: email-preview.php:11 email-templates.php:12 header-menu.php:144
+msgid "E-mail templates"
+msgstr "Email-skabeloner"
+
+#: email-preview.php:11
+msgid "Preview"
+msgstr ""
+
+#: email-templates.php:70 options.php:132
+msgid "Options updated succesfuly."
+msgstr "Indstillingerne blev gemt"
+
+#: email-templates.php:83
+msgid "(to be used as href on a link tag)"
+msgstr "(til brug som href i et link-tag)"
+
+#: email-templates.php:88
+msgid "New file by user"
+msgstr "Ny fil af bruger"
+
+#: email-templates.php:91
+msgid ""
+"This email will be sent to a client whenever a new file has been assigned to "
+"his account."
+msgstr ""
+"Denne email vil blive sendt til en klient når en ny fil bliver tildelt til "
+"dennes bruger."
+
+#: email-templates.php:95 email-templates.php:108
+msgid "Shows the list of files"
+msgstr "Viser fillisten"
+
+#: email-templates.php:96 email-templates.php:109 email-templates.php:123
+#: email-templates.php:137 email-templates.php:151
+msgid "The login link"
+msgstr "Login-linket"
+
+#: email-templates.php:101
+msgid "New file by client"
+msgstr "Ny fil af klient"
+
+#: email-templates.php:104
+msgid ""
+"This email will be sent to the system administrator whenever a client "
+"uploads a new file."
+msgstr ""
+"Denne email vil blive sendt til systemadministratoren når en klient uploader "
+"en ny fil."
+
+#: email-templates.php:114
+msgid "New client (welcome)"
+msgstr "Ny klient (velkommen)"
+
+#: email-templates.php:117
+msgid ""
+"This email will be sent to the new client after an administrator has created "
+"his new account. It would be best to include the log in details (username "
+"and password)."
+msgstr ""
+"Denne email vil blive sendt til den nye klient efter en administrator har "
+"oprettet brugeren. Det vil være bedst at medtage login-detaljer (brugernavn "
+"og adgangskode)."
+
+#: email-templates.php:121 email-templates.php:136 email-templates.php:149
+msgid "The new username for this account"
+msgstr "Det nye brugernavn for denne bruger"
+
+#: email-templates.php:122 email-templates.php:150
+msgid "The new password for this account"
+msgstr "Den nye adgangskode for denne bruger"
+
+#: email-templates.php:128
+msgid "New client (self-registered)"
+msgstr "Ny klient (selvregistreret)"
+
+#: email-templates.php:131
+msgid ""
+"This email will be sent to the system administrator after a new client has "
+"created a new account for himself."
+msgstr ""
+"Denne email vil blive sendt til systemadministratoren efter en ny klient "
+"selv har oprettet en bruger."
+
+#: email-templates.php:135
+msgid "The full name the client registered with"
+msgstr "Det fulde navn klienten registrerede sig med"
+
+#: email-templates.php:142
+msgid "New user (welcome)"
+msgstr "Ny systembruger (velkommen)"
+
+#: email-templates.php:145
+msgid ""
+"This email will be sent to the new system user after an administrator has "
+"created his new account. It would be best to include the log in details "
+"(username and password)."
+msgstr ""
+"Denne email vil blive sendt til den nye systembruger efter en administrator "
+"har oprettet brugeren. Det vil være bedst at medtage login-detaljer "
+"(brugernavn og adgangskode)"
+
+#: email-templates.php:156
+msgid "Password reset"
+msgstr "Adgangskodenulstilling"
+
+#: email-templates.php:159
+msgid ""
+"This email will be sent to a user or client when they try to reset their "
+"password."
+msgstr ""
+"Denne email vil blive sendt til en bruger eller klient når de prøver at "
+"nulstille deres adgangskode."
+
+#: email-templates.php:163
+msgid "The username for this account"
+msgstr "Brugernavnet for denne bruger"
+
+#: email-templates.php:164
+msgid "The text string unique to this request. Must be included somewhere."
+msgstr "Tekststrengen er unik for denne anmodning. Skal inkluderes et sted."
+
+#: email-templates.php:165
+msgid "The link to continue the process"
+msgstr "Brug følgende link"
+
+#: email-templates.php:173 email-templates.php:197
 msgid "Header / Footer"
 msgstr "Sidehoved / Sidefod"
 
-#. Text in echo
-#: options.php:374
-msgid ""
-"Here you can select which mail system will be used when sending the "
-"notifications. If you have a valid e-mail account, SMTP is the recommended "
-"option."
-msgstr ""
-"Her kan du vælge hvilket mail-system vil blive brugt, når du sender "
-"underretninger. SMTP er den anbefalede indstilling."
-
-#. Text in echo
-#: email-templates.php:208
+#: email-templates.php:198
 msgid ""
 "Here you set up the header and footer of every email, or use the default "
 "ones available with the system. Use this to customize each part and include, "
@@ -1119,28 +914,815 @@ msgstr ""
 "standard-skabelonerne. Brug dette til at tilpasse hver del og inkludér for "
 "eksempel dit eget logo og markup."
 
-#. Text in echo
-#: manage-files.php:360 manage-files.php:645 upload-process-form.php:293
-msgid "Hidden"
-msgstr "Skjult"
+#: email-templates.php:199
+msgid ""
+"Do not forget to also include -and close accordingly- the basic structural "
+"HTML tags (DOCTYPE, HTML, HEADER, BODY)."
+msgstr ""
 
-#. Text in echo
-#: manage-files.php:386
-msgid "Hide"
-msgstr "Skjul"
+#: email-templates.php:206
+msgid "Use custom header / footer"
+msgstr "Brug brugerdefineret sidehoved / sidefod"
 
-#. Text in echo
-#: edit-file.php:420
-msgid "Hide from every already assigned clients and groups."
-msgstr "Skjul fra alle allerede tildelte klienter og grupper."
+#: email-templates.php:212
+msgid "Header"
+msgstr "Sidehoved"
 
-#. Text in echo
-#: options.php:407
-msgid "Host"
-msgstr "Host"
+#: email-templates.php:214 email-templates.php:220 email-templates.php:252
+msgid "You can use HTML tags here."
+msgstr "Du kan bruge HTML-tags her."
 
-#. Text in function
-#: includes/updates.functions.php:1
+#: email-templates.php:218
+msgid "Footer"
+msgstr "Sidefod"
+
+#: email-templates.php:244
+msgid "Use custom template"
+msgstr "Brug brugerdefineret skabelon"
+
+#: email-templates.php:250
+msgid "Template text"
+msgstr "Skabelontekst"
+
+#: email-templates.php:255
+msgid "The following tags can be used on this e-mails' body."
+msgstr "De følgende tags kan bruges i emailens body."
+
+#: email-templates.php:274
+msgid "Preview this template"
+msgstr ""
+
+#: email-templates.php:276
+msgid ""
+"Before trying this function, please save your changes to see them reflected "
+"on the preview."
+msgstr ""
+
+#: email-templates.php:292 options.php:770
+msgid "Update all options"
+msgstr "Opdater alle indstil..."
+
+#: groups-add.php:18
+msgid "Add clients group"
+msgstr "Tilføj klientgruppe"
+
+#: groups-add.php:74
+msgid "Group added correctly."
+msgstr "Gruppen blev tilføjet"
+
+#: groups-edit.php:18
+msgid "Edit group"
+msgstr "Rediger gruppe"
+
+#: groups-edit.php:123
+msgid "Group edited correctly."
+msgstr "Gruppen blev redigeret"
+
+#: groups-edit.php:148
+msgid "No group was selected."
+msgstr "Ingen gruppe valgt"
+
+#: groups-edit.php:153
+msgid "There is no group with that ID number."
+msgstr "Der er ingen gruppe med det ID-nummer."
+
+#: groups-form.php:26
+msgid "Create group"
+msgstr "Opret gruppe"
+
+#: groups-form.php:30
+msgid "Save group"
+msgstr "Gem gruppe"
+
+#: groups-form.php:38 groups.php:276
+msgid "Group name"
+msgstr "Gruppenavn"
+
+#: groups-form.php:52 groups.php:278
+msgid "Members"
+msgstr "Medlemmer"
+
+#: groups.php:18
+msgid "Groups administration"
+msgstr "Gruppeadministration"
+
+#: groups.php:33
+msgid "Groups where"
+msgstr "Grupper hvor"
+
+#: groups.php:33
+msgid "is member"
+msgstr "er medlem"
+
+#: groups.php:68
+msgid "Please select at least one group to proceed."
+msgstr "Vælg venligst mindst én gruppe for at fortsætte"
+
+#: groups.php:73
+msgid "groups. Are you sure you want to continue?"
+msgstr "grupper. Er du sikker på, at du ønsker at fortsætte?"
+
+#: groups.php:130
+msgid "The selected groups were deleted."
+msgstr "De valgte grupper blev slettet."
+
+#: groups.php:137
+msgid "Please select at least one group."
+msgstr "Vælg venligst mindst én gruppe"
+
+#: groups.php:227
+msgid "Selected groups actions"
+msgstr "Handlinger for valgte grupper"
+
+#: groups.php:240
+msgid "groups"
+msgstr "grupper"
+
+#: groups.php:256
+msgid "The client does not exist."
+msgstr "Klienten eksisterer ikke"
+
+#: groups.php:259
+msgid "There are no groups where this client is member."
+msgstr "Der er ingen grupper som denne klient er medlem af."
+
+#: groups.php:264
+msgid "There are no groups created yet."
+msgstr "Der er ikke oprettet nogen grupper endnu."
+
+#: groups.php:280
+msgid "Created by"
+msgstr "Oprettet af"
+
+#: header-menu.php:32
+msgid "Dashboard"
+msgstr "Betjeningspanel"
+
+#: header-menu.php:56 upload-import-orphans.php:22
+msgid "Find orphan files"
+msgstr "Find hjemløse filer"
+
+#: header-menu.php:78 header-menu.php:96 header-menu.php:115
+msgid "Add new"
+msgstr "Tilføj ny"
+
+#: header-menu.php:82
+msgid "Manage clients"
+msgstr "Administrer klienter"
+
+#: header-menu.php:92
+msgid "Clients groups"
+msgstr "Klientgrupper"
+
+#: header-menu.php:100
+msgid "Manage groups"
+msgstr "Administrer grupper"
+
+#: header-menu.php:110
+msgid "System Users"
+msgstr "Systembrugere"
+
+#: header-menu.php:119
+msgid "Manage system users"
+msgstr "Administrer systembrugere"
+
+#: header-menu.php:129
+msgid "Options"
+msgstr "Indstillinger"
+
+#: header-menu.php:133
+msgid "General options"
+msgstr "Grundlæggende indstillinger"
+
+#: header-menu.php:180 upload-process-form.php:362
+msgid "View my files"
+msgstr "Vis mine filer"
+
+#: header-unlogged.php:21
+msgid "setup"
+msgstr "opsætning"
+
+#: header.php:22
+msgid "System Administration"
+msgstr "Systemadministration"
+
+#: header.php:74
+msgid "Welcome"
+msgstr "Velkommen"
+
+#: header.php:84
+msgid "My Account"
+msgstr "Min bruger"
+
+#: header.php:85
+msgid "Logout"
+msgstr "Log ud"
+
+#: header.php:123
+msgid "Menu"
+msgstr ""
+
+#: home-log.php:65
+msgid "There are no results"
+msgstr "Der er ingen resultater"
+
+#: home-news-widget.php:8
+msgid "ProjectSend news"
+msgstr "ProjectSend-nyheder"
+
+#: home-statistics.php:178 home.php:47
+msgid "Uploads by users"
+msgstr "Uploads af systembrugere"
+
+#: home-statistics.php:182 home.php:48
+msgid "Uploads by clients"
+msgstr "Uploads af klienter"
+
+#: home-statistics.php:186 home.php:49 home.php:83
+msgid "Downloads"
+msgstr "Downloads"
+
+#: home-statistics.php:190 home.php:50
+msgid "Zip Downloads"
+msgstr "Zip-downloads"
+
+#: home-statistics.php:194
+msgid "Public downloads"
+msgstr ""
+
+#: home.php:14 includes/classes/send-email.php:44
+#: includes/classes/send-email.php:74
+msgid "Welcome to ProjectSend"
+msgstr "Velkommen til ProjectSend"
+
+#: home.php:39
+msgid "Statistics"
+msgstr "Statistikker"
+
+#: home.php:42 home.php:43 home.php:44
+msgid "days"
+msgstr "dage"
+
+#: home.php:51
+msgid "Public Downloads"
+msgstr ""
+
+#: home.php:65
+msgid "System data"
+msgstr "Systemdata"
+
+#: home.php:67
+msgid "Note:"
+msgstr "Bemærk:"
+
+#: home.php:67
+msgid ""
+"This graphic will help you get a relative view of the existing data, "
+"allowing you to see the relation between clients, users, groups and files."
+msgstr ""
+"Denne grafik giver dig et relativt syn på de eksisterende data, så du kan se "
+"forholdet mellem klienter, brugere, grupper og filer."
+
+#: home.php:78
+msgid "Recent activites"
+msgstr "Nylige aktiviteter"
+
+#: home.php:82
+msgid "Logins"
+msgstr "Logins"
+
+#: home.php:87
+msgid "Clients self-registrations"
+msgstr "Klient-selvregistreringer"
+
+#: home.php:95
+msgid "View all"
+msgstr "Vis alle"
+
+#: home.php:165
+msgid "Users"
+msgstr "Brugere"
+
+#: home.php:185
+msgid "Please wait while the system generates the statistics graph."
+msgstr "Vent venligst mens systemet genererer statistikgrafen"
+
+#: home.php:209
+msgid "Please wait while the system gets the information from the log."
+msgstr "Vent venligst mens systemet henter informationen fra loggen"
+
+#: includes/classes/actions-log.php:11
+msgid "ProjecSend has been installed"
+msgstr "ProjecSend er blevet installeret"
+
+#: includes/classes/actions-log.php:12
+msgid "Account logs in through the form"
+msgstr "Bruger loggede ind vha. formularen"
+
+#: includes/classes/actions-log.php:13
+msgid "Account logs in through cookies"
+msgstr "Bruger loggede ind vha. cookies"
+
+#: includes/classes/actions-log.php:14
+msgid "Account (user or client) logs out"
+msgstr "Bruger (system eller klient) loggede ud"
+
+#: includes/classes/actions-log.php:15
+msgid "A user creates a new user account"
+msgstr "En systembruger oprettede en ny systembruger"
+
+#: includes/classes/actions-log.php:16
+msgid "A user creates a new client account"
+msgstr "En systembruger oprettede en ny klientkonto"
+
+#: includes/classes/actions-log.php:17
+msgid "A client registers an account for himself"
+msgstr "En klient oprettede selv en bruger"
+
+#: includes/classes/actions-log.php:18
+msgid "A file is uploaded by an user"
+msgstr "En fil blev uploadet af en systembruger"
+
+#: includes/classes/actions-log.php:19
+msgid "A file is uploaded by a client"
+msgstr "En fil blev uploadet af en klient"
+
+#: includes/classes/actions-log.php:20
+msgid "A file is downloaded by a user (on \"Client view\" mode)"
+msgstr ""
+"En fil blev downloadet af en systembruger (i \"Klientvisning\"-tilstand)"
+
+#: includes/classes/actions-log.php:21
+msgid "A file is downloaded by a client"
+msgstr "En fil blev downloadet af en klient"
+
+#: includes/classes/actions-log.php:22
+msgid "A zip file was generated by a client"
+msgstr "En zip-fil blev genereret af en klient"
+
+#: includes/classes/actions-log.php:23
+msgid "A file has been unassigned from a client."
+msgstr "En fils tildeling til en klient blev fjernet"
+
+#: includes/classes/actions-log.php:24
+msgid "A file has been unassigned from a group"
+msgstr "En fils tildeling til en gruppe blev fjernet"
+
+#: includes/classes/actions-log.php:25
+msgid "A file has been deleted"
+msgstr "En fil blev slettet"
+
+#: includes/classes/actions-log.php:26
+msgid "A user was edited"
+msgstr "En systembruger blev redigeret"
+
+#: includes/classes/actions-log.php:27
+msgid "A client was edited"
+msgstr "En klient blev redigeret"
+
+#: includes/classes/actions-log.php:28
+msgid "A group was edited"
+msgstr "En gruppe blev redigeret"
+
+#: includes/classes/actions-log.php:29
+msgid "A user was deleted"
+msgstr "En systembruger blev slettet"
+
+#: includes/classes/actions-log.php:30
+msgid "A client was deleted"
+msgstr "En klient blev slettet"
+
+#: includes/classes/actions-log.php:31
+msgid "A group was deleted"
+msgstr "En gruppe blev slettet"
+
+#: includes/classes/actions-log.php:32
+msgid "A client account was activated"
+msgstr "En klientbruger blev aktiveret"
+
+#: includes/classes/actions-log.php:33
+msgid "A client account was deactivated"
+msgstr "En klientbruger blev deaktiveret"
+
+#: includes/classes/actions-log.php:34
+msgid "A user account was activated"
+msgstr "En systembruger blev aktiveret"
+
+#: includes/classes/actions-log.php:35
+msgid "A user account was deactivated"
+msgstr "En systembruger blev deaktiveret"
+
+#: includes/classes/actions-log.php:36
+msgid "A file was marked as hidden"
+msgstr "En fil blev markeret som skjult"
+
+#: includes/classes/actions-log.php:37
+msgid "A file was marked as visible"
+msgstr "En fil blev markeret som synlig"
+
+#: includes/classes/actions-log.php:38
+msgid "A user creates a new group"
+msgstr "En systembruger oprettede en ny gruppe"
+
+#: includes/classes/actions-log.php:39
+msgid "A file is assigned to a client"
+msgstr "En fil blev tildelt en klient"
+
+#: includes/classes/actions-log.php:40
+msgid "A file is assigned to a group"
+msgstr "En fil blev tildelt en gruppe"
+
+#: includes/classes/actions-log.php:41
+msgid "A user account was marked as active"
+msgstr "En systembruger blev markeret som aktiv"
+
+#: includes/classes/actions-log.php:42
+msgid "A user account was marked as inactive"
+msgstr "En systembruger blev markeret som inaktiv"
+
+#: includes/classes/actions-log.php:43
+msgid "The logo on \"Branding\" was changed"
+msgstr "Logoet i \"Markedsføring\" blev ændret"
+
+#: includes/classes/actions-log.php:44
+msgid "ProjectSend was updated"
+msgstr "ProjectSend blev opdateret"
+
+#: includes/classes/actions-log.php:45
+msgid "A system user edited a file."
+msgstr "En systembruger redigerede en fil."
+
+#: includes/classes/actions-log.php:46
+msgid "A client edited a file."
+msgstr "En klient redigerede en fil."
+
+#: includes/classes/actions-log.php:47
+msgid "A client created a category."
+msgstr ""
+
+#: includes/classes/actions-log.php:48
+msgid "A client edited a category."
+msgstr ""
+
+#: includes/classes/actions-log.php:49
+msgid "A client deleted a category."
+msgstr ""
+
+#: includes/classes/actions-log.php:50
+msgid "An anonymous user downloaded a public file."
+msgstr ""
+
+#: includes/classes/form-validation.php:15
+msgid "The following errors were found"
+msgstr "De følgende fejl blev fundet"
+
+#: includes/classes/send-email.php:26
+msgid "New files uploaded for you"
+msgstr "Nye filer uploadet til dig"
+
+#: includes/classes/send-email.php:27
+msgid "The following files are now available for you to download."
+msgstr "De følgende filer er tilgængelige til download for dig."
+
+#: includes/classes/send-email.php:28
+msgid ""
+"If you prefer not to be notified about new files, please go to My Account "
+"and deactivate the notifications checkbox."
+msgstr ""
+"Hvis du foretrækker ikke at blive underrettet om nye filer, skal du gå til "
+"Min bruger og deaktivere underretning."
+
+#: includes/classes/send-email.php:29
+msgid "You can access a list of all your files or upload your own"
+msgstr "Du kan se en liste over alle dine filer eller uploade dine egne"
+
+#: includes/classes/send-email.php:30 includes/classes/send-email.php:38
+msgid "by logging in here"
+msgstr "ved at logge ind her"
+
+#: includes/classes/send-email.php:35
+msgid "New files uploaded by clients"
+msgstr "Nye filer uploadet af klienter"
+
+#: includes/classes/send-email.php:36
+msgid "New files has been uploaded by the following clients"
+msgstr "Nye filer er blevet uploadet af de følgende klienter"
+
+#: includes/classes/send-email.php:37
+msgid "You can manage these files"
+msgstr "Du kan administrere disse filer"
+
+#: includes/classes/send-email.php:45
+msgid ""
+"A new account was created for you. From now on, you can access the files "
+"that have been uploaded under your account using the following credentials:"
+msgstr ""
+"En ny bruger er oprettet til dig. Fra nu af kan du få adgang til filer, der "
+"er blevet uploadet under din bruger ved hjælp af følgende "
+"legitimationsoplysninger:"
+
+#: includes/classes/send-email.php:46
+msgid "You can log in following this link"
+msgstr "Du kan logge ind via dette link"
+
+#: includes/classes/send-email.php:47
+msgid "Please contact the administrator if you need further assistance."
+msgstr "Kontakt venligst administratoren, hvis du har brug for hjælp"
+
+#: includes/classes/send-email.php:48 includes/classes/send-email.php:78
+msgid "Your username"
+msgstr "Dit brugernavn"
+
+#: includes/classes/send-email.php:49 includes/classes/send-email.php:79
+msgid "Your password"
+msgstr "Din adgangskode"
+
+#: includes/classes/send-email.php:57
+msgid "A new client has registered."
+msgstr "En ny klient blev oprettet."
+
+#: includes/classes/send-email.php:58
+msgid ""
+"A new account was created using the self registration form on your site. "
+"Registration information:"
+msgstr ""
+"En ny bruger blev oprettet ved hjælp af selvtilmeldingsformularen på dit "
+"websted. Tilmeldingsoplysninger:"
+
+#: includes/classes/send-email.php:60 includes/classes/send-email.php:90
+#: includes/vars.php:48 index.php:205 install/make-config.php:258
+#: options.php:483
+msgid "Username"
+msgstr "Brugernavn"
+
+#: includes/classes/send-email.php:63
+msgid "Please log in to activate it."
+msgstr "Log venligst ind for at aktivere det"
+
+#: includes/classes/send-email.php:64
+msgid ""
+"Remember, your new client will not be able to log in until an administrator "
+"has approved their account."
+msgstr ""
+"Husk at din nye klient ikke vil være i stand til at logge ind før en "
+"administrator har godkendt deres bruger."
+
+#: includes/classes/send-email.php:67
+msgid "Auto-approvals of new accounts are currently enabled."
+msgstr "Auto-godkendelse af nye brugere er slået til."
+
+#: includes/classes/send-email.php:68
+msgid "You can log in to manually deactivate it."
+msgstr "Du kan logge ind for manuelt af deaktivere den."
+
+#: includes/classes/send-email.php:75
+msgid ""
+"A new account was created for you. From now on, you can access the system "
+"administrator using the following credentials:"
+msgstr ""
+"En ny bruger er oprettet til dig. Fra nu af kan du få adgang til "
+"systemadministratoren ved hjælp af følgende legitimationsoplysninger:"
+
+#: includes/classes/send-email.php:76
+msgid "Access the system panel here"
+msgstr "Gå til systempanelet her"
+
+#: includes/classes/send-email.php:77
+msgid "Thank you for using ProjectSend."
+msgstr "Tak fordi du bruger ProjectSend."
+
+#: includes/classes/send-email.php:85
+msgid "Password reset instructions"
+msgstr "Adgangskodenulstillings-instruktioner"
+
+#: includes/classes/send-email.php:86
+msgid ""
+"A request has been received to reset the password for the following account:"
+msgstr "En anmodning om adgangskodenulstilling er modtaget fra brugeren:"
+
+#: includes/classes/send-email.php:87
+msgid "To continue, please visit the following link"
+msgstr "For at fortsætte, skal du besøge følgende link"
+
+#: includes/classes/send-email.php:88
+msgid "The request is valid only for 24 hours."
+msgstr "Anmodningen er kun gyldig i 24 timer."
+
+#: includes/classes/send-email.php:89
+msgid "If you did not make this request, simply ignore this email."
+msgstr "Hvis du ikke lavede denne anmodning, kan du ignorere denne email."
+
+#: includes/classes/send-email.php:430
+msgid ""
+"This email contains HTML formatting and cannot be displayed right now. "
+"Please use an HTML compatible reader."
+msgstr ""
+"Denne e-mail indeholder HTML-formatering og kan ikke vises lige nu. Brug "
+"venligst en HTML-kompatibel læser."
+
+#: includes/functions.php:41
+msgid "An unexpected error has occurred"
+msgstr ""
+
+#: includes/functions.php:42
+msgid "Could not generate a random password"
+msgstr ""
+
+#: includes/functions.php:472
+msgid "Provided by"
+msgstr "Kører på"
+
+#: includes/functions.php:472 includes/updates.messages.php:51
+msgid "version"
+msgstr "version"
+
+#: includes/functions.php:472
+msgid "Free software"
+msgstr "Gratis software"
+
+#: includes/functions.php:487
+msgid "Important:"
+msgstr ""
+
+#: includes/functions.php:487
+msgid ""
+"There are no clients or groups at the moment. You can still upload files and "
+"assign them later."
+msgstr ""
+
+#: includes/functions.php:896
+msgid "The password must contain, at least:"
+msgstr "Adgangskoden skal indeholde mindst:"
+
+#: includes/functions.php:946
+msgid "ProjectSend was installed"
+msgstr "ProjectSend blev installeret"
+
+#: includes/functions.php:951 includes/functions.php:1096
+msgid "logged in to the system."
+msgstr "loggede ind på systemet."
+
+#: includes/functions.php:956
+msgid "created the user account"
+msgstr "oprettede systembrugeren"
+
+#: includes/functions.php:962
+msgid "created the client account "
+msgstr "oprettede klient-brugeren"
+
+#: includes/functions.php:968
+msgid "created a client account for themself."
+msgstr "oprettede en bruger til sig selv."
+
+#: includes/functions.php:973
+msgid "(user) uploaded the file"
+msgstr "(systembruger) uploadede filen"
+
+#: includes/functions.php:979
+msgid "(client) uploaded the file"
+msgstr "(klient) uploadede filen"
+
+#: includes/functions.php:985
+msgid "(user) downloaded the file"
+msgstr "(systembruger) downloadede filen"
+
+#: includes/functions.php:987
+msgid "assigned to:"
+msgstr "tildelt til:"
+
+#: includes/functions.php:993
+msgid "(client) downloaded the file"
+msgstr "(klient) downloadede filen"
+
+#: includes/functions.php:999
+msgid "generated a zip file"
+msgstr "genererede en zip-fil"
+
+#: includes/functions.php:1004 includes/functions.php:1012
+msgid "unassigned the file"
+msgstr "fjernede tildelingen af filen"
+
+#: includes/functions.php:1006
+msgid "from the client:"
+msgstr "fra klienten:"
+
+#: includes/functions.php:1014
+msgid "from the group:"
+msgstr "fra gruppen:"
+
+#: includes/functions.php:1020
+msgid "deleted the file"
+msgstr "slettede filen"
+
+#: includes/functions.php:1026
+msgid "edited the user"
+msgstr "redigerede brugeren"
+
+#: includes/functions.php:1032
+msgid "edited the client"
+msgstr "redigerede klienten"
+
+#: includes/functions.php:1038
+msgid "edited the group"
+msgstr "redigerede gruppen"
+
+#: includes/functions.php:1044
+msgid "deleted the user"
+msgstr "slettede brugeren"
+
+#: includes/functions.php:1050
+msgid "deleted the client"
+msgstr "slettede klienten"
+
+#: includes/functions.php:1056
+msgid "deleted the group"
+msgstr "slettede gruppen"
+
+#: includes/functions.php:1062
+msgid "activated the client"
+msgstr "aktiverede klienten"
+
+#: includes/functions.php:1068
+msgid "deactivated the client"
+msgstr "deaktiverede klienten"
+
+#: includes/functions.php:1074
+msgid "marked as hidden the file"
+msgstr "markerede som skjult filen"
+
+#: includes/functions.php:1076 includes/functions.php:1084
+msgid "to:"
+msgstr "til:"
+
+#: includes/functions.php:1082
+msgid "marked as visible the file"
+msgstr "markerede som synlig filen"
+
+#: includes/functions.php:1090
+msgid "created the group"
+msgstr "oprettede gruppen"
+
+#: includes/functions.php:1101 includes/functions.php:1109
+msgid "assigned the file"
+msgstr "tildelte filen"
+
+#: includes/functions.php:1103
+msgid "to the client:"
+msgstr "til klienten:"
+
+#: includes/functions.php:1111
+msgid "to the group:"
+msgstr "til gruppen:"
+
+#: includes/functions.php:1117
+msgid "activated the user"
+msgstr "aktiverede systembrugeren"
+
+#: includes/functions.php:1123
+msgid "deactivated the user"
+msgstr "deaktiverede systembrugeren"
+
+#: includes/functions.php:1129
+msgid "uploaded a new logo on \"Branding\""
+msgstr "uploadede et nyt logo på \"Markedsføring\""
+
+#: includes/functions.php:1134
+msgid "updated ProjectSend to version"
+msgstr "opdaterede ProjectSend til version"
+
+#: includes/functions.php:1140
+msgid "logged out of the system."
+msgstr "loggede ud af systemet."
+
+#: includes/functions.php:1145
+msgid "(user) edited the file"
+msgstr "(systembruger) redigerede filen"
+
+#: includes/functions.php:1151
+msgid "(client) edited the file"
+msgstr "(klient) redigerede filen"
+
+#: includes/functions.php:1157
+msgid "created the category"
+msgstr ""
+
+#: includes/functions.php:1163
+msgid "edited the category"
+msgstr ""
+
+#: includes/functions.php:1169
+msgid "deleted the category"
+msgstr ""
+
+#: includes/functions.php:1174
+msgid "An anonymous user"
+msgstr ""
+
+#: includes/functions.php:1175
+msgid "downloaded the file"
+msgstr ""
+
+#: includes/updates.functions.php:55
 msgid ""
 "If images thumbnails aren't showing on your client's files lists (even your "
 "company logo there and on the branding page) please chmod the includes/"
@@ -1153,22 +1735,985 @@ msgstr ""
 "'index.html' og 'timthumb_cacheLastCleanTime.touch'-filerne i denne mappe. "
 "Prøv derefter at sænke hver fil til 644 og se om alt stadig fungerer."
 
-#. Text in function
-#: reset-password.php:322
-msgid "If the problem persists, please contact an administrator."
-msgstr "Kontakt en administrator hvis problemet fortsætter."
-
-#. Text in function
-#: branding.php:96
+#: includes/updates.functions.php:83
 msgid ""
-"If this doesn't solve the issue, try giving the same values to the "
-"directories above that one until it works."
+"The chmod values of the emails folder and the html templates inside couldn't "
+"be set. If ProjectSend isn't sending notifications emails, please set them "
+"manually to 777."
 msgstr ""
-"Hvis dette ikke løser problemet, kan du prøve at give de samme værdier til "
-"mapper over denne indtil det virker."
+"Chmod-værdierne for emails-mappen og html-skabelonerne indeni kunne ikke "
+"indstilles. Hvis ProjectSend ikke sender email-underretninger, så indstil "
+"dem venligst til 777 manuelt."
 
-#. Text in echo
-#: options.php:500
+#: includes/updates.functions.php:116
+msgid ""
+"A safe chmod value couldn't be set for one or more system files. Please make "
+"sure that at least includes/sys.config.php has a chmod of 644 for security "
+"reasons."
+msgstr ""
+"En sikker chmod-værdi kunne ikke indstilles for én eller flere systemfiler. "
+"Sørg for, at i det mindste includes/sys.config.php har en chmod på 644 af "
+"sikkerhedsmæssige årsager."
+
+#: includes/updates.functions.php:204
+msgid ""
+"This version changes the way files-to-clients relationships are stored on "
+"the database making it possible to assign a file to multiple clients. "
+"However some files did not update successfully. The following files may need "
+"to be reassigned to their clients by using the \"Find orphan files\" tool:"
+msgstr ""
+
+#: includes/updates.messages.php:16
+msgid "System Notice:"
+msgstr "Systemmeddelse:"
+
+#: includes/updates.messages.php:16
+msgid "The database was updated to support this version of the software."
+msgstr ""
+"Databasen blev opdateret for at understøtte denne version af softwaren."
+
+#: includes/updates.messages.php:22
+msgid "Do you want to support ProjectSend?"
+msgstr "Har du lyst til at støtte ProjectSend?"
+
+#: includes/updates.messages.php:23
+msgid ""
+"Please remember that this tool is free software. If you find the system "
+"useful"
+msgstr "Husk at dette er gratis software. Hvis du synes om det, så"
+
+#: includes/updates.messages.php:24
+msgid "please consider making a donation to support further development."
+msgstr "overvej venligst en donation for at støtte den videre udvikling."
+
+#: includes/updates.messages.php:25
+msgid "Thank you!"
+msgstr "Tak!"
+
+#: includes/updates.messages.php:51
+msgid "Update available!"
+msgstr "Opdatering er tilgængelig!"
+
+#: includes/updates.messages.php:51
+msgid "has been released."
+msgstr "er blevet frigivet."
+
+#: includes/userlevel_check.php:165
+msgid "Access denied"
+msgstr "Adgang nægtet"
+
+#: includes/userlevel_check.php:168
+msgid ""
+"Your account type doesn't allow you to view this page. Please contact a "
+"system administrator if you need to access this function."
+msgstr ""
+"Din brugertype giver dig ikke adgang til at se denne side. Kontakt en "
+"systemadministrator, hvis du har brug for adgang til siden."
+
+#: includes/vars.php:13 users.php:215
+msgid "System Administrator"
+msgstr "Systemadministrator"
+
+#: includes/vars.php:14 users.php:216
+msgid "Account Manager"
+msgstr "Brugeradministrator"
+
+#: includes/vars.php:15 manage-files.php:560 users.php:217
+msgid "Uploader"
+msgstr "Uploader"
+
+#: includes/vars.php:25
+msgid "reCAPTCHA verification failed"
+msgstr ""
+
+#: includes/vars.php:26
+msgid "Name was not completed"
+msgstr "Navn blev ikke udfyldt"
+
+#: includes/vars.php:27
+msgid "No client was selected"
+msgstr "Ingen klient valgt"
+
+#: includes/vars.php:28 index.php:193
+msgid "Username was not completed"
+msgstr "Brugernavn blev ikke udfyldt"
+
+#: includes/vars.php:29 index.php:194
+msgid "Password was not completed"
+msgstr "Adgangskode blev ikke udfyldt"
+
+#: includes/vars.php:30
+msgid "Password verification was not completed"
+msgstr "Adgangskode-verificering blev ikke gennemført"
+
+#: includes/vars.php:31
+msgid "E-mail was not completed"
+msgstr "Email blev ikke udfyldt"
+
+#: includes/vars.php:32
+msgid "E-mail address is not valid"
+msgstr "Email-adressen er ikke gyldig"
+
+#: includes/vars.php:33
+msgid ""
+"Username must be alphanumeric and may contain dot (a-z,A-Z,0-9 and . allowed)"
+msgstr ""
+
+#: includes/vars.php:34
+msgid "Password must be alphanumeric (a-z,A-Z,0-9 allowed)"
+msgstr "Adgangskode skal være alfanumerisk (a-z, A-Z, 0-9 tilladt)"
+
+#: includes/vars.php:35
+msgid "Passwords do not match"
+msgstr "Adgangskoder er ikke ens"
+
+#: includes/vars.php:36
+msgid "Password does not meet the required characters rules"
+msgstr "Adgangskode lever ikke op til de krævne regler"
+
+#: includes/vars.php:37
+msgid "User level was not specified"
+msgstr "Brugerniveau blev ikke specificeret"
+
+#: includes/vars.php:38
+msgid "A system user or client with this login name already exists."
+msgstr "Et systembruger eller klient med dette login-navn findes allerede."
+
+#: includes/vars.php:39
+msgid "A system user or client with this e-mail address already exists."
+msgstr "Et systembruger eller klient med denne e-mail-adresse findes allerede."
+
+#: includes/vars.php:40
+msgid ""
+"Your password can only contain letters, numbers and the following characters:"
+msgstr "Din adgangskode må kun indeholde bogstaver, tal og de følgende tegn:"
+
+#: includes/vars.php:42
+msgid "Title was not completed"
+msgstr "Titel blev ikke udfyldt"
+
+#: includes/vars.php:50
+msgid "length should be between"
+msgstr "længde skal være mellem"
+
+#: includes/vars.php:51 install/index.php:233
+msgid "and"
+msgstr "og"
+
+#: includes/vars.php:52
+msgid "characters long"
+msgstr "tegn langt"
+
+#: includes/vars.php:56
+msgid "1 uppercase character"
+msgstr "1 stort bogstav"
+
+#: includes/vars.php:57
+msgid "1 lowercase character"
+msgstr "1 lille bogstav"
+
+#: includes/vars.php:58
+msgid "1 number"
+msgstr "1 tal"
+
+#: includes/vars.php:59
+msgid "1 special character"
+msgstr "1 specialtegn"
+
+#: index.php:20 index.php:243
+msgid "Log in"
+msgstr "Log ind"
+
+#: index.php:159
+msgid "The supplied credentials are not valid."
+msgstr "De indtastede legitimationsoplysninger er ikke gyldige."
+
+#: index.php:162
+msgid "The supplied username doesn't exist."
+msgstr "Det angivne brugernavn eksisterer ikke."
+
+#: index.php:165
+msgid "The supplied password is incorrect."
+msgstr "Den angivne adgangskode er forkert."
+
+#: index.php:168
+msgid "This account is not active."
+msgstr "Denne bruger er ikke aktiv."
+
+#: index.php:170
+msgid ""
+"If you just registered, please wait until a system administrator approves "
+"your account."
+msgstr ""
+"Hvis du lige har registreret dig, så vent venligst til en "
+"systemadministrator godkender din bruger."
+
+#: index.php:174 register.php:106
+msgid ""
+"Client self registration is not allowed. If you need an account, please "
+"contact a system administrator."
+msgstr ""
+"Selvregistrering for klienter er ikke tilladt. Har du brug for en bruger, "
+"kan du kontakte systemadministratoren."
+
+#: index.php:177
+msgid "Sign-in with Google cannot be used to create new accounts at this time."
+msgstr ""
+
+#: index.php:180
+msgid "You must approve the requested permissions to sign in with Google."
+msgstr ""
+
+#: index.php:215 install/make-config.php:324 options.php:255
+msgid "Language"
+msgstr ""
+
+#: index.php:226
+msgid "default"
+msgstr ""
+
+#: index.php:255
+msgid "Forgot your password?"
+msgstr "Glemt adgangskode?"
+
+#: index.php:255
+msgid "Set up a new one."
+msgstr "Opret en ny."
+
+#: index.php:259
+msgid "Don't have an account yet?"
+msgstr "Har du ikke en bruger endnu?"
+
+#: index.php:259
+msgid "Register as a new client."
+msgstr "Registrer som en ny klient"
+
+#: index.php:263
+msgid "This server does not allow self registrations."
+msgstr "Denne server tillader ikke at brugere registrerer sig selv."
+
+#: index.php:264
+msgid "If you need an account, please contact a server administrator."
+msgstr ""
+"Hvis du har brug for en bruger, så kontakt venligst en serveradministrator."
+
+#: install/index.php:52 install/index.php:272 install/make-config.php:16
+msgid "Install"
+msgstr "Installer"
+
+#: install/index.php:53
+msgid "Sitename was not completed."
+msgstr "Sidenavn blev ikke udfyldt"
+
+#: install/index.php:54
+msgid "ProjectSend URI was not completed."
+msgstr "ProjectSend-URI blev ikke udfyldt"
+
+#: install/index.php:69
+msgid "Already installed"
+msgstr "Allerede installeret"
+
+#: install/index.php:70
+msgid "It seems that ProjectSend is already installed here."
+msgstr "Det ser ud som om, at ProjectSend allerede er installeret her."
+
+#: install/index.php:71
+msgid ""
+"If you want to reinstall, please delete the system tables from the database "
+"and come back to the installation form."
+msgstr ""
+"Hvis du ønsker at geninstallere, skal du slette systemtabellerne fra "
+"databasen og komme tilbage til installationsformularen."
+
+#: install/index.php:154
+msgid "Congratulations! Everything is up and running."
+msgstr "Tillykke! Alt kører som det skal."
+
+#: install/index.php:166
+msgid "You may proceed to"
+msgstr "Du kan nu fortsætte til at"
+
+#: install/index.php:166
+msgid "log in"
+msgstr "logge ind"
+
+#: install/index.php:166
+msgid "with your newely created username and password."
+msgstr "med dit nyligt oprettede brugernavn og adgangskode."
+
+#: install/index.php:170
+msgid "There seems to be an error. Please try again."
+msgstr "Der er sket en fejl. Prøv igen."
+
+#: install/index.php:211
+msgid "Basic system options"
+msgstr "Grundlæggende systemindstillinger"
+
+#: install/index.php:212
+msgid ""
+"You need to provide this data for a correct system installation. The site "
+"name will be visible in the system panel, and the client's lists."
+msgstr ""
+"Du er nødt til at opgive disse data for en korrekt installation. Sidenavnet "
+"vil være synligt i systempanelet og klientens lister."
+
+#: install/index.php:213
+msgid "Remember to edit the file"
+msgstr "Husk at redigere filen"
+
+#: install/index.php:213
+msgid ""
+"with your database settings before installing. If the file doesn't exist, "
+"you can create it by renaming the dummy file sys.config.sample.php."
+msgstr ""
+"med dine databaseindstillinger, før du installerer. Hvis filen ikke findes, "
+"kan du oprette den ved at omdøbe dummyfilen sys.config.sample.php."
+
+#: install/index.php:217 options.php:206
+msgid "Site name"
+msgstr "Sidenavn"
+
+#: install/index.php:224
+msgid "ProjectSend URI (address)"
+msgstr "ProjectSend-URI (adresse)"
+
+#: install/index.php:232
+msgid "Default system administrator options"
+msgstr "Standard systemadministratorindstillinger"
+
+#: install/index.php:233
+msgid ""
+"This info will be used to create a default system user, which can't be "
+"deleted afterwards. Password should be between"
+msgstr ""
+"Denne info vil blive brugt til at oprette en standard-systembruger, der ikke "
+"kan slettes bagefter. Adgangskoden skal være mellem"
+
+#: install/index.php:233
+msgid "characters long."
+msgstr "tegn langt."
+
+#: install/index.php:243 options.php:387
+msgid "E-mail address"
+msgstr "Email-adresse"
+
+#: install/index.php:277
+msgid ""
+"After installing the system, you can go to the options page to set your "
+"timezone, preferred date display format and thumbnails parameters, besides "
+"being able to change the site options provided here."
+msgstr ""
+
+#: install/make-config.php:200
+msgid "Successfully wrote the config file."
+msgstr ""
+
+#: install/make-config.php:204
+msgid "Continue to installation"
+msgstr ""
+
+#: install/make-config.php:213
+msgid "Database configuration"
+msgstr ""
+
+#: install/make-config.php:214
+msgid "You need to provide this data for a correct database communication."
+msgstr ""
+
+#: install/make-config.php:217
+msgid "Select driver"
+msgstr ""
+
+#: install/make-config.php:222 install/make-config.php:228
+msgid "(not supported)"
+msgstr ""
+
+#: install/make-config.php:238 options.php:502
+msgid "Host"
+msgstr "Host"
+
+#: install/make-config.php:248
+msgid "Database name"
+msgstr ""
+
+#: install/make-config.php:278
+msgid "Table prefix"
+msgstr ""
+
+#: install/make-config.php:294
+msgid "The database is already populated"
+msgstr ""
+
+#: install/make-config.php:308
+msgid "Reuse existing tables"
+msgstr ""
+
+#: install/make-config.php:321
+msgid "Language selection"
+msgstr ""
+
+#: install/make-config.php:336
+msgid "Folders"
+msgstr ""
+
+#: install/make-config.php:365
+msgid "Writable"
+msgstr ""
+
+#: install/make-config.php:367
+msgid "Not writable"
+msgstr ""
+
+#: install/make-config.php:377
+msgid "System information"
+msgstr ""
+
+#: install/make-config.php:431
+msgid "Check again"
+msgstr ""
+
+#: install/make-config.php:432
+msgid "Write config file"
+msgstr ""
+
+#: install/make-config.php:434
+msgid "Check"
+msgstr ""
+
+#: manage-files.php:44
+msgid "for client"
+msgstr "for klient"
+
+#: manage-files.php:69
+msgid "for group"
+msgstr "for gruppe"
+
+#: manage-files.php:85
+msgid "on category"
+msgstr ""
+
+#: manage-files.php:99 upload-import-orphans.php:213
+msgid "Please select at least one file to proceed."
+msgstr "Vælg venligst mindst én fil for at fortsætte"
+
+#: manage-files.php:106
+msgid ""
+"files permanently and for every client/group. Are you sure you want to "
+"continue?"
+msgstr ""
+"filer permanent og for hver klient/gruppe. Er du sikker på, at du ønsker at "
+"fortsætte?"
+
+#: manage-files.php:114
+msgid "You are about to unassign"
+msgstr "Du er ved at fjerne tildelingen af"
+
+#: manage-files.php:115
+msgid "files from this account. Are you sure you want to continue?"
+msgstr "filer fra denne bruger. Er du sikker på, at du ønsker at fortsætte?"
+
+#: manage-files.php:160 upload-process-form.php:757
+msgid "Click to select"
+msgstr "Klik for at vælge"
+
+#: manage-files.php:160 upload-process-form.php:757
+msgid ""
+"Send this URL to someone to download the file without registering or logging "
+"in."
+msgstr ""
+"Send denne URL til nogen. De vil kunne downloade filen uden at registrere "
+"sig eller logge ind."
+
+#: manage-files.php:160 upload-process-form.php:757
+msgid "Close"
+msgstr "Luk"
+
+#: manage-files.php:230
+msgid "The selected files were marked as hidden."
+msgstr "De valgte filer blev markeret som skjulte."
+
+#: manage-files.php:244
+msgid "The selected files were marked as visible."
+msgstr "De valgte filer blev markeret som synlige."
+
+#: manage-files.php:257
+msgid "The selected files were unassigned from this client."
+msgstr "De valgte filer fik fjernet deres tildeling til denne klient."
+
+#: manage-files.php:286
+msgid "The selected files were deleted."
+msgstr "De valgte filer blev slettet."
+
+#: manage-files.php:291
+msgid "Some files could not be deleted."
+msgstr ""
+
+#: manage-files.php:314
+msgid "Please select at least one file."
+msgstr "Vælg venligst mindst én fil"
+
+#: manage-files.php:451 manage-files.php:775 upload-process-form.php:319
+msgid "Hidden"
+msgstr "Skjult"
+
+#: manage-files.php:452 manage-files.php:776 upload-process-form.php:320
+msgid "Visible"
+msgstr "Synlig"
+
+#: manage-files.php:473
+msgid "Selected files actions"
+msgstr "Handlinger for valgte filer"
+
+#: manage-files.php:487
+msgid "Hide"
+msgstr "Skjul"
+
+#: manage-files.php:488
+msgid "Show"
+msgstr "Vis"
+
+#: manage-files.php:489
+msgid "Unassign"
+msgstr "Fjern tildeling"
+
+#: manage-files.php:507 upload-import-orphans.php:151
+msgid "files"
+msgstr "filer"
+
+#: manage-files.php:520
+msgid "There are no files assigned to this category."
+msgstr ""
+
+#: manage-files.php:526
+msgid "There are no files assigned to this client."
+msgstr "Der er ingen filer tildelt til denne klient."
+
+#: manage-files.php:529
+msgid "You have not uploaded any files for this account."
+msgstr "Du har ikke uploadet nogen filer til denne bruger."
+
+#: manage-files.php:534
+msgid "There are no files for this client."
+msgstr "Der er ingen filer til denne klient."
+
+#: manage-files.php:554
+msgid "Ext."
+msgstr "Endelse"
+
+#: manage-files.php:556
+msgid "Size"
+msgstr "Størrelse"
+
+#: manage-files.php:564
+msgid "Assigned"
+msgstr ""
+
+#: manage-files.php:568 manage-files.php:732 upload-process-form.php:298
+#: upload-process-form.php:345
+msgid "Public"
+msgstr "Offentlig"
+
+#: manage-files.php:569
+msgid "Expiry"
+msgstr "Udløb"
+
+#: manage-files.php:579
+msgid "Download count"
+msgstr "Downloadtæller"
+
+#: manage-files.php:724 upload-process-form.php:337
+msgid "Public URL"
+msgstr "Offentlig URL"
+
+#: manage-files.php:733 upload-process-form.php:346
+msgid "Private"
+msgstr "Privat"
+
+#: manage-files.php:743
+msgid "Does not expire"
+msgstr "Udløber ikke"
+
+#: manage-files.php:751
+msgid "Expired on"
+msgstr "Udløb"
+
+#: manage-files.php:758
+msgid "Expires on"
+msgstr "Udløber"
+
+#: manage-files.php:787
+msgid "times"
+msgstr "gange"
+
+#: manage-files.php:794 manage-files.php:817
+msgid "downloads"
+msgstr "downloads"
+
+#: manage-files.php:847
+msgid ""
+"Please note that downloading a file from here will not add to the download "
+"count."
+msgstr "Bemærk at download af en fil herfra ikke vil berøre downloadtallet"
+
+#: options.php:15
+msgid "System options"
+msgstr "Systemindstillinger"
+
+#: options.php:140
+msgid "Some fields were not completed. Options could not be saved."
+msgstr "Nogle felter blev ikke udfyldt. Indstillingerne kunne ikke gemmes."
+
+#: options.php:175 options.php:178
+msgid "Please complete all the fields."
+msgstr "Udfyld venligst alle felterne"
+
+#: options.php:184
+msgid "General Options"
+msgstr "Grundlæggende indstillinger"
+
+#: options.php:186
+msgid "E-mail notifications"
+msgstr "Email-underretninger"
+
+#: options.php:187
+msgid "Security"
+msgstr "Sikkerhed"
+
+#: options.php:188 options.php:639
+msgid "Thumbnails"
+msgstr "Miniaturer"
+
+#: options.php:189
+msgid "Company logo"
+msgstr "Firmalogo"
+
+#: options.php:190
+msgid "Social Login"
+msgstr ""
+
+#: options.php:202
+msgid "General"
+msgstr "Generelt"
+
+#: options.php:203
+msgid ""
+"Basic information to be shown around the site. The time format and zones "
+"values affect how the clients see the dates on their files lists."
+msgstr ""
+"Grundlæggende oplysninger, der skal vises rundt på siden. Tidsformat og "
+"zoneværdier påvirker, hvordan klienter ser datoerne på deres fillister."
+
+#: options.php:213
+msgid "Client's template"
+msgstr "Klienters udseende"
+
+#: options.php:231
+msgid "Timezone"
+msgstr "Tidszone"
+
+#: options.php:244
+msgid "Time format"
+msgstr "Tidsformat"
+
+#: options.php:247
+msgid "For example, d/m/Y h:i:s will result in something like"
+msgstr "For eksempel vil d/m/Y h:i:s resultere i noget ligende dette"
+
+#: options.php:248
+msgid "For the full list of available values, visit"
+msgstr "Vi anbefaler at bruge \"d/m/Y - H:i:s\". For mere information se"
+
+#: options.php:248
+msgid "this page"
+msgstr "denne side"
+
+#: options.php:260
+msgid "Detect user browser language"
+msgstr ""
+
+#: options.php:261
+msgid ""
+"If available, will override the default one from the system configuration "
+"file. Affects all users and clients."
+msgstr ""
+
+#: options.php:268
+msgid "System location"
+msgstr "Systemplacering"
+
+#: options.php:269
+msgid ""
+"These options are to be changed only if you are moving the system to another "
+"place. Changes here can cause ProjectSend to stop working."
+msgstr ""
+"Disse indstillinger skal kun ændres, hvis du flytter systemet til et andet "
+"sted. Ændringer her kan få ProjectSend at stoppe med at virke."
+
+#: options.php:272
+msgid "System URI"
+msgstr "System-URI"
+
+#: options.php:288
+msgid "New registrations"
+msgstr "Nye registrationer"
+
+#: options.php:289
+msgid ""
+"Used only on self-registrations. These options will not apply to clients "
+"registered by system administrators."
+msgstr ""
+"Benyttes kun ved selv-registreringer. Disse indstillinger gælder ikke for "
+"klienter, der er registreret af systemadministratorer."
+
+#: options.php:294
+msgid "Clients can register themselves"
+msgstr "Klienter kan registrere sig selv"
+
+#: options.php:302
+msgid "Auto approve new accounts"
+msgstr "Auto-godkend nye brugere"
+
+#: options.php:308
+msgid "Add clients to this group:"
+msgstr "Tilføj klienter til denne gruppe:"
+
+#: options.php:311
+msgid "None (does not enable this feature)"
+msgstr "Ingen (funktion deaktiveret)"
+
+#: options.php:333
+msgid ""
+"New clients will automatically be assigned to the group you have selected."
+msgstr "Nye klienter bliver automatisk tildelt den gruppe, du har valgt."
+
+#: options.php:348
+msgid "Clients can upload files"
+msgstr "Klienter kan uploade filer"
+
+#: options.php:356
+msgid "Clients can delete their own uploaded files"
+msgstr ""
+
+#: options.php:362
+msgid "When a file expires:"
+msgstr "Når en fil udløber:"
+
+#: options.php:365
+msgid "Don't show it on the files list"
+msgstr "Vis den ikke på fillisten"
+
+#: options.php:366
+msgid "Show it anyway, but prevent download."
+msgstr "Vis den alligevel men tillad ikke download."
+
+#: options.php:368
+msgid ""
+"This only affects clients. On the admin side, you can still get the files."
+msgstr ""
+"Dette påvirker kun klienter. På admin-siden kan du stadig få adgang til "
+"filerne."
+
+#: options.php:384
+msgid "\"From\" information"
+msgstr "\"Fra\"-information"
+
+#: options.php:402
+msgid "Send copies"
+msgstr "Send kopier"
+
+#: options.php:407
+msgid "When a system user uploads files"
+msgstr "Når en systembruger uploader filer"
+
+#: options.php:415
+msgid "When a client uploads files"
+msgstr "Når en klient uploader filer"
+
+#: options.php:421
+msgid ""
+"Define here who will receive copies of this emails. These are sent as BCC so "
+"neither recipient will see the other addresses."
+msgstr ""
+"Definér her hvem der skal modtage kopier af disse emails. De sendes som BCC, "
+"så ingen modtagere kan se de andres adresser."
+
+#: options.php:427
+msgid "Address supplied above (on \"From\")"
+msgstr "Adressen ovenover (i \"Fra\")"
+
+#: options.php:433
+msgid "Also to this addresses"
+msgstr "Også til disse adresser"
+
+#: options.php:436
+msgid "Separate e-mail addresses with a comma."
+msgstr "Separér email-adresser med et komma"
+
+#: options.php:442
+msgid "Expiration"
+msgstr "Udløb"
+
+#: options.php:445
+msgid "Maximum sending attemps"
+msgstr "Maximum sendeforsøg"
+
+#: options.php:448
+msgid "Define how many times will the system attemp to send each notification."
+msgstr ""
+"Vælg hvor mange gange systemet skal forsøge at sende hver underretning."
+
+#: options.php:453
+msgid "Days before expiring"
+msgstr "Antal dage til udløb"
+
+#: options.php:456
+msgid "Notifications older than this will not be sent."
+msgstr "Underretninger ældre end dette vil ikke blive sendt."
+
+#: options.php:456
+msgid "Set to 0 to disable."
+msgstr "Sæt til 0 for at deaktivere."
+
+#: options.php:462
+msgid "E-mail sending options"
+msgstr "Email-afsendingsindstillinger"
+
+#: options.php:463
+msgid ""
+"Here you can select which mail system will be used when sending the "
+"notifications. If you have a valid e-mail account, SMTP is the recommended "
+"option."
+msgstr ""
+"Her kan du vælge hvilket mail-system vil blive brugt, når du sender "
+"underretninger. SMTP er den anbefalede indstilling."
+
+#: options.php:466
+msgid "Mailer"
+msgstr "Mailer"
+
+#: options.php:479
+msgid "SMTP & Gmail shared options"
+msgstr "Delte indstillinger for SMTP & Gmail"
+
+#: options.php:480
+msgid ""
+"You need to include your username (usually your e-mail address) and password "
+"if you have selected either SMTP or Gmail as your mailer."
+msgstr ""
+"Du skal inkludere dit brugernavn (som regel din email-adresse) og "
+"adgangskode, hvis du har valgt enten SMTP eller Gmail som din mailer."
+
+#: options.php:498
+msgid "SMTP options"
+msgstr "SMTP-indstillinger"
+
+#: options.php:499
+msgid "If you selected SMTP as your mailer, please complete these options."
+msgstr ""
+"Hvis du valgte SMTP som din mailer, så udfyld venligst disse indstillinger."
+
+#: options.php:509
+msgid "Port"
+msgstr "Port"
+
+#: options.php:516
+msgid "Authentication"
+msgstr "Godkendelse"
+
+#: options.php:536
+msgid "Allowed file extensions"
+msgstr "Tilladte filendelser"
+
+#: options.php:537
+msgid ""
+"Be careful when changing this options. They could affect not only the system "
+"but the whole server it is installed on."
+msgstr ""
+"Vær forsigtig når du ændrer denne indstilling. Ændringer kan påvirke hele "
+"serveren."
+
+#: options.php:538
+msgid "Important"
+msgstr "Vigtigt"
+
+#: options.php:538
+msgid "Separate allowed file types with a comma."
+msgstr ""
+
+#: options.php:541
+msgid "Limit file types uploading to"
+msgstr "Begræns uploadbare filtyper til"
+
+#: options.php:544
+msgid "No one"
+msgstr "Ingen"
+
+#: options.php:545
+msgid "Everyone"
+msgstr "Alle"
+
+#: options.php:546
+msgid "Clients only"
+msgstr "Kun klienter"
+
+#: options.php:557
+msgid "Passwords"
+msgstr "Adgangskoder"
+
+#: options.php:558
+msgid "When setting up a password for an account, requiere at least:"
+msgstr "Når en adgangskode opsættes for en bruger kræves mindst:"
+
+#: options.php:596
+msgid "reCAPTCHA"
+msgstr ""
+
+#: options.php:597
+msgid "Helps prevent SPAM on your registration form."
+msgstr ""
+
+#: options.php:602
+msgid "Use reCAPTCHA"
+msgstr ""
+
+#: options.php:608
+msgid "Site key"
+msgstr ""
+
+#: options.php:615
+msgid "Secret key"
+msgstr ""
+
+#: options.php:626 options.php:750
+msgid "How do I obtain this credentials?"
+msgstr ""
+
+#: options.php:640
+msgid ""
+"Thumbnails are used on files lists. It is recommended to keep them small, "
+"unless you are using the system to upload only images, and will change the "
+"default client's template accordingly."
+msgstr ""
+"Miniaturer bruges på fillister. Det anbefales gøre dem små, medmindre du "
+"bruger systemet til kun at uploade billeder."
+
+#: options.php:645 options.php:697
+msgid "Max width"
+msgstr "Max-bredde"
+
+#: options.php:652 options.php:705
+msgid "Max height"
+msgstr "Max-højde"
+
+#: options.php:660
+msgid "JPG Quality"
+msgstr "JPG-kvalitet"
+
+#: options.php:670
+msgid "File's path"
+msgstr "Filsti"
+
+#: options.php:671
 msgid ""
 "If thumbnails are not showing (your company logo and file's preview on the "
 "branding page and client's files lists) try setting this option ON. It they "
@@ -1178,92 +2723,15 @@ msgstr ""
 "markedsføringssiden og klientfillister) Prøv at sætte denne indstilling TIL. "
 "Hvis de stadig ikke virker, kan et mappetilladelsesproblem være årsagen."
 
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid "If you did not make this request, simply ignore this email."
-msgstr "Hvis du ikke lavede denne anmodning, kan du ignorere denne email."
+#: options.php:676
+msgid "Use file's absolute path"
+msgstr "Brug filens absolutte sti"
 
-#. Text in function
-#: index.php:110
-msgid ""
-"If you just registered, please wait until a system administrator approves "
-"your account."
-msgstr ""
-"Hvis du lige har registreret dig, så vent venligst til en "
-"systemadministrator godkender din bruger."
+#: options.php:691
+msgid "Size settings"
+msgstr "Størrelsesindstillinger"
 
-#. Text in echo
-#: index.php:181
-msgid "If you need an account, please contact a server administrator."
-msgstr ""
-"Hvis du har brug for en bruger, så kontakt venligst en serveradministrator."
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid ""
-"If you prefer not to be notified about new files, please go to My Account "
-"and deactivate the notifications checkbox."
-msgstr ""
-"Hvis du foretrækker ikke at blive underrettet om nye filer, skal du gå til "
-"Min bruger og deaktivere underretning."
-
-#. Text in echo
-#: options.php:404
-msgid "If you selected SMTP as your mailer, please complete these options."
-msgstr ""
-"Hvis du valgte SMTP som din mailer, så udfyld venligst disse indstillinger."
-
-#. Text in echo
-#: install/index.php:107
-msgid ""
-"If you want to reinstall, please delete the system tables from the database "
-"and come back to the installation form."
-msgstr ""
-"Hvis du ønsker at geninstallere, skal du slette systemtabellerne fra "
-"databasen og komme tilbage til installationsformularen."
-
-#. Text in echo
-#: options.php:434
-msgid "Important"
-msgstr "Vigtigt"
-
-#. Text in echo
-#: clients.php:167 clients.php:307 users.php:200 users.php:282
-msgid "Inactive"
-msgstr "Inaktiv"
-
-#. Text in function
-#: install/index.php:311 install/index.php:289
-msgid "Install"
-msgstr "Installer"
-
-#. Text in echo
-#: clients.php:236
-msgid "Internal contact"
-msgstr "Intern kontakt"
-
-#. Text in echo
-#: clients-form.php:130
-msgid "Internal contact name"
-msgstr "Internt kontaktnavn"
-
-#. Text in echo
-#: install/index.php:106
-msgid "It seems that ProjectSend is already installed here."
-msgstr "Det ser ud som om, at ProjectSend allerede er installeret her."
-
-#. Text in echo
-#: options.php:492
-msgid "JPG Quality"
-msgstr "JPG-kvalitet"
-
-#. Text in echo
-#: upload-import-orphans.php:161
-msgid "Last modified"
-msgstr "Sidst ændret"
-
-#. Text in echo
-#: options.php:517
+#: options.php:692
 msgid ""
 "Like the thumbnails options, these have to be changed taking into account "
 "the client's template design, since it can be shown there. The default "
@@ -1275,1085 +2743,100 @@ msgstr ""
 "logoet, men Galleri-skabelonen bruger denne indstilling til at vise billedet "
 "på toppen."
 
-#. Text in echo
-#: options.php:437
-msgid "Limit file types uploading to"
-msgstr "Begræns uploadbare filtyper til"
-
-#. Text in function
-#: index.php:196
-msgid "Log in"
-msgstr "Log ind"
-
-#. Text in echo
-#: users-form.php:91 clients.php:226 clients-form.php:105
-#: install/index.php:278 users.php:250
-msgid "Log in username"
-msgstr "Login-brugernavn"
-
-#. Text in echo
-#: home.php:78
-msgid "Logins"
-msgstr "Logins"
-
-#. Text in echo
-#: branding.php:136
-msgid "Logo Placeholder"
-msgstr "Logopladsholder"
-
-#. Text in echo
-#: header.php:155 templates/gallery/template.php:48
-msgid "Logout"
-msgstr "Log ud"
-
-#. Text in function
-#: reset-password.php:341
-msgid "Lost password"
-msgstr "Mistet adgangskode"
-
-#. Text in echo
-#: options.php:377
-msgid "Mailer"
-msgstr "Mailer"
-
-#. Text in echo
-#: header.php:252
-msgid "Manage clients"
-msgstr "Administrer klienter"
-
-#. Text in echo
-#: header.php:219 header.php:346 clients.php:326 groups.php:292
-#: manage-files.php:689
-msgid "Manage files"
-msgstr "Administrer filer"
-
-#. Text in echo
-#: header.php:274
-msgid "Manage groups"
-msgstr "Administrer grupper"
-
-#. Text in echo
-#: header.php:309
-msgid "Manage system users"
-msgstr "Administrer systembrugere"
-
-#. Text in echo
-#: edit-file.php:419
-msgid ""
-"Mark as hidden (will not send notifications) for new assigned clients and "
-"groups."
+#: options.php:721
+msgid "Google"
 msgstr ""
-"Markér som skjult (vil ikke sende underretninger) for nye tildelte klienter "
-"og grupper."
 
-#. Text in echo
-#: options.php:488 options.php:525
-msgid "Max height"
-msgstr "Max-højde"
-
-#. Text in echo
-#: options.php:485 options.php:521
-msgid "Max width"
-msgstr "Max-bredde"
-
-#. Text in echo
-#: options.php:360
-msgid "Maximum sending attemps"
-msgstr "Maximum sendeforsøg"
-
-#. Text in echo
-#: groups.php:246 groups-form.php:47
-msgid "Members"
-msgstr "Medlemmer"
-
-#. Text in echo
-#: users-form.php:92 clients-form.php:106
-msgid "Must be alphanumeric"
-msgstr "Skal være alfanumerisk"
-
-#. Text in echo
-#: users-form.php:102 clients-form.php:116
-msgid "Must be valid and unique"
-msgstr "Skal være gyldigt og unikt"
-
-#. Text in echo
-#: header.php:154
-msgid "My Account"
-msgstr "Min bruger"
-
-#. Text in function
-#: clients-edit.php:208 users-edit.php:216
-msgid "My account"
-msgstr "Min bruger"
-
-#. Text in echo
-#: users-form.php:87 clients-form.php:101 options.php:326
-msgid "Name"
-msgstr "Navn"
-
-#. Text in function
-#: includes/vars.php:1
-msgid "Name was not completed"
-msgstr "Navn blev ikke udfyldt"
-
-#. Text in echo
-#: upload-import-orphans.php:177
-msgid "Never assigned to any user or group"
-msgstr "Aldrig tildelt en klient eller gruppe"
-
-#. Text in function
-#: email-templates.php:91
-msgid "New client (self-registered)"
-msgstr "Ny klient (selvregistreret)"
-
-#. Text in function
-#: email-templates.php:91
-msgid "New client (welcome)"
-msgstr "Ny klient (velkommen)"
-
-#. Text in echo
-#: options.php:285
-msgid ""
-"New clients will automatically be assigned to the group you have selected."
-msgstr "Nye klienter bliver automatisk tildelt den gruppe, du har valgt."
-
-#. Text in function
-#: email-templates.php:91
-msgid "New file by client"
-msgstr "Ny fil af klient"
-
-#. Text in function
-#: email-templates.php:91
-msgid "New file by user"
-msgstr "Ny fil af bruger"
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid "New files has been uploaded by the following clients"
-msgstr "Nye filer er blevet uploadet af de følgende klienter"
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid "New files uploaded by clients"
-msgstr "Nye filer uploadet af klienter"
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid "New files uploaded for you"
-msgstr "Nye filer uploadet til dig"
-
-#. Text in echo
-#: reset-password.php:305
-msgid "New password"
-msgstr "Ny adgangskode"
-
-#. Text in echo
-#: options.php:251
-msgid "New registrations"
-msgstr "Nye registrationer"
-
-#. Text in function
-#: email-templates.php:91
-msgid "New user (welcome)"
-msgstr "Ny systembruger (velkommen)"
-
-#. Text in echo
-#: clients.php:299
-msgid "No"
-msgstr "Nej"
-
-#. Text in function
-#: includes/vars.php:1
-msgid "No client was selected"
-msgstr "Ingen klient valgt"
-
-#. Text in function
-#: clients-edit.php:143
-msgid "No client was selected."
-msgstr "Ingen klient valgt"
-
-#. Text in function
-#: groups-edit.php:104
-msgid "No group was selected."
-msgstr "Ingen gruppe valgt"
-
-#. Text in echo
-#: options.php:439
-msgid "No one"
-msgstr "Ingen"
-
-#. Text in echo
-#: edit-file.php:446 groups-form.php:81 upload-process-form.php:635
-msgid "No results where found."
-msgstr "Ingen resultater fundet."
-
-#. Text in function
-#: users-edit.php:146
-msgid "No user was selected."
-msgstr "Ingen systembruger valgt"
-
-#. Text in echo
-#: options.php:417
-msgid "None"
-msgstr "Ingen"
-
-#. Text in echo
-#: options.php:265
-msgid "None (does not enable this feature)"
-msgstr "Ingen (funktion deaktiveret)"
-
-#. Text in echo
-#: upload-process-form.php:385
-msgid "Note"
-msgstr "Bemærk"
-
-#. Text in echo
-#: home.php:63
-msgid "Note:"
-msgstr "Bemærk:"
-
-#. Text in echo
-#: options.php:367
-msgid "Notifications older than this will not be sent."
-msgstr "Underretninger ældre end dette vil ikke blive sendt."
-
-#. Text in echo
-#: clients.php:232
-msgid "Notify"
-msgstr "Underret"
-
-#. Text in echo
-#: clients-form.php:141
-msgid "Notify new uploads by e-mail"
-msgstr "Underret om nye uploads med email"
-
-#. Text in function
-#: upload-send-notifications.php:1
-msgid "One or more notifications couldn't be sent."
-msgstr "En eller flere underretninger kunne ikke sendes."
-
-#. Text in echo
-#: edit-file.php:339 upload-process-form.php:477
-msgid "Optionally, enter here a description for the file."
-msgstr "Filbeskrivelse, dette er valgfrit"
-
-#. Text in echo
-#: header.php:327
-msgid "Options"
-msgstr "Indstillinger"
-
-#. Text in echo
-#: options.php:291
-msgid "Options related to the files that clients upload themselves."
-msgstr "Indstillinger relateret til klient-upload af filer"
-
-#. Text in function
-#: email-templates.php:91 options.php:115
-msgid "Options updated succesfuly."
-msgstr "Indstillingerne blev gemt"
-
-#. Text in echo
-#: users-form.php:96 index.php:156 clients-form.php:110 install/index.php:283
-#: includes/vars.php:1 options.php:397
-msgid "Password"
-msgstr "Adgangskode"
-
-#. Text in function
-#: includes/vars.php:1
-msgid "Password does not meet the required characters rules"
-msgstr "Adgangskode lever ikke op til de krævne regler"
-
-#. Text in function
-#: includes/vars.php:1
-msgid "Password must be alphanumeric (a-z,A-Z,0-9 allowed)"
-msgstr "Adgangskode skal være alfanumerisk (a-z, A-Z, 0-9 tilladt)"
-
-#. Text in function
-#: email-templates.php:91
-msgid "Password reset"
-msgstr "Adgangskodenulstilling"
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid "Password reset instructions"
-msgstr "Adgangskodenulstillings-instruktioner"
-
-#. Text in function
-#: includes/vars.php:1
-msgid "Password verification was not completed"
-msgstr "Adgangskode-verificering blev ikke gennemført"
-
-#. Text in echo
-#: index.php:143 includes/vars.php:1
-msgid "Password was not completed"
-msgstr "Adgangskode blev ikke udfyldt"
-
-#. Text in echo
-#: options.php:451
-msgid "Passwords"
-msgstr "Adgangskoder"
-
-#. Text in function
-#: includes/vars.php:1
-msgid "Passwords do not match"
-msgstr "Adgangskoder er ikke ens"
-
-#. Text in echo
-#: options.php:164 options.php:167
-msgid "Please complete all the fields."
-msgstr "Udfyld venligst alle felterne"
-
-#. Text in echo
-#: upload-process-form.php:380
-msgid ""
-"Please complete the following information to finish the uploading process. "
-"Remember that \"Title\" is a required field."
+#: options.php:725
+msgid "Enabled"
 msgstr ""
-"Udfyld venligst den følgende information for at færdiggøre "
-"uploadingsprocessen. Husk at \"Titel\" er et påkrævet felt."
 
-#. Text in function
-#: register.php:89
+#: options.php:734
+msgid "Client ID"
+msgstr ""
+
+#: options.php:740
+msgid "Client Secret"
+msgstr ""
+
+#: options.php:755
+msgid "Callback URI"
+msgstr ""
+
+#: process.php:177
+msgid "File not found"
+msgstr ""
+
+#: process.php:234
+msgid ""
+"You don't have the required permissions to view the requested information "
+"about this file."
+msgstr ""
+"Du har ikke de nødvendige rettigheder til at vise den forespurgte "
+"information om denne fil."
+
+#: register.php:12
+msgid "Register new account"
+msgstr "Registrer ny bruger"
+
+#: register.php:121
 msgid "Please contact a system administrator."
 msgstr "Kontakt venligst en systemadministrator"
 
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid "Please contact the administrator if you need further assistance."
-msgstr "Kontakt venligst administratoren, hvis du har brug for hjælp"
+#: register.php:125
+msgid "Account added correctly."
+msgstr "Bruger tilføjet"
 
-#. Text in echo
-#: reset-password.php:275
-msgid ""
-"Please enter your account's e-mail address. You will receive a link to "
-"continue the process."
-msgstr ""
-"Indtast venligst din brugers email-adresse. Du vil modtage et link til at "
-"fortsætte processen."
-
-#. Text in echo
-#: reset-password.php:311
-msgid ""
-"Please enter your desired new password. After that, you will be able to log "
-"in normally."
-msgstr ""
-"Indtast venligst din ønskede nye adgangskode. Efter dette vil du kunne logge "
-"ind normalt."
-
-#. Text in function
-#: edit-file.php:436
-msgid ""
-"Please go to the clients or groups administration page, select \"Manage files"
-"\" from any client and then click on \"Edit\" on any file to return here."
-msgstr ""
-"Gå venligst til klient- eller gruppeadministrationssiden og vælg "
-"\"Administrer filer\" fra enhver klient, og klik derefter på \"Rediger\" på "
-"enhver fil at vende tilbage her."
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid "Please log in to activate it."
-msgstr "Log venligst ind for at aktivere det"
-
-#. Text in echo
-#: manage-files.php:684
-msgid ""
-"Please note that downloading a file from here will not add to the download "
-"count."
-msgstr "Bemærk at download af en fil herfra ikke vil berøre downloadtallet"
-
-#. Text in function
-#: upload-import-orphans.php:197
-msgid ""
-"Please note that the listed files will be renamed if they contain invalid "
-"characters."
-msgstr ""
-"Bemærk at de angivne filer vil blive omdøbt, hvis de indeholder ugyldige tegn"
-
-#. Text in function
-#: register.php:89
+#: register.php:129
 msgid ""
 "Please remember that an administrator needs to approve your account before "
 "you can log in."
 msgstr ""
 "Husk at en administrator skal godkende din bruger, før du kan logge ind."
 
-#. Text in echo
-#: includes/updates.messages.php:23
+#: register.php:132
+msgid "You may now log in with your new credentials."
+msgstr "Du kan nu logge ind med dine nye legitimationsoplysninger."
+
+#: register.php:152
 msgid ""
-"Please remember that this tool is free software. If you find the system "
-"useful"
-msgstr "Husk at dette er gratis software. Hvis du synes om det, så"
-
-#. Text in echo
-#: branding.php:85
-msgid "Please select an image file to upload"
-msgstr "Vælg venligst en billedfil til upload"
-
-#. Text in echo
-#: actions-log.php:25
-msgid "Please select at least one activity to proceed."
-msgstr "Vælg venligst mindst én aktivitet for at fortsætte"
-
-#. Text in function
-#: actions-log.php:64
-msgid "Please select at least one activity."
-msgstr "Vælg venligst mindst én aktivitet"
-
-#. Text in echo
-#: clients.php:35
-msgid "Please select at least one client to proceed."
-msgstr "Vælg venligst mindst en klient for at fortsætte"
-
-#. Text in function
-#: clients.php:57
-msgid "Please select at least one client."
-msgstr "Vælg venligst mindst én klient"
-
-#. Text in echo
-#: upload-import-orphans.php:212 templates/default/template.php:198
-#: manage-files.php:70
-msgid "Please select at least one file to proceed."
-msgstr "Vælg venligst mindst én fil for at fortsætte"
-
-#. Text in function
-#: manage-files.php:689
-msgid "Please select at least one file."
-msgstr "Vælg venligst mindst én fil"
-
-#. Text in echo
-#: groups.php:56
-msgid "Please select at least one group to proceed."
-msgstr "Vælg venligst mindst én gruppe for at fortsætte"
-
-#. Text in function
-#: groups.php:76
-msgid "Please select at least one group."
-msgstr "Vælg venligst mindst én gruppe"
-
-#. Text in echo
-#: users.php:24
-msgid "Please select at least one user to proceed."
-msgstr "Vælg venligst mindst én systembruger for at fortsætte"
-
-#. Text in function
-#: users.php:47
-msgid "Please select at least one user."
-msgstr "Vælg venligst mindst én systembruger"
-
-#. Text in echo
-#: home.php:181
-msgid "Please wait while the system generates the statistics graph."
-msgstr "Vent venligst mens systemet genererer statistikgrafen"
-
-#. Text in echo
-#: home.php:205
-msgid "Please wait while the system gets the information from the log."
-msgstr "Vent venligst mens systemet henter informationen fra loggen"
-
-#. Text in echo
-#: manage-files.php:103
-msgid "Please wait while the system gets the required information."
-msgstr "Vent venligst mens systemet henter den nødvendige information"
-
-#. Text in echo
-#: templates/default/template.php:213 actions-log.php:51
-msgid "Please wait while your download is prepared."
-msgstr "Vent venligst mens din download forberedes"
-
-#. Text in echo
-#: options.php:411
-msgid "Port"
-msgstr "Port"
-
-#. Text in function
-#: manage-files.php:645
-msgid "Private"
-msgstr "Privat"
-
-#. Text in echo
-#: clients.php:184 groups.php:201 templates/default/template.php:46
-#: actions-log.php:192 users.php:217 manage-files.php:394
-msgid "Proceed"
-msgstr "Udfør"
-
-#. Text in echo
-#: actions-log.php:139
-msgid "ProjecSend has been installed"
-msgstr "ProjecSend er blevet installeret"
-
-#. Text in echo
-#: install/index.php:259
-msgid "ProjectSend URI (address)"
-msgstr "ProjectSend-URI (adresse)"
-
-#. Text in function
-#: install/index.php:311
-msgid "ProjectSend URI was not completed."
-msgstr "ProjectSend-URI blev ikke udfyldt"
-
-#. Text in echo
-#: home-news-widget.php:2
-msgid "ProjectSend news"
-msgstr "ProjectSend-nyheder"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "ProjectSend was installed"
-msgstr "ProjectSend blev installeret"
-
-#. Text in echo
-#: actions-log.php:172
-msgid "ProjectSend was updated"
-msgstr "ProjectSend blev opdateret"
-
-#. Text in echo
-#: includes/functions.php:270
-msgid "Provided by"
-msgstr "Kører på"
-
-#. Text in echo
-#: manage-files.php:456 manage-files.php:645
-msgid "Public"
-msgstr "Offentlig"
-
-#. Text in echo
-#: manage-files.php:577
-msgid "Public URL"
-msgstr "Offentlig URL"
-
-#. Text in echo
-#: edit-file.php:368 upload-process-form.php:504
-msgid "Public downloading"
-msgstr "Offentlig download"
-
-#. Text in echo
-#: upload-import-orphans.php:162
-msgid "Reason"
-msgstr "Grund"
-
-#. Text in echo
-#: home.php:74
-msgid "Recent activites"
-msgstr "Nylige aktiviteter"
-
-#. Text in function
-#: actions-log.php:64
-msgid "Recent activities log"
-msgstr "Nylig aktivitetslog"
-
-#. Text in function
-#: clients-form.php:58
-msgid "Register account"
-msgstr "Registrer bruger"
-
-#. Text in echo
-#: index.php:176
-msgid "Register as a new client."
-msgstr "Registrer som en ny klient"
-
-#. Text in function
-#: register.php:183
-msgid "Register new account"
-msgstr "Registrer ny bruger"
-
-#. Text in echo
-#: index.php:196
-msgid "Remember me"
-msgstr "Husk mig"
-
-#. Text in echo
-#: install/index.php:251
-msgid "Remember to edit the file"
-msgstr "Husk at redigere filen"
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid ""
-"Remember, your new client will not be able to log in until an administrator "
-"has approved their account."
+"A folder for this account could not be created. Probably because of a server "
+"configuration."
 msgstr ""
-"Husk at din nye klient ikke vil være i stand til at logge ind før en "
-"administrator har godkendt deres bruger."
+"En mappe til denne bruger kunne ikke oprettes. Dette kan skyldes en "
+"serverkonfiguration."
 
-#. Text in echo
-#: edit-file.php:414 groups-form.php:68 upload-process-form.php:547
-msgid "Remove all"
-msgstr "Fjern alle"
-
-#. Text in echo
-#: users-form.php:108 users.php:252
-msgid "Role"
-msgstr "Rolle"
-
-#. Text in echo
-#: options.php:389
-msgid "SMTP & Gmail shared options"
-msgstr "Delte indstillinger for SMTP & Gmail"
-
-#. Text in echo
-#: options.php:403
-msgid "SMTP options"
-msgstr "SMTP-indstillinger"
-
-#. Text in function
-#: clients-form.php:58
-msgid "Save client"
-msgstr "Gem klient"
-
-#. Text in function
-#: groups-form.php:23
-msgid "Save group"
-msgstr "Gem gruppe"
-
-#. Text in function
-#: users-form.php:59
-msgid "Save user"
-msgstr "Gem bruger"
-
-#. Text in echo
-#: clients.php:160 groups.php:187 upload-import-orphans.php:147
-#: templates/default/template.php:33 actions-log.php:133 users.php:186
-#: manage-files.php:350
-msgid "Search"
-msgstr "Søg"
-
-#. Text in echo
-#: options.php:180
-msgid "Security"
-msgstr "Sikkerhed"
-
-#. Text in echo
-#: edit-file.php:360 upload-process-form.php:496
-msgid "Select a date"
-msgstr "Vælg en dato"
-
-#. Text in echo
-#: groups.php:198 actions-log.php:187
-msgid "Select action"
-msgstr "Vælg handling"
-
-#. Text in echo
-#: branding.php:148
-msgid "Select image to upload"
-msgstr "Vælg billede til upload"
-
-#. Text in echo
-#: edit-file.php:380 groups-form.php:48 upload-process-form.php:517
-msgid "Select one or more options. Type to search."
-msgstr "Vælg én eller flere valgmuligheder. Indtast for at søge."
-
-#. Text in echo
-#: clients.php:178
-msgid "Selected clients actions"
-msgstr "Handlinger for valgte klienter"
-
-#. Text in echo
-#: templates/default/template.php:42 manage-files.php:380
-msgid "Selected files actions"
-msgstr "Handlinger for valgte filer"
-
-#. Text in echo
-#: groups.php:196
-msgid "Selected groups actions"
-msgstr "Handlinger for valgte grupper"
-
-#. Text in echo
-#: users.php:211
-msgid "Selected users actions"
-msgstr "Handlinger for valgte brugere"
-
-#. Text in echo
-#: options.php:332
-msgid "Send copies"
-msgstr "Send kopier"
-
-#. Text in echo
-#: manage-files.php:129
-msgid ""
-"Send this URL to someone to download the file without registering or logging "
-"in."
-msgstr ""
-"Send denne URL til nogen. De vil kunne downloade filen uden at registrere "
-"sig eller logge ind."
-
-#. Text in echo
-#: options.php:434
-msgid ""
-"Separate allowed file types with a comma. You can navigate the box with the "
-"left/right arrows, backspace and delete keys."
-msgstr ""
-"Separér tilladte filtyper med et komma. Du kan navigere i boksen med "
-"piletasterne, backspace og delete."
-
-#. Text in echo
-#: options.php:352
-msgid "Separate e-mail addresses with a comma."
-msgstr "Separér email-adresser med et komma"
-
-#. Text in echo
-#: options.php:367
-msgid "Set to 0 to disable."
-msgstr "Sæt til 0 for at deaktivere."
-
-#. Text in echo
-#: index.php:172
-msgid "Set up a new one."
-msgstr "Opret en ny."
-
-#. Text in echo
-#: manage-files.php:387
-msgid "Show"
-msgstr "Vis"
-
-#. Text in echo
-#: options.php:304
-msgid "Show it anyway, but prevent download."
-msgstr "Vis den alligevel men tillad ikke download."
-
-#. Text in echo
-#: clients.php:191 groups.php:208 templates/default/template.php:54
-#: actions-log.php:199 users.php:224 manage-files.php:405
-msgid "Showing"
-msgstr "Viser"
-
-#. Text in function
-#: email-templates.php:91
-msgid "Shows the list of files"
-msgstr "Viser fillisten"
-
-#. Text in echo
-#: install/index.php:255 options.php:195
-msgid "Site name"
-msgstr "Sidenavn"
-
-#. Text in function
-#: install/index.php:311
-msgid "Sitename was not completed."
-msgstr "Sidenavn blev ikke udfyldt"
-
-#. Text in echo
-#: manage-files.php:451
-msgid "Size"
-msgstr "Størrelse"
-
-#. Text in echo
-#: options.php:516
-msgid "Size settings"
-msgstr "Størrelsesindstillinger"
-
-#. Text in function
-#: options.php:115
-msgid "Some fields were not completed. Options could not be saved."
-msgstr "Nogle felter blev ikke udfyldt. Indstillingerne kunne ikke gemmes."
-
-#. Text in echo
-#: home.php:36
-msgid "Statistics"
-msgstr "Statistikker"
-
-#. Text in echo
-#: clients.php:230 users.php:253 manage-files.php:466
-#: upload-process-form.php:274
-msgid "Status"
-msgstr "Status"
-
-#. Text in function
-#: header.php:367
-msgid "System Administration"
-msgstr "Systemadministration"
-
-#. Text in function
-#: sys.vars.php:1 users.php:192
-msgid "System Administrator"
-msgstr "Systemadministrator"
-
-#. Text in echo
-#: includes/updates.messages.php:16
-msgid "System Notice:"
-msgstr "Systemmeddelse:"
-
-#. Text in echo
-#: options.php:237
-msgid "System URI"
-msgstr "System-URI"
-
-#. Text in echo
-#: header.php:293
-msgid "System Users"
-msgstr "Systembrugere"
-
-#. Text in echo
-#: home.php:61
-msgid "System data"
-msgstr "Systemdata"
-
-#. Text in echo
-#: options.php:233
-msgid "System location"
-msgstr "Systemplacering"
-
-#. Text in function
-#: options.php:546
-msgid "System options"
-msgstr "Systemindstillinger"
-
-#. Text in echo
-#: clients.php:235 clients-form.php:123
-msgid "Telephone"
-msgstr "Telefon"
-
-#. Text in echo
-#: email-templates.php:247
-msgid "Template text"
-msgstr "Skabelontekst"
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid "Thank you for using ProjectSend."
-msgstr "Tak fordi du bruger ProjectSend."
-
-#. Text in echo
-#: includes/updates.messages.php:25
-msgid "Thank you!"
-msgstr "Tak!"
-
-#. Text in function
-#: register.php:89
+#: register.php:157
 msgid ""
 "The account could not be created. A folder with this name already exists."
 msgstr ""
 "Brugeren kunne ikke oprettes. En mappe med det navn eksisterer allerede."
 
-#. Text in function
-#: includes/updates.functions.php:1
+#: register.php:167
 msgid ""
-"The chmod values of the emails folder and the html templates inside couldn't "
-"be set. If ProjectSend isn't sending notifications emails, please set them "
-"manually to 777."
+"An e-mail notification with login information was sent to the specified "
+"address."
 msgstr ""
-"Chmod-værdierne for emails-mappen og html-skabelonerne indeni kunne ikke "
-"indstilles. Hvis ProjectSend ikke sender email-underretninger, så indstil "
-"dem venligst til 777 manuelt."
+"En email-underretning med login-informationen blev sendt til den "
+"specificerede adresse."
 
-#. Text in function
-#: groups.php:213
-msgid "The client does not exist."
-msgstr "Klienten eksisterer ikke"
+#: reset-password.php:11
+msgid "Lost password"
+msgstr "Mistet adgangskode"
 
-#. Text in echo
-#: includes/updates.messages.php:16
-msgid "The database was updated to support this version of the software."
-msgstr ""
-"Databasen blev opdateret for at understøtte denne version af softwaren."
-
-#. Text in function
-#: branding.php:96
-msgid "The file could not be moved to the corresponding folder."
-msgstr "Filen kunne ikke flyttes til den tilsvarende mappe."
-
-#. Text in function
-#: edit-file.php:436
-msgid "The file has been edited succesfuly."
-msgstr "Filen blev redigeret."
-
-#. Text in function
-#: branding.php:96
-msgid ""
-"The file you selected is not an allowed image format. Please upload your "
-"logo as a jpg, gif or png file."
-msgstr ""
-"Filen du har valgt er ikke et tilladt billedformat. Upload venligst dit logo "
-"som en jpg, gif eller png-fil."
-
-#. Text in function
-#: clients.php:200 groups.php:213 actions-log.php:204 users.php:229
-#: manage-files.php:410
-msgid "The filters you selected returned no results."
-msgstr "De valgte filtre gav ingen resultater."
-
-#. Text in function
-#: includes/classes/form-validation.php:1
-msgid "The following errors were found"
-msgstr "De følgende fejl blev fundet"
-
-#. Text in echo
-#: download.php:96
-msgid "The following file is now ready for you to download:"
-msgstr "Den følgende fil er nu klar til at du kan downloade den:"
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid "The following files are now available for you to download."
-msgstr "De følgende filer er tilgængelige til download for dig."
-
-#. Text in echo
-#: email-templates.php:256
-msgid "The following tags can be used on this e-mails' body."
-msgstr "De følgende tags kan bruges i emailens body."
-
-#. Text in function
-#: email-templates.php:91
-msgid "The full name the client registered with"
-msgstr "Det fulde navn klienten registrerede sig med"
-
-#. Text in function
-#: branding.php:96
-msgid "The image was uploaded correctly."
-msgstr "Billedet blev uploadet."
-
-#. Text in function
-#: email-templates.php:91
-msgid "The link to continue the process"
-msgstr "Brug følgende link"
-
-#. Text in function
-#: actions-log.php:64
-msgid ""
-"The log was cleared. Only data used for statistics remained. You can delete "
-"them manually if you want."
-msgstr ""
-"Loggen blev ryddet. Kun statistikdata er tilbage. Du kan slette dem manuelt "
-"hvis du ønsker."
-
-#. Text in function
-#: email-templates.php:91
-msgid "The login link"
-msgstr "Login-linket"
-
-#. Text in echo
-#: actions-log.php:171
-msgid "The logo on \"Branding\" was changed"
-msgstr "Logoet i \"Markedsføring\" blev ændret"
-
-#. Text in function
-#: email-templates.php:91
-msgid "The new password for this account"
-msgstr "Den nye adgangskode for denne bruger"
-
-#. Text in function
-#: email-templates.php:91
-msgid "The new username for this account"
-msgstr "Det nye brugernavn for denne bruger"
-
-#. Text in echo
-#: includes/functions.php:673
-msgid "The password must contain, at least:"
-msgstr "Adgangskoden skal indeholde mindst:"
-
-#. Text in echo
-#: branding.php:129
-msgid ""
-"The picture on the right is not an actual representation of what they will "
-"see. The size on this preview is fixed, but remember that you can change the "
-"display size and picture quality for your client's pages on the"
-msgstr ""
-"Billedet til højre er ikke en egentlig repræsentation af, hvad dine klienter "
-"vil se. Størrelsen på denne forhåndsvisning er fast, men husk at du kan "
-"ændre skærmstørrelse og billedkvalitet for din klients sider i"
-
-#. Text in function
-#: reset-password.php:322 download.php:79
-msgid "The request is not valid."
-msgstr "Anmodningen er ikke gyldig."
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid "The request is valid only for 24 hours."
-msgstr "Anmodningen er kun gyldig i 24 timer."
-
-#. Text in function
-#: actions-log.php:64
-msgid "The selected activities were deleted."
-msgstr "De valgte aktiviteter blev slettet."
-
-#. Text in function
-#: clients.php:57
-msgid "The selected clients were deleted."
-msgstr "De valgte klienter blev slettet."
-
-#. Text in function
-#: clients.php:57
-msgid "The selected clients were marked as active."
-msgstr "De valgte klienter blev markeret som aktive."
-
-#. Text in function
-#: clients.php:57
-msgid "The selected clients were marked as inactive."
-msgstr "De valgte klienter blev markeret som inaktive."
-
-#. Text in function
-#: manage-files.php:689
-msgid "The selected files were deleted."
-msgstr "De valgte filer blev slettet."
-
-#. Text in function
-#: manage-files.php:689
-msgid "The selected files were marked as hidden."
-msgstr "De valgte filer blev markeret som skjulte."
-
-#. Text in function
-#: manage-files.php:689
-msgid "The selected files were marked as visible."
-msgstr "De valgte filer blev markeret som synlige."
-
-#. Text in function
-#: manage-files.php:689
-msgid "The selected files were unassigned from this client."
-msgstr "De valgte filer fik fjernet deres tildeling til denne klient."
-
-#. Text in function
-#: groups.php:76
-msgid "The selected groups were deleted."
-msgstr "De valgte grupper blev slettet."
-
-#. Text in function
-#: users.php:47
-msgid "The selected users were deleted."
-msgstr "De valgte brugere blev slettet."
-
-#. Text in function
-#: users.php:47
-msgid "The selected users were marked as active."
-msgstr "De valgte brugere blev markerede som aktive."
-
-#. Text in function
-#: users.php:47
-msgid "The selected users were marked as inactive."
-msgstr "De valgte brugere blev markerede som inaktive."
-
-#. Text in function
-#: index.php:110
-msgid "The supplied credentials are not valid."
-msgstr "De indtastede legitimationsoplysninger er ikke gyldige."
-
-#. Text in function
-#: reset-password.php:322
+#: reset-password.php:215
 msgid "The supplied email address does not correspond to any user."
 msgstr "Den angivne email-adresse stemmer ikke overens med nogen bruger."
 
-#. Text in function
-#: index.php:110
-msgid "The supplied password is incorrect."
-msgstr "Den angivne adgangskode er forkert."
+#: reset-password.php:221
+msgid "This request has expired. Please make a new one."
+msgstr "Denne anmodning er udløbet. Foretag venligst en ny."
 
-#. Text in function
-#: index.php:110
-msgid "The supplied username doesn't exist."
-msgstr "Det angivne brugernavn eksisterer ikke."
+#: reset-password.php:224
+msgid "This request has already been completed. Please make a new one."
+msgstr "Denne anmodning er allerede afsluttet. Foretag venligst en ny."
 
-#. Text in function
-#: email-templates.php:91
-msgid "The text string unique to this request. Must be included somewhere."
-msgstr "Tekststrengen er unik for denne anmodning. Skal inkluderes et sted."
-
-#. Text in function
-#: email-templates.php:91
-msgid "The username for this account"
-msgstr "Brugernavnet for denne bruger"
-
-#. Text in function
-#: reset-password.php:322
+#: reset-password.php:227
 msgid ""
 "There are 3 unused requests done in less than 24 hs. Please wait until one "
 "expires (1 day since made) to make a new one."
@@ -2361,214 +2844,97 @@ msgstr ""
 "Der er 3 ubrugte anmodninger i de sidste 24 timer. Vent venligst til en "
 "udløber (1 dag siden anmodningen) til du laver en ny."
 
-#. Text in function
-#: actions-log.php:204
-msgid "There are no activities recorded."
-msgstr "Der er ingen registrerede aktiviteter."
-
-#. Text in function
-#: clients.php:200 includes/functions.php:287
-msgid "There are no clients at the moment"
-msgstr "Der er ingen klienter i øjeblikket"
-
-#. Text in function
-#: manage-files.php:410
-msgid "There are no files assigned to this client."
-msgstr "Der er ingen filer tildelt til denne klient."
-
-#. Text in echo
-#: upload-import-orphans.php:226
-msgid "There are no files available to add right now."
-msgstr "Der er ingen filer tilgængelige til at tilføje lige nu."
-
-#. Text in function
-#: manage-files.php:410
-msgid "There are no files for this client."
-msgstr "Der er ingen filer til denne klient."
-
-#. Text in function
-#: groups.php:213
-msgid "There are no groups created yet."
-msgstr "Der er ikke oprettet nogen grupper endnu."
-
-#. Text in function
-#: groups.php:213
-msgid "There are no groups where this client is member."
-msgstr "Der er ingen grupper som denne klient er medlem af."
-
-#. Text in echo
-#: home-log.php:62
-msgid "There are no results"
-msgstr "Der er ingen resultater"
-
-#. Text in function
-#: clients-edit.php:143
-msgid "There is no client with that ID number."
-msgstr "Der er ingen klient med det ID-nummer."
-
-#. Text in function
-#: groups-edit.php:104
-msgid "There is no group with that ID number."
-msgstr "Der er ingen gruppe med det ID-nummer."
-
-#. Text in function
-#: users-edit.php:146
-msgid "There is no user with that ID number."
-msgstr "Der er ingen bruger med det ID-nummer."
-
-#. Text in function
-#: edit-file.php:436
-msgid "There is not file with that ID number."
-msgstr "Der er ingen fil med det ID-nummer."
-
-#. Text in function
-#: install/index.php:203
-msgid "There seems to be an error. Please try again."
-msgstr "Der er sket en fejl. Prøv igen."
-
-#. Text in function
-#: branding.php:96
-msgid "There was an error uploading the file. Please try again."
-msgstr "Der opstod en fejl under upload af filen. Prøv igen."
-
-#. Text in function
-#: email-templates.php:91 clients-edit.php:143 groups-add.php:63
-#: groups-edit.php:104 options.php:115 register.php:89 users-add.php:75
-#: users-edit.php:146 clients-add.php:83
-msgid "There was an error. Please try again."
-msgstr "Der var en fejl. Prøv igen."
-
-#. Text in echo
-#: upload-process-form.php:333
-msgid "These files have not been assigned to any client or group."
-msgstr "Disse filer er ikke blevet tildelt nogen klient eller gruppe."
-
-#. Text in echo
-#: options.php:234
+#: reset-password.php:240
 msgid ""
-"These options are to be changed only if you are moving the system to another "
-"place. Changes here can cause ProjectSend to stop working."
+"An e-mail with further instructions has been sent. Please check your inbox "
+"to proceed."
 msgstr ""
-"Disse indstillinger skal kun ændres, hvis du flytter systemet til et andet "
-"sted. Ændringer her kan få ProjectSend at stoppe med at virke."
+"En email med yderligere instruktioner er blevet sendt. Tjek din inbox for at "
+"fortsætte."
 
-#. Text in function
-#: users-form.php:128 clients-form.php:150
-msgid "This account information will be e-mailed to the address supplied above"
-msgstr "Disse kontooplysninger vil blive sendt til email-adressen ovenover"
+#: reset-password.php:244
+msgid "E-mail couldn't be sent."
+msgstr "Email kunne ikke afsendes."
 
-#. Text in function
-#: index.php:110
-msgid "This account is not active."
-msgstr "Denne bruger er ikke aktiv."
+#: reset-password.php:245 reset-password.php:262
+msgid "If the problem persists, please contact an administrator."
+msgstr "Kontakt en administrator hvis problemet fortsætter."
 
-#. Text in function
-#: includes/classes/send-email.php:1
+#: reset-password.php:257
+msgid "Your new password has been set. You can now log in using it."
+msgstr "Din nye adgangskode er blevet indstillet. Du kan nu logge ind."
+
+#: reset-password.php:261
+msgid "Your new password couldn't be set."
+msgstr "Din nye adgangskode kunne ikke indstilles."
+
+#: reset-password.php:295
 msgid ""
-"This email contains HTML formatting and cannot be displayed right now. "
-"Please use an HTML compatible reader."
+"Please enter your account's e-mail address. You will receive a link to "
+"continue the process."
 msgstr ""
-"Denne e-mail indeholder HTML-formatering og kan ikke vises lige nu. Brug "
-"venligst en HTML-kompatibel læser."
+"Indtast venligst din brugers email-adresse. Du vil modtage et link til at "
+"fortsætte processen."
 
-#. Text in function
-#: email-templates.php:91
+#: reset-password.php:298
+msgid "Get a new password"
+msgstr ""
+
+#: reset-password.php:333
+msgid "New password"
+msgstr "Ny adgangskode"
+
+#: reset-password.php:344
 msgid ""
-"This email will be sent to a client whenever a new file has been assigned to "
-"his account."
+"Please enter your desired new password. After that, you will be able to log "
+"in normally."
 msgstr ""
-"Denne email vil blive sendt til en klient når en ny fil bliver tildelt til "
-"dennes bruger."
+"Indtast venligst din ønskede nye adgangskode. Efter dette vil du kunne logge "
+"ind normalt."
 
-#. Text in function
-#: email-templates.php:91
+#: reset-password.php:347
+msgid "Set new password"
+msgstr ""
+
+#: upload-from-computer.php:20 upload-from-computer.php:181
+#: upload-process-form.php:29
+msgid "Upload files"
+msgstr "Upload filer"
+
+#: upload-from-computer.php:51
 msgid ""
-"This email will be sent to a user or client when they try to reset their "
-"password."
+"Click on Add files to select all the files that you want to upload, and then "
+"click continue. On the next step, you will be able to set a name and "
+"description for each uploaded file. Remember that the maximum allowed file "
+"size (in mb.) is "
 msgstr ""
-"Denne email vil blive sendt til en bruger eller klient når de prøver at "
-"nulstille deres adgangskode."
+"Klik på Tilføj filer for at vælge de filer, du vil uploade, og klik derefter "
+"på Upload filer. På det næste trin, kan du angive et navn og en beskrivelse "
+"til hver uploadede fil. Husk, at den maksimalt tilladte filstørrelse (i MB) "
+"er "
 
-#. Text in function
-#: email-templates.php:91
+#: upload-from-computer.php:144
+msgid "You must select at least one file to upload."
+msgstr "Du skal vælge mindst en fil at uploade."
+
+#: upload-from-computer.php:177
 msgid ""
-"This email will be sent to the new client after an administrator has created "
-"his new account. It would be best to include the log in details (username "
-"and password)."
+"Your browser doesn't support HTML5, Flash or Silverlight. Please update your "
+"browser or install Adobe Flash or Silverlight to continue."
 msgstr ""
-"Denne email vil blive sendt til den nye klient efter en administrator har "
-"oprettet brugeren. Det vil være bedst at medtage login-detaljer (brugernavn "
-"og adgangskode)."
+"Din browser understøtter ikke HTML5, Flash eller Silverlight. Opdater "
+"venligst din browser eller installer Adobe Flash eller Silverlight for at "
+"fortsætte."
 
-#. Text in function
-#: email-templates.php:91
+#: upload-from-computer.php:184
 msgid ""
-"This email will be sent to the new system user after an administrator has "
-"created his new account. It would be best to include the log in details "
-"(username and password)."
+"Your files are being uploaded! Progress indicators may take a while to "
+"update, but work is still being done behind the scenes."
 msgstr ""
-"Denne email vil blive sendt til den nye systembruger efter en administrator "
-"har oprettet brugeren. Det vil være bedst at medtage login-detaljer "
-"(brugernavn og adgangskode)"
+"Dine filer bliver uploadet! Forløbsindikatorere kan tage noget tid før de "
+"opdateres, men der arbejdes stadig bag kulisserne."
 
-#. Text in function
-#: email-templates.php:91
-msgid ""
-"This email will be sent to the system administrator after a new client has "
-"created a new account for himself."
-msgstr ""
-"Denne email vil blive sendt til systemadministratoren efter en ny klient "
-"selv har oprettet en bruger."
-
-#. Text in function
-#: email-templates.php:91
-msgid ""
-"This email will be sent to the system administrator whenever a client "
-"uploads a new file."
-msgstr ""
-"Denne email vil blive sendt til systemadministratoren når en klient uploader "
-"en ny fil."
-
-#. Text in echo
-#: home.php:63
-msgid ""
-"This graphic will help you get a relative view of the existing data, "
-"allowing you to see the relation between clients, users, groups and files."
-msgstr ""
-"Denne grafik giver dig et relativt syn på de eksisterende data, så du kan se "
-"forholdet mellem klienter, brugere, grupper og filer."
-
-#. Text in echo
-#: install/index.php:267
-msgid ""
-"This info will be used to create a default system user, which can't be "
-"deleted afterwards. Password should be between"
-msgstr ""
-"Denne info vil blive brugt til at oprette en standard-systembruger, der ikke "
-"kan slettes bagefter. Adgangskoden skal være mellem"
-
-#. Text in function
-#: branding.php:96
-msgid ""
-"This is most likely a permissions issue. If that's the case, it can be "
-"corrected via FTP by setting the chmod value of the"
-msgstr ""
-"Dette er sandsynligvis et problem med tilladelser. Hvis det er tilfældet, "
-"kan det løses via FTP ved at indstille chmod-værdien af"
-
-#. Text in echo
-#: upload-import-orphans.php:233
-msgid ""
-"This is the same folder where the files uploaded by the web interface will "
-"be stored. So if you finish uploading your files but do not assign them to "
-"any clients/groups, the files will still be there for later use."
-msgstr ""
-"Dette er den samme mappe, hvor filerne uploadet af webbrugerfladen vil blive "
-"gemt. Hvis du er færdig med at uploade dine filer, men ikke har tildelt dem "
-"til nogen klienter/grupper, vil filerne stadig være der til senere brug."
-
-#. Text in function
-#: upload-import-orphans.php:220
+#: upload-import-orphans.php:38
 msgid ""
 "This list only shows the files that are allowed according to your security "
 "settings. If the file type you need to add is not listed here, add the "
@@ -2579,355 +2945,58 @@ msgstr ""
 "du tilføje en filendelse til \"Tilladte filendelser\"-boksen på siden "
 "Indstillinger."
 
-#. Text in echo
-#: options.php:306
+#: upload-import-orphans.php:163
+msgid "File name"
+msgstr "Filnavn"
+
+#: upload-import-orphans.php:164
+msgid "File size"
+msgstr "Filstørrelse"
+
+#: upload-import-orphans.php:165
+msgid "Last modified"
+msgstr "Sidst ændret"
+
+#: upload-import-orphans.php:199
 msgid ""
-"This only affects clients. On the admin side, you can still get the files."
+"Please note that the listed files will be renamed if they contain invalid "
+"characters."
 msgstr ""
-"Dette påvirker kun klienter. På admin-siden kan du stadig få adgang til "
-"filerne."
+"Bemærk at de angivne filer vil blive omdøbt, hvis de indeholder ugyldige tegn"
 
-#. Text in echo
-#: templates/default/template.php:214
-msgid ""
-"This operation could take a few minutes, depending on the size of the files."
-msgstr ""
-"Denne handling kan tage et par minutter afhængigt af størrelsen på filerne."
+#: upload-import-orphans.php:239
+msgid "There are no files available to add right now."
+msgstr "Der er ingen filer tilgængelige til at tilføje lige nu."
 
-#. Text in function
-#: clients-edit.php:143 groups-edit.php:104 users-edit.php:146
-msgid "This page is not intended to be accessed directly."
-msgstr "Denne side er ikke beregnet til at blive tilgået direkte."
-
-#. Text in function
-#: reset-password.php:322
-msgid "This request has already been completed. Please make a new one."
-msgstr "Denne anmodning er allerede afsluttet. Foretag venligst en ny."
-
-#. Text in function
-#: reset-password.php:322
-msgid "This request has expired. Please make a new one."
-msgstr "Denne anmodning er udløbet. Foretag venligst en ny."
-
-#. Text in echo
-#: index.php:180
-msgid "This server does not allow self registrations."
-msgstr "Denne server tillader ikke at brugere registrerer sig selv."
-
-#. Text in function
-#: includes/updates.functions.php:1
-msgid ""
-"This version changes the way files-to-clients relationships are stored on "
-"the database making it possible to assign a file to multiple clients. "
-"However some files did not update successfully. The following files may need "
-"to be reassigned to their clients by using the \\\"Find orphan files\\\" "
-"tool:"
-msgstr ""
-"Denne version ændrer den måde fil-til-klient-relationer er gemt i databasen, "
-"hvilket gør det muligt at tildele en fil til flere klienter. Men nogle filer "
-"ikke opdateret korrekt. Følgende filer kan være nødvendige at overføre til "
-"deres klienter ved hjælp af \\\"Find hjemløse filer\\\"-værktøjet:"
-
-#. Text in echo
-#: options.php:181 options.php:480
-msgid "Thumbnails"
-msgstr "Miniaturer"
-
-#. Text in echo
-#: options.php:481
-msgid ""
-"Thumbnails are used on files lists. It is recommended to keep them small, "
-"unless you are using the system to upload only images, and will change the "
-"default client's template accordingly."
-msgstr ""
-"Miniaturer bruges på fillister. Det anbefales gøre dem små, medmindre du "
-"bruger systemet til kun at uploade billeder."
-
-#. Text in echo
-#: options.php:224
-msgid "Time format"
-msgstr "Tidsformat"
-
-#. Text in echo
-#: options.php:214
-msgid "Timezone"
-msgstr "Tidszone"
-
-#. Text in echo
-#: edit-file.php:336 manage-files.php:450 upload-process-form.php:268
-#: upload-process-form.php:474
-msgid "Title"
-msgstr "Titel"
-
-#. Text in function
-#: includes/vars.php:1
-msgid "Title was not completed"
-msgstr "Titel blev ikke udfyldt"
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid "To continue, please visit the following link"
-msgstr "For at fortsætte, skal du besøge følgende link"
-
-#. Text in echo
-#: upload-import-orphans.php:228
+#: upload-import-orphans.php:242
 msgid "To use this feature you need to upload your files via FTP to the folder"
 msgstr "For at bruge denne funktion, skal du uploade filer til mappen via FTP"
 
-#. Text in echo
-#: manage-files.php:473
-msgid "Total downloads"
-msgstr "Totalt antal downloads"
+#: upload-process-form.php:286
+msgid "Files uploaded correctly"
+msgstr "Filer blev uploadet"
 
-#. Text in echo
-#: manage-files.php:388
-msgid "Unassign"
-msgstr "Fjern tildeling"
+#: upload-process-form.php:292 upload-process-form.php:662
+msgid "File Name"
+msgstr "Filnavn"
 
-#. Text in echo
-#: upload-process-form.php:332
-msgid "Unassigned files"
-msgstr "Utildelte filer"
+#: upload-process-form.php:381
+msgid "Files ready to upload"
+msgstr "Filer klar til upload"
 
-#. Text in function
-#: users-form.php:59 clients-form.php:58
-msgid "Update account"
-msgstr "Opdater bruger"
-
-#. Text in echo
-#: email-templates.php:285 options.php:536
-msgid "Update all options"
-msgstr "Opdater alle indstil..."
-
-#. Text in echo
-#: includes/updates.messages.php:51
-msgid "Update available!"
-msgstr "Opdatering er tilgængelig!"
-
-#. Text in echo
-#: header.php:217 header.php:342 branding.php:157
-msgid "Upload"
-msgstr "Upload"
-
-#. Text in function
-#: upload-from-computer.php:171 upload-from-computer.php:157
-#: templates/gallery/template.php:49 upload-process-form.php:693
-msgid "Upload files"
-msgstr "Upload filer"
-
-#. Text in echo
-#: upload-process-form.php:553
-msgid "Upload hidden (will not send notifications)"
-msgstr "Upload skjult (vil ikke sende email-underretninger)"
-
-#. Text in function
-#: sys.vars.php:1 users.php:194 manage-files.php:455
-msgid "Uploader"
-msgstr "Uploader"
-
-#. Text in echo
-#: home-statistics.php:174 home.php:45
-msgid "Uploads by clients"
-msgstr "Uploads af klienter"
-
-#. Text in echo
-#: home-statistics.php:170 home.php:44
-msgid "Uploads by users"
-msgstr "Uploads af systembrugere"
-
-#. Text in echo
-#: email-templates.php:211
-msgid "Use custom header / footer"
-msgstr "Brug brugerdefineret sidehoved / sidefod"
-
-#. Text in echo
-#: email-templates.php:243
-msgid "Use custom template"
-msgstr "Brug brugerdefineret skabelon"
-
-#. Text in echo
-#: options.php:503
-msgid "Use file's absolute path"
-msgstr "Brug filens absolutte sti"
-
-#. Text in echo
-#: branding.php:124
+#: upload-process-form.php:382
 msgid ""
-"Use this page to upload your company logo, or update the currently assigned "
-"one. This image will be shown to your clients when they access their file "
-"list."
+"Please complete the following information to finish the uploading process. "
+"Remember that \"Title\" is a required field."
 msgstr ""
-"Brug denne side til at uploade dit firmalogo eller opdatere det nuværende "
-"logo. Dette billede vil blive vist til dine klienter når de bruger deres "
-"filliste."
+"Udfyld venligst den følgende information for at færdiggøre "
+"uploadingsprocessen. Husk at \"Titel\" er et påkrævet felt."
 
-#. Text in echo
-#: options.php:252
-msgid ""
-"Used only on self-registrations. These options will not apply to clients "
-"registered by system administrators."
-msgstr ""
-"Benyttes kun ved selv-registreringer. Disse indstillinger gælder ikke for "
-"klienter, der er registreret af systemadministratorer."
+#: upload-process-form.php:387
+msgid "Note"
+msgstr "Bemærk"
 
-#. Text in function
-#: users-add.php:75
-msgid "User added correctly."
-msgstr "Brugeren blev tilføjet."
-
-#. Text in function
-#: users-edit.php:146
-msgid "User edited correctly."
-msgstr "Brugeren blev redigeret."
-
-#. Text in function
-#: includes/vars.php:1
-msgid "User level was not specified"
-msgstr "Brugerniveau blev ikke specificeret"
-
-#. Text in echo
-#: index.php:153 includes/classes/send-email.php:1 includes/vars.php:1
-#: options.php:393
-msgid "Username"
-msgstr "Brugernavn"
-
-#. Text in function
-#: includes/vars.php:1
-msgid "Username must be alphanumeric (a-z,A-Z,0-9 allowed)"
-msgstr "Brugernavn skal være alfanumerisk (a-z,A-Z,0-9 tilladt)"
-
-#. Text in echo
-#: index.php:142 includes/vars.php:1
-msgid "Username was not completed"
-msgstr "Brugernavn blev ikke udfyldt"
-
-#. Text in echo
-#: home.php:161
-msgid "Users"
-msgstr "Brugere"
-
-#. Text in function
-#: users.php:47
-msgid "Users administration"
-msgstr "Brugeradministration"
-
-#. Text in echo
-#: home.php:91
-msgid "View all"
-msgstr "Vis alle"
-
-#. Text in echo
-#: clients.php:328
-msgid "View as client"
-msgstr "Vis som klient"
-
-#. Text in echo
-#: clients.php:194
-msgid "View full table"
-msgstr "Vis fuld oversigt"
-
-#. Text in echo
-#: clients.php:327
-msgid "View groups"
-msgstr "Vis grupper"
-
-#. Text in echo
-#: header.php:347 upload-process-form.php:360
-msgid "View my files"
-msgstr "Vis mine filer"
-
-#. Text in echo
-#: clients.php:193
-msgid "View reduced table"
-msgstr "Vis mindre oversigt"
-
-#. Text in echo
-#: manage-files.php:361 manage-files.php:645 upload-process-form.php:293
-msgid "Visible"
-msgstr "Synlig"
-
-#. Text in echo
-#: header.php:144
-msgid "Welcome"
-msgstr "Velkommen"
-
-#. Text in function
-#: home.php:221 includes/classes/send-email.php:1
-msgid "Welcome to ProjectSend"
-msgstr "Velkommen til ProjectSend"
-
-#. Text in echo
-#: options.php:339
-msgid "When a client uploads files"
-msgstr "Når en klient uploader filer"
-
-#. Text in echo
-#: options.php:301
-msgid "When a file expires:"
-msgstr "Når en fil udløber:"
-
-#. Text in echo
-#: options.php:335
-msgid "When a system user uploads files"
-msgstr "Når en systembruger uploader filer"
-
-#. Text in echo
-#: options.php:452
-msgid "When setting up a password for an account, requiere at least:"
-msgstr "Når en adgangskode opsættes for en bruger kræves mindst:"
-
-#. Text in function
-#: clients-form.php:58
-msgid "Will be visible on the client's file list"
-msgstr "Vil være synlig på klientens filliste"
-
-#. Text in echo
-#: clients.php:299
-msgid "Yes"
-msgstr "Ja"
-
-#. Text in echo
-#: clients.php:41 groups.php:60 actions-log.php:29 users.php:30
-#: manage-files.php:76
-msgid "You are about to delete"
-msgstr "Du er ved at slette"
-
-#. Text in echo
-#: actions-log.php:39
-msgid ""
-"You are about to delete all activities from the log. Only those used for "
-"statistics will remain. Are you sure you want to continue?"
-msgstr ""
-"Du er ved at slette alle aktiviteter fra loggen. Kun dem, der anvendes til "
-"statistik vil forblive. Er du sikker på du vil fortsætte?"
-
-#. Text in echo
-#: manage-files.php:85
-msgid "You are about to unassign"
-msgstr "Du er ved at fjerne tildelingen af"
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid "You can access a list of all your files or upload your own"
-msgstr "Du kan se en liste over alle dine filer eller uploade dine egne"
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid "You can log in following this link"
-msgstr "Du kan logge ind via dette link"
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid "You can log in to manually deactivate it."
-msgstr "Du kan logge ind for manuelt af deaktivere den."
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid "You can manage these files"
-msgstr "Du kan administrere disse filer"
-
-#. Text in echo
-#: upload-process-form.php:385
+#: upload-process-form.php:387
 msgid ""
 "You can skip assigning if you want. The files are retained and you may add "
 "them to clients or groups later."
@@ -2935,475 +3004,217 @@ msgstr ""
 "Du kan springe tildelingen over, hvis du har lyst. Filerne gemmes stadig og "
 "du kan tildele dem til klienter eller grupper senere."
 
-#. Text in echo
-#: email-templates.php:227 email-templates.php:252
-msgid "You can use HTML tags here."
-msgstr "Du kan bruge HTML-tags her."
+#: upload-process-form.php:575 upload-process-form.php:605
+msgid "Copy selections to other files"
+msgstr "Kopier valg til andre filer"
 
-#. Text in function
-#: users.php:47
-msgid "You cannot deactivate your own account."
-msgstr "Du kan ikke deaktivere din egen bruger."
+#: upload-process-form.php:582
+msgid "Upload hidden (will not send notifications)"
+msgstr "Upload skjult (vil ikke sende email-underretninger)"
 
-#. Text in function
-#: users.php:47
-msgid "You cannot delete your own account."
-msgstr "Du kan ikke slette din egen bruger."
+#: upload-process-form.php:658
+msgid "Files not uploaded"
+msgstr "Filer ikke uploadet"
 
-#. Text in function
-#: edit-file.php:436
-msgid "You don't have permission to edit this file."
-msgstr "Du har ikke rettigheder til at redigere denne fil."
-
-#. Text in echo
-#: process.php:1
-msgid ""
-"You don't have the required permissions to view the requested information "
-"about this file."
+#: upload-process-form.php:721
+msgid "Copy selection to all files?"
 msgstr ""
-"Du har ikke de nødvendige rettigheder til at vise den forespurgte "
-"information om denne fil."
 
-#. Text in function
-#: manage-files.php:410
-msgid "You have not uploaded any files for this account."
-msgstr "Du har ikke uploadet nogen filer til denne bruger."
+#: upload-send-notifications.php:277 upload-send-notifications.php:311
+msgid "E-mail notifications have been sent."
+msgstr "Email-underretninger blev sendt."
 
-#. Text in function
-#: register.php:89
-msgid "You may now log in with your new credentials."
-msgstr "Du kan nu logge ind med dine nye legitimationsoplysninger."
+#: upload-send-notifications.php:291
+msgid "One or more notifications couldn't be sent."
+msgstr "En eller flere underretninger kunne ikke sendes."
 
-#. Text in echo
-#: install/index.php:202
-msgid "You may proceed to"
-msgstr "Du kan nu fortsætte til at"
+#: upload-send-notifications.php:315
+msgid "E-mail notifications for inactive clients were not sent."
+msgstr "Email-underretninger for inaktive klienter blev ikke sendt."
 
-#. Text in echo
-#: upload-from-computer.php:141
-msgid "You must select at least one file to upload."
-msgstr "Du skal vælge mindst en fil at uploade."
+#: users-add.php:18
+msgid "Add system user"
+msgstr "Tilføj systembruger"
 
-#. Text in echo
-#: options.php:390
-msgid ""
-"You need to include your username (usually your e-mail address) and password "
-"if you have selected either SMTP or Gmail as your mailer."
+#: users-add.php:87
+msgid "User added correctly."
+msgstr "Brugeren blev tilføjet."
+
+#: users-add.php:111
+msgid "An e-mail notification with login information was sent to the new user."
 msgstr ""
-"Du skal inkludere dit brugernavn (som regel din email-adresse) og "
-"adgangskode, hvis du har valgt enten SMTP eller Gmail som din mailer."
+"En email-underretning med login-informationen blev sendt til den nye bruger."
 
-#. Text in echo
-#: install/index.php:250
-msgid ""
-"You need to provide this data for a correct system installation. The site "
-"name will be visible in the system panel, and the client's lists."
-msgstr ""
-"Du er nødt til at opgive disse data for en korrekt installation. Sidenavnet "
-"vil være synligt i systempanelet og klientens lister."
+#: users-edit.php:123
+msgid "Edit system user"
+msgstr "Rediger systembruger"
 
-#. Text in function
-#: clients-edit.php:143 users-edit.php:146
-msgid "Your account type doesn't allow you to access this feature."
-msgstr "Din brugertype tillader dig ikke adgang til denne funktion."
+#: users-edit.php:154
+msgid "User edited correctly."
+msgstr "Brugeren blev redigeret."
 
-#. Text in function
-#: includes/userlevel_check.php:158
-msgid ""
-"Your account type doesn't allow you to view this page. Please contact a "
-"system administrator if you need to access this function."
-msgstr ""
-"Din brugertype giver dig ikke adgang til at se denne side. Kontakt en "
-"systemadministrator, hvis du har brug for adgang til siden."
+#: users-edit.php:181
+msgid "No user was selected."
+msgstr "Ingen systembruger valgt"
 
-#. Text in echo
-#: upload-from-computer.php:153
-msgid ""
-"Your browser doesn't support HTML5, Flash or Silverlight. Please update your "
-"browser or install Adobe Flash or Silverlight to continue."
-msgstr ""
-"Din browser understøtter ikke HTML5, Flash eller Silverlight. Opdater "
-"venligst din browser eller installer Adobe Flash eller Silverlight for at "
-"fortsætte."
+#: users-edit.php:186
+msgid "There is no user with that ID number."
+msgstr "Der er ingen bruger med det ID-nummer."
 
-#. Text in echo
-#: upload-from-computer.php:160
-msgid ""
-"Your files are being uploaded! Progress indicators may take a while to "
-"update, but work is still being done behind the scenes."
-msgstr ""
-"Dine filer bliver uploadet! Forløbsindikatorere kan tage noget tid før de "
-"opdateres, men der arbejdes stadig bag kulisserne."
+#: users-form.php:62
+msgid "Add user"
+msgstr "Tilføj bruger"
 
-#. Text in function
-#: clients-form.php:58
-msgid "Your full name"
-msgstr "Dit fulde navn"
+#: users-form.php:69
+msgid "Save user"
+msgstr "Gem bruger"
 
-#. Text in function
-#: reset-password.php:322
-msgid "Your new password couldn't be set."
-msgstr "Din nye adgangskode kunne ikke indstilles."
+#: users-form.php:124 users.php:280
+msgid "Role"
+msgstr "Rolle"
 
-#. Text in function
-#: reset-password.php:322
-msgid "Your new password has been set. You can now log in using it."
-msgstr "Din nye adgangskode er blevet indstillet. Du kan nu logge ind."
+#: users-form.php:137
+msgid "Active (user can log in)"
+msgstr "Aktiv (systembruger kan logge ind)"
 
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid "Your password"
-msgstr "Din adgangskode"
+#: users.php:22
+msgid "Users administration"
+msgstr "Brugeradministration"
 
-#. Text in function
-#: includes/vars.php:1
-msgid ""
-"Your password can only contain letters, numbers and the following characters:"
-msgstr "Din adgangskode må kun indeholde bogstaver, tal og de følgende tegn:"
-
-#. Text in function
-#: clients.php:200 groups.php:213 templates/default/template.php:59
-#: users.php:229 manage-files.php:410
-msgid "Your search keywords returned no results."
-msgstr "Din søgning gav ingen resultater."
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid "Your username"
-msgstr "Dit brugernavn"
-
-#. Text in echo
-#: home-statistics.php:182 home.php:47
-msgid "Zip Downloads"
-msgstr "Zip-downloads"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "activated the client"
-msgstr "aktiverede klienten"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "activated the user"
-msgstr "aktiverede systembrugeren"
-
-#. Text in echo
-#: actions-log.php:199
-msgid "activities"
-msgstr "aktiviteter"
-
-#. Text in echo
-#: actions-log.php:30
-msgid "activities. Are you sure you want to continue?"
-msgstr "aktiviteter. Er du sikker på, at du ønsker at fortsætte?"
-
-#. Text in echo
-#: install/index.php:267 includes/vars.php:1
-msgid "and"
-msgstr "og"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "assigned the file"
-msgstr "tildelte filen"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "assigned to:"
-msgstr "tildelt til:"
-
-#. Text in function
-#: includes/classes/send-email.php:1
-msgid "by logging in here"
-msgstr "ved at logge ind her"
-
-#. Text in function
-#: includes/vars.php:1
-msgid "characters long"
-msgstr "tegn langt"
-
-#. Text in echo
-#: install/index.php:267
-msgid "characters long."
-msgstr "tegn langt."
-
-#. Text in echo
-#: clients.php:191
-msgid "clients"
-msgstr "klienter"
-
-#. Text in echo
-#: clients.php:42
-msgid ""
-"clients and all of the assigned files. Are you sure you want to continue?"
-msgstr ""
-"klienter og alle de tildelte filer. Er du sikker på, at du ønsker at "
-"fortsætte?"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "created a client account for themself."
-msgstr "oprettede en bruger til sig selv."
-
-#. Text in function
-#: includes/functions.php:682
-msgid "created the client account "
-msgstr "oprettede klient-brugeren"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "created the group"
-msgstr "oprettede gruppen"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "created the user account"
-msgstr "oprettede systembrugeren"
-
-#. Text in echo
-#: home.php:39 home.php:40 home.php:41
-msgid "days"
-msgstr "dage"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "deactivated the client"
-msgstr "deaktiverede klienten"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "deactivated the user"
-msgstr "deaktiverede systembrugeren"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "deleted the client"
-msgstr "slettede klienten"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "deleted the file"
-msgstr "slettede filen"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "deleted the group"
-msgstr "slettede gruppen"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "deleted the user"
-msgstr "slettede brugeren"
-
-#. Text in function
-#: branding.php:96
-msgid "directory to 755, or 777 as a last resource."
-msgstr "mappe til 755, eller 777 som en sidste udvej."
-
-#. Text in echo
-#: manage-files.php:643 manage-files.php:657
-msgid "downloads"
-msgstr "downloads"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "edited the client"
-msgstr "redigerede klienten"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "edited the group"
-msgstr "redigerede gruppen"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "edited the user"
-msgstr "redigerede brugeren"
-
-#. Text in echo
-#: templates/default/template.php:54 manage-files.php:405
-msgid "files"
-msgstr "filer"
-
-#. Text in echo
-#: manage-files.php:86
-msgid "files from this account. Are you sure you want to continue?"
-msgstr "filer fra denne bruger. Er du sikker på, at du ønsker at fortsætte?"
-
-#. Text in echo
-#: manage-files.php:77
-msgid ""
-"files permanently and for every client/group. Are you sure you want to "
-"continue?"
-msgstr ""
-"filer permanent og for hver klient/gruppe. Er du sikker på, at du ønsker at "
-"fortsætte?"
-
-#. Text in function
-#: manage-files.php:689
-msgid "for client"
-msgstr "for klient"
-
-#. Text in function
-#: manage-files.php:689
-msgid "for group"
-msgstr "for gruppe"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "from the client:"
-msgstr "fra klienten:"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "from the group:"
-msgstr "fra gruppen:"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "generated a zip file"
-msgstr "genererede en zip-fil"
-
-#. Text in echo
-#: groups.php:208
-msgid "groups"
-msgstr "grupper"
-
-#. Text in echo
-#: groups.php:61
-msgid "groups. Are you sure you want to continue?"
-msgstr "grupper. Er du sikker på, at du ønsker at fortsætte?"
-
-#. Text in echo
-#: includes/updates.messages.php:51
-msgid "has been released."
-msgstr "er blevet frigivet."
-
-#. Text in function
-#: groups.php:76
-msgid "is member"
-msgstr "er medlem"
-
-#. Text in function
-#: includes/vars.php:1
-msgid "length should be between"
-msgstr "længde skal være mellem"
-
-#. Text in echo
-#: install/index.php:202
-msgid "log in"
-msgstr "logge ind"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "logged in to the system."
-msgstr "loggede ind på systemet."
-
-#. Text in function
-#: includes/functions.php:682
-msgid "logged out of the system."
-msgstr "loggede ud af systemet."
-
-#. Text in function
-#: includes/functions.php:682
-msgid "marked as hidden the file"
-msgstr "markerede som skjult filen"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "marked as visible the file"
-msgstr "markerede som synlig filen"
-
-#. Text in echo
-#: branding.php:129
-msgid "options"
-msgstr "indstillinger"
-
-#. Text in echo
-#: includes/updates.messages.php:24
-msgid "please consider making a donation to support further development."
-msgstr "overvej venligst en donation for at støtte den videre udvikling."
-
-#. Text in echo
-#: branding.php:129
-msgid "section."
-msgstr "-sektionen."
-
-#. Text in echo
-#: install/index.php:87
-msgid "setup"
-msgstr "opsætning"
-
-#. Text in echo
-#: options.php:227
-msgid "this page"
-msgstr "denne side"
-
-#. Text in echo
-#: manage-files.php:114 manage-files.php:637
-msgid "times"
-msgstr "gange"
-
-#. Text in echo
-#: includes/functions.php:288
-msgid "to be able to upload files for that account."
-msgstr "for at være i stand til at uploade filer til den bruger."
-
-#. Text in function
-#: includes/functions.php:682
-msgid "to the client:"
-msgstr "til klienten:"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "to the group:"
-msgstr "til gruppen:"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "to:"
-msgstr "til:"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "unassigned the file"
-msgstr "fjernede tildelingen af filen"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "updated ProjectSend to version"
-msgstr "opdaterede ProjectSend til version"
-
-#. Text in function
-#: includes/functions.php:682
-msgid "uploaded a new logo on \"Branding\""
-msgstr "uploadede et nyt logo på \"Markedsføring\""
-
-#. Text in echo
-#: users.php:224
-msgid "users"
-msgstr "systembrugere"
-
-#. Text in echo
 #: users.php:31
+msgid "Please select at least one user to proceed."
+msgstr "Vælg venligst mindst én systembruger for at fortsætte"
+
+#: users.php:38
 msgid "users. Are you sure you want to continue?"
 msgstr "systembrugere. Er du sikker på, at du ønsker at fortsætte?"
 
-#. Text in echo
-#: includes/updates.messages.php:51 includes/functions.php:270
-msgid "version"
-msgstr "version"
+#: users.php:90
+msgid "The selected users were marked as active."
+msgstr "De valgte brugere blev markerede som aktive."
 
-#. Text in echo
-#: install/index.php:251
-msgid ""
-"with your database settings before installing. If the file doesn't exist, "
-"you can create it by renaming the dummy file sys.config.sample.php."
-msgstr ""
-"med dine databaseindstillinger, før du installerer. Hvis filen ikke findes, "
-"kan du oprette den ved at omdøbe dummyfilen sys.config.sample.php."
+#: users.php:110
+msgid "You cannot deactivate your own account."
+msgstr "Du kan ikke deaktivere din egen bruger."
 
-#. Text in echo
-#: install/index.php:202
-msgid "with your newely created username and password."
-msgstr "med dit nyligt oprettede brugernavn og adgangskode."
+#: users.php:116
+msgid "The selected users were marked as inactive."
+msgstr "De valgte brugere blev markerede som inaktive."
+
+#: users.php:133
+msgid "You cannot delete your own account."
+msgstr "Du kan ikke slette din egen bruger."
+
+#: users.php:139
+msgid "The selected users were deleted."
+msgstr "De valgte brugere blev slettet."
+
+#: users.php:158
+msgid "Please select at least one user."
+msgstr "Vælg venligst mindst én systembruger"
+
+#: users.php:214
+msgid "All roles"
+msgstr "Alle roller"
+
+#: users.php:238
+msgid "Selected users actions"
+msgstr "Handlinger for valgte brugere"
+
+#: users.php:252
+msgid "users"
+msgstr "systembrugere"
+
+#~ msgid ""
+#~ "After installing the system, you can go to the options page to set your "
+#~ "timezone, prefered date display format and thubmnails parameters, besides "
+#~ "being able to change the site options provided here."
+#~ msgstr ""
+#~ "Efter installationen af systemet, kan du også gå til siden Indstillinger "
+#~ "for at indstille din tidszone, foretrukne datovisningsformat og miniature-"
+#~ "parametre."
+
+#~ msgid "All assignations were removed"
+#~ msgstr "Alle tildelninger blev fjernet"
+
+#~ msgid "Create a new one"
+#~ msgstr "Opret en ny"
+
+#~ msgid "Download zipped"
+#~ msgstr "Download som zip"
+
+#~ msgid "Downloaders of file:"
+#~ msgstr "Downloadere af filen:"
+
+#~ msgid "File is not public."
+#~ msgstr "Fil er ikke offentlig."
+
+#~ msgid "Never assigned to any user or group"
+#~ msgstr "Aldrig tildelt en klient eller gruppe"
+
+#~ msgid "Options related to the files that clients upload themselves."
+#~ msgstr "Indstillinger relateret til klient-upload af filer"
+
+#~ msgid "Please wait while the system gets the required information."
+#~ msgstr "Vent venligst mens systemet henter den nødvendige information"
+
+#~ msgid "Reason"
+#~ msgstr "Grund"
+
+#~ msgid "Remember me"
+#~ msgstr "Husk mig"
+
+#~ msgid ""
+#~ "Separate allowed file types with a comma. You can navigate the box with "
+#~ "the left/right arrows, backspace and delete keys."
+#~ msgstr ""
+#~ "Separér tilladte filtyper med et komma. Du kan navigere i boksen med "
+#~ "piletasterne, backspace og delete."
+
+#~ msgid "These files have not been assigned to any client or group."
+#~ msgstr "Disse filer er ikke blevet tildelt nogen klient eller gruppe."
+
+#~ msgid ""
+#~ "This is the same folder where the files uploaded by the web interface "
+#~ "will be stored. So if you finish uploading your files but do not assign "
+#~ "them to any clients/groups, the files will still be there for later use."
+#~ msgstr ""
+#~ "Dette er den samme mappe, hvor filerne uploadet af webbrugerfladen vil "
+#~ "blive gemt. Hvis du er færdig med at uploade dine filer, men ikke har "
+#~ "tildelt dem til nogen klienter/grupper, vil filerne stadig være der til "
+#~ "senere brug."
+
+#~ msgid ""
+#~ "This operation could take a few minutes, depending on the size of the "
+#~ "files."
+#~ msgstr ""
+#~ "Denne handling kan tage et par minutter afhængigt af størrelsen på "
+#~ "filerne."
+
+#~ msgid ""
+#~ "This version changes the way files-to-clients relationships are stored on "
+#~ "the database making it possible to assign a file to multiple clients. "
+#~ "However some files did not update successfully. The following files may "
+#~ "need to be reassigned to their clients by using the \\\"Find orphan files"
+#~ "\\\" tool:"
+#~ msgstr ""
+#~ "Denne version ændrer den måde fil-til-klient-relationer er gemt i "
+#~ "databasen, hvilket gør det muligt at tildele en fil til flere klienter. "
+#~ "Men nogle filer ikke opdateret korrekt. Følgende filer kan være "
+#~ "nødvendige at overføre til deres klienter ved hjælp af \\\"Find hjemløse "
+#~ "filer\\\"-værktøjet:"
+
+#~ msgid "Unassigned files"
+#~ msgstr "Utildelte filer"
+
+#~ msgid "Username must be alphanumeric (a-z,A-Z,0-9 allowed)"
+#~ msgstr "Brugernavn skal være alfanumerisk (a-z,A-Z,0-9 tilladt)"
+
+#~ msgid "View full table"
+#~ msgstr "Vis fuld oversigt"
+
+#~ msgid "View reduced table"
+#~ msgstr "Vis mindre oversigt"
+
+#~ msgid "to be able to upload files for that account."
+#~ msgstr "for at være i stand til at uploade filer til den bruger."

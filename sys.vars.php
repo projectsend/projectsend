@@ -24,13 +24,25 @@ define('CURRENT_VERSION', 'r754');
 define('PROTOCOL', empty($_SERVER['HTTPS'])? 'http' : 'https');
 
 /**
+ * DEBUG constant effects:
+ * - Changes the error_reporting php value
+ * - Enables the PDOEX extension (on the database class) to count queries
+ */
+define('DEBUG', false);
+
+/**
  * Turn off reporting of PHP errors, warnings and notices.
  * On a development environment, it should be set to E_ALL for
  * complete debugging.
  *
  * @link http://www.php.net/manual/en/function.error-reporting.php
  */
-error_reporting(0);
+if ( DEBUG === true ) {
+	error_reporting(E_ALL);
+}
+else {
+	error_reporting(0);
+}
 
 define('GLOBAL_TIME_LIMIT', 240*60);
 define('UPLOAD_TIME_LIMIT', 120*60);

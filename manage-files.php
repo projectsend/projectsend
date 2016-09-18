@@ -320,6 +320,8 @@ include('header.php');
 		 * Global form action
 		 */
 		$form_action_url = 'manage-files.php';
+		
+		$query_table_files = true;
 
 		if (isset($search_on)) {
 			$params = array();
@@ -330,10 +332,10 @@ include('header.php');
 			/** Add the status filter */	
 			if (isset($_POST['status']) && $_POST['status'] != 'all') {
 				$set_and = true;
-				$cq .= " AND hidden = :status";
+				$cq .= " AND hidden = :hidden";
 				$no_results_error = 'filter';
 				
-				$params[':status'] = $_POST['status'];
+				$params[':hidden'] = $_POST['status'];
 			}
 
 			/**
@@ -342,7 +344,7 @@ include('header.php');
 			 */
 			$sql = $dbh->prepare($cq);
 			$sql->execute( $params );
-	
+			
 			if ( $sql->rowCount() > 0) {
 				/**
 				 * Get the IDs of files that match the previous query.
@@ -356,80 +358,83 @@ include('header.php');
 			else {
 				$count = 0;
 				$no_results_error = 'filter';
+				$query_table_files = false;
 			}
 		}
+
+		if ( $query_table_files === true ) {
+			/**
+			 * Get the files
+			 */
+			$params = array();
+			$fq = "SELECT * FROM " . TABLE_FILES;
+	
+			if ( isset($search_on) && !empty($gotten_files) ) {
+				$conditions[] = "FIND_IN_SET(id, :files)";
+				$params[':files'] = $gotten_files;
+			}
+	
+			/** Add the search terms */	
+			if(isset($_POST['search']) && !empty($_POST['search'])) {
+				$conditions[] = "(filename LIKE :name OR description LIKE :description)";
+				$no_results_error = 'search';
+	
+				$search_terms			= '%'.$_POST['search'].'%';
+				$params[':name']		= $search_terms;
+				$params[':description']	= $search_terms;
+			}
+	
+			/**
+			 * If the user is an uploader, or a client is editing his files
+			 * only show files uploaded by that account.
+			*/
+			$current_level = get_current_user_level();
+			if ($current_level == '7' || $current_level == '0') {
+				$conditions[] = "uploader = :uploader";
+				$no_results_error = 'account_level';
+	
+				$params[':uploader'] = $global_user;
+			}
 			
-		/**
-		 * Get the files
-		 */
-		$params = array();
-		$fq = "SELECT * FROM " . TABLE_FILES;
-
-		if ( isset($search_on) && !empty($gotten_files) ) {
-			$conditions[] = "FIND_IN_SET(id, :files)";
-			$params[':files'] = $gotten_files;
-		}
-
-		/** Add the search terms */	
-		if(isset($_POST['search']) && !empty($_POST['search'])) {
-			$conditions[] = "(filename LIKE :name OR description LIKE :description)";
-			$no_results_error = 'search';
-
-			$search_terms			= '%'.$_POST['search'].'%';
-			$params[':name']		= $search_terms;
-			$params[':description']	= $search_terms;
-		}
-
-		/**
-		 * If the user is an uploader, or a client is editing his files
-		 * only show files uploaded by that account.
-		*/
-		$current_level = get_current_user_level();
-		if ($current_level == '7' || $current_level == '0') {
-			$conditions[] = "uploader = :uploader";
-			$no_results_error = 'account_level';
-
-			$params[':uploader'] = $global_user;
-		}
-		
-		/**
-		 * Add the category filter
-		 */
-		if ( isset( $results_type ) && $results_type == 'category' ) {
-			$files_id_by_cat = array();
-			$statement = $dbh->prepare("SELECT file_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE cat_id = :cat_id");
-			$statement->bindParam(':cat_id', $this_category['id'], PDO::PARAM_INT);
-			$statement->execute();
-			$statement->setFetchMode(PDO::FETCH_ASSOC);
-			while ( $file_data = $statement->fetch() ) {
-				$files_id_by_cat[] = $file_data['file_id'];
+			/**
+			 * Add the category filter
+			 */
+			if ( isset( $results_type ) && $results_type == 'category' ) {
+				$files_id_by_cat = array();
+				$statement = $dbh->prepare("SELECT file_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE cat_id = :cat_id");
+				$statement->bindParam(':cat_id', $this_category['id'], PDO::PARAM_INT);
+				$statement->execute();
+				$statement->setFetchMode(PDO::FETCH_ASSOC);
+				while ( $file_data = $statement->fetch() ) {
+					$files_id_by_cat[] = $file_data['file_id'];
+				}
+				$files_id_by_cat = implode(',',$files_id_by_cat);
+	
+				/** Overwrite the parameter set previously */
+				$conditions[] = "FIND_IN_SET(id, :files)";
+				$params[':files'] = $files_id_by_cat;
+				
+				$no_results_error = 'category';
 			}
-			$files_id_by_cat = implode(',',$files_id_by_cat);
-
-			/** Overwrite the parameter set previously */
-			$conditions[] = "FIND_IN_SET(id, :files)";
-			$params[':files'] = $files_id_by_cat;
-			
-			$no_results_error = 'category';
-		}
-
-		/**
-		 * Build the final query
-		 */
-		if ( !empty( $conditions ) ) {
-			foreach ( $conditions as $index => $condition ) {
-				$fq .= ( $index == 0 ) ? ' WHERE ' : ' AND ';
-				$fq .= $condition;
+	
+			/**
+			 * Build the final query
+			 */
+			if ( !empty( $conditions ) ) {
+				foreach ( $conditions as $index => $condition ) {
+					$fq .= ( $index == 0 ) ? ' WHERE ' : ' AND ';
+					$fq .= $condition;
+				}
 			}
+	
+			/** Debug query */
+			//echo $fq;
+			//print_r( $conditions );
+	
+			$sql_files = $dbh->prepare($fq);
+			$sql_files->execute( $params );
+			$count = $sql_files->rowCount();
 		}
-
-		/** Debug query */
-		//echo $fq;
-		//print_r( $conditions );
-
-		$sql_files = $dbh->prepare($fq);
-		$sql_files->execute( $params );
-		$count = $sql_files->rowCount();
 	?>
 		<div class="form_actions_left">
 			<div class="form_actions_limit_results">
@@ -447,9 +452,18 @@ include('header.php');
 						<form action="<?php echo html_output($form_action_url); ?>" name="files_filters" method="post" class="form-inline form_filters">
 							<div class="form-group group_float">
 								<select name="status" id="status" class="txtfield form-control">
-									<option value="all"><?php _e('All statuses','cftp_admin'); ?></option>
-									<option value="1"><?php _e('Hidden','cftp_admin'); ?></option>
-									<option value="0"><?php _e('Visible','cftp_admin'); ?></option>
+									<?php
+										$options_status = array(
+																'all'	=> __('All statuses','cftp_admin'),
+																'1'		=> __('Hidden','cftp_admin'),
+																'0'		=> __('Visible','cftp_admin'),
+															);
+										foreach ( $options_status as $value => $text ) {
+									?>
+											<option value="<?php echo $value; ?>"><?php echo $text; ?></option>
+									<?php
+										}
+									?>
 								</select>
 							</div>
 							<button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default"><?php _e('Filter','cftp_admin'); ?></button>

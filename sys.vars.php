@@ -194,4 +194,10 @@ define('HASH_PORTABLE', false);
 if (!defined('DB_DRIVER')) {
 	define('DB_DRIVER', 'mysql');
 }
+
+/**
+ * External links
+ */
+define('LINK_DOC_RECAPTCHA', 'https://developers.google.com/recaptcha/docs/start');
+define('LINK_DOC_GOOGLE_SIGN_IN', 'https://developers.google.com/identity/protocols/OpenIDConnect');
 ?>

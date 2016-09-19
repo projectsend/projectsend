@@ -620,10 +620,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 		
 										<div class="form-group">
 											<div class="col-sm-8 col-sm-offset-4">
-												<?php
-													$doc_link_recaptcha = 'https://developers.google.com/recaptcha/docs/start';
-												?>
-												<a href="<?php echo $doc_link_recaptcha; ?>" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
+												<a href="<?php echo LINK_DOC_RECAPTCHA; ?>" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
 											</div>
 										</div>
 
@@ -744,10 +741,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 											</div>
 											<div class="form-group">
 												<div class="col-sm-8 col-sm-offset-4">
-													<?php
-														$doc_link_google = 'https://developers.google.com/identity/protocols/OpenIDConnect';
-													?>
-													<a href="<?php echo $doc_link_google; ?>" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
+													<a href="<?php echo LINK_DOC_GOOGLE_SIGN_IN; ?>" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
 												</div>
 											</div>
 											<div class="form-group">

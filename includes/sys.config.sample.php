@@ -81,4 +81,17 @@ define('MAX_FILESIZE',2048);
  * Encoding to use on the e-mails sent to new clients, users, files, etc.
  */
 define('EMAIL_ENCODING', 'utf-8');
+
+
+/**
+ * New version autocheck
+ */
+define('VERSION_NEW_AUTOCHECK', true);
+
+
+/**
+ * Show news on home page
+ */
+define('HOME_NEWS', true);
+
 ?>

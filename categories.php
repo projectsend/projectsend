@@ -211,7 +211,7 @@ include('header.php');
 				$status = $redirect_status;
 			}
 			else {
-				$msg = __('There was a problem savint to the database.','cftp_admin');
+				$msg = __('There was a problem saving to the database.','cftp_admin');
 				echo system_message('error', $msg);
 			}
 		}

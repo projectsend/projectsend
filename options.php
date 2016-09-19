@@ -725,8 +725,8 @@ $allowed_file_types = implode(',',$allowed_file_types);
 												<label for="google_signin_enabled" class="col-sm-4 control-label"><?php _e('Enabled','cftp_admin'); ?></label>
 												<div class="col-sm-8">
 													<select name="google_signin_enabled" id="google_signin_enabled" class="form-control">
-														<option value="1" <?php echo (GOOGLE_SIGNIN_ENABLED == '1') ? 'selected="selected"' : ''; ?>>Yes</option>
-														<option value="0" <?php echo (GOOGLE_SIGNIN_ENABLED == '0') ? 'selected="selected"' : ''; ?>>No</option>
+														<option value="1" <?php echo (GOOGLE_SIGNIN_ENABLED == '1') ? 'selected="selected"' : ''; ?>><?php _e('Yes','cftp_admin'); ?></option>
+														<option value="0" <?php echo (GOOGLE_SIGNIN_ENABLED == '0') ? 'selected="selected"' : ''; ?>><?php _e('No','cftp_admin'); ?></option>
 													</select>
 												</div>
 											</div>

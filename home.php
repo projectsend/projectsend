@@ -44,10 +44,11 @@ define('CAN_INCLUDE_FILES', true);
 											<a href="#" class="stats_days btn btn-sm btn-default" rel="60">60 <?php _e('days','cftp_admin'); ?></a>
 										</div>
 										<ul class="graph_legend">
-											<li><div class="legend_color legend_color1"></div><?php _e('Uploads by users','cftp_admin'); ?></li><li>
-											<div class="legend_color legend_color2"></div><?php _e('Uploads by clients','cftp_admin'); ?></li><li>
-											<div class="legend_color legend_color3"></div><?php _e('Downloads','cftp_admin'); ?></li><li>
-											<div class="legend_color legend_color4"></div><?php _e('Zip Downloads','cftp_admin'); ?></li>
+											<li class="legend_color legend_color1"><div class="ref_color"></div><?php _e('Uploads by users','cftp_admin'); ?></li>
+											<li class="legend_color legend_color2"><div class="ref_color"></div><?php _e('Uploads by clients','cftp_admin'); ?></li>
+											<li class="legend_color legend_color3"><div class="ref_color"></div><?php _e('Downloads','cftp_admin'); ?></li>
+											<li class="legend_color legend_color4"><div class="ref_color"></div><?php _e('Zip Downloads','cftp_admin'); ?></li>
+											<li class="legend_color legend_color5"><div class="ref_color"></div><?php _e('Public Downloads','cftp_admin'); ?></li>
 										</ul>
 
 										<div id="statistics" style="height:320px;width:100%;"></div>
@@ -56,9 +57,21 @@ define('CAN_INCLUDE_FILES', true);
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-sm-6">
-								<?php include(ROOT_DIR.'/home-news-widget.php'); ?>
-							</div>
+							
+							<?PHP
+							
+								if (defined('HOME_NEWS') && (HOME_NEWS === true)) {
+								
+									echo '<div class="col-sm-6">' . "\n";
+									
+									include(ROOT_DIR . '/home-news-widget.php');
+									
+									echo '</div>' . "\n";
+								
+								}
+								
+							?>
+						
 							<div class="col-sm-6">
 								<div class="widget">
 									<h4><?php _e('System data','cftp_admin'); ?></h4>

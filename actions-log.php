@@ -138,8 +138,12 @@ include('header.php');
 
 		$no_results_error = 'filter';
 	}
-
-	$cq .= " ORDER BY id DESC";
+	
+	/**
+	 * Add the order.
+	 * Defaults to order by: id, order: DESC
+	 */
+	$cq .= sql_add_order( TABLE_LOG );
 
 	/**
 	 * Pre-query to count the total results
@@ -250,21 +254,25 @@ include('header.php');
 
 			$thead_columns		= array(
 										array(
-											'sortable'		=> false,
 											'select_all'	=> true,
 											'attributes'	=> array(
 																	'class'		=> array( 'td_checkbox' ),
 																),
 										),
 										array(
-											'sort_url'		=> 'date',
+											'sortable'		=> true,
+											'sort_url'		=> 'timestamp',
 											'sort_default'	=> true,
 											'content'		=> __('Date','cftp_admin'),
 										),
 										array(
+											'sortable'		=> true,
+											'sort_url'		=> 'owner_id',
 											'content'		=> __('Author','cftp_admin'),
 										),
 										array(
+											'sortable'		=> true,
+											'sort_url'		=> 'action',
 											'content'		=> __('Activity','cftp_admin'),
 											'hide'			=> 'phone',
 										),

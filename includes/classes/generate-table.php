@@ -24,6 +24,33 @@ class generateTable {
 		$output .= ">\n";
 		return $output;
 	}
+	
+	private function build_sortable_th_content( $sort_url, $content ) {
+		$url_parse = parse_url( $_SERVER['REQUEST_URI'] );
+
+		if ( !empty( $_GET ) ) {
+			$new_url_parameters = $_GET;
+		}
+		$new_url_parameters['orderby'] = $sort_url;
+		
+		if ( !empty( $new_url_parameters['order'] ) ) {
+			$order = ( $new_url_parameters['order'] == 'ASC' ) ? 'DESC' : 'ASC';  // TODO: invert only for active column. default to desc for others
+		}
+		$new_url_parameters['order'] = $order;
+
+		foreach ( $new_url_parameters as $param => $value ) {
+			$params[$param] = $value;
+		}
+		$query = http_build_query($params);
+		
+		$build_url = BASE_URI . basename( $url_parse['path'] ) . '?' . $query;
+
+		$sortable_link = '<a href="' . $build_url . '">';
+		$sortable_link .= $content;
+		$sortable_link .= '</a>';
+		
+		return $sortable_link;
+	}
 
 	public function add_thead( $columns ) {
 		$output = "<thead>\n<tr>";
@@ -32,12 +59,14 @@ class generateTable {
 				$attributes	= ( !empty( $column['attributes'] ) ) ? $column['attributes'] : array();
 				$data_attr	= ( !empty( $column['data_attr'] ) ) ? $column['data_attr'] : array();
 				$content	= ( !empty( $column['content'] ) ) ? $column['content'] : '';
+				$sortable	= ( !empty( $column['sortable'] ) ) ? $column['sortable'] : false;
+				$sort_url	= ( !empty( $column['sort_url'] ) ) ? $column['sort_url'] : false;
+
 				if ( !empty( $column['hide'] ) ) {
 					$data_attr['hide'] = $column['hide'];
 				}
-
-				if ( isset( $_GET['sortby'] ) ) {
-					if ( $_GET['sortby'] == $column['sort_url'] ) {
+				if ( isset( $_GET['orderby'] ) && !empty( $sort_url ) ) {
+					if ( $_GET['orderby'] == $sort_url ) {
 						$attributes['class'][] = 'active';
 					}
 				}
@@ -49,6 +78,10 @@ class generateTable {
 
 				if ( !empty( $column['select_all'] ) && $column['select_all'] === true ) {
 					$content = '<input type="checkbox" name="select_all" id="select_all" value="0" />';
+				}
+				
+				if ( $sortable == true && !empty( $sort_url ) ) {
+					$content = self::build_sortable_th_content( $sort_url, $content );
 				}
 
 				/**  Generate the column */

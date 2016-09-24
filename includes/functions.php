@@ -54,6 +54,24 @@ function form_add_existing_parameters( $ignore = array() ) {
 	}
 }
 
+/**
+ * To successfully add the orderby and order parameters to a query,
+ * check if the column exists on the table and validate that order
+ * is either ASC or DESC.
+ * Defaults to ORDER BY: id, ORDER: DESC
+ */
+function sql_add_order( $table ) {
+	global $dbh;
+
+	$columns_query	= $dbh->query('SELECT * FROM ' . $table . ' LIMIT 1');
+	$columns_keys	= array_keys($columns_query->fetch(PDO::FETCH_ASSOC));
+	$orderby		= ( isset( $_GET['orderby'] ) && in_array( $_GET['orderby'], $columns_keys ) ) ? $_GET['orderby'] : 'id';
+
+	$order		= ( isset( $_GET['order'] ) ) ? strtoupper($_GET['order']) : 'DESC';
+	$order		= ( $order != 'DESC' || $order != 'ASC' ) ? $order : 'DESC';
+
+	return " ORDER BY $orderby $order";
+}
 
 function generate_password() {
 	/**

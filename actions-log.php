@@ -13,7 +13,7 @@ $load_scripts	= array(
 
 $allowed_levels = array(9);
 require_once('sys.includes.php');
-$page_title = __('Recent activities log','cftp_admin');;
+$page_title = __('Recent activities log','cftp_admin');
 
 include('header.php');
 ?>

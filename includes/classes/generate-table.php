@@ -96,9 +96,12 @@ class generateTable {
 		$output = '';
 
 		if ( $params['pages'] > 1 ) {
-			$output = '<nav aria-label="'. __('Results navigation','cftp_admin') . '">
-						<div class="pagination_wrapper text-center">
-							<ul class="pagination">';
+			$output = '<div class="container-fluid">
+						<div class="row">
+							<div class="col-xs-12 text-center">
+								<nav aria-label="'. __('Results navigation','cftp_admin') . '">
+									<div class="pagination_wrapper">
+										<ul class="pagination">';
 
 			/** First and previous */
 			if ( $params['current'] > 1 ) {
@@ -116,12 +119,28 @@ class generateTable {
 			 * TODO: Skip pages that are too far away
 			 * of the current one.
 			 */
+			$already_spaced = false;
 			for ( $i = 1; $i <= $params['pages']; $i++ ) {
+				if (
+						( $i < $params['current'] - 3 || $i > $params['current'] + 3 ) &&
+						( $i != 1 && $i != $params['pages'] )
+					)
+				{
+					if ( $already_spaced == false ) {
+						$output .= '<li class="disabled"><a href="#">...</a></li>';
+						$already_spaced = true;
+					}
+					continue;
+				}
 				if ( $params['current'] == $i ) {
 					$output .= '<li class="active"><a href="#">' . $i .'</a></li>';
 				}
 				else {
 					$output .= '<li><a href="' . self::construct_pagination_link( $params['link'], $i) .'">' . $i .'</a></li>';
+				}
+				
+				if ( $i > $params['current'] ) {
+					$already_spaced = false;
 				}
 			}
 			
@@ -135,9 +154,22 @@ class generateTable {
 							</li>';
 			}
 
-			$output .= '</ul>
+
+			$output .= '				</ul>
+									</div>
+								</nav>';
+			
+			$output .= '<div class="form-group">
+							<label class="control-label hidden-xs hidden-sm" for="page">' . __('Go to:','cftp_admin') . '</label>
+							<input type="text" class="form-control" name="page" id="go_to_page" value="' . $params['current'] .'" />
 						</div>
-						</nav>';
+						<div class="form-group">
+							<button type="submit" class="form-control"><span aria-hidden="true" class="glyphicon glyphicon-ok"></span></button>
+						</div>';
+			
+			$output .= '		</div>
+							</div>
+						</div>';
 
 		}
 		

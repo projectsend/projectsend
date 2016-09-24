@@ -26,7 +26,9 @@
 	vertical-align: middle;
 }
 .footable-sorted,
-.footable-sorted-desc {
+.footable-sorted-desc,
+.footable .active
+{
 	background-color: #004b92 !important;
 	color:white !important;
 }

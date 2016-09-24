@@ -11,7 +11,6 @@
  * All tables must exist to verify the installation.
  * If any table is missing, the installation is considered corrupt.
  */
-
 function is_projectsend_installed() {
 	global $current_tables;
 
@@ -31,6 +30,30 @@ function is_projectsend_installed() {
 		return true;
 	}
 }
+
+/**
+ * Add any existing $_GET parameters as hidden fields on a form
+ */
+function form_add_existing_parameters( $ignore = array() ) {
+	// Don't add the pagination parameter
+	$ignore = array('page');
+	
+	// Remove this parameters so they only exist when the action is done
+	$remove = array('action', 'batch', 'status');
+
+	if ( !empty( $_GET ) ) {
+		foreach ( $_GET as $param => $value ) {
+			// Remove status and actions
+			if ( in_array( $param, $remove ) ) {
+				unset( $_GET[$param] );
+			}
+			if ( !is_array( $value ) && !in_array( $param, $ignore ) ) {
+				echo '<input type="hidden" name="' . $param . '" value="' . encode_html($value) . '">';
+			}
+		}
+	}
+}
+
 
 function generate_password() {
 	/**
@@ -623,8 +646,8 @@ function html_output($str, $flags = ENT_QUOTES, $encoding = 'UTF-8', $double_enc
  */
 function encode_html($str) {
 	$str = htmlentities($str, ENT_QUOTES, $encoding='utf-8');
-	//$str = mysql_real_escape_string($str);
 	$str = nl2br($str);
+	//$str = addslashes($str);
 	return $str;
 }
 

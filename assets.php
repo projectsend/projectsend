@@ -50,9 +50,10 @@ if ( !empty( $load_scripts ) ) {
 				$load_js_files[]		= BASE_URI . 'includes/js/bootstrap-spinedit/bootstrap-spinedit.js';
 				break;
 			case 'footable':
+				$footable_js_file		= ( !empty( $footable_min ) ) ? 'footable.min.js' : 'footable.all.min.js';
 				$load_css_files[]		= BASE_URI . 'includes/js/footable/css/footable.core.css';
 				$load_css_files[]		= BASE_URI . 'css/footable.css';
-				$load_js_files[]		= BASE_URI . 'includes/js/footable/footable.all.min.js';
+				$load_js_files[]		= BASE_URI . 'includes/js/footable/' . $footable_js_file;
 				break;
 			case 'jquery_tags_input':
 				$load_css_files[]		= BASE_URI . 'includes/js/jquery-tags-input/jquery.tagsinput.css';

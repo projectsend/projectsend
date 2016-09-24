@@ -70,6 +70,7 @@ $classes_files = array(
 						'form-validation.php',
 						'send-email.php',
 						'generate-form.php',
+						'generate-table.php',
 					);
 foreach ( $classes_files as $filename ) {
 	$location = ROOT_DIR . '/includes/classes/' . $filename;

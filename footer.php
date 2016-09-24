@@ -10,7 +10,10 @@
 		load_js_files();
 
 		if ( DEBUG === true ) {
-			echo $dbh->GetCount(); // Print the total count of queries made by PDO
+			echo "\n" . '<!-- DEBUG INFORMATION' . "\n";
+			// Print the total count of queries made by PDO
+			_e('Executed queries','cftp_admin'); echo ': ' . $dbh->GetCount();
+			echo "\n" . '-->' . "\n" ;
 		}
 	?>
 

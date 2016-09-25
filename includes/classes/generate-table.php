@@ -25,7 +25,7 @@ class generateTable {
 		return $output;
 	}
 	
-	private function build_sortable_th_content( $sort_url, $content ) {
+	private function build_sortable_th_content( $sort_url, $is_current_sorted, $content ) {
 		$url_parse = parse_url( $_SERVER['REQUEST_URI'] );
 
 		if ( !empty( $_GET ) ) {
@@ -34,7 +34,10 @@ class generateTable {
 		$new_url_parameters['orderby'] = $sort_url;
 		
 		if ( !empty( $new_url_parameters['order'] ) ) {
-			$order = ( $new_url_parameters['order'] == 'ASC' ) ? 'DESC' : 'ASC';  // TODO: invert only for active column. default to desc for others
+			$order = ( $new_url_parameters['order'] == 'asc' ) ? 'desc' : 'asc';
+			if ( $is_current_sorted != true ) {
+				$order = ( $order == 'asc' ) ? 'desc' : 'asc';
+			}
 		}
 		$new_url_parameters['order'] = $order;
 
@@ -61,6 +64,8 @@ class generateTable {
 				$content	= ( !empty( $column['content'] ) ) ? $column['content'] : '';
 				$sortable	= ( !empty( $column['sortable'] ) ) ? $column['sortable'] : false;
 				$sort_url	= ( !empty( $column['sort_url'] ) ) ? $column['sort_url'] : false;
+				$order		= ( !empty( $_GET['order'] ) ) ? html_output($_GET['order']) : 'desc';
+				$is_current_sorted = false;
 
 				if ( !empty( $column['hide'] ) ) {
 					$data_attr['hide'] = $column['hide'];
@@ -68,11 +73,15 @@ class generateTable {
 				if ( isset( $_GET['orderby'] ) && !empty( $sort_url ) ) {
 					if ( $_GET['orderby'] == $sort_url ) {
 						$attributes['class'][] = 'active';
+						$attributes['class'][] = 'footable-sorted-' . $order;
+						$is_current_sorted = true;
 					}
 				}
 				else {
 					if ( !empty( $column['sort_default'] ) ) {
 						$attributes['class'][] = 'active';
+						$attributes['class'][] = 'footable-sorted-' . $order;
+						$sort_next = $order;
 					}
 				}
 
@@ -81,7 +90,7 @@ class generateTable {
 				}
 				
 				if ( $sortable == true && !empty( $sort_url ) ) {
-					$content = self::build_sortable_th_content( $sort_url, $content );
+					$content = self::build_sortable_th_content( $sort_url, $is_current_sorted, $content );
 				}
 
 				/**  Generate the column */
@@ -95,7 +104,13 @@ class generateTable {
 				foreach ( $data_attr as $tag => $value ) {
 					$output .= ' data-' . $tag . '="' . $value . '"';
 				}
-				$output .= '>' . $content . '</th>';
+				$output .= '>' . $content;
+				
+				if ( $sortable == true ) {
+					$output .= '<span class="footable-sort-indicator"></span>';
+				}
+
+				$output .= '</th>';
 			}
 		}
 		$output .= "</tr>\n</thead>\n";

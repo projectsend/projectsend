@@ -25,13 +25,31 @@
 	background: #E2E5E9;
 	vertical-align: middle;
 }
+
+	.footable > thead > tr > th a,
+	.footable > thead > tr > td a
+	{
+		display:inline-block;
+		color:#222;
+		text-decoration:none;
+	}
+
+	.footable > thead > tr > th.footable-sorted-asc > span.footable-sort-indicator:before {
+	  content: "\e013";
+	}
+
 .footable-sorted,
+.footable-sorted-asc,
 .footable-sorted-desc,
 .footable .active
 {
 	background-color: #004b92 !important;
 	color:white !important;
 }
+
+	.footable .active a {
+		color:white;
+	}
 
 .footable > thead > tr > th.footable-first-column,
 .footable > thead > tr > td.footable-first-column {

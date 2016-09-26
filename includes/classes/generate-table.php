@@ -8,23 +8,35 @@
 
 class generateTable {
 
-	function __construct() {
+	function __construct( $attributes ) {
 		global $dbh;
 		$this->dbh = $dbh;
+
+		$this->contents = self::open( $attributes );
+		$this->contents .= "<tbody>\n";
+
+		$this->current_row = 1;
 	}
 
 	/**
 	 * Create the form
 	 */
 	public function open( $attributes ) {
-		$output = "<table";
+		$this->output = "<table";
 		foreach ( $attributes as $tag => $value ) {
-			$output .= ' ' . $tag . '="' . $value . '"';
+			$this->output .= ' ' . $tag . '="' . $value . '"';
 		}
-		$output .= ">\n";
-		return $output;
+		$this->output .= ">\n";
+		return $this->output;
 	}
 	
+	/**
+	 * If a column name is sortable, it's content has to be a link
+	 * to the current page + existing $_GET parameters, but adding
+	 * the orderby and order ones.
+	 * If "order" is set and the current column in the loop contains
+	 * the current sort order needs to be inversed on the link.
+	 */
 	private function build_sortable_th_content( $sort_url, $is_current_sorted, $content ) {
 		$url_parse = parse_url( $_SERVER['REQUEST_URI'] );
 
@@ -55,8 +67,8 @@ class generateTable {
 		return $sortable_link;
 	}
 
-	public function add_thead( $columns ) {
-		$output = "<thead>\n<tr>";
+	public function thead( $columns ) {
+		$this->output = "<thead>\n<tr>";
 		if ( !empty( $columns ) ) {
 			foreach ( $columns as $column ) {
 				$attributes	= ( !empty( $column['attributes'] ) ) ? $column['attributes'] : array();
@@ -94,32 +106,55 @@ class generateTable {
 				}
 
 				/**  Generate the column */
-				$output .= '<th';
+				$this->output .= '<th';
 				foreach ( $attributes as $tag => $value ) {
 					if ( is_array( $value ) ) {
 						$value = implode(' ', $value);
 					}
-					$output .= ' ' . $tag . '="' . $value . '"';
+					$this->output .= ' ' . $tag . '="' . $value . '"';
 				}
 				foreach ( $data_attr as $tag => $value ) {
-					$output .= ' data-' . $tag . '="' . $value . '"';
+					$this->output .= ' data-' . $tag . '="' . $value . '"';
 				}
-				$output .= '>' . $content;
+				$this->output .= '>' . $content;
 				
 				if ( $sortable == true ) {
-					$output .= '<span class="footable-sort-indicator"></span>';
+					$this->output .= '<span class="footable-sort-indicator"></span>';
 				}
 
-				$output .= '</th>';
+				$this->output .= '</th>';
 			}
 		}
-		$output .= "</tr>\n</thead>\n";
-		return $output;
+		$this->output .= "</tr>\n</thead>\n";
+		$this->contents .= $this->output;
+	}
+	
+	public function add_row() {
+		$this->contents .= "<tr>\n";
 	}
 
-	public function close() {
-		$output = "</table>\n";
-		return $output;
+	public function add_cell( $attributes ) {
+		$this->content 		= ( !empty( $attributes['content'] ) ) ? html_output( $attributes['content'] ) : '';
+		$this->is_checkbox 	= ( !empty( $attributes['checkbox'] ) ) ? true : false;
+		$this->value 		= ( !empty( $attributes['value'] ) ) ? html_output( $attributes['value'] ) : null;
+		
+		if ( $this->is_checkbox == true ) {
+			$this->content = '<input type="checkbox" name="batch[]" value="' . $this->value . '" />' . "\n";
+		}
+
+		$this->contents .= "<td>\n" . $this->content . "</td>\n";
+	}
+
+	public function end_row() {
+		$this->contents .= "</tr>\n";
+	}
+
+	/**
+	 * Print the full table
+	 */
+	public function render() {
+		$this->contents .= "</tbody>\n</table>\n";
+		return $this->contents;
 	}
 
 	/**
@@ -135,30 +170,30 @@ class generateTable {
 				}
 			}
 		}
-		$query = http_build_query($params);
+		$this->query = http_build_query($params);
 		
-		return BASE_URI . $link . '?' . $query;
+		return BASE_URI . $link . '?' . $this->query;
 	}
 
 	public function pagination( $params ) {
-		$output = '';
+		$this->output = '';
 
 		if ( $params['pages'] > 1 ) {
-			$output = '<div class="container-fluid">
-						<div class="row">
-							<div class="col-xs-12 text-center">
-								<nav aria-label="'. __('Results navigation','cftp_admin') . '">
-									<div class="pagination_wrapper">
-										<ul class="pagination">';
+			$this->output = '<div class="container-fluid">
+								<div class="row">
+									<div class="col-xs-12 text-center">
+										<nav aria-label="'. __('Results navigation','cftp_admin') . '">
+											<div class="pagination_wrapper">
+												<ul class="pagination">';
 
 			/** First and previous */
 			if ( $params['current'] > 1 ) {
-				$output .= '<li>
-								<a href="' . self::construct_pagination_link( $params['link'] ) .'" data-page="first"><span aria-hidden="true">&laquo;</span></a>
-							</li>
-							<li>
-								<a href="'. self::construct_pagination_link( $params['link'], $params['current'] - 1 ) .'" data-page="prev">&lsaquo;</a>
-							</li>';
+				$this->output .= '<li>
+										<a href="' . self::construct_pagination_link( $params['link'] ) .'" data-page="first"><span aria-hidden="true">&laquo;</span></a>
+									</li>
+									<li>
+										<a href="'. self::construct_pagination_link( $params['link'], $params['current'] - 1 ) .'" data-page="prev">&lsaquo;</a>
+									</li>';
 			}
 
 			/**
@@ -175,16 +210,16 @@ class generateTable {
 					)
 				{
 					if ( $already_spaced == false ) {
-						$output .= '<li class="disabled"><a href="#">...</a></li>';
+						$this->output .= '<li class="disabled"><a href="#">...</a></li>';
 						$already_spaced = true;
 					}
 					continue;
 				}
 				if ( $params['current'] == $i ) {
-					$output .= '<li class="active"><a href="#">' . $i .'</a></li>';
+					$this->output .= '<li class="active"><a href="#">' . $i .'</a></li>';
 				}
 				else {
-					$output .= '<li><a href="' . self::construct_pagination_link( $params['link'], $i) .'">' . $i .'</a></li>';
+					$this->output .= '<li><a href="' . self::construct_pagination_link( $params['link'], $i) .'">' . $i .'</a></li>';
 				}
 				
 				if ( $i > $params['current'] ) {
@@ -194,34 +229,34 @@ class generateTable {
 			
 			/** Next and last */
 			if ( $params['current'] != $params['pages'] ) {
-				$output .= '<li>
-								<a href="' . self::construct_pagination_link( $params['link'], $params['current'] + 1 ) .'" data-page="next">&rsaquo;</a>
-							</li>
-							<li>
-								<a href="' . self::construct_pagination_link( $params['link'], $params['pages'] ) .'" data-page="last"><span aria-hidden="true">&raquo;</span></a>
-							</li>';
+				$this->output .= '<li>
+										<a href="' . self::construct_pagination_link( $params['link'], $params['current'] + 1 ) .'" data-page="next">&rsaquo;</a>
+									</li>
+									<li>
+										<a href="' . self::construct_pagination_link( $params['link'], $params['pages'] ) .'" data-page="last"><span aria-hidden="true">&raquo;</span></a>
+									</li>';
 			}
 
 
-			$output .= '				</ul>
+			$this->output .= '				</ul>
 									</div>
 								</nav>';
 			
-			$output .= '<div class="form-group">
-							<label class="control-label hidden-xs hidden-sm" for="page">' . __('Go to:','cftp_admin') . '</label>
-							<input type="text" class="form-control" name="page" id="go_to_page" value="' . $params['current'] .'" />
-						</div>
-						<div class="form-group">
-							<button type="submit" class="form-control"><span aria-hidden="true" class="glyphicon glyphicon-ok"></span></button>
-						</div>';
+			$this->output .= '<div class="form-group">
+									<label class="control-label hidden-xs hidden-sm" for="page">' . __('Go to:','cftp_admin') . '</label>
+									<input type="text" class="form-control" name="page" id="go_to_page" value="' . $params['current'] .'" />
+								</div>
+								<div class="form-group">
+									<button type="submit" class="form-control"><span aria-hidden="true" class="glyphicon glyphicon-ok"></span></button>
+								</div>';
 			
-			$output .= '		</div>
+			$this->output .= '		</div>
 							</div>
 						</div>';
 
 		}
 		
-		return $output;
+		return $this->output;
 	}
 }
 ?>

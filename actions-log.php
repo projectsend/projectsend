@@ -244,13 +244,11 @@ include('header.php');
 		 	/**
 			 * Generate the table using the class.
 			 */
-			$table = new generateTable();
-			
 			$table_attributes	= array(
 										'id'		=> 'activities_tbl',
 										'class'		=> 'footable table',
 									);
-			echo $table->open( $table_attributes );
+			$table = new generateTable( $table_attributes );
 
 			$thead_columns		= array(
 										array(
@@ -289,46 +287,61 @@ include('header.php');
 											'hide'			=> 'phone',
 										),
 									);
-			echo $table->add_thead( $thead_columns );
-		?>
+			$table->thead( $thead_columns );
+			
+			$sql->setFetchMode(PDO::FETCH_ASSOC);
+			while ( $log = $sql->fetch() ) {
 
-			<tbody>
-				<?php
-					$sql->setFetchMode(PDO::FETCH_ASSOC);
-					while ( $log = $sql->fetch() ) {
-						$this_action = render_log_action(
-											array(
-												'action'				=> $log['action'],
-												'timestamp'				=> $log['timestamp'],
-												'owner_id'				=> $log['owner_id'],
-												'owner_user'			=> $log['owner_user'],
-												'affected_file'			=> $log['affected_file'],
-												'affected_file_name'	=> $log['affected_file_name'],
-												'affected_account'		=> $log['affected_account'],
-												'affected_account_name'	=> $log['affected_account_name']
-											)
-						);
-						$date = date(TIMEFORMAT_USE,strtotime($log['timestamp']));
-					?>
-					<tr>
-						<td><input type="checkbox" name="batch[]" value="<?php echo $log["id"]; ?>" /></td>
-						<td data-value="<?php echo strtotime($log['timestamp']); ?>">
-							<?php echo html_output($date); ?>
-						</td>
-						<td><?php echo (!empty($this_action["1"])) ? html_output($this_action["1"]) : ''; ?></td>
-						<td><?php echo html_output($this_action["text"]); ?></td>
-						<td><?php echo (!empty($this_action["2"])) ? html_output($this_action["2"]) : ''; ?></td>
-						<td><?php echo (!empty($this_action["3"])) ? html_output($this_action["3"]) : ''; ?></td>
-						<td><?php echo (!empty($this_action["4"])) ? html_output($this_action["4"]) : ''; ?></td>
-					</tr>
-							
-					<?php
-					}
-				?>
-			</tbody>
-		
-		<?php
-			echo $table->close();
+				$this_action = render_log_action(
+									array(
+										'action'				=> $log['action'],
+										'timestamp'				=> $log['timestamp'],
+										'owner_id'				=> $log['owner_id'],
+										'owner_user'			=> $log['owner_user'],
+										'affected_file'			=> $log['affected_file'],
+										'affected_file_name'	=> $log['affected_file_name'],
+										'affected_account'		=> $log['affected_account'],
+										'affected_account_name'	=> $log['affected_account_name']
+									)
+				);
+				$date = date(TIMEFORMAT_USE,strtotime($log['timestamp']));
+
+				$table->add_row();
+				
+				// Checkbox
+				$tbody_cells = array(
+										array(
+												'checkbox'		=> true,
+												'value'			=> $log["id"],
+											),
+										array(
+												'content'		=> $date,
+											),
+										array(
+												'content'		=> ( !empty( $this_action["1"] ) ) ? $this_action["1"] : '',
+											),
+										array(
+												'content'		=> $this_action["text"],
+											),
+										array(
+												'content'		=> ( !empty( $this_action["2"] ) ) ? $this_action["2"] : '',
+											),
+										array(
+												'content'		=> ( !empty( $this_action["3"] ) ) ? $this_action["3"] : '',
+											),
+										array(
+												'content'		=> ( !empty( $this_action["4"] ) ) ? $this_action["4"] : '',
+											),
+									);
+
+				foreach ( $tbody_cells as $cell ) {
+					$table->add_cell( $cell );
+				}
+
+				$table->end_row();
+			}
+			
+			echo $table->render();
 
 			/**
 			 * PAGINATION

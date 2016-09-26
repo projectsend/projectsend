@@ -855,13 +855,6 @@ include('header.php');
 			</nav>
 
 		</form>
-
-		<?php
-			if ($current_level != '0') {
-				$msg = __('Please note that downloading a file from here will not add to the download count.','cftp_admin');
-				echo system_message('info',$msg);
-			}
-		?>
 	</div>
 
 </div>

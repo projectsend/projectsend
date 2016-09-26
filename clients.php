@@ -146,7 +146,7 @@ include('header.php');
 	}
 
 	/** Add the active filter */	
-	if(isset($_GET['active']) && $_GET['active'] != 'all') {
+	if(isset($_GET['active']) && $_GET['active'] != '2') {
 		$cq .= " AND active = :active";
 		$no_results_error = 'filter';
 
@@ -196,7 +196,7 @@ include('header.php');
 						<select name="active" id="active" class="txtfield form-control">
 							<?php
 								$status_options = array(
-														'all'	=> __('All statuses','cftp_admin'),
+														'2'		=> __('All statuses','cftp_admin'),
 														'1'		=> __('Active','cftp_admin'),
 														'0'		=> __('Inactive','cftp_admin'),
 													);

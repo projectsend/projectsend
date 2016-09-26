@@ -185,7 +185,7 @@ include('header.php');
 	}
 	
 	/** Add the active filter */	
-	if ( isset( $_GET['active'] ) && $_GET['active'] != 'all' ) {
+	if ( isset( $_GET['active'] ) && $_GET['active'] != '2' ) {
 		$cq .= " AND active = :active";
 		$no_results_error = 'filter';
 
@@ -235,13 +235,13 @@ include('header.php');
 				<div class="form-group group_float">
 					<select name="role" id="role" class="txtfield form-control">
 						<?php
-							$status_options = array(
+							$roles_options = array(
 													'all'	=> __('All roles','cftp_admin'),
 													'9'		=> USER_ROLE_LVL_9,
 													'8'		=> USER_ROLE_LVL_8,
 													'7'		=> USER_ROLE_LVL_7,
 												);
-							foreach ( $status_options as $val => $text ) {
+							foreach ( $roles_options as $val => $text ) {
 						?>
 								<option value="<?php echo $val; ?>" <?php if ( isset( $_GET['role'] ) && $_GET['role'] == $val ) { echo 'selected="selected"'; } ?>><?php echo $text; ?></option>
 						<?php
@@ -254,7 +254,7 @@ include('header.php');
 					<select name="active" id="active" class="txtfield form-control">
 						<?php
 							$status_options = array(
-													'all'	=> __('All statuses','cftp_admin'),
+													'2'		=> __('All statuses','cftp_admin'),
 													'1'		=> __('Active','cftp_admin'),
 													'0'		=> __('Inactive','cftp_admin'),
 												);

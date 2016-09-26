@@ -60,12 +60,12 @@ function form_add_existing_parameters( $ignore = array() ) {
  * is either ASC or DESC.
  * Defaults to ORDER BY: id, ORDER: DESC
  */
-function sql_add_order( $table ) {
+function sql_add_order( $table, $column = 'id' ) {
 	global $dbh;
 
 	$columns_query	= $dbh->query('SELECT * FROM ' . $table . ' LIMIT 1');
 	$columns_keys	= array_keys($columns_query->fetch(PDO::FETCH_ASSOC));
-	$orderby		= ( isset( $_GET['orderby'] ) && in_array( $_GET['orderby'], $columns_keys ) ) ? $_GET['orderby'] : 'id';
+	$orderby		= ( isset( $_GET['orderby'] ) && in_array( $_GET['orderby'], $columns_keys ) ) ? $_GET['orderby'] : $column;
 
 	$order		= ( isset( $_GET['order'] ) ) ? strtoupper($_GET['order']) : 'DESC';
 	$order		= ( $order != 'DESC' || $order != 'ASC' ) ? $order : 'DESC';

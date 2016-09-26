@@ -183,8 +183,8 @@ include('header.php');
 					<label for="activity" class="sr-only"><?php _e('Filter activities','cftp_admin'); ?></label>
 					<select name="activity" id="activity" class="form-control">
 						<option value="all"><?php _e('All activities','cftp_admin'); ?></option>
-						<?php
-							global $activities_references;
+							<?php
+								global $activities_references;
 								foreach ( $activities_references as $val => $text ) {
 							?>
 									<option value="<?php echo $val; ?>" <?php if ( isset( $_GET['activity'] ) && $_GET['activity'] == $val ) { echo 'selected="selected"'; } ?>><?php echo $text; ?></option>
@@ -199,7 +199,7 @@ include('header.php');
 	</div>
 
 	<form action="actions-log.php" name="actions_list" method="get" class="form-inline">
-		<?php form_add_existing_parameters(); // Ignore ACTIVITIES, which ?>
+		<?php form_add_existing_parameters(); ?>
 		<div class="form_actions_right">
 			<div class="form_actions">
 				<div class="form_actions_submit">
@@ -308,7 +308,6 @@ include('header.php');
 
 				$table->add_row();
 				
-				// Checkbox
 				$tbody_cells = array(
 										array(
 												'checkbox'		=> true,
@@ -318,19 +317,19 @@ include('header.php');
 												'content'		=> $date,
 											),
 										array(
-												'content'		=> ( !empty( $this_action["1"] ) ) ? $this_action["1"] : '',
+												'content'		=> ( !empty( $this_action["1"] ) ) ? html_output( $this_action["1"] ) : '',
 											),
 										array(
-												'content'		=> $this_action["text"],
+												'content'		=> html_output( $this_action["text"] ),
 											),
 										array(
-												'content'		=> ( !empty( $this_action["2"] ) ) ? $this_action["2"] : '',
+												'content'		=> ( !empty( $this_action["2"] ) ) ? html_output( $this_action["2"] ) : '',
 											),
 										array(
-												'content'		=> ( !empty( $this_action["3"] ) ) ? $this_action["3"] : '',
+												'content'		=> ( !empty( $this_action["3"] ) ) ? html_output( $this_action["3"] ) : '',
 											),
 										array(
-												'content'		=> ( !empty( $this_action["4"] ) ) ? $this_action["4"] : '',
+												'content'		=> ( !empty( $this_action["4"] ) ) ? html_output( $this_action["4"] ) : '',
 											),
 									);
 

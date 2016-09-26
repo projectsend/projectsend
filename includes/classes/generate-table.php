@@ -45,6 +45,7 @@ class generateTable {
 		}
 		$new_url_parameters['orderby'] = $sort_url;
 		
+		$order = 'desc';
 		if ( !empty( $new_url_parameters['order'] ) ) {
 			$order = ( $new_url_parameters['order'] == 'asc' ) ? 'desc' : 'asc';
 			if ( $is_current_sorted != true ) {
@@ -130,11 +131,13 @@ class generateTable {
 	}
 	
 	public function add_row() {
-		$this->contents .= "<tr>\n";
+		$this->row_class = ( $this->current_row % 2 ) ? 'table_row' : 'table_row_alt';
+		$this->contents .= '<tr class="' . $this->row_class . '">' . "\n";
+		$this->current_row++;
 	}
 
 	public function add_cell( $attributes ) {
-		$this->content 		= ( !empty( $attributes['content'] ) ) ? html_output( $attributes['content'] ) : '';
+		$this->content 		= ( !empty( $attributes['content'] ) ) ? $attributes['content'] : '';
 		$this->is_checkbox 	= ( !empty( $attributes['checkbox'] ) ) ? true : false;
 		$this->value 		= ( !empty( $attributes['value'] ) ) ? html_output( $attributes['value'] ) : null;
 		

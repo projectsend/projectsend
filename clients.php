@@ -487,7 +487,7 @@ include('header.php');
 														'content'		=>  '<a href="' . $files_link . '" class="btn btn-sm ' . $files_button . '">' . __("Manage files","cftp_admin") . '</a>' . "\n" .
 																			'<a href="' . $groups_link . '" class="btn btn-sm ' . $groups_button . '">' . __("View groups","cftp_admin") . '</a>' . "\n" .
 																			'<a href="my_files/?client=' . html_output( $row["user"] ) . '" class="btn btn-primary btn-sm" target="_blank">' . __('View as client','cftp_admin') . '</a>' . "\n" .
-																			'<a href="clients-edit.php?id=' . html_output( $row["id"] ) . '" class="btn btn-primary btn-sm" target="_blank">' . __('Edit','cftp_admin') . '</a>' . "\n"
+																			'<a href="clients-edit.php?id=' . html_output( $row["id"] ) . '" class="btn btn-primary btn-sm">' . __('Edit','cftp_admin') . '</a>' . "\n"
 													),
 											);
 

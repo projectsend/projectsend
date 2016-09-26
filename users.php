@@ -435,7 +435,7 @@ include('header.php');
 												),
 											array(
 													'actions'		=> true,
-													'content'		=>  '<a href=""users-edit.php?id=' . html_output( $row["id"] ) . '" class="btn btn-primary btn-sm" target="_blank">' . __('Edit','cftp_admin') . '</a>' . "\n"
+													'content'		=>  '<a href="users-edit.php?id=' . html_output( $row["id"] ) . '" class="btn btn-primary btn-sm">' . __('Edit','cftp_admin') . '</a>' . "\n"
 												),
 										);
 

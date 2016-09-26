@@ -33,7 +33,7 @@ include('header.php');
 				return false; 
 			}
 			else {
-				var action = $('#users_actions').val();
+				var action = $('#action').val();
 				if (action == 'delete') {
 					var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
 					var msg_2 = '<?php _e("users. Are you sure you want to continue?",'cftp_admin'); ?>';

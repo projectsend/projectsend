@@ -36,7 +36,7 @@ function is_projectsend_installed() {
  */
 function form_add_existing_parameters( $ignore = array() ) {
 	// Don't add the pagination parameter
-	$ignore = array('page');
+	$ignore[] = 'page';
 	
 	// Remove this parameters so they only exist when the action is done
 	$remove = array('action', 'batch', 'status');
@@ -60,15 +60,15 @@ function form_add_existing_parameters( $ignore = array() ) {
  * is either ASC or DESC.
  * Defaults to ORDER BY: id, ORDER: DESC
  */
-function sql_add_order( $table, $column = 'id' ) {
+function sql_add_order( $table, $column = 'id', $initial_order = 'ASC' ) {
 	global $dbh;
 
 	$columns_query	= $dbh->query('SELECT * FROM ' . $table . ' LIMIT 1');
 	$columns_keys	= array_keys($columns_query->fetch(PDO::FETCH_ASSOC));
 	$orderby		= ( isset( $_GET['orderby'] ) && in_array( $_GET['orderby'], $columns_keys ) ) ? $_GET['orderby'] : $column;
 
-	$order		= ( isset( $_GET['order'] ) ) ? strtoupper($_GET['order']) : 'DESC';
-	$order		= ( $order != 'DESC' || $order != 'ASC' ) ? $order : 'DESC';
+	$order		= ( isset( $_GET['order'] ) ) ? strtoupper($_GET['order']) : $initial_order;
+	$order		= ( $order != 'DESC' || $order != 'ASC' ) ? $order : $initial_order;
 
 	return " ORDER BY $orderby $order";
 }

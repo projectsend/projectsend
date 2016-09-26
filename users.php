@@ -6,6 +6,7 @@
  * @subpackage	Users
  *
  */
+$footable_min = true; // delete this line after finishing pagination on every table
 $load_scripts	= array(
 						'footable',
 					); 
@@ -56,10 +57,10 @@ include('header.php');
 	/**
 	 * Apply the corresponding action to the selected users.
 	 */
-	if(isset($_POST['users_actions'])) {
+	if(isset($_GET['action'])) {
 		/** Continue only if 1 or more users were selected. */
-		if(!empty($_POST['users'])) {
-			$selected_users = $_POST['users'];
+		if(!empty($_GET['batch'])) {
+			$selected_users = $_GET['batch'];
 			$users_to_get = implode( ',', array_map( 'intval', array_unique( $selected_users ) ) );
 
 			/**
@@ -77,7 +78,7 @@ include('header.php');
 			$my_info = get_user_by_username(get_current_user_username());
 			$affected_users = 0;
 
-			switch($_POST['users_actions']) {
+			switch($_GET['action']) {
 				case 'activate':
 					/**
 					 * Changes the value on the "active" column value on the database.
@@ -165,64 +166,104 @@ include('header.php');
 	$cq = "SELECT * FROM " . TABLE_USERS . " WHERE level != '0'";
 
 	/** Add the search terms */	
-	if ( isset( $_POST['search'] ) && !empty( $_POST['search'] ) ) {
+	if ( isset( $_GET['search'] ) && !empty( $_GET['search'] ) ) {
 		$cq .= " AND (name LIKE :name OR user LIKE :user OR email LIKE :email)";
 		$no_results_error = 'search';
 
-		$search_terms		= '%'.$_POST['search'].'%';
+		$search_terms		= '%'.$_GET['search'].'%';
 		$params[':name']	= $search_terms;
 		$params[':user']	= $search_terms;
 		$params[':email']	= $search_terms;
 	}
 
 	/** Add the role filter */	
-	if ( isset( $_POST['role'] ) && $_POST['role'] != 'all' ) {
+	if ( isset( $_GET['role'] ) && $_GET['role'] != 'all' ) {
 		$cq .= " AND level=:level";
 		$no_results_error = 'filter';
 
-		$params[':level']	= $_POST['role'];
+		$params[':level']	= $_GET['role'];
 	}
 	
-	/** Add the status filter */	
-	if ( isset( $_POST['status'] ) && $_POST['status'] != 'all' ) {
+	/** Add the active filter */	
+	if ( isset( $_GET['active'] ) && $_GET['active'] != 'all' ) {
 		$cq .= " AND active = :active";
 		$no_results_error = 'filter';
 
-		$params[':active']	= (int)$_POST['status'];
+		$params[':active']	= (int)$_GET['active'];
 	}
 
-	$cq .= " ORDER BY name ASC";
+	/**
+	 * Add the order.
+	 * Defaults to order by: name, order: ASC
+	 */
+	$cq .= sql_add_order( TABLE_USERS, 'name', 'asc' );
 
+	/**
+	 * Pre-query to count the total results
+	*/
+	$count_sql = $dbh->prepare( $cq );
+	$count_sql->execute($params);
+	$count_for_pagination = $count_sql->rowCount();
+
+	/**
+	 * Repeat the query but this time, limited by pagination
+	 */
+	$cq .= " LIMIT :limit_start, :limit_number";
 	$sql = $dbh->prepare( $cq );
+
+	$pagination_page			= ( isset( $_GET["page"] ) ) ? $_GET["page"] : 1;
+	$pagination_start			= ( $pagination_page - 1 ) * RESULTS_PER_PAGE;
+	$params[':limit_start']		= $pagination_start;
+	$params[':limit_number']	= RESULTS_PER_PAGE;
+
 	$sql->execute( $params );
 	$count = $sql->rowCount();
-
 ?>
 
 	<div class="form_actions_left">
 		<div class="form_actions_limit_results">
-			<form action="users.php" name="users_search" method="post" class="form-inline">
+			<form action="users.php" name="users_search" method="get" class="form-inline">
+				<?php form_add_existing_parameters( array('search') ); ?>
 				<div class="form-group group_float">
-					<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box form-control" />
+					<input type="text" name="search" id="search" value="<?php if(isset($_GET['search']) && !empty($_GET['search'])) { echo html_output($_GET['search']); } ?>" class="txtfield form_actions_search_box form-control" />
 				</div>
 				<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default"><?php _e('Search','cftp_admin'); ?></button>
 			</form>
 
-			<form action="users.php" name="users_filters" method="post" class="form-inline">
+			<form action="users.php" name="users_filters" method="get" class="form-inline">
+				<?php form_add_existing_parameters( array('active', 'role') ); ?>
 				<div class="form-group group_float">
 					<select name="role" id="role" class="txtfield form-control">
-						<option value="all"><?php _e('All roles','cftp_admin'); ?></option>
-						<option value="9"><?php _e('System Administrator','cftp_admin'); ?></option>
-						<option value="8"><?php _e('Account Manager','cftp_admin'); ?></option>
-						<option value="7"><?php _e('Uploader','cftp_admin'); ?></option>
+						<?php
+							$status_options = array(
+													'all'	=> __('All roles','cftp_admin'),
+													'9'		=> USER_ROLE_LVL_9,
+													'8'		=> USER_ROLE_LVL_8,
+													'7'		=> USER_ROLE_LVL_7,
+												);
+							foreach ( $status_options as $val => $text ) {
+						?>
+								<option value="<?php echo $val; ?>" <?php if ( isset( $_GET['role'] ) && $_GET['role'] == $val ) { echo 'selected="selected"'; } ?>><?php echo $text; ?></option>
+						<?php
+							}
+						?>
 					</select>
 				</div>
 
 				<div class="form-group group_float">
-					<select name="status" id="status" class="txtfield form-control">
-						<option value="all"><?php _e('All statuses','cftp_admin'); ?></option>
-						<option value="1"><?php _e('Active','cftp_admin'); ?></option>
-						<option value="0"><?php _e('Inactive','cftp_admin'); ?></option>
+					<select name="active" id="active" class="txtfield form-control">
+						<?php
+							$status_options = array(
+													'all'	=> __('All statuses','cftp_admin'),
+													'1'		=> __('Active','cftp_admin'),
+													'0'		=> __('Inactive','cftp_admin'),
+												);
+							foreach ( $status_options as $val => $text ) {
+						?>
+								<option value="<?php echo $val; ?>" <?php if ( isset( $_GET['active'] ) && $_GET['active'] == $val ) { echo 'selected="selected"'; } ?>><?php echo $text; ?></option>
+						<?php
+							}
+						?>
 					</select>
 				</div>
 				<button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default"><?php _e('Filter','cftp_admin'); ?></button>
@@ -230,26 +271,37 @@ include('header.php');
 		</div>
 	</div>
 
-	<form action="users.php" name="users_list" method="post" class="form-inline">
+	<form action="users.php" name="users_list" method="get" class="form-inline">
+		<?php form_add_existing_parameters(); ?>
 		<div class="form_actions_right">
 			<div class="form_actions">
 				<div class="form_actions_submit">
 					<div class="form-group group_float">
 						<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected users actions','cftp_admin'); ?>:</label>
-						<select name="users_actions" id="users_actions" class="txtfield form-control">
-							<option value="activate"><?php _e('Activate','cftp_admin'); ?></option>
-							<option value="deactivate"><?php _e('Deactivate','cftp_admin'); ?></option>
-							<option value="delete"><?php _e('Delete','cftp_admin'); ?></option>
+						<select name="action" id="action" class="txtfield form-control">
+							<?php
+								$actions_options = array(
+														'none'			=> __('Select action','cftp_admin'),
+														'activate'		=> __('Activate','cftp_admin'),
+														'deactivate'	=> __('Deactivate','cftp_admin'),
+														'delete'		=> __('Delete','cftp_admin'),
+													);
+								foreach ( $actions_options as $val => $text ) {
+							?>
+									<option value="<?php echo $val; ?>"><?php echo $text; ?></option>
+							<?php
+								}
+							?>
 						</select>
 					</div>
-					<button type="submit" id="do_action" name="proceed" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
+					<button type="submit" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
 				</div>
 			</div>
 		</div>
 		<div class="clear"></div>
 
 		<div class="form_actions_count">
-			<p><?php _e('Showing','cftp_admin'); ?>: <span><?php echo $count; ?> <?php _e('users','cftp_admin'); ?></span></p>
+			<p><?php _e('Found','cftp_admin'); ?>: <span><?php echo $count_for_pagination; ?> <?php _e('users','cftp_admin'); ?></span></p>
 		</div>
 
 		<div class="clear"></div>
@@ -266,80 +318,149 @@ include('header.php');
 				}
 				echo system_message('error',$no_results_message);
 			}
-		?>
-
-		<table id="users_tbl" class="footable" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
-			<thead>
-				<tr>
-					<th class="td_checkbox" data-sort-ignore="true">
-						<input type="checkbox" name="select_all" id="select_all" value="0" />
-					</th>
-					<th data-sort-initial="true"><?php _e('Full name','cftp_admin'); ?></th>
-					<th data-hide="phone"><?php _e('Log in username','cftp_admin'); ?></th>
-					<th data-hide="phone"><?php _e('E-mail','cftp_admin'); ?></th>
-					<th data-hide="phone"><?php _e('Role','cftp_admin'); ?></th>
-					<th><?php _e('Status','cftp_admin'); ?></th>
-					<th data-hide="phone, tablet" data-type="numeric"><?php _e('Added on','cftp_admin'); ?></th>
-					<th data-hide="phone" data-sort-ignore="true"><?php _e('Actions','cftp_admin'); ?></th>
-				</tr>
-			</thead>
-			<tbody>
 			
-			<?php
+			if ($count > 0) {
+				/**
+				 * Generate the table using the class.
+				 */
+				$table_attributes	= array(
+											'id'		=> 'users_tbl',
+											'class'		=> 'footable table',
+										);
+				$table = new generateTable( $table_attributes );
+
+				$thead_columns		= array(
+											array(
+												'select_all'	=> true,
+												'attributes'	=> array(
+																		'class'		=> array( 'td_checkbox' ),
+																	),
+											),
+											array(
+												'sortable'		=> true,
+												'sort_url'		=> 'name',
+												'sort_default'	=> true,
+												'content'		=> __('Full name','cftp_admin'),
+											),
+											array(
+												'sortable'		=> true,
+												'sort_url'		=> 'user',
+												'content'		=> __('Log in username','cftp_admin'),
+												'hide'			=> 'phone',
+											),
+											array(
+												'sortable'		=> true,
+												'sort_url'		=> 'email',
+												'content'		=> __('E-mail','cftp_admin'),
+												'hide'			=> 'phone',
+											),
+											array(
+												'sortable'		=> true,
+												'sort_url'		=> 'level',
+												'content'		=> __('Role','cftp_admin'),
+												'hide'			=> 'phone',
+											),
+											array(
+												'sortable'		=> true,
+												'sort_url'		=> 'active',
+												'content'		=> __('Status','cftp_admin'),
+											),
+											array(
+												'sortable'		=> true,
+												'sort_url'		=> 'timestamp',
+												'sort_default'	=> true,
+												'content'		=> __('Added on','cftp_admin'),
+												'hide'			=> 'phone,tablet',
+											),
+											array(
+												'content'		=> __('Actions','cftp_admin'),
+												'hide'			=> 'phone',
+											),
+										);
+				$table->thead( $thead_columns );
+
 				$sql->setFetchMode(PDO::FETCH_ASSOC);
 				while ( $row = $sql->fetch() ) {
-					$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
-				?>
-				<tr>
-					<td>
-						<?php if ($row["id"] != '1') { ?>
-							<input type="checkbox" name="users[]" value="<?php echo html_output($row["id"]); ?>" />
-						<?php } ?>
-					</td>
-					<td><?php echo html_output($row["name"]); ?></td>
-					<td><?php echo html_output($row["user"]); ?></td>
-					<td><?php echo html_output($row["email"]); ?></td>
-					<td><?php
-						switch(html_entity_decode($row["level"])) {
-							case '9': echo USER_ROLE_LVL_9; break;
-							case '8': echo USER_ROLE_LVL_8; break;
-							case '7': echo USER_ROLE_LVL_7; break;
-						}
-					?>
-					</td>
-					<td>
-						<?php
-							$status_hidden	= __('Inactive','cftp_admin');
-							$status_visible	= __('Active','cftp_admin');
-							$label			= ($row['active'] === 0) ? $status_hidden : $status_visible;
-							$class			= ($row['active'] === 0) ? 'danger' : 'success';
-						?>
-						<span class="label label-<?php echo $class; ?>">
-							<?php echo $label; ?>
-						</span>
-					</td>
-					<td data-value="<?php echo strtotime($row['timestamp']); ?>">
-						<?php echo $date; ?>
-					</td>
-					<td>
-						<a href="users-edit.php?id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm"><?php _e('Edit','cftp_admin'); ?></a>
-					</td>
-				</tr>
-						
-				<?php
+					$table->add_row();
+
+					/**
+					 * Prepare the information to be used later on the cells array
+					 * 1- Get the role name
+					 */
+					switch( $row["level"] ) {
+						case '9': $role_name = USER_ROLE_LVL_9; break;
+						case '8': $role_name = USER_ROLE_LVL_8; break;
+						case '7': $role_name = USER_ROLE_LVL_7; break;
+					}
+					 
+					/**
+					 * 2- Get active status
+					 */
+					$status_hidden	= __('Inactive','cftp_admin');
+					$status_visible	= __('Active','cftp_admin');
+					$label			= ($row['active'] === 0) ? $status_hidden : $status_visible;
+					$class			= ($row['active'] === 0) ? 'danger' : 'success';
+					
+					/**
+					 * 3- Get account creation date
+					 */
+					$date = date( TIMEFORMAT_USE, strtotime( $row['timestamp'] ) );
+
+
+					/**
+					 * Add the cells to the row
+					 */
+					$tbody_cells = array(
+											array(
+													'checkbox'		=> true,
+													'value'			=> $row["id"],
+												),
+											array(
+													'content'		=> html_output( $row["name"] ),
+												),
+											array(
+													'content'		=> html_output( $row["user"] ),
+												),
+											array(
+													'content'		=> html_output( $row["email"] ),
+												),
+											array(
+													'content'		=> $role_name,
+												),
+											array(
+													'content'		=> '<span class="label label-' . $class . '">' . $label . '</span>',
+												),
+											array(
+													'content'		=> $date,
+												),
+											array(
+													'actions'		=> true,
+													'content'		=>  '<a href=""users-edit.php?id=' . html_output( $row["id"] ) . '" class="btn btn-primary btn-sm" target="_blank">' . __('Edit','cftp_admin') . '</a>' . "\n"
+												),
+										);
+
+					foreach ( $tbody_cells as $cell ) {
+						$table->add_cell( $cell );
+					}
+	
+					$table->end_row();
 				}
-			?>
-			
-			</tbody>
-		</table>
 
-		<nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
-			<div class="pagination_wrapper text-center">
-				<ul class="pagination hide-if-no-paging"></ul>
-			</div>
-		</nav>
+				echo $table->render();
+
+				/**
+				 * PAGINATION
+				 */
+				$pagination_args = array(
+										'link'		=> 'users.php',
+										'current'	=> $pagination_page,
+										'pages'		=> ceil( $count_for_pagination / RESULTS_PER_PAGE ),
+									);
+				
+				echo $table->pagination( $pagination_args );
+			}
+		?>
 	</form>
-
 </div>
 
 <?php include('footer.php'); ?>

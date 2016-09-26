@@ -155,9 +155,9 @@ include('header.php');
 	
 	/**
 	 * Add the order.
-	 * Defaults to order by: id, order: DESC
+	 * Defaults to order by: name, order: ASC
 	 */
-	$cq .= sql_add_order( TABLE_USERS, 'name' );
+	$cq .= sql_add_order( TABLE_USERS, 'name', 'asc' );
 
 	/**
 	 * Pre-query to count the total results
@@ -221,10 +221,19 @@ include('header.php');
 						<div class="form-group group_float">
 							<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected clients actions','cftp_admin'); ?>:</label>
 							<select name="action" id="action" class="txtfield form-control">
-								<option value="none"><?php _e('Select action','cftp_admin'); ?></option>
-								<option value="activate"><?php _e('Activate','cftp_admin'); ?></option>
-								<option value="deactivate"><?php _e('Deactivate','cftp_admin'); ?></option>
-								<option value="delete"><?php _e('Delete','cftp_admin'); ?></option>
+								<?php
+									$actions_options = array(
+															'none'			=> __('Select action','cftp_admin'),
+															'activate'		=> __('Activate','cftp_admin'),
+															'deactivate'	=> __('Deactivate','cftp_admin'),
+															'delete'		=> __('Delete','cftp_admin'),
+														);
+									foreach ( $actions_options as $val => $text ) {
+								?>
+										<option value="<?php echo $val; ?>"><?php echo $text; ?></option>
+								<?php
+									}
+								?>
 							</select>
 						</div>
 						<button type="submit" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
@@ -364,11 +373,14 @@ include('header.php');
 							$found_groups = implode(',',$groups_ids);
 						}
 
+						/**
+						 * 2- Get account creation date
+						 */
 						$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
 						
 						/**
 						 * Prepare the information to be used later on the cells array
-						 * 2- Count OWN and GROUP files
+						 * 3- Count OWN and GROUP files
 						 */
 						$own_files = 0;
 						$groups_files = 0;
@@ -397,7 +409,7 @@ include('header.php');
 						}
 
 						/**
-						 * 3- Get active status
+						 * 4- Get active status
 						 */
 						$status_hidden	= __('Inactive','cftp_admin');
 						$status_visible	= __('Active','cftp_admin');
@@ -406,7 +418,7 @@ include('header.php');
 						
 						
 						/**
-						 * 3- Actions buttons
+						 * 5- Actions buttons
 						 */
 						if ($own_files + $groups_files > 0) {
 							$files_link		= 'manage-files.php?client_id='.$row["id"];

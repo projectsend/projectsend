@@ -143,7 +143,7 @@ include('header.php');
 	 * Add the order.
 	 * Defaults to order by: id, order: DESC
 	 */
-	$cq .= sql_add_order( TABLE_LOG );
+	$cq .= sql_add_order( TABLE_LOG, 'id', 'DESC' );
 
 	/**
 	 * Pre-query to count the total results

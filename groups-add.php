@@ -28,7 +28,7 @@ if ($_POST) {
 	 */
 	$add_group_data_name = encode_html($_POST['add_group_form_name']);
 	$add_group_data_description = encode_html($_POST['add_group_form_description']);
-	$add_group_data_members = $_POST['add_group_form_members'];
+	$add_group_data_members = ( !empty( $_POST['add_group_form_members'] ) ) ? $_POST['add_group_form_members'] : null;
 
 	/** Arguments used on validation and group creation. */
 	$new_arguments = array(

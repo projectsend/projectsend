@@ -183,7 +183,7 @@ include('header.php');
 		<div class="form_actions_left">
 			<div class="form_actions_limit_results">
 				<form action="clients.php" name="clients_search" method="get" class="form-inline">
-					<?php form_add_existing_parameters( array('search') ); ?>
+					<?php form_add_existing_parameters( array('search', 'action') ); ?>
 					<div class="form-group group_float">
 						<input type="text" name="search" id="search" value="<?php if(isset($_GET['search']) && !empty($_GET['search'])) { echo html_output($_GET['search']); } ?>" class="txtfield form_actions_search_box form-control" />
 					</div>
@@ -191,7 +191,7 @@ include('header.php');
 				</form>
 
 				<form action="clients.php" name="clients_filters" method="get" class="form-inline">
-					<?php form_add_existing_parameters( array('active') ); ?>
+					<?php form_add_existing_parameters( array('active', 'action') ); ?>
 					<div class="form-group group_float">
 						<select name="active" id="active" class="txtfield form-control">
 							<?php

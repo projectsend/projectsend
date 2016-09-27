@@ -236,13 +236,6 @@ include('header.php');
 	<div class="form_actions_left">
 		<div class="form_actions_limit_results">
 			<form action="groups.php" name="groups_search" method="get" class="form-inline">
-				<?php
-					if( isset( $member_exists ) ) {
-				?>
-						<input type="hidden" name="member" id="member" value="<?php echo html_output($member); ?>">
-				<?php
-					}
-				?>
 				<?php form_add_existing_parameters( array('search', 'action') ); ?>
 				<div class="form-group group_float">
 					<input type="text" name="search" id="search" value="<?php if(isset($_GET['search']) && !empty($_GET['search'])) { echo html_output($_GET['search']); } ?>" class="txtfield form_actions_search_box form-control" />
@@ -252,14 +245,7 @@ include('header.php');
 		</div>
 	</div>
 
-	<form action="groups.php" name="groups_list" method="get" class="form-inline">
-		<?php
-			if( isset( $member_exists ) ) {
-		?>
-				<input type="hidden" name="member" id="member" value="<?php echo html_output($member); ?>">
-		<?php
-			}
-		?>
+	<form action="groups.php<?php if(isset($member_exists)) { ?>?member=<?php echo html_output($member); } ?>" name="groups_list" method="get" class="form-inline">
 		<?php form_add_existing_parameters(); ?>
 		<div class="form_actions_right">
 			<div class="form_actions">

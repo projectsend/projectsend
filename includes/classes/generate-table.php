@@ -71,58 +71,63 @@ class generateTable {
 		$this->output = "<thead>\n<tr>";
 		if ( !empty( $columns ) ) {
 			foreach ( $columns as $column ) {
-				$attributes	= ( !empty( $column['attributes'] ) ) ? $column['attributes'] : array();
-				$data_attr	= ( !empty( $column['data_attr'] ) ) ? $column['data_attr'] : array();
-				$content	= ( !empty( $column['content'] ) ) ? $column['content'] : '';
-				$sortable	= ( !empty( $column['sortable'] ) ) ? $column['sortable'] : false;
-				$sort_url	= ( !empty( $column['sort_url'] ) ) ? $column['sort_url'] : false;
-				$order		= ( !empty( $_GET['order'] ) ) ? html_output($_GET['order']) : 'desc';
-				$is_current_sorted = false;
+				$continue	= ( !isset( $column['condition'] ) || !empty( $column['condition'] ) ) ? true : false;
+				if ( $continue == true ) {
 
-				if ( !empty( $column['hide'] ) ) {
-					$data_attr['hide'] = $column['hide'];
-				}
-				if ( isset( $_GET['orderby'] ) && !empty( $sort_url ) ) {
-					if ( $_GET['orderby'] == $sort_url ) {
-						$attributes['class'][] = 'active';
-						$attributes['class'][] = 'footable-sorted-' . $order;
-						$is_current_sorted = true;
+					$attributes	= ( !empty( $column['attributes'] ) ) ? $column['attributes'] : array();
+					$data_attr	= ( !empty( $column['data_attr'] ) ) ? $column['data_attr'] : array();
+					$content	= ( !empty( $column['content'] ) ) ? $column['content'] : '';
+					$sortable	= ( !empty( $column['sortable'] ) ) ? $column['sortable'] : false;
+					$sort_url	= ( !empty( $column['sort_url'] ) ) ? $column['sort_url'] : false;
+					$order		= ( !empty( $_GET['order'] ) ) ? html_output($_GET['order']) : 'desc';
+
+					$is_current_sorted = false;
+	
+					if ( !empty( $column['hide'] ) ) {
+						$data_attr['hide'] = $column['hide'];
 					}
-				}
-				else {
-					if ( !empty( $column['sort_default'] ) ) {
-						$attributes['class'][] = 'active';
-						$attributes['class'][] = 'footable-sorted-' . $order;
-						$sort_next = $order;
+					if ( isset( $_GET['orderby'] ) && !empty( $sort_url ) ) {
+						if ( $_GET['orderby'] == $sort_url ) {
+							$attributes['class'][] = 'active';
+							$attributes['class'][] = 'footable-sorted-' . $order;
+							$is_current_sorted = true;
+						}
 					}
-				}
-
-				if ( !empty( $column['select_all'] ) && $column['select_all'] === true ) {
-					$content = '<input type="checkbox" name="select_all" id="select_all" value="0" />';
-				}
-				
-				if ( $sortable == true && !empty( $sort_url ) ) {
-					$content = self::build_sortable_th_content( $sort_url, $is_current_sorted, $content );
-				}
-
-				/**  Generate the column */
-				$this->output .= '<th';
-				foreach ( $attributes as $tag => $value ) {
-					if ( is_array( $value ) ) {
-						$value = implode(' ', $value);
+					else {
+						if ( !empty( $column['sort_default'] ) ) {
+							$attributes['class'][] = 'active';
+							$attributes['class'][] = 'footable-sorted-' . $order;
+							$sort_next = $order;
+						}
 					}
-					$this->output .= ' ' . $tag . '="' . $value . '"';
+	
+					if ( !empty( $column['select_all'] ) && $column['select_all'] === true ) {
+						$content = '<input type="checkbox" name="select_all" id="select_all" value="0" />';
+					}
+					
+					if ( $sortable == true && !empty( $sort_url ) ) {
+						$content = self::build_sortable_th_content( $sort_url, $is_current_sorted, $content );
+					}
+	
+					/**  Generate the column */
+					$this->output .= '<th';
+					foreach ( $attributes as $tag => $value ) {
+						if ( is_array( $value ) ) {
+							$value = implode(' ', $value);
+						}
+						$this->output .= ' ' . $tag . '="' . $value . '"';
+					}
+					foreach ( $data_attr as $tag => $value ) {
+						$this->output .= ' data-' . $tag . '="' . $value . '"';
+					}
+					$this->output .= '>' . $content;
+					
+					if ( $sortable == true ) {
+						$this->output .= '<span class="footable-sort-indicator"></span>';
+					}
+	
+					$this->output .= '</th>';
 				}
-				foreach ( $data_attr as $tag => $value ) {
-					$this->output .= ' data-' . $tag . '="' . $value . '"';
-				}
-				$this->output .= '>' . $content;
-				
-				if ( $sortable == true ) {
-					$this->output .= '<span class="footable-sort-indicator"></span>';
-				}
-
-				$this->output .= '</th>';
 			}
 		}
 		$this->output .= "</tr>\n</thead>\n";
@@ -167,15 +172,19 @@ class generateTable {
 	}
 
 	public function add_cell( $attributes ) {
-		$this->content 		= ( !empty( $attributes['content'] ) ) ? $attributes['content'] : '';
-		$this->is_checkbox 	= ( !empty( $attributes['checkbox'] ) ) ? true : false;
-		$this->value 		= ( !empty( $attributes['value'] ) ) ? html_output( $attributes['value'] ) : null;
+		$continue	= ( !isset( $attributes['condition'] ) || !empty( $attributes['condition'] ) ) ? true : false;
 		
-		if ( $this->is_checkbox == true ) {
-			$this->content = '<input type="checkbox" name="batch[]" value="' . $this->value . '" />' . "\n";
+		if ( $continue == true ) {
+			$this->content 		= ( !empty( $attributes['content'] ) ) ? $attributes['content'] : '';
+			$this->is_checkbox 	= ( !empty( $attributes['checkbox'] ) ) ? true : false;
+			$this->value 		= ( !empty( $attributes['value'] ) ) ? html_output( $attributes['value'] ) : null;
+			
+			if ( $this->is_checkbox == true ) {
+				$this->content = '<input type="checkbox" name="batch[]" value="' . $this->value . '" />' . "\n";
+			}
+	
+			$this->contents .= "<td>\n" . $this->content . "</td>\n";
 		}
-
-		$this->contents .= "<td>\n" . $this->content . "</td>\n";
 	}
 
 	public function end_row() {

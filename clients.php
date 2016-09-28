@@ -325,7 +325,6 @@ include('header.php');
 												array(
 													'sortable'		=> true,
 													'sort_url'		=> 'timestamp',
-													'sort_default'	=> true,
 													'content'		=> __('Added on','cftp_admin'),
 													'hide'			=> 'phone,tablet',
 												),

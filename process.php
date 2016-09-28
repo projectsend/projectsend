@@ -107,9 +107,11 @@ class process {
 								 * If the file is being downloaded by a client, add +1 to
 								 * the download count
 								 */
-								$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (user_id , file_id) VALUES (:user_id, :file_id)");
+								$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (user_id , file_id, remote_ip, remote_host) VALUES (:user_id, :file_id, :remote_ip, :remote_host)");
 								$this->statement->bindValue(':user_id', CURRENT_USER_ID, PDO::PARAM_INT);
 								$this->statement->bindParam(':file_id', $_GET['id'], PDO::PARAM_INT);
+								$this->statement->bindParam(':remote_ip', $_SERVER['REMOTE_ADDR']);
+								$this->statement->bindParam(':remote_host', $_SERVER['REMOTE_HOST']);
 								$this->statement->execute();
 
 								/**
@@ -145,6 +147,7 @@ class process {
 						$new_record_action = $new_log_action->log_action_save($log_action_args);
 						$this->real_file = UPLOADED_FILES_FOLDER.$this->real_file_url;
 						if (file_exists($this->real_file)) {
+							session_write_close();
 							while (ob_get_level()) ob_end_clean();
 							header('Content-Type: application/octet-stream');
 							header('Content-Disposition: attachment; filename='.basename($this->real_file));
@@ -154,11 +157,27 @@ class process {
 							header('Cache-Control: private',false);
 							header('Content-Length: ' . get_real_size($this->real_file));
 							header('Connection: close');
-							readfile($this->real_file);
+							//readfile($this->real_file);
+							
+							$context = stream_context_create();
+							$file = fopen($this->real_file, 'rb', FALSE, $context);
+							while( !feof( $file ) ) {
+								//usleep(1000000); //Reduce download speed
+								echo stream_get_contents($file, 2014);
+							}
+							
+							fclose( $file );
 							exit;
 						}
 						else {
 							header("HTTP/1.1 404 Not Found");
+							?>
+								<div id="main">
+									<div class="file_404">
+										<h2><?php _e('File not found','cftp_admin'); ?></h2>
+									</div>
+								</div>
+							<?php
 							exit;
 						}
 					}
@@ -175,7 +194,7 @@ class process {
 				$requested_files = $_GET['files'];
 				foreach($requested_files as $file_id) {
 					echo $file_id;
-					$this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE id=:file_id");
+					$this->statement = $this->dbh->prepare("SELECT url FROM " . TABLE_FILES . " WHERE id=:file_id");
 					$this->statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
 					$this->statement->execute();
 					$this->statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -264,6 +283,7 @@ class process {
 		unset($_SESSION['loggedin']);
 		unset($_SESSION['access']);
 		unset($_SESSION['userlevel']);
+		unset($_SESSION['lang']);
 		session_destroy();
 
 		/** If there is a cookie, unset it */
@@ -271,6 +291,13 @@ class process {
 		setcookie("password","",time()-COOKIE_EXP_TIME);
 		setcookie("access","",time()-COOKIE_EXP_TIME);
 		setcookie("userlevel","",time()-COOKIE_EXP_TIME);
+
+		/*
+		$language_cookie = 'projectsend_language';
+		setcookie ($language_cookie, "", 1);
+		setcookie ($language_cookie, false);
+		unset($_COOKIE[$language_cookie]);
+		*/
 
 		/** Record the action log */
 		$new_log_action = new LogActions();

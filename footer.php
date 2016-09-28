@@ -5,12 +5,15 @@
 	 *
 	 * @package ProjectSend
 	 */
-	default_footer_info();
-	
-	//echo $dbh->GetCount(); // Print the total count of queries made by PDO
+		default_footer_info();
+		
+		load_js_files();
 
+		if ( DEBUG === true ) {
+			echo $dbh->GetCount(); // Print the total count of queries made by PDO
+		}
 	?>
 
-</body>
+	</body>
 </html>
 <?php ob_end_flush(); ?>

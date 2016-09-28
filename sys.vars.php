@@ -9,12 +9,12 @@
  * @package ProjectSend
  * @subpackage Core
  */
-
+session_start();
 /**
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r611');
+define('CURRENT_VERSION', 'r754');
 
 /**
  * Fix for including external files when on HTTPS.
@@ -24,13 +24,25 @@ define('CURRENT_VERSION', 'r611');
 define('PROTOCOL', empty($_SERVER['HTTPS'])? 'http' : 'https');
 
 /**
+ * DEBUG constant effects:
+ * - Changes the error_reporting php value
+ * - Enables the PDOEX extension (on the database class) to count queries
+ */
+define('DEBUG', false);
+
+/**
  * Turn off reporting of PHP errors, warnings and notices.
  * On a development environment, it should be set to E_ALL for
  * complete debugging.
  *
  * @link http://www.php.net/manual/en/function.error-reporting.php
  */
-error_reporting(0);
+if ( DEBUG === true ) {
+	error_reporting(E_ALL);
+}
+else {
+	error_reporting(0);
+}
 
 define('GLOBAL_TIME_LIMIT', 240*60);
 define('UPLOAD_TIME_LIMIT', 120*60);
@@ -53,12 +65,18 @@ define('UPDATES_FEED_URI','http://projectsend.org/updates/versions.xml');
  *
  * @see sys.config.sample.php
  */
-if(!file_exists(ROOT_DIR.'/includes/sys.config.php')) {
+if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') && !defined( 'IS_MAKE_CONFIG' ) ) {
 	// the following script returns only after the creation of the configuration file
-	include(ROOT_DIR.'/install/checkconfig.php');
+	if ( defined('IS_INSTALL') ) {
+		header('Location:make-config.php');
+	}
+	else {
+		header('Location:install/make-config.php');
+	}
 }
-
-include(ROOT_DIR.'/includes/sys.config.php');
+else {
+	include(ROOT_DIR.'/includes/sys.config.php');
+}
 
 /**
  * Check for PDO extensions
@@ -104,6 +122,8 @@ define('TABLE_USERS', TABLES_PREFIX . 'users');
 define('TABLE_GROUPS', TABLES_PREFIX . 'groups');
 define('TABLE_MEMBERS', TABLES_PREFIX . 'members');
 define('TABLE_FOLDERS', TABLES_PREFIX . 'folders');
+define('TABLE_CATEGORIES', TABLES_PREFIX . 'categories');
+define('TABLE_CATEGORIES_RELATIONS', TABLES_PREFIX . 'categories_relations');
 define('TABLE_LOG', TABLES_PREFIX . 'actions_log');
 define('TABLE_PASSWORD_RESET', TABLES_PREFIX . 'password_reset');
 
@@ -112,7 +132,7 @@ $current_tables = array(
 						TABLE_OPTIONS,
 						TABLE_USERS
 					);
-//$current_tables = array(TABLE_FILES,TABLE_FILES_RELATIONS,TABLE_OPTIONS,TABLE_USERS,TABLE_GROUPS,TABLE_MEMBERS,TABLE_FOLDERS,TABLE_LOG);
+//$current_tables = array(TABLE_FILES,TABLE_FILES_RELATIONS,TABLE_OPTIONS,TABLE_USERS,TABLE_GROUPS,TABLE_MEMBERS,TABLE_FOLDERS,TABLES_PREFIX,TABLE_LOG,TABLE_CATEGORIES,TABLE_CATEGORIES_RELATIONS);
 
 /**
  * This values affect both validation methods (client and server side)
@@ -123,6 +143,8 @@ define('MAX_USER_CHARS', 60);
 define('MIN_PASS_CHARS', 5);
 define('MAX_PASS_CHARS', 60);
 
+define('MIN_GENERATE_PASS_CHARS', 10);
+define('MAX_GENERATE_PASS_CHARS', 20);
 /*
  * Cookie expiration time (in seconds).
  * Set by default to 30 days (60*60*24*30).
@@ -153,33 +175,13 @@ define('CLIENT_UPLOADS_TEMP_FOLDER', ROOT_DIR.'/upload/temp');
  *
  */
 define('SYSTEM_URI','http://www.projectsend.org/');
-define('SYSTEM_URI_LABEL','ProjectSend on Google Code');
+define('SYSTEM_URI_LABEL','ProjectSend on github');
 define('DONATIONS_URL','http://www.projectsend.org/donations/');
 /** Previously cFTP */
 define('SYSTEM_NAME','ProjectSend');
 
 define('LOGO_FOLDER',ROOT_DIR.'/img/custom/logo/');
 define('LOGO_THUMB_FOLDER',ROOT_DIR.'/img/custom/thumbs/');
-
-/**
- * Current system language
- *
- * @see sys.config.sample.php
- */
-$lang = SITE_LANG;
-define('I18N_DEFAULT_DOMAIN', 'cftp_admin');
-require_once(ROOT_DIR.'/includes/classes/i18n.php');
-I18n::LoadDomain(ROOT_DIR."/lang/{$lang}.mo", 'cftp_admin' );
-
-/** System User Roles names */
-$user_role_9_name = __('System Administrator','cftp_admin');
-$user_role_8_name = __('Account Manager','cftp_admin');
-$user_role_7_name = __('Uploader','cftp_admin');
-$user_role_0_name = __('Client','cftp_admin');
-define('USER_ROLE_LVL_9', $user_role_9_name);
-define('USER_ROLE_LVL_8', $user_role_8_name);
-define('USER_ROLE_LVL_7', $user_role_7_name);
-define('USER_ROLE_LVL_0', $user_role_0_name);
 
 /** phpass */
 define('HASH_COST_LOG2', 8);

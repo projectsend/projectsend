@@ -105,7 +105,7 @@ class PSend_Email
 		switch ($type) {
 			case 'new_client':
 					$filename	= 'new-client.html';
-					$body_check	= (!defined('EMAILS_HEADER_FOOTER_CUSTOM') || EMAILS_HEADER_FOOTER_CUSTOM == '0') ? '0' : EMAILS_CLIENT_BY_USER_USE_CUSTOM;
+					$body_check	= (!defined('EMAILS_CLIENT_BY_USER_USE_CUSTOM') || EMAILS_CLIENT_BY_USER_USE_CUSTOM == '0') ? '0' : EMAILS_CLIENT_BY_USER_USE_CUSTOM;
 					$body_text	= EMAILS_CLIENT_BY_USER_TEXT;
 				break;
 			case 'new_client_self':
@@ -264,7 +264,7 @@ class PSend_Email
 		global $email_strings_file_by_user;
 		$this->email_body = $this->email_prepare_body('new_file_by_user');
 		$this->email_body = str_replace(
-									array('%SUBJECT%','%BODY1%','%FILES%','%BODY2%','%BODY3%','%BODY4%','%LINK%'),
+									array('%SUBJECT%','%BODY1%','%FILES%','%BODY2%','%BODY3%','%BODY4%','%URI%'),
 									array(
 										$email_strings_file_by_user['subject'],
 										$email_strings_file_by_user['body'],
@@ -292,7 +292,7 @@ class PSend_Email
 		global $email_strings_file_by_client;
 		$this->email_body = $this->email_prepare_body('new_file_by_client');
 		$this->email_body = str_replace(
-									array('%SUBJECT%','%BODY1%','%FILES%','%BODY2%','%BODY3%','%LINK%'),
+									array('%SUBJECT%','%BODY1%','%FILES%','%BODY2%','%BODY3%','%URI%'),
 									array(
 										$email_strings_file_by_client['subject'],
 										$email_strings_file_by_client['body'],

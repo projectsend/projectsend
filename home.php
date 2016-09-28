@@ -5,12 +5,16 @@
  * @package		ProjectSend
  *
  */
+$load_scripts	= array(
+						'flot',
+					); 
+
 $allowed_levels = array(9,8,7);
 require_once('sys.includes.php');
 $page_title = __('Welcome to ProjectSend', 'cftp_admin');
 
 $active_nav = 'dashboard';
-$flot = 1;
+
 include('header.php');
 
 define('CAN_INCLUDE_FILES', true);
@@ -33,29 +37,30 @@ foreach($dir as $fileinfo){
 
 	<div class="home">
 		<div class="container-fluid">
-			<div class="row-fluid">
+			<div class="row">
 			<?php
 				$log_allowed = array(9);
 				if (in_session_or_cookies($log_allowed)) {
 					$show_log = true;
 				}
 			?>
-					<div class="span8 <?php if ($show_log != true) { echo 'offset2'; } ?>">
-						<div class="row-fluid">
-							<div class="span12">
+					<div class="col-sm-8 <?php if ($show_log != true) { echo 'col-sm-offset-2'; } ?>">
+						<div class="row">
+							<div class="col-sm-12">
 								<div class="widget">
 									<h4><?php _e('Statistics','cftp_admin'); ?></h4>
 									<div class="widget_int">
 										<div class="stats_change_days">
-											<a href="#" class="stats_days btn btn-small" rel="15" id="default_graph">15 <?php _e('days','cftp_admin'); ?></a>
-											<a href="#" class="stats_days btn btn-small" rel="30">30 <?php _e('days','cftp_admin'); ?></a>
-											<a href="#" class="stats_days btn btn-small" rel="60">60 <?php _e('days','cftp_admin'); ?></a>
+											<a href="#" class="stats_days btn btn-sm btn-default" rel="15" id="default_graph">15 <?php _e('days','cftp_admin'); ?></a>
+											<a href="#" class="stats_days btn btn-sm btn-default" rel="30">30 <?php _e('days','cftp_admin'); ?></a>
+											<a href="#" class="stats_days btn btn-sm btn-default" rel="60">60 <?php _e('days','cftp_admin'); ?></a>
 										</div>
 										<ul class="graph_legend">
-											<li><div class="legend_color legend_color1"></div><?php _e('Uploads by users','cftp_admin'); ?></li><li>
-											<div class="legend_color legend_color2"></div><?php _e('Uploads by clients','cftp_admin'); ?></li><li>
-											<div class="legend_color legend_color3"></div><?php _e('Downloads','cftp_admin'); ?></li><li>
-											<div class="legend_color legend_color4"></div><?php _e('Zip Downloads','cftp_admin'); ?></li>
+											<li class="legend_color legend_color1"><div class="ref_color"></div><?php _e('Uploads by users','cftp_admin'); ?></li>
+											<li class="legend_color legend_color2"><div class="ref_color"></div><?php _e('Uploads by clients','cftp_admin'); ?></li>
+											<li class="legend_color legend_color3"><div class="ref_color"></div><?php _e('Downloads','cftp_admin'); ?></li>
+											<li class="legend_color legend_color4"><div class="ref_color"></div><?php _e('Zip Downloads','cftp_admin'); ?></li>
+											<li class="legend_color legend_color5"><div class="ref_color"></div><?php _e('Public Downloads','cftp_admin'); ?></li>
 										</ul>
 
 										<div id="statistics" style="height:320px;width:100%;"></div>
@@ -63,14 +68,14 @@ foreach($dir as $fileinfo){
 								</div>
 							</div>
 						</div>
-						<div class="row-fluid">
-							<div class="span6">
+						<div class="row">
+							<div class="col-sm-6">
 								<div class="widget">
 									<h4><?php _e('Used Disk Space','cftp_admin'); ?>: <?php echo html_output(format_file_size($total_file_size)); ?></h4>
 								</div>
 								<?php include(ROOT_DIR.'/home-news-widget.php'); ?>
 							</div>
-							<div class="span6">
+							<div class="col-sm-6">
 								<div class="widget">
 									<h4><?php _e('System data','cftp_admin'); ?></h4>
 									<div class="widget_int">
@@ -83,18 +88,18 @@ foreach($dir as $fileinfo){
 					</div>
 					
 					<?php if (isset($show_log) && $show_log == true) { ?>
-						<div class="span4">
+						<div class="col-sm-4">
 							<div class="widget">
 								<h4><?php _e('Recent activites','cftp_admin'); ?></h4>
 								<div class="widget_int">
 									<div class="log_change_action">
-										<a href="#" class="log_action btn btn-small" rel="" id="default_log"><?php _e('All activities','cftp_admin'); ?></a>
-										<a href="#" class="log_action btn btn-small" rel="1"><?php _e('Logins','cftp_admin'); ?></a>
-										<a href="#" class="log_action btn btn-small" rel="8"><?php _e('Downloads','cftp_admin'); ?></a>
+										<a href="#" class="log_action btn btn-sm btn-default" rel="" id="default_log"><?php _e('All activities','cftp_admin'); ?></a>
+										<a href="#" class="log_action btn btn-sm btn-default" rel="1"><?php _e('Logins','cftp_admin'); ?></a>
+										<a href="#" class="log_action btn btn-sm btn-default" rel="8"><?php _e('Downloads','cftp_admin'); ?></a>
 										<?php
 											if (CLIENTS_CAN_REGISTER == '1') {
 										?>
-											<a href="#" class="log_action btn btn-small" rel="4"><?php _e('Clients self-registrations','cftp_admin'); ?></a>
+											<a href="#" class="log_action btn btn-sm btn-default" rel="4"><?php _e('Clients self-registrations','cftp_admin'); ?></a>
 										<?php
 											}
 										?>
@@ -181,8 +186,6 @@ foreach($dir as $fileinfo){
 				}
 			}
 		);
-
-
 
 		// Generate the graphic		
 		$('.stats_days').click(function(e) {

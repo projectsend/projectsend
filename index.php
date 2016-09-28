@@ -21,13 +21,29 @@ $page_title = __('Log in','cftp_admin');
 
 include('header-unlogged.php');
 	
+	/**
+	 * Google Sign-in
+	 */
+	if ( GOOGLE_SIGNIN_ENABLED == '1' ) {
+		$googleClient = new Google_Client();
+		$googleClient->setApplicationName(THIS_INSTALL_SET_TITLE);
+		$googleClient->setClientSecret(GOOGLE_CLIENT_SECRET);
+		$googleClient->setClientId(GOOGLE_CLIENT_ID);
+		$googleClient->setAccessType('online');
+		$googleClient->setApprovalPrompt('auto');
+		$googleClient->setRedirectUri(BASE_URI . 'sociallogin/google/callback.php');
+		$googleClient->setScopes(array('profile','email'));
+		$auth_url = $googleClient->createAuthUrl();
+	}
+	
 	/** The form was submitted */
 	if ($_POST) {
 		global $dbh;
-		$sysuser_password = $_POST['login_form_pass'];
+		$sysuser_password	= $_POST['login_form_pass'];
+		$selected_form_lang	= $_POST['login_form_lang'];
 	
 		/** Look up the system users table to see if the entered username exists */
-		$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE BINARY user= :username OR BINARY email= :email");
+		$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user= :username OR email= :email");
 		$statement->execute(
 						array(
 							':username'	=> $_POST['login_form_user'],
@@ -53,6 +69,18 @@ include('header-unlogged.php');
 					/** Set SESSION values */
 					$_SESSION['loggedin'] = $sysuser_username;
 					$_SESSION['userlevel'] = $user_level;
+					$_SESSION['lang'] = $selected_form_lang;
+
+					/**
+					 * Language cookie
+					 * TODO: Implement.
+					 * Must decide how to refresh language in the form when the user
+					 * changes the language <select> field.
+					 * By using a cookie and not refreshing here, the user is
+					 * stuck in a language and must use it to recover password or
+					 * create account, since the lang cookie is only at login now.
+					 */
+					//setcookie('projectsend_language', $selected_form_lang, time() + (86400 * 30), '/');
 
 					if ($user_level != '0') {
 						$access_string = 'admin';
@@ -106,13 +134,20 @@ include('header-unlogged.php');
 		}
 	
 	}
-	?>
 
-		<h2><?php echo $page_title; ?></h2>
-		
+if ( isset($_SESSION['errorstate'] ) ) {
+	$errorstate = $_SESSION['errorstate'];
+	unset($_SESSION['errorstate']);
+}
+?>
+		<h2 class="hidden"><?php echo $page_title; ?></h2>
+
 		<div class="container">
+
+			<?php echo generate_branding_layout(); ?>
+
 			<div class="row">
-				<div class="span4 offset4 white-box">
+				<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-4 white-box">
 					<div class="white-box-interior">
 						<?php
 							/**
@@ -134,6 +169,15 @@ include('header-unlogged.php');
 										if (CLIENTS_AUTO_APPROVE == 0) {
 											$login_err_message .= ' '.__("If you just registered, please wait until a system administrator approves your account.",'cftp_admin');
 										}
+										break;
+									case 'no_self_registration':
+										$login_err_message = __('Client self registration is not allowed. If you need an account, please contact a system administrator.','cftp_admin');
+										break;
+									case 'no_account':
+										$login_err_message = __('Sign-in with Google cannot be used to create new accounts at this time.','cftp_admin');
+										break;
+									case 'access_denied':
+										$login_err_message = __('You must approve the requested permissions to sign in with Google.','cftp_admin');
 										break;
 								}
 				
@@ -157,11 +201,37 @@ include('header-unlogged.php');
 					
 						<form action="index.php" method="post" name="login_admin" role="form">
 							<fieldset>
-								<label for="login_form_user"><?php _e('Username','cftp_admin'); ?> / <?php _e('E-mail','cftp_admin'); ?></label>
-								<input type="text" name="login_form_user" id="login_form_user" value="<?php if (isset($sysuser_username)) { echo htmlspecialchars($sysuser_username); } ?>" class="span3" />
+								<div class="form-group">
+									<label for="login_form_user"><?php _e('Username','cftp_admin'); ?> / <?php _e('E-mail','cftp_admin'); ?></label>
+									<input type="text" name="login_form_user" id="login_form_user" value="<?php if (isset($sysuser_username)) { echo htmlspecialchars($sysuser_username); } ?>" class="form-control" />
+								</div>
 
-								<label for="login_form_pass"><?php _e('Password','cftp_admin'); ?></label>
-								<input type="password" name="login_form_pass" id="login_form_pass" class="span3" />
+								<div class="form-group">
+									<label for="login_form_pass"><?php _e('Password','cftp_admin'); ?></label>
+									<input type="password" name="login_form_pass" id="login_form_pass" class="form-control" />
+								</div>
+
+								<div class="form-group">
+									<label for="login_form_lang"><?php _e('Language','cftp_admin'); ?></label>
+									<select name="login_form_lang" id="login_form_lang" class="form-control">
+										<?php
+											// scan for language files
+											$available_langs = get_available_languages();
+											foreach ($available_langs as $filename => $lang_name) {
+										?>
+												<option value="<?php echo $filename;?>" <?php echo ( LOADED_LANG == $filename ) ? 'selected' : ''; ?>>
+													<?php
+														echo $lang_name;
+														if ( $filename == SITE_LANG ) {
+															echo ' [' . __('default','cftp_admin') . ']';
+														}
+													?>
+												</option>
+										<?php
+											}
+										?>
+									</select>
+								</div>
 <?php
 /*
 								<label for="login_form_remember">
@@ -170,7 +240,13 @@ include('header-unlogged.php');
 								</label>
 */?>
 								<div class="inside_form_buttons">
-									<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Continue','cftp_admin'); ?></button>
+									<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Log in','cftp_admin'); ?></button>
+								</div>
+
+								<div class="social-login">
+									<?php if(GOOGLE_SIGNIN_ENABLED == '1'): ?>
+										<a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="google-login"><img src="<?php echo BASE_URI; ?>img/google/btn_google_signin_light_normal_web.png" alt="Google Signin" /></a>
+									<?php endif; ?>
 								</div>
 							</fieldset>
 						</form>
@@ -196,7 +272,11 @@ include('header-unlogged.php');
 		</div> <!-- container -->
 	</div> <!-- main (from header) -->
 
-	<?php default_footer_info(false); ?>
+	<?php
+		default_footer_info( false );
+
+		load_js_files();
+	?>
 
 </body>
 </html>

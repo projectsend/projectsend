@@ -26,6 +26,43 @@ class PSend_Upload_File
 		global $dbh;
 		$this->dbh = $dbh;
 	}
+
+	/**
+	 * Convert a string into a url safe address.
+	 * Original name: formatURL
+	 * John Magnolia / svick on StackOverflow
+	 *
+	 * @param string $unformatted
+	 * @return string
+	 * @link http://stackoverflow.com/questions/2668854/sanitizing-strings-to-make-them-url-and-filename-safe
+	 */
+	function generate_safe_filename($unformatted) {
+	
+		$got = pathinfo( strtolower( trim( $unformatted ) ) );
+		$url = $got['filename'];
+		$ext = $got['extension'];
+	
+		//replace accent characters, forien languages
+		$search = array('À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ', 'Ā', 'ā', 'Ă', 'ă', 'Ą', 'ą', 'Ć', 'ć', 'Ĉ', 'ĉ', 'Ċ', 'ċ', 'Č', 'č', 'Ď', 'ď', 'Đ', 'đ', 'Ē', 'ē', 'Ĕ', 'ĕ', 'Ė', 'ė', 'Ę', 'ę', 'Ě', 'ě', 'Ĝ', 'ĝ', 'Ğ', 'ğ', 'Ġ', 'ġ', 'Ģ', 'ģ', 'Ĥ', 'ĥ', 'Ħ', 'ħ', 'Ĩ', 'ĩ', 'Ī', 'ī', 'Ĭ', 'ĭ', 'Į', 'į', 'İ', 'ı', 'Ĳ', 'ĳ', 'Ĵ', 'ĵ', 'Ķ', 'ķ', 'Ĺ', 'ĺ', 'Ļ', 'ļ', 'Ľ', 'ľ', 'Ŀ', 'ŀ', 'Ł', 'ł', 'Ń', 'ń', 'Ņ', 'ņ', 'Ň', 'ň', 'ŉ', 'Ō', 'ō', 'Ŏ', 'ŏ', 'Ő', 'ő', 'Œ', 'œ', 'Ŕ', 'ŕ', 'Ŗ', 'ŗ', 'Ř', 'ř', 'Ś', 'ś', 'Ŝ', 'ŝ', 'Ş', 'ş', 'Š', 'š', 'Ţ', 'ţ', 'Ť', 'ť', 'Ŧ', 'ŧ', 'Ũ', 'ũ', 'Ū', 'ū', 'Ŭ', 'ŭ', 'Ů', 'ů', 'Ű', 'ű', 'Ų', 'ų', 'Ŵ', 'ŵ', 'Ŷ', 'ŷ', 'Ÿ', 'Ź', 'ź', 'Ż', 'ż', 'Ž', 'ž', 'ſ', 'ƒ', 'Ơ', 'ơ', 'Ư', 'ư', 'Ǎ', 'ǎ', 'Ǐ', 'ǐ', 'Ǒ', 'ǒ', 'Ǔ', 'ǔ', 'Ǖ', 'ǖ', 'Ǘ', 'ǘ', 'Ǚ', 'ǚ', 'Ǜ', 'ǜ', 'Ǻ', 'ǻ', 'Ǽ', 'ǽ', 'Ǿ', 'ǿ'); 
+		$replace = array('A', 'A', 'A', 'A', 'A', 'A', 'AE', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'D', 'N', 'O', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 's', 'a', 'a', 'a', 'a', 'a', 'a', 'ae', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'n', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y', 'A', 'a', 'A', 'a', 'A', 'a', 'C', 'c', 'C', 'c', 'C', 'c', 'C', 'c', 'D', 'd', 'D', 'd', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'G', 'g', 'G', 'g', 'G', 'g', 'G', 'g', 'H', 'h', 'H', 'h', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'IJ', 'ij', 'J', 'j', 'K', 'k', 'L', 'l', 'L', 'l', 'L', 'l', 'L', 'l', 'l', 'l', 'N', 'n', 'N', 'n', 'N', 'n', 'n', 'O', 'o', 'O', 'o', 'O', 'o', 'OE', 'oe', 'R', 'r', 'R', 'r', 'R', 'r', 'S', 's', 'S', 's', 'S', 's', 'S', 's', 'T', 't', 'T', 't', 'T', 't', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'W', 'w', 'Y', 'y', 'Y', 'Z', 'z', 'Z', 'z', 'Z', 'z', 's', 'f', 'O', 'o', 'U', 'u', 'A', 'a', 'I', 'i', 'O', 'o', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'A', 'a', 'AE', 'ae', 'O', 'o'); 
+		$url = str_replace($search, $replace, $url);
+	
+		//replace common characters
+		$search = array('&', '£', '$'); 
+		$replace = array('and', 'pounds', 'dollars'); 
+		$url= str_replace($search, $replace, $url);
+	
+		// remove - for spaces and union characters
+		$find = array(' ', '&', '\r\n', '\n', '+', ',', '//');
+		$url = str_replace($find, '-', $url);
+	
+		//delete and replace rest of special chars
+		$find = array('/[^a-z0-9\-<>_]/', '/[\-]+/', '/<[^>]*>/');
+		$replace = array('', '-', '');
+		$uri = preg_replace($find, $replace, $url);
+	
+		return $uri . '.' . $ext;
+	}
 	
 	/**
 	 * Check if the file extension is among the allowed ones, that are defined on
@@ -55,7 +92,7 @@ class PSend_Upload_File
 	function safe_rename($name)
 	{
 		$this->name = $name;
-		$this->safe_filename = preg_replace('/[^\w\._]+/', $this->separator, $this->name);
+		$this->safe_filename = $this->generate_safe_filename( $this->name );
 		return $this->safe_filename;
 	}
 	
@@ -67,13 +104,13 @@ class PSend_Upload_File
 	 * Files are renamed before being shown on the list.
 	 *
 	 */
-	function safe_rename_on_disc($name,$folder)
+	function safe_rename_on_disk($name,$folder)
 	{
 		$this->name = $name;
 		$this->folder = $folder;
-		$this->new_filename = preg_replace('/[^\w\._]+/', $this->separator, $this->name);
-		if(rename($this->folder.'/'.$this->name, $this->folder.'/'.$this->new_filename)) {
-			return $this->new_filename;
+		$this->safe_filename = $this->generate_safe_filename( $this->name );
+		if(rename($this->folder.'/'.$this->name, $this->folder.'/'.$this->safe_filename)) {
+			return $this->safe_filename;
 		}
 		else {
 			return false;
@@ -161,7 +198,8 @@ class PSend_Upload_File
 				$this->file_id = $row["id"];
 				$this->state['new_file_id'] = $this->file_id;
 				if (!empty($row["public_token"])) {
-					$this->public_token	= $row["public_token"];
+					$this->public_token				= $row["public_token"];
+					$this->state['public_token']	= $row["public_token"];
 				}
 				/**
 				 * If a client is editing a file, the public settings should
@@ -487,6 +525,69 @@ class PSend_Upload_File
 				$new_record_action = $new_log_action->log_action_save($log_action_args);
 			}
 		}
+	}
+
+	/**
+	 * Used to save the categories relations
+	 */
+	function upload_save_categories($arguments)
+	{
+		$this->file_id		= $arguments['file_id'];
+		$this->categories	= $arguments['categories'];
+		
+		if ( !empty( $this->categories ) ) {
+			$this->categories_current	= array();
+			$this->categories_to_delete	= array();
+			
+			$this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE file_id = :file_id");
+			$this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+			$this->statement->execute();
+			$this->statement->setFetchMode(PDO::FETCH_ASSOC);
+			while( $this->row = $this->statement->fetch() ) {
+				$this->categories_current[$this->row['cat_id']] = $this->row['cat_id'];
+			}
+	
+			/**
+			 * Add existing -on DB- but not selected on the form to
+			 * the delete array. This uses the ID of the record.
+			 */
+			if ( !empty( $this->categories_current ) ) {
+				foreach ( $this->categories_current as $cat ) {
+					if ( !in_array( $cat, $this->categories ) ) {
+						$this->categories_to_delete[$cat] = $cat;
+					}
+				}
+
+				$this->categories_to_delete = implode( ',', array_unique($this->categories_to_delete ) );
+
+				$this->statement = $this->dbh->prepare("DELETE FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE file_id = :file_id AND FIND_IN_SET(cat_id, :categories)");
+				$this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+				$this->statement->bindParam(':categories', $this->categories_to_delete);
+				$this->statement->execute();
+			}
+	
+			/**
+			 * Compare the ones passed through the form to the
+			 * ones that are already on the database.
+			 * If it's not in the current array, add the row.
+			 */
+			foreach ( $this->categories as $cat ) {
+				if ( !in_array( $cat, $this->categories_current ) ) {
+					$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_CATEGORIES_RELATIONS . " (file_id, cat_id)"
+															."VALUES (:file_id, :cat_id)");
+					$this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+					$this->statement->bindParam(':cat_id', $cat, PDO::PARAM_INT);
+					$this->statement->execute();
+				}
+			}
+		}
+		else {
+			/** No value came from the form, so delete all existing */
+			$this->statement = $this->dbh->prepare("DELETE FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE file_id = :file_id");
+			$this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+			$this->statement->execute();
+		}
+
 	}
 }
 

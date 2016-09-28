@@ -33,18 +33,24 @@ switch ($groups_form_type) {
 }
 ?>
 
-<form action="<?php echo html_output($form_action); ?>" name="addgroup" method="post">
-	<ul class="form_fields">
-		<li>
-			<label for="add_group_form_name"><?php _e('Group name','cftp_admin'); ?></label>
-			<input type="text" name="add_group_form_name" id="add_group_form_name" class="required" value="<?php echo (isset($add_group_data_name)) ? html_output(stripslashes($add_group_data_name)) : ''; ?>" />
-		</li>
-		<li>
-			<label for="add_group_form_description" class="textarea_label"><?php _e('Description','cftp_admin'); ?></label>
-			<textarea name="add_group_form_description" id="add_group_form_description"><?php echo (isset($add_group_data_description)) ? html_output($add_group_data_description) : ''; ?></textarea>
-		</li>
-		<li class="assigns">
-			<label for="add_group_form_members"><?php _e('Members','cftp_admin'); ?></label>
+<form action="<?php echo html_output($form_action); ?>" name="addgroup" method="post" class="form-horizontal">
+	<div class="form-group">
+		<label for="add_group_form_name" class="col-sm-4 control-label"><?php _e('Group name','cftp_admin'); ?></label>
+		<div class="col-sm-8">
+			<input type="text" name="add_group_form_name" id="add_group_form_name" class="form-control required" value="<?php echo (isset($add_group_data_name)) ? html_output(stripslashes($add_group_data_name)) : ''; ?>" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label for="add_group_form_description" class="col-sm-4 control-label"><?php _e('Description','cftp_admin'); ?></label>
+		<div class="col-sm-8">
+			<textarea name="add_group_form_description" id="add_group_form_description" class="form-control"><?php echo (isset($add_group_data_description)) ? html_output($add_group_data_description) : ''; ?></textarea>
+		</div>
+	</div>
+
+	<div class="form-group assigns">
+		<label for="add_group_form_members" class="col-sm-4 control-label"><?php _e('Members','cftp_admin'); ?></label>
+		<div class="col-sm-8">
 			<select multiple="multiple" id="members-select" class="form-control chosen-select" name="add_group_form_members[]" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
 				<?php
 					$sql = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE level = '0' ORDER BY name ASC");
@@ -66,11 +72,11 @@ switch ($groups_form_type) {
 				?>
 			</select>
 			<div class="list_mass_members">
-				<a href="#" class="btn add-all"><?php _e('Add all','cftp_admin'); ?></a>
-				<a href="#" class="btn remove-all"><?php _e('Remove all','cftp_admin'); ?></a>
+				<a href="#" class="btn btn-default add-all"><?php _e('Add all','cftp_admin'); ?></a>
+				<a href="#" class="btn btn-default remove-all"><?php _e('Remove all','cftp_admin'); ?></a>
 			</div>
-		</li>
-	</ul>
+		</div>
+	</div>
 
 	<div class="inside_form_buttons">
 		<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php echo html_output($submit_value); ?></button>

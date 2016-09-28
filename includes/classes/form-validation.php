@@ -13,7 +13,7 @@
  * Prepare the error message mark up and content
  */
 $validation_errors_title = __('The following errors were found','cftp_admin');
-$before_error = '<div class="alert alert-error alert-block"><a href="#" class="close" data-dismiss="alert">&times;</a><p class="alert-title">'.$validation_errors_title.':</p><ol>';
+$before_error = '<div class="alert alert-danger alert-block"><a href="#" class="close" data-dismiss="alert">&times;</a><p class="alert-title">'.$validation_errors_title.':</p><ol>';
 $after_error = '</ol></div>';
 
 class Validate_Form
@@ -113,6 +113,7 @@ class Validate_Form
 										),
 					);
 	
+		$rules_active = array();
 		foreach ( $rules as $rule => $data ) {
 			if ( $data['value'] == '1' ) {
 				$rules_active[$rule] = $data['chars'];
@@ -185,7 +186,7 @@ class Validate_Form
 	 */
 	private function is_email_exists($field, $err, $current_id)
 	{
-		$this->sql_users = "SELECT * FROM " . TABLE_USERS . " WHERE email = :email";
+		$this->sql_users = "SELECT id, email FROM " . TABLE_USERS . " WHERE email = :email";
 		$this->params = array(
 							':email'	=> $field
 						);
@@ -208,6 +209,16 @@ class Validate_Form
 			$this->return_val = false;
 		}
 	}
+
+	/** Check if the recaptcha response is ok */
+	private function recaptcha_verify($field, $err)
+	{
+		if( !strstr($field, "true" ) ) {
+			$this->error_msg .= '<li>'.$err.'</li>';
+			$this->return_val = false;
+		}
+	}
+
 
 	/** Call the requested method and pass the corresponding values */
 	function validate($val_type, $field, $err='', $min='', $max='', $pass1='', $pass2='', $row='', $current_id='')
@@ -242,6 +253,9 @@ class Validate_Form
 			break;
 			case 'email_exists':
 				$this->is_email_exists($field, $err, $current_id);
+			break;
+			case 'recaptcha':
+				$this->recaptcha_verify($field, $err);
 			break;
 		}
 	}

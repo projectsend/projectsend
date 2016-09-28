@@ -93,73 +93,79 @@ if ($_POST) {
 	</script>
 
 	<form action="branding.php" name="logoupload" method="post" enctype="multipart/form-data">
-		<div class="options_box whitebox">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
+					<div class="white-box-interior">
 
-			<?php
-				if (isset($_GET['status'])) {
-					switch ($_GET['status']) {
-						case '1':
-							$msg = __('The image was uploaded correctly.','cftp_admin');
-							echo system_message('ok',$msg);
-							break;
-						case '2':
-							$msg = __('The file could not be moved to the corresponding folder.','cftp_admin');
-							$msg .= __("This is most likely a permissions issue. If that's the case, it can be corrected via FTP by setting the chmod value of the",'cftp_admin');
-							$msg .= ' '.LOGO_FOLDER.' ';
-							$msg .= __('directory to 755, or 777 as a last resource.','cftp_admin');
-							$msg .= __("If this doesn't solve the issue, try giving the same values to the directories above that one until it works.",'cftp_admin');
-							echo system_message('error',$msg);
-							break;
-						case '3':
-							$msg = __('The file you selected is not an allowed image format. Please upload your logo as a jpg, gif or png file.','cftp_admin');
-							echo system_message('error',$msg);
-							break;
-						case '4':
-							$msg = __('There was an error uploading the file. Please try again.','cftp_admin');
-							echo system_message('error',$msg);
-							break;
-					}
-				}
-		
-			?>
-
-			<p><?php _e('Use this page to upload your company logo, or update the currently assigned one. This image will be shown to your clients when they access their file list.','cftp_admin'); ?></p>
-		
-			<div id="current_logo">
-				<div id="current_logo_left">
-					<p><strong><?php _e('Current logo','cftp_admin'); ?></strong></p>
-					<p class="logo_note"><?php _e("The picture on the right is not an actual representation of what they will see. The size on this preview is fixed, but remember that you can change the display size and picture quality for your client's pages on the",'cftp_admin'); ?> <a href="options.php"><?php _e("options",'cftp_admin'); ?></a> <?php _e("section.",'cftp_admin'); ?></p>
-				</div>
-				<div id="current_logo_right">
-					<div id="current_logo_img">
 						<?php
-							if ($logo_file_info['exists'] === true) {
-						?>
-								<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $logo_file_info['url']; ?>&amp;w=220" alt="<?php _e('Logo Placeholder','cftp_admin'); ?>" />
-						<?php
+							if (isset($_GET['status'])) {
+								switch ($_GET['status']) {
+									case '1':
+										$msg = __('The image was uploaded correctly.','cftp_admin');
+										echo system_message('ok',$msg);
+										break;
+									case '2':
+										$msg = __('The file could not be moved to the corresponding folder.','cftp_admin');
+										$msg .= __("This is most likely a permissions issue. If that's the case, it can be corrected via FTP by setting the chmod value of the",'cftp_admin');
+										$msg .= ' '.LOGO_FOLDER.' ';
+										$msg .= __('directory to 755, or 777 as a last resource.','cftp_admin');
+										$msg .= __("If this doesn't solve the issue, try giving the same values to the directories above that one until it works.",'cftp_admin');
+										echo system_message('error',$msg);
+										break;
+									case '3':
+										$msg = __('The file you selected is not an allowed image format. Please upload your logo as a jpg, gif or png file.','cftp_admin');
+										echo system_message('error',$msg);
+										break;
+									case '4':
+										$msg = __('There was an error uploading the file. Please try again.','cftp_admin');
+										echo system_message('error',$msg);
+										break;
+								}
 							}
+					
 						?>
+			
+						<p><?php _e('Use this page to upload your company logo, or update the currently assigned one. This image will be shown to your clients when they access their file list.','cftp_admin'); ?></p>
+					
+						<div id="current_logo">
+							<div id="current_logo_left">
+								<p><strong><?php _e('Current logo','cftp_admin'); ?></strong></p>
+								<p class="logo_note"><?php _e("The picture on the right is not an actual representation of what they will see. The size on this preview is fixed, but remember that you can change the display size and picture quality for your client's pages on the",'cftp_admin'); ?> <a href="options.php"><?php _e("options",'cftp_admin'); ?></a> <?php _e("section.",'cftp_admin'); ?></p>
+							</div>
+							<div id="current_logo_right">
+								<div id="current_logo_img">
+									<?php
+										if ($logo_file_info['exists'] === true) {
+									?>
+											<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $logo_file_info['url']; ?>&amp;w=220" alt="<?php _e('Logo Placeholder','cftp_admin'); ?>" />
+									<?php
+										}
+									?>
+								</div>
+							</div>
+						</div>
+				
+						<div id="form_upload_logo">
+							<input type="hidden" name="MAX_FILE_SIZE" value="1000000000">
+							<div class="form-group">
+								<label class="col-sm-4 control-label"><?php _e('Select image to upload','cftp_admin'); ?></label>
+								<div class="col-sm-8">
+									<input type="file" name="select_logo" />
+								</div>
+							</div>
+						</div>
+
 					</div>
 				</div>
 			</div>
-	
-			<div id="form_upload_logo">
-			<input type="hidden" name="MAX_FILE_SIZE" value="1000000000">
-				<ul class="form_fields">
-					<li>
-						<label><?php _e('Select image to upload','cftp_admin'); ?></label>
-						<input type="file" name="select_logo" />
-					</li>
-				</ul>
-			</div>
-		
-		</div>
 
-		<div class="after_form_buttons">
-			<button type="submit" name="submit" class="btn btn-wide btn-primary empty"><?php _e('Upload','cftp_admin'); ?></button>
+			<div class="after_form_buttons">
+				<button type="submit" name="submit" class="btn btn-wide btn-primary empty"><?php _e('Upload','cftp_admin'); ?></button>
+			</div>
+
 		</div>
 	</form>
-	<div class="clear"></div>
 
 </div>
 

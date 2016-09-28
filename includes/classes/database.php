@@ -9,22 +9,24 @@
  */
 
 /** Extension class to count the total of executed queries */
-class PDOEx extends PDO
-{
-	private $queries = 0;
+if ( DEBUG === true ) {
+	class PDOEx extends PDO
+	{
+		private $queries = 0;
+		
+		public function query($query) {
+			++$this->queries;
+			return parent::query($query);
+		}
 	
-	public function query($query) {
-		++$this->queries;
-		return parent::query($query);
-	}
-
-	public function prepare($statement) {
-		++$this->queries;
-		return parent::prepare($statement);
-	}
-	
-	public function GetCount() {
-		return $this->queries;
+		public function prepare($statement) {
+			++$this->queries;
+			return parent::prepare($statement);
+		}
+		
+		public function GetCount() {
+			return $this->queries;
+		}
 	}
 }
 
@@ -34,11 +36,11 @@ try {
 	switch ( DB_DRIVER ) {
 		default:
 		case 'mysql':
-			$dbh = new PDOEx("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
+			$dbh = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
 			break;
 
 		case 'mssql':
-			$dbh = new PDOEx("mssql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
+			$dbh = new PDO("mssql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
 			break;
 	}
 

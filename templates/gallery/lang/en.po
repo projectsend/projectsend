@@ -1,31 +1,40 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: Ignacio <info@subwaydesign.com.ar>\n"
-"Language-Team: \n"
+"Project-Id-Version: ProjectSend theme: Gallery\n"
+"POT-Creation-Date: 2016-09-14 15:46-0300\n"
+"PO-Revision-Date: 2016-09-14 15:47-0300\n"
+"Last-Translator: \n"
+"Language-Team: ProjectSend <contact@projectsend.org>\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
-"X-Generator: Poedit 1.5.7\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.8\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: _e;__\n"
+"X-Poedit-SearchPath-0: .\n"
 
-#. Text in echo
-#: psend/templates/gallery/template.php:99
-msgid "Download original"
-msgstr ""
-
-#. Text in echo
-#: psend/templates/gallery/template.php:80
-msgid "File expired"
-msgstr ""
-
-#. Text in function
-#: psend/templates/gallery/template.php:56
+#: template.php:13
 msgid "Gallery"
 msgstr ""
 
-#. Text in echo
-#: psend/templates/gallery/template.php:56
+#: template.php:48
+msgid "Logout"
+msgstr ""
+
+#: template.php:49
+msgid "Upload files"
+msgstr ""
+
+#: template.php:58
 msgid "There are no files."
+msgstr ""
+
+#: template.php:72
+msgid "File expired"
+msgstr ""
+
+#: template.php:91
+msgid "Download original"
 msgstr ""

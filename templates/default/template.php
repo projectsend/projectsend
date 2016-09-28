@@ -5,12 +5,20 @@ Default
 */
 
 $ld = 'cftp_template'; // specify the language domain for this template
+
+if ( !empty( $_POST['category'] ) ) {
+	$category_filter = $_POST['category'];
+}
+
 include_once(ROOT_DIR.'/templates/common.php'); // include the required functions for every template
 
 $window_title = __('File downloads','cftp_template');
 
-$footable = 1;
-include_once(ROOT_DIR.'/header.php'); // include the required functions for every template
+$load_scripts	= array(
+						'footable',
+					); 
+
+include_once(ROOT_DIR.'/header.php');
 
 $count = count($my_files);
 ?>
@@ -29,9 +37,30 @@ $count = count($my_files);
 			<div class="form_actions_left">
 				<div class="form_actions_limit_results">
 					<form action="" name="files_search" method="post" class="form-inline">
-						<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box" />
-						<button type="submit" id="btn_proceed_search" class="btn btn-small"><?php _e('Search','cftp_admin'); ?></button>
+						<div class="form-group group_float">
+							<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box form-control" />
+						</div>
+						<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default"><?php _e('Search','cftp_admin'); ?></button>
 					</form>
+
+					<?php
+						if ( !empty( $cat_ids ) ) {
+					?>
+							<form action="" name="files_filters" method="post" class="form-inline form_filters">
+								<div class="form-group group_float">
+									<select name="category" id="category" class="txtfield form-control">
+										<option value="0"><?php _e('All categories','cftp_admin'); ?></option>
+										<?php
+											$selected_parent = ( isset($category_filter) ) ? array( $category_filter ) : array();
+											echo generate_categories_options( $get_categories['arranged'], 0, $selected_parent, 'include', $cat_ids );
+										?>
+									</select>
+								</div>
+								<button type="submit" id="btn_proceed_filter_files" class="btn btn-sm btn-default"><?php _e('Filter','cftp_admin'); ?></button>
+							</form>
+					<?php
+						}
+					?>
 				</div>
 			</div>
 		
@@ -39,11 +68,13 @@ $count = count($my_files);
 				<div class="form_actions_right">
 					<div class="form_actions">
 						<div class="form_actions_submit">
-							<label><?php _e('Selected files actions','cftp_admin'); ?>:</label>
-							<select name="files_actions" id="files_actions" class="txtfield">
-								<option value="zip"><?php _e('Download zipped','cftp_admin'); ?></option>
-							</select>
-							<button type="submit" id="do_action" name="proceed" class="btn btn-small"><?php _e('Proceed','cftp_admin'); ?></button>
+							<div class="form-group group_float">
+								<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected files actions','cftp_admin'); ?>:</label>
+								<select name="files_actions" id="files_actions" class="txtfield form-control">
+									<option value="zip"><?php _e('Download zipped','cftp_admin'); ?></option>
+								</select>
+							</div>
+							<button type="submit" id="do_action" name="proceed" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
 						</div>
 					</div>
 				</div>
@@ -83,6 +114,7 @@ $count = count($my_files);
 							<th data-hide="phone" class="description"><?php _e('Description','cftp_template'); ?></th>
 							<th data-hide="phone"><?php _e('Size','cftp_template'); ?></th>
 							<th data-type="numeric" data-sort-initial="descending"><?php _e('Date','cftp_template'); ?></th>
+							<th data-hide="phone" data-sort-ignore="true"><?php _e('Expiration date','cftp_template'); ?></th>
 							<th data-hide="phone,tablet" data-sort-ignore="true"><?php _e('Image preview','cftp_template'); ?></th>
 							<th data-hide="phone" data-sort-ignore="true"><?php _e('Download','cftp_template'); ?></th>
 						</tr>
@@ -121,7 +153,7 @@ $count = count($my_files);
 											?>
 										</td>
 										<td class="extra">
-											<span class="label label-important">
+											<span class="label label-success label_big">
 												<?php		
 													$pathinfo = pathinfo($file['url']);	
 													$extension = strtolower($pathinfo['extension']);					
@@ -130,16 +162,46 @@ $count = count($my_files);
 											</span>
 										</td>
 										<td class="description"><?php echo htmlentities($file['description']); ?></td>
-										<td><?php $this_file_size = get_real_size(UPLOADED_FILES_FOLDER.$file['url']); echo format_file_size($this_file_size); ?></td>
+										<td>
+											<?php
+												$file_absolute_path = UPLOADED_FILES_FOLDER . $file['url'];
+												if ( file_exists( $file_absolute_path ) ) {
+													$this_file_size = get_real_size(UPLOADED_FILES_FOLDER.$file['url']);
+													echo format_file_size($this_file_size);
+												}
+												else {
+													echo '-';
+												}
+											?>
+										</td>
 										<td data-value="<?php echo strtotime($file['timestamp']); ?>">
 											<?php echo $date; ?>
+										</td>
+										<td>
+											<?php
+												if ( $file['expires'] == '1' ) {
+													if ( $file['expired'] == false ) {
+														$class = 'primary';
+													} else {
+														$class = 'danger';
+													}
+													
+													$value = date( TIMEFORMAT_USE, strtotime( $file['expiry_date'] ) );
+												} else {
+													$class = 'success';
+													$value = __('Never','cftp_template');
+												}
+											?>
+											<span class="label label-<?php echo $class; ?> label_big">
+												<?php echo $value; ?>
+											</span>
 										</td>
 										<?php
 											if ($file['expired'] == true) {
 										?>
 											<td class="extra"></td>
 											<td class="text-center">
-												<a href="javascript:void(0);" class="btn btn-danger disabled btn-small">
+												<a href="javascript:void(0);" class="btn btn-danger disabled btn-sm">
 													<?php _e('File expired','cftp_template'); ?>
 												</a>
 											</td>
@@ -156,16 +218,20 @@ $count = count($my_files);
 															$extension == "jpeg" ||
 															$extension == "png"
 														) {
-															$this_thumbnail_url = UPLOADED_FILES_URL.$file['url'];
-															if (THUMBS_USE_ABSOLUTE == '1') {
-																$this_thumbnail_url = BASE_URI.$this_thumbnail_url;
-															}
-														?>
+															if ( file_exists( $file_absolute_path ) ) {
+																$this_thumbnail_url = UPLOADED_FILES_URL.$file['url'];
+																if (THUMBS_USE_ABSOLUTE == '1') {
+																	$this_thumbnail_url = BASE_URI.$this_thumbnail_url;
+																}
+													?>
 																<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $this_thumbnail_url; ?>&amp;w=<?php echo THUMBS_MAX_WIDTH; ?>&amp;q=<?php echo THUMBS_QUALITY; ?>" class="thumbnail" alt="<?php echo htmlentities($this_file['name']); ?>" />
-													<?php } ?>
+													<?php
+															}
+														}
+													?>
 												</td>
 												<td>
-													<a href="<?php echo $download_link; ?>" target="_blank" class="btn btn-primary btn-small btn-wide">
+													<a href="<?php echo $download_link; ?>" target="_blank" class="btn btn-primary btn-sm btn-wide">
 														<?php _e('Download','cftp_template'); ?>
 													</a>
 												</td>
@@ -180,7 +246,11 @@ $count = count($my_files);
 					</tbody>
 				</table>
 
-				<div class="pagination pagination-centered hide-if-no-paging"></div>
+				<nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
+					<div class="pagination_wrapper text-center">
+						<ul class="pagination hide-if-no-paging"></ul>
+					</div>
+				</nav>
 			</form>
 		
 		</div> <!-- right_column -->
@@ -230,5 +300,8 @@ $count = count($my_files);
 		});
 	</script>
 
+	<?php
+		load_js_files();
+	?>
 </body>
 </html>

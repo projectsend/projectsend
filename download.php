@@ -50,9 +50,29 @@ include('header-unlogged.php');
 				$download_link = BASE_URI . 'download.php?id=' . $got_file_id . '&token=' . $got_token . '&download';
 			}
 			else {
+				/** Add the download row */
+				$statement = $dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (file_id, remote_ip, remote_host, anonymous)"
+											." VALUES (:file_id, :remote_ip, :remote_host, :anonymous)");
+				$statement->bindParam(':file_id', $got_file_id, PDO::PARAM_INT);
+				$statement->bindParam(':remote_ip', $_SERVER['REMOTE_ADDR']);
+				$statement->bindParam(':remote_host', $_SERVER['REMOTE_HOST']);
+				$statement->bindValue(':anonymous', 1, PDO::PARAM_INT);
+				$statement->execute();
+
+				/** Record the action log */
+				$new_log_action = new LogActions();
+				$log_action_args = array(
+										'action'				=> 37,
+										'owner_id'				=> 0,
+										'affected_file'			=> (int)$got_file_id,
+										'affected_file_name'	=> $got_url['url'],
+									);
+				$new_record_action = $new_log_action->log_action_save($log_action_args);
+
 				// DOWNLOAD
 				$real_file = UPLOADED_FILES_FOLDER.$real_file_url;
 				if (file_exists($real_file)) {
+					session_write_close(); 
 					while (ob_get_level()) ob_end_clean();
 					header('Content-Type: application/octet-stream');
 					header('Content-Disposition: attachment; filename='.basename($real_file));
@@ -62,7 +82,16 @@ include('header-unlogged.php');
 					header('Cache-Control: private',false);
 					header('Content-Length: ' . get_real_size($real_file));
 					header('Connection: close');
-					readfile($real_file);
+					//readfile($real_file);
+					
+					$context = stream_context_create();
+					$file = fopen($real_file, 'rb', FALSE, $context);
+					while ( !feof( $file ) ) {
+						//usleep(1000000); //Reduce download speed
+						echo stream_get_contents($file, 2014);
+					}
+					
+					fclose( $file );
 					die();
 				}
 			}
@@ -70,6 +99,8 @@ include('header-unlogged.php');
 		else {
 			$errorstate = 'token_invalid';
 		}
+	} else {
+		$errorstate = 'token_invalid';
 	}
 ?>
 
@@ -77,7 +108,7 @@ include('header-unlogged.php');
 
 		<div class="container">
 			<div class="row">
-				<div class="span4 offset4 white-box">
+				<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-4 white-box">
 					<div class="white-box-interior">
 						<?php
 							/**
@@ -115,7 +146,11 @@ include('header-unlogged.php');
 		</div> <!-- container -->
 	</div> <!-- main (from header) -->
 
-	<?php default_footer_info(false); ?>
+	<?php
+		default_footer_info( false );
+
+		load_js_files();
+	?>
 
 </body>
 </html>

@@ -904,6 +904,147 @@ if (in_session_or_cookies($allowed_update)) {
 			$updates_made++;
 		}
 
+
+		/**
+		 * r645 updates
+		 * Added an option to use the browser language instead of
+		 * the one on the config file.
+		 */
+		if ($last_update < 645) {
+			$new_database_values = array(
+											'use_browser_lang'	=> '0',
+										);
+			
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
+				}
+			}
+		}
+
+		/**
+		 * r672 updates
+		 * Added an option to allow clients to delete their own uploads
+		 */
+		if ($last_update < 672) {
+			$new_database_values = array(
+											'clients_can_delete_own_files'	=> '0',
+										);
+			
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
+				}
+			}
+		}
+
+		/**
+		 * r674 updates
+		 * Add the Google Sign in options to the database
+		 */
+		if ($last_update < 674) {
+			$new_database_values = array(
+											'google_client_id'		=> '',
+											'google_client_secret'	=> '',
+											'google_signin_enabled'	=> '0',
+										);
+			
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
+				}
+			}
+		}
+
+
+		/**
+		 * r678 updates
+		 * A new database table was added.
+		 * Files categories.
+		 */
+		if ($last_update < 678) {
+			if ( !tableExists( TABLE_CATEGORIES ) ) {
+				$query = "
+				CREATE TABLE IF NOT EXISTS `".TABLE_CATEGORIES."` (
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+				  `name` varchar(32) NOT NULL,
+				  `parent` int(11) DEFAULT NULL,
+				  `description` text NULL,
+				  `created_by` varchar(".MAX_USER_CHARS.") NULL,
+				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+				  FOREIGN KEY (`parent`) REFERENCES ".TABLE_CATEGORIES."(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+				  PRIMARY KEY (`id`)
+				) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+				";
+				$statement = $dbh->prepare($query);
+				$statement->execute();
+
+				$updates_made++;
+			}
+		}
+
+		/**
+		 * r680 updates
+		 * A new database table was added.
+		 * Relates files categories to files.
+		 */
+		if ($last_update < 680) {
+			if ( !tableExists( TABLE_CATEGORIES_RELATIONS ) ) {
+				$query = "
+				CREATE TABLE IF NOT EXISTS `".TABLE_CATEGORIES_RELATIONS."` (
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+				  `file_id` int(11) NOT NULL,
+				  `cat_id` int(11) NOT NULL,
+				  FOREIGN KEY (`file_id`) REFERENCES ".TABLE_FILES."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`cat_id`) REFERENCES ".TABLE_CATEGORIES."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  PRIMARY KEY (`id`)
+				) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+				";
+				$statement = $dbh->prepare($query);
+				$statement->execute();
+
+				$updates_made++;
+			}
+		}
+
+
+		/**
+		 * r737 updates
+		 * Add the reCAPTCHA options to the database
+		 */
+		if ($last_update < 737) {
+			$new_database_values = array(
+											'recaptcha_enabled'		=> '0',
+											'recaptcha_site_key'	=> '',
+											'recaptcha_secret_key'	=> '',
+										);
+			
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
+				}
+			}
+		}
+
+
+		/**
+		 * r738 updates
+		 * New columns where added to the downloads table, to
+		 * store the ip and hostname of the user, and a boolean
+		 * fieled set to true for anonymous downloads (public files)
+		 */
+		if ($last_update < 738) {
+			try {
+				$statement = $dbh->query("SELECT remote_ip FROM " . TABLE_DOWNLOADS);
+			} catch( PDOException $e ) {
+				$statement = $dbh->query("ALTER TABLE " . TABLE_DOWNLOADS . " ADD remote_ip varchar(45) NULL");
+				$statement = $dbh->query("ALTER TABLE " . TABLE_DOWNLOADS . " ADD remote_host text NULL");
+				$statement = $dbh->query("ALTER TABLE " . TABLE_DOWNLOADS . " ADD anonymous tinyint(1) NULL");
+				$updates_made++;
+			}
+		}
+
 	}
 }	
 ?>

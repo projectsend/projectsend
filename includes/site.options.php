@@ -178,6 +178,49 @@ if(!empty($options_values)) {
 	}
 
 	/**
+	 * For versions 645 and up
+	 */	
+	if (isset($options_values['use_browser_lang'])) {
+		define('USE_BROWSER_LANG',$options_values['use_browser_lang']);
+	}
+	
+	/**
+	 * For versions 672 and up
+	 */	
+	if (isset($options_values['clients_can_delete_own_files'])) {
+		define('CLIENTS_CAN_DELETE_OWN_FILES',$options_values['clients_can_delete_own_files']);
+	}
+
+	/**
+	 * For versions 673 and up
+	 * For Google Login
+	 */
+	if (isset($options_values['google_client_id'])) {
+		define('GOOGLE_CLIENT_ID',$options_values['google_client_id']);
+		define('GOOGLE_CLIENT_SECRET',$options_values['google_client_secret']);
+		define('GOOGLE_SIGNIN_ENABLED', $options_values['google_signin_enabled']);
+	}
+
+	/**
+	 * For versions 737 and up
+	 * For reCAPTCHA
+	 */
+	if (isset($options_values['recaptcha_enabled'])) {
+		define('RECAPTCHA_ENABLED', $options_values['recaptcha_enabled']);
+		define('RECAPTCHA_SITE_KEY', $options_values['recaptcha_site_key']);
+		define('RECAPTCHA_SECRET_KEY', $options_values['recaptcha_secret_key']);
+		
+		if (
+				RECAPTCHA_ENABLED == 1 &&
+				!empty($options_values['recaptcha_site_key']) &&
+				!empty($options_values['recaptcha_secret_key'])
+			)
+		{
+			define('RECAPTCHA_AVAILABLE', true);
+		}
+	}
+
+	/**
 	 * Set the default timezone based on the value of the Timezone select box
 	 * of the options page.
 	 */

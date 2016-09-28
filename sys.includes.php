@@ -18,7 +18,15 @@ require_once(ROOT_DIR.'/sys.vars.php');
 require_once(ROOT_DIR.'/includes/classes/database.php');
 
 /** Load the site options */
-require_once(ROOT_DIR.'/includes/site.options.php');
+if ( !defined( 'IS_MAKE_CONFIG' ) ) {
+	require_once(ROOT_DIR.'/includes/site.options.php');
+}
+
+/** Load the language class and translation file */
+require_once(ROOT_DIR.'/includes/language.php');
+
+/** Load the language and locales names list */
+require_once(ROOT_DIR.'/includes/language-locales-names.php');
 
 /** Text strings used on various files */
 require_once(ROOT_DIR.'/includes/vars.php');
@@ -43,17 +51,40 @@ if ( !defined( 'IS_INSTALL' ) ) {
 /** Recreate the function if it doesn't exist. By Alan Reiblein */
 require_once(ROOT_DIR.'/includes/timezone_identifiers_list.php');
 
+/** Categories functions */
+require_once(ROOT_DIR.'/includes/functions.categories.php');
+
 /**
  * Always require this classes to avoid repetition of code
  * on other files.
  *
  */
-require_once(ROOT_DIR.'/includes/classes/actions-clients.php');
-require_once(ROOT_DIR.'/includes/classes/actions-files.php');
-require_once(ROOT_DIR.'/includes/classes/actions-groups.php');
-require_once(ROOT_DIR.'/includes/classes/actions-log.php');
-require_once(ROOT_DIR.'/includes/classes/actions-users.php');
-require_once(ROOT_DIR.'/includes/classes/file-upload.php');
-require_once(ROOT_DIR.'/includes/classes/form-validation.php');
-require_once(ROOT_DIR.'/includes/classes/send-email.php');
+$classes_files = array(
+						'actions-clients.php',
+						'actions-files.php',
+						'actions-categories.php',
+						'actions-groups.php',
+						'actions-log.php',
+						'actions-users.php',
+						'file-upload.php',
+						'form-validation.php',
+						'send-email.php',
+						'generate-form.php',
+					);
+foreach ( $classes_files as $filename ) {
+	$location = ROOT_DIR . '/includes/classes/' . $filename;
+	if ( file_exists( $location ) ) {
+		require_once( $location );
+	}
+}
+
+/**
+ * Google Login
+ */
+require_once ROOT_DIR . '/includes/Google/Oauth2/service/Google_ServiceResource.php';
+require_once ROOT_DIR . '/includes/Google/Oauth2/service/Google_Service.php';
+require_once ROOT_DIR . '/includes/Google/Oauth2/service/Google_Model.php';
+require_once ROOT_DIR . '/includes/Google/Oauth2/contrib/Google_Oauth2Service.php';
+require_once ROOT_DIR . '/includes/Google/Oauth2/Google_Client.php';
+
 ?>

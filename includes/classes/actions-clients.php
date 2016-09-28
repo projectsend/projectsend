@@ -17,6 +17,25 @@ class ClientActions
 		$this->dbh = $dbh;
 	}
 
+	public function generateUsername($string, $i = 1) {
+		$string = preg_replace('/[^A-Za-z0-9]/', "", $string);
+		$username = $string;
+		while(!$this->isUniqueUsername($username)) {
+			$username = $string . $i;
+			$i++;
+		}
+		return $username;
+	}
+
+	private function isUniqueUsername($string) {
+		$statement = $this->dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE user = :user" );
+		$statement->execute(array(':user'	=> $string));
+		if($statement->rowCount() > 0) {
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * Validate the information from the form.
 	 */
@@ -37,6 +56,7 @@ class ClientActions
 		$this->contact = $arguments['contact'];
 		$this->notify = $arguments['notify'];
 		$this->type = $arguments['type'];
+		$this->recaptcha = $arguments['recaptcha'];
 
 		/**
 		 * These validations are done both when creating a new client and
@@ -86,6 +106,10 @@ class ClientActions
 			$valid_me->validate('pass_rules',$this->password,$validation_rules_pass);
 			$valid_me->validate('length',$this->password,$validation_length_pass,MIN_PASS_CHARS,MAX_PASS_CHARS);
 			//$valid_me->validate('pass_match','',$validation_match_pass,'','',$this->password,$this->password_repeat);
+		}
+
+		if ( isset($this->recaptcha) ) {
+			$valid_me->validate('recaptcha',$this->recaptcha,$validation_recaptcha);
 		}
 
 		if ($valid_me->return_val) {

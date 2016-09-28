@@ -23,7 +23,7 @@ if (defined('TRY_INSTALL')) {
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `uploader` varchar('.MAX_USER_CHARS.') NOT NULL,
 								  `expires` INT(1) NOT NULL default \'0\',
-								  `expiry_date` TIMESTAMP NOT NULL,
+								  `expiry_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `public_allow` INT(1) NOT NULL default \'0\',
 								  `public_token` varchar(32) NULL,
 								  PRIMARY KEY (`id`)
@@ -193,6 +193,9 @@ if (defined('TRY_INSTALL')) {
 								  `user_id` int(11) DEFAULT NULL,
 								  `file_id` int(11) NOT NULL,
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+								  `remote_ip` varchar(45) DEFAULT NULL,
+								  `remote_host` text NULL,
+								  `anonymous` tinyint(1) DEFAULT \'0\',
 								  FOREIGN KEY (`user_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
@@ -266,7 +269,16 @@ if (defined('TRY_INSTALL')) {
 								('pass_require_lower', '0'),
 								('pass_require_number', '0'),
 								('pass_require_special', '0'),
-								('mail_smtp_auth', 'none')",
+								('mail_smtp_auth', 'none'),
+								('use_browser_lang', '0'),
+								('clients_can_delete_own_files', '0'),
+								('google_client_id', ''),
+								('google_client_secret', ''),
+								('google_signin_enabled', '0'),
+								('recaptcha_enabled', '0'),
+								('recaptcha_site_key', ''),
+								('recaptcha_secret_key', '')
+								",
 					'params' => array(
 										':base_uri'	=> $base_uri,
 										':title'	=> $this_install_title,
@@ -288,6 +300,38 @@ if (defined('TRY_INSTALL')) {
 										':email'	=> $got_admin_email,
 						),
 		),
+
+		'13' =>  array(
+					'table'	=> TABLE_CATEGORIES,
+					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_CATEGORIES.'` (
+								  `id` int(11) NOT NULL AUTO_INCREMENT,
+								  `name` varchar(32) NOT NULL,
+								  `parent` int(11) DEFAULT NULL,
+								  `description` text NULL,
+								  `created_by` varchar('.MAX_USER_CHARS.') NULL,
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+								  FOREIGN KEY (`parent`) REFERENCES '.TABLE_CATEGORIES.'(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+								  PRIMARY KEY (`id`)
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+								',
+					'params' => array(),
+		),
+		
+		'14' =>  array(
+					'table'	=> TABLE_CATEGORIES_RELATIONS,
+					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_CATEGORIES_RELATIONS.'` (
+								  `id` int(11) NOT NULL AUTO_INCREMENT,
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+								  `file_id` int(11) NOT NULL,
+								  `cat_id` int(11) NOT NULL,
+								  FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+								  FOREIGN KEY (`cat_id`) REFERENCES '.TABLE_CATEGORIES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+								  PRIMARY KEY (`id`)
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+								',
+					'params' => array(),
+		),
+		
 	);
 }
 ?>

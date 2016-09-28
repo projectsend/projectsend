@@ -32,6 +32,101 @@ function is_projectsend_installed() {
 	}
 }
 
+function generate_password() {
+	/**
+	 * Random compat library, a polyfill for PHP 7's random_bytes();
+	 * @link: https://github.com/paragonie/random_compat
+	 */
+	require_once(ROOT_DIR . '/includes/random_compat/random_compat.phar' );
+	$error_unexpected	= __('An unexpected error has occurred', 'cftp_admin');
+	$error_os_fail		= __('Could not generate a random password', 'cftp_admin');
+
+	try {
+		$password = random_bytes(12);
+	} catch (TypeError $e) {
+		die($error_unexpected); 
+	} catch (Error $e) {
+		die($error_unexpected); 
+	} catch (Exception $e) {
+		die($error_os_fail); 
+	}
+	
+	return bin2hex($password);
+}
+
+
+/**
+ * Reads the lang folder and scans for .mo files. 
+ * Returns an array of avaiable languages.
+ */
+function get_available_languages() {
+	global $locales_names;
+
+	$langs = array();
+
+	$mo_files = scandir(ROOT_DIR.'/lang/');
+	foreach ($mo_files as $file) {
+		$lang_file	= pathinfo($file, PATHINFO_FILENAME);
+		$extension	= pathinfo($file, PATHINFO_EXTENSION);
+		if ( $extension == 'mo' ) {
+			if ( array_key_exists( $lang_file, $locales_names ) ) {
+				$lang_name = $locales_names[$lang_file];
+			}
+			else {
+				$lang_name = $lang_file;
+			}
+	
+			$langs[$lang_file] = $lang_name;
+		}
+	}
+
+	/** Sort alphabetically */
+	asort($langs, SORT_STRING);
+
+	return $langs;
+}
+
+/**
+ * Get the total count of downloads grouped by file
+ * Data returned:
+ * - Count anonymous downloads (Public downloads)
+ * - Unique logged in clients downloads
+ * - Total count
+ */
+function generate_downloads_count( $id = null ) {
+	global $dbh;
+
+	$data = array();
+
+	$sql = "SELECT file_id, COUNT(*) as downloads, SUM( ISNULL(user_id) ) AS anonymous_users, COUNT(DISTINCT user_id) as unique_clients FROM " . TABLE_DOWNLOADS;
+	if ( !empty( $id ) ) {
+		$sql .= ' WHERE file_id = :id';
+	}
+	
+	$sql .=  " GROUP BY file_id";
+	
+	$statement	= $dbh->prepare( $sql );
+
+	if ( !empty( $id ) ) {
+		$statement->bindValue(':id', $id, PDO::PARAM_INT);
+	}
+
+	$statement->execute();
+
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
+
+	while ( $row = $statement->fetch() ) {
+		$data[$row['file_id']] = array(
+									'file_id'			=> $row['file_id'],
+									'total'				=> $row['downloads'],
+									'unique_clients'	=> $row['unique_clients'],
+									'anonymous_users'	=> $row['anonymous_users'],
+								);
+	}
+	
+	return $data;
+}
+
 /**
  * Check if a table exists in the current database.
  *
@@ -52,6 +147,27 @@ function tableExists($table) {
     // Result is either boolean FALSE (no table found) or PDOStatement Object (table found)
     return $result !== false;
 }
+
+/**
+ * Check if a file id exists on the database.
+ * Used on the download information page.
+ *
+ * @return bool
+ */
+function download_information_exists($id)
+{
+	global $dbh;
+	$statement = $dbh->prepare("SELECT id FROM " . TABLE_DOWNLOADS . " WHERE file_id = :id");
+	$statement->bindParam(':id', $id, PDO::PARAM_INT);
+	$statement->execute();
+	if ( $statement->rowCount() > 0 ) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 
 /**
  * Check if a client id exists on the database.
@@ -313,6 +429,36 @@ function get_user_by_id($id)
 
 
 /**
+ * Get all the file information knowing only the id
+ * Used on the Download information page.
+ *
+ * @return array
+ */
+function get_file_by_id($id)
+{
+	global $dbh;
+	$statement = $dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE id=:id");
+	$statement->bindParam(':id', $id, PDO::PARAM_INT);
+	$statement->execute();
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
+
+	while ( $row = $statement->fetch() ) {
+		$information = array(
+							'id'			=> $row['id'],
+							'url'			=> $row['url'],
+							'title'			=> $row['filename'],
+						);
+		if ( !empty( $information ) ) {
+			return $information;
+		}
+		else {
+			return false;
+		}
+	}
+}
+
+
+/**
  * Standard footer mark up and information generated on this function to
  * prevent code repetition.
  * Used on the default template, log in page, install page and the back-end
@@ -338,12 +484,8 @@ function default_footer_info($logged = true)
  */
 function message_no_clients()
 {
-?>
-	<div class="whitebox whiteform whitebox_text">
-		<p><?php _e('There are no clients at the moment', 'cftp_admin'); ?></p>
-		<p><a href="clients-add.php" target="_self"><?php _e('Create a new one', 'cftp_admin'); ?></a> <?php _e('to be able to upload files for that account.', 'cftp_admin'); ?></p>
-	</div>
-<?php
+	$msg = '<strong>' . __('Important:','cftp_admin') . '</strong> ' . __('There are no clients or groups at the moment. You can still upload files and assign them later.','cftp_admin');
+	echo system_message('warning', $msg);
 }
 
 
@@ -366,7 +508,7 @@ function system_message($type,$message,$div_id = '')
 			$close = true;
 			break;
 		case 'error':
-			$class = 'error';
+			$class = 'danger';
 			$close = true;
 			break;
 		case 'info':
@@ -465,9 +607,13 @@ function get_current_user_username()
 
 /**
  * Wrapper for html_entities with default options
+ * 
  */
-function html_output($str,$flags=ENT_QUOTES,$encoding="utf8",$double_encode=false) {
-    return htmlentities($str,$flags,$encoding,$double_encode);
+function html_output($str, $flags = ENT_QUOTES, $encoding = 'UTF-8', $double_encode = false)
+{
+
+   return htmlentities($str, $flags, $encoding, $double_encode);
+
 }
 
 
@@ -527,24 +673,26 @@ function format_file_size($file)
 {
 	if ($file < 1024) {
 		 /** No digits so put a ? much better than just seeing Byte */
-		echo (ctype_digit($file))? $file . ' Byte' :  ' ? ' ;
+		$formatted = (ctype_digit($file))? $file . ' Byte' :  ' ? ' ;
 	} elseif ($file < 1048576) {
-		echo round($file / 1024, 2) . ' KB';
+		$formatted = round($file / 1024, 2) . ' KB';
 	} elseif ($file < 1073741824) {
-		echo round($file / 1048576, 2) . ' MB';
+		$formatted = round($file / 1048576, 2) . ' MB';
 	} elseif ($file < 1099511627776) {
-		echo round($file / 1073741824, 2) . ' GB';
+		$formatted = round($file / 1073741824, 2) . ' GB';
 	} elseif ($file < 1125899906842624) {
-		echo round($file / 1099511627776, 2) . ' TB';
+		$formatted = round($file / 1099511627776, 2) . ' TB';
 	} elseif ($file < 1152921504606846976) {
-		echo round($file / 1125899906842624, 2) . ' PB';
+		$formatted = round($file / 1125899906842624, 2) . ' PB';
 	} elseif ($file < 1180591620717411303424) {
-		echo round($file / 1152921504606846976, 2) . ' EB';
+		$formatted = round($file / 1152921504606846976, 2) . ' EB';
 	} elseif ($file < 1208925819614629174706176) {
-		echo round($file / 1180591620717411303424, 2) . ' ZB';
+		$formatted = round($file / 1180591620717411303424, 2) . ' ZB';
 	} else {
-		echo round($file / 1208925819614629174706176, 2) . ' YB';
+		$formatted = round($file / 1208925819614629174706176, 2) . ' YB';
 	}
+	
+	return $formatted;
 }
 
 
@@ -594,7 +742,7 @@ function get_real_size($file)
  * Delete just one file.
  * Used on the files managment page.
  */
-function delete_file($filename)
+function delete_file_from_disk($filename)
 {
 	chmod($filename, 0777);
 	unlink($filename);
@@ -654,22 +802,48 @@ function generateRandomString($length = 10)
 
 
 /**
- * Prepare the logo file using the database options
+ * Prepare the branding image file using the database options
  * for the file name and the thumbnails path value.
  */
 function generate_logo_url()
 {
-	$logo_file = array();
-	$logo_file['exists'] = false;
+	$branding = array();
+	$branding['exists'] = false;
 
-	$logo_file['url'] = '/img/custom/logo/'.LOGO_FILENAME;
-	if (file_exists(ROOT_DIR.$logo_file['url'])) {
-		$logo_file['exists'] = true;
+	$branding['url'] = '/img/custom/logo/'.LOGO_FILENAME;
+	if (file_exists(ROOT_DIR.$branding['url'])) {
+		$branding['exists'] = true;
 		if (THUMBS_USE_ABSOLUTE == '1') {
-			$logo_file['url'] = BASE_URI.$logo_file['url'];
+			$branding['url'] = BASE_URI.$branding['url'];
 		}
 	}
-	return $logo_file;
+	return $branding;
+}
+
+
+/**
+ * Returns the full layout with the branding image.
+ * Used on the unlogged header file.
+ */
+function generate_branding_layout()
+{
+	$branding	= generate_logo_url();
+	$layout		= '';
+
+	if ($branding['exists'] === true) {
+		$branding_image = $branding['url'];
+	}
+	else {
+		$branding_image = BASE_URI . 'img/projectsend-logo.png';
+	}
+
+	$layout = '<div class="row">
+					<div class="col-xs-12 branding_unlogged">
+						<img src="' . $branding_image . '" alt="' . THIS_INSTALL_SET_TITLE . '" />
+					</div>
+				</div>';
+
+	return $layout;
 }
 
 
@@ -690,6 +864,8 @@ function prevent_direct_access()
  */
 function password_notes()
 {
+	$pass_notes_output = '';
+
 	global $validation_req_upper;
 	global $validation_req_lower;
 	global $validation_req_number;
@@ -722,18 +898,14 @@ function password_notes()
 	}
 	
 	if ( count( $rules_active ) > 0 ) {
-?>
-		<p class="field_note"><?php _e('The password must contain, at least:','cftp_admin'); ?></strong><br />
-<?php
+		$pass_notes_output = '<p class="field_note">' . __('The password must contain, at least:','cftp_admin') . '</strong><br />';
 			foreach ( $rules_active as $rule => $text ) {
-?>
-				- <?php echo $text; ?><br />
-<?php
+				$pass_notes_output .= '- ' . $text . '<br>';
 			}
-?>
-		</p>
-<?php
+		$pass_notes_output .= '</p>';
 	}
+	
+	return $pass_notes_output;
 }
 
 
@@ -982,6 +1154,30 @@ function render_log_action($params)
 			$action_ico = 'file-edit';
 			$part1 = $owner_user;
 			$action_text = __('(client) edited the file','cftp_admin');
+			$part2 = $affected_file_name;
+			break;
+		case 34:
+			$action_ico = 'category-add';
+			$part1 = $owner_user;
+			$action_text = __('created the category','cftp_admin');
+			$part2 = $affected_account_name;
+			break;
+		case 35:
+			$action_ico = 'category-edit';
+			$part1 = $owner_user;
+			$action_text = __('edited the category','cftp_admin');
+			$part2 = $affected_account_name;
+			break;
+		case 36:
+			$action_ico = 'category-delete';
+			$part1 = $owner_user;
+			$action_text = __('deleted the category','cftp_admin');
+			$part2 = $affected_account_name;
+			break;
+		case 37:
+			$action_ico = 'download-anonymous';
+			$part1 = __('An anonymous user','cftp_admin');
+			$action_text = __('downloaded the file','cftp_admin');
 			$part2 = $affected_file_name;
 			break;
 	}

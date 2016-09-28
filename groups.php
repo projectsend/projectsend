@@ -245,7 +245,7 @@ include('header.php');
 		</div>
 	</div>
 
-	<form action="groups.php<?php if(isset($member_exists)) { ?>?member=<?php echo html_output($member); } ?>" name="groups_list" method="get" class="form-inline">
+	<form action="groups.php" name="groups_list" method="get" class="form-inline">
 		<?php form_add_existing_parameters(); ?>
 		<div class="form_actions_right">
 			<div class="form_actions">

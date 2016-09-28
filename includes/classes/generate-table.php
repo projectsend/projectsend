@@ -130,6 +130,33 @@ class generateTable {
 		$this->contents .= $this->output;
 	}
 	
+	public function tfoot( $columns ) {
+		$this->output = "<tfoot>\n<tr>";
+		if ( !empty( $columns ) ) {
+			foreach ( $columns as $column ) {
+				$attributes	= ( !empty( $column['attributes'] ) ) ? $column['attributes'] : array();
+				$data_attr	= ( !empty( $column['data_attr'] ) ) ? $column['data_attr'] : array();
+				$content	= ( !empty( $column['content'] ) ) ? $column['content'] : '';
+				/**  Generate the column */
+				$this->output .= '<td';
+				foreach ( $attributes as $tag => $value ) {
+					if ( is_array( $value ) ) {
+						$value = implode(' ', $value);
+					}
+					$this->output .= ' ' . $tag . '="' . $value . '"';
+				}
+				foreach ( $data_attr as $tag => $value ) {
+					$this->output .= ' data-' . $tag . '="' . $value . '"';
+				}
+				$this->output .= '>' . $content;
+				
+				$this->output .= '</td>';
+			}
+		}
+		$this->output .= "</tr>\n</tfoot>\n";
+		$this->contents .= $this->output;
+	}
+	
 	public function add_row() {
 		$this->row_class = ( $this->current_row % 2 ) ? 'table_row' : 'table_row_alt';
 		$this->contents .= '<tr class="' . $this->row_class . '">' . "\n";

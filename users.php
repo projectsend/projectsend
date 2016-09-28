@@ -410,11 +410,17 @@ include('header.php');
 					/**
 					 * Add the cells to the row
 					 */
+					if ( $row['id'] == 1 ) {
+						$cell = array( 'content' => '' );
+					}
+					else {
+						$cell = array(
+									'checkbox'		=> true,
+									'value'			=> $row["id"],
+									);
+					}
 					$tbody_cells = array(
-											array(
-													'checkbox'		=> true,
-													'value'			=> $row["id"],
-												),
+											$cell,
 											array(
 													'content'		=> html_output( $row["name"] ),
 												),

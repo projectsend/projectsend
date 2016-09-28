@@ -13,7 +13,6 @@ class generateTable {
 		$this->dbh = $dbh;
 
 		$this->contents = self::open( $attributes );
-		$this->contents .= "<tbody>\n";
 
 		$this->current_row = 1;
 	}
@@ -158,6 +157,10 @@ class generateTable {
 	}
 	
 	public function add_row() {
+		if ( $this->current_row == 1 ) {
+			$this->contents .= "<tbody>\n";
+		}
+
 		$this->row_class = ( $this->current_row % 2 ) ? 'table_row' : 'table_row_alt';
 		$this->contents .= '<tr class="' . $this->row_class . '">' . "\n";
 		$this->current_row++;

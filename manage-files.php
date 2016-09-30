@@ -19,12 +19,6 @@ $page_title = __('Manage files','cftp_admin');
 
 $current_level = get_current_user_level();
 
-/*
- * Get the total downloads count here. The results are then
- * referenced on the results table.
- */
-$downloads_information = generate_downloads_count();
-
 /**
  * Used to distinguish the current page results.
  * Global means all files.
@@ -335,7 +329,18 @@ include('header.php');
 			 * Get the files
 			 */
 			$params = array();
-			$cq = "SELECT * FROM " . TABLE_FILES;
+			
+			/**
+			 * Add the download count to the main query.
+			 * If the page is filtering files by client, then
+			 * add the client ID to the subquery.
+			 */
+			$add_user_to_query = '';
+			if ( isset($search_on) && $results_type == 'client' ) {
+				$add_user_to_query = "AND user_id = :user_id";
+				$params[':user_id'] = $this_id;
+			}
+			$cq = "SELECT files.*, ( SELECT COUNT(file_id) FROM " . TABLE_DOWNLOADS . " WHERE " . TABLE_DOWNLOADS . ".file_id=files.id " . $add_user_to_query . ") as download_count FROM " . TABLE_FILES . " files";
 	
 			if ( isset($search_on) && !empty($gotten_files) ) {
 				$conditions[] = "FIND_IN_SET(id, :files)";
@@ -399,7 +404,7 @@ include('header.php');
 			 * Add the order.
 			 * Defaults to order by: date, order: ASC
 			 */
-			$cq .= sql_add_order( TABLE_FILES, 'timestamp', 'asc' );
+			$cq .= sql_add_order( TABLE_FILES, 'timestamp', 'desc' );
 
 			/**
 			 * Pre-query to count the total results
@@ -432,13 +437,7 @@ include('header.php');
 	?>
 		<div class="form_actions_left">
 			<div class="form_actions_limit_results">
-				<form action="manage-files.php" name="files_search" method="get" class="form-inline">
-					<?php form_add_existing_parameters( array('search', 'action') ); ?>
-					<div class="form-group group_float">
-						<input type="text" name="search" id="search" value="<?php if(isset($_GET['search']) && !empty($search_terms)) { echo html_output($_GET['search']); } ?>" class="txtfield form_actions_search_box form-control" />
-					</div>
-					<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default"><?php _e('Search','cftp_admin'); ?></button>
-				</form>
+				<?php show_search_form('manage-files.php'); ?>
 
 				<?php
 					/** Filters are not available for clients */
@@ -634,11 +633,15 @@ include('header.php');
 													'condition'		=> $conditions['is_search_on'],
 												),
 												array(
+													'sortable'		=> true,
+													'sort_url'		=> 'download_count',
 													'content'		=> __('Download count','cftp_admin'),
 													'hide'			=> 'phone',
 													'condition'		=> $conditions['is_search_on'],
 												),
 												array(
+													'sortable'		=> true,
+													'sort_url'		=> 'download_count',
 													'content'		=> __('Total downloads','cftp_admin'),
 													'hide'			=> 'phone',
 													'condition'		=> $conditions['total_downloads'],
@@ -666,37 +669,11 @@ include('header.php');
 						$file_id = $row['id'];
 	
 						/**
-						 * Download count and visibility status are only available when
-						 * filtering by client or group.
+						 * Visibility is only available when filtering by client or group.
 						 */
 						$params = array();
 						$query_this_file = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id";
 						$params[':file_id'] = $row['id'];
-	
-						if (isset($search_on)) {
-							$query_this_file .= " AND $search_on = :id";
-							$params[':id'] = $this_id;
-							/**
-							 * Count how many times this file has been downloaded
-							 * Here, the download count is specific per user.
-							 */
-							switch ($results_type) {
-								case 'client':
-										$download_count_sql	= $dbh->prepare("SELECT user_id, file_id FROM " . TABLE_DOWNLOADS . " WHERE file_id = :file_id AND user_id = :user_id");
-										$download_count_sql->bindParam(':file_id', $row['id'], PDO::PARAM_INT);
-										$download_count_sql->bindParam(':user_id', $this_id, PDO::PARAM_INT);
-										$download_count_sql->execute();
-										$download_count	= $download_count_sql->rowCount();
-									break;
-								case 'group':
-								case 'category':
-										$download_count_sql	= $dbh->prepare("SELECT file_id FROM " . TABLE_DOWNLOADS . " WHERE file_id = :file_id");
-										$download_count_sql->bindParam(':file_id', $row['id'], PDO::PARAM_INT);
-										$download_count_sql->execute();
-										$download_count	= $download_count_sql->rowCount();
-									break;
-							}
-						}
 	
 						$sql_this_file = $dbh->prepare($query_this_file);
 						$sql_this_file->execute( $params );
@@ -767,42 +744,44 @@ include('header.php');
 						/**
 						 * Visibility
 						 */
-						$status_class	= ($hidden == 1) ? 'danger' : 'success';
-						$status_label	= ($hidden == 1) ? __('Hidden','cftp_admin') : __('Visible','cftp_admin');
+						$status_label = '';
+						$status_class = '';
+						if ( isset( $search_on ) ) {
+							$status_class	= ($hidden == 1) ? 'danger' : 'success';
+							$status_label	= ($hidden == 1) ? __('Hidden','cftp_admin') : __('Visible','cftp_admin');
+						}
 	
 						/**
 						 * Download count when filtering by group or client
 						 */
 						if ( isset( $search_on ) ) {
-							$download_count_content = $download_count . ' ' . __('times','cftp_admin');
+							$download_count_content = $row['download_count'] . ' ' . __('times','cftp_admin');
 	
 							switch ($results_type) {
 								case 'client':
 									break;
 								case 'group':
 								case 'category':
-									$download_count_class	= ( $download_count > 0 ) ? 'downloaders btn-primary' : 'btn-default disabled';
+									$download_count_class	= ( $row['download_count'] > 0 ) ? 'downloaders btn-primary' : 'btn-default disabled';
 									$download_count_content	= '<a href="' . BASE_URI .'download-information.php?id=' . $row['id'] .'" class="' . $download_count_class . ' btn btn-sm" rel="' . $row["id"] . '" title="' . html_output( $row['filename'] ) . '">' . $download_count_content . '</a>';
 								break;
 							}
 						}
 						
 						/**
-						 * Download count and link on the general files table
+						 * Download count and link on the unfiltered files table
+						 * (no specific client or group selected)
 						 */
 						if ( !isset( $search_on ) ) {
 							if ($current_level != '0') {
-								if ( isset( $downloads_information[$row["id"]] ) ) {
-									$download_info	= $downloads_information[$row["id"]];
-									$btn_class		= ( $download_info['total'] > 0 ) ? 'downloaders btn-primary' : 'btn-default disabled';
-									$total_count	= $download_info['total'];
+								if ( $row["download_count"] > 0 ) {
+									$btn_class		= 'downloaders btn-primary';
 								}
 								else {
 									$btn_class		= 'btn-default disabled';
-									$total_count	= 0;
 								}
 	
-								$downloads_table_link = '<a href="' . BASE_URI .'download-information.php?id=' . $row['id'] .'" class="' . $btn_class .' btn btn-sm" rel="' . $row["id"] .'" title="' .html_output($row['filename']) .'">' . $total_count . ' ' . __('downloads','cftp_admin') .'</a>';
+								$downloads_table_link = '<a href="' . BASE_URI .'download-information.php?id=' . $row['id'] .'" class="' . $btn_class .' btn btn-sm" rel="' . $row["id"] .'" title="' .html_output($row['filename']) .'">' . $row["download_count"] . ' ' . __('downloads','cftp_admin') .'</a>';
 							}
 						}
 	

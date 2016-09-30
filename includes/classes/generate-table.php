@@ -54,7 +54,13 @@ class generateTable {
 		$new_url_parameters['order'] = $order;
 
 		foreach ( $new_url_parameters as $param => $value ) {
-			$params[$param] = $value;
+			/**
+			 * Page is not added, so when you click a table header
+			 * pagination always returns to page 1.
+			 */
+			if ( $param != 'page' ) {
+				$params[$param] = $value;
+			}
 		}
 		$query = http_build_query($params);
 		

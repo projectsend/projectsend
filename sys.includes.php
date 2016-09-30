@@ -54,6 +54,9 @@ require_once(ROOT_DIR.'/includes/timezone_identifiers_list.php');
 /** Categories functions */
 require_once(ROOT_DIR.'/includes/functions.categories.php');
 
+/** Search, filters and actions forms */
+require_once(ROOT_DIR.'/includes/functions.forms.php');
+
 /**
  * Always require this classes to avoid repetition of code
  * on other files.

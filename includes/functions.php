@@ -62,9 +62,11 @@ function form_add_existing_parameters( $ignore = array() ) {
  */
 function sql_add_order( $table, $column = 'id', $initial_order = 'ASC' ) {
 	global $dbh;
+	$allowed_custom_sort_columns = array( 'download_count' );
 
 	$columns_query	= $dbh->query('SELECT * FROM ' . $table . ' LIMIT 1');
 	$columns_keys	= array_keys($columns_query->fetch(PDO::FETCH_ASSOC));
+	$columns_keys	= array_merge( $columns_keys, $allowed_custom_sort_columns );
 	$orderby		= ( isset( $_GET['orderby'] ) && in_array( $_GET['orderby'], $columns_keys ) ) ? $_GET['orderby'] : $column;
 
 	$order		= ( isset( $_GET['order'] ) ) ? strtoupper($_GET['order']) : $initial_order;
@@ -785,8 +787,10 @@ function get_real_size($file)
  */
 function delete_file_from_disk($filename)
 {
-	chmod($filename, 0777);
-	unlink($filename);
+	if ( file_exists( $filename ) ) {
+		chmod($filename, 0777);
+		unlink($filename);
+	}
 }
 
 /**

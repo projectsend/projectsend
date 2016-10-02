@@ -197,7 +197,6 @@ class Validate_Form
 		 */
 		if (!empty($current_id)) {
 			$this->sql_not_this	= " AND id != :id";
-			$this->sql_clients	.= $this->sql_not_this;
 			$this->sql_users	.= $this->sql_not_this;
 			$this->params[':id'] = $current_id;
 		}

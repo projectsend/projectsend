@@ -91,10 +91,11 @@ function get_categories( $params = array() ) {
 	
 	/** Add the search terms */	
 	if ( isset( $params['search'] ) && !empty( $params['search'] ) ) {
-		$conditions[]				= "(name LIKE :name)";
-		$return['no_results_type']	= 'search';
-		$search_terms				= '%'.$params['search'].'%';
-		$sql_params[':name']		= $search_terms;
+		$conditions[]					= "(name LIKE :name OR description LIKE :description)";
+		$return['no_results_type']		= 'search';
+		$search_terms					= '%'.$params['search'].'%';
+		$sql_params[':name']			= $search_terms;
+		$sql_params[':description']		= $search_terms;
 	}
 	
 	/**

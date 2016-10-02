@@ -629,10 +629,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 		
 										<div class="form-group">
 											<div class="col-sm-8 col-sm-offset-4">
-												<?php
-													$doc_link_recaptcha = 'https://developers.google.com/recaptcha/docs/start';
-												?>
-												<a href="<?php echo $doc_link_recaptcha; ?>" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
+												<a href="<?php echo LINK_DOC_RECAPTCHA; ?>" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
 											</div>
 										</div>
 
@@ -734,8 +731,8 @@ $allowed_file_types = implode(',',$allowed_file_types);
 												<label for="google_signin_enabled" class="col-sm-4 control-label"><?php _e('Enabled','cftp_admin'); ?></label>
 												<div class="col-sm-8">
 													<select name="google_signin_enabled" id="google_signin_enabled" class="form-control">
-														<option value="1" <?php echo (GOOGLE_SIGNIN_ENABLED == '1') ? 'selected="selected"' : ''; ?>>Yes</option>
-														<option value="0" <?php echo (GOOGLE_SIGNIN_ENABLED == '0') ? 'selected="selected"' : ''; ?>>No</option>
+														<option value="1" <?php echo (GOOGLE_SIGNIN_ENABLED == '1') ? 'selected="selected"' : ''; ?>><?php _e('Yes','cftp_admin'); ?></option>
+														<option value="0" <?php echo (GOOGLE_SIGNIN_ENABLED == '0') ? 'selected="selected"' : ''; ?>><?php _e('No','cftp_admin'); ?></option>
 													</select>
 												</div>
 											</div>
@@ -753,10 +750,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 											</div>
 											<div class="form-group">
 												<div class="col-sm-8 col-sm-offset-4">
-													<?php
-														$doc_link_google = 'https://developers.google.com/identity/protocols/OpenIDConnect';
-													?>
-													<a href="<?php echo $doc_link_google; ?>" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
+													<a href="<?php echo LINK_DOC_GOOGLE_SIGN_IN; ?>" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
 												</div>
 											</div>
 											<div class="form-group">

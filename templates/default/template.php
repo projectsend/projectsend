@@ -6,8 +6,8 @@ Default
 
 $ld = 'cftp_template'; // specify the language domain for this template
 
-if ( !empty( $_POST['category'] ) ) {
-	$category_filter = $_POST['category'];
+if ( !empty( $_GET['category'] ) ) {
+	$category_filter = $_GET['category'];
 }
 
 include_once(ROOT_DIR.'/templates/common.php'); // include the required functions for every template
@@ -36,17 +36,13 @@ $count = count($my_files);
 	
 			<div class="form_actions_left">
 				<div class="form_actions_limit_results">
-					<form action="" name="files_search" method="post" class="form-inline">
-						<div class="form-group group_float">
-							<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box form-control" />
-						</div>
-						<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default"><?php _e('Search','cftp_admin'); ?></button>
-					</form>
+					<?php show_search_form(); ?>
 
 					<?php
 						if ( !empty( $cat_ids ) ) {
 					?>
-							<form action="" name="files_filters" method="post" class="form-inline form_filters">
+							<form action="" name="files_filters" method="get" class="form-inline form_filters">
+								<?php form_add_existing_parameters( array('category', 'action') ); ?>
 								<div class="form-group group_float">
 									<select name="category" id="category" class="txtfield form-control">
 										<option value="0"><?php _e('All categories','cftp_admin'); ?></option>
@@ -64,17 +60,18 @@ $count = count($my_files);
 				</div>
 			</div>
 		
-			<form action="" name="files_list" method="post" class="form-inline">
+			<form action="" name="files_list" method="get" class="form-inline">
+				<?php form_add_existing_parameters(); ?>
 				<div class="form_actions_right">
 					<div class="form_actions">
 						<div class="form_actions_submit">
 							<div class="form-group group_float">
 								<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected files actions','cftp_admin'); ?>:</label>
-								<select name="files_actions" id="files_actions" class="txtfield form-control">
+								<select name="action" id="action" class="txtfield form-control">
 									<option value="zip"><?php _e('Download zipped','cftp_admin'); ?></option>
 								</select>
 							</div>
-							<button type="submit" id="do_action" name="proceed" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
+							<button type="submit" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
 						</div>
 					</div>
 				</div>
@@ -82,7 +79,7 @@ $count = count($my_files);
 				<div class="right_clear"></div><br />
 
 				<div class="form_actions_count">
-					<p class="form_count_total"><?php _e('Showing','cftp_admin'); ?>: <span><?php echo $count; ?> <?php _e('files','cftp_admin'); ?></span></p>
+					<p class="form_count_total"><?php _e('Found','cftp_admin'); ?>: <span><?php echo $count; ?> <?php _e('files','cftp_admin'); ?></span></p>
 				</div>
 	
 				<div class="right_clear"></div>
@@ -269,7 +266,7 @@ $count = count($my_files);
 					return false; 
 				} 
 				else {
-					var action = $('#files_actions').val();
+					var action = $('#action').val();
 					if (action == 'zip') {
 
 						var checkboxes = $.map($('input:checkbox:checked'), function(e,i) {

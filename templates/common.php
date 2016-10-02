@@ -162,12 +162,12 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 					);
 
 	/** Add the search terms */	
-	if ( isset($_POST['search']) && !empty($_POST['search']) ) {
+	if ( isset($_GET['search']) && !empty($_GET['search']) ) {
 		$files_query		.= " AND (filename LIKE :title OR description LIKE :description)";
 		$no_results_error	= 'search';
 
-		$params[':title']		= '%'.$_POST['search'].'%';
-		$params[':description']	= '%'.$_POST['search'].'%';
+		$params[':title']		= '%'.$_GET['search'].'%';
+		$params[':description']	= '%'.$_GET['search'].'%';
 	}
 	
 	$sql_files = $dbh->prepare( $files_query );

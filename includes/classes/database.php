@@ -14,12 +14,12 @@ if ( DEBUG === true ) {
 	{
 		private $queries = 0;
 		
-		public function query($query) {
+		public function query($query, $options = array()) {
 			++$this->queries;
 			return parent::query($query);
 		}
 	
-		public function prepare($statement) {
+		public function prepare($statement, $options = array()) {
 			++$this->queries;
 			return parent::prepare($statement);
 		}
@@ -36,11 +36,21 @@ try {
 	switch ( DB_DRIVER ) {
 		default:
 		case 'mysql':
-			$dbh = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
+			if ( DEBUG === true ) {
+				$dbh = new PDOEx("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+			}
+			else {
+				$dbh = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+			}
 			break;
 
 		case 'mssql':
-			$dbh = new PDO("mssql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
+			if ( DEBUG === true ) {
+				$dbh = new PDOEx("mssql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+			}
+			else {
+				$dbh = new PDO("mssql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+			}
 			break;
 	}
 

@@ -104,17 +104,6 @@ class process {
 							/** Continue */
 							if ($this->can_download == true) {
 								/**
-								 * If the file is being downloaded by a client, add +1 to
-								 * the download count
-								 */
-								$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (user_id , file_id, remote_ip, remote_host) VALUES (:user_id, :file_id, :remote_ip, :remote_host)");
-								$this->statement->bindValue(':user_id', CURRENT_USER_ID, PDO::PARAM_INT);
-								$this->statement->bindParam(':file_id', $_GET['id'], PDO::PARAM_INT);
-								$this->statement->bindParam(':remote_ip', $_SERVER['REMOTE_ADDR']);
-								$this->statement->bindParam(':remote_host', $_SERVER['REMOTE_HOST']);
-								$this->statement->execute();
-
-								/**
 								 * The owner ID is generated here to prevent false results
 								 * from a modified GET url.
 								 */
@@ -132,6 +121,16 @@ class process {
 					}
 
 					if ($this->can_download == true) {
+						/**
+						 * Add +1 to the download count
+						 */
+						$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (user_id , file_id, remote_ip, remote_host) VALUES (:user_id, :file_id, :remote_ip, :remote_host)");
+						$this->statement->bindValue(':user_id', CURRENT_USER_ID, PDO::PARAM_INT);
+						$this->statement->bindParam(':file_id', $_GET['id'], PDO::PARAM_INT);
+						$this->statement->bindParam(':remote_ip', $_SERVER['REMOTE_ADDR']);
+						$this->statement->bindParam(':remote_host', $_SERVER['REMOTE_HOST']);
+						$this->statement->execute();
+
 						/** Record the action log */
 						$new_log_action = new LogActions();
 						$log_action_args = array(

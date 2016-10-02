@@ -11,7 +11,6 @@
  * All tables must exist to verify the installation.
  * If any table is missing, the installation is considered corrupt.
  */
-
 function is_projectsend_installed() {
 	global $current_tables;
 
@@ -30,6 +29,50 @@ function is_projectsend_installed() {
 	else {
 		return true;
 	}
+}
+
+/**
+ * Add any existing $_GET parameters as hidden fields on a form
+ */
+function form_add_existing_parameters( $ignore = array() ) {
+	// Don't add the pagination parameter
+	$ignore[] = 'page';
+	
+	// Remove this parameters so they only exist when the action is done
+	$remove = array('action', 'batch', 'status');
+
+	if ( !empty( $_GET ) ) {
+		foreach ( $_GET as $param => $value ) {
+			// Remove status and actions
+			if ( in_array( $param, $remove ) ) {
+				unset( $_GET[$param] );
+			}
+			if ( !is_array( $value ) && !in_array( $param, $ignore ) ) {
+				echo '<input type="hidden" name="' . $param . '" value="' . encode_html($value) . '">';
+			}
+		}
+	}
+}
+
+/**
+ * To successfully add the orderby and order parameters to a query,
+ * check if the column exists on the table and validate that order
+ * is either ASC or DESC.
+ * Defaults to ORDER BY: id, ORDER: DESC
+ */
+function sql_add_order( $table, $column = 'id', $initial_order = 'ASC' ) {
+	global $dbh;
+	$allowed_custom_sort_columns = array( 'download_count' );
+
+	$columns_query	= $dbh->query('SELECT * FROM ' . $table . ' LIMIT 1');
+	$columns_keys	= array_keys($columns_query->fetch(PDO::FETCH_ASSOC));
+	$columns_keys	= array_merge( $columns_keys, $allowed_custom_sort_columns );
+	$orderby		= ( isset( $_GET['orderby'] ) && in_array( $_GET['orderby'], $columns_keys ) ) ? $_GET['orderby'] : $column;
+
+	$order		= ( isset( $_GET['order'] ) ) ? strtoupper($_GET['order']) : $initial_order;
+	$order		= ( $order != 'DESC' || $order != 'ASC' ) ? $order : $initial_order;
+
+	return " ORDER BY $orderby $order";
 }
 
 function generate_password() {
@@ -623,8 +666,8 @@ function html_output($str, $flags = ENT_QUOTES, $encoding = 'UTF-8', $double_enc
  */
 function encode_html($str) {
 	$str = htmlentities($str, ENT_QUOTES, $encoding='utf-8');
-	//$str = mysql_real_escape_string($str);
 	$str = nl2br($str);
+	//$str = addslashes($str);
 	return $str;
 }
 
@@ -744,8 +787,10 @@ function get_real_size($file)
  */
 function delete_file_from_disk($filename)
 {
-	chmod($filename, 0777);
-	unlink($filename);
+	if ( file_exists( $filename ) ) {
+		chmod($filename, 0777);
+		unlink($filename);
+	}
 }
 
 /**

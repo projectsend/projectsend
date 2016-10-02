@@ -253,4 +253,8 @@ if (!defined('FOOTABLE_PAGING_NUMBER')) {
 	define('FOOTABLE_PAGING_NUMBER', '10');
 	define('FOOTABLE_PAGING_NUMBER_LOG', '15');
 }
+if (!defined('RESULTS_PER_PAGE')) {
+	define('RESULTS_PER_PAGE', '10');
+	define('RESULTS_PER_PAGE_LOG', '15');
+}
 ?>

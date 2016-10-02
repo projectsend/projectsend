@@ -105,8 +105,8 @@ $work_folder = UPLOADED_FILES_FOLDER;
 			closedir($handle);
 		}
 		
-		if (!empty($_POST['search'])) {
-			$search = htmlspecialchars($_POST['search']);
+		if (!empty($_GET['search'])) {
+			$search = htmlspecialchars($_GET['search']);
 			
 			function search_text($item) {
 				global $search;
@@ -137,12 +137,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 		if(isset($files_to_add) && count($files_to_add) > 0) {
 	?>
 			<div class="form_actions_limit_results">
-				<form action="" name="files_search" method="post" class="form-inline">
-					<div class="form-group group_float">
-						<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box form-control" />
-					</div>
-					<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default"><?php _e('Search','cftp_admin'); ?></button>
-				</form>
+				<?php show_search_form('upload-import-orphans.php'); ?>
 			</div>
 
 			<div class="clear"></div>

@@ -135,9 +135,27 @@ include('header.php');
 	}
 	
 	/** Get all the existing categories */
-	$get_categories = get_categories();
-	$categories	= $get_categories['categories'];
-	$arranged	= $get_categories['arranged'];
+	$params = array();
+
+	/**
+	 * Add the search terms
+	 *
+	 * TODO: Search gets the real results, but subcategories
+	 * are not shown if the parent is not in the results
+	 */
+	if ( isset( $_GET['search'] ) && !empty( $_GET['search'] ) ) {
+		$params['search']	= $_GET['search'];
+	}
+
+	$get_categories = get_categories( $params );
+	if ( !empty( $get_categories['categories'] ) ) {
+		$categories	= $get_categories['categories'];
+		$arranged	= $get_categories['arranged'];
+	}
+	else {
+		$categories	= null;
+		$arranged	= null;
+	}
 
 	/**
 	 * Adding or editing a category
@@ -211,7 +229,7 @@ include('header.php');
 				$status = $redirect_status;
 			}
 			else {
-				$msg = __('There was a problem savint to the database.','cftp_admin');
+				$msg = __('There was a problem saving to the database.','cftp_admin');
 				echo system_message('error', $msg);
 			}
 		}
@@ -232,15 +250,9 @@ include('header.php');
 
 		<div class="form_actions_left">
 			<div class="form_actions_limit_results">
-				<form action="categories.php" name="cat_search" method="post" class="form-inline">
-					<div class="form-group group_float">
-						<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($search_terms)) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box form-control" />
-					</div>
-					<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default"><?php _e('Search','cftp_admin'); ?></button>
-				</form>
+				<?php show_search_form('categories.php'); ?>
 			</div>
 		</div>
-
 
 		<form action="categories.php" name="selected_categories" id="selected_categories" method="post">
 
@@ -261,7 +273,7 @@ include('header.php');
 			<div class="clear"></div>
 	
 			<div class="form_actions_count">
-				<p class="form_count_total"><?php _e('Showing','cftp_admin'); ?>: <span><?php echo $get_categories['count']; ?> <?php _e('categories','cftp_admin'); ?></span></p>
+				<p class="form_count_total"><?php _e('Found','cftp_admin'); ?>: <span><?php echo $get_categories['count']; ?> <?php _e('categories','cftp_admin'); ?></span></p>
 			</div>
 	
 			<div class="clear"></div>

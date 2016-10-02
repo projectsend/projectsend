@@ -53,20 +53,6 @@ $current_level = get_current_user_level();
 			?>
 		</p>
 
-		<?php
-			/**
-			 * Load a plupload translation file, if the ProjectSend language
-			 * on sys.config.php is set to anything other than "en", and the
-			 * corresponding plupload file exists.
-			 */
-			if(SITE_LANG != 'en') {
-				$plupload_lang_file = 'includes/plupload/js/i18n/'.SITE_LANG.'.js';
-				if(file_exists($plupload_lang_file)) {
-					echo '<script type="text/javascript" src="'.BASE_URI.$plupload_lang_file.'"></script>';
-				}
-			}
-		?>
-
 		<script type="text/javascript">
 			$(document).ready(function() {
 				setInterval(function(){

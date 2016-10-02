@@ -50,9 +50,10 @@ if ( !empty( $load_scripts ) ) {
 				$load_js_files[]		= BASE_URI . 'includes/js/bootstrap-spinedit/bootstrap-spinedit.js';
 				break;
 			case 'footable':
+				$footable_js_file		= ( !empty( $footable_min ) ) ? 'footable.min.js' : 'footable.all.min.js';
 				$load_css_files[]		= BASE_URI . 'includes/js/footable/css/footable.core.css';
 				$load_css_files[]		= BASE_URI . 'css/footable.css';
-				$load_js_files[]		= BASE_URI . 'includes/js/footable/footable.all.min.js';
+				$load_js_files[]		= BASE_URI . 'includes/js/footable/' . $footable_js_file;
 				break;
 			case 'jquery_tags_input':
 				$load_css_files[]		= BASE_URI . 'includes/js/jquery-tags-input/jquery.tagsinput.css';
@@ -68,6 +69,18 @@ if ( !empty( $load_scripts ) ) {
 				$load_js_files[]		= BASE_URI . 'includes/js/browserplus-min.js';
 				$load_js_files[]		= BASE_URI . 'includes/plupload/js/plupload.full.js';
 				$load_js_files[]		= BASE_URI . 'includes/plupload/js/jquery.plupload.queue/jquery.plupload.queue.js';
+				/**
+				 * Load a plupload translation file, if the ProjectSend language
+				 * on sys.config.php is set to anything other than "en", and the
+				 * corresponding plupload file exists.
+				 */
+				if ( LOADED_LANG != 'en' ) {
+					$plupload_lang_file = 'includes/plupload/js/i18n/'.LOADED_LANG.'.js';
+					if ( file_exists( $plupload_lang_file ) ) {
+						$load_js_files[] = BASE_URI . $plupload_lang_file;
+					}
+				}
+
 				break;
 			case 'flot':
 				$load_js_files[]		= BASE_URI . 'includes/flot/jquery.flot.min.js';

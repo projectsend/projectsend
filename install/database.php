@@ -246,6 +246,7 @@ if (defined('TRY_INSTALL')) {
 								('clients_auto_approve', '0'),
 								('clients_auto_group', '0'),
 								('clients_can_upload', '1'),
+								('clients_can_set_expiration_date', '0'),
 								('email_new_file_by_user_customize', '0'),
 								('email_new_file_by_client_customize', '0'),
 								('email_new_client_by_user_customize', '0'),

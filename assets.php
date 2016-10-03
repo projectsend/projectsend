@@ -111,6 +111,15 @@ else {
 }
 
 /**
+ * Custom CSS styles.
+ */
+$custom_css_location = ROOT_DIR . '/css/custom.css';
+if ( file_exists( $custom_css_location ) ) {
+	$load_css_files[]	= BASE_URI . 'css/custom.css';
+}
+
+
+/**
  * Used on header to print the CSS files
  */
 function load_css_files() {

@@ -688,11 +688,12 @@ function get_current_url()
 		}
 	}
 	$pageURL .= "://";
-	if ($_SERVER["SERVER_PORT"] != "80") {
-		$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
-	} else {
-		$pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
-	}
+	/*
+	** Using $_SERVER["HTTP_HOST"] now.
+	** Fixing problems wth the old solution: $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"] when using a reverse proxy.
+	** HTTP_HOST already includes port number (if non-standard), no specific handling of port number necessary.
+	*/
+	$pageURL .= $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
 
 	/**
 	 * Check if we are accesing the install folder or the index.php file directly

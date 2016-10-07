@@ -226,6 +226,14 @@ if(!empty($options_values)) {
 	if (isset($options_values['clients_auto_approve'])) {
 		define('CLIENTS_CAN_SET_EXPIRATION_DATE',$options_values['clients_can_set_expiration_date']);
 	}
+    
+    /**
+     * For a newer version
+     * Securely delete files with shred
+     */
+    if (isset($options_values['secure_delete_files'])) {
+		define('SECURE_DELETE_FILES',$options_values['secure_delete_files']);
+	}
 
 	/**
 	 * Set the default timezone based on the value of the Timezone select box

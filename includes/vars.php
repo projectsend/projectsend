@@ -22,6 +22,7 @@ if ( !defined( 'USER_ROLE_LVL_0' ) ) { define('USER_ROLE_LVL_0', $user_role_0_na
 /**
  * Validation class strings
  */
+$validation_seure_delete	= __('Securely delete files','cftp_admin');
 $validation_recaptcha		= __('reCAPTCHA verification failed','cftp_admin');
 $validation_no_name			= __('Name was not completed','cftp_admin');
 $validation_no_client		= __('No client was selected','cftp_admin');

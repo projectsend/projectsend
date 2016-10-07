@@ -42,6 +42,7 @@ if ($_POST) {
 
 	/** Checkboxes */
 	$checkboxes	= array(
+                        'secure_delete_files',
 						'recaptcha_enabled',
 						'clients_can_delete_own_files',
 						'use_browser_lang',
@@ -599,6 +600,17 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</div>
 			
 										<div class="options_divide"></div>
+			
+										<h3><?php _e('File deletion','cftp_admin'); ?></h3>
+										<p><?php _e('Securely delete files usig "shred -v", only enable when installed (installed by default on ubuntu)','cftp_admin'); ?></p>
+			
+										<div class="form-group">
+											<div class="col-sm-8 col-sm-offset-4">
+												<label for="secure_delete_files">
+													<input type="checkbox" value="1" name="secure_delete_files" id="secure_delete_files" class="checkbox_options" <?php echo (SECURE_DELETE_FILES == 1) ? 'checked="checked"' : ''; ?> /> <?php  _e('Securely delete files'); ?>
+												</label>
+											</div>
+										</div>
 		
 										<div class="options_divide"></div>
 		

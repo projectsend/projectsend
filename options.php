@@ -602,7 +602,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										<div class="options_divide"></div>
 			
 										<h3><?php _e('File deletion','cftp_admin'); ?></h3>
-										<p><?php _e('Securely delete files usig "shred -v", only enable when installed (installed by default on ubuntu)','cftp_admin'); ?></p>
+										<p><?php _e('Securely delete files using the Unix command "shred -u". Make sure to check that this command is available on your server before enabling this options.','cftp_admin'); ?></p>
 			
 										<div class="form-group">
 											<div class="col-sm-8 col-sm-offset-4">

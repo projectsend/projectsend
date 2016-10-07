@@ -23,7 +23,7 @@ if (defined('TRY_INSTALL')) {
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `uploader` varchar('.MAX_USER_CHARS.') NOT NULL,
 								  `expires` INT(1) NOT NULL default \'0\',
-								  `expiry_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+								  `expiry_date` TIMESTAMP NOT NULL DEFAULT \'0000-00-00 00:00:00\',
 								  `public_allow` INT(1) NOT NULL default \'0\',
 								  `public_token` varchar(32) NULL,
 								  PRIMARY KEY (`id`)
@@ -279,9 +279,9 @@ if (defined('TRY_INSTALL')) {
 								('recaptcha_enabled', '0'),
 								('recaptcha_site_key', ''),
 								('recaptcha_secret_key', ''),
-                                ('secure_delete_files', '0')
+                                				('secure_delete_files', '0')
 								",
-					'params' => array(
+								'params' => array(
 										':base_uri'	=> $base_uri,
 										':title'	=> $this_install_title,
 										':email'	=> $got_admin_email,

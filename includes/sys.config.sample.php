@@ -7,7 +7,7 @@
  * that will be used on the sent e-mails (for new client, new user and
  * new file).
  *
- * It be renamed to sys.config.php for ProjectSend to recognize
+ * It must be renamed to sys.config.php for ProjectSend to recognize
  * it, and the database information must be completed before installing
  * the software.
  * The filesize value and the character encoding can be changed at anytime.

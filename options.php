@@ -555,7 +555,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										<div class="options_divide"></div>
 			
 										<h3><?php _e('Passwords','cftp_admin'); ?></h3>
-										<p><?php _e('When setting up a password for an account, requiere at least:','cftp_admin'); ?></p>
+										<p><?php _e('When setting up a password for an account, require at least:','cftp_admin'); ?></p>
 			
 										<div class="form-group">
 											<div class="col-sm-8 col-sm-offset-4">

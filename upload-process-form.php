@@ -540,7 +540,6 @@ while( $row = $statement->fetch() ) {
 														?>
 														</div>
 													</div>
-												
 												<?php
 													} /** Close $current_level check */
 												?>
@@ -549,8 +548,6 @@ while( $row = $statement->fetch() ) {
 													/** The following options are available to users only */
 													if ($global_level != 0) {
 												?>
-														
-
 														<div class="col-sm-6 col-md-3 assigns column">
 															<div class="file_data">
 																<?php
@@ -604,7 +601,6 @@ while( $row = $statement->fetch() ) {
 																</div>
 															</div>
 														</div>
-
 
 														<div class="col-sm-6 col-md-3 categories column">
 															<div class="file_data">

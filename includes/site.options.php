@@ -219,6 +219,13 @@ if(!empty($options_values)) {
 			define('RECAPTCHA_AVAILABLE', true);
 		}
 	}
+	
+	/**
+	 * For versions 757 and up
+	 */	
+	if (isset($options_values['clients_auto_approve'])) {
+		define('CLIENTS_CAN_SET_EXPIRATION_DATE',$options_values['clients_can_set_expiration_date']);
+	}
 
 	/**
 	 * Set the default timezone based on the value of the Timezone select box

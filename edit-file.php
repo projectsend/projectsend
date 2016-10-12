@@ -364,7 +364,7 @@ $current_level = get_current_user_level();
 								<div class="row edit_files">
 									<div class="col-sm-12">
 										<div class="row edit_files_blocks">
-											<div class="<?php echo ($global_level != 0) ? 'col-sm-6 col-md-3' : 'col-sm-12 col-md-12'; ?>  column">
+											<div class="<?php echo ($global_level != 0 || CLIENTS_CAN_SET_EXPIRATION_DATE == '1') ? 'col-sm-6 col-md-3' : 'col-sm-12 col-md-12'; ?>  column">
 												<div class="file_data">
 													<div class="row">
 														<div class="col-sm-12">
@@ -383,16 +383,17 @@ $current_level = get_current_user_level();
 													</div>
 												</div>
 											</div>
+											
 											<?php
-												/** The following options are available to users only */
-												if ($global_level != 0) {
+												/** The following options are available to users or client if clients_can_set_expiration_date set. */
+												if ($global_level != 0 || CLIENTS_CAN_SET_EXPIRATION_DATE == '1' ) {
 											?>
 													<div class="col-sm-6 col-md-3 column_even column">
 														<div class="file_data">
 															<?php
 																/**
 																* Only show the EXPIRY options if the current
-																* uploader is a system user, and not a client.
+																* uploader is a system user or client if clients_can_set_expiration_date is set.
 																*/
 																if (!empty($row['expiry_date'])) {
 																	$expiry_date = date('d-m-Y', strtotime($row['expiry_date']));
@@ -416,6 +417,10 @@ $current_level = get_current_user_level();
 																</label>
 															</div>
 			
+															<?php
+																/** The following options are available to users only */
+																if ($global_level != 0) {
+															?>
 															<div class="divider"></div>
 			
 															<h3><?php _e('Public downloading', 'cftp_admin');?></h3>
@@ -424,9 +429,19 @@ $current_level = get_current_user_level();
 																	<input type="checkbox" id="pub_checkbox" name="file[<?php echo $i; ?>][public]" value="1" <?php if ($row['public_allow']) { ?>checked="checked"<?php } ?> /> <?php _e('Allow public downloading of this file.', 'cftp_admin');?>
 																</label>
 															</div>
+														<?php
+															} /** Close $current_level check */
+														?>
 														</div>
-													</div>
-	
+													</div>									
+											<?php
+												} /** Close $current_level check */
+											?>
+											
+											<?php
+												/** The following options are available to users only */
+												if ($global_level != 0) {
+											?>
 													<div class="col-sm-6 col-md-3 assigns column">
 														<div class="file_data">
 															<?php
@@ -489,7 +504,6 @@ $current_level = get_current_user_level();
 														</div>
 													</div>
 	
-	
 													<div class="col-sm-6 col-md-3 categories column">
 														<div class="file_data">
 															<h3><?php _e('Categories', 'cftp_admin');?></h3>
@@ -509,7 +523,6 @@ $current_level = get_current_user_level();
 															</div>
 														</div>
 													</div>
-	
 											<?php
 												} /** Close $current_level check */
 											?>

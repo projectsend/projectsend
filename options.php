@@ -48,6 +48,7 @@ if ($_POST) {
 						'clients_can_register',
 						'clients_auto_approve',
 						'clients_can_upload',
+						'clients_can_set_expiration_date',
 						'mail_copy_user_upload',
 						'mail_copy_client_upload',
 						'mail_copy_main_user',
@@ -354,6 +355,14 @@ $allowed_file_types = implode(',',$allowed_file_types);
 											<div class="col-sm-8 col-sm-offset-4">
 												<label for="clients_can_delete_own_files">
 													<input type="checkbox" value="1" name="clients_can_delete_own_files" id="clients_can_delete_own_files" class="checkbox_options" <?php echo (CLIENTS_CAN_DELETE_OWN_FILES == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Clients can delete their own uploaded files','cftp_admin'); ?>
+												</label>
+											</div>
+										</div>
+		
+										<div class="form-group">
+											<div class="col-sm-8 col-sm-offset-4">
+												<label for="clients_can_set_expiration_date">
+													<input type="checkbox" value="1" name="clients_can_set_expiration_date" id="clients_can_set_expiration_date" class="checkbox_options" <?php echo (CLIENTS_CAN_SET_EXPIRATION_DATE == 1) ? 'checked="checked"' : ''; ?> /><?php _e('Clients can set expiration Date','cftp_admin'); ?>
 												</label>
 											</div>
 										</div>

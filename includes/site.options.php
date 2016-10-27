@@ -231,7 +231,7 @@ if(!empty($options_values)) {
 	 * For versions 757 and up
 	 */	
 	if (isset($options_values['custom_expiry_date'])) {
-		define('CUSTOM_EXPIRY_DATE',$options_values['CUSTOM_EXPIRY_DATE']);
+		define('CUSTOM_EXPIRY_DATE',$options_values['custom_expiry_date']);
 	}
 	else {
 		define('CUSTOM_EXPIRY_DATE','14');

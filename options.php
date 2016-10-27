@@ -169,6 +169,14 @@ $allowed_file_types = implode(',',$allowed_file_types);
 					'height'		: 'auto',
 					'defaultText'	: '',
 				});
+				
+				$('#custom_expiry_date').spinedit({
+					minimum: 0,
+					maximum: 365,
+					step: 1,
+					value: <?php echo CUSTOM_EXPIRY_DATE; ?>,
+					numberOfDecimals: 0
+				});	
 
 				$("form").submit(function() {
 					clean_form(this);
@@ -252,6 +260,15 @@ $allowed_file_types = implode(',',$allowed_file_types);
 
 										<div class="options_divide"></div>
 
+										<h3><?php _e('Files Options','cftp_admin'); ?></h3>
+										
+										<div class="form-group">
+											<label for="custom_expiry_date" class="col-sm-4 control-label"><?php _e('Expiration Days auto selectet','cftp_admin'); ?></label>
+											<div class="col-sm-8">
+												<input type="text" name="custom_expiry_date" id="custom_expiry_date" class="form-control" value="<?php echo CUSTOM_EXPIRY_DATE; ?>" />
+												<p class="field_note"><?php _e('Define how many Days the expiration date auto selectet.','cftp_admin'); ?></p>
+											</div>
+										</div>
 
 										<h3><?php _e('Language','cftp_admin'); ?></h3>
 

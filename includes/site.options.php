@@ -226,6 +226,16 @@ if(!empty($options_values)) {
 	if (isset($options_values['clients_auto_approve'])) {
 		define('CLIENTS_CAN_SET_EXPIRATION_DATE',$options_values['clients_can_set_expiration_date']);
 	}
+	
+	/**
+	 * For versions 757 and up
+	 */	
+	if (isset($options_values['custom_expiry_date'])) {
+		define('CUSTOM_EXPIRY_DATE',$options_values['CUSTOM_EXPIRY_DATE']);
+	}
+	else {
+		define('CUSTOM_EXPIRY_DATE','14');
+	}
 
 	/**
 	 * Set the default timezone based on the value of the Timezone select box

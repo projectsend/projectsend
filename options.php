@@ -362,7 +362,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										<div class="form-group">
 											<div class="col-sm-8 col-sm-offset-4">
 												<label for="clients_can_set_expiration_date">
-													<input type="checkbox" value="1" name="clients_can_set_expiration_date" id="clients_can_set_expiration_date" class="checkbox_options" <?php echo (CLIENTS_CAN_SET_EXPIRATION_DATE == 1) ? 'checked="checked"' : ''; ?> /><?php _e('Clients can set expiration Date','cftp_admin'); ?>
+													<input type="checkbox" value="1" name="clients_can_set_expiration_date" id="clients_can_set_expiration_date" class="checkbox_options" <?php echo (CLIENTS_CAN_SET_EXPIRATION_DATE == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Clients can set expiration Date','cftp_admin'); ?>
 												</label>
 											</div>
 										</div>

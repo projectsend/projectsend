@@ -1050,7 +1050,7 @@ if (in_session_or_cookies($allowed_update)) {
 		 * Add new options that clients can set expiration date when Uploded New files 
 		 */
 		 
-			if ($last_update < 757) {
+		if ($last_update < 757) {
 			$new_database_values = array(
 											'clients_can_set_expiration_date'	=> '0'
 										);

@@ -200,7 +200,42 @@ if(!empty($options_values)) {
 		define('GOOGLE_CLIENT_SECRET',$options_values['google_client_secret']);
 		define('GOOGLE_SIGNIN_ENABLED', $options_values['google_signin_enabled']);
 	}
-
+	/**
+	 * For versions 673 and up
+	 * For facebook Login
+	 */
+	if (isset($options_values['facebook_client_id'])) {
+		define('FACEBOOK_CLIENT_ID',$options_values['facebook_client_id']);
+		define('FACEBOOK_CLIENT_SECRET',$options_values['facebook_client_secret']);
+		define('FACEBOOK_SIGNIN_ENABLED', $options_values['facebook_signin_enabled']);
+	}
+	/**
+	 * For versions 673 and up
+	 * For twitter Login
+	 */
+	if (isset($options_values['twitter_client_id'])) {
+		define('TWITTER_CLIENT_ID',$options_values['twitter_client_id']);
+		define('TWITTER_CLIENT_SECRET',$options_values['twitter_client_secret']);
+		define('TWITTER_SIGNIN_ENABLED', $options_values['twitter_signin_enabled']);
+	}
+	/**
+	 * For versions 673 and up
+	 * For YAHOO Login
+	 */
+	if (isset($options_values['yahoo_client_id'])) {
+		define('YAHOO_CLIENT_ID',$options_values['yahoo_client_id']);
+		define('YAHOO_CLIENT_SECRET',$options_values['yahoo_client_secret']);
+		define('YAHOO_SIGNIN_ENABLED', $options_values['yahoo_signin_enabled']);
+	}
+	/**
+	 * For versions 673 and up
+	 * For linkedin Login
+	 */
+	if (isset($options_values['linkedin_client_id'])) {
+		define('LINKEDIN_CLIENT_ID',$options_values['linkedin_client_id']);
+		define('LINKEDIN_CLIENT_SECRET',$options_values['linkedin_client_secret']);
+		define('LINKEDIN_SIGNIN_ENABLED', $options_values['linkedin_signin_enabled']);
+	}
 	/**
 	 * For versions 737 and up
 	 * For reCAPTCHA
@@ -245,9 +280,5 @@ if (defined('BASE_URI')) {
 if (!defined('FOOTABLE_PAGING_NUMBER')) {
 	define('FOOTABLE_PAGING_NUMBER', '10');
 	define('FOOTABLE_PAGING_NUMBER_LOG', '15');
-}
-if (!defined('RESULTS_PER_PAGE')) {
-	define('RESULTS_PER_PAGE', '10');
-	define('RESULTS_PER_PAGE_LOG', '15');
 }
 ?>

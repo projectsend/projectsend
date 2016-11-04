@@ -35,6 +35,18 @@ if ($_POST) {
 		$allowed_empty_values[] = 'google_client_id';
 		$allowed_empty_values[] = 'google_client_secret';
 	}
+	if ( empty( $_POST['facebook_signin_enabled'] ) ) {
+		$allowed_empty_values[] = 'facebook_client_id';
+		$allowed_empty_values[] = 'facebook_client_secret';
+	}
+	if ( empty( $_POST['twitter_signin_enabled'] ) ) {
+		$allowed_empty_values[] = 'twitter_client_id';
+		$allowed_empty_values[] = 'twitter_client_secret';
+	}
+	if ( empty( $_POST['yahoo_signin_enabled'] ) ) {
+		$allowed_empty_values[] = 'yahoo_client_id';
+		$allowed_empty_values[] = 'yahoo_client_secret';
+	}
 	if ( empty( $_POST['recaptcha_enabled'] ) ) {
 		$allowed_empty_values[] = 'recaptcha_site_key';
 		$allowed_empty_values[] = 'recaptcha_secret_key';
@@ -61,6 +73,7 @@ if ($_POST) {
 		$_POST[$checkbox] = (empty($_POST[$checkbox]) || !isset($_POST[$checkbox])) ? 0 : 1;
 	}
 
+	//echo "<pre>";print_r($_POST);exit();
 	$keys = array_keys($_POST);
 	 
 	$options_total = count($keys);
@@ -143,6 +156,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 					break;
 			}
 		}
+	
 	?>
 
 		<script type="text/javascript">
@@ -620,7 +634,10 @@ $allowed_file_types = implode(',',$allowed_file_types);
 		
 										<div class="form-group">
 											<div class="col-sm-8 col-sm-offset-4">
-												<a href="<?php echo LINK_DOC_RECAPTCHA; ?>" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
+												<?php
+													$doc_link_recaptcha = 'https://developers.google.com/recaptcha/docs/start';
+												?>
+												<a href="<?php echo $doc_link_recaptcha; ?>" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
 											</div>
 										</div>
 
@@ -713,17 +730,17 @@ $allowed_file_types = implode(',',$allowed_file_types);
 
 						<div role="tabpanel" class="tab-pane fade" id="tab_sociallogin">
 							<div class="row">
+								<!-- Google Start -->
 								<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
 									<div class="white-box-interior">
 										<h3><?php _e('Google','cftp_admin'); ?></h3>
-
 										<div class="options_column">
 											<div class="form-group">
 												<label for="google_signin_enabled" class="col-sm-4 control-label"><?php _e('Enabled','cftp_admin'); ?></label>
 												<div class="col-sm-8">
 													<select name="google_signin_enabled" id="google_signin_enabled" class="form-control">
-														<option value="1" <?php echo (GOOGLE_SIGNIN_ENABLED == '1') ? 'selected="selected"' : ''; ?>><?php _e('Yes','cftp_admin'); ?></option>
-														<option value="0" <?php echo (GOOGLE_SIGNIN_ENABLED == '0') ? 'selected="selected"' : ''; ?>><?php _e('No','cftp_admin'); ?></option>
+														<option value="1" <?php echo (GOOGLE_SIGNIN_ENABLED == '1') ? 'selected="selected"' : ''; ?>>Yes</option>
+														<option value="0" <?php echo (GOOGLE_SIGNIN_ENABLED == '0') ? 'selected="selected"' : ''; ?>>No</option>
 													</select>
 												</div>
 											</div>
@@ -741,20 +758,166 @@ $allowed_file_types = implode(',',$allowed_file_types);
 											</div>
 											<div class="form-group">
 												<div class="col-sm-8 col-sm-offset-4">
-													<a href="<?php echo LINK_DOC_GOOGLE_SIGN_IN; ?>" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
-												</div>
-											</div>
-											<div class="form-group">
-												<div class="col-sm-4">
-													<?php _e('Callback URI','cftp_admin'); ?>
-												</div>
-												<div class="col-sm-8">
-													<span class="format_url"><?php echo BASE_URI . 'sociallogin/google/callback.php'; ?></span>
+													<?php
+														$doc_link_google = 'https://developers.google.com/identity/protocols/OpenIDConnect';
+													?>
+													<a href="<?php echo $doc_link_google; ?>" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
 												</div>
 											</div>
 										</div>
 									</div>
 								</div>
+								<!-- Google End -->							
+								<!-- Facebook start -->
+								<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
+		
+									<div class="white-box-interior" style="background-color:#3b5998;color:#ffffff;">
+										<h3><?php _e('Facebook','cftp_admin'); ?></h3>
+										<div class="options_column">
+											<div class="form-group">
+												<label for="facebook_signin_enabled" class="col-sm-4 control-label"><?php _e('Enabled','cftp_admin'); ?></label>
+												<div class="col-sm-8">
+													<select name="facebook_signin_enabled" id="facebook_signin_enabled" class="form-control">
+														<option value="1" <?php echo (FACEBOOK_SIGNIN_ENABLED == '1') ? 'selected="selected"' : ''; ?>>Yes</option>
+														<option value="0" <?php echo (FACEBOOK_SIGNIN_ENABLED == '0') ? 'selected="selected"' : ''; ?>>No</option>
+													</select>
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="facebook_client_id" class="col-sm-4 control-label"><?php _e('Client ID','cftp_admin'); ?></label>
+												<div class="col-sm-8">
+													<input type="text" name="facebook_client_id" id="facebook_client_id" class="form-control empty" value="<?php echo html_output(FACEBOOK_CLIENT_ID); ?>" />
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="facebook_client_secret" class="col-sm-4 control-label"><?php _e('Client Secret','cftp_admin'); ?></label>
+												<div class="col-sm-8">
+													<input type="text" name="facebook_client_secret" id="facebook_client_secret" class="form-control empty" value="<?php echo html_output(FACEBOOK_CLIENT_SECRET); ?>" />
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="col-sm-8 col-sm-offset-4">
+													<?php
+														$doc_link_facebook = 'https://developers.facebook.com/apps/';
+													?>
+													<a href="<?php echo $doc_link_facebook; ?>" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+						<!-- Facebook End -->	
+						<!-- twitter Start -->
+								<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
+									<div class="white-box-interior" style="background-color:#c0deed;color:#ffffff;">
+										<h3><?php _e('twitter','cftp_admin'); ?></h3>
+										<div class="options_column">
+											<div class="form-group">
+												<label for="twitter_signin_enabled" class="col-sm-4 control-label"><?php _e('Enabled','cftp_admin'); ?></label>
+												<div class="col-sm-8">
+													<select name="twitter_signin_enabled" id="twitter_signin_enabled" class="form-control">
+														<option value="1" <?php echo (TWITTER_SIGNIN_ENABLED == '1') ? 'selected="selected"' : ''; ?>>Yes</option>
+														<option value="0" <?php echo (TWITTER_SIGNIN_ENABLED == '0') ? 'selected="selected"' : ''; ?>>No</option>
+													</select>
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="twitter_client_id" class="col-sm-4 control-label"><?php _e('Client ID','cftp_admin'); ?></label>
+												<div class="col-sm-8">
+													<input type="text" name="twitter_client_id" id="twitter_client_id" class="form-control empty" value="<?php echo html_output(TWITTER_CLIENT_ID); ?>" />
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="twitter_client_secret" class="col-sm-4 control-label"><?php _e('Client Secret','cftp_admin'); ?></label>
+												<div class="col-sm-8">
+													<input type="text" name="twitter_client_secret" id="twitter_client_secret" class="form-control empty" value="<?php echo html_output(TWITTER_CLIENT_SECRET); ?>" />
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="col-sm-8 col-sm-offset-4">
+													<?php
+														$doc_link_twitter = 'https://developers.twitter.com/identity/protocols/OpenIDConnect';
+													?>
+													<a href="#" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- twitter End -->
+								<!-- yahoo Start -->
+								<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
+									<div class="white-box-interior" style="background-color:#7B0099;color:#ffffff;">
+										<h3><?php _e('yahoo','cftp_admin'); ?></h3>
+										<div class="options_column">
+											<div class="form-group">
+												<label for="yahoo_signin_enabled" class="col-sm-4 control-label"><?php _e('Enabled','cftp_admin'); ?></label>
+												<div class="col-sm-8">
+													<select name="yahoo_signin_enabled" id="yahoo_signin_enabled" class="form-control">
+														<option value="1" <?php echo (YAHOO_SIGNIN_ENABLED == '1') ? 'selected="selected"' : ''; ?>>Yes</option>
+														<option value="0" <?php echo (YAHOO_SIGNIN_ENABLED == '0') ? 'selected="selected"' : ''; ?>>No</option>
+													</select>
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="yahoo_client_id" class="col-sm-4 control-label"><?php _e('Client ID','cftp_admin'); ?></label>
+												<div class="col-sm-8">
+													<input type="text" name="yahoo_client_id" id="yahoo_client_id" class="form-control empty" value="<?php echo html_output(YAHOO_CLIENT_ID); ?>" />
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="yahoo_client_secret" class="col-sm-4 control-label"><?php _e('Client Secret','cftp_admin'); ?></label>
+												<div class="col-sm-8">
+													<input type="text" name="yahoo_client_secret" id="yahoo_client_secret" class="form-control empty" value="<?php echo html_output(YAHOO_CLIENT_SECRET); ?>" />
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="col-sm-8 col-sm-offset-4">
+													<?php
+														$doc_link_yahoo = 'https://developers.yahoo.com/identity/protocols/OpenIDConnect';
+													?>
+													<a href="#" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- yahoo End -->
+								<!-- linkedin Start -->
+								<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
+									<div class="white-box-interior" style="background-color:#0077B5;color:#ffffff;">
+										<h3><?php _e('linkedin','cftp_admin'); ?></h3>
+										<div class="options_column">
+											<div class="form-group">
+												<label for="linkedin_signin_enabled" class="col-sm-4 control-label"><?php _e('Enabled','cftp_admin'); ?></label>
+												<div class="col-sm-8">
+													<select name="linkedin_signin_enabled" id="linkedin_signin_enabled" class="form-control">
+														<option value="1" <?php echo (LINKEDIN_SIGNIN_ENABLED == '1') ? 'selected="selected"' : ''; ?>>Yes</option>
+														<option value="0" <?php echo (LINKEDIN_SIGNIN_ENABLED == '0') ? 'selected="selected"' : ''; ?>>No</option>
+													</select>
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="linkedin_client_id" class="col-sm-4 control-label"><?php _e('Client ID','cftp_admin'); ?></label>
+												<div class="col-sm-8">
+													<input type="text" name="linkedin_client_id" id="linkedin_client_id" class="form-control empty" value="<?php echo html_output(LINKEDIN_CLIENT_ID); ?>" />
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="linkedin_client_secret" class="col-sm-4 control-label"><?php _e('Client Secret','cftp_admin'); ?></label>
+												<div class="col-sm-8">
+													<input type="text" name="linkedin_client_secret" id="linkedin_client_secret" class="form-control empty" value="<?php echo html_output(LINKEDIN_CLIENT_SECRET); ?>" />
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- linkedin End -->			
+
+
+										</div>
+									</div>
+								</div>	
 							</div>
 						</div>
 	

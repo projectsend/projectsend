@@ -248,6 +248,26 @@ if ( isset($_SESSION['errorstate'] ) ) {
 										<a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="google-login"><img src="<?php echo BASE_URI; ?>img/google/btn_google_signin_light_normal_web.png" alt="Google Signin" /></a>
 									<?php endif; ?>
 								</div>
+								<div class="social-login">
+									<?php if(FACEBOOK_SIGNIN_ENABLED == '1'): ?>
+										<a href="sociallogin/login-with.php?provider=Facebook" name="Sign in with Facebook" class="facebook-login"><img src="<?php echo BASE_URI; ?>img/facebook/btn_facebook_signin_light_normal_web.png" alt="facebook Signin" /></a>
+									<?php endif; ?>
+								</div>
+								<div class="social-login">
+									<?php if(TWITTER_SIGNIN_ENABLED == '1'): ?>
+										<a href="sociallogin/login-with.php?provider=Twitter" name="Sign in with Twitter" class="twitter-login"><img src="<?php echo BASE_URI; ?>img/twitter/btn_twitter_signin_light_normal_web.png" alt="twitter Signin" /></a>
+									<?php endif; ?>
+								</div>
+								<div class="social-login">
+									<?php if(YAHOO_SIGNIN_ENABLED == '1'): ?>
+										<a href="sociallogin/login-with.php?provider=yahoo" name="Sign in with yahoo" class="yahoo-login"><img src="<?php echo BASE_URI; ?>img/yahoo/btn_yahoo_signin_light_normal_web.png" alt="yahoo Signin" /></a>
+									<?php endif; ?>
+								</div>
+								<div class="social-login">
+									<?php if(LINKEDIN_SIGNIN_ENABLED == '1'): ?>
+										<a href="sociallogin/login-with.php?provider=LinkedIn" name="Sign in with linkedin" class="linkedin-login"><img src="<?php echo BASE_URI; ?>img/linkedin/btn_linkedin_signin_light_normal_web.png" alt="linkedin Signin" /></a>
+									<?php endif; ?>
+								</div>
 							</fieldset>
 						</form>
 			

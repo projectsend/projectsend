@@ -5,13 +5,7 @@ MAINTAINER Kyle Gordon <kyle@lodge.glasgownet.com>
 
 RUN apt-get update && apt-get -y install wget git apache2 php5 php5-mysql php5-apcu php5-mcrypt php5-intl
 
-# Enable mysql extension, disable PDO and mysqli
-#RUN sed -i'' 's#^;\(extension=mysql.so.*$\)#\1#g' /etc/php/php.ini
-#RUN sed -i'' 's#^\(extension=mysqli.so.*$\)#;\1#g' /etc/php/php.ini
-#RUN sed -i'' 's#^\(extension=pdo_mysql.so.*$\)#;\1#g' /etc/php/php.ini
-
 # Use php5enmod to link /etc/php5/mods-available items to /etc/php5/apache2/conf.d/
-# FIXME See above about disabling or enabling mysql php extensions
 RUN php5enmod apcu mcrypt intl pdo_mysql
 RUN php5dismod mysqli mysql
 

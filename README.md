@@ -52,6 +52,11 @@ Your personal configuration file (sys.config.php) is never included on the downl
 When a system user logs in to the system version, a check for database missing data will be made, and if anything is found, it will be updated automatically and a message will appear under the menu one time only.
 Whenever a new version is available, you will be notified in the admin panel via a message shown under the main menu.
 
+## Using with Docker:
+## FIXME
+
+1. docker run -ti -p 80:80 -e DB_NAME=projectsend -e DB_HOST=10.2.10.213 -e DB_USER=projectsend -e DB_PASS=projectsend -e MAX_FILESIZE=51200 test:latest
+
 ## Questions, ideas? Want to join the project?
 Send your message to contact@projectsend.org or join us on Facebook, on https://www.facebook.com/projectsend/
 

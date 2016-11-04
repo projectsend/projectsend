@@ -3,7 +3,7 @@ FROM debian:jessie
 # Inspiration from MAINTAINER Marc Richter <mail@marc-richter.info>
 MAINTAINER Kyle Gordon <kyle@lodge.glasgownet.com>
 
-RUN apt-get update && apt-get -y install git apache2 php5 php5-mysql php5-apcu php5-mcrypt php5-intl
+RUN apt-get update && apt-get -y install wget git apache2 php5 php5-mysql php5-apcu php5-mcrypt php5-intl
 
 # Enable mysql extension, disable PDO and mysqli
 #RUN sed -i'' 's#^;\(extension=mysql.so.*$\)#\1#g' /etc/php/php.ini
@@ -15,7 +15,9 @@ RUN apt-get update && apt-get -y install git apache2 php5 php5-mysql php5-apcu p
 RUN php5enmod apcu mcrypt intl pdo_mysql
 RUN php5dismod mysqli mysql
 
-RUN rm /var/www/html/index.html && git clone https://github.com/ignacionelson/ProjectSend /var/www/html/
+#RUN rm /var/www/html/index.html && git clone https://github.com/ignacionelson/ProjectSend /var/www/html/
+RUN rm /var/www/html/index.html && wget https://codeload.github.com/ignacionelson/ProjectSend/tar.gz/r756 -O /tmp/ProjectSend.tar.gz && tar -zxvf /tmp/ProjectSend.tar.gz --strip-components=1 -C /var/www/html/
+
 # Forbid access to .git
 RUN echo -e '\nRedirectMatch 404 /\.git' >> /var/www/html/.htaccess
 RUN chown www-data:www-data -R /var/www/html

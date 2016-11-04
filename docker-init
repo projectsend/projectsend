@@ -31,11 +31,11 @@ sed -i'' 's#^define(.*MAX_FILESIZE.*$#MAX_FILESIZE_MARKER#g' "${CONFIGFILE}"
 sed -i'' "s#MAX_FILESIZE_MARKER#define('MAX_FILESIZE',${MAX_FILESIZE});#g" "${CONFIGFILE}"
 # PHP
 # upload_max_filesize
-sed -i'' "s#upload_max_filesize =.*\$#upload_max_filesize = ${MAX_FILESIZE};#g" /etc/php/php.ini
-sed -i'' "s#^;upload_max_filesize#upload_max_filesize#g" /etc/php/php.ini
+sed -i'' "s#upload_max_filesize =.*\$#upload_max_filesize = ${MAX_FILESIZE};#g" /etc/php5/apache2/php.ini
+sed -i'' "s#^;upload_max_filesize#upload_max_filesize#g" /etc/php5/apache2/php.ini
 # post_max_size
-sed -i'' "s#post_max_size =.*\$#post_max_size = ${MAX_FILESIZE};#g" /etc/php/php.ini
-sed -i'' "s#^;post_max_size#post_max_size#g" /etc/php/php.ini
+sed -i'' "s#post_max_size =.*\$#post_max_size = ${MAX_FILESIZE};#g" /etc/php5/apache2/php.ini
+sed -i'' "s#^;post_max_size#post_max_size#g" /etc/php5/apache2/php.ini
 
 # SITE_LANG
 if [ -z "${SITE_LANG}" ]; then

@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 # Create config if not exist
 CONFIGFILE="/var/www/html/includes/sys.config.php"

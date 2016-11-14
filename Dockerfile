@@ -28,10 +28,7 @@ COPY docker-init docker-init
 RUN chmod +x /docker-init
 
 EXPOSE 80
-#CMD ["/usr/sbin/apache2", "-D", "FOREGROUND"]
 CMD ["/docker-init"]
 
-#VOLUME ["/app"]
+VOLUME ["/var/www/html/upload/files/"]
 
-#CMD ["/init"]
-#COPY src/ /var/www/html/

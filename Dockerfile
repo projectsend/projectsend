@@ -3,7 +3,7 @@ FROM debian:jessie
 # Inspiration from MAINTAINER Marc Richter <mail@marc-richter.info>
 MAINTAINER Kyle Gordon <kyle@lodge.glasgownet.com>
 
-RUN apt-get update && apt-get -y install wget git apache2 php5 php5-mysql php5-apcu php5-mcrypt php5-intl
+RUN apt-get update && apt-get -y install wget git apache2 php5 php5-mysql php5-apcu php5-mcrypt php5-intl && apt-get clean && rm -d /var/lib/apt/lists/*
 
 # Use php5enmod to link /etc/php5/mods-available items to /etc/php5/apache2/conf.d/
 RUN php5enmod apcu mcrypt intl pdo_mysql

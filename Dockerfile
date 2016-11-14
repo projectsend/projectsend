@@ -15,6 +15,7 @@ RUN rm /var/www/html/index.html && wget https://codeload.github.com/ignacionelso
 # Forbid access to .git
 RUN echo -e '\nRedirectMatch 404 /\.git' >> /var/www/html/.htaccess
 RUN chown www-data:www-data -R /var/www/html
+RUN mkdir /var/www/html/upload/files/ && chown www-data. /var/www/html/upload/files/ && chmod 755 /var/www/html/upload/files/
 
 ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP www-data

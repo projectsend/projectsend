@@ -53,9 +53,13 @@ When a system user logs in to the system version, a check for database missing d
 Whenever a new version is available, you will be notified in the admin panel via a message shown under the main menu.
 
 ## Using with Docker:
-## FIXME
 
-1. docker run -ti -p 80:80 -e DB_NAME=projectsend -e DB_HOST=10.2.10.213 -e DB_USER=projectsend -e DB_PASS=projectsend -e MAX_FILESIZE=51200 test:latest
+Before running the Docker image, you will need to have a seperate, persistent
+MySQL or MariaDB instance. The below example assumes you have a database host on
+192.168.1.100, with a 'projectsend' table, with the username and password also
+set to 'projectsend'
+
+1. docker run -d -ti -p 80:80 -e DB_NAME=projectsend -e DB_HOST=192.168.1.100 -e DB_USER=projectsend -e DB_PASS=projectsend -e MAX_FILESIZE=51200 kylegordon/projectsend:r756
 
 ## Questions, ideas? Want to join the project?
 Send your message to contact@projectsend.org or join us on Facebook, on https://www.facebook.com/projectsend/

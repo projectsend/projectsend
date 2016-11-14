@@ -59,7 +59,7 @@ MySQL or MariaDB instance. The below example assumes you have a database host on
 192.168.1.100, with a 'projectsend' table, with the username and password also
 set to 'projectsend'
 
-1. docker run -d -ti -p 80:80 -e DB_NAME=projectsend -e DB_HOST=192.168.1.100 -e DB_USER=projectsend -e DB_PASS=projectsend -e MAX_FILESIZE=51200 kylegordon/projectsend:r756
+1. docker run -d -ti -p 80:80 -e DB_NAME=projectsend -e DB_HOST=192.168.1.100 -e DB_USER=projectsend -e DB_PASS=projectsend -e MAX_FILESIZE=5120000 kylegordon/projectsend:r756
 
 ## Questions, ideas? Want to join the project?
 Send your message to contact@projectsend.org or join us on Facebook, on https://www.facebook.com/projectsend/

@@ -27,9 +27,6 @@ ENV APACHE_PID_FILE /var/run/apache2.pid
 COPY docker-init docker-init
 RUN chmod +x /docker-init
 
-# Temporary diagnostics page
-COPY phpinfo.php /var/www/html/info.php
-
 EXPOSE 80
 #CMD ["/usr/sbin/apache2", "-D", "FOREGROUND"]
 CMD ["/docker-init"]

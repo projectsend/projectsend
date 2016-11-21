@@ -42,7 +42,7 @@ if ($_POST) {
 
 	/** Checkboxes */
 	$checkboxes	= array(
-                        'secure_delete_files',
+						'secure_delete_files',
 						'recaptcha_enabled',
 						'clients_can_delete_own_files',
 						'use_browser_lang',
@@ -178,6 +178,27 @@ $allowed_file_types = implode(',',$allowed_file_types);
 
 					// show the errors or continue if everything is ok
 					if (show_form_errors() == false) { alert('<?php _e('Please complete all the fields.','cftp_admin'); ?>'); return false; }
+				});
+
+				$('#secure_delete_files').change(function() {
+					// We only check when enabling shred
+					var box_element = $(this);
+					if (box_element.is(':checked'))
+						$.getJSON({
+							url: 'includes/shred-check.php',
+							success: function(data) {
+								if(!data.installed) {
+									alert('<?php _e('shred not found','cftp_admin'); ?>');
+									box_element.prop('checked', false);
+									box_element.parent().addClass("alert alert-danger");
+									box_element.parent().text('<?php _e('shred not found','cftp_admin'); ?>');
+								}
+							},
+							error: function(data) {
+								alert('<?php _e('Server error executing shred-check script','cftp_admin'); ?>');
+								box_element.prop('checked', false);
+							}
+						});
 				});
 			});
 		</script>

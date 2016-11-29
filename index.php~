@@ -305,49 +305,7 @@ if ( isset($_SESSION['errorstate'] ) ) {
 			</div>	
 		</div> <!-- container -->
 	</div> <!-- main (from header) -->
-<script type="text/javascript">
-function validateEmail($email) {
-  var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
-  if( !emailReg.test( $email ) ) {
-    return false;
-  } else {
-    return true;
-  }
-}
 
-	$(document).ready(function(){
-		$('#display_ldap_form').click(function(e){
-			e.preventDefault();
-			$('#ldap_login_div').toggle();
-			$('#ldap_submit').click(function(){
-					var email = $('#ldap_email').val();
-					var password = $('#ldap_password').val();
-					//alert(email+' '+password);
-					if(email){
-					if(validateEmail(email)){		
-					$.ajax({
-						type:'POST',
-						url:'<?php echo BASE_URI; ?>ldap_ajax.php',
-						dataType:'html',
-						data:{email:email,password:password}
-					}).done(function(data){
-						if(data="success"){
-							     window.location = "<?php echo BASE_URI;?>sociallogin/ldap-login.php?email="+email;
-						}else{
-							
-						}
-			
-					});
-				}else{
-			$('#message').text('Not a valid email');
-		}}else{
-			$('#message').text('The Email field is required');
-		}
-		});
-					
-		});
-	});
-</script>
 	<?php
 		default_footer_info( false );
 

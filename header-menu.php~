@@ -122,22 +122,6 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 											),
 							);
 
-	$items['update_database_info']	= array(
-								'nav'	=> 'options',
-								'level'	=> array( 9 ),
-								'main'	=> array(
-												'label'	=> __('Database info', 'cftp_admin'),
-												
-											),
-								'sub'	=> array(
-												array(
-													'label'	=> __('Database info', 'cftp_admin'),
-													'link'	=> 'databse_info.php',
-												),
-											),
-							);
-
-
 	$items['options']	= array(
 								'nav'	=> 'options',
 								'level'	=> array( 9 ),

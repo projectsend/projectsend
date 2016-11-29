@@ -287,10 +287,6 @@ if (defined('TRY_INSTALL')) {
 								('twitter_client_id', ''),
 								('twitter_client_secret', ''),
 								('twitter_signin_enabled', '0'),
-								('ldap_server', ''),
-								('ldap_bind_dn', ''),
-								('ldap_bind_password', ''),
-								('ldap_server_enabled', '0'),
 								('recaptcha_enabled', '0'),
 								('recaptcha_site_key', ''),
 								('recaptcha_secret_key', '')

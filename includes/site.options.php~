@@ -236,16 +236,7 @@ if(!empty($options_values)) {
 		define('LINKEDIN_CLIENT_SECRET',$options_values['linkedin_client_secret']);
 		define('LINKEDIN_SIGNIN_ENABLED', $options_values['linkedin_signin_enabled']);
 	}
-	/**
-	 * For versions 673 and up
-	 * For Ldap Login
-	 */
-	if (isset($options_values['ldap_server'])) {
-		define('LDAP_SERVER_ENABLED', $options_values['ldap_server_enabled']);
-		define('LDAP_SERVER',$options_values['ldap_server']);
-		define('LDAP_BIND_DN',$options_values['ldap_bind_dn']);
-		define('LDAP_BIND_PASSWORD',$options_values['ldap_bind_password']);
-	}
+	
 	/**
 	 * For versions 737 and up
 	 * For reCAPTCHA

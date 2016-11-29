@@ -129,19 +129,12 @@ if (isset($_POST['submit-start']) && $ready_to_go) {
 								"'tbl_'",
 								"'en'"
 							);
-			/* AES Decryption started by RJ-23-Nov-2016 */
-			$blockSize = 256;
-    			$inputKey = "project send encryption";
-			$aes = new AES($post_vars['dbpassword'], $inputKey, $blockSize);
-			$encPassword = $aes->encrypt();
-			/* AES Decryption ended by RJ-23-Nov-2016 */
-			//encPassword is a aes encrypted password
 	$template_replace	= array(
 								"'" . $post_vars['dbdriver'] . "'",
 								"'" . $post_vars['dbname'] . "'",
 								"'" . $post_vars['dbhost'] . "'",
 								"'" . $post_vars['dbuser'] . "'",
-								"'" . $encPassword . "'",
+								"'" . $post_vars['dbpassword'] . "'",
 								"'" . $post_vars['dbprefix'] . "'",
 								"'" . $post_vars['lang'] . "'",
 							);

@@ -70,7 +70,7 @@ function sql_add_order( $table, $column = 'id', $initial_order = 'ASC' ) {
 	$orderby		= ( isset( $_GET['orderby'] ) && in_array( $_GET['orderby'], $columns_keys ) ) ? $_GET['orderby'] : $column;
 
 	$order		= ( isset( $_GET['order'] ) ) ? strtoupper($_GET['order']) : $initial_order;
-	$order		= ( $order != 'DESC' || $order != 'ASC' ) ? $order : $initial_order;
+    $order      = (preg_match("/^(DESC|ASC)$/",$order)) ? $order : $initial_order;
 
 	return " ORDER BY $orderby $order";
 }
@@ -760,7 +760,7 @@ function get_real_size($file)
 			$ff = $f->Size;
 		}
 		else {
-	        $ff = trim(exec("for %F in (\"" . $file . "\") do @echo %~zF"));
+	        $ff = trim(exec("for %F in (\"" . escapeshellarg($file) . "\") do @echo %~zF"));
 		}
     }
 	elseif (PHP_OS == 'Darwin') {

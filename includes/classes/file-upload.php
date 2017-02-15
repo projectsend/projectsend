@@ -93,7 +93,7 @@ class PSend_Upload_File
 	{
 		$this->name = $name;
 		$this->safe_filename = $this->generate_safe_filename( $this->name );
-		return $this->safe_filename;
+		return $this->basename(safe_filename);
 	}
 	
 	/**

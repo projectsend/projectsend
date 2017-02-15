@@ -49,6 +49,13 @@ $this_file = new PSend_Upload_File();
 // Rename the file
 $fileName = $this_file->safe_rename($fileName);
 
+// Validate file has an acceptable extension
+$fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
+$allowedExt = explode(',', $options_values['allowed_file_types'] );
+if (!in_array($fileExt, $allowedExt)) {
+    die('{"jsonrpc" : "2.0", "error" : {"code": 104, "message": "Invalid Extension."}, "id" : "id"}');
+};
+
 // Make sure the fileName is unique but only if chunking is disabled
 if ($chunks < 2 && file_exists($targetDir . DIRECTORY_SEPARATOR . $fileName)) {
 	$ext = strrpos($fileName, '.');

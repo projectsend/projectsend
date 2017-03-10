@@ -1,0 +1,8 @@
+//This file for DB migrations
+
+
+-------------------------------
+
+ALTER TABLE `tbl_files` ADD `size` INT NOT NULL DEFAULT '0' COMMENT 'file size' ;
+
+-------------------------------

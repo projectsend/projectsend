@@ -93,7 +93,7 @@ class PSend_Upload_File
 	{
 		$this->name = $name;
 		$this->safe_filename = $this->generate_safe_filename( $this->name );
-		return $this->basename(safe_filename);
+		return basename($this->safe_filename);
 	}
 	
 	/**
@@ -155,10 +155,15 @@ class PSend_Upload_File
 		$this->expiry_date		= (!empty($arguments['expiry_date'])) ? date("Y-m-d", strtotime($arguments['expiry_date'])) : date("Y-m-d");
 		$this->is_public		= (!empty($arguments['public'])) ? 1 : 0;
 		$this->public_token		= generateRandomString(32);
-		
+		if(isset($arguments['size'])){
+			$this->size 			= $arguments['size'];
+		}
+		else{
+			$this->size 			= 0;
+		}
 		if (isset($arguments['add_to_db'])) {
-			$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (url, filename, description, uploader, expires, expiry_date, public_allow, public_token)"
-											."VALUES (:url, :name, :description, :uploader, :expires, :expiry_date, :public, :token)");
+			$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (url, filename, description, uploader, expires, expiry_date, public_allow, public_token, size)"
+											."VALUES (:url, :name, :description, :uploader, :expires, :expiry_date, :public, :token, :size)");
 			$this->statement->bindParam(':url', $this->post_file);
 			$this->statement->bindParam(':name', $this->name);
 			$this->statement->bindParam(':description', $this->description);
@@ -167,6 +172,7 @@ class PSend_Upload_File
 			$this->statement->bindParam(':expiry_date', $this->expiry_date);
 			$this->statement->bindParam(':public', $this->is_public, PDO::PARAM_INT);
 			$this->statement->bindParam(':token', $this->public_token);
+			$this->statement->bindParam(':size', $this->size);
 			$this->statement->execute();
 
 			$this->file_id = $this->dbh->lastInsertId();

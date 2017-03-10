@@ -220,7 +220,7 @@ while( $row = $statement->fetch() ) {
 						if (!in_array($new_filename,$urls_db_files)) {
 							$add_arguments['add_to_db'] = true;
 						}
-
+						$add_arguments['size'] = filesize($location) / 1024;
 						/**
 						 * 1- Add the file to the database
 						 */

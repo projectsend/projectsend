@@ -155,8 +155,12 @@ class PSend_Upload_File
 		$this->expiry_date		= (!empty($arguments['expiry_date'])) ? date("Y-m-d", strtotime($arguments['expiry_date'])) : date("Y-m-d");
 		$this->is_public		= (!empty($arguments['public'])) ? 1 : 0;
 		$this->public_token		= generateRandomString(32);
-		$this->size 			= $arguments['size'];;
-		
+		if(isset($arguments['size'])){
+			$this->size 			= $arguments['size'];
+		}
+		else{
+			$this->size 			= 0;
+		}
 		if (isset($arguments['add_to_db'])) {
 			$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (url, filename, description, uploader, expires, expiry_date, public_allow, public_token, size)"
 											."VALUES (:url, :name, :description, :uploader, :expires, :expiry_date, :public, :token, :size)");

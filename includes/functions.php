@@ -510,21 +510,31 @@ function get_file_by_id($id)
 function default_footer_info($logged = true)
 {
 	global $dbh;
-	global $global_name;
-	$sql_distinct_files = $dbh->prepare("SELECT SUM(size) AS volume FROM " . TABLE_FILES. " WHERE uploader='Orlandop'");
-	//$sql_distinct_files->bindParam(':username', 'Orlandop');
+	
+	$editing = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
+	$user_id = CURRENT_USER_ID;
+	$editing->bindParam(':id', $user_id, PDO::PARAM_INT);
+	$editing->execute();
+	$editing->setFetchMode(PDO::FETCH_ASSOC);
+
+	while ( $data = $editing->fetch() ) {
+		$add_user_data_user = $data['user'];
+	}
+	
+	$sql_distinct_files = $dbh->prepare("SELECT SUM(size) AS volume FROM " . TABLE_FILES. " WHERE uploader= :username");
+	$sql_distinct_files->bindParam(':username', $add_user_data_user);
 	$sql_distinct_files->execute();
 	$sql_distinct_files->setFetchMode(PDO::FETCH_ASSOC);
-			
+	$file_size = 0;		
 	while( $data_file_relations = $sql_distinct_files->fetch() ) {
-		$file_size = format_file_size($data_file_relations['volume'] * 1024);
+		$file_size = $data_file_relations['volume'] * 1024;
 	}
-	//$file_size = format_file_size(1234545678);
+	$file_size = format_file_size($file_size);
 					
 ?>
 	<footer>
 		<div id="footer">
-			<span>Current upluaded size: <?=$file_size?></span>&nbsp;
+			<span>Current uploaded size:&nbsp;<?=$file_size?></span>&nbsp;
 		</div>
 	</footer>
 <?php

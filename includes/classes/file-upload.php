@@ -91,10 +91,9 @@ class PSend_Upload_File
 	 */
 	function safe_rename($name)
 	{
-		/*$this->name = $name;
+		$this->name = $name;
 		$this->safe_filename = $this->generate_safe_filename( $this->name );
-		return $this->basename(safe_filename);*/
-		return $name;
+		return basename($this->safe_filename);
 	}
 	
 	/**

@@ -509,10 +509,22 @@ function get_file_by_id($id)
  */
 function default_footer_info($logged = true)
 {
+	global $dbh;
+	global $global_name;
+	$sql_distinct_files = $dbh->prepare("SELECT SUM(size) AS volume FROM " . TABLE_FILES. " WHERE uploader='Orlandop'");
+	//$sql_distinct_files->bindParam(':username', 'Orlandop');
+	$sql_distinct_files->execute();
+	$sql_distinct_files->setFetchMode(PDO::FETCH_ASSOC);
+			
+	while( $data_file_relations = $sql_distinct_files->fetch() ) {
+		$file_size = format_file_size($data_file_relations['volume'] * 1024);
+	}
+	//$file_size = format_file_size(1234545678);
+					
 ?>
 	<footer>
 		<div id="footer">
-			<?php _e('Provided by', 'cftp_admin'); ?> <a href="<?php echo SYSTEM_URI; ?>" target="_blank"><?php echo SYSTEM_NAME; ?></a> <?php if ($logged == true) { _e('version', 'cftp_admin'); echo ' ' . CURRENT_VERSION; } ?> - <?php _e('Free software', 'cftp_admin'); ?>
+			<span>Current upluaded size: <?=$file_size?></span>&nbsp;
 		</div>
 	</footer>
 <?php

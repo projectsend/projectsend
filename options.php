@@ -48,6 +48,7 @@ if ($_POST) {
 						'clients_can_register',
 						'clients_auto_approve',
 						'clients_can_upload',
+						'clients_can_set_expiration_date',
 						'mail_copy_user_upload',
 						'mail_copy_client_upload',
 						'mail_copy_main_user',
@@ -168,6 +169,14 @@ $allowed_file_types = implode(',',$allowed_file_types);
 					'height'		: 'auto',
 					'defaultText'	: '',
 				});
+				
+				$('#custom_expiry_date').spinedit({
+					minimum: 0,
+					maximum: 365,
+					step: 1,
+					value: <?php echo CUSTOM_EXPIRY_DATE; ?>,
+					numberOfDecimals: 0
+				});	
 
 				$("form").submit(function() {
 					clean_form(this);
@@ -251,6 +260,15 @@ $allowed_file_types = implode(',',$allowed_file_types);
 
 										<div class="options_divide"></div>
 
+										<h3><?php _e('Files Options','cftp_admin'); ?></h3>
+										
+										<div class="form-group">
+											<label for="custom_expiry_date" class="col-sm-4 control-label"><?php _e('Expiration Days auto selectet','cftp_admin'); ?></label>
+											<div class="col-sm-8">
+												<input type="text" name="custom_expiry_date" id="custom_expiry_date" class="form-control" value="<?php echo CUSTOM_EXPIRY_DATE; ?>" />
+												<p class="field_note"><?php _e('Define how many Days the expiration date auto selectet.','cftp_admin'); ?></p>
+											</div>
+										</div>
 
 										<h3><?php _e('Language','cftp_admin'); ?></h3>
 
@@ -354,6 +372,14 @@ $allowed_file_types = implode(',',$allowed_file_types);
 											<div class="col-sm-8 col-sm-offset-4">
 												<label for="clients_can_delete_own_files">
 													<input type="checkbox" value="1" name="clients_can_delete_own_files" id="clients_can_delete_own_files" class="checkbox_options" <?php echo (CLIENTS_CAN_DELETE_OWN_FILES == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Clients can delete their own uploaded files','cftp_admin'); ?>
+												</label>
+											</div>
+										</div>
+		
+										<div class="form-group">
+											<div class="col-sm-8 col-sm-offset-4">
+												<label for="clients_can_set_expiration_date">
+													<input type="checkbox" value="1" name="clients_can_set_expiration_date" id="clients_can_set_expiration_date" class="checkbox_options" <?php echo (CLIENTS_CAN_SET_EXPIRATION_DATE == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Clients can set expiration Date','cftp_admin'); ?>
 												</label>
 											</div>
 										</div>

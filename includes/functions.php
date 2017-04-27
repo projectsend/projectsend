@@ -70,7 +70,7 @@ function sql_add_order( $table, $column = 'id', $initial_order = 'ASC' ) {
 	$orderby		= ( isset( $_GET['orderby'] ) && in_array( $_GET['orderby'], $columns_keys ) ) ? $_GET['orderby'] : $column;
 
 	$order		= ( isset( $_GET['order'] ) ) ? strtoupper($_GET['order']) : $initial_order;
-	$order		= ( $order != 'DESC' || $order != 'ASC' ) ? $order : $initial_order;
+    $order      = (preg_match("/^(DESC|ASC)$/",$order)) ? $order : $initial_order;
 
 	return " ORDER BY $orderby $order";
 }
@@ -760,14 +760,14 @@ function get_real_size($file)
 			$ff = $f->Size;
 		}
 		else {
-	        $ff = trim(exec("for %F in (\"" . $file . "\") do @echo %~zF"));
+	        $ff = trim(exec("for %F in (\"" . escapeshellarg($file) . "\") do @echo %~zF"));
 		}
     }
 	elseif (PHP_OS == 'Darwin') {
-		$ff = trim(shell_exec("stat -f %z " . escapeshellarg($file)));
+		$ff = trim(shell_exec("stat -L -f %z " . escapeshellarg($file)));
     }
 	elseif ((PHP_OS == 'Linux') || (PHP_OS == 'FreeBSD') || (PHP_OS == 'Unix') || (PHP_OS == 'SunOS')) {
-		$ff = trim(shell_exec("stat -c%s " . escapeshellarg($file)));
+		$ff = trim(shell_exec("stat -L -c%s " . escapeshellarg($file)));
     }
 	else {
 		$ff = filesize($file);

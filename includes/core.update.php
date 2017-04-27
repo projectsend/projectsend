@@ -1044,7 +1044,41 @@ if (in_session_or_cookies($allowed_update)) {
 				$updates_made++;
 			}
 		}
+		
+		/**
+		 * r757 updates
+		 * Add new options that clients can set expiration date when Uploded New files 
+		 */
+		 
+		if ($last_update < 757) {
+			$new_database_values = array(
+											'clients_can_set_expiration_date'	=> '0'
+										);
+			
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
+				}
+			}
+		}
 
+		/**
+		 * r757 updates
+		 * Add new options that clients can set expiration date when Uploded New files 
+		 */
+		 
+			if ($last_update < 757) {
+			$new_database_values = array(
+											'custom_expiry_date'	=> '14'
+										);
+			
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
+				}
+			}
+		}	
+		
 	}
 }	
 ?>

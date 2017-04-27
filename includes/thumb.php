@@ -35,7 +35,7 @@ else {
 			$do_on_folder = LOGO_THUMB_FOLDER;
 		break;
 		case 'prev':
-			$who = $_GET['who'];
+			$who = basename($_GET['who']);
 			$thumb_name = $_GET['name'];
 			$do_on_folder = '../upload/'.$who.'/thumbs/';
 		break;
@@ -49,7 +49,7 @@ if(isset($_GET['w'])) { $thumb_name .= '-W'.$_GET['w']; }
 if(isset($_GET['h'])) { $thumb_name .= '-H'.$_GET['h']; }
 $thumb_name .= '.'.$pathinfo['extension'];
 
-$destination = $do_on_folder.$thumb_name;
+$destination = $do_on_folder.basename($thumb_name);
 
 if (!file_exists($thumb_name)) {
 	$extension = strtolower($pathinfo['extension']);
@@ -408,7 +408,7 @@ function UnsharpMask($img, $amount, $radius, $threshold)
 ////  
 ////                  Unsharp Mask for PHP - version 2.1.1  
 ////  
-////    Unsharp mask algorithm by Torstein Hønsi 2003-07.  
+////    Unsharp mask algorithm by Torstein Hï¿½nsi 2003-07.  
 ////             thoensi_at_netcom_dot_no.  
 ////               Please leave this notice.  
 ////  

@@ -468,7 +468,7 @@ while( $row = $statement->fetch() ) {
 									<div class="row edit_files">
 										<div class="col-sm-12">
 											<div class="row edit_files_blocks">
-												<div class="<?php echo ($global_level != 0) ? 'col-sm-6 col-md-3' : 'col-sm-12 col-md-12'; ?> column">
+												<div class="<?php echo ($global_level != 0 || CLIENTS_CAN_SET_EXPIRATION_DATE == '1' ) ? 'col-sm-6 col-md-3' : 'col-sm-12 col-md-12'; ?> column">
 													<div class="file_data">
 														<div class="row">
 															<div class="col-sm-12">
@@ -490,47 +490,64 @@ while( $row = $statement->fetch() ) {
 														</div>
 													</div>
 												</div>
+												
 												<?php
-													/** The following options are available to users only */
-													if ($global_level != 0) {
-												?>
-														<div class="col-sm-6 col-md-3 column_even column">
-															<div class="file_data">
-																<?php
-																	/**
-																	* Only show the expiration options if the current
-																	* uploader is a system user, and not a client.
-																	*/
-																?>
-																<h3><?php _e('Expiration date', 'cftp_admin');?></h3>
-
-																<div class="form-group">
-																	<label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
+													/** The following options are available to users or client if clients_can_set_expiration_date set. */
+													if ($global_level != 0 || CLIENTS_CAN_SET_EXPIRATION_DATE == '1' ) {
+												?>											
+													<div class="col-sm-6 col-md-3 column_even column">
+														<div class="file_data">
+															<?php
+																/**
+																* Only show the expiration options if the current
+																* uploader is a system user or client if clients_can_set_expiration_date is set.
+																*/
+															?>
+															<h3><?php _e('Expiration date', 'cftp_admin');?></h3>
+															
+															<div class="form-group">
+																<label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
 																	<div class="input-group date-container">
-																		<input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" />
+																		<input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y', strtotime( "$dt +" . CUSTOM_EXPIRY_DATE . " day" )); ?>" />
 																		<div class="input-group-addon">
 																			<i class="glyphicon glyphicon-time"></i>
 																		</div>
 																	</div>
-																</div>
+															</div>
 
-																<div class="checkbox">
-																	<label for="exp_checkbox_<?php echo $i; ?>">
-																		<input type="checkbox" name="file[<?php echo $i; ?>][expires]" id="exp_checkbox_<?php echo $i; ?>" value="1" <?php if ($row['expiry_set']) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?>
-																	</label>
-																</div>
+															<div class="checkbox">
+																<label for="exp_checkbox_<?php echo $i; ?>">
+																	<input type="checkbox" name="file[<?php echo $i; ?>][expires]" id="exp_checkbox_<?php echo $i; ?>" value="1" <?php if ($row['expiry_set']) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?>
+																</label>
+															</div>
+			
+															<?php
+																/** The following options are available to users only */
+																if ($global_level != 0) {
+															?>
 			
 																<div class="divider"></div>
-				
+					
 																<h3><?php _e('Public downloading', 'cftp_admin');?></h3>
+																
 																<div class="checkbox">
 																	<label for="pub_checkbox_<?php echo $i; ?>">
 																		<input type="checkbox" id="pub_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][public]" value="1" /> <?php _e('Allow public downloading of this file.', 'cftp_admin');?>
 																	</label>
 																</div>
-															</div>
+														<?php
+															} /** Close $current_level check */
+														?>
 														</div>
-
+													</div>
+												<?php
+													} /** Close $current_level check */
+												?>
+												
+												<?php
+													/** The following options are available to users only */
+													if ($global_level != 0) {
+												?>
 														<div class="col-sm-6 col-md-3 assigns column">
 															<div class="file_data">
 																<?php
@@ -584,7 +601,6 @@ while( $row = $statement->fetch() ) {
 																</div>
 															</div>
 														</div>
-
 
 														<div class="col-sm-6 col-md-3 categories column">
 															<div class="file_data">

@@ -214,7 +214,7 @@ if (!empty($found_notifications)) {
 		foreach ($notes_to_admin as $mail_username => $admin_files) {
 			
 			/** Check if the admin is active */
-			if ($creators_data[$mail_username]['active'] == '1') {
+			if (isset($creators_data[$mail_username]) && $creators_data[$mail_username]['active'] == '1') {
 				/** Reset the files list UL contents */
 				$files_list = '';
 				foreach ($admin_files as $client_uploader => $mail_files) {

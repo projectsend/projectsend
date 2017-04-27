@@ -265,7 +265,6 @@ if (defined('TRY_INSTALL')) {
 								('expired_files_hide', '1'),
 								('notifications_max_tries', '2'),
 								('notifications_max_days', '15'),
-								('custom_expiry_date', '14'),
 								('file_types_limit_to', 'all'),
 								('pass_require_upper', '0'),
 								('pass_require_lower', '0'),

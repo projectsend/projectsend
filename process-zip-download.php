@@ -12,7 +12,7 @@ $zip_file = tempnam("tmp", "zip");
 $zip = new ZipArchive();
 $zip->open($zip_file, ZipArchive::OVERWRITE);
 
-$files_to_zip = explode( ',', $_GET['file'] );
+$files_to_zip = explode( ',', $_GET['ids'] );
 
 foreach ($files_to_zip as $idx => $file) {
     $file = UPLOADED_FILES_FOLDER . $file;
@@ -46,13 +46,14 @@ foreach ($files_to_zip as $file_to_zip) {
 	 * that only files under his account can be added.
 	 */
 	if ($current_level == 0) {
-		$statement = $dbh->prepare("SELECT id, expires, expiry_date FROM " . TABLE_FILES . " WHERE url = :url");
-		$statement->bindParam(':url', $file_to_zip);
+		$statement = $dbh->prepare("SELECT id, url, expires, expiry_date FROM " . TABLE_FILES . " WHERE id = :file");
+		$statement->bindParam(':file', $file_to_zip, PDO::PARAM_INT);
 		$statement->execute();
 		$statement->setFetchMode(PDO::FETCH_ASSOC);
 		$row = $statement->fetch();
 
 		$this_file_id			= $row['id'];
+		$this_file_filename		= $row['url'];
 		$this_file_expires		= $row['expires'];
 		$this_file_expiry_date	= $row['expiry_date'];
 
@@ -69,26 +70,31 @@ foreach ($files_to_zip as $file_to_zip) {
 			$statement->execute();
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
 			$row = $statement->fetch();
-
-			/** Add the file */
-			$allowed_to_zip[$row['file_id']] = $file_to_zip;
-
-			/** Add the download row */
-			$statement = $dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (user_id , file_id, remote_ip, remote_host)"
-										." VALUES (:user_id, :file_id, :remote_ip, :remote_host)");
-			$statement->bindValue(':user_id', CURRENT_USER_ID, PDO::PARAM_INT);
-			$statement->bindParam(':file_id', $this_file_id, PDO::PARAM_INT);
-			$statement->bindParam(':remote_ip', $_SERVER['REMOTE_ADDR']);
-			$statement->bindParam(':remote_host', $_SERVER['REMOTE_HOST']);
-			$statement->execute();
+			
+			if ( $row ) {
+				/** Add the file */
+				$allowed_to_zip[$row['file_id']] = $this_file_filename;
+	
+				/** Add the download row */
+				$statement = $dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (user_id , file_id, remote_ip, remote_host)"
+											." VALUES (:user_id, :file_id, :remote_ip, :remote_host)");
+				$statement->bindValue(':user_id', CURRENT_USER_ID, PDO::PARAM_INT);
+				$statement->bindParam(':file_id', $this_file_id, PDO::PARAM_INT);
+				$statement->bindParam(':remote_ip', $_SERVER['REMOTE_ADDR']);
+				$statement->bindParam(':remote_host', $_SERVER['REMOTE_HOST']);
+				$statement->execute();
+			}
 		}
 	}
 	else {
-		$allowed_to_zip[] = $file_to_zip;
+		$allowed_to_zip[] = $this_file_filename;
 	}
+
 }
 
 $allowed_to_zip = array_unique($allowed_to_zip);
+
+//echo $zip_file;print_r($allowed_to_zip); die();
 
 /** Start adding the files to the zip */
 foreach ($allowed_to_zip as $allowed_file_id => $this_allowed_file) {
@@ -99,6 +105,8 @@ foreach ($allowed_to_zip as $allowed_file_id => $this_allowed_file) {
 $zip->close();
 
 if ($added_files > 0) {
+
+	
 
 	/** Record the action log */
 	$new_log_action = new LogActions();

@@ -280,9 +280,10 @@ $count = count($my_files);
 													'<p class="lead text-center text-info"><?php _e('Please wait while your download is prepared.','cftp_admin'); ?></p>'+
 													'<p class="text-center text-info"><?php _e('This operation could take a few minutes, depending on the size of the files.','cftp_admin'); ?></p>'
 												);
-						$.get('<?php echo BASE_URI; ?>process.php', { do:"zip_download", client:"<?php echo CURRENT_USER_USERNAME; ?>", files:checkboxes },
+						$.get('<?php echo BASE_URI; ?>process.php', { do:"zip_download", files:checkboxes },
 							function(data) {
-								var url = '<?php echo BASE_URI; ?>process-zip-download.php?file=' + data;
+								alert(data);
+								var url = '<?php echo BASE_URI; ?>process-zip-download.php?ids=' + data;
 								$('.modal_content').append("<iframe id='modal_zip'></iframe>");
 								$('#modal_zip').attr('src', url);
 								// Close the modal window

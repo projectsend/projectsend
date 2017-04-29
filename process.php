@@ -186,14 +186,15 @@ class process {
 
 	function download_zip() {
 		$this->check_level = array(9,8,7,0);
-		if (isset($_GET['files']) && isset($_GET['client'])) {
+		if (isset($_GET['files'])) {
 			// do a permissions check for logged in user
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
 				$file_list = array();
 				$requested_files = $_GET['files'];
 				foreach($requested_files as $file_id) {
-					echo $file_id;
-					$this->statement = $this->dbh->prepare("SELECT url FROM " . TABLE_FILES . " WHERE id=:file_id");
+					//echo $file_id;
+/*
+					$this->statement = $this->dbh->prepare("SELECT id, url FROM " . TABLE_FILES . " WHERE id=:file_id");
 					$this->statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
 					$this->statement->execute();
 					$this->statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -201,8 +202,12 @@ class process {
 					$this->url = $this->row['url'];
 					$file = UPLOADED_FILES_FOLDER.$this->url;
 					if (file_exists($file)) {
-						$file_list[] = $this->url;
+
+						$file_list[] = $this->id;
 					}
+*/
+
+					$file_list[] = $file_id;
 				}
 				ob_clean();
 				flush();

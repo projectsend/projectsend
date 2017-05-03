@@ -44,12 +44,13 @@ class process {
 					/**
 					 * Get the file name
 					 */
-					$this->statement = $this->dbh->prepare("SELECT url, expires, expiry_date FROM " . TABLE_FILES . " WHERE id=:id");
+					$this->statement = $this->dbh->prepare("SELECT url, original_url, expires, expiry_date FROM " . TABLE_FILES . " WHERE id=:id");
 					$this->statement->bindParam(':id', $_GET['id'], PDO::PARAM_INT);
 					$this->statement->execute();
 					$this->statement->setFetchMode(PDO::FETCH_ASSOC);
-					$this->row = $this->statement->fetch();
-					$this->real_file_url	= $this->row['url'];
+					$this->row				= $this->statement->fetch();
+					$this->filename_find	= $this->row['url'];
+					$this->filename_save	= (!empty( $this->row['original_url'] ) ) ? $this->row['original_url'] : $this->row['url'];
 					$this->expires			= $this->row['expires'];
 					$this->expiry_date		= $this->row['expiry_date'];
 					
@@ -137,19 +138,20 @@ class process {
 												'action'				=> $log_action,
 												'owner_id'				=> $log_action_owner_id,
 												'affected_file'			=> (int)$_GET['id'],
-												'affected_file_name'	=> $this->real_file_url,
+												'affected_file_name'	=> $this->filename_find,
 												'affected_account'		=> (int)$_GET['client_id'],
 												'affected_account_name'	=> $_GET['client'],
 												'get_user_real_name'	=> true,
 												'get_file_real_name'	=> true
 											);
 						$new_record_action = $new_log_action->log_action_save($log_action_args);
-						$this->real_file = UPLOADED_FILES_FOLDER.$this->real_file_url;
+						$this->real_file = UPLOADED_FILES_FOLDER.$this->filename_find;
+						$this->save_file = UPLOADED_FILES_FOLDER.$this->filename_save;
 						if (file_exists($this->real_file)) {
 							session_write_close();
 							while (ob_get_level()) ob_end_clean();
 							header('Content-Type: application/octet-stream');
-							header('Content-Disposition: attachment; filename='.basename($this->real_file));
+							header('Content-Disposition: attachment; filename='.basename($this->save_file));
 							header('Expires: 0');
 							header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 							header('Pragma: public');

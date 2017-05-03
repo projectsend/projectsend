@@ -110,11 +110,11 @@ $get_categories = get_categories();
 /**
  * Make an array of file urls that are on the DB already.
  */
-$statement = $dbh->prepare("SELECT DISTINCT url FROM " . TABLE_FILES);
+$statement = $dbh->prepare("SELECT DISTINCT original_url FROM " . TABLE_FILES);
 $statement->execute();
 $statement->setFetchMode(PDO::FETCH_ASSOC);
 while( $row = $statement->fetch() ) {
-	$urls_db_files[] = $row["url"];
+	$urls_db_files[] = $row["original_url"];
 }
 
 /**
@@ -156,10 +156,12 @@ while( $row = $statement->fetch() ) {
 					 */
 					if (!in_array($file['file'],$urls_db_files)) {
 						$move_arguments = array(
-												'uploaded_name' => $location,
-												'filename' => $file['file']
+												'uploaded_name'		=> $location,
+												'filename'			=> $file['file'],
 											);
-						$new_filename = $this_upload->upload_move($move_arguments);
+						$upload_move		= $this_upload->upload_move($move_arguments);
+						$new_filename		= $upload_move['filename_disk'];
+						$original_filename	= $upload_move['filename_original'];
 					}
 					else {
 						$new_filename = $file['original'];
@@ -175,11 +177,12 @@ while( $row = $statement->fetch() ) {
 
 						/** Add to the database for each client / group selected */
 						$add_arguments = array(
-												'file' => $new_filename,
-												'name' => $file['name'],
-												'description' => $file['description'],
-												'uploader' => $global_user,
-												'uploader_id' => $global_id
+												'file_disk'		=> $new_filename,
+												'file_original'	=> $original_filename,
+												'name'			=> $file['name'],
+												'description'	=> $file['description'],
+												'uploader'		=> $global_user,
+												'uploader_id'	=> $global_id
 											);
 
 						/** Set notifications to YES by default */

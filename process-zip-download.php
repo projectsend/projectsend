@@ -46,14 +46,15 @@ foreach ($files_to_zip as $file_to_zip) {
 	 * that only files under his account can be added.
 	 */
 	if ($current_level == 0) {
-		$statement = $dbh->prepare("SELECT id, url, expires, expiry_date FROM " . TABLE_FILES . " WHERE id = :file");
+		$statement = $dbh->prepare("SELECT id, url, original_url, expires, expiry_date FROM " . TABLE_FILES . " WHERE id = :file");
 		$statement->bindParam(':file', $file_to_zip, PDO::PARAM_INT);
 		$statement->execute();
 		$statement->setFetchMode(PDO::FETCH_ASSOC);
 		$row = $statement->fetch();
 
 		$this_file_id			= $row['id'];
-		$this_file_filename		= $row['url'];
+		$this_file_on_disk		= $row['url'];
+		$this_file_save_as		= (!empty( $row['original_url'] ) ) ? $row['original_url'] : $row['url'];
 		$this_file_expires		= $row['expires'];
 		$this_file_expiry_date	= $row['expiry_date'];
 
@@ -73,7 +74,10 @@ foreach ($files_to_zip as $file_to_zip) {
 			
 			if ( $row ) {
 				/** Add the file */
-				$allowed_to_zip[$row['file_id']] = $this_file_filename;
+				$allowed_to_zip[$row['file_id']] = array(
+														'on_disk'	=> $this_file_on_disk,
+														'save_as'	=> $this_file_save_as
+													);
 	
 				/** Add the download row */
 				$statement = $dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (user_id , file_id, remote_ip, remote_host)"
@@ -87,27 +91,25 @@ foreach ($files_to_zip as $file_to_zip) {
 		}
 	}
 	else {
-		$allowed_to_zip[] = $this_file_filename;
+		$allowed_to_zip[] = array(
+								'on_disk'	=> $this_file_on_disk,
+								'save_as'	=> $this_file_save_as
+							);
 	}
 
 }
 
-$allowed_to_zip = array_unique($allowed_to_zip);
-
 //echo $zip_file;print_r($allowed_to_zip); die();
 
 /** Start adding the files to the zip */
-foreach ($allowed_to_zip as $allowed_file_id => $this_allowed_file) {
-	$zip->addFile(UPLOADED_FILES_FOLDER.$this_allowed_file,$this_allowed_file);
+foreach ($allowed_to_zip as $allowed_file_id => $allowed_file_info) {
+	$zip->addFile(UPLOADED_FILES_FOLDER.$allowed_file_info['on_disk'],$allowed_file_info['save_as']);
 	$added_files++;
 }
 
 $zip->close();
 
 if ($added_files > 0) {
-
-	
-
 	/** Record the action log */
 	$new_log_action = new LogActions();
 	$log_action_args = array(

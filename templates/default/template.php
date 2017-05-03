@@ -221,7 +221,7 @@ $count = count($my_files);
 																	$this_thumbnail_url = BASE_URI.$this_thumbnail_url;
 																}
 													?>
-																<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $this_thumbnail_url; ?>&amp;w=<?php echo THUMBS_MAX_WIDTH; ?>&amp;q=<?php echo THUMBS_QUALITY; ?>" class="thumbnail" alt="<?php echo htmlentities($this_file['name']); ?>" />
+																<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $this_thumbnail_url; ?>&amp;w=<?php echo THUMBS_MAX_WIDTH; ?>&amp;q=<?php echo THUMBS_QUALITY; ?>" class="thumbnail" alt="<?php echo htmlentities($file['name']); ?>" />
 													<?php
 															}
 														}
@@ -282,7 +282,6 @@ $count = count($my_files);
 												);
 						$.get('<?php echo BASE_URI; ?>process.php', { do:"zip_download", files:checkboxes },
 							function(data) {
-								alert(data);
 								var url = '<?php echo BASE_URI; ?>process-zip-download.php?ids=' + data;
 								$('.modal_content').append("<iframe id='modal_zip'></iframe>");
 								$('#modal_zip').attr('src', url);

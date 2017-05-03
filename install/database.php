@@ -18,6 +18,7 @@ if (defined('TRY_INSTALL')) {
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_FILES.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `url` text NOT NULL,
+								  `original_url` text NOT NULL,
 								  `filename` text NOT NULL,
 								  `description` text NOT NULL,
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),

@@ -198,10 +198,12 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 				$origin = 'group';
 			}
 			*/
+
 			$my_files[$f] = array(
 								//'origin'		=> $origin,
 								'id'			=> $data['id'],
 								'url'			=> $data['url'],
+								'save_as'		=> (!empty( $data['original_url'] ) ) ? $data['original_url'] : $data['url'],
 								'name'			=> $data['filename'],
 								'description'	=> $data['description'],
 								'timestamp'		=> $data['timestamp'],

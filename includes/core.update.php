@@ -1062,6 +1062,21 @@ if (in_session_or_cookies($allowed_update)) {
 			}
 		}
 
+		/**
+		 * r835 updates
+		 * Uploaded files now save the filename twice on the database. The original filename (to
+		 * use when downloading) and the filename on disk, so no 2 files with the same name exist.
+		 */
+		 
+		if ($last_update < 835) {
+			try {
+				$statement = $dbh->query("SELECT original_url FROM " . TABLE_FILES);
+			} catch( PDOException $e ) {
+				$sql1 = $dbh->query("ALTER TABLE " . TABLE_FILES . " ADD original_url TEXT NULL AFTER `url`");
+				$updates_made++;
+			}
+		}
+
 	}
 }	
 ?>

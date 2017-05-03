@@ -124,15 +124,22 @@ class PSend_Upload_File
 	 */
 	function upload_move($arguments)
 	{
-		$this->uploaded_name = $arguments['uploaded_name'];
-		$this->filename = $arguments['filename'];
+		$this->uploaded_name	= $arguments['uploaded_name'];
+		$this->filename			= $arguments['filename'];
+		$this->uid 				= CURRENT_USER_ID;
+		$this->username 		= CURRENT_USER_USERNAME;
+		$this->makehash 		= sha1($this->username);
 
-		//$this->file_final_name = time().'-'.$this->filename;
-		$this->file_final_name = $this->filename;
-		$this->path = UPLOADED_FILES_FOLDER.'/'.$this->file_final_name;
+		$this->filename_on_disk = time().'-'.$this->makehash.'-'.$this->filename;
+		//$this->file_final_name = $this->filename;
+		$this->path = UPLOADED_FILES_FOLDER.'/'.$this->filename_on_disk;
 		if (rename($this->uploaded_name, $this->path)) {
 			chmod($this->path, 0644);
-			return $this->file_final_name;
+			$this->return = array(
+									'filename_original'	=> $this->filename,
+									'filename_disk'		=> $this->filename_on_disk,
+								);
+			return $this->return;
 		}
 		else {
 			return false;
@@ -144,7 +151,8 @@ class PSend_Upload_File
 	 */
 	function upload_add_to_database($arguments)
 	{
-		$this->post_file		= $arguments['file'];
+		$this->file_on_disk		= $arguments['file_disk'];
+		$this->post_file		= $arguments['file_original'];
 		$this->name				= encode_html($arguments['name']);
 		$this->description		= encode_html($arguments['description']);
 		$this->uploader			= $arguments['uploader'];
@@ -157,9 +165,10 @@ class PSend_Upload_File
 		$this->public_token		= generateRandomString(32);
 		
 		if (isset($arguments['add_to_db'])) {
-			$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (url, filename, description, uploader, expires, expiry_date, public_allow, public_token)"
-											."VALUES (:url, :name, :description, :uploader, :expires, :expiry_date, :public, :token)");
-			$this->statement->bindParam(':url', $this->post_file);
+			$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (url, original_url, filename, description, uploader, expires, expiry_date, public_allow, public_token)"
+											."VALUES (:url, :original_url, :name, :description, :uploader, :expires, :expiry_date, :public, :token)");
+			$this->statement->bindParam(':url', $this->file_on_disk);
+			$this->statement->bindParam(':original_url', $this->post_file);
 			$this->statement->bindParam(':name', $this->name);
 			$this->statement->bindParam(':description', $this->description);
 			$this->statement->bindParam(':uploader', $this->uploader);

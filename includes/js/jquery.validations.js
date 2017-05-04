@@ -75,7 +75,7 @@ function is_length(field,minsize,maxsize,error) {
 }
 
 function is_email(field,error) {
-	var reg = /^([^@])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+	var reg = /^([^@])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,})$/;
 	var address = field.value;
 	if (reg.test(address) == false) {
 		add_error_to_field(field, error);

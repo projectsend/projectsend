@@ -790,7 +790,13 @@ function delete_file_from_disk($filename)
 {
 	if ( file_exists( $filename ) ) {
 		chmod($filename, 0777);
-		unlink($filename);
+        
+        if (SECURE_DELETE_FILES == '1') {
+            shell_exec("shred -u " . escapeshellarg($filename));
+        }
+        else {
+           	unlink($filename);
+        }
 	}
 }
 
@@ -810,7 +816,13 @@ function delete_recursive($dir)
 					}
 					else {
 						chmod($dir.$file, 0777);
-						unlink($dir.$file);
+                        
+                        if (SECURE_DELETE_FILES == '1') {
+                            shell_exec("shred -u " . escapeshellarg($dir.$file));
+						}
+                        else {
+                            unlink($dir.$file);
+                        }
 					}
 				}
 		   }

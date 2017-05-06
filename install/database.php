@@ -279,9 +279,10 @@ if (defined('TRY_INSTALL')) {
 								('google_signin_enabled', '0'),
 								('recaptcha_enabled', '0'),
 								('recaptcha_site_key', ''),
-								('recaptcha_secret_key', '')
+								('recaptcha_secret_key', ''),
+                                				('secure_delete_files', '0')
 								",
-					'params' => array(
+								'params' => array(
 										':base_uri'	=> $base_uri,
 										':title'	=> $this_install_title,
 										':email'	=> $got_admin_email,

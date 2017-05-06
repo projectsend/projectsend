@@ -42,6 +42,7 @@ if ($_POST) {
 
 	/** Checkboxes */
 	$checkboxes	= array(
+						'secure_delete_files',
 						'recaptcha_enabled',
 						'clients_can_delete_own_files',
 						'use_browser_lang',
@@ -177,6 +178,27 @@ $allowed_file_types = implode(',',$allowed_file_types);
 
 					// show the errors or continue if everything is ok
 					if (show_form_errors() == false) { alert('<?php _e('Please complete all the fields.','cftp_admin'); ?>'); return false; }
+				});
+
+				$('#secure_delete_files').change(function() {
+					// We only check when enabling shred
+					var box_element = $(this);
+					if (box_element.is(':checked'))
+						$.getJSON({
+							url: 'includes/shred-check.php',
+							success: function(data) {
+								if(!data.installed) {
+									alert('<?php _e('shred not found','cftp_admin'); ?>');
+									box_element.prop('checked', false);
+									box_element.parent().addClass("alert alert-danger");
+									box_element.parent().text('<?php _e('shred not found','cftp_admin'); ?>');
+								}
+							},
+							error: function(data) {
+								alert('<?php _e('Server error executing shred-check script','cftp_admin'); ?>');
+								box_element.prop('checked', false);
+							}
+						});
 				});
 			});
 		</script>
@@ -599,6 +621,17 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</div>
 			
 										<div class="options_divide"></div>
+			
+										<h3><?php _e('File deletion','cftp_admin'); ?></h3>
+										<p><?php _e('Securely delete files using the Unix command "shred -u". Make sure to check that this command is available on your server before enabling this options.','cftp_admin'); ?></p>
+			
+										<div class="form-group">
+											<div class="col-sm-8 col-sm-offset-4">
+												<label for="secure_delete_files">
+													<input type="checkbox" value="1" name="secure_delete_files" id="secure_delete_files" class="checkbox_options" <?php echo (SECURE_DELETE_FILES == 1) ? 'checked="checked"' : ''; ?> /> <?php  _e('Securely delete files'); ?>
+												</label>
+											</div>
+										</div>
 		
 										<div class="options_divide"></div>
 		

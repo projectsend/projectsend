@@ -135,6 +135,14 @@ function load_css_files() {
 }
 
 /**
+ * Custom JS.
+ */
+$custom_js_location = ROOT_DIR . '/includes/js/custom.js';
+if ( file_exists( $custom_js_location ) ) {
+	$load_js_files[]	= BASE_URI . 'includes/js/custom.js';
+}
+
+/**
  * Used before the </body> tag to print the JS files
  */
 function load_js_files() {

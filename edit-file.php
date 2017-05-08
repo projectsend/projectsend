@@ -175,12 +175,12 @@ $current_level = get_current_user_level();
 					
 						/** Add to the database for each client / group selected */
 						$add_arguments = array(
-												'file' => $edit_file_info['url'],
-												'name' => $file['name'],
-												'description' => $file['description'],
-												'uploader' => $global_user,
-												'uploader_id' => $global_id,
-												'expiry_date' => $file['expiry_date']
+												'file_original'	=> $edit_file_info['url'],
+												'name'			=> $file['name'],
+												'description'	=> $file['description'],
+												'uploader'		=> $global_user,
+												'uploader_id'	=> $global_id,
+												'expiry_date'	=> $file['expiry_date']
 											);
 					
 						/** Set notifications to YES by default */

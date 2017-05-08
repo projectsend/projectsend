@@ -151,8 +151,8 @@ class PSend_Upload_File
 	 */
 	function upload_add_to_database($arguments)
 	{
-		$this->file_on_disk		= $arguments['file_disk'];
-		$this->post_file		= $arguments['file_original'];
+		$this->file_on_disk		= (!empty($arguments['file_disk'])) ? $arguments['file_disk'] : '';
+		$this->post_file		= (!empty($arguments['file_original'])) ? $arguments['file_original'] : '';
 		$this->name				= encode_html($arguments['name']);
 		$this->description		= encode_html($arguments['description']);
 		$this->uploader			= $arguments['uploader'];

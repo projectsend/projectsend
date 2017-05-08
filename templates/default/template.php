@@ -158,7 +158,12 @@ $count = count($my_files);
 												?>
 											</span>
 										</td>
-										<td class="description"><?php echo htmlentities($file['description']); ?></td>
+										<td class="description">
+											<?php
+												$description = htmlentities_allowed($file['description']);
+												echo $description;
+											?>
+										</td>
 										<td>
 											<?php
 												$file_absolute_path = UPLOADED_FILES_FOLDER . $file['url'];

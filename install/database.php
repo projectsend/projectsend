@@ -75,6 +75,7 @@ if (defined('TRY_INSTALL')) {
 								  `created_by` varchar(32) NOT NULL,
 								  `name` varchar(32) NOT NULL,
 								  `description` text NOT NULL,
+								  `public` tinyint(1) NOT NULL DEFAULT \'0\',
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
@@ -279,7 +280,9 @@ if (defined('TRY_INSTALL')) {
 								('google_signin_enabled', '0'),
 								('recaptcha_enabled', '0'),
 								('recaptcha_site_key', ''),
-								('recaptcha_secret_key', '')
+								('recaptcha_secret_key', ''),
+								('clients_can_select_group', 'none'),
+								('files_descriptions_use_ckeditor', '0')
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,

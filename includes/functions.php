@@ -649,14 +649,37 @@ function get_current_user_username()
 }
 
 /**
- * Wrapper for html_entities with default options
+ * Wrapper for htmlentities with default options
  * 
  */
 function html_output($str, $flags = ENT_QUOTES, $encoding = 'UTF-8', $double_encode = false)
 {
+	return htmlentities($str, $flags, $encoding, $double_encode);
+}
 
-   return htmlentities($str, $flags, $encoding, $double_encode);
+/**
+ * Allow some html tags for file descriptions on htmlentities
+ * 
+ */
+function htmlentities_allowed($str)
+{
+	$description = htmlentities($str);
+	$allowed_tags = array('i','b','strong','em','p','br','ul','ol','li','u','sup','sub','s');
 
+	$find = array();
+	$replace = array();
+
+	foreach ( $allowed_tags as $tag ) {
+		/** Opening tags */
+		$find[] = '&amp;lt;' . $tag . '&amp;gt;';
+		$replace[] = '<' . $tag . '>';
+		/** Closing tags */
+		$find[] = '&amp;lt;/' . $tag . '&amp;gt;';
+		$replace[] = '</' . $tag . '>';
+	}
+
+	$description = str_replace($find, $replace, $description);
+	return $description;
 }
 
 

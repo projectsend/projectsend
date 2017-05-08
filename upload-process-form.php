@@ -19,6 +19,7 @@ $load_scripts	= array(
 						'datepicker',
 						'footable',
 						'chosen',
+						'ckeditor',
 					); 
 
 $allowed_levels = array(9,8,7,0);
@@ -486,7 +487,7 @@ while( $row = $statement->fetch() ) {
 																
 																<div class="form-group">
 																	<label><?php _e('Description', 'cftp_admin');?></label>
-																	<textarea name="file[<?php echo $i; ?>][description]" class="form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (isset($description)) ? html_output($description) : ''; ?></textarea>
+																	<textarea name="file[<?php echo $i; ?>][description]" class="ckeditor form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (isset($description)) ? html_output($description) : ''; ?></textarea>
 																</div>
 																
 															</div>
@@ -761,7 +762,16 @@ while( $row = $statement->fetch() ) {
 
 					return false;
 				});
-		
+
+				<?php
+					/** CKEditor only avaiable if the option is enabled */
+					if ( DESCRIPTIONS_USE_CKEDITOR == '1' ) {
+				?>
+						CKEDITOR.replaceAll( 'ckeditor' );
+				<?php
+					}
+				?>
+
 				// Autoclick the continue button
 				//$('#upload-continue').click();
 		<?php

@@ -50,6 +50,7 @@ if ($page_status === 1) {
 	while ( $data = $editing->fetch() ) {
 		$add_group_data_name = $data['name'];
 		$add_group_data_description = $data['description'];
+		if ($data['public'] == 1) { $add_group_data_public = 1; } else { $add_group_data_public = 0; }
 	}
 
 	/**
@@ -79,13 +80,15 @@ if ($_POST) {
 	$add_group_data_name = $_POST['add_group_form_name'];
 	$add_group_data_description = $_POST['add_group_form_description'];
 	$add_group_data_members = (!empty($_POST['add_group_form_members']) ? $_POST['add_group_form_members'] : '');
+	$add_group_data_public = (isset($_POST["add_group_form_public"])) ? 1 : 0;
 
 	/** Arguments used on validation and group creation. */
 	$edit_arguments = array(
 							'id' => $group_id,
 							'name' => $add_group_data_name,
 							'description' => $add_group_data_description,
-							'members' => $add_group_data_members
+							'members' => $add_group_data_members,
+							'public' => $add_group_data_public,
 						);
 
 	/** Validate the information from the posted form. */

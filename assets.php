@@ -91,6 +91,11 @@ if ( !empty( $load_scripts ) ) {
 												'cond'	=> 'lt IE 9',
 											);
 				break;
+			case 'ckeditor':
+				if ( DESCRIPTIONS_USE_CKEDITOR == '1' ) {
+					$load_js_files[]		= BASE_URI . 'includes/js/ckeditor/ckeditor.js';
+				}
+				break;
 		}
 	}
 }

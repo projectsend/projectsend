@@ -1077,6 +1077,33 @@ if (in_session_or_cookies($allowed_update)) {
 			}
 		}
 
+
+		/**
+		 * r837 updates
+		 * Added an option to allow groups to be public so clients can manually opt-in and out of them.
+		 * Added an option to enable or disable the use of CKEDITOR in the files descriptions.
+		 */
+		 
+		if ($last_update < 837) {
+			try {
+				$statement = $dbh->query("SELECT public FROM " . TABLE_GROUPS);
+			} catch( PDOException $e ) {
+				$sql1 = $dbh->query("ALTER TABLE " . TABLE_GROUPS . " ADD public tinyint(1) NOT NULL default '0'");
+				$updates_made++;
+			}
+
+			$new_database_values = array(
+											'clients_can_select_group'			=> 'none',
+											'files_descriptions_use_ckeditor'	=> '0',
+										);
+			
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
+				}
+			}
+		}
+
 	}
 }	
 ?>

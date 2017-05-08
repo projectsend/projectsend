@@ -55,15 +55,17 @@ class GroupActions
 		$this->name = $arguments['name'];
 		$this->description = $arguments['description'];
 		$this->members = $arguments['members'];
+		$this->ispublic = $arguments['public'];
 		$this->timestamp = time();
 
 		/** Who is creating the group? */
 		$this->this_admin = get_current_user_username();
 
-		$this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_GROUPS . " (name,description,created_by)"
-												." VALUES (:name, :description, :this_admin)");
+		$this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_GROUPS . " (name,description,public,created_by)"
+												." VALUES (:name, :description, :public, :this_admin)");
 		$this->sql_query->bindParam(':name', $this->name);
 		$this->sql_query->bindParam(':description', $this->description);
+		$this->sql_query->bindParam(':public', $this->ispublic, PDO::PARAM_INT);
 		$this->sql_query->bindParam(':this_admin', $this->this_admin);
 		$this->sql_query->execute();
 
@@ -105,15 +107,17 @@ class GroupActions
 		$this->name = $arguments['name'];
 		$this->description = $arguments['description'];
 		$this->members = $arguments['members'];
+		$this->ispublic = $arguments['public'];
 		$this->timestamp = time();
 
 		/** Who is adding the members to the group? */
 		$this->this_admin = get_current_user_username();
 
 		/** SQL query */
-		$this->sql_query = $this->dbh->prepare( "UPDATE " . TABLE_GROUPS . " SET name = :name, description = :description WHERE id = :id" );
+		$this->sql_query = $this->dbh->prepare( "UPDATE " . TABLE_GROUPS . " SET name = :name, description = :description, public = :public WHERE id = :id" );
 		$this->sql_query->bindParam(':name', $this->name);
 		$this->sql_query->bindParam(':description', $this->description);
+		$this->sql_query->bindParam(':public', $this->ispublic, PDO::PARAM_INT);
 		$this->sql_query->bindParam(':id', $this->id, PDO::PARAM_INT);
 		$this->sql_query->execute();
 

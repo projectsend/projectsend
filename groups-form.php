@@ -78,6 +78,15 @@ switch ($groups_form_type) {
 		</div>
 	</div>
 
+	<div class="form-group">
+		<div class="col-sm-8 col-sm-offset-4">
+			<label for="add_group_form_public">
+				<input type="checkbox" name="add_group_form_public" id="add_group_form_public" <?php echo (isset($add_group_data_public) && $add_group_data_public == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Public','cftp_admin'); ?>
+				<p class="field_note"><?php _e('Allows clients to request access to this group in the registraron process and when editing their own profile. This feature requires the corresponding option to be enabled on the CLIENTS OPTIONS page.','cftp_admin'); ?></p>
+			</label>
+		</div>
+	</div>
+
 	<div class="inside_form_buttons">
 		<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php echo html_output($submit_value); ?></button>
 	</div>

@@ -228,6 +228,14 @@ if(!empty($options_values)) {
 	}
 
 	/**
+	 * For versions 837 and up
+	 */	
+	if (isset($options_values['clients_can_select_group'])) {
+		define('CLIENTS_CAN_SELECT_GROUP',$options_values['clients_can_select_group']);
+		define('DESCRIPTIONS_USE_CKEDITOR',$options_values['files_descriptions_use_ckeditor']);
+	}
+
+	/**
 	 * Set the default timezone based on the value of the Timezone select box
 	 * of the options page.
 	 */

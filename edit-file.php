@@ -8,6 +8,7 @@
 $load_scripts	= array(
 						'datepicker',
 						'chosen',
+						'ckeditor',
 					); 
 
 $allowed_levels = array(9,8,7,0);
@@ -352,12 +353,13 @@ $current_level = get_current_user_level();
 						$statement->bindParam(':id', $this_file_id, PDO::PARAM_INT);
 						$statement->execute();
 						while( $row = $statement->fetch() ) {
+							$file_name_title = (!empty( $row['original_url'] ) ) ? $row['original_url'] : $row['url'];
 					?>
 							<div class="file_editor <?php if ($i%2) { echo 'f_e_odd'; } ?>">
 								<div class="row">
 									<div class="col-sm-12">
 										<div class="file_number">
-											<p><span class="glyphicon glyphicon-saved" aria-hidden="true"></span><?php echo html_output($row['url']); ?></p>
+											<p><span class="glyphicon glyphicon-saved" aria-hidden="true"></span><?php echo html_output($file_name_title); ?></p>
 										</div>
 									</div>
 								</div>
@@ -377,7 +379,7 @@ $current_level = get_current_user_level();
 	
 															<div class="form-group">
 																<label><?php _e('Description', 'cftp_admin');?></label>
-																<textarea name="file[<?php echo $i; ?>][description]" class="form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (!empty($row['description'])) ? html_output($row['description']) : ''; ?></textarea>
+																<textarea name="file[<?php echo $i; ?>][description]" class="ckeditor form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (!empty($row['description'])) ? html_output($row['description']) : ''; ?></textarea>
 															</div>
 														</div>
 													</div>
@@ -589,6 +591,15 @@ $current_level = get_current_user_level();
 			if (show_form_errors() == false) { return false; }
 
 		});
+		
+		<?php
+			/** CKEditor only avaiable if the option is enabled */
+			if ( DESCRIPTIONS_USE_CKEDITOR == '1' ) {
+		?>
+				CKEDITOR.replaceAll( 'ckeditor' );
+		<?php
+			}
+		?>
 	});
 </script>
 

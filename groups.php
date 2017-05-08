@@ -335,6 +335,11 @@ include('header.php');
 											),
 											array(
 												'sortable'		=> true,
+												'sort_url'		=> 'active',
+												'content'		=> __('Public','cftp_admin'),
+											),
+											array(
+												'sortable'		=> true,
 												'sort_url'		=> 'created_by',
 												'content'		=> __('Created by','cftp_admin'),
 												'hide'			=> 'phone',
@@ -381,6 +386,9 @@ include('header.php');
 												),
 											array(
 													'content'		=> ( isset( $files_amount[$row['id']] ) ) ? $files_amount[$row['id']] : '0',
+												),
+											array(
+													'content'		=> ( $row["public"] == '1' ) ? __('Yes','cftp_admin') : __('No','cftp_admin'),
 												),
 											array(
 													'content'		=> html_output( $row["created_by"] ),

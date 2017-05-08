@@ -252,6 +252,17 @@ $allowed_file_types = implode(',',$allowed_file_types);
 
 										<div class="options_divide"></div>
 
+										<h3><?php _e('Files','cftp_admin'); ?></h3>
+
+										<div class="form-group">
+											<div class="col-sm-8 col-sm-offset-4">
+												<label for="files_descriptions_use_ckeditor">
+													<input type="checkbox" value="1" name="files_descriptions_use_ckeditor" id="files_descriptions_use_ckeditor" class="checkbox_options" <?php echo (DESCRIPTIONS_USE_CKEDITOR == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Use the visual editor on files descriptions",'cftp_admin'); ?>
+												</label>
+											</div>
+										</div>
+
+										<div class="options_divide"></div>
 
 										<h3><?php _e('Language','cftp_admin'); ?></h3>
 
@@ -332,6 +343,18 @@ $allowed_file_types = implode(',',$allowed_file_types);
 													?>
 												</select>
 												<p class="field_note"><?php _e('New clients will automatically be assigned to the group you have selected.','cftp_admin'); ?></p>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<label for="clients_can_select_group" class="col-sm-4 control-label"><?php _e('Groups for which clients can request membership to','cftp_admin'); ?></label> 
+											<div class="col-sm-8">
+												<select class="form-control" name="clients_can_select_group" id="clients_can_select_group">
+													<option value="none" <?php echo (cLIENTS_CAN_SELECT_GROUP == 'none') ? 'selected="selected"' : ''; ?>><?php _e("None",'cftp_admin'); ?></option>
+													<option value="public" <?php echo (cLIENTS_CAN_SELECT_GROUP == 'public') ? 'selected="selected"' : ''; ?>><?php _e("Public groups",'cftp_admin'); ?></option>
+													<option value="all" <?php echo (cLIENTS_CAN_SELECT_GROUP == 'all') ? 'selected="selected"' : ''; ?>><?php _e("All available groups",'cftp_admin'); ?></option>
+												</select>
+												<p class="field_note"><?php _e('When a client registers a new account, an option will be presented to request becoming a member of a particular group.','cftp_admin'); ?></p>
 											</div>
 										</div>
 			

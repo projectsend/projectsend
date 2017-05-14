@@ -350,9 +350,18 @@ $allowed_file_types = implode(',',$allowed_file_types);
 											<label for="clients_can_select_group" class="col-sm-4 control-label"><?php _e('Groups for which clients can request membership to','cftp_admin'); ?></label> 
 											<div class="col-sm-8">
 												<select class="form-control" name="clients_can_select_group" id="clients_can_select_group">
-													<option value="none" <?php echo (cLIENTS_CAN_SELECT_GROUP == 'none') ? 'selected="selected"' : ''; ?>><?php _e("None",'cftp_admin'); ?></option>
-													<option value="public" <?php echo (cLIENTS_CAN_SELECT_GROUP == 'public') ? 'selected="selected"' : ''; ?>><?php _e("Public groups",'cftp_admin'); ?></option>
-													<option value="all" <?php echo (cLIENTS_CAN_SELECT_GROUP == 'all') ? 'selected="selected"' : ''; ?>><?php _e("All available groups",'cftp_admin'); ?></option>
+													<?php
+														$pub_groups_options = array(
+																					'none'		=> __("None",'cftp_admin'),
+																					'public'	=> __("Public groups",'cftp_admin'),
+																					'all'		=> __("All groups",'cftp_admin'),
+																				);
+														foreach ( $pub_groups_options as $value => $label ) {
+													?>
+															<option value="<?php echo $value; ?>" <?php if (CLIENTS_CAN_SELECT_GROUP == $value) { echo 'selected="selected"'; } ?>><?php echo $label; ?></option>
+													<?php
+														}
+													?>
 												</select>
 												<p class="field_note"><?php _e('When a client registers a new account, an option will be presented to request becoming a member of a particular group.','cftp_admin'); ?></p>
 											</div>

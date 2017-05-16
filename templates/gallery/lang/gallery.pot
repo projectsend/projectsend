@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend theme: Gallery\n"
-"POT-Creation-Date: 2016-09-14 15:46-0300\n"
-"PO-Revision-Date: 2016-09-14 15:46-0300\n"
+"POT-Creation-Date: 2017-05-16 00:55-0300\n"
+"PO-Revision-Date: 2017-05-16 00:55-0300\n"
 "Last-Translator: \n"
 "Language-Team: ProjectSend <contact@projectsend.org>\n"
 "Language: en\n"
@@ -15,26 +15,34 @@ msgstr ""
 "X-Poedit-KeywordsList: _e;__\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: template.php:13
+#: template.php:18
 msgid "Gallery"
 msgstr ""
 
-#: template.php:48
+#: template.php:61
 msgid "Logout"
 msgstr ""
 
-#: template.php:49
+#: template.php:62
 msgid "Upload files"
 msgstr ""
 
-#: template.php:58
+#: template.php:71
+msgid "Filter by category"
+msgstr ""
+
+#: template.php:74
+msgid "All files"
+msgstr ""
+
+#: template.php:107
 msgid "There are no files."
 msgstr ""
 
-#: template.php:72
+#: template.php:121
 msgid "File expired"
 msgstr ""
 
-#: template.php:91
+#: template.php:140
 msgid "Download original"
 msgstr ""

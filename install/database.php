@@ -298,7 +298,8 @@ if (defined('TRY_INSTALL')) {
 								('recaptcha_site_key', ''),
 								('recaptcha_secret_key', ''),
 								('clients_can_select_group', 'none'),
-								('files_descriptions_use_ckeditor', '0')
+								('files_descriptions_use_ckeditor', '0'),
+								('enable_landing_for_all_files', '0')
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,

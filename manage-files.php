@@ -122,17 +122,24 @@ include('header.php');
 			content: function() {
 				var id		= $(this).data('id');
 				var token	= $(this).data('token');
-				return '<strong><?php _e('Click to select','cftp_admin'); ?></strong><textarea class="input-large public_link_copy" rows="4"><?php echo BASE_URI; ?>download.php?id=' + id + '&token=' + token + '</textarea><small><?php _e('Send this URL to someone to download the file without registering or logging in.','cftp_admin'); ?></small><div class="close-popover"><button type="button" class="btn btn-inverse btn-sm"><?php _e('Close','cftp_admin'); ?></button></div>';
+				return '<strong><?php _e('Click to select and copy','cftp_admin'); ?></strong><div class="copied"><?php _e('Succesfully copied to clipboard','cftp_admin'); ?></div><div class="copied_not"><?php _e('Content could not be copied to clipboard','cftp_admin'); ?></div><textarea class="input-large public_link_copy" rows="4"><?php echo BASE_URI; ?>download.php?id=' + id + '&token=' + token + '</textarea><small><?php _e('Send this URL to someone to download the file without registering or logging in.','cftp_admin'); ?></small><div class="close-popover"><button type="button" class="btn btn-inverse btn-sm"><?php _e('Close','cftp_admin'); ?></button></div>';
 			}
 		});
 
-		$(".col_visibility").on('click', '.close-popover button', function(e) {
-			var popped = $(this).parents('.col_visibility').find('.public_link');
+		$(document).on('click', '.close-popover', function(e) {
+			var popped = $(this).parents('td').find('.public_link');
 			popped.popover('hide');
 		});
 
-		$(".col_visibility").on('click', '.public_link_copy', function(e) {
+		$(document).on('click', '.public_link_copy', function(e) {
 			$(this).select();
+			if ( document.execCommand("copy") ) {
+				var copied = '.copied';
+			}
+			else {
+				var copied = '.copied_not';
+			}
+			$(this).parents('.popover-content').find(copied).stop().fadeIn().delay(2000).fadeOut();
 			$(this).mouseup(function() {
 				$(this).unbind("mouseup");
 				return false;
@@ -717,8 +724,14 @@ include('header.php');
 							$visibility_label	= __('Public','cftp_admin');
 						}
 						else {
-							$visibility_link	= '<a href="javascript:void(0);" class="btn btn-default btn-sm disabled" rel="" title="">';
-							$visibility_label	= __('Private','cftp_admin');
+							if ( ENABLE_LANDING_FOR_ALL_FILES == '1' ) {
+								$visibility_link	= '<a href="javascript:void(0);" class="btn btn-default btn-sm public_link" data-id="' . $row['id'] .'" data-token="' . html_output($row['public_token']) .'" data-placement="top" data-toggle="popover" data-original-title="' . __('Landing page URL','cftp_admin') .'">';
+								$visibility_label	= __('Private','cftp_admin');
+							}
+							else {
+								$visibility_link	= '<a href="javascript:void(0);" class="btn btn-default btn-sm disabled" rel="" title="">';
+								$visibility_label	= __('Private','cftp_admin');
+							}
 						}
 	
 						/**

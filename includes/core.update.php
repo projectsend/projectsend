@@ -1104,6 +1104,48 @@ if (in_session_or_cookies($allowed_update)) {
 			}
 		}
 
+		/**
+		 * r840 updates
+		 * Add a new table to handle clients requests to groups
+		 */
+		if ($last_update < 840) {
+			if ( !tableExists( TABLE_MEMBERS_REQUESTS ) ) {
+				/** Create the MEMBERS table */
+				$query = "
+				CREATE TABLE IF NOT EXISTS `".TABLE_MEMBERS_REQUESTS."` (
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+				  `requested_by` varchar(32) NOT NULL,
+				  `client_id` int(11) NOT NULL,
+				  `group_id` int(11) NOT NULL,
+				  PRIMARY KEY (`id`),
+				  FOREIGN KEY (`client_id`) REFERENCES ".TABLE_USERS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`group_id`) REFERENCES ".TABLE_GROUPS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+				) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+				";
+				$statement = $dbh->prepare($query);
+				$statement->execute();
+
+				$updates_made++;
+			}
+		}
+
+		/**
+		 * r841 updates
+		 * Added an option so every file can have it's landing page, even if it's not public
+		 */
+		if ($last_update < 841) {
+			$new_database_values = array(
+											'enable_landing_for_all_files'	=> '0',
+										);
+			
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
+				}
+			}
+		}
+
 	}
 }	
 ?>

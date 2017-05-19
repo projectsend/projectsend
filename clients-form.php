@@ -58,6 +58,8 @@
 <?php
 $name_placeholder = __("Will be visible on the client's file list",'cftp_admin');
 
+$group_field = false;
+
 switch ($clients_form_type) {
 	/** User is creating a new client */
 	case 'new_client':
@@ -86,6 +88,7 @@ switch ($clients_form_type) {
 		$info_box = true;
 		$extra_fields = false;
 		$name_placeholder = __("Your full name",'cftp_admin');
+		$group_field = true;
 		break;
 	/** A client is editing his profile */
 	case 'edit_client_self':
@@ -175,6 +178,47 @@ switch ($clients_form_type) {
 			</label>
 		</div>
 	</div>
+
+	<?php
+		if ( $group_field == true ) {
+			if ( CLIENTS_CAN_SELECT_GROUP == 'public' || CLIENTS_CAN_SELECT_GROUP == 'all' ) {
+				$cq = "SELECT id, name FROM " . TABLE_GROUPS;
+				
+				if ( CLIENTS_CAN_SELECT_GROUP == 'public' ) {
+					$cq .= " WHERE public = :public";
+				}
+				
+				$sql_groups = $dbh->prepare($cq);
+				
+				if ( CLIENTS_CAN_SELECT_GROUP == 'public' ) {
+					$sql_groups->bindValue(':public', 1, PDO::PARAM_INT);
+				}
+
+				$sql_groups->execute();
+				$sql_groups->setFetchMode(PDO::FETCH_ASSOC);
+				
+				if ( $sql_groups->rowCount() > 0) {
+	?>
+					<div class="form-group">
+						<label for="add_client_group_request" class="col-sm-4 control-label"><?php _e('Request access to group','cftp_admin'); ?></label>
+						<div class="col-sm-8">
+							<select name="add_client_group_request" id="add_client_group_request" class="form-control">
+								<option value="0"><?php _e('None','cftp_admin'); ?></option>
+								<?php
+									while ( $row = $sql_groups->fetch() ) {
+								?>
+										<option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
+								<?php
+									}
+								?>
+							</select>
+						</div>
+					</div>
+	<?php
+				}
+			}
+		}
+	?>
 	
 	<?php
 		if ( $clients_form_type == 'new_client_self' ) {
@@ -188,6 +232,7 @@ switch ($clients_form_type) {
 				</div>
 	<?php
 			}
+			
 		}
 	?>
 

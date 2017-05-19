@@ -36,6 +36,7 @@ include('header-unlogged.php');
 		$add_client_data_phone = (isset($_POST["add_client_form_phone"])) ? encode_html($_POST["add_client_form_phone"]) : '';
 		$add_client_data_intcont = (isset($_POST["add_client_form_intcont"])) ? encode_html($_POST["add_client_form_intcont"]) : '';
 		$add_client_data_notity = (isset($_POST["add_client_form_notify"])) ? 1 : 0;
+		$add_client_data_group = (isset($_POST["add_client_group_request"])) ? encode_html($_POST["add_client_group_request"]) : '';
 	
 		/** Arguments used on validation and client creation. */
 		$new_arguments = array(
@@ -49,6 +50,7 @@ include('header-unlogged.php');
 								'phone'		=> $add_client_data_phone,
 								'contact'	=> $add_client_data_intcont,
 								'notify'	=> $add_client_data_notity,
+								'group'		=> $add_client_data_group,
 								'type'		=> 'new_client',
 							);
 

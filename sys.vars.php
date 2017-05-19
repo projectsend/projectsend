@@ -14,7 +14,7 @@ session_start();
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r837');
+define('CURRENT_VERSION', 'r841');
 
 /**
  * Fix for including external files when on HTTPS.
@@ -121,6 +121,7 @@ define('TABLE_OPTIONS', TABLES_PREFIX . 'options');
 define('TABLE_USERS', TABLES_PREFIX . 'users');
 define('TABLE_GROUPS', TABLES_PREFIX . 'groups');
 define('TABLE_MEMBERS', TABLES_PREFIX . 'members');
+define('TABLE_MEMBERS_REQUESTS', TABLES_PREFIX . 'members_requests');
 define('TABLE_FOLDERS', TABLES_PREFIX . 'folders');
 define('TABLE_CATEGORIES', TABLES_PREFIX . 'categories');
 define('TABLE_CATEGORIES_RELATIONS', TABLES_PREFIX . 'categories_relations');

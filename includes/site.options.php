@@ -236,6 +236,13 @@ if(!empty($options_values)) {
 	}
 
 	/**
+	 * For versions 841 and up
+	 */	
+	if (isset($options_values['enable_landing_for_all_files'])) {
+		define('ENABLE_LANDING_FOR_ALL_FILES',$options_values['enable_landing_for_all_files']);
+	}
+
+	/**
 	 * Set the default timezone based on the value of the Timezone select box
 	 * of the options page.
 	 */

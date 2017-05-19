@@ -97,8 +97,24 @@ if (defined('TRY_INSTALL')) {
 								',
 					'params' => array(),
 		),
-		
+
 		'5' =>  array(
+					'table'	=> TABLE_MEMBERS_REQUESTS,
+					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_MEMBERS_REQUESTS.'` (
+								  `id` int(11) NOT NULL AUTO_INCREMENT,
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+								  `requested_by` varchar(32) NOT NULL,
+								  `client_id` int(11) NOT NULL,
+								  `group_id` int(11) NOT NULL,
+								  PRIMARY KEY (`id`),
+								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+								  FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+								',
+					'params' => array(),
+		),
+		
+		'6' =>  array(
 					'table'	=> TABLE_FOLDERS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_FOLDERS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -116,7 +132,7 @@ if (defined('TRY_INSTALL')) {
 					'params' => array(),
 		),
 		
-		'6' =>  array(
+		'7' =>  array(
 					'table'	=> TABLE_FILES_RELATIONS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_FILES_RELATIONS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -137,7 +153,7 @@ if (defined('TRY_INSTALL')) {
 					'params' => array(),
 		),
 		
-		'7' =>  array(
+		'8' =>  array(
 					'table'	=> TABLE_LOG,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_LOG.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -155,7 +171,7 @@ if (defined('TRY_INSTALL')) {
 					'params' => array(),
 		),
 		
-		'8' =>  array(
+		'9' =>  array(
 					'table'	=> TABLE_NOTIFICATIONS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_NOTIFICATIONS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -173,7 +189,7 @@ if (defined('TRY_INSTALL')) {
 					'params' => array(),
 		),
 		
-		'9' =>  array(
+		'10' =>  array(
 					'table'	=> TABLE_PASSWORD_RESET,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_PASSWORD_RESET.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -188,7 +204,7 @@ if (defined('TRY_INSTALL')) {
 					'params' => array(),
 		),
 	
-		'10' =>  array(
+		'11' =>  array(
 					'table'	=> TABLE_DOWNLOADS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_DOWNLOADS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -206,7 +222,7 @@ if (defined('TRY_INSTALL')) {
 					'params' => array(),
 		),
 	
-		'11' =>  array(
+		'12' =>  array(
 					'table'	=> '',
 					'query'	=> "INSERT INTO ".TABLE_OPTIONS." (name, value) VALUES
 								('base_uri', :base_uri),
@@ -294,7 +310,7 @@ if (defined('TRY_INSTALL')) {
 								),
 		),
 		
-		'12' =>  array(
+		'13' =>  array(
 						'table'	=> '',
 						'query'	=> "INSERT INTO ".TABLE_USERS." (id, user, password, name, email, level, active) VALUES
 									(1, :username, :password, :name, :email, 9, 1)",
@@ -306,7 +322,7 @@ if (defined('TRY_INSTALL')) {
 						),
 		),
 
-		'13' =>  array(
+		'14' =>  array(
 					'table'	=> TABLE_CATEGORIES,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_CATEGORIES.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -322,7 +338,7 @@ if (defined('TRY_INSTALL')) {
 					'params' => array(),
 		),
 		
-		'14' =>  array(
+		'15' =>  array(
 					'table'	=> TABLE_CATEGORIES_RELATIONS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_CATEGORIES_RELATIONS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,

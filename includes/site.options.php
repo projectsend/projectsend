@@ -243,6 +243,14 @@ if(!empty($options_values)) {
 	}
 
 	/**
+	 * For versions 842 and up
+	 */	
+	if (isset($options_values['footer_custom_enable'])) {
+		define('FOOTER_CUSTOM_ENABLE',$options_values['footer_custom_enable']);
+		define('FOOTER_CUSTOM_CONTENT',$options_values['footer_custom_content']);
+	}
+
+	/**
 	 * Set the default timezone based on the value of the Timezone select box
 	 * of the options page.
 	 */

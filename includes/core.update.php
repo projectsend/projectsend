@@ -1146,6 +1146,23 @@ if (in_session_or_cookies($allowed_update)) {
 			}
 		}
 
+		/**
+		 * r842 updates
+		 * Added an option to set a different text on the footer
+		 */
+		if ($last_update < 842) {
+			$new_database_values = array(
+											'footer_custom_enable'	=> '0',
+											'footer_custom_content'	=> '',
+										);
+			
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
+				}
+			}
+		}
+
 	}
 }	
 ?>

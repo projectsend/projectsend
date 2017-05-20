@@ -42,6 +42,7 @@ if ($_POST) {
 
 	/** Checkboxes */
 	$checkboxes	= array(
+						'footer_custom_enable',
 						'files_descriptions_use_ckeditor',
 						'enable_landing_for_all_files',
 						'recaptcha_enabled',
@@ -252,6 +253,21 @@ $allowed_file_types = implode(',',$allowed_file_types);
 											</div>
 										</div>
 
+										<div class="form-group">
+											<div class="col-sm-8 col-sm-offset-4">
+												<label for="footer_custom_enable">
+													<input type="checkbox" value="1" name="footer_custom_enable" id="footer_custom_enable" class="checkbox_options" <?php echo (FOOTER_CUSTOM_ENABLE == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Use custom footer text",'cftp_admin'); ?>
+												</label>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<label for="footer_custom_content" class="col-sm-4 control-label"><?php _e('Footer content','cftp_admin'); ?></label>
+											<div class="col-sm-8">
+												<input type="text" name="footer_custom_content" id="footer_custom_content" class="form-control" value="<?php echo html_output(FOOTER_CUSTOM_CONTENT); ?>" />
+											</div>
+										</div>
+
 										<div class="options_divide"></div>
 
 										<h3><?php _e('Files','cftp_admin'); ?></h3>
@@ -358,7 +374,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</div>
 
 										<div class="form-group">
-											<label for="clients_can_select_group" class="col-sm-4 control-label"><?php _e('Groups for which clients can request membership to','cftp_admin'); ?></label> 
+											<label for="clients_can_select_group" class="col-sm-4 control-label"><?php _e('Groups for which clients can request membership to on the register form','cftp_admin'); ?></label> 
 											<div class="col-sm-8">
 												<select class="form-control" name="clients_can_select_group" id="clients_can_select_group">
 													<?php

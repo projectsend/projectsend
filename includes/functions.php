@@ -514,7 +514,8 @@ function default_footer_info($logged = true)
 		<div id="footer">
 			<?php
 				if ( FOOTER_CUSTOM_ENABLE == '1' ) {
-					echo htmlentities(FOOTER_CUSTOM_CONTENT);
+					echo strip_tags(FOOTER_CUSTOM_CONTENT, '<br><span><a><strong><em><b><i><u><s>');
+					//echo htmlentities_allowed(FOOTER_CUSTOM_CONTENT);
 				}
 				else {
 					_e('Provided by', 'cftp_admin'); ?> <a href="<?php echo SYSTEM_URI; ?>" target="_blank"><?php echo SYSTEM_NAME; ?></a> <?php if ($logged == true) { _e('version', 'cftp_admin'); echo ' ' . CURRENT_VERSION; } ?> - <?php _e('Free software', 'cftp_admin');

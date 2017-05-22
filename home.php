@@ -61,11 +61,86 @@ define('CAN_INCLUDE_FILES', true);
 								<?php include(ROOT_DIR.'/home-news-widget.php'); ?>
 							</div>
 							<div class="col-sm-6">
-								<div class="widget">
-									<h4><?php _e('System data','cftp_admin'); ?></h4>
+								<div class="widget widget_system_info">
+									<h4><?php _e('System information','cftp_admin'); ?></h4>
 									<div class="widget_int">
-										<p><strong><?php _e('Note:','cftp_admin'); ?></strong> <?php _e('This graphic will help you get a relative view of the existing data, allowing you to see the relation between clients, users, groups and files.','cftp_admin'); ?>
-										<div id="sys_info" style="height:290px; width:100%;"></div>
+										<h3><?php _e('Software','cftp_admin'); ?></h3>
+										<dl class="dl-horizontal">
+											<dt><?php _e('Version','cftp_admin'); ?></dt>
+											<dd>
+												<?php echo CURRENT_VERSION; ?> <?php
+													if (defined('VERSION_NEW_NUMBER')) {
+														echo ' - <strong>'; _e('New version available','cftp_admin'); echo ':</strong> <a href="'. VERSION_NEW_URL . '">' . VERSION_NEW_NUMBER . '</a>';
+													}
+												?>
+											</dd>
+	
+											<dt><?php _e('Upload max. file size','cftp_admin'); ?></dt>
+											<dd><?php echo MAX_FILESIZE; ?> mb.</dd>
+	
+											<dt><?php _e('Template','cftp_admin'); ?></dt>
+											<dd><?php echo ucfirst(TEMPLATE_USE); ?></dd>
+	
+											<?php
+												/** Get the data to show on the bars graphic */
+												$statement = $dbh->query("SELECT distinct id FROM " . TABLE_FILES );
+												$total_files = $statement->rowCount();
+											
+												$statement = $dbh->query("SELECT distinct id FROM " . TABLE_USERS . " WHERE level = '0'");
+												$total_clients = $statement->rowCount();
+											
+												$statement = $dbh->query("SELECT distinct id FROM " . TABLE_GROUPS);
+												$total_groups = $statement->rowCount();
+											
+												$statement = $dbh->query("SELECT distinct id FROM " . TABLE_USERS . " WHERE level != '0'");
+												$total_users = $statement->rowCount();
+											?>
+	
+											<dt><?php _e('Files','cftp_admin'); ?></dt>
+											<dd><?php echo $total_files; ?></dd>
+	
+											<dt><?php _e('Clients','cftp_admin'); ?></dt>
+											<dd><?php echo $total_clients; ?></dd>
+	
+											<dt><?php _e('System users','cftp_admin'); ?></dt>
+											<dd><?php echo $total_users; ?></dd>
+	
+											<dt><?php _e('Groups','cftp_admin'); ?></dt>
+											<dd><?php echo $total_groups; ?></dd>
+	
+											<dt><?php _e('Root directory','cftp_admin'); ?></dt>
+											<dd><?php echo ROOT_DIR; ?></dd>
+
+											<dt><?php _e('Uploads folder','cftp_admin'); ?></dt>
+											<dd><?php echo UPLOADED_FILES_FOLDER; ?></dd>
+										</dl>
+										
+										<h3><?php _e('System','cftp_admin'); ?></h3>
+										<dl class="dl-horizontal">
+											<dt><?php _e('Server','cftp_admin'); ?></dt>
+											<dd><?php echo $_SERVER["SERVER_SOFTWARE"]; ?>
+
+											<dt><?php _e('PHP version','cftp_admin'); ?></dt>
+											<dd><?php echo PHP_VERSION; ?></dd>
+
+											<dt><?php _e('Memory limit','cftp_admin'); ?></dt>
+											<dd><?php echo ini_get('memory_limit'); ?></dd>
+
+											<dt><?php _e('Max execution time','cftp_admin'); ?></dt>
+											<dd><?php echo ini_get('max_execution_time'); ?></dd>
+
+											<dt><?php _e('Post max size','cftp_admin'); ?></dt>
+											<dd><?php echo ini_get('post_max_size'); ?></dd>
+										</dl>
+										
+										<h3>Database</h3>
+										<dl class="dl-horizontal">
+											<dt><?php _e('Driver','cftp_admin'); ?></dt>
+											<dd><?php echo $dbh->getAttribute(PDO::ATTR_DRIVER_NAME);; ?></dd>
+
+											<dt><?php _e('Version','cftp_admin'); ?></dt>
+											<dd><?php echo $dbh->query('select version()')->fetchColumn(); ?></dd>
+										</dl>
 									</div>
 								</div>
 							</div>
@@ -106,72 +181,8 @@ define('CAN_INCLUDE_FILES', true);
 	
 </div>
 
-<?php
-	/** Get the data to show on the bars graphic */
-	$statement = $dbh->query("SELECT distinct id FROM " . TABLE_FILES );
-	$total_files = $statement->rowCount();
-
-	$statement = $dbh->query("SELECT distinct user FROM " . TABLE_USERS . " WHERE level = '0'");
-	$total_clients = $statement->rowCount();
-
-	$statement = $dbh->query("SELECT distinct id FROM " . TABLE_GROUPS);
-	$total_groups = $statement->rowCount();
-
-	$statement = $dbh->query("SELECT distinct user FROM " . TABLE_USERS . " WHERE level != '0'");
-	$total_users = $statement->rowCount();
-?>
 <script type="text/javascript">
 	$(document).ready(function(){
-		$.plot(
-			$("#sys_info"), [{
-				data: [
-					[1, <?php echo $total_files; ?>],
-					[2, <?php echo $total_clients; ?>],
-					[3, <?php echo $total_groups; ?>]
-					<?php
-						$log_allowed = array(9);
-						if (in_session_or_cookies($log_allowed)) {
-							?>
-								,[4, <?php echo $total_users; ?>]
-							<?php
-							$show_log = true;
-						}
-					?>
-				]
-			}
-			], {
-				series:{
-					bars:{show: true}
-				},
-				bars:{
-					  barWidth:.5,
-					  align: 'center'
-				},
-				legend: {
-					show: true
-				},
-				grid:{
-					hoverable: true,
-					borderWidth: 0,
-					backgroundColor: {
-						colors: ["#fff", "#f9f9f9"]
-					}
-				},
-				xaxis: {
-					ticks: [
-						[1, '<?php _e('Files','cftp_admin'); ?>: <?php echo $total_files; ?>'],
-						[2, '<?php _e('Clients','cftp_admin'); ?>: <?php echo $total_clients; ?>'],
-						[3, '<?php _e('Groups','cftp_admin'); ?>: <?php echo $total_groups; ?>'],
-						[4, '<?php _e('Users','cftp_admin'); ?>: <?php echo $total_users; ?>']
-					]
-				},
-				yaxis: {
-					min: 0,
-					tickDecimals:0
-				}
-			}
-		);
-
 		// Generate the graphic		
 		$('.stats_days').click(function(e) {
 			if ($(this).hasClass('btn-inverse')) {

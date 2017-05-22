@@ -283,7 +283,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										<div class="form-group">
 											<div class="col-sm-8 col-sm-offset-4">
 												<label for="enable_landing_for_all_files">
-													<input type="checkbox" value="1" name="enable_landing_for_all_files" id="enable_landing_for_all_files" class="checkbox_options" <?php echo (ENABLE_LANDING_FOR_ALL_FILES == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Enable landing page for private files",'cftp_admin'); ?>
+													<input type="checkbox" value="1" name="enable_landing_for_all_files" id="enable_landing_for_all_files" class="checkbox_options" <?php echo (ENABLE_LANDING_FOR_ALL_FILES == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Enable information page for private files",'cftp_admin'); ?>
 													<p class="field_note"><?php _e("If enabled, the file information landing page will be available even for files that are not marked as private. Downloading will, however, not be permitted.",'cftp_admin'); ?></p>
 												</label>
 											</div>

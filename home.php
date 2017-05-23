@@ -108,11 +108,16 @@ define('CAN_INCLUDE_FILES', true);
 											<dt><?php _e('Groups','cftp_admin'); ?></dt>
 											<dd><?php echo $total_groups; ?></dd>
 	
-											<dt><?php _e('Root directory','cftp_admin'); ?></dt>
-											<dd><?php echo ROOT_DIR; ?></dd>
-
-											<dt><?php _e('Uploads folder','cftp_admin'); ?></dt>
-											<dd><?php echo UPLOADED_FILES_FOLDER; ?></dd>
+											<?php
+												/**
+												 * Hidden so it doesn't get shared by accident in any bug report
+												<dt><?php _e('Root directory','cftp_admin'); ?></dt>
+												<dd><?php echo ROOT_DIR; ?></dd>
+	
+												<dt><?php _e('Uploads folder','cftp_admin'); ?></dt>
+												<dd><?php echo UPLOADED_FILES_FOLDER; ?></dd>
+												*/
+											?>
 										</dl>
 										
 										<h3><?php _e('System','cftp_admin'); ?></h3>

@@ -138,7 +138,7 @@ define('CAN_INCLUDE_FILES', true);
 											<dd><?php echo ini_get('post_max_size'); ?></dd>
 										</dl>
 										
-										<h3>Database</h3>
+										<h3><?php _e('Database','cftp_admin'); ?></h3>
 										<dl class="dl-horizontal">
 											<dt><?php _e('Driver','cftp_admin'); ?></dt>
 											<dd><?php echo $dbh->getAttribute(PDO::ATTR_DRIVER_NAME);; ?></dd>

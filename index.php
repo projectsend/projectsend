@@ -14,13 +14,17 @@
  * @package		ProjectSend
  *
  */
+
+
+
 $allowed_levels = array(9,8,7,0);
+
 require_once('sys.includes.php');
 
 $page_title = __('Log in','cftp_admin');
 
 include('header-unlogged.php');
-	
+	//session_destroy();
 	/**
 	 * Google Sign-in
 	 */
@@ -38,6 +42,7 @@ include('header-unlogged.php');
 	
 	/** The form was submitted */
 	if ($_POST) {
+	//echo "post";exit;
 		global $dbh;
 		$sysuser_password	= $_POST['login_form_pass'];
 		$selected_form_lang	= $_POST['login_form_lang'];
@@ -51,6 +56,7 @@ include('header-unlogged.php');
 						)
 					);
 		$count_user = $statement->rowCount();
+	//echo '---------'.$count_user;exit();
 		if ($count_user > 0){
 			/** If the username was found on the users table */
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -64,11 +70,11 @@ include('header-unlogged.php');
 			}
 			$check_password = $hasher->CheckPassword($sysuser_password, $db_pass);
 			if ($check_password) {
+	//		echo $check_password;exit();
 			//if ($db_pass == $sysuser_password) {
 				if ($active_status != '0') {
-					$statement1 = $dbh->prepare("INSERT INTO tbl_login_details (user_id,login_time_tamp,status ) VALUES (".$logged_id.",".time().",".true.")");
-					$statement1->execute();
 					/** Set SESSION values */
+					$_SESSION['loggedin_id'] = $logged_id;
 					$_SESSION['loggedin'] = $sysuser_username;
 					$_SESSION['userlevel'] = $user_level;
 					$_SESSION['lang'] = $selected_form_lang;
@@ -136,22 +142,55 @@ include('header-unlogged.php');
 		}
 	
 	}
+	//echo "else";exit;
 
 if ( isset($_SESSION['errorstate'] ) ) {
 	$errorstate = $_SESSION['errorstate'];
 	unset($_SESSION['errorstate']);
 }
 ?>
-		<h2 class="hidden"><?php echo $page_title; ?></h2>
+<?php //echo generate_branding_layout(); ?>
 
-		<div class="container">
-
-			<?php echo generate_branding_layout(); ?>
-
-			<div class="row">
-				<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-4 white-box">
-					<div class="white-box-interior">
-						<?php
+<div id="content" class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8 hidden-xs hidden-sm">
+      <h1 class="txt-color-red login-header-big"></h1>
+<img alt="Logo Placeholder" src="<?php echo BASE_URI?>/includes/timthumb/timthumb.php?src=/img/custom/logo/<?php echo LOGO_FILENAME; ?>&amp;w=220">
+      <div class="hero">
+        <div class="pull-left login-desc-box-l">
+          <h4 class="paragraph-header">It's Okay to be Smart. Experience the simplicity of MicroHealth Send, everywhere you go!</h4>
+          <div class="login-app-icons"> <a href="register.php" class="btn btn-danger btn-sm">Not a member? Join now</a><a href="dropoff_guest.php" class="btn btn-danger btn-sm" style="margin-left:5px"><i class="fa fa-upload" aria-hidden="true"></i>&nbsp;&nbsp;drop off</a></div>
+        </div>
+        <img src="img/demo/iphoneview.png" class="pull-right display-image" alt="" style="width:210px"> </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+          <h5 class="about-heading">About MicroHealth Send - Are you up to date?</h5>
+          <p> Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa. </p>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+          <h5 class="about-heading">Not just your average template!</h5>
+          <p> Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi voluptatem accusantium! </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
+      <div class="well no-padding"> 
+        <script type="text/javascript">
+							$(document).ready(function() {
+								$("form").submit(function() {
+									clean_form(this);
+					
+									is_complete(this.login_form_user,'<?php _e('Username was not completed','cftp_admin'); ?>');
+									is_complete(this.login_form_pass,'<?php _e('Password was not completed','cftp_admin'); ?>');
+					
+									// show the errors or continue if everything is ok
+									if (show_form_errors() == false) { return false; }
+								});
+							});
+						</script>
+        <form action="index.php" method="post" name="login_admin" role="form" id="login-form" class="smart-form client-form">
+          <header> Sign In </header>
+          <?php
 							/**
 							 * Show login errors
 							 */
@@ -186,125 +225,122 @@ if ( isset($_SESSION['errorstate'] ) ) {
 								echo system_message('error',$login_err_message,'login_error');
 							}
 						?>
-					
-						<script type="text/javascript">
-							$(document).ready(function() {
-								$("form").submit(function() {
-									clean_form(this);
-					
-									is_complete(this.login_form_user,'<?php _e('Username was not completed','cftp_admin'); ?>');
-									is_complete(this.login_form_pass,'<?php _e('Password was not completed','cftp_admin'); ?>');
-					
-									// show the errors or continue if everything is ok
-									if (show_form_errors() == false) { return false; }
-								});
-							});
-						</script>
-					
-						<form action="index.php" method="post" name="login_admin" role="form">
-							<fieldset>
-								<div class="form-group">
-									<label for="login_form_user"><?php _e('Username','cftp_admin'); ?> / <?php _e('E-mail','cftp_admin'); ?></label>
-									<input type="text" name="login_form_user" id="login_form_user" value="<?php if (isset($sysuser_username)) { echo htmlspecialchars($sysuser_username); } ?>" class="form-control" />
-								</div>
-
-								<div class="form-group">
-									<label for="login_form_pass"><?php _e('Password','cftp_admin'); ?></label>
-									<input type="password" name="login_form_pass" id="login_form_pass" class="form-control" />
-								</div>
-
-								<div class="form-group">
-									<label for="login_form_lang"><?php _e('Language','cftp_admin'); ?></label>
-									<select name="login_form_lang" id="login_form_lang" class="form-control">
-										<?php
+          <fieldset>
+            <section>
+              <label class="label">E-mail / Username</label>
+              <label class="input"> <i class="icon-append fa fa-user"></i>
+                <input type="text" name="login_form_user" id="login_form_user" value="<?php if (isset($sysuser_username)) { echo htmlspecialchars($sysuser_username); } ?>" class="form-control" />
+                <b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i> Please enter email address/username</b></label>
+            </section>
+            <section>
+              <label class="label">Password</label>
+              <label class="input"> <i class="icon-append fa fa-lock"></i>
+                <input type="password" name="login_form_pass" id="login_form_pass" class="form-control" />
+                <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> Enter your password</b> </label>
+              <div class="note"> <a href="<?php echo BASE_URI; ?>reset-password.php">Forgot password?</a> </div>
+            </section>
+            <section>
+              <label for="login_form_lang">
+                <?php _e('Language','cftp_admin'); ?>
+              </label>
+              <select name="login_form_lang" id="login_form_lang" class="form-control">
+                <?php
 											// scan for language files
 											$available_langs = get_available_languages();
 											foreach ($available_langs as $filename => $lang_name) {
 										?>
-												<option value="<?php echo $filename;?>" <?php echo ( LOADED_LANG == $filename ) ? 'selected' : ''; ?>>
-													<?php
+                <option value="<?php echo $filename;?>" <?php echo ( LOADED_LANG == $filename ) ? 'selected' : ''; ?>>
+                <?php
 														echo $lang_name;
 														if ( $filename == SITE_LANG ) {
 															echo ' [' . __('default','cftp_admin') . ']';
 														}
 													?>
-												</option>
-										<?php
+                </option>
+                <?php
 											}
 										?>
-									</select>
-								</div>
-<?php
-/*
-								<label for="login_form_remember">
-									<input type="checkbox" name="login_form_remember" id="login_form_remember" value="on" />
-									<?php _e('Remember me','cftp_admin'); ?>
-								</label>
-*/?>
-								<div class="inside_form_buttons">
-									<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Log in','cftp_admin'); ?></button>
-								</div>
+              </select>
+            </section>
+            <section>
+              <label class="checkbox">
+                <input type="checkbox" name="remember" checked="">
+                <i></i>Stay signed in</label>
+            </section>
+          </fieldset>
+          <footer>
+            <button type="submit" name="submit" class="btn  btn-primary">
+            <?php _e('Log in','cftp_admin'); ?>
+            </button>
+          </footer>
+        </form>
+      </div>
+      <h5 class="text-center"> - Or sign in using -</h5>
+      <ul class="list-inline text-center">
+        <li>
+          <?php if(GOOGLE_SIGNIN_ENABLED == '1'): ?>
+          <a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="btn btn-default btn-circle"><i class="fa fa-google"></i></a></a>
+          <?php endif; ?>
+        </li>
+        <?php if(FACEBOOK_SIGNIN_ENABLED == '1'): ?>
+        <li> <a href="sociallogin/facebook_special/fbconfig.php" name="Sign in with Facebook" class="btn btn-primary btn-circle" title="facebook"><i class="fa fa-facebook"></i></a> </li>
+        <?php endif; ?>
+        <?php if(TWITTER_SIGNIN_ENABLED == '1'): ?>
+        <li> <a href="sociallogin/login-with.php?provider=Twitter" name="Sign in with Twitter" class="btn btn-info btn-circle" title="twitter"><i class="fa fa-twitter"></i></a> </li>
+        <?php endif; ?>
+        <?php if(YAHOO_SIGNIN_ENABLED == '1'): ?>
+        <li> <a href="sociallogin/login-with.php?provider=yahoo" name="Sign in with yahoo" class="btn btn-danger btn-circle" title="Yahoo"><i class="fa fa-yahoo" aria-hidden="true"></i></a> </li>
+        <?php endif; ?>
+        <?php if(LINKEDIN_SIGNIN_ENABLED == '1'): ?>
+        <li> <a href="sociallogin/login-with.php?provider=LinkedIn" name="Sign in with linkedin" class="btn btn-warning btn-circle" title="Linkedin"><i class="fa fa-linkedin"></i></a> </li>
+        <?php endif; ?>
+		<?php if(LDAP_SIGNIN_ENABLED == '1'): ?>
+        <li> <a href="sociallogin/ldap-login.php" name="Sign in with LDAP" class="btn btn-success btn-circle" id="display_ldap_form" title="LDAP"> <i class="fa fa-universal-access"></i></a> </li>
+		<?php endif; ?>
+        <?php if(WINDOWS_SIGNIN_ENABLED == '1'): ?>
+        <li> <a href="#" name="office365" class="btn btn-default btn-circle" id="office365" onclick="signIn()" title="Sign in with office 365"> <i class="fa fa-windows"></i></a> </li>
+        <?php endif; ?>
+      </ul>
+<!--	<div id="ldap_login_div" style="display:none">
+		<div id="message"></div>
+		Email<br/>
+		<input type="text" id="ldap_email" placeholder="email" value="riemann@ldap.forumsys.com"><br/>
+		Password:<br/>						
+		<input type="password" id="ldap_password" placeholder="password" value="password"><br/>
+		<a href="#" id="ldap_submit">LOGIN</a>
 
-								<div class="social-login">
-									<?php if(GOOGLE_SIGNIN_ENABLED == '1'): ?>
-										<a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="google-login"><img src="<?php echo BASE_URI; ?>img/google/btn_google_signin_light_normal_web.png" alt="Google Signin" /></a>
-									<?php endif; ?>
-								</div>
-								<div class="social-login">
-									<?php if(FACEBOOK_SIGNIN_ENABLED == '1'): ?>
-										<a href="sociallogin/login-with.php?provider=Facebook" name="Sign in with Facebook" class="facebook-login"><img src="<?php echo BASE_URI; ?>img/facebook/btn_facebook_signin_light_normal_web.png" alt="facebook Signin" /></a>
-									<?php endif; ?>
-								</div>
-								<div class="social-login">
-									<?php if(TWITTER_SIGNIN_ENABLED == '1'): ?>
-										<a href="sociallogin/login-with.php?provider=Twitter" name="Sign in with Twitter" class="twitter-login"><img src="<?php echo BASE_URI; ?>img/twitter/btn_twitter_signin_light_normal_web.png" alt="twitter Signin" /></a>
-									<?php endif; ?>
-								</div>
-								<div class="social-login">
-									<?php if(YAHOO_SIGNIN_ENABLED == '1'): ?>
-										<a href="sociallogin/login-with.php?provider=yahoo" name="Sign in with yahoo" class="yahoo-login"><img src="<?php echo BASE_URI; ?>img/yahoo/btn_yahoo_signin_light_normal_web.png" alt="yahoo Signin" /></a>
-									<?php endif; ?>
-								</div>
-								<div class="social-login">
-									<?php if(LINKEDIN_SIGNIN_ENABLED == '1'): ?>
-										<a href="sociallogin/login-with.php?provider=LinkedIn" name="Sign in with linkedin" class="linkedin-login"><img src="<?php echo BASE_URI; ?>img/linkedin/btn_linkedin_signin_light_normal_web.png" alt="linkedin Signin" /></a>
-									<?php endif; ?>
-								</div>
-								<div class="social-login">
-									<a href="#" id="display_ldap_form" name="Sign in with linkedin" class="linkedin-login">LDAP LOGIN</a>
-									<div id="ldap_login_div" style="display:none">
-										<div id="message"></div>
-										Email<br/>
-										<input type="text" id="ldap_email" placeholder="email" value="riemann@ldap.forumsys.com"><br/>										
-										Password:<br/>						
-										<input type="password" id="ldap_password" placeholder="password" value="password"><br/>
-										<a href="#" id="ldap_submit">LOGIN</a>
-										
-									</div>
-								</div>
-							</fieldset>
-						</form>
-			
-						<div class="login_form_links">
-							<p id="reset_pass_link"><?php _e("Forgot your password?",'cftp_admin'); ?> <a href="<?php echo BASE_URI; ?>reset-password.php"><?php _e('Set up a new one.','cftp_admin'); ?></a></p>
-							<?php
-								if (CLIENTS_CAN_REGISTER == '1') {
-							?>
-									<p id="register_link"><?php _e("Don't have an account yet?",'cftp_admin'); ?> <a href="<?php echo BASE_URI; ?>register.php"><?php _e('Register as a new client.','cftp_admin'); ?></a></p>
-							<?php
-								} else {
-							?>
-									<p><?php _e("This server does not allow self registrations.",'cftp_admin'); ?></p>
-									<p><?php _e("If you need an account, please contact a server administrator.",'cftp_admin'); ?></p>
-							<?php
-								}
-							?>
-						</div>
-					</div>
-				</div>
-			</div>	
-		</div> <!-- container -->
-	</div> <!-- main (from header) -->
+	</div>-->
+            <div id="ldap_login_div" style="display:none">
+            <div class="well no-padding"> 
+            <form role="form" id="login-form1" class="smart-form client-form">
+            <fieldset>
+            	<section>
+                    <div id="message"></div>
+                    <label class="label">Email</label>
+                    <label class="input"> <i class="icon-append fa fa-user"></i>
+                    <input type="text" id="ldap_email" placeholder="email" value="riemann@ldap.forumsys.com" class="form-control">
+                    </label>
+                    </section>
+                    <section>
+                    <label class="label">Password</label>	
+                    <label class="input"> <i class="icon-append fa fa-lock"></i>				
+                    <input type="password" id="ldap_password" placeholder="password" value="password" class="form-control">
+                    </label>
+                    </section>
+                    <a href="#" id="ldap_submit" class="btn  btn-primary">LOGIN</a>
+            	
+            </fieldset>
+            </form>
+            </div>
+		</div>
+    </div>
+  </div>
+</div>
+<!------------------------------------------------------------------------------------------------>
+</div>
+<!-- main (from header) -->
+
+<div class="cc-footer">
 <script type="text/javascript">
 function validateEmail($email) {
   var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
@@ -348,15 +384,55 @@ function validateEmail($email) {
 		});
 	});
 </script>
-	<?php
+  <?php
 		default_footer_info( false );
 
 		load_js_files();
 	?>
-
-</body>
-</html>
-<?php
+</div>
+</body></html><?php
 	$dbh = null;
 	ob_end_flush();
 ?>
+<!-- Trigger the modal with a button 
+<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#cc-ldap">Open Modal</button>-->
+
+<!-- Modal -->
+<div id="cc-ldap" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Sign In with LDAP</h4>
+      </div>
+      <div class="modal-body">
+        <!----------------------------------------------------------------------->
+        <div id="ldap_login_div">
+            <div class="well no-padding"> 
+            <fieldset>
+            	<section>
+                    <div id="message"></div>
+                    <label class="label">Email</label>
+                    <label class="input"> <i class="icon-append fa fa-user"></i>
+                    <input type="text" id="ldap_email" placeholder="email" value="riemann@ldap.forumsys.com" class="form-control">
+                    <label class="label">Password</label>	
+                    <label class="input"> <i class="icon-append fa fa-lock"></i>				
+                    <input type="password" id="ldap_password" placeholder="password" value="password" class="form-control"><br/>
+                    <a href="#" id="ldap_submit" class="btn  btn-primary">LOGIN</a>
+            	</section>
+            </fieldset>
+            </div>
+		</div>
+        <!----------------------------------------------------------------------->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+  </div>
+  
+

@@ -27,6 +27,7 @@ if(isset($_GET['email']))
 			/** Set SESSION values */
 			$_SESSION['loggedin'] = $sysuser_username;
 			$_SESSION['userlevel'] = $user_level;
+			$_SESSION['loggedin_id'] = $logged_id;
 
 			if ($user_level != '0') {
 				$access_string = 'admin';
@@ -70,7 +71,7 @@ if(isset($_GET['email']))
 
 		$clientData = array(
 		  'id' => '',
-		  'username' => $username,
+		  'username' => $email,
 		  'password' => $password,
 		  'name' => $username,
 		  'email' => $email,

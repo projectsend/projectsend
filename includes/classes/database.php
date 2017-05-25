@@ -7,21 +7,19 @@
  * @subpackage	Classes
  *
  */
-//require_once('sys.includes.php');
-/* included aes class file by RJ-07-Oct-2016 */
-include('aes_class.php');
+
 /** Extension class to count the total of executed queries */
 if ( DEBUG === true ) {
 	class PDOEx extends PDO
 	{
 		private $queries = 0;
 		
-		public function query($query, $options = array()) {
+		public function query($query) {
 			++$this->queries;
 			return parent::query($query);
 		}
 	
-		public function prepare($statement, $options = array()) {
+		public function prepare($statement) {
 			++$this->queries;
 			return parent::prepare($statement);
 		}
@@ -32,34 +30,17 @@ if ( DEBUG === true ) {
 	}
 }
 
-
 /** Initiate the database connection */
 global $dbh;
-	$blockSize = 256;
-	$inputKey = "project send encryption";
-	$fileData1 = DB_PASSWORD;
-    	$aes1 = new AES($fileData1, $inputKey, $blockSize);
-    	$decryptedPassword = $aes1->decrypt();
-	//echo $decryptedPassword;exit();
 try {
 	switch ( DB_DRIVER ) {
 		default:
 		case 'mysql':
-			if ( DEBUG === true ) {
-				$dbh = new PDOEx("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, $decryptedPassword, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
-			}
-			else {
-				$dbh = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, $decryptedPassword, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
-			}
+			$dbh = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
 			break;
 
 		case 'mssql':
-			if ( DEBUG === true ) {
-				$dbh = new PDOEx("mssql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, $decryptedPassword, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
-			}
-			else {
-				$dbh = new PDO("mssql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, $decryptedPassword, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
-			}
+			$dbh = new PDO("mssql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
 			break;
 	}
 

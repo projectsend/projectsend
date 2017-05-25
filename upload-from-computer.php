@@ -16,6 +16,7 @@ $load_scripts	= array(
 require_once('sys.includes.php');
 
 $active_nav = 'files';
+$cc_active_page = 'Send File';
 
 $page_title = __('Upload files', 'cftp_admin');
 
@@ -33,9 +34,12 @@ $current_level = get_current_user_level();
 ?>
 
 <div id="main">
-	<h2><?php echo $page_title; ?></h2>
-	
-	<?php
+<div id="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <h2><i class="fa fa-upload" aria-hidden="true"></i>&nbsp;<?php echo $page_title; ?></h2>
+        <?php
 		/** Count the clients to show an error or the form */
 		$statement		= $dbh->query("SELECT id FROM " . TABLE_USERS . " WHERE level = '0'");
 		$count_clients	= $statement->rowCount();
@@ -46,14 +50,13 @@ $current_level = get_current_user_level();
 			message_no_clients();
 		}
 	?>
-		<p>
-			<?php
+        <p>
+          <?php
 				$msg = __('Click on Add files to select all the files that you want to upload, and then click continue. On the next step, you will be able to set a name and description for each uploaded file. Remember that the maximum allowed file size (in mb.) is ','cftp_admin') . ' <strong>'.MAX_FILESIZE.'</strong>';
 				echo system_message('info', $msg);
 			?>
-		</p>
-
-		<script type="text/javascript">
+        </p>
+        <script type="text/javascript">
 			$(document).ready(function() {
 				setInterval(function(){
 					// Send a keep alive action every 1 minute
@@ -155,24 +158,31 @@ $current_level = get_current_user_level();
 				};
 			});
 		</script>
-		
-		<form action="upload-process-form.php" name="upload_by_client" id="upload_by_client" method="post" enctype="multipart/form-data">
-			<input type="hidden" name="uploaded_files" id="uploaded_files" value="" />
-			<div id="uploader">
-				<div class="message message_error">
-					<p><?php _e("Your browser doesn't support HTML5, Flash or Silverlight. Please update your browser or install Adobe Flash or Silverlight to continue.",'cftp_admin'); ?></p>
-				</div>
-			</div>
-			<div class="after_form_buttons">
-				<button type="submit" name="Submit" class="btn btn-wide btn-primary" id="btn-submit"><?php _e('Upload files','cftp_admin'); ?></button>
-			</div>
-			<div class="message message_info message_uploading">
-				<p><?php _e("Your files are being uploaded! Progress indicators may take a while to update, but work is still being done behind the scenes.",'cftp_admin'); ?></p>
-			</div>
-		</form>
-
+        <form action="upload-process-form.php" name="upload_by_client" id="upload_by_client" method="post" enctype="multipart/form-data">
+          <input type="hidden" name="uploaded_files" id="uploaded_files" value="" />
+          <div id="uploader">
+            <div class="message message_error">
+              <p>
+                <?php _e("Your browser doesn't support HTML5, Flash or Silverlight. Please update your browser or install Adobe Flash or Silverlight to continue.",'cftp_admin'); ?>
+              </p>
+            </div>
+          </div>
+          <div class="cc-text-right after_form_buttons">
+            <button type="submit" name="Submit" class="btn btn-wide btn-primary" id="btn-submit">
+            <?php _e('Upload files','cftp_admin'); ?>
+            </button>
+          </div>
+          <div class="message message_info message_uploading">
+            <p>
+              <?php _e("Your files are being uploaded! Progress indicators may take a while to update, but work is still being done behind the scenes.",'cftp_admin'); ?>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
-
+</div>
 <?php
 	include('footer.php');
 ?>

@@ -2,60 +2,18 @@
 	BACKEND specific styles 
 	Not shared with the DEFAULT TEMPLATE
 ********************************************************************************************************************************************/
-
-a {
-	color:#0099FF;
-	text-decoration:none;
+@import url('https://fonts.googleapis.com/css?family=Raleway:100,300,400,600,700');
+body {
+	overflow-x: hidden;
 }
-
-a:hover,
-a:focus
-{
-	text-decoration:underline;
+/*html , body {
+	height: 100%;
 }
-
-.clear {
-	clear:both;
-}
-
-h1, h2, h3, h4, h5, h6 {
-	font-weight:normal !important;
-	font-family:'Open Sans', Arial, sans-serif;
-}
-
-	h1 {
-		color:white;
-		font-size:32px;
-		line-height:32px;
-		margin:15px 0;
-		/*text-shadow:1px 1px 1px #000;*/
-	}
-	
-	h2 {
-		color:#333333;
-		font-size:29px;
-		line-height:29px;
-		/*text-shadow:1px 1px 0 #fff;*/
-		margin:10px auto 35px;
-		text-align:center;
-	}
-	
-	h3 {
-		font-size:17px;
-		line-height:19px;
-		padding:0;
-		/*border-bottom:1px solid #E5E5E5;*/
-		font-weight:900 !important;
-		margin-bottom:20px;
-		text-transform:uppercase;
-	}
-	
-	h4 {
-		font-size:13px;
-		margin-bottom:20px;
-		line-height:18px;
-	}
-
+.cc-footer {
+	position: absolute;
+    bottom: 0;
+    width: 100%;
+}*/
 #system_msg {
 	padding:10px;
 	background:#FFFBE4;
@@ -65,11 +23,6 @@ h1, h2, h3, h4, h5, h6 {
 	#system_msg p {
 		margin:0;
 	}
-
-#main {
-	padding:30px;
-}
-
 /********************************************************************************************************************************************
 	UPDATE AVAILABLE message bar
 ********************************************************************************************************************************************/
@@ -305,6 +258,7 @@ h1, h2, h3, h4, h5, h6 {
 	display:none;
 	float:right;
 	zoom:1;
+	padding-left:0;
 }
 
 	.graph_legend li {
@@ -877,3 +831,208 @@ span.label {
 #uploaded_files_tbl {
 	margin-bottom:70px;
 }
+.cc-visible {
+	display:block!important;
+}
+.close-shortcut {
+	float:right;
+	top:0;
+	right:0;
+}
+#left-panel ul.cc-visible {
+	padding:0;
+}
+#left-panel ul.cc-visible li>a {
+	padding-top: 10px!important;
+    padding-bottom: 10px!important;
+}
+#logo {
+	color: #fff;
+    font-weight: 600;
+	letter-spacing: 1px;
+    font-size: 16px;
+    word-spacing: 2px;
+}
+#logo::first-letter {
+    color: #ca0505;
+    font-size: 20px;
+    font-weight: 800;
+}
+.widget {
+	border-radius: 2px;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+	border: 1px solid rgba(204, 204, 204, 0.22);
+	
+}
+.widget h4 {
+	    background: #ffffff!important;
+    border-radius: 0;
+    color: #000000;
+    border-color: #353D4B!important;
+}
+.graph_legend li {
+	border-radius: 0;
+    padding: 6px 10px;
+    margin: 0;
+}
+.stats_change_days .btn  {
+	box-shadow:none!important;
+}
+ul.home_news , ul.activities_log {
+	list-style-type:none;
+}
+.stats_change_days {
+	text-align: right;
+    margin-bottom: 0;
+	width:100%;
+}
+.log_change_action a {
+	margin-bottom:10px;
+}
+.graph_legend li {
+margin-bottom:10px;
+}
+#unlogged #logo {
+	color:#000000;
+}
+.cc-footer {
+	    padding: 20px 30px;
+		margin: 0;
+    border-bottom: 1px solid #eee!important;
+    overflow: hidden;
+    border-width: 0;
+    background: #f4f4f4!important;
+}
+.cc-signup {
+	font-size:10px;
+}
+.clear, .smart-form section  {
+	clear:both!important;
+}
+.cc-btn-reg {
+	padding:5px 10px;
+}
+.cc-user-cover {
+	width:100%;
+	height:140px;
+	background:#666;
+}
+.air-bottom-right {
+	right:16px!important;
+}
+.cc-widget-area {
+	display: inline-block;
+    padding: 30px;
+}
+.alert {
+	clear:both!important;
+	    margin-top: 20px;
+}
+.cc-profile-wrap {
+	margin-bottom:30px;
+}
+.cc-text-right {
+	text-align:right;
+	margin:20px 0;
+}
+.cc-dft-btm-margin {
+	margin-bottom:20px;
+}
+.form-control {
+	height: 31px;
+}
+table.dataTable tfoot>tr>th input, table.dataTable thead>tr>th input {
+	width:initial!important;
+}
+.cc-active-subpage {
+	    background: rgba(61, 68, 80, 0.67)!important;
+}
+.cc-active-subpage a {
+	color: #ca0505!important;
+    text-shadow: none!important;
+    font-weight: 600!important;
+}
+.form_actions_left {
+	margin-bottom:20px;
+}
+.float-right {
+	float:right;
+}
+.btn {
+	padding: 5px 12px;
+}
+.cc-my-account {
+	    line-height: 48px;
+    color: #ffffff;
+    padding: 10px;
+}
+.cc-group-submit {
+	float:right!important;
+}
+#footer {
+	text-align: center;
+}
+.preview_button .btn {
+	float:right;
+}
+.tab-pane {
+	    padding-bottom: 20px;
+}
+.white-box , .footable {
+	box-shadow:none!important;
+}
+.txt-rgt {
+	text-align:right!important;
+	margin-top:20px;
+}
+
+@media screen and (max-width: 1200px) {
+#no-more-tables td {
+	padding-top:10px;
+	padding-bottom:10px;
+}
+#no-more-tables .btn {
+	margin-top:10px;
+}
+#no-more-tables td {
+	    word-wrap: break-word;
+}
+#no-more-tables tr {
+	margin-bottom:10px;
+}
+}
+
+@media screen and (max-width: 480px) {
+	#logo::first-letter {
+    color: #ca0505;
+    font-size: 20px;
+    font-weight: 800;
+}
+.cc-mob-hide {
+	display:none;
+}
+#logo {
+	font-size: 18px;
+}
+#logo-group , #header>:first-child, #logo {
+	width: 100%;
+}
+.cc-pull-right {
+	margin-top:-50px;
+}
+#hide-menu>:first-child>a {
+	width:initial!important;
+}
+.cc-my-account {
+	display:none;
+}
+#current_logo_left {
+	width:100%;
+}
+#current_logo_right {
+	float:left;
+}
+}
+
+

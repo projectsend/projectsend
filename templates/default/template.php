@@ -1,13 +1,15 @@
+
 <?php
 /*
 Template name:
 Default
 */
 
+
 $ld = 'cftp_template'; // specify the language domain for this template
 
-if ( !empty( $_GET['category'] ) ) {
-	$category_filter = $_GET['category'];
+if ( !empty( $_POST['category'] ) ) {
+	$category_filter = $_POST['category'];
 }
 
 include_once(ROOT_DIR.'/templates/common.php'); // include the required functions for every template
@@ -17,32 +19,41 @@ $window_title = __('File downloads','cftp_template');
 $load_scripts	= array(
 						'footable',
 					); 
-
 include_once(ROOT_DIR.'/header.php');
+
 
 $count = count($my_files);
 ?>
+<link rel="stylesheet" media="all" type="text/css" href="https://msend.microhealthllc.com/css/base.css" />
+<!----------------------------------------------------->
+<div id="main" role="main">
+			<!-- MAIN CONTENT -->
+			<div id="content">
 
+				<!-- Added by B) -------------------->
+            <div class="container-fluid">
+            	<div class="row">
+                	<div class="col-md-12">
+						<h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-home"></i><?php echo $page_title; ?></h1>
+<!------------------------------------------------------->
 	<div id="wrapper">
-		<div id="left_column">
-			<?php if ($logo_file_info['exists'] === true) { ?>
-				<div id="current_logo">
-					<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $logo_file_info['url']; ?>&amp;w=250" alt="<?php echo THIS_INSTALL_SET_TITLE; ?>" />
-				</div>
-			<?php } ?>
-		</div>
+
 	
 		<div id="right_column">
 	
 			<div class="form_actions_left">
 				<div class="form_actions_limit_results">
-					<?php show_search_form(); ?>
+					<form action="" name="files_search" method="post" class="form-inline">
+						<div class="form-group group_float">
+							<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box form-control" />
+						</div>
+						<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default"><?php _e('Search','cftp_admin'); ?></button>
+					</form>
 
 					<?php
 						if ( !empty( $cat_ids ) ) {
 					?>
-							<form action="" name="files_filters" method="get" class="form-inline form_filters">
-								<?php form_add_existing_parameters( array('category', 'action') ); ?>
+							<form action="" name="files_filters" method="post" class="form-inline form_filters">
 								<div class="form-group group_float">
 									<select name="category" id="category" class="txtfield form-control">
 										<option value="0"><?php _e('All categories','cftp_admin'); ?></option>
@@ -60,18 +71,17 @@ $count = count($my_files);
 				</div>
 			</div>
 		
-			<form action="" name="files_list" method="get" class="form-inline">
-				<?php form_add_existing_parameters(); ?>
+			<form action="" name="files_list" method="post" class="form-inline">
 				<div class="form_actions_right">
 					<div class="form_actions">
 						<div class="form_actions_submit">
 							<div class="form-group group_float">
 								<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected files actions','cftp_admin'); ?>:</label>
-								<select name="action" id="action" class="txtfield form-control">
+								<select name="files_actions" id="files_actions" class="txtfield form-control">
 									<option value="zip"><?php _e('Download zipped','cftp_admin'); ?></option>
 								</select>
 							</div>
-							<button type="submit" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
+							<button type="submit" id="do_action" name="proceed" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
 						</div>
 					</div>
 				</div>
@@ -79,7 +89,7 @@ $count = count($my_files);
 				<div class="right_clear"></div><br />
 
 				<div class="form_actions_count">
-					<p class="form_count_total"><?php _e('Found','cftp_admin'); ?>: <span><?php echo $count; ?> <?php _e('files','cftp_admin'); ?></span></p>
+					<p class="form_count_total"><?php _e('Showing','cftp_admin'); ?>: <span><?php echo $count; ?> <?php _e('files','cftp_admin'); ?></span></p>
 				</div>
 	
 				<div class="right_clear"></div>
@@ -100,7 +110,7 @@ $count = count($my_files);
 					}
 				?>
 		
-				<table id="files_list" class="footable" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
+				<table id="files_list" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
 					<thead>
 						<tr>
 							<th class="td_checkbox" data-sort-ignore="true">
@@ -254,8 +264,21 @@ $count = count($my_files);
 	
 	
 	</div> <!-- wrapper -->
+    <!----------------------------------------------------------->
+    </div></div></div></div></div>
+    <!------------------------------------------------------------>
 	
-	<?php default_footer_info(); ?>
+	<?php //default_footer_info(); ?>
+    <div class="page-footer">
+			<div class="row">
+				<div class="col-xs-12 col-sm-12 txt-color-white">
+    <?php
+include('../../footer.php');
+?>
+</div>
+</div>
+</div>
+
 
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -266,7 +289,7 @@ $count = count($my_files);
 					return false; 
 				} 
 				else {
-					var action = $('#action').val();
+					var action = $('#files_actions').val();
 					if (action == 'zip') {
 
 						var checkboxes = $.map($('input:checkbox:checked'), function(e,i) {
@@ -302,3 +325,19 @@ $count = count($my_files);
 	?>
 </body>
 </html>
+<!-- Added B) -->
+<script type="text/javascript">
+$(document).ready(function(e) {	
+	$("#show-shortcut").click(function(e) {
+        $("#shortcut").toggleClass('cc-visible');
+    });
+	$(".close-shortcut").click(function(e) {
+		$("#shortcut").toggleClass('cc-visible');
+    });
+	$(".cc-dropdown").click(function(e) {
+			$(this).find('ul').toggleClass('cc-visible');
+    });
+	$(".cc-active-subpage").parent().addClass('cc-visible');
+});
+</script>
+<!-- Ended By B) -->

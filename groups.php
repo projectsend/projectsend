@@ -6,7 +6,6 @@
  * @subpackage	Groups
  *
  */
-$footable_min = true; // delete this line after finishing pagination on every table
 $load_scripts	= array(
 						'footable',
 					); 
@@ -15,6 +14,7 @@ $allowed_levels = array(9,8);
 require_once('sys.includes.php');
 
 $active_nav = 'groups';
+$cc_active_page = 'Group';
 
 $page_title = __('Groups administration','cftp_admin');;
 
@@ -60,7 +60,6 @@ include('header.php');
 
 
 ?>
-
 <script type="text/javascript">
 	$(document).ready( function() {
 		$("#do_action").click(function() {
@@ -70,15 +69,12 @@ include('header.php');
 				return false; 
 			}
 			else {
-				var action = $('#action').val();
-				if (action == 'delete') {
-					var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
-					var msg_2 = '<?php _e("groups. Are you sure you want to continue?",'cftp_admin'); ?>';
-					if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
-						return true;
-					} else {
-						return false;
-					}
+				var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
+				var msg_2 = '<?php _e("groups. Are you sure you want to continue?",'cftp_admin'); ?>';
+				if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
+					return true;
+				} else {
+					return false;
 				}
 			}
 		});
@@ -87,17 +83,22 @@ include('header.php');
 </script>
 
 <div id="main">
-	<h2><?php echo $page_title; ?></h2>
-
-<?php
+  <div id="content"> 
+    
+    <!-- Added by B) -------------------->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-user"></i>&nbsp;<?php echo $page_title; ?></h1>
+          <?php
 
 	/**
 	 * Apply the corresponding action to the selected users.
 	 */
-	if(isset($_GET['action']) && $_GET['action'] != 'none') {
+	if(isset($_POST['groups_actions']) && $_POST['groups_actions'] != 'none') {
 		/** Continue only if 1 or more users were selected. */
-		if(!empty($_GET['batch'])) {
-			$selected_groups = $_GET['batch'];
+		if(!empty($_POST['groups'])) {
+			$selected_groups = $_POST['groups'];
 			$groups_to_get = implode( ',', array_map( 'intval', array_unique( $selected_groups ) ) );
 
 			/**
@@ -111,7 +112,7 @@ include('header.php');
 				$all_groups[$data_group['id']] = $data_group['name'];
 			}
 
-			switch($_GET['action']) {
+			switch($_POST['groups_actions']) {
 				case 'delete':
 					$deleted_groups = 0;
 
@@ -180,12 +181,12 @@ include('header.php');
 	$cq = "SELECT * FROM " . TABLE_GROUPS;
 
 	/** Add the search terms */	
-	if ( isset( $_GET['search'] ) && !empty( $_GET['search'] ) ) {
+	if ( isset( $_POST['search'] ) && !empty( $_POST['search'] ) ) {
 		$cq .= " WHERE (name LIKE :name OR description LIKE :description)";
 		$next_clause = ' AND';
 		$no_results_error = 'search';
 
-		$search_terms			= '%'.$_GET['search'].'%';
+		$search_terms			= '%'.$_POST['search'].'%';
 		$params[':name']		= $search_terms;
 		$params[':description']	= $search_terms;
 	}
@@ -205,74 +206,57 @@ include('header.php');
 		$no_results_error = 'is_not_member';
 	}
 
-	/**
-	 * Add the order.
-	 * Defaults to order by: name, order: ASC
-	 */
-	$cq .= sql_add_order( TABLE_GROUPS, 'name', 'asc' );
-
-	/**
-	 * Pre-query to count the total results
-	*/
-	$count_sql = $dbh->prepare( $cq );
-	$count_sql->execute($params);
-	$count_for_pagination = $count_sql->rowCount();
-
-	/**
-	 * Repeat the query but this time, limited by pagination
-	 */
-	$cq .= " LIMIT :limit_start, :limit_number";
+	$cq .= " ORDER BY name ASC";
+	
 	$sql = $dbh->prepare( $cq );
-
-	$pagination_page			= ( isset( $_GET["page"] ) ) ? $_GET["page"] : 1;
-	$pagination_start			= ( $pagination_page - 1 ) * RESULTS_PER_PAGE;
-	$params[':limit_start']		= $pagination_start;
-	$params[':limit_number']	= RESULTS_PER_PAGE;
-
 	$sql->execute( $params );
 	$count = $sql->rowCount();
 ?>
-
-	<div class="form_actions_left">
-		<div class="form_actions_limit_results">
-			<?php show_search_form('groups.php'); ?>
-		</div>
-	</div>
-
-	<form action="groups.php" name="groups_list" method="get" class="form-inline">
-		<?php form_add_existing_parameters(); ?>
-		<div class="form_actions_right">
-			<div class="form_actions">
-				<div class="form_actions_submit">
-					<div class="form-group group_float">
-						<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected groups actions','cftp_admin'); ?>:</label>
-						<select name="action" id="action" class="txtfield form-control">
-							<?php
-								$actions_options = array(
-														'none'			=> __('Select action','cftp_admin'),
-														'delete'		=> __('Delete','cftp_admin'),
-													);
-								foreach ( $actions_options as $val => $text ) {
-							?>
-									<option value="<?php echo $val; ?>"><?php echo $text; ?></option>
-							<?php
-								}
-							?>
-						</select>
-					</div>
-					<button type="submit" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
-				</div>
-			</div>
-		</div>
-		<div class="clear"></div>
-
-		<div class="form_actions_count">
-			<p><?php _e('Found','cftp_admin'); ?>: <span><?php echo $count_for_pagination; ?> <?php _e('groups','cftp_admin'); ?></span></p>
-		</div>
-
-		<div class="clear"></div>
-
-		<?php
+          <div class="form_actions_left">
+            <div class="form_actions_limit_results">
+              <form action="groups.php<?php if(isset($member_exists)) { ?>?member=<?php echo html_output($member); } ?>" name="groups_search" method="post" class="form-inline">
+                <div class="form-group group_float">
+                  <input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box form-control" />
+                </div>
+                <button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default">
+                <?php _e('Search','cftp_admin'); ?>
+                </button>
+              </form>
+            </div>
+          </div>
+          <form action="groups.php<?php if(isset($member_exists)) { ?>?member=<?php echo html_output($member); } ?>" name="groups_list" method="post" class="form-inline">
+            <div class="form_actions_right">
+              <div class="form_actions">
+                <div class="form_actions_submit">
+                  <div class="form-group group_float">
+                    <label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i>
+                      <?php _e('Selected groups actions','cftp_admin'); ?>
+                      :</label>
+                    <select name="groups_actions" id="groups_actions" class="txtfield form-control">
+                      <option value="none">
+                      <?php _e('Select action','cftp_admin'); ?>
+                      </option>
+                      <option value="delete">
+                      <?php _e('Delete','cftp_admin'); ?>
+                      </option>
+                    </select>
+                  </div>
+                  <button type="submit" id="do_action" name="proceed" class="btn btn-sm btn-default">
+                  <?php _e('Proceed','cftp_admin'); ?>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="clear"></div>
+            <div class="form_actions_count">
+              <p>
+                <?php _e('Showing','cftp_admin'); ?>
+                : <span><?php echo $count; ?>
+                <?php _e('groups','cftp_admin'); ?>
+                </span></p>
+            </div>
+            <div class="clear"></div>
+            <?php
 			if (!$count) {
 				if (isset($no_results_error)) {
 					switch ($no_results_error) {
@@ -295,131 +279,140 @@ include('header.php');
 				}
 				echo system_message('error',$no_results_message);
 			}
-
-
-			if ($count > 0) {
-				/**
-				 * Generate the table using the class.
-				 */
-				$table_attributes	= array(
-											'id'		=> 'groups_tbl',
-											'class'		=> 'footable table',
-										);
-				$table = new generateTable( $table_attributes );
-
-				$thead_columns		= array(
-											array(
-												'select_all'	=> true,
-												'attributes'	=> array(
-																		'class'		=> array( 'td_checkbox' ),
-																	),
-											),
-											array(
-												'sortable'		=> true,
-												'sort_url'		=> 'name',
-												'sort_default'	=> true,
-												'content'		=> __('Group name','cftp_admin'),
-											),
-											array(
-												'sortable'		=> true,
-												'sort_url'		=> 'description',
-												'content'		=> __('Description','cftp_admin'),
-												'hide'			=> 'phone',
-											),
-											array(
-												'content'		=> __('Members','cftp_admin'),
-											),
-											array(
-												'content'		=> __('Files','cftp_admin'),
-												'hide'			=> 'phone',
-											),
-											array(
-												'sortable'		=> true,
-												'sort_url'		=> 'created_by',
-												'content'		=> __('Created by','cftp_admin'),
-												'hide'			=> 'phone',
-											),
-											array(
-												'sortable'		=> true,
-												'sort_url'		=> 'timestamp',
-												'content'		=> __('Added on','cftp_admin'),
-												'hide'			=> 'phone',
-											),
-											array(
-												'content'		=> __('Actions','cftp_admin'),
-												'hide'			=> 'phone',
-											),
-										);
-				$table->thead( $thead_columns );
-
+		?>
+        	<section id="no-more-tables">
+            <table id="groups_tbl" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
+              <thead>
+                <tr>
+                  <th class="td_checkbox" data-sort-ignore="true"> <input type="checkbox" name="select_all" id="select_all" value="0" />
+                  </th>
+                  <th data-sort-initial="true"><?php _e('Group name','cftp_admin'); ?></th>
+                  <th data-hide="phone"><?php _e('Description','cftp_admin'); ?></th>
+                  <th data-type="numeric"><?php _e('Members','cftp_admin'); ?></th>
+                  <th data-hide="phone" data-type="numeric"><?php _e('Files','cftp_admin'); ?></th>
+                  <th data-hide="phone"><?php _e('Created by','cftp_admin'); ?></th>
+                  <th data-hide="phone" data-type="numeric"><?php _e('Added on','cftp_admin'); ?></th>
+                  <th data-hide="phone" data-sort-ignore="true"><?php _e('Actions','cftp_admin'); ?></th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php
 				$sql->setFetchMode(PDO::FETCH_ASSOC);
 				while ( $row = $sql->fetch() ) {
-					$table->add_row();
-
-					/**
-					 * Prepare the information to be used later on the cells array
-					 * 1- Get account creation date
-					 */
 					$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
-
-					/**
-					 * Add the cells to the row
-					 */
-					$tbody_cells = array(
-											array(
-													'checkbox'		=> true,
-													'value'			=> $row["id"],
-												),
-											array(
-													'content'		=> html_output( $row["name"] ),
-												),
-											array(
-													'content'		=> html_output( $row["description"] ),
-												),
-											array(
-													'content'		=> ( isset( $members_amount[$row['id']] ) ) ? $members_amount[$row['id']] : '0',
-												),
-											array(
-													'content'		=> ( isset( $files_amount[$row['id']] ) ) ? $files_amount[$row['id']] : '0',
-												),
-											array(
-													'content'		=> html_output( $row["created_by"] ),
-												),
-											array(
-													'content'		=> $date,
-												),
-											array(
-													'actions'		=> true,
-													'content'		=> '<a href="manage-files.php?group_id=' . html_output( $row["id"] ) . '" class="btn btn-primary btn-sm">' . __('Manage files','cftp_admin') . '</a>' . "\n" .
-																		'<a href="groups-edit.php?id=' . html_output( $row["id"] ) . '" class="btn btn-primary btn-sm">' . __('Edit','cftp_admin') . '</a>' . "\n"
-												),
-										);
-
-
-					foreach ( $tbody_cells as $cell ) {
-						$table->add_cell( $cell );
-					}
-	
-					$table->end_row();
+				?>
+                <tr>
+                  <td><?php if ($row["id"] != '1') { ?>
+                    <input type="checkbox" name="groups[]" value="<?php echo $row["id"]; ?>" />
+                    <?php } ?></td>
+                  <td><?php echo html_output($row["name"]); ?></td>
+                  <td><?php echo html_output($row["description"]); ?></td>
+                  <td><?php
+							if (isset($members_amount[$row['id']])) {
+								echo $members_amount[$row['id']];
+							}
+							else {
+								echo '0';
+							}
+						?></td>
+                  <td><?php
+							if (isset($files_amount[$row['id']])) {
+								echo $files_amount[$row['id']];
+							}
+							else {
+								echo '0';
+							}
+						?></td>
+                  <td><?php echo html_output($row["created_by"]); ?></td>
+                  <td data-value="<?php echo html_output($row['timestamp']); ?>"><?php echo $date; ?></td>
+                  <td><a href="manage-files.php?group_id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm">
+                    <?php _e('Manage files','cftp_admin'); ?>
+                    </a> <a href="groups-edit.php?id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm">
+                    <?php _e('Edit','cftp_admin'); ?>
+                    </a></td>
+                </tr>
+                <?php
 				}
-
-				echo $table->render();
-
-				/**
-				 * PAGINATION
-				 */
-				$pagination_args = array(
-										'link'		=> 'groups.php',
-										'current'	=> $pagination_page,
-										'pages'		=> ceil( $count_for_pagination / RESULTS_PER_PAGE ),
-									);
-				
-				echo $table->pagination( $pagination_args );
-			}
-
-		?>
-	</form>
-	
+			?>
+              </tbody>
+            </table>
+            </section>
+            <nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
+              <div class="pagination_wrapper text-center">
+                <ul class="pagination hide-if-no-paging">
+                </ul>
+              </div>
+            </nav>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
 <?php include('footer.php'); ?>
+
+<style type="text/css">
+/*-------------------- Responsive table by B) -----------------------*/
+@media only screen and (max-width: 1200px) {
+	#content {
+		padding-top:30px;
+	}
+	
+	/* Force table to not be like tables anymore */
+	#no-more-tables table, 
+	#no-more-tables thead, 
+	#no-more-tables tbody, 
+	#no-more-tables th, 
+	#no-more-tables td, 
+	#no-more-tables tr { 
+		display: block; 
+	}
+ 
+	/* Hide table headers (but not display: none;, for accessibility) */
+	#no-more-tables thead tr { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+ 
+	#no-more-tables tr { border: 1px solid #ccc; }
+ 
+	#no-more-tables td { 
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee; 
+		position: relative;
+		padding-left: 50%; 
+		white-space: normal;
+		text-align:left;
+	}
+ 
+	#no-more-tables td:before { 
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 45%; 
+		padding-right: 10px; 
+		white-space: nowrap;
+		text-align:left;
+		font-weight: bold;
+	}
+ 
+	/*
+	Label the data
+	*/
+
+	
+	td:nth-of-type(1):before { content: ""; }
+	td:nth-of-type(2):before { content: "Group name"; }
+	td:nth-of-type(3):before { content: "Description"; }
+	td:nth-of-type(4):before { content: "Members"; }
+	td:nth-of-type(5):before { content: "Files"; }
+	td:nth-of-type(6):before { content: "Created by"; }
+	td:nth-of-type(7):before { content: "Added on"; }
+	td:nth-of-type(8):before { content: "Actions"; }
+}
+/*-------------------- Responsive table End--------------------------*/
+</style>

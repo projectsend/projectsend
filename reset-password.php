@@ -188,17 +188,7 @@ include('header-unlogged.php');
 		}
 	}
 	?>
-
-		<h2 class="hidden"><?php echo $page_title; ?></h2>
-
-		<div class="container">
-
-			<?php echo generate_branding_layout(); ?>
-
-			<div class="row">
-				<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-4 white-box">
-					<div class="white-box-interior box-reset-password">
-						<?php
+    <?php
 							/**
 							 * If the form was submited with errors, show them here.
 							 */
@@ -282,23 +272,107 @@ include('header-unlogged.php');
 											});
 										});
 									</script>
+
+		<div class="container">
+<!--------added by B) ------------------------------------------------------------------->
+<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-7 col-lg-8 hidden-xs hidden-sm">
+						<h1 class="txt-color-red login-header-big">SmartAdmin</h1>
+						<div class="hero">
+
+							<div class="pull-left login-desc-box-l">
+								<h4 class="paragraph-header">It's Okay to be Smart. Experience the simplicity of SmartAdmin, everywhere you go!</h4>
+								<div class="login-app-icons">
+									<a href="<?php echo BASE_URI; ?>" class="btn btn-danger btn-sm"><?php _e('Go back to the homepage.','cftp_admin'); ?></a>
+								</div>
+							</div>
+							
+							<img src="img/demo/iphoneview.png" class="pull-right display-image" alt="" style="width:210px">
+
+						</div>
+
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+								<h5 class="about-heading">About SmartAdmin - Are you up to date?</h5>
+								<p>
+									Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa.
+								</p>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+								<h5 class="about-heading">Not just your average template!</h5>
+								<p>
+									Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi voluptatem accusantium!
+								</p>
+							</div>
+						</div>
+
+					</div>
+					<div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
+						<div class="well no-padding">
+                        <?php
+							/**
+							 * If the form was submited with errors, show them here.
+							 */
+							$valid_me->list_errors();
+						?>
+							<form action="reset-password.php" name="resetpassword" method="post" role="form" id="login-form" class="smart-form client-form">
+								<header>
+									Forgot Password
+								</header>
+								<input type="hidden" name="form_type" id="form_type" value="new_request" />
+								<fieldset>
 									
-									<form action="reset-password.php" name="resetpassword" method="post" role="form">
-										<fieldset>
-											<input type="hidden" name="form_type" id="form_type" value="new_request" />
+									<section>
+										<label class="label">Enter your email address</label>
+										<label class="input"> <i class="icon-append fa fa-envelope"></i>
+											
+                                            <input type="text" name="reset_password_email" id="reset_password_email"/>
+											<b class="tooltip tooltip-top-right"><i class="fa fa-envelope txt-color-teal"></i> Please enter email address for password reset</b></label>
+									</section>
 
-											<div class="form-group">
-												<label for="reset_password_email"><?php _e('E-mail','cftp_admin'); ?></label>
-												<input type="text" name="reset_password_email" id="reset_password_email" class="form-control" />
-											</div>
+								</fieldset>
+								<footer>
+                                <button type="submit" name="submit" class="btn btn-primary"><i class="fa fa-refresh"></i> Reset Password</button>
+								</footer>
+							</form>
 
-											<p><?php _e("Please enter your account's e-mail address. You will receive a link to continue the process.",'cftp_admin'); ?></p>
+						</div>
+						
+						<h5 class="text-center"> - Or sign in using -</h5>
+															
+										<ul class="list-inline text-center">
+        <li>
+          <?php if(GOOGLE_SIGNIN_ENABLED == '1'): ?>
+          <a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="btn btn-default btn-circle"><i class="fa fa-google"></i></a></a>
+          <?php endif; ?>
+        </li>
+        <?php if(FACEBOOK_SIGNIN_ENABLED == '1'): ?>
+        <li> <a href="sociallogin/login-with.php?provider=Facebook" name="Sign in with Facebook" class="btn btn-primary btn-circle" title="facebook"><i class="fa fa-facebook"></i></a> </li>
+        <?php endif; ?>
+        <?php if(TWITTER_SIGNIN_ENABLED == '1'): ?>
+        <li> <a href="sociallogin/login-with.php?provider=Twitter" name="Sign in with Twitter" class="btn btn-info btn-circle" title="twitter"><i class="fa fa-twitter"></i></a> </li>
+        <?php endif; ?>
+        <?php if(YAHOO_SIGNIN_ENABLED == '1'): ?>
+        <li> <a href="sociallogin/login-with.php?provider=yahoo" name="Sign in with yahoo" class="btn btn-danger btn-circle" title="Yahoo"><i class="fa fa-yahoo" aria-hidden="true"></i></a> </li>
+        <?php endif; ?>
+        <?php if(LINKEDIN_SIGNIN_ENABLED == '1'): ?>
+        <li> <a href="sociallogin/login-with.php?provider=LinkedIn" name="Sign in with linkedin" class="btn btn-warning btn-circle" title="Linkedin"><i class="fa fa-linkedin"></i></a> </li>
+        <?php endif; ?>
+        <li> <a href="sociallogin/ldap-login.php" name="Sign in with LDAP" class="btn btn-success btn-circle" title="LDAP"> <i class="fa fa-universal-access"></i></a> </li>
+      </ul>
+                                       
+						
+					</div>
+				</div>
+<!--------------------------------------------------------------------------------------->
+			<?php //echo generate_branding_layout(); ?>
 
-											<div class="inside_form_buttons">
-												<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Get a new password','cftp_admin'); ?></button>
-											</div>
-										</fieldset>
-									</form>
+			<div class="">
+				<div class="">
+					<div class="">
+						
+									
+									
 						<?php
 								break;
 								case 'enter_new_password':
@@ -357,9 +431,7 @@ include('header-unlogged.php');
 							 }
 						?>
 
-						<div class="login_form_links">
-							<p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.','cftp_admin'); ?></a></p>
-						</div>
+						
 
 					</div>
 				</div>
@@ -368,7 +440,7 @@ include('header-unlogged.php');
 	</div> <!-- main (from header) -->
 
 	<?php
-		default_footer_info( false );
+		//default_footer_info( false );
 
 		load_js_files();
 	?>

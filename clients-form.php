@@ -110,7 +110,7 @@ switch ($clients_form_type) {
 	<div class="form-group">
 		<label for="add_client_form_user" class="col-sm-4 control-label"><?php _e('Log in username','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" name="add_client_form_user" id="add_client_form_user" class="form-control <?php if (!$disable_user) { echo 'required'; } ?>" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($add_client_data_user)) ? html_output(stripslashes($add_client_data_user)) : ''; ?>" <?php if ($disable_user) { echo 'readonly'; }?> placeholder="<?php _e("Must be alphanumeric",'cftp_admin'); ?>" />
+			<input type="text" name="add_client_form_user" id="add_client_form_user" class="form-control <?php if (!$disable_user) { echo 'required'; } ?>" minlength="4" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($add_client_data_user)) ? html_output(stripslashes($add_client_data_user)) : ''; ?>" <?php if ($disable_user) { echo 'readonly'; }?> placeholder="<?php _e("Must be alphanumeric",'cftp_admin'); ?>" />
 		</div>
 	</div>
 
@@ -191,7 +191,7 @@ switch ($clients_form_type) {
 		}
 	?>
 
-	<div class="inside_form_buttons">
+	<div class="inside_form_buttons cc-text-right">
 		<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php echo html_output($submit_value); ?></button>
 	</div>
 

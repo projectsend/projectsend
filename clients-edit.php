@@ -24,7 +24,7 @@ else {
 	 * Return 0 if the id is not set.
 	 */
 	$page_status = 0;
-}
+} 
 
 /**
  * Get the clients information from the database to use on the form.

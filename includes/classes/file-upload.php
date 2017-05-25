@@ -15,6 +15,9 @@ class PSend_Upload_File
 	var $uploader;
 	var $file;
 	var $name;
+	var $notify;
+	var $number_downloads;
+	var $future_send_date;
 	var $description;
 	var $upload_state;
 	/**
@@ -145,34 +148,38 @@ class PSend_Upload_File
 	function upload_add_to_database($arguments)
 	{
 		$this->post_file		= $arguments['file'];
-		$this->name				= encode_html($arguments['name']);
+		$this->name			= encode_html($arguments['name']);
 		$this->description		= encode_html($arguments['description']);
 		$this->uploader			= $arguments['uploader'];
 		$this->uploader_id		= $arguments['uploader_id'];
-		$this->uploader_type	= $arguments['uploader_type'];
+		$this->uploader_type		= $arguments['uploader_type'];
 		$this->hidden			= (!empty($arguments['hidden'])) ? 1 : 0;
 		$this->expires			= (!empty($arguments['expires'])) ? 1 : 0;
 		$this->expiry_date		= (!empty($arguments['expiry_date'])) ? date("Y-m-d", strtotime($arguments['expiry_date'])) : date("Y-m-d");
+		$this->number_downloads		= $arguments['number_downloads'];
+		$this->notify			= (!empty($arguments['notify'])) ? 1 : 0;
+		$this->future_send_date		= (!empty($arguments['future_send_date'])) ? date("Y-m-d", strtotime($arguments['future_send_date'])) : date("Y-m-d"); 
+		$this->uploader_type		= $arguments['uploader_type'];
 		$this->is_public		= (!empty($arguments['public'])) ? 1 : 0;
 		$this->public_token		= generateRandomString(32);
-		
 		if (isset($arguments['add_to_db'])) {
-			$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (url, filename, description, uploader, expires, expiry_date, public_allow, public_token)"
-											."VALUES (:url, :name, :description, :uploader, :expires, :expiry_date, :public, :token)");
+			$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (url, filename, description, uploader, expires,notify, expiry_date,number_downloads,future_send_date, public_allow, public_token)"
+											."VALUES (:url, :name, :description, :uploader, :expires, :notify, :expiry_date,:number_downloads,:future_send_date, :public, :token)");
 			$this->statement->bindParam(':url', $this->post_file);
 			$this->statement->bindParam(':name', $this->name);
 			$this->statement->bindParam(':description', $this->description);
 			$this->statement->bindParam(':uploader', $this->uploader);
 			$this->statement->bindParam(':expires', $this->expires, PDO::PARAM_INT);
+			$this->statement->bindParam(':notify', $this->notify, PDO::PARAM_INT);
+			$this->statement->bindParam(':number_downloads', $this->number_downloads, PDO::PARAM_INT);
+			$this->statement->bindParam(':future_send_date', $this->future_send_date);
 			$this->statement->bindParam(':expiry_date', $this->expiry_date);
 			$this->statement->bindParam(':public', $this->is_public, PDO::PARAM_INT);
 			$this->statement->bindParam(':token', $this->public_token);
+			
 			$this->statement->execute();
-
 			$this->file_id = $this->dbh->lastInsertId();
 			$this->state['new_file_id'] = $this->file_id;
-
-			$this->state['public_token'] = $this->public_token;
 
 			/** Record the action log */
 			if ($this->uploader_type == 'user') {
@@ -183,12 +190,12 @@ class PSend_Upload_File
 			}
 			$new_log_action = new LogActions();
 			$log_action_args = array(
-									'action' => $this->action_type,
-									'owner_id' => $this->uploader_id,
-									'affected_file' => $this->file_id,
-									'affected_file_name' => $this->name,
-									'affected_account_name' => $this->uploader
-								);
+					'action' => $this->action_type,
+					'owner_id' => $this->uploader_id,
+					'affected_file' => $this->file_id,
+					'affected_file_name' => $this->name,
+					'affected_account_name' => $this->uploader
+				);
 			$new_record_action = $new_log_action->log_action_save($log_action_args);
 		}
 		else {
@@ -215,6 +222,9 @@ class PSend_Upload_File
 												filename = :title,
 												description = :description,
 												expires = :expires,
+												notify = :notify,
+												number_downloads = :number_downloads,
+												future_send_date = :future_send_date,
 												expiry_date = :expiry_date,
 												public_allow = :public,
 												public_token = :token
@@ -223,6 +233,9 @@ class PSend_Upload_File
 			$this->statement->bindParam(':title', $this->name);
 			$this->statement->bindParam(':description', $this->description);
 			$this->statement->bindParam(':expires', $this->expires, PDO::PARAM_INT);
+			$this->statement->bindParam(':notify', $this->notify, PDO::PARAM_INT);
+			$this->statement->bindParam(':number_downloads', $this->number_downloads, PDO::PARAM_INT);
+			$this->statement->bindParam(':future_send_date', $this->future_send_date);
 			$this->statement->bindParam(':expiry_date', $this->expiry_date);
 			$this->statement->bindParam(':public', $this->is_public, PDO::PARAM_INT);
 			$this->statement->bindParam(':token', $this->public_token);
@@ -245,10 +258,12 @@ class PSend_Upload_File
 	 */
 	function upload_add_assignment($arguments)
 	{
+		
 		$this->name = encode_html($arguments['name']);
 		$this->uploader_id = $arguments['uploader_id'];
 		$this->groups = $arguments['all_groups'];
 		$this->users = $arguments['all_users'];
+		$this->fromid = $arguments['from_id'];
 
 		if (!empty($arguments['assign_to'])) {
 			$this->assign_to = $arguments['assign_to'];
@@ -267,9 +282,10 @@ class PSend_Upload_File
 						break;
 				}
 				$this->assignment = substr($this->assignment, 1);
-				$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES_RELATIONS . " (file_id, $this->add_to, hidden)"
-														."VALUES (:file_id, :assignment, :hidden)");
+				$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES_RELATIONS . " (file_id, from_id, $this->add_to, hidden)"
+														."VALUES (:file_id, :fromid, :assignment, :hidden)");
 				$this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+				$this->statement->bindParam(':fromid', $this->fromid, PDO::PARAM_INT);
 				$this->statement->bindParam(':assignment', $this->assignment);
 				$this->statement->bindParam(':hidden', $this->hidden, PDO::PARAM_INT);
 				$this->statement->execute();

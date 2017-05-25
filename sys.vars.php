@@ -113,6 +113,7 @@ if( (DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers) ) {
 if (!defined('TABLES_PREFIX')) {
 	define('TABLES_PREFIX', 'tbl_');
 }
+define('TABLE_DROPOFF','tbl_drop_off_request');
 define('TABLE_FILES', TABLES_PREFIX . 'files');
 define('TABLE_FILES_RELATIONS', TABLES_PREFIX . 'files_relations');
 define('TABLE_DOWNLOADS', TABLES_PREFIX . 'downloads');
@@ -175,6 +176,7 @@ define('CLIENT_UPLOADS_TEMP_FOLDER', ROOT_DIR.'/upload/temp');
  *
  */
 define('SYSTEM_URI','http://www.projectsend.org/');
+define('SITE_URI','https://msend.microhealthllc.com/');
 define('SYSTEM_URI_LABEL','ProjectSend on github');
 define('DONATIONS_URL','http://www.projectsend.org/donations/');
 /** Previously cFTP */
@@ -194,10 +196,4 @@ define('HASH_PORTABLE', false);
 if (!defined('DB_DRIVER')) {
 	define('DB_DRIVER', 'mysql');
 }
-
-/**
- * External links
- */
-define('LINK_DOC_RECAPTCHA', 'https://developers.google.com/recaptcha/docs/start');
-define('LINK_DOC_GOOGLE_SIGN_IN', 'https://developers.google.com/identity/protocols/OpenIDConnect');
 ?>

@@ -4,7 +4,6 @@
  *
  * @package ProjectSend
  */
-$footable_min = true; // delete this line after finishing pagination on every table
 $load_scripts	= array(
 						'footable',
 						'flot',
@@ -58,9 +57,14 @@ include('header.php');
 ?>
 
 <div id="main">
-	<h2><?php echo $page_title; ?></h2>
-
-	<?php	
+  <div id="content"> 
+    
+    <!-- Added by B) -------------------->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 class="page-title txt-color-blueDark"><i class="fa fa-download"></i>&nbsp;<?php echo $page_title; ?></h1>
+          <?php	
 		if ($page_status === 0) {
 			$msg = __('No file was selected.','cftp_admin');
 			echo system_message('error',$msg);
@@ -73,190 +77,84 @@ include('header.php');
 		}
 		else {
 	?>
-
-		<form action="download-information.php" name="groups_list" method="get" class="form-inline">
-			<?php form_add_existing_parameters(); ?>
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col-sm-12">
-						<h3><?php _e('Total downloads','cftp_admin'); ?>: <span class="label label-primary"><strong><?php echo $file_stats['total']; ?></strong></span></h3>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-
-						<?php
-							$params = array();
-							$cq = "SELECT * FROM " . TABLE_DOWNLOADS . " WHERE file_id = :id";
-					
-							/**
-							 * Add the order.
-							 * Defaults to order by: name, order: ASC
-							 */
-							$cq .= sql_add_order( TABLE_GROUPS, 'timestamp', 'desc' );
-
-							$statement = $dbh->prepare($cq);
-
-							$params[':id'] = $file_id;
-							$statement->execute($params);
-
-							/**
-							 * Pre-query to count the total results
-							*/
-							$count_sql = $dbh->prepare( $cq );
-							$count_sql->execute($params);
-							$count_for_pagination = $count_sql->rowCount();
-						
-							/**
-							 * Repeat the query but this time, limited by pagination
-							 */
-							$cq .= " LIMIT :limit_start, :limit_number";
-							$sql = $dbh->prepare( $cq );
-						
-							$pagination_page			= ( isset( $_GET["page"] ) ) ? $_GET["page"] : 1;
-							$pagination_start			= ( $pagination_page - 1 ) * RESULTS_PER_PAGE;
-							$params[':limit_start']		= $pagination_start;
-							$params[':limit_number']	= RESULTS_PER_PAGE;
-						
-							$sql->execute( $params );
-
-							/**
-							 * Generate the table using the class.
-							 */
-							$table_attributes	= array(
-														'id'		=> 'download_info_tbl',
-														'class'		=> 'footable table',
-													);
-							$table = new generateTable( $table_attributes );
-
-							$thead_columns		= array(
-														array(
-															'sortable'		=> true,
-															'sort_url'		=> 'timestamp',
-															'sort_default'	=> true,
-															'content'		=> __('Date','cftp_admin'),
-														),
-														array(
-															'content'		=> __('Time','cftp_admin'),
-														),
-														array(
-															'sortable'		=> true,
-															'sort_url'		=> 'user_id',
-															'content'		=> __('Client','cftp_admin'),
-														),
-														array(
-															'sortable'		=> true,
-															'sort_url'		=> 'anonymous',
-															'content'		=> __('Anonymous','cftp_admin'),
-														),
-														array(
-															'sortable'		=> true,
-															'sort_url'		=> 'remote_ip',
-															'content'		=> __("Client's IP",'cftp_admin'),
-															'hide'			=> 'phone',
-														),
-														array(
-															'sortable'		=> true,
-															'sort_url'		=> 'remote_host',
-															'content'		=> __("Client's hostname",'cftp_admin'),
-															'hide'			=> 'phone',
-														),
-													);
-							$table->thead( $thead_columns );
-
-							$tfoot_columns		= array(
-														array(
-															'content'		=> '',
-														),
-														array(
-															'content'		=> '',
-														),
-														array(
-															'content'		=> __('Unique logged in clients/users','cftp_admin') . ': <span class="label label-primary">' . $file_stats['unique_clients'] . '</span>',
-														),
-														array(
-															'content'		=> __('Total public downloads','cftp_admin') . ': <span class="label label-primary">' . $file_stats['anonymous_users'] . '</span>',
-														),
-														array(
-															'content'		=> '',
-														),
-														array(
-															'content'		=> '',
-														),
-													);
-							$table->tfoot( $tfoot_columns );
-
-							$sql->setFetchMode(PDO::FETCH_ASSOC);
-							while ( $row = $sql->fetch() ) {
-								$table->add_row();
-			
-								/**
-								 * Prepare the information to be used later on the cells array
-								 * 1- Get account download time and date
-								 */
-								$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
-								$time = date('h:s:i',strtotime($row['timestamp']));
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-sm-12">
+                <h3>
+                  <?php _e('Total downloads','cftp_admin'); ?>
+                  : <span class="label label-primary"><strong><?php echo $file_stats['total']; ?></strong></span></h3>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <table id="download_info_tbl" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
+                  <thead>
+                    <tr>
+                      <th data-type="numeric" data-sort-initial="descending"><?php _e('Date','cftp_admin'); ?></th>
+                      <th data-sort-ignore="true"><?php _e('Time','cftp_admin'); ?></th>
+                      <th><?php _e('Client','cftp_admin'); ?></th>
+                      <th><?php _e('Anonymous','cftp_admin'); ?></th>
+                      <th data-hide="phone"><?php _e("Client's IP",'cftp_admin'); ?></th>
+                      <th data-hide="phone"><?php _e("Client's hostname",'cftp_admin'); ?></th>
+                    </tr>
+                  </thead>
+                  <tfoot>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td><?php _e('Unique logged in clients/users','cftp_admin'); ?>
+                        : <span class="label label-primary"><?php echo $file_stats['unique_clients']; ?></span></td>
+                      <td><?php _e('Total public downloads','cftp_admin'); ?>
+                        : <span class="label label-primary"><?php echo $file_stats['anonymous_users']; ?></span></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tfoot>
+                  <tbody>
+                    <?php
+									$statement = $dbh->prepare("SELECT * FROM " . TABLE_DOWNLOADS . " WHERE file_id = :id");
+									$statement->bindValue(':id', $file_id, PDO::PARAM_INT);
+									$statement->execute();
 								
-								/**
-								 * 2- Check if it's from a know user or anonymous
-								 */
-								$anon_yes	= __('Yes','cftp_admin');
-								$anon_no	= __('No','cftp_admin');
-								$label		= ($row['anonymous'] == '1') ? $anon_yes : $anon_no;
-								$class		= ($row['anonymous'] == '1') ? 'warning' : 'success';
-			
-								/**
-								 * Add the cells to the row
-								 */
-								$tbody_cells = array(
-														array(
-																'content'		=> $date,
-															),
-														array(
-																'content'		=> $time,
-															),
-														array(
-																'content'		=> ( !empty( $users_names[$row['user_id']] ) ) ? html_output( $users_names[$row['user_id']] ) : '',
-															),
-														array(
-																'content'		=> '<span class="label label-' . $class . '">' . $label . '</span>',
-															),
-														array(
-																'content'		=> html_output( $row['remote_ip'] ),
-															),
-														array(
-																'content'		=> html_output( $row['remote_host'] ),
-															),
-													);
-								
-								
-								foreach ( $tbody_cells as $cell ) {
-									$table->add_cell( $cell );
-								}
-								
-								$table->end_row();
-							}
-
-							echo $table->render();
-			
-							/**
-							 * PAGINATION
-							 */
-							$pagination_args = array(
-													'link'		=> 'download-information.php',
-													'current'	=> $pagination_page,
-													'pages'		=> ceil( $count_for_pagination / RESULTS_PER_PAGE ),
-												);
-							
-							echo $table->pagination( $pagination_args );
-						?>
-					</div>
-				</div>
-			</div>
-		</form>
-	<?php
+									$statement->setFetchMode(PDO::FETCH_ASSOC);
+									while ( $row = $statement->fetch() ) {
+										$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
+										$time = date('h:s:i',strtotime($row['timestamp']));
+								?>
+                    <tr>
+                      <td data-value="<?php echo strtotime($row['timestamp']); ?>"><?php echo $date; ?></td>
+                      <td><?php echo $time; ?></td>
+                      <td><?php echo ( !empty( $users_names[$row['user_id']] ) ) ? $users_names[$row['user_id']] : ''; ?></td>
+                      <td><?php
+													$anon_yes	= __('Yes','cftp_admin');
+													$anon_no	= __('No','cftp_admin');
+													$label		= ($row['anonymous'] == '1') ? $anon_yes : $anon_no;
+													$class		= ($row['anonymous'] == '1') ? 'warning' : 'success';
+												?>
+                        <span class="label label-<?php echo $class; ?>"> <?php echo $label; ?> </span></td>
+                      <td><?php echo $row['remote_ip']; ?></td>
+                      <td><span class="format_url"><?php echo $row['remote_host']; ?></span></td>
+                    </tr>
+                    <?php
+									}
+								?>
+                  </tbody>
+                </table>
+                <nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
+                  <div class="pagination_wrapper text-center">
+                    <ul class="pagination hide-if-no-paging">
+                    </ul>
+                  </div>
+                </nav>
+              </div>
+            </div>
+          </div>
+          <?php
 		}
 	?>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
 <?php include('footer.php'); ?>

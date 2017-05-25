@@ -7,8 +7,6 @@
  */
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
-/* included aes class file by RJ-07-Oct-2016 */
-include('aes_class.php');
 
 $page_title = __('Download','cftp_admin');
 
@@ -33,6 +31,7 @@ include('header-unlogged.php');
 		if ( $statement->rowCount() > 0 ){
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
 			$got_url	= $statement->fetch();
+
 			$expires		= $got_url['expires'];
 			$expiry_date	= $got_url['expiry_date'];
 			
@@ -46,7 +45,7 @@ include('header-unlogged.php');
 		
 		if ($can_download == true) {
 			$real_file_url	= $got_url['url'];
-			//echo $real_file_url;exit();
+
 			if (!isset($_GET['download'])) {
 				$download_link = BASE_URI . 'download.php?id=' . $got_file_id . '&token=' . $got_token . '&download';
 			}
@@ -72,14 +71,14 @@ include('header-unlogged.php');
 
 				// DOWNLOAD
 				$real_file = UPLOADED_FILES_FOLDER.$real_file_url;
-
 				/* AES Decryption started by RJ-07-Oct-2016. 
 					Encrypted file is decrypted and saved to temp folder.This file will be downloaded.
 					After downloading the file, this file will be removed from the server.
 					 
 				*/
-				$blockSize = 256;
-				$inputKey = "project send encryption";
+				/*
+				$blockSize = BLOCKSIZE;
+				$inputKey = ENCRYPTION_KEY;
 				$fileData1 = file_get_contents($real_file);
 			    	$aes1 = new AES($fileData1, $inputKey, $blockSize);
 			    	$encData1 = $aes1->decrypt();
@@ -87,10 +86,9 @@ include('header-unlogged.php');
 				    mkdir(UPLOADED_FILES_FOLDER.'/temp', 0777, true);
 				}
 				$real_file = UPLOADED_FILES_FOLDER.'/temp/'.$real_file_url;
-			    	file_put_contents($real_file  , $encData1);
+			    	file_put_contents($real_file  , $encData1);*/
 				/* AES Decryption ended by RJ-07-Oct-2016 */
 
-				
 				if (file_exists($real_file)) {
 					session_write_close(); 
 					while (ob_get_level()) ob_end_clean();
@@ -113,11 +111,7 @@ include('header-unlogged.php');
 					
 					fclose( $file );
 					die();
-					
-					
 				}
-				//not working this need to check
-				unlink($real_file);
 			}
 		}
 		else {

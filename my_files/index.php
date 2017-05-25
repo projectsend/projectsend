@@ -1,4 +1,5 @@
-<?php
+
+ <?php
 	require_once('../sys.includes.php');
 	$this_user = CURRENT_USER_USERNAME;
 	if (!empty($_GET['client']) && CURRENT_USER_LEVEL != '0') {

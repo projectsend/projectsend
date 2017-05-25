@@ -40,14 +40,31 @@ if (in_session_or_cookies($core_update_allowed)) {
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0 ,user-scalable=no">
+
 
 	<title><?php echo html_output( $page_title . ' &raquo; ' . THIS_INSTALL_SET_TITLE ); ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="shortcut icon" href="<?php echo BASE_URI; ?>/favicon.ico" />
-	<script type="text/javascript" src="<?php echo BASE_URI; ?>includes/js/jquery.1.12.4.min.js"></script>
+    <!----- Added B) --------->
+    <script data-pace-options='{ "restartOnRequestAfter": true }' src="<?php echo BASE_URI; ?>assets/wrap/js/plugin/pace/pace.min.js"></script>
+    <script>
+		if (!window.jQuery) {
+			document.write('<script src="<?php echo BASE_URI; ?>assets/wrap/js/libs/jquery-2.1.1.min.js"><\/script>');
+		}
+	</script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script>
+		if (!window.jQuery.ui) {
+			document.write('<script src="<?php echo BASE_URI; ?>assets/wrap/js/libs/jquery-ui-1.10.3.min.js"><\/script>');
+		}
+	</script>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
 
-	<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>assets/bootstrap/css/bootstrap.min.css" />
+
+
+    <!------B)---------------->
 	
 	<!--[if lt IE 9]>
 		<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -59,20 +76,7 @@ if (in_session_or_cookies($core_update_allowed)) {
 
 		load_css_files();
 	?>
-</head>
-
-<body>
-	<header>
-		<div id="header">
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col-xs-12 col-sm-6 main_title">
-						<h1><?php echo THIS_INSTALL_SET_TITLE; ?></h1>
-					</div>
-					<div class="col-xs-12 col-sm-6">
-						<div id="account">
-							<span><?php _e('Welcome', 'cftp_admin'); ?>, <?php echo $global_name; ?></span>
-							<?php
+        							<?php
 								if (CURRENT_USER_LEVEL == 0) {
 									$my_account_link = 'clients-edit.php';
 								}
@@ -81,68 +85,85 @@ if (in_session_or_cookies($core_update_allowed)) {
 								}
 								$my_account_link .= '?id='.CURRENT_USER_ID;
 							?>
-							<a href="<?php echo BASE_URI.$my_account_link; ?>" class="my_account"><?php _e('My Account', 'cftp_admin'); ?></a>
-							<a href="<?php echo BASE_URI; ?>process.php?do=logout" ><?php _e('Logout', 'cftp_admin'); ?></a>
-						</div>
-					</div>
+</head>
+
+
+<body class="pace-done smart-style-1">
+
+
+	<!-- HEADER -->
+    <!----------------theme ------------------------>
+		<header id="header">
+			<div id="logo-group">
+					
+				<!-- PLACE YOUR LOGO HERE -->
+				<span id="logo"><?php //echo THIS_INSTALL_SET_TITLE; ?>
+			<?php echo BRAND_NAME; ?>
+                	<!--<img src="img/logo.png" alt="SmartAdmin"> -->
+                </span>
+                </div>
+				<!-- END LOGO PLACEHOLDER -->
+
+				<!-- Note: The activity badge color changes when clicked and resets the number to 0
+				Suggestion: You may want to set a flag when this happens to tick off all checked messages / notifications -->
+
+
+			<!-- pulled right: nav area -->
+			<div class="pull-right cc-pull-right">
+            	<div id="hide-menu" class="btn-header pull-right">
+					<span> <a href="javascript:void(0);" data-action="toggleMenu" title="Collapse Menu"><i class="fa fa-reorder"></i></a> </span>
 				</div>
+				<!-- logout button -->
+                <span style="color:#ffffff;"><?php _e('Welcome', 'cftp_admin'); ?>, <?php echo $global_name; ?></span>
+                <a class="cc-my-account" href="<?php echo BASE_URI.$my_account_link; ?>">
+				<?php _e('My Account', 'cftp_admin'); ?> </span> </span> 
+                </a>
+				<div id="logout" class="btn-header transparent pull-right">
+					<span> <a href="<?php echo BASE_URI; ?>process.php?do=logout" title="Sign Out" data-action="userLogout" data-logout-msg="You can improve your security further after logging out by closing this opened browser"><i class="fa fa-sign-out"></i></a> </span>
+				</div>
+				<!-- end logout button -->
+
+				
 			</div>
-		</div>
-	
-		<script type="text/javascript">
-			$(document).ready(function() {
-				<?php
-					if ( !empty( $load_scripts ) && in_array( 'footable', $load_scripts ) ) {
-				?>
-						$("#select_all").click(function(){
-							var status = $(this).prop("checked");
-							/** Uncheck all first in case you used pagination */
-							$("tr td input[type=checkbox]").prop("checked",false);
-							$("tr:visible td input[type=checkbox]").prop("checked",status);
-						});
-	
-						$('.footable').footable().find('> tbody > tr:not(.footable-row-detail):nth-child(even)').addClass('odd');
-				<?php
-					}
-				?>
-			});
+			<!-- end pulled right: nav area -->
 
-			var dataExtraction = function(node) {
-				if (node.childNodes.length > 1) {
-					return node.childNodes[1].innerHTML;
-				} else {
-					return node.innerHTML;
-				}
-			}
-		</script>
+		</header>
 
-		<div class="navbar navbar-inverse">
-			<div class="container-fluid">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#header-navbar-collapse" aria-expanded="false">
-						<span class="sr-only"><?php _e('Menu', 'cftp_admin'); ?></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-				</div>
+	<!-- END HEADER -->
+    <!-- Left panel : Navigation area -->
+		<!-- Note: This width of the aside area can be adjusted through LESS variables -->
+		<aside id="left-panel">
 
-				<div class="collapse navbar-collapse" id="header-navbar-collapse">
-					<?php
-						include('header-menu.php');
-					?>
-				</div>
+			<!-- User info -->
+			<div class="login-info">
+				<span> <!-- User image size is adjusted inside CSS, it should stay as it --> 
+					
+					<a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut">
+						<img src="<?php echo BASE_URI; ?>/img/avatars/sunny.png" alt="me" class="online" /> 
+						<span>
+							<?php echo $global_name; ?>
+						</span>
+						<i class="fa fa-angle-down"></i>
+					</a> 
+					
+				</span>
 			</div>
-		</div>
+			<!-- end user info -->
 
-		<?php
-			/**
-			 * Gets the mark up abd values for the System Updated and
-			 * errors messages.
-			 */
-			include(ROOT_DIR.'/includes/updates.messages.php');
-		?>
-	</header>
+			<!-- NAVIGATION : This navigation is also responsive-->
+            <nav>
+            <?php
+			include('header-menu.php'); 
+			?>
+            </nav>
+			
+
+			<!--<span class="minifyme" data-action="minifyMenu"> 
+				<i class="fa fa-arrow-circle-left hit"></i> 
+			</span>-->
+
+		</aside>
+		<!-- END NAVIGATION -->
 
 <?php
 	/**

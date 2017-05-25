@@ -26,16 +26,21 @@ require_once('sys.includes.php');
 
 $active_nav = 'files';
 
-$page_title = __('Upload files', 'cftp_admin');
+$page_title = __('Sent Items', 'cftp_admin');
 include('header.php');
 
 define('CAN_INCLUDE_FILES', true);
 ?>
 
 <div id="main">
-	<h2><?php echo $page_title; ?></h2>
-
-<?php
+  <div id="content"> 
+    
+    <!-- Added by B) -------------------->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <h2><?php echo $page_title; ?></h2>
+          <?php
 /**
  * Get the user level to determine if the uploader is a
  * system user or a client.
@@ -84,14 +89,15 @@ $empty_fields = 0;
 
 /** Fill the users array that will be used on the notifications process */
 $users = array();
-$statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . " ORDER BY name ASC");
+$statement = $dbh->prepare("SELECT id, name, email, level FROM " . TABLE_USERS . " ORDER BY name ASC");
 $statement->execute();
 $statement->setFetchMode(PDO::FETCH_ASSOC);
-while( $row = $statement->fetch() ) {
+while( $row = $statement->fetch() ) { 
 	$users[$row["id"]] = $row["name"];
-	if ($row["level"] == '0') {
-		$clients[$row["id"]] = $row["name"];
-	}
+	//if ($row["level"] == '0') {
+		//$clients[$row["id"]] = $row["name"];
+	//}
+		$clients[$row["id"]] = $row["name"]." : ".$row["email"];
 }
 
 /** Fill the groups array that will be used on the form */
@@ -184,15 +190,110 @@ while( $row = $statement->fetch() ) {
 
 						/** Set notifications to YES by default */
 						$send_notifications = true;
-
+						if (!empty($file['notify'])) {
+							$add_arguments['notify'] = true;
+						}else{
+							$add_arguments['notify'] = false;
+						}
+						
 						if (!empty($file['hidden'])) {
 							$add_arguments['hidden'] = $file['hidden'];
 							$send_notifications = false;
 						}
-						
-						if (!empty($file['assignments'])) {
-							$add_arguments['assign_to'] = $file['assignments'];
-							$assignations_count	= count($file['assignments']);
+						if (!empty($file['number_downloads'])) {
+							$add_arguments['number_downloads'] = $file['number_downloads'];
+						}else{
+							$add_arguments['number_downloads'] = 0;
+						}
+						if (!empty($file['future_send_date'])) {
+							$add_arguments['future_send_date'] = $file['future_send_date'];
+						}
+						if (!empty($file['assignments']) || !empty($_POST['new_client']) ) {
+															 
+//------------------------------------------------------------
+				function randomPassword() {
+					$alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+					$pass = array(); //remember to declare $pass as an array
+					$alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+					for ($i = 0; $i < 8; $i++) {
+						$n = rand(0, $alphaLength);
+						$pass[] = $alphabet[$n];
+					}
+					return implode($pass); //turn the array into a string
+				}
+				$nuser_list = $_POST['new_client'];
+				if(!empty($file['assignments'])){
+					$full_list = $file['assignments'];
+				}else{
+					$full_list = array();
+				}
+				if(!empty($nuser_list)) {
+					foreach($nuser_list as $nuser) {
+						$euser_query = $dbh->prepare("SELECT id FROM `".TABLE_USERS."` WHERE `email` = '".$nuser."'");
+						//echo "SELECT id FROM `".TABLE_USERS."` WHERE `email` = '".$nuser."'";exit();
+						$euser_query->execute(); 
+						$euser = $euser_query->fetch();
+						$nuser_id = $euser['id'];
+						if( $euser_query->rowCount() == 0 ) {
+							//echo "Here";exit();
+							$npw = randomPassword();
+							$cc_enpass = $hasher->HashPassword($npw);
+							$nuser_query = $dbh->prepare("INSERT INTO `".TABLE_USERS."` (`user`, `password`, `name`, `email`, `level`, `timestamp`, `address`, `phone`, `notify`, `contact`, `created_by`, `active`) VALUES ('".$nuser."', '".$cc_enpass."', '', '".$nuser."', '0', CURRENT_TIMESTAMP, NULL, NULL, '0', NULL, NULL, '1')");
+							$nuser_query->execute(); 
+							$nuser_id = $dbh->lastInsertId();
+// --------------------------------- email notification start here! B)
+$to = $nuser; // note the comma
+
+// Subject
+$subject = 'Invitation to Download';
+
+// Message
+$message = '
+<html>
+<head>
+  <title>Invitation to Download</title>
+</head>
+<body>
+  <p>Please find the login details</p>
+  <table>
+    <tr>
+      <td>User Name : </td><td>'.$nuser.'</td>
+    </tr>
+    <tr>
+      <td>Password</td><td>'.$npw.'</td>
+    </tr>
+	<tr>
+      <td>Site :</td><td>'.'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'].'</td>
+    </tr>
+  </table>
+</body>
+</html>
+';
+
+// To send HTML mail, the Content-type header must be set
+$headers[] = 'MIME-Version: 1.0';
+$headers[] = 'Content-type: text/html; charset=iso-8859-1';
+
+// Additional headers
+$headers[] = 'To: <'.$nuser.'>';
+$headers[] = 'From:  MicroHealth <info@microhealthllc.com>';
+
+// Mail it
+mail($to, $subject, $message, implode("\r\n", $headers));
+// email notification End here! B)
+						}
+						array_push($full_list,'c'.$nuser_id);
+					}
+				}
+									//	echo "HERE !!!222 ";print_r($full_list);exit;
+
+				//print_r($full_list);exit();
+				$full_assi_user = $full_list;
+//------------------------------------------------------------
+							//$add_arguments['assign_to'] = $file['assignments'];
+							$add_arguments['assign_to'] = $full_assi_user;
+							//$assignations_count	= count($file['assignments']);
+							$assignations_count	= count($full_assi_user);
 						}
 						else {
 							$assignations_count	= '0';
@@ -229,6 +330,7 @@ while( $row = $statement->fetch() ) {
 							$add_arguments['new_file_id']	= $process_file['new_file_id'];
 							$add_arguments['all_users']		= $users;
 							$add_arguments['all_groups']	= $groups;
+							$add_arguments['from_id'] = CURRENT_USER_ID;
 							/**
 							 * 2- Add the assignments to the database
 							 */
@@ -283,94 +385,87 @@ while( $row = $statement->fetch() ) {
 	 */
 	if(!empty($upload_finish)) {
 ?>
-		<h3><?php _e('Files uploaded correctly','cftp_admin'); ?></h3>
-		<table id="uploaded_files_tbl" class="footable" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
-			<thead>
-				<tr>
-					<th data-sort-initial="true"><?php _e('Title','cftp_admin'); ?></th>
-					<th data-hide="phone"><?php _e('Description','cftp_admin'); ?></th>
-					<th data-hide="phone"><?php _e('File Name','cftp_admin'); ?></th>
-					<?php
+          <h3>
+            <?php _e('Files uploaded correctly','cftp_admin'); ?>
+          </h3>
+          <table id="uploaded_files_tbl" class="footable" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
+            <thead>
+              <tr>
+                <th data-sort-initial="true"><?php _e('Title','cftp_admin'); ?></th>
+                <th data-hide="phone"><?php _e('Description','cftp_admin'); ?></th>
+                <th data-hide="phone"><?php _e('File Name','cftp_admin'); ?></th>
+                <?php
 						if ($current_level != 0) {
 					?>
-							<th data-hide="phone"><?php _e("Status",'cftp_admin'); ?></th>
-							<th data-hide="phone"><?php _e('Assignations','cftp_admin'); ?></th>
-							<th data-hide="phone"><?php _e('Public','cftp_admin'); ?></th>
-					<?php
+                <th data-hide="phone"><?php _e("Status",'cftp_admin'); ?></th>
+                <th data-hide="phone"><?php _e('Assignations','cftp_admin'); ?></th>
+                <th data-hide="phone"><?php _e('Public','cftp_admin'); ?></th>
+                <?php
 						}
 					?>
-					<th data-hide="phone" data-sort-ignore="true"><?php _e("Actions",'cftp_admin'); ?></th>
-				</tr>
-			</thead>
-			<tbody>
-			<?php
+                <th data-hide="phone" data-sort-ignore="true"><?php _e("Actions",'cftp_admin'); ?></th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php
 				foreach($upload_finish as $uploaded) {
 			?>
-					<tr>
-						<td><?php echo html_output($uploaded['name']); ?></td>
-						<td><?php echo html_output($uploaded['description']); ?></td>
-						<td><?php echo html_output($uploaded['file']); ?></td>
-						<?php
+              <tr>
+                <td><?php echo html_output($uploaded['name']); ?></td>
+                <td><?php echo html_output($uploaded['description']); ?></td>
+                <td><?php echo html_output($uploaded['file']); ?></td>
+                <?php
 							if ($current_level != 0) {
 						?>
-								<td class="<?php echo (!empty($uploaded['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>">
-
-									<?php
+                <td class="<?php echo (!empty($uploaded['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>"><?php
 										$status_hidden	= __('Hidden','cftp_admin');
 										$status_visible	= __('Visible','cftp_admin');
 										$class			= (!empty($uploaded['hidden'])) ? 'danger' : 'success';
 									?>
-									<span class="label label-<?php echo $class; ?>">
-										<?php echo ( !empty( $hidden ) && $hidden == 1) ? $status_hidden : $status_visible; ?>
-									</span>
-								</td>
-								<td>
-									<?php $class = ($uploaded['assignations'] > 0) ? 'success' : 'danger'; ?>
-									<span class="label label-<?php echo $class; ?>">
-										<?php echo $uploaded['assignations']; ?>
-									</span>
-								</td>
-								<td class="col_visibility">
-									<?php
+                  <span class="label label-<?php echo $class; ?>"> <?php echo ( !empty( $hidden ) && $hidden == 1) ? $status_hidden : $status_visible; ?> </span></td>
+                <td><?php $class = ($uploaded['assignations'] > 0) ? 'success' : 'danger'; ?>
+                  <span class="label label-<?php echo $class; ?>"> <?php echo $uploaded['assignations']; ?> </span></td>
+                <td class="col_visibility"><?php
 										if ($uploaded['public'] == '1') {
 									?>
-											<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-id="<?php echo $uploaded['file_id']; ?>" data-token="<?php echo html_output($uploaded['public_token']); ?>" data-placement="top" data-toggle="popover" data-original-title="<?php _e('Public URL','cftp_admin'); ?>">
-									<?php
+                  <a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-id="<?php echo $uploaded['file_id']; ?>" data-token="<?php echo html_output($uploaded['public_token']); ?>" data-placement="top" data-toggle="popover" data-original-title="<?php _e('Public URL','cftp_admin'); ?>">
+                  <?php
 										}
 										else {
 									?>
-											<a href="javascript:void(0);" class="btn btn-default btn-sm disabled" rel="" title="">
-									<?php
+                  <a href="javascript:void(0);" class="btn btn-default btn-sm disabled" rel="" title="">
+                  <?php
 										}
 												$status_public	= __('Public','cftp_admin');
 												$status_private	= __('Private','cftp_admin');
 												echo ($uploaded['public'] == 1) ? $status_public : $status_private;
 									?>
-											</a>
-								</td>
-						<?php
+                  </a></td>
+                <?php
 							}
 						?>
-						<td>
-							<a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>" class="btn-primary btn btn-sm"><?php _e('Edit file','cftp_admin'); ?></a>
-							<?php
+                <td><a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>" class="btn-primary btn btn-sm">
+                  <?php _e('Edit file','cftp_admin'); ?>
+                  </a>
+                  <?php
 								/*
 								 * Show the "My files" button only to clients
 								 */
 								if ($current_level == 0) {
 							?>
-									<a href="my_files/" class="btn-primary btn btn-sm"><?php _e('View my files','cftp_admin'); ?></a>
-							<?php
+                  <a href="my_files/" class="btn-primary btn btn-sm">
+                  <?php _e('View my files','cftp_admin'); ?>
+                  </a>
+                  <?php
 								}
-							?>
-						</td>
-					</tr>
-			<?php
+							?></td>
+              </tr>
+              <?php
 				}
 			?>
-			</tbody>
-		</table>
-<?php
+            </tbody>
+          </table>
+          <?php
 	}
 
 	/**
@@ -378,14 +473,21 @@ while( $row = $statement->fetch() ) {
 	 */
 	if(!empty($uploaded_files)) {
 ?>
-		<h3><?php _e('Files ready to upload','cftp_admin'); ?></h3>
-		<p><?php _e('Please complete the following information to finish the uploading process. Remember that "Title" is a required field.','cftp_admin'); ?></p>
-
-		<?php
+          <h3>
+            <?php _e('Files ready to upload','cftp_admin'); ?>
+          </h3>
+          <p>
+            <?php _e('Please complete the following information to finish the uploading process. Remember that "Title" is a required field.','cftp_admin'); ?>
+          </p>
+          <?php
 			if ($current_level != 0) {
 		?>
-			<div class="message message_info"><strong><?php _e('Note','cftp_admin'); ?></strong>: <?php _e('You can skip assigning if you want. The files are retained and you may add them to clients or groups later.','cftp_admin'); ?></div>
-		<?php
+          <div class="message message_info"><strong>
+            <?php _e('Note','cftp_admin'); ?>
+            </strong>:
+            <?php _e('You can skip assigning if you want. The files are retained and you may add them to clients or groups later.','cftp_admin'); ?>
+          </div>
+          <?php
 			}
 
 		/**
@@ -397,8 +499,7 @@ while( $row = $statement->fetch() ) {
 			echo system_message('error',$msg);
 		}
 ?>
-
-		<script type="text/javascript">
+          <script type="text/javascript">
 			$(document).ready(function() {
 				$("form").submit(function() {
 					clean_form(this);
@@ -413,17 +514,16 @@ while( $row = $statement->fetch() ) {
 				});
 			});
 		</script>
-
-		<form action="upload-process-form.php" name="save_files" id="save_files" method="post">
-			<?php
+          <form action="upload-process-form.php" name="save_files" id="save_files" method="post">
+          <select multiple="multiple" name="new_client[]" class="form-control new_client" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>" style="display:none">
+            <?php
 				foreach($uploaded_files as $add_uploaded_field) {
 					echo '<input type="hidden" name="finished_files[]" value="'.$add_uploaded_field.'" />
 					';
 				}
 			?>
-			
-			<div class="container-fluid">
-				<?php
+            <div class="container-fluid">
+              <?php
 					$i = 1;
 					foreach ($uploaded_files as $file) {
 						clearstatcache();
@@ -457,163 +557,202 @@ while( $row = $statement->fetch() ) {
 									}
 								}
 					?>
-								<div class="file_editor <?php if ($i%2) { echo 'f_e_odd'; } ?>">
-									<div class="row">
-										<div class="col-sm-12">
-											<div class="file_number">
-												<p><span class="glyphicon glyphicon-saved" aria-hidden="true"></span><?php echo html_output($file); ?></p>
-											</div>
-										</div>
-									</div>
-									<div class="row edit_files">
-										<div class="col-sm-12">
-											<div class="row edit_files_blocks">
-												<div class="<?php echo ($global_level != 0) ? 'col-sm-6 col-md-3' : 'col-sm-12 col-md-12'; ?> column">
-													<div class="file_data">
-														<div class="row">
-															<div class="col-sm-12">
-																<h3><?php _e('File information', 'cftp_admin');?></h3>
-																<input type="hidden" name="file[<?php echo $i; ?>][original]" value="<?php echo html_output($file_original); ?>" />
-																<input type="hidden" name="file[<?php echo $i; ?>][file]" value="<?php echo html_output($file); ?>" />
-		
-																<div class="form-group">
-																	<label><?php _e('Title', 'cftp_admin');?></label>
-																	<input type="text" name="file[<?php echo $i; ?>][name]" value="<?php echo html_output($file_title); ?>" class="form-control file_title" placeholder="<?php _e('Enter here the required file title.', 'cftp_admin');?>" />
-																</div>
-																
-																<div class="form-group">
-																	<label><?php _e('Description', 'cftp_admin');?></label>
-																	<textarea name="file[<?php echo $i; ?>][description]" class="form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (isset($description)) ? html_output($description) : ''; ?></textarea>
-																</div>
-																
-															</div>
-														</div>
-													</div>
-												</div>
-												<?php
+              <div class="file_editor <?php if ($i%2) { echo 'f_e_odd'; } ?>">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="file_number">
+                      <p><span class="glyphicon glyphicon-saved" aria-hidden="true"></span><?php echo html_output($file); ?></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="row edit_files">
+                  <div class="col-sm-12">
+                    <div class="row edit_files_blocks">
+                      <div class="<?php echo ($global_level != 0) ? 'col-sm-6 col-md-3' : 'col-sm-12 col-md-12'; ?> column">
+                        <div class="file_data">
+                          <div class="row">
+                            <div class="col-sm-12">
+                              <h3>
+                                <?php _e('File information', 'cftp_admin');?>
+                              </h3>
+                              <input type="hidden" name="file[<?php echo $i; ?>][original]" value="<?php echo html_output($file_original); ?>" />
+                              <input type="hidden" name="file[<?php echo $i; ?>][file]" value="<?php echo html_output($file); ?>" />
+                              <div class="form-group">
+                                <label>
+                                  <?php _e('Title', 'cftp_admin');?>
+                                </label>
+                                <input type="text" name="file[<?php echo $i; ?>][name]" value="<?php echo html_output($file_title); ?>" class="form-control file_title" placeholder="<?php _e('Enter here the required file title.', 'cftp_admin');?>" />
+                              </div>
+                              <div class="form-group">
+                                <label>
+                                  <?php _e('Description', 'cftp_admin');?>
+                                </label>
+                                <textarea name="file[<?php echo $i; ?>][description]" class="form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (isset($description)) ? html_output($description) : ''; ?></textarea>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <?php
 													/** The following options are available to users only */
-													if ($global_level != 0) {
+													// 1 == 1 for all user
+													if ($global_level != 0 || 1 == 1) {
 												?>
-														<div class="col-sm-6 col-md-3 column_even column">
-															<div class="file_data">
-																<?php
+                      <div class="col-sm-6 col-md-3 column_even column">
+                        <div class="file_data">
+                          <?php
 																	/**
 																	* Only show the expiration options if the current
 																	* uploader is a system user, and not a client.
 																	*/
 																?>
-																<h3><?php _e('Expiration date', 'cftp_admin');?></h3>
-
-																<div class="form-group">
-																	<label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
-																	<div class="input-group date-container">
-																		<input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" />
-																		<div class="input-group-addon">
-																			<i class="glyphicon glyphicon-time"></i>
-																		</div>
-																	</div>
-																</div>
-
-																<div class="checkbox">
-																	<label for="exp_checkbox_<?php echo $i; ?>">
-																		<input type="checkbox" name="file[<?php echo $i; ?>][expires]" id="exp_checkbox_<?php echo $i; ?>" value="1" <?php if ($row['expiry_set']) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?>
-																	</label>
-																</div>
-			
-																<div class="divider"></div>
-				
-																<h3><?php _e('Public downloading', 'cftp_admin');?></h3>
-																<div class="checkbox">
-																	<label for="pub_checkbox_<?php echo $i; ?>">
-																		<input type="checkbox" id="pub_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][public]" value="1" /> <?php _e('Allow public downloading of this file.', 'cftp_admin');?>
-																	</label>
-																</div>
-															</div>
-														</div>
-
-														<div class="col-sm-6 col-md-3 assigns column">
-															<div class="file_data">
-																<?php
+                          <h3>
+                            <?php _e('Expiration date', 'cftp_admin');?>
+                          </h3>
+                          <div class="form-group">
+                            <label for="file[<?php echo $i; ?>][expires_date]">
+                              <?php _e('Select a date', 'cftp_admin');?>
+                            </label>
+                            <div class="input-group date-container">
+                              <input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" />
+                              <div class="input-group-addon"> <i class="glyphicon glyphicon-time"></i> </div>
+                            </div>
+                          </div>
+                          <div class="checkbox">
+                            <label for="exp_checkbox_<?php echo $i; ?>">
+                              <input type="checkbox" name="file[<?php echo $i; ?>][expires]" id="exp_checkbox_<?php echo $i; ?>" value="1" <?php if ($row['expiry_set']) { ?>checked="checked"<?php } ?> />
+                              <?php _e('File expires', 'cftp_admin');?>
+                            </label>
+                          </div>
+                          <div class="checkbox">
+                            <label for="notify_checkbox">
+                              <input type="checkbox" id="notify_checkbox" name="file[<?php echo $i; ?>][notify]" value="1" <?php if ($row['notify']) { ?>checked="checked"<?php } ?> />
+                              <?php _e('Don\'t Notify Me', 'cftp_admin');?>
+                            </label>
+                          </div>
+                          <div class="divider"></div>
+                          <h3>
+                            <?php _e('Public downloading', 'cftp_admin');?>
+                          </h3>
+                          <div class="checkbox">
+                            <label for="pub_checkbox_<?php echo $i; ?>">
+                              <input type="checkbox" id="pub_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][public]" value="1" />
+                              <?php _e('Allow public downloading of this file.', 'cftp_admin');?>
+                            </label>
+                          </div>
+                          <div class="form-group">
+                            <label>
+                              <?php _e('Number of Downloads Allowed', 'cftp_admin');?>
+                            </label>
+                            <input type="text" name="file[<?php echo $i; ?>][number_downloads]" value="" size="1" class="form-control1 file_title" placeholder="<?php _e('Enter number of downloads.', 'cftp_admin');?>" />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-6 col-md-3 assigns column">
+                        <div class="file_data">
+                          <?php
 																	/**
 																	* Only show the CLIENTS select field if the current
 																	* uploader is a system user, and not a client.
 																	*/
 																?>
-																<h3><?php _e('Assignations', 'cftp_admin');?></h3>
-																<label><?php _e('Assign this file to', 'cftp_admin');?>:</label>
-																<select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
-																	<optgroup label="<?php _e('Clients', 'cftp_admin');?>">
-																		<?php
+                          <h3>
+                            <?php _e('Send To', 'cftp_admin');?>
+                          </h3>
+                          
+                          <label>
+                            <?php _e('Assign this file to', 'cftp_admin');?>
+                            :</label>
+                          <select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+                            <optgroup label="<?php _e('Clients', 'cftp_admin');?>">
+                            <?php
 																			/**
 																			 * The clients list is generated early on the file so the
 																			 * array doesn't need to be made once on every file.
 																			 */
 																			foreach($clients as $client => $client_name) {
 																			?>
-																				<option value="<?php echo html_output('c'.$client); ?>"><?php echo html_output($client_name); ?></option>
-																			<?php
+                            <option value="<?php echo html_output('c'.$client); ?>"><?php echo html_output($client_name); ?></option>
+                            <?php
 																			}
 																		?>
-																	</optgroup>
-																	<optgroup label="<?php _e('Groups', 'cftp_admin');?>">
-																		<?php
+                            </optgroup>
+                            <optgroup label="<?php _e('Groups', 'cftp_admin');?>">
+                            <?php
 																			/**
 																			 * The groups list is generated early on the file so the
 																			 * array doesn't need to be made once on every file.
 																			 */
 																			foreach($groups as $group => $group_name) {
 																			?>
-																				<option value="<?php echo html_output('g'.$group); ?>"><?php echo html_output($group_name); ?></option>
-																			<?php
+                            <option value="<?php echo html_output('g'.$group); ?>"><?php echo html_output($group_name); ?></option>
+                            <?php
 																			}
 																		?>
-																	</optgroup>
-																</select>
-																<div class="list_mass_members">
-																	<a href="#" class="btn btn-xs btn-primary add-all" data-type="assigns"><?php _e('Add all','cftp_admin'); ?></a>
-																	<a href="#" class="btn btn-xs btn-primary remove-all" data-type="assigns"><?php _e('Remove all','cftp_admin'); ?></a>
-																	<a href="#" class="btn btn-xs btn-danger copy-all" data-type="assigns"><?php _e('Copy selections to other files','cftp_admin'); ?></a>
-																</div>
-	
-																<div class="divider"></div>
-					
-																<div class="checkbox">
-																	<label for="hid_checkbox_<?php echo $i; ?>">
-																		<input type="checkbox" id="hid_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][hidden]" value="1" /> <?php _e('Upload hidden (will not send notifications)', 'cftp_admin');?>
-																	</label>
-																</div>
-															</div>
-														</div>
-
-
-														<div class="col-sm-6 col-md-3 categories column">
-															<div class="file_data">
-																<h3><?php _e('Categories', 'cftp_admin');?></h3>
-																<label><?php _e('Add to', 'cftp_admin');?>:</label>
-																<select multiple="multiple" name="file[<?php echo $i; ?>][categories][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
-																	<?php
+                            </optgroup>
+                          </select>
+                          <div class="list_mass_members"> <a href="#" class="btn btn-xs btn-primary add-all" data-type="assigns">
+                            <?php _e('Add all','cftp_admin'); ?>
+                            </a> <a href="#" class="btn btn-xs btn-primary remove-all" data-type="assigns">
+                            <?php _e('Remove all','cftp_admin'); ?>
+                            </a> <a href="#" class="btn btn-xs btn-danger copy-all" data-type="assigns">
+                            <?php _e('Copy selections to other files','cftp_admin'); ?>
+                            </a> </div>
+                          <div class="divider"></div>
+                          <div class="checkbox">
+                            <label for="hid_checkbox_<?php echo $i; ?>">
+                              <input type="checkbox" id="hid_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][hidden]" value="1" />
+                              <?php _e('Upload hidden (will not send notifications)', 'cftp_admin');?>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-6 col-md-3 categories column">
+                        <div class="file_data">
+                          <h3>
+                            <?php _e('Categories', 'cftp_admin');?>
+                          </h3>
+                          <label>
+                            <?php _e('Add to', 'cftp_admin');?>
+                            :</label>
+                          <select multiple="multiple" name="file[<?php echo $i; ?>][categories][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+                            <?php
 																		/**
 																		 * The categories list is generated early on the file so the
 																		 * array doesn't need to be made once on every file.
 																		 */
 																		echo generate_categories_options( $get_categories['arranged'], 0 );
 																	?>
-																</select>
-																<div class="list_mass_members">
-																	<a href="#" class="btn btn-xs btn-primary add-all" data-type="categories"><?php _e('Add all','cftp_admin'); ?></a>
-																	<a href="#" class="btn btn-xs btn-primary remove-all" data-type="categories"><?php _e('Remove all','cftp_admin'); ?></a>
-																	<a href="#" class="btn btn-xs btn-danger copy-all" data-type="categories"><?php _e('Copy selections to other files','cftp_admin'); ?></a>
-																</div>
-															</div>
-														</div>
-													<?php
+                          </select>
+                          <div class="list_mass_members"> <a href="#" class="btn btn-xs btn-primary add-all" data-type="categories">
+                            <?php _e('Add all','cftp_admin'); ?>
+                            </a> <a href="#" class="btn btn-xs btn-primary remove-all" data-type="categories">
+                            <?php _e('Remove all','cftp_admin'); ?>
+                            </a> <a href="#" class="btn btn-xs btn-danger copy-all" data-type="categories">
+                            <?php _e('Copy selections to other files','cftp_admin'); ?>
+                            </a> </div>
+                        </div>
+                        <h3>
+                          <?php _e('Future Send Date', 'cftp_admin');?>
+                        </h3>
+                        <div class="form-group">
+                          <label for="file[<?php echo $i; ?>][future_send_date]">
+                            <?php _e('Select a date', 'cftp_admin');?>
+                          </label>
+                          <div class="input-group date-container">
+                            <input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][future_send_date]" value="<?php echo (!empty($future_send_date)) ? $future_send_date : date('d-m-Y'); ?>" />
+                            <div class="input-group-addon"> <i class="glyphicon glyphicon-time"></i> </div>
+                          </div>
+                        </div>
+                      </div>
+                      <?php
 														} /** Close $current_level check */
 													?>
-											</div>
-										</div>
-									</div>
-								</div>
-						<?php
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <?php
 								$i++;
 							}
 						}
@@ -622,10 +761,10 @@ while( $row = $statement->fetch() ) {
 						}
 					}
 				?>
-
-			</div> <!-- container -->
-
-			<?php
+            </div>
+            <!-- container -->
+            
+            <?php
 				/**
 				 * Take the list of failed files and store them as a text string
 				 * that will be passed on a hidden field when posting the form.
@@ -633,14 +772,14 @@ while( $row = $statement->fetch() ) {
 				$upload_failed = array_filter($upload_failed);
 				$upload_failed_hidden = implode(',',$upload_failed);
 			?>
-			<input type="hidden" name="upload_failed" value="<?php echo $upload_failed_hidden; ?>" />
-			
-			<div class="after_form_buttons">
-				<button type="submit" name="submit" class="btn btn-wide btn-primary" id="upload-continue"><?php _e('Continue','cftp_admin'); ?></button>
-			</div>
-		</form>
-
-<?php
+            <input type="hidden" name="upload_failed" value="<?php echo $upload_failed_hidden; ?>" />
+            <div class="after_form_buttons">
+              <button type="submit" name="submit" class="btn btn-wide btn-primary" id="upload-continue">
+              <?php _e('Continue','cftp_admin'); ?>
+              </button>
+            </div>
+          </form>
+          <?php
 	}
 	/**
 	 * There are no more files to assign.
@@ -655,41 +794,60 @@ while( $row = $statement->fetch() ) {
 	 */
 	if(count($upload_failed) > 0) {
 ?>
-		<h3><?php _e('Files not uploaded','cftp_admin'); ?></h3>
-		<table id="failed_files_tbl" class="footable" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
-			<thead>
-				<tr>
-					<th data-sort-initial="true"><?php _e('File Name','cftp_admin'); ?></th>
-				</tr>
-			</thead>
-			<tbody>
-			<?php
+          <h3>
+            <?php _e('Files not uploaded','cftp_admin'); ?>
+          </h3>
+          <table id="failed_files_tbl" class="footable" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
+            <thead>
+              <tr>
+                <th data-sort-initial="true"><?php _e('File Name','cftp_admin'); ?></th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php
 				foreach($upload_failed as $failed) {
 			?>
-					<tr>
-						<td><?php echo $failed; ?></td>
-					</tr>
-			<?php
+              <tr>
+                <td><?php echo $failed; ?></td>
+              </tr>
+              <?php
 				}
 			?>
-			</tbody>
-		</table>
-<?php
+            </tbody>
+          </table>
+          <?php
 	}
 ?>
-
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
 <script type="text/javascript">
 	$(document).ready(function() {
 		<?php
 			if(!empty($uploaded_files)) {
 		?>
 				$('.chosen-select').chosen({
-					no_results_text	: "<?php _e('No results where found.','cftp_admin'); ?>",
-					width			: "98%",
-					search_contains	: true
+				no_results_text	: "<?php _e('Invite User :','cftp_admin'); ?>",
+				width			: "98%",
+				search_contains	: true,
 				});
+		// Start by B)
+			$(".no-results").click(function(e) {
+    			console.log($('span',this).text());
+			});
+			$(document).on('click', ".no-results", function() {
+    			var cc_email = $('span',this).text(); 
+				$(".new_client").append('<option val="'+cc_email+'" selected="selected">'+cc_email+'</option>'); 
+				$(this).parent().parent().siblings('.chosen-choices').prepend('<li class="search-choice"><span>'+cc_email+'</span><a style="text-decoration:none" class="cc-choice-close">&nbsp;&nbsp;x</a></li>');
+			});
+			$(document).on('click', ".cc-choice-close", function() {
+				var cc_remove_op = $(this).siblings('span').text();
+				jQuery(".new_client option:contains('"+cc_remove_op+"')").remove();
+				$(this).parent().remove();
+			});
+		// End by B)
 
 				$('.date-container .date-field').datepicker({
 					format			: 'dd-mm-yyyy',
@@ -773,7 +931,6 @@ while( $row = $statement->fetch() ) {
 
 	});
 </script>
-
 <?php
 	include('footer.php');
 ?>

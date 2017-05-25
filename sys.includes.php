@@ -21,7 +21,6 @@ require_once(ROOT_DIR.'/includes/classes/database.php');
 if ( !defined( 'IS_MAKE_CONFIG' ) ) {
 	require_once(ROOT_DIR.'/includes/site.options.php');
 }
-
 /** Load the language class and translation file */
 require_once(ROOT_DIR.'/includes/language.php');
 
@@ -47,15 +46,12 @@ require_once(ROOT_DIR.'/includes/templates.php');
 if ( !defined( 'IS_INSTALL' ) ) {
 	require_once(ROOT_DIR.'/includes/active.session.php');
 }
-
+//echo "sssssssssssssssssss";exit();
 /** Recreate the function if it doesn't exist. By Alan Reiblein */
 require_once(ROOT_DIR.'/includes/timezone_identifiers_list.php');
 
 /** Categories functions */
 require_once(ROOT_DIR.'/includes/functions.categories.php');
-
-/** Search, filters and actions forms */
-require_once(ROOT_DIR.'/includes/functions.forms.php');
 
 /**
  * Always require this classes to avoid repetition of code
@@ -73,7 +69,6 @@ $classes_files = array(
 						'form-validation.php',
 						'send-email.php',
 						'generate-form.php',
-						'generate-table.php',
 					);
 foreach ( $classes_files as $filename ) {
 	$location = ROOT_DIR . '/includes/classes/' . $filename;

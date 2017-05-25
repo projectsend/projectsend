@@ -91,17 +91,13 @@ include('header-unlogged.php');
 	}
 	?>
 
-		<h2 class="hidden"><?php echo $page_title; ?></h2>
+		<!--<h2 class="hidden"><?php //echo $page_title; ?></h2>-->
+        <!--------------------------------------------------------------------------------------------------->
+        <div id="content" class="container">
 
-		<div class="container">
-
-			<?php echo generate_branding_layout(); ?>
-
-			<div class="row">
-				<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
-					<div class="white-box-interior">
-		
-						<?php
+				<div class="row">
+                <div class="col-md-12">
+                <?php
 							if (CLIENTS_CAN_REGISTER == '0') {
 								$msg = __('Client self registration is not allowed. If you need an account, please contact a system administrator.','cftp_admin');
 								echo system_message('error',$msg);
@@ -179,25 +175,292 @@ include('header-unlogged.php');
 									 * Include the form.
 									 */
 									$clients_form_type = 'new_client_self';
-									include('clients-form.php');
+									//include('clients-form.php'); ?>
+                                    <!---------------------------------------------------------------------------->
+                                    <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 hidden-xs hidden-sm">
+						<h1 class="txt-color-red login-header-big">SmartAdmin</h1>
+						<div class="hero">
+
+							<div class="pull-left login-desc-box-l">
+								<h4 class="paragraph-header">It's Okay to be Smart. Experience the simplicity of SmartAdmin, everywhere you go!</h4>
+								<div class="login-app-icons">
+									<a href="index.php" class="btn btn-danger btn-sm">Already on MicroHealth Send? login here ! </a>
+								</div>
+							</div>
+							
+							<img src="img/demo/iphoneview.png" alt="" class="pull-right display-image" style="width:210px">
+							
+						</div>
+
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+								<h5 class="about-heading">About SmartAdmin - Are you up to date?</h5>
+								<p>
+									Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa.
+								</p>
+							</div>
+							<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+								<h5 class="about-heading">Not just your average template!</h5>
+								<p>
+									Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi voluptatem accusantium!
+								</p>
+							</div>
+						</div>
+
+					</div>
+                                    <script type="text/javascript">
+	$(document).ready(function() {
+		$("form").submit(function() {
+			clean_form(this);
+
+				is_complete(this.add_client_form_name,'<?php echo $validation_no_name; ?>');
+				is_complete(this.add_client_form_user,'<?php echo $validation_no_user; ?>');
+				is_complete(this.add_client_form_email,'<?php echo $validation_no_email; ?>');
+				is_length(this.add_client_form_user,<?php echo MIN_USER_CHARS; ?>,<?php echo MAX_USER_CHARS; ?>,'<?php echo $validation_length_user; ?>');
+				is_email(this.add_client_form_email,'<?php echo $validation_invalid_mail; ?>');
+				is_alpha_or_dot(this.add_client_form_user,'<?php echo $validation_alpha_user; ?>');
+			
+			<?php
+				/**
+				 * Password validation is optional only when editing a client.
+				 */
+				if ($clients_form_type == 'edit_client' || $clients_form_type == 'edit_client_self') {
+			?>
+					// Only check password if any of the 2 fields is completed
+					var password_1 = $("#add_client_form_pass").val();
+					//var password_2 = $("#add_client_form_pass2").val();
+					if ($.trim(password_1).length > 0/* || $.trim(password_2).length > 0*/) {
+			<?php
+				}
+			?>
+
+						is_complete(this.add_client_form_pass,'<?php echo $validation_no_pass; ?>');
+						//is_complete(this.add_client_form_pass2,'<?php echo $validation_no_pass2; ?>');
+						is_length(this.add_client_form_pass,<?php echo MIN_PASS_CHARS; ?>,<?php echo MAX_PASS_CHARS; ?>,'<?php echo $validation_length_pass; ?>');
+						is_password(this.add_client_form_pass,'<?php $chars = addslashes($validation_valid_chars); echo $validation_valid_pass." ".$chars; ?>');
+						//is_match(this.add_client_form_pass,this.add_client_form_pass2,'<?php echo $validation_match_pass; ?>');
+
+			<?php
+				/** Close the jquery IF statement. */
+				if ($clients_form_type == 'edit_client' || $clients_form_type == 'edit_client_self') {
+			?>
+					}
+			<?php
+				}
+			?>
+
+			// show the errors or continue if everything is ok
+			if (show_form_errors() == false) { return false; }
+		});
+	});
+</script>
+
+<?php
+$name_placeholder = __("Will be visible on the client's file list",'cftp_admin');
+
+switch ($clients_form_type) {
+	/** User is creating a new client */
+	case 'new_client':
+		$submit_value = __('Add client','cftp_admin');
+		$disable_user = false;
+		$require_pass = true;
+		$form_action = 'clients-add.php';
+		$info_box = true;
+		$extra_fields = true;
+		break;
+	/** User is editing an existing client */
+	case 'edit_client':
+		$submit_value = __('Save client','cftp_admin');
+		$disable_user = true;
+		$require_pass = false;
+		$form_action = 'clients-edit.php?id='.$client_id;
+		$info_box = false;
+		$extra_fields = true;
+		break;
+	/** A client is creating a new account for himself */
+	case 'new_client_self':
+		$submit_value = __('Register account','cftp_admin');
+		$disable_user = false;
+		$require_pass = true;
+		$form_action = 'register.php';
+		$info_box = true;
+		$extra_fields = false;
+		$name_placeholder = __("Your full name",'cftp_admin');
+		break;
+	/** A client is editing his profile */
+	case 'edit_client_self':
+		$submit_value = __('Update account','cftp_admin');
+		$disable_user = true;
+		$require_pass = false;
+		$form_action = 'clients-edit.php?id='.$client_id;
+		$info_box = false;
+		$extra_fields = false;
+		break;
+}
+?>
+<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+	<div class="well no-padding">
+								
+		<form action="<?php echo $form_action; ?>" name="addclient" id="smart-form-register" method="post" class="smart-form client-form">
+     <header>Registration is FREE*</header>
+     <fieldset>
+     <section>
+     
+	<?php
+		if ($info_box == true) {
+			$msg = __('This account information will be e-mailed to the address supplied above','cftp_admin');
+			echo system_message('info',$msg);
+		}
+	?>
+     </section>
+     <section>
+     	Name
+		<label class="input"> 
+        	<i class="icon-append fa fa-user"></i>
+            <input type="text" name="add_client_form_name" id="add_client_form_name" class="form-control required" value="<?php echo (isset($add_client_data_name)) ? html_output(stripslashes($add_client_data_name)) : ''; ?>" placeholder="<?php echo $name_placeholder; ?>" />
+			<b class="tooltip tooltip-bottom-right">Needed to enter the website</b> 
+        </label>
+	</section>
+     <section>Log in username
+     <label class="input">
+     
+	 <i class="icon-append fa fa-user-circle"></i>
+     <input type="text" name="add_client_form_user" id="add_client_form_user" class="form-control <?php if (!$disable_user) { echo 'required'; } ?>" minlength="4" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($add_client_data_user)) ? html_output(stripslashes($add_client_data_user)) : ''; ?>" <?php if ($disable_user) { echo 'readonly'; }?> placeholder="<?php _e("Must be alphanumeric",'cftp_admin'); ?>" />
+	 <b class="tooltip tooltip-bottom-right">Needed to enter the website</b> 
+     </label>
+	 </section>
+     <section><?php _e('Password','cftp_admin'); ?>
+     <label class="input">
+     
+	 <i class="icon-append fa fa-user"></i>
+     <div class="col-md-10">
+     <input name="add_client_form_pass" id="add_client_form_pass" class="form-control password_toggle <?php if ($require_pass) { echo 'required'; } ?>" type="password" maxlength="<?php echo MAX_PASS_CHARS; ?>" />
+     </div>
+     <div class="col-md-2">
+     <button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="add_client_form_pass" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate','cftp_admin'); ?></button>
+     </div>
+     </label>
+     
+			<?php echo password_notes(); ?>
+	 </section>
+     
+     <section><?php _e('E-mail','cftp_admin'); ?>
+     <label class="input">
+     
+	 <i class="icon-append fa fa-envelope"></i>
+     <input type="text" name="add_client_form_email" id="add_client_form_email" class="form-control required" value="<?php echo (isset($add_client_data_email)) ? html_output(stripslashes($add_client_data_email)) : ''; ?>" placeholder="<?php _e("Must be valid and unique",'cftp_admin'); ?>" />
+     </label>
+	 </section>
+     
+     <section><?php _e('Address','cftp_admin'); ?>
+     <label class="input">
+     
+	 <i class="icon-append fa fa-address-card-o"></i>
+     <input type="text" name="add_client_form_address" id="add_client_form_address" class="form-control" value="<?php echo (isset($add_client_data_addr)) ? html_output(stripslashes($add_client_data_addr)) : ''; ?>" />
+     </label>
+	 </section>
+     <section><?php _e('Telephone','cftp_admin'); ?>
+     <label class="input">
+     
+	 <i class="icon-append fa fa-phone"></i>
+     <input type="text" name="add_client_form_phone" id="add_client_form_phone" class="form-control" value="<?php echo (isset($add_client_data_phone)) ? html_output(stripslashes($add_client_data_phone)) : ''; ?>" />
+     </label>
+	 </section>
+     <?php
+			if ($extra_fields == true) {
+	 ?>
+     <section><?php _e('Internal contact name','cftp_admin'); ?>
+     <label class="input">
+     
+	 <i class="icon-append fa fa-user"></i>
+     <input type="text" name="add_client_form_intcont" id="add_client_form_intcont" class="form-control" value="<?php echo (isset($add_client_data_intcont)) ? html_output(stripslashes($add_client_data_intcont)) : ''; ?>" />
+     </label>
+	 </section>
+     
+     <section><?php _e('Internal contact name','cftp_admin'); ?>
+     <label class="input">
+	 <i class="icon-append fa fa-user"></i>
+     <input type="checkbox" name="add_client_form_active" id="add_client_form_active" <?php echo (isset($add_client_data_active) && $add_client_data_active == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Active (client can log in)','cftp_admin'); ?>
+                
+     </label>
+	 </section>
+                
+       	<?php
+			}
+		?>         
+     
+     
+
+	
+				
+	
+	<section>
+			<label for="add_client_form_notify">
+				<input type="checkbox" name="add_client_form_notify" id="add_client_form_notify" <?php echo (isset($add_client_data_notity) && $add_client_data_notity == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Notify new uploads by e-mail','cftp_admin'); ?>
+			</label>
+	</section>
+	
+	<?php
+		if ( $clients_form_type == 'new_client_self' ) {
+			if ( defined('RECAPTCHA_AVAILABLE') ) {
+	?>
+				<section><?php _e('Verification','cftp_admin'); ?>
+						<div class="g-recaptcha" data-sitekey="<?php echo RECAPTCHA_SITE_KEY; ?>"></div>
+				</section>
+	<?php
+			}
+		}
+	?>
+	<section>
+	<div class="inside_form_buttons">
+		<button type="submit" name="submit" class="btn cc-btn-reg btn-wide btn-primary"><?php echo html_output($submit_value); ?></button>
+	</div>
+    </section>
+</fieldset>
+</form>
+	</div>
+    <p class="note text-center">*FREE Registration ends on October 2015.</p>
+						<h5 class="text-center">- Or sign up using -</h5>
+						<ul class="list-inline text-center">
+                        <li> 
+      <?php if(GOOGLE_SIGNIN_ENABLED == '1'): ?>
+		<a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="btn btn-default btn-circle"><i class="fa fa-google"></i></a></a>
+		<?php endif; ?>
+        </li>
+        <?php if(FACEBOOK_SIGNIN_ENABLED == '1'): ?>
+        <li> <a href="sociallogin/login-with.php?provider=Facebook" name="Sign in with Facebook" class="btn btn-primary btn-circle"><i class="fa fa-facebook"></i></a> </li>
+        <?php endif; ?>
+        <?php if(TWITTER_SIGNIN_ENABLED == '1'): ?>
+        <li> <a href="sociallogin/login-with.php?provider=Twitter" name="Sign in with Twitter" class="btn btn-info btn-circle"><i class="fa fa-twitter"></i></a> </li>
+        <?php endif; ?>
+        <?php if(YAHOO_SIGNIN_ENABLED == '1'): ?>
+        <li> <a href="sociallogin/login-with.php?provider=yahoo" name="Sign in with yahoo" class="btn btn-danger btn-circle"><i class="fa fa-yahoo" aria-hidden="true"></i></a> </li>
+        <?php endif; ?>
+        <?php if(LINKEDIN_SIGNIN_ENABLED == '1'): ?>
+        <li> <a href="sociallogin/login-with.php?provider=LinkedIn" name="Sign in with linkedin" class="btn btn-warning btn-circle"><i class="fa fa-linkedin"></i></a> </li>
+        <li> <a href="sociallogin/ldap-login.php" name="Sign in with LDAP" class="btn btn-success btn-circle" title="LDAP">
+        <i class="fa fa-universal-access"></i></a> </li>
+        <?php endif; ?>
+      </ul>
+</div>
+ <!---------------------------------------------------------------------------->
+                                    <?php
 								}
 							}
 						?>
-
-						<div class="login_form_links">
-							<p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.','cftp_admin'); ?></a></p>
-						</div>
-					</div>
+                </div>
 				</div>
 			</div>
-		</div>
-	</div> <!-- main -->
+        <!--------------------------------------------------------------------------------------------------->
 
+	</div> <!-- main -->
+<div class="cc-footer">
 	<?php
 		default_footer_info();
 
 		load_js_files();
 	?>
+</div>
 
 </body>
 </html>

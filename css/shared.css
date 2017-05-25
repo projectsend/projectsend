@@ -646,11 +646,6 @@ p.downloaders_note {
 	margin:2em auto;
 }
 
-#go_to_page {
-	width:4em !important;
-	text-align:center;
-}
-
 .format_url {
 	word-break:break-all;
 }

@@ -17,21 +17,53 @@ $load_compat_js_files	= array();
 /** Add the base files that every page will need, regardless of type */
 
 /** JS */
+/*
 $load_js_files[]	= BASE_URI . 'assets/bootstrap/js/bootstrap.min.js';
 $load_js_files[]	= BASE_URI . 'includes/js/jquery.validations.js';
 $load_js_files[]	= BASE_URI . 'includes/js/jquery.psendmodal.js';
 $load_js_files[]	= BASE_URI . 'includes/js/jen/jen.js';
-$load_js_files[]	= BASE_URI . 'includes/js/main.js';
+$load_js_files[]	= BASE_URI . 'includes/js/main.js';*/
 
+/*---------------------added by B)-----------------------------------*/
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/app.config.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/jquery-touch/jquery.ui.touch-punch.min.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/bootstrap/bootstrap.min.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/notification/SmartNotification.min.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/smartwidgets/jarvis.widget.min.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/easy-pie-chart/jquery.easy-pie-chart.min.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/sparkline/jquery.sparkline.min.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/jquery-validate/jquery.validate.min.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/masked-input/jquery.maskedinput.min.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/select2/select2.min.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/select2/select2.min.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/bootstrap-slider/bootstrap-slider.min.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/msie-fix/jquery.mb.browser.min.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/fastclick/fastclick.min.js';
+//$load_js_files[]	= BASE_URI . 'assets/wrap/js/demo.min.js';
+//$load_js_files[]	= BASE_URI . 'assets/wrap/js/app.min.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/smart-chat-ui/smart.chat.ui.min.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/speech/voicecommand.min.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/smart-chat-ui/smart.chat.manager.min.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/flot/jquery.flot.cust.min.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/flot/jquery.flot.resize.min.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/flot/jquery.flot.time.min.js';	
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/flot/jquery.flot.tooltip.min.js';		
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/vectormap/jquery-jvectormap-1.2.2.min.js';	
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/moment/moment.min.js';	
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/fullcalendar/jquery.fullcalendar.min.js';
+$load_js_files[]	= 'https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js';
+$load_css_files[]	= 'https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700';
+/*---------------------end by B)-----------------------------------*/
 /** CSS */
 
 /** Fonts*/
-$load_css_files[]	= 'https://fonts.googleapis.com/css?family=Open+Sans:400,700,300';
-$load_css_files[]	= 'https://fonts.googleapis.com/css?family=Abel';
+/*$load_css_files[]	= 'https://fonts.googleapis.com/css?family=Open+Sans:400,700,300';
+$load_css_files[]	= 'https://fonts.googleapis.com/css?family=Abel';*/
 
 /**
  * Optional scripts
  */
+ /* -------------------commnted by B)---------------------------- */
 if ( !empty( $load_scripts ) ) {
 	foreach ( $load_scripts as $script ) {
 		switch ( $script ) {
@@ -50,10 +82,9 @@ if ( !empty( $load_scripts ) ) {
 				$load_js_files[]		= BASE_URI . 'includes/js/bootstrap-spinedit/bootstrap-spinedit.js';
 				break;
 			case 'footable':
-				$footable_js_file		= ( !empty( $footable_min ) ) ? 'footable.min.js' : 'footable.all.min.js';
 				$load_css_files[]		= BASE_URI . 'includes/js/footable/css/footable.core.css';
 				$load_css_files[]		= BASE_URI . 'css/footable.css';
-				$load_js_files[]		= BASE_URI . 'includes/js/footable/' . $footable_js_file;
+				$load_js_files[]		= BASE_URI . 'includes/js/footable/footable.all.min.js';
 				break;
 			case 'jquery_tags_input':
 				$load_css_files[]		= BASE_URI . 'includes/js/jquery-tags-input/jquery.tagsinput.css';
@@ -69,11 +100,7 @@ if ( !empty( $load_scripts ) ) {
 				$load_js_files[]		= BASE_URI . 'includes/js/browserplus-min.js';
 				$load_js_files[]		= BASE_URI . 'includes/plupload/js/plupload.full.js';
 				$load_js_files[]		= BASE_URI . 'includes/plupload/js/jquery.plupload.queue/jquery.plupload.queue.js';
-				/**
-				 * Load a plupload translation file, if the ProjectSend language
-				 * on sys.config.php is set to anything other than "en", and the
-				 * corresponding plupload file exists.
-				 */
+
 				if ( LOADED_LANG != 'en' ) {
 					$plupload_lang_file = 'includes/plupload/js/i18n/'.LOADED_LANG.'.js';
 					if ( file_exists( $plupload_lang_file ) ) {
@@ -94,9 +121,21 @@ if ( !empty( $load_scripts ) ) {
 		}
 	}
 }
+ /* -------------------commnted by B)---------------------------- */
 
-$load_css_files[]	= BASE_URI . 'css/shared.css';
-$load_css_files[]	= BASE_URI . 'css/mobile.css';
+// $load_css_files[]	= BASE_URI . 'css/shared.css';
+// $load_css_files[]	= BASE_URI . 'css/mobile.css';
+
+/* -------------------- added B) -------------------------------- */
+$load_css_files[]	= BASE_URI . 'assets/wrap/css/smartadmin-production-plugins.min.css';
+$load_css_files[]	= BASE_URI . 'assets/wrap/css/smartadmin-production.min.css';
+$load_css_files[]	= BASE_URI . 'assets/wrap/css/smartadmin-skins.min.css';
+$load_css_files[]	= BASE_URI . 'assets/wrap/css/smartadmin-rtl.min.css';
+$load_css_files[]	= BASE_URI . 'assets/wrap/css/your_style.css';
+$load_css_files[]	= BASE_URI . 'assets/wrap/css/demo.min.css';
+
+/* -------------------- end B) -------------------------------- */
+
 /**
  * Load a different css file when called from the admin, or
  * the default template.
@@ -107,17 +146,8 @@ if ( !isset( $this_template_css ) ) {
 }
 else {
 	/** Template */
-	$load_css_files[]	= $this_template_css;
+	//$load_css_files[]	= $this_template_css;
 }
-
-/**
- * Custom CSS styles.
- */
-$custom_css_location = ROOT_DIR . '/css/custom.css';
-if ( file_exists( $custom_css_location ) ) {
-	$load_css_files[]	= BASE_URI . 'css/custom.css';
-}
-
 
 /**
  * Used on header to print the CSS files

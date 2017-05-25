@@ -1,0 +1,136 @@
+#
+# Translators:
+# Vaclav Greif <vasik@vasik.net>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: ProjectSend\n"
+"POT-Creation-Date: 2016-09-18 20:27-0300\n"
+"PO-Revision-Date: 2016-09-18 20:27-0300\n"
+"Last-Translator: Vaclav Greif <vasik@vasik.net>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/projectsend/"
+"language/cs/)\n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Poedit 1.8.8\n"
+
+#: template.php:15
+msgid "File downloads"
+msgstr "Stažení souborů"
+
+#: template.php:43
+msgid "Search"
+msgstr ""
+
+#: template.php:52
+msgid "All categories"
+msgstr ""
+
+#: template.php:59
+msgid "Filter"
+msgstr ""
+
+#: template.php:72
+msgid "Selected files actions"
+msgstr ""
+
+#: template.php:74
+msgid "Download zipped"
+msgstr ""
+
+#: template.php:76
+msgid "Proceed"
+msgstr ""
+
+#: template.php:85
+msgid "Showing"
+msgstr ""
+
+#: template.php:85
+msgid "files"
+msgstr ""
+
+#: template.php:95
+msgid "Your search keywords returned no results."
+msgstr ""
+
+#: template.php:100
+msgid "There are no files available."
+msgstr "Nejsou dostupné žádné soubory"
+
+#: template.php:112
+msgid "Title"
+msgstr "Název"
+
+#: template.php:113
+msgid "Ext."
+msgstr ""
+
+#: template.php:114
+msgid "Description"
+msgstr "Popis"
+
+#: template.php:115
+msgid "Size"
+msgstr "Velikost"
+
+#: template.php:116
+msgid "Date"
+msgstr "Datum"
+
+#: template.php:117
+msgid "Expiration date"
+msgstr ""
+
+#: template.php:118
+msgid "Image preview"
+msgstr "Náhled obrázku"
+
+#: template.php:119 template.php:235
+msgid "Download"
+msgstr "Stážení"
+
+#: template.php:192
+msgid "Never"
+msgstr ""
+
+#: template.php:205
+msgid "File expired"
+msgstr "Soubor vypršel"
+
+#: template.php:249
+msgid "Results navigation"
+msgstr ""
+
+#: template.php:268
+msgid "Please select at least one file to proceed."
+msgstr ""
+
+#: template.php:283
+msgid "Please wait while your download is prepared."
+msgstr ""
+
+#: template.php:284
+msgid ""
+"This operation could take a few minutes, depending on the size of the files."
+msgstr ""
+
+#~ msgid "First"
+#~ msgstr "První"
+
+#~ msgid "Last"
+#~ msgstr "Poslední"
+
+#~ msgid "Next"
+#~ msgstr "Další"
+
+#~ msgid "Page"
+#~ msgstr "Stránka"
+
+#~ msgid "Prev."
+#~ msgstr "Předchozí"
+
+#~ msgid "Show"
+#~ msgstr "Zobrazit"

@@ -2,10 +2,11 @@
 /**
  *  Call the required system files
  */
+
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 /* included aes class file by RJ-07-Oct-2016 */
-include('aes_class.php');
+//include('aes_class.php');
 /**
  * If there is no valid session/user block the upload of files
  */
@@ -140,10 +141,11 @@ if (!$chunks || $chunk == $chunks - 1) {
 }
 			
 			/* AES Decryption started by RJ-07-Oct-2016 */
-			$blockSize = 256;
-    			$inputKey = "project send encryption";
+			//$blockSize = 256;
+    			//$inputKey = "project send encryption";
+				
 			$fileData = file_get_contents($filePath);
-			$aes = new AES($fileData, $inputKey, $blockSize);
+			$aes = new AES($fileData, ENCRYPTION_KEY, BLOCKSIZE);
 			$encData = $aes->encrypt();
 			unlink($filePath);
 			file_put_contents($filePath , $encData);

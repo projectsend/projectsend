@@ -72,15 +72,13 @@ class GroupActions
 		$this->state['new_id'] = $this->id;
 
 		/** Create the members records */
-		if ( !empty( $this->members ) ) {
-			foreach ($this->members as $this->member) {
-				$this->sql_member = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
-														." VALUES (:admin, :member, :id)");
-				$this->sql_member->bindParam(':admin', $this->this_admin);
-				$this->sql_member->bindParam(':member', $this->member, PDO::PARAM_INT);
-				$this->sql_member->bindParam(':id', $this->id, PDO::PARAM_INT);
-				$this->sql_member->execute();
-			}
+		foreach ($this->members as $this->member) {
+			$this->sql_member = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
+													." VALUES (:admin, :member, :id)");
+			$this->sql_member->bindParam(':admin', $this->this_admin);
+			$this->sql_member->bindParam(':member', $this->member, PDO::PARAM_INT);
+			$this->sql_member->bindParam(':id', $this->id, PDO::PARAM_INT);
+			$this->sql_member->execute();
 		}
 
 		if ($this->sql_query) {

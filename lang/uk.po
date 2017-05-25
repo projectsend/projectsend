@@ -1,0 +1,3242 @@
+#
+# Translators:
+# Victor Bidnenko, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: ProjectSend\n"
+"POT-Creation-Date: 2016-09-18 20:27-0300\n"
+"PO-Revision-Date: 2016-09-18 20:27-0300\n"
+"Last-Translator: Victor Bidnenko\n"
+"Language-Team: Ukrainian (http://www.transifex.com/projects/p/projectsend/"
+"language/uk/)\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 1.8.8\n"
+
+#: actions-log.php:15
+msgid "Recent activities log"
+msgstr "Журнал нещодавніх дій"
+
+#: actions-log.php:28
+msgid "Please select at least one activity to proceed."
+msgstr "Будь ласка, виберіть хоча б одну дію, щоб продовжити."
+
+#: actions-log.php:32 categories.php:37 clients.php:44 groups.php:72
+#: manage-files.php:105 users.php:37
+msgid "You are about to delete"
+msgstr "Ви видаляєте"
+
+#: actions-log.php:33
+msgid "activities. Are you sure you want to continue?"
+msgstr "дії. Ви впевнені що хочете продовжити?"
+
+#: actions-log.php:42
+msgid ""
+"You are about to delete all activities from the log. Only those used for "
+"statistics will remain. Are you sure you want to continue?"
+msgstr ""
+"Ви збираєтеся видалити всі дії з журналу. Тільки ті, які використовуються "
+"для статистики залишиться. Ви впевнені, що хочете продовжити?"
+
+#: actions-log.php:54
+msgid "Please wait while your download is prepared."
+msgstr "Будь-ласка, зачекайте поки ваше завантаження підготовлюється."
+
+#: actions-log.php:87
+msgid "The selected activities were deleted."
+msgstr "Обрані дії були видалені."
+
+#: actions-log.php:91
+msgid "Please select at least one activity."
+msgstr "Будь ласка, виберіть хоча б одну дію."
+
+#: actions-log.php:103
+msgid ""
+"The log was cleared. Only data used for statistics remained. You can delete "
+"them manually if you want."
+msgstr ""
+"Ваш лог очищено. Залишилися лише дані, які використовуються для статистики. "
+"Ви можете видалити їх вручну, якщо ви хочете."
+
+#: actions-log.php:151 categories.php:239 clients.php:178 groups.php:217
+#: manage-files.php:440 upload-import-orphans.php:144 users.php:208
+msgid "Search"
+msgstr "Знайти"
+
+#: actions-log.php:156
+msgid "Filter activities"
+msgstr ""
+
+#: actions-log.php:158 home.php:81
+msgid "All activities"
+msgstr "Всі дії"
+
+#: actions-log.php:169 clients.php:189 manage-files.php:455 users.php:228
+msgid "Filter"
+msgstr "Фільтр"
+
+#: actions-log.php:179
+msgid "Activities actions"
+msgstr "можливі дії"
+
+#: actions-log.php:181 groups.php:229
+msgid "Select action"
+msgstr "Обрати дію"
+
+#: actions-log.php:182
+msgid "Download as csv"
+msgstr "Скачати як csv файл"
+
+#: actions-log.php:183
+msgid "Delete selected"
+msgstr "Видалити обрані"
+
+#: actions-log.php:184
+msgid "Clear entire log"
+msgstr "Очистити весь журнал"
+
+#: actions-log.php:187 categories.php:256 clients.php:206 groups.php:233
+#: manage-files.php:496 users.php:245
+msgid "Proceed"
+msgstr "Продовжити"
+
+#: actions-log.php:194 categories.php:264 clients.php:213 groups.php:240
+#: manage-files.php:507 upload-import-orphans.php:151 users.php:252
+msgid "Showing"
+msgstr "Відображення"
+
+#: actions-log.php:194
+msgid "activities"
+msgstr "дії"
+
+#: actions-log.php:204 clients.php:226 groups.php:253 manage-files.php:523
+#: users.php:264
+msgid "The filters you selected returned no results."
+msgstr "Обрані вамі фільтри не мають результатів."
+
+#: actions-log.php:209
+msgid "There are no activities recorded."
+msgstr "Не записано жодної дії."
+
+#: actions-log.php:221 download-information.php:86 manage-files.php:553
+msgid "Date"
+msgstr "Дата"
+
+#: actions-log.php:222
+msgid "Author"
+msgstr "Автор"
+
+#: actions-log.php:223
+msgid "Activity"
+msgstr "Дія"
+
+#: actions-log.php:267 categories.php:360 clients.php:372
+#: download-information.php:143 groups.php:337 manage-files.php:837
+#: upload-import-orphans.php:192 users.php:336
+msgid "Results navigation"
+msgstr ""
+
+#: branding.php:13 header-menu.php:140
+msgid "Branding"
+msgstr "Брендування"
+
+#: branding.php:87
+msgid "Please select an image file to upload"
+msgstr "Будь ласка, виберіть файл зображення для завантаження"
+
+#: branding.php:105
+msgid "The image was uploaded correctly."
+msgstr "Зображення завантажено вірно."
+
+#: branding.php:109
+msgid "The file could not be moved to the corresponding folder."
+msgstr "Файл не може бути переміщено у відповідний каталог."
+
+#: branding.php:110
+msgid ""
+"This is most likely a permissions issue. If that's the case, it can be "
+"corrected via FTP by setting the chmod value of the"
+msgstr ""
+"Це, швидше за все, проблема з дозволами. Якщо це так, то може бути "
+"виправлена за допомогою FTP, встановивши значення CHMOD з"
+
+#: branding.php:112
+msgid "directory to 755, or 777 as a last resource."
+msgstr "директорію до 755 або 777 в якості останнього шансу."
+
+#: branding.php:113
+msgid ""
+"If this doesn't solve the issue, try giving the same values to the "
+"directories above that one until it works."
+msgstr ""
+"Якщо це не допомогло, спробуйте задати ті самі значення для директорій "
+"зазначених вище доки це не допоможе."
+
+#: branding.php:117
+msgid ""
+"The file you selected is not an allowed image format. Please upload your "
+"logo as a jpg, gif or png file."
+msgstr ""
+"Обраний Вами файл має недозволений формат зображення. Будь-ласка, завантажте "
+"своє лого в форматі  jpg, gif або png."
+
+#: branding.php:121
+msgid "There was an error uploading the file. Please try again."
+msgstr "При завантаженні файлу виникла помилка. Спробуйте ще раз."
+
+#: branding.php:129
+msgid ""
+"Use this page to upload your company logo, or update the currently assigned "
+"one. This image will be shown to your clients when they access their file "
+"list."
+msgstr ""
+"Використовуйте цю сторінку, щоб завантажити логотип Вашої компанії, або "
+"оновити його. Це зображення буде показано для ваших клієнтів, коли вони "
+"отримують доступ до їх список файлів."
+
+#: branding.php:133
+msgid "Current logo"
+msgstr "Поточне лого"
+
+#: branding.php:134
+msgid ""
+"The picture on the right is not an actual representation of what they will "
+"see. The size on this preview is fixed, but remember that you can change the "
+"display size and picture quality for your client's pages on the"
+msgstr ""
+"Фото справа не є фактичним виглядомзображення яке побачать. Розмір на "
+"передперегляді фіксується, але пам'ятайте, що ви можете змінити розмір "
+"екрану і якість зображення для сторінок вашого клієнта на"
+
+#: branding.php:134
+msgid "options"
+msgstr "опції"
+
+#: branding.php:134
+msgid "section."
+msgstr "секція."
+
+#: branding.php:141
+msgid "Logo Placeholder"
+msgstr "Місце для Лого"
+
+#: branding.php:152
+msgid "Select image to upload"
+msgstr "Обрати зображення для завантаження"
+
+#: branding.php:164 header-menu.php:45 header-menu.php:161
+msgid "Upload"
+msgstr "Завантажити"
+
+#: categories-form.php:14
+msgid "Create"
+msgstr ""
+
+#: categories-form.php:17
+msgid "Save"
+msgstr ""
+
+#: categories-form.php:27 categories.php:294 clients-form.php:104
+#: options.php:394 users-form.php:86
+msgid "Name"
+msgstr "Ім'я"
+
+#: categories-form.php:34
+msgid "Parent"
+msgstr ""
+
+#: categories-form.php:37 options.php:519
+msgid "None"
+msgstr "жоден"
+
+#: categories-form.php:48 categories.php:296 edit-file.php:379
+#: groups-form.php:45 groups.php:277 upload-process-form.php:291
+#: upload-process-form.php:485
+msgid "Description"
+msgstr "Опис"
+
+#: categories-form.php:56 edit-file.php:524
+msgid "Cancel"
+msgstr "Відмінити"
+
+#: categories.php:18
+msgid "Categories administration"
+msgstr ""
+
+#: categories.php:31
+msgid "Please select at least one category to proceed."
+msgstr ""
+
+#: categories.php:38
+msgid "categories. Are you sure you want to continue?"
+msgstr ""
+
+#: categories.php:71
+msgid "The category was successfully created."
+msgstr ""
+
+#: categories.php:75
+msgid "The category was successfully edited."
+msgstr ""
+
+#: categories.php:114
+msgid "The selected categories were deleted."
+msgstr ""
+
+#: categories.php:132
+msgid "Please select at least one category."
+msgstr ""
+
+#: categories.php:149
+msgid "Create new category"
+msgstr ""
+
+#: categories.php:161
+msgid "Edit category"
+msgstr ""
+
+#: categories.php:214
+msgid "There was a problem savint to the database."
+msgstr ""
+
+#: categories.php:219
+msgid "Please complete all the required fields."
+msgstr ""
+
+#: categories.php:251
+msgid "Selected categories actions"
+msgstr ""
+
+#: categories.php:253 clients.php:203 groups.php:230 manage-files.php:493
+#: users.php:242
+msgid "Delete"
+msgstr "Видалити"
+
+#: categories.php:264
+msgid "categories"
+msgstr ""
+
+#: categories.php:274 clients.php:223 groups.php:250 manage-files.php:517
+#: users.php:261
+msgid "Your search keywords returned no results."
+msgstr "Ваші ключові слова для пошуку не дали результатів."
+
+#: categories.php:279
+msgid "There are no categories yet."
+msgstr ""
+
+#: categories.php:295 groups.php:279 header-menu.php:41 home.php:162
+#: options.php:339
+msgid "Files"
+msgstr "Файли"
+
+#: categories.php:297 clients.php:255 groups.php:282 manage-files.php:590
+#: upload-import-orphans.php:166 upload-process-form.php:302 users.php:283
+msgid "Actions"
+msgstr "Дії"
+
+#: categories.php:339 clients.php:359 groups.php:325 header-menu.php:52
+#: header-menu.php:171 manage-files.php:17
+msgid "Manage files"
+msgstr "Керувати файлами"
+
+#: categories.php:340 clients.php:362 groups.php:326 manage-files.php:826
+#: upload-import-orphans.php:182 users.php:325
+msgid "Edit"
+msgstr "Редагувати"
+
+#: clients-add.php:14 clients-form.php:64
+msgid "Add client"
+msgstr "Додати клієнта"
+
+#: clients-add.php:91
+msgid "Client added correctly."
+msgstr "Обліковий запис кліента додано коректно."
+
+#: clients-add.php:105 clients-edit.php:167 email-templates.php:74
+#: groups-add.php:88 groups-edit.php:137 options.php:136 register.php:147
+#: users-add.php:102 users-edit.php:170
+msgid "There was an error. Please try again."
+msgstr "Помилка. Спробуйте ще раз."
+
+#: clients-add.php:114
+msgid "An e-mail notification with login information was sent to your client."
+msgstr ""
+"Поштове повідомлення з інформацією для входу було відправлено вашому клієнту."
+
+#: clients-add.php:118 register.php:171 users-add.php:115
+msgid "E-mail notification couldn't be sent."
+msgstr "E-mail повідомлення не може бути відправлене."
+
+#: clients-edit.php:120
+msgid "Edit client"
+msgstr "Редагувати клієнта"
+
+#: clients-edit.php:122 users-edit.php:125
+msgid "My account"
+msgstr "мій обліковий запис"
+
+#: clients-edit.php:151
+msgid "Client edited correctly."
+msgstr "Обліковий запис змінено коректно"
+
+#: clients-edit.php:176 groups-edit.php:146 users-edit.php:179
+msgid "This page is not intended to be accessed directly."
+msgstr "Ця сторінка не призначена для безпосереднього доступу."
+
+#: clients-edit.php:178
+msgid "No client was selected."
+msgstr "Клієнти не були обрані."
+
+#: clients-edit.php:183
+msgid "There is no client with that ID number."
+msgstr "З таким  ID  клієнти відсутні."
+
+#: clients-edit.php:188 users-edit.php:191
+msgid "Your account type doesn't allow you to access this feature."
+msgstr "Ваш тип облікового запису не дозволяє отримати доступ до цієї функції."
+
+#: clients-form.php:59
+msgid "Will be visible on the client's file list"
+msgstr "Буде видимий в списку файлів клієнта"
+
+#: clients-form.php:73
+msgid "Save client"
+msgstr "Зберегти клієнта"
+
+#: clients-form.php:82
+msgid "Register account"
+msgstr "Зарееструвати обліковий запис"
+
+#: clients-form.php:88
+msgid "Your full name"
+msgstr "Ваше повне ім'я"
+
+#: clients-form.php:92 users-form.php:76
+msgid "Update account"
+msgstr "Оновити обліковий запис"
+
+#: clients-form.php:111 clients.php:244 install/index.php:250 users-form.php:93
+#: users.php:278
+msgid "Log in username"
+msgstr "Ім'я для входу"
+
+#: clients-form.php:113 users-form.php:95
+msgid "Must be alphanumeric"
+msgstr "Має бути буквено-цифровий"
+
+#: clients-form.php:118 includes/vars.php:49 index.php:210
+#: install/index.php:258 install/make-config.php:268 options.php:490
+#: users-form.php:100
+msgid "Password"
+msgstr "Пароль"
+
+#: clients-form.php:126 install/index.php:266 reset-password.php:340
+#: users-form.php:108
+msgid "Generate"
+msgstr ""
+
+#: clients-form.php:132 clients.php:245 index.php:205 reset-password.php:291
+#: users-form.php:114 users.php:279
+msgid "E-mail"
+msgstr "E-mail"
+
+#: clients-form.php:134 users-form.php:116
+msgid "Must be valid and unique"
+msgstr "Має бути вірним та унікальним"
+
+#: clients-form.php:139 clients.php:252
+msgid "Address"
+msgstr "Адреса"
+
+#: clients-form.php:146 clients.php:253
+msgid "Telephone"
+msgstr "Телефон"
+
+#: clients-form.php:156
+msgid "Internal contact name"
+msgstr "Ім'я внутрішнього контакту"
+
+#: clients-form.php:164
+msgid "Active (client can log in)"
+msgstr "Активний (client може зайти)"
+
+#: clients-form.php:174
+msgid "Notify new uploads by e-mail"
+msgstr "Повідомляти про нові завантаження поштовим повідомленням"
+
+#: clients-form.php:184
+msgid "Verification"
+msgstr ""
+
+#: clients-form.php:200 users-form.php:151
+msgid "This account information will be e-mailed to the address supplied above"
+msgstr ""
+"Ця інформація про обліковий запис буде відправлено за адресою вказаною вище"
+
+#: clients.php:18
+msgid "Clients Administration"
+msgstr "Управління клієнтами"
+
+#: clients.php:38
+msgid "Please select at least one client to proceed."
+msgstr "Будь ласка, виберіть хоча б одного клієнта щоб продовжити."
+
+#: clients.php:45
+msgid ""
+"clients and all of the assigned files. Are you sure you want to continue?"
+msgstr "клієнтів і всіх призначених файлів. Ви впевнені, що хочете продовжити?"
+
+#: clients.php:91
+msgid "The selected clients were marked as active."
+msgstr "Обрані клієнти були відмічені як активні."
+
+#: clients.php:105
+msgid "The selected clients were marked as inactive."
+msgstr "Обрані клієнти були відмічені як неактивні."
+
+#: clients.php:116
+msgid "The selected clients were deleted."
+msgstr "Обрані клієнти були видалені."
+
+#: clients.php:134
+msgid "Please select at least one client."
+msgstr "Будь ласка, виберіть хоча б одного клієнта."
+
+#: clients.php:184 manage-files.php:450 users.php:223
+msgid "All statuses"
+msgstr "Всі статуси"
+
+#: clients.php:185 clients.php:323 users.php:224 users.php:313
+msgid "Active"
+msgstr "Активний"
+
+#: clients.php:186 clients.php:322 users.php:225 users.php:312
+msgid "Inactive"
+msgstr "Неактивний"
+
+#: clients.php:199
+msgid "Selected clients actions"
+msgstr "Обрані дії клієнтів"
+
+#: clients.php:201 users.php:240
+msgid "Activate"
+msgstr "Активувати"
+
+#: clients.php:202 users.php:241
+msgid "Deactivate"
+msgstr "Деактивувати"
+
+#: clients.php:213
+msgid "clients"
+msgstr "кліенти"
+
+#: clients.php:231
+msgid "There are no clients at the moment"
+msgstr "На поточний момент клієнтів немає."
+
+#: clients.php:243 includes/classes/send-email.php:59 install/index.php:236
+#: users.php:277
+msgid "Full name"
+msgstr "Повне ім'я"
+
+#: clients.php:246
+msgid "Files: Own"
+msgstr "Файли: Власник"
+
+#: clients.php:247
+msgid "Files: Groups"
+msgstr "Файли: Групи"
+
+#: clients.php:248 manage-files.php:578 upload-process-form.php:296
+#: users.php:281
+msgid "Status"
+msgstr "Статус"
+
+#: clients.php:249
+msgid "Groups on"
+msgstr "Групи на"
+
+#: clients.php:250
+msgid "Notify"
+msgstr "Повідомити"
+
+#: clients.php:251 groups.php:281 users.php:282
+msgid "Added on"
+msgstr "Додано"
+
+#: clients.php:254
+msgid "Internal contact"
+msgstr "Внутрішній контакт"
+
+#: clients.php:332 download-information.php:125 manage-files.php:711
+msgid "Yes"
+msgstr "Так"
+
+#: clients.php:332 download-information.php:126 manage-files.php:711
+msgid "No"
+msgstr "ні"
+
+#: clients.php:360
+msgid "View groups"
+msgstr "Подивитися групи"
+
+#: clients.php:361
+msgid "View as client"
+msgstr "Подивитися як клієнт"
+
+#: download-information.php:17
+msgid "Download information"
+msgstr ""
+
+#: download-information.php:64
+msgid "No file was selected."
+msgstr ""
+
+#: download-information.php:69
+msgid "There is no information with that file ID number."
+msgstr ""
+
+#: download-information.php:78 manage-files.php:585
+msgid "Total downloads"
+msgstr "Загальне число завантажень"
+
+#: download-information.php:87
+msgid "Time"
+msgstr ""
+
+#: download-information.php:88 includes/vars.php:16
+msgid "Client"
+msgstr "Клієнт"
+
+#: download-information.php:89
+msgid "Anonymous"
+msgstr ""
+
+#: download-information.php:90
+msgid "Client's IP"
+msgstr ""
+
+#: download-information.php:91
+msgid "Client's hostname"
+msgstr ""
+
+#: download-information.php:98
+msgid "Unique logged in clients/users"
+msgstr ""
+
+#: download-information.php:99
+msgid "Total public downloads"
+msgstr ""
+
+#: download.php:11
+msgid "Download"
+msgstr "Скачати"
+
+#: download.php:120 reset-password.php:218
+msgid "The request is not valid."
+msgstr "Запит не є вірним"
+
+#: download.php:130
+msgid "The following file is now ready for you to download:"
+msgstr "Наступний файл готовий для завантаження:"
+
+#: download.php:132
+msgid "Download file"
+msgstr "Скачати файл"
+
+#: download.php:140 register.php:188 reset-password.php:361
+msgid "Go back to the homepage."
+msgstr "Повернутися на головну."
+
+#: edit-file.php:23 upload-process-form.php:355
+msgid "Edit file"
+msgstr "Редагувати файл"
+
+#: edit-file.php:118
+msgid ""
+"Please go to the clients or groups administration page, select \"Manage files"
+"\" from any client and then click on \"Edit\" on any file to return here."
+msgstr ""
+"Будь ласка, перейдіть на сторінку клієнтів або адміністрування груп, "
+"виберіть \"Управління файлами\" з будь-якого клієнта, а потім натисніть на "
+"кнопку \"Редагувати\" на будь-якому файлі, щоб повернутися сюди."
+
+#: edit-file.php:121
+msgid "There is not file with that ID number."
+msgstr "З таким ID файли відсутні."
+
+#: edit-file.php:124
+msgid "You don't have permission to edit this file."
+msgstr "У вас нема дозволу на редагування цього файлу."
+
+#: edit-file.php:308
+msgid "The file has been edited succesfuly."
+msgstr "Файл відредаговано успішно."
+
+#: edit-file.php:371 upload-process-form.php:475
+msgid "File information"
+msgstr "Інформація файлу"
+
+#: edit-file.php:374 manage-files.php:555 upload-process-form.php:290
+#: upload-process-form.php:480
+msgid "Title"
+msgstr "Заголовок"
+
+#: edit-file.php:375 upload-process-form.php:481
+msgid "Enter here the required file title."
+msgstr "Введіть необхідне ім'я файлу."
+
+#: edit-file.php:380 upload-process-form.php:486
+msgid "Optionally, enter here a description for the file."
+msgstr "Опціонально, введіть опис для файлу."
+
+#: edit-file.php:401 upload-process-form.php:505
+msgid "Expiration date"
+msgstr "Дата закінчення"
+
+#: edit-file.php:404 upload-process-form.php:508
+msgid "Select a date"
+msgstr "Обрати дату"
+
+#: edit-file.php:415 upload-process-form.php:519
+msgid "File expires"
+msgstr "час життя файлу спливає"
+
+#: edit-file.php:421 upload-process-form.php:525
+msgid "Public downloading"
+msgstr "Загальнодоступне завантаження"
+
+#: edit-file.php:424 upload-process-form.php:528
+msgid "Allow public downloading of this file."
+msgstr "Дозволити публічне завантаження цього файлу."
+
+#: edit-file.php:438 upload-process-form.php:297 upload-process-form.php:542
+msgid "Assignations"
+msgstr "Призначення"
+
+#: edit-file.php:439 upload-process-form.php:543
+msgid "Assign this file to"
+msgstr "Призначити цей файл до "
+
+#: edit-file.php:440 edit-file.php:497 groups-form.php:54
+#: upload-process-form.php:544 upload-process-form.php:593
+msgid "Select one or more options. Type to search."
+msgstr "Оберіть одну чи більше опцій. Введіть для пошуку."
+
+#: edit-file.php:441 header-menu.php:73 home.php:163 options.php:185
+#: upload-process-form.php:545
+msgid "Clients"
+msgstr "Клієнти"
+
+#: edit-file.php:456 home.php:164 upload-process-form.php:558
+msgid "Groups"
+msgstr "Групи"
+
+#: edit-file.php:473 edit-file.php:507 groups-form.php:75
+#: upload-process-form.php:573 upload-process-form.php:603
+msgid "Add all"
+msgstr "Додати все"
+
+#: edit-file.php:474 edit-file.php:508 groups-form.php:76
+#: upload-process-form.php:574 upload-process-form.php:604
+msgid "Remove all"
+msgstr "Видалити все"
+
+#: edit-file.php:481
+msgid ""
+"Mark as hidden (will not send notifications) for new assigned clients and "
+"groups."
+msgstr ""
+"Відмітити як прихований (не буде відправляти повідомлення) для "
+"новопризначених клієнтів та груп."
+
+#: edit-file.php:486
+msgid "Hide from every already assigned clients and groups."
+msgstr "Приховати від вже призначених клієнтів та груп."
+
+#: edit-file.php:495 header-menu.php:63 upload-process-form.php:591
+msgid "Categories"
+msgstr ""
+
+#: edit-file.php:496 upload-process-form.php:592
+msgid "Add to"
+msgstr ""
+
+#: edit-file.php:525 upload-import-orphans.php:204 upload-process-form.php:639
+msgid "Continue"
+msgstr "Продовжити"
+
+#: edit-file.php:537 groups-form.php:89 upload-process-form.php:689
+msgid "No results where found."
+msgstr "Не знайдено жодних результатів."
+
+#: email-preview.php:11 email-templates.php:12 header-menu.php:144
+msgid "E-mail templates"
+msgstr "Шаблони E-mail "
+
+#: email-preview.php:11
+msgid "Preview"
+msgstr ""
+
+#: email-templates.php:70 options.php:132
+msgid "Options updated succesfuly."
+msgstr "Опціїї успішно оновлено."
+
+#: email-templates.php:83
+msgid "(to be used as href on a link tag)"
+msgstr "(to be used as href on a link tag)"
+
+#: email-templates.php:88
+msgid "New file by user"
+msgstr "Новий файл від користувача"
+
+#: email-templates.php:91
+msgid ""
+"This email will be sent to a client whenever a new file has been assigned to "
+"his account."
+msgstr ""
+"Цей  email буде відправлено клієнту, коли новий файл був призначений до його "
+"облікового запису."
+
+#: email-templates.php:95 email-templates.php:108
+msgid "Shows the list of files"
+msgstr "Показати список файлів"
+
+#: email-templates.php:96 email-templates.php:109 email-templates.php:123
+#: email-templates.php:137 email-templates.php:151
+msgid "The login link"
+msgstr "Посилання для входу"
+
+#: email-templates.php:101
+msgid "New file by client"
+msgstr "Новий файл від клієнта"
+
+#: email-templates.php:104
+msgid ""
+"This email will be sent to the system administrator whenever a client "
+"uploads a new file."
+msgstr ""
+"Цей лист буде відправлено адміністратору коли клієнт завантажить новий файл."
+
+#: email-templates.php:114
+msgid "New client (welcome)"
+msgstr "Новий клієнт (вітання)"
+
+#: email-templates.php:117
+msgid ""
+"This email will be sent to the new client after an administrator has created "
+"his new account. It would be best to include the log in details (username "
+"and password)."
+msgstr ""
+"Цей лист буде відправлено новому клієнту після того як адміністратор створив "
+"його новий обліковий запис. Краще увімкнути докладний журнал (ім'я "
+"користувача і пароль)."
+
+#: email-templates.php:121 email-templates.php:136 email-templates.php:149
+msgid "The new username for this account"
+msgstr "Нове ім'я для цього облікового запису"
+
+#: email-templates.php:122 email-templates.php:150
+msgid "The new password for this account"
+msgstr "Новий пароль для цього облікового запису"
+
+#: email-templates.php:128
+msgid "New client (self-registered)"
+msgstr "Новий клієнт (авто-реестрація)"
+
+#: email-templates.php:131
+msgid ""
+"This email will be sent to the system administrator after a new client has "
+"created a new account for himself."
+msgstr ""
+"Цей лист буде відправлено системному адміністратору після того як він "
+"створив його новий обліковий запис для себе."
+
+#: email-templates.php:135
+msgid "The full name the client registered with"
+msgstr "Повне ім'я клієнту  зареєстрованого з"
+
+#: email-templates.php:142
+msgid "New user (welcome)"
+msgstr "Новий користувач (вітання)"
+
+#: email-templates.php:145
+msgid ""
+"This email will be sent to the new system user after an administrator has "
+"created his new account. It would be best to include the log in details "
+"(username and password)."
+msgstr ""
+"Цей лист буде відправлено новому системному коритсувачу після того як "
+"адміністратор створив його новий обліковий запис. Краще увімкнути докладний "
+"журнал (ім'я користувача і пароль)."
+
+#: email-templates.php:156
+msgid "Password reset"
+msgstr "Зкинути пароль"
+
+#: email-templates.php:159
+msgid ""
+"This email will be sent to a user or client when they try to reset their "
+"password."
+msgstr ""
+"Цей email буде відправлено користувачу або клієнту коли вони спробують "
+"зкинути пароль."
+
+#: email-templates.php:163
+msgid "The username for this account"
+msgstr "Ім'я коритсувача для цього облікового запису"
+
+#: email-templates.php:164
+msgid "The text string unique to this request. Must be included somewhere."
+msgstr ""
+"Текстовий рядок є унікальним для даного запиту. Повинен бути включений де-"
+"небудь."
+
+#: email-templates.php:165
+msgid "The link to continue the process"
+msgstr "Посилання для продовження процесу"
+
+#: email-templates.php:173 email-templates.php:197
+msgid "Header / Footer"
+msgstr "Верхній / нижній колонтитули"
+
+#: email-templates.php:198
+msgid ""
+"Here you set up the header and footer of every email, or use the default "
+"ones available with the system. Use this to customize each part and include, "
+"for example, your own logo and markup."
+msgstr ""
+"Тут ви можете налаштувати верхній і нижній колонтитули кожного повідомлення, "
+"або використовувати ті що є за замовчуванням в системі. Використовуйте це, "
+"щоб налаштувати кожну частину і включити, наприклад, свій власний логотип і "
+"розмітку."
+
+#: email-templates.php:199
+msgid ""
+"Do not forget to also include -and close accordingly- the basic structural "
+"HTML tags (DOCTYPE, HTML, HEADER, BODY)."
+msgstr ""
+
+#: email-templates.php:206
+msgid "Use custom header / footer"
+msgstr "Викоритсовувати свій верхній / нижній колонтитул"
+
+#: email-templates.php:212
+msgid "Header"
+msgstr "Верхній колонтитул"
+
+#: email-templates.php:214 email-templates.php:220 email-templates.php:252
+msgid "You can use HTML tags here."
+msgstr "Ви можете використовувати HTML-теги тут."
+
+#: email-templates.php:218
+msgid "Footer"
+msgstr "Нижній колонтитул"
+
+#: email-templates.php:244
+msgid "Use custom template"
+msgstr "Використати свій шаблон"
+
+#: email-templates.php:250
+msgid "Template text"
+msgstr "Шаблон тексту"
+
+#: email-templates.php:255
+msgid "The following tags can be used on this e-mails' body."
+msgstr "Наступні теги можуть бути використані в тілі електронного листа."
+
+#: email-templates.php:274
+msgid "Preview this template"
+msgstr ""
+
+#: email-templates.php:276
+msgid ""
+"Before trying this function, please save your changes to see them reflected "
+"on the preview."
+msgstr ""
+
+#: email-templates.php:292 options.php:770
+msgid "Update all options"
+msgstr "Оновити усі опції"
+
+#: groups-add.php:18
+msgid "Add clients group"
+msgstr "Додати групу клієнтів"
+
+#: groups-add.php:74
+msgid "Group added correctly."
+msgstr "Групу додано коректно."
+
+#: groups-edit.php:18
+msgid "Edit group"
+msgstr "Редагувати групу"
+
+#: groups-edit.php:123
+msgid "Group edited correctly."
+msgstr "Групу модифіковано коректно."
+
+#: groups-edit.php:148
+msgid "No group was selected."
+msgstr "Групи не були обрані."
+
+#: groups-edit.php:153
+msgid "There is no group with that ID number."
+msgstr "З таким ID групи відсутні."
+
+#: groups-form.php:26
+msgid "Create group"
+msgstr "Створити групу"
+
+#: groups-form.php:30
+msgid "Save group"
+msgstr "Зберегти групу"
+
+#: groups-form.php:38 groups.php:276
+msgid "Group name"
+msgstr "Ім'я групи"
+
+#: groups-form.php:52 groups.php:278
+msgid "Members"
+msgstr "Члени"
+
+#: groups.php:18
+msgid "Groups administration"
+msgstr "Керування групами"
+
+#: groups.php:33
+msgid "Groups where"
+msgstr "Групи де"
+
+#: groups.php:33
+msgid "is member"
+msgstr "є членом"
+
+#: groups.php:68
+msgid "Please select at least one group to proceed."
+msgstr "Будь ласка, виберіть хоча б одну групу, щоб продовжити."
+
+#: groups.php:73
+msgid "groups. Are you sure you want to continue?"
+msgstr "групи. Ви впевнені, що хочете продовжити?"
+
+#: groups.php:130
+msgid "The selected groups were deleted."
+msgstr "Обрані групи були видалені."
+
+#: groups.php:137
+msgid "Please select at least one group."
+msgstr "Будь ласка, виберіть хоча б одну групу."
+
+#: groups.php:227
+msgid "Selected groups actions"
+msgstr "Обрані дії груп"
+
+#: groups.php:240
+msgid "groups"
+msgstr "групи"
+
+#: groups.php:256
+msgid "The client does not exist."
+msgstr "Клієнт не існує."
+
+#: groups.php:259
+msgid "There are no groups where this client is member."
+msgstr "Не існує груп членом яких є клієнт."
+
+#: groups.php:264
+msgid "There are no groups created yet."
+msgstr "Не створено жодних груп."
+
+#: groups.php:280
+msgid "Created by"
+msgstr "Створено"
+
+#: header-menu.php:32
+msgid "Dashboard"
+msgstr "Панель приладів"
+
+#: header-menu.php:56 upload-import-orphans.php:22
+msgid "Find orphan files"
+msgstr "Знайти файли без власників"
+
+#: header-menu.php:78 header-menu.php:96 header-menu.php:115
+msgid "Add new"
+msgstr "Додати новий"
+
+#: header-menu.php:82
+msgid "Manage clients"
+msgstr "Керувати клієнтами"
+
+#: header-menu.php:92
+msgid "Clients groups"
+msgstr "Группи клієнтів"
+
+#: header-menu.php:100
+msgid "Manage groups"
+msgstr "Керувати групами"
+
+#: header-menu.php:110
+msgid "System Users"
+msgstr "Системні користувачі"
+
+#: header-menu.php:119
+msgid "Manage system users"
+msgstr "Керувати системними користувачами"
+
+#: header-menu.php:129
+msgid "Options"
+msgstr "Опції"
+
+#: header-menu.php:133
+msgid "General options"
+msgstr "Загальні налаштування"
+
+#: header-menu.php:180 upload-process-form.php:362
+msgid "View my files"
+msgstr "Подивитися мої файли"
+
+#: header-unlogged.php:21
+msgid "setup"
+msgstr "встановлення"
+
+#: header.php:22
+msgid "System Administration"
+msgstr "Управління Системою"
+
+#: header.php:74
+msgid "Welcome"
+msgstr "Вітаємо"
+
+#: header.php:84
+msgid "My Account"
+msgstr "Мій обліковий запис"
+
+#: header.php:85
+msgid "Logout"
+msgstr "Вийти"
+
+#: header.php:123
+msgid "Menu"
+msgstr ""
+
+#: home-log.php:65
+msgid "There are no results"
+msgstr "Немає результатів"
+
+#: home-news-widget.php:8
+msgid "ProjectSend news"
+msgstr "Новини ProjectSend "
+
+#: home-statistics.php:178 home.php:47
+msgid "Uploads by users"
+msgstr "Завантаження по користувачам"
+
+#: home-statistics.php:182 home.php:48
+msgid "Uploads by clients"
+msgstr "Завантаження по клієнтам"
+
+#: home-statistics.php:186 home.php:49 home.php:83
+msgid "Downloads"
+msgstr "Завантаження"
+
+#: home-statistics.php:190 home.php:50
+msgid "Zip Downloads"
+msgstr "Zip завантаження"
+
+#: home-statistics.php:194
+msgid "Public downloads"
+msgstr ""
+
+#: home.php:14 includes/classes/send-email.php:44
+#: includes/classes/send-email.php:74
+msgid "Welcome to ProjectSend"
+msgstr "Вітаємо в ProjectSend"
+
+#: home.php:39
+msgid "Statistics"
+msgstr "Статистика"
+
+#: home.php:42 home.php:43 home.php:44
+msgid "days"
+msgstr "дні"
+
+#: home.php:51
+msgid "Public Downloads"
+msgstr ""
+
+#: home.php:65
+msgid "System data"
+msgstr "Системна дата"
+
+#: home.php:67
+msgid "Note:"
+msgstr "Замітка:"
+
+#: home.php:67
+msgid ""
+"This graphic will help you get a relative view of the existing data, "
+"allowing you to see the relation between clients, users, groups and files."
+msgstr ""
+"Цей графік допоможе вам отримати відносне уявлення про існуючі дані, що "
+"дозволяє побачити зв'язок між клієнтами, користувачами, групами і файлами."
+
+#: home.php:78
+msgid "Recent activites"
+msgstr "Нещодавні дії"
+
+#: home.php:82
+msgid "Logins"
+msgstr "Логіни"
+
+#: home.php:87
+msgid "Clients self-registrations"
+msgstr "Авто-реєстрація клієнтів"
+
+#: home.php:95
+msgid "View all"
+msgstr "Дивитися все"
+
+#: home.php:165
+msgid "Users"
+msgstr "Користувачі"
+
+#: home.php:185
+msgid "Please wait while the system generates the statistics graph."
+msgstr "Будь ласка, зачекайте доки система згенерує графік статистики."
+
+#: home.php:209
+msgid "Please wait while the system gets the information from the log."
+msgstr "Будь-ласка, зачекайте поки система збере інформацію з логів."
+
+#: includes/classes/actions-log.php:11
+msgid "ProjecSend has been installed"
+msgstr "ProjecSend встановлено"
+
+#: includes/classes/actions-log.php:12
+msgid "Account logs in through the form"
+msgstr "Обліковий запис входить за допомогою форми"
+
+#: includes/classes/actions-log.php:13
+msgid "Account logs in through cookies"
+msgstr "Обліковий запис входить за допомогою cookies"
+
+#: includes/classes/actions-log.php:14
+msgid "Account (user or client) logs out"
+msgstr "Обліковий запис (user or client) виходить"
+
+#: includes/classes/actions-log.php:15
+msgid "A user creates a new user account"
+msgstr "Користувач створює новий обліковий запис користувача"
+
+#: includes/classes/actions-log.php:16
+msgid "A user creates a new client account"
+msgstr "Користувач створює новий клієнтскій обліковий запис"
+
+#: includes/classes/actions-log.php:17
+msgid "A client registers an account for himself"
+msgstr "Клієнт зареестрував обліковий запис для себе"
+
+#: includes/classes/actions-log.php:18
+msgid "A file is uploaded by an user"
+msgstr "Файл буде завантажений користувачем"
+
+#: includes/classes/actions-log.php:19
+msgid "A file is uploaded by a client"
+msgstr "Файл буде завантажений клієнтом"
+
+#: includes/classes/actions-log.php:20
+msgid "A file is downloaded by a user (on \"Client view\" mode)"
+msgstr "Файл скачано користувачем (в режимі \"Client view\")"
+
+#: includes/classes/actions-log.php:21
+msgid "A file is downloaded by a client"
+msgstr "Файл завантажено кліентом"
+
+#: includes/classes/actions-log.php:22
+msgid "A zip file was generated by a client"
+msgstr "Клієнтом було згенеровано архів ZIP"
+
+#: includes/classes/actions-log.php:23
+msgid "A file has been unassigned from a client."
+msgstr "Файл від кліента не призначено"
+
+#: includes/classes/actions-log.php:24
+msgid "A file has been unassigned from a group"
+msgstr "Файл було не призначено від группи"
+
+#: includes/classes/actions-log.php:25
+msgid "A file has been deleted"
+msgstr "Файл було видалено"
+
+#: includes/classes/actions-log.php:26
+msgid "A user was edited"
+msgstr "Користувача було модифіковано"
+
+#: includes/classes/actions-log.php:27
+msgid "A client was edited"
+msgstr "Клієнт був модифікований"
+
+#: includes/classes/actions-log.php:28
+msgid "A group was edited"
+msgstr "Група була модифікована"
+
+#: includes/classes/actions-log.php:29
+msgid "A user was deleted"
+msgstr "Користувача було видалено"
+
+#: includes/classes/actions-log.php:30
+msgid "A client was deleted"
+msgstr "Клієнта було видалено"
+
+#: includes/classes/actions-log.php:31
+msgid "A group was deleted"
+msgstr "Група була видалена"
+
+#: includes/classes/actions-log.php:32
+msgid "A client account was activated"
+msgstr "Обліковий запис кліента активовано"
+
+#: includes/classes/actions-log.php:33
+msgid "A client account was deactivated"
+msgstr "Обліковий запис кліента деактивовано"
+
+#: includes/classes/actions-log.php:34
+msgid "A user account was activated"
+msgstr "Обліковий запис користувача активовано"
+
+#: includes/classes/actions-log.php:35
+msgid "A user account was deactivated"
+msgstr "Обліковий запис користувача деактивовано"
+
+#: includes/classes/actions-log.php:36
+msgid "A file was marked as hidden"
+msgstr "Файл помічено як прихований"
+
+#: includes/classes/actions-log.php:37
+msgid "A file was marked as visible"
+msgstr "Файл відмічено як видимий"
+
+#: includes/classes/actions-log.php:38
+msgid "A user creates a new group"
+msgstr "Користувач створює нову групу"
+
+#: includes/classes/actions-log.php:39
+msgid "A file is assigned to a client"
+msgstr "Файл призначено клієнту"
+
+#: includes/classes/actions-log.php:40
+msgid "A file is assigned to a group"
+msgstr "Файл призначено группі"
+
+#: includes/classes/actions-log.php:41
+msgid "A user account was marked as active"
+msgstr "Обліковий запис користувача помічено як активний"
+
+#: includes/classes/actions-log.php:42
+msgid "A user account was marked as inactive"
+msgstr "Обліковий запис користувача помічено як неактивний"
+
+#: includes/classes/actions-log.php:43
+msgid "The logo on \"Branding\" was changed"
+msgstr "Лого на \"Брендингу\" змінено"
+
+#: includes/classes/actions-log.php:44
+msgid "ProjectSend was updated"
+msgstr "ProjectSend оновлено"
+
+#: includes/classes/actions-log.php:45
+msgid "A system user edited a file."
+msgstr "Системний користувач відредагував файл"
+
+#: includes/classes/actions-log.php:46
+msgid "A client edited a file."
+msgstr "Клієнт відредактував файл"
+
+#: includes/classes/actions-log.php:47
+msgid "A client created a category."
+msgstr ""
+
+#: includes/classes/actions-log.php:48
+msgid "A client edited a category."
+msgstr ""
+
+#: includes/classes/actions-log.php:49
+msgid "A client deleted a category."
+msgstr ""
+
+#: includes/classes/actions-log.php:50
+msgid "An anonymous user downloaded a public file."
+msgstr ""
+
+#: includes/classes/form-validation.php:15
+msgid "The following errors were found"
+msgstr "Знайдено наступні помилки"
+
+#: includes/classes/send-email.php:26
+msgid "New files uploaded for you"
+msgstr "Для вас завантажено нові файли"
+
+#: includes/classes/send-email.php:27
+msgid "The following files are now available for you to download."
+msgstr "Наступні файли готові для завантаження."
+
+#: includes/classes/send-email.php:28
+msgid ""
+"If you prefer not to be notified about new files, please go to My Account "
+"and deactivate the notifications checkbox."
+msgstr ""
+"Якщо ви не хочете отримувати повідомлення про нові файли, перейдіть в Мій "
+"обліковий запис і деактивуйте прапорець повідомлень."
+
+#: includes/classes/send-email.php:29
+msgid "You can access a list of all your files or upload your own"
+msgstr ""
+"Ви можете отримати доступ до списку всіх ваших файлів або завантажити свій "
+"власний"
+
+#: includes/classes/send-email.php:30 includes/classes/send-email.php:38
+msgid "by logging in here"
+msgstr "війшовши тут"
+
+#: includes/classes/send-email.php:35
+msgid "New files uploaded by clients"
+msgstr "Нові файли завантажено клієнтами"
+
+#: includes/classes/send-email.php:36
+msgid "New files has been uploaded by the following clients"
+msgstr "Нові файли було завантажено наступними клієнтами"
+
+#: includes/classes/send-email.php:37
+msgid "You can manage these files"
+msgstr "Ви можете управляти цими файлами"
+
+#: includes/classes/send-email.php:45
+msgid ""
+"A new account was created for you. From now on, you can access the files "
+"that have been uploaded under your account using the following credentials:"
+msgstr ""
+"Для Вас було створено новий обліковий запис. Відтепер, ви можете отримати "
+"доступ до файлів, які були завантажені в свій аккаунт, використовуючи такі "
+"облікові дані:"
+
+#: includes/classes/send-email.php:46
+msgid "You can log in following this link"
+msgstr "Ви можете увійти за цим посиланням"
+
+#: includes/classes/send-email.php:47
+msgid "Please contact the administrator if you need further assistance."
+msgstr ""
+"Будь ласка, зв'яжіться з адміністратором, якщо вам потрібна подальша "
+"допомога."
+
+#: includes/classes/send-email.php:48 includes/classes/send-email.php:78
+msgid "Your username"
+msgstr "Ваше ім'я користувача"
+
+#: includes/classes/send-email.php:49 includes/classes/send-email.php:79
+msgid "Your password"
+msgstr "Ваш пароль"
+
+#: includes/classes/send-email.php:57
+msgid "A new client has registered."
+msgstr "Зареєстровано нового клієнта"
+
+#: includes/classes/send-email.php:58
+msgid ""
+"A new account was created using the self registration form on your site. "
+"Registration information:"
+msgstr ""
+"Новий обліковий запис було створено за допомогою реєстраційної форми на "
+"сайті. Реєстраційна інформація:"
+
+#: includes/classes/send-email.php:60 includes/classes/send-email.php:90
+#: includes/vars.php:48 index.php:205 install/make-config.php:258
+#: options.php:483
+msgid "Username"
+msgstr "Ім'я"
+
+#: includes/classes/send-email.php:63
+msgid "Please log in to activate it."
+msgstr "Будь-ласка ввійдіть для її активації."
+
+#: includes/classes/send-email.php:64
+msgid ""
+"Remember, your new client will not be able to log in until an administrator "
+"has approved their account."
+msgstr ""
+"Пам'ятайте, ваш новий клієнт не зможе увійти, поки адміністратор не "
+"затвердить їх обліковий запис."
+
+#: includes/classes/send-email.php:67
+msgid "Auto-approvals of new accounts are currently enabled."
+msgstr "Авто підтвердження нових облікових записів зараз активовано."
+
+#: includes/classes/send-email.php:68
+msgid "You can log in to manually deactivate it."
+msgstr "Ви можете увійти щоб вручну відключити її."
+
+#: includes/classes/send-email.php:75
+msgid ""
+"A new account was created for you. From now on, you can access the system "
+"administrator using the following credentials:"
+msgstr ""
+"Для Вас було створено новий обліковий запис. Відтепер, ви можете отримати "
+"доступ системного адміністратора, використовуючи такі облікові дані:"
+
+#: includes/classes/send-email.php:76
+msgid "Access the system panel here"
+msgstr "Натисніть для доступу до системної панелі тут"
+
+#: includes/classes/send-email.php:77
+msgid "Thank you for using ProjectSend."
+msgstr "Дякуємо за користування ProjectSend."
+
+#: includes/classes/send-email.php:85
+msgid "Password reset instructions"
+msgstr "Інструкції по зкиданню паролю"
+
+#: includes/classes/send-email.php:86
+msgid ""
+"A request has been received to reset the password for the following account:"
+msgstr "Отримано запит на оновлення паролю для наступного облікового запису"
+
+#: includes/classes/send-email.php:87
+msgid "To continue, please visit the following link"
+msgstr "Для завершення перейдіть за посиланням"
+
+#: includes/classes/send-email.php:88
+msgid "The request is valid only for 24 hours."
+msgstr "Запит є дійсним лише протягом 24 годин."
+
+#: includes/classes/send-email.php:89
+msgid "If you did not make this request, simply ignore this email."
+msgstr "Якщо ви не робили цей запит просто проігноруйте цього листа."
+
+#: includes/classes/send-email.php:430
+msgid ""
+"This email contains HTML formatting and cannot be displayed right now. "
+"Please use an HTML compatible reader."
+msgstr ""
+"Цей лист містить HTML форматування і не можуть бути відображений зараз. Будь "
+"ласка, використовуйте сумісний HTML переглядач."
+
+#: includes/functions.php:41
+msgid "An unexpected error has occurred"
+msgstr ""
+
+#: includes/functions.php:42
+msgid "Could not generate a random password"
+msgstr ""
+
+#: includes/functions.php:472
+msgid "Provided by"
+msgstr "Надано"
+
+#: includes/functions.php:472 includes/updates.messages.php:51
+msgid "version"
+msgstr "версія"
+
+#: includes/functions.php:472
+msgid "Free software"
+msgstr "Безкоштовне ПЗ"
+
+#: includes/functions.php:487
+msgid "Important:"
+msgstr ""
+
+#: includes/functions.php:487
+msgid ""
+"There are no clients or groups at the moment. You can still upload files and "
+"assign them later."
+msgstr ""
+
+#: includes/functions.php:896
+msgid "The password must contain, at least:"
+msgstr "Пароль має складатися щонайменше з:"
+
+#: includes/functions.php:946
+msgid "ProjectSend was installed"
+msgstr "ProjectSend встановлено"
+
+#: includes/functions.php:951 includes/functions.php:1096
+msgid "logged in to the system."
+msgstr "увійшов в систему."
+
+#: includes/functions.php:956
+msgid "created the user account"
+msgstr "створив обліковий запис користувача"
+
+#: includes/functions.php:962
+msgid "created the client account "
+msgstr "створив клієнтский обліковий запис"
+
+#: includes/functions.php:968
+msgid "created a client account for themself."
+msgstr "створив обліковий запис клієнта для себе."
+
+#: includes/functions.php:973
+msgid "(user) uploaded the file"
+msgstr "(user) завантажив файл"
+
+#: includes/functions.php:979
+msgid "(client) uploaded the file"
+msgstr "(client) завантажив файл"
+
+#: includes/functions.php:985
+msgid "(user) downloaded the file"
+msgstr "(user) завантажив файл на диск"
+
+#: includes/functions.php:987
+msgid "assigned to:"
+msgstr "призначено:"
+
+#: includes/functions.php:993
+msgid "(client) downloaded the file"
+msgstr "(client) завантажив файл"
+
+#: includes/functions.php:999
+msgid "generated a zip file"
+msgstr "сгенерував zip файл"
+
+#: includes/functions.php:1004 includes/functions.php:1012
+msgid "unassigned the file"
+msgstr "непризначений файл"
+
+#: includes/functions.php:1006
+msgid "from the client:"
+msgstr "від клієнта:"
+
+#: includes/functions.php:1014
+msgid "from the group:"
+msgstr "від групи:"
+
+#: includes/functions.php:1020
+msgid "deleted the file"
+msgstr "видалив файл"
+
+#: includes/functions.php:1026
+msgid "edited the user"
+msgstr "відредагував користувача"
+
+#: includes/functions.php:1032
+msgid "edited the client"
+msgstr "відредагував клієнта"
+
+#: includes/functions.php:1038
+msgid "edited the group"
+msgstr "відредагував групу"
+
+#: includes/functions.php:1044
+msgid "deleted the user"
+msgstr "видалив користувача"
+
+#: includes/functions.php:1050
+msgid "deleted the client"
+msgstr "видалив клієнта"
+
+#: includes/functions.php:1056
+msgid "deleted the group"
+msgstr "видалив групу"
+
+#: includes/functions.php:1062
+msgid "activated the client"
+msgstr "активував клієнта"
+
+#: includes/functions.php:1068
+msgid "deactivated the client"
+msgstr "деактивував клієнта"
+
+#: includes/functions.php:1074
+msgid "marked as hidden the file"
+msgstr "позначив як прихований файл"
+
+#: includes/functions.php:1076 includes/functions.php:1084
+msgid "to:"
+msgstr "кому:"
+
+#: includes/functions.php:1082
+msgid "marked as visible the file"
+msgstr "позначив як видимий файл"
+
+#: includes/functions.php:1090
+msgid "created the group"
+msgstr "створив групу"
+
+#: includes/functions.php:1101 includes/functions.php:1109
+msgid "assigned the file"
+msgstr "призначив файл"
+
+#: includes/functions.php:1103
+msgid "to the client:"
+msgstr "клієнту:"
+
+#: includes/functions.php:1111
+msgid "to the group:"
+msgstr "групі:"
+
+#: includes/functions.php:1117
+msgid "activated the user"
+msgstr "активував користувача"
+
+#: includes/functions.php:1123
+msgid "deactivated the user"
+msgstr "деактивував користувача"
+
+#: includes/functions.php:1129
+msgid "uploaded a new logo on \"Branding\""
+msgstr "оновлено нове лого в \"Брендингу\""
+
+#: includes/functions.php:1134
+msgid "updated ProjectSend to version"
+msgstr "оновлено ProjectSend  до версії"
+
+#: includes/functions.php:1140
+msgid "logged out of the system."
+msgstr "вийшов з системи."
+
+#: includes/functions.php:1145
+msgid "(user) edited the file"
+msgstr "(user) вніс зміни у файл"
+
+#: includes/functions.php:1151
+msgid "(client) edited the file"
+msgstr "(client) вніс зміни у файл"
+
+#: includes/functions.php:1157
+msgid "created the category"
+msgstr ""
+
+#: includes/functions.php:1163
+msgid "edited the category"
+msgstr ""
+
+#: includes/functions.php:1169
+msgid "deleted the category"
+msgstr ""
+
+#: includes/functions.php:1174
+msgid "An anonymous user"
+msgstr ""
+
+#: includes/functions.php:1175
+msgid "downloaded the file"
+msgstr ""
+
+#: includes/updates.functions.php:55
+msgid ""
+"If images thumbnails aren't showing on your client's files lists (even your "
+"company logo there and on the branding page) please chmod the includes/"
+"timthumb/cache folder to 777 and then do the same with the 'index.html' and "
+"'timthumb_cacheLastCleanTime.touch' files inside that folder. Then try "
+"lowering each file to 644 and see if everything is still working."
+msgstr ""
+"Якщо мініатюри не відображаються у списках файлів вашого клієнта (навіть ваш "
+"логотип компанії там і на сторінці брендингу), будь ласка, змініть CHMOD на "
+"папки includes/timthumb/cache на 777, а потім зробіть те ж саме з 'index."
+"html' і  'timthumb_cacheLastCleanTime.touch' всередині цієї папки. Тоді "
+"спробуйте зменшити права на кожен файл до 644 і подивитися, чи все ще працює."
+
+#: includes/updates.functions.php:83
+msgid ""
+"The chmod values of the emails folder and the html templates inside couldn't "
+"be set. If ProjectSend isn't sending notifications emails, please set them "
+"manually to 777."
+msgstr ""
+"Значення CHMOD на папки листів і шаблони HTML всередині не можуть бути "
+"встановлені. Якщо ProjectSend не відправляє повідомлення електронної пошти, "
+"будь ласка, встановіть їх вручну на 777."
+
+#: includes/updates.functions.php:116
+msgid ""
+"A safe chmod value couldn't be set for one or more system files. Please make "
+"sure that at least includes/sys.config.php has a chmod of 644 for security "
+"reasons."
+msgstr ""
+"Безпечне значення CHMOD не може бути встановлено на одному або декількох "
+"системних файлах. Будь ласка, переконайтеся, що файл sys.config.php має "
+"CHMOD 644 з міркувань безпеки."
+
+#: includes/updates.functions.php:204
+msgid ""
+"This version changes the way files-to-clients relationships are stored on "
+"the database making it possible to assign a file to multiple clients. "
+"However some files did not update successfully. The following files may need "
+"to be reassigned to their clients by using the \"Find orphan files\" tool:"
+msgstr ""
+
+#: includes/updates.messages.php:16
+msgid "System Notice:"
+msgstr "Системне повідомлення:"
+
+#: includes/updates.messages.php:16
+msgid "The database was updated to support this version of the software."
+msgstr ""
+"База даних була оновлена для підтримки цієї версії програмного забезпечення."
+
+#: includes/updates.messages.php:22
+msgid "Do you want to support ProjectSend?"
+msgstr "Ви хочете підтримати  ProjectSend?"
+
+#: includes/updates.messages.php:23
+msgid ""
+"Please remember that this tool is free software. If you find the system "
+"useful"
+msgstr ""
+"Будь ласка, пам'ятайте, що цей інструмент є вільним програмним "
+"забезпеченням. Якщо ви виявите систему корисною"
+
+#: includes/updates.messages.php:24
+msgid "please consider making a donation to support further development."
+msgstr ""
+"будь ласка, розгляньте питання про внесення пожертвувань для підтримки "
+"подальшого розвитку."
+
+#: includes/updates.messages.php:25
+msgid "Thank you!"
+msgstr "Дякуємо!"
+
+#: includes/updates.messages.php:51
+msgid "Update available!"
+msgstr "Доступне оновлення!"
+
+#: includes/updates.messages.php:51
+msgid "has been released."
+msgstr "був випущений."
+
+#: includes/userlevel_check.php:165
+msgid "Access denied"
+msgstr "Доступ заборонено"
+
+#: includes/userlevel_check.php:168
+msgid ""
+"Your account type doesn't allow you to view this page. Please contact a "
+"system administrator if you need to access this function."
+msgstr ""
+"Ваш тип облікового запису не має дозволу на перегляд цієї сторінки. Будь "
+"ласка, зв'яжіться з системним адміністратором, якщо вам потрібно "
+"використовувати цю функцію."
+
+#: includes/vars.php:13 users.php:215
+msgid "System Administrator"
+msgstr "Системний Адміністратор"
+
+#: includes/vars.php:14 users.php:216
+msgid "Account Manager"
+msgstr "Менеджер облікових записів"
+
+#: includes/vars.php:15 manage-files.php:560 users.php:217
+msgid "Uploader"
+msgstr "завантажив"
+
+#: includes/vars.php:25
+msgid "reCAPTCHA verification failed"
+msgstr ""
+
+#: includes/vars.php:26
+msgid "Name was not completed"
+msgstr "Ім'я не було введено"
+
+#: includes/vars.php:27
+msgid "No client was selected"
+msgstr "Клієнти не були обрані"
+
+#: includes/vars.php:28 index.php:193
+msgid "Username was not completed"
+msgstr "Ім'я користувача не було введено"
+
+#: includes/vars.php:29 index.php:194
+msgid "Password was not completed"
+msgstr "Пароль не було введено"
+
+#: includes/vars.php:30
+msgid "Password verification was not completed"
+msgstr "Перевірка паролю не була виконана"
+
+#: includes/vars.php:31
+msgid "E-mail was not completed"
+msgstr "Листа не було завершено"
+
+#: includes/vars.php:32
+msgid "E-mail address is not valid"
+msgstr "E-mail адреса не вірна"
+
+#: includes/vars.php:33
+msgid ""
+"Username must be alphanumeric and may contain dot (a-z,A-Z,0-9 and . allowed)"
+msgstr ""
+
+#: includes/vars.php:34
+msgid "Password must be alphanumeric (a-z,A-Z,0-9 allowed)"
+msgstr "Пароль має бути цифрено-буквенним (дозволені символи a-z,A-Z,0-9)"
+
+#: includes/vars.php:35
+msgid "Passwords do not match"
+msgstr "Паролі не співпадають"
+
+#: includes/vars.php:36
+msgid "Password does not meet the required characters rules"
+msgstr "Пароль не відповідає вимогам"
+
+#: includes/vars.php:37
+msgid "User level was not specified"
+msgstr "Рівень користувача не визначено."
+
+#: includes/vars.php:38
+msgid "A system user or client with this login name already exists."
+msgstr "Системний користувач або клієнт з таким логіном вже існує."
+
+#: includes/vars.php:39
+msgid "A system user or client with this e-mail address already exists."
+msgstr "Системний користувач чи клієнт з такою поштовою адресою вже існує."
+
+#: includes/vars.php:40
+msgid ""
+"Your password can only contain letters, numbers and the following characters:"
+msgstr "Ваш пароль може містити тільки букви, цифри та наступні знаки:"
+
+#: includes/vars.php:42
+msgid "Title was not completed"
+msgstr "Загаловок не було введено"
+
+#: includes/vars.php:50
+msgid "length should be between"
+msgstr "Довжина повинна бути в межах"
+
+#: includes/vars.php:51 install/index.php:233
+msgid "and"
+msgstr "та"
+
+#: includes/vars.php:52
+msgid "characters long"
+msgstr "символів"
+
+#: includes/vars.php:56
+msgid "1 uppercase character"
+msgstr "1 велика літера"
+
+#: includes/vars.php:57
+msgid "1 lowercase character"
+msgstr "1 маленька літера"
+
+#: includes/vars.php:58
+msgid "1 number"
+msgstr "1 цифра"
+
+#: includes/vars.php:59
+msgid "1 special character"
+msgstr "1 спецсимвол"
+
+#: index.php:20 index.php:243
+msgid "Log in"
+msgstr "Вхід"
+
+#: index.php:159
+msgid "The supplied credentials are not valid."
+msgstr "Введені облікові данні не є дійсними."
+
+#: index.php:162
+msgid "The supplied username doesn't exist."
+msgstr "Введене ім'я користувача не існує."
+
+#: index.php:165
+msgid "The supplied password is incorrect."
+msgstr "Парольне є вірним."
+
+#: index.php:168
+msgid "This account is not active."
+msgstr "Цей обліковий запис неактивний."
+
+#: index.php:170
+msgid ""
+"If you just registered, please wait until a system administrator approves "
+"your account."
+msgstr ""
+"Якщо ви тількино зареєструвалися, зачекайте поки системний адміністратор "
+"підвердить ваш обліковий запис."
+
+#: index.php:174 register.php:106
+msgid ""
+"Client self registration is not allowed. If you need an account, please "
+"contact a system administrator."
+msgstr ""
+"Авто-реєстрація клієнтів неможлива. Якщо вам потрібен обліковий запис, будь "
+"ласка, зв'яжіться з системним адміністратором."
+
+#: index.php:177
+msgid "Sign-in with Google cannot be used to create new accounts at this time."
+msgstr ""
+
+#: index.php:180
+msgid "You must approve the requested permissions to sign in with Google."
+msgstr ""
+
+#: index.php:215 install/make-config.php:324 options.php:255
+msgid "Language"
+msgstr ""
+
+#: index.php:226
+msgid "default"
+msgstr ""
+
+#: index.php:255
+msgid "Forgot your password?"
+msgstr "Забули пароль?"
+
+#: index.php:255
+msgid "Set up a new one."
+msgstr "Встановити новий."
+
+#: index.php:259
+msgid "Don't have an account yet?"
+msgstr "Ще не маєте облікового запису?"
+
+#: index.php:259
+msgid "Register as a new client."
+msgstr "Зарееструватися як новий клієнт."
+
+#: index.php:263
+msgid "This server does not allow self registrations."
+msgstr "Сервер не дозволяє авто-реестрацію."
+
+#: index.php:264
+msgid "If you need an account, please contact a server administrator."
+msgstr ""
+"Якщо вам потрібен обліковий запис, зв'яжіться з адміністратором серверу."
+
+#: install/index.php:52 install/index.php:272 install/make-config.php:16
+msgid "Install"
+msgstr "Встановити"
+
+#: install/index.php:53
+msgid "Sitename was not completed."
+msgstr "Ім'я сайту не введено."
+
+#: install/index.php:54
+msgid "ProjectSend URI was not completed."
+msgstr "ProjectSend URI не встановлено."
+
+#: install/index.php:69
+msgid "Already installed"
+msgstr "Вже встановлено"
+
+#: install/index.php:70
+msgid "It seems that ProjectSend is already installed here."
+msgstr "Здається ProjectSend вже встановлено тут."
+
+#: install/index.php:71
+msgid ""
+"If you want to reinstall, please delete the system tables from the database "
+"and come back to the installation form."
+msgstr ""
+"Якщо ви хочете, перевстановити, будь ласка, видаліть системні таблиці з бази "
+"даних і поверніться до форми інсталяції."
+
+#: install/index.php:154
+msgid "Congratulations! Everything is up and running."
+msgstr "Вітання! Все встановлено та працює."
+
+#: install/index.php:166
+msgid "You may proceed to"
+msgstr "Ви можете перейти до"
+
+#: install/index.php:166
+msgid "log in"
+msgstr "увійти"
+
+#: install/index.php:166
+msgid "with your newely created username and password."
+msgstr "з щойноствореним ім'ям коритсувача та паролем."
+
+#: install/index.php:170
+msgid "There seems to be an error. Please try again."
+msgstr "Помилка. Спробуйте ще раз."
+
+#: install/index.php:211
+msgid "Basic system options"
+msgstr "Основні системні параметри"
+
+#: install/index.php:212
+msgid ""
+"You need to provide this data for a correct system installation. The site "
+"name will be visible in the system panel, and the client's lists."
+msgstr ""
+"Ви повинні надати ці дані для правильної установки системи. Ім'я сайту буде "
+"відображатися в системній панелі і списках клієнтів."
+
+#: install/index.php:213
+msgid "Remember to edit the file"
+msgstr "Нагадати відредагувати файл"
+
+#: install/index.php:213
+msgid ""
+"with your database settings before installing. If the file doesn't exist, "
+"you can create it by renaming the dummy file sys.config.sample.php."
+msgstr ""
+"з настройками баз даних перед установкою. Якщо файл не існує, ви можете "
+"створити його, перейменувавши порожній файл sys.config.sample.php."
+
+#: install/index.php:217 options.php:206
+msgid "Site name"
+msgstr "Ім'я сайту"
+
+#: install/index.php:224
+msgid "ProjectSend URI (address)"
+msgstr "ProjectSend URI (address)"
+
+#: install/index.php:232
+msgid "Default system administrator options"
+msgstr "Опції системного адміністратора за умовчанням"
+
+#: install/index.php:233
+msgid ""
+"This info will be used to create a default system user, which can't be "
+"deleted afterwards. Password should be between"
+msgstr ""
+"Ця інформація буде використовуватися для створення користувача в системі за "
+"замовчуванням, який не може бути видалений після цього. Пароль повинен бути "
+"між"
+
+#: install/index.php:233
+msgid "characters long."
+msgstr "символів."
+
+#: install/index.php:243 options.php:387
+msgid "E-mail address"
+msgstr "E-mail адреса"
+
+#: install/index.php:277
+msgid ""
+"After installing the system, you can go to the options page to set your "
+"timezone, preferred date display format and thumbnails parameters, besides "
+"being able to change the site options provided here."
+msgstr ""
+
+#: install/make-config.php:200
+msgid "Successfully wrote the config file."
+msgstr ""
+
+#: install/make-config.php:204
+msgid "Continue to installation"
+msgstr ""
+
+#: install/make-config.php:213
+msgid "Database configuration"
+msgstr ""
+
+#: install/make-config.php:214
+msgid "You need to provide this data for a correct database communication."
+msgstr ""
+
+#: install/make-config.php:217
+msgid "Select driver"
+msgstr ""
+
+#: install/make-config.php:222 install/make-config.php:228
+msgid "(not supported)"
+msgstr ""
+
+#: install/make-config.php:238 options.php:502
+msgid "Host"
+msgstr "Хост"
+
+#: install/make-config.php:248
+msgid "Database name"
+msgstr ""
+
+#: install/make-config.php:278
+msgid "Table prefix"
+msgstr ""
+
+#: install/make-config.php:294
+msgid "The database is already populated"
+msgstr ""
+
+#: install/make-config.php:308
+msgid "Reuse existing tables"
+msgstr ""
+
+#: install/make-config.php:321
+msgid "Language selection"
+msgstr ""
+
+#: install/make-config.php:336
+msgid "Folders"
+msgstr ""
+
+#: install/make-config.php:365
+msgid "Writable"
+msgstr ""
+
+#: install/make-config.php:367
+msgid "Not writable"
+msgstr ""
+
+#: install/make-config.php:377
+msgid "System information"
+msgstr ""
+
+#: install/make-config.php:431
+msgid "Check again"
+msgstr ""
+
+#: install/make-config.php:432
+msgid "Write config file"
+msgstr ""
+
+#: install/make-config.php:434
+msgid "Check"
+msgstr ""
+
+#: manage-files.php:44
+msgid "for client"
+msgstr "для клієнта"
+
+#: manage-files.php:69
+msgid "for group"
+msgstr "для групи"
+
+#: manage-files.php:85
+msgid "on category"
+msgstr ""
+
+#: manage-files.php:99 upload-import-orphans.php:213
+msgid "Please select at least one file to proceed."
+msgstr "Будь ласка, виберіть хоча б один файл для продовження."
+
+#: manage-files.php:106
+msgid ""
+"files permanently and for every client/group. Are you sure you want to "
+"continue?"
+msgstr ""
+"файли назавжди і для кожного клієнта / групи. Ви впевнені, що хочете "
+"продовжити?"
+
+#: manage-files.php:114
+msgid "You are about to unassign"
+msgstr "Ви збираєтеся скасувати призначення"
+
+#: manage-files.php:115
+msgid "files from this account. Are you sure you want to continue?"
+msgstr "файли з цього облікового запису. Ви впевнені що хочете продовжити?"
+
+#: manage-files.php:160 upload-process-form.php:757
+msgid "Click to select"
+msgstr "Клікніть для вибору"
+
+#: manage-files.php:160 upload-process-form.php:757
+msgid ""
+"Send this URL to someone to download the file without registering or logging "
+"in."
+msgstr "Відправити цей URL будь-кому для завантаження без реєстрації чи входу."
+
+#: manage-files.php:160 upload-process-form.php:757
+msgid "Close"
+msgstr "Закрити"
+
+#: manage-files.php:230
+msgid "The selected files were marked as hidden."
+msgstr "Відмічені файли були помічені як приховані."
+
+#: manage-files.php:244
+msgid "The selected files were marked as visible."
+msgstr "Обрані файли відмічені як видимі."
+
+#: manage-files.php:257
+msgid "The selected files were unassigned from this client."
+msgstr "Обрані файли були відкріплені від клієнта."
+
+#: manage-files.php:286
+msgid "The selected files were deleted."
+msgstr "Обрані файли було видалено."
+
+#: manage-files.php:291
+msgid "Some files could not be deleted."
+msgstr ""
+
+#: manage-files.php:314
+msgid "Please select at least one file."
+msgstr "Будь ласка, виберіть хоча б один файл."
+
+#: manage-files.php:451 manage-files.php:775 upload-process-form.php:319
+msgid "Hidden"
+msgstr "Прихований"
+
+#: manage-files.php:452 manage-files.php:776 upload-process-form.php:320
+msgid "Visible"
+msgstr "Видимий"
+
+#: manage-files.php:473
+msgid "Selected files actions"
+msgstr "Обрані дії файлів"
+
+#: manage-files.php:487
+msgid "Hide"
+msgstr "Приховати"
+
+#: manage-files.php:488
+msgid "Show"
+msgstr "Показати"
+
+#: manage-files.php:489
+msgid "Unassign"
+msgstr "Непризначений"
+
+#: manage-files.php:507 upload-import-orphans.php:151
+msgid "files"
+msgstr "файли"
+
+#: manage-files.php:520
+msgid "There are no files assigned to this category."
+msgstr ""
+
+#: manage-files.php:526
+msgid "There are no files assigned to this client."
+msgstr "Немає файлів призначених клієнтам."
+
+#: manage-files.php:529
+msgid "You have not uploaded any files for this account."
+msgstr "Ви не маєте завантажених файлів для цього облікового запису."
+
+#: manage-files.php:534
+msgid "There are no files for this client."
+msgstr "Немає файлів для цього клієнта."
+
+#: manage-files.php:554
+msgid "Ext."
+msgstr "Зовн."
+
+#: manage-files.php:556
+msgid "Size"
+msgstr "Розмір"
+
+#: manage-files.php:564
+msgid "Assigned"
+msgstr ""
+
+#: manage-files.php:568 manage-files.php:732 upload-process-form.php:298
+#: upload-process-form.php:345
+msgid "Public"
+msgstr "Публічний"
+
+#: manage-files.php:569
+msgid "Expiry"
+msgstr "Закінчення"
+
+#: manage-files.php:579
+msgid "Download count"
+msgstr "Кількість скачувань"
+
+#: manage-files.php:724 upload-process-form.php:337
+msgid "Public URL"
+msgstr "Публічний URL"
+
+#: manage-files.php:733 upload-process-form.php:346
+msgid "Private"
+msgstr "Особистий"
+
+#: manage-files.php:743
+msgid "Does not expire"
+msgstr "Не спливає"
+
+#: manage-files.php:751
+msgid "Expired on"
+msgstr "Закінчився"
+
+#: manage-files.php:758
+msgid "Expires on"
+msgstr "Закінчується"
+
+#: manage-files.php:787
+msgid "times"
+msgstr "разів"
+
+#: manage-files.php:794 manage-files.php:817
+msgid "downloads"
+msgstr "завантаження"
+
+#: manage-files.php:847
+msgid ""
+"Please note that downloading a file from here will not add to the download "
+"count."
+msgstr ""
+"Зауважте, що завантажання файлу звідси не збільшить лічильник завантажень."
+
+#: options.php:15
+msgid "System options"
+msgstr "Системні опції"
+
+#: options.php:140
+msgid "Some fields were not completed. Options could not be saved."
+msgstr "Деякі поля не були заповнені. Опції не можуть бити збережені."
+
+#: options.php:175 options.php:178
+msgid "Please complete all the fields."
+msgstr "Будь-ласка, заповніть всі поля."
+
+#: options.php:184
+msgid "General Options"
+msgstr "Загальні налаштування"
+
+#: options.php:186
+msgid "E-mail notifications"
+msgstr "Поштові повідомлення"
+
+#: options.php:187
+msgid "Security"
+msgstr "Безпека"
+
+#: options.php:188 options.php:639
+msgid "Thumbnails"
+msgstr "Мініатюри"
+
+#: options.php:189
+msgid "Company logo"
+msgstr "Лого компанії"
+
+#: options.php:190
+msgid "Social Login"
+msgstr ""
+
+#: options.php:202
+msgid "General"
+msgstr "Загальні"
+
+#: options.php:203
+msgid ""
+"Basic information to be shown around the site. The time format and zones "
+"values affect how the clients see the dates on their files lists."
+msgstr ""
+"Основна інформація що буде показана на всьому сайті. Значення формат часу і "
+"зони впливають як клієнти бачать дати в своїх списках файлів."
+
+#: options.php:213
+msgid "Client's template"
+msgstr "Шаблон клієнта"
+
+#: options.php:231
+msgid "Timezone"
+msgstr "Часовий Пояс"
+
+#: options.php:244
+msgid "Time format"
+msgstr "Формат часу"
+
+#: options.php:247
+msgid "For example, d/m/Y h:i:s will result in something like"
+msgstr "Наприклад, d/m/Y h:i:s призведе до чогось на кшталт"
+
+#: options.php:248
+msgid "For the full list of available values, visit"
+msgstr "Для повного списку доступних опцій, відвідайте"
+
+#: options.php:248
+msgid "this page"
+msgstr "ця сторінка"
+
+#: options.php:260
+msgid "Detect user browser language"
+msgstr ""
+
+#: options.php:261
+msgid ""
+"If available, will override the default one from the system configuration "
+"file. Affects all users and clients."
+msgstr ""
+
+#: options.php:268
+msgid "System location"
+msgstr "Системна локація"
+
+#: options.php:269
+msgid ""
+"These options are to be changed only if you are moving the system to another "
+"place. Changes here can cause ProjectSend to stop working."
+msgstr ""
+"Ці параметри повинні бути змінені, тільки якщо ви переміщаєте систему в інше "
+"місце. Зміни можуть призвести непрацездатності ProjectSend."
+
+#: options.php:272
+msgid "System URI"
+msgstr "Системний URI"
+
+#: options.php:288
+msgid "New registrations"
+msgstr "Нові реєстрації"
+
+#: options.php:289
+msgid ""
+"Used only on self-registrations. These options will not apply to clients "
+"registered by system administrators."
+msgstr ""
+"Використовується тільки на само-реєстрації. Ці параметри не "
+"застосовуватимуться до клієнтів, зареєстрованих системним адміністратором."
+
+#: options.php:294
+msgid "Clients can register themselves"
+msgstr "Клієнти можуть реєстувати самих себе"
+
+#: options.php:302
+msgid "Auto approve new accounts"
+msgstr "Автоматично підтверджувати нові облікові записи"
+
+#: options.php:308
+msgid "Add clients to this group:"
+msgstr "Додати клієнтів до групи:"
+
+#: options.php:311
+msgid "None (does not enable this feature)"
+msgstr "Жоден (не вмикає цю опцію)"
+
+#: options.php:333
+msgid ""
+"New clients will automatically be assigned to the group you have selected."
+msgstr "Нові клієнти будуть автоматично потрапляти до групи що ви обрали."
+
+#: options.php:348
+msgid "Clients can upload files"
+msgstr "Клієнти можуть завантажувати файли"
+
+#: options.php:356
+msgid "Clients can delete their own uploaded files"
+msgstr ""
+
+#: options.php:362
+msgid "When a file expires:"
+msgstr "Коли час життя файлу спливає:"
+
+#: options.php:365
+msgid "Don't show it on the files list"
+msgstr "Не показувати в списку файлів"
+
+#: options.php:366
+msgid "Show it anyway, but prevent download."
+msgstr "Показати все одно, але запобігти завантаженню."
+
+#: options.php:368
+msgid ""
+"This only affects clients. On the admin side, you can still get the files."
+msgstr ""
+"Це впливає тільки на клієнтів. Ви все ще можете отримати файли як "
+"адміністратор."
+
+#: options.php:384
+msgid "\"From\" information"
+msgstr "Інформація \"від кого\""
+
+#: options.php:402
+msgid "Send copies"
+msgstr "Відправити копії"
+
+#: options.php:407
+msgid "When a system user uploads files"
+msgstr "Коли системний користувач завантажує файл"
+
+#: options.php:415
+msgid "When a client uploads files"
+msgstr "Коли клієнт завантажив файл"
+
+#: options.php:421
+msgid ""
+"Define here who will receive copies of this emails. These are sent as BCC so "
+"neither recipient will see the other addresses."
+msgstr ""
+"Визначіть хто буде отримувати копії цих листів. Список адрес буде вказано як "
+"прихована копія, тому ніхто з одержувачів не бачииме увесь список адресс."
+
+#: options.php:427
+msgid "Address supplied above (on \"From\")"
+msgstr "Адреса береться з поля (\"Від\")"
+
+#: options.php:433
+msgid "Also to this addresses"
+msgstr "Також на цю адресу"
+
+#: options.php:436
+msgid "Separate e-mail addresses with a comma."
+msgstr "Розділяйте e-mail адреси комами."
+
+#: options.php:442
+msgid "Expiration"
+msgstr "Закінчення"
+
+#: options.php:445
+msgid "Maximum sending attemps"
+msgstr "Максимальна кількість спроб"
+
+#: options.php:448
+msgid "Define how many times will the system attemp to send each notification."
+msgstr ""
+"Визначити, скільки разів буде система намагатися відправляти кожне "
+"повідомлення."
+
+#: options.php:453
+msgid "Days before expiring"
+msgstr "Днів до закінчення"
+
+#: options.php:456
+msgid "Notifications older than this will not be sent."
+msgstr "Повідомлення старіші за це не будуть відправлені."
+
+#: options.php:456
+msgid "Set to 0 to disable."
+msgstr "Встановіть в 0 для вимкнення."
+
+#: options.php:462
+msgid "E-mail sending options"
+msgstr "Налаштування параметрів надсилання пошти"
+
+#: options.php:463
+msgid ""
+"Here you can select which mail system will be used when sending the "
+"notifications. If you have a valid e-mail account, SMTP is the recommended "
+"option."
+msgstr ""
+"Тут ви можете обрати, яка поштова система буде використовуватися при "
+"відправці повідомлень. Якщо у вас є діючий обліковий запис електронної "
+"пошти, SMTP є рекомендованим варіантом."
+
+#: options.php:466
+msgid "Mailer"
+msgstr "Відправник"
+
+#: options.php:479
+msgid "SMTP & Gmail shared options"
+msgstr "Опції SMTP & Gmail"
+
+#: options.php:480
+msgid ""
+"You need to include your username (usually your e-mail address) and password "
+"if you have selected either SMTP or Gmail as your mailer."
+msgstr ""
+"Ви повинні включити своє ім'я користувача (як правило, вашу адресу "
+"електронної пошти) і пароль, якщо ви вибрали SMTP або Gmail в якості "
+"поштової програми."
+
+#: options.php:498
+msgid "SMTP options"
+msgstr "SMTP опції"
+
+#: options.php:499
+msgid "If you selected SMTP as your mailer, please complete these options."
+msgstr "Якщо ви обрали SMTP, будь-ласка вкажіть наступне."
+
+#: options.php:509
+msgid "Port"
+msgstr "Порт"
+
+#: options.php:516
+msgid "Authentication"
+msgstr "Автентифікація"
+
+#: options.php:536
+msgid "Allowed file extensions"
+msgstr "Дозволені розшерення файлів"
+
+#: options.php:537
+msgid ""
+"Be careful when changing this options. They could affect not only the system "
+"but the whole server it is installed on."
+msgstr ""
+"Будьте обережні змінюючи цю опції. Вони можуть вплинути не тільки на "
+"систему, а й на сервер на якому вона встановлена."
+
+#: options.php:538
+msgid "Important"
+msgstr "Важливо"
+
+#: options.php:538
+msgid "Separate allowed file types with a comma."
+msgstr ""
+
+#: options.php:541
+msgid "Limit file types uploading to"
+msgstr "Обмежити типи файлів що завантажуються до"
+
+#: options.php:544
+msgid "No one"
+msgstr "Ніхто"
+
+#: options.php:545
+msgid "Everyone"
+msgstr "Усі"
+
+#: options.php:546
+msgid "Clients only"
+msgstr "Лише клієнти"
+
+#: options.php:557
+msgid "Passwords"
+msgstr "Паролі"
+
+#: options.php:558
+msgid "When setting up a password for an account, requiere at least:"
+msgstr "При встановленні паролю для облікового запису вимагати щонайменше:"
+
+#: options.php:596
+msgid "reCAPTCHA"
+msgstr ""
+
+#: options.php:597
+msgid "Helps prevent SPAM on your registration form."
+msgstr ""
+
+#: options.php:602
+msgid "Use reCAPTCHA"
+msgstr ""
+
+#: options.php:608
+msgid "Site key"
+msgstr ""
+
+#: options.php:615
+msgid "Secret key"
+msgstr ""
+
+#: options.php:626 options.php:750
+msgid "How do I obtain this credentials?"
+msgstr ""
+
+#: options.php:640
+msgid ""
+"Thumbnails are used on files lists. It is recommended to keep them small, "
+"unless you are using the system to upload only images, and will change the "
+"default client's template accordingly."
+msgstr ""
+"Мініатюри використовуються для списків файлів. Рекомендується, "
+"використовувати невеликий розмір, якщо тільки ви не використовуєте систему "
+"для завантаження лише зображень, і змінити шаблон клієнта за замовчуванням "
+"відповідним чином."
+
+#: options.php:645 options.php:697
+msgid "Max width"
+msgstr "макс. ширина"
+
+#: options.php:652 options.php:705
+msgid "Max height"
+msgstr "Макс. висота"
+
+#: options.php:660
+msgid "JPG Quality"
+msgstr "якість JPG"
+
+#: options.php:670
+msgid "File's path"
+msgstr "Шлях файлу"
+
+#: options.php:671
+msgid ""
+"If thumbnails are not showing (your company logo and file's preview on the "
+"branding page and client's files lists) try setting this option ON. It they "
+"still don't work, a folders permission issue might be the cause."
+msgstr ""
+"Якщо мініатюри не відображаються (ваш логотип компанії і попередній перегляд "
+"файлу на сторінці брендингу та списки файлів клієнта) спробуйте встановити "
+"цей параметр в стан Включено. Якщо це не допомогло, перевірти права доступу "
+"до папок."
+
+#: options.php:676
+msgid "Use file's absolute path"
+msgstr "Використати абсолютний шлях файлу"
+
+#: options.php:691
+msgid "Size settings"
+msgstr "Параметри розміру"
+
+#: options.php:692
+msgid ""
+"Like the thumbnails options, these have to be changed taking into account "
+"the client's template design, since it can be shown there. The default "
+"template uses a fixed width for the logo, however the Gallery template uses "
+"this setting to show the image on top."
+msgstr ""
+"Як і варіанти ескізів, вони повинні бути змінені з урахуванням дизайну "
+"шаблону клієнта, так як він може бути там показаний. Шаблон за замовчуванням "
+"використовує фіксовану ширину для логотипу, проте шаблон Галерея "
+"використовує цей параметр, щоб показати зображення вгорі."
+
+#: options.php:721
+msgid "Google"
+msgstr ""
+
+#: options.php:725
+msgid "Enabled"
+msgstr ""
+
+#: options.php:734
+msgid "Client ID"
+msgstr ""
+
+#: options.php:740
+msgid "Client Secret"
+msgstr ""
+
+#: options.php:755
+msgid "Callback URI"
+msgstr ""
+
+#: process.php:177
+msgid "File not found"
+msgstr ""
+
+#: process.php:234
+msgid ""
+"You don't have the required permissions to view the requested information "
+"about this file."
+msgstr "Ви не маєте необхідних прав для перегляду інформації про цей файл."
+
+#: register.php:12
+msgid "Register new account"
+msgstr "Зареєструвати новий обліковий запис"
+
+#: register.php:121
+msgid "Please contact a system administrator."
+msgstr "Будь ласка, зв'яжіться з адміністратором системи."
+
+#: register.php:125
+msgid "Account added correctly."
+msgstr "Обліковий запис додано коректно"
+
+#: register.php:129
+msgid ""
+"Please remember that an administrator needs to approve your account before "
+"you can log in."
+msgstr ""
+"Будь ласка, пам'ятайте, що адміністратор повинен підтвердити свій аккаунт, "
+"перш ніж ви зможете увійти."
+
+#: register.php:132
+msgid "You may now log in with your new credentials."
+msgstr "Тепер Ви можете увійти за новими обліковими даними."
+
+#: register.php:152
+msgid ""
+"A folder for this account could not be created. Probably because of a server "
+"configuration."
+msgstr ""
+"Папка для цього облікового запису не може бути створена. Можливо через "
+"конфігурацію сервера."
+
+#: register.php:157
+msgid ""
+"The account could not be created. A folder with this name already exists."
+msgstr ""
+"Данний обліковий запис не може бути створено. Директорія з цим ім'ям вже "
+"існує."
+
+#: register.php:167
+msgid ""
+"An e-mail notification with login information was sent to the specified "
+"address."
+msgstr ""
+"Поштове повідомлення з інформацією для входу було відправлено на зазначену "
+"адресу"
+
+#: reset-password.php:11
+msgid "Lost password"
+msgstr "Загублено пароль"
+
+#: reset-password.php:215
+msgid "The supplied email address does not correspond to any user."
+msgstr "Введена поштова адреса не відповідає жодному користувачу."
+
+#: reset-password.php:221
+msgid "This request has expired. Please make a new one."
+msgstr "Цей запит закінчився. Будь ласка, зробіть новий."
+
+#: reset-password.php:224
+msgid "This request has already been completed. Please make a new one."
+msgstr "Цей запит вже був завершений. Будь ласка, зробіть новий."
+
+#: reset-password.php:227
+msgid ""
+"There are 3 unused requests done in less than 24 hs. Please wait until one "
+"expires (1 day since made) to make a new one."
+msgstr ""
+"Є 3 невикористані запити, зроблені менш ніж за 24 години. Будь ласка, "
+"зачекайте, поки не закінчиться (1 день з дати останньої спроби), щоб зробити "
+"нову."
+
+#: reset-password.php:240
+msgid ""
+"An e-mail with further instructions has been sent. Please check your inbox "
+"to proceed."
+msgstr ""
+"Поштове повідомлення з подальшими інструкціями було відправлено. Будь-ласка, "
+"перевірте свою пошту для продовження."
+
+#: reset-password.php:244
+msgid "E-mail couldn't be sent."
+msgstr "E-mail не може бути відправлений"
+
+#: reset-password.php:245 reset-password.php:262
+msgid "If the problem persists, please contact an administrator."
+msgstr "Якщо проблема залишилася, зв'яжіться з системним адміністратором."
+
+#: reset-password.php:257
+msgid "Your new password has been set. You can now log in using it."
+msgstr ""
+"Ваш новий пароль був встановлений. Тепер Ви можете увійти, використовуючи "
+"його."
+
+#: reset-password.php:261
+msgid "Your new password couldn't be set."
+msgstr "Ваш новий пароль неможливо встановити."
+
+#: reset-password.php:295
+msgid ""
+"Please enter your account's e-mail address. You will receive a link to "
+"continue the process."
+msgstr ""
+"Будь ласка, введіть свою поштову адресу. Ви отримаєте посилання для "
+"продовження процесу."
+
+#: reset-password.php:298
+msgid "Get a new password"
+msgstr ""
+
+#: reset-password.php:333
+msgid "New password"
+msgstr "Новий пароль"
+
+#: reset-password.php:344
+msgid ""
+"Please enter your desired new password. After that, you will be able to log "
+"in normally."
+msgstr ""
+"Будь-ласка, введіть свій новий паролью Після цього ви зможете ввійти в "
+"систему як звичайно."
+
+#: reset-password.php:347
+msgid "Set new password"
+msgstr ""
+
+#: upload-from-computer.php:20 upload-from-computer.php:181
+#: upload-process-form.php:29
+msgid "Upload files"
+msgstr "Завантажити файли"
+
+#: upload-from-computer.php:51
+msgid ""
+"Click on Add files to select all the files that you want to upload, and then "
+"click continue. On the next step, you will be able to set a name and "
+"description for each uploaded file. Remember that the maximum allowed file "
+"size (in mb.) is "
+msgstr ""
+"Натисніть на кнопці Додати файли, щоб вибрати всі файли, які ви хочете "
+"завантажити, а потім натисніть кнопку продовжити. На наступному кроці, ви "
+"зможете задати ім'я і опис для кожного завантаження. Пам'ятайте, що "
+"максимально допустимий розмір файлу (в Мб.)"
+
+#: upload-from-computer.php:144
+msgid "You must select at least one file to upload."
+msgstr "Ви повинні вибрати принаймні один файл для завантаження."
+
+#: upload-from-computer.php:177
+msgid ""
+"Your browser doesn't support HTML5, Flash or Silverlight. Please update your "
+"browser or install Adobe Flash or Silverlight to continue."
+msgstr ""
+"Ваш браузер не підтримує HTML5, Flash або Silverlight. Будь ласка, оновіть "
+"ваш браузер або встановити Adobe Flash або Silverlight, щоб продовжити."
+
+#: upload-from-computer.php:184
+msgid ""
+"Your files are being uploaded! Progress indicators may take a while to "
+"update, but work is still being done behind the scenes."
+msgstr ""
+"Ваші файли, завантажені! Оновлення показників прогресу може зайняти деякий "
+"час, але завдання все ще виконується в фоновому режимі."
+
+#: upload-import-orphans.php:38
+msgid ""
+"This list only shows the files that are allowed according to your security "
+"settings. If the file type you need to add is not listed here, add the "
+"extension to the \"Allowed file extensions\" box on the options page."
+msgstr ""
+"Цей список показує тільки ті файли, які дозволені відповідно до ваших "
+"налаштувань безпеки. Якщо тип файлу який потрібно додати, не перераховано "
+"тут, додати розширення до поля «Допустимі розширення файлів\" можна на "
+"сторінці налаштувань."
+
+#: upload-import-orphans.php:163
+msgid "File name"
+msgstr "Назва файлу"
+
+#: upload-import-orphans.php:164
+msgid "File size"
+msgstr "Розмір файлу"
+
+#: upload-import-orphans.php:165
+msgid "Last modified"
+msgstr "В останне змінено"
+
+#: upload-import-orphans.php:199
+msgid ""
+"Please note that the listed files will be renamed if they contain invalid "
+"characters."
+msgstr ""
+"Будь ласка, зверніть увагу, що перераховані файли будуть перейменовані, якщо "
+"вони містять неприпустимі символи."
+
+#: upload-import-orphans.php:239
+msgid "There are no files available to add right now."
+msgstr "Зараз немає файлів доступних для додавання."
+
+#: upload-import-orphans.php:242
+msgid "To use this feature you need to upload your files via FTP to the folder"
+msgstr ""
+"Щоб скористатися цією функцією вам необхідно завантажити файли за допомогою "
+"FTP в папку"
+
+#: upload-process-form.php:286
+msgid "Files uploaded correctly"
+msgstr "Файли успішно завантажено"
+
+#: upload-process-form.php:292 upload-process-form.php:662
+msgid "File Name"
+msgstr "Назва файлу"
+
+#: upload-process-form.php:381
+msgid "Files ready to upload"
+msgstr "Файли готові для завантаження"
+
+#: upload-process-form.php:382
+msgid ""
+"Please complete the following information to finish the uploading process. "
+"Remember that \"Title\" is a required field."
+msgstr ""
+"Будь ласка, заповніть наступну інформацію, щоб закінчити процес "
+"завантаження. Пам'ятайте, що \"Назва\" є обов'язковим полем."
+
+#: upload-process-form.php:387
+msgid "Note"
+msgstr "Замітка"
+
+#: upload-process-form.php:387
+msgid ""
+"You can skip assigning if you want. The files are retained and you may add "
+"them to clients or groups later."
+msgstr ""
+"Ви можете пропустити привласнення, якщо ви хочете. Файли зберігаються, і ви "
+"можете додати їх до клієнтів або груп пізніше."
+
+#: upload-process-form.php:575 upload-process-form.php:605
+msgid "Copy selections to other files"
+msgstr "Копіювати обране в інші файли"
+
+#: upload-process-form.php:582
+msgid "Upload hidden (will not send notifications)"
+msgstr "Завантажити приховано (без нотифікації)"
+
+#: upload-process-form.php:658
+msgid "Files not uploaded"
+msgstr "Файли не завантажено"
+
+#: upload-process-form.php:721
+msgid "Copy selection to all files?"
+msgstr ""
+
+#: upload-send-notifications.php:277 upload-send-notifications.php:311
+msgid "E-mail notifications have been sent."
+msgstr "E-mail повідомлення відправлено."
+
+#: upload-send-notifications.php:291
+msgid "One or more notifications couldn't be sent."
+msgstr "Одне чи більше повідомлень не може бути відправлене"
+
+#: upload-send-notifications.php:315
+msgid "E-mail notifications for inactive clients were not sent."
+msgstr "Поштове повідомлення для неактивних користувачів відправлено."
+
+#: users-add.php:18
+msgid "Add system user"
+msgstr "Додати системного користувача"
+
+#: users-add.php:87
+msgid "User added correctly."
+msgstr "Користувач успішно доданий."
+
+#: users-add.php:111
+msgid "An e-mail notification with login information was sent to the new user."
+msgstr ""
+"Поштове повідомлення з інформацією для входу було відправлено новому "
+"користувачу"
+
+#: users-edit.php:123
+msgid "Edit system user"
+msgstr "Редагувати системного користувача"
+
+#: users-edit.php:154
+msgid "User edited correctly."
+msgstr "Користувач успішно виправлений."
+
+#: users-edit.php:181
+msgid "No user was selected."
+msgstr "Не обрано жодного користувача"
+
+#: users-edit.php:186
+msgid "There is no user with that ID number."
+msgstr "З таким ID користувачі відсутні."
+
+#: users-form.php:62
+msgid "Add user"
+msgstr "Додати користувача"
+
+#: users-form.php:69
+msgid "Save user"
+msgstr "Зберегти користувача"
+
+#: users-form.php:124 users.php:280
+msgid "Role"
+msgstr "Роль"
+
+#: users-form.php:137
+msgid "Active (user can log in)"
+msgstr "Активний (user can log in)"
+
+#: users.php:22
+msgid "Users administration"
+msgstr "Керування користувачами"
+
+#: users.php:31
+msgid "Please select at least one user to proceed."
+msgstr "Будь ласка, виберіть хоча б одного користувача, щоб продовжити."
+
+#: users.php:38
+msgid "users. Are you sure you want to continue?"
+msgstr "коритсувачі. Ви впевнені що хочете продовжувати?"
+
+#: users.php:90
+msgid "The selected users were marked as active."
+msgstr "Обрані користувачі були відмічені як активні."
+
+#: users.php:110
+msgid "You cannot deactivate your own account."
+msgstr "Ви не можете відключити свій власний обліковий запис."
+
+#: users.php:116
+msgid "The selected users were marked as inactive."
+msgstr "Обрані користувачі відмічені як неактивні."
+
+#: users.php:133
+msgid "You cannot delete your own account."
+msgstr "Ви не можете видалити свій власний обліковий запис."
+
+#: users.php:139
+msgid "The selected users were deleted."
+msgstr "Обрані коритсувачі були видалені."
+
+#: users.php:158
+msgid "Please select at least one user."
+msgstr "Будь ласка, виберіть хоча б одного користувача."
+
+#: users.php:214
+msgid "All roles"
+msgstr "Всі ролі"
+
+#: users.php:238
+msgid "Selected users actions"
+msgstr "Обрані дії користувачів"
+
+#: users.php:252
+msgid "users"
+msgstr "користувачі"
+
+#~ msgid ""
+#~ "After installing the system, you can go to the options page to set your "
+#~ "timezone, prefered date display format and thubmnails parameters, besides "
+#~ "being able to change the site options provided here."
+#~ msgstr ""
+#~ "Післявстановлення системи, ви можете перейти на сторінку налаштувань, щоб "
+#~ "встановити часовий пояс, формат відображення дати і параметрів ескізів, "
+#~ "крім того, ви в змозі змінити параметри сайту, представлені тут."
+
+#~ msgid "All assignations were removed"
+#~ msgstr "Всі призначення були видалені"
+
+#~ msgid "Create a new one"
+#~ msgstr "Створити новий"
+
+#~ msgid "Download zipped"
+#~ msgstr "Скачати zipped архівом"
+
+#~ msgid "Downloaders of file:"
+#~ msgstr "Файл скачали:"
+
+#~ msgid "File is not public."
+#~ msgstr "Файл не є загальнодоступним."
+
+#~ msgid "Never assigned to any user or group"
+#~ msgstr "Ніколи не призначати будь-якому користувачи чи групі"
+
+#~ msgid "Options related to the files that clients upload themselves."
+#~ msgstr "Опціїї що стосуються файлів, завантажених клієнтами особисто."
+
+#~ msgid "Please wait while the system gets the required information."
+#~ msgstr "Будь-ласка, зачекайте поки система збере потрібну інформацію."
+
+#~ msgid "Reason"
+#~ msgstr "Причина"
+
+#~ msgid "Remember me"
+#~ msgstr "Запам'ятати мене"
+
+#~ msgid ""
+#~ "Separate allowed file types with a comma. You can navigate the box with "
+#~ "the left/right arrows, backspace and delete keys."
+#~ msgstr ""
+#~ "Розділяйте дозволені типи файлів дозволені комами. Ви можете переходити у "
+#~ "полі вводу з лівою / правою стрілками, Backspace і Delete клавішами."
+
+#~ msgid "These files have not been assigned to any client or group."
+#~ msgstr "Ці файли не призначено жодному клієнту чи групі."
+
+#~ msgid ""
+#~ "This is the same folder where the files uploaded by the web interface "
+#~ "will be stored. So if you finish uploading your files but do not assign "
+#~ "them to any clients/groups, the files will still be there for later use."
+#~ msgstr ""
+#~ "Це та ж папка, де будуть зберігатися файли, що завантажені через веб-"
+#~ "інтерфейс. Так що, якщо ви закінчите завантаження файлів, але не "
+#~ "призначати їх на будь-які клієнтів / груп, файли все ще будуть там для "
+#~ "подальшого використання."
+
+#~ msgid ""
+#~ "This operation could take a few minutes, depending on the size of the "
+#~ "files."
+#~ msgstr ""
+#~ "Ця операція може зайняти декілька хвилин, залежно від розміру файлів."
+
+#~ msgid ""
+#~ "This version changes the way files-to-clients relationships are stored on "
+#~ "the database making it possible to assign a file to multiple clients. "
+#~ "However some files did not update successfully. The following files may "
+#~ "need to be reassigned to their clients by using the \\\"Find orphan files"
+#~ "\\\" tool:"
+#~ msgstr ""
+#~ "Цей варіант змінює спосіб відносин файлів до клієнтів і зберігаються в "
+#~ "базі даних, так що робить можливим призначати файл для декількох "
+#~ "клієнтів. Однак деякі файли не оновились успішно. Наступні файли, "
+#~ "можливо, буде потрібно призначити своїм клієнтам за допомогою інструменту "
+#~ "пошуку файлів без власників:"
+
+#~ msgid "Unassigned files"
+#~ msgstr "непризначені файли"
+
+#~ msgid "Username must be alphanumeric (a-z,A-Z,0-9 allowed)"
+#~ msgstr "Ім'я має бути буквенно-цифреним (дозволені символи a-z,A-Z,0-9)"
+
+#~ msgid "View full table"
+#~ msgstr "Подивитися всю таблицю"
+
+#~ msgid "View reduced table"
+#~ msgstr "Подивитися скорочену таблицю"
+
+#~ msgid "to be able to upload files for that account."
+#~ msgstr ""
+#~ "щоб мати можливість завантажувати файли для цього облікового запису."

@@ -14,6 +14,7 @@ $allowed_levels = array(9,8,7);
 require_once('sys.includes.php');
 
 $active_nav = 'files';
+$cc_active_page = 'Categories';
 
 $page_title = __('Categories administration','cftp_admin');
 
@@ -57,9 +58,15 @@ include('header.php');
 </script>
 
 <div id="main">
-
-	<h2><?php echo $page_title; ?></h2>
-
+<div id="content"> 
+    
+    <!-- Added by B) -------------------->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+	
+	<h2 class="page-title txt-color-blueDark"><?php echo $page_title; ?></h2>
+<a href="category-add.php" class="btn btn-sm btn-primary right-btn">New Category</a></div>
 	<?php
 	/**
 	 * Messages set when adding or editing a category
@@ -135,27 +142,9 @@ include('header.php');
 	}
 	
 	/** Get all the existing categories */
-	$params = array();
-
-	/**
-	 * Add the search terms
-	 *
-	 * TODO: Search gets the real results, but subcategories
-	 * are not shown if the parent is not in the results
-	 */
-	if ( isset( $_GET['search'] ) && !empty( $_GET['search'] ) ) {
-		$params['search']	= $_GET['search'];
-	}
-
-	$get_categories = get_categories( $params );
-	if ( !empty( $get_categories['categories'] ) ) {
-		$categories	= $get_categories['categories'];
-		$arranged	= $get_categories['arranged'];
-	}
-	else {
-		$categories	= null;
-		$arranged	= null;
-	}
+	$get_categories = get_categories();
+	$categories	= $get_categories['categories'];
+	$arranged	= $get_categories['arranged'];
 
 	/**
 	 * Adding or editing a category
@@ -229,7 +218,7 @@ include('header.php');
 				$status = $redirect_status;
 			}
 			else {
-				$msg = __('There was a problem saving to the database.','cftp_admin');
+				$msg = __('There was a problem savint to the database.','cftp_admin');
 				echo system_message('error', $msg);
 			}
 		}
@@ -250,9 +239,15 @@ include('header.php');
 
 		<div class="form_actions_left">
 			<div class="form_actions_limit_results">
-				<?php show_search_form('categories.php'); ?>
+				<form action="categories.php" name="cat_search" method="post" class="form-inline">
+					<div class="form-group group_float">
+						<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($search_terms)) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box form-control" />
+					</div>
+					<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default"><?php _e('Search','cftp_admin'); ?></button>
+				</form>
 			</div>
 		</div>
+
 
 		<form action="categories.php" name="selected_categories" id="selected_categories" method="post">
 
@@ -273,7 +268,7 @@ include('header.php');
 			<div class="clear"></div>
 	
 			<div class="form_actions_count">
-				<p class="form_count_total"><?php _e('Found','cftp_admin'); ?>: <span><?php echo $get_categories['count']; ?> <?php _e('categories','cftp_admin'); ?></span></p>
+				<p class="form_count_total"><?php _e('Showing','cftp_admin'); ?>: <span><?php echo $get_categories['count']; ?> <?php _e('categories','cftp_admin'); ?></span></p>
 			</div>
 	
 			<div class="clear"></div>
@@ -296,8 +291,9 @@ include('header.php');
 
 			<div class="container-fluid">
 				<div class="row">
-					<div class="col-xs-12 col-sm-12 col-md-8">
-						<table id="categories_tbl" class="footable" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
+					<div class="col-xs-12 col-sm-12 col-md-12">
+                    <section id="no-more-tables">
+						<table id="categories_tbl" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
 							<thead>
 								<tr>
 									<th class="td_checkbox" data-sort-ignore="true">
@@ -349,7 +345,7 @@ include('header.php');
 													<td><?php echo html_output($category["description"]); ?></td>
 													<td>
 														<a href="<?php echo $files_link; ?>" class="btn btn-sm <?php echo $files_button; ?>"><?php _e('Manage files','cftp_admin'); ?></a>
-														<a href="categories.php?action=edit&id=<?php echo $category["id"]; ?>" class="btn btn-primary btn-sm"><?php _e('Edit','cftp_admin'); ?></a>
+														<a href="category-edit.php?action=edit&id=<?php echo $category["id"]; ?>" class="btn btn-primary btn-sm"><?php _e('Edit','cftp_admin'); ?></a>
 													</td>
 												</tr>
 								<?php
@@ -367,6 +363,7 @@ include('header.php');
 								?>											
 							</tbody>
 						</table>
+                    </section>
 			
 			
 						<nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
@@ -388,13 +385,17 @@ include('header.php');
 			?>
 
 					<div class="col-xs-12 col-sm-12 col-md-4">
-						<?php include_once( 'categories-form.php' ); ?>
+						<?php //include_once( 'categories-form.php' ); ?>
 					</div>
+         </form>
 				</div>
 			</div>
 
 	</div>
 
+</div>
+</div>
+</div>
 </div>
 
 <?php include('footer.php'); ?>

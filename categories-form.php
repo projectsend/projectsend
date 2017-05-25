@@ -12,14 +12,17 @@ $show_cancel = false;
 switch ( $form_information['type'] ) {
 	case 'new_category':
 		$submit_value	= __('Create','cftp_admin');
+		$form_action = 'category-add.php';
 		break;
 	case 'edit_category':
 		$submit_value	= __('Save','cftp_admin');
+		$form_action = 'category-edit.php?id='.$edit_id;
 		$show_cancel	= true;
 		break;
 }
 
 ?>
+<form action="<?php echo html_output($form_action); ?>" name="addcategory" id="process_category" method="post" class="form-horizontal">
 <div class="categories_form form-horizontal">
 	<h3><?php echo $form_information['title']; ?></h3>
 
@@ -58,3 +61,4 @@ switch ( $form_information['type'] ) {
 		<button type="submit" name="btn_process" id="btn_process" class="btn btn-wide btn-primary"><?php echo html_output($submit_value); ?></button>
 	</div>
 </div>
+</form>

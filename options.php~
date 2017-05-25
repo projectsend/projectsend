@@ -6,9 +6,9 @@
  * @subpackage Options
  */
 $load_scripts	= array(
-						'jquery_tags_input',
-						'spinedit',
-					); 
+			'jquery_tags_input',
+			'spinedit',
+		); 
 
 $allowed_levels = array(9);
 require_once('sys.includes.php');
@@ -18,18 +18,21 @@ $active_nav = 'options';
 include('header.php');
 
 if ($_POST) {
+	echo "<pre>";
+	print_r($_POST);
+	echo "</pre>";
 	/**
 	 * Escape all the posted values on a single function.
 	 * Defined on functions.php
 	 */
 	/** Values that can be empty */
 	$allowed_empty_values	= array(
-								'mail_copy_addresses',
-								'mail_smtp_host',
-								'mail_smtp_port',
-								'mail_smtp_user',
-								'mail_smtp_pass',
-							);
+					'mail_copy_addresses',
+					'mail_smtp_host',
+					'mail_smtp_port',
+					'mail_smtp_user',
+					'mail_smtp_pass',
+				);
 
 	if ( empty( $_POST['google_signin_enabled'] ) ) {
 		$allowed_empty_values[] = 'google_client_id';
@@ -47,11 +50,6 @@ if ($_POST) {
 		$allowed_empty_values[] = 'yahoo_client_id';
 		$allowed_empty_values[] = 'yahoo_client_secret';
 	}
-	if ( empty( $_POST['ldap_server_enabled'] ) ) {
-		$allowed_empty_values[] = 'ldap_server';
-		$allowed_empty_values[] = 'ldap_bind_dn';
-		$allowed_empty_values[] = 'ldap_bind_password';
-	}
 	if ( empty( $_POST['recaptcha_enabled'] ) ) {
 		$allowed_empty_values[] = 'recaptcha_site_key';
 		$allowed_empty_values[] = 'recaptcha_secret_key';
@@ -59,21 +57,21 @@ if ($_POST) {
 
 	/** Checkboxes */
 	$checkboxes	= array(
-						'recaptcha_enabled',
-						'clients_can_delete_own_files',
-						'use_browser_lang',
-						'clients_can_register',
-						'clients_auto_approve',
-						'clients_can_upload',
-						'mail_copy_user_upload',
-						'mail_copy_client_upload',
-						'mail_copy_main_user',
-						'thumbnails_use_absolute',
-						'pass_require_upper',
-						'pass_require_lower',
-						'pass_require_number',
-						'pass_require_special',
-					);
+				'recaptcha_enabled',
+				'clients_can_delete_own_files',
+				'use_browser_lang',
+				'clients_can_register',
+				'clients_auto_approve',
+				'clients_can_upload',
+				'mail_copy_user_upload',
+				'mail_copy_client_upload',
+				'mail_copy_main_user',
+				'thumbnails_use_absolute',
+				'pass_require_upper',
+				'pass_require_lower',
+				'pass_require_number',
+				'pass_require_special',
+			);
 	foreach ($checkboxes as $checkbox) {
 		$_POST[$checkbox] = (empty($_POST[$checkbox]) || !isset($_POST[$checkbox])) ? 0 : 1;
 	}
@@ -918,7 +916,42 @@ $allowed_file_types = implode(',',$allowed_file_types);
 									</div>
 								</div>
 								<!-- linkedin End -->			
-
+								<!-- ldap Start -->
+								<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
+									<div class="white-box-interior" style="background-color:green;color:#ffffff;">
+										<h3><?php _e('ldap','cftp_admin'); ?></h3>
+										<div class="options_column">
+											<div class="form-group">
+												<label for="ldap_signin_enabled" class="col-sm-4 control-label"><?php _e('Enabled','cftp_admin'); ?></label>
+												<div class="col-sm-8">
+													<select name="ldap_signin_enabled" id="ldap_signin_enabled" class="form-control">
+														<option value="1" <?php echo (LDAP_SIGNIN_ENABLED == '1') ? 'selected="selected"' : ''; ?>>Yes</option>
+														<option value="0" <?php echo (LDAP_SIGNIN_ENABLED == '0') ? 'selected="selected"' : ''; ?>>No</option>
+													</select>
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="ldap_signin_enabled" class="col-sm-4 control-label"><?php _e('Server','cftp_admin'); ?></label>
+												<div class="col-sm-8">
+													<input type="text" name="ldap_client_id" id="ldap_client_id" class="form-control empty" placeholder="Server" value="" />
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="ldap_client_id" class="col-sm-4 control-label"><?php _e('Bind DN','cftp_admin'); ?></label>
+												<div class="col-sm-8">
+													<input type="text" name="ldap_client_id" id="ldap_client_id" class="form-control empty" placeholder="Bind DN" value=""  />
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="ldap_client_secret" class="col-sm-4 control-label"><?php _e('Bind Password','cftp_admin'); ?></label>
+												<div class="col-sm-8">
+													<input type="text" name="ldap_client_secret" id="ldap_client_secret" class="form-control empty" placeholder="Bind Password" value="" />
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- ldap End -->	
 
 										</div>
 									</div>

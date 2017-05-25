@@ -24,7 +24,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 	$sql_inactive->execute();
 	$inactive_users		= $sql_inactive->rowCount();
 
-
+/*
 	$items['dashboard'] = array(
 								'nav'	=> 'dashboard',
 								'level'	=> array( 9,8,7 ),
@@ -33,7 +33,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 												'link'	=> 'home.php',
 											),
 							);
-
+*/
 	$items['files']		= array(
 								'nav'	=> 'files',
 								'level'	=> array( 9,8,7 ),
@@ -42,13 +42,35 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 											),
 								'sub'	=> array(
 												array(
-													'label'	=> __('Upload', 'cftp_admin'),
+													'label'	=> __('Send File', 'cftp_admin'),
 													'link'	=> 'upload-from-computer.php',
 												),
 												array(
-													'divider'	=> true,
+													'label'	=> __('Inbox', 'cftp_admin'),
+													'link'	=> 'inbox.php',
 												),
 												array(
+													'label'	=> __('Outbox', 'cftp_admin'),
+													'link'	=> 'outbox.php',
+												),
+												array(
+													'label'	=> __('Sent', 'cftp_admin'),
+													'link'	=> 'sent.php',
+												),
+												array(
+													'label'	=> __('Requested File', 'cftp_admin'),
+													'link'	=> 'requested_file.php',
+												),
+											/*	array(
+													'label'	=> __('Request a File', 'cftp_admin'),
+													'link'	=> 'request-drop-off.php',
+												),*/
+												array(
+													'label'	=> __('Expired Files', 'cftp_admin'),
+													'link'	=> 'expired.php',
+												),
+
+											/*	array(
 													'label'	=> __('Manage files', 'cftp_admin'),
 													'link'	=> 'manage-files.php',
 												),
@@ -62,7 +84,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 												array(
 													'label'	=> __('Categories', 'cftp_admin'),
 													'link'	=> 'categories.php',
-												),
+												),*/
 											),
 							);
 
@@ -74,18 +96,71 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 												'badge'	=> $inactive_clients,
 											),
 								'sub'	=> array(
-												array(
+												/*array(
 													'label'	=> __('Add new', 'cftp_admin'),
 													'link'	=> 'clients-add.php',
-												),
+												),*/
 												array(
 													'label'	=> __('Manage clients', 'cftp_admin'),
 													'link'	=> 'clients.php',
 												),
+												array(
+													'label'	=> __('Manage Organization', 'cftp_admin'),
+													'link'	=> 'organization.php',
+												),
+												array(
+													'label'	=> __('Categories', 'cftp_admin'),
+													'link'	=> 'categories.php',
+												),
+											),
+							);
+	$items['admin']	= array(
+								'nav'	=> 'admin',
+								'level'	=> array( 9 ),
+								'main'	=> array(
+												'label'	=> __('Admin', 'cftp_admin'),
+												
+											),
+								'sub'	=> array(
+												array(
+												'label'	=> __('Dashboard', 'cftp_admin'),
+												'link'	=> 'home.php',
+												),
+												array(
+													'label'	=> __('Manage files', 'cftp_admin'),
+													'link'	=> 'manage-files.php',
+												),
+												array(
+													'label'	=> __('Users', 'cftp_admin'),
+													'link'	=> 'users.php',
+												),
+
+												array(
+													'label'	=> __('Options', 'cftp_admin'),
+													'link'	=> 'options.php',
+												),
+												array(
+													'label'	=> __('Branding', 'cftp_admin'),
+													'link'	=> 'branding.php',
+												),
+												array(
+													'label'	=> __('Email Templates', 'cftp_admin'),
+													'link'	=> 'email-templates.php',
+												),
+												array(
+													'label'	=> __('Orphans files', 'cftp_admin'),
+													'link'	=> 'upload-import-orphans.php',
+												),
+												array(
+													'label'	=> __('Activities log', 'cftp_admin'),
+													'link'	=> 'actions-log.php',
+												),
+
 											),
 							);
 
-	$items['groups']	= array(
+
+	/*$items['groups']	= array(
 								'nav'	=> 'groups',
 								'level'	=> array( 9,8 ),
 								'main'	=> array(
@@ -122,22 +197,6 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 											),
 							);
 
-	$items['update_database_info']	= array(
-								'nav'	=> 'options',
-								'level'	=> array( 9 ),
-								'main'	=> array(
-												'label'	=> __('Database info', 'cftp_admin'),
-												
-											),
-								'sub'	=> array(
-												array(
-													'label'	=> __('Database info', 'cftp_admin'),
-													'link'	=> 'databse_info.php',
-												),
-											),
-							);
-
-
 	$items['options']	= array(
 								'nav'	=> 'options',
 								'level'	=> array( 9 ),
@@ -161,16 +220,51 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 													'link'	=> 'email-templates.php',
 												),
 											),
-							);
+							);*/
 }
 /**
  * Items for clients
  */
 else
 {
+
+		$items['upload'] = array(
+									'nav'	=> 'upload',
+									'level'	=> array( 9,8,7,0 ),
+									'main'	=> array(
+												'label'	=> __('Files', 'cftp_admin'),
+											),
+								'sub'	=> array(
+												array(
+													'label'	=> __('Send File', 'cftp_admin'),
+													'link'	=> 'upload-from-computer.php',
+												),
+												array(
+													'label'	=> __('Inbox', 'cftp_admin'),
+													'link'	=> 'inbox.php',
+												),
+												array(
+													'label'	=> __('Outbox', 'cftp_admin'),
+													'link'	=> 'outbox.php',
+												),
+												array(
+													'label'	=> __('Sent', 'cftp_admin'),
+													'link'	=> 'sent.php',
+												),
+												array(
+													'label'	=> __('Requested File', 'cftp_admin'),
+													'link'	=> 'requested_file.php',
+												),
+												array(
+													'label'	=> __('Expired Files', 'cftp_admin'),
+													'link'	=> 'expired.php',
+												),
+									)
+								);
+/*
 	if (CLIENTS_CAN_UPLOAD == 1)
 	{
-		$items['upload'] = array(
+		$items['upload1'] = array(
 									'nav'	=> 'upload',
 									'level'	=> array( 9,8,7,0 ),
 									'main'	=> array(
@@ -196,13 +290,13 @@ else
 												'label'	=> __('View my files', 'cftp_admin'),
 												'link'	=> 'my_files/',
 											),
-							);
+							);*/
 }
 
 /**
  * Build the menu
  */
-$menu_output = "<ul class='nav navbar-nav'>\n";
+$menu_output = "<ul>\n";
 
 foreach ( $items as $item )
 {
@@ -220,8 +314,8 @@ foreach ( $items as $item )
 
 		else
 		{
-			$format			= "<li class='dropdown %s'>\n\t<a href='#' class='dropdown-toggle' data-toggle='dropdown'>%s%s <b class='caret'></b></a>\n\t<ul class='dropdown-menu'>\n";
-			$menu_output 	.= sprintf( $format, $current, $item['main']['label'], $badge );
+			$format			= "<li class='cc-dropdown $current'>\n\t<a href='#'>%s%s <b class='caret'></b></a>\n\t<ul>\n";
+			$menu_output 	.= sprintf( $format, $item['main']['label'], $badge );
 			/**
 			 * Submenu
 			*/
@@ -233,7 +327,23 @@ foreach ( $items as $item )
 				}
 				else
 				{
-					$format			= "\t\t<li>\n\t\t\t<a href='%s'>%s</a>\n\t\t</li>\n";
+/*					if(isset($subitem['subnav']) != '') {
+						if($subitem['subnav'] == $cc_active_page) {
+							$cc_active_sub = 'cc-active-subpage';
+						}
+						else {
+							$cc_active_sub = '';
+						}
+					}*/
+					if($subitem['label'] == $cc_active_page) {
+						$cc_active_sub = 'cc-active-subpage';
+					}
+					else {
+						$cc_active_sub = '';
+					}
+					//$cc_active_sub = isset($cc_active_sub) ? $cc_active_sub : '';
+					$format			= "\t\t<li class='$cc_active_sub'>\n\t\t\t<a href='%s'>%s</a>\n\t\t</li>\n";
+					$cc_active_sub ='';
 					$menu_output 	.= sprintf( $format, BASE_URI . $subitem['link'], $subitem['label'] );
 				}
 			}

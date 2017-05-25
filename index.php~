@@ -66,8 +66,6 @@ include('header-unlogged.php');
 			if ($check_password) {
 			//if ($db_pass == $sysuser_password) {
 				if ($active_status != '0') {
-					$statement1 = $dbh->prepare("INSERT INTO tbl_login_details (user_id,login_time_tamp,status ) VALUES (".$logged_id.",".time().",".true.")");
-					$statement1->execute();
 					/** Set SESSION values */
 					$_SESSION['loggedin'] = $sysuser_username;
 					$_SESSION['userlevel'] = $user_level;
@@ -249,38 +247,6 @@ if ( isset($_SESSION['errorstate'] ) ) {
 									<?php if(GOOGLE_SIGNIN_ENABLED == '1'): ?>
 										<a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="google-login"><img src="<?php echo BASE_URI; ?>img/google/btn_google_signin_light_normal_web.png" alt="Google Signin" /></a>
 									<?php endif; ?>
-								</div>
-								<div class="social-login">
-									<?php if(FACEBOOK_SIGNIN_ENABLED == '1'): ?>
-										<a href="sociallogin/login-with.php?provider=Facebook" name="Sign in with Facebook" class="facebook-login"><img src="<?php echo BASE_URI; ?>img/facebook/btn_facebook_signin_light_normal_web.png" alt="facebook Signin" /></a>
-									<?php endif; ?>
-								</div>
-								<div class="social-login">
-									<?php if(TWITTER_SIGNIN_ENABLED == '1'): ?>
-										<a href="sociallogin/login-with.php?provider=Twitter" name="Sign in with Twitter" class="twitter-login"><img src="<?php echo BASE_URI; ?>img/twitter/btn_twitter_signin_light_normal_web.png" alt="twitter Signin" /></a>
-									<?php endif; ?>
-								</div>
-								<div class="social-login">
-									<?php if(YAHOO_SIGNIN_ENABLED == '1'): ?>
-										<a href="sociallogin/login-with.php?provider=yahoo" name="Sign in with yahoo" class="yahoo-login"><img src="<?php echo BASE_URI; ?>img/yahoo/btn_yahoo_signin_light_normal_web.png" alt="yahoo Signin" /></a>
-									<?php endif; ?>
-								</div>
-								<div class="social-login">
-									<?php if(LINKEDIN_SIGNIN_ENABLED == '1'): ?>
-										<a href="sociallogin/login-with.php?provider=LinkedIn" name="Sign in with linkedin" class="linkedin-login"><img src="<?php echo BASE_URI; ?>img/linkedin/btn_linkedin_signin_light_normal_web.png" alt="linkedin Signin" /></a>
-									<?php endif; ?>
-								</div>
-								<div class="social-login">
-									<a href="#" id="display_ldap_form" name="Sign in with linkedin" class="linkedin-login">LDAP LOGIN</a>
-									<div id="ldap_login_div" style="display:none">
-										<div id="message"></div>
-										Email<br/>
-										<input type="text" id="ldap_email" placeholder="email" value="riemann@ldap.forumsys.com"><br/>										
-										Password:<br/>						
-										<input type="password" id="ldap_password" placeholder="password" value="password"><br/>
-										<a href="#" id="ldap_submit">LOGIN</a>
-										
-									</div>
 								</div>
 							</fieldset>
 						</form>

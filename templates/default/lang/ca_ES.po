@@ -1,0 +1,136 @@
+#
+# Translators:
+# carles <carleslm@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: ProjectSend\n"
+"POT-Creation-Date: 2016-09-18 20:27-0300\n"
+"PO-Revision-Date: 2016-09-18 20:27-0300\n"
+"Last-Translator: carles <carleslm@gmail.com>\n"
+"Language-Team: Catalan (Spain) (http://www.transifex.com/projects/p/"
+"projectsend/language/ca_ES/)\n"
+"Language: ca_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.8\n"
+
+#: template.php:15
+msgid "File downloads"
+msgstr "Descàrregues"
+
+#: template.php:43
+msgid "Search"
+msgstr ""
+
+#: template.php:52
+msgid "All categories"
+msgstr ""
+
+#: template.php:59
+msgid "Filter"
+msgstr ""
+
+#: template.php:72
+msgid "Selected files actions"
+msgstr ""
+
+#: template.php:74
+msgid "Download zipped"
+msgstr ""
+
+#: template.php:76
+msgid "Proceed"
+msgstr ""
+
+#: template.php:85
+msgid "Showing"
+msgstr ""
+
+#: template.php:85
+msgid "files"
+msgstr ""
+
+#: template.php:95
+msgid "Your search keywords returned no results."
+msgstr ""
+
+#: template.php:100
+msgid "There are no files available."
+msgstr "No hi ha arxius disponibles."
+
+#: template.php:112
+msgid "Title"
+msgstr "Títol"
+
+#: template.php:113
+msgid "Ext."
+msgstr ""
+
+#: template.php:114
+msgid "Description"
+msgstr "Descripció"
+
+#: template.php:115
+msgid "Size"
+msgstr "Mida"
+
+#: template.php:116
+msgid "Date"
+msgstr "Data"
+
+#: template.php:117
+msgid "Expiration date"
+msgstr ""
+
+#: template.php:118
+msgid "Image preview"
+msgstr "Previsualització d'imatge"
+
+#: template.php:119 template.php:235
+msgid "Download"
+msgstr "Descarga"
+
+#: template.php:192
+msgid "Never"
+msgstr ""
+
+#: template.php:205
+msgid "File expired"
+msgstr "Arxiu expirat"
+
+#: template.php:249
+msgid "Results navigation"
+msgstr ""
+
+#: template.php:268
+msgid "Please select at least one file to proceed."
+msgstr ""
+
+#: template.php:283
+msgid "Please wait while your download is prepared."
+msgstr ""
+
+#: template.php:284
+msgid ""
+"This operation could take a few minutes, depending on the size of the files."
+msgstr ""
+
+#~ msgid "First"
+#~ msgstr "Primer"
+
+#~ msgid "Last"
+#~ msgstr "Últim"
+
+#~ msgid "Next"
+#~ msgstr "Següent"
+
+#~ msgid "Page"
+#~ msgstr "Pàgina"
+
+#~ msgid "Prev."
+#~ msgstr "Previ"
+
+#~ msgid "Show"
+#~ msgstr "Mostrar"

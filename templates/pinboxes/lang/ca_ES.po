@@ -1,0 +1,68 @@
+#
+# Translators:
+# carles <carleslm@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: ProjectSend\n"
+"POT-Creation-Date: 2016-09-18 20:31-0300\n"
+"PO-Revision-Date: 2016-09-18 20:31-0300\n"
+"Last-Translator: carles <carleslm@gmail.com>\n"
+"Language-Team: Catalan (Spain) (http://www.transifex.com/projects/p/"
+"projectsend/language/ca_ES/)\n"
+"Language: ca_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.8\n"
+
+#: template.php:16
+msgid "Available files"
+msgstr "Arxius disponibles"
+
+#: template.php:89
+msgid "Welcome"
+msgstr "Benvingut"
+
+#: template.php:94
+msgid "Search..."
+msgstr "Cercar..."
+
+#: template.php:104
+msgid "Categories"
+msgstr ""
+
+#: template.php:106
+msgid "All files"
+msgstr ""
+
+#: template.php:125
+msgid "Upload files"
+msgstr "Pujar arxius"
+
+#: template.php:128
+msgid "Logout"
+msgstr "Tancar la sessió"
+
+#: template.php:142
+msgid "There are no files."
+msgstr "No hi ha arxius."
+
+#: template.php:206
+msgid "File size:"
+msgstr "Mida d'arxiu:"
+
+#: template.php:216
+msgid "Expiration date:"
+msgstr ""
+
+#: template.php:227
+msgid "Download"
+msgstr "Descàrrega"
+
+#: template.php:233
+msgid "File expired"
+msgstr "Arxiu expirat"
+
+#~ msgid "Search"
+#~ msgstr "Cercar"

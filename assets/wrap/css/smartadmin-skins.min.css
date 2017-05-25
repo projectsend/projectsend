@@ -1,0 +1,3136 @@
+/*!
+ * SmartAdmin v1.8.2 ()
+ * Copyright 2011-2016 
+ */.smart-style-1 a {
+	transition: color .1s linear 0s, background-color .1s linear 0s!important
+}
+.smart-style-1 body.container {
+	border-left: 1px solid rgba(34,38,46,.4);
+	border-right: 1px solid rgba(34,38,46,.4)
+}
+.smart-style-1 #header {
+	background-image: none;
+	background-color: #22262e
+}
+.smart-style-1 .project-context>:first-child {
+	color: #697B92;
+	text-shadow: 0 0 1px #111318
+}
+.smart-style-1 #ribbon {
+	background: #e6e6e6
+}
+.smart-style-1 .breadcrumb>li+li:before {
+	color: #646464
+}
+.smart-style-1 .project-selector {
+	color: #B9B9B9
+}
+.smart-style-1 .btn.btn-ribbon {
+	background-color: #697486;
+	background-image: -moz-linear-gradient(top, #6f7d94, #697486);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#6f7d94), to(#697486));
+	background-image: -webkit-linear-gradient(top, #6f7d94, #697486);
+	background-image: -o-linear-gradient(top, #6f7d94, #697486);
+	background-image: linear-gradient(to bottom, #6f7d94, #697486)
+}
+.smart-style-1 #logo-group {
+	background: #22262e!important
+}
+.smart-style-1 #logo-group span#activity {
+	background: #0d0f12;
+	border: 1px solid #0d0f12;
+	color: #fff;
+	cursor: pointer
+}
+.smart-style-1 #logo-group>span .badge {
+	background: #0aa699
+}
+.smart-style-1 .btn-header>:first-child>a {
+	background: #fb3c4a;
+	border: 1px solid #fb3c4a;
+	color: #fff!important;
+	cursor: pointer!important
+}
+.smart-style-1 .btn-header>:first-child>a:hover {
+	opacity: .9
+}
+.smart-style-1 #cancel-search-js {
+	background: #fb3c4a;
+	line-height: 29px!important
+}
+.smart-style-1 .MsgTitle .txt-color-orangeDark {
+	color: #fb3c4a!important
+}
+.smart-style-1 .minifyme {
+	background: #434953
+}
+.smart-style-1 .minifyme:hover {
+	background: #5C6C86;
+	color: #E1E8F3
+}
+.smart-style-1 #show-shortcut:hover>i {
+	color: #fff
+}
+.smart-style-1 .superbox-list.active:before {
+	color: #1b1e24
+}
+.smart-style-1 nav ul b {
+	font-size: 14px;
+	margin-top: 0
+}
+.smart-style-1 nav ul b .fa-plus-square-o:before {
+	content: "\f104"
+}
+.smart-style-1 nav ul b .fa-minus-square-o:before {
+	content: "\f107"
+}
+.smart-style-1 nav ul ul {
+	background: #22262E
+}
+.smart-style-1 nav ul ul li>a {
+	text-shadow: 0 1px 1px #000;
+	font-size: 13px;
+	padding-left: 43px;
+	color: #e1eaf1;
+	display: block;
+	font-weight: 300;
+	padding-top: 6px!important;
+	padding-bottom: 6px!important;
+	overflow: hidden
+}
+.smart-style-1 nav ul ul li>a:hover {
+	background: #1b1e24!important
+}
+.smart-style-1 nav ul ul ul li a {
+	padding: 8px 17px 8px 54px!important
+}
+.smart-style-1 nav ul ul ul ul li a {
+	padding-left: 72px!important
+}
+.smart-style-1 nav ul ul ul ul ul li a {
+	padding-left: 90px!important
+}
+.smart-style-1 nav ul ul ul ul ul ul li a {
+	padding-left: 108px!important
+}
+.smart-style-1 nav ul li a:active {
+	background: 0 0
+}
+.smart-style-1 nav ul li a:hover {
+	color: #E1EAF1
+}
+.smart-style-1 nav ul li a {
+	padding: 12px 17px 12px 16px
+}
+.smart-style-1 nav>ul>li>a>i {
+	font-size: 17px;
+	vertical-align: 0
+}
+.smart-style-1 nav>ul>li>a b {
+	right: 17px;
+	top: 12px
+}
+.smart-style-1 nav>ul>li>a>i:after {
+	border: 1px solid #fff
+}
+.smart-style-1 nav>ul>li>a:hover i {
+	-webkit-animation-name: none;
+	-moz-animation-name: none;
+	-o-animation-name: none;
+	animation-name: none
+}
+.smart-style-1 .header-search>input[type=text] {
+	border-color: #FFF!important;
+	border-radius: 2px
+}
+.smart-style-1 .header-dropdown-list a.dropdown-toggle {
+	color: #FFF;
+	text-decoration: none
+}
+.smart-style-1 .login-info {
+	height: auto
+}
+.smart-style-1 .login-info>span {
+	padding: 5px 10px
+}
+.smart-style-1 .login-info img {
+	width: 35px;
+	border-radius: 50%
+}
+.smart-style-1 .login-info a {
+	margin-top: 2px
+}
+.smart-style-1 .login-info a span {
+	max-width: 136px
+}
+.smart-style-1 .login-info a:hover {
+	color: #fff
+}
+.smart-style-1 #activity.active .badge {
+	background: #0aa699!important
+}
+.smart-style-1 .ajax-dropdown {
+	background: #E2E8F1
+}
+.smart-style-1 .ajax-notifications {
+	background: #fff
+}
+.smart-style-1 img.online {
+	border-left-color: #0AA699!important
+}
+.smart-style-1 .onoffswitch-inner:before {
+	background-color: #36AECC!important
+}
+.smart-style-1 .bg-color-red {
+	background-color: #fb3c4a!important
+}
+.smart-style-1 .jarviswidget-color-darken>header {
+	background: #1B1E24!important;
+	border-color: #1B1E24!important
+}
+.smart-style-1 .jarviswidget-color-blueDark>header {
+	background: #353D4B!important;
+	border-color: #353D4B!important
+}
+.smart-style-1 .jarviswidget-color-blue>header {
+	background: #688F9E;
+	border-color: #6A838D!important
+}
+.smart-style-1 .jarviswidget-color-purple>header {
+	background: #736086
+}
+.smart-style-1 .jarviswidget-color-red>header {
+	background: #C02631;
+	border-color: #8F2129!important
+}
+.smart-style-1 .jarviswidget .bg-color-red {
+	background: #C02631!important
+}
+.smart-style-1 .ui-chatbox-titlebar {
+	background: #3E4553!important
+}
+.smart-style-1 .ui-chatbox-titlebar.ui-state-focus {
+	background: #1B1F27!important
+}
+.smart-style-1 #ribbon .breadcrumb li:last-child, .smart-style-1 #ribbon .breadcrumb>.active {
+	color: #868686
+}
+.smart-style-1 #ribbon .breadcrumb, .smart-style-1 #ribbon .breadcrumb a {
+	color: #747474!important
+}
+.smart-style-1 .dropdown-menu, .smart-style-1 .open>.dropdown-menu {
+	padding: 4px
+}
+.smart-style-1 .dropdown-menu>li>a {
+	border-radius: 4px;
+	margin: 3px 0
+}
+.smart-style-1 .page-footer, .smart-style-1 .superbox-show, .smart-style-1 aside {
+	background: #1b1e24
+}
+.smart-style-1 .login-info, .smart-style-1 .login-info span {
+	border-bottom: none
+}
+.smart-style-1 nav>ul ul li::before, .smart-style-1 nav>ul>li>ul::before {
+
+}
+.smart-style-1 .login-info a, .smart-style-1 .login-info strong, .smart-style-1 nav ul li a {
+	color: #8b91a0
+}
+.smart-style-1 .pagination>.active>a, .smart-style-1 .pagination>.active>a:focus, .smart-style-1 .pagination>.active>a:hover, .smart-style-1 .pagination>.active>span, .smart-style-1 .pagination>.active>span:focus, .smart-style-1 .pagination>.active>span:hover {
+	background-color: #36AECC;
+	border-color: #36AECC
+}
+.smart-style-1.minified .login-info a {
+	margin-top: 6px
+}
+.smart-style-1.minified .login-info img {
+	width: 30px!important
+}
+.smart-style-1.minified .login-info span {
+	padding: 0 5px!important
+}
+.smart-style-1.minified nav ul li a {
+	padding: 12px 17px 12px 14px
+}
+.smart-style-1.minified nav ul ul li>a:hover {
+	background: #30343D!important
+}
+.smart-style-1.minified nav ul ul li>a {
+	padding-left: 13px;
+	padding-right: 13px!important
+}
+.smart-style-1.minified nav ul ul ul li a {
+	padding-left: 33px!important;
+	padding-right: 13px!important
+}
+.smart-style-1.minified nav ul ul ul ul li a {
+	padding-left: 43px!important;
+	padding-right: 13px!important
+}
+.smart-style-1.minified nav ul ul ul ul ul li a {
+	padding-left: 53px!important;
+	padding-right: 13px!important
+}
+.smart-style-1.minified nav ul ul ul ul ul ul li a {
+	padding-left: 63px!important;
+	padding-right: 13px!important
+}
+.smart-style-1.minified nav ul>li>ul>li>ul {
+	background: #1B1E24
+}
+.smart-style-1.minified nav>ul>li {
+	border-bottom: 1px solid #131416;
+	border-top: 1px solid #303031
+}
+.smart-style-1.minified nav>ul>li>a>i {
+	font-size: 18px
+}
+.smart-style-1.minified nav>ul>li>ul {
+	background: #1B1E24
+}
+.smart-style-1.minified nav>ul>li>ul>li {
+	background: #22262E
+}
+.smart-style-1.minified nav>ul>li>ul>li>ul>li {
+	background: #1B1E24
+}
+.smart-style-1 .jarviswidget .bg-color-greenLight, .smart-style-1 .jarviswidget-color-greenLight>header {
+	border-color: #96B447!important;
+	background: #96B447!important
+}
+.smart-style-1 .jarviswidget .bg-color-yellow, .smart-style-1 .jarviswidget-color-yellow>header {
+	border-color: #DBB727!important;
+	background: #FDD01C!important;
+	color: #25241F
+}
+.smart-style-1 .jarviswidget .bg-color-pink, .smart-style-1 .jarviswidget-color-pink>header {
+	background: #DB8EBB!important
+}
+.smart-style-1.menu-on-top nav ul ul li>a {
+	text-shadow: none!important;
+	color: #646E75
+}
+.smart-style-1.menu-on-top nav ul ul li a {
+	padding-left: 10px!important;
+	font-size: 13px
+}
+.smart-style-1.menu-on-top nav ul ul li:hover>a {
+	color: #fff;
+	background-color: #1b1e24
+}
+.smart-style-1.menu-on-top nav ul ul .active>a {
+	color: #fff!important
+}
+.smart-style-1.menu-on-top nav>ul ul ul {
+	border-top: 1px solid #c7c7c7!important
+}
+.smart-style-1.menu-on-top nav>ul ul li:hover>ul {
+	background: #333
+}
+.smart-style-1.menu-on-top nav>ul>li>a:after {
+	color: #8AA1B3!important
+}
+.smart-style-1.menu-on-top aside {
+	background: #14161B
+}
+.smart-style-1.menu-on-top aside#left-panel {
+	-webkit-box-shadow: 0 2px 4px 0 rgba(0,0,0,.25);
+	box-shadow: 0 2px 4px 0 rgba(0,0,0,.25);
+	border-bottom: 1px solid #222;
+	border-top: 1px solid #333
+}
+.smart-style-1.menu-on-top aside#left-panel nav>ul>li {
+	border-right: 1px solid transparent;
+	border-left: 1px solid transparent
+}
+.smart-style-1.menu-on-top aside#left-panel nav>ul>li>a {
+	text-shadow: none!important;
+	font-size: 13px;
+	padding: 10px 9px!important
+}
+.smart-style-1.menu-on-top aside#left-panel nav>ul>li>ul {
+	background: #3a3633
+}
+.smart-style-1.menu-on-top aside#left-panel nav>ul>li:hover {
+	border-right-color: #333;
+	border-left-color: #333;
+	background: #fff;
+	background: -moz-linear-gradient(top, #04070c 0, #2e3e57 66%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #cfcfcf), color-stop(66%, #2e3e57));
+	background: -webkit-linear-gradient(top, #04070c 0, #2e3e57 66%);
+	background: -o-linear-gradient(top, #04070c 0, #2e3e57 66%);
+	background: -ms-linear-gradient(top, #04070c 0, #2e3e57 66%);
+	background: linear-gradient(to bottom, #04070c, #2e3e57 66%);
+filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#04070C', endColorstr='#2E3E57', GradientType=0)
+}
+.smart-style-1.menu-on-top aside#left-panel nav>ul>li:hover>a {
+	color: #F1F1F1!important;
+	border-left: 1px solid #000;
+	border-right: 1px solid #000;
+	padding-left: 8px!important;
+	padding-right: 8px!important
+}
+.smart-style-1.menu-on-top nav ul ul li a, .smart-style-1.menu-on-top nav ul ul ul li a {
+	color: #D8DEE5
+}
+.smart-style-1.menu-on-top nav ul ul li a:hover, .smart-style-1.menu-on-top nav ul ul ul li a:hover {
+	color: #fff;
+	background-color: #1b1e24!important
+}
+.smart-style-1.menu-on-top nav ul ul, .smart-style-1.menu-on-top nav ul ul ul {
+	background: #2e3e57!important;
+	border: 1px solid transparent;
+	padding: 0
+}
+.smart-style-1.menu-on-top nav ul ul li:hover>a:after, .smart-style-1.menu-on-top nav>ul ul>li a:after, .smart-style-1.menu-on-top nav>ul ul>li a:hover:after, .smart-style-1.menu-on-top nav>ul>li>a:after {
+	color: #D5D5D5
+}
+.smart-style-1.menu-on-top nav ul ul li:hover>a:after, .smart-style-1.menu-on-top nav>ul ul>li a:hover:after {
+	color: #fff
+}
+.smart-style-1.menu-on-top nav>ul ul>li a:only-child:after, .smart-style-1.menu-on-top nav>ul>li>a:only-child:after {
+	content: ""!important
+}
+.smart-style-1.menu-on-top nav ul ul li.active:hover>a, .smart-style-1.menu-on-top nav ul ul li.active>a:hover {
+	color: #fff!important
+}
+@media (max-width:979px) and (min-width:768px) {
+.smart-style-1 #hide-menu i {
+	color: #fff!important
+}
+}
+@media (max-width:767px) {
+.smart-style-1 #hide-menu i {
+	color: #fff!important
+}
+}
+@media only screen and (max-width:679px) and (min-width:0) {
+.smart-style-1 #hide-menu i {
+	color: #fff!important
+}
+}
+@media only screen and (max-width:479px) and (min-width:320px) {
+.smart-style-1 #sparks {
+	background: #fff
+}
+.smart-style-1 #cancel-search-js, .smart-style-1 .search-mobile .header-search>button {
+	border-radius: 3px
+}
+}
+.smart-style-2 #shortcut {
+	background-color: rgba(255,255,255,.9)
+}
+.smart-style-2 #shortcut ul {
+	-webkit-box-shadow: 0 4px 10px rgba(0,0,0,.3);
+	box-shadow: 0 4px 10px rgba(0,0,0,.3);
+	border-bottom: 1px solid #A8BADB
+}
+.smart-style-2 .superbox-list.active:before {
+	color: #2C3742
+}
+.smart-style-2 .superbox-img-description {
+	color: #9EA8B1!important
+}
+.smart-style-2 .project-context>:first-child {
+	text-shadow: none
+}
+.smart-style-2 .project-selector {
+	color: #B2C1D5
+}
+.smart-style-2 .project-selector:hover {
+	color: #fff
+}
+.smart-style-2 #logo-group span#activity {
+	background: none!important;
+	border: none!important;
+	color: #C5C6CA
+}
+.smart-style-2 #logo-group span#activity:hover {
+	color: #fff
+}
+.smart-style-2 #logo-group>span .badge {
+	background: #008DC4
+}
+.smart-style-2 .header-search>input[type=text] {
+	background: #161B22;
+	border: 1px solid #0F1217;
+	color: #fff;
+	border-radius: 4px
+}
+.smart-style-2 #ribbon {
+	background: #fff
+}
+.smart-style-2 .btn.btn-ribbon {
+	background: #9498A0
+}
+.smart-style-2 aside {
+	background: #F7F7F7;
+	background: -webkit-gradient(linear, left top, right top, color-stop(99%, #f7f7f7), color-stop(100%, #cacaca));
+	background: -webkit-linear-gradient(left, #f7f7f7 99%, #cacaca 100%);
+	background: -webkit-gradient(linear, top left, top right, from(#f7f7f7), to(#cacaca));
+	background: linear-gradient(to right, #f7f7f7 99%, #cacaca 100%);
+	min-height: 100%
+}
+.smart-style-2 #left-panel {
+	padding-right: 15px;
+	padding-left: 15px;
+	padding-bottom: 15px;
+	padding-top: 64px
+}
+.smart-style-2 .login-info {
+	margin-bottom: 7px!important;
+	height: auto
+}
+.smart-style-2 .login-info span {
+	padding: 5px 10px 7px;
+	background: #FFF;
+	border-radius: 4px
+}
+.smart-style-2 .login-info a {
+	font-size: 16px!important;
+	color: #33455A;
+	margin-top: 2px
+}
+.smart-style-2 .login-info a span {
+	padding: 0;
+	font-size: 16px!important;
+	max-width: 105px
+}
+.smart-style-2 .login-info img {
+	width: 35px
+}
+.smart-style-2 nav ul li a {
+	color: #69737A!important;
+	font-size: 12px!important
+}
+.smart-style-2 nav ul ul {
+	background: 0 0
+}
+.smart-style-2 nav ul ul>li:hover b {
+	color: #69737A!important
+}
+.smart-style-2 nav ul ul li>a {
+	padding-left: 23px
+}
+.smart-style-2 nav ul ul ul li a {
+	padding-left: 30px
+}
+.smart-style-2 nav ul ul ul ul li a {
+	padding-left: 40px
+}
+.smart-style-2 nav ul ul ul ul ul li a {
+	padding-left: 50px
+}
+.smart-style-2 nav ul ul ul ul ul ul li a {
+	padding-left: 60px
+}
+.smart-style-2 nav>ul>li>a {
+	padding-top: 16px;
+	padding-bottom: 16px
+}
+.smart-style-2 nav>ul>li>a>i {
+	font-size: 25px!important
+}
+.smart-style-2 nav>ul>li>a b {
+	top: 16px
+}
+.smart-style-2 .jarviswidget-color-blueDark>header {
+	background: #2C3742!important;
+	border-color: #2C3742!important
+}
+.smart-style-2 .btn-success {
+	background-color: #96bf48;
+	border-color: #84A83E
+}
+.smart-style-2 .btn-danger {
+	background-color: #DB4A67;
+	border-color: #CA4862
+}
+.smart-style-2 .btn-warning {
+	background-color: #E2B14A;
+	border-color: #C99D42
+}
+.smart-style-2 .bg-color-red {
+	background: #DB4A67!important
+}
+.smart-style-2 .bg-color-blue {
+	background: #4387bf!important
+}
+.smart-style-2 .smart-form .toggle i:before {
+	background-color: #3b9ff3
+}
+.smart-style-2 .bg-color-greenLight {
+	background-color: #89AD45!important
+}
+.smart-style-2 .bg-color-orange {
+	background-color: #D6A848!important
+}
+.smart-style-2 .bg-color-teal {
+	background-color: #5ba0a3!important
+}
+.smart-style-2 .minifyme {
+	background: #D7DAE2;
+	border-bottom: 1px solid #818181;
+	color: #7E7E7E
+}
+.smart-style-2 .minifyme:hover {
+	color: #4E4E4E
+}
+.smart-style-2 .onoffswitch-inner:before {
+	background: #3b9ff3;
+	border-color: #3b9ff3 #257DC7 #2A7DC4
+}
+.smart-style-2 .onoffswitch-checkbox:checked+.onoffswitch-label .onoffswitch-switch:before {
+	color: #84A83E
+}
+.smart-style-2 .ui-chatbox-titlebar {
+	background: #576574!important
+}
+.smart-style-2 .ui-chatbox-titlebar.ui-state-focus {
+	background: #2C3742!important
+}
+body.smart-style-2 {
+	background: #fff
+}
+.smart-style-2 #header, .smart-style-2 .page-footer, .smart-style-2 .superbox-show {
+	background-image: none;
+	background-color: #2C3742
+}
+.smart-style-2 #hide-menu a>i, .smart-style-2 .btn-header>:first-child>a {
+	background: 0 0;
+	border: none!important;
+	color: #C5C6CA!important;
+	box-shadow: none!important
+}
+.smart-style-2 #hide-menu a:hover i, .smart-style-2 .btn-header>:first-child>a:hover {
+	color: #fff!important;
+	cursor: pointer!important
+}
+.smart-style-2 .header-dropdown-list a.dropdown-toggle, .smart-style-2 .header-search>button {
+	color: #C5C6CA
+}
+.smart-style-2.fixed-ribbon #ribbon {
+	border-bottom: 1px solid #E0E0E0
+}
+.smart-style-2 #ribbon .breadcrumb, .smart-style-2 #ribbon .breadcrumb a, .smart-style-2 #ribbon .breadcrumb li:last-child, .smart-style-2 #ribbon .breadcrumb>.active {
+	color: #7C7C7C!important
+}
+.menu-on-top.smart-style-2 #left-panel {
+	padding-top: 49px!important
+}
+.smart-style-2 .login-info, .smart-style-2 .login-info span {
+	border: 0!important;
+	box-shadow: none!important
+}
+.smart-style-2 nav ul .active>a, .smart-style-2 nav ul li.open>a, .smart-style-2 nav ul li.open>a b {
+	color: #202427!important;
+	font-weight: 700
+}
+.smart-style-2 nav ul li a:hover, .smart-style-2 nav ul ul li>a:hover {
+	color: #202427!important;
+	background: none!important
+}
+.smart-style-2 nav>ul ul li::before, .smart-style-2 nav>ul>li>ul::before {
+	border: none!important
+}
+.smart-style-2 .btn-primary, .smart-style-2 .smart-form .button {
+	background-color: #3b9ff3;
+	border-color: #3292E2
+}
+.smart-style-2 .btn-primary.active, .smart-style-2 .btn-primary:active, .smart-style-2 .btn-primary:focus, .smart-style-2 .btn-primary:hover, .smart-style-2 .open .dropdown-toggle.btn-primary {
+	background-color: #3E90D4;
+	border-color: #2F7DBE
+}
+.smart-style-2 .dropdown-menu>li>a:focus, .smart-style-2 .dropdown-menu>li>a:hover {
+	background-color: #3E90D4
+}
+.smart-style-2 .btn-success.active, .smart-style-2 .btn-success:active, .smart-style-2 .btn-success:focus, .smart-style-2 .btn-success:hover, .smart-style-2 .open .dropdown-toggle.btn-success {
+	background-color: #89AD45;
+	border-color: #78973B
+}
+.smart-style-2 .btn-danger.active, .smart-style-2 .btn-danger:active, .smart-style-2 .btn-danger:focus, .smart-style-2 .btn-danger:hover, .smart-style-2 .open .dropdown-toggle.btn-danger {
+	background-color: #CF4762;
+	border-color: #C0455E
+}
+.smart-style-2 .btn-warning.active, .smart-style-2 .btn-warning:active, .smart-style-2 .btn-warning:focus, .smart-style-2 .btn-warning:hover, .smart-style-2 .open .dropdown-toggle.btn-warning {
+	background-color: #D6A848;
+	border-color: #C09844
+}
+.smart-style-2 .pagination>.active>a, .smart-style-2 .pagination>.active>a:focus, .smart-style-2 .pagination>.active>a:hover, .smart-style-2 .pagination>.active>span, .smart-style-2 .pagination>.active>span:focus, .smart-style-2 .pagination>.active>span:hover {
+	background-color: #3b9ff3
+}
+.smart-style-2.minified .login-info {
+	margin: 0!important
+}
+.smart-style-2.minified .login-info a {
+	margin-top: 4px
+}
+.smart-style-2.minified .login-info span {
+	padding: 0
+}
+.smart-style-2.minified #left-panel {
+	padding: 0!important;
+	padding-top: 50px!important
+}
+.smart-style-2.minified nav ul>li>a {
+	padding: 12px 11px
+}
+.smart-style-2.minified nav ul li.active>a:before {
+	height: 23px;
+	right: -19px;
+	top: 7px;
+	font-size: 20px;
+	color: #FFF
+}
+.smart-style-2.minified nav>ul>li {
+	border-bottom: 1px solid #E6E6E6;
+	border-top: 1px solid #FFF
+}
+.smart-style-2.minified nav>ul>li>a>i {
+	font-size: 18px!important
+}
+.smart-style-2.minified nav>ul>li>ul, .smart-style-2.minified nav>ul>li>ul>li, .smart-style-2.minified nav>ul>li>ul>li>ul>li {
+	background: #fff!important
+}
+.smart-style-2 .smart-form .checkbox input:checked+i, .smart-style-2 .smart-form .radio input:checked+i, .smart-style-2 .smart-form .toggle input:checked+i {
+	border-color: #3b9ff3
+}
+.smart-form .rating input+label:hover, .smart-form .rating input+label:hover~label {
+	color: #3b9ff3
+}
+.smart-style-2.menu-on-top .menu-item-parent {
+	font-size: 10px
+}
+.smart-style-2.menu-on-top #left-panel {
+	padding-right: 0;
+	padding-left: 0;
+	padding-bottom: 0
+}
+.smart-style-2.menu-on-top nav ul ul li>a {
+	text-shadow: none!important;
+	color: #646E75
+}
+.smart-style-2.menu-on-top nav ul ul li a {
+	padding-left: 10px!important;
+	font-size: 13px
+}
+.smart-style-2.menu-on-top nav ul ul li:hover>a {
+	color: #fff!important;
+	background-color: #5E6C88
+}
+.smart-style-2.menu-on-top nav ul ul .active>a {
+	color: #fff!important
+}
+.smart-style-2.menu-on-top nav>ul ul ul {
+	border-top: 1px solid #c7c7c7!important
+}
+.smart-style-2.menu-on-top nav>ul ul li:hover>ul {
+	background: #333
+}
+.smart-style-2.menu-on-top nav>ul>li>a:after {
+	color: #8AA1B3!important
+}
+.smart-style-2.menu-on-top aside {
+	background: inherit
+}
+.smart-style-2.menu-on-top aside#left-panel {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	border-bottom: 1px solid #B8B8B8;
+	border-top: 1px solid #333
+}
+.smart-style-2.menu-on-top aside#left-panel nav>ul>li {
+	border-right: 1px solid transparent;
+	border-left: 1px solid transparent
+}
+.smart-style-2.menu-on-top aside#left-panel nav>ul>li>a {
+	text-shadow: none!important;
+	font-size: 13px;
+	padding: 10px 9px!important
+}
+.smart-style-2.menu-on-top aside#left-panel nav>ul>li>ul {
+	background: #2C3742
+}
+.smart-style-2.menu-on-top aside#left-panel nav>ul>li:hover {
+	background: #2e3e57;
+	border-right-color: #fff;
+	border-left-color: #fff
+}
+.smart-style-2.menu-on-top aside#left-panel nav>ul>li:hover>a {
+	color: #F1F1F1!important;
+	border-left: 1px solid #000;
+	border-right: 1px solid #000;
+	padding-left: 8px!important;
+	padding-right: 8px!important
+}
+.smart-style-2.menu-on-top nav ul ul li a, .smart-style-2.menu-on-top nav ul ul ul li a {
+	color: #ADBED3!important
+}
+.smart-style-2.menu-on-top nav ul ul li a:hover, .smart-style-2.menu-on-top nav ul ul ul li a:hover {
+	color: #fff;
+	background-color: #5E6C88!important
+}
+.smart-style-2.menu-on-top nav ul ul, .smart-style-2.menu-on-top nav ul ul ul {
+	background: #2e3e57!important;
+	border: 1px solid transparent
+}
+.smart-style-2.menu-on-top nav ul ul li:hover>a:after, .smart-style-2.menu-on-top nav>ul ul>li a:after, .smart-style-2.menu-on-top nav>ul ul>li a:hover:after, .smart-style-2.menu-on-top nav>ul>li>a:after {
+	color: #D5D5D5
+}
+.smart-style-2.menu-on-top nav ul ul li:hover>a:after, .smart-style-2.menu-on-top nav>ul ul>li a:hover:after {
+	color: #fff
+}
+.smart-style-2.menu-on-top nav ul ul .active>a:hover, .smart-style-2.menu-on-top nav ul ul li.active:hover>a {
+	color: #fff!important
+}
+.smart-style-3 body, body.smart-style-3 {
+	background: #fff!important;
+	font-family: Arial, sans-serif
+}
+.smart-style-3 #logo img {
+	width: 125px;
+	height: auto;
+	padding-left: 3px;
+	margin-top: -3px
+}
+.smart-style-3 #header {
+	background-color: #f78c40;
+	background-image: -moz-linear-gradient(top, #f78c40, #d67632);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f78c40), to(#d67632));
+	background-image: -webkit-linear-gradient(top, #f78c40, #d67632);
+	background-image: -o-linear-gradient(top, #f78c40, #d67632);
+	background-image: linear-gradient(to bottom, #f78c40, #d67632)
+}
+.smart-style-3 #ribbon {
+	background: #fff
+}
+.smart-style-3 #hide-menu i {
+	color: #fff!important
+}
+.smart-style-3 .header-dropdown-list>li>.dropdown-toggle {
+	display: block;
+	background: rgba(0,0,0,.2);
+	padding: 2px 7px 3px;
+	border-radius: 3px;
+	margin-top: 14px
+}
+.smart-style-3 .header-search>input[type=text] {
+	border-color: #CA854F
+}
+.smart-style-3 .header-search>button {
+	color: #DF9B45
+}
+.smart-style-3 aside {
+	background: #f2f2f2;
+	border-right: 2px solid #ccc
+}
+.smart-style-3 .login-info {
+	border-bottom: 1px solid #E2E2E2;
+	background: #fff;
+	box-shadow: none;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none
+}
+.smart-style-3 .login-info span {
+	border-bottom: none
+}
+.smart-style-3 .login-info a span {
+	color: #444!important
+}
+.smart-style-3 nav>ul>li {
+	background-color: #f2f2f2;
+	background-image: -moz-linear-gradient(top, #f9f9f9, #f2f2f2);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f9f9f9), to(#f2f2f2));
+	background-image: -webkit-linear-gradient(top, #f9f9f9, #f2f2f2);
+	background-image: -o-linear-gradient(top, #f9f9f9, #f2f2f2);
+	background-image: linear-gradient(to bottom, #f9f9f9, #f2f2f2);
+	border-bottom: 1px solid #DFDFDF
+}
+.smart-style-3 nav>ul>li>a {
+	padding: 12px 10px 12px 11px;
+	font-size: 13px
+}
+.smart-style-3 nav>ul>li>a b {
+	top: 12px
+}
+.smart-style-3 nav>ul>li>a>i {
+	color: #4D8BA5;
+	font-size: 20px
+}
+.smart-style-3 nav>ul>li.active>a:before {
+	top: 10px!important
+}
+.smart-style-3 nav>ul>li.open {
+	border-left: 4px solid #4D8BA5
+}
+.smart-style-3 nav>ul>li.open>a {
+	padding-left: 7px
+}
+.smart-style-3 nav>ul>li.open ul li>a, .smart-style-3 nav>ul>li.open>ul>li>a {
+	padding-left: 38px
+}
+.smart-style-3 nav ul li.active>a:before {
+	top: 6px;
+	color: #bbb
+}
+.smart-style-3 nav ul li.active>a {
+	font-weight: 700
+}
+.smart-style-3 nav ul ul {
+	background: 0 0
+}
+.smart-style-3 nav ul ul li>a {
+	font-size: 13px
+}
+.smart-style-3 nav ul li a:hover {
+	background: rgba(0,0,0,.05)!important
+}
+.smart-style-3 .superbox-list.active:before {
+	color: #3D3B39
+}
+.smart-style-3 .active+.ajax-dropdown {
+	-webkit-box-shadow: 1px 14px 16px rgba(61,35,14,.55);
+	box-shadow: 1px 14px 16px rgba(61,35,14,.55)
+}
+.smart-style-3 .dropdown-menu {
+	border-radius: 0;
+	border-bottom: 2px solid #ADADAD;
+	background: #FDDFB3
+}
+.smart-style-3 .dropdown-menu>li>a {
+	color: #4E361B
+}
+.smart-style-3 .dropdown-menu .divider {
+	background-color: #EBC7A6
+}
+.smart-style-3 .dropdown-menu-large .dropdown-header {
+	color: #5C391E
+}
+.smart-style-3 .has-warning .form-control {
+	border-color: #c09853!important
+}
+.smart-style-3 .has-error .form-control {
+	border-color: #b94a48!important
+}
+.smart-style-3 .has-success .form-control {
+	border-color: #468847!important
+}
+.smart-style-3 #shortcut {
+	background-color: rgba(25,16,6,.85)
+}
+.smart-style-3 .ui-chatbox-titlebar {
+	background-color: #66605B!important
+}
+.smart-style-3 .ui-chatbox-titlebar.ui-state-focus {
+	background-color: #4B433C!important
+}
+.smart-style-3 #ribbon .breadcrumb, .smart-style-3 #ribbon .breadcrumb a {
+	color: #7C7C7C!important
+}
+.smart-style-3 #ribbon .breadcrumb li:last-child, .smart-style-3 #ribbon .breadcrumb>.active {
+	color: #5F5F5F
+}
+.smart-style-3.fixed-ribbon #ribbon {
+	box-shadow: 0 .0625em .3125em rgba(0,0,0,.35)
+}
+.smart-style-3 #logo-group span#activity, .smart-style-3 .btn-header>:first-child>a {
+	background-color: #DD7C37;
+	background-image: -moz-linear-gradient(top, #dd7c37, #b9662b);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#b9662b), to(#b9662b));
+	background-image: -webkit-linear-gradient(top, #dd7c37, #b9662b);
+	background-image: -o-linear-gradient(top, #dd7c37, #b9662b);
+	background-image: linear-gradient(to bottom, #dd7c37, #b9662b);
+	color: #fff!important;
+	border: 1px solid #f09d61;
+	text-shadow: #985813 0 -1px
+}
+.smart-style-3 #logo-group span#activity:active, .smart-style-3 #logo-group span#activity:hover, .smart-style-3 .btn-header>:first-child>a:active, .smart-style-3 .btn-header>:first-child>a:hover {
+	-webkit-box-shadow: inset 1px 1px 0 #985813, inset -1px -1px 0 #985813;
+	-moz-box-shadow: inset 1px 1px 0 #985813, inset -1px -1px 0 #985813;
+	box-shadow: inset 1px 1px 0 #985813, inset -1px -1px 0 #985813;
+	background-color: #dd7a35;
+	background-image: -moz-linear-gradient(top, #dd7a35, #984a13);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#dd7a35), to(#984a13));
+	background-image: -webkit-linear-gradient(top, #dd7a35, #984a13);
+	background-image: -o-linear-gradient(top, #dd7a35, #984a13);
+	background-image: linear-gradient(to bottom, #dd7a35, #984a13)
+}
+.smart-style-3 .header-dropdown-list>li>.dropdown-toggle, .smart-style-3 .project-context>:first-child, .smart-style-3 .project-selector {
+	color: #fff;
+	text-shadow: #985813 0 -1px
+}
+.smart-style-3 nav ul li a, .smart-style-3 nav ul li.open>a, .smart-style-3 nav ul li.open>a b {
+	color: #444!important
+}
+.smart-style-3 nav>ul ul li::before, .smart-style-3 nav>ul>li>ul::before {
+	border: none
+}
+.smart-style-3 .page-footer, .smart-style-3 .superbox-show {
+	background: #3D3B39
+}
+.smart-style-3.minified nav>ul>li {
+	border-bottom: 1px solid #E9E4E4;
+	border-top: 1px solid #FFF
+}
+.smart-style-3.minified nav>ul>li.open ul li>a {
+	padding-left: 14px
+}
+.smart-style-3.minified nav>ul>li>ul, .smart-style-3.minified nav>ul>li>ul>li>ul>li {
+	background-color: rgba(69,69,69,.9)
+}
+.smart-style-3.minified nav ul li a, .smart-style-3.minified nav ul li.open>a, .smart-style-3.minified nav ul li.open>a b {
+	color: #fff!important
+}
+.smart-style-3 .dropdown-menu>.active>a, .smart-style-3 .dropdown-menu>.active>a:hover, .smart-style-3 .dropdown-menu>li>a:focus, .smart-style-3 .dropdown-menu>li>a:hover, .smart-style-3 .tt-suggestion.tt-is-under-cursor {
+	background-color: #EC9519;
+	color: #fff
+}
+.smart-style-3 .dropdown-menu-large>li ul>li>a:focus, .smart-style-3 .dropdown-menu-large>li ul>li>a:hover {
+	border-radius: 3px;
+	background-color: #F1B686
+}
+.smart-style-3 input:not([type]), .smart-style-3 input[type=color], .smart-style-3 input[type=email], .smart-style-3 input[type=number], .smart-style-3 input[type=password], .smart-style-3 input[type=tel], .smart-style-3 input[type=text], .smart-style-3 input[type=url], .smart-style-3 textarea {
+	border-top-color: #a3a3a3;
+	border-left-color: #a3a3a3;
+	border-bottom-color: #ccc;
+	border-right-color: #ccc;
+	-webkit-box-shadow: inset 0 1px 0 #d6d6d6;
+	-moz-box-shadow: inset 0 1px 0 #d6d6d6;
+	box-shadow: inset 0 1px 0 #d6d6d6;
+	color: #000
+}
+.smart-style-3 .select2-container-multi .select2-choices .select2-search-field input, .smart-style-3 .tt-hint {
+	box-shadow: none!important;
+	border: none!important
+}
+.smart-style-3 .SmallBox span, .smart-style-3 .bigBox span {
+	letter-spacing: 0
+}
+.smart-style-3.menu-on-top nav ul ul li>a {
+	color: inherit
+}
+.smart-style-3.menu-on-top nav ul ul li a {
+	padding-left: 10px!important;
+	font-size: 13px
+}
+.smart-style-3.menu-on-top nav ul ul li:hover>a {
+	color: #fff
+}
+.smart-style-3.menu-on-top nav ul ul .active>a {
+	color: #333!important
+}
+.smart-style-3.menu-on-top nav ul>li>ul {
+	left: -2px
+}
+.smart-style-3.menu-on-top nav>ul>li>a:hover {
+	background: #fff!important
+}
+.smart-style-3.menu-on-top nav>ul>li>a:after {
+	color: #8AA1B3!important
+}
+.smart-style-3.menu-on-top aside {
+	background: inherit
+}
+.smart-style-3.menu-on-top aside#left-panel {
+	-webkit-box-shadow: 0 2px 4px 0 rgba(0,0,0,.25);
+	box-shadow: 0 2px 4px 0 rgba(0,0,0,.25);
+	border-bottom: 1px solid #fff;
+	border-top: 1px solid #fff
+}
+.smart-style-3.menu-on-top aside#left-panel nav>ul>li {
+	border-right: 1px solid #E2E2E2;
+	border-left: 1px solid #FFF
+}
+.smart-style-3.menu-on-top aside#left-panel nav>ul>li>a {
+	text-shadow: none!important;
+	font-size: 13px;
+	padding: 10px 9px!important;
+	border: none!important
+}
+.smart-style-3.menu-on-top aside#left-panel nav>ul>li:hover {
+	background: #fff
+}
+.smart-style-3.menu-on-top nav ul ul, .smart-style-3.menu-on-top nav ul ul ul {
+	border-color: #E2E2E2
+}
+.smart-style-3.menu-on-top nav ul ul li a:hover, .smart-style-3.menu-on-top nav ul ul li:hover>a, .smart-style-3.menu-on-top nav ul ul ul li a:hover {
+	background: rgba(0,0,0,.05)
+}
+.smart-style-3.menu-on-top nav ul ul li a, .smart-style-3.menu-on-top nav ul ul ul li a {
+	color: #D8DEE5
+}
+.smart-style-3.menu-on-top nav ul ul li a:hover, .smart-style-3.menu-on-top nav ul ul ul li a:hover {
+	color: #fff
+}
+.smart-style-3.menu-on-top nav ul ul li:hover>a:after, .smart-style-3.menu-on-top nav>ul ul>li a:after, .smart-style-3.menu-on-top nav>ul ul>li a:hover:after, .smart-style-3.menu-on-top nav>ul>li>a:after {
+	color: inherit
+}
+.smart-style-3.menu-on-top nav ul ul .active>a:hover, .smart-style-3.menu-on-top nav ul ul li.active:hover>a {
+	color: #333!important
+}
+@media (max-width:979px) {
+.smart-style-3 #content {
+	padding-left: 5px;
+	padding-right: 5px
+}
+.smart-style-3 #ribbon {
+	margin-left: 0;
+	margin-right: 0;
+	margin-top: 0;
+	border-radius: 0
+}
+}
+body.smart-style-4 {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif!important
+}
+.smart-style-4 .ribbon-button-alignment {
+	display: none
+}
+.smart-style-4:not(.menu-on-top) #left-panel {
+	padding-top: 49px
+}
+.smart-style-4 #ribbon {
+	position: absolute!important;
+	z-index: 1;
+	left: 3px;
+	top: 30px;
+	background: 0 0;
+	font-size: 11px;
+	font-weight: 700
+}
+.smart-style-4 #header {
+	background: #fff;
+	box-shadow: 0 2px 2px rgba(0,0,0,.05), 0 1px 0 rgba(0,0,0,.05)
+}
+.smart-style-4 #header>:first-child {
+	background: #71a06a
+}
+.smart-style-4 .login-info>span {
+	border-bottom-color: #000
+}
+.smart-style-4 .page-title {
+	margin: 8px 0 13px;
+	font-size: 24px
+}
+.smart-style-4 .page-title>span {
+	font-size: 14px
+}
+.smart-style-4 .page-title>i:first-child {
+	display: none
+}
+.smart-style-4 #logo-group span#activity {
+	background: #5a8354;
+	background: -webkit-gradient(linear, left bottom, left top, color-stop(0, #5a8354), color-stop(1, #8fb489));
+	background: -ms-linear-gradient(bottom, #5a8354, #8fb489);
+	background: -moz-linear-gradient(center bottom, #5a8354 0, #8fb489 100%);
+	background: -o-linear-gradient(#8fb489, #5a8354);
+filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#8fb489', endColorstr='#5a8354', GradientType=0);
+	border-color: #5a8354;
+	color: #e8efe7
+}
+.smart-style-4:not(.mobile-view-activated) .login-info {
+	display: none
+}
+.smart-style-4:not(.mobile-view-activated) #mobile-profile-img {
+	display: inline-block!important
+}
+.smart-style-4 #mobile-profile-img a.userdropdown img {
+	margin-left: 3px
+}
+.smart-style-4 #mobile-profile-img>li {
+	display: inline-block;
+	padding-right: 0;
+	margin-right: -3px
+}
+.smart-style-4 aside {
+	background: #3a3f51
+}
+.smart-style-4 aside .minifyme {
+	background: #71a06a;
+	color: #e8efe7
+}
+.smart-style-4 aside .minifyme:hover {
+	background: #8fb489;
+	color: #fff
+}
+.smart-style-4:not(.menu-on-top) nav ul li.active:not(.open)>a:before, .smart-style-4:not(.menu-on-top) nav>ul>li.active:not(.open)>a:before {
+	content: "";
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACYAAAAqBAMAAAAt0TTmAAAAHlBMVEUAAAD///////////////////////////////////8kfJuVAAAACnRSTlMABQMJDRIBFhofGayHogAAAOFJREFUKM+F070RgzAMBeBU6QkbuKDnlA1INoCjpWIDzmyA2QC2zVMC6IfcIbrvnjC2xe1v3XuUs4AqoN6gBjMuYOcNqINElHskLqDuflY/fKjgC1VRCZTgu/6isaZpoByU5nYAIqgtRiRhJZp3HKc4AInUynOKQNs8LwlWc3MoNluXNEWsYmxNabdwGDefbRp4YW2rmM1dv8+ue/4+v49MLB37lTMYQdxKclbq/ELfbdaCEOPX2ftA7HRviMHU/SIl1yazUdrZ2MjMUA7gaSn8/IE6ZSHD42Y3oGQH+l+4qg+S/XPD6LV6iwAAAABJRU5ErkJggg==);
+	background-repeat: no-repeat;
+	background-position: left;
+	border-left: 4px solid #fff;
+	left: 0;
+	height: 20px;
+	top: 6px
+}
+.smart-style-4 nav>ul>li.active:not(.open)>a:before {
+	height: 26px!important;
+	top: 7px!important
+}
+.smart-style-4 nav ul li a {
+	color: #bbc0cf;
+	-webkit-transition: background-color .2s ease-in-out 0s;
+	transition: background-color .2s ease-in-out 0s;
+	font-size: 13px;
+	padding-top: 12px;
+	padding-bottom: 11px
+}
+.smart-style-4 nav>ul>li>a {
+	padding-top: 13px;
+	padding-bottom: 13px
+}
+.smart-style-4 nav>ul>li>a b {
+	top: 11px;
+	font-size: 14px
+}
+.smart-style-4 nav>ul ul li a {
+	padding-top: 9px;
+	padding-bottom: 8px
+}
+.smart-style-4:not(.minified) nav ul ul li>a {
+	padding-left: 46px
+}
+.smart-style-4:not(.minified) nav ul ul ul li a {
+	padding-left: 69px
+}
+.smart-style-4:not(.minified) nav ul ul ul ul li a {
+	padding-left: 92px
+}
+.smart-style-4:not(.minified) nav ul ul ul ul ul li a {
+	padding-left: 115px
+}
+.smart-style-4:not(.minified) nav ul ul ul ul ul ul li a {
+	padding-left: 138px
+}
+.smart-style-4:not(.minified) nav>ul>li>a>i {
+	margin-right: 9px
+}
+.smart-style-4:not(.menu-on-top) nav ul li a:hover {
+	background: #313645;
+	color: #fff
+}
+.smart-style-4 nav ul li a:active {
+	background: #292d39;
+	color: #fff
+}
+.smart-style-4 nav ul li.open>a, .smart-style-4 nav ul ul, .smart-style-4.minified nav li li, .smart-style-4.minified nav ul ul {
+	background: #363a4b
+}
+.smart-style-4 nav>ul ul li:before, .smart-style-4 nav>ul>li>ul:before {
+	border: none
+}
+.smart-style-4 #content>.row:first-child {
+	background-color: #f7f7f9;
+	margin-top: -10px;
+	padding-top: 10px;
+	margin-bottom: 13px;
+	padding-bottom: 7px;
+	border-bottom: 1px solid #d9dbe4
+}
+.smart-style-4 #ribbon, .smart-style-4 #smart-fixed-ribbon+span {
+	display: none
+}
+.smart-style-4.fixed-ribbon #content {
+	padding-top: 10px
+}
+.smart-style-4 .superbox-show {
+	background: #1e212a
+}
+.smart-style-4 .superbox-list.active:before {
+	color: #1e212a
+}
+.smart-style-4 .superbox-imageinfo span {
+	color: #a7acc0
+}
+@media (max-width:979px) {
+.smart-style-4 #header {
+	background: #71a06a
+}
+.smart-style-4 #hide-menu>:first-child>a {
+	border-color: #FFF!important
+}
+.smart-style-4:not(.menu-on-top) #left-panel {
+	margin-top: 0!important
+}
+.smart-style-4 #project-context>:first-child, .smart-style-4 #project-selector, .smart-style-4 .btn-header.transparent a, .smart-style-4 .header-dropdown-list>li>.dropdown-toggle, .smart-style-4 .project-context>:first-child, .smart-style-4 .project-selector {
+	color: #fff!important;
+	text-shadow: none
+}
+}
+.smart-style-5 {
+	background: url(../img/glass.jpg) no-repeat center top fixed;
+	background-size: cover;
+	color: #fff
+}
+.smart-style-5 #header, .smart-style-5 #logo-group span#activity, .smart-style-5 #ribbon, .smart-style-5 .btn-header>:first-child>a, .smart-style-5 .header-search>input[type=text], .smart-style-5 .jvectormap-container {
+	background: none!important
+}
+.smart-style-5.fixed-header #header {
+	background: rgba(0,0,0,.7)!important
+}
+.smart-style-5.fixed-ribbon #ribbon {
+	background: rgba(0,0,0,.23)!important
+}
+.smart-style-5 #logo-group span#activity, .smart-style-5 .btn-header>:first-child>a, .smart-style-5 .header-search>input[type=text], .smart-style-5 .jarviswidget>header, .smart-style-5 .login-info {
+	border-color: transparent
+}
+.smart-style-5 #logo-group span#activity:hover, .smart-style-5 .btn-header>:first-child>a:hover, .smart-style-5 .header-search>input[type=text]:hover, .smart-style-5 .jarviswidget>header:hover, .smart-style-5 .login-info:hover {
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none
+}
+#extr-page .smart-style-5 h4.paragraph-header, #extr-page .smart-style-5 h5.about-heading, .smart-style-5 #logo-group span#activity, .smart-style-5 #project-context>:first-child, .smart-style-5 #project-selector, .smart-style-5 .bs-example-type .table .info, .smart-style-5 .close, .smart-style-5 .close:focus, .smart-style-5 .close:hover, .smart-style-5 .dd-handle>span, .smart-style-5 .dropdown-menu>li>a, .smart-style-5 .dygraph-axis-label, .smart-style-5 .easy-pie-chart .percent, .smart-style-5 .h1 .small, .smart-style-5 .h1 small, .smart-style-5 .h2 .small, .smart-style-5 .h2 small, .smart-style-5 .h3 .small, .smart-style-5 .h3 small, .smart-style-5 .h4 .small, .smart-style-5 .h4 small, .smart-style-5 .h5 .small, .smart-style-5 .h5 small, .smart-style-5 .h6 .small, .smart-style-5 .h6 small, .smart-style-5 .header-search>button, .smart-style-5 .highlight, .smart-style-5 .highlight pre code, .smart-style-5 .inbox-data-message>:first-child, .smart-style-5 .inbox-data-message>:first-child span, .smart-style-5 .inbox-menu-lg li a, .smart-style-5 .irs-grid-pol, .smart-style-5 .irs-grid-text, .smart-style-5 .irs-max, .smart-style-5 .irs-min, .smart-style-5 .jarviswidget header:first-child .nav-tabs li a, .smart-style-5 .jarviswidget>header, .smart-style-5 .nav-tabs>li>a, .smart-style-5 .notification-body .from, .smart-style-5 .notification-body time, .smart-style-5 .page-title span, .smart-style-5 .pager .disabled>a, .smart-style-5 .pager .disabled>a:focus, .smart-style-5 .pager .disabled>a:hover, .smart-style-5 .pager .disabled>span, .smart-style-5 .project-context>:first-child, .smart-style-5 .project-selector, .smart-style-5 .responsive-utilities td.is-visible, .smart-style-5 .row-seperator-header, .smart-style-5 .smart-form .checkbox input+i:after, .smart-style-5 .smart-form header, .smart-style-5 .superbox-imageinfo span, .smart-style-5 .text-muted, .smart-style-5 .todo-group-title, .smart-style-5 .todo>li>p, .smart-style-5 .todo>li>p>.date, .smart-style-5 .todo>li>p>:first-child, .smart-style-5 .tree li span, .smart-style-5 .ui-widget-content, .smart-style-5 .usr-card-content>:first-child, .smart-style-5 a, .smart-style-5 code, .smart-style-5 h1 .small, .smart-style-5 h1 small, .smart-style-5 h2 .small, .smart-style-5 h2 small, .smart-style-5 h3 .small, .smart-style-5 h3 small, .smart-style-5 h4 .small, .smart-style-5 h4 small, .smart-style-5 h5 .small, .smart-style-5 h5 small, .smart-style-5 h6 .small, .smart-style-5 h6 small, .smart-style-5 pre {
+	color: #fff
+}
+.smart-style-5 #ribbon .breadcrumb, .smart-style-5 #ribbon .breadcrumb a, .smart-style-5 .txt-color-blueDark {
+	color: #fff!important
+}
+.smart-style-5 #ribbon .breadcrumb li:last-child, .smart-style-5 #ribbon .breadcrumb>.active, .smart-style-5 .open .project-selector {
+	color: #FFD600
+}
+.smart-style-5 a:focus, .smart-style-5 a:hover {
+	color: #FFD600;
+	text-decoration: none
+}
+.smart-style-5 #header, .smart-style-5 .login-info>span {
+	border-bottom: 1px solid rgba(255,255,225,.15)
+}
+.smart-style-5 .jarviswidget>header {
+	background: rgba(0,0,0,.5);
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none
+}
+.smart-style-5 .fc-border-separate thead tr, .smart-style-5 .table thead tr, .smart-style-5 aside#left-panel {
+	background: rgba(0,0,0,.43)
+}
+.smart-style-5 .jarviswidget>div {
+	background: rgba(0,0,0,.18)!important;
+	border-color: rgba(0,0,0,.13)!important
+}
+.smart-style-5 .highlight {
+	border-color: rgba(255,255,225,.15);
+	background: rgba(255,255,225,.43)
+}
+.smart-style-5 pre {
+	background: rgba(255,255,255,.13)
+}
+.smart-style-5 .highlight pre code, .smart-style-5 code {
+	background: rgba(0,0,0,.13);
+	border-color: transparent
+}
+.smart-style-5 .bs-example, .smart-style-5 .well {
+	background: rgba(255,255,255,.23);
+	border-color: transparent;
+	-webkit-box-shadow: 0 1px 1px rgba(0,0,0,.43);
+	-moz-box-shadow: 0 1px 1px rgba(0,0,0,.43);
+	box-shadow: 0 1px 1px rgba(0,0,0,.43)
+}
+.smart-style-5 .alert {
+	-webkit-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	-moz-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	text-shadow: 0 1px 5px rgba(0,0,0,.25)
+}
+.smart-style-5 .alert-info {
+	background: rgba(174,207,233,.43);
+	color: #E7F1FF
+}
+.smart-style-5 .alert-success {
+	border-color: rgba(132,233,177,.5);
+	color: #fff;
+	background-color: rgba(120,201,156,.5)
+}
+.smart-style-5 .alert-warning {
+	border-color: rgba(255,242,200,.4);
+	color: #fff;
+	background-color: rgba(255,242,200,.4)
+}
+.alert-warning a {
+	color: #333
+}
+.smart-style-5 .alert-danger {
+	border-color: #953b39;
+	color: #fff;
+	background-color: rgba(194,101,101,.7)
+}
+.smart-style-5 hr {
+	border-color: rgba(255,255,225,.15)
+}
+.smart-style-5 .btn-header>:first-child>a, .smart-style-5 .header-search>input[type=text] {
+	color: #fff;
+	background: rgba(0,0,0,.1)!important
+}
+.smart-style-5 .bs-example, .smart-style-5 .bs-example-type .table td, .smart-style-5 .table-bordered, .smart-style-5 .table-bordered>tbody>tr>td, .smart-style-5 .table-bordered>tbody>tr>th, .smart-style-5 .table-bordered>tfoot>tr>td, .smart-style-5 .table-bordered>tfoot>tr>th, .smart-style-5 .table-bordered>thead>tr>td, .smart-style-5 .table-bordered>thead>tr>th {
+	border-color: rgba(255,255,225,.15)
+}
+.smart-style-5 :-moz-placeholder, .smart-style-5 :-webkit-placeholder, .smart-style-5 ::-moz-placeholder, .smart-style-5 ::-webkit-input-placeholder, .smart-style-5 :placeholder, .smart-style-5 nav ul li.active>a:before, .smart-style-5.menu-on-top nav ul ul li a, .smart-style-5.menu-on-top nav ul ul ul li a {
+color:#fff
+}
+.smart-style-5 .page-footer {
+	background: rgba(0,0,0,.33);
+	border-color: rgba(255,255,225,.15)
+}
+.smart-style-5 nav ul ul {
+	background: rgba(0,0,0,.23)
+}
+.smart-style-5 nav ul .active>a {
+	color: #FFD600!important
+}
+.smart-style-5.menu-on-top aside#left-panel nav>ul>li {
+	border-right-color: rgba(255,255,225,.15);
+	border-left-color: transparent
+}
+.smart-style-5.menu-on-top aside#left-panel nav>ul>li:first-child {
+	border-left-color: rgba(255,255,225,.15)
+}
+.smart-style-5.menu-on-top aside#left-panel nav>ul>li:hover>a {
+	background: #000;
+	border-left-color: transparent;
+	border-right-color: transparent;
+	color: #FFD600!important
+}
+.smart-style-5 .menu-on-top nav ul ul ul li a:hover, .smart-style-5.menu-on-top nav ul ul li a:hover, .smart-style-5.menu-on-top nav ul ul ul li a:hover {
+	color: #FFD600
+}
+.smart-style-5.menu-on-top nav ul ul li:hover>a:after, .smart-style-5.menu-on-top nav>ul ul>li a:after, .smart-style-5.menu-on-top nav>ul ul>li a:hover:after, .smart-style-5.menu-on-top nav>ul>li>a:after {
+	color: #fff
+}
+.smart-style-5 .ajax-dropdown:after, .smart-style-5 .ajax-dropdown:before {
+	border-bottom-color: rgba(255,255,225,.15)
+}
+.smart-style-5 .ajax-dropdown .fa-4x.fa-border {
+	color: rgba(170,241,219,.9);
+	border-color: rgba(0,255,224,.3)
+}
+.smart-style-5 .notification-body .msg-body, .smart-style-5 .notification-body .subject {
+	color: rgba(255,255,255,.7)
+}
+.smart-style-5 .notification-body .unread {
+	background-color: rgba(169,255,241,.2)
+}
+.smart-style-5 .notification-body>li {
+	border-bottom: 1px dashed rgba(255,255,255,.3)
+}
+.smart-style-5 .dropdown-menu {
+	background: rgba(0,0,0,.63)
+}
+.smart-style-5 .dropdown-menu .divider {
+	background: rgba(255,255,225,.15)
+}
+.smart-style-5 .btn-default, .smart-style-5 .btn-default.active, .smart-style-5 .btn-default:active, .smart-style-5 .btn-default:focus, .smart-style-5 .btn-default:hover, .smart-style-5 .open>.dropdown-toggle.btn-default {
+	background: rgba(0,0,0,.5);
+	color: #fff;
+	border-color: transparent
+}
+.smart-style-5 .ajax-notifications {
+	background: 0 0
+}
+.smart-style-5 .table-responsive {
+	border-color: rgba(255,255,225,.15)
+}
+.smart-style-5 .dropdown-menu>li>a {
+	color: #fff!important
+}
+.smart-style-5 .bootstrap-tagsinput, .smart-style-5 .form-control, .smart-style-5 .input-group-addon, .smart-style-5 .select2-container .select2-choice, .smart-style-5 .select2-container .select2-choice .select2-arrow, .smart-style-5 .select2-container-multi .select2-choices, .smart-style-5 .smart-form .input input, .smart-style-5 .smart-form .select select, .smart-style-5 .smart-form .textarea textarea {
+	background: rgba(255,255,255,.2);
+	border-color: rgba(255,255,255,.4);
+	color: #FFF
+}
+.smart-style-5 .select2-dropdown-open .select2-arrow {
+	background: rgba(0,0,0,.2)!important;
+	border-color: rgba(0,0,0,.4)!important
+}
+.smart-style-5 .form header, .smart-style-5 .note, .smart-style-5 legend {
+	color: #fff;
+	-webkit-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	-moz-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	text-shadow: 0 1px 5px rgba(0,0,0,.25)
+}
+.smart-style-5 .smart-form .label {
+	color: #fff
+}
+.smart-style-5 .jarviswidget .fc-header-title h2 {
+	text-shadow: none
+}
+.smart-style-5 .dropzone, .smart-style-5 td.fc-other-month {
+	background-color: rgba(72,112,85,.23)
+}
+.smart-style-5 .popover, .smart-style-5 .ui-widget-content {
+	background: rgba(0,0,0,.8);
+	border-color: rgba(0,0,0,.4)
+}
+.smart-style-5 .ui-datepicker {
+	background: rgba(0,0,0,.8)!important
+}
+.smart-style-5 .editable+.popover {
+	background: rgba(20,114,88,.8);
+	border-color: rgba(0,0,0,.4)
+}
+.smart-style-5 .ui-widget-content {
+	background: rgba(0,0,0,.1)
+}
+.smart-style-5 tr.ui-widget-content {
+	background: rgba(255,255,225,.15)
+}
+.smart-style-5 .ui-spinner {
+	background: 0 0;
+	border-color: rgba(0,0,0,.4)
+}
+.smart-style-5 .bootstrapWizard li .title, .smart-style-5 .dropzone .dz-preview, .smart-style-5 .dropzone-previews .dz-preview {
+	color: #000
+}
+.smart-style-5 .tree li span, .smart-style-5 .tree li:after, .smart-style-5 .tree li:before {
+	border-color: #fff
+}
+.smart-style-5 label input[type=radio][disabled].radiobox+span, .smart-style-5 label input[type=radio][disabled].radiobox:checked+span, .smart-style-5 label:hover input[type=radio][disabled].radiobox:checked+span:before {
+	color: rgba(255,255,255,.7)
+}
+.smart-style-5 .table, .smart-style-5 .ui-jqgrid .ui-jqgrid-bdiv {
+	background: 0 0
+}
+.smart-style-5 .ui-jqgrid .ui-jqgrid-pager, .smart-style-5 .ui-jqgrid .ui-jqgrid-titlebar {
+	border-color: rgba(255,255,225,.15);
+	background-color: rgba(0,0,0,.23)
+}
+.smart-style-5 .ui-jqgrid {
+	border-color: rgba(255,255,225,.15)!important
+}
+.smart-style-5 .ui-jqgrid .ui-pg-input, .smart-style-5 .ui-jqgrid .ui-pg-selbox {
+	color: #000
+}
+.smart-style-5 .ui-state-focus, .smart-style-5 .ui-state-hover, .smart-style-5 .ui-widget-content .ui-state-focus, .smart-style-5 .ui-widget-content .ui-state-hover, .smart-style-5 .ui-widget-header .ui-state-focus, .smart-style-5 .ui-widget-header .ui-state-hover {
+	background: 0 0
+}
+.smart-style-5 .arrow-box-up-right:after {
+	border-color: transparent
+}
+.smart-style-5 .arrow-box-up-right:before {
+	border-bottom-color: rgba(0,0,0,.63)
+}
+.smart-style-5 .ui-tabs .ui-tabs-nav {
+	background: rgba(0,0,0,.43);
+	border-color: rgba(255,255,225,.15)
+}
+.smart-style-5 .ui-tabs {
+	background: 0 0
+}
+.smart-style-5 .ui-tabs-panel {
+	background: 0 0;
+	border-color: rgba(255,255,255,.15)
+}
+.smart-style-5 .popover.bottom>.arrow, .smart-style-5 .popover.left>.arrow, .smart-style-5 .popover.right>.arrow, .smart-style-5 .popover.top>.arrow {
+	border-color: transparent
+}
+.smart-style-5 .popover.right>.arrow:after {
+	border-right-color: rgba(0,0,0,.8);
+	left: 0
+}
+.smart-style-5 .popover.bottom>.arrow:after {
+	border-bottom-color: rgba(0,0,0,.8);
+	top: 0
+}
+.smart-style-5 .popover.top>.arrow:after {
+	border-top-color: rgba(0,0,0,.8);
+	bottom: 0
+}
+.smart-style-5 .popover.left>.arrow:after {
+	border-left-color: rgba(0,0,0,.8);
+	right: 0
+}
+.smart-style-5 .popover-title {
+	background-color: rgba(247,247,247,.3);
+	border-bottom: 1px solid rgba(247,247,247,.3)
+}
+.smart-style-5 .ui-chatbox-input-focus {
+	color: #000
+}
+.smart-style-5 .dt-toolbar, .smart-style-5 table.dataTable thead .sorting_asc, .smart-style-5 table.dataTable thead .sorting_desc {
+	background-color: rgba(0,0,0,.43)
+}
+.smart-style-5 .dt-toolbar {
+	border-color: rgba(255,255,225,.15)
+}
+.smart-style-5 .table-hover>tbody>tr:hover, .smart-style-5 .table-striped>tbody>tr:nth-child(odd) {
+	background-color: transparent!important
+}
+.smart-style-5 .dt-toolbar-footer, .smart-style-5 .table-hover>tbody>tr:hover>td, .smart-style-5 .table-hover>tbody>tr:hover>th, .smart-style-5 .table-striped>tbody>tr:nth-child(odd)>th {
+	background: rgba(0,0,0,.43)
+}
+.smart-style-5 .table-striped>tbody>tr:nth-child(odd)>td {
+	background: rgba(0,0,0,.13)
+}
+.smart-style-5 .dt-toolbar-footer {
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	border-color: rgba(255,255,225,.15)
+}
+.smart-style-5 .pagination>li>a, .smart-style-5 .pagination>li>span {
+	background: rgba(0,0,0,.43);
+	border-color: rgba(255,255,225,.15);
+	color: #fff
+}
+.smart-style-5 .pagination>.disabled>a, .smart-style-5 .pagination>.disabled>a:focus, .smart-style-5 .pagination>.disabled>a:hover, .smart-style-5 .pagination>.disabled>span, .smart-style-5 .pagination>.disabled>span:focus, .smart-style-5 .pagination>.disabled>span:hover {
+	background: rgba(0,0,0,.43);
+	border-color: rgba(255,255,225,.15);
+	color: #ccc
+}
+.smart-style-5 .pagination>.active>a, .smart-style-5 .pagination>.active>a:focus, .smart-style-5 .pagination>.active>a:hover, .smart-style-5 .pagination>.active>span, .smart-style-5 .pagination>.active>span:focus, .smart-style-5 .pagination>.active>span:hover .pagination>.active>a {
+	color: #FFD600;
+	border-color: rgba(255,255,225,.15);
+	background: rgba(0,0,0,.63)
+}
+.smart-style-5 div.DTTT .btn {
+	color: #fff!important
+}
+.smart-style-5 button.ColVis_Button, .smart-style-5 ul.ColVis_collection li {
+	background: rgba(0,0,0,.43)
+}
+.smart-style-5 .dygraph-legend {
+	background: none!important
+}
+#extr-page .smart-style-5 #main {
+	background: 0 0
+}
+#extr-page .smart-style-5 #header {
+	background: rgba(0,0,0,.43)!important;
+	border-color: rgba(255,255,225,.15)!important
+}
+.smart-style-5 .client-form footer, .smart-style-5 .client-form header {
+	background: rgba(0,0,0,.63);
+	color: #fff
+}
+.smart-style-5 .smart-form fieldset {
+	background: rgba(255,255,255,.03)
+}
+.smart-style-5 .timeline-seperator>:first-child {
+	background: rgba(0,0,0,.43);
+	color: #fff
+}
+.smart-style-5 .smart-form footer {
+	background: rgba(0,0,0,.43)
+}
+.smart-style-5 .smart-form .checkbox, .smart-style-5 .smart-form .radio, .smart-style-5 .smart-form .rating, .smart-style-5 .smart-form .toggle {
+	color: #fff;
+	-webkit-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	-moz-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	text-shadow: 0 1px 5px rgba(0,0,0,.25)
+}
+.smart-style-5 .ui-datepicker .ui-datepicker-header {
+	background-color: rgba(255,255,225,.15)
+}
+.smart-style-5 .table-forum thead tr th {
+	border-bottom-color: rgba(255,255,225,.15)
+}
+.smart-style-5 .table>tbody>tr>td, .smart-style-5 .table>tbody>tr>th, .smart-style-5 .table>tfoot>tr>td, .smart-style-5 .table>tfoot>tr>th, .smart-style-5 .table>thead>tr>td, .smart-style-5 .table>thead>tr>th {
+	border-top-color: rgba(255,255,225,.07)
+}
+.smart-style-5 .note-editor .note-toolbar {
+	background: rgba(0,0,0,.43);
+	border-bottom-color: rgba(255,255,225,.15)
+}
+.smart-style-5 .md-editor>textarea, .smart-style-5 .note-editor {
+	border-color: rgba(255,255,225,.15);
+	background: rgba(255,255,225,.15)
+}
+.smart-style-5 .md-editor>textarea:focus, .smart-style-5 .note-editor .note-editable:focus {
+	background: rgba(255,255,225,.05)
+}
+.smart-style-5 .superbox-show {
+	background: rgba(0,0,0,.43)
+}
+.smart-style-5 .superbox-list.active:before {
+	color: rgba(0,0,0,.43)
+}
+.smart-style-5 .progress {
+	background: rgba(0,0,0,.13);
+	-webkit-box-shadow: 0 0 0 1px rgba(255,255,225,.15)inset;
+	-moz-box-shadow: 0 0 0 1px rgba(255,255,225,.15)inset;
+	box-shadow: 0 0 0 1px rgba(255,255,225,.15)inset
+}
+.smart-style-5 .nav>li>a:focus, .smart-style-5 .nav>li>a:hover {
+	background: rgba(0,0,0,.63);
+	border-color: rgba(255,255,225,.15)
+}
+.smart-style-5 .nav-tabs.bordered, .smart-style-5 .nav-tabs>li.active>a, .smart-style-5 .nav-tabs>li.active>a:focus, .smart-style-5 .nav-tabs>li.active>a:hover {
+	background: rgba(0,0,0,.43);
+	color: #fff;
+	border-color: rgba(255,255,225,.15)!important
+}
+.smart-style-5 .nav-tabs>li.active>a {
+	-webkit-box-shadow: 0 -2px 0 #ccf0ff;
+	-moz-box-shadow: 0 -2px 0 #ccf0ff;
+	box-shadow: 0 -2px 0 #ccf0ff
+}
+.smart-style-5 .nav-tabs.bordered+.tab-content, .smart-style-5 .tabs-left>.nav-pills, .smart-style-5 .tabs-left>.nav-tabs {
+	border-color: rgba(255,255,225,.15)
+}
+.smart-style-5 .tabs-right>.nav-tabs {
+	border-left-color: rgba(255,255,225,.15)
+}
+.smart-style-5 .jarviswidget header .nav-tabs>li.active>a, .smart-style-5 .jarviswidget header .nav-tabs>li.active>a:focus, .smart-style-5 .jarviswidget header .nav-tabs>li.active>a:hover {
+	background: rgba(0,0,0,.43);
+	color: #fff
+}
+.smart-style-5 .smart-accordion-default .panel-default {
+	border-color: rgba(255,255,225,.15)
+}
+.smart-style-5 .panel, .smart-style-5 .smart-accordion-default .panel-default>.panel-heading {
+	background: 0 0
+}
+.smart-style-5 .panel-default>.panel-heading+.panel-collapse>.panel-body {
+	border-top-color: rgba(255,255,225,.15)
+}
+.smart-style-5 .jumbotron {
+	background: rgba(0,0,0,.43)
+}
+.smart-style-5 .pagination.pagination-alt>li:first-child>a {
+	padding-left: 12px
+}
+.smart-style-5 .modal-content, .smart-style-5 .pager .disabled>a, .smart-style-5 .pager .disabled>a:focus, .smart-style-5 .pager .disabled>a:hover, .smart-style-5 .pager .disabled>span, .smart-style-5 .pager li>a, .smart-style-5 .pager li>span {
+	background: rgba(0,0,0,.43)
+}
+.smart-style-5 .modal-header {
+	border-bottom-color: rgba(255,255,225,.15)
+}
+.smart-style-5 .modal-footer {
+	border-top-color: rgba(255,255,225,.15)
+}
+.smart-style-5 .bs-glyphicons li {
+	border-color: rgba(255,255,225,.15)!important
+}
+.smart-style-5 .responsive-utilities td.is-hidden {
+	background: rgba(0,0,0,.43)!important;
+	color: #fff
+}
+.smart-style-5 .inbox-body.no-content-padding {
+	background: 0 0
+}
+.smart-style-5 .txt-color-darken {
+	color: #fff!important
+}
+.smart-style-5 .inbox-menu-lg li a:hover {
+	background: rgba(0,0,0,.43)
+}
+.smart-style-5 .inbox-menu-lg li.active a {
+	background: rgba(0,0,0,.43);
+	border-bottom-color: rgba(255,255,225,.15)
+}
+.smart-style-5 .fill-a, .smart-style-5 .fill-b {
+	background: 0 0
+}
+.smart-style-5 #heat-fill {
+	left: 20px
+}
+.smart-style-5 .fill-a {
+	top: -11px;
+	left: -10px
+}
+.smart-style-5 .fill-b {
+	top: -11px;
+	right: -23px
+}
+.smart-style-5 .chat-body {
+	background: 0 0;
+	border-color: transparent
+}
+.smart-style-5 .chat-footer {
+	background: rgba(255,255,225,.15)
+}
+.smart-style-5 .textarea-controls, .smart-style-5 .textarea-div, .smart-style-5 .todo-group-title {
+	background: rgba(0,0,0,.43)
+}
+.smart-style-5 .typearea textarea {
+	background: 0 0
+}
+.smart-style-5 .show-stat-microcharts>div {
+	border-color: rgba(255,255,225,.15)!important;
+	background: rgba(0,255,255,.1)!important
+}
+.smart-style-5 .fc-widget-content, .smart-style-5 .fc-widget-header, .smart-style-5 .smart-form.widget-body-toolbar, .smart-style-5 .textarea-controls, .smart-style-5 .textarea-div, .smart-style-5 .todo-group-title, .smart-style-5 .todo>li, .smart-style-5 .todo>li>:first-child, .smart-style-5 .todo>li>p, .smart-style-5 .typearea, .smart-style-5 .widget-body-toolbar {
+	border-color: rgba(255,255,225,.15)
+}
+.smart-style-5 .table>thead>tr>th {
+	border-bottom-color: rgba(255,255,225,.25)
+}
+.smart-style-5 .table-bordered, .smart-style-5 .table-bordered>tbody>tr>td, .smart-style-5 .table-bordered>tbody>tr>th, .smart-style-5 .table-bordered>tfoot>tr>td, .smart-style-5 .table-bordered>tfoot>tr>th, .smart-style-5 .table-bordered>thead>tr>td, .smart-style-5 .table-bordered>thead>tr>th {
+	border-color: rgba(255,255,225,.15)
+}
+.smart-style-5 .ui-jqgrid .ui-jqgrid-titlebar {
+	background: rgba(0,0,0,.23)
+}
+.smart-style-5 .ui-jqgrid .ui-jqgrid-htable th {
+	background: 0 0
+}
+.smart-style-5 .ui-jqgrid .ui-state-hover td {
+	background: rgba(255,255,225,.15)!important
+}
+.smart-style-5 .ui-accordion .ui-accordion-header {
+	background: rgba(0,0,0,.43);
+	color: #fff
+}
+.smart-style-5 .ui-menu .ui-state-disabled {
+	color: #fff!important
+}
+.smart-style-5 .ui-accordion-content {
+	background: 0 0
+}
+.smart-style-5 .ui-dialog .ui-dialog-title {
+	color: #fff;
+	background: 0 0
+}
+.smart-style-5 .ui-dialog .ui-dialog-titlebar {
+	border-bottom-color: rgba(255,255,255,.15);
+	color: #fff;
+	background: 0 0
+}
+.smart-style-5 .ui-dialog .ui-dialog-buttonpane {
+	border-top-color: rgba(255,255,255,.15);
+	-webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.15);
+	-moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.15);
+	box-shadow: inset 0 1px 0 rgba(255,255,255,.15)
+}
+.smart-style-5 .ui-dialog-buttonpane, .smart-style-5 .ui-dialog-content {
+	background: 0 0
+}
+.smart-style-5 .ui-dialog {
+	background: url(../img/glass.jpg) no-repeat
+}
+.smart-style-5 .slider-track {
+	background: rgba(0,0,0,.43)
+}
+.smart-style-5 .ui-tabs .ui-tabs-nav li a:hover {
+	border-bottom: none
+}
+.smart-style-5 .ui-tabs .ui-tabs-nav li a:hover, .smart-style-5 .ui-tabs .ui-tabs-nav li.ui-tabs-active a {
+	background: rgba(0,0,0,.43);
+	color: #fff;
+	border-color: rgba(255,255,255,.15);
+	-webkit-box-shadow: 0 -2px 0 #ccf0ff;
+	-moz-box-shadow: 0 -2px 0 #ccf0ff;
+	box-shadow: 0 -2px 0 #ccf0ff
+}
+.smart-style-5 .ui-accordion .ui-accordion-content, .smart-style-5 .ui-accordion .ui-accordion-header {
+	border-color: rgba(255,255,255,.15)!important
+}
+.smart-style-5 .ui-accordion-header-active+.ui-accordion-content {
+	border-top-color: transparent
+}
+.smart-style-5 .ui-tabs .ui-tabs-nav li a, .smart-style-5 .ui-tabs .ui-tabs-nav li.ui-tabs-active:hover {
+	background: 0 0;
+	color: #fff;
+	border-color: transparent
+}
+.smart-style-5 .ui-tabs .ui-state-default, .smart-style-5 .ui-tabs .ui-widget-content .smart-style-5 .ui-tabs .ui-state-default, .smart-style-5 .ui-tabs .ui-widget-header .ui-state-default {
+	background: 0 0;
+	margin: 0
+}
+.smart-style-5 .lockscreen .logo+div {
+	background: rgba(0,0,0,.43)
+}
+.smart-style-5 .chart text {
+	fill: #fff
+}
+.smart-style-5 .dd-handle, .smart-style-5 .dd3-content {
+	background: rgba(0,0,0,.43);
+	border-color: rgba(255,255,225,.15);
+	color: #fff
+}
+.smart-style-5 .md-editor .md-footer, .smart-style-5 .md-editor>.md-header, .smart-style-5 .widget-footer {
+	background: rgba(0,0,0,.43);
+	border-bottom-color: rgba(255,255,225,.15)
+}
+.smart-style-5 .widget-footer {
+	border-top: 1px solid rgba(255,255,225,.15)
+}
+.smart-style-5 .noUi-target[disabled] .noUi-base {
+	background: rgba(26,26,26,.43)
+}
+.smart-style-5 .irs-line, .smart-style-5 .noUi-background {
+	background: rgba(0,0,0,.43)
+}
+.smart-style-5 .select2-search input {
+	border: 1px solid rgba(255,255,255,.2);
+	background: rgba(29,29,29,.9);
+	color: #fff
+}
+.smart-style-5 .select2-results .select2-no-results, .smart-style-5 .select2-results .select2-searching, .smart-style-5 .select2-results .select2-selection-limit {
+	background: 0 0
+}
+.smart-style-5 .select2-drop {
+	border-color: rgba(0,0,0,.2);
+	background: rgba(0,0,0,.8);
+	color: #fff
+}
+.smart-style-5 .select2-search:before {
+	color: #e0e0e0!important
+}
+.smart-style-5 .knob[data-fgcolor="#222222"], .smart-style-5 .select2-container-multi .select2-choices .select2-search-field input {
+	color: #fff!important
+}
+.smart-style-5 .select2-dropdown-open .select2-choice {
+	border: 1px solid #000;
+	background: rgba(0,0,0,.9);
+	box-shadow: none!important
+}
+.smart-style-5 .price-features, .smart-style-5 .profile-message li.message.message-reply {
+	background: rgba(0,0,0,.43)
+}
+.smart-style-5 .panel-footer {
+	background: rgba(0,0,0,.63);
+	border-top-color: rgba(255,255,225,.15)
+}
+.smart-style-5 .pricing-big .panel-footer {
+	background: rgba(0,0,0,.63)!important
+}
+.smart-style-5 .table>tbody>tr.active>td, .smart-style-5 .table>tbody>tr.active>th, .smart-style-5 .table>tbody>tr>td.active, .smart-style-5 .table>tbody>tr>th.active, .smart-style-5 .table>tfoot>tr.active>td, .smart-style-5 .table>tfoot>tr.active>th, .smart-style-5 .table>tfoot>tr>td.active, .smart-style-5 .table>tfoot>tr>th.active, .smart-style-5 .table>thead>tr.active>td, .smart-style-5 .table>thead>tr.active>th, .smart-style-5 .table>thead>tr>td.active, .smart-style-5 .table>thead>tr>th.active {
+	background: rgba(255,255,225,.15)
+}
+.smart-style-5 .table>tbody>tr.danger>td, .smart-style-5 .table>tbody>tr.info>td, .smart-style-5 .table>tbody>tr.success>td, .smart-style-5 .table>tbody>tr.warning>td {
+	color: #000
+}
+.smart-style-5 .smart-timeline-list>li:hover {
+	background: rgba(0,0,0,.43)
+}
+.smart-style-5 .jvectormap-zoomin, .smart-style-5 .jvectormap-zoomout {
+	background: rgba(0,0,0,.3)!important;
+	border: 1px solid rgba(0,0,0,.3)
+}
+.smart-style-5 .text-primary {
+	color: #E2F2FF
+}
+.smart-style-5 .text-success {
+	color: #90FF92
+}
+.smart-style-5 .onoffswitch-switch {
+	border-color: transparent
+}
+.smart-style-5 #shortcut {
+	background-color: rgba(27,16,43,.75)
+}
+.smart-style-5.minified nav>ul>li {
+	border-bottom: 1px solid rgba(2,8,9,.33);
+	border-top: 1px solid rgba(255,255,255,.23)
+}
+.smart-style-5 .minifyme {
+	background: rgba(77,209,172,.5);
+	color: rgba(255,255,255,.7)
+}
+.smart-style-5 .minifyme:hover {
+	background: rgba(77,209,172,.7);
+	color: #fff
+}
+.smart-style-5.minified nav>ul>li>ul {
+	border: 1px solid rgba(255,255,255,.4);
+	background: rgba(0,0,0,.8);
+	margin-top: 0;
+	padding: 0
+}
+.smart-style-5.minified nav>ul>li>ul>li, .smart-style-5.minified nav>ul>li>ul>li>ul>li {
+	background: 0 0
+}
+.smart-style-5 #project-context>:first-child, .smart-style-5 #sparks li h5, .smart-style-5 .ajax-notifications>.alert.alert-transparent, .smart-style-5 .bootstrap-duallistbox-container label, .smart-style-5 .form header, .smart-style-5 .inbox-side-bar h6, .smart-style-5 .project-context>:first-child, .smart-style-5 [class*=" txt-color-"], .smart-style-5 [class^=txt-color-] {
+	color: #fff!important;
+	-webkit-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	-moz-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	text-shadow: 0 1px 5px rgba(0,0,0,.25)
+}
+.smart-style-5 .bg-color-green, .smart-style-5 .jarviswidget-color-green>header {
+	background: rgba(144,255,146,.5)!important;
+	border-color: rgba(144,255,146,.5)!important;
+	color: #fff
+}
+.smart-style-5 .bg-color-greenLight, .smart-style-5 .jarviswidget-color-greenLight>header {
+	border-color: rgba(127,207,113,.5)!important;
+	background: rgba(127,207,113,.5)!important;
+	color: #fff
+}
+.smart-style-5 .bg-color-greenDark, .smart-style-5 .jarviswidget-color-greenDark>header {
+	border-color: rgba(135,233,117,.5)!important;
+	background: rgba(135,233,117,.5)!important;
+	color: #fff
+}
+.smart-style-5 .bg-color-purple, .smart-style-5 .jarviswidget-color-purple>header {
+	border-color: rgba(98,57,149,.43)!important;
+	background: rgba(122,72,185,.43)!important;
+	color: #fff
+}
+.smart-style-5 .bg-color-magenta, .smart-style-5 .jarviswidget-color-magenta>header {
+	border-color: rgba(76,38,78,.43)!important;
+	background: rgba(110,54,113,.43)!important;
+	color: #fff
+}
+.smart-style-5 .bg-color-pink, .smart-style-5 .jarviswidget-color-pink>header {
+	border-color: rgba(233,157,201,.43)!important;
+	background: rgba(233,157,201,.43)!important;
+	color: #fff
+}
+.smart-style-5 .bg-color-pinkDark, .smart-style-5 .jarviswidget-color-pinkDark>header {
+	border-color: rgba(208,58,146,.43)!important;
+	background: rgba(218,99,169,.43)!important;
+	color: #fff
+}
+.smart-style-5 .bg-color-blueLight, .smart-style-5 .jarviswidget-color-blueLight>header {
+	border-color: rgba(140,210,236,.43)!important;
+	background: rgba(184,227,243,.43)!important;
+	color: #fff
+}
+.smart-style-5 .jarviswidget-color-blueLight>header>.jarviswidget-ctrls a {
+	color: #fff!important
+}
+.smart-style-5 .bg-color-teal, .smart-style-5 .jarviswidget-color-teal>header {
+	border-color: rgba(84,210,208,.83)!important;
+	background: rgba(124,221,219,.83)!important;
+	color: #fff
+}
+.smart-style-5 .bg-color-blue, .smart-style-5 .jarviswidget-color-blue>header {
+	border-color: rgba(59,184,235,.43)!important;
+	background: rgba(59,184,235,.43)!important;
+	color: #fff
+}
+.smart-style-5 .bg-color-blueDark, .smart-style-5 .jarviswidget-color-blueDark>header {
+	border-color: rgba(29,61,104,.43)!important;
+	background: rgba(29,61,104,.43)!important;
+	color: #fff
+}
+.smart-style-5 .bg-color-darken, .smart-style-5 .jarviswidget-color-darken>header {
+	border-color: rgba(0,0,0,.23)!important;
+	background: rgba(0,0,0,.23)!important;
+	color: #fff
+}
+.smart-style-5 .bg-color-yellow, .smart-style-5 .jarviswidget-color-yellow>header {
+	border-color: rgba(253,236,184,.43)!important;
+	background: rgba(253,236,184,.43)!important;
+	color: #fff
+}
+.smart-style-5 .bg-color-orange, .smart-style-5 .jarviswidget-color-orange>header {
+	border-color: rgba(255,159,71,.43)!important;
+	background: rgba(255,159,71,.43)!important;
+	color: #fff
+}
+.smart-style-5 .bg-color-orangeDark, .smart-style-5 .jarviswidget-color-orangeDark>header {
+	border-color: rgba(255,161,87,.43)!important;
+	background: rgba(255,161,87,.43)!important;
+	color: #fff
+}
+.smart-style-5 .bg-color-red, .smart-style-5 .jarviswidget-color-red>header {
+	border-color: rgba(255,7,7,.43)!important;
+	background: rgba(255,7,7,.43)!important;
+	color: #fff
+}
+.smart-style-5 .bg-color-redLight, .smart-style-5 .jarviswidget-color-redLight>header {
+	border-color: rgba(252,61,61,.43)!important;
+	background: rgba(252,61,61,.43)!important;
+	color: #fff
+}
+.smart-style-5 .bg-color-white, .smart-style-5 .jarviswidget-color-white>header {
+	border-color: rgba(255,255,255,.33)!important;
+	background: rgba(255,255,255,.43)!important;
+	color: #000
+}
+.smart-style-5 .jarviswidget-color-white>header>.jarviswidget-ctrls a {
+	color: #3d3d3d!important
+}
+.smart-style-5 button.ColVis_Button, .smart-style-5 ul.ColVis_collection li {
+	color: #fff!important
+}
+.smart-style-5 ul.ColVis_collection {
+	background: rgba(0,0,0,.5)
+}
+.smart-style-5 .status .links {
+	background: rgba(255,255,255,.1)
+}
+.smart-style-5 .bootstrap-tagsinput>span, .smart-style-5 .btn-primary, .smart-style-5 .btn-primary.active, .smart-style-5 .btn-primary:active, .smart-style-5 .btn-primary:focus, .smart-style-5 .btn-primary:hover, .smart-style-5 .open>.dropdown-toggle.btn-primary, .smart-style-5 .select2-container-multi .select2-choices .select2-search-choice {
+	border-color: rgba(117,205,241,.83);
+	background: rgba(71,188,236,.83);
+	webkit-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	-moz-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	text-shadow: 0 1px 5px rgba(0,0,0,.25)
+}
+.smart-style-5 .btn-info, .smart-style-5 .btn-info.active, .smart-style-5 .btn-info:active, .smart-style-5 .btn-info:focus, .smart-style-5 .btn-info:hover, .smart-style-5 .open>.dropdown-toggle.btn-info {
+	border-color: rgba(164,232,230,.83);
+	background: rgba(124,221,219,.83);
+	webkit-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	-moz-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	text-shadow: 0 1px 5px rgba(0,0,0,.25)
+}
+.smart-style-5 .btn-success, .smart-style-5 .btn-success.active, .smart-style-5 .btn-success:active, .smart-style-5 .btn-success:focus, .smart-style-5 .btn-success:hover, .smart-style-5 .open>.dropdown-toggle.btn-success, .smart-style-5 .sa-chat-learnmore-btn, .smart-style-5 .sa-chat-learnmore-btn:active, .smart-style-5 .sa-chat-learnmore-btn:focus, .smart-style-5 .sa-chat-learnmore-btn:hover {
+	border-color: rgba(0,246,4,.83);
+	background: rgba(144,255,146,.5);
+	webkit-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	-moz-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	text-shadow: 0 1px 5px rgba(0,0,0,.25)
+}
+.smart-style-5 .btn-warning, .smart-style-5 .btn-warning.active, .smart-style-5 .btn-warning:active, .smart-style-5 .btn-warning:focus, .smart-style-5 .btn-warning:hover, .smart-style-5 .open>.dropdown-toggle.btn-warning {
+	border-color: rgba(250,220,156,.83);
+	background-color: rgba(245,206,122,.83);
+	webkit-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	-moz-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	text-shadow: 0 1px 5px rgba(0,0,0,.25)
+}
+.smart-style-5 .btn-danger, .smart-style-5 .btn-danger.active, .smart-style-5 .btn-danger:active, .smart-style-5 .btn-danger:focus, .smart-style-5 .btn-danger:hover, .smart-style-5 .open>.dropdown-toggle.btn-danger {
+	border-color: rgba(217,20,44,.83);
+	background-color: rgba(236,52,74,.83);
+	webkit-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	-moz-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	text-shadow: 0 1px 5px rgba(0,0,0,.25)
+}
+.smart-style-5 .smart-form .rating input:checked~label {
+	color: #7ED5EB
+}
+.smart-style-5 .smart-form .rating input+label:hover, .smart-style-5 .smart-form .rating input+label:hover~label {
+	color: #A3EDFF
+}
+.smart-style-5 .dt-toolbar option, .smart-style-5 select:not([multiple]) option {
+	background: #000;
+	border-color: rgba(0,0,0,.4);
+	color: #FFF
+}
+.smart-style-5 .control-label {
+	-webkit-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	-moz-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	text-shadow: 0 1px 5px rgba(0,0,0,.25)
+}
+.smart-style-5 .has-error .checkbox, .smart-style-5 .has-error .checkbox-inline, .smart-style-5 .has-error .control-label, .smart-style-5 .has-error .form-control-feedback, .smart-style-5 .has-error .help-block, .smart-style-5 .has-error .radio, .smart-style-5 .has-error .radio-inline {
+	color: #ff7676;
+	-webkit-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	-moz-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	text-shadow: 0 1px 5px rgba(0,0,0,.25)
+}
+.smart-style-5 .has-success .checkbox, .smart-style-5 .has-success .checkbox-inline, .smart-style-5 .has-success .control-label, .smart-style-5 .has-success .form-control-feedback, .smart-style-5 .has-success .help-block, .smart-style-5 .has-success .radio, .smart-style-5 .has-success .radio-inline {
+	color: #b1f3b2;
+	-webkit-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	-moz-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	text-shadow: 0 1px 5px rgba(0,0,0,.25)
+}
+.smart-style-5 label input[type=checkbox].checkbox:checked+span:before {
+	color: #d2e8ff
+}
+.smart-style-5 label input[type=checkbox].checkbox.style-2:checked+span:before {
+	color: #66665e
+}
+.smart-style-5 label input[type=radio].radiobox+span:before, .smart-style-5 label input[type=radio].radiobox:checked+span:before {
+	color: #d2e8ff!important;
+	border-color: #d2e8ff!important
+}
+.smart-style-5 input[type=checkbox].checkbox+span:before {
+	color: #FFF;
+	border-color: #FFF
+}
+.smart-style-5 .form-actions, .smart-style-5 .smart-form.widget-body-toolbar, .smart-style-5 .widget-body-toolbar, .smart-style-5 label input[type=checkbox].checkbox+span:before, .smart-style-5 label input[type=radio].radiobox+span:before {
+	background: rgba(255,255,255,.23);
+	border-color: rgba(255,255,255,.53)
+}
+.smart-style-5 .irs-diapason, .smart-style-5 .noUi-connect {
+	background: #FFF
+}
+.smart-style-5 .noUi-origin-lower {
+	background: rgba(0,255,255,.8)
+}
+#extr-page.smart-style-5, .smart-style-5 .MessageBoxContainer, .smart-style-5 .ajax-dropdown, .smart-style-5 .modal-content {
+	background: url(../img/glass.jpg) no-repeat 0 0;
+	color: #fff;
+	background-size: cover
+}
+#extr-page body.smart-style-5 {
+	background: none!important
+}
+.smart-style-5 .ui-chatbox-titlebar {
+	background: #2A4F58!important
+}
+.smart-style-5 .ui-chatbox-titlebar.ui-state-focus {
+	background: #204149!important
+}
+.smart-style-5 .ui-chatbox .ui-widget-content {
+	background: rgba(51,103,105,.6);
+	background: -webkit-gradient(linear, left bottom, left top, color-stop(0, rgba(81,165,177,.6)), color-stop(1, rgba(68,85,139,.6)));
+	background: -ms-linear-gradient(bottom, rgba(81,165,177,.6), rgba(68,85,139,.6));
+	background: -moz-linear-gradient(center bottom, rgba(81,165,177,.6)0, rgba(68,85,139,.6)100%);
+	background: -o-linear-gradient(rgba(68,85,139,.6), rgba(81,165,177,.6));
+filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='rgba(68, 85, 139, 0.6)', endColorstr='rgba(81, 165, 177, 0.6)', GradientType=0)
+}
+.smart-style-5 .ui-state-focus+.ui-widget-content {
+	background: rgba(51,103,105,.6);
+	background: -webkit-gradient(linear, left bottom, left top, color-stop(0, rgba(68,85,139,.9)), color-stop(1, rgba(68,85,139,.9)));
+	background: -ms-linear-gradient(bottom, rgba(68,85,139,.9), rgba(68,85,139,.9));
+	background: -moz-linear-gradient(center bottom, rgba(68,85,139,.9)0, rgba(68,85,139,.9)100%);
+	background: -o-linear-gradient(rgba(68,85,139,.9), rgba(68,85,139,.9));
+filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='rgba(68, 85, 139, 0.9)', endColorstr='rgba(68, 85, 139, 0.9)', GradientType=0)
+}
+.smart-style-5 .ui-chatbox-content>.alert-msg {
+	background: #FFFDD0
+}
+.smart-style-5 .ui-chatbox-input {
+	background: rgba(29,96,117,.6)
+}
+.smart-style-5 .ui-chatbox .ui-widget-content textarea {
+	background: rgba(0,0,0,.23)!important;
+	border-color: rgba(0,0,0,.23)!important;
+	color: #fff
+}
+.smart-style-5 .ui-chatbox .ui-widget-content textarea:focus {
+	background: rgba(0,0,0,.53)!important;
+	border-color: rgba(0,0,0,.53)!important;
+	font-weight: 700
+}
+.smart-style-5 .MessageBoxContainer, .smart-style-5 .fc-widget-content {
+	-webkit-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	-moz-text-shadow: 0 1px 5px rgba(0,0,0,.25);
+	text-shadow: 0 1px 5px rgba(0,0,0,.25)
+}
+.smart-style-5 #jarviswidget-fullscreen-mode .jarviswidget {
+	background: url(../img/glass.jpg) no-repeat center bottom fixed;
+	background-size: cover
+}
+.smart-style-5.hidden-menu aside#left-panel {
+	background: rgba(7,38,41,.83)
+}
+.smart-style-5 .fc-widget-content {
+	border-color: rgba(0,0,0,.25)
+}
+.smart-style-5 .fc-grid .fc-day-number {
+	padding: 0 4px;
+	font-size: 17px
+}
+.smart-style-5 .fc-state-highlight {
+	background: 0 0;
+	-webkit-animation: progress-bar-stripes 2s linear infinite;
+	-moz-animation: progress-bar-stripes 2s linear infinite;
+	-ms-animation: progress-bar-stripes 2s linear infinite;
+	-o-animation: progress-bar-stripes 2s linear infinite;
+	animation: progress-bar-stripes 2s linear infinite;
+	background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(0.25, rgba(255,255,255,.15)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(255,255,255,.15)), color-stop(0.75, rgba(255,255,255,.15)), color-stop(0.75, transparent), to(transparent));
+	background-image: -webkit-linear-gradient(45deg, rgba(255,255,255,.15)25%, transparent 25%, transparent 50%, rgba(255,255,255,.15)50%, rgba(255,255,255,.15)75%, transparent 75%, transparent);
+	background-image: -moz-linear-gradient(45deg, rgba(255,255,255,.15)25%, transparent 25%, transparent 50%, rgba(255,255,255,.15)50%, rgba(255,255,255,.15)75%, transparent 75%, transparent);
+	background-image: linear-gradient(45deg, rgba(255,255,255,.15)25%, transparent 25%, transparent 50%, rgba(255,255,255,.15)50%, rgba(255,255,255,.15)75%, transparent 75%, transparent);
+	background-size: 40px 40px
+}
+.smart-style-5 .bootstrap-duallistbox-container label, .smart-style-5 .form header, .smart-style-5 .inbox-body .table-wrap, .smart-style-5 .inbox-nav-bar, .smart-style-5 .inbox-side-bar, .smart-style-5 .notification-body>li>span, .smart-style-5 .smart-form header {
+	background: 0 0
+}
+.smart-style-5 #inbox-table.table tbody>tr>td {
+	border-color: rgba(255,255,225,.15)!important
+}
+.smart-style-5 #inbox-table tbody tr:hover, .smart-style-5 .table-hover>tbody>tr:hover>td {
+	background: rgba(0,255,225,.25)
+}
+.smart-style-5 .inbox-message {
+	background: rgba(0,0,0,.35)
+}
+.smart-style-5 .table {
+	background: rgba(0,0,0,.15)
+}
+.smart-style-5 .bs-example .table {
+	background: 0 0
+}
+.smart-style-5 .smart-form .checkbox i, .smart-style-5 .smart-form .radio i {
+	background: rgba(255,255,255,.2);
+	border-color: rgba(255,255,255,.4)!important
+}
+.smart-style-5 .smart-form .radio input+i:after {
+	background: #fff
+}
+.smart-style-5 .smart-form .icon-append, .smart-style-5 .smart-form .icon-prepend {
+	color: #FFF;
+	border-color: rgba(255,255,255,.5)
+}
+.smart-style-5 .smart-form .checkbox.state-error i, .smart-style-5 .smart-form .radio.state-error i, .smart-style-5 .smart-form .state-error input, .smart-style-5 .smart-form .state-error select, .smart-style-5 .smart-form .state-error textarea, .smart-style-5 .smart-form .toggle.state-error i {
+	background: rgba(255,8,8,.2)!important;
+	border-color: #a90329!important
+}
+.smart-style-5 .smart-form .checkbox.state-success i, .smart-style-5 .smart-form .radio.state-success i, .smart-style-5 .smart-form .state-success input, .smart-style-5 .smart-form .state-success select, .smart-style-5 .smart-form .state-success textarea, .smart-style-5 .smart-form .toggle.state-success i {
+	background: rgba(98,248,98,.2)!important;
+	border-color: #7dc27d
+}
+.smart-form .toggle i {
+	background: rgba(255,255,255,.12)
+}
+.smart-style-5 .smart-form .toggle i:after {
+	color: #fff
+}
+.smart-style-5 .smart-form .toggle i:before {
+	background-color: #fff
+}
+.smart-style-5 .bootstrap-timepicker-widget table td input {
+	color: #333
+}
+.smart-style-5.menu-on-top nav>ul>li>a:after {
+	color: #90D8CF!important
+}
+.smart-style-5.menu-on-top nav ul ul li a, .smart-style-5.menu-on-top nav ul ul ul li a {
+	color: #fff
+}
+.smart-style-5.menu-on-top nav ul ul, .smart-style-5.menu-on-top nav ul ul ul {
+	margin-left: -1px;
+	border-bottom-color: #2AB7BD;
+	background-color: transparent!important;
+	background-image: -moz-linear-gradient(top, #000, rgba(0,0,0,.7))!important;
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#000), to(rgba(0,0,0,.7)))!important;
+	background-image: -webkit-linear-gradient(top, #000, rgba(0,0,0,.7))!important;
+	background-image: -o-linear-gradient(top, #000, rgba(0,0,0,.7))!important;
+	background-image: linear-gradient(to bottom, #000, rgba(0,0,0,.7))!important
+}
+.smart-style-5.menu-on-top nav ul ul .active>a {
+	color: #FFD600!important
+}
+.smart-style-5 .inbox-info-bar .form-group input, .smart-style-5 .inbox-info-bar .select2-container-multi .select2-choices {
+	border-color: transparent!important;
+	background: transparent!important
+}
+.smart-style-5 .highlight .inbox-data-message>:first-child, .smart-style-5 .highlight .inbox-data-message>:first-child>:first-child {
+	color: #333!important
+}
+.smart-style-5 .table>tbody>tr.warning>td, .smart-style-5 .table>tbody>tr.warning>th, .smart-style-5 .table>tbody>tr>td.warning, .smart-style-5 .table>tbody>tr>th.warning, .smart-style-5 .table>tfoot>tr.warning>td, .smart-style-5 .table>tfoot>tr.warning>th, .smart-style-5 .table>tfoot>tr>td.warning, .smart-style-5 .table>tfoot>tr>th.warning, .smart-style-5 .table>thead>tr.warning>td, .smart-style-5 .table>thead>tr.warning>th, .smart-style-5 .table>thead>tr>td.warning, .smart-style-5 .table>thead>tr>th.warning, .smart-style-5 .unread td {
+	background-color: rgba(255,214,0,.3)!important;
+	color: #fff
+}
+.smart-style-5 .table>tbody>tr.danger>td, .smart-style-5 .table>tbody>tr.danger>th, .smart-style-5 .table>tbody>tr>td.danger, .smart-style-5 .table>tbody>tr>th.danger, .smart-style-5 .table>tfoot>tr.danger>td, .smart-style-5 .table>tfoot>tr.danger>th, .smart-style-5 .table>tfoot>tr>td.danger, .smart-style-5 .table>tfoot>tr>th.danger, .smart-style-5 .table>thead>tr.danger>td, .smart-style-5 .table>thead>tr.danger>th, .smart-style-5 .table>thead>tr>td.danger, .smart-style-5 .table>thead>tr>th.danger {
+	background-color: rgba(236,43,43,.5)!important;
+	color: #fff
+}
+.smart-style-5 .table>tbody>tr.success>td, .smart-style-5 .table>tbody>tr.success>th, .smart-style-5 .table>tbody>tr>td.success, .smart-style-5 .table>tbody>tr>th.success, .smart-style-5 .table>tfoot>tr.success>td, .smart-style-5 .table>tfoot>tr.success>th, .smart-style-5 .table>tfoot>tr>td.success, .smart-style-5 .table>tfoot>tr>th.success, .smart-style-5 .table>thead>tr.success>td, .smart-style-5 .table>thead>tr.success>th, .smart-style-5 .table>thead>tr>td.success, .smart-style-5 .table>thead>tr>th.success {
+	background-color: rgba(106,228,56,.5)!important;
+	color: #fff
+}
+.smart-style-5 #chat-container #chat-users li a img, .smart-style-5 #shortcut ul li .jarvismetro-tile, .smart-style-5 .chat-body li.message img, .smart-style-5 .friends-list img, .smart-style-5 .inbox-download-list li>:first-child>:first-child>img, .smart-style-5 .login-info img, .smart-style-5 .notification-body, .smart-style-5 .profile-pic>img, .smart-style-5 .usr-card>img {
+	border-radius: 50% 0!important
+}
+.smart-style-5 .friends-list img {
+	outline: 0
+}
+.smart-style-5 .inbox-download-list li>:first-child:hover {
+	background: rgba(255,255,255,.3);
+	border-color: rgba(192,192,192,.3)
+}
+.smart-style-5 .inbox-download, .smart-style-5 .inbox-message {
+	border-bottom-color: rgba(255,255,255,.3)
+}
+.smart-style-5 .demo [class*=" txt-color-"], .smart-style-5 .demo legend, .smart-style-5 .demo>* {
+	color: #333!important;
+	-webkit-text-shadow: none;
+	-moz-text-shadow: none;
+	text-shadow: none
+}
+.smart-style-5 .demo .txt-color-white {
+	color: #fff!important
+}
+.smart-style-5 .demo .txt-color-darken {
+	color: #333!important
+}
+.smart-style-5 .demo label input[type=checkbox].checkbox+span:before, .smart-style-5 .demo label input[type=radio].radiobox+span:before {
+	background-color: #f4f4f4
+}
+.smart-style-5 #hide-menu i {
+	color: #fff!important
+}
+.smart-style-5 nav>ul ul li::before, .smart-style-5 nav>ul>li>ul::before {
+	border: none!important
+}
+.smart-style-5 nav ul ul li>a:hover, .smart-style-5 nav ul ul ul li a:hover {
+	background-color: rgba(0,0,0,.3)
+}
+.smart-style-5 .smart-form, .smart-style-5 .ui-jqgrid .ui-jqgrid-title, .smart-style-5 .ui-state-focus, .smart-style-5 .ui-state-hover, .smart-style-5 .ui-widget-content .ui-state-focus, .smart-style-5 .ui-widget-content .ui-state-hover, .smart-style-5 .ui-widget-header .ui-state-focus, .smart-style-5 .ui-widget-header .ui-state-hover {
+	color: #fff
+}
+.smart-style-5 .well-light .nav-tabs {
+	background: rgba(0,0,0,.43);
+	color: #fff;
+	padding-left: 10px
+}
+.smart-style-5 .icon-addon, .smart-style-5 .input-icon-left>i, .smart-style-5 .input-icon-right>i {
+	color: #fff
+}
+.smart-style-5 .show-stats .progress-bar {
+	background: rgba(255,255,255,.8)!important
+}
+@media (max-width:979px) {
+.smart-style-5 #sparks {
+	background: 0 0
+}
+}
+body.smart-style-6 {
+	background: #edecec;
+	font-family: RobotoDraft, Roboto, sans-serif;
+	-webkit-font-smoothing: antialiased
+}
+body.smart-style-6 .txt-color-green {
+	color: #4CAF50!important
+}
+body.smart-style-6 .bg-color-greenDark {
+	background: #2E7D32!important
+}
+body.smart-style-6 .txt-color-greenDark {
+	color: #2E7D32!important
+}
+body.smart-style-6 .bg-color-greenLight {
+	background: #43A047!important
+}
+body.smart-style-6 .txt-color-greenLight {
+	color: #43A047!important
+}
+body.smart-style-6 .bg-color-purple {
+	background: #9C27B0!important
+}
+body.smart-style-6 .txt-color-purple {
+	color: #9C27B0!important
+}
+body.smart-style-6 .bg-color-magenta, body.smart-style-6 .jarviswidget-color-magenta>header {
+	background: #A0F!important
+}
+body.smart-style-6 .jarviswidget-color-magenta>header {
+	border-color: #A0F!important
+}
+body.smart-style-6 .txt-color-magenta, body.smart-style-6 nav ul li.active>a:before {
+	color: #A0F!important
+}
+body.smart-style-6 .bg-color-pink {
+	background: #E91E63!important
+}
+body.smart-style-6 .txt-color-pink {
+	color: #E91E63!important
+}
+body.smart-style-6 .bg-color-pinkDark {
+	background: #AD1457!important
+}
+body.smart-style-6 .txt-color-pinkDark {
+	color: #AD1457!important
+}
+body.smart-style-6 .bg-color-blue, body.smart-style-6 .bootstrap-tagsinput>span, body.smart-style-6 .onoffswitch-inner:before, body.smart-style-6 .open>.dropdown-toggle.btn-primary, body.smart-style-6 .select2-container-multi .select2-choices .select2-search-choice {
+	background: #2196F3!important
+}
+body.smart-style-6 .txt-color-blue {
+	color: #2196F3!important
+}
+body.smart-style-6 .bg-color-blueLight, body.smart-style-6 .label-primary, body.smart-style-6 .noUi-connect, body.smart-style-6 .pagination>.active>a, body.smart-style-6 .pagination>.active>a:focus, body.smart-style-6 .pagination>.active>a:hover, body.smart-style-6 .pagination>.active>span, body.smart-style-6 .pagination>.active>span:focus, body.smart-style-6 .pagination>.active>span:hover, body.smart-style-6 .slider-selection {
+	background: #03A9F4!important
+}
+body.smart-style-6 .btn-primary {
+	background: #2196F3;
+	border-color: #0c7cd5!important
+}
+body.smart-style-6 .btn-primary:active, body.smart-style-6 .btn-primary:focus, body.smart-style-6 .btn-primary:hover {
+	background: #0c7cd5!important
+}
+body.smart-style-6 .btn-primary.active, body.smart-style-6 .btn-primary:active, body.smart-style-6 .btn-primary:hover, body.smart-style-6 .open>.dropdown-toggle.btn-primary {
+	border-color: #0c7cd5!important
+}
+body.smart-style-6 .btn-primary.active.focus, body.smart-style-6 .btn-primary.active:focus, body.smart-style-6 .btn-primary.active:hover, body.smart-style-6 .btn-primary:active.focus, body.smart-style-6 .btn-primary:active:focus, body.smart-style-6 .btn-primary:active:hover, body.smart-style-6 .open>.dropdown-toggle.btn-primary.focus, body.smart-style-6 .open>.dropdown-toggle.btn-primary:focus, body.smart-style-6 .open>.dropdown-toggle.btn-primary:hover {
+	background: #0c7cd5!important;
+	border-color: #0c7cd5!important
+}
+body.smart-style-6 .btn-warning {
+	background: #FF9800;
+	border-color: #cc7a00!important
+}
+body.smart-style-6 .btn-warning:active, body.smart-style-6 .btn-warning:focus, body.smart-style-6 .btn-warning:hover {
+	background: #cc7a00!important
+}
+body.smart-style-6 .btn-warning.active, body.smart-style-6 .btn-warning:active, body.smart-style-6 .btn-warning:hover, body.smart-style-6 .open>.dropdown-toggle.btn-warning {
+	border-color: #cc7a00!important
+}
+body.smart-style-6 .btn-warning.active.focus, body.smart-style-6 .btn-warning.active:focus, body.smart-style-6 .btn-warning.active:hover, body.smart-style-6 .btn-warning:active.focus, body.smart-style-6 .btn-warning:active:focus, body.smart-style-6 .btn-warning:active:hover, body.smart-style-6 .open>.dropdown-toggle.btn-warning.focus, body.smart-style-6 .open>.dropdown-toggle.btn-warning:focus, body.smart-style-6 .open>.dropdown-toggle.btn-warning:hover {
+	background: #cc7a00!important;
+	border-color: #cc7a00!important
+}
+body.smart-style-6 .pagination>li>a, body.smart-style-6 .pagination>li>span {
+	color: #03A9F4
+}
+body.smart-style-6 .pagination>.active>a, body.smart-style-6 .pagination>.active>a:focus, body.smart-style-6 .pagination>.active>a:hover, body.smart-style-6 .pagination>.active>span, body.smart-style-6 .pagination>.active>span:focus, body.smart-style-6 .pagination>.active>span:hover {
+	color: #fff;
+	border-color: #0398db
+}
+body.smart-style-6 .btn-danger {
+	color: #fff;
+	background-color: #F44336;
+	border-color: #f32c1e
+}
+body.smart-style-6 .btn-danger:active, body.smart-style-6 .btn-danger:focus, body.smart-style-6 .btn-danger:hover {
+	background-color: #ba160a
+}
+body.smart-style-6 .btn-danger.active, body.smart-style-6 .btn-danger:active, body.smart-style-6 .btn-danger:hover, body.smart-style-6 .open>.dropdown-toggle.btn-warning {
+	border-color: #ea1c0d!important
+}
+body.smart-style-6 .btn-danger.active.focus, body.smart-style-6 .btn-danger.active:focus, body.smart-style-6 .btn-danger.active:hover, body.smart-style-6 .btn-danger:active.focus, body.smart-style-6 .btn-danger:active:focus, body.smart-style-6 .btn-danger:active:hover, body.smart-style-6 .open>.dropdown-toggle.btn-danger.focus, body.smart-style-6 .open>.dropdown-toggle.btn-danger:focus, body.smart-style-6 .open>.dropdown-toggle.btn-danger:hover {
+	background: #ea1c0d!important;
+	border-color: #ea1c0d!important
+}
+body.smart-style-6 .label-danger {
+	background-color: #F44336
+}
+body.smart-style-6 .alert-success, body.smart-style-6 .btn-success {
+	border-color: #388E3C;
+	color: #FFF;
+	background-color: #4CAF50
+}
+body.smart-style-6 .label-success {
+	background-color: #4CAF50
+}
+body.smart-style-6 .btn-success:active, body.smart-style-6 .btn-success:focus, body.smart-style-6 .btn-success:hover {
+	background: #3d8b40;
+	border-color: #388E3C
+}
+body.smart-style-6 .btn-success.active.focus, body.smart-style-6 .btn-success.active:focus, body.smart-style-6 .btn-success.active:hover, body.smart-style-6 .btn-success:active.focus, body.smart-style-6 .btn-success:active:focus, body.smart-style-6 .btn-success:active:hover, body.smart-style-6 .open>.dropdown-toggle.btn-success.focus, body.smart-style-6 .open>.dropdown-toggle.btn-success:focus, body.smart-style-6 .open>.dropdown-toggle.btn-success:hover {
+	border-color: #388E3C;
+	background: #3d8b40
+}
+body.smart-style-6 .txt-color-blueLight {
+	color: #03A9F4!important
+}
+body.smart-style-6 .bg-color-blueDark {
+	background: #1565C0!important
+}
+body.smart-style-6 .alert-info, body.smart-style-6 .btn-info {
+	border-color: #03A9F4;
+	color: #01579B;
+	background-color: #B3E5FC
+}
+body.smart-style-6 .label-info {
+	background-color: #B3E5FC
+}
+body.smart-style-6 .btn-info.active, body.smart-style-6 .btn-info:active, body.smart-style-6 .btn-info:focus, body.smart-style-6 .btn-info:hover, body.smart-style-6 .open>.dropdown-toggle.btn-info {
+	background: #82d4fa;
+	border-color: #03A9F4
+}
+body.smart-style-6 .slider-info+.slider-track>.slider-selection {
+	background-color: #B3E5FC
+}
+body.smart-style-6 .txt-color-blueDark {
+	color: #1565C0!important
+}
+body.smart-style-6 .bg-color-teal {
+	background: #009688!important
+}
+body.smart-style-6 .txt-color-teal {
+	color: #009688!important
+}
+body.smart-style-6 .bg-color-yellow, body.smart-style-6 .slider-warning+.slider-track>.slider-selection {
+	background: #FFEB3B!important
+}
+body.smart-style-6 .alert-warning {
+	border-color: #F9A825;
+	color: #5A4E3F;
+	background-color: #FFEB3B
+}
+body.smart-style-6 .label-warning {
+	background-color: #FFEB3B;
+	color: #333
+}
+body.smart-style-6 .txt-color-yellow {
+	color: #FFEB3B!important
+}
+body.smart-style-6 .bg-color-orange {
+	background: #FF9800!important
+}
+body.smart-style-6 .txt-color-orange {
+	color: #FF9800!important
+}
+body.smart-style-6 .bg-color-orangeDark {
+	background: #E65100!important
+}
+body.smart-style-6 .txt-color-orangeDark {
+	color: #E65100!important
+}
+body.smart-style-6 .alert-danger, body.smart-style-6 .bg-color-red, body.smart-style-6 .slider-danger+.slider-track>.slider-selection {
+	background: #F44336!important
+}
+body.smart-style-6 .txt-color-red {
+	color: #F44336!important
+}
+body.smart-style-6 .bg-color-redLight {
+	background: #FF5252!important
+}
+body.smart-style-6 .alert-danger {
+	border-color: #B71C1C
+}
+body.smart-style-6 .txt-color-redLight {
+	color: #FF5252!important
+}
+body.smart-style-6 .text-primary {
+	color: #3F51B5!important
+}
+body.smart-style-6 .text-success {
+	color: #00C853!important
+}
+body.smart-style-6 .text-danger {
+	color: #C62828!important
+}
+body.smart-style-6 .text-warning {
+	color: #FF5722!important
+}
+body.smart-style-6 .text-info {
+	color: #607D8B!important
+}
+body.smart-style-6 .ajax-notifications {
+	background: #D8F4FF
+}
+body.smart-style-6 .ajax-notifications .fa-4x.fa-border {
+	color: #2196F3;
+	border-color: #2196F3
+}
+body.smart-style-6 aside, body.smart-style-6 nav ul ul {
+	background: #fff
+}
+body.smart-style-6 .nav-tabs>li.active>a {
+	-webkit-box-shadow: 0 2px 0 #E91E63;
+	-moz-box-shadow: 0 2px 0 #E91E63;
+	box-shadow: 0 2px 0 #E91E63;
+	z-index: 10
+}
+body.smart-style-6 #header, body.smart-style-6 .dropdown-menu>.active>a, body.smart-style-6 .dropdown-menu>.active>a:focus, body.smart-style-6 .dropdown-menu>.active>a:hover, body.smart-style-6 .dropdown-menu>li>a:focus, body.smart-style-6 .dropdown-menu>li>a:hover {
+	background: #2196F3
+}
+body.smart-style-6 #content {
+	margin-left: 30px;
+	margin-right: 30px;
+	margin-top: 20px
+}
+body.smart-style-6 #content>.row {
+	margin-bottom: 20px
+}
+body.smart-style-6 .page-title {
+	text-transform: uppercase;
+	font-size: 19px;
+	margin-bottom: 0;
+	margin-top: 10px;
+	letter-spacing: normal
+}
+body.smart-style-6 .page-title>.fa {
+	display: none
+}
+body.smart-style-6 .page-footer {
+	background: #455A64
+}
+body.smart-style-6 #updating-chart.txt-color-blue {
+	color: #4d7686!important
+}
+body.smart-style-6 .ribbon-button-alignment {
+	display: none
+}
+body.smart-style-6 #ribbon {
+	background: rgba(255,255,255,.4)
+}
+body.smart-style-6 #logo-group span#activity, body.smart-style-6 .btn-header>:first-child>a {
+	background: 0 0;
+	border: none;
+	color: #fff;
+	border-radius: 50%
+}
+#project-context body.smart-style-6>:first-child, body.smart-style-6 #project-selector, body.smart-style-6 .header-dropdown-list>li>.dropdown-toggle, body.smart-style-6 .project-context>:first-child, body.smart-style-6 .project-selector {
+	color: #fff!important;
+	text-shadow: none
+}
+body.smart-style-6 .open>.dropdown-menu {
+	-webkit-animation-name: none;
+	-moz-animation-name: none;
+	-o-animation-name: none;
+	animation-name: none;
+	-webkit-animation-duration: .4s;
+	-moz-animation-duration: .4s;
+	-o-animation-duration: .4s;
+	animation-duration: .4s;
+	-webkit-animation-fill-mode: none;
+	-moz-animation-fill-mode: none;
+	-o-animation-fill-mode: none;
+	animation-fill-mode: none
+}
+body.smart-style-6 .bootstrap-select .dropdown-menu.dropdown-menu-right, body.smart-style-6 .bootstrap-select .dropdown-menu.pull-right, body.smart-style-6 .btn-group .dropdown-menu.dropdown-menu-right, body.smart-style-6 .btn-group .dropdown-menu.pull-right, body.smart-style-6 .date-picker .dropdown-menu.dropdown-menu-right, body.smart-style-6 .date-picker .dropdown-menu.pull-right, body.smart-style-6 .dropdown .dropdown-menu.dropdown-menu-right, body.smart-style-6 .dropdown .dropdown-menu.pull-right, body.smart-style-6 .dropdown-menu.pull-right {
+	-webkit-transform-origin: top right!important;
+	-moz-transform-origin: top right!important;
+	-ms-transform-origin: top right!important;
+	transform-origin: top right!important
+}
+body.smart-style-6 .bootstrap-select .dropdown-menu.dropdown-menu-left, body.smart-style-6 .bootstrap-select .dropdown-menu.pull-left, body.smart-style-6 .btn-group .dropdown-menu.dropdown-menu-left, body.smart-style-6 .btn-group .dropdown-menu.pull-left, body.smart-style-6 .date-picker .dropdown-menu.dropdown-menu-left, body.smart-style-6 .date-picker .dropdown-menu.pull-left, body.smart-style-6 .dropdown .dropdown-menu.dropdown-menu-left, body.smart-style-6 .dropdown .dropdown-menu.pull-left, body.smart-style-6 .dropdown-menu.pull-left, body.smart-style-6 .project-selector+.dropdown-menu {
+	-webkit-transform-origin: top left!important;
+	-moz-transform-origin: top left!important;
+	-ms-transform-origin: top left!important;
+	transform-origin: top left!important
+}
+body.smart-style-6 .btn-group .dropdown-menu, body.smart-style-6 .date-picker .dropdown-menu, body.smart-style-6 .dropdown, body.smart-style-6 .dropdown-menu {
+	-webkit-transform-origin: top left;
+	-moz-transform-origin: top left;
+	-ms-transform-origin: top left;
+	transform-origin: top left;
+	-webkit-transition: all;
+	-o-transition: all;
+	transition: all;
+	-webkit-transition-duration: 250ms;
+	transition-duration: 250ms;
+	-webkit-backface-visibility: hidden;
+	-moz-backface-visibility: hidden;
+	backface-visibility: hidden;
+	-webkit-transform: scale(0);
+	-ms-transform: scale(0);
+	-o-transform: scale(0);
+	transform: scale(0);
+	opacity: 0;
+	filter: alpha(opacity=0);
+	display: block
+}
+body.smart-style-6 .project-selector+.dropdown-menu {
+	margin-top: -27px
+}
+body.smart-style-6 .header-dropdown-list .dropdown-menu {
+	margin-top: -20px
+}
+body.smart-style-6 .bootstrap-select.open .dropdown-menu, body.smart-style-6 .btn-group.open .dropdown-menu, body.smart-style-6 .dropdown.open .dropdown-menu, body.smart-style-6 .dropup.open .dropdown-menu, body.smart-style-6 .open>.dropdown-menu {
+	-webkit-transform: scale(1);
+	-ms-transform: scale(1);
+	-o-transform: scale(1);
+	transform: scale(1);
+	opacity: 1;
+	filter: alpha(opacity=100)
+}
+body.smart-style-6 .login-info {
+	height: 120px;
+	background: url(../img/cover.png) no-repeat center center;
+	margin-top: -1px!important;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	border: 0
+}
+body.smart-style-6 .login-info>span {
+	height: 119px;
+	border: 0;
+	padding: 0
+}
+body.smart-style-6 .login-info a {
+	display: block;
+	margin: 0;
+	padding: 10px
+}
+body.smart-style-6 .login-info a span {
+	display: block;
+	background: rgba(0,0,0,.2);
+	width: 100%;
+	max-width: 100%;
+	padding: 5px 10px;
+	margin-left: -10px;
+	margin-top: 22px;
+	color: #fff
+}
+body.smart-style-6 .login-info img {
+	border-radius: 50%;
+	width: 50px;
+	border: 3px solid rgba(0,0,0,.14);
+	box-sizing: content-box
+}
+body.smart-style-6 #logo img {
+	display: none
+}
+body.smart-style-6 #activity b.badge {
+	padding: 4px
+}
+body.smart-style-6 #logo-group>span#logo:before {
+	content: "SmartAdmin";
+	font-size: 17px;
+	color: #fff;
+	font-weight: 300;
+	margin-top: 1px;
+	display: block
+}
+body.smart-style-6 .header-search>input[type=text] {
+	background: 0 0;
+	border-right-width: 0;
+	border-left-width: 0;
+	border-top-width: 0;
+	border-bottom-color: #fff;
+	color: #fff;
+	padding: 0
+}
+body.smart-style-6 .header-search>button {
+	color: #fff
+}
+body.smart-style-6 .header-search input[type=text]::-webkit-input-placeholder {
+color:rgba(255,255,255,.7)
+}
+body.smart-style-6 .header-search input[type=text]:-moz-placeholder {
+color:rgba(255,255,255,.7)
+}
+body.smart-style-6 .header-search input[type=text]::-moz-placeholder {
+color:rgba(255,255,255,.7)
+}
+body.smart-style-6 .header-search input[type=text]:-ms-input-placeholder {
+color:rgba(255,255,255,.7)
+}
+body.smart-style-6 nav ul li a, body.smart-style-6 nav ul li.open>a, body.smart-style-6 nav ul li.open>a b {
+	color: #4C4C4C!important
+}
+body.smart-style-6 nav ul .active body.smart-style-6 nav ul>a, nav ul li.open body.smart-style-6 nav ul>a {
+	color: #3C3C3C!important
+}
+body.smart-style-6 nav ul li a:hover, ul li body.smart-style-6 nav ul>a:hover {
+	background-color: rgba(69,69,69,.05)
+}
+body.smart-style-6 nav ul li a {
+	font-size: 13px
+}
+body.smart-style-6 nav>ul>li>a {
+	font-weight: 400;
+	text-transform: uppercase;
+	padding: 14px 10px 14px 11px
+}
+body.smart-style-6 nav>ul>li>a b {
+	margin-top: 6px
+}
+body.smart-style-6 nav ul li a:active {
+	background: 0 0
+}
+body.smart-style-6 .login-info a span+i {
+	display: none
+}
+#ribbon .breadcrumb body.smart-style-6>.active, .breadcrumb body.smart-style-6>li+li:before, body.smart-style-6 #ribbon .breadcrumb, body.smart-style-6 #ribbon .breadcrumb a, body.smart-style-6 #ribbon .breadcrumb li:last-child {
+	color: #374850!important
+}
+#speech-btn body.smart-style-6>:first-child body.smart-style-6>a+.popover, body.smart-style-6 .ajax-dropdown {
+	-webkit-box-shadow: 0 0 30px rgba(30,30,100,.75);
+	-moz-box-shadow: 0 0 30px rgba(30,30,100,.75);
+	box-shadow: 0 0 30px rgba(30,30,100,.75)
+}
+body.smart-style-6 nav>ul ul li::before, body.smart-style-6 nav>ul>li>ul::before {
+	border: none
+}
+body.smart-style-6 .minifyme {
+	background: #2196F3;
+	color: #FFF;
+	position: absolute;
+	width: 29px;
+	border-radius: 50%;
+	z-index: 999;
+	right: -12px;
+	padding: 1px 3px;
+	border-bottom: 1px solid #3D6A8A
+}
+body.smart-style-6 nav li a {
+	position: relative;
+	overflow: hidden
+}
+body.smart-style-6 nav li a:after {
+	content: '';
+	display: block;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 300px;
+	height: 300px;
+	margin-left: -120px;
+	margin-top: -150px;
+	background: #455A64;
+	border-radius: 100%;
+	opacity: .3;
+	transform: scale(0)
+}
+@keyframes ripple {
+0% {
+transform:scale(0)
+}
+20% {
+transform:scale(1)
+}
+100% {
+opacity:0;
+transform:scale(1)
+}
+}
+body.smart-style-6 nav li a:not(:active):after {
+	animation: ripple 1.5s ease-in-out
+}
+body.smart-style-6 nav li a:after {
+	visibility: hidden
+}
+body.smart-style-6 nav li a:focus:after {
+	visibility: visible
+}
+body.smart-style-6 nav li a:active {
+	background-color: transparent!important
+}
+body.smart-style-6 .checkbox label>input[type=checkbox]:after {
+	content: '';
+	display: block;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 48px;
+	height: 48px;
+	margin-left: -18px;
+	margin-top: -18px;
+	background: #3f51b5;
+	border-radius: 100%;
+	opacity: .6;
+	transform: scale(0)
+}
+@keyframes rippleDuplicate {
+0% {
+transform:scale(0)
+}
+40% {
+transform:scale(1)
+}
+100% {
+opacity:0;
+transform:scale(1)
+}
+}
+body.smart-style-6 .checkbox label>input[type=checkbox]:focus:after {
+	animation: rippleDuplicate .5s ease-out
+}
+body.smart-style-6 .checkbox label>input[type=checkbox]:checked {
+	animation-name: rippleDuplicate
+}
+body.smart-style-6 .checkbox label>input[type=checkbox]:focus:after {
+	visibility: visible
+}
+body.smart-style-6 .smart-form .checkbox input:focus+i, body.smart-style-6 .smart-form .input input:focus, body.smart-style-6 .smart-form .radio input:focus+i, body.smart-style-6 .smart-form .select select:focus, body.smart-style-6 .smart-form .textarea textarea:focus, body.smart-style-6 .smart-form .toggle input:focus+i {
+	border-color: #2196F3
+}
+body.smart-style-6 .smart-form .checkbox input+i:after, body.smart-style-6 .smart-form .rating input:checked~label {
+	color: #2196F3
+}
+body.smart-style-6 .fieldset[disabled] .form-control, body.smart-style-6 .form-control[disabled], body.smart-style-6 .form-control[readonly], body.smart-style-6 .smart-form .select select, body.smart-style-6 .smart-form .textarea textarea {
+	border-bottom: 1px dashed #E0E0E0
+}
+body.smart-style-6 .form-control-feedback {
+	width: auto;
+	height: auto
+}
+body.smart-style-6 .smart-form .checkbox input:checked+i, body.smart-style-6 .smart-form .radio input:checked+i, body.smart-style-6 .smart-form .toggle input:checked+i {
+	border-color: transparent
+}
+body.smart-style-6 .form-control, body.smart-style-6 .smart-form .icon-append, body.smart-style-6 .smart-form .icon-prepend, body.smart-style-6 .smart-form .input input, body.smart-style-6 .smart-form .select select, body.smart-style-6 .smart-form .textarea textarea {
+	border-top-width: 0;
+	border-left-width: 0;
+	border-right-width: 0
+}
+body.smart-style-6 .form-control, body.smart-style-6 .smart-form .icon-append, body.smart-style-6 .smart-form .icon-prepend, body.smart-style-6 .smart-form .select select, body.smart-style-6 .smart-form .textarea textarea {
+	padding-left: 0
+}
+body.smart-style-6 .form-control:not(.ui-autocomplete-loading) {
+	background: 0 0
+}
+body.smart-style-6 .icon-addon>input[type=text], body.smart-style-6 .input-icon-left input[type=text].form-control {
+	padding-left: 32px
+}
+body.smart-style-6 input[type=checkbox], body.smart-style-6 input[type=radio] {
+	margin-top: 2px;
+	line-height: normal
+}
+body.smart-style-6 .dataTables_filter>label:focus .input-group-addon {
+	border-bottom-color: #2196F3
+}
+body.smart-style-6 .dataTables_filter .input-group-addon {
+	border-top-width: 0!important;
+	border-left-width: 0!important;
+	border-right-width: 0!important;
+	background: 0 0
+}
+body.smart-style-6 .dataTables_filter .input-group-addon+.form-control {
+	background: 0 0
+}
+body.smart-style-6 .input-group-addon:first-child, body.smart-style-6 .input-group-addon:last-child {
+	border: 1px solid inherit
+}
+body.smart-style-6 .input-group .form-control:first-child {
+	border-right: 0!important
+}
+body.smart-style-6 .input-group-addon+.form-control[type=text] {
+	padding-left: 10px;
+	padding-right: 10px
+}
+body.smart-style-6 .ui-sortable .jarviswidget-sortable>header {
+	box-shadow: none!important
+}
+body.smart-style-6 .jarviswidget>header {
+	border-bottom: 0
+}
+body.smart-style-6 .jarviswidget-ctrls .button-icon, body.smart-style-6 .widget-toolbar {
+	border: 0
+}
+body.smart-style-6 .widget-toolbar>.color-box {
+	outline: 0!important;
+	border-radius: 30%;
+	box-shadow: 0 0 1px 1px rgba(56,56,56,.3)
+}
+body.smart-style-6 .color-box, body.smart-style-6 .color-select li span {
+	border-radius: 30%
+}
+body.smart-style-6 .jarviswidget header .nav-tabs>li.active>a, body.smart-style-6 .jarviswidget header .nav-tabs>li.active>a:focus, body.smart-style-6 .jarviswidget header .nav-tabs>li.active>a:hover {
+	border: 0!important
+}
+body.smart-style-6 .jarviswidget-sortable.ui-sortable-helper {
+	box-shadow: 0 19px 38px rgba(0,0,0,.3), 0 15px 12px rgba(0,0,0,.22)
+}
+body.smart-style-6 .jarviswidget-placeholder {
+	background: linear-gradient(90deg, #00f 50%, transparent 50%), linear-gradient(90deg, #00f 50%, transparent 50%), linear-gradient(0deg, #00f 50%, transparent 50%), linear-gradient(0deg, #00f 50%, transparent 50%);
+	background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+	background-size: 10px 2px, 10px 2px, 2px 10px, 2px 10px;
+	background-position: 0 0, 100% 100%, 0 100%, 100% 0;
+	animation: border-dance 4s infinite linear;
+	width: 100%;
+	height: 100%;
+	padding: 10px
+}
+@keyframes border-dance {
+0% {
+background-position:0 0, 300px 116px, 0 150px, 216px 0
+}
+100% {
+background-position:300px 0, 0 116px, 0 0, 216px 150px
+}
+}
+body.smart-style-6 .MessageBoxContainer {
+	border-radius: 4px;
+	max-width: 600px;
+	margin: 0 auto;
+	box-shadow: 0 19px 38px rgba(0,0,0,.3), 0 15px 12px rgba(0,0,0,.22);
+	background: #fff;
+	color: #333
+}
+body.smart-style-6 .table>tbody>tr>td, body.smart-style-6 .table>tbody>tr>th, body.smart-style-6 .table>tfoot>tr>td, body.smart-style-6 .table>tfoot>tr>th, body.smart-style-6 .table>thead>tr>td, body.smart-style-6 .table>thead>tr>th {
+	padding: 16px 10px
+}
+body.smart-style-6 .dt-toolbar {
+	padding: 14px 20px 11px
+}
+body.smart-style-6 .inbox-body .table-wrap, body.smart-style-6 .inbox-compose-footer, body.smart-style-6 .inbox-info-bar .form-group input, body.smart-style-6 .inbox-info-bar .select2-container-multi .select2-choices, body.smart-style-6 .inbox-nav-bar, body.smart-style-6 .inbox-side-bar {
+	background: #fff
+}
+body.smart-style-6 .inbox-compose-footer {
+	border-bottom-width: 0;
+	padding-left: 0;
+	padding-right: 0
+}
+body.smart-style-6 .inbox-body {
+	box-shadow: -11px 12px 23px rgba(0,0,0,.1)
+}
+body.smart-style-6 .inbox-download, body.smart-style-6 .inbox-message {
+	border-bottom: 0
+}
+body.smart-style-6 .inbox-info-bar .form-group input, body.smart-style-6 .inbox-info-bar .select2-container-multi .select2-choices {
+	border-color: transparent!important
+}
+body.smart-style-6 #inbox-content {
+	margin-bottom: 30px!important
+}
+body.smart-style-6.desktop-detected .inbox-compose-footer, body.smart-style-6.desktop-detected .inbox-download {
+	padding-bottom: 56px
+}
+body.smart-style-6 ::-webkit-scrollbar {
+width:10px;
+background-color:transparent;
+border-top:10px solid transparent;
+border-bottom:10px solid transparent
+}
+body.smart-style-6 ::-webkit-scrollbar:hover {
+background-color:rgba(0,0,0,.05)
+}
+body.smart-style-6 ::-webkit-scrollbar-thumb:vertical {
+background:rgba(0,0,0,.2);
+border-radius:100px;
+background-clip:padding-box;
+border:2px solid transparent;
+min-height:10px
+}
+body.smart-style-6 .inbox-message {
+	background: #fff
+}
+body.smart-style-6 .note-editor .note-editable {
+	background-color: rgba(33,150,243,.15)
+}
+body.smart-style-6 .note-editor .note-editable:focus {
+	background: #fff
+}
+body.smart-style-6 .inbox-nav-bar {
+	height: auto!important
+}
+body.smart-style-6 .superbox-show {
+	background-color: #37474F
+}
+body.smart-style-6 .superbox-list.active:before {
+	color: #37474F
+}
+body.smart-style-6 .superbox-imageinfo span {
+	color: rgba(255,255,255,.5)
+}
+body.smart-style-6 #sparks {
+	display: none
+}
+body.smart-style-6 .page-footer .txt-color-blueLight {
+	color: #fff!important
+}
+body.smart-style-6.minified .login-info {
+	height: 55px
+}
+body.smart-style-6.minified .login-info img {
+	width: 34px
+}
+body.smart-style-6.minified .login-info a {
+	padding: 10px 0
+}
+body.smart-style-6.minified .login-info a span {
+	display: none
+}
+body.smart-style-6.minified .minifyme {
+	border-radius: 0;
+	left: 0;
+	width: 45px;
+	border: 0
+}
+body.smart-style-6.minified nav>ul>li>a>.menu-item-parent, body.smart-style-6.minified nav>ul>li>ul {
+	left: 45px
+}
+body.smart-style-6.minified nav>ul>li>a>.menu-item-parent {
+	padding-top: 4px;
+	top: 0
+}
+body.smart-style-6.minified nav>ul>li ul li {
+	background: #fff;
+	overflow: hidden
+}
+body.smart-style-6.minified nav li a {
+	overflow: visible;
+	border: 0
+}
+body.smart-style-6.minified nav>ul>li {
+	border-bottom: 0!important;
+	border-top: 0!important
+}
+body.smart-style-6.minified nav>ul>li>ul {
+	padding-top: 0;
+	border: 0;
+	background: #f5f5f5;
+	border-left: 1px solid #CACACA
+}
+body.smart-style-6.menu-on-top aside#left-panel, body.smart-style-6.menu-on-top aside#left-panel nav>ul>li {
+	border: 0
+}
+body.smart-style-6.menu-on-top aside#left-panel nav>ul>li:hover {
+	background: #fff
+}
+body.smart-style-6.menu-on-top aside#left-panel nav>ul>li:hover>a, body.smart-style-6.menu-on-top nav ul li a:hover, body.smart-style-6.menu-on-top nav ul ul li a:hover, body.smart-style-6.menu-on-top nav ul ul li:hover>a, body.smart-style-6.menu-on-top nav ul ul ul li a:hover, body.smart-style-6.menu-on-top nav ul>a:hover {
+	color: #fff!important;
+	background-color: #2196F3
+}
+@media (max-width:979px) and (min-width:768px) {
+body.smart-style-6 #hide-menu i {
+	color: #fff
+}
+}
+@media (max-width:767px) {
+body.smart-style-6 #content {
+	margin-left: 0;
+	margin-right: 0
+}
+body.smart-style-6 #hide-menu>:first-child>a {
+	width: 40px!important
+}
+body.smart-style-6 #hide-menu i {
+	color: #fff
+}
+}
+@media only screen and (max-width:479px) and (min-width:320px) {
+body.smart-style-6 #hide-menu i {
+	color: #fff
+}
+}

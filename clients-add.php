@@ -10,6 +10,7 @@ $allowed_levels = array(9,8);
 require_once('sys.includes.php');
 
 $active_nav = 'clients';
+$cc_active_page = 'client_add';
 
 $page_title = __('Add client','cftp_admin');
 
@@ -67,21 +68,23 @@ if ($_POST) {
 ?>
 
 <div id="main">
-	<h2><?php echo $page_title; ?></h2>
-	
-	<div class="container">
-		<div class="row">
-			<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
-				<div class="white-box-interior">
-		
-					<?php
+  <div id="content"> 
+    
+    <!-- Added by B) -------------------->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-user"></i>&nbsp;<?php echo $page_title; ?></h1>
+          <div class="row">
+            <div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
+              <div class="white-box-interior">
+                <?php
 						/**
 						 * If the form was submited with errors, show them here.
 						 */
 						$valid_me->list_errors();
 					?>
-					
-					<?php
+                <?php
 						if (isset($new_response)) {
 							/**
 							 * Get the process state and show the corresponding ok or error messages.
@@ -129,12 +132,14 @@ if ($_POST) {
 							include('clients-form.php');
 						}
 					?>
-				</div>
-			</div>
-		</div>
-	</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
 <?php
 	include('footer.php');
 ?>

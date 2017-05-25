@@ -90,8 +90,8 @@ $count = count($my_files);
 			</p>
 			<ul>
 				<li id="search_box">
-					<form action="" name="files_search" method="get">
-						<input type="text" name="search" id="search_text" value="<?php echo (isset($_GET['search']) && !empty($_GET['search'])) ? html_output($_GET['search']) : ''; ?>" placeholder="<?php _e('Search...','pinboxes_template'); ?>">
+					<form action="" name="files_search" method="post">
+						<input type="text" name="search" id="search_text" value="<?php echo (isset($_POST['search']) && !empty($_POST['search'])) ? html_output($_POST['search']) : ''; ?>" placeholder="<?php _e('Search...','pinboxes_template'); ?>">
 						<button type="submit" id="search_go"><i class="fa fa-search" aria-hidden="true"></i></button>
 					</form>
 				</li>

@@ -23,8 +23,11 @@ if (defined('TRY_INSTALL')) {
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `uploader` varchar('.MAX_USER_CHARS.') NOT NULL,
 								  `expires` INT(1) NOT NULL default \'0\',
+								  `notify` int(11) NOT NULL,
 								  `expiry_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+								  `future_send_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `public_allow` INT(1) NOT NULL default \'0\',
+  								  `number_downloads` int(15) NOT NULL,
 								  `public_token` varchar(32) NULL,
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -89,6 +92,8 @@ if (defined('TRY_INSTALL')) {
 								  `client_id` int(11) NOT NULL,
 								  `group_id` int(11) NOT NULL,
 								  PRIMARY KEY (`id`),
+								  KEY `client_id` (`client_id`),
+								  KEY `group_id` (`group_id`),
 								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -108,7 +113,10 @@ if (defined('TRY_INSTALL')) {
 								  FOREIGN KEY (`parent`) REFERENCES '.TABLE_FOLDERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-								  PRIMARY KEY (`id`)
+								  PRIMARY KEY (`id`),
+								  KEY `parent` (`parent`),
+								  KEY `client_id` (`client_id`),
+								  KEY `group_id` (`group_id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
 					'params' => array(),
@@ -121,6 +129,7 @@ if (defined('TRY_INSTALL')) {
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `file_id` int(11) NOT NULL,
 								  `client_id` int(11) DEFAULT NULL,
+								  `from_id` int(11) DEFAULT NULL,
 								  `group_id` int(11) DEFAULT NULL,
 								  `folder_id` int(11) DEFAULT NULL,
 								  `hidden` int(1) NOT NULL,
@@ -129,7 +138,11 @@ if (defined('TRY_INSTALL')) {
 								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`folder_id`) REFERENCES '.TABLE_FOLDERS.'(`id`) ON UPDATE CASCADE,
-								  PRIMARY KEY (`id`)
+								  PRIMARY KEY (`id`),
+								  KEY `file_id` (`file_id`),
+								  KEY `client_id` (`client_id`),
+								  KEY `group_id` (`group_id`),
+								  KEY `folder_id` (`folder_id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
 					'params' => array(),
@@ -232,6 +245,7 @@ if (defined('TRY_INSTALL')) {
 								('mail_from_name', :from),
 								('thumbnails_use_absolute', '0'),
 								('mail_copy_user_upload', ''),
+								('mail_drop_off_request', ''),
 								('mail_copy_client_upload', ''),
 								('mail_copy_main_user', ''),
 								('mail_copy_addresses', ''),
@@ -261,6 +275,8 @@ if (defined('TRY_INSTALL')) {
 								('email_footer_text', ''),
 								('email_pass_reset_customize', '0'),
 								('email_pass_reset_text', ''),
+								('email_drop_off_request', ''),
+								('email_drop_off_request_text', ''),
 								('expired_files_hide', '1'),
 								('notifications_max_tries', '2'),
 								('notifications_max_days', '15'),
@@ -287,10 +303,6 @@ if (defined('TRY_INSTALL')) {
 								('twitter_client_id', ''),
 								('twitter_client_secret', ''),
 								('twitter_signin_enabled', '0'),
-								('ldap_server', ''),
-								('ldap_bind_dn', ''),
-								('ldap_bind_password', ''),
-								('ldap_server_enabled', '0'),
 								('recaptcha_enabled', '0'),
 								('recaptcha_site_key', ''),
 								('recaptcha_secret_key', '')
@@ -344,6 +356,36 @@ if (defined('TRY_INSTALL')) {
 								  FOREIGN KEY (`cat_id`) REFERENCES '.TABLE_CATEGORIES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+								',
+					'params' => array(),
+		),
+		'15' =>  array(
+					'table'	=> 'tbl_drop_off_request',
+					'query'	=> 'CREATE TABLE IF NOT EXISTS `tbl_drop_off_request` (
+							`id` int(11) NOT NULL AUTO_INCREMENT,
+							  `from_id` int(11) DEFAULT NULL,
+							  `to_name` varchar(50) DEFAULT NULL,
+							  `to_subject_request` varchar(500) DEFAULT NULL,
+							  `from_organization` varchar(100) DEFAULT NULL,
+							  `to_email` varchar(50) DEFAULT NULL,
+							  `to_note_request` varchar(500) DEFAULT NULL,
+							  `requested_time` datetime DEFAULT NULL,
+							  `auth_key` varchar(50) NOT NULL,
+							  `status` int(11) NOT NULL
+							) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+								',
+					'params' => array(),
+		),
+		'16' =>  array(
+					'table'	=> 'tbl_login_details',
+					'query'	=> 'CREATE TABLE IF NOT EXISTS `tbl_login_details` (
+						`id` int(11) NOT NULL,
+						  `user_id` int(11) NOT NULL,
+						  `login_time_tamp` int(11) NOT NULL,
+						  `logout_time_stamp` int(11) NOT NULL,
+						  `login_failed_attept` int(11) NOT NULL,
+						  `status` int(11) NOT NULL
+						) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 								',
 					'params' => array(),
 		),

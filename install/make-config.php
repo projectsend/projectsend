@@ -12,7 +12,7 @@ define( 'IS_MAKE_CONFIG', true );
 
 define( 'ABS_PARENT', dirname( dirname(__FILE__) ) );
 require_once( ABS_PARENT . '/sys.includes.php' );
-include('aes_class.php');
+
 $page_title_install		= __('Install','cftp_admin');
 
 // array of POST variables to check, with associated default value
@@ -20,7 +20,7 @@ $post_vars = array(
 	'dbdriver'		=> 'mysql',
 	'dbname'		=> 'projectsend',
 	'dbuser'		=> 'root',
-	'dbpassword'		=> 'root',
+	'dbpassword'	=> 'root',
 	'dbhost'		=> 'localhost',
 	'dbprefix'		=> 'tbl_',
 	'dbreuse'		=> 'no',
@@ -105,6 +105,8 @@ $upload_files_dir = ROOT_DIR.'/upload/files';
 $upload_files_dir_writable = is_writable($upload_files_dir) || is_writable($upload_dir);
 $upload_temp_dir = ROOT_DIR.'/upload/temp';
 $upload_temp_dir_writable = is_writable($upload_temp_dir) || is_writable($upload_dir);
+$upload_aes_temp_files_dir = ROOT_DIR.'/upload/files/temp';
+$upload_aes_temp_files_dir_writable = is_writable($upload_aes_temp_files_dir);
 
 // retrieve user data for web server
 if (function_exists('posix_getpwuid')) {
@@ -115,7 +117,7 @@ if (function_exists('posix_getpwuid')) {
 }
 
 // if everything is ok, we can proceed
-$ready_to_go = $pdo_connected && (!$table_exists || $reuse_tables) && $lang_ok && $config_file_writable && $upload_files_dir_writable && $upload_temp_dir_writable;
+$ready_to_go = $pdo_connected && (!$table_exists || $reuse_tables) && $lang_ok && $config_file_writable && $upload_files_dir_writable && $upload_temp_dir_writable&&$upload_aes_temp_files_dir_writable;
 
 // if the user requested to write the config file AND we can proceed, we try to write the new configuration
 if (isset($_POST['submit-start']) && $ready_to_go) {
@@ -129,19 +131,12 @@ if (isset($_POST['submit-start']) && $ready_to_go) {
 								"'tbl_'",
 								"'en'"
 							);
-			/* AES Decryption started by RJ-23-Nov-2016 */
-			$blockSize = 256;
-    			$inputKey = "project send encryption";
-			$aes = new AES($post_vars['dbpassword'], $inputKey, $blockSize);
-			$encPassword = $aes->encrypt();
-			/* AES Decryption ended by RJ-23-Nov-2016 */
-			//encPassword is a aes encrypted password
 	$template_replace	= array(
 								"'" . $post_vars['dbdriver'] . "'",
 								"'" . $post_vars['dbname'] . "'",
 								"'" . $post_vars['dbhost'] . "'",
 								"'" . $post_vars['dbuser'] . "'",
-								"'" . $encPassword . "'",
+								"'" . $post_vars['dbpassword'] . "'",
 								"'" . $post_vars['dbprefix'] . "'",
 								"'" . $post_vars['lang'] . "'",
 							);
@@ -354,6 +349,11 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 																						'file'		=> $upload_files_dir,
 																						'status'	=> $upload_files_dir_writable,
 																					),
+																'upload_aes_temp'		=> array(
+																						'label'		=> 'Upload aes temp directory',
+																						'file'		=> $upload_aes_temp_files_dir,
+																						'status'	=> $upload_aes_temp_files_dir_writable,
+																					),
 																'temp'			=> array(
 																						'label'		=> 'Temp directory',
 																						'file'		=> $upload_temp_dir,
@@ -371,7 +371,7 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 													<?php if ( $values['status'] ) : ?>
 														<span class="label label-success"><?php _e('Writable','cftp_admin'); ?></span>
 													<?php else : ?>
-														<span class="label label-important"><?php _e('Not writable','cftp_admin'); ?></span>
+														<span class="label label-warning"><?php _e('Not writable','cftp_admin'); ?></span>
 													<?php endif; ?>
 												</div>
 											</div>

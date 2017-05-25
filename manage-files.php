@@ -5,7 +5,6 @@
  *
  * @package ProjectSend
  */
-$footable_min = true; // delete this line after finishing pagination on every table
 $load_scripts	= array(
 						'footable',
 					); 
@@ -14,10 +13,17 @@ $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 
 $active_nav = 'files';
+$cc_active_page = 'ManageFiles';
 
 $page_title = __('Manage files','cftp_admin');
 
 $current_level = get_current_user_level();
+
+/*
+ * Get the total downloads count here. The results are then
+ * referenced on the results table.
+ */
+$downloads_information = generate_downloads_count();
 
 /**
  * Used to distinguish the current page results.
@@ -85,7 +91,6 @@ if (isset($_GET['category'])) {
 
 include('header.php');
 ?>
-
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("#do_action").click(function() {
@@ -95,7 +100,7 @@ include('header.php');
 				return false; 
 			} 
 			else {
-				var action = $('#action').val();
+				var action = $('#files_actions').val();
 				if (action == 'delete') {
 					var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
 					var msg_2 = '<?php _e("files permanently and for every client/group. Are you sure you want to continue?",'cftp_admin'); ?>';
@@ -117,6 +122,36 @@ include('header.php');
 			}
 		});
 		
+		<?php
+			if ($results_type != 'client') {
+				/*
+		?>
+				$(".downloaders").click(function() {
+					$(document).psendmodal();
+					$('.modal_content').html('<p class="loading-img">'+
+												'<img src="<?php echo BASE_URI; ?>img/ajax-loader.gif" alt="Loading" /></p>'+
+												'<p class="lead text-center text-info"><?php _e('Please wait while the system gets the required information.','cftp_admin'); ?></p>'
+											);
+					
+					var file_name = $(this).attr('title');
+					var file_id = $(this).attr('rel');
+					$.get('<?php echo BASE_URI; ?>process.php', { do:"get_downloaders", sys_user:"<?php echo $global_id; ?>", file_id:file_id },
+						function(data) {
+							$('.modal_content').html('<h4><?php _e('Downloaders of file:','cftp_admin'); ?> <strong>'+file_name+'</strong></h4>');
+							$('.modal_content').append('<ul class="downloaders_list"></ul>');
+							var obj = $.parseJSON(data);
+							for (i = 0; i < obj.length; i++) {
+								$('.modal_content .downloaders_list').append('<li><img src="<?php echo BASE_URI; ?>img/downloader-' + obj[i].type + '.png" alt="" /><div class="downloader_count">' +  obj[i].count + ' <?php _e('times','cftp_admin'); ?></div><p class="downloader_name">' + obj[i].name + '</p><p class="downloader_email">' +  obj[i].email + '</p></li>');
+							}
+						}
+					);					
+					return false;
+				});
+		<?php
+				*/
+			}
+		?>
+
 	    $('.public_link').popover({ 
 			html : true,
 			content: function() {
@@ -142,17 +177,19 @@ include('header.php');
 </script>
 
 <div id="main">
-
-	<h2><?php echo $page_title; ?></h2>
-
-	<?php
+  <div id="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 class="page-title txt-color-blueDark"><i class="fa fa-tasks" aria-hidden="true"></i>&nbsp;<?php echo $page_title; ?></h1>
+          <?php
 		/**
 		 * Apply the corresponding action to the selected files.
 		 */
-		if(isset($_GET['action'])) {
+		if(isset($_POST['do_action'])) {
 			/** Continue only if 1 or more files were selected. */
-			if(!empty($_GET['batch'])) {
-				$selected_files = array_map('intval',array_unique($_GET['batch']));
+			if(!empty($_POST['files'])) {
+				$selected_files = array_map('intval',array_unique($_POST['files']));
 				$files_to_get = implode(',',$selected_files);
 				/**
 				 * Make a list of files to avoid individual queries.
@@ -180,7 +217,7 @@ include('header.php');
 					$all_files[$data_file['id']] = $data_file['filename'];
 				}
 				
-				switch($_GET['action']) {
+				switch($_POST['files_actions']) {
 					case 'hide':
 						/**
 						 * Changes the value on the "hidden" column value on the database.
@@ -190,7 +227,7 @@ include('header.php');
 						 */
 						foreach ($selected_files as $work_file) {
 							$this_file = new FilesActions();
-							$hide_file = $this_file->change_files_hide_status($work_file, '1', $_GET['modify_type'], $_GET['modify_id']);
+							$hide_file = $this_file->change_files_hide_status($work_file, '1', $_POST['modify_type'], $_POST['modify_id']);
 						}
 						$msg = __('The selected files were marked as hidden.','cftp_admin');
 						echo system_message('ok',$msg);
@@ -204,7 +241,7 @@ include('header.php');
 						 */
 						foreach ($selected_files as $work_file) {
 							$this_file = new FilesActions();
-							$show_file = $this_file->change_files_hide_status($work_file, '0', $_GET['modify_type'], $_GET['modify_id']);
+							$show_file = $this_file->change_files_hide_status($work_file, '0', $_POST['modify_type'], $_POST['modify_id']);
 						}
 						$msg = __('The selected files were marked as visible.','cftp_admin');
 						echo system_message('ok',$msg);
@@ -217,7 +254,7 @@ include('header.php');
 						 */
 						foreach ($selected_files as $work_file) {
 							$this_file = new FilesActions();
-							$unassign_file = $this_file->unassign_file($work_file, $_GET['modify_type'], $_GET['modify_id']);
+							$unassign_file = $this_file->unassign_file($work_file, $_POST['modify_type'], $_POST['modify_id']);
 						}
 						$msg = __('The selected files were unassigned from this client.','cftp_admin');
 						echo system_message('ok',$msg);
@@ -284,27 +321,30 @@ include('header.php');
 		/**
 		 * Global form action
 		 */
+		$form_action_url = 'manage-files.php';
+		
 		$query_table_files = true;
 
 		if (isset($search_on)) {
 			$params = array();
-			$rq = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE $search_on = :id";
+			$cq = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE $search_on = :id";
 			$params[':id'] = $this_id;
+			$form_action_url .= '?'.$search_on.'='.$this_id;
 
 			/** Add the status filter */	
-			if (isset($_GET['hidden']) && $_GET['hidden'] != 'all') {
+			if (isset($_POST['status']) && $_POST['status'] != 'all') {
 				$set_and = true;
-				$rq .= " AND hidden = :hidden";
+				$cq .= " AND hidden = :hidden";
 				$no_results_error = 'filter';
 				
-				$params[':hidden'] = $_GET['hidden'];
+				$params[':hidden'] = $_POST['status'];
 			}
 
 			/**
 			 * Count the files assigned to this client. If there is none, show
 			 * an error message.
 			 */
-			$sql = $dbh->prepare($rq);
+			$sql = $dbh->prepare($cq);
 			$sql->execute( $params );
 			
 			if ( $sql->rowCount() > 0) {
@@ -329,18 +369,7 @@ include('header.php');
 			 * Get the files
 			 */
 			$params = array();
-			
-			/**
-			 * Add the download count to the main query.
-			 * If the page is filtering files by client, then
-			 * add the client ID to the subquery.
-			 */
-			$add_user_to_query = '';
-			if ( isset($search_on) && $results_type == 'client' ) {
-				$add_user_to_query = "AND user_id = :user_id";
-				$params[':user_id'] = $this_id;
-			}
-			$cq = "SELECT files.*, ( SELECT COUNT(file_id) FROM " . TABLE_DOWNLOADS . " WHERE " . TABLE_DOWNLOADS . ".file_id=files.id " . $add_user_to_query . ") as download_count FROM " . TABLE_FILES . " files";
+			$fq = "SELECT * FROM " . TABLE_FILES;
 	
 			if ( isset($search_on) && !empty($gotten_files) ) {
 				$conditions[] = "FIND_IN_SET(id, :files)";
@@ -348,11 +377,11 @@ include('header.php');
 			}
 	
 			/** Add the search terms */	
-			if(isset($_GET['search']) && !empty($_GET['search'])) {
+			if(isset($_POST['search']) && !empty($_POST['search'])) {
 				$conditions[] = "(filename LIKE :name OR description LIKE :description)";
 				$no_results_error = 'search';
 	
-				$search_terms			= '%'.$_GET['search'].'%';
+				$search_terms			= '%'.$_POST['search'].'%';
 				$params[':name']		= $search_terms;
 				$params[':description']	= $search_terms;
 			}
@@ -395,139 +424,121 @@ include('header.php');
 			 */
 			if ( !empty( $conditions ) ) {
 				foreach ( $conditions as $index => $condition ) {
-					$cq .= ( $index == 0 ) ? ' WHERE ' : ' AND ';
-					$cq .= $condition;
+					$fq .= ( $index == 0 ) ? ' WHERE ' : ' AND ';
+					$fq .= $condition;
 				}
 			}
-
-			/**
-			 * Add the order.
-			 * Defaults to order by: date, order: ASC
-			 */
-			$cq .= sql_add_order( TABLE_FILES, 'timestamp', 'desc' );
-
-			/**
-			 * Pre-query to count the total results
-			*/
-			$count_sql = $dbh->prepare( $cq );
-			$count_sql->execute($params);
-			$count_for_pagination = $count_sql->rowCount();
-		
-			/**
-			 * Repeat the query but this time, limited by pagination
-			 */
-			$cq .= " LIMIT :limit_start, :limit_number";
-			$sql = $dbh->prepare( $cq );
-		
-			$pagination_page			= ( isset( $_GET["page"] ) ) ? $_GET["page"] : 1;
-			$pagination_start			= ( $pagination_page - 1 ) * RESULTS_PER_PAGE;
-			$params[':limit_start']		= $pagination_start;
-			$params[':limit_number']	= RESULTS_PER_PAGE;
-		
-			$sql->execute( $params );
-			$count = $sql->rowCount();
 	
 			/** Debug query */
-			//echo $cq;
+			//echo $fq;
 			//print_r( $conditions );
-		}
-		else {
-			$count_for_pagination = 0;
+	
+			$sql_files = $dbh->prepare($fq);
+			$sql_files->execute( $params );
+			$count = $sql_files->rowCount();
 		}
 	?>
-		<div class="form_actions_left">
-			<div class="form_actions_limit_results">
-				<?php show_search_form('manage-files.php'); ?>
-
-				<?php
+          <div class="form_actions_left cc-dft-btm-margin">
+            <div class="form_actions_limit_results">
+              <form action="<?php echo html_output($form_action_url); ?>" name="files_search" method="post" class="form-inline">
+                <div class="form-group group_float">
+                  <input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($search_terms)) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box form-control" />
+                </div>
+                <button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default">
+                <?php _e('Search','cftp_admin'); ?>
+                </button>
+              </form>
+              <?php
 					/** Filters are not available for clients */
 					if($current_level != '0' && $results_type != 'global') {
 				?>
-						<form action="manage-files.php" name="files_filters" method="get" class="form-inline form_filters">
-							<?php form_add_existing_parameters( array('hidden', 'action') ); ?>
-							<div class="form-group group_float">
-								<select name="hidden" id="hidden" class="txtfield form-control">
-									<?php
-										$status_options = array(
-																'2'		=> __('All statuses','cftp_admin'),
-																'0'		=> __('Visible','cftp_admin'),
+              <form action="<?php echo html_output($form_action_url); ?>" name="files_filters" method="post" class="form-inline form_filters">
+                <div class="form-group group_float">
+                  <select name="status" id="status" class="txtfield form-control">
+                    <?php
+										$options_status = array(
+																'all'	=> __('All statuses','cftp_admin'),
 																'1'		=> __('Hidden','cftp_admin'),
+																'0'		=> __('Visible','cftp_admin'),
 															);
-										foreach ( $status_options as $val => $text ) {
+										foreach ( $options_status as $value => $text ) {
 									?>
-											<option value="<?php echo $val; ?>" <?php if ( isset( $_GET['hidden'] ) && $_GET['hidden'] == $val ) { echo 'selected="selected"'; } ?>><?php echo $text; ?></option>
-									<?php
+                    <option value="<?php echo $value; ?>"><?php echo $text; ?></option>
+                    <?php
 										}
 									?>
-								</select>
-							</div>
-							<button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default"><?php _e('Filter','cftp_admin'); ?></button>
-						</form>
-				<?php
+                  </select>
+                </div>
+                <button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default">
+                <?php _e('Filter','cftp_admin'); ?>
+                </button>
+              </form>
+              <?php
 					}
 				?>
-			</div>
-		</div>
-
-
-		<form action="manage-files.php" name="files_list" method="get" class="form-inline">
-			<?php form_add_existing_parameters(); ?>
-			<?php
+            </div>
+          </div>
+          <form action="<?php echo html_output($form_action_url); ?>" name="files_list" method="post" class="form-inline">
+            <?php
 				/** Actions are not available for clients */
 				if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
 			?>
-					<div class="form_actions_right">
-						<div class="form_actions">
-							<div class="form_actions_submit">
-								<div class="form-group group_float">
-									<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected files actions','cftp_admin'); ?>:</label>
-									<?php
+            <div class="form_actions_right cc-dft-btm-margin">
+              <div class="form_actions">
+                <div class="form_actions_submit">
+                  <div class="form-group group_float">
+                    <label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i>
+                      <?php _e('Selected files actions','cftp_admin'); ?>
+                      :</label>
+                    <?php
 										if (isset($search_on)) {
 									?>
-										<input type="hidden" name="modify_type" id="modify_type" value="<?php echo $search_on; ?>" />
-										<input type="hidden" name="modify_id" id="modify_id" value="<?php echo $this_id; ?>" />
-									<?php
+                    <input type="hidden" name="modify_type" id="modify_type" value="<?php echo $search_on; ?>" />
+                    <input type="hidden" name="modify_id" id="modify_id" value="<?php echo $this_id; ?>" />
+                    <?php
 										}
 									?>
-									<select name="action" id="action" class="txtfield form-control">
-										<?php
-											$actions_options = array(
-																	'none'			=> __('Select action','cftp_admin'),
-																	'delete'		=> __('Delete','cftp_admin'),
-																);
-
+                    <select name="files_actions" id="files_actions" class="txtfield form-control">
+                      <?php
 											/** Options only available when viewing a client/group files list */
 											if (isset($search_on)) {
-												$actions_options['hide']		= __('Hide','cftp_admin');
-												$actions_options['show']		= __('Show','cftp_admin');
-												$actions_options['unassign']	= __('Unassign','cftp_admin');
-											}
-
-											foreach ( $actions_options as $val => $text ) {
 										?>
-												<option value="<?php echo $val; ?>"><?php echo $text; ?></option>
-										<?php
+                      <option value="hide">
+                      <?php _e('Hide','cftp_admin'); ?>
+                      </option>
+                      <option value="show">
+                      <?php _e('Show','cftp_admin'); ?>
+                      </option>
+                      <option value="unassign">
+                      <?php _e('Unassign','cftp_admin'); ?>
+                      </option>
+                      <?php
 											}
 										?>
-									</select>
-								</div>
-								<button type="submit" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
-							</div>
-						</div>
-					</div>
-			<?php
+                      <option value="delete">
+                      <?php _e('Delete','cftp_admin'); ?>
+                      </option>
+                    </select>
+                  </div>
+                  <button type="submit" name="do_action" id="do_action" class="btn btn-sm btn-default">
+                  <?php _e('Proceed','cftp_admin'); ?>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <?php
 				}
 			?>
-
-			<div class="clear"></div>
-	
-			<div class="form_actions_count">
-				<p class="form_count_total"><?php _e('Found','cftp_admin'); ?>: <span><?php echo $count_for_pagination; ?> <?php _e('files','cftp_admin'); ?></span></p>
-			</div>
-	
-			<div class="clear"></div>
-
-			<?php
+            <div class="clear"></div>
+            <div class="form_actions_count">
+              <p class="form_count_total">
+                <?php _e('Showing','cftp_admin'); ?>
+                : <span><?php echo $count; ?>
+                <?php _e('files','cftp_admin'); ?>
+                </span></p>
+            </div>
+            <div class="clear"></div>
+            <?php
 				if (!$count) {
 					if (isset($no_results_error)) {
 						switch ($no_results_error) {
@@ -553,323 +564,364 @@ include('header.php');
 					}
 					echo system_message('error',$no_results_message);
 				}
+			?>
+            <section id="no-more-tables" class="cc-overflow-scroll">
+            <table id="files_list" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
+              <thead>
+                <tr>
+                  <?php
+							/** Actions are not available for clients if delete own files is false */
+							if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
+						?>
+                  <th class="td_checkbox" data-sort-ignore="true"> <input type="checkbox" name="select_all" id="select_all" value="0" />
+                  </th>
+                  <?php
+							}
+						?>
+                  <th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('Date','cftp_admin'); ?></th>
+                  <th data-hide="phone,tablet"><?php _e('Ext.','cftp_admin'); ?></th>
+                  <th><?php _e('Title','cftp_admin'); ?></th>
+                  <th><?php _e('Size','cftp_admin'); ?></th>
+                  <?php
+							if($current_level != '0') {
+						?>
+                  <th data-hide="phone,tablet"><?php _e('Uploader','cftp_admin'); ?></th>
+                  <?php
+									if ( !isset( $search_on ) ) {
+								?>
+                  <th data-hide="phone"><?php _e('Assigned','cftp_admin'); ?></th>
+                  <?php
+									}
+								?>
+                  <th data-hide="phone"><?php _e('Public','cftp_admin'); ?></th>
+                  <th data-hide="phone"><?php _e('Expiry','cftp_admin'); ?></th>
+                  <?php
+							}
 
-				if ( $count_for_pagination > 0 ) {
-					/**
-					 * Generate the table using the class.
-					 */
-					$table_attributes	= array(
-												'id'		=> 'files_tbl',
-												'class'		=> 'footable table',
-											);
-					$table = new generateTable( $table_attributes );
-					
-					/**
-					 * Set the conditions to true or false once here to
-					 * avoid repetition
-					 * They will be used to generate or no certain columns
-					 */
-					$conditions = array(
-										'select_all'		=> ( $current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1' ) ? true : false,
-										'is_not_client'		=> ( $current_level != '0' ) ? true : false,
-										'total_downloads'	=> ( $current_level != '0' && !isset( $search_on ) ) ? true : false,
-										'is_search_on'		=> ( isset( $search_on ) ) ? true : false,
-									);
-	
-					$thead_columns		= array(
-												array(
-													'select_all'	=> true,
-													'attributes'	=> array(
-																			'class'		=> array( 'td_checkbox' ),
-																		),
-													'condition'		=> $conditions['select_all'],
-												),
-												array(
-													'sortable'		=> true,
-													'sort_url'		=> 'timestamp',
-													'sort_default'	=> true,
-													'content'		=> __('Added on','cftp_admin'),
-													'hide'			=> 'phone',
-												),
-												array(
-													'content'		=> __('Ext.','cftp_admin'),
-													'hide'			=> 'phone,tablet',
-												),
-												array(
-													'sortable'		=> true,
-													'sort_url'		=> 'filename',
-													'content'		=> __('Title','cftp_admin'),
-												),
-												array(
-													'content'		=> __('Size','cftp_admin'),
-												),
-												array(
-													'sortable'		=> true,
-													'sort_url'		=> 'uploader',
-													'content'		=> __('Uploader','cftp_admin'),
-													'hide'			=> 'phone,tablet',
-													'condition'		=> $conditions['is_not_client'],
-												),
-												array(
-													'content'		=> __('Assigned','cftp_admin'),
-													'hide'			=> 'phone',
-													'condition'		=> ( $conditions['is_not_client'] && !$conditions['is_search_on'] ),
-												),
-												array(
-													'sortable'		=> true,
-													'sort_url'		=> 'public_allow',
-													'content'		=> __('Public','cftp_admin'),
-													'hide'			=> 'phone',
-													'condition'		=> $conditions['is_not_client'],
-												),
-												array(
-													'content'		=> __('Expiry','cftp_admin'),
-													'hide'			=> 'phone',
-													'condition'		=> $conditions['is_not_client'],
-												),
-												array(
-													'content'		=> __('Status','cftp_admin'),
-													'hide'			=> 'phone',
-													'condition'		=> $conditions['is_search_on'],
-												),
-												array(
-													'sortable'		=> true,
-													'sort_url'		=> 'download_count',
-													'content'		=> __('Download count','cftp_admin'),
-													'hide'			=> 'phone',
-													'condition'		=> $conditions['is_search_on'],
-												),
-												array(
-													'sortable'		=> true,
-													'sort_url'		=> 'download_count',
-													'content'		=> __('Total downloads','cftp_admin'),
-													'hide'			=> 'phone',
-													'condition'		=> $conditions['total_downloads'],
-												),
-												array(
-													'content'		=> __('Actions','cftp_admin'),
-													'hide'			=> 'phone',
-												),
-											);
-	
-											//echo '<pre>'; 
-											//print_r($thead_columns);
-											//echo '</pre>';
-	
-					$table->thead( $thead_columns );
-	
-	
-					$sql->setFetchMode(PDO::FETCH_ASSOC);
-					while ( $row = $sql->fetch() ) {
-						$table->add_row();
-	
-						/**
-						 * Prepare the information to be used later on the cells array
-						 */
-						$file_id = $row['id'];
-	
-						/**
-						 * Visibility is only available when filtering by client or group.
-						 */
-						$params = array();
-						$query_this_file = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id";
-						$params[':file_id'] = $row['id'];
-	
-						$sql_this_file = $dbh->prepare($query_this_file);
-						$sql_this_file->execute( $params );
-						$sql_this_file->setFetchMode(PDO::FETCH_ASSOC);
-	
-						$count_assignations = $sql_this_file->rowCount();
-	
-						while( $data_file = $sql_this_file->fetch() ) {
-							$file_id = $data_file['id'];
-							$hidden = $data_file['hidden'];
-						}
-	
-						$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
-	
-						/**
-						 * Get file size only if the file exists
-						 */
-						$this_file_absolute = UPLOADED_FILES_FOLDER . $row['url'];
-						if ( file_exists( $this_file_absolute ) ) {
-							$this_file_size = get_real_size($this_file_absolute);
-							$formatted_size = html_output(format_file_size($this_file_size));
-						}
-						else {
-							$this_file_size = '0';
-							$formatted_size = '-';
-						}
-	
-						/***/
-						$pathinfo = pathinfo($row['url']);
-						$extension = strtolower($pathinfo['extension']);
-	
-						/** Is file assigned? */
-						$assigned_class		= ($count_assignations == 0) ? 'danger' : 'success';
-						$assigned_status	= ($count_assignations == 0) ? __('No','cftp_admin') : __('Yes','cftp_admin');
-	
-						/**
-						 * Visibility
-						 */
-						if ($row['public_allow'] == '1') {
-							$visibility_link	= '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-id="' . $row['id'] .'" data-token="' . html_output($row['public_token']) .'" data-placement="top" data-toggle="popover" data-original-title="' . __('Public URL','cftp_admin') .'">';
-							$visibility_label	= __('Public','cftp_admin');
-						}
-						else {
-							$visibility_link	= '<a href="javascript:void(0);" class="btn btn-default btn-sm disabled" rel="" title="">';
-							$visibility_label	= __('Private','cftp_admin');
-						}
-	
-						/**
-						 * Expiration
-						 */
-						if ($row['expires'] == '0') {
-							$expires_button	= 'success';
-							$expires_label	= __('Does not expire','cftp_admin');
-						}
-						else {
-							$expires_date = date( TIMEFORMAT_USE, strtotime ($row['expiry_date'] ) );
-	
-							if (time() > strtotime($row['expiry_date'])) {
-								$expires_button	= 'danger';
-								$expires_label	= __('Expired on','cftp_admin') . ' ' . $expires_date;
+							/**
+							 * These columns are only available when filtering by client or group.
+							 */
+							if (isset($search_on)) {
+						?>
+                  <th data-hide="phone"><?php _e('Status','cftp_admin'); ?></th>
+                  <th data-hide="phone"><?php _e('Download count','cftp_admin'); ?></th>
+                  <?php
 							}
 							else {
-								$expires_button	= 'info';
-								$expires_label	= __('Expires on','cftp_admin') . ' ' . $expires_date;
+								if($current_level != '0') {
+						?>
+                  <th data-hide="phone"><?php _e('Total downloads','cftp_admin'); ?></th>
+                  <?php
+								}
 							}
-						}
-	
-						/**
-						 * Visibility
-						 */
-						$status_label = '';
-						$status_class = '';
-						if ( isset( $search_on ) ) {
-							$status_class	= ($hidden == 1) ? 'danger' : 'success';
-							$status_label	= ($hidden == 1) ? __('Hidden','cftp_admin') : __('Visible','cftp_admin');
-						}
-	
-						/**
-						 * Download count when filtering by group or client
-						 */
-						if ( isset( $search_on ) ) {
-							$download_count_content = $row['download_count'] . ' ' . __('times','cftp_admin');
-	
-							switch ($results_type) {
-								case 'client':
-									break;
-								case 'group':
-								case 'category':
-									$download_count_class	= ( $row['download_count'] > 0 ) ? 'downloaders btn-primary' : 'btn-default disabled';
-									$download_count_content	= '<a href="' . BASE_URI .'download-information.php?id=' . $row['id'] .'" class="' . $download_count_class . ' btn btn-sm" rel="' . $row["id"] . '" title="' . html_output( $row['filename'] ) . '">' . $download_count_content . '</a>';
-								break;
-							}
-						}
-						
-						/**
-						 * Download count and link on the unfiltered files table
-						 * (no specific client or group selected)
-						 */
-						if ( !isset( $search_on ) ) {
-							if ($current_level != '0') {
-								if ( $row["download_count"] > 0 ) {
-									$btn_class		= 'downloaders btn-primary';
+						?>
+                  <th data-hide="phone" data-sort-ignore="true"><?php _e('Actions','cftp_admin'); ?></th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php
+						if ($count > 0) {
+							$sql_files->setFetchMode(PDO::FETCH_ASSOC);
+							while( $row = $sql_files->fetch() ) {
+								$file_id = $row['id'];
+								/**
+								 * Construct the complete file URI to use on the download button.
+								 */
+								$this_file_absolute = UPLOADED_FILES_FOLDER.$row['url'];
+								$this_file_uri = BASE_URI.UPLOADED_FILES_URL.$row['url'];
+																
+								/**
+								 * Download count and visibility status are only available when
+								 * filtering by client or group.
+								 */
+								$params = array();
+								$query_this_file = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id";
+								$params[':file_id'] = $row['id'];
+
+								if (isset($search_on)) {
+									$query_this_file .= " AND $search_on = :id";
+									$params[':id'] = $this_id;
+									/**
+									 * Count how many times this file has been downloaded
+									 * Here, the download count is specific per user.
+									 */
+									switch ($results_type) {
+										case 'client':
+												$download_count_sql	= $dbh->prepare("SELECT user_id, file_id FROM " . TABLE_DOWNLOADS . " WHERE file_id = :file_id AND user_id = :user_id");
+												$download_count_sql->bindParam(':file_id', $row['id'], PDO::PARAM_INT);
+												$download_count_sql->bindParam(':user_id', $this_id, PDO::PARAM_INT);
+												$download_count_sql->execute();
+												$download_count	= $download_count_sql->rowCount();
+											break;
+
+										case 'group':
+										case 'category':
+												$download_count_sql	= $dbh->prepare("SELECT file_id FROM " . TABLE_DOWNLOADS . " WHERE file_id = :file_id");
+												$download_count_sql->bindParam(':file_id', $row['id'], PDO::PARAM_INT);
+												$download_count_sql->execute();
+												$download_count	= $download_count_sql->rowCount();
+											break;
+									}
+								}
+
+								$sql_this_file = $dbh->prepare($query_this_file);
+								$sql_this_file->execute( $params );
+								$sql_this_file->setFetchMode(PDO::FETCH_ASSOC);
+
+								$count_assignations = $sql_this_file->rowCount();
+
+								while( $data_file = $sql_this_file->fetch() ) {
+									$file_id = $data_file['id'];
+									$hidden = $data_file['hidden'];
+								}
+								$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
+
+								/**
+								 * Get file size only if the file exists
+								 */
+								if ( file_exists( $this_file_absolute ) ) {
+									$this_file_size = get_real_size($this_file_absolute);
+									$formatted_size = html_output(format_file_size($this_file_size));
 								}
 								else {
-									$btn_class		= 'btn-default disabled';
+									$this_file_size = '0';
+									$formatted_size = '-';
 								}
-	
-								$downloads_table_link = '<a href="' . BASE_URI .'download-information.php?id=' . $row['id'] .'" class="' . $btn_class .' btn btn-sm" rel="' . $row["id"] .'" title="' .html_output($row['filename']) .'">' . $row["download_count"] . ' ' . __('downloads','cftp_admin') .'</a>';
+					?>
+                <tr>
+                  <?php
+										/** Actions are not available for clients */
+										if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
+									?>
+                  <td><input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" /></td>
+                  <?php
+										}
+									?>
+                  <td data-value="<?php echo strtotime($row['timestamp']); ?>"><?php echo $date; ?></td>
+                  <td><?php
+											$pathinfo = pathinfo($row['url']);
+											$extension = strtolower($pathinfo['extension']);
+											echo html_output($extension);
+										?></td>
+                  <td class="file_name"><?php
+											/**
+											 * Clients cannot download from here.
+											 */
+											if($current_level != '0') {
+												$download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
+										?>
+                    <a href="<?php echo $download_link; ?>" target="_blank"> <?php echo html_output($row['filename']); ?> </a>
+                    <?php
+											}
+											else {
+												echo html_output($row['filename']);
+											}
+										?></td>
+                  <td data-value="<?php echo $this_file_size; ?>"><?php echo $formatted_size; ?></td>
+                  <?php
+										if($current_level != '0') {
+									?>
+                  <td><?php echo html_output($row['uploader']); ?></td>
+                  <?php
+												if ( !isset( $search_on ) ) {
+											?>
+                  <td><?php
+															$class	= ($count_assignations == 0) ? 'danger' : 'success';
+															$status	= ($count_assignations == 0) ? __('No','cftp_admin') : __('Yes','cftp_admin');
+														?>
+                    <span class="label label-<?php echo $class; ?>"> <?php echo $status; ?> </span></td>
+                  <?php
+												}
+											?>
+                  <td class="col_visibility"><?php
+													if ($row['public_allow'] == '1') {
+												?>
+                    <a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-id="<?php echo $row['id']; ?>" data-token="<?php echo html_output($row['public_token']); ?>" data-placement="top" data-toggle="popover" data-original-title="<?php _e('Public URL','cftp_admin'); ?>">
+                    <?php
+													}
+													else {
+												?>
+                    <a href="javascript:void(0);" class="btn btn-default btn-sm disabled" rel="" title="">
+                    <?php
+													}
+															$status_public	= __('Public','cftp_admin');
+															$status_private	= __('Private','cftp_admin');
+															echo ($row['public_allow'] == 1) ? $status_public : $status_private;
+												?>
+                    </a></td>
+                  <td><?php
+													if ($row['expires'] == '0') {
+												?>
+                    <a href="javascript:void(0);" class="btn btn-success disabled btn-sm">
+                    <?php _e('Does not expire','cftp_admin'); ?>
+                    </a>
+                    <?php
+													}
+													else {
+														if (time() > strtotime($row['expiry_date'])) {
+												?>
+                    <a href="javascript:void(0);" class="btn btn-danger disabled btn-sm" rel="" title="">
+                    <?php _e('<span class="cc-mob-hide">Expired on</span>','cftp_admin'); ?>
+                    <?php echo date(TIMEFORMAT_USE,strtotime($row['expiry_date'])); ?> </a>
+                    <?php
+														}
+														else {
+												?>
+                    <a href="javascript:void(0);" class="btn btn-info disabled btn-sm" rel="" title="">
+                    <?php _e('Expires on','cftp_admin'); ?>
+                    <?php echo date(TIMEFORMAT_USE,strtotime($row['expiry_date'])); ?> </a>
+                    <?php
+														}
+													}
+												?></td>
+                  <?php
+										}
+
+										/**
+										 * These columns are only available when filtering by client or group.
+										 */
+										if (isset($search_on)) {
+									?>
+                  <td class="<?php echo ($hidden == 1) ? 'file_status_hidden' : 'file_status_visible'; ?>"><?php
+													$status_hidden	= __('Hidden','cftp_admin');
+													$status_visible	= __('Visible','cftp_admin');
+													$class			= ($hidden == 1) ? 'danger' : 'success';
+												?>
+                    <span class="label label-<?php echo $class; ?>"> <?php echo ($hidden == 1) ? $status_hidden : $status_visible; ?> </span></td>
+                  <td><?php
+													switch ($results_type) {
+														case 'client':
+															echo $download_count; ?>
+                    <?php _e('times','cftp_admin');
+															break;
+				
+														case 'group':
+														case 'category':
+												?>
+                    <a href="javascript:void(0);" class="<?php if ($download_count > 0) { echo 'downloaders btn-primary'; } else { echo 'btn-default disabled'; } ?> btn btn-sm" rel="<?php echo $row["id"]; ?>" title="<?php echo html_output($row['filename']); ?>"> <?php echo $download_count; ?>
+                    <?php _e('downloads','cftp_admin'); ?>
+                    </a>
+                    <?php
+														break;
+													}
+												?></td>
+                  <?php
+										}
+										else {
+											if ($current_level != '0') {
+												if ( isset( $downloads_information[$row["id"]] ) ) {
+													$download_info	= $downloads_information[$row["id"]];
+													$btn_class		= ( $download_info['total'] > 0 ) ? 'downloaders btn-primary' : 'btn-default disabled';
+													$total_count	= $download_info['total'];
+												}
+												else {
+													$btn_class		= 'btn-default disabled';
+													$total_count	= 0;
+												}
+									?>
+                  <td><a href="<?php echo BASE_URI; ?>download-information.php?id=<?php echo $row['id']; ?>" class="<?php echo $btn_class; ?> btn btn-sm" rel="<?php echo $row["id"]; ?>" title="<?php echo html_output($row['filename']); ?>"> <?php echo $total_count; ?>
+                    <?php _e('downloads','cftp_admin'); ?>
+                    </a></td>
+                  <?php
+											}
+										}
+									?>
+                  <td><a href="edit-file.php?file_id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm">
+                    <?php _e('Edit','cftp_admin'); ?>
+                    </a></td>
+                </tr>
+                <?php
 							}
 						}
-	
-						/**
-						 * Add the cells to the row
-						 */
-						$tbody_cells = array(
-												array(
-													'checkbox'		=> true,
-													'value'			=> $row["id"],
-													'condition'		=> $conditions['select_all'],
-												),
-												array(
-													'content'		=> $date,
-												),
-												array(
-													'content'		=> html_output( $extension ),
-												),
-												array(
-													'attributes'	=> array(
-																			'class'		=> array( 'file_name' ),
-																		),
-													'content'		=> '<a href="' . BASE_URI . 'process.php?do=download&amp;client=' . $global_user . '&amp;id=' . $row['id'] . '&amp;n=1" target="_blank">' . html_output($row['filename']) . '</a>',
-												),
-												array(
-													'content'		=> $formatted_size,
-												),
-												array(
-													'content'		=> html_output( $row['uploader'] ),
-													'condition'		=> $conditions['is_not_client'],
-												),
-												array(
-													'content'		=> '<span class="label label-' . $assigned_class .'">' . $assigned_status . '</span>',
-													'condition'		=> ( $conditions['is_not_client'] && !$conditions['is_search_on'] ),
-												),
-												array(
-													'attributes'	=> array(
-																			'class'		=> array( 'col_visibility' ),
-																		),
-													'content'		=> $visibility_link . $visibility_label . '</a>',
-													'condition'		=> $conditions['is_not_client'],
-												),
-												array(
-													'content'		=> '<a href="javascript:void(0);" class="btn btn-' . $expires_button . ' disabled btn-sm" rel="" title="">' . $expires_label . '</a>',
-													'condition'		=> $conditions['is_not_client'],
-												),
-												array(
-													'content'		=> '<span class="label label-' . $status_class .'">' . $status_label . '</span>',
-													'condition'		=> $conditions['is_search_on'],
-												),
-												array(
-													'content'		=> ( !empty( $download_count_content ) ) ? $download_count_content : false,
-													'condition'		=> $conditions['is_search_on'],
-												),
-												array(
-													'content'		=> ( !empty( $downloads_table_link ) ) ? $downloads_table_link : false,
-													'condition'		=> $conditions['total_downloads'],
-												),
-												array(
-													'content'		=> '<a href="edit-file.php?file_id=' . $row["id"] .'" class="btn btn-primary btn-sm">' . __('Edit','cftp_admin') . '</a>',
-												),
-									);
-	
-						foreach ( $tbody_cells as $cell ) {
-							$table->add_cell( $cell );
-						}
-		
-						$table->end_row();
-					}
-	
-	
-					echo $table->render();
-	
-					/**
-					 * PAGINATION
-					 */
-					$pagination_args = array(
-											'link'		=> 'manage-files.php',
-											'current'	=> $pagination_page,
-											'pages'		=> ceil( $count_for_pagination / RESULTS_PER_PAGE ),
-										);
-					
-					echo $table->pagination( $pagination_args );
-				}
-			?>
-		</form>
-	</div>
-
+					?>
+              </tbody>
+            </table>
+            </section>
+            <nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
+              <div class="pagination_wrapper text-center">
+                <ul class="pagination hide-if-no-paging">
+                </ul>
+              </div>
+            </nav>
+          </form>
+          <?php
+			if ($current_level != '0') {
+				$msg = __('Please note that downloading a file from here will not add to the download count.','cftp_admin');
+				echo system_message('info',$msg);
+			}
+		?>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
+</div>
 <?php include('footer.php'); ?>
+<style type="text/css">
+/*-------------------- Responsive table by B) -----------------------*/
+@media only screen and (max-width: 1200px) {
+	#content {
+		padding-top:30px;
+	}
+	
+	/* Force table to not be like tables anymore */
+	#no-more-tables table, 
+	#no-more-tables thead, 
+	#no-more-tables tbody, 
+	#no-more-tables th, 
+	#no-more-tables td, 
+	#no-more-tables tr { 
+		display: block; 
+	}
+ 
+	/* Hide table headers (but not display: none;, for accessibility) */
+	#no-more-tables thead tr { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+ 
+	#no-more-tables tr { border: 1px solid #ccc; }
+ 
+	#no-more-tables td { 
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee; 
+		position: relative;
+		padding-left: 50%; 
+		white-space: normal;
+		text-align:left;
+	}
+ 
+	#no-more-tables td:before { 
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 45%; 
+		padding-right: 10px; 
+		white-space: nowrap;
+		text-align:left;
+		font-weight: bold;
+	}
+ 
+	/*
+	Label the data
+	*/
+
+	
+	td:nth-of-type(1):before { content: ""; }
+	td:nth-of-type(2):before { content: "Date"; }
+	td:nth-of-type(3):before { content: "Ext."; }
+	td:nth-of-type(4):before { content: "Title"; }
+	td:nth-of-type(5):before { content: "Size"; }
+	td:nth-of-type(6):before { content: "Uploader"; }
+	td:nth-of-type(7):before { content: "Assigned"; }
+	td:nth-of-type(8):before { content: "Public"; }
+	td:nth-of-type(9):before { content: "Expiry"; }
+	td:nth-of-type(10):before { content: "Total downloads"; }
+	td:nth-of-type(10):before { content: "Actions"; }
+}
+/*-------------------- Responsive table End--------------------------*/
+</style>

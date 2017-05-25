@@ -13,13 +13,21 @@ require_once('sys.includes.php');
 $page_title = __('Branding','cftp_admin');
 
 $active_nav = 'options';
+$cc_active_page = 'Branding';
 include('header.php');
 
 $logo_file_info = generate_logo_url();
 ?>
 
 <div id="main">
-	<h2><?php echo $page_title; ?></h2>
+<div id="content"> 
+    
+    <!-- Added by B) -------------------->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-flag"></i>&nbsp;<?php echo $page_title; ?></h1>
+          
 
 <?php
 if ($_POST) {
@@ -88,16 +96,56 @@ if ($_POST) {
 
 				// show the errors or continue if everything is ok
 				if (show_form_errors() == false) { return false; }
-			});
+			});		
+			$(".b_name_change").click(function(e) {
+			//console.log($("#b_name").val());
+			 e.preventDefault();
+			  $.ajax({
+            url: "change_branding_name.php",
+            type: "POST",
+            async: true, 
+            data: { bname:$("#b_name").val() }, //your form data to post goes here as a json object
+            dataType: "json",
+            success: function(data) {
+                if(data == 1) {
+					$("#brand_status").html('<div class="alert alert-success fade in" style="margin-top: 15px;"><strong>Success!</strong> brand name successfully updated.</div>');
+					
+				}
+				else {
+					$("#brand_status").html('<div class="alert alert-danger fade in" style="margin-top: 15px;"><strong>Opps!</strong> something went wrong!.</div>');
+				}
+            },  
+        	});
 		});
+		});
+
 	</script>
 
-	<form action="branding.php" name="logoupload" method="post" enctype="multipart/form-data">
+	
 		<div class="container">
+        <div class="row">
+        <div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
+        <div id="brand_status" ></div>
+        <div class="white-box-interior" style="display: flex;">
+        <div class="col-md-4">
+                    <label for="b_name">Brand Name :</label>
+                    </div>
+        <div class="col-xs-8">
+                      <form class="form-inline" method="post">
+                        <div class="form-group">
+                          
+                          <input type="text" value="<?php echo $brandname; ?>" class="form-control" name="b_name" id="b_name" placeholder="Brand Name">
+                        </div>
+    				<button type="submit" class="btn btn-default b_name_change">Change Name</button>
+  					</form>
+                    </div>
+        </div>
+        </div>
+        </div>
 			<div class="row">
 				<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
 					<div class="white-box-interior">
-
+<form action="branding.php" name="logoupload" method="post" enctype="multipart/form-data">
 						<?php
 							if (isset($_GET['status'])) {
 								switch ($_GET['status']) {
@@ -155,18 +203,20 @@ if ($_POST) {
 								</div>
 							</div>
 						</div>
-
+<div class="after_form_buttons txt-rgt">
+				<button type="submit" name="submit" class="btn btn-wide btn-primary empty"><?php _e('Upload','cftp_admin'); ?></button>
+			</div>
 					</div>
 				</div>
 			</div>
 
-			<div class="after_form_buttons">
-				<button type="submit" name="submit" class="btn btn-wide btn-primary empty"><?php _e('Upload','cftp_admin'); ?></button>
-			</div>
+			
+
+			
 
 		</div>
 	</form>
 
-</div>
+</div></div></div></div></div>
 
 <?php include('footer.php'); ?>

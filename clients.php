@@ -6,7 +6,6 @@
  * @subpackage	Clients
  *
  */
-$footable_min = true; // delete this line after finishing pagination on every table
 $load_scripts	= array(
 						'footable',
 					); 
@@ -15,46 +14,63 @@ $allowed_levels = array(9,8);
 require_once('sys.includes.php');
 
 $active_nav = 'clients';
+$cc_active_page = 'Manage clients';
 
 $page_title = __('Clients Administration','cftp_admin');
 include('header.php');
 ?>
-
 <script type="text/javascript">
-	$(document).ready(function() {
-		$("#do_action").click(function() {
-			var checks = $("td>input:checkbox").serializeArray(); 
-			if (checks.length == 0) { 
-				alert('<?php _e('Please select at least one client to proceed.','cftp_admin'); ?>');
-				return false; 
-			} 
-			else {
-				var action = $('#action').val();
-				if (action == 'delete') {
-					var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
-					var msg_2 = '<?php _e("clients and all of the assigned files. Are you sure you want to continue?",'cftp_admin'); ?>';
-					if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
-						return true;
-					} else {
-						return false;
-					}
+$(document).ready(function() {
+	$("#view_reduced").click(function(){
+		$(this).addClass('active_view_button');
+		$("#view_full").removeClass('active_view_button');
+		$(".extra").hide();
+	});
+	$("#view_full").click(function(){
+		$(this).addClass('active_view_button');
+		$("#view_reduced").removeClass('active_view_button');
+		$(".extra").show();
+	});
+	
+	$("#do_action").click(function() {
+		var checks = $("td>input:checkbox").serializeArray(); 
+		if (checks.length == 0) { 
+			alert('<?php _e('Please select at least one client to proceed.','cftp_admin'); ?>');
+			return false; 
+		} 
+		else {
+			var action = $('#clients_actions').val();
+			if (action == 'delete') {
+				var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
+				var msg_2 = '<?php _e("clients and all of the assigned files. Are you sure you want to continue?",'cftp_admin'); ?>';
+				if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
+					return true;
+				} else {
+					return false;
 				}
 			}
-		});
+		}
 	});
+});
 </script>
 
 <div id="main">
-	<h2><?php echo $page_title; ?></h2>
-	
-<?php
+  <div id="content"> 
+    
+    <!-- Added by B) -------------------->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-user"></i>&nbsp;<?php echo $page_title; ?></h1>
+<a href="clients-add.php" class="btn btn-sm btn-primary right-btn">New Client</a>
+          <?php
 	/**
 	 * Apply the corresponding action to the selected clients.
 	 */
-	if(isset($_GET['action'])) {
+	if(isset($_POST['clients_actions'])) {
 		/** Continue only if 1 or more clients were selected. */
-		if(!empty($_GET['batch'])) {
-			$selected_clients = $_GET['batch'];
+		if(!empty($_POST['selected_clients'])) {
+			$selected_clients = $_POST['selected_clients'];
 			$clients_to_get = implode( ',', array_map( 'intval', array_unique( $selected_clients ) ) );
 
 			/**
@@ -68,7 +84,7 @@ include('header.php');
 				$all_users[$data_user['id']] = $data_user['name'];
 			}
 
-			switch($_GET['action']) {
+			switch($_POST['clients_actions']) {
 				case 'activate':
 					/**
 					 * Changes the value on the "active" column value on the database.
@@ -132,11 +148,11 @@ include('header.php');
 	$cq = "SELECT * FROM " . TABLE_USERS . " WHERE level='0'";
 
 	/** Add the search terms */	
-	if ( isset( $_GET['search'] ) && !empty( $_GET['search'] ) ) {
+	if ( isset( $_POST['search'] ) && !empty( $_POST['search'] ) ) {
 		$cq .= " AND (name LIKE :name OR user LIKE :user OR address LIKE :address OR phone LIKE :phone OR email LIKE :email OR contact LIKE :contact)";
 		$no_results_error = 'search';
 
-		$search_terms		= '%'.$_GET['search'].'%';
+		$search_terms		= '%'.$_POST['search'].'%';
 		$params[':name']	= $search_terms;
 		$params[':user']	= $search_terms;
 		$params[':address']	= $search_terms;
@@ -145,104 +161,86 @@ include('header.php');
 		$params[':contact']	= $search_terms;
 	}
 
-	/** Add the active filter */	
-	if(isset($_GET['active']) && $_GET['active'] != '2') {
+	/** Add the status filter */	
+	if(isset($_POST['status']) && $_POST['status'] != 'all') {
 		$cq .= " AND active = :active";
 		$no_results_error = 'filter';
 
-		$params[':active']	= (int)$_GET['active'];
+		$params[':active']	= (int)$_POST['status'];
 	}
 	
-	/**
-	 * Add the order.
-	 * Defaults to order by: name, order: ASC
-	 */
-	$cq .= sql_add_order( TABLE_USERS, 'name', 'asc' );
+	$cq .= " ORDER BY name ASC";
 
-	/**
-	 * Pre-query to count the total results
-	*/
-	$count_sql = $dbh->prepare( $cq );
-	$count_sql->execute($params);
-	$count_for_pagination = $count_sql->rowCount();
-
-	/**
-	 * Repeat the query but this time, limited by pagination
-	 */
-	$cq .= " LIMIT :limit_start, :limit_number";
 	$sql = $dbh->prepare( $cq );
-
-	$pagination_page			= ( isset( $_GET["page"] ) ) ? $_GET["page"] : 1;
-	$pagination_start			= ( $pagination_page - 1 ) * RESULTS_PER_PAGE;
-	$params[':limit_start']		= $pagination_start;
-	$params[':limit_number']	= RESULTS_PER_PAGE;
-
 	$sql->execute( $params );
 	$count = $sql->rowCount();
 ?>
-		<div class="form_actions_left">
-			<div class="form_actions_limit_results">
-				<?php show_search_form('clients.php'); ?>
-
-				<form action="clients.php" name="clients_filters" method="get" class="form-inline">
-					<?php form_add_existing_parameters( array('active', 'action') ); ?>
-					<div class="form-group group_float">
-						<select name="active" id="active" class="txtfield form-control">
-							<?php
-								$status_options = array(
-														'2'		=> __('All statuses','cftp_admin'),
-														'1'		=> __('Active','cftp_admin'),
-														'0'		=> __('Inactive','cftp_admin'),
-													);
-								foreach ( $status_options as $val => $text ) {
-							?>
-									<option value="<?php echo $val; ?>" <?php if ( isset( $_GET['active'] ) && $_GET['active'] == $val ) { echo 'selected="selected"'; } ?>><?php echo $text; ?></option>
-							<?php
-								}
-							?>
-						</select>
-					</div>
-					<button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default"><?php _e('Filter','cftp_admin'); ?></button>
-				</form>
-			</div>
-		</div>
-
-		<form action="clients.php" name="clients_list" method="get" class="form-inline">
-			<?php form_add_existing_parameters(); ?>
-			<div class="form_actions_right">
-				<div class="form_actions">
-					<div class="form_actions_submit">
-						<div class="form-group group_float">
-							<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected clients actions','cftp_admin'); ?>:</label>
-							<select name="action" id="action" class="txtfield form-control">
-								<?php
-									$actions_options = array(
-															'none'			=> __('Select action','cftp_admin'),
-															'activate'		=> __('Activate','cftp_admin'),
-															'deactivate'	=> __('Deactivate','cftp_admin'),
-															'delete'		=> __('Delete','cftp_admin'),
-														);
-									foreach ( $actions_options as $val => $text ) {
-								?>
-										<option value="<?php echo $val; ?>"><?php echo $text; ?></option>
-								<?php
-									}
-								?>
-							</select>
-						</div>
-						<button type="submit" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
-					</div>
-				</div>
-			</div>
-			<div class="clear"></div>
-
-			<div class="form_actions_count">
-				<p><?php _e('Found','cftp_admin'); ?>: <span><?php echo $count_for_pagination; ?> <?php _e('clients','cftp_admin'); ?></span></p>
-			</div>
-
-			<div class="clear"></div>
-
-			<?php
+          <div class="form_actions_left">
+            <div class="form_actions_limit_results">
+              <form action="clients.php" name="clients_search" method="post" class="form-inline">
+                <div class="form-group group_float">
+                  <input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box form-control" />
+                </div>
+                <button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default">
+                <?php _e('Search','cftp_admin'); ?>
+                </button>
+              </form>
+              <form action="clients.php" name="clients_filters" method="post" class="form-inline">
+                <div class="form-group group_float">
+                  <select name="status" id="status" class="txtfield form-control">
+                    <option value="all">
+                    <?php _e('All statuses','cftp_admin'); ?>
+                    </option>
+                    <option value="1">
+                    <?php _e('Active','cftp_admin'); ?>
+                    </option>
+                    <option value="0">
+                    <?php _e('Inactive','cftp_admin'); ?>
+                    </option>
+                  </select>
+                </div>
+                <button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default">
+                <?php _e('Filter','cftp_admin'); ?>
+                </button>
+              </form>
+            </div>
+          </div>
+          <form action="clients.php" name="clients_list" method="post" class="form-inline">
+            <div class="form_actions_right">
+              <div class="form_actions">
+                <div class="form_actions_submit">
+                  <div class="form-group group_float">
+                    <label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i>
+                      <?php _e('Selected clients actions','cftp_admin'); ?>
+                      :</label>
+                    <select name="clients_actions" id="clients_actions" class="txtfield form-control">
+                      <option value="activate">
+                      <?php _e('Activate','cftp_admin'); ?>
+                      </option>
+                      <option value="deactivate">
+                      <?php _e('Deactivate','cftp_admin'); ?>
+                      </option>
+                      <option value="delete">
+                      <?php _e('Delete','cftp_admin'); ?>
+                      </option>
+                    </select>
+                  </div>
+                  <button type="submit" id="do_action" name="proceed" class="btn btn-sm btn-default">
+                  <?php _e('Proceed','cftp_admin'); ?>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="clear"></div>
+            <div class="form_actions_count">
+              <p class="form_count_total">
+                <?php _e('Showing','cftp_admin'); ?>
+                : <span><?php echo html_output($count); ?>
+                <?php _e('clients','cftp_admin'); ?>
+                </span></p>
+            </div>
+            <div class="clear"></div>
+            <?php
 				if (!$count) {
 					if (isset($no_results_error)) {
 						switch ($no_results_error) {
@@ -259,254 +257,147 @@ include('header.php');
 					}
 					echo system_message('error',$no_results_message);
 				}
-
-				if ($count > 0) {
-					/**
-					 * Generate the table using the class.
-					 */
-					$table_attributes	= array(
-												'id'		=> 'clients_tbl',
-												'class'		=> 'footable table',
-											);
-					$table = new generateTable( $table_attributes );
-	
-					$thead_columns		= array(
-												array(
-													'select_all'	=> true,
-													'attributes'	=> array(
-																			'class'		=> array( 'td_checkbox' ),
-																		),
-												),
-												array(
-													'sortable'		=> true,
-													'sort_url'		=> 'name',
-													'sort_default'	=> true,
-													'content'		=> __('Full name','cftp_admin'),
-												),
-												array(
-													'sortable'		=> true,
-													'sort_url'		=> 'user',
-													'content'		=> __('Log in username','cftp_admin'),
-													'hide'			=> 'phone,tablet',
-												),
-												array(
-													'sortable'		=> true,
-													'sort_url'		=> 'email',
-													'content'		=> __('E-mail','cftp_admin'),
-													'hide'			=> 'phone,tablet',
-												),
-												array(
-													'content'		=> __('Files: Own','cftp_admin'),
-													'hide'			=> 'phone',
-												),
-												array(
-													'content'		=> __('Files: Groups','cftp_admin'),
-													'hide'			=> 'phone',
-												),
-												array(
-													'sortable'		=> true,
-													'sort_url'		=> 'active',
-													'content'		=> __('Status','cftp_admin'),
-												),
-												array(
-													'content'		=> __('Groups on','cftp_admin'),
-													'hide'			=> 'phone',
-												),
-												array(
-													'content'		=> __('Notify','cftp_admin'),
-													'hide'			=> 'phone,tablet',
-												),
-												array(
-													'sortable'		=> true,
-													'sort_url'		=> 'timestamp',
-													'content'		=> __('Added on','cftp_admin'),
-													'hide'			=> 'phone,tablet',
-												),
-												array(
-													'content'		=> __('Address','cftp_admin'),
-													'hide'			=> 'phone,tablet',
-												),
-												array(
-													'content'		=> __('Telephone','cftp_admin'),
-													'hide'			=> 'phone,tablet',
-												),
-												array(
-													'content'		=> __('Internal contact','cftp_admin'),
-													'hide'			=> 'phone,tablet',
-												),
-												array(
-													'content'		=> __('Actions','cftp_admin'),
-													'hide'			=> 'phone',
-												),
-											);
-					$table->thead( $thead_columns );
-	
-					$sql->setFetchMode(PDO::FETCH_ASSOC);
-					while ( $row = $sql->fetch() ) {
-						$table->add_row();
-
-						/**
-						 * Prepare the information to be used later on the cells array
-						 * 1- Count GROUPS where the client is member
-						 */
-						$found_groups	= '';
-						$client_user	= $row["user"];
-						$client_id		= $row["id"];
-
-						$sql_groups = $dbh->prepare("SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE client_id=:id");
-						$sql_groups->bindParam(':id', $client_id, PDO::PARAM_INT);
-						$sql_groups->execute();
-						$count_groups = $sql_groups->rowCount();
-
-						if ($count_groups > 0) {
-							$sql_groups->setFetchMode(PDO::FETCH_ASSOC);
-							while ( $row_groups = $sql_groups->fetch() ) {
-								$groups_ids[] = $row_groups["group_id"];
-							}
-							$found_groups = implode(',',$groups_ids);
-						}
-
-						/**
-						 * 2- Get account creation date
-						 */
-						$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
-						
-						/**
-						 * Prepare the information to be used later on the cells array
-						 * 3- Count OWN and GROUP files
-						 */
-						$own_files = 0;
-						$groups_files = 0;
-
-						$files_query = "SELECT DISTINCT id, file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE client_id=:id";
-						if ( !empty( $found_groups ) ) {
-							$files_query .= " OR FIND_IN_SET(group_id, :group_id)";
-						}
-						$sql_files = $dbh->prepare( $files_query );
-						$sql_files->bindParam(':id', $client_id, PDO::PARAM_INT);
-						if ( !empty( $found_groups ) ) {
-							$sql_files->bindParam(':group_id', $found_groups);
-						}
-
-						$sql_files->execute();
-						$count_files = $sql_files->rowCount();
-
-						$sql_files->setFetchMode(PDO::FETCH_ASSOC);
-						while ( $row_files = $sql_files->fetch() ) {
-							if (!is_null($row_files['client_id'])) {
-								$own_files++;
-							}
-							else {
-								$groups_files++;
-							}
-						}
-
-						/**
-						 * 4- Get active status
-						 */
-						$status_hidden	= __('Inactive','cftp_admin');
-						$status_visible	= __('Active','cftp_admin');
-						$label			= ($row['active'] == 0) ? $status_hidden : $status_visible;
-						$class			= ($row['active'] == 0) ? 'danger' : 'success';
-						
-						
-						/**
-						 * 5- Actions buttons
-						 */
-						if ($own_files + $groups_files > 0) {
-							$files_link		= 'manage-files.php?client_id='.$row["id"];
-							$files_button	= 'btn-primary';
-						}
-						else {
-							$files_link		= 'javascript:void(0);';
-							$files_button	= 'btn-default disabled';
-						}
-
-						if ($count_groups > 0) {
-							$groups_link	= 'groups.php?member='.$row["id"];
-							$groups_button	= 'btn-primary';
-						}
-						else {
-							$groups_link	= 'javascript:void(0);';
-							$groups_button	= 'btn-default disabled';
-						}
-						
-						/**
-						 * Add the cells to the row
-						 */
-						$tbody_cells = array(
-												array(
-														'checkbox'		=> true,
-														'value'			=> $row["id"],
-													),
-												array(
-														'content'		=> html_output( $row["name"] ),
-													),
-												array(
-														'content'		=> html_output( $row["user"] ),
-													),
-												array(
-														'content'		=> html_output( $row["email"] ),
-													),
-												array(
-														'content'		=> $own_files,
-													),
-												array(
-														'content'		=> $groups_files,
-													),
-												array(
-														'content'		=> '<span class="label label-' . $class . '">' . $label . '</span>',
-													),
-												array(
-														'content'		=> $count_groups,
-													),
-												array(
-														'content'		=> ( $row["notify"] == '1' ) ? __('Yes','cftp_admin') : __('No','cftp_admin'),
-													),
-												array(
-														'content'		=> $date,
-													),
-												array(
-														'content'		=> html_output( $row["address"] ),
-													),
-												array(
-														'content'		=> html_output( $row["phone"] ),
-													),
-												array(
-														'content'		=> html_output( $row["contact"] ),
-													),
-												array(
-														'actions'		=> true,
-														'content'		=>  '<a href="' . $files_link . '" class="btn btn-sm ' . $files_button . '">' . __("Manage files","cftp_admin") . '</a>' . "\n" .
-																			'<a href="' . $groups_link . '" class="btn btn-sm ' . $groups_button . '">' . __("View groups","cftp_admin") . '</a>' . "\n" .
-																			'<a href="my_files/?client=' . html_output( $row["user"] ) . '" class="btn btn-primary btn-sm" target="_blank">' . __('View as client','cftp_admin') . '</a>' . "\n" .
-																			'<a href="clients-edit.php?id=' . html_output( $row["id"] ) . '" class="btn btn-primary btn-sm">' . __('Edit','cftp_admin') . '</a>' . "\n"
-													),
-											);
-
-						foreach ( $tbody_cells as $cell ) {
-							$table->add_cell( $cell );
-						}
-		
-						$table->end_row();
-					}
-
-					echo $table->render();
-	
-					/**
-					 * PAGINATION
-					 */
-					$pagination_args = array(
-											'link'		=> 'clients.php',
-											'current'	=> $pagination_page,
-											'pages'		=> ceil( $count_for_pagination / RESULTS_PER_PAGE ),
-										);
-					
-					echo $table->pagination( $pagination_args );
-				}
 			?>
-		</form>
-	</div>
-</div>
+            <section id="no-more-tables" class="cc-overflow-scroll">
+            <table id="clients_tbl" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
+              <thead>
+                <tr>
+                  <th class="td_checkbox" data-sort-ignore="true"> <input type="checkbox" name="select_all" id="select_all" value="0" />
+                  </th>
+                  <th data-sort-initial="true"><?php _e('Full name','cftp_admin'); ?></th>
+                  <th data-hide="phone,tablet"><?php _e('Log in username','cftp_admin'); ?></th>
+                  <th data-hide="phone,tablet"><?php _e('E-mail','cftp_admin'); ?></th>
+                  <th data-hide="phone" data-type="numeric"><?php _e('Files: Own','cftp_admin'); ?></th>
+                  <th data-hide="phone" data-type="numeric"><?php _e('Files: Groups','cftp_admin'); ?></th>
+                  <th><?php _e('Status','cftp_admin'); ?></th>
+                  <th data-hide="phone" data-type="numeric"><?php _e('Groups on','cftp_admin'); ?></th>
+                  <th data-hide="phone,tablet"><?php _e('Notify','cftp_admin'); ?></th>
+                  <th data-hide="phone,tablet" data-type="numeric"><?php _e('Added on','cftp_admin'); ?></th>
+                  <th data-hide="phone,tablet"><?php _e('Address','cftp_admin'); ?></th>
+                  <th data-hide="phone,tablet"><?php _e('Telephone','cftp_admin'); ?></th>
+                  <th data-hide="phone,tablet"><?php _e('Internal contact','cftp_admin'); ?></th>
+                  <th data-hide="phone" data-sort-ignore="true"><?php _e('Actions','cftp_admin'); ?></th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php
+						if ($count > 0) {
+							$sql->setFetchMode(PDO::FETCH_ASSOC);
+							while ( $row = $sql->fetch() ) {
+								$found_groups	= '';
+								$client_user	= $row["user"];
+								$client_id		= $row["id"];
 
+								$sql_groups = $dbh->prepare("SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE client_id=:id");
+								$sql_groups->bindParam(':id', $client_id, PDO::PARAM_INT);
+								$sql_groups->execute();
+								$count_groups	= $sql_groups->rowCount();
+
+								if ($count_groups > 0) {
+									$sql_groups->setFetchMode(PDO::FETCH_ASSOC);
+									while ( $row_groups = $sql_groups->fetch() ) {
+										$groups_ids[] = $row_groups["group_id"];
+									}
+									$found_groups = implode(',',$groups_ids);
+								}
+
+								$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
+					?>
+                <tr>
+                  <td><input type="checkbox" name="selected_clients[]" value="<?php echo html_output($row["id"]); ?>" /></td>
+                  <td><?php echo html_output($row["name"]); ?></td>
+                  <td><?php echo html_output($row["user"]); ?></td>
+                  <td><?php echo html_output($row["email"]); ?></td>
+                  <td><?php
+											$own_files = 0;
+											$groups_files = 0;
+
+											$files_query = "SELECT DISTINCT id, file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE client_id=:id";
+											if ( !empty( $found_groups ) ) {
+												$files_query .= " OR FIND_IN_SET(group_id, :group_id)";
+											}
+											$sql_files = $dbh->prepare( $files_query );
+											$sql_files->bindParam(':id', $client_id, PDO::PARAM_INT);
+											if ( !empty( $found_groups ) ) {
+												$sql_files->bindParam(':group_id', $found_groups);
+											}
+
+											$sql_files->execute();
+											$count_files = $sql_files->rowCount();
+
+											$sql_files->setFetchMode(PDO::FETCH_ASSOC);
+											while ( $row_files = $sql_files->fetch() ) {
+												if (!is_null($row_files['client_id'])) {
+													$own_files++;
+												}
+												else {
+													$groups_files++;
+												}
+											}
+											
+											echo html_output($own_files);
+										?></td>
+                  <td><?php echo html_output($groups_files); ?></td>
+                  <td><?php
+											$status_hidden	= __('Inactive','cftp_admin');
+											$status_visible	= __('Active','cftp_admin');
+											$label			= ($row['active'] == 0) ? $status_hidden : $status_visible;
+											$class			= ($row['active'] == 0) ? 'danger' : 'success';
+										?>
+                    <span class="label label-<?php echo $class; ?>"> <?php echo $label; ?> </span></td>
+                  <td><?php echo $count_groups; ?></td>
+                  <td><?php if ($row["notify"] == '1') { _e('Yes','cftp_admin'); } else { _e('No','cftp_admin'); }?></td>
+                  <td data-value="<?php echo strtotime($row['timestamp']); ?>"><?php echo $date; ?></td>
+                  <td><?php echo html_output($row["address"]); ?></td>
+                  <td><?php echo html_output($row["phone"]); ?></td>
+                  <td><?php echo html_output($row["contact"]); ?></td>
+                  <td><?php
+											if ($own_files + $groups_files > 0) {
+												$files_link = 'manage-files.php?client_id='.$row["id"];
+												$files_button = 'btn-primary';
+											}
+											else {
+												$files_link = 'javascript:void(0);';
+												$files_button = 'btn-default disabled';
+											}
+
+											if ($count_groups > 0) {
+												$groups_link = 'groups.php?member='.$row["id"];
+												$groups_button = 'btn-primary';
+											}
+											else {
+												$groups_link = 'javascript:void(0);';
+												$groups_button = 'btn-default disabled';
+											}
+										?>
+                    <a href="<?php echo $files_link; ?>" class="btn btn-sm <?php echo $files_button; ?>">
+                    <?php _e('Manage files','cftp_admin'); ?>
+                    </a> <a href="<?php echo $groups_link; ?>" class="btn btn-sm <?php echo $groups_button; ?>">
+                    <?php _e('View groups','cftp_admin'); ?>
+                    </a> <a href="my_files/?client=<?php echo html_output($row["user"]); ?>" class="btn btn-primary btn-sm" target="_blank">
+                    <?php _e('View as client','cftp_admin'); ?>
+                    </a> <a href="clients-edit.php?id=<?php echo html_output($row["id"]); ?>" class="btn btn-primary btn-sm">
+                    <?php _e('Edit','cftp_admin'); ?>
+                    </a></td>
+                </tr>
+                <?php
+							}
+						}
+					?>
+              </tbody>
+            </table>
+            </section>
+            <nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
+              <div class="pagination_wrapper text-center">
+                <ul class="pagination hide-if-no-paging">
+                </ul>
+              </div>
+            </nav>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <?php include('footer.php'); ?>
+

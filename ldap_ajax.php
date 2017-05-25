@@ -1,11 +1,14 @@
 <?php
 
-$ldapConn = ldap_connect('ldap.forumsys.com');
+//$ldapConn = ldap_connect('ldap.forumsys.com');
+$ldapConn = ldap_connect(LDAP_SERVER);
 ldap_set_option($ldapConn, LDAP_OPT_PROTOCOL_VERSION, 3);
 ldap_set_option($ldapConn, LDAP_OPT_REFERRALS, 0);
 $password=$_POST['password'];
 $mail = $_POST['email'];
-if(ldap_bind($ldapConn, 'cn=read-only-admin,dc=example,dc=com', 'password')) {
+
+//if(ldap_bind($ldapConn, 'cn=read-only-admin,dc=example,dc=com', 'password')) {
+if(ldap_bind($ldapConn,LDAP_BIND_DN, LDAP_BIND_PASS)) {
 
             $arr = array('dn', 1);
             $result = ldap_search($ldapConn, 'dc=example,dc=com', "(mail=$mail)", $arr);

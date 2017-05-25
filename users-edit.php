@@ -130,21 +130,50 @@ include('header.php');
 ?>
 
 <div id="main">
-	<h2><?php echo $page_title; ?></h2>
-	
-	<div class="container">
-		<div class="row">
-			<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
-				<div class="white-box-interior">
-		
-					<?php
+<div id="content">
+  <div class="container-fluid">
+    <div class="row"> 
+    <div class="col-md-12">
+      <!------------------------------------------------------------------------------------>
+      <h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-home"></i>My Account</h1>
+      <div class="widget cc-widget-area">
+      <div class="col-sm-12 col-md-offset-3 col-md-6 col-lg-6 cc-profile-wrap">
+      
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="air air-bottom-right padding-10"> <a data-toggle="modal" data-target="#cc-edit-info" class="btn txt-color-white bg-color-teal btn-sm"><i class="fa fa-pencil-square-o"></i> Edit</a></div>
+              <div class="cc-user-cover"></div>
+            </div>
+            <div class="col-sm-12">
+              <div class="row">
+                <div class="col-sm-3 profile-pic"> <img src="img/avatars/no-image.png" alt="demo user">
+                </div>
+                <div class="col-sm-6">
+                  <h1><?php echo (isset($add_user_data_name)) ? html_output(stripslashes($add_user_data_name)) : ''; ?> <br>
+                    <small> </small></h1>
+                  <ul class="list-unstyled">
+                    <li>
+                      <p class="text-muted"> <i class="fa fa-envelope"></i>&nbsp;&nbsp;<a href="mailto:<?php echo (isset($add_user_data_email)) ? html_output(stripslashes($add_user_data_email)) : ''; ?>"><?php echo (isset($add_user_data_email)) ? html_output(stripslashes($add_user_data_email)) : ''; ?></a> </p>
+                    </li>
+                  </ul>
+                  <br>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- end row --> 
+          
+      </div>
+      
+      <!------------------------------------------------------------------------------------>
+          <?php
 						/**
 						 * If the form was submited with errors, show them here.
 						 */
 						$valid_me->list_errors();
 					?>
-					
-					<?php
+          <?php
 						if (isset($edit_response)) {
 							/**
 							 * Get the process state and show the corresponding ok or error message.
@@ -206,17 +235,40 @@ include('header.php');
 										$user_form_type = 'edit_user';
 									}
 								}
-								include('users-form.php');
+								?>
+                                <!-- Modal -->
+								<div id="cc-edit-info" class="modal fade" role="dialog">
+  									<div class="modal-dialog">
+
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title"><?php echo $page_title; ?></h4>
+                                          </div>
+                                          <div class="modal-body">
+                                            <?php
+											include('users-form.php');
+											?>
+                                          </div>
+                                          <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                          </div>
+                                        </div>
+
+  									</div>
+								</div>
+                                <?php
+								
 							}
 						}
 					?>
-
-				</div>
-			</div>
-		</div>		
-	</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
 </div>
-
 <?php
 	include('footer.php');
 ?>

@@ -12,6 +12,7 @@ require_once('sys.includes.php');
 $page_title = __('E-mail templates','cftp_admin');
 
 $active_nav = 'options';
+$cc_active_page = 'Email Templates';
 include('header.php');
 
 if ($_POST) {
@@ -24,6 +25,7 @@ if ($_POST) {
 								'email_new_client_by_self_customize',
 								'email_new_user_customize',
 								'email_pass_reset_customize',
+								'email_drop_off_request',
 							);
 	foreach ($checkboxes as $checkbox) {
 		$_POST[$checkbox] = (empty($_POST[$checkbox]) || !isset($_POST[$checkbox])) ? 0 : 1;
@@ -34,7 +36,6 @@ if ($_POST) {
 	 * Defined on functions.php
 	 */
 	$keys = array_keys($_POST);
-
 	$options_total = count($keys);
 
 	$updated = 0;
@@ -61,7 +62,12 @@ if ($_POST) {
 }
 ?>
 <div id="main">
-	<h2><?php echo $page_title; ?></h2>
+  <div id="content"> 
+    <!-- Added by B) -------------------->
+    <div class="container-fluid">
+    <div class="row">
+    <div class="col-md-12">
+	<h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-envelope"></i>&nbsp;<?php echo $page_title; ?></h1>
 
 	<?php
 		if (isset($_GET['status'])) {
@@ -165,11 +171,23 @@ if ($_POST) {
 																			'%URI%	'		=> __('The link to continue the process','cftp_admin') . $href_string,
 																		),
 											),
+								7	=> array(
+												'tab'			=> 'drop_off_request',
+												'name'			=> __('Drop off request','cftp_admin'),
+												'checkbox'		=> 'email_drop_off_request',
+												'textarea'		=> 'email_drop_off_request_text',
+												'description'	=> __('This email will be sent to the user.','cftp_admin'),
+												'option_check'	=> DROPOFF_REQUEST_CUSTOM,
+												'option_text'	=> DROPOFF_REQUEST_CUSTOM_TEXT,
+												'tags'			=> array(
+																			'%URI%	'		=> __('Site Url link','cftp_admin') . $href_string,
+																		),
+											),
 							);
 	?>
 
-
-	<ul class="nav nav-tabs" role="tablist">
+<form action="email-templates.php" name="templatesform" method="post" class="form-horizontal">
+	<ul class="nav nav-tabs responsive" role="tablist" id="myTab1">
 		<li class="active"><a href="#tab_header_footer" aria-controls="tab_header_footer" role="tab" data-toggle="tab"><?php _e('Header / Footer','cftp_admin'); ?></a></li>
 		<?php
 			foreach ($options_groups as $group) {
@@ -182,10 +200,13 @@ if ($_POST) {
 		<?php
 			}
 		?>
+        <li class="cc-group-submit">
+        <button type="submit" name="submit" class="btn btn-wide btn-primary empty"><?php _e('Update all options','cftp_admin'); ?></button>
+        </li>
 	</ul>
 
-	<form action="email-templates.php" name="templatesform" method="post" class="form-horizontal">
-		<div class="container">
+	
+		<div class="myTabContent1">
 	
 			<div id="outer_tabs_wrapper">
 				<div class="tab-content">
@@ -201,7 +222,7 @@ if ($_POST) {
 									<div class="options_divide"></div>
 
 									<div class="form-group">
-										<div class="text-center">
+										<div class="">
 											<label for="email_header_footer_customize">
 												<input type="checkbox" value="1" name="email_header_footer_customize" <?php echo (EMAILS_HEADER_FOOTER_CUSTOM == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Use custom header / footer','cftp_admin'); ?>
 											</label>
@@ -239,7 +260,7 @@ if ($_POST) {
 											<div class="options_divide"></div>
 
 											<div class="form-group">
-												<div class="text-center">
+												<div class="">
 													<label for="<?php echo $group['checkbox']; ?>">
 														<input type="checkbox" value="1" name="<?php echo $group['checkbox']; ?>" class="checkbox_options" <?php echo ($group['option_check'] == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Use custom template','cftp_admin'); ?>
 													</label>
@@ -288,16 +309,16 @@ if ($_POST) {
 				</div>
 			</div>
 	
-			<div class="after_form_buttons">
-				<button type="submit" name="submit" class="btn btn-wide btn-primary empty"><?php _e('Update all options','cftp_admin'); ?></button>
-			</div>
+<!--			<div class="after_form_buttons">
+				<button type="submit" name="submit" class="btn btn-wide btn-primary empty"><?php //_e('Update all options','cftp_admin'); ?></button>
+			</div>-->
 		</div>
 	</form>
 </div>
 
 	<div class="clear"></div>
 </div>
-
+</div></div></div></div>
 <script type="text/javascript">
 	$(document).ready(function(e) {
 		$('.preview').click(function(e) {

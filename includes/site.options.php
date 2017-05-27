@@ -251,6 +251,26 @@ if(!empty($options_values)) {
 	}
 
 	/**
+	 * For versions 845 and up
+	 */	
+	if (isset($options_values['email_new_file_by_user_subject'])) {
+		/** Checkboxes */
+		define('EMAILS_FILE_BY_USER_USE_SUBJECT_CUSTOM',$options_values['email_new_file_by_user_subject_customize']);
+		define('EMAILS_FILE_BY_CLIENT_USE_SUBJECT_CUSTOM',$options_values['email_new_file_by_client_subject_customize']);
+		define('EMAILS_CLIENT_BY_USER_USE_SUBJECT_CUSTOM',$options_values['email_new_client_by_user_subject_customize']);
+		define('EMAILS_CLIENT_BY_SELF_USE_SUBJECT_CUSTOM',$options_values['email_new_client_by_self_subject_customize']);
+		define('EMAILS_NEW_USER_USE_SUBJECT_CUSTOM',$options_values['email_new_user_subject_customize']);
+		define('EMAILS_PASS_RESET_USE_SUBJECT_CUSTOM',$options_values['email_pass_reset_subject_customize']);
+		/** Subjects */
+		define('EMAILS_FILE_BY_USER_SUBJECT',$options_values['email_new_file_by_user_subject']);
+		define('EMAILS_FILE_BY_CLIENT_SUBJECT',$options_values['email_new_file_by_client_subject']);
+		define('EMAILS_CLIENT_BY_USER_SUBJECT',$options_values['email_new_client_by_user_subject']);
+		define('EMAILS_CLIENT_BY_SELF_SUBJECT',$options_values['email_new_client_by_self_subject']);
+		define('EMAILS_NEW_USER_SUBJECT',$options_values['email_new_user_subject']);
+		define('EMAILS_PASS_RESET_SUBJECT',$options_values['email_pass_reset_subject']);
+	}
+
+	/**
 	 * Set the default timezone based on the value of the Timezone select box
 	 * of the options page.
 	 */

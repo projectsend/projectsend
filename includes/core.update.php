@@ -1163,6 +1163,41 @@ if (in_session_or_cookies($allowed_update)) {
 			}
 		}
 
+		/**
+		 * r845 updates
+		 * Add new options to customize the emails subjects sent by the system.
+		 */
+		if ($last_update < 845) {
+			$new_database_values = array(
+										/**
+										 * On or Off fields
+										 * Each one corresponding to a type of email
+										 */
+											'email_new_file_by_user_subject_customize'		=> '0',
+											'email_new_file_by_client_subject_customize'	=> '0',
+											'email_new_client_by_user_subject_customize'	=> '0',
+											'email_new_client_by_self_subject_customize'	=> '0',
+											'email_new_user_subject_customize'				=> '0',
+											'email_pass_reset_subject_customize'			=> '0',
+										/**
+										 * Text fields
+										 * Each one corresponding to a type of email
+										 */
+											'email_new_file_by_user_subject'			=> '',
+											'email_new_file_by_client_subject'			=> '',
+											'email_new_client_by_user_subject'			=> '',
+											'email_new_client_by_self_subject'			=> '',
+											'email_new_user_subject'					=> '',
+											'email_pass_reset_subject'					=> '',
+										);
+			
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
+				}
+			}
+		}
+
 	}
 }	
 ?>

@@ -28,21 +28,27 @@ $type = $_GET['t'];
 
 switch ($type) {
 	case 'client_by_user':
+			$subject	= EMAILS_CLIENT_BY_USER_SUBJECT;
 			$body_text	= EMAILS_CLIENT_BY_USER_TEXT;
 		break;
 	case 'client_by_self':
+			$subject	= EMAILS_CLIENT_BY_SELF_SUBJECT;
 			$body_text	= EMAILS_CLIENT_BY_SELF_TEXT;
 		break;
 	case 'new_user_welcome':
+			$subject	= EMAILS_NEW_USER_SUBJECT;
 			$body_text	= EMAILS_NEW_USER_TEXT;
 		break;
 	case 'file_by_user':
+			$subject	= EMAILS_FILE_BY_USER_SUBJECT;
 			$body_text	= EMAILS_FILE_BY_USER_TEXT;
 		break;
 	case 'file_by_client':
+			$subject	= EMAILS_FILE_BY_CLIENT_SUBJECT;
 			$body_text	= EMAILS_FILE_BY_CLIENT_TEXT;
 		break;
 	case 'password_reset':
+			$subject	= EMAILS_PASS_RESET_SUBJECT;
 			$body_text	= EMAILS_PASS_RESET_TEXT;
 		break;
 }

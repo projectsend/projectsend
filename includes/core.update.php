@@ -1198,6 +1198,23 @@ if (in_session_or_cookies($allowed_update)) {
 			}
 		}
 
+
+		/**
+		 * r859 updates
+		 * Added an option to prevent indexing by search engines
+		 */
+		if ($last_update < 859) {
+			$new_database_values = array(
+											'privacy_noindex_site'	=> '0',
+										);
+			
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
+				}
+			}
+		}
+
 	}
 }	
 ?>

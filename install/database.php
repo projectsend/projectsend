@@ -311,7 +311,8 @@ if (defined('TRY_INSTALL')) {
 								('email_new_client_by_user_subject', ''),
 								('email_new_client_by_self_subject', ''),
 								('email_new_user_subject', ''),
-								('email_pass_reset_subject', '')
+								('email_pass_reset_subject', ''),
+								('privacy_noindex_site', '0')
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,

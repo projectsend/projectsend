@@ -271,6 +271,13 @@ if(!empty($options_values)) {
 	}
 
 	/**
+	 * For versions 859 and up
+	 */	
+	if (isset($options_values['privacy_noindex_site'])) {
+		define('PRIVACY_NOINDEX_SITE',$options_values['privacy_noindex_site']);
+	}
+
+	/**
 	 * Set the default timezone based on the value of the Timezone select box
 	 * of the options page.
 	 */

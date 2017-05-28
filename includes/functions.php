@@ -936,6 +936,20 @@ function prevent_direct_access()
 	}
 }
 
+
+/**
+ * Add a noindex to the header
+ */
+function meta_noindex()
+{
+	if ( defined('PRIVACY_NOINDEX_SITE') ) {
+		if ( PRIVACY_NOINDEX_SITE == 1 ) {
+			echo '<meta name="robots" content="noindex">';
+		}
+	}
+}
+
+
 /**
  * If password rules are set, show a message
  */

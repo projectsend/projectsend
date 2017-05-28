@@ -42,6 +42,7 @@ if ($_POST) {
 
 	/** Checkboxes */
 	$checkboxes	= array(
+						'privacy_noindex_site',
 						'footer_custom_enable',
 						'files_descriptions_use_ckeditor',
 						'enable_landing_for_all_files',
@@ -270,12 +271,12 @@ $allowed_file_types = implode(',',$allowed_file_types);
 
 										<div class="options_divide"></div>
 
-										<h3><?php _e('Files','cftp_admin'); ?></h3>
+										<h3><?php _e('Privacy','cftp_admin'); ?></h3>
 
 										<div class="form-group">
 											<div class="col-sm-8 col-sm-offset-4">
-												<label for="files_descriptions_use_ckeditor">
-													<input type="checkbox" value="1" name="files_descriptions_use_ckeditor" id="files_descriptions_use_ckeditor" class="checkbox_options" <?php echo (DESCRIPTIONS_USE_CKEDITOR == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Use the visual editor on files descriptions",'cftp_admin'); ?>
+												<label for="privacy_noindex_site">
+													<input type="checkbox" value="1" name="privacy_noindex_site" id="privacy_noindex_site" class="checkbox_options" <?php echo (PRIVACY_NOINDEX_SITE == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Prevent search engines from indexing this site",'cftp_admin'); ?>
 												</label>
 											</div>
 										</div>
@@ -285,6 +286,18 @@ $allowed_file_types = implode(',',$allowed_file_types);
 												<label for="enable_landing_for_all_files">
 													<input type="checkbox" value="1" name="enable_landing_for_all_files" id="enable_landing_for_all_files" class="checkbox_options" <?php echo (ENABLE_LANDING_FOR_ALL_FILES == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Enable information page for private files",'cftp_admin'); ?>
 													<p class="field_note"><?php _e("If enabled, the file information landing page will be available even for files that are not marked as private. Downloading them will stay restricted.",'cftp_admin'); ?></p>
+												</label>
+											</div>
+										</div>
+
+										<div class="options_divide"></div>
+
+										<h3><?php _e('Files','cftp_admin'); ?></h3>
+
+										<div class="form-group">
+											<div class="col-sm-8 col-sm-offset-4">
+												<label for="files_descriptions_use_ckeditor">
+													<input type="checkbox" value="1" name="files_descriptions_use_ckeditor" id="files_descriptions_use_ckeditor" class="checkbox_options" <?php echo (DESCRIPTIONS_USE_CKEDITOR == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Use the visual editor on files descriptions",'cftp_admin'); ?>
 												</label>
 											</div>
 										</div>

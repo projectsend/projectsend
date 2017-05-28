@@ -90,7 +90,7 @@ if ($_POST) {
 
 		$options_groups = array(
 								1	=> array(
-												'tab'				=> 'file_by_user',
+												'tab'				=> 'new_files_for_client',
 												'name'				=> __('New file by user','cftp_admin'),
 												'subject_checkbox'	=> 'email_new_file_by_user_subject_customize',
 												'subject'			=> 'email_new_file_by_user_subject',
@@ -108,7 +108,7 @@ if ($_POST) {
 												'default_text'		=> EMAIL_TEMPLATE_NEW_FILE_BY_USER,
 											),
 								2	=> array(
-												'tab'				=> 'file_by_client',
+												'tab'				=> 'new_file_by_client',
 												'name'				=> __('New file by client','cftp_admin'),
 												'subject_checkbox'	=> 'email_new_file_by_client_subject_customize',
 												'subject'			=> 'email_new_file_by_client_subject',
@@ -126,7 +126,7 @@ if ($_POST) {
 												'default_text'		=> EMAIL_TEMPLATE_NEW_FILE_BY_CLIENT,
 											),
 								3	=> array(
-												'tab'				=> 'client_by_user',
+												'tab'				=> 'new_client',
 												'name'				=> __('New client (welcome)','cftp_admin'),
 												'subject_checkbox'	=> 'email_new_client_by_user_subject_customize',
 												'subject'			=> 'email_new_client_by_user_subject',
@@ -145,7 +145,7 @@ if ($_POST) {
 												'default_text'		=> EMAIL_TEMPLATE_NEW_CLIENT,
 											),
 								4	=> array(
-												'tab'				=> 'client_by_self',
+												'tab'				=> 'new_client_self',
 												'name'				=> __('New client (self-registered)','cftp_admin'),
 												'subject_checkbox'	=> 'email_new_client_by_self_subject_customize',
 												'subject'			=> 'email_new_client_by_self_subject',
@@ -164,7 +164,7 @@ if ($_POST) {
 												'default_text'		=> EMAIL_TEMPLATE_NEW_CLIENT_SELF,
 											),
 								5	=> array(
-												'tab'				=> 'new_user_welcome',
+												'tab'				=> 'new_user',
 												'name'				=> __('New user (welcome)','cftp_admin'),
 												'subject_checkbox'	=> 'email_new_user_subject_customize',
 												'subject'			=> 'email_new_user_subject',

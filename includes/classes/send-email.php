@@ -369,8 +369,9 @@ class PSend_Email
 	function psend_send_email($arguments)
 	{
 		/** Generate the values from the arguments */
+		$this->preview		= (!empty($arguments['preview'])) ? $arguments['preview'] : false;
 		$this->type			= $arguments['type'];
-		$this->addresses	= $arguments['address'];
+		$this->addresses	= (!empty($arguments['address'])) ? $arguments['address'] : '';
 		$this->username		= (!empty($arguments['username'])) ? $arguments['username'] : '';
 		$this->password		= (!empty($arguments['password'])) ? $arguments['password'] : '';
 		$this->client_id	= (!empty($arguments['client_id'])) ? $arguments['client_id'] : '';
@@ -416,94 +417,107 @@ class PSend_Email
 		 * Replace the default info on the footer
 		 */
 		$this->mail_info['body'] = str_replace(
-									array('%FOOTER_SYSTEM_URI%','%FOOTER_URI%'),
+									array(
+										'%FOOTER_SYSTEM_URI%',
+										'%FOOTER_URI%'
+									),
 									array(
 										SYSTEM_URI,
 										BASE_URI
 									),
 									$this->mail_info['body']
 								);
-		
-		/**
-		 * phpMailer
-		 */
-		$this->send_mail = new PHPMailer();
-		switch (MAIL_SYSTEM) {
-			case 'smtp':
-					$this->send_mail->IsSMTP();
-					$this->send_mail->SMTPAuth = true;
-					$this->send_mail->Host = SMTP_HOST;
-					$this->send_mail->Port = SMTP_PORT;
-					$this->send_mail->Username = SMTP_USER;
-					$this->send_mail->Password = SMTP_PASS;
-					
-					if ( defined('SMTP_AUTH') && SMTP_AUTH != 'none' ) {
-						$this->send_mail->SMTPSecure = SMTP_AUTH;
-					}
-				break;
-			case 'gmail':
-					$this->send_mail->IsSMTP();
-					$this->send_mail->SMTPAuth = true;
-					$this->send_mail->SMTPSecure = "tls";
-					$this->send_mail->Host = 'smtp.gmail.com';
-					$this->send_mail->Port = 587;
-					$this->send_mail->Username = SMTP_USER;
-					$this->send_mail->Password = SMTP_PASS;
-				break;
-			case 'sendmail':
-					$this->send_mail->IsSendmail();
-				break;
-		}
-		
-		$this->send_mail->CharSet = EMAIL_ENCODING;
 
-		$this->send_mail->Subject = $this->mail_info['subject'];
-		$this->send_mail->MsgHTML($this->mail_info['body']);
-		$this->send_mail->AltBody = __('This email contains HTML formatting and cannot be displayed right now. Please use an HTML compatible reader.','cftp_admin');
 
-		$this->send_mail->SetFrom(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
-		$this->send_mail->AddReplyTo(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
-
-		$this->send_mail->AddAddress($this->addresses);
-		
 		/**
-		 * Check if BCC is enabled and get the list of
-		 * addresses to add, based on the email type.
+		 * If we are generating a preview, just return the html content
 		 */
-		if ($this->try_bcc === true) {
-			$this->add_bcc_to = array();
-			if (COPY_MAIL_MAIN_USER == '1') {
-				$this->add_bcc_to[] = ADMIN_EMAIL_ADDRESS;
-			}
-			$this->more_addresses = COPY_MAIL_ADDRESSES;
-			if (!empty($this->more_addresses)) {
-				$this->more_addresses = explode(',',$this->more_addresses);
-				foreach ($this->more_addresses as $this->add_bcc) {
-					$this->add_bcc_to[] = $this->add_bcc;
-				}
-			}
-			/**
-			 * Add the BCCs with the compiled array.
-			 * First, clean the array to make sure the admin
-			 * address is not written twice.
-			 */
-			if (!empty($this->add_bcc_to)) {
-				$this->add_bcc_to = array_unique($this->add_bcc_to);
-				foreach ($this->add_bcc_to as $this->set_bcc) {
-					$this->send_mail->AddBCC($this->set_bcc);
-				}
-			}
-			 
-		}
-		
-		/**
-		 * Finally, send the e-mail.
-		 */
-		if($this->send_mail->Send()) {
-			return 1;
+		if ( $this->preview == true ) {
+			return $this->mail_info['body'];
 		}
 		else {
-			return 2;
+
+			/**
+			 * phpMailer
+			 */
+			$this->send_mail = new PHPMailer();
+			switch (MAIL_SYSTEM) {
+				case 'smtp':
+						$this->send_mail->IsSMTP();
+						$this->send_mail->SMTPAuth = true;
+						$this->send_mail->Host = SMTP_HOST;
+						$this->send_mail->Port = SMTP_PORT;
+						$this->send_mail->Username = SMTP_USER;
+						$this->send_mail->Password = SMTP_PASS;
+						
+						if ( defined('SMTP_AUTH') && SMTP_AUTH != 'none' ) {
+							$this->send_mail->SMTPSecure = SMTP_AUTH;
+						}
+					break;
+				case 'gmail':
+						$this->send_mail->IsSMTP();
+						$this->send_mail->SMTPAuth = true;
+						$this->send_mail->SMTPSecure = "tls";
+						$this->send_mail->Host = 'smtp.gmail.com';
+						$this->send_mail->Port = 587;
+						$this->send_mail->Username = SMTP_USER;
+						$this->send_mail->Password = SMTP_PASS;
+					break;
+				case 'sendmail':
+						$this->send_mail->IsSendmail();
+					break;
+			}
+			
+			$this->send_mail->CharSet = EMAIL_ENCODING;
+	
+			$this->send_mail->Subject = $this->mail_info['subject'];
+			$this->send_mail->MsgHTML($this->mail_info['body']);
+			$this->send_mail->AltBody = __('This email contains HTML formatting and cannot be displayed right now. Please use an HTML compatible reader.','cftp_admin');
+	
+			$this->send_mail->SetFrom(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
+			$this->send_mail->AddReplyTo(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
+	
+			$this->send_mail->AddAddress($this->addresses);
+			
+			/**
+			 * Check if BCC is enabled and get the list of
+			 * addresses to add, based on the email type.
+			 */
+			if ($this->try_bcc === true) {
+				$this->add_bcc_to = array();
+				if (COPY_MAIL_MAIN_USER == '1') {
+					$this->add_bcc_to[] = ADMIN_EMAIL_ADDRESS;
+				}
+				$this->more_addresses = COPY_MAIL_ADDRESSES;
+				if (!empty($this->more_addresses)) {
+					$this->more_addresses = explode(',',$this->more_addresses);
+					foreach ($this->more_addresses as $this->add_bcc) {
+						$this->add_bcc_to[] = $this->add_bcc;
+					}
+				}
+				/**
+				 * Add the BCCs with the compiled array.
+				 * First, clean the array to make sure the admin
+				 * address is not written twice.
+				 */
+				if (!empty($this->add_bcc_to)) {
+					$this->add_bcc_to = array_unique($this->add_bcc_to);
+					foreach ($this->add_bcc_to as $this->set_bcc) {
+						$this->send_mail->AddBCC($this->set_bcc);
+					}
+				}
+				 
+			}
+			
+			/**
+			 * Finally, send the e-mail.
+			 */
+			if($this->send_mail->Send()) {
+				return 1;
+			}
+			else {
+				return 2;
+			}
 		}
 	}
 }

@@ -740,7 +740,7 @@ optgroup {
 }
 
 .textarea_high {
-	height:200px !important;
+	min-height:200px;
 }
 
 	.options_col_left {

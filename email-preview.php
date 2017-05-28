@@ -19,7 +19,6 @@ check_for_session();
 can_see_content($allowed_levels);
 
 /** Get the default header and footer */
-include_once(ROOT_DIR.'/includes/email-template.php');
 global $email_template_header;
 global $email_template_footer;
 
@@ -54,22 +53,14 @@ switch ($type) {
 }
 
 /**
- * Header
+ * Header and footer
  */
 if (!defined('EMAILS_HEADER_FOOTER_CUSTOM') || EMAILS_HEADER_FOOTER_CUSTOM == '0') {
 	$header = $email_template_header;
-}
-else {
-	$header = EMAILS_HEADER_TEXT;
-}
-
-/**
- * Footer
- */
-if (!defined('EMAILS_HEADER_FOOTER_CUSTOM') || EMAILS_HEADER_FOOTER_CUSTOM == '0') {
 	$footer = $email_template_footer;
 }
 else {
+	$header = EMAILS_HEADER_TEXT;
 	$footer = EMAILS_FOOTER_TEXT;
 }
 

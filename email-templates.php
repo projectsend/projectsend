@@ -105,6 +105,7 @@ if ($_POST) {
 																				'%FILES%'		=> __('Shows the list of files','cftp_admin'),
 																				'%URI%	'		=> __('The login link','cftp_admin') . $href_string,
 																			),
+												'default_text'		=> EMAIL_TEMPLATE_NEW_FILE_BY_USER,
 											),
 								2	=> array(
 												'tab'				=> 'file_by_client',
@@ -122,6 +123,7 @@ if ($_POST) {
 																				'%FILES%'		=> __('Shows the list of files','cftp_admin'),
 																				'%URI%	'		=> __('The login link','cftp_admin') . $href_string,
 																			),
+												'default_text'		=> EMAIL_TEMPLATE_NEW_FILE_BY_CLIENT,
 											),
 								3	=> array(
 												'tab'				=> 'client_by_user',
@@ -140,6 +142,7 @@ if ($_POST) {
 																				'%PASSWORD%'	=> __('The new password for this account','cftp_admin'),
 																				'%URI%	'		=> __('The login link','cftp_admin') . $href_string,
 																			),
+												'default_text'		=> EMAIL_TEMPLATE_NEW_CLIENT,
 											),
 								4	=> array(
 												'tab'				=> 'client_by_self',
@@ -158,6 +161,7 @@ if ($_POST) {
 																				'%USERNAME%'	=> __('The new username for this account','cftp_admin'),
 																				'%URI%	'		=> __('The login link','cftp_admin') . $href_string,
 																			),
+												'default_text'		=> EMAIL_TEMPLATE_NEW_CLIENT_SELF,
 											),
 								5	=> array(
 												'tab'				=> 'new_user_welcome',
@@ -176,6 +180,7 @@ if ($_POST) {
 																				'%PASSWORD%'	=> __('The new password for this account','cftp_admin'),
 																				'%URI%	'		=> __('The login link','cftp_admin') . $href_string,
 																			),
+												'default_text'		=> EMAIL_TEMPLATE_NEW_USER,
 											),
 								6	=> array(
 												'tab'				=> 'password_reset',
@@ -194,6 +199,7 @@ if ($_POST) {
 																				'%TOKEN%'		=> __('The text string unique to this request. Must be included somewhere.','cftp_admin'),
 																				'%URI%	'		=> __('The link to continue the process','cftp_admin') . $href_string,
 																			),
+												'default_text'		=> EMAIL_TEMPLATE_PASSWORD_RESET,
 											),
 							);
 	?>
@@ -244,10 +250,20 @@ if ($_POST) {
 										<p class="field_note"><?php _e('You can use HTML tags here.','cftp_admin'); ?></p>
 									</div>
 
+									<div class="preview_button">
+										<button type="button" class="btn btn-default load_default" data-textarea="email_header_text" data-file="<?php echo EMAIL_TEMPLATE_HEADER; ?>"><?php _e('Replace with default','cftp_admin'); ?></button>
+									</div>
+									
+									<hr />
+
 									<div class="form-group">
 										<label for="email_footer_text"><?php _e('Footer','cftp_admin'); ?></label>
 										<textarea name="email_footer_text" id="email_footer_text" class="form-control textarea_high"><?php echo EMAILS_FOOTER_TEXT; ?></textarea>
 										<p class="field_note"><?php _e('You can use HTML tags here.','cftp_admin'); ?></p>
+									</div>
+
+									<div class="preview_button">
+										<button type="button" class="btn btn-default load_default" data-textarea="email_footer_text" data-file="<?php echo EMAIL_TEMPLATE_FOOTER; ?>"><?php _e('Replace with default','cftp_admin'); ?></button>
 									</div>
 
 								</div>
@@ -295,7 +311,7 @@ if ($_POST) {
 												<textarea name="<?php echo $group['body_textarea']; ?>" id="<?php echo $group['body_textarea']; ?>"  class="form-control textarea_high"><?php echo $group['body_text']; ?></textarea>
 												<p class="field_note"><?php _e('You can use HTML tags here.','cftp_admin'); ?></p>
 											</div>	
-			
+
 											<p><strong><?php _e("The following tags can be used on this e-mails' body.",'cftp_admin'); ?></strong></p>
 											<?php
 												if (!empty($group['tags'])) {
@@ -313,8 +329,10 @@ if ($_POST) {
 												}
 											?>
 
+
 											<hr />
 											<div class="preview_button">
+												<button type="button" class="btn btn-default load_default" data-textarea="<?php echo $group['body_textarea']; ?>" data-file="<?php echo $group['default_text']; ?>"><?php _e('Replace with default','cftp_admin'); ?></button>
 												<button type="button" data-preview="<?php echo $group['tab']; ?>" class="btn btn-wide btn-primary preview"><?php _e('Preview this template','cftp_admin'); ?></button>
 												<?php
 													$message = __("Before trying this function, please save your changes to see them reflected on the preview.",'cftp_admin');
@@ -344,11 +362,31 @@ if ($_POST) {
 
 <script type="text/javascript">
 	$(document).ready(function(e) {
+		$('.load_default').click(function(e) {
+			e.preventDefault();
+			var file		= jQuery(this).data('file');
+			var textarea	= '#'+jQuery(this).data('textarea');
+			var accept		= confirm('<?php _e('Please confirm: replace the custom template text with the default one?','cftp_admin'); ?>');
+			if ( accept ) {
+				$.ajax({
+					url: "emails/"+file,
+					async: false,
+					cache: false,
+					success: function (data){
+						$(textarea).text(data);
+					},
+					error: function() {
+						alert("<?php _e('Error: the content could not be loaded','cftp_admin'); ?>");
+					}
+				});
+			}
+		});
+
 		$('.preview').click(function(e) {
 			e.preventDefault();
 			var type	= jQuery(this).data('preview');
-			var theurl	= '<?php echo BASE_URI; ?>email-preview.php?t=' + type;
-		    window.open(theurl, "previewWindow", "width=800,height=600,scrollbars=yes");
+			var url		= '<?php echo BASE_URI; ?>email-preview.php?t=' + type;
+		    window.open(url, "previewWindow", "width=800,height=600,scrollbars=yes");
 		});
 	});
 </script>

@@ -20,6 +20,23 @@
  */
 include_once(ROOT_DIR.'/includes/email-template.php');
 
+/**
+ * Default e-mail templates files
+ */
+define('EMAIL_TEMPLATE_HEADER', 'header.html');
+define('EMAIL_TEMPLATE_FOOTER', 'footer.html');
+define('EMAIL_TEMPLATE_NEW_CLIENT', 'new-client.html');
+define('EMAIL_TEMPLATE_NEW_CLIENT_SELF', 'new-client-self.html');
+define('EMAIL_TEMPLATE_NEW_USER', 'new-user.html');
+define('EMAIL_TEMPLATE_NEW_FILE_BY_USER', 'new-file-for-client.html');
+define('EMAIL_TEMPLATE_NEW_FILE_BY_CLIENT', 'new-file-by-client.html');
+define('EMAIL_TEMPLATE_PASSWORD_RESET', 'password-reset.html');
+
+global $email_template_header;
+global $email_template_footer;
+$email_template_header = file_get_contents(ROOT_DIR.'/emails/'.EMAIL_TEMPLATE_HEADER);
+$email_template_footer = file_get_contents(ROOT_DIR.'/emails/'.EMAIL_TEMPLATE_FOOTER);
+
 /** Define the messages texts */
 
 /** Strings for the "New file uploaded" BY A SYSTEM USER e-mail */
@@ -60,14 +77,14 @@ $email_strings_new_client_self = array(
 									'label_name'	=> __('Full name','cftp_admin'),
 									'label_user'	=> __('Username','cftp_admin')
 								);
-if (CLIENTS_AUTO_APPROVE == '0') {
-	$email_strings_new_client_self['body2'] = __('Please log in to activate it.','cftp_admin');
-	$email_strings_new_client_self['body3'] = __('Remember, your new client will not be able to log in until an administrator has approved their account.','cftp_admin');
-}
-else {
-	$email_strings_new_client_self['body2'] = __('Auto-approvals of new accounts are currently enabled.','cftp_admin');
-	$email_strings_new_client_self['body3'] = __('You can log in to manually deactivate it.','cftp_admin');
-}
+								if (CLIENTS_AUTO_APPROVE == '0') {
+									$email_strings_new_client_self['body2'] = __('Please log in to activate it.','cftp_admin');
+									$email_strings_new_client_self['body3'] = __('Remember, your new client will not be able to log in until an administrator has approved their account.','cftp_admin');
+								}
+								else {
+									$email_strings_new_client_self['body2'] = __('Auto-approvals of new accounts are currently enabled.','cftp_admin');
+									$email_strings_new_client_self['body3'] = __('You can log in to manually deactivate it.','cftp_admin');
+								}
 
 
 /** Strings for the "New system user created" e-mail */
@@ -105,32 +122,32 @@ class PSend_Email
 		
 		switch ($type) {
 			case 'new_client':
-					$filename	= 'new-client.html';
+					$filename	= EMAIL_TEMPLATE_NEW_CLIENT;
 					$body_check	= (!defined('EMAILS_CLIENT_BY_USER_USE_CUSTOM') || EMAILS_CLIENT_BY_USER_USE_CUSTOM == '0') ? '0' : EMAILS_CLIENT_BY_USER_USE_CUSTOM;
 					$body_text	= EMAILS_CLIENT_BY_USER_TEXT;
 				break;
 			case 'new_client_self':
-					$filename	= 'new-client-self.html';
+					$filename	= EMAIL_TEMPLATE_NEW_CLIENT_SELF;
 					$body_check	= (!defined('EMAILS_CLIENT_BY_SELF_USE_CUSTOM') || EMAILS_CLIENT_BY_SELF_USE_CUSTOM == '0') ? '0' : EMAILS_CLIENT_BY_SELF_USE_CUSTOM;
 					$body_text	= EMAILS_CLIENT_BY_SELF_TEXT;
 				break;
 			case 'new_user':
-					$filename	= 'new-user.html';
+					$filename	= EMAIL_TEMPLATE_NEW_USER;
 					$body_check	= (!defined('EMAILS_NEW_USER_USE_CUSTOM') || EMAILS_NEW_USER_USE_CUSTOM == '0') ? '0' : EMAILS_NEW_USER_USE_CUSTOM;
 					$body_text	= EMAILS_NEW_USER_TEXT;
 				break;
 			case 'new_file_by_user':
-					$filename	= 'new-file-for-client.html';
+					$filename	= EMAIL_TEMPLATE_NEW_FILE_BY_USER;
 					$body_check	= (!defined('EMAILS_FILE_BY_USER_USE_CUSTOM') || EMAILS_FILE_BY_USER_USE_CUSTOM == '0') ? '0' : EMAILS_FILE_BY_USER_USE_CUSTOM;
 					$body_text	= EMAILS_FILE_BY_USER_TEXT;
 				break;
 			case 'new_file_by_client':
-					$filename	= 'new-file-by-client.html';
+					$filename	= EMAIL_TEMPLATE_NEW_FILE_BY_CLIENT;
 					$body_check	= (!defined('EMAILS_FILE_BY_CLIENT_USE_CUSTOM') || EMAILS_FILE_BY_CLIENT_USE_CUSTOM == '0') ? '0' : EMAILS_FILE_BY_CLIENT_USE_CUSTOM;
 					$body_text	= EMAILS_FILE_BY_CLIENT_TEXT;
 				break;
 			case 'password_reset':
-					$filename	= 'password-reset.html';
+					$filename	= EMAIL_TEMPLATE_PASSWORD_RESET;
 					$body_check	= (!defined('EMAILS_PASS_RESET_USE_CUSTOM') || EMAILS_PASS_RESET_USE_CUSTOM == '0') ? '0' : EMAILS_PASS_RESET_USE_CUSTOM;
 					$body_text	= EMAILS_PASS_RESET_TEXT;
 				break;
@@ -183,13 +200,15 @@ class PSend_Email
 		$this->email_body = str_replace(
 									array('%SUBJECT%','%BODY1%','%BODY2%','%BODY3%','%LBLUSER%','%LBLPASS%','%USERNAME%','%PASSWORD%','%URI%'),
 									array(
-										$email_strings_new_client['subject'],
-										$email_strings_new_client['body'],
-										$email_strings_new_client['body2'],
-										$email_strings_new_client['body3'],
-										$email_strings_new_client['label_user'],
-										$email_strings_new_client['label_pass'],
-										$username,$password,BASE_URI
+											$email_strings_new_client['subject'],
+											$email_strings_new_client['body'],
+											$email_strings_new_client['body2'],
+											$email_strings_new_client['body3'],
+											$email_strings_new_client['label_user'],
+											$email_strings_new_client['label_pass'],
+											$username,
+											$password,
+											BASE_URI
 										),
 									$this->email_body
 								);
@@ -392,6 +411,18 @@ class PSend_Email
 				$this->mail_info = $this->email_password_reset($this->username,$this->token);
 			break;
 		}
+
+		/**
+		 * Replace the default info on the footer
+		 */
+		$this->mail_info['body'] = str_replace(
+									array('%FOOTER_SYSTEM_URI%','%FOOTER_URI%'),
+									array(
+										SYSTEM_URI,
+										BASE_URI
+									),
+									$this->mail_info['body']
+								);
 		
 		/**
 		 * phpMailer

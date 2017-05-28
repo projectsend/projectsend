@@ -113,7 +113,31 @@ h1, h2, h3, h4, h5, h6 {
 	#update_security_1 div { background-position:-24px 0 !important; }
 	#update_important_0 div { background-position:-48px -24px !important; }
 	#update_important_1 div { background-position:-48px 0 !important; }
+
+#donations_message {
+	background:#0094bb ;
+	color:#fff;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	margin:20px 20px 0;
+	padding:30px;
+	font-size:1.1em;
+}
+
+	#donations_message h3 {
+		margin-top:0;
+		font-size:1.5em;
+	}
 	
+	#donations_message p {
+		margin-bottom:0;
+	}
+
+	#donations_message a {
+		color:white;
+		font-weight:bold;
+	}
 
 /********************************************************************************************************************************************
 	HEADER

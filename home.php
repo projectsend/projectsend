@@ -94,6 +94,9 @@ define('CAN_INCLUDE_FILES', true);
 											
 												$statement = $dbh->query("SELECT distinct id FROM " . TABLE_USERS . " WHERE level != '0'");
 												$total_users = $statement->rowCount();
+
+												$statement = $dbh->query("SELECT distinct id FROM " . TABLE_CATEGORIES);
+												$total_categories = $statement->rowCount();
 											?>
 	
 											<dt><?php _e('Files','cftp_admin'); ?></dt>
@@ -107,6 +110,9 @@ define('CAN_INCLUDE_FILES', true);
 	
 											<dt><?php _e('Groups','cftp_admin'); ?></dt>
 											<dd><?php echo $total_groups; ?></dd>
+
+											<dt><?php _e('Categories','cftp_admin'); ?></dt>
+											<dd><?php echo $total_categories; ?></dd>
 	
 											<?php
 												/**

@@ -123,6 +123,12 @@ $allowed_file_types = str_replace('|',',',$allowed_file_types);
 /** Explode, sort, and implode the values to list them alphabetically */
 $allowed_file_types = explode(',',$allowed_file_types);
 sort($allowed_file_types);
+
+/** If .php files are allowed, set the flag for the warning message */
+if ( in_array( 'php', $allowed_file_types ) ) {
+	$php_allowed_warning = true;
+}
+
 $allowed_file_types = implode(',',$allowed_file_types);
 
 ?>
@@ -632,6 +638,13 @@ $allowed_file_types = implode(',',$allowed_file_types);
 									   <div class="form-group">
 											<input name="allowed_file_types" id="allowed_file_types" value="<?php echo $allowed_file_types; ?>" />
 										</div>
+										
+										<?php
+											if ( isset( $php_allowed_warning ) && $php_allowed_warning == true ) {
+												$msg = __('Warning: php extension is allowed. This is a serious security problem. If you are not sure that you need it, please remove it from the list.','cftp_admin');
+												echo system_message('error',$msg);
+											}
+										?>
 			
 										<div class="options_divide"></div>
 			

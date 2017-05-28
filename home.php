@@ -21,7 +21,7 @@ define('CAN_INCLUDE_FILES', true);
 ?>
 
 <div id="main">
-	<h2><?php echo $page_title; ?></h2>
+	<?php /*<h2><?php echo $page_title; ?></h2>*/ ?>
 
 	<div class="home">
 		<div class="container-fluid">

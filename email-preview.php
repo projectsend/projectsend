@@ -18,10 +18,6 @@ check_for_session();
 
 can_see_content($allowed_levels);
 
-/** Get the default header and footer */
-global $email_template_header;
-global $email_template_footer;
-
 /** Get the preview type */
 $type = $_GET['t'];
 

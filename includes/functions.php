@@ -488,8 +488,9 @@ function get_file_by_id($id)
 	while ( $row = $statement->fetch() ) {
 		$information = array(
 							'id'			=> $row['id'],
-							'url'			=> $row['url'],
 							'title'			=> $row['filename'],
+							'original_url'	=> $row['original_url'],
+							'url'			=> $row['url'],
 						);
 		if ( !empty( $information ) ) {
 			return $information;

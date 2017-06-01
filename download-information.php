@@ -37,7 +37,9 @@ if ($page_status === 1) {
 	$general_stats = generate_downloads_count( $file_id );
 	$file_stats = $general_stats[$file_id];
 
-	$page_title .= ': ' . $file['url'];
+	$filename_on_disk = (!empty( $file['original_url'] ) ) ? $file['original_url'] : $file['url'];
+
+	$page_title .= ': ' . $filename_on_disk;
 
 	/**
 	 * Make a list of users names

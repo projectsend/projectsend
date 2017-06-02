@@ -15,6 +15,8 @@ $page_title = __('Welcome to ProjectSend', 'cftp_admin');
 
 $active_nav = 'dashboard';
 
+$body_class = array('dashboard', 'home');
+
 include('header.php');
 
 define('CAN_INCLUDE_FILES', true);

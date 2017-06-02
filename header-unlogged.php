@@ -90,7 +90,7 @@ else {
 	?>
 </head>
 
-<body>
+<body <?php echo add_body_class( $body_class ); ?>>
 	<header>
 		<div id="header" class="header_shadow">
 			<div id="lonely_logo">

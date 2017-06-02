@@ -61,7 +61,7 @@ if (in_session_or_cookies($core_update_allowed)) {
 	?>
 </head>
 
-<body>
+<body <?php echo add_body_class( $body_class ); ?>>
 	<header>
 		<div id="header">
 			<div class="container-fluid">

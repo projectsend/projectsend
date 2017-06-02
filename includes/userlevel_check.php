@@ -70,7 +70,7 @@ function check_valid_cookie()
  * cookie before generating the content.
  * If none is found, redirect to the log in form.
  */
-function check_for_session()
+function check_for_session( $redirect = true )
 {
 	$is_logged_now = false;
 	if (isset($_SESSION['loggedin'])) {
@@ -82,7 +82,7 @@ function check_for_session()
 	elseif (check_valid_cookie()) {
 		$is_logged_now = true;
 	}
-	if(!$is_logged_now) {
+	if ( !$is_logged_now && $redirect == true ) {
 		header("location:" . BASE_URI . "index.php");
 	}
 	return $is_logged_now;

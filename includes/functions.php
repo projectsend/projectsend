@@ -1000,6 +1000,41 @@ function password_notes()
 	return $pass_notes_output;
 }
 
+/**
+ * Adds default and custom css classes to the body.
+ */
+function add_body_class( $custom = '' ) {
+	/** Remove query string */
+	$current_url = strtok( $_SERVER['REQUEST_URI'], '?' );
+
+	$pathinfo = pathinfo( $current_url );
+
+	if ( !empty( $pathinfo['extension'] ) ) {
+		$classes = array(
+						strpos( $pathinfo['filename'], "?" ),
+						str_replace('.', '-', $pathinfo['filename'] ),
+					);
+	}
+
+	if ( check_for_session( false ) ) {
+		$classes[] = 'logged-in';
+
+		global $client_info;
+		$logged_type = $client_info['level'] == '0' ? 'client' : 'admin';
+
+		$classes[] = 'logged-as-' . $logged_type;
+	}
+	
+	if ( !empty( $custom ) && is_array( $custom ) ) {
+		$classes = array_merge( $classes, $custom );
+	}
+
+	$classes = array_filter( array_unique( $classes ) );
+
+	$render = 'class="' . implode(' ', $classes) . '"';
+	return $render;
+}
+
 
 /**
  * Creates a standarized download link. Used on

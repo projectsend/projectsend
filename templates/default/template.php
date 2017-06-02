@@ -18,6 +18,8 @@ $load_scripts	= array(
 						'footable',
 					); 
 
+$body_class = array('template', 'default-template');
+
 include_once(ROOT_DIR.'/header.php');
 
 $count = count($my_files);

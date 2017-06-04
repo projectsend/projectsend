@@ -25,7 +25,7 @@ define('CAN_INCLUDE_FILES', true);
 <div id="main">
 	<?php /*<h2><?php echo $page_title; ?></h2>*/ ?>
 
-	<div class="home">
+	<div class="dashboard_contents">
 		<div class="container-fluid">
 			<div class="row">
 			<?php

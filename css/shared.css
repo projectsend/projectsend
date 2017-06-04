@@ -1,5 +1,5 @@
 /********************************************************************************************************************************************
-	Styles share between the BACKEND and the DEFAULT TEMPLATE
+	Styles shared between the BACKEND and the DEFAULT TEMPLATE
 ********************************************************************************************************************************************/
 
 :focus { outline:none !important; }
@@ -45,7 +45,7 @@ body,
 html
 {
 	color:#666666;
-	font-size:.9em !important;
+	font-size:.9em;
 	line-height:1.2em;
 	background:#F4F4F4 url(../img/bg-2-noise.jpg);
 	height:100%;
@@ -102,7 +102,7 @@ html
 		margin-left:15px;
 	}
 
-.home {
+.dashboard_contents {
 	padding-top:10px;
 }
 

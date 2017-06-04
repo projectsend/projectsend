@@ -131,7 +131,31 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 								'sub'	=> array(
 												array(
 													'label'	=> __('General options', 'cftp_admin'),
-													'link'	=> 'options.php',
+													'link'	=> 'options.php?section=general',
+												),
+												array(
+													'label'	=> __('Clients', 'cftp_admin'),
+													'link'	=> 'options.php?section=clients',
+												),
+												array(
+													'label'	=> __('E-mail notifications', 'cftp_admin'),
+													'link'	=> 'options.php?section=email',
+												),
+												array(
+													'label'	=> __('Security', 'cftp_admin'),
+													'link'	=> 'options.php?section=security',
+												),
+												array(
+													'label'	=> __('Thumbnails', 'cftp_admin'),
+													'link'	=> 'options.php?section=thumbnails',
+												),
+												array(
+													'label'	=> __('Company logo', 'cftp_admin'),
+													'link'	=> 'options.php?section=logo',
+												),
+												array(
+													'label'	=> __('Social Login', 'cftp_admin'),
+													'link'	=> 'options.php?section=social_login',
 												),
 												array(
 													'divider'	=> true,

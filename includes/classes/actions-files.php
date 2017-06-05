@@ -21,7 +21,7 @@ class FilesActions
 	{
 		$this->can_delete		= false;
 		$this->result			= '';
-		$this->check_level		= array(9,8,0);
+		$this->check_level		= array(9,8,7,0);
 
 		if (isset($rel_id)) {
 			/** Do a permissions check */
@@ -34,6 +34,11 @@ class FilesActions
 				while( $this->row = $this->sql->fetch() ) {
 					if ( CURRENT_USER_LEVEL == '0' ) {
 						if ( CLIENTS_CAN_DELETE_OWN_FILES == '1' && $this->row['uploader'] == CURRENT_USER_USERNAME ) {
+							$this->can_delete	= true;
+						}
+					}
+					elseif ( CURRENT_USER_LEVEL == '7' ) {
+						if ( $this->row['uploader'] == CURRENT_USER_USERNAME ) {
 							$this->can_delete	= true;
 						}
 					}

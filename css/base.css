@@ -664,35 +664,26 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #current_logo {
-	margin:20px 0;
+	margin:20px auto;
+	text-align:center;
 	padding:20px 0 0;
-	border-top:1px dotted #CCCCCC;
 	overflow:hidden;
 }
 
-#current_logo_left {
-	width:35%;
-	float:left;
-	text-align:left;
+#current_logo_img {
+	padding:20px 0;
 }
 
-	#current_logo_left .logo_note {
-		font-size:.85em;
-		line-height:1.35em!important;
-		color:#888;
+	#current_logo_img img {
+		height:auto;
+		width:100%;
+		max-width:300px;
 	}
 
-#current_logo_right {
-	float:right;
-	border:2px dashed #CCCCCC;
-	padding:15px;
-	display:table;
-	height:120px;
-}
-
-#current_logo_img {
-	display:table-cell;
-	vertical-align:middle;
+.preview_logo_note {
+	font-size:.9em;
+	margin-top:30px;
+	color:#888;
 }
 
 #form_upload_logo {

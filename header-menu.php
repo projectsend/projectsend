@@ -150,8 +150,8 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 													'link'	=> 'options.php?section=thumbnails',
 												),
 												array(
-													'label'	=> __('Company logo', 'cftp_admin'),
-													'link'	=> 'options.php?section=logo',
+													'label'	=> __('Branding', 'cftp_admin'),
+													'link'	=> 'options.php?section=branding',
 												),
 												array(
 													'label'	=> __('Social Login', 'cftp_admin'),
@@ -159,10 +159,6 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 												),
 												array(
 													'divider'	=> true,
-												),
-												array(
-													'label'	=> __('Branding', 'cftp_admin'),
-													'link'	=> 'branding.php',
 												),
 												array(
 													'label'	=> __('E-mail templates', 'cftp_admin'),

@@ -60,8 +60,8 @@ switch ( $section ) {
 								'thumbnails_use_absolute',
 							);
 		break;
-	case 'logo':
-		$section_title	= __('Company logo','cftp_admin');
+	case 'branding':
+		$section_title	= __('Branding','cftp_admin');
 		$checkboxes		= array(
 							);
 		break;
@@ -82,6 +82,7 @@ $page_title = $section_title;
 $active_nav = 'options';
 include('header.php');
 
+$logo_file_info = generate_logo_url();
 
 if ($_POST) {
 	/**
@@ -151,10 +152,69 @@ if ($_POST) {
 		}
 	}
 
+	/** If uploading a logo on the branding page */
+	if ( !empty($_FILES['select_logo']['name']) ) {
+		/** Valid file extensions (images) */
+		$image_file_types = "/^\.(jpg|jpeg|gif|png){1}$/i";
+	
+		if (is_uploaded_file($_FILES['select_logo']['tmp_name'])) {
+	
+			$this_upload = new PSend_Upload_File();
+			$safe_filename = $this_upload->safe_rename($_FILES['select_logo']['name']);
+			/**
+			 * Check the file type for allowed extensions.
+			 *
+			 * @todo Use the file upload class file type validation function.
+			 */
+			if (preg_match($image_file_types, strrchr($safe_filename, '.'))) {
+	
+				/**
+				 * Move the file to the destination defined on sys.vars.php. If ok, add the
+				 * new file name to the database.
+				 */
+				if (move_uploaded_file($_FILES['select_logo']['tmp_name'],LOGO_FOLDER.$safe_filename)) {
+					$sql = $dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name='logo_filename'" );
+					$sql->execute(
+								array(
+									':value'	=> $safe_filename
+								)
+							);
+					
+					$logo_status = '1';
+	
+					/** Record the action log */
+					$new_log_action = new LogActions();
+					$log_action_args = array(
+											'action' => 29,
+											'owner_id' => $global_id
+										);
+					$new_record_action = $new_log_action->log_action_save($log_action_args);
+				}
+				else {
+					$logo_status = '2';
+				}
+			}
+			else {
+				$logo_status = '3';
+			}
+		}
+		else {
+			$logo_status = '4';
+		}
+	}
+
 	/** Redirect so the options are reflected immediatly */
 	while (ob_get_level()) ob_end_clean();
 	$section_redirect = html_output($_POST['section']);
-	$location = BASE_URI . 'options.php?section=' . $section_redirect . '&status=' . $query_state;
+	$location = BASE_URI . 'options.php?section=' . $section_redirect;
+
+	if ( !empty( $query_state ) ) {
+		$location .= '&status=' . $query_state;
+	}
+
+	if ( !empty( $logo_status ) ) {
+		$location .= '&logo_status=' . $logo_status;
+	}
 	header("Location: $location");
 	die();
 }
@@ -199,6 +259,31 @@ $allowed_file_types = implode(',',$allowed_file_types);
 					break;
 			}
 		}
+
+		/** Logo uploading status */
+		if (isset($_GET['logo_status'])) {
+			switch ($_GET['logo_status']) {
+				case '1':
+					break;
+				case '2':
+					$msg = __('The file could not be moved to the corresponding folder.','cftp_admin');
+					$msg .= __("This is most likely a permissions issue. If that's the case, it can be corrected via FTP by setting the chmod value of the",'cftp_admin');
+					$msg .= ' '.LOGO_FOLDER.' ';
+					$msg .= __('directory to 755, or 777 as a last resource.','cftp_admin');
+					$msg .= __("If this doesn't solve the issue, try giving the same values to the directories above that one until it works.",'cftp_admin');
+					echo system_message('error',$msg);
+					break;
+				case '3':
+					$msg = __('The file you selected is not an allowed image format. Please upload your logo as a jpg, gif or png file.','cftp_admin');
+					echo system_message('error',$msg);
+					break;
+				case '4':
+					$msg = __('There was an error uploading the file. Please try again.','cftp_admin');
+					echo system_message('error',$msg);
+					break;
+			}
+		}
+
 	?>
 
 		<script type="text/javascript">
@@ -236,7 +321,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 			});
 		</script>
 
-		<form action="options.php" name="optionsform" method="post" class="form-horizontal">
+		<form action="options.php" name="optionsform" method="post" enctype="multipart/form-data" class="form-horizontal">
 			<input type="hidden" name="section" value="<?php echo $section; ?>">
 			<div class="container">
 							
@@ -816,32 +901,65 @@ $allowed_file_types = implode(',',$allowed_file_types);
 								</div>
 				<?php
 						break;
-						case 'logo':
+						case 'branding':
 				?>
 								<div class="row">
 									<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
 										<div class="white-box-interior">
-											<h3><?php _e('Size settings','cftp_admin'); ?></h3>
-											<p><?php _e("Like the thumbnails options, these have to be changed taking into account the client's template design, since it can be shown there. The default template uses a fixed width for the logo, however the Gallery template uses this setting to show the image on top.",'cftp_admin'); ?></p>
-				
-											<div class="options_column">
-												<div class="options_col_left">
-													<div class="form-group">
-														<label for="max_logo_width" class="col-sm-6 control-label"><?php _e('Max width','cftp_admin'); ?></label>
-														<div class="col-sm-6">
-															<input type="text" name="max_logo_width" id="max_logo_width" class="form-control" value="<?php echo html_output(LOGO_MAX_WIDTH); ?>" />
-														</div>
-													</div>
+
+											<h3><?php _e('Current logo','cftp_admin'); ?></h3>
+											<p><?php _e('Use this page to upload your company logo, or update the currently assigned one. This image will be shown to your clients when they access their file list.','cftp_admin'); ?></p>
+					
+											<div id="current_logo">
+												<div id="current_logo_img">
+													<?php
+														if ($logo_file_info['exists'] === true) {
+													?>
+															<img src="<?php echo $logo_file_info['url']; ?>" alt="<?php _e('Logo Placeholder','cftp_admin'); ?>" />
+													<?php
+														}
+													?>
 												</div>
-												<div class="options_col_right">
-													<div class="form-group">
-														<label for="max_logo_height" class="col-sm-6 control-label"><?php _e('Max height','cftp_admin'); ?></label>
-														<div class="col-sm-6">
-															<input type="text" name="max_logo_height" id="max_logo_height" class="form-control" value="<?php echo html_output(LOGO_MAX_HEIGHT); ?>" />
-														</div>
+												<p class="preview_logo_note">
+													<?php _e('Tihs preview uses a maximum width of 300px','cftp_admin'); ?>
+												</p>
+											</div>
+									
+											<div id="form_upload_logo">
+												<input type="hidden" name="MAX_FILE_SIZE" value="1000000000">
+												<div class="form-group">
+													<label class="col-sm-4 control-label"><?php _e('Select image to upload','cftp_admin'); ?></label>
+													<div class="col-sm-8">
+														<input type="file" name="select_logo" class="empty" />
 													</div>
 												</div>
 											</div>
+					
+											<div class="options_divide"></div>
+					
+											<h3><?php _e('Size settings','cftp_admin'); ?></h3>
+											<p><?php _e("The file viewer template may use this setting when showing the image.",'cftp_admin'); ?></p>
+					
+											<div class="form-group">
+												<label for="max_logo_width" class="col-sm-4 control-label"><?php _e('Max width','cftp_admin'); ?></label>
+												<div class="col-sm-3">
+													<div class="input-group">
+														<input type="text" name="max_logo_width" id="max_logo_width" class="form-control" value="<?php echo html_output(LOGO_MAX_WIDTH); ?>" />
+														<span class="input-group-addon">px</span>
+													</div>
+												</div>
+											</div>
+					
+											<div class="form-group">
+												<label for="max_logo_height" class="col-sm-4 control-label"><?php _e('Max height','cftp_admin'); ?></label>
+												<div class="col-sm-3">
+													<div class="input-group">
+														<input type="text" name="max_logo_height" id="max_logo_height" class="form-control" value="<?php echo html_output(LOGO_MAX_HEIGHT); ?>" />
+														<span class="input-group-addon">px</span>
+													</div>
+												</div>
+											</div>
+
 										</div>
 									</div>
 								</div>

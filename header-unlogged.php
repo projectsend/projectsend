@@ -42,6 +42,7 @@ else {
 	$load_scripts = array(
 						'social_login',
 						'recaptcha',
+						'chosen',
 					);
 	
 	/**
@@ -61,6 +62,8 @@ else {
 	 * Silent updates that are needed even if no user is logged in.
 	 */
 	require_once(ROOT_DIR.'/includes/core.update.silent.php');
+
+	if (!isset($body_class)) { $body_class = ''; }
 }
 ?>
 <!doctype html>

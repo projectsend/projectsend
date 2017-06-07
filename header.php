@@ -21,6 +21,8 @@ check_for_session();
 /** If no page title is defined, revert to a default one */
 if (!isset($page_title)) { $page_title = __('System Administration','cftp_admin'); }
 
+if (!isset($body_class)) { $body_class = ''; }
+
 /**
  * Silent updates that are needed even if no user is logged in.
  */

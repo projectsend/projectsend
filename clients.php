@@ -296,6 +296,10 @@ include('header.php');
 													'hide'			=> 'phone,tablet',
 												),
 												array(
+													'content'		=> __('Uploads','cftp_admin'),
+													'hide'			=> 'phone',
+												),
+												array(
 													'content'		=> __('Files: Own','cftp_admin'),
 													'hide'			=> 'phone',
 												),
@@ -345,35 +349,39 @@ include('header.php');
 					while ( $row = $sql->fetch() ) {
 						$table->add_row();
 
+						$client_user	= $row["user"];
+						$client_id		= $row["id"];
+
 						/**
 						 * Prepare the information to be used later on the cells array
 						 * 1- Count GROUPS where the client is member
 						 */
-						$found_groups	= '';
-						$client_user	= $row["user"];
-						$client_id		= $row["id"];
+						$get_groups		= new MembersActions();
+						$get_arguments	= array(
+												'client_id'	=> $client_id,
+											);
+						$found_groups	= $get_groups->client_get_groups($get_arguments); 
+						$count_groups	= count( $found_groups );
 
-						$sql_groups = $dbh->prepare("SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE client_id=:id");
-						$sql_groups->bindParam(':id', $client_id, PDO::PARAM_INT);
-						$sql_groups->execute();
-						$count_groups = $sql_groups->rowCount();
-
-						if ($count_groups > 0) {
-							$sql_groups->setFetchMode(PDO::FETCH_ASSOC);
-							while ( $row_groups = $sql_groups->fetch() ) {
-								$groups_ids[] = $row_groups["group_id"];
-							}
-							$found_groups = implode(',',$groups_ids);
-						}
-
+						$found_groups = ($count_groups > 0) ? implode( ',', $found_groups ) : '';
+						
 						/**
 						 * 2- Get account creation date
 						 */
 						$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
-						
+
 						/**
 						 * Prepare the information to be used later on the cells array
-						 * 3- Count OWN and GROUP files
+						 * 3- Count uploads
+						 */
+						$uploads_query = "SELECT DISTINCT id FROM " . TABLE_FILES . " WHERE uploader=:username";
+						$uploads_files = $dbh->prepare( $uploads_query );
+						$uploads_files->bindParam(':username', $client_user);
+						$uploads_files->execute();
+						$uploads_count = $uploads_files->rowCount();
+						
+						/**
+						 * 4- Count OWN and GROUP files
 						 */
 						$own_files = 0;
 						$groups_files = 0;
@@ -402,7 +410,7 @@ include('header.php');
 						}
 
 						/**
-						 * 4- Get active status
+						 * 5- Get active status
 						 */
 						$status_hidden	= __('Inactive','cftp_admin');
 						$status_visible	= __('Active','cftp_admin');
@@ -411,7 +419,7 @@ include('header.php');
 						
 						
 						/**
-						 * 5- Actions buttons
+						 * 6- Actions buttons
 						 */
 						if ($own_files + $groups_files > 0) {
 							$files_link		= 'manage-files.php?client_id='.$row["id"];
@@ -447,6 +455,9 @@ include('header.php');
 													),
 												array(
 														'content'		=> html_output( $row["email"] ),
+													),
+												array(
+														'content'		=> $uploads_count,
 													),
 												array(
 														'content'		=> $own_files,

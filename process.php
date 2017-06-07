@@ -67,21 +67,16 @@ class process {
 							 * Does the client have permission to download the file?
 							 * First, get the list of different groups the client belongs to.
 							 */
-							$this->groups = $this->dbh->prepare("SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE client_id=:id");
-							$this->groups->bindValue(':id', CURRENT_USER_ID, PDO::PARAM_INT);
-							$this->groups->execute();
+							$this->get_groups		= new MembersActions();
+							$this->get_arguments	= array(
+															'client_id'	=> CURRENT_USER_ID,
+															'return'	=> 'list',
+														);
+							$this->found_groups	= $this->get_groups->client_get_groups($this->get_arguments); 
 
-							if ( $this->groups->rowCount() > 0 ) {
-								$this->groups->setFetchMode(PDO::FETCH_ASSOC);
-								while ( $this->row_groups = $this->groups->fetch() ) {
-									$this->groups_ids[] = $this->row_groups["group_id"];
-								}
-								if ( !empty( $this->groups_ids ) ) {
-									$this->found_groups = implode( ',', $this->groups_ids );
-								}
-							}
-
-
+							/**
+							 * Get assignments
+							 */
 							$this->params = array(
 												':client_id'	=> CURRENT_USER_ID,
 											);

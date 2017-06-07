@@ -67,6 +67,7 @@ $classes_files = array(
 						'actions-files.php',
 						'actions-categories.php',
 						'actions-groups.php',
+						'actions-members.php',
 						'actions-log.php',
 						'actions-users.php',
 						'file-upload.php',

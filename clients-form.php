@@ -56,9 +56,9 @@
 </script>
 
 <?php
-$name_placeholder = __("Will be visible on the client's file list",'cftp_admin');
+$current_level = get_current_user_level();
 
-$group_field = false;
+$name_placeholder = __("Will be visible on the client's file list",'cftp_admin');
 
 switch ($clients_form_type) {
 	/** User is creating a new client */
@@ -69,6 +69,8 @@ switch ($clients_form_type) {
 		$form_action = 'clients-add.php';
 		$info_box = true;
 		$extra_fields = true;
+		$group_field = true;
+		$group_label = __('Groups','cftp_admin');
 		break;
 	/** User is editing an existing client */
 	case 'edit_client':
@@ -78,6 +80,8 @@ switch ($clients_form_type) {
 		$form_action = 'clients-edit.php?id='.$client_id;
 		$info_box = false;
 		$extra_fields = true;
+		$group_field = true;
+		$group_label = __('Groups','cftp_admin');
 		break;
 	/** A client is creating a new account for himself */
 	case 'new_client_self':
@@ -88,7 +92,13 @@ switch ($clients_form_type) {
 		$info_box = true;
 		$extra_fields = false;
 		$name_placeholder = __("Your full name",'cftp_admin');
-		$group_field = true;
+		$group_field = false;
+		/*
+		if ( CLIENTS_CAN_SELECT_GROUP == 'public' || CLIENTS_CAN_SELECT_GROUP == 'all' ) {
+			$group_field = true;
+			$group_label = __('Request access to groups','cftp_admin');
+		}
+		*/
 		break;
 	/** A client is editing his profile */
 	case 'edit_client_self':
@@ -98,6 +108,7 @@ switch ($clients_form_type) {
 		$form_action = 'clients-edit.php?id='.$client_id;
 		$info_box = false;
 		$extra_fields = false;
+		$group_field = false;
 		break;
 }
 ?>
@@ -152,38 +163,30 @@ switch ($clients_form_type) {
 		</div>
 	</div>
 
-		<?php
-			if ($extra_fields == true) {
-		?>
-				<div class="form-group">
-					<label for="add_client_form_intcont" class="col-sm-4 control-label"><?php _e('Internal contact name','cftp_admin'); ?></label>
-					<div class="col-sm-8">
-						<input type="text" name="add_client_form_intcont" id="add_client_form_intcont" class="form-control" value="<?php echo (isset($add_client_data_intcont)) ? html_output(stripslashes($add_client_data_intcont)) : ''; ?>" />
-					</div>
+	<?php
+		if ($extra_fields == true) {
+	?>
+			<div class="form-group">
+				<label for="add_client_form_intcont" class="col-sm-4 control-label"><?php _e('Internal contact name','cftp_admin'); ?></label>
+				<div class="col-sm-8">
+					<input type="text" name="add_client_form_intcont" id="add_client_form_intcont" class="form-control" value="<?php echo (isset($add_client_data_intcont)) ? html_output(stripslashes($add_client_data_intcont)) : ''; ?>" />
 				</div>
-				<div class="form-group">
-					<div class="col-sm-8 col-sm-offset-4">
-						<label for="add_client_form_active">
-							<input type="checkbox" name="add_client_form_active" id="add_client_form_active" <?php echo (isset($add_client_data_active) && $add_client_data_active == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Active (client can log in)','cftp_admin'); ?>
-						</label>
-					</div>
-				</div>
-		<?php
-			}
-		?>
-	<div class="form-group">
-		<div class="col-sm-8 col-sm-offset-4">
-			<label for="add_client_form_notify">
-				<input type="checkbox" name="add_client_form_notify" id="add_client_form_notify" <?php echo (isset($add_client_data_notity) && $add_client_data_notity == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Notify new uploads by e-mail','cftp_admin'); ?>
-			</label>
-		</div>
-	</div>
+			</div>
+	<?php
+		}
+	?>
 
 	<?php
 		if ( $group_field == true ) {
-			if ( CLIENTS_CAN_SELECT_GROUP == 'public' || CLIENTS_CAN_SELECT_GROUP == 'all' ) {
-				$cq = "SELECT id, name FROM " . TABLE_GROUPS;
-				
+			$cq = "SELECT id, name FROM " . TABLE_GROUPS;
+
+			/** Groups to search on based on the current user level */
+			if ( $current_level == 9 || $current_level == 8 ) {
+				/** An admin or client manager is creating a client account */
+				$sql_groups = $dbh->prepare($cq);
+			}
+			else {
+				/** Someone is registering an account for himself */
 				if ( CLIENTS_CAN_SELECT_GROUP == 'public' ) {
 					$cq .= " WHERE public = :public";
 				}
@@ -193,32 +196,70 @@ switch ($clients_form_type) {
 				if ( CLIENTS_CAN_SELECT_GROUP == 'public' ) {
 					$sql_groups->bindValue(':public', 1, PDO::PARAM_INT);
 				}
+			}
 
-				$sql_groups->execute();
-				$sql_groups->setFetchMode(PDO::FETCH_ASSOC);
-				
-				if ( $sql_groups->rowCount() > 0) {
+
+			$sql_groups->execute();
+			$sql_groups->setFetchMode(PDO::FETCH_ASSOC);
+			
+			if ( $sql_groups->rowCount() > 0) {
 	?>
-					<div class="form-group">
-						<label for="add_client_group_request" class="col-sm-4 control-label"><?php _e('Request access to group','cftp_admin'); ?></label>
-						<div class="col-sm-8">
-							<select name="add_client_group_request" id="add_client_group_request" class="form-control">
-								<option value="0"><?php _e('None','cftp_admin'); ?></option>
-								<?php
-									while ( $row = $sql_groups->fetch() ) {
-								?>
-										<option value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
-								<?php
-									}
-								?>
-							</select>
-						</div>
+				<div class="form-group assigns">
+					<label for="add_client_group_request" class="col-sm-4 control-label"><?php echo $group_label; ?></label>
+					<div class="col-sm-8">
+						<select multiple="multiple" name="add_client_group_request[]" id="groups-select" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+							<?php
+								while ( $row = $sql_groups->fetch() ) {
+							?>
+									<option value="<?php echo $row['id']; ?>"
+							<?php
+										if ( !empty( $found_groups ) && in_array( $row["id"], $found_groups ) ) {
+											echo ' selected="selected"';
+										}
+							?>
+									><?php echo $row['name']; ?></option>
+							<?php
+								}
+							?>
+						</select>
+						<?php
+							if ( $current_level == 9 || $current_level == 8 ) {
+						?>
+								<div class="list_mass_members">
+									<a href="#" class="btn btn-default add-all"><?php _e('Add all','cftp_admin'); ?></a>
+									<a href="#" class="btn btn-default remove-all"><?php _e('Remove all','cftp_admin'); ?></a>
+								</div>
+						<?php
+							}
+						?>
 					</div>
+				</div>
 	<?php
-				}
 			}
 		}
 	?>
+
+	<?php
+		if ($extra_fields == true) {
+	?>
+			<div class="form-group">
+				<div class="col-sm-8 col-sm-offset-4">
+					<label for="add_client_form_active">
+						<input type="checkbox" name="add_client_form_active" id="add_client_form_active" <?php echo (isset($add_client_data_active) && $add_client_data_active == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Active (client can log in)','cftp_admin'); ?>
+					</label>
+				</div>
+			</div>
+	<?php
+		}
+	?>
+
+	<div class="form-group">
+		<div class="col-sm-8 col-sm-offset-4">
+			<label for="add_client_form_notify">
+				<input type="checkbox" name="add_client_form_notify" id="add_client_form_notify" <?php echo (isset($add_client_data_notity) && $add_client_data_notity == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Notify new uploads by e-mail','cftp_admin'); ?>
+			</label>
+		</div>
+	</div>
 	
 	<?php
 		if ( $clients_form_type == 'new_client_self' ) {
@@ -247,3 +288,30 @@ switch ($clients_form_type) {
 		}
 	?>
 </form>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('.chosen-select').chosen({
+			no_results_text	: "<?php _e('No results where found.','cftp_admin'); ?>",
+			search_contains	: true
+		});
+
+		$('.add-all').click(function(){
+			var selector = $(this).closest('.assigns').find('select');
+			$(selector).find('option').each(function(){
+				$(this).prop('selected', true);
+			});
+			$('select').trigger('chosen:updated');
+			return false;
+		});
+
+		$('.remove-all').click(function(){
+			var selector = $(this).closest('.assigns').find('select');
+			$(selector).find('option').each(function(){
+				$(this).prop('selected', false);
+			});
+			$('select').trigger('chosen:updated');
+			return false;
+		});
+	});
+</script>

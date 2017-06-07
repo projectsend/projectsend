@@ -35,19 +35,15 @@ if(!empty($_GET['member'])) {
 		}
 		$member_exists = 1;
 
-		/** Find groups where the client is member */
-		$sql_is_member = $dbh->prepare("SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE client_id=:id");
-		$sql_is_member->bindParam(':id', $member, PDO::PARAM_INT);
-		$sql_is_member->execute();
 
-		if ( $sql_is_member->rowCount() > 0) {
-			$sql_is_member->setFetchMode(PDO::FETCH_ASSOC);
-			while ( $row_groups = $sql_is_member->fetch() ) {
-				$groups_ids[] = $row_groups["group_id"];
-			}
-			$found_groups = implode(',',$groups_ids);
-		}
-		else {
+		/** Get groups where this client is member */
+		$get_groups		= new MembersActions();
+		$get_arguments	= array(
+								'client_id'	=> $member,
+								'return'	=> 'list',
+							);
+		$found_groups	= $get_groups->client_get_groups($get_arguments); 
+		if ( empty( $found_groups ) ) {
 			$found_groups = '';
 		}
 	}

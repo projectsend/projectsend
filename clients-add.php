@@ -6,6 +6,10 @@
  * @subpackage	Clients
  *
  */
+$load_scripts	= array(
+						'chosen',
+					); 
+
 $allowed_levels = array(9,8);
 require_once('sys.includes.php');
 
@@ -41,18 +45,18 @@ if ($_POST) {
 
 	/** Arguments used on validation and client creation. */
 	$new_arguments = array(
-							'id' => '',
-							'username' => $add_client_data_user,
-							'password' => $_POST['add_client_form_pass'],
+							'id'		=> '',
+							'username'	=> $add_client_data_user,
+							'password'	=> $_POST['add_client_form_pass'],
 							//'password_repeat' => $_POST['add_client_form_pass2'],
-							'name' => $add_client_data_name,
-							'email' => $add_client_data_email,
-							'address' => $add_client_data_addr,
-							'phone' => $add_client_data_phone,
-							'contact' => $add_client_data_intcont,
-							'notify' => $add_client_data_notity,
-							'active' => $add_client_data_active,
-							'type' => 'new_client'
+							'name'		=> $add_client_data_name,
+							'email'		=> $add_client_data_email,
+							'address'	=> $add_client_data_addr,
+							'phone'		=> $add_client_data_phone,
+							'contact'	=> $add_client_data_intcont,
+							'notify'	=> $add_client_data_notity,
+							'active'	=> $add_client_data_active,
+							'type'		=> 'new_client',
 						);
 
 	/** Validate the information from the posted form. */
@@ -61,6 +65,19 @@ if ($_POST) {
 	/** Create the client if validation is correct. */
 	if ($new_validate == 1) {
 		$new_response = $new_client->create_client($new_arguments);
+		
+		$add_to_groups = (!empty( $_POST['add_client_group_request'] ) ) ? $_POST['add_client_group_request'] : '';
+		if ( !empty( $add_to_groups ) ) {
+			array_map('encode_html', $add_to_groups);
+			$memberships	= new MembersActions;
+			$arguments		= array(
+									'client_id'	=> $new_response['new_id'],
+									'group_ids'	=> $add_to_groups,
+									'added_by'	=> CURRENT_USER_USERNAME,
+								);
+	
+			$memberships->client_add_to_groups($arguments);
+		}
 	}
 	
 }

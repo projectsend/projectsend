@@ -29,16 +29,12 @@ $current_username = get_current_user_username();
 /**
  * Get the list of different groups the client belongs to.
  */
-$statement = $dbh->prepare("SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE client_id = :client_id");
-$statement->bindParam(':client_id', $global_id, PDO::PARAM_INT);
-$statement->execute();
-if ( $statement->rowCount() > 0) {
-	$statement->setFetchMode(PDO::FETCH_ASSOC);
-	while( $row = $statement->fetch() ) {
-		$groups_ids[] = $row["group_id"];
-	}
-	$found_groups = implode(',', $groups_ids);
-}
+$get_groups		= new MembersActions();
+$get_arguments	= array(
+								'client_id'	=> CURRENT_USER_ID,
+								'return'	=> 'list',
+							);
+$found_groups	= $get_groups->client_get_groups($get_arguments); 
 
 foreach ($files_to_zip as $file_to_zip) {
 	/**

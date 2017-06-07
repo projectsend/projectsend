@@ -49,18 +49,12 @@ $client_info = get_client_by_username($this_user);
 /**
  * Get the list of different groups the client belongs to.
  */
-$sql_groups = $dbh->prepare( "SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE client_id=:id" );
-$sql_groups->bindParam(':id', $client_info['id'], PDO::PARAM_INT);
-$sql_groups->execute();
-$count_groups = $sql_groups->rowCount();
-
-if ($count_groups > 0) {
-	$sql_groups	->setFetchMode(PDO::FETCH_ASSOC);
-	while ( $row = $sql_groups->fetch() ) {
-		$groups_ids[] = $row["group_id"];
-	}
-	$found_groups = implode(',',$groups_ids);
-}
+$get_groups		= new MembersActions();
+$get_arguments	= array(
+						'client_id'	=> $client_info['id'],
+						'return'	=> 'list',
+					);
+$found_groups	= $get_groups->client_get_groups($get_arguments); 
 
 /**
  * Define the arrays so they can't be empty

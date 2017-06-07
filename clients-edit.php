@@ -6,6 +6,10 @@
  * @subpackage	Clients
  *
  */
+$load_scripts	= array(
+						'chosen',
+					); 
+
 $allowed_levels = array(9,8,0);
 require_once('sys.includes.php');
 
@@ -45,6 +49,13 @@ if ($page_status === 1) {
 		if ($data['notify'] == 1) { $add_client_data_notity = 1; } else { $add_client_data_notity = 0; }
 		if ($data['active'] == 1) { $add_client_data_active = 1; } else { $add_client_data_active = 0; }
 	}
+
+	/** Get groups where this client is member */
+	$get_groups		= new MembersActions();
+	$get_arguments	= array(
+							'client_id'	=> $client_id,
+						);
+	$found_groups	= $get_groups->client_get_groups($get_arguments); 
 }
 
 /**
@@ -114,6 +125,18 @@ if ($_POST) {
 	/** Create the client if validation is correct. */
 	if ($edit_validate == 1) {
 		$edit_response = $edit_client->edit_client($edit_arguments);
+
+		$edit_groups = (!empty( $_POST['add_client_group_request'] ) ) ? $_POST['add_client_group_request'] : array();
+		array_map('encode_html', $edit_groups);
+		$memberships	= new MembersActions;
+		$arguments		= array(
+								'client_id'	=> $client_id,
+								'group_ids'	=> $edit_groups,
+								'added_by'	=> CURRENT_USER_USERNAME,
+							);
+
+		$memberships->client_edit_groups($arguments);
+
 	}
 }
 

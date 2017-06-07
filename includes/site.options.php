@@ -13,19 +13,10 @@
  *
  * @return array
  */
-error_reporting(-1);
+error_reporting(0);
 
+global $dbh;
 
- 
- 	$sql = $dbh->prepare( "SELECT `value` FROM " . TABLE_OPTIONS . " WHERE `".TABLE_OPTIONS."`.`name` = 'branding_title'" );
-if($sql->execute()) {
-$brand_array = $sql->fetch();
-$brandname = $brand_array['value'];
-//echo $brandname;//exit;
-	if(!empty($brandname)){
-		define('BRAND_NAME',$brandname);
-	}
-}
 $options_values = array();
 try {
 	$options = $dbh->query("SELECT * FROM " . TABLE_OPTIONS);
@@ -56,7 +47,6 @@ if(!empty($options_values)) {
 	$allowed_file_types = $options_values['allowed_file_types'];
 	
 	define('BASE_URI',$options_values['base_uri']);
-
 	define('BLOCKSIZE',256);
 	define('ENCRYPTION_KEY','psend_key1234567'); // 16 bit , 32 
 	define('THUMBS_MAX_WIDTH',$options_values['max_thumbnail_width']);
@@ -72,6 +62,8 @@ if(!empty($options_values)) {
 	define('TIMEZONE_USE',$options_values['timezone']);
 	define('TIMEFORMAT_USE',$options_values['timeformat']);
 	define('CLIENTS_CAN_REGISTER',$options_values['clients_can_register']);
+	define('BRAND_NAME',$options_values['branding_title']);
+
 	/** Define the template path */
 	define('TEMPLATE_PATH',ROOT_DIR.'/templates/'.TEMPLATE_USE.'/template.php');
 	/**

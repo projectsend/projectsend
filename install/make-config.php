@@ -6,7 +6,6 @@
  * @subpackage	Install (config check)
  */
 error_reporting(E_ALL);
-
 define( 'IS_INSTALL', true );
 define( 'IS_MAKE_CONFIG', true );
 

@@ -245,7 +245,6 @@ if (defined('TRY_INSTALL')) {
 								('mail_from_name', :from),
 								('thumbnails_use_absolute', '0'),
 								('mail_copy_user_upload', ''),
-								('mail_drop_off_request', ''),
 								('mail_copy_client_upload', ''),
 								('mail_copy_main_user', ''),
 								('mail_copy_addresses', ''),
@@ -275,8 +274,6 @@ if (defined('TRY_INSTALL')) {
 								('email_footer_text', ''),
 								('email_pass_reset_customize', '0'),
 								('email_pass_reset_text', ''),
-								('email_drop_off_request', ''),
-								('email_drop_off_request_text', ''),
 								('expired_files_hide', '1'),
 								('notifications_max_tries', '2'),
 								('notifications_max_days', '15'),
@@ -303,6 +300,12 @@ if (defined('TRY_INSTALL')) {
 								('twitter_client_id', ''),
 								('twitter_client_secret', ''),
 								('twitter_signin_enabled', '0'),
+								('windows_client_id', '0'),
+								('windows_client_secret', '0'),
+								('windows_signin_enabled', '0'),
+								('ldap_signin_enabled', '0'),
+								('ldap_server_url', '0'),
+								('ldap_bind_port', '0'),
 								('recaptcha_enabled', '0'),
 								('recaptcha_site_key', ''),
 								('recaptcha_secret_key', '')
@@ -371,7 +374,8 @@ if (defined('TRY_INSTALL')) {
 							  `to_note_request` varchar(500) DEFAULT NULL,
 							  `requested_time` datetime DEFAULT NULL,
 							  `auth_key` varchar(50) NOT NULL,
-							  `status` int(11) NOT NULL
+							  `status` int(11) NOT NULL,
+							  PRIMARY KEY (id) 
 							) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 								',
 					'params' => array(),
@@ -392,4 +396,5 @@ if (defined('TRY_INSTALL')) {
 		
 	);
 }
+
 ?>

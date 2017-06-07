@@ -68,9 +68,11 @@ define('UPDATES_FEED_URI','http://projectsend.org/updates/versions.xml');
 if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') && !defined( 'IS_MAKE_CONFIG' ) ) {
 	// the following script returns only after the creation of the configuration file
 	if ( defined('IS_INSTALL') ) {
+		
 		header('Location:make-config.php');
 	}
 	else {
+		
 		header('Location:install/make-config.php');
 	}
 }

@@ -131,7 +131,7 @@ class AES {
             return trim(mcrypt_decrypt(
                             $this->cipher, $this->key, base64_decode($this->data), $this->mode, $this->getIV()));
         } else {
-            throw new Exception('Invlid params!');
+            //throw new Exception('Invlid params!');
         }
     }
 }

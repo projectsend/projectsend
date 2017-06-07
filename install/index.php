@@ -6,9 +6,10 @@
  * @subpackage	Install
  */
 define( 'IS_INSTALL', true );
-require_once('../sys.includes.php');
 
-global $dbh;
+require_once(__DIR__.'/../sys.includes.php');
+
+
 /**
  * Function that takes an array of SQL queries and executes them in order.
  */

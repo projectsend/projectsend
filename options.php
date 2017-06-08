@@ -186,7 +186,7 @@ if ($_POST) {
 					$new_log_action = new LogActions();
 					$log_action_args = array(
 											'action' => 29,
-											'owner_id' => $global_id
+											'owner_id' => CURRENT_USER_ID
 										);
 					$new_record_action = $new_log_action->log_action_save($log_action_args);
 				}

@@ -183,7 +183,7 @@ while( $row = $statement->fetch() ) {
 												'name'			=> $file['name'],
 												'description'	=> $file['description'],
 												'uploader'		=> $global_user,
-												'uploader_id'	=> $global_id
+												'uploader_id'	=> CURRENT_USER_ID,
 											);
 
 						/** Set notifications to YES by default */

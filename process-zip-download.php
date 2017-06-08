@@ -61,7 +61,7 @@ foreach ($files_to_zip as $file_to_zip) {
 	if ($current_level == 0) {
 		if ($this_file_expires == '0' || $this_file_expired == false) {
 			$statement = $dbh->prepare("SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE (client_id = :client_id OR FIND_IN_SET(group_id, :groups)) AND file_id = :file_id AND hidden = '0'");
-			$statement->bindParam(':client_id', $global_id, PDO::PARAM_INT);
+			$statement->bindValue(':client_id', CURRENT_USER_ID, PDO::PARAM_INT);
 			$statement->bindParam(':groups', $found_groups);
 			$statement->bindParam(':file_id', $this_file_id, PDO::PARAM_INT);
 			$statement->execute();
@@ -110,7 +110,7 @@ if ($added_files > 0) {
 	$new_log_action = new LogActions();
 	$log_action_args = array(
 							'action' => 9,
-							'owner_id' => $global_id,
+							'owner_id' => CURRENT_USER_ID,
 							'affected_account_name' => $current_username
 						);
 	$new_record_action = $new_log_action->log_action_save($log_action_args);

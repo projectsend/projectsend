@@ -112,8 +112,7 @@ class process {
 						$this->can_download = true;
 						$log_action = 7;
 						$global_user = get_current_user_username();
-						$global_id = get_logged_account_id($global_user);
-						$log_action_owner_id = $global_id;
+						$log_action_owner_id = CURRENT_USER_ID;
 					}
 
 					if ($this->can_download == true) {

@@ -589,7 +589,7 @@ if (in_session_or_cookies($allowed_update)) {
 		$new_log_action = new LogActions();
 		$log_action_args = array(
 								'action' => 30,
-								'owner_id' => $global_id,
+								'owner_id' => CURRENT_USER_ID,
 								'affected_account_name' => $current_version
 							);
 		$new_record_action = $new_log_action->log_action_save($log_action_args);

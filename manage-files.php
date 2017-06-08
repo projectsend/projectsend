@@ -271,7 +271,7 @@ include('header.php');
 					$new_log_action = new LogActions();
 					$log_action_args = array(
 											'action' => $log_action_number,
-											'owner_id' => $global_id,
+											'owner_id' => CURRENT_USER_ID,
 											'affected_file' => $work_file_id,
 											'affected_file_name' => $work_file
 										);

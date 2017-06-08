@@ -130,7 +130,7 @@ if ($_POST) {
 									$new_log_action = new LogActions();
 									$log_action_args = array(
 															'action' => 15,
-															'owner_id' => $global_id,
+															'owner_id' => CURRENT_USER_ID,
 															'affected_account' => $group_id,
 															'affected_account_name' => $add_group_data_name
 														);

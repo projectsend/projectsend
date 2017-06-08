@@ -179,7 +179,7 @@ $current_level = get_current_user_level();
 												'name'			=> $file['name'],
 												'description'	=> $file['description'],
 												'uploader'		=> $global_user,
-												'uploader_id'	=> $global_id,
+												'uploader_id'	=> CURRENT_USER_ID,
 												'expiry_date'	=> $file['expiry_date']
 											);
 					
@@ -230,7 +230,7 @@ $current_level = get_current_user_level();
 							/** CLEAN deletes the removed users/groups from the assignments table */
 							if ($clean_who == 'All') {
 								$clean_all_arguments = array(
-																'owner_id' => $global_id, /** For the log */
+																'owner_id' => CURRENT_USER_ID, /** For the log */
 																'file_id' => $this_file_id,
 																'file_name' => $file['name']
 															);
@@ -238,7 +238,7 @@ $current_level = get_current_user_level();
 							}
 							else {						
 								$clean_arguments = array (
-														'owner_id' => $global_id, /** For the log */
+														'owner_id' => CURRENT_USER_ID, /** For the log */
 														'file_id' => $this_file_id,
 														'file_name' => $file['name'],
 														'assign_to' => $clean_who,
@@ -257,7 +257,7 @@ $current_level = get_current_user_level();
 						
 						/** Uploader is a client */
 						if ($current_level == 0) {
-							$add_arguments['assign_to'] = array('c'.$global_id);
+							$add_arguments['assign_to'] = array('c'.CURRENT_USER_ID);
 							$add_arguments['hidden'] = '0';
 							$add_arguments['uploader_type'] = 'client';
 							$action_log_number = 33;
@@ -299,7 +299,7 @@ $current_level = get_current_user_level();
 							$new_log_action = new LogActions();
 							$log_action_args = array(
 													'action' => $action_log_number,
-													'owner_id' => $global_id,
+													'owner_id' => CURRENT_USER_ID,
 													'owner_user' => $global_user,
 													'affected_file' => $process_file['new_file_id'],
 													'affected_file_name' => $file['name']

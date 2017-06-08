@@ -159,7 +159,7 @@ include('header.php');
 									$new_log_action = new LogActions();
 									$log_action_args = array(
 															'action' => 13,
-															'owner_id' => $global_id,
+															'owner_id' => CURRENT_USER_ID,
 															'affected_account' => $user_id,
 															'affected_account_name' => $saved_user['username'],
 															'get_user_real_name' => true

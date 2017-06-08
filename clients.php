@@ -114,7 +114,7 @@ include('header.php');
 				$new_log_action = new LogActions();
 				$log_action_args = array(
 										'action' => $log_action_number,
-										'owner_id' => $global_id,
+										'owner_id' => CURRENT_USER_ID,
 										'affected_account_name' => $all_users[$client]
 									);
 				$new_record_action = $new_log_action->log_action_save($log_action_args);

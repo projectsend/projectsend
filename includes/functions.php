@@ -1050,11 +1050,7 @@ function add_body_class( $custom = '' ) {
 function make_download_link($file_info)
 {
 	global $client_info;
-	$download_link = BASE_URI.
-						'process.php?do=download
-						&amp;client='.CURRENT_USER_USERNAME.'
-						&amp;client_id='.$client_info['id'].'
-						&amp;id='.$file_info['id'];
+	$download_link = BASE_URI.'process.php?do=download&amp;id='.$file_info['id'];
 	/*
 						&amp;origin='.$file_info['origin'];
 	if (!empty($file_info['group_id'])) {

@@ -118,6 +118,9 @@ if ($_POST) {
 		$edit_response = $edit_user->edit_user($edit_arguments);
 	}
 
+	$location = BASE_URI . 'users-edit.php?id=' . $user_id . '&status=' . $edit_response['query'];
+	header("Location: $location");
+	die();
 }
 
 $page_title = __('Edit system user','cftp_admin');
@@ -131,6 +134,33 @@ include('header.php');
 
 <div id="main">
 	<h2><?php echo $page_title; ?></h2>
+
+	<?php
+		if (isset($_GET['status'])) {
+			switch ($_GET['status']) {
+				case 1:
+					$msg = __('User edited correctly.','cftp_admin');
+					echo system_message('ok',$msg);
+
+					$saved_user = get_user_by_id($user_id);
+					/** Record the action log */
+					$new_log_action = new LogActions();
+					$log_action_args = array(
+											'action' => 13,
+											'owner_id' => CURRENT_USER_ID,
+											'affected_account' => $user_id,
+											'affected_account_name' => $saved_user['username'],
+											'get_user_real_name' => true
+										);
+					$new_record_action = $new_log_action->log_action_save($log_action_args);
+				break;
+				case 0:
+					$msg = __('There was an error. Please try again.','cftp_admin');
+					echo system_message('error',$msg);
+				break;
+			}
+		}
+	?>
 	
 	<div class="container">
 		<div class="row">
@@ -145,69 +175,37 @@ include('header.php');
 					?>
 					
 					<?php
-						if (isset($edit_response)) {
-							/**
-							 * Get the process state and show the corresponding ok or error message.
-							 */
-							switch ($edit_response['query']) {
-								case 1:
-									$msg = __('User edited correctly.','cftp_admin');
-									echo system_message('ok',$msg);
-			
-									$saved_user = get_user_by_id($user_id);
-									/** Record the action log */
-									$new_log_action = new LogActions();
-									$log_action_args = array(
-															'action' => 13,
-															'owner_id' => CURRENT_USER_ID,
-															'affected_account' => $user_id,
-															'affected_account_name' => $saved_user['username'],
-															'get_user_real_name' => true
-														);
-									$new_record_action = $new_log_action->log_action_save($log_action_args);
-								break;
-								case 0:
-									$msg = __('There was an error. Please try again.','cftp_admin');
-									echo system_message('error',$msg);
-								break;
-							}
+						$direct_access_error = __('This page is not intended to be accessed directly.','cftp_admin');
+						if ($page_status === 0) {
+							$msg = __('No user was selected.','cftp_admin');
+							echo system_message('error',$msg);
+							echo '<p>'.$direct_access_error.'</p>';
+						}
+						else if ($page_status === 2) {
+							$msg = __('There is no user with that ID number.','cftp_admin');
+							echo system_message('error',$msg);
+							echo '<p>'.$direct_access_error.'</p>';
+						}
+						else if ($page_status === 3) {
+							$msg = __("Your account type doesn't allow you to access this feature.",'cftp_admin');
+							echo system_message('error',$msg);
 						}
 						else {
-						/**
-						 * If not $edit_response is set, it means we are just entering for the first time.
-						 */
-							$direct_access_error = __('This page is not intended to be accessed directly.','cftp_admin');
-							if ($page_status === 0) {
-								$msg = __('No user was selected.','cftp_admin');
-								echo system_message('error',$msg);
-								echo '<p>'.$direct_access_error.'</p>';
-							}
-							else if ($page_status === 2) {
-								$msg = __('There is no user with that ID number.','cftp_admin');
-								echo system_message('error',$msg);
-								echo '<p>'.$direct_access_error.'</p>';
-							}
-							else if ($page_status === 3) {
-								$msg = __("Your account type doesn't allow you to access this feature.",'cftp_admin');
-								echo system_message('error',$msg);
+							/**
+							 * Include the form.
+							 */
+							if ($global_level == 7) {
+								$user_form_type = 'edit_user_self';
 							}
 							else {
-								/**
-								 * Include the form.
-								 */
-								if ($global_level == 7) {
+								if ($global_user == $add_user_data_user) {
 									$user_form_type = 'edit_user_self';
 								}
 								else {
-									if ($global_user == $add_user_data_user) {
-										$user_form_type = 'edit_user_self';
-									}
-									else {
-										$user_form_type = 'edit_user';
-									}
+									$user_form_type = 'edit_user';
 								}
-								include('users-form.php');
 							}
+							include('users-form.php');
 						}
 					?>
 

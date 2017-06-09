@@ -300,6 +300,8 @@ if (defined('TRY_INSTALL')) {
 								('clients_can_select_group', 'none'),
 								('files_descriptions_use_ckeditor', '0'),
 								('enable_landing_for_all_files', '0'),
+								('footer_custom_enable', '0'),
+								('footer_custom_content', ''),
 								('email_new_file_by_user_subject_customize', '0'),
 								('email_new_file_by_client_subject_customize', '0'),
 								('email_new_client_by_user_subject_customize', '0'),

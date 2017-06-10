@@ -36,7 +36,7 @@ include('header-unlogged.php');
 		$add_client_data_phone = (isset($_POST["add_client_form_phone"])) ? encode_html($_POST["add_client_form_phone"]) : '';
 		$add_client_data_intcont = (isset($_POST["add_client_form_intcont"])) ? encode_html($_POST["add_client_form_intcont"]) : '';
 		$add_client_data_notity = (isset($_POST["add_client_form_notify"])) ? 1 : 0;
-		$add_client_data_group = (isset($_POST["add_client_group_request"])) ? encode_html($_POST["add_client_group_request"]) : '';
+		$add_client_data_group = (isset($_POST["add_client_group_request"])) ? $_POST["add_client_group_request"] : '';
 	
 		/** Arguments used on validation and client creation. */
 		$new_arguments = array(
@@ -56,38 +56,61 @@ include('header-unlogged.php');
 
 		$new_arguments['active']	= (CLIENTS_AUTO_APPROVE == 0) ? 0 : 1;
 		$new_arguments['recaptcha']	= ( defined('RECAPTCHA_AVAILABLE') ) ? $recaptcha_request : null;
-	
+
 		/** Validate the information from the posted form. */
 		$new_validate = $new_client->validate_client($new_arguments);
 		
 		/** Create the client if validation is correct. */
 		if ($new_validate == 1) {
 			$new_response = $new_client->create_client($new_arguments);
-			
+
+			$admin_name = 'SELFREGISTERED';
 			/**
 			 * Check if the option to auto-add to a group
 			 * is active.
 			 */
 			if (CLIENTS_AUTO_GROUP != '0') {
-				$admin_name = 'SELFREGISTERED';
-				$client_id = $new_response['new_id'];
 				$group_id = CLIENTS_AUTO_GROUP;
+				define('AUTOGROUP', true);
 
-				$add_to_group = $dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
-													." VALUES (:admin, :id, :group)");
-				$add_to_group->bindParam(':admin', $admin_name);
-				$add_to_group->bindParam(':id', $client_id, PDO::PARAM_INT);
-				$add_to_group->bindParam(':group', $group_id);
-				$add_to_group->execute();
+				$autogroup	= new MembersActions;
+				$arguments	= array(
+									'client_id'	=> $new_response['new_id'],
+									'group_ids'	=> $group_id,
+									'added_by'	=> $admin_name,
+								);
+		
+				$execute = $autogroup->client_add_to_groups($arguments);
 			}
 
+			/**
+			 * Check if the client requested memberships to groups
+			 */
+			define('REGISTERING', true);
+			$request	= new MembersActions;
+			$arguments	= array(
+								'client_id'		=> $new_response['new_id'],
+								'group_ids'		=> $add_client_data_group,
+								'request_by'	=> $admin_name,
+							);
+	
+			$execute_requests = $request->group_request_membership($arguments);
+
+			/**
+			 * Prepare and send an email to administrator(s)
+			 */
 			$notify_admin = new PSend_Email();
 			$email_arguments = array(
-											'type' => 'new_client_self',
-											'address' => ADMIN_EMAIL_ADDRESS,
-											'username' => $add_client_data_user,
-											'name' => $add_client_data_name
+											'type'			=> 'new_client_self',
+											'address'		=> ADMIN_EMAIL_ADDRESS,
+											'username'		=> $add_client_data_user,
+											'name'			=> $add_client_data_name,
 										);
+
+			if ( !empty( $execute_requests['requests'] ) ) {
+				$email_arguments['memberships'] = $execute_requests['requests'];
+			}
+
 			$notify_admin_status = $notify_admin->psend_send_email($email_arguments);
 		}
 	}

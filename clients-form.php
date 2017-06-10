@@ -93,12 +93,10 @@ switch ($clients_form_type) {
 		$extra_fields = false;
 		$name_placeholder = __("Your full name",'cftp_admin');
 		$group_field = false;
-		/*
 		if ( CLIENTS_CAN_SELECT_GROUP == 'public' || CLIENTS_CAN_SELECT_GROUP == 'all' ) {
-			$group_field = true;
+			//$group_field = true;
 			$group_label = __('Request access to groups','cftp_admin');
 		}
-		*/
 		break;
 	/** A client is editing his profile */
 	case 'edit_client_self':
@@ -178,46 +176,42 @@ switch ($clients_form_type) {
 
 	<?php
 		if ( $group_field == true ) {
-			$cq = "SELECT id, name FROM " . TABLE_GROUPS;
+			/**
+			 * Make a list of public groups in case clients can only request
+			 * membership to those
+			 */
+			$memberships	= new GroupActions;
+			$arguments		= array();
 
 			/** Groups to search on based on the current user level */
 			if ( $current_level == 9 || $current_level == 8 ) {
 				/** An admin or client manager is creating a client account */
-				$sql_groups = $dbh->prepare($cq);
 			}
 			else {
 				/** Someone is registering an account for himself */
 				if ( CLIENTS_CAN_SELECT_GROUP == 'public' ) {
-					$cq .= " WHERE public = :public";
-				}
-				
-				$sql_groups = $dbh->prepare($cq);
-				
-				if ( CLIENTS_CAN_SELECT_GROUP == 'public' ) {
-					$sql_groups->bindValue(':public', 1, PDO::PARAM_INT);
+					$arguments['public'] = true;
 				}
 			}
 
+			$sql_groups = $memberships->get_groups($arguments);
 
-			$sql_groups->execute();
-			$sql_groups->setFetchMode(PDO::FETCH_ASSOC);
-			
-			if ( $sql_groups->rowCount() > 0) {
+			if ( count( $sql_groups ) > 0) {
 	?>
 				<div class="form-group assigns">
 					<label for="add_client_group_request" class="col-sm-4 control-label"><?php echo $group_label; ?></label>
 					<div class="col-sm-8">
 						<select multiple="multiple" name="add_client_group_request[]" id="groups-select" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
 							<?php
-								while ( $row = $sql_groups->fetch() ) {
+								foreach ( $sql_groups as $group ) {
 							?>
-									<option value="<?php echo $row['id']; ?>"
+									<option value="<?php echo $group['id']; ?>"
 							<?php
-										if ( !empty( $found_groups ) && in_array( $row["id"], $found_groups ) ) {
+										if ( !empty( $found_groups ) && in_array( $group['id'], $found_groups ) ) {
 											echo ' selected="selected"';
 										}
 							?>
-									><?php echo $row['name']; ?></option>
+									><?php echo $group['name']; ?></option>
 							<?php
 								}
 							?>

@@ -75,7 +75,8 @@ $email_strings_new_client_self = array(
 									'subject'		=> ( EMAILS_CLIENT_BY_SELF_USE_SUBJECT_CUSTOM == 1 && defined( EMAILS_CLIENT_BY_SELF_SUBJECT ) ) ? EMAILS_CLIENT_BY_SELF_SUBJECT : __('A new client has registered.','cftp_admin'),
 									'body'			=> __('A new account was created using the self registration form on your site. Registration information:','cftp_admin'),
 									'label_name'	=> __('Full name','cftp_admin'),
-									'label_user'	=> __('Username','cftp_admin')
+									'label_user'	=> __('Username','cftp_admin'),
+									'label_request'	=> __('Additionally, the client requests access to the following group(s)','cftp_admin')
 								);
 								if (CLIENTS_AUTO_APPROVE == '0') {
 									$email_strings_new_client_self['body2'] = __('Please log in to activate it.','cftp_admin');
@@ -222,7 +223,7 @@ class PSend_Email
 	 * Prepare the body for the "New Client" self registration e-mail.
 	 * The name of the client and username are also sent.
 	 */
-	function email_new_client_self($username,$fullname)
+	function email_new_client_self($username,$fullname,$memberships_requests)
 	{
 		global $email_strings_new_client_self;
 		$this->email_body = $this->email_prepare_body('new_client_self');
@@ -239,6 +240,29 @@ class PSend_Email
 										),
 									$this->email_body
 								);
+		if ( !empty( $memberships_requests ) ) {
+			$this->groups		= new GroupActions;
+			$this->groups_args	= array(
+										'group_ids' => $memberships_requests
+									);
+			$this->get_groups = $this->groups->get_groups( $this->groups_args );
+			
+			$this->groups_list = '<ul>';
+			foreach ( $this->get_groups as $group ) {
+				$this->groups_list .= '<li>' . $group['name'] . '</li>';
+			}
+			$this->groups_list .= '</ul>';
+
+			$memberships_requests = implode(',',$memberships_requests);
+			$this->email_body = str_replace(
+									array('%LABEL_REQUESTS%', '%GROUPS_REQUESTS%'),
+									array(
+										$email_strings_new_client_self['label_request'],
+										$this->groups_list
+									),
+								$this->email_body
+							);
+		}
 		return array(
 					'subject' => $email_strings_new_client_self['subject'],
 					'body' => $this->email_body
@@ -378,6 +402,7 @@ class PSend_Email
 		$this->name			= (!empty($arguments['name'])) ? $arguments['name'] : '';
 		$this->files_list	= (!empty($arguments['files_list'])) ? $arguments['files_list'] : '';
 		$this->token		= (!empty($arguments['token'])) ? $arguments['token'] : '';
+		$this->memberships	= (!empty($arguments['memberships'])) ? $arguments['memberships'] : '';
 		
 		require_once(ROOT_DIR.'/includes/phpmailer/class.phpmailer.php');
 
@@ -403,7 +428,7 @@ class PSend_Email
 				$this->mail_info = $this->email_new_client($this->username,$this->password);
 			break;
 			case 'new_client_self':
-				$this->mail_info = $this->email_new_client_self($this->username,$this->name);
+				$this->mail_info = $this->email_new_client_self($this->username,$this->name,$this->memberships);
 			break;
 			case 'new_user':
 				$this->mail_info = $this->email_new_user($this->username,$this->password);
@@ -427,7 +452,6 @@ class PSend_Email
 									),
 									$this->mail_info['body']
 								);
-
 
 		/**
 		 * If we are generating a preview, just return the html content

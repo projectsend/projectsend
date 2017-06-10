@@ -116,7 +116,7 @@ class MembersActions
 		$this->group_ids	= is_array( $arguments['group_ids'] ) ? $arguments['group_ids'] : array( $arguments['group_ids'] );;
 		$this->added_by		= $arguments['added_by'];
 		
-		if ( in_array( CURRENT_USER_LEVEL, array(9,8) ) ) {
+		if ( in_array( CURRENT_USER_LEVEL, array(9,8) ) || ( defined('AUTOGROUP') ) ) {
 			$this->results 		= array(
 										'added'		=> 0,
 										'queue'		=> count( $this->group_ids ),
@@ -205,6 +205,71 @@ class MembersActions
 	
 	function group_request_membership($arguments)
 	{
+		if ( in_array( CURRENT_USER_LEVEL, array(9,8) ) || ( defined('REGISTERING') ) ) {
+			if ( CLIENTS_CAN_SELECT_GROUP == 'public' || CLIENTS_CAN_SELECT_GROUP == 'all' ) {
+
+				$this->requests = array();
+	
+				if ( CLIENTS_CAN_SELECT_GROUP == 'public' ) {
+					/**
+					 * Make a list of public groups in case clients can only request
+					 * membership to those
+					 */
+					$this->memberships	= new GroupActions;
+					$this->arguments = array(
+											'public'	=> true,
+										);
+					$this->public_groups = $this->memberships->get_groups($this->arguments);
+				}
+				$this->client_id	= $arguments['client_id'];
+				$this->group_ids	= is_array( $arguments['group_ids'] ) ? $arguments['group_ids'] : array( $arguments['group_ids'] );
+				$this->request_by	= $arguments['request_by'];
+
+				$this->results 		= array(
+											'added'		=> 0,
+											'queue'		=> count( $this->group_ids ),
+											'errors'	=> array(),
+										);
+		
+				foreach ( $this->group_ids as $this->group_id ) {
+					if ( defined('REGISTERING') ) {
+						if ( CLIENTS_CAN_SELECT_GROUP == 'public' ) {
+							$this->permitted = array();
+							foreach ( $this->public_groups as $this->public_group ) {
+								$this->permitted[] = $this->public_group['id'];
+							}
+							
+							if ( !in_array( $this->group_id, $this->permitted ) ) {
+								continue;
+							}
+						}
+					}
+
+					$statemente = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS_REQUESTS . " (requested_by,client_id,group_id)"
+														." VALUES (:username, :id, :group)");
+					$statemente->bindParam(':username', $this->request_by);
+					$statemente->bindParam(':id', $this->client_id, PDO::PARAM_INT);
+					$statemente->bindParam(':group', $this->group_id, PDO::PARAM_INT);
+					$this->status = $statemente->execute();
+					
+					if ( $this->status ) {
+						$this->results['added']++;
+						$this->requests[] = $this->group_id;
+					}
+					else {
+						$this->results['errors'][] = array(
+															'client'	=> $this->group_id,
+														);
+					}
+
+					$this->results['requests'] = $this->requests;
+				}
+			}
+			else {
+				return false;
+			}
+		}
+		return $this->results;
 	}
 
 	function group_approve_membership($arguments)

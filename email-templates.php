@@ -103,7 +103,7 @@ if ($_POST) {
 												'body_text'			=> EMAILS_FILE_BY_USER_TEXT,
 												'tags'				=> array(
 																				'%FILES%'		=> __('Shows the list of files','cftp_admin'),
-																				'%URI%	'		=> __('The login link','cftp_admin') . $href_string,
+																				'%URI%'			=> __('The login link','cftp_admin') . $href_string,
 																			),
 												'default_text'		=> EMAIL_TEMPLATE_NEW_FILE_BY_USER,
 											),
@@ -121,7 +121,7 @@ if ($_POST) {
 												'body_text'			=> EMAILS_FILE_BY_CLIENT_TEXT,
 												'tags'				=> array(
 																				'%FILES%'		=> __('Shows the list of files','cftp_admin'),
-																				'%URI%	'		=> __('The login link','cftp_admin') . $href_string,
+																				'%URI%'			=> __('The login link','cftp_admin') . $href_string,
 																			),
 												'default_text'		=> EMAIL_TEMPLATE_NEW_FILE_BY_CLIENT,
 											),
@@ -140,7 +140,7 @@ if ($_POST) {
 												'tags'				=> array(
 																				'%USERNAME%'	=> __('The new username for this account','cftp_admin'),
 																				'%PASSWORD%'	=> __('The new password for this account','cftp_admin'),
-																				'%URI%	'		=> __('The login link','cftp_admin') . $href_string,
+																				'%URI%'			=> __('The login link','cftp_admin') . $href_string,
 																			),
 												'default_text'		=> EMAIL_TEMPLATE_NEW_CLIENT,
 											),
@@ -157,9 +157,10 @@ if ($_POST) {
 												'body_check'		=> EMAILS_CLIENT_BY_SELF_USE_CUSTOM,
 												'body_text'			=> EMAILS_CLIENT_BY_SELF_TEXT,
 												'tags'				=> array(
-																				'%FULLNAME%'	=> __('The full name the client registered with','cftp_admin'),
-																				'%USERNAME%'	=> __('The new username for this account','cftp_admin'),
-																				'%URI%	'		=> __('The login link','cftp_admin') . $href_string,
+																				'%FULLNAME%'		=> __('The full name the client registered with','cftp_admin'),
+																				'%USERNAME%'		=> __('The new username for this account','cftp_admin'),
+																				'%URI%'				=> __('The login link','cftp_admin') . $href_string,
+																				'%GROUPS_REQUESTS%' => __('List of groups that the client requests membership to','cftp_admin'),
 																			),
 												'default_text'		=> EMAIL_TEMPLATE_NEW_CLIENT_SELF,
 											),
@@ -178,7 +179,7 @@ if ($_POST) {
 												'tags'				=> array(
 																				'%USERNAME%'	=> __('The new username for this account','cftp_admin'),
 																				'%PASSWORD%'	=> __('The new password for this account','cftp_admin'),
-																				'%URI%	'		=> __('The login link','cftp_admin') . $href_string,
+																				'%URI%'			=> __('The login link','cftp_admin') . $href_string,
 																			),
 												'default_text'		=> EMAIL_TEMPLATE_NEW_USER,
 											),
@@ -197,7 +198,7 @@ if ($_POST) {
 												'tags'				=> array(
 																				'%USERNAME%'	=> __('The username for this account','cftp_admin'),
 																				'%TOKEN%'		=> __('The text string unique to this request. Must be included somewhere.','cftp_admin'),
-																				'%URI%	'		=> __('The link to continue the process','cftp_admin') . $href_string,
+																				'%URI%'			=> __('The link to continue the process','cftp_admin') . $href_string,
 																			),
 												'default_text'		=> EMAIL_TEMPLATE_PASSWORD_RESET,
 											),

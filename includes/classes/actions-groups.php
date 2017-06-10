@@ -164,6 +164,94 @@ class GroupActions
 		}
 	}
 
+	/**
+	 * Return an array of existing groups
+	 */
+	function get_groups($arguments)
+	{
+		$this->group_ids	= !empty( $arguments['group_ids'] ) ? $arguments['group_ids'] : array();
+		$this->group_ids	= is_array( $this->group_ids ) ? $this->group_ids : array( $this->group_ids );
+		$this->is_public	= !empty( $arguments['public'] ) ? $arguments['public'] : '';
+		$this->created_by	= !empty( $arguments['created_by'] ) ? $arguments['created_by'] : '';
+		$this->search		= !empty( $arguments['search'] ) ? $arguments['search'] : '';
+
+		$this->groups = array();
+		$this->query = "SELECT * FROM " . TABLE_GROUPS;
+
+		$this->parameters = array();
+		if ( !empty( $this->group_ids ) ) {
+			$this->parameters[] = "FIND_IN_SET(id, :ids)";
+		}
+		if ( !empty( $this->is_public ) ) {
+			$this->parameters[] = "public=:public";
+		}
+		if ( !empty( $this->created_by ) ) {
+			$this->parameters[] = "created_by=:created_by";
+		}
+		if ( !empty( $this->search ) ) {
+			$this->parameters[] = "(name LIKE :name OR description LIKE :description)";
+		}
+		
+		if ( !empty( $this->parameters ) ) {
+			$this->p = 1;
+			foreach ( $this->parameters as $this->parameter ) {
+				if ( $this->p == 1 ) {
+					$this->connector = " WHERE ";
+				}
+				else {
+					$this->connector = " AND ";
+				}
+				$this->p++;
+				
+				$this->query .= $this->connector . $this->parameter;
+			}
+		}
+
+		$this->statement = $this->dbh->prepare($this->query);
+
+		if ( !empty( $this->group_ids ) ) {
+			$this->group_ids = implode( ',', $this->group_ids );
+			$this->statement->bindParam(':ids', $this->group_ids);
+		}
+		if ( !empty( $this->is_public ) ) {
+			switch ( $this->is_public ) {
+				case 'true':
+					$this->pub = 1;
+					break;
+				case 'false':
+					$this->pub = 0;
+					break;
+			}
+			$this->statement->bindValue(':public', $this->pub, PDO::PARAM_INT);
+		}
+		if ( !empty( $this->created_by ) ) {
+			$this->statement->bindParam(':created_by', $this->created_by);
+		}
+		if ( !empty( $this->search ) ) {
+			$this->search_value = '%' . $this->search . '%';
+			$this->statement->bindValue(':name', $this->search_value);
+			$this->statement->bindValue(':description', $this->search_value);
+		}
+		
+		$this->statement->execute();
+		$this->statement->setFetchMode(PDO::FETCH_ASSOC);
+		while( $this->data_group = $this->statement->fetch() ) {
+			$this->all_groups[] = array(
+										'id'			=> $this->data_group['id'],
+										'name'			=> $this->data_group['name'],
+										'description'	=> $this->data_group['description'],
+										'created_by'	=> $this->data_group['created_by'],
+										'public'		=> $this->data_group['public'],
+									);
+		}
+		
+		if ( count($this->all_groups) > 0 ) {		
+			return $this->all_groups;
+		}
+		else {
+			return false;
+		}
+	}
 }
 
 ?>

@@ -49,11 +49,9 @@ if (in_session_or_cookies($core_update_allowed)) {
 	<link rel="shortcut icon" href="<?php echo BASE_URI; ?>/favicon.ico" />
 	<script type="text/javascript" src="<?php echo BASE_URI; ?>includes/js/jquery.1.12.4.min.js"></script>
 
-	<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>assets/bootstrap/css/bootstrap.min.css" />
-	
 	<!--[if lt IE 9]>
-		<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<script src="<?php echo BASE_URI; ?>includes/js/html5shiv.min.js"></script>
+		<script src="<?php echo BASE_URI; ?>includes/js/respond.min.js"></script>
 	<![endif]-->
 	
 	<?php

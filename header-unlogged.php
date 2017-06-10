@@ -62,9 +62,9 @@ else {
 	 * Silent updates that are needed even if no user is logged in.
 	 */
 	require_once(ROOT_DIR.'/includes/core.update.silent.php');
-
-	if (!isset($body_class)) { $body_class = ''; }
 }
+
+if ( !isset( $body_class ) ) { $body_class = ''; }
 ?>
 <!doctype html>
 <html lang="<?php echo $header_vars['html_lang']; ?>">
@@ -79,11 +79,9 @@ else {
 	<link rel="shortcut icon" href="<?php echo BASE_URI; ?>favicon.ico" />
 	<script src="<?php echo BASE_URI; ?>includes/js/jquery.1.12.4.min.js"></script>
 
-	<link rel="stylesheet" media="all" type="text/css" href="<?php echo BASE_URI; ?>assets/bootstrap/css/bootstrap.min.css" />
-
 	<!--[if lt IE 9]>
-		<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<script src="<?php echo BASE_URI; ?>includes/js/html5shiv.min.js"></script>
+		<script src="<?php echo BASE_URI; ?>includes/js/respond.min.js"></script>
 	<![endif]-->
 
 	<?php

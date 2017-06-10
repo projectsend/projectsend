@@ -100,6 +100,7 @@ if ( !empty( $load_scripts ) ) {
 	}
 }
 
+$load_css_files[]	= BASE_URI . 'assets/bootstrap/css/bootstrap.min.css';
 $load_css_files[]	= BASE_URI . 'css/shared.css';
 $load_css_files[]	= BASE_URI . 'css/mobile.css';
 /**

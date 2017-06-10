@@ -19,6 +19,8 @@ require_once('sys.includes.php');
 
 $page_title = __('Log in','cftp_admin');
 
+$body_class = array('login');
+
 include('header-unlogged.php');
 	
 	/**

@@ -1013,6 +1013,7 @@ function password_notes()
 function add_body_class( $custom = '' ) {
 	/** Remove query string */
 	$current_url = strtok( $_SERVER['REQUEST_URI'], '?' );
+	$classes = array('body');
 
 	$pathinfo = pathinfo( $current_url );
 

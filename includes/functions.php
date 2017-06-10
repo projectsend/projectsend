@@ -1061,6 +1061,16 @@ function make_download_link($file_info)
 	return $download_link;
 }
 
+/**
+ * print_r a variable with a more human readable format
+ */
+function print_array( $data = array() )
+{
+	echo '<pre>';
+	print_r($data);
+	echo '</pre>';
+}
+
 
 /**
  * Renders an action recorded on the log.

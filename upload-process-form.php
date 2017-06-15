@@ -656,7 +656,7 @@ while( $row = $statement->fetch() ) {
 			<input type="hidden" name="upload_failed" value="<?php echo $upload_failed_hidden; ?>" />
 			
 			<div class="after_form_buttons">
-				<button type="submit" name="submit" class="btn btn-wide btn-primary" id="upload-continue"><?php _e('Continue','cftp_admin'); ?></button>
+				<button type="submit" name="submit" class="btn btn-wide btn-primary" id="upload-continue"><?php _e('Save','cftp_admin'); ?></button>
 			</div>
 		</form>
 

@@ -10,10 +10,8 @@ $.fn.psendmodal = function() {
 	}
 
 	window.remove_modal = function() {
-		$('.modal_overlay').stop(true, true).fadeOut();
-		$('.modal_psend').stop(true, true).fadeOut();
-		$('.modal_overlay').remove();
-		$('.modal_psend').remove();
+		$('.modal_overlay').stop(true, true).fadeOut(500, function() { $(this).remove(); });
+		$('.modal_psend').stop(true, true).fadeOut(500, function() { $(this).remove(); });
 		return false;
 	}
 

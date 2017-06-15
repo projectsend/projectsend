@@ -283,6 +283,9 @@ $count = count($my_files);
 						});
 						
 						$(document).psendmodal();
+
+						Cookies.set('download_started', 0, { expires: 100 });
+						setTimeout(check_download_cookie, 1000);
 						$('.modal_content').html('<p class="loading-img"><img src="<?php echo BASE_URI; ?>img/ajax-loader.gif" alt="Loading" /></p>'+
 													'<p class="lead text-center text-info"><?php _e('Please wait while your download is prepared.','cftp_admin'); ?></p>'+
 													'<p class="text-center text-info"><?php _e('This operation could take a few minutes, depending on the size of the files.','cftp_admin'); ?></p>'
@@ -300,6 +303,20 @@ $count = count($my_files);
 				return false;
 				}
 			});
+
+			/**
+			 * Solution to close the modal. Suggested by remez, based on
+			 * https://stackoverflow.com/questions/29532788/how-to-display-a-loading-animation-while-file-is-generated-for-download
+			 */
+			var downloadTimeout;
+			var check_download_cookie = function() {
+				if (Cookies.get("download_started") == 1) {
+					Cookies.set("download_started", "false", { expires: 100 });
+					remove_modal();
+				} else {
+					downloadTimeout = setTimeout(check_download_cookie, 1000);
+				}
+			};
 
 		});
 	</script>

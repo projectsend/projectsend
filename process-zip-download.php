@@ -116,6 +116,7 @@ if ($added_files > 0) {
 	$new_record_action = $new_log_action->log_action_save($log_action_args);
 
 	if (file_exists($zip_file)) {
+		setCookie("download_started", 1, time() + 20, '/', "", false, false);
 		$zip_file_name = 'projectsend_'.generateRandomString().'.zip';
 		session_write_close(); 
 		while (ob_get_level()) ob_end_clean();

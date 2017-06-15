@@ -21,6 +21,7 @@ $load_js_files[]	= BASE_URI . 'assets/bootstrap/js/bootstrap.min.js';
 $load_js_files[]	= BASE_URI . 'includes/js/jquery.validations.js';
 $load_js_files[]	= BASE_URI . 'includes/js/jquery.psendmodal.js';
 $load_js_files[]	= BASE_URI . 'includes/js/jen/jen.js';
+$load_js_files[]	= BASE_URI . 'includes/js/js.cookie.js';
 $load_js_files[]	= BASE_URI . 'includes/js/main.js';
 
 /** CSS */

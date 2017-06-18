@@ -140,7 +140,8 @@ class ClientActions
 		$this->phone		= $arguments['phone'];
 		$this->contact		= $arguments['contact'];
 		$this->notify		= ( $arguments['notify'] == '1' ) ? 1 : 0;
-		$this->active		= ( $arguments['active'] == '1' ) ? 1 : 0;
+		$this->request		= ( !empty( $arguments['account_requested'] ) ) ? $arguments['account_requested'] : 0;
+		$this->active		= ( $arguments['active'] );
 		$this->enc_password	= $hasher->HashPassword($this->password);
 
 		if (strlen($this->enc_password) >= 20) {
@@ -152,8 +153,8 @@ class ClientActions
 	
 			/** Insert the client information into the database */
 			$this->timestamp = time();
-			$this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_USERS . " (name,user,password,address,phone,email,notify,contact,created_by,active)"
-												."VALUES (:name, :username, :password, :address, :phone, :email, :notify, :contact, :admin, :active)");
+			$this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_USERS . " (name,user,password,address,phone,email,notify,contact,created_by,active,account_requested)"
+												."VALUES (:name, :username, :password, :address, :phone, :email, :notify, :contact, :admin, :active, :request)");
 			$this->sql_query->bindParam(':name', $this->name);
 			$this->sql_query->bindParam(':username', $this->username);
 			$this->sql_query->bindParam(':password', $this->enc_password);
@@ -164,6 +165,7 @@ class ClientActions
 			$this->sql_query->bindParam(':contact', $this->contact);
 			$this->sql_query->bindParam(':admin', $this->this_admin);
 			$this->sql_query->bindParam(':active', $this->active, PDO::PARAM_INT);
+			$this->sql_query->bindParam(':request', $this->request, PDO::PARAM_INT);
 
 			$this->sql_query->execute();
 	
@@ -304,6 +306,20 @@ class ClientActions
 				$this->sql->execute();
 			}
 		}
+	}
+
+	/**
+	 * Approve account
+	 */
+	function client_account_approve($client_id)
+	{
+	}
+
+	/**
+	 * Deny account
+	 */
+	function client_account_deny($client_id)
+	{
 	}
 
 }

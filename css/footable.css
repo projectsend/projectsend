@@ -41,7 +41,7 @@
 .footable-sorted,
 .footable-sorted-asc,
 .footable-sorted-desc,
-.footable .active
+.footable th.active
 {
 	background-color: #004b92 !important;
 	color:white !important;

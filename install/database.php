@@ -61,6 +61,8 @@ if (defined('TRY_INSTALL')) {
 								  `contact` text COLLATE utf8_general_ci NULL,
 								  `created_by` varchar('.MAX_USER_CHARS.') NULL,
 								  `active` tinyint(1) NOT NULL DEFAULT \'1\',
+								  `account_requested` tinyint(1) NOT NULL DEFAULT \'0\',
+								  `account_denied` tinyint(1) NOT NULL DEFAULT \'0\',
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
@@ -106,6 +108,7 @@ if (defined('TRY_INSTALL')) {
 								  `requested_by` varchar(32) NOT NULL,
 								  `client_id` int(11) NOT NULL,
 								  `group_id` int(11) NOT NULL,
+								  `denied` int(1) NOT NULL DEFAULT \'0\',
 								  PRIMARY KEY (`id`),
 								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE

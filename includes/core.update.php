@@ -1215,6 +1215,24 @@ if (in_session_or_cookies($allowed_update)) {
 			}
 		}
 
+
+		/**
+		 * r882 updates
+		 * New columns where added to the users table, to
+		 * mark if a client self registered and the account
+		 * needs to be checked.
+		 */
+		if ($last_update < 882) {
+			try {
+				$statement = $dbh->query("SELECT account_requested FROM " . TABLE_USERS);
+			} catch( PDOException $e ) {
+				$statement = $dbh->query("ALTER TABLE " . TABLE_USERS . " ADD account_requested INT(1) NOT NULL default '0'");
+				$statement = $dbh->query("ALTER TABLE " . TABLE_USERS . " ADD account_denied INT(1) NOT NULL default '0'");
+				$statement = $dbh->query("ALTER TABLE " . TABLE_MEMBERS_REQUESTS . " ADD denied INT(1) NOT NULL default '0'");
+				$updates_made++;
+			}
+		}
+
 	}
 }	
 ?>

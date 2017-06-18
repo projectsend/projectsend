@@ -492,20 +492,19 @@ $allowed_file_types = implode(',',$allowed_file_types);
 														<option value="0"><?php _e('None (does not enable this feature)','cftp_admin'); ?></option>
 														<?php
 															/** Fill the groups array that will be used on the form */
-															$groups = array();
-															$sql = $dbh->prepare( "SELECT id, name FROM " . TABLE_GROUPS . " ORDER BY name ASC" );
-															$sql->execute();
-				
-															$sql->setFetchMode(PDO::FETCH_ASSOC);
-															while ( $grow = $sql->fetch() ) {
-																?>
-																	<option value="<?php echo filter_var($grow["id"],FILTER_VALIDATE_INT); ?>"
+															$get_groups		= new GroupActions;
+															$arguments		= array();
+															$groups 		= $get_groups->get_groups($arguments);
+															
+															foreach ( $groups as $group ) {
+														?>
+																	<option value="<?php echo filter_var($group["id"],FILTER_VALIDATE_INT); ?>"
 																		<?php
-																			if (CLIENTS_AUTO_GROUP == $grow["id"]) {
+																			if (CLIENTS_AUTO_GROUP == $group["id"]) {
 																				echo 'selected="selected"';
 																			}
 																		?>
-																		><?php echo html_output($grow["name"]); ?>
+																		><?php echo html_output($group["name"]); ?>
 																	</option>
 																<?php
 															}
@@ -516,7 +515,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 											</div>
 	
 											<div class="form-group">
-												<label for="clients_can_select_group" class="col-sm-4 control-label"><?php _e('Groups for which clients can request membership to on the register form','cftp_admin'); ?></label> 
+												<label for="clients_can_select_group" class="col-sm-4 control-label"><?php _e('Groups for which clients can request membership to:','cftp_admin'); ?></label> 
 												<div class="col-sm-8">
 													<select class="form-control" name="clients_can_select_group" id="clients_can_select_group">
 														<?php

@@ -181,6 +181,7 @@ class generateTable {
 		$continue	= ( !isset( $attributes['condition'] ) || !empty( $attributes['condition'] ) ) ? true : false;
 		
 		if ( $continue == true ) {
+			$this->attributes	= ( !empty( $attributes['attributes'] ) ) ? $attributes['attributes'] : array();
 			$this->content 		= ( !empty( $attributes['content'] ) ) ? $attributes['content'] : '';
 			$this->is_checkbox 	= ( !empty( $attributes['checkbox'] ) ) ? true : false;
 			$this->value 		= ( !empty( $attributes['value'] ) ) ? html_output( $attributes['value'] ) : null;
@@ -189,7 +190,16 @@ class generateTable {
 				$this->content = '<input type="checkbox" name="batch[]" value="' . $this->value . '" />' . "\n";
 			}
 	
-			$this->contents .= "<td>\n" . $this->content . "</td>\n";
+			$this->contents .= "<td";
+			if ( !empty( $this->attributes ) ) {
+				foreach ( $this->attributes as $tag => $value ) {
+					if ( is_array( $value ) ) {
+						$value = implode(' ', $value);
+					}
+					$this->contents .= ' ' . $tag . '="' . $value . '"';
+				}
+			}
+			$this->contents .= ">\n" . $this->content . "</td>\n";
 		}
 	}
 

@@ -54,8 +54,9 @@ include('header-unlogged.php');
 								'type'		=> 'new_client',
 							);
 
-		$new_arguments['active']	= (CLIENTS_AUTO_APPROVE == 0) ? 0 : 1;
-		$new_arguments['recaptcha']	= ( defined('RECAPTCHA_AVAILABLE') ) ? $recaptcha_request : null;
+		$new_arguments['active']			= (CLIENTS_AUTO_APPROVE == 0) ? 0 : 1;
+		$new_arguments['account_requested']	= (CLIENTS_AUTO_APPROVE == 0) ? 1 : 0;
+		$new_arguments['recaptcha']			= ( defined('RECAPTCHA_AVAILABLE') ) ? $recaptcha_request : null;
 
 		/** Validate the information from the posted form. */
 		$new_validate = $new_client->validate_client($new_arguments);

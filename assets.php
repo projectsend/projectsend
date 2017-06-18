@@ -65,6 +65,10 @@ if ( !empty( $load_scripts ) ) {
 				$load_css_files[]		= BASE_URI . 'includes/js/chosen/chosen.bootstrap.css';
 				$load_js_files[]		= BASE_URI . 'includes/js/chosen/chosen.jquery.min.js';
 				break;
+			case 'toggle':
+				$load_css_files[]		= BASE_URI . 'includes/js/bootstrap-toggle/css/bootstrap-toggle.min.css';
+				$load_js_files[]		= BASE_URI . 'includes/js/bootstrap-toggle/js/bootstrap-toggle.min.js';
+				break;
 			case 'plupload':
 				$load_css_files[]		= BASE_URI . 'includes/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css';
 				$load_js_files[]		= BASE_URI . 'includes/js/browserplus-min.js';

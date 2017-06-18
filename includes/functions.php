@@ -1321,6 +1321,12 @@ function render_log_action($params)
 			$action_text = __('downloaded the file','cftp_admin');
 			$part2 = $affected_file_name;
 			break;
+		case 38:
+			$action_ico = 'client-request-processed';
+			$part1 = $owner_user;
+			$action_text = __('processed an account request for','cftp_admin');
+			$part2 = $affected_account_name;
+			break;
 	}
 	
 	$date = date(TIMEFORMAT_USE,strtotime($timestamp));

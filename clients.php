@@ -129,7 +129,7 @@ include('header.php');
 	/** Query the clients */
 	$params = array();
 
-	$cq = "SELECT * FROM " . TABLE_USERS . " WHERE level='0'";
+	$cq = "SELECT * FROM " . TABLE_USERS . " WHERE level='0' AND account_requested='0'";
 
 	/** Add the search terms */	
 	if ( isset( $_GET['search'] ) && !empty( $_GET['search'] ) ) {

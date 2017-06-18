@@ -79,7 +79,7 @@ $email_strings_new_client_self = array(
 									'label_request'	=> __('Additionally, the client requests access to the following group(s)','cftp_admin')
 								);
 								if (CLIENTS_AUTO_APPROVE == '0') {
-									$email_strings_new_client_self['body2'] = __('Please log in to activate it.','cftp_admin');
+									$email_strings_new_client_self['body2'] = __('Please log in to process the request.','cftp_admin');
 									$email_strings_new_client_self['body3'] = __('Remember, your new client will not be able to log in until an administrator has approved their account.','cftp_admin');
 								}
 								else {

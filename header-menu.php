@@ -15,14 +15,24 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 {
 
 	/** Count inactive CLIENTS */
-	$sql_inactive		= $dbh->prepare( "SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE active = '0' AND level = '0'" );
+	$sql_inactive = $dbh->prepare( "SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE active = '0' AND level = '0' AND account_requested='0'" );
 	$sql_inactive->execute();
-	$inactive_clients	= $sql_inactive->rowCount();
+	define('COUNT_CLIENTS_INACTIVE', $sql_inactive->rowCount());
+
+	/** Count new CLIENTS account requests */
+	$sql_requests = $dbh->prepare( "SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE account_requested='1' AND account_denied='0'" );
+	$sql_requests->execute();
+	define('COUNT_CLIENTS_REQUESTS', $sql_requests->rowCount());
+
+	/** Count new CLIENTS account requests */
+	$sql_requests = $dbh->prepare( "SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE account_requested='1' AND account_denied='1'" );
+	$sql_requests->execute();
+	define('COUNT_CLIENTS_DENIED', $sql_requests->rowCount());
 
 	/** Count inactive USERS */
-	$sql_inactive		= $dbh->prepare( "SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE active = '0' AND level != '0'" );
+	$sql_inactive = $dbh->prepare( "SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE active = '0' AND level != '0'" );
 	$sql_inactive->execute();
-	$inactive_users		= $sql_inactive->rowCount();
+	define('COUNT_USERS_INACTIVE', $sql_inactive->rowCount());
 
 
 	$items['dashboard'] = array(
@@ -71,7 +81,6 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 								'level'	=> array( 9,8 ),
 								'main'	=> array(
 												'label'	=> __('Clients', 'cftp_admin'),
-												'badge'	=> $inactive_clients,
 											),
 								'sub'	=> array(
 												array(
@@ -81,7 +90,18 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 												array(
 													'label'	=> __('Manage clients', 'cftp_admin'),
 													'link'	=> 'clients.php',
+													'badge'	=> COUNT_CLIENTS_INACTIVE,
 												),
+												/*
+												array(
+													'divider'	=> true,
+												),
+												array(
+													'label'	=> __('Account requests', 'cftp_admin'),
+													'link'	=> 'clients-requests.php',
+													'badge'	=> COUNT_CLIENTS_REQUESTS,
+												),
+												*/
 											),
 							);
 
@@ -108,7 +128,6 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 								'level'	=> array( 9 ),
 								'main'	=> array(
 												'label'	=> __('System Users', 'cftp_admin'),
-												'badge'	=> $inactive_users,
 											),
 								'sub'	=> array(
 												array(
@@ -118,6 +137,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 												array(
 													'label'	=> __('Manage system users', 'cftp_admin'),
 													'link'	=> 'users.php',
+													'badge'	=> COUNT_USERS_INACTIVE,
 												),
 											),
 							);
@@ -231,14 +251,15 @@ foreach ( $items as $item )
 			*/
 			foreach ( $item['sub'] as $subitem )
 			{
+				$badge		= ( !empty( $subitem['badge'] ) ) ? ' <span class="badge">' . $subitem['badge'] . '</span>' : '';
 				if ( !empty( $subitem['divider'] ) )
 				{
 					$menu_output .= "\t\t<li class='divider'></li>\n";
 				}
 				else
 				{
-					$format			= "\t\t<li>\n\t\t\t<a href='%s'>%s</a>\n\t\t</li>\n";
-					$menu_output 	.= sprintf( $format, BASE_URI . $subitem['link'], $subitem['label'] );
+					$format			= "\t\t<li>\n\t\t\t<a href='%s'>%s%s</a>\n\t\t</li>\n";
+					$menu_output 	.= sprintf( $format, BASE_URI . $subitem['link'], $subitem['label'], $badge );
 				}
 			}
 			$menu_output 	.= "\t</ul>\n</li>\n";

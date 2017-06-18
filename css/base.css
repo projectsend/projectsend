@@ -905,3 +905,30 @@ span.label {
 #uploaded_files_tbl {
 	margin-bottom:70px;
 }
+
+th.select_buttons {
+	width:220px;
+}
+
+.membership_toggle {
+	margin-right:10px;
+}
+
+.membership_toggle .toggle-group { transition: left 0.1s; -webkit-transition: left 0.1s; }
+
+.form_results_filter {
+	margin-bottom:20px;
+}
+
+	.form_results_filter a {
+		text-decoration:underline;
+		display:inline-block;
+		padding-right:5px;
+		margin-right:5px;
+		border-right:1px solid #dedede;
+	}
+
+	.form_results_filter a.filter_option {
+		color:#333;
+	}
+

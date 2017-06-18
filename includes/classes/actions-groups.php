@@ -236,7 +236,7 @@ class GroupActions
 		$this->statement->execute();
 		$this->statement->setFetchMode(PDO::FETCH_ASSOC);
 		while( $this->data_group = $this->statement->fetch() ) {
-			$this->all_groups[] = array(
+			$this->all_groups[$this->data_group['id']] = array(
 										'id'			=> $this->data_group['id'],
 										'name'			=> $this->data_group['name'],
 										'description'	=> $this->data_group['description'],

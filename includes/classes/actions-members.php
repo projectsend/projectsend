@@ -202,6 +202,49 @@ class MembersActions
 			return $this->results;
 		}
 	}
+
+	function get_membership_requests($arguments = '')
+	{
+		$this->client_id		= !empty( $arguments['client_id'] ) ? $arguments['client_id'] : '';
+		$this->denied			= !empty( $arguments['denied'] ) ? $arguments['denied'] : 0;
+		$this->requests_query	= "SELECT * FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied=:denied";
+		if ( !empty( $this->client_id ) ) {
+			$this->requests_query	.= " AND client_id=:client_id";
+		}
+		$this->requests			= $this->dbh->prepare( $this->requests_query );
+		$this->requests->bindParam(':denied', $this->denied, PDO::PARAM_INT);
+		if ( !empty( $this->client_id ) ) {
+			$this->requests->bindParam(':client_id', $this->client_id, PDO::PARAM_INT);
+		}
+		$this->requests->execute();
+		$this->requests_count = $this->requests->rowCount();
+		$this->results = array(
+								'requests' => array(),
+							);
+		
+		if ( $this->requests_count > 0 ) {
+			$this->groups		= new GroupActions;
+			$this->arguments	= array();
+
+			$this->arguments = array();
+			$this->get_groups = $this->groups->get_groups($this->arguments);
+
+			while ( $this->row = $this->requests->fetch() ) {
+				$this->results[$this->row['client_id']][] = array(
+																'id'	=> $this->row['group_id'],
+																'name'	=> $this->get_groups[$this->row['group_id']]['name'],
+															);
+			}
+			
+			if ( !empty( $this->client_id ) ) {
+				$this->results['client_id'] = $this->client_id;
+			}
+			return $this->results;
+		}
+		else {
+			return false;
+		}
+	}
 	
 	function group_request_membership($arguments)
 	{
@@ -272,12 +315,25 @@ class MembersActions
 		return $this->results;
 	}
 
-	function group_approve_membership($arguments)
+	/**
+	 * Approve and deny group memberships requests
+	 */
+	function group_process_memberships($arguments)
 	{
-	}
+		$this->client_id	= $arguments['client_id'];
+		$this->approve		= !empty( $arguments['approve'] ) ? $arguments['approve'] : '';
+		$this->deny_all		= !empty( $arguments['deny_all'] ) ? $arguments['deny_all'] : '';
 
-	function group_deny_membership($arguments)
-	{
+		$this->get_requests_arguments = array(
+												'client_id'	=> $this->client_id,
+											);
+		$this->get_requests	= $this->get_membership_requests( $this->get_requests_arguments );
+		foreach ( $this->get_requests[$this->client_id] as $this->request ) {
+			/**
+			 * Process request
+			 */
+		}
+
 	}
 }
 

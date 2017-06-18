@@ -94,7 +94,7 @@ switch ($clients_form_type) {
 		$name_placeholder = __("Your full name",'cftp_admin');
 		$group_field = false;
 		if ( CLIENTS_CAN_SELECT_GROUP == 'public' || CLIENTS_CAN_SELECT_GROUP == 'all' ) {
-			//$group_field = true;
+			$group_field = true;
 			$group_label = __('Request access to groups','cftp_admin');
 		}
 		break;

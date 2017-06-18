@@ -41,7 +41,7 @@ $email_template_footer = file_get_contents(ROOT_DIR.'/emails/'.EMAIL_TEMPLATE_FO
 
 /** Strings for the "New file uploaded" BY A SYSTEM USER e-mail */
 $email_strings_file_by_user = array(
-									'subject'	=> ( EMAILS_FILE_BY_USER_USE_SUBJECT_CUSTOM == 1 && defined( EMAILS_FILE_BY_USER_SUBJECT ) ) ? EMAILS_FILE_BY_USER_SUBJECT : __('New files uploaded for you','cftp_admin'),
+									'subject'	=> ( defined('EMAILS_FILE_BY_USER_USE_SUBJECT_CUSTOM' ) && EMAILS_FILE_BY_USER_USE_SUBJECT_CUSTOM == 1 && defined( 'EMAILS_FILE_BY_USER_SUBJECT' ) ) ? EMAILS_FILE_BY_USER_SUBJECT : __('New files uploaded for you','cftp_admin'),
 									'body'		=> __('The following files are now available for you to download.','cftp_admin'),
 									'body2'		=> __("If you prefer not to be notified about new files, please go to My Account and deactivate the notifications checkbox.",'cftp_admin'),
 									'body3'		=> __('You can access a list of all your files or upload your own','cftp_admin'),
@@ -50,7 +50,7 @@ $email_strings_file_by_user = array(
 
 /** Strings for the "New file uploaded" BY A CLIENT e-mail */
 $email_strings_file_by_client = array(
-									'subject'	=> ( EMAILS_FILE_BY_CLIENT_USE_SUBJECT_CUSTOM == 1 && defined( EMAILS_FILE_BY_CLIENT_SUBJECT ) ) ? EMAILS_FILE_BY_CLIENT_SUBJECT : __('New files uploaded by clients','cftp_admin'),
+									'subject'	=> ( defined('EMAILS_FILE_BY_CLIENT_USE_SUBJECT_CUSTOM' ) && EMAILS_FILE_BY_CLIENT_USE_SUBJECT_CUSTOM == 1 && defined( 'EMAILS_FILE_BY_CLIENT_SUBJECT' ) ) ? EMAILS_FILE_BY_CLIENT_SUBJECT : __('New files uploaded by clients','cftp_admin'),
 									'body'		=> __('New files has been uploaded by the following clients','cftp_admin'),
 									'body2'		=> __("You can manage these files",'cftp_admin'),
 									'body3'		=> __('by logging in here','cftp_admin')
@@ -59,7 +59,7 @@ $email_strings_file_by_client = array(
 
 /** Strings for the "New client created" e-mail */
 $email_strings_new_client = array(
-									'subject'		=> ( EMAILS_CLIENT_BY_USER_USE_SUBJECT_CUSTOM == 1 && defined( EMAILS_CLIENT_BY_USER_SUBJECT ) ) ? EMAILS_CLIENT_BY_USER_SUBJECT : __('Welcome to ProjectSend','cftp_admin'),
+									'subject'		=> ( defined('EMAILS_CLIENT_BY_USER_USE_SUBJECT_CUSTOM' ) && EMAILS_CLIENT_BY_USER_USE_SUBJECT_CUSTOM == 1 && defined( 'EMAILS_CLIENT_BY_USER_SUBJECT' ) ) ? EMAILS_CLIENT_BY_USER_SUBJECT : __('Welcome to ProjectSend','cftp_admin'),
 									'body'			=> __('A new account was created for you. From now on, you can access the files that have been uploaded under your account using the following credentials:','cftp_admin'),
 									'body2'			=> __('You can log in following this link','cftp_admin'),
 									'body3'			=> __('Please contact the administrator if you need further assistance.','cftp_admin'),
@@ -72,13 +72,13 @@ $email_strings_new_client = array(
  * on self registration.
  */
 $email_strings_new_client_self = array(
-									'subject'		=> ( EMAILS_CLIENT_BY_SELF_USE_SUBJECT_CUSTOM == 1 && defined( EMAILS_CLIENT_BY_SELF_SUBJECT ) ) ? EMAILS_CLIENT_BY_SELF_SUBJECT : __('A new client has registered.','cftp_admin'),
+									'subject'		=> ( defined('EMAILS_CLIENT_BY_SELF_USE_SUBJECT_CUSTOM' ) && EMAILS_CLIENT_BY_SELF_USE_SUBJECT_CUSTOM == 1 && defined( 'EMAILS_CLIENT_BY_SELF_SUBJECT' ) ) ? EMAILS_CLIENT_BY_SELF_SUBJECT : __('A new client has registered.','cftp_admin'),
 									'body'			=> __('A new account was created using the self registration form on your site. Registration information:','cftp_admin'),
 									'label_name'	=> __('Full name','cftp_admin'),
 									'label_user'	=> __('Username','cftp_admin'),
 									'label_request'	=> __('Additionally, the client requests access to the following group(s)','cftp_admin')
 								);
-								if (CLIENTS_AUTO_APPROVE == '0') {
+								if ( defined('CLIENTS_AUTO_APPROVE') && CLIENTS_AUTO_APPROVE == '0') {
 									$email_strings_new_client_self['body2'] = __('Please log in to process the request.','cftp_admin');
 									$email_strings_new_client_self['body3'] = __('Remember, your new client will not be able to log in until an administrator has approved their account.','cftp_admin');
 								}
@@ -90,7 +90,7 @@ $email_strings_new_client_self = array(
 
 /** Strings for the "New system user created" e-mail */
 $email_strings_new_user = array(
-									'subject'		=> ( EMAILS_NEW_USER_USE_SUBJECT_CUSTOM == 1 && defined( EMAILS_NEW_USER_SUBJECT ) ) ? EMAILS_NEW_USER_SUBJECT : __('Welcome to ProjectSend','cftp_admin'),
+									'subject'		=> ( defined('EMAILS_NEW_USER_USE_SUBJECT_CUSTOM' ) && EMAILS_NEW_USER_USE_SUBJECT_CUSTOM == 1 && defined( 'EMAILS_NEW_USER_SUBJECT' ) ) ? EMAILS_NEW_USER_SUBJECT : __('Welcome to ProjectSend','cftp_admin'),
 									'body'			=> __('A new account was created for you. From now on, you can access the system administrator using the following credentials:','cftp_admin'),
 									'body2'			=> __('Access the system panel here','cftp_admin'),
 									'body3'			=> __('Thank you for using ProjectSend.','cftp_admin'),
@@ -101,7 +101,7 @@ $email_strings_new_user = array(
 
 /** Strings for the "Reset password" e-mail */
 $email_strings_pass_reset = array(
-									'subject'		=> ( EMAILS_PASS_RESET_USE_SUBJECT_CUSTOM == 1 && defined( EMAILS_PASS_RESET_SUBJECT ) ) ? EMAILS_PASS_RESET_SUBJECT : __('Password reset instructions','cftp_admin'),
+									'subject'		=> ( defined('EMAILS_PASS_RESET_USE_SUBJECT_CUSTOM' ) && EMAILS_PASS_RESET_USE_SUBJECT_CUSTOM == 1 && defined( 'EMAILS_PASS_RESET_SUBJECT' ) ) ? EMAILS_PASS_RESET_SUBJECT : __('Password reset instructions','cftp_admin'),
 									'body'			=> __('A request has been received to reset the password for the following account:','cftp_admin'),
 									'body2'			=> __('To continue, please visit the following link','cftp_admin'),
 									'body3'			=> __('The request is valid only for 24 hours.','cftp_admin'),

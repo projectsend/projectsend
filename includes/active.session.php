@@ -60,6 +60,16 @@ $global_id = $global_account['id'];
 $global_name = $global_account['name'];
 
 /**
+ * Check if account has a custom value for upload max file size
+ */
+if ( $global_account['max_file_size'] == 0 || empty( $global_account['max_file_size'] ) ) {
+	define('UPLOAD_MAX_FILESIZE', MAX_FILESIZE);
+}
+else {
+	define('UPLOAD_MAX_FILESIZE', $global_account['max_file_size']);
+}
+
+/**
  * Files types limitation
  */
 $limit_files = true;

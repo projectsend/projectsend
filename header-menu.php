@@ -92,7 +92,6 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 													'link'	=> 'clients.php',
 													'badge'	=> COUNT_CLIENTS_INACTIVE,
 												),
-												/*
 												array(
 													'divider'	=> true,
 												),
@@ -101,7 +100,6 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 													'link'	=> 'clients-requests.php',
 													'badge'	=> COUNT_CLIENTS_REQUESTS,
 												),
-												*/
 											),
 							);
 

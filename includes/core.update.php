@@ -1233,6 +1233,15 @@ if (in_session_or_cookies($allowed_update)) {
 			}
 		}
 
+
+		/**
+		 * r885 updates
+		 * Option to set max upload filesize per user
+		 */
+		if ($last_update < 885) {
+			$statement = $dbh->query("ALTER TABLE `" . TABLE_USERS . "` ADD COLUMN `max_file_size` int(20) NOT NULL DEFAULT '0'");
+			$updates_made++;
+		}
 	}
 }	
 ?>

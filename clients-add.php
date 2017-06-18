@@ -40,23 +40,25 @@ if ($_POST) {
 	$add_client_data_addr = (isset($_POST["add_client_form_address"])) ? encode_html($_POST["add_client_form_address"]) : '';
 	$add_client_data_phone = (isset($_POST["add_client_form_phone"])) ? encode_html($_POST["add_client_form_phone"]) : '';
 	$add_client_data_intcont = (isset($_POST["add_client_form_intcont"])) ? encode_html($_POST["add_client_form_intcont"]) : '';
+	$add_client_data_maxfilesize = (isset($_POST["add_client_form_maxfilesize"])) ? encode_html($_POST["add_client_form_maxfilesize"]) : '';
 	$add_client_data_notity = (isset($_POST["add_client_form_notify"])) ? 1 : 0;
 	$add_client_data_active = (isset($_POST["add_client_form_active"])) ? 1 : 0;
 
 	/** Arguments used on validation and client creation. */
 	$new_arguments = array(
-							'id'		=> '',
-							'username'	=> $add_client_data_user,
-							'password'	=> $_POST['add_client_form_pass'],
+							'id'			=> '',
+							'username'		=> $add_client_data_user,
+							'password'		=> $_POST['add_client_form_pass'],
 							//'password_repeat' => $_POST['add_client_form_pass2'],
-							'name'		=> $add_client_data_name,
-							'email'		=> $add_client_data_email,
-							'address'	=> $add_client_data_addr,
-							'phone'		=> $add_client_data_phone,
-							'contact'	=> $add_client_data_intcont,
-							'notify'	=> $add_client_data_notity,
-							'active'	=> $add_client_data_active,
-							'type'		=> 'new_client',
+							'name'			=> $add_client_data_name,
+							'email'			=> $add_client_data_email,
+							'address'		=> $add_client_data_addr,
+							'phone'			=> $add_client_data_phone,
+							'contact'		=> $add_client_data_intcont,
+							'notify'		=> $add_client_data_notity,
+							'active'		=> $add_client_data_active,
+							'max_file_size'	=> $add_client_data_maxfilesize,
+							'type'			=> 'new_client',
 						);
 
 	/** Validate the information from the posted form. */

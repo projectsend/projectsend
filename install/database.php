@@ -63,6 +63,7 @@ if (defined('TRY_INSTALL')) {
 								  `active` tinyint(1) NOT NULL DEFAULT \'1\',
 								  `account_requested` tinyint(1) NOT NULL DEFAULT \'0\',
 								  `account_denied` tinyint(1) NOT NULL DEFAULT \'0\',
+								  `max_file_size` int(20)  NOT NULL DEFAULT \'0\',
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',

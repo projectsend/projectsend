@@ -11,7 +11,9 @@
  * where is it being called from.
  */
 if ( defined('IS_INSTALL') ) {
-	define( 'BASE_URI', '../' );
+	if ( !defined('BASE_URI') ) {
+		define( 'BASE_URI', '../' );
+	}
 
 	$lang = ( defined('SITE_LANG') ) ? SITE_LANG : 'en';
 

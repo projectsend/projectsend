@@ -40,6 +40,7 @@ if ($page_status === 1) {
 		$add_user_data_user = $data['user'];
 		$add_user_data_email = $data['email'];
 		$add_user_data_level = $data['level'];
+		$add_user_data_maxfilesize	= $data['max_file_size'];
 		if ($data['active'] == 1) { $add_user_data_active = 1; } else { $add_user_data_active = 0; }
 	}
 }
@@ -71,8 +72,9 @@ if ($_POST) {
 	 * validation failed, the new unsaved values are shown to avoid
 	 * having to type them again.
 	 */
-	$add_user_data_name = $_POST['add_user_form_name'];
-	$add_user_data_email = $_POST['add_user_form_email'];
+	$add_user_data_name			= $_POST['add_user_form_name'];
+	$add_user_data_email		= $_POST['add_user_form_email'];
+	$add_user_data_maxfilesize	= (isset($_POST["add_user_form_maxfilesize"])) ? $_POST["add_user_form_maxfilesize"] : '';
 
 	/**
 	 * Edit level only when user is not Uploader (level 7) or when
@@ -95,12 +97,13 @@ if ($_POST) {
 
 	/** Arguments used on validation and user creation. */
 	$edit_arguments = array(
-							'id'		=> $user_id,
-							'name'		=> $add_user_data_name,
-							'email'		=> $add_user_data_email,
-							'role'		=> $add_user_data_level,
-							'active'	=> $add_user_data_active,
-							'type'		=> 'edit_user'
+							'id'			=> $user_id,
+							'name'			=> $add_user_data_name,
+							'email'			=> $add_user_data_email,
+							'role'			=> $add_user_data_level,
+							'active'		=> $add_user_data_active,
+							'max_file_size'	=> $add_user_data_maxfilesize,
+							'type'			=> 'edit_user'
 						);
 
 	/**

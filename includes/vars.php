@@ -34,6 +34,7 @@ $validation_alpha_user		= __('Username must be alphanumeric and may contain dot 
 $validation_alpha_pass		= __('Password must be alphanumeric (a-z,A-Z,0-9 allowed)','cftp_admin');
 $validation_match_pass		= __('Passwords do not match','cftp_admin');
 $validation_rules_pass		= __('Password does not meet the required characters rules','cftp_admin');
+$validation_file_size		= __('File size value must be a whole number','cftp_admin');
 $validation_no_level		= __('User level was not specified','cftp_admin');
 $add_user_exists			= __('A system user or client with this login name already exists.','cftp_admin');
 $add_user_mail_exists		= __('A system user or client with this e-mail address already exists.','cftp_admin');

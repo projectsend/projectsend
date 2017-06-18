@@ -32,9 +32,10 @@ define('CAN_INCLUDE_FILES', true);
 				$log_allowed = array(9);
 				if (in_session_or_cookies($log_allowed)) {
 					$show_log = true;
+					$sys_info = true;
 				}
 			?>
-					<div class="col-sm-8 <?php if ($show_log != true) { echo 'col-sm-offset-2'; } ?>">
+					<div class="col-sm-8 <?php if ( isset( $show_log ) && $show_log != true) { echo 'col-sm-offset-2'; } ?>">
 						<div class="row">
 							<div class="col-sm-12">
 								<div class="widget">
@@ -62,101 +63,103 @@ define('CAN_INCLUDE_FILES', true);
 							<div class="col-sm-6">
 								<?php include(ROOT_DIR.'/home-news-widget.php'); ?>
 							</div>
-							<div class="col-sm-6">
-								<div class="widget widget_system_info">
-									<h4><?php _e('System information','cftp_admin'); ?></h4>
-									<div class="widget_int">
-										<h3><?php _e('Software','cftp_admin'); ?></h3>
-										<dl class="dl-horizontal">
-											<dt><?php _e('Version','cftp_admin'); ?></dt>
-											<dd>
-												<?php echo CURRENT_VERSION; ?> <?php
-													if (defined('VERSION_NEW_NUMBER')) {
-														echo ' - <strong>'; _e('New version available','cftp_admin'); echo ':</strong> <a href="'. VERSION_NEW_URL . '">' . VERSION_NEW_NUMBER . '</a>';
-													}
+							<?php if (isset($sys_info) && $sys_info == true) { ?>
+								<div class="col-sm-6">
+									<div class="widget widget_system_info">
+										<h4><?php _e('System information','cftp_admin'); ?></h4>
+										<div class="widget_int">
+											<h3><?php _e('Software','cftp_admin'); ?></h3>
+											<dl class="dl-horizontal">
+												<dt><?php _e('Version','cftp_admin'); ?></dt>
+												<dd>
+													<?php echo CURRENT_VERSION; ?> <?php
+														if (defined('VERSION_NEW_NUMBER')) {
+															echo ' - <strong>'; _e('New version available','cftp_admin'); echo ':</strong> <a href="'. VERSION_NEW_URL . '">' . VERSION_NEW_NUMBER . '</a>';
+														}
+													?>
+												</dd>
+		
+												<dt><?php _e('Default upload max. size','cftp_admin'); ?></dt>
+												<dd><?php echo MAX_FILESIZE; ?> mb.</dd>
+		
+												<dt><?php _e('Template','cftp_admin'); ?></dt>
+												<dd><?php echo ucfirst(TEMPLATE_USE); ?></dd>
+		
+												<?php
+													/** Get the data to show on the bars graphic */
+													$statement = $dbh->query("SELECT distinct id FROM " . TABLE_FILES );
+													$total_files = $statement->rowCount();
+												
+													$statement = $dbh->query("SELECT distinct id FROM " . TABLE_USERS . " WHERE level = '0'");
+													$total_clients = $statement->rowCount();
+												
+													$statement = $dbh->query("SELECT distinct id FROM " . TABLE_GROUPS);
+													$total_groups = $statement->rowCount();
+												
+													$statement = $dbh->query("SELECT distinct id FROM " . TABLE_USERS . " WHERE level != '0'");
+													$total_users = $statement->rowCount();
+	
+													$statement = $dbh->query("SELECT distinct id FROM " . TABLE_CATEGORIES);
+													$total_categories = $statement->rowCount();
 												?>
-											</dd>
+		
+												<dt><?php _e('Files','cftp_admin'); ?></dt>
+												<dd><?php echo $total_files; ?></dd>
+		
+												<dt><?php _e('Clients','cftp_admin'); ?></dt>
+												<dd><?php echo $total_clients; ?></dd>
+		
+												<dt><?php _e('System users','cftp_admin'); ?></dt>
+												<dd><?php echo $total_users; ?></dd>
+		
+												<dt><?php _e('Groups','cftp_admin'); ?></dt>
+												<dd><?php echo $total_groups; ?></dd>
 	
-											<dt><?php _e('Upload max. file size','cftp_admin'); ?></dt>
-											<dd><?php echo MAX_FILESIZE; ?> mb.</dd>
-	
-											<dt><?php _e('Template','cftp_admin'); ?></dt>
-											<dd><?php echo ucfirst(TEMPLATE_USE); ?></dd>
-	
-											<?php
-												/** Get the data to show on the bars graphic */
-												$statement = $dbh->query("SELECT distinct id FROM " . TABLE_FILES );
-												$total_files = $statement->rowCount();
+												<dt><?php _e('Categories','cftp_admin'); ?></dt>
+												<dd><?php echo $total_categories; ?></dd>
+		
+												<?php
+													/**
+													 * Hidden so it doesn't get shared by accident in any bug report
+													<dt><?php _e('Root directory','cftp_admin'); ?></dt>
+													<dd><?php echo ROOT_DIR; ?></dd>
+		
+													<dt><?php _e('Uploads folder','cftp_admin'); ?></dt>
+													<dd><?php echo UPLOADED_FILES_FOLDER; ?></dd>
+													*/
+												?>
+											</dl>
 											
-												$statement = $dbh->query("SELECT distinct id FROM " . TABLE_USERS . " WHERE level = '0'");
-												$total_clients = $statement->rowCount();
+											<h3><?php _e('System','cftp_admin'); ?></h3>
+											<dl class="dl-horizontal">
+												<dt><?php _e('Server','cftp_admin'); ?></dt>
+												<dd><?php echo $_SERVER["SERVER_SOFTWARE"]; ?>
+	
+												<dt><?php _e('PHP version','cftp_admin'); ?></dt>
+												<dd><?php echo PHP_VERSION; ?></dd>
+	
+												<dt><?php _e('Memory limit','cftp_admin'); ?></dt>
+												<dd><?php echo ini_get('memory_limit'); ?></dd>
+	
+												<dt><?php _e('Max execution time','cftp_admin'); ?></dt>
+												<dd><?php echo ini_get('max_execution_time'); ?></dd>
+	
+												<dt><?php _e('Post max size','cftp_admin'); ?></dt>
+												<dd><?php echo ini_get('post_max_size'); ?></dd>
+											</dl>
 											
-												$statement = $dbh->query("SELECT distinct id FROM " . TABLE_GROUPS);
-												$total_groups = $statement->rowCount();
-											
-												$statement = $dbh->query("SELECT distinct id FROM " . TABLE_USERS . " WHERE level != '0'");
-												$total_users = $statement->rowCount();
-
-												$statement = $dbh->query("SELECT distinct id FROM " . TABLE_CATEGORIES);
-												$total_categories = $statement->rowCount();
-											?>
+											<h3><?php _e('Database','cftp_admin'); ?></h3>
+											<dl class="dl-horizontal">
+												<dt><?php _e('Driver','cftp_admin'); ?></dt>
+												<dd><?php echo $dbh->getAttribute(PDO::ATTR_DRIVER_NAME);; ?></dd>
 	
-											<dt><?php _e('Files','cftp_admin'); ?></dt>
-											<dd><?php echo $total_files; ?></dd>
-	
-											<dt><?php _e('Clients','cftp_admin'); ?></dt>
-											<dd><?php echo $total_clients; ?></dd>
-	
-											<dt><?php _e('System users','cftp_admin'); ?></dt>
-											<dd><?php echo $total_users; ?></dd>
-	
-											<dt><?php _e('Groups','cftp_admin'); ?></dt>
-											<dd><?php echo $total_groups; ?></dd>
-
-											<dt><?php _e('Categories','cftp_admin'); ?></dt>
-											<dd><?php echo $total_categories; ?></dd>
-	
-											<?php
-												/**
-												 * Hidden so it doesn't get shared by accident in any bug report
-												<dt><?php _e('Root directory','cftp_admin'); ?></dt>
-												<dd><?php echo ROOT_DIR; ?></dd>
-	
-												<dt><?php _e('Uploads folder','cftp_admin'); ?></dt>
-												<dd><?php echo UPLOADED_FILES_FOLDER; ?></dd>
-												*/
-											?>
-										</dl>
-										
-										<h3><?php _e('System','cftp_admin'); ?></h3>
-										<dl class="dl-horizontal">
-											<dt><?php _e('Server','cftp_admin'); ?></dt>
-											<dd><?php echo $_SERVER["SERVER_SOFTWARE"]; ?>
-
-											<dt><?php _e('PHP version','cftp_admin'); ?></dt>
-											<dd><?php echo PHP_VERSION; ?></dd>
-
-											<dt><?php _e('Memory limit','cftp_admin'); ?></dt>
-											<dd><?php echo ini_get('memory_limit'); ?></dd>
-
-											<dt><?php _e('Max execution time','cftp_admin'); ?></dt>
-											<dd><?php echo ini_get('max_execution_time'); ?></dd>
-
-											<dt><?php _e('Post max size','cftp_admin'); ?></dt>
-											<dd><?php echo ini_get('post_max_size'); ?></dd>
-										</dl>
-										
-										<h3><?php _e('Database','cftp_admin'); ?></h3>
-										<dl class="dl-horizontal">
-											<dt><?php _e('Driver','cftp_admin'); ?></dt>
-											<dd><?php echo $dbh->getAttribute(PDO::ATTR_DRIVER_NAME);; ?></dd>
-
-											<dt><?php _e('Version','cftp_admin'); ?></dt>
-											<dd><?php echo $dbh->query('select version()')->fetchColumn(); ?></dd>
-										</dl>
+												<dt><?php _e('Version','cftp_admin'); ?></dt>
+												<dd><?php echo $dbh->query('select version()')->fetchColumn(); ?></dd>
+											</dl>
+										</div>
 									</div>
 								</div>
-							</div>
+							<?php } ?>
 						</div>
 					</div>
 					

@@ -322,10 +322,17 @@ include('header.php');
 												),
 												array(
 													'sortable'		=> true,
+													'sort_url'		=> 'max_file_size',
+													'content'		=> __('Max. upload size','cftp_admin'),
+													'hide'			=> 'phone',
+												),
+												array(
+													'sortable'		=> true,
 													'sort_url'		=> 'timestamp',
 													'content'		=> __('Added on','cftp_admin'),
 													'hide'			=> 'phone,tablet',
 												),
+												/*
 												array(
 													'content'		=> __('Address','cftp_admin'),
 													'hide'			=> 'phone,tablet',
@@ -338,6 +345,7 @@ include('header.php');
 													'content'		=> __('Internal contact','cftp_admin'),
 													'hide'			=> 'phone,tablet',
 												),
+												*/
 												array(
 													'content'		=> __('Actions','cftp_admin'),
 													'hide'			=> 'phone',
@@ -475,8 +483,12 @@ include('header.php');
 														'content'		=> ( $row["notify"] == '1' ) ? __('Yes','cftp_admin') : __('No','cftp_admin'),
 													),
 												array(
+														'content'		=> ( $row["max_file_size"] == '0' ) ? __('Default','cftp_admin') : $row["max_file_size"] . 'mb',
+													),
+												array(
 														'content'		=> $date,
 													),
+												/*
 												array(
 														'content'		=> html_output( $row["address"] ),
 													),
@@ -486,6 +498,7 @@ include('header.php');
 												array(
 														'content'		=> html_output( $row["contact"] ),
 													),
+												*/
 												array(
 														'actions'		=> true,
 														'content'		=>  '<a href="' . $files_link . '" class="btn btn-sm ' . $files_button . '">' . __("Manage files","cftp_admin") . '</a>' . "\n" .

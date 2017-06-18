@@ -59,6 +59,15 @@ class Validate_Form
 		}
 	}
 
+	/** Check if the field value is a number */
+	private function is_number($field, $err)
+	{
+		if(preg_match('/[^0-9]/', $field)) {
+			$this->error_msg .= '<li>'.$err.'</li>';
+			$this->return_val = false;
+		}
+	}
+
 	/** Check if the field value is alphanumeric */
 	private function is_alpha_or_dot($field, $err)
 	{
@@ -231,6 +240,9 @@ class Validate_Form
 			break;
 			case 'alpha':
 				$this->is_alpha($field, $err);
+			break;
+			case 'number':
+				$this->is_number($field, $err);
 			break;
 			case 'alpha_dot':
 				$this->is_alpha_or_dot($field, $err);

@@ -20,6 +20,7 @@
 			is_length(this.add_user_form_user,<?php echo MIN_USER_CHARS; ?>,<?php echo MAX_USER_CHARS; ?>,'<?php echo $validation_length_user; ?>');
 			is_email(this.add_user_form_email,'<?php echo $validation_invalid_mail; ?>');
 			is_alpha_or_dot(this.add_user_form_user,'<?php echo $validation_alpha_user; ?>');
+			is_number(this.add_user_form_maxfilesize,'<?php echo $validation_file_size; ?>');
 			
 			<?php
 				/**
@@ -128,6 +129,17 @@ switch ($user_form_type) {
 						<option value="8" <?php echo (isset($add_user_data_level) && $add_user_data_level == '8') ? 'selected="selected"' : ''; ?>><?php echo USER_ROLE_LVL_8; ?></option>
 						<option value="7" <?php echo (isset($add_user_data_level) && $add_user_data_level == '7') ? 'selected="selected"' : ''; ?>><?php echo USER_ROLE_LVL_7; ?></option>
 					</select>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="add_user_form_maxfilesize" class="col-sm-4 control-label"><?php _e('Max. upload filesize','cftp_admin'); ?></label>
+				<div class="col-sm-8">
+					<div class="input-group">
+						<input type="text" name="add_user_form_maxfilesize" id="add_user_form_maxfilesize" class="form-control" value="<?php echo (isset($add_user_data_maxfilesize)) ? html_output(stripslashes($add_user_data_maxfilesize)) : ''; ?>" />
+						<span class="input-group-addon">mb</span>
+					</div>
+					<p class="field_note"><?php _e("Set to 0 to use the default system limit",'cftp_admin'); ?> (<?php echo MAX_FILESIZE; ?> mb)</p>
 				</div>
 			</div>
 

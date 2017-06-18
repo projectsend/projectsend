@@ -288,18 +288,19 @@ function get_client_by_id($client)
 
 	while ( $row = $statement->fetch() ) {
 		$information = array(
-							'id'			=> $row['id'],
-							'name'			=> $row['name'],
-							'username'		=> $row['user'],
-							'address'		=> $row['address'],
-							'phone'			=> $row['phone'],
-							'email'			=> $row['email'],
-							'notify'		=> $row['notify'],
-							'level'			=> $row['level'],
-							'active'		=> $row['active'],
-							'contact'		=> $row['contact'],
-							'created_date'	=> $row['timestamp'],
-							'created_by'	=> $row['created_by']
+							'id'				=> $row['id'],
+							'name'				=> $row['name'],
+							'username'			=> $row['user'],
+							'address'			=> $row['address'],
+							'phone'				=> $row['phone'],
+							'email'				=> $row['email'],
+							'notify'			=> $row['notify'],
+							'level'				=> $row['level'],
+							'active'			=> $row['active'],
+							'max_file_size'		=> $row['max_file_size'],
+							'contact'			=> $row['contact'],
+							'created_date'		=> $row['timestamp'],
+							'created_by'		=> $row['created_by']
 						);
 		if ( !empty( $information ) ) {
 			return $information;
@@ -326,18 +327,19 @@ function get_client_by_username($client)
 
 	while ( $row = $statement->fetch() ) {
 		$information = array(
-							'id'			=> $row['id'],
-							'name'			=> $row['name'],
-							'username'		=> $row['user'],
-							'address'		=> $row['address'],
-							'phone'			=> $row['phone'],
-							'email'			=> $row['email'],
-							'notify'		=> $row['notify'],
-							'level'			=> $row['level'],
-							'active'		=> $row['active'],
-							'contact'		=> $row['contact'],
-							'created_date'	=> $row['timestamp'],
-							'created_by'	=> $row['created_by']
+							'id'				=> $row['id'],
+							'name'				=> $row['name'],
+							'username'			=> $row['user'],
+							'address'			=> $row['address'],
+							'phone'				=> $row['phone'],
+							'email'				=> $row['email'],
+							'notify'			=> $row['notify'],
+							'level'				=> $row['level'],
+							'active'			=> $row['active'],
+							'max_file_size'		=> $row['max_file_size'],
+							'contact'			=> $row['contact'],
+							'created_date'		=> $row['timestamp'],
+							'created_by'		=> $row['created_by']
 						);
 		if ( !empty( $information ) ) {
 			return $information;
@@ -421,13 +423,14 @@ function get_user_by_username($user)
 	if ( $statement->rowCount() > 0 ) {
 		while ( $row = $statement->fetch() ) {
 			$information = array(
-								'id'			=> $row['id'],
-								'username'		=> $row['user'],
-								'name'			=> $row['name'],
-								'email'			=> $row['email'],
-								'level'			=> $row['level'],
-								'active'		=> $row['active'],
-								'created_date'	=> $row['timestamp']
+								'id'				=> $row['id'],
+								'username'			=> $row['user'],
+								'name'				=> $row['name'],
+								'email'				=> $row['email'],
+								'level'				=> $row['level'],
+								'active'			=> $row['active'],
+								'max_file_size'		=> $row['max_file_size'],
+								'created_date'		=> $row['timestamp']
 							);
 			if ( !empty( $information ) ) {
 				return $information;
@@ -454,12 +457,13 @@ function get_user_by_id($id)
 
 	while ( $row = $statement->fetch() ) {
 		$information = array(
-							'id'			=> $row['id'],
-							'username'		=> $row['user'],
-							'name'			=> $row['name'],
-							'email'			=> $row['email'],
-							'level'			=> $row['level'],
-							'created_date'	=> $row['timestamp']
+							'id'				=> $row['id'],
+							'username'			=> $row['user'],
+							'name'				=> $row['name'],
+							'email'				=> $row['email'],
+							'level'				=> $row['level'],
+							'max_file_size'		=> $row['max_file_size'],
+							'created_date'		=> $row['timestamp']
 						);
 		if ( !empty( $information ) ) {
 			return $information;

@@ -36,6 +36,7 @@ if ($_POST) {
 	$add_user_data_email = encode_html($_POST['add_user_form_email']);
 	$add_user_data_level = encode_html($_POST['add_user_form_level']);
 	$add_user_data_user = encode_html($_POST['add_user_form_user']);
+	$add_user_data_maxfilesize = (isset($_POST["add_user_form_maxfilesize"])) ? encode_html($_POST["add_user_form_maxfilesize"]) : '';
 	$add_user_data_active = (isset($_POST["add_user_form_active"])) ? 1 : 0;
 
 	/** Arguments used on validation and user creation. */
@@ -48,6 +49,7 @@ if ($_POST) {
 							'email' => $add_user_data_email,
 							'role' => $add_user_data_level,
 							'active' => $add_user_data_active,
+							'max_file_size'	=> $add_user_data_maxfilesize,
 							'type' => 'new_user'
 						);
 

@@ -361,6 +361,12 @@ include('header.php');
 											),
 											array(
 												'sortable'		=> true,
+												'sort_url'		=> 'max_file_size',
+												'content'		=> __('Max. upload size','cftp_admin'),
+												'hide'			=> 'phone',
+											),
+											array(
+												'sortable'		=> true,
 												'sort_url'		=> 'timestamp',
 												'sort_default'	=> true,
 												'content'		=> __('Added on','cftp_admin'),
@@ -429,6 +435,9 @@ include('header.php');
 												),
 											array(
 													'content'		=> '<span class="label label-' . $class . '">' . $label . '</span>',
+												),
+											array(
+													'content'		=> ( $row["max_file_size"] == '0' ) ? __('Default','cftp_admin') : $row["max_file_size"] . 'mb',
 												),
 											array(
 													'content'		=> $date,

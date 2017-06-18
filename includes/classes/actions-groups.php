@@ -245,7 +245,7 @@ class GroupActions
 									);
 		}
 		
-		if ( count($this->all_groups) > 0 ) {		
+		if ( !empty($this->all_groups) > 0 ) {		
 			return $this->all_groups;
 		}
 		else {

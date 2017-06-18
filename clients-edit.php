@@ -60,6 +60,18 @@ if ($page_status === 1) {
 }
 
 /**
+ * Form type
+ */
+if ($global_level != 0) {
+	$clients_form_type = 'edit_client';
+	$ignore_size = false;
+}
+else {
+	$clients_form_type = 'edit_client_self';
+	$ignore_size = true;
+}
+
+/**
  * Compare the client editing this account to the on the db.
  */
 if ($global_level == 0) {
@@ -93,8 +105,14 @@ if ($_POST) {
 	$add_client_data_addr			= (isset($_POST["add_client_form_address"])) ? $_POST["add_client_form_address"] : '';
 	$add_client_data_phone			= (isset($_POST["add_client_form_phone"])) ? $_POST["add_client_form_phone"] : '';
 	$add_client_data_intcont		= (isset($_POST["add_client_form_intcont"])) ? $_POST["add_client_form_intcont"] : '';
-	$add_client_data_maxfilesize	= (isset($_POST["add_client_form_maxfilesize"])) ? $_POST["add_client_form_maxfilesize"] : '';
 	$add_client_data_notity			= (isset($_POST["add_client_form_notify"])) ? 1 : 0;
+
+	if ( $ignore_size == false ) {
+		$add_client_data_maxfilesize	= (isset($_POST["add_client_form_maxfilesize"])) ? $_POST["add_client_form_maxfilesize"] : '';
+	}
+	else {
+		$add_client_data_maxfilesize	= $add_client_data_maxfilesize;
+	}
 
 	if ($global_level != 0) {
 		$add_client_data_active	= (isset($_POST["add_client_form_active"])) ? 1 : 0;
@@ -220,12 +238,6 @@ include('header.php');
 							/**
 							 * Include the form.
 							 */
-							if ($global_level != 0) {
-								$clients_form_type = 'edit_client';
-							}
-							else {
-								$clients_form_type = 'edit_client_self';
-							}
 							include('clients-form.php');
 						}
 					?>

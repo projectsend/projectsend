@@ -46,6 +46,24 @@ if ($page_status === 1) {
 }
 
 /**
+ * Form type
+ */
+if ($global_level == 7) {
+	$user_form_type = 'edit_user_self';
+	$ignore_size = true;
+}
+else {
+	if ($global_user == $add_user_data_user) {
+		$user_form_type = 'edit_user_self';
+		$ignore_size = true;
+	}
+	else {
+		$user_form_type = 'edit_user';
+		$ignore_size = false;
+	}
+}
+
+/**
  * Compare the client editing this account to the on the db.
  */
 if ($global_level != 9) {
@@ -74,7 +92,13 @@ if ($_POST) {
 	 */
 	$add_user_data_name			= $_POST['add_user_form_name'];
 	$add_user_data_email		= $_POST['add_user_form_email'];
-	$add_user_data_maxfilesize	= (isset($_POST["add_user_form_maxfilesize"])) ? $_POST["add_user_form_maxfilesize"] : '';
+
+	if ( $ignore_size == false ) {
+		$add_user_data_maxfilesize	= (isset($_POST["add_user_form_maxfilesize"])) ? $_POST["add_user_form_maxfilesize"] : '';
+	}
+	else {
+		$add_user_data_maxfilesize	= $add_user_data_maxfilesize;
+	}
 
 	/**
 	 * Edit level only when user is not Uploader (level 7) or when
@@ -197,17 +221,6 @@ include('header.php');
 							/**
 							 * Include the form.
 							 */
-							if ($global_level == 7) {
-								$user_form_type = 'edit_user_self';
-							}
-							else {
-								if ($global_user == $add_user_data_user) {
-									$user_form_type = 'edit_user_self';
-								}
-								else {
-									$user_form_type = 'edit_user';
-								}
-							}
 							include('users-form.php');
 						}
 					?>

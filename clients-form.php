@@ -72,6 +72,7 @@ switch ($clients_form_type) {
 		$extra_fields = true;
 		$group_field = true;
 		$group_label = __('Groups','cftp_admin');
+		$ignore_size = false;
 		break;
 	/** User is editing an existing client */
 	case 'edit_client':
@@ -83,6 +84,7 @@ switch ($clients_form_type) {
 		$extra_fields = true;
 		$group_field = true;
 		$group_label = __('Groups','cftp_admin');
+		$ignore_size = false;
 		break;
 	/** A client is creating a new account for himself */
 	case 'new_client_self':
@@ -108,6 +110,7 @@ switch ($clients_form_type) {
 		$info_box = false;
 		$extra_fields = false;
 		$group_field = false;
+		$ignore_size = true;
 		break;
 }
 ?>

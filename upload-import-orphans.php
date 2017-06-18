@@ -73,8 +73,10 @@ $work_folder = UPLOADED_FILES_FOLDER;
 		}
 		
 		/** We consider public file as assigned file */
-		foreach ($db_files_public as $file_id){
-			$assigned[] = $file_id;
+		if ( !empty( $db_files_public ) ) {
+			foreach ($db_files_public as $file_id){
+				$assigned[] = $file_id;
+			}
 		}
 
 		/** Read the temp folder and list every allowed file */

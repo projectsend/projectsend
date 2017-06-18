@@ -65,14 +65,19 @@ function sql_add_order( $table, $column = 'id', $initial_order = 'ASC' ) {
 	$allowed_custom_sort_columns = array( 'download_count' );
 
 	$columns_query	= $dbh->query('SELECT * FROM ' . $table . ' LIMIT 1');
-	$columns_keys	= array_keys($columns_query->fetch(PDO::FETCH_ASSOC));
-	$columns_keys	= array_merge( $columns_keys, $allowed_custom_sort_columns );
-	$orderby		= ( isset( $_GET['orderby'] ) && in_array( $_GET['orderby'], $columns_keys ) ) ? $_GET['orderby'] : $column;
-
-	$order		= ( isset( $_GET['order'] ) ) ? strtoupper($_GET['order']) : $initial_order;
-    $order      = (preg_match("/^(DESC|ASC)$/",$order)) ? $order : $initial_order;
-
-	return " ORDER BY $orderby $order";
+	if ( $columns_query->rowCount() > 0 ) {
+		$columns_keys	= array_keys($columns_query->fetch(PDO::FETCH_ASSOC));
+		$columns_keys	= array_merge( $columns_keys, $allowed_custom_sort_columns );
+		$orderby		= ( isset( $_GET['orderby'] ) && in_array( $_GET['orderby'], $columns_keys ) ) ? $_GET['orderby'] : $column;
+	
+		$order		= ( isset( $_GET['order'] ) ) ? strtoupper($_GET['order']) : $initial_order;
+		$order      = (preg_match("/^(DESC|ASC)$/",$order)) ? $order : $initial_order;
+	
+		return " ORDER BY $orderby $order";
+	}
+	else {
+		return false;
+	}
 }
 
 function generate_password() {

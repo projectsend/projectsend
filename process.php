@@ -48,7 +48,7 @@ class process {
 	function login() {
 		global $hasher;
 		$this->sysuser_password		= $_GET['password'];
-		$this->selected_form_lang	= $_GET['language'];
+		$this->selected_form_lang	= (!empty( $_GET['language'] ) ) ? $_GET['language'] : SITE_LANG;
 	
 		/** Look up the system users table to see if the entered username exists */
 		$this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user= :username OR email= :email");

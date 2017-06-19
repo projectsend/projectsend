@@ -47,15 +47,15 @@ class process {
 	
 	function login() {
 		global $hasher;
-		$this->sysuser_password		= $_GET['login_form_pass'];
-		$this->selected_form_lang	= $_GET['login_form_lang'];
+		$this->sysuser_password		= $_GET['password'];
+		$this->selected_form_lang	= $_GET['language'];
 	
 		/** Look up the system users table to see if the entered username exists */
 		$this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user= :username OR email= :email");
 		$this->statement->execute(
 						array(
-							':username'	=> $_GET['login_form_user'],
-							':email'	=> $_GET['login_form_user'],
+							':username'	=> $_GET['username'],
+							':email'	=> $_GET['username'],
 						)
 					);
 		$this->count_user = $this->statement->rowCount();

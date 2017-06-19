@@ -29,6 +29,7 @@ $load_js_files[]	= BASE_URI . 'includes/js/main.js';
 /** Fonts*/
 $load_css_files[]	= 'https://fonts.googleapis.com/css?family=Open+Sans:400,700,300';
 $load_css_files[]	= 'https://fonts.googleapis.com/css?family=Abel';
+$load_css_files[]	= BASE_URI . 'assets/font-awesome/css/font-awesome.min.css';
 
 /**
  * Optional scripts

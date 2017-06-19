@@ -1,7 +1,8 @@
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend theme: Gallery\n"
-"POT-Creation-Date: 2017-05-16 00:55-0300\n"
+"POT-Creation-Date: 2017-06-19 05:28-0300\n"
 "PO-Revision-Date: 2017-05-16 00:55-0300\n"
 "Last-Translator: \n"
 "Language-Team: ProjectSend <contact@projectsend.org>\n"

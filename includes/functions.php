@@ -907,9 +907,7 @@ function generate_logo_url()
 
 	if (file_exists(ROOT_DIR.$branding['filename'])) {
 		$branding['exists'] = true;
-		if (THUMBS_USE_ABSOLUTE == '1') {
-			$branding['url'] = BASE_URI.$branding['filename'];
-		}
+		$branding['url'] = BASE_URI.$branding['filename'];
 	}
 	return $branding;
 }

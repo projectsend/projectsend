@@ -55,7 +55,14 @@ $login_button_text = __('Log in','cftp_admin');
 			<div class="row">
 				<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-4 white-box">
 					<div class="white-box-interior">
-						<div class="ajax_response"></div>
+						<div class="ajax_response">
+							<?php
+								/** Coming from an external form */
+								if ( isset( $_GET['error'] ) && $_GET['error'] == 1 ) {
+									echo system_message('error',__("The supplied credentials are not valid.",'cftp_admin'),'login_error');
+								}
+							?>
+						</div>
 						<script type="text/javascript">
 							$(document).ready(function() {
 								$("#login_form").submit(function(e) {

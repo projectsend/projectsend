@@ -128,7 +128,16 @@ class process {
 						$results['location']	= BASE_URI."my_files/";
 					}
 					else {
-						$results['location']	= "home.php";
+						$results['location']	= BASE_URI."home.php";
+					}
+
+					/** Using an external form */
+					if ( !empty( $_GET['external'] ) && $_GET['external'] == '1' && empty( $_GET['ajax'] ) ) {
+						/** Success */
+						if ( $results['status'] == 'success' ) {
+							header('Location: ' . $results['location']);
+							exit;
+						}
 					}
 
 					echo json_encode($results);
@@ -181,6 +190,15 @@ class process {
 						'status'	=> 'error',
 						'message'	=> system_message('error',$this->login_err_message,'login_error'),
 					);
+
+		/** Using an external form */
+		if ( !empty( $_GET['external'] ) && $_GET['external'] == '1' && empty( $_GET['ajax'] ) ) {
+			/** Error */
+			if ( $results['status'] == 'error' ) {
+				header('Location: ' . BASE_URI . '?error=1');
+			}
+			exit;
+		}
 
 		echo json_encode($results);
 		exit;

@@ -64,8 +64,8 @@ $login_button_text = __('Log in','cftp_admin');
 									$('.ajax_response').html();
 									clean_form(this);
 					
-									is_complete(this.login_form_user,'<?php _e('Username was not completed','cftp_admin'); ?>');
-									is_complete(this.login_form_pass,'<?php _e('Password was not completed','cftp_admin'); ?>');
+									is_complete(this.username,'<?php _e('Username was not completed','cftp_admin'); ?>');
+									is_complete(this.password,'<?php _e('Password was not completed','cftp_admin'); ?>');
 					
 									// show the errors or continue if everything is ok
 									if (show_form_errors() == false) {
@@ -105,18 +105,18 @@ $login_button_text = __('Log in','cftp_admin');
 							<input type="hidden" name="do" value="login">
 							<fieldset>
 								<div class="form-group">
-									<label for="login_form_user"><?php _e('Username','cftp_admin'); ?> / <?php _e('E-mail','cftp_admin'); ?></label>
-									<input type="text" name="login_form_user" id="login_form_user" value="<?php if (isset($sysuser_username)) { echo htmlspecialchars($sysuser_username); } ?>" class="form-control" />
+									<label for="username"><?php _e('Username','cftp_admin'); ?> / <?php _e('E-mail','cftp_admin'); ?></label>
+									<input type="text" name="username" id="username" value="<?php if (isset($sysuser_username)) { echo htmlspecialchars($sysuser_username); } ?>" class="form-control" />
 								</div>
 
 								<div class="form-group">
-									<label for="login_form_pass"><?php _e('Password','cftp_admin'); ?></label>
-									<input type="password" name="login_form_pass" id="login_form_pass" class="form-control" />
+									<label for="password"><?php _e('Password','cftp_admin'); ?></label>
+									<input type="password" name="password" id="password" class="form-control" />
 								</div>
 
 								<div class="form-group">
-									<label for="login_form_lang"><?php _e('Language','cftp_admin'); ?></label>
-									<select name="login_form_lang" id="login_form_lang" class="form-control">
+									<label for="language"><?php _e('Language','cftp_admin'); ?></label>
+									<select name="language" id="language" class="form-control">
 										<?php
 											// scan for language files
 											$available_langs = get_available_languages();

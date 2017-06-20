@@ -13,6 +13,10 @@ define( 'IS_MAKE_CONFIG', true );
 define( 'ABS_PARENT', dirname( dirname(__FILE__) ) );
 require_once( ABS_PARENT . '/sys.includes.php' );
 
+if ( is_projectsend_installed() ) {
+	header("Location:index.php");
+}
+
 $page_title_install		= __('Install','cftp_admin');
 
 // array of POST variables to check, with associated default value
@@ -65,27 +69,12 @@ if ($pdo_driver_available) {
 	}
 }
 
-// names of reserved tables
-$table_names = array(
-	'actions_log',
-	'categories',
-	'categories_relations',
-	'downloads',
-	'files',
-	'files_relations',
-	'folders',
-	'groups',
-	'members',
-	'notifications',
-	'options',
-	'password_reset',
-	'users',
-);
+/** List of tables comes from sys.vars.php */
 
 // check if tables exists
 $table_exists = false;
 if ($pdo_connected) {
-	foreach ($table_names as $name) {
+	foreach ($all_system_tables as $name) {
 		$table_exists = $table_exists || table_exists($db, $post_vars['dbprefix'].$name);
 	}
 }
@@ -156,14 +145,14 @@ if (isset($_POST['submit-start']) && $ready_to_go) {
  * @return bool TRUE if table exists, FALSE if no table found.
  */
 function table_exists($pdo, $table) {
-
     // Try a select statement against the table
     // Run it in try/catch in case PDO is in ERRMODE_EXCEPTION.
     try {
-        $result = $pdo->query("SELECT 1 FROM $table LIMIT 1");
+        $result = $pdo->prepare("SELECT 1 FROM $table LIMIT 1");
+		$result->execute();
     } catch (Exception $e) {
         // We got an exception == table not found
-        return FALSE;
+        return false;
     }
 
     // Result is either boolean FALSE (no table found) or PDOStatement Object (table found)

@@ -7,18 +7,19 @@
  */
 
 /**
- * Check if ProjectSend is installed by looping over the main tables.
- * All tables must exist to verify the installation.
- * If any table is missing, the installation is considered corrupt.
+ * Check if ProjectSend is installed by trying to find the main users table.
+ * If it is missing, the installation is invalid.
  */
 function is_projectsend_installed() {
-	global $current_tables;
+	$tables_need = array(
+						TABLE_USERS
+					);
 
 	$tables_missing = 0;
 	/**
 	 * This table list is defined on sys.vars.php
 	 */
-	foreach ($current_tables as $table) {
+	foreach ($tables_need as $table) {
 		if ( !tableExists( $table ) ) {
 			$tables_missing++;
 		}
@@ -523,7 +524,7 @@ function default_footer_info($logged = true)
 	<footer>
 		<div id="footer">
 			<?php
-				if ( FOOTER_CUSTOM_ENABLE == '1' ) {
+				if ( defined('FOOTER_CUSTOM_ENABLE') && FOOTER_CUSTOM_ENABLE == '1' ) {
 					echo strip_tags(FOOTER_CUSTOM_CONTENT, '<br><span><a><strong><em><b><i><u><s>');
 					//echo htmlentities_allowed(FOOTER_CUSTOM_CONTENT);
 				}

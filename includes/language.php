@@ -30,17 +30,19 @@ if ( isset( $_SESSION['lang'] ) ) {
  * the browser's language (if available)
  */
 else {
-	switch ( USE_BROWSER_LANG ) {
-		case '0':
-		default:
-			break;
-		case '1':
-			$browser_lang	= substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
-			$lang_file		= ROOT_DIR . '/lang/' . $browser_lang . '.mo';
-			if ( file_exists( $lang_file ) ) {
-				$lang = $browser_lang;
-			}
-			break;
+	if ( defined('USE_BROWSER_LANG') ) {
+		switch ( USE_BROWSER_LANG ) {
+			case '0':
+			default:
+				break;
+			case '1':
+				$browser_lang	= substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+				$lang_file		= ROOT_DIR . '/lang/' . $browser_lang . '.mo';
+				if ( file_exists( $lang_file ) ) {
+					$lang = $browser_lang;
+				}
+				break;
+		}
 	}
 }
 

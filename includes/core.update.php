@@ -295,7 +295,7 @@ if (in_session_or_cookies($allowed_update)) {
 				 * Included inside the previous update since that is not an officially
 				 * released version.
 				 */
-				foreach ($current_tables as $working_table) {
+				foreach ($original_basic_tables as $working_table) {
 					$statement = $dbh->prepare("ALTER TABLE $working_table ENGINE = InnoDB");
 					$statement->execute();
 

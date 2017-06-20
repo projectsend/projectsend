@@ -128,11 +128,29 @@ define('TABLE_CATEGORIES_RELATIONS', TABLES_PREFIX . 'categories_relations');
 define('TABLE_LOG', TABLES_PREFIX . 'actions_log');
 define('TABLE_PASSWORD_RESET', TABLES_PREFIX . 'password_reset');
 
-$current_tables = array(
-						TABLE_FILES,
-						TABLE_OPTIONS,
-						TABLE_USERS
-					);
+$original_basic_tables = array(
+								TABLE_FILES,
+								TABLE_OPTIONS,
+								TABLE_USERS
+							);
+
+$all_system_tables = array(
+							'files',
+							'files_relations',
+							'downloads',
+							'notifications',
+							'options',
+							'users',
+							'groups',
+							'members',
+							'members_requests',
+							'folders',
+							'categories',
+							'categories_relations',
+							'actions_log',
+							'password_reset',
+						);
+
 //$current_tables = array(TABLE_FILES,TABLE_FILES_RELATIONS,TABLE_OPTIONS,TABLE_USERS,TABLE_GROUPS,TABLE_MEMBERS,TABLE_FOLDERS,TABLES_PREFIX,TABLE_LOG,TABLE_CATEGORIES,TABLE_CATEGORIES_RELATIONS);
 
 /**

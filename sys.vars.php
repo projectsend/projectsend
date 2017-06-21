@@ -183,7 +183,7 @@ define('SESSION_EXPIRE_TIME', $session_expire_time);
  * Define the folder where uploaded files will reside
  */
 define('UPLOADED_FILES_FOLDER', ROOT_DIR.'/upload/files/');
-define('UPLOADED_FILES_URL', '/upload/files/');
+define('UPLOADED_FILES_URL', 'upload/files/');
 
 /**
  * Define the folder where the uploaded files are stored before

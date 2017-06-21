@@ -7,6 +7,8 @@
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 
+$_SESSION['last_call']	= time();
+
 $header = 'header.php';
 
 if ( !empty( $_GET['do'] ) && $_GET['do'] == 'login' ) {
@@ -453,6 +455,7 @@ class process {
 		unset($_SESSION['access']);
 		unset($_SESSION['userlevel']);
 		unset($_SESSION['lang']);
+		unset($_SESSION['last_call']);
 		session_destroy();
 
 		/** If there is a cookie, unset it */
@@ -476,10 +479,15 @@ class process {
 								'affected_account_name' => $global_name
 							);
 		$new_record_action = $new_log_action->log_action_save($log_action_args);
+		
+		$redirect_to = 'index.php';
+		if ( isset( $_GET['timeout'] ) ) {
+			$redirect_to .= '?error=timeout';
+		}
 
-		header("location:index.php");
+		header("Location: " . $redirect_to);
+		die();
 	}
 }
 
 $process = new process;
-?>

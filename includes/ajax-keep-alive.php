@@ -10,6 +10,7 @@
  * @package ProjectSend
  */
 session_start();
+$_SESSION['last_call'] = time();
 /*
 $img = imagecreate( 1, 1 );
 header( "Content-type: image/jpeg" );

@@ -16,6 +16,16 @@ if (!is_projectsend_installed()) {
 	exit;
 }
 
+if ( defined('SESSION_TIMEOUT_EXPIRE') && SESSION_TIMEOUT_EXPIRE == true ) {
+	if (isset($_SESSION['last_call']) && (time() - $_SESSION['last_call'] > SESSION_EXPIRE_TIME)) {
+		$logout_location = BASE_URI . 'process.php?do=logout&timeout=1';
+		header('Location: ' . $logout_location);
+		die();
+	}
+}
+$_SESSION['last_call'] = time(); // update last activity time stamp
+
+
 /**
  * Global information on the current account to use accross the system.
  */

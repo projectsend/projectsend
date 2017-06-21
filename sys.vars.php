@@ -171,6 +171,15 @@ define('MAX_GENERATE_PASS_CHARS', 20);
 define('COOKIE_EXP_TIME', 60*60*24*30);
 
 /**
+ * Time (in seconds) after which the session becomes invalid.
+ * Default is disabled and time is set to a huge value (1 month)
+ * Case uses must be analyzed before enabling this function
+ */
+define('SESSION_TIMEOUT_EXPIRE', true);
+$session_expire_time = 31*24*60*60; // 31 days * 24 hours * 60 minutes * 60 seconds
+define('SESSION_EXPIRE_TIME', $session_expire_time);
+
+/**
  * Define the folder where uploaded files will reside
  */
 define('UPLOADED_FILES_FOLDER', ROOT_DIR.'/upload/files/');

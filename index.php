@@ -58,8 +58,15 @@ $login_button_text = __('Log in','cftp_admin');
 						<div class="ajax_response">
 							<?php
 								/** Coming from an external form */
-								if ( isset( $_GET['error'] ) && $_GET['error'] == 1 ) {
-									echo system_message('error',__("The supplied credentials are not valid.",'cftp_admin'),'login_error');
+								if ( isset( $_GET['error'] ) ) {
+									switch ( $_GET['error'] ) {
+										case 1:
+											echo system_message('error',__("The supplied credentials are not valid.",'cftp_admin'),'login_error');
+											break;
+										case 'timeout':
+											echo system_message('error',__("Session timed out. Please log in again.",'cftp_admin'),'login_error');
+											break;
+									}
 								}
 							?>
 						</div>

@@ -16,6 +16,11 @@ git: [project page](https://github.com/ignacionelson/ProjectSend)
 
 Feel free to participate!
 
+## IMPORTANT
+It is recommended that you download an official release (either from the releases tab here or from the official website).
+Downloading a development version directly from the repository might give you unexpected results, such as visible errors, functions that are still not finished, etc.
+
+
 ## How to install on your server:
 
 Preparations:

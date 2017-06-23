@@ -112,15 +112,24 @@ if ($_POST) {
 		for ($j = 0; $j < $options_total; $j++) {
 						$cc_val = $_POST[$keys[$j]];
 			$cc_key = $keys[$j];
-			if ($cc_key == 'google_client_id' || $cc_key == 'google_client_secret' || $cc_key == 'facebook_client_id' ||$cc_key == 'facebook_client_secret' || $cc_key == 'twitter_client_id' || $cc_key == 'twitter_client_secret' || $cc_key == 'yahoo_client_id' || $cc_key == 'yahoo_client_secret' || $cc_key == 'linkedin_client_id'|| $cc_key == 'linkedin_client_secret' || $cc_key == 'windows_client_id')  {
 
-			$aes = new AES($cc_val, ENCRYPTION_KEY, BLOCKSIZE);
-			$cc_val = $aes->encrypt(); 
+			if ($cc_key == 'google_client_id' || $cc_key == 'google_client_secret' || $cc_key == 'facebook_client_id' ||$cc_key == 'facebook_client_secret' || $cc_key == 'twitter_client_id' || $cc_key == 'twitter_client_secret' || $cc_key == 'yahoo_client_id' || $cc_key == 'yahoo_client_secret' || $cc_key == 'linkedin_client_id'|| $cc_key == 'linkedin_client_secret' || $cc_key == 'windows_client_id')  {	
+				if($cc_val !='') {
+					$aes = new AES($cc_val, ENCRYPTION_KEY, BLOCKSIZE);
+					$cc_val = $aes->encrypt(); 
+					
+					$save = $dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name=:name" );
+					$save->bindParam(':value', $cc_val);
+					$save->bindParam(':name', $cc_key);
+					$save->execute();
+				}
 			}
-			$save = $dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name=:name" );
-			$save->bindParam(':value', $cc_val);
-			$save->bindParam(':name', $cc_key);
-			$save->execute();
+			else {
+				$save = $dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name=:name" );
+				$save->bindParam(':value', $cc_val);
+				$save->bindParam(':name', $cc_key);
+				$save->execute();
+			}
 
 			if ($save) {
 				$updated++;

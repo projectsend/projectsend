@@ -900,10 +900,10 @@ function generate_logo_url()
 
 	$logo_filename = LOGO_FILENAME;
 	if ( empty( $logo_filename ) ) {
-		$branding['filename'] = '/img/projectsend-logo.png';
+		$branding['filename'] = 'img/projectsend-logo.png';
 	}
 	else {
-		$branding['filename'] = '/img/custom/logo/'.LOGO_FILENAME;
+		$branding['filename'] = 'img/custom/logo/'.LOGO_FILENAME;
 	}
 
 	if (file_exists(ROOT_DIR.$branding['filename'])) {

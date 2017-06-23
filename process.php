@@ -26,20 +26,17 @@ class process {
 
 	function process() {
 		switch ($_GET['do']) {
-			case 'download':
-				$this->download_file();
-				break;
-			case 'zip_download':
-				$this->download_zip();
-				break;
-			case 'get_downloaders':
-				$this->get_downloaders();
-				break;
 			case 'login':
 				$this->login();
 				break;
 			case 'logout':
 				$this->logout();
+				break;
+			case 'download':
+				$this->download_file();
+				break;
+			case 'zip_download':
+				$this->download_zip();
 				break;
 			default:
 				header('Location: '.BASE_URI);
@@ -47,7 +44,7 @@ class process {
 		}
 	}
 	
-	function login() {
+	private function login() {
 		global $hasher;
 		$this->sysuser_password		= $_GET['password'];
 		$this->selected_form_lang	= (!empty( $_GET['language'] ) ) ? $_GET['language'] : SITE_LANG;
@@ -205,8 +202,48 @@ class process {
 		echo json_encode($results);
 		exit;
 	}
+
+	private function logout() {
+		header("Cache-control: private");
+		unset($_SESSION['loggedin']);
+		unset($_SESSION['access']);
+		unset($_SESSION['userlevel']);
+		unset($_SESSION['lang']);
+		unset($_SESSION['last_call']);
+		session_destroy();
+
+		/** If there is a cookie, unset it */
+		setcookie("loggedin","",time()-COOKIE_EXP_TIME);
+		setcookie("password","",time()-COOKIE_EXP_TIME);
+		setcookie("access","",time()-COOKIE_EXP_TIME);
+		setcookie("userlevel","",time()-COOKIE_EXP_TIME);
+
+		/*
+		$language_cookie = 'projectsend_language';
+		setcookie ($language_cookie, "", 1);
+		setcookie ($language_cookie, false);
+		unset($_COOKIE[$language_cookie]);
+		*/
+
+		/** Record the action log */
+		$new_log_action = new LogActions();
+		$log_action_args = array(
+								'action'	=> 31,
+								'owner_id'	=> CURRENT_USER_ID,
+								'affected_account_name' => $global_name
+							);
+		$new_record_action = $new_log_action->log_action_save($log_action_args);
+		
+		$redirect_to = 'index.php';
+		if ( isset( $_GET['timeout'] ) ) {
+			$redirect_to .= '?error=timeout';
+		}
+
+		header("Location: " . $redirect_to);
+		die();
+	}
 	
-	function download_file() {
+	private function download_file() {
 		$this->check_level = array(9,8,7,0);
 		if (isset($_GET['id'])) {
 			/** Do a permissions check for logged in user */
@@ -326,7 +363,7 @@ class process {
 							//readfile($this->real_file);
 							
 							$context = stream_context_create();
-							$file = fopen($this->real_file, 'rb', FALSE, $context);
+							$file = fopen($this->real_file, 'rb', false, $context);
 							while( !feof( $file ) ) {
 								//usleep(1000000); //Reduce download speed
 								echo stream_get_contents($file, 2014);
@@ -351,7 +388,7 @@ class process {
 		}
 	}
 
-	function download_zip() {
+	private function download_zip() {
 		$this->check_level = array(9,8,7,0);
 		if (isset($_GET['files'])) {
 			// do a permissions check for logged in user
@@ -359,21 +396,6 @@ class process {
 				$file_list = array();
 				$requested_files = $_GET['files'];
 				foreach($requested_files as $file_id) {
-					//echo $file_id;
-/*
-					$this->statement = $this->dbh->prepare("SELECT id, url FROM " . TABLE_FILES . " WHERE id=:file_id");
-					$this->statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
-					$this->statement->execute();
-					$this->statement->setFetchMode(PDO::FETCH_ASSOC);
-					$this->row = $this->statement->fetch();
-					$this->url = $this->row['url'];
-					$file = UPLOADED_FILES_FOLDER.$this->url;
-					if (file_exists($file)) {
-
-						$file_list[] = $this->id;
-					}
-*/
-
 					$file_list[] = $file_id;
 				}
 				ob_clean();
@@ -381,112 +403,6 @@ class process {
 				echo implode( ',', $file_list );
 			}
 		}
-	}
-
-	function get_downloaders() {
-		$this->check_level = array(9,8,7);
-		if (isset($_GET['sys_user']) && isset($_GET['file_id'])) {
-			// do a permissions check for logged in user
-			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
-				$file_id = (int)$_GET['file_id'];
-				$current_level = get_current_user_level();
-				$this->statement = $this->dbh->prepare("SELECT id, uploader, filename FROM " . TABLE_FILES . " WHERE id=:file_id");
-				$this->statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
-				$this->statement->execute();
-				$this->statement->setFetchMode(PDO::FETCH_ASSOC);
-				$this->row = $this->statement->fetch();
-				$this->uploader = $this->row['uploader'];
-
-				/** Uploaders can only generate this for their own files */
-				if ($current_level == '7') {
-					if ($this->uploader != $_GET['sys_user']) {
-						ob_clean();
-						flush();
-						_e("You don't have the required permissions to view the requested information about this file.",'cftp_admin');
-						exit;
-					}
-				}
-
-				$this->filename = $this->row['filename'];
-
-				
-
-				$this->sql_who = $this->dbh->prepare("SELECT user_id, COUNT(*) AS downloads FROM " . TABLE_DOWNLOADS . " WHERE file_id=:file_id GROUP BY user_id");
-				$this->sql_who->bindParam(':file_id', $file_id, PDO::PARAM_INT);
-				$this->sql_who->execute();
-				$this->sql_who->setFetchMode(PDO::FETCH_ASSOC);
-				while ( $this->wrow = $this->sql_who->fetch() ) {
-					$this->downloaders_ids[] = $this->wrow['user_id'];
-					$this->downloaders_count[$this->wrow['user_id']] = $this->wrow['downloads'];
-				}
-
-				$this->users_ids = implode(',',array_unique(array_filter($this->downloaders_ids)));
-
-				$this->downloaders_list = array();
-
-
-
-				$this->sql_who = $this->dbh->prepare("SELECT id, name, email, level FROM " . TABLE_USERS . " WHERE FIND_IN_SET(id,:users)");
-				$this->sql_who->bindParam(':users', $this->users_ids);
-				$this->sql_who->execute();
-				$this->sql_who->setFetchMode(PDO::FETCH_ASSOC);
-
-				$i = 0;
-				while ( $this->urow = $this->sql_who->fetch() ) {
-					$this->downloaders_list[$i] = array(
-														'name' => $this->urow['name'],
-														'email' => $this->urow['email']
-													);
-					$this->downloaders_list[$i]['type'] = ($this->urow['name'] == 0) ? 'client' : 'user';
-					$this->downloaders_list[$i]['count'] = isset($this->downloaders_count[$this->urow['id']]) ? $this->downloaders_count[$this->urow['id']] : null;
-					$i++;
-				}
-
-				ob_clean();
-				flush();
-				echo json_encode($this->downloaders_list);
-			}
-		}
-	}
-
-	function logout() {
-		header("Cache-control: private");
-		unset($_SESSION['loggedin']);
-		unset($_SESSION['access']);
-		unset($_SESSION['userlevel']);
-		unset($_SESSION['lang']);
-		unset($_SESSION['last_call']);
-		session_destroy();
-
-		/** If there is a cookie, unset it */
-		setcookie("loggedin","",time()-COOKIE_EXP_TIME);
-		setcookie("password","",time()-COOKIE_EXP_TIME);
-		setcookie("access","",time()-COOKIE_EXP_TIME);
-		setcookie("userlevel","",time()-COOKIE_EXP_TIME);
-
-		/*
-		$language_cookie = 'projectsend_language';
-		setcookie ($language_cookie, "", 1);
-		setcookie ($language_cookie, false);
-		unset($_COOKIE[$language_cookie]);
-		*/
-
-		/** Record the action log */
-		$new_log_action = new LogActions();
-		$log_action_args = array(
-								'action'	=> 31,
-								'owner_id'	=> CURRENT_USER_ID,
-								'affected_account_name' => $global_name
-							);
-		$new_record_action = $new_log_action->log_action_save($log_action_args);
-		
-		$redirect_to = 'index.php';
-		if ( isset( $_GET['timeout'] ) ) {
-			$redirect_to .= '?error=timeout';
-		}
-
-		header("Location: " . $redirect_to);
-		die();
 	}
 }
 

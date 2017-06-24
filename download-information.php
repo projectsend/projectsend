@@ -197,7 +197,7 @@ include('header.php');
 								 * 1- Get account download time and date
 								 */
 								$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
-								$time = date('h:s:i',strtotime($row['timestamp']));
+								$time = date('h:i:s',strtotime($row['timestamp']));
 								
 								/**
 								 * 2- Check if it's from a know user or anonymous

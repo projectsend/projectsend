@@ -13,19 +13,38 @@
 			$gen_30_days[] = date('d/m/Y',mktime(0,0,0,$month,($day-$i),$year));
 		}
 		$last_30_days = array_reverse($gen_30_days);
-	
+		
+		$actions_to_graph = array();
+
+		$params = array(
+						':max_days'	=> $max_stats_days,
+					);
 		/**
-		 * The graph will show only this actions
+		 * Get downloads from the specific downloads table
+		 */
+		$statement = $dbh->prepare("SELECT timestamp, COUNT(*) as total
+										FROM " . TABLE_DOWNLOADS . " 
+										WHERE timestamp >= DATE_SUB( CURDATE(),INTERVAL :max_days DAY)
+										GROUP BY DATE(timestamp)
+									");
+		$statement->execute( $params );
+		if ( $statement->rowCount() > 0 ) {
+			$statement->setFetchMode(PDO::FETCH_ASSOC);
+			while ( $res = $statement->fetch() ) {
+				$res['timestamp'] = strtotime($res['timestamp']);
+				$actions_to_graph['d8'][$res['timestamp']] = $res['total'];
+			}
+		}
+
+		/**
+		 * Get other details from the actions log
 		 */
 		$statement = $dbh->prepare("SELECT action, timestamp, COUNT(*) as total
 										FROM " . TABLE_LOG . " 
 										WHERE timestamp >= DATE_SUB( CURDATE(),INTERVAL :max_days DAY)
-										AND action IN ('5', '6', '8', '9', '37')
+										AND action IN ('5', '6', '37')
 										GROUP BY DATE(timestamp), action
 									");
-		$params = array(
-						':max_days'	=> $max_stats_days,
-					);
 		$statement->execute( $params );
 		if ( $statement->rowCount() > 0 ) {
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -37,12 +56,6 @@
 						break;
 					case 6:
 						$actions_to_graph['d6'][$res['timestamp']] = $res['total'];
-						break;
-					case 8:
-						$actions_to_graph['d8'][$res['timestamp']] = $res['total'];
-						break;
-					case 9:
-						$actions_to_graph['d9'][$res['timestamp']] = $res['total'];
 						break;
 					case 37:
 						$actions_to_graph['d37'][$res['timestamp']] = $res['total'];
@@ -168,7 +181,7 @@
 				sorted: true,
 				show: false
 			},
-			colors: ["#0094bb","#86ae00","#C60F13","#f2b705","#1ec4a7"]
+			colors: ["#0094bb","#86ae00","#f2b705","#1ec4a7"]
 		};
 	
 		$.plot(
@@ -186,10 +199,6 @@
 					label: '<?php _e('Downloads','cftp_admin'); ?>'
 				},
 				{
-					data: d9,
-					label: '<?php _e('Zip Downloads','cftp_admin'); ?>'
-				},
-				{
 					data: d37,
 					label: '<?php _e('Public downloads','cftp_admin'); ?>'
 				}
@@ -199,4 +208,3 @@
 
 <?php
 	}
-?>

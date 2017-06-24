@@ -59,9 +59,7 @@ if ($page_status === 1) {
 include('header.php');
 ?>
 
-<div id="main">
-	<h2><?php echo $page_title; ?></h2>
-
+<div class="col-xs-12">
 	<?php	
 		if ($page_status === 0) {
 			$msg = __('No file was selected.','cftp_admin');

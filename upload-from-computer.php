@@ -32,9 +32,7 @@ include('header.php');
 $current_level = get_current_user_level();
 ?>
 
-<div id="main">
-	<h2><?php echo $page_title; ?></h2>
-	
+<div class="col-xs-12">
 	<?php
 		/** Count the clients to show an error or the form */
 		$statement		= $dbh->query("SELECT id FROM " . TABLE_USERS . " WHERE level = '0'");

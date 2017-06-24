@@ -15,6 +15,14 @@
 /** Check for an active session or cookie */
 check_for_session();
 
+/**
+ * Check if the current user has permission to view this page.
+ * If not, an error message is generated instead of the actual content.
+ * The allowed levels are defined on each individual page before the
+ * inclusion of this file.
+ */
+can_see_content($allowed_levels);
+
 /** Check if the active account belongs to a system user or a client. */
 //check_for_admin();
 
@@ -22,6 +30,13 @@ check_for_session();
 if (!isset($page_title)) { $page_title = __('System Administration','cftp_admin'); }
 
 if (!isset($body_class)) { $body_class = ''; }
+
+if ( !empty( $_COOKIE['menu_contracted'] ) && $_COOKIE['menu_contracted'] == 'true' ) {
+	$body_class[] = 'menu_contracted';
+}
+if ( !empty( $_COOKIE['menu_hidden'] ) && $_COOKIE['menu_hidden'] == 'true' ) {
+	$body_class[] = 'menu_hidden';
+}
 
 /**
  * Silent updates that are needed even if no user is logged in.
@@ -62,94 +77,57 @@ if (in_session_or_cookies($core_update_allowed)) {
 </head>
 
 <body <?php echo add_body_class( $body_class ); ?>>
-	<header>
-		<div id="header">
+	<div class="container-custom">
+		<header id="header" class="navbar navbar-static-top navbar-fixed-top">
+			<ul class="nav pull-left nav_toggler">
+				<li>
+					<a href="#" class="toggle_main_menu"><i class="fa fa-bars" aria-hidden="true"></i><span><?php _e('Toogle menu', 'cftp_admin'); ?></span></a>
+				</li>
+			</ul>
+
+			<div class="navbar-header">
+				<span class="navbar-brand"><a href="<?php echo SYSTEM_URI; ?>" target="_blank"><?php include('img/ps-icon.svg'); ?></a> <?php echo THIS_INSTALL_SET_TITLE; ?></span>
+			</div>
+
+			<ul class="nav pull-right nav_account">
+				<li id="header_welcome">
+					<span><?php //_e('Welcome', 'cftp_admin'); ?> <?php echo $global_name; ?></span>
+				</li>
+				<li>
+					<?php
+						$my_account_link = (CURRENT_USER_LEVEL == 0) ? 'clients-edit.php' : 'users-edit.php';
+						$my_account_link .= '?id='.CURRENT_USER_ID;
+					?>
+					<a href="<?php echo BASE_URI.$my_account_link; ?>" class="my_account"><i class="fa fa-user-circle" aria-hidden="true"></i> <?php _e('My Account', 'cftp_admin'); ?></a>
+				</li>
+				<li>
+					<a href="<?php echo BASE_URI; ?>process.php?do=logout" ><i class="fa fa-sign-out" aria-hidden="true"></i> <?php _e('Logout', 'cftp_admin'); ?></a>
+				</li>
+			</ul>
+		</header>
+
+		<div class="main_side_menu">
+			<?php
+				include('header-menu.php');
+			?>
+		</div>
+
+		<div class="main_content">
 			<div class="container-fluid">
+				<?php
+					/**
+					 * Gets the mark up abd values for the System Updated and
+					 * errors messages.
+					 */
+					include(ROOT_DIR.'/includes/updates.messages.php');
+				?>
+
 				<div class="row">
-					<div class="col-xs-12 col-sm-6 main_title">
-						<h1><?php echo THIS_INSTALL_SET_TITLE; ?></h1>
-					</div>
-					<div class="col-xs-12 col-sm-6">
-						<div id="account">
-							<span><?php _e('Welcome', 'cftp_admin'); ?>, <?php echo $global_name; ?></span>
-							<?php
-								if (CURRENT_USER_LEVEL == 0) {
-									$my_account_link = 'clients-edit.php';
-								}
-								else {
-									$my_account_link = 'users-edit.php';
-								}
-								$my_account_link .= '?id='.CURRENT_USER_ID;
-							?>
-							<a href="<?php echo BASE_URI.$my_account_link; ?>" class="my_account"><?php _e('My Account', 'cftp_admin'); ?></a>
-							<a href="<?php echo BASE_URI; ?>process.php?do=logout" ><?php _e('Logout', 'cftp_admin'); ?></a>
+					<div id="section_title">
+						<div class="col-xs-12">
+							<h2><?php echo $page_title; ?></h2>
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
-	
-		<script type="text/javascript">
-			$(document).ready(function() {
-				<?php
-					if ( !empty( $load_scripts ) && in_array( 'footable', $load_scripts ) ) {
-				?>
-						$("#select_all").click(function(){
-							var status = $(this).prop("checked");
-							/** Uncheck all first in case you used pagination */
-							$("tr td input[type=checkbox]").prop("checked",false);
-							$("tr:visible td input[type=checkbox]").prop("checked",status);
-						});
-	
-						$('.footable').footable().find('> tbody > tr:not(.footable-row-detail):nth-child(even)').addClass('odd');
-				<?php
-					}
-				?>
-			});
 
-			var dataExtraction = function(node) {
-				if (node.childNodes.length > 1) {
-					return node.childNodes[1].innerHTML;
-				} else {
-					return node.innerHTML;
-				}
-			}
-		</script>
-
-		<div class="navbar navbar-inverse">
-			<div class="container-fluid">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#header-navbar-collapse" aria-expanded="false">
-						<span class="sr-only"><?php _e('Menu', 'cftp_admin'); ?></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-				</div>
-
-				<div class="collapse navbar-collapse" id="header-navbar-collapse">
-					<?php
-						include('header-menu.php');
-					?>
-				</div>
-			</div>
-		</div>
-
-		<?php
-			/**
-			 * Gets the mark up abd values for the System Updated and
-			 * errors messages.
-			 */
-			include(ROOT_DIR.'/includes/updates.messages.php');
-		?>
-	</header>
-
-<?php
-	/**
-	 * Check if the current user has permission to view this page.
-	 * If not, an error message is generated instead of the actual content.
-	 * The allowed levels are defined on each individual page before the
-	 * inclusion of this file.
-	 */
-	can_see_content($allowed_levels);
-?>
+				<div class="row">

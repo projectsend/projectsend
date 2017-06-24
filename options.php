@@ -238,9 +238,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 
 ?>
 
-<div id="main">
-	<h2><?php echo $page_title; ?></h2>
-
+<div class="col-xs-12">
 	<?php
 		if (isset($_GET['status'])) {
 			switch ($_GET['status']) {

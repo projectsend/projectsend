@@ -158,9 +158,7 @@ if ($global_user == $add_user_data_user) {
 include('header.php');
 
 ?>
-
-<div id="main">
-	<h2><?php echo $page_title; ?></h2>
+<div class="col-xs-12">
 
 	<?php
 		if (isset($_GET['status'])) {

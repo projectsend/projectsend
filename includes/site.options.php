@@ -13,6 +13,7 @@
  *
  * @return array
  */
+global $dbh;
 $options_values = array();
 try {
 	$options = $dbh->query("SELECT * FROM " . TABLE_OPTIONS);

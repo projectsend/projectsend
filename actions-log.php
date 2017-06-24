@@ -13,6 +13,9 @@ $load_scripts	= array(
 
 $allowed_levels = array(9);
 require_once('sys.includes.php');
+
+$active_nav = 'tools';
+
 $page_title = __('Recent activities log','cftp_admin');
 
 include('header.php');
@@ -62,8 +65,7 @@ include('header.php');
 	});
 </script>
 
-<div id="main">
-	<h2><?php echo $page_title; ?></h2>
+<div class="col-xs-12">
 
 <?php
 

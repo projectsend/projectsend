@@ -107,18 +107,13 @@ if ( !empty( $load_scripts ) ) {
 }
 
 $load_css_files[]	= BASE_URI . 'assets/bootstrap/css/bootstrap.min.css';
-$load_css_files[]	= BASE_URI . 'css/shared.css';
+$load_css_files[]	= BASE_URI . 'css/main.css';
 $load_css_files[]	= BASE_URI . 'css/mobile.css';
+
 /**
- * Load a different css file when called from the admin, or
- * the default template.
+ * Load a different css file when called from the default template.
  */
-if ( !isset( $this_template_css ) ) {
-	/** Back-end */
-	$load_css_files[]	= BASE_URI . 'css/base.css';
-}
-else {
-	/** Template */
+if ( isset( $this_template_css ) ) {
 	$load_css_files[]	= $this_template_css;
 }
 

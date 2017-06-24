@@ -148,10 +148,7 @@ include('header.php');
 	});
 </script>
 
-<div id="main">
-
-	<h2><?php echo $page_title; ?></h2>
-
+<div class="col-xs-12">
 	<?php
 		/**
 		 * Apply the corresponding action to the selected files.
@@ -674,6 +671,7 @@ include('header.php');
 						 * Prepare the information to be used later on the cells array
 						 */
 						$file_id = $row['id'];
+						$download_link = make_download_link( array( 'id' => $file_id ) );
 	
 						/**
 						 * Visibility is only available when filtering by client or group.
@@ -817,7 +815,7 @@ include('header.php');
 													'attributes'	=> array(
 																			'class'		=> array( 'file_name' ),
 																		),
-													'content'		=> '<a href="' . BASE_URI . 'process.php?do=download&amp;client=' . $global_user . '&amp;id=' . $row['id'] . '&amp;n=1" target="_blank">' . html_output($row['filename']) . '</a>',
+													'content'		=> '<a href="' . $download_link . '" target="_blank">' . html_output($row['filename']) . '</a>',
 												),
 												array(
 													'content'		=> $formatted_size,
@@ -881,8 +879,6 @@ include('header.php');
 				}
 			?>
 		</form>
-	</div>
-
 </div>
 
-<?php include('footer.php'); ?>
+<?php include('footer.php');

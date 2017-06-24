@@ -29,9 +29,7 @@ include('header.php');
  */
 $work_folder = UPLOADED_FILES_FOLDER;
 ?>
-
-<div id="main">
-	<h2><?php echo $page_title; ?></h2>
+<div class="col-xs-12">
 
 	<?php
 		if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {

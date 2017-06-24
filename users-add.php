@@ -63,9 +63,7 @@ if ($_POST) {
 	
 }
 ?>
-
-<div id="main">
-	<h2><?php echo $page_title; ?></h2>
+<div class="col-xs-12">
 	
 	<div class="container">
 		<div class="row">

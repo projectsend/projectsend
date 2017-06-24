@@ -40,6 +40,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 								'level'	=> array( 9,8,7 ),
 								'main'	=> array(
 												'label'	=> __('Dashboard', 'cftp_admin'),
+												'icon'	=> 'tachometer',
 												'link'	=> 'home.php',
 											),
 							);
@@ -49,6 +50,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 								'level'	=> array( 9,8,7 ),
 								'main'	=> array(
 												'label'	=> __('Files', 'cftp_admin'),
+												'icon'	=> 'file',
 											),
 								'sub'	=> array(
 												array(
@@ -81,6 +83,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 								'level'	=> array( 9,8 ),
 								'main'	=> array(
 												'label'	=> __('Clients', 'cftp_admin'),
+												'icon'	=> 'address-card',
 											),
 								'sub'	=> array(
 												array(
@@ -108,6 +111,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 								'level'	=> array( 9,8 ),
 								'main'	=> array(
 												'label'	=> __('Clients groups', 'cftp_admin'),
+												'icon'	=> 'th-large',
 											),
 								'sub'	=> array(
 												array(
@@ -126,6 +130,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 								'level'	=> array( 9 ),
 								'main'	=> array(
 												'label'	=> __('System Users', 'cftp_admin'),
+												'icon'	=> 'users',
 											),
 								'sub'	=> array(
 												array(
@@ -139,12 +144,27 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 												),
 											),
 							);
+	$items['tools']		= array(
+								'nav'	=> 'tools',
+								'level'	=> array( 9 ),
+								'main'	=> array(
+												'label'	=> __('Tools', 'cftp_admin'),
+												'icon'	=> 'wrench',
+											),
+								'sub'	=> array(
+												array(
+													'label'	=> __('Actions log', 'cftp_admin'),
+													'link'	=> 'actions-log.php',
+												),
+											),
+							);
 
 	$items['options']	= array(
 								'nav'	=> 'options',
 								'level'	=> array( 9 ),
 								'main'	=> array(
 												'label'	=> __('Options', 'cftp_admin'),
+												'icon'	=> 'cog',
 											),
 								'sub'	=> array(
 												array(
@@ -198,6 +218,7 @@ else
 									'main'	=> array(
 													'label'	=> __('Upload', 'cftp_admin'),
 													'link'	=> 'upload-from-computer.php',
+													'icon'	=> 'cloud-upload',
 												),
 								);
 	}
@@ -208,6 +229,7 @@ else
 								'main'	=> array(
 												'label'	=> __('Manage files', 'cftp_admin'),
 												'link'	=> 'manage-files.php',
+												'icon'	=> 'file',
 											),
 							);
 
@@ -217,6 +239,7 @@ else
 								'main'	=> array(
 												'label'	=> __('View my files', 'cftp_admin'),
 												'link'	=> 'my_files/',
+												'icon'	=> 'th-list',
 											),
 							);
 }
@@ -224,40 +247,42 @@ else
 /**
  * Build the menu
  */
-$menu_output = "<ul class='nav navbar-nav'>\n";
+$menu_output = "<ul class='main_menu' role='navigation'>\n";
 
 foreach ( $items as $item )
 {
 	if ( in_session_or_cookies( $item['level'] ) )
 	{
-		$current	= ( !empty( $active_nav ) && $active_nav == $item['nav'] ) ? 'active' : '';
+		$current	= ( !empty( $active_nav ) && $active_nav == $item['nav'] ) ? 'current_nav' : '';
 		$badge		= ( !empty( $item['main']['badge'] ) ) ? ' <span class="badge">' . $item['main']['badge'] . '</span>' : '';
+		$icon		= ( !empty( $item['main']['icon'] ) ) ? '<i class="fa fa-'.$item['main']['icon'].' fa-fw" aria-hidden="true"></i>' : '';
 
 		/** Top level tag */
 		if ( !isset( $item['sub'] ) )
 		{
-			$format			= "<li class='%s'>\n\t<a href='%s'>%s%s</a>\n</li>\n";
-			$menu_output 	.= sprintf( $format, $current, BASE_URI . $item['main']['link'], $badge, $item['main']['label'] );
+			$format			= "<li class='%s'>\n\t<a href='%s' class='nav_top_level'>%s<span class='menu_label'>%s%s</span></a>\n</li>\n";
+			$menu_output 	.= sprintf( $format, $current, BASE_URI . $item['main']['link'], $icon, $badge, $item['main']['label'] );
 		}
 
 		else
 		{
-			$format			= "<li class='dropdown %s'>\n\t<a href='#' class='dropdown-toggle' data-toggle='dropdown'>%s%s <b class='caret'></b></a>\n\t<ul class='dropdown-menu'>\n";
-			$menu_output 	.= sprintf( $format, $current, $item['main']['label'], $badge );
+			$format			= "<li class='has_dropdown %s'>\n\t<a href='#' class='nav_top_level'>%s<span class='menu_label'>%s%s</span></a>\n\t<ul class='dropdown_content'>\n";
+			$menu_output 	.= sprintf( $format, $current, $icon, $item['main']['label'], $badge );
 			/**
 			 * Submenu
 			*/
 			foreach ( $item['sub'] as $subitem )
 			{
 				$badge		= ( !empty( $subitem['badge'] ) ) ? ' <span class="badge">' . $subitem['badge'] . '</span>' : '';
+				$icon		= ( !empty( $subitem['icon'] ) ) ? '<i class="fa fa-'.$subitem['icon'].' fa-fw" aria-hidden="true"></i>' : '';
 				if ( !empty( $subitem['divider'] ) )
 				{
 					$menu_output .= "\t\t<li class='divider'></li>\n";
 				}
 				else
 				{
-					$format			= "\t\t<li>\n\t\t\t<a href='%s'>%s%s</a>\n\t\t</li>\n";
-					$menu_output 	.= sprintf( $format, BASE_URI . $subitem['link'], $subitem['label'], $badge );
+					$format			= "\t\t<li>\n\t\t\t<a href='%s'>%s<span class='submenu_label'>%s%s</span></a>\n\t\t</li>\n";
+					$menu_output 	.= sprintf( $format, BASE_URI . $subitem['link'], $icon, $subitem['label'], $badge );
 				}
 			}
 			$menu_output 	.= "\t</ul>\n</li>\n";

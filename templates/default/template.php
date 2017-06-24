@@ -18,21 +18,23 @@ $load_scripts	= array(
 						'footable',
 					); 
 
-$body_class = array('template', 'default-template');
+$body_class = array('template', 'default-template', 'hide_title');
 
 include_once(ROOT_DIR.'/header.php');
 
 $count = count($my_files);
 ?>
 
+<div class="col-xs-12">
 	<div id="wrapper">
+		<?php /*
 		<div id="left_column">
 			<?php if ($logo_file_info['exists'] === true) { ?>
 				<div id="current_logo">
 					<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $logo_file_info['url']; ?>&amp;w=250" alt="<?php echo THIS_INSTALL_SET_TITLE; ?>" />
 				</div>
 			<?php } ?>
-		</div>
+		</div> */ ?>
 	
 		<div id="right_column">
 	
@@ -263,6 +265,8 @@ $count = count($my_files);
 	</div> <!-- wrapper -->
 	
 	<?php default_footer_info(); ?>
+
+</div>
 
 	<script type="text/javascript">
 		$(document).ready(function() {

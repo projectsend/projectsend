@@ -56,10 +56,7 @@ include('header.php');
 	});
 </script>
 
-<div id="main">
-
-	<h2><?php echo $page_title; ?></h2>
-
+<div class="col-xs-12">
 	<?php
 	/**
 	 * Messages set when adding or editing a category
@@ -393,8 +390,7 @@ include('header.php');
 				</div>
 			</div>
 
-	</div>
-
 </div>
 
-<?php include('footer.php'); ?>
+<?php
+	include('footer.php');

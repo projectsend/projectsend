@@ -1022,7 +1022,7 @@ function add_body_class( $custom = '' ) {
 	/** Remove query string */
 	$current_url = strtok( $_SERVER['REQUEST_URI'], '?' );
 	$classes = array('body');
-
+	
 	$pathinfo = pathinfo( $current_url );
 
 	if ( !empty( $pathinfo['extension'] ) ) {
@@ -1043,6 +1043,10 @@ function add_body_class( $custom = '' ) {
 	
 	if ( !empty( $custom ) && is_array( $custom ) ) {
 		$classes = array_merge( $classes, $custom );
+	}
+
+	if ( !in_array('template-default', $classes ) ) {
+		$classes[] = 'backend';
 	}
 
 	$classes = array_filter( array_unique( $classes ) );

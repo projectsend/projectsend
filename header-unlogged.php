@@ -95,10 +95,8 @@ if ( !isset( $body_class ) ) { $body_class = ''; }
 
 <body <?php echo add_body_class( $body_class ); ?>>
 	<header>
-		<div id="header" class="header_shadow">
-			<div id="lonely_logo">
-				<h1><?php echo $header_vars['header_title']; ?></h1>
-			</div>
+		<div id="header" class="header_unlogged">
+			<h1><?php echo $header_vars['header_title']; ?></h1>
 		</div>
 	</header>
 

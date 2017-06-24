@@ -71,9 +71,7 @@ $current_level = get_current_user_level();
 
 ?>
 
-<div id="main">
-	<h2><?php echo $page_title; ?></h2>
-
+<div class="col-xs-12">
 	<?php
 		/**
 		 * Show an error message if no ID value is passed on the URI.

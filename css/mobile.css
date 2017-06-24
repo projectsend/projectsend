@@ -4,19 +4,24 @@
     display: block; } }
 @media (max-width: 1024px) {
   .edit_files .column {
-    margin-bottom: 50px; } }
+    margin-bottom: 50px; }
+
+  .backend .graph_legend {
+    float: none !important;
+    clear: both;
+    display: block; } }
 @media (max-width: 768px) {
+  .main_content {
+    padding: 0; }
+
   .menu_hidden .main_side_menu {
     display: none; }
   .menu_hidden .main_content {
     margin-left: 0px; }
 
   .navbar-header {
-    display: none; } }
-@media (max-width: 576px) {
-  .nav_account i {
-    display: none; } }
-@media (max-width: 768px) {
+    display: none; }
+
   .main_title {
     text-align: center;
     margin-bottom: 20px; }
@@ -61,5 +66,8 @@
 
   .edit_files .col-sm-4:last-child .file_data {
     border-bottom: 1px solid #ccc; } }
+@media (max-width: 576px) {
+  .nav_account i {
+    display: none; } }
 
 /*# sourceMappingURL=mobile.css.map */

@@ -282,7 +282,8 @@
     text-align: right;
     padding-top: 5px;
     zoom: 1;
-    margin: 0 0 0 auto; }
+    margin: 0 0 0 auto;
+    float: right; }
     .backend .graph_legend li {
       display: inline-block;
       margin-left: 5px;
@@ -329,9 +330,7 @@
     -moz-border-radius: 2px;
     -ms-border-radius: 2px;
     border-radius: 2px;
-    -moz-box-shadow: 3px 3px 5px #dedede;
-    -webkit-box-shadow: 3px 3px 5px #dedede;
-    box-shadow: 3px 3px 5px #dedede; }
+    /*@include box-shadow(3px 3px 5px, #dedede);*/ }
   .backend .white-box {
     margin-top: 35px;
     background-color: white;
@@ -340,9 +339,7 @@
     -moz-border-radius: 2px;
     -ms-border-radius: 2px;
     border-radius: 2px;
-    -moz-box-shadow: 3px 3px 5px #dedede;
-    -webkit-box-shadow: 3px 3px 5px #dedede;
-    box-shadow: 3px 3px 5px #dedede; }
+    /*@include box-shadow(3px 3px 5px, #dedede);*/ }
   .backend .white-box-interior {
     padding: 15px; }
   .backend .whiteform {

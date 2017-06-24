@@ -377,6 +377,7 @@ $widget_hover_background	: #f0f0f0;
 		padding-top:5px;
 		zoom:1;
 		margin:0 0 0 auto;
+		float:right;
 	
 		li {
 			display:inline-block;
@@ -449,7 +450,7 @@ $widget_hover_background	: #f0f0f0;
 		border:1px solid #ccc;
 
 		@include border-radius(2px);
-		@include box-shadow(3px 3px 5px, #dedede);
+		/*@include box-shadow(3px 3px 5px, #dedede);*/
 	}
 	
 	.white-box {
@@ -458,7 +459,7 @@ $widget_hover_background	: #f0f0f0;
 		border:1px solid #ccc;
 
 		@include border-radius(2px);
-		@include box-shadow(3px 3px 5px, #dedede);
+		/*@include box-shadow(3px 3px 5px, #dedede);*/
 	}
 	
 		.white-box-interior {

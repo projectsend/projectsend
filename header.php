@@ -34,9 +34,8 @@ if (!isset($body_class)) { $body_class = ''; }
 if ( !empty( $_COOKIE['menu_contracted'] ) && $_COOKIE['menu_contracted'] == 'true' ) {
 	$body_class[] = 'menu_contracted';
 }
-if ( !empty( $_COOKIE['menu_hidden'] ) && $_COOKIE['menu_hidden'] == 'true' ) {
-	$body_class[] = 'menu_hidden';
-}
+
+$body_class[] = 'menu_hidden';
 
 /**
  * Silent updates that are needed even if no user is logged in.

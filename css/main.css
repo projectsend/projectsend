@@ -169,7 +169,8 @@
       color: white;
       font-weight: bold; }
   .backend .branding_unlogged {
-    text-align: center; }
+    text-align: center;
+    margin: 20px auto; }
     .backend .branding_unlogged img {
       height: auto;
       width: 100%;
@@ -178,9 +179,14 @@
     margin: 15px auto;
     text-align: center; }
   .backend .header_unlogged {
-    clear: both;
-    border-bottom: 7px solid #CCCCCC;
-    background: #0d0f14; }
+    clear: both; }
+    .backend .header_unlogged .navbar-header {
+      display: block;
+      width: 100%;
+      padding: 0; }
+      .backend .header_unlogged .navbar-header span {
+        display: block;
+        width: 100%; }
   .backend #install_form {
     margin-top: 30px; }
   .backend #install_extra {
@@ -691,6 +697,9 @@ body {
   padding: 0;
   margin: 0; }
 
+body.login {
+  height: auto; }
+
 .container-custom {
   padding-top: 60px;
   min-height: 100%;
@@ -926,7 +935,9 @@ body {
   */
   margin: 50px 0 10px 0;
   padding: 20px 0;
-  border-top: 1px solid #dedede; }
+  border-top: 1px solid #dedede;
+  text-align: center;
+  color: #888; }
   #footer a {
     color: #666; }
 

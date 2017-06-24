@@ -196,6 +196,7 @@ $widget_hover_background	: #f0f0f0;
 	
 	.branding_unlogged {
 		text-align:center;
+		margin:20px auto;
 	
 		img {
 			height:auto;
@@ -211,8 +212,17 @@ $widget_hover_background	: #f0f0f0;
 	
 	.header_unlogged {
 		clear:both;
-		border-bottom:7px solid #CCCCCC;
-		background:$top_bar_background;
+		
+		.navbar-header {
+			display:block;
+			width:100%;
+			padding:0;
+			
+			span {
+				display:block;
+				width:100%;
+			}
+		}
 	}
 	
 	#install_form {
@@ -1010,6 +1020,10 @@ body
 	margin:0;
 }
 
+body.login {
+	height:auto;
+}
+
 .container-custom {
 	padding-top:$padding_top_main;
 	min-height:100%;
@@ -1368,7 +1382,8 @@ body
 	margin:50px 0 10px 0;
 	padding:20px 0;
 	border-top:1px solid #dedede;
-	
+	text-align:center;	
+	color:#888;
 	
 	a {
 		color:#666;

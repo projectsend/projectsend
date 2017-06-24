@@ -94,10 +94,11 @@ if ( !isset( $body_class ) ) { $body_class = ''; }
 </head>
 
 <body <?php echo add_body_class( $body_class ); ?>>
-	<header>
-		<div id="header" class="header_unlogged">
-			<h1><?php echo $header_vars['header_title']; ?></h1>
-		</div>
-	</header>
-
-	<div id="main">
+	<div class="container-custom">
+		<header id="header" class="navbar navbar-static-top navbar-fixed-top header_unlogged">
+			<div class="navbar-header text-center">
+				<span class="navbar-brand">
+					<?php echo $header_vars['header_title']; ?>
+				</span>
+			</div>
+		</header>

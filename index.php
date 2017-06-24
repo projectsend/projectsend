@@ -155,7 +155,7 @@ if ( isset($_SESSION['errorstate'] ) ) {
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8 hidden-xs hidden-sm">
       <h1 class="txt-color-red login-header-big"></h1>
-<img alt="Logo Placeholder" src="<?php echo BASE_URI?>/includes/timthumb/timthumb.php?src=/img/custom/logo/<?php echo LOGO_FILENAME; ?>&amp;w=220">
+<img alt="Logo Placeholder" src="<?php echo BASE_URI?>img/custom/logo/<?php echo LOGO_FILENAME.'?'.microtime(); ?>">
       <div class="hero">
         <div class="pull-left login-desc-box-l">
           <h4 class="paragraph-header">It's Okay to be Smart. Experience the simplicity of MicroHealth Send, everywhere you go!</h4>

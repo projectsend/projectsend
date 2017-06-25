@@ -83,7 +83,6 @@ $widget_hover_background	: #f0f0f0;
 			font-size:27px;
 			line-height:29px;
 			margin:0 0 15px;
-			text-align:left;
 			letter-spacing:-1px;
 		}
 		
@@ -624,6 +623,7 @@ $widget_hover_background	: #f0f0f0;
 	.file_number {
 		font-family:'Open Sans', Arial, sans-serif;
 		position:relative;
+		word-break:break-all;
 	}
 	
 	/*

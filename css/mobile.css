@@ -68,6 +68,9 @@
     border-bottom: 1px solid #ccc; } }
 @media (max-width: 576px) {
   .nav_account i {
-    display: none; } }
+    display: none; }
+
+  .backend .white-box-interior {
+    padding: 15px 0; } }
 
 /*# sourceMappingURL=mobile.css.map */

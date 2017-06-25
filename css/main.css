@@ -94,7 +94,6 @@
     font-size: 27px;
     line-height: 29px;
     margin: 0 0 15px;
-    text-align: left;
     letter-spacing: -1px; }
   .backend h3 {
     font-size: 17px;
@@ -451,7 +450,8 @@
     border-top-color: #777; }
   .backend .file_number {
     font-family: 'Open Sans', Arial, sans-serif;
-    position: relative; }
+    position: relative;
+    word-break: break-all; }
   .backend .file_number {
     margin: 0;
     padding: 10px;

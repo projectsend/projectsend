@@ -1,14 +1,11 @@
 .footable {
 	border-collapse: separate;
 	border-spacing: 0;
-	border: 1px solid #fff;
+	border: 1px solid #ccc;
 	font-size: 1em;
 	color: #444444;
 	background: #ffffff;
 	margin:10px auto 15px;
-	-moz-box-shadow:3px 3px 5px #dedede;
-	-webkit-box-shadow:3px 3px 5px #dedede;
-	box-shadow:3px 3px 5px #dedede;
 }
 .footable > tfoot > tr > td {
 	padding:20px 0;

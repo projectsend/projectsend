@@ -102,3 +102,7 @@ if ( !isset( $body_class ) ) { $body_class = ''; }
 				</span>
 			</div>
 		</header>
+
+		<div class="main_content_unlogged">
+			<div class="container-fluid">
+				<div class="row">

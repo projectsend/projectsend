@@ -68,7 +68,6 @@ include('header.php');
 <div class="col-xs-12">
 
 <?php
-
 	/**
 	 * Apply the corresponding action to the selected users.
 	 */

@@ -173,7 +173,7 @@ include('header.php');
 
 ?>
 
-<div class="col-xs-12">
+<div class="col-xs-12 col-sm-12 col-lg-6">
 	<?php
 		if (isset($_GET['status'])) {
 			/**
@@ -203,49 +203,43 @@ include('header.php');
 			}
 		}
 	?>
+	<div class="white-box">
+		<div class="white-box-interior">
 	
-	<div class="container">
-		<div class="row">
-			<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
-				<div class="white-box-interior">
-		
-					<?php
-						/**
-						 * If the form was submited with errors, show them here.
-						 */
-						$valid_me->list_errors();
-					?>
-					
-					<?php
-						$direct_access_error = __('This page is not intended to be accessed directly.','cftp_admin');
-						if ($page_status === 0) {
-							$msg = __('No client was selected.','cftp_admin');
-							echo system_message('error',$msg);
-							echo '<p>'.$direct_access_error.'</p>';
-						}
-						else if ($page_status === 2) {
-							$msg = __('There is no client with that ID number.','cftp_admin');
-							echo system_message('error',$msg);
-							echo '<p>'.$direct_access_error.'</p>';
-						}
-						else if ($page_status === 3) {
-							$msg = __("Your account type doesn't allow you to access this feature.",'cftp_admin');
-							echo system_message('error',$msg);
-						}
-						else {
-							/**
-							 * Include the form.
-							 */
-							include('clients-form.php');
-						}
-					?>
+			<?php
+				/**
+				 * If the form was submited with errors, show them here.
+				 */
+				$valid_me->list_errors();
+			?>
+			
+			<?php
+				$direct_access_error = __('This page is not intended to be accessed directly.','cftp_admin');
+				if ($page_status === 0) {
+					$msg = __('No client was selected.','cftp_admin');
+					echo system_message('error',$msg);
+					echo '<p>'.$direct_access_error.'</p>';
+				}
+				else if ($page_status === 2) {
+					$msg = __('There is no client with that ID number.','cftp_admin');
+					echo system_message('error',$msg);
+					echo '<p>'.$direct_access_error.'</p>';
+				}
+				else if ($page_status === 3) {
+					$msg = __("Your account type doesn't allow you to access this feature.",'cftp_admin');
+					echo system_message('error',$msg);
+				}
+				else {
+					/**
+					 * Include the form.
+					 */
+					include('clients-form.php');
+				}
+			?>
 
-				</div>
-			</div>
 		</div>
 	</div>
 </div>
 
 <?php
 	include('footer.php');
-?>

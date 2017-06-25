@@ -125,72 +125,61 @@ include('header-unlogged.php');
 	}
 ?>
 
+<div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
+
+	<div class="text-center">
 		<h2><?php echo $page_title; ?></h2>
+	</div>
 
-		<div class="container">
-			<div class="row">
-				<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-4 white-box">
-					<div class="white-box-interior">
-						<?php
-							/**
-							 * Show status message
-							 */
-							if (isset($errorstate)) {
-								switch ($errorstate) {
-									case 'token_invalid':
-										$login_err_message = __("The request is not valid.",'cftp_admin');
-										break;
-								}
+	<div class="white-box">
+		<div class="white-box-interior">
+			<?php
+				/**
+				 * Show status message
+				 */
+				if (isset($errorstate)) {
+					switch ($errorstate) {
+						case 'token_invalid':
+							$login_err_message = __("The request is not valid.",'cftp_admin');
+							break;
+					}
+	
+					echo system_message('error',$login_err_message,'login_error');
+				}
 				
-								echo system_message('error',$login_err_message,'login_error');
-							}
-							
-							if (isset($download_link)) {
-							?>
-								<div class="text-center">
-									<p><?php _e('The following file is now ready for you to download:','cftp_admin'); ?><br /><strong><?php echo $real_file_url; ?></strong></p>
-									<h3><?php echo $file_title; ?></h3>
-									<div class="download_description">
-										<?php echo $file_description; ?>
-									</div>
-									<a href="<?php echo $download_link; ?>" class="btn btn-primary">
-										<?php _e('Download file','cftp_admin'); ?>
-									</a>
-								</div>
-							<?php
-							}
-
-							if ( $can_view ) {
-							?>
-								<div class="text-center">
-									<p><strong><?php echo $real_file_url; ?></strong></p>
-									<h3><?php echo $file_title; ?></h3>
-									<div class="download_description">
-										<?php echo $file_description; ?>
-									</div>
-								</div>
-							<?php
-							}
-						?>
-
-						<div class="login_form_links">
-							<p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.','cftp_admin'); ?></a></p>
+				if (isset($download_link)) {
+				?>
+					<div class="text-center">
+						<p><?php _e('The following file is now ready for you to download:','cftp_admin'); ?><br /><strong><?php echo $real_file_url; ?></strong></p>
+						<h3><?php echo $file_title; ?></h3>
+						<div class="download_description">
+							<?php echo $file_description; ?>
 						</div>
-
+						<a href="<?php echo $download_link; ?>" class="btn btn-primary">
+							<?php _e('Download file','cftp_admin'); ?>
+						</a>
 					</div>
-				</div>
+				<?php
+				}
+
+				if ( $can_view ) {
+				?>
+					<div class="text-center">
+						<p><strong><?php echo $real_file_url; ?></strong></p>
+						<h3><?php echo $file_title; ?></h3>
+						<div class="download_description">
+							<?php echo $file_description; ?>
+						</div>
+					</div>
+				<?php
+				}
+			?>
+
+			<div class="login_form_links">
+				<p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.','cftp_admin'); ?></a></p>
 			</div>
-		</div> <!-- container -->
-	</div> <!-- main (from header) -->
+		</div>
+	</div>
+</div>
 
-	<?php
-		default_footer_info( false );
-
-		load_js_files();
-	?>
-
-</body>
-</html>
-<?php
-	ob_end_flush();
-?>
+<?php include('footer.php');

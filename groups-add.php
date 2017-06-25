@@ -51,57 +51,53 @@ if ($_POST) {
 }
 ?>
 
-<div class="col-xs-12">
-	<div class="container">
-		<div class="row">
-			<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
-				<div class="white-box-interior">
+<div class="col-xs-12 col-sm-12 col-lg-6">
+	<div class="white-box">
+		<div class="white-box-interior">
 		
-					<?php
-						/**
-						 * If the form was submited with errors, show them here.
-						 */
-						$valid_me->list_errors();
-					?>
-					
-					<?php
-						if (isset($new_response)) {
-							/**
-							 * Get the process state and show the corresponding ok or error messages.
-							 */
-							switch ($new_response['query']) {
-								case 1:
-									$msg = __('Group added correctly.','cftp_admin');
-									echo system_message('ok',$msg);
+			<?php
+				/**
+				 * If the form was submited with errors, show them here.
+				 */
+				$valid_me->list_errors();
+			?>
 			
-									/** Record the action log */
-									$new_log_action = new LogActions();
-									$log_action_args = array(
-															'action' => 23,
-															'owner_id' => CURRENT_USER_ID,
-															'affected_account' => $new_response['new_id'],
-															'affected_account_name' => $add_group_data_name
-														);
-									$new_record_action = $new_log_action->log_action_save($log_action_args);
-								break;
-								case 0:
-									$msg = __('There was an error. Please try again.','cftp_admin');
-									echo system_message('error',$msg);
-								break;
-							}
-						}
-						else {
-							/**
-							 * If not $new_response is set, it means we are just entering for the first time.
-							 * Include the form.
-							 */
-							$groups_form_type = 'new_group';
-							include('groups-form.php');
-						}
-					?>
+			<?php
+				if (isset($new_response)) {
+					/**
+					 * Get the process state and show the corresponding ok or error messages.
+					 */
+					switch ($new_response['query']) {
+						case 1:
+							$msg = __('Group added correctly.','cftp_admin');
+							echo system_message('ok',$msg);
+	
+							/** Record the action log */
+							$new_log_action = new LogActions();
+							$log_action_args = array(
+													'action' => 23,
+													'owner_id' => CURRENT_USER_ID,
+													'affected_account' => $new_response['new_id'],
+													'affected_account_name' => $add_group_data_name
+												);
+							$new_record_action = $new_log_action->log_action_save($log_action_args);
+						break;
+						case 0:
+							$msg = __('There was an error. Please try again.','cftp_admin');
+							echo system_message('error',$msg);
+						break;
+					}
+				}
+				else {
+					/**
+					 * If not $new_response is set, it means we are just entering for the first time.
+					 * Include the form.
+					 */
+					$groups_form_type = 'new_group';
+					include('groups-form.php');
+				}
+			?>
 
-				</div>
-			</div>
 		</div>
 	</div>
 </div>

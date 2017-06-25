@@ -117,116 +117,100 @@ include('header-unlogged.php');
 	}
 	?>
 
-		<h2 class="hidden"><?php echo $page_title; ?></h2>
+<div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 
-		<div class="container">
+	<?php echo generate_branding_layout(); ?>
 
-			<?php echo generate_branding_layout(); ?>
+	<div class="white-box">
+		<div class="white-box-interior">
 
-			<div class="row">
-				<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
-					<div class="white-box-interior">
-		
-						<?php
-							if (CLIENTS_CAN_REGISTER == '0') {
-								$msg = __('Client self registration is not allowed. If you need an account, please contact a system administrator.','cftp_admin');
-								echo system_message('error',$msg);
-							}
-							else {
-								/**
-								 * If the form was submited with errors, show them here.
-								 */
-								$valid_me->list_errors();
-				
-								if (isset($new_response)) {
-									/**
-									 * Get the process state and show the corresponding ok or error messages.
-									 */
-				
-									$error_msg = '</p><br /><p>';
-									$error_msg .= __('Please contact a system administrator.','cftp_admin');
-				
-									switch ($new_response['actions']) {
-										case 1:
-											$msg = __('Account added correctly.','cftp_admin');
-											echo system_message('ok',$msg);
-				
-											if (CLIENTS_AUTO_APPROVE == 0) {
-												$msg = __('Please remember that an administrator needs to approve your account before you can log in.','cftp_admin');
-											}
-											else {
-												$msg = __('You may now log in with your new credentials.','cftp_admin');
-											}
-											echo system_message('info',$msg);
-				
-											/** Record the action log */
-											$new_log_action = new LogActions();
-											$log_action_args = array(
-																	'action' => 4,
-																	'owner_id' => $new_response['new_id'],
-																	'affected_account' => $new_response['new_id'],
-																	'affected_account_name' => $add_client_data_name
-																);
-											$new_record_action = $new_log_action->log_action_save($log_action_args);
-										break;
-										case 0:
-											$msg = __('There was an error. Please try again.','cftp_admin');
-											$msg .= $error_msg;
-											echo system_message('error',$msg);
-										break;
-										case 2:
-											$msg = __('A folder for this account could not be created. Probably because of a server configuration.','cftp_admin');
-											$msg .= $error_msg;
-											echo system_message('error',$msg);
-										break;
-										case 3:
-											$msg = __('The account could not be created. A folder with this name already exists.','cftp_admin');
-											$msg .= $error_msg;
-											echo system_message('error',$msg);
-										break;
-									}
-									/**
-									 * Show the ok or error message for the email notification.
-									 */
-									switch ($new_response['email']) {
-										case 1:
-											$msg = __('An e-mail notification with login information was sent to the specified address.','cftp_admin');
-											echo system_message('ok',$msg);
-										break;
-										case 0:
-											$msg = __("E-mail notification couldn't be sent.",'cftp_admin');
-											echo system_message('error',$msg);
-										break;
-									}
+			<?php
+				if (CLIENTS_CAN_REGISTER == '0') {
+					$msg = __('Client self registration is not allowed. If you need an account, please contact a system administrator.','cftp_admin');
+					echo system_message('error',$msg);
+				}
+				else {
+					/**
+					 * If the form was submited with errors, show them here.
+					 */
+					$valid_me->list_errors();
+	
+					if (isset($new_response)) {
+						/**
+						 * Get the process state and show the corresponding ok or error messages.
+						 */
+	
+						$error_msg = '</p><br /><p>';
+						$error_msg .= __('Please contact a system administrator.','cftp_admin');
+	
+						switch ($new_response['actions']) {
+							case 1:
+								$msg = __('Account added correctly.','cftp_admin');
+								echo system_message('ok',$msg);
+	
+								if (CLIENTS_AUTO_APPROVE == 0) {
+									$msg = __('Please remember that an administrator needs to approve your account before you can log in.','cftp_admin');
 								}
 								else {
-									/**
-									 * If not $new_response is set, it means we are just entering for the first time.
-									 * Include the form.
-									 */
-									$clients_form_type = 'new_client_self';
-									include('clients-form.php');
+									$msg = __('You may now log in with your new credentials.','cftp_admin');
 								}
-							}
-						?>
+								echo system_message('info',$msg);
+	
+								/** Record the action log */
+								$new_log_action = new LogActions();
+								$log_action_args = array(
+														'action' => 4,
+														'owner_id' => $new_response['new_id'],
+														'affected_account' => $new_response['new_id'],
+														'affected_account_name' => $add_client_data_name
+													);
+								$new_record_action = $new_log_action->log_action_save($log_action_args);
+							break;
+							case 0:
+								$msg = __('There was an error. Please try again.','cftp_admin');
+								$msg .= $error_msg;
+								echo system_message('error',$msg);
+							break;
+							case 2:
+								$msg = __('A folder for this account could not be created. Probably because of a server configuration.','cftp_admin');
+								$msg .= $error_msg;
+								echo system_message('error',$msg);
+							break;
+							case 3:
+								$msg = __('The account could not be created. A folder with this name already exists.','cftp_admin');
+								$msg .= $error_msg;
+								echo system_message('error',$msg);
+							break;
+						}
+						/**
+						 * Show the ok or error message for the email notification.
+						 */
+						switch ($new_response['email']) {
+							case 1:
+								$msg = __('An e-mail notification with login information was sent to the specified address.','cftp_admin');
+								echo system_message('ok',$msg);
+							break;
+							case 0:
+								$msg = __("E-mail notification couldn't be sent.",'cftp_admin');
+								echo system_message('error',$msg);
+							break;
+						}
+					}
+					else {
+						/**
+						 * If not $new_response is set, it means we are just entering for the first time.
+						 * Include the form.
+						 */
+						$clients_form_type = 'new_client_self';
+						include('clients-form.php');
+					}
+				}
+			?>
 
-						<div class="login_form_links">
-							<p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.','cftp_admin'); ?></a></p>
-						</div>
-					</div>
-				</div>
+			<div class="login_form_links">
+				<p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.','cftp_admin'); ?></a></p>
 			</div>
 		</div>
 	</div> <!-- main -->
 
-	<?php
-		default_footer_info();
-
-		load_js_files();
-	?>
-
-</body>
-</html>
-<?php
-	ob_end_flush();
-?>
+<?php include('footer.php');

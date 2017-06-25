@@ -189,192 +189,176 @@ include('header-unlogged.php');
 	}
 	?>
 
-		<h2 class="hidden"><?php echo $page_title; ?></h2>
+<div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 
-		<div class="container">
+	<?php echo generate_branding_layout(); ?>
 
-			<?php echo generate_branding_layout(); ?>
+	<div class="white-box">
+		<div class="white-box-interior">
+			<?php
+				/**
+				 * If the form was submited with errors, show them here.
+				 */
+				$valid_me->list_errors();
+			?>
+	
+			<?php
+				/**
+				 * Show status message
+				 */
+				if (isset($errorstate)) {
+					switch ($errorstate) {
+						case 'email_not_found':
+							$login_err_message = __("The supplied email address does not correspond to any user.",'cftp_admin');
+							break;
+						case 'token_invalid':
+							$login_err_message = __("The request is not valid.",'cftp_admin');
+							break;
+						case 'token_expired':
+							$login_err_message = __("This request has expired. Please make a new one.",'cftp_admin');
+							break;
+						case 'token_used':
+							$login_err_message = __("This request has already been completed. Please make a new one.",'cftp_admin');
+							break;
+						case 'too_many_today':
+							$login_err_message = __("There are 3 unused requests done in less than 24 hs. Please wait until one expires (1 day since made) to make a new one.",'cftp_admin');
+							break;
+					}
+	
+					echo system_message('error',$login_err_message,'login_error');
+				}
 
-			<div class="row">
-				<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-4 col-md-offset-4 white-box">
-					<div class="white-box-interior box-reset-password">
-						<?php
+				/**
+				 * Show the ok or error message for the email.
+				 */
+				if (isset($state['email'])) {
+					switch ($state['email']) {
+						case 1:
+							$msg = __('An e-mail with further instructions has been sent. Please check your inbox to proceed.','cftp_admin');
+							echo system_message('ok',$msg);
+						break;
+						case 0:
+							$msg = __("E-mail couldn't be sent.",'cftp_admin');
+							$msg .= ' ' . __("If the problem persists, please contact an administrator.",'cftp_admin');
+							echo system_message('error',$msg);
+						break;
+					}
+				}
+
+				/**
+				 * Show the ok or error message for the password reset.
+				 */
+				if (isset($state['reset'])) {
+					switch ($state['reset']) {
+						case 1:
+							$msg = __('Your new password has been set. You can now log in using it.','cftp_admin');
+							echo system_message('ok',$msg);
+						break;
+						case 0:
+							$msg = __("Your new password couldn't be set.",'cftp_admin');
+							$msg .= ' ' . __("If the problem persists, please contact an administrator.",'cftp_admin');
+							echo system_message('error',$msg);
+						break;
+					}
+				}
+				 
+				switch ($show_form) {
+					case 'enter_email':
+					default:
+			?>
+						<script type="text/javascript">
+							$(document).ready(function() {
+								$("form").submit(function() {
+									clean_form(this);
+						
+									is_complete(this.reset_password_email,'<?php echo $validation_no_email; ?>');
+									is_email(this.reset_password_email,'<?php echo $validation_invalid_mail; ?>');
+						
+									// show the errors or continue if everything is ok
+									if (show_form_errors() == false) { return false; }
+								});
+							});
+						</script>
+						
+						<form action="reset-password.php" name="resetpassword" method="post" role="form">
+							<fieldset>
+								<input type="hidden" name="form_type" id="form_type" value="new_request" />
+
+								<div class="form-group">
+									<label for="reset_password_email"><?php _e('E-mail','cftp_admin'); ?></label>
+									<input type="text" name="reset_password_email" id="reset_password_email" class="form-control" />
+								</div>
+
+								<p><?php _e("Please enter your account's e-mail address. You will receive a link to continue the process.",'cftp_admin'); ?></p>
+
+								<div class="inside_form_buttons">
+									<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Get a new password','cftp_admin'); ?></button>
+								</div>
+							</fieldset>
+						</form>
+			<?php
+					break;
+					case 'enter_new_password':
+			?>
+						<script type="text/javascript">
 							/**
-							 * If the form was submited with errors, show them here.
+							 * Quick hack to ignore the col-sm-* classes
+							 * when adding the errors to the form
 							 */
-							$valid_me->list_errors();
-						?>
-				
-						<?php
-							/**
-							 * Show status message
-							 */
-							if (isset($errorstate)) {
-								switch ($errorstate) {
-									case 'email_not_found':
-										$login_err_message = __("The supplied email address does not correspond to any user.",'cftp_admin');
-										break;
-									case 'token_invalid':
-										$login_err_message = __("The request is not valid.",'cftp_admin');
-										break;
-									case 'token_expired':
-										$login_err_message = __("This request has expired. Please make a new one.",'cftp_admin');
-										break;
-									case 'token_used':
-										$login_err_message = __("This request has already been completed. Please make a new one.",'cftp_admin');
-										break;
-									case 'too_many_today':
-										$login_err_message = __("There are 3 unused requests done in less than 24 hs. Please wait until one expires (1 day since made) to make a new one.",'cftp_admin');
-										break;
-								}
-				
-								echo system_message('error',$login_err_message,'login_error');
-							}
+							var ignore_columns = true;
 
-							/**
-							 * Show the ok or error message for the email.
-							 */
-							if (isset($state['email'])) {
-								switch ($state['email']) {
-									case 1:
-										$msg = __('An e-mail with further instructions has been sent. Please check your inbox to proceed.','cftp_admin');
-										echo system_message('ok',$msg);
-									break;
-									case 0:
-										$msg = __("E-mail couldn't be sent.",'cftp_admin');
-										$msg .= ' ' . __("If the problem persists, please contact an administrator.",'cftp_admin');
-										echo system_message('error',$msg);
-									break;
-								}
-							}
+							$(document).ready(function() {
+								$("form").submit(function() {
 
-							/**
-							 * Show the ok or error message for the password reset.
-							 */
-							if (isset($state['reset'])) {
-								switch ($state['reset']) {
-									case 1:
-										$msg = __('Your new password has been set. You can now log in using it.','cftp_admin');
-										echo system_message('ok',$msg);
-									break;
-									case 0:
-										$msg = __("Your new password couldn't be set.",'cftp_admin');
-										$msg .= ' ' . __("If the problem persists, please contact an administrator.",'cftp_admin');
-										echo system_message('error',$msg);
-									break;
-								}
-							}
-							 
-							switch ($show_form) {
-								case 'enter_email':
-								default:
-						?>
-									<script type="text/javascript">
-										$(document).ready(function() {
-											$("form").submit(function() {
-												clean_form(this);
-									
-												is_complete(this.reset_password_email,'<?php echo $validation_no_email; ?>');
-												is_email(this.reset_password_email,'<?php echo $validation_invalid_mail; ?>');
-									
-												// show the errors or continue if everything is ok
-												if (show_form_errors() == false) { return false; }
-											});
-										});
-									</script>
-									
-									<form action="reset-password.php" name="resetpassword" method="post" role="form">
-										<fieldset>
-											<input type="hidden" name="form_type" id="form_type" value="new_request" />
+									clean_form(this);
+						
+									is_complete(this.reset_password_new,'<?php echo $validation_no_pass; ?>');
+									is_length(this.reset_password_new,<?php echo MIN_PASS_CHARS; ?>,<?php echo MAX_PASS_CHARS; ?>,'<?php echo $validation_length_pass; ?>');
+									is_password(this.reset_password_new,'<?php $chars = addslashes($validation_valid_chars); echo $validation_valid_pass." ".$chars; ?>');
+						
+									// show the errors or continue if everything is ok
+									if (show_form_errors() == false) { return false; }
+								});
+							});
+						</script>
+						
+						<form action="reset-password.php?token=<?php echo html_output($got_token); ?>&user=<?php echo html_output($got_user); ?>" name="newpassword" method="post" role="form">
+							<fieldset>
+								<input type="hidden" name="form_type" id="form_type" value="new_password" />
 
-											<div class="form-group">
-												<label for="reset_password_email"><?php _e('E-mail','cftp_admin'); ?></label>
-												<input type="text" name="reset_password_email" id="reset_password_email" class="form-control" />
-											</div>
+								<div class="form-group">
+									<label for="reset_password_new"><?php _e('New password','cftp_admin'); ?></label>
+									<div class="input-group">
+										<input type="password" name="reset_password_new" id="reset_password_new" class="form-control password_toggle" />
+										<div class="input-group-btn password_toggler">
+											<button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button>
+										</div>
+									</div>
+									<button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="reset_password_new" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate','cftp_admin'); ?></button>
+								</div>
+								<?php echo password_notes(); ?>
+								
+								<p><?php _e("Please enter your desired new password. After that, you will be able to log in normally.",'cftp_admin'); ?></p>
 
-											<p><?php _e("Please enter your account's e-mail address. You will receive a link to continue the process.",'cftp_admin'); ?></p>
+								<div class="inside_form_buttons">
+									<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Set new password','cftp_admin'); ?></button>
+								</div>
+							</fieldset>
+						</form>
+			<?php
+					break;
+					case 'none':
+			?>
+			<?php
+					break;
+				 }
+			?>
 
-											<div class="inside_form_buttons">
-												<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Get a new password','cftp_admin'); ?></button>
-											</div>
-										</fieldset>
-									</form>
-						<?php
-								break;
-								case 'enter_new_password':
-						?>
-									<script type="text/javascript">
-										/**
-										 * Quick hack to ignore the col-sm-* classes
-										 * when adding the errors to the form
-										 */
-										var ignore_columns = true;
-
-										$(document).ready(function() {
-											$("form").submit(function() {
-
-												clean_form(this);
-									
-												is_complete(this.reset_password_new,'<?php echo $validation_no_pass; ?>');
-												is_length(this.reset_password_new,<?php echo MIN_PASS_CHARS; ?>,<?php echo MAX_PASS_CHARS; ?>,'<?php echo $validation_length_pass; ?>');
-												is_password(this.reset_password_new,'<?php $chars = addslashes($validation_valid_chars); echo $validation_valid_pass." ".$chars; ?>');
-									
-												// show the errors or continue if everything is ok
-												if (show_form_errors() == false) { return false; }
-											});
-										});
-									</script>
-									
-									<form action="reset-password.php?token=<?php echo html_output($got_token); ?>&user=<?php echo html_output($got_user); ?>" name="newpassword" method="post" role="form">
-										<fieldset>
-											<input type="hidden" name="form_type" id="form_type" value="new_password" />
-
-											<div class="form-group">
-												<label for="reset_password_new"><?php _e('New password','cftp_admin'); ?></label>
-												<div class="input-group">
-													<input type="password" name="reset_password_new" id="reset_password_new" class="form-control password_toggle" />
-													<div class="input-group-btn password_toggler">
-														<button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button>
-													</div>
-												</div>
-												<button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="reset_password_new" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate','cftp_admin'); ?></button>
-											</div>
-											<?php echo password_notes(); ?>
-											
-											<p><?php _e("Please enter your desired new password. After that, you will be able to log in normally.",'cftp_admin'); ?></p>
-
-											<div class="inside_form_buttons">
-												<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Set new password','cftp_admin'); ?></button>
-											</div>
-										</fieldset>
-									</form>
-						<?php
-								break;
-								case 'none':
-						?>
-						<?php
-								break;
-							 }
-						?>
-
-						<div class="login_form_links">
-							<p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.','cftp_admin'); ?></a></p>
-						</div>
-
-					</div>
-				</div>
+			<div class="login_form_links">
+				<p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.','cftp_admin'); ?></a></p>
 			</div>
-		</div> <!-- container -->
-	</div> <!-- main (from header) -->
+		</div>
+	</div> <!-- container-custom -->
+</div>
 
-	<?php
-		default_footer_info( false );
-
-		load_js_files();
-	?>
-
-</body>
-</html>
-<?php
-	ob_end_flush();
-?>
+<?php include('footer.php');

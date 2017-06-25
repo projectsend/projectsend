@@ -18,4 +18,3 @@ while (ob_get_level()) ob_end_clean();
 $location = BASE_URI . 'options.php?section=branding';
 header("Location: $location");
 die();
-?>

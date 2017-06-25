@@ -173,4 +173,3 @@ $current_level = get_current_user_level();
 
 <?php
 	include('footer.php');
-?>

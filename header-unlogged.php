@@ -87,6 +87,7 @@ if ( !isset( $body_class ) ) { $body_class = ''; }
 	<![endif]-->
 
 	<?php
+		$load_theme_css = true;
 		require_once( 'assets.php' );
 
 		load_css_files();

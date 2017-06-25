@@ -180,8 +180,10 @@ $login_button_text = __('Log in','cftp_admin');
 					}
 				?>
 			</div>
+
 		</div>
 	</div>
 </div>
 
-<?php include('footer.php');
+<?php
+	include('footer.php');

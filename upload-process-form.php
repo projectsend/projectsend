@@ -804,4 +804,3 @@ while( $row = $statement->fetch() ) {
 
 <?php
 	include('footer.php');
-?>

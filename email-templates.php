@@ -390,4 +390,5 @@ if ($_POST) {
 	});
 </script>
 
-<?php include('footer.php'); ?>
+<?php
+	include('footer.php');

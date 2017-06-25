@@ -253,4 +253,3 @@ $work_folder = UPLOADED_FILES_FOLDER;
 
 <?php
 	include('footer.php');
-?>

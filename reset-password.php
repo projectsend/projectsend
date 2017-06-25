@@ -361,4 +361,5 @@ include('header-unlogged.php');
 	</div> <!-- container-custom -->
 </div>
 
-<?php include('footer.php');
+<?php
+	include('footer.php');

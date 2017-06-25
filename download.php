@@ -127,12 +127,14 @@ include('header-unlogged.php');
 
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 
-	<div class="text-center">
-		<h2><?php echo $page_title; ?></h2>
-	</div>
+	<?php echo generate_branding_layout(); ?>
 
 	<div class="white-box">
 		<div class="white-box-interior">
+			<div class="text-center">
+				<h3><?php echo $page_title; ?></h3>
+			</div>
+
 			<?php
 				/**
 				 * Show status message
@@ -182,4 +184,5 @@ include('header-unlogged.php');
 	</div>
 </div>
 
-<?php include('footer.php');
+<?php
+	include('footer.php');

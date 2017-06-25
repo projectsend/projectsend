@@ -104,4 +104,3 @@ if ($_POST) {
 
 <?php
 	include('footer.php');
-?>

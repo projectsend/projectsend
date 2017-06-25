@@ -330,4 +330,3 @@ if (!empty($found_notifications)) {
 	 echo '<h2>Notifications sent query</h2><br />' . $notifications_sent_query . '<br /><br />';
 	 */
 }
-?>

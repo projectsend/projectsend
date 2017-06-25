@@ -171,4 +171,3 @@ function load_js_files() {
 		}
 	}
 }
-?>

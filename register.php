@@ -213,4 +213,5 @@ include('header-unlogged.php');
 		</div>
 	</div> <!-- main -->
 
-<?php include('footer.php');
+<?php
+	include('footer.php');

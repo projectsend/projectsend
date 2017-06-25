@@ -138,4 +138,3 @@ if ($added_files > 0) {
 		unlink($zip_file);
 	}
 }
-?>

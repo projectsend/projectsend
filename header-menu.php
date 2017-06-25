@@ -298,4 +298,3 @@ $menu_output = str_replace( "'", '"', $menu_output );
  * Print to screen
  */
 echo $menu_output;
-?>

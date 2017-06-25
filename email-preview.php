@@ -31,4 +31,3 @@ $preview_results = $preview->psend_send_email($preview_arguments);
 echo $preview_results;
 
 ob_end_flush();
-?>

@@ -1,5 +1,6 @@
 <?php
 	require_once('sys.includes.php');
+	$demo_data = false;
 
 	$allowed_stats = array(9,8,7);
 	if (in_array(CURRENT_USER_LEVEL,$allowed_stats)) {
@@ -71,7 +72,7 @@
 	
 	<script type="text/javascript">
 	<?php	
-			$data_logs = array('d5','d6','d8','d9','d37');
+			$data_logs = array('d5','d6','d8','d37');
 			foreach ($data_logs as $gen_log) {
 				echo 'var '.$gen_log.' = [';
 				$i = 0;
@@ -97,14 +98,16 @@
 					}
 					if (!$wrote || $continue === false) {
 						echo '0';
-						/** These values are used for screenshots
-						switch ($gen_log) {
-							case 'd5': echo rand(0,10); break;
-							case 'd6': echo rand(0,30); break;
-							case 'd8': echo rand(0,180); break;
-							case 'd9': echo rand(0,45); break;
+						
+						/** These values are used for screenshots */
+						if ( $demo_data == true ) {
+							switch ($gen_log) {
+								case 'd5': echo rand(0,10); break;
+								case 'd6': echo rand(0,30); break;
+								case 'd8': echo rand(0,180); break;
+								case 'd37': echo rand(0,45); break;
+							}
 						}
-						*/
 					}
 					echo ']';
 					$i++;

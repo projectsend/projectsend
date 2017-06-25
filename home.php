@@ -20,14 +20,12 @@ $body_class = array('dashboard', 'home', 'hide_title');
 include('header.php');
 
 define('CAN_INCLUDE_FILES', true);
-?>
 
-<?php
-	$log_allowed = array(9);
-	if (in_session_or_cookies($log_allowed)) {
-		$show_log = true;
-		$sys_info = true;
-	}
+$log_allowed = array(9);
+if (in_session_or_cookies($log_allowed)) {
+	$show_log = true;
+	$sys_info = true;
+}
 ?>
 		<div class="col-sm-8 <?php if ( isset( $show_log ) && $show_log != true) { echo 'col-sm-offset-2'; } ?>">
 			<div class="row">
@@ -194,7 +192,6 @@ define('CAN_INCLUDE_FILES', true);
 			}
 			$('.stats_days').removeClass('btn-inverse');
 			$(this).addClass('btn-inverse');
-			$('.graph_legend').hide();
 			$('#statistics').html('<div class="loading-graph">'+
 										'<img src="<?php echo BASE_URI; ?>/img/ajax-loader.gif" alt="Loading" />'+
 										'<p><?php _e('Please wait while the system generates the statistics graph.','cftp_admin'); ?></p></div>'
@@ -203,14 +200,12 @@ define('CAN_INCLUDE_FILES', true);
 			$.get('<?php echo BASE_URI; ?>home-statistics.php', { days:days },
 				function(data) {
 					$('#statistics').html(data);
-					$('.graph_legend').css('display','inline-block');
 				}
 			);					
 			return false;
 		});
 
 		$('#default_graph').click();
-
 
 		// Generate the action log
 		$('.log_action').click(function(e) {

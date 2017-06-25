@@ -73,6 +73,7 @@ switch ( $section ) {
 	default:
 		$location = BASE_URI . 'options.php?section=general';
 		header("Location: $location");
+		die();
 		break;
 }
 
@@ -239,52 +240,52 @@ $allowed_file_types = implode(',',$allowed_file_types);
 ?>
 
 <div class="col-xs-12 col-sm-12 col-lg-6">
+	<?php
+		if (isset($_GET['status'])) {
+			switch ($_GET['status']) {
+				case '1':
+					$msg = __('Options updated succesfuly.','cftp_admin');
+					echo system_message('ok',$msg);
+					break;
+				case '2':
+					$msg = __('There was an error. Please try again.','cftp_admin');
+					echo system_message('error',$msg);
+					break;
+				case '3':
+					$msg = __('Some fields were not completed. Options could not be saved.','cftp_admin');
+					echo system_message('error',$msg);
+					$show_options_form = 1;
+					break;
+			}
+		}
+
+		/** Logo uploading status */
+		if (isset($_GET['logo_status'])) {
+			switch ($_GET['logo_status']) {
+				case '1':
+					break;
+				case '2':
+					$msg = __('The file could not be moved to the corresponding folder.','cftp_admin');
+					$msg .= __("This is most likely a permissions issue. If that's the case, it can be corrected via FTP by setting the chmod value of the",'cftp_admin');
+					$msg .= ' '.LOGO_FOLDER.' ';
+					$msg .= __('directory to 755, or 777 as a last resource.','cftp_admin');
+					$msg .= __("If this doesn't solve the issue, try giving the same values to the directories above that one until it works.",'cftp_admin');
+					echo system_message('error',$msg);
+					break;
+				case '3':
+					$msg = __('The file you selected is not an allowed image format. Please upload your logo as a jpg, gif or png file.','cftp_admin');
+					echo system_message('error',$msg);
+					break;
+				case '4':
+					$msg = __('There was an error uploading the file. Please try again.','cftp_admin');
+					echo system_message('error',$msg);
+					break;
+			}
+		}
+	?>
+
 	<div class="white-box">
 		<div class="white-box-interior">
-			<?php
-				if (isset($_GET['status'])) {
-					switch ($_GET['status']) {
-						case '1':
-							$msg = __('Options updated succesfuly.','cftp_admin');
-							echo system_message('ok',$msg);
-							break;
-						case '2':
-							$msg = __('There was an error. Please try again.','cftp_admin');
-							echo system_message('error',$msg);
-							break;
-						case '3':
-							$msg = __('Some fields were not completed. Options could not be saved.','cftp_admin');
-							echo system_message('error',$msg);
-							$show_options_form = 1;
-							break;
-					}
-				}
-		
-				/** Logo uploading status */
-				if (isset($_GET['logo_status'])) {
-					switch ($_GET['logo_status']) {
-						case '1':
-							break;
-						case '2':
-							$msg = __('The file could not be moved to the corresponding folder.','cftp_admin');
-							$msg .= __("This is most likely a permissions issue. If that's the case, it can be corrected via FTP by setting the chmod value of the",'cftp_admin');
-							$msg .= ' '.LOGO_FOLDER.' ';
-							$msg .= __('directory to 755, or 777 as a last resource.','cftp_admin');
-							$msg .= __("If this doesn't solve the issue, try giving the same values to the directories above that one until it works.",'cftp_admin');
-							echo system_message('error',$msg);
-							break;
-						case '3':
-							$msg = __('The file you selected is not an allowed image format. Please upload your logo as a jpg, gif or png file.','cftp_admin');
-							echo system_message('error',$msg);
-							break;
-						case '4':
-							$msg = __('There was an error uploading the file. Please try again.','cftp_admin');
-							echo system_message('error',$msg);
-							break;
-					}
-				}
-		
-			?>
 
 			<script type="text/javascript">
 				$(document).ready(function() {
@@ -964,7 +965,8 @@ $allowed_file_types = implode(',',$allowed_file_types);
 				<div class="after_form_buttons">
 					<button type="submit" class="btn btn-wide btn-primary empty"><?php _e('Save options','cftp_admin'); ?></button>
 				</div>
-		</form>
+			</form>
+		</div>
 	</div>
 </div>
 

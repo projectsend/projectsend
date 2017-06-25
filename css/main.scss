@@ -1455,69 +1455,6 @@ form .alert {
 }
 
 /********************************************************************************************************************************************
-	Override bootstrap's TABS styles
-	Used on the options pages
-********************************************************************************************************************************************/
-
-.nav-tabs > li,
-.nav-pills > li
-{
-    float: none;
-    display: inline-block;
-    *display: inline;
-    zoom: 1;
-}
-
-.nav-tabs,
-.nav-pills
-{
-    text-align: center;
-    border: none;
-}
-
-.nav-tabs li {
-    border: none;
-    padding-bottom: 3px;
-}
-
-    .nav-tabs li.active {
-        text-decoration:none;
-    }
-
-.nav-tabs li a {
-	background:#ededed;
-    color:#ccc;
-	font-size:1.3em;
-	line-height:2em;
-	outline:none;
-    margin: 0;
-    padding: 2px 12px;
-    border:1px solid #ccc !important;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-}
-
-    .nav-tabs li a:hover {
-        color: #666 !important;
-    }
-
-
-    .nav-tabs li.active a {
-        color: #333 !important;
-        margin: 0;
-        background: white;
-    }
-
-.panel-container {
-	margin-bottom:10px;
-}
-
-#outer_tabs_wrapper {
-	margin:0 auto;
-}
-
-/********************************************************************************************************************************************
 	Forms
 ********************************************************************************************************************************************/
 

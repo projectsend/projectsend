@@ -198,9 +198,43 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 												array(
 													'divider'	=> true,
 												),
+											),
+							);
+	$items['emails']	= array(
+								'nav'	=> 'emails',
+								'level'	=> array( 9 ),
+								'main'	=> array(
+												'label'	=> __('E-mail templates', 'cftp_admin'),
+												'icon'	=> 'envelope',
+											),
+								'sub'	=> array(
 												array(
-													'label'	=> __('E-mail templates', 'cftp_admin'),
-													'link'	=> 'email-templates.php',
+													'label'	=> __('Header / footer', 'cftp_admin'),
+													'link'	=> 'email-templates.php?section=header_footer',
+												),
+												array(
+													'label'	=> __('New file by user', 'cftp_admin'),
+													'link'	=> 'email-templates.php?section=new_files_for_client',
+												),
+												array(
+													'label'	=> __('New file by client', 'cftp_admin'),
+													'link'	=> 'email-templates.php?section=new_file_by_client',
+												),
+												array(
+													'label'	=> __('New client (welcome)', 'cftp_admin'),
+													'link'	=> 'email-templates.php?section=new_client',
+												),
+												array(
+													'label'	=> __('New client (self-registered)', 'cftp_admin'),
+													'link'	=> 'email-templates.php?section=new_client_self',
+												),
+												array(
+													'label'	=> __('New user (welcome)', 'cftp_admin'),
+													'link'	=> 'email-templates.php?section=new_user',
+												),
+												array(
+													'label'	=> __('Password reset', 'cftp_admin'),
+													'link'	=> 'email-templates.php?section=password_reset',
 												),
 											),
 							);
@@ -247,7 +281,7 @@ else
 /**
  * Build the menu
  */
-$menu_output = "<ul class='main_menu' role='navigation'>\n";
+$menu_output = "<ul class='main_menu' role='menu'>\n";
 
 foreach ( $items as $item )
 {

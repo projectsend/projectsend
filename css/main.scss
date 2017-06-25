@@ -1078,10 +1078,6 @@ body.login {
 		}
 	}
 
-	.nav_account li {
-		display:inline-block;
-	}
-
 	&.navbar {
 		margin:0;
 		background:$top_bar_background;
@@ -1129,6 +1125,14 @@ body.login {
 				}
 			}
 		}
+
+		.nav_account > li {
+			display:inline-block;
+			
+			> a {
+				color:#f0f0f0;
+			}
+		}
 	}
 
 	.navbar-brand {
@@ -1146,7 +1150,7 @@ body.login {
 	
 	#header_welcome {
 		margin-right:10px;
-		color:#777b87;
+		color:#ccc;
 	}
 }
 

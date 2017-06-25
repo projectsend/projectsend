@@ -731,8 +731,6 @@ body.login {
   height: auto; }
   #header .navbar-header svg:hover {
     fill: #fff; }
-#header .nav_account li {
-  display: inline-block; }
 #header.navbar {
   margin: 0;
   background: #0d0f14;
@@ -763,6 +761,10 @@ body.login {
           display: none; }
         #header.navbar .nav > li > a.toggle_main_menu:hover, #header.navbar .nav > li > a.toggle_main_menu:focus {
           background: none; }
+  #header.navbar .nav_account > li {
+    display: inline-block; }
+    #header.navbar .nav_account > li > a {
+      color: #f0f0f0; }
 #header .navbar-brand {
   height: 40px;
   line-height: 10px;
@@ -771,7 +773,7 @@ body.login {
     text-decoration: none; }
 #header #header_welcome {
   margin-right: 10px;
-  color: #777b87; }
+  color: #ccc; }
 
 .dashboard_contents {
   padding-top: 10px; }

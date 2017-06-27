@@ -293,4 +293,3 @@ class Validate_Form
 }
 
 $valid_me = new Validate_Form();
-?>

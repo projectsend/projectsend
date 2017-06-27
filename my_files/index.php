@@ -6,4 +6,3 @@
 		$this_user = $_GET['client'];
 	}
 	include_once(TEMPLATE_PATH);
-?>

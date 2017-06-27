@@ -37,4 +37,3 @@ if (!isset($grant_access)) {
 	header("location:".BASE_URI);
 	exit;
 }
-?>

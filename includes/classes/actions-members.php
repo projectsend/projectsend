@@ -336,5 +336,3 @@ class MembersActions
 
 	}
 }
-
-?>

@@ -310,4 +310,3 @@ class generateForm {
 		return $this->output;
 	}
 }
-?>

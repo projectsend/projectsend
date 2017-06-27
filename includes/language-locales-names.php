@@ -444,4 +444,3 @@ $locales_names = array(
 					'zu_ZA' => "Zulu (South Africa)",
 					'zu' => "Zulu"
 				);
-?>

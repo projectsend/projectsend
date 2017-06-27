@@ -226,4 +226,3 @@ function reset_update_status()
 	$dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='' WHERE name='version_new_important'");
 	$dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='0' WHERE name='version_new_found'");
 }
-?>

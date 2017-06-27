@@ -301,7 +301,7 @@ class generateTable {
 								</nav>';
 			
 			$this->output .= '<div class="form-group">
-									<label class="control-label hidden-xs hidden-sm" for="page">' . __('Go to:','cftp_admin') . '</label>
+									<label class="control-label hidden-xs hidden-sm">' . __('Go to:','cftp_admin') . '</label>
 									<input type="text" class="form-control" name="page" id="go_to_page" value="' . $params['current'] .'" />
 								</div>
 								<div class="form-group">
@@ -317,4 +317,3 @@ class generateTable {
 		return $this->output;
 	}
 }
-?>

@@ -103,4 +103,3 @@ if ( $limit_files === true ) {
 else {
 	define('CAN_UPLOAD_ANY_FILE_TYPE', true);
 }
-?>

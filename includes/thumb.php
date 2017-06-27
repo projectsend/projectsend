@@ -538,4 +538,3 @@ function UnsharpMask($img, $amount, $radius, $threshold)
      
     return $img;
 }
-?>

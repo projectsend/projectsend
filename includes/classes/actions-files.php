@@ -116,5 +116,3 @@ class FilesActions
 	}
 
 }
-
-?>

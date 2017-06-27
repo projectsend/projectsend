@@ -58,4 +58,3 @@ $validation_req_upper	= __('1 uppercase character','cftp_admin');
 $validation_req_lower	= __('1 lowercase character','cftp_admin');
 $validation_req_number	= __('1 number','cftp_admin');
 $validation_req_special	= __('1 special character','cftp_admin');
-?>

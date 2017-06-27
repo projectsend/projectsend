@@ -57,4 +57,3 @@ if ($last_update < $current_version || !isset($last_update)) {
 		}
 	}
 }
-?>

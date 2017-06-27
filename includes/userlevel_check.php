@@ -200,4 +200,3 @@ function can_see_content($allowed_levels) {
 		die();
 	}
 }
-?>

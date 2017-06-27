@@ -18,4 +18,3 @@ function show_search_form( $action = '' ) {
 	</form>
 <?php
 }
-?>

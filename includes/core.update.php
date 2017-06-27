@@ -1243,5 +1243,4 @@ if (in_session_or_cookies($allowed_update)) {
 			$updates_made++;
 		}
 	}
-}	
-?>
+}

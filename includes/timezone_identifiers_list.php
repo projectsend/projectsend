@@ -573,4 +573,3 @@ if ( !function_exists('timezone_identifiers_list') ) {
 		1);
 	}
 }
-?>

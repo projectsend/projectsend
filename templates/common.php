@@ -217,4 +217,3 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 
 /** Get the url for the logo from "Branding" */
 $logo_file_info = generate_logo_url();
-?>

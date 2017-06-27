@@ -375,4 +375,3 @@ if (defined('TRY_INSTALL')) {
 		
 	);
 }
-?>

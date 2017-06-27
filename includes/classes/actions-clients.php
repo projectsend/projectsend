@@ -330,5 +330,3 @@ class ClientActions
 	}
 
 }
-
-?>

@@ -308,4 +308,3 @@ if (!defined('RESULTS_PER_PAGE')) {
 	define('RESULTS_PER_PAGE', '10');
 	define('RESULTS_PER_PAGE_LOG', '15');
 }
-?>

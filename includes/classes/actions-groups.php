@@ -253,5 +253,3 @@ class GroupActions
 		}
 	}
 }
-
-?>

@@ -545,4 +545,3 @@ class PSend_Email
 		}
 	}
 }
-?>

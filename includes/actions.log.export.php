@@ -52,4 +52,3 @@ if ($log_count > 0) {
 		fputcsv($output, $rendered);
 	}
 }
-?>

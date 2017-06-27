@@ -79,5 +79,3 @@ function check_template_integrity($folder) {
 	}
 	unset($miss);
 }
-
-?>

@@ -38,4 +38,3 @@ require_once('includes/classes/actions-users.php');
 require_once('includes/classes/file-upload.php');
 require_once('includes/classes/form-validation.php');
 require_once('includes/classes/send-email.php');
-?>

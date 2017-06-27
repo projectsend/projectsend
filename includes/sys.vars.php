@@ -10,4 +10,3 @@
  */
 require_once('../../includes/sys.vars.php');
 require_once('../../sys.includes.php');
-?>

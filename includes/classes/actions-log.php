@@ -130,4 +130,3 @@ class LogActions
 		$this->sql_query->execute( $params );
 	}
 }
-?>

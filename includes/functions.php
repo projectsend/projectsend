@@ -1353,4 +1353,3 @@ function render_log_action($params)
 	
 	return $log;
 }
-?>

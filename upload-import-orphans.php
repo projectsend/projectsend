@@ -22,16 +22,38 @@ $active_nav = 'files';
 $page_title = __('Find orphan files', 'cftp_admin');
 include('header.php');
 
+?>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("#upload_by_ftp").submit(function() {
+				var checks = $("td>input:checkbox").serializeArray(); 
+				
+				if (checks.length == 0) { 
+					alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
+					return false; 
+				} 
+			});
+			
+			/**
+			 * Only select the current file when clicking an "edit" button
+			 */
+			$('.btn-edit-file').click(function(e) {
+				$('#select_all').prop('checked', false);
+				$('td .select_file_checkbox').prop('checked', false);
+				$(this).parents('tr').find('td .select_file_checkbox').prop('checked', true);
+				$('#upload-continue').click();
+			});
+
+		});
+	</script>
+<?php
 /**
  * Use the folder defined on sys.vars.php
  * Composed of the absolute path to that file plus the
  * default uploads folder.
  */
 $work_folder = UPLOADED_FILES_FOLDER;
-?>
-<div class="col-xs-12">
 
-	<?php
 		if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
 			$msg = __('This list only shows the files that are allowed according to your security settings. If the file type you need to add is not listed here, add the extension to the "Allowed file extensions" box on the options page.', 'cftp_admin');
 			echo system_message('warning',$msg);
@@ -54,11 +76,12 @@ $work_folder = UPLOADED_FILES_FOLDER;
 		 * When a file doesn't correspond to a record, it can
 		 * be safely renamed.
 		 */
-		$sql = $dbh->query("SELECT url, id, public_allow FROM " . TABLE_FILES );
+		$sql = $dbh->query("SELECT original_url, url, id, public_allow FROM " . TABLE_FILES );
 		$db_files = array();
 		$sql->setFetchMode(PDO::FETCH_ASSOC);
 		while ( $row = $sql->fetch() ) {
 			$db_files[$row["url"]] = $row["id"];
+			$db_files[$row["original_url"]] = $row["id"];
 			if ($row['public_allow'] == 1) {$db_files_public[$row["url"]] = $row["id"];}
 		}
 
@@ -106,6 +129,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 		}
 		
 		if (!empty($_GET['search'])) {
+			$no_results_error = 'search';
 			$search = htmlspecialchars($_GET['search']);
 			
 			function search_text($item) {
@@ -129,127 +153,139 @@ $work_folder = UPLOADED_FILES_FOLDER;
 		}
 		
 //			var_dump($result);
-		
-		/**
-		 * Generate the list of files if there is at least 1
-		 * available and allowed.
-		 */
-		if(isset($files_to_add) && count($files_to_add) > 0) {
-	?>
-			<div class="form_actions_limit_results">
-				<?php show_search_form('upload-import-orphans.php'); ?>
-			</div>
+?>
+<div class="col-xs-12">
+	<div class="form_actions_limit_results">
+		<?php show_search_form('upload-import-orphans.php'); ?>
+	</div>
 
-			<div class="clear"></div>
+	<div class="form_actions_count">
+		<p class="form_count_total"><?php _e('Showing','cftp_admin'); ?>: <span><?php echo count($files_to_add); ?> <?php _e('files','cftp_admin'); ?></span></p>
+	</div>
+
+
+	<form action="upload-process-form.php" name="upload_by_ftp" id="upload_by_ftp" method="post" enctype="multipart/form-data">
+		<?php		
+			/**
+			 * Generate the list of files if there is at least 1
+			 * available and allowed.
+			 */
+			if ( isset( $files_to_add ) && count( $files_to_add ) > 0 ) {
 	
-			<div class="form_actions_count">
-				<p class="form_count_total"><?php _e('Showing','cftp_admin'); ?>: <span><?php echo count($files_to_add); ?> <?php _e('files','cftp_admin'); ?></span></p>
-			</div>
+				$table_attributes	= array(
+											'id'				=> 'add_files_from_ftp',
+											'class'				=> 'footable table',
+											'data-page-size'	=> FOOTABLE_PAGING_NUMBER,
+										);
+				$table = new generateTable( $table_attributes );
 	
-			<div class="clear"></div>
+				$thead_columns		= array(
+											array(
+												'select_all'	=> true,
+												'attributes'	=> array(
+																		'class'		=> array( 'td_checkbox' ),
+																	),
+											),
+											array(
+												'content'		=> __('File name','cftp_admin'),
+												'attributes'	=> array(
+																		'data-sort-initial'	=> 'true',
+																	),
+											),
+											array(
+												'content'		=> __('File size','cftp_admin'),
+												'hide'			=> 'phone',
+												'attributes'	=> array(
+																		'data-type'	=> 'numeric',
+																	),
+											),
+											array(
+												'content'		=> __('Last modified','cftp_admin'),
+												'hide'			=> 'phone',
+												'attributes'	=> array(
+																		'data-type'	=> 'numeric',
+																	),
+											),
+											array(
+												'content'		=> __('Actions','cftp_admin'),
+											),
+										);
+				$table->thead( $thead_columns );
 
-			<form action="upload-process-form.php" name="upload_by_ftp" id="upload_by_ftp" method="post" enctype="multipart/form-data">
-				<table id="add_files_from_ftp" class="footable" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
-					<thead>
-						<tr>
-							<th class="td_checkbox" data-sort-ignore="true">
-								<input type="checkbox" name="select_all" id="select_all" value="0" />
-							</th>
-							<th data-sort-initial="true"><?php _e('File name','cftp_admin'); ?></th>
-							<th data-type="numeric" data-hide="phone"><?php _e('File size','cftp_admin'); ?></th>
-							<th data-type="numeric" data-hide="phone"><?php _e('Last modified','cftp_admin'); ?></th>
-							<th><?php _e('Actions','cftp_admin'); ?></th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php
-							foreach ($files_to_add as $add_file) {
-								?>
-									<tr>
-										<td><input type="checkbox" name="add[]" class="select_file_checkbox" value="<?php echo html_output($add_file['name']); ?>" /></td>
-										<td><?php echo html_output($add_file['name']); ?></td>
-										<td data-value="<?php echo filesize($add_file['path']); ?>"><?php echo html_output(format_file_size(get_real_size($add_file['path']))); ?></td>
-										<td data-value="<?php echo filemtime($add_file['path']); ?>">
-											<?php echo date(TIMEFORMAT_USE, filemtime($add_file['path'])); ?>
-										</td>
-										<td>
-											<button type="button" name="file_edit" class="btn btn-primary btn-sm btn-edit-file">
-												<i class="fa fa-pencil"></i><span class="button_label"><?php _e('Edit','cftp_admin'); ?></span>
-											</a>
-										</td>
-									</tr>
-								<?php
-							}
-						?>
-					</tbody>
-				</table>
+				foreach ($files_to_add as $add_file) {
+					$table->add_row();
+					/**
+					 * Add the cells to the row
+					 */
+					$tbody_cells = array(
+											array(
+													'content'		=> '<input type="checkbox" name="add[]" class="select_file_checkbox" value="' . html_output( $add_file['name'] ) . '" />',
+												),
+											array(
+													'content'		=> html_output( $add_file['name'] ),
+												),
+											array(
+													'content'		=> html_output( format_file_size( get_real_size( $add_file['path'] ) ) ),
+													'attributes'	=> array(
+																			'data-value'	=> filesize( $add_file['path'] ),
+																		),
+												),
+											array(
+													'content'		=> date( TIMEFORMAT_USE, filemtime( $add_file['path'] ) ),
+													'attributes'	=> array(
+																			'data-value'	=> filemtime( $add_file['path'] ),
+																		),
+												),
+											array(
+													'actions'		=> true,
+													'content'		=>  '<button type="button" name="file_edit" class="btn btn-primary btn-sm btn-edit-file"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></button>' . "\n"
+												),
+										);
 
+					foreach ( $tbody_cells as $cell ) {
+						$table->add_cell( $cell );
+					}
+	
+					$table->end_row();
+				}
+
+				echo $table->render();
+		?>
 				<nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
 					<div class="pagination_wrapper text-center">
 						<ul class="pagination hide-if-no-paging"></ul>
 					</div>
 				</nav>
-
-				<?php
-					$msg = __('Please note that the listed files will be renamed if they contain invalid characters.','cftp_admin');
-					echo system_message('info',$msg);
-				?>
-
+		<?php
+				$msg = __('Please note that the listed files will be renamed if they contain invalid characters.','cftp_admin');
+				echo system_message('info',$msg);
+		?>
 				<div class="after_form_buttons">
 					<button type="submit" name="submit" class="btn btn-wide btn-primary" id="upload-continue"><?php _e('Continue','cftp_admin'); ?></button>
 				</div>
-			</form>
-
-			<script type="text/javascript">
-				$(document).ready(function() {
-					$("#upload_by_ftp").submit(function() {
-						var checks = $("td>input:checkbox").serializeArray(); 
-						if (checks.length == 0) { 
-							alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
-							return false; 
-						} 
-					});
-					
-					/**
-					 * Only select the current file when clicking an "edit" button
-					 */
-					$('.btn-edit-file').click(function(e) {
-						$('#select_all').prop('checked', false);
-						$('td .select_file_checkbox').prop('checked', false);
-						$(this).parents('tr').find('td .select_file_checkbox').prop('checked', true);
-						$('#upload-continue').click();
-					});
-
-				});
-			</script>
-	<?php
-		}
-		else {
-			/** No files found */
-		?>
-			<div class="container">
-				<div class="row">
-					<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
-						<div class="white-box-interior">
-							<p><?php _e('There are no files available to add right now.', 'cftp_admin'); ?></p>
-							<p class="margin_0">
-								<?php
-									_e('To use this feature you need to upload your files via FTP to the folder', 'cftp_admin');
-									echo ' <span class="format_url"><strong>'.html_output($work_folder).'</strong></span>.';
-								?>
-							</p>
-							<?php /*
-							<p><?php _e('This is the same folder where the files uploaded by the web interface will be stored. So if you finish uploading your files but do not assign them to any clients/groups, the files will still be there for later use.', 'cftp_admin'); ?></p>
-							*/ ?>
-						</div>
-					</div>
-				</div>
-			</div>
 		<?php
-		}
-	?>
+			}
 
+			/** No files found */
+			else {
+				if (isset($no_results_error)) {
+					switch ($no_results_error) {
+						case 'search':
+							$no_results_message = __('Your search keywords returned no results.','cftp_admin');
+							break;
+					}
+				}
+				else {
+					$no_results_message = __('There are no files available to add right now.','cftp_admin');
+					$no_results_message = __('To use this feature you need to upload your files via FTP to the folder','cftp_admin');
+					$no_results_message = ' <span class="format_url"><strong>'.html_output($work_folder).'</strong></span>.';
+				}
+	
+				echo system_message('error',$no_results_message);
+			}
+		?>
+	</form>
 </div>
-
+	
 <?php
 	include('footer.php');

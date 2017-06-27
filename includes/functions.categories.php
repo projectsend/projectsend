@@ -50,7 +50,9 @@ function get_categories( $params = array() ) {
 	$order		= ( !empty( $params['order'] ) ) ? $params['order'] : 'ASC';
 	$parent		= ( !empty( $params['parent'] ) ) ? $params['parent'] : false;
 	$id			= ( !empty( $params['id'] ) ) ? $params['id'] : array();
-
+	// pagination
+	$page		= ( !empty( $params['page'] ) ) ? $params['page'] : '';
+	
 	/**
 	 * By default, count files assigned to each category.
 	 * Avoids doing this individually later if needed.
@@ -127,6 +129,10 @@ function get_categories( $params = array() ) {
 	/** Count results and add the value to the response array */
 	$count				= $statement->rowCount();
 	$return['count']	= $count;
+
+	/**
+	 * Repeat the query but this time, limited by pagination
+	 */
 	
 	if ( $count > 0 ) {
 		$statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -164,6 +170,10 @@ function get_categories( $params = array() ) {
 			}
 		}
 		
+
+		$statement->execute( $sql_params );
+		$count = $statement->rowCount();
+
 		$return['arranged'] = arrange_categories( $found_categories );
 
 		$return['categories'] = $found_categories;
@@ -245,4 +255,3 @@ function generate_categories_options( $categories, $parent = 0, $selected = arra
 	
 	return $return;
 }
-?>

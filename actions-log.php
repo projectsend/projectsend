@@ -224,12 +224,12 @@ include('header.php');
 				if (isset($no_results_error)) {
 					switch ($no_results_error) {
 						case 'filter':
-							$no_results_message = __('The filters you selected returned no results.','cftp_admin');;
+							$no_results_message = __('The filters you selected returned no results.','cftp_admin');
 							break;
 					}
 				}
 				else {
-					$no_results_message = __('There are no activities recorded.','cftp_admin');;
+					$no_results_message = __('There are no activities recorded.','cftp_admin');
 				}
 				echo system_message('error',$no_results_message);
 			}

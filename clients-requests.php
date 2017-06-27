@@ -314,15 +314,15 @@ include('header.php');
 					if (isset($no_results_error)) {
 						switch ($no_results_error) {
 							case 'search':
-								$no_results_message = __('Your search keywords returned no results.','cftp_admin');;
+								$no_results_message = __('Your search keywords returned no results.','cftp_admin');
 								break;
 							case 'filter':
-								$no_results_message = __('The filters you selected returned no results.','cftp_admin');;
+								$no_results_message = __('The filters you selected returned no results.','cftp_admin');
 								break;
 						}
 					}
 					else {
-						$no_results_message = __('There are no clients at the moment','cftp_admin');;
+						$no_results_message = __('There are no clients at the moment','cftp_admin');
 					}
 					echo system_message('error',$no_results_message);
 				}

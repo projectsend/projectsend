@@ -16,7 +16,7 @@ require_once('sys.includes.php');
 
 $active_nav = 'groups';
 
-$page_title = __('Groups administration','cftp_admin');;
+$page_title = __('Groups administration','cftp_admin');
 
 /**
  * Used when viewing groups a certain client belongs to.
@@ -274,21 +274,21 @@ include('header.php');
 				if (isset($no_results_error)) {
 					switch ($no_results_error) {
 						case 'search':
-							$no_results_message = __('Your search keywords returned no results.','cftp_admin');;
+							$no_results_message = __('Your search keywords returned no results.','cftp_admin');
 							break;
 						case 'filter':
-							$no_results_message = __('The filters you selected returned no results.','cftp_admin');;
+							$no_results_message = __('The filters you selected returned no results.','cftp_admin');
 							break;
 						case 'client_not_exists':
-							$no_results_message = __('The client does not exist.','cftp_admin');;
+							$no_results_message = __('The client does not exist.','cftp_admin');
 							break;
 						case 'is_not_member':
-							$no_results_message = __('There are no groups where this client is member.','cftp_admin');;
+							$no_results_message = __('There are no groups where this client is member.','cftp_admin');
 							break;
 					}
 				}
 				else {
-					$no_results_message = __('There are no groups created yet.','cftp_admin');;
+					$no_results_message = __('There are no groups created yet.','cftp_admin');
 				}
 				echo system_message('error',$no_results_message);
 			}

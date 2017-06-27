@@ -113,7 +113,7 @@ class MembersActions
 	function client_add_to_groups($arguments)
 	{
 		$this->client_id	= $arguments['client_id'];
-		$this->group_ids	= is_array( $arguments['group_ids'] ) ? $arguments['group_ids'] : array( $arguments['group_ids'] );;
+		$this->group_ids	= is_array( $arguments['group_ids'] ) ? $arguments['group_ids'] : array( $arguments['group_ids'] );
 		$this->added_by		= $arguments['added_by'];
 		
 		if ( in_array( CURRENT_USER_LEVEL, array(9,8) ) || ( defined('AUTOGROUP') ) ) {
@@ -148,7 +148,7 @@ class MembersActions
 	function client_edit_groups($arguments)
 	{
 		$this->client_id	= $arguments['client_id'];
-		$this->group_ids	= is_array( $arguments['group_ids'] ) ? $arguments['group_ids'] : array( $arguments['group_ids'] );;
+		$this->group_ids	= is_array( $arguments['group_ids'] ) ? $arguments['group_ids'] : array( $arguments['group_ids'] );
 		$this->added_by		= $arguments['added_by'];
 
 		if ( in_array( CURRENT_USER_LEVEL, array(9,8) ) ) {

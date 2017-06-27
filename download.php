@@ -48,7 +48,7 @@ include('header-unlogged.php');
 				$can_download = false;
 			}
 
-			$real_file_url	= (!empty( $got_url['original_url'] ) ) ? $got_url['original_url'] : $got_url['url'];;
+			$real_file_url	= (!empty( $got_url['original_url'] ) ) ? $got_url['original_url'] : $got_url['url'];
 			$file_on_disk	= $got_url['url'];
 		}
 		else {

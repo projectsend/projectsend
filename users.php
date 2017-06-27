@@ -20,7 +20,7 @@ if(!check_for_admin()) {
 
 $active_nav = 'users';
 
-$page_title = __('Users administration','cftp_admin');;
+$page_title = __('Users administration','cftp_admin');
 include('header.php');
 ?>
 
@@ -304,10 +304,10 @@ include('header.php');
 			if (!$count) {
 				switch ($no_results_error) {
 					case 'search':
-						$no_results_message = __('Your search keywords returned no results.','cftp_admin');;
+						$no_results_message = __('Your search keywords returned no results.','cftp_admin');
 						break;
 					case 'filter':
-						$no_results_message = __('The filters you selected returned no results.','cftp_admin');;
+						$no_results_message = __('The filters you selected returned no results.','cftp_admin');
 						break;
 				}
 				echo system_message('error',$no_results_message);

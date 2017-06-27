@@ -297,12 +297,12 @@ if ( isset( $_POST['btn_process'] ) ) {
 				if ( !empty( $get_categories['no_results_type'] ) ) {
 					switch ( $get_categories['no_results_type'] ) {
 						case 'search':
-							$no_results_message = __('Your search keywords returned no results.','cftp_admin');;
+							$no_results_message = __('Your search keywords returned no results.','cftp_admin');
 							break;
 					}
 				}
 				else {
-					$no_results_message = __('There are no categories yet.','cftp_admin');;
+					$no_results_message = __('There are no categories yet.','cftp_admin');
 				}
 				echo system_message('error', $no_results_message);
 			}

@@ -142,7 +142,7 @@ if (in_session_or_cookies($log_allowed)) {
 								<h3><?php _e('Database','cftp_admin'); ?></h3>
 								<dl class="dl-horizontal">
 									<dt><?php _e('Driver','cftp_admin'); ?></dt>
-									<dd><?php echo $dbh->getAttribute(PDO::ATTR_DRIVER_NAME);; ?></dd>
+									<dd><?php echo $dbh->getAttribute(PDO::ATTR_DRIVER_NAME); ?></dd>
 
 									<dt><?php _e('Version','cftp_admin'); ?></dt>
 									<dd><?php echo $dbh->query('select version()')->fetchColumn(); ?></dd>

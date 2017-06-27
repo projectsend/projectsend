@@ -538,24 +538,24 @@ include('header.php');
 					if (isset($no_results_error)) {
 						switch ($no_results_error) {
 							case 'search':
-								$no_results_message = __('Your search keywords returned no results.','cftp_admin');;
+								$no_results_message = __('Your search keywords returned no results.','cftp_admin');
 								break;
 							case 'category':
-								$no_results_message = __('There are no files assigned to this category.','cftp_admin');;
+								$no_results_message = __('There are no files assigned to this category.','cftp_admin');
 								break;
 							case 'filter':
-								$no_results_message = __('The filters you selected returned no results.','cftp_admin');;
+								$no_results_message = __('The filters you selected returned no results.','cftp_admin');
 								break;
 							case 'none_assigned':
-								$no_results_message = __('There are no files assigned to this client.','cftp_admin');;
+								$no_results_message = __('There are no files assigned to this client.','cftp_admin');
 								break;
 							case 'account_level':
-								$no_results_message = __('You have not uploaded any files for this account.','cftp_admin');;
+								$no_results_message = __('You have not uploaded any files for this account.','cftp_admin');
 								break;
 						}
 					}
 					else {
-						$no_results_message = __('There are no files for this client.','cftp_admin');;
+						$no_results_message = __('There are no files for this client.','cftp_admin');
 					}
 					echo system_message('error',$no_results_message);
 				}

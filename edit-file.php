@@ -114,13 +114,13 @@ $current_level = get_current_user_level();
 		if (isset($no_results_error)) {
 			switch ($no_results_error) {
 				case 'no_id_passed':
-					$no_results_message = __('Please go to the clients or groups administration page, select "Manage files" from any client and then click on "Edit" on any file to return here.','cftp_admin');;
+					$no_results_message = __('Please go to the clients or groups administration page, select "Manage files" from any client and then click on "Edit" on any file to return here.','cftp_admin');
 					break;
 				case 'id_not_exists':
-					$no_results_message = __('There is not file with that ID number.','cftp_admin');;
+					$no_results_message = __('There is not file with that ID number.','cftp_admin');
 					break;
 				case 'not_uploader':
-					$no_results_message = __("You don't have permission to edit this file.",'cftp_admin');;
+					$no_results_message = __("You don't have permission to edit this file.",'cftp_admin');
 					break;
 			}
 	?>

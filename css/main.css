@@ -93,7 +93,7 @@
     color: #333333;
     font-size: 27px;
     line-height: 29px;
-    margin: 0 0 15px;
+    margin: 0 0 35px;
     letter-spacing: -1px; }
   .backend h3 {
     font-size: 17px;
@@ -331,7 +331,6 @@
     border-radius: 2px;
     /*@include box-shadow(3px 3px 5px, #dedede);*/ }
   .backend .white-box {
-    margin-top: 35px;
     background-color: white;
     border: 1px solid #ccc;
     -webkit-border-radius: 2px;
@@ -614,6 +613,8 @@
   .backend .btn-inverse:hover {
     color: white;
     background: #555; }
+  .backend .button_label {
+    display: none; }
   .backend .td_checkbox {
     width: 50px; }
   .backend #uploaded_files_tbl {

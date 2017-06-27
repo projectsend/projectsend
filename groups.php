@@ -60,20 +60,22 @@ include('header.php');
 <script type="text/javascript">
 	$(document).ready( function() {
 		$("#do_action").click(function() {
-			var checks = $("td>input:checkbox").serializeArray(); 
-			if (checks.length == 0) { 
-				alert('<?php _e('Please select at least one group to proceed.','cftp_admin'); ?>');
-				return false; 
-			}
-			else {
-				var action = $('#action').val();
-				if (action == 'delete') {
-					var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
-					var msg_2 = '<?php _e("groups. Are you sure you want to continue?",'cftp_admin'); ?>';
-					if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
-						return true;
-					} else {
-						return false;
+			var action = $('#action').val();
+			if (action != 'none') {
+				var checks = $("td>input:checkbox").serializeArray(); 
+				if (checks.length == 0) { 
+					alert('<?php _e('Please select at least one group to proceed.','cftp_admin'); ?>');
+					return false; 
+				}
+				else {
+					if (action == 'delete') {
+						var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
+						var msg_2 = '<?php _e("groups. Are you sure you want to continue?",'cftp_admin'); ?>';
+						if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
+							return true;
+						} else {
+							return false;
+						}
 					}
 				}
 			}
@@ -346,6 +348,10 @@ include('header.php');
 												'hide'			=> 'phone',
 											),
 											array(
+												'content'		=> __('View','cftp_admin'),
+												'hide'			=> 'phone',
+											),
+											array(
 												'content'		=> __('Actions','cftp_admin'),
 												'hide'			=> 'phone',
 											),
@@ -361,7 +367,19 @@ include('header.php');
 					 * 1- Get account creation date
 					 */
 					$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
-
+					
+					/**
+					 * 2- Button class for the manage files link
+					 */
+					if ( isset( $files_amount[$row['id']] ) ) {
+						$files_link	= 'manage-files.php?group_id=' . html_output( $row["id"] );
+						$files_btn	= 'btn-primary';
+					}
+					else {
+						$files_link	= '#';
+						$files_btn	= 'btn-default disabled';
+					}
+					
 					/**
 					 * Add the cells to the row
 					 */
@@ -393,8 +411,11 @@ include('header.php');
 												),
 											array(
 													'actions'		=> true,
-													'content'		=> '<a href="manage-files.php?group_id=' . html_output( $row["id"] ) . '" class="btn btn-primary btn-sm">' . __('Manage files','cftp_admin') . '</a>' . "\n" .
-																		'<a href="groups-edit.php?id=' . html_output( $row["id"] ) . '" class="btn btn-primary btn-sm">' . __('Edit','cftp_admin') . '</a>' . "\n"
+													'content'		=> '<a href="' . $files_link . '" class="btn ' . $files_btn . ' btn-sm">' . __('Files','cftp_admin') . '</a>',
+												),
+											array(
+													'actions'		=> true,
+													'content'		=> '<a href="groups-edit.php?id=' . html_output( $row["id"] ) . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a>' . "\n"
 												),
 										);
 

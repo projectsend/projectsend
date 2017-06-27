@@ -174,7 +174,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 										</td>
 										<td>
 											<button type="button" name="file_edit" class="btn btn-primary btn-sm btn-edit-file">
-												<?php _e('Edit','cftp_admin'); ?>
+												<i class="fa fa-pencil"></i><span class="button_label"><?php _e('Edit','cftp_admin'); ?></span>
 											</a>
 										</td>
 									</tr>

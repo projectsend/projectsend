@@ -89,29 +89,31 @@ include('header.php');
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("#do_action").click(function() {
-			var checks = $("td>input:checkbox").serializeArray(); 
-			if (checks.length == 0) { 
-				alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
-				return false; 
-			} 
-			else {
-				var action = $('#action').val();
-				if (action == 'delete') {
-					var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
-					var msg_2 = '<?php _e("files permanently and for every client/group. Are you sure you want to continue?",'cftp_admin'); ?>';
-					if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
-						return true;
-					} else {
-						return false;
+			var action = $('#action').val();
+			if (action != 'none') {
+				var checks = $("td>input:checkbox").serializeArray(); 
+				if (checks.length == 0) { 
+					alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
+					return false; 
+				} 
+				else {
+					if (action == 'delete') {
+						var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
+						var msg_2 = '<?php _e("files permanently and for every client/group. Are you sure you want to continue?",'cftp_admin'); ?>';
+						if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
+							return true;
+						} else {
+							return false;
+						}
 					}
-				}
-				else if (action == 'unassign') {
-					var msg_1 = '<?php _e("You are about to unassign",'cftp_admin'); ?>';
-					var msg_2 = '<?php _e("files from this account. Are you sure you want to continue?",'cftp_admin'); ?>';
-					if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
-						return true;
-					} else {
-						return false;
+					else if (action == 'unassign') {
+						var msg_1 = '<?php _e("You are about to unassign",'cftp_admin'); ?>';
+						var msg_2 = '<?php _e("files from this account. Are you sure you want to continue?",'cftp_admin'); ?>';
+						if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
+							return true;
+						} else {
+							return false;
+						}
 					}
 				}
 			}
@@ -727,7 +729,7 @@ include('header.php');
 								$visibility_label	= __('View information','cftp_admin');
 							}
 							else {
-								$visibility_link	= '<a href="javascript:void(0);" class="btn btn-default btn-sm disabled" rel="" title="">';
+								$visibility_link	= '<a href="javascript:void(0);" class="btn btn-default btn-sm disabled" title="">';
 								$visibility_label	= __('None','cftp_admin');
 							}
 						}
@@ -774,7 +776,7 @@ include('header.php');
 								case 'group':
 								case 'category':
 									$download_count_class	= ( $row['download_count'] > 0 ) ? 'downloaders btn-primary' : 'btn-default disabled';
-									$download_count_content	= '<a href="' . BASE_URI .'download-information.php?id=' . $row['id'] .'" class="' . $download_count_class . ' btn btn-sm" rel="' . $row["id"] . '" title="' . html_output( $row['filename'] ) . '">' . $download_count_content . '</a>';
+									$download_count_content	= '<a href="' . BASE_URI .'download-information.php?id=' . $row['id'] .'" class="' . $download_count_class . ' btn btn-sm" title="' . html_output( $row['filename'] ) . '">' . $download_count_content . '</a>';
 								break;
 							}
 						}
@@ -792,7 +794,7 @@ include('header.php');
 									$btn_class		= 'btn-default disabled';
 								}
 	
-								$downloads_table_link = '<a href="' . BASE_URI .'download-information.php?id=' . $row['id'] .'" class="' . $btn_class .' btn btn-sm" rel="' . $row["id"] .'" title="' .html_output($row['filename']) .'">' . $row["download_count"] . ' ' . __('downloads','cftp_admin') .'</a>';
+								$downloads_table_link = '<a href="' . BASE_URI .'download-information.php?id=' . $row['id'] .'" class="' . $btn_class .' btn btn-sm" title="' .html_output($row['filename']) .'">' . $row["download_count"] . ' ' . __('downloads','cftp_admin') .'</a>';
 							}
 						}
 	
@@ -852,7 +854,7 @@ include('header.php');
 													'condition'		=> $conditions['total_downloads'],
 												),
 												array(
-													'content'		=> '<a href="edit-file.php?file_id=' . $row["id"] .'" class="btn btn-primary btn-sm">' . __('Edit','cftp_admin') . '</a>',
+													'content'		=> '<a href="edit-file.php?file_id=' . $row["id"] .'" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a>',
 												),
 									);
 	

@@ -49,7 +49,7 @@ if(isset($_POST['finished_files'])) {
 	$uploaded_files = array_filter($_POST['finished_files']);
 }
 /** Coming from upload by FTP */
-if(isset($_POST['add'])) {
+if ( isset($_POST['add'] ) ) {
 	$uploaded_files = $_POST['add'];
 }
 

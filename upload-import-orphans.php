@@ -261,7 +261,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 				echo system_message('info',$msg);
 		?>
 				<div class="after_form_buttons">
-					<button type="submit" name="submit" class="btn btn-wide btn-primary" id="upload-continue"><?php _e('Continue','cftp_admin'); ?></button>
+					<button type="submit" class="btn btn-wide btn-primary" id="upload-continue"><?php _e('Continue','cftp_admin'); ?></button>
 				</div>
 		<?php
 			}

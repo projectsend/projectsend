@@ -420,8 +420,9 @@ while( $row = $statement->fetch() ) {
 		<form action="upload-process-form.php" name="save_files" id="save_files" method="post">
 			<?php
 				foreach($uploaded_files as $add_uploaded_field) {
-					echo '<input type="hidden" name="finished_files[]" value="'.$add_uploaded_field.'" />
-					';
+			?>
+					<input type="hidden" name="finished_files[]" value="<?php echo $add_uploaded_field; ?>" />
+			<?php
 				}
 			?>
 			

@@ -221,6 +221,7 @@ while( $row = $statement->fetch() ) {
 					}
 					return implode($pass); //turn the array into a string
 				}
+				
 				$nuser_list = $_POST['new_client'];
 				if(!empty($file['assignments'])){
 					$full_list = $file['assignments'];
@@ -285,7 +286,7 @@ mail($to, $subject, $message, implode("\r\n", $headers));
 						array_push($full_list,'c'.$nuser_id);
 					}
 				}
-									//	echo "HERE !!!222 ";print_r($full_list);exit;
+				//	echo "HERE !!!222 ";print_r($full_list);exit;
 
 				//print_r($full_list);exit();
 				$full_assi_user = $full_list;
@@ -326,6 +327,7 @@ mail($to, $subject, $message, implode("\r\n", $headers));
 						 * 1- Add the file to the database
 						 */
 						$process_file = $this_upload->upload_add_to_database($add_arguments);
+						
 						if($process_file['database'] == true) {
 							$add_arguments['new_file_id']	= $process_file['new_file_id'];
 							$add_arguments['all_users']		= $users;
@@ -335,7 +337,6 @@ mail($to, $subject, $message, implode("\r\n", $headers));
 							 * 2- Add the assignments to the database
 							 */
 							$process_assignment = $this_upload->upload_add_assignment($add_arguments);
-
 							/**
 							 * 3- Add the assignments to the database
 							 */
@@ -348,9 +349,62 @@ mail($to, $subject, $message, implode("\r\n", $headers));
 							/**
 							 * 4- Add the notifications to the database
 							 */
+							
 							if ($send_notifications == true) {
-								$process_notifications = $this_upload->upload_add_notifications($add_arguments);
+								$process_notifications = $this_upload->upload_add_notifications($add_arguments); 
 							}
+							
+							// added by B)
+							if($send_notifications == true && $add_arguments['uploader_type']= 'user') {
+								$userarray = array();
+								foreach($add_arguments['assign_to'] as $assigned) {
+									$userarray[] = substr($assigned, -1);
+								}
+								$userarrayarg = '"' . implode('","', $userarray) . '"';
+								$statement = $dbh->prepare("SELECT id,user,name,email FROM " . TABLE_USERS . " WHERE `id` IN ($userarrayarg) and level != 0");
+								$statement->execute();
+								$statement->setFetchMode(PDO::FETCH_ASSOC);
+								$notifyuser = $statement->fetchAll();
+								foreach($notifyuser as $user) {
+									// --------------------------------- email notification start here! B)
+$to = $user['email']; // note the comma
+
+// Subject
+$subject = 'New files uploaded for you';
+
+// Message
+$message = '
+<html>
+<head>
+<title>New files uploaded for you</title>
+</head>
+<body>
+<p>The following files are now available for you to download.</p>
+<h1>'.$add_arguments['name'].'</h1>
+<p>If you prefer not to be notified about new files, please go to My Account and deactivate the notifications checkbox.</p>
+<p>You can access a list of all your files or upload your own by logging in <a href="'.$tt.'">here</a></p>
+</body>
+</html>
+';
+
+// To send HTML mail, the Content-type header must be set
+$headers[] = 'MIME-Version: 1.0';
+$headers[] = 'Content-type: text/html; charset=iso-8859-1';
+
+// Additional headers
+$headers[] = 'To: <'.$to.'>';
+$headers[] = 'From:  MicroHealth<info@microhealthllc.com>';
+
+// Mail it
+if(mail($to, $subject, $message, implode("\r\n", $headers))) {
+	echo "<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert'>×</a>E-mail notifications have been sent.</div>";
+}
+
+// email notification End here! B)
+								}
+								
+							}
+// End by B)
 							/**
 							 * 5- Mark is as correctly uploaded / assigned
 							 */

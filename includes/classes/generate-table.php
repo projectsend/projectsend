@@ -221,9 +221,22 @@ class generateTable {
 	private function construct_pagination_link( $link, $page = 1 ) {
 		$params['page'] = $page;
 	
+		/**
+		 * List of parameters to ignore when building the pagination links.
+		 * TODO: change it so it ignores all but 'search' instead? must check
+		 * if there are other parameters that need to be saved.
+		 */
+		$ignore_current_params = array(
+										'page',
+										'categories_actions',
+										'action',
+										'do_action',
+										'batch',
+									);
+									
 		if ( !empty( $_GET ) ) {
 			foreach ( $_GET as $param => $value ) {
-				if ( $param != 'page' ) {
+				if ( !in_array($param, $ignore_current_params ) ) {
 					$params[$param] = $value;
 				}
 			}

@@ -108,12 +108,12 @@ class process {
 						*/
 						setcookie("rememberwho",$sysuser_username,time()+COOKIE_EXP_TIME);
 					}
-					
 					/** Record the action log */
 					$this->new_log_action = new LogActions();
 					$this->log_action_args = array(
 											'action' => 1,
 											'owner_id' => $this->logged_id,
+											'owner_user' => $this->global_name,
 											'affected_account_name' => $this->global_name
 										);
 					$this->new_record_action = $this->new_log_action->log_action_save($this->log_action_args);

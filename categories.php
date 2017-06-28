@@ -86,12 +86,12 @@ if ( !empty( $_GET['status'] ) ) {
 if ( isset( $_GET['categories_actions'] ) ) {
 	if ( $_GET['categories_actions'] != 'none' ) {
 		/** Continue only if 1 or more categories were selected. */
-		if ( !empty($_GET['categories'] ) ) {
+		if ( !empty($_GET['batch'] ) ) {
 	
 			/**
 			 * Make a list of categories to avoid individual queries.
 			 */
-			$selected_categories	= $_GET['categories'];
+			$selected_categories	= $_GET['batch'];
 	
 			$get_categories_delete	= get_categories(
 													array(

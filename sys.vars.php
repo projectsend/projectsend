@@ -28,7 +28,7 @@ define('PROTOCOL', empty($_SERVER['HTTPS'])? 'http' : 'https');
  * - Changes the error_reporting php value
  * - Enables the PDOEX extension (on the database class) to count queries
  */
-define('DEBUG', false);
+define('DEBUG', true);
 
 /**
  * Turn off reporting of PHP errors, warnings and notices.

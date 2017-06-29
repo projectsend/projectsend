@@ -1,5 +1,7 @@
 <?php
-	require_once('sys.includes.php');
+	if ( isset( $_GET['ajax_call'] ) ) {
+		require_once('../../sys.includes.php');
+	}
 
 	$allowed_news = array(9,8,7);
 	if (in_array(CURRENT_USER_LEVEL,$allowed_news)) {

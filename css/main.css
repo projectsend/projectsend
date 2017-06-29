@@ -289,19 +289,7 @@
       font-size: .9em;
       padding: 4px; }
       .backend .graph_legend li.legend_color {
-        margin: 2px 5px 0 0;
-        border-top-width: 5px;
-        border-top-style: solid; }
-        .backend .graph_legend li.legend_color.legend_color1 {
-          border-top: 5px solid #0094bb; }
-        .backend .graph_legend li.legend_color.legend_color2 {
-          border-top-color: #86ae00; }
-        .backend .graph_legend li.legend_color.legend_color3 {
-          border-top-color: #f2b705; }
-        .backend .graph_legend li.legend_color.legend_color4 {
-          border-top-color: #C60F13; }
-        .backend .graph_legend li.legend_color.legend_color5 {
-          border-top-color: #1ec4a7; }
+        margin: 2px 5px 0 0; }
   .backend .stats_change_data, .backend .log_change_action {
     margin-bottom: 2em; }
   .backend .widget_system_info .widget_int h3:first-child {
@@ -310,18 +298,21 @@
     margin-bottom: 25px; }
   .backend .widget_system_info dt {
     text-align: left; }
-  .backend #stats_tooltip {
+  .backend .widget_statistics #stats_tooltip {
     position: absolute;
     display: none;
     background: black;
     color: #FFFFFF;
     padding: 5px; }
-  .backend .login_form_links {
+  .backend .widget_statistics .login_form_links {
     margin-top: 14px;
     padding-top: 8px;
     border-top: 1px dotted #ccc; }
-  .backend .login_form_links p {
-    margin: 10px 0 0; }
+    .backend .widget_statistics .login_form_links p {
+      margin: 10px 0 0; }
+  .backend .widget_statistics .statistics_graph {
+    display: block;
+    height: 360px; }
   .backend .whitebox {
     background-color: white;
     border: 1px solid #ccc;

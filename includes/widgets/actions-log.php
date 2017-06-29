@@ -1,5 +1,59 @@
 <?php
-	require_once('sys.includes.php');
+	$render_container = true;
+	if ( isset( $_GET['ajax_call'] ) ) {
+		require_once('../../sys.includes.php');
+		$render_container = false;
+	}
+	
+	$actions_buttons = array(
+							array(
+								'action'	=> '',
+								'title'		=> __('All activities','cftp_admin'),
+							),
+							array(
+								'action'	=> '1',
+								'title'		=> __('Logins','cftp_admin'),
+							),
+							array(
+								'action'	=> '8',
+								'title'		=> __('Downloads','cftp_admin'),
+							),
+						);
+
+	if ( CLIENTS_CAN_REGISTER == 1 ) {
+		$actions_buttons[] = array(
+									'action'	=> '4',
+									'title'		=> __('Clients self-registrations','cftp_admin'),
+								);
+	}
+	$default_actions = '';
+
+	if ( $render_container == true ) {
+?>
+		<div class="widget">
+			<h4><?php _e('Recent activites','cftp_admin'); ?></h4>
+			<div class="widget_int">
+				<div class="log_change_action">
+					<?php
+						foreach ( $actions_buttons as $index => $button ) {
+					?>
+							<a href="#" class="log_action btn btn-sm btn-default <?php if ( $button['action'] == $default_actions ) { echo 'btn-inverse'; } ?>" data-action="<?php echo $button['action']; ?>">
+								<?php echo $button['title']; ?>
+							</a>
+					<?php
+						}
+					?>
+				</div>
+				<ul class="activities_log">
+				</ul>
+				<div class="view_full_log">
+					<a href="actions-log.php" class="btn btn-primary btn-wide"><?php _e('View all','cftp_admin'); ?></a>
+				</div>
+			</div>
+		</div>
+<?php
+	}
+
 	/** Low level accesses are not permited */
 	if (CURRENT_USER_LEVEL != 9) {
 		prevent_direct_access();
@@ -11,7 +65,7 @@
 		 */
 		if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest')) {
 			$max_show_log = 10;
-			$log_action = $_GET['action'];
+			$log_action = isset( $_GET['action'] ) ? $_GET['action'] : '';
 
 			$params = array();
 			$log_query = "SELECT * FROM " . TABLE_LOG;

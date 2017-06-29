@@ -293,6 +293,9 @@ if(!empty($options_values)) {
 if (defined('BASE_URI')) {
 	define('TIMTHUMB_URL',BASE_URI.'includes/timthumb/timthumb.php');
 	define('TIMTHUMB_ABS',ROOT_DIR.'/includes/timthumb/timthumb.php');
+
+	define('WIDGETS_URL',BASE_URI.'includes/widgets/');
+	define('WIDGETS_FOLDER',ROOT_DIR.'/includes/widgets/');
 }
 
 /**

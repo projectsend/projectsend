@@ -37,7 +37,7 @@ $count = count($img_files);
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title><?php echo html_output( $client_info['name'].' | '.$window_title . ' &raquo; ' . SYSTEM_NAME ); ?></title>
-	<link rel="shortcut icon" href="<?php echo BASE_URI; ?>/favicon.ico" />
+	<link rel="shortcut icon" href="<?php echo BASE_URI; ?>favicon.ico" />
 
 	<link rel="stylesheet" href="<?php echo $this_template; ?>/font-awesome-4.6.3/css/font-awesome.min.css">
 	<script src="<?php echo PROTOCOL; ?>://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>

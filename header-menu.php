@@ -229,6 +229,14 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 													'link'	=> 'email-templates.php?section=new_client_self',
 												),
 												array(
+													'label'	=> __('Approve client account', 'cftp_admin'),
+													'link'	=> 'email-templates.php?section=client_approve',
+												),
+												array(
+													'label'	=> __('Deny client account', 'cftp_admin'),
+													'link'	=> 'email-templates.php?section=client_deny',
+												),
+												array(
 													'label'	=> __('New user (welcome)', 'cftp_admin'),
 													'link'	=> 'email-templates.php?section=new_user',
 												),

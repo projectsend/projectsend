@@ -46,6 +46,20 @@ switch ( $section ) {
 								'email_new_client_by_self_subject_customize',
 							);
 		break;
+	case 'client_approve':
+		$section_title	= __('Approve client account','cftp_admin');
+		$checkboxes		= array(
+								'email_account_approve_subject_customize',
+								'email_account_approve_customize',
+							);
+		break;
+	case 'client_deny':
+		$section_title	= __('Deny client account','cftp_admin');
+		$checkboxes		= array(
+								'email_account_deny_subject_customize',
+								'email_account_deny_customize',
+							);
+		break;
 	case 'new_user':
 		$section_title	= __('New user (welcome)','cftp_admin');
 		$checkboxes		= array(
@@ -204,6 +218,37 @@ if ($_POST) {
 																									),
 																		'default_text'		=> EMAIL_TEMPLATE_NEW_CLIENT_SELF,
 																	),
+										'client_approve'		=> array(
+																		'subject_checkbox'	=> 'email_account_approve_subject_customize',
+																		'subject'			=> 'email_account_approve_subject',
+																		'body_checkbox'		=> 'email_account_approve_customize',
+																		'body_textarea'		=> 'email_account_approve_text',
+																		'description'		=> __('This email will be sent to a client that requested an account if it gets approved. Group membership requests are also mentioned on the email, separated by their approval status.','cftp_admin'),
+																		'subject_check'		=> EMAILS_ACCOUNT_APPROVE_USE_SUBJECT_CUSTOM,
+																		'subject_text'		=> EMAILS_ACCOUNT_APPROVE_SUBJECT,
+																		'body_check'		=> EMAILS_ACCOUNT_APPROVE_USE_CUSTOM,
+																		'body_text'			=> EMAILS_ACCOUNT_APPROVE_TEXT,
+																		'tags'				=> array(
+																										'%GROUPS_APPROVED%'	=> __('List of approved group memberships','cftp_admin'),
+																										'%GROUPS_DENIED%'	=> __('List of denied group memberships','cftp_admin'),
+																										'%URI%'				=> __('The login link','cftp_admin') . $href_string,
+																									),
+																		'default_text'		=> EMAIL_TEMPLATE_ACCOUNT_APPROVE,
+																	),
+										'client_deny'		=> array(
+																		'subject_checkbox'	=> 'email_account_deny_subject_customize',
+																		'subject'			=> 'email_account_deny_subject',
+																		'body_checkbox'		=> 'email_account_deny_customize',
+																		'body_textarea'		=> 'email_account_deny_text',
+																		'description'		=> __('This email will be sent to a client that requested an account if it gets denied. All group membership requests for this account are denied automatically.','cftp_admin'),
+																		'subject_check'		=> EMAILS_ACCOUNT_DENY_USE_SUBJECT_CUSTOM,
+																		'subject_text'		=> EMAILS_ACCOUNT_DENY_SUBJECT,
+																		'body_check'		=> EMAILS_ACCOUNT_DENY_USE_CUSTOM,
+																		'body_text'			=> EMAILS_ACCOUNT_DENY_TEXT,
+																		'tags'				=> array(
+																									),
+																		'default_text'		=> EMAIL_TEMPLATE_ACCOUNT_DENY,
+																	),
 										'new_user'				=> array(
 																		'subject_checkbox'	=> 'email_new_user_subject_customize',
 																		'subject'			=> 'email_new_user_subject',
@@ -330,10 +375,10 @@ if ($_POST) {
 							</div>
 						</div>	
 
-						<p><strong><?php _e("The following tags can be used on this e-mails' body.",'cftp_admin'); ?></strong></p>
 						<?php
 							if (!empty($group['tags'])) {
 						?>
+								<p><strong><?php _e("The following tags can be used on this e-mails' body.",'cftp_admin'); ?></strong></p>
 								<ul>
 									<?php
 										foreach ($group['tags'] as $tag => $description) {

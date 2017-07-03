@@ -279,6 +279,23 @@ if(!empty($options_values)) {
 	}
 
 	/**
+	 * For versions 950 and up
+	 */	
+	if (isset($options_values['email_account_approve_subject'])) {
+		/** Checkboxes */
+		define('EMAILS_ACCOUNT_APPROVE_USE_SUBJECT_CUSTOM',$options_values['email_account_approve_subject_customize']);
+		define('EMAILS_ACCOUNT_DENY_USE_SUBJECT_CUSTOM',$options_values['email_account_deny_subject_customize']);
+		define('EMAILS_ACCOUNT_APPROVE_USE_CUSTOM',$options_values['email_account_approve_customize']);
+		define('EMAILS_ACCOUNT_DENY_USE_CUSTOM',$options_values['email_account_deny_customize']);
+		/** Subjects */
+		define('EMAILS_ACCOUNT_APPROVE_SUBJECT',$options_values['email_account_approve_subject']);
+		define('EMAILS_ACCOUNT_DENY_SUBJECT',$options_values['email_account_deny_subject']);
+		/** Email texts */
+		define('EMAILS_ACCOUNT_APPROVE_TEXT',$options_values['email_account_approve_text']);
+		define('EMAILS_ACCOUNT_DENY_TEXT',$options_values['email_account_deny_text']);
+	}
+
+	/**
 	 * Set the default timezone based on the value of the Timezone select box
 	 * of the options page.
 	 */

@@ -1242,5 +1242,37 @@ if (in_session_or_cookies($allowed_update)) {
 			$statement = $dbh->query("ALTER TABLE `" . TABLE_USERS . "` ADD COLUMN `max_file_size` int(20) NOT NULL DEFAULT '0'");
 			$updates_made++;
 		}
+
+
+		/**
+		 * r950 updates
+		 * New emails for approved and denied accounts.
+		 */
+		if ($last_update < 950) {
+			$new_database_values = array(
+										/**
+										 * On or Off fields
+										 * Each one corresponding to a type of email
+										 */
+											'email_account_approve_subject_customize'		=> '0',
+											'email_account_deny_subject_customize'			=> '0',
+											'email_account_approve_customize'				=> '0',
+											'email_account_deny_customize'					=> '0',
+										/**
+										 * Text fields
+										 * Each one corresponding to a type of email
+										 */
+											'email_account_approve_subject'					=> '',
+											'email_account_deny_subject'					=> '',
+											'email_account_approve_text'					=> '',
+											'email_account_deny_text'						=> '',
+										);
+			
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
+				}
+			}
+		}
 	}
 }

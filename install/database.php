@@ -318,7 +318,15 @@ if (defined('TRY_INSTALL')) {
 								('email_new_client_by_self_subject', ''),
 								('email_new_user_subject', ''),
 								('email_pass_reset_subject', ''),
-								('privacy_noindex_site', '0')
+								('privacy_noindex_site', '0'),
+								('email_account_approve_subject_customize', '0'),
+								('email_account_deny_subject_customize', '0'),
+								('email_account_approve_customize', '0'),
+								('email_account_deny_customize', '0'),
+								('email_account_approve_subject', ''),
+								('email_account_deny_subject', ''),
+								('email_account_approve_text', ''),
+								('email_account_deny_text', '')
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,

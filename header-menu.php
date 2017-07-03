@@ -15,25 +15,31 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 {
 
 	/** Count inactive CLIENTS */
+	/*
 	$sql_inactive = $dbh->prepare( "SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE active = '0' AND level = '0' AND account_requested='0'" );
 	$sql_inactive->execute();
 	define('COUNT_CLIENTS_INACTIVE', $sql_inactive->rowCount());
+	*/
 
 	/** Count new CLIENTS account requests */
 	$sql_requests = $dbh->prepare( "SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE account_requested='1' AND account_denied='0'" );
 	$sql_requests->execute();
 	define('COUNT_CLIENTS_REQUESTS', $sql_requests->rowCount());
 
-	/** Count new CLIENTS account requests */
+	/**
+	 * Count ALREADY DENIED account requests
+	 * Used on the manage requests page
+	 */
 	$sql_requests = $dbh->prepare( "SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE account_requested='1' AND account_denied='1'" );
 	$sql_requests->execute();
 	define('COUNT_CLIENTS_DENIED', $sql_requests->rowCount());
 
 	/** Count inactive USERS */
+	/*
 	$sql_inactive = $dbh->prepare( "SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE active = '0' AND level != '0'" );
 	$sql_inactive->execute();
 	define('COUNT_USERS_INACTIVE', $sql_inactive->rowCount());
-
+	*/
 
 	$items['dashboard'] = array(
 								'nav'	=> 'dashboard',
@@ -84,6 +90,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 								'main'	=> array(
 												'label'	=> __('Clients', 'cftp_admin'),
 												'icon'	=> 'address-card',
+												'badge'	=> COUNT_CLIENTS_REQUESTS,
 											),
 								'sub'	=> array(
 												array(
@@ -93,7 +100,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 												array(
 													'label'	=> __('Manage clients', 'cftp_admin'),
 													'link'	=> 'clients.php',
-													'badge'	=> COUNT_CLIENTS_INACTIVE,
+													//'badge'	=> COUNT_CLIENTS_INACTIVE,
 												),
 												array(
 													'divider'	=> true,
@@ -140,7 +147,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 												array(
 													'label'	=> __('Manage system users', 'cftp_admin'),
 													'link'	=> 'users.php',
-													'badge'	=> COUNT_USERS_INACTIVE,
+													//'badge'	=> COUNT_USERS_INACTIVE,
 												),
 											),
 							);

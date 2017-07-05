@@ -82,7 +82,7 @@ include('header.php');
 	 * Apply the corresponding action to the selected clients.
 	 */
 	if ( !empty($_POST) ) {
-		print_array($_POST);
+		//print_array($_POST);
 
 		/** Continue only if 1 or more clients were selected. */
 		if(!empty($_POST['accounts'])) {
@@ -115,15 +115,13 @@ include('header.php');
 						 * 1- Approve or deny account
 						 */
 						$process_account = new ClientActions();
-						$account_arguments = array(
-													'client_id'	=> $client['id'],
-												);
 
+						/** $client['account'] == 1 means approve that account */
 						if ( !empty( $client['account'] ) and $client['account'] == '1' ) {
 							/**
 							 * 1 - Approve account
 							 */
-							$approve = $process_account->client_account_approve( $account_arguments );
+							$approve = $process_account->client_account_approve( $client['id'] );
 							/**
 							 * 2 - Prepare memberships information
 							 */
@@ -140,7 +138,7 @@ include('header.php');
 							/**
 							 * 1 - Deny account
 							 */
-							$deny = $process_account->client_account_deny( $account_arguments );
+							$deny = $process_account->client_account_deny( $client['id'] );
 							/**
 							 * 2 - Deny all memberships
 							 */
@@ -154,6 +152,10 @@ include('header.php');
 						 * 2 - Process memberships requests
 						 */
 						$process_requests	= $process_memberships->group_process_memberships( $memberships_arguments );
+						
+						/**
+						 * 3- Send email to the client
+						 */
 					}
 
 					$msg = __('The selected actions were applied.','cftp_admin');
@@ -289,12 +291,12 @@ include('header.php');
 				<?php
 					$filters = array(
 									'new'		=> array(
-														'title'	=> __('New requests','cftp_admin'),
+														'title'	=> __('New account requests','cftp_admin'),
 														'link'	=> $this_page,
 														'count'	=> COUNT_CLIENTS_REQUESTS,
 													),
 									'denied'	=> array(
-														'title'	=> __('Denied','cftp_admin'),
+														'title'	=> __('Denied accounts','cftp_admin'),
 														'link'	=> $this_page . '?denied=1',
 														'count'	=> COUNT_CLIENTS_DENIED,
 													),
@@ -322,7 +324,7 @@ include('header.php');
 						}
 					}
 					else {
-						$no_results_message = __('There are no clients at the moment','cftp_admin');
+						$no_results_message = __('There are no requests at the moment','cftp_admin');
 					}
 					echo system_message('error',$no_results_message);
 				}
@@ -438,8 +440,8 @@ include('header.php');
 						/**
 						 * Checkboxes for every membership request
 						 */
-						if ( !empty( $get_requests[$row['id']] ) ) {
-							foreach ( $get_requests[$row['id']] as $request ) {
+						if ( !empty( $get_requests[$row['id']]['requests'] ) ) {
+							foreach ( $get_requests[$row['id']]['requests'] as $request ) {
 								$this_checkbox = $client_id . '_' . $request['id'];
 								$membership_requests .= '<div class="request_checkbox">
 															<label for="' . $this_checkbox . '">

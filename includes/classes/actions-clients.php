@@ -292,7 +292,7 @@ class ClientActions
 			/** Do a permissions check */
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
 				$this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_USERS . ' WHERE id=:id');
-				$this->sql->bindParam(':id', $client_id, PDO::PARAM_INT);
+				$this->sql->bindValue(':id', $client_id, PDO::PARAM_INT);
 				$this->sql->execute();
 			}
 		}
@@ -308,11 +308,16 @@ class ClientActions
 			/** Do a permissions check */
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
 				$this->sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active_state WHERE id=:id');
-				$this->sql->bindParam(':active_state', $change_to, PDO::PARAM_INT);
-				$this->sql->bindParam(':id', $client_id, PDO::PARAM_INT);
-				$this->sql->execute();
+				$this->sql->bindValue(':active_state', $change_to, PDO::PARAM_INT);
+				$this->sql->bindValue(':id', $client_id, PDO::PARAM_INT);
+				$this->status = $this->sql->execute();
 			}
 		}
+		else {
+			$this->status = false;
+		}
+		
+		return $this->status;
 	}
 
 	/**
@@ -320,6 +325,23 @@ class ClientActions
 	 */
 	function client_account_approve($client_id)
 	{
+		$this->check_level = array(9,8);
+		if (isset($client_id)) {
+			/** Do a permissions check */
+			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
+				$this->sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active, account_requested=:requested, account_denied=:denied WHERE id=:id');
+				$this->sql->bindValue(':active', 1, PDO::PARAM_INT);
+				$this->sql->bindValue(':requested', 0, PDO::PARAM_INT);
+				$this->sql->bindValue(':denied', 0, PDO::PARAM_INT);
+				$this->sql->bindValue(':id', $client_id, PDO::PARAM_INT);
+				$this->status = $this->sql->execute();
+			}
+		}
+		else {
+			$this->status = false;
+		}
+		
+		return $this->status;
 	}
 
 	/**
@@ -327,6 +349,23 @@ class ClientActions
 	 */
 	function client_account_deny($client_id)
 	{
+		$this->check_level = array(9,8);
+		if (isset($client_id)) {
+			/** Do a permissions check */
+			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
+				$this->sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active, account_requested=:account_requested, account_denied=:account_denied WHERE id=:id');
+				$this->sql->bindValue(':active', 0, PDO::PARAM_INT);
+				$this->sql->bindValue(':account_requested', 1, PDO::PARAM_INT);
+				$this->sql->bindValue(':account_denied', 1, PDO::PARAM_INT);
+				$this->sql->bindValue(':id', $client_id, PDO::PARAM_INT);
+				$this->status = $this->sql->execute();
+			}
+		}
+		else {
+			$this->status = false;
+		}
+		
+		return $this->status;
 	}
 
 }

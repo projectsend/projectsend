@@ -78,6 +78,19 @@ include('header.php');
 
 <div class="col-xs-12">
 <?php
+	if (isset($_GET['action'])) {
+		switch ($_GET['action']) {
+			case 'apply':
+				$msg = __('The selected actions were applied.','cftp_admin');
+				echo system_message('ok',$msg);
+				break;
+			case 'delete':
+				$msg = __('The selected clients were deleted.','cftp_admin');
+				echo system_message('ok',$msg);
+				break;
+		}
+	}
+
 	/**
 	 * Apply the corresponding action to the selected clients.
 	 */
@@ -158,19 +171,14 @@ include('header.php');
 						 */
 					}
 
-					$msg = __('The selected actions were applied.','cftp_admin');
-					echo system_message('ok',$msg);
 					$log_action_number = 38;
 					break;
 				case 'delete':
 					foreach ($selected_clients as $client) {
 						$this_client = new ClientActions();
-						$delete_client = $this_client->delete_client($client);
-						/** TODO: delete membership requests */
+						$delete_client = $this_client->delete_client($client['id']);
 					}
 					
-					$msg = __('The selected clients were deleted.','cftp_admin');
-					echo system_message('ok',$msg);
 					$log_action_number = 17;
 					break;
 			}
@@ -185,6 +193,13 @@ include('header.php');
 									);
 				$new_record_action = $new_log_action->log_action_save($log_action_args);
 			}
+
+			/** Redirect after processing */
+			while (ob_get_level()) ob_end_clean();
+			$action_redirect = html_output($_POST['action']);
+			$location = BASE_URI . 'clients-requests.php?action=' . $action_redirect;
+			header("Location: $location");
+			die();
 		}
 		else {
 			$msg = __('Please select at least one client.','cftp_admin');

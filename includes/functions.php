@@ -906,7 +906,7 @@ function generate_logo_url()
 		$branding['filename'] = 'img/custom/logo/'.LOGO_FILENAME;
 	}
 
-	if (file_exists(ROOT_DIR.$branding['filename'])) {
+	if (file_exists(ROOT_DIR . '/' . $branding['filename'])) {
 		$branding['exists'] = true;
 		$branding['url'] = BASE_URI.$branding['filename'];
 	}

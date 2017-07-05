@@ -100,6 +100,8 @@ $work_folder = UPLOADED_FILES_FOLDER;
 			}
 		}
 
+		$files_to_add = array();
+
 		/** Read the temp folder and list every allowed file */
 		if ($handle = opendir($work_folder)) {
 			while (false !== ($filename = readdir($handle))) {
@@ -277,8 +279,8 @@ $work_folder = UPLOADED_FILES_FOLDER;
 				}
 				else {
 					$no_results_message = __('There are no files available to add right now.','cftp_admin');
-					$no_results_message = __('To use this feature you need to upload your files via FTP to the folder','cftp_admin');
-					$no_results_message = ' <span class="format_url"><strong>'.html_output($work_folder).'</strong></span>.';
+					$no_results_message .= __('To use this feature you need to upload your files via FTP to the folder','cftp_admin');
+					$no_results_message .= ' <span class="format_url"><strong>'.html_output($work_folder).'</strong></span>.';
 				}
 	
 				echo system_message('error',$no_results_message);

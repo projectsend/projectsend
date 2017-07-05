@@ -224,7 +224,7 @@ if(!empty($options_values)) {
 	/**
 	 * For versions 757 and up
 	 */	
-	if (isset($options_values['clients_auto_approve'])) {
+	if (isset($options_values['clients_can_set_expiration_date'])) {
 		define('CLIENTS_CAN_SET_EXPIRATION_DATE',$options_values['clients_can_set_expiration_date']);
 	}
 

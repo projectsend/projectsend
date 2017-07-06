@@ -598,7 +598,7 @@ include('header.php');
 													'hide'			=> 'phone',
 												),
 												array(
-													'content'		=> __('Ext.','cftp_admin'),
+													'content'		=> __('Type','cftp_admin'),
 													'hide'			=> 'phone,tablet',
 												),
 												array(

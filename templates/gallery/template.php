@@ -9,6 +9,8 @@ Delete icon: http://www.iconfinder.com/icondetails/37519/16/can_delete_trash_ico
 
 $ld = 'cftp_template_gallery'; // specify the language domain for this template
 
+define('TEMPLATE_RESULTS_PER_PAGE', -1);
+
 if ( !empty( $_GET['category'] ) ) {
 	$category_filter = $_GET['category'];
 }

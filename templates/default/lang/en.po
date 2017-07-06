@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend theme: Default\n"
-"POT-Creation-Date: 2016-09-18 20:28-0300\n"
-"PO-Revision-Date: 2016-09-18 20:28-0300\n"
+"POT-Creation-Date: 2017-07-06 02:13-0300\n"
+"PO-Revision-Date: 2017-07-06 02:13-0300\n"
 "Last-Translator: \n"
 "Language-Team: ProjectSend <contact@projectsend.org>\n"
 "Language: en\n"
@@ -19,15 +19,11 @@ msgstr ""
 msgid "File downloads"
 msgstr ""
 
-#: template.php:43
-msgid "Search"
-msgstr ""
-
-#: template.php:52
+#: template.php:51
 msgid "All categories"
 msgstr ""
 
-#: template.php:59
+#: template.php:58
 msgid "Filter"
 msgstr ""
 
@@ -35,82 +31,82 @@ msgstr ""
 msgid "Selected files actions"
 msgstr ""
 
-#: template.php:74
+#: template.php:76
+msgid "Select action"
+msgstr ""
+
+#: template.php:77
 msgid "Download zipped"
 msgstr ""
 
-#: template.php:76
+#: template.php:87
 msgid "Proceed"
 msgstr ""
 
-#: template.php:85
-msgid "Showing"
-msgstr ""
-
-#: template.php:85
-msgid "files"
+#: template.php:95
+msgid "Found"
 msgstr ""
 
 #: template.php:95
+msgid "files"
+msgstr ""
+
+#: template.php:105
 msgid "Your search keywords returned no results."
 msgstr ""
 
-#: template.php:100
+#: template.php:110
 msgid "There are no files available."
 msgstr ""
 
-#: template.php:112
+#: template.php:137
 msgid "Title"
 msgstr ""
 
-#: template.php:113
-msgid "Ext."
+#: template.php:140
+msgid "Type"
 msgstr ""
 
-#: template.php:114
+#: template.php:146
 msgid "Description"
 msgstr ""
 
-#: template.php:115
+#: template.php:153
 msgid "Size"
 msgstr ""
 
-#: template.php:116
+#: template.php:159
 msgid "Date"
 msgstr ""
 
-#: template.php:117
+#: template.php:162
 msgid "Expiration date"
 msgstr ""
 
-#: template.php:118
+#: template.php:166
 msgid "Image preview"
 msgstr ""
 
-#: template.php:119 template.php:235
+#: template.php:170 template.php:256
 msgid "Download"
 msgstr ""
 
-#: template.php:192
+#: template.php:228
 msgid "Never"
 msgstr ""
 
-#: template.php:205
+#: template.php:252
 msgid "File expired"
 msgstr ""
 
-#: template.php:249
-msgid "Results navigation"
-msgstr ""
-
-#: template.php:268
+#: template.php:346
 msgid "Please select at least one file to proceed."
 msgstr ""
 
-#: template.php:283
+#: template.php:364
 msgid "Please wait while your download is prepared."
 msgstr ""
 
-#: template.php:284
+#: template.php:365
 msgid "This operation could take a few minutes, depending on the size of the files."
 msgstr ""

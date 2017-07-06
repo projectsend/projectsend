@@ -7,6 +7,8 @@ Inspired by the awesome desing of Pinterest!
 */
 $ld = 'pinboxes_template'; // specify the language domain for this template
 
+define('TEMPLATE_RESULTS_PER_PAGE', -1);
+
 if ( !empty( $_GET['category'] ) ) {
 	$category_filter = $_GET['category'];
 }

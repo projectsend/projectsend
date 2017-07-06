@@ -163,9 +163,34 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 		$params[':title']		= '%'.$_GET['search'].'%';
 		$params[':description']	= '%'.$_GET['search'].'%';
 	}
-	
+
+
+	/**
+	 * Add the order.
+	 * Defaults to order by: filename, order: ASC
+	 */
+	$files_query .= sql_add_order( TABLE_USERS, 'filename', 'asc' );
+
+	/**
+	 * Pre-query to count the total results
+	*/
+	$count_sql = $dbh->prepare( $files_query );
+	$count_sql->execute($params);
+	$count_for_pagination = $count_sql->rowCount();
+
+	/**
+	 * Repeat the query but this time, limited by pagination
+	 */
+	$files_query .= " LIMIT :limit_start, :limit_number";
 	$sql_files = $dbh->prepare( $files_query );
+
+	$pagination_page			= ( isset( $_GET["page"] ) ) ? $_GET["page"] : 1;
+	$pagination_start			= ( $pagination_page - 1 ) * TEMPLATE_RESULTS_PER_PAGE;
+	$params[':limit_start']		= $pagination_start;
+	$params[':limit_number']	= TEMPLATE_RESULTS_PER_PAGE;
+
 	$sql_files->execute( $params );
+	$count = $sql_files->rowCount();
 
 	$sql_files->setFetchMode(PDO::FETCH_ASSOC);
 	while ( $data = $sql_files->fetch() ) {

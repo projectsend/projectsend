@@ -571,14 +571,17 @@ class PSend_Email
 			switch (MAIL_SYSTEM) {
 				case 'smtp':
 						$this->send_mail->IsSMTP();
-						$this->send_mail->SMTPAuth = true;
 						$this->send_mail->Host = SMTP_HOST;
 						$this->send_mail->Port = SMTP_PORT;
 						$this->send_mail->Username = SMTP_USER;
 						$this->send_mail->Password = SMTP_PASS;
 						
 						if ( defined('SMTP_AUTH') && SMTP_AUTH != 'none' ) {
+							$this->send_mail->SMTPAuth = true;
 							$this->send_mail->SMTPSecure = SMTP_AUTH;
+						}
+						else {
+							$this->send_mail->SMTPAuth = false;
 						}
 					break;
 				case 'gmail':

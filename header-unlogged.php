@@ -78,7 +78,7 @@ if ( !isset( $body_class ) ) { $body_class = ''; }
 	<?php meta_noindex(); ?>
 
 	<title><?php echo html_output( $header_vars['title'] ); ?></title>
-	<link rel="shortcut icon" href="<?php echo BASE_URI; ?>favicon.ico" />
+	<?php meta_favicon(); ?>
 	<script src="<?php echo BASE_URI; ?>includes/js/jquery.1.12.4.min.js"></script>
 
 	<!--[if lt IE 9]>

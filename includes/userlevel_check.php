@@ -172,7 +172,7 @@ function can_see_content($allowed_levels) {
 			
 				<title><?php echo html_output( $page_title . ' &raquo; ' . THIS_INSTALL_SET_TITLE ); ?></title>
 				<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-				<link rel="shortcut icon" href="<?php echo BASE_URI; ?>favicon.ico" />
+				<?php meta_favicon(); ?>
 				<script type="text/javascript" src="<?php echo BASE_URI; ?>includes/js/jquery.1.12.4.min.js"></script>
 			
 				<!--[if lt IE 9]>

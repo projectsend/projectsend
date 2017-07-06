@@ -23,7 +23,7 @@ $count = count($my_files);
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php echo html_output( $client_info['name'].' | '.$window_title . ' &raquo; ' . SYSTEM_NAME ); ?></title>
 		<link rel="stylesheet" media="all" type="text/css" href="<?php echo $this_template; ?>main.css" />
-		<link rel="shortcut icon" href="<?php echo BASE_URI; ?>favicon.ico" />
+		<?php meta_favicon(); ?>
 		<link href='<?php echo PROTOCOL; ?>://fonts.googleapis.com/css?family=Metrophobic' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="<?php echo $this_template; ?>/font-awesome-4.6.3/css/font-awesome.min.css">
 		

@@ -965,6 +965,16 @@ function meta_noindex()
 	}
 }
 
+/**
+ * Favicon meta tags
+ */
+function meta_favicon()
+{
+	$favicon_location = BASE_URI . 'img/favicon/';
+	echo '<link rel="icon" href="' . $favicon_location . 'favicon-32.png" />';
+	echo '<link rel="apple-touch-icon-precomposed" href="' . $favicon_location . 'favicon-152.png">';
+}
+
 
 /**
  * If password rules are set, show a message

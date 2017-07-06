@@ -95,8 +95,8 @@ $(document).ready(function() {
 	$("#select_all").click(function(){
 		var status = $(this).prop("checked");
 		/** Uncheck all first in case you used pagination */
-		$("tr td input[type=checkbox]").prop("checked",false);
-		$("tr:visible td input[type=checkbox]").prop("checked",status);
+		$("tr td input[type=checkbox].batch_checkbox").prop("checked",false);
+		$("tr:visible td input[type=checkbox].batch_checkbox").prop("checked",status);
 	});
 
 	if ( $.isFunction($.fn.footable) ) {

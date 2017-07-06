@@ -187,7 +187,7 @@ class generateTable {
 			$this->value 		= ( !empty( $attributes['value'] ) ) ? html_output( $attributes['value'] ) : null;
 			
 			if ( $this->is_checkbox == true ) {
-				$this->content = '<input type="checkbox" name="batch[]" value="' . $this->value . '" />' . "\n";
+				$this->content = '<input type="checkbox" class="batch_checkbox" name="batch[]" value="' . $this->value . '" />' . "\n";
 			}
 	
 			$this->contents .= "<td";

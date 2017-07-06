@@ -185,7 +185,8 @@ $work_folder = UPLOADED_FILES_FOLDER;
 											array(
 												'select_all'	=> true,
 												'attributes'	=> array(
-																		'class'		=> array( 'td_checkbox' ),
+																		'class'			=> array( 'td_checkbox' ),
+																		'data-sortable'	=> 'false',
 																	),
 											),
 											array(
@@ -221,7 +222,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 					 */
 					$tbody_cells = array(
 											array(
-													'content'		=> '<input type="checkbox" name="add[]" class="select_file_checkbox" value="' . html_output( $add_file['name'] ) . '" />',
+													'content'		=> '<input type="checkbox" name="add[]" class="batch_checkbox select_file_checkbox" value="' . html_output( $add_file['name'] ) . '" />',
 												),
 											array(
 													'content'		=> html_output( $add_file['name'] ),

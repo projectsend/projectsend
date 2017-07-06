@@ -132,7 +132,7 @@ $count = count($my_files);
 											<?php
 												if ($file['expired'] == false) {
 											?>
-													<input type="checkbox" name="files[]" value="<?php echo $file["id"]; ?>" />
+													<input type="checkbox" name="files[]" value="<?php echo $file["id"]; ?>" class="batch_checkbox" />
 											<?php
 												}
 											?>

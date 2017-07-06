@@ -439,7 +439,7 @@ include('header.php');
 						/**
 						 * Checkbox on the first column
 						 */
-						$selectable = '<input name="accounts['.$row['id'].'][id]" value="'.$row['id'].'" type="checkbox" data-clientid="' . $client_id . '">';
+						$selectable = '<input name="accounts['.$row['id'].'][id]" value="'.$row['id'].'" type="checkbox" class="batch_checkbox" data-clientid="' . $client_id . '">';
 
 						/**
 						 * Checkbox for the account action

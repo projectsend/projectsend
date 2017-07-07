@@ -35,6 +35,9 @@ $uploadOk = 1;
 $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
 
 if($_POST) {
+	//echo "<pre>";
+	//print_r($_FILES);
+	//echo "</pre>";
 	$to = ($_REQUEST['to']) ? $_REQUEST['to'] : '';
 	$comments = ($_REQUEST['comments']) ? $_REQUEST['comments'] : '';
 	$auth = ($_REQUEST['auth']) ? $_REQUEST['auth'] : '';
@@ -186,8 +189,10 @@ for($i = 0 ; $i < $filecount; $i++) {
 		 //var_dump($filename ,$fromid , $_POST);
 		 $time = '2017-03-02 00:00:00';
 		 $expdate = '2017-03-09 00:00:00';
-		 
-		$statement = $dbh->prepare("INSERT INTO ".TABLE_FILES." (`url`, `filename`, `description`, `timestamp`, `uploader`, `expires`, `expiry_date`, `public_allow`, `public_token`) VALUES ('$url', '$filename', '', CURRENT_TIMESTAMP, '$uploader', '0', '2017-12-09 00:00:00', '0', NULL);");
+		$thirty_days_ahead =  date('Y-m-d H:i:s', strtotime("+30 days") );
+		 //echo "INSERT INTO ".TABLE_FILES." (`url`, `filename`, `description`, `timestamp`, `uploader`, `expires`, `expiry_date`, `public_allow`, `public_token`) VALUES ('$url', '$filename', '', CURRENT_TIMESTAMP, '$uploader', '0', '2017-12-09 00:00:00', '0', NULL)";
+
+		$statement = $dbh->prepare("INSERT INTO ".TABLE_FILES." (`url`, `filename`, `description`, `timestamp`, `uploader`,`notify`, `expires`, `expiry_date`, `public_allow`,`number_downloads`, `public_token`) VALUES ('$url', '$filename', '', CURRENT_TIMESTAMP, 'guest', '0','0', '$thirty_days_ahead', '0','0', NULL)");
 		if($statement->execute()) {
 			$img_id = $dbh->lastInsertId();
 			$filesrelations = $dbh->prepare("INSERT INTO ".TABLE_FILES_RELATIONS." (`timestamp`, `file_id`, `client_id`, `group_id`, `folder_id`, `hidden`, `download_count`) VALUES (CURRENT_TIMESTAMP, ".$img_id.", ".$fromid.", NULL, NULL, '0', '0')");

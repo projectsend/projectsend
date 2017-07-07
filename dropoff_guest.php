@@ -28,16 +28,7 @@ if($_POST){
 			$message = "Invalid email format";
 			
 		}else{
-			//Form Success
-			/*$statement = $dbh->prepare("INSERT INTO tbl_drop_off_request (to_name,from_organization,to_email,requested_time,auth_key,status) VALUES ( :to_name, :from_organization, :to_email, :requested_time, :auth_key, :status )");
-				
-				$statement->bindValue(':to_name', $your_name);
-				$statement->bindValue(':from_organization', $your_organization);
-				$statement->bindValue(':to_email', $your_email);
-				$statement->bindValue(':requested_time', date("Y-m-d H:i:s"));
-				$statement->bindValue(':auth_key', $randomString);
-				$statement->bindParam(':status', '0');*/
-		$sql1 = $dbh->prepare("INSERT INTO `".TABLE_DROPOFF."` (`to_name`,`from_organization`, `to_email`, `requested_time`, `auth_key`, `status`) VALUES ('".$your_name."', '".$your_organization."', '".$your_email."', '".date("Y-m-d H:i:s")."', '".$randomString."', '0')");
+			$sql1 = $dbh->prepare("INSERT INTO `".TABLE_DROPOFF."` (`to_name`,`from_organization`, `to_email`, `requested_time`, `auth_key`, `status`) VALUES ('".$your_name."', '".$your_organization."', '".$your_email."', '".date("Y-m-d H:i:s")."', '".$randomString."', '0')");
 		if($sql1->execute()) {
 			//echo "inserted";
 			$message1 ="<html>
@@ -193,25 +184,119 @@ if($_POST){
 		</table>
 	  </body>
 	</html>";
-			
-		$headers = "MIME-Version: 1.0" . "\r\n";
-		$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-		// More headers
-		$headers .= 'From: <user@microhealthllc.com>' . "\r\n";
-		if(mail($your_email,$your_email,$message1,$headers)){
-		//echo "Message sent";
+		
+
+		/**
+		 * phpMailer
+		 */
+		require_once(ROOT_DIR.'/includes/phpmailer/class.phpmailer.php');
+		if (!spl_autoload_functions() OR (!in_array('PHPMailerAutoload', spl_autoload_functions()))) {
+			require_once(ROOT_DIR.'/includes/phpmailer/PHPMailerAutoload.php');
+		}
+
+		$send_mail = new PHPMailer();
+		switch (MAIL_SYSTEM) {
+			case 'smtp':
+					$send_mail->IsSMTP();
+					$send_mail->SMTPAuth = true;
+					$send_mail->Host = SMTP_HOST;
+					$send_mail->Port = SMTP_PORT;
+					$send_mail->Username = SMTP_USER;
+					$send_mail->Password = SMTP_PASS;
+					
+					if ( defined('SMTP_AUTH') && SMTP_AUTH != 'none' ) {
+						$send_mail->SMTPSecure = SMTP_AUTH;
+					}
+				break;
+			case 'gmail':
+					$send_mail->IsSMTP();
+					$send_mail->SMTPAuth = true;
+					$send_mail->SMTPSecure = "tls";
+					$send_mail->Host = 'smtp.gmail.com';
+					$send_mail->Port = 587;
+					$send_mail->Username = SMTP_USER;
+					$send_mail->Password = SMTP_PASS;
+				break;
+			case 'sendmail':
+					$send_mail->IsSendmail();
+				break;
+		}
+
+		$send_mail->CharSet = EMAIL_ENCODING;
+//
+		$send_mail->Subject = "GUEST DROP OFF REQUEST";
+		$to_email_request = $your_email;
+//
+		$send_mail->MsgHTML($message1);
+		$send_mail->AltBody = __('This email contains HTML formatting and cannot be displayed right now. Please use an HTML compatible reader.','cftp_admin');
+
+		$send_mail->SetFrom(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
+		$send_mail->AddReplyTo(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
+//
+		$send_mail->AddAddress($to_email_request);
+		
+		/**
+		 * Check if BCC is enabled and get the list of
+		 * addresses to add, based on the email type.
+		 */
+		if (COPY_MAIL_ON_CLIENT_UPLOADS == '1') {
+					$try_bcc = true;
+				}
+		if ($try_bcc === true) {
+			$add_bcc_to = array();
+			if (COPY_MAIL_MAIN_USER == '1') {
+				$add_bcc_to[] = ADMIN_EMAIL_ADDRESS;
+			}
+			$more_addresses = COPY_MAIL_ADDRESSES;
+			if (!empty($more_addresses)) {
+				$more_addresses = explode(',',$more_addresses);
+				foreach ($more_addresses as $add_bcc) {
+					$add_bcc_to[] = $add_bcc;
+				}
+			}
+			/**
+			 * Add the BCCs with the compiled array.
+			 * First, clean the array to make sure the admin
+			 * address is not written twice.
+			 */
+
+			if (!empty($add_bcc_to)) {
+				$add_bcc_to = array_unique($add_bcc_to);
+				foreach ($add_bcc_to as $set_bcc) {
+					$send_mail->AddBCC($set_bcc);
+				}
+			}
+		}
+		/**
+		 * Finally, send the e-mail.
+		 */
+
+
+		if($send_mail->Send()) {
+			//echo "Message sent";
 				$cc_status = "<div class=\"alert alert-success cc-success\"><strong>Success!</strong>Your Request has been submitted successfully.</div>";
 		}else{
 				$cc_status = "<div class=\"alert alert-danger cc-failed\"><strong>Oops! </strong>Something went wrong! please try after sometime.</div>";
 		}
 		
+		echo "<script>$(document).ready(function(){ $('#cc-mail-status').modal('toggle');});</script>";	
+
+		/*
+		$headers = "MIME-Version: 1.0" . "\r\n";
+		$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+		// More headers
+		$headers .= 'From: <user@microhealthllc.com>' . "\r\n";
+		if(mail($your_email,$your_email,$message1,$headers)){
+			//echo "Message sent";
+			$cc_status = "<div class=\"alert alert-success cc-success\"><strong>Success!</strong>Your Request has been submitted successfully.</div>";
+		}else{
+			$cc_status = "<div class=\"alert alert-danger cc-failed\"><strong>Oops! </strong>Something went wrong! please try after sometime.</div>";
+		}
+		
 			echo "<script>$(document).ready(function(){ $('#cc-mail-status').modal('toggle');});</script>";
-/*	}
-	else {
-		$cc_status = "<div class=\"alert alert-danger cc-failed\"><strong>Oops! </strong>capcha Error! please try again .</div>";
-		echo "<script>$(document).ready(function(){ $('#cc-mail-status').modal('toggle');});</script>";
-	}*/
-	}}
+		*/
+	}
+	}
 ?>
 <!----------------------------------------------------------------------------------------->
 

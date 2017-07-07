@@ -181,17 +181,21 @@ include('header.php');
 					
 					$log_action_number = 17;
 					break;
+				default:
+					break;
 			}
 
 			/** Record the action log */
-			foreach ($selected_clients_ids as $client) {
-				$new_log_action = new LogActions();
-				$log_action_args = array(
-										'action' => $log_action_number,
-										'owner_id' => CURRENT_USER_ID,
-										'affected_account_name' => $all_users[$client]
-									);
-				$new_record_action = $new_log_action->log_action_save($log_action_args);
+			if ( !empty( $log_action_number ) ) {
+				foreach ($selected_clients_ids as $client) {
+					$new_log_action = new LogActions();
+					$log_action_args = array(
+											'action' => $log_action_number,
+											'owner_id' => CURRENT_USER_ID,
+											'affected_account_name' => $all_users[$client]
+										);
+					$new_record_action = $new_log_action->log_action_save($log_action_args);
+				}
 			}
 
 			/** Redirect after processing */

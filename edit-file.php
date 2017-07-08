@@ -429,6 +429,14 @@ $current_level = get_current_user_level();
 																	<input type="checkbox" id="pub_checkbox" name="file[<?php echo $i; ?>][public]" value="1" <?php if ($row['public_allow']) { ?>checked="checked"<?php } ?> /> <?php _e('Allow public downloading of this file.', 'cftp_admin');?>
 																</label>
 															</div>
+
+															<div class="divider"></div>
+															<h3><?php _e('Public URL', 'cftp_admin');?></h3>
+															<div class="public_url">
+																<div class="form-group">
+																	<textarea class="form-control" readonly><?php echo BASE_URI; ?>download.php?id=<?php echo $row['id']; ?>&token=<?php echo html_output($row['public_token']); ?></textarea>
+																</div>
+															</div>
 														<?php
 															} /** Close $current_level check */
 														?>

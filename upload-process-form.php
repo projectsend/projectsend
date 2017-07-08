@@ -783,23 +783,14 @@ while( $row = $statement->fetch() ) {
 			content: function() {
 				var id		= $(this).data('id');
 				var token	= $(this).data('token');
-				return '<strong><?php _e('Click to select','cftp_admin'); ?></strong><textarea class="input-large public_link_copy" rows="4"><?php echo BASE_URI; ?>download.php?id=' + id + '&token=' + token + '</textarea><small><?php _e('Send this URL to someone to download the file without registering or logging in.','cftp_admin'); ?></small><div class="close-popover"><button type="button" class="btn btn-inverse btn-sm"><?php _e('Close','cftp_admin'); ?></button></div>';
+				return '<strong><?php _e('Click to select and copy','cftp_admin'); ?></strong>'+
+						'<div class="copied"><?php _e('Succesfully copied to clipboard','cftp_admin'); ?></div>'+
+						'<div class="copied_not"><?php _e('Content could not be copied to clipboard','cftp_admin'); ?></div>'+
+						'<textarea class="input-large public_link_copy" rows="4"><?php echo BASE_URI; ?>download.php?id=' + id + '&token=' + token + '</textarea>'+
+						'<small><?php _e('Send this URL to someone to download the file without registering or logging in.','cftp_admin'); ?></small>'+
+						'<div class="close-popover"><button type="button" class="btn btn-inverse btn-sm"><?php _e('Close','cftp_admin'); ?></button></div>';
 			}
 		});
-
-		$(".col_visibility").on('click', '.close-popover button', function(e) {
-			var popped = $(this).parents('.col_visibility').find('.public_link');
-			popped.popover('hide');
-		});
-
-		$(".col_visibility").on('click', '.public_link_copy', function(e) {
-			$(this).select();
-			$(this).mouseup(function() {
-				$(this).unbind("mouseup");
-				return false;
-			});
-		});
-
 	});
 </script>
 

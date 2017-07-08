@@ -90,6 +90,27 @@ $(document).ready(function() {
 		}
 	});
 
+	/** Used on the public link popup on both manage files and the upload results */
+	$(document).on('click', '.close-popover', function(e) {
+		var popped = $(this).parents('td').find('.public_link');
+		popped.popover('hide');
+	});
+
+	$(document).on('click', '.public_link_copy', function(e) {
+		$(this).select();
+		if ( document.execCommand("copy") ) {
+			var copied = '.copied';
+		}
+		else {
+			var copied = '.copied_not';
+		}
+		$(this).parents('.popover-content').find(copied).stop().fadeIn().delay(2000).fadeOut();
+		$(this).mouseup(function() {
+			$(this).unbind("mouseup");
+			return false;
+		});
+	});
+
 
 	/** Common for all tables */
 	$("#select_all").click(function(){

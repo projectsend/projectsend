@@ -47,8 +47,8 @@ if ( !empty( $load_scripts ) ) {
 				$load_js_files[]		= BASE_URI . 'includes/js/bootstrap-datepicker/js/bootstrap-datepicker.js';
 				break;
 			case 'spinedit':
-				$load_css_files[]		= BASE_URI . 'includes/js/bootstrap-spinedit/bootstrap-spinedit.css';
-				$load_js_files[]		= BASE_URI . 'includes/js/bootstrap-spinedit/bootstrap-spinedit.js';
+				$load_css_files[]		= BASE_URI . 'includes/js/bootstrap-spinedit/css/bootstrap-spinedit.css';
+				$load_js_files[]		= BASE_URI . 'includes/js/bootstrap-spinedit/js/bootstrap-spinedit.js';
 				break;
 			case 'footable':
 				$footable_js_file		= ( !empty( $footable_min ) ) ? 'footable.min.js' : 'footable.all.min.js';

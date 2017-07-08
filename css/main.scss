@@ -1526,7 +1526,7 @@ li .required.password_toggle {
 	height:100%;
 	background:url(../img/modal-bg.png);
 	text-align:center;
-	z-index:1000;
+	z-index:2000;
 	opacity:.9;
 }
 
@@ -1566,8 +1566,11 @@ li .required.password_toggle {
 }
 
 .modal_title {
-	text-align:right;
-	padding:10px;
+	$distance: 10px;
+
+	text-align:left;
+	position:relative;
+	padding:$distance;
 	background:#eee;
 	background:-moz-linear-gradient(top , #f5f5f5, #eee)!important;
 	background:-webkit-gradient(linear, left top, left bottom, from(#f5f5f5), to(#eee))!important;
@@ -1580,6 +1583,13 @@ li .required.password_toggle {
 	-moz-border-radius-topright: 7px;
 	border-top-left-radius: 7px;
 	border-top-right-radius: 7px;
+	
+	a {
+		position:absolute;
+		display:inline-block;
+		top:$distance;
+		right:$distance;
+	}
 }
 
 .modal_close {
@@ -1608,42 +1618,30 @@ li .required.password_toggle {
 }
 
 .public_link_copy {
-	background:#E5F1FC;
-	color:#2E8EB4;
-	font-size:12px;
+	padding:5px;
 	width:100%;
-	border:1px solid #BCD8F3;
-	margin:7px auto !important;
+	margin:10px auto !important;
 }
 
-.popover {
-	.popover-title {
-		font-size:15px;
-		padding:8px;
-		font-weight:400;
-		margin-bottom:0;
+.public_link_modal {
+	.copied {
+		display:none;
+		padding:7px;
+		margin:8px 0;
+		font-weight:bold;
+		color:#849F4F;
+		background:#ECF5DA;
+		border:1px solid #B1C786;
 	}
 
-	.popover-content {
-		.copied {
-			display:none;
-			padding:7px;
-			margin:8px 0;
-			font-weight:bold;
-			color:#849F4F;
-			background:#ECF5DA;
-			border:1px solid #B1C786;
-		}
-	
-		.copied_not {
-			display:none;
-			padding:7px;
-			margin:8px 0;
-			font-weight:bold;
-			color:#B94A48;
-			background:#F2DEDE;
-			border:1px solid #EED3D7;
-		}
+	.copied_not {
+		display:none;
+		padding:7px;
+		margin:8px 0;
+		font-weight:bold;
+		color:#B94A48;
+		background:#F2DEDE;
+		border:1px solid #EED3D7;
 	}
 }
 

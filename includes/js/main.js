@@ -90,12 +90,7 @@ $(document).ready(function() {
 		}
 	});
 
-	/** Used on the public link popup on both manage files and the upload results */
-	$(document).on('click', '.close-popover', function(e) {
-		var popped = $(this).parents('td').find('.public_link');
-		popped.popover('hide');
-	});
-
+	/** Used on the public link modal on both manage files and the upload results */
 	$(document).on('click', '.public_link_copy', function(e) {
 		$(this).select();
 		if ( document.execCommand("copy") ) {
@@ -104,7 +99,7 @@ $(document).ready(function() {
 		else {
 			var copied = '.copied_not';
 		}
-		$(this).parents('.popover-content').find(copied).stop().fadeIn().delay(2000).fadeOut();
+		$(this).parents('.public_link_modal').find(copied).stop().fadeIn().delay(2000).fadeOut();
 		$(this).mouseup(function() {
 			$(this).unbind("mouseup");
 			return false;

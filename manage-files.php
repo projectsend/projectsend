@@ -119,19 +119,24 @@ include('header.php');
 			}
 		});
 		
-	    $('.public_link').popover({ 
-			html : true,
-			content: function() {
-				var id		= $(this).data('id');
-				var token	= $(this).data('token');
-				return '<strong><?php _e('Click to select and copy','cftp_admin'); ?></strong>'+
-						'<div class="copied"><?php _e('Succesfully copied to clipboard','cftp_admin'); ?></div>'+
-						'<div class="copied_not"><?php _e('Content could not be copied to clipboard','cftp_admin'); ?></div>'+
-						'<textarea class="input-large public_link_copy" rows="4"><?php echo BASE_URI; ?>download.php?id=' + id + '&token=' + token + '</textarea>'+
-						'<small><?php _e('Send this URL to someone to download the file without registering or logging in.','cftp_admin'); ?></small>'+
-						'<div class="close-popover"><button type="button" class="btn btn-inverse btn-sm"><?php _e('Close','cftp_admin'); ?></button></div>';
-			}
+		$('body').on('click', '.public_link', function(e) {
+			$(document).psendmodal();
+			var id		= $(this).data('id');
+			var token	= $(this).data('token');
+			var content =  '<div class="public_link_modal">'+
+								'<strong><?php _e('Click to select and copy','cftp_admin'); ?></strong>'+
+								'<div class="copied"><?php _e('Succesfully copied to clipboard','cftp_admin'); ?></div>'+
+								'<div class="copied_not"><?php _e('Content could not be copied to clipboard','cftp_admin'); ?></div>'+
+								'<div class="form-group">'+
+									'<textarea class="input-large public_link_copy form-control" rows="4" readonly><?php echo BASE_URI; ?>download.php?id=' + id + '&token=' + token + '</textarea>'+
+								'</div>'+
+								'<span class="note"><?php _e('Send this URL to someone to download the file without registering or logging in.','cftp_admin'); ?></span>'+
+							'</div>';
+			var title 	= '<?php _e('Public URL','cftp_admin'); ?>';
+			$('.modal_title span').html(title);
+			$('.modal_content').html(content);
 		});
+
 	});
 </script>
 
@@ -705,12 +710,12 @@ include('header.php');
 						 * Visibility
 						 */
 						if ($row['public_allow'] == '1') {
-							$visibility_link	= '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-id="' . $row['id'] .'" data-token="' . html_output($row['public_token']) .'" data-placement="top" data-toggle="popover" data-original-title="' . __('Public URL','cftp_admin') .'">';
+							$visibility_link	= '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-id="' . $row['id'] .'" data-token="' . html_output($row['public_token']) .'">';
 							$visibility_label	= __('Download','cftp_admin');
 						}
 						else {
 							if ( ENABLE_LANDING_FOR_ALL_FILES == '1' ) {
-								$visibility_link	= '<a href="javascript:void(0);" class="btn btn-default btn-sm public_link" data-id="' . $row['id'] .'" data-token="' . html_output($row['public_token']) .'" data-placement="top" data-toggle="popover" data-original-title="' . __('Landing page URL','cftp_admin') .'">';
+								$visibility_link	= '<a href="javascript:void(0);" class="btn btn-default btn-sm public_link" data-id="' . $row['id'] .'" data-token="' . html_output($row['public_token']) .'">';
 								$visibility_label	= __('View information','cftp_admin');
 							}
 							else {

@@ -131,6 +131,7 @@ include('header.php');
 
 						/** $client['account'] == 1 means approve that account */
 						if ( !empty( $client['account'] ) and $client['account'] == '1' ) {
+							$email_type = 'client_approve';
 							/**
 							 * 1 - Approve account
 							 */
@@ -148,6 +149,8 @@ include('header.php');
 														);
 						}
 						else {
+							$email_type = 'client_deny';
+
 							/**
 							 * 1 - Deny account
 							 */
@@ -165,10 +168,24 @@ include('header.php');
 						 * 2 - Process memberships requests
 						 */
 						$process_requests	= $process_memberships->group_process_memberships( $memberships_arguments );
-						
+
 						/**
 						 * 3- Send email to the client
 						 */
+						/** Send email */
+						$processed_requests = $process_requests['memberships'];
+						$client_information = get_client_by_id( $client['id'] );
+
+						$notify_client = new PSend_Email();
+						$email_arguments = array(
+														'type'			=> $email_type,
+														'username'		=> $client_information['username'],
+														'name'			=> $client_information['name'],
+														'addresses'		=> $client_information['email'],
+														'memberships'	=> $processed_requests,
+														'preview'		=> true,
+													);
+						$notify_send = $notify_client->psend_send_email($email_arguments);
 					}
 
 					$log_action_number = 38;

@@ -94,8 +94,9 @@ $email_strings_new_client_self = array(
 $email_strings_account_approved = array(
 									'subject'			=> ( defined('EMAILS_ACCOUNT_APPROVE_USE_SUBJECT_CUSTOM' ) && EMAILS_ACCOUNT_APPROVE_USE_SUBJECT_CUSTOM == 1 && defined( 'EMAILS_ACCOUNT_APPROVE_SUBJECT' ) ) ? EMAILS_ACCOUNT_APPROVE_SUBJECT : __('You account has been approved','cftp_admin'),
 									'body'				=> __('Your account has been approved.','cftp_admin'),
-									'title_approved'	=> __('Additionally, the following group membership requests have also been approved:','cftp_admin'),
-									'title_denied'		=> __('While these membership requests were denied:','cftp_admin'),
+									'title_memberships'	=> __('Additionally, your group membership requests have been processed.','cftp_admin'),
+									'title_approved'	=> __('Approved requests:','cftp_admin'),
+									'title_denied'		=> __('Denied requests:','cftp_admin'),
 									'body2'				=> __('You can log in following this link','cftp_admin'),
 									'body3'				=> __('Please contact the administrator if you need further assistance.','cftp_admin')
 								);
@@ -304,30 +305,51 @@ class PSend_Email
 	 */
 	function email_account_approve($username,$name,$memberships_requests)
 	{
+		global $email_strings_account_approved;
+		$requests_title_replace = false;
+		
+		$this->groups = new GroupActions();
+		$this->get_args = array();
+		$this->get_groups = $this->groups->get_groups( $this->get_args );
+
 		if ( !empty( $memberships_requests['approved'] ) ) {
-			$approved_list =  $memberships_requests['approved'];
+			$requests_title_replace = true;
 			$approved_title = '<p>'.$email_strings_account_approved['title_approved'].'</p>';
+			// Make the list
+			$approved_list = '<ul>';
+			foreach ( $memberships_requests['approved'] as $group_id ) {
+				$approved_list .= '<li style="list-style:disc;">' . $this->get_groups[$group_id]['name'] . '</li>';
+			}
+			$approved_list .= '</ul><hr>';
 		}
 		else {
 			$approved_list =  '';
 			$approved_title = '';
 		}
 		if ( !empty( $memberships_requests['denied'] ) ) {
-			$denied_list =  $memberships_requests['denied'];
+			$requests_title_replace = true;
 			$denied_title = '<p>'.$email_strings_account_approved['title_denied'].'</p>';
+			// Make the list
+			$denied_list = '<ul>';
+			foreach ( $memberships_requests['denied'] as $group_id ) {
+				$denied_list .= '<li style="list-style:disc;">' . $this->get_groups[$group_id]['name'] . '</li>';
+			}
+			$denied_list .= '</ul><hr>';
 		}
 		else {
 			$denied_list =  '';
 			$denied_title = '';
 		}
+		
+		$requests_title = ( $requests_title_replace == true ) ? '<p>'.$email_strings_account_approved['title_approved'].'</p>' : '';
 
-		global $email_strings_account_approved;
 		$this->email_body = $this->email_prepare_body('client_approve');
 		$this->email_body = str_replace(
-									array('%SUBJECT%','%BODY1%','%APPROVED_TITLE%','%GROUPS_APPROVED%','%DENIED_TITLE%','%GROUPS_DENIED%','%BODY2%','%BODY3%','%URI%'),
+									array('%SUBJECT%','%BODY1%', '%REQUESTS_TITLE%', '%APPROVED_TITLE%','%GROUPS_APPROVED%','%DENIED_TITLE%','%GROUPS_DENIED%','%BODY2%','%BODY3%','%URI%'),
 									array(
 										$email_strings_account_approved['subject'],
 										$email_strings_account_approved['body'],
+										'<p>'.$email_strings_account_approved['title_memberships'].'</p>',
 										$approved_title,
 										$approved_list,
 										$denied_title,

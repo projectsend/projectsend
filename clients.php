@@ -20,32 +20,6 @@ $page_title = __('Clients Administration','cftp_admin');
 include('header.php');
 ?>
 
-<script type="text/javascript">
-	$(document).ready(function() {
-		$("#do_action").click(function() {
-			var action = $('#action').val();
-			if (action != 'none') {
-				var checks = $("td>input:checkbox").serializeArray(); 
-				if (checks.length == 0) { 
-					alert('<?php _e('Please select at least one client to proceed.','cftp_admin'); ?>');
-					return false; 
-				} 
-				else {
-					if (action == 'delete') {
-						var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
-						var msg_2 = '<?php _e("clients and all of the assigned files. Are you sure you want to continue?",'cftp_admin'); ?>';
-						if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
-							return true;
-						} else {
-							return false;
-						}
-					}
-				}
-			}
-		});
-	});
-</script>
-
 <div class="col-xs-12">
 <?php
 	/**

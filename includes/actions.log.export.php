@@ -52,3 +52,5 @@ if ($log_count > 0) {
 		fputcsv($output, $rendered);
 	}
 }
+
+setCookie("log_download_started", 1, time() + 20, '/', "", false, false);

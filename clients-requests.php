@@ -24,26 +24,6 @@ include('header.php');
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		$("#do_action").click(function() {
-			var checks = $(".footable-first-column>input:checkbox").serializeArray(); 
-			if (checks.length == 0) { 
-				alert('<?php _e('Please select at least one client to proceed.','cftp_admin'); ?>');
-				return false; 
-			} 
-			else {
-				var action = $('#action').val();
-				if (action == 'delete') {
-					var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
-					var msg_2 = '<?php _e("requests. Are you sure you want to continue?",'cftp_admin'); ?>';
-					if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
-						return true;
-					} else {
-						return false;
-					}
-				}
-			}
-		});
-		
 		$('.change_all').click(function(e) {
 			e.preventDefault();
 			var target = $(this).data('target');
@@ -301,8 +281,6 @@ include('header.php');
 									$actions_options = array(
 															'none'				=> __('Select action','cftp_admin'),
 															'apply'				=> __('Apply selection','cftp_admin'),
-															//'approve_account'	=> __('Approve accounts only','cftp_admin'),
-															//'approve_all'		=> __('Approve accounts and memberships','cftp_admin'),
 															'delete'			=> __('Delete requests','cftp_admin'),
 														);
 									foreach ( $actions_options as $val => $text ) {

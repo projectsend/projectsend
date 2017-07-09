@@ -337,65 +337,6 @@ include_once(ROOT_DIR.'/header.php');
 	<?php default_footer_info(); ?>
 
 </div>
-
-	<script type="text/javascript">
-		$(document).ready(function() {
-			$("#do_action").click(function() {
-				var action = $('#action').val();
-				if (action != 'none') {
-					var checks = $("td>input:checkbox").serializeArray(); 
-					if (checks.length == 0) { 
-						alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
-						return false; 
-					} 
-					else {
-						var action = $('#action').val();
-						if (action == 'zip') {
-	
-							var checkboxes = $.map($('input:checkbox:checked'), function(e,i) {
-								if (e.value != '0') {
-									return +e.value;
-								}
-							});
-							
-							$(document).psendmodal();
-	
-							Cookies.set('download_started', 0, { expires: 100 });
-							setTimeout(check_download_cookie, 1000);
-							$('.modal_content').html('<p class="loading-img"><img src="<?php echo BASE_URI; ?>img/ajax-loader.gif" alt="Loading" /></p>'+
-														'<p class="lead text-center text-info"><?php _e('Please wait while your download is prepared.','cftp_admin'); ?></p>'+
-														'<p class="text-center text-info"><?php _e('This operation could take a few minutes, depending on the size of the files.','cftp_admin'); ?></p>'
-													);
-							$.get('<?php echo BASE_URI; ?>process.php', { do:"zip_download", files:checkboxes },
-								function(data) {
-									var url = '<?php echo BASE_URI; ?>process-zip-download.php?ids=' + data;
-									$('.modal_content').append("<iframe id='modal_zip'></iframe>");
-									$('#modal_zip').attr('src', url);
-								}
-							);
-						}
-					return false;
-					}
-				}
-			});
-
-			/**
-			 * Solution to close the modal. Suggested by remez, based on
-			 * https://stackoverflow.com/questions/29532788/how-to-display-a-loading-animation-while-file-is-generated-for-download
-			 */
-			var downloadTimeout;
-			var check_download_cookie = function() {
-				if (Cookies.get("download_started") == 1) {
-					Cookies.set("download_started", "false", { expires: 100 });
-					remove_modal();
-				} else {
-					downloadTimeout = setTimeout(check_download_cookie, 1000);
-				}
-			};
-
-		});
-	</script>
-
 	<?php
 		load_js_files();
 	?>

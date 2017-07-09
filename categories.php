@@ -26,28 +26,6 @@ include('header.php');
 
 <script type="text/javascript">
 	$(document).ready( function() {
-		$("#do_action").click(function() {
-			var action = $('#categories_actions').val();
-			if (action != 'none') {
-				var checks = $("td>input:checkbox").serializeArray(); 
-				if (checks.length == 0) { 
-					alert('<?php _e('Please select at least one category to proceed.','cftp_admin'); ?>');
-					return false; 
-				}
-				else {
-					if (action == 'delete') {
-						var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
-						var msg_2 = '<?php _e("categories. Are you sure you want to continue?",'cftp_admin'); ?>';
-						if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
-							return true;
-						} else {
-							return false;
-						}
-					}
-				}
-			}
-		});
-
 		$("#process_category").submit(function() {
 			clean_form( this );
 
@@ -83,8 +61,8 @@ if ( !empty( $_GET['status'] ) ) {
 /**
  * Apply the corresponding action to the selected categories.
  */
-if ( isset( $_GET['categories_actions'] ) ) {
-	if ( $_GET['categories_actions'] != 'none' ) {
+if ( isset( $_GET['action'] ) ) {
+	if ( $_GET['action'] != 'none' ) {
 		/** Continue only if 1 or more categories were selected. */
 		if ( !empty($_GET['batch'] ) ) {
 	
@@ -105,7 +83,7 @@ if ( isset( $_GET['categories_actions'] ) ) {
 			$my_info = get_user_by_username(get_current_user_username());
 			$affected_users = 0;
 	
-			switch($_GET['categories_actions']) {
+			switch($_GET['action']) {
 				case 'delete':
 					foreach ($selected_categories as $category) {
 						$this_category		= new CategoriesActions();
@@ -265,7 +243,7 @@ if ( isset( $_POST['btn_process'] ) ) {
 				<div class="form_actions_submit">
 					<div class="form-group group_float">
 						<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected categories actions','cftp_admin'); ?>:</label>
-						<select name="categories_actions" id="categories_actions" class="txtfield form-control">
+						<select name="action" id="action" class="txtfield form-control">
 							<?php
 								$actions_options = array(
 														'none'			=> __('Select action','cftp_admin'),

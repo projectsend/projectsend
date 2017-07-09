@@ -86,60 +86,6 @@ if (isset($_GET['category'])) {
 include('header.php');
 ?>
 
-<script type="text/javascript">
-	$(document).ready(function() {
-		$("#do_action").click(function() {
-			var action = $('#action').val();
-			if (action != 'none') {
-				var checks = $("td>input:checkbox").serializeArray(); 
-				if (checks.length == 0) { 
-					alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
-					return false; 
-				} 
-				else {
-					if (action == 'delete') {
-						var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
-						var msg_2 = '<?php _e("files permanently and for every client/group. Are you sure you want to continue?",'cftp_admin'); ?>';
-						if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
-							return true;
-						} else {
-							return false;
-						}
-					}
-					else if (action == 'unassign') {
-						var msg_1 = '<?php _e("You are about to unassign",'cftp_admin'); ?>';
-						var msg_2 = '<?php _e("files from this account. Are you sure you want to continue?",'cftp_admin'); ?>';
-						if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
-							return true;
-						} else {
-							return false;
-						}
-					}
-				}
-			}
-		});
-		
-		$('body').on('click', '.public_link', function(e) {
-			$(document).psendmodal();
-			var id		= $(this).data('id');
-			var token	= $(this).data('token');
-			var content =  '<div class="public_link_modal">'+
-								'<strong><?php _e('Click to select and copy','cftp_admin'); ?></strong>'+
-								'<div class="copied"><?php _e('Succesfully copied to clipboard','cftp_admin'); ?></div>'+
-								'<div class="copied_not"><?php _e('Content could not be copied to clipboard','cftp_admin'); ?></div>'+
-								'<div class="form-group">'+
-									'<textarea class="input-large public_link_copy form-control" rows="4" readonly><?php echo BASE_URI; ?>download.php?id=' + id + '&token=' + token + '</textarea>'+
-								'</div>'+
-								'<span class="note"><?php _e('Send this URL to someone to download the file without registering or logging in.','cftp_admin'); ?></span>'+
-							'</div>';
-			var title 	= '<?php _e('Public URL','cftp_admin'); ?>';
-			$('.modal_title span').html(title);
-			$('.modal_content').html(content);
-		});
-
-	});
-</script>
-
 <div class="col-xs-12">
 	<?php
 		/**

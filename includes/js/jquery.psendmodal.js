@@ -3,7 +3,7 @@ $.fn.psendmodal = function() {
 	var modal_structure = '<div class="modal_overlay"></div>'+
 							'<div class="modal_psend">'+
 								'<div class="modal_title">'+
-									'<span></span>'+
+									'<span>&nbsp;</span>'+
 									'<a href="#" class="modal_close">&times;</a>'+
 								'</div>'+
 								'<div class="modal_content"></div>'+

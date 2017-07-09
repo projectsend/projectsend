@@ -23,6 +23,7 @@ $load_js_files[]	= BASE_URI . 'includes/js/jquery.psendmodal.js';
 $load_js_files[]	= BASE_URI . 'includes/js/jen/jen.js';
 $load_js_files[]	= BASE_URI . 'includes/js/js.cookie.js';
 $load_js_files[]	= BASE_URI . 'includes/js/main.js';
+$load_js_files[]	= BASE_URI . 'includes/js/js.functions.php';
 
 /** CSS */
 

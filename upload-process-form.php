@@ -779,24 +779,6 @@ while( $row = $statement->fetch() ) {
 		<?php
 			}
 		?>
-
-		$('body').on('click', '.public_link', function(e) {
-			$(document).psendmodal();
-			var id		= $(this).data('id');
-			var token	= $(this).data('token');
-			var content =  '<div class="public_link_modal">'+
-								'<strong><?php _e('Click to select and copy','cftp_admin'); ?></strong>'+
-								'<div class="copied"><?php _e('Succesfully copied to clipboard','cftp_admin'); ?></div>'+
-								'<div class="copied_not"><?php _e('Content could not be copied to clipboard','cftp_admin'); ?></div>'+
-								'<div class="form-group">'+
-									'<textarea class="input-large public_link_copy form-control" rows="4" readonly><?php echo BASE_URI; ?>download.php?id=' + id + '&token=' + token + '</textarea>'+
-								'</div>'+
-								'<span class="note"><?php _e('Send this URL to someone to download the file without registering or logging in.','cftp_admin'); ?></span>'+
-							'</div>';
-			var title 	= '<?php _e('Public URL','cftp_admin'); ?>';
-			$('.modal_title span').html(title);
-			$('.modal_content').html(content);
-		});
 	});
 </script>
 

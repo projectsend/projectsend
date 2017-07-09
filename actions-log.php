@@ -21,52 +21,7 @@ $page_title = __('Recent activities log','cftp_admin');
 include('header.php');
 ?>
 
-<script type="text/javascript">
-	$(document).ready( function() {
-		$("#do_action").click(function() {
-			var checks = $("td>input:checkbox").serializeArray(); 
-			var action = $('#action').val();
-
-			if (action == 'delete') {
-				if (checks.length == 0) { 
-					alert('<?php _e('Please select at least one activity to proceed.','cftp_admin'); ?>');
-					return false; 
-				}
-				else {
-					var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
-					var msg_2 = '<?php _e("activities. Are you sure you want to continue?",'cftp_admin'); ?>';
-					if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
-						return true;
-					} else {
-						return false;
-					}
-				}
-			}
-			if (action == 'clear') {
-				var msg = '<?php _e("You are about to delete all activities from the log. Only those used for statistics will remain. Are you sure you want to continue?",'cftp_admin'); ?>';
-				if (confirm(msg)) {
-					return true;
-				} else {
-					return false;
-				}
-			}
-
-			if (action == 'download') {
-				$(document).psendmodal();
-				$('.modal_content').html('<p class="loading-img">'+
-											'<img src="<?php echo BASE_URI; ?>img/ajax-loader.gif" alt="Loading" /></p>'+
-											'<p class="lead text-center text-info"><?php _e('Please wait while your download is prepared.','cftp_admin'); ?></p>'
-										);
-				$('.modal_content').append('<iframe src="<?php echo BASE_URI; ?>includes/actions.log.export.php?format=csv"></iframe>');
-				return false;
-			}
-		});
-
-	});
-</script>
-
 <div class="col-xs-12">
-
 <?php
 	/**
 	 * Apply the corresponding action to the selected users.
@@ -201,10 +156,19 @@ include('header.php');
 					<div class="form-group group_float">
 						<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Activities actions','cftp_admin'); ?>:</label>
 						<select name="action" id="action" class="form-control">
-							<option value="none"><?php _e('Select action','cftp_admin'); ?></option>
-							<option value="download"><?php _e('Download as csv','cftp_admin'); ?></option>
-							<option value="delete"><?php _e('Delete selected','cftp_admin'); ?></option>
-							<option value="clear"><?php _e('Clear entire log','cftp_admin'); ?></option>
+								<?php
+								$actions_options = array(
+														'none'				=> __('Select action','cftp_admin'),
+														'log_download'		=> __('Download as csv','cftp_admin'),
+														'delete'			=> __('Delete selected','cftp_admin'),
+														'log_clear'			=> __('Clear entire log','cftp_admin'),
+													);
+								foreach ( $actions_options as $val => $text ) {
+							?>
+									<option value="<?php echo $val; ?>"><?php echo $text; ?></option>
+							<?php
+								}
+							?>
 						</select>
 					</div>
 					<button type="submit" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>

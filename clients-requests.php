@@ -37,12 +37,6 @@ include('header.php');
 				var target = $(this).data('client');
 				$(".membership_action[data-client='"+target+"']").prop("checked",false).change();
 			}
-			/*
-			var target = $(this).data('target');
-			var check = $(this).data('check');
-			$("input[data-client='"+target+"']").prop("checked",check).change();
-			check_client(target);
-			*/
 		});
 
 		$('.checkbox_toggle').change(function() {

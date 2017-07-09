@@ -132,6 +132,37 @@ $(document).ready(function() {
 	});
 
 
+	/** File editor */
+	if ( $.isFunction($.fn.datepicker) ) {
+		$('.date-container .date-field').datepicker({
+			format			: 'dd-mm-yyyy',
+			autoclose		: true,
+			todayHighlight	: true
+		});
+	}
+
+	$('.add-all').click(function(){
+		var type = $(this).data('type');
+		var selector = $(this).closest('.' + type).find('select');
+		$(selector).find('option').each(function(){
+			$(this).prop('selected', true);
+		});
+		$(selector).trigger('chosen:updated');
+		return false;
+	});
+
+	$('.remove-all').click(function(){
+		var type = $(this).data('type');
+		var selector = $(this).closest('.' + type).find('select');
+		$(selector).find('option').each(function(){
+			$(this).prop('selected', false);
+		});
+		$(selector).trigger('chosen:updated');
+		return false;
+	});
+
+
+	/** Misc */
 	$('button').click(function() {
 		$(this).blur();
 	});

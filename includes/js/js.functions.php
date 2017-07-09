@@ -1,4 +1,12 @@
 <?php
+/**
+ * This file contains javascript functions that are repeated on 2 or more
+ * files and use text from translation resources or conditions via php
+ *
+ * @package		ProjectSend
+ * @subpackage	javascript
+ *
+ */
     header("Content-Type: application/javascript");
 	require_once('../../sys.includes.php');
 ?>
@@ -147,4 +155,29 @@ $(document).ready(function(e) {
 			logdownloadTimeout = setTimeout(check_log_download_cookie, 1000);
 		}
 	};
+
+
+	<?php
+		/** EDIT FILE + UPLOAD FORM */
+	?>
+		if ( $.isFunction($.fn.chosen) ) {
+			$('.chosen-select').chosen({
+				no_results_text	: "<?php _e('No results where found.','cftp_admin'); ?>",
+				width			: "100%",
+				search_contains	: true
+			});
+		}
+
+
+	<?php
+		/** CKEditor only avaiable if the option is enabled */
+		if ( DESCRIPTIONS_USE_CKEDITOR == '1' ) {
+	?>
+			if ( typeof CKEDITOR !== "undefined" ) {
+				CKEDITOR.replaceAll( 'ckeditor' );
+			}
+	<?php
+		}
+	?>
+
 });

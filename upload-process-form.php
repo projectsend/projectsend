@@ -15,6 +15,8 @@
  * @package ProjectSend
  * @subpackage Upload
  */
+define('IS_FILE_EDITOR', true);
+
 $load_scripts	= array(
 						'datepicker',
 						'footable',
@@ -707,38 +709,6 @@ while( $row = $statement->fetch() ) {
 		<?php
 			if(!empty($uploaded_files)) {
 		?>
-				$('.chosen-select').chosen({
-					no_results_text	: "<?php _e('No results where found.','cftp_admin'); ?>",
-					width			: "98%",
-					search_contains	: true
-				});
-
-				$('.date-container .date-field').datepicker({
-					format			: 'dd-mm-yyyy',
-					autoclose		: true,
-					todayHighlight	: true
-				});
-
-				$('.add-all').click(function(){
-					var type = $(this).data('type');
-					var selector = $(this).closest('.' + type).find('select');
-					$(selector).find('option').each(function(){
-						$(this).prop('selected', true);
-					});
-					$('select').trigger('chosen:updated');
-					return false;
-				});
-		
-				$('.remove-all').click(function(){
-					var type = $(this).data('type');
-					var selector = $(this).closest('.' + type).find('select');
-					$(selector).find('option').each(function(){
-						$(this).prop('selected', false);
-					});
-					$('select').trigger('chosen:updated');
-					return false;
-				});
-
 				$('.copy-all').click(function() {
 					if ( confirm( "<?php _e('Copy selection to all files?','cftp_admin'); ?>" ) ) {
 						var type = $(this).data('type');
@@ -764,15 +734,6 @@ while( $row = $statement->fetch() ) {
 
 					return false;
 				});
-
-				<?php
-					/** CKEditor only avaiable if the option is enabled */
-					if ( DESCRIPTIONS_USE_CKEDITOR == '1' ) {
-				?>
-						CKEDITOR.replaceAll( 'ckeditor' );
-				<?php
-					}
-				?>
 
 				// Autoclick the continue button
 				//$('#upload-continue').click();

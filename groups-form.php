@@ -72,8 +72,8 @@ switch ($groups_form_type) {
 				?>
 			</select>
 			<div class="list_mass_members">
-				<a href="#" class="btn btn-default add-all"><?php _e('Add all','cftp_admin'); ?></a>
-				<a href="#" class="btn btn-default remove-all"><?php _e('Remove all','cftp_admin'); ?></a>
+				<a href="#" class="btn btn-default add-all" data-type="assigns"><?php _e('Add all','cftp_admin'); ?></a>
+				<a href="#" class="btn btn-default remove-all" data-type="assigns"><?php _e('Remove all','cftp_admin'); ?></a>
 			</div>
 		</div>
 	</div>
@@ -91,30 +91,3 @@ switch ($groups_form_type) {
 		<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php echo html_output($submit_value); ?></button>
 	</div>
 </form>
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		$('.chosen-select').chosen({
-			no_results_text	: "<?php _e('No results where found.','cftp_admin'); ?>",
-			search_contains	: true
-		});
-
-		$('.add-all').click(function(){
-			var selector = $(this).closest('.assigns').find('select');
-			$(selector).find('option').each(function(){
-				$(this).prop('selected', true);
-			});
-			$('select').trigger('chosen:updated');
-			return false;
-		});
-
-		$('.remove-all').click(function(){
-			var selector = $(this).closest('.assigns').find('select');
-			$(selector).find('option').each(function(){
-				$(this).prop('selected', false);
-			});
-			$('select').trigger('chosen:updated');
-			return false;
-		});
-	});
-</script>

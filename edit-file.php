@@ -5,6 +5,8 @@
  *
  * @package ProjectSend
  */
+define('IS_FILE_EDITOR', true);
+
 $load_scripts	= array(
 						'datepicker',
 						'chosen',
@@ -554,38 +556,6 @@ $current_level = get_current_user_level();
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('.chosen-select').chosen({
-			no_results_text	: "<?php _e('No results where found.','cftp_admin'); ?>",
-			width			: "98%",
-			search_contains	: true
-		});
-
-		$('.date-container .date-field').datepicker({
-			format			: 'dd-mm-yyyy',
-			autoclose		: true,
-			todayHighlight	: true
-		});
-
-		$('.add-all').click(function(){
-			var type = $(this).data('type');
-			var selector = $(this).closest('.' + type).find('select');
-			$(selector).find('option').each(function(){
-				$(this).prop('selected', true);
-			});
-			$('select').trigger('chosen:updated');
-			return false;
-		});
-
-		$('.remove-all').click(function(){
-			var type = $(this).data('type');
-			var selector = $(this).closest('.' + type).find('select');
-			$(selector).find('option').each(function(){
-				$(this).prop('selected', false);
-			});
-			$('select').trigger('chosen:updated');
-			return false;
-		});
-
 		$("form").submit(function() {
 			clean_form(this);
 
@@ -597,15 +567,6 @@ $current_level = get_current_user_level();
 			if (show_form_errors() == false) { return false; }
 
 		});
-		
-		<?php
-			/** CKEditor only avaiable if the option is enabled */
-			if ( DESCRIPTIONS_USE_CKEDITOR == '1' ) {
-		?>
-				CKEDITOR.replaceAll( 'ckeditor' );
-		<?php
-			}
-		?>
 	});
 </script>
 

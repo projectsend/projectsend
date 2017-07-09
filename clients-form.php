@@ -235,8 +235,8 @@ switch ($clients_form_type) {
 							if ( $current_level == 9 || $current_level == 8 ) {
 						?>
 								<div class="list_mass_members">
-									<a href="#" class="btn btn-default add-all"><?php _e('Add all','cftp_admin'); ?></a>
-									<a href="#" class="btn btn-default remove-all"><?php _e('Remove all','cftp_admin'); ?></a>
+									<a href="#" class="btn btn-default add-all" data-type="assigns"><?php _e('Add all','cftp_admin'); ?></a>
+									<a href="#" class="btn btn-default remove-all" data-type="assigns"><?php _e('Remove all','cftp_admin'); ?></a>
 								</div>
 						<?php
 							}
@@ -297,30 +297,3 @@ switch ($clients_form_type) {
 		}
 	?>
 </form>
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		$('.chosen-select').chosen({
-			no_results_text	: "<?php _e('No results where found.','cftp_admin'); ?>",
-			search_contains	: true
-		});
-
-		$('.add-all').click(function(){
-			var selector = $(this).closest('.assigns').find('select');
-			$(selector).find('option').each(function(){
-				$(this).prop('selected', true);
-			});
-			$('select').trigger('chosen:updated');
-			return false;
-		});
-
-		$('.remove-all').click(function(){
-			var selector = $(this).closest('.assigns').find('select');
-			$(selector).find('option').each(function(){
-				$(this).prop('selected', false);
-			});
-			$('select').trigger('chosen:updated');
-			return false;
-		});
-	});
-</script>

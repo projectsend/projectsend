@@ -39,7 +39,6 @@ $(document).ready(function(e) {
 		var checks = $("td>input:checkbox").serializeArray(); 
 		var action = $('#action').val();
 		if (action != 'none') {
-
 			<?php
 				/** GENERIC ACTIONS */
 			?>
@@ -124,7 +123,8 @@ $(document).ready(function(e) {
 						}
 					);
 				}
-
+		}
+		else {
 			return false;
 		}
 	});

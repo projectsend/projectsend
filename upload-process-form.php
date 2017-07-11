@@ -243,10 +243,11 @@ while( $row = $statement->fetch() ) {
 							$nuser_query->execute(); 
 							$nuser_id = $dbh->lastInsertId();
 // --------------------------------- email notification start here! B)
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 $to = $nuser; // note the comma
 
 // Subject
-$subject = 'Invitation to Download';
+//$subject = 'Invitation to Download';
 
 // Message
 $message = '
@@ -270,17 +271,109 @@ $message = '
 </body>
 </html>
 ';
+// smtp -------------------
+//-----------------------------------smtp -------------------------------------------------------------------//
+		/**
+		 * phpMailer
+		 */
+		require_once(ROOT_DIR.'/includes/phpmailer/class.phpmailer.php');
+		if (!spl_autoload_functions() OR (!in_array('PHPMailerAutoload', spl_autoload_functions()))) {
+			require_once(ROOT_DIR.'/includes/phpmailer/PHPMailerAutoload.php');
+		}
 
-// To send HTML mail, the Content-type header must be set
-$headers[] = 'MIME-Version: 1.0';
-$headers[] = 'Content-type: text/html; charset=iso-8859-1';
+		$send_mail = new PHPMailer();
+		switch (MAIL_SYSTEM) {
+			case 'smtp':
+					$send_mail->IsSMTP();
+					$send_mail->SMTPAuth = true;
+					$send_mail->Host = SMTP_HOST;
+					$send_mail->Port = SMTP_PORT;
+					$send_mail->Username = SMTP_USER;
+					$send_mail->Password = SMTP_PASS;
+					
+					if ( defined('SMTP_AUTH') && SMTP_AUTH != 'none' ) {
+						$send_mail->SMTPSecure = SMTP_AUTH;
+					}
+				break;
+			case 'gmail':
+					$send_mail->IsSMTP();
+					$send_mail->SMTPAuth = true;
+					$send_mail->SMTPSecure = "tls";
+					$send_mail->Host = 'smtp.gmail.com';
+					$send_mail->Port = 587;
+					$send_mail->Username = SMTP_USER;
+					$send_mail->Password = SMTP_PASS;
+				break;
+			case 'sendmail':
+					$send_mail->IsSendmail();
+				break;
+		}
+		
+		$send_mail->CharSet = EMAIL_ENCODING;
+//
+		$send_mail->Subject = "Invitation to Download";
+//
+		$send_mail->MsgHTML($message);
+		$send_mail->AltBody = __('This email contains HTML formatting and cannot be displayed right now. Please use an HTML compatible reader.','cftp_admin');
 
-// Additional headers
-$headers[] = 'To: <'.$nuser.'>';
-$headers[] = 'From:  MicroHealth <info@microhealthllc.com>';
+		$send_mail->SetFrom(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
+		$send_mail->AddReplyTo(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
+//
+		$send_mail->AddAddress($to);
+		
+		/**
+		 * Check if BCC is enabled and get the list of
+		 * addresses to add, based on the email type.
+		 */
+		if (COPY_MAIL_ON_CLIENT_UPLOADS == '1') {
+					$try_bcc = true;
+				}
+		if ($try_bcc === true) {
+			$add_bcc_to = array();
+			if (COPY_MAIL_MAIN_USER == '1') {
+				$add_bcc_to[] = ADMIN_EMAIL_ADDRESS;
+			}
+			$more_addresses = COPY_MAIL_ADDRESSES;
+			if (!empty($more_addresses)) {
+				$more_addresses = explode(',',$more_addresses);
+				foreach ($more_addresses as $add_bcc) {
+					$add_bcc_to[] = $add_bcc;
+				}
+			}
 
-// Mail it
-mail($to, $subject, $message, implode("\r\n", $headers));
+
+			/**
+			 * Add the BCCs with the compiled array.
+			 * First, clean the array to make sure the admin
+			 * address is not written twice.
+			 */
+
+			if (!empty($add_bcc_to)) {
+				$add_bcc_to = array_unique($add_bcc_to);
+				foreach ($add_bcc_to as $set_bcc) {
+					$send_mail->AddBCC($set_bcc);
+				}
+			}
+			 
+		}
+
+
+	
+		/**
+		 * Finally, send the e-mail.
+		 */
+		if($send_mail->Send()) {
+			$cc_status = "<div class=\"alert alert-success cc-success\"><strong>Success!</strong>Your Request has been submitted successfully.</div>";
+		}
+		else {
+			$cc_status = "<div class=\"alert alert-danger cc-failed\"><strong>Oops! </strong>Something went wrong! please try after sometime.</div>";
+		}
+
+		
+			echo "<script>$(document).ready(function(){ $('#cc-mail-status').modal('toggle');});</script>";
+//-----------------------------------smtp -------------------------------------------------------------------//
+// smtp -------------------
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // email notification End here! B)
 						}
 						array_push($full_list,'c'.$nuser_id);
@@ -370,7 +463,7 @@ mail($to, $subject, $message, implode("\r\n", $headers));
 $to = $user['email']; // note the comma
 
 // Subject
-$subject = 'New files uploaded for you';
+//$subject = 'New files uploaded for you';
 
 // Message
 $message = '
@@ -395,10 +488,107 @@ $headers[] = 'Content-type: text/html; charset=iso-8859-1';
 $headers[] = 'To: <'.$to.'>';
 $headers[] = 'From:  MicroHealth<info@microhealthllc.com>';
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+if (!spl_autoload_functions() OR (!in_array('PHPMailerAutoload', spl_autoload_functions()))) {
+			require_once(ROOT_DIR.'/includes/phpmailer/PHPMailerAutoload.php');
+		}
+
+		$send_mail = new PHPMailer();
+		switch (MAIL_SYSTEM) {
+			case 'smtp':
+					$send_mail->IsSMTP();
+					$send_mail->SMTPAuth = true;
+					$send_mail->Host = SMTP_HOST;
+					$send_mail->Port = SMTP_PORT;
+					$send_mail->Username = SMTP_USER;
+					$send_mail->Password = SMTP_PASS;
+					
+					if ( defined('SMTP_AUTH') && SMTP_AUTH != 'none' ) {
+						$send_mail->SMTPSecure = SMTP_AUTH;
+					}
+				break;
+			case 'gmail':
+					$send_mail->IsSMTP();
+					$send_mail->SMTPAuth = true;
+					$send_mail->SMTPSecure = "tls";
+					$send_mail->Host = 'smtp.gmail.com';
+					$send_mail->Port = 587;
+					$send_mail->Username = SMTP_USER;
+					$send_mail->Password = SMTP_PASS;
+				break;
+			case 'sendmail':
+					$send_mail->IsSendmail();
+				break;
+		}
+		
+		$send_mail->CharSet = EMAIL_ENCODING;
+//
+		$send_mail->Subject = "NEW FILE RECEIVED";
+//
+		$send_mail->MsgHTML($message);
+		$send_mail->AltBody = __('This email contains HTML formatting and cannot be displayed right now. Please use an HTML compatible reader.','cftp_admin');
+
+		$send_mail->SetFrom(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
+		$send_mail->AddReplyTo(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
+//
+		$send_mail->AddAddress($to);
+		
+		/**
+		 * Check if BCC is enabled and get the list of
+		 * addresses to add, based on the email type.
+		 */
+		if (COPY_MAIL_ON_CLIENT_UPLOADS == '1') {
+					$try_bcc = true;
+				}
+		if ($try_bcc === true) {
+			$add_bcc_to = array();
+			if (COPY_MAIL_MAIN_USER == '1') {
+				$add_bcc_to[] = ADMIN_EMAIL_ADDRESS;
+			}
+			$more_addresses = COPY_MAIL_ADDRESSES;
+			if (!empty($more_addresses)) {
+				$more_addresses = explode(',',$more_addresses);
+				foreach ($more_addresses as $add_bcc) {
+					$add_bcc_to[] = $add_bcc;
+				}
+			}
+
+
+			/**
+			 * Add the BCCs with the compiled array.
+			 * First, clean the array to make sure the admin
+			 * address is not written twice.
+			 */
+
+			if (!empty($add_bcc_to)) {
+				$add_bcc_to = array_unique($add_bcc_to);
+				foreach ($add_bcc_to as $set_bcc) {
+					$send_mail->AddBCC($set_bcc);
+				}
+			}
+			 
+		}
+
+
+	
+		/**
+		 * Finally, send the e-mail.
+		 */
+		if($send_mail->Send()) {
+			$cc_status = "<div class=\"alert alert-success cc-success\"><strong>Success!</strong>Your Request has been submitted successfully.</div>";
+		}
+		else {
+			$cc_status = "<div class=\"alert alert-danger cc-failed\"><strong>Oops! </strong>Something went wrong! please try after sometime.</div>";
+		}
+
+		
+			echo "<script>$(document).ready(function(){ $('#cc-mail-status').modal('toggle');});</script>";
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // Mail it
-if(mail($to, $subject, $message, implode("\r\n", $headers))) {
+/*if(mail($to, $subject, $message, implode("\r\n", $headers))) {
 	echo "<div class='alert alert-success'><a href='#' class='close' data-dismiss='alert'>×</a>E-mail notifications have been sent.</div>";
-}
+}*/
 
 // email notification End here! B)
 								}

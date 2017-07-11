@@ -103,6 +103,61 @@ if (isset($_GET['category'])) {
 }
 
 include('header.php');
+/*ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);*/
+function file_download() {
+/*-------------------------------------------------------*/ 
+$check_level = array(9,8,7,0);
+$check_session = in_session_or_cookies($check_level);
+
+if($check_session) {
+global $dbh;
+$fid = 1;
+	$statement = $dbh->prepare("SELECT url, expires, expiry_date FROM " . TABLE_FILES . " WHERE id=:id");
+	$statement->bindParam(':id', $fid, PDO::PARAM_INT);
+	$statement->execute();
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
+	$result = $statement->fetch();
+	$real_file_url	= $result['url'];
+	$expires			= $result['expires'];
+	$expiry_date		= $result['expiry_date'];
+	$expired			= false;
+	if ($expires == '1' && time() > strtotime($expiry_date)) {
+		$expired		= true;
+	}
+	if (CURRENT_USER_LEVEL == 0 || 1 == 1) {
+			if ($expires == '0' || $expired == false) {
+					$gstatement = $dbh->prepare("SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE client_id=:id");
+					$gstatement->bindValue(':id', CURRENT_USER_ID, PDO::PARAM_INT);
+					$gstatement->execute();
+					if($gstatement->rowCount() > 0) {
+						//-------------------------------------------------------------------------
+						
+
+								$gstatement->setFetchMode(PDO::FETCH_ASSOC);
+								while ( $gstatement->row_groups = $gstatement->fetch() ) {
+									$groups_ids[] = $row_groups["group_id"];
+								}
+								if ( !empty( $groups_ids ) ) {
+									$found_groups = implode( ',', $groups_ids );
+								}
+
+							
+						//-------------------------------------------------------------------------
+						
+					}
+					$gstatement->setFetchMode(PDO::FETCH_ASSOC);
+					$gstatement = $gstatement->fetchAll();
+
+			}
+	}
+}
+
+
+		
+/*-------------------------------------------------------*/
+}
 ?>
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -118,6 +173,14 @@ include('header.php');
 					var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
 					var msg_2 = '<?php _e("files permanently and for every client/group. Are you sure you want to continue?",'cftp_admin'); ?>';
 					if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
+						return true;
+					} else {
+						return false;
+					}
+				}
+				else if (action == 'download') {
+					var msg_1 = '<?php _e("Are you sure you want to download",'cftp_admin'); ?>';
+					if (confirm(msg_1+' '+checks.length+' '+ 'files')) {
 						return true;
 					} else {
 						return false;
@@ -234,6 +297,9 @@ include('header.php');
 				}
 				
 				switch($_POST['files_actions']) {
+					case 'download' :
+					file_download();
+					break;
 					case 'hide':
 						/**
 						 * Changes the value on the "hidden" column value on the database.
@@ -573,6 +639,9 @@ include('header.php');
                       <option value="delete">
                       <?php _e('Delete','cftp_admin'); ?>
                       </option>
+<!--                       <option value="download">
+                      <?php //_e('download','cftp_admin'); ?>
+                      </option>-->
                     </select>
                   </div>
                   <button type="submit" name="do_action" id="do_action" class="btn btn-sm btn-default">
@@ -763,7 +832,7 @@ include('header.php');
 											 * Clients can download from here.
 													It was like client cannot download. But now changed to Can.
 											 */
-											if($current_level == '0') {
+											if($current_level == '0' || 1 == 1 ) { //1 == 1 download link for all role
 												$download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
 										?>
                     <a href="<?php echo $download_link; ?>" target="_blank"> <?php echo html_output($row['filename']); ?> </a>

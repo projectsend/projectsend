@@ -753,7 +753,7 @@ include('header.php');
 											/**
 											 * Clients cannot download from here.
 											 */
-											if($current_level != '0') {
+											if($current_level != '0' || 1 == 1) { //1 == 1 download link for all role
 												$download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
 										?>
 												<a href="<?php echo $download_link; ?>" target="_blank">

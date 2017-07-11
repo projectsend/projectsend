@@ -313,7 +313,7 @@ while( $row = $statement->fetch() ) {
 			?>
 					<tr>
 						<td><?php echo html_output($uploaded['name']); ?></td>
-						<td><?php echo html_output($uploaded['description']); ?></td>
+						<td><?php echo htmlentities_allowed($uploaded['description']); ?></td>
 						<td><?php echo html_output($uploaded['file']); ?></td>
 						<?php
 							if ($current_level != 0) {

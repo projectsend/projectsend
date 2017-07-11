@@ -199,7 +199,7 @@ $count = count($my_files);
 							<div class="img_data">
 								<h2><?php echo htmlentities($file['name']); ?></h2>
 								<div class="photo_info">
-									<?php echo $file['description']; ?>
+									<?php echo htmlentities_allowed($file['description']); ?>
 									<p class="file_size">
 										<?php
 											$file_absolute_path = UPLOADED_FILES_FOLDER . $file['url'];

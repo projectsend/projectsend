@@ -78,7 +78,7 @@ if (!empty($found_notifications)) {
 		$file_data[$row['id']] = array(
 									'id'			=> $row['id'],
 									'filename'		=> $row['filename'],
-									'description'	=> $row['description']
+									'description'	=> htmlentities_allowed($row['description'])
 								);
 	}
 	

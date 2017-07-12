@@ -298,7 +298,18 @@ include('header.php');
 				$params[':name']		= $search_terms;
 				$params[':description']	= $search_terms;
 			}
+
+			/**
+			 * Filter by uploader
+			 */	
+			if(isset($_GET['uploader']) && !empty($_GET['uploader'])) {
+				$conditions[] = "uploader = :uploader";
+				$no_results_error = 'filter';
 	
+				$params[':uploader'] = $_GET['uploader'];
+			}
+
+
 			/**
 			 * If the user is an uploader, or a client is editing his files
 			 * only show files uploaded by that account.
@@ -382,11 +393,42 @@ include('header.php');
 				<?php show_search_form('manage-files.php'); ?>
 
 				<?php
+					if( $current_level != '0' && $results_type == 'global') {
+				?>
+					<form action="manage-files.php" name="files_filters" method="get" class="form-inline form_filters">
+						<?php form_add_existing_parameters( array('hidden', 'action', 'uploader') ); ?>
+						<div class="form-group group_float">
+							<select name="uploader" id="uploader" class="txtfield form-control">
+								<?php
+									$status_options = array(
+															'0'		=> __('Uploader','cftp_admin'),
+														);
+									$sql_uploaders = $dbh->prepare("SELECT uploader FROM " . TABLE_FILES . " GROUP BY uploader");
+									$sql_uploaders->execute();
+									$sql_uploaders->setFetchMode(PDO::FETCH_ASSOC);
+
+									while( $data_uploaders = $sql_uploaders->fetch() ) {
+										$status_options[$data_uploaders['uploader']] = $data_uploaders['uploader'];
+									}
+
+									foreach ( $status_options as $val => $text ) {
+								?>
+										<option value="<?php echo $val; ?>" <?php if ( isset( $_GET['uploader'] ) && $_GET['uploader'] == $val ) { echo 'selected="selected"'; } ?>><?php echo $text; ?></option>
+								<?php
+									}
+								?>
+							</select>
+						</div>
+						<button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default"><?php _e('Filter','cftp_admin'); ?></button>
+					</form>
+				<?php
+					}
+
 					/** Filters are not available for clients */
 					if($current_level != '0' && $results_type != 'global') {
 				?>
 						<form action="manage-files.php" name="files_filters" method="get" class="form-inline form_filters">
-							<?php form_add_existing_parameters( array('hidden', 'action') ); ?>
+							<?php form_add_existing_parameters( array('hidden', 'action', 'uploader') ); ?>
 							<div class="form-group group_float">
 								<select name="hidden" id="hidden" class="txtfield form-control">
 									<?php

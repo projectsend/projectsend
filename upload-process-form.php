@@ -475,7 +475,7 @@ $message = '
 <p>The following files are now available for you to download.</p>
 <h1>'.$add_arguments['name'].'</h1>
 <p>If you prefer not to be notified about new files, please go to My Account and deactivate the notifications checkbox.</p>
-<p>You can access a list of all your files or upload your own by logging in <a href="'.$tt.'">here</a></p>
+<p>You can access a list of all your files or upload your own by logging in <a href="'.SITE_URI.'">here</a></p>
 </body>
 </html>
 ';

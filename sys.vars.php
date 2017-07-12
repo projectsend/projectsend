@@ -115,7 +115,7 @@ if( (DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers) ) {
 if (!defined('TABLES_PREFIX')) {
 	define('TABLES_PREFIX', 'tbl_');
 }
-define('TABLE_DROPOFF','tbl_drop_off_request');
+define('TABLE_DROPOFF', TABLES_PREFIX . 'drop_off_request');
 define('TABLE_FILES', TABLES_PREFIX . 'files');
 define('TABLE_FILES_RELATIONS', TABLES_PREFIX . 'files_relations');
 define('TABLE_DOWNLOADS', TABLES_PREFIX . 'downloads');

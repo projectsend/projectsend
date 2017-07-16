@@ -40,8 +40,8 @@ require_once(ROOT_DIR.'/includes/updates.functions.php');
 /** Contains the session and cookies validation functions */
 require_once(ROOT_DIR.'/includes/userlevel_check.php');
 
-/** Template list generator */
-require_once(ROOT_DIR.'/includes/templates.php');
+/** Template list functions */
+require_once(ROOT_DIR.'/includes/functions.templates.php');
 
 /** Contains the current session information */
 if ( !defined( 'IS_INSTALL' ) ) {

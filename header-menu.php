@@ -166,6 +166,20 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 											),
 							);
 
+	$items['templates']	= array(
+								'nav'	=> 'templates',
+								'level'	=> array( 9 ),
+								'main'	=> array(
+												'label'	=> __('Templates', 'cftp_admin'),
+												'icon'	=> 'desktop',
+											),
+								'sub'	=> array(
+												array(
+													'label'	=> __('Templates', 'cftp_admin'),
+													'link'	=> 'templates.php',
+												),
+											),
+							);
 	$items['options']	= array(
 								'nav'	=> 'options',
 								'level'	=> array( 9 ),

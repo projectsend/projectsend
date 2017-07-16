@@ -1,9 +1,11 @@
 <?php
 /*
-Template name:
-PinBoxes
-
-Inspired by the awesome desing of Pinterest!
+Template name: PinBoxes
+URI: http://www.projectsend.org/templates/pinboxes
+Author: ProjectSend
+Author URI: http://www.projectsend.org/
+Author e-mail: contact@projectsend.org
+Description: Inspired by the awesome design of Pinterest!
 */
 $ld = 'pinboxes_template'; // specify the language domain for this template
 

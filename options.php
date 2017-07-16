@@ -85,6 +85,7 @@ include('header.php');
 
 $logo_file_info = generate_logo_url();
 
+/** Form sent */
 if ($_POST) {
 	/**
 	 * Escape all the posted values on a single function.
@@ -336,24 +337,6 @@ $allowed_file_types = implode(',',$allowed_file_types);
 									<label for="this_install_title" class="col-sm-4 control-label"><?php _e('Site name','cftp_admin'); ?></label>
 									<div class="col-sm-8">
 										<input type="text" name="this_install_title" id="this_install_title" class="form-control" value="<?php echo html_output(THIS_INSTALL_SET_TITLE); ?>" />
-									</div>
-								</div>
-	
-								<div class="form-group">
-									<label for="selected_clients_template" class="col-sm-4 control-label"><?php _e("Client's template",'cftp_admin'); ?></label>
-									<div class="col-sm-8">
-										<select class="form-control" name="selected_clients_template" id="selected_clients_template">
-											<?php
-												$templates = look_for_templates();
-												foreach ($templates as $template) {
-													echo '<option value="'.html_output($template['folder']).'"';
-														if($template['folder'] == TEMPLATE_USE) {
-															echo ' selected="selected"';
-														}
-													echo '>'.html_output($template['name']).'</option>';
-												}
-											?>
-										</select>
 									</div>
 								</div>
 	
@@ -959,9 +942,9 @@ $allowed_file_types = implode(',',$allowed_file_types);
 							break;
 						}
 					?>
-				
+
 				<div class="options_divide"></div>
-	
+
 				<div class="after_form_buttons">
 					<button type="submit" class="btn btn-wide btn-primary empty"><?php _e('Save options','cftp_admin'); ?></button>
 				</div>

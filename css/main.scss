@@ -145,6 +145,14 @@ body.login {
 	}
 }
 
+.login_form_links {
+	margin-top:25px;
+
+	p {
+		margin:10px 0 0;
+	}
+}
+
 /********************************************************************************************************************************************
 	BACKEND specific styles 
 	Not shared with the DEFAULT TEMPLATE
@@ -510,7 +518,7 @@ body.login {
 	/********************************************************************************************************************************************
 		Home statistics tooltip
 	********************************************************************************************************************************************/
-	
+
 	.widget_statistics {
 		#stats_tooltip {
 			position:absolute;
@@ -518,16 +526,6 @@ body.login {
 			background:black;
 			color:#FFFFFF;
 			padding:5px;
-		}
-		
-		.login_form_links {
-			margin-top:14px;
-			padding-top:8px;
-			border-top:1px dotted #ccc;
-		
-			p {
-				margin:10px 0 0;
-			}
 		}
 		
 		.statistics_graph {
@@ -849,6 +847,74 @@ body.login {
 		}
 	}
 	
+	.template_selector {
+		.template {
+			margin-bottom:40px;
+			padding:15px 0;
+			background:white;
+			overflow:hidden;
+			position:relative;
+			
+			&.current_template {
+				border:5px solid $main_color;
+			}
+			
+			h4 {
+				font-size:1.5em;
+				color:black;
+				margin-top:25px;
+			}
+			
+			.info {
+
+				.description {
+				}
+				
+				h5 {
+					margin:20px 0 10px;
+					font-size:1.2em;
+				}
+			}
+
+			.images {
+				position:relative;
+
+				img {
+					width:100%;
+					height:auto;
+				}
+
+				.screenshot {
+					display:block;
+				}
+				
+				.cover {
+					@include opacity(0);
+					position:absolute;
+					width:100%;
+					left:0;
+					top:0;
+					height:100%;
+					transition:.3s all linear;
+				}
+			}
+			
+			&:hover {
+				.images {
+					.screenshot {
+					}
+					
+					.cover {
+						@include opacity(1);
+					}
+				}
+			}
+			
+			.buttons {
+				text-align:right;
+			}
+		}
+	}
 	
 	/********************************************************************************************************************************************
 		Overwrite PLUPLOAD styles

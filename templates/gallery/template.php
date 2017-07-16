@@ -1,7 +1,11 @@
 <?php
 /*
-Template name:
-Gallery
+Template name: Gallery
+URI: http://www.projectsend.org/templates/gallery
+Author: ProjectSend
+Author URI: http://www.projectsend.org/
+Author e-mail: contact@projectsend.org
+Description: Shows only images (jpg, gif, and png). Do not use if you plan to upload other file types! They will not be shown.
 
 Background modified from: http://www.artofadambetts.com/weblog/2008/05/black-leather-apple-desktop-background/
 Delete icon: http://www.iconfinder.com/icondetails/37519/16/can_delete_trash_icon

@@ -1,7 +1,11 @@
 <?php
 /*
-Template name:
-Default
+Template name: Default
+URI: http://www.projectsend.org/templates/default
+Author: ProjectSend
+Author URI: http://www.projectsend.org/
+Author e-mail: contact@projectsend.org
+Description: The default template uses the same style as the system backend, allowing for a seamless user experience
 */
 
 $ld = 'cftp_template'; // specify the language domain for this template

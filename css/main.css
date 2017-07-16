@@ -968,6 +968,9 @@ body.login {
   		}
   */
 }
+.main_menu > li.separator {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
 .main_menu > li.has_dropdown::after {
   font-family: FontAwesome;
   content: '\f0d7';

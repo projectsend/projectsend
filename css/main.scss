@@ -1175,6 +1175,10 @@ body.login {
 		margin:0;
 		position:relative;
 
+		&.separator {
+			border-top:1px solid rgba(255, 255, 255, .1);
+		}
+
 		&.has_dropdown::after {
 			font-family: FontAwesome;
 			content:'\f0d7';

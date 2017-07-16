@@ -51,6 +51,8 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 											),
 							);
 
+	$items[]			= 'separator';
+
 	$items['files']		= array(
 								'nav'	=> 'files',
 								'level'	=> array( 9,8,7 ),
@@ -151,20 +153,8 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 												),
 											),
 							);
-	$items['tools']		= array(
-								'nav'	=> 'tools',
-								'level'	=> array( 9 ),
-								'main'	=> array(
-												'label'	=> __('Tools', 'cftp_admin'),
-												'icon'	=> 'wrench',
-											),
-								'sub'	=> array(
-												array(
-													'label'	=> __('Actions log', 'cftp_admin'),
-													'link'	=> 'actions-log.php',
-												),
-											),
-							);
+
+	$items[]			= 'separator';
 
 	$items['templates']	= array(
 								'nav'	=> 'templates',
@@ -180,6 +170,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 												),
 											),
 							);
+
 	$items['options']	= array(
 								'nav'	=> 'options',
 								'level'	=> array( 9 ),
@@ -221,6 +212,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 												),
 											),
 							);
+
 	$items['emails']	= array(
 								'nav'	=> 'emails',
 								'level'	=> array( 9 ),
@@ -267,6 +259,24 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 												),
 											),
 							);
+
+	$items[]			= 'separator';
+
+	$items['tools']		= array(
+								'nav'	=> 'tools',
+								'level'	=> array( 9 ),
+								'main'	=> array(
+												'label'	=> __('Tools', 'cftp_admin'),
+												'icon'	=> 'wrench',
+											),
+								'sub'	=> array(
+												array(
+													'label'	=> __('Actions log', 'cftp_admin'),
+													'link'	=> 'actions-log.php',
+												),
+											),
+							);
+
 }
 /**
  * Items for clients
@@ -314,6 +324,10 @@ $menu_output = "<ul class='main_menu' role='menu'>\n";
 
 foreach ( $items as $item )
 {
+	if ( !is_array( $item ) && $item == 'separator' ) {
+		$menu_output .= '<li class="separator"></li>';
+	}
+
 	if ( in_session_or_cookies( $item['level'] ) )
 	{
 		$current	= ( !empty( $active_nav ) && $active_nav == $item['nav'] ) ? 'current_nav' : '';

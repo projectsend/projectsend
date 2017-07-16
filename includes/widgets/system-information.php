@@ -21,7 +21,7 @@
 			<dd><?php echo MAX_FILESIZE; ?> mb.</dd>
 
 			<dt><?php _e('Template','cftp_admin'); ?></dt>
-			<dd><?php echo ucfirst(TEMPLATE_USE); ?></dd>
+			<dd><?php echo ucfirst(TEMPLATE_USE); ?> <a href="<?php echo BASE_URI; ?>templates.php">[<?php _e('Change','cftp_admin'); ?>]</a></dd>
 
 			<?php
 				/** Get the data to show on the bars graphic */

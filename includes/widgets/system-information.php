@@ -40,7 +40,10 @@
 				$statement = $dbh->query("SELECT distinct id FROM " . TABLE_CATEGORIES);
 				$total_categories = $statement->rowCount();
 			?>
+		</dl>
 
+		<h3><?php _e('Data','cftp_admin'); ?></h3>
+		<dl class="dl-horizontal">
 			<dt><?php _e('Files','cftp_admin'); ?></dt>
 			<dd><?php echo $total_files; ?></dd>
 

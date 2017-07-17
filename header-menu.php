@@ -5,7 +5,6 @@
  *
  * @package ProjectSend
  */
-
 $items = array();
 
 /**
@@ -207,9 +206,6 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 													'label'	=> __('Social Login', 'cftp_admin'),
 													'link'	=> 'options.php?section=social_login',
 												),
-												array(
-													'divider'	=> true,
-												),
 											),
 							);
 
@@ -320,6 +316,8 @@ else
 /**
  * Build the menu
  */
+$current_filename = basename($_SERVER['REQUEST_URI']);
+
 $menu_output = "<ul class='main_menu' role='menu'>\n";
 
 foreach ( $items as $item )
@@ -358,8 +356,9 @@ foreach ( $items as $item )
 				}
 				else
 				{
-					$format			= "\t\t<li>\n\t\t\t<a href='%s'>%s<span class='submenu_label'>%s%s</span></a>\n\t\t</li>\n";
-					$menu_output 	.= sprintf( $format, BASE_URI . $subitem['link'], $icon, $subitem['label'], $badge );
+					$sub_active		= ( $subitem['link'] == $current_filename ) ? 'active' : '';
+					$format			= "\t\t<li class='%s'>\n\t\t\t<a href='%s'>%s<span class='submenu_label'>%s%s</span></a>\n\t\t</li>\n";
+					$menu_output 	.= sprintf( $format, $sub_active, BASE_URI . $subitem['link'], $icon, $subitem['label'], $badge );
 				}
 			}
 			$menu_output 	.= "\t</ul>\n</li>\n";

@@ -89,11 +89,11 @@ if ( !empty( $load_scripts ) ) {
 
 				break;
 			case 'flot':
-				$load_js_files[]		= BASE_URI . 'includes/flot/jquery.flot.min.js';
-				$load_js_files[]		= BASE_URI . 'includes/flot/jquery.flot.resize.min.js';
-				$load_js_files[]		= BASE_URI . 'includes/flot/jquery.flot.time.min.js';
+				$load_js_files[]		= BASE_URI . 'includes/js/flot/jquery.flot.min.js';
+				$load_js_files[]		= BASE_URI . 'includes/js/flot/jquery.flot.resize.min.js';
+				$load_js_files[]		= BASE_URI . 'includes/js/flot/jquery.flot.time.min.js';
 				$load_compat_js_files[]	= array(
-												'file'	=> BASE_URI . 'includes/flot/excanvas.js',
+												'file'	=> BASE_URI . 'includes/js/flot/excanvas.js',
 												'cond'	=> 'lt IE 9',
 											);
 				break;

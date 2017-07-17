@@ -4,6 +4,11 @@
 /********************************************************************************************************************************************
 	Variables and mixins
 ********************************************************************************************************************************************/
+/** Side menu */
+/** Dark sidebar menu skin */
+/** Light sidebar menu skin */
+/** Contracted side menu */
+/** Widgets */
 /********************************************************************************************************************************************
 	Styles shared between the BACKEND and the DEFAULT TEMPLATE
 ********************************************************************************************************************************************/
@@ -88,8 +93,8 @@ body.login {
   position: absolute;
   top: 0px;
   left: 0px;
-  background: #232835;
-  color: #f0f0f0;
+  background: #e0e0e2;
+  border-right: 1px solid #ccc;
 }
 
 .main_content {
@@ -902,7 +907,7 @@ body.login {
   font-size: 13px;
 }
 #header.navbar .nav > li > a {
-  color: #b0b3bb;
+  color: #f0f0f0;
   line-height: 33px;
   padding: 3px 10px;
   border-left: 1px solid #474b58;
@@ -954,8 +959,8 @@ body.login {
   padding: 0;
 }
 .main_menu a {
-  color: #dedede;
-  font-size: 1.2em;
+  color: #3f3f47;
+  font-size: 1.1em;
 }
 .main_menu > li {
   margin: 0;
@@ -969,7 +974,8 @@ body.login {
   */
 }
 .main_menu > li.separator {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid none;
+  margin-bottom: 15px;
 }
 .main_menu > li.has_dropdown::after {
   font-family: FontAwesome;
@@ -977,6 +983,7 @@ body.login {
   position: absolute;
   top: 1em;
   right: 1em;
+  color: #3f3f47;
 }
 .main_menu > li > a {
   display: block;
@@ -986,19 +993,18 @@ body.login {
   margin-right: 1em;
 }
 .main_menu > li > ul {
-  border-top: 1px solid #232835;
-  padding-top: 1em;
-  padding-bottom: 1em;
-  font-size: .8em;
+  border-top: 1px solid #cbcbcd;
+  padding: 1em 0 1em 28px;
+  font-size: .9em;
   display: none;
-  background: #0d0f14;
+  background: #d6d6d9;
 }
 .main_menu > li > ul > li {
   position: relative;
 }
 .main_menu > li > ul > li ::before {
   content: '';
-  background-color: #232835;
+  background-color: #cbcbcd;
   position: absolute;
   top: 11px;
   left: -3px;
@@ -1018,30 +1024,32 @@ body.login {
   top: 0;
   left: 0;
   bottom: 0;
-  border-left: 2px solid #232835;
+  border-left: 2px solid #cbcbcd;
   transition: .2s all ease-in-out;
 }
 .main_menu > li > ul > li a {
   display: block;
   padding: .5em 0 .5em 1.5em;
-  color: #b0b3bb;
+  color: #3f3f47;
+}
+.main_menu > li > ul > li.active {
+  background: #cbcbcd;
 }
 .main_menu > li > ul > li:hover {
-  background: #0d0f14;
-  background: #232835;
+  background: #cbcbcd;
 }
 .main_menu > li > ul > li:hover a {
-  color: #fff;
+  /*color:$side_menu_sub_hover;*/
 }
 .main_menu > li > ul > li:hover ::before {
   transform: scale(1.5);
 }
 .main_menu > li.active, .main_menu > li.current_nav {
-  background: #0d0f14;
+  background: #d6d6d9;
   border-right: 7px solid #004b92;
 }
 .main_menu > li.active > a, .main_menu > li.current_nav > a {
-  color: white;
+  color: #3f3f47;
 }
 
 /** Contracted version */
@@ -1067,9 +1075,10 @@ body.login {
 }
 .menu_contracted .main_menu > li > a i {
   margin: 0;
-  display: block;
+  /*display:block;*/
   text-align: center;
   font-size: 2.2em;
+  color: #222;
 }
 .menu_contracted .main_menu > li > a .menu_label {
   display: none;
@@ -1098,19 +1107,22 @@ body.login {
 .menu_contracted .main_menu > li > ul > li a {
   display: block;
   padding: 1em 1em;
-  color: #b0b3bb;
+  color: #3f3f47;
   text-align: left;
 }
 .menu_contracted .main_menu > li > ul > li:hover {
-  background: #0d0f14;
-  background: #232835;
+  background: #d6d6d9;
+  background: #cbcbcd;
 }
 .menu_contracted .main_menu > li > ul > li:hover a {
-  color: #fff;
+  color: #333339;
 }
 .menu_contracted .main_menu > li.active, .menu_contracted .main_menu > li.current_nav {
   border-right: none;
   background: #004b92;
+}
+.menu_contracted .main_menu > li.active > a > i, .menu_contracted .main_menu > li.current_nav > a > i {
+  color: #fff;
 }
 
 /********************************************************************************************************************************************

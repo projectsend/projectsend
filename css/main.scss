@@ -17,12 +17,32 @@ $padding_top_main 			: 60px;
 $side_menu_width 			: 220px;
 $side_menu_width_contacted 	: 45px;
 
-$main_menu_dark 			: #0d0f14;
-$main_menu_highlight 		: #373f53;
-$main_menu_subtle 			: #232835;
-$main_menu_sub_color 		: #b0b3bb;
-$main_menu_sub_hover 		: #fff;
+/** Side menu */
+	/** Dark sidebar menu skin */
+	$side_menu_background		: #232835;
+	$side_menu_dark 			: #0d0f14;
+	$side_menu_highlight 		: #373f53;
+	$side_menu_subtle 			: #232835;
+	$side_menu_color			: #fff;
+	$side_menu_sub_color 		: #b0b3bb;
+	$side_menu_sub_hover 		: #fff;
+	$side_menu_separator_border : rgba(255, 255, 255, .1);
+	
+	/** Light sidebar menu skin */
+	$side_menu_background		: #e0e0e2;
+	$side_menu_dark 			: #d6d6d9;
+	$side_menu_highlight 		: #eeeef1;
+	$side_menu_subtle 			: #cbcbcd;
+	$side_menu_color			: #3f3f47;
+	$side_menu_sub_color 		: #3f3f47;
+	$side_menu_sub_hover 		: #333339;
+	$side_menu_separator_border : none;
+	
+	/** Contracted side menu */
+	$side_menu_con_color 		: #222;
+	$side_menu_con_active_color : #fff;
 
+/** Widgets */
 $widget_title_color			: #42454a;
 $widget_title_background	: #fff;
 $widget_hover_background	: #f0f0f0;
@@ -125,8 +145,8 @@ body.login {
 	position:absolute;
 	top:0px;
 	left:0px;
-	background:#232835;
-	color:#f0f0f0;
+	background:$side_menu_background;
+	border-right:1px solid #ccc;
 }
 
 
@@ -1094,14 +1114,14 @@ body.login {
 			font-size:13px;
 
 			> a {
-				color:$main_menu_sub_color;
+				color:#f0f0f0;
 				line-height:33px;
 				padding:3px 10px;
 				border-left:1px solid #474b58;
 				margin:0;
 				
 				&:hover {
-					color:$main_menu_sub_hover;
+					color:#fff;
 					background:$top_bar_hover;
 				}
 				
@@ -1167,8 +1187,8 @@ body.login {
 	padding:0;
 
 	a {
-		color:#dedede;
-		font-size:1.2em;
+		color:$side_menu_color;
+		font-size:1.1em;
 	}
 
 	> li {
@@ -1176,7 +1196,8 @@ body.login {
 		position:relative;
 
 		&.separator {
-			border-top:1px solid rgba(255, 255, 255, .1);
+			border-top:1px solid $side_menu_separator_border;
+			margin-bottom:15px;
 		}
 
 		&.has_dropdown::after {
@@ -1185,6 +1206,7 @@ body.login {
 			position:absolute;
 			top:1em;
 			right:1em;
+			color:$side_menu_color;
 		}
 		
 		> a {
@@ -1197,19 +1219,18 @@ body.login {
 		}
 		
 		> ul {
-			border-top:1px solid $main_menu_subtle;
-			padding-top:1em;
-			padding-bottom:1em;
-			font-size:.8em;
+			border-top:1px solid $side_menu_subtle;
+			padding:1em 0 1em 28px;
+			font-size:.9em;
 			display:none;
-			background:$main_menu_dark;
+			background:$side_menu_dark;
 
 			> li {
 				position:relative;
 
 				::before {
 					content:'';
-					background-color:$main_menu_subtle;
+					background-color:$side_menu_subtle;
 					position:absolute;
 					top:11px;
 					left:-3px;
@@ -1227,22 +1248,25 @@ body.login {
 					top:0;
 					left:0;
 					bottom:0;
-					border-left:2px solid $main_menu_subtle;
+					border-left:2px solid $side_menu_subtle;
 					transition:.2s all ease-in-out;
 				}				
 
 				a {
 					display:block;
 					padding:.5em 0 .5em 1.5em;
-					color:$main_menu_sub_color;
+					color:$side_menu_sub_color;
+				}
+				
+				&.active {
+					background:$side_menu_subtle;
 				}
 				
 				&:hover {
-					background:$main_menu_dark;
-					background:$main_menu_subtle;
+					background:$side_menu_subtle;
 					
 					a {
-						color:$main_menu_sub_hover;
+						/*color:$side_menu_sub_hover;*/
 					}
 
 					::before {
@@ -1258,11 +1282,11 @@ body.login {
 		&.active,
 		&.current_nav
 		{
-			background:$main_menu_dark;
+			background:$side_menu_dark;
 			border-right:7px solid $main_color;
 		
 			> a {
-				color:white;
+				color:$side_menu_color;
 			}
 		}
 
@@ -1299,9 +1323,10 @@ body.login {
 
 				i {
 					margin:0;
-					display:block;
+					/*display:block;*/
 					text-align:center;
 					font-size:2.2em;
+					color:$side_menu_con_color;
 				}
 
 				.menu_label {
@@ -1335,16 +1360,16 @@ body.login {
 					a {
 						display:block;
 						padding:1em 1em;
-						color:$main_menu_sub_color;
+						color:$side_menu_sub_color;
 						text-align:left;
 					}
 					
 					&:hover {
-						background:$main_menu_dark;
-						background:$main_menu_subtle;
+						background:$side_menu_dark;
+						background:$side_menu_subtle;
 						
 						a {
-							color:$main_menu_sub_hover;
+							color:$side_menu_sub_hover;
 						}
 					}
 				}
@@ -1354,6 +1379,12 @@ body.login {
 			&.current_nav {
 				border-right:none;
 				background:$main_color;
+				
+				> a {
+					> i {
+						color:$side_menu_con_active_color;
+					}
+				}
 			}
 			
 			/*

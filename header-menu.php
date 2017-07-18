@@ -356,7 +356,7 @@ foreach ( $items as $item )
 				}
 				else
 				{
-					$sub_active		= ( $subitem['link'] == $current_filename ) ? 'active' : '';
+					$sub_active		= ( $subitem['link'] == $current_filename ) ? 'current_page' : '';
 					$format			= "\t\t<li class='%s'>\n\t\t\t<a href='%s'>%s<span class='submenu_label'>%s%s</span></a>\n\t\t</li>\n";
 					$menu_output 	.= sprintf( $format, $sub_active, BASE_URI . $subitem['link'], $icon, $subitem['label'], $badge );
 				}

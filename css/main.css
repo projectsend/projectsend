@@ -1032,7 +1032,7 @@ body.login {
   padding: .5em 0 .5em 1.5em;
   color: #3f3f47;
 }
-.main_menu > li > ul > li.active {
+.main_menu > li > ul > li.current_page {
   background: #cbcbcd;
 }
 .main_menu > li > ul > li:hover {
@@ -1044,11 +1044,11 @@ body.login {
 .main_menu > li > ul > li:hover ::before {
   transform: scale(1.5);
 }
-.main_menu > li.active, .main_menu > li.current_nav {
+.main_menu > li.current_page, .main_menu > li.current_nav {
   background: #d6d6d9;
   border-right: 7px solid #004b92;
 }
-.main_menu > li.active > a, .main_menu > li.current_nav > a {
+.main_menu > li.current_page > a, .main_menu > li.current_nav > a {
   color: #3f3f47;
 }
 
@@ -1117,11 +1117,11 @@ body.login {
 .menu_contracted .main_menu > li > ul > li:hover a {
   color: #333339;
 }
-.menu_contracted .main_menu > li.active, .menu_contracted .main_menu > li.current_nav {
+.menu_contracted .main_menu > li.current_page, .menu_contracted .main_menu > li.current_nav {
   border-right: none;
   background: #004b92;
 }
-.menu_contracted .main_menu > li.active > a > i, .menu_contracted .main_menu > li.current_nav > a > i {
+.menu_contracted .main_menu > li.current_page > a > i, .menu_contracted .main_menu > li.current_nav > a > i {
   color: #fff;
 }
 

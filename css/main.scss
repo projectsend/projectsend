@@ -1258,7 +1258,7 @@ body.login {
 					color:$side_menu_sub_color;
 				}
 				
-				&.active {
+				&.current_page {
 					background:$side_menu_subtle;
 				}
 				
@@ -1279,7 +1279,7 @@ body.login {
 			}
 		}
 
-		&.active,
+		&.current_page,
 		&.current_nav
 		{
 			background:$side_menu_dark;
@@ -1375,7 +1375,7 @@ body.login {
 				}
 			}
 
-			&.active,
+			&.current_page,
 			&.current_nav {
 				border-right:none;
 				background:$main_color;

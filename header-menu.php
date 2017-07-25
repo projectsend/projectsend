@@ -324,6 +324,7 @@ foreach ( $items as $item )
 {
 	if ( !is_array( $item ) && $item == 'separator' ) {
 		$menu_output .= '<li class="separator"></li>';
+		continue;
 	}
 
 	if ( in_session_or_cookies( $item['level'] ) )

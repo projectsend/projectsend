@@ -83,7 +83,7 @@ $count = count($my_files);
 		<div id="header">
 			<?php if ($logo_file_info['exists'] === true) { ?>
 				<div id="branding">
-					<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $logo_file_info['url']; ?>&amp;w=300" alt="<?php echo THIS_INSTALL_SET_TITLE; ?>" />
+					<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $logo_file_info['url']; ?>&amp;w=300" alt="<?php echo html_output(THIS_INSTALL_SET_TITLE); ?>" />
 				</div>
 			<?php } ?>
 		</div>

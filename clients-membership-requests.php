@@ -15,10 +15,10 @@ $load_scripts	= array(
 $allowed_levels = array(9,8);
 require_once('sys.includes.php');
 
-$active_nav = 'clients';
-$this_page = 'clients-requests.php';
+$active_nav = 'groups';
+$this_page = 'clients-membership-requests.php';
 
-$page_title = __('Account requests','cftp_admin');
+$page_title = __('Membership requests','cftp_admin');
 include('header.php');
 ?>
 
@@ -59,7 +59,7 @@ include('header.php');
 				echo system_message('ok',$msg);
 				break;
 			case 'delete':
-				$msg = __('The selected clients were deleted.','cftp_admin');
+				$msg = __('The selected requests were deleted.','cftp_admin');
 				echo system_message('ok',$msg);
 				break;
 		}
@@ -92,55 +92,26 @@ include('header.php');
 				$all_users[$data_user['id']] = $data_user['name'];
 			}
 
+
 			switch($_POST['action']) {
 				case 'apply':
 					$selected_clients = $_POST['accounts'];
 					foreach ( $selected_clients as $client ) {
+						$email_type = 'client_memberships_process';
 						$process_memberships	= new MembersActions();
 
 						/**
-						 * 1- Approve or deny account
+						 * 1 - Process memberships requests
 						 */
-						$process_account = new ClientActions();
-
-						/** $client['account'] == 1 means approve that account */
-						if ( !empty( $client['account'] ) and $client['account'] == '1' ) {
-							$email_type = 'client_approve';
-							/**
-							 * 1 - Approve account
-							 */
-							$approve = $process_account->client_account_approve( $client['id'] );
-							/**
-							 * 2 - Prepare memberships information
-							 */
-							if ( empty( $client['groups'] ) ) {
-								$client['groups'] = array();
-							}
-
-							$memberships_arguments = array(
-															'client_id'	=> $client['id'],
-															'approve'	=> $client['groups'],
-														);
-						}
-						else {
-							$email_type = 'client_deny';
-
-							/**
-							 * 1 - Deny account
-							 */
-							$deny = $process_account->client_account_deny( $client['id'] );
-							/**
-							 * 2 - Deny all memberships
-							 */
-							$memberships_arguments = array(
-															'client_id'	=> $client['id'],
-															'deny_all'	=> true,
-														);
+						if ( empty( $client['groups'] ) ) {
+							$client['groups'] = array();
 						}
 
-						/**
-						 * 2 - Process memberships requests
-						 */
+						$memberships_arguments = array(
+														'client_id'	=> $client['id'],
+														'approve'	=> $client['groups'],
+													);
+
 						$process_requests	= $process_memberships->group_process_memberships( $memberships_arguments );
 
 						/**
@@ -159,18 +130,24 @@ include('header.php');
 														'memberships'	=> $processed_requests,
 														'preview'		=> true,
 													);
-						$notify_send = $notify_client->psend_send_email($email_arguments);
+						//$notify_send = $notify_client->psend_send_email($email_arguments);
 					}
-
-					$log_action_number = 38;
+					
+					$log_action_number = 39;
 					break;
 				case 'delete':
 					foreach ($selected_clients as $client) {
-						$this_client = new ClientActions();
-						$delete_client = $this_client->delete_client($client['id']);
+						$process_memberships	= new MembersActions();
+
+						$memberships_arguments = array(
+														'client_id'	=> $client['id'],
+														'type'		=> ( !empty( $_POST['denied'] ) && $_POST['denied'] == 1 ) ? 'denied' : 'new',
+													);
+
+						$delete_requests = $process_memberships->group_delete_requests( $memberships_arguments );
 					}
 					
-					$log_action_number = 17;
+					$log_action_number = 39;
 					break;
 				default:
 					break;
@@ -192,7 +169,7 @@ include('header.php');
 			/** Redirect after processing */
 			while (ob_get_level()) ob_end_clean();
 			$action_redirect = html_output($_POST['action']);
-			$location = BASE_URI . 'clients-requests.php?action=' . $action_redirect;
+			$location = BASE_URI . $this_page . '?action=' . $action_redirect;
 			if ( !empty( $_POST['denied'] ) && $_POST['denied'] == 1 ) {
 				$location .= '&denied=1';
 			}
@@ -206,45 +183,45 @@ include('header.php');
 	}
 
 	/** Query the clients */
+	/**
+	 * TODO: Make a list of existing clients to exclude those with pending account requests
+	 * from the membership requests query
+	 */
+
 	$params = array();
 
-	$cq = "SELECT * FROM " . TABLE_USERS . " WHERE level='0' AND account_requested='1'";
+	$cq = "SELECT client_id, COUNT(group_id) as amount, GROUP_CONCAT(group_id SEPARATOR ',') AS groups FROM " . TABLE_MEMBERS_REQUESTS;
 	
 	if ( isset( $_GET['denied'] ) && !empty( $_GET['denied'] ) ) {
-		$cq .= " AND account_denied='1'";
+		$cq .= " WHERE denied='1'";
 		$current_filter = 'denied';  // Which link to highlight
+		$found_count = COUNT_MEMBERSHIP_DENIED;
 	}
 	else {
-		$cq .= " AND account_denied='0'";
+		$cq .= " WHERE denied='0'";
 		$current_filter = 'new';
+		$found_count = COUNT_MEMBERSHIP_REQUESTS;
 	}
+	
+	$cq .= " GROUP BY client_id";
 
-	/** Add the search terms */	
-	if ( isset( $_GET['search'] ) && !empty( $_GET['search'] ) ) {
-		$cq .= " AND (name LIKE :name OR user LIKE :user OR address LIKE :address OR phone LIKE :phone OR email LIKE :email OR contact LIKE :contact)";
-		$no_results_error = 'search';
+	/**
+	 * Pre-query to count the total results
+	*/
+	$tq = $cq;
+	$tq .= " LIMIT 0 UNION ALL SELECT COUNT(DISTINCT client_id) as clients, COUNT(group_id) as total, null FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='0'";
+	//echo $tq;
 
-		$search_terms		= '%'.$_GET['search'].'%';
-		$params[':name']	= $search_terms;
-		$params[':user']	= $search_terms;
-		$params[':address']	= $search_terms;
-		$params[':phone']	= $search_terms;
-		$params[':email']	= $search_terms;
-		$params[':contact']	= $search_terms;
-	}
+	$count_sql	= $dbh->prepare( $tq );
+	$tq_row		= $count_sql->execute($params);
+	$tq_row		= $count_sql->fetch();
+	$count_for_pagination = $tq_row['client_id'];
 
 	/**
 	 * Add the order.
 	 * Defaults to order by: name, order: ASC
 	 */
-	$cq .= sql_add_order( TABLE_USERS, 'name', 'asc' );
-
-	/**
-	 * Pre-query to count the total results
-	*/
-	$count_sql = $dbh->prepare( $cq );
-	$count_sql->execute($params);
-	$count_for_pagination = $count_sql->rowCount();
+	$cq .= sql_add_order( TABLE_USERS, 'client_id', 'asc' );
 
 	/**
 	 * Repeat the query but this time, limited by pagination
@@ -256,23 +233,22 @@ include('header.php');
 	$pagination_start			= ( $pagination_page - 1 ) * RESULTS_PER_PAGE;
 	$params[':limit_start']		= $pagination_start;
 	$params[':limit_number']	= RESULTS_PER_PAGE;
-
+	
 	$sql->execute( $params );
 	$count = $sql->rowCount();
 ?>
 		<div class="form_actions_left">
 			<div class="form_actions_limit_results">
-				<?php show_search_form($this_page); ?>
 			</div>
 		</div>
 
-		<form action="<?php echo $this_page; ?>" name="clients_list" method="post" class="form-inline">
+		<form action="<?php echo $this_page; ?>" name="requests_list" method="post" class="form-inline">
 			<?php form_add_existing_parameters(); ?>
 			<div class="form_actions_right">
 				<div class="form_actions">
 					<div class="form_actions_submit">
 						<div class="form-group group_float">
-							<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected clients actions','cftp_admin'); ?>:</label>
+							<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected requests actions','cftp_admin'); ?>:</label>
 							<select name="action" id="action" class="txtfield form-control">
 								<?php
 									$actions_options = array(
@@ -295,21 +271,21 @@ include('header.php');
 			<div class="clear"></div>
 
 			<div class="form_actions_count">
-				<p><?php _e('Found','cftp_admin'); ?>: <span><?php echo $count_for_pagination; ?> <?php _e('requests','cftp_admin'); ?></span></p>
+				<p><?php _e('Found','cftp_admin'); ?>: <span><?php echo $found_count; ?> <?php _e('requests','cftp_admin'); ?></span></p>
 			</div>
 
 			<div class="form_results_filter">
 				<?php
 					$filters = array(
 									'new'		=> array(
-														'title'	=> __('New account requests','cftp_admin'),
+														'title'	=> __('New requests','cftp_admin'),
 														'link'	=> $this_page,
-														'count'	=> COUNT_CLIENTS_REQUESTS,
+														'count'	=> COUNT_MEMBERSHIP_REQUESTS,
 													),
 									'denied'	=> array(
-														'title'	=> __('Denied accounts','cftp_admin'),
+														'title'	=> __('Denied requests','cftp_admin'),
 														'link'	=> $this_page . '?denied=1',
-														'count'	=> COUNT_CLIENTS_DENIED,
+														'count'	=> COUNT_MEMBERSHIP_DENIED,
 													),
 								);
 					foreach ( $filters as $type => $filter ) {
@@ -341,6 +317,11 @@ include('header.php');
 				}
 
 				if ($count > 0) {
+					$get_groups	= new GroupActions();
+					$arguments	= array();
+					$all_groups	= $get_groups->get_groups($arguments);
+
+
 					/**
 					 * Pre-populate a membership requests array
 					 */
@@ -386,10 +367,6 @@ include('header.php');
 													'hide'			=> 'phone,tablet',
 												),
 												array(
-													'content'		=> __('Account','cftp_admin'),
-													'hide'			=> 'phone',
-												),
-												array(
 													'content'		=> __('Membership requests','cftp_admin'),
 													'hide'			=> 'phone',
 												),
@@ -399,12 +376,6 @@ include('header.php');
 													'attributes'	=> array(
 																			'class'		=> array( 'select_buttons' ),
 																		),
-												),
-												array(
-													'sortable'		=> true,
-													'sort_url'		=> 'timestamp',
-													'content'		=> __('Added on','cftp_admin'),
-													'hide'			=> 'phone,tablet',
 												),
 											);
 					$table->thead( $thead_columns );
@@ -417,14 +388,10 @@ include('header.php');
 					$toggle_attr = 'data-toggle="toggle" data-style="membership_toggle" data-on="Accept" data-off="Deny" data-onstyle="success" data-offstyle="danger" data-size="mini"';
 					while ( $row = $sql->fetch() ) {
 						$table->add_row();
+						
+						$client_id		= $row["client_id"];
 
-						$client_user	= $row["user"];
-						$client_id		= $row["id"];
-
-						/**
-						 * Get account creation date
-						 */
-						$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
+						$query_client = get_client_by_id($client_id);
 						
 						/**
 						 * Make an array of group membership requests
@@ -435,32 +402,21 @@ include('header.php');
 						/**
 						 * Checkbox on the first column
 						 */
-						$selectable = '<input name="accounts['.$row['id'].'][id]" value="'.$row['id'].'" type="checkbox" class="batch_checkbox" data-clientid="' . $client_id . '">';
-
-						/**
-						 * Checkbox for the account action
-						 */
-						$action_checkbox = '';
-						$account_request = '<div class="request_checkbox">
-													<label for="' . $action_checkbox . '">
-														<input ' . $toggle_attr . ' type="checkbox" value="1" name="accounts['.$row['id'].'][account]" id="' . $action_checkbox . '" class="checkbox_options account_action checkbox_toggle" data-client="'.$client_id.'" />
-													</label>
-												</div>';
-
+						$selectable = '<input name="accounts['.$client_id.'][id]" value="'.$client_id.'" type="checkbox" class="batch_checkbox" data-clientid="' . $client_id . '">';
 
 						/**
 						 * Checkboxes for every membership request
 						 */
-						if ( !empty( $get_requests[$row['id']]['requests'] ) ) {
-							foreach ( $get_requests[$row['id']]['requests'] as $request ) {
-								$this_checkbox = $client_id . '_' . $request['id'];
+						if ( !empty( $row['groups'] ) ) {
+							$requests = explode(',', $row['groups']);
+							foreach ( $requests as $request ) {
+								$this_checkbox = $client_id . '_' . $request;
 								$membership_requests .= '<div class="request_checkbox">
 															<label for="' . $this_checkbox . '">
-																<input ' . $toggle_attr . ' type="checkbox" value="' . $request['id'] . '" name="accounts['.$row['id'].'][groups][]' . $request['id'] . '" id="' . $this_checkbox . '" class="checkbox_options membership_action checkbox_toggle" data-client="'.$client_id.'" /> '. $request['name'] .'
+																<input ' . $toggle_attr . ' type="checkbox" value="' . $request . '" name="accounts['.$client_id.'][groups][]' . $request . '" id="' . $this_checkbox . '" class="checkbox_options membership_action checkbox_toggle" data-client="'.$client_id.'" /> '. $all_groups[$request]['name'] .'
 															</label>
 														</div>';
-								
-								//echo '<input type="hidden" name="accounts['.$row['id'].'][requests][]" value="' . $request['id'] . '">';
+
 							}
 							
 							$membership_select = '<a href="#" class="change_all btn btn-default btn-xs" data-target="'.$client_id.'" data-check="true">'.__('Accept all','cftp_admin').'</a> 
@@ -478,25 +434,19 @@ include('header.php');
 																			),
 													),
 												array(
-														'content'		=> html_output( $row["name"] ),
+														'content'		=> html_output( $query_client["name"] ),
 													),
 												array(
-														'content'		=> html_output( $row["user"] ),
+														'content'		=> html_output( $query_client["username"] ),
 													),
 												array(
-														'content'		=> html_output( $row["email"] ),
-													),
-												array(
-														'content'		=> $account_request,
+														'content'		=> html_output( $query_client["email"] ),
 													),
 												array(
 														'content'		=> $membership_requests,
 													),
 												array(
 														'content'		=> $membership_select,
-													),
-												array(
-														'content'		=> $date,
 													),
 											);
 

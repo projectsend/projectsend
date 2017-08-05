@@ -1350,6 +1350,12 @@ function render_log_action($params)
 			$action_text = __('processed an account request for','cftp_admin');
 			$part2 = $affected_account_name;
 			break;
+		case 39:
+			$action_ico = 'client-request-processed';
+			$part1 = $owner_user;
+			$action_text = __('processed group memberships requests for','cftp_admin');
+			$part2 = $affected_account_name;
+			break;
 	}
 	
 	$date = date(TIMEFORMAT_USE,strtotime($timestamp));

@@ -20,6 +20,16 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 	define('COUNT_CLIENTS_INACTIVE', $sql_inactive->rowCount());
 	*/
 
+	/** Count new groups MEMBERSHIP requests */
+	$sql_requests = $dbh->prepare( "SELECT DISTINCT id FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='0'" );
+	$sql_requests->execute();
+	define('COUNT_MEMBERSHIP_REQUESTS', $sql_requests->rowCount());
+
+	/** Count ALREADY DENIED groups MEMBERSHIP requests */
+	$sql_requests = $dbh->prepare( "SELECT DISTINCT id FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='1'" );
+	$sql_requests->execute();
+	define('COUNT_MEMBERSHIP_DENIED', $sql_requests->rowCount());
+
 	/** Count new CLIENTS account requests */
 	$sql_requests = $dbh->prepare( "SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE account_requested='1' AND account_denied='0'" );
 	$sql_requests->execute();
@@ -120,6 +130,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 								'main'	=> array(
 												'label'	=> __('Clients groups', 'cftp_admin'),
 												'icon'	=> 'th-large',
+												'badge'	=> COUNT_MEMBERSHIP_REQUESTS,
 											),
 								'sub'	=> array(
 												array(
@@ -129,6 +140,14 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 												array(
 													'label'	=> __('Manage groups', 'cftp_admin'),
 													'link'	=> 'groups.php',
+												),
+												array(
+													'divider'	=> true,
+												),
+												array(
+													'label'	=> __('Membership requests', 'cftp_admin'),
+													'link'	=> 'clients-membership-requests.php',
+													'badge'	=> COUNT_MEMBERSHIP_REQUESTS,
 												),
 											),
 							);

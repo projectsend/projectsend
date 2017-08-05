@@ -110,6 +110,11 @@ switch ($clients_form_type) {
 		$info_box = false;
 		$extra_fields = false;
 		$group_field = false;
+		if ( CLIENTS_CAN_SELECT_GROUP == 'public' || CLIENTS_CAN_SELECT_GROUP == 'all' ) {
+			$group_field			= true;
+			$group_label			= __('Request access to groups','cftp_admin');
+			$override_groups_list	= $found_requests[$client_id]['group_ids'];
+		}
 		$ignore_size = true;
 		break;
 }
@@ -210,6 +215,21 @@ switch ($clients_form_type) {
 			}
 
 			$sql_groups = $memberships->get_groups($arguments);
+			
+			$selected_groups	= ( !empty( $found_groups ) ) ? $found_groups : '';
+			$my_current_groups	= array();
+			/** Dirty and awful quick test, mark as selected the current groups which have requests for a client that's editing his own account */
+			if ( isset( $override_groups_list ) ) {
+				$selected_groups = $override_groups_list;
+				if ( !empty( $found_groups ) ) {
+					foreach ( $sql_groups as $array_key => $sql_group ) {
+						if ( in_array( $sql_group['id'], $found_groups ) ) {
+							$my_current_groups[] = $sql_group;
+							unset($sql_groups[$array_key]);
+						}
+					}
+				}
+			}
 
 			if ( count( $sql_groups ) > 0) {
 	?>
@@ -222,7 +242,7 @@ switch ($clients_form_type) {
 							?>
 									<option value="<?php echo $group['id']; ?>"
 							<?php
-										if ( !empty( $found_groups ) && in_array( $group['id'], $found_groups ) ) {
+										if ( !empty( $selected_groups ) && in_array( $group['id'], $selected_groups ) ) {
 											echo ' selected="selected"';
 										}
 							?>

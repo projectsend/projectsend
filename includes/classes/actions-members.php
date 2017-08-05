@@ -249,10 +249,41 @@ class MembersActions
 	
 	function group_request_membership($arguments)
 	{
-		if ( in_array( CURRENT_USER_LEVEL, array(9,8) ) || ( defined('REGISTERING') ) ) {
+		if ( in_array( CURRENT_USER_LEVEL, array(9,8) ) || ( defined('REGISTERING') ) || ( defined('EDITING_SELF_ACCOUNT') ) ) {
 			if ( CLIENTS_CAN_SELECT_GROUP == 'public' || CLIENTS_CAN_SELECT_GROUP == 'all' ) {
+				$this->client_id	= $arguments['client_id'];
+				$this->group_ids	= is_array( $arguments['group_ids'] ) ? $arguments['group_ids'] : array( $arguments['group_ids'] );
+				$this->request_by	= $arguments['request_by'];
 
-				$this->requests = array();
+				/** Make a list of current groups to ignore new requests to them */
+				$this->current_groups = self::client_get_groups(
+															array(
+																'client_id' => $this->client_id
+															)
+														);
+
+				if ( !empty( $this->current_groups ) ) {
+					foreach ( $this->group_ids as $this->array_key => $this->group_id ) {
+						if ( in_array( $this->group_id, $this->current_groups ) ) {
+							unset($this->group_ids[$this->array_key]);
+						}
+					}
+				}
+
+				/** Make a list of current requests to avoid duplicates */
+				$this->current_requests = self::get_membership_requests(
+															array(
+																'client_id' => $this->client_id
+															)
+														);
+
+				if ( !empty( $this->current_requests ) ) {
+					foreach ( $this->group_ids as $this->array_key => $this->group_id ) {
+						if ( in_array( $this->group_id, $this->current_requests[$this->client_id]['group_ids'] ) ) {
+							unset($this->group_ids[$this->array_key]);
+						}
+					}
+				}
 	
 				if ( CLIENTS_CAN_SELECT_GROUP == 'public' ) {
 					/**
@@ -265,48 +296,51 @@ class MembersActions
 										);
 					$this->public_groups = $this->memberships->get_groups($this->arguments);
 				}
-				$this->client_id	= $arguments['client_id'];
-				$this->group_ids	= is_array( $arguments['group_ids'] ) ? $arguments['group_ids'] : array( $arguments['group_ids'] );
-				$this->request_by	= $arguments['request_by'];
-
+				
 				$this->results 		= array(
 											'added'		=> 0,
 											'queue'		=> count( $this->group_ids ),
 											'errors'	=> array(),
 										);
 		
-				foreach ( $this->group_ids as $this->group_id ) {
-					if ( defined('REGISTERING') ) {
-						if ( CLIENTS_CAN_SELECT_GROUP == 'public' ) {
-							$this->permitted = array();
-							foreach ( $this->public_groups as $this->public_group ) {
-								$this->permitted[] = $this->public_group['id'];
-							}
-							
-							if ( !in_array( $this->group_id, $this->permitted ) ) {
-								continue;
+				if ( !empty( $this->group_ids ) ) {
+					$this->requests = array();
+					foreach ( $this->group_ids as $this->group_id ) {
+						if ( defined('REGISTERING') ) {
+							if ( CLIENTS_CAN_SELECT_GROUP == 'public' ) {
+								$this->permitted = array();
+								foreach ( $this->public_groups as $this->public_group ) {
+									$this->permitted[] = $this->public_group['id'];
+								}
+								
+								if ( !in_array( $this->group_id, $this->permitted ) ) {
+									continue;
+								}
 							}
 						}
+	
+						$statemente = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS_REQUESTS . " (requested_by,client_id,group_id)"
+															." VALUES (:username, :id, :group)");
+						$statemente->bindParam(':username', $this->request_by);
+						$statemente->bindParam(':id', $this->client_id, PDO::PARAM_INT);
+						$statemente->bindParam(':group', $this->group_id, PDO::PARAM_INT);
+						$this->status = $statemente->execute();
+						
+						if ( $this->status ) {
+							$this->results['added']++;
+							$this->requests[] = $this->group_id;
+						}
+						else {
+							$this->results['errors'][] = array(
+																'client'	=> $this->group_id,
+															);
+						}
+	
+						$this->results['requests'] = $this->requests;
 					}
-
-					$statemente = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS_REQUESTS . " (requested_by,client_id,group_id)"
-														." VALUES (:username, :id, :group)");
-					$statemente->bindParam(':username', $this->request_by);
-					$statemente->bindParam(':id', $this->client_id, PDO::PARAM_INT);
-					$statemente->bindParam(':group', $this->group_id, PDO::PARAM_INT);
-					$this->status = $statemente->execute();
-					
-					if ( $this->status ) {
-						$this->results['added']++;
-						$this->requests[] = $this->group_id;
-					}
-					else {
-						$this->results['errors'][] = array(
-															'client'	=> $this->group_id,
-														);
-					}
-
-					$this->results['requests'] = $this->requests;
+				}
+				else {
+					return false;
 				}
 			}
 			else {
@@ -360,7 +394,7 @@ class MembersActions
 					$statemente->bindValue(':added_by', 'SELFREGISTERED');
 					$statemente->bindValue(':client_id', $this->client_id, PDO::PARAM_INT);
 					$statemente->bindValue(':group_id', $this->request, PDO::PARAM_INT);
-					//$statemente->execute();
+					$statemente->execute();
 					/** Add to delete from requests array */
 					$this->requests_to_remove[] = $this->request;
 					$this->return_info['memberships']['approved'][] = $this->request;
@@ -371,7 +405,7 @@ class MembersActions
 					$this->sql->bindValue(':denied', 1, PDO::PARAM_INT);
 					$this->sql->bindValue(':client_id', $this->client_id, PDO::PARAM_INT);
 					$this->sql->bindValue(':group_id', $this->request, PDO::PARAM_INT);
-					//$this->status = $this->sql->execute();
+					$this->status = $this->sql->execute();
 					$this->return_info['memberships']['denied'][] = $this->request;
 				}
 			}
@@ -381,10 +415,27 @@ class MembersActions
 				$this->statement = $this->dbh->prepare("DELETE FROM " . TABLE_MEMBERS_REQUESTS . " WHERE client_id=:client_id AND FIND_IN_SET(group_id, :delete)");
 				$this->statement->bindParam(':client_id', $this->client_id, PDO::PARAM_INT);
 				$this->statement->bindParam(':delete', $this->delete_ids);
-				//$this->statement->execute();
+				$this->statement->execute();
 			}
 		}
 		
 		return $this->return_info;
+	}
+
+
+	/**
+	 * Delete memberships requests
+	 */
+	function group_delete_requests($arguments)
+	{
+		$this->client_id	= $arguments['client_id'];
+		$this->type			= ( !empty( $arguments['type'] ) && $arguments['type'] == 'denied' ) ? 1 : 0;
+
+		if ( !empty( $this->client_id ) ) {
+			$this->statement = $this->dbh->prepare("DELETE FROM " . TABLE_MEMBERS_REQUESTS . " WHERE client_id=:client_id AND denied=:denied");
+			$this->statement->bindParam(':client_id', $this->client_id, PDO::PARAM_INT);
+			$this->statement->bindParam(':denied', $this->type, PDO::PARAM_INT);
+			$this->statement->execute();
+		}
 	}
 }

@@ -57,6 +57,10 @@ if ($page_status === 1) {
 							'client_id'	=> $client_id,
 						);
 	$found_groups	= $get_groups->client_get_groups($get_arguments); 
+	
+	/** Get current membership requests */
+	$get_arguments['denied'] = 0;
+	$found_requests	= $get_groups->get_membership_requests($get_arguments); 
 }
 
 /**
@@ -68,6 +72,7 @@ if ($global_level != 0) {
 }
 else {
 	$clients_form_type = 'edit_client_self';
+	define('EDITING_SELF_ACCOUNT', true);
 	$ignore_size = true;
 }
 
@@ -148,15 +153,14 @@ if ($_POST) {
 		$edit_response = $edit_client->edit_client($edit_arguments);
 
 		$edit_groups = (!empty( $_POST['add_client_group_request'] ) ) ? $_POST['add_client_group_request'] : array();
-		array_map('encode_html', $edit_groups);
 		$memberships	= new MembersActions;
 		$arguments		= array(
-								'client_id'	=> $client_id,
-								'group_ids'	=> $edit_groups,
-								'added_by'	=> CURRENT_USER_USERNAME,
+								'client_id'		=> $client_id,
+								'group_ids'		=> $edit_groups,
+								'request_by'	=> CURRENT_USER_USERNAME,
 							);
 
-		$memberships->client_edit_groups($arguments);
+		$memberships->group_request_membership($arguments);
 	}
 
 	$location = BASE_URI . 'clients-edit.php?id=' . $client_id . '&status=' . $edit_response['query'];

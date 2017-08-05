@@ -24,7 +24,7 @@ if (defined('TRY_INSTALL')) {
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `uploader` varchar('.MAX_USER_CHARS.') NOT NULL,
 								  `expires` INT(1) NOT NULL default \'0\',
-								  `expiry_date` TIMESTAMP NOT NULL DEFAULT \'0000-00-00 00:00:00\',
+								  `expiry_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `public_allow` INT(1) NOT NULL default \'0\',
 								  `public_token` varchar(32) NULL,
 								  PRIMARY KEY (`id`)

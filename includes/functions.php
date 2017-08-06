@@ -295,7 +295,7 @@ function get_client_by_id($client)
 	while ( $row = $statement->fetch() ) {
 		$information = array(
 							'id'				=> $row['id'],
-							'name'				=> $row['name'],
+							'name'				=> html_output($row['name']),
 							'username'			=> $row['user'],
 							'address'			=> $row['address'],
 							'phone'				=> $row['phone'],
@@ -334,7 +334,7 @@ function get_client_by_username($client)
 	while ( $row = $statement->fetch() ) {
 		$information = array(
 							'id'				=> $row['id'],
-							'name'				=> $row['name'],
+							'name'				=> html_output($row['name']),
 							'username'			=> $row['user'],
 							'address'			=> $row['address'],
 							'phone'				=> $row['phone'],
@@ -431,7 +431,7 @@ function get_user_by_username($user)
 			$information = array(
 								'id'				=> $row['id'],
 								'username'			=> $row['user'],
-								'name'				=> $row['name'],
+								'name'				=> html_output($row['name']),
 								'email'				=> $row['email'],
 								'level'				=> $row['level'],
 								'active'			=> $row['active'],
@@ -465,7 +465,7 @@ function get_user_by_id($id)
 		$information = array(
 							'id'				=> $row['id'],
 							'username'			=> $row['user'],
-							'name'				=> $row['name'],
+							'name'				=> html_output($row['name']),
 							'email'				=> $row['email'],
 							'level'				=> $row['level'],
 							'max_file_size'		=> $row['max_file_size'],
@@ -932,7 +932,7 @@ function generate_branding_layout()
 
 	$layout = '<div class="row">
 					<div class="col-xs-12 branding_unlogged">
-						<img src="' . $branding_image . '" alt="' . THIS_INSTALL_SET_TITLE . '" />
+						<img src="' . $branding_image . '" alt="' . html_output(THIS_INSTALL_SET_TITLE) . '" />
 					</div>
 				</div>';
 
@@ -1103,11 +1103,11 @@ function render_log_action($params)
 	$action = $params['action'];
 	$timestamp = $params['timestamp'];
 	$owner_id = $params['owner_id'];
-	$owner_user = $params['owner_user'];
+	$owner_user = html_output($params['owner_user']);
 	$affected_file = $params['affected_file'];
 	$affected_file_name = $params['affected_file_name'];
 	$affected_account = $params['affected_account'];
-	$affected_account_name = $params['affected_account_name'];
+	$affected_account_name = html_output($params['affected_account_name']);
 	
 	switch ($action) {
 		case 0:

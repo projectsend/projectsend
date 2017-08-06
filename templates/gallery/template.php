@@ -101,7 +101,7 @@ $count = count($img_files);
 		<header>
 			<?php if ($logo_file_info['exists'] === true) { ?>
 				<div id="logo">
-					<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $logo_file_info['url']; ?>&amp;w=<?php echo LOGO_MAX_WIDTH; ?>" alt="<?php echo THIS_INSTALL_SET_TITLE; ?>" />
+					<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $logo_file_info['url']; ?>&amp;w=<?php echo LOGO_MAX_WIDTH; ?>" alt="<?php echo html_output(THIS_INSTALL_SET_TITLE); ?>" />
 				</div>
 			<?php } ?>
 		</header>

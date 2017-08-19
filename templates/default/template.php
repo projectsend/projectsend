@@ -325,7 +325,7 @@ include_once(ROOT_DIR.'/header.php');
 						$pagination_args = array(
 												'link'		=> 'my_files',
 												'current'	=> $pagination_page,
-												'pages'		=> ceil( $count_for_pagination / RESULTS_PER_PAGE ),
+												'pages'		=> ceil( $count_for_pagination / TEMPLATE_RESULTS_PER_PAGE ),
 											);
 						
 						echo $table->pagination( $pagination_args );

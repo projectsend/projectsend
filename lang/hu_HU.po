@@ -1,0 +1,3185 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ProjectSend admin\n"
+"POT-Creation-Date: 2017-08-26 14:45+0200\n"
+"PO-Revision-Date: 2017-08-26 14:53+0200\n"
+"Last-Translator: Levente Peres <sheridan@sheridan.hu>\n"
+"Language-Team: ProjectSend <contact@projectsend.org>\n"
+"Language: hu_HU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.12\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: assets\n"
+"X-Poedit-SearchPathExcluded-1: includes/flot\n"
+"X-Poedit-SearchPathExcluded-2: includes/Google\n"
+"X-Poedit-SearchPathExcluded-3: includes/phpass\n"
+"X-Poedit-SearchPathExcluded-4: includes/phpmailer\n"
+"X-Poedit-SearchPathExcluded-5: includes/plupload\n"
+"X-Poedit-SearchPathExcluded-6: includes/random_compat\n"
+"X-Poedit-SearchPathExcluded-7: includes/timthumb\n"
+"X-Poedit-SearchPathExcluded-8: templates/default\n"
+"X-Poedit-SearchPathExcluded-9: templates/gallery\n"
+"X-Poedit-SearchPathExcluded-10: templates/pinboxes\n"
+"X-Poedit-SearchPathExcluded-11: includes/js/bootstrap-datepicker\n"
+"X-Poedit-SearchPathExcluded-12: includes/js/bootstrap-spinedit\n"
+"X-Poedit-SearchPathExcluded-13: includes/js/chosen\n"
+"X-Poedit-SearchPathExcluded-14: includes/js/footable\n"
+"X-Poedit-SearchPathExcluded-15: includes/js/jen\n"
+"X-Poedit-SearchPathExcluded-16: includes/js/jquery-tags-input\n"
+
+#: actions-log.php:15
+msgid "Recent activities log"
+msgstr "Tevékenységnapló"
+
+#: actions-log.php:28
+msgid "Please select at least one activity to proceed."
+msgstr "Kérem, válasszon ki legalább egy tevékenységet a folytatáshoz"
+
+#: actions-log.php:32 categories.php:37 clients.php:44 groups.php:72
+#: manage-files.php:105 users.php:37
+msgid "You are about to delete"
+msgstr "Ön törölni készül"
+
+#: actions-log.php:33
+msgid "activities. Are you sure you want to continue?"
+msgstr "tevékenységet. Biztosan folytatja?"
+
+#: actions-log.php:42
+msgid ""
+"You are about to delete all activities from the log. Only those used for "
+"statistics will remain. Are you sure you want to continue?"
+msgstr ""
+"Ön minden tevékenységet törölni készül a naplóból. Csak a statisztika fog "
+"megmaradni. Biztosan folytatja?"
+
+#: actions-log.php:54
+msgid "Please wait while your download is prepared."
+msgstr "Kérem várjon, amíg a letöltést előkészítjük!"
+
+#: actions-log.php:87
+msgid "The selected activities were deleted."
+msgstr "A kiválasztott tevékenységeket töröltük."
+
+#: actions-log.php:91
+msgid "Please select at least one activity."
+msgstr "Kérem, válasszon ki legalább egy tevékenységet"
+
+#: actions-log.php:103
+msgid ""
+"The log was cleared. Only data used for statistics remained. You can delete "
+"them manually if you want."
+msgstr ""
+"A naplót kiürítettük. Csak a statisztika maradt meg, melyet kézzel törölhet."
+
+#: actions-log.php:151 categories.php:239 clients.php:178 groups.php:217
+#: manage-files.php:445 upload-import-orphans.php:144 users.php:208
+msgid "Search"
+msgstr "Keresés"
+
+#: actions-log.php:156
+msgid "Filter activities"
+msgstr "Tevékenységek szűrése"
+
+#: actions-log.php:158 home.php:81
+msgid "All activities"
+msgstr "Minden tevékenység"
+
+#: actions-log.php:169 clients.php:189 manage-files.php:469 users.php:228
+msgid "Filter"
+msgstr "Szűrő"
+
+#: actions-log.php:179
+msgid "Activities actions"
+msgstr "Tevékenységek kezelése"
+
+#: actions-log.php:181 groups.php:229
+msgid "Select action"
+msgstr "Művelet kiválasztása"
+
+#: actions-log.php:182
+msgid "Download as csv"
+msgstr "Letöltés CSV formátumban"
+
+#: actions-log.php:183
+msgid "Delete selected"
+msgstr "Kiválasztottak törlése"
+
+#: actions-log.php:184
+msgid "Clear entire log"
+msgstr "Napló kiürítése"
+
+#: actions-log.php:187 categories.php:256 clients.php:206 groups.php:233
+#: manage-files.php:510 users.php:245
+msgid "Proceed"
+msgstr "Folytatás"
+
+#: actions-log.php:194 categories.php:264 clients.php:213 groups.php:240
+#: manage-files.php:521 upload-import-orphans.php:151 users.php:252
+msgid "Showing"
+msgstr "Megjelenítve"
+
+#: actions-log.php:194
+msgid "activities"
+msgstr "tevékenység"
+
+#: actions-log.php:204 clients.php:226 groups.php:253 manage-files.php:537
+#: users.php:264
+msgid "The filters you selected returned no results."
+msgstr "A kiválasztott szűrők nem hoztak eredményt."
+
+#: actions-log.php:209
+msgid "There are no activities recorded."
+msgstr "Nincs rögzített tevékenység"
+
+#: actions-log.php:221 download-information.php:86 manage-files.php:567
+msgid "Date"
+msgstr "Dátum"
+
+#: actions-log.php:222
+msgid "Author"
+msgstr "Tulajdonos"
+
+#: actions-log.php:223
+msgid "Activity"
+msgstr "Tevékenység"
+
+#: actions-log.php:267 categories.php:360 clients.php:372
+#: download-information.php:143 groups.php:337 manage-files.php:851
+#: upload-import-orphans.php:192 users.php:336
+msgid "Results navigation"
+msgstr "Eredmények böngészése"
+
+#: branding.php:13 header-menu.php:140
+msgid "Branding"
+msgstr "Márkajelzés"
+
+#: branding.php:87
+msgid "Please select an image file to upload"
+msgstr "Kérem, válasszon ki egy feltöltendő képfájlt!"
+
+#: branding.php:105
+msgid "The image was uploaded correctly."
+msgstr "A képfájl sikeresen feltöltve."
+
+#: branding.php:109
+msgid "The file could not be moved to the corresponding folder."
+msgstr "A fájlt nem sikerült a kiválasztott könyvtárba átmozgatni"
+
+#: branding.php:110
+msgid ""
+"This is most likely a permissions issue. If that's the case, it can be "
+"corrected via FTP by setting the chmod value of the"
+msgstr ""
+"Ez valószínűleg jogosultság probléma. Amennyiben ez a helyzet, akkor FTP-n "
+"keresztül is ki lehet javítan úgy, hogy be kell álítani a"
+
+#: branding.php:112
+msgid "directory to 755, or 777 as a last resource."
+msgstr ""
+"könyvtár jogosultsági értékeit 755-re vagy pedig - végső esetben - 777-re."
+
+#: branding.php:113
+msgid ""
+"If this doesn't solve the issue, try giving the same values to the "
+"directories above that one until it works."
+msgstr ""
+"Ha ez nem oldotta meg a problémát, akkor próbálja meg az említett értékeket "
+"sorban, mindíg az eggyel fentebbi szülőkörnyvtárakra is alkalmazni, amíg a "
+"működés helyre nem áll."
+
+#: branding.php:117
+msgid ""
+"The file you selected is not an allowed image format. Please upload your "
+"logo as a jpg, gif or png file."
+msgstr ""
+"A feltölteni kívánt fájl nem engedélyezett képformátum. Kérem, töltsön fel "
+"egy logót jpg, gif vagy png formátumban!"
+
+#: branding.php:121
+msgid "There was an error uploading the file. Please try again."
+msgstr "A fájl feltöltése közben hiba történt. Kérem próbálja újra!"
+
+#: branding.php:129
+msgid ""
+"Use this page to upload your company logo, or update the currently assigned "
+"one. This image will be shown to your clients when they access their file "
+"list."
+msgstr ""
+"Ezen az oldalon a cége logóját töltheti fel, vagy frissítheti a jelenlegi "
+"képet. Ezt az ügyfelek fogják látni, amikor megnyitják a fájljaik listáját."
+
+#: branding.php:133
+msgid "Current logo"
+msgstr "Jelenlegi logó"
+
+#: branding.php:134
+msgid ""
+"The picture on the right is not an actual representation of what they will "
+"see. The size on this preview is fixed, but remember that you can change the "
+"display size and picture quality for your client's pages on the"
+msgstr ""
+"A jobboldalon látható kép nem pontosan úgy néz ki, ahogyan azt látni fogják. "
+"Ez az előbézet fix méretű, de a megjelenítési képméretet, valamint minőséget "
+"be tudja állítani a"
+
+#: branding.php:134
+msgid "options"
+msgstr "beállítások"
+
+#: branding.php:134
+msgid "section."
+msgstr "szekcióban."
+
+#: branding.php:141
+msgid "Logo Placeholder"
+msgstr "Logó helye"
+
+#: branding.php:152
+msgid "Select image to upload"
+msgstr "Válassza ki a feltöltendő képet"
+
+#: branding.php:164 header-menu.php:45 header-menu.php:161
+msgid "Upload"
+msgstr "Feltöltés"
+
+#: categories-form.php:14
+msgid "Create"
+msgstr "Létrehozás"
+
+#: categories-form.php:17
+msgid "Save"
+msgstr "Mentés"
+
+#: categories-form.php:27 categories.php:294 clients-form.php:104
+#: options.php:394 users-form.php:86
+msgid "Name"
+msgstr "Név"
+
+#: categories-form.php:34
+msgid "Parent"
+msgstr "Származás"
+
+#: categories-form.php:37 options.php:519
+msgid "None"
+msgstr "Nincs"
+
+#: categories-form.php:48 categories.php:296 edit-file.php:379
+#: groups-form.php:45 groups.php:277 upload-process-form.php:291
+#: upload-process-form.php:485
+msgid "Description"
+msgstr "Leírás"
+
+#: categories-form.php:56 edit-file.php:524
+msgid "Cancel"
+msgstr "Mégse"
+
+#: categories.php:18
+msgid "Categories administration"
+msgstr "Kategóriakezelés"
+
+#: categories.php:31
+msgid "Please select at least one category to proceed."
+msgstr "Kérem, válasszon ki legalább egy kategóriát"
+
+#: categories.php:38
+msgid "categories. Are you sure you want to continue?"
+msgstr "kategória. Biztosan folytatja?"
+
+#: categories.php:71
+msgid "The category was successfully created."
+msgstr "A kategória sikeresen létrehozva."
+
+#: categories.php:75
+msgid "The category was successfully edited."
+msgstr "A kategória sikeresen módosítva."
+
+#: categories.php:114
+msgid "The selected categories were deleted."
+msgstr "A kiválasztott kategóriák törölve."
+
+#: categories.php:132
+msgid "Please select at least one category."
+msgstr "Kérem, válasszon ki legalább egy kategóriát!"
+
+#: categories.php:149
+msgid "Create new category"
+msgstr "Új kategória létrehozása"
+
+#: categories.php:161
+msgid "Edit category"
+msgstr "Kategória szerkesztése"
+
+#: categories.php:214
+msgid "There was a problem savint to the database."
+msgstr "Az adatbázisba történő mentés során hiba lépett fel."
+
+#: categories.php:219
+msgid "Please complete all the required fields."
+msgstr "Kérem töltsön ki minden kötelező mezőt!"
+
+#: categories.php:251
+msgid "Selected categories actions"
+msgstr "Művelet a kiválasztott kategóriákkal"
+
+#: categories.php:253 clients.php:203 groups.php:230 manage-files.php:507
+#: users.php:242
+msgid "Delete"
+msgstr "Törlés"
+
+#: categories.php:264
+msgid "categories"
+msgstr "kategóriák"
+
+#: categories.php:274 clients.php:223 groups.php:250 manage-files.php:531
+#: users.php:261
+msgid "Your search keywords returned no results."
+msgstr "A kulcsszavas keresés nem hozott eredményt"
+
+#: categories.php:279
+msgid "There are no categories yet."
+msgstr "Még nincsenek kategóriák"
+
+#: categories.php:295 groups.php:279 header-menu.php:41 home.php:162
+#: options.php:339
+msgid "Files"
+msgstr "Fájlok"
+
+#: categories.php:297 clients.php:255 groups.php:282 manage-files.php:604
+#: upload-import-orphans.php:166 upload-process-form.php:302 users.php:283
+msgid "Actions"
+msgstr "Műveletek"
+
+#: categories.php:339 clients.php:359 groups.php:325 header-menu.php:52
+#: header-menu.php:171 manage-files.php:17
+msgid "Manage files"
+msgstr "Fájlok kezelése"
+
+#: categories.php:340 clients.php:362 groups.php:326 manage-files.php:840
+#: upload-import-orphans.php:182 users.php:325
+msgid "Edit"
+msgstr "Szerkesztés"
+
+#: clients-add.php:14 clients-form.php:64
+msgid "Add client"
+msgstr "Ügyfél hozzáadása"
+
+#: clients-add.php:91
+msgid "Client added correctly."
+msgstr "Ügyfél sikeresen hozzáadva"
+
+#: clients-add.php:105 clients-edit.php:167 email-templates.php:74
+#: groups-add.php:88 groups-edit.php:137 options.php:136 register.php:147
+#: users-add.php:102 users-edit.php:170
+msgid "There was an error. Please try again."
+msgstr "Hiba történt. Kérem próbálja újra."
+
+#: clients-add.php:114
+msgid "An e-mail notification with login information was sent to your client."
+msgstr "Az ügyfél emailben értesítve lett."
+
+#: clients-add.php:118 register.php:171 users-add.php:115
+msgid "E-mail notification couldn't be sent."
+msgstr "Az email értesítést nem sikerült kiküldeni."
+
+#: clients-edit.php:120
+msgid "Edit client"
+msgstr "Ügyfél szerkesztése"
+
+#: clients-edit.php:122 users-edit.php:125
+msgid "My account"
+msgstr "Saját fiók"
+
+#: clients-edit.php:151
+msgid "Client edited correctly."
+msgstr "Az ügyfél adatai sikeresen módosítva"
+
+#: clients-edit.php:176 groups-edit.php:146 users-edit.php:179
+msgid "This page is not intended to be accessed directly."
+msgstr "Ezt az oldalt nem közvetlen elérésre szánták."
+
+#: clients-edit.php:178
+msgid "No client was selected."
+msgstr "Nincs ügyfél kiválaszva"
+
+#: clients-edit.php:183
+msgid "There is no client with that ID number."
+msgstr "Ezzel az azonosítóval nincs ügyfél nyilvántartva."
+
+#: clients-edit.php:188 users-edit.php:191
+msgid "Your account type doesn't allow you to access this feature."
+msgstr "Az ön fióktípusával nem érteti el ezt a szolgáltatást."
+
+#: clients-form.php:59
+msgid "Will be visible on the client's file list"
+msgstr "Látszani fog az ügyfél fájllistájában."
+
+#: clients-form.php:73
+msgid "Save client"
+msgstr "Ügyfél mentése"
+
+#: clients-form.php:82
+msgid "Register account"
+msgstr "Fiók lérehozása"
+
+#: clients-form.php:88
+msgid "Your full name"
+msgstr "Az ön teljes neve"
+
+#: clients-form.php:92 users-form.php:76
+msgid "Update account"
+msgstr "Fiók firrsítése"
+
+#: clients-form.php:111 clients.php:244 install/index.php:250 users-form.php:93
+#: users.php:278
+msgid "Log in username"
+msgstr "Bejelentkezési felhasználónév"
+
+#: clients-form.php:113 users-form.php:95
+msgid "Must be alphanumeric"
+msgstr "Alfanumerikus kell, hogy legyen"
+
+#: clients-form.php:118 includes/vars.php:49 index.php:210
+#: install/index.php:258 install/make-config.php:268 options.php:490
+#: users-form.php:100
+msgid "Password"
+msgstr "Jelszó"
+
+#: clients-form.php:126 install/index.php:266 reset-password.php:340
+#: users-form.php:108
+msgid "Generate"
+msgstr "Generálás"
+
+#: clients-form.php:132 clients.php:245 index.php:205 reset-password.php:291
+#: users-form.php:114 users.php:279
+msgid "E-mail"
+msgstr "E-Mail"
+
+#: clients-form.php:134 users-form.php:116
+msgid "Must be valid and unique"
+msgstr "Szabályszerű és egyedi kell, hogy legyen"
+
+#: clients-form.php:139 clients.php:252
+msgid "Address"
+msgstr "Postacím"
+
+#: clients-form.php:146 clients.php:253
+msgid "Telephone"
+msgstr "Telefonszám"
+
+#: clients-form.php:156
+msgid "Internal contact name"
+msgstr "Belső kapcsolattartó neve"
+
+#: clients-form.php:164
+msgid "Active (client can log in)"
+msgstr "Aktív (az ügyfél be tud lépni)"
+
+#: clients-form.php:174
+msgid "Notify new uploads by e-mail"
+msgstr "Az új feltöltésekről értesítés küldése"
+
+#: clients-form.php:184
+msgid "Verification"
+msgstr "Ellenőrzés"
+
+#: clients-form.php:200 users-form.php:151
+msgid "This account information will be e-mailed to the address supplied above"
+msgstr "A fiókkal kapcsolatos adatokat a fent megadott email címre elküldjük."
+
+#: clients.php:18
+msgid "Clients Administration"
+msgstr "Ügyfélkezelés"
+
+#: clients.php:38
+msgid "Please select at least one client to proceed."
+msgstr "Kérem, válasszok ki legalább egy ügyfelet a folytatáshoz"
+
+#: clients.php:45
+msgid ""
+"clients and all of the assigned files. Are you sure you want to continue?"
+msgstr "ügyfél és minden hozzájuk kapcsolódó fájl. Biztosan folytatja?"
+
+#: clients.php:91
+msgid "The selected clients were marked as active."
+msgstr "A kiválasztott ügyfelek aktiválva lettek"
+
+#: clients.php:105
+msgid "The selected clients were marked as inactive."
+msgstr "A kiválasztott ügyfelek deaktiválva lettek"
+
+#: clients.php:116
+msgid "The selected clients were deleted."
+msgstr "A kiválasztott ügyfelek törölve"
+
+#: clients.php:134
+msgid "Please select at least one client."
+msgstr "Kérem, válasszon ki legalább egy ügyfelet"
+
+#: clients.php:184 manage-files.php:457 users.php:223
+msgid "All statuses"
+msgstr "Minden státusz"
+
+#: clients.php:185 clients.php:323 users.php:224 users.php:313
+msgid "Active"
+msgstr "Aktív"
+
+#: clients.php:186 clients.php:322 users.php:225 users.php:312
+msgid "Inactive"
+msgstr "Inaktív"
+
+#: clients.php:199
+msgid "Selected clients actions"
+msgstr "Ügyfélművelet kiválasztása"
+
+#: clients.php:201 users.php:240
+msgid "Activate"
+msgstr "Aktiválás"
+
+#: clients.php:202 users.php:241
+msgid "Deactivate"
+msgstr "Deaktiválás"
+
+#: clients.php:213
+msgid "clients"
+msgstr "ügyfelek"
+
+#: clients.php:231
+msgid "There are no clients at the moment"
+msgstr "Jelenleg nincsenek ügyfelek"
+
+#: clients.php:243 includes/classes/send-email.php:59 install/index.php:236
+#: users.php:277
+msgid "Full name"
+msgstr "Teljes név"
+
+#: clients.php:246
+msgid "Files: Own"
+msgstr "Fájlok: Saját"
+
+#: clients.php:247
+msgid "Files: Groups"
+msgstr "Fájlok: Csoport"
+
+#: clients.php:248 manage-files.php:592 upload-process-form.php:296
+#: users.php:281
+msgid "Status"
+msgstr "Státusz"
+
+#: clients.php:249
+msgid "Groups on"
+msgstr "Csoportok"
+
+#: clients.php:250
+msgid "Notify"
+msgstr "Értesítés"
+
+#: clients.php:251 groups.php:281 users.php:282
+msgid "Added on"
+msgstr "Hozzáadva"
+
+#: clients.php:254
+msgid "Internal contact"
+msgstr "Belső kapcsolattartó"
+
+#: clients.php:332 download-information.php:125 manage-files.php:725
+msgid "Yes"
+msgstr "Igen"
+
+#: clients.php:332 download-information.php:126 manage-files.php:725
+msgid "No"
+msgstr "Nem"
+
+#: clients.php:360
+msgid "View groups"
+msgstr "Csoportok megtekintése"
+
+#: clients.php:361
+msgid "View as client"
+msgstr "Megtekintés ügyfélként"
+
+#: download-information.php:17
+msgid "Download information"
+msgstr "Letöltés adatai"
+
+#: download-information.php:64
+msgid "No file was selected."
+msgstr "Nincs fájl kiválasztva"
+
+#: download-information.php:69
+msgid "There is no information with that file ID number."
+msgstr "Nincs adat ezzel a file ID azonosítóval"
+
+#: download-information.php:78 manage-files.php:599
+msgid "Total downloads"
+msgstr "Összes letöltés"
+
+#: download-information.php:87
+msgid "Time"
+msgstr "Idő"
+
+#: download-information.php:88 includes/vars.php:16
+msgid "Client"
+msgstr "Ügyfél"
+
+#: download-information.php:89
+msgid "Anonymous"
+msgstr "Anonymous"
+
+#: download-information.php:90
+msgid "Client's IP"
+msgstr "Ügyfél IP címe"
+
+#: download-information.php:91
+msgid "Client's hostname"
+msgstr "Ügyfél hosztneve"
+
+#: download-information.php:98
+msgid "Unique logged in clients/users"
+msgstr "Egyedi bejelentkezett ügyfelek/felhasználók"
+
+#: download-information.php:99
+msgid "Total public downloads"
+msgstr "Összes nyilvános letöltés"
+
+#: download.php:11
+msgid "Download"
+msgstr "Letöltés"
+
+#: download.php:120 reset-password.php:218
+msgid "The request is not valid."
+msgstr "A kérés nem értelmezhető."
+
+#: download.php:130
+msgid "The following file is now ready for you to download:"
+msgstr "A következő fájl készen áll a letöltésre:"
+
+#: download.php:132
+msgid "Download file"
+msgstr "Fájl letöltése"
+
+#: download.php:140 register.php:188 reset-password.php:361
+msgid "Go back to the homepage."
+msgstr "Vissza a kezőlapra"
+
+#: edit-file.php:23 upload-process-form.php:355
+msgid "Edit file"
+msgstr "Fájl szerkesztése"
+
+#: edit-file.php:118
+msgid ""
+"Please go to the clients or groups administration page, select \"Manage files"
+"\" from any client and then click on \"Edit\" on any file to return here."
+msgstr ""
+"Kérem lépjen vissza az ügyfél vagy csoport kezelőfelületére, válassza ki a "
+"\"Fájlok kezelése\" menüpontot bármelyik ügyféltől, majd kattintson bármely "
+"fájl mellett a \"Szerkesztés\" menüpontra ahhoz, hogy ide visszatérjen."
+
+#: edit-file.php:121
+msgid "There is not file with that ID number."
+msgstr "Nincs fájl ezzel az azonosítóval."
+
+#: edit-file.php:124
+msgid "You don't have permission to edit this file."
+msgstr "Nincs engedélye ennek a fájlnak a szerkesztésére"
+
+#: edit-file.php:308
+msgid "The file has been edited succesfuly."
+msgstr "A fájl sikeresen szerkesztve"
+
+#: edit-file.php:371 upload-process-form.php:475
+msgid "File information"
+msgstr "Fájl adatai"
+
+#: edit-file.php:374 manage-files.php:569 upload-process-form.php:290
+#: upload-process-form.php:480
+msgid "Title"
+msgstr "Cím"
+
+#: edit-file.php:375 upload-process-form.php:481
+msgid "Enter here the required file title."
+msgstr "Írja be ide a kívánt címet a fájlhoz"
+
+#: edit-file.php:380 upload-process-form.php:486
+msgid "Optionally, enter here a description for the file."
+msgstr "Itt adhatja meg a fájl leírását (nem kötelező)"
+
+#: edit-file.php:401 upload-process-form.php:505
+msgid "Expiration date"
+msgstr "Lejárati idő"
+
+#: edit-file.php:404 upload-process-form.php:508
+msgid "Select a date"
+msgstr "Válasszon dátumot"
+
+#: edit-file.php:415 upload-process-form.php:519
+msgid "File expires"
+msgstr "A fájl lejár"
+
+#: edit-file.php:421 upload-process-form.php:525
+msgid "Public downloading"
+msgstr "Nyilvános letöltés"
+
+#: edit-file.php:424 upload-process-form.php:528
+msgid "Allow public downloading of this file."
+msgstr "Ez a fájl legyen nyilvánosan letölthető"
+
+#: edit-file.php:438 upload-process-form.php:297 upload-process-form.php:542
+msgid "Assignations"
+msgstr "Hozzárendelések"
+
+#: edit-file.php:439 upload-process-form.php:543
+msgid "Assign this file to"
+msgstr "Rendelje hozzá ezt a fájlt ehhez"
+
+#: edit-file.php:440 edit-file.php:497 groups-form.php:54
+#: upload-process-form.php:544 upload-process-form.php:593
+msgid "Select one or more options. Type to search."
+msgstr "Írjon be egy vagy több opciót. Kezdjen gépelni a kereséshez"
+
+#: edit-file.php:441 header-menu.php:73 home.php:163 options.php:185
+#: upload-process-form.php:545
+msgid "Clients"
+msgstr "Ügyfelek"
+
+#: edit-file.php:456 home.php:164 upload-process-form.php:558
+msgid "Groups"
+msgstr "Csoportok"
+
+#: edit-file.php:473 edit-file.php:507 groups-form.php:75
+#: upload-process-form.php:573 upload-process-form.php:603
+msgid "Add all"
+msgstr "Mind hozzáadása"
+
+#: edit-file.php:474 edit-file.php:508 groups-form.php:76
+#: upload-process-form.php:574 upload-process-form.php:604
+msgid "Remove all"
+msgstr "Mind eltávolítása"
+
+#: edit-file.php:481
+msgid ""
+"Mark as hidden (will not send notifications) for new assigned clients and "
+"groups."
+msgstr ""
+"Megjelölés rejtettként (nem lesz kiküldve értesítés) az újonnan hozzárendelt "
+"csoportok és ügyfelek számára."
+
+#: edit-file.php:486
+msgid "Hide from every already assigned clients and groups."
+msgstr "Elrejtés minden, már hozzárendelt üygfél és csoport elől."
+
+#: edit-file.php:495 header-menu.php:63 upload-process-form.php:591
+msgid "Categories"
+msgstr "Kategóriák"
+
+#: edit-file.php:496 upload-process-form.php:592
+msgid "Add to"
+msgstr "Hozzáadás ehhez"
+
+#: edit-file.php:525 upload-import-orphans.php:204 upload-process-form.php:639
+msgid "Continue"
+msgstr "Tovább"
+
+#: edit-file.php:537 groups-form.php:89 upload-process-form.php:689
+msgid "No results where found."
+msgstr "Nincs eredmény."
+
+#: email-preview.php:11 email-templates.php:12 header-menu.php:144
+msgid "E-mail templates"
+msgstr "E-mail sablonok"
+
+#: email-preview.php:11
+msgid "Preview"
+msgstr "Előnézet"
+
+#: email-templates.php:70 options.php:132
+msgid "Options updated succesfuly."
+msgstr "A beállítások sikeresen módosítva."
+
+#: email-templates.php:83
+msgid "(to be used as href on a link tag)"
+msgstr "(href-ként való használathoz link tag-en belül)"
+
+#: email-templates.php:88
+msgid "New file by user"
+msgstr "Új fájl a következő felhasználó által"
+
+#: email-templates.php:91
+msgid ""
+"This email will be sent to a client whenever a new file has been assigned to "
+"his account."
+msgstr ""
+"Ez az email minden alkalommal kiküldésre kerül az ügyfélnek, valahányszor "
+"egy új fájlt rendelnek hozzá a fiókjához"
+
+#: email-templates.php:95 email-templates.php:108
+msgid "Shows the list of files"
+msgstr "Mutatja a fájlok listáját"
+
+#: email-templates.php:96 email-templates.php:109 email-templates.php:123
+#: email-templates.php:137 email-templates.php:151
+msgid "The login link"
+msgstr "A bejelentkezési link"
+
+#: email-templates.php:101
+msgid "New file by client"
+msgstr "Új fájl ügyfél által"
+
+#: email-templates.php:104
+msgid ""
+"This email will be sent to the system administrator whenever a client "
+"uploads a new file."
+msgstr ""
+"Ezt az emailt mindíg megküldjük a rendszergazdának, amikor egy ügyfél új "
+"fájlt tölt fel"
+
+#: email-templates.php:114
+msgid "New client (welcome)"
+msgstr "Új ügyfél (üdvözlet)"
+
+#: email-templates.php:117
+msgid ""
+"This email will be sent to the new client after an administrator has created "
+"his new account. It would be best to include the log in details (username "
+"and password)."
+msgstr ""
+"Ez az email kerül kiküldésre egy új ügyfél számára, miután a rendszergazda "
+"elkészítette a fiókját. A legjobb, ha beleírjuk a belépési adatokat "
+"(felhasználónév és jelszó)."
+
+#: email-templates.php:121 email-templates.php:136 email-templates.php:149
+msgid "The new username for this account"
+msgstr "Új felhasználónév ehhez a fiókhoz"
+
+#: email-templates.php:122 email-templates.php:150
+msgid "The new password for this account"
+msgstr "Új jelszó ehhez a fiókhoz"
+
+#: email-templates.php:128
+msgid "New client (self-registered)"
+msgstr "Új ügyfél (saját regisztráció)"
+
+#: email-templates.php:131
+msgid ""
+"This email will be sent to the system administrator after a new client has "
+"created a new account for himself."
+msgstr ""
+"Ezt az emailt a rendszergazda kapja, miután egy felhasználó új fiókot hozott "
+"lére magának."
+
+#: email-templates.php:135
+msgid "The full name the client registered with"
+msgstr "A teljes név, amivel az ügyfél regisztrálva lett"
+
+#: email-templates.php:142
+msgid "New user (welcome)"
+msgstr "Új felhasználó (üdvözlet)"
+
+#: email-templates.php:145
+msgid ""
+"This email will be sent to the new system user after an administrator has "
+"created his new account. It would be best to include the log in details "
+"(username and password)."
+msgstr ""
+"Ezt az emailt az új rendszer felhasználó kapja, miután a rendszergazda "
+"létrehozta a fiókját. A legjobb, ha beleírjuk a belépési adatok is "
+"(felhasználónév és jelszó)."
+
+#: email-templates.php:156
+msgid "Password reset"
+msgstr "Jelszó visszaállítás"
+
+#: email-templates.php:159
+msgid ""
+"This email will be sent to a user or client when they try to reset their "
+"password."
+msgstr ""
+"Ha egy ügyfél jelszóvisszaállítást kér, akkor ezt az emailt fogja megkapni."
+
+#: email-templates.php:163
+msgid "The username for this account"
+msgstr "A fiókhoz tartozó felhasználónév"
+
+#: email-templates.php:164
+msgid "The text string unique to this request. Must be included somewhere."
+msgstr "A kérelemhez tartozó egyedi karakterlánc. Valahová be kell csatolni."
+
+#: email-templates.php:165
+msgid "The link to continue the process"
+msgstr "A link, amelyre kattintva a művelet folytatható"
+
+#: email-templates.php:173 email-templates.php:197
+msgid "Header / Footer"
+msgstr "Fejléc / Lábléc"
+
+#: email-templates.php:198
+msgid ""
+"Here you set up the header and footer of every email, or use the default "
+"ones available with the system. Use this to customize each part and include, "
+"for example, your own logo and markup."
+msgstr ""
+"Itt tuja megadni minden egyes email fejlécét és láblécét, vagy használhatja "
+"a rendszer alapértelmezését. Használja ezt minden egyes rész testreszabására "
+"és szerkessze bele például a saját logóját, jelöléseit."
+
+#: email-templates.php:199
+msgid ""
+"Do not forget to also include -and close accordingly- the basic structural "
+"HTML tags (DOCTYPE, HTML, HEADER, BODY)."
+msgstr ""
+"Ne felejtse el beilleszteni - és megfelelően lezárni - az alapvető HTML "
+"struktúrális tag-eket (DOCTYPE, HTML, HEADER, BODY)"
+
+#: email-templates.php:206
+msgid "Use custom header / footer"
+msgstr "Egyedi fejléc / lábléc használata"
+
+#: email-templates.php:212
+msgid "Header"
+msgstr "Fejléc"
+
+#: email-templates.php:214 email-templates.php:220 email-templates.php:252
+msgid "You can use HTML tags here."
+msgstr "Itt használhat HTML tag-eket."
+
+#: email-templates.php:218
+msgid "Footer"
+msgstr "Lábléc"
+
+#: email-templates.php:244
+msgid "Use custom template"
+msgstr "Egyedi sablon használata"
+
+#: email-templates.php:250
+msgid "Template text"
+msgstr "Sablon szövege"
+
+#: email-templates.php:255
+msgid "The following tags can be used on this e-mails' body."
+msgstr "Az alábbi tag-eket lehet használni ennek az emailnek a szövegrészében."
+
+#: email-templates.php:274
+msgid "Preview this template"
+msgstr "Sablon előnézete"
+
+#: email-templates.php:276
+msgid ""
+"Before trying this function, please save your changes to see them reflected "
+"on the preview."
+msgstr ""
+"Ennek a funkciónak a használata előtt kérjük mentse el a változásokat, mert "
+"azok csak így lesznek láthatóak az előnézetben."
+
+#: email-templates.php:292 options.php:770
+msgid "Update all options"
+msgstr "Minden beállítás frissítése"
+
+#: groups-add.php:18
+msgid "Add clients group"
+msgstr "Ügyfelek hozzáadása csoporthoz"
+
+#: groups-add.php:74
+msgid "Group added correctly."
+msgstr "Csoport sikeresen hozzáadva"
+
+#: groups-edit.php:18
+msgid "Edit group"
+msgstr "Csoport szerkesztése"
+
+#: groups-edit.php:123
+msgid "Group edited correctly."
+msgstr "Csoport sikeresen szerkesztve"
+
+#: groups-edit.php:148
+msgid "No group was selected."
+msgstr "Nem lett csoport kiválaszva"
+
+#: groups-edit.php:153
+msgid "There is no group with that ID number."
+msgstr "Nincs csoport ezzel az azonosítóval"
+
+#: groups-form.php:26
+msgid "Create group"
+msgstr "Csoport létrehozása"
+
+#: groups-form.php:30
+msgid "Save group"
+msgstr "Csoport mentése"
+
+#: groups-form.php:38 groups.php:276
+msgid "Group name"
+msgstr "Csoport neve"
+
+#: groups-form.php:52 groups.php:278
+msgid "Members"
+msgstr "Tagok"
+
+#: groups.php:18
+msgid "Groups administration"
+msgstr "Csoportkezelés"
+
+#: groups.php:33
+msgid "Groups where"
+msgstr "Csoportok ahol"
+
+#: groups.php:33
+msgid "is member"
+msgstr "tag"
+
+#: groups.php:68
+msgid "Please select at least one group to proceed."
+msgstr "Kérem, válasszon ki legalább egy csoportot a folytatáshoz"
+
+#: groups.php:73
+msgid "groups. Are you sure you want to continue?"
+msgstr "csoport. Biztosan folytatja?"
+
+#: groups.php:130
+msgid "The selected groups were deleted."
+msgstr "A kiválasztott csoportok törölve."
+
+#: groups.php:137
+msgid "Please select at least one group."
+msgstr "Kérem, válasszon ki legalább egy csoportot."
+
+#: groups.php:227
+msgid "Selected groups actions"
+msgstr "Kiválasztott csoportműveletek"
+
+#: groups.php:240
+msgid "groups"
+msgstr "csoportok"
+
+#: groups.php:256
+msgid "The client does not exist."
+msgstr "Ilyen ügyfél nem létezik"
+
+#: groups.php:259
+msgid "There are no groups where this client is member."
+msgstr "Ez az ügyfél nem tagja egyetlen csoportnak sem."
+
+#: groups.php:264
+msgid "There are no groups created yet."
+msgstr "Még nincsenek csoportok létrehozva."
+
+#: groups.php:280
+msgid "Created by"
+msgstr "Létrehozta"
+
+#: header-menu.php:32
+msgid "Dashboard"
+msgstr "Műszerfal"
+
+#: header-menu.php:56 upload-import-orphans.php:22
+msgid "Find orphan files"
+msgstr "Gazdátlan fájlok keresése"
+
+#: header-menu.php:78 header-menu.php:96 header-menu.php:115
+msgid "Add new"
+msgstr "Új hozzáadása"
+
+#: header-menu.php:82
+msgid "Manage clients"
+msgstr "Ügyfelek kezelése"
+
+#: header-menu.php:92
+msgid "Clients groups"
+msgstr "Ügyfél csoportjai"
+
+#: header-menu.php:100
+msgid "Manage groups"
+msgstr "Csoportkezelés"
+
+#: header-menu.php:110
+msgid "System Users"
+msgstr "Rendszerfelhasználók"
+
+#: header-menu.php:119
+msgid "Manage system users"
+msgstr "Rendszerfelhasználók kezelése"
+
+#: header-menu.php:129
+msgid "Options"
+msgstr "Beállítások"
+
+#: header-menu.php:133
+msgid "General options"
+msgstr "Általános beállítások"
+
+#: header-menu.php:180 upload-process-form.php:362
+msgid "View my files"
+msgstr "Fájljaim megtekintése"
+
+#: header-unlogged.php:21
+msgid "setup"
+msgstr "beállítás"
+
+#: header.php:22
+msgid "System Administration"
+msgstr "Rendszer adminisztráció"
+
+#: header.php:74
+msgid "Welcome"
+msgstr "Üdvözöljük"
+
+#: header.php:84
+msgid "My Account"
+msgstr "Saját fiók"
+
+#: header.php:85
+msgid "Logout"
+msgstr "Kijelentkezés"
+
+#: header.php:123
+msgid "Menu"
+msgstr "Menü"
+
+#: home-log.php:65
+msgid "There are no results"
+msgstr "Nincs eredmény."
+
+#: home-news-widget.php:8
+msgid "ProjectSend news"
+msgstr "ProjectSend hírek"
+
+#: home-statistics.php:178 home.php:47
+msgid "Uploads by users"
+msgstr "Felhasználók feltöltései"
+
+#: home-statistics.php:182 home.php:48
+msgid "Uploads by clients"
+msgstr "Ügyfelek feltöltései"
+
+#: home-statistics.php:186 home.php:49 home.php:83
+msgid "Downloads"
+msgstr "Letöltések"
+
+#: home-statistics.php:190 home.php:50
+msgid "Zip Downloads"
+msgstr "Tömörített letöltések"
+
+#: home-statistics.php:194
+msgid "Public downloads"
+msgstr "Nyílvános letöltések"
+
+#: home.php:14 includes/classes/send-email.php:44
+#: includes/classes/send-email.php:74
+msgid "Welcome to ProjectSend"
+msgstr "Üdvözli a ProjectSend"
+
+#: home.php:39
+msgid "Statistics"
+msgstr "Statisztika"
+
+#: home.php:42 home.php:43 home.php:44
+msgid "days"
+msgstr "napok"
+
+#: home.php:51
+msgid "Public Downloads"
+msgstr "Nyílvános letöltések"
+
+#: home.php:65
+msgid "System data"
+msgstr "Rendszer adatok"
+
+#: home.php:67
+msgid "Note:"
+msgstr "Megjegyzés:"
+
+#: home.php:67
+msgid ""
+"This graphic will help you get a relative view of the existing data, "
+"allowing you to see the relation between clients, users, groups and files."
+msgstr ""
+"Ez a grafikon segít áttekintést szerezni a már meglévő adatokról, lehetővé "
+"teszi, hogy átlássa az összefüggéseket ügyfelek, felhasználók, csoportok és "
+"fájlok között."
+
+#: home.php:78
+msgid "Recent activites"
+msgstr "Előzmények"
+
+#: home.php:82
+msgid "Logins"
+msgstr "Bejelentkezések"
+
+#: home.php:87
+msgid "Clients self-registrations"
+msgstr "Ügyfelek saját regisztrációi"
+
+#: home.php:95
+msgid "View all"
+msgstr "Minden megtekintése"
+
+#: home.php:165
+msgid "Users"
+msgstr "Felhasználók"
+
+#: home.php:185
+msgid "Please wait while the system generates the statistics graph."
+msgstr "Kérem várjon, amíg a rendszer legenerálja a statisztika grafikonjait!"
+
+#: home.php:209
+msgid "Please wait while the system gets the information from the log."
+msgstr ""
+"Kérem várjon, amíg a rendszer betölti a naplókban tárolt információkat!"
+
+#: includes/classes/actions-log.php:11
+msgid "ProjecSend has been installed"
+msgstr "A ProjectSend telepítése befejeződött."
+
+#: includes/classes/actions-log.php:12
+msgid "Account logs in through the form"
+msgstr "Fiók belépések az ürlapon keresztül"
+
+#: includes/classes/actions-log.php:13
+msgid "Account logs in through cookies"
+msgstr "Fiók belépések sütik segítségével"
+
+#: includes/classes/actions-log.php:14
+msgid "Account (user or client) logs out"
+msgstr "Fiók (felhasználó vagy ügyfél) kilépések"
+
+#: includes/classes/actions-log.php:15
+msgid "A user creates a new user account"
+msgstr "Egy felhasználó új felhasználói fiókot hoz létre"
+
+#: includes/classes/actions-log.php:16
+msgid "A user creates a new client account"
+msgstr "Egy felhasználó új ügyfélfiókot hoz létre"
+
+#: includes/classes/actions-log.php:17
+msgid "A client registers an account for himself"
+msgstr "Egy ügyfél létrehoz egy fiókot saját maga számára"
+
+#: includes/classes/actions-log.php:18
+msgid "A file is uploaded by an user"
+msgstr "Egy felhasználó fájlt töltött fel"
+
+#: includes/classes/actions-log.php:19
+msgid "A file is uploaded by a client"
+msgstr "Egy ügyfél fájlt töltött fel"
+
+#: includes/classes/actions-log.php:20
+msgid "A file is downloaded by a user (on \"Client view\" mode)"
+msgstr "Egy felhasználó fájlt töltött le (\"Ügyfélnézet\" módban)"
+
+#: includes/classes/actions-log.php:21
+msgid "A file is downloaded by a client"
+msgstr "Egy ügyfél fájlt töltött le"
+
+#: includes/classes/actions-log.php:22
+msgid "A zip file was generated by a client"
+msgstr "Egy ügyfél tömörített fájlt hozott létre"
+
+#: includes/classes/actions-log.php:23
+msgid "A file has been unassigned from a client."
+msgstr "Egy fájlt elvettek egy ügyféltől"
+
+#: includes/classes/actions-log.php:24
+msgid "A file has been unassigned from a group"
+msgstr "Egy fájlt elvettek egy csoporttól"
+
+#: includes/classes/actions-log.php:25
+msgid "A file has been deleted"
+msgstr "Egy fájlt töröltek"
+
+#: includes/classes/actions-log.php:26
+msgid "A user was edited"
+msgstr "Egy felhasználót szerkesztettek"
+
+#: includes/classes/actions-log.php:27
+msgid "A client was edited"
+msgstr "Egy ügyfelet szerkesztettek"
+
+#: includes/classes/actions-log.php:28
+msgid "A group was edited"
+msgstr "Egy csoportot szerkesztettek"
+
+#: includes/classes/actions-log.php:29
+msgid "A user was deleted"
+msgstr "Egy felhasználót töröltek"
+
+#: includes/classes/actions-log.php:30
+msgid "A client was deleted"
+msgstr "Egy ügyfelet töröltek"
+
+#: includes/classes/actions-log.php:31
+msgid "A group was deleted"
+msgstr "Egy csoportot töröltek"
+
+#: includes/classes/actions-log.php:32
+msgid "A client account was activated"
+msgstr "Egy ügyfélfiókot aktiváltak"
+
+#: includes/classes/actions-log.php:33
+msgid "A client account was deactivated"
+msgstr "Egy ügyfélfiókot kikapcsoltak"
+
+#: includes/classes/actions-log.php:34
+msgid "A user account was activated"
+msgstr "Egy felhasználói fiókot aktiváltak"
+
+#: includes/classes/actions-log.php:35
+msgid "A user account was deactivated"
+msgstr "Egy felhasználói fiókot kikapcsoltak"
+
+#: includes/classes/actions-log.php:36
+msgid "A file was marked as hidden"
+msgstr "Egy fájlt rejtettként jelöltek meg"
+
+#: includes/classes/actions-log.php:37
+msgid "A file was marked as visible"
+msgstr "Egy fájlt láthatóként jelöltek meg"
+
+#: includes/classes/actions-log.php:38
+msgid "A user creates a new group"
+msgstr "Egy felhasználó új csoportot hoz létre"
+
+#: includes/classes/actions-log.php:39
+msgid "A file is assigned to a client"
+msgstr "Egy fájlt hozzárendeltek egy ügyfélhez"
+
+#: includes/classes/actions-log.php:40
+msgid "A file is assigned to a group"
+msgstr "Egy fájlt hozzárendeltek egy csoporthoz"
+
+#: includes/classes/actions-log.php:41
+msgid "A user account was marked as active"
+msgstr "Egy felhasználói fiókot aktiváltak"
+
+#: includes/classes/actions-log.php:42
+msgid "A user account was marked as inactive"
+msgstr "Egy felhasználói fiókot kikapcsoltak"
+
+#: includes/classes/actions-log.php:43
+msgid "The logo on \"Branding\" was changed"
+msgstr "A \"Márkajelzés\" logó megváltozott"
+
+#: includes/classes/actions-log.php:44
+msgid "ProjectSend was updated"
+msgstr "A ProjectSend frissítésre került"
+
+#: includes/classes/actions-log.php:45
+msgid "A system user edited a file."
+msgstr "Egy rendszerfelhasználó szerkesztett egy fájlt"
+
+#: includes/classes/actions-log.php:46
+msgid "A client edited a file."
+msgstr "Egy ügyfél szerkesztett egy fájlt"
+
+#: includes/classes/actions-log.php:47
+msgid "A client created a category."
+msgstr "Egy ügyfél létrehozott egy kategóriát"
+
+#: includes/classes/actions-log.php:48
+msgid "A client edited a category."
+msgstr "Egy ügyfél szerkesztett egy kategóriát"
+
+#: includes/classes/actions-log.php:49
+msgid "A client deleted a category."
+msgstr "Egy ügyfél törölt egy kategóriát"
+
+#: includes/classes/actions-log.php:50
+msgid "An anonymous user downloaded a public file."
+msgstr "Egy névtelen felhasználó letöltött egy nyilvános fájlt"
+
+#: includes/classes/form-validation.php:15
+msgid "The following errors were found"
+msgstr "Az alábbi hibákat találtuk"
+
+#: includes/classes/send-email.php:26
+msgid "New files uploaded for you"
+msgstr "Új fájlokat töltöttek fel az Ön számára"
+
+#: includes/classes/send-email.php:27
+msgid "The following files are now available for you to download."
+msgstr "Az alábbi fájlok váltak elérhetővé letöltésre"
+
+#: includes/classes/send-email.php:28
+msgid ""
+"If you prefer not to be notified about new files, please go to My Account "
+"and deactivate the notifications checkbox."
+msgstr ""
+"Ha úgy dönt, nem szeretne többé új fájlokról értesítéseket kapni, akkor "
+"lépjen be a \"Saját fiókba\", majd kapcsolja ki az értesítések jelölődobozt."
+
+#: includes/classes/send-email.php:29
+msgid "You can access a list of all your files or upload your own"
+msgstr "Kilistázhatja az összes fájlját vagy feltöltheti a sajátját."
+
+#: includes/classes/send-email.php:30 includes/classes/send-email.php:38
+msgid "by logging in here"
+msgstr "az ide való bejelentkezéssel"
+
+#: includes/classes/send-email.php:35
+msgid "New files uploaded by clients"
+msgstr "Ügyfelek által feltöltött új fájlok"
+
+#: includes/classes/send-email.php:36
+msgid "New files has been uploaded by the following clients"
+msgstr "Az alábbi kliensek új fájlokat töltöttek fel"
+
+#: includes/classes/send-email.php:37
+msgid "You can manage these files"
+msgstr "Kezelheti ezeket a fájlokat"
+
+#: includes/classes/send-email.php:45
+msgid ""
+"A new account was created for you. From now on, you can access the files "
+"that have been uploaded under your account using the following credentials:"
+msgstr ""
+"Új fiókot hoztak létre az Ön számára. Mostantól az Ön fiókja alá feltöltött "
+"fájlokat az alábbi bejelentkezési adatokkal érheti el:"
+
+#: includes/classes/send-email.php:46
+msgid "You can log in following this link"
+msgstr "A következő linken jelentkezhet be"
+
+#: includes/classes/send-email.php:47
+msgid "Please contact the administrator if you need further assistance."
+msgstr ""
+"Kérjük, lépjen kapcsolatba a rendszergazdával, amennyiben segítségre van "
+"szüksége"
+
+#: includes/classes/send-email.php:48 includes/classes/send-email.php:78
+msgid "Your username"
+msgstr "Az Ön felhasználóneve"
+
+#: includes/classes/send-email.php:49 includes/classes/send-email.php:79
+msgid "Your password"
+msgstr "Az ön jelszava"
+
+#: includes/classes/send-email.php:57
+msgid "A new client has registered."
+msgstr "Új ügyfél regisztrálva"
+
+#: includes/classes/send-email.php:58
+msgid ""
+"A new account was created using the self registration form on your site. "
+"Registration information:"
+msgstr ""
+"Új fiókot hoztak létre az önregisztrációs ürlap segítségével az oldalon. A "
+"regisztráció adatai:"
+
+#: includes/classes/send-email.php:60 includes/classes/send-email.php:90
+#: includes/vars.php:48 index.php:205 install/make-config.php:258
+#: options.php:483
+msgid "Username"
+msgstr "Felhasználónév"
+
+#: includes/classes/send-email.php:63
+msgid "Please log in to activate it."
+msgstr "Kérjük, lépjen be az aktiváláshoz."
+
+#: includes/classes/send-email.php:64
+msgid ""
+"Remember, your new client will not be able to log in until an administrator "
+"has approved their account."
+msgstr ""
+"Kérjük vegye figyelembe, hogy az új ügyfél addig nem fog tudni "
+"bejelentkezni, amígy egy rendszergazda jóvá nem hagyta a fiókregisztrációt."
+
+#: includes/classes/send-email.php:67
+msgid "Auto-approvals of new accounts are currently enabled."
+msgstr "Az új fiókok automatikus jóváhagyása jelenleg BE van kapcsolva."
+
+#: includes/classes/send-email.php:68
+msgid "You can log in to manually deactivate it."
+msgstr "A kikapcsoláshoz be kell jelentkeznie."
+
+#: includes/classes/send-email.php:75
+msgid ""
+"A new account was created for you. From now on, you can access the system "
+"administrator using the following credentials:"
+msgstr ""
+"Új fiókot hoztak létre az Ön számára, mostantól a rendszer adminisztrációs "
+"felületet az alábbi bejelentkezési adatokkal érheti el:"
+
+#: includes/classes/send-email.php:76
+msgid "Access the system panel here"
+msgstr "A rendszerpanelt itt érheti el"
+
+#: includes/classes/send-email.php:77
+msgid "Thank you for using ProjectSend."
+msgstr "Köszönjük, hogy a ProjectSendet használja"
+
+#: includes/classes/send-email.php:85
+msgid "Password reset instructions"
+msgstr "Jelszó visszaállítási tudnivalók"
+
+#: includes/classes/send-email.php:86
+msgid ""
+"A request has been received to reset the password for the following account:"
+msgstr "Kérelem érkezett az alábbi fiók jelszavának visszaállítására:"
+
+#: includes/classes/send-email.php:87
+msgid "To continue, please visit the following link"
+msgstr "A folytatáshoz kérjük, látogassa meg az alábbi linket"
+
+#: includes/classes/send-email.php:88
+msgid "The request is valid only for 24 hours."
+msgstr "Ez a kérelem 24 óráig érvényes."
+
+#: includes/classes/send-email.php:89
+msgid "If you did not make this request, simply ignore this email."
+msgstr ""
+"Amennyiben ezt nem Ön kérte, kérjük egyszerűen hagyja figyelmen kívül ezt a "
+"levelet."
+
+#: includes/classes/send-email.php:430
+msgid ""
+"This email contains HTML formatting and cannot be displayed right now. "
+"Please use an HTML compatible reader."
+msgstr ""
+"Ez az email HTML formázást tartalmaz és jelenleg nem jeleníthető meg. "
+"Kérjük, használjon HTML kompatibilis levelezőprogramot a megjelenítéshez."
+
+#: includes/functions.php:41
+msgid "An unexpected error has occurred"
+msgstr "Nem várt hiba keletkezett."
+
+#: includes/functions.php:42
+msgid "Could not generate a random password"
+msgstr "Nem lehetett véletlenszerű jelszót generálni."
+
+#: includes/functions.php:472
+msgid "Provided by"
+msgstr "Biztosítja"
+
+#: includes/functions.php:472 includes/updates.messages.php:51
+msgid "version"
+msgstr "verzió"
+
+#: includes/functions.php:472
+msgid "Free software"
+msgstr "Szabad szoftver"
+
+#: includes/functions.php:487
+msgid "Important:"
+msgstr "Fontos:"
+
+#: includes/functions.php:487
+msgid ""
+"There are no clients or groups at the moment. You can still upload files and "
+"assign them later."
+msgstr ""
+"Jelenleg nincsenek ügyfelek vagy csoportok létrehozva. Ettől függetlenül "
+"feltölthet fájlokat és később hozzárendelheti őket."
+
+#: includes/functions.php:901
+msgid "The password must contain, at least:"
+msgstr "A jelszónak tartalmaznia kell legalább a következőket:"
+
+#: includes/functions.php:951
+msgid "ProjectSend was installed"
+msgstr "A ProjectSend telepítve"
+
+#: includes/functions.php:956 includes/functions.php:1101
+msgid "logged in to the system."
+msgstr "bejelentkezve"
+
+#: includes/functions.php:961
+msgid "created the user account"
+msgstr "létrehozta a felhasználói fiókot"
+
+#: includes/functions.php:967
+msgid "created the client account "
+msgstr "létrehozta az ügyfélfiókot."
+
+#: includes/functions.php:973
+msgid "created a client account for themself."
+msgstr "létrehozta az ügyfélfiókot saját maga számára."
+
+#: includes/functions.php:978
+msgid "(user) uploaded the file"
+msgstr "(felhasználó) feltöltötte a fájlt"
+
+#: includes/functions.php:984
+msgid "(client) uploaded the file"
+msgstr "(ügyfél) feltöltötte a fájlt"
+
+#: includes/functions.php:990
+msgid "(user) downloaded the file"
+msgstr "(felhasználó) letöltötte a fájlt"
+
+#: includes/functions.php:992
+msgid "assigned to:"
+msgstr "hozzárendelve:"
+
+#: includes/functions.php:998
+msgid "(client) downloaded the file"
+msgstr "(ügyfél) letöltötte a fájlt"
+
+#: includes/functions.php:1004
+msgid "generated a zip file"
+msgstr "tömörített fájlt hozott létre"
+
+#: includes/functions.php:1009 includes/functions.php:1017
+msgid "unassigned the file"
+msgstr "elvette a fájlt"
+
+#: includes/functions.php:1011
+msgid "from the client:"
+msgstr "az ügyféltől:"
+
+#: includes/functions.php:1019
+msgid "from the group:"
+msgstr "a csoporttól:"
+
+#: includes/functions.php:1025
+msgid "deleted the file"
+msgstr "törölte a fájlt"
+
+#: includes/functions.php:1031
+msgid "edited the user"
+msgstr "szerkesztette a felhasználót"
+
+#: includes/functions.php:1037
+msgid "edited the client"
+msgstr "szerkesztette az ügyfelet"
+
+#: includes/functions.php:1043
+msgid "edited the group"
+msgstr "szerkesztette a csoportot"
+
+#: includes/functions.php:1049
+msgid "deleted the user"
+msgstr "törölte a felhasználót"
+
+#: includes/functions.php:1055
+msgid "deleted the client"
+msgstr "törölte az ügyfelet"
+
+#: includes/functions.php:1061
+msgid "deleted the group"
+msgstr "törölte a csoportot"
+
+#: includes/functions.php:1067
+msgid "activated the client"
+msgstr "aktiválta az ügyfelet"
+
+#: includes/functions.php:1073
+msgid "deactivated the client"
+msgstr "kikapcsolta az ügyfelet"
+
+#: includes/functions.php:1079
+msgid "marked as hidden the file"
+msgstr "rejtettként jelölte meg a fájlt"
+
+#: includes/functions.php:1081 includes/functions.php:1089
+msgid "to:"
+msgstr "a következőnek:"
+
+#: includes/functions.php:1087
+msgid "marked as visible the file"
+msgstr "láthatóként jelölte meg a fájlt"
+
+#: includes/functions.php:1095
+msgid "created the group"
+msgstr "létrehozta a csoportot"
+
+#: includes/functions.php:1106 includes/functions.php:1114
+msgid "assigned the file"
+msgstr "hozzárendelte a fájlt"
+
+#: includes/functions.php:1108
+msgid "to the client:"
+msgstr "ehhez az ügyfélhez"
+
+#: includes/functions.php:1116
+msgid "to the group:"
+msgstr "ehhez a csoporthoz:"
+
+#: includes/functions.php:1122
+msgid "activated the user"
+msgstr "aktiválta a felhasználót"
+
+#: includes/functions.php:1128
+msgid "deactivated the user"
+msgstr "kikapcsolta a felhasználót"
+
+#: includes/functions.php:1134
+msgid "uploaded a new logo on \"Branding\""
+msgstr "új logót töltött fel \"Márkajelzés\"-nek"
+
+#: includes/functions.php:1139
+msgid "updated ProjectSend to version"
+msgstr "frissítette a ProjectSendet erre a verzióra: "
+
+#: includes/functions.php:1145
+msgid "logged out of the system."
+msgstr "kilépett a rendszerből"
+
+#: includes/functions.php:1150
+msgid "(user) edited the file"
+msgstr "(felhasználó) szerkesztette a fájlt"
+
+#: includes/functions.php:1156
+msgid "(client) edited the file"
+msgstr "(ügyfél) szerkesztette a fájlt"
+
+#: includes/functions.php:1162
+msgid "created the category"
+msgstr "létrehozta a kategóriát"
+
+#: includes/functions.php:1168
+msgid "edited the category"
+msgstr "szerkesztette a kategóriát"
+
+#: includes/functions.php:1174
+msgid "deleted the category"
+msgstr "törölte a kategóriát"
+
+#: includes/functions.php:1179
+msgid "An anonymous user"
+msgstr "Egy névtelen felhasználó"
+
+#: includes/functions.php:1180
+msgid "downloaded the file"
+msgstr "letöltötte a fájlt"
+
+#: includes/updates.functions.php:55
+msgid ""
+"If images thumbnails aren't showing on your client's files lists (even your "
+"company logo there and on the branding page) please chmod the includes/"
+"timthumb/cache folder to 777 and then do the same with the 'index.html' and "
+"'timthumb_cacheLastCleanTime.touch' files inside that folder. Then try "
+"lowering each file to 644 and see if everything is still working."
+msgstr ""
+"Ha a képek bélyegképei nem jelennek meg az ügyfelei fájllistáiban (még a "
+"céges logó sem és a \"Márkajelzés\" oldalon sem) akkor chmod-olja az "
+"includes/timthumb/cache könyvtárat 777-re, majd végezze el ugyanezt az index."
+"html és a 'timthumb_cacheLastCleanTime.touch' fájlokkal ugyanebben a "
+"könyvtárban. Ezután próbálja meg a jogosultságot minden fájlnál 644-re "
+"visszaállítani, majd ellenőrizze, hogy működik-e a funkció."
+
+#: includes/updates.functions.php:83
+msgid ""
+"The chmod values of the emails folder and the html templates inside couldn't "
+"be set. If ProjectSend isn't sending notifications emails, please set them "
+"manually to 777."
+msgstr ""
+"Az emails könyvtár és a benne lévő html sablonok chmod-értékét nem lehett "
+"beállítani. Ha a ProjectSend nem küld értesítő leveleket, akkor kérem "
+"állítsa be ezeket kézzel 777-re."
+
+#: includes/updates.functions.php:116
+msgid ""
+"A safe chmod value couldn't be set for one or more system files. Please make "
+"sure that at least includes/sys.config.php has a chmod of 644 for security "
+"reasons."
+msgstr ""
+"Nem lehetett biztonságos chmod értéket beállítani egy vagy több rendszerfájl "
+"számára. Kérem győződjön meg arról, hogy legalább az includes/sys.config.php "
+"chmod értéke 644 biztonsági okok miatt."
+
+#: includes/updates.functions.php:204
+msgid ""
+"This version changes the way files-to-clients relationships are stored on "
+"the database making it possible to assign a file to multiple clients. "
+"However some files did not update successfully. The following files may need "
+"to be reassigned to their clients by using the \"Find orphan files\" tool:"
+msgstr ""
+"Ebben a verzióban megváltozik a fájlok és ügyfelek kapcsolatainak tárolási "
+"módja, amely lehetővé teszi, hogy egy fájlt több ügyfélhez is hozzá lehessen "
+"rendelni. Azonban sajnos néhány fájl frissítése nem sikerült. Az alábbi "
+"fájlokat valószínűleg a \"Gazdátlan fájlok keresése\" eszköz segítségével "
+"újra hozzá kell majd rendelni az ügyfelekhez:"
+
+#: includes/updates.messages.php:16
+msgid "System Notice:"
+msgstr "Rendszer üzenet:"
+
+#: includes/updates.messages.php:16
+msgid "The database was updated to support this version of the software."
+msgstr "Az adatbázis frissítésre került, hogy támogassa az új szoftververziót."
+
+#: includes/updates.messages.php:22
+msgid "Do you want to support ProjectSend?"
+msgstr "Kívánja támogatni a ProjectSendet?"
+
+#: includes/updates.messages.php:23
+msgid ""
+"Please remember that this tool is free software. If you find the system "
+"useful"
+msgstr ""
+"Kérem vegye figyelembe, hogy ez az eszköz szabadszoftver. Ha hasznosnak "
+"találja a rendszert"
+
+#: includes/updates.messages.php:24
+msgid "please consider making a donation to support further development."
+msgstr ""
+"kérjük, hogy vegye fontolóra az adakozást a további fejlesztések támogatása "
+"érdekében."
+
+#: includes/updates.messages.php:25
+msgid "Thank you!"
+msgstr "Köszönjük szépen!"
+
+#: includes/updates.messages.php:51
+msgid "Update available!"
+msgstr "Frissítés elérhető!"
+
+#: includes/updates.messages.php:51
+msgid "has been released."
+msgstr "megjelent."
+
+#: includes/userlevel_check.php:165
+msgid "Access denied"
+msgstr "Hozzáférés megtagadva"
+
+#: includes/userlevel_check.php:168
+msgid ""
+"Your account type doesn't allow you to view this page. Please contact a "
+"system administrator if you need to access this function."
+msgstr ""
+"Az ön fióktípusa nem teszi lehetővé ennek az oldalnak a megtekintését. "
+"Kérjük, lépjen kapcsolatba egy rendszergazdával, hogy elérhesse ezt a "
+"funkciót."
+
+#: includes/vars.php:13 users.php:215
+msgid "System Administrator"
+msgstr "Rendszer Adminisztrátor"
+
+#: includes/vars.php:14 users.php:216
+msgid "Account Manager"
+msgstr "Ügyfélmenedzser"
+
+#: includes/vars.php:15 manage-files.php:574 users.php:217
+msgid "Uploader"
+msgstr "Feltöltő"
+
+#: includes/vars.php:25
+msgid "reCAPTCHA verification failed"
+msgstr "reCAPTCHA ellenőrzés sikertelen"
+
+#: includes/vars.php:26
+msgid "Name was not completed"
+msgstr "A név nincs kitöltve"
+
+#: includes/vars.php:27
+msgid "No client was selected"
+msgstr "Nincs ügyfél kiválasztva"
+
+#: includes/vars.php:28 index.php:193
+msgid "Username was not completed"
+msgstr "A felhasználónév nincs kitöltve"
+
+#: includes/vars.php:29 index.php:194
+msgid "Password was not completed"
+msgstr "A jelszó nincs kitöltve"
+
+#: includes/vars.php:30
+msgid "Password verification was not completed"
+msgstr "A jelszó ellenőrzés nincs kitöltve"
+
+#: includes/vars.php:31
+msgid "E-mail was not completed"
+msgstr "Az E-mail nincs kitöltve"
+
+#: includes/vars.php:32
+msgid "E-mail address is not valid"
+msgstr "Az emailcím érvénytelen"
+
+#: includes/vars.php:33
+msgid ""
+"Username must be alphanumeric and may contain dot (a-z,A-Z,0-9 and . allowed)"
+msgstr ""
+"A felhasználónév csak betűkből és számokból állhat, valamint pontot \".\" "
+"tartalmazhat (a-z,A-Z,0-9 és . engedélyezett)"
+
+#: includes/vars.php:34
+msgid "Password must be alphanumeric (a-z,A-Z,0-9 allowed)"
+msgstr "A jelszó csak betűkből és számokból állhat (a-z,A-Z,0-9 engedélyezett)"
+
+#: includes/vars.php:35
+msgid "Passwords do not match"
+msgstr "A jelszavak nem egyeznek"
+
+#: includes/vars.php:36
+msgid "Password does not meet the required characters rules"
+msgstr "A jelszó nem felel meg a karakterkövetelményeknek"
+
+#: includes/vars.php:37
+msgid "User level was not specified"
+msgstr "A felhasználó hozzáférési szintje nincs megadva"
+
+#: includes/vars.php:38
+msgid "A system user or client with this login name already exists."
+msgstr ""
+"Egy rendszerfelhasználó vagy ügyfél már létezik ezzel a felhasználói névvel"
+
+#: includes/vars.php:39
+msgid "A system user or client with this e-mail address already exists."
+msgstr "Egy rendszerfelhasználó vagy ügyfél már létezik ezzel az email címmel"
+
+#: includes/vars.php:40
+msgid ""
+"Your password can only contain letters, numbers and the following characters:"
+msgstr ""
+"A jelszó csak betűket, számokat és az alábbi karaktereket tartalmazhatja:"
+
+#: includes/vars.php:42
+msgid "Title was not completed"
+msgstr "A cím nincs kitöltve"
+
+#: includes/vars.php:50
+msgid "length should be between"
+msgstr "a hossz a következők közé kell, hogy essen"
+
+#: includes/vars.php:51 install/index.php:233
+msgid "and"
+msgstr "és"
+
+#: includes/vars.php:52
+msgid "characters long"
+msgstr "karakter"
+
+#: includes/vars.php:56
+msgid "1 uppercase character"
+msgstr "1 nagybetű"
+
+#: includes/vars.php:57
+msgid "1 lowercase character"
+msgstr "1 kisbetű"
+
+#: includes/vars.php:58
+msgid "1 number"
+msgstr "1 szám"
+
+#: includes/vars.php:59
+msgid "1 special character"
+msgstr "1 különleges karakter"
+
+#: index.php:20 index.php:243
+msgid "Log in"
+msgstr "Belépés"
+
+#: index.php:159
+msgid "The supplied credentials are not valid."
+msgstr "A megadott hozzáférési adatok érvénytelenek"
+
+#: index.php:162
+msgid "The supplied username doesn't exist."
+msgstr "A megadott felhasználói név nem létezik"
+
+#: index.php:165
+msgid "The supplied password is incorrect."
+msgstr "A megadott jelszó nem megfelelő"
+
+#: index.php:168
+msgid "This account is not active."
+msgstr "A fiók ki van kapcsolva"
+
+#: index.php:170
+msgid ""
+"If you just registered, please wait until a system administrator approves "
+"your account."
+msgstr ""
+"Ha nemrég regisztrált, akkor kérem várjon, amíg egy rendszergazda jóváhagyja "
+"a fiókját."
+
+#: index.php:174 register.php:106
+msgid ""
+"Client self registration is not allowed. If you need an account, please "
+"contact a system administrator."
+msgstr ""
+"Az ügyfelek jelenleg nem regisztrálhatják önmagukat. Ha hozzáférésre van "
+"szüksége, akkor kérjük, lépjen kapcsolatba egy rendszergazdával."
+
+#: index.php:177
+msgid "Sign-in with Google cannot be used to create new accounts at this time."
+msgstr "Jelenleg nem lehet Google fiókkal regisztrálni."
+
+#: index.php:180
+msgid "You must approve the requested permissions to sign in with Google."
+msgstr ""
+"Meg kell adnia a kért engedélyeket a Google fiókkal történő bejelentkezéshez."
+
+#: index.php:215 install/make-config.php:324 options.php:255
+msgid "Language"
+msgstr "Nyelv"
+
+#: index.php:226
+msgid "default"
+msgstr "alapértelmezés"
+
+#: index.php:255
+msgid "Forgot your password?"
+msgstr "Elfelejtette a jelszavát?"
+
+#: index.php:255
+msgid "Set up a new one."
+msgstr "Új létrehozása"
+
+#: index.php:259
+msgid "Don't have an account yet?"
+msgstr "Nincs még fiókja?"
+
+#: index.php:259
+msgid "Register as a new client."
+msgstr "Regisztráljon új ügyfélként"
+
+#: index.php:263
+msgid "This server does not allow self registrations."
+msgstr "Ezen a szerveren az önregisztráció nem megengedett."
+
+#: index.php:264
+msgid "If you need an account, please contact a server administrator."
+msgstr "Ha hozzáférésre van szüksége, lépjen kapcsolatba egy rendszergazdával."
+
+#: install/index.php:52 install/index.php:272 install/make-config.php:16
+msgid "Install"
+msgstr "Telepítés"
+
+#: install/index.php:53
+msgid "Sitename was not completed."
+msgstr "A honlapnév nincs kitöltve"
+
+#: install/index.php:54
+msgid "ProjectSend URI was not completed."
+msgstr "A ProjectSend URI nincs kitöltve"
+
+#: install/index.php:69
+msgid "Already installed"
+msgstr "Már telepítve van"
+
+#: install/index.php:70
+msgid "It seems that ProjectSend is already installed here."
+msgstr "Úgy tűnik, hogy a ProjectSend már telepítésre került."
+
+#: install/index.php:71
+msgid ""
+"If you want to reinstall, please delete the system tables from the database "
+"and come back to the installation form."
+msgstr ""
+"Ha újra kívánja telepíteni, akkor törölje a rendszertáblákat az adatbázisból "
+"és nyissa meg újra a telepítési ürlapot"
+
+#: install/index.php:154
+msgid "Congratulations! Everything is up and running."
+msgstr "Gratulálunk! Minden megfelelően működik."
+
+#: install/index.php:166
+msgid "You may proceed to"
+msgstr "Mostmár továbbléphet a"
+
+#: install/index.php:166
+msgid "log in"
+msgstr "bejelentkezésre"
+
+#: install/index.php:166
+msgid "with your newely created username and password."
+msgstr "az újonnan létrehozott felhasználói nevével és jelszavával."
+
+#: install/index.php:170
+msgid "There seems to be an error. Please try again."
+msgstr "Hiba történt. Kérjük, próbálja újra."
+
+#: install/index.php:211
+msgid "Basic system options"
+msgstr "Alapvető rendszerbeállítások"
+
+#: install/index.php:212
+msgid ""
+"You need to provide this data for a correct system installation. The site "
+"name will be visible in the system panel, and the client's lists."
+msgstr ""
+"Egy megfelelő telepítéshez meg kell adnia ezt az információt. A weboldal "
+"neve látható lesz a rendszer panelen és az ügyfelek listáiban is."
+
+#: install/index.php:213
+msgid "Remember to edit the file"
+msgstr "Kérjük, ne felejtse el beleírni a fájlba"
+
+#: install/index.php:213
+msgid ""
+"with your database settings before installing. If the file doesn't exist, "
+"you can create it by renaming the dummy file sys.config.sample.php."
+msgstr ""
+"az adatbázis beállításokat telepítés előtt. Ha ez a fájl nem létezik, akkor "
+"létrehozhatja azt a minta sys.config.sample.php fájl átnevezésével."
+
+#: install/index.php:217 options.php:206
+msgid "Site name"
+msgstr "Weboldal neve"
+
+#: install/index.php:224
+msgid "ProjectSend URI (address)"
+msgstr "ProjectSend URI (cím)"
+
+#: install/index.php:232
+msgid "Default system administrator options"
+msgstr "Alapértelmezett rendszer adminisztrációs beállítások"
+
+#: install/index.php:233
+msgid ""
+"This info will be used to create a default system user, which can't be "
+"deleted afterwards. Password should be between"
+msgstr ""
+"Ez az információ arra lesz használva, hogy létrehozzunk egy alapértelmezett "
+"rendszer felhasználót, amelyet ezt követően nem lehet törölni. A jelszónak"
+
+#: install/index.php:233
+msgid "characters long."
+msgstr "karakter hosszúnak kell lennie."
+
+#: install/index.php:243 options.php:387
+msgid "E-mail address"
+msgstr "Email cím"
+
+#: install/index.php:277
+msgid ""
+"After installing the system, you can go to the options page to set your "
+"timezone, preferred date display format and thumbnails parameters, besides "
+"being able to change the site options provided here."
+msgstr ""
+"A rendszer telepítése után a beállítások oldalon megadhatja az időzónát, "
+"dátumformátumot és a bélyegképek paramétereit, valamint az itt megadott "
+"beálíltásokat is módosíthatja."
+
+#: install/make-config.php:200
+msgid "Successfully wrote the config file."
+msgstr "A konfigurációs fájl sikeresen kiírásra került."
+
+#: install/make-config.php:204
+msgid "Continue to installation"
+msgstr "Telepítés folytatása"
+
+#: install/make-config.php:213
+msgid "Database configuration"
+msgstr "Adatbázis beállításai"
+
+#: install/make-config.php:214
+msgid "You need to provide this data for a correct database communication."
+msgstr "Ezekre az adatokra a megfelelő adatbázis kommunikációhoz van szükség."
+
+#: install/make-config.php:217
+msgid "Select driver"
+msgstr "Meghajtóprogram kiválasztása"
+
+#: install/make-config.php:222 install/make-config.php:228
+msgid "(not supported)"
+msgstr "(nem támogatott)"
+
+#: install/make-config.php:238 options.php:502
+msgid "Host"
+msgstr "Hosztnév"
+
+#: install/make-config.php:248
+msgid "Database name"
+msgstr "Adatbázis neve"
+
+#: install/make-config.php:278
+msgid "Table prefix"
+msgstr "Tábla előtag"
+
+#: install/make-config.php:294
+msgid "The database is already populated"
+msgstr "Az adatbázisban már vannak táblák"
+
+#: install/make-config.php:308
+msgid "Reuse existing tables"
+msgstr "A létező táblák újrafelhasználása"
+
+#: install/make-config.php:321
+msgid "Language selection"
+msgstr "Nyelvválasztás"
+
+#: install/make-config.php:336
+msgid "Folders"
+msgstr "Könyvtárak"
+
+#: install/make-config.php:365
+msgid "Writable"
+msgstr "Írható"
+
+#: install/make-config.php:367
+msgid "Not writable"
+msgstr "Nem írható"
+
+#: install/make-config.php:377
+msgid "System information"
+msgstr "Rendszer információ"
+
+#: install/make-config.php:431
+msgid "Check again"
+msgstr "Újraellenőrzés"
+
+#: install/make-config.php:432
+msgid "Write config file"
+msgstr "Konfigurációs fájl kiírása"
+
+#: install/make-config.php:434
+msgid "Check"
+msgstr "Ellenőrzés"
+
+#: manage-files.php:44
+msgid "for client"
+msgstr "ügyfélnek"
+
+#: manage-files.php:69
+msgid "for group"
+msgstr "csoportnak"
+
+#: manage-files.php:85
+msgid "on category"
+msgstr "kategóriában"
+
+#: manage-files.php:99 upload-import-orphans.php:213
+msgid "Please select at least one file to proceed."
+msgstr "Kérem, válasszon ki legalább egy fájlt a folytatáshoz"
+
+#: manage-files.php:106
+msgid ""
+"files permanently and for every client/group. Are you sure you want to "
+"continue?"
+msgstr ""
+"fájlok véglegesen és minden ügyfél/csoport számára. Biztosan folytatja?"
+
+#: manage-files.php:114
+msgid "You are about to unassign"
+msgstr "Ön arra készül, hogy elvegyen"
+
+#: manage-files.php:115
+msgid "files from this account. Are you sure you want to continue?"
+msgstr "fájlt ettől a fióktól. Biztosan folytatja?"
+
+#: manage-files.php:160 upload-process-form.php:757
+msgid "Click to select"
+msgstr "Kattintson a kiválasztáshoz"
+
+#: manage-files.php:160 upload-process-form.php:757
+msgid ""
+"Send this URL to someone to download the file without registering or logging "
+"in."
+msgstr ""
+"Küldje el ezt az URL valakinek, hogy az letölthesse ezt a fájlt regisztráció "
+"vagy belépés nélkül."
+
+#: manage-files.php:160 upload-process-form.php:757
+msgid "Close"
+msgstr "Bezárás"
+
+#: manage-files.php:230
+msgid "The selected files were marked as hidden."
+msgstr "A kiválasztott fájlokat rejtettként megjelöltük."
+
+#: manage-files.php:244
+msgid "The selected files were marked as visible."
+msgstr "A kiválasztott fájlokat láthatóként megjelöltük."
+
+#: manage-files.php:257
+msgid "The selected files were unassigned from this client."
+msgstr "A kiválasztott fájlokat elvettük az ügyféltől."
+
+#: manage-files.php:286
+msgid "The selected files were deleted."
+msgstr "A kiválasztott fájlokat töröltük."
+
+#: manage-files.php:291
+msgid "Some files could not be deleted."
+msgstr "Néhány fájl törlése nem sikerült."
+
+#: manage-files.php:314
+msgid "Please select at least one file."
+msgstr "Kérem jelöljön ki legalább egy fájlt."
+
+#: manage-files.php:458 manage-files.php:789 upload-process-form.php:319
+msgid "Hidden"
+msgstr "Rejtett"
+
+#: manage-files.php:459 manage-files.php:790 upload-process-form.php:320
+msgid "Visible"
+msgstr "Látható"
+
+#: manage-files.php:487
+msgid "Selected files actions"
+msgstr "Művelet a kiválasztott fájlokkal"
+
+#: manage-files.php:501
+msgid "Hide"
+msgstr "Elrejtés"
+
+#: manage-files.php:502
+msgid "Show"
+msgstr "Mutatás"
+
+#: manage-files.php:503
+msgid "Unassign"
+msgstr "Elvétel"
+
+#: manage-files.php:521 upload-import-orphans.php:151
+msgid "files"
+msgstr "fájlok"
+
+#: manage-files.php:534
+msgid "There are no files assigned to this category."
+msgstr "Ehhez a kategóriához nem tartoznak fájlok."
+
+#: manage-files.php:540
+msgid "There are no files assigned to this client."
+msgstr "Ehhez az ügyfélhez nem tartoznak fájlok."
+
+#: manage-files.php:543
+msgid "You have not uploaded any files for this account."
+msgstr "Ön nem töltött fel egy fájlt sem ehhez a fiókhoz."
+
+#: manage-files.php:548
+msgid "There are no files for this client."
+msgstr "Ehhez az ügyfélhez nem tartoznak fájlok."
+
+#: manage-files.php:568
+msgid "Ext."
+msgstr "Kit."
+
+#: manage-files.php:570
+msgid "Size"
+msgstr "Méret"
+
+#: manage-files.php:578
+msgid "Assigned"
+msgstr "Hozzárendelve"
+
+#: manage-files.php:582 manage-files.php:746 upload-process-form.php:298
+#: upload-process-form.php:345
+msgid "Public"
+msgstr "Nyilvános"
+
+#: manage-files.php:583
+msgid "Expiry"
+msgstr "Lejárat"
+
+#: manage-files.php:593
+msgid "Download count"
+msgstr "Letöltésszám"
+
+#: manage-files.php:738 upload-process-form.php:337
+msgid "Public URL"
+msgstr "Publikus URL"
+
+#: manage-files.php:747 upload-process-form.php:346
+msgid "Private"
+msgstr "Belső"
+
+#: manage-files.php:757
+msgid "Does not expire"
+msgstr "Nem jár le"
+
+#: manage-files.php:765
+msgid "Expired on"
+msgstr "Lejárt ekkor"
+
+#: manage-files.php:772
+msgid "Expires on"
+msgstr "Lejár ekkor"
+
+#: manage-files.php:801
+msgid "times"
+msgstr "alkalommal"
+
+#: manage-files.php:808 manage-files.php:831
+msgid "downloads"
+msgstr "letöltések"
+
+#: manage-files.php:861
+msgid ""
+"Please note that downloading a file from here will not add to the download "
+"count."
+msgstr ""
+"Kérem vegye figyelembe, hogy ha innen tölti le a fájlt, az nem fog "
+"hozzáadódni a letöltésszámhoz."
+
+#: options.php:15
+msgid "System options"
+msgstr "Rendszerbeállítások"
+
+#: options.php:140
+msgid "Some fields were not completed. Options could not be saved."
+msgstr "Néhány mező nincs kitöltve - a beállításokat nem sikerült elmenteni."
+
+#: options.php:175 options.php:178
+msgid "Please complete all the fields."
+msgstr "Kérjük töltse ki az összes mezőt."
+
+#: options.php:184
+msgid "General Options"
+msgstr "Általános beállítások"
+
+#: options.php:186
+msgid "E-mail notifications"
+msgstr "E-mail értesítések"
+
+#: options.php:187
+msgid "Security"
+msgstr "Biztonság"
+
+#: options.php:188 options.php:639
+msgid "Thumbnails"
+msgstr "Bélyegképek"
+
+#: options.php:189
+msgid "Company logo"
+msgstr "Céglogó"
+
+#: options.php:190
+msgid "Social Login"
+msgstr "Közösségi bejelentkezés"
+
+#: options.php:202
+msgid "General"
+msgstr "Általános"
+
+#: options.php:203
+msgid ""
+"Basic information to be shown around the site. The time format and zones "
+"values affect how the clients see the dates on their files lists."
+msgstr ""
+"Az oldalakon megjelenő alapvető információk. Az időformátum és zóna értékek "
+"azt befolyásolják, ahogyan az ügyfeleknek a fájllistáikon a dátumok "
+"megjelennek."
+
+#: options.php:213
+msgid "Client's template"
+msgstr "Ügyfélsablon"
+
+#: options.php:231
+msgid "Timezone"
+msgstr "Időzóna"
+
+#: options.php:244
+msgid "Time format"
+msgstr "Időformátum"
+
+#: options.php:247
+msgid "For example, d/m/Y h:i:s will result in something like"
+msgstr "Például, a d/m/Y h:i:s valahogyan így fog kinzéni:"
+
+#: options.php:248
+msgid "For the full list of available values, visit"
+msgstr "Ha az összes használható értékre kíváncsi, látogasson el"
+
+#: options.php:248
+msgid "this page"
+msgstr "erre az oldalra"
+
+#: options.php:260
+msgid "Detect user browser language"
+msgstr "Böngésző nyelvének felismerése"
+
+#: options.php:261
+msgid ""
+"If available, will override the default one from the system configuration "
+"file. Affects all users and clients."
+msgstr ""
+"Ha lehetőség van rá, akkor ez felülírja az alapértelmezést, ami a "
+"rendszerkonfigurációs fájlban található. Minden felhasználót és ügyfelet "
+"érint."
+
+#: options.php:268
+msgid "System location"
+msgstr "Rendszer elhelyezkedése"
+
+#: options.php:269
+msgid ""
+"These options are to be changed only if you are moving the system to another "
+"place. Changes here can cause ProjectSend to stop working."
+msgstr ""
+"Ezeket a beállításokat csak akkor módosítsa, ha átköltözteti a rendszert egy "
+"másik helyre. Az itteni változások megakadályozhatják a ProjectSend további "
+"működését."
+
+#: options.php:272
+msgid "System URI"
+msgstr "Rendszer URI"
+
+#: options.php:288
+msgid "New registrations"
+msgstr "Új regisztrációk"
+
+#: options.php:289
+msgid ""
+"Used only on self-registrations. These options will not apply to clients "
+"registered by system administrators."
+msgstr ""
+"Csak az önregisztrációkra van alkalmazva. Ezek a beállítások nem "
+"befolyásolják a rendszergazdák által létrehozott ügyfeleket."
+
+#: options.php:294
+msgid "Clients can register themselves"
+msgstr "Az ügyfelek regisztrálhatják önmagukat."
+
+#: options.php:302
+msgid "Auto approve new accounts"
+msgstr "Az új fiókok automatikus jóváhagyása"
+
+#: options.php:308
+msgid "Add clients to this group:"
+msgstr "Ügyfelek hozzáadása ehhez a csoporthoz:"
+
+#: options.php:311
+msgid "None (does not enable this feature)"
+msgstr "Nincs (nem endegélyezi ezt a funkciót)"
+
+#: options.php:333
+msgid ""
+"New clients will automatically be assigned to the group you have selected."
+msgstr ""
+"Az új ügyfeleket automatikusan az Ön által kiválasztott csoporthoz adjuk "
+"hozzá."
+
+#: options.php:348
+msgid "Clients can upload files"
+msgstr "Az ügyfelek feltölthetnek fájlokat."
+
+#: options.php:356
+msgid "Clients can delete their own uploaded files"
+msgstr "Az ügyfelek törölhetik az általuk feltöltött fájlokat."
+
+#: options.php:362
+msgid "When a file expires:"
+msgstr "Amikor egy fájl lejár:"
+
+#: options.php:365
+msgid "Don't show it on the files list"
+msgstr "Ne mutassa a fájllistában."
+
+#: options.php:366
+msgid "Show it anyway, but prevent download."
+msgstr "Mutassa a listában, de ne lehessen letölteni."
+
+#: options.php:368
+msgid ""
+"This only affects clients. On the admin side, you can still get the files."
+msgstr ""
+"Ez csak az ügyfelekre vonatkozik. Az admin oldalon a fájlok továbbra is "
+"letölthetőek maradnak."
+
+#: options.php:384
+msgid "\"From\" information"
+msgstr "\"Feladó\" információ"
+
+#: options.php:402
+msgid "Send copies"
+msgstr "Másolatok küldése"
+
+#: options.php:407
+msgid "When a system user uploads files"
+msgstr "Amikor egy rendszerfelhasználó fájlokat tölt fel"
+
+#: options.php:415
+msgid "When a client uploads files"
+msgstr "Amikor egy ügyfél fájlokat tölt fel"
+
+#: options.php:421
+msgid ""
+"Define here who will receive copies of this emails. These are sent as BCC so "
+"neither recipient will see the other addresses."
+msgstr ""
+"Itt adja meg, hogy ki fog másolatokat kapni ezekről az emailekről. Ezek "
+"rejtett másolatként kerülnek küldésre, úgyhogy semelyik címzett nem fogja "
+"látni a többi címet."
+
+#: options.php:427
+msgid "Address supplied above (on \"From\")"
+msgstr "A fentebb megadott \"Feladó\" cím"
+
+#: options.php:433
+msgid "Also to this addresses"
+msgstr "Másolatok küldése ezekre a címekre is"
+
+#: options.php:436
+msgid "Separate e-mail addresses with a comma."
+msgstr "Az emailcímeket pontosvesszővel válassza el."
+
+#: options.php:442
+msgid "Expiration"
+msgstr "Lejárat"
+
+#: options.php:445
+msgid "Maximum sending attemps"
+msgstr "Maximális küldési próbálkozások száma"
+
+#: options.php:448
+msgid "Define how many times will the system attemp to send each notification."
+msgstr ""
+"Adja meg, hányszor próbálkozzon a rendszer újra elküldeni egy-egy értesítést."
+
+#: options.php:453
+msgid "Days before expiring"
+msgstr "Napok száma a lejáratig"
+
+#: options.php:456
+msgid "Notifications older than this will not be sent."
+msgstr "Az ennél régebbi értesítések nem kerülnek elküldésre."
+
+#: options.php:456
+msgid "Set to 0 to disable."
+msgstr "Állítsa 0-ra a kikapcsoláshoz."
+
+#: options.php:462
+msgid "E-mail sending options"
+msgstr "E-mail küldési beállítások"
+
+#: options.php:463
+msgid ""
+"Here you can select which mail system will be used when sending the "
+"notifications. If you have a valid e-mail account, SMTP is the recommended "
+"option."
+msgstr ""
+"Itt be tudja állítani, hogy milyen email rendszer legyen használva az "
+"értesítések kiküldésére. Ha van érvényes e-mail fiókja, akkor az SMTP a "
+"javasolt opció."
+
+#: options.php:466
+msgid "Mailer"
+msgstr "Levélküldő"
+
+#: options.php:479
+msgid "SMTP & Gmail shared options"
+msgstr "SMTP & Gmail közös beállításai"
+
+#: options.php:480
+msgid ""
+"You need to include your username (usually your e-mail address) and password "
+"if you have selected either SMTP or Gmail as your mailer."
+msgstr ""
+"Be kell írnia a felhasználói nevét (általában az email cím az) és a "
+"jelszavát is, amennyiben akár az SMTP, akár a Gmail levelezési opciót "
+"választotta."
+
+#: options.php:498
+msgid "SMTP options"
+msgstr "SMTP beállítások"
+
+#: options.php:499
+msgid "If you selected SMTP as your mailer, please complete these options."
+msgstr "Ha az SMTP-t választotta levélküldőként, kérjük ezeket töltse ki."
+
+#: options.php:509
+msgid "Port"
+msgstr "Portszám"
+
+#: options.php:516
+msgid "Authentication"
+msgstr "Hitelesítés"
+
+#: options.php:536
+msgid "Allowed file extensions"
+msgstr "Engedélyezett fájlkiterjesztések"
+
+#: options.php:537
+msgid ""
+"Be careful when changing this options. They could affect not only the system "
+"but the whole server it is installed on."
+msgstr ""
+"Legyen körültekintő, ha megváltoztatja ezeket a beállításokat. Ezek "
+"pontenciálisan nem csak a rendszerre, hanem az azt futtató szerverre is "
+"hatással lehetnek."
+
+#: options.php:538
+msgid "Important"
+msgstr "Fontos"
+
+#: options.php:538
+msgid "Separate allowed file types with a comma."
+msgstr "Az engedélyezett fájl típusokat pontosvesszővel válassza el!"
+
+#: options.php:541
+msgid "Limit file types uploading to"
+msgstr "A következő felhasználók limitálása a megadott fájltípusokra:"
+
+#: options.php:544
+msgid "No one"
+msgstr "Senki"
+
+#: options.php:545
+msgid "Everyone"
+msgstr "Mindenki"
+
+#: options.php:546
+msgid "Clients only"
+msgstr "Csak ügyfelek"
+
+#: options.php:557
+msgid "Passwords"
+msgstr "Jelszavak"
+
+#: options.php:558
+msgid "When setting up a password for an account, requiere at least:"
+msgstr "Amikor jelszót adnak meg egy fiókhoz, minimálisan ez legyen szükséges:"
+
+#: options.php:596
+msgid "reCAPTCHA"
+msgstr "reCAPTCHA"
+
+#: options.php:597
+msgid "Helps prevent SPAM on your registration form."
+msgstr "Segít a regisztrációs formot érintő SPAM visszafogásában."
+
+#: options.php:602
+msgid "Use reCAPTCHA"
+msgstr "reCAPTCHA használata"
+
+#: options.php:608
+msgid "Site key"
+msgstr "Site kulcs (site key):"
+
+#: options.php:615
+msgid "Secret key"
+msgstr "Titkos kulcs (Secret key):"
+
+#: options.php:626 options.php:750
+msgid "How do I obtain this credentials?"
+msgstr "Hogyan juthatok hozzá ezekhez az adatokhoz?"
+
+#: options.php:640
+msgid ""
+"Thumbnails are used on files lists. It is recommended to keep them small, "
+"unless you are using the system to upload only images, and will change the "
+"default client's template accordingly."
+msgstr ""
+"A bélyegképeket a fájllistákban használjuk. Javasolt, hogy tartsuk "
+"alacsonyan ezek méretét, hacsak nem kizárólag képek feltöltésére használják "
+"a rendszert - ebben az esetben az ügyfélsablont is ennek megfelelően meg "
+"kell változtatni."
+
+#: options.php:645 options.php:697
+msgid "Max width"
+msgstr "Max szélesség"
+
+#: options.php:652 options.php:705
+msgid "Max height"
+msgstr "Max magasság"
+
+#: options.php:660
+msgid "JPG Quality"
+msgstr "JPG minőség"
+
+#: options.php:670
+msgid "File's path"
+msgstr "Fájl útvonala"
+
+#: options.php:671
+msgid ""
+"If thumbnails are not showing (your company logo and file's preview on the "
+"branding page and client's files lists) try setting this option ON. It they "
+"still don't work, a folders permission issue might be the cause."
+msgstr ""
+"Ha a bélyegképek nem jelennek meg (a céges logó és a fájl előnézete sem az "
+"előnézeti oldalon és az ügyfelek fájllistájában sem) akkor próbálja meg "
+"bekapcsolni ezt az opciót. Ha ezek után sem jelennek meg, akkor a könyvtárak "
+"engedélyeivel lehet a probléma."
+
+#: options.php:676
+msgid "Use file's absolute path"
+msgstr "A fájlok teljes elérési újtának használata"
+
+#: options.php:691
+msgid "Size settings"
+msgstr "Méretbeállítások"
+
+#: options.php:692
+msgid ""
+"Like the thumbnails options, these have to be changed taking into account "
+"the client's template design, since it can be shown there. The default "
+"template uses a fixed width for the logo, however the Gallery template uses "
+"this setting to show the image on top."
+msgstr ""
+"Akár a bélyegképeknél, ezeket szintén úgy kell megváltoztatni, hogy "
+"figyelembe vesszük az ügyfélsablon dizájnját, mivel ez ott fog érvényesülni. "
+"Az alapértelmezett sablon fix szélességet használ a logóhoz, de a galéria "
+"sablon ezt a beállítást a felső kép megjelenítésénél alkalmazza."
+
+#: options.php:721
+msgid "Google"
+msgstr "Google"
+
+#: options.php:725
+msgid "Enabled"
+msgstr "Engedélyezve"
+
+#: options.php:734
+msgid "Client ID"
+msgstr "Ügyfél azonosító (ID)"
+
+#: options.php:740
+msgid "Client Secret"
+msgstr "Ügyfél titkos kulcs"
+
+#: options.php:755
+msgid "Callback URI"
+msgstr "Callback URI"
+
+#: process.php:177
+msgid "File not found"
+msgstr "A fájl nem található"
+
+#: process.php:234
+msgid ""
+"You don't have the required permissions to view the requested information "
+"about this file."
+msgstr ""
+"Önnek nincs megfelelő jogosultsága a fájl ezen adatainak megtekintéséhez."
+
+#: register.php:12
+msgid "Register new account"
+msgstr "Új fiók létrehozása"
+
+#: register.php:121
+msgid "Please contact a system administrator."
+msgstr "Kérjük, lépjen kapcsolatba a rendszergazdával."
+
+#: register.php:125
+msgid "Account added correctly."
+msgstr "Fiók sikeresen hozzáadva."
+
+#: register.php:129
+msgid ""
+"Please remember that an administrator needs to approve your account before "
+"you can log in."
+msgstr ""
+"Kérjük vegye figyelembe, hogy egy rendszergazdának engedélyeznie kell a "
+"fiókját, mielőtt be tudna jelentkezni."
+
+#: register.php:132
+msgid "You may now log in with your new credentials."
+msgstr "Ön mostmár bejelentkezhez az új hozzáférési adataival."
+
+#: register.php:152
+msgid ""
+"A folder for this account could not be created. Probably because of a server "
+"configuration."
+msgstr ""
+"Nem sikerült létrehozni könyvtárat ehhez a fiókhoz, valószínűleg szerver "
+"konfigurációs okok miatt."
+
+#: register.php:157
+msgid ""
+"The account could not be created. A folder with this name already exists."
+msgstr "A fiókot nem sikerült létrehozni. Ilyen nevű könyvtár már létezik."
+
+#: register.php:167
+msgid ""
+"An e-mail notification with login information was sent to the specified "
+"address."
+msgstr "A megadott címre elküldtük az értesítést a bejelentkezési adatokkal."
+
+#: reset-password.php:11
+msgid "Lost password"
+msgstr "Elveszett jelszó"
+
+#: reset-password.php:215
+msgid "The supplied email address does not correspond to any user."
+msgstr "A megadott emailcímmel nincs regisztrált felhasználó."
+
+#: reset-password.php:221
+msgid "This request has expired. Please make a new one."
+msgstr "A kérelem lejárt. Kérjük, küldön újat."
+
+#: reset-password.php:224
+msgid "This request has already been completed. Please make a new one."
+msgstr "Ezt a kérést már teljesítettük. Kérjük, küldön újat."
+
+#: reset-password.php:227
+msgid ""
+"There are 3 unused requests done in less than 24 hs. Please wait until one "
+"expires (1 day since made) to make a new one."
+msgstr ""
+"Már három darab nem használt kérést rögzítettünk 24 órán belül. Kérjük "
+"várjon, amíg legalább egy lejár (1 napnál régebbi lesz) mielőtt újra "
+"próbálkozna."
+
+#: reset-password.php:240
+msgid ""
+"An e-mail with further instructions has been sent. Please check your inbox "
+"to proceed."
+msgstr ""
+"Elküldtünk egy email értesítést a további tennivalókkal. Kérjük ellenőrizze "
+"az emailfiókját!"
+
+#: reset-password.php:244
+msgid "E-mail couldn't be sent."
+msgstr "Az emailt nem lehetett elküldeni."
+
+#: reset-password.php:245 reset-password.php:262
+msgid "If the problem persists, please contact an administrator."
+msgstr ""
+"Ha a hiba továbbra is fennáll, lépjen kapcsolatba egy rendszergazdával."
+
+#: reset-password.php:257
+msgid "Your new password has been set. You can now log in using it."
+msgstr ""
+"Az új jelszavát beállítottuk. Mostmár annak használatával bejelentkezhet."
+
+#: reset-password.php:261
+msgid "Your new password couldn't be set."
+msgstr "Az új jelszót nem tudtuk beállítani."
+
+#: reset-password.php:295
+msgid ""
+"Please enter your account's e-mail address. You will receive a link to "
+"continue the process."
+msgstr ""
+"Kérjük, írja be a fiókhoz tartozó emailcímét. Ide fogja megkapni a linket a "
+"folytatáshoz."
+
+#: reset-password.php:298
+msgid "Get a new password"
+msgstr "Igényeljen új jelszót"
+
+#: reset-password.php:333
+msgid "New password"
+msgstr "Új jelszó"
+
+#: reset-password.php:344
+msgid ""
+"Please enter your desired new password. After that, you will be able to log "
+"in normally."
+msgstr ""
+"Kérjük ide írja be a kért új jelszót. Ez után a szokásos módon be fog tudni "
+"jelentkezni."
+
+#: reset-password.php:347
+msgid "Set new password"
+msgstr "Új jelszó beállítása"
+
+#: upload-from-computer.php:20 upload-from-computer.php:167
+#: upload-process-form.php:29
+msgid "Upload files"
+msgstr "Fájlfeltöltés"
+
+#: upload-from-computer.php:51
+msgid ""
+"Click on Add files to select all the files that you want to upload, and then "
+"click continue. On the next step, you will be able to set a name and "
+"description for each uploaded file. Remember that the maximum allowed file "
+"size (in mb.) is "
+msgstr ""
+"Kattintson a fájlok hozzáadására a feltöltendő fájlok hozzáadásához, majd "
+"kattintson a Tovább gombra. A következő lépésnél meg fog tudni adni nevet és "
+"leírást minden egyes feltöltött fájlhoz. Kérjük vegye figyelembe, hogy a "
+"feltölthető legnagyobb fájlméret (Megabyte-ban):"
+
+#: upload-from-computer.php:130
+msgid "You must select at least one file to upload."
+msgstr "Legalább egy feltöltendő fájlt ki kell választania."
+
+#: upload-from-computer.php:163
+msgid ""
+"Your browser doesn't support HTML5, Flash or Silverlight. Please update your "
+"browser or install Adobe Flash or Silverlight to continue."
+msgstr ""
+"Az Ön böngészője nem támogatja a HTML5-öt, sem pedig a Flasht vagy "
+"Silverlight-ot. Kérjük frissítse a böngészőjét vagy pedig telepítsen fel "
+"Adobe Flasht vagy Silverlight-ot a folytatáshoz."
+
+#: upload-from-computer.php:170
+msgid ""
+"Your files are being uploaded! Progress indicators may take a while to "
+"update, but work is still being done behind the scenes."
+msgstr ""
+"A fájlok feltöltése folyamatban van! A folyamatjelzők frissülése beletellhet "
+"némi időbe, de a háttérben folyamatos a munka."
+
+#: upload-import-orphans.php:38
+msgid ""
+"This list only shows the files that are allowed according to your security "
+"settings. If the file type you need to add is not listed here, add the "
+"extension to the \"Allowed file extensions\" box on the options page."
+msgstr ""
+"Ez a lista csak azokat a fájlokat tartalmazza, amelyek megfelelnek a "
+"biztonsági követelményeinknek. Ha egy kívánt fájltípus nincs benne ebben a "
+"listában, akkor hozzá kell adnia a kiterjesztést az \"Engedélyezett "
+"fájltípusok\"-hoz a beállítások oldalon."
+
+#: upload-import-orphans.php:163
+msgid "File name"
+msgstr "Fájlnév"
+
+#: upload-import-orphans.php:164
+msgid "File size"
+msgstr "Fájlméret"
+
+#: upload-import-orphans.php:165
+msgid "Last modified"
+msgstr "Utolsó módosítás"
+
+#: upload-import-orphans.php:199
+msgid ""
+"Please note that the listed files will be renamed if they contain invalid "
+"characters."
+msgstr ""
+"Kérjük vegye figyelembe, hogy a felsorolt fájlok át lesznek nevezve, "
+"amennyiben érvénytelen karaktert tartalmaznak."
+
+#: upload-import-orphans.php:239
+msgid "There are no files available to add right now."
+msgstr "Jelenleg nincsenek hozzáadható fájlok."
+
+#: upload-import-orphans.php:242
+msgid "To use this feature you need to upload your files via FTP to the folder"
+msgstr ""
+"Ennek a funkciónak a használatához a fájlokat FTP-n fel kell töltenie ebbe a "
+"könyvtárba:"
+
+#: upload-process-form.php:286
+msgid "Files uploaded correctly"
+msgstr "A fájlok sikeresen feltöltésre kerültek"
+
+#: upload-process-form.php:292 upload-process-form.php:662
+msgid "File Name"
+msgstr "Fájl neve"
+
+#: upload-process-form.php:381
+msgid "Files ready to upload"
+msgstr "A fájlok készen állnak a feltöltésre"
+
+#: upload-process-form.php:382
+msgid ""
+"Please complete the following information to finish the uploading process. "
+"Remember that \"Title\" is a required field."
+msgstr ""
+"Kérem, töltse ki az alábbi adatokat a feltöltési folyamat befejezéséhez. "
+"Kérjük vegye figyelembe, hogy a \"Cím\" egy kötelező mező."
+
+#: upload-process-form.php:387
+msgid "Note"
+msgstr "Megjegyzés"
+
+#: upload-process-form.php:387
+msgid ""
+"You can skip assigning if you want. The files are retained and you may add "
+"them to clients or groups later."
+msgstr ""
+"Nem szükséges most hozzárendelést végeznie. A fájlok megmaradnak és később "
+"is hozzáadhatja őket ügyfelekhez vagy csoportokhoz."
+
+#: upload-process-form.php:575 upload-process-form.php:605
+msgid "Copy selections to other files"
+msgstr "Kiválasztottak átmásolása más fájlokra"
+
+#: upload-process-form.php:582
+msgid "Upload hidden (will not send notifications)"
+msgstr "Rejtett feltöltés (nem lesz értesítés küldve)"
+
+#: upload-process-form.php:658
+msgid "Files not uploaded"
+msgstr "A fájlok nem lettek feltöltve"
+
+#: upload-process-form.php:721
+msgid "Copy selection to all files?"
+msgstr "Minden fájlra másoljuk át a kiválasztottakat?"
+
+#: upload-send-notifications.php:277 upload-send-notifications.php:311
+msgid "E-mail notifications have been sent."
+msgstr "Az email értesítéseket sikeresen kiküldtük."
+
+#: upload-send-notifications.php:291
+msgid "One or more notifications couldn't be sent."
+msgstr "Egy vagy több értesítés kiküldése nem sikerült."
+
+#: upload-send-notifications.php:315
+msgid "E-mail notifications for inactive clients were not sent."
+msgstr "A kikapcsolt ügyfelek számára nem lett értesítés küldve."
+
+#: users-add.php:18
+msgid "Add system user"
+msgstr "Rendszer felhasználó hozzáadása"
+
+#: users-add.php:87
+msgid "User added correctly."
+msgstr "Felhasználó sikeresen hozzáadva"
+
+#: users-add.php:111
+msgid "An e-mail notification with login information was sent to the new user."
+msgstr ""
+"A bejelentkezési információkat sikeresen elküldtük emailben az új "
+"felhasználó számára"
+
+#: users-edit.php:123
+msgid "Edit system user"
+msgstr "Rendszerfelhasználó szerkesztése"
+
+#: users-edit.php:154
+msgid "User edited correctly."
+msgstr "Felhasználó sikeresen szerkesztve"
+
+#: users-edit.php:181
+msgid "No user was selected."
+msgstr "Nincs felhasználó kiválasztva."
+
+#: users-edit.php:186
+msgid "There is no user with that ID number."
+msgstr "Nincs felhasználó ezzel az azonosítóval."
+
+#: users-form.php:62
+msgid "Add user"
+msgstr "Felhasználó hozzáadása"
+
+#: users-form.php:69
+msgid "Save user"
+msgstr "Felhasználó mentése"
+
+#: users-form.php:124 users.php:280
+msgid "Role"
+msgstr "Szerepkör"
+
+#: users-form.php:137
+msgid "Active (user can log in)"
+msgstr "Aktív (be tud jelentkezni)"
+
+#: users.php:22
+msgid "Users administration"
+msgstr "Felhasználókezelés"
+
+#: users.php:31
+msgid "Please select at least one user to proceed."
+msgstr "Kérem válasszon ki legalább egy felhasználót a folytatáshoz."
+
+#: users.php:38
+msgid "users. Are you sure you want to continue?"
+msgstr "felhasználó. Biztosan folytatja?"
+
+#: users.php:90
+msgid "The selected users were marked as active."
+msgstr "A kiválasztot felhasználót aktiváltuk."
+
+#: users.php:110
+msgid "You cannot deactivate your own account."
+msgstr "Nem kapcsolhatja ki a saját fiókját."
+
+#: users.php:116
+msgid "The selected users were marked as inactive."
+msgstr "A kiválasztott felhasználókat kikapcsoltuk."
+
+#: users.php:133
+msgid "You cannot delete your own account."
+msgstr "Nem törölheti a saját fiókját."
+
+#: users.php:139
+msgid "The selected users were deleted."
+msgstr "A kiválasztott felhasználókat töröltük."
+
+#: users.php:158
+msgid "Please select at least one user."
+msgstr "Kérjük, válasszon ki legalább egy felhasználót."
+
+#: users.php:214
+msgid "All roles"
+msgstr "Minden szerepkör"
+
+#: users.php:238
+msgid "Selected users actions"
+msgstr "Kiválasztott felhasználókkal végzendő művelet"
+
+#: users.php:252
+msgid "users"
+msgstr "felhasználók"

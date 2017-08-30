@@ -148,7 +148,7 @@ if ($_POST) {
 	/** Validate the information from the posted form. */
 	$edit_validate = $edit_client->validate_client($edit_arguments);
 	
-	/** Create the client if validation is correct. */
+	/** Edit the account if validation is correct. */
 	if ($edit_validate == 1) {
 		$edit_response = $edit_client->edit_client($edit_arguments);
 
@@ -160,7 +160,7 @@ if ($_POST) {
 								'request_by'	=> CURRENT_USER_USERNAME,
 							);
 
-		$memberships->group_request_membership($arguments);
+		$memberships->update_membership_requests($arguments);
 	}
 
 	$location = BASE_URI . 'clients-edit.php?id=' . $client_id . '&status=' . $edit_response['query'];

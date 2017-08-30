@@ -438,4 +438,74 @@ class MembersActions
 			$this->statement->execute();
 		}
 	}
+
+
+	/**
+	 * Takes a submitted memberships array. Adds new ones and removes
+	 * those that are in the database but not in the new request.
+	 */
+	function update_membership_requests($arguments)
+	{
+		$this->client_id	= $arguments['client_id'];
+		$this->group_ids	= is_array( $arguments['group_ids'] ) ? $arguments['group_ids'] : array( $arguments['group_ids'] );
+
+
+		if ( !empty( $this->client_id ) ) {
+
+			$this->get_requests_arguments = array(
+													'client_id'	=> $this->client_id,
+												);
+			$this->get_requests	= self::get_membership_requests( $this->get_requests_arguments );
+			$this->on_database = $this->get_requests[$this->client_id]['group_ids'];
+
+
+
+			/**
+			 * On database but not on array:
+			 * delete it from requests table
+			 */
+			$this->remove = array();
+			if ( !empty( $this->on_database ) ) {
+				foreach ( $this->on_database as $this->key => $this->group_id ) {
+					if ( !in_array( $this->group_id, $this->group_ids ) ) {
+						$this->remove[] = $this->group_id;
+					}
+				}
+				if ( !empty( $this->remove ) ) {
+					$this->delete_ids = implode( ',', $this->remove );
+					echo $this->delete_ids;
+					$this->statement = $this->dbh->prepare("DELETE FROM " . TABLE_MEMBERS_REQUESTS . " WHERE client_id=:client_id AND FIND_IN_SET(group_id, :remove)");
+					$this->statement->bindParam(':client_id', $this->client_id, PDO::PARAM_INT);
+					$this->statement->bindParam(':remove', $this->delete_ids);
+					$this->statement->execute();
+				}
+			}
+
+			/**
+			 * On array but not on database:
+			 * add the request
+			 */
+			$this->add = array();
+			if ( !empty( $this->group_ids ) ) {
+				foreach ( $this->group_ids as $this->key => $this->group_id ) {
+					if ( !in_array( $this->group_id, $this->on_database ) ) {
+						$this->add[] = $this->group_id;
+					}
+				}
+				if ( !empty( $this->add ) ) {
+					$this->add_arguments = array(
+												'client_id'		=> $this->client_id,
+												'group_ids'		=> $this->add,
+												'request_by'	=> 'SELF',
+											);
+					$this->process_add = self::group_request_membership( $this->add_arguments );
+				}
+			}
+
+			/**
+			 * TODO: Send email to admin informing of new requests
+			 */
+		}
+	}
+
 }

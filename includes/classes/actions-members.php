@@ -448,6 +448,7 @@ class MembersActions
 	{
 		$this->client_id	= $arguments['client_id'];
 		$this->group_ids	= is_array( $arguments['group_ids'] ) ? $arguments['group_ids'] : array( $arguments['group_ids'] );
+		$this->request_by	= $arguments['request_by'];
 
 
 		if ( !empty( $this->client_id ) ) {
@@ -496,7 +497,7 @@ class MembersActions
 					$this->add_arguments = array(
 												'client_id'		=> $this->client_id,
 												'group_ids'		=> $this->add,
-												'request_by'	=> 'SELF',
+												'request_by'	=> $this->request_by,
 											);
 					$this->process_add = self::group_request_membership( $this->add_arguments );
 				}

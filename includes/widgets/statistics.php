@@ -100,7 +100,7 @@
 		$statement = $dbh->prepare("SELECT timestamp, COUNT(*) as total
 										FROM " . TABLE_DOWNLOADS . " 
 										WHERE timestamp >= DATE_SUB( CURDATE(),INTERVAL :max_days DAY)
-										GROUP BY timestamp
+										GROUP BY DATE(timestamp)
 									");
 		$statement->execute( $params );
 		if ( $statement->rowCount() > 0 ) {
@@ -118,7 +118,7 @@
 										FROM " . TABLE_LOG . " 
 										WHERE timestamp >= DATE_SUB( CURDATE(),INTERVAL :max_days DAY)
 										AND action IN (".$actions.")
-										GROUP BY timestamp, action
+										GROUP BY DATE(timestamp), action
 									");
 		$statement->execute( $params );
 		if ( $statement->rowCount() > 0 ) {

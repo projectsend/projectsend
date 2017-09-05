@@ -169,7 +169,7 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 	 * Add the order.
 	 * Defaults to order by: timestamp, order: DESC (shows last uploaded files first)
 	 */
-	$files_query .= sql_add_order( TABLE_USERS, 'timestamp', 'desc' );
+	$files_query .= sql_add_order( TABLE_FILES, 'timestamp', 'desc' );
 
 	/**
 	 * Pre-query to count the total results

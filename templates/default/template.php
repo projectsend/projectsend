@@ -139,7 +139,6 @@ include_once(ROOT_DIR.'/header.php');
 													array(
 														'sortable'		=> true,
 														'sort_url'		=> 'filename',
-														'sort_default'	=> true,
 														'content'		=> __('Title','cftp_admin'),
 													),
 													array(
@@ -162,6 +161,7 @@ include_once(ROOT_DIR.'/header.php');
 													array(
 														'sortable'		=> true,
 														'sort_url'		=> 'timestamp',
+														'sort_default'	=> true,
 														'content'		=> __('Date','cftp_admin'),
 													),
 													array(

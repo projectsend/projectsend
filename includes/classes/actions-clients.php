@@ -67,7 +67,7 @@ class ClientActions
 		$valid_me->validate('completed',$this->email,$validation_no_email);
 		$valid_me->validate('email',$this->email,$validation_invalid_mail);
 		$valid_me->validate('number',$this->max_file_size,$validation_file_size);
-		
+
 		/**
 		 * Validations for NEW CLIENT submission only.
 		 */
@@ -80,7 +80,7 @@ class ClientActions
 			$valid_me->validate('completed',$this->username,$validation_no_user);
 			$valid_me->validate('alpha_dot',$this->username,$validation_alpha_user);
 			$valid_me->validate('length',$this->username,$validation_length_user,MIN_USER_CHARS,MAX_USER_CHARS);
-			
+
 			$this->validate_password = true;
 		}
 		/**
@@ -133,14 +133,14 @@ class ClientActions
 
 		/** Define the account information */
 		$this->id				= $arguments['id'];
-		$this->name				= $arguments['name'];
-		$this->email			= $arguments['email'];
-		$this->username			= $arguments['username'];
-		$this->password			= $arguments['password'];
+		$this->name				= encode_html($arguments['name']);
+		$this->email			= encode_html($arguments['email']);
+		$this->username		= encode_html($arguments['username']);
+		$this->password		= $arguments['password'];
 		//$this->password_repeat = $arguments['password_repeat'];
-		$this->address			= $arguments['address'];
-		$this->phone			= $arguments['phone'];
-		$this->contact			= $arguments['contact'];
+		$this->address			= encode_html($arguments['address']);
+		$this->phone			= encode_html($arguments['phone']);
+		$this->contact			= encode_html($arguments['contact']);
 		$this->notify			= ( $arguments['notify'] == '1' ) ? 1 : 0;
 		$this->max_file_size	= ( !empty( $arguments['max_file_size'] ) ) ? $arguments['max_file_size'] : 0;
 		$this->request			= ( !empty( $arguments['account_requested'] ) ) ? $arguments['account_requested'] : 0;
@@ -153,7 +153,7 @@ class ClientActions
 
 			/** Who is creating the client? */
 			$this->this_admin = get_current_user_username();
-	
+
 			/** Insert the client information into the database */
 			$this->timestamp = time();
 			$this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_USERS . " (name,user,password,address,phone,email,notify,contact,created_by,active,account_requested,max_file_size)"
@@ -172,11 +172,11 @@ class ClientActions
 			$this->sql_query->bindParam(':max_file_size', $this->max_file_size, PDO::PARAM_INT);
 
 			$this->sql_query->execute();
-	
+
 			if ($this->sql_query) {
 				$this->state['actions']	= 1;
 				$this->state['new_id']	= $this->dbh->lastInsertId();
-	
+
 				/** Send account data by email */
 				$this->notify_client = new PSend_Email();
 				$this->email_arguments = array(
@@ -186,7 +186,7 @@ class ClientActions
 												'password'	=> $this->password
 											);
 				$this->notify_send = $this->notify_client->psend_send_email($this->email_arguments);
-	
+
 				if ($this->notify_send == 1){
 					$this->state['email'] = 1;
 				}
@@ -217,12 +217,12 @@ class ClientActions
 
 		/** Define the account information */
 		$this->id				= $arguments['id'];
-		$this->name				= $arguments['name'];
-		$this->email			= $arguments['email'];
-		$this->password			= $arguments['password'];
-		$this->address			= $arguments['address'];
-		$this->phone			= $arguments['phone'];
-		$this->contact			= $arguments['contact'];
+		$this->name				= encode_html($arguments['name']);
+		$this->password		= $arguments['password'];
+		$this->email			= encode_html($arguments['email']);
+		$this->address			= encode_html($arguments['address']);
+		$this->phone			= encode_html($arguments['phone']);
+		$this->contact			= encode_html($arguments['contact']);
 		$this->notify			= ( $arguments['notify'] == '1' ) ? 1 : 0;
 		$this->active			= ( $arguments['active'] == '1' ) ? 1 : 0;
 		$this->max_file_size	= ( !empty( $arguments['max_file_size'] ) ) ? $arguments['max_file_size'] : 0;
@@ -233,7 +233,7 @@ class ClientActions
 			$this->state['hash'] = 1;
 
 			/** SQL query */
-			$this->edit_client_query = "UPDATE " . TABLE_USERS . " SET 
+			$this->edit_client_query = "UPDATE " . TABLE_USERS . " SET
 										name = :name,
 										address = :address,
 										phone = :phone,
@@ -243,12 +243,12 @@ class ClientActions
 										active = :active,
 										max_file_size = :max_file_size
 										";
-	
+
 			/** Add the password to the query if it's not the dummy value '' */
 			if (!empty($arguments['password'])) {
 				$this->edit_client_query .= ", password = :password";
 			}
-	
+
 			$this->edit_client_query .= " WHERE id = :id";
 
 
@@ -268,7 +268,7 @@ class ClientActions
 
 			$this->sql_query->execute();
 
-	
+
 			if ($this->sql_query) {
 				$this->state['query'] = 1;
 			}
@@ -279,7 +279,7 @@ class ClientActions
 		else {
 			$this->state['hash'] = 0;
 		}
-		
+
 		return $this->state;
 	}
 
@@ -316,7 +316,7 @@ class ClientActions
 		else {
 			$this->status = false;
 		}
-		
+
 		return $this->status;
 	}
 
@@ -340,7 +340,7 @@ class ClientActions
 		else {
 			$this->status = false;
 		}
-		
+
 		return $this->status;
 	}
 
@@ -364,7 +364,7 @@ class ClientActions
 		else {
 			$this->status = false;
 		}
-		
+
 		return $this->status;
 	}
 

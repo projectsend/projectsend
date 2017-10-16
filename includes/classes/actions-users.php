@@ -16,7 +16,7 @@ class UserActions
 		global $dbh;
 		$this->dbh = $dbh;
 	}
-	
+
 	/**
 	 * Validate the information from the form.
 	 */
@@ -45,7 +45,7 @@ class UserActions
 		$valid_me->validate('completed',$this->role,$validation_no_level);
 		$valid_me->validate('email',$this->email,$validation_invalid_mail);
 		$valid_me->validate('number',$this->max_file_size,$validation_file_size);
-		
+
 		/**
 		 * Validations for NEW USER submission only.
 		 */
@@ -58,7 +58,7 @@ class UserActions
 			$valid_me->validate('completed',$this->username,$validation_no_user);
 			$valid_me->validate('alpha_dot',$this->username,$validation_alpha_user);
 			$valid_me->validate('length',$this->username,$validation_length_user,MIN_USER_CHARS,MAX_USER_CHARS);
-			
+
 			$this->validate_password = true;
 		}
 		/**
@@ -105,10 +105,10 @@ class UserActions
 		$this->state = array();
 
 		/** Define the account information */
-		$this->username			= $arguments['username'];
-		$this->password			= $arguments['password'];
-		$this->name				= $arguments['name'];
-		$this->email			= $arguments['email'];
+		$this->username		= encode_html($arguments['username']);
+		$this->password		= $arguments['password'];
+		$this->name				= encode_html($arguments['name']);
+		$this->email			= encode_html($arguments['email']);
 		$this->role				= $arguments['role'];
 		$this->active			= $arguments['active'];
 		$this->max_file_size	= ( !empty( $arguments['max_file_size'] ) ) ? $arguments['max_file_size'] : 0;
@@ -135,7 +135,7 @@ class UserActions
 			if ($this->sql_query) {
 				$this->state['query'] = 1;
 				$this->state['new_id'] = $this->dbh->lastInsertId();
-	
+
 				/** Send account data by email */
 				$this->notify_user = new PSend_Email();
 				$this->email_arguments = array(
@@ -145,7 +145,7 @@ class UserActions
 												'password'	=> $this->password
 											);
 				$this->notify_send = $this->notify_user->psend_send_email($this->email_arguments);
-	
+
 				if ($this->notify_send == 1){
 					$this->state['email'] = 1;
 				}
@@ -160,7 +160,7 @@ class UserActions
 		else {
 			$this->state['hash'] = 0;
 		}
-		
+
 		return $this->state;
 	}
 
@@ -174,11 +174,11 @@ class UserActions
 
 		/** Define the account information */
 		$this->id				= $arguments['id'];
-		$this->name				= $arguments['name'];
-		$this->email			= $arguments['email'];
+		$this->name				= encode_html($arguments['name']);
+		$this->email			= encode_html($arguments['email']);
 		$this->role				= $arguments['role'];
 		$this->active			= ( $arguments['active'] == '1' ) ? 1 : 0;
-		$this->password			= $arguments['password'];
+		$this->password		= $arguments['password'];
 		$this->max_file_size	= ( !empty( $arguments['max_file_size'] ) ) ? $arguments['max_file_size'] : 0;
 		//$this->enc_password = md5(mysql_real_escape_string($this->password));
 		$this->enc_password 	= $hasher->HashPassword($this->password);
@@ -188,19 +188,19 @@ class UserActions
 			$this->state['hash'] = 1;
 
 			/** SQL query */
-			$this->edit_user_query = "UPDATE " . TABLE_USERS . " SET 
+			$this->edit_user_query = "UPDATE " . TABLE_USERS . " SET
 									name = :name,
 									email = :email,
 									level = :level,
 									active = :active,
 									max_file_size = :max_file_size
 									";
-	
+
 			/** Add the password to the query if it's not the dummy value '' */
 			if (!empty($arguments['password'])) {
 				$this->edit_user_query .= ", password = :password";
 			}
-	
+
 			$this->edit_user_query .= " WHERE id = :id";
 
 			$this->sql_query = $this->dbh->prepare( $this->edit_user_query );
@@ -216,7 +216,7 @@ class UserActions
 
 			$this->sql_query->execute();
 
-	
+
 			if ($this->sql_query) {
 				$this->state['query'] = 1;
 			}
@@ -227,7 +227,7 @@ class UserActions
 		else {
 			$this->state['hash'] = 0;
 		}
-		
+
 		return $this->state;
 	}
 

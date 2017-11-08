@@ -27,7 +27,7 @@ $side_menu_width_contacted 	: 45px;
 	$side_menu_sub_color 		: #b0b3bb;
 	$side_menu_sub_hover 		: #fff;
 	$side_menu_separator_border : rgba(255, 255, 255, .1);
-	
+
 	/** Light sidebar menu skin */
 	$side_menu_background		: #e0e0e2;
 	$side_menu_dark 			: #d6d6d9;
@@ -37,7 +37,7 @@ $side_menu_width_contacted 	: 45px;
 	$side_menu_sub_color 		: #3f3f47;
 	$side_menu_sub_hover 		: #333339;
 	$side_menu_separator_border : none;
-	
+
 	/** Contracted side menu */
 	$side_menu_con_color 		: #222;
 	$side_menu_con_active_color : #fff;
@@ -76,7 +76,7 @@ $widget_hover_background	: #f0f0f0;
 
 ul {
 	margin:0 !important;
-	list-style:none; 
+	list-style:none;
 }
 
 strong,
@@ -159,7 +159,7 @@ body.login {
 	.main_side_menu {
 		width:$side_menu_width_contacted;
 	}
-	
+
 	.main_content {
 		margin-left:$side_menu_width_contacted;
 	}
@@ -174,36 +174,36 @@ body.login {
 }
 
 /********************************************************************************************************************************************
-	BACKEND specific styles 
+	BACKEND specific styles
 	Not shared with the DEFAULT TEMPLATE
 ********************************************************************************************************************************************/
 .backend {
 	a {
 		text-decoration:none;
-	
+
 		&:hover,
 		&:focus
 		{
 			text-decoration:none;
 		}
 	}
-	
+
 	.clear {
 		clear:both;
 	}
-	
+
 	h1, h2, h3, h4, h5, h6 {
 		font-weight:normal;
 		font-family:'Open Sans', Arial, sans-serif;
 	}
-	
+
 		h1 {
 			color:white;
 			font-size:32px;
 			line-height:32px;
 			margin:15px 0;
 		}
-		
+
 		h2 {
 			color:#333333;
 			font-size:27px;
@@ -211,7 +211,7 @@ body.login {
 			margin:0 0 35px;
 			letter-spacing:-1px;
 		}
-		
+
 		h3 {
 			font-size:17px;
 			line-height:19px;
@@ -220,50 +220,50 @@ body.login {
 			margin-bottom:20px;
 			text-transform:uppercase;
 		}
-		
+
 		h4 {
 			font-size:13px;
 			margin-bottom:20px;
 			line-height:18px;
 		}
 
-	#system_msg {
+	.system_msg {
 		padding:10px;
 		background:#FFFBE4;
 		border-bottom:1px solid #CCCCCC;
-	
+		margin-bottom: 20px;
+
 		p {
 			margin:0;
 		}
 	}
-	
+
 	#main {
 		padding:30px;
 	}
-	
+
 	/********************************************************************************************************************************************
 		UPDATE AVAILABLE message bar
 	********************************************************************************************************************************************/
-	
+
 	.update_msg {
 		padding:5px !important;
-		margin-bottom:25px;
-	
+
 		p {
 			line-height:2.2em !important;
 			float:left;
 		}
-	
+
 		.buttons {
 			padding:0 0 0 25px;
 			display:inline-block;
 			zoom:1;
 			margin-top:3px;
 		}
-	
+
 		ul {
 			text-align:right;
-		
+
 			li {
 				display:inline-block;
 				margin:0;
@@ -280,96 +280,96 @@ body.login {
 				margin:0 2px;
 				@include border-radius(50%);
 			}
-	
+
 			.update_icon_status_0 {
 				@include opacity(.4);
 			}
 		}
 
 	}
-	
+
 	&.default-template .update_msg {
 		display:none !important;
 	}
-	
+
 	#donations_message {
 		background:#0094bb ;
 		color:#fff;
 		@include border-radius(2px);
-		margin:20px 0;
+		margin:0 0 20px;
 		padding:30px;
 		font-size:1.1em;
-	
+
 		h3 {
 			margin-top:0;
 			font-size:1.5em;
 		}
-		
+
 		p {
 			margin-bottom:0;
 		}
-	
+
 		a {
 			color:white;
 			font-weight:bold;
 		}
 	}
-	
+
 	/********************************************************************************************************************************************
 		HEADER
 	********************************************************************************************************************************************/
-	
+
 	.branding_unlogged {
 		text-align:center;
 		margin:20px auto;
-	
+
 		img {
 			height:auto;
 			width:100%;
 			max-width:250px;
 		}
 	}
-	
+
 	#login_logo {
 		margin:15px auto;
 		text-align:center;
 	}
-	
+
 	.header_unlogged {
 		clear:both;
-		
+
 		.navbar-header {
 			display:block;
 			width:100%;
 			padding:0;
-			
+
 			span {
 				display:block;
 				width:100%;
 			}
 		}
 	}
-	
+
 	#install_form {
 		margin-top:30px;
 	}
-	
+
 	#install_extra {
 		margin-top:30px;
 		font-weight:bold;
 		font-size:11px;
 		color:#0099CC;
 	}
-	
+
 	#install_inside {
 		width:400px;
 		margin:20px auto 0;
 	}
-	
+
 	/********************************************************************************************************************************************
 		HOME widgets
 	********************************************************************************************************************************************/
-	
+
 	.widget {
 		background:white;
 		display:block;
@@ -377,14 +377,14 @@ body.login {
 		border:1px solid #ccc;
 		width:100%;
 		margin-bottom:30px;
-	
+
 		@include border-radius(2px);
 		/*@include box-shadow(3px 3px 5px, #dedede);*/
-	
+
 		.widget_int {
 			padding:15px;
 		}
-		
+
 		h4 {
 			text-align:left;
 			padding:13px;
@@ -395,107 +395,107 @@ body.login {
 			border-bottom:1px solid #dedede;
 			@include border-radius(2px 2px 0 0);
 		}
-	
+
 		&:hover h4 {
 			background: $widget_hover_background;
 		}
 
 	}
-	
+
 	/********************************************************************************************************************************************
 		Home LOG widget
 	********************************************************************************************************************************************/
-	
+
 	.activities_log {
 		padding:0;
-	
+
 		li {
 			padding:7px;
 			border-bottom:1px solid #EFEFEF;
 			overflow:hidden;
-		
+
 			&:nth-child(odd) {
 				background:#fafafa;
 			}
-		
+
 			&:last-child {
 				border-bottom:none !important;
 			}
-		
+
 			.date {
 				font-size:.9em;
 				color:#999;
 			}
-			
+
 			.log_ico {
 				width:45px;
 				float:left;
 				@include opacity(.1);
 			}
-		
+
 			&:hover .log_ico {
 				@include opacity(.7);
 			}
-	
+
 			span {
 				font-weight:bold;
 				color:$main_color;
 			}
-			
+
 			span.secondary {
 				color:#86AE00;
 			}
 		}
-		
+
 		.home_log_text {
 			margin-left:45px;
 		}
 	}
-	
+
 	.view_full_log {
 		text-align:right;
 		padding-top:5px;
 		margin-top:5px;
 		border-top:1px solid #EFEFEF;
 	}
-	
+
 	/********************************************************************************************************************************************
 		Home NEWS widget
 	********************************************************************************************************************************************/
-	
+
 	.home_news {
 		margin:0;
 		padding:0;
-	
+
 		.date {
 			color:#999;
 			font-size:.9em;
 		}
-		
+
 		h5 {
 			margin:0 0 3px;
 		}
 	}
-	
+
 	/********************************************************************************************************************************************
 		Home graphs
 	********************************************************************************************************************************************/
-	
+
 	.loading-graph {
 		text-align:center;
 		padding-top:100px;
-	
+
 		img {
 			margin-bottom:2em;
 		}
 	}
-	
+
 	.stats_change_days {
 		margin-bottom:1.5em;
 		display:inline-block;
 		zoom:1;
 	}
-	
+
 	.graph_legend {
 		display:inline-block;
 		text-align:right;
@@ -503,24 +503,24 @@ body.login {
 		zoom:1;
 		margin:0 0 0 auto;
 		float:right;
-	
+
 		li {
 			display:inline-block;
 			margin-left:5px;
 			font-size:.9em;
 			padding:4px;
-		
+
 			&.legend_color {
 				margin: 2px 5px 0 0;
 			}
 		}
 
 	}
-	
+
 	.stats_change_data, .log_change_action {
 		margin-bottom:2em;
 	}
-	
+
 	.widget_system_info {
 		.widget_int h3:first-child {
 			margin-top:0;
@@ -534,7 +534,7 @@ body.login {
 			text-align:left;
 		}
 	}
-	
+
 	/********************************************************************************************************************************************
 		Home statistics tooltip
 	********************************************************************************************************************************************/
@@ -547,17 +547,17 @@ body.login {
 			color:#FFFFFF;
 			padding:5px;
 		}
-		
+
 		.statistics_graph {
 			display:block;
 			height:360px;
 		}
-	}	
-	
+	}
+
 	/********************************************************************************************************************************************
 		Main white content boxes
 	********************************************************************************************************************************************/
-	
+
 	.whitebox {
 		background-color:white;
 		border:1px solid #ccc;
@@ -565,29 +565,29 @@ body.login {
 		@include border-radius(2px);
 		/*@include box-shadow(3px 3px 5px, #dedede);*/
 	}
-	
+
 	.white-box {
 		background-color:white;
 		border:1px solid #ccc;
 
 		@include border-radius(2px);
 		/*@include box-shadow(3px 3px 5px, #dedede);*/
-	
+
 		.white-box-interior {
 			padding:15px;
 		}
 	}
-	
+
 	.whiteform {
 		margin:0;
 		text-align:left;
 		padding:20px;
-	
+
 		td {
 			height:25px;
 		}
 	}
-	
+
 	.whitebox_text {
 		padding-top:25px;
 	}
@@ -595,7 +595,7 @@ body.login {
 	/********************************************************************************************************************************************
 		Categories
 	********************************************************************************************************************************************/
-	
+
 	.categories_form {
 		padding:20px;
 		background:white;
@@ -603,38 +603,38 @@ body.login {
 		border:1px solid #ccc;
 		@include border-radius(2px);
 		/*@include box-shadow(3px 3px 5px, #dedede);*/
-	
+
 		h3 {
 			margin:0 0 30px;
 		}
 	}
-	
+
 	/********************************************************************************************************************************************
 		File management
 	********************************************************************************************************************************************/
-	
+
 	.file_status_visible, .account_status_active {
 		color:#639822!important;
 		font-weight:bold;
 	}
-	
+
 	.file_status_hidden, .account_status_inactive {
 		color:#D24244!important;
 		font-weight:bold;
 	}
-	
-	
+
+
 	/********************************************************************************************************************************************
 		VALIDATION
 	********************************************************************************************************************************************/
-	
+
 	.field_error {
 		border:1px solid #B94A48 !important;
 	}
-	
+
 	.field_error_msg {
 		position:relative;
-	
+
 		ul {
 			font-size:.95em;
 			color:#B94A48;
@@ -646,26 +646,26 @@ body.login {
 			-webkit-border-radius: 3px;
 			-moz-border-radius: 3px;
 			border-radius: 3px;
-			
+
 			li {
 				padding:3px 0;
-				
+
 				&:last-child {
 					border-bottom:none;
 				}
 			}
 		}
-		
+
 		&:after,
 		&:before
 		{
 			bottom: 100%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute; pointer-events: none;
 		}
-		
+
 		&:after {
 			border-color: rgba(45, 237, 14, 0); border-bottom-color:#F2DEDE; border-width: 10px; right: 5%; margin-left: -10px;
 		}
-		
+
 		&:before {
 			border-color: rgba(238, 211, 215, 0); border-bottom-color:#EED3D7; border-width: 11px; right: 5%; margin-left: -11px;
 		}
@@ -673,12 +673,12 @@ body.login {
 		.options_box & {
 			margin-left:44%;
 		}
-		
+
 		.error_no_margin & {
 			margin-left:0;
 		}
 	}
-	
+
 	/********************************************************************************************************************************************
 		Edit file information on UPLOAD
 	********************************************************************************************************************************************/
@@ -687,46 +687,46 @@ body.login {
 		padding-top:15px;
 		margin-bottom:40px;
 	}
-	
+
 	.edit_files {
-	
+
 		.edit_files_blocks {
 			background:white;
 			border:1px solid #ccc;
 			@include border-radius(2px);
 			@include box-shadow(3px 3px 5px, #dedede);
 			padding:30px 15px;
-	
+
 			&:hover {
 				border:1px solid #888;
 				@include box-shadow(3px 3px 5px, #ccc);
 			}
 		}
-		
+
 		.file_data {
 			h3 {
 				padding-top:0;
 				margin-top:0;
 			}
 		}
-	
+
 		textarea {
 			height:70px!important;
 		}
 
 		.column {
 			padding:0 30px;
-		
+
 			&:last-child {
 				border:none;
 			}
 		}
-		
+
 		.divider {
 			margin:40px auto;
 		}
 	}
-	
+
 	.file_number {
 		font-family:'Open Sans', Arial, sans-serif;
 		position:relative;
@@ -738,13 +738,13 @@ body.login {
 		font-size:18px;
 		display:inline-block;
 		@include border-radius(5px 5px 0 0);
-	
+
 		p {
 			padding:0 15px;
 			margin:0;
 			display:inline-block;
 			word-wrap:break-word;
-	
+
 			span {
 				display:inline-block;
 				color:#888;
@@ -752,60 +752,60 @@ body.login {
 			}
 		}
 	}
-	
+
 	.list_mass_members {
 		margin:10px 0 0;
 		padding:0;
-	
+
 		a {
 			margin-right:5px;
-		
+
 			&:last-child {
 				margin-right:0;
 			}
 		}
 	}
-		
+
 	/********************************************************************************************************************************************
 		Branding
 	********************************************************************************************************************************************/
-	
+
 	#current_logo_h2 {
 		margin:30px 0 10px;
 	}
-	
+
 	#current_logo {
 		margin:20px auto;
 		text-align:center;
 		padding:20px 0 0;
 		overflow:hidden;
 	}
-	
+
 	#current_logo_img {
 		padding:20px 0;
-	
+
 		img {
 			height:auto;
 			width:100%;
 			max-width:300px;
 		}
 	}
-	
+
 	.preview_logo_note {
 		font-size:.9em;
 		margin-top:30px;
 		color:#888;
 	}
-	
+
 	#form_upload_logo {
 		padding:30px 0 10px;
 		border-top:1px dotted #CCCCCC;
 	}
-	
+
 	/********************************************************************************************************************************************
 		OPTIONS page
 	********************************************************************************************************************************************/
-	
+
 	.field_note {
 		margin:4px 0 15px 0;
 		font-size:1em;
@@ -813,60 +813,60 @@ body.login {
 		padding-left:6px;
 		font-weight:300;
 		border-left:3px solid #eee;
-	
+
 		a {
 			color:#0094bb;
 			text-decoration:underline;
 		}
-	
+
 		.box-reset-password & {
 			margin-left:0;
 		}
 	}
-	
+
 	optgroup {
 		padding:1em;
 		border:dotted #999;
 		border-width:1px 0 0 0;
 	}
-	
+
 	.checkbox_options {
 		width:auto !important;
 	}
-	
+
 	.options_divide {
 		clear:both;
 		overflow:hidden;
 		margin:25px 0;
 	}
-	
+
 	.options_column {
 		overflow:hidden;
 	}
-	
+
 	.textarea_high {
 		min-height:200px;
 	}
-	
+
 		.options_col_left {
 			width:47%;
 			float:left;
 		}
-		
+
 		.options_col_right {
 			width:47%;
 			float:right;
 		}
-	
+
 	.preview_button {
 		margin-top:25px;
 		text-align:center;
-	
+
 		button {
 			margin-bottom:10px;
 		}
 	}
-	
+
 	.template_selector {
 		.template {
 			margin-bottom:40px;
@@ -874,22 +874,22 @@ body.login {
 			background:white;
 			overflow:hidden;
 			position:relative;
-			
+
 			&.current_template {
 				border:5px solid $main_color;
 			}
-			
+
 			h4 {
 				font-size:1.5em;
 				color:black;
 				margin-top:25px;
 			}
-			
+
 			.info {
 
 				.description {
 				}
-				
+
 				h5 {
 					margin:20px 0 10px;
 					font-size:1.2em;
@@ -907,7 +907,7 @@ body.login {
 				.screenshot {
 					display:block;
 				}
-				
+
 				.cover {
 					@include opacity(0);
 					position:absolute;
@@ -918,38 +918,38 @@ body.login {
 					transition:.3s all linear;
 				}
 			}
-			
+
 			&:hover {
 				.images {
 					.screenshot {
 					}
-					
+
 					.cover {
 						@include opacity(1);
 					}
 				}
 			}
-			
+
 			.buttons {
 				text-align:right;
 			}
 		}
 	}
-	
+
 	/********************************************************************************************************************************************
 		Overwrite PLUPLOAD styles
 	********************************************************************************************************************************************/
-	
+
 	.plupload_filelist_header,
 	.plupload_filelist_footer
 	{
 		background: #e2e5e9;
 	}
-	
+
 	.plupload_filelist_footer {
 		height:auto;
 	}
-	
+
 	.plupload_button {
 		color:white;
 		background:$main_color;
@@ -964,7 +964,7 @@ body.login {
 		-moz-border-radius:4px;
 		-webkit-border-radius:4px;
 		border-radius:4px;
-	
+
 		&:hover,
 		&:focus
 		{
@@ -972,51 +972,51 @@ body.login {
 			background:#1069bd;
 		}
 	}
-	
+
 	.plupload_wrapper {
 		@include box-shadow(3px 3px 5px, #dedede);
 	}
-	
+
 	.plupload_container {
 		padding:1px;
 	}
-	
+
 	a.plupload_start {
 		display:none;
 	}
-	
+
 	.message_uploading {
 		display:none;
 	}
-	
+
 	/********************************************************************************************************************************************
 		Overwrite BOOTSTRAP styles
 	********************************************************************************************************************************************/
-	
+
 	.form-horizontal .control-label {
 		text-align: left;
 	}
-	
+
 	label input[type="checkbox"] {
 		cursor: pointer;
 	}
-	
+
 	.checkbox label {
 		line-height:20px;
 	}
-	
+
 	span.label {
 		font-size:12px;
 	}
-	
+
 	.text-warning {
 		color:#c9302c;
 	}
-	
+
 	/********************************************************************************************************************************************
 		Recreate the dark, inverted button from Bootstrap 2
 	********************************************************************************************************************************************/
-	
+
 	.btn-inverse,
 	.btn-inverse:focus
 	{
@@ -1024,52 +1024,52 @@ body.login {
 		color:white;
 		border-color:#333;
 	}
-	
+
 	.btn-inverse:hover {
 		color:white;
 		background:#555;
 	}
-	
+
 	/********************************************************************************************************************************************
 		Misc
 	********************************************************************************************************************************************/
-	
+
 	.button_label {
 		display:none;
 	}
-	
+
 	.td_checkbox {
 		width:50px;
 	}
-	
+
 	#uploaded_files_tbl {
 		margin-bottom:70px;
 	}
-	
+
 	th.select_buttons {
 		width:220px;
 	}
-	
+
 	.membership_toggle {
 		margin-right:10px;
 	}
-	
+
 	.membership_toggle .toggle-group { transition: left 0.1s; -webkit-transition: left 0.1s; }
-	
+
 	.form_results_filter {
 		margin-bottom:20px;
-	
+
 		a {
 			text-decoration:underline;
 			display:inline-block;
 			padding-right:5px;
 			margin-right:5px;
 			border-right:1px solid #dedede;
-			
+
 			&:last-child {
 				border-right:none;
 			}
-	
+
 			&.filter_option {
 				color:#c3c3ca;
 			}
@@ -1092,7 +1092,7 @@ body.login {
 		margin:-4px 15px 0 0;
 		width:20px;
 		height:auto;
-		
+
 		&:hover {
 			fill:#fff;
 		}
@@ -1119,12 +1119,12 @@ body.login {
 				padding:3px 10px;
 				border-left:1px solid #474b58;
 				margin:0;
-				
+
 				&:hover {
 					color:#fff;
 					background:$top_bar_hover;
 				}
-				
+
 				&:focus	{
 				}
 
@@ -1132,11 +1132,11 @@ body.login {
 					font-size:2em;
 					margin-top:3px;
 					border-left:none;
-					
+
 					span {
 						display:none;
 					}
-			
+
 					&:hover,
 					&:focus
 					{
@@ -1148,7 +1148,7 @@ body.login {
 
 		.nav_account > li {
 			display:inline-block;
-			
+
 			> a {
 				color:#f0f0f0;
 			}
@@ -1167,7 +1167,7 @@ body.login {
 			text-decoration:none;
 		}
 	}
-	
+
 	#header_welcome {
 		margin-right:10px;
 		color:#ccc;
@@ -1208,7 +1208,7 @@ body.login {
 			right:1em;
 			color:$side_menu_color;
 		}
-		
+
 		> a {
 			display:block;
 			padding:1em 1em;
@@ -1217,7 +1217,7 @@ body.login {
 				margin-right:1em;
 			}
 		}
-		
+
 		> ul {
 			border-top:1px solid $side_menu_subtle;
 			padding:1em 0 1em 28px;
@@ -1240,7 +1240,7 @@ body.login {
 					transition:.2s all ease-in-out;
 					transform:scale(1);
 					@include border-radius(50%);
-				}				
+				}
 
 				::after {
 					content:'';
@@ -1250,21 +1250,21 @@ body.login {
 					bottom:0;
 					border-left:2px solid $side_menu_subtle;
 					transition:.2s all ease-in-out;
-				}				
+				}
 
 				a {
 					display:block;
 					padding:.5em 0 .5em 1.5em;
 					color:$side_menu_sub_color;
 				}
-				
+
 				&.current_page {
 					background:$side_menu_subtle;
 				}
-				
+
 				&:hover {
 					background:$side_menu_subtle;
-					
+
 					a {
 						/*color:$side_menu_sub_hover;*/
 					}
@@ -1284,13 +1284,13 @@ body.login {
 		{
 			background:$side_menu_dark;
 			border-right:7px solid $main_color;
-		
+
 			> a {
 				color:$side_menu_color;
 			}
 		}
 
-/*		
+/*
 		&.current_nav {
 			> ul {
 				display:block;
@@ -1298,7 +1298,7 @@ body.login {
 		}
 */
 	}
-	
+
 }
 
 /** Contracted version */
@@ -1306,7 +1306,7 @@ body.login {
 	.main_menu {
 		a {
 		}
-	
+
 		> li {
 			text-align:center;
 			position:relative;
@@ -1315,7 +1315,7 @@ body.login {
 			&.has_dropdown::after {
 				display:none;
 			}
-			
+
 			> a {
 				padding:.5em;
 				font-size:.8em;
@@ -1333,7 +1333,7 @@ body.login {
 					display:none;
 				}
 			}
-			
+
 			> ul {
 				position:absolute;
 				left:45px;
@@ -1345,29 +1345,29 @@ body.login {
 				font-size:.8em;
 				display:none;
 				border-left:7px solid $main_color;
-	
+
 				> li {
 					position:relative;
-	
+
 					::before {
 						display:none;
-					}				
-	
+					}
+
 					::after {
 						display:none;
-					}				
-	
+					}
+
 					a {
 						display:block;
 						padding:1em 1em;
 						color:$side_menu_sub_color;
 						text-align:left;
 					}
-					
+
 					&:hover {
 						background:$side_menu_dark;
 						background:$side_menu_subtle;
-						
+
 						a {
 							color:$side_menu_sub_hover;
 						}
@@ -1379,14 +1379,14 @@ body.login {
 			&.current_nav {
 				border-right:none;
 				background:$main_color;
-				
+
 				> a {
 					> i {
 						color:$side_menu_con_active_color;
 					}
 				}
 			}
-			
+
 			/*
 			&.current_nav {
 				> ul {
@@ -1394,9 +1394,9 @@ body.login {
 				}
 			}
 			*/
-	
+
 		}
-		
+
 	}
 }
 
@@ -1408,9 +1408,9 @@ body.login {
 	margin:50px 0 10px 0;
 	padding:20px 0;
 	border-top:1px solid #dedede;
-	text-align:center;	
+	text-align:center;
 	color:#888;
-	
+
 	a {
 		color:#666;
 	}
@@ -1684,7 +1684,7 @@ li .required.password_toggle {
 	-moz-border-radius-topright: 7px;
 	border-top-left-radius: 7px;
 	border-top-right-radius: 7px;
-	
+
 	a {
 		position:absolute;
 		display:inline-block;

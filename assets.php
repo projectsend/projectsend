@@ -107,8 +107,8 @@ if ( !empty( $load_scripts ) ) {
 }
 
 $load_css_files[]	= BASE_URI . 'assets/bootstrap/css/bootstrap.min.css';
-$load_css_files[]	= BASE_URI . 'css/main.css';
-$load_css_files[]	= BASE_URI . 'css/mobile.css';
+$load_css_files[]	= BASE_URI . 'css/main.min.css';
+$load_css_files[]	= BASE_URI . 'css/mobile.min.css';
 
 /**
  * Load a different css file when called from the default template.

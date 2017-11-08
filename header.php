@@ -66,7 +66,7 @@ if (in_session_or_cookies($core_update_allowed)) {
 		<script src="<?php echo BASE_URI; ?>includes/js/html5shiv.min.js"></script>
 		<script src="<?php echo BASE_URI; ?>includes/js/respond.min.js"></script>
 	<![endif]-->
-	
+
 	<?php
 		require_once( 'assets.php' );
 
@@ -114,10 +114,25 @@ if (in_session_or_cookies($core_update_allowed)) {
 			<div class="container-fluid">
 				<?php
 					/**
-					 * Gets the mark up abd values for the System Updated and
+					 * Gets the mark up and values for the System Updated and
 					 * errors messages.
 					 */
 					include(ROOT_DIR.'/includes/updates.messages.php');
+
+					/**
+					 * Check if we are on a development version
+					 */
+					if ( IS_DEV == true ) {
+				?>
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="system_msg">
+									<p><strong><?php _e('System Notice:', 'cftp_admin');?></strong> <?php _e('You are using a development version. Some features may be unfinished or not working correctly.', 'cftp_admin'); ?></p>
+								</div>
+							</div>
+						</div>
+				<?php
+					}
 				?>
 
 				<div class="row">

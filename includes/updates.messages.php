@@ -14,7 +14,7 @@
 ?>
 			<div class="row">
 				<div class="col-sm-12">
-					<div id="system_msg">
+					<div class="system_msg">
 						<p><strong><?php _e('System Notice:', 'cftp_admin');?></strong> <?php _e('The database was updated to support this version of the software.', 'cftp_admin'); ?></p>
 					</div>
 				</div>
@@ -46,7 +46,7 @@
 			if ( defined('VERSION_NEW_NUMBER') ) {
 				if ( CURRENT_USER_LEVEL != '0' ) {
 	?>
-					<div id="system_msg" class="update_msg">
+					<div class="system_msg update_msg">
 						<div class="row">
 							<div class="col-sm-9">
 								<p><strong><?php _e('Update available!', 'cftp_admin');?></strong> <?php _e('version', 'cftp_admin'); ?> <?php echo VERSION_NEW_NUMBER; ?> <?php _e('has been released.', 'cftp_admin');?></p>

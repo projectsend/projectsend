@@ -31,6 +31,12 @@ define('PROTOCOL', empty($_SERVER['HTTPS'])? 'http' : 'https');
 define('DEBUG', false);
 
 /**
+ * IS_DEV is set to true during development to show a sitewide remainder
+ * of the app unreleased status.
+ */
+define('IS_DEV', true);
+
+/**
  * Turn off reporting of PHP errors, warnings and notices.
  * On a development environment, it should be set to E_ALL for
  * complete debugging.

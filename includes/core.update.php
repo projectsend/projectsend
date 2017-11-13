@@ -1274,5 +1274,32 @@ if (in_session_or_cookies($allowed_update)) {
 				}
 			}
 		}
+
+
+		/**
+		 * r1003 updates
+		 * Add an email to the admin when a client changes requests to public groups
+		 */
+		if ($last_update < 1003) {
+			$new_database_values = array(
+										/**
+										 * On or Off field
+										 */
+										 	'email_client_edited_subject_customize'		=> '0',
+											'email_client_edited_customize'					=> '0',
+										/**
+										 * Text fields
+										 */
+											'email_client_edited_subject'						=> '',
+											'email_client_edited_text'							=> '',
+										);
+			
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
+				}
+			}
+		}
+
 	}
 }

@@ -296,6 +296,19 @@ if(!empty($options_values)) {
 	}
 
 	/**
+	 * For versions 1003 and up
+	 */	
+	if (isset($options_values['email_client_edited_subject_customize'])) {
+		/** Checkbox */
+		define('EMAILS_CLIENT_EDITED_USE_SUBJECT_CUSTOM',$options_values['email_client_edited_subject_customize']);
+		define('EMAILS_CLIENT_EDITED_USE_CUSTOM',$options_values['email_client_edited_customize']);
+		/** Subject */
+		define('EMAILS_CLIENT_EDITED_SUBJECT',$options_values['email_client_edited_subject']);
+		/** Text */
+		define('EMAILS_CLIENT_EDITED_TEXT',$options_values['email_client_edited_text']);
+	}
+
+	/**
 	 * Set the default timezone based on the value of the Timezone select box
 	 * of the options page.
 	 */

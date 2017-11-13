@@ -74,6 +74,13 @@ switch ( $section ) {
 								'email_pass_reset_subject_customize',
 							);
 		break;
+	case 'client_edited':
+		$section_title	= __('Client updated memberships','cftp_admin');
+		$checkboxes		= array(
+								'email_client_edited_subject_customize',
+								'email_client_edited_customize',
+							);
+		break;
 	default:
 		$location = BASE_URI . 'email-templates.php?section=header_footer';
 		header("Location: $location");
@@ -282,6 +289,24 @@ if ($_POST) {
 																										'%URI%'			=> __('The link to continue the process','cftp_admin') . $href_string,
 																									),
 																		'default_text'		=> EMAIL_TEMPLATE_PASSWORD_RESET,
+																	),
+										'client_edited'		=> array(
+																		'subject_checkbox'	=> 'email_client_edited_subject_customize',
+																		'subject'			=> 'email_client_edited_subject',
+																		'body_checkbox'		=> 'email_client_edited_customize',
+																		'body_textarea'		=> 'email_client_edited_text',
+																		'description'		=> __('This email will be sent to the systema administrator when a client edits his account and changes the public groups membership requests.','cftp_admin'),
+																		'subject_check'		=> EMAILS_CLIENT_EDITED_USE_SUBJECT_CUSTOM,
+																		'subject_text'		=> EMAILS_CLIENT_EDITED_SUBJECT,
+																		'body_check'		=> EMAILS_CLIENT_EDITED_USE_CUSTOM,
+																		'body_text'			=> EMAILS_CLIENT_EDITED_TEXT,
+																		'tags'				=> array(
+																										'%FULLNAME%'		=> __('The full name the client registered with','cftp_admin'),
+																										'%USERNAME%'		=> __('The new username for this account','cftp_admin'),
+																										'%URI%'				=> __('The login link','cftp_admin') . $href_string,
+																										'%GROUPS_REQUESTS%' => __('List of groups that the client requests membership to','cftp_admin'),
+																									),
+																		'default_text'		=> EMAIL_TEMPLATE_CLIENT_EDITED,
 																	),
 									);
 			?>

@@ -27,6 +27,7 @@ define('EMAIL_TEMPLATE_HEADER', 'header.html');
 define('EMAIL_TEMPLATE_FOOTER', 'footer.html');
 define('EMAIL_TEMPLATE_NEW_CLIENT', 'new-client.html');
 define('EMAIL_TEMPLATE_NEW_CLIENT_SELF', 'new-client-self.html');
+define('EMAIL_TEMPLATE_CLIENT_EDITED', 'client-edited.html');
 define('EMAIL_TEMPLATE_NEW_USER', 'new-user.html');
 define('EMAIL_TEMPLATE_ACCOUNT_APPROVE', 'account-approve.html');
 define('EMAIL_TEMPLATE_ACCOUNT_DENY', 'account-deny.html');
@@ -129,6 +130,17 @@ $email_strings_pass_reset = array(
 									'label_user'	=> __('Username','cftp_admin'),
 								);
 
+/**
+ * Strings for the "Review client group requests" e-mail to the admin
+ */
+$email_strings_client_edited = array(
+									'subject'			=> ( defined('EMAILS_CLIENT_EDITED_USE_SUBJECT_CUSTOM' ) && EMAILS_CLIENT_EDITED_USE_SUBJECT_CUSTOM == 1 && defined( 'EMAILS_CLIENT_EDITED_SUBJECT' ) ) ? EMAILS_CLIENT_EDITED_SUBJECT : __('A client has changed memberships requests.','cftp_admin'),
+									'body'				=> __('A client on you site has just changed his groups membership requests and needs your approval.','cftp_admin'),
+									'label_name'		=> __('Full name','cftp_admin'),
+									'label_user'		=> __('Username','cftp_admin'),
+									'label_request'	=> __('The client requests access to the following group(s)','cftp_admin'),
+									'body2'				=> __('Please log in to process the request.','cftp_admin')
+								);
 
 class PSend_Email
 {
@@ -140,7 +152,7 @@ class PSend_Email
 	{
 		global $email_template_header;
 		global $email_template_footer;
-		
+
 		switch ($type) {
 			case 'new_client':
 					$filename	= EMAIL_TEMPLATE_NEW_CLIENT;
@@ -182,6 +194,11 @@ class PSend_Email
 					$body_check	= (!defined('EMAILS_PASS_RESET_USE_CUSTOM') || EMAILS_PASS_RESET_USE_CUSTOM == '0') ? '0' : EMAILS_PASS_RESET_USE_CUSTOM;
 					$body_text	= EMAILS_PASS_RESET_TEXT;
 				break;
+			case 'client_edited':
+					$filename	= EMAIL_TEMPLATE_CLIENT_EDITED;
+					$body_check	= (!defined('EMAILS_CLIENT_EDITED_USE_CUSTOM') || EMAILS_CLIENT_EDITED_USE_CUSTOM == '0') ? '0' : EMAILS_CLIENT_EDITED_USE_CUSTOM;
+					$body_text	= EMAILS_CLIENT_EDITED_TEXT;
+				break;
 		}
 
 		if ($body_check == '0') {
@@ -190,7 +207,7 @@ class PSend_Email
 		else {
 			$this->get_body = $body_text;
 		}
-		
+
 		/**
 		 * Header
 		 */
@@ -276,7 +293,7 @@ class PSend_Email
 										'group_ids' => $memberships_requests
 									);
 			$this->get_groups = $this->groups->get_groups( $this->groups_args );
-			
+
 			$this->groups_list = '<ul>';
 			foreach ( $this->get_groups as $group ) {
 				$this->groups_list .= '<li>' . $group['name'] . '</li>';
@@ -307,7 +324,7 @@ class PSend_Email
 	{
 		global $email_strings_account_approved;
 		$requests_title_replace = false;
-		
+
 		$this->groups = new GroupActions();
 		$this->get_args = array();
 		$this->get_groups = $this->groups->get_groups( $this->get_args );
@@ -340,7 +357,7 @@ class PSend_Email
 			$denied_list =  '';
 			$denied_title = '';
 		}
-		
+
 		$requests_title = ( $requests_title_replace == true ) ? '<p>'.$email_strings_account_approved['title_approved'].'</p>' : '';
 
 		$this->email_body = $this->email_prepare_body('client_approve');
@@ -502,6 +519,56 @@ class PSend_Email
 	}
 
 	/**
+	 * Prepare the body for the e-mail sent when a client changes group
+	 *  membeship requests.
+	 */
+	function email_client_edited($username,$fullname,$memberships_requests)
+	{
+		global $email_strings_client_edited;
+		$this->email_body = $this->email_prepare_body('client_edited');
+		$this->email_body = str_replace(
+									array('%SUBJECT%','%BODY1%','%BODY2%','%LBLNAME%','%LBLUSER%','%FULLNAME%','%USERNAME%','%URI%'),
+									array(
+										$email_strings_client_edited['subject'],
+										$email_strings_client_edited['body'],
+										$email_strings_client_edited['body2'],
+										$email_strings_client_edited['label_name'],
+										$email_strings_client_edited['label_user'],
+										$fullname,$username,BASE_URI
+										),
+									$this->email_body
+								);
+		if ( !empty( $memberships_requests ) ) {
+			$this->groups		= new GroupActions;
+			$this->groups_args	= array(
+										'group_ids' => $memberships_requests
+									);
+			$this->get_groups = $this->groups->get_groups( $this->groups_args );
+
+			$this->groups_list = '<ul>';
+			foreach ( $this->get_groups as $group ) {
+				$this->groups_list .= '<li>' . $group['name'] . '</li>';
+			}
+			$this->groups_list .= '</ul>';
+
+			$memberships_requests = implode(',',$memberships_requests);
+			$this->email_body = str_replace(
+									array('%LABEL_REQUESTS%', '%GROUPS_REQUESTS%'),
+									array(
+										$email_strings_client_edited['label_request'],
+										$this->groups_list
+									),
+								$this->email_body
+							);
+		}
+		return array(
+					'subject' => $email_strings_client_edited['subject'],
+					'body' => $this->email_body
+				);
+	}
+
+
+	/**
 	 * Finally, try to send the e-mail and return a status, where
 	 * 1 = Message sent OK
 	 * 2 = Error sending the e-mail
@@ -522,7 +589,7 @@ class PSend_Email
 		$this->files_list	= (!empty($arguments['files_list'])) ? $arguments['files_list'] : '';
 		$this->token		= (!empty($arguments['token'])) ? $arguments['token'] : '';
 		$this->memberships	= (!empty($arguments['memberships'])) ? $arguments['memberships'] : '';
-		
+
 		require_once(ROOT_DIR.'/includes/phpmailer/class.phpmailer.php');
 
 		if (!spl_autoload_functions() OR (!in_array('PHPMailerAutoload', spl_autoload_functions()))) {
@@ -561,6 +628,9 @@ class PSend_Email
 			case 'password_reset':
 				$this->mail_info = $this->email_password_reset($this->username,$this->token);
 			break;
+			case 'client_edited':
+				$this->mail_info = $this->email_client_edited($this->username,$this->name,$this->memberships);
+			break;
 		}
 
 		/**
@@ -597,7 +667,7 @@ class PSend_Email
 						$this->send_mail->Port = SMTP_PORT;
 						$this->send_mail->Username = SMTP_USER;
 						$this->send_mail->Password = SMTP_PASS;
-						
+
 						if ( defined('SMTP_AUTH') && SMTP_AUTH != 'none' ) {
 							$this->send_mail->SMTPAuth = true;
 							$this->send_mail->SMTPSecure = SMTP_AUTH;
@@ -619,18 +689,18 @@ class PSend_Email
 						$this->send_mail->IsSendmail();
 					break;
 			}
-			
+
 			$this->send_mail->CharSet = EMAIL_ENCODING;
-	
+
 			$this->send_mail->Subject = $this->mail_info['subject'];
 			$this->send_mail->MsgHTML($this->mail_info['body']);
 			$this->send_mail->AltBody = __('This email contains HTML formatting and cannot be displayed right now. Please use an HTML compatible reader.','cftp_admin');
-	
+
 			$this->send_mail->SetFrom(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
 			$this->send_mail->AddReplyTo(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
-	
+
 			$this->send_mail->AddAddress($this->addresses);
-			
+
 			/**
 			 * Check if BCC is enabled and get the list of
 			 * addresses to add, based on the email type.
@@ -658,9 +728,9 @@ class PSend_Email
 						$this->send_mail->AddBCC($this->set_bcc);
 					}
 				}
-				 
+
 			}
-			
+
 			/**
 			 * Finally, send the e-mail.
 			 */

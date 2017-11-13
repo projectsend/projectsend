@@ -326,7 +326,11 @@ if (defined('TRY_INSTALL')) {
 								('email_account_approve_subject', ''),
 								('email_account_deny_subject', ''),
 								('email_account_approve_text', ''),
-								('email_account_deny_text', '')
+								('email_account_deny_text', ''),
+								('email_client_edited_subject_customize', '0'),
+								('email_client_edited_customize', '0'),
+								('email_client_edited_subject', ''),
+								('email_client_edited_text', '')
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,

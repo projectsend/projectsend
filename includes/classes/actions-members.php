@@ -504,8 +504,22 @@ class MembersActions
 			}
 
 			/**
-			 * TODO: Send email to admin informing of new requests
+			 * Prepare and send an email to administrator(s) if there is at least one request
 			 */
+			if ( !empty( $this->group_ids ) ) {
+				$this->client_info = get_client_by_id($this->client_id);
+				$notify_admin = new PSend_Email();
+
+				$email_arguments = array(
+												'type'			=> 'client_edited',
+												'address'		=> ADMIN_EMAIL_ADDRESS,
+												'username'		=> $this->client_info['username'],
+												'name'			=> $this->client_info['name'],
+												'memberships'	=> $this->group_ids
+											);
+
+				$notify_admin_status = $notify_admin->psend_send_email($email_arguments);
+			}
 		}
 	}
 

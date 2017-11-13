@@ -730,6 +730,10 @@ class PSend_Email
 				}
 
 			}
+			
+			/** Debug by echoing the email on page */
+			//echo $this->mail_info['body'];
+			//die();
 
 			/**
 			 * Finally, send the e-mail.

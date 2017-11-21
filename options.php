@@ -537,7 +537,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 								<div class="form-group">
 									<div class="col-sm-8 col-sm-offset-4">
 										<label for="public_listing_show_all_files">
-											<input type="checkbox" value="1" name="public_listing_show_all_files" id="public_listing_show_all_files" class="checkbox_options" <?php echo (PUBLIC_LISTING_SHOW_ALL_FILES == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Show all public files, including those that do not belong to public groups.','cftp_admin'); ?>
+											<input type="checkbox" value="1" name="public_listing_show_all_files" id="public_listing_show_all_files" class="checkbox_options" <?php echo (PUBLIC_LISTING_SHOW_ALL_FILES == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Inside groups show all files, including those that are not marked as public.','cftp_admin'); ?>
 										</label>
 									</div>
 								</div>

@@ -330,7 +330,10 @@ if (defined('TRY_INSTALL')) {
 								('email_client_edited_subject_customize', '0'),
 								('email_client_edited_customize', '0'),
 								('email_client_edited_subject', ''),
-								('email_client_edited_text', '')
+								('email_client_edited_text', ''),
+								('public_listing_page_enable', '0'),
+								('public_listing_logged_only', '0'),
+								('public_listing_show_all_files', '0')
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,

@@ -1301,5 +1301,25 @@ if (in_session_or_cookies($allowed_update)) {
 			}
 		}
 
+
+		/**
+		 * r1004 updates
+		 * Add new options for the landing page of public groups and files
+		 */
+		 
+		if ($last_update < 1004) {
+			$new_database_values = array(
+											'public_listing_page_enable'		=> '0',
+											'public_listing_logged_only'		=> '0',
+											'public_listing_show_all_files'	=> '0',
+										);
+			
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
+				}
+			}
+		}
+
 	}
 }

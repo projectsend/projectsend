@@ -309,6 +309,15 @@ if(!empty($options_values)) {
 	}
 
 	/**
+	 * For versions 1004 and up
+	 */	
+	if (isset($options_values['public_listing_page_enable'])) {
+		define('PUBLIC_LISTING_ENABLE',$options_values['public_listing_page_enable']);
+		define('PUBLIC_LISTING_LOGGED_ONLY',$options_values['public_listing_logged_only']);
+		define('PUBLIC_LISTING_SHOW_ALL_FILES',$options_values['public_listing_show_all_files']);
+	}
+
+	/**
 	 * Set the default timezone based on the value of the Timezone select box
 	 * of the options page.
 	 */
@@ -324,8 +333,8 @@ if (defined('BASE_URI')) {
 	define('TIMTHUMB_URL',BASE_URI.'includes/timthumb/timthumb.php');
 	define('TIMTHUMB_ABS',ROOT_DIR.'/includes/timthumb/timthumb.php');
 
-	define('WIDGETS_URL',BASE_URI.'includes/widgets/');
 	define('WIDGETS_FOLDER',ROOT_DIR.'/includes/widgets/');
+	define('WIDGETS_URL',BASE_URI.'includes/widgets/');
 }
 
 /**
@@ -340,4 +349,11 @@ if (!defined('FOOTABLE_PAGING_NUMBER')) {
 if (!defined('RESULTS_PER_PAGE')) {
 	define('RESULTS_PER_PAGE', '10');
 	define('RESULTS_PER_PAGE_LOG', '15');
+}
+
+/**
+ * Landing page for public groups and files
+ */
+if (defined('BASE_URI')) {
+	define('PUBLIC_LANDING_URI',BASE_URI.'public.php');
 }

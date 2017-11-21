@@ -34,6 +34,9 @@ switch ( $section ) {
 								'clients_can_upload',
 								'clients_can_delete_own_files',
 								'clients_can_set_expiration_date',
+								'public_listing_page_enable',
+								'public_listing_logged_only',
+								'public_listing_show_all_files',
 							);
 		break;
 	case 'email':
@@ -504,6 +507,38 @@ $allowed_file_types = implode(',',$allowed_file_types);
 											?>
 										</select>
 										<p class="field_note"><?php _e('When a client registers a new account, an option will be presented to request becoming a member of a particular group.','cftp_admin'); ?></p>
+									</div>
+								</div>
+
+								<div class="options_divide"></div>
+	
+								<h3><?php _e('Public groups and files listings page','cftp_admin'); ?></h3>
+
+								<div class="form-group">
+									<div class="col-sm-8 col-sm-offset-4">
+										<label for="public_listing_page_enable">
+											<input type="checkbox" value="1" name="public_listing_page_enable" id="public_listing_page_enable" class="checkbox_options" <?php echo (PUBLIC_LISTING_ENABLE == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Enable page','cftp_admin'); ?>
+										</label>
+										<p class="field_note"><?php _e('The url for the listings page is','cftp_admin'); ?><br>
+										<a href="<?php echo PUBLIC_LANDING_URI; ?>" target="_blank">
+											<?php echo PUBLIC_LANDING_URI; ?>
+										</a></p>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<div class="col-sm-8 col-sm-offset-4">
+										<label for="public_listing_logged_only">
+											<input type="checkbox" value="1" name="public_listing_logged_only" id="public_listing_logged_only" class="checkbox_options" <?php echo (PUBLIC_LISTING_LOGGED_ONLY == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Only for logged in clients','cftp_admin'); ?>
+										</label>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<div class="col-sm-8 col-sm-offset-4">
+										<label for="public_listing_show_all_files">
+											<input type="checkbox" value="1" name="public_listing_show_all_files" id="public_listing_show_all_files" class="checkbox_options" <?php echo (PUBLIC_LISTING_SHOW_ALL_FILES == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Show all public files, including those that do not belong to public groups.','cftp_admin'); ?>
+										</label>
 									</div>
 								</div>
 	

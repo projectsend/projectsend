@@ -14,7 +14,7 @@ session_start();
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r1003');
+define('CURRENT_VERSION', 'r1005');
 
 /**
  * Fix for including external files when on HTTPS.

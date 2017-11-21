@@ -315,6 +315,7 @@ if(!empty($options_values)) {
 		define('PUBLIC_LISTING_ENABLE',$options_values['public_listing_page_enable']);
 		define('PUBLIC_LISTING_LOGGED_ONLY',$options_values['public_listing_logged_only']);
 		define('PUBLIC_LISTING_SHOW_ALL_FILES',$options_values['public_listing_show_all_files']);
+		define('PUBLIC_LISTING_USE_DOWNLOAD_LINK',$options_values['public_listing_use_download_link']);
 	}
 
 	/**

@@ -37,6 +37,7 @@ switch ( $section ) {
 								'public_listing_page_enable',
 								'public_listing_logged_only',
 								'public_listing_show_all_files',
+								'public_listing_use_download_link',
 							);
 		break;
 	case 'email':
@@ -538,6 +539,14 @@ $allowed_file_types = implode(',',$allowed_file_types);
 									<div class="col-sm-8 col-sm-offset-4">
 										<label for="public_listing_show_all_files">
 											<input type="checkbox" value="1" name="public_listing_show_all_files" id="public_listing_show_all_files" class="checkbox_options" <?php echo (PUBLIC_LISTING_SHOW_ALL_FILES == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Inside groups show all files, including those that are not marked as public.','cftp_admin'); ?>
+										</label>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<div class="col-sm-8 col-sm-offset-4">
+										<label for="public_listing_use_download_link">
+											<input type="checkbox" value="1" name="public_listing_use_download_link" id="public_listing_use_download_link" class="checkbox_options" <?php echo (PUBLIC_LISTING_USE_DOWNLOAD_LINK == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('On public files, show the download link.','cftp_admin'); ?>
 										</label>
 									</div>
 								</div>

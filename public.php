@@ -37,6 +37,129 @@ include('header-unlogged.php');
 			<div class="text-center">
 				<h3><?php echo $page_title; ?></h3>
 			</div>
+			
+			<div class="treeview">
+					<?php
+						/**
+						 * 1- Make a list of files IDs
+						 */
+						$all_files = array();
+						$public_files = array();
+						$remove_files = array(); // used to remove file ids from the complete list after showing the groups so the files don't appear again on the list.
+						$files_sql = "SELECT id, url, original_url, filename, public_allow, public_token FROM " . TABLE_FILES;
+
+						/** All files or just the public ones? */
+						if ( PUBLIC_LISTING_SHOW_ALL_FILES != 1 ) {
+							$files_sql .= " WHERE public_allow=1";
+						}
+
+						$sql = $dbh->prepare($files_sql);
+		 				$sql->execute();
+		 				$sql->setFetchMode(PDO::FETCH_ASSOC);
+		 				while ( $row = $sql->fetch() ) {
+							$filename_on_disk = (!empty( $row['original_url'] ) ) ? $row['original_url'] : $row['url'];
+							$all_files[$row['id']] = array(
+																'filename'	=> encode_html($filename_on_disk),
+																'title'		=> encode_html($row['filename']),
+																'public'		=> encode_html($row['public_allow']),
+																'token'		=> encode_html($row['public_token']),
+															);
+							if ( $row['public_allow'] == 1 ) {
+								$public_files[] = $row['id'];
+							}
+						}
+
+						/**
+						 * 2- Get public groups
+						 */
+						$groups = array();
+						$get_groups		= new GroupActions();
+						$get_arguments	= array(
+												 	'public'	=> true,
+												);
+						$found_groups	= $get_groups->get_groups($get_arguments); 
+						foreach ($found_groups as $group_id => $group_data) {
+							$groups[$group_id] = array(
+														'name'	=> $group_data['name'],
+														'files'	=> array(),
+													);
+							/**
+							 * 3- Get list of files from this group
+							 */
+							$group_files = array();
+							$files_groups_sql = "SELECT id, file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE group_id=:group_id AND hidden = '0'";
+							// Don't include private files
+							if ( PUBLIC_LISTING_SHOW_ALL_FILES != 1 ) {
+								$files_groups_sql .= " AND FIND_IN_SET(file_id, :public_files)";
+							}
+
+							$sql = $dbh->prepare($files_groups_sql);
+							$sql->bindParam(':group_id', $group_id, PDO::PARAM_INT);
+							
+							if ( PUBLIC_LISTING_SHOW_ALL_FILES != 1 ) {
+								$included_files = implode( ',', array_map( 'intval', array_unique( $public_files ) ) );
+								$sql->bindParam(':public_files', $included_files);
+							}
+							
+			 				$sql->execute();
+			 				$sql->setFetchMode(PDO::FETCH_ASSOC);
+							while ( $row = $sql->fetch() ) {
+								/** TODO:
+									* - no incluir archivos expirados
+									* */
+								$groups[$group_id]['files'][$row['file_id']] = $all_files[$row['file_id']];
+								$remove_files[] = $row['file_id'];
+							}
+						}
+						
+						/**
+						 * Removes from the array of files those that are on, at least, one group
+						 * so in the list of groupless files they are not repeated.
+						 */
+						foreach ( $remove_files as $file_id ) {
+							unset($all_files[$file_id]);
+						}
+						
+						//print_r($groups);
+						//print_r($all_files);
+						
+						/**
+						 * Finally, generate the list
+						 * 1- Groups
+						 */
+					?>
+						<div class="listing">
+							<ul>
+								<?php
+									foreach ( $groups as $group ) {
+								?>
+										<li>
+											<?php echo $group['name']; ?>
+											<ul>
+												<?php
+														foreach ( $group['files'] as $id => $file_info ) {
+												?>
+															<li><?php echo $file_info['title']; ?></li>
+												<?php
+														}
+												?>
+											</ul>
+										</li>
+								<?php
+									}
+
+									/**
+									 * 2- Groupless files
+									 */
+									foreach ( $all_files as $id => $file_info) {
+								?>
+										<li><?php echo $file_info['title']; ?></li>
+								<?php
+									}
+								?>
+							</ul>
+						</div>
+			</div>
 		</div>
 	</div>
 

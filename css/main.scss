@@ -1768,3 +1768,31 @@ li .required.password_toggle {
 .format_url {
 	word-break:break-all;
 }
+
+
+/********************************************************************************************************************************************
+	Public files and groups listing
+********************************************************************************************************************************************/
+
+.public {
+	.listing {
+		ul {
+			margin:0;
+			padding: 0;
+			
+			li {
+				padding: 7px 0;
+				border-bottom: 1px solid #dedede;
+				
+				&:last-child {
+					border: none;
+					padding-bottom: 0;
+				}
+				
+				ul {
+					padding-left: 2em;
+				}
+			}
+		}
+	}
+}

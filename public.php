@@ -40,15 +40,26 @@ include('header-unlogged.php');
 			
 			<div class="treeview">
 					<?php
-						function list_file($data) {
-							$output = '';
-							if ( PUBLIC_LISTING_USE_DOWNLOAD_LINK == 1 && $data['expired'] != true ) {
-								$download_link = BASE_URI . 'download.php?id=' . $data['id'] . '&token=' . $data['token'];
-								$output = '<a href="' . $download_link . '">' . $data['filename'] . '</a>';
+						function list_file($data, $origin) {
+							$show = false;
+							if ( $origin == 'group' && PUBLIC_LISTING_SHOW_ALL_FILES == 1 ) {
 							}
 							else {
-								$output = $data['filename'];
+								if ( $data['public'] != 1 ) {
+									return;
+								}
 							}
+
+							$output = '<li><i class="fa fa-file-o" aria-hidden="true"></i> ';
+							if ( PUBLIC_LISTING_USE_DOWNLOAD_LINK == 1 && $data['expired'] != true && $data['public'] == 1 ) {
+								$download_link = BASE_URI . 'download.php?id=' . $data['id'] . '&token=' . $data['token'];
+								$output .= '<a href="' . $download_link . '">' . $data['filename'] . '</a>';
+							}
+							else {
+								$output .= $data['filename'];
+							}
+							
+							$output .= '</li>';
 							
 							return $output;
 						}
@@ -150,9 +161,6 @@ include('header-unlogged.php');
 			 				$sql->execute();
 			 				$sql->setFetchMode(PDO::FETCH_ASSOC);
 							while ( $row = $sql->fetch() ) {
-								/** TODO:
-									* - no incluir archivos expirados
-									* */
 								$groups[$group_id]['files'][$row['file_id']] = $all_files[$row['file_id']];
 								$remove_files[] = $row['file_id'];
 							}
@@ -180,14 +188,12 @@ include('header-unlogged.php');
 									foreach ( $groups as $group ) {
 								?>
 										<li>
-											<?php echo $group['name']; ?>
+											<i class="fa fa-th-large fa-fw" aria-hidden="true"></i> <?php echo $group['name']; ?>
 											<ul>
 												<?php
-														foreach ( $group['files'] as $id => $file_info ) {
-												?>
-															<li><?php echo list_file($file_info) ?></li>
-												<?php
-														}
+													foreach ( $group['files'] as $id => $file_info ) {
+														echo list_file($file_info, 'group');
+													}
 												?>
 											</ul>
 										</li>
@@ -198,9 +204,7 @@ include('header-unlogged.php');
 									 * 2- Groupless files
 									 */
 									foreach ( $all_files as $id => $file_info) {
-								?>
-										<li><?php echo list_file($file_info) ?></li>
-								<?php
+										echo list_file($file_info, 'loose');
 									}
 								?>
 							</ul>

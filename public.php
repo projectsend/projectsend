@@ -40,13 +40,27 @@ include('header-unlogged.php');
 			
 			<div class="treeview">
 					<?php
+						function list_file($data) {
+							$output = '';
+							if ( PUBLIC_LISTING_USE_DOWNLOAD_LINK == 1 && $data['expired'] != true ) {
+								$download_link = BASE_URI . 'download.php?id=' . $data['id'] . '&token=' . $data['token'];
+								$output = '<a href="' . $download_link . '">' . $data['filename'] . '</a>';
+							}
+							else {
+								$output = $data['filename'];
+							}
+							
+							return $output;
+						}
+
 						/**
 						 * 1- Make a list of files IDs
 						 */
 						$all_files = array();
 						$public_files = array();
+						$expired_files = array();
 						$remove_files = array(); // used to remove file ids from the complete list after showing the groups so the files don't appear again on the list.
-						$files_sql = "SELECT id, url, original_url, filename, public_allow, public_token FROM " . TABLE_FILES;
+						$files_sql = "SELECT * FROM " . TABLE_FILES;
 
 						/** All files or just the public ones? */
 						if ( PUBLIC_LISTING_SHOW_ALL_FILES != 1 ) {
@@ -57,15 +71,38 @@ include('header-unlogged.php');
 		 				$sql->execute();
 		 				$sql->setFetchMode(PDO::FETCH_ASSOC);
 		 				while ( $row = $sql->fetch() ) {
-							$filename_on_disk = (!empty( $row['original_url'] ) ) ? $row['original_url'] : $row['url'];
-							$all_files[$row['id']] = array(
-																'filename'	=> encode_html($filename_on_disk),
-																'title'		=> encode_html($row['filename']),
-																'public'		=> encode_html($row['public_allow']),
-																'token'		=> encode_html($row['public_token']),
-															);
-							if ( $row['public_allow'] == 1 ) {
-								$public_files[] = $row['id'];
+
+							/** Does it expire? */
+							$add_file = true;
+							$expired	= false;
+
+							if ($row['expires'] == '1') {
+								if (time() > strtotime($row['expiry_date'])) {
+									if (EXPIRED_FILES_HIDE == '1') {
+										$add_file = false;
+									}
+									$expired = true;
+								}
+							}
+
+							if ($add_file == true) {
+								$filename_on_disk = (!empty( $row['original_url'] ) ) ? $row['original_url'] : $row['url'];
+
+								$all_files[$row['id']] = array(
+																	'id'				=> encode_html($row['id']),
+																	'filename'		=> encode_html($filename_on_disk),
+																	'title'			=> encode_html($row['filename']),
+																	'public'			=> encode_html($row['public_allow']),
+																	'token'			=> encode_html($row['public_token']),
+																	'expired'		=> $expired,
+																	'expire_date'	=> encode_html($row['expiry_date']),
+																);
+								if ( $row['public_allow'] == 1 ) {
+									$public_files[] = $row['id'];
+								}
+							}
+							else {
+								$expired_files[] = $row['id'];
 							}
 						}
 
@@ -92,6 +129,11 @@ include('header-unlogged.php');
 							if ( PUBLIC_LISTING_SHOW_ALL_FILES != 1 ) {
 								$files_groups_sql .= " AND FIND_IN_SET(file_id, :public_files)";
 							}
+							
+							// Don't include expired files
+							if (EXPIRED_FILES_HIDE == '1') {
+								$files_groups_sql .= " AND !FIND_IN_SET(file_id, :excluded_files)";
+							}
 
 							$sql = $dbh->prepare($files_groups_sql);
 							$sql->bindParam(':group_id', $group_id, PDO::PARAM_INT);
@@ -99,6 +141,10 @@ include('header-unlogged.php');
 							if ( PUBLIC_LISTING_SHOW_ALL_FILES != 1 ) {
 								$included_files = implode( ',', array_map( 'intval', array_unique( $public_files ) ) );
 								$sql->bindParam(':public_files', $included_files);
+							}
+							if (EXPIRED_FILES_HIDE == '1') {
+								$excluded_files = implode( ',', array_map( 'intval', array_unique( $expired_files ) ) );
+								$sql->bindParam(':excluded_files', $excluded_files);
 							}
 							
 			 				$sql->execute();
@@ -139,7 +185,7 @@ include('header-unlogged.php');
 												<?php
 														foreach ( $group['files'] as $id => $file_info ) {
 												?>
-															<li><?php echo $file_info['title']; ?></li>
+															<li><?php echo list_file($file_info) ?></li>
 												<?php
 														}
 												?>
@@ -153,7 +199,7 @@ include('header-unlogged.php');
 									 */
 									foreach ( $all_files as $id => $file_info) {
 								?>
-										<li><?php echo $file_info['title']; ?></li>
+										<li><?php echo list_file($file_info) ?></li>
 								<?php
 									}
 								?>

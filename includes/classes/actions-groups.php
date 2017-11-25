@@ -56,22 +56,25 @@ class GroupActions
 		$this->description = $arguments['description'];
 		$this->members = $arguments['members'];
 		$this->ispublic = $arguments['public'];
+		$this->public_token		= generateRandomString(32);
 		$this->timestamp = time();
 
 		/** Who is creating the group? */
 		$this->this_admin = get_current_user_username();
 
-		$this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_GROUPS . " (name,description,public,created_by)"
-												." VALUES (:name, :description, :public, :this_admin)");
+		$this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_GROUPS . " (name, description, public, public_token, created_by)"
+												." VALUES (:name, :description, :public, :token, :this_admin)");
 		$this->sql_query->bindParam(':name', $this->name);
 		$this->sql_query->bindParam(':description', $this->description);
 		$this->sql_query->bindParam(':public', $this->ispublic, PDO::PARAM_INT);
 		$this->sql_query->bindParam(':this_admin', $this->this_admin);
+		$this->sql_query->bindParam(':token', $this->public_token);
 		$this->sql_query->execute();
 
 
 		$this->id = $this->dbh->lastInsertId();
 		$this->state['new_id'] = $this->id;
+		$this->state['public_token'] = $this->public_token;
 
 		/** Create the members records */
 		if ( !empty( $this->members ) ) {

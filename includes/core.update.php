@@ -1337,5 +1337,32 @@ if (in_session_or_cookies($allowed_update)) {
 				}
 			}
 		}
+
+		/**
+		 * r1006 updates
+		 * 1- New column, public_token for public groups links
+		 * 2- Set public token for each group
+		 */
+		if ($last_update < 1006) {
+			try {
+				$statement = $dbh->query("SELECT public_token FROM " . TABLE_GROUPS);
+			} catch( PDOException $e ) {
+				$statement = $dbh->query("ALTER TABLE " . TABLE_GROUPS . " ADD public_token varchar(32) NULL");
+				$updates_made++;
+			}
+			
+			$statement = $dbh->prepare("SELECT id FROM " . TABLE_GROUPS);
+			$statement->execute();
+			$statement->setFetchMode(PDO::FETCH_ASSOC);
+			while( $group = $statement->fetch() ) {
+				$public_token = generateRandomString(32);
+				$statement2 = $dbh->prepare("UPDATE " . TABLE_GROUPS . " SET public_token=:token WHERE id=:id");
+				$statement2->bindParam(':token', $public_token);
+				$statement2->bindParam(':id', $group['id'], PDO::PARAM_INT);
+				$statement2->execute();
+				$updates_made++;
+			}
+		}
+
 	}
 }

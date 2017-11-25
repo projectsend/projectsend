@@ -79,6 +79,7 @@ if (defined('TRY_INSTALL')) {
 								  `name` varchar(32) NOT NULL,
 								  `description` text NOT NULL,
 								  `public` tinyint(1) NOT NULL DEFAULT \'0\',
+								  `public_token` varchar(32) NULL,
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',

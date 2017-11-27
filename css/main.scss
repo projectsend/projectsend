@@ -1781,12 +1781,19 @@ li .required.password_toggle {
 			padding: 0;
 			
 			li {
-				padding: 7px 0;
+				padding: 8px 0;
 				border-bottom: 1px solid #dedede;
 				
 				&:last-child {
 					border: none;
-					padding-bottom: 0;
+				}
+				
+				&.file:hover {
+					background: #f0f0f0;
+				}
+				
+				i {
+					margin-right: .5em;
 				}
 				
 				ul {

@@ -357,14 +357,14 @@ class MembersActions
 	{
 		$this->client_id	= $arguments['client_id'];
 		$this->approve		= !empty( $arguments['approve'] ) ? $arguments['approve'] : '';
-		$this->deny_all		= !empty( $arguments['deny_all'] ) ? $arguments['deny_all'] : '';
+		$this->deny_all	= !empty( $arguments['deny_all'] ) ? $arguments['deny_all'] : '';
 		
 		$this->get_requests_arguments = array(
 												'client_id'	=> $this->client_id,
 											);
 		$this->get_requests	= $this->get_membership_requests( $this->get_requests_arguments );
 		$this->got_requests = $this->get_requests[$this->client_id]['group_ids'];
-
+		
 		$this->return_info	= array(
 									'memberships'	=> array(
 															'approved'	=> array(),
@@ -381,42 +381,40 @@ class MembersActions
 		}
 
 		/** Process individual requests */
-		if ( !empty( $this->approve ) ) {
-			foreach ( $this->got_requests as $this->request ) {
-				/**
-				 * Process request
-				 */
-				$this->requests_to_remove = array();
-				if ( in_array( $this->request, $this->approve ) ) {
-					/** Insert into memberships */
-					$statemente = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
-														." VALUES (:added_by, :client_id, :group_id)");
-					$statemente->bindValue(':added_by', 'SELFREGISTERED');
-					$statemente->bindValue(':client_id', $this->client_id, PDO::PARAM_INT);
-					$statemente->bindValue(':group_id', $this->request, PDO::PARAM_INT);
-					$statemente->execute();
-					/** Add to delete from requests array */
-					$this->requests_to_remove[] = $this->request;
-					$this->return_info['memberships']['approved'][] = $this->request;
-				}
-				else {
-					/** Mark as denied */
-					$this->sql = $this->dbh->prepare('UPDATE ' . TABLE_MEMBERS_REQUESTS . ' SET denied=:denied WHERE client_id=:client_id AND group_id=:group_id');
-					$this->sql->bindValue(':denied', 1, PDO::PARAM_INT);
-					$this->sql->bindValue(':client_id', $this->client_id, PDO::PARAM_INT);
-					$this->sql->bindValue(':group_id', $this->request, PDO::PARAM_INT);
-					$this->status = $this->sql->execute();
-					$this->return_info['memberships']['denied'][] = $this->request;
-				}
+		foreach ( $this->got_requests as $this->request ) {
+			/**
+			 * Process request
+			 */
+			$this->requests_to_remove = array();
+			if ( in_array( $this->request, $this->approve ) ) {
+				/** Insert into memberships */
+				$statemente = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
+													." VALUES (:added_by, :client_id, :group_id)");
+				$statemente->bindValue(':added_by', 'SELFREGISTERED');
+				$statemente->bindValue(':client_id', $this->client_id, PDO::PARAM_INT);
+				$statemente->bindValue(':group_id', $this->request, PDO::PARAM_INT);
+				$statemente->execute();
+				/** Add to delete from requests array */
+				$this->requests_to_remove[] = $this->request;
+				$this->return_info['memberships']['approved'][] = $this->request;
 			}
-			
-			if ( !empty( $this->requests_to_remove ) ) {
-				$this->delete_ids = implode( ',', $this->requests_to_remove );
-				$this->statement = $this->dbh->prepare("DELETE FROM " . TABLE_MEMBERS_REQUESTS . " WHERE client_id=:client_id AND FIND_IN_SET(group_id, :delete)");
-				$this->statement->bindParam(':client_id', $this->client_id, PDO::PARAM_INT);
-				$this->statement->bindParam(':delete', $this->delete_ids);
-				$this->statement->execute();
+			else {
+				/** Mark as denied */
+				$this->sql = $this->dbh->prepare('UPDATE ' . TABLE_MEMBERS_REQUESTS . ' SET denied=:denied WHERE client_id=:client_id AND group_id=:group_id');
+				$this->sql->bindValue(':denied', 1, PDO::PARAM_INT);
+				$this->sql->bindValue(':client_id', $this->client_id, PDO::PARAM_INT);
+				$this->sql->bindValue(':group_id', $this->request, PDO::PARAM_INT);
+				$this->status = $this->sql->execute();
+				$this->return_info['memberships']['denied'][] = $this->request;
 			}
+		}
+		
+		if ( !empty( $this->requests_to_remove ) ) {
+			$this->delete_ids = implode( ',', $this->requests_to_remove );
+			$this->statement = $this->dbh->prepare("DELETE FROM " . TABLE_MEMBERS_REQUESTS . " WHERE client_id=:client_id AND FIND_IN_SET(group_id, :delete)");
+			$this->statement->bindParam(':client_id', $this->client_id, PDO::PARAM_INT);
+			$this->statement->bindParam(':delete', $this->delete_ids);
+			$this->statement->execute();
 		}
 		
 		return $this->return_info;

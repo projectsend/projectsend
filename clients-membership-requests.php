@@ -128,9 +128,8 @@ include('header.php');
 														'name'			=> $client_information['name'],
 														'addresses'		=> $client_information['email'],
 														'memberships'	=> $processed_requests,
-														'preview'		=> true,
 													);
-						//$notify_send = $notify_client->psend_send_email($email_arguments);
+						$notify_send = $notify_client->psend_send_email($email_arguments);
 					}
 					
 					$log_action_number = 39;

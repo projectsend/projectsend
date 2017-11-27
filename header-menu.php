@@ -206,6 +206,10 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 													'link'	=> 'options.php?section=clients',
 												),
 												array(
+													'label'	=> __('Privacy', 'cftp_admin'),
+													'link'	=> 'options.php?section=privacy',
+												),
+												array(
 													'label'	=> __('E-mail notifications', 'cftp_admin'),
 													'link'	=> 'options.php?section=email',
 												),

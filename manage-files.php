@@ -689,7 +689,7 @@ include('header.php');
 	
 						/***/
 						$pathinfo = pathinfo($row['url']);
-						$extension = strtolower($pathinfo['extension']);
+						$extension = ( !empty( $pathinfo['extension'] ) ) ? strtolower($pathinfo['extension']) : '';
 	
 						/** Is file assigned? */
 						$assigned_class		= ($count_assignations == 0) ? 'danger' : 'success';
@@ -699,12 +699,12 @@ include('header.php');
 						 * Visibility
 						 */
 						if ($row['public_allow'] == '1') {
-							$visibility_link	= '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-id="' . $row['id'] .'" data-token="' . html_output($row['public_token']) .'">';
+							$visibility_link	= '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="file" data-id="' . $row['id'] .'" data-token="' . html_output($row['public_token']) .'">';
 							$visibility_label	= __('Download','cftp_admin');
 						}
 						else {
 							if ( ENABLE_LANDING_FOR_ALL_FILES == '1' ) {
-								$visibility_link	= '<a href="javascript:void(0);" class="btn btn-default btn-sm public_link" data-id="' . $row['id'] .'" data-token="' . html_output($row['public_token']) .'">';
+								$visibility_link	= '<a href="javascript:void(0);" class="btn btn-default btn-sm public_link" data-type="file" data-id="' . $row['id'] .'" data-token="' . html_output($row['public_token']) .'">';
 								$visibility_label	= __('View information','cftp_admin');
 							}
 							else {

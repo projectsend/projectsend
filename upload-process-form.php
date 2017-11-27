@@ -339,7 +339,7 @@ while( $row = $statement->fetch() ) {
 									<?php
 										if ($uploaded['public'] == '1') {
 									?>
-											<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-id="<?php echo $uploaded['file_id']; ?>" data-token="<?php echo html_output($uploaded['public_token']); ?>">
+											<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="file" data-id="<?php echo $uploaded['file_id']; ?>" data-token="<?php echo html_output($uploaded['public_token']); ?>">
 									<?php
 										}
 										else {

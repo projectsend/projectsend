@@ -352,6 +352,18 @@ include('header.php');
 					}
 					
 					/**
+					 * 3- Visibility
+					 */
+					 if ($row['public'] == '1') {
+						 $visibility_link	= '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="group" data-id="' . $row['id'] .'" data-token="' . html_output($row['public_token']) .'">';
+						 $visibility_label	= __('Public','cftp_admin');
+					 }
+					 else {
+						 $visibility_link	= '<a href="javascript:void(0);" class="btn btn-default btn-sm disabled" title="">';
+						 $visibility_label	= __('Private','cftp_admin');
+					 }
+					
+					/**
 					 * Add the cells to the row
 					 */
 					$tbody_cells = array(
@@ -372,7 +384,8 @@ include('header.php');
 													'content'		=> ( isset( $files_amount[$row['id']] ) ) ? $files_amount[$row['id']] : '0',
 												),
 											array(
-													'content'		=> ( $row["public"] == '1' ) ? __('Yes','cftp_admin') : __('No','cftp_admin'),
+													//'content'		=> ( $row["public"] == '1' ) ? __('Yes','cftp_admin') : __('No','cftp_admin'),
+													'content'		=> $visibility_link . $visibility_label . '</a>',
 												),
 											array(
 													'content'		=> html_output( $row["created_by"] ),

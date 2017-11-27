@@ -356,5 +356,7 @@ if (!defined('RESULTS_PER_PAGE')) {
  * Landing page for public groups and files
  */
 if (defined('BASE_URI')) {
+	define('PUBLIC_DOWNLOAD_URI',BASE_URI.'download.php');
 	define('PUBLIC_LANDING_URI',BASE_URI.'public.php');
+	define('PUBLIC_GROUP_URI',BASE_URI.'public.php');
 }

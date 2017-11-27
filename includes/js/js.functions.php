@@ -16,16 +16,27 @@ $(document).ready(function(e) {
 	***********************************************************************************/
 	$('body').on('click', '.public_link', function(e) {
 		$(document).psendmodal();
+		var type		= $(this).data('type');
 		var id		= $(this).data('id');
 		var token	= $(this).data('token');
+
+		if ( type == 'group' ) {
+			var link_base = '<?php echo PUBLIC_GROUP_URI; ?>?nav=group&';
+			var note_text = '<?php _e('Send this URL to someone to view the allowed group contents according to your privacy settings.','cftp_admin'); ?>';
+		}
+		else if ( type == 'file' ) {
+			var link_base = '<?php echo PUBLIC_DOWNLOAD_URI; ?>?';
+			var note_text = '<?php _e('Send this URL to someone to download the file without registering or logging in.','cftp_admin'); ?>';
+		}
+
 		var content =  '<div class="public_link_modal">'+
 							'<strong><?php _e('Click to select and copy','cftp_admin'); ?></strong>'+
 							'<div class="copied"><?php _e('Succesfully copied to clipboard','cftp_admin'); ?></div>'+
 							'<div class="copied_not"><?php _e('Content could not be copied to clipboard','cftp_admin'); ?></div>'+
 							'<div class="form-group">'+
-								'<textarea class="input-large public_link_copy form-control" rows="4" readonly><?php echo BASE_URI; ?>download.php?id=' + id + '&token=' + token + '</textarea>'+
+								'<textarea class="input-large public_link_copy form-control" rows="4" readonly>' + link_base + 'id=' + id + '&token=' + token + '</textarea>'+
 							'</div>'+
-							'<span class="note"><?php _e('Send this URL to someone to download the file without registering or logging in.','cftp_admin'); ?></span>'+
+							'<span class="note">' + note_text + '</span>'+
 						'</div>';
 		var title 	= '<?php _e('Public URL','cftp_admin'); ?>';
 		$('.modal_title span').html(title);

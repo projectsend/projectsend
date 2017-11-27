@@ -10,7 +10,8 @@
  * Check if ProjectSend is installed by trying to find the main users table.
  * If it is missing, the installation is invalid.
  */
-function is_projectsend_installed() {
+function is_projectsend_installed()
+{
 	$tables_need = array(
 						TABLE_USERS
 					);
@@ -35,7 +36,8 @@ function is_projectsend_installed() {
 /**
  * Add any existing $_GET parameters as hidden fields on a form
  */
-function form_add_existing_parameters( $ignore = array() ) {
+function form_add_existing_parameters( $ignore = array() )
+{
 	// Don't add the pagination parameter
 	$ignore[] = 'page';
 	
@@ -61,7 +63,8 @@ function form_add_existing_parameters( $ignore = array() ) {
  * is either ASC or DESC.
  * Defaults to ORDER BY: id, ORDER: DESC
  */
-function sql_add_order( $table, $column = 'id', $initial_order = 'ASC' ) {
+function sql_add_order( $table, $column = 'id', $initial_order = 'ASC' )
+{
 	global $dbh;
 	$allowed_custom_sort_columns = array( 'download_count' );
 
@@ -81,7 +84,8 @@ function sql_add_order( $table, $column = 'id', $initial_order = 'ASC' ) {
 	}
 }
 
-function generate_password() {
+function generate_password()
+{
 	/**
 	 * Random compat library, a polyfill for PHP 7's random_bytes();
 	 * @link: https://github.com/paragonie/random_compat
@@ -108,7 +112,8 @@ function generate_password() {
  * Reads the lang folder and scans for .mo files. 
  * Returns an array of avaiable languages.
  */
-function get_available_languages() {
+function get_available_languages()
+{
 	global $locales_names;
 
 	$langs = array();
@@ -142,7 +147,8 @@ function get_available_languages() {
  * - Unique logged in clients downloads
  * - Total count
  */
-function generate_downloads_count( $id = null ) {
+function generate_downloads_count( $id = null )
+{
 	global $dbh;
 
 	$data = array();
@@ -166,10 +172,10 @@ function generate_downloads_count( $id = null ) {
 
 	while ( $row = $statement->fetch() ) {
 		$data[$row['file_id']] = array(
-									'file_id'			=> $row['file_id'],
-									'total'				=> $row['downloads'],
-									'unique_clients'	=> $row['unique_clients'],
-									'anonymous_users'	=> $row['anonymous_users'],
+									'file_id'			=> html_output($row['file_id']),
+									'total'				=> html_output($row['downloads']),
+									'unique_clients'	=> html_output($row['unique_clients']),
+									'anonymous_users'	=> html_output($row['anonymous_users']),
 								);
 	}
 	
@@ -183,7 +189,8 @@ function generate_downloads_count( $id = null ) {
  * @return bool TRUE if table exists, FALSE if no table found.
  * by esbite on http://stackoverflow.com/questions/1717495/check-if-a-database-table-exists-using-php-pdo
  */
-function tableExists($table) {
+function tableExists($table)
+{
 	global $dbh;
 
     try {
@@ -294,19 +301,19 @@ function get_client_by_id($client)
 
 	while ( $row = $statement->fetch() ) {
 		$information = array(
-							'id'				=> $row['id'],
+							'id'					=> html_output($row['id']),
+							'username'			=> html_output($row['user']),
 							'name'				=> html_output($row['name']),
-							'username'			=> $row['user'],
-							'address'			=> $row['address'],
-							'phone'				=> $row['phone'],
-							'email'				=> $row['email'],
-							'notify'			=> $row['notify'],
-							'level'				=> $row['level'],
-							'active'			=> $row['active'],
-							'max_file_size'		=> $row['max_file_size'],
-							'contact'			=> $row['contact'],
-							'created_date'		=> $row['timestamp'],
-							'created_by'		=> $row['created_by']
+							'address'			=> html_output($row['address']),
+							'phone'				=> html_output($row['phone']),
+							'email'				=> html_output($row['email']),
+							'notify'				=> html_output($row['notify']),
+							'level'				=> html_output($row['level']),
+							'active'				=> html_output($row['active']),
+							'max_file_size'	=> html_output($row['max_file_size']),
+							'contact'			=> html_output($row['contact']),
+							'created_date'		=> html_output($row['timestamp']),
+							'created_by'		=> html_output($row['created_by'])
 						);
 		if ( !empty( $information ) ) {
 			return $information;
@@ -333,19 +340,19 @@ function get_client_by_username($client)
 
 	while ( $row = $statement->fetch() ) {
 		$information = array(
-							'id'				=> $row['id'],
+							'id'					=> html_output($row['id']),
 							'name'				=> html_output($row['name']),
-							'username'			=> $row['user'],
-							'address'			=> $row['address'],
-							'phone'				=> $row['phone'],
-							'email'				=> $row['email'],
-							'notify'			=> $row['notify'],
-							'level'				=> $row['level'],
-							'active'			=> $row['active'],
-							'max_file_size'		=> $row['max_file_size'],
-							'contact'			=> $row['contact'],
-							'created_date'		=> $row['timestamp'],
-							'created_by'		=> $row['created_by']
+							'username'			=> html_output($row['user']),
+							'address'			=> html_output($row['address']),
+							'phone'				=> html_output($row['phone']),
+							'email'				=> html_output($row['email']),
+							'notify'				=> html_output($row['notify']),
+							'level'				=> html_output($row['level']),
+							'active'				=> html_output($row['active']),
+							'max_file_size'	=> html_output($row['max_file_size']),
+							'contact'			=> html_output($row['contact']),
+							'created_date'		=> html_output($row['timestamp']),
+							'created_by'		=> html_output($row['created_by'])
 						);
 		if ( !empty( $information ) ) {
 			return $information;
@@ -373,7 +380,7 @@ function get_logged_account_id($username)
 	$statement->setFetchMode(PDO::FETCH_ASSOC);
 
 	while ( $row = $statement->fetch() ) {
-		$return_id = $row['id'];
+		$return_id = html_output($row['id']);
 		if ( !empty( $return_id ) ) {
 			return $return_id;
 		}
@@ -401,7 +408,7 @@ function check_if_notify_client($client)
 
 	while ( $row = $statement->fetch() ) {
 		if ( $row['notify'] == '1' ) {
-			return $row['email'];
+			return html_output($row['email']);
 		}
 		else {
 			return false;
@@ -429,14 +436,14 @@ function get_user_by_username($user)
 	if ( $statement->rowCount() > 0 ) {
 		while ( $row = $statement->fetch() ) {
 			$information = array(
-								'id'				=> $row['id'],
-								'username'			=> $row['user'],
+								'id'					=> html_output($row['id']),
+								'username'			=> html_output($row['user']),
 								'name'				=> html_output($row['name']),
-								'email'				=> $row['email'],
-								'level'				=> $row['level'],
-								'active'			=> $row['active'],
-								'max_file_size'		=> $row['max_file_size'],
-								'created_date'		=> $row['timestamp']
+								'email'				=> html_output($row['email']),
+								'level'				=> html_output($row['level']),
+								'active'				=> html_output($row['active']),
+								'max_file_size'	=> html_output($row['max_file_size']),
+								'created_date'		=> html_output($row['timestamp'])
 							);
 			if ( !empty( $information ) ) {
 				return $information;
@@ -463,13 +470,13 @@ function get_user_by_id($id)
 
 	while ( $row = $statement->fetch() ) {
 		$information = array(
-							'id'				=> $row['id'],
-							'username'			=> $row['user'],
+							'id'					=> html_output($row['id']),
+							'username'			=> html_output($row['user']),
 							'name'				=> html_output($row['name']),
-							'email'				=> $row['email'],
-							'level'				=> $row['level'],
-							'max_file_size'		=> $row['max_file_size'],
-							'created_date'		=> $row['timestamp']
+							'email'				=> html_output($row['email']),
+							'level'				=> html_output($row['level']),
+							'max_file_size'	=> html_output($row['max_file_size']),
+							'created_date'		=> html_output($row['timestamp']),
 						);
 		if ( !empty( $information ) ) {
 			return $information;
@@ -497,10 +504,43 @@ function get_file_by_id($id)
 
 	while ( $row = $statement->fetch() ) {
 		$information = array(
-							'id'			=> $row['id'],
-							'title'			=> $row['filename'],
-							'original_url'	=> $row['original_url'],
-							'url'			=> $row['url'],
+							'id'				=> html_output($row['id']),
+							'title'			=> html_output($row['filename']),
+							'original_url'	=> html_output($row['original_url']),
+							'url'				=> html_output($row['url']),
+						);
+		if ( !empty( $information ) ) {
+			return $information;
+		}
+		else {
+			return false;
+		}
+	}
+}
+
+
+/**
+ * Get all the group information knowing only the id
+ *
+ * @return array
+ */
+function get_group_by_id($id)
+{
+	global $dbh;
+	$statement = $dbh->prepare("SELECT * FROM " . TABLE_GROUPS . " WHERE id=:id");
+	$statement->bindParam(':id', $id, PDO::PARAM_INT);
+	$statement->execute();
+	$statement->setFetchMode(PDO::FETCH_ASSOC);
+
+	while ( $row = $statement->fetch() ) {
+		$information = array(
+							'id'				=> html_output($row['id']),
+							'created_by'	=> html_output($row['created_by']),
+							'created_date'	=> html_output($row['timestamp']),
+							'name'			=> html_output($row['name']),
+							'description'	=> html_output($row['description']),
+							'public'			=> html_output($row['public']),
+							'public_token'	=> html_output($row['token']),
 						);
 		if ( !empty( $information ) ) {
 			return $information;
@@ -1029,7 +1069,8 @@ function password_notes()
 /**
  * Adds default and custom css classes to the body.
  */
-function add_body_class( $custom = '' ) {
+function add_body_class( $custom = '' )
+{
 	/** Remove query string */
 	$current_url = strtok( $_SERVER['REQUEST_URI'], '?' );
 	$classes = array('body');

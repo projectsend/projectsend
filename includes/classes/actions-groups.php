@@ -240,11 +240,12 @@ class GroupActions
 		$this->statement->setFetchMode(PDO::FETCH_ASSOC);
 		while( $this->data_group = $this->statement->fetch() ) {
 			$this->all_groups[$this->data_group['id']] = array(
-										'id'			=> $this->data_group['id'],
+										'id'				=> $this->data_group['id'],
 										'name'			=> $this->data_group['name'],
 										'description'	=> $this->data_group['description'],
 										'created_by'	=> $this->data_group['created_by'],
-										'public'		=> $this->data_group['public'],
+										'public'			=> $this->data_group['public'],
+										'public_token'	=> $this->data_group['public_token'],
 									);
 		}
 		

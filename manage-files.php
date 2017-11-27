@@ -121,7 +121,6 @@ include('header.php');
 				while( $data_file = $sql_file->fetch() ) {
 					$all_files[$data_file['id']] = $data_file['filename'];
 				}
-				
 				switch($_GET['action']) {
 					case 'hide':
 						/**
@@ -132,7 +131,7 @@ include('header.php');
 						 */
 						foreach ($selected_files as $work_file) {
 							$this_file = new FilesActions();
-							$hide_file = $this_file->change_files_hide_status($work_file, '1', $_GET['modify_type'], $_GET['modify_id']);
+							$hide_file = $this_file->change_files_hide_status('1', $work_file, $_GET['modify_type'], $_GET['modify_id']);
 						}
 						$msg = __('The selected files were marked as hidden.','cftp_admin');
 						echo system_message('ok',$msg);
@@ -146,7 +145,7 @@ include('header.php');
 						 */
 						foreach ($selected_files as $work_file) {
 							$this_file = new FilesActions();
-							$show_file = $this_file->change_files_hide_status($work_file, '0', $_GET['modify_type'], $_GET['modify_id']);
+							$show_file = $this_file->change_files_hide_status('0', $work_file, $_GET['modify_type'], $_GET['modify_id']);
 						}
 						$msg = __('The selected files were marked as visible.','cftp_admin');
 						echo system_message('ok',$msg);
@@ -455,7 +454,7 @@ include('header.php');
 
 
 		<form action="manage-files.php" name="files_list" method="get" class="form-inline">
-			<?php form_add_existing_parameters(); ?>
+			<?php form_add_existing_parameters( array( 'modify_id', 'modify_type' ) ); ?>
 			<?php
 				/** Actions are not available for clients */
 				if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
@@ -477,7 +476,6 @@ include('header.php');
 										<?php
 											$actions_options = array(
 																	'none'			=> __('Select action','cftp_admin'),
-																	'delete'		=> __('Delete','cftp_admin'),
 																);
 
 											/** Options only available when viewing a client/group files list */
@@ -485,6 +483,9 @@ include('header.php');
 												$actions_options['hide']		= __('Hide','cftp_admin');
 												$actions_options['show']		= __('Show','cftp_admin');
 												$actions_options['unassign']	= __('Unassign','cftp_admin');
+											}
+											else {
+												$actions_options['delete']		= __('Delete','cftp_admin');
 											}
 
 											foreach ( $actions_options as $val => $text ) {

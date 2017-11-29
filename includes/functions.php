@@ -540,7 +540,7 @@ function get_group_by_id($id)
 							'name'			=> html_output($row['name']),
 							'description'	=> html_output($row['description']),
 							'public'			=> html_output($row['public']),
-							'public_token'	=> html_output($row['token']),
+							'public_token'	=> html_output($row['public_token']),
 						);
 		if ( !empty( $information ) ) {
 			return $information;

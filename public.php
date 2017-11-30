@@ -87,7 +87,7 @@ function list_file($data, $origin) {
 }
 
 ?>
-<div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
+<div class="col-xs-12 col-sm-12 col-lg-6 col-lg-offset-3">
 	
 	<?php echo generate_branding_layout(); ?>
 
@@ -243,23 +243,23 @@ function list_file($data, $origin) {
 								* 1- Loose files
 								*/
 								case 'files':
-									foreach ( $groups as $group ) {
-										$group_link = PUBLIC_GROUP_URI . '?group=' . $group['id'] . '&token=' . $group['token'];
-						?>
-										<li>
-											<a href="<?php echo $group_link; ?>">
-												<i class="fa fa-th-large fa-fw" aria-hidden="true"></i> <?php echo $group['name']; ?>
-											</a>
-										</li>
-						<?php
+									if ( empty( $all_files ) && empty( $groups ) ) {
+										_e("There are no files available.",'cftp_admin');
 									}
-									if ( !empty( $all_files ) ) {
+									else {
+										foreach ( $groups as $group ) {
+											$group_link = PUBLIC_GROUP_URI . '?group=' . $group['id'] . '&token=' . $group['token'];
+						?>
+											<li>
+												<a href="<?php echo $group_link; ?>">
+													<i class="fa fa-th-large fa-fw" aria-hidden="true"></i> <?php echo $group['name']; ?>
+												</a>
+											</li>
+						<?php
+										}
 										foreach ( $all_files as $id => $file_info) {
 											echo list_file($file_info, 'loose');
 										}
-									}
-									else {
-										_e("There are no files available.",'cftp_admin');
 									}
 								break;
 					

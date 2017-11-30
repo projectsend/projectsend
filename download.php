@@ -125,7 +125,7 @@ include('header-unlogged.php');
 	}
 ?>
 
-<div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
+<div class="col-xs-12 col-sm-12 col-lg-6 col-lg-offset-3">
 
 	<?php echo generate_branding_layout(); ?>
 
@@ -177,10 +177,11 @@ include('header-unlogged.php');
 				}
 			?>
 
-			<div class="login_form_links">
-				<p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.','cftp_admin'); ?></a></p>
-			</div>
 		</div>
+	</div>
+
+	<div class="login_form_links">
+		<p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.','cftp_admin'); ?></a></p>
 	</div>
 </div>
 

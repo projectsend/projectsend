@@ -88,11 +88,28 @@ function list_file($data, $origin) {
 
 ?>
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
+	
+	<?php echo generate_branding_layout(); ?>
 
 	<div class="white-box">
 		<div class="white-box-interior">
 			<div class="text-center">
-				<h3><?php echo $page_title; ?></h3>
+				<?php
+					switch ( $mode ) {
+						case 'files':
+								$title	= __('Public groups and files','cftp_admin');
+								$desc		= ''; //__('Public navigation','cftp_admin');
+							break;
+						case 'group':
+								$title	= $test_group['name'];
+								$desc		= $test_group['description'];
+							break;
+					}
+				?>
+				<h3><?php echo $title; ?></h3>
+				<div class="intro">
+					<?php echo $desc; ?>
+				</div>
 			</div>
 			
 			<div class="treeview">
@@ -226,30 +243,40 @@ function list_file($data, $origin) {
 								* 1- Loose files
 								*/
 								case 'files':
-										foreach ( $groups as $group ) {
-											$group_link = PUBLIC_GROUP_URI . '?group=' . $group['id'] . '&token=' . $group['token'];
+									foreach ( $groups as $group ) {
+										$group_link = PUBLIC_GROUP_URI . '?group=' . $group['id'] . '&token=' . $group['token'];
 						?>
-											<li>
-												<a href="<?php echo $group_link; ?>">
-													<i class="fa fa-th-large fa-fw" aria-hidden="true"></i> <?php echo $group['name']; ?>
-												</a>
-											</li>
+										<li>
+											<a href="<?php echo $group_link; ?>">
+												<i class="fa fa-th-large fa-fw" aria-hidden="true"></i> <?php echo $group['name']; ?>
+											</a>
+										</li>
 						<?php
-										}
+									}
+									if ( !empty( $all_files ) ) {
 										foreach ( $all_files as $id => $file_info) {
 											echo list_file($file_info, 'loose');
 										}
-									break;
-						
-									/**
-									* 2- Group files
-									*/
-									case 'group':
+									}
+									else {
+										_e("There are no files available.",'cftp_admin');
+									}
+								break;
+					
+								/**
+								* 2- Group files
+								*/
+								case 'group':
+									if ( !empty( $groups[$test_group['id']]['files'] ) ) {
 										foreach ( $groups[$test_group['id']]['files'] as $id => $file_info) {
 											echo list_file($file_info, 'loose');
 										}
-										break;
-								}
+									}
+									else {
+										_e("There are no files available.",'cftp_admin');
+									}
+								break;
+							}
 						?>
 					</ul>
 				</div>

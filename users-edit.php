@@ -48,12 +48,12 @@ if ($page_status === 1) {
 /**
  * Form type
  */
-if ($global_level == 7) {
+if (CURRENT_USER_LEVEL == 7) {
 	$user_form_type = 'edit_user_self';
 	$ignore_size = true;
 }
 else {
-	if ($global_user == $add_user_data_user) {
+	if (CURRENT_USER_USERNAME == $add_user_data_user) {
 		$user_form_type = 'edit_user_self';
 		$ignore_size = true;
 	}
@@ -66,8 +66,8 @@ else {
 /**
  * Compare the client editing this account to the on the db.
  */
-if ($global_level != 9) {
-	if ($global_user != $add_user_data_user) {
+if (CURRENT_USER_LEVEL != 9) {
+	if (CURRENT_USER_USERNAME != $add_user_data_user) {
 		$page_status = 3;
 	}
 }
@@ -77,7 +77,7 @@ if ($_POST) {
 	 * If the user is not an admin, check if the id of the user
 	 * that's being edited is the same as the current logged in one.
 	 */
-	if ($global_level != 9) {
+	if (CURRENT_USER_LEVEL != 9) {
 		if ($user_id != CURRENT_USER_ID) {
 			die();
 		}
@@ -105,11 +105,11 @@ if ($_POST) {
 	 * editing other's account (not own).
 	 */	
 	$edit_level_active = true;
-	if ($global_level == 7) {
+	if (CURRENT_USER_LEVEL == 7) {
 		$edit_level_active = false;
 	}
 	else {
-		if ($global_user == $add_user_data_user) {
+		if (CURRENT_USER_USERNAME == $add_user_data_user) {
 			$edit_level_active = false;
 		}
 	}
@@ -123,11 +123,11 @@ if ($_POST) {
 	$edit_arguments = array(
 							'id'			=> $user_id,
 							'name'			=> $add_user_data_name,
-							'email'			=> $add_user_data_email,
-							'role'			=> $add_user_data_level,
-							'active'		=> $add_user_data_active,
+							'email'				=> $add_user_data_email,
+							'role'				=> $add_user_data_level,
+							'active'				=> $add_user_data_active,
 							'max_file_size'	=> $add_user_data_maxfilesize,
-							'type'			=> 'edit_user'
+							'type'				=> 'edit_user'
 						);
 
 	/**
@@ -151,7 +151,7 @@ if ($_POST) {
 }
 
 $page_title = __('Edit system user','cftp_admin');
-if ($global_user == $add_user_data_user) {
+if (CURRENT_USER_USERNAME == $add_user_data_user) {
 	$page_title = __('My account','cftp_admin');
 }
 

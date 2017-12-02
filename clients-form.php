@@ -326,8 +326,14 @@ switch ($clients_form_type) {
 
 	<?php
 		if ($info_box == true) {
-			$msg = __('This account information will be e-mailed to the address supplied above by default unless de-selected','cftp_admin');
-			echo system_message('info',$msg);
+			if ( $clients_form_type == 'new_client_self' ) {
+				$msg = __('This account information will be e-mailed to the address supplied above','cftp_admin');
+				echo system_message('info',$msg);
+			}
+			else {
+				$msg = __('This account information will be e-mailed to the address supplied above by default unless de-selected','cftp_admin');
+				echo system_message('info',$msg);
+			}
 		}
 	?>
 </form>

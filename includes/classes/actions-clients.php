@@ -54,7 +54,8 @@ class ClientActions
 		$this->address = $arguments['address'];
 		$this->phone = $arguments['phone'];
 		$this->contact = $arguments['contact'];
-		$this->notify = $arguments['notify'];
+		$this->notify_account = $arguments['notify_account'];
+		$this->notify_upload = $arguments['notify_upload'];
 		$this->max_file_size = ( !empty( $arguments['max_file_size'] ) ) ? $arguments['max_file_size'] : 0;
 		$this->type = $arguments['type'];
 		$this->recaptcha = ( isset( $arguments['recaptcha'] ) ) ? $arguments['recaptcha'] : '';
@@ -141,7 +142,8 @@ class ClientActions
 		$this->address			= encode_html($arguments['address']);
 		$this->phone			= encode_html($arguments['phone']);
 		$this->contact			= encode_html($arguments['contact']);
-		$this->notify			= ( $arguments['notify'] == '1' ) ? 1 : 0;
+		$this->notify_upload    	= ( $arguments['notify_upload'] == '1' ) ? 1 : 0;
+		$this->notify_account   	= ( $arguments['notify_account'] == '1' ) ? 1 : 0;
 		$this->max_file_size	= ( !empty( $arguments['max_file_size'] ) ) ? $arguments['max_file_size'] : 0;
 		$this->request			= ( !empty( $arguments['account_requested'] ) ) ? $arguments['account_requested'] : 0;
 		$this->active			= ( $arguments['active'] );
@@ -164,7 +166,7 @@ class ClientActions
 			$this->sql_query->bindParam(':address', $this->address);
 			$this->sql_query->bindParam(':phone', $this->phone);
 			$this->sql_query->bindParam(':email', $this->email);
-			$this->sql_query->bindParam(':notify', $this->notify, PDO::PARAM_INT);
+			$this->sql_query->bindParam(':notify', $this->notify_upload, PDO::PARAM_INT);
 			$this->sql_query->bindParam(':contact', $this->contact);
 			$this->sql_query->bindParam(':admin', $this->this_admin);
 			$this->sql_query->bindParam(':active', $this->active, PDO::PARAM_INT);
@@ -185,13 +187,18 @@ class ClientActions
 												'username'	=> $this->username,
 												'password'	=> $this->password
 											);
-				$this->notify_send = $this->notify_client->psend_send_email($this->email_arguments);
+				if ($this->notify_account == 1) {
+					$this->notify_send = $this->notify_client->psend_send_email($this->email_arguments);
 
-				if ($this->notify_send == 1){
-					$this->state['email'] = 1;
+					if ($this->notify_send == 1){
+						$this->state['email'] = 1;
+					}
+					else {
+						$this->state['email'] = 0;
+					}
 				}
 				else {
-					$this->state['email'] = 0;
+					$this->state['email'] = 2;
 				}
 			}
 			else {
@@ -223,7 +230,7 @@ class ClientActions
 		$this->address			= encode_html($arguments['address']);
 		$this->phone			= encode_html($arguments['phone']);
 		$this->contact			= encode_html($arguments['contact']);
-		$this->notify			= ( $arguments['notify'] == '1' ) ? 1 : 0;
+		$this->notify_upload		= ( $arguments['notify_upload'] == '1' ) ? 1 : 0;
 		$this->active			= ( $arguments['active'] == '1' ) ? 1 : 0;
 		$this->max_file_size	= ( !empty( $arguments['max_file_size'] ) ) ? $arguments['max_file_size'] : 0;
 		$this->enc_password		= $hasher->HashPassword($arguments['password']);
@@ -258,7 +265,7 @@ class ClientActions
 			$this->sql_query->bindParam(':phone', $this->phone);
 			$this->sql_query->bindParam(':email', $this->email);
 			$this->sql_query->bindParam(':contact', $this->contact);
-			$this->sql_query->bindParam(':notify', $this->notify, PDO::PARAM_INT);
+			$this->sql_query->bindParam(':notify', $this->notify_upload, PDO::PARAM_INT);
 			$this->sql_query->bindParam(':active', $this->active, PDO::PARAM_INT);
 			$this->sql_query->bindParam(':max_file_size', $this->max_file_size, PDO::PARAM_INT);
 			$this->sql_query->bindParam(':id', $this->id, PDO::PARAM_INT);

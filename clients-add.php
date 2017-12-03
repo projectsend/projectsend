@@ -128,11 +128,11 @@ if ($_POST) {
 					 */
 					switch ($new_response['email']) {
 						case 2:
-							$msg = __('An e-mail notification was not sent to your client.','cftp_admin');
+							$msg = __('A welcome message was not sent to your client.','cftp_admin');
 							echo system_message('ok',$msg);
 						break;
 						case 1:
-							$msg = __('An e-mail notification with login information was sent to your client.','cftp_admin');
+							$msg = __('A welcome message with login information was sent to your client.','cftp_admin');
 							echo system_message('ok',$msg);
 						break;
 						case 0:

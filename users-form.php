@@ -150,6 +150,22 @@ switch ($user_form_type) {
 					</label>
 				</div>
 			</div>
+
+			<?php
+				if ( $user_form_type == 'new_user' ) {
+			?>
+
+					<div class="form-group">
+						<div class="col-sm-8 col-sm-offset-4">
+							<label for="add_user_form_notify_account">
+								<input type="checkbox" name="add_user_form_notify_account" id="add_user_form_notify_account" <?php echo (isset($add_user_data_notify_account) && $add_user_data_notify_account == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Send welcome email','cftp_admin'); ?>
+							</label>
+						</div>
+					</div>
+			<?php
+				}
+			?>
+
 		<?php
 			}
 		?>

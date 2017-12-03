@@ -24,6 +24,7 @@ include('header.php');
  * the form
  */
 $add_user_data_active = 1;
+$add_user_data_notify_account = 1;
 
 if ($_POST) {
 	$new_user = new UserActions();
@@ -38,6 +39,7 @@ if ($_POST) {
 	$add_user_data_user = encode_html($_POST['add_user_form_user']);
 	$add_user_data_maxfilesize = (isset($_POST["add_user_form_maxfilesize"])) ? encode_html($_POST["add_user_form_maxfilesize"]) : '';
 	$add_user_data_active = (isset($_POST["add_user_form_active"])) ? 1 : 0;
+	$add_user_data_notify_account = (isset($_POST["add_user_form_notify_account"])) ? 1 : 0;
 
 	/** Arguments used on validation and user creation. */
 	$new_arguments = array(
@@ -50,6 +52,7 @@ if ($_POST) {
 							'role' => $add_user_data_level,
 							'active' => $add_user_data_active,
 							'max_file_size'	=> $add_user_data_maxfilesize,
+							'notify_account' => $add_user_data_notify_account,
 							'type' => 'new_user'
 						);
 
@@ -104,8 +107,12 @@ if ($_POST) {
 					 * Show the ok or error message for the email notification.
 					 */
 					switch ($new_response['email']) {
+						case 2:
+							$msg = __('A welcome message was not sent to the new user.','cftp_admin');
+							echo system_message('ok',$msg);
+						break;
 						case 1:
-							$msg = __('An e-mail notification with login information was sent to the new user.','cftp_admin');
+							$msg = __('A welcome message with login information was sent to the new user.','cftp_admin');
 							echo system_message('ok',$msg);
 						break;
 						case 0:

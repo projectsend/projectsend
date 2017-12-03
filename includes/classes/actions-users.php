@@ -33,6 +33,7 @@ class UserActions
 		$this->password = $arguments['password'];
 		//$this->password_repeat = $arguments['password_repeat'];
 		$this->role = $arguments['role'];
+		$this->notify_account = $arguments['notify_account'];
 		$this->max_file_size = ( !empty( $arguments['max_file_size'] ) ) ? $arguments['max_file_size'] : 0;
 		$this->type = $arguments['type'];
 
@@ -111,6 +112,7 @@ class UserActions
 		$this->email			= encode_html($arguments['email']);
 		$this->role				= $arguments['role'];
 		$this->active			= $arguments['active'];
+		$this->notify_account           = ( $arguments['notify_account'] == '1' ) ? 1 : 0;
 		$this->max_file_size	= ( !empty( $arguments['max_file_size'] ) ) ? $arguments['max_file_size'] : 0;
 		//$this->enc_password = md5(mysql_real_escape_string($this->password));
 		$this->enc_password	= $hasher->HashPassword($this->password);
@@ -144,13 +146,18 @@ class UserActions
 												'username'	=> $this->username,
 												'password'	=> $this->password
 											);
-				$this->notify_send = $this->notify_user->psend_send_email($this->email_arguments);
+				if ($this->notify_account == 1) {
+					$this->notify_send = $this->notify_user->psend_send_email($this->email_arguments);
 
-				if ($this->notify_send == 1){
-					$this->state['email'] = 1;
+					if ($this->notify_send == 1){
+						$this->state['email'] = 1;
+					}
+					else {
+						$this->state['email'] = 0;
+					}
 				}
 				else {
-					$this->state['email'] = 0;
+					$this->state['email'] = 2;
 				}
 			}
 			else {

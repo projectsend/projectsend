@@ -296,7 +296,7 @@ switch ($clients_form_type) {
 			<div class="form-group">
 				<div class="col-sm-8 col-sm-offset-4">
 					<label for="add_client_form_notify_account">
-						<input type="checkbox" name="add_client_form_notify_account" id="add_client_form_notify_account" <?php echo (isset($add_client_data_notify_account) && $add_client_data_notify_account == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Notify user of account creation by e-mail','cftp_admin'); ?>
+						<input type="checkbox" name="add_client_form_notify_account" id="add_client_form_notify_account" <?php echo (isset($add_client_data_notify_account) && $add_client_data_notify_account == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Send welcome email','cftp_admin'); ?>
 					</label>
 				</div>
 			</div>
@@ -326,14 +326,8 @@ switch ($clients_form_type) {
 
 	<?php
 		if ($info_box == true) {
-			if ( $clients_form_type == 'new_client_self' ) {
-				$msg = __('This account information will be e-mailed to the address supplied above','cftp_admin');
-				echo system_message('info',$msg);
-			}
-			else {
-				$msg = __('This account information will be e-mailed to the address supplied above by default unless de-selected','cftp_admin');
-				echo system_message('info',$msg);
-			}
+			$msg = __('This account information will be e-mailed to the address supplied above','cftp_admin');
+			echo system_message('info',$msg);
 		}
 	?>
 </form>

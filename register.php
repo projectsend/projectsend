@@ -35,7 +35,7 @@ include('header-unlogged.php');
 		$add_client_data_addr = (isset($_POST["add_client_form_address"])) ? encode_html($_POST["add_client_form_address"]) : '';
 		$add_client_data_phone = (isset($_POST["add_client_form_phone"])) ? encode_html($_POST["add_client_form_phone"]) : '';
 		$add_client_data_intcont = (isset($_POST["add_client_form_intcont"])) ? encode_html($_POST["add_client_form_intcont"]) : '';
-		$add_client_data_notity = (isset($_POST["add_client_form_notify"])) ? 1 : 0;
+		$add_client_data_notify_upload = (isset($_POST["add_client_form_notify_upload"])) ? 1 : 0;
 		$add_client_data_group = (isset($_POST["add_client_group_request"])) ? $_POST["add_client_group_request"] : '';
 	
 		/** Arguments used on validation and client creation. */
@@ -49,7 +49,7 @@ include('header-unlogged.php');
 								'address'	=> $add_client_data_addr,
 								'phone'		=> $add_client_data_phone,
 								'contact'	=> $add_client_data_intcont,
-								'notify'	=> $add_client_data_notity,
+								'notify_upload'	=> $add_client_data_notity_upload,
 								'group'		=> $add_client_data_group,
 								'type'		=> 'new_client',
 							);

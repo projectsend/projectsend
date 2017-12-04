@@ -47,7 +47,7 @@ if ($page_status === 1) {
 		$add_client_data_phone			= $data['phone'];
 		$add_client_data_intcont		= $data['contact'];
 		$add_client_data_maxfilesize	= $data['max_file_size'];
-		if ($data['notify'] == 1) { $add_client_data_notity = 1; } else { $add_client_data_notity = 0; }
+		if ($data['notify'] == 1) { $add_client_data_notify_upload = 1; } else { $add_client_data_notify_upload = 0; }
 		if ($data['active'] == 1) { $add_client_data_active = 1; } else { $add_client_data_active = 0; }
 	}
 
@@ -110,7 +110,7 @@ if ($_POST) {
 	$add_client_data_addr			= (isset($_POST["add_client_form_address"])) ? $_POST["add_client_form_address"] : '';
 	$add_client_data_phone			= (isset($_POST["add_client_form_phone"])) ? $_POST["add_client_form_phone"] : '';
 	$add_client_data_intcont		= (isset($_POST["add_client_form_intcont"])) ? $_POST["add_client_form_intcont"] : '';
-	$add_client_data_notity			= (isset($_POST["add_client_form_notify"])) ? 1 : 0;
+	$add_client_data_notify_upload  	= (isset($_POST["add_client_form_notify_upload"])) ? 1 : 0;
 
 	if ( $ignore_size == false ) {
 		$add_client_data_maxfilesize	= (isset($_POST["add_client_form_maxfilesize"])) ? $_POST["add_client_form_maxfilesize"] : '';
@@ -132,7 +132,7 @@ if ($_POST) {
 							'address'		=> $add_client_data_addr,
 							'phone'			=> $add_client_data_phone,
 							'contact'		=> $add_client_data_intcont,
-							'notify'		=> $add_client_data_notity,
+							'notify_upload' 	=> $add_client_data_notify_upload,
 							'active'		=> $add_client_data_active,
 							'max_file_size'	=> $add_client_data_maxfilesize,
 							'type'			=> 'edit_client'

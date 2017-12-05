@@ -142,7 +142,25 @@ if ($_POST) {
 	
 	/** Create the user if validation is correct. */
 	if ($edit_validate == 1) {
+		if ($edit_level_active === true) {
+			$editing = $dbh->prepare("SELECT active FROM " . TABLE_USERS . " WHERE id = :user_id");
+			$editing->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+			$editing->execute();
+			$old_active = $editing->fetchColumn();
+		}
+
 		$edit_response = $edit_user->edit_user($edit_arguments);
+
+		// if account has changed from inactive to active then reset invalid_auth_attempts and start_observation_window
+		if ($edit_level_active === true) {
+			if ($old_active == ACCOUNT_INACTIVE && $add_user_data_active == ACCOUNT_ACTIVE) {
+				$editing = $dbh->prepare("UPDATE " . TABLE_USERS . " SET invalid_auth_attempts = :invalid_auth_attempts, start_observation_window = :start_observation_window WHERE id = :user_id");
+				$editing->bindValue(':invalid_auth_attempts', 0, PDO::PARAM_INT);
+				$editing->bindValue(':start_observation_window', 0, PDO::PARAM_INT);
+				$editing->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+				$editing->execute();
+			}	
+		}
 	}
 
 	$location = BASE_URI . 'users-edit.php?id=' . $user_id . '&status=' . $edit_response['query'];

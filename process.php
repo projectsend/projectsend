@@ -153,22 +153,15 @@ class process {
 				//
 				// account lockout logic
 				//
-				error_log("DBG: *** Start lokout logic", 0);
 
 				// set the correct limits based on the user_level of the account
 				if ($this->user_level != '0') {
-					error_log("DBG: User account", 0);
 					$this->max_invalid_auth_attempts = USER_MAX_INVALID_AUTH_ATTEMPTS;
 					$this->observation_window = USER_OBSERVATION_WINDOW;
 				} else {
-					error_log("DBG: Client account", 0);
 					$this->max_invalid_auth_attempts = CLIENT_MAX_INVALID_AUTH_ATTEMPTS;
 					$this->observation_window = CLIENT_OBSERVATION_WINDOW;
 				}
-
-				error_log("DBG: max_invalid_auth_attempts: " . $this->max_invalid_auth_attempts, 0);
-				error_log("DBG: observation_window: " . $this->observation_window, 0);
-				error_log("DBG: active_status: " . $this->active_status, 0);
 
 				// only bother where the account is active and lockout functionality is enabled (i.e. _MAX_INVALID_AUTH_ATTEMPTS > 0)
 				if ($this->active_status != '0' && $this->max_invalid_auth_attempts != '0') {
@@ -179,10 +172,10 @@ class process {
 							// this invalid login is in an existing observation_window
 
 							// update user table incrementing invalid_auth_attempts by one
-                                			$this->sql = "UPDATE " . TABLE_USERS . " SET invalid_auth_attempts = :invalid_auth_attempts WHERE id = :user_id";
+                                			$this->sql = "UPDATE " . TABLE_USERS . " SET invalid_auth_attempts = :invalid_auth_attempts WHERE id = :logged_id";
                                 			$this->statement = $this->dbh->prepare($this->sql);
                                 			$this->statement->bindValue(':invalid_auth_attempts', $this->invalid_auth_attempts + 1, PDO::PARAM_INT);
-      							$this->statement->bindParam(':user_id', $this->logged_id, PDO::PARAM_INT);
+      							$this->statement->bindParam(':logged_id', $this->logged_id, PDO::PARAM_INT);
                                 			$this->statement->execute();
 
 							// requery to refresh $this
@@ -198,11 +191,11 @@ class process {
 						else {
 							// this invalid login is in a new observation_window
 							
-                                			$this->sql = "UPDATE " . TABLE_USERS . " SET invalid_auth_attempts = :invalid_auth_attempts, start_observation_window = :start_observation_window WHERE id = :user_id";
+                                			$this->sql = "UPDATE " . TABLE_USERS . " SET invalid_auth_attempts = :invalid_auth_attempts, start_observation_window = :start_observation_window WHERE id = :logged_id";
                                 			$this->statement = $this->dbh->prepare($this->sql);
                                 			$this->statement->bindValue(':invalid_auth_attempts', 1, PDO::PARAM_INT);
                                 			$this->statement->bindValue(':start_observation_window', time(), PDO::PARAM_INT);
-      							$this->statement->bindParam(':user_id', $this->logged_id, PDO::PARAM_INT);
+      							$this->statement->bindParam(':logged_id', $this->logged_id, PDO::PARAM_INT);
                                 			$this->statement->execute();
 
 							// requery to refresh $this
@@ -280,8 +273,8 @@ class process {
 
 	private function refresh_account_status($id) {
 		
-		$this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id = :user_id");
-		$this->statement->bindParam(':user_id', $id, PDO::PARAM_INT);
+		$this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id = :logged_id");
+		$this->statement->bindParam(':logged_id', $id, PDO::PARAM_INT);
 		$this->statement->execute();
 		$this->statement->setFetchMode(PDO::FETCH_ASSOC);
 	
@@ -293,10 +286,10 @@ class process {
 	}
 
 	private function disable_account($id) {
-		$this->sql = "UPDATE " . TABLE_USERS . " SET active = :active_status WHERE id = :user_id";
+		$this->sql = "UPDATE " . TABLE_USERS . " SET active = :active_status WHERE id = :logged_id";
 		$this->statement = $this->dbh->prepare($this->sql);
 		$this->statement->bindValue(':active_status', ACCOUNT_INACTIVE, PDO::PARAM_INT);
-		$this->statement->bindParam(':user_id', $id, PDO::PARAM_INT);
+		$this->statement->bindParam(':logged_id', $id, PDO::PARAM_INT);
 		$this->statement->execute();
 	}	
 

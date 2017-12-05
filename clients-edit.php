@@ -153,8 +153,8 @@ if ($_POST) {
 
 		// get the existing value of active
 		if ($global_level != 0) {
-			$editing = $dbh->prepare("SELECT active FROM " . TABLE_USERS . " WHERE id = :user_id");
-			$editing->bindParam(':user_id', $client_id, PDO::PARAM_INT);
+			$editing = $dbh->prepare("SELECT active FROM " . TABLE_USERS . " WHERE id = :client_id");
+			$editing->bindParam(':client_id', $client_id, PDO::PARAM_INT);
 			$editing->execute();
 			$old_active = $editing->fetchColumn();
 		}
@@ -174,10 +174,10 @@ if ($_POST) {
 		// if account has changed from inactive to active then reset invalid_auth_attempts and start_observation_window
 		if ($global_level != 0) {
 			if ($old_active == ACCOUNT_INACTIVE && $add_client_data_active == ACCOUNT_ACTIVE) {
-				$editing = $dbh->prepare("UPDATE " . TABLE_USERS . " SET invalid_auth_attempts = :invalid_auth_attempts, start_observation_window = :start_observation_window WHERE id = :user_id");
+				$editing = $dbh->prepare("UPDATE " . TABLE_USERS . " SET invalid_auth_attempts = :invalid_auth_attempts, start_observation_window = :start_observation_window WHERE id = :client_id");
 				$editing->bindValue(':invalid_auth_attempts', 0, PDO::PARAM_INT);
 				$editing->bindValue(':start_observation_window', 0, PDO::PARAM_INT);
-				$editing->bindParam(':user_id', $client_id, PDO::PARAM_INT);
+				$editing->bindParam(':client_id', $client_id, PDO::PARAM_INT);
 				$editing->execute();
 			}
 		}

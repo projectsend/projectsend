@@ -20,6 +20,12 @@ if ( !defined( 'USER_ROLE_LVL_7' ) ) { define('USER_ROLE_LVL_7', $user_role_7_na
 if ( !defined( 'USER_ROLE_LVL_0' ) ) { define('USER_ROLE_LVL_0', $user_role_0_name); }
 
 /**
+ * Account status
+ */
+if ( !defined( 'ACCOUNT_ACTIVE' ) ) { define('ACCOUNT_ACTIVE', 1); }
+if ( !defined( 'ACCOUNT_INACTIVE' ) ) { define('ACCOUNT_INACTIVE', 0); }
+
+/**
  * Validation class strings
  */
 $validation_recaptcha		= __('reCAPTCHA verification failed','cftp_admin');

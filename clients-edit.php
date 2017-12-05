@@ -150,6 +150,15 @@ if ($_POST) {
 	
 	/** Edit the account if validation is correct. */
 	if ($edit_validate == 1) {
+
+		// get the existing value of active
+		if ($global_level != 0) {
+			$editing = $dbh->prepare("SELECT active FROM " . TABLE_USERS . " WHERE id = :user_id");
+			$editing->bindParam(':user_id', $client_id, PDO::PARAM_INT);
+			$editing->execute();
+			$old_active = $editing->fetchColumn();
+		}
+
 		$edit_response = $edit_client->edit_client($edit_arguments);
 
 		$edit_groups = (!empty( $_POST['add_client_group_request'] ) ) ? $_POST['add_client_group_request'] : array();
@@ -161,6 +170,17 @@ if ($_POST) {
 							);
 
 		$memberships->update_membership_requests($arguments);
+
+		// if account has changed from inactive to active then reset invalid_auth_attempts and start_observation_window
+		if ($global_level != 0) {
+			if ($old_active == ACCOUNT_INACTIVE && $add_client_data_active == ACCOUNT_ACTIVE) {
+				$editing = $dbh->prepare("UPDATE " . TABLE_USERS . " SET invalid_auth_attempts = :invalid_auth_attempts, start_observation_window = :start_observation_window WHERE id = :user_id");
+				$editing->bindValue(':invalid_auth_attempts', 0, PDO::PARAM_INT);
+				$editing->bindValue(':start_observation_window', 0, PDO::PARAM_INT);
+				$editing->bindParam(':user_id', $client_id, PDO::PARAM_INT);
+				$editing->execute();
+			}
+		}
 	}
 
 	$location = BASE_URI . 'clients-edit.php?id=' . $client_id . '&status=' . $edit_response['query'];

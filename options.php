@@ -314,6 +314,38 @@ $allowed_file_types = implode(',',$allowed_file_types);
 						value: <?php echo NOTIFICATIONS_MAX_DAYS; ?>,
 						numberOfDecimals: 0
 					});
+			
+					$('#user_observation_window').spinedit({
+						minimum: 2,
+						maximum: 999,
+						step: 1,
+						value: <?php echo USER_OBSERVATION_WINDOW; ?>,
+						numberOfDecimals: 0
+					});
+
+					$('#user_max_invalid_auth_attempts').spinedit({
+						minimum: 0,
+						maximum: 999,
+						step: 1,
+						value: <?php echo USER_MAX_INVALID_AUTH_ATTEMPTS; ?>,
+						numberOfDecimals: 0
+					});
+
+					$('#client_observation_window').spinedit({
+						minimum: 2,
+						maximum: 999,
+						step: 1,
+						value: <?php echo CLIENT_OBSERVATION_WINDOW; ?>,
+						numberOfDecimals: 0
+					});
+
+					$('#client_max_invalid_auth_attempts').spinedit({
+						minimum: 0,
+						maximum: 999,
+						step: 1,
+						value: <?php echo CLIENT_MAX_INVALID_AUTH_ATTEMPTS; ?>,
+						numberOfDecimals: 0
+					});
 	
 					$('#allowed_file_types').tagsInput({
 						'width'			: '95%',
@@ -848,6 +880,40 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										<a href="<?php echo LINK_DOC_RECAPTCHA; ?>" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
 									</div>
 								</div>
+
+								<h3><?php _e('Account Lockout','cftp_admin'); ?></h3>
+								<div class="form-group">
+									<label for="user_observation_window" class="col-sm-4 control-label"><?php _e('User observation window (minutes)','cftp_admin'); ?></label>
+									<div class="col-sm-8">
+										<input type="text" name="user_observation_window" id="user_observation_window" class="form-control" value="<?php echo USER_OBSERVATION_WINDOW; ?>" />
+										<p class="field_note"><?php _e('Define the period of time invalid logins will be observed over in minutes','cftp_admin'); ?></p>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="user_max_invalid_auth_attempts" class="col-sm-4 control-label"><?php _e('User maximum invalid login count','cftp_admin'); ?></label>
+									<div class="col-sm-8">
+										<input type="text" name="user_max_invalid_auth_attempts" id="user_max_invalid_auth_attempts" class="form-control" value="<?php echo USER_MAX_INVALID_AUTH_ATTEMPTS; ?>" />
+										<p class="field_note"><?php _e('Once an account reached this number it will be disabled. Set to 0 to disable user account lockout.','cftp_admin'); ?></p>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="client_observation_window" class="col-sm-4 control-label"><?php _e('Client observation window (minutes)','cftp_admin'); ?></label>
+									<div class="col-sm-8">
+										<input type="text" name="client_observation_window" id="client_observation_window" class="form-control" value="<?php echo CLIENT_OBSERVATION_WINDOW; ?>" />
+										<p class="field_note"><?php _e('Define the period of time invalid logins will be observed over in minutes','cftp_admin'); ?></p>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="client_max_invalid_auth_attempts" class="col-sm-4 control-label"><?php _e('Client maximum invalid login count','cftp_admin'); ?></label>
+									<div class="col-sm-8">
+										<input type="text" name="client_max_invalid_auth_attempts" id="client_max_invalid_auth_attempts" class="form-control" value="<?php echo CLIENT_MAX_INVALID_AUTH_ATTEMPTS; ?>" />
+										<p class="field_note"><?php _e('Once an account reached this number it will be disabled. Set to 0 to disable client account lockout.','cftp_admin'); ?></p>
+									</div>
+								</div>
+	
 					<?php
 							break;
 							case 'thumbnails':

@@ -62,12 +62,14 @@ class process {
 			/** If the username was found on the users table */
 			$this->statement->setFetchMode(PDO::FETCH_ASSOC);
 			while ( $this->row = $this->statement->fetch() ) {
-				$this->sysuser_username	= $this->row['user'];
+				$this->sysuser_username		= $this->row['user'];
 				$this->db_pass			= $this->row['password'];
 				$this->user_level		= $this->row["level"];
-				$this->active_status	= $this->row['active'];
+				$this->active_status		= $this->row['active'];
 				$this->logged_id		= $this->row['id'];
 				$this->global_name		= $this->row['name'];
+				$this->start_observation_window = $this->row['start_observation_window'];
+				$this->invalid_auth_attempts	= $this->row['invalid_auth_attempts'];
 			}
 			$this->check_password = $hasher->CheckPassword($this->sysuser_password, $this->db_pass);
 			if ($this->check_password) {
@@ -143,16 +145,89 @@ class process {
 					exit;
 				}
 				else {
+					// active_status
 					$this->errorstate = 'inactive_client';
 				}
 			}
 			else {
-				//$errorstate = 'wrong_password';
-				$this->errorstate = 'invalid_credentials';
+				//
+				// account lockout logic
+				//
+				error_log("DBG: *** Start lokout logic", 0);
+
+				// set the correct limits based on the user_level of the account
+				if ($this->user_level != '0') {
+					error_log("DBG: User account", 0);
+					$this->max_invalid_auth_attempts = USER_MAX_INVALID_AUTH_ATTEMPTS;
+					$this->observation_window = USER_OBSERVATION_WINDOW;
+				} else {
+					error_log("DBG: Client account", 0);
+					$this->max_invalid_auth_attempts = CLIENT_MAX_INVALID_AUTH_ATTEMPTS;
+					$this->observation_window = CLIENT_OBSERVATION_WINDOW;
+				}
+
+				error_log("DBG: max_invalid_auth_attempts: " . $this->max_invalid_auth_attempts, 0);
+				error_log("DBG: observation_window: " . $this->observation_window, 0);
+				error_log("DBG: active_status: " . $this->active_status, 0);
+
+				// only bother where the account is active and lockout functionality is enabled (i.e. _MAX_INVALID_AUTH_ATTEMPTS > 0)
+				if ($this->active_status != '0' && $this->max_invalid_auth_attempts != '0') {
+
+					if ($this->invalid_auth_attempts < $this->max_invalid_auth_attempts) {
+
+						if (time() <= $this->start_observation_window + $this->observation_window * 60) {
+							// this invalid login is in an existing observation_window
+
+							// update user table incrementing invalid_auth_attempts by one
+                                			$this->sql = "UPDATE " . TABLE_USERS . " SET invalid_auth_attempts = :invalid_auth_attempts WHERE id = :user_id";
+                                			$this->statement = $this->dbh->prepare($this->sql);
+                                			$this->statement->bindValue(':invalid_auth_attempts', $this->invalid_auth_attempts + 1, PDO::PARAM_INT);
+      							$this->statement->bindParam(':user_id', $this->logged_id, PDO::PARAM_INT);
+                                			$this->statement->execute();
+
+							// requery to refresh $this
+							$this->refresh_account_status($this->logged_id);
+
+							if ($this->invalid_auth_attempts >= $this->max_invalid_auth_attempts) {
+								
+								// maximum attempts in window exceded so disable user account and refresh status
+								$this->disable_account($this->logged_id);
+								$this->refresh_account_status($this->logged_id);
+							}
+						}
+						else {
+							// this invalid login is in a new observation_window
+							
+                                			$this->sql = "UPDATE " . TABLE_USERS . " SET invalid_auth_attempts = :invalid_auth_attempts, start_observation_window = :start_observation_window WHERE id = :user_id";
+                                			$this->statement = $this->dbh->prepare($this->sql);
+                                			$this->statement->bindValue(':invalid_auth_attempts', 1, PDO::PARAM_INT);
+                                			$this->statement->bindValue(':start_observation_window', time(), PDO::PARAM_INT);
+      							$this->statement->bindParam(':user_id', $this->logged_id, PDO::PARAM_INT);
+                                			$this->statement->execute();
+
+							// requery to refresh $this
+							$this->refresh_account_status($this->logged_id);
+						}
+					} 
+					else {
+						// this could happen if _MAX_INVALID_AUTH_ATTEMPTS is reduced
+
+						// maximum attempts exceded so disable user account and refresh status
+						$this->disable_account($this->logged_id);
+						$this->refresh_account_status($this->logged_id);
+					}
+					
+					// user hasn't authenticated correctly so don't bleed any state information about the account
+					$this->errorstate = 'invalid_credentials';
+				} 
+				else {
+					// user hasn't authenticated correctly so don't bleed any state information about the account
+					$this->errorstate = 'invalid_credentials';
+				}
 			}
 		}
 		else {
-			//$errorstate = 'wrong_username';
+			// count_user = 'wrong_username';
 			$this->errorstate = 'invalid_credentials';
 		}
 
@@ -202,6 +277,28 @@ class process {
 		echo json_encode($results);
 		exit;
 	}
+
+	private function refresh_account_status($id) {
+		
+		$this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id = :user_id");
+		$this->statement->bindParam(':user_id', $id, PDO::PARAM_INT);
+		$this->statement->execute();
+		$this->statement->setFetchMode(PDO::FETCH_ASSOC);
+	
+		while ( $this->row = $this->statement->fetch() ) {
+			$this->active_status		= $this->row['active'];
+			$this->start_observation_window = $this->row['start_observation_window'];
+			$this->invalid_auth_attempts	= $this->row['invalid_auth_attempts'];
+		}
+	}
+
+	private function disable_account($id) {
+		$this->sql = "UPDATE " . TABLE_USERS . " SET active = :active_status WHERE id = :user_id";
+		$this->statement = $this->dbh->prepare($this->sql);
+		$this->statement->bindValue(':active_status', ACCOUNT_INACTIVE, PDO::PARAM_INT);
+		$this->statement->bindParam(':user_id', $id, PDO::PARAM_INT);
+		$this->statement->execute();
+	}	
 
 	private function logout() {
 		header("Cache-control: private");

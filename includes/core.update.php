@@ -1363,6 +1363,29 @@ if (in_session_or_cookies($allowed_update)) {
 				$updates_made++;
 			}
 		}
+		
+		/**
+		* r1023 updates
+		* 1- New solumns invalid_auth_attempts and start_observation_window for account lockout functionality
+		*/
+		if ($last_update < 1023) {
+			$new_database_values = array(
+							'user_max_invalid_auth_attempts'	=> '5',
+							'user_observation_window'		=> '20',
+							'client_max_invalid_auth_attempts'	=> '5',
+							'client_observation_window'		=> '20',
+						);
+			
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
+				}
+			}
+
+			$statement = $dbh->query("ALTER TABLE " . TABLE_USERS . " ADD invalid_auth_attempts INT(3) NOT NULL default '0'");
+			$statement = $dbh->query("ALTER TABLE " . TABLE_USERS . " ADD start_observation_window INT(10) NOT NULL default '0'");
+			$updates_made++;
+		}
 
 	}
 }

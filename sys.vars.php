@@ -170,6 +170,13 @@ define('MAX_PASS_CHARS', 60);
 
 define('MIN_GENERATE_PASS_CHARS', 10);
 define('MAX_GENERATE_PASS_CHARS', 20);
+
+// account lockout options validation
+define('MIN_INVALID_AUTH_ATTEMPTS', 0);
+define('MAX_INVALID_AUTH_ATTEMPTS', 999);
+define('MIN_OBSERVED_WINDOW', 2);
+define('MAX_OBSERVED_WINDOW', 999);
+
 /*
  * Cookie expiration time (in seconds).
  * Set by default to 30 days (60*60*24*30).

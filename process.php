@@ -171,12 +171,14 @@ class process {
 						if (time() <= $this->start_observation_window + $this->observation_window * 60) {
 							// this invalid login is in an existing observation_window
 
-							// update user table incrementing invalid_auth_attempts by one
-                                			$this->sql = "UPDATE " . TABLE_USERS . " SET invalid_auth_attempts = :invalid_auth_attempts WHERE id = :logged_id";
-                                			$this->statement = $this->dbh->prepare($this->sql);
-                                			$this->statement->bindValue(':invalid_auth_attempts', $this->invalid_auth_attempts + 1, PDO::PARAM_INT);
-      							$this->statement->bindParam(':logged_id', $this->logged_id, PDO::PARAM_INT);
-                                			$this->statement->execute();
+							// update user table incrementing invalid_auth_attempts by one if current value < MAX_INVALID_AUTH_ATTEMPTS
+							if ($this->invalid_auth_attempts < MAX_INVALID_AUTH_ATTEMPTS) {
+                                				$this->sql = "UPDATE " . TABLE_USERS . " SET invalid_auth_attempts = :invalid_auth_attempts WHERE id = :logged_id";
+                                				$this->statement = $this->dbh->prepare($this->sql);
+                                				$this->statement->bindValue(':invalid_auth_attempts', $this->invalid_auth_attempts + 1, PDO::PARAM_INT);
+      								$this->statement->bindParam(':logged_id', $this->logged_id, PDO::PARAM_INT);
+                                				$this->statement->execute();
+							}
 
 							// requery to refresh $this
 							$this->refresh_account_status($this->logged_id);

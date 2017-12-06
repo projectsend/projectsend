@@ -141,6 +141,44 @@ if ($_POST) {
 			}
 		}
 	}
+
+	/** Some server side data validation is always nice */
+	if ($query_state == '0') {
+
+		/** Account lockout options */
+
+		/** user */
+		if (!empty($_POST['user_max_invalid_auth_attempts'])) {
+			if($_POST['user_max_invalid_auth_attempts'] < MIN_INVALID_AUTH_ATTEMPTS || 
+			  $_POST['user_max_invalid_auth_attempts'] > MAX_INVALID_AUTH_ATTEMPTS) {
+				$query_state = 4;
+			}
+		}
+
+		if (!empty($_POST['user_observation_window'])) {
+			if($_POST['user_observation_window'] < MIN_OBSERVED_WINDOW || 
+			  $_POST['user_observation_window'] > MAX_OBSERVED_WINDOW) {
+				$query_state = 4;
+			}
+
+		}
+
+		/** client */
+		if (!empty($_POST['client_max_invalid_auth_attempts'])) {
+			if($_POST['client_max_invalid_auth_attempts'] < MIN_INVALID_AUTH_ATTEMPTS || 
+			  $_POST['client_max_invalid_auth_attempts'] > MAX_INVALID_AUTH_ATTEMPTS) {
+				$query_state = 4;
+			}
+
+		}
+
+		if (!empty($_POST['client_observation_window'])) {
+			if($_POST['client_observation_window'] < MIN_OBSERVED_WINDOW || 
+			  $_POST['client_observation_window'] > MAX_OBSERVED_WINDOW) {
+				$query_state = 4;
+			}
+		}
+	}
 	
 	/** If every option is completed, continue */
 	if ($query_state == '0') {
@@ -266,6 +304,10 @@ $allowed_file_types = implode(',',$allowed_file_types);
 					echo system_message('error',$msg);
 					$show_options_form = 1;
 					break;
+				case '4':
+					$msg = __('Invalid option vale specified. Please try again.','cftp_admin');
+					echo system_message('error',$msg);
+					break;
 			}
 		}
 
@@ -316,32 +358,32 @@ $allowed_file_types = implode(',',$allowed_file_types);
 					});
 			
 					$('#user_observation_window').spinedit({
-						minimum: 2,
-						maximum: 999,
+						minimum: <?php echo MIN_OBSERVED_WINDOW; ?>,
+						maximum: <?php echo MAX_OBSERVED_WINDOW; ?>,
 						step: 1,
 						value: <?php echo USER_OBSERVATION_WINDOW; ?>,
 						numberOfDecimals: 0
 					});
 
 					$('#user_max_invalid_auth_attempts').spinedit({
-						minimum: 0,
-						maximum: 999,
+						minimum: <?php echo MIN_INVALID_AUTH_ATTEMPTS; ?>,
+						maximum: <?php echo MAX_INVALID_AUTH_ATTEMPTS; ?>,
 						step: 1,
 						value: <?php echo USER_MAX_INVALID_AUTH_ATTEMPTS; ?>,
 						numberOfDecimals: 0
 					});
 
 					$('#client_observation_window').spinedit({
-						minimum: 2,
-						maximum: 999,
+						minimum: <?php echo MIN_OBSERVED_WINDOW; ?>,
+						maximum: <?php echo MAX_OBSERVED_WINDOW; ?>,
 						step: 1,
 						value: <?php echo CLIENT_OBSERVATION_WINDOW; ?>,
 						numberOfDecimals: 0
 					});
 
 					$('#client_max_invalid_auth_attempts').spinedit({
-						minimum: 0,
-						maximum: 999,
+						minimum: <?php echo MIN_INVALID_AUTH_ATTEMPTS; ?>,
+						maximum: <?php echo MAX_INVALID_AUTH_ATTEMPTS; ?>,
 						step: 1,
 						value: <?php echo CLIENT_MAX_INVALID_AUTH_ATTEMPTS; ?>,
 						numberOfDecimals: 0

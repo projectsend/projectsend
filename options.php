@@ -305,7 +305,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 					$show_options_form = 1;
 					break;
 				case '4':
-					$msg = __('Invalid option vale specified. Please try again.','cftp_admin');
+					$msg = __('Invalid option value specified. Please try again.','cftp_admin');
 					echo system_message('error',$msg);
 					break;
 			}

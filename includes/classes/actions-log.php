@@ -54,6 +54,7 @@ $activities_references = array(
 							41	=> __("A user account failed login",'cftp_admin'),
 							42	=> __("A client account deactivated due to maximum failed logins reached",'cftp_admin'),
 							43	=> __("A user account deactivated due to maximum failed logins reached",'cftp_admin'),
+							44	=> __("An unknown account failed login",'cftp_admin'),
 						);
  /**
  * More to be added soon.

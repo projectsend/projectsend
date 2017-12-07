@@ -1366,7 +1366,8 @@ if (in_session_or_cookies($allowed_update)) {
 		
 		/**
 		* r1023 updates
-		* 1- New solumns invalid_auth_attempts and start_observation_window for account lockout functionality
+		* 1- New columns invalid_auth_attempts and start_observation_window for account lockout functionality
+ 		* 2- New option for logging failed authentication attempts 
 		*/
 		if ($last_update < 1023) {
 			$new_database_values = array(
@@ -1374,6 +1375,7 @@ if (in_session_or_cookies($allowed_update)) {
 							'user_observation_window'		=> '20',
 							'client_max_invalid_auth_attempts'	=> '5',
 							'client_observation_window'		=> '20',
+							'log_failed_auth'			=> '0',
 						);
 			
 			foreach($new_database_values as $row => $value) {

@@ -328,6 +328,10 @@ if(!empty($options_values)) {
 		define('CLIENT_OBSERVATION_WINDOW',$options_values['client_observation_window']);
 	}
 
+	if (isset($options_values['log_failed_auth'])) {
+		define('LOG_FAILED_AUTH',$options_values['log_failed_auth']);
+	}
+
 	/**
 	 * Set the default timezone based on the value of the Timezone select box
 	 * of the options page.

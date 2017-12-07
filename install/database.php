@@ -337,7 +337,12 @@ if (defined('TRY_INSTALL')) {
 								('public_listing_page_enable', '0'),
 								('public_listing_logged_only', '0'),
 								('public_listing_show_all_files', '0'),
-								('public_listing_use_download_link', '0')
+								('public_listing_use_download_link', '0'),
+								('user_max_invalid_auth_attempts', '5'),
+								('user_observation_window', '20'),
+								('client_max_invalid_auth_attempts', '5'),
+								('client_observation_window', '20'),
+								('log_failed_auth', '0')
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,

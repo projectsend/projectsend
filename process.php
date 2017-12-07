@@ -150,9 +150,28 @@ class process {
 				}
 			}
 			else {
-				//
-				// account lockout logic
-				//
+				/**
+				* failed authentication logging
+				*/
+				
+				if (LOG_FAILED_AUTH) {
+
+					$action = ($this->user_level != '0' ? 41 : 40);
+
+					$this->new_log_action = new LogActions();
+					$this->log_action_args = array(
+							'action' => $action,
+							'owner_id' => $this->logged_id,
+							'owner_user' => $this->global_name,
+							'affected_account_name' => $this->global_name
+										);
+					$this->new_record_action = $this->new_log_action->log_action_save($this->log_action_args);
+				}
+
+
+				/**
+				* account lockout logic
+				*/	
 
 				// set the correct limits based on the user_level of the account
 				if ($this->user_level != '0') {
@@ -248,6 +267,17 @@ class process {
 		else {
 			// count_user = 'wrong_username';
 			$this->errorstate = 'invalid_credentials';
+
+			if (LOG_FAILED_AUTH) {
+
+				$this->new_log_action = new LogActions();
+				$this->log_action_args = array(
+						'action' => 44,
+						'owner_id' => -1,
+						'owner_user' => $_GET['username']
+					);
+				$this->new_record_action = $this->new_log_action->log_action_save($this->log_action_args);
+			}
 		}
 
 		if (isset($this->errorstate)) {

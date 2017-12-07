@@ -1419,6 +1419,11 @@ function render_log_action($params)
 			$action_text = __('deactivated the user due to maximum failed logins reached','cftp_admin');
 			$part2 = $affected_account_name;
 			break;
+		case 44:
+			$action_ico = 'login';
+			$part1 = $owner_user;
+			$action_text = __('unknown account failed login to the system.','cftp_admin');
+			break;
 	}
 	
 	$date = date(TIMEFORMAT_USE,strtotime($timestamp));

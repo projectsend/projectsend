@@ -61,6 +61,7 @@ switch ( $section ) {
 								'pass_require_number',
 								'pass_require_special',
 								'recaptcha_enabled',
+								'log_failed_auth',
 							);
 		break;
 	case 'thumbnails':
@@ -923,7 +924,10 @@ $allowed_file_types = implode(',',$allowed_file_types);
 									</div>
 								</div>
 
+								<div class="options_divide"></div>
+
 								<h3><?php _e('Account Lockout','cftp_admin'); ?></h3>
+								<p><?php _e('Configure account lockout of user and client accounts','cftp_admin'); ?></p>
 								<div class="form-group">
 									<label for="user_observation_window" class="col-sm-4 control-label"><?php _e('User observation window (minutes)','cftp_admin'); ?></label>
 									<div class="col-sm-8">
@@ -953,6 +957,19 @@ $allowed_file_types = implode(',',$allowed_file_types);
 									<div class="col-sm-8">
 										<input type="text" name="client_max_invalid_auth_attempts" id="client_max_invalid_auth_attempts" class="form-control" value="<?php echo CLIENT_MAX_INVALID_AUTH_ATTEMPTS; ?>" />
 										<p class="field_note"><?php _e('Once an account reached this number it will be disabled. Set to 0 to disable client account lockout.','cftp_admin'); ?></p>
+									</div>
+								</div>
+
+								<div class="options_divide"></div>
+
+								<h3><?php _e('Logging','cftp_admin'); ?></h3>
+								<p><?php _e('Options for logging of security events','cftp_admin'); ?></p>
+	
+								<div class="form-group">
+									<div class="col-sm-8 col-sm-offset-4">
+										<label for="log_failed_auth">
+											<input type="checkbox" value="1" name="log_failed_auth" id="log_failed_auth" class="checkbox_options" <?php echo (LOG_FAILED_AUTH == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Log failed authentication attempts','cftp_admin'); ?>
+										</label>
 									</div>
 								</div>
 	

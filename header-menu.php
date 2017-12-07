@@ -34,6 +34,26 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 											),
 							);
 */
+							?>
+							
+							
+	<div class="row sendfile1">
+		<div class="sendfile col-md-11">
+		<div>
+		<a href="upload-from-computer.php" class="btn btn-success center-block">Send File</a>
+	</div>
+</div>
+	<div class="sendfile col-md-11">
+		<div>
+		<a href="request-drop-off.php" class="btn btn-primary center-block" >Request a File</a>
+		</div>
+	</div>
+</div>
+							
+							
+						
+							<?php
+
 	$items['files']		= array(
 								'nav'	=> 'files',
 								'level'	=> array( 9,8,7 ),
@@ -41,10 +61,10 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 												'label'	=> __('Files', 'cftp_admin'),
 											),
 								'sub'	=> array(
-												array(
+												/*array(
 													'label'	=> __('Send File', 'cftp_admin'),
 													'link'	=> 'upload-from-computer.php',
-												),
+												),*/
 												array(
 													'label'	=> __('Inbox', 'cftp_admin'),
 													'link'	=> 'inbox.php',
@@ -101,13 +121,26 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 													'link'	=> 'clients-add.php',
 												),*/
 												array(
-													'label'	=> __('Manage clients', 'cftp_admin'),
+													'label'	=> __('Manage Clients', 'cftp_admin'),
 													'link'	=> 'clients.php',
 												),
 												array(
-													'label'	=> __('Manage Organization', 'cftp_admin'),
-													'link'	=> 'organization.php',
+													'label'	=> __('Manage Clients Organization', 'cftp_admin'),
+													'link'	=> 'clientorganization.php',
+													
 												),
+
+												array(
+													'label'	=> __('Manage Users Organization', 'cftp_admin'),
+													'link'	=> 'userorganization.php',
+													
+												),
+												array(
+													'label'	=> __('Organization Request', 'cftp_admin'),
+													'link'	=> 'organizationrequest.php',
+													
+												),
+
 												array(
 													'label'	=> __('Categories', 'cftp_admin'),
 													'link'	=> 'categories.php',
@@ -227,7 +260,21 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
  */
 else
 {
+?>
+	<div class="row sendfile1">
+		<div class="sendfile col-md-11">
+		<div>
+		<a href="<?php echo BASE_URI;?>upload-from-computer.php" class="btn btn-success center-block">Send File</a>
+	</div>
+</div>
+	<div class="sendfile col-md-11">
+		<div>
+		<a href="<?php echo BASE_URI;?>request-drop-off.php" class="btn btn-primary center-block" >Request a File</a>
+		</div>
+	</div>
+</div>
 
+<?
 		$items['upload'] = array(
 									'nav'	=> 'upload',
 									'level'	=> array( 9,8,7,0 ),
@@ -235,10 +282,10 @@ else
 												'label'	=> __('Files', 'cftp_admin'),
 											),
 								'sub'	=> array(
-												array(
+												/*array(
 													'label'	=> __('Send File', 'cftp_admin'),
 													'link'	=> 'upload-from-computer.php',
-												),
+												),*/
 												array(
 													'label'	=> __('Inbox', 'cftp_admin'),
 													'link'	=> 'inbox.php',

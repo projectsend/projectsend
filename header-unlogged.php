@@ -110,7 +110,7 @@ else {
 	  // msend a301616f-53ad-45da-b63f-9ba907ccc66f
 	  //pw local aohLgNis3YpAdFWTLS2WgzF
       //redirectUri: 'http://localhost:3333/ms/oauth.php', //This is your redirect URI
-	  redirectUri: '<?php echo BASE_URI; ?>',
+	  redirectUri: 'https://msend.microhealthllc.com',
 
       callback: userSignedIn,
       popUp: true

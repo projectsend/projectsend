@@ -1,0 +1,32 @@
+{
+  "warning": {
+    "nl": "Je certificaat verloopt over %days% dagen.",
+    "no": "Sertifikatet ditt vil utløpe om %days% dager.",
+    "da": "Dit certifikat udløber om %days% dage.",
+    "es": "Su certificado caduca en %days% días."
+  },
+  "warning_header": {
+    "nl": "Je certificaat verloopt binnenkort.",
+    "no": "Sertifikatet ditt vil snart utløpe.",
+    "da": "Dit certifikat udløber om kort tid",
+    "es": "Su certificado está a punto de caducar."
+  },
+  "renew": {
+    "nl": "Vervang tijdig je certificaat.",
+    "no": "Vennligst forny sertifikatet ditt før det utløper.",
+    "da": "Forny venligst dit certifikat i tide.",
+    "es": "Por favor, renueve su certificado a tiempo."
+  },
+  "renew_url": {
+    "nl": "<a href='%renewurl%'>Vervang<\/a> tijdig je certificaat.",
+    "no": "Vennligst <a href=‘%renewurl%’>forny<\/a> sertifikatet ditt før det utløper.",
+    "da": "<a href='%renewurl%'>Forny<\/a>, venligst dit certifikat før det udløber.",
+    "es": "Por favor, <a href=‘%renewurl%’>renueve<\/a> su certificado a tiempo."
+  },
+  "proceed": {
+    "nl": "Verder",
+    "no": "Fortsett",
+    "da": "Fortsæt",
+    "es": "Continuar"
+  }
+}

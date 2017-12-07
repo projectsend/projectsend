@@ -11,6 +11,8 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("form").submit(function() {
+		    
+			
 			clean_form(this);
 
 			is_complete(this.add_user_form_name,'<?php echo $validation_no_name; ?>');
@@ -81,7 +83,7 @@ switch ($user_form_type) {
 		break;
 }
 ?>
-<form action="<?php echo html_output($form_action); ?>" name="adduser" method="post" class="form-horizontal">
+<form action="<?php echo html_output($form_action); ?>" name="adduser" method="post" class="form-horizontal" enctype="multipart/form-data">
 	<div class="form-group">
 		<label for="add_user_form_name" class="col-sm-4 control-label"><?php _e('Name','cftp_admin'); ?></label>
 		<div class="col-sm-8">
@@ -116,9 +118,48 @@ switch ($user_form_type) {
 			<input type="text" name="add_user_form_email" id="add_user_form_email" class="form-control required" value="<?php echo (isset($add_user_data_email)) ? html_output(stripslashes($add_user_data_email)) : ''; ?>" placeholder="<?php _e("Must be valid and unique",'cftp_admin'); ?>" />
 		</div>
 	</div>
-
-		<?php
-			if ($extra_fields == true) {
+<?php
+/* 
+	-Added alternative email option for users
+	-Maximum limit of emails are 5. 
+	-Added emails display from table. Balance will list as input box to enter new email.	
+*/
+	if(!empty($alternate_email_array)){
+		$count_alternate_email_array = count($alternate_email_array);
+		$maximum_alternate_emails = 5;
+		$balance_email = ($maximum_alternate_emails-$count_alternate_email_array);
+		foreach($alternate_email_array as $alternate_email){
+	
+?>
+		<div class="form-group">
+			<label for="add_user_form_email_alternate1" class="col-sm-4 control-label"><?php _e('Alternate E-mails','cftp_admin'); ?></label>
+			<div class="col-sm-8">
+				<input type="text" name="add_user_form_email_alternate[]" id="add_user_form_email_alternate1" class="form-control required" value="<?php echo (isset($alternate_email)) ? html_output(stripslashes($alternate_email)) : ''; ?>" placeholder="<?php _e("Must be valid email",'cftp_admin'); ?>" />
+			</div>
+		</div>
+	<?php
+		}
+		if(!empty($balance_email)){
+			for ($i = 1; $i <= $balance_email; $i++) {
+	?>
+		<div class="form-group">
+			<label for="add_user_form_email_alternate1" class="col-sm-4 control-label"><?php _e('Alternate E-mails','cftp_admin'); ?></label>
+			<div class="col-sm-8">
+				<input type="text" name="add_user_form_email_alternate[]" id="add_user_form_email_alternate1" class="form-control required" value="" placeholder="<?php _e("Must be valid email",'cftp_admin'); ?>" />
+			</div>
+		</div>
+	<?php
+			}
+		}
+	}?>
+<div class="form-group">
+	<label for="add_user_form_email_alternate1" class="col-sm-4 control-label"><?php _e('Upload profile pic','cftp_admin'); ?></label>
+	<div class="col-sm-8">
+		<input type="file" name="userfiles" class="required" value="" placeholder="upload file" />
+	</div>
+</div>		
+	<?php
+		if ($extra_fields == true) {
 		?>
 			<div class="form-group">
 				<label for="add_user_form_level" class="col-sm-4 control-label"><?php _e('Role','cftp_admin'); ?></label>
@@ -153,3 +194,4 @@ switch ($user_form_type) {
 		}
 	?>
 </form>
+

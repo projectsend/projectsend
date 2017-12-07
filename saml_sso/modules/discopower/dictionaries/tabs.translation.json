@@ -1,0 +1,96 @@
+{
+	"norway": {
+		"es": "Noruega",
+		"ru": "\u041d\u043e\u0440\u0432\u0435\u0433\u0438\u044f",
+		"zh-tw": "\u632a\u5a01",
+		"nl": "Noorwegen",
+		"gl": "Noruega",
+		"da": "Norge",
+		"af": "Noorwe\u00eb"
+	},
+	"kalmar": {
+		"es": "Kalmar",
+		"ru": "\u041a\u0430\u043b\u044c\u043c\u0430\u0440",
+		"zh-tw": "\u5361\u723e\u99ac",
+		"nl": "Kalmar",
+		"da": "Kalmar",
+		"af": "Kalmar"
+	},
+	"finland": {
+		"es": "Finlandia",
+		"ru": "\u0424\u0438\u043d\u043b\u044f\u043d\u0434\u0438\u044f",
+		"zh-tw": "\u82ac\u862d",
+		"nl": "Finland",
+		"gl": "Finlandia",
+		"da": "Finland",
+		"af": "Finland"
+	},
+	"sweden": {
+		"es": "Suecia",
+		"ru": "\u0428\u0432\u0435\u0446\u0438\u044f",
+		"zh-tw": "\u745e\u5178",
+		"nl": "Zweden",
+		"gl": "Suecia",
+		"da": "Sverige",
+		"af": "Swede"
+	},
+	"iceland": {
+		"es": "Islandia",
+		"ru": "\u0418\u0441\u043b\u0430\u043d\u0434\u0438\u044f",
+		"zh-tw": "\u51b0\u5cf6",
+		"nl": "IJsland",
+		"gl": "Islandia",
+		"da": "Island",
+		"af": "Ysland"
+	},
+	"denmark": {
+		"es": "Dinamarca",
+		"ru": "\u0414\u0430\u043d\u0438\u044f",
+		"zh-tw": "\u4e39\u9ea5",
+		"nl": "Denemarken",
+		"gl": "Dinamarca",
+		"da": "Danmark",
+		"af": "Denmark"
+	},
+	"switzerland": {
+		"es": "Suiza",
+		"ru": "\u0428\u0432\u0435\u0439\u0446\u0430\u0440\u0438\u044f",
+		"zh-tw": "\u745e\u58eb",
+		"nl": "Zwitserland",
+		"gl": "Suiza",
+		"da": "Schweiz",
+		"af": "Switserland"
+	},
+	"edugain": {
+		"es": "Europa (eduGAIN)",
+		"ru": "\u0415\u0432\u0440\u043e\u043f\u0430 (eduGAIN)",
+		"zh-tw": "\u6b50\u6d32 (eduGAIN)",
+		"nl": "Europa (eduGAIN)",
+		"gl": "Europa (eduGAIN)",
+		"da": "Europa (eduGAIN)",
+		"af": "Europa (eduGAIN)"
+	},
+	"misc": {
+		"es": "Otros",
+		"ru": "\u0420\u0430\u0437\u043d\u043e\u0435",
+		"zh-tw": "\u96dc\u9805",
+		"nl": "Overige",
+		"gl": "Miscelanea",
+		"da": "Forskellige",
+		"af": "Verskeie"
+	},
+	"incommon": {
+		"es": "InCommon",
+		"zh-tw": "InCommon",
+		"nl": "InCommon",
+		"da": "InCommon",
+		"af": "In gemeen"
+	},
+	"ukacessfederation": {
+		"es": "Federaci&oacute;n de Acceso de Reino Unido",
+		"zh-tw": "\u82f1\u570b Access Management Federation for Education and Research.",
+		"nl": "UK Access Federation",
+		"da": "Storbritanniens adgangsf\u00f8deration",
+		"af": "UK Toegangs Federasie"
+	}
+}

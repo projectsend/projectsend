@@ -99,7 +99,7 @@ switch ($clients_form_type) {
 }
 ?>
 
-<form action="<?php echo $form_action; ?>" name="addclient" method="post" class="form-horizontal">
+<form action="<?php echo $form_action; ?>" name="addclient" method="post" class="form-horizontal" enctype="multipart/form-data">
 	<div class="form-group">
 		<label for="add_client_form_name" class="col-sm-4 control-label"><?php _e('Name','cftp_admin'); ?></label>
 		<div class="col-sm-8">
@@ -136,19 +136,52 @@ switch ($clients_form_type) {
 	</div>
 
 	<div class="form-group">
-		<label for="add_client_form_address" class="col-sm-4 control-label"><?php _e('Address','cftp_admin'); ?></label>
+		<label for="add_client_form_address" class="col-sm-4 control-label"><?php _e('Address Line 1','cftp_admin'); ?></label>
 		<div class="col-sm-8">
 			<input type="text" name="add_client_form_address" id="add_client_form_address" class="form-control" value="<?php echo (isset($add_client_data_addr)) ? html_output(stripslashes($add_client_data_addr)) : ''; ?>" />
 		</div>
 	</div>
-
+	<!-- Address line 2 -->
+    
+    <div class="form-group">
+		<label for="add_client_form_address_line2" class="col-sm-4 control-label"><?php _e('Address Line 2','cftp_admin'); ?></label>
+		<div class="col-sm-8">
+			<input type="text" name="add_client_form_address_line2" id="add_client_form_address_line2" class="form-control" value="<?php echo (isset($add_client_data_addr2)) ? html_output(stripslashes($add_client_data_addr2)) : ''; ?>" />
+		</div>
+	</div>
+    <!-- city -->
+    <div class="form-group">
+		<label for="add_client_city" class="col-sm-4 control-label"><?php _e('City','cftp_admin'); ?></label>
+		<div class="col-sm-8">
+			<input type="text" name="add_client_city" id="add_client_city" class="form-control" value="<?php echo (isset($add_client_data_city)) ? html_output(stripslashes($add_client_data_city)) : ''; ?>" />
+		</div>
+	</div>
+    <!-- State -->
+    <div class="form-group">
+		<label for="add_client_form_state" class="col-sm-4 control-label"><?php _e('State','cftp_admin'); ?></label>
+		<div class="col-sm-8">
+			<input type="text" name="add_client_form_state" id="add_client_form_state" class="form-control" value="<?php echo (isset($add_client_data_state)) ? html_output(stripslashes($add_client_data_state)) : ''; ?>" />
+		</div>
+	</div>
+    <!-- zip code -->
+    <div class="form-group">
+		<label for="add_client_form_zip" class="col-sm-4 control-label"><?php _e('Zip Code','cftp_admin'); ?></label>
+		<div class="col-sm-8">
+			<input type="text" name="add_client_form_zip" id="add_client_form_zip" class="form-control" value="<?php echo (isset($add_client_data_zip)) ? html_output(stripslashes($add_client_data_zip)) : ''; ?>" />
+		</div>
+	</div>
 	<div class="form-group">
 		<label for="add_client_form_phone" class="col-sm-4 control-label"><?php _e('Telephone','cftp_admin'); ?></label>
 		<div class="col-sm-8">
 			<input type="text" name="add_client_form_phone" id="add_client_form_phone" class="form-control" value="<?php echo (isset($add_client_data_phone)) ? html_output(stripslashes($add_client_data_phone)) : ''; ?>" />
 		</div>
 	</div>
-
+<div class="form-group">
+	<label for="add_user_form_email_alternate1" class="col-sm-4 control-label"><?php _e('Upload profile pic','cftp_admin'); ?></label>
+	<div class="col-sm-8">
+		<input type="file" name="userfiles" class="required" value="" placeholder="upload file" />
+	</div>
+</div>
 		<?php
 			if ($extra_fields == true) {
 		?>

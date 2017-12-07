@@ -24,6 +24,8 @@ include('header-unlogged.php');
 
 $auth = isset($_GET['auth']) ? htmlspecialchars($_GET['auth'],ENT_QUOTES, 'UTF-8') : '';
 if(!empty($auth)){
+
+	define('TABLE_DROPOFF','tbl_drop_off_request');
 	$sql = $dbh->prepare( 'SELECT * FROM '.TABLE_DROPOFF.' WHERE auth_key = "'.$auth.'"' );	
 
 	$sql->execute();

@@ -323,7 +323,8 @@ include('header.php');
 													<td>
 														<input type="checkbox" name="categories[]" value="<?php echo html_output($category["id"]); ?>" />
 													</td>
-													<td data-value="<?php echo $c; ?>"><?php echo $depth . html_output($category["name"]); ?></td>
+													<td data-value="<?php echo $c; ?>">
+													<a href="category-edit.php?action=edit&id=<?php echo $category["id"]; ?>"><?php _e($depth . html_output($category["name"]),'cftp_admin'); ?></a></td>
 													<td>
 														<?php
 															$total = $category['file_count'];
@@ -345,7 +346,7 @@ include('header.php');
 													<td><?php echo html_output($category["description"]); ?></td>
 													<td>
 														<a href="<?php echo $files_link; ?>" class="btn btn-sm <?php echo $files_button; ?>"><?php _e('Manage files','cftp_admin'); ?></a>
-														<a href="category-edit.php?action=edit&id=<?php echo $category["id"]; ?>" class="btn btn-primary btn-sm"><?php _e('Edit','cftp_admin'); ?></a>
+														
 													</td>
 												</tr>
 								<?php

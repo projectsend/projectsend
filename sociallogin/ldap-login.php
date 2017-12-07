@@ -64,6 +64,7 @@ if(isset($_GET['email']))
 			$_SESSION['errorstate'] = 'invalid_credentials';
 		}
 	}else {
+
 		$_SESSION['errorstate'] = 'no_account'; //TODO: create new account
 		$new_client = new ClientActions();
 		$username = $new_client->generateUsername("ldap guest");
@@ -82,9 +83,7 @@ if(isset($_GET['email']))
 		  'type' => 'new_client',
 		  'active' => CLIENTS_AUTO_APPROVE,
 		);
-		
 		$new_client->create_client($clientData);
-
 		if (CLIENTS_AUTO_GROUP != '0') {
 			$admin_name = 'SELFREGISTERED';
 			$client_id = $new_response['new_id'];

@@ -175,11 +175,14 @@ include('header.php');
 							</div>
 							<div class="clear"></div>
 							<section id="no-more-tables">
-								<table id="files_list" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
+								<table id="files_list" class=" cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
 									<thead>
 										<tr>
 											<th class="td_checkbox" data-sort-ignore="true">
-												<input type="checkbox" name="select_all" id="select_all" value="0" />
+                                                <label class="cc-chk-container">
+                                                <input type="checkbox" name="select_all" id="select_all" value="0" />
+                                                <span class="checkmark"></span>
+                                                </label>
 											</th>
 											<th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('To name','cftp_admin'); ?></th>
 											<th data-hide="phone,tablet"><?php _e('Subject.','cftp_admin'); ?></th>
@@ -196,9 +199,15 @@ include('header.php');
 									if ($count > 0) {
 									$sql_files->setFetchMode(PDO::FETCH_ASSOC);
 										while( $row = $sql_files->fetch() ) {
+									//echo "<pre>";	print_r($row);
 										?>
 										<tr>
-											<td><input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" /></td>
+											<td>
+                                            <label class="cc-chk-container">
+                                              <input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" />
+                                              <span class="checkmark"></span>
+                                          </label>
+                                            </td>
 											<td><?php echo $row['to_name']; ?></td>
 											<td class="file_name"><?php echo $row['to_subject_request']; ?></td>
 											<td><?php echo $row['from_organization']; ?></td>

@@ -49,21 +49,24 @@ class GroupActions
 	 */
 	function create_group($arguments)
 	{
+		
 		$this->state = array();
 
 		/** Define the group information */
 		$this->name = $arguments['name'];
 		$this->description = $arguments['description'];
+		$this->organization_type = $arguments['organization_type'];
 		$this->members = $arguments['members'];
 		$this->timestamp = time();
 
 		/** Who is creating the group? */
 		$this->this_admin = get_current_user_username();
 
-		$this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_GROUPS . " (name,description,created_by)"
-												." VALUES (:name, :description, :this_admin)");
+		$this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_GROUPS . " (name,description,organization_type,created_by)"
+												." VALUES (:name, :description, :organization_type,:this_admin)");
 		$this->sql_query->bindParam(':name', $this->name);
 		$this->sql_query->bindParam(':description', $this->description);
+		$this->sql_query->bindParam(':organization_type', $this->organization_type);
 		$this->sql_query->bindParam(':this_admin', $this->this_admin);
 		$this->sql_query->execute();
 

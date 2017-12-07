@@ -23,11 +23,11 @@ if (defined('TRY_INSTALL')) {
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `uploader` varchar('.MAX_USER_CHARS.') NOT NULL,
 								  `expires` INT(1) NOT NULL default \'0\',
-								  `notify` int(11) NOT NULL,
-								  `expiry_date` TIMESTAMP,
-								  `future_send_date` timestamp,
+								  `notify` int(11) NOT NULL default \'0\',
+								  `expiry_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+								  `future_send_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `public_allow` INT(1) NOT NULL default \'0\',
-  								  `number_downloads` int(15) NOT NULL,
+  								  `number_downloads` int(15) NOT NULL default \'0\',
 								  `public_token` varchar(32) NULL,
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -58,6 +58,10 @@ if (defined('TRY_INSTALL')) {
 								  `level` tinyint(1) NOT NULL DEFAULT \'0\',
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `address` text COLLATE utf8_general_ci NULL,
+								  `address2` text COLLATE utf8_general_ci NULL,
+								  `city`  varchar(256) NULL,
+								  `state` varchar(256) NULL,
+								  `zipcode` text COLLATE utf8_general_ci NULL,
 								  `phone` varchar(32) COLLATE utf8_general_ci NULL,
 								  `notify` tinyint(1) NOT NULL DEFAULT \'0\',
 								  `contact` text COLLATE utf8_general_ci NULL,
@@ -77,6 +81,7 @@ if (defined('TRY_INSTALL')) {
 								  `created_by` varchar(32) NOT NULL,
 								  `name` varchar(32) NOT NULL,
 								  `description` text NOT NULL,
+								  `organization_type` NOT NULL,
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
@@ -91,6 +96,7 @@ if (defined('TRY_INSTALL')) {
 								  `added_by` varchar(32) NOT NULL,
 								  `client_id` int(11) NOT NULL,
 								  `group_id` int(11) NOT NULL,
+								  `m_org_status` INT(11) NULL DEFAULT NULL,
 								  PRIMARY KEY (`id`),
 								  KEY `client_id` (`client_id`),
 								  KEY `group_id` (`group_id`),
@@ -308,7 +314,8 @@ if (defined('TRY_INSTALL')) {
 								('ldap_bind_port', '0'),
 								('recaptcha_enabled', '0'),
 								('recaptcha_site_key', ''),
-								('recaptcha_secret_key', '')
+								('recaptcha_secret_key', ''),
+								('orphan_deletion_settings', '0')
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,
@@ -393,7 +400,18 @@ if (defined('TRY_INSTALL')) {
 								',
 					'params' => array(),
 		),
-		
+		'17' =>  array(
+					'table'	=> TABLE_USER_EXTRA_PROFILE,
+					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_USER_EXTRA_PROFILE.'` (
+								  `id` int(10) NOT NULL AUTO_INCREMENT,
+		  			   			  `user_id` int(11) NOT NULL,		
+								  `name` varchar(50) COLLATE utf8_general_ci NOT NULL,
+								  `value` text COLLATE utf8_general_ci NOT NULL,
+								  PRIMARY KEY (`id`)
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+								',
+					'params' => array(),
+		),
 	);
 }
 

@@ -433,6 +433,26 @@ class PSend_Email
 		$this->send_mail->AddReplyTo(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
 
 		$this->send_mail->AddAddress($this->addresses);
+/**
+Fetch alternate emails and add as CC.
+**/
+$alternate_email = $dbh->prepare("SELECT value FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id=:user_id AND name = :name");
+$alternate_email->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+$alternate_email->bindValue(':name', 'alternate_email');
+$alternate_email->execute();
+$test = $alternate_email->setFetchMode(PDO::FETCH_ASSOC);
+//print_r($test);
+$alternate_email_list = array();
+while ( $data = $alternate_email->fetch() ) {
+		$alternate_email_list[] = $data['value'];
+}
+
+			
+
+
+/**
+end
+**/
 		
 		/**
 		 * Check if BCC is enabled and get the list of
@@ -450,6 +470,21 @@ class PSend_Email
 					$this->add_bcc_to[] = $this->add_bcc;
 				}
 			}
+/**
+Fetched alternate emails adding to CC.
+**/
+		if(!empty($alternate_email_list)){
+			if (!empty($this->add_bcc_to)) {
+						$this->add_bcc_to = array_unique($this->add_bcc_to);
+						foreach ($alternate_email_list as $aml) {
+							$this->send_mail->AddBCC($aml);
+						}
+			}
+		}
+/**
+Fetched alternate emails adding to CC. --END--
+**/
+
 			/**
 			 * Add the BCCs with the compiled array.
 			 * First, clean the array to make sure the admin

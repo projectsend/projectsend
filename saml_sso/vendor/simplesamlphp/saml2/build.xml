@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Simplesamlphp Saml2" default="build">
+    <target name="build"
+            depends="prepare,composer-run-install,php-lint-ci,phpmd-ci,phpcs-ci,phpcpd-ci,php-security-checker,phpunit-ci"/>
+
+    <target name="clean" description="Cleanup build artifacts">
+        <delete dir="build/artifacts/coverage"/>
+        <delete dir="build/artifacts/logs"/>
+    </target>
+
+    <target name="prepare-dev" description="Prepare for dev build">
+    </target>
+
+    <target name="prepare" depends="clean" description="Prepare for build">
+        <mkdir dir="build/artifacts/coverage"/>
+        <mkdir dir="build/artifacts/logs"/>
+    </target>
+
+    <target name="check-composer">
+        <available file="composer.phar" property="composer.installed"/>
+    </target>
+
+    <target name="composer-install" depends="check-composer" unless="composer.installed">
+        <get src="https://getcomposer.org/composer.phar" dest="composer.phar"/>
+    </target>
+
+    <target name="composer-update" depends="composer-install">
+        <exec executable="php" failonerror="true">
+            <arg line="composer.phar self-update"/>
+        </exec>
+    </target>
+
+    <target name="composer-run-install" depends="composer-update">
+        <exec executable="php" failonerror="true">
+            <arg line="composer.phar install --dev --prefer-source"/>
+        </exec>
+    </target>
+
+    <target name="get-changeset.php.raw"
+            description="creates a list of changed php files separated by newline">
+        <pathconvert property="changeset.php.raw" pathsep="${line.separator}">
+            <fileset dir="src">
+                <include name="**/*.php"/>
+                <modified/>
+            </fileset>
+        </pathconvert>
+
+        <!--Check if files are modified-->
+        <condition property="changeset.php.notempty">
+            <not>
+                <equals arg1="${changeset.php.raw}" arg2="" trim="true"/>
+            </not>
+        </condition>
+    </target>
+
+    <target name="get-changeset.php.spacesep" depends="get-changeset.php.raw" if="changeset.php.notempty"
+            description="Creates a quoted list of changed php files separated by spaces">
+        <loadresource property="changeset.php.spacesep">
+            <propertyresource name="changeset.php.raw"/>
+            <filterchain>
+                <tokenfilter delimoutput=" ">
+                    <linetokenizer/>
+                    <replaceregex pattern="^" replace='"'/>
+                    <replaceregex pattern="$" replace='"'/>
+                </tokenfilter>
+            </filterchain>
+        </loadresource>
+    </target>
+
+    <target name="php-lint-ci" depends="get-changeset.php.spacesep" if="changeset.php.notempty"
+            description="Perform syntax check of sourcecode files in parallel">
+        <exec executable="sh" failonerror="true">
+            <arg value="-c"/>
+            <arg value="echo '${changeset.php.spacesep}' | xargs -n 1 -P 4 php -l 1>/dev/null"/>
+        </exec>
+    </target>
+
+    <target name="php-security-checker" description="Check your composer dependencies for insecure components">
+        <exec executable="vendor/bin/security-checker" failonerror="false">
+            <arg value="security:check"/>
+            <arg value="--verbose"/>
+            <arg value="composer.lock"/>
+        </exec>
+    </target>
+
+    <target name="phpmd" description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
+        <exec executable="vendor/bin/phpmd" failonerror="true">
+            <arg path="src"/>
+            <arg value="text"/>
+            <arg value="tools/phpmd/ruleset.xml"/>
+            <!-- These classes are already messes, exclude them for now... -->
+            <arg value="--exclude" />
+            <arg value="${basedir}/src/SAML2/AuthnRequest.php,${basedir}/src/SAML2/Assertion.php,${basedir}/src/SAML2/SOAP.php,${basedir}/src/SAML2/SOAPClient.php,${basedir}/src/SAML2/Utils.php,${basedir}/src/SAML2/XML/md/EntityDescriptor.php,${basedir}/src/SAML2/XML/md/RoleDescriptor.php,${basedir}/src/SAML2/XML/saml/SubjectConfirmationData.php" />
+        </exec>
+    </target>
+
+    <target name="phpmd-ci"
+            description="Perform project mess detection using PHPMD creating a log file for the continuous integration server">
+        <exec executable="vendor/bin/phpmd" failonerror="true">
+            <arg path="src"/>
+            <arg value="text"/>
+            <arg value="tools/phpmd/ruleset.xml"/>
+            <!-- These classes are already messes, exclude them for now... -->
+            <arg value="--exclude" />
+            <arg value="${basedir}/src/SAML2/AuthnRequest.php,${basedir}/src/SAML2/Assertion.php,${basedir}/src/SAML2/SOAP.php,${basedir}/src/SAML2/SOAPClient.php,${basedir}/src/SAML2/Utils.php,${basedir}/src/SAML2/XML/md/EntityDescriptor.php,${basedir}/src/SAML2/XML/md/RoleDescriptor.php,${basedir}/src/SAML2/XML/saml/SubjectConfirmationData.php" />
+        </exec>
+    </target>
+
+    <target name="phpcs"
+            description="Find coding standard violations using PHP_CodeSniffer">
+        <exec executable="vendor/bin/phpcs" failonerror="true">
+            <arg value="--standard=tools/phpcs/ruleset.xml"/>
+            <arg value="--extensions=php"/>
+            <arg path="src"/>
+        </exec>
+    </target>
+
+    <target name="phpcs-ci"
+            description="Find coding standard violations using PHP_CodeSniffer creating a log file for the continuous integration server">
+        <exec executable="vendor/bin/phpcs" failonerror="true">
+            <arg value="--report=full"/>
+            <arg value="--standard=tools/phpcs/ruleset.xml"/>
+            <arg value="--warning-severity=0"/>
+            <arg value="--extensions=php"/>
+            <arg path="src"/>
+        </exec>
+    </target>
+
+    <target name="phpcpd-ci" description="Find duplicate code using PHPCPD">
+        <exec executable="vendor/bin/phpcpd" failonerror="false">
+            <arg path="src"/>
+        </exec>
+    </target>
+
+    <target name="phpunit" description="Run unit tests with PHPUnit">
+        <exec executable="vendor/bin/phpunit" failonerror="true">
+            <arg line="--configuration=${basedir}/tools/phpunit"/>
+        </exec>
+    </target>
+
+    <target name="phpunit-ci" description="Run unit tests with PHPUnit">
+        <exec executable="vendor/bin/phpunit" failonerror="true">
+            <arg line="--configuration=${basedir}/tools/phpunit"/>
+            <arg line="--coverage-clover=${basedir}/build/artifacts/coverage/clover.xml"/>
+        </exec>
+    </target>
+
+</project>

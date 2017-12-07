@@ -1,0 +1,38 @@
+{
+    "name": "simplesamlphp/saml2",
+    "description": "SAML2 PHP library from SimpleSAMLphp",
+    "license": "LGPL-2.1",
+    "authors": [
+        {
+            "name": "Andreas Åkre Solberg",
+            "email": "andreas.solberg@uninett.no"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "ext-openssl": "*",
+        "ext-dom": "*",
+
+        "robrichards/xmlseclibs": "^1.3",
+        "psr/log": "~1.0"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "~1.4",
+        "phpmd/phpmd": "~1.5",
+        "sensiolabs/security-checker": "~1.1",
+        "phpunit/phpunit": "~3.7",
+        "satooshi/php-coveralls": "~0.6.1",
+        "sebastian/phpcpd": "~1.4",
+        "mockery/mockery": "~0.9"
+    },
+    "autoload": {
+        "psr-0": {
+            "SAML2_": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-0": {
+            "SAML2_": "tests/"
+        }
+    }
+}

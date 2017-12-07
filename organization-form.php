@@ -24,7 +24,7 @@
 switch ($organization_form_type) {
 	case 'new_organization':
 		$submit_value = __('Create Organization','cftp_admin');
-		$form_action = 'organization-add.php';
+		$form_action = 'organization-add-client.php';
 		break;
 	case 'edit_organization':
 		$submit_value = __('Save Organization','cftp_admin');

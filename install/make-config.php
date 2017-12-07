@@ -16,6 +16,7 @@ $page_title_install		= __('Install','cftp_admin');
 
 // array of POST variables to check, with associated default value
 $post_vars = array(
+	
 	'dbdriver'		=> 'mysql',
 	'dbname'		=> 'projectsend',
 	'dbuser'		=> 'root',

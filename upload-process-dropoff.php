@@ -15,11 +15,6 @@
  * @package ProjectSend
  * @subpackage Upload
  */
-// Report all PHP errors
-error_reporting(-1);
-
-// Same as error_reporting(E_ALL);
-ini_set('error_reporting', E_ALL);
 
 
 $page="upload-process-dropoff.php";
@@ -57,7 +52,7 @@ define('CAN_INCLUDE_FILES', true);
  * system user or a client.
  */
 
-//$current_level = get_current_user_level();
+$current_level = get_current_user_level();
 
 
 $work_folder = UPLOADED_FILES_FOLDER;
@@ -144,12 +139,10 @@ while( $row = $statement->fetch() ) {
  * (name, description and client).
  */
 $fromid = $_POST['fromid'];
-//var_dump($_POST); exit;
 $to_email_request = $_POST['to_email'];
 $to_name = $_POST['to_name'];
 $to_subject_request = $_POST['to_subject_request'];
-
-$statement = $dbh->prepare("SELECT USER from ".TABLE_USERS." WHERE id = $fromid");
+$statement = $dbh->prepare("SELECT USER from tbl_users WHERE id = $fromid");
 $statement->execute();
 $statement->setFetchMode(PDO::FETCH_ASSOC);
 $data = $statement->fetch();
@@ -157,6 +150,7 @@ $data = $statement->fetch();
 $uploader = $data['USER'];
 $allfiles = $_POST['finished_files'];
 $totalfiles = count($allfiles);
+
 for($i = 0 ; $i < $totalfiles; $i++) {
 
  $url = $allfiles[$i];
@@ -164,15 +158,12 @@ for($i = 0 ; $i < $totalfiles; $i++) {
  $filenamearray = explode(".",$url);
  $filename = $filenamearray[0];
  $public_allow = 0;
- 
 
-  $statement = $dbh->prepare("INSERT INTO ".TABLE_FILES." (`url`, `filename`, `description`, `timestamp`, `uploader`, `expires`, `notify`, `public_allow`, `number_downloads`, `public_token`) VALUES ('$url', '$filename', '', CURRENT_TIMESTAMP, '$uploader', '0', '1', '0', '1', NULL);");
+$statement = $dbh->prepare("INSERT INTO ".TABLE_FILES." (`url`, `filename`, `description`, `timestamp`, `uploader`, `expires`,`notify`, `expiry_date`, `public_allow`, `public_token`) VALUES ('$url', '$filename', '', CURRENT_TIMESTAMP, '$uploader', '0','0', '2017-12-09 00:00:00', '0', NULL)");
 
-//$statement = $dbh->prepare("INSERT INTO ".TABLE_FILES." (`url`, `filename`, `description`, `timestamp`, `uploader`, `expires`, `expiry_date`, `public_allow`, `public_token`) VALUES ('$url', '$filename', '', CURRENT_TIMESTAMP, '$uploader', '0', '2017-12-09 00:00:00', '0', NULL);");
 if($statement->execute()) {
 	$img_id = $dbh->lastInsertId();
-	//echo $img_id." INSERT INTO ".TABLE_FILES_RELATIONS." (`timestamp`, `file_id`, `client_id`, `group_id`, `folder_id`, `hidden`, `download_count`) VALUES (CURRENT_TIMESTAMP, ".$img_id.", ".$fromid.", NULL, NULL, '0', '0')";
-	$filesrelations = $dbh->prepare("INSERT INTO ".TABLE_FILES_RELATIONS." (`timestamp`, `file_id`, `client_id`, `group_id`, `folder_id`, `hidden`, `download_count`) VALUES (CURRENT_TIMESTAMP, ".$img_id.", ".$fromid.", NULL, NULL, '0', '0')");
+$filesrelations = $dbh->prepare("INSERT INTO ".TABLE_FILES_RELATIONS." (`timestamp`, `file_id`, `client_id`, `group_id`, `folder_id`, `hidden`, `download_count`) VALUES (CURRENT_TIMESTAMP, ".$img_id.", ".$fromid.", NULL, NULL, '0', '0')");
 	//var_dump($filesrelations);
 
 	$sql = $dbh->prepare( 'SELECT * FROM '.TABLE_USERS.' WHERE id = "'.$fromid.'"' );	
@@ -433,6 +424,8 @@ if($statement->execute()) {
 
 
 
+}else{
+	echo "not executed";exit;
 }
 }
 //echo "HERE<br>";

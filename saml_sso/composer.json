@@ -1,0 +1,61 @@
+{
+    "name": "simplesamlphp/simplesamlphp",
+    "description": "A PHP implementation of SAML 2.0 service provider and identity provider functionality. And is also compatible with Shibboleth 1.3 and 2.0.",
+    "type": "project",
+    "keywords": [ "saml2", "shibboleth","aselect","openid","oauth","ws-federation","sp","idp" ],
+    "homepage": "http://simplesamlphp.org",
+    "license": "LGPL-2.1",
+    "authors": [
+        {
+            "name": "Andreas Åkre Solberg",
+            "email": "andreas.solberg@uninett.no"
+        },
+        {
+            "name": "Olav Morken",
+            "email": "olav.morken@uninett.no"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "SimpleSAML": "lib/"
+        },
+        "files": ["lib/_autoload_modules.php"]
+    },
+    "require": {
+        "php": ">=5.3",
+        "simplesamlphp/saml2": "~1.9.1",
+        "robrichards/xmlseclibs": "~1.4.1",
+        "whitehat101/apr1-md5": "~1.0",
+        "ext-SPL": "*",
+        "ext-zlib": "*",
+        "ext-pcre": "*",
+        "ext-openssl": "*",
+        "ext-dom": "*",
+        "ext-date": "*",
+        "ext-hash": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "simplesamlphp/simplesamlphp-module-infocard": "1.0.2",
+        "simplesamlphp/simplesamlphp-module-aggregator": "^1.0",
+        "simplesamlphp/simplesamlphp-module-aggregator2": "^1.0",
+        "simplesamlphp/simplesamlphp-module-autotest": "^1.0",
+        "simplesamlphp/simplesamlphp-module-consentsimpleadmin": "^1.1",
+        "simplesamlphp/simplesamlphp-module-logpeek": "^1.0",
+        "simplesamlphp/simplesamlphp-module-metaedit": "^1.0",
+        "simplesamlphp/simplesamlphp-module-modinfo": "^1.0",
+        "openid/php-openid": "dev-master#ee669c6a9d4d95b58ecd9b6945627276807694fb",
+        "simplesamlphp/simplesamlphp-module-openid": "^1.0",
+        "simplesamlphp/simplesamlphp-module-openidprovider": "^1.0",
+        "rediris-es/simplesamlphp-module-papi": "^1.0",
+        "simplesamlphp/simplesamlphp-module-saml2debug": "^1.0"
+    },
+    "require-dev": {
+        "ext-pdo_sqlite": "*",
+        "phpunit/phpunit": "~3.7",
+        "satooshi/php-coveralls": "^1.0"
+    },
+    "support": {
+        "issues": "https://github.com/simplesamlphp/simplesamlphp/issues",
+        "source": "https://github.com/simplesamlphp/simplesamlphp"
+    }
+}

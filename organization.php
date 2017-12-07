@@ -299,7 +299,8 @@ include('header.php');
                                 <input type="checkbox" name="groups[]" value="<?php echo $row["id"]; ?>" />
                             <?php } ?>
                         </td>
-                        <td><?php echo html_output($row["name"]); ?></td>
+                        <td> <a href="organization-edit.php?id=<?php echo $row["id"]; ?>" class=" btn-sm"><?php _e(html_output($row["name"]),'cftp_admin'); ?></a></td>
+                        
                         <td><?php echo html_output($row["description"]); ?></td>
                         <td>
                             <?php
@@ -327,7 +328,7 @@ include('header.php');
                         </td>
                         <td>
                             <a href="manage-files.php?group_id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm"><?php _e('Manage files','cftp_admin'); ?></a>
-                            <a href="organization-edit.php?id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm"><?php _e('Edit','cftp_admin'); ?></a>
+                           
                         </td>
                     </tr>
                             

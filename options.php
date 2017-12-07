@@ -5,6 +5,14 @@
  * @package ProjectSend
  * @subpackage Options
  */
+
+// Report all PHP errors
+error_reporting(-1);
+
+// Same as error_reporting(E_ALL);
+ini_set('error_reporting', E_ALL);
+
+
 $load_scripts	= array(
 			'jquery_tags_input',
 			'spinedit',
@@ -19,6 +27,8 @@ $cc_active_page = 'Options';
 include('header.php');
 
 if ($_POST) {
+
+
 	/**
 	 * Escape all the posted values on a single function.
 	 * Defined on functions.php
@@ -112,24 +122,15 @@ if ($_POST) {
 		for ($j = 0; $j < $options_total; $j++) {
 						$cc_val = $_POST[$keys[$j]];
 			$cc_key = $keys[$j];
+			if ($cc_key == 'google_client_id' || $cc_key == 'google_client_secret' || $cc_key == 'facebook_client_id' ||$cc_key == 'facebook_client_secret' || $cc_key == 'twitter_client_id' || $cc_key == 'twitter_client_secret' || $cc_key == 'yahoo_client_id' || $cc_key == 'yahoo_client_secret' || $cc_key == 'linkedin_client_id'|| $cc_key == 'linkedin_client_secret' || $cc_key == 'windows_client_id')  {
 
-			if ($cc_key == 'google_client_id' || $cc_key == 'google_client_secret' || $cc_key == 'facebook_client_id' ||$cc_key == 'facebook_client_secret' || $cc_key == 'twitter_client_id' || $cc_key == 'twitter_client_secret' || $cc_key == 'yahoo_client_id' || $cc_key == 'yahoo_client_secret' || $cc_key == 'linkedin_client_id'|| $cc_key == 'linkedin_client_secret' || $cc_key == 'windows_client_id')  {	
-				if($cc_val !='') {
-					$aes = new AES($cc_val, ENCRYPTION_KEY, BLOCKSIZE);
-					$cc_val = $aes->encrypt(); 
-					
-					$save = $dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name=:name" );
-					$save->bindParam(':value', $cc_val);
-					$save->bindParam(':name', $cc_key);
-					$save->execute();
-				}
+			$aes = new AES($cc_val, ENCRYPTION_KEY, BLOCKSIZE);
+			$cc_val = $aes->encrypt(); 
 			}
-			else {
-				$save = $dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name=:name" );
-				$save->bindParam(':value', $cc_val);
-				$save->bindParam(':name', $cc_key);
-				$save->execute();
-			}
+			$save = $dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name=:name" );
+			$save->bindParam(':value', $cc_val);
+			$save->bindParam(':name', $cc_key);
+			$save->execute();
 
 			if ($save) {
 				$updated++;
@@ -759,12 +760,31 @@ $allowed_file_types = implode(',',$allowed_file_types);
                     <div class="form-group">
                       <div class="col-sm-8 col-sm-offset-4">
                         <?php
-													$doc_link_recaptcha = 'https://developers.google.com/recaptcha/docs/start';
+			$doc_link_recaptcha = 'https://developers.google.com/recaptcha/docs/start';
 												?>
                         <a href="<?php echo $doc_link_recaptcha; ?>" class="external_link" target="_blank">
                         <?php _e('How do I obtain this credentials?','cftp_admin'); ?>
-                        </a> </div>
+                        </a> 
+			</div>
                     </div>
+			<div class="options_divide"></div>
+			<div class="options_divide"></div>
+			<h3>
+				<?php _e('Settings for orphan deletion','cftp_admin'); ?>
+			</h3>
+			<div class="form-group">
+				<label for="orphan_deletion_settings" class="col-sm-4 control-label">
+					<?php _e('Select a duration','cftp_admin'); ?>
+				</label>
+				<div class="col-sm-8 ">
+		                  <select id="orphan_deletion_settings" name="orphan_deletion_settings" >
+		                    <option value="0" <?php if(ORPHAN_DELETION_SETTINGS=='0'){ echo "selected"; }?>>--Select and option--</option>
+		                    <option value="d" <?php if(ORPHAN_DELETION_SETTINGS=='d'){ echo "selected"; }?>>Daily</option>
+		                    <option value="w" <?php if(ORPHAN_DELETION_SETTINGS=='w'){ echo "selected"; }?>>Weekly</option>
+		                    <option value="m" <?php if(ORPHAN_DELETION_SETTINGS=='m'){ echo "selected"; }?>>Monthly</option>
+		                  </select>
+				</div>
+			</div>
                   </div>
                 </div>
               </div>

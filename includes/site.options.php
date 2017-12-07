@@ -31,10 +31,7 @@ try {
 catch ( Exception $e ) {
 	return FALSE;
 }
-/*echo "<pre>";
-print_r($options_values);
-echo "</pre>";
-*/
+
 /**
  * Set the options returned before as constants.
  */
@@ -312,6 +309,12 @@ if(!empty($options_values)) {
 			define('RECAPTCHA_AVAILABLE', true);
 		}
 	}
+	if (isset($options_values['orphan_deletion_settings'])) {
+		define('ORPHAN_DELETION_SETTINGS', $options_values['orphan_deletion_settings']);
+	}else{
+		define('ORPHAN_DELETION_SETTINGS', '0');
+	}
+
 
 	/**
 	 * Set the default timezone based on the value of the Timezone select box

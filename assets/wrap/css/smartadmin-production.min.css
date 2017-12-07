@@ -11200,7 +11200,7 @@ input[type=color].ui-autocomplete-loading, input[type=date].ui-autocomplete-load
 	margin-top: 1px;
 	margin-right: 5px;
 	margin-left: 0;
-	border-left: 3px solid #fff
+	border: 1px solid #fff
 }
 img.away, img.busy, img.offline, img.online {
 	border-left: 3px solid #fff

@@ -1,0 +1,760 @@
+[
+    {
+        "name": "robrichards/xmlseclibs",
+        "version": "1.4.2",
+        "version_normalized": "1.4.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/robrichards/xmlseclibs.git",
+            "reference": "79fb5e03c4ee4dc3ec77e4b2628231374364a017"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/robrichards/xmlseclibs/zipball/79fb5e03c4ee4dc3ec77e4b2628231374364a017",
+            "reference": "79fb5e03c4ee4dc3ec77e4b2628231374364a017",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">= 5.2"
+        },
+        "suggest": {
+            "ext/mcrypt": "MCrypt extension",
+            "ext/openssl": "OpenSSL extension"
+        },
+        "time": "2016-09-08T13:31:44+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "src/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "description": "A PHP library for XML Security",
+        "homepage": "https://github.com/robrichards/xmlseclibs",
+        "keywords": [
+            "security",
+            "signature",
+            "xml",
+            "xmldsig"
+        ]
+    },
+    {
+        "name": "psr/log",
+        "version": "1.0.2",
+        "version_normalized": "1.0.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/php-fig/log.git",
+            "reference": "4ebe3a8bf773a19edfe0a84b6585ba3d401b724d"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/php-fig/log/zipball/4ebe3a8bf773a19edfe0a84b6585ba3d401b724d",
+            "reference": "4ebe3a8bf773a19edfe0a84b6585ba3d401b724d",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "time": "2016-10-10T12:19:37+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Psr\\Log\\": "Psr/Log/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "PHP-FIG",
+                "homepage": "http://www.php-fig.org/"
+            }
+        ],
+        "description": "Common interface for logging libraries",
+        "homepage": "https://github.com/php-fig/log",
+        "keywords": [
+            "log",
+            "psr",
+            "psr-3"
+        ]
+    },
+    {
+        "name": "simplesamlphp/saml2",
+        "version": "v1.9.1",
+        "version_normalized": "1.9.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/simplesamlphp/saml2.git",
+            "reference": "2a2bd4398257cbe72251c68348be72707cc77262"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/simplesamlphp/saml2/zipball/2a2bd4398257cbe72251c68348be72707cc77262",
+            "reference": "2a2bd4398257cbe72251c68348be72707cc77262",
+            "shasum": ""
+        },
+        "require": {
+            "ext-dom": "*",
+            "ext-openssl": "*",
+            "php": ">=5.3.3",
+            "psr/log": "~1.0",
+            "robrichards/xmlseclibs": "^1.3"
+        },
+        "require-dev": {
+            "mockery/mockery": "~0.9",
+            "phpmd/phpmd": "~1.5",
+            "phpunit/phpunit": "~3.7",
+            "satooshi/php-coveralls": "~0.6.1",
+            "sebastian/phpcpd": "~1.4",
+            "sensiolabs/security-checker": "~1.1",
+            "squizlabs/php_codesniffer": "~1.4"
+        },
+        "time": "2016-12-02T12:45:13+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "SAML2_": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "LGPL-2.1"
+        ],
+        "authors": [
+            {
+                "name": "Andreas Åkre Solberg",
+                "email": "andreas.solberg@uninett.no"
+            }
+        ],
+        "description": "SAML2 PHP library from SimpleSAMLphp"
+    },
+    {
+        "name": "whitehat101/apr1-md5",
+        "version": "v1.0.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/whitehat101/apr1-md5.git",
+            "reference": "8b261c9fc0481b4e9fa9d01c6ca70867b5d5e819"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/whitehat101/apr1-md5/zipball/8b261c9fc0481b4e9fa9d01c6ca70867b5d5e819",
+            "reference": "8b261c9fc0481b4e9fa9d01c6ca70867b5d5e819",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "4.0.*"
+        },
+        "time": "2015-02-11T11:06:42+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "WhiteHat101\\Crypt\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jeremy Ebler",
+                "email": "jebler@gmail.com"
+            }
+        ],
+        "description": "Apache's APR1-MD5 algorithm in pure PHP",
+        "homepage": "https://github.com/whitehat101/apr1-md5",
+        "keywords": [
+            "MD5",
+            "apr1"
+        ]
+    },
+    {
+        "name": "simplesamlphp/composer-module-installer",
+        "version": "v1.1.6",
+        "version_normalized": "1.1.6.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/simplesamlphp/composer-module-installer.git",
+            "reference": "b70414a2112fe49e97a7eddd747657bd8bc38ef0"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/simplesamlphp/composer-module-installer/zipball/b70414a2112fe49e97a7eddd747657bd8bc38ef0",
+            "reference": "b70414a2112fe49e97a7eddd747657bd8bc38ef0",
+            "shasum": ""
+        },
+        "require": {
+            "composer-plugin-api": "^1.0",
+            "simplesamlphp/simplesamlphp": "*"
+        },
+        "time": "2017-04-24T07:12:50+00:00",
+        "type": "composer-plugin",
+        "extra": {
+            "class": "SimpleSamlPhp\\Composer\\ModuleInstallerPlugin"
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "SimpleSamlPhp\\Composer": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "description": "A Composer plugin that allows installing SimpleSAMLphp modules through Composer."
+    },
+    {
+        "name": "simplesamlphp/simplesamlphp-module-infocard",
+        "version": "v1.0.2",
+        "version_normalized": "1.0.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/simplesamlphp/simplesamlphp-module-infocard.git",
+            "reference": "3a5b99f7f25e971c9b9b25b16503be9a1007b42a"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/simplesamlphp/simplesamlphp-module-infocard/zipball/3a5b99f7f25e971c9b9b25b16503be9a1007b42a",
+            "reference": "3a5b99f7f25e971c9b9b25b16503be9a1007b42a",
+            "shasum": ""
+        },
+        "require": {
+            "simplesamlphp/composer-module-installer": "~1.0"
+        },
+        "time": "2017-06-27T08:41:08+00:00",
+        "type": "simplesamlphp-module",
+        "extra": {
+            "ssp-mixedcase-module-name": "InfoCard"
+        },
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "authors": [
+            {
+                "name": "Samuel Muñoz Hidalgo",
+                "email": "samuel.mh@gmail.com"
+            }
+        ],
+        "description": "A SimpleSAMLphp module that works with Information Cards techcnologies.",
+        "keywords": [
+            "infocard",
+            "simplesamlphp"
+        ]
+    },
+    {
+        "name": "simplesamlphp/simplesamlphp-module-aggregator",
+        "version": "v1.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/simplesamlphp/simplesamlphp-module-aggregator.git",
+            "reference": "4159443fdd7b0eb76e96543552ab211e6ea5a398"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/simplesamlphp/simplesamlphp-module-aggregator/zipball/4159443fdd7b0eb76e96543552ab211e6ea5a398",
+            "reference": "4159443fdd7b0eb76e96543552ab211e6ea5a398",
+            "shasum": ""
+        },
+        "require": {
+            "simplesamlphp/composer-module-installer": "~1.0"
+        },
+        "time": "2015-08-10T13:58:10+00:00",
+        "type": "simplesamlphp-module",
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "LGPL-2.1"
+        ],
+        "authors": [
+            {
+                "name": "Olav Morken",
+                "email": "olav.morken@uninett.no"
+            },
+            {
+                "name": "Andreas Åkre Solberg",
+                "email": "andreas.solberg@uninett.no"
+            },
+            {
+                "name": "Jaime Perez",
+                "email": "jaime.perez@uninett.no"
+            }
+        ],
+        "description": "A SAML 2.0 metadata aggregator for SimpleSAMLphp.",
+        "homepage": "http://simplesamlphp.org",
+        "keywords": [
+            "SAML2",
+            "metadata"
+        ]
+    },
+    {
+        "name": "simplesamlphp/simplesamlphp-module-aggregator2",
+        "version": "v1.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/simplesamlphp/simplesamlphp-module-aggregator2.git",
+            "reference": "6d19dd405a2ebc626a3881f15c73b4f4dd0493e9"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/simplesamlphp/simplesamlphp-module-aggregator2/zipball/6d19dd405a2ebc626a3881f15c73b4f4dd0493e9",
+            "reference": "6d19dd405a2ebc626a3881f15c73b4f4dd0493e9",
+            "shasum": ""
+        },
+        "require": {
+            "simplesamlphp/composer-module-installer": "~1.0"
+        },
+        "time": "2016-03-09T12:57:23+00:00",
+        "type": "simplesamlphp-module",
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "LGPL-2.1"
+        ],
+        "authors": [
+            {
+                "name": "Olav Morken",
+                "email": "olav.morken@uninett.no"
+            },
+            {
+                "name": "Jaime Perez",
+                "email": "jaime.perez@uninett.no"
+            }
+        ],
+        "description": "A SAML 2.0 metadata aggregator for SimpleSAMLphp.",
+        "homepage": "http://simplesamlphp.org",
+        "keywords": [
+            "SAML2",
+            "metadata"
+        ]
+    },
+    {
+        "name": "simplesamlphp/simplesamlphp-module-autotest",
+        "version": "v1.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/simplesamlphp/simplesamlphp-module-autotest.git",
+            "reference": "b36dd8cf99bab42e6d43791160ac1f5c4f471aaf"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/simplesamlphp/simplesamlphp-module-autotest/zipball/b36dd8cf99bab42e6d43791160ac1f5c4f471aaf",
+            "reference": "b36dd8cf99bab42e6d43791160ac1f5c4f471aaf",
+            "shasum": ""
+        },
+        "require": {
+            "simplesamlphp/composer-module-installer": "~1.0"
+        },
+        "time": "2015-08-07T14:01:45+00:00",
+        "type": "simplesamlphp-module",
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "authors": [
+            {
+                "name": "Olav Morken",
+                "email": "olav.morken@uninett.no"
+            },
+            {
+                "name": "Andreas Åkre Solberg",
+                "email": "andreas.solberg@uninett.no"
+            }
+        ],
+        "description": "This module provides an interface to do automatic testing of authentication sources.",
+        "keywords": [
+            "modules",
+            "simplesamlphp"
+        ]
+    },
+    {
+        "name": "simplesamlphp/simplesamlphp-module-consentsimpleadmin",
+        "version": "v1.1",
+        "version_normalized": "1.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/simplesamlphp/simplesamlphp-module-consentsimpleadmin.git",
+            "reference": "b629ab9e5679717a8fdb7c2dc8a7636a9ac7666c"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/simplesamlphp/simplesamlphp-module-consentsimpleadmin/zipball/b629ab9e5679717a8fdb7c2dc8a7636a9ac7666c",
+            "reference": "b629ab9e5679717a8fdb7c2dc8a7636a9ac7666c",
+            "shasum": ""
+        },
+        "require": {
+            "simplesamlphp/composer-module-installer": "~1.0"
+        },
+        "time": "2016-06-22T13:47:34+00:00",
+        "type": "simplesamlphp-module",
+        "extra": {
+            "ssp-mixedcase-module-name": "consentSimpleAdmin"
+        },
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "LGPL-2.1"
+        ],
+        "authors": [
+            {
+                "name": "Olav Morken",
+                "email": "olav.morken@uninett.no"
+            },
+            {
+                "name": "Andreas Åkre Solberg",
+                "email": "andreas.solberg@uninett.no"
+            }
+        ],
+        "description": "A SimpleSAMLphp module implementing a very simple user interface for managing consent.",
+        "homepage": "http://simplesamlphp.org"
+    },
+    {
+        "name": "simplesamlphp/simplesamlphp-module-logpeek",
+        "version": "v1.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/simplesamlphp/simplesamlphp-module-logpeek.git",
+            "reference": "e3f0242b87556faeb42570dbdd3ce1bbe2700856"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/simplesamlphp/simplesamlphp-module-logpeek/zipball/e3f0242b87556faeb42570dbdd3ce1bbe2700856",
+            "reference": "e3f0242b87556faeb42570dbdd3ce1bbe2700856",
+            "shasum": ""
+        },
+        "require": {
+            "simplesamlphp/composer-module-installer": "~1.0"
+        },
+        "time": "2015-08-07T12:52:45+00:00",
+        "type": "simplesamlphp-module",
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "authors": [
+            {
+                "name": "Olav Morken",
+                "email": "olav.morken@uninett.no"
+            },
+            {
+                "name": "Andreas Åkre Solberg",
+                "email": "andreas.solberg@uninett.no"
+            }
+        ],
+        "description": "A SimpleSAMLphp module to provide a web API to access the log files.",
+        "keywords": [
+            "modules",
+            "simplesamlphp"
+        ]
+    },
+    {
+        "name": "simplesamlphp/simplesamlphp-module-metaedit",
+        "version": "v1.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/simplesamlphp/simplesamlphp-module-metaedit.git",
+            "reference": "09e6c5449ab274e54c0f9deee278d4f1bda4a712"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/simplesamlphp/simplesamlphp-module-metaedit/zipball/09e6c5449ab274e54c0f9deee278d4f1bda4a712",
+            "reference": "09e6c5449ab274e54c0f9deee278d4f1bda4a712",
+            "shasum": ""
+        },
+        "require": {
+            "simplesamlphp/composer-module-installer": "~1.0"
+        },
+        "time": "2015-08-07T14:32:36+00:00",
+        "type": "simplesamlphp-module",
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "authors": [
+            {
+                "name": "Olav Morken",
+                "email": "olav.morken@uninett.no"
+            },
+            {
+                "name": "Andreas Åkre Solberg",
+                "email": "andreas.solberg@uninett.no"
+            }
+        ],
+        "description": "A SimpleSAMLphp module for metadata editing and registration.",
+        "keywords": [
+            "modules",
+            "simplesamlphp"
+        ]
+    },
+    {
+        "name": "simplesamlphp/simplesamlphp-module-modinfo",
+        "version": "v1.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/simplesamlphp/simplesamlphp-module-modinfo.git",
+            "reference": "a382dcd30145dcdcfcaa13673d2b638954848886"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/simplesamlphp/simplesamlphp-module-modinfo/zipball/a382dcd30145dcdcfcaa13673d2b638954848886",
+            "reference": "a382dcd30145dcdcfcaa13673d2b638954848886",
+            "shasum": ""
+        },
+        "require": {
+            "simplesamlphp/composer-module-installer": "~1.0"
+        },
+        "time": "2015-09-07T11:23:13+00:00",
+        "type": "simplesamlphp-module",
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "authors": [
+            {
+                "name": "Olav Morken",
+                "email": "olav.morken@uninett.no"
+            },
+            {
+                "name": "Andreas Åkre Solberg",
+                "email": "andreas.solberg@uninett.no"
+            }
+        ],
+        "description": "A very straightforward module for SimpleSAMLphp that displays the list of modules and their status in the web interface.",
+        "keywords": [
+            "modules",
+            "simplesamlphp"
+        ]
+    },
+    {
+        "name": "openid/php-openid",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/openid/php-openid.git",
+            "reference": "ee669c6a9d4d95b58ecd9b6945627276807694fb"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/openid/php-openid/zipball/ee669c6a9d4d95b58ecd9b6945627276807694fb",
+            "reference": "ee669c6a9d4d95b58ecd9b6945627276807694fb",
+            "shasum": ""
+        },
+        "require": {
+            "ext-curl": "*",
+            "ext-dom": "*",
+            "ext-gmp": "*",
+            "php": ">=5.6"
+        },
+        "time": "2017-09-15T23:15:52+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "Auth"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "include-path": [
+            "."
+        ],
+        "license": [
+            "Apache-2.0"
+        ],
+        "authors": [
+            {
+                "name": "JanRain Inc.",
+                "homepage": "http://www.openidenabled.com"
+            }
+        ],
+        "description": "OpenID library for PHP5",
+        "homepage": "http://github.com/openid/php-openid",
+        "keywords": [
+            "Authentication",
+            "OpenId",
+            "auth",
+            "yadis"
+        ]
+    },
+    {
+        "name": "simplesamlphp/simplesamlphp-module-openid",
+        "version": "v1.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/simplesamlphp/simplesamlphp-module-openid.git",
+            "reference": "b1f406c8850024d6430d07a1efa6ca98bf8e0e92"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/simplesamlphp/simplesamlphp-module-openid/zipball/b1f406c8850024d6430d07a1efa6ca98bf8e0e92",
+            "reference": "b1f406c8850024d6430d07a1efa6ca98bf8e0e92",
+            "shasum": ""
+        },
+        "require": {
+            "openid/php-openid": "dev-master#ee669c6a9d4d95b58ecd9b6945627276807694fb as 2.2.2",
+            "simplesamlphp/composer-module-installer": "~1.0"
+        },
+        "time": "2016-03-09T13:05:21+00:00",
+        "type": "simplesamlphp-module",
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "LGPL-2.1"
+        ],
+        "authors": [
+            {
+                "name": "Olav Morken",
+                "email": "olav.morken@uninett.no"
+            },
+            {
+                "name": "Andreas Åkre Solberg",
+                "email": "andreas.solberg@uninett.no"
+            },
+            {
+                "name": "Andjelko Horvat",
+                "email": "comel@vingd.com"
+            }
+        ],
+        "description": "A SimpleSAMLphp module adding support for the OpenID protocol.",
+        "homepage": "http://simplesamlphp.org",
+        "keywords": [
+            "OpenId",
+            "consumer"
+        ]
+    },
+    {
+        "name": "simplesamlphp/simplesamlphp-module-openidprovider",
+        "version": "v1.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/simplesamlphp/simplesamlphp-module-openidprovider.git",
+            "reference": "f307dce5914efea51b6ea1dd60cb404ed46856ea"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/simplesamlphp/simplesamlphp-module-openidprovider/zipball/f307dce5914efea51b6ea1dd60cb404ed46856ea",
+            "reference": "f307dce5914efea51b6ea1dd60cb404ed46856ea",
+            "shasum": ""
+        },
+        "require": {
+            "openid/php-openid": "dev-master#ee669c6a9d4d95b58ecd9b6945627276807694fb as 2.2.2",
+            "simplesamlphp/composer-module-installer": "~1.0"
+        },
+        "time": "2016-03-09T13:02:52+00:00",
+        "type": "simplesamlphp-module",
+        "extra": {
+            "ssp-mixedcase-module-name": "openidProvider"
+        },
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "LGPL-2.1"
+        ],
+        "authors": [
+            {
+                "name": "Olav Morken",
+                "email": "olav.morken@uninett.no"
+            },
+            {
+                "name": "Andreas Åkre Solberg",
+                "email": "andreas.solberg@uninett.no"
+            }
+        ],
+        "description": "A SimpleSAMLphp module adding support for the OpenID protocol as an Identity Provider.",
+        "homepage": "http://simplesamlphp.org",
+        "keywords": [
+            "OpenId",
+            "provider"
+        ]
+    },
+    {
+        "name": "rediris-es/simplesamlphp-module-papi",
+        "version": "v1.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/rediris-es/simplesamlphp-module-papi.git",
+            "reference": "54cdb1a238dc2909b57b0c0aebdd28448abc33fa"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/rediris-es/simplesamlphp-module-papi/zipball/54cdb1a238dc2909b57b0c0aebdd28448abc33fa",
+            "reference": "54cdb1a238dc2909b57b0c0aebdd28448abc33fa",
+            "shasum": ""
+        },
+        "require": {
+            "simplesamlphp/composer-module-installer": "~1.0"
+        },
+        "time": "2016-03-09T13:01:33+00:00",
+        "type": "simplesamlphp-module",
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "authors": [
+            {
+                "name": "Jaime Pérez Crespo",
+                "email": "jaime.perez@uninett.no"
+            }
+        ],
+        "description": "A SimpleSAMLphp module adding support for the PAPI protocol.",
+        "keywords": [
+            "PAPI",
+            "RedIRIS",
+            "SIR",
+            "simplesamlphp"
+        ]
+    },
+    {
+        "name": "simplesamlphp/simplesamlphp-module-saml2debug",
+        "version": "v1.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/simplesamlphp/simplesamlphp-module-saml2debug.git",
+            "reference": "ef65783f4ba8a0ac169bbf10874c6025f7676f4e"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/simplesamlphp/simplesamlphp-module-saml2debug/zipball/ef65783f4ba8a0ac169bbf10874c6025f7676f4e",
+            "reference": "ef65783f4ba8a0ac169bbf10874c6025f7676f4e",
+            "shasum": ""
+        },
+        "require": {
+            "simplesamlphp/composer-module-installer": "~1.0"
+        },
+        "time": "2015-08-07T13:34:49+00:00",
+        "type": "simplesamlphp-module",
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "authors": [
+            {
+                "name": "Olav Morken",
+                "email": "olav.morken@uninett.no"
+            },
+            {
+                "name": "Andreas Åkre Solberg",
+                "email": "andreas.solberg@uninett.no"
+            }
+        ],
+        "description": "A module to debug encoding and decoding of SAML message for both the HTTP-redirect and HTTP-POST bindings.",
+        "keywords": [
+            "modules",
+            "simplesamlphp"
+        ]
+    }
+]

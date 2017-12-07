@@ -1,15 +1,14 @@
 <?php
 require_once('sys.includes.php');
 include('header-unlogged.php');
-if (!spl_autoload_functions() OR (!in_array('PHPMailerAutoload', spl_autoload_functions()))) {
-			require_once(ROOT_DIR.'/includes/phpmailer/PHPMailerAutoload.php');
-}
 
 $page_title = __('Drop-Off Summary','cftp_admin');
 //$form_action="dropoff_guest_action.php";
 
 $auth = isset($_REQUEST['auth']) ? htmlspecialchars($_REQUEST['auth'],ENT_QUOTES, 'UTF-8') : '';
 if(!empty($auth)){
+
+	define('TABLE_DROPOFF','tbl_drop_off_request');
 	$sql = $dbh->prepare( 'SELECT * FROM '.TABLE_DROPOFF.' WHERE auth_key = "'.$auth.'"' );	
 
 	$sql->execute();
@@ -36,9 +35,6 @@ $uploadOk = 1;
 $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
 
 if($_POST) {
-	//echo "<pre>";
-	//print_r($_FILES);
-	//echo "</pre>";
 	$to = ($_REQUEST['to']) ? $_REQUEST['to'] : '';
 	$comments = ($_REQUEST['comments']) ? $_REQUEST['comments'] : '';
 	$auth = ($_REQUEST['auth']) ? $_REQUEST['auth'] : '';
@@ -190,133 +186,14 @@ for($i = 0 ; $i < $filecount; $i++) {
 		 //var_dump($filename ,$fromid , $_POST);
 		 $time = '2017-03-02 00:00:00';
 		 $expdate = '2017-03-09 00:00:00';
-		$thirty_days_ahead =  date('Y-m-d H:i:s', strtotime("+30 days") );
-		 //echo "INSERT INTO ".TABLE_FILES." (`url`, `filename`, `description`, `timestamp`, `uploader`, `expires`, `expiry_date`, `public_allow`, `public_token`) VALUES ('$url', '$filename', '', CURRENT_TIMESTAMP, '$uploader', '0', '2017-12-09 00:00:00', '0', NULL)";
-
-		$statement = $dbh->prepare("INSERT INTO ".TABLE_FILES." (`url`, `filename`, `description`, `timestamp`, `uploader`,`notify`, `expires`, `expiry_date`, `public_allow`,`number_downloads`, `public_token`) VALUES ('$url', '$filename', '', CURRENT_TIMESTAMP, 'guest', '0','0', '$thirty_days_ahead', '0','0', NULL)");
+		 
+		$statement = $dbh->prepare("INSERT INTO ".TABLE_FILES." (`url`, `filename`, `description`, `timestamp`, `uploader`, `expires`, `expiry_date`, `public_allow`, `public_token`) VALUES ('$url', '$filename', '', CURRENT_TIMESTAMP, '$uploader', '0', '2017-12-09 00:00:00', '0', NULL);");
 		if($statement->execute()) {
 			$img_id = $dbh->lastInsertId();
 			$filesrelations = $dbh->prepare("INSERT INTO ".TABLE_FILES_RELATIONS." (`timestamp`, `file_id`, `client_id`, `group_id`, `folder_id`, `hidden`, `download_count`) VALUES (CURRENT_TIMESTAMP, ".$img_id.", ".$fromid.", NULL, NULL, '0', '0')");
 			//var_dump($filesrelations);
 			$filesrelations->execute();
 		}
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-// Subject
-//$subject = 'New files uploaded for you';
-
-// Message
-$message = '
-<html>
-<head>
-<title>New files uploaded for you</title>
-</head>
-<body>
-<p>The following files are now available for you to download.</p>
-<h1>'.$filename.'</h1>
-<p>If you prefer not to be notified about new files, please go to My Account and deactivate the notifications checkbox.</p>
-<p>You can access a list of all your files or upload your own by logging in <a href="'.SITE_URI.'">here</a></p>
-<p>uploaded by :</p>
-	Name : '.$grow['to_name'].'<br>
-	Organization : '.$grow['from_organization'].'<br>
-	Email : '.$grow['to_email'].'<br>
-	Requested Time : '.$grow['requested_time'].'
-</body>
-</html>
-';
-
-// To send HTML mail, the Content-type header must be set
-$headers[] = 'MIME-Version: 1.0';
-$headers[] = 'Content-type: text/html; charset=iso-8859-1';
-
-// Additional headers
-$headers[] = 'To: <'.$to.'>';
-$headers[] = 'From:  MicroHealth<info@microhealthllc.com>';
-
-		$send_mail = new PHPMailer();
-		switch (MAIL_SYSTEM) {
-			case 'smtp':
-					$send_mail->IsSMTP();
-					$send_mail->SMTPAuth = true;
-					$send_mail->Host = SMTP_HOST;
-					$send_mail->Port = SMTP_PORT;
-					$send_mail->Username = SMTP_USER;
-					$send_mail->Password = SMTP_PASS;
-					
-					if ( defined('SMTP_AUTH') && SMTP_AUTH != 'none' ) {
-						$send_mail->SMTPSecure = SMTP_AUTH;
-					}
-				break;
-			case 'gmail':
-					$send_mail->IsSMTP();
-					$send_mail->SMTPAuth = true;
-					$send_mail->SMTPSecure = "tls";
-					$send_mail->Host = 'smtp.gmail.com';
-					$send_mail->Port = 587;
-					$send_mail->Username = SMTP_USER;
-					$send_mail->Password = SMTP_PASS;
-				break;
-			case 'sendmail':
-					$send_mail->IsSendmail();
-				break;
-		}
-		
-		$send_mail->CharSet = EMAIL_ENCODING;
-//
-		$send_mail->Subject = "NEW FILE RECEIVED";
-//
-		$send_mail->MsgHTML($message);
-		$send_mail->AltBody = __('This email contains HTML formatting and cannot be displayed right now. Please use an HTML compatible reader.','cftp_admin');
-
-		$send_mail->SetFrom(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
-		$send_mail->AddReplyTo(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
-//
-		$send_mail->AddAddress($to);
-		
-		/**
-		 * Check if BCC is enabled and get the list of
-		 * addresses to add, based on the email type.
-		 */
-		if (COPY_MAIL_ON_CLIENT_UPLOADS == '1') {
-					$try_bcc = true;
-				}
-		if ($try_bcc === true) {
-			$add_bcc_to = array();
-			if (COPY_MAIL_MAIN_USER == '1') {
-				$add_bcc_to[] = ADMIN_EMAIL_ADDRESS;
-			}
-			$more_addresses = COPY_MAIL_ADDRESSES;
-			if (!empty($more_addresses)) {
-				$more_addresses = explode(',',$more_addresses);
-				foreach ($more_addresses as $add_bcc) {
-					$add_bcc_to[] = $add_bcc;
-				}
-			}
-
-
-			/**
-			 * Add the BCCs with the compiled array.
-			 * First, clean the array to make sure the admin
-			 * address is not written twice.
-			 */
-
-			if (!empty($add_bcc_to)) {
-				$add_bcc_to = array_unique($add_bcc_to);
-				foreach ($add_bcc_to as $set_bcc) {
-					$send_mail->AddBCC($set_bcc);
-				}
-			}
-			 
-		}
-
-
-	
-		/**
-		 * Finally, send the e-mail.
-		 */
-		$send_mail->Send();
-
 // loop end ---------------------------------------------------------------------------------------------		
 }
 //----------------------------------

@@ -29,13 +29,16 @@ if ($_POST) {
 	$add_group_data_name = encode_html($_POST['add_group_form_name']);
 	$add_group_data_description = encode_html($_POST['add_group_form_description']);
 	$add_group_data_members = $_POST['add_group_form_members'];
+	$add_type = 0;
 
 	/** Arguments used on validation and group creation. */
 	$new_arguments = array(
 							'id' => '',
 							'name' => $add_group_data_name,
 							'description' => $add_group_data_description,
+							'organization_type'=>$add_type,
 							'members' => $add_group_data_members
+							
 						);
 
 	/** Validate the information from the posted form. */

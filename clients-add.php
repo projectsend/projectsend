@@ -35,7 +35,12 @@ if ($_POST) {
 	$add_client_data_email = encode_html($_POST['add_client_form_email']);
 	/** Optional fields: Address, Phone, Internal Contact, Notify */
 	$add_client_data_addr = (isset($_POST["add_client_form_address"])) ? encode_html($_POST["add_client_form_address"]) : '';
+	$add_client_data_addr2 = (isset($_POST["add_client_form_address_line2"])) ? encode_html($_POST["add_client_form_address_line2"]) : '';
+	$add_client_data_city = (isset($_POST["add_client_city"])) ? encode_html($_POST["add_client_city"]) : '';
+	$add_client_data_state = (isset($_POST["add_client_form_state"])) ? encode_html($_POST["add_client_form_state"]) : '';
+	$add_client_data_zip 	= (isset($_POST["add_client_form_zip"])) ? encode_html($_POST["add_client_form_zip"]) : '';
 	$add_client_data_phone = (isset($_POST["add_client_form_phone"])) ? encode_html($_POST["add_client_form_phone"]) : '';
+	$add_client_data_level = (isset($_POST["select_user"])) ? 1 : 0;
 	$add_client_data_intcont = (isset($_POST["add_client_form_intcont"])) ? encode_html($_POST["add_client_form_intcont"]) : '';
 	$add_client_data_notity = (isset($_POST["add_client_form_notify"])) ? 1 : 0;
 	$add_client_data_active = (isset($_POST["add_client_form_active"])) ? 1 : 0;
@@ -49,7 +54,12 @@ if ($_POST) {
 							'name' => $add_client_data_name,
 							'email' => $add_client_data_email,
 							'address' => $add_client_data_addr,
+							'address2' => $add_client_data_addr2,
+							'city'		=> $add_client_data_city,
+							'state'		=> $add_client_data_state,
+							'zipcode'	=> $add_client_data_zip,
 							'phone' => $add_client_data_phone,
+							'level'		=> $add_client_data_level,
 							'contact' => $add_client_data_intcont,
 							'notify' => $add_client_data_notity,
 							'active' => $add_client_data_active,

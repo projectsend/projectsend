@@ -286,9 +286,10 @@ include('header.php');
 					<th data-hide="phone"><?php _e('Log in username','cftp_admin'); ?></th>
 					<th data-hide="phone"><?php _e('E-mail','cftp_admin'); ?></th>
 					<th data-hide="phone"><?php _e('Role','cftp_admin'); ?></th>
+					<th data-hide="phone"><?php _e('user groups','cftp_admin'); ?></th>
 					<th><?php _e('Status','cftp_admin'); ?></th>
 					<th data-hide="phone, tablet" data-type="numeric"><?php _e('Added on','cftp_admin'); ?></th>
-					<th data-hide="phone" data-sort-ignore="true"><?php _e('Actions','cftp_admin'); ?></th>
+					<!-- <th data-hide="phone" data-sort-ignore="true"><?php _e('Actions','cftp_admin'); ?></th> -->
 				</tr>
 			</thead>
 			<tbody>
@@ -305,7 +306,9 @@ include('header.php');
 						<?php } ?>
 					</td>
 					<td><?php echo html_output($row["name"]); ?></td>
-					<td><?php echo html_output($row["user"]); ?></td>
+
+					<td><a href="users-edit.php?id=<?php echo $row["id"]; ?>"><?php _e(html_output($row["user"]),'cftp_admin'); ?></a></td>
+					
 					<td><?php echo html_output($row["email"]); ?></td>
 					<td><?php
 						switch(html_entity_decode($row["level"])) {
@@ -315,6 +318,7 @@ include('header.php');
 						}
 					?>
 					</td>
+					<td><a href="user-organizations.php?id=<?php echo $row["id"]; ?>" class="btn btn-sm btn-primary right-btn"><?php if($global_level == 0) { echo "My organizations"; } else { echo 'Manage Organization';} ?></a></td>
 					<td>
 						<?php
 							$status_hidden	= __('Inactive','cftp_admin');
@@ -329,9 +333,9 @@ include('header.php');
 					<td data-value="<?php echo strtotime($row['timestamp']); ?>">
 						<?php echo $date; ?>
 					</td>
-					<td>
-						<a href="users-edit.php?id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm"><?php _e('Edit','cftp_admin'); ?></a>
-					</td>
+					
+						
+					
 				</tr>
 						
 				<?php

@@ -34,6 +34,9 @@ $core_update_allowed = array(9,8,7);
 if (in_session_or_cookies($core_update_allowed)) {
 	require_once(ROOT_DIR.'/includes/core.update.php');
 }
+
+
+
 ?>
 <!doctype html>
 <html lang="<?php echo SITE_LANG; ?>">
@@ -84,9 +87,35 @@ if (in_session_or_cookies($core_update_allowed)) {
 									$my_account_link = 'users-edit.php';
 								}
 								$my_account_link .= '?id='.CURRENT_USER_ID;
+$user_id = CURRENT_USER_ID;
 							?>
 </head>
+<?php
+$profile_pic = $dbh->prepare("SELECT * FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id=:user_id AND name = :name");
+$profile_pic->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+$profile_pic->bindValue(':name', 'profile_pic');
+$profile_pic->execute();
+$profile_pic->setFetchMode(PDO::FETCH_ASSOC);
+$profile_pic_email_array = array();
+while ( $data = $profile_pic->fetch() ) {
+		$profile_pic_img = $data['value'];
+}
+/*
+$alternate_email = $dbh->prepare("SELECT value FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id=:user_id AND name = :name");
+$alternate_email->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+$alternate_email->bindValue(':name', 'alternate_email');
+$alternate_email->execute();
+$test = $alternate_email->setFetchMode(PDO::FETCH_ASSOC);
+//print_r($test);
+$alternate_email_list = array();
+while ( $data = $alternate_email->fetch() ) {
+		$alternate_email_list[] = $data['value'];
+}
+print_r($alternate_email_list);
+*/
 
+
+?>
 
 <body class="pace-done smart-style-1">
 
@@ -139,7 +168,18 @@ if (in_session_or_cookies($core_update_allowed)) {
 				<span> <!-- User image size is adjusted inside CSS, it should stay as it --> 
 					
 					<a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut">
-						<img src="<?php echo BASE_URI; ?>/img/avatars/sunny.png" alt="me" class="online" /> 
+						<!--img src="<?php echo BASE_URI; ?>/img/avatars/sunny.png" alt="me" class="online" /--> 
+
+<?php
+
+	if(!empty($profile_pic_img)){?>
+
+				<img src="<?php echo SITE_URI . "img/avatars/".$profile_pic_img;?>" alt="demo user">
+	<?php }else{
+?>
+						<img src="<?php echo SITE_URI . 'img/avatars/no-image.png';?>" alt="demo user">
+
+<?php }?>
 						<span>
 							<?php echo $global_name; ?>
 						</span>

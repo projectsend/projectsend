@@ -20,17 +20,19 @@
 			
 		</div>
 	</div>
-	<div class="form-group">
-		<label for="from_organization" class="col-sm-4 control-label"><?php _e('Organization','cftp_admin'); ?></label>
-		<div class="col-sm-8">
-			<input type="text" name="from_organization" id="from_mail_id" class="form-control required" value="" placeholder="Organization name" />
-		</div>
-	</div>
+	
 
 	<div class="form-group">
 		<label for="to_name_request" class="col-sm-4 control-label"><?php _e('To Name','cftp_admin'); ?></label>
 		<div class="col-sm-8">
 			<input type="text" name="to_name_request" id="to_name_request" class="form-control <?php if (!$disable_user) { echo 'required'; } ?>" maxlength="<?php echo MAX_USER_CHARS; ?>" placeholder="<?php _e("Enter To name",'cftp_admin'); ?>" />
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label for="from_organization" class="col-sm-4 control-label"><?php _e('Organization','cftp_admin'); ?></label>
+		<div class="col-sm-8">
+			<input type="text" name="from_organization" id="from_mail_id" class="form-control required" value="" placeholder="Organization name" />
 		</div>
 	</div>
 

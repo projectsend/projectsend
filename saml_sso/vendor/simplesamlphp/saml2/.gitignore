@@ -1,0 +1,4 @@
+/vendor/
+build
+cache.properties
+composer.phar

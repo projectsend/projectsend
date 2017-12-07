@@ -14,7 +14,7 @@ $allowed_levels = array(9,8);
 require_once('sys.includes.php');
 
 $active_nav = 'clients';
-$cc_active_page = 'Manage clients';
+$cc_active_page = 'Manage Clients';
 
 $page_title = __('Clients Administration','cftp_admin');
 include('header.php');
@@ -268,9 +268,9 @@ $(document).ready(function() {
                   <th data-hide="phone,tablet"><?php _e('Log in username','cftp_admin'); ?></th>
                   <th data-hide="phone,tablet"><?php _e('E-mail','cftp_admin'); ?></th>
                   <th data-hide="phone" data-type="numeric"><?php _e('Files: Own','cftp_admin'); ?></th>
-                  <th data-hide="phone" data-type="numeric"><?php _e('Files: Groups','cftp_admin'); ?></th>
+                  <th data-hide="phone" data-type="numeric"><?php _e('Files: Organization','cftp_admin'); ?></th>
                   <th><?php _e('Status','cftp_admin'); ?></th>
-                  <th data-hide="phone" data-type="numeric"><?php _e('Groups on','cftp_admin'); ?></th>
+                  <th data-hide="phone" data-type="numeric"><?php _e('Organization on','cftp_admin'); ?></th>
                   <th data-hide="phone,tablet"><?php _e('Notify','cftp_admin'); ?></th>
                   <th data-hide="phone,tablet" data-type="numeric"><?php _e('Added on','cftp_admin'); ?></th>
                   <th data-hide="phone,tablet"><?php _e('Address','cftp_admin'); ?></th>
@@ -306,7 +306,9 @@ $(document).ready(function() {
                 <tr>
                   <td><input type="checkbox" name="selected_clients[]" value="<?php echo html_output($row["id"]); ?>" /></td>
                   <td><?php echo html_output($row["name"]); ?></td>
-                  <td><?php echo html_output($row["user"]); ?></td>
+
+                  <td> <a href="clients-edit.php?id=<?php echo html_output($row["id"]); ?>"><?php _e( html_output($row["user"]),'cftp_admin'); ?></a></td>
+
                   <td><?php echo html_output($row["email"]); ?></td>
                   <td><?php
 											$own_files = 0;
@@ -376,9 +378,11 @@ $(document).ready(function() {
                     <?php _e('View groups','cftp_admin'); ?>
                     </a> <a href="my_files/?client=<?php echo html_output($row["user"]); ?>" class="btn btn-primary btn-sm" target="_blank">
                     <?php _e('View as client','cftp_admin'); ?>
-                    </a> <a href="clients-edit.php?id=<?php echo html_output($row["id"]); ?>" class="btn btn-primary btn-sm">
-                    <?php _e('Edit','cftp_admin'); ?>
-                    </a></td>
+                    </a> 
+                    
+                   
+
+                    </td>
                 </tr>
                 <?php
 							}

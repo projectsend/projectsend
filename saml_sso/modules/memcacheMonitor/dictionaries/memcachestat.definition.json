@@ -1,0 +1,62 @@
+{
+	"pid": {
+		"en": "Process ID"
+	},
+	"uptime": {
+		"en": "Uptime"
+	},
+	"time": {
+		"en": "Current time"
+	},
+	"version": {
+		"en": "Version"
+	},
+	"rusage_user": {
+		"en": "CPU Seconds (User)"
+	},
+	"rusage_system": {
+		"en": "CPU Seconds (System)"
+	},
+	"curr_items": {
+		"en": "Currently number of items"
+	},
+	"total_items": {
+		"en": "Total items ever"
+	},
+	"bytes": {
+		"en": "Total bytes in use currently"
+	},
+	"curr_connections": {
+		"en": "Current open connections"
+	},
+	"total_connections": {
+		"en": "Total connections"
+	},
+	"connection_structures": {
+		"en": "Connection structures"
+	},
+	"cmd_get": {
+		"en": "Total GET commands"
+	},
+	"cmd_set": {
+		"en": "Total SET commands"
+	},
+    "cmd_flush": {
+        "en": "Total FLUSH commands"
+    },
+	"get_hits": {
+		"en": "Total GET commands (success)"
+	},
+	"get_misses": {
+		"en": "Total GET commands (failed)"
+	},
+	"bytes_read": {
+		"en": "Bytes in to the server"
+	},
+	"bytes_written": {
+		"en": "Bytes written by the server"
+	},
+	"limit_maxbytes": {
+		"en": "Total storage avail"
+	}
+}

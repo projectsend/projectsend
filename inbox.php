@@ -103,61 +103,6 @@ if (isset($_GET['category'])) {
 }
 
 include('header.php');
-/*ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);*/
-function file_download() {
-/*-------------------------------------------------------*/ 
-$check_level = array(9,8,7,0);
-$check_session = in_session_or_cookies($check_level);
-
-if($check_session) {
-global $dbh;
-$fid = 1;
-	$statement = $dbh->prepare("SELECT url, expires, expiry_date FROM " . TABLE_FILES . " WHERE id=:id");
-	$statement->bindParam(':id', $fid, PDO::PARAM_INT);
-	$statement->execute();
-	$statement->setFetchMode(PDO::FETCH_ASSOC);
-	$result = $statement->fetch();
-	$real_file_url	= $result['url'];
-	$expires			= $result['expires'];
-	$expiry_date		= $result['expiry_date'];
-	$expired			= false;
-	if ($expires == '1' && time() > strtotime($expiry_date)) {
-		$expired		= true;
-	}
-	if (CURRENT_USER_LEVEL == 0 || 1 == 1) {
-			if ($expires == '0' || $expired == false) {
-					$gstatement = $dbh->prepare("SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE client_id=:id");
-					$gstatement->bindValue(':id', CURRENT_USER_ID, PDO::PARAM_INT);
-					$gstatement->execute();
-					if($gstatement->rowCount() > 0) {
-						//-------------------------------------------------------------------------
-						
-
-								$gstatement->setFetchMode(PDO::FETCH_ASSOC);
-								while ( $gstatement->row_groups = $gstatement->fetch() ) {
-									$groups_ids[] = $row_groups["group_id"];
-								}
-								if ( !empty( $groups_ids ) ) {
-									$found_groups = implode( ',', $groups_ids );
-								}
-
-							
-						//-------------------------------------------------------------------------
-						
-					}
-					$gstatement->setFetchMode(PDO::FETCH_ASSOC);
-					$gstatement = $gstatement->fetchAll();
-
-			}
-	}
-}
-
-
-		
-/*-------------------------------------------------------*/
-}
 ?>
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -173,14 +118,6 @@ $fid = 1;
 					var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
 					var msg_2 = '<?php _e("files permanently and for every client/group. Are you sure you want to continue?",'cftp_admin'); ?>';
 					if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
-						return true;
-					} else {
-						return false;
-					}
-				}
-				else if (action == 'download') {
-					var msg_1 = '<?php _e("Are you sure you want to download",'cftp_admin'); ?>';
-					if (confirm(msg_1+' '+checks.length+' '+ 'files')) {
 						return true;
 					} else {
 						return false;
@@ -297,9 +234,6 @@ $fid = 1;
 				}
 				
 				switch($_POST['files_actions']) {
-					case 'download' :
-					file_download();
-					break;
 					case 'hide':
 						/**
 						 * Changes the value on the "hidden" column value on the database.
@@ -473,7 +407,7 @@ $fid = 1;
 			 * only show files uploaded by that account.
 			*/
 			$current_level = get_current_user_level();
-			if ($current_level == '7' || $current_level == '0') {
+			if ($current_level == '7' || $current_level == '8' || $current_level == '0') {
 				$conditions[] = "uploader = :uploader";
 				$no_results_error = 'account_level';
 	
@@ -518,8 +452,11 @@ $fid = 1;
 	
 			//$sql_files = $dbh->prepare($fq);
 			//$sql_files->execute( $params );
-			
-			$q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id where tbl_files_relations.client_id =" . CURRENT_USER_ID;
+			/*Some issue on the query. Need to check future send date and expiry date */
+			//$q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id where tbl_files.future_send_date<=CURDATE() and tbl_files.expiry_date =CURDATE() and tbl_files_relations.client_id =" . CURRENT_USER_ID;
+$q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id where  tbl_files_relations.client_id =" . CURRENT_USER_ID;
+
+		//	echo $q_sent_file;exit;
 
 			$sql_files = $dbh->prepare($q_sent_file);
 			$sql_files->execute();
@@ -639,9 +576,6 @@ $fid = 1;
                       <option value="delete">
                       <?php _e('Delete','cftp_admin'); ?>
                       </option>
-<!--                       <option value="download">
-                      <?php //_e('download','cftp_admin'); ?>
-                      </option>-->
                     </select>
                   </div>
                   <button type="submit" name="do_action" id="do_action" class="btn btn-sm btn-default">
@@ -690,14 +624,18 @@ $fid = 1;
 				}
 			?>
             <section id="no-more-tables">
-            <table id="files_list" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
+            <table id="files_list" class="cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
               <thead>
                 <tr>
                   <?php
 							/** Actions are not available for clients if delete own files is false */
 							if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
 						?>
-                  <th class="td_checkbox" data-sort-ignore="true"> <input type="checkbox" name="select_all" id="select_all" value="0" />
+                  <th class="td_checkbox" data-sort-ignore="true"> 
+                  <label class="cc-chk-container">
+                      <input type="checkbox" name="select_all" id="select_all" value="0" />
+                      <span class="checkmark"></span>
+                  </label>
                   </th>
                   <?php
 							}
@@ -705,11 +643,13 @@ $fid = 1;
                   <th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('Date','cftp_admin'); ?></th>
                   <th data-hide="phone,tablet"><?php _e('Ext.','cftp_admin'); ?></th>
                   <th><?php _e('Title','cftp_admin'); ?></th>
+
                   <th><?php _e('Size','cftp_admin'); ?></th>
+                  <th data-hide="phone,tablet"><?php _e('Uploader','cftp_admin'); ?></th>
                   <?php
 							if($current_level != '0') {
 						?>
-                  <th data-hide="phone,tablet"><?php _e('Uploader','cftp_admin'); ?></th>
+
                   <?php
 									if ( !isset( $search_on ) ) {
 								?>
@@ -739,7 +679,7 @@ $fid = 1;
 								}
 							}
 						?>
-                  <th data-hide="phone" data-sort-ignore="true"><?php _e('Actions','cftp_admin'); ?></th>
+                 <!--  <th data-hide="phone" data-sort-ignore="true"><?php _e('Actions','cftp_admin'); ?></th> -->
                 </tr>
               </thead>
               <tbody>
@@ -747,6 +687,7 @@ $fid = 1;
 						if ($count > 0) {
 							$sql_files->setFetchMode(PDO::FETCH_ASSOC);
 							while( $row = $sql_files->fetch() ) {
+
 								$file_id = $row['id'];
 								/**
 								 * Construct the complete file URI to use on the download button.
@@ -817,7 +758,12 @@ $fid = 1;
 										/** Actions are not available for clients */
 										if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
 									?>
-                  <td><input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" /></td>
+                  <td>
+                  <label class="cc-chk-container">
+                      <input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" />
+                      <span class="checkmark"></span>
+                  </label>
+                  </td>
                   <?php
 										}
 									?>
@@ -832,7 +778,7 @@ $fid = 1;
 											 * Clients can download from here.
 													It was like client cannot download. But now changed to Can.
 											 */
-											if($current_level == '0' || 1 == 1 ) { //1 == 1 download link for all role
+											if($current_level == '0') {
 												$download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
 										?>
                     <a href="<?php echo $download_link; ?>" target="_blank"> <?php echo html_output($row['filename']); ?> </a>
@@ -843,11 +789,34 @@ $fid = 1;
 											}
 										?></td>
                   <td data-value="<?php echo $this_file_size; ?>"><?php echo $formatted_size; ?></td>
+
                   <?php
 										if($current_level != '0') {
 									?>
-                  <td><?php echo html_output($row['uploader']); ?></td>
+                  <td>
+                  	
+                  		<a href="edit-file.php?file_id=<?php echo $row["id"]; ?>" class="btn-sm">
+                    	<?php _e(html_output($row['uploader']),'cftp_admin'); ?>
+                    	</a>
+
+                  </td>
+	<?php
+	}else{
+?>
+                  <td>
+                  	
+                    	<?php _e(html_output($row['uploader']),'cftp_admin'); ?>
+
+                  </td>
+
+<?php
+
+}
+?>
+
+                  
                   <?php
+										if($current_level != '0') {
 												if ( !isset( $search_on ) ) {
 											?>
                   <td><?php
@@ -951,9 +920,9 @@ $fid = 1;
 											}
 										}
 									?>
-                  <td><a href="edit-file.php?file_id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm">
+                  <!-- <td><a href="edit-file.php?file_id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm">
                     <?php _e('Edit','cftp_admin'); ?>
-                    </a></td>
+                    </a></td> -->
                 </tr>
                 <?php
 							}

@@ -155,7 +155,7 @@ $my_files = array();
 
 if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 	$f = 0;
-	$files_query = "SELECT * FROM " . TABLE_FILES . " WHERE FIND_IN_SET(id,:search_ids)";
+	$files_query = "SELECT * FROM " . TABLE_FILES . " WHERE future_send_date<=CURDATE() and FIND_IN_SET(id,:search_ids)";
 
 	$params		= array(
 						':search_ids' => $ids_to_search

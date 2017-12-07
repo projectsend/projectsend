@@ -155,7 +155,7 @@ if ( isset($_SESSION['errorstate'] ) ) {
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8 hidden-xs hidden-sm">
       <h1 class="txt-color-red login-header-big"></h1>
-<img alt="Logo Placeholder" src="<?php echo BASE_URI?>img/custom/logo/<?php echo LOGO_FILENAME.'?'.microtime(); ?>">
+<img alt="Logo Placeholder" src="<?php echo BASE_URI?>/includes/timthumb/timthumb.php?src=/img/custom/logo/<?php echo LOGO_FILENAME; ?>&amp;w=220">
       <div class="hero">
         <div class="pull-left login-desc-box-l">
           <h4 class="paragraph-header">It's Okay to be Smart. Experience the simplicity of MicroHealth Send, everywhere you go!</h4>
@@ -277,6 +277,26 @@ if ( isset($_SESSION['errorstate'] ) ) {
       </div>
       <h5 class="text-center"> - Or sign in using -</h5>
       <ul class="list-inline text-center">
+	    
+		<?php
+/*
+		require_once('simplesamlsp/lib/_autoload.php');
+		$auth = new SimpleSAML_Auth_Simple('default-sp');
+		$login_url =  $auth->getLoginURL();
+		if (!$auth->isAuthenticated()) {
+			print('<li><a href="'.htmlspecialchars($login_url).'">SAML</a></li>');
+		}else{
+			$attributes = $auth->getAttributes();
+			echo "Attributes present!!";
+			echo "<pre>";print_r($attributes);echo "</pre>";	
+			$url = $auth->getLogoutURL();
+			print('<li><a href="' . htmlspecialchars($url) . '">SAML Logout</a></li>');
+		}
+
+*/		
+		print('<li><a href="https://msend.microhealthllc.com/saml_app">SAML</a></li>');
+        ?>
+        
         <li>
           <?php if(GOOGLE_SIGNIN_ENABLED == '1'): ?>
           <a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="btn btn-default btn-circle"><i class="fa fa-google"></i></a></a>

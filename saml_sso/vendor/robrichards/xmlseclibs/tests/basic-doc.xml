@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Basic XML example -->
+<Root xmlns="urn:envelope">
+  <Value>
+	Hello, World!
+  </Value>
+</Root>

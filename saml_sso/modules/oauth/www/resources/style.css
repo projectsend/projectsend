@@ -1,0 +1,37 @@
+table.formtable {
+	width: 100%;
+}
+table.formtable tr td.name {
+	text-align: right;
+	vertical-align: top;
+	padding-right: .6em;
+}
+table.formtable tr td.value {
+	text-align: left;
+	padding: 0px;
+}
+table.formtable tr td.header {
+	padding-left: 5px;
+	padding-top: 8px;
+	font-weight: bold;
+	font-size: 110%;
+}
+
+table.formtable tr td input,table.formtable tr td textarea {
+	width: 90%;
+	border: 1px solid #bbb;
+	margin: 2px 5px;
+	padding: 2px 4px;
+}
+
+
+table.metalist {
+	border: 1px solid #aaa;
+	border-collapse: collapse;
+}
+table.metalist tr td {
+	padding: 2px 5px; 
+}
+table.metalist tr.even td {
+	background: #e5e5e5;
+}

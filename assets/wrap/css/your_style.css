@@ -1,106 +1,233 @@
 /*
+
  * It is advised not to edit the smartadmin_production.css
+
  * as this will override any changes you make in the 
+
  * later versions of this theme. 
+
  * 
+
  * We advise that you use use this CSS to override 
+
  * SmartAdmin styles. 
+
  * 
+
  * Rename the stylesheet to whatever your liking so it will stay
+
  * unique to you with each update of SmartAdmin.
+
  */
+
+
 
 /*
+
  * INDEX
+
  * 
+
  * - HTML
+
  * - BODY
+
  * - CUSTOM STYLES
+
  */
+
  
- .text-rgt {
-	 text-align:right; 
- }
- a.title-link {
-	 color:#000;
- }
- a.title-link:hover {
-	 color:#000;
-	 text-decoration:none;
- }
- .right-btn {
+
+.text-rgt {
+	text-align: right;
+}
+a.title-link {
+	color: #000;
+}
+a.title-link:hover {
+	color: #000;
+	text-decoration: none;
+}
+.right-btn {
 	float: right;
-    margin-bottom: 20px;
- }
- .cc-display-none {
-	 display:none!important;
- }
- select.form-control + .chosen-container-multi .chosen-choices li.search-choice {
-	     white-space: initial!important;
-		 width: 100%!important;
- }
+	margin-bottom: 20px;
+}
+.cc-display-none {
+	display: none!important;
+}
+select.form-control + .chosen-container-multi .chosen-choices li.search-choice {
+	white-space: initial!important;
+	width: 100%!important;
+}
+
  /*-------------------- Responsive table by B) -----------------------*/
+
 @media only screen and (max-width: 1200px) {
-	#content {
-		padding-top:30px;
-	}
-	
-	/* Force table to not be like tables anymore */
-	#no-more-tables table, 
-	#no-more-tables thead, 
-	#no-more-tables tbody, 
-	#no-more-tables th, 
-	#no-more-tables td, 
-	#no-more-tables tr { 
-		display: block; 
-	}
- 
-	/* Hide table headers (but not display: none;, for accessibility) */
-	#no-more-tables thead tr { 
-		position: absolute;
-		top: -9999px;
-		left: -9999px;
-	}
- 
-	#no-more-tables tr { border: 1px solid #ccc; }
- 
-	#no-more-tables td { 
-		/* Behave  like a "row" */
-		border: none;
-		border-bottom: 1px solid #eee; 
-		position: relative;
-		padding-left: 50%; 
-		white-space: normal;
-		text-align:left;
-	}
- 
-	#no-more-tables td:before { 
-		/* Now like a table header */
-		position: absolute;
-		/* Top/left values mimic padding */
-		top: 6px;
-		left: 6px;
-		width: 45%; 
-		padding-right: 10px; 
-		white-space: nowrap;
-		text-align:left;
-		font-weight: bold;
-	}
- 
-	/*
+#content {
+	padding-top: 30px;
+}
+/* Force table to not be like tables anymore */
+
+#no-more-tables table,  #no-more-tables thead,  #no-more-tables tbody,  #no-more-tables th,  #no-more-tables td,  #no-more-tables tr {
+	display: block;
+}
+/* Hide table headers (but not display: none;, for accessibility) */
+
+#no-more-tables thead tr {
+	position: absolute;
+	top: -9999px;
+	left: -9999px;
+}
+#no-more-tables tr {
+	border: 1px solid #ccc;
+}
+#no-more-tables td {
+	/* Behave  like a "row" */
+
+	border: none;
+	border-bottom: 1px solid #eee;
+	position: relative;
+	padding-left: 50%;
+	white-space: normal;
+	text-align: left;
+}
+#no-more-tables td:before {
+	/* Now like a table header */
+
+	position: absolute;
+	/* Top/left values mimic padding */
+
+	top: 6px;
+	left: 6px;
+	width: 45%;
+	padding-right: 10px;
+	white-space: nowrap;
+	text-align: left;
+	font-weight: bold;
+}
+/*
+
 	Label the data
+
 	*/
 
+
+
 	
-	td:nth-of-type(1):before { content: ""; }
-	td:nth-of-type(2):before { content: "Date"; }
-	td:nth-of-type(3):before { content: "Author"; }
-	td:nth-of-type(4):before { content: "Activity"; }
-	td:nth-of-type(5):before { content: ""; }
-	td:nth-of-type(6):before { content: ""; }
-	td:nth-of-type(7):before { content: ""; }
+
+td:nth-of-type(1):before {
+	content: "";
+}
+td:nth-of-type(2):before {
+	content: "Date";
+}
+td:nth-of-type(3):before {
+	content: "Author";
+}
+td:nth-of-type(4):before {
+	content: "Activity";
+}
+td:nth-of-type(5):before {
+	content: "";
+}
+td:nth-of-type(6):before {
+	content: "";
+}
+td:nth-of-type(7):before {
+	content: "";
+}
 }
 .cc-overflow-scroll {
-	overflow:scroll;
+	overflow: scroll;
 }
 /*-------------------- Responsive table End--------------------------*/
+
+.cc-chk-container  {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.cc-chk-container  input {
+  position: absolute;
+  opacity: 0;
+}
+
+/* Create a custom checkbox */
+.cc-chk-container .checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 16px;
+  width: 16px;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+}
+/* On mouse-over, add a grey background color */
+.cc-chk-container:hover input ~ .checkmark {
+    border: 1px solid #007bba;
+}
+
+/* When the checkbox is checked, add a blue background */
+.cc-chk-container input:checked ~ .checkmark {
+  background-color: #ffffff;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.cc-chk-container .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.cc-chk-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.cc-chk-container .checkmark:after {
+    left: 5px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid #007bba;
+    border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+table.cc-mail-listing-style tfoot>tr>th, table.dataTable thead>tr>th , table.cc-mail-listing-style>tbody>tr>td , .cc-mail-listing-style {
+	border:none!important;
+}
+table.cc-mail-listing-style thead tr {
+	background:#FFF!important;
+}
+table.cc-mail-listing-style th .cc-chk-container .checkmark {
+	left:1px;
+	top: -5px;
+}
+table.cc-mail-listing-style td {
+
+	    padding: 8px 10px 0px 10px;
+    line-height: 24px;
+    font-size: 14px;
+}
+table.cc-mail-listing-style th {
+	padding-left: 0;
+}
+table.cc-mail-listing-style {
+	font-family: "Open Sans",Arial,Helvetica,Sans-Serif;
+}
+table.cc-mail-listing-style span.label {
+    font-size: 9px;
+    padding: 0px 4px;
+}

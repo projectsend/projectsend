@@ -1,0 +1,48 @@
+[01-Dec-2017 13:10:45 UTC] PHP Warning:  require_once(/home/demo3rndshosting/public_html/mSend-master/saml_app/../simplesamlphp/lib/_autoload.php): failed to open stream: No such file or directory in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php on line 2
+[01-Dec-2017 13:10:45 UTC] PHP Fatal error:  require_once(): Failed opening required '/home/demo3rndshosting/public_html/mSend-master/saml_app/../simplesamlphp/lib/_autoload.php' (include_path='.:/php/includes') in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php on line 2
+[01-Dec-2017 13:53:28 UTC] PHP Parse error:  syntax error, unexpected '?' in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php on line 23
+[01-Dec-2017 13:53:31 UTC] PHP Parse error:  syntax error, unexpected '?' in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php on line 23
+[01-Dec-2017 13:54:18 UTC] PHP Parse error:  syntax error, unexpected '?' in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php on line 23
+[01-Dec-2017 13:54:21 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php:9) in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php on line 23
+[01-Dec-2017 13:56:23 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php:20) in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php on line 23
+[01-Dec-2017 13:56:25 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php:20) in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php on line 23
+[01-Dec-2017 13:56:28 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php:20) in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php on line 23
+[01-Dec-2017 14:02:18 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php:20) in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php on line 24
+[01-Dec-2017 14:04:44 UTC] PHP Parse error:  syntax error, unexpected 'exit' (T_EXIT), expecting ',' or ';' in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php on line 25
+[04-Dec-2017 11:41:51 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method SimpleSAML_Auth_Simple::checkSession() in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php on line 8
+[04-Dec-2017 11:42:12 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method SimpleSAML_Auth_Simple::checkSession() in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php on line 8
+[04-Dec-2017 11:42:17 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method SimpleSAML_Auth_Simple::checkSession() in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php on line 8
+[04-Dec-2017 11:57:15 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method SimpleSAML_Auth_Simple::checkSession() in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php on line 9
+[04-Dec-2017 11:58:40 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method SimpleSAML_Auth_Simple::checkSession() in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php:13
+Stack trace:
+#0 {main}
+  thrown in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php on line 13
+[04-Dec-2017 11:59:24 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method SimpleSAML_Auth_Simple::checkSession() in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php:13
+Stack trace:
+#0 {main}
+  thrown in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php on line 13
+[04-Dec-2017 12:01:57 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method SimpleSAML_Auth_Simple::checkSession() in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php:13
+Stack trace:
+#0 {main}
+  thrown in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php on line 13
+[04-Dec-2017 12:02:32 UTC] PHP Warning:  Missing argument 1 for SimpleSAML_Auth_Simple::getAuthData(), called in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php on line 4 and defined in /home/demo3rndshosting/public_html/mSend-master/saml_sso/lib/SimpleSAML/Auth/Simple.php on line 258
+[04-Dec-2017 12:02:32 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method SimpleSAML_Auth_Simple::checkSession() in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php:12
+Stack trace:
+#0 {main}
+  thrown in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php on line 12
+[04-Dec-2017 12:03:53 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method SimpleSAML_Auth_Simple::checkSession() in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/demo3rndshosting/public_html/mSend-master/saml_app/index.php on line 17

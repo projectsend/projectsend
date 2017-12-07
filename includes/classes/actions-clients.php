@@ -128,7 +128,6 @@ class ClientActions
 	{
 		global $hasher;
 		$this->state = array();
-
 		/** Define the account information */
 		$this->id			= $arguments['id'];
 		$this->name			= $arguments['name'];
@@ -137,12 +136,22 @@ class ClientActions
 		$this->password		= $arguments['password'];
 		//$this->password_repeat = $arguments['password_repeat'];
 		$this->address		= $arguments['address'];
+		$this->address2		= $arguments['address2'];
+		$this->city			= $arguments['city'];
+		$this->state_c		= $arguments['state'];
+		$this->zipcode		= $arguments['zipcode'];
 		$this->phone		= $arguments['phone'];
+		$this->level		= $arguments['level'];
+		$this->groupid		= $arguments['groupid'];
 		$this->contact		= $arguments['contact'];
 		$this->notify		= ( $arguments['notify'] == '1' ) ? 1 : 0;
 		$this->active		= ( $arguments['active'] == '1' ) ? 1 : 0;
 		$this->enc_password	= $hasher->HashPassword($this->password);
-
+		foreach($this->groupid as $gid)
+		{
+			
+		}
+		//var_dump($this->state);exit;
 		if (strlen($this->enc_password) >= 20) {
 
 			$this->state['hash'] = 1;
@@ -152,26 +161,33 @@ class ClientActions
 	
 			/** Insert the client information into the database */
 			$this->timestamp = time();
-			$this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_USERS . " (name,user,password,address,phone,email,notify,contact,created_by,active)"
-												."VALUES (:name, :username, :password, :address, :phone, :email, :notify, :contact, :admin, :active)");
+			$query = "INSERT INTO " . TABLE_USERS . " (name,user,password,address,address2,city,state,zipcode,phone,level,email,notify,contact,created_by,active)"
+												."VALUES (:name, :username, :password, :address, :address2, :city, :state, :zipcode, :phone, :level, :email, :notify, :contact, :admin, :active)";
+			//echo $query;exit;
+			$this->sql_query = $this->dbh->prepare($query);
+							
 			$this->sql_query->bindParam(':name', $this->name);
 			$this->sql_query->bindParam(':username', $this->username);
 			$this->sql_query->bindParam(':password', $this->enc_password);
 			$this->sql_query->bindParam(':address', $this->address);
+			$this->sql_query->bindParam(':address2', $this->address2);
+			$this->sql_query->bindParam(':city', $this->city);
+			$this->sql_query->bindParam(':state', $this->state_c);
+			$this->sql_query->bindParam(':zipcode', $this->zipcode);
 			$this->sql_query->bindParam(':phone', $this->phone);
+			$this->sql_query->bindParam(':level', $this->level);
 			$this->sql_query->bindParam(':email', $this->email);
 			$this->sql_query->bindParam(':notify', $this->notify, PDO::PARAM_INT);
 			$this->sql_query->bindParam(':contact', $this->contact);
 			$this->sql_query->bindParam(':admin', $this->this_admin);
 			$this->sql_query->bindParam(':active', $this->active, PDO::PARAM_INT);
-
 			$this->sql_query->execute();
-	
 			if ($this->sql_query) {
 				$this->state['actions']	= 1;
 				$this->state['new_id']	= $this->dbh->lastInsertId();
 	
 				/** Send account data by email */
+				/*				
 				$this->notify_client = new PSend_Email();
 				$this->email_arguments = array(
 												'type'		=> 'new_client',
@@ -180,6 +196,7 @@ class ClientActions
 												'password'	=> $this->password
 											);
 				$this->notify_send = $this->notify_client->psend_send_email($this->email_arguments);
+
 	
 				if ($this->notify_send == 1){
 					$this->state['email'] = 1;
@@ -187,8 +204,10 @@ class ClientActions
 				else {
 					$this->state['email'] = 0;
 				}
+			*/
 			}
 			else {
+				//echo "TWO";
 				/** Query couldn't be executed */
 				$this->state['actions'] = 0;
 			}
@@ -196,7 +215,7 @@ class ClientActions
 		else {
 			$this->state['hash'] = 0;
 		}
-
+	//print_r($this->state);exit;
 		return $this->state;
 	}
 
@@ -215,7 +234,11 @@ class ClientActions
 		$this->email		= $arguments['email'];
 		$this->password		= $arguments['password'];
 		$this->address		= $arguments['address'];
+		$this->address2		= $arguments['address2'];
+		$this->city			= $arguments['city'];
+		$this->state		= $arguments['state'];
 		$this->phone		= $arguments['phone'];
+		$this->zipcode		= $arguments['zipcode'];
 		$this->contact		= $arguments['contact'];
 		$this->notify		= ( $arguments['notify'] == '1' ) ? 1 : 0;
 		$this->active		= ( $arguments['active'] == '1' ) ? 1 : 0;
@@ -229,6 +252,10 @@ class ClientActions
 			$this->edit_client_query = "UPDATE " . TABLE_USERS . " SET 
 										name = :name,
 										address = :address,
+										address2 = :address2,
+										city 	= :city,
+										state 	= :state,
+										zipcode 	= :zipcode,
 										phone = :phone,
 										email = :email,
 										contact = :contact,
@@ -247,6 +274,10 @@ class ClientActions
 			$this->sql_query = $this->dbh->prepare( $this->edit_client_query );
 			$this->sql_query->bindParam(':name', $this->name);
 			$this->sql_query->bindParam(':address', $this->address);
+			$this->sql_query->bindParam(':address2', $this->address2);
+			$this->sql_query->bindParam(':city', $this->city);
+			$this->sql_query->bindParam(':state', $this->state);
+			$this->sql_query->bindParam(':zipcode', $this->zipcode);
 			$this->sql_query->bindParam(':phone', $this->phone);
 			$this->sql_query->bindParam(':email', $this->email);
 			$this->sql_query->bindParam(':contact', $this->contact);

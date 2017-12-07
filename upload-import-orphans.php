@@ -131,7 +131,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 			$files_to_add = array_filter($files_to_add, 'search_text');
 		}
 		
-//			var_dump($result);
+	//	echo "<pre>";var_dump($files_to_add);echo "</pre>";
 		
 		/**
 		 * Generate the list of files if there is at least 1
@@ -184,7 +184,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
                   <th data-sort-initial="true"><?php _e('File name','cftp_admin'); ?></th>
                   <th data-type="numeric" data-hide="phone"><?php _e('File size','cftp_admin'); ?></th>
                   <th data-type="numeric" data-hide="phone"><?php _e('Last modified','cftp_admin'); ?></th>
-                  <th><?php _e('Actions','cftp_admin'); ?></th>
+                  
                 </tr>
               </thead>
                 <tbody>
@@ -195,17 +195,16 @@ $work_folder = UPLOADED_FILES_FOLDER;
                 <tr>
               
               <td><input type="checkbox" name="add[]" class="select_file_checkbox" value="<?php echo html_output($add_file['name']); ?>" /></td>
-              <td><?php echo html_output($add_file['name']); ?></td>
+
+              <td><a href="#" name="file_edit" class="btn-edit-file">
+              
+              <?php _e(html_output($add_file['name']),'cftp_admin'); ?>
+                </a></td>
+
+
               <td data-value="<?php echo filesize($add_file['path']); ?>"><?php echo html_output(format_file_size(get_real_size($add_file['path']))); ?></td>
               <td data-value="<?php echo filemtime($add_file['path']); ?>"><?php echo date(TIMEFORMAT_USE, filemtime($add_file['path'])); ?></td>
-                <td>
-              
-                <button type="button" name="file_edit" class="btn btn-primary btn-sm btn-edit-file">
-              
-              <?php _e('Edit','cftp_admin'); ?>
-                </a>
-              
-                </td>
+               
               
                 </tr>
               

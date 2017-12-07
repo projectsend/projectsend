@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Root>
+  <xenc:EncryptedData xmlns:xenc="http://www.w3.org/2001/04/xmlenc#" Type="http://www.w3.org/2001/04/xmlenc#Content">
+    <xenc:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes256-cbc"/>
+    <dsig:KeyInfo xmlns:dsig="http://www.w3.org/2000/09/xmldsig#">
+      <dsig:RetrievalMethod Type="http://www.w3.org/2001/04/xmlenc#EncryptedKey" URI="#KeyNodeId" />
+    </dsig:KeyInfo>
+    <xenc:CipherData>
+      <xenc:CipherValue>aYHfjPwZQ5HSmWLPzSOLYxFlg/MV+SVzvV4SOyELa/rhIwwC5qpbfYFumtLQJkZ9swJ0hURLAt9R86xm+lt+oA==</xenc:CipherValue>
+    </xenc:CipherData>
+  </xenc:EncryptedData>
+  <OtherChild>
+    <xenc:EncryptedKey xmlns:xenc="http://www.w3.org/2001/04/xmlenc#" Id="KeyNodeId">
+      <xenc:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p"/>
+      <xenc:CipherData>
+        <xenc:CipherValue>TgU99QwvzrqXNLy4xWTRete62Sx8MwHveRFbZn+JnScUrqZxBxjE1HvX52Y6Z+2EX1EVTaDbORzFIYuGX08JtXA1lI4cACCwdbjIsVh+YYwVvyhoLwjXbPMybBqJ7QswDxM+6977MiGgJ3U/P4VAPdo6ic/KDDu8FH2z4/CqnFGRRKpSt73Q+5BDdQXBWj+9U0iAUp0UWRFu/dMFzi2RWnFPkbWc0POysaDyxqlD0/DY0XpdZk82LMrLq8cy/mOq3eZm476d6xTwv6JOuamuHxR+I1HGAbqa/z1i4f6L+I0Q8HdWo4Kk/Us0On3CghOD8JYhntqYPHpPZcXsu1bxmw==</xenc:CipherValue>
+      </xenc:CipherData>
+    </xenc:EncryptedKey>
+  </OtherChild>
+</Root>

@@ -8,12 +8,11 @@
  */
 $allowed_levels = array(9,8,7);
 require_once('sys.includes.php');
-
 $active_nav = 'users';
 
 /** Create the object */
 $edit_user = new UserActions();
-
+$target_dir = UPLOADED_FILES_FOLDER.'../../img/avatars/';
 /** Check if the id parameter is on the URI. */
 if (isset($_GET['id'])) {
 	$user_id = $_GET['id'];
@@ -42,8 +41,26 @@ if ($page_status === 1) {
 		$add_user_data_level = $data['level'];
 		if ($data['active'] == 1) { $add_user_data_active = 1; } else { $add_user_data_active = 0; }
 	}
-}
 
+	$alternate = $dbh->prepare("SELECT * FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id=:user_id AND name = :name");
+	$alternate->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+	$alternate->bindValue(':name', 'alternate_email');
+	$alternate->execute();
+	$alternate->setFetchMode(PDO::FETCH_ASSOC);
+	$alternate_email_array = array();
+	while ( $data = $alternate->fetch() ) {
+			$alternate_email_array[] = $data['value'];
+	}
+}
+	$profile_pic = $dbh->prepare("SELECT * FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id=:user_id AND name = :name");
+	$profile_pic->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+	$profile_pic->bindValue(':name', 'profile_pic');
+	$profile_pic->execute();
+	$profile_pic->setFetchMode(PDO::FETCH_ASSOC);
+	$profile_pic_email_array = array();
+	while ( $data = $profile_pic->fetch() ) {
+			$profile_pic_img = $data['value'];
+	}
 /**
  * Compare the client editing this account to the on the db.
  */
@@ -141,12 +158,23 @@ include('header.php');
       
           <div class="row">
             <div class="col-sm-12">
+<a href="user-organizations.php?id=<?php echo $user_id; ?>" class="btn btn-sm btn-primary right-btn"><?php if($global_level == 0) { echo "My organizations"; } else { echo 'Manage Organization';} ?></a>
               <div class="air air-bottom-right padding-10"> <a data-toggle="modal" data-target="#cc-edit-info" class="btn txt-color-white bg-color-teal btn-sm"><i class="fa fa-pencil-square-o"></i> Edit</a></div>
               <div class="cc-user-cover"></div>
             </div>
             <div class="col-sm-12">
               <div class="row">
-                <div class="col-sm-3 profile-pic"> <img src="img/avatars/no-image.png" alt="demo user">
+			
+                <div class="col-sm-3 profile-pic"> 
+				<?php
+					if(!empty($profile_pic_img)){?>
+
+								<img src="<?php echo "img/avatars/".$profile_pic_img;?>" alt="demo user">
+					<?php }else{
+				?>
+										<img src="img/avatars/no-image.png" alt="demo user">
+
+				<?php }?>
                 </div>
                 <div class="col-sm-6">
                   <h1><?php echo (isset($add_user_data_name)) ? html_output(stripslashes($add_user_data_name)) : ''; ?> <br>
@@ -194,6 +222,75 @@ include('header.php');
 															'get_user_real_name' => true
 														);
 									$new_record_action = $new_log_action->log_action_save($log_action_args);
+									/* Insert alternative emails to table prefix-user_extra_profile */
+									//echo "<pre>";print_r($_POST['add_user_form_email_alternate']);echo "</pre>";exit;
+									$alternate_emails = $_POST['add_user_form_email_alternate'];
+									if(!empty($alternate_emails)){
+										$statement = $dbh->query("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$user_id." AND name='alternate_email'");
+
+										foreach($alternate_emails as $a_email){
+													//	echo "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$user_id.",'alternate_email',".$a_email." )"; 
+												if(!empty($a_email)){
+														$alternate_email_save = $dbh->query( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$user_id.",'alternate_email','".$a_email."' ) ");
+												}
+										}
+									}
+
+									/*For avatar upload start */
+								//	$this_file = new PSend_Upload_File();
+									// Rename the file
+									//$fileName = $this_file->safe_rename($fileName);
+							if($_FILES){
+									
+
+									if (!file_exists($target_dir)) {
+											mkdir($target_dir, 0777, true);
+									}
+									$target_file = $target_dir;
+									$uploadOk = 1;
+									$target_file = $target_dir . "/".basename($_FILES["userfiles"]["name"]);
+									$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+									$fl_name = $user_id.".".$imageFileType;
+									$target_file = $target_dir.$fl_name;
+									$uploadOk = 1;
+									// Check if image file is a actual image or fake image
+									$check = getimagesize($_FILES["userfiles"]["tmp_name"]);
+									if($check !== false) {
+										//echo "File is an image - " . $check["mime"] . ".";
+										$uploadOk = 1;
+									} else {
+									//	echo "File is not an image.";
+										$uploadOk = 0;
+									}
+									// Allow certain file formats
+									if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+									&& $imageFileType != "gif" ) {
+										//	echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+											$uploadOk = 0;
+									}
+									// Check if $uploadOk is set to 0 by an error
+									if ($uploadOk == 0) {
+											//echo "Sorry, your file was not uploaded.";
+									// if everything is ok, try to upload file
+									} else {
+										if (file_exists($target_file)) {
+												unlink($target_file);
+										}
+										if (move_uploaded_file($_FILES["userfiles"]["tmp_name"], $target_file)) {
+											if(!empty($fl_name)){
+												$statement = $dbh->query("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$user_id." AND name='profile_pic'");
+
+												$alternate_email_save = $dbh->query( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$user_id.",'profile_pic','".$fl_name."' ) ");
+											}
+
+										} else {
+									echo "Sorry, there was an error uploading your file.";
+										}
+									}
+
+								}
+										//	exit;
+										/*For avatar upload end */
 								break;
 								case 0:
 									$msg = __('There was an error. Please try again.','cftp_admin');
@@ -248,8 +345,8 @@ include('header.php');
                                           </div>
                                           <div class="modal-body">
                                             <?php
-											include('users-form.php');
-											?>
+																						include('users-form.php');
+																						?>
                                           </div>
                                           <div class="modal-footer">
                                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

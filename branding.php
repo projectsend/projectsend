@@ -186,7 +186,7 @@ if ($_POST) {
 									<?php
 										if ($logo_file_info['exists'] === true) {
 									?>
-											<img src="<?php echo BASE_URI.$logo_file_info['url'].'?'.microtime(); ?>" alt="<?php _e('Logo Placeholder','cftp_admin'); ?>" />
+											<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $logo_file_info['url']; ?>&amp;w=220" alt="<?php _e('Logo Placeholder','cftp_admin'); ?>" />
 									<?php
 										}
 									?>

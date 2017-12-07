@@ -1,0 +1,43 @@
+<?php 
+require_once('sys.includes.php');
+//include('header-unlogged.php');
+if(isset($_POST['action']) && !empty($_POST['action'])) {
+	
+    $action = $_POST['action'];
+    switch($action) {
+        case 'get_organization' : get_organization();break;
+        case 'remove_organization' : remove_organization();break;
+    }
+}
+
+function get_organization()
+{
+	global $dbh;
+	$level = $_POST['selectedid'];
+	if($level!=''){
+	$sql = $dbh->prepare("SELECT * FROM " . TABLE_GROUPS . " WHERE organization_type = '".$level."' ORDER BY name ASC");
+	
+	//var_dump($sql);
+	//echo 'test';exit;
+	$sql->execute();
+	$sql->setFetchMode(PDO::FETCH_ASSOC);
+	while ( $row = $sql->fetch() ) {
+	echo "<option value=".$row['id'].">".$row['name']."</option>";
+	}
+	}
+}
+function remove_organization()
+{
+	global $dbh;
+	$group_id = $_POST['group_id'];
+	$client_id = $_POST['client_id'];
+	$sql = $dbh->prepare("DELETE FROM " . TABLE_MEMBERS . " WHERE " . TABLE_MEMBERS . ".client_id = ". $client_id." AND " . TABLE_MEMBERS . ".group_id =".$group_id);
+	//var_dump($sql);
+	//echo 'test';exit;
+	if($sql->execute()){
+		echo "done";
+	}else{
+		echo "not done";
+	}
+}
+?>

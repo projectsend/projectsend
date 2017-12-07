@@ -15,6 +15,7 @@ include('header-unlogged.php');
 
 	/** The form was submitted */
 	if ($_POST) {
+		
 		if ( defined('RECAPTCHA_AVAILABLE') ) {
 			$recaptcha_user_ip		= $_SERVER["REMOTE_ADDR"];
 			$recaptcha_response		= $_POST['g-recaptcha-response'];
@@ -33,7 +34,13 @@ include('header-unlogged.php');
 		$add_client_data_email = encode_html($_POST['add_client_form_email']);
 		/** Optional fields: Address, Phone, Internal Contact, Notify */
 		$add_client_data_addr = (isset($_POST["add_client_form_address"])) ? encode_html($_POST["add_client_form_address"]) : '';
+		$add_client_data_addr2 = (isset($_POST["add_client_form_address_line2"])) ? encode_html($_POST["add_client_form_address_line2"]) : '';
+		$add_client_data_city = (isset($_POST["add_client_city"])) ? encode_html($_POST["add_client_city"]) : '';
+		$add_client_data_state = (isset($_POST["add_client_form_state"])) ? encode_html($_POST["add_client_form_state"]) : '';
+		$add_client_data_zip 	= (isset($_POST["add_client_form_zip"])) ? encode_html($_POST["add_client_form_zip"]) : '';
 		$add_client_data_phone = (isset($_POST["add_client_form_phone"])) ? encode_html($_POST["add_client_form_phone"]) : '';
+		$add_client_data_level = (isset($_POST["select_user"])) ? encode_html($_POST["select_user"]) : '';
+		$add_client_data_groups = (isset($_POST["add_group_form_members"])) ? encode_html($_POST["add_group_form_members"]) : '';
 		$add_client_data_intcont = (isset($_POST["add_client_form_intcont"])) ? encode_html($_POST["add_client_form_intcont"]) : '';
 		$add_client_data_notity = (isset($_POST["add_client_form_notify"])) ? 1 : 0;
 	
@@ -46,18 +53,25 @@ include('header-unlogged.php');
 								'name'		=> $add_client_data_name,
 								'email'		=> $add_client_data_email,
 								'address'	=> $add_client_data_addr,
+								'address2'	=> $add_client_data_addr2,
+								'city'		=> $add_client_data_city,
+								'state'		=> $add_client_data_state,
+								'zipcode'	=> $add_client_data_zip,
 								'phone'		=> $add_client_data_phone,
+								'level'		=> $add_client_data_level,
+								'groupid'		=> $add_client_data_groups,
 								'contact'	=> $add_client_data_intcont,
 								'notify'	=> $add_client_data_notity,
 								'type'		=> 'new_client',
 							);
+		
 
 		$new_arguments['active']	= (CLIENTS_AUTO_APPROVE == 0) ? 0 : 1;
 		$new_arguments['recaptcha']	= ( defined('RECAPTCHA_AVAILABLE') ) ? $recaptcha_request : null;
 	
 		/** Validate the information from the posted form. */
 		$new_validate = $new_client->validate_client($new_arguments);
-		
+		//var_dump($new_validate);exit;
 		/** Create the client if validation is correct. */
 		if ($new_validate == 1) {
 			$new_response = $new_client->create_client($new_arguments);
@@ -115,7 +129,7 @@ include('header-unlogged.php');
 				
 									$error_msg = '</p><br /><p>';
 									$error_msg .= __('Please contact a system administrator.','cftp_admin');
-				
+									//var_dump($new_response);exit;
 									switch ($new_response['actions']) {
 										case 1:
 											$msg = __('Account added correctly.','cftp_admin');
@@ -322,13 +336,13 @@ switch ($clients_form_type) {
         </label>
 	</section>
      <section>Log in username
-     <label class="input">
-     
-	 <i class="icon-append fa fa-user-circle"></i>
-     <input type="text" name="add_client_form_user" id="add_client_form_user" class="form-control <?php if (!$disable_user) { echo 'required'; } ?>" minlength="4" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($add_client_data_user)) ? html_output(stripslashes($add_client_data_user)) : ''; ?>" <?php if ($disable_user) { echo 'readonly'; }?> placeholder="<?php _e("Must be alphanumeric",'cftp_admin'); ?>" />
-	 <b class="tooltip tooltip-bottom-right">Needed to enter the website</b> 
-     </label>
+     	<label class="input">
+	 		<i class="icon-append fa fa-user-circle"></i>
+     		<input type="text" name="add_client_form_user" id="add_client_form_user" class="form-control <?php if (!$disable_user) { echo 'required'; } ?>" minlength="4" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($add_client_data_user)) ? html_output(stripslashes($add_client_data_user)) : ''; ?>" <?php if ($disable_user) { echo 'readonly'; }?> placeholder="<?php _e("Must be alphanumeric",'cftp_admin'); ?>" />
+	 		<b class="tooltip tooltip-bottom-right">Needed to enter the website</b> 
+     	</label>
 	 </section>
+     
      <section><?php _e('Password','cftp_admin'); ?>
      <label class="input">
      
@@ -352,13 +366,45 @@ switch ($clients_form_type) {
      </label>
 	 </section>
      
-     <section><?php _e('Address','cftp_admin'); ?>
+     <section><?php _e('Address Line 1','cftp_admin'); ?>
      <label class="input">
      
 	 <i class="icon-append fa fa-address-card-o"></i>
      <input type="text" name="add_client_form_address" id="add_client_form_address" class="form-control" value="<?php echo (isset($add_client_data_addr)) ? html_output(stripslashes($add_client_data_addr)) : ''; ?>" />
      </label>
 	 </section>
+     <section><?php _e('Address Line 2','cftp_admin'); ?>
+     <label class="input">
+     
+	 <i class="icon-append fa fa-address-card-o"></i>
+     <input type="text" name="add_client_form_address_line2" id="add_client_form_address_line2" class="form-control" value="<?php echo (isset($add_client_data_addr2)) ? html_output(stripslashes($add_client_data_addr2)) : ''; ?>" />
+     </label>
+	 </section>
+     <!-- city -->
+     <section><?php _e('City','cftp_admin'); ?>
+     <label class="input">
+     
+	 <i class="icon-append fa fa-building-o"></i>
+     <input type="text" name="add_client_city" id="add_client_city" class="form-control" value="<?php echo (isset($add_client_data_city)) ? html_output(stripslashes($add_client_data_city)) : ''; ?>" />
+     </label>
+	 </section>
+     <!-- State -->
+     <section><?php _e('State','cftp_admin'); ?>
+     <label class="input">
+     
+	 <i class="icon-append fa fa-building"></i>
+     <input type="text" name="add_client_form_state" id="add_client_form_state" class="form-control" value="<?php echo (isset($add_client_data_state)) ? html_output(stripslashes($add_client_data_state)) : ''; ?>" />
+     </label>
+	 </section>
+     <!-- zicode -->
+     <section><?php _e('Zip','cftp_admin'); ?>
+     <label class="input">
+     
+	 <i class="icon-append fa fa-location-arrow"></i>
+     <input type="text" name="add_client_form_zip" id="add_client_form_zip" class="form-control" value="<?php echo (isset($add_client_data_zip)) ? html_output(stripslashes($add_client_data_zip)) : ''; ?>" />
+     </label>
+	 </section>
+     <!-- Telephone -->
      <section><?php _e('Telephone','cftp_admin'); ?>
      <label class="input">
      
@@ -366,6 +412,25 @@ switch ($clients_form_type) {
      <input type="text" name="add_client_form_phone" id="add_client_form_phone" class="form-control" value="<?php echo (isset($add_client_data_phone)) ? html_output(stripslashes($add_client_data_phone)) : ''; ?>" />
      </label>
 	 </section>
+     <!-- User/client -->
+     <section><?php _e('User','cftp_admin'); ?>
+         <label class="input"><i class="icon-append fa fa-user-o"></i>
+            <select name="select_user" id="select_user" class="form-control">
+            			<option value="">--Select--</option>
+                        <option value="0">Client</option>
+                        <option  value="1">User</option>
+            </select>
+         </label>
+	 </section>
+     <!-- Organisation choose -->
+     <?php _e('User','cftp_admin'); ?>
+         <label for="add_group_form_members" class="col-sm-4 control-label"><?php _e('Members','cftp_admin'); ?></label>
+            <select multiple="multiple" id="members-select" class="form-control chosen-select" name="add_group_form_members[]" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+				
+			</select>
+         </label>
+	 
+     
      <?php
 			if ($extra_fields == true) {
 	 ?>
@@ -464,6 +529,23 @@ switch ($clients_form_type) {
 
 </body>
 </html>
+
 <?php
 	ob_end_flush();
 ?>
+
+<script type="text/javascript">
+$('#select_user').change(function(){
+
+	$.ajax({
+		method: "POST",
+		url:'ajax.php',
+		data: {selectedid:$(this).val(),action:'get_organization'},
+		success: function (data) {
+			console.log(data);
+			$('#members-select').html(data);
+			//$('.trailer_price').val(data);
+		}
+	});
+  });
+</script>

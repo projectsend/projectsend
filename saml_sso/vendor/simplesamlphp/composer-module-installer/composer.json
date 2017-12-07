@@ -1,0 +1,15 @@
+{
+    "name": "simplesamlphp/composer-module-installer",
+    "description": "A Composer plugin that allows installing SimpleSAMLphp modules through Composer.",
+    "type": "composer-plugin",
+    "autoload": {
+        "psr-0": {"SimpleSamlPhp\\Composer": "src/"}
+    },
+    "extra": {
+        "class": "SimpleSamlPhp\\Composer\\ModuleInstallerPlugin"
+    },
+    "require": {
+        "composer-plugin-api": "^1.0",
+        "simplesamlphp/simplesamlphp": "*"
+    }
+}

@@ -13,7 +13,7 @@ $active_nav = 'clients';
 
 /** Create the object */
 $edit_client = new ClientActions();
-
+$target_dir = UPLOADED_FILES_FOLDER.'../../img/avatars/';
 /** Check if the id parameter is on the URI. */
 if (isset($_GET['id'])) {
 	$client_id = $_GET['id'];
@@ -30,6 +30,7 @@ else {
  * Get the clients information from the database to use on the form.
  */
 if ($page_status === 1) {
+
 	$editing = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
 	$editing->bindParam(':id', $client_id, PDO::PARAM_INT);
 	$editing->execute();
@@ -40,6 +41,10 @@ if ($page_status === 1) {
 		$add_client_data_user		= $data['user'];
 		$add_client_data_email		= $data['email'];
 		$add_client_data_addr		= $data['address'];
+		$add_client_data_addr2		= $data['address2'];
+		$add_client_data_city		= $data['city'];
+		$add_client_data_state		= $data['state'];
+		$add_client_data_zip		= $data['zipcode'];
 		$add_client_data_phone		= $data['phone'];
 		$add_client_data_intcont	= $data['contact'];
 		if ($data['notify'] == 1) { $add_client_data_notity = 1; } else { $add_client_data_notity = 0; }
@@ -79,6 +84,10 @@ if ($_POST) {
 	$add_client_data_email		= $_POST['add_client_form_email'];
 	/** Optional fields: Address, Phone, Internal Contact, Notify */
 	$add_client_data_addr		= (isset($_POST["add_client_form_address"])) ? $_POST["add_client_form_address"] : '';
+	$add_client_data_addr2		= (isset($_POST["add_client_form_address_line2"])) ? $_POST["add_client_form_address_line2"] : '';
+	$add_client_data_city		= (isset($_POST["add_client_city"])) ? $_POST["add_client_city"] : '';
+	$add_client_data_state		= (isset($_POST["add_client_form_state"])) ? $_POST["add_client_form_state"] : '';
+	$add_client_data_zip		= (isset($_POST["add_client_form_zip"])) ? $_POST["add_client_form_zip"] : '';
 	$add_client_data_phone		= (isset($_POST["add_client_form_phone"])) ? $_POST["add_client_form_phone"] : '';
 	$add_client_data_intcont	= (isset($_POST["add_client_form_intcont"])) ? $_POST["add_client_form_intcont"] : '';
 	$add_client_data_notity		= (isset($_POST["add_client_form_notify"])) ? 1 : 0;
@@ -94,7 +103,11 @@ if ($_POST) {
 							'name'		=> $add_client_data_name,
 							'email'		=> $add_client_data_email,
 							'address'	=> $add_client_data_addr,
+							'address2'	=> $add_client_data_addr2,
+							'city'		=> $add_client_data_city,
+							'state'		=> $add_client_data_state,
 							'phone'		=> $add_client_data_phone,
+							'zipcode'	=> $add_client_data_zip,
 							'contact'	=> $add_client_data_intcont,
 							'notify'	=> $add_client_data_notity,
 							'active'	=> $add_client_data_active,
@@ -127,12 +140,17 @@ include('header.php');
 ?>
 
 <div id="main">
-	<h2><?php echo $page_title; ?></h2>
-	
 	<div class="container">
 		<div class="row">
-			<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
+        <h2><?php echo $page_title; ?></h2>
+		<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 ">
+			<a href="client-organizations.php?id=<?php echo $client_id; ?>" class="btn btn-sm btn-primary right-btn"><?php if($global_level == 0) { echo "My organizations"; } else { echo 'Manage Organization';} ?></a>
+		</div>
+			<!--div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box"-->
+			<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 white-box">
+
 				<div class="white-box-interior">
+                
 		
 					<?php
 						/**
@@ -162,6 +180,65 @@ include('header.php');
 															'get_user_real_name' => true
 														);
 									$new_record_action = $new_log_action->log_action_save($log_action_args);
+
+									/*For avatar upload start */
+								//	$this_file = new PSend_Upload_File();
+									// Rename the file
+									//$fileName = $this_file->safe_rename($fileName);
+							if($_FILES){
+									print_r($_FILES);
+
+									if (!file_exists($target_dir)) {
+											mkdir($target_dir, 0777, true);
+									}else{
+										echo "ss";
+									}
+									$target_file = $target_dir;
+									$uploadOk = 1;
+									$target_file = $target_dir . "/".basename($_FILES["userfiles"]["name"]);
+									$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+									$fl_name = $client_id.".".$imageFileType;
+									$target_file = $target_dir.$fl_name;
+									$uploadOk = 1;
+									// Check if image file is a actual image or fake image
+									$check = getimagesize($_FILES["userfiles"]["tmp_name"]);
+									if($check !== false) {
+								//		echo "File is an image - " . $check["mime"] . ".";
+										$uploadOk = 1;
+									} else {
+										echo "File is not an image.";
+										$uploadOk = 0;
+									}
+									// Allow certain file formats
+									if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+									&& $imageFileType != "gif" ) {
+											echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+											$uploadOk = 0;
+									}
+									// Check if $uploadOk is set to 0 by an error
+									if ($uploadOk == 0) {
+											echo "Sorry, your file was not uploaded.";
+									// if everything is ok, try to upload file
+									} else {
+										if (file_exists($target_file)) {
+												unlink($target_file);
+										}
+										if (move_uploaded_file($_FILES["userfiles"]["tmp_name"], $target_file)) {
+											if(!empty($fl_name)){
+												$statement = $dbh->query("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$client_id." AND name='profile_pic'");
+
+												$alternate_email_save = $dbh->query( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$client_id.",'profile_pic','".$fl_name."' ) ");
+											}
+
+										} else {
+									echo "Sorry, there was an error uploading your file.";
+										}
+									}
+
+								}
+										//	exit;
+										/*For avatar upload end */
+
 								break;
 								case 0:
 									$msg = __('There was an error. Please try again.','cftp_admin');

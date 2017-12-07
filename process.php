@@ -188,6 +188,18 @@ class process {
 								// maximum attempts in window exceded so disable user account and refresh status
 								$this->disable_account($this->logged_id);
 								$this->refresh_account_status($this->logged_id);
+					
+								/** Record the lockout action */
+								$action = ($this->user_level != '0' ? 43 : 42);
+
+								$this->new_log_action = new LogActions();
+								$this->log_action_args = array(
+											'action' => $action,
+											'owner_id' => $this->logged_id,
+											'owner_user' => $this->global_name,
+											'affected_account_name' => $this->global_name
+										);
+								$this->new_record_action = $this->new_log_action->log_action_save($this->log_action_args);
 							}
 						}
 						else {
@@ -210,6 +222,18 @@ class process {
 						// maximum attempts exceded so disable user account and refresh status
 						$this->disable_account($this->logged_id);
 						$this->refresh_account_status($this->logged_id);
+
+						/** Record the lockout action */
+						$action = ($this->user_level != '0' ? 43 : 42);
+
+						$this->new_log_action = new LogActions();
+						$this->log_action_args = array(
+									'action' => $action,
+									'owner_id' => $this->logged_id,
+									'owner_user' => $this->global_name,
+									'affected_account_name' => $this->global_name
+								);
+						$this->new_record_action = $this->new_log_action->log_action_save($this->log_action_args);
 					}
 					
 					// user hasn't authenticated correctly so don't bleed any state information about the account

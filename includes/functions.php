@@ -1397,6 +1397,28 @@ function render_log_action($params)
 			$action_text = __('processed group memberships requests for','cftp_admin');
 			$part2 = $affected_account_name;
 			break;
+		case 40:
+			$action_ico = 'login';
+			$part1 = $owner_user;
+			$action_text = __('client failed login to the system.','cftp_admin');
+			break;
+		case 41:
+			$action_ico = 'login';
+			$part1 = $owner_user;
+			$action_text = __('user failed login to the system.','cftp_admin');
+			break;
+		case 42:
+			$action_ico = 'client-deactivate';
+			$part1 = $owner_user;
+			$action_text = __('deactivated the client due to maximum failed logins reached','cftp_admin');
+			$part2 = $affected_account_name;
+			break;
+		case 43:
+			$action_ico = 'user-deactivate';
+			$part1 = $owner_user;
+			$action_text = __('deactivated the user due to maximum failed logins reached','cftp_admin');
+			$part2 = $affected_account_name;
+			break;
 	}
 	
 	$date = date(TIMEFORMAT_USE,strtotime($timestamp));

@@ -50,6 +50,10 @@ $activities_references = array(
 							37	=> __('An anonymous user downloaded a public file.','cftp_admin'),
 							38	=> __('A client account request was processed.','cftp_admin'),
 							39	=> __("A client's groups membership requests were processed.",'cftp_admin'),
+							40	=> __("A client account failed login",'cftp_admin'),
+							41	=> __("A user account failed login",'cftp_admin'),
+							42	=> __("A client account deactivated due to maximum failed logins reached",'cftp_admin'),
+							43	=> __("A user account deactivated due to maximum failed logins reached",'cftp_admin'),
 						);
  /**
  * More to be added soon.

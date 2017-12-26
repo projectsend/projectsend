@@ -25,6 +25,11 @@ $log_query	= "SELECT * FROM " . TABLE_LOG . " ORDER BY id DESC";
 $log_sql	= $dbh->query( $log_query );
 $log_count	= $log_sql->rowCount();
 
+function filter_pipe($input) {
+	$output = str_replace('|', '\|', $input);
+	return $output;
+}
+
 if ($log_count > 0) {
 	$log_sql->setFetchMode(PDO::FETCH_ASSOC);
 	while ( $log = $log_sql->fetch() ) {
@@ -32,14 +37,14 @@ if ($log_count > 0) {
 		$rendered = array();
 		$render = render_log_action(
 							array(
-								'action'				=> $log['action'],
-								'timestamp'				=> $log['timestamp'],
-								'owner_id'				=> $log['owner_id'],
-								'owner_user'			=> $log['owner_user'],
-								'affected_file'			=> $log['affected_file'],
-								'affected_file_name'	=> $log['affected_file_name'],
-								'affected_account'		=> $log['affected_account'],
-								'affected_account_name'	=> $log['affected_account_name']
+								'action'						=> filter_pipe($log['action']),
+								'timestamp'					=> filter_pipe($log['timestamp']),
+								'owner_id'					=> filter_pipe($log['owner_id']),
+								'owner_user'				=> filter_pipe($log['owner_user']),
+								'affected_file'			=> filter_pipe($log['affected_file']),
+								'affected_file_name'		=> filter_pipe($log['affected_file_name']),
+								'affected_account'		=> filter_pipe($log['affected_account']),
+								'affected_account_name'	=> filter_pipe($log['affected_account_name'])
 							)
 		);
 		if (!empty($render['timestamp'])) { $rendered['timestamp'] = $render['timestamp']; };

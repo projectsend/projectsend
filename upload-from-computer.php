@@ -21,11 +21,11 @@ $cc_active_page = 'Send File';
 $page_title = __('Upload files', 'cftp_admin');
 
 $allowed_levels = array(9,8,7);
+
 if (CLIENTS_CAN_UPLOAD == 1) {
 	$allowed_levels[] = 0;
 }
 include('header.php');
-
 /**
  * Get the user level to determine if the uploader is a
  * system user or a client.
@@ -45,6 +45,11 @@ $current_level = get_current_user_level();
 		$count_clients	= $statement->rowCount();
 		$statement		= $dbh->query("SELECT id FROM " . TABLE_GROUPS);
 		$count_groups	= $statement->rowCount();
+		
+		echo "<pre>";
+		var_dump($statement);
+		echo "</pre>";
+		exit;
 
 		if ( ( !$count_clients or $count_clients < 1 ) && ( !$count_groups or $count_groups < 1 ) ) {
 			message_no_clients();

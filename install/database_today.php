@@ -23,11 +23,11 @@ if (defined('TRY_INSTALL')) {
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `uploader` varchar('.MAX_USER_CHARS.') NOT NULL,
 								  `expires` INT(1) NOT NULL default \'0\',
-								  `notify` int(11) NOT NULL default \'0\',
+								  `notify` int(11) NOT NULL,
 								  `expiry_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `future_send_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `public_allow` INT(1) NOT NULL default \'0\',
-  								  `number_downloads` int(15) NOT NULL default \'0\',
+  								  `number_downloads` int(15) NOT NULL,
 								  `public_token` varchar(32) NULL,
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -81,7 +81,7 @@ if (defined('TRY_INSTALL')) {
 								  `created_by` varchar(32) NOT NULL,
 								  `name` varchar(32) NOT NULL,
 								  `description` text NOT NULL,
-								  `organization_type` varchar(32) NOT NULL,
+								  `organization_type` NOT NULL,
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
@@ -192,7 +192,6 @@ if (defined('TRY_INSTALL')) {
 		
 		'9' =>  array(
 					'table'	=> TABLE_PASSWORD_RESET,
-
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_PASSWORD_RESET.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `user_id` int(11) DEFAULT NULL,

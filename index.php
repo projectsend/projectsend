@@ -123,7 +123,7 @@ include('header-unlogged.php');
 						header("location:".BASE_URI."my_files/");
 					}
 					else {
-						header("location:home.php");
+						header("location:".BASE_URI."home.php");
 					}
 					exit;
 				}
@@ -147,7 +147,7 @@ include('header-unlogged.php');
 if ( isset($_SESSION['errorstate'] ) ) {
 	$errorstate = $_SESSION['errorstate'];
 	unset($_SESSION['errorstate']);
-}
+}	 
 ?>
 <?php //echo generate_branding_layout(); ?>
 

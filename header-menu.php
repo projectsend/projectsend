@@ -274,7 +274,7 @@ else
 	</div>
 </div>
 
-<?
+<?php
 		$items['upload'] = array(
 									'nav'	=> 'upload',
 									'level'	=> array( 9,8,7,0 ),

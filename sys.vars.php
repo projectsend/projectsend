@@ -38,7 +38,7 @@ define('DEBUG', false);
  * @link http://www.php.net/manual/en/function.error-reporting.php
  */
 if ( DEBUG === true ) {
-	error_reporting(E_ALL);
+	error_reporting(-1);
 }
 else {
 	error_reporting(0);

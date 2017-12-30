@@ -13,7 +13,6 @@
  *
  * @return array
  */
-error_reporting(0);
 
 global $dbh;
 

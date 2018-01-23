@@ -57,13 +57,13 @@ define('UPLOAD_TIME_LIMIT', 120*60);
 /**
  * Define the RSS url to use on the home news list.
  */
-define('NEWS_FEED_URI','http://www.projectsend.org/feed/');
+define('NEWS_FEED_URI','https://www.projectsend.org/feed/');
 
 /**
  * Define the Feed from where to take the latest version
  * number.
  */
-define('UPDATES_FEED_URI','http://projectsend.org/updates/versions.xml');
+define('UPDATES_FEED_URI','https://projectsend.org/updates/versions.xml');
 
 /**
  * Check if the personal configuration file exists

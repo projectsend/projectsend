@@ -87,7 +87,7 @@ include('header-unlogged.php');
 
 				// DOWNLOAD
 				$real_file = UPLOADED_FILES_FOLDER.basename($real_file_url);
-				$random_file = UPLOADED_FILES_FOLDER.basename($file_on_disk);
+				$random_file = realpath(UPLOADED_FILES_FOLDER.basename($file_on_disk));
 				if (file_exists($random_file)) {
 					session_write_close();
 					while (ob_get_level()) ob_end_clean();

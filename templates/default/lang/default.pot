@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend theme: Default\n"
-"POT-Creation-Date: 2017-07-06 02:12-0300\n"
+"POT-Creation-Date: 2018-02-26 02:21-0300\n"
 "PO-Revision-Date: 2016-09-14 15:42-0300\n"
 "Last-Translator: \n"
 "Language-Team: ProjectSend <contact@projectsend.org>\n"
@@ -10,104 +10,92 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.8\n"
+"X-Generator: Poedit 2.0.6\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-KeywordsList: _e;__\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: template.php:15
+#: template.php:21
 msgid "File downloads"
 msgstr ""
 
-#: template.php:51
+#: template.php:57
 msgid "All categories"
 msgstr ""
 
-#: template.php:58
+#: template.php:64
 msgid "Filter"
 msgstr ""
 
-#: template.php:72
+#: template.php:78
 msgid "Selected files actions"
 msgstr ""
 
-#: template.php:76
+#: template.php:82
 msgid "Select action"
 msgstr ""
 
-#: template.php:77
+#: template.php:83
 msgid "Download zipped"
 msgstr ""
 
-#: template.php:87
+#: template.php:93
 msgid "Proceed"
 msgstr ""
 
-#: template.php:95
+#: template.php:101
 msgid "Found"
 msgstr ""
 
-#: template.php:95
+#: template.php:101
 msgid "files"
 msgstr ""
 
-#: template.php:105
+#: template.php:111
 msgid "Your search keywords returned no results."
 msgstr ""
 
-#: template.php:110
+#: template.php:116
 msgid "There are no files available."
 msgstr ""
 
-#: template.php:137
+#: template.php:142
 msgid "Title"
 msgstr ""
 
-#: template.php:140
+#: template.php:145
 msgid "Type"
 msgstr ""
 
-#: template.php:146
+#: template.php:151
 msgid "Description"
 msgstr ""
 
-#: template.php:153
+#: template.php:158
 msgid "Size"
 msgstr ""
 
-#: template.php:159
+#: template.php:165
 msgid "Date"
 msgstr ""
 
-#: template.php:162
+#: template.php:168
 msgid "Expiration date"
 msgstr ""
 
-#: template.php:166
+#: template.php:172
 msgid "Image preview"
 msgstr ""
 
-#: template.php:170 template.php:256
+#: template.php:176 template.php:262
 msgid "Download"
 msgstr ""
 
-#: template.php:228
+#: template.php:234
 msgid "Never"
 msgstr ""
 
-#: template.php:252
+#: template.php:258
 msgid "File expired"
-msgstr ""
-
-#: template.php:346
-msgid "Please select at least one file to proceed."
-msgstr ""
-
-#: template.php:364
-msgid "Please wait while your download is prepared."
-msgstr ""
-
-#: template.php:365
-msgid "This operation could take a few minutes, depending on the size of the files."
 msgstr ""

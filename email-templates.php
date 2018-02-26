@@ -295,7 +295,7 @@ if ($_POST) {
 																		'subject'			=> 'email_client_edited_subject',
 																		'body_checkbox'		=> 'email_client_edited_customize',
 																		'body_textarea'		=> 'email_client_edited_text',
-																		'description'		=> __('This email will be sent to the systema administrator when a client edits his account and changes the public groups membership requests.','cftp_admin'),
+																		'description'		=> __('This email will be sent to the system administrator when a client edits his account and changes the public groups membership requests.','cftp_admin'),
 																		'subject_check'		=> EMAILS_CLIENT_EDITED_USE_SUBJECT_CUSTOM,
 																		'subject_text'		=> EMAILS_CLIENT_EDITED_SUBJECT,
 																		'body_check'		=> EMAILS_CLIENT_EDITED_USE_CUSTOM,

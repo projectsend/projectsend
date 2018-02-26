@@ -14,7 +14,7 @@ require_once('sys.includes.php');
  */
 if ( PUBLIC_LISTING_ENABLE != 1 ) {
 	header("location:" . BASE_URI . "index.php");
-	die();	
+	die();
 }
 
 /**
@@ -44,12 +44,12 @@ if (!empty($_GET['token']) && !empty($_GET['group'])) {
 			$can_view_group = true;
 		}
 	}
-	
+
 	if ( !$can_view_group ) {
 		header("location:" . BASE_URI . "index.php");
-		die();	
+		die();
 	}
-	
+
 	$mode = 'group';
 }
 
@@ -80,15 +80,15 @@ function list_file($data, $origin) {
 	else {
 		$output .= $data['filename'];
 	}
-	 
+
 	$output .= '</li>';
-	 
+
 	return $output;
 }
 
 ?>
 <div class="col-xs-12 col-sm-12 col-lg-6 col-lg-offset-3">
-	
+
 	<?php echo generate_branding_layout(); ?>
 
 	<div class="white-box">
@@ -111,7 +111,7 @@ function list_file($data, $origin) {
 					<?php echo $desc; ?>
 				</div>
 			</div>
-			
+
 			<div class="treeview">
 				<div class="listing">
 					<ul>
@@ -127,7 +127,7 @@ function list_file($data, $origin) {
 							$files_sql = "SELECT * FROM " . TABLE_FILES;
 
 							/** All files or just the public ones? */
-							if ( PUBLIC_LISTING_SHOW_ALL_FILES != 1 ) {
+							if ( PUBLIC_LISTING_SHOW_ALL_FILES != 1 && $mode != 'group' ) {
 								$files_sql .= " WHERE public_allow=1";
 							}
 
@@ -170,6 +170,8 @@ function list_file($data, $origin) {
 								}
 							}
 
+							//print_array($all_files);
+
 							/**
 							 * 2- Get public groups
 							 */
@@ -178,7 +180,7 @@ function list_file($data, $origin) {
 							$get_arguments	= array(
 													 	'public'	=> true,
 													);
-							$found_groups	= $get_groups->get_groups($get_arguments); 
+							$found_groups	= $get_groups->get_groups($get_arguments);
 							foreach ($found_groups as $group_id => $group_data) {
 								$groups[$group_id] = array(
 															'id'		=> $group_data['id'],
@@ -195,7 +197,7 @@ function list_file($data, $origin) {
 								if ( PUBLIC_LISTING_SHOW_ALL_FILES != 1 ) {
 									$files_groups_sql .= " AND FIND_IN_SET(file_id, :public_files)";
 								}
-								
+
 								// Don't include expired files
 								if (EXPIRED_FILES_HIDE == '1') {
 									$files_groups_sql .= " AND !FIND_IN_SET(file_id, :excluded_files)";
@@ -203,7 +205,7 @@ function list_file($data, $origin) {
 
 								$sql = $dbh->prepare($files_groups_sql);
 								$sql->bindParam(':group_id', $group_id, PDO::PARAM_INT);
-								
+
 								if ( PUBLIC_LISTING_SHOW_ALL_FILES != 1 ) {
 									$included_files = implode( ',', array_map( 'intval', array_unique( $public_files ) ) );
 									$sql->bindParam(':public_files', $included_files);
@@ -212,15 +214,16 @@ function list_file($data, $origin) {
 									$excluded_files = implode( ',', array_map( 'intval', array_unique( $expired_files ) ) );
 									$sql->bindParam(':excluded_files', $excluded_files);
 								}
-								
+
 				 				$sql->execute();
 				 				$sql->setFetchMode(PDO::FETCH_ASSOC);
+
 								while ( $row = $sql->fetch() ) {
 									$groups[$group_id]['files'][$row['file_id']] = $all_files[$row['file_id']];
 									$remove_files[] = $row['file_id'];
 								}
 							}
-							
+
 							/**
 							 * Removes from the array of files those that are on, at least, one group
 							 * so in the list of groupless files they are not repeated.
@@ -229,10 +232,10 @@ function list_file($data, $origin) {
 							foreach ( $remove_files as $file_id ) {
 								unset($all_files[$file_id]);
 							}
-							
+
 							//print_r($groups);
 							//print_r($all_files);
-							
+
 							/**
 							 * Finally, generate the list
 							 * 1- Groups
@@ -262,14 +265,14 @@ function list_file($data, $origin) {
 										}
 									}
 								break;
-					
+
 								/**
 								* 2- Group files
 								*/
 								case 'group':
 									if ( !empty( $groups[$test_group['id']]['files'] ) ) {
 										foreach ( $groups[$test_group['id']]['files'] as $id => $file_info) {
-											echo list_file($file_info, 'loose');
+											echo list_file($file_info, 'group');
 										}
 									}
 									else {
@@ -277,6 +280,8 @@ function list_file($data, $origin) {
 									}
 								break;
 							}
+
+							//print_array($all_files);
 						?>
 					</ul>
 				</div>

@@ -97,36 +97,36 @@
 		/**
 		 * Get downloads from the specific downloads table
 		 */
-		$statement = $dbh->prepare("SELECT timestamp, COUNT(*) as total
+		$statement = $dbh->prepare("SELECT DATE(timestamp) as statsDate, COUNT(*) as total
 										FROM " . TABLE_DOWNLOADS . " 
 										WHERE timestamp >= DATE_SUB( CURDATE(),INTERVAL :max_days DAY)
-										GROUP BY DATE(timestamp)
+										GROUP BY statsDate
 									");
 		$statement->execute( $params );
 		if ( $statement->rowCount() > 0 ) {
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
 			while ( $res = $statement->fetch() ) {
-				$res['timestamp'] = strtotime($res['timestamp']);
-				$actions_to_graph['d8'][$res['timestamp']] = $res['total'];
+				$res['statsDate'] = strtotime($res['statsDate']);
+				$actions_to_graph['d8'][$res['statsDate']] = $res['total'];
 			}
 		}
 
 		/**
 		 * Get other details from the actions log
 		 */
-		$statement = $dbh->prepare("SELECT action, timestamp, COUNT(*) as total
+		$statement = $dbh->prepare("SELECT action, DATE(timestamp) as statsDate, COUNT(*) as total
 										FROM " . TABLE_LOG . " 
 										WHERE timestamp >= DATE_SUB( CURDATE(),INTERVAL :max_days DAY)
 										AND action IN (".$actions.")
-										GROUP BY DATE(timestamp), action
+										GROUP BY statsDate, action
 									");
 		$statement->execute( $params );
 		if ( $statement->rowCount() > 0 ) {
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
 			while ( $res = $statement->fetch() ) {
 				$dkey = 'd'.$res['action'];
-				$res['timestamp'] = strtotime($res['timestamp']);
-				$actions_to_graph[$dkey][$res['timestamp']] = $res['total'];
+				$res['statsDate'] = strtotime($res['statsDate']);
+				$actions_to_graph[$dkey][$res['statsDate']] = $res['total'];
 			}
 			$continue = true;
 		}

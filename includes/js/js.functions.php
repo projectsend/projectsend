@@ -21,7 +21,7 @@ $(document).ready(function(e) {
 		var token	= $(this).data('token');
 
 		if ( type == 'group' ) {
-			var link_base = '<?php echo PUBLIC_GROUP_URI; ?>?nav=group&';
+			var link_base = '<?php echo PUBLIC_GROUP_URI; ?>?';
 			var note_text = '<?php _e('Send this URL to someone to view the allowed group contents according to your privacy settings.','cftp_admin'); ?>';
 		}
 		else if ( type == 'file' ) {
@@ -47,16 +47,16 @@ $(document).ready(function(e) {
 		APPLY FORM BULK ACTIONS
 	***********************************************************************************/
 	$("#do_action").click(function() {
-		var checks = $("td>input:checkbox").serializeArray(); 
+		var checks = $("td>input:checkbox").serializeArray();
 		var action = $('#action').val();
 		if (action != 'none') {
 			<?php
 				/** GENERIC ACTIONS */
 			?>
 				if (action == 'delete') {
-					if (checks.length == 0) { 
+					if (checks.length == 0) {
 						alert('<?php _e('Please select at least one item to proceed.','cftp_admin'); ?>');
-						return false; 
+						return false;
 					}
 					else {
 						var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
@@ -68,7 +68,7 @@ $(document).ready(function(e) {
 						}
 					}
 				}
-			
+
 			<?php
 				/** ACTIVITIES LOG ACTIONS */
 			?>
@@ -80,7 +80,7 @@ $(document).ready(function(e) {
 						return false;
 					}
 				}
-		
+
 				if (action == 'log_download') {
 					$(document).psendmodal();
 					//Cookies.set('log_download_started', 0, { expires: 100 });
@@ -90,7 +90,7 @@ $(document).ready(function(e) {
 												'<p class="lead text-center text-info"><?php _e('Please wait while your download is prepared.','cftp_admin'); ?></p>'
 											);
 					$('.modal_content').append('<iframe src="<?php echo BASE_URI; ?>includes/actions.log.export.php?format=csv"></iframe>');
-					
+
 					return false;
 				}
 
@@ -117,7 +117,7 @@ $(document).ready(function(e) {
 							return +e.value;
 						}
 					});
-					
+
 					$(document).psendmodal();
 
 					Cookies.set('download_started', 0, { expires: 100 });

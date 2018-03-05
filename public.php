@@ -32,8 +32,8 @@ $mode = 'files';
 /**
  * If viewing a particular group, make sure it's public
  */
-if (!empty($_GET['token']) && !empty($_GET['group'])) {
-	$got_group		= $_GET['group'];
+if (!empty($_GET['token']) && !empty($_GET['id'])) {
+	$got_group		= $_GET['id'];
 	$got_token		= $_GET['token'];
 
 	$can_view_group = false;

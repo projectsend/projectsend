@@ -21,8 +21,8 @@ $load_scripts	= array(
 						'datepicker',
 						'footable',
 						'chosen',
-						'ckeditor',
-					); 
+						'ckeditor'
+					);
 
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
@@ -69,7 +69,7 @@ if(isset($_POST['upload_failed'])) {
  */
 if(isset($upload_failed_hidden_post) && count($upload_failed_hidden_post) > 0) {
 	foreach ($upload_failed_hidden_post as $failed) {
-		$delete_key = array_search($failed, $uploaded_files);					
+		$delete_key = array_search($failed, $uploaded_files);
 		unset($uploaded_files[$delete_key]);
 	}
 }
@@ -131,7 +131,7 @@ while( $row = $statement->fetch() ) {
 			$client_my_info = get_client_by_username($global_user);
 			$client_my_id = $client_my_info["id"];
 		}
-		
+
 		$n = 0;
 
 		foreach ($_POST['file'] as $file) {
@@ -145,7 +145,7 @@ while( $row = $statement->fetch() ) {
 				if ($current_level == 0) {
 					$file['assignments'] = 'c'.$global_user;
 				}
-				
+
 				$this_upload = new PSend_Upload_File();
 				if (!in_array($file['file'],$urls_db_files)) {
 					$file['file'] = $this_upload->safe_rename($file['file']);
@@ -169,7 +169,7 @@ while( $row = $statement->fetch() ) {
 						$new_filename = $file['original'];
 					}
 					if (!empty($new_filename)) {
-						$delete_key = array_search($file['original'], $uploaded_files);					
+						$delete_key = array_search($file['original'], $uploaded_files);
 						unset($uploaded_files[$delete_key]);
 
 						/**
@@ -194,7 +194,7 @@ while( $row = $statement->fetch() ) {
 							$add_arguments['hidden'] = $file['hidden'];
 							$send_notifications = false;
 						}
-						
+
 						if (!empty($file['assignments'])) {
 							$add_arguments['assign_to'] = $file['assignments'];
 							$assignations_count	= count($file['assignments']);
@@ -202,7 +202,7 @@ while( $row = $statement->fetch() ) {
 						else {
 							$assignations_count	= '0';
 						}
-						
+
 						/** Uploader is a client */
 						if ($current_level == 0) {
 							$add_arguments['assign_to'] = array('c'.$client_my_id);
@@ -221,7 +221,7 @@ while( $row = $statement->fetch() ) {
 								$add_arguments['public'] = '1';
 							}
 						}
-						
+
 						if (!in_array($new_filename,$urls_db_files)) {
 							$add_arguments['add_to_db'] = true;
 						}
@@ -410,7 +410,7 @@ while( $row = $statement->fetch() ) {
 				$("form").submit(function() {
 					clean_form(this);
 
-					$(this).find('input[name$="[name]"]').each(function() {	
+					$(this).find('input[name$="[name]"]').each(function() {
 						is_complete($(this)[0],'<?php echo $validation_no_title; ?>');
 					});
 
@@ -429,7 +429,7 @@ while( $row = $statement->fetch() ) {
 			<?php
 				}
 			?>
-			
+
 			<div class="container-fluid">
 				<?php
 					$i = 1;
@@ -483,26 +483,26 @@ while( $row = $statement->fetch() ) {
 																<h3><?php _e('File information', 'cftp_admin');?></h3>
 																<input type="hidden" name="file[<?php echo $i; ?>][original]" value="<?php echo html_output($file_original); ?>" />
 																<input type="hidden" name="file[<?php echo $i; ?>][file]" value="<?php echo html_output($file); ?>" />
-		
+
 																<div class="form-group">
 																	<label><?php _e('Title', 'cftp_admin');?></label>
 																	<input type="text" name="file[<?php echo $i; ?>][name]" value="<?php echo html_output($file_title); ?>" class="form-control file_title" placeholder="<?php _e('Enter here the required file title.', 'cftp_admin');?>" />
 																</div>
-																
+
 																<div class="form-group">
 																	<label><?php _e('Description', 'cftp_admin');?></label>
-																	<textarea name="file[<?php echo $i; ?>][description]" class="ckeditor form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (isset($description)) ? html_output($description) : ''; ?></textarea>
+																	<textarea name="file[<?php echo $i; ?>][description]" class="<?php if ( DESCRIPTIONS_USE_CKEDITOR == 1 ) { echo 'ckeditor'; } ?> form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (isset($description)) ? html_output($description) : ''; ?></textarea>
 																</div>
-																
+
 															</div>
 														</div>
 													</div>
 												</div>
-												
+
 												<?php
 													/** The following options are available to users or client if clients_can_set_expiration_date set. */
 													if ($global_level != 0 || CLIENTS_CAN_SET_EXPIRATION_DATE == '1' ) {
-												?>											
+												?>
 													<div class="col-sm-6 col-md-3 column_even column">
 														<div class="file_data">
 															<?php
@@ -512,7 +512,7 @@ while( $row = $statement->fetch() ) {
 																*/
 															?>
 															<h3><?php _e('Expiration date', 'cftp_admin');?></h3>
-															
+
 															<div class="form-group">
 																<label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
 																	<div class="input-group date-container">
@@ -528,16 +528,16 @@ while( $row = $statement->fetch() ) {
 																	<input type="checkbox" name="file[<?php echo $i; ?>][expires]" id="exp_checkbox_<?php echo $i; ?>" value="1" <?php if ($row['expiry_set']) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?>
 																</label>
 															</div>
-			
+
 															<?php
 																/** The following options are available to users only */
 																if ($global_level != 0) {
 															?>
-			
+
 																<div class="divider"></div>
-					
+
 																<h3><?php _e('Public downloading', 'cftp_admin');?></h3>
-																
+
 																<div class="checkbox">
 																	<label for="pub_checkbox_<?php echo $i; ?>">
 																		<input type="checkbox" id="pub_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][public]" value="1" /> <?php _e('Allow public downloading of this file.', 'cftp_admin');?>
@@ -551,7 +551,7 @@ while( $row = $statement->fetch() ) {
 												<?php
 													} /** Close $current_level check */
 												?>
-												
+
 												<?php
 													/** The following options are available to users only */
 													if ($global_level != 0) {
@@ -599,9 +599,9 @@ while( $row = $statement->fetch() ) {
 																	<a href="#" class="btn btn-xs btn-primary remove-all" data-type="assigns"><?php _e('Remove all','cftp_admin'); ?></a>
 																	<a href="#" class="btn btn-xs btn-danger copy-all" data-type="assigns"><?php _e('Copy selections to other files','cftp_admin'); ?></a>
 																</div>
-	
+
 																<div class="divider"></div>
-					
+
 																<div class="checkbox">
 																	<label for="hid_checkbox_<?php echo $i; ?>">
 																		<input type="checkbox" id="hid_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][hidden]" value="1" /> <?php _e('Upload hidden (will not send notifications)', 'cftp_admin');?>
@@ -658,7 +658,7 @@ while( $row = $statement->fetch() ) {
 				$upload_failed_hidden = implode(',',$upload_failed);
 			?>
 			<input type="hidden" name="upload_failed" value="<?php echo $upload_failed_hidden; ?>" />
-			
+
 			<div class="after_form_buttons">
 				<button type="submit" name="submit" class="btn btn-wide btn-primary" id="upload-continue"><?php _e('Save','cftp_admin'); ?></button>
 			</div>
@@ -673,7 +673,7 @@ while( $row = $statement->fetch() ) {
 	else {
 		include(ROOT_DIR.'/upload-send-notifications.php');
 	}
-		
+
 	/**
 	 * Generate the table for the failed files.
 	 */
@@ -713,12 +713,12 @@ while( $row = $statement->fetch() ) {
 					if ( confirm( "<?php _e('Copy selection to all files?','cftp_admin'); ?>" ) ) {
 						var type = $(this).data('type');
 						var selector = $(this).closest('.' + type).find('select');
-	
+
 						var selected = new Array();
 						$(selector).find('option:selected').each(function() {
 							selected.push($(this).val());
 						});
-	
+
 						$('.' + type + ' .chosen-select').each(function() {
 							$(this).find('option').each(function() {
 								if ($.inArray($(this).val(), selected) === -1) {

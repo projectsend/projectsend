@@ -10,8 +10,8 @@ define('IS_FILE_EDITOR', true);
 $load_scripts	= array(
 						'datepicker',
 						'chosen',
-						'ckeditor',
-					); 
+						'ckeditor'
+					);
 
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
@@ -94,7 +94,7 @@ $current_level = get_current_user_level();
 			if ( $count == 0 ) {
 				$no_results_error = 'id_not_exists';
 			}
-	
+
 			/**
 			 * Continue if client exists and has files under his account.
 			 */
@@ -166,13 +166,13 @@ $current_level = get_current_user_level();
 						if ($current_level == 0) {
 							$file['assignments'] = 'c'.$global_user;
 						}
-						
+
 						$this_upload = new PSend_Upload_File();
 						/**
 						 * Unassigned files are kept as orphans and can be related
 						 * to clients or groups later.
 						 */
-					
+
 						/** Add to the database for each client / group selected */
 						$add_arguments = array(
 												'file_original'	=> $edit_file_info['url'],
@@ -182,15 +182,15 @@ $current_level = get_current_user_level();
 												'uploader_id'	=> CURRENT_USER_ID,
 												'expiry_date'	=> $file['expiry_date']
 											);
-					
+
 						/** Set notifications to YES by default */
 						$send_notifications = true;
-					
+
 						if (!empty($file['hidden'])) {
 							$add_arguments['hidden'] = $file['hidden'];
 							$send_notifications = false;
 						}
-						
+
 						if ($current_level != 0) {
 
 							if (!empty($file['expires'])) {
@@ -216,7 +216,7 @@ $current_level = get_current_user_level();
 									$full_list = array_diff($full_list,$compare_groups);
 								}
 								$add_arguments['assign_to'] = $full_list;
-								
+
 								/**
 								 * On cleaning the DB, only remove the clients/groups
 								 * That just have been deselected.
@@ -226,7 +226,7 @@ $current_level = get_current_user_level();
 							else {
 								$clean_who = 'All';
 							}
-							
+
 							/** CLEAN deletes the removed users/groups from the assignments table */
 							if ($clean_who == 'All') {
 								$clean_all_arguments = array(
@@ -236,7 +236,7 @@ $current_level = get_current_user_level();
 															);
 								$clean_assignments = $this_upload->clean_all_assignments($clean_all_arguments);
 							}
-							else {						
+							else {
 								$clean_arguments = array (
 														'owner_id' => CURRENT_USER_ID, /** For the log */
 														'file_id' => $this_file_id,
@@ -254,7 +254,7 @@ $current_level = get_current_user_level();
 													);
 							$this_upload->upload_save_categories( $categories_arguments );
 						}
-						
+
 						/** Uploader is a client */
 						if ($current_level == 0) {
 							$add_arguments['assign_to'] = array('c'.CURRENT_USER_ID);
@@ -274,7 +274,7 @@ $current_level = get_current_user_level();
 							$add_arguments['new_file_id'] = $process_file['new_file_id'];
 							$add_arguments['all_users'] = $users;
 							$add_arguments['all_groups'] = $groups;
-							
+
 							if ($current_level != 0) {
 								/**
 								 * 2- Add the assignments to the database
@@ -308,7 +308,7 @@ $current_level = get_current_user_level();
 
 							$msg = __('The file has been edited succesfuly.','cftp_admin');
 							echo system_message('ok',$msg);
-							
+
 							include(ROOT_DIR.'/upload-send-notifications.php');
 						}
 					}
@@ -346,8 +346,8 @@ $current_level = get_current_user_level();
 								$current_categories[] = $assignment_row['cat_id'];
 							}
 						}
-	
-	
+
+
 						$i = 1;
 						$statement = $dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE id = :id");
 						$statement->bindParam(':id', $this_file_id, PDO::PARAM_INT);
@@ -371,21 +371,21 @@ $current_level = get_current_user_level();
 													<div class="row">
 														<div class="col-sm-12">
 															<h3><?php _e('File information', 'cftp_admin');?></h3>
-															
+
 															<div class="form-group">
 																<label><?php _e('Title', 'cftp_admin');?></label>
 																<input type="text" name="file[<?php echo $i; ?>][name]" value="<?php echo html_output($row['filename']); ?>" class="form-control file_title" placeholder="<?php _e('Enter here the required file title.', 'cftp_admin');?>" />
 															</div>
-	
+
 															<div class="form-group">
 																<label><?php _e('Description', 'cftp_admin');?></label>
-																<textarea name="file[<?php echo $i; ?>][description]" class="ckeditor form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (!empty($row['description'])) ? html_output($row['description']) : ''; ?></textarea>
+																<textarea name="file[<?php echo $i; ?>][description]" class="<?php if ( DESCRIPTIONS_USE_CKEDITOR == 1 ) { echo 'ckeditor'; } ?> form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (!empty($row['description'])) ? html_output($row['description']) : ''; ?></textarea>
 															</div>
 														</div>
 													</div>
 												</div>
 											</div>
-											
+
 											<?php
 												/** The following options are available to users or client if clients_can_set_expiration_date set. */
 												if ($global_level != 0 || CLIENTS_CAN_SET_EXPIRATION_DATE == '1' ) {
@@ -402,7 +402,7 @@ $current_level = get_current_user_level();
 																}
 															?>
 															<h3><?php _e('Expiration date', 'cftp_admin');?></h3>
-			
+
 															<div class="form-group">
 																<label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
 																<div class="input-group date-container">
@@ -412,19 +412,19 @@ $current_level = get_current_user_level();
 																	</div>
 																</div>
 															</div>
-	
+
 															<div class="checkbox">
 																<label for="exp_checkbox">
 																	<input type="checkbox" id="exp_checkbox" name="file[<?php echo $i; ?>][expires]" value="1" <?php if ($row['expires']) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?>
 																</label>
 															</div>
-			
+
 															<?php
 																/** The following options are available to users only */
 																if ($global_level != 0) {
 															?>
 															<div class="divider"></div>
-			
+
 															<h3><?php _e('Public downloading', 'cftp_admin');?></h3>
 															<div class="checkbox">
 																<label for="pub_checkbox">
@@ -443,11 +443,11 @@ $current_level = get_current_user_level();
 															} /** Close $current_level check */
 														?>
 														</div>
-													</div>									
+													</div>
 											<?php
 												} /** Close $current_level check */
 											?>
-											
+
 											<?php
 												/** The following options are available to users only */
 												if ($global_level != 0) {
@@ -498,9 +498,9 @@ $current_level = get_current_user_level();
 																<a href="#" class="btn btn-xs btn-primary add-all" data-type="assigns"><?php _e('Add all','cftp_admin'); ?></a>
 																<a href="#" class="btn btn-xs btn-primary remove-all" data-type="assigns"><?php _e('Remove all','cftp_admin'); ?></a>
 															</div>
-			
+
 															<div class="divider"></div>
-				
+
 															<div class="checkbox">
 																<label for="hid_checkbox">
 																	<input type="checkbox" id="hid_checkbox" name="file[<?php echo $i; ?>][hidden]" value="1" /> <?php _e('Mark as hidden (will not send notifications) for new assigned clients and groups.', 'cftp_admin');?>
@@ -513,7 +513,7 @@ $current_level = get_current_user_level();
 															</div>
 														</div>
 													</div>
-	
+
 													<div class="col-sm-6 col-md-3 categories column">
 														<div class="file_data">
 															<h3><?php _e('Categories', 'cftp_admin');?></h3>
@@ -559,7 +559,7 @@ $current_level = get_current_user_level();
 		$("form").submit(function() {
 			clean_form(this);
 
-			$(this).find('input[name$="[name]"]').each(function() {	
+			$(this).find('input[name$="[name]"]').each(function() {
 				is_complete($(this)[0],'<?php echo $validation_no_title; ?>');
 			});
 

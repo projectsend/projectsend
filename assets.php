@@ -98,9 +98,7 @@ if ( !empty( $load_scripts ) ) {
 											);
 				break;
 			case 'ckeditor':
-				if ( DESCRIPTIONS_USE_CKEDITOR == '1' ) {
-					$load_js_files[]		= BASE_URI . 'includes/js/ckeditor/ckeditor.js';
-				}
+				$load_js_files[]		= BASE_URI . 'includes/js/ckeditor/ckeditor.js';
 				break;
 		}
 	}

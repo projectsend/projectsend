@@ -181,14 +181,10 @@ $(document).ready(function(e) {
 
 
 	<?php
-		/** CKEditor only avaiable if the option is enabled */
-		if ( DESCRIPTIONS_USE_CKEDITOR == '1' ) {
+		/** CKEditor */
 	?>
-			if ( typeof CKEDITOR !== "undefined" ) {
-				CKEDITOR.replaceAll( 'ckeditor' );
-			}
-	<?php
+		if ( typeof CKEDITOR !== "undefined" ) {
+			CKEDITOR.replaceAll( 'ckeditor' );
 		}
-	?>
 
 });

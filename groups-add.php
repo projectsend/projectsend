@@ -8,7 +8,8 @@
  */
 $load_scripts	= array(
 						'chosen',
-					); 
+						'ckeditor',
+					);
 
 $allowed_levels = array(9,8);
 require_once('sys.includes.php');
@@ -42,26 +43,26 @@ if ($_POST) {
 
 	/** Validate the information from the posted form. */
 	$new_validate = $new_group->validate_group($new_arguments);
-	
+
 	/** Create the group if validation is correct. */
 	if ($new_validate == 1) {
 		$new_response = $new_group->create_group($new_arguments);
 	}
-	
+
 }
 ?>
 
 <div class="col-xs-12 col-sm-12 col-lg-6">
 	<div class="white-box">
 		<div class="white-box-interior">
-		
+
 			<?php
 				/**
 				 * If the form was submited with errors, show them here.
 				 */
 				$valid_me->list_errors();
 			?>
-			
+
 			<?php
 				if (isset($new_response)) {
 					/**
@@ -71,7 +72,7 @@ if ($_POST) {
 						case 1:
 							$msg = __('Group added correctly.','cftp_admin');
 							echo system_message('ok',$msg);
-	
+
 							/** Record the action log */
 							$new_log_action = new LogActions();
 							$log_action_args = array(

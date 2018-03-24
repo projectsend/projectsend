@@ -8,7 +8,7 @@
 $load_scripts	= array(
 						'jquery_tags_input',
 						'spinedit',
-					); 
+					);
 
 $allowed_levels = array(9);
 require_once('sys.includes.php');
@@ -123,7 +123,7 @@ if ($_POST) {
 	}
 
 	$keys = array_keys($_POST);
-	 
+
 	$options_total = count($keys);
 	$options_filled = 0;
 	$query_state = '0';
@@ -141,7 +141,7 @@ if ($_POST) {
 			}
 		}
 	}
-	
+
 	/** If every option is completed, continue */
 	if ($query_state == '0') {
 		$updated = 0;
@@ -167,9 +167,9 @@ if ($_POST) {
 	if ( !empty($_FILES['select_logo']['name']) ) {
 		/** Valid file extensions (images) */
 		$image_file_types = "/^\.(jpg|jpeg|gif|png){1}$/i";
-	
+
 		if (is_uploaded_file($_FILES['select_logo']['tmp_name'])) {
-	
+
 			$this_upload = new PSend_Upload_File();
 			$safe_filename = $this_upload->safe_rename($_FILES['select_logo']['name']);
 			/**
@@ -178,7 +178,7 @@ if ($_POST) {
 			 * @todo Use the file upload class file type validation function.
 			 */
 			if (preg_match($image_file_types, strrchr($safe_filename, '.'))) {
-	
+
 				/**
 				 * Move the file to the destination defined on sys.vars.php. If ok, add the
 				 * new file name to the database.
@@ -190,9 +190,9 @@ if ($_POST) {
 									':value'	=> $safe_filename
 								)
 							);
-					
+
 					$logo_status = '1';
-	
+
 					/** Record the action log */
 					$new_log_action = new LogActions();
 					$log_action_args = array(
@@ -306,7 +306,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 						value: <?php echo NOTIFICATIONS_MAX_TRIES; ?>,
 						numberOfDecimals: 0
 					});
-	
+
 					$('#notifications_max_days').spinedit({
 						minimum: 0,
 						maximum: 365,
@@ -314,18 +314,18 @@ $allowed_file_types = implode(',',$allowed_file_types);
 						value: <?php echo NOTIFICATIONS_MAX_DAYS; ?>,
 						numberOfDecimals: 0
 					});
-	
+
 					$('#allowed_file_types').tagsInput({
 						'width'			: '95%',
 						'height'		: 'auto',
 						'defaultText'	: '',
 					});
-	
+
 					$("form").submit(function() {
 						clean_form(this);
-	
+
 						is_complete_all_options(this,'<?php _e('Please complete all the fields.','cftp_admin'); ?>');
-	
+
 						// show the errors or continue if everything is ok
 						if (show_form_errors() == false) { alert('<?php _e('Please complete all the fields.','cftp_admin'); ?>'); return false; }
 					});
@@ -334,26 +334,26 @@ $allowed_file_types = implode(',',$allowed_file_types);
 
 			<form action="options.php" name="optionsform" method="post" enctype="multipart/form-data" class="form-horizontal">
 				<input type="hidden" name="section" value="<?php echo $section; ?>">
-								
+
 					<?php
 						switch ( $section ) {
 							case 'general':
 					?>
 								<h3><?php _e('General','cftp_admin'); ?></h3>
 								<p><?php _e('Basic information to be shown around the site. The time format and zones values affect how the clients see the dates on their files lists.','cftp_admin'); ?></p>
-	
+
 								<div class="form-group">
 									<label for="this_install_title" class="col-sm-4 control-label"><?php _e('Site name','cftp_admin'); ?></label>
 									<div class="col-sm-8">
 										<input type="text" name="this_install_title" id="this_install_title" class="form-control" value="<?php echo html_output(THIS_INSTALL_SET_TITLE); ?>" />
 									</div>
 								</div>
-	
+
 								<div class="form-group">
 									<label for="timezone" class="col-sm-4 control-label"><?php _e('Timezone','cftp_admin'); ?></label>
 									<div class="col-sm-8">
 										<?php
-											/** 
+											/**
 											 * Generates a select field.
 											 * Code is stored on a separate file since it's pretty long.
 											 */
@@ -361,7 +361,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										?>
 									</div>
 								</div>
-	
+
 								<div class="form-group">
 									<label for="timeformat" class="col-sm-4 control-label"><?php _e('Time format','cftp_admin'); ?></label>
 									<div class="col-sm-8">
@@ -370,7 +370,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										<?php _e('For the full list of available values, visit','cftp_admin'); ?> <a href="http://php.net/manual/en/function.date.php" target="_blank"><?php _e('this page','cftp_admin'); ?></a>.</p>
 									</div>
 								</div>
-	
+
 								<div class="form-group">
 									<div class="col-sm-8 col-sm-offset-4">
 										<label for="footer_custom_enable">
@@ -378,18 +378,18 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</label>
 									</div>
 								</div>
-	
+
 								<div class="form-group">
 									<label for="footer_custom_content" class="col-sm-4 control-label"><?php _e('Footer content','cftp_admin'); ?></label>
 									<div class="col-sm-8">
 										<input type="text" name="footer_custom_content" id="footer_custom_content" class="form-control" value="<?php echo html_output(FOOTER_CUSTOM_CONTENT); ?>" />
 									</div>
 								</div>
-	
+
 								<div class="options_divide"></div>
-	
-								<h3><?php _e('Files','cftp_admin'); ?></h3>
-	
+
+								<h3><?php _e('Editor','cftp_admin'); ?></h3>
+
 								<div class="form-group">
 									<div class="col-sm-8 col-sm-offset-4">
 										<label for="files_descriptions_use_ckeditor">
@@ -397,11 +397,11 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</label>
 									</div>
 								</div>
-	
+
 								<div class="options_divide"></div>
-	
+
 								<h3><?php _e('Language','cftp_admin'); ?></h3>
-	
+
 								<div class="form-group">
 									<div class="col-sm-8 col-sm-offset-4">
 										<label for="use_browser_lang">
@@ -410,12 +410,12 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</label>
 									</div>
 								</div>
-	
+
 								<div class="options_divide"></div>
-	
+
 								<h3><?php _e('System location','cftp_admin'); ?></h3>
 								<p class="text-warning"><?php _e('These options are to be changed only if you are moving the system to another place. Changes here can cause ProjectSend to stop working.','cftp_admin'); ?></p>
-	
+
 								<div class="form-group">
 									<label for="base_uri" class="col-sm-4 control-label"><?php _e('System URI','cftp_admin'); ?></label>
 									<div class="col-sm-8">
@@ -428,7 +428,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 					?>
 								<h3><?php _e('New registrations','cftp_admin'); ?></h3>
 								<p><?php _e('Used only on self-registrations. These options will not apply to clients registered by system administrators.','cftp_admin'); ?></p>
-	
+
 								<div class="form-group">
 									<div class="col-sm-8 col-sm-offset-4">
 										<label for="clients_can_register">
@@ -436,7 +436,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</label>
 									</div>
 								</div>
-	
+
 								<div class="form-group">
 									<div class="col-sm-8 col-sm-offset-4">
 										<label for="clients_auto_approve">
@@ -444,7 +444,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</label>
 									</div>
 								</div>
-								
+
 								<div class="form-group">
 									<label for="clients_auto_group" class="col-sm-4 control-label"><?php _e('Add clients to this group:','cftp_admin'); ?></label>
 									<div class="col-sm-8">
@@ -455,7 +455,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 												$get_groups		= new GroupActions;
 												$arguments		= array();
 												$groups 		= $get_groups->get_groups($arguments);
-												
+
 												foreach ( $groups as $group ) {
 											?>
 														<option value="<?php echo filter_var($group["id"],FILTER_VALIDATE_INT); ?>"
@@ -473,9 +473,9 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										<p class="field_note"><?php _e('New clients will automatically be assigned to the group you have selected.','cftp_admin'); ?></p>
 									</div>
 								</div>
-	
+
 								<div class="form-group">
-									<label for="clients_can_select_group" class="col-sm-4 control-label"><?php _e('Groups for which clients can request membership to:','cftp_admin'); ?></label> 
+									<label for="clients_can_select_group" class="col-sm-4 control-label"><?php _e('Groups for which clients can request membership to:','cftp_admin'); ?></label>
 									<div class="col-sm-8">
 										<select class="form-control" name="clients_can_select_group" id="clients_can_select_group">
 											<?php
@@ -496,13 +496,13 @@ $allowed_file_types = implode(',',$allowed_file_types);
 								</div>
 
 								<div class="options_divide"></div>
-	
+
 								<h3><?php _e('Files','cftp_admin'); ?></h3>
 								<?php
 									/*<p><?php _e('Options related to the files that clients upload themselves.','cftp_admin'); ?></p>
 									*/
 								?>
-	
+
 								<div class="form-group">
 									<div class="col-sm-8 col-sm-offset-4">
 										<label for="clients_can_upload">
@@ -510,7 +510,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</label>
 									</div>
 								</div>
-	
+
 								<div class="form-group">
 									<div class="col-sm-8 col-sm-offset-4">
 										<label for="clients_can_delete_own_files">
@@ -518,7 +518,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</label>
 									</div>
 								</div>
-	
+
 								<div class="form-group">
 									<div class="col-sm-8 col-sm-offset-4">
 										<label for="clients_can_set_expiration_date">
@@ -526,9 +526,9 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</label>
 									</div>
 								</div>
-	
+
 								<div class="form-group">
-									<label for="expired_files_hide" class="col-sm-4 control-label"><?php _e('When a file expires:','cftp_admin'); ?></label> 
+									<label for="expired_files_hide" class="col-sm-4 control-label"><?php _e('When a file expires:','cftp_admin'); ?></label>
 									<div class="col-sm-8">
 										<select class="form-control" name="expired_files_hide" id="expired_files_hide">
 											<option value="1" <?php echo (EXPIRED_FILES_HIDE == '1') ? 'selected="selected"' : ''; ?>><?php _e("Don't show it on the files list",'cftp_admin'); ?></option>
@@ -599,7 +599,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</label>
 									</div>
 								</div>
-	
+
 								<div class="options_divide"></div>
 
 					<?php
@@ -607,25 +607,25 @@ $allowed_file_types = implode(',',$allowed_file_types);
 							case 'email':
 					?>
 								<h3><?php _e('"From" information','cftp_admin'); ?></h3>
-	
+
 								<div class="form-group">
 									<label for="admin_email_address" class="col-sm-4 control-label"><?php _e('E-mail address','cftp_admin'); ?></label>
 									<div class="col-sm-8">
 										<input type="text" name="admin_email_address" id="admin_email_address" class="form-control" value="<?php echo html_output(ADMIN_EMAIL_ADDRESS); ?>" />
 									</div>
 								</div>
-	
+
 								<div class="form-group">
 									<label for="mail_from_name" class="col-sm-4 control-label"><?php _e('Name','cftp_admin'); ?></label>
 									<div class="col-sm-8">
 										<input type="text" name="mail_from_name" id="mail_from_name" class="form-control" value="<?php echo html_output(MAIL_FROM_NAME); ?>" />
 									</div>
 								</div>
-	
+
 								<div class="options_divide"></div>
-	
+
 								<h3><?php _e('Send copies','cftp_admin'); ?></h3>
-	
+
 								<div class="form-group">
 									<div class="col-sm-8 col-sm-offset-4">
 										<label for="mail_copy_user_upload">
@@ -633,7 +633,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</label>
 									</div>
 								</div>
-								
+
 								<div class="form-group">
 									<div class="col-sm-8 col-sm-offset-4">
 										<label for="mail_copy_client_upload">
@@ -641,11 +641,11 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</label>
 									</div>
 								</div>
-	
+
 								<div class="options_nested_note">
 									<p><?php _e('Define here who will receive copies of this emails. These are sent as BCC so neither recipient will see the other addresses.','cftp_admin'); ?></p>
 								</div>
-	
+
 								<div class="form-group">
 									<div class="col-sm-8 col-sm-offset-4">
 										<label for="mail_copy_main_user">
@@ -653,7 +653,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</label>
 									</div>
 								</div>
-	
+
 								<div class="form-group">
 									<label for="mail_copy_addresses" class="col-sm-4 control-label"><?php _e('Also to this addresses','cftp_admin'); ?></label>
 									<div class="col-sm-8">
@@ -661,11 +661,11 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										<p class="field_note"><?php _e('Separate e-mail addresses with a comma.','cftp_admin'); ?></p>
 									</div>
 								</div>
-	
+
 								<div class="options_divide"></div>
-	
+
 								<h3><?php _e('Expiration','cftp_admin'); ?></h3>
-	
+
 								<div class="form-group">
 									<label for="notifications_max_tries" class="col-sm-4 control-label"><?php _e('Maximum sending attemps','cftp_admin'); ?></label>
 									<div class="col-sm-8">
@@ -673,7 +673,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										<p class="field_note"><?php _e('Define how many times will the system attemp to send each notification.','cftp_admin'); ?></p>
 									</div>
 								</div>
-	
+
 								<div class="form-group">
 									<label for="notifications_max_days" class="col-sm-4 control-label"><?php _e('Days before expiring','cftp_admin'); ?></label>
 									<div class="col-sm-8">
@@ -681,12 +681,12 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										<p class="field_note"><?php _e('Notifications older than this will not be sent.','cftp_admin'); ?><br /><strong><?php _e('Set to 0 to disable.','cftp_admin'); ?></strong></p>
 									</div>
 								</div>
-	
+
 								<div class="options_divide"></div>
-	
+
 								<h3><?php _e('E-mail sending options','cftp_admin'); ?></h3>
 								<p><?php _e('Here you can select which mail system will be used when sending the notifications. If you have a valid e-mail account, SMTP is the recommended option.','cftp_admin'); ?></p>
-	
+
 								<div class="form-group">
 									<label for="mail_system_use" class="col-sm-4 control-label"><?php _e('Mailer','cftp_admin'); ?></label>
 									<div class="col-sm-8">
@@ -698,45 +698,45 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</select>
 									</div>
 								</div>
-	
+
 								<div class="options_divide"></div>
-	
+
 								<h3><?php _e('SMTP & Gmail shared options','cftp_admin'); ?></h3>
 								<p><?php _e('You need to include your username (usually your e-mail address) and password if you have selected either SMTP or Gmail as your mailer.','cftp_admin'); ?></p>
-	
+
 								<div class="form-group">
 									<label for="mail_smtp_user" class="col-sm-4 control-label"><?php _e('Username','cftp_admin'); ?></label>
 									<div class="col-sm-8">
 										<input type="text" name="mail_smtp_user" id="mail_smtp_user" class="mail_data empty form-control" value="<?php echo html_output(SMTP_USER); ?>" />
 									</div>
 								</div>
-	
+
 								<div class="form-group">
 									<label for="mail_smtp_pass" class="col-sm-4 control-label"><?php _e('Password','cftp_admin'); ?></label>
 									<div class="col-sm-8">
 										<input type="password" name="mail_smtp_pass" id="mail_smtp_pass" class="mail_data empty form-control" value="<?php echo html_output(SMTP_PASS); ?>" />
 									</div>
 								</div>
-								
+
 								<div class="options_divide"></div>
-	
+
 								<h3><?php _e('SMTP options','cftp_admin'); ?></h3>
 								<p><?php _e('If you selected SMTP as your mailer, please complete these options.','cftp_admin'); ?></p>
-								
+
 								<div class="form-group">
 									<label for="mail_smtp_host" class="col-sm-4 control-label"><?php _e('Host','cftp_admin'); ?></label>
 									<div class="col-sm-8">
 										<input type="text" name="mail_smtp_host" id="mail_smtp_host" class="mail_data empty form-control" value="<?php echo html_output(SMTP_HOST); ?>" />
 									</div>
 								</div>
-								
+
 								<div class="form-group">
 									<label for="mail_smtp_port" class="col-sm-4 control-label"><?php _e('Port','cftp_admin'); ?></label>
 									<div class="col-sm-8">
 										<input type="text" name="mail_smtp_port" id="mail_smtp_port" class="mail_data empty form-control" value="<?php echo html_output(SMTP_PORT); ?>" />
 									</div>
 								</div>
-								
+
 								<div class="form-group">
 									<label for="mail_smtp_auth" class="col-sm-4 control-label"><?php _e('Authentication','cftp_admin'); ?></label>
 									<div class="col-sm-8">
@@ -754,7 +754,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 								<h3><?php _e('Allowed file extensions','cftp_admin'); ?></h3>
 								<p><?php _e('Be careful when changing this options. They could affect not only the system but the whole server it is installed on.','cftp_admin'); ?><br />
 								<strong><?php _e('Important','cftp_admin'); ?></strong>: <?php _e('Separate allowed file types with a comma.','cftp_admin'); ?></p>
-	
+
 							   <div class="form-group">
 								   <label for="file_types_limit_to" class="col-sm-4 control-label"><?php _e('Limit file types uploading to','cftp_admin'); ?></label>
 								   <div class="col-sm-8">
@@ -765,23 +765,23 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</select>
 								   </div>
 								</div>
-	
+
 							   <div class="form-group">
 									<input name="allowed_file_types" id="allowed_file_types" value="<?php echo $allowed_file_types; ?>" />
 								</div>
-								
+
 								<?php
 									if ( isset( $php_allowed_warning ) && $php_allowed_warning == true ) {
 										$msg = __('Warning: php extension is allowed. This is a serious security problem. If you are not sure that you need it, please remove it from the list.','cftp_admin');
 										echo system_message('error',$msg);
 									}
 								?>
-	
+
 								<div class="options_divide"></div>
-	
+
 								<h3><?php _e('Passwords','cftp_admin'); ?></h3>
 								<p><?php _e('When setting up a password for an account, require at least:','cftp_admin'); ?></p>
-	
+
 								<div class="form-group">
 									<div class="col-sm-8 col-sm-offset-4">
 										<label for="pass_require_upper">
@@ -789,7 +789,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</label>
 									</div>
 								</div>
-	
+
 								<div class="form-group">
 									<div class="col-sm-8 col-sm-offset-4">
 										<label for="pass_require_lower">
@@ -797,7 +797,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</label>
 									</div>
 								</div>
-	
+
 								<div class="form-group">
 									<div class="col-sm-8 col-sm-offset-4">
 										<label for="pass_require_number">
@@ -805,7 +805,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</label>
 									</div>
 								</div>
-	
+
 								<div class="form-group">
 									<div class="col-sm-8 col-sm-offset-4">
 										<label for="pass_require_special">
@@ -813,14 +813,14 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</label>
 									</div>
 								</div>
-	
+
 								<div class="options_divide"></div>
-	
+
 								<div class="options_divide"></div>
-	
+
 								<h3><?php _e('reCAPTCHA','cftp_admin'); ?></h3>
 								<p><?php _e('Helps prevent SPAM on your registration form.','cftp_admin'); ?></p>
-	
+
 								<div class="form-group">
 									<div class="col-sm-8 col-sm-offset-4">
 										<label for="recaptcha_enabled">
@@ -828,21 +828,21 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</label>
 									</div>
 								</div>
-	
+
 								<div class="form-group">
 									<label for="recaptcha_site_key" class="col-sm-4 control-label"><?php _e('Site key','cftp_admin'); ?></label>
 									<div class="col-sm-8">
 										<input type="text" name="recaptcha_site_key" id="recaptcha_site_key" class="form-control empty" value="<?php echo html_output(RECAPTCHA_SITE_KEY); ?>" />
 									</div>
 								</div>
-	
+
 								<div class="form-group">
 									<label for="recaptcha_secret_key" class="col-sm-4 control-label"><?php _e('Secret key','cftp_admin'); ?></label>
 									<div class="col-sm-8">
 										<input type="text" name="recaptcha_secret_key" id="recaptcha_secret_key" class="form-control empty" value="<?php echo html_output(RECAPTCHA_SECRET_KEY); ?>" />
 									</div>
 								</div>
-	
+
 								<div class="form-group">
 									<div class="col-sm-8 col-sm-offset-4">
 										<a href="<?php echo LINK_DOC_RECAPTCHA; ?>" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
@@ -854,7 +854,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 					?>
 								<h3><?php _e('Thumbnails','cftp_admin'); ?></h3>
 								<p><?php _e("Thumbnails are used on files lists. It is recommended to keep them small, unless you are using the system to upload only images, and will change the default client's template accordingly.",'cftp_admin'); ?></p>
-	
+
 								<div class="options_column">
 									<div class="options_col_left">
 										<div class="form-group">
@@ -863,7 +863,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 												<input type="text" name="max_thumbnail_width" id="max_thumbnail_width" class="form-control" value="<?php echo html_output(THUMBS_MAX_WIDTH); ?>" />
 											</div>
 										</div>
-	
+
 										<div class="form-group">
 											<label for="max_thumbnail_height" class="col-sm-6 control-label"><?php _e('Max height','cftp_admin'); ?></label>
 											<div class="col-sm-6">
@@ -880,12 +880,12 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</div>
 									</div>
 								</div>
-	
+
 								<div class="options_divide"></div>
-	
+
 								<h3><?php _e("File's path", 'cftp_admin'); ?></h3>
 								<p><?php _e("If thumbnails are not showing (your company logo and file's preview on the branding page and client's files lists) try setting this option ON. It they still don't work, a folders permission issue might be the cause.",'cftp_admin'); ?></p>
-	
+
 								<div class="form-group">
 									<div class="col-sm-8 col-sm-offset-4">
 										<label for="thumbnails_use_absolute">
@@ -899,7 +899,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 					?>
 								<h3><?php _e('Current logo','cftp_admin'); ?></h3>
 								<p><?php _e('Use this page to upload your company logo, or update the currently assigned one. This image will be shown to your clients when they access their file list.','cftp_admin'); ?></p>
-		
+
 								<div id="current_logo">
 									<div id="current_logo_img">
 										<?php
@@ -914,7 +914,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										<?php _e('Tihs preview uses a maximum width of 300px','cftp_admin'); ?>
 									</p>
 								</div>
-						
+
 								<div id="form_upload_logo">
 									<input type="hidden" name="MAX_FILE_SIZE" value="1000000000">
 									<div class="form-group">
@@ -924,12 +924,12 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</div>
 									</div>
 								</div>
-		
+
 								<div class="options_divide"></div>
-		
+
 								<h3><?php _e('Size settings','cftp_admin'); ?></h3>
 								<p><?php _e("The file viewer template may use this setting when showing the image.",'cftp_admin'); ?></p>
-		
+
 								<div class="form-group">
 									<label for="max_logo_width" class="col-sm-4 control-label"><?php _e('Max width','cftp_admin'); ?></label>
 									<div class="col-sm-3">
@@ -939,7 +939,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</div>
 									</div>
 								</div>
-		
+
 								<div class="form-group">
 									<label for="max_logo_height" class="col-sm-4 control-label"><?php _e('Max height','cftp_admin'); ?></label>
 									<div class="col-sm-3">
@@ -954,7 +954,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 							case 'social_login':
 					?>
 								<h3><?php _e('Google','cftp_admin'); ?></h3>
-	
+
 								<div class="options_column">
 									<div class="form-group">
 										<label for="google_signin_enabled" class="col-sm-4 control-label"><?php _e('Enabled','cftp_admin'); ?></label>

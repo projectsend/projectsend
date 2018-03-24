@@ -44,7 +44,7 @@ switch ($groups_form_type) {
 	<div class="form-group">
 		<label for="add_group_form_description" class="col-sm-4 control-label"><?php _e('Description','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<textarea name="add_group_form_description" id="add_group_form_description" class="form-control"><?php echo (isset($add_group_data_description)) ? html_output($add_group_data_description) : ''; ?></textarea>
+			<textarea name="add_group_form_description" id="add_group_form_description" class="ckeditor form-control"><?php echo (isset($add_group_data_description)) ? html_output($add_group_data_description) : ''; ?></textarea>
 		</div>
 	</div>
 

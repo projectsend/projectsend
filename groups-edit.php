@@ -8,7 +8,8 @@
  */
 $load_scripts	= array(
 						'chosen',
-					); 
+						'ckeditor',
+					);
 
 $allowed_levels = array(9,8);
 require_once('sys.includes.php');
@@ -93,7 +94,7 @@ if ($_POST) {
 
 	/** Validate the information from the posted form. */
 	$edit_validate = $edit_group->validate_group($edit_arguments);
-	
+
 	/** Create the group if validation is correct. */
 	if ($edit_validate == 1) {
 		$edit_response = $edit_group->edit_group($edit_arguments);
@@ -112,7 +113,7 @@ if ($_POST) {
 				case 1:
 					$msg = __('Group edited correctly.','cftp_admin');
 					echo system_message('ok',$msg);
-	
+
 					/** Record the action log */
 					$new_log_action = new LogActions();
 					$log_action_args = array(
@@ -130,7 +131,7 @@ if ($_POST) {
 			}
 		}
 	?>
-	
+
 	<div class="white-box">
 		<div class="white-box-interior">
 			<?php
@@ -139,7 +140,7 @@ if ($_POST) {
 				 */
 				$valid_me->list_errors();
 			?>
-			
+
 			<?php
 				$direct_access_error = __('This page is not intended to be accessed directly.','cftp_admin');
 				if ($page_status === 0) {

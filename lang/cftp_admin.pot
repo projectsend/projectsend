@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend admin\n"
-"POT-Creation-Date: 2018-02-26 02:20-0300\n"
+"POT-Creation-Date: 2018-04-01 03:12-0300\n"
 "PO-Revision-Date: 2016-09-14 15:19-0300\n"
 "Last-Translator: \n"
 "Language-Team: ProjectSend <contact@projectsend.org>\n"
@@ -218,7 +218,7 @@ msgstr ""
 
 #: categories.php:310 clients.php:482 groups.php:301 groups.php:398
 #: header-menu.php:69 includes/widgets/system-information.php:47
-#: options.php:391 options.php:500
+#: options.php:500
 msgid "Files"
 msgstr ""
 
@@ -250,7 +250,7 @@ msgid "Client added correctly."
 msgstr ""
 
 #: clients-add.php:122 clients-edit.php:204 email-templates.php:147
-#: groups-add.php:86 groups-edit.php:127 options.php:261 register.php:170
+#: groups-add.php:87 groups-edit.php:128 options.php:261 register.php:170
 #: templates.php:59 users-add.php:102 users-edit.php:182
 msgid "There was an error. Please try again."
 msgstr ""
@@ -279,7 +279,7 @@ msgstr ""
 msgid "Client edited correctly."
 msgstr ""
 
-#: clients-edit.php:221 groups-edit.php:144 users-edit.php:200
+#: clients-edit.php:221 groups-edit.php:145 users-edit.php:200
 msgid "This page is not intended to be accessed directly."
 msgstr ""
 
@@ -335,7 +335,7 @@ msgid "Must be alphanumeric"
 msgstr ""
 
 #: clients-form.php:139 includes/vars.php:50 index.php:124
-#: install/index.php:264 install/make-config.php:255 options.php:715
+#: install/index.php:264 install/make-config.php:274 options.php:715
 #: users-form.php:101
 msgid "Password"
 msgstr ""
@@ -899,7 +899,7 @@ msgstr ""
 
 #: email-templates.php:298
 msgid ""
-"This email will be sent to the systema administrator when a client edits his "
+"This email will be sent to the system administrator when a client edits his "
 "account and changes the public groups membership requests."
 msgstr ""
 
@@ -982,27 +982,27 @@ msgstr ""
 msgid "Executed queries"
 msgstr ""
 
-#: groups-add.php:18
+#: groups-add.php:19
 msgid "Add clients group"
 msgstr ""
 
-#: groups-add.php:72
+#: groups-add.php:73
 msgid "Group added correctly."
 msgstr ""
 
-#: groups-edit.php:18
+#: groups-edit.php:19
 msgid "Edit group"
 msgstr ""
 
-#: groups-edit.php:113
+#: groups-edit.php:114
 msgid "Group edited correctly."
 msgstr ""
 
-#: groups-edit.php:146
+#: groups-edit.php:147
 msgid "No group was selected."
 msgstr ""
 
-#: groups-edit.php:151
+#: groups-edit.php:152
 msgid "There is no group with that ID number."
 msgstr ""
 
@@ -1449,7 +1449,7 @@ msgstr ""
 
 #: includes/classes/send-email.php:81 includes/classes/send-email.php:130
 #: includes/classes/send-email.php:140 includes/vars.php:49 index.php:119
-#: install/make-config.php:245 options.php:708
+#: install/make-config.php:264 options.php:708
 msgid "Username"
 msgstr ""
 
@@ -2068,7 +2068,7 @@ msgstr ""
 msgid "days"
 msgstr ""
 
-#: includes/widgets/system-information.php:7 install/make-config.php:364
+#: includes/widgets/system-information.php:7 install/make-config.php:383
 msgid "System information"
 msgstr ""
 
@@ -2157,7 +2157,7 @@ msgstr ""
 msgid "Redirecting"
 msgstr ""
 
-#: index.php:129 install/make-config.php:311 options.php:403
+#: index.php:129 install/make-config.php:330 options.php:403
 msgid "Language"
 msgstr ""
 
@@ -2189,7 +2189,7 @@ msgstr ""
 msgid "If you need an account, please contact a server administrator."
 msgstr ""
 
-#: install/index.php:52 install/index.php:278 install/make-config.php:20
+#: install/index.php:52 install/index.php:278 install/make-config.php:39
 msgid "Install"
 msgstr ""
 
@@ -2288,75 +2288,79 @@ msgid ""
 "being able to change the site options provided here."
 msgstr ""
 
-#: install/make-config.php:187
+#: install/make-config.php:24
+msgid "The configuration file already exists."
+msgstr ""
+
+#: install/make-config.php:206
 msgid "Successfully wrote the config file."
 msgstr ""
 
-#: install/make-config.php:191
+#: install/make-config.php:210
 msgid "Continue to installation"
 msgstr ""
 
-#: install/make-config.php:200
+#: install/make-config.php:219
 msgid "Database configuration"
 msgstr ""
 
-#: install/make-config.php:201
+#: install/make-config.php:220
 msgid "You need to provide this data for a correct database communication."
 msgstr ""
 
-#: install/make-config.php:204
+#: install/make-config.php:223
 msgid "Select driver"
 msgstr ""
 
-#: install/make-config.php:209 install/make-config.php:215
+#: install/make-config.php:228 install/make-config.php:234
 msgid "(not supported)"
 msgstr ""
 
-#: install/make-config.php:225 options.php:727
+#: install/make-config.php:244 options.php:727
 msgid "Host"
 msgstr ""
 
-#: install/make-config.php:235
+#: install/make-config.php:254
 msgid "Database name"
 msgstr ""
 
-#: install/make-config.php:265
+#: install/make-config.php:284
 msgid "Table prefix"
 msgstr ""
 
-#: install/make-config.php:281
+#: install/make-config.php:300
 msgid "The database is already populated"
 msgstr ""
 
-#: install/make-config.php:295
+#: install/make-config.php:314
 msgid "Reuse existing tables"
 msgstr ""
 
-#: install/make-config.php:308
+#: install/make-config.php:327
 msgid "Language selection"
 msgstr ""
 
-#: install/make-config.php:323
+#: install/make-config.php:342
 msgid "Folders"
 msgstr ""
 
-#: install/make-config.php:352
+#: install/make-config.php:371
 msgid "Writable"
 msgstr ""
 
-#: install/make-config.php:354
+#: install/make-config.php:373
 msgid "Not writable"
 msgstr ""
 
-#: install/make-config.php:418
+#: install/make-config.php:437
 msgid "Check again"
 msgstr ""
 
-#: install/make-config.php:419
+#: install/make-config.php:438
 msgid "Write config file"
 msgstr ""
 
-#: install/make-config.php:421
+#: install/make-config.php:440
 msgid "Check"
 msgstr ""
 
@@ -2566,6 +2570,10 @@ msgstr ""
 
 #: options.php:383
 msgid "Footer content"
+msgstr ""
+
+#: options.php:391
+msgid "Editor"
 msgstr ""
 
 #: options.php:396

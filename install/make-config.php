@@ -13,6 +13,25 @@ define( 'IS_MAKE_CONFIG', true );
 define( 'ABS_PARENT', dirname( dirname(__FILE__) ) );
 require_once( ABS_PARENT . '/sys.includes.php' );
 
+/** Config file exists. Do not continue and show the message */
+if ( file_exists( ROOT_DIR.'/includes/sys.config.php' ) ) {
+	include_once( ABS_PARENT . '/header-unlogged.php' );
+?>
+	<div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
+		<div class="white-box">
+			<div class="white-box-interior">
+				<?php
+					$msg = __('The configuration file already exists.','cftp_admin');
+					echo system_message('error',$msg);
+				?>
+			</div>
+		</div>
+	</div>
+<?php
+	include_once( ABS_PARENT . '/footer.php' );
+	exit;
+}
+
 if ( is_projectsend_installed() ) {
 	header("Location:index.php");
 }
@@ -196,7 +215,7 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 			?>
 
 					<form action="make-config.php" name="installform" method="post" class="form-horizontal">
-		
+
 						<h3><?php _e('Database configuration','cftp_admin'); ?></h3>
 						<p><?php _e('You need to provide this data for a correct database communication.','cftp_admin'); ?></p>
 
@@ -275,7 +294,7 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 										else {
 											echo $status_indicator_error;
 										}
-										
+
 										if ($table_exists) {
 								?>
 											<p class="label label-danger"><?php _e('The database is already populated','cftp_admin'); ?></p>
@@ -285,7 +304,7 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 								?>
 							</div>
 						</div>
-		
+
 						<?php if ($pdo_connected) : ?>
 							<?php if ($table_exists) : ?>
 								<div class="form-group">
@@ -304,7 +323,7 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 						<?php endif; ?>
 
 						<div class="options_divide"></div>
-		
+
 						<h3><?php _e('Language selection','cftp_admin'); ?></h3>
 
 						<div class="form-group">
@@ -317,9 +336,9 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 								</select>
 							</div>
 						</div>
-		
+
 						<div class="options_divide"></div>
-		
+
 						<h3><?php _e('Folders','cftp_admin'); ?></h3>
 
 						<?php
@@ -360,7 +379,7 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 						?>
 
 						<div class="options_divide"></div>
-		
+
 						<h3><?php _e('System information','cftp_admin'); ?></h3>
 
 						<?php
@@ -412,7 +431,7 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 						<?php
 							}
 						?>
-							
+
 						<div class="inside_form_buttons">
 							<?php if ($ready_to_go) : ?>
 								<button type="submit" name="submit" class="btn btn-wide btn-secondary"><?php _e('Check again','cftp_admin'); ?></button>
@@ -421,14 +440,14 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 								<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Check','cftp_admin'); ?></button>
 							<?php endif; ?>
 						</div>
-		
+
 					</form>
 			<?php
 				}
-			?>	
+			?>
 		</div>
 	</div>
 </div>
 
 <?php
-	include('../footer.php');
+	include_once( ABS_PARENT . '/footer.php' );

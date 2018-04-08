@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend admin\n"
-"POT-Creation-Date: 2018-04-01 03:12-0300\n"
-"PO-Revision-Date: 2018-04-01 03:12-0300\n"
+"POT-Creation-Date: 2018-04-08 05:19-0300\n"
+"PO-Revision-Date: 2018-04-08 05:19-0300\n"
 "Last-Translator: \n"
 "Language-Team: ProjectSend <contact@projectsend.org>\n"
 "Language: en\n"
@@ -324,7 +324,7 @@ msgid "Update account"
 msgstr ""
 
 #: clients-form.php:132 clients-membership-requests.php:359
-#: clients-requests.php:379 clients.php:263 install/index.php:256
+#: clients-requests.php:379 clients.php:263 install/index.php:291
 #: users-form.php:94 users.php:315
 msgid "Log in username"
 msgstr ""
@@ -334,12 +334,12 @@ msgid "Must be alphanumeric"
 msgstr ""
 
 #: clients-form.php:139 includes/vars.php:50 index.php:124
-#: install/index.php:264 install/make-config.php:274 options.php:715
+#: install/index.php:299 install/make-config.php:275 options.php:715
 #: users-form.php:101
 msgid "Password"
 msgstr ""
 
-#: clients-form.php:147 install/index.php:272 reset-password.php:337
+#: clients-form.php:147 install/index.php:307 reset-password.php:337
 #: users-form.php:109
 msgid "Generate"
 msgstr ""
@@ -456,7 +456,7 @@ msgstr ""
 
 #: clients-membership-requests.php:354 clients-requests.php:374 clients.php:258
 #: includes/classes/send-email.php:80 includes/classes/send-email.php:139
-#: install/index.php:242 users.php:310
+#: install/index.php:277 users.php:310
 msgid "Full name"
 msgstr ""
 
@@ -1448,7 +1448,7 @@ msgstr ""
 
 #: includes/classes/send-email.php:81 includes/classes/send-email.php:130
 #: includes/classes/send-email.php:140 includes/vars.php:49 index.php:119
-#: install/make-config.php:264 options.php:708
+#: install/make-config.php:265 options.php:708
 msgid "Username"
 msgstr ""
 
@@ -1569,205 +1569,205 @@ msgstr ""
 msgid "Could not generate a random password"
 msgstr ""
 
-#: includes/functions.php:572
+#: includes/functions.php:574
 msgid "Provided by"
 msgstr ""
 
-#: includes/functions.php:572 includes/updates.messages.php:52
+#: includes/functions.php:574 includes/updates.messages.php:52
 msgid "version"
 msgstr ""
 
-#: includes/functions.php:572
+#: includes/functions.php:574
 msgid "Free software"
 msgstr ""
 
-#: includes/functions.php:589
+#: includes/functions.php:591
 msgid "Important:"
 msgstr ""
 
-#: includes/functions.php:589
+#: includes/functions.php:591
 msgid ""
 "There are no clients or groups at the moment. You can still upload files and "
 "assign them later."
 msgstr ""
 
-#: includes/functions.php:1059
+#: includes/functions.php:1061
 msgid "The password must contain, at least:"
 msgstr ""
 
-#: includes/functions.php:1156
+#: includes/functions.php:1158
 msgid "ProjectSend was installed"
 msgstr ""
 
-#: includes/functions.php:1161 includes/functions.php:1306
+#: includes/functions.php:1163 includes/functions.php:1308
 msgid "logged in to the system."
 msgstr ""
 
-#: includes/functions.php:1166
+#: includes/functions.php:1168
 msgid "created the user account"
 msgstr ""
 
-#: includes/functions.php:1172
+#: includes/functions.php:1174
 msgid "created the client account "
 msgstr ""
 
-#: includes/functions.php:1178
+#: includes/functions.php:1180
 msgid "created a client account for themself."
 msgstr ""
 
-#: includes/functions.php:1183
+#: includes/functions.php:1185
 msgid "(user) uploaded the file"
 msgstr ""
 
-#: includes/functions.php:1189
+#: includes/functions.php:1191
 msgid "(client) uploaded the file"
 msgstr ""
 
-#: includes/functions.php:1195
+#: includes/functions.php:1197
 msgid "(user) downloaded the file"
 msgstr ""
 
-#: includes/functions.php:1197
+#: includes/functions.php:1199
 msgid "assigned to:"
 msgstr ""
 
-#: includes/functions.php:1203
+#: includes/functions.php:1205
 msgid "(client) downloaded the file"
 msgstr ""
 
-#: includes/functions.php:1209
+#: includes/functions.php:1211
 msgid "generated a zip file"
 msgstr ""
 
-#: includes/functions.php:1214 includes/functions.php:1222
+#: includes/functions.php:1216 includes/functions.php:1224
 msgid "unassigned the file"
 msgstr ""
 
-#: includes/functions.php:1216
+#: includes/functions.php:1218
 msgid "from the client:"
 msgstr ""
 
-#: includes/functions.php:1224
+#: includes/functions.php:1226
 msgid "from the group:"
 msgstr ""
 
-#: includes/functions.php:1230
+#: includes/functions.php:1232
 msgid "deleted the file"
 msgstr ""
 
-#: includes/functions.php:1236
+#: includes/functions.php:1238
 msgid "edited the user"
 msgstr ""
 
-#: includes/functions.php:1242
+#: includes/functions.php:1244
 msgid "edited the client"
 msgstr ""
 
-#: includes/functions.php:1248
+#: includes/functions.php:1250
 msgid "edited the group"
 msgstr ""
 
-#: includes/functions.php:1254
+#: includes/functions.php:1256
 msgid "deleted the user"
 msgstr ""
 
-#: includes/functions.php:1260
+#: includes/functions.php:1262
 msgid "deleted the client"
 msgstr ""
 
-#: includes/functions.php:1266
+#: includes/functions.php:1268
 msgid "deleted the group"
 msgstr ""
 
-#: includes/functions.php:1272
+#: includes/functions.php:1274
 msgid "activated the client"
 msgstr ""
 
-#: includes/functions.php:1278
+#: includes/functions.php:1280
 msgid "deactivated the client"
 msgstr ""
 
-#: includes/functions.php:1284
+#: includes/functions.php:1286
 msgid "marked as hidden the file"
 msgstr ""
 
-#: includes/functions.php:1286 includes/functions.php:1294
+#: includes/functions.php:1288 includes/functions.php:1296
 msgid "to:"
 msgstr ""
 
-#: includes/functions.php:1292
+#: includes/functions.php:1294
 msgid "marked as visible the file"
 msgstr ""
 
-#: includes/functions.php:1300
+#: includes/functions.php:1302
 msgid "created the group"
 msgstr ""
 
-#: includes/functions.php:1311 includes/functions.php:1319
+#: includes/functions.php:1313 includes/functions.php:1321
 msgid "assigned the file"
 msgstr ""
 
-#: includes/functions.php:1313
+#: includes/functions.php:1315
 msgid "to the client:"
 msgstr ""
 
-#: includes/functions.php:1321
+#: includes/functions.php:1323
 msgid "to the group:"
 msgstr ""
 
-#: includes/functions.php:1327
+#: includes/functions.php:1329
 msgid "activated the user"
 msgstr ""
 
-#: includes/functions.php:1333
+#: includes/functions.php:1335
 msgid "deactivated the user"
 msgstr ""
 
-#: includes/functions.php:1339
+#: includes/functions.php:1341
 msgid "uploaded a new logo on \"Branding\""
 msgstr ""
 
-#: includes/functions.php:1344
+#: includes/functions.php:1346
 msgid "updated ProjectSend to version"
 msgstr ""
 
-#: includes/functions.php:1350
+#: includes/functions.php:1352
 msgid "logged out of the system."
 msgstr ""
 
-#: includes/functions.php:1355
+#: includes/functions.php:1357
 msgid "(user) edited the file"
 msgstr ""
 
-#: includes/functions.php:1361
+#: includes/functions.php:1363
 msgid "(client) edited the file"
 msgstr ""
 
-#: includes/functions.php:1367
+#: includes/functions.php:1369
 msgid "created the category"
 msgstr ""
 
-#: includes/functions.php:1373
+#: includes/functions.php:1375
 msgid "edited the category"
 msgstr ""
 
-#: includes/functions.php:1379
+#: includes/functions.php:1381
 msgid "deleted the category"
 msgstr ""
 
-#: includes/functions.php:1384
+#: includes/functions.php:1386
 msgid "An anonymous user"
 msgstr ""
 
-#: includes/functions.php:1385
+#: includes/functions.php:1387
 msgid "downloaded the file"
 msgstr ""
 
-#: includes/functions.php:1391
+#: includes/functions.php:1393
 msgid "processed an account request for"
 msgstr ""
 
-#: includes/functions.php:1397
+#: includes/functions.php:1399
 msgid "processed group memberships requests for"
 msgstr ""
 
@@ -1995,7 +1995,7 @@ msgstr ""
 msgid "length should be between"
 msgstr ""
 
-#: includes/vars.php:52 install/index.php:239
+#: includes/vars.php:52 install/index.php:274
 msgid "and"
 msgstr ""
 
@@ -2067,7 +2067,7 @@ msgstr ""
 msgid "days"
 msgstr ""
 
-#: includes/widgets/system-information.php:7 install/make-config.php:383
+#: includes/widgets/system-information.php:7 install/make-config.php:384
 msgid "System information"
 msgstr ""
 
@@ -2156,7 +2156,7 @@ msgstr ""
 msgid "Redirecting"
 msgstr ""
 
-#: index.php:129 install/make-config.php:330 options.php:403
+#: index.php:129 install/make-config.php:331 options.php:403
 msgid "Language"
 msgstr ""
 
@@ -2188,178 +2188,182 @@ msgstr ""
 msgid "If you need an account, please contact a server administrator."
 msgstr ""
 
-#: install/index.php:52 install/index.php:278 install/make-config.php:39
+#: install/index.php:18
+msgid "minimum version not met. Please upgrade to at least version"
+msgstr ""
+
+#: install/index.php:87 install/index.php:313 install/make-config.php:40
 msgid "Install"
 msgstr ""
 
-#: install/index.php:53
+#: install/index.php:88
 msgid "Sitename was not completed."
 msgstr ""
 
-#: install/index.php:54
+#: install/index.php:89
 msgid "ProjectSend URI was not completed."
 msgstr ""
 
-#: install/index.php:67
+#: install/index.php:102
 msgid "Congratulations! Everything is up and running."
 msgstr ""
 
-#: install/index.php:70
+#: install/index.php:105
 msgid "You may proceed to"
 msgstr ""
 
-#: install/index.php:70
+#: install/index.php:105
 msgid "log in"
 msgstr ""
 
-#: install/index.php:70
+#: install/index.php:105
 msgid "with your newely created username and password."
 msgstr ""
 
-#: install/index.php:78
+#: install/index.php:113
 msgid "Already installed"
 msgstr ""
 
-#: install/index.php:79
+#: install/index.php:114
 msgid "It seems that ProjectSend is already installed here."
 msgstr ""
 
-#: install/index.php:80
+#: install/index.php:115
 msgid ""
 "If you want to reinstall, please delete the system tables from the database "
 "and come back to the installation form."
 msgstr ""
 
-#: install/index.php:176
+#: install/index.php:211
 msgid "There seems to be an error. Please try again."
 msgstr ""
 
-#: install/index.php:217
+#: install/index.php:252
 msgid "Basic system options"
 msgstr ""
 
-#: install/index.php:218
+#: install/index.php:253
 msgid ""
 "You need to provide this data for a correct system installation. The site "
 "name will be visible in the system panel, and the client's lists."
 msgstr ""
 
-#: install/index.php:219
+#: install/index.php:254
 msgid "Remember to edit the file"
 msgstr ""
 
-#: install/index.php:219
+#: install/index.php:254
 msgid ""
 "with your database settings before installing. If the file doesn't exist, "
 "you can create it by renaming the dummy file sys.config.sample.php."
 msgstr ""
 
-#: install/index.php:223 options.php:346
+#: install/index.php:258 options.php:346
 msgid "Site name"
 msgstr ""
 
-#: install/index.php:230
+#: install/index.php:265
 msgid "ProjectSend URI (address)"
 msgstr ""
 
-#: install/index.php:238
+#: install/index.php:273
 msgid "Default system administrator options"
 msgstr ""
 
-#: install/index.php:239
+#: install/index.php:274
 msgid ""
 "This info will be used to create a default system user, which can't be "
 "deleted afterwards. Password should be between"
 msgstr ""
 
-#: install/index.php:239
+#: install/index.php:274
 msgid "characters long."
 msgstr ""
 
-#: install/index.php:249 options.php:612
+#: install/index.php:284 options.php:612
 msgid "E-mail address"
 msgstr ""
 
-#: install/index.php:283
+#: install/index.php:318
 msgid ""
 "After installing the system, you can go to the options page to set your "
 "timezone, preferred date display format and thumbnails parameters, besides "
 "being able to change the site options provided here."
 msgstr ""
 
-#: install/make-config.php:24
+#: install/make-config.php:18
 msgid "The configuration file already exists."
 msgstr ""
 
-#: install/make-config.php:206
+#: install/make-config.php:207
 msgid "Successfully wrote the config file."
 msgstr ""
 
-#: install/make-config.php:210
+#: install/make-config.php:211
 msgid "Continue to installation"
 msgstr ""
 
-#: install/make-config.php:219
+#: install/make-config.php:220
 msgid "Database configuration"
 msgstr ""
 
-#: install/make-config.php:220
+#: install/make-config.php:221
 msgid "You need to provide this data for a correct database communication."
 msgstr ""
 
-#: install/make-config.php:223
+#: install/make-config.php:224
 msgid "Select driver"
 msgstr ""
 
-#: install/make-config.php:228 install/make-config.php:234
+#: install/make-config.php:229 install/make-config.php:235
 msgid "(not supported)"
 msgstr ""
 
-#: install/make-config.php:244 options.php:727
+#: install/make-config.php:245 options.php:727
 msgid "Host"
 msgstr ""
 
-#: install/make-config.php:254
+#: install/make-config.php:255
 msgid "Database name"
 msgstr ""
 
-#: install/make-config.php:284
+#: install/make-config.php:285
 msgid "Table prefix"
 msgstr ""
 
-#: install/make-config.php:300
+#: install/make-config.php:301
 msgid "The database is already populated"
 msgstr ""
 
-#: install/make-config.php:314
+#: install/make-config.php:315
 msgid "Reuse existing tables"
 msgstr ""
 
-#: install/make-config.php:327
+#: install/make-config.php:328
 msgid "Language selection"
 msgstr ""
 
-#: install/make-config.php:342
+#: install/make-config.php:343
 msgid "Folders"
 msgstr ""
 
-#: install/make-config.php:371
+#: install/make-config.php:372
 msgid "Writable"
 msgstr ""
 
-#: install/make-config.php:373
+#: install/make-config.php:374
 msgid "Not writable"
 msgstr ""
 
-#: install/make-config.php:437
+#: install/make-config.php:438
 msgid "Check again"
 msgstr ""
 
-#: install/make-config.php:438
+#: install/make-config.php:439
 msgid "Write config file"
 msgstr ""
 
-#: install/make-config.php:440
+#: install/make-config.php:441
 msgid "Check"
 msgstr ""
 

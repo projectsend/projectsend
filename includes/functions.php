@@ -40,7 +40,7 @@ function form_add_existing_parameters( $ignore = array() )
 {
 	// Don't add the pagination parameter
 	$ignore[] = 'page';
-	
+
 	// Remove this parameters so they only exist when the action is done
 	$remove = array('action', 'batch', 'status');
 
@@ -73,10 +73,10 @@ function sql_add_order( $table, $column = 'id', $initial_order = 'ASC' )
 		$columns_keys	= array_keys($columns_query->fetch(PDO::FETCH_ASSOC));
 		$columns_keys	= array_merge( $columns_keys, $allowed_custom_sort_columns );
 		$orderby		= ( isset( $_GET['orderby'] ) && in_array( $_GET['orderby'], $columns_keys ) ) ? $_GET['orderby'] : $column;
-	
+
 		$order		= ( isset( $_GET['order'] ) ) ? strtoupper($_GET['order']) : $initial_order;
 		$order      = (preg_match("/^(DESC|ASC)$/",$order)) ? $order : $initial_order;
-	
+
 		return " ORDER BY $orderby $order";
 	}
 	else {
@@ -97,19 +97,19 @@ function generate_password()
 	try {
 		$password = random_bytes(12);
 	} catch (TypeError $e) {
-		die($error_unexpected); 
+		die($error_unexpected);
 	} catch (Error $e) {
-		die($error_unexpected); 
+		die($error_unexpected);
 	} catch (Exception $e) {
-		die($error_os_fail); 
+		die($error_os_fail);
 	}
-	
+
 	return bin2hex($password);
 }
 
 
 /**
- * Reads the lang folder and scans for .mo files. 
+ * Reads the lang folder and scans for .mo files.
  * Returns an array of avaiable languages.
  */
 function get_available_languages()
@@ -129,7 +129,7 @@ function get_available_languages()
 			else {
 				$lang_name = $lang_file;
 			}
-	
+
 			$langs[$lang_file] = $lang_name;
 		}
 	}
@@ -157,9 +157,9 @@ function generate_downloads_count( $id = null )
 	if ( !empty( $id ) ) {
 		$sql .= ' WHERE file_id = :id';
 	}
-	
+
 	$sql .=  " GROUP BY file_id";
-	
+
 	$statement	= $dbh->prepare( $sql );
 
 	if ( !empty( $id ) ) {
@@ -178,7 +178,7 @@ function generate_downloads_count( $id = null )
 									'anonymous_users'	=> html_output($row['anonymous_users']),
 								);
 	}
-	
+
 	return $data;
 }
 
@@ -193,15 +193,17 @@ function tableExists($table)
 {
 	global $dbh;
 
-    try {
-        $result = $dbh->prepare("SELECT 1 FROM $table LIMIT 1");
-		$result->execute();
-    } catch (Exception $e) {
-        return false;
-    }
+	if ( !empty ( $dbh ) ) {
+	   try {
+	      $result = $dbh->prepare("SELECT 1 FROM $table LIMIT 1");
+			$result->execute();
+	   } catch (Exception $e) {
+	      return false;
+	   }
+	}
 
-    // Result is either boolean FALSE (no table found) or PDOStatement Object (table found)
-    return $result !== false;
+   // Result is either boolean FALSE (no table found) or PDOStatement Object (table found)
+   return $result !== false;
 }
 
 /**
@@ -599,8 +601,8 @@ function message_no_clients()
  * - message_error
  * - message_info
  *
- */	
-function system_message($type,$message,$div_id = '')
+ */
+function system_message( $type, $message, $div_id = '' )
 {
 	$close = false;
 
@@ -623,8 +625,8 @@ function system_message($type,$message,$div_id = '')
 
 	//$return = '<div class="message message_'.$type.'"';
 	$return = '<div class="alert alert-'.$class.'"';
-	if (isset($div_id) && $div_id != '') {
-		$return .= ' id="'.$div_id.'"';
+	if ( isset( $div_id ) && $div_id != '' ) {
+		$return .= ' id="' . $div_id . '"';
 	}
 
 	$return .= '>';
@@ -643,7 +645,7 @@ function system_message($type,$message,$div_id = '')
 /**
  * Function used accross the system to determine if the current logged in
  * account has permission to do something.
- * 
+ *
  */
 function in_session_or_cookies($levels)
 {
@@ -709,7 +711,7 @@ function get_current_user_username()
 
 /**
  * Wrapper for htmlentities with default options
- * 
+ *
  */
 function html_output($str, $flags = ENT_QUOTES, $encoding = 'UTF-8', $double_encode = false)
 {
@@ -718,7 +720,7 @@ function html_output($str, $flags = ENT_QUOTES, $encoding = 'UTF-8', $double_enc
 
 /**
  * Allow some html tags for file descriptions on htmlentities
- * 
+ *
  */
 function htmlentities_allowed($str)
 {
@@ -817,7 +819,7 @@ function format_file_size($file)
 	} else {
 		$formatted = round($file / 1208925819614629174706176, 2) . ' YB';
 	}
-	
+
 	return $formatted;
 }
 
@@ -1054,7 +1056,7 @@ function password_notes()
 			$rules_active[$rule] = $data['text'];
 		}
 	}
-	
+
 	if ( count( $rules_active ) > 0 ) {
 		$pass_notes_output = '<p class="field_note">' . __('The password must contain, at least:','cftp_admin') . '</strong><br />';
 			foreach ( $rules_active as $rule => $text ) {
@@ -1062,7 +1064,7 @@ function password_notes()
 			}
 		$pass_notes_output .= '</p>';
 	}
-	
+
 	return $pass_notes_output;
 }
 
@@ -1074,7 +1076,7 @@ function add_body_class( $custom = '' )
 	/** Remove query string */
 	$current_url = strtok( $_SERVER['REQUEST_URI'], '?' );
 	$classes = array('body');
-	
+
 	$pathinfo = pathinfo( $current_url );
 
 	if ( !empty( $pathinfo['extension'] ) ) {
@@ -1092,7 +1094,7 @@ function add_body_class( $custom = '' )
 
 		$classes[] = 'logged-as-' . $logged_type;
 	}
-	
+
 	if ( !empty( $custom ) && is_array( $custom ) ) {
 		$classes = array_merge( $classes, $custom );
 	}
@@ -1149,7 +1151,7 @@ function render_log_action($params)
 	$affected_file_name = $params['affected_file_name'];
 	$affected_account = $params['affected_account'];
 	$affected_account_name = html_output($params['affected_account_name']);
-	
+
 	switch ($action) {
 		case 0:
 			$action_ico = 'install';
@@ -1398,7 +1400,7 @@ function render_log_action($params)
 			$part2 = $affected_account_name;
 			break;
 	}
-	
+
 	$date = date(TIMEFORMAT_USE,strtotime($timestamp));
 
 	if (!empty($part1)) { $log['1'] = $part1; }
@@ -1408,6 +1410,6 @@ function render_log_action($params)
 	$log['icon'] = $action_ico;
 	$log['timestamp'] = $date;
 	$log['text'] = $action_text;
-	
+
 	return $log;
 }

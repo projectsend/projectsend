@@ -42,13 +42,14 @@ $page_title_install		= __('Install','cftp_admin');
 // array of POST variables to check, with associated default value
 $post_vars = array(
 	'dbdriver'		=> 'mysql',
-	'dbname'		=> 'projectsend',
-	'dbuser'		=> 'root',
+	'dbname'			=> 'projectsend',
+	'dbuser'			=> 'root',
 	'dbpassword'	=> 'root',
-	'dbhost'		=> 'localhost',
+	'dbhost'			=> 'localhost',
 	'dbprefix'		=> 'tbl_',
 	'dbreuse'		=> 'no',
-	'lang'			=> 'en'
+	'lang'			=> 'en',
+	'maxfilesize'	=> '2048'
 );
 
 // parse all variables in the above array and fill in whatever is sent via POST
@@ -136,7 +137,8 @@ if (isset($_POST['submit-start']) && $ready_to_go) {
 								"'username'",
 								"'password'",
 								"'tbl_'",
-								"'en'"
+								"'en'",
+								"2048"
 							);
 	$template_replace	= array(
 								"'" . $post_vars['dbdriver'] . "'",
@@ -146,6 +148,7 @@ if (isset($_POST['submit-start']) && $ready_to_go) {
 								"'" . $post_vars['dbpassword'] . "'",
 								"'" . $post_vars['dbprefix'] . "'",
 								"'" . $post_vars['lang'] . "'",
+								"'" . $post_vars['maxfilesize'] . "'",
 							);
 	$template			= str_replace( $template_search, $template_replace, $template );
 
@@ -335,6 +338,18 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 										<option value="<?php echo $filename;?>" <?php echo $post_vars['lang']==$filename ? 'selected' : ''; ?>><?php echo $name;?></option>
 									<?php endforeach?>
 								</select>
+							</div>
+						</div>
+
+						<div class="options_divide"></div>
+
+						<h3><?php _e('Files','cftp_admin'); ?></h3>
+
+						<div class="form-group">
+							<label for="lang" class="col-sm-4 control-label"><?php _e('Default maximum upload file size','cftp_admin'); ?></label>
+							<div class="col-sm-6">
+								<input type="number" name="maxfilesize" id="maxfilesize" class="required form-control" value="<?php echo ( !empty( $post_vars['maxfilesize'] ) ) ? $post_vars['maxfilesize'] : '2048'; ?>" />
+								<p class="field_note"><?php _e('Value expressed in MB, where 1GB = 1024','cftp_admin'); ?></p>
 							</div>
 						</div>
 

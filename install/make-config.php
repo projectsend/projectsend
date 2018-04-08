@@ -15,14 +15,19 @@ require_once( ABS_PARENT . '/sys.includes.php' );
 
 /** Config file exists. Do not continue and show the message */
 if ( file_exists( ROOT_DIR.'/includes/sys.config.php' ) ) {
+	$error_msg[] = __('The configuration file already exists.','cftp_admin');
+}
+
+if ( !empty( $error_msg ) ) {
 	include_once( ABS_PARENT . '/header-unlogged.php' );
 ?>
 	<div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 		<div class="white-box">
 			<div class="white-box-interior">
 				<?php
-					$msg = __('The configuration file already exists.','cftp_admin');
-					echo system_message('error',$msg);
+					foreach ( $error_msg as $msg ) {
+						echo system_message( 'error', $msg );
+					}
 				?>
 			</div>
 		</div>
@@ -30,10 +35,6 @@ if ( file_exists( ROOT_DIR.'/includes/sys.config.php' ) ) {
 <?php
 	include_once( ABS_PARENT . '/footer.php' );
 	exit;
-}
-
-if ( is_projectsend_installed() ) {
-	header("Location:index.php");
 }
 
 $page_title_install		= __('Install','cftp_admin');

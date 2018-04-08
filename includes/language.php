@@ -13,6 +13,9 @@
  *
  * @see sys.config.sample.php
  */
+if ( !defined( 'SITE_LANG' ) ) {
+	define( 'SITE_LANG', 'en' );
+}
 $lang = SITE_LANG;
 
 /**

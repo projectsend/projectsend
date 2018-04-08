@@ -14,7 +14,7 @@ session_start();
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r1045');
+define('CURRENT_VERSION', 'r1050');
 
 /**
  * Required software versions
@@ -77,17 +77,26 @@ define('UPDATES_FEED_URI','https://projectsend.org/updates/versions.xml');
  *
  * @see sys.config.sample.php
  */
-if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') && !defined( 'IS_MAKE_CONFIG' ) ) {
-	// the following script returns only after the creation of the configuration file
-	if ( defined('IS_INSTALL') ) {
-		header('Location:make-config.php');
-	}
-	else {
-		header('Location:install/make-config.php');
+if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') ) {
+	if ( !defined( 'IS_MAKE_CONFIG' ) ) {
+		// the following script returns only after the creation of the configuration file
+		if ( defined('IS_INSTALL') ) {
+			header('Location:make-config.php');
+		}
+		else {
+			header('Location:install/make-config.php');
+		}
 	}
 }
 else {
 	include(ROOT_DIR.'/includes/sys.config.php');
+}
+
+/**
+ * Database connection driver
+ */
+if (!defined('DB_DRIVER')) {
+	define('DB_DRIVER', 'mysql');
 }
 
 /**
@@ -226,14 +235,6 @@ define('LOGO_THUMB_FOLDER',ROOT_DIR.'/img/custom/thumbs/');
 /** phpass */
 define('HASH_COST_LOG2', 8);
 define('HASH_PORTABLE', false);
-
-
-/**
- * Database connection driver
- */
-if (!defined('DB_DRIVER')) {
-	define('DB_DRIVER', 'mysql');
-}
 
 /**
  * External links

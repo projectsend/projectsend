@@ -14,7 +14,13 @@ session_start();
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r1040');
+define('CURRENT_VERSION', 'r1045');
+
+/**
+ * Required software versions
+ */
+define('REQUIRED_VERSION_PHP', '5.2');
+define('REQUIRED_VERSION_MYSQL', '5.0');
 
 /**
  * Fix for including external files when on HTTPS.
@@ -208,9 +214,9 @@ define('CLIENT_UPLOADS_TEMP_FOLDER', ROOT_DIR.'/upload/temp');
  * on the footer blocks.
  *
  */
-define('SYSTEM_URI','http://www.projectsend.org/');
+define('SYSTEM_URI','https://www.projectsend.org/');
 define('SYSTEM_URI_LABEL','ProjectSend on github');
-define('DONATIONS_URL','http://www.projectsend.org/donations/');
+define('DONATIONS_URL','https://www.projectsend.org/donations/');
 /** Previously cFTP */
 define('SYSTEM_NAME','ProjectSend');
 

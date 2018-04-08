@@ -10,9 +10,10 @@ if (defined('TRY_INSTALL')) {
 	$timestamp = time();
 	$current_version = substr(CURRENT_VERSION, 1);
 	$now = date('d-m-Y');
-	
+	$expiry_default = date('Y') + 1 . "-01-01 00:00:00";
+
 	$install_queries = array(
-	
+
 		'0' => array(
 					'table'	=> TABLE_FILES,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_FILES.'` (
@@ -24,7 +25,7 @@ if (defined('TRY_INSTALL')) {
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `uploader` varchar('.MAX_USER_CHARS.') NOT NULL,
 								  `expires` INT(1) NOT NULL default \'0\',
-								  `expiry_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+								  `expiry_date` TIMESTAMP NOT NULL DEFAULT "' . $expiry_default . '",
 								  `public_allow` INT(1) NOT NULL default \'0\',
 								  `public_token` varchar(32) NULL,
 								  PRIMARY KEY (`id`)
@@ -32,7 +33,7 @@ if (defined('TRY_INSTALL')) {
 								',
 					'params' => array(),
 		),
-	
+
 		'1' =>  array(
 					'table'	=> TABLE_OPTIONS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_OPTIONS.'` (
@@ -44,7 +45,7 @@ if (defined('TRY_INSTALL')) {
 								',
 					'params' => array(),
 		),
-		
+
 		'2' =>  array(
 					'table'	=> TABLE_USERS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_USERS.'` (
@@ -69,7 +70,7 @@ if (defined('TRY_INSTALL')) {
 								',
 					'params' => array(),
 		),
-		
+
 		'3' =>  array(
 					'table'	=> TABLE_GROUPS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_GROUPS.'` (
@@ -85,7 +86,7 @@ if (defined('TRY_INSTALL')) {
 								',
 					'params' => array(),
 		),
-		
+
 		'4' =>  array(
 					'table'	=> TABLE_MEMBERS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_MEMBERS.'` (
@@ -118,7 +119,7 @@ if (defined('TRY_INSTALL')) {
 								',
 					'params' => array(),
 		),
-		
+
 		'6' =>  array(
 					'table'	=> TABLE_FOLDERS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_FOLDERS.'` (
@@ -136,7 +137,7 @@ if (defined('TRY_INSTALL')) {
 								',
 					'params' => array(),
 		),
-		
+
 		'7' =>  array(
 					'table'	=> TABLE_FILES_RELATIONS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_FILES_RELATIONS.'` (
@@ -157,7 +158,7 @@ if (defined('TRY_INSTALL')) {
 								',
 					'params' => array(),
 		),
-		
+
 		'8' =>  array(
 					'table'	=> TABLE_LOG,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_LOG.'` (
@@ -175,7 +176,7 @@ if (defined('TRY_INSTALL')) {
 								',
 					'params' => array(),
 		),
-		
+
 		'9' =>  array(
 					'table'	=> TABLE_NOTIFICATIONS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_NOTIFICATIONS.'` (
@@ -193,7 +194,7 @@ if (defined('TRY_INSTALL')) {
 								',
 					'params' => array(),
 		),
-		
+
 		'10' =>  array(
 					'table'	=> TABLE_PASSWORD_RESET,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_PASSWORD_RESET.'` (
@@ -208,7 +209,7 @@ if (defined('TRY_INSTALL')) {
 								',
 					'params' => array(),
 		),
-	
+
 		'11' =>  array(
 					'table'	=> TABLE_DOWNLOADS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_DOWNLOADS.'` (
@@ -226,7 +227,7 @@ if (defined('TRY_INSTALL')) {
 								',
 					'params' => array(),
 		),
-	
+
 		'12' =>  array(
 					'table'	=> '',
 					'query'	=> "INSERT INTO ".TABLE_OPTIONS." (name, value) VALUES
@@ -346,7 +347,7 @@ if (defined('TRY_INSTALL')) {
 										':now'		=> $now,
 								),
 		),
-		
+
 		'13' =>  array(
 						'table'	=> '',
 						'query'	=> "INSERT INTO ".TABLE_USERS." (id, user, password, name, email, level, active) VALUES
@@ -374,7 +375,7 @@ if (defined('TRY_INSTALL')) {
 								',
 					'params' => array(),
 		),
-		
+
 		'15' =>  array(
 					'table'	=> TABLE_CATEGORIES_RELATIONS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_CATEGORIES_RELATIONS.'` (
@@ -389,6 +390,6 @@ if (defined('TRY_INSTALL')) {
 								',
 					'params' => array(),
 		),
-		
+
 	);
 }

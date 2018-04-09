@@ -164,54 +164,10 @@ if ($_POST) {
 	}
 
 	/** If uploading a logo on the branding page */
-	if ( !empty($_FILES['select_logo']['name']) ) {
-		/** Valid file extensions (images) */
-		$image_file_types = "/^\.(jpg|jpeg|gif|png){1}$/i";
-
-		if (is_uploaded_file($_FILES['select_logo']['tmp_name'])) {
-
-			$this_upload = new PSend_Upload_File();
-			$safe_filename = $this_upload->safe_rename($_FILES['select_logo']['name']);
-			/**
-			 * Check the file type for allowed extensions.
-			 *
-			 * @todo Use the file upload class file type validation function.
-			 */
-			if (preg_match($image_file_types, strrchr($safe_filename, '.'))) {
-
-				/**
-				 * Move the file to the destination defined on sys.vars.php. If ok, add the
-				 * new file name to the database.
-				 */
-				if (move_uploaded_file($_FILES['select_logo']['tmp_name'],LOGO_FOLDER.$safe_filename)) {
-					$sql = $dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name='logo_filename'" );
-					$sql->execute(
-								array(
-									':value'	=> $safe_filename
-								)
-							);
-
-					$logo_status = '1';
-
-					/** Record the action log */
-					$new_log_action = new LogActions();
-					$log_action_args = array(
-											'action' => 29,
-											'owner_id' => CURRENT_USER_ID
-										);
-					$new_record_action = $new_log_action->log_action_save($log_action_args);
-				}
-				else {
-					$logo_status = '2';
-				}
-			}
-			else {
-				$logo_status = '3';
-			}
-		}
-		else {
-			$logo_status = '4';
-		}
+	$file_logo = $_FILES['select_logo'];
+	if ( !empty( $file_logo ) ) {
+		$logo = option_file_upload( $file_logo, 'image', 'logo_filename', 29 );
+		$file_status = $logo['status'];
 	}
 
 	/** Redirect so the options are reflected immediatly */
@@ -223,8 +179,8 @@ if ($_POST) {
 		$location .= '&status=' . $query_state;
 	}
 
-	if ( !empty( $logo_status ) ) {
-		$location .= '&logo_status=' . $logo_status;
+	if ( !empty( $file_status ) ) {
+		$location .= '&file_status=' . $file_status;
 	}
 	header("Location: $location");
 	die();
@@ -270,8 +226,8 @@ $allowed_file_types = implode(',',$allowed_file_types);
 		}
 
 		/** Logo uploading status */
-		if (isset($_GET['logo_status'])) {
-			switch ($_GET['logo_status']) {
+		if (isset($_GET['file_status'])) {
+			switch ($_GET['file_status']) {
 				case '1':
 					break;
 				case '2':
@@ -283,7 +239,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 					echo system_message('error',$msg);
 					break;
 				case '3':
-					$msg = __('The file you selected is not an allowed image format. Please upload your logo as a jpg, gif or png file.','cftp_admin');
+					$msg = __('The file you selected is not an allowed format.','cftp_admin');
 					echo system_message('error',$msg);
 					break;
 				case '4':
@@ -816,8 +772,6 @@ $allowed_file_types = implode(',',$allowed_file_types);
 
 								<div class="options_divide"></div>
 
-								<div class="options_divide"></div>
-
 								<h3><?php _e('reCAPTCHA','cftp_admin'); ?></h3>
 								<p><?php _e('Helps prevent SPAM on your registration form.','cftp_admin'); ?></p>
 
@@ -900,6 +854,8 @@ $allowed_file_types = implode(',',$allowed_file_types);
 								<h3><?php _e('Current logo','cftp_admin'); ?></h3>
 								<p><?php _e('Use this page to upload your company logo, or update the currently assigned one. This image will be shown to your clients when they access their file list.','cftp_admin'); ?></p>
 
+								<input type="hidden" name="MAX_FILE_SIZE" value="1000000000">
+
 								<div id="current_logo">
 									<div id="current_logo_img">
 										<?php
@@ -911,12 +867,11 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										?>
 									</div>
 									<p class="preview_logo_note">
-										<?php _e('Tihs preview uses a maximum width of 300px','cftp_admin'); ?>
+										<?php _e('This preview uses a maximum width of 300px.','cftp_admin'); ?>
 									</p>
 								</div>
 
 								<div id="form_upload_logo">
-									<input type="hidden" name="MAX_FILE_SIZE" value="1000000000">
 									<div class="form-group">
 										<label class="col-sm-4 control-label"><?php _e('Select image to upload','cftp_admin'); ?></label>
 										<div class="col-sm-8">

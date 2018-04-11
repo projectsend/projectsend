@@ -14,7 +14,7 @@ session_start();
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r1050');
+define('CURRENT_VERSION', 'r1052');
 
 /**
  * Required software versions
@@ -40,7 +40,7 @@ define('DEBUG', false);
  * IS_DEV is set to true during development to show a sitewide remainder
  * of the app unreleased status.
  */
-define('IS_DEV', true);
+define('IS_DEV', false);
 
 /**
  * Turn off reporting of PHP errors, warnings and notices.

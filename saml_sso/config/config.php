@@ -3,7 +3,29 @@
  * The configuration of SimpleSAMLphp
  * 
  */
+ //require_once($_SERVER['DOCUMENT_ROOT'].'/msend_1/sys.includes.php');
+//echo dirname(__FILE__); exit;
 
+ require_once dirname(__FILE__).'/../../sys.includes.php';
+ global $dbh;
+$options_values = array();
+try {
+	$options = $dbh->query("SELECT * FROM " . TABLE_OPTIONS);
+	$options->setFetchMode(PDO::FETCH_ASSOC);
+
+	if ( $options->rowCount() > 0) {
+		while ( $row = $options->fetch() ) {
+			$options_values[$row['name']] = $row['value'];
+		}
+	}
+}
+catch ( Exception $e ) {
+	return FALSE;
+}
+
+//$options_values['saml_baseurl_path'];
+//$options_values['saml_entity_id'];
+//$options_values['saml_idp'];
 $config = array(
 
     /**
@@ -21,7 +43,8 @@ $config = array(
      * external url, no matter where you come from (direct access or via the
      * reverse proxy).
      */
-    'baseurlpath' => 'https://msend.microhealthllc.com/saml_sso/www/',
+    //'baseurlpath' => 'https://send.microhealthllc.com/saml_sso/www/',
+	'baseurlpath' => $options_values['saml_baseurl_path'],
     'certdir' => 'cert/',
     'loggingdir' => 'log/',
     'datadir' => 'data/',

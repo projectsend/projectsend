@@ -80,7 +80,7 @@ else {
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<title><?php echo html_output( $header_vars['title'] ); ?></title>
-	<link rel="shortcut icon" href="<?php echo BASE_URI; ?>favicon.ico" />
+	<link rel="shortcut icon" href="<?php echo BASE_URI?>/img/custom/logo/<?php echo FAVICO_FILENAME; ?>" />
 	<script src="<?php echo BASE_URI; ?>includes/js/jquery.1.12.4.min.js"></script>
 
     	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">

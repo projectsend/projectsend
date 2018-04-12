@@ -23,8 +23,6 @@ $cc_active_page = 'Options';
 include('header.php');
 
 if ($_POST) {
-
-
 	/**
 	 * Escape all the posted values on a single function.
 	 * Defined on functions.php
@@ -119,15 +117,15 @@ if ($_POST) {
 						$cc_val = $_POST[$keys[$j]];
 			$cc_key = $keys[$j];
 			if ($cc_key == 'google_client_id' || $cc_key == 'google_client_secret' || $cc_key == 'facebook_client_id' ||$cc_key == 'facebook_client_secret' || $cc_key == 'twitter_client_id' || $cc_key == 'twitter_client_secret' || $cc_key == 'yahoo_client_id' || $cc_key == 'yahoo_client_secret' || $cc_key == 'linkedin_client_id'|| $cc_key == 'linkedin_client_secret' || $cc_key == 'windows_client_id')  {
-
-			$aes = new AES($cc_val, ENCRYPTION_KEY, BLOCKSIZE);
-			$cc_val = $aes->encrypt(); 
+				if(!empty($cc_val)) {
+					$aes = new AES($cc_val, ENCRYPTION_KEY, BLOCKSIZE);
+					$cc_val = $aes->encrypt(); 
+				}
 			}
 			$save = $dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name=:name" );
 			$save->bindParam(':value', $cc_val);
 			$save->bindParam(':name', $cc_key);
 			$save->execute();
-
 			if ($save) {
 				$updated++;
 			}
@@ -1182,6 +1180,42 @@ $allowed_file_types = implode(',',$allowed_file_types);
 									</div>
 								</div>
 				<!-- ldap End -->  
+                <!-- saml ----->
+                <div class="col-xs-12 col-md-6">
+                  <div class="white-box-interior white-box">
+										<h3><?php _e('SAML','cftp_admin'); ?></h3>
+										<div class="options_column">
+											<div class="form-group">
+												<label for="saml_signin_enabled" class="col-sm-4 control-label"><?php _e('Enabled','cftp_admin'); ?></label>
+												<div class="col-sm-8">
+													<select name="saml_signin_enabled" id="saml_signin_enabled" class="form-control">
+														<option value="1" <?php echo (SAML_SIGNIN_ENABLED == '1') ? 'selected="selected"' : ''; ?>>Yes</option>
+														<option value="0" <?php echo (SAML_SIGNIN_ENABLED == '0') ? 'selected="selected"' : ''; ?>>No</option>
+													</select>
+												</div>
+											</div>
+											<div class="form-group">
+												<label for="saml_baseurl_path" class="col-sm-4 control-label"><?php _e('Base url path','cftp_admin'); ?></label>
+												<div class="col-sm-8">
+													<input type="text" name="saml_baseurl_path" value="<?php echo html_output(SAML_BASE_URL); ?>" id="saml_baseurl_path" class="form-control empty" placeholder="Server" />
+												</div>
+											</div>
+                                            <div class="form-group">
+												<label for="saml_entity_id" class="col-sm-4 control-label"><?php _e('Entity ID','cftp_admin'); ?></label>
+												<div class="col-sm-8">
+													<input type="text" name="saml_entity_id" value="<?php echo html_output(SAML_ENTITY_ID); ?>" id="saml_entity_id" class="form-control empty" placeholder="Entity ID" />
+												</div>
+											</div>
+                                            <div class="form-group">
+												<label for="saml_idp" class="col-sm-4 control-label"><?php _e('IDP','cftp_admin'); ?></label>
+												<div class="col-sm-8">
+													<input type="text" name="saml_idp" value="<?php echo html_output(SAML_IDP); ?>" id="saml_idp" class="form-control empty" placeholder="Entity ID" />
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+                <!-- saml ----->
                 
               </div>
             </div>

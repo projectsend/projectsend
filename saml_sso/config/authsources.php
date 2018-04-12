@@ -1,4 +1,20 @@
 <?php
+ require_once dirname(__FILE__).'/../../sys.includes.php';
+ global $dbh;
+ $options_values = array();
+try {
+	$options = $dbh->query("SELECT * FROM " . TABLE_OPTIONS);
+	$options->setFetchMode(PDO::FETCH_ASSOC);
+
+	if ( $options->rowCount() > 0) {
+		while ( $row = $options->fetch() ) {
+			$options_values[$row['name']] = $row['value'];
+		}
+	}
+}
+catch ( Exception $e ) {
+	return FALSE;
+}
 
 $config = array(
 
@@ -19,11 +35,13 @@ $config = array(
     	'certificate' => 'saml.crt',
         // The entity ID of this SP.
         // Can be NULL/unset, in which case an entity ID is generated based on the metadata URL.
-        'entityID' => 'mSend',
+        //'entityID' => 'mSend',
+	'entityID' => $options_values['saml_entity_id'],
 
         // The entity ID of the IdP this should SP should contact.
         // Can be NULL/unset, in which case the user will be shown a list of available IdPs.
-        'idp' => 'https://sts.windows.net/487ea2d6-7ea0-4a4b-8773-6f4833ed2108/',
+        //'idp' => 'https://sts.windows.net/487ea2d6-7ea0-4a4b-8773-6f4833ed2108/',
+		'idp' => $options_values['saml_idp'],
 
         // The URL to the discovery service.
         // Can be NULL/unset, in which case a builtin discovery service will be used.

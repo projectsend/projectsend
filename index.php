@@ -24,6 +24,7 @@ require_once('sys.includes.php');
 $page_title = __('Log in','cftp_admin');
 
 include('header-unlogged.php');
+
 	//session_destroy();
 	/**
 	 * Google Sign-in
@@ -148,6 +149,11 @@ if ( isset($_SESSION['errorstate'] ) ) {
 	$errorstate = $_SESSION['errorstate'];
 	unset($_SESSION['errorstate']);
 }	 
+$statement = $dbh->prepare("SELECT * FROM tbl_home_page WHERE hid = 1");
+$statement->execute();
+$statement->setFetchMode(PDO::FETCH_ASSOC);
+$row = $statement->fetch();
+
 ?>
 <?php //echo generate_branding_layout(); ?>
 
@@ -158,18 +164,16 @@ if ( isset($_SESSION['errorstate'] ) ) {
 <img alt="Logo Placeholder" src="<?php echo BASE_URI?>/includes/timthumb/timthumb.php?src=/img/custom/logo/<?php echo LOGO_FILENAME; ?>&amp;w=220">
       <div class="hero">
         <div class="pull-left login-desc-box-l">
-          <h4 class="paragraph-header">It's Okay to be Smart. Experience the simplicity of MicroHealth Send, everywhere you go!</h4>
+          <h4 class="paragraph-header"><?php echo html_entity_decode(isset($row['topleft'])?$row['topleft']:''); ?></h4>
           <div class="login-app-icons"> <a href="register.php" class="btn btn-danger btn-sm">Not a member? Join now</a><a href="dropoff_guest.php" class="btn btn-danger btn-sm" style="margin-left:5px"><i class="fa fa-upload" aria-hidden="true"></i>&nbsp;&nbsp;drop off</a></div>
         </div>
-        <img src="img/demo/iphoneview.png" class="pull-right display-image" alt="" style="width:210px"> </div>
+        <img src="<?php echo BASE_URI ?>/img/custom/logo/<?php echo html_entity_decode(isset($row['topright'])?$row['topright']:''); ?>" class="pull-right display-image" alt="" style="width:300px"> </div>
       <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-          <h5 class="about-heading">About MicroHealth Send - Are you up to date?</h5>
-          <p> Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa. </p>
+          <?php echo html_entity_decode(isset($row['bottomleft'])?$row['bottomleft']:''); ?>
         </div>
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-          <h5 class="about-heading">Not just your average template!</h5>
-          <p> Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi voluptatem accusantium! </p>
+         <?php echo html_entity_decode(isset($row['bottomright'])?$row['bottomright']:''); ?>
         </div>
       </div>
     </div>
@@ -294,12 +298,16 @@ if ( isset($_SESSION['errorstate'] ) ) {
 		}
 
 */		
-		print('<li><a href="https://msend.microhealthllc.com/saml_app">SAML</a></li>');
+		//print('<li><a href="https://msend.microhealthllc.com/saml_app">SAML</a></li>');
         ?>
-        
+ <li>
+          <?php if(SAML_SIGNIN_ENABLED == '1'): ?>
+          <a href="<?php echo BASE_URI; ?>saml_app" name="Sign in with SAML" class="" title="Sign in with SAML"><img style="width: 150px;" src="img/saml_logo.png" class="img-responsive"/></a>
+          <?php endif; ?>
+        </li>
         <li>
           <?php if(GOOGLE_SIGNIN_ENABLED == '1'): ?>
-          <a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="btn btn-default btn-circle"><i class="fa fa-google"></i></a></a>
+          <a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="btn btn-default btn-circle"><i class="fa fa-google"></i></a>
           <?php endif; ?>
         </li>
         <?php if(FACEBOOK_SIGNIN_ENABLED == '1'): ?>

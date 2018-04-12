@@ -33,6 +33,8 @@ $downloads_information = generate_downloads_count();
  */
 
 include('header.php');
+$grid_layout= SITE_URI.'requested_file.php?view=grid';/*echo $actual_link; */
+$actual_link = SITE_URI.'requested_file.php';
 ?>
 
 <div id="main"> 
@@ -150,7 +152,9 @@ include('header.php');
                   <button type="submit" name="do_action" id="do_action" class="btn btn-sm btn-default">
                   <?php _e('Proceed','cftp_admin'); ?>
                   </button>
-                </div>
+                  <a href="<?php echo $grid_layout; ?>" class="cc-grid"><i class="fa fa-th" aria-hidden="true"></i></a> 
+                  <a href="<?php echo $actual_link; ?>" class="cc-grid"><i class="fa fa-bars" aria-hidden="true"></i></a>
+                  </div>
               </div>
             </div>
 						</div>
@@ -174,62 +178,101 @@ include('header.php');
 								</span></p>
 							</div>
 							<div class="clear"></div>
-							<section id="no-more-tables">
-								<table id="files_list" class=" cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
-									<thead>
-										<tr>
-											<th class="td_checkbox" data-sort-ignore="true">
-                                                <label class="cc-chk-container">
-                                                <input type="checkbox" name="select_all" id="select_all" value="0" />
-                                                <span class="checkmark"></span>
-                                                </label>
-											</th>
-											<th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('To name','cftp_admin'); ?></th>
-											<th data-hide="phone,tablet"><?php _e('Subject.','cftp_admin'); ?></th>
-											<th data-hide="phone,tablet"><?php _e('Note.','cftp_admin'); ?></th>
-											<th><?php _e('email','cftp_admin'); ?></th>
-											<th><?php _e('note','cftp_admin'); ?></th>
-											<th><?php _e('Requested Time','cftp_admin'); ?></th>
-											<th><?php _e('Action','cftp_admin'); ?></th>
-										</tr>
-									</thead>
-									<tbody>
-
-									<?php
+            				<?php if(isset($_GET['view']) && $_GET['view']==='grid')							
+							{ 
+								if($count>0)
+								{ 
+									$sql_files->setFetchMode(PDO::FETCH_ASSOC);	?>
+									<div class="row">
+									<?php 								
+									while( $row = $sql_files->fetch() ) 
+									{ 
+									?>
+										<div class="col-md-4">
+											<div class="grid_box">
+												<label class="cc-chk-container cc-chk-container-grid-box">
+												<input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" />
+												<span class="checkmark"></span></label>
+												<p><span class="grid_box_span"><?php _e('To name','cftp_admin'); ?>:</span> <?php echo $row['to_name']; ?></p>
+												<p><span class="grid_box_span"><?php _e('Subject','cftp_admin'); ?>:</span> <?php echo $row['to_subject_request']; ?></p>
+												<p><span class="grid_box_span"><?php _e('Note','cftp_admin'); ?>:</span> <span class="tooltip"> <?php echo $row['to_note_request']; ?> </span></span></p>
+												<p><span class="grid_box_span"><?php _e('email','cftp_admin'); ?>:</span> <?php echo $row['to_email']; ?></p>
+												<?php 
+												if($row['status']===1)
+												{
+												?>
+													<p><span class="grid_box_span"><?php _e('Status','cftp_admin'); ?>: File Received</span></p>
+												<?php 
+												} 
+												else 
+												{ ?>
+													<p><span class="grid_box_span"><?php _e('Status','cftp_admin'); ?>: Pending</span></p>
+												<?php 
+												} ?>
+												<p><span class="grid_box_span"><?php _e('Requested Time','cftp_admin'); ?>:</span> <?php echo $row['requested_time']; ?></p>
+												<p><div class="btn btn-primary btn-sm resend_it resend_grid_box"  id="<?php echo $row['id']; ?>" ><?php _e('Resend','cftp_admin'); ?>
+												</div></p>
+											</div>
+										</div>
+									<?php 
+									} ?>
+									</div>
+							<?php } 
+							} 							
+							else 
+							{ ?>
+            			<section id="no-more-tables">
+              				<table id="files_list" class=" cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
+                			<thead>
+                  			<tr>
+                    <th class="td_checkbox" data-sort-ignore="true"> 
+		    <label class="cc-chk-container">
+                        <input type="checkbox" name="select_all" id="select_all" value="0" />
+                        <span class="checkmark"></span> </label>
+                    </th>
+                    <th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('To name','cftp_admin'); ?></th>
+                    <th data-hide="phone,tablet"><?php _e('Subject.','cftp_admin'); ?></th>
+                    <th data-hide="phone,tablet"><?php _e('Note.','cftp_admin'); ?></th>
+                    <th><?php _e('email','cftp_admin'); ?></th>
+                    <th><?php _e('note','cftp_admin'); ?></th>
+                    <th><?php _e('Requested Time','cftp_admin'); ?></th>
+                    <th><?php _e('Action','cftp_admin'); ?></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php
 									if ($count > 0) {
 									$sql_files->setFetchMode(PDO::FETCH_ASSOC);
 										while( $row = $sql_files->fetch() ) {
-									//echo "<pre>";	print_r($row);
 										?>
-										<tr>
-											<td>
-                                            <label class="cc-chk-container">
-                                              <input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" />
-                                              <span class="checkmark"></span>
-                                          </label>
-                                            </td>
-											<td><?php echo $row['to_name']; ?></td>
-											<td class="file_name"><?php echo $row['to_subject_request']; ?></td>
-											<td><?php echo $row['from_organization']; ?></td>
-											<td><?php echo $row['to_email']; ?></td>
-											<td><?php echo $row['to_note_request']; ?></td>
-											<td><?php echo $row['requested_time']; ?></td>
-				              <td><div class="btn btn-primary btn-sm resend_it"  id="<?php echo $row['id']; ?>" ><?php _e('Resend','cftp_admin'); ?></div></td>
-										</tr>
-										<?php
+                  <tr>
+                    <td><label class="cc-chk-container">
+                        <input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" />
+                        <span class="checkmark"></span> </label></td>
+                    <td><?php echo $row['to_name']; ?></td>
+                    <td class="file_name"><?php echo $row['to_subject_request']; ?></td>
+                    <td><?php echo $row['from_organization']; ?></td>
+                    <td><?php echo $row['to_email']; ?></td>
+                    <td><?php echo $row['to_note_request']; ?></td>
+                    <td><?php echo $row['requested_time']; ?></td>
+                    <td><div class="btn btn-primary btn-sm resend_it"  id="<?php echo $row['id']; ?>" >
+                        <?php _e('Resend','cftp_admin'); ?>
+                      </div></td>
+                  </tr>
+                  <?php
 										}
 									}
 									?>
-
-									</tbody>
-								</table>
-							</section>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                </tbody>
+              </table>
+            </section>
+            <?php } ?>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -244,7 +287,7 @@ include('header.php');
 						      traditional: true,
 						      success: function (data) {
 											if(data='done'){
-												alert('File has been resens successfully!!')
+												alert('File has been resend successfully!!')
 												location.reload(); 
 											}
 						      }
@@ -271,5 +314,4 @@ include('header.php');
 		});
 	});
 </script>
-
-<?php include('footer.php'); 
+<?php include('footer.php'); ?>

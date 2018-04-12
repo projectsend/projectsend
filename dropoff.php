@@ -34,7 +34,7 @@ if(!empty($auth)){
 
 	if($grow) {
 
-	
+				$drop_id = $grow["id"];
 			$from_id = $grow["from_id"];
 			$to_name = $grow["to_name"];
 			$to_subject_request = $grow["to_subject_request"];
@@ -171,7 +171,7 @@ if(!empty($auth)){
           <?php _e("Your browser doesn't support HTML5, Flash or Silverlight. Please update your browser or install Adobe Flash or Silverlight to continue.",'cftp_admin'); ?>
         </p>
       </div>
-    </div>
+    </div>	 <input type="hidden" value="<?php echo $grow['id']; ?>" name="drop_id" />	 
     <input type="hidden" value="<?php echo $grow['to_email']; ?>" name="to_email" />
     <input type="hidden" value="<?php echo $grow['from_id']; ?>" name="fromid" />
     <input type="hidden" value="<?php echo $grow['to_name']; ?>" name="to_name" />

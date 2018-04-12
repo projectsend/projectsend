@@ -45,11 +45,6 @@ $current_level = get_current_user_level();
 		$count_clients	= $statement->rowCount();
 		$statement		= $dbh->query("SELECT id FROM " . TABLE_GROUPS);
 		$count_groups	= $statement->rowCount();
-		
-		echo "<pre>";
-		var_dump($statement);
-		echo "</pre>";
-		exit;
 
 		if ( ( !$count_clients or $count_clients < 1 ) && ( !$count_groups or $count_groups < 1 ) ) {
 			message_no_clients();

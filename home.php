@@ -12,7 +12,6 @@ $load_scripts	= array(
 $allowed_levels = array(9,8,7);
 require_once('sys.includes.php');
 $page_title = __("Welcome to ".BRAND_NAME, 'cftp_admin');
-
 $active_nav = 'dashboard';
 $cc_active_page = 'Dashboard';
 

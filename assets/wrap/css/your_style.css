@@ -231,3 +231,17 @@ table.cc-mail-listing-style span.label {
     font-size: 9px;
     padding: 0px 4px;
 }
+.grid_box {padding: 15px;min-height: 272px;    -webkit-box-shadow: 0 0 6px rgba(0,0,0,0.3);    -moz-box-shadow: 0 0 6px rgba(0,0,0,0.3);    box-shadow: 0 0 6px rgba(0,0,0,0.3);    border-radius: 3px;    -webkit-border-radius: 3px;    -moz-border-radius: 3px;	text-rendering: optimizeLegibility;text-shadow: none;position:relative;	}.resend_grid_box{margin: 0 auto;display: block;}span.grid_box_span{font-weight: bold;}.cc-chk-container-grid-box {position: absolute;right: 0;}.tooltip {    position: relative;    display: inline-block;	opacity:1!important}.tooltip .tooltiptext {    visibility: hidden;    width: 120px;    background-color: #555;    color: #fff;    text-align: center;    border-radius: 6px;    padding: 5px 0;    position: absolute;    z-index: 1;    bottom: 125%;    left: 50%;    margin-left: -60px;    opacity: 1!important;    transition: opacity 1s;}.tooltip .tooltiptext::after {    content: "";    position: absolute;    top: 100%;    left: 50%;    margin-left: -5px;    border-width: 5px;    border-style: solid;    border-color: #555 transparent transparent transparent;}.tooltip:hover .tooltiptext {    visibility: visible;    opacity: 1;}
+.cc-grid {font-size: 30px;vertical-align: middle;margin-left: 20px;}
+#site_favico {margin-top: 22px;padding-top: 19px;border-top: 1px dotted #CCCCCC;}
+#site_favico .favico_img_src  {border: 2px dotted #CCCCCC;padding: 15px;margin: 17px;}
+.home_page_edits_cls {width: 50%;margin: 0 auto;}
+#current_logo_right {float: left!important;margin: 16px;}
+#datepicker .ui-widget-header .ui-icon { background-image:url('https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/images/ui-icons_222222_256x240.png')!important; }
+#datepicker .ui-icon-circle-triangle-w {background-position:-80px -192px!important;} 
+#datepicker .ui-datepicker-next>:first-child, .ui-datepicker-prev>:first-child {text-indent: -99999px!important;}
+#datepicker .ui-icon-circle-triangle-e {background-position: -48px -192px!important;}
+#datepicker .ui-datepicker {font-size: 153%;}
+.table_calendar_common {font-family: arial, sans-serif;border-collapse: collapse;width: 100%;}
+.table_calendar_common td, .table_calendar_common th {border: 1px solid #dddddd;text-align: left;padding: 8px;}
+.display-image {margin-top: -17px;}

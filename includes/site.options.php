@@ -52,7 +52,8 @@ if(!empty($options_values)) {
 	define('THUMBS_USE_ABSOLUTE',$options_values['thumbnails_use_absolute']);
 	define('LOGO_MAX_WIDTH',$options_values['max_logo_width']);
 	define('LOGO_MAX_HEIGHT',$options_values['max_logo_height']);
-	define('LOGO_FILENAME',$options_values['logo_filename']);
+	define('LOGO_FILENAME',$options_values['logo_filename']);		
+	define('FAVICO_FILENAME',$options_values['favicon_filename']);
 	define('THIS_INSTALL_SET_TITLE',$options_values['this_install_title']);
 	define('TEMPLATE_USE',$options_values['selected_clients_template']);
 	define('TIMEZONE_USE',$options_values['timezone']);
@@ -289,6 +290,12 @@ if(!empty($options_values)) {
 		define('LDAP_BIND_DN', $options_values['ldap_bind_dn']);
 		define('LDAP_BIND_PASS', $options_values['ldap_bind_password']);
 		define('LDAP_SIGNIN_ENABLED', $options_values['ldap_signin_enabled']);
+	}
+	if (isset($options_values['saml_signin_enabled'])) {
+		define('SAML_SIGNIN_ENABLED', $options_values['saml_signin_enabled']);
+		define('SAML_BASE_URL', $options_values['saml_baseurl_path']);
+		define('SAML_ENTITY_ID', $options_values['saml_entity_id']);
+		define('SAML_IDP', $options_values['saml_idp']);
 	}
 	/**
 	 * For versions 737 and up

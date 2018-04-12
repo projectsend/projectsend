@@ -89,6 +89,10 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 													'label'	=> __('Expired Files', 'cftp_admin'),
 													'link'	=> 'expired.php',
 												),
+										        array(
+													'label'	=> __('Calendar View', 'cftp_admin'),	
+													'link'	=> 'calendar-view.php',
+												),
 
 											/*	array(
 													'label'	=> __('Manage files', 'cftp_admin'),
@@ -187,8 +191,13 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 												array(
 													'label'	=> __('Activities log', 'cftp_admin'),
 													'link'	=> 'actions-log.php',
+												),												
+												array(
+													'label'	=> __('Home Page Edits', 'cftp_admin'),	
+													'link'	=> 'home-page-edits.php',
 												),
-
+												
+												
 											),
 							);
 

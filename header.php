@@ -48,7 +48,7 @@ if (in_session_or_cookies($core_update_allowed)) {
 
 	<title><?php echo html_output( $page_title . ' &raquo; ' . THIS_INSTALL_SET_TITLE ); ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<link rel="shortcut icon" href="<?php echo BASE_URI; ?>/favicon.ico" />
+	<link rel="shortcut icon" href="<?php echo BASE_URI?>/img/custom/logo/<?php echo FAVICO_FILENAME; ?>" />
     <!----- Added B) --------->
     <script data-pace-options='{ "restartOnRequestAfter": true }' src="<?php echo BASE_URI; ?>assets/wrap/js/plugin/pace/pace.min.js"></script>
     <script>
@@ -174,10 +174,10 @@ print_r($alternate_email_list);
 
 	if(!empty($profile_pic_img)){?>
 
-				<img src="<?php echo SITE_URI . "img/avatars/".$profile_pic_img;?>" alt="demo user">
+				<img src="<?php echo SITE_URI . "/img/avatars/".$profile_pic_img;?>" alt="demo user">
 	<?php }else{
 ?>
-						<img src="<?php echo SITE_URI . 'img/avatars/no-image.png';?>" alt="demo user">
+						<img src="<?php echo SITE_URI . '/img/avatars/no-image.png';?>" alt="demo user">
 
 <?php }?>
 						<span>

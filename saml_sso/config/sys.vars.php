@@ -9,10 +9,7 @@
  * @package ProjectSend
  * @subpackage Core
  */
-//session_start();
-if(session_id() == '') {
-    session_start();
-}
+session_start();
 /**
  * Current version.
  * Updated only when releasing a new downloadable complete version.
@@ -41,7 +38,7 @@ define('DEBUG', false);
  * @link http://www.php.net/manual/en/function.error-reporting.php
  */
 if ( DEBUG === true ) {
-	error_reporting(E_ALL);
+	error_reporting(-1);
 }
 else {
 	error_reporting(0);
@@ -71,9 +68,11 @@ define('UPDATES_FEED_URI','http://projectsend.org/updates/versions.xml');
 if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') && !defined( 'IS_MAKE_CONFIG' ) ) {
 	// the following script returns only after the creation of the configuration file
 	if ( defined('IS_INSTALL') ) {
+		
 		header('Location:make-config.php');
 	}
 	else {
+		
 		header('Location:install/make-config.php');
 	}
 }
@@ -116,6 +115,7 @@ if( (DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers) ) {
 if (!defined('TABLES_PREFIX')) {
 	define('TABLES_PREFIX', 'tbl_');
 }
+define('TABLE_DROPOFF', TABLES_PREFIX . 'drop_off_request');
 define('TABLE_FILES', TABLES_PREFIX . 'files');
 define('TABLE_FILES_RELATIONS', TABLES_PREFIX . 'files_relations');
 define('TABLE_DOWNLOADS', TABLES_PREFIX . 'downloads');
@@ -129,6 +129,7 @@ define('TABLE_CATEGORIES', TABLES_PREFIX . 'categories');
 define('TABLE_CATEGORIES_RELATIONS', TABLES_PREFIX . 'categories_relations');
 define('TABLE_LOG', TABLES_PREFIX . 'actions_log');
 define('TABLE_PASSWORD_RESET', TABLES_PREFIX . 'password_reset');
+define('TABLE_USER_EXTRA_PROFILE', TABLES_PREFIX . 'user_extra_profile');
 
 $current_tables = array(
 						TABLE_FILES,
@@ -178,6 +179,7 @@ define('CLIENT_UPLOADS_TEMP_FOLDER', ROOT_DIR.'/upload/temp');
  *
  */
 define('SYSTEM_URI','http://www.projectsend.org/');
+define('SITE_URI','https://send.microhealthllc.com/');
 define('SYSTEM_URI_LABEL','ProjectSend on github');
 define('DONATIONS_URL','http://www.projectsend.org/donations/');
 /** Previously cFTP */

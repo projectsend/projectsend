@@ -138,6 +138,7 @@ while( $row = $statement->fetch() ) {
  * A posted form will include information of the uploaded files
  * (name, description and client).
  */
+ $drop_id = $_POST['drop_id'];
 $fromid = $_POST['fromid'];
 $to_email_request = $_POST['to_email'];
 $to_name = $_POST['to_name'];
@@ -172,6 +173,7 @@ $filesrelations = $dbh->prepare("INSERT INTO ".TABLE_FILES_RELATIONS." (`timesta
 	$sql->setFetchMode(PDO::FETCH_ASSOC);
 	$grow = $sql->fetch();
 
+	$stmt = $dbh->prepare("UPDATE ".TABLE_DROPOFF." SET status=1 WHERE id=$drop_id");	$stmt->execute();
 	if($grow) {
 	$from_email = $grow['email'];
 	
@@ -478,7 +480,7 @@ $filesrelations = $dbh->prepare("INSERT INTO ".TABLE_FILES_RELATIONS." (`timesta
 
 						/**
 						 * Unassigned files are kept as orphans and can be related
-						 * to clients or groups later.
+						 * to Clients and Organizations later.
 						 */
 
 						/** Add to the database for each client / group selected */
@@ -696,7 +698,7 @@ $filesrelations = $dbh->prepare("INSERT INTO ".TABLE_FILES_RELATIONS." (`timesta
 		<?php
 			if ($current_level != 0) {
 		?>
-			<div class="message message_info"><strong><?php _e('Note','cftp_admin'); ?></strong>: <?php _e('You can skip assigning if you want. The files are retained and you may add them to clients or groups later.','cftp_admin'); ?></div>
+			<div class="message message_info"><strong><?php _e('Note','cftp_admin'); ?></strong>: <?php _e('You can skip assigning if you want. The files are retained and you may add them to Clients and Organizations later.','cftp_admin'); ?></div>
 		<?php
 			}
 

@@ -1,4 +1,6 @@
 <?php
+
+require_once (dirname(__FILE__) . '/../sys.includes.php');
 require_once (dirname(__FILE__) . '/../saml_sso/lib/_autoload.php');
 $as = new SimpleSAML_Auth_Simple('default-sp');
 $as->requireAuth();

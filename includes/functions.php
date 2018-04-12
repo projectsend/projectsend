@@ -484,7 +484,7 @@ function default_footer_info($logged = true)
  */
 function message_no_clients()
 {
-	$msg = '<strong>' . __('Important:','cftp_admin') . '</strong> ' . __('There are no clients or groups at the moment. You can still upload files and assign them later.','cftp_admin');
+	$msg = '<strong>' . __('Important:','cftp_admin') . '</strong> ' . __('There are no Clients and Organizations at the moment. You can still upload files and assign them later.','cftp_admin');
 	echo system_message('warning', $msg);
 }
 
@@ -818,6 +818,18 @@ function generate_logo_url()
 		}
 	}
 	return $branding;
+}
+function generate_favico_url(){	
+	$favico = array();	
+	$favico['exists'] = false;	
+	$favico['url'] = '/img/custom/logo/'.FAVICO_FILENAME;	
+	if (file_exists(ROOT_DIR.$favico['url'])) {		
+		$favico['exists'] = true;		
+			if (THUMBS_USE_ABSOLUTE == '1') {			
+				$favico['url'] = BASE_URI.$favico['url'];		
+				}	
+	}	
+	return $favico;
 }
 
 

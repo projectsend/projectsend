@@ -10,13 +10,7 @@ if (defined('TRY_INSTALL')) {
 	$timestamp = time();
 	$current_version = substr(CURRENT_VERSION, 1);
 	$now = date('d-m-Y');
-	$hid="1";
-	$topleft="<p>It\'s Okay to be Smart. Whats that supposed to mean? Who comes up with these taglines?</p>";
-	$topright="microhealth.png";
-	$bottomleft="<h4><font size=\"3\" style=\"\"><b>About MicroHealth Send ?</b></font><br></h4><div><font size=\"3\" style=\"\"><p></p></font></div><div><p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa.</p><font size=\"3\" style=\"\"><br></font></div><p></p>";
-	$bottomright="<b><font size=\"3\">Not just your average template!</font></b><div><p></p></div><div><p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa.</p></div>";
-	$created_by="1";
-	$status="1";
+	
 	$install_queries = array(
 	
 		'0' => array(
@@ -424,26 +418,6 @@ if (defined('TRY_INSTALL')) {
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
 					'params' => array(),
-		),
-		'18' =>  array(
-					'table'	=> TABLE_HOME_PAGE_EDITS,
-					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_HOME_PAGE_EDITS.'` (
-								  `hid` int(11) NOT NULL,
-                                  `topleft` longtext,
-                                  `topright` longtext,
-                                  `bottomleft` longtext,
-                                  `bottomright` longtext,
-                                  `created_by` int(11) DEFAULT NULL,
-                                  `status` int(11) DEFAULT NULL
-                                ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-								',
-					'params' => array(),
-		),
-		'19' =>  array(
-					'table'	=> '',
-					'query'	=> "INSERT INTO `tbl_home_page` (`hid`, `topleft`, `topright`, `bottomleft`, `bottomright`, `created_by`, `status`) VALUES
-(1, '<p>It\'s Okay to be Smart. Whats that supposed to mean? Who comes up with these taglines?</p>', 'microhealth.png', '<h4><font size=\"3\" style=\"\"><b>About MicroHealth Send ?</b></font><br></h4><div><font size=\"3\" style=\"\"><p></p></font></div><div><p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa.</p><font size=\"3\" style=\"\"><br></font></div><p></p>', '<b><font size=\"3\">Not just your average template!</font></b><div><p></p></div><div><p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa.</p></div>', 1, 1)",
-					
 		),
 	);
 }

@@ -130,6 +130,7 @@ define('TABLE_CATEGORIES_RELATIONS', TABLES_PREFIX . 'categories_relations');
 define('TABLE_LOG', TABLES_PREFIX . 'actions_log');
 define('TABLE_PASSWORD_RESET', TABLES_PREFIX . 'password_reset');
 define('TABLE_USER_EXTRA_PROFILE', TABLES_PREFIX . 'user_extra_profile');
+define('TABLE_HOME_PAGE_EDITS', TABLES_PREFIX . 'home_page');
 
 $current_tables = array(
 						TABLE_FILES,

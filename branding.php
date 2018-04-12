@@ -17,68 +17,66 @@ $cc_active_page = 'Branding';
 include('header.php');
 
 $logo_file_info = generate_logo_url();
+$favico_file_info = generate_favico_url();
 ?>
-
 <div id="main">
 <div id="content"> 
-    
     <!-- Added by B) -------------------->
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12">
           <h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-flag"></i>&nbsp;<?php echo $page_title; ?></h1>
-          
-
-<?php
-if ($_POST) {
-	/** Valid file extensions (images) */
-	$image_file_types = "/^\.(jpg|jpeg|gif|png){1}$/i";
-
-	if (is_uploaded_file($_FILES['select_logo']['tmp_name'])) {
-
-		$this_upload = new PSend_Upload_File();
-		$safe_filename = $this_upload->safe_rename($_FILES['select_logo']['name']);
-		/**
-		 * Check the file type for allowed extensions.
-		 *
-		 * @todo Use the file upload class file type validation function.
-		 */
-		if (preg_match($image_file_types, strrchr($safe_filename, '.'))) {
-
+	<?php
+	if ($_POST) {
+		/** Valid file extensions (images) */
+		$image_file_types = "/^\.(jpg|jpeg|gif|png|ico){1}$/i";
+		if (is_uploaded_file($_FILES['select_logo']['tmp_name']) || is_uploaded_file($_FILES['select_favico']['tmp_name']))  {
+			$this_upload = new PSend_Upload_File();
+			$safe_filename = $this_upload->safe_rename($_FILES['select_logo']['name']);
+			$safe_filename_fav = $this_upload->safe_rename($_FILES['select_favico']['name']);
 			/**
-			 * Move the file to the destination defined on sys.vars.php. If ok, add the
-			 * new file name to the database.
-			 */
-			if (move_uploaded_file($_FILES['select_logo']['tmp_name'],LOGO_FOLDER.$safe_filename)) {
-				$sql = $dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name='logo_filename'" );
-				$sql->execute(
-							array(
-								':value'	=> $safe_filename
-							)
-						);
-				
-				$status = '1';
-
-				/** Record the action log */
-				$new_log_action = new LogActions();
-				$log_action_args = array(
-										'action' => 29,
-										'owner_id' => $global_id
-									);
-				$new_record_action = $new_log_action->log_action_save($log_action_args);
+			* Check the file type for allowed extensions.
+			*
+			* @todo Use the file upload class file type validation function.
+			*/
+			if (preg_match($image_file_types, strrchr($safe_filename, '.')) || preg_match($image_file_types, strrchr($safe_filename_fav, '.'))) 
+			{
+				/**
+				 * Move the file to the destination defined on sys.vars.php. If ok, add the
+				 * new file name to the database.
+				 */
+				 if (move_uploaded_file($_FILES['select_logo']['tmp_name'],LOGO_FOLDER.$safe_filename)) 
+				 {
+					$sql = $dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name='logo_filename'" );
+					$sql->execute(array(':value'	=> $safe_filename));
+					$status = '1';
+					/** Record the action log */
+					$new_log_action = new LogActions();
+					$log_action_args = array(
+											'action' => 29,
+											'owner_id' => $global_id
+										);
+					$new_record_action = $new_log_action->log_action_save($log_action_args);
+				}
+				else if (move_uploaded_file($_FILES['select_favico']['tmp_name'],LOGO_FOLDER.$safe_filename_fav))
+				{
+					$sql = $dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name='favicon_filename'" );
+					$sql->execute(array(':value'	=> $safe_filename_fav));
+					$status = '1';			
+				}
+				else {
+					$status = '2';
+				}
 			}
-			else {
-				$status = '2';
+			else 
+			{
+				$status = '3';
 			}
 		}
-		else {
-			$status = '3';
+		else 
+		{
+			$status = '4';
 		}
-	}
-	else {
-		$status = '4';
-	}
-
 	/** Redirect so the options are reflected immediatly */
 	while (ob_get_level()) ob_end_clean();
 	$location = BASE_URI . 'branding.php?status=' . $status;
@@ -203,9 +201,31 @@ if ($_POST) {
 								</div>
 							</div>
 						</div>
-<div class="after_form_buttons txt-rgt">
-				<button type="submit" name="submit" class="btn btn-wide btn-primary empty"><?php _e('Upload','cftp_admin'); ?></button>
-			</div>
+						<!-- To add favicon for the site -->						
+						<div id="site_favico">
+							<input type="hidden" name="MAX_FILE_SIZE" value="1000000000">
+							<label class="col-sm-4 control-label"><?php _e('Select favicon to upload','cftp_admin'); ?></label>
+							<div class="col-sm-8">
+								<input type="file" name="select_favico" />
+							</div>
+							<div id="current_logo_img">
+							<?php if ($favico_file_info['exists'] === true) { 
+							$ext = pathinfo($favico_file_info['url'], PATHINFO_EXTENSION); 
+							if($ext=='ico')
+							{
+							?> 
+							<img class="favico_img_src" src="<?php echo $favico_file_info['url']; ?>" alt="<?php _e('Logo Placeholder','cftp_admin'); ?>" />	
+							<?php 
+							} else {
+							?>
+							<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $favico_file_info['url']; ?>&amp;w=220" alt="<?php _e('Logo Placeholder','cftp_admin'); ?>" />	
+							<?php } } ?>
+								</div>
+						</div>						
+						<!-- To add favicon for the site ends -->
+						<div class="after_form_buttons txt-rgt">
+							<button type="submit" name="submit" class="btn btn-wide btn-primary empty"><?php _e('Upload','cftp_admin'); ?></button>
+						</div>
 					</div>
 				</div>
 			</div>

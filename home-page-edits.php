@@ -114,10 +114,10 @@ if($_POST) {
 						<div id="current_logo_img">
 						<?php
 							if (isset($row['topright']) &&  $row['topright']!='') { 
-							$logo_file_info = BASE_URI .'/img/custom/logo/'. html_entity_decode(isset($row['topright'])?$row['topright']:''); 
+							$logo_file_info = BASE_URI .'img/custom/logo/'. html_entity_decode(isset($row['topright'])?$row['topright']:''); 
 							
 						?>
-								<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $logo_file_info; ?>&amp;w=100" alt="<?php _e('Logo Placeholder','cftp_admin'); ?>" />
+								<img src="<?php echo $logo_file_info; ?>" alt="<?php _e('Logo Placeholder','cftp_admin'); ?>" />
 						<?php
 							}
 						?>

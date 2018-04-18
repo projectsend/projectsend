@@ -161,13 +161,13 @@ $row = $statement->fetch();
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8 hidden-xs hidden-sm">
       <h1 class="txt-color-red login-header-big"></h1>
-<img alt="Logo Placeholder" src="<?php echo BASE_URI?>/includes/timthumb/timthumb.php?src=/img/custom/logo/<?php echo LOGO_FILENAME; ?>&amp;w=220">
+<img alt="Logo Placeholder" src="<?php echo BASE_URI.'/img/custom/logo/'.LOGO_FILENAME; ?>" class="img-responsive">
       <div class="hero">
         <div class="pull-left login-desc-box-l">
           <h4 class="paragraph-header"><?php echo html_entity_decode(isset($row['topleft'])?$row['topleft']:''); ?></h4>
           <div class="login-app-icons"> <a href="register.php" class="btn btn-danger btn-sm">Not a member? Join now</a><a href="dropoff_guest.php" class="btn btn-danger btn-sm" style="margin-left:5px"><i class="fa fa-upload" aria-hidden="true"></i>&nbsp;&nbsp;drop off</a></div>
         </div>
-        <img src="<?php echo BASE_URI ?>/img/custom/logo/<?php echo html_entity_decode(isset($row['topright'])?$row['topright']:''); ?>" class="pull-right display-image" alt="" style="width:300px"> </div>
+        <img src="<?php echo BASE_URI ?>img/custom/logo/<?php echo html_entity_decode(isset($row['topright'])?$row['topright']:''); ?>" class="pull-right display-image" alt="" style="width:300px"> </div>
       <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
           <?php echo html_entity_decode(isset($row['bottomleft'])?$row['bottomleft']:''); ?>
@@ -281,6 +281,13 @@ $row = $statement->fetch();
       </div>
       <h5 class="text-center"> - Or sign in using -</h5>
       <ul class="list-inline text-center">
+        <li>
+          <?php if(SAML_SIGNIN_ENABLED == '1'): ?>
+          <a href="<?php echo BASE_URI; ?>saml_app" name="Sign in with SAML" class="" title="Sign in with SAML"><img style="width: 150px;" src="img/saml_logo.png" class="img-responsive"/></a>
+          <?php endif; ?>
+        </li>
+      </ul>
+      <ul class="list-inline text-center">
 	    
 		<?php
 /*
@@ -300,11 +307,7 @@ $row = $statement->fetch();
 */		
 		//print('<li><a href="https://msend.microhealthllc.com/saml_app">SAML</a></li>');
         ?>
- <li>
-          <?php if(SAML_SIGNIN_ENABLED == '1'): ?>
-          <a href="<?php echo BASE_URI; ?>saml_app" name="Sign in with SAML" class="" title="Sign in with SAML"><img style="width: 150px;" src="img/saml_logo.png" class="img-responsive"/></a>
-          <?php endif; ?>
-        </li>
+
         <li>
           <?php if(GOOGLE_SIGNIN_ENABLED == '1'): ?>
           <a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="btn btn-default btn-circle"><i class="fa fa-google"></i></a>

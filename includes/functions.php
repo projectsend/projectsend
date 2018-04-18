@@ -809,9 +809,8 @@ function generate_logo_url()
 {
 	$branding = array();
 	$branding['exists'] = false;
-
-	$branding['url'] = '/img/custom/logo/'.LOGO_FILENAME;
-	if (file_exists(ROOT_DIR.$branding['url'])) {
+	$branding['url'] = 'img/custom/logo/'.LOGO_FILENAME;
+	if (file_exists(ROOT_DIR.'/'.$branding['url'])) {
 		$branding['exists'] = true;
 		if (THUMBS_USE_ABSOLUTE == '1') {
 			$branding['url'] = BASE_URI.$branding['url'];
@@ -822,8 +821,8 @@ function generate_logo_url()
 function generate_favico_url(){	
 	$favico = array();	
 	$favico['exists'] = false;	
-	$favico['url'] = '/img/custom/logo/'.FAVICO_FILENAME;	
-	if (file_exists(ROOT_DIR.$favico['url'])) {		
+	$favico['url'] = 'img/custom/logo/'.FAVICO_FILENAME;	
+	if (file_exists(ROOT_DIR.'/'.$favico['url'])) {		
 		$favico['exists'] = true;		
 			if (THUMBS_USE_ABSOLUTE == '1') {			
 				$favico['url'] = BASE_URI.$favico['url'];		

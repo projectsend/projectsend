@@ -58,14 +58,14 @@ $favico_file_info = generate_favico_url();
 										);
 					$new_record_action = $new_log_action->log_action_save($log_action_args);
 				}
-				else if (move_uploaded_file($_FILES['select_favico']['tmp_name'],LOGO_FOLDER.$safe_filename_fav))
+				if (move_uploaded_file($_FILES['select_favico']['tmp_name'],LOGO_FOLDER.$safe_filename_fav))
 				{
 					$sql = $dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name='favicon_filename'" );
 					$sql->execute(array(':value'	=> $safe_filename_fav));
 					$status = '1';			
 				}
 				else {
-					$status = '2';
+					//$status = '2';
 				}
 			}
 			else 
@@ -183,8 +183,9 @@ $favico_file_info = generate_favico_url();
 								<div id="current_logo_img">
 									<?php
 										if ($logo_file_info['exists'] === true) {
+											
 									?>
-											<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $logo_file_info['url']; ?>&amp;w=220" alt="<?php _e('Logo Placeholder','cftp_admin'); ?>" />
+											<img src="<?php echo $logo_file_info['url']; ?>" alt="<?php _e('Logo Placeholder','cftp_admin'); ?>" class="img-responsive"/>
 									<?php
 										}
 									?>
@@ -209,7 +210,8 @@ $favico_file_info = generate_favico_url();
 								<input type="file" name="select_favico" />
 							</div>
 							<div id="current_logo_img">
-							<?php if ($favico_file_info['exists'] === true) { 
+							<?php 
+							if ($favico_file_info['exists'] === true) { 
 							$ext = pathinfo($favico_file_info['url'], PATHINFO_EXTENSION); 
 							if($ext=='ico')
 							{
@@ -218,7 +220,7 @@ $favico_file_info = generate_favico_url();
 							<?php 
 							} else {
 							?>
-							<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $favico_file_info['url']; ?>&amp;w=220" alt="<?php _e('Logo Placeholder','cftp_admin'); ?>" />	
+							<img src="<?php echo $favico_file_info['url']; ?>" alt="<?php _e('Logo Placeholder','cftp_admin'); ?>" />	
 							<?php } } ?>
 								</div>
 						</div>						

@@ -186,12 +186,10 @@ include('header.php');
 									// Rename the file
 									//$fileName = $this_file->safe_rename($fileName);
 							if($_FILES){
-									print_r($_FILES);
+									
 
 									if (!file_exists($target_dir)) {
 											mkdir($target_dir, 0777, true);
-									}else{
-										echo "ss";
 									}
 									$target_file = $target_dir;
 									$uploadOk = 1;

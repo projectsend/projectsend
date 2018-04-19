@@ -433,26 +433,27 @@ class PSend_Email
 		$this->send_mail->AddReplyTo(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
 
 		$this->send_mail->AddAddress($this->addresses);
-/**
-Fetch alternate emails and add as CC.
-**/
-$alternate_email = $dbh->prepare("SELECT value FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id=:user_id AND name = :name");
-$alternate_email->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-$alternate_email->bindValue(':name', 'alternate_email');
-$alternate_email->execute();
-$test = $alternate_email->setFetchMode(PDO::FETCH_ASSOC);
-//print_r($test);
-$alternate_email_list = array();
-while ( $data = $alternate_email->fetch() ) {
-		$alternate_email_list[] = $data['value'];
-}
+		/**
+		Fetch alternate emails and add as CC.
+		**/
+		/*
+		$alternate_email = $dbh->prepare("SELECT value FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id=:user_id AND name = :name");
+		$alternate_email->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+		$alternate_email->bindValue(':name', 'alternate_email');
+		$alternate_email->execute();
+		$test = $alternate_email->setFetchMode(PDO::FETCH_ASSOC);
+		//print_r($test);
+		$alternate_email_list = array();
+		while ( $data = $alternate_email->fetch() ) {
+				$alternate_email_list[] = $data['value'];
+		}
 
-			
+					
+		*/
 
-
-/**
-end
-**/
+		/**
+		end
+		**/
 		
 		/**
 		 * Check if BCC is enabled and get the list of

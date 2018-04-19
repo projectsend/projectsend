@@ -16,6 +16,7 @@ $target_dir = UPLOADED_FILES_FOLDER.'../../img/avatars/';
 /** Check if the id parameter is on the URI. */
 if (isset($_GET['id'])) {
 	$user_id = $_GET['id'];
+	$user_id_mic = $_GET['id'];
 	$page_status = (user_exists_id($user_id)) ? 1 : 2;
 }
 else {
@@ -133,6 +134,7 @@ if ($_POST) {
 	/** Create the user if validation is correct. */
 	if ($edit_validate == 1) {
 		$edit_response = $edit_user->edit_user($edit_arguments);
+		header("Location:".SITE_URI."users.php");
 	}
 
 }
@@ -158,7 +160,7 @@ include('header.php');
       
           <div class="row">
             <div class="col-sm-12">
-<a href="user-organizations.php?id=<?php echo $user_id; ?>" class="btn btn-sm btn-primary right-btn"><?php if($global_level == 0) { echo "My organizations"; } else { echo 'Manage Organization';} ?></a>
+<a href="user-organizations.php?id=<?php echo $user_id_mic; ?>" class="btn btn-sm btn-primary right-btn"><?php if($global_level == 0) { echo "My organizations"; } else { echo 'Manage Organization';} ?></a>
               <div class="air air-bottom-right padding-10"> <a data-toggle="modal" data-target="#cc-edit-info" class="btn txt-color-white bg-color-teal btn-sm"><i class="fa fa-pencil-square-o"></i> Edit</a></div>
               <div class="cc-user-cover"></div>
             </div>
@@ -211,13 +213,13 @@ include('header.php');
 									$msg = __('User edited correctly.','cftp_admin');
 									echo system_message('ok',$msg);
 			
-									$saved_user = get_user_by_id($user_id);
+									$saved_user = get_user_by_id($user_id_mic);
 									/** Record the action log */
 									$new_log_action = new LogActions();
 									$log_action_args = array(
 															'action' => 13,
 															'owner_id' => $global_id,
-															'affected_account' => $user_id,
+															'affected_account' => $user_id_mic,
 															'affected_account_name' => $saved_user['username'],
 															'get_user_real_name' => true
 														);
@@ -226,12 +228,12 @@ include('header.php');
 									//echo "<pre>";print_r($_POST['add_user_form_email_alternate']);echo "</pre>";exit;
 									$alternate_emails = $_POST['add_user_form_email_alternate'];
 									if(!empty($alternate_emails)){
-										$statement = $dbh->query("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$user_id." AND name='alternate_email'");
+										$statement = $dbh->query("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$user_id_mic." AND name='alternate_email'");
 
 										foreach($alternate_emails as $a_email){
 													//	echo "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$user_id.",'alternate_email',".$a_email." )"; 
 												if(!empty($a_email)){
-														$alternate_email_save = $dbh->query( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$user_id.",'alternate_email','".$a_email."' ) ");
+														$alternate_email_save = $dbh->query( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$user_id_mic.",'alternate_email','".$a_email."' ) ");
 												}
 										}
 									}
@@ -250,7 +252,7 @@ include('header.php');
 									$uploadOk = 1;
 									$target_file = $target_dir . "/".basename($_FILES["userfiles"]["name"]);
 									$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
-									$fl_name = $user_id.".".$imageFileType;
+									$fl_name = $user_id_mic.".".$imageFileType;
 									$target_file = $target_dir.$fl_name;
 									$uploadOk = 1;
 									// Check if image file is a actual image or fake image
@@ -278,9 +280,9 @@ include('header.php');
 										}
 										if (move_uploaded_file($_FILES["userfiles"]["tmp_name"], $target_file)) {
 											if(!empty($fl_name)){
-												$statement = $dbh->query("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$user_id." AND name='profile_pic'");
+												$statement = $dbh->query("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$user_id_mic." AND name='profile_pic'");
 
-												$alternate_email_save = $dbh->query( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$user_id.",'profile_pic','".$fl_name."' ) ");
+												$alternate_email_save = $dbh->query( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$user_id_mic.",'profile_pic','".$fl_name."' ) ");
 											}
 
 										} else {

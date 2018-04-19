@@ -154,6 +154,24 @@ $statement->execute();
 $statement->setFetchMode(PDO::FETCH_ASSOC);
 $row = $statement->fetch();
 
+/* Logo resize starts */
+$options_values = array();
+try {
+	$options = $dbh->query("SELECT * FROM " . TABLE_OPTIONS);
+	$options->setFetchMode(PDO::FETCH_ASSOC);
+
+	if ( $options->rowCount() > 0) {
+		while ( $row_r = $options->fetch() ) {
+			$options_values[$row_r['name']] = $row_r['value'];
+		}
+	}
+}
+catch ( Exception $e ) {
+	return FALSE;
+}
+
+/* Logo resize ends */
+
 ?>
 <?php //echo generate_branding_layout(); ?>
 
@@ -161,7 +179,7 @@ $row = $statement->fetch();
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8 hidden-xs hidden-sm">
       <h1 class="txt-color-red login-header-big"></h1>
-<img alt="Logo Placeholder" src="<?php echo BASE_URI.'/img/custom/logo/'.LOGO_FILENAME; ?>" class="img-responsive">
+<img alt="Logo Placeholder" src="<?php echo BASE_URI.'/includes/timthumb/timthumb.php?src='. BASE_URI.'/img/custom/logo/'.LOGO_FILENAME.'&w='.$options_values['max_logo_width']; ?>" class="img-responsive">
       <div class="hero">
         <div class="pull-left login-desc-box-l">
           <h4 class="paragraph-header"><?php echo html_entity_decode(isset($row['topleft'])?$row['topleft']:''); ?></h4>

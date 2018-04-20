@@ -214,7 +214,7 @@ include('header.php');
 
 		$("#do_action").click(function() {
 
-			var checks = $("td>input:checkbox").serializeArray(); 
+			var checks = $("td input:checkbox").serializeArray(); 
 
 			if (checks.length == 0) { 
 

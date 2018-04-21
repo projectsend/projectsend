@@ -27,9 +27,7 @@
 			$("tr td input[type=checkbox]").prop("checked",false);
 			$("tr:visible td input[type=checkbox]").prop("checked",status);
 		});
-		$('.footable').footable().find('> tbody > tr:not(.footable-row-detail):nth-child(even)').addClass('odd');
-							
-			$('.btn_generate_password').click(function(e)
+		$('.btn_generate_password').click(function(e)
 			{
 				
 				 e.preventDefault();
@@ -45,6 +43,9 @@
 					},  
 				});
 			});
+		$('.footable').footable().find('> tbody > tr:not(.footable-row-detail):nth-child(even)').addClass('odd');
+							
+			
 		
     });
 	</script>

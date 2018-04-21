@@ -234,6 +234,7 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> '',
 					'query'	=> "INSERT INTO ".TABLE_OPTIONS." (name, value) VALUES
 								('base_uri', :base_uri),
+								('branding_title', 'Brand Name'),
 								('max_thumbnail_width', '100'),
 								('max_thumbnail_height', '100'),
 								('thumbnails_folder', '../../img/custom/thumbs/'),

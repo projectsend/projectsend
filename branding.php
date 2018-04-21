@@ -107,7 +107,7 @@ $favico_file_info = generate_favico_url();
             success: function(data) {
                 if(data == 1) {
 					$("#brand_status").html('<div class="alert alert-success fade in" style="margin-top: 15px;"><strong>Success!</strong> brand name successfully updated.</div>');
-					
+					location.reload();
 				}
 				else {
 					$("#brand_status").html('<div class="alert alert-danger fade in" style="margin-top: 15px;"><strong>Opps!</strong> something went wrong!.</div>');
@@ -132,7 +132,7 @@ $favico_file_info = generate_favico_url();
                       <form class="form-inline" method="post">
                         <div class="form-group">
                           
-                          <input type="text" value="<?php echo $brandname; ?>" class="form-control" name="b_name" id="b_name" placeholder="Brand Name">
+                          <input type="text" value="<?php echo BRAND_NAME; ?>" class="form-control" name="b_name" id="b_name" placeholder="Brand Name">
                         </div>
     				<button type="submit" class="btn btn-default b_name_change">Change Name</button>
   					</form>

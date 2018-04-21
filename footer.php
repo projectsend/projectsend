@@ -29,7 +29,22 @@
 		});
 		$('.footable').footable().find('> tbody > tr:not(.footable-row-detail):nth-child(even)').addClass('odd');
 							
-		
+			$('.btn_generate_password').click(function(e)
+			{
+				
+				 e.preventDefault();
+				 $.ajax({
+					url: "click_to_generate_password.php",
+					type: "POST",
+					async: true, 
+					 data: {func: 'generate_password'},
+					success: function(data) {
+						$('#add_user_form_pass').attr({type:"text"});
+						$('#add_user_form_pass').val(data);
+					   
+					},  
+				});
+			});
 		
     });
 	</script>

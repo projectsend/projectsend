@@ -95,7 +95,7 @@ include('header.php');
 $logo_file_info = generate_logo_url();
 
 /** Form sent */
-if ($_POST) {
+if ($_POST && validateCsrfToken()) {
 	/**
 	 * Escape all the posted values on a single function.
 	 * Defined on functions.php
@@ -289,6 +289,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 			</script>
 
 			<form action="options.php" name="optionsform" method="post" enctype="multipart/form-data" class="form-horizontal">
+                <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
 				<input type="hidden" name="section" value="<?php echo $section; ?>">
 
 					<?php

@@ -1,0 +1,3230 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ProjectSend admin\n"
+"POT-Creation-Date: 2017-07-16 18:28-0300\n"
+"PO-Revision-Date: 2017-09-07 15:43+0200\n"
+"Language-Team: ProjectSend <contact@projectsend.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.3\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"Last-Translator: \n"
+"Language: fr\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: assets\n"
+"X-Poedit-SearchPathExcluded-1: includes/flot\n"
+"X-Poedit-SearchPathExcluded-2: includes/Google\n"
+"X-Poedit-SearchPathExcluded-3: includes/phpass\n"
+"X-Poedit-SearchPathExcluded-4: includes/phpmailer\n"
+"X-Poedit-SearchPathExcluded-5: includes/plupload\n"
+"X-Poedit-SearchPathExcluded-6: includes/random_compat\n"
+"X-Poedit-SearchPathExcluded-7: includes/timthumb\n"
+"X-Poedit-SearchPathExcluded-8: templates/default\n"
+"X-Poedit-SearchPathExcluded-9: templates/gallery\n"
+"X-Poedit-SearchPathExcluded-10: templates/pinboxes\n"
+"X-Poedit-SearchPathExcluded-11: includes/js/bootstrap-datepicker\n"
+"X-Poedit-SearchPathExcluded-12: includes/js/bootstrap-spinedit\n"
+"X-Poedit-SearchPathExcluded-13: includes/js/chosen\n"
+"X-Poedit-SearchPathExcluded-14: includes/js/footable\n"
+"X-Poedit-SearchPathExcluded-15: includes/js/jen\n"
+"X-Poedit-SearchPathExcluded-16: includes/js/jquery-tags-input\n"
+"X-Poedit-SearchPathExcluded-17: includes/js/bootstrap-toggle\n"
+"X-Poedit-SearchPathExcluded-18: includes/js/ckeditor\n"
+
+#: actions-log.php:19
+msgid "Recent activities log"
+msgstr "Activités récentes"
+
+#: actions-log.php:44
+msgid "The selected activities were deleted."
+msgstr "Les activités sélectionnées ont été effacées."
+
+#: actions-log.php:48
+msgid "Please select at least one activity."
+msgstr "Selectionnez au moins une activité."
+
+#: actions-log.php:60
+msgid ""
+"The log was cleared. Only data used for statistics remained. You can delete "
+"them manually if you want."
+msgstr ""
+"L'historique a été effacé. Seules les données utilisées pour les "
+"statistiques seront encore visibles. Vous pouvez les supprimer manuellement "
+"si vous le souhaitez."
+
+#: actions-log.php:133
+msgid "Filter activities"
+msgstr "Filtrer les activités"
+
+#: actions-log.php:135 includes/widgets/actions-log.php:11
+msgid "All activities"
+msgstr "Toutes les activités"
+
+#: actions-log.php:146 clients.php:179 manage-files.php:422
+#: manage-files.php:448 users.php:236
+msgid "Filter"
+msgstr "Filtrer"
+
+#: actions-log.php:157
+msgid "Activities actions"
+msgstr "Actions pour les activités sélectionnées"
+
+#: actions-log.php:161 categories.php:249 clients-requests.php:276
+#: clients.php:194 groups.php:220 manage-files.php:479 users.php:251
+msgid "Select action"
+msgstr "Sélectionner une action"
+
+#: actions-log.php:162
+msgid "Download as csv"
+msgstr "Télécharger au format CSV"
+
+#: actions-log.php:163
+msgid "Delete selected"
+msgstr "Effacer la sélection"
+
+#: actions-log.php:164
+msgid "Clear entire log"
+msgstr "Effacer l'historique"
+
+#: actions-log.php:174 categories.php:260 clients-requests.php:288
+#: clients.php:207 groups.php:231 manage-files.php:498 users.php:264
+msgid "Proceed"
+msgstr "Procéder"
+
+#: actions-log.php:181 categories.php:268 clients-requests.php:295
+#: clients.php:214 groups.php:238 manage-files.php:509 users.php:271
+msgid "Found"
+msgstr "Trouvé"
+
+#: actions-log.php:181
+msgid "activities"
+msgstr "activités"
+
+#: actions-log.php:191 clients-requests.php:330 clients.php:227 groups.php:251
+#: manage-files.php:525 users.php:283
+msgid "The filters you selected returned no results."
+msgstr "Le filtre utilisé ne donne aucun résultat."
+
+#: actions-log.php:196
+msgid "There are no activities recorded."
+msgstr "Il n'y a aucune activité enregistrée."
+
+#: actions-log.php:223 download-information.php:137
+msgid "Date"
+msgstr "Date"
+
+#: actions-log.php:228
+msgid "Author"
+msgstr "Autheur"
+
+#: actions-log.php:233
+msgid "Activity"
+msgstr "Activité"
+
+#: categories-form.php:14
+msgid "Create"
+msgstr "Créer"
+
+#: categories-form.php:17 edit-file.php:548 upload-process-form.php:663
+msgid "Save"
+msgstr "Enregistrer"
+
+#: categories-form.php:27 categories.php:307 clients-form.php:120
+#: options.php:566 users-form.php:87
+msgid "Name"
+msgstr "Nom"
+
+#: categories-form.php:34
+msgid "Parent"
+msgstr "Parent"
+
+#: categories-form.php:37 manage-files.php:711 options.php:495 options.php:691
+msgid "None"
+msgstr "Aucun"
+
+#: categories-form.php:49 categories.php:313 edit-file.php:381
+#: groups-form.php:45 groups.php:294 upload-process-form.php:296
+#: upload-process-form.php:493
+msgid "Description"
+msgstr "Description"
+
+#: categories-form.php:57 edit-file.php:547
+msgid "Cancel"
+msgstr "Annuler"
+
+#: categories.php:19
+msgid "Categories administration"
+msgstr ""
+
+#: categories.php:48
+msgid "The category was successfully created."
+msgstr ""
+
+#: categories.php:52
+msgid "The category was successfully edited."
+msgstr ""
+
+#: categories.php:92
+msgid "The selected categories were deleted."
+msgstr "Les activités sélectionnées ont été effacées."
+
+#: categories.php:110
+msgid "Please select at least one category."
+msgstr "Selectionnez au moins une activité."
+
+#: categories.php:148
+msgid "Create new category"
+msgstr "Créer une nouvelle catégorie"
+
+#: categories.php:160
+msgid "Edit category"
+msgstr "Modifier la catégorie"
+
+#: categories.php:213
+msgid "There was a problem saving to the database."
+msgstr ""
+
+#: categories.php:218
+msgid "Please complete all the required fields."
+msgstr "Veuillez compléter l'ensemble des champs."
+
+#: categories.php:245
+msgid "Selected categories actions"
+msgstr ""
+
+#: categories.php:250 clients.php:197 groups.php:221 manage-files.php:480
+#: users.php:254
+msgid "Delete"
+msgstr "Supprimer"
+
+#: categories.php:268
+msgid "categories"
+msgstr "catégories"
+
+#: categories.php:278 clients-requests.php:327 clients.php:224 groups.php:248
+#: manage-files.php:519 upload-import-orphans.php:277 users.php:280
+msgid "Your search keywords returned no results."
+msgstr ""
+
+#: categories.php:283
+msgid "There are no categories yet."
+msgstr "Il n'y a encore aucune catégories."
+
+#: categories.php:310 clients.php:482 groups.php:301 groups.php:385
+#: header-menu.php:60 includes/widgets/system-information.php:44
+#: options.php:403 options.php:512
+msgid "Files"
+msgstr "Fichiers"
+
+#: categories.php:317 clients.php:324 groups.php:322
+msgid "View"
+msgstr "Voir"
+
+#: categories.php:321 clients.php:328 groups.php:326 manage-files.php:634
+#: upload-import-orphans.php:213 upload-process-form.php:307 users.php:349
+msgid "Actions"
+msgstr "Actions"
+
+#: categories.php:392 header-menu.php:72 header-menu.php:303
+#: manage-files.php:18
+msgid "Manage files"
+msgstr "Gérer les fichiers"
+
+#: categories.php:395 clients.php:488 groups.php:389 manage-files.php:835
+#: upload-import-orphans.php:244 users.php:420
+msgid "Edit"
+msgstr "Editer"
+
+#: clients-add.php:18 clients-form.php:67
+msgid "Add client"
+msgstr "Ajouter un client"
+
+#: clients-add.php:105
+msgid "Client added correctly."
+msgstr "Client ajouté avec succès."
+
+#: clients-add.php:119 clients-edit.php:200 email-templates.php:140
+#: groups-add.php:86 groups-edit.php:127 options.php:252 register.php:170
+#: templates.php:59 users-add.php:99 users-edit.php:182
+msgid "There was an error. Please try again."
+msgstr "Une erreur s'est produite. Veuillez réessayer."
+
+#: clients-add.php:128
+msgid "An e-mail notification with login information was sent to your client."
+msgstr ""
+"Les identifiants de connexion de votre client lui ont été envoyés par E-mail."
+
+#: clients-add.php:132 register.php:194 users-add.php:112
+msgid "E-mail notification couldn't be sent."
+msgstr "Le message ne peut pas être envoyé."
+
+#: clients-edit.php:167
+msgid "Edit client"
+msgstr "Editer le client"
+
+#: clients-edit.php:169 users-edit.php:155
+msgid "My account"
+msgstr "Mon compte"
+
+#: clients-edit.php:184
+msgid "Client edited correctly."
+msgstr "Client édité avec succès."
+
+#: clients-edit.php:217 groups-edit.php:144 users-edit.php:200
+msgid "This page is not intended to be accessed directly."
+msgstr "Cette page n'est pas accessible directement."
+
+#: clients-edit.php:219
+msgid "No client was selected."
+msgstr "Aucun client sélectionné."
+
+#: clients-edit.php:224
+msgid "There is no client with that ID number."
+msgstr "Il n'y a aucun client avec cet ID."
+
+#: clients-edit.php:229 users-edit.php:212
+msgid "Your account type doesn't allow you to access this feature."
+msgstr "Votre compte ne vous permet pas d'accéder à cette fonctionnalité."
+
+#: clients-form.php:62
+msgid "Will be visible on the client's file list"
+msgstr "Sera visible sur la liste des fichiers du client"
+
+#: clients-form.php:74 clients-form.php:86 clients.php:483 edit-file.php:481
+#: includes/widgets/system-information.php:53 upload-process-form.php:583
+msgid "Groups"
+msgstr "Groupes"
+
+#: clients-form.php:79
+msgid "Save client"
+msgstr "Enregistrer le client"
+
+#: clients-form.php:91
+msgid "Register account"
+msgstr "S'inscrire"
+
+#: clients-form.php:97
+msgid "Your full name"
+msgstr "Votre nom complet"
+
+#: clients-form.php:101
+msgid "Request access to groups"
+msgstr ""
+
+#: clients-form.php:106 users-form.php:77
+msgid "Update account"
+msgstr "Mise à jour du compte"
+
+#: clients-form.php:127 clients-requests.php:376 clients.php:263
+#: install/index.php:256 users-form.php:94 users.php:315
+msgid "Log in username"
+msgstr "Nom d'utilisateur"
+
+#: clients-form.php:129 users-form.php:96
+msgid "Must be alphanumeric"
+msgstr "Doit être alphanumérique"
+
+#: clients-form.php:134 includes/vars.php:50 index.php:127
+#: install/index.php:264 install/make-config.php:255 options.php:662
+#: users-form.php:101
+msgid "Password"
+msgstr "Mot de passe"
+
+#: clients-form.php:142 install/index.php:272 reset-password.php:337
+#: users-form.php:109
+msgid "Generate"
+msgstr "Générer"
+
+#: clients-form.php:148 clients-requests.php:382 clients.php:269 index.php:122
+#: reset-password.php:288 users-form.php:115 users.php:321
+msgid "E-mail"
+msgstr "E-mail"
+
+#: clients-form.php:150 users-form.php:117
+msgid "Must be valid and unique"
+msgstr "Doit être unique et valide"
+
+#: clients-form.php:155
+msgid "Address"
+msgstr "Adresse"
+
+#: clients-form.php:162
+msgid "Telephone"
+msgstr "Téléphone"
+
+#: clients-form.php:172
+msgid "Internal contact name"
+msgstr "Contact interne"
+
+#: clients-form.php:179 users-form.php:136
+msgid "Max. upload filesize"
+msgstr "Taille maximum d'un fichier"
+
+#: clients-form.php:185 users-form.php:142
+msgid "Set to 0 to use the default system limit"
+msgstr "0 pour utiliser la limite par défaut du système"
+
+#: clients-form.php:219 edit-file.php:465 edit-file.php:521 groups-form.php:54
+#: upload-process-form.php:569 upload-process-form.php:617
+msgid "Select one or more options. Type to search."
+msgstr ""
+"Sélectionnez une ou plusieurs options. Ecrivez pour lancer la recherche."
+
+#: clients-form.php:238 edit-file.php:498 edit-file.php:531 groups-form.php:75
+#: upload-process-form.php:598 upload-process-form.php:627
+msgid "Add all"
+msgstr "Tout ajouter"
+
+#: clients-form.php:239 edit-file.php:499 edit-file.php:532 groups-form.php:76
+#: upload-process-form.php:599 upload-process-form.php:628
+msgid "Remove all"
+msgstr "Tout supprimer"
+
+#: clients-form.php:257
+msgid "Active (client can log in)"
+msgstr "Actif (le client peut se connecter)"
+
+#: clients-form.php:268
+msgid "Notify new uploads by e-mail"
+msgstr "Notifier les nouveaux transferts par courriel"
+
+#: clients-form.php:278
+msgid "Verification"
+msgstr "Vérification"
+
+#: clients-form.php:295 users-form.php:163
+msgid "This account information will be e-mailed to the address supplied above"
+msgstr ""
+
+#: clients-requests.php:21 header-menu.php:111
+msgid "Account requests"
+msgstr ""
+
+#: clients-requests.php:58
+msgid "The selected actions were applied."
+msgstr ""
+
+#: clients-requests.php:62 clients.php:80
+msgid "The selected clients were deleted."
+msgstr ""
+
+#: clients-requests.php:200 clients.php:98
+msgid "Please select at least one client."
+msgstr ""
+
+#: clients-requests.php:272 clients.php:190
+msgid "Selected clients actions"
+msgstr ""
+
+#: clients-requests.php:277
+msgid "Apply selection"
+msgstr ""
+
+#: clients-requests.php:278
+msgid "Delete requests"
+msgstr ""
+
+#: clients-requests.php:295
+msgid "requests"
+msgstr ""
+
+#: clients-requests.php:302
+msgid "New account requests"
+msgstr ""
+
+#: clients-requests.php:307
+msgid "Denied accounts"
+msgstr ""
+
+#: clients-requests.php:335
+msgid "There are no requests at the moment"
+msgstr ""
+
+#: clients-requests.php:371 clients.php:258 includes/classes/send-email.php:79
+#: install/index.php:242 users.php:310
+msgid "Full name"
+msgstr ""
+
+#: clients-requests.php:386
+msgid "Account"
+msgstr ""
+
+#: clients-requests.php:390
+msgid "Membership requests"
+msgstr ""
+
+#: clients-requests.php:403 clients.php:306 groups.php:318 manage-files.php:575
+#: users.php:345
+msgid "Added on"
+msgstr ""
+
+#: clients-requests.php:463
+msgid "Accept all"
+msgstr ""
+
+#: clients-requests.php:464
+msgid "Deny all"
+msgstr ""
+
+#: clients.php:19
+msgid "Clients Administration"
+msgstr ""
+
+#: clients.php:55
+msgid "The selected clients were marked as active."
+msgstr ""
+
+#: clients.php:69
+msgid "The selected clients were marked as inactive."
+msgstr ""
+
+#: clients.php:167 manage-files.php:436 users.php:224
+msgid "All statuses"
+msgstr ""
+
+#: clients.php:168 clients.php:402 templates.php:116 users.php:225
+#: users.php:373
+msgid "Active"
+msgstr ""
+
+#: clients.php:169 clients.php:401 users.php:226 users.php:372
+msgid "Inactive"
+msgstr ""
+
+#: clients.php:195 templates.php:123 users.php:252
+msgid "Activate"
+msgstr ""
+
+#: clients.php:196 users.php:253
+msgid "Deactivate"
+msgstr ""
+
+#: clients.php:214
+msgid "clients"
+msgstr ""
+
+#: clients.php:232
+msgid "There are no clients at the moment"
+msgstr ""
+
+#: clients.php:273
+msgid "Uploads"
+msgstr ""
+
+#: clients.php:277
+msgid "Files: Own"
+msgstr ""
+
+#: clients.php:281
+msgid "Files: Groups"
+msgstr ""
+
+#: clients.php:287 manage-files.php:615 upload-process-form.php:301
+#: users.php:333
+msgid "Status"
+msgstr ""
+
+#: clients.php:290
+msgid "Groups on"
+msgstr ""
+
+#: clients.php:294
+msgid "Notify"
+msgstr ""
+
+#: clients.php:300 users.php:338
+msgid "Max. upload size"
+msgstr ""
+
+#: clients.php:461 download-information.php:203 groups.php:375
+#: manage-files.php:695 options.php:910
+msgid "Yes"
+msgstr ""
+
+#: clients.php:461 download-information.php:204 groups.php:375
+#: manage-files.php:695 options.php:911
+msgid "No"
+msgstr ""
+
+#: clients.php:464 users.php:413
+msgid "Default"
+msgstr ""
+
+#: clients.php:484
+msgid "As client"
+msgstr ""
+
+#: download-information.php:18
+msgid "Download information"
+msgstr "Information de téléchargement"
+
+#: download-information.php:65
+msgid "No file was selected."
+msgstr ""
+
+#: download-information.php:70
+msgid "There is no information with that file ID number."
+msgstr ""
+
+#: download-information.php:82 manage-files.php:629
+msgid "Total downloads"
+msgstr ""
+
+#: download-information.php:140
+msgid "Time"
+msgstr ""
+
+#: download-information.php:145 includes/vars.php:16
+msgid "Client"
+msgstr ""
+
+#: download-information.php:150
+msgid "Anonymous"
+msgstr ""
+
+#: download-information.php:155
+msgid "Client's IP"
+msgstr ""
+
+#: download-information.php:161
+msgid "Client's hostname"
+msgstr ""
+
+#: download-information.php:175
+msgid "Unique logged in clients/users"
+msgstr ""
+
+#: download-information.php:178
+msgid "Total public downloads"
+msgstr ""
+
+#: download.php:11 edit-file.php:373 upload-process-form.php:483
+msgid "File information"
+msgstr ""
+
+#: download.php:145 reset-password.php:215
+msgid "The request is not valid."
+msgstr ""
+
+#: download.php:155
+msgid "The following file is now ready for you to download:"
+msgstr ""
+
+#: download.php:161
+msgid "Download file"
+msgstr "Télécharger le fichier"
+
+#: download.php:181 register.php:215 reset-password.php:362
+msgid "Go back to the homepage."
+msgstr ""
+
+#: edit-file.php:26 upload-process-form.php:361
+msgid "Edit file"
+msgstr ""
+
+#: edit-file.php:119
+msgid ""
+"Please go to the clients or groups administration page, select \"Manage files"
+"\" from any client and then click on \"Edit\" on any file to return here."
+msgstr ""
+
+#: edit-file.php:122
+msgid "There is not file with that ID number."
+msgstr ""
+
+#: edit-file.php:125
+msgid "You don't have permission to edit this file."
+msgstr ""
+
+#: edit-file.php:309
+msgid "The file has been edited succesfuly."
+msgstr ""
+
+#: edit-file.php:376 manage-files.php:585 upload-process-form.php:295
+#: upload-process-form.php:488
+msgid "Title"
+msgstr "Titre"
+
+#: edit-file.php:377 upload-process-form.php:489
+msgid "Enter here the required file title."
+msgstr ""
+
+#: edit-file.php:382 upload-process-form.php:494
+msgid "Optionally, enter here a description for the file."
+msgstr "Vous pouvez joindre une description à ce fichier."
+
+#: edit-file.php:404 upload-process-form.php:514
+msgid "Expiration date"
+msgstr "Date d'expiration"
+
+#: edit-file.php:407 upload-process-form.php:517
+msgid "Select a date"
+msgstr ""
+
+#: edit-file.php:418 upload-process-form.php:528
+msgid "File expires"
+msgstr ""
+
+#: edit-file.php:428 upload-process-form.php:539
+msgid "Public downloading"
+msgstr ""
+
+#: edit-file.php:431 upload-process-form.php:543
+msgid "Allow public downloading of this file."
+msgstr ""
+
+#: edit-file.php:436 includes/js/js.functions.php:30
+msgid "Public URL"
+msgstr ""
+
+#: edit-file.php:463 upload-process-form.php:302 upload-process-form.php:567
+msgid "Assignations"
+msgstr ""
+
+#: edit-file.php:464 upload-process-form.php:568
+msgid "Assign this file to"
+msgstr ""
+
+#: edit-file.php:466 header-menu.php:93 header-menu.php:187
+#: includes/widgets/system-information.php:47 options.php:30
+#: upload-process-form.php:570
+msgid "Clients"
+msgstr "Clients"
+
+#: edit-file.php:506
+msgid ""
+"Mark as hidden (will not send notifications) for new assigned clients and "
+"groups."
+msgstr ""
+
+#: edit-file.php:511
+msgid "Hide from every already assigned clients and groups."
+msgstr ""
+
+#: edit-file.php:519 header-menu.php:83
+#: includes/widgets/system-information.php:56 upload-process-form.php:615
+msgid "Categories"
+msgstr "Catégories"
+
+#: edit-file.php:520 upload-process-form.php:616
+msgid "Add to"
+msgstr ""
+
+#: email-preview.php:11 header-menu.php:220
+msgid "E-mail templates"
+msgstr "Modèles de notifications"
+
+#: email-preview.php:11
+msgid "Preview"
+msgstr "Aperçu"
+
+#: email-templates.php:16 header-menu.php:225
+msgid "Header / footer"
+msgstr ""
+
+#: email-templates.php:22 header-menu.php:229
+msgid "New file by user"
+msgstr ""
+
+#: email-templates.php:29 header-menu.php:233
+msgid "New file by client"
+msgstr ""
+
+#: email-templates.php:36 header-menu.php:237
+msgid "New client (welcome)"
+msgstr ""
+
+#: email-templates.php:43 header-menu.php:241
+msgid "New client (self-registered)"
+msgstr ""
+
+#: email-templates.php:50 header-menu.php:245
+msgid "Approve client account"
+msgstr ""
+
+#: email-templates.php:57 header-menu.php:249
+msgid "Deny client account"
+msgstr ""
+
+#: email-templates.php:64 header-menu.php:253
+msgid "New user (welcome)"
+msgstr ""
+
+#: email-templates.php:71 header-menu.php:257
+msgid "Password reset"
+msgstr "Réinitialiser le mot de passe"
+
+#: email-templates.php:136 options.php:248 templates.php:55
+msgid "Options updated succesfuly."
+msgstr ""
+
+#: email-templates.php:151
+msgid "(to be used as href on a link tag)"
+msgstr ""
+
+#: email-templates.php:159
+msgid ""
+"This email will be sent to a client whenever a new file has been assigned to "
+"his account."
+msgstr ""
+
+#: email-templates.php:165 email-templates.php:181
+msgid "Shows the list of files"
+msgstr ""
+
+#: email-templates.php:166 email-templates.php:182 email-templates.php:199
+#: email-templates.php:216 email-templates.php:234 email-templates.php:265
+msgid "The login link"
+msgstr ""
+
+#: email-templates.php:175
+msgid ""
+"This email will be sent to the system administrator whenever a client "
+"uploads a new file."
+msgstr ""
+
+#: email-templates.php:191
+msgid ""
+"This email will be sent to the new client after an administrator has created "
+"his new account. It would be best to include the log in details (username "
+"and password)."
+msgstr ""
+
+#: email-templates.php:197 email-templates.php:215 email-templates.php:263
+msgid "The new username for this account"
+msgstr ""
+
+#: email-templates.php:198 email-templates.php:264
+msgid "The new password for this account"
+msgstr ""
+
+#: email-templates.php:208
+msgid ""
+"This email will be sent to the system administrator after a new client has "
+"created a new account for himself."
+msgstr ""
+
+#: email-templates.php:214
+msgid "The full name the client registered with"
+msgstr ""
+
+#: email-templates.php:217
+msgid "List of groups that the client requests membership to"
+msgstr ""
+
+#: email-templates.php:226
+msgid ""
+"This email will be sent to a client that requested an account if it gets "
+"approved. Group membership requests are also mentioned on the email, "
+"separated by their approval status."
+msgstr ""
+
+#: email-templates.php:232
+msgid "List of approved group memberships"
+msgstr ""
+
+#: email-templates.php:233
+msgid "List of denied group memberships"
+msgstr ""
+
+#: email-templates.php:243
+msgid ""
+"This email will be sent to a client that requested an account if it gets "
+"denied. All group membership requests for this account are denied "
+"automatically."
+msgstr ""
+
+#: email-templates.php:257
+msgid ""
+"This email will be sent to the new system user after an administrator has "
+"created his new account. It would be best to include the log in details "
+"(username and password)."
+msgstr ""
+
+#: email-templates.php:274
+msgid ""
+"This email will be sent to a user or client when they try to reset their "
+"password."
+msgstr ""
+
+#: email-templates.php:280
+msgid "The username for this account"
+msgstr ""
+
+#: email-templates.php:281
+msgid "The text string unique to this request. Must be included somewhere."
+msgstr ""
+
+#: email-templates.php:282
+msgid "The link to continue the process"
+msgstr ""
+
+#: email-templates.php:297
+msgid ""
+"Here you set up the header and footer of every email, or use the default "
+"ones available with the system. Use this to customize each part and include, "
+"for example, your own logo and markup."
+msgstr ""
+
+#: email-templates.php:298
+msgid ""
+"Do not forget to also include -and close accordingly- the basic structural "
+"HTML tags (DOCTYPE, HTML, HEADER, BODY)."
+msgstr ""
+
+#: email-templates.php:305
+msgid "Use custom header / footer"
+msgstr ""
+
+#: email-templates.php:312
+msgid "Header"
+msgstr ""
+
+#: email-templates.php:314 email-templates.php:328 email-templates.php:374
+msgid "You can use HTML tags here."
+msgstr ""
+
+#: email-templates.php:319 email-templates.php:333 email-templates.php:397
+msgid "Replace with default"
+msgstr ""
+
+#: email-templates.php:326
+msgid "Footer"
+msgstr ""
+
+#: email-templates.php:349
+msgid "Use custom subject"
+msgstr ""
+
+#: email-templates.php:356
+msgid "Add your custom subject"
+msgstr ""
+
+#: email-templates.php:365
+msgid "Use custom template"
+msgstr ""
+
+#: email-templates.php:372
+msgid "Template text"
+msgstr ""
+
+#: email-templates.php:381
+msgid "The following tags can be used on this e-mails' body."
+msgstr ""
+
+#: email-templates.php:398
+msgid "Preview this template"
+msgstr ""
+
+#: email-templates.php:400
+msgid ""
+"Before trying this function, please save your changes to see them reflected "
+"on the preview."
+msgstr ""
+
+#: email-templates.php:409 options.php:949
+msgid "Save options"
+msgstr ""
+
+#: email-templates.php:422
+msgid "Please confirm: replace the custom template text with the default one?"
+msgstr ""
+
+#: email-templates.php:432
+msgid "Error: the content could not be loaded"
+msgstr ""
+
+#: footer.php:24
+msgid "Executed queries"
+msgstr ""
+
+#: groups-add.php:18
+msgid "Add clients group"
+msgstr ""
+
+#: groups-add.php:72
+msgid "Group added correctly."
+msgstr ""
+
+#: groups-edit.php:18
+msgid "Edit group"
+msgstr ""
+
+#: groups-edit.php:113
+msgid "Group edited correctly."
+msgstr ""
+
+#: groups-edit.php:146
+msgid "No group was selected."
+msgstr ""
+
+#: groups-edit.php:151
+msgid "There is no group with that ID number."
+msgstr ""
+
+#: groups-form.php:26
+msgid "Create group"
+msgstr ""
+
+#: groups-form.php:30
+msgid "Save group"
+msgstr ""
+
+#: groups-form.php:38 groups.php:289
+msgid "Group name"
+msgstr ""
+
+#: groups-form.php:52 groups.php:298
+msgid "Members"
+msgstr ""
+
+#: groups-form.php:84 groups.php:307 upload-process-form.php:303
+#: upload-process-form.php:350
+msgid "Public"
+msgstr ""
+
+#: groups-form.php:85
+msgid ""
+"Allows clients to request access to this group in the registraron process "
+"and when editing their own profile. This feature requires the corresponding "
+"option to be enabled on the CLIENTS OPTIONS page."
+msgstr ""
+
+#: groups.php:19
+msgid "Groups administration"
+msgstr ""
+
+#: groups.php:34
+msgid "Groups where"
+msgstr ""
+
+#: groups.php:34
+msgid "is member"
+msgstr ""
+
+#: groups.php:102
+msgid "The selected groups were deleted."
+msgstr ""
+
+#: groups.php:109
+msgid "Please select at least one group."
+msgstr ""
+
+#: groups.php:216
+msgid "Selected groups actions"
+msgstr ""
+
+#: groups.php:238
+msgid "groups"
+msgstr ""
+
+#: groups.php:254
+msgid "The client does not exist."
+msgstr ""
+
+#: groups.php:257
+msgid "There are no groups where this client is member."
+msgstr ""
+
+#: groups.php:262
+msgid "There are no groups created yet."
+msgstr ""
+
+#: groups.php:312
+msgid "Created by"
+msgstr ""
+
+#: header-menu.php:48 home.php:14
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#: header-menu.php:65 header-menu.php:292
+msgid "Upload"
+msgstr "Transfert"
+
+#: header-menu.php:76 upload-import-orphans.php:22
+msgid "Find orphan files"
+msgstr "Rechercher les orphelins"
+
+#: header-menu.php:99 header-menu.php:127 header-menu.php:146
+msgid "Add new"
+msgstr "Ajouter un nouveau"
+
+#: header-menu.php:103
+msgid "Manage clients"
+msgstr "Gérer les clients"
+
+#: header-menu.php:122
+msgid "Clients groups"
+msgstr "Groupe de clients"
+
+#: header-menu.php:131
+msgid "Manage groups"
+msgstr "Gérer les groupes"
+
+#: header-menu.php:141
+msgid "System Users"
+msgstr "Utilisateurs système"
+
+#: header-menu.php:150
+msgid "Manage system users"
+msgstr "Gérer les utilisateurs système"
+
+#: header-menu.php:163 header-menu.php:168 templates.php:14
+msgid "Templates"
+msgstr "Thèmes"
+
+#: header-menu.php:178
+msgid "Options"
+msgstr "Options"
+
+#: header-menu.php:183 options.php:20
+msgid "General options"
+msgstr "Options générales"
+
+#: header-menu.php:191 options.php:40
+msgid "E-mail notifications"
+msgstr "Notifications E-mail"
+
+#: header-menu.php:195 options.php:48
+msgid "Security"
+msgstr "Sécurité"
+
+#: header-menu.php:199 options.php:58 options.php:802
+msgid "Thumbnails"
+msgstr "Miniatures"
+
+#: header-menu.php:203 options.php:64
+msgid "Branding"
+msgstr "Image de marque"
+
+#: header-menu.php:207 options.php:69
+msgid "Social Login"
+msgstr ""
+
+#: header-menu.php:269
+msgid "Tools"
+msgstr "Outils"
+
+#: header-menu.php:274
+msgid "Actions log"
+msgstr "Historique des actions"
+
+#: header-menu.php:313 upload-process-form.php:369
+msgid "View my files"
+msgstr "Voir mes fichiers"
+
+#: header-unlogged.php:23
+msgid "setup"
+msgstr ""
+
+#: header.php:30
+msgid "System Administration"
+msgstr ""
+
+#: header.php:82
+msgid "Toogle menu"
+msgstr ""
+
+#: header.php:99
+msgid "My Account"
+msgstr "Mon compte"
+
+#: header.php:102
+msgid "Logout"
+msgstr "Déconnexion"
+
+#: includes/classes/actions-log.php:11
+msgid "ProjecSend has been installed"
+msgstr ""
+
+#: includes/classes/actions-log.php:12
+msgid "Account logs in through the form"
+msgstr ""
+
+#: includes/classes/actions-log.php:13
+msgid "Account logs in through cookies"
+msgstr ""
+
+#: includes/classes/actions-log.php:14
+msgid "Account (user or client) logs out"
+msgstr ""
+
+#: includes/classes/actions-log.php:15
+msgid "A user creates a new user account"
+msgstr ""
+
+#: includes/classes/actions-log.php:16
+msgid "A user creates a new client account"
+msgstr ""
+
+#: includes/classes/actions-log.php:17
+msgid "A client registers an account for himself"
+msgstr ""
+
+#: includes/classes/actions-log.php:18
+msgid "A file is uploaded by an user"
+msgstr ""
+
+#: includes/classes/actions-log.php:19
+msgid "A file is uploaded by a client"
+msgstr ""
+
+#: includes/classes/actions-log.php:20
+msgid "A file is downloaded by a user (on \"Client view\" mode)"
+msgstr ""
+
+#: includes/classes/actions-log.php:21
+msgid "A file is downloaded by a client"
+msgstr ""
+
+#: includes/classes/actions-log.php:22
+msgid "A zip file was generated by a client"
+msgstr ""
+
+#: includes/classes/actions-log.php:23
+msgid "A file has been unassigned from a client."
+msgstr ""
+
+#: includes/classes/actions-log.php:24
+msgid "A file has been unassigned from a group"
+msgstr ""
+
+#: includes/classes/actions-log.php:25
+msgid "A file has been deleted"
+msgstr ""
+
+#: includes/classes/actions-log.php:26
+msgid "A user was edited"
+msgstr ""
+
+#: includes/classes/actions-log.php:27
+msgid "A client was edited"
+msgstr ""
+
+#: includes/classes/actions-log.php:28
+msgid "A group was edited"
+msgstr ""
+
+#: includes/classes/actions-log.php:29
+msgid "A user was deleted"
+msgstr ""
+
+#: includes/classes/actions-log.php:30
+msgid "A client was deleted"
+msgstr ""
+
+#: includes/classes/actions-log.php:31
+msgid "A group was deleted"
+msgstr ""
+
+#: includes/classes/actions-log.php:32
+msgid "A client account was activated"
+msgstr ""
+
+#: includes/classes/actions-log.php:33
+msgid "A client account was deactivated"
+msgstr ""
+
+#: includes/classes/actions-log.php:34
+msgid "A user account was activated"
+msgstr ""
+
+#: includes/classes/actions-log.php:35
+msgid "A user account was deactivated"
+msgstr ""
+
+#: includes/classes/actions-log.php:36
+msgid "A file was marked as hidden"
+msgstr ""
+
+#: includes/classes/actions-log.php:37
+msgid "A file was marked as visible"
+msgstr ""
+
+#: includes/classes/actions-log.php:38
+msgid "A user creates a new group"
+msgstr ""
+
+#: includes/classes/actions-log.php:39
+msgid "A file is assigned to a client"
+msgstr ""
+
+#: includes/classes/actions-log.php:40
+msgid "A file is assigned to a group"
+msgstr ""
+
+#: includes/classes/actions-log.php:41
+msgid "A user account was marked as active"
+msgstr ""
+
+#: includes/classes/actions-log.php:42
+msgid "A user account was marked as inactive"
+msgstr ""
+
+#: includes/classes/actions-log.php:43
+msgid "The logo on \"Branding\" was changed"
+msgstr ""
+
+#: includes/classes/actions-log.php:44
+msgid "ProjectSend was updated"
+msgstr ""
+
+#: includes/classes/actions-log.php:45
+msgid "A system user edited a file."
+msgstr ""
+
+#: includes/classes/actions-log.php:46
+msgid "A client edited a file."
+msgstr ""
+
+#: includes/classes/actions-log.php:47
+msgid "A client created a category."
+msgstr ""
+
+#: includes/classes/actions-log.php:48
+msgid "A client edited a category."
+msgstr ""
+
+#: includes/classes/actions-log.php:49
+msgid "A client deleted a category."
+msgstr ""
+
+#: includes/classes/actions-log.php:50
+msgid "An anonymous user downloaded a public file."
+msgstr ""
+
+#: includes/classes/actions-log.php:51
+msgid "A client account request was processed."
+msgstr ""
+
+#: includes/classes/form-validation.php:15
+msgid "The following errors were found"
+msgstr ""
+
+#: includes/classes/generate-table.php:256 upload-import-orphans.php:257
+msgid "Results navigation"
+msgstr ""
+
+#: includes/classes/generate-table.php:317
+msgid "Go to:"
+msgstr ""
+
+#: includes/classes/send-email.php:46
+msgid "New files uploaded for you"
+msgstr ""
+
+#: includes/classes/send-email.php:47
+msgid "The following files are now available for you to download."
+msgstr ""
+
+#: includes/classes/send-email.php:48
+msgid ""
+"If you prefer not to be notified about new files, please go to My Account "
+"and deactivate the notifications checkbox."
+msgstr ""
+
+#: includes/classes/send-email.php:49
+msgid "You can access a list of all your files or upload your own"
+msgstr ""
+
+#: includes/classes/send-email.php:50 includes/classes/send-email.php:58
+msgid "by logging in here"
+msgstr ""
+
+#: includes/classes/send-email.php:55
+msgid "New files uploaded by clients"
+msgstr ""
+
+#: includes/classes/send-email.php:56
+msgid "New files has been uploaded by the following clients"
+msgstr ""
+
+#: includes/classes/send-email.php:57
+msgid "You can manage these files"
+msgstr ""
+
+#: includes/classes/send-email.php:64 includes/classes/send-email.php:113
+msgid "Welcome to ProjectSend"
+msgstr ""
+
+#: includes/classes/send-email.php:65
+msgid ""
+"A new account was created for you. From now on, you can access the files "
+"that have been uploaded under your account using the following credentials:"
+msgstr ""
+
+#: includes/classes/send-email.php:66 includes/classes/send-email.php:100
+msgid "You can log in following this link"
+msgstr ""
+
+#: includes/classes/send-email.php:67 includes/classes/send-email.php:101
+#: includes/classes/send-email.php:108
+msgid "Please contact the administrator if you need further assistance."
+msgstr ""
+
+#: includes/classes/send-email.php:68 includes/classes/send-email.php:117
+msgid "Your username"
+msgstr ""
+
+#: includes/classes/send-email.php:69 includes/classes/send-email.php:118
+msgid "Your password"
+msgstr ""
+
+#: includes/classes/send-email.php:77
+msgid "A new client has registered."
+msgstr ""
+
+#: includes/classes/send-email.php:78
+msgid ""
+"A new account was created using the self registration form on your site. "
+"Registration information:"
+msgstr ""
+
+#: includes/classes/send-email.php:80 includes/classes/send-email.php:129
+#: includes/vars.php:49 index.php:122 install/make-config.php:245
+#: options.php:655
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+#: includes/classes/send-email.php:81
+msgid "Additionally, the client requests access to the following group(s)"
+msgstr ""
+
+#: includes/classes/send-email.php:84
+msgid "Please log in to process the request."
+msgstr ""
+
+#: includes/classes/send-email.php:85
+msgid ""
+"Remember, your new client will not be able to log in until an administrator "
+"has approved their account."
+msgstr ""
+
+#: includes/classes/send-email.php:88
+msgid "Auto-approvals of new accounts are currently enabled."
+msgstr ""
+
+#: includes/classes/send-email.php:89
+msgid "You can log in to manually deactivate it."
+msgstr ""
+
+#: includes/classes/send-email.php:95
+msgid "You account has been approved"
+msgstr ""
+
+#: includes/classes/send-email.php:96
+msgid "Your account has been approved."
+msgstr ""
+
+#: includes/classes/send-email.php:97
+msgid "Additionally, your group membership requests have been processed."
+msgstr ""
+
+#: includes/classes/send-email.php:98
+msgid "Approved requests:"
+msgstr ""
+
+#: includes/classes/send-email.php:99
+msgid "Denied requests:"
+msgstr ""
+
+#: includes/classes/send-email.php:106
+msgid "You account has been denied"
+msgstr ""
+
+#: includes/classes/send-email.php:107
+msgid "Your account request has been denied."
+msgstr ""
+
+#: includes/classes/send-email.php:114
+msgid ""
+"A new account was created for you. From now on, you can access the system "
+"administrator using the following credentials:"
+msgstr ""
+
+#: includes/classes/send-email.php:115
+msgid "Access the system panel here"
+msgstr ""
+
+#: includes/classes/send-email.php:116
+msgid "Thank you for using ProjectSend."
+msgstr ""
+
+#: includes/classes/send-email.php:124
+msgid "Password reset instructions"
+msgstr ""
+
+#: includes/classes/send-email.php:125
+msgid ""
+"A request has been received to reset the password for the following account:"
+msgstr ""
+
+#: includes/classes/send-email.php:126
+msgid "To continue, please visit the following link"
+msgstr ""
+
+#: includes/classes/send-email.php:127
+msgid "The request is valid only for 24 hours."
+msgstr ""
+
+#: includes/classes/send-email.php:128
+msgid "If you did not make this request, simply ignore this email."
+msgstr ""
+
+#: includes/classes/send-email.php:627
+msgid ""
+"This email contains HTML formatting and cannot be displayed right now. "
+"Please use an HTML compatible reader."
+msgstr ""
+
+#: includes/functions.forms.php:17
+msgid "Search"
+msgstr "Chercher"
+
+#: includes/functions.php:90
+msgid "An unexpected error has occurred"
+msgstr ""
+
+#: includes/functions.php:91
+msgid "Could not generate a random password"
+msgstr ""
+
+#: includes/functions.php:532
+msgid "Provided by"
+msgstr ""
+
+#: includes/functions.php:532 includes/updates.messages.php:52
+msgid "version"
+msgstr ""
+
+#: includes/functions.php:532
+msgid "Free software"
+msgstr ""
+
+#: includes/functions.php:549
+msgid "Important:"
+msgstr ""
+
+#: includes/functions.php:549
+msgid ""
+"There are no clients or groups at the moment. You can still upload files and "
+"assign them later."
+msgstr ""
+
+#: includes/functions.php:1019
+msgid "The password must contain, at least:"
+msgstr ""
+
+#: includes/functions.php:1115
+msgid "ProjectSend was installed"
+msgstr ""
+
+#: includes/functions.php:1120 includes/functions.php:1265
+msgid "logged in to the system."
+msgstr ""
+
+#: includes/functions.php:1125
+msgid "created the user account"
+msgstr ""
+
+#: includes/functions.php:1131
+msgid "created the client account "
+msgstr ""
+
+#: includes/functions.php:1137
+msgid "created a client account for themself."
+msgstr ""
+
+#: includes/functions.php:1142
+msgid "(user) uploaded the file"
+msgstr ""
+
+#: includes/functions.php:1148
+msgid "(client) uploaded the file"
+msgstr ""
+
+#: includes/functions.php:1154
+msgid "(user) downloaded the file"
+msgstr ""
+
+#: includes/functions.php:1156
+msgid "assigned to:"
+msgstr ""
+
+#: includes/functions.php:1162
+msgid "(client) downloaded the file"
+msgstr ""
+
+#: includes/functions.php:1168
+msgid "generated a zip file"
+msgstr ""
+
+#: includes/functions.php:1173 includes/functions.php:1181
+msgid "unassigned the file"
+msgstr ""
+
+#: includes/functions.php:1175
+msgid "from the client:"
+msgstr ""
+
+#: includes/functions.php:1183
+msgid "from the group:"
+msgstr ""
+
+#: includes/functions.php:1189
+msgid "deleted the file"
+msgstr ""
+
+#: includes/functions.php:1195
+msgid "edited the user"
+msgstr ""
+
+#: includes/functions.php:1201
+msgid "edited the client"
+msgstr ""
+
+#: includes/functions.php:1207
+msgid "edited the group"
+msgstr ""
+
+#: includes/functions.php:1213
+msgid "deleted the user"
+msgstr ""
+
+#: includes/functions.php:1219
+msgid "deleted the client"
+msgstr ""
+
+#: includes/functions.php:1225
+msgid "deleted the group"
+msgstr ""
+
+#: includes/functions.php:1231
+msgid "activated the client"
+msgstr ""
+
+#: includes/functions.php:1237
+msgid "deactivated the client"
+msgstr ""
+
+#: includes/functions.php:1243
+msgid "marked as hidden the file"
+msgstr ""
+
+#: includes/functions.php:1245 includes/functions.php:1253
+msgid "to:"
+msgstr ""
+
+#: includes/functions.php:1251
+msgid "marked as visible the file"
+msgstr ""
+
+#: includes/functions.php:1259
+msgid "created the group"
+msgstr ""
+
+#: includes/functions.php:1270 includes/functions.php:1278
+msgid "assigned the file"
+msgstr ""
+
+#: includes/functions.php:1272
+msgid "to the client:"
+msgstr ""
+
+#: includes/functions.php:1280
+msgid "to the group:"
+msgstr ""
+
+#: includes/functions.php:1286
+msgid "activated the user"
+msgstr ""
+
+#: includes/functions.php:1292
+msgid "deactivated the user"
+msgstr ""
+
+#: includes/functions.php:1298
+msgid "uploaded a new logo on \"Branding\""
+msgstr ""
+
+#: includes/functions.php:1303
+msgid "updated ProjectSend to version"
+msgstr ""
+
+#: includes/functions.php:1309
+msgid "logged out of the system."
+msgstr ""
+
+#: includes/functions.php:1314
+msgid "(user) edited the file"
+msgstr ""
+
+#: includes/functions.php:1320
+msgid "(client) edited the file"
+msgstr ""
+
+#: includes/functions.php:1326
+msgid "created the category"
+msgstr ""
+
+#: includes/functions.php:1332
+msgid "edited the category"
+msgstr ""
+
+#: includes/functions.php:1338
+msgid "deleted the category"
+msgstr ""
+
+#: includes/functions.php:1343
+msgid "An anonymous user"
+msgstr ""
+
+#: includes/functions.php:1344
+msgid "downloaded the file"
+msgstr ""
+
+#: includes/functions.php:1350
+msgid "processed an account request for"
+msgstr ""
+
+#: includes/js/js.functions.php:22
+msgid "Click to select and copy"
+msgstr ""
+
+#: includes/js/js.functions.php:23
+msgid "Succesfully copied to clipboard"
+msgstr ""
+
+#: includes/js/js.functions.php:24
+msgid "Content could not be copied to clipboard"
+msgstr ""
+
+#: includes/js/js.functions.php:28
+msgid ""
+"Send this URL to someone to download the file without registering or logging "
+"in."
+msgstr ""
+
+#: includes/js/js.functions.php:47
+msgid "Please select at least one item to proceed."
+msgstr ""
+
+#: includes/js/js.functions.php:51
+msgid "You are about to delete"
+msgstr ""
+
+#: includes/js/js.functions.php:52
+msgid "items. Are you sure you want to continue?"
+msgstr ""
+
+#: includes/js/js.functions.php:65
+msgid ""
+"You are about to delete all activities from the log. Only those used for "
+"statistics will remain. Are you sure you want to continue?"
+msgstr ""
+
+#: includes/js/js.functions.php:79 includes/js/js.functions.php:115
+msgid "Please wait while your download is prepared."
+msgstr ""
+
+#: includes/js/js.functions.php:90
+msgid "You are about to unassign"
+msgstr ""
+
+#: includes/js/js.functions.php:91
+msgid "files from this account. Are you sure you want to continue?"
+msgstr ""
+
+#: includes/js/js.functions.php:116
+msgid ""
+"This operation could take a few minutes, depending on the size of the files."
+msgstr ""
+
+#: includes/js/js.functions.php:165
+msgid "No results where found."
+msgstr ""
+
+#: includes/updates.functions.php:55
+msgid ""
+"If images thumbnails aren't showing on your client's files lists (even your "
+"company logo there and on the branding page) please chmod the includes/"
+"timthumb/cache folder to 777 and then do the same with the 'index.html' and "
+"'timthumb_cacheLastCleanTime.touch' files inside that folder. Then try "
+"lowering each file to 644 and see if everything is still working."
+msgstr ""
+
+#: includes/updates.functions.php:83
+msgid ""
+"The chmod values of the emails folder and the html templates inside couldn't "
+"be set. If ProjectSend isn't sending notifications emails, please set them "
+"manually to 777."
+msgstr ""
+
+#: includes/updates.functions.php:116
+msgid ""
+"A safe chmod value couldn't be set for one or more system files. Please make "
+"sure that at least includes/sys.config.php has a chmod of 644 for security "
+"reasons."
+msgstr ""
+
+#: includes/updates.functions.php:204
+msgid ""
+"This version changes the way files-to-clients relationships are stored on "
+"the database making it possible to assign a file to multiple clients. "
+"However some files did not update successfully. The following files may need "
+"to be reassigned to their clients by using the \"Find orphan files\" tool:"
+msgstr ""
+
+#: includes/updates.messages.php:18
+msgid "System Notice:"
+msgstr ""
+
+#: includes/updates.messages.php:18
+msgid "The database was updated to support this version of the software."
+msgstr ""
+
+#: includes/updates.messages.php:25
+msgid "Do you want to support ProjectSend?"
+msgstr ""
+
+#: includes/updates.messages.php:26
+msgid ""
+"Please remember that this tool is free software. If you find the system "
+"useful"
+msgstr ""
+
+#: includes/updates.messages.php:27
+msgid "please consider making a donation to support further development."
+msgstr ""
+
+#: includes/updates.messages.php:28
+msgid "Thank you!"
+msgstr ""
+
+#: includes/updates.messages.php:52
+msgid "Update available!"
+msgstr ""
+
+#: includes/updates.messages.php:52
+msgid "has been released."
+msgstr ""
+
+#: includes/userlevel_check.php:164
+msgid "Access denied"
+msgstr ""
+
+#: includes/userlevel_check.php:200
+msgid ""
+"Your account type doesn't allow you to view this page. Please contact a "
+"system administrator if you need to access this function."
+msgstr ""
+
+#: includes/vars.php:13
+msgid "System Administrator"
+msgstr ""
+
+#: includes/vars.php:14
+msgid "Account Manager"
+msgstr ""
+
+#: includes/vars.php:15 manage-files.php:404 manage-files.php:593
+msgid "Uploader"
+msgstr ""
+
+#: includes/vars.php:25
+msgid "reCAPTCHA verification failed"
+msgstr ""
+
+#: includes/vars.php:26
+msgid "Name was not completed"
+msgstr ""
+
+#: includes/vars.php:27
+msgid "No client was selected"
+msgstr ""
+
+#: includes/vars.php:28 index.php:79
+msgid "Username was not completed"
+msgstr ""
+
+#: includes/vars.php:29 index.php:80
+msgid "Password was not completed"
+msgstr ""
+
+#: includes/vars.php:30
+msgid "Password verification was not completed"
+msgstr ""
+
+#: includes/vars.php:31
+msgid "E-mail was not completed"
+msgstr ""
+
+#: includes/vars.php:32
+msgid "E-mail address is not valid"
+msgstr ""
+
+#: includes/vars.php:33
+msgid ""
+"Username must be alphanumeric and may contain dot (a-z,A-Z,0-9 and . allowed)"
+msgstr ""
+
+#: includes/vars.php:34
+msgid "Password must be alphanumeric (a-z,A-Z,0-9 allowed)"
+msgstr ""
+
+#: includes/vars.php:35
+msgid "Passwords do not match"
+msgstr ""
+
+#: includes/vars.php:36
+msgid "Password does not meet the required characters rules"
+msgstr ""
+
+#: includes/vars.php:37
+msgid "File size value must be a whole number"
+msgstr ""
+
+#: includes/vars.php:38
+msgid "User level was not specified"
+msgstr ""
+
+#: includes/vars.php:39
+msgid "A system user or client with this login name already exists."
+msgstr ""
+
+#: includes/vars.php:40
+msgid "A system user or client with this e-mail address already exists."
+msgstr ""
+
+#: includes/vars.php:41
+msgid ""
+"Your password can only contain letters, numbers and the following characters:"
+msgstr ""
+
+#: includes/vars.php:43
+msgid "Title was not completed"
+msgstr ""
+
+#: includes/vars.php:51
+msgid "length should be between"
+msgstr ""
+
+#: includes/vars.php:52 install/index.php:239
+msgid "and"
+msgstr ""
+
+#: includes/vars.php:53
+msgid "characters long"
+msgstr ""
+
+#: includes/vars.php:57
+msgid "1 uppercase character"
+msgstr ""
+
+#: includes/vars.php:58
+msgid "1 lowercase character"
+msgstr ""
+
+#: includes/vars.php:59
+msgid "1 number"
+msgstr ""
+
+#: includes/vars.php:60
+msgid "1 special character"
+msgstr ""
+
+#: includes/widgets/actions-log.php:15
+msgid "Logins"
+msgstr ""
+
+#: includes/widgets/actions-log.php:19 includes/widgets/statistics.php:25
+msgid "Downloads"
+msgstr ""
+
+#: includes/widgets/actions-log.php:26
+msgid "Clients self-registrations"
+msgstr ""
+
+#: includes/widgets/actions-log.php:34
+msgid "Recent activites"
+msgstr ""
+
+#: includes/widgets/actions-log.php:50
+msgid "View all"
+msgstr ""
+
+#: includes/widgets/actions-log.php:119
+msgid "There are no results"
+msgstr ""
+
+#: includes/widgets/news.php:10
+msgid "ProjectSend news"
+msgstr ""
+
+#: includes/widgets/statistics.php:15
+msgid "Uploads by users"
+msgstr ""
+
+#: includes/widgets/statistics.php:20
+msgid "Uploads by clients"
+msgstr ""
+
+#: includes/widgets/statistics.php:30
+msgid "Public Downloads"
+msgstr ""
+
+#: includes/widgets/statistics.php:53
+msgid "Statistics"
+msgstr ""
+
+#: includes/widgets/statistics.php:60
+msgid "days"
+msgstr ""
+
+#: includes/widgets/system-information.php:7 install/make-config.php:364
+msgid "System information"
+msgstr ""
+
+#: includes/widgets/system-information.php:9
+msgid "Software"
+msgstr ""
+
+#: includes/widgets/system-information.php:11
+#: includes/widgets/system-information.php:94
+msgid "Version"
+msgstr ""
+
+#: includes/widgets/system-information.php:15
+msgid "New version available"
+msgstr ""
+
+#: includes/widgets/system-information.php:20
+msgid "Default upload max. size"
+msgstr ""
+
+#: includes/widgets/system-information.php:23
+msgid "Template"
+msgstr ""
+
+#: includes/widgets/system-information.php:24
+msgid "Change"
+msgstr ""
+
+#: includes/widgets/system-information.php:50
+msgid "System users"
+msgstr ""
+
+#: includes/widgets/system-information.php:71
+msgid "System"
+msgstr ""
+
+#: includes/widgets/system-information.php:73
+msgid "Server"
+msgstr ""
+
+#: includes/widgets/system-information.php:76
+msgid "PHP version"
+msgstr ""
+
+#: includes/widgets/system-information.php:79
+msgid "Memory limit"
+msgstr ""
+
+#: includes/widgets/system-information.php:82
+msgid "Max execution time"
+msgstr ""
+
+#: includes/widgets/system-information.php:85
+msgid "Post max size"
+msgstr ""
+
+#: includes/widgets/system-information.php:89
+msgid "Database"
+msgstr ""
+
+#: includes/widgets/system-information.php:91
+msgid "Driver"
+msgstr ""
+
+#: index.php:20 index.php:26
+msgid "Log in"
+msgstr "Se connecter"
+
+#: index.php:61 login.php:125 process.php:162
+msgid "The supplied credentials are not valid."
+msgstr ""
+
+#: index.php:64
+msgid "Session timed out. Please log in again."
+msgstr ""
+
+#: index.php:95
+msgid "Logging in"
+msgstr "Connexion"
+
+#: index.php:102
+msgid "Redirecting"
+msgstr "Redirection"
+
+#: index.php:132 install/make-config.php:311 options.php:415
+msgid "Language"
+msgstr "Langue"
+
+#: index.php:143
+msgid "default"
+msgstr "par défaut"
+
+#: index.php:176
+msgid "Forgot your password?"
+msgstr "Mot de passe oublié ?"
+
+#: index.php:176
+msgid "Set up a new one."
+msgstr "En définir un nouveau."
+
+#: index.php:180
+msgid "Don't have an account yet?"
+msgstr ""
+
+#: index.php:180
+msgid "Register as a new client."
+msgstr ""
+
+#: index.php:184
+msgid "This server does not allow self registrations."
+msgstr "Ce service n'autorise pas les clients à s'enregistrer eux-mêmes."
+
+#: index.php:185
+msgid "If you need an account, please contact a server administrator."
+msgstr "Si vous avez besoin d'un compte, veuillez nous contacter."
+
+#: install/index.php:52 install/index.php:278 install/make-config.php:20
+msgid "Install"
+msgstr "Installer"
+
+#: install/index.php:53
+msgid "Sitename was not completed."
+msgstr ""
+
+#: install/index.php:54
+msgid "ProjectSend URI was not completed."
+msgstr ""
+
+#: install/index.php:67
+msgid "Congratulations! Everything is up and running."
+msgstr ""
+
+#: install/index.php:70
+msgid "You may proceed to"
+msgstr ""
+
+#: install/index.php:70
+msgid "log in"
+msgstr ""
+
+#: install/index.php:70
+msgid "with your newely created username and password."
+msgstr ""
+
+#: install/index.php:78
+msgid "Already installed"
+msgstr ""
+
+#: install/index.php:79
+msgid "It seems that ProjectSend is already installed here."
+msgstr ""
+
+#: install/index.php:80
+msgid ""
+"If you want to reinstall, please delete the system tables from the database "
+"and come back to the installation form."
+msgstr ""
+
+#: install/index.php:176
+msgid "There seems to be an error. Please try again."
+msgstr ""
+
+#: install/index.php:217
+msgid "Basic system options"
+msgstr ""
+
+#: install/index.php:218
+msgid ""
+"You need to provide this data for a correct system installation. The site "
+"name will be visible in the system panel, and the client's lists."
+msgstr ""
+
+#: install/index.php:219
+msgid "Remember to edit the file"
+msgstr ""
+
+#: install/index.php:219
+msgid ""
+"with your database settings before installing. If the file doesn't exist, "
+"you can create it by renaming the dummy file sys.config.sample.php."
+msgstr ""
+
+#: install/index.php:223 options.php:337
+msgid "Site name"
+msgstr ""
+
+#: install/index.php:230
+msgid "ProjectSend URI (address)"
+msgstr ""
+
+#: install/index.php:238
+msgid "Default system administrator options"
+msgstr ""
+
+#: install/index.php:239
+msgid ""
+"This info will be used to create a default system user, which can't be "
+"deleted afterwards. Password should be between"
+msgstr ""
+
+#: install/index.php:239
+msgid "characters long."
+msgstr ""
+
+#: install/index.php:249 options.php:559
+msgid "E-mail address"
+msgstr ""
+
+#: install/index.php:283
+msgid ""
+"After installing the system, you can go to the options page to set your "
+"timezone, preferred date display format and thumbnails parameters, besides "
+"being able to change the site options provided here."
+msgstr ""
+
+#: install/make-config.php:187
+msgid "Successfully wrote the config file."
+msgstr ""
+
+#: install/make-config.php:191
+msgid "Continue to installation"
+msgstr ""
+
+#: install/make-config.php:200
+msgid "Database configuration"
+msgstr ""
+
+#: install/make-config.php:201
+msgid "You need to provide this data for a correct database communication."
+msgstr ""
+
+#: install/make-config.php:204
+msgid "Select driver"
+msgstr ""
+
+#: install/make-config.php:209 install/make-config.php:215
+msgid "(not supported)"
+msgstr ""
+
+#: install/make-config.php:225 options.php:674
+msgid "Host"
+msgstr ""
+
+#: install/make-config.php:235
+msgid "Database name"
+msgstr ""
+
+#: install/make-config.php:265
+msgid "Table prefix"
+msgstr ""
+
+#: install/make-config.php:281
+msgid "The database is already populated"
+msgstr ""
+
+#: install/make-config.php:295
+msgid "Reuse existing tables"
+msgstr ""
+
+#: install/make-config.php:308
+msgid "Language selection"
+msgstr ""
+
+#: install/make-config.php:323
+msgid "Folders"
+msgstr ""
+
+#: install/make-config.php:352
+msgid "Writable"
+msgstr ""
+
+#: install/make-config.php:354
+msgid "Not writable"
+msgstr ""
+
+#: install/make-config.php:418
+msgid "Check again"
+msgstr ""
+
+#: install/make-config.php:419
+msgid "Write config file"
+msgstr ""
+
+#: install/make-config.php:421
+msgid "Check"
+msgstr ""
+
+#: login.php:128 process.php:165
+msgid "The supplied username doesn't exist."
+msgstr ""
+
+#: login.php:131 process.php:168
+msgid "The supplied password is incorrect."
+msgstr ""
+
+#: login.php:134 process.php:171
+msgid "This account is not active."
+msgstr ""
+
+#: login.php:136 process.php:173
+msgid ""
+"If you just registered, please wait until a system administrator approves "
+"your account."
+msgstr ""
+
+#: login.php:140 process.php:177 register.php:129
+msgid ""
+"Client self registration is not allowed. If you need an account, please "
+"contact a system administrator."
+msgstr ""
+
+#: login.php:143 process.php:180
+msgid "Sign-in with Google cannot be used to create new accounts at this time."
+msgstr ""
+
+#: login.php:146 process.php:183
+msgid "You must approve the requested permissions to sign in with Google."
+msgstr ""
+
+#: manage-files.php:39
+msgid "for client"
+msgstr ""
+
+#: manage-files.php:64
+msgid "for group"
+msgstr ""
+
+#: manage-files.php:80
+msgid "on category"
+msgstr ""
+
+#: manage-files.php:137
+msgid "The selected files were marked as hidden."
+msgstr ""
+
+#: manage-files.php:151
+msgid "The selected files were marked as visible."
+msgstr ""
+
+#: manage-files.php:164
+msgid "The selected files were unassigned from this client."
+msgstr ""
+
+#: manage-files.php:193
+msgid "The selected files were deleted."
+msgstr ""
+
+#: manage-files.php:198
+msgid "Some files could not be deleted."
+msgstr ""
+
+#: manage-files.php:221
+msgid "Please select at least one file."
+msgstr ""
+
+#: manage-files.php:437 manage-files.php:742 upload-process-form.php:325
+msgid "Visible"
+msgstr ""
+
+#: manage-files.php:438 manage-files.php:742 upload-process-form.php:324
+msgid "Hidden"
+msgstr ""
+
+#: manage-files.php:467
+msgid "Selected files actions"
+msgstr "Actions pour les fichiers sélectionnés"
+
+#: manage-files.php:485
+msgid "Hide"
+msgstr ""
+
+#: manage-files.php:486
+msgid "Show"
+msgstr ""
+
+#: manage-files.php:487
+msgid "Unassign"
+msgstr ""
+
+#: manage-files.php:509 upload-import-orphans.php:165
+msgid "files"
+msgstr "fichier(s)"
+
+#: manage-files.php:522
+msgid "There are no files assigned to this category."
+msgstr ""
+
+#: manage-files.php:528
+msgid "There are no files assigned to this client."
+msgstr ""
+
+#: manage-files.php:531
+msgid "You have not uploaded any files for this account."
+msgstr "Vous n'avez chargé aucun fichier pour ce compte."
+
+#: manage-files.php:536
+msgid "There are no files for this client."
+msgstr ""
+
+#: manage-files.php:579
+msgid "Type"
+msgstr ""
+
+#: manage-files.php:588
+msgid "Size"
+msgstr "Taille"
+
+#: manage-files.php:598
+msgid "Assigned"
+msgstr ""
+
+#: manage-files.php:605
+msgid "Public permissions"
+msgstr ""
+
+#: manage-files.php:610
+msgid "Expiry"
+msgstr ""
+
+#: manage-files.php:622
+msgid "Download count"
+msgstr "Nombre de téléchargements"
+
+#: manage-files.php:702
+msgid "Download"
+msgstr "Télécharger"
+
+#: manage-files.php:707
+msgid "View information"
+msgstr ""
+
+#: manage-files.php:720
+msgid "Does not expire"
+msgstr ""
+
+#: manage-files.php:727
+msgid "Expired on"
+msgstr ""
+
+#: manage-files.php:731
+msgid "Expires on"
+msgstr ""
+
+#: manage-files.php:749
+msgid "times"
+msgstr ""
+
+#: manage-files.php:775
+msgid "downloads"
+msgstr ""
+
+#: options.php:256
+msgid "Some fields were not completed. Options could not be saved."
+msgstr ""
+
+#: options.php:269
+msgid "The file could not be moved to the corresponding folder."
+msgstr ""
+
+#: options.php:270
+msgid ""
+"This is most likely a permissions issue. If that's the case, it can be "
+"corrected via FTP by setting the chmod value of the"
+msgstr ""
+
+#: options.php:272
+msgid "directory to 755, or 777 as a last resource."
+msgstr ""
+
+#: options.php:273
+msgid ""
+"If this doesn't solve the issue, try giving the same values to the "
+"directories above that one until it works."
+msgstr ""
+
+#: options.php:277
+msgid ""
+"The file you selected is not an allowed image format. Please upload your "
+"logo as a jpg, gif or png file."
+msgstr ""
+
+#: options.php:281
+msgid "There was an error uploading the file. Please try again."
+msgstr ""
+
+#: options.php:318 options.php:321
+msgid "Please complete all the fields."
+msgstr ""
+
+#: options.php:333
+msgid "General"
+msgstr ""
+
+#: options.php:334
+msgid ""
+"Basic information to be shown around the site. The time format and zones "
+"values affect how the clients see the dates on their files lists."
+msgstr ""
+
+#: options.php:344
+msgid "Timezone"
+msgstr ""
+
+#: options.php:357
+msgid "Time format"
+msgstr ""
+
+#: options.php:360
+msgid "For example, d/m/Y h:i:s will result in something like"
+msgstr ""
+
+#: options.php:361
+msgid "For the full list of available values, visit"
+msgstr ""
+
+#: options.php:361
+msgid "this page"
+msgstr ""
+
+#: options.php:368
+msgid "Use custom footer text"
+msgstr ""
+
+#: options.php:374
+msgid "Footer content"
+msgstr ""
+
+#: options.php:382
+msgid "Privacy"
+msgstr ""
+
+#: options.php:387
+msgid "Prevent search engines from indexing this site"
+msgstr ""
+
+#: options.php:395
+msgid "Enable information page for private files"
+msgstr ""
+
+#: options.php:396
+msgid ""
+"If enabled, the file information landing page will be available even for "
+"files that are not marked as private. Downloading them will stay restricted."
+msgstr ""
+
+#: options.php:408
+msgid "Use the visual editor on files descriptions"
+msgstr ""
+
+#: options.php:420
+msgid "Detect user browser language"
+msgstr ""
+
+#: options.php:421
+msgid ""
+"If available, will override the default one from the system configuration "
+"file. Affects all users and clients."
+msgstr ""
+
+#: options.php:428
+msgid "System location"
+msgstr ""
+
+#: options.php:429
+msgid ""
+"These options are to be changed only if you are moving the system to another "
+"place. Changes here can cause ProjectSend to stop working."
+msgstr ""
+
+#: options.php:432
+msgid "System URI"
+msgstr ""
+
+#: options.php:441
+msgid "New registrations"
+msgstr ""
+
+#: options.php:442
+msgid ""
+"Used only on self-registrations. These options will not apply to clients "
+"registered by system administrators."
+msgstr ""
+
+#: options.php:447
+msgid "Clients can register themselves"
+msgstr ""
+
+#: options.php:455
+msgid "Auto approve new accounts"
+msgstr ""
+
+#: options.php:461
+msgid "Add clients to this group:"
+msgstr ""
+
+#: options.php:464
+msgid "None (does not enable this feature)"
+msgstr ""
+
+#: options.php:485
+msgid ""
+"New clients will automatically be assigned to the group you have selected."
+msgstr ""
+
+#: options.php:490
+msgid "Groups for which clients can request membership to:"
+msgstr ""
+
+#: options.php:496
+msgid "Public groups"
+msgstr ""
+
+#: options.php:497
+msgid "All groups"
+msgstr ""
+
+#: options.php:506
+msgid ""
+"When a client registers a new account, an option will be presented to "
+"request becoming a member of a particular group."
+msgstr ""
+
+#: options.php:521
+msgid "Clients can upload files"
+msgstr ""
+
+#: options.php:529
+msgid "Clients can delete their own uploaded files"
+msgstr ""
+
+#: options.php:537
+msgid "Clients can set expiration Date"
+msgstr ""
+
+#: options.php:543
+msgid "When a file expires:"
+msgstr ""
+
+#: options.php:546
+msgid "Don't show it on the files list"
+msgstr ""
+
+#: options.php:547
+msgid "Show it anyway, but prevent download."
+msgstr ""
+
+#: options.php:549
+msgid ""
+"This only affects clients. On the admin side, you can still get the files."
+msgstr ""
+
+#: options.php:556
+msgid "\"From\" information"
+msgstr ""
+
+#: options.php:574
+msgid "Send copies"
+msgstr ""
+
+#: options.php:579
+msgid "When a system user uploads files"
+msgstr ""
+
+#: options.php:587
+msgid "When a client uploads files"
+msgstr ""
+
+#: options.php:593
+msgid ""
+"Define here who will receive copies of this emails. These are sent as BCC so "
+"neither recipient will see the other addresses."
+msgstr ""
+
+#: options.php:599
+msgid "Address supplied above (on \"From\")"
+msgstr ""
+
+#: options.php:605
+msgid "Also to this addresses"
+msgstr ""
+
+#: options.php:608
+msgid "Separate e-mail addresses with a comma."
+msgstr ""
+
+#: options.php:614
+msgid "Expiration"
+msgstr ""
+
+#: options.php:617
+msgid "Maximum sending attemps"
+msgstr ""
+
+#: options.php:620
+msgid "Define how many times will the system attemp to send each notification."
+msgstr ""
+
+#: options.php:625
+msgid "Days before expiring"
+msgstr ""
+
+#: options.php:628
+msgid "Notifications older than this will not be sent."
+msgstr ""
+
+#: options.php:628
+msgid "Set to 0 to disable."
+msgstr ""
+
+#: options.php:634
+msgid "E-mail sending options"
+msgstr ""
+
+#: options.php:635
+msgid ""
+"Here you can select which mail system will be used when sending the "
+"notifications. If you have a valid e-mail account, SMTP is the recommended "
+"option."
+msgstr ""
+
+#: options.php:638
+msgid "Mailer"
+msgstr ""
+
+#: options.php:651
+msgid "SMTP & Gmail shared options"
+msgstr ""
+
+#: options.php:652
+msgid ""
+"You need to include your username (usually your e-mail address) and password "
+"if you have selected either SMTP or Gmail as your mailer."
+msgstr ""
+
+#: options.php:670
+msgid "SMTP options"
+msgstr ""
+
+#: options.php:671
+msgid "If you selected SMTP as your mailer, please complete these options."
+msgstr ""
+
+#: options.php:681
+msgid "Port"
+msgstr ""
+
+#: options.php:688
+msgid "Authentication"
+msgstr ""
+
+#: options.php:701
+msgid "Allowed file extensions"
+msgstr ""
+
+#: options.php:702
+msgid ""
+"Be careful when changing this options. They could affect not only the system "
+"but the whole server it is installed on."
+msgstr ""
+
+#: options.php:703
+msgid "Important"
+msgstr ""
+
+#: options.php:703
+msgid "Separate allowed file types with a comma."
+msgstr ""
+
+#: options.php:706
+msgid "Limit file types uploading to"
+msgstr ""
+
+#: options.php:709
+msgid "No one"
+msgstr ""
+
+#: options.php:710
+msgid "Everyone"
+msgstr ""
+
+#: options.php:711
+msgid "Clients only"
+msgstr ""
+
+#: options.php:722
+msgid ""
+"Warning: php extension is allowed. This is a serious security problem. If "
+"you are not sure that you need it, please remove it from the list."
+msgstr ""
+
+#: options.php:729
+msgid "Passwords"
+msgstr ""
+
+#: options.php:730
+msgid "When setting up a password for an account, require at least:"
+msgstr ""
+
+#: options.php:768
+msgid "reCAPTCHA"
+msgstr ""
+
+#: options.php:769
+msgid "Helps prevent SPAM on your registration form."
+msgstr ""
+
+#: options.php:774
+msgid "Use reCAPTCHA"
+msgstr ""
+
+#: options.php:780
+msgid "Site key"
+msgstr ""
+
+#: options.php:787
+msgid "Secret key"
+msgstr ""
+
+#: options.php:795 options.php:929
+msgid "How do I obtain this credentials?"
+msgstr ""
+
+#: options.php:803
+msgid ""
+"Thumbnails are used on files lists. It is recommended to keep them small, "
+"unless you are using the system to upload only images, and will change the "
+"default client's template accordingly."
+msgstr ""
+
+#: options.php:808 options.php:881
+msgid "Max width"
+msgstr ""
+
+#: options.php:815 options.php:891
+msgid "Max height"
+msgstr ""
+
+#: options.php:823
+msgid "JPG Quality"
+msgstr ""
+
+#: options.php:833
+msgid "File's path"
+msgstr ""
+
+#: options.php:834
+msgid ""
+"If thumbnails are not showing (your company logo and file's preview on the "
+"branding page and client's files lists) try setting this option ON. It they "
+"still don't work, a folders permission issue might be the cause."
+msgstr ""
+
+#: options.php:839
+msgid "Use file's absolute path"
+msgstr ""
+
+#: options.php:847
+msgid "Current logo"
+msgstr ""
+
+#: options.php:848
+msgid ""
+"Use this page to upload your company logo, or update the currently assigned "
+"one. This image will be shown to your clients when they access their file "
+"list."
+msgstr ""
+
+#: options.php:855
+msgid "Logo Placeholder"
+msgstr ""
+
+#: options.php:861
+msgid "Tihs preview uses a maximum width of 300px"
+msgstr ""
+
+#: options.php:868
+msgid "Select image to upload"
+msgstr ""
+
+#: options.php:877
+msgid "Size settings"
+msgstr ""
+
+#: options.php:878
+msgid "The file viewer template may use this setting when showing the image."
+msgstr ""
+
+#: options.php:903
+msgid "Google"
+msgstr ""
+
+#: options.php:907
+msgid "Enabled"
+msgstr ""
+
+#: options.php:916
+msgid "Client ID"
+msgstr ""
+
+#: options.php:922
+msgid "Client Secret"
+msgstr ""
+
+#: options.php:934
+msgid "Callback URI"
+msgstr ""
+
+#: process.php:380
+msgid "File not found"
+msgstr ""
+
+#: register.php:12
+msgid "Register new account"
+msgstr ""
+
+#: register.php:144
+msgid "Please contact a system administrator."
+msgstr ""
+
+#: register.php:148
+msgid "Account added correctly."
+msgstr ""
+
+#: register.php:152
+msgid ""
+"Please remember that an administrator needs to approve your account before "
+"you can log in."
+msgstr ""
+
+#: register.php:155
+msgid "You may now log in with your new credentials."
+msgstr ""
+
+#: register.php:175
+msgid ""
+"A folder for this account could not be created. Probably because of a server "
+"configuration."
+msgstr ""
+
+#: register.php:180
+msgid ""
+"The account could not be created. A folder with this name already exists."
+msgstr ""
+
+#: register.php:190
+msgid ""
+"An e-mail notification with login information was sent to the specified "
+"address."
+msgstr ""
+
+#: reset-password.php:11
+msgid "Lost password"
+msgstr ""
+
+#: reset-password.php:212
+msgid "The supplied email address does not correspond to any user."
+msgstr ""
+
+#: reset-password.php:218
+msgid "This request has expired. Please make a new one."
+msgstr ""
+
+#: reset-password.php:221
+msgid "This request has already been completed. Please make a new one."
+msgstr ""
+
+#: reset-password.php:224
+msgid ""
+"There are 3 unused requests done in less than 24 hs. Please wait until one "
+"expires (1 day since made) to make a new one."
+msgstr ""
+
+#: reset-password.php:237
+msgid ""
+"An e-mail with further instructions has been sent. Please check your inbox "
+"to proceed."
+msgstr ""
+
+#: reset-password.php:241
+msgid "E-mail couldn't be sent."
+msgstr ""
+
+#: reset-password.php:242 reset-password.php:259
+msgid "If the problem persists, please contact an administrator."
+msgstr ""
+
+#: reset-password.php:254
+msgid "Your new password has been set. You can now log in using it."
+msgstr ""
+
+#: reset-password.php:258
+msgid "Your new password couldn't be set."
+msgstr ""
+
+#: reset-password.php:292
+msgid ""
+"Please enter your account's e-mail address. You will receive a link to "
+"continue the process."
+msgstr ""
+
+#: reset-password.php:295
+msgid "Get a new password"
+msgstr ""
+
+#: reset-password.php:330
+msgid "New password"
+msgstr ""
+
+#: reset-password.php:341
+msgid ""
+"Please enter your desired new password. After that, you will be able to log "
+"in normally."
+msgstr ""
+
+#: reset-password.php:344
+msgid "Set new password"
+msgstr ""
+
+#: upload-from-computer.php:20 upload-from-computer.php:165
+#: upload-process-form.php:32
+msgid "Upload files"
+msgstr "Transférer les fichiers"
+
+#: upload-from-computer.php:49
+msgid ""
+"Click on Add files to select all the files that you want to upload, and then "
+"click continue. On the next step, you will be able to set a name and "
+"description for each uploaded file. Remember that the maximum allowed file "
+"size (in mb.) is "
+msgstr ""
+"Cliquez sur le bouton \"Ajouter fichiers\" pour sélectionner tous les "
+"fichiers que vous voulez transférer, puis cliquer sur \"Transférer des "
+"fichiers\". A la prochaine étape, vous pourrez entrer un nom et une "
+"description pour chaque fichier transféré. Rappelez-vous que la taille de "
+"fichier maximale autorisée (en Mo) est "
+
+#: upload-from-computer.php:128
+msgid "You must select at least one file to upload."
+msgstr ""
+
+#: upload-from-computer.php:161
+msgid ""
+"Your browser doesn't support HTML5, Flash or Silverlight. Please update your "
+"browser or install Adobe Flash or Silverlight to continue."
+msgstr ""
+
+#: upload-from-computer.php:168
+msgid ""
+"Your files are being uploaded! Progress indicators may take a while to "
+"update, but work is still being done behind the scenes."
+msgstr ""
+
+#: upload-import-orphans.php:32
+msgid "Please select at least one file to proceed."
+msgstr ""
+
+#: upload-import-orphans.php:58
+msgid ""
+"This list only shows the files that are allowed according to your security "
+"settings. If the file type you need to add is not listed here, add the "
+"extension to the \"Allowed file extensions\" box on the options page."
+msgstr ""
+
+#: upload-import-orphans.php:165
+msgid "Showing"
+msgstr ""
+
+#: upload-import-orphans.php:193
+msgid "File name"
+msgstr "Nom du/des fichier(s)"
+
+#: upload-import-orphans.php:199
+msgid "File size"
+msgstr ""
+
+#: upload-import-orphans.php:206
+msgid "Last modified"
+msgstr ""
+
+#: upload-import-orphans.php:263
+msgid ""
+"Please note that the listed files will be renamed if they contain invalid "
+"characters."
+msgstr ""
+
+#: upload-import-orphans.php:267
+msgid "Continue"
+msgstr ""
+
+#: upload-import-orphans.php:282
+msgid "There are no files available to add right now."
+msgstr ""
+
+#: upload-import-orphans.php:283
+msgid "To use this feature you need to upload your files via FTP to the folder"
+msgstr ""
+
+#: upload-process-form.php:291
+msgid "Files uploaded correctly"
+msgstr "Les fichiers ont été transférés avec succès"
+
+#: upload-process-form.php:297 upload-process-form.php:686
+msgid "File Name"
+msgstr ""
+
+#: upload-process-form.php:351
+msgid "Private"
+msgstr ""
+
+#: upload-process-form.php:388
+msgid "Files ready to upload"
+msgstr "Fichier(s) prêt(s) à être transféré(s)"
+
+#: upload-process-form.php:389
+msgid ""
+"Please complete the following information to finish the uploading process. "
+"Remember that \"Title\" is a required field."
+msgstr ""
+"Veuillez compléter les informations suivantes pour terminer le transfert. Le "
+"champ \"Titre\" est requis."
+
+#: upload-process-form.php:394
+msgid "Note"
+msgstr ""
+
+#: upload-process-form.php:394
+msgid ""
+"You can skip assigning if you want. The files are retained and you may add "
+"them to clients or groups later."
+msgstr ""
+
+#: upload-process-form.php:600 upload-process-form.php:629
+msgid "Copy selections to other files"
+msgstr ""
+
+#: upload-process-form.php:607
+msgid "Upload hidden (will not send notifications)"
+msgstr ""
+
+#: upload-process-form.php:682
+msgid "Files not uploaded"
+msgstr ""
+
+#: upload-process-form.php:713
+msgid "Copy selection to all files?"
+msgstr ""
+
+#: upload-send-notifications.php:277 upload-send-notifications.php:311
+msgid "E-mail notifications have been sent."
+msgstr ""
+
+#: upload-send-notifications.php:291
+msgid "One or more notifications couldn't be sent."
+msgstr ""
+
+#: upload-send-notifications.php:315
+msgid "E-mail notifications for inactive clients were not sent."
+msgstr ""
+
+#: users-add.php:18
+msgid "Add system user"
+msgstr ""
+
+#: users-add.php:84
+msgid "User added correctly."
+msgstr ""
+
+#: users-add.php:108
+msgid "An e-mail notification with login information was sent to the new user."
+msgstr ""
+
+#: users-edit.php:153
+msgid "Edit system user"
+msgstr ""
+
+#: users-edit.php:166
+msgid "User edited correctly."
+msgstr ""
+
+#: users-edit.php:202
+msgid "No user was selected."
+msgstr ""
+
+#: users-edit.php:207
+msgid "There is no user with that ID number."
+msgstr ""
+
+#: users-form.php:63
+msgid "Add user"
+msgstr ""
+
+#: users-form.php:70
+msgid "Save user"
+msgstr ""
+
+#: users-form.php:125 users.php:327
+msgid "Role"
+msgstr ""
+
+#: users-form.php:149
+msgid "Active (user can log in)"
+msgstr ""
+
+#: users.php:23
+msgid "Users administration"
+msgstr ""
+
+#: users.php:64
+msgid "The selected users were marked as active."
+msgstr ""
+
+#: users.php:84
+msgid "You cannot deactivate your own account."
+msgstr ""
+
+#: users.php:90
+msgid "The selected users were marked as inactive."
+msgstr ""
+
+#: users.php:107
+msgid "You cannot delete your own account."
+msgstr ""
+
+#: users.php:113
+msgid "The selected users were deleted."
+msgstr ""
+
+#: users.php:132
+msgid "Please select at least one user."
+msgstr ""
+
+#: users.php:206
+msgid "All roles"
+msgstr ""
+
+#: users.php:247
+msgid "Selected users actions"
+msgstr ""
+
+#: users.php:271
+msgid "users"
+msgstr ""

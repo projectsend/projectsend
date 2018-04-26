@@ -2,7 +2,7 @@
 require_once('sys.includes.php');
 include('header-unlogged.php');
 ?>
-	<script type="text/javascript" src="https://msend.microhealthllc.com/includes/js/jquery.1.12.4.min.js"></script>
+	<script type="text/javascript" src="<?php echo BASE_URI; ?>includes/js/jquery.1.12.4.min.js"></script>
 <?php
 $page_title = __('Guest Drop-off','cftp_admin');
 //$form_action="dropoff_guest_action.php";
@@ -297,6 +297,6 @@ if($_POST){
 </div>
 </div>
 
-		<script src="https://msend.microhealthllc.com/assets/bootstrap/js/bootstrap.min.js"></script>
-			<script src="https://msend.microhealthllc.com/includes/js/jquery.validations.js"></script>
-			<script src="https://msend.microhealthllc.com/includes/js/jquery.psendmodal.js"></script>
+		<script src="<?php echo BASE_URI; ?>assets/bootstrap/js/bootstrap.min.js"></script>
+			<script src="<?php echo BASE_URI; ?>includes/js/jquery.validations.js"></script>
+			<script src="<?php echo BASE_URI; ?>includes/js/jquery.psendmodal.js"></script>

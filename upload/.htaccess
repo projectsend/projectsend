@@ -1,5 +1,1 @@
-Order Deny,Allow
-Deny from All
-<FilesMatch "^$|(index)\.php$">
-Allow from All
-</FilesMatch>
+Deny from all

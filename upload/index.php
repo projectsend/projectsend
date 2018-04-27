@@ -1,7 +1,1 @@
-<?php
-/**
- * This file prevents direct access to the upload folder.
- *
- * @package	ProjectSend
- */
-header("location:../index.php");
+<?php // removed -> protection not needed, since webroot is not project sub dir

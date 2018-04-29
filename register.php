@@ -49,7 +49,7 @@ include('header-unlogged.php');
 								'address'	=> $add_client_data_addr,
 								'phone'		=> $add_client_data_phone,
 								'contact'	=> $add_client_data_intcont,
-								'notify_upload'	=> $add_client_data_notity_upload,
+								'notify_upload'	=> $add_client_data_notify_upload,
 								'group'		=> $add_client_data_group,
 								'type'		=> 'new_client',
 							);

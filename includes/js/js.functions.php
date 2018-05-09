@@ -22,23 +22,23 @@ $(document).ready(function(e) {
 
 		if ( type == 'group' ) {
 			var link_base = '<?php echo PUBLIC_GROUP_URI; ?>?';
-			var note_text = '<?php _e('Send this URL to someone to view the allowed group contents according to your privacy settings.','cftp_admin'); ?>';
+			var note_text = '<?php echo addslashes(__('Send this URL to someone to view the allowed group contents according to your privacy settings.','cftp_admin')); ?>';
 		}
 		else if ( type == 'file' ) {
 			var link_base = '<?php echo PUBLIC_DOWNLOAD_URI; ?>?';
-			var note_text = '<?php _e('Send this URL to someone to download the file without registering or logging in.','cftp_admin'); ?>';
+			var note_text = '<?php echo addslashes(__('Send this URL to someone to download the file without registering or logging in.','cftp_admin')); ?>';
 		}
 
 		var content =  '<div class="public_link_modal">'+
-							'<strong><?php _e('Click to select and copy','cftp_admin'); ?></strong>'+
-							'<div class="copied"><?php _e('Succesfully copied to clipboard','cftp_admin'); ?></div>'+
-							'<div class="copied_not"><?php _e('Content could not be copied to clipboard','cftp_admin'); ?></div>'+
+							'<strong><?php echo json_encode(__('Click to select and copy','cftp_admin')); ?></strong>'+
+							'<div class="copied"><?php echo addslashes(__('Succesfully copied to clipboard','cftp_admin')); ?></div>'+
+							'<div class="copied_not"><?php echo addslashes(__('Content could not be copied to clipboard','cftp_admin')); ?></div>'+
 							'<div class="form-group">'+
 								'<textarea class="input-large public_link_copy form-control" rows="4" readonly>' + link_base + 'id=' + id + '&token=' + token + '</textarea>'+
 							'</div>'+
 							'<span class="note">' + note_text + '</span>'+
 						'</div>';
-		var title 	= '<?php _e('Public URL','cftp_admin'); ?>';
+		var title 	= '<?php echo addslashes(__('Public URL','cftp_admin')); ?>';
 		$('.modal_title span').html(title);
 		$('.modal_content').html(content);
 	});
@@ -55,12 +55,12 @@ $(document).ready(function(e) {
 			?>
 				if (action == 'delete') {
 					if (checks.length == 0) {
-						alert('<?php _e('Please select at least one item to proceed.','cftp_admin'); ?>');
+						alert('<?php echo addslashes(__('Please select at least one item to proceed.','cftp_admin')); ?>');
 						return false;
 					}
 					else {
-						var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
-						var msg_2 = '<?php _e("items. Are you sure you want to continue?",'cftp_admin'); ?>';
+						var msg_1 = '<?php echo addslashes(__("You are about to delete",'cftp_admin')); ?>';
+						var msg_2 = '<?php echo addslashes(__("items. Are you sure you want to continue?",'cftp_admin')); ?>';
 						if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
 							return true;
 						} else {
@@ -73,7 +73,7 @@ $(document).ready(function(e) {
 				/** ACTIVITIES LOG ACTIONS */
 			?>
 				if (action == 'log_clear') {
-					var msg = '<?php _e("You are about to delete all activities from the log. Only those used for statistics will remain. Are you sure you want to continue?",'cftp_admin'); ?>';
+					var msg = '<?php echo addslashes(__("You are about to delete all activities from the log. Only those used for statistics will remain. Are you sure you want to continue?",'cftp_admin')); ?>';
 					if (confirm(msg)) {
 						return true;
 					} else {
@@ -87,7 +87,7 @@ $(document).ready(function(e) {
 					//setTimeout(check_log_download_cookie, 1000);
 					$('.modal_content').html('<p class="loading-img">'+
 												'<img src="<?php echo BASE_URI; ?>img/ajax-loader.gif" alt="Loading" /></p>'+
-												'<p class="lead text-center text-info"><?php _e('Please wait while your download is prepared.','cftp_admin'); ?></p>'
+												'<p class="lead text-center text-info"><?php echo addslashes(__('Please wait while your download is prepared.','cftp_admin')); ?></p>'
 											);
 					$('.modal_content').append('<iframe src="<?php echo BASE_URI; ?>includes/actions.log.export.php?format=csv"></iframe>');
 
@@ -98,8 +98,8 @@ $(document).ready(function(e) {
 				/** MANAGE FILES ACTIONS */
 			?>
 				if (action == 'unassign') {
-					var msg_1 = '<?php _e("You are about to unassign",'cftp_admin'); ?>';
-					var msg_2 = '<?php _e("files from this account. Are you sure you want to continue?",'cftp_admin'); ?>';
+					var msg_1 = '<?php echo addslashes(__("You are about to unassign",'cftp_admin')); ?>';
+					var msg_2 = '<?php echo addslashes(__("files from this account. Are you sure you want to continue?",'cftp_admin')); ?>';
 					if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
 						return true;
 					} else {
@@ -123,8 +123,8 @@ $(document).ready(function(e) {
 					Cookies.set('download_started', 0, { expires: 100 });
 					setTimeout(check_download_cookie, 1000);
 					$('.modal_content').html('<p class="loading-img"><img src="<?php echo BASE_URI; ?>img/ajax-loader.gif" alt="Loading" /></p>'+
-												'<p class="lead text-center text-info"><?php _e('Please wait while your download is prepared.','cftp_admin'); ?></p>'+
-												'<p class="text-center text-info"><?php _e('This operation could take a few minutes, depending on the size of the files.','cftp_admin'); ?></p>'
+												'<p class="lead text-center text-info"><?php echo addslashes(__('Please wait while your download is prepared.','cftp_admin')); ?></p>'+
+												'<p class="text-center text-info"><?php echo addslashes(__('This operation could take a few minutes, depending on the size of the files.','cftp_admin')); ?></p>'
 											);
 					$.get('<?php echo BASE_URI; ?>process.php', { do:"zip_download", files:checkboxes },
 						function(data) {
@@ -173,7 +173,7 @@ $(document).ready(function(e) {
 	?>
 		if ( $.isFunction($.fn.chosen) ) {
 			$('.chosen-select').chosen({
-				no_results_text	: "<?php _e('No results where found.','cftp_admin'); ?>",
+				no_results_text	: "<?php echo addslashes(__('No results where found.','cftp_admin')); ?>",
 				width			: "100%",
 				search_contains	: true
 			});

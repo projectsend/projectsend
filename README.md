@@ -1,6 +1,15 @@
 
 Forked from ProjectSend
 
+Prerequisites:
+1.Install PHP DOM extension and Enable PHP DOM extension.
+http://php.net/manual/en/dom.setup.php
+
+2.Install GD Image library and Enable GD Image Library.
+http://php.net/manual/en/image.installation.php
+
+and restart server.
+
 ## How to install on your server:
 
 Preparations:
@@ -15,15 +24,6 @@ When those are steps are completed, follow this instructions:
 3. Open your browser and go to http://your-projectsend-folder/install
 4. Complete the information there and wait for the correct installation message.
 
-
-enable PDO extension from php.ini
-
-```
-extension=php_pdo.dll
-extension=php_pdo_mysql.dll
-```
-
-and restart the service if your are local.
 
 Congratulations! MicroHealth Send is now installed and ready for action!
 You may login with your new username and password.

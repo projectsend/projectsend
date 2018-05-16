@@ -17,12 +17,12 @@ $load_compat_js_files	= array();
 /** Add the base files that every page will need, regardless of type */
 
 /** JS */
-/*
+/* commends has been removed to fix password generate */
 $load_js_files[]	= BASE_URI . 'assets/bootstrap/js/bootstrap.min.js';
 $load_js_files[]	= BASE_URI . 'includes/js/jquery.validations.js';
 $load_js_files[]	= BASE_URI . 'includes/js/jquery.psendmodal.js';
 $load_js_files[]	= BASE_URI . 'includes/js/jen/jen.js';
-$load_js_files[]	= BASE_URI . 'includes/js/main.js';*/
+$load_js_files[]	= BASE_URI . 'includes/js/main.js';
 
 /*---------------------added by B)-----------------------------------*/
 $load_js_files[]	= BASE_URI . 'assets/wrap/js/app.config.js';

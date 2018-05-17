@@ -1552,7 +1552,7 @@ include('header.php');
 									?>
 
 											<td>
-											<a href="edit-file.php?file_id=<?php echo $row["id"]; ?>" class="btn-sm">
+											<a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=3" class="btn-sm">
 											<?php _e(html_output($row['uploader']),'cftp_admin'); ?>
 										</a>
 											</td>

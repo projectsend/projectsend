@@ -1573,7 +1573,7 @@ include('header.php');
 										if($current_level != '0') {
 									?>
                   <td>
-                  		<a href="edit-file.php?file_id=<?php echo $row["id"]; ?>" class="btn-sm">
+                  		<a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=5" class="btn-sm">
 <?php
 ?>
                    		<?php _e(html_output($row['uploader']),'cftp_admin'); ?>

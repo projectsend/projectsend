@@ -34,6 +34,34 @@ define('CAN_INCLUDE_FILES', true);
 if (!empty($_GET['file_id'])) {
 	$this_file_id = $_GET['file_id'];
 }
+$get_prev_id = isset($_GET['page_id']) ? $_GET['page_id'] : '';
+//1 for send.php
+//2 for 
+
+switch($get_prev_id) {
+	case 1:
+	$get_prev_url = BASE_URI.'sent.php';
+	break;
+	case 2:
+	$get_prev_url = BASE_URI.'inbox.php';
+	break;
+	case 3:
+	$get_prev_url = BASE_URI.'outbox.php';
+	break;
+	case 4:
+	$get_prev_url = BASE_URI.'requested_file.php';
+	break;
+	case 5:
+	$get_prev_url = BASE_URI.'expired.php';
+	break;
+	case 6:
+	$get_prev_url = BASE_URI.'expired.php';
+	break;
+	default:
+	$get_prev_id = '#';
+}
+var_dump($get_prev_url);
+
 
 /** Fill the users array that will be used on the notifications process */
 $users = array();
@@ -509,10 +537,11 @@ $message = '
 					}
 				}
 				header("location:".$_SERVER['REQUEST_URI']);
+				
 			}
 			/** Validations OK, show the editor */
 	?>
-          <form action="edit-file.php?file_id=<?php echo filter_var($this_file_id,FILTER_VALIDATE_INT); ?>" method="post" name="edit_file" id="edit_file">
+          <form action="edit-file.php?file_id=<?php echo filter_var($this_file_id,FILTER_VALIDATE_INT); ?>&page_id=<?php echo $get_prev_id; ?>" method="post" name="edit_file" id="edit_file">
             <div class="container-fluid">
               <?php
 						/** Reconstruct the current assignments arrays */
@@ -756,7 +785,7 @@ $message = '
 						}
 					?>
               <div class="after_form_buttons">
-                <button type="button" class="btn btn-default btn-wide" onclick="window_back()">Cancel</button>
+              <a class="btn btn-default btn-wide" href="<?php echo $get_prev_url; ?>" >Cancel</a>
                 <button type="submit" name="submit" class="btn btn-wide btn-primary">
                 <?php _e('Continue','cftp_admin'); ?>
                 </button>
@@ -773,7 +802,7 @@ $message = '
 </div>
 <script type="text/javascript">
 function window_back() {
-			window.history.back();
+			//window.history.back(-1);
 }
 	$(document).ready(function() {
 		

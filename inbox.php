@@ -795,7 +795,7 @@ $q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations
 									?>
                   <td>
                   	
-                  		<a href="edit-file.php?file_id=<?php echo $row["id"]; ?>" class="btn-sm">
+                  		<a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=2" class="btn-sm">
                     	<?php _e(html_output($row['uploader']),'cftp_admin'); ?>
                     	</a>
 

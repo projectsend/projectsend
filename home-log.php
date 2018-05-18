@@ -39,6 +39,7 @@
 											'affected_account_name'	=> $log['affected_account_name']
 										)
 					);
+				
 				?>
 					<li>
 						<div class="log_ico">

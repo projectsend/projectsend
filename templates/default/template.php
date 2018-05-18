@@ -112,7 +112,7 @@ $count = count($my_files);
 					}
 				?>
 		
-				<table id="files_list" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
+				<table id="files_list" class="cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
 					<thead>
 						<tr>
 							<th class="td_checkbox" data-sort-ignore="true">

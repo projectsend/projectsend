@@ -1192,7 +1192,6 @@ function render_log_action($params)
 			$part2 = $affected_file_name;
 			break;
 	}
-	
 	$date = date(TIMEFORMAT_USE,strtotime($timestamp));
 
 	if (!empty($part1)) { $log['1'] = $part1; }

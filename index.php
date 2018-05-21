@@ -75,8 +75,8 @@ $login_button_text = __('Log in','cftp_admin');
 						$('.ajax_response').html();
 						clean_form(this);
 		
-						is_complete(this.username,'<?php _e('Username was not completed','cftp_admin'); ?>');
-						is_complete(this.password,'<?php _e('Password was not completed','cftp_admin'); ?>');
+						is_complete(this.username,'<?php echo addslashes(__('Username was not completed','cftp_admin')); ?>');
+						is_complete(this.password,'<?php echo addslashes(__('Password was not completed','cftp_admin')); ?>');
 		
 						// show the errors or continue if everything is ok
 						if (show_form_errors() == false) {
@@ -85,7 +85,7 @@ $login_button_text = __('Log in','cftp_admin');
 						else {
 							var url = $(this).attr('action');
 							$('.ajax_response').html('');
-							$('#submit').html('<i class="fa fa-cog fa-spin fa-fw"></i><span class="sr-only"></span> <?php _e('Logging in','cftp_admin'); ?>...');
+							$('#submit').html('<i class="fa fa-cog fa-spin fa-fw"></i><span class="sr-only"></span> <?php echo addslashes(__('Logging in','cftp_admin')); ?>...');
 							$.ajax({
 									cache: false,
 									type: "get",
@@ -96,7 +96,7 @@ $login_button_text = __('Log in','cftp_admin');
 										var json = jQuery.parseJSON(response);
 										if ( json.status == 'success' ) {
 											//$('.ajax_response').html(json.message);
-											$('#submit').html('<i class="fa fa-check"></i><span class="sr-only"></span> <?php _e('Redirecting','cftp_admin'); ?>...');
+											$('#submit').html('<i class="fa fa-check"></i><span class="sr-only"></span> <?php echo addslashes(__('Redirecting','cftp_admin')); ?>...');
 											$('#submit').removeClass('btn-primary').addClass('btn-success');
 											setTimeout('window.location.href = "'+json.location+'"', 1000);
 										}

@@ -189,7 +189,7 @@ include('header.php');
 
 	$params = array();
 
-	$cq = "SELECT client_id, COUNT(group_id) as amount, GROUP_CONCAT(group_id SEPARATOR ',') AS groups FROM " . TABLE_MEMBERS_REQUESTS;
+	$cq = "(SELECT client_id, COUNT(group_id) as amount, GROUP_CONCAT(group_id SEPARATOR ',') AS groups FROM " . TABLE_MEMBERS_REQUESTS;
 	
 	if ( isset( $_GET['denied'] ) && !empty( $_GET['denied'] ) ) {
 		$cq .= " WHERE denied='1'";
@@ -202,13 +202,13 @@ include('header.php');
 		$found_count = COUNT_MEMBERSHIP_REQUESTS;
 	}
 	
-	$cq .= " GROUP BY client_id";
+	$cq .= " GROUP BY client_id)";
 
 	/**
 	 * Pre-query to count the total results
 	*/
 	$tq = $cq;
-	$tq .= " LIMIT 0 UNION ALL SELECT COUNT(DISTINCT client_id) as clients, COUNT(group_id) as total, null FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='0'";
+        $tq .= "UNION ALL (SELECT COUNT(DISTINCT client_id) as clients, COUNT(group_id) as total, null FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='0') LIMIT 0";
 	//echo $tq;
 
 	$count_sql	= $dbh->prepare( $tq );

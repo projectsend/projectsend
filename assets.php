@@ -11,7 +11,7 @@ global $load_js_files;
 global $load_compat_js_files;
 
 $load_css_files			= array();
-$load_js_files			= array();
+$load_js_files				= array();
 $load_compat_js_files	= array();
 
 /** Add the base files that every page will need, regardless of type */
@@ -129,6 +129,8 @@ if ( file_exists( $custom_css_location ) ) {
  */
 function load_css_files() {
 	global $load_css_files;
+	global $hooks;
+	$hooks->do_action('render_css_files');
 
 	if ( !empty( $load_css_files ) ) {
 		foreach ( $load_css_files as $file ) {
@@ -153,6 +155,8 @@ if ( file_exists( $custom_js_location ) ) {
 function load_js_files() {
 	global $load_compat_js_files;
 	global $load_js_files;
+	global $hooks;
+	$hooks->do_action('render_js_files');
 
 	if ( !empty( $load_compat_js_files ) ) {
 		foreach ( $load_compat_js_files as $index => $info ) {

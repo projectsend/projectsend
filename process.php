@@ -35,7 +35,7 @@ class process {
 			case 'download':
 				$this->download_file();
 				break;
-			case 'zip_download':
+			case 'download_zip':
 				$this->download_zip();
 				break;
 			default:
@@ -43,12 +43,12 @@ class process {
 				break;
 		}
 	}
-	
+
 	private function login() {
 		global $hasher;
 		$this->sysuser_password		= $_GET['password'];
 		$this->selected_form_lang	= (!empty( $_GET['language'] ) ) ? $_GET['language'] : SITE_LANG;
-	
+
 		/** Look up the system users table to see if the entered username exists */
 		$this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user= :username OR email= :email");
 		$this->statement->execute(
@@ -233,7 +233,7 @@ class process {
 								'affected_account_name' => $global_name
 							);
 		$new_record_action = $new_log_action->log_action_save($log_action_args);
-		
+
 		$redirect_to = 'index.php';
 		if ( isset( $_GET['timeout'] ) ) {
 			$redirect_to .= '?error=timeout';
@@ -242,13 +242,13 @@ class process {
 		header("Location: " . $redirect_to);
 		die();
 	}
-	
+
 	private function download_file() {
 		$this->check_level = array(9,8,7,0);
 		if (isset($_GET['id'])) {
 			/** Do a permissions check for logged in user */
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
-				
+
 					/**
 					 * Get the file name
 					 */
@@ -261,12 +261,12 @@ class process {
 					$this->filename_save	= (!empty( $this->row['original_url'] ) ) ? $this->row['original_url'] : $this->row['url'];
 					$this->expires			= $this->row['expires'];
 					$this->expiry_date		= $this->row['expiry_date'];
-					
+
 					$this->expired			= false;
 					if ($this->expires == '1' && time() > strtotime($this->expiry_date)) {
 						$this->expired		= true;
 					}
-					
+
 					$this->can_download = false;
 
 					if (CURRENT_USER_LEVEL == 0) {
@@ -280,7 +280,7 @@ class process {
 															'client_id'	=> CURRENT_USER_ID,
 															'return'	=> 'list',
 														);
-							$this->found_groups	= $this->get_groups->client_get_groups($this->get_arguments); 
+							$this->found_groups	= $this->get_groups->client_get_groups($this->get_arguments);
 
 							/**
 							 * Get assignments
@@ -304,7 +304,7 @@ class process {
 							if ( $this->files->rowCount() > 0 ) {
 								$this->can_download = true;
 							}
-							
+
 							/** Continue */
 							if ($this->can_download == true) {
 								/**
@@ -361,14 +361,14 @@ class process {
 							header('Content-Length: ' . get_real_size($this->real_file));
 							header('Connection: close');
 							//readfile($this->real_file);
-							
+
 							$context = stream_context_create();
 							$file = fopen($this->real_file, 'rb', false, $context);
 							while( !feof( $file ) ) {
 								//usleep(1000000); //Reduce download speed
 								echo stream_get_contents($file, 2014);
 							}
-							
+
 							fclose( $file );
 							exit;
 						}
@@ -395,8 +395,8 @@ class process {
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
 				$file_list = array();
 				$requested_files = $_GET['files'];
-				foreach($requested_files as $file_id) {
-					$file_list[] = $file_id;
+				foreach($requested_files as $key => $data) {
+					$file_list[] = $data['value'];
 				}
 				ob_clean();
 				flush();

@@ -12,7 +12,7 @@ $zip_file = tempnam("tmp", "zip");
 $zip = new ZipArchive();
 $zip->open($zip_file, ZipArchive::OVERWRITE);
 
-$files_to_zip = explode( ',', $_GET['ids'] );
+$files_to_zip = array_map( 'intval', explode( ',', $_GET['ids'] ) );
 
 foreach ($files_to_zip as $idx => $file) {
     $file = UPLOADED_FILES_FOLDER . $file;
@@ -34,7 +34,7 @@ $get_arguments	= array(
 								'client_id'	=> CURRENT_USER_ID,
 								'return'	=> 'list',
 							);
-$found_groups	= $get_groups->client_get_groups($get_arguments); 
+$found_groups	= $get_groups->client_get_groups($get_arguments);
 
 foreach ($files_to_zip as $file_to_zip) {
 	/**
@@ -57,7 +57,7 @@ foreach ($files_to_zip as $file_to_zip) {
 	if ($this_file_expires == '1' && time() > strtotime($this_file_expiry_date)) {
 		$this_file_expired	= true;
 	}
-		
+
 	if ($current_level == 0) {
 		if ($this_file_expires == '0' || $this_file_expired == false) {
 			$statement = $dbh->prepare("SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE (client_id = :client_id OR FIND_IN_SET(group_id, :groups)) AND file_id = :file_id AND hidden = '0'");
@@ -67,7 +67,7 @@ foreach ($files_to_zip as $file_to_zip) {
 			$statement->execute();
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
 			$row = $statement->fetch();
-			
+
 			if ( $row ) {
 				/** Add the file */
 				$allowed_to_zip[$row['file_id']] = array(
@@ -118,7 +118,7 @@ if ($added_files > 0) {
 	if (file_exists($zip_file)) {
 		setCookie("download_started", 1, time() + 20, '/', "", false, false);
 		$zip_file_name = 'projectsend_'.generateRandomString().'.zip';
-		session_write_close(); 
+		session_write_close();
 		while (ob_get_level()) ob_end_clean();
 		header('Content-Type: application/octet-stream');
 		header('Content-Disposition: attachment; filename="'.$zip_file_name.'"');

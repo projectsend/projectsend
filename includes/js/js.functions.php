@@ -112,11 +112,7 @@ $(document).ready(function(e) {
 			?>
 				if (action == 'zip') {
 
-					var checkboxes = $.map($('input:checkbox:checked'), function(e,i) {
-						if (e.value != '0') {
-							return +e.value;
-						}
-					});
+					var checkboxes = $("td>input:checkbox").serializeArray();
 
 					$(document).psendmodal();
 
@@ -126,13 +122,17 @@ $(document).ready(function(e) {
 												'<p class="lead text-center text-info"><?php echo addslashes(__('Please wait while your download is prepared.','cftp_admin')); ?></p>'+
 												'<p class="text-center text-info"><?php echo addslashes(__('This operation could take a few minutes, depending on the size of the files.','cftp_admin')); ?></p>'
 											);
-					$.get('<?php echo BASE_URI; ?>process.php', { do:"zip_download", files:checkboxes },
-						function(data) {
-							var url = '<?php echo BASE_URI; ?>process-zip-download.php?ids=' + data;
-							$('.modal_content').append("<iframe id='modal_zip'></iframe>");
-							$('#modal_zip').attr('src', url);
-						}
-					);
+
+					$.ajax({
+						method: 'GET',
+						url: '<?php echo BASE_URI; ?>process.php',
+						data: { do:"download_zip", files:checkboxes }
+					}).done( function(rsp) {
+						var url = '<?php echo BASE_URI; ?>process-zip-download.php?ids=' + rsp;
+						$('.modal_content').append("<iframe id='modal_zip'></iframe>");
+						$('#modal_zip').attr('src', url);
+					});
+					return false;
 				}
 		}
 		else {

@@ -8,7 +8,7 @@
 $footable_min = true; // delete this line after finishing pagination on every table
 $load_scripts	= array(
 						'footable',
-					); 
+					);
 
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
@@ -52,7 +52,7 @@ if (isset($_GET['group_id'])) {
 
 	$sql_name = $dbh->prepare("SELECT name from " . TABLE_GROUPS . " WHERE id=:id");
 	$sql_name->bindParam(':id', $this_id, PDO::PARAM_INT);
-	$sql_name->execute();							
+	$sql_name->execute();
 
 	if ( $sql_name->rowCount() > 0) {
 		$sql_name->setFetchMode(PDO::FETCH_ASSOC);
@@ -104,12 +104,12 @@ include('header.php');
 				$sql_distinct_files->bindParam(':files', $files_to_get);
 				$sql_distinct_files->execute();
 				$sql_distinct_files->setFetchMode(PDO::FETCH_ASSOC);
-				
+
 				while( $data_file_relations = $sql_distinct_files->fetch() ) {
-					$all_files_relations[] = $data_file_relations['file_id']; 
+					$all_files_relations[] = $data_file_relations['file_id'];
 					$files_to_get = implode(',',$all_files_relations);
 				}
-				
+
 				/**
 				 * Then get the files names to add to the log action.
 				 */
@@ -221,7 +221,7 @@ include('header.php');
 				echo system_message('error',$msg);
 			}
 		}
-		
+
 		/**
 		 * Global form action
 		 */
@@ -232,12 +232,12 @@ include('header.php');
 			$rq = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE $search_on = :id";
 			$params[':id'] = $this_id;
 
-			/** Add the status filter */	
+			/** Add the status filter */
 			if (isset($_GET['hidden']) && $_GET['hidden'] != 'all') {
 				$set_and = true;
 				$rq .= " AND hidden = :hidden";
 				$no_results_error = 'filter';
-				
+
 				$params[':hidden'] = $_GET['hidden'];
 			}
 
@@ -247,7 +247,7 @@ include('header.php');
 			 */
 			$sql = $dbh->prepare($rq);
 			$sql->execute( $params );
-			
+
 			if ( $sql->rowCount() > 0) {
 				/**
 				 * Get the IDs of files that match the previous query.
@@ -270,7 +270,7 @@ include('header.php');
 			 * Get the files
 			 */
 			$params = array();
-			
+
 			/**
 			 * Add the download count to the main query.
 			 * If the page is filtering files by client, then
@@ -282,17 +282,17 @@ include('header.php');
 				$params[':user_id'] = $this_id;
 			}
 			$cq = "SELECT files.*, ( SELECT COUNT(file_id) FROM " . TABLE_DOWNLOADS . " WHERE " . TABLE_DOWNLOADS . ".file_id=files.id " . $add_user_to_query . ") as download_count FROM " . TABLE_FILES . " files";
-	
+
 			if ( isset($search_on) && !empty($gotten_files) ) {
 				$conditions[] = "FIND_IN_SET(id, :files)";
 				$params[':files'] = $gotten_files;
 			}
-	
-			/** Add the search terms */	
+
+			/** Add the search terms */
 			if(isset($_GET['search']) && !empty($_GET['search'])) {
 				$conditions[] = "(filename LIKE :name OR description LIKE :description)";
 				$no_results_error = 'search';
-	
+
 				$search_terms			= '%'.$_GET['search'].'%';
 				$params[':name']		= $search_terms;
 				$params[':description']	= $search_terms;
@@ -300,11 +300,11 @@ include('header.php');
 
 			/**
 			 * Filter by uploader
-			 */	
+			 */
 			if(isset($_GET['uploader']) && !empty($_GET['uploader'])) {
 				$conditions[] = "uploader = :uploader";
 				$no_results_error = 'filter';
-	
+
 				$params[':uploader'] = $_GET['uploader'];
 			}
 
@@ -317,10 +317,10 @@ include('header.php');
 			if ($current_level == '7' || $current_level == '0') {
 				$conditions[] = "uploader = :uploader";
 				$no_results_error = 'account_level';
-	
+
 				$params[':uploader'] = $global_user;
 			}
-			
+
 			/**
 			 * Add the category filter
 			 */
@@ -334,14 +334,14 @@ include('header.php');
 					$files_id_by_cat[] = $file_data['file_id'];
 				}
 				$files_id_by_cat = implode(',',$files_id_by_cat);
-	
+
 				/** Overwrite the parameter set previously */
 				$conditions[] = "FIND_IN_SET(id, :files)";
 				$params[':files'] = $files_id_by_cat;
-				
+
 				$no_results_error = 'category';
 			}
-	
+
 			/**
 			 * Build the final query
 			 */
@@ -364,21 +364,21 @@ include('header.php');
 			$count_sql = $dbh->prepare( $cq );
 			$count_sql->execute($params);
 			$count_for_pagination = $count_sql->rowCount();
-		
+
 			/**
 			 * Repeat the query but this time, limited by pagination
 			 */
 			$cq .= " LIMIT :limit_start, :limit_number";
 			$sql = $dbh->prepare( $cq );
-		
+
 			$pagination_page			= ( isset( $_GET["page"] ) ) ? $_GET["page"] : 1;
 			$pagination_start			= ( $pagination_page - 1 ) * RESULTS_PER_PAGE;
 			$params[':limit_start']		= $pagination_start;
 			$params[':limit_number']	= RESULTS_PER_PAGE;
-		
+
 			$sql->execute( $params );
 			$count = $sql->rowCount();
-	
+
 			/** Debug query */
 			//echo $cq;
 			//print_r( $conditions );
@@ -476,7 +476,8 @@ include('header.php');
 										<?php
 											$actions_options = array(
 																	'none'			=> __('Select action','cftp_admin'),
-																);
+																	'zip'				=> __('Download zipped','cftp_admin'),
+															);
 
 											/** Options only available when viewing a client/group files list */
 											if (isset($search_on)) {
@@ -505,11 +506,11 @@ include('header.php');
 			?>
 
 			<div class="clear"></div>
-	
+
 			<div class="form_actions_count">
 				<p class="form_count_total"><?php _e('Found','cftp_admin'); ?>: <span><?php echo $count_for_pagination; ?> <?php _e('files','cftp_admin'); ?></span></p>
 			</div>
-	
+
 			<div class="clear"></div>
 
 			<?php
@@ -548,7 +549,7 @@ include('header.php');
 												'class'		=> 'footable table',
 											);
 					$table = new generateTable( $table_attributes );
-					
+
 					/**
 					 * Set the conditions to true or false once here to
 					 * avoid repetition
@@ -560,7 +561,7 @@ include('header.php');
 										'total_downloads'	=> ( $current_level != '0' && !isset( $search_on ) ) ? true : false,
 										'is_search_on'		=> ( isset( $search_on ) ) ? true : false,
 									);
-	
+
 					$thead_columns		= array(
 												array(
 													'select_all'	=> true,
@@ -636,44 +637,44 @@ include('header.php');
 													'hide'			=> 'phone',
 												),
 											);
-	
-											//echo '<pre>'; 
+
+											//echo '<pre>';
 											//print_r($thead_columns);
 											//echo '</pre>';
-	
+
 					$table->thead( $thead_columns );
-	
-	
+
+
 					$sql->setFetchMode(PDO::FETCH_ASSOC);
 					while ( $row = $sql->fetch() ) {
 						$table->add_row();
-	
+
 						/**
 						 * Prepare the information to be used later on the cells array
 						 */
 						$file_id = $row['id'];
 						$download_link = make_download_link( array( 'id' => $file_id ) );
-	
+
 						/**
 						 * Visibility is only available when filtering by client or group.
 						 */
 						$params = array();
 						$query_this_file = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id";
 						$params[':file_id'] = $row['id'];
-	
+
 						$sql_this_file = $dbh->prepare($query_this_file);
 						$sql_this_file->execute( $params );
 						$sql_this_file->setFetchMode(PDO::FETCH_ASSOC);
-	
+
 						$count_assignations = $sql_this_file->rowCount();
-	
+
 						while( $data_file = $sql_this_file->fetch() ) {
 							$file_id = $data_file['id'];
 							$hidden = $data_file['hidden'];
 						}
-	
+
 						$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
-	
+
 						/**
 						 * Get file size only if the file exists
 						 */
@@ -686,15 +687,15 @@ include('header.php');
 							$this_file_size = '0';
 							$formatted_size = '-';
 						}
-	
+
 						/***/
 						$pathinfo = pathinfo($row['url']);
 						$extension = ( !empty( $pathinfo['extension'] ) ) ? strtolower($pathinfo['extension']) : '';
-	
+
 						/** Is file assigned? */
 						$assigned_class		= ($count_assignations == 0) ? 'danger' : 'success';
 						$assigned_status	= ($count_assignations == 0) ? __('No','cftp_admin') : __('Yes','cftp_admin');
-	
+
 						/**
 						 * Visibility
 						 */
@@ -712,7 +713,7 @@ include('header.php');
 								$visibility_label	= __('None','cftp_admin');
 							}
 						}
-	
+
 						/**
 						 * Expiration
 						 */
@@ -722,7 +723,7 @@ include('header.php');
 						}
 						else {
 							$expires_date = date( TIMEFORMAT_USE, strtotime ($row['expiry_date'] ) );
-	
+
 							if (time() > strtotime($row['expiry_date'])) {
 								$expires_button	= 'danger';
 								$expires_label	= __('Expired on','cftp_admin') . ' ' . $expires_date;
@@ -732,7 +733,7 @@ include('header.php');
 								$expires_label	= __('Expires on','cftp_admin') . ' ' . $expires_date;
 							}
 						}
-	
+
 						/**
 						 * Visibility
 						 */
@@ -742,13 +743,13 @@ include('header.php');
 							$status_class	= ($hidden == 1) ? 'danger' : 'success';
 							$status_label	= ($hidden == 1) ? __('Hidden','cftp_admin') : __('Visible','cftp_admin');
 						}
-	
+
 						/**
 						 * Download count when filtering by group or client
 						 */
 						if ( isset( $search_on ) ) {
 							$download_count_content = $row['download_count'] . ' ' . __('times','cftp_admin');
-	
+
 							switch ($results_type) {
 								case 'client':
 									break;
@@ -759,7 +760,7 @@ include('header.php');
 								break;
 							}
 						}
-						
+
 						/**
 						 * Download count and link on the unfiltered files table
 						 * (no specific client or group selected)
@@ -772,11 +773,11 @@ include('header.php');
 								else {
 									$btn_class		= 'btn-default disabled';
 								}
-	
+
 								$downloads_table_link = '<a href="' . BASE_URI .'download-information.php?id=' . $row['id'] .'" class="' . $btn_class .' btn btn-sm" title="' .html_output($row['filename']) .'">' . $row["download_count"] . ' ' . __('downloads','cftp_admin') .'</a>';
 							}
 						}
-	
+
 						/**
 						 * Add the cells to the row
 						 */
@@ -836,17 +837,17 @@ include('header.php');
 													'content'		=> '<a href="edit-file.php?file_id=' . $row["id"] .'" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a>',
 												),
 									);
-	
+
 						foreach ( $tbody_cells as $cell ) {
 							$table->add_cell( $cell );
 						}
-		
+
 						$table->end_row();
 					}
-	
-	
+
+
 					echo $table->render();
-	
+
 					/**
 					 * PAGINATION
 					 */
@@ -855,7 +856,7 @@ include('header.php');
 											'current'	=> $pagination_page,
 											'pages'		=> ceil( $count_for_pagination / RESULTS_PER_PAGE ),
 										);
-					
+
 					echo $table->pagination( $pagination_args );
 				}
 			?>

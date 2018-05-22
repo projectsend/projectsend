@@ -16,6 +16,9 @@ require_once('sys.vars.php');
 /** Text strings used on various files */
 require_once('includes/vars.php');
 
+/** Security relevant functions */
+require_once('includes/security/xsrf.php');
+
 /** Basic functions to be accessed from anywhere */
 require_once('includes/functions.php');
 

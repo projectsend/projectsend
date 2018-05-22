@@ -37,33 +37,39 @@ class PSend_Upload_File
 	 * @link http://stackoverflow.com/questions/2668854/sanitizing-strings-to-make-them-url-and-filename-safe
 	 */
 	function generate_safe_filename($unformatted) {
-	
+
 		$got = pathinfo( strtolower( trim( $unformatted ) ) );
 		$url = $got['filename'];
 		$ext = $got['extension'];
-	
+
 		//replace accent characters, forien languages
-		$search = array('À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ', 'Ā', 'ā', 'Ă', 'ă', 'Ą', 'ą', 'Ć', 'ć', 'Ĉ', 'ĉ', 'Ċ', 'ċ', 'Č', 'č', 'Ď', 'ď', 'Đ', 'đ', 'Ē', 'ē', 'Ĕ', 'ĕ', 'Ė', 'ė', 'Ę', 'ę', 'Ě', 'ě', 'Ĝ', 'ĝ', 'Ğ', 'ğ', 'Ġ', 'ġ', 'Ģ', 'ģ', 'Ĥ', 'ĥ', 'Ħ', 'ħ', 'Ĩ', 'ĩ', 'Ī', 'ī', 'Ĭ', 'ĭ', 'Į', 'į', 'İ', 'ı', 'Ĳ', 'ĳ', 'Ĵ', 'ĵ', 'Ķ', 'ķ', 'Ĺ', 'ĺ', 'Ļ', 'ļ', 'Ľ', 'ľ', 'Ŀ', 'ŀ', 'Ł', 'ł', 'Ń', 'ń', 'Ņ', 'ņ', 'Ň', 'ň', 'ŉ', 'Ō', 'ō', 'Ŏ', 'ŏ', 'Ő', 'ő', 'Œ', 'œ', 'Ŕ', 'ŕ', 'Ŗ', 'ŗ', 'Ř', 'ř', 'Ś', 'ś', 'Ŝ', 'ŝ', 'Ş', 'ş', 'Š', 'š', 'Ţ', 'ţ', 'Ť', 'ť', 'Ŧ', 'ŧ', 'Ũ', 'ũ', 'Ū', 'ū', 'Ŭ', 'ŭ', 'Ů', 'ů', 'Ű', 'ű', 'Ų', 'ų', 'Ŵ', 'ŵ', 'Ŷ', 'ŷ', 'Ÿ', 'Ź', 'ź', 'Ż', 'ż', 'Ž', 'ž', 'ſ', 'ƒ', 'Ơ', 'ơ', 'Ư', 'ư', 'Ǎ', 'ǎ', 'Ǐ', 'ǐ', 'Ǒ', 'ǒ', 'Ǔ', 'ǔ', 'Ǖ', 'ǖ', 'Ǘ', 'ǘ', 'Ǚ', 'ǚ', 'Ǜ', 'ǜ', 'Ǻ', 'ǻ', 'Ǽ', 'ǽ', 'Ǿ', 'ǿ'); 
-		$replace = array('A', 'A', 'A', 'A', 'A', 'A', 'AE', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'D', 'N', 'O', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 's', 'a', 'a', 'a', 'a', 'a', 'a', 'ae', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'n', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y', 'A', 'a', 'A', 'a', 'A', 'a', 'C', 'c', 'C', 'c', 'C', 'c', 'C', 'c', 'D', 'd', 'D', 'd', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'G', 'g', 'G', 'g', 'G', 'g', 'G', 'g', 'H', 'h', 'H', 'h', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'IJ', 'ij', 'J', 'j', 'K', 'k', 'L', 'l', 'L', 'l', 'L', 'l', 'L', 'l', 'l', 'l', 'N', 'n', 'N', 'n', 'N', 'n', 'n', 'O', 'o', 'O', 'o', 'O', 'o', 'OE', 'oe', 'R', 'r', 'R', 'r', 'R', 'r', 'S', 's', 'S', 's', 'S', 's', 'S', 's', 'T', 't', 'T', 't', 'T', 't', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'W', 'w', 'Y', 'y', 'Y', 'Z', 'z', 'Z', 'z', 'Z', 'z', 's', 'f', 'O', 'o', 'U', 'u', 'A', 'a', 'I', 'i', 'O', 'o', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'A', 'a', 'AE', 'ae', 'O', 'o'); 
-		$url = str_replace($search, $replace, $url);
-	
+		$accents_search = array('À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ', 'Ā', 'ā', 'Ă', 'ă', 'Ą', 'ą', 'Ć', 'ć', 'Ĉ', 'ĉ', 'Ċ', 'ċ', 'Č', 'č', 'Ď', 'ď', 'Đ', 'đ', 'Ē', 'ē', 'Ĕ', 'ĕ', 'Ė', 'ė', 'Ę', 'ę', 'Ě', 'ě', 'Ĝ', 'ĝ', 'Ğ', 'ğ', 'Ġ', 'ġ', 'Ģ', 'ģ', 'Ĥ', 'ĥ', 'Ħ', 'ħ', 'Ĩ', 'ĩ', 'Ī', 'ī', 'Ĭ', 'ĭ', 'Į', 'į', 'İ', 'ı', 'Ĳ', 'ĳ', 'Ĵ', 'ĵ', 'Ķ', 'ķ', 'Ĺ', 'ĺ', 'Ļ', 'ļ', 'Ľ', 'ľ', 'Ŀ', 'ŀ', 'Ł', 'ł', 'Ń', 'ń', 'Ņ', 'ņ', 'Ň', 'ň', 'ŉ', 'Ō', 'ō', 'Ŏ', 'ŏ', 'Ő', 'ő', 'Œ', 'œ', 'Ŕ', 'ŕ', 'Ŗ', 'ŗ', 'Ř', 'ř', 'Ś', 'ś', 'Ŝ', 'ŝ', 'Ş', 'ş', 'Š', 'š', 'Ţ', 'ţ', 'Ť', 'ť', 'Ŧ', 'ŧ', 'Ũ', 'ũ', 'Ū', 'ū', 'Ŭ', 'ŭ', 'Ů', 'ů', 'Ű', 'ű', 'Ų', 'ų', 'Ŵ', 'ŵ', 'Ŷ', 'ŷ', 'Ÿ', 'Ź', 'ź', 'Ż', 'ż', 'Ž', 'ž', 'ſ', 'ƒ', 'Ơ', 'ơ', 'Ư', 'ư', 'Ǎ', 'ǎ', 'Ǐ', 'ǐ', 'Ǒ', 'ǒ', 'Ǔ', 'ǔ', 'Ǖ', 'ǖ', 'Ǘ', 'ǘ', 'Ǚ', 'ǚ', 'Ǜ', 'ǜ', 'Ǻ', 'ǻ', 'Ǽ', 'ǽ', 'Ǿ', 'ǿ');
+		$accents_replace = array('A', 'A', 'A', 'A', 'A', 'A', 'AE', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'D', 'N', 'O', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 's', 'a', 'a', 'a', 'a', 'a', 'a', 'ae', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'n', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y', 'A', 'a', 'A', 'a', 'A', 'a', 'C', 'c', 'C', 'c', 'C', 'c', 'C', 'c', 'D', 'd', 'D', 'd', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'G', 'g', 'G', 'g', 'G', 'g', 'G', 'g', 'H', 'h', 'H', 'h', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'IJ', 'ij', 'J', 'j', 'K', 'k', 'L', 'l', 'L', 'l', 'L', 'l', 'L', 'l', 'l', 'l', 'N', 'n', 'N', 'n', 'N', 'n', 'n', 'O', 'o', 'O', 'o', 'O', 'o', 'OE', 'oe', 'R', 'r', 'R', 'r', 'R', 'r', 'S', 's', 'S', 's', 'S', 's', 'S', 's', 'T', 't', 'T', 't', 'T', 't', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'W', 'w', 'Y', 'y', 'Y', 'Z', 'z', 'Z', 'z', 'Z', 'z', 's', 'f', 'O', 'o', 'U', 'u', 'A', 'a', 'I', 'i', 'O', 'o', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'A', 'a', 'AE', 'ae', 'O', 'o');
+		$url = str_replace($accents_search, $accents_replace, $url);
+
 		//replace common characters
-		$search = array('&', '£', '$'); 
-		$replace = array('and', 'pounds', 'dollars'); 
-		$url= str_replace($search, $replace, $url);
-	
+		$common_search		= array('&', '£', '$');
+		$common_replace	= array('and', 'pounds', 'dollars');
+		$url					= str_replace($common_search, $common_replace, $url);
+
+		//replace special characters, list extracted from WordPress' formatting.php function
+		$special_search	= array("?", "[", "]", "/", "\\", "=", "<", ">", ":", ";", ",", "'", "\"", "&", "$", "#", "*", "(", ")", "|", "~", "`", "!", "{", "}", "%", "+", chr(0));
+		$special_replace	= array('');
+		$url					= str_replace($special_search, $special_replace, $url);
+
 		// remove - for spaces and union characters
-		$find = array(' ', '&', '\r\n', '\n', '+', ',', '//');
-		$url = str_replace($find, '-', $url);
-	
+		$unions_search		= array(' ', '&', '\r\n', '\n', '+', ',', '//');
+		$url					= str_replace($unions_search, '-', $url);
+
 		//delete and replace rest of special chars
-		$find = array('/[^a-z0-9\-<>_]/', '/[\-]+/', '/<[^>]*>/');
-		$replace = array('', '-', '');
-		$uri = preg_replace($find, $replace, $url);
-	
+		//$find		= array('/[^a-z0-9\-<>_]/', '/[\-]+/', '/<[^>]*>/'); // Overkill?
+		$others_search		= array('/[\-]+/', '/<[^>]*>/');
+		$others_replace	= array('-', '');
+		$uri					= preg_replace($others_search, $others_replace, $url);
+
 		return $uri . '.' . $ext;
 	}
-	
+
 	/**
 	 * Check if the file extension is among the allowed ones, that are defined on
 	 * the options page.
@@ -83,7 +89,7 @@ class PSend_Upload_File
 			}
 		}
 	}
-	
+
 	/**
 	 * Generate a safe filename that includes only letters, numbers and underscores.
 	 * If there are multiple invalid characters in a row, only one replacement character
@@ -95,7 +101,7 @@ class PSend_Upload_File
 		$this->safe_filename = $this->generate_safe_filename( $this->name );
 		return basename($this->safe_filename);
 	}
-	
+
 	/**
 	 * Rename a file using only letters, numbers and underscores.
 	 * Used when reading the temp folder to add files to ProjectSend via the "Add from FTP"
@@ -116,7 +122,7 @@ class PSend_Upload_File
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Used to copy a file from the temporary folder (the default location where it's put
 	 * after uploading it) to the final folder.
@@ -125,7 +131,7 @@ class PSend_Upload_File
 	function upload_move($arguments)
 	{
 		$this->uploaded_name	= $arguments['uploaded_name'];
-		$this->filename			= $arguments['filename'];
+		$this->filename		= $arguments['filename'];
 		$this->uid 				= CURRENT_USER_ID;
 		$this->username 		= CURRENT_USER_USERNAME;
 		$this->makehash 		= sha1($this->username);
@@ -145,25 +151,25 @@ class PSend_Upload_File
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Called after correctly moving the file to the final location.
 	 */
 	function upload_add_to_database($arguments)
 	{
 		$this->file_on_disk		= (!empty($arguments['file_disk'])) ? $arguments['file_disk'] : '';
-		$this->post_file		= (!empty($arguments['file_original'])) ? $arguments['file_original'] : '';
-		$this->name				= encode_html($arguments['name']);
+		$this->post_file			= (!empty($arguments['file_original'])) ? $arguments['file_original'] : '';
+		$this->name					= encode_html($arguments['name']);
 		$this->description		= encode_html($arguments['description']);
 		$this->uploader			= $arguments['uploader'];
 		$this->uploader_id		= $arguments['uploader_id'];
-		$this->uploader_type	= $arguments['uploader_type'];
-		$this->hidden			= (!empty($arguments['hidden'])) ? 1 : 0;
-		$this->expires			= (!empty($arguments['expires'])) ? 1 : 0;
+		$this->uploader_type		= $arguments['uploader_type'];
+		$this->hidden				= (!empty($arguments['hidden'])) ? 1 : 0;
+		$this->expires				= (!empty($arguments['expires'])) ? 1 : 0;
 		$this->expiry_date		= (!empty($arguments['expiry_date'])) ? date("Y-m-d", strtotime($arguments['expiry_date'])) : date("Y-m-d");
-		$this->is_public		= (!empty($arguments['public'])) ? 1 : 0;
+		$this->is_public			= (!empty($arguments['public'])) ? 1 : 0;
 		$this->public_token		= generateRandomString(32);
-		
+
 		if (isset($arguments['add_to_db'])) {
 			$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (url, original_url, filename, description, uploader, expires, expiry_date, public_allow, public_token)"
 											."VALUES (:url, :original_url, :name, :description, :uploader, :expires, :expiry_date, :public, :token)");
@@ -192,11 +198,11 @@ class PSend_Upload_File
 			}
 			$new_log_action = new LogActions();
 			$log_action_args = array(
-									'action' => $this->action_type,
-									'owner_id' => $this->uploader_id,
-									'affected_file' => $this->file_id,
-									'affected_file_name' => $this->name,
-									'affected_account_name' => $this->uploader
+									'action'						=> $this->action_type,
+									'owner_id'					=> $this->uploader_id,
+									'affected_file'			=> $this->file_id,
+									'affected_file_name'		=> $this->name,
+									'affected_account_name'	=> $this->uploader
 								);
 			$new_record_action = $new_log_action->log_action_save($log_action_args);
 		}
@@ -245,7 +251,7 @@ class PSend_Upload_File
 		else {
 			$this->state['database'] = false;
 		}
-		
+
 		return $this->state;
 	}
 
@@ -282,17 +288,17 @@ class PSend_Upload_File
 				$this->statement->bindParam(':assignment', $this->assignment);
 				$this->statement->bindParam(':hidden', $this->hidden, PDO::PARAM_INT);
 				$this->statement->execute();
-				
+
 				if ($this->uploader_type == 'user') {
 					/** Record the action log */
 					$new_log_action = new LogActions();
 					$log_action_args = array(
-											'action' => $this->action_number,
-											'owner_id' => $this->uploader_id,
-											'affected_file' => $this->file_id,
-											'affected_file_name' => $this->name,
-											'affected_account' => $this->assignment,
-											'affected_account_name' => $this->account_name
+											'action'						=> $this->action_number,
+											'owner_id'					=> $this->uploader_id,
+											'affected_file'			=> $this->file_id,
+											'affected_file_name'		=> $this->name,
+											'affected_account'		=> $this->assignment,
+											'affected_account_name'	=> $this->account_name
 										);
 					$new_record_action = $new_log_action->log_action_save($log_action_args);
 				}
@@ -334,7 +340,7 @@ class PSend_Upload_File
 				 * Add the notification to the table
 				 */
 				$this->members_to_notify = array();
-				
+
 				if ($this->add_to == 'group_id') {
 
 					$this->statement = $this->dbh->prepare("SELECT DISTINCT client_id FROM " . TABLE_MEMBERS . " WHERE group_id = :id");
@@ -348,7 +354,7 @@ class PSend_Upload_File
 				else {
 					$this->members_to_notify[] = $this->id_only;
 				}
-				
+
 				if (!empty($this->members_to_notify)) {
 					foreach ($this->members_to_notify as $this->add_notify) {
 						$this->current_assignment = $this->file_id.'-'.$this->add_notify;
@@ -381,7 +387,7 @@ class PSend_Upload_File
 		$this->current_clients = $arguments['current_clients'];
 		$this->current_groups = $arguments['current_groups'];
 		$this->owner_id = $arguments['owner_id'];
-		
+
 		$this->assign_to_clients = array();
 		$this->assign_to_groups = array();
 		$this->delete_from_db_clients = array();
@@ -398,7 +404,7 @@ class PSend_Upload_File
 					break;
 			}
 		}
-		
+
 		foreach ($this->current_clients as $this->client) {
 			if (!in_array($this->client, $this->assign_to_clients)) {
 				$this->delete_from_db_clients[] = $this->client;
@@ -409,7 +415,7 @@ class PSend_Upload_File
 				$this->delete_from_db_groups[] = $this->group;
 			}
 		}
-		
+
 		$this->delete_arguments = array(
 										'clients' => $this->delete_from_db_clients,
 										'groups' => $this->delete_from_db_groups,
@@ -427,7 +433,7 @@ class PSend_Upload_File
 		$this->file_id = $arguments['file_id'];
 		$this->file_name = $arguments['file_name'];
 		$this->owner_id = $arguments['owner_id'];
-		
+
 		$this->delete_from_db_clients = array();
 		$this->delete_from_db_groups = array();
 
@@ -443,7 +449,7 @@ class PSend_Upload_File
 				$this->delete_from_db_groups[] = $this->row['group_id'];
 			}
 		}
-		
+
 		$this->delete_arguments = array(
 										'clients' => $this->delete_from_db_clients,
 										'groups' => $this->delete_from_db_groups,
@@ -456,7 +462,7 @@ class PSend_Upload_File
 
 	/**
 	 * Receives the data from any of the 2 clear assignments functions
-	 */	
+	 */
 	private function delete_assignments($arguments)
 	{
 		$this->clients = $arguments['clients'];
@@ -545,11 +551,11 @@ class PSend_Upload_File
 	{
 		$this->file_id		= $arguments['file_id'];
 		$this->categories	= $arguments['categories'];
-		
+
 		if ( !empty( $this->categories ) ) {
 			$this->categories_current	= array();
 			$this->categories_to_delete	= array();
-			
+
 			$this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE file_id = :file_id");
 			$this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
 			$this->statement->execute();
@@ -557,7 +563,7 @@ class PSend_Upload_File
 			while( $this->row = $this->statement->fetch() ) {
 				$this->categories_current[$this->row['cat_id']] = $this->row['cat_id'];
 			}
-	
+
 			/**
 			 * Add existing -on DB- but not selected on the form to
 			 * the delete array. This uses the ID of the record.
@@ -576,7 +582,7 @@ class PSend_Upload_File
 				$this->statement->bindParam(':categories', $this->categories_to_delete);
 				$this->statement->execute();
 			}
-	
+
 			/**
 			 * Compare the ones passed through the form to the
 			 * ones that are already on the database.

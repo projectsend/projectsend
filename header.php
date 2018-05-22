@@ -29,7 +29,7 @@ can_see_content($allowed_levels);
 /** If no page title is defined, revert to a default one */
 if (!isset($page_title)) { $page_title = __('System Administration','cftp_admin'); }
 
-if (!isset($body_class)) { $body_class = ''; }
+if (!isset($body_class)) { $body_class = array(); }
 
 if ( !empty( $_COOKIE['menu_contracted'] ) && $_COOKIE['menu_contracted'] == 'true' ) {
 	$body_class[] = 'menu_contracted';

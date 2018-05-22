@@ -12,7 +12,7 @@ define('ROOT_DIR', dirname(__FILE__));
 require_once(ROOT_DIR.'/includes/phpass/PasswordHash.php');
 
 /** Security */
-require_once(ROOT_DIR . '/includes/security/xsrf.php');
+require_once(ROOT_DIR.'/includes/security/xsrf.php');
 
 /** Basic system constants */
 require_once(ROOT_DIR.'/sys.vars.php');
@@ -25,6 +25,9 @@ if ( !defined( 'IS_MAKE_CONFIG' ) ) {
 	require_once(ROOT_DIR.'/includes/site.options.php');
 }
 
+/** PHP-Hooks by bainternet */
+require_once(ROOT_DIR.'/includes/php-hooks/php-hooks.php');
+
 /** Load the language class and translation file */
 require_once(ROOT_DIR.'/includes/language.php');
 
@@ -36,6 +39,12 @@ require_once(ROOT_DIR.'/includes/vars.php');
 
 /** Basic functions to be accessed from anywhere */
 require_once(ROOT_DIR.'/includes/functions.php');
+
+/** Custom functions files */
+$custom_functions_file = ROOT_DIR.'/includes/custom.php';
+if (file_exists($custom_functions_file)) {
+	require_once($custom_functions_file);
+}
 
 /** Require the updates functions */
 require_once(ROOT_DIR.'/includes/updates.functions.php');

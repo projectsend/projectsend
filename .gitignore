@@ -3,3 +3,4 @@ includes/sys.config.php
 .idea/
 css/custom.css
 includes/js/custom.js
+includes/custom.php

@@ -15,6 +15,7 @@ $get_file_info = array();
 $get_client_info = array();
 $notifications_sent = array();
 $notifications_inactive = array();
+$notifications_failed = array();
 
 /**
  * First, get the list of different files that have
@@ -81,7 +82,7 @@ if (!empty($found_notifications)) {
 									'description'	=> htmlentities_allowed($row['description'])
 								);
 	}
-	
+
 	/**
 	 * Get the information of each client
 	 */
@@ -104,7 +105,7 @@ if (!empty($found_notifications)) {
 		$creators[] = $row['created_by'];
 		$mail_by_user[$row['user']] = $row['email'];
 	}
-	
+
 	/**
 	 * Add the creatros of the previous clients to the mails array.
 	 */
@@ -125,7 +126,7 @@ if (!empty($found_notifications)) {
 			$mail_by_user[$row['user']] = $row['email'];
 		}
 	}
-	
+
 	/**
 	 * Prepare the list of clients and admins that will be
 	 * notified, adding to each one the corresponding files.
@@ -207,18 +208,18 @@ if (!empty($found_notifications)) {
 			}
 		}
 	}
-	
+
 	/** Prepare the emails for ADMINS */
-	
+
 	if (!empty($notes_to_admin)) {
 		foreach ($notes_to_admin as $mail_username => $admin_files) {
-			
+
 			/** Check if the admin is active */
 			if (isset($creators_data[$mail_username]) && $creators_data[$mail_username]['active'] == '1') {
 				/** Reset the files list UL contents */
 				$files_list = '';
 				foreach ($admin_files as $client_uploader => $mail_files) {
-	
+
 					$files_list.= '<li style="font-size:15px; font-weight:bold; margin-bottom:5px;">'.$client_uploader.'</li>';
 					foreach ($mail_files as $mail_file) {
 						/** Make the list of files */
@@ -233,7 +234,7 @@ if (!empty($found_notifications)) {
 						 */
 						$this_admin_notifications[] = $mail_file['notif_id'];
 					}
-	
+
 					$address = $mail_by_user[$mail_username];
 					/** Create the object and send the email */
 					$notify_admin = new PSend_Email();
@@ -316,9 +317,9 @@ if (!empty($found_notifications)) {
 			echo system_message('error',$msg);
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * DEBUG
 	 */

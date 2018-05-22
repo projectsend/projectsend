@@ -153,21 +153,14 @@ while( $row = $statement->fetch() ) {
 				$location = $work_folder.'/'.$file['file'];
 
 				if(file_exists($location)) {
-					/**
-					 * If the file isn't already on the database, rename/chmod.
-					 */
-					if (!in_array($file['file'],$urls_db_files)) {
-						$move_arguments = array(
-												'uploaded_name'		=> $location,
-												'filename'			=> $file['file'],
-											);
-						$upload_move		= $this_upload->upload_move($move_arguments);
-						$new_filename		= $upload_move['filename_disk'];
-						$original_filename	= $upload_move['filename_original'];
-					}
-					else {
-						$new_filename = $file['original'];
-					}
+					$move_arguments = array(
+						'uploaded_name'		=> $location,
+						'filename'			=> $file['file'],
+					);
+					$upload_move		= $this_upload->upload_move($move_arguments);
+					$new_filename		= $upload_move['filename_disk'];
+					$original_filename	= $upload_move['filename_original'];
+						
 					if (!empty($new_filename)) {
 						$delete_key = array_search($file['original'], $uploaded_files);
 						unset($uploaded_files[$delete_key]);

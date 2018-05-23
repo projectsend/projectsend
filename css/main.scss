@@ -75,7 +75,7 @@ $widget_hover_background	: #f0f0f0;
 ::-moz-focus-inner { border:0 !important; }
 
 ul {
-	margin:0 !important;
+	margin:0;
 	list-style:none;
 }
 
@@ -1414,6 +1414,23 @@ body.login {
 	a {
 		color:#666;
 	}
+
+	.footer_links {
+		ul {
+			margin: 0 auto 2em;
+			padding: 0;
+
+			li {
+				list-style: none;
+				display: inline-block;
+				margin: 0 5px;
+
+				a {
+					text-decoration: underline;
+				}
+			}
+		}
+	}
 }
 
 /********************************************************************************************************************************************
@@ -1783,23 +1800,23 @@ li .required.password_toggle {
 		ul {
 			margin:0;
 			padding: 0;
-			
+
 			li {
 				padding: 8px 0;
 				border-bottom: 1px solid #dedede;
-				
+
 				&:last-child {
 					border: none;
 				}
-				
+
 				&.file:hover {
 					background: #f0f0f0;
 				}
-				
+
 				i {
 					margin-right: .5em;
 				}
-				
+
 				ul {
 					padding-left: 2em;
 				}

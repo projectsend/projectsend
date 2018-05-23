@@ -336,12 +336,15 @@ if (defined('TRY_INSTALL')) {
 								('public_listing_page_enable', '0'),
 								('public_listing_logged_only', '0'),
 								('public_listing_show_all_files', '0'),
-								('public_listing_use_download_link', '0')
+								('public_listing_use_download_link', '0'),
+								('page_policy_enable', '0'),
+								('page_policy_title', ''),
+								('page_policy_content', '')
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,
-										':title'	=> $this_install_title,
-										':email'	=> $got_admin_email,
+										':title'		=> $this_install_title,
+										':email'		=> $got_admin_email,
 										':version'	=> $current_version,
 										':from'		=> $this_install_title,
 										':now'		=> $now,
@@ -356,7 +359,7 @@ if (defined('TRY_INSTALL')) {
 										':username'	=> $got_admin_username,
 										':password'	=> $got_admin_pass,
 										':name'		=> $got_admin_name,
-										':email'	=> $got_admin_email,
+										':email'		=> $got_admin_email,
 						),
 		),
 

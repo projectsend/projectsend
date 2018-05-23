@@ -565,10 +565,43 @@ function default_footer_info($logged = true)
 ?>
 	<footer>
 		<div id="footer">
+			<div class="footer_links">
+				<?php
+					global $footer_links;
+					$footer_links = array();
+
+					/** Privacy policy */
+					if ( defined('PRIVACY_POLICY_PAGE_ENABLE') && PRIVACY_POLICY_PAGE_ENABLE == '1' ) {
+						$footer_links[] = array(
+							'href'	=> BASE_URI . 'policy.php',
+							'text'	=> PRIVACY_POLICY_PAGE_TITLE ?? __('Privacy policy', 'cftp_admin'),
+							'target'	=> '_self',
+						);
+					}
+
+					/** Get links added from the custom functions file */
+					global $hooks;
+					$hooks->do_action('footer_links');
+
+					/** Render the link */
+					if ( !empty( $footer_links ) ) {
+				?>
+						<ul>
+							<?php foreach ( $footer_links as $link ) { ?>
+								<li>
+									<a href="<?php echo $link['href']; ?>" target="<?php echo $link['target']; ?>"><?php echo $link['text']; ?></a>
+								</li>
+							<?php } ?>
+						</ul>
+				<?php
+					}
+				?>
+			</div>
+			<div class="clear clearfix"></div>
+
 			<?php
 				if ( defined('FOOTER_CUSTOM_ENABLE') && FOOTER_CUSTOM_ENABLE == '1' ) {
 					echo strip_tags(FOOTER_CUSTOM_CONTENT, '<br><span><a><strong><em><b><i><u><s>');
-					//echo htmlentities_allowed(FOOTER_CUSTOM_CONTENT);
 				}
 				else {
 					_e('Provided by', 'cftp_admin'); ?> <a href="<?php echo SYSTEM_URI; ?>" target="_blank"><?php echo SYSTEM_NAME; ?></a> <?php if ($logged == true) { _e('version', 'cftp_admin'); echo ' ' . CURRENT_VERSION; } ?> - <?php _e('Free software', 'cftp_admin');

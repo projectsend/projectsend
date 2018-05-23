@@ -39,7 +39,7 @@ if(!empty($options_values)) {
 	 * forms currently).
 	 */
 	$allowed_file_types = $options_values['allowed_file_types'];
-	
+
 	define('BASE_URI',$options_values['base_uri']);
 	define('THUMBS_MAX_WIDTH',$options_values['max_thumbnail_width']);
 	define('THUMBS_MAX_HEIGHT',$options_values['max_thumbnail_height']);
@@ -57,16 +57,16 @@ if(!empty($options_values)) {
 	/** Define the template path */
 	define('TEMPLATE_PATH',ROOT_DIR.'/templates/'.TEMPLATE_USE.'/template.php');
 	/**
-	 * Wrap the e-mail definition in an IF statement in case the user 
+	 * Wrap the e-mail definition in an IF statement in case the user
 	 * just updated to r135 and this value doesn't exist yet to prevent
 	 * a php notice.
-	 */	
+	 */
 	if (isset($options_values['admin_email_address'])) {
 		define('ADMIN_EMAIL_ADDRESS',$options_values['admin_email_address']);
 	}
 	/**
 	 * For versions 282 and up
-	 */	
+	 */
 	if (isset($options_values['mail_system_use'])) {
 		define('MAIL_SYSTEM',$options_values['mail_system_use']);
 		define('SMTP_HOST',$options_values['mail_smtp_host']);
@@ -77,7 +77,7 @@ if(!empty($options_values)) {
 	}
 	/**
 	 * For versions 364 and up
-	 */	
+	 */
 	if (isset($options_values['mail_copy_user_upload'])) {
 		define('COPY_MAIL_ON_USER_UPLOADS',$options_values['mail_copy_user_upload']);
 		define('COPY_MAIL_ON_CLIENT_UPLOADS',$options_values['mail_copy_client_upload']);
@@ -86,7 +86,7 @@ if(!empty($options_values)) {
 	}
 	/**
 	 * For versions 377 and up
-	 */	
+	 */
 	if (isset($options_values['version_last_check'])) {
 		define('VERSION_LAST_CHECK',$options_values['version_last_check']);
 		define('VERSION_NEW_FOUND',$options_values['version_new_found']);
@@ -101,7 +101,7 @@ if(!empty($options_values)) {
 	}
 	/**
 	 * For versions 386 and up
-	 */	
+	 */
 	if (isset($options_values['clients_auto_approve'])) {
 		define('CLIENTS_AUTO_APPROVE',$options_values['clients_auto_approve']);
 		define('CLIENTS_AUTO_GROUP',$options_values['clients_auto_group']);
@@ -110,7 +110,7 @@ if(!empty($options_values)) {
 
 	/**
 	 * For versions 419 and up
-	 */	
+	 */
 	if (isset($options_values['email_new_file_by_user_customize'])) {
 		/** Checkboxes */
 		define('EMAILS_FILE_BY_USER_USE_CUSTOM',$options_values['email_new_file_by_user_customize']);
@@ -128,7 +128,7 @@ if(!empty($options_values)) {
 
 	/**
 	 * For versions 426 and up
-	 */	
+	 */
 	if (isset($options_values['email_header_footer_customize'])) {
 		/** Checkbox */
 		define('EMAILS_HEADER_FOOTER_CUSTOM',$options_values['email_header_footer_customize']);
@@ -139,7 +139,7 @@ if(!empty($options_values)) {
 
 	/**
 	 * For versions 442 and up
-	 */	
+	 */
 	if (isset($options_values['email_pass_reset_customize'])) {
 		/** Checkbox */
 		define('EMAILS_PASS_RESET_USE_CUSTOM',$options_values['email_pass_reset_customize']);
@@ -149,14 +149,14 @@ if(!empty($options_values)) {
 
 	/**
 	 * For versions 464 and up
-	 */	
+	 */
 	if (isset($options_values['expired_files_hide'])) {
 		define('EXPIRED_FILES_HIDE',$options_values['expired_files_hide']);
 	}
 
 	/**
 	 * For versions 487 and up
-	 */	
+	 */
 	if (isset($options_values['notifications_max_tries'])) {
 		define('NOTIFICATIONS_MAX_TRIES',$options_values['notifications_max_tries']);
 		define('NOTIFICATIONS_MAX_DAYS',$options_values['notifications_max_days']);
@@ -168,7 +168,7 @@ if(!empty($options_values)) {
 
 	/**
 	 * For versions 528 and up
-	 */	
+	 */
 	if (isset($options_values['file_types_limit_to'])) {
 		define('FILE_TYPES_LIMIT_TO',$options_values['file_types_limit_to']);
 		define('PASS_REQ_UPPER',$options_values['pass_require_upper']);
@@ -180,14 +180,14 @@ if(!empty($options_values)) {
 
 	/**
 	 * For versions 645 and up
-	 */	
+	 */
 	if (isset($options_values['use_browser_lang'])) {
 		define('USE_BROWSER_LANG',$options_values['use_browser_lang']);
 	}
-	
+
 	/**
 	 * For versions 672 and up
-	 */	
+	 */
 	if (isset($options_values['clients_can_delete_own_files'])) {
 		define('CLIENTS_CAN_DELETE_OWN_FILES',$options_values['clients_can_delete_own_files']);
 	}
@@ -210,7 +210,7 @@ if(!empty($options_values)) {
 		define('RECAPTCHA_ENABLED', $options_values['recaptcha_enabled']);
 		define('RECAPTCHA_SITE_KEY', $options_values['recaptcha_site_key']);
 		define('RECAPTCHA_SECRET_KEY', $options_values['recaptcha_secret_key']);
-		
+
 		if (
 				RECAPTCHA_ENABLED == 1 &&
 				!empty($options_values['recaptcha_site_key']) &&
@@ -220,17 +220,17 @@ if(!empty($options_values)) {
 			define('RECAPTCHA_AVAILABLE', true);
 		}
 	}
-	
+
 	/**
 	 * For versions 757 and up
-	 */	
+	 */
 	if (isset($options_values['clients_can_set_expiration_date'])) {
 		define('CLIENTS_CAN_SET_EXPIRATION_DATE',$options_values['clients_can_set_expiration_date']);
 	}
 
 	/**
 	 * For versions 837 and up
-	 */	
+	 */
 	if (isset($options_values['clients_can_select_group'])) {
 		define('CLIENTS_CAN_SELECT_GROUP',$options_values['clients_can_select_group']);
 		define('DESCRIPTIONS_USE_CKEDITOR',$options_values['files_descriptions_use_ckeditor']);
@@ -238,14 +238,14 @@ if(!empty($options_values)) {
 
 	/**
 	 * For versions 841 and up
-	 */	
+	 */
 	if (isset($options_values['enable_landing_for_all_files'])) {
 		define('ENABLE_LANDING_FOR_ALL_FILES',$options_values['enable_landing_for_all_files']);
 	}
 
 	/**
 	 * For versions 842 and up
-	 */	
+	 */
 	if (isset($options_values['footer_custom_enable'])) {
 		define('FOOTER_CUSTOM_ENABLE',$options_values['footer_custom_enable']);
 		define('FOOTER_CUSTOM_CONTENT',$options_values['footer_custom_content']);
@@ -253,7 +253,7 @@ if(!empty($options_values)) {
 
 	/**
 	 * For versions 845 and up
-	 */	
+	 */
 	if (isset($options_values['email_new_file_by_user_subject'])) {
 		/** Checkboxes */
 		define('EMAILS_FILE_BY_USER_USE_SUBJECT_CUSTOM',$options_values['email_new_file_by_user_subject_customize']);
@@ -273,14 +273,14 @@ if(!empty($options_values)) {
 
 	/**
 	 * For versions 859 and up
-	 */	
+	 */
 	if (isset($options_values['privacy_noindex_site'])) {
 		define('PRIVACY_NOINDEX_SITE',$options_values['privacy_noindex_site']);
 	}
 
 	/**
 	 * For versions 950 and up
-	 */	
+	 */
 	if (isset($options_values['email_account_approve_subject'])) {
 		/** Checkboxes */
 		define('EMAILS_ACCOUNT_APPROVE_USE_SUBJECT_CUSTOM',$options_values['email_account_approve_subject_customize']);
@@ -297,7 +297,7 @@ if(!empty($options_values)) {
 
 	/**
 	 * For versions 1003 and up
-	 */	
+	 */
 	if (isset($options_values['email_client_edited_subject_customize'])) {
 		/** Checkbox */
 		define('EMAILS_CLIENT_EDITED_USE_SUBJECT_CUSTOM',$options_values['email_client_edited_subject_customize']);
@@ -310,12 +310,21 @@ if(!empty($options_values)) {
 
 	/**
 	 * For versions 1004 and up
-	 */	
+	 */
 	if (isset($options_values['public_listing_page_enable'])) {
 		define('PUBLIC_LISTING_ENABLE',$options_values['public_listing_page_enable']);
 		define('PUBLIC_LISTING_LOGGED_ONLY',$options_values['public_listing_logged_only']);
 		define('PUBLIC_LISTING_SHOW_ALL_FILES',$options_values['public_listing_show_all_files']);
 		define('PUBLIC_LISTING_USE_DOWNLOAD_LINK',$options_values['public_listing_use_download_link']);
+	}
+
+	/**
+	 * For versions 1083 and up
+	 */
+	if (isset($options_values['page_policy_enable'])) {
+		define('PRIVACY_POLICY_PAGE_ENABLE',$options_values['page_policy_enable']);
+		define('PRIVACY_POLICY_PAGE_TITLE',$options_values['page_policy_title']);
+		define('PRIVACY_POLICY_PAGE_CONTENT',$options_values['page_policy_content']);
 	}
 
 	/**

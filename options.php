@@ -8,6 +8,7 @@
 $load_scripts	= array(
 						'jquery_tags_input',
 						'spinedit',
+						'ckeditor',
 					);
 
 $allowed_levels = array(9);
@@ -43,6 +44,7 @@ switch ( $section ) {
 								'public_listing_logged_only',
 								'public_listing_show_all_files',
 								'public_listing_use_download_link',
+								'page_policy_enable',
 							);
 		break;
 	case 'email':
@@ -107,6 +109,8 @@ if ($_POST && validateCsrfToken()) {
 								'mail_smtp_port',
 								'mail_smtp_user',
 								'mail_smtp_pass',
+								'page_policy_title',
+								'page_policy_content',
 							);
 
 	if ( empty( $_POST['google_signin_enabled'] ) ) {
@@ -514,6 +518,33 @@ $allowed_file_types = implode(',',$allowed_file_types);
 											<input type="checkbox" value="1" name="enable_landing_for_all_files" id="enable_landing_for_all_files" class="checkbox_options" <?php echo (ENABLE_LANDING_FOR_ALL_FILES == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Enable information page for private files",'cftp_admin'); ?>
 											<p class="field_note"><?php _e("If enabled, the file information landing page will be available even for files that are not marked as private. Downloading them will stay restricted.",'cftp_admin'); ?></p>
 										</label>
+									</div>
+								</div>
+
+								<div class="options_divide"></div>
+
+								<h3><?php _e('Privacy policy page','cftp_admin'); ?></h3>
+
+								<div class="form-group">
+									<div class="col-sm-8 col-sm-offset-4">
+										<label for="page_policy_enable">
+											<input type="checkbox" value="1" name="page_policy_enable" id="page_policy_enable" class="checkbox_options" <?php echo (PRIVACY_POLICY_PAGE_ENABLE == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Enable this page",'cftp_admin'); ?>
+											<p class="field_note"><?php _e("If enabled, a link to it will be shown on the footer, both on public and private pages.",'cftp_admin'); ?></p>
+										</label>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="page_policy_title" class="col-sm-4 control-label"><?php _e('Page title','cftp_admin'); ?></label>
+									<div class="col-sm-8">
+										<input type="text" class="form-control empty" name="page_policy_title" id="page_policy_title" value="<?php echo html_output(PRIVACY_POLICY_PAGE_TITLE); ?>" />
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label for="page_policy_content" class="col-sm-4 control-label"><?php _e('Page content','cftp_admin'); ?></label>
+									<div class="col-sm-8">
+										<textarea name="page_policy_content" id="page_policy_content" class="ckeditor empty form-control"><?php echo html_output(PRIVACY_POLICY_PAGE_CONTENT); ?></textarea>
 									</div>
 								</div>
 

@@ -4,12 +4,12 @@
  * sharing web application.
  * Clients are created and assigned a username and a password. Then you can
  * upload as much files as you want under each account, and optionally add
- * a name and description to them. 
+ * a name and description to them.
  *
- * ProjectSend is hosted on Google Code.
+ * ProjectSend is hosted on github.
  * Feel free to participate!
  *
- * @link		http://code.google.com/p/clients-oriented-ftp/
+ * @link			https://github.com/ignacionelson/ProjectSend/
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU GPL version 2
  * @package		ProjectSend
  *
@@ -24,7 +24,7 @@ $body_class = array('login');
 include('header-unlogged.php');
 
 $login_button_text = __('Log in','cftp_admin');
-	
+
 	/**
 	 * Google Sign-in
 	 */
@@ -39,7 +39,7 @@ $login_button_text = __('Log in','cftp_admin');
 		$googleClient->setScopes(array('profile','email'));
 		$auth_url = $googleClient->createAuthUrl();
 	}
-	
+
 
 	if ( isset($_SESSION['errorstate'] ) ) {
 		$errorstate = $_SESSION['errorstate'];
@@ -74,10 +74,10 @@ $login_button_text = __('Log in','cftp_admin');
 						e.stopImmediatePropagation();
 						$('.ajax_response').html();
 						clean_form(this);
-		
+
 						is_complete(this.username,'<?php echo addslashes(__('Username was not completed','cftp_admin')); ?>');
 						is_complete(this.password,'<?php echo addslashes(__('Password was not completed','cftp_admin')); ?>');
-		
+
 						// show the errors or continue if everything is ok
 						if (show_form_errors() == false) {
 							return false;
@@ -111,7 +111,7 @@ $login_button_text = __('Log in','cftp_admin');
 					});
 				});
 			</script>
-		
+
 			<form action="process.php" name="login_admin" role="form" id="login_form">
 				<input type="hidden" name="do" value="login">
 				<fieldset>

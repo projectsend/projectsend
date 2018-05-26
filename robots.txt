@@ -1,11 +1,3 @@
 User-agent: *
-Disallow: /assets/
-Disallow: /css/
-Disallow: /emails/
-Disallow: /img/
-Disallow: /includes/
-Disallow: /install/
-Disallow: /lang/
-Disallow: /sociallogin/
-Disallow: /templates/
-Disallow: /upload/
+Allow: /$
+Disallow: /

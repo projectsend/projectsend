@@ -72,27 +72,6 @@ ProjectSend is licensed under [GNU GPL v2](http://www.gnu.org/licenses/old-licen
 ## Change log
 [Available at the official site](http://www.projectsend.org/change-log/)
 
-
-## Scripts used by ProjectSend
-
-Many thanks to the authors of the following scripts:
-- [jQuery](http://www.jquery.com/)
-- [Bootstrap](http://getbootstrap.com/)
-- [hashchange](http://benalman.com/projects/jquery-hashchange-plugin/)
-- [Plupload](http://www.plupload.com/)
-- [jQuery Tags Input](https://github.com/xoxco/jQuery-Tags-Input)
-- [footable](https://github.com/bradvin/FooTable)
-- [Chosen](https://harvesthq.github.io/chosen/)
-- [flot](https://github.com/flot/flot)
-- [jen](https://github.com/mykiimike/jen)
-- [JavaScript Cookie](https://github.com/js-cookie/js-cookie)
-- [ckeditor](http://ckeditor.com/)
-- [Bootstrap Toggle](https://github.com/minhur/bootstrap-toggle)
-- [Bootstrap datepicker](http://www.eyecon.ro/bootstrap-datepicker)
-- [Spin Edit for Twitter Bootstrap (modified for Bootstrap 3)](https://github.com/geersch/bootstrap-spinedit/)
-- [Timthumb](http://code.google.com/p/timthumb)
-- [phpmailer](http://phpmailer.worxware.com)
-
 ## Special thanks!
 Also, thank you to the following people/communities that helped during development, either by giving support, sending code, translations, etc.
 

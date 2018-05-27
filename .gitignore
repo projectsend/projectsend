@@ -1,6 +1,12 @@
 # Dependencies directories
 lib/vendor
 node_modules
+npm/node_modules
+
+# NPM / Yarn
+.npm
+.node_repl_history
+npm-debug.log*
 
 # Config files
 config/sys.config.php
@@ -22,6 +28,9 @@ upload/branding/*.*
 
 # Windows thumbnails
 Thumbs.db
+
+# Test results
+test-results
 
 # Misc
 .idea/

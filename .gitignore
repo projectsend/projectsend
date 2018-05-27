@@ -1,7 +1,27 @@
-img/Thumbs.db
+# Dependencies directories
+lib/vendor
+node_modules
+
+# Config files
+config/sys.config.php
 includes/sys.config.php
-.idea/
+
+# Custom files that can be created by the user
+# old location
 css/custom.css
 includes/js/custom.js
 includes/custom.php
+# new location
+assets/css/custom.css
+assets/js/custom.js
+core/includes/custom.php
+
+# Uploads
 upload/files/*.*
+upload/branding/*.*
+
+# Windows thumbnails
+Thumbs.db
+
+# Misc
+.idea/

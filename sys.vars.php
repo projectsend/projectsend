@@ -13,13 +13,25 @@ session_start();
 /**
  * Current version.
  * Updated only when releasing a new downloadable complete version.
+ * Format: Major.Minor.Patch
  */
-define('CURRENT_VERSION', 'r1083');
+define('CURRENT_VERSION', '1.0.0');
+
+/**
+ * Define the system name, and the information that will be used
+ * on the footer blocks.
+ *
+ */
+define('SYSTEM_URI','https://www.projectsend.org/');
+define('SYSTEM_URI_LABEL','ProjectSend on github');
+define('DONATIONS_URL','https://www.projectsend.org/donations/');
+/** Previously cFTP */
+define('SYSTEM_NAME','ProjectSend');
 
 /**
  * Required software versions
  */
-define('REQUIRED_VERSION_PHP', '5.2');
+define('REQUIRED_VERSION_PHP', '5.6');
 define('REQUIRED_VERSION_MYSQL', '5.0');
 
 /**
@@ -34,7 +46,7 @@ define('PROTOCOL', empty($_SERVER['HTTPS'])? 'http' : 'https');
  * - Changes the error_reporting php value
  * - Enables the PDOEX extension (on the database class) to count queries
  */
-define('DEBUG', false);
+define('DEBUG', true);
 
 /**
  * IS_DEV is set to true during development to show a sitewide remainder
@@ -72,12 +84,47 @@ define('NEWS_FEED_URI','https://www.projectsend.org/feed/');
 define('UPDATES_FEED_URI','https://projectsend.org/updates/versions.xml');
 
 /**
+ * Directories
+ */
+/** ProjectSen's classes and resources */
+define('CORE_DIR', ROOT_DIR . '/core');
+define('CLASSES_DIR', CORE_DIR . '/classes');
+define('ADMIN_TEMPLATES_DIR', CORE_DIR . '/templates-admin');
+define('INCLUDES_DIR', CORE_DIR . '/includes');
+
+/** External */
+define('LIB_DIR', ROOT_DIR . '/lib');
+
+define('ASSETS_DIR', ROOT_DIR.'/assets');
+define('ASSETS_CSS_DIR', ASSETS_DIR.'/css');
+define('ASSETS_JS_DIR', ASSETS_DIR.'/js');
+define('ASSETS_IMG_DIR', ASSETS_DIR.'/images');
+define('ASSETS_VENDOR_DIR', ASSETS_DIR.'/vendor');
+
+define('ASSETS_URL', '//assets');
+define('ASSETS_CSS_URL', ASSETS_URL . '/css');
+define('ASSETS_JS_URL', ASSETS_URL.'/js');
+define('ASSETS_IMG_URL', ASSETS_URL.'/images');
+define('ASSETS_VENDOR_URL', ASSETS_URL.'/vendor');
+
+define('EMAIL_TEMPLATES_DIR', CORE_DIR . '/templates-email');
+
+/**
+ * Define the folder where uploaded files will reside
+ */
+define('UPLOAD_DIR', ROOT_DIR.'/upload');
+define('UPLOADED_FILES_FOLDER', UPLOAD_DIR.'/files/');
+define('UPLOADED_FILES_URL', 'upload/files/');
+define('BRANDING_DIR',UPLOAD_DIR.'/branding');
+
+/**
  * Check if the personal configuration file exists
  * Otherwise will start a configuration page
  *
- * @see sys.config.sample.php
+ * @see includes/sys.config.sample.php
  */
-if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') ) {
+define('CONFIG_FILE', ROOT_DIR.'/config/sys.config.php');
+if ( !file_exists( CONFIG_FILE ) ) {
 	if ( !defined( 'IS_MAKE_CONFIG' ) ) {
 		// the following script returns only after the creation of the configuration file
 		if ( defined('IS_INSTALL') ) {
@@ -89,7 +136,7 @@ if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') ) {
 	}
 }
 else {
-	include(ROOT_DIR.'/includes/sys.config.php');
+	require_once CONFIG_FILE;
 }
 
 /**
@@ -100,32 +147,12 @@ if (!defined('DB_DRIVER')) {
 }
 
 /**
- * Check for PDO extensions
+ * Check for available PDO drivers
+ * Currently supported: MySQL
  */
 $pdo_available_drivers = PDO::getAvailableDrivers();
 if( (DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND') ) {
-	echo '<h1>Missing a required extension</h1>';
-	echo "<p>The system couldn't find the configuration the <strong>PDO extension for mysql</strong>.</p>
-	<p>This extension is required for database comunication.</p>
-	<p>You can install this extension via the package manager of your linux distro, most likely with one of these commands:</p>
-	<ul>
-		<li>sudo apt-get install php5-mysql   	<strong># debian/ubuntu</strong></li>
-		<li>sudo yum install php-mysql   		<strong># centos/fedora</strong></li>
-	</ul>
-	<p>You also need to restart the webserver after the installation of PDO_mysql.</p>";
-	exit;
-}
-if( (DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers) ) {
-	echo '<h1>Missing a required extension</h1>';
-	echo "<p>The system couldn't find the configuration the <strong>PDO extension for MS SQL Server</strong>.</p>
-	<p>This extension is required for database comunication.</p>
-	<p>You can install this extension via the package manager of your linux distro, most likely with one of these commands:</p>
-	<ul>
-		<li>sudo apt-get install php5-sybase	<strong># debian/ubuntu</strong></li>
-		<li>sudo yum install php-mssql			<strong># centos/fedora (you need EPEL)</strong></li>
-	</ul>
-	<p>You also need to restart the webserver after the installation of PDO_mssql.</p>";
-	exit;
+	$app->add_error('requirement_pdo');
 }
 
 /**
@@ -134,26 +161,6 @@ if( (DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers) ) {
 if (!defined('TABLES_PREFIX')) {
 	define('TABLES_PREFIX', 'tbl_');
 }
-define('TABLE_FILES', TABLES_PREFIX . 'files');
-define('TABLE_FILES_RELATIONS', TABLES_PREFIX . 'files_relations');
-define('TABLE_DOWNLOADS', TABLES_PREFIX . 'downloads');
-define('TABLE_NOTIFICATIONS', TABLES_PREFIX . 'notifications');
-define('TABLE_OPTIONS', TABLES_PREFIX . 'options');
-define('TABLE_USERS', TABLES_PREFIX . 'users');
-define('TABLE_GROUPS', TABLES_PREFIX . 'groups');
-define('TABLE_MEMBERS', TABLES_PREFIX . 'members');
-define('TABLE_MEMBERS_REQUESTS', TABLES_PREFIX . 'members_requests');
-define('TABLE_FOLDERS', TABLES_PREFIX . 'folders');
-define('TABLE_CATEGORIES', TABLES_PREFIX . 'categories');
-define('TABLE_CATEGORIES_RELATIONS', TABLES_PREFIX . 'categories_relations');
-define('TABLE_LOG', TABLES_PREFIX . 'actions_log');
-define('TABLE_PASSWORD_RESET', TABLES_PREFIX . 'password_reset');
-
-$original_basic_tables = array(
-								TABLE_FILES,
-								TABLE_OPTIONS,
-								TABLE_USERS
-							);
 
 $all_system_tables = array(
 							'files',
@@ -171,6 +178,10 @@ $all_system_tables = array(
 							'actions_log',
 							'password_reset',
 						);
+foreach ( $all_system_tables as $table ) {
+	$const = strtoupper( 'table_' . $table );
+	define( $const, TABLES_PREFIX , $table );
+}
 
 //$current_tables = array(TABLE_FILES,TABLE_FILES_RELATIONS,TABLE_OPTIONS,TABLE_USERS,TABLE_GROUPS,TABLE_MEMBERS,TABLE_FOLDERS,TABLES_PREFIX,TABLE_LOG,TABLE_CATEGORIES,TABLE_CATEGORIES_RELATIONS);
 
@@ -201,12 +212,6 @@ $session_expire_time = 31*24*60*60; // 31 days * 24 hours * 60 minutes * 60 seco
 define('SESSION_EXPIRE_TIME', $session_expire_time);
 
 /**
- * Define the folder where uploaded files will reside
- */
-define('UPLOADED_FILES_FOLDER', ROOT_DIR.'/upload/files/');
-define('UPLOADED_FILES_URL', 'upload/files/');
-
-/**
  * Define the folder where the uploaded files are stored before
  * being assigned to any client.
  *
@@ -217,20 +222,6 @@ define('UPLOADED_FILES_URL', 'upload/files/');
  */
 define('USER_UPLOADS_TEMP_FOLDER', ROOT_DIR.'/upload/temp');
 define('CLIENT_UPLOADS_TEMP_FOLDER', ROOT_DIR.'/upload/temp');
-
-/**
- * Define the system name, and the information that will be used
- * on the footer blocks.
- *
- */
-define('SYSTEM_URI','https://www.projectsend.org/');
-define('SYSTEM_URI_LABEL','ProjectSend on github');
-define('DONATIONS_URL','https://www.projectsend.org/donations/');
-/** Previously cFTP */
-define('SYSTEM_NAME','ProjectSend');
-
-define('LOGO_FOLDER',ROOT_DIR.'/img/custom/logo/');
-define('LOGO_THUMB_FOLDER',ROOT_DIR.'/img/custom/thumbs/');
 
 /** phpass */
 define('HASH_COST_LOG2', 8);

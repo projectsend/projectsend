@@ -6,7 +6,7 @@ $oauth2 = new Google_Oauth2Service($googleClient);
 $googleClient->setApplicationName(THIS_INSTALL_SET_TITLE);
 $googleClient->setClientSecret(GOOGLE_CLIENT_SECRET);
 $googleClient->setClientId(GOOGLE_CLIENT_ID);
-$googleClient->setRedirectUri(BASE_URI . 'sociallogin/google/callback.php');
+$googleClient->setRedirectUri(CALLBACK_GOOGLE_AUTH);
 $googleClient->setScopes(array('profile', 'email'));
 
 if (isset($_GET['error'])) {
@@ -84,7 +84,7 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']->id_
           header("location:" . BASE_URI . "my_files/");
         }
         else {
-          header("location:" . BASE_URI . "home.php");
+          header("location:" . BASE_URI . "dashboard.php");
         }
         exit;
       }
@@ -148,7 +148,7 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']->id_
           return;
         }
         $_SESSION['google_user'] = $userData;
-        header("location:" . BASE_URI . "sociallogin/google/callback.php");
+        header("location:" . CALLBACK_GOOGLE_AUTH);
         return;
       }
     }

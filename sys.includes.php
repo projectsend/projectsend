@@ -8,98 +8,61 @@
 
 define('ROOT_DIR', dirname(__FILE__));
 
-/** PhpPass */
-require_once(ROOT_DIR.'/includes/phpass/PasswordHash.php');
-
-/** Security */
-require_once(ROOT_DIR.'/includes/security/xsrf.php');
-
 /** Basic system constants */
-require_once(ROOT_DIR.'/sys.vars.php');
+require_once ROOT_DIR . '/sys.vars.php';
 
 /** Load the database class */
-require_once(ROOT_DIR.'/includes/classes/database.php');
-
-/** Load the site options */
-if ( !defined( 'IS_MAKE_CONFIG' ) ) {
-	require_once(ROOT_DIR.'/includes/site.options.php');
-}
-
-/** PHP-Hooks by bainternet */
-require_once(ROOT_DIR.'/includes/php-hooks/php-hooks.php');
-
-/** Load the language class and translation file */
-require_once(ROOT_DIR.'/includes/language.php');
-
-/** Load the language and locales names list */
-require_once(ROOT_DIR.'/includes/language-locales-names.php');
-
-/** Text strings used on various files */
-require_once(ROOT_DIR.'/includes/vars.php');
-
-/** Basic functions to be accessed from anywhere */
-require_once(ROOT_DIR.'/includes/functions.php');
-
-/** Custom functions files */
-$custom_functions_file = ROOT_DIR.'/includes/custom.php';
-if (file_exists($custom_functions_file)) {
-	require_once($custom_functions_file);
-}
-
-/** Require the updates functions */
-require_once(ROOT_DIR.'/includes/updates.functions.php');
-
-/** Contains the session and cookies validation functions */
-require_once(ROOT_DIR.'/includes/userlevel_check.php');
-
-/** Template list functions */
-require_once(ROOT_DIR.'/includes/functions.templates.php');
-
-/** Contains the current session information */
-if ( !defined( 'IS_INSTALL' ) ) {
-	require_once(ROOT_DIR.'/includes/active.session.php');
-}
-
-/** Recreate the function if it doesn't exist. By Alan Reiblein */
-require_once(ROOT_DIR.'/includes/timezone_identifiers_list.php');
-
-/** Categories functions */
-require_once(ROOT_DIR.'/includes/functions.categories.php');
-
-/** Search, filters and actions forms */
-require_once(ROOT_DIR.'/includes/functions.forms.php');
+require_once CLASSES_DIR . '/database.php';
 
 /**
- * Always require this classes to avoid repetition of code
- * on other files.
- *
+ * Core function and classes files to include
  */
-$classes_files = array(
-						'actions-clients.php',
-						'actions-files.php',
-						'actions-categories.php',
-						'actions-groups.php',
-						'actions-members.php',
-						'actions-log.php',
-						'actions-users.php',
-						'file-upload.php',
-						'form-validation.php',
-						'send-email.php',
-						'generate-form.php',
-						'generate-table.php',
-					);
-foreach ( $classes_files as $filename ) {
-	$location = ROOT_DIR . '/includes/classes/' . $filename;
+$includes = array(
+	'security/xsrf.php', // Security
+	'site.options.php', // Site options (conditional: !IS_MAKE_CONFIG)
+	'language.php', // Load the language class and translation file
+	'language-locales-names.php', // Load the language and locales names list
+	'text-strings.php', // Text strings used on various files
+	'functions.php', // Basic functions to be accessed from anywhere
+	'custom.php', // Custom functions, file not included in PS
+	'updates.functions.php', // Legacy updates functions
+	'userlevel_check.php', // Contains the session and cookies validation functions
+	'functions.templates.php', // Template list functions
+	'active.session.php', // Contains the current session information (conditional: !IS_INSTALL)
+	'timezone_identifiers_list.php', // Recreate the function if it doesn't exist. By Alan Reiblein
+	'functions.categories.php', // Categories functions
+	'functions.forms.php', // Search, filters and actions forms
+);
+
+foreach ( $includes as $filename ) {
+	$location = INCLUDES_DIR . '/' . $filename;
 	if ( file_exists( $location ) ) {
-		require_once( $location );
+		require_once $location;
 	}
 }
 
 /**
- * Google Login
+ * ProjectSend's own classes
  */
-require_once ROOT_DIR . '/includes/Google/Oauth2/service/Google_ServiceResource.php';
-require_once ROOT_DIR . '/includes/Google/Oauth2/service/Google_Service.php';
-require_once ROOT_DIR . '/includes/Google/Oauth2/service/Google_Model.php';
-require_once ROOT_DIR . '/includes/Google/Oauth2/contrib/Google_Oauth2Service.php';
-require_once ROOT_DIR . '/includes/Google/Oauth2/Google_Client.php';
+$classes_files = array(
+						'projectsend.php',
+						'actions-categories.php',
+						'actions-clients.php',
+						'actions-files.php',
+						'actions-groups.php',
+						'actions-log.php',
+						'actions-members.php',
+						'actions-users.php',
+						'file-upload.php',
+						'form-validation.php',
+						'generate-form.php',
+						'generate-table.php',
+						'send-email.php',
+						'update.php',
+					);
+foreach ( $classes_files as $filename ) {
+	$location = CLASSES_DIR . '/' . $filename;
+	if ( file_exists( $location ) ) {
+		require_once $location;
+	}
+}

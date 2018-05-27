@@ -378,6 +378,6 @@ if ( !defined( 'IS_MAKE_CONFIG' ) ) {
 	/**
 	 * Callback URLs
 	 */
-	define('CALLBACK_URL', BASE_URI.'sociallogin')
-	define('CALLBACK_GOOGLE_AUTH', CALLBACK_URL.'/google/callback.php')
+	define('CALLBACK_URL', BASE_URI.'sociallogin');
+	define('CALLBACK_GOOGLE_AUTH', CALLBACK_URL.'/google/callback.php');
 }

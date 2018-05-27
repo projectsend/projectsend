@@ -20,6 +20,7 @@
 		"league/oauth2-google": "^2.2",
 		"moxiecode/plupload": "3.1.*",
 		"bainternet/php-hooks": "^1.0",
-		"claviska/simpleimage": "^3.3"
+		"claviska/simpleimage": "^3.3",
+		"paragonie/random_compat": "^2.0"
 	}
 }

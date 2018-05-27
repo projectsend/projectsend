@@ -86,11 +86,6 @@ function sql_add_order( $table, $column = 'id', $initial_order = 'ASC' )
 
 function generate_password()
 {
-	/**
-	 * Random compat library, a polyfill for PHP 7's random_bytes();
-	 * @link: https://github.com/paragonie/random_compat
-	 */
-	require_once(LIB_DIR . '/random_compat/random_compat.phar' );
 	$error_unexpected	= __('An unexpected error has occurred', 'cftp_admin');
 	$error_os_fail		= __('Could not generate a random password', 'cftp_admin');
 

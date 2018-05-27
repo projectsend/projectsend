@@ -755,9 +755,9 @@ function html_output($str, $flags = ENT_QUOTES, $encoding = 'UTF-8', $double_enc
  * Allow some html tags for file descriptions on htmlentities
  *
  */
-function htmlentities_allowed($str)
+function htmlentities_allowed($str, $quoteStyle = ENT_COMPAT, $charset = CHARSET, $doubleEncode = false)
 {
-	$description = htmlentities($str);
+	$description = htmlentities($str, $quoteStyle, $charset, $doubleEncode);
 	$allowed_tags = array('i','b','strong','em','p','br','ul','ol','li','u','sup','sub','s');
 
 	$find = array();

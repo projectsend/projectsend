@@ -5,6 +5,7 @@
  * @package ProjectSend
  * @subpackage Core
  */
+session_start();
 
 define('ROOT_DIR', dirname(__FILE__));
 

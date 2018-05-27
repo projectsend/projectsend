@@ -251,7 +251,7 @@ include_once('../header-unlogged.php');
 
 								<h3><?php _e('Basic system options','cftp_admin'); ?></h3>
 								<p><?php _e("You need to provide this data for a correct system installation. The site name will be visible in the system panel, and the client's lists.",'cftp_admin'); ?><br />
-									<?php _e("Remember to edit the file",'cftp_admin'); ?> <em>/includes/sys.config.php</em> <?php _e("with your database settings before installing. If the file doesn't exist, you can create it by renaming the dummy file sys.config.sample.php.",'cftp_admin'); ?>
+									<?php _e("Remember to edit the system configuration file with your database and preferred settings before installing. If the file doesn't exist, you can create it by renaming the dummy file sys.config.sample.php.",'cftp_admin'); ?>
 								</p>
 
 								<div class="form-group">

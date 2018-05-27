@@ -29,6 +29,9 @@ upload/branding/*.*
 # Windows thumbnails
 Thumbs.db
 
+# macOS
+.DS_Store
+
 # Test results
 test-results
 

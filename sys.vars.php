@@ -45,7 +45,7 @@ define('IS_DEV', false);
 /**
  * This constant holds the current default charset
  */
-define('CHARSET', 'ISO-8859-1');
+define('CHARSET', 'UTF-8');
 
 /**
  * Turn off reporting of PHP errors, warnings and notices.

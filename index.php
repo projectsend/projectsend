@@ -25,10 +25,10 @@
  */
 
 /** Packages loaded from Composer */
-require_once dirname(__FILE__) . '/lib/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 /** ProjectSend's classes and functions files */
-require_once dirname(__FILE__) . '/sys.includes.php';
+require_once __DIR__ . '/sys.includes.php';
 
 /** Initiate */
 $app = new ProjectSend();

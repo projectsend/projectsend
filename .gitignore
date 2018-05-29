@@ -1,5 +1,5 @@
 # Dependencies directories
-lib/vendor
+vendor
 node_modules
 npm/node_modules
 

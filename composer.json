@@ -10,10 +10,38 @@
 			"source": "https://github.com/ignacionelson/ProjectSend/"
 	},
 	"config": {
-		"preferred-install": "dist",
-		"vendor-dir": "lib/vendor"
+		"preferred-install": "dist"
 	},
 	"prefer-stable": true,
+	"autoload": {
+		"psr-4": {
+			"\\": "core/classes/"
+		},
+		"files": [
+			"core/includes/database.php",
+			"core/includes/actions.log.export.php",
+			"core/includes/active.sessions.php",
+			"core/includes/ajax-keep-alive.php",
+			"core/includes/core.update.legacy.php",
+			"core/includes/core.update.php",
+			"core/includes/core.update.silent.php",
+			"core/includes/email-template.php",
+			"core/includes/functions.categories.php",
+			"core/includes/functions.forms.php",
+			"core/includes/functions.php",
+			"core/includes/functions.templates.php",
+			"core/includes/language.php",
+			"core/includes/language-locales-names.php",
+			"core/includes/site.options.php",
+			"core/includes/text-string.php",
+			"core/includes/timezone_identifiers_list.php",
+			"core/includes/timezones.php",
+			"core/includes/updates.functions.php",
+			"core/includes/updates.messages.php",
+			"core/includes/userlevel_check.php",
+			"core/includes/security/xsrf.php"
+		]
+	},
 	"require": {
 		"phpmailer/phpmailer": "^6.0",
 		"symfony/polyfill-mbstring": "^1.8",

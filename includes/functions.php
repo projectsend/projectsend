@@ -746,7 +746,7 @@ function get_current_user_username()
  * Wrapper for htmlentities with default options
  *
  */
-function html_output($str, $flags = ENT_QUOTES, $encoding = 'UTF-8', $double_encode = false)
+function html_output($str, $flags = ENT_QUOTES, $encoding = CHARSET, $double_encode = false)
 {
 	return htmlentities($str, $flags, $encoding, $double_encode);
 }
@@ -755,9 +755,9 @@ function html_output($str, $flags = ENT_QUOTES, $encoding = 'UTF-8', $double_enc
  * Allow some html tags for file descriptions on htmlentities
  *
  */
-function htmlentities_allowed($str)
+function htmlentities_allowed($str, $quoteStyle = ENT_COMPAT, $charset = CHARSET, $doubleEncode = false)
 {
-	$description = htmlentities($str);
+	$description = htmlentities($str, $quoteStyle, $charset, $doubleEncode);
 	$allowed_tags = array('i','b','strong','em','p','br','ul','ol','li','u','sup','sub','s');
 
 	$find = array();
@@ -782,7 +782,7 @@ function htmlentities_allowed($str)
  * characters when saving to the database.
  */
 function encode_html($str) {
-	$str = htmlentities($str, ENT_QUOTES, $encoding='utf-8');
+	$str = htmlentities($str, ENT_QUOTES, $encoding=CHARSET);
 	$str = nl2br($str);
 	//$str = addslashes($str);
 	return $str;

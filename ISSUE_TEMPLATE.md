@@ -3,9 +3,9 @@
 Please complete with an X between the brackets to indicate the type of submission.
 This is a:
 
-[ ] Bug report
+[] Bug report
 
-[ ] Feature request
+[] Feature request
 
 
 ### Description of the problem

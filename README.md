@@ -1,6 +1,6 @@
 # ProjectSend
 
-<img align="center" src="http://projectsend.org/projectsend-logo.png" alt="ProjectSend logo" width="600"/>
+![ProjectSend presentation screenshots](https://www.projectsend.org/screenshots.png)
 
 ## About
 ProjectSend (previously cFTP) is a free, clients-oriented, private file sharing web application.
@@ -19,7 +19,6 @@ Feel free to participate!
 ## IMPORTANT
 It is recommended that you download an official release (either from the releases tab here or from the official website).
 Downloading a development version directly from the repository might give you unexpected results, such as visible errors, functions that are still not finished, etc.
-
 
 ## How to install on your server:
 

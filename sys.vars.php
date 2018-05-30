@@ -178,7 +178,7 @@ $all_system_tables = array(
 						);
 foreach ( $all_system_tables as $table ) {
 	$const = strtoupper( 'table_' . $table );
-	define( $const, TABLES_PREFIX , $table );
+	define( $const, TABLES_PREFIX . $table );
 }
 
 /**

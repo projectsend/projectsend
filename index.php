@@ -31,4 +31,5 @@ require_once dirname(__FILE__) . '/lib/vendor/autoload.php';
 require_once dirname(__FILE__) . '/sys.includes.php';
 
 /** Initiate */
-$app = new ProjectSend();
+$app = new ProjectSend\ProjectSend();
+$auth = new ProjectSend\Auth();

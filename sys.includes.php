@@ -47,6 +47,7 @@ foreach ( $includes as $filename ) {
  */
 $classes_files = array(
 						'projectsend.php',
+						'auth.php',
 						'actions-categories.php',
 						'actions-clients.php',
 						'actions-files.php',

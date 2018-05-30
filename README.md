@@ -1,6 +1,6 @@
 # ProjectSend
 
-<img align="center" src="http://projectsend.org/projectsend-logo.png" alt="ProjectSend logo" width="600"/>
+![ProjectSend presentation screenshots](https://www.projectsend.org/screenshots.png)
 
 ## About
 ProjectSend (previously cFTP) is a free, clients-oriented, private file sharing web application.
@@ -17,7 +17,7 @@ git: [project page](https://github.com/ignacionelson/ProjectSend)
 Feel free to participate!
 
 ## IMPORTANT
-It is recommended that you download an official release (either from the [https://github.com/ignacionelson/ProjectSend/releases](github releases tab) or from the official website).
+It is recommended that you download an official release (either from the releases tab here or from the official website).
 Downloading a development version directly from the repository might give you unexpected results, such as visible errors, functions that are still not finished, etc.
 
 ## How to install on your server:
@@ -29,7 +29,7 @@ Preparations:
 
 When those are steps are completed, follow this instructions:
 
-1. Rename config/sys.config.sample.php to sys.config.php and set your database info there.
+1. Rename includes/sys.config.sample.php to sys.config.php and set your database info there.
 2. Upload ProjectSend to your selected destination.
 3. Open your browser and go to http://your-projectsend-folder/install
 4. Complete the information there and wait for the correct installation message.

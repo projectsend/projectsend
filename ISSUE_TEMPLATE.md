@@ -3,9 +3,9 @@
 Please complete with an X between the brackets to indicate the type of submission.
 This is a:
 
-[ ] Bug report
+[] Bug report
 
-[ ] Feature request
+[] Feature request
 
 
 ### Description of the problem
@@ -22,8 +22,6 @@ Please be as clear as possible
 * ProjectSend version:
 * php version:
 * MySQL version:
-* Browser name + version:
-* Operating system + version:
 
 ### Additional information
 

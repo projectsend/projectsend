@@ -5,3 +5,5 @@ css/custom.css
 includes/js/custom.js
 includes/custom.php
 upload/files/*.*
+upload/thumbnails/*.*
+!upload/thumbnails/index.php

@@ -342,9 +342,20 @@ if(!empty($options_values)) {
 if (defined('BASE_URI')) {
 	define('TIMTHUMB_URL',BASE_URI.'includes/timthumb/timthumb.php');
 	define('TIMTHUMB_ABS',ROOT_DIR.'/includes/timthumb/timthumb.php');
+}
 
+/**
+ * Widgets files
+ */
+if (defined('BASE_URI')) {
 	define('WIDGETS_FOLDER',ROOT_DIR.'/includes/widgets/');
 	define('WIDGETS_URL',BASE_URI.'includes/widgets/');
+}
+
+/** SimpleImage thumbnails */
+if (defined('BASE_URI')) {
+	define('THUMBNAILS_FILES_DIR', ROOT_DIR.'/upload/thumbnails');
+	define('THUMBNAILS_FILES_URL', BASE_URI.'upload/thumbnails');
 }
 
 /**

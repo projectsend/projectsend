@@ -1382,5 +1382,13 @@ if (in_session_or_cookies($allowed_update)) {
 			}
 		}
 
+		/**
+		 * r1088 updates
+		 * Started replacing timthumb with SimpleImage
+		 */
+		if ($last_update < 1089) {
+			@chmod(THUMBNAILS_FILES_DIR, 0755);
+		}
+
 	}
 }

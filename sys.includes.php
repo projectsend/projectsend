@@ -69,6 +69,9 @@ require_once(ROOT_DIR.'/includes/functions.categories.php');
 /** Search, filters and actions forms */
 require_once(ROOT_DIR.'/includes/functions.forms.php');
 
+/** Thumbnails */
+require_once(ROOT_DIR.'/includes/SimpleImage/src/claviska/SimpleImage.php');
+
 /**
  * Always require this classes to avoid repetition of code
  * on other files.

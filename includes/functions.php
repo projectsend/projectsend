@@ -981,9 +981,12 @@ function generate_logo_url()
 		$branding['filename'] = 'img/custom/logo/'.LOGO_FILENAME;
 	}
 
-	if (file_exists(ROOT_DIR . '/' . $branding['filename'])) {
+	$result_dir = ROOT_DIR . '/' . $branding['filename'];
+
+	if (file_exists( $result_dir )) {
 		$branding['exists'] = true;
 		$branding['url'] = BASE_URI.$branding['filename'];
+		$branding['dir'] = $result_dir;
 	}
 	return $branding;
 }
@@ -1014,6 +1017,36 @@ function generate_branding_layout()
 	return $layout;
 }
 
+/**
+ * Make a thumbnail with SimpleImage
+ */
+function make_thumbnail( $file, $width = THUMBS_MAX_WIDTH, $height = THUMBS_MAX_HEIGHT )
+{
+	$thumbnail = array();
+
+	if ( file_exists( $file ) ) {
+		$filename = md5( $file );
+		$thumbnail_file = 'thumb_' . $filename . '-' . $width . 'x' . $height . '.png';
+		$thumbnail['original']['location'] = $file;
+		$thumbnail['thumbnail']['location'] = THUMBNAILS_FILES_DIR . '/' . $thumbnail_file;
+		$thumbnail['thumbnail']['url'] = THUMBNAILS_FILES_URL . '/' . $thumbnail_file;
+
+		if ( !file_exists( $thumbnail['thumbnail']['location'] ) ) {
+			try {
+				$image = new \claviska\SimpleImage();
+				$image
+					->fromFile($file)
+					->autoOrient()
+					->bestFit($width, $height)
+					->toFile($thumbnail['thumbnail']['location']);
+			} catch(Exception $err) {
+				$thumbnail['error'] = $err->getMessage();
+			}
+		}
+	}
+
+	return $thumbnail;
+}
 
 /**
  * This function is called when a file is loaded

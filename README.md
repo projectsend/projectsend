@@ -3,9 +3,9 @@
 ![ProjectSend presentation screenshots](https://www.projectsend.org/screenshots.png)
 
 ## About
-ProjectSend (previously cFTP) is a free, clients-oriented, private file sharing web application.
+ProjectSend is a free, clients-oriented, private file sharing web application.
 
-Clients are created and assigned a username and a password.  
+Clients are created and assigned a username and a password.
 Uploaded files can be assigned to specific clients or clients groups.
 
 Other features include auto-expiration of upload, notifications, full logging of actions by users and clients, option to allow clients to also upload files, themes, multiple languages...

@@ -892,11 +892,13 @@ $allowed_file_types = implode(',',$allowed_file_types);
 									<div id="current_logo_img">
 										<?php
 											if ($logo_file_info['exists'] === true) {
-										?>
-												<img src="<?php echo $logo_file_info['url']; ?>" alt="<?php _e('Logo Placeholder','cftp_admin'); ?>" />
-										<?php
+												/** Make the image */
+												$logo = make_thumbnail($logo_file_info['dir'], LOGO_MAX_WIDTH, LOGO_MAX_HEIGHT);
+												/** If the generator failed, use the original image */
+												$img_src = ( !empty( $logo ) ) ? $logo['thumbnail']['url'] : $logo_file_info['url'];
 											}
 										?>
+										<img src="<?php echo $img_src; ?>">
 									</div>
 									<p class="preview_logo_note">
 										<?php _e('This preview uses a maximum width of 300px.','cftp_admin'); ?>

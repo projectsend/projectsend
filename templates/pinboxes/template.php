@@ -30,11 +30,11 @@ $count = count($my_files);
 		<?php meta_favicon(); ?>
 		<link href='<?php echo PROTOCOL; ?>://fonts.googleapis.com/css?family=Metrophobic' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="<?php echo $this_template; ?>/font-awesome-4.6.3/css/font-awesome.min.css">
-		
+
 		<script src="<?php echo PROTOCOL; ?>://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
 		<script type="text/javascript" src="<?php echo $this_template; ?>/js/jquery.masonry.min.js"></script>
 		<script type="text/javascript" src="<?php echo $this_template; ?>/js/imagesloaded.pkgd.min.js"></script>
-		
+
 		<script type="text/javascript">
 			$(document).ready(function()
 				{
@@ -49,7 +49,7 @@ $count = count($my_files);
 					$('.button').click(function() {
 						$(this).blur();
 					});
-					
+
 					$('.categories_trigger a').click(function(e) {
 						if ( $('.categories').hasClass('visible') ) {
 							close_menu();
@@ -58,11 +58,11 @@ $count = count($my_files);
 							open_menu();
 						}
 					});
-					
+
 					$('.content_cover').click(function(e) {
 						close_menu();
 					});
-					
+
 					function open_menu() {
 						$('.categories').addClass('visible');
 						$('.categories').stop().slideDown();
@@ -78,12 +78,12 @@ $count = count($my_files);
 			);
 		</script>
 	</head>
-	
+
 	<body>
 		<div id="header">
 			<?php if ($logo_file_info['exists'] === true) { ?>
 				<div id="branding">
-					<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $logo_file_info['url']; ?>&amp;w=300" alt="<?php echo html_output(THIS_INSTALL_SET_TITLE); ?>" />
+					<img src="<?php echo $logo_file_info['thumbnail']; ?>" alt="<?php echo html_output(THIS_INSTALL_SET_TITLE); ?>">
 				</div>
 			<?php } ?>
 		</div>
@@ -119,7 +119,7 @@ $count = count($my_files);
 										<li><a href="<?php echo $link_template . '?' . $link_query; ?>"><?php echo $category['name']; ?></a></li>
 								<?php
 									}
-								?>							
+								?>
 							</ul>
 						</li>
 				<?php
@@ -133,11 +133,11 @@ $count = count($my_files);
 				</li>
 			</ul>
 		</div>
-			
+
 		<div id="content">
 			<div class="content_cover"></div>
 			<div class="wrapper">
-		
+
 		<?php
 			if (!$count) {
 		?>
@@ -173,12 +173,9 @@ $count = count($my_files);
 											?>
 													<a href="<?php echo $download_link; ?>" target="_blank">
 														<?php
-															$this_thumbnail_url = UPLOADED_FILES_URL.$file['url'];
-															if (THUMBS_USE_ABSOLUTE == '1') {
-																$this_thumbnail_url = BASE_URI.$this_thumbnail_url;
-															}
+															$thumbnail = make_thumbnail( UPLOADED_FILES_FOLDER.$file['url'], 250 );
 														?>
-														<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $this_thumbnail_url; ?>&amp;w=250&amp;q=<?php echo THUMBS_QUALITY; ?>" alt="<?php echo htmlentities($file['name']); ?>" />
+														<img src="<?php echo $thumbnail['thumbnail']['url']; ?>" alt="<?php echo htmlentities($file['name']); ?>" />
 													</a>
 											<?php
 												}
@@ -248,12 +245,12 @@ $count = count($my_files);
 			<?php
 			}
 			?>
-		
+
 			</div>
-	
+
 			<?php default_footer_info(); ?>
-	
+
 		</div>
-	
+
 	</body>
 </html>

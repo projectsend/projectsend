@@ -492,9 +492,10 @@ if (in_session_or_cookies($allowed_update)) {
 		/**
 		 * r346 updates
 		 * chmod the cache folder and main files of timthumb to 775
+		 * @deprecated
 		 */
 		if ($last_update < 346) {
-			update_chmod_timthumb();
+			//update_chmod_timthumb();
 		}
 
 		/**

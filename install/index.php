@@ -190,7 +190,6 @@ include_once('../header-unlogged.php');
 										}
 									}
 
-									update_chmod_timthumb();
 									update_chmod_emails();
 									chmod_main_files();
 

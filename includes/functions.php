@@ -989,7 +989,12 @@ function generate_logo_url()
 		$branding['exists'] = true;
 		$branding['url'] = BASE_URI.$branding['filename'];
 		$branding['dir'] = $result_dir;
+
+		$thumbnail = make_thumbnail($result_dir, LOGO_MAX_WIDTH, LOGO_MAX_HEIGHT);
+		$branding['thumbnail'] = ( !empty( $thumbnail['thumbnail']['url'] ) ) ? $thumbnail['thumbnail']['url'] : $branding['url'];
+		$branding['thumbnail_info'] = $thumbnail;
 	}
+
 	return $branding;
 }
 
@@ -1028,8 +1033,8 @@ function make_thumbnail( $file, $width = THUMBS_MAX_WIDTH, $height = THUMBS_MAX_
 
 	if ( file_exists( $file ) ) {
 		$filename = md5( $file );
-		$thumbnail_file = 'thumb_' . $filename . '-' . $width . 'x' . $height . '.png';
-		$thumbnail['original']['location'] = $file;
+		$thumbnail_file = 'thumb_' . $filename . '_' . $width . 'x' . $height . '.png';
+		$thumbnail['original']['url'] = $file;
 		$thumbnail['thumbnail']['location'] = THUMBNAILS_FILES_DIR . '/' . $thumbnail_file;
 		$thumbnail['thumbnail']['url'] = THUMBNAILS_FILES_URL . '/' . $thumbnail_file;
 

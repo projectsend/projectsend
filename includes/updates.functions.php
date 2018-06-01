@@ -26,9 +26,13 @@ function add_option_if_not_exists ($row, $value) {
 	}
 }
 
-/** Called on r346 */
+/**
+ * Called on r346
+ * @deprecated
+ */
 function update_chmod_timthumb()
 {
+/*
 	global $updates_made;
 	global $updates_errors;
 	global $updates_error_messages;
@@ -48,12 +52,14 @@ function update_chmod_timthumb()
 	if ($chmods > 0) {
 		$updates_made++;
 	}
-	
+*/
 	/** This message is mandatory */
+/*
 	$updates_errors++;
 	if ($updates_errors > 0) {
 		$updates_error_messages[] = __("If images thumbnails aren't showing on your client's files lists (even your company logo there and on the branding page) please chmod the includes/timthumb/cache folder to 777 and then do the same with the 'index.html' and 'timthumb_cacheLastCleanTime.touch' files inside that folder. Then try lowering each file to 644 and see if everything is still working.", 'cftp_admin');
 	}
+*/
 }
 
 /** Called on r348 */
@@ -78,7 +84,7 @@ function update_chmod_emails()
 	if ($chmods > 0) {
 		$updates_made++;
 	}
-	
+
 	if ($updates_errors > 0) {
 		$updates_error_messages[] = __("The chmod values of the emails folder and the html templates inside couldn't be set. If ProjectSend isn't sending notifications emails, please set them manually to 777.", 'cftp_admin');
 	}
@@ -111,7 +117,7 @@ function chmod_main_files() {
 	if ($chmods > 0) {
 		$updates_made++;
 	}
-	
+
 	if ($updates_errors > 0) {
 		$updates_error_messages[] = __("A safe chmod value couldn't be set for one or more system files. Please make sure that at least includes/sys.config.php has a chmod of 644 for security reasons.", 'cftp_admin');
 	}
@@ -133,7 +139,7 @@ function import_files_relations()
 	$imported_ok = 0;
 	$imported_error = 0;
 	$unimported_files = array();
-	
+
 	/**
 	 * Get every file and it's important information from the files database table.
 	 */
@@ -151,7 +157,7 @@ function import_files_relations()
 							);
 		$get_clients_info[] = $row['client_user'];
 	}
-	
+
 	/**
 	 * Get the information of each client found on the
 	 * previous step.
@@ -164,7 +170,7 @@ function import_files_relations()
 	while( $row = $statement->fetch() ) {
 		$found_users[$row['user']] = $row['id'];
 	}
-	
+
 	/**
 	 * Create a new record on the files_relations table
 	 * using the information from the previous 2 queries, to
@@ -196,19 +202,19 @@ function import_files_relations()
 			}
 		}
 	}
-	
+
 	/**
 	 * Did any of the files relations fail?
 	 */
 	if ($imported_error > 0) {
-		$updates_error_messages[100] = __("This version changes the way files-to-clients relationships are stored on the database making it possible to assign a file to multiple clients. However some files did not update successfully. The following files may need to be reassigned to their clients by using the \"Find orphan files\" tool:", 'cftp_admin');	
+		$updates_error_messages[100] = __("This version changes the way files-to-clients relationships are stored on the database making it possible to assign a file to multiple clients. However some files did not update successfully. The following files may need to be reassigned to their clients by using the \"Find orphan files\" tool:", 'cftp_admin');
 		$updates_error_messages[100] .= '<ul>';
 			foreach ($unimported_files as $unimported) {
 				$updates_error_messages[100] .= '<li>File: <strong>'.$unimported['title'].'</strong> Assigned to: <strong>'.$unimported['client'].'</strong></li>';
 			}
 		$updates_error_messages[100] .= '</ul>';
 	}
-	
+
 	if ($imported_ok > 0) {
 		$updates_made++;
 	}

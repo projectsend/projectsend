@@ -67,9 +67,6 @@ switch ( $section ) {
 		break;
 	case 'thumbnails':
 		$section_title	= __('Thumbnails','cftp_admin');
-		$checkboxes		= array(
-								'thumbnails_use_absolute',
-							);
 		break;
 	case 'branding':
 		$section_title	= __('Branding','cftp_admin');
@@ -93,9 +90,6 @@ $page_title = $section_title;
 
 $active_nav = 'options';
 include('header.php');
-
-/** Logo */
-$logo_file_info = generate_logo_url();
 
 /** Form sent */
 if ($_POST && validateCsrfToken()) {
@@ -867,19 +861,6 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										</div>
 									</div>
 								</div>
-
-								<div class="options_divide"></div>
-
-								<h3><?php _e("File's path", 'cftp_admin'); ?></h3>
-								<p><?php _e("If thumbnails are not showing (your company logo and file's preview on the branding page and client's files lists) try setting this option ON. It they still don't work, a folders permission issue might be the cause.",'cftp_admin'); ?></p>
-
-								<div class="form-group">
-									<div class="col-sm-8 col-sm-offset-4">
-										<label for="thumbnails_use_absolute">
-											<input type="checkbox" value="1" name="thumbnails_use_absolute" id="thumbnails_use_absolute" <?php echo (THUMBS_USE_ABSOLUTE == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Use file's absolute path",'cftp_admin'); ?>
-										</label>
-									</div>
-								</div>
 					<?php
 							break;
 							case 'branding':
@@ -892,14 +873,9 @@ $allowed_file_types = implode(',',$allowed_file_types);
 								<div id="current_logo">
 									<div id="current_logo_img">
 										<?php
-											if ($logo_file_info['exists'] === true) {
-												/** Make the image */
-												$logo = make_thumbnail($logo_file_info['dir'], LOGO_MAX_WIDTH, LOGO_MAX_HEIGHT);
-												/** If the generator failed, use the original image */
-												$img_src = ( !empty( $logo ) ) ? $logo['thumbnail']['url'] : $logo_file_info['url'];
-											}
+											$logo_file_info = generate_logo_url();
 										?>
-										<img src="<?php echo $img_src; ?>">
+										<img src="<?php echo $logo_file_info['thumbnail']; ?>">
 									</div>
 									<p class="preview_logo_note">
 										<?php _e('This preview uses a maximum width of 300px.','cftp_admin'); ?>

@@ -763,12 +763,14 @@ function htmlentities_allowed($str, $quoteStyle = ENT_COMPAT, $charset = CHARSET
 	$find = array();
 	$replace = array();
 
+	$description = str_replace('&amp;', '&', $description);
+
 	foreach ( $allowed_tags as $tag ) {
 		/** Opening tags */
-		$find[] = '&amp;lt;' . $tag . '&amp;gt;';
+		$find[] = '&lt;' . $tag . '&gt;';
 		$replace[] = '<' . $tag . '>';
 		/** Closing tags */
-		$find[] = '&amp;lt;/' . $tag . '&amp;gt;';
+		$find[] = '&lt;/' . $tag . '&gt;';
 		$replace[] = '</' . $tag . '>';
 	}
 

@@ -54,11 +54,11 @@ if (in_session_or_cookies($core_update_allowed)) {
 <!doctype html>
 <html lang="<?php echo SITE_LANG; ?>">
 <head>
-	<meta charset="utf-8">
+	<meta charset="<?php echo(CHARSET); ?>">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<title><?php echo html_output( $page_title . ' &raquo; ' . htmlspecialchars(THIS_INSTALL_SET_TITLE, ENT_QUOTES, 'UTF-8') ); ?></title>
+	<title><?php echo html_output( $page_title . ' &raquo; ' . htmlspecialchars(THIS_INSTALL_SET_TITLE, ENT_QUOTES, CHARSET) ); ?></title>
 	<?php meta_favicon(); ?>
 	<script type="text/javascript" src="<?php echo BASE_URI; ?>includes/js/jquery.1.12.4.min.js"></script>
 

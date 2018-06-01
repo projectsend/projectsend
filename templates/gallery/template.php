@@ -68,7 +68,7 @@ $count = count($img_files);
 						<li><a href="<?php echo BASE_URI; ?>upload-from-computer.php" target="_self" id="upload"><i class="fa fa-cloud-upload" aria-hidden="true"></i> <?php _e('Upload files', 'cftp_admin'); ?></a></li>
 					</ul>
 				</nav>
-				
+
 				<?php
 					if ( !empty( $get_categories['categories'] ) ) {
 						$url_client_id	= ( !empty($_GET['client'] ) && CURRENT_USER_LEVEL != '0') ? $_GET['client'] : null;
@@ -89,7 +89,7 @@ $count = count($img_files);
 										<li><a href="<?php echo $link_template . '?' . $link_query; ?>"><?php echo $category['name']; ?></a></li>
 								<?php
 									}
-								?>							
+								?>
 							</ul>
 						</nav>
 				<?php
@@ -101,13 +101,13 @@ $count = count($img_files);
 		<header>
 			<?php if ($logo_file_info['exists'] === true) { ?>
 				<div id="logo">
-					<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $logo_file_info['url']; ?>&amp;w=<?php echo LOGO_MAX_WIDTH; ?>" alt="<?php echo html_output(THIS_INSTALL_SET_TITLE); ?>" />
+					<img src="<?php echo $logo_file_info['thumbnail']; ?>">
 				</div>
 			<?php } ?>
 		</header>
-			
+
 		<div id="content">
-		
+
 			<?php
 				if (!$count) {
 					_e('There are no files.','cftp_template_gallery');
@@ -132,12 +132,9 @@ $count = count($img_files);
 										<div class="img_prev">
 											<a href="<?php echo $download_link; ?>" target="_blank">
 												<?php
-													$this_thumbnail_url = UPLOADED_FILES_URL.$this_file['url'];
-													if (THUMBS_USE_ABSOLUTE == '1') {
-														$this_thumbnail_url = BASE_URI.$this_thumbnail_url;
-													}
+													$thumbnail = make_thumbnail( UPLOADED_FILES_FOLDER.$this_file['url'], 280, 215 );
 												?>
-												<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $this_thumbnail_url; ?>&amp;w=280&amp;h=215&amp;f=2&amp;q=<?php echo THUMBS_QUALITY; ?>" class="thumbnail" alt="<?php echo htmlentities($this_file['name']); ?>" />
+												<img src="<?php echo $thumbnail['thumbnail']['url']; ?>" class="thumbnail" alt="<?php echo htmlentities($this_file['name']); ?>" />
 											</a>
 										</div>
 										<div class="img_data">

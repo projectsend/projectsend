@@ -54,6 +54,11 @@ define('DEBUG', true);
 define('IS_DEV', false);
 
 /**
+ * This constant holds the current default charset
+ */
+define('CHARSET', 'UTF-8');
+
+/**
  * Turn off reporting of PHP errors, warnings and notices.
  * On a development environment, it should be set to E_ALL for
  * complete debugging.

@@ -338,17 +338,6 @@ if ( !defined( 'IS_MAKE_CONFIG' ) ) {
 	}
 
 	/**
-	 * Timthumb
-	 *
-	 * @deprecated
-	 */
-	/*
-	if (defined('BASE_URI')) {
-		define('TIMTHUMB_URL',BASE_URI.'includes/timthumb/timthumb.php');
-		define('TIMTHUMB_ABS',ROOT_DIR.'/includes/timthumb/timthumb.php');
-	*/
-
-	/**
 	 * Widgets files
 	 */
 	if (defined('BASE_URI')) {

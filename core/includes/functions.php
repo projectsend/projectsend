@@ -86,6 +86,11 @@ function sql_add_order( $table, $column = 'id', $initial_order = 'ASC' )
 
 function generate_password()
 {
+	/**
+	 * Random compat library, a polyfill for PHP 7's random_bytes();
+	 * @link: https://github.com/paragonie/random_compat
+	 */
+	require_once(ROOT_DIR . '/includes/random_compat/random_compat.phar' );
 	$error_unexpected	= __('An unexpected error has occurred', 'cftp_admin');
 	$error_os_fail		= __('Could not generate a random password', 'cftp_admin');
 
@@ -741,7 +746,7 @@ function get_current_user_username()
  * Wrapper for htmlentities with default options
  *
  */
-function html_output($str, $flags = ENT_QUOTES, $encoding = 'UTF-8', $double_encode = false)
+function html_output($str, $flags = ENT_QUOTES, $encoding = CHARSET, $double_encode = false)
 {
 	return htmlentities($str, $flags, $encoding, $double_encode);
 }
@@ -750,20 +755,22 @@ function html_output($str, $flags = ENT_QUOTES, $encoding = 'UTF-8', $double_enc
  * Allow some html tags for file descriptions on htmlentities
  *
  */
-function htmlentities_allowed($str)
+function htmlentities_allowed($str, $quoteStyle = ENT_COMPAT, $charset = CHARSET, $doubleEncode = false)
 {
-	$description = htmlentities($str);
+	$description = htmlentities($str, $quoteStyle, $charset, $doubleEncode);
 	$allowed_tags = array('i','b','strong','em','p','br','ul','ol','li','u','sup','sub','s');
 
 	$find = array();
 	$replace = array();
 
+	$description = str_replace('&amp;', '&', $description);
+
 	foreach ( $allowed_tags as $tag ) {
 		/** Opening tags */
-		$find[] = '&amp;lt;' . $tag . '&amp;gt;';
+		$find[] = '&lt;' . $tag . '&gt;';
 		$replace[] = '<' . $tag . '>';
 		/** Closing tags */
-		$find[] = '&amp;lt;/' . $tag . '&amp;gt;';
+		$find[] = '&lt;/' . $tag . '&gt;';
 		$replace[] = '</' . $tag . '>';
 	}
 
@@ -777,7 +784,7 @@ function htmlentities_allowed($str)
  * characters when saving to the database.
  */
 function encode_html($str) {
-	$str = htmlentities($str, ENT_QUOTES, $encoding='utf-8');
+	$str = htmlentities($str, ENT_QUOTES, $encoding=CHARSET);
 	$str = nl2br($str);
 	//$str = addslashes($str);
 	return $str;
@@ -976,10 +983,18 @@ function generate_logo_url()
 		$branding['filename'] = 'img/custom/logo/'.LOGO_FILENAME;
 	}
 
-	if (file_exists(ROOT_DIR . '/' . $branding['filename'])) {
+	$result_dir = ROOT_DIR . '/' . $branding['filename'];
+
+	if (file_exists( $result_dir )) {
 		$branding['exists'] = true;
 		$branding['url'] = BASE_URI.$branding['filename'];
+		$branding['dir'] = $result_dir;
+
+		$thumbnail = make_thumbnail($result_dir, LOGO_MAX_WIDTH, LOGO_MAX_HEIGHT);
+		$branding['thumbnail'] = ( !empty( $thumbnail['thumbnail']['url'] ) ) ? $thumbnail['thumbnail']['url'] : $branding['url'];
+		$branding['thumbnail_info'] = $thumbnail;
 	}
+
 	return $branding;
 }
 
@@ -1009,6 +1024,36 @@ function generate_branding_layout()
 	return $layout;
 }
 
+/**
+ * Make a thumbnail with SimpleImage
+ */
+function make_thumbnail( $file, $width = THUMBS_MAX_WIDTH, $height = THUMBS_MAX_HEIGHT, $quality = THUMBS_QUALITY )
+{
+	$thumbnail = array();
+
+	if ( file_exists( $file ) ) {
+		$filename = md5( $file );
+		$thumbnail_file = 'thumb_' . $filename . '_' . $width . 'x' . $height . '.png';
+		$thumbnail['original']['url'] = $file;
+		$thumbnail['thumbnail']['location'] = THUMBNAILS_FILES_DIR . '/' . $thumbnail_file;
+		$thumbnail['thumbnail']['url'] = THUMBNAILS_FILES_URL . '/' . $thumbnail_file;
+
+		if ( !file_exists( $thumbnail['thumbnail']['location'] ) ) {
+			try {
+				$image = new \claviska\SimpleImage();
+				$image
+					->fromFile($file)
+					->autoOrient()
+					->bestFit($width, $height)
+					->toFile($thumbnail['thumbnail']['location'], null, $quality);
+			} catch(Exception $err) {
+				$thumbnail['error'] = $err->getMessage();
+			}
+		}
+	}
+
+	return $thumbnail;
+}
 
 /**
  * This function is called when a file is loaded
@@ -1040,7 +1085,7 @@ function meta_noindex()
  */
 function meta_favicon()
 {
-	$favicon_location = ASSETS_IMG_URL . 'favicon/';
+	$favicon_location = BASE_URI . 'img/favicon/';
 	echo '<link rel="shortcut icon" type="image/x-icon" href="' . BASE_URI . 'favicon.ico" />' . "\n";
 	echo '<link rel="icon" type="image/png" href="' . $favicon_location . 'favicon-32.png" sizes="32x32">' . "\n";
 	echo '<link rel="apple-touch-icon" href="' . $favicon_location . 'favicon-152.png" sizes="152x152">' . "\n";
@@ -1201,7 +1246,7 @@ function option_file_upload( $file, $validate_ext = '', $option = '', $action = 
 			 * Move the file to the destination defined on sys.vars.php. If ok, add the
 			 * new file name to the database.
 			 */
-			if ( move_uploaded_file( $file['tmp_name'], BRANDING_DIR . '/' , $safe_filename ) ) {
+			if ( move_uploaded_file( $file['tmp_name'], LOGO_FOLDER . $safe_filename ) ) {
 				if ( !empty( $option ) ) {
 					$query = "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name='" . $option . "'";
 					$sql = $dbh->prepare( $query );

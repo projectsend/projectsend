@@ -23,7 +23,7 @@ $window_title = __('File downloads','cftp_template');
 $footable_min = true; // delete this line after finishing pagination on every table
 $load_scripts	= array(
 						'footable',
-					); 
+					);
 
 $body_class = array('template', 'default-template', 'hide_title');
 
@@ -32,17 +32,8 @@ include_once(ROOT_DIR.'/header.php');
 
 <div class="col-xs-12">
 	<div id="wrapper">
-		<?php /*
-		<div id="left_column">
-			<?php if ($logo_file_info['exists'] === true) { ?>
-				<div id="current_logo">
-					<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $logo_file_info['url']; ?>&amp;w=250" alt="<?php echo THIS_INSTALL_SET_TITLE; ?>" />
-				</div>
-			<?php } ?>
-		</div> */ ?>
-	
 		<div id="right_column">
-	
+
 			<div class="form_actions_left">
 				<div class="form_actions_limit_results">
 					<?php show_search_form(); ?>
@@ -68,7 +59,7 @@ include_once(ROOT_DIR.'/header.php');
 					?>
 				</div>
 			</div>
-		
+
 			<form action="" name="files_list" method="get" class="form-inline">
 				<?php form_add_existing_parameters(); ?>
 				<div class="form_actions_right">
@@ -94,15 +85,15 @@ include_once(ROOT_DIR.'/header.php');
 						</div>
 					</div>
 				</div>
-		
+
 				<div class="right_clear"></div><br />
 
 				<div class="form_actions_count">
 					<p class="form_count_total"><?php _e('Found','cftp_admin'); ?>: <span><?php echo $count_for_pagination; ?> <?php _e('files','cftp_admin'); ?></span></p>
 				</div>
-	
+
 				<div class="right_clear"></div>
-	
+
 				<?php
 					if (!$count_for_pagination) {
 						if (isset($no_results_error)) {
@@ -128,7 +119,7 @@ include_once(ROOT_DIR.'/header.php');
 													'class'		=> 'footable table',
 												);
 						$table = new generateTable( $table_attributes );
-		
+
 						$thead_columns		= array(
 													array(
 														'select_all'	=> true,
@@ -177,7 +168,7 @@ include_once(ROOT_DIR.'/header.php');
 														'hide'			=> 'phone',
 													),
 												);
-	
+
 						$table->thead( $thead_columns );
 
 						foreach ($my_files as $file) {
@@ -200,7 +191,7 @@ include_once(ROOT_DIR.'/header.php');
 							else {
 								$filetitle = $file_title_content;
 							}
-							
+
 							/** Extension */
 							$pathinfo = pathinfo($file['url']);
 							$extension = strtolower($pathinfo['extension']);
@@ -208,7 +199,7 @@ include_once(ROOT_DIR.'/header.php');
 
 							/** Description */
 							$description = htmlentities_allowed($file['description']);
-							
+
 							/** File size */
 							$file_size_cell = '-'; // default
 							$file_absolute_path = UPLOADED_FILES_FOLDER . $file['url'];
@@ -216,10 +207,10 @@ include_once(ROOT_DIR.'/header.php');
 								$this_file_size = get_real_size(UPLOADED_FILES_FOLDER.$file['url']);
 								$file_size_cell = format_file_size($this_file_size);
 							}
-							
+
 							/** Date */
 							$date = date(TIMEFORMAT_USE,strtotime($file['timestamp']));
-							
+
 							/** Expiration */
 							if ( $file['expires'] == '1' ) {
 								if ( $file['expired'] == false ) {
@@ -227,26 +218,23 @@ include_once(ROOT_DIR.'/header.php');
 								} else {
 									$class = 'danger';
 								}
-								
+
 								$value = date( TIMEFORMAT_USE, strtotime( $file['expiry_date'] ) );
 							} else {
 								$class = 'success';
 								$value = __('Never','cftp_template');
 							}
-							
+
 							$expiration_cell = '<span class="label label-' . $class . ' label_big">' . $value . '</span>';
 
 							/** Preview */
 							$preview_cell = '';
-							if ($file['expired'] == false) {
+							if ( $file['expired'] == false ) {
 								$image_extensions = array('gif','jpg','pjpeg','jpeg','png');
 								if ( in_array( $extension, $image_extensions ) ) {
-									if ( file_exists( $file_absolute_path ) ) {
-										$this_thumbnail_url = UPLOADED_FILES_URL.$file['url'];
-										if (THUMBS_USE_ABSOLUTE == '1') {
-											$this_thumbnail_url = BASE_URI.$this_thumbnail_url;
-										}
-										$preview_cell = '<img src="' . TIMTHUMB_URL . '?src=' . $this_thumbnail_url . '&amp;w=' . THUMBS_MAX_WIDTH . '&amp;q=' . THUMBS_QUALITY . '" class="thumbnail" alt="' . htmlentities($file['name']) .'" />';
+									$thumbnail = make_thumbnail( $file_absolute_path, THUMBS_MAX_WIDTH, THUMBS_MAX_HEIGHT );
+									if ( !empty( $thumbnail['thumbnail']['url'] ) ) {
+										$preview_cell = '<img src="' . $thumbnail['thumbnail']['url'] . '" class="thumbnail" alt="' . htmlentities($file['name']) .'" />';
 									}
 								}
 							}
@@ -264,7 +252,7 @@ include_once(ROOT_DIR.'/header.php');
 							$download_cell = '<a href="' . $download_link . '" class="' . $download_btn_class . '" target="_blank">' . $download_text . '</a>';
 
 
-							
+
 							$tbody_cells = array(
 													array(
 														'content'		=> $checkbox,
@@ -313,7 +301,7 @@ include_once(ROOT_DIR.'/header.php');
 							foreach ( $tbody_cells as $cell ) {
 								$table->add_cell( $cell );
 							}
-			
+
 							$table->end_row();
 						}
 
@@ -327,17 +315,17 @@ include_once(ROOT_DIR.'/header.php');
 												'current'	=> $pagination_page,
 												'pages'		=> ceil( $count_for_pagination / TEMPLATE_RESULTS_PER_PAGE ),
 											);
-						
+
 						echo $table->pagination( $pagination_args );
-						
+
 
 					}
 				?>
 			</form>
-		
+
 		</div> <!-- right_column -->
 	</div> <!-- wrapper -->
-	
+
 	<?php default_footer_info(); ?>
 
 </div>

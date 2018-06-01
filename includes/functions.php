@@ -1027,7 +1027,7 @@ function generate_branding_layout()
 /**
  * Make a thumbnail with SimpleImage
  */
-function make_thumbnail( $file, $width = THUMBS_MAX_WIDTH, $height = THUMBS_MAX_HEIGHT )
+function make_thumbnail( $file, $width = THUMBS_MAX_WIDTH, $height = THUMBS_MAX_HEIGHT, $quality = THUMBS_QUALITY )
 {
 	$thumbnail = array();
 
@@ -1045,7 +1045,7 @@ function make_thumbnail( $file, $width = THUMBS_MAX_WIDTH, $height = THUMBS_MAX_
 					->fromFile($file)
 					->autoOrient()
 					->bestFit($width, $height)
-					->toFile($thumbnail['thumbnail']['location']);
+					->toFile($thumbnail['thumbnail']['location'], null, $quality);
 			} catch(Exception $err) {
 				$thumbnail['error'] = $err->getMessage();
 			}

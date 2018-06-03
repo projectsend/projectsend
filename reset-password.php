@@ -67,7 +67,7 @@ include('header-unlogged.php');
 		 * Clean the posted form values.
 		 */
 		$form_type = encode_html($_POST['form_type']);
-		
+
 		switch ($form_type) {
 
 			/**
@@ -78,7 +78,7 @@ include('header-unlogged.php');
 				$sql_user->bindParam(':email', $_POST['reset_password_email']);
 				$sql_user->execute();
 				$count_user = $sql_user->rowCount();
-		
+
 				if ( $count_user > 0 ) {
 					/** Email exists on the database */
 					$sql_user->setFetchMode(PDO::FETCH_ASSOC);
@@ -87,7 +87,7 @@ include('header-unlogged.php');
 					$username	= $row['user'];
 					$email		= $row['email'];
 					$token		= generateRandomString(32);
-					
+
 					/**
 					 * Count how many request were made by this user today.
 					 * No more than 3 unused should exist at a time.
@@ -105,7 +105,7 @@ include('header-unlogged.php');
 						$sql_pass->bindParam(':token', $token);
 						$sql_pass->bindParam(':id', $id, PDO::PARAM_INT);
 						$sql_pass->execute();
-			
+
 						/** Send email */
 						$notify_user = new PSend_Email();
 						$email_arguments = array(
@@ -115,7 +115,7 @@ include('header-unlogged.php');
 														'token' => $token
 													);
 						$notify_send = $notify_user->psend_send_email($email_arguments);
-			
+
 						if ($notify_send == 1){
 							$state['email'] = 1;
 						}
@@ -123,7 +123,7 @@ include('header-unlogged.php');
 							$state['email'] = 0;
 						}
 					}
-					
+
 					$show_form = 'none';
 				}
 				else {
@@ -137,40 +137,41 @@ include('header-unlogged.php');
 			case 'new_password':
 				if (!empty($got_user_id)) {
 					$reset_password_new = $_POST['reset_password_new'];
-	
+
 					/** Password checks */
 					$valid_me->validate('completed',$reset_password_new,$validation_no_pass);
 					$valid_me->validate('password',$reset_password_new,$validation_valid_pass.' '.$validation_valid_chars);
 					$valid_me->validate('pass_rules',$reset_password_new,$validation_rules_pass);
 					$valid_me->validate('length',$reset_password_new,$validation_length_pass,MIN_PASS_CHARS,MAX_PASS_CHARS);
-			
+
 					if ($valid_me->return_val) {
-	
-						$enc_password = $hasher->HashPassword($reset_password_new);
-				
+
+						$enc_password = password_hash($reset_password_new, PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
+						//$enc_password 		= $hasher->HashPassword($reset_password_new);
+
 						if (strlen($enc_password) >= 20) {
-				
+
 							$state['hash'] = 1;
-				
+
 							/** SQL queries */
 
-							$sql_query = $dbh->prepare("UPDATE " . TABLE_USERS . " SET 
+							$sql_query = $dbh->prepare("UPDATE " . TABLE_USERS . " SET
 														password = :password
 														WHERE id = :id"
 												);
 							$sql_query->bindParam(':password', $enc_password);
 							$sql_query->bindParam(':id', $got_user_id, PDO::PARAM_INT);
-							$sql_query->execute();							
-					
+							$sql_query->execute();
+
 							if ($sql_query) {
 								$state['reset'] = 1;
 
-								$sql_query = $dbh->prepare("UPDATE " . TABLE_PASSWORD_RESET . " SET 
-															used = '1' 
+								$sql_query = $dbh->prepare("UPDATE " . TABLE_PASSWORD_RESET . " SET
+															used = '1'
 															WHERE id = :id"
 													);
 								$sql_query->bindParam(':id', $request_id, PDO::PARAM_INT);
-								$sql_query->execute();							
+								$sql_query->execute();
 
 								$show_form = 'none';
 							}
@@ -183,7 +184,7 @@ include('header-unlogged.php');
 						}
 					}
 				}
-				
+
 			break;
 		}
 	}
@@ -201,7 +202,7 @@ include('header-unlogged.php');
 				 */
 				$valid_me->list_errors();
 			?>
-	
+
 			<?php
 				/**
 				 * Show status message
@@ -224,7 +225,7 @@ include('header-unlogged.php');
 							$login_err_message = __("There are 3 unused requests done in less than 24 hs. Please wait until one expires (1 day since made) to make a new one.",'cftp_admin');
 							break;
 					}
-	
+
 					echo system_message('error',$login_err_message,'login_error');
 				}
 
@@ -261,7 +262,7 @@ include('header-unlogged.php');
 						break;
 					}
 				}
-				 
+
 				switch ($show_form) {
 					case 'enter_email':
 					default:
@@ -270,16 +271,16 @@ include('header-unlogged.php');
 							$(document).ready(function() {
 								$("form").submit(function() {
 									clean_form(this);
-						
+
 									is_complete(this.reset_password_email,'<?php echo $validation_no_email; ?>');
 									is_email(this.reset_password_email,'<?php echo $validation_invalid_mail; ?>');
-						
+
 									// show the errors or continue if everything is ok
 									if (show_form_errors() == false) { return false; }
 								});
 							});
 						</script>
-						
+
 						<form action="reset-password.php" name="resetpassword" method="post" role="form">
 							<fieldset>
 								<input type="hidden" name="form_type" id="form_type" value="new_request" />
@@ -311,17 +312,17 @@ include('header-unlogged.php');
 								$("form").submit(function() {
 
 									clean_form(this);
-						
+
 									is_complete(this.reset_password_new,'<?php echo $validation_no_pass; ?>');
 									is_length(this.reset_password_new,<?php echo MIN_PASS_CHARS; ?>,<?php echo MAX_PASS_CHARS; ?>,'<?php echo $validation_length_pass; ?>');
 									is_password(this.reset_password_new,'<?php $chars = addslashes($validation_valid_chars); echo $validation_valid_pass." ".$chars; ?>');
-						
+
 									// show the errors or continue if everything is ok
 									if (show_form_errors() == false) { return false; }
 								});
 							});
 						</script>
-						
+
 						<form action="reset-password.php?token=<?php echo html_output($got_token); ?>&user=<?php echo html_output($got_user); ?>" name="newpassword" method="post" role="form">
 							<fieldset>
 								<input type="hidden" name="form_type" id="form_type" value="new_password" />
@@ -337,7 +338,7 @@ include('header-unlogged.php');
 									<button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="reset_password_new" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate','cftp_admin'); ?></button>
 								</div>
 								<?php echo password_notes(); ?>
-								
+
 								<p><?php _e("Please enter your desired new password. After that, you will be able to log in normally.",'cftp_admin'); ?></p>
 
 								<div class="inside_form_buttons">

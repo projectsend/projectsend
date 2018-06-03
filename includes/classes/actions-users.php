@@ -106,16 +106,16 @@ class UserActions
 		$this->state = array();
 
 		/** Define the account information */
-		$this->username		= encode_html($arguments['username']);
-		$this->password		= $arguments['password'];
-		$this->name				= encode_html($arguments['name']);
-		$this->email			= encode_html($arguments['email']);
-		$this->role				= $arguments['role'];
-		$this->active			= $arguments['active'];
-		$this->notify_account           = ( $arguments['notify_account'] == '1' ) ? 1 : 0;
-		$this->max_file_size	= ( !empty( $arguments['max_file_size'] ) ) ? $arguments['max_file_size'] : 0;
-		//$this->enc_password = md5(mysql_real_escape_string($this->password));
-		$this->enc_password	= $hasher->HashPassword($this->password);
+		$this->username			= encode_html($arguments['username']);
+		$this->password			= $arguments['password'];
+		$this->name					= encode_html($arguments['name']);
+		$this->email				= encode_html($arguments['email']);
+		$this->role					= $arguments['role'];
+		$this->active				= $arguments['active'];
+		$this->notify_account	= ( $arguments['notify_account'] == '1' ) ? 1 : 0;
+		$this->max_file_size		= ( !empty( $arguments['max_file_size'] ) ) ? $arguments['max_file_size'] : 0;
+		$this->enc_password		= password_hash($this->password, PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
+		//$this->enc_password		= $hasher->HashPassword();
 
 		if (strlen($this->enc_password) >= 20) {
 
@@ -187,8 +187,8 @@ class UserActions
 		$this->active			= ( $arguments['active'] == '1' ) ? 1 : 0;
 		$this->password		= $arguments['password'];
 		$this->max_file_size	= ( !empty( $arguments['max_file_size'] ) ) ? $arguments['max_file_size'] : 0;
-		//$this->enc_password = md5(mysql_real_escape_string($this->password));
-		$this->enc_password 	= $hasher->HashPassword($this->password);
+		$this->enc_password	= password_hash($this->password, PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
+		//$this->enc_password 	= $hasher->HashPassword($this->password);
 
 		if (strlen($this->enc_password) >= 20) {
 

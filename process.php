@@ -69,7 +69,8 @@ class process {
 				$this->logged_id		= $this->row['id'];
 				$this->global_name		= $this->row['name'];
 			}
-			$this->check_password = $hasher->CheckPassword($this->sysuser_password, $this->db_pass);
+
+			$this->check_password = password_verify($this->sysuser_password, $this->db_pass);
 			if ($this->check_password) {
 			//if ($db_pass == $sysuser_password) {
 				if ($this->active_status != '0') {

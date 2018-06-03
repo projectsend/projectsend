@@ -133,21 +133,22 @@ class ClientActions
 		$this->state = array();
 
 		/** Define the account information */
-		$this->id				= $arguments['id'];
-		$this->name				= encode_html($arguments['name']);
-		$this->email			= encode_html($arguments['email']);
-		$this->username		= encode_html($arguments['username']);
-		$this->password		= $arguments['password'];
+		$this->id					= $arguments['id'];
+		$this->name					= encode_html($arguments['name']);
+		$this->email				= encode_html($arguments['email']);
+		$this->username			= encode_html($arguments['username']);
+		$this->password			= $arguments['password'];
 		//$this->password_repeat = $arguments['password_repeat'];
-		$this->address			= encode_html($arguments['address']);
-		$this->phone			= encode_html($arguments['phone']);
-		$this->contact			= encode_html($arguments['contact']);
-		$this->notify_upload    	= ( $arguments['notify_upload'] == '1' ) ? 1 : 0;
-		$this->notify_account   	= ( $arguments['notify_account'] == '1' ) ? 1 : 0;
-		$this->max_file_size	= ( !empty( $arguments['max_file_size'] ) ) ? $arguments['max_file_size'] : 0;
-		$this->request			= ( !empty( $arguments['account_requested'] ) ) ? $arguments['account_requested'] : 0;
-		$this->active			= ( $arguments['active'] );
-		$this->enc_password		= $hasher->HashPassword($this->password);
+		$this->address				= encode_html($arguments['address']);
+		$this->phone				= encode_html($arguments['phone']);
+		$this->contact				= encode_html($arguments['contact']);
+		$this->notify_upload   	= ( $arguments['notify_upload'] == '1' ) ? 1 : 0;
+		$this->notify_account  	= ( $arguments['notify_account'] == '1' ) ? 1 : 0;
+		$this->max_file_size		= ( !empty( $arguments['max_file_size'] ) ) ? $arguments['max_file_size'] : 0;
+		$this->request				= ( !empty( $arguments['account_requested'] ) ) ? $arguments['account_requested'] : 0;
+		$this->active				= ( $arguments['active'] );
+		$this->enc_password		= password_hash($this->password, PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
+		//$this->enc_password		= $hasher->HashPassword($this->password);
 
 		if (strlen($this->enc_password) >= 20) {
 
@@ -223,17 +224,18 @@ class ClientActions
 		$this->state = array();
 
 		/** Define the account information */
-		$this->id				= $arguments['id'];
-		$this->name				= encode_html($arguments['name']);
-		$this->password		= $arguments['password'];
-		$this->email			= encode_html($arguments['email']);
-		$this->address			= encode_html($arguments['address']);
-		$this->phone			= encode_html($arguments['phone']);
-		$this->contact			= encode_html($arguments['contact']);
+		$this->id					= $arguments['id'];
+		$this->name					= encode_html($arguments['name']);
+		$this->password			= $arguments['password'];
+		$this->email				= encode_html($arguments['email']);
+		$this->address				= encode_html($arguments['address']);
+		$this->phone				= encode_html($arguments['phone']);
+		$this->contact				= encode_html($arguments['contact']);
 		$this->notify_upload		= ( $arguments['notify_upload'] == '1' ) ? 1 : 0;
-		$this->active			= ( $arguments['active'] == '1' ) ? 1 : 0;
-		$this->max_file_size	= ( !empty( $arguments['max_file_size'] ) ) ? $arguments['max_file_size'] : 0;
-		$this->enc_password		= $hasher->HashPassword($arguments['password']);
+		$this->active				= ( $arguments['active'] == '1' ) ? 1 : 0;
+		$this->max_file_size		= ( !empty( $arguments['max_file_size'] ) ) ? $arguments['max_file_size'] : 0;
+		$this->enc_password		= password_hash($this->password, PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
+		//$this->enc_password		= $hasher->HashPassword($arguments['password']);
 
 		if (strlen($this->enc_password) >= 20) {
 

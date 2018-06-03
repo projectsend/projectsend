@@ -8,11 +8,6 @@
  */
 
 /**
- * Create the phpass hash object
- */
-$hasher = new PasswordHash(HASH_COST_LOG2, HASH_PORTABLE);
-
-/**
  * Used when checking if there is a client or user logged in via cookie.
  *
  * @see check_for_session
@@ -44,7 +39,7 @@ function check_valid_cookie()
 				$_SESSION['loggedin']	= $_COOKIE['loggedin'];
 				$_SESSION['userlevel']	= $_COOKIE['userlevel'];
 				$_SESSION['access']		= $_COOKIE['access'];
-				
+
 				$statement->setFetchMode(PDO::FETCH_ASSOC);
 				while ( $row = $statement->fetch() ) {
 					$log_id		= $row['id'];
@@ -169,20 +164,20 @@ function can_see_content($allowed_levels) {
 					<meta charset="utf-8">
 					<meta http-equiv="X-UA-Compatible" content="IE=edge">
 					<meta name="viewport" content="width=device-width, initial-scale=1">
-				
+
 					<title><?php echo html_output( $page_title . ' &raquo; ' . THIS_INSTALL_SET_TITLE ); ?></title>
 					<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 					<?php meta_favicon(); ?>
 					<script type="text/javascript" src="<?php echo BASE_URI; ?>includes/js/jquery.1.12.4.min.js"></script>
-				
+
 					<!--[if lt IE 9]>
 						<script src="<?php echo BASE_URI; ?>includes/js/html5shiv.min.js"></script>
 						<script src="<?php echo BASE_URI; ?>includes/js/respond.min.js"></script>
 					<![endif]-->
-					
+
 					<?php
 						require_once( 'assets.php' );
-				
+
 						load_css_files();
 					?>
 				</head>

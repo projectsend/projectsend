@@ -150,17 +150,20 @@ if ($_POST) {
 	
 	/** Edit the account if validation is correct. */
 	if ($edit_validate == 1) {
-		$edit_response = $edit_client->edit_client($edit_arguments);
+        $edit_response = $edit_client->edit_client($edit_arguments);
+        $edit_groups = (!empty( $_POST['add_client_group_request'] ) ) ? $_POST['add_client_group_request'] : array();
+        $memberships	= new MembersActions;
+        $arguments		= array(
+                                'client_id'		=> $client_id,
+                                'group_ids'		=> $edit_groups,
+                                'request_by'	=> CURRENT_USER_USERNAME,
+                            );
 
-		$edit_groups = (!empty( $_POST['add_client_group_request'] ) ) ? $_POST['add_client_group_request'] : array();
-		$memberships	= new MembersActions;
-		$arguments		= array(
-								'client_id'		=> $client_id,
-								'group_ids'		=> $edit_groups,
-								'request_by'	=> CURRENT_USER_USERNAME,
-							);
-
-		$memberships->update_membership_requests($arguments);
+	    if (in_array(CURRENT_USER_LEVEL, [8 ,9])) {
+            $memberships->client_edit_groups($arguments);
+        } else {
+            $memberships->update_membership_requests($arguments);
+        }
 	}
 
 	$location = BASE_URI . 'clients-edit.php?id=' . $client_id . '&status=' . $edit_response['query'];

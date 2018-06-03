@@ -1389,6 +1389,17 @@ if (in_session_or_cookies($allowed_update)) {
 		 */
 		if ($last_update < 1089) {
 			@chmod(THUMBNAILS_FILES_DIR, 0755);
+			$updates_made++;
+		}
+
+		/**
+		 * r1097 updates
+		 * Password field length changed fomr 60 to 255 as per php's
+		 * password_hash docs recommendations
+		 */
+		if ($last_update < 1097) {
+			$statement = $dbh->query("ALTER TABLE " . TABLE_USERS . " CHANGE `password` `password` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL");
+			$updates_made++;
 		}
 
 	}

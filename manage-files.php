@@ -557,7 +557,7 @@ include('header.php');
 					 */
 					$conditions = array(
 										'select_all'		=> ( $current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1' ) ? true : false,
-										'is_not_client'		=> ( $current_level != '0' ) ? true : false,
+										'is_not_client'	=> ( $current_level != '0' ) ? true : false,
 										'total_downloads'	=> ( $current_level != '0' && !isset( $search_on ) ) ? true : false,
 										'is_search_on'		=> ( isset( $search_on ) ) ? true : false,
 									);
@@ -569,6 +569,10 @@ include('header.php');
 																			'class'		=> array( 'td_checkbox' ),
 																		),
 													'condition'		=> $conditions['select_all'],
+												),
+												array(
+													'content'		=> __('Thumbnail','cftp_admin'),
+													'hide'			=> 'phone,tablet',
 												),
 												array(
 													'sortable'		=> true,
@@ -675,12 +679,13 @@ include('header.php');
 
 						$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
 
+						$file_absolute_path = UPLOADED_FILES_FOLDER . $row['url'];
+
 						/**
 						 * Get file size only if the file exists
 						 */
-						$this_file_absolute = UPLOADED_FILES_FOLDER . $row['url'];
-						if ( file_exists( $this_file_absolute ) ) {
-							$this_file_size = get_real_size($this_file_absolute);
+						if ( file_exists( $file_absolute_path ) ) {
+							$this_file_size = get_real_size($file_absolute_path);
 							$formatted_size = html_output(format_file_size($this_file_size));
 						}
 						else {
@@ -691,6 +696,15 @@ include('header.php');
 						/***/
 						$pathinfo = pathinfo($row['url']);
 						$extension = ( !empty( $pathinfo['extension'] ) ) ? strtolower($pathinfo['extension']) : '';
+
+						/** Thumbnail */
+						$thumbnail_cell = '';
+						if ( file_is_image( $file_absolute_path ) ) {
+							$thumbnail = make_thumbnail( $file_absolute_path, null, 50, 50 );
+							if ( !empty( $thumbnail['thumbnail']['url'] ) ) {
+								$thumbnail_cell = '<img src="' . $thumbnail['thumbnail']['url'] . '" class="thumbnail" />';
+							}
+						}
 
 						/** Is file assigned? */
 						$assigned_class		= ($count_assignations == 0) ? 'danger' : 'success';
@@ -786,6 +800,9 @@ include('header.php');
 													'checkbox'		=> true,
 													'value'			=> $row["id"],
 													'condition'		=> $conditions['select_all'],
+												),
+												array(
+													'content'		=> $thumbnail_cell,
 												),
 												array(
 													'content'		=> $date,

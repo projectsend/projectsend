@@ -28,6 +28,9 @@ $load_scripts	= array(
 $body_class = array('template', 'default-template', 'hide_title');
 
 include_once(ROOT_DIR.'/header.php');
+
+define('TEMPLATE_THUMBNAILS_WIDTH', '50');
+define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 ?>
 
 <div class="col-xs-12">
@@ -118,7 +121,7 @@ include_once(ROOT_DIR.'/header.php');
 													'id'		=> 'files_list',
 													'class'		=> 'footable table',
 												);
-						$table = new generateTable( $table_attributes );
+						$table = new ProjectSend\TableGenerate( $table_attributes );
 
 						$thead_columns		= array(
 													array(
@@ -126,6 +129,10 @@ include_once(ROOT_DIR.'/header.php');
 														'attributes'	=> array(
 																				'class'		=> array( 'td_checkbox' ),
 																			),
+													),
+													array(
+														'content'		=> __('Thumbnail','cftp_admin'),
+														'hide'			=> 'phone,tablet',
 													),
 													array(
 														'sortable'		=> true,
@@ -160,10 +167,6 @@ include_once(ROOT_DIR.'/header.php');
 														'hide'			=> 'phone',
 													),
 													array(
-														'content'		=> __('Image preview','cftp_admin'),
-														'hide'			=> 'phone,tablet',
-													),
-													array(
 														'content'		=> __('Download','cftp_admin'),
 														'hide'			=> 'phone',
 													),
@@ -193,9 +196,7 @@ include_once(ROOT_DIR.'/header.php');
 							}
 
 							/** Extension */
-							$pathinfo = pathinfo($file['url']);
-							$extension = strtolower($pathinfo['extension']);
-							$extension_cell = '<span class="label label-success label_big">' . $extension . '</span>';
+							$extension_cell = '<span class="label label-success label_big">' . $file['extension'] . '</span>';
 
 							/** Description */
 							$description = htmlentities_allowed($file['description']);
@@ -227,12 +228,11 @@ include_once(ROOT_DIR.'/header.php');
 
 							$expiration_cell = '<span class="label label-' . $class . ' label_big">' . $value . '</span>';
 
-							/** Preview */
+							/** Thumbnail */
 							$preview_cell = '';
 							if ( $file['expired'] == false ) {
-								$image_extensions = array('gif','jpg','pjpeg','jpeg','png');
-								if ( in_array( $extension, $image_extensions ) ) {
-									$thumbnail = make_thumbnail( $file_absolute_path, THUMBS_MAX_WIDTH, THUMBS_MAX_HEIGHT );
+								if ( file_is_image( $file_absolute_path ) ) {
+									$thumbnail = make_thumbnail( $file_absolute_path, null, TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT );
 									if ( !empty( $thumbnail['thumbnail']['url'] ) ) {
 										$preview_cell = '<img src="' . $thumbnail['thumbnail']['url'] . '" class="thumbnail" alt="' . htmlentities($file['name']) .'" />';
 									}
@@ -256,6 +256,12 @@ include_once(ROOT_DIR.'/header.php');
 							$tbody_cells = array(
 													array(
 														'content'		=> $checkbox,
+													),
+													array(
+														'content'		=> $preview_cell,
+														'attributes'	=> array(
+																				'class'		=> array( 'extra' ),
+																			),
 													),
 													array(
 														'content'		=> $filetitle,
@@ -283,12 +289,6 @@ include_once(ROOT_DIR.'/header.php');
 													),
 													array(
 														'content'		=> $expiration_cell,
-													),
-													array(
-														'content'		=> $preview_cell,
-														'attributes'	=> array(
-																				'class'		=> array( 'extra' ),
-																			),
 													),
 													array(
 														'content'		=> $download_cell,

@@ -51,7 +51,7 @@ if (defined('TRY_INSTALL')) {
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_USERS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `user` varchar('.MAX_USER_CHARS.') NOT NULL,
-								  `password` varchar('.MAX_PASS_CHARS.') NOT NULL,
+								  `password` varchar(255) NOT NULL,
 								  `name` text NOT NULL,
 								  `email` varchar(60) NOT NULL,
 								  `level` tinyint(1) NOT NULL DEFAULT \'0\',

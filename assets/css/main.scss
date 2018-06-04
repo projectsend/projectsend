@@ -1735,6 +1735,12 @@ li .required.password_toggle {
 	}
 }
 
+.thumbnail {
+	padding: 0;
+	margin-bottom: 0;
+	@include border-radius(0);
+}
+
 .public_link_copy {
 	padding:5px;
 	width:100%;

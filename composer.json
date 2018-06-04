@@ -3,17 +3,45 @@
 	"description": "ProjectSend is an open source, clients-oriented, private file sharing web application.",
 	"type": "project",
 	"license": "GPL-2.0-or-later",
-	"homepage": "https://projectsend.org/",
+	"homepage": "https://www.projectsend.org/",
 	"support": {
 			"email": "contact@projectsend.org",
-			"issues": "https://github.com/ignacionelson/ProjectSend/issues",
-			"source": "https://github.com/ignacionelson/ProjectSend/"
+			"issues": "https://github.com/projectsend/ProjectSend/issues",
+			"source": "https://github.com/projectsend/ProjectSend/"
 	},
 	"config": {
-		"preferred-install": "dist",
-		"vendor-dir": "lib/vendor"
+		"preferred-install": "dist"
 	},
 	"prefer-stable": true,
+	"autoload": {
+		"psr-4": {
+			"\\": "app/classes/"
+		},
+		"files": [
+			"app/functions/database.php",
+			"app/functions/actions.log.export.php",
+			"app/functions/active.sessions.php",
+			"app/functions/ajax-keep-alive.php",
+			"app/functions/core.update.legacy.php",
+			"app/functions/core.update.php",
+			"app/functions/core.update.silent.php",
+			"app/functions/email-template.php",
+			"app/functions/functions.categories.php",
+			"app/functions/functions.forms.php",
+			"app/functions/functions.php",
+			"app/functions/functions.templates.php",
+			"app/functions/language.php",
+			"app/functions/language-locales-names.php",
+			"app/functions/site.options.php",
+			"app/functions/text-string.php",
+			"app/functions/timezone_identifiers_list.php",
+			"app/functions/timezones.php",
+			"app/functions/updates.functions.php",
+			"app/functions/updates.messages.php",
+			"app/functions/userlevel_check.php",
+			"app/functions/security/xsrf.php"
+		]
+	},
 	"require": {
 		"phpmailer/phpmailer": "^6.0",
 		"symfony/polyfill-mbstring": "^1.8",

@@ -18,17 +18,21 @@
  * Feel free to participate!
  *
  * @package		ProjectSend
- * @link			https://github.com/ignacionelson/ProjectSend/
+ * @link		https://github.com/ignacionelson/ProjectSend/
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU GPL version 2
  * @author		Ignacio Nelson <contact@projectsend.org>
  *
  */
+session_start();
+
+define('ROOT_DIR', dirname(__FILE__));
+define('SP', DIRECTORY_SEPARATOR);
+
+/** Basic system constants */
+require_once ROOT_DIR . SP . 'app' . SP . 'config' . SP . 'config.php';
 
 /** Packages loaded from Composer */
-require_once dirname(__FILE__) . '/lib/vendor/autoload.php';
-
-/** ProjectSend's classes and functions files */
-require_once dirname(__FILE__) . '/sys.includes.php';
+require_once ROOT_DIR . SP . 'vendor' . SP . 'autoload.php';
 
 /** Initiate */
 $app = new \ProjectSend\ProjectSend();

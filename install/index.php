@@ -73,19 +73,20 @@ function try_query($queries)
 
 /** Collect data from form */
 if($_POST) {
-	$this_install_title		= $_POST['this_install_title'];
+	$this_install_title	= $_POST['this_install_title'];
 	$base_uri				= $_POST['base_uri'];
-	$got_admin_name			= $_POST['install_user_fullname'];
-	$got_admin_username		= $_POST['install_user_username'];
+	$got_admin_name		= $_POST['install_user_fullname'];
+	$got_admin_username	= $_POST['install_user_username'];
 	$got_admin_email		= $_POST['install_user_mail'];
-	$got_admin_pass			= $hasher->HashPassword($_POST['install_user_pass']);
+	$got_admin_pass 		= password_hash($_POST['install_user_pass'], PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
+	//$got_admin_pass		= $hasher->HashPassword($_POST['install_user_pass']);
 	//$got_admin_pass		= md5($_POST['install_user_pass']);
-	//$got_admin_pass2		= md5($_POST['install_user_repeat']);
+	//$got_admin_pass2	= md5($_POST['install_user_repeat']);
 }
 
 /** Define the installation text strings */
 $page_title_install		= __('Install','cftp_admin');
-$install_no_sitename	= __('Sitename was not completed.','cftp_admin');
+$install_no_sitename		= __('Sitename was not completed.','cftp_admin');
 $install_no_baseuri		= __('ProjectSend URI was not completed.','cftp_admin');
 
 include_once('../header-unlogged.php');

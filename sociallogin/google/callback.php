@@ -133,14 +133,14 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']->id_
           $add_to_group->execute();
         }
 
-        $notify_admin = new PSend_Email();
+        $notify_admin = new ProjectSend\EmailsPrepare();
         $email_arguments = array(
           'type' => 'new_client_self',
           'address' => ADMIN_EMAIL_ADDRESS,
           'username' => $add_client_data_user,
           'name' => $add_client_data_name
         );
-        $notify_admin_status = $notify_admin->psend_send_email($email_arguments);
+        $notify_admin_status = $notify_admin->send($email_arguments);
 
         if (CLIENTS_AUTO_APPROVE == '0') {
           $_SESSION['errorstate'] = 'inactive_client';

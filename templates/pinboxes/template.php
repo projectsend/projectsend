@@ -186,7 +186,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 								?>
 											<div class="ext_prev">
 												<a href="<?php echo $download_link; ?>" target="_blank">
-													<h6><?php echo $extension; ?></h6>
+													<h6><?php echo $file['extension']; ?></h6>
 												</a>
 											</div>
 								<?php

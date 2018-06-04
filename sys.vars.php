@@ -34,7 +34,7 @@ define('PROTOCOL', empty($_SERVER['HTTPS'])? 'http' : 'https');
  * - Changes the error_reporting php value
  * - Enables the PDOEX extension (on the database class) to count queries
  */
-define('DEBUG', false);
+define('DEBUG', true);
 
 /**
  * IS_DEV is set to true during development to show a sitewide remainder
@@ -236,8 +236,15 @@ define('SYSTEM_NAME','ProjectSend');
 
 define('LOGO_FOLDER',ROOT_DIR.'/img/custom/logo/');
 define('LOGO_THUMB_FOLDER',ROOT_DIR.'/img/custom/thumbs/');
+define('LOGO_MAX_WIDTH',300);
+define('LOGO_MAX_HEIGHT',300);
 
-/** phpass */
+/** Thumbnails */
+define('THUMBS_MAX_WIDTH',300);
+define('THUMBS_MAX_HEIGHT',300);
+define('THUMBS_QUALITY',90);
+
+/** Passwords */
 define('HASH_COST_LOG2', 8);
 define('HASH_PORTABLE', false);
 

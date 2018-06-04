@@ -65,9 +65,6 @@ switch ( $section ) {
 								'recaptcha_enabled',
 							);
 		break;
-	case 'thumbnails':
-		$section_title	= __('Thumbnails','cftp_admin');
-		break;
 	case 'branding':
 		$section_title	= __('Branding','cftp_admin');
 		$checkboxes		= array(
@@ -831,38 +828,6 @@ $allowed_file_types = implode(',',$allowed_file_types);
 								</div>
 					<?php
 							break;
-							case 'thumbnails':
-					?>
-								<h3><?php _e('Thumbnails','cftp_admin'); ?></h3>
-								<p><?php _e("Thumbnails are used on files lists. It is recommended to keep them small, unless you are using the system to upload only images, and will change the default client's template accordingly.",'cftp_admin'); ?></p>
-
-								<div class="options_column">
-									<div class="options_col_left">
-										<div class="form-group">
-											<label for="max_thumbnail_width" class="col-sm-6 control-label"><?php _e('Max width','cftp_admin'); ?></label>
-											<div class="col-sm-6">
-												<input type="text" name="max_thumbnail_width" id="max_thumbnail_width" class="form-control" value="<?php echo html_output(THUMBS_MAX_WIDTH); ?>" />
-											</div>
-										</div>
-
-										<div class="form-group">
-											<label for="max_thumbnail_height" class="col-sm-6 control-label"><?php _e('Max height','cftp_admin'); ?></label>
-											<div class="col-sm-6">
-												<input type="text" name="max_thumbnail_height" id="max_thumbnail_height" class="form-control" value="<?php echo html_output(THUMBS_MAX_HEIGHT); ?>" />
-											</div>
-										</div>
-									</div>
-									<div class="options_col_right">
-										<div class="form-group">
-											<label for="thumbnail_default_quality" class="col-sm-6 control-label"><?php _e('JPG Quality','cftp_admin'); ?></label>
-											<div class="col-sm-6">
-												<input type="text" name="thumbnail_default_quality" id="thumbnail_default_quality" class="form-control" value="<?php echo html_output(THUMBS_QUALITY); ?>" />
-											</div>
-										</div>
-									</div>
-								</div>
-					<?php
-							break;
 							case 'branding':
 					?>
 								<h3><?php _e('Current logo','cftp_admin'); ?></h3>
@@ -877,9 +842,6 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										?>
 										<img src="<?php echo $logo_file_info['thumbnail']; ?>">
 									</div>
-									<p class="preview_logo_note">
-										<?php _e('This preview uses a maximum width of 300px.','cftp_admin'); ?>
-									</p>
 								</div>
 
 								<div id="form_upload_logo">
@@ -887,31 +849,6 @@ $allowed_file_types = implode(',',$allowed_file_types);
 										<label class="col-sm-4 control-label"><?php _e('Select image to upload','cftp_admin'); ?></label>
 										<div class="col-sm-8">
 											<input type="file" name="select_logo" class="empty" />
-										</div>
-									</div>
-								</div>
-
-								<div class="options_divide"></div>
-
-								<h3><?php _e('Size settings','cftp_admin'); ?></h3>
-								<p><?php _e("The file viewer template may use this setting when showing the image.",'cftp_admin'); ?></p>
-
-								<div class="form-group">
-									<label for="max_logo_width" class="col-sm-4 control-label"><?php _e('Max width','cftp_admin'); ?></label>
-									<div class="col-sm-3">
-										<div class="input-group">
-											<input type="text" name="max_logo_width" id="max_logo_width" class="form-control" value="<?php echo html_output(LOGO_MAX_WIDTH); ?>" />
-											<span class="input-group-addon">px</span>
-										</div>
-									</div>
-								</div>
-
-								<div class="form-group">
-									<label for="max_logo_height" class="col-sm-4 control-label"><?php _e('Max height','cftp_admin'); ?></label>
-									<div class="col-sm-3">
-										<div class="input-group">
-											<input type="text" name="max_logo_height" id="max_logo_height" class="form-control" value="<?php echo html_output(LOGO_MAX_HEIGHT); ?>" />
-											<span class="input-group-addon">px</span>
 										</div>
 									</div>
 								</div>

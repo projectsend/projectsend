@@ -218,10 +218,6 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 													'link'	=> 'options.php?section=security',
 												),
 												array(
-													'label'	=> __('Thumbnails', 'cftp_admin'),
-													'link'	=> 'options.php?section=thumbnails',
-												),
-												array(
 													'label'	=> __('Branding', 'cftp_admin'),
 													'link'	=> 'options.php?section=branding',
 												),

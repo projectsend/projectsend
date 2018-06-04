@@ -41,13 +41,6 @@ if(!empty($options_values)) {
 	$allowed_file_types = $options_values['allowed_file_types'];
 
 	define('BASE_URI',$options_values['base_uri']);
-	define('THUMBS_MAX_WIDTH',$options_values['max_thumbnail_width']);
-	define('THUMBS_MAX_HEIGHT',$options_values['max_thumbnail_height']);
-	define('THUMBS_FOLDER',$options_values['thumbnails_folder']);
-	define('THUMBS_QUALITY',$options_values['thumbnail_default_quality']);
-	define('THUMBS_USE_ABSOLUTE',$options_values['thumbnails_use_absolute']);
-	define('LOGO_MAX_WIDTH',$options_values['max_logo_width']);
-	define('LOGO_MAX_HEIGHT',$options_values['max_logo_height']);
 	define('LOGO_FILENAME',$options_values['logo_filename']);
 	define('THIS_INSTALL_SET_TITLE',$options_values['this_install_title']);
 	define('TEMPLATE_USE',$options_values['selected_clients_template']);

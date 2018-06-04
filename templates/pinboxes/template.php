@@ -20,6 +20,8 @@ include_once(ROOT_DIR.'/templates/common.php'); // include the required function
 $window_title = __('Available files','pinboxes_template');
 
 $count = count($my_files);
+define('TEMPLATE_THUMBNAILS_WIDTH', '250');
+define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 ?>
 <!DOCTYPE html>
 <html>
@@ -173,7 +175,7 @@ $count = count($my_files);
 											?>
 													<a href="<?php echo $download_link; ?>" target="_blank">
 														<?php
-															$thumbnail = make_thumbnail( UPLOADED_FILES_FOLDER.$file['url'], 250 );
+															$thumbnail = make_thumbnail( UPLOADED_FILES_FOLDER.$file['url'], 'proportional', TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT );
 														?>
 														<img src="<?php echo $thumbnail['thumbnail']['url']; ?>" alt="<?php echo htmlentities($file['name']); ?>" />
 													</a>

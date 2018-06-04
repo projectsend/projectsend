@@ -54,7 +54,7 @@ $get_arguments	= array(
 						'client_id'	=> $client_info['id'],
 						'return'	=> 'list',
 					);
-$found_groups	= $get_groups->client_get_groups($get_arguments); 
+$found_groups	= $get_groups->client_get_groups($get_arguments);
 
 /**
  * Define the arrays so they can't be empty
@@ -155,7 +155,7 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 						':search_ids' => $ids_to_search
 					);
 
-	/** Add the search terms */	
+	/** Add the search terms */
 	if ( isset($_GET['search']) && !empty($_GET['search']) ) {
 		$files_query		.= " AND (filename LIKE :title OR description LIKE :description)";
 		$no_results_error	= 'search';
@@ -220,8 +220,9 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 
 			$my_files[$f] = array(
 								//'origin'		=> $origin,
-								'id'			=> $data['id'],
-								'url'			=> $data['url'],
+								'id'				=> $data['id'],
+								'url'				=> $data['url'],
+								'dir'				=> UPLOADED_FILES_FOLDER . $data['url'],
 								'save_as'		=> (!empty( $data['original_url'] ) ) ? $data['original_url'] : $data['url'],
 								'name'			=> $data['filename'],
 								'description'	=> $data['description'],
@@ -233,7 +234,7 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 			$f++;
 		}
 	}
-	
+
 }
 
 // DEBUG

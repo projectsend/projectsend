@@ -28,6 +28,9 @@ $load_scripts	= array(
 $body_class = array('template', 'default-template', 'hide_title');
 
 include_once(ROOT_DIR.'/header.php');
+
+define('TEMPLATE_THUMBNAILS_WIDTH', '100');
+define('TEMPLATE_THUMBNAILS_HEIGHT', '100');
 ?>
 
 <div class="col-xs-12">
@@ -230,9 +233,8 @@ include_once(ROOT_DIR.'/header.php');
 							/** Preview */
 							$preview_cell = '';
 							if ( $file['expired'] == false ) {
-								$image_extensions = array('gif','jpg','pjpeg','jpeg','png');
-								if ( in_array( $extension, $image_extensions ) ) {
-									$thumbnail = make_thumbnail( $file_absolute_path, THUMBS_MAX_WIDTH, THUMBS_MAX_HEIGHT );
+								if ( file_is_image( $file_absolute_path ) ) {
+									$thumbnail = make_thumbnail( $file_absolute_path, null, TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT );
 									if ( !empty( $thumbnail['thumbnail']['url'] ) ) {
 										$preview_cell = '<img src="' . $thumbnail['thumbnail']['url'] . '" class="thumbnail" alt="' . htmlentities($file['name']) .'" />';
 									}

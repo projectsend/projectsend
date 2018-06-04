@@ -990,7 +990,7 @@ function generate_logo_url()
 		$branding['url'] = BASE_URI.$branding['filename'];
 		$branding['dir'] = $result_dir;
 
-		$thumbnail = make_thumbnail($result_dir, LOGO_MAX_WIDTH, LOGO_MAX_HEIGHT);
+		$thumbnail = make_thumbnail($result_dir, 'proportional', LOGO_MAX_WIDTH, LOGO_MAX_HEIGHT);
 		$branding['thumbnail'] = ( !empty( $thumbnail['thumbnail']['url'] ) ) ? $thumbnail['thumbnail']['url'] : $branding['url'];
 		$branding['thumbnail_info'] = $thumbnail;
 	}
@@ -1025,15 +1025,43 @@ function generate_branding_layout()
 }
 
 /**
+ * Try to recognize if a file is an image
+ *
+ * @todo Check the mime type also
+ */
+function file_is_image( $file )
+{
+	$is_image = false;
+	$pathinfo = pathinfo( $file );
+	$extension = strtolower( $pathinfo['extension'] );
+
+	if ( file_exists( $file ) ) {
+		/** Check the extension */
+		$image_extensions = array('jpg', 'jpeg', 'jpe', 'png', 'gif');
+		if ( in_array( $extension, $image_extensions ) ) {
+			$is_image = true;
+		}
+	}
+
+	return $is_image;
+}
+
+/**
  * Make a thumbnail with SimpleImage
  */
-function make_thumbnail( $file, $width = THUMBS_MAX_WIDTH, $height = THUMBS_MAX_HEIGHT, $quality = THUMBS_QUALITY )
+function make_thumbnail( $file, $type = 'thumbnail', $width = THUMBS_MAX_WIDTH, $height = THUMBS_MAX_HEIGHT, $quality = THUMBS_QUALITY )
 {
 	$thumbnail = array();
 
-	if ( file_exists( $file ) ) {
-		$filename = md5( $file );
-		$thumbnail_file = 'thumb_' . $filename . '_' . $width . 'x' . $height . '.png';
+	if ( file_is_image( $file ) ) {
+		/** Original extension */
+		$pathinfo	= pathinfo( $file );
+		$filename	= md5( $pathinfo['basename'] );
+		$extension	= strtolower( $pathinfo['extension'] );
+		$mime_type	= mime_content_type($file);
+
+		$thumbnail_file = 'thumb_' . $filename . '_' . $width . 'x' . $height . '.' . $extension;
+
 		$thumbnail['original']['url'] = $file;
 		$thumbnail['thumbnail']['location'] = THUMBNAILS_FILES_DIR . '/' . $thumbnail_file;
 		$thumbnail['thumbnail']['url'] = THUMBNAILS_FILES_URL . '/' . $thumbnail_file;
@@ -1043,9 +1071,23 @@ function make_thumbnail( $file, $width = THUMBS_MAX_WIDTH, $height = THUMBS_MAX_
 				$image = new \claviska\SimpleImage();
 				$image
 					->fromFile($file)
-					->autoOrient()
-					->bestFit($width, $height)
-					->toFile($thumbnail['thumbnail']['location'], null, $quality);
+					->autoOrient();
+
+				switch ( $type ) {
+					case 'proportional':
+						$method = 'bestFit';
+						break;
+					case 'thumbnail':
+					default:
+						$method = 'thumbnail';
+						break;
+				}
+
+				$image->$method($width, $height);
+
+				$image
+					->toFile($thumbnail['thumbnail']['location'], $mime_type, $quality);
+
 			} catch(Exception $err) {
 				$thumbnail['error'] = $err->getMessage();
 			}

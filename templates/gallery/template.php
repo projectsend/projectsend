@@ -26,15 +26,16 @@ $window_title = __('Gallery','cftp_template_gallery');
 /**
  * Filter files by type, only save images.
 */
-$img_formats = array('gif','jpg','pjpeg','jpeg','png');
 foreach ($my_files as $file) {
-	$pathinfo = pathinfo($file['url']);
-	$extension = strtolower($pathinfo['extension']);
-	if (in_array($extension,$img_formats)) {
+	if ( file_is_image( $file['dir'] ) ) {
 		$img_files[] = $file;
 	}
 }
+
 $count = count($img_files);
+
+define('TEMPLATE_THUMBNAILS_WIDTH', '280');
+define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 ?>
 <!doctype html>
 <html lang="<?php echo SITE_LANG; ?>">
@@ -132,7 +133,7 @@ $count = count($img_files);
 										<div class="img_prev">
 											<a href="<?php echo $download_link; ?>" target="_blank">
 												<?php
-													$thumbnail = make_thumbnail( UPLOADED_FILES_FOLDER.$this_file['url'], 280, 215 );
+													$thumbnail = make_thumbnail( UPLOADED_FILES_FOLDER.$this_file['url'], null, TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT );
 												?>
 												<img src="<?php echo $thumbnail['thumbnail']['url']; ?>" class="thumbnail" alt="<?php echo htmlentities($this_file['name']); ?>" />
 											</a>

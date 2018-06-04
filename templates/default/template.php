@@ -131,7 +131,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 																			),
 													),
 													array(
-														'content'		=> __('Image preview','cftp_admin'),
+														'content'		=> __('Thumbnail','cftp_admin'),
 														'hide'			=> 'phone,tablet',
 													),
 													array(

@@ -164,10 +164,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 									/**
 									 * Generate the thumbnail if the file is an image.
 									 */
-									$pathinfo = pathinfo($file['url']);
-									$extension = strtolower($pathinfo['extension']);
-									$img_formats = array('gif','jpg','pjpeg','jpeg','png');
-									if (in_array($extension,$img_formats)) {
+									 if ( file_is_image( $file['dir'] ) ) {
 								?>
 										<div class="img_prev">
 											<?php

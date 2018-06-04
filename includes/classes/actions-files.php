@@ -17,6 +17,11 @@ class FilesActions
 		$this->dbh = $dbh;
 	}
 
+	/**
+	 * Standarized way to get a list of files
+	 * @todo finish adding the filters
+	 * @todo implement accross the system (manage-files.php, templates/common.php, etc)
+	 */
 	function get_files($arguments)
 	{
 		$this->file_id		= !empty( $arguments['file_id'] ) ? $arguments['file_id'] : '';
@@ -43,12 +48,12 @@ class FilesActions
 		 */
 		 if ( !empty( $this->group_ids ) || !empty( $this->client_ids ) ) {
 			 if ( !empty( $this->group_ids ) ) {
-				 $group_files = array();
-				 $files_groups_sql = "SELECT id, file_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE group_id=:group_id AND hidden = '0'";
+				 $files_filter = array();
+				 $files_filter_sql = "SELECT id, file_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE group_id=:group_id AND hidden = '0'";
 			 }
 			 if ( !empty( $this->client_ids ) ) {
-				 $client_files = array();
-				 $files_groups_sql = "SELECT id, file_id, client_id FROM " . TABLE_FILES_RELATIONS . " WHERE client_id=:client_id AND hidden = '0'";
+				 $files_filter = array();
+				 $files_filter_sql = "SELECT id, file_id, client_id FROM " . TABLE_FILES_RELATIONS . " WHERE client_id=:client_id AND hidden = '0'";
 			 }
  		}
 
@@ -88,7 +93,7 @@ class FilesActions
 			}
 		}
 
-		echo $this->query;
+		//echo $this->query;
 
 		$this->statement = $this->dbh->prepare($this->query);
 
@@ -127,7 +132,7 @@ class FilesActions
 			/** Do a permissions check */
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
 				$this->file_id = $rel_id;
-				$this->sql = $this->dbh->prepare("SELECT url, uploader FROM " . TABLE_FILES . " WHERE id = :file_id");
+				$this->sql = $this->dbh->prepare("SELECT original_url, url, uploader FROM " . TABLE_FILES . " WHERE id = :file_id");
 				$this->sql->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
 				$this->sql->execute();
 				$this->sql->setFetchMode(PDO::FETCH_ASSOC);
@@ -147,7 +152,17 @@ class FilesActions
 					}
 
 					$this->file_url = $this->row['url'];
+
+					/**
+					 * Thumbnails should be deleted too.
+					 * Start by making a pattern with the file name, a shorter version of what's
+					 * used on make_thumbnail.
+					 */
+					$this->thumbnails_pattern = 'thumb_' . md5($this->row['url']);
+					$this->find_thumbnails = glob( THUMBNAILS_FILES_DIR . '/' . $this->thumbnails_pattern . '*.*' );
+					//print_array($this->find_thumbnails);
 				}
+
 
 				/** Delete the reference to the file on the database */
 				if ( true === $this->can_delete ) {
@@ -160,6 +175,11 @@ class FilesActions
 					 * @see delete_file_from_disk
 					 */
 					delete_file_from_disk(UPLOADED_FILES_FOLDER . $this->file_url);
+
+					/** Delete the thumbnails */
+					foreach ( $this->find_thumbnails as $this->thumbnail ) {
+						delete_file_from_disk($this->thumbnail);
+					}
 					$this->result = true;
 				}
 				else {

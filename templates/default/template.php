@@ -29,8 +29,8 @@ $body_class = array('template', 'default-template', 'hide_title');
 
 include_once(ROOT_DIR.'/header.php');
 
-define('TEMPLATE_THUMBNAILS_WIDTH', '100');
-define('TEMPLATE_THUMBNAILS_HEIGHT', '100');
+define('TEMPLATE_THUMBNAILS_WIDTH', '50');
+define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 ?>
 
 <div class="col-xs-12">
@@ -131,6 +131,10 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '100');
 																			),
 													),
 													array(
+														'content'		=> __('Image preview','cftp_admin'),
+														'hide'			=> 'phone,tablet',
+													),
+													array(
 														'sortable'		=> true,
 														'sort_url'		=> 'filename',
 														'content'		=> __('Title','cftp_admin'),
@@ -163,10 +167,6 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '100');
 														'hide'			=> 'phone',
 													),
 													array(
-														'content'		=> __('Image preview','cftp_admin'),
-														'hide'			=> 'phone,tablet',
-													),
-													array(
 														'content'		=> __('Download','cftp_admin'),
 														'hide'			=> 'phone',
 													),
@@ -196,9 +196,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '100');
 							}
 
 							/** Extension */
-							$pathinfo = pathinfo($file['url']);
-							$extension = strtolower($pathinfo['extension']);
-							$extension_cell = '<span class="label label-success label_big">' . $extension . '</span>';
+							$extension_cell = '<span class="label label-success label_big">' . $file['extension'] . '</span>';
 
 							/** Description */
 							$description = htmlentities_allowed($file['description']);
@@ -230,7 +228,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '100');
 
 							$expiration_cell = '<span class="label label-' . $class . ' label_big">' . $value . '</span>';
 
-							/** Preview */
+							/** Thumbnail */
 							$preview_cell = '';
 							if ( $file['expired'] == false ) {
 								if ( file_is_image( $file_absolute_path ) ) {
@@ -260,6 +258,12 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '100');
 														'content'		=> $checkbox,
 													),
 													array(
+														'content'		=> $preview_cell,
+														'attributes'	=> array(
+																				'class'		=> array( 'extra' ),
+																			),
+													),
+													array(
 														'content'		=> $filetitle,
 														'attributes'	=> array(
 																				'class'		=> array( 'file_name' ),
@@ -285,12 +289,6 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '100');
 													),
 													array(
 														'content'		=> $expiration_cell,
-													),
-													array(
-														'content'		=> $preview_cell,
-														'attributes'	=> array(
-																				'class'		=> array( 'extra' ),
-																			),
 													),
 													array(
 														'content'		=> $download_cell,

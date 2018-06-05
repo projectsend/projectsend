@@ -23,17 +23,15 @@
  * @author		Ignacio Nelson <contact@projectsend.org>
  *
  */
-session_start();
 
-define('ROOT_DIR', dirname(__FILE__));
-define('SP', DIRECTORY_SEPARATOR);
+require __DIR__ . '/bootstrap.php';
 
-/** Basic system constants */
-require_once ROOT_DIR . SP . 'app' . SP . 'config' . SP . 'config.php';
+$container = container();
+/** @var \ProjectSend\ControllerWrapperFactoryInterface $cw */
+$cw = $container->get(\ProjectSend\ControllerWrapperFactoryInterface::class);
+/** @var \Slim\App $app */
+$app = $container->get('app');
 
-/** Packages loaded from Composer */
-require_once ROOT_DIR . SP . 'vendor' . SP . 'autoload.php';
+$app->get('/hello-world', $cw->resolve(\ProjectSend\Controller\HelloWorldControllerInterface::class, 'hello'));
 
-/** Initiate */
-$app = new \ProjectSend\ProjectSend();
-$auth = new \ProjectSend\Auth();
+$app->run();

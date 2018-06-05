@@ -43,12 +43,14 @@
 		]
 	},
 	"require": {
+        "php": "~7.0",
 		"phpmailer/phpmailer": "^6.0",
 		"symfony/polyfill-mbstring": "^1.8",
 		"league/oauth2-google": "^2.2",
 		"moxiecode/plupload": "3.1.*",
 		"bainternet/php-hooks": "^1.0",
 		"claviska/simpleimage": "^3.3",
-		"paragonie/random_compat": "^2.0"
+		"paragonie/random_compat": "^2.0",
+        "slim/slim": "~3.1"
 	}
 }

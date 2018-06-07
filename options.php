@@ -848,7 +848,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 									<div class="form-group">
 										<label class="col-sm-4 control-label"><?php _e('Select image to upload','cftp_admin'); ?></label>
 										<div class="col-sm-8">
-											<input type="file" name="select_logo" class="empty" />
+											<input type="file" name="select_logo" class="empty" accept=".jpg, .jpeg, .jpe, .gif, .png" />
 										</div>
 									</div>
 								</div>

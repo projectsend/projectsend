@@ -10,7 +10,7 @@
  * Feel free to participate!
  *
  * @link			https://github.com/ignacionelson/ProjectSend/
- * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU GPL version 2
+ * @license		https://www.gnu.org/licenses/gpl.html GNU GPL version 3
  * @package		ProjectSend
  *
  */

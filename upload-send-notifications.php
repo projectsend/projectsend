@@ -104,6 +104,7 @@ if (!empty($found_notifications)) {
 								);
 		$creators[] = $row['created_by'];
 		$mail_by_user[$row['user']] = $row['email'];
+		$name_by_user[$row['user']] = $row['name'];
 	}
 
 	/**
@@ -124,6 +125,7 @@ if (!empty($found_notifications)) {
 										'active' => $row['active']
 									);
 			$mail_by_user[$row['user']] = $row['email'];
+			$name_by_user[$row['user']] = $row['name'];
 		}
 	}
 
@@ -192,12 +194,14 @@ if (!empty($found_notifications)) {
 			}
 
 			$address = $mail_by_user[$mail_username];
+			$name = $name_by_user[$mail_username];
 			/** Create the object and send the email */
 			$notify_client = new PSend_Email();
 			$email_arguments = array(
-										'type' => 'new_files_for_client',
-										'address' => $address,
-										'files_list' => $files_list
+										'type'			=> 'new_files_for_client',
+										'address'		=> $address,
+										'files_list'	=> $files_list,
+										'name'			=> $name,
 									);
 			$try_sending = $notify_client->psend_send_email($email_arguments);
 			if ($try_sending == 1) {
@@ -236,12 +240,14 @@ if (!empty($found_notifications)) {
 					}
 
 					$address = $mail_by_user[$mail_username];
+					$name = $name_by_user[$mail_username];
 					/** Create the object and send the email */
 					$notify_admin = new PSend_Email();
 					$email_arguments = array(
-												'type' => 'new_file_by_client',
-												'address' => $address,
-												'files_list' => $files_list
+												'type' 			=> 'new_file_by_client',
+												'address' 		=> $address,
+												'files_list' 	=> $files_list,
+												'name'			=> $name
 											);
 					$try_sending = $notify_admin->psend_send_email($email_arguments);
 					if ($try_sending == 1) {

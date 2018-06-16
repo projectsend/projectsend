@@ -157,9 +157,9 @@ $login_button_text = __('Log in','cftp_admin');
 						<button type="submit" id="submit" class="btn btn-wide btn-primary"><?php echo $login_button_text; ?></button>
 					</div>
 
-					<div class="social-login">
+					<div class="social_login_buttons">
 						<?php if(GOOGLE_SIGNIN_ENABLED == '1'): ?>
-							<a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="google-login"><img src="<?php echo BASE_URI; ?>img/google/btn_google_signin_light_normal_web.png" alt="Google Signin" /></a>
+							<a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="google-login"><img src="<?php echo ASSETS_IMG_URI; ?>google/btn_google_signin_light_normal_web.png" alt="Google Signin" /></a>
 						<?php endif; ?>
 					</div>
 				</fieldset>

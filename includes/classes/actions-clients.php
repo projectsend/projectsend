@@ -41,9 +41,7 @@ class ClientActions
 	 */
 	function validate_client($arguments)
 	{
-		require(ROOT_DIR.'/includes/vars.php');
-
-		global $valid_me;
+		global $valid_me, $json_strings;
 		$this->state = array();
 
 		$this->id = $arguments['id'];
@@ -64,10 +62,10 @@ class ClientActions
 		 * These validations are done both when creating a new client and
 		 * when editing an existing one.
 		 */
-		$valid_me->validate('completed',$this->name,$validation_no_name);
-		$valid_me->validate('completed',$this->email,$validation_no_email);
-		$valid_me->validate('email',$this->email,$validation_invalid_mail);
-		$valid_me->validate('number',$this->max_file_size,$validation_file_size);
+		$valid_me->validate('completed',$this->name,$json_strings['validation']['no_name']);
+		$valid_me->validate('completed',$this->email,$json_strings['validation']['no_email']);
+		$valid_me->validate('email',$this->email,$json_strings['validation']['invalid_email']);
+		$valid_me->validate('number',$this->max_file_size,$json_strings['validation']['file_size']);
 
 		/**
 		 * Validations for NEW CLIENT submission only.
@@ -75,12 +73,12 @@ class ClientActions
 		if ($this->type == 'new_client') {
 			$this->username = $arguments['username'];
 
-			$valid_me->validate('email_exists',$this->email,$add_user_mail_exists);
+			$valid_me->validate('email_exists',$this->email,$json_strings['validation']['email_exists']);
 			/** Username checks */
-			$valid_me->validate('user_exists',$this->username,$add_user_exists);
-			$valid_me->validate('completed',$this->username,$validation_no_user);
-			$valid_me->validate('alpha_dot',$this->username,$validation_alpha_user);
-			$valid_me->validate('length',$this->username,$validation_length_user,MIN_USER_CHARS,MAX_USER_CHARS);
+			$valid_me->validate('user_exists',$this->username,$json_strings['validation']['user_exists']);
+			$valid_me->validate('completed',$this->username,$json_strings['validation']['no_user']);
+			$valid_me->validate('alpha_dot',$this->username,$json_strings['validation']['alpha_user']);
+			$valid_me->validate('length',$this->username,$json_strings['validation']['length_user'],MIN_USER_CHARS,MAX_USER_CHARS);
 
 			$this->validate_password = true;
 		}
@@ -99,20 +97,20 @@ class ClientActions
 			 * Check if the email is currently assigned to this clients's id.
 			 * If not, then check if it exists.
 			 */
-			$valid_me->validate('email_exists',$this->email,$add_user_mail_exists,'','','','','',$this->id);
+			$valid_me->validate('email_exists',$this->email,$json_strings['validation']['email_exists'],'','','','','',$this->id);
 		}
 
 		/** Password checks */
 		if (isset($this->validate_password) && $this->validate_password === true) {
-			$valid_me->validate('completed',$this->password,$validation_no_pass);
-			$valid_me->validate('password',$this->password,$validation_valid_pass.' '.$validation_valid_chars);
-			$valid_me->validate('pass_rules',$this->password,$validation_rules_pass);
-			$valid_me->validate('length',$this->password,$validation_length_pass,MIN_PASS_CHARS,MAX_PASS_CHARS);
-			//$valid_me->validate('pass_match','',$validation_match_pass,'','',$this->password,$this->password_repeat);
+			$valid_me->validate('completed',$this->password,$json_strings['validation']['no_pass']);
+			$valid_me->validate('password',$this->password,$json_strings['validation']['valid_pass'] . " " . addslashes($json_strings['validation']['valid_chars']));
+			$valid_me->validate('pass_rules',$this->password,$json_strings['validation']['rules_pass']);
+			$valid_me->validate('length',$this->password,$json_strings['validation']['length_pass'],MIN_PASS_CHARS,MAX_PASS_CHARS);
+			//$valid_me->validate('pass_match','',$json_strings['validation']['match_pass'],'','',$this->password,$this->password_repeat);
 		}
 
 		if ( !empty($this->recaptcha) ) {
-			$valid_me->validate('recaptcha',$this->recaptcha,$validation_recaptcha);
+			$valid_me->validate('recaptcha',$this->recaptcha,$json_strings['validation']['recaptcha']);
 		}
 
 		if ($valid_me->return_val) {

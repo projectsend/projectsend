@@ -13,7 +13,7 @@ class CategoriesActions
 	var $ategory = '';
 
 	function __construct() {
-		global $dbh;
+		global $dbh, $json_strings;
 		$this->dbh = $dbh;
 	}
 
@@ -22,9 +22,7 @@ class CategoriesActions
 	 */
 	function validate_category($arguments)
 	{
-		require(ROOT_DIR.'/includes/vars.php');
-
-		global $valid_me;
+		global $valid_me, $json_strings;
 		$this->state = array();
 
 		$this->name			= $arguments['name'];
@@ -35,7 +33,7 @@ class CategoriesActions
 		 * These validations are done both when creating a new client and
 		 * when editing an existing one.
 		 */
-		$valid_me->validate('completed',$this->name,$validation_no_name);
+		$valid_me->validate('completed',$this->name,$json_strings['validation']['no_name']);
 
 		if ($valid_me->return_val) {
 			return 1;

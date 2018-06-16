@@ -128,7 +128,7 @@ class process {
 						$results['location']	= BASE_URI."my_files/";
 					}
 					else {
-						$results['location']	= BASE_URI."home.php";
+						$results['location']	= BASE_URI."dashboard.php";
 					}
 
 					/** Using an external form */

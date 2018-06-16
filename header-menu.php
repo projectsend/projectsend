@@ -56,7 +56,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 								'main'	=> array(
 												'label'	=> __('Dashboard', 'cftp_admin'),
 												'icon'	=> 'tachometer',
-												'link'	=> 'home.php',
+												'link'	=> 'dashboard.php',
 											),
 							);
 

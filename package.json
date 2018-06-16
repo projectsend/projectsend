@@ -1,0 +1,28 @@
+{
+	"name": "projectsend",
+	"description": "ProjectSend is an open source, clients-oriented, private file sharing web application.",
+	"repository": "https://github.com/ignacionelson/ProjectSend.git",
+	"author": "Ignacio Nelson <info@subwaydesign.com.ar>",
+	"version": "1.0.0",
+	"license": "GPL-3.0-or-later",
+	"main": "index.js",
+	"scripts": {
+        "build_own_assets": "grunt",
+        "replace_constants": "grunt php_constants",
+        "prepare_dist": "grunt prepare_dist"
+	},
+	"dependencies": {
+		"bower": "^1.8.4"
+	},
+	"devDependencies": {
+		"grunt": "^1.0.2",
+		"grunt-contrib-compress": "^1.4.3",
+		"grunt-contrib-concat": "^1.0.1",
+		"grunt-contrib-copy": "^1.0.0",
+		"grunt-contrib-jshint": "^1.1.0",
+		"grunt-contrib-nodeunit": "^2.0.0",
+		"grunt-contrib-sass": "^1.0.0",
+		"grunt-contrib-uglify": "^3.3.0",
+		"grunt-php-set-constant": "0.0.15"
+	}
+}

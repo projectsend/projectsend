@@ -40,13 +40,13 @@ else {
 		header("Location:install/index.php");
 		exit;
 	}
-	
+
 	$load_scripts = array(
 						'social_login',
 						'recaptcha',
 						'chosen',
 					);
-	
+
 	/**
 	 * This is defined on the public download page.
 	 * So even logged in users can access it.
@@ -54,9 +54,9 @@ else {
 	if (!isset($dont_redirect_if_logged)) {
 		/** If logged as a system user, go directly to the back-end homepage */
 		if (in_session_or_cookies($allowed_levels)) {
-			header("Location:".BASE_URI."home.php");
+			header("Location:".BASE_URI."dashboard.php");
 		}
-	
+
 		/** If client is logged in, redirect to the files list. */
 		check_for_client();
 	}
@@ -74,23 +74,19 @@ if ( !isset( $body_class ) ) { $body_class = ''; }
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	
+
 	<?php meta_noindex(); ?>
 
 	<title><?php echo html_output( $header_vars['title'] ); ?></title>
 	<?php meta_favicon(); ?>
-	<script src="<?php echo BASE_URI; ?>includes/js/jquery.1.12.4.min.js"></script>
-
-	<!--[if lt IE 9]>
-		<script src="<?php echo BASE_URI; ?>includes/js/html5shiv.min.js"></script>
-		<script src="<?php echo BASE_URI; ?>includes/js/respond.min.js"></script>
-	<![endif]-->
 
 	<?php
 		$load_theme_css = true;
 		require_once( 'assets.php' );
 
 		load_css_files();
+
+		require_jquery();
 	?>
 </head>
 

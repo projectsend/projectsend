@@ -6,7 +6,10 @@
  * @subpackage Core
  */
 
-define('ROOT_DIR', dirname(__FILE__));
+define('ROOT_DIR', __DIR__);
+
+/** Composer dependencies */
+require_once(ROOT_DIR.'/vendor/autoload.php');
 
 /** Security */
 require_once(ROOT_DIR.'/includes/security/xsrf.php');
@@ -22,9 +25,6 @@ if ( !defined( 'IS_MAKE_CONFIG' ) ) {
 	require_once(ROOT_DIR.'/includes/site.options.php');
 }
 
-/** PHP-Hooks by bainternet */
-require_once(ROOT_DIR.'/includes/php-hooks/php-hooks.php');
-
 /** Load the language class and translation file */
 require_once(ROOT_DIR.'/includes/language.php');
 
@@ -32,7 +32,7 @@ require_once(ROOT_DIR.'/includes/language.php');
 require_once(ROOT_DIR.'/includes/language-locales-names.php');
 
 /** Text strings used on various files */
-require_once(ROOT_DIR.'/includes/vars.php');
+require_once(ROOT_DIR.'/includes/text.strings.php');
 
 /** Basic functions to be accessed from anywhere */
 require_once(ROOT_DIR.'/includes/functions.php');
@@ -66,8 +66,8 @@ require_once(ROOT_DIR.'/includes/functions.categories.php');
 /** Search, filters and actions forms */
 require_once(ROOT_DIR.'/includes/functions.forms.php');
 
-/** Thumbnails */
-require_once(ROOT_DIR.'/includes/SimpleImage/src/claviska/SimpleImage.php');
+/** Assets loading */
+require_once(ROOT_DIR.'/includes/functions.assets.php');
 
 /**
  * Always require this classes to avoid repetition of code
@@ -97,6 +97,8 @@ foreach ( $classes_files as $filename ) {
 
 /**
  * Google Login
+ * 
+ * @todo replace with composer dependencies
  */
 require_once ROOT_DIR . '/includes/Google/Oauth2/service/Google_ServiceResource.php';
 require_once ROOT_DIR . '/includes/Google/Oauth2/service/Google_Service.php';

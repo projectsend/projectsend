@@ -13,7 +13,7 @@
 		$("form").submit(function() {
 			clean_form(this);
 
-			is_complete(this.add_group_form_name,'<?php echo $validation_no_name; ?>');
+			is_complete(this.add_group_form_name,'<?php echo $json_strings['validation']['no_name']; ?>');
 			// show the errors or continue if everything is ok
 			if (show_form_errors() == false) { return false; }
 		});

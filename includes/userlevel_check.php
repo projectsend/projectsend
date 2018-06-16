@@ -168,17 +168,13 @@ function can_see_content($allowed_levels) {
 					<title><?php echo html_output( $page_title . ' &raquo; ' . THIS_INSTALL_SET_TITLE ); ?></title>
 					<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 					<?php meta_favicon(); ?>
-					<script type="text/javascript" src="<?php echo BASE_URI; ?>includes/js/jquery.1.12.4.min.js"></script>
-
-					<!--[if lt IE 9]>
-						<script src="<?php echo BASE_URI; ?>includes/js/html5shiv.min.js"></script>
-						<script src="<?php echo BASE_URI; ?>includes/js/respond.min.js"></script>
-					<![endif]-->
 
 					<?php
 						require_once( 'assets.php' );
 
 						load_css_files();
+
+						require_jquery();
 					?>
 				</head>
 				<body class="backend forbidden">

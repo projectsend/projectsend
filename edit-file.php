@@ -560,7 +560,7 @@ $current_level = get_current_user_level();
 			clean_form(this);
 
 			$(this).find('input[name$="[name]"]').each(function() {
-				is_complete($(this)[0],'<?php echo $validation_no_title; ?>');
+				is_complete($(this)[0],'<?php echo $json_strings['validation']['no_title']; ?>');
 			});
 
 			// show the errors or continue if everything is ok

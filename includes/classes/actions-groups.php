@@ -22,9 +22,7 @@ class GroupActions
 	 */
 	function validate_group($arguments)
 	{
-		require(ROOT_DIR.'/includes/vars.php');
-
-		global $valid_me;
+		global $valid_me, $json_strings;
 		$this->state = array();
 
 		$this->id = $arguments['id'];
@@ -34,7 +32,7 @@ class GroupActions
 		 * These validations are done both when creating a new group and
 		 * when editing an existing one.
 		 */
-		$valid_me->validate('completed',$this->name,$validation_no_name);
+		$valid_me->validate('completed',$this->name,$json_strings['validation']['no_name']);
 
 		if ($valid_me->return_val) {
 			return 1;

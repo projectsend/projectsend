@@ -4,6 +4,8 @@
  *
  * @package		ProjectSend
  * @subpackage	Install
+ * 
+ * @todo make an Install Class
  */
 define( 'IS_INSTALL', true );
 
@@ -72,22 +74,20 @@ function try_query($queries)
 }
 
 /** Collect data from form */
-if($_POST) {
+if ($_POST) {
 	$this_install_title	= $_POST['this_install_title'];
-	$base_uri				= $_POST['base_uri'];
+	$base_uri			= $_POST['base_uri'];
 	$got_admin_name		= $_POST['install_user_fullname'];
 	$got_admin_username	= $_POST['install_user_username'];
-	$got_admin_email		= $_POST['install_user_mail'];
-	$got_admin_pass 		= password_hash($_POST['install_user_pass'], PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
-	//$got_admin_pass		= $hasher->HashPassword($_POST['install_user_pass']);
-	//$got_admin_pass		= md5($_POST['install_user_pass']);
+	$got_admin_email	= $_POST['install_user_mail'];
+	$got_admin_pass 	= password_hash($_POST['install_user_pass'], PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
+	//$got_admin_pass	= $hasher->HashPassword($_POST['install_user_pass']);
+	//$got_admin_pass	= md5($_POST['install_user_pass']);
 	//$got_admin_pass2	= md5($_POST['install_user_repeat']);
 }
 
 /** Define the installation text strings */
 $page_title_install		= __('Install','cftp_admin');
-$install_no_sitename		= __('Sitename was not completed.','cftp_admin');
-$install_no_baseuri		= __('ProjectSend URI was not completed.','cftp_admin');
 
 include_once('../header-unlogged.php');
 ?>
@@ -124,21 +124,21 @@ include_once('../header-unlogged.php');
 							 */
 							if ($base_uri{(strlen($base_uri) - 1)} != '/') { $base_uri .= '/'; }
 							/** Begin form validation */
-							$valid_me->validate('completed',$this_install_title,$install_no_sitename);
-							$valid_me->validate('completed',$base_uri,$install_no_baseuri);
-							$valid_me->validate('completed',$got_admin_name,$validation_no_name);
-							$valid_me->validate('completed',$got_admin_email,$validation_no_email);
+							$valid_me->validate('completed',$this_install_title,$json_strings['validation']['install_no_sitename']);
+							$valid_me->validate('completed',$base_uri,$json_strings['validation']['install_no_baseuri']);
+							$valid_me->validate('completed',$got_admin_name,$json_strings['validation']['no_name']);
+							$valid_me->validate('completed',$got_admin_email,$json_strings['validation']['no_email']);
 							/** Username validation */
-							$valid_me->validate('completed',$got_admin_username,$validation_no_user);
-							$valid_me->validate('length',$got_admin_username,$validation_length_user,MIN_USER_CHARS,MAX_USER_CHARS);
-							$valid_me->validate('alpha_dot',$got_admin_username,$validation_alpha_user);
+							$valid_me->validate('completed',$got_admin_username,$json_strings['validation']['no_user']);
+							$valid_me->validate('length',$got_admin_username,$json_strings['validation']['length_user'],MIN_USER_CHARS,MAX_USER_CHARS);
+							$valid_me->validate('alpha_dot',$got_admin_username,$json_strings['validation']['alpha_user']);
 							/** Password fields validation */
-							$valid_me->validate('completed',$_POST['install_user_pass'],$validation_no_pass);
-							//$valid_me->validate('completed',$_POST['install_user_repeat'],$validation_no_pass2);
-							$valid_me->validate('email',$got_admin_email,$validation_invalid_mail);
-							$valid_me->validate('length',$_POST['install_user_pass'],$validation_length_pass,MIN_USER_CHARS,MAX_USER_CHARS);
-							$valid_me->validate('password',$_POST['install_user_pass'],$validation_alpha_pass);
-							//$valid_me->validate('pass_match','',$validation_match_pass,'','',$_POST['install_user_pass'],$_POST['install_user_repeat']);
+							$valid_me->validate('completed',$_POST['install_user_pass'],$json_strings['validation']['no_pass']);
+							//$valid_me->validate('completed',$_POST['install_user_repeat'],$json_strings['validation']['no_pass2']);
+							$valid_me->validate('email',$got_admin_email,$json_strings['validation']['invalid_email']);
+							$valid_me->validate('length',$_POST['install_user_pass'],$json_strings['validation']['length_pass'],MIN_USER_CHARS,MAX_USER_CHARS);
+							$valid_me->validate('password',$_POST['install_user_pass'],$json_strings['validation']['alpha_pass']);
+							//$valid_me->validate('pass_match','',$json_strings['validation']['match_pass'],'','',$_POST['install_user_pass'],$_POST['install_user_repeat']);
 
 							if ($valid_me->return_val) {
 								/**
@@ -225,21 +225,21 @@ include_once('../header-unlogged.php');
 									$("form").submit(function() {
 										clean_form(this);
 
-										is_complete(this.this_install_title,'<?php echo $install_no_sitename; ?>');
-										is_complete(this.base_uri,'<?php echo $install_no_baseuri; ?>');
-										is_complete(this.install_user_fullname,'<?php echo $validation_no_name; ?>');
-										is_complete(this.install_user_mail,'<?php echo $validation_no_email; ?>');
+										is_complete(this.this_install_title,'<?php echo $json_strings['validation']['install_no_sitename']; ?>');
+										is_complete(this.base_uri,'<?php echo $json_strings['validation']['install_no_baseuri']; ?>');
+										is_complete(this.install_user_fullname,'<?php echo $json_strings['validation']['no_name']; ?>');
+										is_complete(this.install_user_mail,'<?php echo $json_strings['validation']['no_email']; ?>');
 										// username
-										is_complete(this.install_user_username,'<?php echo $validation_no_user; ?>');
-										is_length(this.install_user_username,<?php echo MIN_USER_CHARS; ?>,<?php echo MAX_USER_CHARS; ?>,'<?php echo $validation_length_user; ?>');
-										is_alpha_or_dot(this.install_user_username,'<?php echo $validation_alpha_user; ?>');
+										is_complete(this.install_user_username,'<?php echo $json_strings['validation']['no_user']; ?>');
+										is_length(this.install_user_username,<?php echo MIN_USER_CHARS; ?>,<?php echo MAX_USER_CHARS; ?>,'<?php echo $json_strings['validation']['length_user']; ?>');
+										is_alpha_or_dot(this.install_user_username,'<?php echo $json_strings['validation']['alpha_user']; ?>');
 										// password fields
-										is_complete(this.install_user_pass,'<?php echo $validation_no_pass; ?>');
-										//is_complete(this.install_user_repeat,'<?php echo $validation_no_pass2; ?>');
-										is_email(this.install_user_mail,'<?php echo $validation_invalid_mail; ?>');
-										is_length(this.install_user_pass,<?php echo MIN_USER_CHARS; ?>,<?php echo MAX_USER_CHARS; ?>,'<?php echo $validation_length_pass; ?>');
-										is_password(this.install_user_pass,'<?php $chars = addslashes($validation_valid_chars); echo $validation_valid_pass." ".$chars; ?>');
-										//is_match(this.install_user_pass,this.install_user_repeat,'<?php echo $validation_match_pass; ?>');
+										is_complete(this.install_user_pass,'<?php echo $json_strings['validation']['no_pass']; ?>');
+										//is_complete(this.install_user_repeat,'<?php echo $json_strings['validation']['no_pass2']; ?>');
+										is_email(this.install_user_mail,'<?php echo $json_strings['validation']['invalid_email']; ?>');
+										is_length(this.install_user_pass,<?php echo MIN_USER_CHARS; ?>,<?php echo MAX_USER_CHARS; ?>,'<?php echo $json_strings['validation']['length_pass']; ?>');
+										is_password(this.install_user_pass,'<?php echo $json_strings['validation']['valid_pass'] . " " . addslashes($json_strings['validation']['valid_chars']); ?>');
+										//is_match(this.install_user_pass,this.install_user_repeat,'<?php echo $json_strings['validation']['match_pass']; ?>');
 
 										// show the errors or continue if everything is ok
 										if (show_form_errors() == false) { return false; }

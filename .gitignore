@@ -1,9 +1,43 @@
-img/Thumbs.db
+# Dependencies directories
+vendor
+node_modules
+npm/node_modules
+bower_components
+
+# Compiled files
+assets/dist
+
+# NPM / Yarn
+.npm
+.node_repl_history
+npm-debug.log*
+
+# Config files
+config/sys.config.php
 includes/sys.config.php
-.idea/
+
+# Custom files that can be created by the user
+# old location
 css/custom.css
 includes/js/custom.js
 includes/custom.php
+# new possible location
+assets/custom
+
+# Uploads
 upload/files/*.*
+upload/branding/*.*
 upload/thumbnails/*.*
 !upload/thumbnails/index.php
+
+# Windows thumbnails
+Thumbs.db
+
+# macOS
+.DS_Store
+
+# Test results
+test-results
+
+# Misc
+.idea/

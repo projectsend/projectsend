@@ -1,0 +1,26 @@
+{
+	"name": "projectsend/projectsend",
+	"description": "ProjectSend is an open source, clients-oriented, private file sharing web application.",
+	"type": "project",
+	"license": "GPL-3.0-or-later",
+	"homepage": "https://www.projectsend.org/",
+	"support": {
+			"email": "contact@projectsend.org",
+			"issues": "https://github.com/projectsend/ProjectSend/issues",
+			"source": "https://github.com/projectsend/ProjectSend/"
+	},
+	"config": {
+		"preferred-install": "dist"
+	},
+	"prefer-stable": true,
+	"require": {
+     	"php": "~5.6",
+		"phpmailer/phpmailer": "~5.2",
+		"symfony/polyfill-mbstring": "^1.8",
+		"league/oauth2-google": "^2.2",
+		"moxiecode/plupload": "3.1.*",
+		"bainternet/php-hooks": "^1.0",
+		"claviska/simpleimage": "^3.3",
+		"paragonie/random_compat": "^2.0"
+	}
+}

@@ -11,7 +11,7 @@
  */
 $load_scripts	= array(
 						'plupload',
-					); 
+					);
 
 require_once('sys.includes.php');
 
@@ -72,33 +72,40 @@ $current_level = get_current_user_level();
 				$("#uploader").pluploadQueue({
 					runtimes : 'html5,flash,silverlight,html4',
 					url : 'process-upload.php',
-					max_file_size : '<?php echo UPLOAD_MAX_FILESIZE; ?>mb',
 					chunk_size : '1mb',
+					rename : true,
+					dragdrop: true,
 					multipart : true,
-					<?php
-						if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
-					?>
-							filters : [
-								{title : "Allowed files", extensions : "<?php echo $options_values['allowed_file_types']; ?>"}
-							],
-					<?php
-						}
-					?>
-					flash_swf_url : 'includes/plupload/js/plupload.flash.swf',
-					silverlight_xap_url : 'includes/plupload/js/plupload.silverlight.xap',
+					filters : {
+						max_file_size : '<?php echo UPLOAD_MAX_FILESIZE; ?>mb'
+						<?php
+							if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
+						?>
+								,mime_types: [
+									{title : "Allowed files", extensions : "<?php echo $options_values['allowed_file_types']; ?>"}
+								]
+						<?php
+							}
+						?>
+					},
+					flash_swf_url : 'vendor/moxiecode/plupload/js/Moxie.swf',
+					silverlight_xap_url : 'vendor/moxiecode/plupload/js/Moxie.xap',
 					preinit: {
 						Init: function (up, info) {
-							$('#uploader_container').removeAttr("title");
+							//$('#uploader_container').removeAttr("title");
 						}
 					}
-					/*
 					,init : {
+						/*
+						FilesAdded: function(up, files) {
+			           uploader.start();
+			         }
 						QueueChanged: function(up) {
 							var uploader = $('#uploader').pluploadQueue();
 							uploader.start();
 						}
+						*/
 					}
-					*/
 				});
 
 				var uploader = $('#uploader').pluploadQueue();
@@ -153,7 +160,7 @@ $current_level = get_current_user_level();
 				};
 			});
 		</script>
-		
+
 		<form action="upload-process-form.php" name="upload_by_client" id="upload_by_client" method="post" enctype="multipart/form-data">
 			<input type="hidden" name="uploaded_files" id="uploaded_files" value="" />
 			<div id="uploader">

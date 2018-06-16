@@ -84,7 +84,7 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']->id_
           header("location:" . BASE_URI . "my_files/");
         }
         else {
-          header("location:" . BASE_URI . "home.php");
+          header("location:" . BASE_URI . "dashboard.php");
         }
         exit;
       }

@@ -3,9 +3,9 @@
 ![ProjectSend presentation screenshots](https://www.projectsend.org/screenshots.png)
 
 ## About
-ProjectSend (previously cFTP) is a free, clients-oriented, private file sharing web application.
+ProjectSend is a free, clients-oriented, private file sharing web application.
 
-Clients are created and assigned a username and a password.  
+Clients are created and assigned a username and a password.
 Uploaded files can be assigned to specific clients or clients groups.
 
 Other features include auto-expiration of upload, notifications, full logging of actions by users and clients, option to allow clients to also upload files, themes, multiple languages...
@@ -66,7 +66,7 @@ Thanks. Arigatō. Danke. Gracias. Grazie. Mahadsanid. Salamat po. Merci. אַ ד
 If you want to translate ProjectSend in your language or download an existing translation, please join the project on [Transifex](https://www.transifex.com/projects/p/projectsend)
 
 ## License
-ProjectSend is licensed under [GNU GPL v2](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
+ProjectSend is licensed under [GNU GPL v3](https://www.gnu.org/licenses/gpl.html)
 
 ## Change log
 [Available at the official site](http://www.projectsend.org/change-log/)

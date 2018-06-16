@@ -96,7 +96,7 @@
 				?>
 					<li>
 						<div class="log_ico">
-							<img src="img/log_icons/<?php echo html_output($rendered['icon']); ?>.png" alt="Action icon">
+							<img src="<?php echo ASSETS_IMG_URI; ?>log_icons/<?php echo html_output($rendered['icon']); ?>.png" alt="Action icon">
 						</div>
 						<div class="home_log_text">
 							<div class="date"><?php echo html_output($rendered['timestamp']); ?></div>

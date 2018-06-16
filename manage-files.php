@@ -126,7 +126,7 @@ include('header.php');
 						/**
 						 * Changes the value on the "hidden" column value on the database.
 						 * This files are not shown on the client's file list. They are
-						 * also not counted on the home.php files count when the logged in
+						 * also not counted on the dashboard.php files count when the logged in
 						 * account is the client.
 						 */
 						foreach ($selected_files as $work_file) {
@@ -476,7 +476,7 @@ include('header.php');
 										<?php
 											$actions_options = array(
 																	'none'			=> __('Select action','cftp_admin'),
-																	'zip'				=> __('Download zipped','cftp_admin'),
+																	'zip'			=> __('Download zipped','cftp_admin'),
 															);
 
 											/** Options only available when viewing a client/group files list */

@@ -590,12 +590,6 @@ class PSend_Email
 		$this->token		= (!empty($arguments['token'])) ? $arguments['token'] : '';
 		$this->memberships	= (!empty($arguments['memberships'])) ? $arguments['memberships'] : '';
 
-		require_once(ROOT_DIR.'/includes/phpmailer/class.phpmailer.php');
-
-		if (!spl_autoload_functions() OR (!in_array('PHPMailerAutoload', spl_autoload_functions()))) {
-			require_once(ROOT_DIR.'/includes/phpmailer/PHPMailerAutoload.php');
-		}
-
 		$this->try_bcc = false;
 		switch($this->type) {
 			case 'new_files_for_client':
@@ -699,7 +693,12 @@ class PSend_Email
 			$this->send_mail->SetFrom(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
 			$this->send_mail->AddReplyTo(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
 
-			$this->send_mail->AddAddress($this->addresses);
+            if ( !empty( $this->name ) ) {
+                $this->send_mail->AddAddress($this->addresses, $this->name);
+            }
+            else {
+                $this->send_mail->AddAddress($this->addresses);
+            }
 
 			/**
 			 * Check if BCC is enabled and get the list of
@@ -730,7 +729,7 @@ class PSend_Email
 				}
 
 			}
-			
+
 			/** Debug by echoing the email on page */
 			//echo $this->mail_info['body'];
 			//die();

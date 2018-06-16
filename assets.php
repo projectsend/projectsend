@@ -1,176 +1,128 @@
 <?php
 /**
- * Generates the list of CSS and JS files to load
- * base on the $load_scripts array defined on each
- * page.
+ * Generates the list of CSS and JS files to load based on the
+ * $load_scripts array defined on each page.
  *
  * @package ProjectSend
  */
-global $load_css_files;
-global $load_js_files;
-global $load_compat_js_files;
+global
+    $load_css_files,
+    $load_js_files,
+    $load_compat_js_files,
+    $jquery_location,
+    $migrate_location;
 
-$load_css_files			= array();
-$load_js_files				= array();
-$load_compat_js_files	= array();
+$load_css_files			= [];
+$load_js_files			= [];
+$load_compat_js_files	= [];
 
-/** Add the base files that every page will need, regardless of type */
-
-/** JS */
-$load_js_files[]	= BASE_URI . 'assets/bootstrap/js/bootstrap.min.js';
-$load_js_files[]	= BASE_URI . 'includes/js/jquery.validations.js';
-$load_js_files[]	= BASE_URI . 'includes/js/jquery.psendmodal.js';
-$load_js_files[]	= BASE_URI . 'includes/js/jen/jen.js';
-$load_js_files[]	= BASE_URI . 'includes/js/js.cookie.js';
-$load_js_files[]	= BASE_URI . 'includes/js/main.js';
-$load_js_files[]	= BASE_URI . 'includes/js/js.functions.php';
-
-/** CSS */
-
-/** Fonts*/
+/**
+ * CSS files block
+ */
+/** External */
 $load_css_files[]	= 'https://fonts.googleapis.com/css?family=Open+Sans:400,700,300';
-$load_css_files[]	= BASE_URI . 'assets/font-awesome/css/font-awesome.min.css';
-
-/**
- * Optional scripts
- */
-if ( !empty( $load_scripts ) ) {
-	foreach ( $load_scripts as $script ) {
-		switch ( $script ) {
-			case 'recaptcha':
-				$load_js_files[]		= 'https://www.google.com/recaptcha/api.js';
-				break;
-			case 'social_login':
-				$load_css_files[]		= BASE_URI . 'css/social-login.css';
-				break;
-			case 'datepicker':
-				$load_css_files[]		= BASE_URI . 'includes/js/bootstrap-datepicker/css/datepicker.css';
-				$load_js_files[]		= BASE_URI . 'includes/js/bootstrap-datepicker/js/bootstrap-datepicker.js';
-				break;
-			case 'spinedit':
-				$load_css_files[]		= BASE_URI . 'includes/js/bootstrap-spinedit/css/bootstrap-spinedit.css';
-				$load_js_files[]		= BASE_URI . 'includes/js/bootstrap-spinedit/js/bootstrap-spinedit.js';
-				break;
-			case 'footable':
-				$footable_js_file		= ( !empty( $footable_min ) ) ? 'footable.min.js' : 'footable.all.min.js';
-				$load_css_files[]		= BASE_URI . 'includes/js/footable/css/footable.core.css';
-				$load_css_files[]		= BASE_URI . 'css/footable.css';
-				$load_js_files[]		= BASE_URI . 'includes/js/footable/' . $footable_js_file;
-				break;
-			case 'jquery_tags_input':
-				$load_css_files[]		= BASE_URI . 'includes/js/jquery-tags-input/jquery.tagsinput.css';
-				$load_js_files[]		= BASE_URI . 'includes/js/jquery-tags-input/jquery.tagsinput.min.js';
-				break;
-			case 'chosen':
-				$load_css_files[]		= BASE_URI . 'includes/js/chosen/chosen.min.css';
-				$load_css_files[]		= BASE_URI . 'includes/js/chosen/chosen.bootstrap.css';
-				$load_js_files[]		= BASE_URI . 'includes/js/chosen/chosen.jquery.min.js';
-				break;
-			case 'toggle':
-				$load_css_files[]		= BASE_URI . 'includes/js/bootstrap-toggle/css/bootstrap-toggle.min.css';
-				$load_js_files[]		= BASE_URI . 'includes/js/bootstrap-toggle/js/bootstrap-toggle.min.js';
-				break;
-			case 'plupload':
-				$load_css_files[]		= BASE_URI . 'includes/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css';
-				$load_js_files[]		= BASE_URI . 'includes/js/browserplus-min.js';
-				$load_js_files[]		= BASE_URI . 'includes/plupload/js/plupload.full.js';
-				$load_js_files[]		= BASE_URI . 'includes/plupload/js/jquery.plupload.queue/jquery.plupload.queue.js';
-				/**
-				 * Load a plupload translation file, if the ProjectSend language
-				 * on sys.config.php is set to anything other than "en", and the
-				 * corresponding plupload file exists.
-				 */
-				if ( LOADED_LANG != 'en' ) {
-					$plupload_lang_file = 'includes/plupload/js/i18n/'.LOADED_LANG.'.js';
-					if ( file_exists( $plupload_lang_file ) ) {
-						$load_js_files[] = BASE_URI . $plupload_lang_file;
-					}
-				}
-
-				break;
-			case 'flot':
-				$load_js_files[]		= BASE_URI . 'includes/js/flot/jquery.flot.min.js';
-				$load_js_files[]		= BASE_URI . 'includes/js/flot/jquery.flot.resize.min.js';
-				$load_js_files[]		= BASE_URI . 'includes/js/flot/jquery.flot.time.min.js';
-				$load_compat_js_files[]	= array(
-												'file'	=> BASE_URI . 'includes/js/flot/excanvas.js',
-												'cond'	=> 'lt IE 9',
-											);
-				break;
-			case 'ckeditor':
-				$load_js_files[]		= BASE_URI . 'includes/js/ckeditor/ckeditor.js';
-				break;
-		}
-	}
+/** Dependencies */
+// Bower
+$bower_dependencies_css = [
+    'bootstrap/dist/css/bootstrap.min.css',
+    'font-awesome/css/font-awesome.min.css',
+    'bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css',
+    'bootstrap-toggle/css/bootstrap-toggle.min.css',
+    'chosen/chosen.min.css',
+    'flot/dist/css/bootstrap.min.css',
+    'footable/css/footable.core.css',
+    'jquery.tagsinput/dist/jquery.tagsinput.min.css',
+];
+foreach ( $bower_dependencies_css as $dep ) {
+    $load_css_files[]	= BOWER_DEPENDENCIES_URI . $dep;
 }
-
-$load_css_files[]	= BASE_URI . 'assets/bootstrap/css/bootstrap.min.css';
-$load_css_files[]	= BASE_URI . 'css/main.min.css';
-$load_css_files[]	= BASE_URI . 'css/mobile.min.css';
-
-/**
- * Load a different css file when called from the default template.
- */
+// Composer
+$composer_dependencies_css = [
+    'moxiecode/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css',
+];
+foreach ( $composer_dependencies_css as $dep ) {
+    $load_css_files[]	= COMPOSER_DEPENDENCIES_URI . $dep;
+}
+/** Own CSS files */
+$load_css_files[]	= ASSETS_CSS_URI . 'main.min.css';
+/** Current template CSS file */
 if ( isset( $this_template_css ) ) {
 	$load_css_files[]	= $this_template_css;
 }
-
 /**
  * Custom CSS styles.
+ * Possible locations: css/custom.css | assets/custom/custom.css
  */
-$custom_css_location = ROOT_DIR . '/css/custom.css';
-if ( file_exists( $custom_css_location ) ) {
-	$load_css_files[]	= BASE_URI . 'css/custom.css';
+$custom_css_locations = [ 'css/custom.css', 'assets/custom/custom.css' ];
+foreach ( $custom_css_locations as $css_file ) {
+	if ( file_exists ( ROOT_DIR . SP . $css_file ) ) {
+		$load_css_files[]	= BASE_URI . $css_file;
+	}
 }
 
 
 /**
- * Used on header to print the CSS files
+ * Javascript files block
  */
-function load_css_files() {
-	global $load_css_files;
-	global $hooks;
-	$hooks->do_action('render_css_files');
-
-	if ( !empty( $load_css_files ) ) {
-		foreach ( $load_css_files as $file ) {
-?>
-			<link rel="stylesheet" media="all" type="text/css" href="<?php echo $file; ?>" />
-<?php
-		}
+$jquery_location	= BOWER_DEPENDENCIES_URI . 'jquery/dist/jquery.min.js';
+$migrate_location	= BOWER_DEPENDENCIES_URI . 'jquery-migrate/jquery-migrate.min.js';
+/** Dependencies */
+// Bower
+$bower_dependencies_js = [
+    'bootstrap/dist/js/bootstrap.min.js',
+    'jen/jen.js',
+    'sprintf/dist/sprintf.min.js',
+    'js-cookie/src/js.cookie.js',
+    'bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+    'bootstrap-toggle/js/bootstrap-toggle.min.js',
+    'chosen/chosen.jquery.min.js',
+    'ckeditor/ckeditor.js',
+    'Flot/jquery.flot.js',
+    'Flot/jquery.flot.resize.js',
+    'Flot/jquery.flot.time.js',
+    'footable/js/footable.js',
+    'jquery.tagsinput/src/jquery.tagsinput.js',
+];
+foreach ( $bower_dependencies_js as $dep ) {
+    $load_js_files[]	= BOWER_DEPENDENCIES_URI . $dep;
+}
+// Composer
+$composer_dependencies_js = [
+    'moxiecode/plupload/js/plupload.full.min.js',
+    'moxiecode/plupload/js/jquery.plupload.queue/jquery.plupload.queue.min.js',
+];
+foreach ( $composer_dependencies_js as $dep ) {
+    $load_js_files[]	= COMPOSER_DEPENDENCIES_URI . $dep;
+}
+/** Own JS files */
+$load_js_files[]	= ASSETS_JS_URI . 'projectsend.min.js';
+/** Compatibility */
+$load_compat_js_files[]	= array(
+	'file'	=> BOWER_DEPENDENCIES_URI . 'flot/excanvas.js',
+	'cond'	=> 'lt IE 9',
+);
+/** Languages */
+if ( LOADED_LANG != 'en' ) {
+	/** Plupload */
+	$plupload_lang_file = 'vendor/moxiecode/plupload/js/i18n/'.LOADED_LANG.'.js';
+	if ( file_exists( $plupload_lang_file ) ) {
+		$load_js_files[] = BASE_URI . $plupload_lang_file;
 	}
 }
-
 /**
- * Custom JS.
+ * Custom JS files.
+ * Possible locations: includes/js/custom.js | assets/custom/custom.js
  */
-$custom_js_location = ROOT_DIR . '/includes/js/custom.js';
-if ( file_exists( $custom_js_location ) ) {
-	$load_js_files[]	= BASE_URI . 'includes/js/custom.js';
-}
-
-/**
- * Used before the </body> tag to print the JS files
- */
-function load_js_files() {
-	global $load_compat_js_files;
-	global $load_js_files;
-	global $hooks;
-	$hooks->do_action('render_js_files');
-
-	if ( !empty( $load_compat_js_files ) ) {
-		foreach ( $load_compat_js_files as $index => $info ) {
-?>
-			<!--[if <?php echo $info['cond']; ?>]><script language="javascript" type="text/javascript" src="<?php echo $info['file']; ?>"></script><![endif]-->
-<?php
-		}
-	}
-
-	if ( !empty( $load_js_files ) ) {
-		foreach ( $load_js_files as $file ) {
-?>
-			<script src="<?php echo $file; ?>"></script>
-<?php
-		}
+$custom_js_locations = [ 'includes/js/custom.js', 'assets/custom/custom.js' ];
+foreach ( $custom_js_locations as $js_file ) {
+	if ( file_exists ( ROOT_DIR . SP . $js_file ) ) {
+		$load_css_files[]	= BASE_URI . $js_file;
 	}
 }
+/** External */
+$load_js_files[]	= 'https://www.google.com/recaptcha/api.js';
+?>
+
+<!--[if lt IE 9]>
+	<script src="<?php echo ASSETS_JS_URI; ?>ie8compatibility.min.js"></script>
+<![endif]-->

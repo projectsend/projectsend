@@ -76,7 +76,7 @@ function look_for_templates() {
 				$screenshot_file	= $directory . '/screenshot.png';
 				$cover_file			= $directory . '/cover.png';
 
-				$template_info['screenshot']	= ( file_exists( $screenshot_file ) ) ? $screenshot_file : BASE_URI . 'img/template-screenshot.png';
+				$template_info['screenshot']	= ( file_exists( $screenshot_file ) ) ? $screenshot_file : ASSETS_IMG_URI . 'template-screenshot.png';
 				if ( file_exists( $cover_file ) ) {
 					$template_info['cover']	= $cover_file;
 				}

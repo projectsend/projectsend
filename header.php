@@ -60,17 +60,13 @@ if (in_session_or_cookies($core_update_allowed)) {
 
 	<title><?php echo html_output( $page_title . ' &raquo; ' . htmlspecialchars(THIS_INSTALL_SET_TITLE, ENT_QUOTES, CHARSET) ); ?></title>
 	<?php meta_favicon(); ?>
-	<script type="text/javascript" src="<?php echo BASE_URI; ?>includes/js/jquery.1.12.4.min.js"></script>
-
-	<!--[if lt IE 9]>
-		<script src="<?php echo BASE_URI; ?>includes/js/html5shiv.min.js"></script>
-		<script src="<?php echo BASE_URI; ?>includes/js/respond.min.js"></script>
-	<![endif]-->
 
 	<?php
 		require_once( 'assets.php' );
 
 		load_css_files();
+
+		require_jquery();
 	?>
 </head>
 
@@ -84,7 +80,7 @@ if (in_session_or_cookies($core_update_allowed)) {
 			</ul>
 
 			<div class="navbar-header">
-				<span class="navbar-brand"><a href="<?php echo SYSTEM_URI; ?>" target="_blank"><?php include('img/ps-icon.svg'); ?></a> <?php echo html_output(THIS_INSTALL_SET_TITLE); ?></span>
+				<span class="navbar-brand"><a href="<?php echo SYSTEM_URI; ?>" target="_blank"><?php include('assets/img/ps-icon.svg'); ?></a> <?php echo html_output(THIS_INSTALL_SET_TITLE); ?></span>
 			</div>
 
 			<ul class="nav pull-right nav_account">

@@ -77,12 +77,17 @@ define('NEWS_FEED_URI','https://www.projectsend.org/feed/');
 define('UPDATES_FEED_URI','https://projectsend.org/updates/versions.xml');
 
 /**
+ * Short for DIRECTORY_SEPARATOR
+ */
+define('SP', DIRECTORY_SEPARATOR);
+
+/**
  * Check if the personal configuration file exists
  * Otherwise will start a configuration page
  *
  * @see sys.config.sample.php
  */
-if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') ) {
+if ( !file_exists(ROOT_DIR.SP.'includes'.SP.'sys.config.php') ) {
 	if ( !defined( 'IS_MAKE_CONFIG' ) ) {
 		// the following script returns only after the creation of the configuration file
 		if ( defined('IS_INSTALL') ) {
@@ -94,7 +99,7 @@ if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') ) {
 	}
 }
 else {
-	include(ROOT_DIR.'/includes/sys.config.php');
+	include(ROOT_DIR.SP.'includes'.SP.'sys.config.php');
 }
 
 /**
@@ -208,20 +213,8 @@ define('SESSION_EXPIRE_TIME', $session_expire_time);
 /**
  * Define the folder where uploaded files will reside
  */
-define('UPLOADED_FILES_FOLDER', ROOT_DIR.'/upload/files/');
+define('UPLOADED_FILES_FOLDER', ROOT_DIR.SP.'upload'.SP.'files'.SP);
 define('UPLOADED_FILES_URL', 'upload/files/');
-
-/**
- * Define the folder where the uploaded files are stored before
- * being assigned to any client.
- *
- * Also, this is the folder where files are searched for when
- * using the Import from FTP feature.
- *
- * @ Deprecated
- */
-define('USER_UPLOADS_TEMP_FOLDER', ROOT_DIR.'/upload/temp');
-define('CLIENT_UPLOADS_TEMP_FOLDER', ROOT_DIR.'/upload/temp');
 
 /**
  * Define the system name, and the information that will be used
@@ -231,11 +224,10 @@ define('CLIENT_UPLOADS_TEMP_FOLDER', ROOT_DIR.'/upload/temp');
 define('SYSTEM_URI','https://www.projectsend.org/');
 define('SYSTEM_URI_LABEL','ProjectSend on github');
 define('DONATIONS_URL','https://www.projectsend.org/donations/');
-/** Previously cFTP */
 define('SYSTEM_NAME','ProjectSend');
 
-define('LOGO_FOLDER',ROOT_DIR.'/img/custom/logo/');
-define('LOGO_THUMB_FOLDER',ROOT_DIR.'/img/custom/thumbs/');
+define('LOGO_FOLDER',ROOT_DIR.SP.'img'.SP.'custom'.SP.'logo'.SP);
+define('LOGO_THUMB_FOLDER',ROOT_DIR.SP.'img'.SP.'custom'.SP.'thumbs'.SP);
 define('LOGO_MAX_WIDTH',300);
 define('LOGO_MAX_HEIGHT',300);
 

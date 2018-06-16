@@ -365,3 +365,20 @@ if (defined('BASE_URI')) {
 	define('PUBLIC_LANDING_URI',BASE_URI.'public.php');
 	define('PUBLIC_GROUP_URI',BASE_URI.'public.php');
 }
+
+/**
+ * Assets
+ */
+if (defined('BASE_URI')) {
+define('ASSETS_DIR','assets/');
+define('ASSETS_COMPILED_DIR','assets/dist/');
+define('BOWER_DEPENDENCIES_DIR','bower_components/');
+define('COMPOSER_DEPENDENCIES_DIR','vendor/');
+define('NPM_DEPENDENCIES_DIR','node_modules/');
+    define('ASSETS_CSS_URI',BASE_URI . ASSETS_COMPILED_DIR . 'css/');
+    define('ASSETS_JS_URI',BASE_URI . ASSETS_COMPILED_DIR . 'js/');
+    define('ASSETS_IMG_URI',BASE_URI . ASSETS_DIR . 'img/');
+    define('BOWER_DEPENDENCIES_URI',BASE_URI . BOWER_DEPENDENCIES_DIR);
+    define('COMPOSER_DEPENDENCIES_URI',BASE_URI . COMPOSER_DEPENDENCIES_DIR);
+    define('NPM_DEPENDENCIES_URI',BASE_URI . NPM_DEPENDENCIES_DIR);
+}

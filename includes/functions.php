@@ -87,10 +87,9 @@ function sql_add_order( $table, $column = 'id', $initial_order = 'ASC' )
 function generate_password()
 {
 	/**
-	 * Random compat library, a polyfill for PHP 7's random_bytes();
+	 * @uses random_compat library, a polyfill for PHP 7's random_bytes();
 	 * @link: https://github.com/paragonie/random_compat
 	 */
-	require_once(ROOT_DIR . '/includes/random_compat/random_compat.phar' );
 	$error_unexpected	= __('An unexpected error has occurred', 'cftp_admin');
 	$error_os_fail		= __('Could not generate a random password', 'cftp_admin');
 
@@ -574,7 +573,7 @@ function default_footer_info($logged = true)
 					if ( defined('PRIVACY_POLICY_PAGE_ENABLE') && PRIVACY_POLICY_PAGE_ENABLE == '1' ) {
 						$footer_links[] = array(
 							'href'	=> BASE_URI . 'policy.php',
-							'text'	=> PRIVACY_POLICY_PAGE_TITLE ?? __('Privacy policy', 'cftp_admin'),
+							'text'	=> PRIVACY_POLICY_PAGE_TITLE ? PRIVACY_POLICY_PAGE_TITLE : __('Privacy policy', 'cftp_admin'),
 							'target'	=> '_self',
 						);
 					}
@@ -612,6 +611,24 @@ function default_footer_info($logged = true)
 <?php
 }
 
+/**
+ * function render_json_variables
+ * 
+ * Adds a CDATA block with variables that are used on the main JS file
+ * URLs. text strings, etc.
+ */
+function render_json_variables()
+{
+	global $json_strings;
+    $output = json_encode( $json_strings );
+?>
+<script type="text/javascript">
+    /*<![CDATA[*/
+        var json_strings = <?php echo $output; ?>;
+    /*]]>*/
+</script>
+<?php
+}
 
 /**
  * Standard "There are no clients" message mark up and information
@@ -977,10 +994,10 @@ function generate_logo_url()
 
 	$logo_filename = LOGO_FILENAME;
 	if ( empty( $logo_filename ) ) {
-		$branding['filename'] = 'img/projectsend-logo.png';
+		$branding['filename'] = 'assets/img/projectsend-logo.png';
 	}
 	else {
-		$branding['filename'] = 'img/custom/logo/'.LOGO_FILENAME;
+		$branding['filename'] = 'assets/img/custom/logo/'.LOGO_FILENAME;
 	}
 
 	$result_dir = ROOT_DIR . '/' . $branding['filename'];
@@ -1012,7 +1029,7 @@ function generate_branding_layout()
 		$branding_image = $branding['url'];
 	}
 	else {
-		$branding_image = BASE_URI . 'img/projectsend-logo.png';
+		$branding_image = ASSETS_IMG_URI . 'projectsend-logo.png';
 	}
 
 	$layout = '<div class="row">
@@ -1127,7 +1144,7 @@ function meta_noindex()
  */
 function meta_favicon()
 {
-	$favicon_location = BASE_URI . 'img/favicon/';
+	$favicon_location = ASSETS_IMG_URI . 'favicon/';
 	echo '<link rel="shortcut icon" type="image/x-icon" href="' . BASE_URI . 'favicon.ico" />' . "\n";
 	echo '<link rel="icon" type="image/png" href="' . $favicon_location . 'favicon-32.png" sizes="32x32">' . "\n";
 	echo '<link rel="apple-touch-icon" href="' . $favicon_location . 'favicon-152.png" sizes="152x152">' . "\n";

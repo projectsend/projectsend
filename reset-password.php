@@ -4,6 +4,7 @@
  *
  * @package		ProjectSend
  *
+ * @todo make a PasswordReset class
  */
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
@@ -139,10 +140,10 @@ include('header-unlogged.php');
 					$reset_password_new = $_POST['reset_password_new'];
 
 					/** Password checks */
-					$valid_me->validate('completed',$reset_password_new,$validation_no_pass);
-					$valid_me->validate('password',$reset_password_new,$validation_valid_pass.' '.$validation_valid_chars);
-					$valid_me->validate('pass_rules',$reset_password_new,$validation_rules_pass);
-					$valid_me->validate('length',$reset_password_new,$validation_length_pass,MIN_PASS_CHARS,MAX_PASS_CHARS);
+					$valid_me->validate('completed',$reset_password_new,$json_strings['validation']['no_pass']);
+					$valid_me->validate('password',$reset_password_new,$json_strings['validation']['valid_pass'].' '.$json_strings['validation']['valid_chars']);
+					$valid_me->validate('pass_rules',$reset_password_new,$json_strings['validation']['rules_pass']);
+					$valid_me->validate('length',$reset_password_new,$json_strings['validation']['length_pass'],MIN_PASS_CHARS,MAX_PASS_CHARS);
 
 					if ($valid_me->return_val) {
 
@@ -272,8 +273,8 @@ include('header-unlogged.php');
 								$("form").submit(function() {
 									clean_form(this);
 
-									is_complete(this.reset_password_email,'<?php echo $validation_no_email; ?>');
-									is_email(this.reset_password_email,'<?php echo $validation_invalid_mail; ?>');
+									is_complete(this.reset_password_email,'<?php echo $json_strings['validation']['no_email']; ?>');
+									is_email(this.reset_password_email,'<?php echo $json_strings['validation']['invalid_email']; ?>');
 
 									// show the errors or continue if everything is ok
 									if (show_form_errors() == false) { return false; }
@@ -313,9 +314,9 @@ include('header-unlogged.php');
 
 									clean_form(this);
 
-									is_complete(this.reset_password_new,'<?php echo $validation_no_pass; ?>');
-									is_length(this.reset_password_new,<?php echo MIN_PASS_CHARS; ?>,<?php echo MAX_PASS_CHARS; ?>,'<?php echo $validation_length_pass; ?>');
-									is_password(this.reset_password_new,'<?php $chars = addslashes($validation_valid_chars); echo $validation_valid_pass." ".$chars; ?>');
+									is_complete(this.reset_password_new,'<?php echo $json_strings['validation']['no_pass']; ?>');
+									is_length(this.reset_password_new,<?php echo MIN_PASS_CHARS; ?>,<?php echo MAX_PASS_CHARS; ?>,'<?php echo $json_strings['validation']['length_pass']; ?>');
+									is_password(this.reset_password_new,'<?php echo $json_strings['validation']['valid_pass'] . " " . addslashes($json_strings['validation']['valid_chars']); ?>');
 
 									// show the errors or continue if everything is ok
 									if (show_form_errors() == false) { return false; }
@@ -323,7 +324,7 @@ include('header-unlogged.php');
 							});
 						</script>
 
-						<form action="reset-password.php?token=<?php echo html_output($got_token); ?>&user=<?php echo html_output($got_user); ?>" name="newpassword" method="post" role="form">
+						<form action="reset-password.php?token=<?php echo html_output($got_token); ?>&amp;user=<?php echo html_output($got_user); ?>" name="newpassword" method="post" role="form">
 							<fieldset>
 								<input type="hidden" name="form_type" id="form_type" value="new_password" />
 

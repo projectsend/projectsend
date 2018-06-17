@@ -13,7 +13,7 @@ class CategoriesActions
 	var $ategory = '';
 
 	function __construct() {
-		global $dbh, $json_strings;
+		global $dbh;
 		$this->dbh = $dbh;
 	}
 

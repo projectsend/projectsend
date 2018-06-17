@@ -13,7 +13,7 @@ class UserActions
 	var $user = '';
 
 	function __construct() {
-		global $dbh, $json_strings;
+		global $dbh;
 		$this->dbh = $dbh;
 	}
 

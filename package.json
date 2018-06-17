@@ -7,9 +7,9 @@
 	"license": "GPL-3.0-or-later",
 	"main": "index.js",
 	"scripts": {
-        "build_own_assets": "grunt",
-        "replace_constants": "grunt php_constants",
-        "prepare_dist": "grunt prepare_dist"
+		"build_own_assets": "grunt",
+		"replace_constants": "grunt php_constants",
+		"prepare_dist": "grunt prepare_dist"
 	},
 	"dependencies": {
 		"bower": "^1.8.4"
@@ -23,6 +23,7 @@
 		"grunt-contrib-nodeunit": "^2.0.0",
 		"grunt-contrib-sass": "^1.0.0",
 		"grunt-contrib-uglify": "^3.3.0",
-		"grunt-php-set-constant": "0.0.15"
+		"grunt-php-set-constant": "0.0.15",
+		"grunt-shell": "^2.1.0"
 	}
 }

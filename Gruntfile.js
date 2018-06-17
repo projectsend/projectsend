@@ -85,7 +85,10 @@ module.exports = function(grunt) {
 					}
 				]
 			}
-		}
+        },
+        shell: {
+            command: ["npm update", "bower update", "composer update"].join('&&')
+        }
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-compress');
@@ -93,9 +96,11 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-php-set-constant');
-	grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-shell');
 
     grunt.registerTask('default', ['concat', 'uglify', 'sass']);
     grunt.registerTask('php_constants', ['setPHPConstant']);
 	grunt.registerTask('prepare_dist', ['compress']);
+	grunt.registerTask('dependencies_update', ['shell']);
 }

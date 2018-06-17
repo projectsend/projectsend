@@ -16,7 +16,7 @@
     "vendor"
   ],
   "dependencies": {
-    "jquery": "2.2.4",
+    "jquery": "jquery#2.2.4",
     "jquery-migrate": "1.4.0",
     "bootstrap": "3.3.7",
     "bootstrap-datepicker": "^1.8.0",

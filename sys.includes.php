@@ -69,6 +69,9 @@ require_once(ROOT_DIR.'/includes/functions.forms.php');
 /** Assets loading */
 require_once(ROOT_DIR.'/includes/functions.assets.php');
 
+/** Actions log references */
+require_once(ROOT_DIR.'/includes/actions.log.references.php');
+
 /**
  * Always require this classes to avoid repetition of code
  * on other files.

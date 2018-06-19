@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# Create config if not exist
+CONFIGFILE="/var/www/html/includes/sys.config.php"
+if [ ! -f "${CONFIGFILE}" ]; then
+    cp -f /var/www/html/includes/sys.config.sample.php "${CONFIGFILE}"
+fi
+
+# Make DB settings
+# DB_NAME
+sed -i'' 's#^define(.*DB_NAME.*$#DB_NAME_MARKER#g' "${CONFIGFILE}"
+sed -i'' "s#DB_NAME_MARKER#define('DB_NAME', '${DB_NAME}');#g" "${CONFIGFILE}"
+# DB_HOST
+sed -i'' 's#^define(.*DB_HOST.*$#DB_HOST_MARKER#g' "${CONFIGFILE}"
+sed -i'' "s#DB_HOST_MARKER#define('DB_HOST', '${DB_HOST}');#g" "${CONFIGFILE}"
+# DB_USER
+sed -i'' 's#^define(.*DB_USER.*$#DB_USER_MARKER#g' "${CONFIGFILE}"
+sed -i'' "s#DB_USER_MARKER#define('DB_USER', '${DB_USER}');#g" "${CONFIGFILE}"
+# DB_PASS
+sed -i'' 's#^define(.*DB_PASSWORD.*$#DB_PASS_MARKER#g' "${CONFIGFILE}"
+sed -i'' "s#DB_PASS_MARKER#define('DB_PASSWORD', '${DB_PASS}');#g" "${CONFIGFILE}"
+
+# Make optional changes
+# MAX_FILESIZE
+if [ -z "${MAX_FILESIZE}" ]; then
+    # 2 GB
+    MAX_FILESIZE=2048
+fi
+# ProjectSend
+sed -i'' 's#^define(.*MAX_FILESIZE.*$#MAX_FILESIZE_MARKER#g' "${CONFIGFILE}"
+sed -i'' "s#MAX_FILESIZE_MARKER#define('MAX_FILESIZE',${MAX_FILESIZE});#g" "${CONFIGFILE}"
+# PHP
+# upload_max_filesize
+sed -i'' "s#upload_max_filesize =.*\$#upload_max_filesize = ${MAX_FILESIZE};#g" /etc/php5/apache2/php.ini
+sed -i'' "s#^;upload_max_filesize#upload_max_filesize#g" /etc/php5/apache2/php.ini
+# post_max_size
+sed -i'' "s#post_max_size =.*\$#post_max_size = ${MAX_FILESIZE};#g" /etc/php5/apache2/php.ini
+sed -i'' "s#^;post_max_size#post_max_size#g" /etc/php5/apache2/php.ini
+
+# SITE_LANG
+if [ -z "${SITE_LANG}" ]; then
+    SITE_LANG=en
+fi
+sed -i'' 's#^define(.*SITE_LANG.*$#SITE_LANG_MARKER#g' "${CONFIGFILE}"
+sed -i'' "s#SITE_LANG_MARKER#define('SITE_LANG', '${SITE_LANG}');#g" "${CONFIGFILE}"
+
+# Execute user_extra - script if present
+USER_EXTRA_SCRIPT=/user_extra/init
+if [ -e ${USER_EXTRA_SCRIPT} ]; then
+    if [ ! -x ${USER_EXTRA_SCRIPT} ]; then
+        chmod +x ${USER_EXTRA_SCRIPT}
+    fi
+    sync
+    ${USER_EXTRA_SCRIPT}
+fi
+
+unset CONFIGFILE SITE_LANG MAX_FILESIZE DB_NAME DB_HOST DB_USER DB_PASS
+
+/usr/sbin/apache2 -D FOREGROUND

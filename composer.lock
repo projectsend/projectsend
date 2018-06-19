@@ -1,10 +1,11 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "c437d85999c9d4ef8b16ed253866f04e",
+    "hash": "e9f2284b007eebdbf27e7c32236f0711",
+    "content-hash": "c223b5493a877c9e856798990ea9aa8b",
     "packages": [
         {
             "name": "bainternet/php-hooks",
@@ -43,7 +44,7 @@
                 "filters",
                 "hooks"
             ],
-            "time": "2015-09-07T12:11:17+00:00"
+            "time": "2015-09-07 12:11:17"
         },
         {
             "name": "claviska/simpleimage",
@@ -82,7 +83,7 @@
                 }
             ],
             "description": "A PHP class that makes working with images as simple as possible.",
-            "time": "2017-09-12T09:03:56+00:00"
+            "time": "2017-09-12 09:03:56"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -147,7 +148,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2018-04-22T15:46:56+00:00"
+            "time": "2018-04-22 15:46:56"
         },
         {
             "name": "guzzlehttp/promises",
@@ -198,7 +199,7 @@
             "keywords": [
                 "promise"
             ],
-            "time": "2016-12-20T10:07:11+00:00"
+            "time": "2016-12-20 10:07:11"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -263,7 +264,7 @@
                 "uri",
                 "url"
             ],
-            "time": "2017-03-20T17:10:46+00:00"
+            "time": "2017-03-20 17:10:46"
         },
         {
             "name": "league/color-extractor",
@@ -317,7 +318,7 @@
                 "image",
                 "palette"
             ],
-            "time": "2016-12-15T09:30:02+00:00"
+            "time": "2016-12-15 09:30:02"
         },
         {
             "name": "league/oauth2-client",
@@ -384,7 +385,7 @@
                 "oauth2",
                 "single sign on"
             ],
-            "time": "2018-01-13T05:27:58+00:00"
+            "time": "2018-01-13 05:27:58"
         },
         {
             "name": "league/oauth2-google",
@@ -435,7 +436,7 @@
                 "oauth",
                 "oauth2"
             ],
-            "time": "2018-03-19T17:28:55+00:00"
+            "time": "2018-03-19 17:28:55"
         },
         {
             "name": "moxiecode/plupload",
@@ -471,7 +472,7 @@
                 "multi-runtime",
                 "plupload"
             ],
-            "time": "2018-02-20T06:20:41+00:00"
+            "time": "2018-02-20 06:20:41"
         },
         {
             "name": "paragonie/random_compat",
@@ -520,7 +521,7 @@
                 "pseudorandom",
                 "random"
             ],
-            "time": "2018-06-08T15:26:40+00:00"
+            "time": "2018-06-08 15:26:40"
         },
         {
             "name": "phpmailer/phpmailer",
@@ -597,7 +598,7 @@
                 }
             ],
             "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
-            "time": "2017-11-04T09:26:05+00:00"
+            "time": "2017-11-04 09:26:05"
         },
         {
             "name": "psr/http-message",
@@ -647,7 +648,7 @@
                 "request",
                 "response"
             ],
-            "time": "2016-08-06T14:39:51+00:00"
+            "time": "2016-08-06 14:39:51"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -706,7 +707,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2018-04-26T10:06:28+00:00"
+            "time": "2018-04-26 10:06:28"
         }
     ],
     "packages-dev": [],
@@ -716,7 +717,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "~5.6"
+        "php": ">=5.6"
     },
     "platform-dev": []
 }

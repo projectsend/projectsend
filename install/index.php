@@ -9,7 +9,7 @@
  */
 define( 'IS_INSTALL', true );
 
-define( 'ABS_PARENT', dirname( dirname(__FILE__) ) );
+define( 'ABS_PARENT', dirname( __DIR__ ) );
 require_once( ABS_PARENT . '/sys.includes.php' );
 
 /** Version requirements check */

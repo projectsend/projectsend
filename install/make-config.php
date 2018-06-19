@@ -10,7 +10,7 @@ error_reporting(E_ALL);
 define( 'IS_INSTALL', true );
 define( 'IS_MAKE_CONFIG', true );
 
-define( 'ABS_PARENT', dirname( dirname(__FILE__) ) );
+define( 'ABS_PARENT', dirname( __DIR__ ) );
 require_once( ABS_PARENT . '/sys.includes.php' );
 
 /** Config file exists. Do not continue and show the message */

@@ -102,7 +102,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 		<header>
 			<?php if ($logo_file_info['exists'] === true) { ?>
 				<div id="logo">
-					<img src="<?php echo $logo_file_info['thumbnail']; ?>" alt="<?php echo html_output(THIS_INSTALL_SET_TITLE); ?>">
+					<img src="<?php echo $logo_file_info['thumbnail']; ?>" alt="<?php echo html_output(THIS_INSTALL_TITLE); ?>">
 				</div>
 			<?php } ?>
 		</header>

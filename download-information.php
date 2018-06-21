@@ -4,12 +4,6 @@
  *
  * @package ProjectSend
  */
-$footable_min = true; // delete this line after finishing pagination on every table
-$load_scripts	= array(
-						'footable',
-						'flot',
-					); 
-
 $allowed_levels = array(9,8,7);
 require_once('sys.includes.php');
 
@@ -56,7 +50,7 @@ if ($page_status === 1) {
 	}
 }
 
-include('header.php');
+include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 ?>
 
 <div class="col-xs-12">
@@ -127,7 +121,7 @@ include('header.php');
 													'id'		=> 'download_info_tbl',
 													'class'		=> 'footable table',
 												);
-						$table = new generateTable( $table_attributes );
+						$table = new ProjectSend\TableGenerate( $table_attributes );
 
 						$thead_columns		= array(
 													array(
@@ -194,7 +188,7 @@ include('header.php');
 							 * Prepare the information to be used later on the cells array
 							 * 1- Get account download time and date
 							 */
-							$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
+							$date = date(TIMEFORMAT,strtotime($row['timestamp']));
 							$time = date('h:i:s',strtotime($row['timestamp']));
 							
 							/**
@@ -259,4 +253,4 @@ include('header.php');
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

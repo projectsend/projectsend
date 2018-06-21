@@ -6,11 +6,6 @@
  * @package		ProjectSend
  * @subpackage	Files
  */
-$footable_min = true; // delete this line after finishing pagination on every table
-$load_scripts	= array(
-						'footable',
-					); 
-
 $allowed_levels = array(9,8,7);
 require_once('sys.includes.php');
 
@@ -18,9 +13,7 @@ $active_nav = 'files';
 
 $page_title = __('Categories administration','cftp_admin');
 
-$current_level = get_current_user_level();
-
-include('header.php');
+include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 ?>
 
 <script type="text/javascript">
@@ -85,7 +78,7 @@ if ( isset( $_GET['action'] ) ) {
 			switch($_GET['action']) {
 				case 'delete':
 					foreach ($selected_categories as $category) {
-						$this_category		= new CategoriesActions();
+						$this_category		= new ProjectSend\CategoriesActions();
 						$delete_category	= $this_category->delete_category($category);
 					}
 					$msg = __('The selected categories were deleted.','cftp_admin');
@@ -96,7 +89,7 @@ if ( isset( $_GET['action'] ) ) {
 	
 			/** Record the action log */
 			foreach ($selected_categories as $category) {
-				$new_log_action = new LogActions();
+				$new_log_action = new ProjectSend\LogActions();
 				$log_action_args = array(
 										'action'				=> $log_action_number,
 										'owner_id'				=> CURRENT_USER_ID,
@@ -180,7 +173,7 @@ if ( isset( $_POST['btn_process'] ) ) {
 	$category_parent		= $_POST['category_parent'];
 	$category_description	= $_POST['category_description'];
 
-	$category_object = new CategoriesActions();
+	$category_object = new ProjectSend\CategoriesActions();
 
 	$arguments = array(
 						'name'			=> $category_name,
@@ -291,7 +284,7 @@ if ( isset( $_POST['btn_process'] ) ) {
 										'id'		=> 'categories_tbl',
 										'class'		=> 'footable table',
 									);
-			$table = new generateTable( $table_attributes );
+			$table = new ProjectSend\TableGenerate( $table_attributes );
 
 			$thead_columns		= array(
 										array(
@@ -439,9 +432,9 @@ if ( isset( $_POST['btn_process'] ) ) {
 			}
 		?>
 
-		<?php include_once( 'categories-form.php' ); ?>
+		<?php include_once FORMS_DIR . DS . 'categories.php'; ?>
 	</form>
 </div>
 
 <?php
-	include('footer.php');
+    include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

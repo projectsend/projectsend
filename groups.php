@@ -6,11 +6,6 @@
  * @subpackage	Groups
  *
  */
-$footable_min = true; // delete this line after finishing pagination on every table
-$load_scripts	= array(
-						'footable',
-					); 
-
 $allowed_levels = array(9,8);
 require_once('sys.includes.php');
 
@@ -37,7 +32,7 @@ if(!empty($_GET['member'])) {
 
 
 		/** Get groups where this client is member */
-		$get_groups		= new MembersActions();
+		$get_groups		= new ProjectSend\MembersActions();
 		$get_arguments	= array(
 								'client_id'	=> $member,
 								'return'	=> 'list',
@@ -52,7 +47,7 @@ if(!empty($_GET['member'])) {
 	}
 }
 
-include('header.php');
+include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 ?>
 
 <div class="col-xs-12">
@@ -84,12 +79,12 @@ include('header.php');
 					$deleted_groups = 0;
 
 					foreach ($selected_groups as $groups) {
-						$this_group = new GroupActions();
+						$this_group = new ProjectSend\GroupActions();
 						$delete_group = $this_group->delete_group($groups);
 						$deleted_groups++;
 
 						/** Record the action log */
-						$new_log_action = new LogActions();
+						$new_log_action = new ProjectSend\LogActions();
 						$log_action_args = array(
 												'action' => 18,
 												'owner_id' => CURRENT_USER_ID,
@@ -273,7 +268,7 @@ include('header.php');
 											'id'		=> 'groups_tbl',
 											'class'		=> 'footable table',
 										);
-				$table = new generateTable( $table_attributes );
+				$table = new ProjectSend\TableGenerate( $table_attributes );
 
 				$thead_columns		= array(
 											array(
@@ -337,7 +332,7 @@ include('header.php');
 					 * Prepare the information to be used later on the cells array
 					 * 1- Get account creation date
 					 */
-					$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
+					$date = date(TIMEFORMAT,strtotime($row['timestamp']));
 					
 					/**
 					 * 2- Button class for the manage files link
@@ -431,4 +426,4 @@ include('header.php');
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

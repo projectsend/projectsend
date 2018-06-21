@@ -6,11 +6,6 @@
  * @subpackage	Users
  *
  */
-$footable_min = true; // delete this line after finishing pagination on every table
-$load_scripts	= array(
-						'footable',
-					); 
-
 $allowed_levels = array(9);
 require_once('sys.includes.php');
 
@@ -21,7 +16,8 @@ if(!check_for_admin()) {
 $active_nav = 'users';
 
 $page_title = __('Users administration','cftp_admin');
-include('header.php');
+
+include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 ?>
 
 <div class="col-xs-12">
@@ -58,7 +54,7 @@ include('header.php');
 					 * Inactive users are not allowed to log in.
 					 */
 					foreach ($selected_users as $work_user) {
-						$this_user = new UserActions();
+						$this_user = new ProjectSend\UserActions();
 						$hide_user = $this_user->change_user_active_status($work_user,'1');
 					}
 					$msg = __('The selected users were marked as active.','cftp_admin');
@@ -76,7 +72,7 @@ include('header.php');
 						 * A user should not be able to deactivate himself
 						 */
 						if ($work_user != $my_info['id']) {
-							$this_user = new UserActions();
+							$this_user = new ProjectSend\UserActions();
 							$hide_user = $this_user->change_user_active_status($work_user,'0');
 							$affected_users++;
 						}
@@ -99,7 +95,7 @@ include('header.php');
 						 * A user should not be able to delete himself
 						 */
 						if ($work_user != $my_info['id']) {
-							$this_user = new UserActions();
+							$this_user = new ProjectSend\UserActions();
 							$delete_user = $this_user->delete_user($work_user);
 							$affected_users++;
 						}
@@ -119,7 +115,7 @@ include('header.php');
 
 			/** Record the action log */
 			foreach ($selected_users as $user) {
-				$new_log_action = new LogActions();
+				$new_log_action = new ProjectSend\LogActions();
 				$log_action_args = array(
 										'action' => $log_action_number,
 										'owner_id' => CURRENT_USER_ID,
@@ -294,7 +290,7 @@ include('header.php');
 											'id'		=> 'users_tbl',
 											'class'		=> 'footable table',
 										);
-				$table = new generateTable( $table_attributes );
+				$table = new ProjectSend\TableGenerate( $table_attributes );
 
 				$thead_columns		= array(
 											array(
@@ -377,7 +373,7 @@ include('header.php');
 					/**
 					 * 3- Get account creation date
 					 */
-					$date = date( TIMEFORMAT_USE, strtotime( $row['timestamp'] ) );
+					$date = date( TIMEFORMAT, strtotime( $row['timestamp'] ) );
 
 
 					/**
@@ -446,4 +442,4 @@ include('header.php');
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

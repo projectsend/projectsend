@@ -28,16 +28,16 @@ $is_template = true;
 $lang = SITE_LANG;
 if(!isset($ld)) { $ld = 'cftp_admin'; }
 require_once(ROOT_DIR.'/includes/classes/i18n.php');
-I18n::LoadDomain(ROOT_DIR."/templates/".TEMPLATE_USE."/lang/{$lang}.mo", $ld);
+I18n::LoadDomain(ROOT_DIR."/templates/".SELECTED_CLIENTS_TEMPLATE."/lang/{$lang}.mo", $ld);
 
-$this_template = BASE_URI.'templates/'.TEMPLATE_USE.'/';
+$this_template = BASE_URI.'templates/'.SELECTED_CLIENTS_TEMPLATE.'/';
 
 include_once(ROOT_DIR.'/templates/session_check.php');
 
 /**
  * URI to the default template CSS file.
  */
-$this_template_css = BASE_URI.'templates/'.TEMPLATE_USE.'/main.css';
+$this_template_css = BASE_URI.'templates/'.SELECTED_CLIENTS_TEMPLATE.'/main.css';
 
 global $dbh;
 
@@ -49,7 +49,7 @@ $client_info = get_client_by_username($this_user);
 /**
  * Get the list of different groups the client belongs to.
  */
-$get_groups		= new MembersActions();
+$get_groups		= new ProjectSend\MembersActions();
 $get_arguments	= array(
 						'client_id'	=> $client_info['id'],
 						'return'	=> 'list',

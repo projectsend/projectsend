@@ -9,10 +9,11 @@ $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 
 /** Check if the page is enabled */
-if ( defined('PRIVACY_POLICY_PAGE_ENABLE') && PRIVACY_POLICY_PAGE_ENABLE == '1' ) {
-	$page_title = html_output(PRIVACY_POLICY_PAGE_TITLE) ?? __('Privacy policy', 'cftp_admin');
+if ( defined('PAGE_POLICY_ENABLE') && PAGE_POLICY_ENABLE == '1' ) {
+	$page_title = defined('PAGE_POLICY_TITLE') ? html_output(PAGE_POLICY_TITLE) : __('Privacy policy', 'cftp_admin');
 	$dont_redirect_if_logged = 1;
-	include('header-unlogged.php');
+
+    include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 }
 else {
 	header("Location:".BASE_URI."index.php");
@@ -28,7 +29,7 @@ else {
 		<div class="white-box-interior">
 			<h3><?php echo $page_title; ?></h3>
 
-			<?php echo strip_tags(PRIVACY_POLICY_PAGE_CONTENT, '<p><br><span><a><strong><em><b><i><u><s><ul><ol><li>'); ?>
+			<?php echo strip_tags(PAGE_POLICY_CONTENT, '<p><br><span><a><strong><em><b><i><u><s><ul><ol><li>'); ?>
 		</div>
 	</div>
 
@@ -38,4 +39,4 @@ else {
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

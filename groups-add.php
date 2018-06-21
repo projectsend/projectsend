@@ -6,11 +6,6 @@
  * @subpackage	Groups
  *
  */
-$load_scripts	= array(
-						'chosen',
-						'ckeditor',
-					);
-
 $allowed_levels = array(9,8);
 require_once('sys.includes.php');
 
@@ -18,10 +13,10 @@ $active_nav = 'groups';
 
 $page_title = __('Add clients group','cftp_admin');
 
-include('header.php');
+include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 
 if ($_POST) {
-	$new_group = new GroupActions();
+	$new_group = new ProjectSend\GroupActions();
 
 	/**
 	 * Clean the posted form values to be used on the groups actions,
@@ -60,7 +55,7 @@ if ($_POST) {
 				/**
 				 * If the form was submited with errors, show them here.
 				 */
-				$valid_me->list_errors();
+				$validation->list_errors();
 			?>
 
 			<?php
@@ -74,7 +69,7 @@ if ($_POST) {
 							echo system_message('ok',$msg);
 
 							/** Record the action log */
-							$new_log_action = new LogActions();
+							$new_log_action = new ProjectSend\LogActions();
 							$log_action_args = array(
 													'action' => 23,
 													'owner_id' => CURRENT_USER_ID,
@@ -95,7 +90,7 @@ if ($_POST) {
 					 * Include the form.
 					 */
 					$groups_form_type = 'new_group';
-					include('groups-form.php');
+					include_once FORMS_DIR . DS . 'groups.php';
 				}
 			?>
 
@@ -104,4 +99,4 @@ if ($_POST) {
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

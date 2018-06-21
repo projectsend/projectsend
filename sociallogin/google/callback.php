@@ -3,7 +3,7 @@ require_once('../../sys.includes.php');
 
 $googleClient = new Google_Client();
 $oauth2 = new Google_Oauth2Service($googleClient);
-$googleClient->setApplicationName(THIS_INSTALL_SET_TITLE);
+$googleClient->setApplicationName(THIS_INSTALL_TITLE);
 $googleClient->setClientSecret(GOOGLE_CLIENT_SECRET);
 $googleClient->setClientId(GOOGLE_CLIENT_ID);
 $googleClient->setRedirectUri(BASE_URI . 'sociallogin/google/callback.php');
@@ -72,11 +72,11 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']->id_
         }
 
         /** Record the action log */
-        $new_log_action = new LogActions();
+        $new_log_action = new ProjectSend\LogActions();
         $log_action_args = array(
           'action' => 1,
           'owner_id' => $logged_id,
-          'affected_account_name' => $global_name
+          'affected_account_name' => CURRENT_USER_NAME
         );
         $new_record_action = $new_log_action->log_action_save($log_action_args);
 
@@ -100,7 +100,7 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']->id_
         return;
       }else {
         $_SESSION['errorstate'] = 'no_account'; //TODO: create new account
-        $new_client = new ClientActions();
+        $new_client = new ProjectSend\ClientActions();
         $username = $new_client->generateUsername($userData['name']);
         $password = generate_password();
 
@@ -133,14 +133,14 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']->id_
           $add_to_group->execute();
         }
 
-        $notify_admin = new PSend_Email();
+        $notify_admin = new ProjectSend\EmailsPrepare();
         $email_arguments = array(
           'type' => 'new_client_self',
           'address' => ADMIN_EMAIL_ADDRESS,
           'username' => $add_client_data_user,
           'name' => $add_client_data_name
         );
-        $notify_admin_status = $notify_admin->psend_send_email($email_arguments);
+        $notify_admin_status = $notify_admin->send($email_arguments);
 
         if (CLIENTS_AUTO_APPROVE == '0') {
           $_SESSION['errorstate'] = 'inactive_client';

@@ -27,7 +27,7 @@ if ( version_compare( $version_mysql, REQUIRED_VERSION_MYSQL, "<" ) ) {
 }
 
 if ( !empty( $error_msg ) ) {
-	include_once( ABS_PARENT . '/header-unlogged.php' );
+    include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 ?>
 	<div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 		<div class="white-box">
@@ -41,7 +41,7 @@ if ( !empty( $error_msg ) ) {
 		</div>
 	</div>
 <?php
-	include_once( ABS_PARENT . '/footer.php' );
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';
 	exit;
 }
 
@@ -89,7 +89,7 @@ if ($_POST) {
 /** Define the installation text strings */
 $page_title_install		= __('Install','cftp_admin');
 
-include_once('../header-unlogged.php');
+include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 ?>
 
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
@@ -124,23 +124,23 @@ include_once('../header-unlogged.php');
 							 */
 							if ($base_uri{(strlen($base_uri) - 1)} != '/') { $base_uri .= '/'; }
 							/** Begin form validation */
-							$valid_me->validate('completed',$this_install_title,$json_strings['validation']['install_no_sitename']);
-							$valid_me->validate('completed',$base_uri,$json_strings['validation']['install_no_baseuri']);
-							$valid_me->validate('completed',$got_admin_name,$json_strings['validation']['no_name']);
-							$valid_me->validate('completed',$got_admin_email,$json_strings['validation']['no_email']);
+							$validation->validate('completed',$this_install_title,$json_strings['validation']['install_no_sitename']);
+							$validation->validate('completed',$base_uri,$json_strings['validation']['install_no_baseuri']);
+							$validation->validate('completed',$got_admin_name,$json_strings['validation']['no_name']);
+							$validation->validate('completed',$got_admin_email,$json_strings['validation']['no_email']);
 							/** Username validation */
-							$valid_me->validate('completed',$got_admin_username,$json_strings['validation']['no_user']);
-							$valid_me->validate('length',$got_admin_username,$json_strings['validation']['length_user'],MIN_USER_CHARS,MAX_USER_CHARS);
-							$valid_me->validate('alpha_dot',$got_admin_username,$json_strings['validation']['alpha_user']);
+							$validation->validate('completed',$got_admin_username,$json_strings['validation']['no_user']);
+							$validation->validate('length',$got_admin_username,$json_strings['validation']['length_user'],MIN_USER_CHARS,MAX_USER_CHARS);
+							$validation->validate('alpha_dot',$got_admin_username,$json_strings['validation']['alpha_user']);
 							/** Password fields validation */
-							$valid_me->validate('completed',$_POST['install_user_pass'],$json_strings['validation']['no_pass']);
-							//$valid_me->validate('completed',$_POST['install_user_repeat'],$json_strings['validation']['no_pass2']);
-							$valid_me->validate('email',$got_admin_email,$json_strings['validation']['invalid_email']);
-							$valid_me->validate('length',$_POST['install_user_pass'],$json_strings['validation']['length_pass'],MIN_USER_CHARS,MAX_USER_CHARS);
-							$valid_me->validate('password',$_POST['install_user_pass'],$json_strings['validation']['alpha_pass']);
-							//$valid_me->validate('pass_match','',$json_strings['validation']['match_pass'],'','',$_POST['install_user_pass'],$_POST['install_user_repeat']);
+							$validation->validate('completed',$_POST['install_user_pass'],$json_strings['validation']['no_pass']);
+							//$validation->validate('completed',$_POST['install_user_repeat'],$json_strings['validation']['no_pass2']);
+							$validation->validate('email',$got_admin_email,$json_strings['validation']['invalid_email']);
+							$validation->validate('length',$_POST['install_user_pass'],$json_strings['validation']['length_pass'],MIN_USER_CHARS,MAX_USER_CHARS);
+							$validation->validate('password',$_POST['install_user_pass'],$json_strings['validation']['alpha_pass']);
+							//$validation->validate('pass_match','',$json_strings['validation']['match_pass'],'','',$_POST['install_user_pass'],$_POST['install_user_repeat']);
 
-							if ($valid_me->return_val) {
+							if ($validation->return_val) {
 								/**
 								 * Call the file that creates the tables and fill it with the data we got previously
 								 */
@@ -165,9 +165,9 @@ include_once('../header-unlogged.php');
 					?>
 
 					<?php
-						if(isset($valid_me)) {
+						if(isset($validation)) {
 							/** If the form was submited with errors, show them here */
-							$valid_me->list_errors();
+							$validation->list_errors();
 						}
 
 						if (isset($query_state)) {
@@ -195,7 +195,7 @@ include_once('../header-unlogged.php');
 									chmod_main_files();
 
 									/** Record the action log */
-									$new_log_action = new LogActions();
+									$new_log_action = new ProjectSend\LogActions();
 									$log_action_args = array(
 															'action' => 0,
 															'owner_id' => 1,
@@ -330,4 +330,4 @@ include_once('../header-unlogged.php');
 
 
 <?php
-	include('../footer.php');
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

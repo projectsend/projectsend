@@ -9,10 +9,6 @@
  * @package ProjectSend
  * @subpackage Upload
  */
-$load_scripts	= array(
-						'plupload',
-					);
-
 require_once('sys.includes.php');
 
 $active_nav = 'files';
@@ -23,13 +19,8 @@ $allowed_levels = array(9,8,7);
 if (CLIENTS_CAN_UPLOAD == 1) {
 	$allowed_levels[] = 0;
 }
-include('header.php');
 
-/**
- * Get the user level to determine if the uploader is a
- * system user or a client.
- */
-$current_level = get_current_user_level();
+include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 ?>
 
 <div class="col-xs-12">
@@ -59,7 +50,7 @@ $current_level = get_current_user_level();
 					$.ajax({
 						type:	'GET',
 						cache:	false,
-						url:	'includes/ajax-keep-alive.php',
+						url:	'<?php echo INCLUDES_URI; ?>/session.keep.alive.php',
 						data:	'timestamp='+timestamp,
 						success: function(result) {
 							var dummy = result;
@@ -71,7 +62,7 @@ $current_level = get_current_user_level();
 			$(function() {
 				$("#uploader").pluploadQueue({
 					runtimes : 'html5,flash,silverlight,html4',
-					url : 'process-upload.php',
+					url : 'app/includes/upload.process.php',
 					chunk_size : '1mb',
 					rename : true,
 					dragdrop: true,
@@ -82,7 +73,7 @@ $current_level = get_current_user_level();
 							if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
 						?>
 								,mime_types: [
-									{title : "Allowed files", extensions : "<?php echo $options_values['allowed_file_types']; ?>"}
+									{title : "Allowed files", extensions : "<?php echo ALLOWED_FILE_TYPES; ?>"}
 								]
 						<?php
 							}
@@ -98,8 +89,8 @@ $current_level = get_current_user_level();
 					,init : {
 						/*
 						FilesAdded: function(up, files) {
-			           uploader.start();
-			         }
+					   uploader.start();
+					 }
 						QueueChanged: function(up) {
 							var uploader = $('#uploader').pluploadQueue();
 							uploader.start();
@@ -126,7 +117,7 @@ $current_level = get_current_user_level();
 
 						uploader.bind('FileUploaded', function (up, file, info) {
 							var obj = JSON.parse(info.response);
-							var new_file_field = '<input type="hidden" name="finished_files[]" value="'+obj.NewFileName+'" />'
+							var new_file_field = '<input type="hidden" name="files[]" value="'+obj.NewFileName+'" />'
 							$('form').append(new_file_field);
 						});
 
@@ -161,22 +152,8 @@ $current_level = get_current_user_level();
 			});
 		</script>
 
-		<form action="upload-process-form.php" name="upload_by_client" id="upload_by_client" method="post" enctype="multipart/form-data">
-			<input type="hidden" name="uploaded_files" id="uploaded_files" value="" />
-			<div id="uploader">
-				<div class="message message_error">
-					<p><?php _e("Your browser doesn't support HTML5, Flash or Silverlight. Please update your browser or install Adobe Flash or Silverlight to continue.",'cftp_admin'); ?></p>
-				</div>
-			</div>
-			<div class="after_form_buttons">
-				<button type="submit" name="Submit" class="btn btn-wide btn-primary" id="btn-submit"><?php _e('Upload files','cftp_admin'); ?></button>
-			</div>
-			<div class="message message_info message_uploading">
-				<p><?php _e("Your files are being uploaded! Progress indicators may take a while to update, but work is still being done behind the scenes.",'cftp_admin'); ?></p>
-			</div>
-		</form>
-
+		<?php include_once FORMS_DIR . DS . 'upload.php'; ?>
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

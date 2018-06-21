@@ -5,10 +5,6 @@
  * @package		ProjectSend
  *
  */
-$load_scripts	= array(
-						'flot',
-					); 
-
 $allowed_levels = array(9,8,7);
 require_once('sys.includes.php');
 $page_title = __('Dashboard', 'cftp_admin');
@@ -17,7 +13,7 @@ $active_nav = 'dashboard';
 
 $body_class = array('dashboard', 'home', 'hide_title');
 
-include('header.php');
+include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 
 define('CAN_INCLUDE_FILES', true);
 
@@ -34,18 +30,18 @@ if (in_session_or_cookies($log_allowed)) {
 	<div class="col-sm-8">
 		<div class="row">
 			<div class="col-sm-12 container_widget_statistics">
-				<?php include(WIDGETS_FOLDER.'statistics.php'); ?>
+				<?php include_ONCE WIDGETS_FOLDER.'statistics.php'; ?>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-6">
-				<?php include_once(WIDGETS_FOLDER.'news.php'); ?>
+				<?php include_once WIDGETS_FOLDER.'news.php'; ?>
 			</div>
 			<?php
 				if ( $sys_info == true ) {
 			?>
 					<div class="col-sm-6">
-						<?php include_once(WIDGETS_FOLDER.'system-information.php'); ?>
+						<?php include_once WIDGETS_FOLDER.'system-information.php'; ?>
 					</div>
 			<?php
 				}
@@ -135,4 +131,4 @@ if (in_session_or_cookies($log_allowed)) {
 	</script>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

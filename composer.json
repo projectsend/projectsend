@@ -13,8 +13,31 @@
 		"preferred-install": "dist"
 	},
 	"prefer-stable": true,
+	"autoload": {
+		"psr-4": {
+			"ProjectSend\\": "app/classes/"
+		},
+		"files": [
+			"app/config/config.php",
+			"app.php",
+			"app/autoload/language.functions.php",
+			"app/autoload/language.locales.names.php",
+			"app/autoload/language.load.php",
+			"app/autoload/functions.php",
+			"app/autoload/assets.functions.php",
+			"app/autoload/actions.log.references.php",
+			"app/autoload/session.information.php",
+			"app/autoload/functions.categories.php",
+			"app/autoload/functions.forms.php",
+			"app/autoload/templates.functions.php",
+			"app/autoload/updates.functions.php",
+			"app/autoload/session.check.php",
+			"app/autoload/text.strings.php",
+			"app/autoload/security/xsrf.php"
+		]
+	},
 	"require": {
-     	"php": "~5.6",
+	 	"php": "~5.6",
 		"phpmailer/phpmailer": "~5.2",
 		"symfony/polyfill-mbstring": "^1.8",
 		"league/oauth2-google": "^2.2",

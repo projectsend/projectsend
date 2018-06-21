@@ -6,11 +6,6 @@
  * @subpackage	Log
  *
  */
-$footable_min = true; // delete this line after finishing pagination on every table
-$load_scripts	= array(
-						'footable',
-					); 
-
 $allowed_levels = array(9);
 require_once('sys.includes.php');
 
@@ -18,7 +13,7 @@ $active_nav = 'tools';
 
 $page_title = __('Recent activities log','cftp_admin');
 
-include('header.php');
+include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 ?>
 
 <div class="col-xs-12">
@@ -35,7 +30,7 @@ include('header.php');
 					$delete_ids = implode( ',', $selected_actions );
 
 					if ( !empty( $_GET['batch'] ) ) {
-							$statement = $dbh->prepare("DELETE FROM " . TABLE_LOG . " WHERE FIND_IN_SET(id, :delete)");
+							$statement = $dbh->prepare("DELETE FROM " . TABLE_ACTIONS_LOG . " WHERE FIND_IN_SET(id, :delete)");
 							$params = array(
 											':delete'	=> $delete_ids,
 										);
@@ -51,7 +46,7 @@ include('header.php');
 				break;
 				case 'clear':
 					$keep = '5,8,9';
-					$statement = $dbh->prepare("DELETE FROM " . TABLE_LOG . " WHERE NOT ( FIND_IN_SET(action, :keep) ) ");
+					$statement = $dbh->prepare("DELETE FROM " . TABLE_ACTIONS_LOG . " WHERE NOT ( FIND_IN_SET(action, :keep) ) ");
 					$params = array(
 									':keep'	=> $keep,
 								);
@@ -68,7 +63,7 @@ include('header.php');
 	/**
 	 * Get the actually requested items
 	 */
-	$cq = "SELECT * FROM " . TABLE_LOG;
+	$cq = "SELECT * FROM " . TABLE_ACTIONS_LOG;
 
 	/** Add the search terms */	
 	if ( isset($_GET['search']) && !empty($_GET['search'] ) ) {
@@ -99,7 +94,7 @@ include('header.php');
 	 * Add the order.
 	 * Defaults to order by: id, order: DESC
 	 */
-	$cq .= sql_add_order( TABLE_LOG, 'id', 'DESC' );
+	$cq .= sql_add_order( TABLE_ACTIONS_LOG, 'id', 'DESC' );
 
 	/**
 	 * Pre-query to count the total results
@@ -207,7 +202,7 @@ include('header.php');
 										'id'		=> 'activities_tbl',
 										'class'		=> 'footable table',
 									);
-			$table = new generateTable( $table_attributes );
+			$table = new ProjectSend\TableGenerate( $table_attributes );
 
 			$thead_columns		= array(
 										array(
@@ -263,7 +258,7 @@ include('header.php');
 										'affected_account_name'	=> $log['affected_account_name']
 									)
 				);
-				$date = date(TIMEFORMAT_USE,strtotime($log['timestamp']));
+				$date = date(TIMEFORMAT,strtotime($log['timestamp']));
 
 				$table->add_row();
 				
@@ -317,4 +312,4 @@ include('header.php');
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

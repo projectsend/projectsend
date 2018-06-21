@@ -6,17 +6,13 @@
  * @subpackage	Clients
  *
  */
-$load_scripts	= array(
-						'chosen',
-					); 
-
 $allowed_levels = array(9,8,0);
 require_once('sys.includes.php');
 
 $active_nav = 'clients';
 
 /** Create the object */
-$edit_client = new ClientActions();
+$edit_client = new ProjectSend\ClientActions();
 
 /** Check if the id parameter is on the URI. */
 if (isset($_GET['id'])) {
@@ -52,7 +48,7 @@ if ($page_status === 1) {
 	}
 
 	/** Get groups where this client is member */
-	$get_groups		= new MembersActions();
+	$get_groups		= new ProjectSend\MembersActions();
 	$get_arguments	= array(
 							'client_id'	=> $client_id,
 						);
@@ -66,7 +62,7 @@ if ($page_status === 1) {
 /**
  * Form type
  */
-if ($global_level != 0) {
+if (CURRENT_USER_LEVEL != 0) {
 	$clients_form_type = 'edit_client';
 	$ignore_size = false;
 }
@@ -79,8 +75,8 @@ else {
 /**
  * Compare the client editing this account to the on the db.
  */
-if ($global_level == 0) {
-	if (isset($add_client_data_user) && $global_user != $add_client_data_user) {
+if (CURRENT_USER_LEVEL == 0) {
+	if (isset($add_client_data_user) && CURRENT_USER_USERNAME != $add_client_data_user) {
 		$page_status = 3;
 	}
 }
@@ -90,7 +86,7 @@ if ($_POST) {
 	 * If the user is not an admin, check if the id of the client
 	 * that's being edited is the same as the current logged in one.
 	 */
-	if ($global_level == 0 || $global_level == 7) {
+	if (CURRENT_USER_LEVEL == 0 || CURRENT_USER_LEVEL == 7) {
 		if ($client_id != CURRENT_USER_ID) {
 			die();
 		}
@@ -119,7 +115,7 @@ if ($_POST) {
 		$add_client_data_maxfilesize	= $add_client_data_maxfilesize;
 	}
 
-	if ($global_level != 0) {
+	if (CURRENT_USER_LEVEL != 0) {
 		$add_client_data_active	= (isset($_POST["add_client_form_active"])) ? 1 : 0;
 	}
 
@@ -152,7 +148,7 @@ if ($_POST) {
 	if ($edit_validate == 1) {
         $edit_response = $edit_client->edit_client($edit_arguments);
         $edit_groups = (!empty( $_POST['add_client_group_request'] ) ) ? $_POST['add_client_group_request'] : array();
-        $memberships	= new MembersActions;
+        $memberships	= new ProjectSend\MembersActions;
         $arguments		= array(
                                 'client_id'		=> $client_id,
                                 'group_ids'		=> $edit_groups,
@@ -172,12 +168,11 @@ if ($_POST) {
 }
 
 $page_title = __('Edit client','cftp_admin');
-if (isset($add_client_data_user) && $global_user == $add_client_data_user) {
+if (isset($add_client_data_user) && CURRENT_USER_USERNAME == $add_client_data_user) {
 	$page_title = __('My account','cftp_admin');
 }
 
-include('header.php');
-
+include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 ?>
 
 <div class="col-xs-12 col-sm-12 col-lg-6">
@@ -193,7 +188,7 @@ include('header.php');
 
 					$saved_client = get_client_by_id($client_id);
 					/** Record the action log */
-					$new_log_action = new LogActions();
+					$new_log_action = new ProjectSend\LogActions();
 					$log_action_args = array(
 											'action' => 14,
 											'owner_id' => CURRENT_USER_ID,
@@ -217,7 +212,7 @@ include('header.php');
 				/**
 				 * If the form was submited with errors, show them here.
 				 */
-				$valid_me->list_errors();
+				$validation->list_errors();
 			?>
 			
 			<?php
@@ -240,7 +235,7 @@ include('header.php');
 					/**
 					 * Include the form.
 					 */
-					include('clients-form.php');
+					include_once FORMS_DIR . DS . 'clients.php';
 				}
 			?>
 
@@ -249,4 +244,4 @@ include('header.php');
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

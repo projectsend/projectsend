@@ -20,11 +20,6 @@ include_once(ROOT_DIR.'/templates/common.php'); // include the required function
 
 $window_title = __('File downloads','cftp_template');
 
-$footable_min = true; // delete this line after finishing pagination on every table
-$load_scripts	= array(
-						'footable',
-					);
-
 $body_class = array('template', 'default-template', 'hide_title');
 
 include_once(ROOT_DIR.'/header.php');
@@ -121,7 +116,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 													'id'		=> 'files_list',
 													'class'		=> 'footable table',
 												);
-						$table = new generateTable( $table_attributes );
+						$table = new ProjectSend\TableGenerate( $table_attributes );
 
 						$thead_columns		= array(
 													array(
@@ -210,7 +205,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 							}
 
 							/** Date */
-							$date = date(TIMEFORMAT_USE,strtotime($file['timestamp']));
+							$date = date(TIMEFORMAT,strtotime($file['timestamp']));
 
 							/** Expiration */
 							if ( $file['expires'] == '1' ) {
@@ -220,7 +215,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 									$class = 'danger';
 								}
 
-								$value = date( TIMEFORMAT_USE, strtotime( $file['expiry_date'] ) );
+								$value = date( TIMEFORMAT, strtotime( $file['expiry_date'] ) );
 							} else {
 								$class = 'success';
 								$value = __('Never','cftp_template');

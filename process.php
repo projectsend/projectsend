@@ -9,12 +9,10 @@ require_once('sys.includes.php');
 
 $_SESSION['last_call']	= time();
 
-$header = 'header.php';
-
 if ( !empty( $_GET['do'] ) && $_GET['do'] == 'login' ) {
 }
 else {
-	require_once($header);
+	include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 }
 
 class process {
@@ -110,7 +108,7 @@ class process {
 						setcookie("rememberwho",$sysuser_username,time()+COOKIE_EXP_TIME);
 					}
 					/** Record the action log */
-					$this->new_log_action = new LogActions();
+					$this->new_log_action = new ProjectSend\LogActions();
 					$this->log_action_args = array(
 											'action' => 1,
 											'owner_id' => $this->logged_id,
@@ -227,11 +225,11 @@ class process {
 		*/
 
 		/** Record the action log */
-		$new_log_action = new LogActions();
+		$new_log_action = new ProjectSend\LogActions();
 		$log_action_args = array(
 								'action'	=> 31,
 								'owner_id'	=> CURRENT_USER_ID,
-								'affected_account_name' => $global_name
+								'affected_account_name' => CURRENT_USER_NAME
 							);
 		$new_record_action = $new_log_action->log_action_save($log_action_args);
 
@@ -276,7 +274,7 @@ class process {
 							 * Does the client have permission to download the file?
 							 * First, get the list of different groups the client belongs to.
 							 */
-							$this->get_groups		= new MembersActions();
+							$this->get_groups		= new ProjectSend\MembersActions();
 							$this->get_arguments	= array(
 															'client_id'	=> CURRENT_USER_ID,
 															'return'	=> 'list',
@@ -320,7 +318,6 @@ class process {
 					else {
 						$this->can_download = true;
 						$log_action = 7;
-						$global_user = get_current_user_username();
 						$log_action_owner_id = CURRENT_USER_ID;
 					}
 
@@ -336,7 +333,7 @@ class process {
 						$this->statement->execute();
 
 						/** Record the action log */
-						$new_log_action = new LogActions();
+						$new_log_action = new ProjectSend\LogActions();
 						$log_action_args = array(
 												'action'				=> $log_action,
 												'owner_id'				=> $log_action_owner_id,

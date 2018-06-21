@@ -6,12 +6,6 @@
  * @subpackage	Clients
  *
  */
-$footable_min = true; // delete this line after finishing pagination on every table
-$load_scripts	= array(
-						'footable',
-						'toggle',
-					); 
-
 $allowed_levels = array(9,8);
 require_once('sys.includes.php');
 
@@ -19,7 +13,8 @@ $active_nav = 'groups';
 $this_page = 'clients-membership-requests.php';
 
 $page_title = __('Membership requests','cftp_admin');
-include('header.php');
+
+include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 ?>
 
 <script type="text/javascript">
@@ -98,7 +93,7 @@ include('header.php');
 					$selected_clients = $_POST['accounts'];
 					foreach ( $selected_clients as $client ) {
 						$email_type = 'client_memberships_process';
-						$process_memberships	= new MembersActions();
+						$process_memberships	= new ProjectSend\MembersActions();
 
 						/**
 						 * 1 - Process memberships requests
@@ -121,7 +116,7 @@ include('header.php');
 						$processed_requests = $process_requests['memberships'];
 						$client_information = get_client_by_id( $client['id'] );
 
-						$notify_client = new PSend_Email();
+						$notify_client = new ProjectSend\EmailsPrepare();
 						$email_arguments = array(
 														'type'			=> $email_type,
 														'username'		=> $client_information['username'],
@@ -129,14 +124,14 @@ include('header.php');
 														'addresses'		=> $client_information['email'],
 														'memberships'	=> $processed_requests,
 													);
-						$notify_send = $notify_client->psend_send_email($email_arguments);
+						$notify_send = $notify_client->send($email_arguments);
 					}
 					
 					$log_action_number = 39;
 					break;
 				case 'delete':
 					foreach ($selected_clients as $client) {
-						$process_memberships	= new MembersActions();
+						$process_memberships	= new ProjectSend\MembersActions();
 
 						$memberships_arguments = array(
 														'client_id'	=> $client['id'],
@@ -155,7 +150,7 @@ include('header.php');
 			/** Record the action log */
 			if ( !empty( $log_action_number ) ) {
 				foreach ($selected_clients_ids as $client) {
-					$new_log_action = new LogActions();
+					$new_log_action = new ProjectSend\LogActions();
 					$log_action_args = array(
 											'action' => $log_action_number,
 											'owner_id' => CURRENT_USER_ID,
@@ -316,7 +311,7 @@ include('header.php');
 				}
 
 				if ($count > 0) {
-					$get_groups	= new GroupActions();
+					$get_groups	= new ProjectSend\GroupActions();
 					$arguments	= array();
 					$all_groups	= $get_groups->get_groups($arguments);
 
@@ -324,7 +319,7 @@ include('header.php');
 					/**
 					 * Pre-populate a membership requests array
 					 */
-					$get_requests	= new MembersActions();
+					$get_requests	= new ProjectSend\MembersActions();
 					$arguments		= array();
 					if ( $current_filter == 'denied' ) {
 						$arguments['denied'] = 1;
@@ -338,7 +333,7 @@ include('header.php');
 												'id'		=> 'clients_tbl',
 												'class'		=> 'footable table',
 											);
-					$table = new generateTable( $table_attributes );
+					$table = new ProjectSend\TableGenerate( $table_attributes );
 	
 					$thead_columns		= array(
 												array(
@@ -475,4 +470,4 @@ include('header.php');
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

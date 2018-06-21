@@ -12,7 +12,7 @@ $page_title = __('File information','cftp_admin');
 
 $dont_redirect_if_logged = 1;
 
-include('header-unlogged.php');
+include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 
 	if (!empty($_GET['token']) && !empty($_GET['id'])) {
 		$got_token		= $_GET['token'];
@@ -76,7 +76,7 @@ include('header-unlogged.php');
 				$statement->execute();
 
 				/** Record the action log */
-				$new_log_action = new LogActions();
+				$new_log_action = new ProjectSend\LogActions();
 				$log_action_args = array(
 										'action'				=> 37,
 										'owner_id'				=> 0,
@@ -186,4 +186,4 @@ include('header-unlogged.php');
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

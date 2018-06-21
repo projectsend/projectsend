@@ -22,12 +22,13 @@ can_see_content($allowed_levels);
 $type = $_GET['t'];
 
 /** Generate the preview using the email sending class */
-$preview = new PSend_Email();
+define('EMAIL_IS_PREVIEW', true);
+$preview = new ProjectSend\EmailsPrepare();
 $preview_arguments = array(
 								'preview'	=> true,
 								'type'		=> $type,
 							);
-$preview_results = $preview->psend_send_email($preview_arguments);
+$preview_results = $preview->send($preview_arguments);
 echo $preview_results;
 
 ob_end_flush();

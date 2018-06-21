@@ -10,18 +10,14 @@
  * @package ProjectSend
  * @subpackage Upload
  */
-$load_scripts	= array(
-						'footable',
-					); 
-
 $allowed_levels = array(9,8,7);
 require_once('sys.includes.php');
 
 $active_nav = 'files';
 
 $page_title = __('Find orphan files', 'cftp_admin');
-include('header.php');
 
+include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 ?>
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -47,18 +43,11 @@ include('header.php');
 		});
 	</script>
 <?php
-/**
- * Use the folder defined on sys.vars.php
- * Composed of the absolute path to that file plus the
- * default uploads folder.
- */
-$work_folder = UPLOADED_FILES_FOLDER;
-
-		if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
-			$msg = __('This list only shows the files that are allowed according to your security settings. If the file type you need to add is not listed here, add the extension to the "Allowed file extensions" box on the options page.', 'cftp_admin');
-			echo system_message('warning',$msg);
-		}
-	?>
+	if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
+		$msg = __('This list only shows the files that are allowed according to your security settings. If the file type you need to add is not listed here, add the extension to the "Allowed file extensions" box on the options page.', 'cftp_admin');
+		echo system_message('warning',$msg);
+	}
+?>
 	
 	<?php
 		/** Count clients to show an error message, or the form */
@@ -103,19 +92,19 @@ $work_folder = UPLOADED_FILES_FOLDER;
 		$files_to_add = array();
 
 		/** Read the temp folder and list every allowed file */
-		if ($handle = opendir($work_folder)) {
+		if ($handle = opendir(UPLOADED_FILES_FOLDER)) {
 			while (false !== ($filename = readdir($handle))) {
-				$filename_path = $work_folder.'/'.$filename;
+				$filename_path = UPLOADED_FILES_FOLDER . DS . $filename;
 				if(!is_dir($filename_path)) {
 					if ($filename != "." && $filename != "..") {
 						/** Check types of files that are not on the database */							
 						if (!array_key_exists($filename,$db_files)) {
-							$file_object = new PSend_Upload_File();
-							$new_filename = $file_object->safe_rename_on_disk($filename,$work_folder);
+							$file_object = new ProjectSend\FilesUpload();
+							$new_filename = $file_object->safe_rename_on_disk($filename,UPLOADED_FILES_FOLDER);
 							/** Check if the filetype is allowed */
 							if ($file_object->is_filetype_allowed($new_filename)) {
 								/** Add it to the array of available files */
-								$new_filename_path = $work_folder.'/'.$new_filename;
+								$new_filename_path = UPLOADED_FILES_FOLDER . DS . $new_filename;
 								//$files_to_add[$new_filename] = $new_filename_path;
 								$files_to_add[] = array(
 														'path'		=> $new_filename_path,
@@ -179,7 +168,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 											'class'				=> 'footable table',
 											'data-page-size'	=> FOOTABLE_PAGING_NUMBER,
 										);
-				$table = new generateTable( $table_attributes );
+				$table = new ProjectSend\TableGenerate( $table_attributes );
 	
 				$thead_columns		= array(
 											array(
@@ -222,7 +211,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 					 */
 					$tbody_cells = array(
 											array(
-													'content'		=> '<input type="checkbox" name="add[]" class="batch_checkbox select_file_checkbox" value="' . html_output( $add_file['name'] ) . '" />',
+													'content'		=> '<input type="checkbox" name="files[]" class="batch_checkbox select_file_checkbox" value="' . html_output( $add_file['name'] ) . '" />',
 												),
 											array(
 													'content'		=> html_output( $add_file['name'] ),
@@ -234,7 +223,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 																		),
 												),
 											array(
-													'content'		=> date( TIMEFORMAT_USE, filemtime( $add_file['path'] ) ),
+													'content'		=> date( TIMEFORMAT, filemtime( $add_file['path'] ) ),
 													'attributes'	=> array(
 																			'data-value'	=> filemtime( $add_file['path'] ),
 																		),
@@ -281,7 +270,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 				else {
 					$no_results_message = __('There are no files available to add right now.','cftp_admin');
 					$no_results_message .= __('To use this feature you need to upload your files via FTP to the folder','cftp_admin');
-					$no_results_message .= ' <span class="format_url"><strong>'.html_output($work_folder).'</strong></span>.';
+					$no_results_message .= ' <span class="format_url"><strong>'.html_output(UPLOADED_FILES_FOLDER).'</strong></span>.';
 				}
 	
 				echo system_message('error',$no_results_message);
@@ -291,4 +280,4 @@ $work_folder = UPLOADED_FILES_FOLDER;
 </div>
 	
 <?php
-	include('footer.php');
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

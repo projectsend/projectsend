@@ -84,7 +84,13 @@ span.label {
 	{
 		color:white;
 		background:$main_lighten;
-	}
+    }
+    
+    &:focus,
+    &:active
+    {
+        color: white;
+    }
 }
 
 .plupload_wrapper {

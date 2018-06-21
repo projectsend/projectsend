@@ -11,7 +11,8 @@ require_once('sys.includes.php');
 
 $page_title = __('Lost password','cftp_admin');
 
-include('header-unlogged.php');
+include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
+
 	$show_form = 'enter_email';
 
 	if (!empty($_GET['token']) && !empty($_GET['user'])) {
@@ -108,14 +109,14 @@ include('header-unlogged.php');
 						$sql_pass->execute();
 
 						/** Send email */
-						$notify_user = new PSend_Email();
+						$notify_user = new ProjectSend\EmailsPrepare();
 						$email_arguments = array(
 														'type' => 'password_reset',
 														'address' => $email,
 														'username' => $username,
 														'token' => $token
 													);
-						$notify_send = $notify_user->psend_send_email($email_arguments);
+						$notify_send = $notify_user->send($email_arguments);
 
 						if ($notify_send == 1){
 							$state['email'] = 1;
@@ -140,12 +141,12 @@ include('header-unlogged.php');
 					$reset_password_new = $_POST['reset_password_new'];
 
 					/** Password checks */
-					$valid_me->validate('completed',$reset_password_new,$json_strings['validation']['no_pass']);
-					$valid_me->validate('password',$reset_password_new,$json_strings['validation']['valid_pass'].' '.$json_strings['validation']['valid_chars']);
-					$valid_me->validate('pass_rules',$reset_password_new,$json_strings['validation']['rules_pass']);
-					$valid_me->validate('length',$reset_password_new,$json_strings['validation']['length_pass'],MIN_PASS_CHARS,MAX_PASS_CHARS);
+					$validation->validate('completed',$reset_password_new,$json_strings['validation']['no_pass']);
+					$validation->validate('password',$reset_password_new,$json_strings['validation']['valid_pass'].' '.$json_strings['validation']['valid_chars']);
+					$validation->validate('pass_rules',$reset_password_new,$json_strings['validation']['rules_pass']);
+					$validation->validate('length',$reset_password_new,$json_strings['validation']['length_pass'],MIN_PASS_CHARS,MAX_PASS_CHARS);
 
-					if ($valid_me->return_val) {
+					if ($validation->return_val) {
 
 						$enc_password = password_hash($reset_password_new, PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
 						//$enc_password 		= $hasher->HashPassword($reset_password_new);
@@ -201,7 +202,7 @@ include('header-unlogged.php');
 				/**
 				 * If the form was submited with errors, show them here.
 				 */
-				$valid_me->list_errors();
+				$validation->list_errors();
 			?>
 
 			<?php
@@ -364,4 +365,4 @@ include('header-unlogged.php');
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

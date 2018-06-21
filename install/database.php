@@ -160,8 +160,8 @@ if (defined('TRY_INSTALL')) {
 		),
 
 		'8' =>  array(
-					'table'	=> TABLE_LOG,
-					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_LOG.'` (
+					'table'	=> TABLE_ACTIONS_LOG,
+					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_ACTIONS_LOG.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `action` int(2) NOT NULL,
@@ -232,15 +232,8 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> '',
 					'query'	=> "INSERT INTO ".TABLE_OPTIONS." (name, value) VALUES
 								('base_uri', :base_uri),
-								('max_thumbnail_width', '100'),
-								('max_thumbnail_height', '100'),
-								('thumbnails_folder', '../../img/custom/thumbs/'),
-								('thumbnail_default_quality', '90'),
-								('max_logo_width', '300'),
-								('max_logo_height', '300'),
 								('this_install_title', :title),
 								('selected_clients_template', 'default'),
-								('logo_thumbnails_folder', '/img/custom/thumbs'),
 								('timezone', 'America/Argentina/Buenos_Aires'),
 								('timeformat', 'd/m/Y'),
 								('allowed_file_types', '7z,ace,ai,avi,bin,bmp,cdr,doc,docm,docx,eps,fla,flv,gif,gz,gzip,htm,html,iso,jpeg,jpg,mp3,mp4,mpg,odt,oog,ppt,pptx,pptm,pps,ppsx,pdf,png,psd,rar,rtf,tar,tif,tiff,txt,wav,xls,xlsm,xlsx,zip'),
@@ -254,7 +247,6 @@ if (defined('TRY_INSTALL')) {
 								('mail_smtp_user', ''),
 								('mail_smtp_pass', ''),
 								('mail_from_name', :from),
-								('thumbnails_use_absolute', '0'),
 								('mail_copy_user_upload', ''),
 								('mail_copy_client_upload', ''),
 								('mail_copy_main_user', ''),

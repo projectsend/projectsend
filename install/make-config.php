@@ -19,7 +19,7 @@ if ( file_exists( ROOT_DIR.'/includes/sys.config.php' ) ) {
 }
 
 if ( !empty( $error_msg ) ) {
-	include_once( ABS_PARENT . '/header-unlogged.php' );
+	include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 ?>
 	<div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 		<div class="white-box">
@@ -33,7 +33,7 @@ if ( !empty( $error_msg ) ) {
 		</div>
 	</div>
 <?php
-	include_once( ABS_PARENT . '/footer.php' );
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';
 	exit;
 }
 
@@ -199,7 +199,7 @@ function pdo_status_label() {
 	}
 }
 
-include_once( ABS_PARENT . '/header-unlogged.php' );
+include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 ?>
 
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
@@ -466,4 +466,4 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 </div>
 
 <?php
-	include_once( ABS_PARENT . '/footer.php' );
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

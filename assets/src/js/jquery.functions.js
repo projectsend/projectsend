@@ -77,7 +77,7 @@ $(document).ready(function(e) {
 												'<img src="'+json_strings.uri.assets_img+'ajax-loader.gif" alt="Loading" /></p>'+
 												'<p class="lead text-center text-info">'+json_strings.translations.download_wait+'</p>'
 											);
-					$('.modal_content').append('<iframe src="'+json_strings.uri.base+'includes/actions.log.export.php?format=csv"></iframe>');
+					$('.modal_content').append('<iframe src="'+json_strings.uri.base+'app/includes/actions.log.export.php?format=csv"></iframe>');
 
 					return false;
 				}
@@ -101,7 +101,7 @@ $(document).ready(function(e) {
 
 					Cookies.set('download_started', 0, { expires: 100 });
 					setTimeout(check_download_cookie, 1000);
-					$('.modal_content').html('<p class="loading-img"><img src="'+json_strings.uri.base+'img/ajax-loader.gif" alt="Loading" /></p>'+
+					$('.modal_content').html('<p class="loading-img"><img src="'+json_strings.uri.assets_img+'ajax-loader.gif" alt="Loading" /></p>'+
 												'<p class="lead text-center text-info">'+json_strings.translations.download_wait+'</p>'+
 												'<p class="text-center text-info">'+json_strings.translations.download_long_wait+'</p>'
 											);
@@ -111,7 +111,7 @@ $(document).ready(function(e) {
 						url: json_strings.uri.base + 'process.php',
 						data: { do:"download_zip", files:checkboxes }
 					}).done( function(rsp) {
-						var url = json_strings.uri.base + 'process-zip-download.php?ids=' + rsp;
+						var url = json_strings.uri.base + 'app/includes/download.zip.process.php?ids=' + rsp;
 						$('.modal_content').append("<iframe id='modal_zip'></iframe>");
 						$('#modal_zip').attr('src', url);
 					});

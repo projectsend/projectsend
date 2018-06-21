@@ -12,7 +12,7 @@ require_once('sys.includes.php');
 /**
  * If the option to show this page is not enabled, redirect
  */
-if ( PUBLIC_LISTING_ENABLE != 1 ) {
+if ( PUBLIC_LISTING_PAGE_ENABLE != 1 ) {
 	header("location:" . BASE_URI . "index.php");
 	die();
 }
@@ -57,7 +57,7 @@ $page_title = __('Public groups and files','cftp_admin');
 
 $dont_redirect_if_logged = 1;
 
-include('header-unlogged.php');
+include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 
 /**
  * General function that defines the formating of files lines
@@ -176,7 +176,7 @@ function list_file($data, $origin) {
 							 * 2- Get public groups
 							 */
 							$groups = array();
-							$get_groups		= new GroupActions();
+							$get_groups		= new ProjectSend\GroupActions();
 							$get_arguments	= array(
 													 	'public'	=> true,
 													);
@@ -303,4 +303,4 @@ function list_file($data, $origin) {
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

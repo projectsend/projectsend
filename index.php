@@ -21,7 +21,7 @@ $page_title = __('Log in','cftp_admin');
 
 $body_class = array('login');
 
-include('header-unlogged.php');
+include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 
 $login_button_text = __('Log in','cftp_admin');
 
@@ -30,7 +30,7 @@ $login_button_text = __('Log in','cftp_admin');
 	 */
 	if ( GOOGLE_SIGNIN_ENABLED == '1' ) {
 		$googleClient = new Google_Client();
-		$googleClient->setApplicationName(THIS_INSTALL_SET_TITLE);
+		$googleClient->setApplicationName(THIS_INSTALL_TITLE);
 		$googleClient->setClientSecret(GOOGLE_CLIENT_SECRET);
 		$googleClient->setClientId(GOOGLE_CLIENT_ID);
 		$googleClient->setAccessType('online');
@@ -186,4 +186,4 @@ $login_button_text = __('Log in','cftp_admin');
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

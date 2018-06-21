@@ -12,7 +12,7 @@ require_once('sys.includes.php');
 $active_nav = 'users';
 
 /** Create the object */
-$edit_user = new UserActions();
+$edit_user = new ProjectSend\UserActions();
 
 /** Check if the id parameter is on the URI. */
 if (isset($_GET['id'])) {
@@ -155,7 +155,7 @@ if (CURRENT_USER_USERNAME == $add_user_data_user) {
 	$page_title = __('My account','cftp_admin');
 }
 
-include('header.php');
+include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 ?>
 
 <div class="col-xs-12 col-sm-12 col-lg-6">
@@ -168,7 +168,7 @@ include('header.php');
 
 					$saved_user = get_user_by_id($user_id);
 					/** Record the action log */
-					$new_log_action = new LogActions();
+					$new_log_action = new ProjectSend\LogActions();
 					$log_action_args = array(
 											'action' => 13,
 											'owner_id' => CURRENT_USER_ID,
@@ -193,7 +193,7 @@ include('header.php');
 				/**
 				 * If the form was submited with errors, show them here.
 				 */
-				$valid_me->list_errors();
+				$validation->list_errors();
 			?>
 			
 			<?php
@@ -216,7 +216,7 @@ include('header.php');
 					/**
 					 * Include the form.
 					 */
-					include('users-form.php');
+					include_once FORMS_DIR . DS . 'users.php';
 				}
 			?>
 
@@ -225,4 +225,4 @@ include('header.php');
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

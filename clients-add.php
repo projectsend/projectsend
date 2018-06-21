@@ -6,10 +6,6 @@
  * @subpackage	Clients
  *
  */
-$load_scripts	= array(
-						'chosen',
-					); 
-
 $allowed_levels = array(9,8);
 require_once('sys.includes.php');
 
@@ -17,7 +13,7 @@ $active_nav = 'clients';
 
 $page_title = __('Add client','cftp_admin');
 
-include('header.php');
+include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 
 /**
  * Set checkboxes as 1 to default them to checked when first entering
@@ -28,7 +24,7 @@ $add_client_data_active = 1;
 $add_client_data_notify_account = 1;
 
 if ($_POST) {
-	$new_client = new ClientActions();
+	$new_client = new ProjectSend\ClientActions();
 
 	/**
 	 * Clean the posted form values to be used on the clients actions,
@@ -74,7 +70,7 @@ if ($_POST) {
 		$add_to_groups = (!empty( $_POST['add_client_group_request'] ) ) ? $_POST['add_client_group_request'] : '';
 		if ( !empty( $add_to_groups ) ) {
 			array_map('encode_html', $add_to_groups);
-			$memberships	= new MembersActions;
+			$memberships	= new ProjectSend\MembersActions;
 			$arguments		= array(
 									'client_id'	=> $new_response['new_id'],
 									'group_ids'	=> $add_to_groups,
@@ -95,7 +91,7 @@ if ($_POST) {
 				/**
 				 * If the form was submited with errors, show them here.
 				 */
-				$valid_me->list_errors();
+				$validation->list_errors();
 			?>
 			
 			<?php
@@ -109,7 +105,7 @@ if ($_POST) {
 							echo system_message('ok',$msg);
 	
 							/** Record the action log */
-							$new_log_action = new LogActions();
+							$new_log_action = new ProjectSend\LogActions();
 							$log_action_args = array(
 													'action' => 3,
 													'owner_id' => CURRENT_USER_ID,
@@ -147,7 +143,7 @@ if ($_POST) {
 					 * Include the form.
 					 */
 					$clients_form_type = 'new_client';
-					include('clients-form.php');
+					include_once FORMS_DIR . DS . 'clients.php';
 				}
 			?>
 		</div>
@@ -155,4 +151,4 @@ if ($_POST) {
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

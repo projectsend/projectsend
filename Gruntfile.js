@@ -5,6 +5,8 @@ module.exports = function(grunt) {
         assets_dir: 'assets/',
         src_dir: '<%= assets_dir %>src/',
         dest_dir: '<%= assets_dir %>dist/',
+        options_file: './app/includes/options.get.php',
+        config_file: './app/config/config.php',
         dependencies_bower_dir: 'bower_components/',
         dependencies_composer_dir: 'vendor/',
         dependencies_npm_dir: 'node_modules/',
@@ -46,30 +48,20 @@ module.exports = function(grunt) {
 			}
 		},
         setPHPConstant: {
-            assets_dir: {
-                constant    : 'ASSETS_DIR',
-                value       : '<%= assets_dir %>',
-                file        : './includes/site.options.php'
+            version: {
+                constant    : 'CURRENT_VERSION',
+                value       : '<%= pkg.version %>',
+                file        : '<%= config_file %>'
             },
-            assets_compiled_dir: {
-                constant    : 'ASSETS_COMPILED_DIR',
-                value       : '<%= dest_dir %>',
-                file        : './includes/site.options.php'
+            debug: {
+                constant    : 'DEBUG',
+                value       : 'false',
+                file        : '<%= config_file %>'
             },
-            dependencies_bower_dir: {
-                constant    : 'BOWER_DEPENDENCIES_DIR',
-                value       : '<%= dependencies_bower_dir %>',
-                file        : './includes/site.options.php'
-            },
-            dependencies_composer_dir: {
-                constant    : 'COMPOSER_DEPENDENCIES_DIR',
-                value       : '<%= dependencies_composer_dir %>',
-                file        : './includes/site.options.php'
-            },
-            dependencies_npm_dir: {
-                constant    : 'NPM_DEPENDENCIES_DIR',
-                value       : '<%= dependencies_npm_dir %>',
-                file        : './includes/site.options.php'
+            is_dev: {
+                constant    : 'IS_DEV',
+                value       : 'false',
+                file        : '<%= config_file %>'
             },
         },
         compress: {
@@ -100,7 +92,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-shell');
 
     grunt.registerTask('default', ['concat', 'uglify', 'sass']);
-    grunt.registerTask('php_constants', ['setPHPConstant']);
-	grunt.registerTask('prepare_dist', ['compress']);
+	grunt.registerTask('prepare_dist', ['compress', 'setPHPConstant']);
 	grunt.registerTask('dependencies_update', ['shell']);
 }

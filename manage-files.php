@@ -5,19 +5,12 @@
  *
  * @package ProjectSend
  */
-$footable_min = true; // delete this line after finishing pagination on every table
-$load_scripts	= array(
-						'footable',
-					);
-
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 
 $active_nav = 'files';
 
 $page_title = __('Manage files','cftp_admin');
-
-$current_level = get_current_user_level();
 
 /**
  * Used to distinguish the current page results.
@@ -83,7 +76,7 @@ if (isset($_GET['category'])) {
 	}
 }
 
-include('header.php');
+include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 ?>
 
 <div class="col-xs-12">
@@ -130,7 +123,7 @@ include('header.php');
 						 * account is the client.
 						 */
 						foreach ($selected_files as $work_file) {
-							$this_file = new FilesActions();
+							$this_file = new ProjectSend\FilesActions();
 							$hide_file = $this_file->change_files_hide_status('1', $work_file, $_GET['modify_type'], $_GET['modify_id']);
 						}
 						$msg = __('The selected files were marked as hidden.','cftp_admin');
@@ -144,7 +137,7 @@ include('header.php');
 						 * that the file is visible.
 						 */
 						foreach ($selected_files as $work_file) {
-							$this_file = new FilesActions();
+							$this_file = new ProjectSend\FilesActions();
 							$show_file = $this_file->change_files_hide_status('0', $work_file, $_GET['modify_type'], $_GET['modify_id']);
 						}
 						$msg = __('The selected files were marked as visible.','cftp_admin');
@@ -157,7 +150,7 @@ include('header.php');
 						 * Remove the file from this client or group only.
 						 */
 						foreach ($selected_files as $work_file) {
-							$this_file = new FilesActions();
+							$this_file = new ProjectSend\FilesActions();
 							$unassign_file = $this_file->unassign_file($work_file, $_GET['modify_type'], $_GET['modify_id']);
 						}
 						$msg = __('The selected files were unassigned from this client.','cftp_admin');
@@ -176,7 +169,7 @@ include('header.php');
 												'errors'	=> 0,
 											);
 						foreach ($selected_files as $index => $file_id) {
-							$this_file		= new FilesActions();
+							$this_file		= new ProjectSend\FilesActions();
 							$delete_status	= $this_file->delete_files($file_id);
 
 							if ( $delete_status == true ) {
@@ -202,7 +195,7 @@ include('header.php');
 
 				/** Record the action log */
 				foreach ($all_files as $work_file_id => $work_file) {
-					$new_log_action = new LogActions();
+					$new_log_action = new ProjectSend\LogActions();
 					$log_action_args = array(
 											'action' => $log_action_number,
 											'owner_id' => CURRENT_USER_ID,
@@ -313,12 +306,11 @@ include('header.php');
 			 * If the user is an uploader, or a client is editing his files
 			 * only show files uploaded by that account.
 			*/
-			$current_level = get_current_user_level();
-			if ($current_level == '7' || $current_level == '0') {
+			if (CURRENT_USER_LEVEL == '7' || CURRENT_USER_LEVEL == '0') {
 				$conditions[] = "uploader = :uploader";
 				$no_results_error = 'account_level';
 
-				$params[':uploader'] = $global_user;
+				$params[':uploader'] = CURRENT_USER_USERNAME;
 			}
 
 			/**
@@ -392,7 +384,7 @@ include('header.php');
 				<?php show_search_form('manage-files.php'); ?>
 
 				<?php
-					if( $current_level != '0' && $results_type == 'global') {
+					if( CURRENT_USER_LEVEL != '0' && $results_type == 'global') {
 				?>
 					<form action="manage-files.php" name="files_filters" method="get" class="form-inline form_filters">
 						<?php form_add_existing_parameters( array('hidden', 'action', 'uploader') ); ?>
@@ -424,7 +416,7 @@ include('header.php');
 					}
 
 					/** Filters are not available for clients */
-					if($current_level != '0' && $results_type != 'global') {
+					if(CURRENT_USER_LEVEL != '0' && $results_type != 'global') {
 				?>
 						<form action="manage-files.php" name="files_filters" method="get" class="form-inline form_filters">
 							<?php form_add_existing_parameters( array('hidden', 'action', 'uploader') ); ?>
@@ -457,7 +449,7 @@ include('header.php');
 			<?php form_add_existing_parameters( array( 'modify_id', 'modify_type' ) ); ?>
 			<?php
 				/** Actions are not available for clients */
-				if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
+				if(CURRENT_USER_LEVEL != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
 			?>
 					<div class="form_actions_right">
 						<div class="form_actions">
@@ -548,7 +540,7 @@ include('header.php');
 												'id'		=> 'files_tbl',
 												'class'		=> 'footable table',
 											);
-					$table = new generateTable( $table_attributes );
+					$table = new ProjectSend\TableGenerate( $table_attributes );
 
 					/**
 					 * Set the conditions to true or false once here to
@@ -556,9 +548,9 @@ include('header.php');
 					 * They will be used to generate or no certain columns
 					 */
 					$conditions = array(
-										'select_all'		=> ( $current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1' ) ? true : false,
-										'is_not_client'	=> ( $current_level != '0' ) ? true : false,
-										'total_downloads'	=> ( $current_level != '0' && !isset( $search_on ) ) ? true : false,
+										'select_all'		=> ( CURRENT_USER_LEVEL != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1' ) ? true : false,
+										'is_not_client'	=> ( CURRENT_USER_LEVEL != '0' ) ? true : false,
+										'total_downloads'	=> ( CURRENT_USER_LEVEL != '0' && !isset( $search_on ) ) ? true : false,
 										'is_search_on'		=> ( isset( $search_on ) ) ? true : false,
 									);
 
@@ -677,7 +669,7 @@ include('header.php');
 							$hidden = $data_file['hidden'];
 						}
 
-						$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
+						$date = date(TIMEFORMAT,strtotime($row['timestamp']));
 
 						$file_absolute_path = UPLOADED_FILES_FOLDER . $row['url'];
 
@@ -736,7 +728,7 @@ include('header.php');
 							$expires_label	= __('Does not expire','cftp_admin');
 						}
 						else {
-							$expires_date = date( TIMEFORMAT_USE, strtotime ($row['expiry_date'] ) );
+							$expires_date = date( TIMEFORMAT, strtotime ($row['expiry_date'] ) );
 
 							if (time() > strtotime($row['expiry_date'])) {
 								$expires_button	= 'danger';
@@ -780,7 +772,7 @@ include('header.php');
 						 * (no specific client or group selected)
 						 */
 						if ( !isset( $search_on ) ) {
-							if ($current_level != '0') {
+							if (CURRENT_USER_LEVEL != '0') {
 								if ( $row["download_count"] > 0 ) {
 									$btn_class		= 'downloaders btn-primary';
 								}
@@ -881,4 +873,4 @@ include('header.php');
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

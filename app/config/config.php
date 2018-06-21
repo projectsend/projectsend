@@ -147,6 +147,18 @@ if( (DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND') ) {
 	<p>You also need to restart the webserver after the installation of PDO_mysql.</p>";
 	exit;
 }
+if( (DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers) ) {
+    echo '<h1>Missing a required extension</h1>';
+    echo "<p>The system couldn't find the configuration the <strong>PDO extension for MS SQL Server</strong>.</p>
+    <p>This extension is required for database comunication.</p>
+    <p>You can install this extension via the package manager of your linux distro, most likely with one of these commands:</p>
+    <ul>
+    	<li>sudo apt-get install php5-sybase	<strong># debian/ubuntu</strong></li>
+    	<li>sudo yum install php-mssql			<strong># centos/fedora (you need EPEL)</strong></li>
+    </ul>
+    <p>You also need to restart the webserver after the installation of PDO_mssql.</p>";
+    exit;
+}
 
 /**
  * Define the tables names

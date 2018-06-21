@@ -10,11 +10,13 @@ error_reporting(E_ALL);
 define( 'IS_INSTALL', true );
 define( 'IS_MAKE_CONFIG', true );
 
-define( 'ABS_PARENT', dirname( dirname(__FILE__) ) );
+define( 'ABS_PARENT', dirname( __DIR__ ) );
 require_once( ABS_PARENT . '/sys.includes.php' );
 
+$page_title_install	= __('Install','cftp_admin');
+
 /** Config file exists. Do not continue and show the message */
-if ( file_exists( ROOT_DIR.'/includes/sys.config.php' ) ) {
+if ( file_exists( CONFIG_FILE ) ) {
 	$error_msg[] = __('The configuration file already exists.','cftp_admin');
 }
 
@@ -36,8 +38,6 @@ if ( !empty( $error_msg ) ) {
 	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';
 	exit;
 }
-
-$page_title_install		= __('Install','cftp_admin');
 
 // array of POST variables to check, with associated default value
 $post_vars = array(

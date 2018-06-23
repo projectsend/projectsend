@@ -18,7 +18,7 @@ $load_compat_js_files	= array();
 
 /** JS */
 /* commends has been removed to fix password generate */
-$load_js_files[]	= BASE_URI . 'assets/bootstrap/js/bootstrap.min.js';
+//$load_js_files[]	= BASE_URI . 'assets/bootstrap/js/bootstrap.min.js';
 $load_js_files[]	= BASE_URI . 'includes/js/jquery.validations.js';
 $load_js_files[]	= BASE_URI . 'includes/js/jquery.psendmodal.js';
 $load_js_files[]	= BASE_URI . 'includes/js/jen/jen.js';

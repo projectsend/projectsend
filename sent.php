@@ -1249,7 +1249,9 @@ include('header.php');
 			?>
 
             <section id="no-more-tables">
-
+<?php
+if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">×</a>The file has been edited succesfuly.</div>';}
+?>
             <table id="files_list" class="cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
 
               <thead>

@@ -187,7 +187,7 @@ class ClientActions
 				$this->state['new_id']	= $this->dbh->lastInsertId();
 	
 				/** Send account data by email */
-				/*				
+						
 				$this->notify_client = new PSend_Email();
 				$this->email_arguments = array(
 												'type'		=> 'new_client',
@@ -204,7 +204,7 @@ class ClientActions
 				else {
 					$this->state['email'] = 0;
 				}
-			*/
+			
 			}
 			else {
 				//echo "TWO";

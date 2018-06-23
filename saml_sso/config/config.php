@@ -22,7 +22,10 @@ try {
 catch ( Exception $e ) {
 	return FALSE;
 }
-
+/* echo '<pre>';
+ print_r($options_values);
+ echo '</pre>';
+exit;*/
 //$options_values['saml_baseurl_path'];
 //$options_values['saml_entity_id'];
 //$options_values['saml_idp'];

@@ -111,6 +111,16 @@ $current_level = get_current_user_level();
         <div class="col-md-12">
           <h1 class="page-title txt-color-blueDark"><i class="fa-fw fa fa-home"></i><?php echo $page_title; ?></h1>
           <?php
+function randomPassword() {
+	$alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+	$pass = array(); //remember to declare $pass as an array
+	$alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+	for ($i = 0; $i < 8; $i++) {
+		$n = rand(0, $alphaLength);
+		$pass[] = $alphabet[$n];
+	}
+	return implode($pass); //turn the array into a string
+}
 		/**
 		 * Show an error message if no ID value is passed on the URI.
 		 */
@@ -260,16 +270,7 @@ $current_level = get_current_user_level();
 								 */
 								 //var_dump($file['assignments']);
 //------------------------------------------------------------
-				function randomPassword() {
-					$alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
-					$pass = array(); //remember to declare $pass as an array
-					$alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
-					for ($i = 0; $i < 8; $i++) {
-						$n = rand(0, $alphaLength);
-						$pass[] = $alphabet[$n];
-					}
-					return implode($pass); //turn the array into a string
-				}
+
 				$nuser_list = $_POST['new_client'];
 				if(!empty($file['assignments'])){
 					$full_list = $file['assignments'];
@@ -290,7 +291,7 @@ $current_level = get_current_user_level();
 							$nuser_query = $dbh->prepare("INSERT INTO `".TABLE_USERS."` (`user`, `password`, `name`, `email`, `level`, `timestamp`, `address`, `phone`, `notify`, `contact`, `created_by`, `active`) VALUES ('".$nuser."', '".$cc_enpass."', '', '".$nuser."', '0', CURRENT_TIMESTAMP, NULL, NULL, '0', NULL, NULL, '1')");
 							$nuser_query->execute(); 
 							$nuser_id = $dbh->lastInsertId();
-// --------------------------------- email notification start here! B)
+// --------------------------------- email notification start here!
 $to_email_request = $nuser; // note the comma
 
 
@@ -536,7 +537,8 @@ $message = '
 						}
 					}
 				}
-				header("location:".$_SERVER['REQUEST_URI']);
+				header("location:".BASE_URI."sent.php?edit=1");
+				exit;
 				
 			}
 			/** Validations OK, show the editor */
@@ -785,9 +787,9 @@ $message = '
 						}
 					?>
               <div class="after_form_buttons">
-              <a class="btn btn-default btn-wide" href="<?php echo $get_prev_url; ?>" >Cancel</a>
+              <a class="btn btn-default btn-wide" href="<?php echo $get_prev_url; ?>" >Back</a>
                 <button type="submit" name="submit" class="btn btn-wide btn-primary">
-                <?php _e('Continue','cftp_admin'); ?>
+                <?php _e('Save','cftp_admin'); ?>
                 </button>
               </div>
             </div>

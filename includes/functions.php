@@ -941,6 +941,41 @@ function make_download_link($file_info)
 	return $download_link;
 }
 
+function current_download_count($file_id)
+{
+	global $client_info;
+
+	global $dbh;
+	$statement = $dbh->prepare('SELECT count(*) FROM tbl_downloads WHERE user_id = :user_id AND file_id = :file_id');
+	$statement->execute([
+    'user_id' => $client_info['id'],
+    'file_id' => $file_id
+	]);
+	$result = $statement->fetchColumn();
+
+	if($result)
+		return $result;
+	else
+		return 0;
+}
+function current_download_count_user($file_id,$user_id)
+{
+	global $client_info;
+
+	global $dbh;
+	$statement = $dbh->prepare('SELECT count(*) FROM tbl_downloads WHERE user_id = :user_id AND file_id = :file_id');
+	$statement->execute([
+    'user_id' => $user_id,
+    'file_id' => $file_id
+	]);
+	$result = $statement->fetchColumn();
+
+	if($result)
+		return $result;
+	else
+		return 0;
+}
+
 
 /**
  * Renders an action recorded on the log.

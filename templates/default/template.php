@@ -125,6 +125,7 @@ $count = count($my_files);
 							<th data-type="numeric" data-sort-initial="descending"><?php _e('Date','cftp_template'); ?></th>
 							<th data-hide="phone" data-sort-ignore="true"><?php _e('Expiration date','cftp_template'); ?></th>
 							<th data-hide="phone,tablet" data-sort-ignore="true"><?php _e('Image preview','cftp_template'); ?></th>
+							<th data-hide="phone,tablet" data-sort-ignore="true"><?php _e('Download/Limit','cftp_template'); ?></th>
 							<th data-hide="phone" data-sort-ignore="true"><?php _e('Download','cftp_template'); ?></th>
 						</tr>
 					</thead>
@@ -133,6 +134,8 @@ $count = count($my_files);
 							if ($count > 0) {
 								foreach ($my_files as $file) {
 									$download_link = make_download_link($file);
+									$current_download_count = current_download_count($file['id']);
+								
 									$date = date(TIMEFORMAT_USE,strtotime($file['timestamp']));
 						?>
 									<tr>
@@ -154,9 +157,9 @@ $count = count($my_files);
 												}
 												else {
 											?>
-													<a href="<?php echo $download_link; ?>" target="_blank">
+													
 														<strong><?php echo htmlentities($file['name']); ?></strong>
-													</a>
+													
 											<?php
 												}
 											?>
@@ -240,9 +243,32 @@ $count = count($my_files);
 													?>
 												</td>
 												<td>
-													<a href="<?php echo $download_link; ?>" target="_blank" class="btn btn-primary btn-sm btn-wide">
+												<strong>
+												<?php 
+												if(isset($file['number_downloads']) && $file['number_downloads']>0)
+												{
+												?>
+													<?php echo htmlentities($current_download_count).'/'. htmlentities($file['number_downloads']); ?></strong>
+												<?php
+												} else {
+													echo "Not set";
+												}
+												?>
+												</td>
+												<td>
+													<?php 
+													if($current_download_count>=$file['number_downloads'] && $current_download_count>0 && $file['number_downloads']!=0)
+													{ ?>
+														<a href="#" target="_blank" class="btn btn-primary btn-sm btn-wide">
+														<?php _e('limit exceeded'); ?>
+														</a>
+													<?php 
+													} else {
+													?>
+													<a href="<?php echo $download_link; ?>" target="_blank" class="btn btn-primary btn-sm btn-wide refreshcls" >
 														<?php _e('Download','cftp_template'); ?>
 													</a>
+													<?php } ?>
 												</td>
 										<?php
 											}
@@ -340,6 +366,19 @@ $(document).ready(function(e) {
 			$(this).find('ul').toggleClass('cc-visible');
     });
 	$(".cc-active-subpage").parent().addClass('cc-visible');
+	
+	$(".refreshcls").on("click", function (e) {  
+		setTimeout(function() {
+    location.reload();
+}, 500);
+	});
+	
+	$("#select_all").click(function(){ 
+			var status = $(this).prop("checked");
+			/** Uncheck all first in case you used pagination */
+			$("tr td input[type=checkbox]").prop("checked",false);
+			$("tr:visible td input[type=checkbox]").prop("checked",status);
+		});
 });
 </script>
 <!-- Ended By B) -->

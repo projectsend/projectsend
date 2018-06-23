@@ -121,7 +121,7 @@ include('header-unlogged.php');
 					$new_record_action = $new_log_action->log_action_save($log_action_args);
 
 					if ($user_level == '0') {
-						header("location:".BASE_URI."my_files/");
+						header("location:".BASE_URI."inbox.php");
 					}
 					else {
 						header("location:".BASE_URI."home.php");

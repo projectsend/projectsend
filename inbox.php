@@ -645,6 +645,7 @@ $q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations
                   <th><?php _e('Title','cftp_admin'); ?></th>
 
                   <th><?php _e('Size','cftp_admin'); ?></th>
+				  <th data-hide="phone,tablet" data-sort-ignore="true"><?php _e('Download/Limit','cftp_admin'); ?></th>
                   <th data-hide="phone,tablet"><?php _e('Uploader','cftp_admin'); ?></th>
                   <?php
 							if($current_level != '0') {

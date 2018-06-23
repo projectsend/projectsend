@@ -3,9 +3,9 @@
  * from the json object and need testing.
  */
 $(document).ready(function(e) {
-	/***********************************************************************************
-		MODAL: SHOW PUBLIC FILE URL
-	***********************************************************************************/
+	/**
+     * Modal: show a public file's URL
+     */
 	$('body').on('click', '.public_link', function(e) {
 		$(document).psendmodal();
 		var type	= $(this).data('type');
@@ -33,97 +33,9 @@ $(document).ready(function(e) {
 		var title 	= json_strings.translations.public_url;
 		$('.modal_title span').html(title);
 		$('.modal_content').html(content);
-	});
-
-	/***********************************************************************************
-		APPLY FORM BULK ACTIONS
-	***********************************************************************************/
-	$("#do_action").click(function() {
-		var checks = $("td>input:checkbox").serializeArray();
-		var action = $('#action').val();
-		if (action != 'none') {
-				/** GENERIC ACTIONS */
-				if (action == 'delete') {
-					if (checks.length == 0) {
-						alert(json_strings.translations.select_one_or_more);
-						return false;
-					}
-					else {
-                        _formatted = sprintf(json_strings.translations.confirm_delete, checks.length);
-                        if (confirm(_formatted)) {
-							return true;
-						} else {
-							return false;
-						}
-					}
-				}
-
-				/** ACTIVITIES LOG ACTIONS */
-				if (action == 'log_clear') {
-					var msg = json_strings.translations.confirm_delete_log;
-					if (confirm(msg)) {
-						return true;
-					} else {
-						return false;
-					}
-				}
-
-				if (action == 'log_download') {
-					$(document).psendmodal();
-					Cookies.set('log_download_started', 0, { expires: 100 });
-                    setTimeout(check_log_download_cookie, 1000);
-
-                    $('.modal_content').html('<p class="loading-img">'+
-												'<img src="'+json_strings.uri.assets_img+'ajax-loader.gif" alt="Loading" /></p>'+
-												'<p class="lead text-center text-info">'+json_strings.translations.download_wait+'</p>'
-											);
-					$('.modal_content').append('<iframe src="'+json_strings.uri.base+'app/includes/actions.log.export.php?format=csv"></iframe>');
-
-					return false;
-				}
-
-				/** MANAGE FILES ACTIONS */
-				if (action == 'unassign') {
-                    _formatted = sprintf(json_strings.translations.confirm_unassign, checks.length);
-					if (confirm(_formatted)) {
-						return true;
-					} else {
-						return false;
-					}
-				}
-
-				/** TEMPLATES */
-				if (action == 'zip') {
-
-					var checkboxes = $("td>input:checkbox").serializeArray();
-
-					$(document).psendmodal();
-
-					Cookies.set('download_started', 0, { expires: 100 });
-					setTimeout(check_download_cookie, 1000);
-					$('.modal_content').html('<p class="loading-img"><img src="'+json_strings.uri.assets_img+'ajax-loader.gif" alt="Loading" /></p>'+
-												'<p class="lead text-center text-info">'+json_strings.translations.download_wait+'</p>'+
-												'<p class="text-center text-info">'+json_strings.translations.download_long_wait+'</p>'
-											);
-
-					$.ajax({
-						method: 'GET',
-						url: json_strings.uri.base + 'process.php',
-						data: { do:"download_zip", files:checkboxes }
-					}).done( function(rsp) {
-						var url = json_strings.uri.base + 'app/includes/download.zip.process.php?ids=' + rsp;
-						$('.modal_content').append("<iframe id='modal_zip'></iframe>");
-						$('#modal_zip').attr('src', url);
-					});
-					return false;
-				}
-		}
-		else {
-			return false;
-		}
-	});
-
-	/**
+    });
+    
+    /**
      * CLOSE THE ZIP DOWNLOAD MODAL
 	 * Solution to close the modal. Suggested by remez, based on
 	 * https://stackoverflow.com/questions/29532788/how-to-display-a-loading-animation-while-file-is-generated-for-download
@@ -138,7 +50,7 @@ $(document).ready(function(e) {
 		}
 	};
 
-	/** CLOSE THE LOG CSV DOWNLOAD MODAL */
+    // Close the log CSV download modal
 	var logdownloadTimeout;
 	var check_log_download_cookie = function() {
 		if (Cookies.get("log_download_started") == 1) {
@@ -149,8 +61,7 @@ $(document).ready(function(e) {
 		}
 	};
 
-
-    /** EDIT FILE + UPLOAD FORM */
+    // Edit file + upload form
     if ( $.isFunction($.fn.chosen) ) {
         $('.chosen-select').chosen({
             no_results_text	: json_strings.translations.no_results,
@@ -159,7 +70,7 @@ $(document).ready(function(e) {
         });
     }
 
-    /** CKEditor */
+    // CKEditor
     if ( typeof CKEDITOR !== "undefined" ) {
         CKEDITOR.replaceAll( 'ckeditor' );
     }

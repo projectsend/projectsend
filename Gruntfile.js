@@ -17,6 +17,7 @@ module.exports = function(grunt) {
 			projectsend: {
 				src: [
 					'<%= src_dir %>js/jquery.functions.js',
+					'<%= src_dir %>js/bulk.actions.js',
 					'<%= src_dir %>js/jquery.psendmodal.js',
 					'<%= src_dir %>js/jquery.validations.js',
 					'<%= src_dir %>js/main.js',

@@ -1014,7 +1014,7 @@ $("document").ready(function(e) {
 $(".refreshcls").on("click", function (e) {  
 		setTimeout(function() {
     location.reload();
-}, 500);
+}, 1000);
 	});
 });
  </script>

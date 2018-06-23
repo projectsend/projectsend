@@ -330,7 +330,9 @@ if (defined('TRY_INSTALL')) {
 								('recaptcha_enabled', '0'),
 								('recaptcha_site_key', ''),
 								('recaptcha_secret_key', ''),
-								('orphan_deletion_settings', '0')
+								('orphan_deletion_settings', '0'),
+								('download_limit_max_tries', '0'),
+								('file_expiry_max_days', '0')
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,

@@ -181,6 +181,17 @@ if(!empty($options_values)) {
 		define('NOTIFICATIONS_MAX_TRIES','2');
 		define('NOTIFICATIONS_MAX_DAYS','15');
 	}
+	
+	/* Code added by rj to limit downloading the files */
+	if (isset($options_values['download_limit_max_tries'])) {
+		define('DOWNLOAD_MAX_TRIES',$options_values['download_limit_max_tries']);
+	}
+	
+	/* code added by rj to expire files  */
+	if (isset($options_values['file_expiry_max_days'])) {
+		define('EXPIRY_MAX_DAYS',$options_values['file_expiry_max_days']);
+	}
+	
 
 	/**
 	 * For versions 528 and up

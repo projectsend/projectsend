@@ -412,7 +412,43 @@ $allowed_file_types = implode(',',$allowed_file_types);
                         </p>
                       </div>
                     </div>
+					<!-- Code added by rj to limit download files and expiry date START -->
                     <div class="options_divide"></div>
+					<h3>
+                      <?php _e('File Expiration and Download Limit','cftp_admin'); ?>
+                    </h3>
+					<div class="form-group">
+						<label for="download_limit_max_tries" class="col-sm-4 control-label">
+							<?php _e('Maximum Download Limit','cftp_admin'); ?>
+						</label>
+						<div class="col-sm-8">
+							<input type="text" name="download_limit_max_tries" id="download_limit_max_tries" class="form-control" value="<?php echo DOWNLOAD_MAX_TRIES; ?>" />
+							<p class="field_note">
+								<?php _e('Define Maximum Download limit for the files.','cftp_admin'); ?>
+							
+							<br />
+							<strong>
+							<?php _e('Set to 0 to disable.','cftp_admin'); ?>
+							</strong></p>
+                      </div>
+                    </div>
+                    <div class="form-group">
+						<label for="file_expiry_max_days" class="col-sm-4 control-label">
+							<?php _e('Days before Files expiring','cftp_admin'); ?>
+						</label>
+						<div class="col-sm-8">
+							<input type="text" name="file_expiry_max_days" id="file_expiry_max_days" class="form-control" value="<?php echo EXPIRY_MAX_DAYS; ?>" />
+							<p class="field_note">
+							<?php _e('Notifications older than this will not be available for download.','cftp_admin'); ?>
+							<br />
+							<strong>
+							<?php _e('Set to 0 to disable.','cftp_admin'); ?>
+							</strong></p>
+						</div>
+                    </div>
+					<!-- Code added by rj to limit download files and expiry date ENDS -->
+					<div class="options_divide"></div>
+					
                     <h3>
                       <?php _e('Files','cftp_admin'); ?>
                     </h3>

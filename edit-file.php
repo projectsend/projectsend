@@ -672,7 +672,27 @@ $message = '
                             <label>
                               <?php _e('Number of Downloads Allowed', 'cftp_admin');?>
                             </label>
-                            <input type="text" name="file[<?php echo $i; ?>][number_downloads]" value="<?php echo html_output($row['number_downloads']); ?>" size="1" class="form-control1 file_title" placeholder="<?php _e('Enter number of downloads.', 'cftp_admin');?>" />
+							<?php 
+								if($row['number_downloads']>0)
+								{  
+									$number_downloads = $row['number_downloads'];
+								}
+								else 
+								{
+									
+									if(DOWNLOAD_MAX_TRIES>0)
+									{
+										$number_downloads = DOWNLOAD_MAX_TRIES;
+									}
+									else
+									{
+										$number_downloads = '';
+									}
+									
+								}
+								?>
+							
+                            <input type="text" name="file[<?php echo $i; ?>][number_downloads]" value="<?php echo html_output($number_downloads); ?>" size="1" class="form-control1 file_title" placeholder="<?php _e('Enter number of downloads.', 'cftp_admin');?>" />
                           </div>
                         </div>
                       </div>

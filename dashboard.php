@@ -34,7 +34,7 @@ if (in_session_or_cookies($log_allowed)) {
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-sm-6">
+			<div class="col-sm-6 container_widget_projectsend_news">
 				<?php include_once WIDGETS_FOLDER.'news.php'; ?>
 			</div>
 			<?php
@@ -58,77 +58,6 @@ if (in_session_or_cookies($log_allowed)) {
 	<?php
 		}
 	?>
-
-	<script type="text/javascript">
-		$(document).ready(function(){
-			/** STATISTICS */
-			function ajax_widget_statistics( days ) {
-				var target = $('.statistics_graph');
-				target.html('<div class="loading-graph">'+
-								'<img src="<?php echo ASSETS_IMG_URI; ?>ajax-loader.gif" alt="Loading" />'+
-							'</div>'
-						);
-				$.ajax({
-					url: '<?php echo WIDGETS_URL; ?>statistics.php',
-					data: { days:days, ajax_call:true },
-					success: function(response){
-								target.html(response);
-							},
-					cache:false
-				});					
-			}
-
-			$('.stats_days').click(function(e) {
-				e.preventDefault();
-
-				if ($(this).hasClass('btn-inverse')) {
-					return false;
-				}
-				else {
-					var days = $(this).data('days');
-					$('.stats_days').removeClass('btn-inverse');
-					$(this).addClass('btn-inverse');
-					ajax_widget_statistics(days);
-				}
-			});
-	
-			ajax_widget_statistics(15);
-
-			/** ACTION LOG */
-			function ajax_widget_log( action ) {
-				var target = $('.activities_log');
-				target.html('<div class="loading-graph">'+
-								'<img src="<?php echo ASSETS_IMG_URI; ?>ajax-loader.gif" alt="Loading" />'+
-							'</div>'
-						);
-				$.ajax({
-					url: '<?php echo WIDGETS_URL; ?>actions-log.php',
-					data: { action:action, ajax_call:true },
-					success: function(response){
-								target.html(response);
-							},
-					cache:false
-				});					
-			}
-
-			// Generate the action log
-			$('.log_action').click(function(e) {
-				e.preventDefault();
-
-				if ($(this).hasClass('btn-inverse')) {
-					return false;
-				}
-				else {
-					var action = $(this).data('action');
-					$('.log_action').removeClass('btn-inverse');
-					$(this).addClass('btn-inverse');
-					ajax_widget_log(action);
-				}
-			});					
-
-			ajax_widget_log();
-		});
-	</script>
 
 <?php
 	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

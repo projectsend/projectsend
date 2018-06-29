@@ -104,7 +104,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 						else {
 							$no_results_message = __('There are no files available.','cftp_template');
 						}
-						echo system_message('error',$no_results_message);
+						echo system_message('danger',$no_results_message);
 					}
 
 

@@ -1,6 +1,6 @@
 <?php
 	if ( isset( $_GET['ajax_call'] ) ) {
-        require_once '../../../sys.includes.php';
+        require_once '../../../bootstrap.php';
 	}
 ?>
 <div class="widget widget_system_info">

@@ -11,7 +11,7 @@ define( 'IS_INSTALL', true );
 define( 'IS_MAKE_CONFIG', true );
 
 define( 'ABS_PARENT', dirname( __DIR__ ) );
-require_once( ABS_PARENT . '/sys.includes.php' );
+require_once( ABS_PARENT . '/bootstrap.php' );
 
 $page_title_install	= __('Install','cftp_admin');
 
@@ -208,7 +208,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 			<?php
 				if ( !empty( $config_file_written ) ) {
 					$msg = __('Successfully wrote the config file.','cftp_admin');
-					echo system_message('ok',$msg);
+					echo system_message('success',$msg);
 			?>
 						<div class="inside_form_buttons">
 							<a href="index.php" class="btn btn-wide btn-primary"><?php _e('Continue to installation','cftp_admin'); ?></a>

@@ -7,7 +7,7 @@
  *
  */
 $allowed_levels = array(9,8);
-require_once('sys.includes.php');
+require_once('bootstrap.php');
 
 $active_nav = 'groups';
 
@@ -66,7 +66,7 @@ if ($_POST) {
 					switch ($new_response['query']) {
 						case 1:
 							$msg = __('Group added correctly.','cftp_admin');
-							echo system_message('ok',$msg);
+							echo system_message('success',$msg);
 
 							/** Record the action log */
 							$new_log_action = new ProjectSend\LogActions();
@@ -80,7 +80,7 @@ if ($_POST) {
 						break;
 						case 0:
 							$msg = __('There was an error. Please try again.','cftp_admin');
-							echo system_message('error',$msg);
+							echo system_message('danger',$msg);
 						break;
 					}
 				}

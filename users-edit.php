@@ -7,7 +7,7 @@
  *
  */
 $allowed_levels = array(9,8,7);
-require_once('sys.includes.php');
+require_once('bootstrap.php');
 
 $active_nav = 'users';
 
@@ -164,7 +164,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 			switch ($_GET['status']) {
 				case 1:
 					$msg = __('User edited correctly.','cftp_admin');
-					echo system_message('ok',$msg);
+					echo system_message('success',$msg);
 
 					$saved_user = get_user_by_id($user_id);
 					/** Record the action log */
@@ -180,7 +180,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 				break;
 				case 0:
 					$msg = __('There was an error. Please try again.','cftp_admin');
-					echo system_message('error',$msg);
+					echo system_message('danger',$msg);
 				break;
 			}
 		}
@@ -200,17 +200,17 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 				$direct_access_error = __('This page is not intended to be accessed directly.','cftp_admin');
 				if ($page_status === 0) {
 					$msg = __('No user was selected.','cftp_admin');
-					echo system_message('error',$msg);
+					echo system_message('danger',$msg);
 					echo '<p>'.$direct_access_error.'</p>';
 				}
 				else if ($page_status === 2) {
 					$msg = __('There is no user with that ID number.','cftp_admin');
-					echo system_message('error',$msg);
+					echo system_message('danger',$msg);
 					echo '<p>'.$direct_access_error.'</p>';
 				}
 				else if ($page_status === 3) {
 					$msg = __("Your account type doesn't allow you to access this feature.",'cftp_admin');
-					echo system_message('error',$msg);
+					echo system_message('danger',$msg);
 				}
 				else {
 					/**

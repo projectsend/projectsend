@@ -7,7 +7,7 @@
  *
  */
 $allowed_levels = array(9,8);
-require_once('sys.includes.php');
+require_once('bootstrap.php');
 
 $active_nav = 'groups';
 
@@ -95,14 +95,14 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 					
 					if ($deleted_groups > 0) {
 						$msg = __('The selected groups were deleted.','cftp_admin');
-						echo system_message('ok',$msg);
+						echo system_message('success',$msg);
 					}
 				break;
 			}
 		}
 		else {
 			$msg = __('Please select at least one group.','cftp_admin');
-			echo system_message('error',$msg);
+			echo system_message('danger',$msg);
 		}
 	}
 	
@@ -256,7 +256,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 				else {
 					$no_results_message = __('There are no groups created yet.','cftp_admin');
 				}
-				echo system_message('error',$no_results_message);
+				echo system_message('danger',$no_results_message);
 			}
 
 

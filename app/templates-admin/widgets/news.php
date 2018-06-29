@@ -1,7 +1,7 @@
 <?php
 	$render_container = true;
 	if ( isset( $_GET['ajax_call'] ) ) {
-        require_once '../../../sys.includes.php';
+        require_once '../../../bootstrap.php';
 		$render_container = false;
 	}
 
@@ -17,26 +17,23 @@
 <?php
 		}
 		else {
-			if ( function_exists( 'simplexml_load_file' ) ) {
+            $news_get = file_get_contents(NEWS_JSON_URI);
+			if ( !empty( $news_get ) ) {
 ?>
 				<ul class="home_news">
-					<?php
-						$feed = simplexml_load_file(NEWS_FEED_URI);
-						$max_news = 3;
-						$n = 0;
-						foreach ($feed->channel->item as $item) {
-							if ($n < $max_news) {
+                    <?php
+                        $news_get = file_get_contents(NEWS_JSON_URI);
+                        $news_json = json_decode( $news_get );
+                        foreach ( $news_json as $item ) {
 						?>
-								<li>
-									<span class="date"><?php echo date(TIMEFORMAT,strtotime($item->pubDate)); ?></span>
-									<a href="<?php echo html_output($item->link); ?>" target="_blank">
-										<h5><?php echo html_output($item->title); ?></h5>
-									</a>
-									<p><?php echo make_excerpt(html_output(strip_tags($item->description, '<br />')),200); ?>
-								</li>
+                            <li>
+                                <span class="date"><?php echo date(TIMEFORMAT,strtotime($item->date)); ?></span>
+                                <a href="<?php echo html_output($item->link); ?>" target="_blank">
+                                    <h5><?php echo html_output($item->title); ?></h5>
+                                </a>
+                                <p><?php echo make_excerpt(html_output(strip_tags($item->content, '<br />')),200); ?>
+                            </li>
 						<?php
-								$n++;
-							}
 						}
 					?>
 				</ul>
@@ -45,7 +42,7 @@
 			else {
 ?>
 				<div class="alert alert-warning">
-					<?php echo sprintf(__('News cannot be loaded. Please enable the %s php module to fix this issue.', 'cftp_admin'), 'simplexml_load_file'); ?>
+					<?php echo sprintf(__('News cannot be loaded.', 'cftp_admin'), 'simplexml_load_file'); ?>
 				</div>
 <?php
 			}

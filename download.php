@@ -6,7 +6,7 @@
  *
  */
 $allowed_levels = array(9,8,7,0);
-require_once('sys.includes.php');
+require_once('bootstrap.php');
 
 $page_title = __('File information','cftp_admin');
 
@@ -146,7 +146,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 							break;
 					}
 	
-					echo system_message('error',$login_err_message,'login_error');
+					echo system_message('danger',$login_err_message,'login_error');
 				}
 				
 				if (isset($download_link)) {

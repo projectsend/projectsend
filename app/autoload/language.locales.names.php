@@ -8,6 +8,7 @@
  * @package		ProjectSend
  * @subpackage	Language
  */
+global $locales_names;
 $locales_names = array(
 					'af_NA' => "Afrikaans (Namibia)",
 					'af_ZA' => "Afrikaans (South Africa)",

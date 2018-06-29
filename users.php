@@ -7,7 +7,7 @@
  *
  */
 $allowed_levels = array(9);
-require_once('sys.includes.php');
+require_once('bootstrap.php');
 
 if(!check_for_admin()) {
     return;
@@ -58,7 +58,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 						$hide_user = $this_user->change_user_active_status($work_user,'1');
 					}
 					$msg = __('The selected users were marked as active.','cftp_admin');
-					echo system_message('ok',$msg);
+					echo system_message('success',$msg);
 					$log_action_number = 27;
 					break;
 
@@ -78,13 +78,13 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 						}
 						else {
 							$msg = __('You cannot deactivate your own account.','cftp_admin');
-							echo system_message('error',$msg);
+							echo system_message('danger',$msg);
 						}
 					}
 
 					if ($affected_users > 0) {
 						$msg = __('The selected users were marked as inactive.','cftp_admin');
-						echo system_message('ok',$msg);
+						echo system_message('success',$msg);
 						$log_action_number = 28;
 					}
 					break;
@@ -101,13 +101,13 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 						}
 						else {
 							$msg = __('You cannot delete your own account.','cftp_admin');
-							echo system_message('error',$msg);
+							echo system_message('danger',$msg);
 						}
 					}
 					
 					if ($affected_users > 0) {
 						$msg = __('The selected users were deleted.','cftp_admin');
-						echo system_message('ok',$msg);
+						echo system_message('success',$msg);
 						$log_action_number = 16;
 					}
 				break;
@@ -126,7 +126,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 		}
 		else {
 			$msg = __('Please select at least one user.','cftp_admin');
-			echo system_message('error',$msg);
+			echo system_message('danger',$msg);
 		}
 	}
 
@@ -279,7 +279,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 						$no_results_message = __('The filters you selected returned no results.','cftp_admin');
 						break;
 				}
-				echo system_message('error',$no_results_message);
+				echo system_message('danger',$no_results_message);
 			}
 			
 			if ($count > 0) {

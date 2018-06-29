@@ -10,7 +10,7 @@
 define( 'IS_INSTALL', true );
 
 define( 'ABS_PARENT', dirname( __DIR__ ) );
-require_once( ABS_PARENT . '/sys.includes.php' );
+require_once( ABS_PARENT . '/bootstrap.php' );
 
 /** Version requirements check */
 $version_php	= phpversion();
@@ -101,7 +101,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 					switch ( $_GET['status'] ) {
 						case 'success';
 							$msg = __('Congratulations! Everything is up and running.','cftp_admin');
-							echo system_message('ok',$msg);
+							echo system_message('success',$msg);
 							?>
 								<p><?php _e('You may proceed to','cftp_admin'); ?> <a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('log in','cftp_admin'); ?></a> <?php _e('with your newely created username and password.','cftp_admin'); ?></p>
 							<?php
@@ -212,7 +212,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 									$msg .= '<p>';
 									$msg .= $error_str;
 									$msg .= '</p>';
-									echo system_message('error',$msg);
+									echo system_message('danger',$msg);
 								break;
 							}
 						}

@@ -6,7 +6,7 @@
  *
  */
 $allowed_levels = array(9,8,7,0);
-require_once('sys.includes.php');
+require_once('bootstrap.php');
 
 /** Check if the page is enabled */
 if ( defined('PAGE_POLICY_ENABLE') && PAGE_POLICY_ENABLE == '1' ) {

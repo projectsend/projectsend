@@ -11,7 +11,7 @@
  * @subpackage Upload
  */
 $allowed_levels = array(9,8,7);
-require_once('sys.includes.php');
+require_once('bootstrap.php');
 
 $active_nav = 'files';
 
@@ -273,7 +273,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 					$no_results_message .= ' <span class="format_url"><strong>'.html_output(UPLOADED_FILES_FOLDER).'</strong></span>.';
 				}
 	
-				echo system_message('error',$no_results_message);
+				echo system_message('danger',$no_results_message);
 			}
 		?>
 	</form>

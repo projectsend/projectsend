@@ -7,7 +7,7 @@
  *
  */
 $allowed_levels = array(9,8,7,0);
-require_once('sys.includes.php');
+require_once('bootstrap.php');
 
 /**
  * If the option to show this page is not enabled, redirect

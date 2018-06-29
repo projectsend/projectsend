@@ -34,30 +34,6 @@ function is_projectsend_installed()
 }
 
 /**
- * Add any existing $_GET parameters as hidden fields on a form
- */
-function form_add_existing_parameters( $ignore = array() )
-{
-	// Don't add the pagination parameter
-	$ignore[] = 'page';
-
-	// Remove this parameters so they only exist when the action is done
-	$remove = array('action', 'batch', 'status');
-
-	if ( !empty( $_GET ) ) {
-		foreach ( $_GET as $param => $value ) {
-			// Remove status and actions
-			if ( in_array( $param, $remove ) ) {
-				unset( $_GET[$param] );
-			}
-			if ( !is_array( $value ) && !in_array( $param, $ignore ) ) {
-				echo '<input type="hidden" name="' . $param . '" value="' . encode_html($value) . '">';
-			}
-		}
-	}
-}
-
-/**
  * To successfully add the orderby and order parameters to a query,
  * check if the column exists on the table and validate that order
  * is either ASC or DESC.
@@ -104,39 +80,6 @@ function generate_password()
 	}
 
 	return bin2hex($password);
-}
-
-
-/**
- * Reads the lang folder and scans for .mo files.
- * Returns an array of avaiable languages.
- */
-function get_available_languages()
-{
-	global $locales_names;
-
-	$langs = array();
-
-	$mo_files = scandir(ROOT_DIR.'/lang/');
-	foreach ($mo_files as $file) {
-		$lang_file	= pathinfo($file, PATHINFO_FILENAME);
-		$extension	= pathinfo($file, PATHINFO_EXTENSION);
-		if ( $extension == 'mo' ) {
-			if ( array_key_exists( $lang_file, $locales_names ) ) {
-				$lang_name = $locales_names[$lang_file];
-			}
-			else {
-				$lang_name = $lang_file;
-			}
-
-			$langs[$lang_file] = $lang_name;
-		}
-	}
-
-	/** Sort alphabetically */
-	asort($langs, SORT_STRING);
-
-	return $langs;
 }
 
 /**
@@ -193,12 +136,12 @@ function tableExists($table)
 	global $dbh;
 
 	if ( !empty ( $dbh ) ) {
-	   try {
-	      $result = $dbh->prepare("SELECT 1 FROM $table LIMIT 1");
+	    try {
+	        $result = $dbh->prepare("SELECT 1 FROM $table LIMIT 1");
 			$result->execute();
-	   } catch (Exception $e) {
-	      return false;
-	   }
+	    } catch (Exception $e) {
+	        return false;
+	    }
 	}
 
    // Result is either boolean FALSE (no table found) or PDOStatement Object (table found)
@@ -644,37 +587,26 @@ function message_no_clients()
 
 
 /**
- * Generate a system text message.
- *
- * Current CSS available message classes:
- * - message_ok
- * - message_error
- * - message_info
- *
+ * Generate a system text message using Bootstrap's alert box.
  */
 function system_message( $type, $message, $div_id = '' )
 {
-	$close = false;
+    if ( empty( $type ) ) {
+        $type = 'success';
+    }
 
 	switch ($type) {
-		case 'ok':
-			$class = 'success';
-			$close = true;
-			break;
-		case 'error':
-			$class = 'danger';
+		case 'success':
+		case 'danger':
 			$close = true;
 			break;
 		case 'info':
-			$class = 'info';
-			break;
-		case 'warning':
-			$class = 'warning';
-			break;
+        case 'warning':
+            $close = false;
+            break;
 	}
 
-	//$return = '<div class="message message_'.$type.'"';
-	$return = '<div class="alert alert-'.$class.'"';
+	$return = '<div class="alert alert-'.$type.'"';
 	if ( isset( $div_id ) && $div_id != '' ) {
 		$return .= ' id="' . $div_id . '"';
 	}
@@ -1246,12 +1178,7 @@ function make_download_link($file_info)
 {
 	global $client_info;
 	$download_link = BASE_URI.'process.php?do=download&amp;id='.$file_info['id'];
-	/*
-						&amp;origin='.$file_info['origin'];
-	if (!empty($file_info['group_id'])) {
-		$download_link .= '&amp;group_id='.$file_info['group_id'];
-	}
-	*/
+
 	return $download_link;
 }
 
@@ -1263,354 +1190,4 @@ function print_array( $data = array() )
 	echo '<pre>';
 	print_r($data);
 	echo '</pre>';
-}
-
-/**
- * Simple file upload. Used on normal file fields, eg: logo on branding page
- */
-function option_file_upload( $file, $validate_ext = '', $option = '', $action = '' )
-{
-	global $dbh;
-	$return = array();
-	$continue = true;
-
-	/** Validate file extensions */
-	if ( !empty( $validate_ext ) ) {
-		switch ( $validate_ext ) {
-			case 'image':
-				$validate_types = "/^\.(jpg|jpeg|gif|png){1}$/i";
-				break;
-			default:
-				break;
-		}
-	}
-
-	if ( is_uploaded_file( $file['tmp_name'] ) ) {
-
-		$this_upload = new ProjectSend\FilesUpload();
-		$safe_filename = $this_upload->safe_rename( $file['name'] );
-		/**
-		 * Check the file type for allowed extensions.
-		 */
-		if ( !empty( $validate_types) && !preg_match( $validate_types, strrchr( $safe_filename, '.' ) ) ) {
-			$continue = false;
-		}
-
-		if ( $continue ) {
-			/**
-			 * Move the file to the destination defined on sys.vars.php. If ok, add the
-			 * new file name to the database.
-			 */
-			if ( move_uploaded_file( $file['tmp_name'], LOGO_FOLDER . $safe_filename ) ) {
-				if ( !empty( $option ) ) {
-					$query = "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name='" . $option . "'";
-					$sql = $dbh->prepare( $query );
-					$sql->execute(
-								array(
-									':value'	=> $safe_filename
-								)
-							);
-				}
-
-				$return['status'] = '1';
-
-				/** Record the action log */
-				if ( !empty( $action ) ) {
-					$new_log_action = new ProjectSend\LogActions();
-					$log_action_args = array(
-											'action' => $action,
-											'owner_id' => CURRENT_USER_ID
-										);
-					$new_record_action = $new_log_action->log_action_save($log_action_args);
-				}
-			}
-			else {
-				$return['status'] = '2';
-			}
-		}
-		else {
-			$return['status'] = '3';
-		}
-	}
-	else {
-		$return['status'] = '4';
-	}
-
-	return $return;
-}
-
-/**
- * Renders an action recorded on the log.
- */
-function render_log_action($params)
-{
-	$action = $params['action'];
-	$timestamp = $params['timestamp'];
-	$owner_id = $params['owner_id'];
-	$owner_user = html_output($params['owner_user']);
-	$affected_file = $params['affected_file'];
-	$affected_file_name = $params['affected_file_name'];
-	$affected_account = $params['affected_account'];
-	$affected_account_name = html_output($params['affected_account_name']);
-
-	switch ($action) {
-		case 0:
-			$action_ico = 'install';
-			$action_text = __('ProjectSend was installed','cftp_admin');
-			break;
-		case 1:
-			$action_ico = 'login';
-			$part1 = $owner_user;
-			$action_text = __('logged in to the system.','cftp_admin');
-			break;
-		case 2:
-			$action_ico = 'user-add';
-			$part1 = $owner_user;
-			$action_text = __('created the user account','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 3:
-			$action_ico = 'client-add';
-			$part1 = $owner_user;
-			$action_text = __('created the client account ','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 4:
-			$action_ico = 'client-add';
-			$part1 = $affected_account_name;
-			$action_text = __('created a client account for themself.','cftp_admin');
-			break;
-		case 5:
-			$action_ico = 'file-add';
-			$part1 = $owner_user;
-			$action_text = __('(user) uploaded the file','cftp_admin');
-			$part2 = $affected_file_name;
-			break;
-		case 6:
-			$action_ico = 'file-add';
-			$part1 = $owner_user;
-			$action_text = __('(client) uploaded the file','cftp_admin');
-			$part2 = $affected_file_name;
-			break;
-		case 7:
-			$action_ico = 'file-download';
-			$part1 = $owner_user;
-			$action_text = __('(user) downloaded the file','cftp_admin');
-			$part2 = $affected_file_name;
-			$part3 = __('assigned to:','cftp_admin');
-			$part4 = $affected_account_name;
-			break;
-		case 8:
-			$action_ico = 'file-download';
-			$part1 = $owner_user;
-			$action_text = __('(client) downloaded the file','cftp_admin');
-			$part2 = $affected_file_name;
-			break;
-		case 9:
-			$action_ico = 'download-zip';
-			$part1 = $owner_user;
-			$action_text = __('generated a zip file','cftp_admin');
-			break;
-		case 10:
-			$action_ico = 'file-unassign';
-			$part1 = $owner_user;
-			$action_text = __('unassigned the file','cftp_admin');
-			$part2 = $affected_file_name;
-			$part3 = __('from the client:','cftp_admin');
-			$part4 = $affected_account_name;
-			break;
-		case 11:
-			$action_ico = 'file-unassign';
-			$part1 = $owner_user;
-			$action_text = __('unassigned the file','cftp_admin');
-			$part2 = $affected_file_name;
-			$part3 = __('from the group:','cftp_admin');
-			$part4 = $affected_account_name;
-			break;
-		case 12:
-			$action_ico = 'file-delete';
-			$part1 = $owner_user;
-			$action_text = __('deleted the file','cftp_admin');
-			$part2 = $affected_file_name;
-			break;
-		case 13:
-			$action_ico = 'user-edit';
-			$part1 = $owner_user;
-			$action_text = __('edited the user','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 14:
-			$action_ico = 'client-edit';
-			$part1 = $owner_user;
-			$action_text = __('edited the client','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 15:
-			$action_ico = 'group-edit';
-			$part1 = $owner_user;
-			$action_text = __('edited the group','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 16:
-			$action_ico = 'user-delete';
-			$part1 = $owner_user;
-			$action_text = __('deleted the user','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 17:
-			$action_ico = 'client-delete';
-			$part1 = $owner_user;
-			$action_text = __('deleted the client','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 18:
-			$action_ico = 'group-delete';
-			$part1 = $owner_user;
-			$action_text = __('deleted the group','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 19:
-			$action_ico = 'client-activate';
-			$part1 = $owner_user;
-			$action_text = __('activated the client','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 20:
-			$action_ico = 'client-deactivate';
-			$part1 = $owner_user;
-			$action_text = __('deactivated the client','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 21:
-			$action_ico = 'file-hidden';
-			$part1 = $owner_user;
-			$action_text = __('marked as hidden the file','cftp_admin');
-			$part2 = $affected_file_name;
-			$part3 = __('to:','cftp_admin');
-			$part4 = $affected_account_name;
-			break;
-		case 22:
-			$action_ico = 'file-visible';
-			$part1 = $owner_user;
-			$action_text = __('marked as visible the file','cftp_admin');
-			$part2 = $affected_file_name;
-			$part3 = __('to:','cftp_admin');
-			$part4 = $affected_account_name;
-			break;
-		case 23:
-			$action_ico = 'group-add';
-			$part1 = $owner_user;
-			$action_text = __('created the group','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 24:
-			$action_ico = 'login';
-			$part1 = $owner_user;
-			$action_text = __('logged in to the system.','cftp_admin');
-			break;
-		case 25:
-			$action_ico = 'file-assign';
-			$part1 = $owner_user;
-			$action_text = __('assigned the file','cftp_admin');
-			$part2 = $affected_file_name;
-			$part3 = __('to the client:','cftp_admin');
-			$part4 = $affected_account_name;
-			break;
-		case 26:
-			$action_ico = 'file-assign';
-			$part1 = $owner_user;
-			$action_text = __('assigned the file','cftp_admin');
-			$part2 = $affected_file_name;
-			$part3 = __('to the group:','cftp_admin');
-			$part4 = $affected_account_name;
-			break;
-		case 27:
-			$action_ico = 'user-activate';
-			$part1 = $owner_user;
-			$action_text = __('activated the user','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 28:
-			$action_ico = 'user-deactivate';
-			$part1 = $owner_user;
-			$action_text = __('deactivated the user','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 29:
-			$action_ico = 'branding-change';
-			$part1 = $owner_user;
-			$action_text = __('uploaded a new logo on "Branding"','cftp_admin');
-			break;
-		case 30:
-			$action_ico = 'update';
-			$part1 = $owner_user;
-			$action_text = __('updated ProjectSend to version','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 31:
-			$action_ico = 'logout';
-			$part1 = $owner_user;
-			$action_text = __('logged out of the system.','cftp_admin');
-			break;
-		case 32:
-			$action_ico = 'file-edit';
-			$part1 = $owner_user;
-			$action_text = __('(user) edited the file','cftp_admin');
-			$part2 = $affected_file_name;
-			break;
-		case 33:
-			$action_ico = 'file-edit';
-			$part1 = $owner_user;
-			$action_text = __('(client) edited the file','cftp_admin');
-			$part2 = $affected_file_name;
-			break;
-		case 34:
-			$action_ico = 'category-add';
-			$part1 = $owner_user;
-			$action_text = __('created the category','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 35:
-			$action_ico = 'category-edit';
-			$part1 = $owner_user;
-			$action_text = __('edited the category','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 36:
-			$action_ico = 'category-delete';
-			$part1 = $owner_user;
-			$action_text = __('deleted the category','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 37:
-			$action_ico = 'download-anonymous';
-			$part1 = __('An anonymous user','cftp_admin');
-			$action_text = __('downloaded the file','cftp_admin');
-			$part2 = $affected_file_name;
-			break;
-		case 38:
-			$action_ico = 'client-request-processed';
-			$part1 = $owner_user;
-			$action_text = __('processed an account request for','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 39:
-			$action_ico = 'client-request-processed';
-			$part1 = $owner_user;
-			$action_text = __('processed group memberships requests for','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-	}
-
-	$date = date(TIMEFORMAT,strtotime($timestamp));
-
-	if (!empty($part1)) { $log['1'] = $part1; }
-	if (!empty($part2)) { $log['2'] = $part2; }
-	if (!empty($part3)) { $log['3'] = $part3; }
-	if (!empty($part4)) { $log['4'] = $part4; }
-	$log['icon'] = $action_ico;
-	$log['timestamp'] = $date;
-	$log['text'] = $action_text;
-
-	return $log;
 }

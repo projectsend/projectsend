@@ -36,20 +36,6 @@ if ( !empty( $_COOKIE['menu_contracted'] ) && $_COOKIE['menu_contracted'] == 'tr
 }
 
 $body_class[] = 'menu_hidden';
-
-/**
- * Silent updates that are needed even if no user is logged in.
- */
-require_once INCLUDES_DIR . DS . 'core.update.silent.php';
-
-/**
- * Call the database update file to see if any change is needed,
- * but only if logged in as a system user.
- */
-$core_update_allowed = array(9,8,7);
-if (in_session_or_cookies($core_update_allowed)) {
-	require_once INCLUDES_DIR . DS . 'core.update.php';
-}
 ?>
 <!doctype html>
 <html lang="<?php echo SITE_LANG; ?>">

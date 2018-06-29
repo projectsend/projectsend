@@ -9,7 +9,7 @@
  * @package ProjectSend
  * @subpackage Upload
  */
-require_once('sys.includes.php');
+require_once('bootstrap.php');
 
 $active_nav = 'files';
 

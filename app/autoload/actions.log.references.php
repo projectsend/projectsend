@@ -2,12 +2,12 @@
 /**
  * List of actions for the log
  *
- * @package		ProjectSend
- *
+ * @package	ProjectSend
+ * @subpackage autoload
  */
 global $activities_references;
 $activities_references = array(
-							0	=> __('ProjecSend has been installed','cftp_admin'),
+							0	=> __('ProjecSend was installed','cftp_admin'),
 							1	=> __('Account logs in through the form','cftp_admin'),
 							24	=> __('Account logs in through cookies','cftp_admin'),
 							31	=> __('Account (user or client) logs out','cftp_admin'),

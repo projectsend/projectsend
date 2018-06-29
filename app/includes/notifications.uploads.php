@@ -6,12 +6,6 @@
  * @subpackage	Upload
  *
  */
-
-/** This file MUST be included by another one */
-require_once '../../sys.includes.php';
-
-prevent_direct_access();
-
 $get_file_info = array();
 $get_client_info = array();
 $notifications_sent = array();
@@ -283,7 +277,7 @@ if (!empty($found_notifications)) {
 		$statement->execute();
 
 		$msg = __('E-mail notifications have been sent.','cftp_admin');
-		echo system_message('ok',$msg);
+		echo system_message('success',$msg);
 	}
 
 	/**
@@ -297,7 +291,7 @@ if (!empty($found_notifications)) {
 		$statement->execute();
 
 		$msg = __("One or more notifications couldn't be sent.",'cftp_admin');
-		echo system_message('error',$msg);
+		echo system_message('danger',$msg);
 	}
 
 	/**
@@ -317,11 +311,11 @@ if (!empty($found_notifications)) {
 			 * creator's account. Show the ok message instead.
 			 */
 			$msg = __('E-mail notifications have been sent.','cftp_admin');
-			echo system_message('ok',$msg);
+			echo system_message('success',$msg);
 		}
 		else {
 			$msg = __('E-mail notifications for inactive clients were not sent.','cftp_admin');
-			echo system_message('error',$msg);
+			echo system_message('danger',$msg);
 		}
 	}
 

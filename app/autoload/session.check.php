@@ -170,7 +170,7 @@ function can_see_content($allowed_levels) {
 					<?php meta_favicon(); ?>
 
 					<?php
-						require_once( 'assets.php' );
+						include_once INCLUDES_DIR . DS . 'assets.load.php';
 
 						load_css_files();
 

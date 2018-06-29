@@ -7,7 +7,7 @@
  *
  */
 $allowed_levels = array(9);
-require_once('sys.includes.php');
+require_once('bootstrap.php');
 
 $active_nav = 'tools';
 
@@ -37,11 +37,11 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 							$statement->execute( $params );
 						
 							$msg = __('The selected activities were deleted.','cftp_admin');
-							echo system_message('ok',$msg);
+							echo system_message('success',$msg);
 					}
 					else {
 						$msg = __('Please select at least one activity.','cftp_admin');
-						echo system_message('error',$msg);
+						echo system_message('danger',$msg);
 					}
 				break;
 				case 'clear':
@@ -53,7 +53,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 					$statement->execute( $params );
 
 					$msg = __('The log was cleared. Only data used for statistics remained. You can delete them manually if you want.','cftp_admin');
-					echo system_message('ok',$msg);
+					echo system_message('success',$msg);
 				break;
 			}
 	}
@@ -190,7 +190,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 				else {
 					$no_results_message = __('There are no activities recorded.','cftp_admin');
 				}
-				echo system_message('error',$no_results_message);
+				echo system_message('danger',$no_results_message);
 			}
 		?>
 

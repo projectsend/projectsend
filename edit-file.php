@@ -6,7 +6,7 @@
  * @package ProjectSend
  */
 $allowed_levels = array(9,8,7,0);
-require_once('sys.includes.php');
+require_once('bootstrap.php');
 
 //Add a session check here
 if(!check_for_session()) {
@@ -289,7 +289,7 @@ $get_categories = get_categories();
 							$new_record_action = $new_log_action->log_action_save($log_action_args);
 
 							$msg = __('The file has been edited succesfuly.','cftp_admin');
-							echo system_message('ok',$msg);
+							echo system_message('success',$msg);
 
 							include_once INCLUDES_DIR . DS . 'notifications.uploads.php';
 						}

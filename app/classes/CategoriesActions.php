@@ -15,7 +15,8 @@ class CategoriesActions
 
 	var $category = '';
 
-	function __construct() {
+    function __construct()
+    {
 		global $dbh;
 		$this->dbh = $dbh;
 	}

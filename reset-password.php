@@ -7,7 +7,7 @@
  * @todo make a PasswordReset class
  */
 $allowed_levels = array(9,8,7,0);
-require_once('sys.includes.php');
+require_once('bootstrap.php');
 
 $page_title = __('Lost password','cftp_admin');
 
@@ -228,7 +228,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 							break;
 					}
 
-					echo system_message('error',$login_err_message,'login_error');
+					echo system_message('danger',$login_err_message,'login_error');
 				}
 
 				/**
@@ -238,12 +238,12 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 					switch ($state['email']) {
 						case 1:
 							$msg = __('An e-mail with further instructions has been sent. Please check your inbox to proceed.','cftp_admin');
-							echo system_message('ok',$msg);
+							echo system_message('success',$msg);
 						break;
 						case 0:
 							$msg = __("E-mail couldn't be sent.",'cftp_admin');
 							$msg .= ' ' . __("If the problem persists, please contact an administrator.",'cftp_admin');
-							echo system_message('error',$msg);
+							echo system_message('danger',$msg);
 						break;
 					}
 				}
@@ -255,12 +255,12 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 					switch ($state['reset']) {
 						case 1:
 							$msg = __('Your new password has been set. You can now log in using it.','cftp_admin');
-							echo system_message('ok',$msg);
+							echo system_message('success',$msg);
 						break;
 						case 0:
 							$msg = __("Your new password couldn't be set.",'cftp_admin');
 							$msg .= ' ' . __("If the problem persists, please contact an administrator.",'cftp_admin');
-							echo system_message('error',$msg);
+							echo system_message('danger',$msg);
 						break;
 					}
 				}

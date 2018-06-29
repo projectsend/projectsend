@@ -15,7 +15,7 @@
  *
  */
 $allowed_levels = array(9,8,7,0);
-require_once('sys.includes.php');
+require_once('bootstrap.php');
 
 $page_title = __('Log in','cftp_admin');
 
@@ -58,10 +58,10 @@ $login_button_text = __('Log in','cftp_admin');
 					if ( isset( $_GET['error'] ) ) {
 						switch ( $_GET['error'] ) {
 							case 1:
-								echo system_message('error',__("The supplied credentials are not valid.",'cftp_admin'),'login_error');
+								echo system_message('danger',__("The supplied credentials are not valid.",'cftp_admin'),'login_error');
 								break;
 							case 'timeout':
-								echo system_message('error',__("Session timed out. Please log in again.",'cftp_admin'),'login_error');
+								echo system_message('danger',__("Session timed out. Please log in again.",'cftp_admin'),'login_error');
 								break;
 						}
 					}

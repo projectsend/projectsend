@@ -7,7 +7,7 @@
  *
  */
 $allowed_levels = array(9,8);
-require_once('sys.includes.php');
+require_once('bootstrap.php');
 
 $active_nav = 'groups';
 
@@ -107,7 +107,7 @@ if ($_POST) {
 			switch ($_GET['status']) {
 				case 1:
 					$msg = __('Group edited correctly.','cftp_admin');
-					echo system_message('ok',$msg);
+					echo system_message('success',$msg);
 
 					/** Record the action log */
 					$new_log_action = new ProjectSend\LogActions();
@@ -121,7 +121,7 @@ if ($_POST) {
 				break;
 				case 0:
 					$msg = __('There was an error. Please try again.','cftp_admin');
-					echo system_message('error',$msg);
+					echo system_message('danger',$msg);
 				break;
 			}
 		}
@@ -140,12 +140,12 @@ if ($_POST) {
 				$direct_access_error = __('This page is not intended to be accessed directly.','cftp_admin');
 				if ($page_status === 0) {
 					$msg = __('No group was selected.','cftp_admin');
-					echo system_message('error',$msg);
+					echo system_message('danger',$msg);
 					echo '<p>'.$direct_access_error.'</p>';
 				}
 				else if ($page_status === 2) {
 					$msg = __('There is no group with that ID number.','cftp_admin');
-					echo system_message('error',$msg);
+					echo system_message('danger',$msg);
 					echo '<p>'.$direct_access_error.'</p>';
 				}
 				else {

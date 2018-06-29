@@ -7,7 +7,7 @@
  *
  */
 $allowed_levels = array(9,8);
-require_once('sys.includes.php');
+require_once('bootstrap.php');
 
 $active_nav = 'clients';
 
@@ -49,7 +49,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 						$hide_client = $this_client->change_client_active_status($work_client,'1');
 					}
 					$msg = __('The selected clients were marked as active.','cftp_admin');
-					echo system_message('ok',$msg);
+					echo system_message('success',$msg);
 					$log_action_number = 19;
 					break;
 
@@ -63,7 +63,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 						$hide_client = $this_client->change_client_active_status($work_client,'0');
 					}
 					$msg = __('The selected clients were marked as inactive.','cftp_admin');
-					echo system_message('ok',$msg);
+					echo system_message('success',$msg);
 					$log_action_number = 20;
 					break;
 
@@ -74,7 +74,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 					}
 					
 					$msg = __('The selected clients were deleted.','cftp_admin');
-					echo system_message('ok',$msg);
+					echo system_message('success',$msg);
 					$log_action_number = 17;
 					break;
 			}
@@ -92,7 +92,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 		}
 		else {
 			$msg = __('Please select at least one client.','cftp_admin');
-			echo system_message('error',$msg);
+			echo system_message('danger',$msg);
 		}
 	}
 
@@ -227,7 +227,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 					else {
 						$no_results_message = __('There are no clients at the moment','cftp_admin');
 					}
-					echo system_message('error',$no_results_message);
+					echo system_message('danger',$no_results_message);
 				}
 
 				if ($count > 0) {

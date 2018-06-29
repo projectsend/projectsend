@@ -7,7 +7,7 @@
  *
  */
 $allowed_levels = array(9,8);
-require_once('sys.includes.php');
+require_once('bootstrap.php');
 
 $active_nav = 'groups';
 $this_page = 'clients-membership-requests.php';
@@ -51,11 +51,11 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 		switch ($_GET['action']) {
 			case 'apply':
 				$msg = __('The selected actions were applied.','cftp_admin');
-				echo system_message('ok',$msg);
+				echo system_message('success',$msg);
 				break;
 			case 'delete':
 				$msg = __('The selected requests were deleted.','cftp_admin');
-				echo system_message('ok',$msg);
+				echo system_message('success',$msg);
 				break;
 		}
 	}
@@ -172,7 +172,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 		}
 		else {
 			$msg = __('Please select at least one client.','cftp_admin');
-			echo system_message('error',$msg);
+			echo system_message('danger',$msg);
 		}
 	}
 
@@ -307,7 +307,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 					else {
 						$no_results_message = __('There are no requests at the moment','cftp_admin');
 					}
-					echo system_message('error',$no_results_message);
+					echo system_message('danger',$no_results_message);
 				}
 
 				if ($count > 0) {

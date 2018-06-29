@@ -5,7 +5,7 @@
  * @package		ProjectSend
  */
 $allowed_levels = array(9,8,7,0);
-require_once '../../sys.includes.php';
+require_once '../../bootstrap.php';
 
 check_for_session();
 can_see_content($allowed_levels);

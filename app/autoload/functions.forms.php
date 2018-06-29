@@ -7,7 +7,8 @@
  * 
  */
 
-function show_search_form( $action = '' ) {
+function show_search_form( $action = '' )
+{
 ?>
 	<form action="<?php echo $action; ?>" name="form_search" method="get" class="form-inline">
 		<?php form_add_existing_parameters( array('search', 'action') ); ?>
@@ -17,4 +18,28 @@ function show_search_form( $action = '' ) {
 		<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default"><?php _e('Search','cftp_admin'); ?></button>
 	</form>
 <?php
+}
+
+/**
+ * Add any existing $_GET parameters as hidden fields on a form
+ */
+function form_add_existing_parameters( $ignore = array() )
+{
+	// Don't add the pagination parameter
+	$ignore[] = 'page';
+
+	// Remove this parameters so they only exist when the action is done
+	$remove = array('action', 'batch', 'status');
+
+	if ( !empty( $_GET ) ) {
+		foreach ( $_GET as $param => $value ) {
+			// Remove status and actions
+			if ( in_array( $param, $remove ) ) {
+				unset( $_GET[$param] );
+			}
+			if ( !is_array( $value ) && !in_array( $param, $ignore ) ) {
+				echo '<input type="hidden" name="' . $param . '" value="' . encode_html($value) . '">';
+			}
+		}
+	}
 }

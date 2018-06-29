@@ -15,7 +15,8 @@ class ClientActions
 
 	var $client = '';
 
-	function __construct() {
+    function __construct()
+    {
 		global $dbh;
 		$this->dbh = $dbh;
 	}
@@ -277,7 +278,8 @@ class ClientActions
 	/**
 	 * Delete an existing client.
 	 */
-	function delete_client($client_id) {
+    function delete_client($client_id)
+    {
 		$this->check_level = array(9,8);
 		if (isset($client_id)) {
 			/** Do a permissions check */
@@ -362,7 +364,8 @@ class ClientActions
     /**
      * Used on social login account creation
      */
-	public function generateUsername($string, $i = 1) {
+    public function generateUsername($string, $i = 1)
+    {
 		$string = preg_replace('/[^A-Za-z0-9]/', "", $string);
 		$username = $string;
 		while(!$this->isUniqueUsername($username)) {
@@ -375,7 +378,8 @@ class ClientActions
     /**
      * Check if a username already exists. Complement for the previous function.
      */
-    private function isUniqueUsername($string) {
+    private function isUniqueUsername($string)
+    {
 		$statement = $this->dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE user = :user" );
 		$statement->execute(array(':user'	=> $string));
 		if($statement->rowCount() > 0) {

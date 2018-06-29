@@ -70,32 +70,14 @@ define('UPLOAD_TIME_LIMIT', 120*60);
  * Define the RSS url to use on the home news list.
  */
 define('NEWS_FEED_URI','https://www.projectsend.org/feed/');
+define('NEWS_JSON_URI','https://www.projectsend.org/serve/news.php');
 
 /**
  * Define the Feed from where to take the latest version
  * number.
  */
 define('UPDATES_FEED_URI','https://projectsend.org/updates/versions.xml');
-
-/**
- * This file ;)
- */
-define('SYS_FILE', ROOT_DIR . __FILE__);
-
-/** Short for DIRECTORY_SEPARATOR */
-define('DS', DIRECTORY_SEPARATOR);
-
-/**
- * Directories
- */
-/** ProjectSend's classes and resources */
-define('CORE_DIR', ROOT_DIR . DS . 'app');
-define('CORE_LANG_DIR', ROOT_DIR . DS . 'lang');
-define('CLASSES_DIR', CORE_DIR . DS . 'classes');
-define('ADMIN_TEMPLATES_DIR', CORE_DIR . DS . 'templates-admin');
-define('FORMS_DIR', ADMIN_TEMPLATES_DIR . DS . 'forms');
-define('AUTOLOAD_DIR', CORE_DIR . DS . 'autoload');
-define('INCLUDES_DIR', CORE_DIR . DS . 'includes');
+define('UPDATES_JSON_URI', 'https://projectsend.org/serve/versions.php');
 
 /**
  * Check if the personal configuration file exists

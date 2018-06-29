@@ -1,45 +1,11 @@
 <?php
-/** Connect to the DB */
-global $dbh;
-if ( defined('DB_NAME') ) {
-    try {
-        switch ( DB_DRIVER ) {
-            default:
-            case 'mysql':
-                if ( DEBUG === true ) {
-                    $dbh = new ProjectSend\Database\PDOEx("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
-                }
-                else {
-                    $dbh = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
-                }
-                break;
-        }
-
-        $dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-        $dbh->setAttribute( PDO::ATTR_EMULATE_PREPARES, false );
-    }
-    catch(PDOException $e) {
-    /*
-        print "Error!: " . $e->getMessage() . "<br/>";
-        die();
-    */
-        return false;
-    }
-}
-
-/** Get system options */
-$options = new ProjectSend\Options();
-$options->make();
-
 /**
- * @todo initialize only when needed
+ * Define system constants after getting the options from the database
+ *
+ * @package	ProjectSend
+ * @subpackage autoload
  */
-global $validation;
-$validation = new ProjectSend\FormValidate();
-
-/**
- * Directories and URLs constants
- */
+/*Directories and URLs constants */
 if (defined('BASE_URI')) {
     /** Directories */
     define('ASSETS_DIR','assets/');
@@ -109,25 +75,3 @@ if (defined('BASE_URI')) {
         define('RESULTS_PER_PAGE_LOG', '15');
     }
 }
-
-/** Custom functions files */
-$requires = [
-    'custom.php',
-];
-foreach ( $requires as $file ) {
-    $location = INCLUDES_DIR . DS . $file;
-    if ( file_exists( $location ) ) {
-        require_once $location;
-    }
-}
-
-/**
- * Google Login
- * 
- * @todo replace with composer dependencies
- */
-require_once ROOT_DIR . '/includes/Google/Oauth2/service/Google_ServiceResource.php';
-require_once ROOT_DIR . '/includes/Google/Oauth2/service/Google_Service.php';
-require_once ROOT_DIR . '/includes/Google/Oauth2/service/Google_Model.php';
-require_once ROOT_DIR . '/includes/Google/Oauth2/contrib/Google_Oauth2Service.php';
-require_once ROOT_DIR . '/includes/Google/Oauth2/Google_Client.php';

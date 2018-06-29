@@ -221,16 +221,3 @@ function import_files_relations()
 		$updates_made++;
 	}
 }
-
-function reset_update_status()
-{
-	global $dbh;
-
-	$dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='' WHERE name='version_new_number'");
-	$dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='' WHERE name='version_new_url'");
-	$dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='' WHERE name='version_new_chlog'");
-	$dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='' WHERE name='version_new_security'");
-	$dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='' WHERE name='version_new_features'");
-	$dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='' WHERE name='version_new_important'");
-	$dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='0' WHERE name='version_new_found'");
-}

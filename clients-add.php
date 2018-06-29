@@ -7,7 +7,7 @@
  *
  */
 $allowed_levels = array(9,8);
-require_once('sys.includes.php');
+require_once('bootstrap.php');
 
 $active_nav = 'clients';
 
@@ -102,7 +102,7 @@ if ($_POST) {
 					switch ($new_response['actions']) {
 						case 1:
 							$msg = __('Client added correctly.','cftp_admin');
-							echo system_message('ok',$msg);
+							echo system_message('success',$msg);
 	
 							/** Record the action log */
 							$new_log_action = new ProjectSend\LogActions();
@@ -116,7 +116,7 @@ if ($_POST) {
 						break;
 						case 0:
 							$msg = __('There was an error. Please try again.','cftp_admin');
-							echo system_message('error',$msg);
+							echo system_message('danger',$msg);
 						break;
 					}
 					/**
@@ -125,15 +125,15 @@ if ($_POST) {
 					switch ($new_response['email']) {
 						case 2:
 							$msg = __('A welcome message was not sent to your client.','cftp_admin');
-							echo system_message('ok',$msg);
+							echo system_message('success',$msg);
 						break;
 						case 1:
 							$msg = __('A welcome message with login information was sent to your client.','cftp_admin');
-							echo system_message('ok',$msg);
+							echo system_message('success',$msg);
 						break;
 						case 0:
 							$msg = __("E-mail notification couldn't be sent.",'cftp_admin');
-							echo system_message('error',$msg);
+							echo system_message('danger',$msg);
 						break;
 					}
 				}

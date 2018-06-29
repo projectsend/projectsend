@@ -6,7 +6,7 @@
  * @package ProjectSend
  */
 $allowed_levels = array(9,8,7,0);
-require_once('sys.includes.php');
+require_once('bootstrap.php');
 
 $active_nav = 'files';
 
@@ -127,7 +127,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 							$hide_file = $this_file->change_files_hide_status('1', $work_file, $_GET['modify_type'], $_GET['modify_id']);
 						}
 						$msg = __('The selected files were marked as hidden.','cftp_admin');
-						echo system_message('ok',$msg);
+						echo system_message('success',$msg);
 						$log_action_number = 21;
 						break;
 
@@ -141,7 +141,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 							$show_file = $this_file->change_files_hide_status('0', $work_file, $_GET['modify_type'], $_GET['modify_id']);
 						}
 						$msg = __('The selected files were marked as visible.','cftp_admin');
-						echo system_message('ok',$msg);
+						echo system_message('success',$msg);
 						$log_action_number = 22;
 						break;
 
@@ -154,7 +154,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 							$unassign_file = $this_file->unassign_file($work_file, $_GET['modify_type'], $_GET['modify_id']);
 						}
 						$msg = __('The selected files were unassigned from this client.','cftp_admin');
-						echo system_message('ok',$msg);
+						echo system_message('success',$msg);
 						if ($search_on == 'group_id') {
 							$log_action_number = 11;
 						}
@@ -183,12 +183,12 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 
 						if ( $delete_results['ok'] > 0 ) {
 							$msg = __('The selected files were deleted.','cftp_admin');
-							echo system_message('ok',$msg);
+							echo system_message('success',$msg);
 							$log_action_number = 12;
 						}
 						if ( $delete_results['errors'] > 0 ) {
 							$msg = __('Some files could not be deleted.','cftp_admin');
-							echo system_message('error',$msg);
+							echo system_message('danger',$msg);
 						}
 						break;
 				}
@@ -211,7 +211,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 			}
 			else {
 				$msg = __('Please select at least one file.','cftp_admin');
-				echo system_message('error',$msg);
+				echo system_message('danger',$msg);
 			}
 		}
 
@@ -529,7 +529,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 					else {
 						$no_results_message = __('There are no files for this client.','cftp_admin');
 					}
-					echo system_message('error',$no_results_message);
+					echo system_message('danger',$no_results_message);
 				}
 
 				if ( $count_for_pagination > 0 ) {

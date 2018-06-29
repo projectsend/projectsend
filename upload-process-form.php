@@ -16,7 +16,7 @@
  * @subpackage Upload
  */
 $allowed_levels = array(9,8,7,0);
-require_once('sys.includes.php');
+require_once('bootstrap.php');
 
 $active_nav = 'files';
 
@@ -370,7 +370,7 @@ while( $row = $statement->fetch() ) {
 		 */
 		if(!empty($empty_fields)) {
 			$msg = 'Name and client are required fields for all uploaded files.';
-			echo system_message('error',$msg);
+			echo system_message('danger',$msg);
 		}
 ?>
 

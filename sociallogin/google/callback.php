@@ -1,5 +1,5 @@
 <?php
-require_once('../../sys.includes.php');
+require_once('../../bootstrap.php');
 
 $googleClient = new Google_Client();
 $oauth2 = new Google_Oauth2Service($googleClient);

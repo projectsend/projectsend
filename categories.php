@@ -7,7 +7,7 @@
  * @subpackage	Files
  */
 $allowed_levels = array(9,8,7);
-require_once('sys.includes.php');
+require_once('bootstrap.php');
 
 $active_nav = 'files';
 
@@ -82,7 +82,7 @@ if ( isset( $_GET['action'] ) ) {
 						$delete_category	= $this_category->delete_category($category);
 					}
 					$msg = __('The selected categories were deleted.','cftp_admin');
-					echo system_message('ok',$msg);
+					echo system_message('success',$msg);
 					$log_action_number = 36;
 					break;
 			}
@@ -100,7 +100,7 @@ if ( isset( $_GET['action'] ) ) {
 		}
 		else {
 			$msg = __('Please select at least one category.','cftp_admin');
-			echo system_message('error',$msg);
+			echo system_message('danger',$msg);
 		}
 	}
 }
@@ -203,12 +203,12 @@ if ( isset( $_POST['btn_process'] ) ) {
 		}
 		else {
 			$msg = __('There was a problem saving to the database.','cftp_admin');
-			echo system_message('error', $msg);
+			echo system_message('danger', $msg);
 		}
 	}
 	else {
 		$msg = __('Please complete all the required fields.','cftp_admin');
-		echo system_message('error', $msg);
+		echo system_message('danger', $msg);
 	}
 
 	/** Redirect so the actions are reflected immediatly */
@@ -274,7 +274,7 @@ if ( isset( $_POST['btn_process'] ) ) {
 				else {
 					$no_results_message = __('There are no categories yet.','cftp_admin');
 				}
-				echo system_message('error', $no_results_message);
+				echo system_message('danger', $no_results_message);
 			}
 
 			/**

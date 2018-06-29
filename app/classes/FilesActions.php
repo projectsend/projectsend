@@ -34,7 +34,7 @@ class FilesActions
 		$this->client_ids	= !empty( $arguments['client_ids'] ) ? $arguments['client_ids'] : array();
 		$this->client_ids	= is_array( $this->client_ids ) ? $this->client_ids : array( $this->client_ids );
 		$this->group_ids	= !empty( $arguments['group_ids'] ) ? $arguments['group_ids'] : array();
-		$this->uploader	= !empty( $arguments['uploader'] ) ? $arguments['uploader'] : '';
+		$this->uploader	    = !empty( $arguments['uploader'] ) ? $arguments['uploader'] : '';
 		$this->is_public	= !empty( $arguments['public'] ) ? $arguments['public'] : '';
 		$this->expires		= !empty( $arguments['expires'] ) ? $arguments['expires'] : '';
 		$this->expired		= !empty( $arguments['expired'] ) ? $arguments['expired'] : '';

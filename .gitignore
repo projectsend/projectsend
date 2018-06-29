@@ -25,9 +25,11 @@ includes/custom.php
 assets/custom
 
 # Uploads
-upload/files/*.*
-upload/branding/*.*
-upload/thumbnails/*.*
+upload/files/*
+upload/branding/*
+upload/thumbnails/*
+!upload/files/index.php
+!upload/branding/index.php
 !upload/thumbnails/index.php
 
 # Windows thumbnails

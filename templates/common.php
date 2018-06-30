@@ -119,7 +119,6 @@ $sql_client_categories->execute();
 $sql_client_categories->setFetchMode(PDO::FETCH_ASSOC);
 
 while ( $row = $sql_client_categories->fetch() ) {
-    print_r($row);
 	$cat_ids[$row['cat_id']]		= $row['cat_id'];
 	$files_keep[$row['file_id']][]	= $row['cat_id'];
 }

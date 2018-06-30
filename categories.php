@@ -38,11 +38,11 @@ if ( !empty( $_GET['status'] ) ) {
 	switch ( $result_status ) {
 		case 'added':
 				$msg_text	= __('The category was successfully created.','cftp_admin');
-				$msg_type	= 'ok';
+				$msg_type	= 'success';
 			break;
 		case 'edited':
 				$msg_text	= __('The category was successfully edited.','cftp_admin');
-				$msg_type	= 'ok';
+				$msg_type	= 'success';
 			break;
 	}
 

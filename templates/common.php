@@ -27,17 +27,16 @@ $is_template = true;
  */
 $lang = SITE_LANG;
 if(!isset($ld)) { $ld = 'cftp_admin'; }
-require_once(ROOT_DIR.'/includes/classes/i18n.php');
-I18n::LoadDomain(ROOT_DIR."/templates/".SELECTED_CLIENTS_TEMPLATE."/lang/{$lang}.mo", $ld);
+ProjectSend\I18n::LoadDomain(ROOT_DIR."/templates/".SELECTED_CLIENTS_TEMPLATE."/lang/{$lang}.mo", $ld);
 
-$this_template = BASE_URI.'templates/'.SELECTED_CLIENTS_TEMPLATE.'/';
+$this_template = TEMPLATES_URI.'/'.SELECTED_CLIENTS_TEMPLATE.'/';
 
-include_once(ROOT_DIR.'/templates/session_check.php');
+include_once(TEMPLATES_DIR . DS . 'session_check.php');
 
 /**
  * URI to the default template CSS file.
  */
-$this_template_css = BASE_URI.'templates/'.SELECTED_CLIENTS_TEMPLATE.'/main.css';
+$this_template_css = $this_template.'/main.css';
 
 global $dbh;
 
@@ -62,6 +61,11 @@ $found_groups	= $get_groups->client_get_groups($get_arguments);
 $found_all_files_array	= array();
 $found_own_files_temp	= array();
 $found_group_files_temp	= array();
+
+/** Category filter */
+if ( !empty( $_GET['category'] ) ) {
+	$category_filter = $_GET['category'];
+}
 
 /**
  * Get the client's own files
@@ -115,6 +119,7 @@ $sql_client_categories->execute();
 $sql_client_categories->setFetchMode(PDO::FETCH_ASSOC);
 
 while ( $row = $sql_client_categories->fetch() ) {
+    print_r($row);
 	$cat_ids[$row['cat_id']]		= $row['cat_id'];
 	$files_keep[$row['file_id']][]	= $row['cat_id'];
 }
@@ -221,9 +226,9 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 
 			$my_files[$f] = array(
 								//'origin'		=> $origin,
-								'id'				=> $data['id'],
-								'url'				=> $data['url'],
-								'dir'				=> UPLOADED_FILES_FOLDER . $data['url'],
+								'id'			=> $data['id'],
+								'url'			=> $data['url'],
+								'dir'			=> UPLOADED_FILES_DIR . DS . $data['url'],
 								'save_as'		=> (!empty( $data['original_url'] ) ) ? $data['original_url'] : $data['url'],
 								'extension'		=> strtolower($pathinfo['extension']),
 								'name'			=> $data['filename'],

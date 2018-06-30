@@ -29,7 +29,7 @@ header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 
 // Settings
-$targetDir = UPLOADED_FILES_FOLDER;
+$targetDir = UPLOADED_FILES_DIR;
 
 $cleanupTargetDir = true; // Remove old files
 $maxFileAge = 5 * 3600; // Temp file age in seconds
@@ -56,19 +56,19 @@ if (!in_array($fileExt, $allowedExt)) {
 };
 
 // Make sure the fileName is unique but only if chunking is disabled
-if ($chunks < 2 && file_exists($targetDir . DIRECTORY_SEPARATOR . $fileName)) {
+if ($chunks < 2 && file_exists($targetDir . DS . $fileName)) {
 	$ext = strrpos($fileName, '.');
 	$fileName_a = substr($fileName, 0, $ext);
 	$fileName_b = substr($fileName, $ext);
 
 	$count = 1;
-	while (file_exists($targetDir . DIRECTORY_SEPARATOR . $fileName_a . '_' . $count . $fileName_b))
+	while (file_exists($targetDir . DS . $fileName_a . '_' . $count . $fileName_b))
 		$count++;
 
 	$fileName = $fileName_a . '_' . $count . $fileName_b;
 }
 
-$filePath = $targetDir . DIRECTORY_SEPARATOR . $fileName;
+$filePath = $targetDir . DS . $fileName;
 
 // Create target dir
 if (!file_exists($targetDir))
@@ -77,7 +77,7 @@ if (!file_exists($targetDir))
 // Remove old temp files	
 if ($cleanupTargetDir && is_dir($targetDir) && ($dir = opendir($targetDir))) {
 	while (($file = readdir($dir)) !== false) {
-		$tmpfilePath = $targetDir . DIRECTORY_SEPARATOR . $file;
+		$tmpfilePath = $targetDir . DS . $file;
 
 		// Remove temp file if it is older than the max age and is not the current file
 		if (preg_match('/\.part$/', $file) && (filemtime($tmpfilePath) < time() - $maxFileAge) && ($tmpfilePath != "{$filePath}.part")) {

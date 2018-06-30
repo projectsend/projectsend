@@ -140,7 +140,7 @@ class FilesUpload
 
 		$this->filename_on_disk = time().'-'.$this->makehash.'-'.$this->filename;
 		//$this->file_final_name = $this->filename;
-		$this->path = UPLOADED_FILES_FOLDER.'/'.$this->filename_on_disk;
+		$this->path = UPLOADED_FILES_DIR . DS . $this->filename_on_disk;
 		if (rename($this->uploaded_name, $this->path)) {
 			chmod($this->path, 0644);
 			$this->return = array(

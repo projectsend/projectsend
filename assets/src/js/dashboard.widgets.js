@@ -1,57 +1,56 @@
+// ProjectSend News
+function ajax_widget_news() {
+    var target = $('.widget_news');
+    target.html('<div class="loading-graph">'+
+                    '<img src="'+json_strings.uri.assets_img+'ajax-loader.gif" alt="Loading" />'+
+                '</div>'
+            );
+    $.ajax({
+        url: json_strings.uri.widgets+'news.php',
+        data: { ajax_call:true },
+        success: function(response){
+                    target.html(response);
+                },
+        cache:false
+    });
+}
+
+// Statistics
+function ajax_widget_statistics( days ) {
+    var target = $('.statistics_graph');
+    target.html('<div class="loading-graph">'+
+                    '<img src="'+json_strings.uri.assets_img+'ajax-loader.gif" alt="Loading" />'+
+                '</div>'
+            );
+    $.ajax({
+        url: json_strings.uri.widgets+'statistics.php',
+        data: { days:days, ajax_call:true },
+        success: function(response){
+                    target.html(response);
+                },
+        cache:false
+    });
+}
+
+// Action log
+function ajax_widget_log( action ) {
+    var target = $('.activities_log');
+    target.html('<div class="loading-graph">'+
+                    '<img src="'+json_strings.uri.assets_img+'ajax-loader.gif" alt="Loading" />'+
+                '</div>'
+            );
+    $.ajax({
+        url: json_strings.uri.widgets+'actions-log.php',
+        data: { action:action, ajax_call:true },
+        success: function(response){
+                    target.html(response);
+                },
+        cache:false
+    });
+}
+
+/** AJAX calls */
 $(document).ready(function(){
-	/** AJAX calls */
-
-	// ProjectSend News
-	function ajax_widget_news() {
-		var target = $('.widget_news');
-		target.html('<div class="loading-graph">'+
-						'<img src="'+json_strings.uri.assets_img+'ajax-loader.gif" alt="Loading" />'+
-					'</div>'
-				);
-		$.ajax({
-			url: json_strings.uri.widgets+'news.php',
-			data: { ajax_call:true },
-			success: function(response){
-						target.html(response);
-					},
-			cache:false
-		});
-	}
-
-	// Statistics
-	function ajax_widget_statistics( days ) {
-		var target = $('.statistics_graph');
-		target.html('<div class="loading-graph">'+
-						'<img src="'+json_strings.uri.assets_img+'ajax-loader.gif" alt="Loading" />'+
-					'</div>'
-				);
-		$.ajax({
-			url: json_strings.uri.widgets+'statistics.php',
-			data: { days:days, ajax_call:true },
-			success: function(response){
-						target.html(response);
-					},
-			cache:false
-		});
-	}
-
-	// Action log
-	function ajax_widget_log( action ) {
-		var target = $('.activities_log');
-		target.html('<div class="loading-graph">'+
-						'<img src="'+json_strings.uri.assets_img+'ajax-loader.gif" alt="Loading" />'+
-					'</div>'
-				);
-		$.ajax({
-			url: json_strings.uri.widgets+'actions-log.php',
-			data: { action:action, ajax_call:true },
-			success: function(response){
-						target.html(response);
-					},
-			cache:false
-		});
-	}
-
 	/** Click events */
 
 	// Statistics
@@ -83,10 +82,4 @@ $(document).ready(function(){
 			ajax_widget_log(action);
 		}
 	});
-
-
-	// Get the widgets after loading the page
-	ajax_widget_statistics(15);
-	ajax_widget_log();
-	ajax_widget_news();
 });

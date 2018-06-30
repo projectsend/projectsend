@@ -177,7 +177,7 @@ class FilesActions
 					 *
 					 * @see delete_file_from_disk
 					 */
-					delete_file_from_disk(UPLOADED_FILES_FOLDER . $this->file_url);
+					delete_file_from_disk(UPLOADED_FILES_DIR . DS . $this->file_url);
 
 					/** Delete the thumbnails */
 					foreach ( $this->find_thumbnails as $this->thumbnail ) {

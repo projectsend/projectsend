@@ -90,10 +90,10 @@ if ( $last_update < $current_version || !isset($last_update)) {
 				}
 			}
 		}
-		$work_folder = UPLOADED_FILES_FOLDER;
+		$work_folder = UPLOADED_FILES_DIR;
 		if (!empty($mark_for_moving)) {
 			foreach ($mark_for_moving as $filename => $path) {
-				$new = UPLOADED_FILES_FOLDER.'/'.$filename;
+				$new = UPLOADED_FILES_DIR.DS.$filename;
 				$try_moving = rename($path, $new);
 				chmod($new, 0644);
 			}

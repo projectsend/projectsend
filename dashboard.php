@@ -59,5 +59,13 @@ if (in_session_or_cookies($log_allowed)) {
 		}
 	?>
 
+    <script>
+        $(document).ready(function(e) {
+            // Get the widgets after loading the page
+            ajax_widget_statistics(15);
+            ajax_widget_log();
+            ajax_widget_news();
+        });
+    </script>
 <?php
 	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';

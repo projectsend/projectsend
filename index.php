@@ -39,12 +39,6 @@ $login_button_text = __('Log in','cftp_admin');
 		$googleClient->setScopes(array('profile','email'));
 		$auth_url = $googleClient->createAuthUrl();
 	}
-
-
-	if ( isset($_SESSION['errorstate'] ) ) {
-		$errorstate = $_SESSION['errorstate'];
-		unset($_SESSION['errorstate']);
-	}
 ?>
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 
@@ -54,16 +48,19 @@ $login_button_text = __('Log in','cftp_admin');
 		<div class="white-box-interior">
 			<div class="ajax_response">
 				<?php
-					/** Coming from an external form */
+					/** Coming from an external form or oauth login */
+                    $get_error = null;
 					if ( isset( $_GET['error'] ) ) {
-						switch ( $_GET['error'] ) {
-							case 1:
-								echo system_message('danger',__("The supplied credentials are not valid.",'cftp_admin'),'login_error');
-								break;
-							case 'timeout':
-								echo system_message('danger',__("Session timed out. Please log in again.",'cftp_admin'),'login_error');
-								break;
-						}
+                        $get_error = $_GET['error'];
+                    }
+                    elseif ( isset( $_SESSION['errorstate'] ) ) {
+                        $get_error = $_SESSION['errorstate'];
+                        unset($_SESSION['errorstate']);
+                    }
+
+                    if ( $get_error ) {
+                        $error_message = $auth->get_login_error($get_error);
+						echo system_message('danger',$error_message,'login_error');
 					}
 				?>
 			</div>

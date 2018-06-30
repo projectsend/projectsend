@@ -44,23 +44,22 @@ class Auth {
 						)
 					);
 		$this->count_user = $this->statement->rowCount();
-		if ($this->count_user > 0){
+		if ($this->count_user > 0) {
 			/** If the username was found on the users table */
 			$this->statement->setFetchMode(PDO::FETCH_ASSOC);
 			while ( $this->row = $this->statement->fetch() ) {
-				$this->sysuser_username	= $this->row['user'];
+				$this->db_username	    = $this->row['user'];
 				$this->db_pass			= $this->row['password'];
 				$this->user_level		= $this->row["level"];
 				$this->active_status	= $this->row['active'];
 				$this->logged_id		= $this->row['id'];
-				$this->global_name		= $this->row['name'];
+				$this->name	        	= $this->row['name'];
 			}
 
-			$this->check_password = password_verify($password, $this->db_pass);
-			if ($this->check_password) {
+			if (password_verify($password, $this->db_pass)) {
 				if ($this->active_status != '0') {
 					/** Set SESSION values */
-					$_SESSION['loggedin']	= $this->sysuser_username;
+					$_SESSION['loggedin']	= $this->db_username;
 					$_SESSION['userlevel']	= $this->user_level;
 					$_SESSION['lang']		= $this->selected_form_lang;
 
@@ -81,26 +80,26 @@ class Auth {
 						$_SESSION['access']		= $this->access_string;
 					}
 					else {
-						$this->access_string	= $this->sysuser_username;
-						$_SESSION['access']		= $this->sysuser_username;
+						$this->access_string	= $this->db_username;
+						$_SESSION['access']		= $this->db_username;
 					}
 
 					/** If "remember me" checkbox is on, set the cookie */
 					if (!empty($_POST['login_form_remember'])) {
 						/*
-						setcookie("loggedin",$sysuser_username,time()+COOKIE_EXP_TIME);
+						setcookie("loggedin",$db_username,time()+COOKIE_EXP_TIME);
 						setcookie("password",$sysuser_password,time()+COOKIE_EXP_TIME);
 						setcookie("access",$access_string,time()+COOKIE_EXP_TIME);
 						setcookie("userlevel",$user_level,time()+COOKIE_EXP_TIME);
 						*/
-						setcookie("rememberwho",$sysuser_username,time()+COOKIE_EXP_TIME);
+						setcookie("rememberwho",$db_username,time()+COOKIE_EXP_TIME);
 					}
 					/** Record the action log */
 					$this->log_action_args = array(
 											'action' => 1,
 											'owner_id' => $this->logged_id,
-											'owner_user' => $this->global_name,
-											'affected_account_name' => $this->global_name
+											'owner_user' => $this->name,
+											'affected_account_name' => $this->name
 										);
 					$this->new_record_action = $logger->log_action_save($this->log_action_args);
 
@@ -140,52 +139,73 @@ class Auth {
 		else {
 			//$errorstate = 'wrong_username';
 			$this->errorstate = 'invalid_credentials';
-		}
-
-		if (isset($this->errorstate)) {
-			switch ($this->errorstate) {
-				case 'invalid_credentials':
-					$this->login_err_message = __("The supplied credentials are not valid.",'cftp_admin');
-					break;
-				case 'wrong_username':
-					$this->login_err_message = __("The supplied username doesn't exist.",'cftp_admin');
-					break;
-				case 'wrong_password':
-					$this->login_err_message = __("The supplied password is incorrect.",'cftp_admin');
-					break;
-				case 'inactive_client':
-					$this->login_err_message = __("This account is not active.",'cftp_admin');
-					if (CLIENTS_AUTO_APPROVE == 0) {
-						$this->login_err_message .= ' '.__("If you just registered, please wait until a system administrator approves your account.",'cftp_admin');
-					}
-					break;
-				case 'no_self_registration':
-					$this->login_err_message = __('Client self registration is not allowed. If you need an account, please contact a system administrator.','cftp_admin');
-					break;
-				case 'no_account':
-					$this->login_err_message = __('Sign-in with Google cannot be used to create new accounts at this time.','cftp_admin');
-					break;
-				case 'access_denied':
-					$this->login_err_message = __('You must approve the requested permissions to sign in with Google.','cftp_admin');
-					break;
-			}
-		}
-
+        }
+        
+        $this->error_message = $this->get_login_error($this->errorstate);
 		$results = array(
 						'status'	=> 'error',
-						'message'	=> system_message('danger',$this->login_err_message,'login_error'),
+						'message'	=> system_message('danger',$this->error_message,'login_error'),
 					);
 
 		/** Using an external form */
 		if ( !empty( $_GET['external'] ) && $_GET['external'] == '1' && empty( $_GET['ajax'] ) ) {
 			/** Error */
 			if ( $results['status'] == 'error' ) {
-				header('Location: ' . BASE_URI . '?error=1');
+				header('Location: ' . BASE_URI . '?error=invalid_credentials');
+                exit;
 			}
-			exit;
 		}
 
-		return json_encode($results);
+        echo json_encode($results);
+    }
+
+    /**
+     * Login error strings
+     * 
+     * @param string errorstate
+     * @return string
+     */
+    public function get_login_error($errorstate)
+    {
+        $this->error = __("Error during log in.",'cftp_admin');;
+
+		if (isset($errorstate)) {
+			switch ($errorstate) {
+				case 'invalid_credentials':
+					$this->error = __("The supplied credentials are not valid.",'cftp_admin');
+					break;
+				case 'wrong_username':
+					$this->error = __("The supplied username doesn't exist.",'cftp_admin');
+					break;
+				case 'wrong_password':
+					$this->error = __("The supplied password is incorrect.",'cftp_admin');
+					break;
+				case 'inactive_client':
+					$this->error = __("This account is not active.",'cftp_admin');
+					if (CLIENTS_AUTO_APPROVE == 0) {
+						$this->error .= ' '.__("If you just registered, please wait until a system administrator approves your account.",'cftp_admin');
+					}
+					break;
+				case 'no_self_registration':
+					$this->error = __('Client self registration is not allowed. If you need an account, please contact a system administrator.','cftp_admin');
+					break;
+				case 'no_account':
+					$this->error = __('Sign-in with Google cannot be used to create new accounts at this time.','cftp_admin');
+					break;
+				case 'access_denied':
+					$this->error = __('You must approve the requested permissions to sign in with Google.','cftp_admin');
+					break;
+			}
+        }
+        
+        return $this->error;
+    }
+
+    /**
+     * Login using oauth
+     */
+    public function oauth_login($service, $oauth)
+    {
     }
 
     public function logout()

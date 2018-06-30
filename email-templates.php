@@ -448,7 +448,7 @@ if ($_POST) {
 			var accept		= confirm('<?php _e('Please confirm: replace the custom template text with the default one?','cftp_admin'); ?>');
 			if ( accept ) {
 				$.ajax({
-					url: "<?php echo EMAIL_TEMPLATES_URI; ?>/"+file,
+					url: "<?php echo EMAIL_TEMPLATES_URI; ?>"+file,
 					async: false,
 					cache: false,
 					success: function (data){

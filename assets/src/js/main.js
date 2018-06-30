@@ -1,25 +1,4 @@
 /**
- * Backend functions
- */
-function resizeChosen() {
-   $(".chosen-container").each(function() {
-       $(this).attr('style', 'width: 100%');
-   });
-}
-
-function prepare_sidebar() {
-	var window_width = jQuery(window).width();
-	if ( window_width < 769 ) {
-		$('.main_menu .active .dropdown_content').hide();
-		$('.main_menu li').removeClass('active');
-
-		if ( !$('body').hasClass('menu_contracted') ) {
-			$('body').addClass('menu_contracted');
-		}
-	}
-}
-
-/**
  * Event: Doccument ready
  */
 $(document).ready(function() {
@@ -153,16 +132,54 @@ $(document).ready(function() {
 	$('button').click(function() {
 		$(this).blur();
 	});
+
+	/**
+     * Modal: show a public file's URL
+     */
+	$('body').on('click', '.public_link', function(e) {
+		$(document).psendmodal();
+		var type	= $(this).data('type');
+		var id		= $(this).data('id');
+		var token	= $(this).data('token');
+
+		if ( type == 'group' ) {
+            var link_base = json_strings.uri.public_group + '?';
+			var note_text = json_strings.translations.public_group_note;
+		}
+		else if ( type == 'file' ) {
+			var link_base = json_strings.uri.public_download + '?';
+			var note_text = json_strings.translations.public_file_note;
+		}
+
+		var content =  '<div class="public_link_modal">'+
+							'<strong>'+json_strings.translations.copy_click_select+'</strong>'+
+							'<div class="copied">'+json_strings.translations.copy_ok+'</div>'+
+							'<div class="copied_not">'+json_strings.translations.copy_error+'</div>'+
+							'<div class="form-group">'+
+								'<textarea class="input-large public_link_copy form-control" rows="4" readonly>' + link_base + 'id=' + id + '&token=' + token + '</textarea>'+
+							'</div>'+
+							'<span class="note">' + note_text + '</span>'+
+						'</div>';
+		var title 	= json_strings.translations.public_url;
+		$('.modal_title span').html(title);
+		$('.modal_content').html(content);
+    });
+    
+    // Edit file + upload form
+    if ( $.isFunction($.fn.chosen) ) {
+        $('.chosen-select').chosen({
+            no_results_text	: json_strings.translations.no_results,
+            width			: "100%",
+            search_contains	: true
+        });
+    }
+
+    // CKEditor
+    if ( typeof CKEDITOR !== "undefined" ) {
+        CKEDITOR.replaceAll( 'ckeditor' );
+    }
+
 });
-
-var dataExtraction = function(node) {
-	if (node.childNodes.length > 1) {
-		return node.childNodes[1].innerHTML;
-	} else {
-		return node.innerHTML;
-	}
-}
-
 
 /**
  * Event: Scroll

@@ -50,7 +50,9 @@ class process {
 
 	private function login() {
         $this->selected_form_lang = (!empty( $_GET['language'] ) ) ? $_GET['language'] : SITE_LANG;
-        $this->auth->login($_GET['username'], $_GET['password'], $this->selected_form_lang);
+        $this->try_login = $this->auth->login($_GET['username'], $_GET['password'], $this->selected_form_lang);
+
+        return $this->try_login;
 	}
 
 	private function logout() {
@@ -160,8 +162,8 @@ class process {
 												'get_file_real_name'	=> true
 											);
 						$new_record_action = $new_log_action->log_action_save($log_action_args);
-						$this->real_file = UPLOADED_FILES_FOLDER.$this->filename_find;
-						$this->save_file = UPLOADED_FILES_FOLDER.$this->filename_save;
+						$this->real_file = UPLOADED_FILES_DIR.DS.$this->filename_find;
+						$this->save_file = UPLOADED_FILES_DIR.DS.$this->filename_save;
 						if (file_exists($this->real_file)) {
 							session_write_close();
 							while (ob_get_level()) ob_end_clean();

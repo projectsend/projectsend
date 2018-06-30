@@ -79,16 +79,47 @@ define('NEWS_JSON_URI','https://www.projectsend.org/serve/news.php');
 define('UPDATES_FEED_URI','https://projectsend.org/updates/versions.xml');
 define('UPDATES_JSON_URI', 'https://projectsend.org/serve/versions.php');
 
+/** Directories */
+define('CORE_LANG_DIR', ROOT_DIR . DS . 'lang');
+define('CLASSES_DIR', CORE_DIR . DS . 'classes');
+define('ADMIN_TEMPLATES_DIR', CORE_DIR . DS . 'templates');
+define('FORMS_DIR', ADMIN_TEMPLATES_DIR . DS . 'forms');
+define('AUTOLOAD_DIR', CORE_DIR . DS . 'autoload');
+define('INCLUDES_DIR', CORE_DIR . DS . 'includes');
+
 /**
  * Check if the personal configuration file exists
  * Otherwise will start a configuration page
  *
  * @see sys.config.sample.php
  */
-define('CONFIG_DIR', ROOT_DIR . DS . 'includes');
-define('CONFIG_FILE', ROOT_DIR . '/includes/sys.config.php');
-define('CONFIG_SAMPLE', ROOT_DIR . '/includes/sys.config.sample.php');
+define('CONFIG_DIR', ROOT_DIR . DS . 'config');
+define('CONFIG_FILE', CONFIG_DIR . DS . 'config.php');
+define('CONFIG_SAMPLE', ROOT_DIR . DS . 'config.sample.php');
+define('CONFIG_FILE_OLD_LOCATION', ROOT_DIR . DS . 'includes' . DS . 'sys.config.php');
 
+/**
+ * Try to move the personal configuration file to the new location
+ * up to versions 1.0.0 it was located on the includes folder
+ */
+$available_config_file = CONFIG_FILE;
+if ( file_exists(CONFIG_FILE_OLD_LOCATION) ) {
+    global $old_config_file_moved, $old_config_file_deleted;
+    $old_config_file_moved = false;
+    $old_config_file_deleted = false;
+    chmod(CONFIG_FILE_OLD_LOCATION, 0755);
+    copy(CONFIG_FILE_OLD_LOCATION, CONFIG_FILE);
+    if ( file_exists( CONFIG_FILE ) ) {
+        $old_config_file_moved = true;
+        chmod(CONFIG_FILE, 0644);
+        unlink(CONFIG_FILE_OLD_LOCATION);
+    }
+    else {
+        $available_config_file = CONFIG_FILE_OLD_LOCATION;
+    }
+}
+
+/* Load personal configuration file */
 if ( !file_exists( CONFIG_FILE ) ) {
 	if ( !defined( 'IS_MAKE_CONFIG' ) ) {
 		// the following script returns only after the creation of the configuration file
@@ -103,7 +134,7 @@ if ( !file_exists( CONFIG_FILE ) ) {
 	}
 }
 else {
-	require_once CONFIG_FILE;
+	require_once $available_config_file;
 }
 
 /**
@@ -199,7 +230,8 @@ define('SESSION_EXPIRE_TIME', $session_expire_time);
 /**
  * Define the folder where uploaded files will reside
  */
-define('UPLOADED_FILES_FOLDER', ROOT_DIR.DS.'upload'.DS.'files'.DS);
+define('UPLOADED_FILES_ROOT', ROOT_DIR . DS . 'upload');
+define('UPLOADED_FILES_DIR', UPLOADED_FILES_ROOT . DS . 'files');
 define('UPLOADED_FILES_URL', 'upload/files/');
 
 /**
@@ -207,10 +239,10 @@ define('UPLOADED_FILES_URL', 'upload/files/');
  * on the footer blocks.
  *
  */
+define('SYSTEM_NAME','ProjectSend');
 define('SYSTEM_URI','https://www.projectsend.org/');
 define('SYSTEM_URI_LABEL','ProjectSend on github');
 define('DONATIONS_URL','https://www.projectsend.org/donations/');
-define('SYSTEM_NAME','ProjectSend');
 
 /** Passwords */
 define('HASH_COST_LOG2', 8);
@@ -221,18 +253,3 @@ define('HASH_PORTABLE', false);
  */
 define('LINK_DOC_RECAPTCHA', 'https://developers.google.com/recaptcha/docs/start');
 define('LINK_DOC_GOOGLE_SIGN_IN', 'https://developers.google.com/identity/protocols/OpenIDConnect');
-
-/**
- * Default e-mail templates files
- */
-define('EMAIL_TEMPLATE_HEADER', 'header.html');
-define('EMAIL_TEMPLATE_FOOTER', 'footer.html');
-define('EMAIL_TEMPLATE_NEW_CLIENT', 'new-client.html');
-define('EMAIL_TEMPLATE_NEW_CLIENT_SELF', 'new-client-self.html');
-define('EMAIL_TEMPLATE_CLIENT_EDITED', 'client-edited.html');
-define('EMAIL_TEMPLATE_NEW_USER', 'new-user.html');
-define('EMAIL_TEMPLATE_ACCOUNT_APPROVE', 'account-approve.html');
-define('EMAIL_TEMPLATE_ACCOUNT_DENY', 'account-deny.html');
-define('EMAIL_TEMPLATE_NEW_FILE_BY_USER', 'new-file-by-user.html');
-define('EMAIL_TEMPLATE_NEW_FILE_BY_CLIENT', 'new-file-by-client.html');
-define('EMAIL_TEMPLATE_PASSWORD_RESET', 'password-reset.html');

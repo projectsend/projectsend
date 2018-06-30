@@ -92,19 +92,19 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 		$files_to_add = array();
 
 		/** Read the temp folder and list every allowed file */
-		if ($handle = opendir(UPLOADED_FILES_FOLDER)) {
+		if ($handle = opendir(UPLOADED_FILES_DIR)) {
 			while (false !== ($filename = readdir($handle))) {
-				$filename_path = UPLOADED_FILES_FOLDER . DS . $filename;
+				$filename_path = UPLOADED_FILES_DIR . DS . $filename;
 				if(!is_dir($filename_path)) {
 					if ($filename != "." && $filename != "..") {
 						/** Check types of files that are not on the database */							
 						if (!array_key_exists($filename,$db_files)) {
 							$file_object = new ProjectSend\FilesUpload();
-							$new_filename = $file_object->safe_rename_on_disk($filename,UPLOADED_FILES_FOLDER);
+							$new_filename = $file_object->safe_rename_on_disk($filename,UPLOADED_FILES_DIR);
 							/** Check if the filetype is allowed */
 							if ($file_object->is_filetype_allowed($new_filename)) {
 								/** Add it to the array of available files */
-								$new_filename_path = UPLOADED_FILES_FOLDER . DS . $new_filename;
+								$new_filename_path = UPLOADED_FILES_DIR . DS . $new_filename;
 								//$files_to_add[$new_filename] = $new_filename_path;
 								$files_to_add[] = array(
 														'path'		=> $new_filename_path,
@@ -270,7 +270,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 				else {
 					$no_results_message = __('There are no files available to add right now.','cftp_admin');
 					$no_results_message .= __('To use this feature you need to upload your files via FTP to the folder','cftp_admin');
-					$no_results_message .= ' <span class="format_url"><strong>'.html_output(UPLOADED_FILES_FOLDER).'</strong></span>.';
+					$no_results_message .= ' <span class="format_url"><strong>'.html_output(UPLOADED_FILES_DIR).'</strong></span>.';
 				}
 	
 				echo system_message('danger',$no_results_message);

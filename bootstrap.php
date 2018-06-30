@@ -14,15 +14,8 @@ define('ROOT_DIR', __DIR__);
 /* Short for DIRECTORY_SEPARATOR */
 define('DS', DIRECTORY_SEPARATOR);
 
-/* Directories */
+/* App config */
 define('CORE_DIR', ROOT_DIR . DS . 'app');
-define('CORE_LANG_DIR', ROOT_DIR . DS . 'lang');
-define('CLASSES_DIR', CORE_DIR . DS . 'classes');
-define('ADMIN_TEMPLATES_DIR', CORE_DIR . DS . 'templates-admin');
-define('FORMS_DIR', ADMIN_TEMPLATES_DIR . DS . 'forms');
-define('AUTOLOAD_DIR', CORE_DIR . DS . 'autoload');
-define('INCLUDES_DIR', CORE_DIR . DS . 'includes');
-
 define('SYS_FILE', CORE_DIR . DS . "config" . DS . "config.php");
 require_once SYS_FILE;
 

@@ -11,13 +11,9 @@ $ld = 'pinboxes_template'; // specify the language domain for this template
 
 define('TEMPLATE_RESULTS_PER_PAGE', -1);
 
-if ( !empty( $_GET['category'] ) ) {
-	$category_filter = $_GET['category'];
-}
+include_once(TEMPLATES_DIR.'/common.php'); // include the required functions for every template
 
-include_once(ROOT_DIR.'/templates/common.php'); // include the required functions for every template
-
-$window_title = __('Available files','pinboxes_template');
+$page_title = __('Available files','pinboxes_template');
 
 $count = count($my_files);
 define('TEMPLATE_THUMBNAILS_WIDTH', '250');
@@ -27,7 +23,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title><?php echo html_output( $client_info['name'].' | '.$window_title . ' &raquo; ' . SYSTEM_NAME ); ?></title>
+		<title><?php echo html_output( $client_info['name'].' | '.$page_title . ' &raquo; ' . SYSTEM_NAME ); ?></title>
 		<link rel="stylesheet" media="all" type="text/css" href="<?php echo $this_template; ?>main.css" />
 		<?php meta_favicon(); ?>
 		<link href='<?php echo PROTOCOL; ?>://fonts.googleapis.com/css?family=Metrophobic' rel='stylesheet' type='text/css'>
@@ -172,7 +168,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 											?>
 													<a href="<?php echo $download_link; ?>" target="_blank">
 														<?php
-															$thumbnail = make_thumbnail( UPLOADED_FILES_FOLDER.$file['url'], 'proportional', TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT );
+															$thumbnail = make_thumbnail( UPLOADED_FILES_DIR.DS.$file['url'], 'proportional', TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT );
 														?>
 														<img src="<?php echo $thumbnail['thumbnail']['url']; ?>" alt="<?php echo htmlentities($file['name']); ?>" />
 													</a>
@@ -200,9 +196,9 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 									<?php echo htmlentities_allowed($file['description']); ?>
 									<p class="file_size">
 										<?php
-											$file_absolute_path = UPLOADED_FILES_FOLDER . $file['url'];
+											$file_absolute_path = UPLOADED_FILES_DIR . DS . $file['url'];
 											if ( file_exists( $file_absolute_path ) ) {
-												$this_file_size = format_file_size(get_real_size(UPLOADED_FILES_FOLDER.$file['url']));
+												$this_file_size = format_file_size(get_real_size(UPLOADED_FILES_DIR.DS.$file['url']));
 												_e('File size:','pinboxes_template'); ?> <strong><?php echo $this_file_size; ?></strong>
 										<?php
 											}

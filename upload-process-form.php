@@ -126,7 +126,7 @@ while( $row = $statement->fetch() ) {
 				if (!in_array($file['file'],$urls_db_files)) {
 					$file['file'] = $this_upload->safe_rename($file['file']);
 				}
-				$location = UPLOADED_FILES_FOLDER . DS . $file['file'];
+				$location = UPLOADED_FILES_DIR . DS . $file['file'];
 
 				if(file_exists($location)) {
 					$move_arguments = array(
@@ -407,7 +407,7 @@ while( $row = $statement->fetch() ) {
                         $this_upload = new ProjectSend\FilesUpload();
 						$file_original = $file;
 
-						$location = UPLOADED_FILES_FOLDER . DS . $file;
+						$location = UPLOADED_FILES_DIR . DS . $file;
 
 						/**
 						 * Check that the file is indeed present on the folder.

@@ -17,8 +17,8 @@ $zip->open($zip_file, ZipArchive::OVERWRITE);
 $files_to_zip = array_map( 'intval', explode( ',', $_GET['ids'] ) );
 
 foreach ($files_to_zip as $idx => $file) {
-    $file = UPLOADED_FILES_FOLDER . $file;
-    if ( !( realpath( $file ) && substr( realpath( $file ),0, strlen( UPLOADED_FILES_FOLDER ) ) ) === UPLOADED_FILES_FOLDER ){
+    $file = UPLOADED_FILES_DIR . DS . $file;
+    if ( !( realpath( $file ) && substr( realpath( $file ),0, strlen( UPLOADED_FILES_DIR ) ) ) === UPLOADED_FILES_DIR ){
        unset( $files_to_zip[$idx] );
     }
 }
@@ -100,7 +100,7 @@ foreach ($files_to_zip as $file_to_zip) {
 
 /** Start adding the files to the zip */
 foreach ($allowed_to_zip as $allowed_file_id => $allowed_file_info) {
-	$zip->addFile(UPLOADED_FILES_FOLDER.$allowed_file_info['on_disk'],$allowed_file_info['save_as']);
+	$zip->addFile(UPLOADED_FILES_DIR.DS.$allowed_file_info['on_disk'],$allowed_file_info['save_as']);
 	$added_files++;
 }
 

@@ -12,17 +12,13 @@ $ld = 'cftp_template'; // specify the language domain for this template
 
 define('TEMPLATE_RESULTS_PER_PAGE', 10);
 
-if ( !empty( $_GET['category'] ) ) {
-	$category_filter = $_GET['category'];
-}
+include_once(TEMPLATES_DIR.'/common.php'); // include the required functions for every template
 
-include_once(ROOT_DIR.'/templates/common.php'); // include the required functions for every template
-
-$window_title = __('File downloads','cftp_template');
+$page_title = __('File downloads','cftp_template');
 
 $body_class = array('template', 'default-template', 'hide_title');
 
-include_once(ROOT_DIR.'/header.php');
+include_once(ADMIN_TEMPLATES_DIR.'/header.php');
 
 define('TEMPLATE_THUMBNAILS_WIDTH', '50');
 define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
@@ -198,9 +194,9 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 
 							/** File size */
 							$file_size_cell = '-'; // default
-							$file_absolute_path = UPLOADED_FILES_FOLDER . $file['url'];
+							$file_absolute_path = UPLOADED_FILES_DIR . DS . $file['url'];
 							if ( file_exists( $file_absolute_path ) ) {
-								$this_file_size = get_real_size(UPLOADED_FILES_FOLDER.$file['url']);
+								$this_file_size = get_real_size(UPLOADED_FILES_DIR.DS.$file['url']);
 								$file_size_cell = format_file_size($this_file_size);
 							}
 
@@ -325,6 +321,8 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 
 </div>
 	<?php
+        render_json_variables();
+
 		load_js_files();
 	?>
 </body>

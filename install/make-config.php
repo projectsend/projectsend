@@ -42,10 +42,10 @@ if ( !empty( $error_msg ) ) {
 // array of POST variables to check, with associated default value
 $post_vars = array(
 	'dbdriver'		=> 'mysql',
-	'dbname'			=> 'projectsend',
-	'dbuser'			=> 'root',
+	'dbname'		=> 'projectsend',
+	'dbuser'		=> 'root',
 	'dbpassword'	=> 'root',
-	'dbhost'			=> 'localhost',
+	'dbhost'		=> 'localhost',
 	'dbprefix'		=> 'tbl_',
 	'dbreuse'		=> 'no',
 	'lang'			=> 'en',
@@ -108,9 +108,9 @@ $langs = get_available_languages();
 $lang_ok = array_key_exists($post_vars['lang'], $langs);
 
 // check file & folders are writable
-$config_file = ROOT_DIR.'/includes/sys.config.php';
+$config_file = CONFIG_FILE;
 $config_file_writable = is_writable($config_file) || is_writable(dirname($config_file));
-$upload_dir = ROOT_DIR.'/upload';
+$upload_dir = UPLOADED_FILES_ROOT;
 $upload_files_dir = ROOT_DIR.'/upload/files';
 $upload_files_dir_writable = is_writable($upload_files_dir) || is_writable($upload_dir);
 $upload_temp_dir = ROOT_DIR.'/upload/temp';
@@ -129,7 +129,7 @@ $ready_to_go = $pdo_connected && (!$table_exists || $reuse_tables) && $lang_ok &
 
 // if the user requested to write the config file AND we can proceed, we try to write the new configuration
 if (isset($_POST['submit-start']) && $ready_to_go) {
-	$template			= file_get_contents(ROOT_DIR . '/includes/sys.config.sample.php');
+	$template			= file_get_contents(CONFIG_SAMPLE);
 	$template_search	= array(
 								"'mysql'",
 								"'database'",

@@ -8,14 +8,19 @@
 /*Directories and URLs constants */
 if (defined('BASE_URI')) {
     /** Directories */
-    define('ASSETS_DIR','assets/');
-    define('ASSETS_COMPILED_DIR','assets/dist/');
+    define('ASSETS_DIR','assets');
+    define('ASSETS_COMPILED_DIR', ASSETS_DIR . DS . 'dist/');
     define('BOWER_DEPENDENCIES_DIR','bower_components/');
     define('COMPOSER_DEPENDENCIES_DIR','vendor/');
     define('NPM_DEPENDENCIES_DIR','node_modules/');
-    define('EMAIL_TEMPLATES_URI', BASE_URI . '/app/templates-email');
-    define('EMAIL_TEMPLATES_DIR', CORE_DIR . '/templates-email');
-    define('TEMPLATES_DIR', CORE_DIR . '/templates');
+    define('ADMIN_TEMPLATES_URI', BASE_URI . 'app/templates/');
+    define('EMAIL_TEMPLATES_URI', ADMIN_TEMPLATES_URI . 'emails/');
+    define('EMAIL_TEMPLATES_DIR', ADMIN_TEMPLATES_DIR . '/emails');
+    define('TEMPLATES_DIR', ROOT_DIR . '/templates');
+    define('TEMPLATES_URI', BASE_URI . '/templates');
+    /**Widgets files */
+    define('WIDGETS_FOLDER',ADMIN_TEMPLATES_DIR . DS . 'widgets' . DS);
+    define('WIDGETS_URL',ADMIN_TEMPLATES_URI . 'widgets/');
 
     /** Selected template path */
     define('TEMPLATE_PATH', TEMPLATES_DIR . DS . SELECTED_CLIENTS_TEMPLATE . DS . 'template.php');
@@ -30,10 +35,6 @@ if (defined('BASE_URI')) {
     define('THUMBS_MAX_HEIGHT',300);
     define('THUMBS_QUALITY',90);
 
-    /**Widgets files */
-    define('WIDGETS_FOLDER',ADMIN_TEMPLATES_DIR.DS . 'widgets' . DS);
-    define('WIDGETS_URL',BASE_URI . 'app/templates-admin/widgets/');
-
     /** SimpleImage thumbnails */
     define('THUMBNAILS_FILES_DIR', ROOT_DIR.'/upload/thumbnails');
     define('THUMBNAILS_FILES_URL', BASE_URI.'upload/thumbnails');
@@ -44,12 +45,25 @@ if (defined('BASE_URI')) {
     define('PUBLIC_GROUP_URI',BASE_URI.'public.php');
     define('ASSETS_CSS_URI',BASE_URI . ASSETS_COMPILED_DIR . 'css/');
     define('ASSETS_JS_URI',BASE_URI . ASSETS_COMPILED_DIR . 'js/');
-    define('ASSETS_IMG_URI',BASE_URI . ASSETS_DIR . 'img/');
-    define('ASSETS_IMG_DIR',ROOT_DIR . DS . ASSETS_DIR . 'img/');
+    define('ASSETS_IMG_URI',BASE_URI . ASSETS_DIR . DS . 'img/');
+    define('ASSETS_IMG_DIR',ROOT_DIR . DS . ASSETS_DIR . DS . 'img/');
     define('INCLUDES_URI', BASE_URI . 'app/includes');
     define('BOWER_DEPENDENCIES_URI',BASE_URI . BOWER_DEPENDENCIES_DIR);
     define('COMPOSER_DEPENDENCIES_URI',BASE_URI . COMPOSER_DEPENDENCIES_DIR);
     define('NPM_DEPENDENCIES_URI',BASE_URI . NPM_DEPENDENCIES_DIR);
+
+    /**Default e-mail templates files */
+    define('EMAIL_TEMPLATE_HEADER', 'header.html');
+    define('EMAIL_TEMPLATE_FOOTER', 'footer.html');
+    define('EMAIL_TEMPLATE_NEW_CLIENT', 'new-client.html');
+    define('EMAIL_TEMPLATE_NEW_CLIENT_SELF', 'new-client-self.html');
+    define('EMAIL_TEMPLATE_CLIENT_EDITED', 'client-edited.html');
+    define('EMAIL_TEMPLATE_NEW_USER', 'new-user.html');
+    define('EMAIL_TEMPLATE_ACCOUNT_APPROVE', 'account-approve.html');
+    define('EMAIL_TEMPLATE_ACCOUNT_DENY', 'account-deny.html');
+    define('EMAIL_TEMPLATE_NEW_FILE_BY_USER', 'new-file-by-user.html');
+    define('EMAIL_TEMPLATE_NEW_FILE_BY_CLIENT', 'new-file-by-client.html');
+    define('EMAIL_TEMPLATE_PASSWORD_RESET', 'password-reset.html');
 
     /** Recaptcha */
     if (
@@ -74,4 +88,8 @@ if (defined('BASE_URI')) {
         define('RESULTS_PER_PAGE', '10');
         define('RESULTS_PER_PAGE_LOG', '15');
     }
+
+    /** Oauth login callback */
+    define('OAUTH_LOGIN_CALLBACK_URI', BASE_URI . 'oauth2.php');
+    define('LOGIN_CALLBACK_URI_GOOGLE', OAUTH_LOGIN_CALLBACK_URI . '?service=google');
 }

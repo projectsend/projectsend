@@ -671,7 +671,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 
 						$date = date(TIMEFORMAT,strtotime($row['timestamp']));
 
-						$file_absolute_path = UPLOADED_FILES_FOLDER . $row['url'];
+						$file_absolute_path = UPLOADED_FILES_DIR . DS . $row['url'];
 
 						/**
 						 * Get file size only if the file exists

@@ -15,13 +15,9 @@ $ld = 'cftp_template_gallery'; // specify the language domain for this template
 
 define('TEMPLATE_RESULTS_PER_PAGE', -1);
 
-if ( !empty( $_GET['category'] ) ) {
-	$category_filter = $_GET['category'];
-}
+include_once(TEMPLATES_DIR.'/common.php'); // include the required functions for every template
 
-include_once(ROOT_DIR.'/templates/common.php'); // include the required functions for every template
-
-$window_title = __('Gallery','cftp_template_gallery');
+$page_title = __('Gallery','cftp_template_gallery');
 
 /**
  * Filter files by type, only save images.
@@ -43,7 +39,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title><?php echo html_output( $client_info['name'].' | '.$window_title . ' &raquo; ' . SYSTEM_NAME ); ?></title>
+	<title><?php echo html_output( $client_info['name'].' | '.$page_title . ' &raquo; ' . SYSTEM_NAME ); ?></title>
 	<?php meta_favicon(); ?>
 
 	<link rel="stylesheet" href="<?php echo $this_template; ?>/font-awesome-4.6.3/css/font-awesome.min.css">
@@ -133,7 +129,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 										<div class="img_prev">
 											<a href="<?php echo $download_link; ?>" target="_blank">
 												<?php
-													$thumbnail = make_thumbnail( UPLOADED_FILES_FOLDER.$this_file['url'], null, TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT );
+													$thumbnail = make_thumbnail( UPLOADED_FILES_DIR.DS.$this_file['url'], null, TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT );
 												?>
 												<img src="<?php echo $thumbnail['thumbnail']['url']; ?>" class="thumbnail" alt="<?php echo htmlentities($this_file['name']); ?>" />
 											</a>

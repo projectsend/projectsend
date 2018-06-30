@@ -86,8 +86,8 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 				$new_record_action = $new_log_action->log_action_save($log_action_args);
 
 				// DOWNLOAD
-				$real_file = UPLOADED_FILES_FOLDER.basename($real_file_url);
-				$random_file = realpath(UPLOADED_FILES_FOLDER.basename($file_on_disk));
+				$real_file = UPLOADED_FILES_DIR.DS.basename($real_file_url);
+				$random_file = realpath(UPLOADED_FILES_DIR.DS.basename($file_on_disk));
 				if (file_exists($random_file)) {
 					session_write_close();
 					while (ob_get_level()) ob_end_clean();

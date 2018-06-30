@@ -62,13 +62,13 @@
 			<dd><?php echo $total_categories; ?></dd>
 
 			<?php
-				/**
+				/*
 				 * Hidden so it doesn't get shared by accident in any bug report
 				<dt><?php _e('Root directory','cftp_admin'); ?></dt>
 				<dd><?php echo ROOT_DIR; ?></dd>
 
 				<dt><?php _e('Uploads folder','cftp_admin'); ?></dt>
-				<dd><?php echo UPLOADED_FILES_FOLDER; ?></dd>
+				<dd><?php echo UPLOADED_FILES_DIR; ?></dd>
 				*/
 			?>
 		</dl>

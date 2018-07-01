@@ -111,10 +111,8 @@ $lang_ok = array_key_exists($post_vars['lang'], $langs);
 $config_file = CONFIG_FILE;
 $config_file_writable = is_writable($config_file) || is_writable(dirname($config_file));
 $upload_dir = UPLOADED_FILES_ROOT;
-$upload_files_dir = ROOT_DIR.'/upload/files';
+$upload_files_dir = UPLOADED_FILES_DIR;
 $upload_files_dir_writable = is_writable($upload_files_dir) || is_writable($upload_dir);
-$upload_temp_dir = ROOT_DIR.'/upload/temp';
-$upload_temp_dir_writable = is_writable($upload_temp_dir) || is_writable($upload_dir);
 
 // retrieve user data for web server
 if (function_exists('posix_getpwuid')) {
@@ -125,7 +123,7 @@ if (function_exists('posix_getpwuid')) {
 }
 
 // if everything is ok, we can proceed
-$ready_to_go = $pdo_connected && (!$table_exists || $reuse_tables) && $lang_ok && $config_file_writable && $upload_files_dir_writable && $upload_temp_dir_writable;
+$ready_to_go = $pdo_connected && (!$table_exists || $reuse_tables) && $lang_ok && $config_file_writable && $upload_files_dir_writable;
 
 // if the user requested to write the config file AND we can proceed, we try to write the new configuration
 if (isset($_POST['submit-start']) && $ready_to_go) {
@@ -368,11 +366,6 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 																			'label'		=> 'Upload directory',
 																			'file'		=> $upload_files_dir,
 																			'status'	=> $upload_files_dir_writable,
-																		),
-													'temp'			=> array(
-																			'label'		=> 'Temp directory',
-																			'file'		=> $upload_temp_dir,
-																			'status'	=> $upload_temp_dir_writable,
 																		),
 												);
 							foreach ( $write_checks as $check => $values ) {

@@ -178,9 +178,10 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 									 * errors later.
 									 */
 									$up_folders = array(
-															'main'	=> ROOT_DIR.'/upload',
-															'temp'	=> ROOT_DIR.'/upload/temp',
-															'files'	=> ROOT_DIR.'/upload/files'
+															'main'	        => UPLOADED_FILES_ROOT,
+															'files'	        => UPLOADED_FILES_DIR,
+                                                            'thumbnails'	=> THUMBNAILS_FILES_DIR,
+                                                            'admin_files'   => ADMIN_UPLOADS_DIR,
 														);
 									foreach ($up_folders as $work_folder) {
 										if (!file_exists($work_folder)) {

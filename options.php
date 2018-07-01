@@ -820,10 +820,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 
 								<div id="current_logo">
 									<div id="current_logo_img">
-										<?php
-											$logo_file_info = generate_logo_url();
-										?>
-										<img src="<?php echo $logo_file_info['thumbnail']; ?>">
+										<?php echo get_branding_layout(true); // true: returns the thumbnail, not the full image ?>
 									</div>
 								</div>
 
@@ -831,7 +828,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 									<div class="form-group">
 										<label class="col-sm-4 control-label"><?php _e('Select image to upload','cftp_admin'); ?></label>
 										<div class="col-sm-8">
-											<input type="file" name="select_logo" class="empty" accept=".jpg, .jpeg, .jpe, .gif, .png" />
+											<input type="file" name="select_logo" class="empty" accept=".jpg, .jpeg, .jpe, .gif, .png, .svg" />
 										</div>
 									</div>
 								</div>

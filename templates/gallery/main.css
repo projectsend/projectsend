@@ -167,7 +167,14 @@ header {
 
 #logo {
 	margin:0;
-	padding:30px 0;
+    padding:30px 0;
+    
+}
+
+#logo img, #logo svg {
+    width:100%;
+    height:auto;
+    max-width:300px;
 }
 
 .photo_list {

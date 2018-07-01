@@ -98,7 +98,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 		<header>
 			<?php if ($logo_file_info['exists'] === true) { ?>
 				<div id="logo">
-					<img src="<?php echo $logo_file_info['thumbnail']; ?>" alt="<?php echo html_output(THIS_INSTALL_TITLE); ?>">
+                    <?php echo get_branding_layout(true); // true: returns the thumbnail, not the full image ?>
 				</div>
 			<?php } ?>
 		</header>

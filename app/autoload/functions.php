@@ -5,6 +5,7 @@
  * @package		ProjectSend
  * @subpackage	Functions
  */
+use enshrined\svgSanitize\Sanitizer;
 
 /**
  * Check if ProjectSend is installed by trying to find the main users table.
@@ -935,37 +936,48 @@ function generate_logo_url()
     }
 
 	if (file_exists( $branding['dir'] )) {
-		$branding['exists'] = true;
+        $branding['exists'] = true;
+        
+        /* Make thumbnails for raster files */
+        if ( file_is_image($branding['dir']) ) {
+            $thumbnail = make_thumbnail($branding['dir'], 'proportional', LOGO_MAX_WIDTH, LOGO_MAX_HEIGHT);
+		    $branding['thumbnail'] = ( !empty( $thumbnail['thumbnail']['url'] ) ) ? $thumbnail['thumbnail']['url'] : $branding['url'];
+            $branding['thumbnail_info'] = $thumbnail;
+            $branding['type'] = 'raster';
+        }
+        elseif ( file_is_svg($branding['dir']) ) {
+            $branding['type'] = 'vector';
+            $branding['thumbnail'] = $branding['dir']; // no thumbnail, just return the original file
+        }
 
-        $thumbnail = make_thumbnail($branding['dir'], 'proportional', LOGO_MAX_WIDTH, LOGO_MAX_HEIGHT);
-		$branding['thumbnail'] = ( !empty( $thumbnail['thumbnail']['url'] ) ) ? $thumbnail['thumbnail']['url'] : $branding['url'];
-		$branding['thumbnail_info'] = $thumbnail;
+        $branding['ext'] = pathinfo($branding['dir'], PATHINFO_EXTENSION);
     }
 
 	return $branding;
 }
 
-
 /**
- * Returns the full layout with the branding image.
- * Used on the unlogged header file.
+ * Returns the corresponding layout to show an image tag or the svg contents
+ * of the current uploaded logo file.
  */
-function generate_branding_layout()
+function get_branding_layout($return_thumbnail = false)
 {
+    $layout = '';
     $branding = generate_logo_url();
 
 	if ($branding['exists'] === true) {
-		$branding_image = $branding['url'];
+        $branding_image = ( $return_thumbnail === true ) ? $branding['thumbnail'] : $branding['url'];
 	}
 	else {
 		$branding_image = ASSETS_IMG_URI . DEFAULT_LOGO_FILENAME;
-	}
-
-	$layout = '<div class="row">
-					<div class="col-xs-12 branding_unlogged">
-						<img src="' . $branding_image . '" alt="' . html_output(THIS_INSTALL_TITLE) . '" />
-					</div>
-				</div>';
+    }
+    
+    if ($branding['type'] == 'raster') {
+        $layout = '<img src="' . $branding_image . '" alt="' . html_output(THIS_INSTALL_TITLE) . '" />';
+    }
+    elseif ($branding['type'] == 'vector') {
+        $layout = file_is_svg($branding['dir']);
+    }
 
 	return $layout;
 }
@@ -991,6 +1003,24 @@ function file_is_image( $file )
 
 	return $is_image;
 }
+
+/**
+ * Try to recognize if a file is a valid svg
+ */
+function file_is_svg( $file )
+{
+	if ( file_exists( $file ) ) {
+        $svg_sanitizer = new Sanitizer();
+        $source_file = file_get_contents($file);
+        $sanitized_file = $svg_sanitizer->sanitize($source_file);
+    }
+    else {
+        return false;
+    }
+
+	return $sanitized_file;
+}
+
 
 /**
  * Make a thumbnail with SimpleImage

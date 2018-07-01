@@ -247,9 +247,3 @@ define('DONATIONS_URL','https://www.projectsend.org/donations/');
 /** Passwords */
 define('HASH_COST_LOG2', 8);
 define('HASH_PORTABLE', false);
-
-/**
- * External links
- */
-define('LINK_DOC_RECAPTCHA', 'https://developers.google.com/recaptcha/docs/start');
-define('LINK_DOC_GOOGLE_SIGN_IN', 'https://developers.google.com/identity/protocols/OpenIDConnect');

@@ -92,4 +92,8 @@ if (defined('BASE_URI')) {
     /** Oauth login callback */
     define('OAUTH_LOGIN_CALLBACK_URI', BASE_URI . 'oauth2.php');
     define('LOGIN_CALLBACK_URI_GOOGLE', OAUTH_LOGIN_CALLBACK_URI . '?service=google');
+
+    /** External links */
+    define('LINK_DOC_RECAPTCHA', 'https://developers.google.com/recaptcha/docs/start');
+    define('LINK_DOC_GOOGLE_SIGN_IN', 'https://developers.google.com/identity/protocols/OpenIDConnect');
 }

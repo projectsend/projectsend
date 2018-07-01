@@ -26,7 +26,7 @@ define('UPLOADED_FILES_URL', 'upload/files/');
 define('ADMIN_UPLOADS_DIR', UPLOADED_FILES_ROOT . DS . 'admin');
 define('LOGO_MAX_WIDTH', 300);
 define('LOGO_MAX_HEIGHT', 300);
-define('DEFAULT_LOGO_FILENAME', 'projectsend-logo.png');
+define('DEFAULT_LOGO_FILENAME', 'projectsend-logo.svg');
 
 /* Thumbnails */
 define('THUMBS_MAX_WIDTH', 300);

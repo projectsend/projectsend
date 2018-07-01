@@ -1,0 +1,3 @@
+<FilesMatch "^thumb_.*\.(jpg|png|gif|jpeg)$">
+    Allow from all
+</FilesMatch>

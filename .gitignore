@@ -26,11 +26,17 @@ assets/custom
 
 # Uploads
 upload/files/*
+upload/admin/*
 upload/branding/*
 upload/thumbnails/*
 !upload/files/index.php
+!upload/admin/index.php
 !upload/branding/index.php
 !upload/thumbnails/index.php
+!upload/files/.htaccess
+!upload/admin/.htaccess
+!upload/branding/.htaccess
+!upload/thumbnails/.htaccess
 
 # Windows thumbnails
 Thumbs.db

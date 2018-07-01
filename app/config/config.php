@@ -228,13 +228,6 @@ $session_expire_time = 31*24*60*60; // 31 days * 24 hours * 60 minutes * 60 seco
 define('SESSION_EXPIRE_TIME', $session_expire_time);
 
 /**
- * Define the folder where uploaded files will reside
- */
-define('UPLOADED_FILES_ROOT', ROOT_DIR . DS . 'upload');
-define('UPLOADED_FILES_DIR', UPLOADED_FILES_ROOT . DS . 'files');
-define('UPLOADED_FILES_URL', 'upload/files/');
-
-/**
  * Define the system name, and the information that will be used
  * on the footer blocks.
  *

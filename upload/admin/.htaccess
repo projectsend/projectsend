@@ -1,0 +1,3 @@
+<FilesMatch "\.(jpg|png|gif|jpeg|svg)">
+    Allow from all
+</FilesMatch>

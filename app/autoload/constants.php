@@ -16,19 +16,22 @@ define('EMAIL_TEMPLATES_DIR', ADMIN_TEMPLATES_DIR . '/emails');
 define('TEMPLATES_DIR', ROOT_DIR . '/templates');
 define('WIDGETS_DIR', ADMIN_TEMPLATES_DIR . DS . 'widgets');
 
+/* Define the folder where uploaded files will reside */
+define('UPLOADED_FILES_ROOT', ROOT_DIR . DS . 'upload');
+define('UPLOADED_FILES_DIR', UPLOADED_FILES_ROOT . DS . 'files');
+define('THUMBNAILS_FILES_DIR', UPLOADED_FILES_ROOT . DS . 'thumbnails');
+define('UPLOADED_FILES_URL', 'upload/files/');
+
 /* Branding */
-define('LOGO_FOLDER', ROOT_DIR.DS.'img'.DS.'custom'.DS.'logo'.DS);
-define('LOGO_THUMB_FOLDER', ROOT_DIR.DS.'img'.DS.'custom'.DS.'thumbs'.DS);
+define('ADMIN_UPLOADS_DIR', UPLOADED_FILES_ROOT . DS . 'admin');
 define('LOGO_MAX_WIDTH', 300);
 define('LOGO_MAX_HEIGHT', 300);
+define('DEFAULT_LOGO_FILENAME', 'projectsend-logo.png');
 
 /* Thumbnails */
 define('THUMBS_MAX_WIDTH', 300);
 define('THUMBS_MAX_HEIGHT', 300);
 define('THUMBS_QUALITY', 90);
-
-/* SimpleImage thumbnails */
-define('THUMBNAILS_FILES_DIR', ROOT_DIR . '/upload/thumbnails');
 
 /* Selected template path */
 define('TEMPLATE_PATH', TEMPLATES_DIR . DS . SELECTED_CLIENTS_TEMPLATE . DS . 'template.php');
@@ -101,6 +104,7 @@ if (defined('BASE_URI')) {
     define('BOWER_DEPENDENCIES_URI', BASE_URI . BOWER_DEPENDENCIES_DIR);
     define('COMPOSER_DEPENDENCIES_URI', BASE_URI . COMPOSER_DEPENDENCIES_DIR);
     define('NPM_DEPENDENCIES_URI', BASE_URI . NPM_DEPENDENCIES_DIR);
+    define('ADMIN_UPLOADS_URI', BASE_URI . 'upload/admin/');
 
     /** Oauth login callback */
     define('OAUTH_LOGIN_CALLBACK_URI', BASE_URI . 'oauth2.php');

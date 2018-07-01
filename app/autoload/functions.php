@@ -924,25 +924,23 @@ function generate_logo_url()
 	$branding = array();
 	$branding['exists'] = false;
 
-	$logo_filename = LOGO_FILENAME;
-	if ( empty( $logo_filename ) ) {
-		$branding['filename'] = 'assets/img/projectsend-logo.png';
-	}
-	else {
-		$branding['filename'] = 'assets/img/custom/logo/'.LOGO_FILENAME;
-	}
+    // LOGO_FILENAME: filename gotten from the database
+    if ( empty( LOGO_FILENAME ) ) {
+        $branding['dir'] = ASSETS_IMG_DIR . DS . DEFAULT_LOGO_FILENAME;
+        $branding['url'] = ASSETS_IMG_URI . DEFAULT_LOGO_FILENAME;
+    }
+    else {
+        $branding['dir'] = ADMIN_UPLOADS_DIR . DS . LOGO_FILENAME;
+        $branding['url'] = ADMIN_UPLOADS_URI . LOGO_FILENAME;
+    }
 
-	$result_dir = ROOT_DIR . '/' . $branding['filename'];
-
-	if (file_exists( $result_dir )) {
+	if (file_exists( $branding['dir'] )) {
 		$branding['exists'] = true;
-		$branding['url'] = BASE_URI.$branding['filename'];
-		$branding['dir'] = $result_dir;
 
-		$thumbnail = make_thumbnail($result_dir, 'proportional', LOGO_MAX_WIDTH, LOGO_MAX_HEIGHT);
+        $thumbnail = make_thumbnail($branding['dir'], 'proportional', LOGO_MAX_WIDTH, LOGO_MAX_HEIGHT);
 		$branding['thumbnail'] = ( !empty( $thumbnail['thumbnail']['url'] ) ) ? $thumbnail['thumbnail']['url'] : $branding['url'];
 		$branding['thumbnail_info'] = $thumbnail;
-	}
+    }
 
 	return $branding;
 }
@@ -954,14 +952,13 @@ function generate_logo_url()
  */
 function generate_branding_layout()
 {
-	$branding	= generate_logo_url();
-	$layout		= '';
+    $branding = generate_logo_url();
 
 	if ($branding['exists'] === true) {
 		$branding_image = $branding['url'];
 	}
 	else {
-		$branding_image = ASSETS_IMG_URI . 'projectsend-logo.png';
+		$branding_image = ASSETS_IMG_URI . DEFAULT_LOGO_FILENAME;
 	}
 
 	$layout = '<div class="row">

@@ -223,7 +223,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 				case '2':
 					$msg = __('The file could not be moved to the corresponding folder.','cftp_admin');
 					$msg .= __("This is most likely a permissions issue. If that's the case, it can be corrected via FTP by setting the chmod value of the",'cftp_admin');
-					$msg .= ' '.LOGO_FOLDER.' ';
+					$msg .= ' '.ADMIN_UPLOADS_DIR.' ';
 					$msg .= __('directory to 755, or 777 as a last resource.','cftp_admin');
 					$msg .= __("If this doesn't solve the issue, try giving the same values to the directories above that one until it works.",'cftp_admin');
 					echo system_message('danger',$msg);

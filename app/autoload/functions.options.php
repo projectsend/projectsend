@@ -69,7 +69,7 @@ function option_file_upload( $file, $validate_ext = '', $option = '', $action = 
 			 * Move the file to the destination defined on sys.vars.php. If ok, add the
 			 * new file name to the database.
 			 */
-			if ( move_uploaded_file( $file['tmp_name'], LOGO_FOLDER . $safe_filename ) ) {
+			if ( move_uploaded_file( $file['tmp_name'], ADMIN_UPLOADS_DIR . DS . $safe_filename ) ) {
 				if ( !empty( $option ) ) {
 					$query = "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name='" . $option . "'";
 					$sql = $dbh->prepare( $query );
@@ -84,12 +84,12 @@ function option_file_upload( $file, $validate_ext = '', $option = '', $action = 
 
 				/** Record the action log */
 				if ( !empty( $action ) ) {
-					$new_log_action = new ProjectSend\LogActions();
+                    global $logger;
 					$log_action_args = array(
 											'action' => $action,
 											'owner_id' => CURRENT_USER_ID
 										);
-					$new_record_action = $new_log_action->log_action_save($log_action_args);
+					$new_record_action = $logger->log_action_save($log_action_args);
 				}
 			}
 			else {

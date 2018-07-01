@@ -30,18 +30,18 @@ if (in_session_or_cookies($log_allowed)) {
 	<div class="col-sm-8">
 		<div class="row">
 			<div class="col-sm-12 container_widget_statistics">
-				<?php include_ONCE WIDGETS_FOLDER.'statistics.php'; ?>
+				<?php include_once WIDGETS_DIR . DS . 'statistics.php'; ?>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-6 container_widget_projectsend_news">
-				<?php include_once WIDGETS_FOLDER.'news.php'; ?>
+				<?php include_once WIDGETS_DIR . DS . 'news.php'; ?>
 			</div>
 			<?php
 				if ( $sys_info == true ) {
 			?>
 					<div class="col-sm-6">
-						<?php include_once WIDGETS_FOLDER.'system-information.php'; ?>
+						<?php include_once WIDGETS_DIR . DS . 'system-information.php'; ?>
 					</div>
 			<?php
 				}
@@ -53,7 +53,7 @@ if (in_session_or_cookies($log_allowed)) {
 		if ( $show_log == true ) {
 	?>
 			<div class="col-sm-4 container_widget_actions_log">
-				<?php include(WIDGETS_FOLDER.'actions-log.php'); ?>
+				<?php include(WIDGETS_DIR . DS . 'actions-log.php'); ?>
 			</div>
 	<?php
 		}

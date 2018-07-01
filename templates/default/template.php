@@ -302,7 +302,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 						 * PAGINATION
 						 */
 						$pagination_args = array(
-												'link'		=> 'my_files',
+												'link'		=> basename($_SERVER['SCRIPT_FILENAME']),
 												'current'	=> $pagination_page,
 												'pages'		=> ceil( $count_for_pagination / TEMPLATE_RESULTS_PER_PAGE ),
 											);

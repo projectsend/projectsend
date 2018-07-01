@@ -107,7 +107,8 @@ if (defined('BASE_URI')) {
     define('ADMIN_UPLOADS_URI', BASE_URI . 'upload/admin/');
 
     /** Client's landing URI */
-    define('CLIENT_VIEW_FILE_LIST_URI_PATH', 'my_files/');
+    //define('CLIENT_VIEW_FILE_LIST_URI_PATH', 'my_files/');
+    define('CLIENT_VIEW_FILE_LIST_URI_PATH', 'private.php');
     define('CLIENT_VIEW_FILE_LIST_URI', BASE_URI . CLIENT_VIEW_FILE_LIST_URI_PATH);
 
     /** Oauth login callback */

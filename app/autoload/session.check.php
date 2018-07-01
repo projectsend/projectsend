@@ -8,59 +8,6 @@
  */
 
 /**
- * Used when checking if there is a client or user logged in via cookie.
- *
- * @see check_for_session
- */
-function check_valid_cookie()
-{
-	global $dbh;
-	if (isset($_COOKIE['password']) && isset($_COOKIE['loggedin']) && isset($_COOKIE['userlevel'])) {
-
-		$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user= :cookie_user AND password= :cookie_pass AND level= :cookie_level AND active = '1'");
-		$statement->execute(
-						array(
-							':cookie_user'	=> $_COOKIE['loggedin'],
-							':cookie_pass'	=> $_COOKIE['password'],
-							':cookie_level'	=> $_COOKIE['userlevel']
-						)
-					);
-		$count = $statement->rowCount();
-
-		/**
-		 * Compare the cookies to the database information. Level
-		 * and active are compared in case the cookie exists but
-		 * the client has been deactivated, or the user level has
-		 * changed.
-		 */
-		if ( $count > 0 ) {
-			if ( !isset( $_SESSION['loggedin'] ) ) {
-				/** Set SESSION values */
-				$_SESSION['loggedin']	= $_COOKIE['loggedin'];
-				$_SESSION['userlevel']	= $_COOKIE['userlevel'];
-				$_SESSION['access']		= $_COOKIE['access'];
-
-				$statement->setFetchMode(PDO::FETCH_ASSOC);
-				while ( $row = $statement->fetch() ) {
-					$log_id		= $row['id'];
-					$log_name	= $row['name'];
-				}
-
-				/** Record the action log */
-				$new_log_action = new ProjectSend\LogActions();
-				$log_action_args = array(
-										'action'		=> 24,
-										'owner_id'		=> $log_id,
-										'owner_user'	=> $log_name
-									);
-				$new_record_action = $new_log_action->log_action_save($log_action_args);
-			}
-			return true;
-		}
-	}
-}
-
-/**
  * Used on header.php to check if there is an active session or valid
  * cookie before generating the content.
  * If none is found, redirect to the log in form.
@@ -72,9 +19,6 @@ function check_for_session( $redirect = true )
 		$is_logged_now = true;
 	}
 	elseif (isset($_SESSION['access']) && $_SESSION['access'] == 'admin') {
-		$is_logged_now = true;
-	}
-	elseif (check_valid_cookie()) {
 		$is_logged_now = true;
 	}
 	if ( !$is_logged_now && $redirect == true ) {
@@ -98,10 +42,7 @@ function check_for_admin() {
 	if (isset($_SESSION['access']) && $_SESSION['access'] == 'admin') {
 		$is_logged_admin = true;
 	}
-	elseif (check_valid_cookie() && mysql_real_escape_string($_COOKIE['access']) == 'admin') {
-		$is_logged_admin = true;
-	}
-	if(!$is_logged_admin) {
+	if (!$is_logged_admin) {
 	    ob_clean();
 		header("location:" . BASE_URI . "index.php");
 	}
@@ -115,11 +56,11 @@ function check_for_admin() {
  */
 function check_for_client() {
 	if (isset($_SESSION['userlevel']) && $_SESSION['userlevel'] == '0') {
-		header("location:my_files/");
+		header("location:" . CLIENT_VIEW_FILE_LIST_URI);
 		exit;
 	}
 	if (isset($_COOKIE['userlevel']) && $_COOKIE['userlevel'] == '0') {
-		header("location:my_files/");
+		header("location:" . CLIENT_VIEW_FILE_LIST_URI);
 		exit;
 	}
 }

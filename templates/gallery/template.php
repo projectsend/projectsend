@@ -69,12 +69,12 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 				<?php
 					if ( !empty( $get_categories['categories'] ) ) {
 						$url_client_id	= ( !empty($_GET['client'] ) && CURRENT_USER_LEVEL != '0') ? $_GET['client'] : null;
-						$link_template	= BASE_URI . 'my_files/';
+						$link_template	= CLIENT_VIEW_FILE_LIST_URI;
 				?>
 						<h4><?php _e('Filter by category', 'cftp_admin'); ?></h4>
 						<nav class="categories">
 							<ul>
-								<li class="filter_all_files"><a href="<?php echo BASE_URI . 'my_files/'; if ( !empty( $url_client_id ) ) { echo '?client=' . $url_client_id; }; ?>"><?php  _e('All files', 'pinboxes_template'); ?></a></li>
+								<li class="filter_all_files"><a href="<?php echo CLIENT_VIEW_FILE_LIST_URI; if ( !empty( $url_client_id ) ) { echo '?client=' . $url_client_id; }; ?>"><?php  _e('All files', 'pinboxes_template'); ?></a></li>
 								<?php
 									foreach ( $get_categories['categories'] as $category ) {
 										$link_data	= array(

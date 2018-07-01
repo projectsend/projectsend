@@ -10,6 +10,8 @@ use \PDO;
 
 class Auth {
 
+    public $user;
+
     function __construct()
     {
 		global $dbh;
@@ -109,7 +111,7 @@ class Auth {
 									'message'	=> system_message('success','Login success. Redirecting...','login_response'),
 								);
 					if ($this->user_level == '0') {
-						$results['location']	= BASE_URI."my_files/";
+						$results['location']	= CLIENT_VIEW_FILE_LIST_URI;
 					}
 					else {
 						$results['location']	= BASE_URI."dashboard.php";

@@ -330,7 +330,7 @@ else
 								'level'	=> array( 9,8,7,0 ),
 								'main'	=> array(
 												'label'	=> __('View my files', 'cftp_admin'),
-												'link'	=> 'my_files/',
+												'link'	=> CLIENT_VIEW_FILE_LIST_URI_PATH,
 												'icon'	=> 'th-list',
 											),
 							);

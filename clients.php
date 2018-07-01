@@ -477,7 +477,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 														'actions'		=> true,
 														'content'		=>  '<a href="' . $files_link . '" class="btn btn-sm ' . $files_button . '">' . __("Files","cftp_admin") . '</a>' . "\n" .
 																			'<a href="' . $groups_link . '" class="btn btn-sm ' . $groups_button . '">' . __("Groups","cftp_admin") . '</a>' . "\n" .
-																			'<a href="my_files/?client=' . html_output( $row["user"] ) . '" class="btn btn-primary btn-sm" target="_blank">' . __('As client','cftp_admin') . '</a>' . "\n"
+																			'<a href="' . CLIENT_VIEW_FILE_LIST_URI . '?client=' . html_output( $row["user"] ) . '" class="btn btn-primary btn-sm" target="_blank">' . __('As client','cftp_admin') . '</a>' . "\n"
 													),
 												array(
 														'actions'		=> true,

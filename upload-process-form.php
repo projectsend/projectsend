@@ -335,7 +335,7 @@ while( $row = $statement->fetch() ) {
 								 */
 								if (CURRENT_USER_LEVEL == 0) {
 							?>
-									<a href="my_files/" class="btn-primary btn btn-sm"><?php _e('View my files','cftp_admin'); ?></a>
+									<a href="<?php echo CLIENT_VIEW_FILE_LIST_URI; ?>" class="btn-primary btn btn-sm"><?php _e('View my files','cftp_admin'); ?></a>
 							<?php
 								}
 							?>

@@ -106,6 +106,10 @@ if (defined('BASE_URI')) {
     define('NPM_DEPENDENCIES_URI', BASE_URI . NPM_DEPENDENCIES_DIR);
     define('ADMIN_UPLOADS_URI', BASE_URI . 'upload/admin/');
 
+    /** Client's landing URI */
+    define('CLIENT_VIEW_FILE_LIST_URI_PATH', 'my_files/');
+    define('CLIENT_VIEW_FILE_LIST_URI', BASE_URI . CLIENT_VIEW_FILE_LIST_URI_PATH);
+
     /** Oauth login callback */
     define('OAUTH_LOGIN_CALLBACK_URI', BASE_URI . 'oauth2.php');
     define('LOGIN_CALLBACK_URI_GOOGLE', OAUTH_LOGIN_CALLBACK_URI . '?service=google');

@@ -105,7 +105,7 @@ while( $row = $statement->fetch() ) {
 		 * Get the ID of the current client that is uploading files.
 		 */
 		if (CURRENT_USER_LEVEL == 0) {
-			$client_my_id = $client_my_info["id"];
+			$client_my_id = CURRENT_USER_ID;
 		}
 
 		$n = 0;

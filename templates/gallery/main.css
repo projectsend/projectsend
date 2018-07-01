@@ -11,9 +11,6 @@ a:hover { text-decoration:underline; }
 
 .clear { clear:both; }
 
-html, body {
-}
-
 body {
 	color:#f0f0f0;
     font-family: 'Montserrat', sans-serif;
@@ -96,9 +93,6 @@ body {
 			padding-top:30px;
 		}
 
-		#offsite_nav a {
-		}
-		
 .account_actions {
 	font-size:1.1em;
 	margin:20px 0;
@@ -237,12 +231,6 @@ header {
 		border-radius:4px;
 		color:#333;
 	}
-
-#logout {
-}
-
-#upload {
-}
 
 /*
 .header_button {

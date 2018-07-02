@@ -47,6 +47,9 @@
 		"moxiecode/plupload": "3.1.*",
 		"bainternet/php-hooks": "^1.0",
 		"claviska/simpleimage": "^3.3",
-		"paragonie/random_compat": "^2.0"
+		"paragonie/random_compat": "^2.0",
+		"hybridauth/hybridauth": "^2.11",
+		"slim/slim": "^3.10",
+		"enshrined/svg-sanitize": "^0.8.2"
 	}
 }

@@ -61,7 +61,7 @@ Whenever a new version is available, you will be notified in the admin panel via
 
 If you want to help with development, you will need to do a few things via Grunt:
 1. Download the composer, bower and npm dependencies. You can use the ````Grunt dependencies_update```` command which should take care of that.
-1. Run the default grunt task simply with ````Grunt```` to compiled the CSS and JS assets files.
+1. Run the default grunt task simply with ````Grunt```` to compile the main CSS and JS assets files.
 
 ## Questions, ideas? Want to join the project?
 Send your message to contact@projectsend.org or join us on Facebook, on https://www.facebook.com/projectsend/

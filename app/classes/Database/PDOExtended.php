@@ -9,7 +9,7 @@
 namespace ProjectSend\Database;
 use PDO;
 
-class PDOEx extends \PDO
+class PDOExtended extends \PDO
 {
     private $queries = 0;
 

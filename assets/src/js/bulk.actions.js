@@ -73,9 +73,9 @@ $(document).ready(function(e) {
 					$.ajax({
 						method: 'GET',
 						url: json_strings.uri.base + 'process.php',
-						data: { do:"download_zip", files:checkboxes }
+						data: { do:"return_files_ids", files:checkboxes }
 					}).done( function(rsp) {
-						var url = json_strings.uri.base + 'app/includes/download.zip.process.php?ids=' + rsp;
+						var url = json_strings.uri.base + 'process.php?do=download_zip&files=' + rsp;
 						$('.modal_content').append("<iframe id='modal_zip'></iframe>");
 						$('#modal_zip').attr('src', url);
 					});

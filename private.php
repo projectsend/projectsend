@@ -16,4 +16,4 @@ if (!empty($_GET['client']) && CURRENT_USER_LEVEL != '0') {
     $this_user = $_GET['client'];
 }
 
-include_once(TEMPLATE_PATH);
+include_once SELECTED_TEMPLATE_MAIN_FILE;

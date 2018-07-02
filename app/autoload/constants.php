@@ -34,7 +34,7 @@ define('THUMBS_MAX_HEIGHT', 300);
 define('THUMBS_QUALITY', 90);
 
 /* Selected template path */
-define('TEMPLATE_PATH', TEMPLATES_DIR . DS . SELECTED_CLIENTS_TEMPLATE . DS . 'template.php');
+define('SELECTED_TEMPLATE_MAIN_FILE', TEMPLATES_DIR . DS . SELECTED_CLIENTS_TEMPLATE . DS . 'template.php');
 
 /* Assets */
 define('ASSETS_IMG_DIR', ROOT_DIR . DS . ASSETS_DIR . DS . 'img/');
@@ -51,6 +51,11 @@ define('EMAIL_TEMPLATE_ACCOUNT_DENY', 'account-deny.html');
 define('EMAIL_TEMPLATE_NEW_FILE_BY_USER', 'new-file-by-user.html');
 define('EMAIL_TEMPLATE_NEW_FILE_BY_CLIENT', 'new-file-by-client.html');
 define('EMAIL_TEMPLATE_PASSWORD_RESET', 'password-reset.html');
+
+/* Set a page for each status code */
+define('STATUS_PAGES_DIR', ADMIN_TEMPLATES_DIR . DS . 'http_status_pages');
+define('PAGE_STATUS_CODE_403', STATUS_PAGES_DIR . DS . '403.php');
+define('PAGE_STATUS_CODE_404', STATUS_PAGES_DIR . DS . '404.php');
 
 /* Recaptcha */
 if (

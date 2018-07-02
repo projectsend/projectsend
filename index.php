@@ -179,7 +179,7 @@ catch ( Exception $e ) {
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8 hidden-xs hidden-sm">
       <h1 class="txt-color-red login-header-big"></h1>
-<img alt="Logo Placeholder" src="<?php echo BASE_URI.'/includes/timthumb/timthumb.php?src='. BASE_URI.'/img/custom/logo/'.LOGO_FILENAME.'&w='.$options_values['max_logo_width']; ?>" class="img-responsive">
+      <img alt="Logo Placeholder" src="https://send.microhealthllc.com/img/custom/logo/2015_microhealth-blue.png" class="img-responsive" width="300">
       <div class="hero">
         <div class="pull-left login-desc-box-l">
           <h4 class="paragraph-header"><?php echo html_entity_decode(isset($row['topleft'])?$row['topleft']:''); ?></h4>

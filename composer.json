@@ -43,7 +43,6 @@
      	"php": ">=5.6",
 		"phpmailer/phpmailer": "~5.2",
 		"symfony/polyfill-mbstring": "^1.8",
-		"league/oauth2-google": "^2.2",
 		"moxiecode/plupload": "3.1.*",
 		"bainternet/php-hooks": "^1.0",
 		"claviska/simpleimage": "^3.3",

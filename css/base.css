@@ -854,7 +854,7 @@ span.label {
     word-spacing: 2px;
 }
 #logo::first-letter {
-    color: #ca0505;
+    color: #fb3c4a;
     font-size: 20px;
     font-weight: 800;
 }
@@ -949,8 +949,8 @@ table.dataTable tfoot>tr>th input, table.dataTable thead>tr>th input {
 	    background: rgba(61, 68, 80, 0.67)!important;
 }
 .cc-active-subpage a {
-	color: #ca0505!important;
-    text-shadow: none!important;
+        color: #fb3c4a!important;
+	text-shadow: none!important;
     font-weight: 600!important;
 }
 
@@ -958,7 +958,7 @@ table.dataTable tfoot>tr>th input, table.dataTable thead>tr>th input {
 	    background: rgba(61, 68, 80, 0.67)!important;
 }
 .cc-active-subchildpage a {
-	color: #ca0505!important;
+        color: #fb3c4a!important;
     text-shadow: none!important;
     font-weight: 600!important;
 }
@@ -1015,7 +1015,7 @@ table.dataTable tfoot>tr>th input, table.dataTable thead>tr>th input {
 
 @media screen and (max-width: 480px) {
 	#logo::first-letter {
-    color: #ca0505;
+    color: #fb3c4a;
     font-size: 20px;
     font-weight: 800;
 }

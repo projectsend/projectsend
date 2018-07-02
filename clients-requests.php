@@ -91,12 +91,12 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 				case 'apply':
 					$selected_clients = $_POST['accounts'];
 					foreach ( $selected_clients as $client ) {
-						$process_memberships	= new ProjectSend\MembersActions();
+						$process_memberships	= new \ProjectSend\MembersActions();
 
 						/**
 						 * 1- Approve or deny account
 						 */
-						$process_account = new ProjectSend\ClientActions();
+						$process_account = new \ProjectSend\ClientActions();
 
 						/** $client['account'] == 1 means approve that account */
 						if ( !empty( $client['account'] ) and $client['account'] == '1' ) {
@@ -145,7 +145,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 						$processed_requests = $process_requests['memberships'];
 						$client_information = get_client_by_id( $client['id'] );
 
-						$notify_client = new ProjectSend\EmailsPrepare();
+						$notify_client = new \ProjectSend\EmailsPrepare();
 						$email_arguments = array(
 														'type'			=> $email_type,
 														'username'		=> $client_information['username'],
@@ -161,7 +161,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 					break;
 				case 'delete':
 					foreach ($selected_clients as $client) {
-						$this_client = new ProjectSend\ClientActions();
+						$this_client = new \ProjectSend\ClientActions();
 						$delete_client = $this_client->delete_client($client['id']);
 					}
 					
@@ -174,13 +174,13 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 			/** Record the action log */
 			if ( !empty( $log_action_number ) ) {
 				foreach ($selected_clients_ids as $client) {
-					$new_log_action = new ProjectSend\LogActions();
+					global $logger;
 					$log_action_args = array(
 											'action' => $log_action_number,
 											'owner_id' => CURRENT_USER_ID,
 											'affected_account_name' => $all_users[$client]
 										);
-					$new_record_action = $new_log_action->log_action_save($log_action_args);
+					$new_record_action = $logger->log_action_save($log_action_args);
 				}
 			}
 
@@ -339,7 +339,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 					/**
 					 * Pre-populate a membership requests array
 					 */
-					$get_requests	= new ProjectSend\MembersActions();
+					$get_requests	= new \ProjectSend\MembersActions();
 					$arguments		= array();
 					if ( $current_filter == 'denied' ) {
 						$arguments['denied'] = 1;
@@ -353,7 +353,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 												'id'		=> 'clients_tbl',
 												'class'		=> 'footable table',
 											);
-					$table = new ProjectSend\TableGenerate( $table_attributes );
+					$table = new \ProjectSend\TableGenerate( $table_attributes );
 	
 					$thead_columns		= array(
 												array(

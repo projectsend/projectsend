@@ -16,7 +16,7 @@ $page_title = __('Add clients group','cftp_admin');
 include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 
 if ($_POST) {
-	$new_group = new ProjectSend\GroupActions();
+	$new_group = new \ProjectSend\GroupActions();
 
 	/**
 	 * Clean the posted form values to be used on the groups actions,
@@ -69,14 +69,14 @@ if ($_POST) {
 							echo system_message('success',$msg);
 
 							/** Record the action log */
-							$new_log_action = new ProjectSend\LogActions();
+							global $logger;
 							$log_action_args = array(
 													'action' => 23,
 													'owner_id' => CURRENT_USER_ID,
 													'affected_account' => $new_response['new_id'],
 													'affected_account_name' => $add_group_data_name
 												);
-							$new_record_action = $new_log_action->log_action_save($log_action_args);
+							$new_record_action = $logger->log_action_save($log_action_args);
 						break;
 						case 0:
 							$msg = __('There was an error. Please try again.','cftp_admin');

@@ -99,7 +99,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 					if ($filename != "." && $filename != "..") {
 						/** Check types of files that are not on the database */							
 						if (!array_key_exists($filename,$db_files)) {
-							$file_object = new ProjectSend\FilesUpload();
+							$file_object = new \ProjectSend\FilesUpload();
 							$new_filename = $file_object->safe_rename_on_disk($filename,UPLOADED_FILES_DIR);
 							/** Check if the filetype is allowed */
 							if ($file_object->is_filetype_allowed($new_filename)) {
@@ -168,7 +168,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 											'class'				=> 'footable table',
 											'data-page-size'	=> FOOTABLE_PAGING_NUMBER,
 										);
-				$table = new ProjectSend\TableGenerate( $table_attributes );
+				$table = new \ProjectSend\TableGenerate( $table_attributes );
 	
 				$thead_columns		= array(
 											array(

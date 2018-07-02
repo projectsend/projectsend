@@ -48,7 +48,7 @@ $client_info = get_client_by_username($this_user);
 /**
  * Get the list of different groups the client belongs to.
  */
-$get_groups		= new ProjectSend\MembersActions();
+$get_groups		= new \ProjectSend\MembersActions();
 $get_arguments	= array(
 						'client_id'	=> $client_info['id'],
 						'return'	=> 'list',

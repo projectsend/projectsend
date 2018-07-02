@@ -45,7 +45,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 					 * Inactive clients are not allowed to log in.
 					 */
 					foreach ($selected_clients as $work_client) {
-						$this_client = new ProjectSend\ClientActions();
+						$this_client = new \ProjectSend\ClientActions();
 						$hide_client = $this_client->change_client_active_status($work_client,'1');
 					}
 					$msg = __('The selected clients were marked as active.','cftp_admin');
@@ -59,7 +59,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 					 * that the client is inactive.
 					 */
 					foreach ($selected_clients as $work_client) {
-						$this_client = new ProjectSend\ClientActions();
+						$this_client = new \ProjectSend\ClientActions();
 						$hide_client = $this_client->change_client_active_status($work_client,'0');
 					}
 					$msg = __('The selected clients were marked as inactive.','cftp_admin');
@@ -69,7 +69,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 
 				case 'delete':
 					foreach ($selected_clients as $client) {
-						$this_client = new ProjectSend\ClientActions();
+						$this_client = new \ProjectSend\ClientActions();
 						$delete_client = $this_client->delete_client($client);
 					}
 					
@@ -81,13 +81,13 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 
 			/** Record the action log */
 			foreach ($selected_clients as $client) {
-				$new_log_action = new ProjectSend\LogActions();
+				global $logger;
 				$log_action_args = array(
 										'action' => $log_action_number,
 										'owner_id' => CURRENT_USER_ID,
 										'affected_account_name' => $all_users[$client]
 									);
-				$new_record_action = $new_log_action->log_action_save($log_action_args);
+				$new_record_action = $logger->log_action_save($log_action_args);
 			}
 		}
 		else {
@@ -238,7 +238,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 												'id'		=> 'clients_tbl',
 												'class'		=> 'footable table',
 											);
-					$table = new ProjectSend\TableGenerate( $table_attributes );
+					$table = new \ProjectSend\TableGenerate( $table_attributes );
 	
 					$thead_columns		= array(
 												array(
@@ -338,7 +338,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 						 * Prepare the information to be used later on the cells array
 						 * 1- Count GROUPS where the client is member
 						 */
-						$get_groups		= new ProjectSend\MembersActions();
+						$get_groups		= new \ProjectSend\MembersActions();
 						$get_arguments	= array(
 												'client_id'	=> $client_id,
 											);

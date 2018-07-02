@@ -121,7 +121,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 													'id'		=> 'download_info_tbl',
 													'class'		=> 'footable table',
 												);
-						$table = new ProjectSend\TableGenerate( $table_attributes );
+						$table = new \ProjectSend\TableGenerate( $table_attributes );
 
 						$thead_columns		= array(
 													array(

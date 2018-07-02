@@ -32,7 +32,7 @@ if(!empty($_GET['member'])) {
 
 
 		/** Get groups where this client is member */
-		$get_groups		= new ProjectSend\MembersActions();
+		$get_groups		= new \ProjectSend\MembersActions();
 		$get_arguments	= array(
 								'client_id'	=> $member,
 								'return'	=> 'list',
@@ -79,18 +79,18 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 					$deleted_groups = 0;
 
 					foreach ($selected_groups as $groups) {
-						$this_group = new ProjectSend\GroupActions();
+						$this_group = new \ProjectSend\GroupActions();
 						$delete_group = $this_group->delete_group($groups);
 						$deleted_groups++;
 
 						/** Record the action log */
-						$new_log_action = new ProjectSend\LogActions();
+						global $logger;
 						$log_action_args = array(
 												'action' => 18,
 												'owner_id' => CURRENT_USER_ID,
 												'affected_account_name' => $all_groups[$groups]
 											);
-						$new_record_action = $new_log_action->log_action_save($log_action_args);		
+						$new_record_action = $logger->log_action_save($log_action_args);		
 					}
 					
 					if ($deleted_groups > 0) {
@@ -268,7 +268,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 											'id'		=> 'groups_tbl',
 											'class'		=> 'footable table',
 										);
-				$table = new ProjectSend\TableGenerate( $table_attributes );
+				$table = new \ProjectSend\TableGenerate( $table_attributes );
 
 				$thead_columns		= array(
 											array(

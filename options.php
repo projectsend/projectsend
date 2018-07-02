@@ -383,7 +383,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 											<option value="0"><?php _e('None (does not enable this feature)','cftp_admin'); ?></option>
 											<?php
 												/** Fill the groups array that will be used on the form */
-												$get_groups		= new ProjectSend\GroupActions;
+												$get_groups		= new \ProjectSend\GroupActions;
 												$arguments		= array();
 												$groups 		= $get_groups->get_groups($arguments);
 

@@ -78,7 +78,7 @@ if ( isset( $_GET['action'] ) ) {
 			switch($_GET['action']) {
 				case 'delete':
 					foreach ($selected_categories as $category) {
-						$this_category		= new ProjectSend\CategoriesActions();
+						$this_category		= new \ProjectSend\CategoriesActions();
 						$delete_category	= $this_category->delete_category($category);
 					}
 					$msg = __('The selected categories were deleted.','cftp_admin');
@@ -89,13 +89,13 @@ if ( isset( $_GET['action'] ) ) {
 	
 			/** Record the action log */
 			foreach ($selected_categories as $category) {
-				$new_log_action = new ProjectSend\LogActions();
+                global $logger;
 				$log_action_args = array(
 										'action'				=> $log_action_number,
 										'owner_id'				=> CURRENT_USER_ID,
 										'affected_account_name'	=> $all_categories[$category]
 									);
-				$new_record_action = $new_log_action->log_action_save($log_action_args);
+				$new_record_action = $logger->log_action_save($log_action_args);
 			}
 		}
 		else {
@@ -173,7 +173,7 @@ if ( isset( $_POST['btn_process'] ) ) {
 	$category_parent		= $_POST['category_parent'];
 	$category_description	= $_POST['category_description'];
 
-	$category_object = new ProjectSend\CategoriesActions();
+	$category_object = new \ProjectSend\CategoriesActions();
 
 	$arguments = array(
 						'name'			=> $category_name,
@@ -284,7 +284,7 @@ if ( isset( $_POST['btn_process'] ) ) {
 										'id'		=> 'categories_tbl',
 										'class'		=> 'footable table',
 									);
-			$table = new ProjectSend\TableGenerate( $table_attributes );
+			$table = new \ProjectSend\TableGenerate( $table_attributes );
 
 			$thead_columns		= array(
 										array(

@@ -196,13 +196,13 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 									chmod_main_files();
 
 									/** Record the action log */
-									$new_log_action = new ProjectSend\LogActions();
+									global $logger;
 									$log_action_args = array(
 															'action' => 0,
 															'owner_id' => 1,
 															'owner_user' => $got_admin_name
 														);
-									$new_record_action = $new_log_action->log_action_save($log_action_args);
+									$new_record_action = $logger->log_action_save($log_action_args);
 
 									$location = 'index.php?status=success';
 									header("Location: $location");

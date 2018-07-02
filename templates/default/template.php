@@ -112,7 +112,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 													'id'		=> 'files_list',
 													'class'		=> 'footable table',
 												);
-						$table = new ProjectSend\TableGenerate( $table_attributes );
+						$table = new \ProjectSend\TableGenerate( $table_attributes );
 
 						$thead_columns		= array(
 													array(

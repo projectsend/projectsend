@@ -44,7 +44,7 @@ $chunk = isset($_REQUEST["chunk"]) ? intval($_REQUEST["chunk"]) : 0;
 $chunks = isset($_REQUEST["chunks"]) ? intval($_REQUEST["chunks"]) : 0;
 $fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
 
-$this_file = new ProjectSend\FilesUpload();
+$this_file = new \ProjectSend\FilesUpload();
 // Rename the file
 $fileName = $this_file->safe_rename($fileName);
 

@@ -191,7 +191,7 @@ if (!empty($found_notifications)) {
 			$address = $mail_by_user[$mail_username];
 			$name = $name_by_user[$mail_username];
 			/** Create the object and send the email */
-			$notify_client = new ProjectSend\EmailsPrepare();
+			$notify_client = new \ProjectSend\EmailsPrepare();
 			$email_arguments = array(
 										'type'			=> 'new_files_by_user',
 										'address'		=> $address,
@@ -237,7 +237,7 @@ if (!empty($found_notifications)) {
 					$address = $mail_by_user[$mail_username];
 					$name = $name_by_user[$mail_username];
 					/** Create the object and send the email */
-					$notify_admin = new ProjectSend\EmailsPrepare();
+					$notify_admin = new \ProjectSend\EmailsPrepare();
 					$email_arguments = array(
 												'type' 			=> 'new_files_by_client',
 												'address' 		=> $address,

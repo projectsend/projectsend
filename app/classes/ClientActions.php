@@ -8,7 +8,7 @@
  */
 
 namespace ProjectSend;
-use PDO;
+use \PDO;
 
 class ClientActions
 {

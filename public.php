@@ -180,7 +180,7 @@ function list_file($data, $origin) {
 							 * 2- Get public groups
 							 */
 							$groups = array();
-							$get_groups		= new ProjectSend\GroupActions();
+							$get_groups		= new \ProjectSend\GroupActions();
 							$get_arguments	= array(
 													 	'public'	=> true,
 													);

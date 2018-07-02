@@ -28,7 +28,7 @@ class FilesActions
 	function get_files($arguments)
 	{
 		$this->file_id		= !empty( $arguments['file_id'] ) ? $arguments['file_id'] : '';
-		$this->uploader	= !empty( $arguments['uploader'] ) ? $arguments['uploader'] : '';
+		$this->uploader	    = !empty( $arguments['uploader'] ) ? $arguments['uploader'] : '';
 		$this->group_ids	= !empty( $arguments['group_ids'] ) ? $arguments['group_ids'] : array();
 		$this->group_ids	= is_array( $this->group_ids ) ? $this->group_ids : array( $this->group_ids );
 		$this->client_ids	= !empty( $arguments['client_ids'] ) ? $arguments['client_ids'] : array();
@@ -204,7 +204,7 @@ class FilesActions
 				$this->statement = $this->dbh->prepare($this->sql);
 				$this->statement->bindParam(':hidden', $change_to, PDO::PARAM_INT);
 				$this->statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
-            $this->statement->bindParam(':modify_id', $modify_id, PDO::PARAM_INT);
+                $this->statement->bindParam(':modify_id', $modify_id, PDO::PARAM_INT);
 				$this->statement->execute();
 			}
 		}
@@ -232,7 +232,7 @@ class FilesActions
 				$this->sql = "DELETE FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id AND " . $modify_type . " = :modify_id";
 				$this->statement = $this->dbh->prepare($this->sql);
 				$this->statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
-            $this->statement->bindParam(':modify_id', $modify_id, PDO::PARAM_INT);
+                $this->statement->bindParam(':modify_id', $modify_id, PDO::PARAM_INT);
 				$this->statement->execute();
 			}
 		}

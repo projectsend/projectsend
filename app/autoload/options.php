@@ -8,7 +8,7 @@
 
 /** Get system options */
 global $options;
-$options = new ProjectSend\Options();
+$options = new \ProjectSend\Options();
 $options->retrieve();
 
 /**

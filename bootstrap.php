@@ -24,17 +24,17 @@ require_once ROOT_DIR . '/vendor/autoload.php';
 
 /* Actions logger */
 global $logger;
-$logger = new ProjectSend\LogActions();
+$logger = new \ProjectSend\LogActions();
 
 /* Auth */
 global $auth;
-$auth = new ProjectSend\Auth();
+$auth = new \ProjectSend\Auth();
 
 /**
  * @todo initialize only when needed
  */
 global $validation;
-$validation = new ProjectSend\FormValidate();
+$validation = new \ProjectSend\FormValidate();
 
 /** Custom functions files */
 $requires = [
@@ -60,4 +60,4 @@ require_once ROOT_DIR . '/includes/Google/Oauth2/Google_Client.php';
 
 /* Updates */
 global $core_updates;
-$core_updates = new ProjectSend\UpdatesCore();
+$core_updates = new \ProjectSend\UpdatesCore();

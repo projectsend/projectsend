@@ -22,7 +22,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 			$recaptcha_request		= file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptcha_secret_key}&response={$recaptcha_response}&remoteip={$recaptcha_user_ip}");
 		}
 
-		$new_client = new ProjectSend\ClientActions();
+		$new_client = new \ProjectSend\ClientActions();
 	
 		/**
 		 * Clean the posted form values to be used on the clients actions,
@@ -74,7 +74,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 				$group_id = CLIENTS_AUTO_GROUP;
 				define('AUTOGROUP', true);
 
-				$autogroup	= new ProjectSend\MembersActions;
+				$autogroup	= new \ProjectSend\MembersActions;
 				$arguments	= array(
 									'client_id'	=> $new_response['new_id'],
 									'group_ids'	=> $group_id,
@@ -88,7 +88,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 			 * Check if the client requested memberships to groups
 			 */
 			define('REGISTERING', true);
-			$request	= new ProjectSend\MembersActions;
+			$request	= new \ProjectSend\MembersActions;
 			$arguments	= array(
 								'client_id'		=> $new_response['new_id'],
 								'group_ids'		=> $add_client_data_group,
@@ -100,7 +100,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 			/**
 			 * Prepare and send an email to administrator(s)
 			 */
-			$notify_admin = new ProjectSend\EmailsPrepare();
+			$notify_admin = new \ProjectSend\EmailsPrepare();
 			$email_arguments = array(
 											'type'			=> 'new_client_self',
 											'address'		=> ADMIN_EMAIL_ADDRESS,
@@ -161,14 +161,14 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 								echo system_message('info',$msg);
 	
 								/** Record the action log */
-								$new_log_action = new ProjectSend\LogActions();
+								global $logger;
 								$log_action_args = array(
 														'action' => 4,
 														'owner_id' => $new_response['new_id'],
 														'affected_account' => $new_response['new_id'],
 														'affected_account_name' => $add_client_data_name
 													);
-								$new_record_action = $new_log_action->log_action_save($log_action_args);
+								$new_record_action = $logger->log_action_save($log_action_args);
 							break;
 							case 0:
 								$msg = __('There was an error. Please try again.','cftp_admin');

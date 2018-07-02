@@ -16,7 +16,7 @@ $page_title = __('Edit group','cftp_admin');
 include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 
 /** Create the object */
-$edit_group = new ProjectSend\GroupActions();
+$edit_group = new \ProjectSend\GroupActions();
 
 /** Check if the id parameter is on the URI. */
 if (isset($_GET['id'])) {
@@ -110,14 +110,14 @@ if ($_POST) {
 					echo system_message('success',$msg);
 
 					/** Record the action log */
-					$new_log_action = new ProjectSend\LogActions();
+					global $logger;
 					$log_action_args = array(
 											'action' => 15,
 											'owner_id' => CURRENT_USER_ID,
 											'affected_account' => $group_id,
 											'affected_account_name' => $add_group_data_name
 										);
-					$new_record_action = $new_log_action->log_action_save($log_action_args);
+					$new_record_action = $logger->log_action_save($log_action_args);
 				break;
 				case 0:
 					$msg = __('There was an error. Please try again.','cftp_admin');

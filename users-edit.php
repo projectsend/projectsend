@@ -12,7 +12,7 @@ require_once('bootstrap.php');
 $active_nav = 'users';
 
 /** Create the object */
-$edit_user = new ProjectSend\UserActions();
+$edit_user = new \ProjectSend\UserActions();
 
 /** Check if the id parameter is on the URI. */
 if (isset($_GET['id'])) {
@@ -168,7 +168,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 
 					$saved_user = get_user_by_id($user_id);
 					/** Record the action log */
-					$new_log_action = new ProjectSend\LogActions();
+					global $logger;
 					$log_action_args = array(
 											'action' => 13,
 											'owner_id' => CURRENT_USER_ID,
@@ -176,7 +176,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 											'affected_account_name' => $saved_user['username'],
 											'get_user_real_name' => true
 										);
-					$new_record_action = $new_log_action->log_action_save($log_action_args);
+					$new_record_action = $logger->log_action_save($log_action_args);
 				break;
 				case 0:
 					$msg = __('There was an error. Please try again.','cftp_admin');

@@ -55,7 +55,7 @@ function option_file_upload( $file, $validate_ext = '', $option = '', $action = 
 
 	if ( is_uploaded_file( $file['tmp_name'] ) ) {
 
-		$this_upload = new ProjectSend\FilesUpload();
+		$this_upload = new \ProjectSend\FilesUpload();
 		$safe_filename = $this_upload->safe_rename( $file['name'] );
 		/**
 		 * Check the file type for allowed extensions.

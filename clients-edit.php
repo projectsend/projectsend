@@ -12,7 +12,7 @@ require_once('bootstrap.php');
 $active_nav = 'clients';
 
 /** Create the object */
-$edit_client = new ProjectSend\ClientActions();
+$edit_client = new \ProjectSend\ClientActions();
 
 /** Check if the id parameter is on the URI. */
 if (isset($_GET['id'])) {
@@ -48,7 +48,7 @@ if ($page_status === 1) {
 	}
 
 	/** Get groups where this client is member */
-	$get_groups		= new ProjectSend\MembersActions();
+	$get_groups		= new \ProjectSend\MembersActions();
 	$get_arguments	= array(
 							'client_id'	=> $client_id,
 						);
@@ -148,7 +148,7 @@ if ($_POST) {
 	if ($edit_validate == 1) {
         $edit_response = $edit_client->edit_client($edit_arguments);
         $edit_groups = (!empty( $_POST['add_client_group_request'] ) ) ? $_POST['add_client_group_request'] : array();
-        $memberships	= new ProjectSend\MembersActions;
+        $memberships	= new \ProjectSend\MembersActions;
         $arguments		= array(
                                 'client_id'		=> $client_id,
                                 'group_ids'		=> $edit_groups,
@@ -188,7 +188,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 
 					$saved_client = get_client_by_id($client_id);
 					/** Record the action log */
-					$new_log_action = new ProjectSend\LogActions();
+					global $logger;
 					$log_action_args = array(
 											'action' => 14,
 											'owner_id' => CURRENT_USER_ID,
@@ -196,7 +196,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 											'affected_account_name' => $saved_client['username'],
 											'get_user_real_name' => true
 										);
-					$new_record_action = $new_log_action->log_action_save($log_action_args);
+					$new_record_action = $logger->log_action_save($log_action_args);
 				break;
 				case 0:
 					$msg = __('There was an error. Please try again.','cftp_admin');

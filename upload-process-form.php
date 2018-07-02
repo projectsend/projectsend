@@ -122,7 +122,7 @@ while( $row = $statement->fetch() ) {
 					$file['assignments'] = 'c'.CURRENT_USER_USERNAME;
 				}
 
-				$this_upload = new ProjectSend\FilesUpload();
+				$this_upload = new \ProjectSend\FilesUpload();
 				if (!in_array($file['file'],$urls_db_files)) {
 					$file['file'] = $this_upload->safe_rename($file['file']);
 				}
@@ -404,7 +404,7 @@ while( $row = $statement->fetch() ) {
 					$i = 1;
 					foreach ($uploaded_files as $file) {
 						clearstatcache();
-                        $this_upload = new ProjectSend\FilesUpload();
+                        $this_upload = new \ProjectSend\FilesUpload();
 						$file_original = $file;
 
 						$location = UPLOADED_FILES_DIR . DS . $file;

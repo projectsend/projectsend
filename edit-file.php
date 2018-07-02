@@ -149,7 +149,7 @@ $get_categories = get_categories();
 							$file['assignments'] = 'c'.CURRENT_USER_USERNAME;
 						}
 
-						$this_upload = new ProjectSend\FilesUpload();
+						$this_upload = new \ProjectSend\FilesUpload();
 						/**
 						 * Unassigned files are kept as orphans and can be related
 						 * to clients or groups later.
@@ -267,7 +267,7 @@ $get_categories = get_categories();
 								 * 3- Hide for everyone if checked
 								 */
 								if (!empty($file['hideall'])) {
-									$this_file = new ProjectSend\FilesActions();
+									$this_file = new \ProjectSend\FilesActions();
 									$hide_file = $this_file->hide_for_everyone($this_file_id);
 								}
 								/**
@@ -278,7 +278,7 @@ $get_categories = get_categories();
 								}
 							}
 
-							$new_log_action = new ProjectSend\LogActions();
+							global $logger;
 							$log_action_args = array(
 													'action' => $action_log_number,
 													'owner_id' => CURRENT_USER_ID,
@@ -286,7 +286,7 @@ $get_categories = get_categories();
 													'affected_file' => $process_file['new_file_id'],
 													'affected_file_name' => $file['name']
 												);
-							$new_record_action = $new_log_action->log_action_save($log_action_args);
+							$new_record_action = $logger->log_action_save($log_action_args);
 
 							$msg = __('The file has been edited succesfuly.','cftp_admin');
 							echo system_message('success',$msg);

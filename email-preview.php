@@ -23,7 +23,7 @@ $type = $_GET['t'];
 
 /** Generate the preview using the email sending class */
 define('EMAIL_IS_PREVIEW', true);
-$preview = new ProjectSend\EmailsPrepare();
+$preview = new \ProjectSend\EmailsPrepare();
 $preview_arguments = array(
 								'preview'	=> true,
 								'type'		=> $type,

@@ -202,7 +202,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 										'id'		=> 'activities_tbl',
 										'class'		=> 'footable table',
 									);
-			$table = new ProjectSend\TableGenerate( $table_attributes );
+			$table = new \ProjectSend\TableGenerate( $table_attributes );
 
 			$thead_columns		= array(
 										array(

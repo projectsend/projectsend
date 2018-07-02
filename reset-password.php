@@ -109,7 +109,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 						$sql_pass->execute();
 
 						/** Send email */
-						$notify_user = new ProjectSend\EmailsPrepare();
+						$notify_user = new \ProjectSend\EmailsPrepare();
 						$email_arguments = array(
 														'type' => 'password_reset',
 														'address' => $email,

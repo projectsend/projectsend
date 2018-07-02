@@ -198,7 +198,7 @@ switch ($clients_form_type) {
 			 * Make a list of public groups in case clients can only request
 			 * membership to those
 			 */
-			$memberships	= new ProjectSend\GroupActions;
+			$memberships	= new \ProjectSend\GroupActions;
 			$arguments		= array();
 
 			/** Groups to search on based on the current user level */

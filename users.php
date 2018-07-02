@@ -54,7 +54,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 					 * Inactive users are not allowed to log in.
 					 */
 					foreach ($selected_users as $work_user) {
-						$this_user = new ProjectSend\UserActions();
+						$this_user = new \ProjectSend\UserActions();
 						$hide_user = $this_user->change_user_active_status($work_user,'1');
 					}
 					$msg = __('The selected users were marked as active.','cftp_admin');
@@ -72,7 +72,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 						 * A user should not be able to deactivate himself
 						 */
 						if ($work_user != $my_info['id']) {
-							$this_user = new ProjectSend\UserActions();
+							$this_user = new \ProjectSend\UserActions();
 							$hide_user = $this_user->change_user_active_status($work_user,'0');
 							$affected_users++;
 						}
@@ -95,7 +95,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 						 * A user should not be able to delete himself
 						 */
 						if ($work_user != $my_info['id']) {
-							$this_user = new ProjectSend\UserActions();
+							$this_user = new \ProjectSend\UserActions();
 							$delete_user = $this_user->delete_user($work_user);
 							$affected_users++;
 						}
@@ -115,13 +115,13 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 
 			/** Record the action log */
 			foreach ($selected_users as $user) {
-				$new_log_action = new ProjectSend\LogActions();
+				global $logger;
 				$log_action_args = array(
 										'action' => $log_action_number,
 										'owner_id' => CURRENT_USER_ID,
 										'affected_account_name' => $all_users[$user]
 									);
-				$new_record_action = $new_log_action->log_action_save($log_action_args);
+				$new_record_action = $logger->log_action_save($log_action_args);
 			}
 		}
 		else {
@@ -290,7 +290,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 											'id'		=> 'users_tbl',
 											'class'		=> 'footable table',
 										);
-				$table = new ProjectSend\TableGenerate( $table_attributes );
+				$table = new \ProjectSend\TableGenerate( $table_attributes );
 
 				$thead_columns		= array(
 											array(

@@ -123,7 +123,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 						 * account is the client.
 						 */
 						foreach ($selected_files as $work_file) {
-							$this_file = new ProjectSend\FilesActions();
+							$this_file = new \ProjectSend\FilesActions();
 							$hide_file = $this_file->change_files_hide_status('1', $work_file, $_GET['modify_type'], $_GET['modify_id']);
 						}
 						$msg = __('The selected files were marked as hidden.','cftp_admin');
@@ -137,7 +137,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 						 * that the file is visible.
 						 */
 						foreach ($selected_files as $work_file) {
-							$this_file = new ProjectSend\FilesActions();
+							$this_file = new \ProjectSend\FilesActions();
 							$show_file = $this_file->change_files_hide_status('0', $work_file, $_GET['modify_type'], $_GET['modify_id']);
 						}
 						$msg = __('The selected files were marked as visible.','cftp_admin');
@@ -150,7 +150,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 						 * Remove the file from this client or group only.
 						 */
 						foreach ($selected_files as $work_file) {
-							$this_file = new ProjectSend\FilesActions();
+							$this_file = new \ProjectSend\FilesActions();
 							$unassign_file = $this_file->unassign_file($work_file, $_GET['modify_type'], $_GET['modify_id']);
 						}
 						$msg = __('The selected files were unassigned from this client.','cftp_admin');
@@ -169,7 +169,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 												'errors'	=> 0,
 											);
 						foreach ($selected_files as $index => $file_id) {
-							$this_file		= new ProjectSend\FilesActions();
+							$this_file		= new \ProjectSend\FilesActions();
 							$delete_status	= $this_file->delete_files($file_id);
 
 							if ( $delete_status == true ) {
@@ -195,7 +195,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 
 				/** Record the action log */
 				foreach ($all_files as $work_file_id => $work_file) {
-					$new_log_action = new ProjectSend\LogActions();
+					global $logger;
 					$log_action_args = array(
 											'action' => $log_action_number,
 											'owner_id' => CURRENT_USER_ID,
@@ -206,7 +206,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 						$log_action_args['affected_account_name'] = $name_for_actions;
 						$log_action_args['get_user_real_name'] = true;
 					}
-					$new_record_action = $new_log_action->log_action_save($log_action_args);
+					$new_record_action = $logger->log_action_save($log_action_args);
 				}
 			}
 			else {
@@ -540,7 +540,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 												'id'		=> 'files_tbl',
 												'class'		=> 'footable table',
 											);
-					$table = new ProjectSend\TableGenerate( $table_attributes );
+					$table = new \ProjectSend\TableGenerate( $table_attributes );
 
 					/**
 					 * Set the conditions to true or false once here to

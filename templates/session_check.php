@@ -21,7 +21,7 @@ if (isset($_COOKIE['access']) && $_COOKIE['access'] == CURRENT_USER_USERNAME) { 
 if (isset($is_client)) {
 	global $dbh;
 	$current_user_username = CURRENT_USER_USERNAME;
-	$sql = $dbh->prepare("SELECT active FROM ". TABLE_USERS . " WHERE user=:current_user_username");
+	$sql = $dbh->prepare("SELECT active FROM ". TABLE_USERS . " WHERE username=:current_user_username");
   	$sql->bindParam(':current_user_username', $current_user_username, PDO::PARAM_STR);
  	$sql->execute();
 	$row = $sql->fetch();

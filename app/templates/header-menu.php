@@ -15,7 +15,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 
 	/** Count inactive CLIENTS */
 	/*
-	$sql_inactive = $dbh->prepare( "SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE active = '0' AND level = '0' AND account_requested='0'" );
+	$sql_inactive = $dbh->prepare( "SELECT DISTINCT username FROM " . TABLE_USERS . " WHERE active = '0' AND level = '0' AND account_requested='0'" );
 	$sql_inactive->execute();
 	define('COUNT_CLIENTS_INACTIVE', $sql_inactive->rowCount());
 	*/
@@ -31,7 +31,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 	define('COUNT_MEMBERSHIP_DENIED', $sql_requests->rowCount());
 
 	/** Count new CLIENTS account requests */
-	$sql_requests = $dbh->prepare( "SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE account_requested='1' AND account_denied='0'" );
+	$sql_requests = $dbh->prepare( "SELECT DISTINCT username FROM " . TABLE_USERS . " WHERE account_requested='1' AND account_denied='0'" );
 	$sql_requests->execute();
 	define('COUNT_CLIENTS_REQUESTS', $sql_requests->rowCount());
 
@@ -39,13 +39,13 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 	 * Count ALREADY DENIED account requests
 	 * Used on the manage requests page
 	 */
-	$sql_requests = $dbh->prepare( "SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE account_requested='1' AND account_denied='1'" );
+	$sql_requests = $dbh->prepare( "SELECT DISTINCT username FROM " . TABLE_USERS . " WHERE account_requested='1' AND account_denied='1'" );
 	$sql_requests->execute();
 	define('COUNT_CLIENTS_DENIED', $sql_requests->rowCount());
 
 	/** Count inactive USERS */
 	/*
-	$sql_inactive = $dbh->prepare( "SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE active = '0' AND level != '0'" );
+	$sql_inactive = $dbh->prepare( "SELECT DISTINCT username FROM " . TABLE_USERS . " WHERE active = '0' AND level != '0'" );
 	$sql_inactive->execute();
 	define('COUNT_USERS_INACTIVE', $sql_inactive->rowCount());
 	*/

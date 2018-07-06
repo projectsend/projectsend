@@ -96,7 +96,7 @@ if ($pdo_driver_available) {
 $table_exists = false;
 if ($pdo_connected) {
 	foreach ($all_system_tables as $name) {
-		$table_exists = $table_exists || table_exists($db, $post_vars['dbprefix'].$name);
+		$table_exists = $table_exists || try_table_exists($db, $post_vars['dbprefix'].$name);
 	}
 }
 $reuse_tables =  $post_vars['dbreuse'] == 'reuse';
@@ -165,7 +165,7 @@ if (isset($_POST['submit-start']) && $ready_to_go) {
  * @param string $table Table to search for.
  * @return bool TRUE if table exists, FALSE if no table found.
  */
-function table_exists($pdo, $table) {
+function try_table_exists($pdo, $table) {
     // Try a select statement against the table
     // Run it in try/catch in case PDO is in ERRMODE_EXCEPTION.
     try {

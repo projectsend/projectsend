@@ -18,6 +18,12 @@ session_start();
 define('CURRENT_VERSION', '1.0.0');
 
 /**
+ * Used to check if the database needs updating.
+ * Update version format: {year}{month}{day}{id} where ID helps do more than 1 update per day
+*/
+define('DATABASE_VERSION', '201807051');
+
+/**
  * Required software versions
  */
 define('REQUIRED_VERSION_PHP', '5.6');
@@ -56,7 +62,7 @@ define('CHARSET', 'UTF-8');
  * @link http://www.php.net/manual/en/function.error-reporting.php
  */
 if ( DEBUG === true ) {
-	error_reporting(E_ALL);
+	error_reporting(E_ALL | E_STRICT);
 }
 else {
 	error_reporting(0);
@@ -142,35 +148,6 @@ else {
  */
 if (!defined('DB_DRIVER')) {
 	define('DB_DRIVER', 'mysql');
-}
-
-/**
- * Check for PDO extensions
- */
-$pdo_available_drivers = PDO::getAvailableDrivers();
-if( (DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND') ) {
-	echo '<h1>Missing a required extension</h1>';
-	echo "<p>The system couldn't find the configuration the <strong>PDO extension for mysql</strong>.</p>
-	<p>This extension is required for database comunication.</p>
-	<p>You can install this extension via the package manager of your linux distro, most likely with one of these commands:</p>
-	<ul>
-		<li>sudo apt-get install php5-mysql   	<strong># debian/ubuntu</strong></li>
-		<li>sudo yum install php-mysql   		<strong># centos/fedora</strong></li>
-	</ul>
-	<p>You also need to restart the webserver after the installation of PDO_mysql.</p>";
-	exit;
-}
-if( (DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers) ) {
-    echo '<h1>Missing a required extension</h1>';
-    echo "<p>The system couldn't find the configuration the <strong>PDO extension for MS SQL Server</strong>.</p>
-    <p>This extension is required for database comunication.</p>
-    <p>You can install this extension via the package manager of your linux distro, most likely with one of these commands:</p>
-    <ul>
-    	<li>sudo apt-get install php5-sybase	<strong># debian/ubuntu</strong></li>
-    	<li>sudo yum install php-mssql			<strong># centos/fedora (you need EPEL)</strong></li>
-    </ul>
-    <p>You also need to restart the webserver after the installation of PDO_mssql.</p>";
-    exit;
 }
 
 /**

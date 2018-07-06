@@ -205,7 +205,9 @@ function render_log_action($params)
 			$action_ico = 'update';
 			$part1 = $owner_user;
 			$action_text = __('updated ProjectSend to version','cftp_admin');
-			$part2 = $affected_account_name;
+            $part2 = $affected_account_name;
+            $part3 = __('with database version');
+            $part4 = $affected_file_name;
 			break;
 		case 31:
 			$action_ico = 'logout';

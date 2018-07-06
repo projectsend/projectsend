@@ -24,46 +24,33 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 
 		$new_client = new \ProjectSend\ClientActions();
 	
-		/**
-		 * Clean the posted form values to be used on the clients actions,
-		 * and again on the form if validation failed.
-		 */
-		$add_client_data_name = encode_html($_POST['add_client_form_name']);
-		$add_client_data_user = encode_html($_POST['add_client_form_user']);
-		$add_client_data_email = encode_html($_POST['add_client_form_email']);
-		/** Optional fields: Address, Phone, Internal Contact, Notify */
-		$add_client_data_addr = (isset($_POST["add_client_form_address"])) ? encode_html($_POST["add_client_form_address"]) : '';
-		$add_client_data_phone = (isset($_POST["add_client_form_phone"])) ? encode_html($_POST["add_client_form_phone"]) : '';
-		$add_client_data_intcont = (isset($_POST["add_client_form_intcont"])) ? encode_html($_POST["add_client_form_intcont"]) : '';
-		$add_client_data_notify_upload = (isset($_POST["add_client_form_notify_upload"])) ? 1 : 0;
-		$add_client_data_group = (isset($_POST["add_client_group_request"])) ? $_POST["add_client_group_request"] : '';
-	
 		/** Arguments used on validation and client creation. */
-		$new_arguments = array(
-								'id'		=> '',
-								'username'	=> $add_client_data_user,
-								'password'	=> $_POST['add_client_form_pass'],
-								//'password_repeat' => $_POST['add_client_form_pass2'],
-								'name'		=> $add_client_data_name,
-								'email'		=> $add_client_data_email,
-								'address'	=> $add_client_data_addr,
-								'phone'		=> $add_client_data_phone,
-								'contact'	=> $add_client_data_intcont,
-								'notify_upload'	=> $add_client_data_notify_upload,
-								'group'		=> $add_client_data_group,
-								'type'		=> 'new_client',
-							);
-
-		$new_arguments['active']			= (CLIENTS_AUTO_APPROVE == 0) ? 0 : 1;
-		$new_arguments['account_requested']	= (CLIENTS_AUTO_APPROVE == 0) ? 1 : 0;
-		$new_arguments['recaptcha']			= ( defined('RECAPTCHA_AVAILABLE') ) ? $recaptcha_request : null;
+        $client_arguments = array(
+            'id'	    		=> '',
+            'username'	    	=> encode_html($_POST['username']),
+            'password'		    => $_POST['password'],
+            //'password_repeat' => $_POST['password_repeat'],
+            'name'	    		=> encode_html($_POST['name']),
+            'email'		    	=> encode_html($_POST['email']),
+            'address'		    => (isset($_POST["address"])) ? encode_html($_POST['address']) : '',
+            'phone'	    		=> (isset($_POST["phone"])) ? encode_html($_POST['phone']) : '',
+            'contact'	    	=> (isset($_POST["contact"])) ? encode_html($_POST['contact']) : '',
+            'max_file_size'	    => (isset($_POST["max_file_size"])) ? encode_html($_POST['max_file_size']) : '',
+            'notify_upload'    	=> (isset($_POST["notify_upload"])) ? 1 : 0,
+            'notify_account' 	=> (isset($_POST["notify_account"])) ? 1 : 0,
+            'active'	    	=> (CLIENTS_AUTO_APPROVE == 0) ? 0 : 1,
+            'account_requested'	=> (CLIENTS_AUTO_APPROVE == 0) ? 1 : 0,
+            'group' 	    	=> (isset($_POST["groups_request"])) ? $_POST["groups_request"] : '',
+            'type'		    	=> 'new_client',
+            'recaptcha'         => ( defined('RECAPTCHA_AVAILABLE') ) ? $recaptcha_request : null,
+        );
 
 		/** Validate the information from the posted form. */
-		$new_validate = $new_client->validate_client($new_arguments);
+		$new_validate = $new_client->validate_client($client_arguments);
 		
 		/** Create the client if validation is correct. */
 		if ($new_validate == 1) {
-			$new_response = $new_client->create_client($new_arguments);
+			$new_response = $new_client->create_client($client_arguments);
 
 			$admin_name = 'SELFREGISTERED';
 			/**
@@ -91,7 +78,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 			$request	= new \ProjectSend\MembersActions;
 			$arguments	= array(
 								'client_id'		=> $new_response['new_id'],
-								'group_ids'		=> $add_client_data_group,
+								'group_ids'		=> $client_arguments['group'],
 								'request_by'	=> $admin_name,
 							);
 	
@@ -104,8 +91,8 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 			$email_arguments = array(
 											'type'			=> 'new_client_self',
 											'address'		=> ADMIN_EMAIL_ADDRESS,
-											'username'		=> $add_client_data_user,
-											'name'			=> $add_client_data_name,
+											'username'		=> $client_arguments['username'],
+											'name'			=> $client_arguments['name'],
 										);
 
 			if ( !empty( $execute_requests['requests'] ) ) {
@@ -166,7 +153,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 														'action' => 4,
 														'owner_id' => $new_response['new_id'],
 														'affected_account' => $new_response['new_id'],
-														'affected_account_name' => $add_client_data_name
+														'affected_account_name' => $client_arguments['name']
 													);
 								$new_record_action = $logger->log_action_save($log_action_args);
 							break;

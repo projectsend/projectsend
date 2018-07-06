@@ -34,7 +34,7 @@ class LogActions
 		
 		/** Get the real name of the client or user */
 		if (!empty($arguments['get_user_real_name'])) {
-			$this->short_query = $dbh->prepare( "SELECT name FROM " . TABLE_USERS . " WHERE user =:user" );
+			$this->short_query = $dbh->prepare( "SELECT name FROM " . TABLE_USERS . " WHERE username =:user" );
 			$params = array(
 							':user'		=> $this->affected_account_name,
 						);

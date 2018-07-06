@@ -8,33 +8,6 @@
 use enshrined\svgSanitize\Sanitizer;
 
 /**
- * Check if ProjectSend is installed by trying to find the main users table.
- * If it is missing, the installation is invalid.
- */
-function is_projectsend_installed()
-{
-	$tables_need = array(
-						TABLE_USERS
-					);
-
-	$tables_missing = 0;
-	/**
-	 * This table list is defined on sys.vars.php
-	 */
-	foreach ($tables_need as $table) {
-		if ( !tableExists( $table ) ) {
-			$tables_missing++;
-		}
-	}
-	if ($tables_missing > 0) {
-		return false;
-	}
-	else {
-		return true;
-	}
-}
-
-/**
  * To successfully add the orderby and order parameters to a query,
  * check if the column exists on the table and validate that order
  * is either ASC or DESC.
@@ -123,30 +96,6 @@ function generate_downloads_count( $id = null )
 	}
 
 	return $data;
-}
-
-/**
- * Check if a table exists in the current database.
- *
- * @param string $table Table to search for.
- * @return bool TRUE if table exists, FALSE if no table found.
- * by esbite on http://stackoverflow.com/questions/1717495/check-if-a-database-table-exists-using-php-pdo
- */
-function tableExists($table)
-{
-	global $dbh;
-
-	if ( !empty ( $dbh ) ) {
-	    try {
-	        $result = $dbh->prepare("SELECT 1 FROM $table LIMIT 1");
-			$result->execute();
-	    } catch (Exception $e) {
-	        return false;
-	    }
-	}
-
-   // Result is either boolean FALSE (no table found) or PDOStatement Object (table found)
-   return $result !== false;
 }
 
 /**
@@ -246,16 +195,16 @@ function get_client_by_id($client)
 
 	while ( $row = $statement->fetch() ) {
 		$information = array(
-							'id'					=> html_output($row['id']),
-							'username'			=> html_output($row['user']),
+							'id'				=> html_output($row['id']),
+							'username'			=> html_output($row['username']),
 							'name'				=> html_output($row['name']),
 							'address'			=> html_output($row['address']),
 							'phone'				=> html_output($row['phone']),
 							'email'				=> html_output($row['email']),
-							'notify'				=> html_output($row['notify']),
+							'notify_upload'		=> html_output($row['notify']),
 							'level'				=> html_output($row['level']),
-							'active'				=> html_output($row['active']),
-							'max_file_size'	=> html_output($row['max_file_size']),
+							'active'			=> html_output($row['active']),
+							'max_file_size' 	=> html_output($row['max_file_size']),
 							'contact'			=> html_output($row['contact']),
 							'created_date'		=> html_output($row['timestamp']),
 							'created_by'		=> html_output($row['created_by'])
@@ -278,23 +227,23 @@ function get_client_by_id($client)
 function get_client_by_username($client)
 {
 	global $dbh;
-	$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:username");
+	$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE username=:username");
 	$statement->bindParam(':username', $client);
 	$statement->execute();
 	$statement->setFetchMode(PDO::FETCH_ASSOC);
 
 	while ( $row = $statement->fetch() ) {
 		$information = array(
-							'id'					=> html_output($row['id']),
+							'id'				=> html_output($row['id']),
 							'name'				=> html_output($row['name']),
-							'username'			=> html_output($row['user']),
+							'username'			=> html_output($row['username']),
 							'address'			=> html_output($row['address']),
 							'phone'				=> html_output($row['phone']),
 							'email'				=> html_output($row['email']),
-							'notify'				=> html_output($row['notify']),
+							'notify_upload'		=> html_output($row['notify']),
 							'level'				=> html_output($row['level']),
-							'active'				=> html_output($row['active']),
-							'max_file_size'	=> html_output($row['max_file_size']),
+							'active'			=> html_output($row['active']),
+							'max_file_size'	    => html_output($row['max_file_size']),
 							'contact'			=> html_output($row['contact']),
 							'created_date'		=> html_output($row['timestamp']),
 							'created_by'		=> html_output($row['created_by'])
@@ -316,7 +265,7 @@ function get_client_by_username($client)
 function get_logged_account_id($username)
 {
 	global $dbh;
-	$statement = $dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE user=:user");
+	$statement = $dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE username=:user");
 	$statement->execute(
 						array(
 							':user'	=> $username
@@ -343,7 +292,7 @@ function get_logged_account_id($username)
 function check_if_notify_client($client)
 {
 	global $dbh;
-	$statement = $dbh->prepare("SELECT notify, email FROM " . TABLE_USERS . " WHERE user=:user");
+	$statement = $dbh->prepare("SELECT notify, email FROM " . TABLE_USERS . " WHERE username=:user");
 	$statement->execute(
 						array(
 							':user'	=> $client
@@ -370,7 +319,7 @@ function check_if_notify_client($client)
 function get_user_by_username($user)
 {
 	global $dbh;
-	$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:user");
+	$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE username=:user");
 	$statement->execute(
 						array(
 							':user'	=> $user
@@ -381,14 +330,14 @@ function get_user_by_username($user)
 	if ( $statement->rowCount() > 0 ) {
 		while ( $row = $statement->fetch() ) {
 			$information = array(
-								'id'					=> html_output($row['id']),
-								'username'			=> html_output($row['user']),
-								'name'				=> html_output($row['name']),
-								'email'				=> html_output($row['email']),
-								'level'				=> html_output($row['level']),
-								'active'				=> html_output($row['active']),
+								'id'			=> html_output($row['id']),
+								'username'		=> html_output($row['username']),
+								'name'			=> html_output($row['name']),
+								'email'			=> html_output($row['email']),
+								'level'			=> html_output($row['level']),
+								'active'		=> html_output($row['active']),
 								'max_file_size'	=> html_output($row['max_file_size']),
-								'created_date'		=> html_output($row['timestamp'])
+								'created_date'	=> html_output($row['timestamp'])
 							);
 			if ( !empty( $information ) ) {
 				return $information;
@@ -401,7 +350,7 @@ function get_user_by_username($user)
 }
 
 /**
- * Get all the user information knowing only the log in username
+ * Get all the user information knowing only the id
  *
  * @return array
  */
@@ -415,13 +364,13 @@ function get_user_by_id($id)
 
 	while ( $row = $statement->fetch() ) {
 		$information = array(
-							'id'					=> html_output($row['id']),
-							'username'			=> html_output($row['user']),
-							'name'				=> html_output($row['name']),
-							'email'				=> html_output($row['email']),
-							'level'				=> html_output($row['level']),
+							'id'			=> html_output($row['id']),
+							'username'		=> html_output($row['username']),
+							'name'			=> html_output($row['name']),
+							'email'			=> html_output($row['email']),
+							'level'			=> html_output($row['level']),
 							'max_file_size'	=> html_output($row['max_file_size']),
-							'created_date'		=> html_output($row['timestamp']),
+							'created_date'	=> html_output($row['timestamp']),
 						);
 		if ( !empty( $information ) ) {
 			return $information;
@@ -449,10 +398,10 @@ function get_file_by_id($id)
 
 	while ( $row = $statement->fetch() ) {
 		$information = array(
-							'id'				=> html_output($row['id']),
+							'id'			=> html_output($row['id']),
 							'title'			=> html_output($row['filename']),
 							'original_url'	=> html_output($row['original_url']),
-							'url'				=> html_output($row['url']),
+							'url'			=> html_output($row['url']),
 						);
 		if ( !empty( $information ) ) {
 			return $information;

@@ -123,7 +123,7 @@ class UserActions
 			$this->state['hash'] = 1;
 
 			$this->timestamp = time();
-			$this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_USERS . " (user,password,name,email,level,active,max_file_size)"
+			$this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_USERS . " (username,password,name,email,level,active,max_file_size)"
 												." VALUES (:username, :password, :name, :email, :role, :active, :max_file_size)");
 			$this->sql_query->bindParam(':username', $this->username);
 			$this->sql_query->bindParam(':password', $this->enc_password);

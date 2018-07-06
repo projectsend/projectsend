@@ -37,7 +37,7 @@ if ($page_status === 1) {
 
 	while ( $data = $editing->fetch() ) {
 		$add_user_data_name = $data['name'];
-		$add_user_data_user = $data['user'];
+		$add_user_data_user = $data['username'];
 		$add_user_data_email = $data['email'];
 		$add_user_data_level = $data['level'];
 		$add_user_data_maxfilesize	= $data['max_file_size'];

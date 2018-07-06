@@ -166,7 +166,7 @@ class FormValidate
 	 */
 	private function is_user_exists($field, $err)
 	{
-		$this->statement = $this->dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE user = :user" );
+		$this->statement = $this->dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE username = :user" );
 		$this->statement->execute(
 							array(
 								':user'	=> $field,

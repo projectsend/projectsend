@@ -350,7 +350,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 												),
 												array(
 													'sortable'		=> true,
-													'sort_url'		=> 'user',
+													'sort_url'		=> 'username',
 													'content'		=> __('Log in username','cftp_admin'),
 													'hide'			=> 'phone,tablet',
 												),

@@ -53,7 +53,7 @@ class Options
 
 		/** @todo Hacky! Replace? */
 		$this->replacements = [
-			'last_update'   => 'convert_old_version_number',
+			//'last_update'   => 'convert_old_version_number',
 		];
 		
 		if ( !empty( $this->options ) ) {

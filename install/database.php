@@ -8,7 +8,6 @@
  */
 if (defined('TRY_INSTALL')) {
 	$timestamp = time();
-	$current_version = substr(CURRENT_VERSION, 1);
 	$now = date('d-m-Y');
 	$expiry_default = date('Y') + 1 . "-01-01 00:00:00";
 
@@ -50,7 +49,7 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> TABLE_USERS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_USERS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
-								  `user` varchar('.MAX_USER_CHARS.') NOT NULL,
+								  `username` varchar('.MAX_USER_CHARS.') NOT NULL,
 								  `password` varchar(255) NOT NULL,
 								  `name` text NOT NULL,
 								  `email` varchar(60) NOT NULL,
@@ -335,9 +334,9 @@ if (defined('TRY_INSTALL')) {
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,
-										':title'		=> $this_install_title,
-										':email'		=> $got_admin_email,
-										':version'	=> $current_version,
+										':title'	=> $this_install_title,
+										':email'	=> $got_admin_email,
+										':version'	=> DATABASE_VERSION,
 										':from'		=> $this_install_title,
 										':now'		=> $now,
 								),
@@ -345,13 +344,13 @@ if (defined('TRY_INSTALL')) {
 
 		'13' =>  array(
 						'table'	=> '',
-						'query'	=> "INSERT INTO ".TABLE_USERS." (id, user, password, name, email, level, active) VALUES
+						'query'	=> "INSERT INTO ".TABLE_USERS." (id, username, password, name, email, level, active) VALUES
 									(1, :username, :password, :name, :email, 9, 1)",
 						'params' => array(
 										':username'	=> $got_admin_username,
 										':password'	=> $got_admin_pass,
 										':name'		=> $got_admin_name,
-										':email'		=> $got_admin_email,
+										':email'	=> $got_admin_email,
 						),
 		),
 

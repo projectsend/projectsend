@@ -21,9 +21,12 @@
             "app/autoload/database.php",
             "app/autoload/options.php",
             "app/autoload/constants.php",
+			"app/autoload/updates.functions.php",
+            "app/autoload/core.update.silent.php",
 			"app/autoload/language.functions.php",
 			"app/autoload/language.locales.names.php",
-			"app/autoload/language.load.php",
+            "app/autoload/language.load.php",
+            "app/autoload/functions.system.php",
             "app/autoload/functions.php",
             "app/autoload/functions.options.php",
 			"app/autoload/assets.functions.php",
@@ -33,7 +36,6 @@
 			"app/autoload/functions.categories.php",
 			"app/autoload/functions.forms.php",
 			"app/autoload/templates.functions.php",
-			"app/autoload/updates.functions.php",
 			"app/autoload/session.check.php",
 			"app/autoload/text.strings.php",
 			"app/autoload/security/xsrf.php"
@@ -49,6 +51,7 @@
 		"paragonie/random_compat": "^2.0",
 		"hybridauth/hybridauth": "^2.11",
 		"slim/slim": "^3.10",
-		"enshrined/svg-sanitize": "^0.8.2"
+		"enshrined/svg-sanitize": "^0.8.2",
+		"league/oauth2-google": "^2.2"
 	}
 }

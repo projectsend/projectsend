@@ -37,7 +37,7 @@ class ClientActions
 		$this->address = $arguments['address'];
 		$this->phone = $arguments['phone'];
 		$this->contact = $arguments['contact'];
-		$this->notify_account = $arguments['notify_account'];
+		$this->notify_account = ( !empty( $arguments['notify_account'] ) ) ? $arguments['notify_account'] : 0;
 		$this->notify_upload = $arguments['notify_upload'];
 		$this->max_file_size = ( !empty( $arguments['max_file_size'] ) ) ? $arguments['max_file_size'] : 0;
 		$this->type = $arguments['type'];
@@ -116,22 +116,22 @@ class ClientActions
 		$this->state = array();
 
 		/** Define the account information */
-		$this->id					= $arguments['id'];
-		$this->name					= encode_html($arguments['name']);
-		$this->email				= encode_html($arguments['email']);
+		$this->id				= $arguments['id'];
+		$this->name				= encode_html($arguments['name']);
+		$this->email			= encode_html($arguments['email']);
 		$this->username			= encode_html($arguments['username']);
 		$this->password			= $arguments['password'];
 		//$this->password_repeat = $arguments['password_repeat'];
-		$this->address				= encode_html($arguments['address']);
-		$this->phone				= encode_html($arguments['phone']);
-		$this->contact				= encode_html($arguments['contact']);
+		$this->address			= encode_html($arguments['address']);
+		$this->phone			= encode_html($arguments['phone']);
+		$this->contact			= encode_html($arguments['contact']);
 		$this->notify_upload   	= ( $arguments['notify_upload'] == '1' ) ? 1 : 0;
 		$this->notify_account  	= ( $arguments['notify_account'] == '1' ) ? 1 : 0;
-		$this->max_file_size		= ( !empty( $arguments['max_file_size'] ) ) ? $arguments['max_file_size'] : 0;
-		$this->request				= ( !empty( $arguments['account_requested'] ) ) ? $arguments['account_requested'] : 0;
-		$this->active				= ( $arguments['active'] );
+		$this->max_file_size	= ( !empty( $arguments['max_file_size'] ) ) ? $arguments['max_file_size'] : 0;
+		$this->request			= ( !empty( $arguments['account_requested'] ) ) ? $arguments['account_requested'] : 0;
+		$this->active			= ( $arguments['active'] );
 		$this->enc_password		= password_hash($this->password, PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
-		//$this->enc_password		= $hasher->HashPassword($this->password);
+		//$this->enc_password	= $hasher->HashPassword($this->password);
 
 		if (strlen($this->enc_password) >= 20) {
 
@@ -142,15 +142,15 @@ class ClientActions
 
 			/** Insert the client information into the database */
 			$this->timestamp = time();
-			$this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_USERS . " (name,user,password,address,phone,email,notify,contact,created_by,active,account_requested,max_file_size)"
-												."VALUES (:name, :username, :password, :address, :phone, :email, :notify, :contact, :admin, :active, :request, :max_file_size)");
+			$this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_USERS . " (name,username,password,address,phone,email,notify,contact,created_by,active,account_requested,max_file_size)"
+												."VALUES (:name, :username, :password, :address, :phone, :email, :notify_upload, :contact, :admin, :active, :request, :max_file_size)");
 			$this->sql_query->bindParam(':name', $this->name);
 			$this->sql_query->bindParam(':username', $this->username);
 			$this->sql_query->bindParam(':password', $this->enc_password);
 			$this->sql_query->bindParam(':address', $this->address);
 			$this->sql_query->bindParam(':phone', $this->phone);
 			$this->sql_query->bindParam(':email', $this->email);
-			$this->sql_query->bindParam(':notify', $this->notify_upload, PDO::PARAM_INT);
+			$this->sql_query->bindParam(':notify_upload', $this->notify_upload, PDO::PARAM_INT);
 			$this->sql_query->bindParam(':contact', $this->contact);
 			$this->sql_query->bindParam(':admin', $this->this_admin);
 			$this->sql_query->bindParam(':active', $this->active, PDO::PARAM_INT);
@@ -207,18 +207,18 @@ class ClientActions
 		$this->state = array();
 
 		/** Define the account information */
-		$this->id					= $arguments['id'];
-		$this->name					= encode_html($arguments['name']);
+		$this->id				= $arguments['id'];
+		$this->name				= encode_html($arguments['name']);
 		$this->password			= $arguments['password'];
-		$this->email				= encode_html($arguments['email']);
-		$this->address				= encode_html($arguments['address']);
-		$this->phone				= encode_html($arguments['phone']);
-		$this->contact				= encode_html($arguments['contact']);
-		$this->notify_upload		= ( $arguments['notify_upload'] == '1' ) ? 1 : 0;
-		$this->active				= ( $arguments['active'] == '1' ) ? 1 : 0;
-		$this->max_file_size		= ( !empty( $arguments['max_file_size'] ) ) ? $arguments['max_file_size'] : 0;
+		$this->email			= encode_html($arguments['email']);
+		$this->address			= encode_html($arguments['address']);
+		$this->phone			= encode_html($arguments['phone']);
+		$this->contact			= encode_html($arguments['contact']);
+        $this->notify_upload	= ( $arguments['notify_upload'] == '1' ) ? 1 : 0;
+		$this->active			= ( $arguments['active'] == '1' ) ? 1 : 0;
+		$this->max_file_size	= ( !empty( $arguments['max_file_size'] ) ) ? $arguments['max_file_size'] : 0;
 		$this->enc_password		= password_hash($this->password, PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
-		//$this->enc_password		= $hasher->HashPassword($arguments['password']);
+		//$this->enc_password	= $hasher->HashPassword($arguments['password']);
 
 		if (strlen($this->enc_password) >= 20) {
 
@@ -231,7 +231,7 @@ class ClientActions
 										phone = :phone,
 										email = :email,
 										contact = :contact,
-										notify = :notify,
+										notify = :notify_upload,
 										active = :active,
 										max_file_size = :max_file_size
 										";
@@ -250,7 +250,7 @@ class ClientActions
 			$this->sql_query->bindParam(':phone', $this->phone);
 			$this->sql_query->bindParam(':email', $this->email);
 			$this->sql_query->bindParam(':contact', $this->contact);
-			$this->sql_query->bindParam(':notify', $this->notify_upload, PDO::PARAM_INT);
+			$this->sql_query->bindParam(':notify_upload', $this->notify_upload, PDO::PARAM_INT);
 			$this->sql_query->bindParam(':active', $this->active, PDO::PARAM_INT);
 			$this->sql_query->bindParam(':max_file_size', $this->max_file_size, PDO::PARAM_INT);
 			$this->sql_query->bindParam(':id', $this->id, PDO::PARAM_INT);
@@ -380,7 +380,7 @@ class ClientActions
      */
     private function isUniqueUsername($string)
     {
-		$statement = $this->dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE user = :user" );
+		$statement = $this->dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE username = :user" );
 		$statement->execute(array(':user'	=> $string));
 		if($statement->rowCount() > 0) {
 			return false;

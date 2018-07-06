@@ -3,7 +3,7 @@ require_once('../../bootstrap.php');
 
 $googleClient = new Google_Client();
 $oauth2 = new Google_Oauth2Service($googleClient);
-$googleClient->setApplicationName(THIS_INSTALL_TITLE);
+$googleClient->setApplicationName(THIS_INSTALL_SET_TITLE);
 $googleClient->setClientSecret(GOOGLE_CLIENT_SECRET);
 $googleClient->setClientId(GOOGLE_CLIENT_ID);
 $googleClient->setRedirectUri(BASE_URI . 'sociallogin/google/callback.php');
@@ -72,16 +72,16 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']->id_
         }
 
         /** Record the action log */
-        $new_log_action = new ProjectSend\LogActions();
+        global $logger;
         $log_action_args = array(
           'action' => 1,
           'owner_id' => $logged_id,
           'affected_account_name' => CURRENT_USER_NAME
         );
-        $new_record_action = $new_log_action->log_action_save($log_action_args);
+        $new_record_action = $logger->log_action_save($log_action_args);
 
         if ($user_level == '0') {
-          header("location:" . BASE_URI . "my_files/");
+          header("location:" . BASE_URI . "private.php");
         }
         else {
           header("location:" . BASE_URI . "dashboard.php");
@@ -99,8 +99,8 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']->id_
         header("location:" . BASE_URI);
         return;
       }else {
-        $_SESSION['errorstate'] = 'no_account'; //TODO: create new account
-        $new_client = new ProjectSend\ClientActions();
+        $_SESSION['errorstate'] = 'no_account';
+        $new_client = new \ProjectSend\ClientActions();
         $username = $new_client->generateUsername($userData['name']);
         $password = generate_password();
 
@@ -133,7 +133,7 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']->id_
           $add_to_group->execute();
         }
 
-        $notify_admin = new ProjectSend\EmailsPrepare();
+        $notify_admin = new \ProjectSend\EmailsPrepare();
         $email_arguments = array(
           'type' => 'new_client_self',
           'address' => ADMIN_EMAIL_ADDRESS,

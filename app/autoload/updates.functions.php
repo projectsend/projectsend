@@ -6,6 +6,30 @@
  * @subpackage	Functions
  */
 
+ /**
+ * Check if a table exists in the current database.
+ *
+ * @param string $table Table to search for.
+ * @return bool TRUE if table exists, FALSE if no table found.
+ * by esbite on http://stackoverflow.com/questions/1717495/check-if-a-database-table-exists-using-php-pdo
+ */
+function table_exists($table)
+{
+	global $dbh;
+
+	if ( !empty ( $dbh ) ) {
+	    try {
+	        $result = $dbh->prepare("SELECT 1 FROM $table LIMIT 1");
+			$result->execute();
+	    } catch (Exception $e) {
+	        return false;
+	    }
+	}
+
+   // Result is either boolean FALSE (no table found) or PDOStatement Object (table found)
+   return $result !== false;
+}
+
 /** Add a new row to the options table */
 function add_option_if_not_exists($row, $value)
 {
@@ -71,7 +95,7 @@ function update_chmod_emails()
 	global $updates_error_messages;
 
 	$chmods = 0;
-	$emails_folder = ROOT_DIR.'/emails';
+	$emails_folder = EMAIL_TEMPLATES_DIR;
 	if (@chmod($emails_folder, 0755)) { $chmods++; } else { $updates_errors++; }
 
 	$emails_files = glob($emails_folder."*", GLOB_NOSORT);
@@ -100,8 +124,7 @@ function chmod_main_files()
 
 	$chmods = 0;
 	$system_files = array(
-							'sys' => ROOT_DIR.'/sys.vars.php',
-							'cfg' => ROOT_DIR.'/includes/sys.config.php'
+							'cfg' => CONFIG_FILE
 						);
 	foreach ($system_files as $sys_file) {
 		if (!file_exists($sys_file)) {
@@ -121,7 +144,7 @@ function chmod_main_files()
 	}
 
 	if ($updates_errors > 0) {
-		$updates_error_messages[] = __("A safe chmod value couldn't be set for one or more system files. Please make sure that at least includes/sys.config.php has a chmod of 644 for security reasons.", 'cftp_admin');
+		$updates_error_messages[] = sprintf(__("A safe chmod value couldn't be set for one or more system files. Please make sure that at least %s has a chmod of 644 for security reasons.", 'cftp_admin'), CONFIG_FILE);
 	}
 }
 
@@ -165,12 +188,12 @@ function import_files_relations()
 	 * previous step.
 	 */
 	$users = implode(',', $get_clients_info);
-	$statement = $dbh->prepare("SELECT id, user FROM " . TABLE_USERS . " WHERE FIND_IN_SET(user, :users)");
+	$statement = $dbh->prepare("SELECT id, username FROM " . TABLE_USERS . " WHERE FIND_IN_SET(username, :users)");
 	$statement->bindParam(':users', $users);
 	$statement->execute();
 	$statement->setFetchMode(PDO::FETCH_ASSOC);
 	while( $row = $statement->fetch() ) {
-		$found_users[$row['user']] = $row['id'];
+		$found_users[$row['username']] = $row['id'];
 	}
 
 	/**

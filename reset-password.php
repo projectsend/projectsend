@@ -22,7 +22,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 		/**
 		 * Get the user's id
 		 */
-		$query_user_id	= $dbh->prepare("SELECT id, user FROM " . TABLE_USERS . " WHERE user = :user");
+		$query_user_id	= $dbh->prepare("SELECT id, username FROM " . TABLE_USERS . " WHERE username = :user");
 		$query_user_id->bindParam(':user', $got_user);
 		$query_user_id->execute();
 		$result_user_id = $query_user_id->fetch();
@@ -76,7 +76,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 			 * The form submited contains a new token request
 			 */
 			case 'new_request':
-				$sql_user = $dbh->prepare("SELECT id, user, email FROM " . TABLE_USERS . " WHERE email = :email");
+				$sql_user = $dbh->prepare("SELECT id, username, email FROM " . TABLE_USERS . " WHERE email = :email");
 				$sql_user->bindParam(':email', $_POST['reset_password_email']);
 				$sql_user->execute();
 				$count_user = $sql_user->rowCount();
@@ -86,7 +86,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 					$sql_user->setFetchMode(PDO::FETCH_ASSOC);
 					$row = $sql_user->fetch();
 					$id			= $row['id'];
-					$username	= $row['user'];
+					$username	= $row['username'];
 					$email		= $row['email'];
 					$token		= generateRandomString(32);
 

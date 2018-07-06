@@ -136,7 +136,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 
 	/** Add the search terms */	
 	if ( isset( $_GET['search'] ) && !empty( $_GET['search'] ) ) {
-		$cq .= " AND (name LIKE :name OR user LIKE :user OR email LIKE :email)";
+		$cq .= " AND (name LIKE :name OR username LIKE :user OR email LIKE :email)";
 		$no_results_error = 'search';
 
 		$search_terms		= '%'.$_GET['search'].'%';
@@ -307,7 +307,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 											),
 											array(
 												'sortable'		=> true,
-												'sort_url'		=> 'user',
+												'sort_url'		=> 'username',
 												'content'		=> __('Log in username','cftp_admin'),
 												'hide'			=> 'phone',
 											),
@@ -394,7 +394,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 													'content'		=> html_output( $row["name"] ),
 												),
 											array(
-													'content'		=> html_output( $row["user"] ),
+													'content'		=> html_output( $row["username"] ),
 												),
 											array(
 													'content'		=> html_output( $row["email"] ),

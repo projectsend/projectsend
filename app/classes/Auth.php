@@ -38,7 +38,7 @@ class Auth {
 		$this->selected_form_lang	= (!empty( $language ) ) ? $language : SITE_LANG;
 
 		/** Look up the system users table to see if the entered username exists */
-		$this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user= :username OR email= :email");
+		$this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE username=:username OR email=:email");
 		$this->statement->execute(
 						array(
 							':username'	=> $username,
@@ -50,7 +50,7 @@ class Auth {
 			/** If the username was found on the users table */
 			$this->statement->setFetchMode(PDO::FETCH_ASSOC);
 			while ( $this->row = $this->statement->fetch() ) {
-				$this->db_username	    = $this->row['user'];
+				$this->db_username	    = $this->row['username'];
 				$this->db_pass			= $this->row['password'];
 				$this->user_level		= $this->row["level"];
 				$this->active_status	= $this->row['active'];
@@ -201,13 +201,6 @@ class Auth {
         }
         
         return $this->error;
-    }
-
-    /**
-     * Login using oauth
-     */
-    public function oauth_login($service, $oauth)
-    {
     }
 
     public function logout()

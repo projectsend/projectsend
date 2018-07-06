@@ -43,3 +43,20 @@ function form_add_existing_parameters( $ignore = array() )
 		}
 	}
 }
+
+/**
+ * Returns an existing or empty value to an input
+ * 
+ * @param string
+ * @return string
+ */
+function format_form_value( $value )
+{
+    if ( isset($value) && !empty( $value ) )
+    {
+        return html_output( stripslashes( $value ) );
+    }
+    else {
+        return;
+    }
+}

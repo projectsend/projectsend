@@ -12,39 +12,6 @@ define( 'IS_INSTALL', true );
 define( 'ABS_PARENT', dirname( __DIR__ ) );
 require_once( ABS_PARENT . '/bootstrap.php' );
 
-/** Version requirements check */
-$version_php	= phpversion();
-$version_mysql	= $dbh->query('SELECT version()')->fetchColumn();
-
-/** php */
-$version_not_met =  __('minimum version not met. Please upgrade to at least version','cftp_admin');
-if ( version_compare( $version_php, REQUIRED_VERSION_PHP, "<" ) ) {
-	$error_msg[] = 'php' . ' ' . $version_not_met . ' ' . REQUIRED_VERSION_PHP;
-}
-/** mysql */
-if ( version_compare( $version_mysql, REQUIRED_VERSION_MYSQL, "<" ) ) {
-	$error_msg[] = 'MySQL' . ' ' . $version_not_met . ' ' . REQUIRED_VERSION_MYSQL;
-}
-
-if ( !empty( $error_msg ) ) {
-    include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
-?>
-	<div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
-		<div class="white-box">
-			<div class="white-box-interior">
-				<?php
-					foreach ( $error_msg as $msg ) {
-						echo system_message( 'error', $msg );
-					}
-				?>
-			</div>
-		</div>
-	</div>
-<?php
-	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';
-	exit;
-}
-
 global $dbh;
 /**
  * Function that takes an array of SQL queries and executes them in order.
@@ -252,7 +219,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 
 								<h3><?php _e('Basic system options','cftp_admin'); ?></h3>
 								<p><?php _e("You need to provide this data for a correct system installation. The site name will be visible in the system panel, and the client's lists.",'cftp_admin'); ?><br />
-									<?php _e("Remember to edit the file",'cftp_admin'); ?> <em>/includes/sys.config.php</em> <?php _e("with your database settings before installing. If the file doesn't exist, you can create it by renaming the dummy file sys.config.sample.php.",'cftp_admin'); ?>
+                                    <?php echo sprintf(__("Remember to edit the file %s with your database settings before installing. If the file doesn't exist, you can create it by renaming the dummy file sys.config.sample.php.",'cftp_admin'), CONFIG_SAMPLE); ?>
 								</p>
 
 								<div class="form-group">
@@ -272,7 +239,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 								<div class="options_divide"></div>
 
 								<h3><?php _e('Default system administrator options','cftp_admin'); ?></h3>
-								<p><?php _e("This info will be used to create a default system user, which can't be deleted afterwards. Password should be between",'cftp_admin'); ?> <strong><?php echo MIN_PASS_CHARS; ?> <?php _e("and",'cftp_admin'); ?> <?php echo MAX_PASS_CHARS; ?> <?php _e("characters long.",'cftp_admin'); ?></strong></p>
+								<p><?php echo sprintf( __("This info will be used to create a default system user, which can't be deleted afterwards. Password should be between %d and %d characters long.",'cftp_admin'), MIN_PASS_CHARS, MAX_PASS_CHARS); ?></strong></p>
 
 								<div class="form-group">
 									<label for="install_user_fullname" class="col-sm-4 control-label"><?php _e('Full name','cftp_admin'); ?></label>

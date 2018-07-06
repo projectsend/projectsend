@@ -11,15 +11,14 @@ use \PDO;
 
 class UpdatesCore
 {
+    public $latest_available_version;
 
     function __construct()
     {
-        global $core_update_latest_version;
         global $dbh;
         $this->dbh = $dbh;
 
-        /** @todo replace! */
-        require_once INCLUDES_DIR . DS . 'core.update.silent.php';
+        $this->has_update_available();
     }
 
     /**
@@ -35,6 +34,7 @@ class UpdatesCore
         $this->versions_json = json_decode( $this->versions_get );
         if ( !empty( $this->versions_json ) ) {
             $this->latest = $this->versions_json[0];
+            $this->latest_available_version = $this->latest->version;
 
             if ( version_compare(CURRENT_VERSION, $this->latest->version, '<') ) {
                 /**
@@ -94,7 +94,7 @@ class UpdatesCore
             $this->has_update = $this->lookup_latest_version();
         }
         else {
-            if (VERSION_NEW_FOUND == '1') {
+            if (VERSION_NEW_FOUND == '1' && version_compare(CURRENT_VERSION, VERSION_NEW_NUMBER, '<')) {
                 $this->has_update = true;
             }
         }
@@ -143,21 +143,57 @@ class UpdatesCore
      */
     public function reset_update_status()
     {
-        $this->save_options = [
-            'version_new_number'	=> '',
-            'version_new_url'		=> '',
-            'version_new_chlog'		=> '',
-            'version_new_security'	=> '',
-            'version_new_features'	=> '',
-            'version_new_important'	=> '',
-            'version_new_found'		=> 0,
-        ];
-        foreach ( $this->save_options as $this->option => $this->value ) {
-            $this->query = "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name=:name";
-            $this->sql = $this->dbh->prepare( $this->query );
-            $this->sql->bindParam(':value', $this->value);
-            $this->sql->bindParam(':name', $this->option);
-            $this->sql->execute();
+        // Reset lookup status only if the current version >= latest found version
+        // A reset can be triggered by just updating the database, not the whole app
+        if ( version_compare(CURRENT_VERSION, VERSION_NEW_NUMBER, '>=') ) {
+            $this->save_options = [
+                'version_new_number'	=> '',
+                'version_new_url'		=> '',
+                'version_new_chlog'		=> '',
+                'version_new_security'	=> '',
+                'version_new_features'	=> '',
+                'version_new_important'	=> '',
+                'version_new_found'		=> 0,
+            ];
+            foreach ( $this->save_options as $this->option => $this->value ) {
+                $this->query = "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name=:name";
+                $this->sql = $this->dbh->prepare( $this->query );
+                $this->sql->bindParam(':value', $this->value);
+                $this->sql->bindParam(':name', $this->option);
+                $this->sql->execute();
+            }
         }
+    }
+
+    /**
+     * Apply updates for versions older than 1.0.0
+     */
+    public function apply_legacy_updates()
+    {
+        if (LAST_UPDATE < DATABASE_VERSION) {
+            require_once INCLUDES_DIR . DS . 'core.update.legacy.php';
+        }
+    }
+
+    /**
+     * Set the last update value on the database
+     * Database version number is defined on config.php
+     */
+    public function save_database_version_number()
+    {
+        /** Update the database */
+        $this->statement = $this->dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :version WHERE name='last_update'");
+        $this->statement->bindValue(':version', DATABASE_VERSION);
+        $this->statement->execute();
+
+        /** Record the action log */
+        global $logger;
+        $this->log_action_args = array(
+                                'action' => 30,
+                                'owner_id' => CURRENT_USER_ID,
+                                'affected_account_name' => CURRENT_VERSION,
+                                'affected_file_name' => DATABASE_VERSION
+                            );
+        $this->new_record_action = $logger->log_action_save($this->log_action_args);
     }
 }

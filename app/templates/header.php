@@ -94,28 +94,16 @@ $body_class[] = 'menu_hidden';
 
 		<div class="main_content">
 			<div class="container-fluid">
-				<?php
-					/**
+                <?php
+                    /**
 					 * Gets the mark up and values for the System Updated and
 					 * errors messages.
 					 */
                     include_once ADMIN_TEMPLATES_DIR . DS . 'updates.messages.php';
 
-					/**
-					 * Check if we are on a development version
-					 */
-					if ( IS_DEV == true ) {
-				?>
-						<div class="row">
-							<div class="col-sm-12">
-								<div class="system_msg">
-									<p><strong><?php _e('System Notice:', 'cftp_admin');?></strong> <?php _e('You are using a development version. Some features may be unfinished or not working correctly.', 'cftp_admin'); ?></p>
-								</div>
-							</div>
-						</div>
-				<?php
-					}
-				?>
+                    // Renders all system messages
+                    require_once ADMIN_TEMPLATES_DIR . DS . 'system.messages.php';
+                ?>
 
 				<div class="row">
 					<div id="section_title">

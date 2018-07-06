@@ -72,7 +72,9 @@ module.exports = function(grunt) {
         compress: {
 			dist: {
 				options: {
-					archive: '<%= pkg.name %>-<%= pkg.version %>.zip'
+                    archive: '<%= pkg.name %>-<%= pkg.version %>.zip'
+                    // This is not implemented yet
+                    // Don't forget to add an ignore to the custom config file config/config.php
 				},
 				files: [
 					{

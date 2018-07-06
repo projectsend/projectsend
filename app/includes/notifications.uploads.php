@@ -82,14 +82,14 @@ if (!empty($found_notifications)) {
 	 * Get the information of each client
 	 */
 	$creators = array();
-	$statement = $dbh->prepare("SELECT id, user, name, email, level, notify, created_by, active FROM " . TABLE_USERS . " WHERE FIND_IN_SET(id, :clients)");
+	$statement = $dbh->prepare("SELECT id, username, name, email, level, notify, created_by, active FROM " . TABLE_USERS . " WHERE FIND_IN_SET(id, :clients)");
 	$statement->bindParam(':clients', $clients_to_get);
 	$statement->execute();
 	$statement->setFetchMode(PDO::FETCH_ASSOC);
 	while ( $row = $statement->fetch() ) {
 		$clients_data[$row['id']] = array(
 									'id'			=> $row['id'],
-									'user'			=> $row['user'],
+									'user'			=> $row['username'],
 									'name'			=> $row['name'],
 									'email'			=> $row['email'],
 									'level'			=> $row['level'],
@@ -98,8 +98,8 @@ if (!empty($found_notifications)) {
 									'active'		=> $row['active']
 								);
 		$creators[] = $row['created_by'];
-		$mail_by_user[$row['user']] = $row['email'];
-		$name_by_user[$row['user']] = $row['name'];
+		$mail_by_user[$row['username']] = $row['email'];
+		$name_by_user[$row['username']] = $row['name'];
 	}
 
 	/**
@@ -107,20 +107,20 @@ if (!empty($found_notifications)) {
 	 */
 	$creators = implode( ',', $creators);
 	if (!empty($creators)) {
-		$statement = $dbh->prepare("SELECT id, name, user, email, active FROM " . TABLE_USERS . " WHERE FIND_IN_SET(user, :users)");
+		$statement = $dbh->prepare("SELECT id, name, username, email, active FROM " . TABLE_USERS . " WHERE FIND_IN_SET(username, :users)");
 		$statement->bindParam(':users', $creators);
 		$statement->execute();
 		$statement->setFetchMode(PDO::FETCH_ASSOC);
 		while ( $row = $statement->fetch() ) {
-			$creators_data[$row['user']] = array(
+			$creators_data[$row['username']] = array(
 										'id' => $row['id'],
-										'user' => $row['user'],
+										'user' => $row['username'],
 										'name' => $row['name'],
 										'email' => $row['email'],
 										'active' => $row['active']
 									);
-			$mail_by_user[$row['user']] = $row['email'];
-			$name_by_user[$row['user']] = $row['name'];
+			$mail_by_user[$row['username']] = $row['email'];
+			$name_by_user[$row['username']] = $row['name'];
 		}
 	}
 

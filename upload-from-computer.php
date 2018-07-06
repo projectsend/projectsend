@@ -78,7 +78,7 @@ $current_level = get_current_user_level();
 					runtimes : 'html5,flash,silverlight,html4',
 					url : 'process-upload.php',
 					max_file_size : '<?php echo MAX_FILESIZE; ?>mb',
-					chunk_size : '2048mb',
+					chunk_size : '1mb',
 					multipart : true,
 					<?php
 						if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {

@@ -118,7 +118,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 			<?php
 				if (CLIENTS_CAN_REGISTER == '0') {
 					$msg = __('Client self registration is not allowed. If you need an account, please contact a system administrator.','cftp_admin');
-					echo system_message('danger',$msg);
+                    echo system_message('danger',$msg);
 				}
 				else {
 					/**
@@ -136,16 +136,18 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 	
 						switch ($new_response['actions']) {
 							case 1:
-								$msg = __('Account added correctly.','cftp_admin');
+                                $msg = __('Account added correctly.','cftp_admin');
 								echo system_message('success',$msg);
 	
 								if (CLIENTS_AUTO_APPROVE == 0) {
-									$msg = __('Please remember that an administrator needs to approve your account before you can log in.','cftp_admin');
+                                    $msg = __('Please remember that an administrator needs to approve your account before you can log in.','cftp_admin');
+                                    $type = 'warning';
 								}
 								else {
-									$msg = __('You may now log in with your new credentials.','cftp_admin');
+                                    $msg = __('You may now log in with your new credentials.','cftp_admin');
+                                    $type = 'success';
 								}
-								echo system_message('info',$msg);
+								echo system_message($type,$msg);
 	
 								/** Record the action log */
 								global $logger;

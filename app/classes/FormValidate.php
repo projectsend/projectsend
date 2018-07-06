@@ -273,7 +273,6 @@ class FormValidate
          * Prepare the error message mark up and content
          */
         $error_format = '<div class="alert alert-danger alert-block">
-                            <a href="#" class="close" data-dismiss="alert">&times;</a>
                             <p class="alert-title">%s:</p>
                             <ol>
                                 %s

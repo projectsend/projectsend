@@ -546,13 +546,13 @@ function system_message( $type, $message, $div_id = '' )
     }
 
 	switch ($type) {
-		case 'success':
+        case 'success':
+            break;
 		case 'danger':
-			$close = true;
 			break;
 		case 'info':
+            break;
         case 'warning':
-            $close = false;
             break;
 	}
 
@@ -563,7 +563,7 @@ function system_message( $type, $message, $div_id = '' )
 
 	$return .= '>';
 
-	if ($close == true) {
+	if (isset($close) && $close == true) {
 		$return .= '<a href="#" class="close" data-dismiss="alert">&times;</a>';
 	}
 

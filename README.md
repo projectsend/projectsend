@@ -3,6 +3,7 @@
 ![ProjectSend presentation screenshots](https://www.projectsend.org/screenshots.png)
 
 ## About
+
 ProjectSend is a free, clients-oriented, private file sharing web application.
 
 Clients are created and assigned a username and a password.
@@ -17,6 +18,7 @@ git: [project page](https://github.com/ignacionelson/ProjectSend)
 Feel free to participate!
 
 ## IMPORTANT
+
 It is recommended that you download an official release (either from the releases tab here or from the official website).
 Downloading a development version directly from the repository might give you unexpected results, such as visible errors, functions that are still not finished, etc.
 
@@ -39,7 +41,7 @@ You may login with your new username and password.
 
 **Important Note:** for version r608 and later you will need to enable PDO extension from php.ini
 
-```
+```ini
 extension=php_pdo.dll
 extension=php_pdo_mysql.dll
 ```
@@ -57,13 +59,16 @@ When a system user logs in to the system version, a check for database missing d
 Whenever a new version is available, you will be notified in the admin panel via a message shown under the main menu.
 
 ## Developing
-**Notice: ProjectSend is currently under refactoring**
+
+####Notice: ProjectSend is currently under refactoring
 
 If you want to help with development, you will need to do a few things via Grunt:
+
 1. Download the composer, bower and npm dependencies. You can use the ````Grunt dependencies_update```` command which should take care of that.
 1. Run the default grunt task simply with ````Grunt```` to compile the main CSS and JS assets files.
 
 ## Questions, ideas? Want to join the project?
+
 Send your message to contact@projectsend.org or join us on Facebook, on https://www.facebook.com/projectsend/
 
 ## Translations
@@ -73,12 +78,15 @@ Thanks. Arigatō. Danke. Gracias. Grazie. Mahadsanid. Salamat po. Merci. אַ ד
 If you want to translate ProjectSend in your language or download an existing translation, please join the project on [Transifex](https://www.transifex.com/projects/p/projectsend)
 
 ## License
+
 ProjectSend is licensed under [GNU GPL v3](https://www.gnu.org/licenses/gpl.html)
 
 ## Change log
+
 [Available at the official site](https://www.projectsend.org/change-log/)
 
 ## Special thanks!
+
 Also, thank you to the following people/communities that helped during development, either by giving support, sending code, translations, etc.
 
 - lenamtl

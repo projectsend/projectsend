@@ -206,7 +206,7 @@ class FilesUpload
 									'affected_file_name'		=> $this->name,
 									'affected_account_name'	=> $this->uploader
 								);
-			$new_record_action = $new_log_action->log_action_save($log_action_args);
+			$new_record_action = $new_log_action->add_entry($log_action_args);
 		}
 		else {
 			$this->statement = $this->dbh->prepare("SELECT id, public_allow, public_token FROM " . TABLE_FILES . " WHERE url = :url");
@@ -302,7 +302,7 @@ class FilesUpload
 											'affected_account'		=> $this->assignment,
 											'affected_account_name'	=> $this->account_name
 										);
-					$new_record_action = $new_log_action->log_action_save($log_action_args);
+					$new_record_action = $new_log_action->add_entry($log_action_args);
 				}
 			}
 		}
@@ -504,7 +504,7 @@ class FilesUpload
 										'affected_account' => $this->deleted_client,
 										'affected_account_name' => $this->clients_names[$this->deleted_client]
 									);
-				$new_record_action = $new_log_action->log_action_save($log_action_args);
+				$new_record_action = $new_log_action->add_entry($log_action_args);
 			}
 		}
 		/**
@@ -541,7 +541,7 @@ class FilesUpload
 										'affected_account' => $this->deleted_group,
 										'affected_account_name' => $this->groups_names[$this->deleted_group]
 									);
-				$new_record_action = $new_log_action->log_action_save($log_action_args);
+				$new_record_action = $new_log_action->add_entry($log_action_args);
 			}
 		}
 	}

@@ -194,6 +194,6 @@ class UpdatesCore
                                 'affected_account_name' => CURRENT_VERSION,
                                 'affected_file_name' => DATABASE_VERSION
                             );
-        $this->new_record_action = $logger->log_action_save($this->log_action_args);
+        $this->new_record_action = $logger->add_entry($this->log_action_args);
     }
 }

@@ -83,7 +83,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 										'affected_file'			=> (int)$got_file_id,
 										'affected_file_name'	=> $real_file_url,
 									);
-				$new_record_action = $logger->log_action_save($log_action_args);
+				$new_record_action = $logger->add_entry($log_action_args);
 
 				// DOWNLOAD
 				$real_file = UPLOADED_FILES_DIR.DS.basename($real_file_url);

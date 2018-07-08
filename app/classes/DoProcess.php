@@ -283,7 +283,7 @@ class DoProcess
                                         'owner_id' => CURRENT_USER_ID,
                                         'affected_account_name' => CURRENT_USER_USERNAME
                                     );
-                $this->new_record_action = $this->logger->log_action_save($this->log_action_args);
+                $this->new_record_action = $this->logger->add_entry($this->log_action_args);
             
                 if (file_exists($this->zip_file)) {
                     setCookie("download_started", 1, time() + 20, '/', "", false, false);
@@ -319,7 +319,7 @@ class DoProcess
                                     'get_user_real_name'	=> true,
                                     'get_file_real_name'	=> true
                                 );
-            $this->new_record_action = $this->logger->log_action_save($this->log_action_args);
+            $this->new_record_action = $this->logger->add_entry($this->log_action_args);
             $this->save_file_as = UPLOADED_FILES_DIR . DS . $save_as;
 
             $this->serve_file($this->file_location, $this->save_file_as);

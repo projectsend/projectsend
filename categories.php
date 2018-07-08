@@ -95,7 +95,7 @@ if ( isset( $_GET['action'] ) ) {
 										'owner_id'				=> CURRENT_USER_ID,
 										'affected_account_name'	=> $all_categories[$category]
 									);
-				$new_record_action = $logger->log_action_save($log_action_args);
+				$new_record_action = $logger->add_entry($log_action_args);
 			}
 		}
 		else {

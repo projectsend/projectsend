@@ -206,7 +206,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 						$log_action_args['affected_account_name'] = $name_for_actions;
 						$log_action_args['get_user_real_name'] = true;
 					}
-					$new_record_action = $logger->log_action_save($log_action_args);
+					$new_record_action = $logger->add_entry($log_action_args);
 				}
 			}
 			else {

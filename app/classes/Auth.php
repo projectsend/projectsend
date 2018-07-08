@@ -103,7 +103,7 @@ class Auth {
 											'owner_user' => $this->name,
 											'affected_account_name' => $this->name
 										);
-					$this->new_record_action = $logger->log_action_save($this->log_action_args);
+					$this->new_record_action = $logger->add_entry($this->log_action_args);
 
 
 					$results = array(
@@ -234,7 +234,7 @@ class Auth {
 								'owner_id'	=> CURRENT_USER_ID,
 								'affected_account_name' => CURRENT_USER_NAME
 							);
-		$new_record_action = $logger->log_action_save($log_action_args);
+		$new_record_action = $logger->add_entry($log_action_args);
 
 		$redirect_to = 'index.php';
 		if ( isset( $_GET['timeout'] ) ) {

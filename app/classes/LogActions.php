@@ -18,7 +18,7 @@ class LogActions
 	/**
 	 * Create a new client.
 	 */
-	function log_action_save($arguments)
+	function add_entry($arguments)
 	{
 		global $dbh;
 		$this->state = array();

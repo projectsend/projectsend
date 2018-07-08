@@ -165,7 +165,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 											'affected_account_name' => $saved_client['username'],
 											'get_user_real_name' => true
 										);
-					$new_record_action = $logger->log_action_save($log_action_args);
+					$new_record_action = $logger->add_entry($log_action_args);
 				break;
 				case 0:
 					$msg = __('There was an error. Please try again.','cftp_admin');

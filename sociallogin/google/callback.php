@@ -78,7 +78,7 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']->id_
           'owner_id' => $logged_id,
           'affected_account_name' => CURRENT_USER_NAME
         );
-        $new_record_action = $logger->log_action_save($log_action_args);
+        $new_record_action = $logger->add_entry($log_action_args);
 
         if ($user_level == '0') {
           header("location:" . BASE_URI . "private.php");

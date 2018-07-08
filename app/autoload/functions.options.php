@@ -89,7 +89,7 @@ function option_file_upload( $file, $validate_ext = '', $option = '', $action = 
 											'action' => $action,
 											'owner_id' => CURRENT_USER_ID
 										);
-					$new_record_action = $logger->log_action_save($log_action_args);
+					$new_record_action = $logger->add_entry($log_action_args);
 				}
 			}
 			else {

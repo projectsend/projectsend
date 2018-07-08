@@ -16,25 +16,16 @@ $page_title = __('Groups administration','cftp_admin');
 /**
  * Used when viewing groups a certain client belongs to.
  */
-if(!empty($_GET['member'])) {
-	$member = $_GET['member'];
-	/** Add the name of the client to the page's title. */
-	$sql_name = $dbh->prepare("SELECT name from " . TABLE_USERS . " WHERE id=:id");
-	$sql_name->bindParam(':id', $member, PDO::PARAM_INT);
-	$sql_name->execute();
-
-	if ( $sql_name->rowCount() > 0) {
-		$sql_name->setFetchMode(PDO::FETCH_ASSOC);
-		while ( $row_member = $sql_name->fetch() ) {
-			$page_title = ' '.__('Groups where','cftp_admin').' '.html_entity_decode($row_member['name']).' '.__('is member','cftp_admin');
-		}
-		$member_exists = 1;
-
+if (!empty($_GET['member']) ) {
+    $client_id = $_GET['member'];
+    $client = get_client_by_id($client_id);
+    if (!empty($client)) {
+        $page_title = sprintf(__('Groups where %s is member','cftp_admin'), $client['name']);
 
 		/** Get groups where this client is member */
 		$get_groups		= new \ProjectSend\MembersActions();
 		$get_arguments	= array(
-								'client_id'	=> $member,
+								'client_id'	=> $client_id,
 								'return'	=> 'list',
 							);
 		$found_groups	= $get_groups->client_get_groups($get_arguments); 
@@ -57,9 +48,9 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 	/**
 	 * Apply the corresponding action to the selected users.
 	 */
-	if(isset($_GET['action']) && $_GET['action'] != 'none') {
+	if (isset($_GET['action']) && $_GET['action'] != 'none') {
 		/** Continue only if 1 or more users were selected. */
-		if(!empty($_GET['batch'])) {
+		if (!empty($_GET['batch'])) {
 			$selected_groups = $_GET['batch'];
 			$groups_to_get = implode( ',', array_map( 'intval', array_unique( $selected_groups ) ) );
 
@@ -90,7 +81,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 												'owner_id' => CURRENT_USER_ID,
 												'affected_account_name' => $all_groups[$groups]
 											);
-						$new_record_action = $logger->log_action_save($log_action_args);		
+						$new_record_action = $logger->add_entry($log_action_args);		
 					}
 					
 					if ($deleted_groups > 0) {

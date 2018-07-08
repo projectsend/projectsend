@@ -286,7 +286,7 @@ $get_categories = get_categories();
 													'affected_file' => $process_file['new_file_id'],
 													'affected_file_name' => $file['name']
 												);
-							$new_record_action = $logger->log_action_save($log_action_args);
+							$new_record_action = $logger->add_entry($log_action_args);
 
 							$msg = __('The file has been edited succesfuly.','cftp_admin');
 							echo system_message('success',$msg);

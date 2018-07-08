@@ -1,4 +1,6 @@
 <?php
+use enshrined\svgSanitize\Sanitizer;
+
 /**
  * Get all the file information knowing only the id
  * Used on the Download information page.

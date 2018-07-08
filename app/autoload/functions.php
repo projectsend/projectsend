@@ -5,7 +5,6 @@
  * @package		ProjectSend
  * @subpackage	Functions
  */
-use enshrined\svgSanitize\Sanitizer;
 
 /**
  * To successfully add the orderby and order parameters to a query,

@@ -13,14 +13,14 @@
 		$("form").submit(function() {
 			clean_form(this);
 
-			is_complete(this.add_user_form_name,'<?php echo $json_strings['validation']['no_name']; ?>');
-			is_complete(this.add_user_form_user,'<?php echo $json_strings['validation']['no_user']; ?>');
-			is_complete(this.add_user_form_email,'<?php echo $json_strings['validation']['no_email']; ?>');
-			is_complete(this.add_user_form_level,'<?php echo $json_strings['validation']['no_role']; ?>');
-			is_length(this.add_user_form_user,<?php echo MIN_USER_CHARS; ?>,<?php echo MAX_USER_CHARS; ?>,'<?php echo $json_strings['validation']['length_user']; ?>');
-			is_email(this.add_user_form_email,'<?php echo $json_strings['validation']['invalid_email']; ?>');
-			is_alpha_or_dot(this.add_user_form_user,'<?php echo $json_strings['validation']['alpha_user']; ?>');
-			is_number(this.add_user_form_maxfilesize,'<?php echo $json_strings['validation']['file_size']; ?>');
+			is_complete(this.name,'<?php echo $json_strings['validation']['no_name']; ?>');
+			is_complete(this.username,'<?php echo $json_strings['validation']['no_user']; ?>');
+			is_complete(this.email,'<?php echo $json_strings['validation']['no_email']; ?>');
+			is_complete(this.level,'<?php echo $json_strings['validation']['no_role']; ?>');
+			is_length(this.username,<?php echo MIN_USER_CHARS; ?>,<?php echo MAX_USER_CHARS; ?>,'<?php echo $json_strings['validation']['length_user']; ?>');
+			is_email(this.email,'<?php echo $json_strings['validation']['invalid_email']; ?>');
+			is_alpha_or_dot(this.username,'<?php echo $json_strings['validation']['alpha_user']; ?>');
+			is_number(this.max_file_size,'<?php echo $json_strings['validation']['file_size']; ?>');
 			
 			<?php
 				/**
@@ -29,18 +29,18 @@
 				if ($user_form_type == 'edit_user' || $user_form_type == 'edit_user_self') {
 			?>
 					// Only check password if any of the 2 fields is completed
-					var password_1 = $("#add_user_form_pass").val();
-					//var password_2 = $("#add_user_form_pass2").val();
+					var password_1 = $("#password").val();
+					//var password_2 = $("#password_repeat").val();
 					if ($.trim(password_1).length > 0/* || $.trim(password_2).length > 0*/) {
 			<?php
 				}
 			?>
 
-						is_complete(this.add_user_form_pass,'<?php echo $json_strings['validation']['no_pass']; ?>');
-						//is_complete(this.add_user_form_pass2,'<?php echo $json_strings['validation']['no_pass2']; ?>');
-						is_length(this.add_user_form_pass,<?php echo MIN_PASS_CHARS; ?>,<?php echo MAX_PASS_CHARS; ?>,'<?php echo $json_strings['validation']['length_pass']; ?>');
-						is_password(this.add_user_form_pass,'<?php echo $json_strings['validation']['valid_pass'] . " " . addslashes($json_strings['validation']['valid_chars']); ?>');
-						//is_match(this.add_user_form_pass,this.add_user_form_pass2,'<?php echo $json_strings['validation']['match_pass']; ?>');
+						is_complete(this.password,'<?php echo $json_strings['validation']['no_pass']; ?>');
+						//is_complete(this.password_repeat,'<?php echo $json_strings['validation']['no_pass2']; ?>');
+						is_length(this.password,<?php echo MIN_PASS_CHARS; ?>,<?php echo MAX_PASS_CHARS; ?>,'<?php echo $json_strings['validation']['length_pass']; ?>');
+						is_password(this.password,'<?php echo $json_strings['validation']['valid_pass'] . " " . addslashes($json_strings['validation']['valid_chars']); ?>');
+						//is_match(this.password,this.password_repeat,'<?php echo $json_strings['validation']['match_pass']; ?>');
 
 			<?php
 				/** Close the jquery IF statement. */
@@ -84,37 +84,37 @@ switch ($user_form_type) {
 ?>
 <form action="<?php echo html_output($form_action); ?>" name="adduser" method="post" class="form-horizontal">
 	<div class="form-group">
-		<label for="add_user_form_name" class="col-sm-4 control-label"><?php _e('Name','cftp_admin'); ?></label>
+		<label for="name" class="col-sm-4 control-label"><?php _e('Name','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" name="add_user_form_name" id="add_user_form_name" class="form-control required" value="<?php echo (isset($add_user_data_name)) ? html_output(stripslashes($add_user_data_name)) : ''; ?>" />
+			<input type="text" name="name" id="name" class="form-control required" value="<?php echo (isset($user_arguments['name'])) ? format_form_value($user_arguments['name']) : ''; ?>" />
 		</div>
 	</div>
 
 	<div class="form-group">
-		<label for="add_user_form_user" class="col-sm-4 control-label"><?php _e('Log in username','cftp_admin'); ?></label>
+		<label for="username" class="col-sm-4 control-label"><?php _e('Log in username','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" name="add_user_form_user" id="add_user_form_user" class="form-control <?php if (!$disable_user) { echo 'required'; } ?>" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($add_user_data_user)) ? html_output(stripslashes($add_user_data_user)) : ''; ?>" <?php if ($disable_user) { echo 'readonly'; } ?> placeholder="<?php _e("Must be alphanumeric",'cftp_admin'); ?>" />
+			<input type="text" name="username" id="username" class="form-control <?php if (!$disable_user) { echo 'required'; } ?>" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($user_arguments['username'])) ? format_form_value($user_arguments['username']) : ''; ?>" <?php if ($disable_user) { echo 'readonly'; } ?> placeholder="<?php _e("Must be alphanumeric",'cftp_admin'); ?>" />
 		</div>
 	</div>
 
 	<div class="form-group">
-		<label for="add_user_form_pass" class="col-sm-4 control-label"><?php _e('Password','cftp_admin'); ?></label>
+		<label for="password" class="col-sm-4 control-label"><?php _e('Password','cftp_admin'); ?></label>
 		<div class="col-sm-8">
 			<div class="input-group">
-				<input name="add_user_form_pass" id="add_user_form_pass" class="form-control <?php if ($require_pass) { echo 'required'; } ?> password_toggle" type="password" maxlength="<?php echo MAX_PASS_CHARS; ?>" />
+				<input name="password" id="password" class="form-control <?php if ($require_pass) { echo 'required'; } ?> password_toggle" type="password" maxlength="<?php echo MAX_PASS_CHARS; ?>" />
 				<div class="input-group-btn password_toggler">
 					<button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button>
 				</div>
 			</div>
-			<button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="add_user_form_pass" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate','cftp_admin'); ?></button>
+			<button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="password" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate','cftp_admin'); ?></button>
 			<?php echo password_notes(); ?>
 		</div>
 	</div>
 
 	<div class="form-group">
-		<label for="add_user_form_email" class="col-sm-4 control-label"><?php _e('E-mail','cftp_admin'); ?></label>
+		<label for="email" class="col-sm-4 control-label"><?php _e('E-mail','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" name="add_user_form_email" id="add_user_form_email" class="form-control required" value="<?php echo (isset($add_user_data_email)) ? html_output(stripslashes($add_user_data_email)) : ''; ?>" placeholder="<?php _e("Must be valid and unique",'cftp_admin'); ?>" />
+			<input type="text" name="email" id="email" class="form-control required" value="<?php echo (isset($user_arguments['email'])) ? format_form_value($user_arguments['email']) : ''; ?>" placeholder="<?php _e("Must be valid and unique",'cftp_admin'); ?>" />
 		</div>
 	</div>
 
@@ -122,21 +122,30 @@ switch ($user_form_type) {
 			if ($extra_fields == true) {
 		?>
 			<div class="form-group">
-				<label for="add_user_form_level" class="col-sm-4 control-label"><?php _e('Role','cftp_admin'); ?></label>
+				<label for="level" class="col-sm-4 control-label"><?php _e('Role','cftp_admin'); ?></label>
 				<div class="col-sm-8">
-					<select name="add_user_form_level" id="add_user_form_level" class="form-control">
-						<option value="9" <?php echo (isset($add_user_data_level) && $add_user_data_level == '9') ? 'selected="selected"' : ''; ?>><?php echo USER_ROLE_LVL_9; ?></option>
-						<option value="8" <?php echo (isset($add_user_data_level) && $add_user_data_level == '8') ? 'selected="selected"' : ''; ?>><?php echo USER_ROLE_LVL_8; ?></option>
-						<option value="7" <?php echo (isset($add_user_data_level) && $add_user_data_level == '7') ? 'selected="selected"' : ''; ?>><?php echo USER_ROLE_LVL_7; ?></option>
+					<select name="level" id="level" class="form-control">
+                        <?php
+                            $roles = [
+                                '9' => USER_ROLE_LVL_9,
+                                '8' => USER_ROLE_LVL_8,
+                                '7' => USER_ROLE_LVL_7,
+                            ];
+                            foreach ( $roles as $role_level => $role_name ) {
+                        ?>
+						        <option value="<?php echo $role_level; ?>" <?php echo (isset($user_arguments['level']) && $user_arguments['level'] == $role_level) ? 'selected="selected"' : ''; ?>><?php echo $role_name; ?></option>
+                        <?php
+                            }
+                        ?>
 					</select>
 				</div>
 			</div>
 
 			<div class="form-group">
-				<label for="add_user_form_maxfilesize" class="col-sm-4 control-label"><?php _e('Max. upload filesize','cftp_admin'); ?></label>
+				<label for="max_file_size" class="col-sm-4 control-label"><?php _e('Max. upload filesize','cftp_admin'); ?></label>
 				<div class="col-sm-8">
 					<div class="input-group">
-						<input type="text" name="add_user_form_maxfilesize" id="add_user_form_maxfilesize" class="form-control" value="<?php echo (isset($add_user_data_maxfilesize)) ? html_output(stripslashes($add_user_data_maxfilesize)) : ''; ?>" />
+						<input type="text" name="max_file_size" id="max_file_size" class="form-control" value="<?php echo (isset($user_arguments['max_file_size'])) ? format_form_value($user_arguments['max_file_size']) : '0'; ?>" />
 						<span class="input-group-addon">mb</span>
 					</div>
 					<p class="field_note"><?php _e("Set to 0 to use the default system limit",'cftp_admin'); ?> (<?php echo MAX_FILESIZE; ?> mb)</p>
@@ -145,8 +154,8 @@ switch ($user_form_type) {
 
 			<div class="form-group">
 				<div class="col-sm-8 col-sm-offset-4">
-					<label for="add_user_form_active">
-						<input type="checkbox" name="add_user_form_active" id="add_user_form_active" <?php echo (isset($add_user_data_active) && $add_user_data_active == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Active (user can log in)','cftp_admin'); ?>
+					<label for="active">
+						<input type="checkbox" name="active" id="active" <?php echo (isset($user_arguments['active']) && $user_arguments['active'] == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Active (user can log in)','cftp_admin'); ?>
 					</label>
 				</div>
 			</div>
@@ -157,21 +166,18 @@ switch ($user_form_type) {
 
 					<div class="form-group">
 						<div class="col-sm-8 col-sm-offset-4">
-							<label for="add_user_form_notify_account">
-								<input type="checkbox" name="add_user_form_notify_account" id="add_user_form_notify_account" <?php echo (isset($add_user_data_notify_account) && $add_user_data_notify_account == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Send welcome email','cftp_admin'); ?>
+							<label for="notify_account">
+								<input type="checkbox" name="notify_account" id="notify_account" <?php echo (isset($user_arguments['notify_account']) && $user_arguments['notify_account'] == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Send welcome email','cftp_admin'); ?>
 							</label>
 						</div>
 					</div>
 			<?php
 				}
-			?>
-
-		<?php
 			}
 		?>
 
 	<div class="inside_form_buttons">
-		<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php echo $submit_value; ?></button>
+		<button type="submit" class="btn btn-wide btn-primary"><?php echo $submit_value; ?></button>
 	</div>
 
 	<?php

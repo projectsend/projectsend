@@ -93,10 +93,15 @@ if ($pdo_driver_available) {
 /** List of tables comes from sys.vars.php */
 
 // check if tables exists
-$table_exists = false;
+$table_exists = true;
 if ($pdo_connected) {
+    $availableTables = $pdo->query("SHOW TABLES")->fetchAll(\PDO::FETCH_COLUMN);
 	foreach ($all_system_tables as $name) {
-		$table_exists = $table_exists || try_table_exists($db, $post_vars['dbprefix'].$name);
+	    $prefixed = $post_vars['dbprefix'].$name;
+	    if (!in_array($prefixed, $availableTables)) {
+	        $table_exists = false;
+	        break;
+        }
 	}
 }
 $reuse_tables =  $post_vars['dbreuse'] == 'reuse';
@@ -155,29 +160,6 @@ if (isset($_POST['submit-start']) && $ready_to_go) {
 		// config file written successfully
 		$config_file_written = true;
 	}
-}
-
-/**
- * Check if a table exists in the current database.
- * (taken from stackoverflow)
- *
- * @param PDO $pdo PDO instance connected to a database.
- * @param string $table Table to search for.
- * @return bool TRUE if table exists, FALSE if no table found.
- */
-function try_table_exists($pdo, $table) {
-    // Try a select statement against the table
-    // Run it in try/catch in case PDO is in ERRMODE_EXCEPTION.
-    try {
-        $result = $pdo->prepare("SELECT 1 FROM $table LIMIT 1");
-		$result->execute();
-    } catch (Exception $e) {
-        // We got an exception == table not found
-        return false;
-    }
-
-    // Result is either boolean FALSE (no table found) or PDOStatement Object (table found)
-    return $result !== FALSE;
 }
 
 global $status_indicator_ok;

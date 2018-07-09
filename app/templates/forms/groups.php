@@ -13,7 +13,7 @@
 		$("form").submit(function() {
 			clean_form(this);
 
-			is_complete(this.add_group_form_name,'<?php echo $json_strings['validation']['no_name']; ?>');
+			is_complete(this.name,'<?php echo $json_strings['validation']['no_name']; ?>');
 			// show the errors or continue if everything is ok
 			if (show_form_errors() == false) { return false; }
 		});
@@ -35,23 +35,23 @@ switch ($groups_form_type) {
 
 <form action="<?php echo html_output($form_action); ?>" name="addgroup" method="post" class="form-horizontal">
 	<div class="form-group">
-		<label for="add_group_form_name" class="col-sm-4 control-label"><?php _e('Group name','cftp_admin'); ?></label>
+		<label for="name" class="col-sm-4 control-label"><?php _e('Group name','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" name="add_group_form_name" id="add_group_form_name" class="form-control required" value="<?php echo (isset($add_group_data_name)) ? html_output(stripslashes($add_group_data_name)) : ''; ?>" />
+			<input type="text" name="name" id="name" class="form-control required" value="<?php echo (isset($group_arguments['name'])) ? html_output(stripslashes($group_arguments['name'])) : ''; ?>" />
 		</div>
 	</div>
 
 	<div class="form-group">
-		<label for="add_group_form_description" class="col-sm-4 control-label"><?php _e('Description','cftp_admin'); ?></label>
+		<label for="description" class="col-sm-4 control-label"><?php _e('Description','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<textarea name="add_group_form_description" id="add_group_form_description" class="ckeditor form-control"><?php echo (isset($add_group_data_description)) ? html_output($add_group_data_description) : ''; ?></textarea>
+			<textarea name="description" id="description" class="ckeditor form-control"><?php echo (isset($group_arguments['description'])) ? html_output($group_arguments['description']) : ''; ?></textarea>
 		</div>
 	</div>
 
 	<div class="form-group assigns">
-		<label for="add_group_form_members" class="col-sm-4 control-label"><?php _e('Members','cftp_admin'); ?></label>
+		<label for="members" class="col-sm-4 control-label"><?php _e('Members','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<select multiple="multiple" id="members-select" class="form-control chosen-select" name="add_group_form_members[]" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+			<select multiple="multiple" id="members" class="form-control chosen-select" name="members[]" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
 				<?php
 					$sql = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE level = '0' ORDER BY name ASC");
 					$sql->execute();
@@ -80,14 +80,14 @@ switch ($groups_form_type) {
 
 	<div class="form-group">
 		<div class="col-sm-8 col-sm-offset-4">
-			<label for="add_group_form_public">
-				<input type="checkbox" name="add_group_form_public" id="add_group_form_public" <?php echo (isset($add_group_data_public) && $add_group_data_public == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Public','cftp_admin'); ?>
+			<label for="public">
+				<input type="checkbox" name="public" id="public" <?php echo (isset($group_arguments['public']) && $group_arguments['public'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Public','cftp_admin'); ?>
 				<p class="field_note"><?php _e('Allows clients to request access to this group in the registraron process and when editing their own profile. This feature requires the corresponding option to be enabled on the CLIENTS OPTIONS page.','cftp_admin'); ?></p>
 			</label>
 		</div>
 	</div>
 
 	<div class="inside_form_buttons">
-		<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php echo html_output($submit_value); ?></button>
+		<button type="submit" class="btn btn-wide btn-primary"><?php echo html_output($submit_value); ?></button>
 	</div>
 </form>

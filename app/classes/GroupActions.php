@@ -154,19 +154,22 @@ class GroupActions
 
 	/**
 	 * Delete an existing group.
+     * @deprecated 1.0.0
 	 */
+    /*
 	function delete_group($group)
 	{
 		$this->check_level = array(9,8);
 		if (isset($group)) {
-			/** Do a permissions check */
+			// Do a permissions check
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
 				$this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_GROUPS . ' WHERE id=:id');
 				$this->sql->bindParam(':id', $group, PDO::PARAM_INT);
 				$this->sql->execute();
 			}
 		}
-	}
+    }
+    */
 
 	/**
 	 * Return an array of existing groups

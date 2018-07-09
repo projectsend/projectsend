@@ -22,28 +22,21 @@ if ($_POST) {
 	 * Clean the posted form values to be used on the groups actions,
 	 * and again on the form if validation failed.
 	 */
-	$add_group_data_name = encode_html($_POST['add_group_form_name']);
-	$add_group_data_description = encode_html($_POST['add_group_form_description']);
-	$add_group_data_members = ( !empty( $_POST['add_group_form_members'] ) ) ? $_POST['add_group_form_members'] : null;
-	$add_group_data_public = (isset($_POST["add_group_form_public"])) ? 1 : 0;
-
-	/** Arguments used on validation and group creation. */
-	$new_arguments = array(
-							'id' => '',
-							'name' => $add_group_data_name,
-							'description' => $add_group_data_description,
-							'members' => $add_group_data_members,
-							'public' => $add_group_data_public,
-						);
+    $group_arguments = [
+        'id'            => '',
+        'name'          => encode_html($_POST['name']),
+        'description'   => encode_html($_POST['description']),
+        'members'       => ( !empty( $_POST['members'] ) ) ? $_POST['members'] : null,
+        'public'        => (isset($_POST["public"])) ? 1 : 0,
+    ];
 
 	/** Validate the information from the posted form. */
-	$new_validate = $new_group->validate_group($new_arguments);
+	$new_validate = $new_group->validate_group($group_arguments);
 
 	/** Create the group if validation is correct. */
 	if ($new_validate == 1) {
-		$new_response = $new_group->create_group($new_arguments);
+		$new_response = $new_group->create_group($group_arguments);
 	}
-
 }
 ?>
 
@@ -74,7 +67,7 @@ if ($_POST) {
 													'action' => 23,
 													'owner_id' => CURRENT_USER_ID,
 													'affected_account' => $new_response['new_id'],
-													'affected_account_name' => $add_group_data_name
+													'affected_account_name' => $group_arguments['name']
 												);
 							$new_record_action = $logger->add_entry($log_action_args);
 						break;

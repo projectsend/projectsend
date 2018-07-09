@@ -44,45 +44,30 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 <div class="col-xs-12">
 
 <?php
-
 	/**
 	 * Apply the corresponding action to the selected users.
 	 */
 	if (isset($_GET['action']) && $_GET['action'] != 'none') {
-		/** Continue only if 1 or more users were selected. */
+		// Continue only if 1 or more users were selected.
 		if (!empty($_GET['batch'])) {
 			$selected_groups = $_GET['batch'];
 			$groups_to_get = implode( ',', array_map( 'intval', array_unique( $selected_groups ) ) );
 
-			/**
-			 * Make a list of groups to avoid individual queries.
-			 */
-			$sql_grps = $dbh->prepare("SELECT id, name FROM " . TABLE_GROUPS . " WHERE FIND_IN_SET(id, :groups)");
-			$sql_grps->bindParam(':groups', $groups_to_get);
-			$sql_grps->execute();
-			$sql_grps->setFetchMode(PDO::FETCH_ASSOC);
-			while( $data_group = $sql_grps->fetch() ) {
-				$all_groups[$data_group['id']] = $data_group['name'];
-			}
+			// Make a list of groups to avoid individual queries.
+            $groups_arguments = [
+                'group_ids' => $groups_to_get,
+            ];
+            $get_groups = get_groups($groups_arguments);
 
 			switch($_GET['action']) {
 				case 'delete':
 					$deleted_groups = 0;
 
-					foreach ($selected_groups as $groups) {
-						$this_group = new \ProjectSend\GroupActions();
-						$delete_group = $this_group->delete_group($groups);
-						$deleted_groups++;
-
-						/** Record the action log */
-						global $logger;
-						$log_action_args = array(
-												'action' => 18,
-												'owner_id' => CURRENT_USER_ID,
-												'affected_account_name' => $all_groups[$groups]
-											);
-						$new_record_action = $logger->add_entry($log_action_args);		
-					}
+					foreach ($get_groups as $group => $group_data)  {
+						if ( delete_group($group_data['id']) ) {
+                            $deleted_groups++;
+                        }
+                    }
 					
 					if ($deleted_groups > 0) {
 						$msg = __('The selected groups were deleted.','cftp_admin');
@@ -98,42 +83,13 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 	}
 	
 	/**
-	 * Generate the list of available groups.
+	 * Get the groups
+     * @todo use get_groups()
 	 */
-
-	/**
-	 * Generate an array of file count per group
-	 */
-	$files_amount = array();
-	$count_files_sql = $dbh->prepare("SELECT group_id, COUNT(file_id) as files FROM " . TABLE_FILES_RELATIONS . " WHERE group_id IS NOT NULL GROUP BY group_id");
-	$count_files_sql->execute();
-	$count_files = $count_files_sql->rowCount();
-	if ($count_files > 0) {
-		$count_files_sql->setFetchMode(PDO::FETCH_ASSOC);
-		while ( $crow = $count_files_sql->fetch() ) {
-			$files_amount[$crow['group_id']] = $crow['files'];
-		}
-	}
-
-	/**
-	 * Generate an array of amount of users on each group
-	 */
-	$members_amount = array();
-	$count_members_sql = $dbh->prepare("SELECT group_id, COUNT(client_id) as members FROM " . TABLE_MEMBERS . " GROUP BY group_id");
-	$count_members_sql->execute();
-	$count_members = $count_members_sql->rowCount();
-	if ($count_members > 0) {
-		while ( $mrow = $count_members_sql->fetch() ) {
-			$members_amount[$mrow['group_id']] = $mrow['members'];
-		}
-	}
-
-
-
 	$params = array();
 	$cq = "SELECT * FROM " . TABLE_GROUPS;
 
-	/** Add the search terms */	
+	// Add the search terms
 	if ( isset( $_GET['search'] ) && !empty( $_GET['search'] ) ) {
 		$cq .= " WHERE (name LIKE :name OR description LIKE :description)";
 		$next_clause = ' AND';
@@ -147,7 +103,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 		$next_clause = ' WHERE';
 	}
 	
-	/** Add the member */
+	// Add the member
 	if (isset($found_groups)) {
 		if ($found_groups != '') {
 			$cq .= $next_clause. " FIND_IN_SET(id, :groups)";
@@ -321,6 +277,12 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 
 					/**
 					 * Prepare the information to be used later on the cells array
+                     * @todo a Group class object needs to return this information
+                    */
+                    $members_count = count_members_on_group($row['id']);
+                    $files_count = count_files_on_group($row['id']);
+
+                    /**
 					 * 1- Get account creation date
 					 */
 					$date = date(TIMEFORMAT,strtotime($row['timestamp']));
@@ -328,8 +290,8 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 					/**
 					 * 2- Button class for the manage files link
 					 */
-					if ( isset( $files_amount[$row['id']] ) ) {
-						$files_link	= 'manage-files.php?group_id=' . html_output( $row["id"] );
+					if ( $files_count > 0 ) {
+						$files_link	= 'manage-files.php?group_id=' . html_output( $row['id'] );
 						$files_btn	= 'btn-primary';
 					}
 					else {
@@ -364,10 +326,10 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 													'content'		=> html_output( $row["description"] ),
 												),
 											array(
-													'content'		=> ( isset( $members_amount[$row['id']] ) ) ? $members_amount[$row['id']] : '0',
+													'content'		=> $members_count,
 												),
 											array(
-													'content'		=> ( isset( $files_amount[$row['id']] ) ) ? $files_amount[$row['id']] : '0',
+													'content'		=> $files_count,
 												),
 											array(
 													//'content'		=> ( $row["public"] == '1' ) ? __('Yes','cftp_admin') : __('No','cftp_admin'),
@@ -403,7 +365,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 				 * PAGINATION
 				 */
 				$pagination_args = array(
-										'link'		=> 'groups.php',
+										'link'		=> basename($_SERVER['SCRIPT_FILENAME']),
 										'current'	=> $pagination_page,
 										'pages'		=> ceil( $count_for_pagination / RESULTS_PER_PAGE ),
 									);

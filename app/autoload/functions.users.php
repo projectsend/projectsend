@@ -20,6 +20,49 @@ function user_exists_id($id)
 }
 
 /**
+ * Get a user using any of the accepted field names
+ * 
+ * @uses get_user_by_id
+ * @return array
+ */
+function get_user_by($user_type, $field, $value)
+{
+    global $dbh;
+    $field = (string)$field;
+    $field = trim( strip_Tags( htmlentities( strtolower( $field ) ) ) );
+    $acceptable_fields = [
+        'username',
+        'name',
+        'email',
+    ];
+
+    if ( in_array( $field, $acceptable_fields ) ) {
+        $statement = $dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE `$field`=:value");
+        $statement->bindParam(':value', $value);
+        $statement->execute();
+        
+        $result = $statement->fetchColumn();
+        if ( $result ) {
+            switch ( $user_type ) {
+                case 'user':
+                    $user_data = get_user_by_id($result);
+                    break;
+                case 'client':
+                    $user_data = get_client_by_id($result);
+            }
+
+            return $user_data;
+        }
+        else {
+            return false;
+        }
+    }
+    else {
+        return false;
+    }
+}
+
+/**
  * Get all the user information knowing only the id
  *
  * @return array

@@ -34,15 +34,8 @@ class LogActions
 		
 		/** Get the real name of the client or user */
 		if (!empty($arguments['get_user_real_name'])) {
-			$this->short_query = $dbh->prepare( "SELECT name FROM " . TABLE_USERS . " WHERE username =:user" );
-			$params = array(
-							':user'		=> $this->affected_account_name,
-						);
-			$this->short_query->execute( $params );
-			$this->short_query->setFetchMode(PDO::FETCH_ASSOC);
-			while ( $srow = $this->short_query->fetch() ) {
-				$this->affected_account_name = $srow['name'];
-			}
+            $this->get_user = get_user_by_username($this->affected_account_name);
+			$this->affected_account_name = $this->get_user['name'];
 		}
 
 		/** Get the title of the file on downloads */

@@ -28,6 +28,7 @@ else {
 
 /**
  * Get the user information from the database to use on the form.
+ * @todo replace when a User class is made
  */
 if ($page_status === 1) {
     $user_arguments = get_user_by_id($user_id);

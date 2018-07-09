@@ -25,6 +25,7 @@ else {
 
 /**
  * Get the clients information from the database to use on the form.
+ * @todo replace when a Client class is made
  */
 if ($page_status === 1) {
     $client_arguments = get_client_by_id($client_id);

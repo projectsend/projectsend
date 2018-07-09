@@ -430,7 +430,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 				 * PAGINATION
 				 */
 				$pagination_args = array(
-										'link'		=> 'users.php',
+										'link'		=> basename($_SERVER['SCRIPT_FILENAME']),
 										'current'	=> $pagination_page,
 										'pages'		=> ceil( $count_for_pagination / RESULTS_PER_PAGE ),
 									);

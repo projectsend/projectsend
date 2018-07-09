@@ -412,7 +412,7 @@ if ( isset( $_POST['btn_process'] ) ) {
 			 * PAGINATION
 			 */
 			$pagination_args = array(
-									'link'		=> 'categories.php',
+									'link'		=> basename($_SERVER['SCRIPT_FILENAME']),
 									'current'	=> $params['page'],
 									'pages'		=> ceil( $get_categories['count'] / RESULTS_PER_PAGE ),
 								);

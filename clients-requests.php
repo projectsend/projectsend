@@ -10,7 +10,7 @@ $allowed_levels = array(9,8);
 require_once('bootstrap.php');
 
 $active_nav = 'clients';
-$this_page = 'clients-requests.php';
+$this_page = basename($_SERVER['SCRIPT_FILENAME']);
 
 $page_title = __('Account requests','cftp_admin');
 

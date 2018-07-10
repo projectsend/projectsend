@@ -994,9 +994,7 @@ $notify_send = $e_notify->psend_send_email($e_arg);
     <label>
     <?php _e('Description', 'cftp_admin');?>
     </label>
-    <textarea name="file[<?php echo $i; ?>][description]" class="form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>">
-    <?php echo (isset($description)) ? html_output($description) : ''; ?>
-    </textarea>
+    <textarea name="file[<?php echo $i; ?>][description]" class="form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (isset($description)) ? html_output($description) : ''; ?></textarea>
     </div>
     </div>
     </div>

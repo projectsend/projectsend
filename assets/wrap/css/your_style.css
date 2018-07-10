@@ -119,13 +119,13 @@ td:nth-of-type(1):before {
 	content: "";
 }
 td:nth-of-type(2):before {
-	content: "Date";
+	content: "";
 }
 td:nth-of-type(3):before {
-	content: "Author";
+	content: "";
 }
 td:nth-of-type(4):before {
-	content: "Activity";
+	content: "";
 }
 td:nth-of-type(5):before {
 	content: "";

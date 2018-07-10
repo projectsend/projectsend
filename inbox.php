@@ -775,31 +775,36 @@ $q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations
 											$extension = strtolower($pathinfo['extension']);
 											echo html_output($extension);
 										?></td>
-									<td class="file_name">
-										<?php
-										/**
-										* Clients can download from here.
-										It was like client cannot download. But now changed to Can.
-										*/
-										if($current_level == '0') 
-										{
-											if($current_download_count>=$row['number_downloads'] && $current_download_count>0 && $row['number_downloads']!=0) {
-												echo html_output($row['filename']);
-											}
-											else
-											{
-												$download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
-												?>
-												<a href="<?php echo $download_link; ?>" class="refreshcls" target="_blank"> <?php echo html_output($row['filename']); ?> </a>
-												<?php 
-											}
-										
-										}
-										else {
-											echo html_output($row['filename']);
-										}
-										?>
-									</td>
+                                    <td class="file_name">
+                                        <?php
+                                            $download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
+                                        /**
+                                        * Clients can download from here.
+                                        It was like client cannot download. But now changed to Can.
+                                        */
+                                        if($current_level == '0') 
+                                        {
+                                            if($current_download_count>=$row['number_downloads'] && $current_download_count>0 && $row['number_downloads']!=0) {
+                                                echo html_output($row['filename']);
+                                            }
+                                            else
+                                            {
+                                                ?>
+                                                <a href="<?php echo $download_link; ?>" class="refreshcls" target="_blank"> <?php echo html_output($row['filename']); ?> </a>
+                                                <?php 
+                                            }
+                                        
+                                        }
+                                        else {
+                                        ?>
+                                            <a href="<?php echo $download_link; ?>" target="_blank">
+                                            <?php echo html_output($row['filename']); ?>
+                                            </a>
+
+                                        <?php 
+                                            }
+                                        ?>
+                                    </td>
                   <td data-value="<?php echo $this_file_size; ?>"><?php echo $formatted_size; ?></td>
 				  <td>
 										<strong>

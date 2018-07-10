@@ -183,7 +183,7 @@ catch ( Exception $e ) {
       <div class="hero">
         <div class="pull-left login-desc-box-l">
           <h4 class="paragraph-header"><?php echo html_entity_decode(isset($row['topleft'])?$row['topleft']:''); ?></h4>
-          <div class="login-app-icons"> <a href="register.php" class="btn btn-danger btn-sm">Not a member? Join now</a><a href="dropoff_guest.php" class="btn btn-danger btn-sm" style="margin-left:5px"><i class="fa fa-upload" aria-hidden="true"></i>&nbsp;&nbsp;drop off</a></div>
+          <div class="login-app-icons"><a href="dropoff_guest.php" class="btn btn-danger btn-sm"><i class="fa fa-upload" aria-hidden="true"></i>&nbsp;&nbsp;drop off</a></div>
         </div>
         <img src="<?php echo BASE_URI ?>img/custom/logo/<?php echo html_entity_decode(isset($row['topright'])?$row['topright']:''); ?>" class="pull-right display-image" alt="" style="width:300px"> </div>
       <div class="row">

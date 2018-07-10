@@ -32,10 +32,10 @@ if($_POST) {		}
       <div class="row">
         <div class="col-md-12">
 			<h1 class="page-title txt-color-blueDark"><i class="fa fa-tasks" aria-hidden="true"></i>&nbsp;<?php echo $page_title; ?></h1>
-			<div class="col-md-5" style="border-right: 1px solid #cccc;">
+			<div style="margin-bottom:20px;">
 			<div id="datepicker"></div>
 			</div>
-			<div class="col-md-7">
+			<div>
 			<div id=d1><p style="color:#ff0000">Available dates are highlighted in the calendar. Click on the dates to view the action</p></div>
 			</div></div>	
       </div>

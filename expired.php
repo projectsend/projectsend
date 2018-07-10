@@ -908,7 +908,7 @@ include('header.php');
 
 			//echo date('Y-m-d H:i:s'); exit;	
 
-			$q_sent_file = "SELECT  tbl_files.* FROM tbl_files where expires = 1 and expires < '" . date('Y-m-d H:i:s')."' and uploader = '".CURRENT_USER_USERNAME."'";
+			$q_sent_file = "SELECT  tbl_files.* FROM tbl_files where expires = 1 and expires > '" . date('Y-m-d H:i:s')."' and uploader = '".CURRENT_USER_USERNAME."'";
 
 			$sql_files = $dbh->prepare($q_sent_file);
 

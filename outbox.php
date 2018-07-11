@@ -1507,42 +1507,47 @@ include('header.php');
 
 									</td>
 
-									<td class="file_name">
+                                    <td class="file_name">
 
-										<?php
+                                        <?php
 
-											/**
+                                            /**
 
-											 * Clients cannot download from here.
+                                             * Clients cannot download from here.
 
-											 */
+                                             */
 
-											if($current_level != '0') {
+                                            if($current_level != '0') {
 
-												$download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
+                                                $download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
+                                                if (($row['expires'] != '0') && (time() < strtotime($row['expiry_date']))) {
+                                        ?>
 
-										?>
+                                                <a href="<?php echo $download_link; ?>" target="_blank">
 
-												<a href="<?php echo $download_link; ?>" target="_blank">
+                                                    <?php echo html_output($row['filename']); ?>
 
-													<?php echo html_output($row['filename']); ?>
+                                                </a>
 
-												</a>
+                                        <?php
 
-										<?php
+                                                } else {
 
-											}
+                                                    echo html_output($row['filename']);
 
-											else {
+                                                }
 
-												echo html_output($row['filename']);
+                                            }
 
-											}
+                                            else {
 
-										?>
+                                                echo html_output($row['filename']);
 
-									</td>
+                                            }
 
+                                        ?>
+
+                                    </td>
 									<td data-value="<?php echo $this_file_size; ?>"><?php echo $formatted_size; ?></td>
 
 									<?php

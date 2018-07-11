@@ -784,7 +784,7 @@ $q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations
                                         */
                                         if($current_level == '0') 
                                         {
-                                            if($current_download_count>=$row['number_downloads'] && $current_download_count>0 && $row['number_downloads']!=0) {
+                                            if(($current_download_count>=$row['number_downloads'] && $current_download_count>0 && $row['number_downloads']!=0) || (($row['expires'] != '0') && (time() > strtotime($row['expiry_date'])))) {
                                                 echo html_output($row['filename']);
                                             }
                                             else
@@ -796,13 +796,17 @@ $q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations
                                         
                                         }
                                         else {
+                                            if (($row['expires'] != '0') && (time() < strtotime($row['expiry_date']))) {
                                         ?>
                                             <a href="<?php echo $download_link; ?>" target="_blank">
                                             <?php echo html_output($row['filename']); ?>
                                             </a>
 
                                         <?php 
+                                            } else {
+                                                echo html_output($row['filename']);
                                             }
+                                        }
                                         ?>
                                     </td>
                   <td data-value="<?php echo $this_file_size; ?>"><?php echo $formatted_size; ?></td>

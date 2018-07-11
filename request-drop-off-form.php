@@ -12,7 +12,7 @@
 <form action="<?php echo $form_action; ?>" name="addclient" method="post" class="form-horizontal">
 	<div class="form-group">
 		<div class="col-sm-4"></div><div class="col-sm-8">
-		This page will allow you to send a request to one of more people requesting that they send (upload) one more files for you.
+		This page will allow you to send a request to one or more people requesting that they send (upload) one more files for you.
 		</div>
 		<label for="from_mail_id" class="col-sm-4 control-label"><?php _e('From email','cftp_admin'); ?></label>
 		<div class="col-sm-8">
@@ -54,7 +54,7 @@
 	<div class="form-group">
 		<label for="to_note_request" class="col-sm-4 control-label"><?php _e('Note','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			This will be sent to the recipient. It will also be included in the resulting drop-off sent to you. 
+			This will be sent to the recipient(s). It will also be included in the resulting drop-off sent to you. 
 			<textarea name="to_note_request" id="to_note_request" class="form-control" ></textarea>
 		</div>
 	</div>

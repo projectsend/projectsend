@@ -169,7 +169,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 		if (isset($_GET['status'])) {
 			switch ($_GET['status']) {
 				case '1':
-					$msg = __('Options updated succesfuly.','cftp_admin');
+					$msg = __('Options updated successfully.','cftp_admin');
 					echo system_message('ok',$msg);
 					break;
 				case '2':

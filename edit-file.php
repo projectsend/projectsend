@@ -852,7 +852,7 @@ function window_back() {
 			format		: 'dd-mm-yyyy',
 			autoclose	: true,
 			todayHighlight	: true,
-                        startDate       : new Date()
+                        startDate       : '+1d'
 		});
 
 		$('.add-all').click(function(){

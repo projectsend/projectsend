@@ -1420,7 +1420,7 @@ $notify_send = $e_notify->psend_send_email($e_arg);
 					format		: 'dd-mm-yyyy',
 					autoclose	: true,
 					todayHighlight	: true,
-                                        startDate       : new Date()
+                                        startDate       : '+1d'
 
 				});
 

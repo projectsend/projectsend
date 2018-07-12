@@ -1540,28 +1540,7 @@ include('header.php');
 											 * Clients cannot download from here.
 
 											 */
-
-											if($current_level != '0') {
-
-												$download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
-
-										?>
-
-												<a href="<?php echo $download_link; ?>" target="_blank">
-
-													<?php echo html_output($row['filename']); ?>
-
-												</a>
-
-										<?php
-
-											}
-
-											else {
-
-												echo html_output($row['filename']);
-
-											}
+										    echo html_output($row['filename']);
 
 										?>
 

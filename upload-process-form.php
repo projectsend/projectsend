@@ -1417,11 +1417,10 @@ $notify_send = $e_notify->psend_send_email($e_arg);
 
 				$('.date-container .date-field').datepicker({
 
-					format			: 'dd-mm-yyyy',
-
-					autoclose		: true,
-
-					todayHighlight	: true
+					format		: 'dd-mm-yyyy',
+					autoclose	: true,
+					todayHighlight	: true,
+                                        startDate       : new Date()
 
 				});
 

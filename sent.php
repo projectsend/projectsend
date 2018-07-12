@@ -1500,7 +1500,6 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
 									$formatted_size = '-';
 
 								}
-                if((expires = 0) || (expires = 1 and expiry_date > '" . date('Y-m-d H:i:s')."')) {
 
 					?>
 
@@ -1829,7 +1828,6 @@ echo $data['user'].'</br>';
                 </tr>
 
                 <?php
-		                                             }
 
 							}
 

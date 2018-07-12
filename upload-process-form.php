@@ -742,7 +742,7 @@ $notify_send = $e_notify->psend_send_email($e_arg);
 										if ($uploaded['public'] == '1') {
 
 									?>
-        <a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-id="<?php echo $uploaded['file_id']; ?>" data-token="<?php echo html_output($uploaded['public_token']); ?>" data-placement="top" data-toggle="popover" data-original-title="<?php _e('Public URL','cftp_admin'); ?>">
+        <a href="javascript:void(0);" class="btn btn-primary btn-sm disabled public_link" data-id="<?php echo $uploaded['file_id']; ?>" data-token="<?php echo html_output($uploaded['public_token']); ?>" data-placement="top" data-toggle="popover" data-original-title="<?php _e('Public URL','cftp_admin'); ?>">
         <?php
 
 										}

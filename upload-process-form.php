@@ -1048,7 +1048,7 @@ $notify_send = $e_notify->psend_send_email($e_arg);
 	}
 							?>
     <div class="input-group date-container">
-    <input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" />
+    <input type="text" class="date-field expire-date form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" />
     <div class="input-group-addon">
     <i class="glyphicon glyphicon-time"></i>
     </div>
@@ -1242,7 +1242,7 @@ $notify_send = $e_notify->psend_send_email($e_arg);
         <?php _e('Select a date', 'cftp_admin');?>
       </label>
       <div class="input-group date-container">
-        <input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][future_send_date]" value="<?php echo (!empty($future_send_date)) ? $future_send_date : date('d-m-Y'); ?>" />
+        <input type="text" class="date-field future-date form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][future_send_date]" value="<?php echo (!empty($future_send_date)) ? $future_send_date : date('d-m-Y'); ?>" />
         <div class="input-group-addon"> <i class="glyphicon glyphicon-time"></i> </div>
       </div>
     </div>
@@ -1415,7 +1415,16 @@ $notify_send = $e_notify->psend_send_email($e_arg);
 
 
 
-				$('.date-container .date-field').datepicker({
+				$('.date-container .date-field .expire-date').datepicker({
+
+					format		: 'dd-mm-yyyy',
+					autoclose	: true,
+					todayHighlight	: true,
+                                        startDate       : new Date()
+
+				});
+
+				$('.date-container .date-field .future-date').datepicker({
 
 					format		: 'dd-mm-yyyy',
 					autoclose	: true,
@@ -1423,7 +1432,6 @@ $notify_send = $e_notify->psend_send_email($e_arg);
                                         startDate       : '+1d'
 
 				});
-
 
 
 				$('.add-all').click(function(){

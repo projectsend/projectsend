@@ -796,7 +796,7 @@ $q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations
                                         
                                         }
                                         else {
-                                            if (($row['expires'] == '0') || (($row['expires'] != '0') && (time() < strtotime($row['expiry_date'])))) {
+                                            if (($row['expires'] == '0') || (time() < strtotime($row['expiry_date']))) {
                                         ?>
                                             <a href="<?php echo $download_link; ?>" target="_blank">
                                             <?php echo html_output($row['filename']); ?>

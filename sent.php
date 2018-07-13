@@ -1546,25 +1546,28 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
 
 											 */
 
-											if(($current_level != '0') && (time() < strtotime($row['expiry_date']))) {
+                                    if($current_level != '0') {
 
-												$download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
+                                            if(($row['expires'] == '0') || (($row['expires'] != '0') && (time() < strtotime($row['expiry_date'])))) {
 
-										?>
+                                                $download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
+
+                                        ?>
 
                     <a href="<?php echo $download_link; ?>" target="_blank"> <?php echo html_output($row['filename']); ?> </a>
 
                     <?php
 
-											}
+                                            }
+                                        }
 
-											else {
+                                            else {
 
-												echo html_output($row['filename']);
+                                                echo html_output($row['filename']);
 
-											}
+                                            }
 
-										?></td>
+                                        ?></td>
 
                   <td data-value="<?php echo $this_file_size; ?>"><?php echo $formatted_size; ?></td>
                   <?php

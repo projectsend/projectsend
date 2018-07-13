@@ -754,7 +754,9 @@ $q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations
 									$this_file_size = '0';
 									$formatted_size = '-';
 								}
-					?>
+
+        if(($row['expires'] == '0') || (time() < strtotime($row['expiry_date']))) {
+		      ?>
                 <tr>
                   <?php
 										/** Actions are not available for clients */
@@ -960,6 +962,7 @@ $q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations
                     </a></td> -->
                 </tr>
                 <?php
+							    }
 							}
 						}
 					?>

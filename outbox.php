@@ -1520,7 +1520,7 @@ include('header.php');
                                             if($current_level != '0') {
 
                                                 $download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
-                                                if (($row['expires'] != '0') && (time() < strtotime($row['expiry_date']))) {
+                                                if (($row['expires'] == '0') || (time() < strtotime($row['expiry_date']))) {
                                         ?>
 
                                                 <a href="<?php echo $download_link; ?>" target="_blank">

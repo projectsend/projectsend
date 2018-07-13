@@ -1461,6 +1461,8 @@ include('header.php');
 
 								}
 
+        if(($row['expires'] == '0') || (time() < strtotime($row['expiry_date']))) {
+					
 					?>
 
 								<tr>
@@ -1822,6 +1824,7 @@ include('header.php');
 
 					<?php
 
+	                                                    }
 							}
 
 						}

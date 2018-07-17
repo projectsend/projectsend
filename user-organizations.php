@@ -65,7 +65,7 @@ include('header.php');
 <div class="row">
 <h2><?php echo $page_title; ?></h2>
 
-<section id="no-more-tables">
+<section id="no-more-tables" class="cc-overflow-scroll">
 	<div class="col-md-12">
 		<div class="col-md-6">
 		<h3>Current Organizations</h3>
@@ -73,7 +73,7 @@ include('header.php');
 			<table id="groups_tbl" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
 			<thead>
 			<tr>
-			<th data-sort-initial="true"><?php _e('User Organization name','cftp_admin'); ?></th>
+			<th data-sort-initial="true"><?php _e('User Organization Name','cftp_admin'); ?></th>
 			<th data-hide="phone"><?php _e('Description','cftp_admin'); ?></th>
 			<th data-hide="action"><?php _e('Action','cftp_admin'); ?></th>
             <td><?php echo "Status"; ?></td>
@@ -110,7 +110,7 @@ include('header.php');
 			<table id="groups_tbl" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
 			<thead>
 			<tr>
-			<th data-sort-initial="true"><?php _e('User Organization name','cftp_admin'); ?></th>
+			<th data-sort-initial="true"><?php _e('User Organization Name','cftp_admin'); ?></th>
 			<th data-hide="phone"><?php _e('Description','cftp_admin'); ?></th>
             <th><?php _e('Action','cftp_admin'); ?></th>
 			</tr>
@@ -149,6 +149,75 @@ include('header.php');
 </div>
 </div>
 <?php include('footer.php'); ?>
+
+
+<style type="text/css">
+/*-------------------- Responsive table by B) -----------------------*/
+@media only screen and (max-width: 1200px) {
+    #content {
+        padding-top:30px;
+    }
+    
+    /* Force table to not be like tables anymore */
+    #no-more-tables table, 
+    #no-more-tables thead, 
+    #no-more-tables tbody, 
+    #no-more-tables th, 
+    #no-more-tables td, 
+    #no-more-tables tr { 
+        display: block; 
+    }
+ 
+    /* Hide table headers (but not display: none;, for accessibility) */
+    #no-more-tables thead tr { 
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+ 
+    #no-more-tables tr { border: 1px solid #ccc; }
+ 
+    #no-more-tables td { 
+        /* Behave  like a "row" */
+        border: none;
+        border-bottom: 1px solid #eee; 
+        position: relative;
+        padding-left: 50%; 
+        white-space: normal;
+        text-align:left;
+    }
+ 
+    #no-more-tables td:before { 
+        /* Now like a table header */
+        position: absolute;
+        /* Top/left values mimic padding */
+        top: 6px;
+        left: 6px;
+        width: 45%; 
+        padding-right: 10px; 
+        white-space: nowrap;
+        text-align:left;
+        font-weight: bold;
+    }
+ 
+    /*
+    Label the data
+    */
+
+    
+    td:nth-of-type(1):before { content: ""; }
+    td:nth-of-type(2):before { content: "Organization Name"; }
+    td:nth-of-type(3):before { content: "Description"; }
+    td:nth-of-type(4):before { content: "Members"; }
+    td:nth-of-type(5):before { content: "Files"; }
+    td:nth-of-type(6):before { content: "Created by"; }
+    td:nth-of-type(7):before { content: "Added on"; }
+    td:nth-of-type(8):before { content: "Actions"; }
+}
+/*-------------------- Responsive table End--------------------------*/
+</style>
+
+
 <script type="text/javascript">
 	$(document).ready(function(){
 		$(".remove_category").click(function(event){

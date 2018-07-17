@@ -292,7 +292,7 @@ include('header.php');
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-12">
-                    <section id="no-more-tables" class="cc-overflow-scroll">
+                    <section id="no-more-tables">
 						<table id="categories_tbl" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
 							<thead>
 								<tr>

@@ -454,8 +454,7 @@ include('header.php');
 			//$sql_files->execute( $params );
 			/*Some issue on the query. Need to check future send date and expiry date */
 			//$q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id where tbl_files.future_send_date<=CURDATE() and tbl_files.expiry_date =CURDATE() and tbl_files_relations.client_id =" . CURRENT_USER_ID;
-//$q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id where  tbl_files_relations.client_id =" . CURRENT_USER_ID;
-			$q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id where tbl_files.expiry_date > CURDATE() and tbl_files_relations.client_id =" . CURRENT_USER_ID;
+$q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id where  tbl_files_relations.client_id =" . CURRENT_USER_ID;
 
 		//	echo $q_sent_file;exit;
 

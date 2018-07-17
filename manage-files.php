@@ -921,7 +921,7 @@ include('header.php');
 	td:nth-of-type(8):before { content: "Public"; }
 	td:nth-of-type(9):before { content: "Expiry"; }
 	td:nth-of-type(10):before { content: "Total downloads"; }
-	td:nth-of-type(10):before { content: "Actions"; }
+	td:nth-of-type(11):before { content: "Actions"; }
 }
 /*-------------------- Responsive table End--------------------------*/
 </style>

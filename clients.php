@@ -264,8 +264,8 @@ $(document).ready(function() {
                 <tr>
                   <th class="td_checkbox" data-sort-ignore="true"> <input type="checkbox" name="select_all" id="select_all" value="0" />
                   </th>
-                  <th data-sort-initial="true"><?php _e('Full name','cftp_admin'); ?></th>
-                  <th data-hide="phone,tablet"><?php _e('Log in username','cftp_admin'); ?></th>
+                  <th data-sort-initial="true"><?php _e('Full Name','cftp_admin'); ?></th>
+                  <th data-hide="phone,tablet"><?php _e('Log In Username','cftp_admin'); ?></th>
                   <th data-hide="phone,tablet"><?php _e('E-mail','cftp_admin'); ?></th>
                   <th data-hide="phone" data-type="numeric"><?php _e('Files: Own','cftp_admin'); ?></th>
                   <th data-hide="phone" data-type="numeric"><?php _e('Files: Organization','cftp_admin'); ?></th>
@@ -275,7 +275,7 @@ $(document).ready(function() {
                   <th data-hide="phone,tablet" data-type="numeric"><?php _e('Added on','cftp_admin'); ?></th>
                   <th data-hide="phone,tablet"><?php _e('Address','cftp_admin'); ?></th>
                   <th data-hide="phone,tablet"><?php _e('Telephone','cftp_admin'); ?></th>
-                  <th data-hide="phone,tablet"><?php _e('Internal contact','cftp_admin'); ?></th>
+                  <th data-hide="phone,tablet"><?php _e('Internal Contact','cftp_admin'); ?></th>
                   <th data-hide="phone" data-sort-ignore="true"><?php _e('Actions','cftp_admin'); ?></th>
                 </tr>
               </thead>
@@ -471,10 +471,9 @@ $(document).ready(function() {
     td:nth-of-type(9):before { content: "Notify"; }
     td:nth-of-type(10):before { content: "Added on"; }
     td:nth-of-type(11):before { content: "Address"; }
-    td:nth-of-type(12):before { content: "Added on"; }
-    td:nth-of-type(13):before { content: "Telephone"; }
-    td:nth-of-type(14):before { content: "Internal Contact"; }
-    td:nth-of-type(15):before { content: "Actions"; }
+    td:nth-of-type(12):before { content: "Telephone"; }
+    td:nth-of-type(13):before { content: "Internal Contact"; }
+    td:nth-of-type(14):before { content: "Actions"; }
 }
 /*-------------------- Responsive table End--------------------------*/
 </style>

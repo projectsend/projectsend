@@ -221,7 +221,7 @@ $actual_link = SITE_URI.'requested_file.php';
 							} 							
 							else 
 							{ ?>
-            			<section id="no-more-tables" class="cc-overflow-scroll">
+            			<section id="no-more-tables">
               				<table id="files_list" class=" cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
                 			<thead>
                   			<tr>

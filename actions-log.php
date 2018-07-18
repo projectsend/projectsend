@@ -229,9 +229,9 @@ include('header.php');
 					<th data-type="numeric" data-sort-initial="descending"><?php _e('Date','cftp_admin'); ?></th>
 					<th><?php _e('Author','cftp_admin'); ?></th>
 					<th data-hide="phone"><?php _e('Activity','cftp_admin'); ?></th>
-					<th data-hide="phone">&nbsp;</th>
-					<th data-hide="phone">&nbsp;</th>
-					<th data-hide="phone">&nbsp;</th>
+					<th data-hide="phone"><?php _e('Affected File','cftp_admin'); ?></th>
+					<th data-hide="phone"><?php _e('from / to','cftp_admin'); ?></th>
+					<th data-hide="phone"><?php _e('Affected Account','cftp_admin'); ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -343,9 +343,9 @@ include('header.php');
     td:nth-of-type(2):before { content: "Date"; }
     td:nth-of-type(3):before { content: "Author"; }
     td:nth-of-type(4):before { content: "Activity"; }
-    td:nth-of-type(5):before { content: ""; }
-    td:nth-of-type(6):before { content: ""; }
-    td:nth-of-type(7):before { content: ""; }
+    td:nth-of-type(5):before { content: "Affected File"; }
+    td:nth-of-type(6):before { content: "from / to"; }
+    td:nth-of-type(7):before { content: "Affected Account"; }
 }
 /*-------------------- Responsive table End--------------------------*/
 </style>

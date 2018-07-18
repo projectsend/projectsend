@@ -67,7 +67,6 @@ include('header.php');
 
 <section id="no-more-tables">
     <div class="col-md-12">
-        <div class="col-md-6">
         <h3>Current Organizations</h3>
             <?php if(!empty($my_categories)){?>
             <table id="groups_tbl" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
@@ -102,46 +101,7 @@ include('header.php');
             ?>
             </tbody>
             </table>
-        </div>
-        <div class="col-md-6">
 
-
-        <div class="col-md-12">
-            <table id="groups_tbl" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
-            <thead>
-            <tr>
-            <th data-sort-initial="true"><?php _e('User Organization Name','cftp_admin'); ?></th>
-            <th data-hide="phone"><?php _e('Description','cftp_admin'); ?></th>
-            <th><?php _e('Action','cftp_admin'); ?></th>
-            </tr>
-            </thead>
-            <tbody>
-
-            <?php
-            if(!empty($user_organizations)){
-            foreach($user_organizations as $cat){
-/*              echo "<pre>";
-                print_r($user_organizations);
-                echo "</pre>";
-                exit;*/
-            ?>
-            <tr>
-            <td> <?php _e(html_output($cat["name"]),'cftp_admin'); ?></td>
-
-            <td><?php echo html_output($cat["description"]); ?></td>
-            <td><a href="#" data-orgid="<?php echo $cat["id"]; ?>" data-clientid="<?php echo $id; ?>" class="btn btn-success btn-sm add-user-cat">Add</a></td>
-            </tr>
-
-            <?php
-            }
-            }
-            ?>
-
-            </tbody>
-            </table>
-        </div>
-        </div>
-        </div>
     </div>
 </section>
 </div>

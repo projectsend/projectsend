@@ -279,7 +279,7 @@ include('header.php');
                     echo system_message('error',$no_results_message);
                 }
             ?>
-    <section id="no-more-tables" class="cc-overflow-scroll">
+    <section id="no-more-tables">
             <table id="groups_tbl" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
                 <thead>
                     <tr>

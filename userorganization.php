@@ -270,7 +270,7 @@ include('header.php');
                     echo system_message('error',$no_results_message);
                 }
             ?>
-    <section id="no-more-tables" class="cc-overflow-scroll">
+    <section id="no-more-tables">
             <table id="groups_tbl" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
                 <thead>
                     <tr>
@@ -410,10 +410,11 @@ include('header.php');
     td:nth-of-type(1):before { content: ""; }
     td:nth-of-type(2):before { content: "Organization Name"; }
     td:nth-of-type(3):before { content: "Description"; }
-    td:nth-of-type(4):before { content: "Members Files"; }
-    td:nth-of-type(5):before { content: "Created by"; }
-    td:nth-of-type(6):before { content: "Added on"; }
-    td:nth-of-type(10):before { content: "Actions"; }
+    td:nth-of-type(4):before { content: "Members"; }
+    td:nth-of-type(5):before { content: "Files"; }
+    td:nth-of-type(6):before { content: "Created by"; }
+    td:nth-of-type(7):before { content: "Added on"; }
+    td:nth-of-type(8):before { content: "Actions"; }
 }
 /*-------------------- Responsive table End--------------------------*/
 </style>

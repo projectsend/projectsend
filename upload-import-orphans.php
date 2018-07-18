@@ -225,7 +225,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 					$msg = __('Please note that the listed files will be renamed if they contain invalid characters.','cftp_admin');
 					echo system_message('info',$msg);
 				?>
-            <div class="after_form_buttons">
+            <div class="after_form_buttons" hidden>
               <button type="submit" name="submit" class="btn btn-wide btn-primary" id="upload-continue">
               <?php _e('Continue','cftp_admin'); ?>
               </button>

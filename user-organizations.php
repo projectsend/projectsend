@@ -74,8 +74,8 @@ include('header.php');
             <tr>
             <th data-sort-initial="true"><?php _e('User Organization Name','cftp_admin'); ?></th>
             <th data-hide="phone"><?php _e('Description','cftp_admin'); ?></th>
+            <th data-hide="phone"><?php _e('Status','cftp_admin'); ?></th>
             <th data-hide="action"><?php _e('Action','cftp_admin'); ?></th>
-            <td><?php echo "Status"; ?></td>
             </tr>
             </thead>
             <tbody>
@@ -165,11 +165,10 @@ include('header.php');
     */
 
     
-    td:nth-of-type(1):before { content: ""; }
-    td:nth-of-type(2):before { content: "User Organization Name"; }
-    td:nth-of-type(3):before { content: "Description"; }
-    td:nth-of-type(4):before { content: "Status"; }
-    td:nth-of-type(5):before { content: "Action"; }
+    td:nth-of-type(1):before { content: "User Organization Name"; }
+    td:nth-of-type(2):before { content: "Description"; }
+    td:nth-of-type(3):before { content: "Status"; }
+    td:nth-of-type(4):before { content: "Action"; }
 }
 /*-------------------- Responsive table End--------------------------*/
 </style>

@@ -1023,7 +1023,11 @@ $("document").ready(function(e) {
 	 <?php }
  } ?>
  <script>
- $(document).ready(function(e) {	
+ $(document).ready(function(e) {
+var numfiles = document.querySelectorAll("#files_list tbody tr");
+var totalcount = document.querySelectorAll(".form_count_total span");
+totalcount[0].innerHTML = numfiles.length + " files";
+	 
 $(".refreshcls").on("click", function (e) {  
 		setTimeout(function() {
     location.reload();

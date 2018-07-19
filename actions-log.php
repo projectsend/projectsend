@@ -159,6 +159,28 @@ include('header.php');
 				<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default"><?php _e('Search','cftp_admin'); ?></button>
 			</form>
 
+		    <form action="actions-log.php" name="log_date_search" method="post" class="form-inline">
+		      <div class="form-group">
+			<label for="date_from">
+			  <?php _e('Date from', 'cftp_admin');?>
+			</label>
+			<div class="input-group date-container">
+			  <input type="text" class="date-field form-control datapick-field" readonly id="date_from" name="date_from" value="<?php echo date('d-m-Y'); ?>" />
+			  <div class="input-group-addon"> <i class="glyphicon glyphicon-time"></i> </div>
+			</div>
+		      </div>
+		      <div class="form-group">
+			<label for="date_to">
+			  <?php _e('Date to', 'cftp_admin');?>
+			</label>
+			<div class="input-group date-container">
+			  <input type="text" class="date-field form-control datapick-field" readonly id="date_to" name="date_to" value="<?php echo date('d-m-Y'); ?>" />
+			  <div class="input-group-addon"> <i class="glyphicon glyphicon-time"></i> </div>
+			</div>
+		      </div>
+		      <button type="submit" id="btn_proceed_date_search" class="btn btn-sm btn-default"><?php _e('Submit','cftp_admin'); ?></button>
+		    </form>
+			
 			<form action="actions-log.php" name="actions_filters" method="post" class="form-inline form_filters">
 				<div class="form-group group_float">
 					<label for="activity" class="sr-only"><?php _e('Filter activities','cftp_admin'); ?></label>
@@ -283,6 +305,18 @@ include('header.php');
 </div></div></div></div></div>
 
 <?php include('footer.php'); ?>
+
+
+<script>
+    $(document).ready(function() {
+        $('.date-container .date-field').datepicker({
+            format      : 'dd-mm-yyyy',
+            autoclose   : true,
+            todayHighlight  : true,
+                        startDate       : new Date()
+        });
+    });
+</script>
 
 
 <style type="text/css">

@@ -60,6 +60,12 @@ include('header.php');
 			}
 		});
 
+		$('.date-container .date-field').datepicker({
+		    format      : 'dd-mm-yyyy',
+		    autoclose   : true,
+		    todayHighlight  : true,
+		    maxDate: new Date()
+		});
 	});
 </script>
 
@@ -307,17 +313,6 @@ include('header.php');
 
 <?php include('footer.php'); ?>
 
-
-<script>
-    $(document).ready(function() {
-        $('.date-container .date-field').datepicker({
-            format      : 'dd-mm-yyyy',
-            autoclose   : true,
-            todayHighlight  : true,
-	    maxDate: new Date()
-        });
-    });
-</script>
 
 
 <style type="text/css">

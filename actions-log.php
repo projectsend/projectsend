@@ -314,7 +314,7 @@ include('header.php');
             format      : 'dd-mm-yyyy',
             autoclose   : true,
             todayHighlight  : true,
-                        startDate       : new Date()
+	    maxDate: '0'
         });
     });
 </script>

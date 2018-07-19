@@ -7,8 +7,9 @@
  *
  */
 $load_scripts	= array(
-						'footable',
-					); 
+                        'datepicker',
+			'footable',
+		); 
 
 $allowed_levels = array(9);
 $cc_active_page = 'Activities log';
@@ -158,7 +159,7 @@ include('header.php');
 				</div>
 				<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default"><?php _e('Search','cftp_admin'); ?></button>
 			</form>
-
+                   <br>
 		    <form action="actions-log.php" name="log_date_search" method="post" class="form-inline">
 		      <div class="form-group">
 			<label for="date_from">
@@ -180,7 +181,7 @@ include('header.php');
 		      </div>
 		      <button type="submit" id="btn_proceed_date_search" class="btn btn-sm btn-default"><?php _e('Submit','cftp_admin'); ?></button>
 		    </form>
-			
+		    <br>
 			<form action="actions-log.php" name="actions_filters" method="post" class="form-inline form_filters">
 				<div class="form-group group_float">
 					<label for="activity" class="sr-only"><?php _e('Filter activities','cftp_admin'); ?></label>

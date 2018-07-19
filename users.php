@@ -215,7 +215,7 @@ include('header.php');
 				</div>
 				<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default"><?php _e('Search','cftp_admin'); ?></button>
 			</form>
-
+                        <br>
 			<form action="users.php" name="users_filters" method="post" class="form-inline">
 				<div class="form-group group_float">
 					<select name="role" id="role" class="txtfield form-control">

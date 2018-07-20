@@ -140,9 +140,13 @@ include('header.php');
 		$next_clause = ' WHERE';
 	}
 
+  
+    /** Add the date from and date to filters  */
+    $cq .= $next_clause. " (timestamp >= " . strtotime($_POST['date_from']) . " AND timestamp <= " . strtotime($_POST['date_to']) . ") AND ";
+		
 	/** Add the activities filter */	
 	if(isset($_POST['activity']) && $_POST['activity'] != 'all') {
-		$cq .= $next_clause. " action=:status";
+		$cq .= " action=:status";
 
 		$status_filter		= $_POST['activity'];
 		$params[':status']	= $status_filter;

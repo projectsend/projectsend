@@ -179,13 +179,15 @@ catch ( Exception $e ) {
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8 hidden-xs hidden-sm">
       <h1 class="txt-color-red login-header-big"></h1>
-      <img alt="Logo Placeholder" src="https://send.microhealthllc.com/img/custom/logo/2015_microhealth-blue.png" class="img-responsive" width="300">
+      <img alt="Logo Placeholder" src="https://send.microhealthllc.com/img/custom/logo/2015_microhealth-blue.png" class="img-responsive" width="280px">
       <div class="hero">
-        <div class="pull-left login-desc-box-l">
+        <div class="col-xs-6 pull-left login-desc-box-l">
           <h4 class="paragraph-header"><?php echo html_entity_decode(isset($row['topleft'])?$row['topleft']:''); ?></h4>
           <div class="login-app-icons"><a href="dropoff_guest.php" class="btn btn-danger btn-sm"><i class="fa fa-upload" aria-hidden="true"></i>&nbsp;&nbsp;drop off</a></div>
         </div>
-        <img src="<?php echo BASE_URI ?>img/custom/logo/<?php echo html_entity_decode(isset($row['topright'])?$row['topright']:''); ?>" class="pull-right display-image" alt="" style="width:300px"> </div>
+        <div class="col-xs-6 pull-right">
+          <img src="<?php echo BASE_URI ?>img/custom/logo/<?php echo html_entity_decode(isset($row['topright'])?$row['topright']:''); ?>" class="display-image" alt="">
+	</div>
       <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
           <?php echo html_entity_decode(isset($row['bottomleft'])?$row['bottomleft']:''); ?>

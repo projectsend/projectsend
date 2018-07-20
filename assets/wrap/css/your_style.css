@@ -244,4 +244,4 @@ table.cc-mail-listing-style span.label {
 #datepicker .ui-datepicker {font-size: 153%;}
 .table_calendar_common {font-family: arial, sans-serif;border-collapse: collapse;width: 100%;}
 .table_calendar_common td, .table_calendar_common th {border: 1px solid #dddddd;text-align: left;padding: 8px;}
-.display-image {margin-top: -17px;}
+.display-image {margin-top: -25px;width:100%;}

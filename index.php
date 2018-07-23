@@ -188,6 +188,7 @@ catch ( Exception $e ) {
         <div class="col-xs-6 pull-right">
           <img src="<?php echo BASE_URI ?>img/custom/logo/<?php echo html_entity_decode(isset($row['topright'])?$row['topright']:''); ?>" class="display-image" alt="">
 	</div>
+      </div>
       <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
           <?php echo html_entity_decode(isset($row['bottomleft'])?$row['bottomleft']:''); ?>

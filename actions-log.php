@@ -187,7 +187,7 @@ include('header.php');
 			  <div class="input-group-addon"> <i class="glyphicon glyphicon-time"></i> </div>
 			</div>
 		      </div>
-		      <button type="submit" id="btn_proceed_date_search" class="btn btn-sm btn-default"><?php _e('Submit','cftp_admin'); ?></button>
+		      <button type="submit" id="btn_proceed_date_search" class="btn btn-sm btn-default"><?php _e('Filter','cftp_admin'); ?></button>
 		    </form>
 		    <br>
 			<form action="actions-log.php" name="actions_filters" method="post" class="form-inline form_filters">

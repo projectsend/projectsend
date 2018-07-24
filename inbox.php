@@ -107,7 +107,7 @@ include('header.php');
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("#do_action").click(function() {
-			var checks = $("td>input:checkbox").serializeArray(); 
+			var checks = $("td input:checkbox").serializeArray(); 
 			if (checks.length == 0) { 
 				alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
 				return false; 

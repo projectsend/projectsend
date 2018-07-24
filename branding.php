@@ -134,7 +134,7 @@ $favico_file_info = generate_favico_url();
                           
                           <input type="text" value="<?php echo BRAND_NAME; ?>" class="form-control" name="b_name" id="b_name" placeholder="Brand Name">
                         </div>
-    				<button type="submit" class="btn btn-default b_name_change">Change Name</button>
+    				<button type="submit" class="btn btn-primary b_name_change">Change Name</button>
   					</form>
                     </div>
         </div>

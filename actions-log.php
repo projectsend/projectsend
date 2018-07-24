@@ -251,7 +251,7 @@ include('header.php');
 			}
 		?>
 <section id="no-more-tables">
-		<table id="activities_tbl" class="table footable" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER_LOG; ?>">
+		<table id="activities_tbl" class="table footable" data-limit-navigation="10" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER_LOG; ?>">
 			<thead>
 				<tr>
 					<th class="td_checkbox" data-sort-ignore="true">

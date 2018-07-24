@@ -1598,7 +1598,8 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
 <td>
 <?php
 
-$senders_list = $dbh->prepare("SELECT tfr.*,tu.* FROM " . TABLE_FILES_RELATIONS . " AS tfr INNER JOIN ".TABLE_USERS." AS tu ON tfr.client_id= tu.id  WHERE tfr.file_id=:file_id" );
+//$senders_list = $dbh->prepare("SELECT tfr.*,tu.* FROM " . TABLE_FILES_RELATIONS . " AS tfr INNER JOIN ".TABLE_USERS." AS tu ON tfr.client_id= tu.id  WHERE tfr.file_id=:file_id" );
+$senders_list = $dbh->prepare("SELECT tfr.*,tu.*,tg.name as g_name FROM " . TABLE_FILES_RELATIONS . " AS tfr LEFT JOIN ".TABLE_USERS." AS tu ON tfr.client_id= tu.id LEFT JOIN ".TABLE_GROUPS." AS tg ON tg.id = tfr.group_id WHERE tfr.file_id=:file_id" );
 //echo "SELECT tfr.*,tu.* FROM " . TABLE_FILES_RELATIONS . " AS tfr ON tfr.client_id= tu.id INNER JOIN ".TABLE_USERS." AS tu ON WHERE tfr.file_id=:file_id";
 //exit;
 $f_id = $row['id'];
@@ -1609,7 +1610,9 @@ $senders_list_array = array();
 while ( $data = $senders_list->fetch() ) {
     //echo "<pre>";print_r($data);echo "</pre>";
 //      $senders_list_array[] = $data['user'];
-echo $data['user'].'</br>';
+//echo $data['user'].'</br>';
+if($data['user']) {echo $data['user']."<br>";}
+if($data['g_name']) {echo $data['g_name']."<br>";}
 }
 
 ?>

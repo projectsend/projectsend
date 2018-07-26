@@ -70,6 +70,10 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 													'link'	=> 'inbox.php',
 												),
 												array(
+													'label'	=> __('Draft', 'cftp_admin'),
+													'link'	=> 'draft.php',
+												),
+												array(
 													'label'	=> __('Outbox', 'cftp_admin'),
 													'link'	=> 'outbox.php',
 												),

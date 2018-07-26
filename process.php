@@ -60,7 +60,7 @@ class process {
 					}
 					$this->can_download = false;	
 					
-					if (CURRENT_USER_LEVEL == 0) {
+					if (CURRENT_USER_LEVEL == 0 || CURRENT_USER_LEVEL==8) {
 					
 						if ($this->expires == '0' || $this->expired == false) {
 							/**

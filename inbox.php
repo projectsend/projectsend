@@ -689,7 +689,9 @@ $q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations
 							$sql_files->setFetchMode(PDO::FETCH_ASSOC);
 							while( $row = $sql_files->fetch() ) {
 
-										$current_download_count = current_download_count_user($row['id'],CURRENT_USER_ID);
+								$current_download_count = current_download_count_user($row['id'],CURRENT_USER_ID);
+								echo $current_download_count;
+								echo 
 								$file_id = $row['id'];
 								/**
 								 * Construct the complete file URI to use on the download button.
@@ -780,11 +782,12 @@ $q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations
                                     <td class="file_name">
                                         <?php
                                             $download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
+											
                                         /**
                                         * Clients can download from here.
                                         It was like client cannot download. But now changed to Can.
                                         */
-                                        if($current_level == '0') 
+                                        if($current_level == '0' || $current_level=='8') 
                                         {
                                             if((($current_download_count>=$row['number_downloads'] && $current_download_count>0 && $row['number_downloads']!=0)) || (($row['expires'] != '0') && (time() > strtotime($row['expiry_date'])))) {
                                                 echo html_output($row['filename']);
@@ -800,7 +803,7 @@ $q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations
                                         else {
                                             if (($row['expires'] == '0') || (time() < strtotime($row['expiry_date']))) {
                                         ?>
-                                            <a href="<?php echo $download_link; ?>" target="_blank">
+                                            <a href="<?php echo $download_link; ?>" class="refreshcls" target="_blank">
                                             <?php echo html_output($row['filename']); ?>
                                             </a>
 
@@ -812,8 +815,8 @@ $q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations
                                         ?>
                                     </td>
 
-                  <td data-value="<?php echo $this_file_size; ?>"><?php echo $formatted_size; ?></td>
-				  <td>
+									  <td data-value="<?php echo $this_file_size; ?>"><?php echo $formatted_size; ?></td>
+									  <td>
 										<strong>
 												<?php 
 												if(isset($row['number_downloads']) && $row['number_downloads']>0)

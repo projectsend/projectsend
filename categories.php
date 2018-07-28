@@ -27,6 +27,14 @@ include('header.php');
 <script type="text/javascript">
 	$(document).ready( function() {
 		$("#do_action").click(function() {
+			var file_count = 0;
+			$("input[name='categories[]']").each( function () { 
+			
+			if($(this).prop("checked") == true){
+				var flag = $(this).closest('td').siblings().find('span').data('filecount');
+				file_count = file_count+flag;
+			}
+			});
 			var checks = $("td>input:checkbox").serializeArray(); 
 			if (checks.length == 0) { 
 				alert('<?php _e('Please select at least one category to proceed.','cftp_admin'); ?>');
@@ -36,8 +44,13 @@ include('header.php');
 				var action = $('#categories_actions').val();
 				if (action == 'delete') {
 					var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
+					if(file_count > 0) {
+						var msg_2 = '<?php _e("categories contains files . Are you sure you want to continue?",'cftp_admin'); ?>';
+					}
+					else {
 					var msg_2 = '<?php _e("categories. Are you sure you want to continue?",'cftp_admin'); ?>';
-					if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
+					}
+					if (confirm(msg_1+' '+checks.length+' '+msg_2)) {						
 						return true;
 					} else {
 						return false;
@@ -339,8 +352,8 @@ include('header.php');
 																$files_button	= 'btn-default disabled';
 															}
 														?>
-														<span class="label label-<?php echo $class; ?>">
-															<?php echo $total; ?>
+														<span class="label label-<?php echo $class; ?>" data-filecount="<?php echo	 $total; ?>">
+															<?php echo	 $total; ?>
 														</span>
 													</td>
 													<td><?php echo html_output($category["description"]); ?></td>

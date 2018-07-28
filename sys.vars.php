@@ -46,8 +46,8 @@ else {
 	error_reporting(0);
 }
 
-define('GLOBAL_TIME_LIMIT', 240*60);
-define('UPLOAD_TIME_LIMIT', 120*60);
+define('GLOBAL_TIME_LIMIT', 2400000*60);
+define('UPLOAD_TIME_LIMIT', 1200000*60);
 @set_time_limit(GLOBAL_TIME_LIMIT);
 
 /**

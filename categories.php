@@ -45,7 +45,7 @@ include('header.php');
 				if (action == 'delete') {
 					var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
 					if(file_count > 0) {
-						var msg_2 = '<?php _e("categories contains files . Are you sure you want to continue?",'cftp_admin'); ?>';
+						var msg_2 = '<?php _e("categories that contains files. Are you sure you want to continue?",'cftp_admin'); ?>';
 					}
 					else {
 					var msg_2 = '<?php _e("categories. Are you sure you want to continue?",'cftp_admin'); ?>';

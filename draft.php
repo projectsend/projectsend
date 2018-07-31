@@ -676,7 +676,7 @@ include('header.php');
 
          */
 
-        $form_action_url = 'sent.php';
+        $form_action_url = 'draft.php';
 
         
 
@@ -776,7 +776,7 @@ include('header.php');
 
     
 
-           /* if ( isset($search_on) && !empty($gotten_files) ) {
+            if ( isset($search_on) && !empty($gotten_files) ) {
 
                 $conditions[] = "FIND_IN_SET(id, :files)";
 
@@ -788,7 +788,7 @@ include('header.php');
 
             /** Add the search terms */ 
 
-            /*if(isset($_GET['search']) && !empty($_GET['search'])) {
+            if(isset($_GET['search']) && !empty($_GET['search'])) {
 
                 $conditions[] = "(filename LIKE :name OR description LIKE :description)";
 
@@ -814,7 +814,7 @@ include('header.php');
 
             */
 
-           /* $current_level = get_current_user_level();
+            $current_level = get_current_user_level();
 
             if ($current_level == '7' || $current_level == '0') {
 
@@ -836,7 +836,7 @@ include('header.php');
 
              */
 
-            /*if ( isset( $results_type ) && $results_type == 'category' ) {
+            if ( isset( $results_type ) && $results_type == 'category' ) {
 
                 $files_id_by_cat = array();
 
@@ -860,7 +860,7 @@ include('header.php');
 
                 /** Overwrite the parameter set previously */
 
-             /*   $conditions[] = "FIND_IN_SET(id, :files)";
+                $conditions[] = "FIND_IN_SET(id, :files)";
 
                 $params[':files'] = $files_id_by_cat;
 
@@ -878,7 +878,7 @@ include('header.php');
 
              */
 
-           /* if ( !empty( $conditions ) ) {
+            if ( !empty( $conditions ) ) {
 
                 foreach ( $conditions as $index => $condition ) {
 
@@ -903,11 +903,13 @@ include('header.php');
             //$sql_files = $dbh->prepare($fq);  
 
             //$sql_files->execute( $params );       
+			
 
-           $q_sent_file = "SELECT  tf.* FROM tbl_files AS tf LEFT JOIN tbl_notifications AS tns ON tf.id = tns.id where tns.sent_status =1" ;
+           //$q_sent_file = "SELECT  tf.* FROM tbl_files AS tf LEFT JOIN tbl_notifications AS tns ON tf.id = tns.id where tns.sent_status =1" ;
+		   $q_sent_file= "Select * from tbl_files AS tf where not tf.id in (select file_id from tbl_notifications)"; 
 
 
-            $sql_files = $dbh->prepare($q_sent_file);
+            $sql_files = $dbh->prepare($q_sent_file);  
 
             $sql_files->execute();
 
@@ -918,7 +920,7 @@ include('header.php');
             //var_dump($sql_files);
 
             //exit;
-
+	
             //var_dump(); exit;
 
             $count = $sql_files->rowCount();
@@ -1391,8 +1393,8 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                                  */
 
                                 $params = array();
-
-                                $query_this_file = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id";
+                               //$query_this_file = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id";
+                                $query_this_file = "Select * from tbl_files AS tf where not tf.id in (select file_id from tbl_notifications)";
 
                                 $params[':file_id'] = $row['id'];
 

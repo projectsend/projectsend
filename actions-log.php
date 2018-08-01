@@ -64,7 +64,7 @@ include('header.php');
 		    format      : 'dd-mm-yyyy',
 		    autoclose   : true,
 		    todayHighlight  : true,
-		    maxDate: '0'
+		    maxDate: 0
 		});
 	});
 </script>

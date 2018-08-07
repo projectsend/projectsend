@@ -44,7 +44,7 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header.php';
 						echo system_message('danger',$msg);
 					}
 				break;
-				case 'clear':
+				case 'log_clear':
 					$keep = '5,8,9';
 					$statement = $dbh->prepare("DELETE FROM " . TABLE_ACTIONS_LOG . " WHERE NOT ( FIND_IN_SET(action, :keep) ) ");
 					$params = array(

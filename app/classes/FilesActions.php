@@ -198,6 +198,9 @@ class FilesActions
 	{
 		$this->check_level = array(9,8,7);
 		if (isset($file_id)) {
+            if ($modify_type !== 'client_id' && $modify_type !== 'group_id') {
+                throw new \Exception('Invalid modify type');
+            }
 			/** Do a permissions check */
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
 				$this->sql = "UPDATE " . TABLE_FILES_RELATIONS . " SET hidden=:hidden WHERE file_id = :file_id AND " . $modify_type . " = :modify_id";
@@ -227,6 +230,9 @@ class FilesActions
 	{
 		$this->check_level = array(9,8,7);
 		if (isset($file_id)) {
+            if ($modify_type !== 'client_id' && $modify_type !== 'group_id') {
+                throw new \Exception('Invalid modify type');
+            }
 			/** Do a permissions check */
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
 				$this->sql = "DELETE FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id AND " . $modify_type . " = :modify_id";

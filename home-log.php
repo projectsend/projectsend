@@ -12,16 +12,15 @@
 		if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest')) {
 			$max_show_log = 10;
 			$log_action = $_GET['action'];
-
 			$params = array();
 			$log_query = "SELECT * FROM " . TABLE_LOG;
 			if (!empty($log_action)) {
-				$log_query .= " WHERE action = :action";
+				$log_query .= " WHERE action = :action AND timestamp like '%".date("Y-m-d")."%'";
 				$params[':action'] = $log_action;
 			}
+			$log_query .= " WHERE timestamp like '%".date("Y-m-d")."%'";
 			$log_query .= " ORDER BY id DESC LIMIT :max";
 			$params[':max'] = $max_show_log;
-
 			$sql_log = $dbh->prepare( $log_query );
 			$sql_log->execute( $params );
 			if ( $sql_log->rowCount() > 0 ) {

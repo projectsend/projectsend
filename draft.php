@@ -906,7 +906,8 @@ include('header.php');
 			
 
            //$q_sent_file = "SELECT  tf.* FROM tbl_files AS tf LEFT JOIN tbl_notifications AS tns ON tf.id = tns.id where tns.sent_status =1" ;
-		   $q_sent_file= "Select * from tbl_files AS tf where not tf.id in (select file_id from tbl_notifications)"; 
+		   //$q_sent_file= "Select * from tbl_files AS tf where not tf.id in (select file_id from tbl_notifications)"; 
+		   $q_sent_file = "Select * from tbl_files AS tf LEFT JOIN tbl_files_relations ON tf.id = tbl_files_relations.file_id where tf.id not in (select file_id from tbl_notifications) AND tbl_files_relations.from_id =" . CURRENT_USER_ID;
 
 
             $sql_files = $dbh->prepare($q_sent_file);  
@@ -1394,8 +1395,13 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
 
                                 $params = array();
                                //$query_this_file = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id";
-                                $query_this_file = "Select * from tbl_files AS tf where not tf.id in (select file_id from tbl_notifications)";
-
+                                //$query_this_file = "Select * from tbl_files AS tf where not tf.id in (select file_id from tbl_notifications);
+								
+								
+								$query_this_file = "Select * from tbl_files AS tf LEFT JOIN tbl_files_relations ON tf.id = tbl_files_relations.file_id where tf.id not in (select file_id from tbl_notifications) AND tbl_files_relations.from_id =" . CURRENT_USER_ID;
+								//var_dump($query_this_file);
+								//exit;
+								
                                 $params[':file_id'] = $row['id'];
 
 
@@ -1451,7 +1457,7 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                                 }
 
 
-
+                                
                                 $sql_this_file = $dbh->prepare($query_this_file);
 
                                 $sql_this_file->execute( $params );
@@ -1461,7 +1467,6 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
 
 
                                 $count_assignations = $sql_this_file->rowCount();
-
 
 
                                 while( $data_file = $sql_this_file->fetch() ) {

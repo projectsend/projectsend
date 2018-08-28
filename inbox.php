@@ -690,9 +690,9 @@ $q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations
 							while( $row = $sql_files->fetch() ) {
 
 								$current_download_count = current_download_count_user($row['id'],CURRENT_USER_ID);
-								echo $current_download_count;
-								echo 
-								$file_id = $row['id'];
+								//echo $current_download_count;
+								//echo $file_id = $row['id'];
+								
 								/**
 								 * Construct the complete file URI to use on the download button.
 								 */

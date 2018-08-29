@@ -905,9 +905,10 @@ include('header.php');
             //$sql_files->execute( $params );       
 			
 
-           //$q_sent_file = "SELECT  tf.* FROM tbl_files AS tf LEFT JOIN tbl_notifications AS tns ON tf.id = tns.id where tns.sent_status =1" ;
-		   //$q_sent_file= "Select * from tbl_files AS tf where not tf.id in (select file_id from tbl_notifications)"; 
-		   $q_sent_file = "Select * from tbl_files AS tf LEFT JOIN tbl_files_relations ON tf.id = tbl_files_relations.file_id where tf.id not in (select file_id from tbl_notifications) AND tbl_files_relations.from_id =" . CURRENT_USER_ID;
+		   $q_sent_file = "SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME ."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')";
+		   
+		   
+		   //var_dump($q_sent_file); exit;
 
 
             $sql_files = $dbh->prepare($q_sent_file);  
@@ -1394,11 +1395,11 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                                  */
 
                                 $params = array();
-                               //$query_this_file = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id";
-                                //$query_this_file = "Select * from tbl_files AS tf where not tf.id in (select file_id from tbl_notifications);
+                               
 								
 								
-								$query_this_file = "Select * from tbl_files AS tf LEFT JOIN tbl_files_relations ON tf.id = tbl_files_relations.file_id where tf.id not in (select file_id from tbl_notifications) AND tbl_files_relations.from_id =" . CURRENT_USER_ID;
+								$query_this_file = "SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')";
+								
 								//var_dump($query_this_file);
 								//exit;
 								

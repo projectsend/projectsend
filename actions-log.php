@@ -14,7 +14,7 @@ $load_scripts	= array(
 $allowed_levels = array(9);
 $cc_active_page = 'Activities log';
 require_once('sys.includes.php');
-$page_title = __('Recent activities log','cftp_admin');;
+$page_title = __('Activities Log','cftp_admin');;
 
 include('header.php');
 ?>

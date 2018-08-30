@@ -1383,7 +1383,7 @@ $notify_send = $e_notify->psend_send_email($e_arg);
 
 				});
 
-		// Start by B)
+
 
 			$(".no-results").click(function(e) {
 
@@ -1410,9 +1410,6 @@ $notify_send = $e_notify->psend_send_email($e_arg);
 				$(this).parent().remove();
 
 			});
-
-		// End by B)
-
 
 
 				$('.date-container .date-field').datepicker({
@@ -1514,11 +1511,6 @@ $notify_send = $e_notify->psend_send_email($e_arg);
 
 				});
 
-		
-
-				// Autoclick the continue button
-
-				//$('#upload-continue').click();
 
 		<?php
 

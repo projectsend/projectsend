@@ -924,7 +924,7 @@ include('header.php');
 			$current_date = date("Y-m-d");
 			
 		 
-		 $q_sent_file = "SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME ."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')  AND tbl_files.future_send_date <='".$current_date."'   "; 
+		 $q_sent_file = "SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME ."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')  AND tbl_files.future_send_date <='".$current_date."' AND  tbl_files.public_allow=0 "; 
 		   
 		   
 		 //var_dump($q_sent_file); exit;
@@ -1692,8 +1692,14 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                                 $params = array();
                                
 								
+								//"SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME ."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')  AND tbl_files.future_send_date <='".$current_date."'   ";
 								
-								$query_this_file = "SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')";
+								
+								
+								//$query_this_file = "SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')";
+								
+								
+								$query_this_file="SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME ."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')  AND tbl_files.future_send_date <='".$current_date."'   ";
 								
 								//var_dump($query_this_file);
 								//exit;
@@ -1856,7 +1862,7 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
 
                                         ?>
 
-                    <a href="edit-to-send.php?file_id=<?php echo $row["id"]; ?>" target="_blank"> <?php echo html_output($row['filename']); ?> </a>
+                    <a href="edit-to-send.php?file_id=<?php echo $row["id"]; ?>" > <?php echo html_output($row['filename']); ?> </a>
 
                     <?php
 

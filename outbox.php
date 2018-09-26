@@ -110,15 +110,11 @@ if (isset($_GET['group_id'])) {
 
 	$this_id = $_GET['group_id'];
 
-
-
-
-
 	$sql_name = $dbh->prepare("SELECT name from " . TABLE_GROUPS . " WHERE id=:id");
 
 	$sql_name->bindParam(':id', $this_id, PDO::PARAM_INT);
 
-	$sql_name->execute();							
+	$sql_name->execute();
 
 
 
@@ -467,6 +463,7 @@ include('header.php');
 					$all_files[$data_file['id']] = $data_file['filename'];
 
 				}
+				
 
 				
 
@@ -817,8 +814,8 @@ include('header.php');
 			*/
 
 			$current_level = get_current_user_level();
-
-			if ($current_level == '7' || $current_level == '0') {
+			//echo $current_level;
+			if ($current_level == '7' || $current_level == '0' || $current_level=='9') {
 
 				$conditions[] = "uploader = :uploader";
 
@@ -842,9 +839,11 @@ include('header.php');
 
 				$files_id_by_cat = array();
 
-				$statement = $dbh->prepare("SELECT file_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE cat_id = :cat_id");
+				$statement = $dbh->prepare("SELECT file_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE cat_id = :cat_id AND uploader=:use_name");
 
 				$statement->bindParam(':cat_id', $this_category['id'], PDO::PARAM_INT);
+				
+				$statement->bindParam(':use_name',CURRENT_USER_USERNAME);
 
 				$statement->execute();
 
@@ -896,9 +895,9 @@ include('header.php');
 
 			/** Debug query */
 
-			//echo $fq;
+			 //echo $fq;
 
-			//print_r( $conditions );
+			 //print_r( $conditions );
 
 	
 
@@ -1332,6 +1331,10 @@ include('header.php');
 							$sql_files->setFetchMode(PDO::FETCH_ASSOC);
 
 							while( $row = $sql_files->fetch() ) {
+								
+								//echo '<pre>';
+								//print_r($row);
+								//echo '</pre>';
 
 								$file_id = $row['id'];
 
@@ -1356,13 +1359,26 @@ include('header.php');
 								 */
 
 								$params = array();
-
+								
+								//SELECT * from tbl_files_relations LEFT JOIN tbl_files on tbl_files.id = tbl_files_relations.file_id where file_id= :file_id and tbl_files.uploader ='admin'
+								
+								
 								$query_this_file = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id";
+								
+								
+								//$query_this_file = "SELECT * from tbl_files_relations LEFT JOIN tbl_files on tbl_files.id = tbl_files_relations.file_id where file_id= :file_id and tbl_files.uploader = :uploader";
+
+								
 
 								$params[':file_id'] = $row['id'];
-
-
-
+								//$conditions[] = "uploader = :uploader";
+								//$no_results_error = 'account_level'; 
+								//$params[':uploader'] = $global_user;
+//echo '<pre>';
+//print_r($row['id']);
+//echo '</pre>';
+//echo $row['id'];
+//print_r($query_this_file); 
 								if (isset($search_on)) {
 
 									$query_this_file .= " AND $search_on = :id";
@@ -1575,7 +1591,7 @@ include('header.php');
 }
 										if($current_level != '0') {
 												if ( !isset( $search_on ) ) {
-
+                                                   
 											?>
 
 													<td>

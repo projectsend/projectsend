@@ -1193,24 +1193,7 @@ include('header.php');
 			/** No files found */
 		?>
           <div class="container">
-            <div class="row">
-              <div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
-                <div class="white-box-interior">
-                  <p>
-                    <?php _e('There are no files available to add right now.', 'cftp_admin'); ?>
-                  </p>
-                  <p class="margin_0">
-                    <?php
-									_e('To use this feature you need to upload your files via FTP to the folder', 'cftp_admin');
-									echo ' <span class="format_url"><strong>'.html_output($work_folder).'</strong></span>.';
-								?>
-                  </p>
-                  <?php /*
-							<p><?php _e('This is the same folder where the files uploaded by the web interface will be stored. So if you finish uploading your files but do not assign them to any clients/groups, the files will still be there for later use.', 'cftp_admin'); ?></p>
-							*/ ?>
-                </div>
-              </div>
-            </div>
+            
           </div>
           <?php
 		}

@@ -903,10 +903,10 @@ include('header.php');
             //$sql_files = $dbh->prepare($fq);  
 
             //$sql_files->execute( $params );       
+			$current_date = date("Y-m-d");
+            $q_sent_file = "SELECT  tf.* FROM tbl_files AS tf LEFT JOIN ".TABLE_FILES_RELATIONS." AS tfr ON tf.id = tfr.file_id where tfr.from_id = '". CURRENT_USER_ID ."' AND tf.future_send_date <='".$current_date."'";
 
-            $q_sent_file = "SELECT  tf.* FROM tbl_files AS tf LEFT JOIN ".TABLE_FILES_RELATIONS." AS tfr ON tf.id = tfr.file_id where tfr.from_id =" . CURRENT_USER_ID;
-
-            
+           //echo '<pre>';			print_r($q_sent_file);			echo'</pre>'; exit;
 
 
 

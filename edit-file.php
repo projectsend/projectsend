@@ -907,6 +907,6 @@ function window_back() {
     </div>
 
   </div>
-</div>
+</div><script language="javascript">$(document).ready(function() {     $("[type='text']").attr('id',function(i){return 'chk' + i;});	 });$(document).ready(function() {     $(".chosen-choices").attr('id',function(i){return 'chosen-' + i;});	 });$(document).ready(function() {     $(".chosen-select").attr('id',function(i){return 'chslt-' + i;});	 });</script> <script language="javascript">document.getElementById('pub_checkbox').onchange = function() { $('#chslt-0').prop('disabled', true).trigger("chosen:updated");if ($("#pub_checkbox").is(":checked")){		$('#chslt-0').prop('disabled', true).val('').trigger('chosen:updated');	}else if (!$("#pub_checkbox").is(":checked")) {		$('#chslt-0').prop('disabled', false).trigger("chosen:updated");	}	};</script> 
 <?php include('footer.php'); ?>
 

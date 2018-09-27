@@ -1875,17 +1875,17 @@ $(document).ready(function() {
 
 <script language="javascript">
 
-document.getElementById('pub_checkbox_1').onchange = function() { 
+document.getElementById('pub_checkbox').onchange = function() { 
 
 $('#chslt-0').prop('disabled', true).trigger("chosen:updated");
 
-if ($("#pub_checkbox_1").is(":checked")){
+if ($("#pub_checkbox").is(":checked")){
 	
 	$('#chslt-0').prop('disabled', true).val('').trigger('chosen:updated');
 	
 }
 
-else if (!$("#pub_checkbox_1").is(":checked")) {
+else if (!$("#pub_checkbox").is(":checked")) {
 	
 	$('#chslt-0').prop('disabled', false).trigger("chosen:updated");
 	

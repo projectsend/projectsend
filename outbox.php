@@ -1563,7 +1563,7 @@ include('header.php');
 
                                             }
 
-                                        ?>
+                                        ?> 
 
                                     </td>
 									<td data-value="<?php echo $this_file_size; ?>"><?php echo $formatted_size; ?></td>
@@ -1575,7 +1575,7 @@ include('header.php');
 									?>
 
 											<td>
-											<a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=3" class="btn-sm">
+											<a href="edit-to-send.php?file_id=<?php echo $row["id"]; ?>&page_id=3" class="btn-sm">
 											<?php _e(html_output($row['uploader']),'cftp_admin'); ?>
 										</a>
 											</td>

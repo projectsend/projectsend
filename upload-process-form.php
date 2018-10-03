@@ -770,7 +770,7 @@ while( $row = $statement->fetch() ) {
 							}
 
 						?>
-      <td><a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>" class="btn-primary btn btn-sm">
+      <td><a href="edit-to-send.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>" class="btn-primary btn btn-sm">
         <?php _e('Edit file','cftp_admin'); ?>
         </a>
         <?php

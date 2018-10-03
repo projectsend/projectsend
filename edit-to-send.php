@@ -456,7 +456,9 @@ function randomPassword() {
 
 												'uploader_id' => $global_id,
 
-												'expiry_date' => $file['expiry_date']
+												'expiry_date' => $file['expiry_date'],
+												
+												'future_send_date'=>$file['future_send_date']
 
 											);
 

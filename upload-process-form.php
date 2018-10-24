@@ -47,7 +47,7 @@ $load_scripts	= array(
 $allowed_levels = array(9,8,7,0);
 
 require_once('sys.includes.php');
-
+//require_once('future-send.php'); 
 
 
 $active_nav = 'files';
@@ -265,7 +265,11 @@ while( $row = $statement->fetch() ) {
 					return implode($pass); //turn the array into a string
 
 				}
+				/*echo '<pre>';
+				print_r($pass);
+				echo'</pre>';*/
 	if (isset($_POST['submit'])) {
+
 		/**
 
 		 * Get the ID of the current client that is uploading files.
@@ -287,6 +291,7 @@ while( $row = $statement->fetch() ) {
 
 
 		foreach ($_POST['file'] as $file) {
+			
 
 			$n++;
 
@@ -425,16 +430,20 @@ while( $row = $statement->fetch() ) {
 							$add_arguments['future_send_date'] = $file['future_send_date'];
 
 						}
+						
+						
 
 						if (!empty($file['assignments']) || !empty($_POST['new_client']) ) {
 
-															 
-
+									//echo "test";	exit();					 
+									
 //------------------------------------------------------------
 
 				
 
 				$nuser_list = $_POST['new_client'];
+				
+				
 
 				if(!empty($file['assignments'])){
 
@@ -464,7 +473,7 @@ while( $row = $statement->fetch() ) {
 
 							//echo "Here";exit();
 
-							$npw = randomPassword();
+							$npw = randomPassword(); 
 
 							$cc_enpass = $hasher->HashPassword($npw);
 
@@ -484,9 +493,14 @@ while( $row = $statement->fetch() ) {
 										'username'	=> $nuser,
 										'password'	=> $npw
 									);
+									
 							$notify_send = $e_notify->psend_send_email($e_arg);
+			
+
 
 }
+
+               
 
 						array_push($full_list,'c'.$nuser_id);
 
@@ -495,6 +509,8 @@ while( $row = $statement->fetch() ) {
 				}
 
 				$full_assi_user = $full_list;
+				
+				
 
 //------------------------------------------------------------
 
@@ -598,9 +614,8 @@ while( $row = $statement->fetch() ) {
 
 							$categories_arguments = array(
 
-														'file_id'		=> $process_file['new_file_id'],
-
-														'categories'	=> !empty( $file['categories'] ) ? $file['categories'] : '',
+										'file_id'		=> $process_file['new_file_id'],
+										'categories'	=> !empty( $file['categories'] ) ? $file['categories'] : '',
 
 													);
 
@@ -613,8 +628,8 @@ while( $row = $statement->fetch() ) {
 							 * 4- Add the notifications to the database
 
 							 */
-
-							if ($send_notifications == true) {
+							$today = date("d-m-Y");
+							if ($send_notifications == true && $file['future_send_date'] == $today)  {
 
 								$process_notifications = $this_upload->upload_add_notifications($add_arguments);
 
@@ -669,7 +684,9 @@ while( $row = $statement->fetch() ) {
 		}
 
 	}
-
+				/*echo '<pre>';
+				print_r($pass);
+				echo'</pre>';*/
 
 
 	/**
@@ -891,11 +908,11 @@ while( $row = $statement->fetch() ) {
   
 			<?php
 
-				foreach($uploaded_files as $add_uploaded_field) {
+				foreach($uploaded_files as $add_uploaded_field) 
+				
+				{
 
-					echo '<input type="hidden" name="finished_files[]" value="'.$add_uploaded_field.'" />
-
-					';
+					echo '<input type="hidden" name="finished_files[]" value="'.$add_uploaded_field.'" />';
 
 				}
 
@@ -930,15 +947,9 @@ while( $row = $statement->fetch() ) {
 						if(file_exists($location)) {
 
 							/** Generate a safe filename */
-
-							//$file = $this_upload->safe_rename($file);
-
 							/**
-
 							 * Remove the extension from the file name and replace every
-
 							 * underscore with a space to generate a valid upload name.
-
 							 */
 
 							$filename_no_ext = substr($file, 0, strrpos($file, '.'));

@@ -52,16 +52,16 @@ $this_file = new PSend_Upload_File();
 $fileName = $this_file->safe_rename($fileName);
 
 // Make sure the fileName is unique but only if chunking is disabled
-if ($chunks < 2 && file_exists($targetDir . DIRECTORY_SEPARATOR . $fileName)) {
+if ($chunks < 2) {
 	$ext = strrpos($fileName, '.');
 	$fileName_a = substr($fileName, 0, $ext);
-	$fileName_b = substr($fileName, $ext);
+	$fileName_b = substr($fileName, $ext);	$curr_usr_id= CURRENT_USER_ID;
 
 	$count = 1;
-	while (file_exists($targetDir . DIRECTORY_SEPARATOR . $fileName_a . '_' . $count . $fileName_b))
-		$count++;
+	while (file_exists($targetDir . DIRECTORY_SEPARATOR . $fileName_a . '_' . $count . '_'. $curr_usr_id . '_'. $fileName_b))
+	$count++; 
 
-	$fileName = $fileName_a . '_' . $count . $fileName_b;
+	$fileName = $fileName_a . '_' . $count. '_' . $curr_usr_id . '_'. $fileName_b;
 }
 
 $filePath = $targetDir . DIRECTORY_SEPARATOR . $fileName;

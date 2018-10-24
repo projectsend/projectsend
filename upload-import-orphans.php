@@ -32,26 +32,43 @@ $work_folder = UPLOADED_FILES_FOLDER;
 ?>
 
 <div id="main">
+
   <div id="content">
+  
     <div class="container-fluid">
+	
       <div class="row">
+	  
         <div class="col-md-12">
+		
           <h1 class="page-title txt-color-blueDark"><i class="fa fa-file" aria-hidden="true"></i>&nbsp;<?php echo $page_title; ?></h1>
+		  
           <?php
+		  
 		if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
+			
 			$msg = __('This list only shows the files that are allowed according to your security settings. If the file type you need to add is not listed here, add the extension to the "Allowed file extensions" box on the options page.', 'cftp_admin');
+			
 			echo system_message('warning',$msg);
+			
 		}
 	?>
           <?php
+		  
 		/** Count clients to show an error message, or the form */
+		
 		$statement		= $dbh->query("SELECT id FROM " . TABLE_USERS . " WHERE level = '0'");
+		
 		$count_clients	= $statement->rowCount();
+		
 		$statement		= $dbh->query("SELECT id FROM " . TABLE_GROUPS);
+		
 		$count_groups	= $statement->rowCount();
 
 		if ( ( !$count_clients or $count_clients < 1 ) && ( !$count_groups or $count_groups < 1 ) ) {
+			
 			message_no_clients();
+			
 		}
 
 		/**
@@ -60,45 +77,80 @@ $work_folder = UPLOADED_FILES_FOLDER;
 		 * be safely renamed.
 		 */
 		$sql = $dbh->query("SELECT url, id, public_allow FROM " . TABLE_FILES );
+		
 		$db_files = array();
+		
 		$sql->setFetchMode(PDO::FETCH_ASSOC);
+		
 		while ( $row = $sql->fetch() ) {
+			
 			$db_files[$row["url"]] = $row["id"];
+			
 			if ($row['public_allow'] == 1) {$db_files_public[$row["url"]] = $row["id"];}
 		}
 
 		/** Make an array of already assigned files */
+		
 		$sql = $dbh->query("SELECT DISTINCT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE client_id IS NOT NULL OR group_id IS NOT NULL OR folder_id IS NOT NULL");
+		
 		$assigned = array();
+		
 		$sql->setFetchMode(PDO::FETCH_ASSOC);
+		
+		
 		while ( $row = $sql->fetch() ) {
+			
 			$assigned[] = $row["file_id"];
 		}
 		
 		/** We consider public file as assigned file */
+		
 		foreach ($db_files_public as $file_id){
+			
 			$assigned[] = $file_id;
+			
 		}
 
 		/** Read the temp folder and list every allowed file */
+		
+		
+		
 		if ($handle = opendir($work_folder)) {
+			
 			while (false !== ($filename = readdir($handle))) {
+				
 				$filename_path = $work_folder.'/'.$filename;
+				
 				if(!is_dir($filename_path)) {
+					
 					if ($filename != "." && $filename != "..") {
-						/** Check types of files that are not on the database */							
+						
+						/** Check types of files that are not on the database */
+						
 						if (!array_key_exists($filename,$db_files)) {
+							
 							$file_object = new PSend_Upload_File();
+							
 							$new_filename = $file_object->safe_rename_on_disk($filename,$work_folder);
+							
 							/** Check if the filetype is allowed */
+							
 							if ($file_object->is_filetype_allowed($new_filename)) {
+								
 								/** Add it to the array of available files */
+								
 								$new_filename_path = $work_folder.'/'.$new_filename;
+								
 								//$files_to_add[$new_filename] = $new_filename_path;
+								
 								$files_to_add[] = array(
+								
 														'path'		=> $new_filename_path,
+														
 														'name'		=> $new_filename,
+														
 														'reason'	=> 'not_on_db',
+														
 													);
 							}
 						}
@@ -109,118 +161,205 @@ $work_folder = UPLOADED_FILES_FOLDER;
 		}
 		
 		if (!empty($_POST['search'])) {
+			
 			$search = htmlspecialchars($_POST['search']);
 			
+			
 			function search_text($item) {
+				
 				global $search;
+				
 				if (stripos($item['name'], $search) !== false) {
+					
 					/**
 					 * Items that match the search
 					 */
 					return true;
 				}
+				
 				else {
+					
 					/**
 					 * Remove other items
 					 */
+					 
 					unset($item);
+					
 				}
+				
 				return false;
+				
 			}
 
 			$files_to_add = array_filter($files_to_add, 'search_text');
 		}
 		
-	//	echo "<pre>";var_dump($files_to_add);echo "</pre>";
+		
+		
 		
 		/**
 		 * Generate the list of files if there is at least 1
 		 * available and allowed.
 		 */
 		if(isset($files_to_add) && count($files_to_add) > 0) {
+			
 	?>
           <div class="form_actions_limit_results">
+		  
             <form action="" name="files_search" method="post" class="form-inline">
+			
               <div class="form-group group_float">
+			  
                 <input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box form-control" />
+				
               </div>
+			  
               <button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default">
+			  
               <?php _e('Search','cftp_admin'); ?>
+			  
+			  
               </button>
+			  
             </form>
+			
           </div>
+		  
           <div class="clear"></div>
+		  
           <div class="clear"></div>
+		  
           <div class="clear"></div>
+		  
 			<div class="form-inline">
+			
 			<div class="form_actions_limit_results">
+			
 					<div class="form-group group_float">
+					
 						<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i>
+						
                       <?php _e('Selected orphan files actions','cftp_admin'); ?>
+					  
                       :</label>
+					  
 						<select name="files_actions" id="files_actions" class="txtfield form-control" style="width:200px !important;">
+						
 										<option value="delete"><?php _e('Delete','cftp_admin'); ?></option>
+										
 									</select>
+									
 								</div>
+								
 								<button type="submit" name="do_delete" id="do_delete" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
+								
 			</div>
+			
 			</div>
 
           <div class="form_actions_count">
+		  
             <p class="form_count_total">
+			
               <?php _e('Showing','cftp_admin'); ?>
+			  
               : <span><?php echo count($files_to_add); ?>
+			  
               <?php _e('files','cftp_admin'); ?>
+			  
               </span></p>
+			  
           </div>
+		  
           <div class="clear"></div>
+		  
           <form action="upload-process-form.php" name="upload_by_ftp" id="upload_by_ftp" method="post" enctype="multipart/form-data">
+		  
           	<section id="no-more-tables">
+			
             <table id="add_files_from_ftp" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
+			
               <thead>
+			  
                 <tr>
+				
                   <th class="td_checkbox" data-sort-ignore="true"> <input type="checkbox" name="select_all" id="select_all" value="0" />
+				  
                   </th>
+				  
                   <th data-sort-initial="true"><?php _e('File Name','cftp_admin'); ?></th>
+				  
                   <th data-type="numeric" data-hide="phone"><?php _e('File Size','cftp_admin'); ?></th>
+				  
                   <th data-type="numeric" data-hide="phone"><?php _e('Last Modified','cftp_admin'); ?></th>
+				  
                   
                 </tr>
+				
               </thead>
+			  
                 <tbody>
               
               <?php
-							foreach ($files_to_add as $add_file) {
-								?>
-                <tr>
+			  
+						$curr_usr_id =	CURRENT_USER_ID;
+							
+							foreach ($files_to_add as $add_file){
+		
+							
+							
+								$x=explode("_", $add_file[name]);
+			
+									
+									if($x[2]==$curr_usr_id){
+									
+			  ?>
+        <tr>
               
-              <td><input type="checkbox" name="add[]" class="select_file_checkbox" value="<?php echo html_output($add_file['name']); ?>" /></td>
+            <td>
+			<input type="checkbox" name="add[]" class="select_file_checkbox" value="<?php echo html_output($add_file['name']); ?>" />
+			</td>
 
-              <td><a href="#" name="file_edit" class="btn-edit-file">
-              
+            <td>
+			  <a href="#" name="file_edit" class="btn-edit-file">
               <?php _e(html_output($add_file['name']),'cftp_admin'); ?>
-                </a></td>
+              </a>
+			</td>
 
 
-              <td data-value="<?php echo filesize($add_file['path']); ?>"><?php echo html_output(format_file_size(get_real_size($add_file['path']))); ?></td>
-              <td data-value="<?php echo filemtime($add_file['path']); ?>"><?php echo date(TIMEFORMAT_USE, filemtime($add_file['path'])); ?></td>
+              <td data-value="<?php echo filesize($add_file['path']); ?>">
+			  <?php echo html_output(format_file_size(get_real_size($add_file['path']))); ?>
+			  </td>
+			  
+              <td data-value="<?php echo filemtime($add_file['path']); ?>">
+			  <?php echo date(TIMEFORMAT_USE, filemtime($add_file['path'])); ?>
+			  </td>
                
               
-                </tr>
+        </tr>
               
-              <?php
+						<?php
+									}
 							}
 						?>
                 </tbody>
               
             </table>
+			
             </section>
+			
             <nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
+			
               <div class="pagination_wrapper text-center">
+			  
                 <ul class="pagination hide-if-no-paging">
+				
                 </ul>
+				
               </div>
+			  
             </nav>
+			
             <?php
 					$msg = __('Please note that the listed files will be renamed if they contain invalid characters.','cftp_admin');
 					echo system_message('info',$msg);

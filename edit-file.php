@@ -512,12 +512,21 @@ $message = '
 									$this_file = new FilesActions();
 									$hide_file = $this_file->hide_for_everyone($this_file_id);
 								}
+								
+								
 								/**
 								 * 4- Add the notifications to the database
 								 */
-								if ($send_notifications == true) {
+								 
+								 
+							 $today = date("d-m-Y");
+							 
+							if ($send_notifications == true && $file['future_send_date'] == $today)  {
+								
 									$process_notifications = $this_upload->upload_add_notifications($add_arguments);
+									
 								}
+								
 							}
 
 							$new_log_action = new LogActions();

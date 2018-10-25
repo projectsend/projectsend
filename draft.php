@@ -953,51 +953,111 @@ include('header.php');
 		
 /*=========================================orphan files===========================================================*/	
 		$work_folder = UPLOADED_FILES_FOLDER;
+		
 		/**
 		 * Make a list of existing files on the database.
 		 * When a file doesn't correspond to a record, it can
 		 * be safely renamed.
 		 */
-		$sql = $dbh->query("SELECT url, id, public_allow FROM " . TABLE_FILES );
+		 
+		$sql = $dbh->query("SELECT url, id, public_allow, uploader FROM " . TABLE_FILES );
+		
 		$db_files = array();
+		
 		$sql->setFetchMode(PDO::FETCH_ASSOC);
+		
 		while ( $row = $sql->fetch() ) {
+			
 			$db_files[$row["url"]] = $row["id"];
-			if ($row['public_allow'] == 1) {$db_files_public[$row["url"]] = $row["id"];}
+			
+			if ($row['public_allow'] == 1) {
+				
+				$db_files_public[$row["url"]] = $row["id"];
+			
+			}
+			
 		}
 
+		
+		//var_dump($sql); exit;
+		
 		/** Make an array of already assigned files */
+		
 		$sql = $dbh->query("SELECT DISTINCT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE client_id IS NOT NULL OR group_id IS NOT NULL OR folder_id IS NOT NULL");
+		
 		$assigned = array();
+		
 		$sql->setFetchMode(PDO::FETCH_ASSOC);
+		
 		while ( $row = $sql->fetch() ) {
+			
 			$assigned[] = $row["file_id"];
-		}//var_dump($sql); exit;
+			
+		} 
+		
+		
+		//var_dump($sql); exit;
+		
+		
+		
 		
 		/** We consider public file as assigned file */
+		
 		foreach ($db_files_public as $file_id){
+			
 			$assigned[] = $file_id;
+			
 		}
 
 		/** Read the temp folder and list every allowed file */
-		if ($handle = opendir($work_folder)) {
+		 
+		if ($handle = opendir($work_folder))  {
+			
 			while (false !== ($filename = readdir($handle))) {
-				$filename_path = $work_folder.'/'.$filename;
-				//var_dump($filename_path); exit;
+				
+				$filename_path = $work_folder.'//'.$filename;
+				
+				
 				if(!is_dir($filename_path)) {
-					if ($filename != "." && $filename != "..") {
-						/** Check types of files that are not on the database */							
+					
+					
+					if ($filename != "." && $filename != "..") { 
+					
+				/*echo "<pre>";
+				print_r($filename);
+				echo "</pre>";
+				
+				echo "<pre>";
+				print_r($db_files);
+				echo "</pre>";*/
+				
+						
+						/** Check types of files that are not on the database */	
+						
+						$x_id = CURRENT_USER_USERNAME ;
+						
 						if (!array_key_exists($filename,$db_files)) {
+							 
 							$file_object = new PSend_Upload_File();
-							$new_filename = $file_object->safe_rename_on_disk($filename,$work_folder);
+							
+							$new_filename = $file_object->safe_rename_on_disk( $filename , $work_folder );
+							
 							/** Check if the filetype is allowed */
+							
 							if ($file_object->is_filetype_allowed($new_filename)) {
+								
 								/** Add it to the array of available files */
+								
 								$new_filename_path = $work_folder.'/'.$new_filename;
+								
 								//$files_to_add[$new_filename] = $new_filename_path;
+								
 								$files_to_add[] = array('path'		=> $new_filename_path,
+								
 														'name'		=> $new_filename,
+														
 														'reason'	=> 'not_on_db',);
+														
 							}
 						}
 					}
@@ -1007,25 +1067,39 @@ include('header.php');
 		}
 		
 		if (!empty($_POST['search'])) {
+			
 			$search = htmlspecialchars($_POST['search']);
 			
 			function search_text($item) {
+				
 				global $search;
+				
 				if (stripos($item['name'], $search) !== false) {
+					
 					/**
 					 * Items that match the search
 					 */
+					 
 					return true;
+					
 				}
+				
 				else {
+					
 					/**
 					 * Remove other items
 					 */
+					 
 					unset($item);
+					
 				}
+				
 				return false;
+				
 			}
+			
 			$files_to_add = array_filter($files_to_add, 'search_text');
+			
 		}
 		
 		//echo "<pre>";var_dump($files_to_add);echo "</pre>";
@@ -1038,7 +1112,9 @@ include('header.php');
 		  
 		  <?php
 		  
-		 if(isset($files_to_add) && count($files_to_add) > 0) {
+		  //if ($row['public_allow'] == 1)
+		  
+		 if(isset($files_to_add) && count($files_to_add) > 0 ) {
 			 
 	      ?>
           <div class="form_actions_limit_results">
@@ -1055,17 +1131,18 @@ include('header.php');
           <div class="clear"></div>
           <div class="clear"></div>
 			<div class="form-inline">
-			<div class="form_actions_limit_results">
+				<div class="form_actions_limit_results">
 					<div class="form-group group_float">
-						<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i>
-                      <?php _e('Selected orphan files actions','cftp_admin'); ?>
-                      :</label>
-						<select name="files_actions" id="files_actions" class="txtfield form-control" style="width:200px !important;">
-										<option value="delete"><?php _e('Delete','cftp_admin'); ?></option>
-									</select>
-								</div>
-								<button type="submit" name="do_delete" id="do_delete" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
-			</div>
+					<label class="control-label hidden-xs hidden-sm">
+					<i class="glyphicon glyphicon-check"></i>
+                    <?php _e('Selected orphan files actions','cftp_admin'); ?>
+                    :</label>
+					<select name="files_actions" id="files_actions" class="txtfield form-control" style="width:200px !important;">
+					<option value="delete"><?php _e('Delete','cftp_admin'); ?></option>
+					</select>
+					</div>
+					<button type="submit" name="do_delete" id="do_delete" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
+				</div>
 			</div></br>
 
          <!-- <div class="form_actions_count">
@@ -1076,6 +1153,11 @@ include('header.php');
               </span></p>
           </div>-->
           <div class="clear"></div>
+		  <?php
+			/*echo "<pre>";
+			print_r($files_to_add);
+			echo "</pre>";*/
+		  ?>
           <form action="upload-process-form.php" name="upload_by_ftp" id="upload_by_ftp" method="post" enctype="multipart/form-data">
           	<section id="no-more-tables">
             <table id="add_files_from_ftp" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER;?>"> 
@@ -1091,7 +1173,16 @@ include('header.php');
                 <tbody>
               
               <?php
-							foreach ($files_to_add as $add_file) {
+							$curr_usr_id =	CURRENT_USER_ID;
+							
+							foreach ($files_to_add as $add_file){
+		
+							
+							
+								$x=explode("_", $add_file[name]);
+			
+									
+									if($x[2]==$curr_usr_id){
 			  ?>
                 <tr>
               
@@ -1111,6 +1202,7 @@ include('header.php');
               
               <?php
 							}
+						}
 						?>
                 </tbody>
               
@@ -1318,9 +1410,9 @@ include('header.php');
 
                                                             );
 
+                                    ?>
                                         foreach ( $options_status as $value => $text ) {
 
-                                    ?>
 
                                             <option value="<?php echo $value; ?>"><?php echo $text; ?></option>
 

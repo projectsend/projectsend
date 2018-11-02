@@ -179,6 +179,14 @@ switch ($user_form_type) {
 					</label>
 				</div>
 			</div>
+			
+			<div class="form-group">
+		<div class="col-sm-8 col-sm-offset-4">
+			<label for="add_client_form_notify">
+				<input type="checkbox" name="add_client_form_notify" id="add_client_form_notify" <?php echo (isset($add_client_data_notity) && $add_client_data_notity == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Notify new uploads by e-mail','cftp_admin'); ?>
+			</label>
+		</div>
+	</div>
 		<?php
 			}
 		?>

@@ -41,6 +41,7 @@ if ($page_status === 1) {
 		$add_user_data_email = $data['email'];
 		$add_user_data_level = $data['level'];
 		if ($data['active'] == 1) { $add_user_data_active = 1; } else { $add_user_data_active = 0; }
+		if ($data['notify'] == 1) { $add_client_data_notity = 1; } else { $add_client_data_notity = 0; }
 	}
 
 	$alternate = $dbh->prepare("SELECT * FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id=:user_id AND name = :name");
@@ -110,7 +111,7 @@ if ($_POST) {
 		$add_user_data_level = (isset($_POST["add_user_form_level"])) ? $_POST['add_user_form_level'] : '7';
 		$add_user_data_active = (isset($_POST["add_user_form_active"])) ? 1 : 0;
 	}
-
+	$add_client_data_notity		= (isset($_POST["add_client_form_notify"])) ? 1 : 0;
 	/** Arguments used on validation and user creation. */
 	$edit_arguments = array(
 							'id'		=> $user_id,
@@ -118,7 +119,8 @@ if ($_POST) {
 							'email'		=> $add_user_data_email,
 							'role'		=> $add_user_data_level,
 							'active'	=> $add_user_data_active,
-							'type'		=> 'edit_user'
+							'type'		=> 'edit_user',
+							'notify'	=> $add_client_data_notity,
 						);
 
 	/**

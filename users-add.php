@@ -48,7 +48,8 @@ if ($_POST) {
 							'name' => $add_user_data_name,
 							'email' => $add_user_data_email,
 							'role' => $add_user_data_level,
-							'active' => $add_user_data_active,
+							'active' => $add_user_data_active,						
+							'notify' => '1',
 							'type' => 'new_user'
 						);
 

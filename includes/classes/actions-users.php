@@ -109,6 +109,7 @@ class UserActions
 		$this->email		= $arguments['email'];
 		$this->role			= $arguments['role'];
 		$this->active		= $arguments['active'];
+		$this->notify		= '1';
 		//$this->enc_password = md5(mysql_real_escape_string($this->password));
 		$this->enc_password	= $hasher->HashPassword($this->password);
 
@@ -117,14 +118,15 @@ class UserActions
 			$this->state['hash'] = 1;
 
 			$this->timestamp = time();
-			$this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_USERS . " (user,password,name,email,level,active)"
-												." VALUES (:username, :password, :name, :email, :role, :active)");
+			$this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_USERS . " (user,password,name,email,level,active,notify)"
+												." VALUES (:username, :password, :name, :email, :role, :active,:notify)");
 			$this->sql_query->bindParam(':username', $this->username);
 			$this->sql_query->bindParam(':password', $this->enc_password);
 			$this->sql_query->bindParam(':name', $this->name);
 			$this->sql_query->bindParam(':email', $this->email);
 			$this->sql_query->bindParam(':role', $this->role);
 			$this->sql_query->bindParam(':active', $this->active, PDO::PARAM_INT);
+			$this->sql_query->bindParam(':notify', $this->notify);
 
 			$this->sql_query->execute();
 
@@ -174,6 +176,7 @@ class UserActions
 		$this->email		= $arguments['email'];
 		$this->role			= $arguments['role'];
 		$this->active		= ( $arguments['active'] == '1' ) ? 1 : 0;
+		$this->notify		= ( $arguments['notify'] == '1' ) ? 1 : 0;
 		$this->password		= $arguments['password'];
 		//$this->enc_password = md5(mysql_real_escape_string($this->password));
 		$this->enc_password = $hasher->HashPassword($this->password);
@@ -187,7 +190,8 @@ class UserActions
 									name = :name,
 									email = :email,
 									level = :level,
-									active = :active";
+									active = :active,
+									notify = :notify";
 	
 			/** Add the password to the query if it's not the dummy value '' */
 			if (!empty($arguments['password'])) {
@@ -201,6 +205,7 @@ class UserActions
 			$this->sql_query->bindParam(':email', $this->email);
 			$this->sql_query->bindParam(':level', $this->role);
 			$this->sql_query->bindParam(':active', $this->active, PDO::PARAM_INT);
+			$this->sql_query->bindParam(':notify', $this->notify);
 			$this->sql_query->bindParam(':id', $this->id, PDO::PARAM_INT);
 			if (!empty($arguments['password'])) {
 				$this->sql_query->bindParam(':password', $this->enc_password);

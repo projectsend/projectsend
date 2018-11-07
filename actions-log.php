@@ -63,7 +63,6 @@ include('header.php');
 		$('.date-container .date-field').datepicker({
 		    format      : 'dd-mm-yyyy',
 		    autoclose   : true,
-		    todayHighlight  : true,
 		    maxDate: 0
 		});
 	});
@@ -136,20 +135,41 @@ include('header.php');
 		$params[':file']	= $search_terms;
 		$params[':account']	= $search_terms;
 	}
-	else {
-		$next_clause = ' WHERE';
-	}
-  
-    /** Add the date from and date to filters  here */
+	else if(isset($_POST['date_from']) || isset($_POST['date_to'])) {				
+		$date_f = $_POST['date_from'];				
+		$date = date("Y-m-d", strtotime($date_f) );				
+		$date_t = $_POST['date_to'];				
+		$date_to = date("Y-m-d", strtotime($date_t) );				
+		if($date === $date_to) {						
+			$cq .= " WHERE (timestamp LIKE :date)";						
+			$next_clause = ' AND';						
+			$no_results_error = 'date search';						
+			$params[':date']	= '%'.$date.'%';
+		}				
+		else {
+			$cq .= " WHERE (timestamp BETWEEN :date AND :date_to)";						
+			$next_clause = ' AND';						
+			$no_results_error = 'date search';						
+			$params[':date']	= $date;						
+			$params[':date_to']	= $date_to;							
+		}				
 		
-	/** Add the activities filter */	
-	if(isset($_POST['activity']) && $_POST['activity'] != 'all') {
+	}
+	else if(isset($_POST['activity']) && $_POST['activity'] != 'all') {
+		$next_clause = ' WHERE';
 		$cq .= $next_clause. " action=:status";
 
 		$status_filter		= $_POST['activity'];
 		$params[':status']	= $status_filter;
 
 		$no_results_error = 'filter';
+	}
+	else {
+		
+		$current_date = date("Y-m-d");
+		$cq .= " WHERE (timestamp LIKE :current_date)" ;				
+		$params[':current_date']	= '%'.$current_date.'%'; 
+		$next_clause = ' AND';
 	}
 
 	$cq .= " ORDER BY id DESC";
@@ -174,7 +194,7 @@ include('header.php');
 			  <?php _e('Date from', 'cftp_admin');?>
 			</label>
 			<div class="input-group date-container">
-			  <input type="text" class="date-field form-control datapick-field" readonly id="date_from" name="date_from" value="<?php echo date('d-m-Y'); ?>" />
+			  <input type="text" class="date-field form-control datapick-field" readonly id="date_from" name="date_from" value="<?php echo isset($date_f)?$date_f: date("d-m-Y")?>" />
 			  <div class="input-group-addon"> <i class="glyphicon glyphicon-time"></i> </div>
 			</div>
 		      </div>
@@ -183,7 +203,7 @@ include('header.php');
 			  <?php _e('Date to', 'cftp_admin');?>
 			</label>
 			<div class="input-group date-container">
-			  <input type="text" class="date-field form-control datapick-field" readonly id="date_to" name="date_to" value="<?php echo date('d-m-Y'); ?>" />
+			  <input type="text" class="date-field form-control datapick-field" readonly id="date_to" name="date_to" value="<?php echo isset($date_t)?$date_t: date("d-m-Y")?>" />
 			  <div class="input-group-addon"> <i class="glyphicon glyphicon-time"></i> </div>
 			</div>
 		      </div>

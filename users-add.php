@@ -25,6 +25,7 @@ include('header.php');
  * the form
  */
 $add_user_data_active = 1;
+$add_user_data_notify = 1;
 
 if ($_POST) {
 	$new_user = new UserActions();
@@ -38,6 +39,7 @@ if ($_POST) {
 	$add_user_data_level = encode_html($_POST['add_user_form_level']);
 	$add_user_data_user = encode_html($_POST['add_user_form_user']);
 	$add_user_data_active = (isset($_POST["add_user_form_active"])) ? 1 : 0;
+        $add_user_data_notify = (isset($_POST["add_user_form_notify"])) ? 1 : 0;
 
 	/** Arguments used on validation and user creation. */
 	$new_arguments = array(
@@ -49,7 +51,7 @@ if ($_POST) {
 							'email' => $add_user_data_email,
 							'role' => $add_user_data_level,
 							'active' => $add_user_data_active,						
-							'notify' => 1,
+							'notify' => $add_user_data_notify,
 							'type' => 'new_user'
 						);
 

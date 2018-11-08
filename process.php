@@ -45,22 +45,22 @@ class process {
 					/**
 					 * Get the file name
 					 */
-					$this->statement = $this->dbh->prepare("SELECT url, expires, expiry_date FROM " . TABLE_FILES . " WHERE id=:id");
+					$this->statement = $this->dbh->prepare("SELECT url, expires, expiry_date, uploader  FROM " . TABLE_FILES . " WHERE id=:id");
 					$this->statement->bindParam(':id', $_GET['id'], PDO::PARAM_INT);
 					$this->statement->execute();
 					$this->statement->setFetchMode(PDO::FETCH_ASSOC);
 					$this->row = $this->statement->fetch();
 					$this->real_file_url	= $this->row['url'];
 					$this->expires			= $this->row['expires'];
-					$this->expiry_date		= $this->row['expiry_date'];
+					$this->expiry_date		= $this->row['expiry_date'];										$this->uploader		= $this->row['uploader'];//var_dump($this->row);exit;
 					
 					$this->expired			= false;
 					if ($this->expires == '1' && time() > strtotime($this->expiry_date)) {
 						$this->expired		= true;
 					}
-					$this->can_download = false;	
-					
-					if (CURRENT_USER_LEVEL == 0 || CURRENT_USER_LEVEL==8) {
+					$this->can_download = true;	
+					$curr_usr_nm = CURRENT_USER_USERNAME;
+					if ((CURRENT_USER_LEVEL == 0 || CURRENT_USER_LEVEL==8) && ($curr_usr_nm != $this->row['uploader'])) {
 					
 						if ($this->expires == '0' || $this->expired == false) {
 							/**
@@ -165,7 +165,7 @@ class process {
 						$aes1 = new AES($fileData1, ENCRYPTION_KEY, BLOCKSIZE);
 						$decryptData1 = $aes1->decrypt();
 						//echo "<br>-------------------w ".$decryptData1;
-						//echo UPLOADED_FILES_FOLDER;
+						//echo UPLOADED_FILES_FOLDER;						
 						
 						if (!file_exists(UPLOADED_FILES_FOLDER.'temp')) {
 						mkdir(UPLOADED_FILES_FOLDER.'temp', 0777, true);
@@ -211,7 +211,7 @@ class process {
                                     
                                     <!-- Added by B) -------------------->
                                     <div class="container-fluid">
-                                      <div class="row">
+                                      <div class="row"> 
                                         <div class="col-md-12">
 										<h2><?php _e('File not found','cftp_admin'); ?></h2>
 									</div>

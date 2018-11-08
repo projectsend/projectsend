@@ -82,6 +82,10 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 													'link'	=> 'sent.php',
 												),
 												array(
+													'label'	=> __('Public Files', 'cftp_admin'),
+													'link'	=> 'public-files.php',
+												),
+												array(
 													'label'	=> __('Requested File', 'cftp_admin'),
 													'link'	=> 'requested_file.php',
 												),
@@ -310,6 +314,10 @@ else
 												array(
 													'label'	=> __('Sent', 'cftp_admin'),
 													'link'	=> 'sent.php',
+												),
+												array(
+													'label'	=> __('Public Files', 'cftp_admin'),
+													'link'	=> 'public-files.php',
 												),
 												array(
 													'label'	=> __('Requested File', 'cftp_admin'),

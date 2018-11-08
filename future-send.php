@@ -1,7 +1,7 @@
 <?php
 require_once('sys.includes.php');
 
-	$current_date = date("Y-m-d");
+	$current_date = date("d-m-Y");
 	
 	/*$test = "select tbl_files.filename,CAST(tbl_files.future_send_date AS DATE) AS  fs_date,tbl_users.email from tbl_files LEFT JOIN  tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id LEFT JOIN  tbl_users ON tbl_files_relations.client_id = tbl_users.id where tbl_files.future_send_date = '".$current_date."'";*/
 
@@ -18,7 +18,7 @@ require_once('sys.includes.php');
 {
 							
 
-if (date("Y-m-d") == $key['fs_date'])
+if (date("d-m-Y") == $key['fs_date'])
 	
 { 
 						$email_to = $key['email'];

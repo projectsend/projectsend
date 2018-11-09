@@ -18,6 +18,22 @@ $cc_active_page = 'Inbox';
 $page_title = __('Inbox','cftp_admin');
 
 $current_level = get_current_user_level();
+$this_user = CURRENT_USER_USERNAME;
+$client_info = get_client_by_username($this_user);
+
+$sql_groups = $dbh->prepare( "SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE client_id=:id" );
+$sql_groups->bindParam(':id', $client_info['id'], PDO::PARAM_INT);
+$sql_groups->execute();
+$count_groups = $sql_groups->rowCount();
+
+if ($count_groups > 0) {
+	$sql_groups	->setFetchMode(PDO::FETCH_ASSOC);
+	while ( $row = $sql_groups->fetch() ) {
+		$groups_ids[] = $row["group_id"];
+	}
+	$found_groups = implode(',',$groups_ids);
+}
+//echo "<pre>"; print_r($found_groups); echo "</pre>";
 
 /*
  * Get the total downloads count here. The results are then
@@ -446,19 +462,17 @@ include('header.php');
 			}
 	
 			/** Debug query */
-			//echo $fq;
-			//print_r( $conditions );
 			
-	
-			//$sql_files = $dbh->prepare($fq);
-			//$sql_files->execute( $params );
-			/*Some issue on the query. Need to check future send date and expiry date */
-			//$q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id where tbl_files.future_send_date<=CURDATE() and tbl_files.expiry_date =CURDATE() and tbl_files_relations.client_id =" . CURRENT_USER_ID;
-$q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id where  tbl_files_relations.client_id =" . CURRENT_USER_ID;
-
-		//	echo $q_sent_file;exit;
+$q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id where  (tbl_files_relations.client_id =" . CURRENT_USER_ID;
+			if (!empty($found_groups)) {
+				$q_sent_file .= " OR FIND_IN_SET(group_id, :groups)";
+			}
+			$q_sent_file .= ") AND hidden = '0'";
 
 			$sql_files = $dbh->prepare($q_sent_file);
+			if (!empty($found_groups)) {
+				$sql_files->bindParam(':groups', $found_groups);
+			}
 			$sql_files->execute();
 			
 			$count = $sql_files->rowCount();

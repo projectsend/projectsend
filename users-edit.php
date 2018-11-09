@@ -41,7 +41,7 @@ if ($page_status === 1) {
 		$add_user_data_email = $data['email'];
 		$add_user_data_level = $data['level'];
 		if ($data['active'] == 1) { $add_user_data_active = 1; } else { $add_user_data_active = 0; }
-		if ($data['notify'] == 1) { $add_usert_data_notity = 1; } else { $add_user_data_notity = 0; }
+		if ($data['notify'] == 1) { $add_user_data_notity = 1; } else { $add_user_data_notity = 0; }
 	}
 
 	$alternate = $dbh->prepare("SELECT * FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id=:user_id AND name = :name");

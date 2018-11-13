@@ -213,10 +213,10 @@ $actual_link = SITE_URI.'requested_file.php';
                         <span class="checkmark"></span> </label>
                     </th>
                     <th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('To name','cftp_admin'); ?></th>
-                    <th data-hide="phone,tablet"><?php _e('Subject.','cftp_admin'); ?></th>
-                    <th data-hide="phone,tablet"><?php _e('Note.','cftp_admin'); ?></th>
+                    <th data-hide="phone,tablet"><?php _e('Subject','cftp_admin'); ?></th>
+                    <th data-hide="phone,tablet"><?php _e('Note','cftp_admin'); ?></th>
                     <th><?php _e('email','cftp_admin'); ?></th>
-                    <th><?php _e('note','cftp_admin'); ?></th>
+                    <th><?php _e('Status','cftp_admin'); ?></th>
                     <th><?php _e('Requested Time','cftp_admin'); ?></th>
                     <th><?php _e('Action','cftp_admin'); ?></th>
                   </tr>
@@ -233,10 +233,21 @@ $actual_link = SITE_URI.'requested_file.php';
                         <span class="checkmark"></span> </label></td>
                     <td><?php echo $row['to_name']; ?></td>
                     <td class="file_name"><?php echo $row['to_subject_request']; ?></td>
-                    <td><?php echo $row['from_organization']; ?></td>
-                    <td><?php echo $row['to_email']; ?></td>
                     <td><?php echo $row['to_note_request']; ?></td>
-                    <td><?php echo $row['requested_time']; ?></td>
+                    <td><?php echo $row['to_email']; ?></td>
+                    <?php 
+                    if($row['status']===1)
+                    {
+                    ?>
+                        <td><?php _e('File Received','cftp_admin'); ?></td>
+                    <?php 
+                    } 
+                    else 
+                    { ?>
+                        <td><?php _e('Pending','cftp_admin'); ?></td>
+                    <?php 
+                    } ?>			  
+	            <td><?php echo $row['requested_time']; ?></td>
                     <td><div class="btn btn-primary btn-sm resend_it"  id="<?php echo $row['id']; ?>" >
                         <?php _e('Resend','cftp_admin'); ?>
                       </div></td>

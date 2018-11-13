@@ -62,9 +62,9 @@ include('header.php');
 
 		$('.date-container .date-field').datepicker({
 		    format      : 'dd-mm-yyyy',
-		    autoclose   : true,
-		    maxDate: 0
+		    autoclose   : true
 		});
+               $('.date-container .date-field').datepicker("option", "maxDate", "0");
 	});
 </script>
 

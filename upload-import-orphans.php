@@ -311,7 +311,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 								$x=explode("_", $add_file[name]);
 			
 									
-									if($x[2]==$curr_usr_id){
+								//	if($x[2]==$curr_usr_id){
 									
 			  ?>
         <tr>
@@ -339,7 +339,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
         </tr>
               
 						<?php
-									}
+								//	}
 							}
 						?>
                 </tbody>

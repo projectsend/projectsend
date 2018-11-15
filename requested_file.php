@@ -5,15 +5,20 @@
  *
  * @package ProjectSend
  */
+
 $load_scripts	= array(
 						'footable',
 					); 
+
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 $loggedin_id = $_SESSION['loggedin_id'];
+
 $active_nav = 'files';
 $cc_active_page = 'Requested File';
+
 $page_title = __('Requested files','cftp_admin');
+
 $current_level = get_current_user_level();
 $form_action_url = 'requested_file.php';
 /*
@@ -21,10 +26,12 @@ $form_action_url = 'requested_file.php';
  * referenced on the results table.
  */
 $downloads_information = generate_downloads_count();
+
 /**
  * The client's id is passed on the URI.
  * Then get_client_by_id() gets all the other account values.
  */
+
 include('header.php');
 $grid_layout= SITE_URI.'requested_file.php?view=grid';/*echo $actual_link; */
 $actual_link = SITE_URI.'requested_file.php';
@@ -72,11 +79,14 @@ $actual_link = SITE_URI.'requested_file.php';
 				$sql_file->bindParam(':files', $files_to_get);
 				$sql_file->execute();
 				$sql_file->setFetchMode(PDO::FETCH_ASSOC);
+
 				while( $data_file = $sql_file->fetch() ) {
 					$all_files[$data_file['id']] = $data_file['filename'];
 				}
 				
 				switch($_POST['files_actions']) {
+
+
 					case 'delete':
 						$delete_results	= array(
 												'ok'		=> 0,
@@ -94,9 +104,12 @@ $actual_link = SITE_URI.'requested_file.php';
 								$msg = __('Some request could not be deleted.','cftp_admin');
 								echo system_message('error',$msg);
 							}
+
 						}
+
 						break;
 				}
+
 				/** Record the action log */
 				foreach ($all_files as $work_file_id => $work_file) {
 					$new_log_action = new LogActions();
@@ -118,6 +131,8 @@ $actual_link = SITE_URI.'requested_file.php';
 				echo system_message('error',$msg);
 			}
 		}
+
+
 ?>
           <form action="<?php echo html_output($form_action_url); ?>" name="delete" method="POST" class="form-inline">
           <div class="form-inline">
@@ -145,9 +160,12 @@ $actual_link = SITE_URI.'requested_file.php';
 						</div>
 						<?php
 						/** Debug query */
+
 						$q_sent_file = "SELECT * FROM tbl_drop_off_request WHERE from_id = ".$loggedin_id;
+
 						$sql_files = $dbh->prepare($q_sent_file);
 						$sql_files->execute();
+
 						$count = $sql_files->rowCount();
 						?>
 						<form action="<?php echo html_output($form_action_url); ?>" name="files_list" method="post" class="form-inline">
@@ -213,10 +231,10 @@ $actual_link = SITE_URI.'requested_file.php';
                         <span class="checkmark"></span> </label>
                     </th>
                     <th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('To name','cftp_admin'); ?></th>
-                    <th data-hide="phone,tablet"><?php _e('Subject','cftp_admin'); ?></th>
-                    <th data-hide="phone,tablet"><?php _e('Note','cftp_admin'); ?></th>
+                    <th data-hide="phone,tablet"><?php _e('Subject.','cftp_admin'); ?></th>
+                    <th data-hide="phone,tablet"><?php _e('Note.','cftp_admin'); ?></th>
                     <th><?php _e('email','cftp_admin'); ?></th>
-                    <th><?php _e('Status','cftp_admin'); ?></th>
+                    <th><?php _e('note','cftp_admin'); ?></th>
                     <th><?php _e('Requested Time','cftp_admin'); ?></th>
                     <th><?php _e('Action','cftp_admin'); ?></th>
                   </tr>
@@ -233,21 +251,10 @@ $actual_link = SITE_URI.'requested_file.php';
                         <span class="checkmark"></span> </label></td>
                     <td><?php echo $row['to_name']; ?></td>
                     <td class="file_name"><?php echo $row['to_subject_request']; ?></td>
-                    <td><?php echo $row['to_note_request']; ?></td>
+                    <td><?php echo $row['from_organization']; ?></td>
                     <td><?php echo $row['to_email']; ?></td>
-                    <?php 
-                    if($row['status']===1)
-                    {
-                    ?>
-                        <td><?php _e('File Received','cftp_admin'); ?></td>
-                    <?php 
-                    } 
-                    else 
-                    { ?>
-                        <td><?php _e('Pending','cftp_admin'); ?></td>
-                    <?php 
-                    } ?>			  
-	            <td><?php echo $row['requested_time']; ?></td>
+                    <td><?php echo $row['to_note_request']; ?></td>
+                    <td><?php echo $row['requested_time']; ?></td>
                     <td><div class="btn btn-primary btn-sm resend_it"  id="<?php echo $row['id']; ?>" >
                         <?php _e('Resend','cftp_admin'); ?>
                       </div></td>
@@ -269,6 +276,7 @@ $actual_link = SITE_URI.'requested_file.php';
 </div>
 <script type="text/javascript">
 	$(document).ready(function() {
+
 		$(".resend_it").click(function(event) {
 		var e_id = event.target.id;
 		var postData = {  "e_id": e_id };
@@ -307,3 +315,70 @@ $actual_link = SITE_URI.'requested_file.php';
 	});
 </script>
 <?php include('footer.php'); ?>
+
+
+<style type="text/css">
+/*-------------------- Responsive table by B) -----------------------*/
+@media only screen and (max-width: 1200px) {
+    #content {
+        padding-top:30px;
+    }
+    
+    /* Force table to not be like tables anymore */
+    #no-more-tables table, 
+    #no-more-tables thead, 
+    #no-more-tables tbody, 
+    #no-more-tables th, 
+    #no-more-tables td, 
+    #no-more-tables tr { 
+        display: block; 
+    }
+ 
+    /* Hide table headers (but not display: none;, for accessibility) */
+    #no-more-tables thead tr { 
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+ 
+    #no-more-tables tr { border: 1px solid #ccc; }
+ 
+    #no-more-tables td { 
+        /* Behave  like a "row" */
+        border: none;
+        border-bottom: 1px solid #eee; 
+        position: relative;
+        padding-left: 50%; 
+        white-space: normal;
+        text-align:left;
+    }
+ 
+    #no-more-tables td:before { 
+        /* Now like a table header */
+        position: absolute;
+        /* Top/left values mimic padding */
+        top: 6px;
+        left: 6px;
+        width: 45%; 
+        padding-right: 10px; 
+        white-space: nowrap;
+        text-align:left;
+        font-weight: bold;
+    }
+ 
+    /*
+    Label the data
+    */
+
+    
+    td:nth-of-type(1):before { content: ""; }
+    td:nth-of-type(2):before { content: "To Name"; }
+    td:nth-of-type(3):before { content: "Subject"; }
+    td:nth-of-type(4):before { content: "Note"; }
+    td:nth-of-type(5):before { content: "Email"; }
+    td:nth-of-type(6):before { content: "Note"; }
+    td:nth-of-type(7):before { content: "Requested Time"; }
+    td:nth-of-type(8):before { content: "Action"; }
+}
+/*-------------------- Responsive table End--------------------------*/
+</style>

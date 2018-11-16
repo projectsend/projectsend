@@ -7,11 +7,19 @@ $date = new DateTime($date);
 $date=$date->format('Y-m-d');
 
 /*$q_sent_file = "SELECT  tf.* FROM tbl_files AS tf LEFT JOIN ".TABLE_FILES_RELATIONS." AS tfr ON tf.id = tfr.file_id where tfr.from_id =" . CURRENT_USER_ID. " AND DATE(tf.timestamp)='".$date."'"; */
-
+/*
 $q_sent_file = "SELECT tu.name As clientid,  tf.* 
 FROM tbl_files AS tf 
 LEFT JOIN ".TABLE_FILES_RELATIONS." AS tfr ON tf.id = tfr.file_id 
 LEFT JOIN  ".TABLE_USERS." As tu ON tfr.client_id=tu.id
+where tfr.from_id =" . CURRENT_USER_ID. " AND DATE(tf.timestamp)='".$date."'";
+*/
+
+$q_sent_file = "SELECT tu.name As clientid, tg.name As groupid, tf.* 
+FROM tbl_files AS tf 
+LEFT JOIN ".TABLE_FILES_RELATIONS." AS tfr ON tf.id = tfr.file_id 
+LEFT JOIN  ".TABLE_USERS." As tu ON tfr.client_id=tu.id
+LEFT JOIN  ".TABLE_GROUPS." As tg ON tfr.group_id=tg.id
 where tfr.from_id =" . CURRENT_USER_ID. " AND DATE(tf.timestamp)='".$date."'";
 
 $statement = $dbh->prepare($q_sent_file);

@@ -147,7 +147,11 @@ $(function() {
 						htmlText += '<td>'+json.send[i].filename+'</td>';
 						htmlText += '<td>'+json.send[i].description+'</td>';
 						htmlText += '<td>'+json.send[i].timestamp+'</td>';
-						htmlText += '<td>'+json.send[i].clientid+'</td>';
+						if(json.send[i].clientid != null) {
+						    htmlText += '<td>'+json.send[i].clientid+'</td>';
+						}else{
+						    htmlText += '<td>'+json.send[i].groupid+'</td>';                            
+						}
 						htmlText += '</tr>';
 						};
 						 htmlText += '</table>';

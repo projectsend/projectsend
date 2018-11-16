@@ -1574,7 +1574,9 @@ while( $row = $statement->fetch() ) {
 
 								else {
 
-									$(this).attr('selected', 'selected');
+								//	$(this).attr('selected', 'selected');
+									$(this).prop('selected', true);
+									
 
 								}
 

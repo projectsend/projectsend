@@ -18,7 +18,7 @@ require_once('sys.includes.php');
 {
 							
 
-if (date("Y-m-d") == $key['fs_date'])
+if ($current_date == $key['fs_date'])
 	
 { 
 						$email_to = $key['email'];

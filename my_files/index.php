@@ -6,7 +6,7 @@
 		$this_user = $_GET['client'];
 	}
 	$url = SITE_URI."inbox.php";
-	if(CURRENT_USER_LEVEL !='0') {
+	if(CURRENT_USER_LEVEL !='1') {
 		echo "<script>";
 		echo "window.location.href ='".$url."'";
 		echo "</script>";

@@ -8,7 +8,7 @@
 	// $url = SITE_URI."inbox.php";
 	if(CURRENT_USER_LEVEL !='9') {
 		echo "<script>";
-		echo "window.location.href ='https://send.microhealthllc.com/inbox.php'";
+		echo "window.location ='https://send.microhealthllc.com/inbox.php'";
 		echo "</script>";
 	}
 	else {

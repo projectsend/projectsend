@@ -15,12 +15,12 @@
 			$params = array();
 			$log_query = "SELECT * FROM " . TABLE_LOG;
 			if (!empty($log_action)) {
-				$log_query .= " WHERE action = :action AND timestamp like '%".date("Y-m-d")."%'";
 				$params[':action'] = $log_action;
+				$log_query .= " WHERE action = :action AND timestamp like '%".date("Y-m-d")."%'";
 			}
 			$log_query .= " WHERE timestamp like '%".date("Y-m-d")."%'";
-			$log_query .= " ORDER BY id DESC LIMIT :max";
 			$params[':max'] = $max_show_log;
+			$log_query .= " ORDER BY id DESC LIMIT :max";
 			$sql_log = $dbh->prepare( $log_query );
 			$sql_log->execute( $params );
 			if ( $sql_log->rowCount() > 0 ) {

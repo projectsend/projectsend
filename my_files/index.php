@@ -5,10 +5,10 @@
 	if (!empty($_GET['client']) && CURRENT_USER_LEVEL == '0') {
 		$this_user = $_GET['client'];
 	}
-	$url = SITE_URI."inbox.php";
+	// $url = SITE_URI."inbox.php";
 	if(CURRENT_USER_LEVEL !='9') {
 		echo "<script>";
-		echo "window.location.href ='".$url."'";
+		echo "window.location.href ='https://send.microhealthllc.com/inbox.php'";
 		echo "</script>";
 	}
 	else {

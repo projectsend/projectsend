@@ -232,8 +232,10 @@ $actual_link = SITE_URI.'requested_file.php';
                     </th>
                     <th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('To name','cftp_admin'); ?></th>
                     <th data-hide="phone,tablet"><?php _e('Subject.','cftp_admin'); ?></th>
-                    <th data-hide="phone,tablet"><?php _e('Note.','cftp_admin'); ?></th>
+                    <th data-hide="phone,tablet"><?php _e('Organization','cftp_admin'); ?></th>
+					
                     <th><?php _e('email','cftp_admin'); ?></th>
+					<th><?php _e('Note','cftp_admin'); ?></th>
                     <th><?php _e('Status','cftp_admin'); ?></th>
                     <th><?php _e('Requested Time','cftp_admin'); ?></th>
                     <th><?php _e('Action','cftp_admin'); ?></th>
@@ -253,13 +255,14 @@ $actual_link = SITE_URI.'requested_file.php';
                     <td class="file_name"><?php echo $row['to_subject_request']; ?></td>
                     <td><?php echo $row['from_organization']; ?></td>
                     <td><?php echo $row['to_email']; ?></td>
-                    <td class="<?php echo (!empty($uploaded['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>"><?php
+					<td><?php echo $row['to_note_request']; ?></td>
+                    <td class="<?php echo (!empty($row['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>"><?php
 
 										$status_hidden	= __('Pending','cftp_admin');
 
 										$status_visible	= __('Send','cftp_admin');
 
-										$class			= (!empty($uploaded['hidden'])) ? 'danger' : 'success';
+										$class			= (!empty($row['hidden'])) ? 'danger' : 'success';
 
 									?>
         <span class="label label-<?php echo $class; ?>"> <?php echo ( !empty( $hidden ) && $hidden == 1) ? $status_hidden : $status_visible; ?> </span></td>
@@ -382,12 +385,13 @@ $actual_link = SITE_URI.'requested_file.php';
     
     td:nth-of-type(1):before { content: ""; }
     td:nth-of-type(2):before { content: "To Name"; }
-    td:nth-of-type(3):before { content: "Subject"; }
-    td:nth-of-type(4):before { content: "Note"; }
-    td:nth-of-type(5):before { content: "Email"; }
+    td:nth-of-type(3):before { content: "Email"; }
+    td:nth-of-type(4):before { content: "Organization"; }
+    td:nth-of-type(5):before { content: "Subject"; }
     td:nth-of-type(6):before { content: "Note"; }
-    td:nth-of-type(7):before { content: "Requested Time"; }
-    td:nth-of-type(8):before { content: "Action"; }
+	td:nth-of-type(7):before { content: "Status"; }
+    td:nth-of-type(8):before { content: "Requested Time"; }
+    td:nth-of-type(9):before { content: "Action"; }
 }
 /*-------------------- Responsive table End--------------------------*/
 </style>

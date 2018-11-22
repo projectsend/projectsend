@@ -119,7 +119,7 @@ define('CAN_INCLUDE_FILES', true);
                   <?php _e('All activities','cftp_admin'); ?>
                   </a> <a href="#" class="log_action btn btn-sm btn-default" rel="1">
                   <?php _e('Logins','cftp_admin'); ?>
-                  </a> <a href="#" class="log_action btn btn-sm btn-default" rel="8">
+                  </a> <a href="#" class="log_action btn btn-sm btn-default" rel="7 or 8">
                   <?php _e('Downloads','cftp_admin'); ?>
                   </a>
                   <?php

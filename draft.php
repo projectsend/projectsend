@@ -1171,18 +1171,13 @@ include('header.php');
                 </tr>
               </thead>
                 <tbody>
-              
               <?php
 							$curr_usr_id =	CURRENT_USER_ID;
-							
 							foreach ($files_to_add as $add_file){
-		
-							
-							
 								$x=explode("_", $add_file[name]);
-			
-									
-									if($x[2]==$curr_usr_id){
+								$cuid_array=explode(".", $add_file[name]);
+								$cuid = substr($cuid_array[0], -2, 1);
+								if($cuid==$curr_usr_id){
 			  ?>
                 <tr>
               

@@ -18,9 +18,12 @@
 				$params[':action'] = $log_action;
 				$log_query .= " WHERE action = :action AND timestamp like '%".date("Y-m-d")."%'";
 			}
+			else {
 			$log_query .= " WHERE timestamp like '%".date("Y-m-d")."%'";
+			}
 			$params[':max'] = $max_show_log;
 			$log_query .= " ORDER BY id DESC LIMIT :max";
+			//var_dump($log_query); exit;
 			$sql_log = $dbh->prepare( $log_query );
 			$sql_log->execute( $params );
 			if ( $sql_log->rowCount() > 0 ) {

@@ -60,7 +60,8 @@ if ($_POST) {
 		$to_email_request = $_POST['to_email_request'];
 		$to_subject_request = $_POST['to_subject_request'];
 		$to_note_request = $_POST['to_note_request'];
-		$to_subject_request = $_POST['to_subject_request'];
+		$to_subject_request = $_POST['to_subject_request'];						
+		if($from_organization!='' && $to_name_request!='' && $to_email_request!='' && $to_subject_request!='' && $to_note_request!='') { 			
 		//$test = "INSERT INTO `tbl_drop_off_request` (`from_id`, `to_name`, `to_subject_request`, `from_organization`, `to_email`, `to_note_request`, `requested_time`, `auth_key`, `status`) VALUES ('".$logged_in_id."', '".$to_name_request."', '".$to_subject_request."', '".$from_organization."', '".$to_email_request."', '".$to_note_request."', '".date("Y-m-d H:i:s")."', '".$randomString."', '0')";
 		//var_dump($test);
 		//exit;
@@ -359,7 +360,7 @@ if ($_POST) {
 
 		
 			echo "<script>$(document).ready(function(){ $('#cc-mail-status').modal('toggle');});</script>";
-}
+}	}
 ?>
 <!----------------------------------------------------------------------------------------->
 <!-- Modal -->

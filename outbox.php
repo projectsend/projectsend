@@ -815,7 +815,7 @@ include('header.php');
 
 			$current_level = get_current_user_level();
 			//echo $current_level;
-			if ($current_level == '7' || $current_level == '0' || $current_level=='9') {
+			if ($current_level == '7' || $current_level == '0' || $current_level=='9' || $current_level=='8') {
 
 				$conditions[] = "uploader = :uploader";
 
@@ -839,7 +839,7 @@ include('header.php');
 
 				$files_id_by_cat = array();
 
-				$statement = $dbh->prepare("SELECT file_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE cat_id = :cat_id AND uploader=:use_name");
+				$statement = $dbh->prepare("SELECT file_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE cat_id = :cat_id");
 
 				$statement->bindParam(':cat_id', $this_category['id'], PDO::PARAM_INT);
 				
@@ -894,10 +894,6 @@ include('header.php');
 	
 
 			/** Debug query */
-
-			 //echo $fq;
-
-			 //print_r( $conditions );
 
 	
 

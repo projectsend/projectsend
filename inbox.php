@@ -463,7 +463,7 @@ include('header.php');
 	
 			/** Debug query */
 			
-$q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id where  (tbl_files_relations.client_id =" . CURRENT_USER_ID;
+$q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id where  (tbl_files.future_send_date<= DATE(NOW()) AND tbl_files_relations.client_id =" . CURRENT_USER_ID;
 			if (!empty($found_groups)) {
 				$q_sent_file .= " OR FIND_IN_SET(group_id, :groups)";
 			}

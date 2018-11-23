@@ -21,11 +21,13 @@
 		$("#hide-menu").click(function() {
 			$('body').toggleClass('hidden-menu');
 		});
-		$("#select_all").click(function(){
+		$("#select_all, .select_all1").click(function(){
 			var status = $(this).prop("checked");
 			/** Uncheck all first in case you used pagination */
-			$("tr td input[type=checkbox]").prop("checked",false);
-			$("tr:visible td input[type=checkbox]").prop("checked",status);
+			$(this).closest('table').find('tr td input[type=checkbox]').prop("checked",false);
+			$(this).closest('table').find('tr:visible td input[type=checkbox]').prop("checked",status);
+			//$("tr td input[type=checkbox]").prop("checked",false);
+			//$("tr:visible td input[type=checkbox]").prop("checked",status);
 		});
 		$('.btn_generate_password').click(function(e)
 			{

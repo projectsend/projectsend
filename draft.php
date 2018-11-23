@@ -1634,7 +1634,7 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
 
                   <th class="td_checkbox" data-sort-ignore="true"> 
                   <label class="cc-chk-container">
-                      <input type="checkbox" name="select_all" id="select_all" value="0" />
+                      <input type="checkbox" name="select_all" class="select_all1" value="0" />
                       <span class="checkmark"></span>
                   </label>
 

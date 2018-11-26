@@ -1302,7 +1302,7 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                         ?>
 
 
-                  <th data-hide="phone,tablet"><?php _e('Sent to','cftp_admin'); ?></th>
+                 <!-- <th data-hide="phone,tablet"><?php _e('Sent to','cftp_admin'); ?></th>-->
 
                   <?php
 
@@ -1310,7 +1310,7 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
 
                                 ?>
 
-                  <th data-hide="phone"><?php _e('Assigned','cftp_admin'); ?></th>
+                  <!--<th data-hide="phone"><?php _e('Assigned','cftp_admin'); ?></th>-->
 
                   <?php
 
@@ -1637,7 +1637,7 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
 }
     if($current_level != '0') {
 ?>
-<td>
+<!--<td>
 <?php
 
 //$senders_list = $dbh->prepare("SELECT tfr.*,tu.* FROM " . TABLE_FILES_RELATIONS . " AS tfr INNER JOIN ".TABLE_USERS." AS tu ON tfr.client_id= tu.id  WHERE tfr.file_id=:file_id" );
@@ -1659,7 +1659,7 @@ if($data['g_name']) {echo $data['g_name']."<br>";}
 
 ?>
 
-                  </td>
+                  </td>-->
 
                   <?php
 
@@ -1667,7 +1667,7 @@ if($data['g_name']) {echo $data['g_name']."<br>";}
 
                                             ?>
 
-                  <td><?php
+                  <!--<td><?php
 
                                                             $class  = ($count_assignations == 0) ? 'danger' : 'success';
 
@@ -1675,7 +1675,7 @@ if($data['g_name']) {echo $data['g_name']."<br>";}
 
                                                         ?>
 
-                    <span class="label label-<?php echo $class; ?>"> <?php echo $status; ?> </span></td>
+                    <span class="label label-<?php echo $class; ?>"> <?php echo $status; ?> </span></td>-->
 
                   <?php
 
@@ -2013,12 +2013,11 @@ $(".refreshcls").on("click", function (e) {
     td:nth-of-type(3):before { content: "Ext."; }
     td:nth-of-type(4):before { content: "Title"; }
     td:nth-of-type(5):before { content: "Size"; }
-    td:nth-of-type(6):before { content: "Uploader"; }
-    td:nth-of-type(7):before { content: "Sent to"; }
-    td:nth-of-type(8):before { content: "Assigned"; }
-    td:nth-of-type(9):before { content: "Public"; }
-    td:nth-of-type(10):before { content: "Expiry"; }
-    td:nth-of-type(11):before { content: "Total downloads"; }
+	td:nth-of-type(6):before { content: "Download/Limit"; }
+    td:nth-of-type(7):before { content: "Uploader"; }
+    td:nth-of-type(8):before { content: "Public"; }
+    td:nth-of-type(9):before { content: "Expiry"; }
+    td:nth-of-type(10):before { content: "Total downloads"; }
 } 
     td{	text-align:center;}
 	th{ text-align:center;}

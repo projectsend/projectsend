@@ -41,18 +41,19 @@ class process {
 			/** Do a permissions check for logged in user */
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
 				
-				
 					/**
 					 * Get the file name
 					 */
-					$this->statement = $this->dbh->prepare("SELECT url, expires, expiry_date, uploader  FROM " . TABLE_FILES . " WHERE id=:id");
+					$this->statement = $this->dbh->prepare("SELECT url, expires, expiry_date, uploader, number_downloads  FROM " . TABLE_FILES . " WHERE id=:id");
 					$this->statement->bindParam(':id', $_GET['id'], PDO::PARAM_INT);
 					$this->statement->execute();
 					$this->statement->setFetchMode(PDO::FETCH_ASSOC);
 					$this->row = $this->statement->fetch();
 					$this->real_file_url	= $this->row['url'];
 					$this->expires			= $this->row['expires'];
-					$this->expiry_date		= $this->row['expiry_date'];										$this->uploader		= $this->row['uploader'];//var_dump($this->row);exit;
+					$this->expiry_date		= $this->row['expiry_date'];
+					$this->uploader		= $this->row['uploader'];
+					//var_dump($this->row);exit;
 					
 					$this->expired			= false;
 					if ($this->expires == '1' && time() > strtotime($this->expiry_date)) {
@@ -102,7 +103,16 @@ class process {
 							if ( $this->files->rowCount() > 0 ) {
 								$this->can_download = true;
 							}
-							
+					//to check whether download limit is exceeded--------------------------------------
+					$this->download_statement = $this->dbh->prepare("SELECT COUNT(*) as download_count FROM " . TABLE_DOWNLOADS . " WHERE file_id=:id AND user_id=".CURRENT_USER_ID);
+					$this->download_statement->bindParam(':id', $_GET['id'], PDO::PARAM_INT);
+					$this->download_statement->execute();
+					$this->download_statement->setFetchMode(PDO::FETCH_ASSOC);
+					$this->download_count = $this->download_statement->fetch();
+					//echo $this->download_count['download_count'];
+					if($this->download_count['download_count'] >= $this->row['number_downloads']) { //echo 'sadffffffffffffss'; exit;
+						$this->can_download = false;
+					}
 							/** Continue */
 							if ($this->can_download == true) {
 								/**
@@ -124,8 +134,9 @@ class process {
 								$log_action_owner_id = CURRENT_USER_ID;
 							}
 						}
+
 					}
-					else {
+					else { 
 						 
 						$this->can_download = true;
 						$log_action = 7;

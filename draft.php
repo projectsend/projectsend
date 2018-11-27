@@ -424,7 +424,7 @@ include('header.php');
 
                  */
 
-                $sql_distinct_files = $dbh->prepare("SELECT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE FIND_IN_SET(id, :files)");
+                /*$sql_distinct_files = $dbh->prepare("SELECT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE FIND_IN_SET(id, :files)");
 
                 $sql_distinct_files->bindParam(':files', $files_to_get);
 
@@ -440,7 +440,7 @@ include('header.php');
 
                     $files_to_get = implode(',',$all_files_relations);
 
-                }
+                }*/
 
                 
 

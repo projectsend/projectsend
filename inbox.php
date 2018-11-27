@@ -223,19 +223,24 @@ include('header.php');
 			if(!empty($_POST['files'])) {
 				$selected_files = array_map('intval',array_unique($_POST['files']));
 				$files_to_get = implode(',',$selected_files);
+//var_dump($files_to_get);
+//exit;
 				/**
 				 * Make a list of files to avoid individual queries.
 				 * First, get all the different files under this account.
 				 */
-				$sql_distinct_files = $dbh->prepare("SELECT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE FIND_IN_SET(id, :files)");
+				 //-----------------------------------
+				 
+				/*$sql_distinct_files = $dbh->prepare("SELECT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE FIND_IN_SET(id, :files)");
 				$sql_distinct_files->bindParam(':files', $files_to_get);
 				$sql_distinct_files->execute();
 				$sql_distinct_files->setFetchMode(PDO::FETCH_ASSOC);
-				
 				while( $data_file_relations = $sql_distinct_files->fetch() ) {
 					$all_files_relations[] = $data_file_relations['file_id']; 
 					$files_to_get = implode(',',$all_files_relations);
-				}
+				}*/
+				
+				//---------------------------------------
 				
 				/**
 				 * Then get the files names to add to the log action.
@@ -244,7 +249,6 @@ include('header.php');
 				$sql_file->bindParam(':files', $files_to_get);
 				$sql_file->execute();
 				$sql_file->setFetchMode(PDO::FETCH_ASSOC);
-
 				while( $data_file = $sql_file->fetch() ) {
 					$all_files[$data_file['id']] = $data_file['filename'];
 				}
@@ -306,7 +310,6 @@ include('header.php');
 						foreach ($selected_files as $index => $file_id) {
 							$this_file		= new FilesActions();
 							$delete_status	= $this_file->delete_files($file_id);
-
 							if ( $delete_status == true ) {
 								$delete_results['ok']++;
 							}
@@ -702,7 +705,6 @@ $q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations
 						if ($count > 0) {
 							$sql_files->setFetchMode(PDO::FETCH_ASSOC);
 							while( $row = $sql_files->fetch() ) {
-
 								$current_download_count = current_download_count_user($row['id'],CURRENT_USER_ID);
 								//echo $current_download_count;
 								//echo $file_id = $row['id'];

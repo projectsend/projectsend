@@ -308,6 +308,10 @@ else
 													'link'	=> 'inbox.php',
 												),
 												array(
+													'label'	=> __('Draft', 'cftp_admin'),
+													'link'	=> 'draft.php',
+												),
+												array(
 													'label'	=> __('Outbox', 'cftp_admin'),
 													'link'	=> 'outbox.php',
 												),

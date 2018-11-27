@@ -85,6 +85,7 @@ include('header.php');
 	 */
 	if (isset($_POST['log_actions']) && $_POST['log_actions'] != 'none') {
 		/** Continue only if 1 or more users were selected. */
+
 			switch($_POST['log_actions']) {
 				case 'delete':
 
@@ -177,6 +178,8 @@ include('header.php');
 	$sql = $dbh->prepare( $cq );
 	$sql->execute( $params );
 	$count = $sql->rowCount();
+	//var_dump($sql);
+	//exit;
 ?>
 
 	<div class="form_actions_left">

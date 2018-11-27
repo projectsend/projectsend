@@ -424,23 +424,20 @@ include('header.php');
 
                  */
 
-                $sql_distinct_files = $dbh->prepare("SELECT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE FIND_IN_SET(id, :files)");
+/*                $sql_distinct_files = $dbh->prepare("SELECT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE FIND_IN_SET(id, :files)");
 
                 $sql_distinct_files->bindParam(':files', $files_to_get);
 
                 $sql_distinct_files->execute();
 
                 $sql_distinct_files->setFetchMode(PDO::FETCH_ASSOC);
-
-                
-
                 while( $data_file_relations = $sql_distinct_files->fetch() ) {
 
                     $all_files_relations[] = $data_file_relations['file_id']; 
 
                     $files_to_get = implode(',',$all_files_relations);
 
-                }
+                }*/
 
                 
 

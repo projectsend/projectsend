@@ -110,8 +110,10 @@ class process {
 					$this->download_statement->setFetchMode(PDO::FETCH_ASSOC);
 					$this->download_count = $this->download_statement->fetch();
 					//echo $this->download_count['download_count'];
-					if($this->download_count['download_count'] >= $this->row['number_downloads']) { //echo 'sadffffffffffffss'; exit;
-						$this->can_download = false;
+					if($this->row['number_downloads'] != 0) {
+						if($this->download_count['download_count'] >= $this->row['number_downloads']) {
+							$this->can_download = false;
+						}
 					}
 							/** Continue */
 							if ($this->can_download == true) {

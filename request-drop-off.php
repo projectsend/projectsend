@@ -61,11 +61,39 @@ if ($_POST) {
 		$to_subject_request = $_POST['to_subject_request'];
 		$to_note_request = $_POST['to_note_request'];
 		
-		//$to_subject_request = $_POST['to_subject_request'];		
+		//$to_subject_request = $_POST['to_subject_request'];	
+		//validation start --------------------
+		$validate_err['count'] = 0;
+		if(!preg_match("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$^",$to_email_request))
+		{ 
+			$validate_err['email'] = 'Invalid Email';
+			$validate_err['count']++;
+			
+		}else{
+			$validate_err['email'] = '';
+			
+		}
+		if($to_subject_request == '')
+		{ 
+			$validate_err['subject'] = 'Invalid subbject';
+			$validate_err['count']++;
+			
+		}else{
+			$validate_err['subject'] = '';
+			
+		}
+		if($to_name_request == '')
+		{ 
+			$validate_err['name'] = 'Invalid Name';
+			$validate_err['count']++;
+			
+		}else{
+			$validate_err['name'] = '';
+			
+		}
+		//validation end ----------------------	
 
-		if($from_organization!='' && $to_name_request!='' && $to_email_request!='' && $to_subject_request!='' && $to_note_request!='') { 		
-		
-		
+		if($validate_err['count'] == 0) { 
 				if (!filter_var($to_email_request, FILTER_VALIDATE_EMAIL) === false) {
 					
 				  $to_emailErr = "Invalid email format"; 
@@ -94,7 +122,7 @@ if ($_POST) {
 
 				  
 						
-		
+
 		
 		
 		//$test = "INSERT INTO `tbl_drop_off_request` (`from_id`, `to_name`, `to_subject_request`, `from_organization`, `to_email`, `to_note_request`, `requested_time`, `auth_key`, `status`) VALUES ('".$logged_in_id."', '".$to_name_request."', '".$to_subject_request."', '".$from_organization."', '".$to_email_request."', '".$to_note_request."', '".date("Y-m-d H:i:s")."', '".$randomString."', '0')";
@@ -386,15 +414,16 @@ if ($_POST) {
 		/**
 		 * Finally, send the e-mail.
 		 */
+
 		if($send_mail->Send()) {
 			$cc_status = "<div class=\"alert alert-success cc-success\"><strong>Success!</strong>Your Request has been submitted successfully.</div>";
 		}
 		else {
 			$cc_status = "<div class=\"alert alert-danger cc-failed\"><strong>Oops! </strong>Something went wrong! please try after sometime.</div>";
 		}
-
 		
-			echo "<script>$(document).ready(function(){ $('#cc-mail-status').modal('toggle');});</script>";
+		echo '<script>$(document).ready(function(){$("#cc-mail-status").modal("toggle");});</script>';
+			
 						/*	}	
 
 						}
@@ -444,7 +473,7 @@ if ($_POST) {
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
-				<div class="white-box-interior">
+				<div class="white-box-interior">adadasdas
 					<?php
 							include('request-drop-off-form.php');
 					?>

@@ -25,14 +25,15 @@
 	<div class="form-group">
 		<label for="to_name_request" class="col-sm-4 control-label"><?php _e('To Name','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" name="to_name_request" id="to_name_request" class="form-control <?php if (!$disable_user) { echo 'required'; } ?>" maxlength="<?php echo MAX_USER_CHARS; ?>" placeholder="<?php _e("Enter To name",'cftp_admin'); ?>" />
+			<input type="text" value="<?php echo $to_name_request; ?>" name="to_name_request" id="to_name_request" class="form-control <?php if (!$disable_user) { echo 'required'; } ?>" maxlength="<?php echo MAX_USER_CHARS; ?>" placeholder="<?php _e("Enter To name",'cftp_admin'); ?>" />
+            <span style="color:#F00"><?php echo $validate_err['name']; ?></span>
 		</div>
 	</div>
 
 	<div class="form-group">
 		<label for="from_organization" class="col-sm-4 control-label"><?php _e('Organization','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" name="from_organization" id="from_mail_id" class="form-control required" value="" placeholder="Organization name" />
+			<input type="text" value="<?php if(isset($from_organization)) { echo $from_organization; } ?>" name="from_organization" id="from_mail_id" class="form-control required" value="" placeholder="Organization name" />
 		</div>
 	</div>
 
@@ -40,14 +41,16 @@
 			
 		<label for="to_email_request" class="col-sm-4 control-label"><?php _e('E-mail','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" name="to_email_request" id="to_email_request" class="form-control required"  placeholder="<?php _e("Must be valid and unique",'cftp_admin'); ?>" />
+			<input type="text" value="<?php echo $to_email_request; ?>" name="to_email_request" id="to_email_request" class="form-control required"  placeholder="<?php _e("Must be valid and unique",'cftp_admin'); ?>" />
+            <span style="color:#F00"><?php echo $validate_err['email']; ?></span>
 		</div>	
 	</div>
 
 	<div class="form-group">
 		<label for="to_subject_request" class="col-sm-4 control-label"><?php _e('Subject','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-				<input name="to_subject_request" id="to_subject_request" class="form-control <?php if ($require_pass) { echo 'required'; } ?>" type="test" maxlength="<?php echo MAX_PASS_CHARS; ?>" />
+				<input value="<?php echo $to_subject_request; ?>" name="to_subject_request" id="to_subject_request" class="form-control <?php if ($require_pass) { echo 'required'; } ?>" type="test" maxlength="<?php echo MAX_PASS_CHARS; ?>" />
+                <span style="color:#F00"><?php echo $validate_err['subject']; ?></span>
 		</div>
 	</div>
 
@@ -55,7 +58,7 @@
 		<label for="to_note_request" class="col-sm-4 control-label"><?php _e('Note','cftp_admin'); ?></label>
 		<div class="col-sm-8">
 			This will be sent to the recipient(s). It will also be included in the resulting drop-off sent to you. 
-			<textarea name="to_note_request" id="to_note_request" class="form-control" ></textarea>
+			<textarea name="to_note_request" id="to_note_request" class="form-control" ><?php echo $to_note_request; ?></textarea>
 		</div>
 	</div>
 	

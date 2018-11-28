@@ -137,7 +137,7 @@ if($_POST){
 	  <p>
 	Details:<br>
 	Name : $your_name <br>
-	Organization : $you_organization <br>
+	Organization : $your_organization <br>
 	Email : $your_email<br></p>
 
 	  <p>IGNORE THIS MESSAGE IF YOU WERE NOT IMMEDIATELY EXPECTING IT!</p>

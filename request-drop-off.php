@@ -66,34 +66,37 @@ if ($_POST) {
 		$validate_err['count'] = 0;
 		if(!preg_match("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$^",$to_email_request))
 		{ 
-			$validate_err['email'] = 'Invalid Email';
-			$validate_err['count']++;
+			
+			$to_emailErr  = "<div class=\"alert alert-danger cc-failed\">Invalid E-mail</div>";
 			
 		}else{
-			$validate_err['email'] = '';
+			
+			$to_emailErr = '';
 			
 		}
 		if($to_subject_request == '')
 		{ 
-			$validate_err['subject'] = 'Invalid subbject';
-			$validate_err['count']++;
+			
+			$to_subErr  = "<div class=\"alert alert-danger cc-failed\">Invalid Subject</div>";
 			
 		}else{
-			$validate_err['subject'] = '';
+			
+			$to_subErr = '';
 			
 		}
 		if($to_name_request == '')
 		{ 
-			$validate_err['name'] = 'Invalid Name';
-			$validate_err['count']++;
+			
+			$to_nameErr  = "<div class=\"alert alert-danger cc-failed\">Invalid To Name</div>";
 			
 		}else{
-			$validate_err['name'] = '';
+			$to_nameErr = '';
 			
 		}
-		//validation end ----------------------	
-
-		if($validate_err['count'] == 0) { 
+		
+		
+		if($to_email_request!='' && $to_subject_request != '' && $to_name_request != '' ) { 
+		
 				if (!filter_var($to_email_request, FILTER_VALIDATE_EMAIL) === false) {
 					
 				  $to_emailErr = "Invalid email format"; 
@@ -473,7 +476,8 @@ if ($_POST) {
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
-				<div class="white-box-interior">adadasdas
+				<div class="white-box-interior">
+				
 					<?php
 							include('request-drop-off-form.php');
 					?>

@@ -11,7 +11,6 @@
  * @package ProjectSend
 
  */
-
 $load_scripts   = array(
 
                         'footable',
@@ -1175,9 +1174,10 @@ include('header.php');
 							$curr_usr_id =	CURRENT_USER_ID;
 							foreach ($files_to_add as $add_file){
 								$x=explode("_", $add_file[name]);
+								
 								$cuid_array=explode(".", $add_file[name]);
-								$cuid = substr($cuid_array[0], -2, 1);
-								if($cuid==$curr_usr_id){
+								$arr = array_reverse(preg_split('/(_)/',$cuid_array[0],-1, PREG_SPLIT_NO_EMPTY));
+								if($arr[0]==$curr_usr_id){
 			  ?>
                 <tr>
               

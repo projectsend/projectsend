@@ -138,12 +138,13 @@ while( $row = $statement->fetch() ) {
  * A posted form will include information of the uploaded files
  * (name, description and client).
  */
+ $curr_usr_id=CURRENT_USER_ID;
  $drop_id = $_POST['drop_id'];
 $fromid = $_POST['fromid'];
 $to_email_request = $_POST['to_email'];
 $to_name = $_POST['to_name'];
 $to_subject_request = $_POST['to_subject_request'];
-$statement = $dbh->prepare("SELECT USER from tbl_users WHERE id = $fromid");
+$statement = $dbh->prepare("SELECT USER from tbl_users WHERE id = $curr_usr_id");
 $statement->execute();
 $statement->setFetchMode(PDO::FETCH_ASSOC);
 $data = $statement->fetch();

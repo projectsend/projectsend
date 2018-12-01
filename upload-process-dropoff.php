@@ -138,13 +138,13 @@ while( $row = $statement->fetch() ) {
  * A posted form will include information of the uploaded files
  * (name, description and client).
  */
- $curr_usr_id=CURRENT_USER_ID;
+ $curr_usr_id=$_POST['fromid'];
  $drop_id = $_POST['drop_id'];
 $fromid = $_POST['fromid'];
 $to_email_request = $_POST['to_email'];
 $to_name = $_POST['to_name'];
 $to_subject_request = $_POST['to_subject_request'];
-$statement = $dbh->prepare("SELECT USER from tbl_users WHERE id = $curr_usr_id");
+$statement = $dbh->prepare("SELECT USER from tbl_users WHERE id = ".$curr_usr_id);
 $statement->execute();
 $statement->setFetchMode(PDO::FETCH_ASSOC);
 $data = $statement->fetch();
@@ -161,7 +161,7 @@ for($i = 0 ; $i < $totalfiles; $i++) {
  $filename = $filenamearray[0];
  $public_allow = 0;
 
-$statement = $dbh->prepare("INSERT INTO ".TABLE_FILES." (`url`, `filename`, `description`, `timestamp`, `uploader`, `expires`,`notify`, `expiry_date`, `public_allow`, `public_token`) VALUES ('$url', '$filename', '', CURRENT_TIMESTAMP, '$uploader', '0','0', '2017-12-09 00:00:00', '0', NULL)");
+$statement = $dbh->prepare("INSERT INTO ".TABLE_FILES." (`url`, `filename`, `description`, `timestamp`, `uploader`, `expires`,`notify`, `expiry_date`, `public_allow`, `public_token`) VALUES ('$url', '$filename', '', CURRENT_TIMESTAMP, '$uploader', '0','0', '".date('Y-m-d H:i:s')."', '0', NULL)");
 
 if($statement->execute()) {
 	$img_id = $dbh->lastInsertId();

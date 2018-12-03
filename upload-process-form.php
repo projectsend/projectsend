@@ -268,10 +268,9 @@ while( $row = $statement->fetch() ) {
 				/*echo '<pre>';
 				print_r($pass);
 				echo'</pre>';*/
+
 	if (isset($_POST['submit'])) {
-
 		/**
-
 		 * Get the ID of the current client that is uploading files.
 
 		 */
@@ -630,9 +629,7 @@ while( $row = $statement->fetch() ) {
 							 */
 							$today = date("d-m-Y");
 							if ($send_notifications == true && $file['future_send_date'] == $today)  {
-
 								$process_notifications = $this_upload->upload_add_notifications($add_arguments);
-
 							}
 
 							/**
@@ -700,7 +697,6 @@ while( $row = $statement->fetch() ) {
 	 * assigned files will be displayed.
 
 	 */
-
 	if(!empty($upload_finish)) {
 
 ?>
@@ -1126,7 +1122,7 @@ while( $row = $statement->fetch() ) {
 			</h3>
     <div class="checkbox">
 		<label for="pub_checkbox_<?php echo $i; ?>">
-			<input type="checkbox" id="pub_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][public]" value="1" />
+			<input type="checkbox" class="pub_checkbox_status" id="pub_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][public]" value="1" />
 			<?php _e('Allow public downloading of this file.', 'cftp_admin');?>
 		</label>
     </div>
@@ -1671,8 +1667,19 @@ $(document).ready(function() {
 </script> 
 
 <script language="javascript">
-
-document.getElementById('pub_checkbox_1').onchange = function() { 
+$('[id^=pub_checkbox_]').change(function(e) {
+var chslt = $(this).closest('.edit_files').find('[id^=chslt-]');
+    chslt.prop('disabled', true).trigger("chosen:updated");
+if ($(this).is(":checked")){
+	
+	chslt.prop('disabled', true).val('').trigger('chosen:updated');
+	
+}
+else if (!$(this).is(":checked")) {
+chslt.prop('disabled', false).trigger("chosen:updated");
+}
+});
+document.getElementById('pub_checkbox_1').onchange = function() {/* 
 
 $('#chslt-0').prop('disabled', true).trigger("chosen:updated");
 
@@ -1689,7 +1696,7 @@ else if (!$("#pub_checkbox_1").is(":checked")) {
 }
 
 	
-};
+*/};
 </script>
 
 

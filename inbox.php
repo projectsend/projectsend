@@ -465,8 +465,11 @@ include('header.php');
 			}
 	
 			/** Debug query */
-			
-$q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id where  (tbl_files.future_send_date<= DATE(NOW()) AND tbl_files_relations.client_id =" . CURRENT_USER_ID;
+$today = date("Y-m-d H:i:s",strtotime("tomorrow")); //date("Y-m-d H:i:s");
+//var_dump($today);
+/* exit;*/
+$q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id where  (tbl_files.future_send_date< DATE('".$today."') AND tbl_files_relations.client_id =" . CURRENT_USER_ID;
+//$q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id where  (tbl_files.future_send_date<= DATE(NOW()) AND tbl_files_relations.client_id =" . CURRENT_USER_ID;
 			if (!empty($found_groups)) {
 				$q_sent_file .= " OR FIND_IN_SET(group_id, :groups)";
 			}
@@ -706,6 +709,7 @@ $q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations
 							$sql_files->setFetchMode(PDO::FETCH_ASSOC);
 							while( $row = $sql_files->fetch() ) {
 								$current_download_count = current_download_count_user($row['id'],CURRENT_USER_ID);
+								
 								//echo $current_download_count;
 								//echo $file_id = $row['id'];
 								
@@ -760,7 +764,6 @@ $q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations
 									$hidden = $data_file['hidden'];
 								}
 								$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
-
 								/**
 								 * Get file size only if the file exists
 								 */
@@ -773,9 +776,13 @@ $q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations
 									$formatted_size = '-';
 								}
 
-        if(($row['expires'] == '0') || (time() < strtotime($row['expiry_date']))) {
+
+	
+        if(($row['expires'] == 0) || (time() < strtotime($row['expiry_date']))) {
+			
 		      ?>
                 <tr>
+                
                   <?php
 										/** Actions are not available for clients */
 										if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {

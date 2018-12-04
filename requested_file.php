@@ -179,7 +179,7 @@ $actual_link = SITE_URI.'requested_file.php';
 							</div>
 							<div class="clear"></div>
             				<?php if(isset($_GET['view']) && $_GET['view']==='grid')							
-							{ 
+							{
 								if($count>0)
 								{ 
 									$sql_files->setFetchMode(PDO::FETCH_ASSOC);	?>
@@ -201,7 +201,7 @@ $actual_link = SITE_URI.'requested_file.php';
 												if($row['status']===1)
 												{
 												?>
-													<p><span class="grid_box_span"><?php _e('Status','cftp_admin'); ?>: File Received</span></p>
+													<p><span class="grid_box_span"><?php _e('Status','cftp_admin'); ?>: Uploaded</span></p>
 												<?php 
 												} 
 												else 
@@ -259,13 +259,13 @@ $actual_link = SITE_URI.'requested_file.php';
                     <td class="<?php echo (!empty($row['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>"><?php
 
 										$status_hidden	= __('Pending','cftp_admin');
+										$hidden = $row['status'];
+										$status_visible	= __('Uploaded','cftp_admin');
 
-										$status_visible	= __('Send','cftp_admin');
-
-										$class			= (!empty($row['hidden'])) ? 'danger' : 'success';
+										$class			= ($hidden == 0) ? 'danger' : 'success';
 
 									?>
-        <span class="label label-<?php echo $class; ?>"> <?php echo ( !empty( $hidden ) && $hidden == 1) ? $status_hidden : $status_visible; ?> </span></td>
+        <span class="label label-<?php echo $class; ?>"> <?php echo ($hidden == 0) ? $status_hidden : $status_visible; ?> </span></td>
                     <td><?php echo $row['requested_time']; ?></td>
                     <td><div class="btn btn-primary btn-sm resend_it"  id="<?php echo $row['id']; ?>" >
                         <?php _e('Resend','cftp_admin'); ?>

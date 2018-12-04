@@ -140,7 +140,8 @@ include('header.php');
 		$date_f = $_POST['date_from'];				
 		$date = date("Y-m-d", strtotime($date_f) );				
 		$date_t = $_POST['date_to'];				
-		$date_to = date("Y-m-d", strtotime($date_t) );				
+		$date_to = date("Y-m-d", strtotime($date_t) );
+			
 		if($date === $date_to) {						
 			$cq .= " WHERE (timestamp LIKE :date)";						
 			$next_clause = ' AND';						
@@ -148,7 +149,9 @@ include('header.php');
 			$params[':date']	= '%'.$date.'%';
 		}				
 		else {
-			$cq .= " WHERE (timestamp BETWEEN :date AND :date_to)";						
+			$date_to = date('Y-m-d', strtotime($date_to . ' +1 day'));	
+			//$cq .= " WHERE (timestamp BETWEEN :date AND :date_to)";	
+			$cq .= " WHERE (timestamp >= :date AND timestamp <= :date_to)";					
 			$next_clause = ' AND';						
 			$no_results_error = 'date search';						
 			$params[':date']	= $date;						

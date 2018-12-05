@@ -105,9 +105,9 @@ while( $row = $statement->fetch() ) {
 	
 	
 	$users[$row["id"]] = $row["name"];
-	if ($row["level"] == '0') {
+	/*if ($row["level"] == '0') { */
 		$clients[$row["id"]] = $row["name"];
-	}
+	/*} */
 }
 
 

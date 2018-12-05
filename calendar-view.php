@@ -139,7 +139,7 @@ $(function() {
 					  htmlText += '<h5>Send Files</h5>';
 					  htmlText += '<table class="table_calendar_common">';
 					  htmlText += '<tr>';
-					  htmlText += '<th>File Name</th><th>File Desc</th><th>Send Date</th><th>Send to</th>';
+					  htmlText += '<th>File Name</th><th>File Desc</th><th>Send Date</th><th>Send To</th>';
 					  htmlText += '</tr>';
 					  for(var i = 0; i < json.send.length; i++)
 					   { 
@@ -162,7 +162,7 @@ $(function() {
 						htmlText1 += '<h5>Received Files</h5>';
 						htmlText1 += '<table class="table_calendar_common">';
 						htmlText1 += '<tr>';
-						htmlText1 += '<th>File Name</th><th>File Desc</th><th>Recived Date</th>';
+						htmlText1 += '<th>File Name</th><th>File Desc</th><th>Received Date</th>';
 						htmlText1 += '</tr>';
 						for(var i = 0; i < json.receive.length; i++)
 						{ 

@@ -857,7 +857,7 @@ $filesrelations = $dbh->prepare("INSERT INTO ".TABLE_FILES_RELATIONS." (`timesta
 																?>
 																<h3><?php _e('Assignations', 'cftp_admin');?></h3>
 																<label><?php _e('Assign this file to', 'cftp_admin');?>:</label>
-																<select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+																<select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]" class="form-control chosen-select chosen-select_pub" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
 																	<optgroup label="<?php _e('Clients', 'cftp_admin');?>">
 																		<?php
 																			/**
@@ -1088,6 +1088,20 @@ $filesrelations = $dbh->prepare("INSERT INTO ".TABLE_FILES_RELATIONS." (`timesta
 		});
 
 	});
+</script>
+<script language="javascript">
+$('[id^=pub_checkbox_]').change(function(e) { 
+var chslt = $(this).closest('.edit_files').find('.chosen-select_pub');
+    chslt.prop('disabled', true).trigger("chosen:updated");
+if ($(this).is(":checked")){
+	
+	chslt.prop('disabled', true).val('').trigger('chosen:updated');
+	
+}
+else if (!$(this).is(":checked")) {
+chslt.prop('disabled', false).trigger("chosen:updated");
+}
+});
 </script>
 
 <?php

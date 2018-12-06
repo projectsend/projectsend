@@ -149,7 +149,8 @@ $statement->execute();
 $statement->setFetchMode(PDO::FETCH_ASSOC);
 $data = $statement->fetch();
 
-$uploader = $data['USER'];
+//$uploader = $data['USER'];
+$uploader = $to_name;
 $allfiles = $_POST['finished_files'];
 $totalfiles = count($allfiles);
 

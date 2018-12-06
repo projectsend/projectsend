@@ -707,7 +707,16 @@ $q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations
                 <?php
 						if ($count > 0) {
 							$sql_files->setFetchMode(PDO::FETCH_ASSOC);
+							//echo CURRENT_USER_USERNAME;
 							while( $row = $sql_files->fetch() ) {
+								$uploader_cc= trim($row[uploader]);
+								if($uploader_cc == CURRENT_USER_USERNAME) {
+									$edit_access = true;
+								}
+								else {
+									$edit_access = '';
+								}
+								
 								$current_download_count = current_download_count_user($row['id'],CURRENT_USER_ID);
 								
 								//echo $current_download_count;
@@ -854,7 +863,7 @@ $q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations
 									</td>
 
                   <?php
-										if($current_level != '0') {
+										if(($current_level != '0') && ($edit_access==true)) {
 									?>
                   <td>
                   	

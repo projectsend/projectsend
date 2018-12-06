@@ -182,7 +182,7 @@ class PSend_Upload_File
 			$this->statement->execute();
 			$this->file_id = $this->dbh->lastInsertId();
 			$this->state['new_file_id'] = $this->file_id;
-
+			$this->state['public_token'] = $this->public_token;
 			/** Record the action log */
 			if ($this->uploader_type == 'user') {
 				$this->action_type = 5;

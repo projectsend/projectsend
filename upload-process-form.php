@@ -757,7 +757,7 @@ while( $row = $statement->fetch() ) {
 										if ($uploaded['public'] == '1') {
 
 									?>
-        <a href="javascript:void(0);" class="btn btn-primary btn-sm disabled public_link" data-id="<?php echo $uploaded['file_id']; ?>" data-token="<?php echo html_output($uploaded['public_token']); ?>" data-placement="top" data-toggle="popover" data-original-title="<?php _e('Public URL','cftp_admin'); ?>">
+        <a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-id="<?php echo $uploaded['file_id']; ?>" data-token="<?php echo html_output($uploaded['public_token']); ?>" data-placement="top" data-toggle="popover" data-original-title="<?php _e('Public URL','cftp_admin'); ?>">
         <?php
 
 										}
@@ -1186,7 +1186,7 @@ while( $row = $statement->fetch() ) {
 				
 				
 				
-    <select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+    <select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]" class="form-control chosen-select chosen-select_pub" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
     <optgroup label="<?php _e('Clients', 'cftp_admin');?>">
 	
 	
@@ -1668,7 +1668,7 @@ $(document).ready(function() {
 
 <script language="javascript">
 $('[id^=pub_checkbox_]').change(function(e) {
-var chslt = $(this).closest('.edit_files').find('[id^=chslt-]');
+var chslt = $(this).closest('.edit_files').find('.chosen-select_pub');
     chslt.prop('disabled', true).trigger("chosen:updated");
 if ($(this).is(":checked")){
 	

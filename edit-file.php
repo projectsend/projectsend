@@ -546,8 +546,8 @@ $message = '
 						}
 					}
 				}
-				header("location:".BASE_URI."sent.php?edit=1");
-				exit;
+				//header("location:".BASE_URI."sent.php?edit=1");
+				//exit;
 				
 			}
 			/** Validations OK, show the editor */
@@ -651,6 +651,12 @@ $message = '
                               <?php _e('Select a date', 'cftp_admin');?>
                             </label>
                             <div class="input-group date-container">
+				<?php 
+				$date = date('d-m-Y'); 
+				if(!empty($expiry_date) && $expiry_date!='') {
+					$expiry_date = date('d-m-Y', strtotime($date. ' + 14 days'));
+				}
+				?>
                               <input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" />
                               <div class="input-group-addon"> <i class="glyphicon glyphicon-time"></i> </div>
                             </div>

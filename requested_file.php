@@ -152,8 +152,6 @@ $actual_link = SITE_URI.'requested_file.php';
                   <button type="submit" name="do_action" id="do_action" class="btn btn-sm btn-default">
                   <?php _e('Proceed','cftp_admin'); ?>
                   </button>
-                  <a href="<?php echo $grid_layout; ?>" class="cc-grid"><i class="fa fa-th" aria-hidden="true"></i></a> 
-                  <a href="<?php echo $actual_link; ?>" class="cc-grid"><i class="fa fa-bars" aria-hidden="true"></i></a>
                   </div>
               </div>
             </div>

@@ -498,6 +498,7 @@ $message = '
 							$add_arguments['new_file_id'] = $process_file['new_file_id'];
 							$add_arguments['all_users'] = $users;
 							$add_arguments['all_groups'] = $groups;
+							$add_arguments['from_id'] = $global_id;
 							
 							if ($current_level != 0 || 1 == 1) {
 								/**
@@ -721,6 +722,19 @@ $message = '
 																*/
 															?>
                           <h3>
+							<?php 
+							if($row['public_allow']){ 
+							?>
+								<script> 
+								$(document).ready(function() {
+									$('.chosen-select_pub').prop('disabled', true).val('').trigger('chosen:updated').chosen();
+								});
+								</script>
+							<?php 
+							}
+							?>
+						  
+						  </script>
                             <?php _e('Send To', 'cftp_admin');?>
                           </h3>
                           <select multiple="multiple" name="new_client[]" class="form-control new_client" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>" style="display:none">
@@ -728,7 +742,7 @@ $message = '
                           <label>
                             <?php _e('Assign this file to', 'cftp_admin');?>
                             :</label>
-                          <select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+                          <select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]" class="form-control chosen-select chosen-select_pub" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
                             <optgroup label="<?php _e('Clients', 'cftp_admin');?>">
                             <?php
 																		/**

@@ -636,9 +636,7 @@ $message = '
 																* Only show the EXPIRY options if the current
 																* uploader is a system user, and not a client.
 																*/
-																if (!empty($row['expiry_date'])) {
-																	$expiry_date = date('d-m-Y', strtotime($row['expiry_date']));
-																}
+																
 																if (!empty($row['future_send_date'])) {
 																	$future_send_date = date('d-m-Y', strtotime($row['future_send_date']));
 																}
@@ -651,12 +649,15 @@ $message = '
                               <?php _e('Select a date', 'cftp_admin');?>
                             </label>
                             <div class="input-group date-container">
-				<?php 
-				$date = date('d-m-Y'); 
-				if(!empty($expiry_date) && $expiry_date!='') {
-					$expiry_date = date('d-m-Y', strtotime($date. ' + 14 days'));
-				}
-				?>
+								<?php 
+								$date = date('d-m-Y'); 
+								if($row['expires']==1) {
+									$expiry_date = date('d-m-Y', strtotime($date. ' + 14 days'));
+								}
+								else {
+									$expiry_date ='';
+								}
+								?>
                               <input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" />
                               <div class="input-group-addon"> <i class="glyphicon glyphicon-time"></i> </div>
                             </div>

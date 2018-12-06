@@ -148,12 +148,6 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 													
 												),
 												array(
-													'label'	=> __('Organization Request', 'cftp_admin'),
-													'link'	=> 'organizationrequest.php',
-													
-												),
-
-												array(
 													'label'	=> __('Categories', 'cftp_admin'),
 													'link'	=> 'categories.php',
 												),

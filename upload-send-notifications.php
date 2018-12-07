@@ -274,8 +274,8 @@ if (!empty($found_notifications)) {
 		$statement->bindParam(':sent', $notifications_sent);
 		$statement->execute();
 
-		$msg = __('E-mail notifications have been sent.','cftp_admin');
-		echo system_message('ok',$msg);
+		// $msg = __('E-mail notifications have been sent.','cftp_admin');
+		// echo system_message('ok',$msg);
 	}
 
 	/**

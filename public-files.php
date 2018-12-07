@@ -903,14 +903,14 @@ include('header.php');
             //$sql_files = $dbh->prepare($fq);  
 
             //$sql_files->execute( $params );       
-			
-			$current_date = date("Y-m-d");
-			
+            
+            $current_date = date("Y-m-d");
+            
            // $q_sent_file = "SELECT  tf.* FROM tbl_files AS tf LEFT JOIN ".TABLE_FILES_RELATIONS." AS tfr ON tf.id = tfr.file_id where tfr.from_id = '". CURRENT_USER_ID ."' AND tf.future_send_date <='".$current_date."'";
-		   
-		   $q_sent_file = "SELECT * FROM tbl_files WHERE tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')  AND tbl_files.future_send_date <='".$current_date."' AND  tbl_files.public_allow=1 ";
+           
+           $q_sent_file = "SELECT * FROM tbl_files WHERE tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')  AND tbl_files.future_send_date <='".$current_date."' AND  tbl_files.public_allow=1 ";
 
-           //echo '<pre>';			print_r($q_sent_file);			echo'</pre>'; exit;
+           //echo '<pre>';          print_r($q_sent_file);          echo'</pre>'; exit;
 
 
 
@@ -921,8 +921,8 @@ include('header.php');
 
 
             /*echo "<pre>";
-            print_r($sql_files);				
-			echo "</pre>";
+            print_r($sql_files);                
+            echo "</pre>";
 
             exit;*/
 
@@ -1291,9 +1291,9 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                   <th><?php _e('Title','cftp_admin'); ?></th>
 
                   <th><?php _e('Size','cftp_admin'); ?></th>
-				  
-				  <th data-hide="phone,tablet" data-sort-ignore="true"><?php _e('Download/Limit','cftp_admin'); ?></th>
-				  
+                  
+                  <th data-hide="phone,tablet" data-sort-ignore="true"><?php _e('Download/Limit','cftp_admin'); ?></th>
+                  
                   <th data-hide="phone,tablet"><?php _e('Uploader','cftp_admin'); ?></th>
                   <?php
 
@@ -1546,25 +1546,25 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                                             echo html_output($extension);
 
                                         ?></td>
-										
-										
-										
-										
+                                        
+                                        
+                                        
+                                        
 
                   <td class="file_name">
                                         <?php
                                             $download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
-											$current_download_count = current_download_count_user($row['id'],CURRENT_USER_ID);
-                                            $curr_usr_id	=	CURRENT_USER_ID;
-										/**
+                                            $current_download_count = current_download_count_user($row['id'],CURRENT_USER_ID);
+                                            $curr_usr_id    =   CURRENT_USER_ID;
+                                        /**
                                         * Clients can download from here.
                                         It was like client cannot download. But now changed to Can.
                                         */
                                         if($current_level == '0' || $current_level=='8' || $current_level=='9') 
                                         {
-											
+                                            
                                             if((($current_download_count>=$row['number_downloads'] && $current_download_count>0 && $row['number_downloads']!=0)) || (($row['expires'] != '0') && (time() > strtotime($row['expiry_date']))) ) {
-												
+                                                
                                                 echo html_output($row['filename']);
                                             }
                                             else
@@ -1590,31 +1590,34 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                                         ?>
                                     </td>
 
-									  <td data-value="<?php echo $this_file_size; ?>"><?php echo $formatted_size; ?></td>
-									  <td>
-										<strong>
-												<?php 
-												
-												if(isset($row['number_downloads']) && $row['number_downloads']>0 )
-												{
-												?>
-													<?php echo htmlentities($current_download_count).'/'. htmlentities($row['number_downloads']); ?>
-													
-										</strong>
-												<?php
-												} else {
-													echo "Not set";
-												}
-												?>
-									</td>
-										
-										
-										
+                                      <td data-value="<?php echo $this_file_size; ?>"><?php echo $formatted_size; ?></td>
+                                      <td>
+                                        <strong>
+                                                <?php 
+                                                
+                                                if ( isset( $downloads_information[$row["id"]] ) )
+                                                {
+                                                    $download_info  = $downloads_information[$row["id"]];
+
+                                                    $total_count    = $download_info['total'];
+                                               ?>
+                                                    <?php echo htmlentities($total_count).'/'. htmlentities($row['number_downloads']); ?>
+                                                    
+                                        </strong>
+                                                <?php
+                                                } else {
+                                                    echo "Not set";
+                                                }
+                                                ?>
+                                    </td>
+                                        
+                                        
+                                        
 
                   
                   <?php
-				  
-										$curr_usr_nm = CURRENT_USER_USERNAME;
+                  
+                                        $curr_usr_nm = CURRENT_USER_USERNAME;
 
                                         if($current_level != '0' && $curr_usr_nm == $row[uploader])  {
                                     ?>
@@ -1685,7 +1688,7 @@ if($data['g_name']) {echo $data['g_name']."<br>";}
 
                   <td class="col_visibility"><?php
 
-                                                    if ($row['public_allow'] == '1') {
+                                                    if (($row['public_allow'] == '1') && ($total_count < $row['number_downloads'])) {
 
                                                 ?>
 
@@ -1945,12 +1948,12 @@ totalcount[0].innerHTML = numfiles.length + " files";
 var numfiles = document.querySelectorAll("#files_list tbody tr");
 var totalcount = document.querySelectorAll(".form_count_total span");
 totalcount[0].innerHTML = numfiles.length + " files";
-	 
+     
 $(".refreshcls").on("click", function (e) {  
-		setTimeout(function() {
+        setTimeout(function() {
     location.reload();
 }, 1000);
-	});
+    });
 });
  </script>
 
@@ -2013,13 +2016,13 @@ $(".refreshcls").on("click", function (e) {
     td:nth-of-type(3):before { content: "Ext."; }
     td:nth-of-type(4):before { content: "Title"; }
     td:nth-of-type(5):before { content: "Size"; }
-	td:nth-of-type(6):before { content: "Download/Limit"; }
+    td:nth-of-type(6):before { content: "Download/Limit"; }
     td:nth-of-type(7):before { content: "Uploader"; }
     td:nth-of-type(8):before { content: "Public"; }
     td:nth-of-type(9):before { content: "Expiry"; }
     td:nth-of-type(10):before { content: "Total downloads"; }
 } 
-    td{	text-align:center;}
-	th{ text-align:center;}
+    td{ text-align:center;}
+    th{ text-align:center;}
 /*-------------------- Responsive table End--------------------------*/
 </style>

@@ -1688,7 +1688,7 @@ if($data['g_name']) {echo $data['g_name']."<br>";}
 
                   <td class="col_visibility"><?php
 
-                                                    if (($row['public_allow'] == '1') && ($total_count < $row['number_downloads'])) {
+                                                    if (($row['public_allow'] == '1') && (($row['expires'] == '0') || ($total_count < $row['number_downloads']))) {
 
                                                 ?>
 
@@ -1702,7 +1702,7 @@ if($data['g_name']) {echo $data['g_name']."<br>";}
 
                                                 ?>
 
-                    <a href="javascript:void(0);" class="btn btn-default btn-sm disabled" rel="" title="">
+                    <a href="javascript:void(0);" class="btn btn-primary btn-sm disabled" rel="" title="">
 
                     <?php
 

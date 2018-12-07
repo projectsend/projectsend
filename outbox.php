@@ -675,7 +675,7 @@ include('header.php');
 
 		 */
 
-		$form_action_url = 'manage-files.php';
+		$form_action_url = 'outbox.php';
 
 		
 

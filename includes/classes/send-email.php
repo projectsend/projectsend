@@ -112,6 +112,14 @@ $email_strings_invite_client = array(
 									'label_pass'	=> __('Your password','cftp_admin')
 
 								);
+$email_strings_drop_off_guest = array(
+								'subject'		=> __('Drop-off guest upload','cftp_admin'),
+								'body'			=> __('You have asked us to send you this message so that you can drop-off some files for someone'),
+								'label_name'			=> __('Name','cftp_admin'),
+								'label_organization'			=> __('Organization','cftp_admin'),
+								'label_email'			=> __('Email','cftp_admin'),
+
+);
 
 
 
@@ -282,6 +290,11 @@ class PSend_Email
 
 					$body_text	= EMAILS_PASS_RESET_TEXT;
 
+				break;
+			case 'mail_upload':
+					$filename	= 'mail-upload.html';
+					$body_check	= (!defined('EMAILS_PASS_RESET_USE_CUSTOM') || EMAILS_PASS_RESET_USE_CUSTOM == '0') ? '0' : EMAILS_PASS_RESET_USE_CUSTOM;
+					$body_text	= EMAILS_PASS_RESET_TEXT;
 				break;
 
 		}
@@ -581,11 +594,15 @@ class PSend_Email
 	 */
 
 	function email_new_files_for_client($files_list)
-
 	{
-
 		global $email_strings_file_by_user;
-
+		if(is_array($files_list)) {
+			$repairArray = array();
+			foreach($files_list as $files) {
+				$repairArray[] = $files;
+			}
+			$files_list = implode("<br />", $repairArray);
+		}	
 		$this->email_body = $this->email_prepare_body('new_file_by_user');
 
 		$this->email_body = str_replace(
@@ -1084,8 +1101,92 @@ Fetched alternate emails adding to CC. --END--
 		}
 
 	}
-
+	/* custom code added by rj */	
+	function psend_send_drop_off_email($arguments)	
+	{				
+		$this->type			= (!empty($arguments['type'])) ? $arguments['type'] : '';		
+		$this->name			= (!empty($arguments['name'])) ? $arguments['name'] : '';		
+		$this->organization		= (!empty($arguments['your_organization'])) ? $arguments['your_organization'] : '';		
+		$this->email		= (!empty($arguments['your_email'])) ? $arguments['your_email'] : '';	
+		$this->token		= (!empty($arguments['token'])) ? $arguments['token'] : '';
+		require_once(ROOT_DIR.'/includes/phpmailer/class.phpmailer.php');		
+		if (!spl_autoload_functions() OR (!in_array('PHPMailerAutoload', spl_autoload_functions()))) {			
+			require_once(ROOT_DIR.'/includes/phpmailer/PHPMailerAutoload.php');		
+		}		
+		$this->try_bcc = false;		
+		switch($this->type) {
+			case 'dropoff_guest_request':
+				$this->mail_info = $this->invite_user_to_upload_file($this->name,$this->organization,$this->email,$this->token);
+			break;
+		}
+		/*** phpMailer		 */	
+		$this->send_mail = new PHPMailer();
+		switch (MAIL_SYSTEM) {
+			case 'smtp':
+				$this->send_mail->IsSMTP();
+				$this->send_mail->SMTPAuth = true;
+				$this->send_mail->Host = SMTP_HOST;
+				$this->send_mail->Port = SMTP_PORT;
+				$this->send_mail->Username = SMTP_USER;
+				$this->send_mail->Password = SMTP_PASS;
+				if ( defined('SMTP_AUTH') && SMTP_AUTH != 'none' ) {
+					$this->send_mail->SMTPSecure = SMTP_AUTH;
+				}
+			break;
+			case 'gmail':
+				$this->send_mail->IsSMTP();
+				$this->send_mail->SMTPAuth = true;
+				$this->send_mail->SMTPSecure = "tls";
+				$this->send_mail->Host = 'smtp.gmail.com';
+				$this->send_mail->Port = 587;
+				$this->send_mail->Username = SMTP_USER;
+				$this->send_mail->Password = SMTP_PASS;
+			break;
+			case 'sendmail':
+				$this->send_mail->IsSendmail();
+			break;
+		}
+		$this->send_mail->CharSet = EMAIL_ENCODING;		
+		$this->send_mail->Subject = $this->mail_info['subject'];
+		$this->send_mail->MsgHTML($this->mail_info['body']);
+		$this->send_mail->AltBody = __('This email contains HTML formatting and cannot be displayed right now. Please use an HTML compatible reader.','cftp_admin');
+		$this->send_mail->SetFrom(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
+		$this->send_mail->AddReplyTo(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
+		$this->send_mail->AddAddress($this->email);
+		/**		 * Check if BCC is enabled and get the list of * addresses to add, based on the email type.		 */	
+		
+		/* Send Mail  */
+		if($this->send_mail->Send()) { return 1; 
+		}
+		else {
+			echo $this->send_mail->ErrorInfo;
+			return 2;		
+		}	
+	}	
+	function invite_user_to_upload_file($name,$organization,$email,$token)
+	{
+		/*global $email_strings_invite_client;*/
+		global $email_strings_drop_off_guest;
+		
+		$this->email_body = $this->email_prepare_body('mail_upload');
+		$this->email_body = str_replace(
+			array('%SUBJECT%','%BODY1%','%LNAME%','%LORGNAME%','%LEMAIL%','%LNAMEVAL%','%LORGNAMEVAL%','%LEMAILVAL%','%URI%'),
+				array(
+					$email_strings_drop_off_guest['subject'],
+					$email_strings_drop_off_guest['body'],
+					$email_strings_drop_off_guest['label_name'],
+					$email_strings_drop_off_guest['label_organization'],
+					$email_strings_drop_off_guest['label_email'],
+					$name,$organization,$email,
+					BASE_URI.'dropoff_guest_process.php?auth=' . $token,
+				),
+				$this->email_body								
+			);
+			return array(
+				'subject' => $email_strings_drop_off_guest['subject'],
+				'body' => $this->email_body	
+			);
+	}
 }
-
 ?>
 

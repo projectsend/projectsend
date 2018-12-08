@@ -38,6 +38,15 @@ if($_POST) {
 	$to = ($_REQUEST['to']) ? $_REQUEST['to'] : '';
 	$comments = ($_REQUEST['comments']) ? $_REQUEST['comments'] : '';
 	$auth = ($_REQUEST['auth']) ? $_REQUEST['auth'] : '';
+	if(empty($to) && $to=='') {
+		$error_message ="Please fill the Email ID";
+	}
+	else {
+		if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
+				$error_message = "Invalid email format";
+		}
+	}
+	
 	//$file1 = $_FILES['fileone'];
 	//var_dump($_FILES['fileone']['tmp_name']);
 $statement = $dbh->prepare("select id,user from ".TABLE_USERS." where email = '$to'");
@@ -64,7 +73,7 @@ $chunks = isset($_REQUEST["chunks"]) ? intval($_REQUEST["chunks"]) : 0;
 
 
 $filecount = count($_FILES['userfiles']['name']);
-
+$array_file_name = array();
 for($i = 0 ; $i < $filecount; $i++) {
 // looop start ------------------------------------------------------------------------------------------
 		$fileName = isset($_FILES['userfiles']['name'][$i]) ? $_FILES['userfiles']['name'][$i] : '';
@@ -178,10 +187,11 @@ for($i = 0 ; $i < $filecount; $i++) {
 		$url = $fileName;
 		 $fromid = $userindo['id'];
 		 $filenamearray = explode(".",$url);
-		 $filename = $filenamearray[0];
+		 $filename = $filenamearray[0];		
+		 $array_file_name[] = $filenamearray[0];
 		 $public_allow = 0;
 		
-		$uploader = $userindo['user'];
+		$uploader = $to_name;
 		
 		 //var_dump($filename ,$fromid , $_POST);
 		 $time = '2017-03-02 00:00:00';
@@ -190,12 +200,21 @@ for($i = 0 ; $i < $filecount; $i++) {
 		$statement = $dbh->prepare("INSERT INTO ".TABLE_FILES." (`url`, `filename`, `description`, `timestamp`, `uploader`, `expires`, `expiry_date`, `public_allow`, `public_token`) VALUES ('$url', '$filename', '', CURRENT_TIMESTAMP, '$uploader', '0', '2017-12-09 00:00:00', '0', NULL);");
 		if($statement->execute()) {
 			$img_id = $dbh->lastInsertId();
-			$filesrelations = $dbh->prepare("INSERT INTO ".TABLE_FILES_RELATIONS." (`timestamp`, `file_id`, `client_id`, `group_id`, `folder_id`, `hidden`, `download_count`) VALUES (CURRENT_TIMESTAMP, ".$img_id.", ".$fromid.", NULL, NULL, '0', '0')");
-			//var_dump($filesrelations);
-			$filesrelations->execute();
+			$filesrelations = $dbh->prepare("INSERT INTO ".TABLE_FILES_RELATIONS." (`timestamp`, `file_id`, `client_id`, `group_id`, `folder_id`, `hidden`, `download_count`) VALUES (CURRENT_TIMESTAMP, ".$img_id.", ".$fromid.", NULL, NULL, '0', '0')");			
+			if($filesrelations->execute()) {
+				$file_status=true;				
+			}		
 		}
 // loop end ---------------------------------------------------------------------------------------------		
-}
+}if($file_status) {
+	$notify_client = new PSend_Email();	
+	$email_arguments = array(							
+		'type' => 'new_files_for_client',							
+		'address' => $to,							
+		'files_list' => 
+		$array_file_name						
+	);
+	$try_sending = $notify_client->psend_send_email($email_arguments);		}			
 //----------------------------------
 //------------------------------------------------------------------------------------
 echo "<div class='alert alert-success alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Success!</strong> Your file has been uploaded successfully.</div>";
@@ -210,6 +229,7 @@ else {
 
 
   <h2><?php echo $page_title; ?></h2>
+  <div class="error_div" style="text-align: center;color: red;padding: 10px;"><?php echo !empty($error_message)?$error_message:''; ?></div>
   <div style="width:600px;background: white none repeat scroll 0 0;border: 1px solid #adadad;margin: 0 auto;padding: 64px;width: 600px;">
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" name="addclient" enctype="multipart/form-data" method="post" class="form-horizontal" autocomplete="off">
       <div class="form-group">
@@ -244,7 +264,7 @@ else {
           <?php _e('File','cftp_admin'); ?>
         </label>
         <div class="col-sm-6">
-          <input type="file" name="userfiles[]" id="fileone" class="form-control required" value="" placeholder="upload file" />
+          <input type="file" name="userfiles[]" id="fileone" class="form-control userfiles required" value="" placeholder="upload file" style="padding:0;" />
         </div>
         <div class="col-sm-2">
         <span class="glyphicon glyphicon-plus cc-add-file" aria-hidden="true"></span>
@@ -254,6 +274,11 @@ else {
       <div class="inside_form_buttons text-rgt">
         <button type="submit" name="submit" class="btn btn-default">Send the request</button>
       </div>
+	  <div class="form-group">
+		  <div class="col-md-12 note_file_upload">
+			<p>NOTE: <em>For Multiple file upload please choose '+' icon near the upload file</em></p>
+		  </div>
+	  </div>
     </form>
   </div>
 </div>
@@ -280,7 +305,7 @@ $(".mhusermid").hide();
 
 });
 $(document).on('click','.cc-add-file',function() {
-	$(".cc-file-container").append("<div class='form-group'><label for='to_email_request' class='col-sm-4 control-label'>File</label><div class='col-sm-6'><input type='file' name='userfiles[]' id='fileone' class='form-control required' value='' placeholder='upload file' /></div><div class='col-sm-2'><span class='glyphicon glyphicon-plus cc-add-file' aria-hidden='true'></span><span class='glyphicon glyphicon-remove cc-remove-file' aria-hidden='true'></span></div></div>")
+	$(".cc-file-container").append("<div class='form-group'><label for='to_email_request' class='col-sm-4 control-label'>File</label><div class='col-sm-6'><input type='file' name='userfiles[]' id='fileone' class='form-control required userfiles' value='' placeholder='upload file' /></div><div class='col-sm-2'><span class='glyphicon glyphicon-plus cc-add-file' aria-hidden='true'></span><span class='glyphicon glyphicon-remove cc-remove-file' aria-hidden='true'></span></div></div>")
 });
 $(document).on('click','.cc-remove-file',function() {
 	$(this).parent().parent().remove();
@@ -332,5 +357,9 @@ $(document).on('click','.cc-remove-file',function() {
     font-size: 11px;
 	cursor:pointer;
 	margin-left:3px;
+}
+.userfiles {padding:0}
+.note_file_upload {
+	padding-top: 35px;
 }
 </style>

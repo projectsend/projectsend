@@ -403,8 +403,9 @@ include('header.php');
 			/**
 			 * Get the files
 			 */
+			$today = date("Y-m-d H:i:s",strtotime("tomorrow"));
 			$params = array();
-			$fq = "SELECT * FROM " . TABLE_FILES;
+			$fq = "SELECT tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id";
 	
 			if ( isset($search_on) && !empty($gotten_files) ) {
 				$conditions[] = "FIND_IN_SET(id, :files)";
@@ -413,10 +414,11 @@ include('header.php');
 	
 			/** Add the search terms */	
 			if(isset($_GET['search']) && !empty($_GET['search'])) {
-				$conditions[] = "(filename LIKE :name OR description LIKE :description)";
+				$term = "%".$_GET['search']."%";
+				$conditions[] = "(filename LIKE '$term' OR description LIKE '$term')";
 				$no_results_error = 'search';
 	
-				$search_terms			= '%'.$_GET['search'].'%';
+				$search_terms			= $term;
 				$params[':name']		= $search_terms;
 				$params[':description']	= $search_terms;
 			}
@@ -426,8 +428,9 @@ include('header.php');
 			 * only show files uploaded by that account.
 			*/
 			$current_level = get_current_user_level();
-			if ($current_level == '7' || $current_level == '8' || $current_level == '0') {
-				$conditions[] = "uploader = :uploader";
+			if ($current_level == '7' || $current_level == '8' || $current_level == '0' || $current_level == '9') {
+				$conditions[] = "tbl_files_relations.client_id =" . CURRENT_USER_ID;
+				$conditions[] = "tbl_files.future_send_date< DATE('".$today."')";
 				$no_results_error = 'account_level';
 	
 				$params[':uploader'] = $global_user;
@@ -464,18 +467,12 @@ include('header.php');
 				}
 			}
 	
-			/** Debug query */
-$today = date("Y-m-d H:i:s",strtotime("tomorrow")); //date("Y-m-d H:i:s");
-//var_dump($today);
-/* exit;*/
-$q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id where  (tbl_files.future_send_date< DATE('".$today."') AND tbl_files_relations.client_id =" . CURRENT_USER_ID;
-//$q_sent_file = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id where  (tbl_files.future_send_date<= DATE(NOW()) AND tbl_files_relations.client_id =" . CURRENT_USER_ID;
 			if (!empty($found_groups)) {
 				$q_sent_file .= " OR FIND_IN_SET(group_id, :groups)";
 			}
 			$q_sent_file .= ") AND hidden = '0'";
 
-			$sql_files = $dbh->prepare($q_sent_file);
+			$sql_files = $dbh->prepare($fq);
 			if (!empty($found_groups)) {
 				$sql_files->bindParam(':groups', $found_groups);
 			}

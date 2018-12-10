@@ -794,15 +794,21 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                                         <strong>
                                                 <?php 
                                                 
-                                                if ( isset( $downloads_information[$row["id"]] ) )
+                                                if(isset($row['number_downloads']) && $row['number_downloads']>0 )
                                                 {
-                                                    $download_info  = $downloads_information[$row["id"]];
-                                                    $total_count    = $download_info['total'];
-                                               ?>
-                                                    <?php echo htmlentities($total_count).'/'. htmlentities($row['number_downloads']); ?>
-                                                    
+                                                    if( isset( $downloads_information[$row["id"]] ))
+                                                    {
+                                                        $download_info  = $downloads_information[$row["id"]];
+                                                        $total_count    = $download_info['total'];
+                                                    ?>
+                                                        <?php echo htmlentities($total_count).'/'. htmlentities($row['number_downloads']); ?>
+                                                    <?php 
+                                                    } else {
+                                                    ?>
+                                                    <?php echo htmlentities($current_download_count).'/'. htmlentities($row['number_downloads']); ?> 
                                         </strong>
-                                                <?php
+                                                    <?php
+                                                    }
                                                 } else {
                                                     echo "Not set";
                                                 }
@@ -866,14 +872,14 @@ if($data['g_name']) {echo $data['g_name']."<br>";}
                                                 }
                                             ?>
                   <td class="col_visibility"><?php
-                                                    if (($row['public_allow'] == '1') && ($total_count < $row['number_downloads'])) {
+                                                    if (($row['public_allow'] == '1') && ((isset($row['number_downloads']) && $row['number_downloads']==0) || ($total_count < $row['number_downloads']))) {
                                                 ?>
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-id="<?php echo $row['id']; ?>" data-token="<?php echo html_output($row['public_token']); ?>" data-placement="top" data-toggle="popover" data-original-title="<?php _e('Public URL','cftp_admin'); ?>">
                     <?php
                                                     }
                                                     else {
                                                 ?>
-                    <a href="javascript:void(0);" class="btn btn-default btn-sm disabled" rel="" title="">
+                    <a href="javascript:void(0);" class="btn btn-primary btn-sm disabled" rel="" title="">
                     <?php
                                                     }
                                                             $status_public  = __('Public','cftp_admin');

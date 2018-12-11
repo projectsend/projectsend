@@ -872,7 +872,7 @@ if($data['g_name']) {echo $data['g_name']."<br>";}
                                                 }
                                             ?>
                   <td class="col_visibility"><?php
-                                                    if (($row['public_allow'] == '1') && (isset($row['number_downloads']) && ($total_count < $row['number_downloads']))) {
+                                                    if (($row['public_allow'] == '1') && (isset($row['number_downloads']) && (($row['number_downloads']==0) || (($row['number_downloads']>0) && ($total_count < $row['number_downloads']))))) {
                                                 ?>
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-id="<?php echo $row['id']; ?>" data-token="<?php echo html_output($row['public_token']); ?>" data-placement="top" data-toggle="popover" data-original-title="<?php _e('Public URL','cftp_admin'); ?>">
                     <?php

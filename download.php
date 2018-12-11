@@ -12,6 +12,8 @@ $page_title = __('Download','cftp_admin');
 
 $dont_redirect_if_logged = 1;
 
+$downloads_information = generate_downloads_count();
+
 include('header-unlogged.php');
 
 	if (!empty($_GET['token']) && !empty($_GET['id'])) {
@@ -31,6 +33,19 @@ include('header-unlogged.php');
 		if ( $statement->rowCount() > 0 ){
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
 			$got_url	= $statement->fetch();
+
+		    if(isset($got_url['number_downloads']) && $got_url['number_downloads']>0)
+		    {
+			if(isset($downloads_information[$got_url["id"]]))
+			{
+			    $download_info  = $downloads_information[$got_url["id"]];
+			    $total_count    = $download_info['total'];
+			    if($total_count >= $got_url['number_downloads'])
+			    {
+				$can_download = false;
+			    }
+			}
+		    }            
 
 			$expires		= $got_url['expires'];
 			$expiry_date	= $got_url['expiry_date'];

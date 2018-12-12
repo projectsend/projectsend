@@ -99,12 +99,12 @@ $actual_link = SITE_URI.'requested_file.php';
 							$sql =$dbh->prepare("DELETE FROM tbl_drop_off_request WHERE id = :file_id");
 							$sql->bindParam(':file_id', $file_id);
 							if($sql->execute()){
-								$msg = __('The selected request were deleted.','cftp_admin');
+								$msg_succes = __('The selected request were deleted.','cftp_admin');
 								$success_count++;
 								/*echo system_message('ok',$msg); */
 								$log_action_number = 12;
 							}else{
-								$msg = __('Some request could not be deleted.','cftp_admin');
+								$msg_failed = __('Some request could not be deleted.','cftp_admin');
 								$failed_count++;
 								/* echo system_message('error',$msg); */
 							}

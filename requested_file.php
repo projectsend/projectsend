@@ -92,20 +92,31 @@ $actual_link = SITE_URI.'requested_file.php';
 												'ok'		=> 0,
 												'errors'	=> 0,
 											);
+						$success_count = 0;
+						$failed_count = 0;
 						foreach ($selected_files as $index => $file_id) {
 							//echo $file_id;exit;
 							$sql =$dbh->prepare("DELETE FROM tbl_drop_off_request WHERE id = :file_id");
 							$sql->bindParam(':file_id', $file_id);
 							if($sql->execute()){
 								$msg = __('The selected request were deleted.','cftp_admin');
-								echo system_message('ok',$msg);
+								$success_count++;
+								/*echo system_message('ok',$msg); */
 								$log_action_number = 12;
 							}else{
 								$msg = __('Some request could not be deleted.','cftp_admin');
-								echo system_message('error',$msg);
+								$failed_count++;
+								/* echo system_message('error',$msg); */
 							}
 
 						}
+						if($success_count>0) {
+							echo system_message('ok',$msg_succes);
+						}
+						if($failed_count>0) {
+							echo system_message('ok',$msg_failed);
+						}
+
 
 						break;
 				}

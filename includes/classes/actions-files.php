@@ -65,6 +65,46 @@ class FilesActions
 			}
 		}
 	}
+	function delete_public_files($rel_id)
+	{
+		$this->can_delete		= false;
+		$this->result			= '';
+		$this->check_level		= array(9,8,0);
+
+		if (isset($rel_id)) {
+			/** Do a permissions check */
+			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
+				$this->file_id = $rel_id;
+				$this->sql = $this->dbh->prepare("SELECT url, uploader FROM " . TABLE_FILES . " WHERE id = :file_id");
+				$this->sql->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+				$this->sql->execute();
+				$this->sql->setFetchMode(PDO::FETCH_ASSOC);
+				while( $this->row = $this->sql->fetch() ) {
+						$this->can_delete	= true;
+						$this->file_url = $this->row['url'];
+				}
+
+				/** Delete the reference to the file on the database */
+				if ( true === $this->can_delete ) {
+					$this->sql = $this->dbh->prepare("DELETE FROM " . TABLE_FILES . " WHERE id = :file_id");
+					$this->sql->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+					$this->sql->execute();
+					/**
+					 * Use the id and uri information to delete the file.
+					 *
+					 * @see delete_file_from_disk
+					 */
+					delete_file_from_disk(UPLOADED_FILES_FOLDER . $this->file_url);
+					$this->result = true;
+				}
+				else {
+					$this->result = false;
+				}
+				
+				return $this->result;
+			}
+		}
+	}
 	
 	function change_files_hide_status($file_id,$change_to,$modify_type,$modify_id)
 	{

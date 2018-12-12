@@ -75,6 +75,9 @@ $chunks = isset($_REQUEST["chunks"]) ? intval($_REQUEST["chunks"]) : 0;
 $filecount = count($_FILES['userfiles']['name']);
 $array_file_name = array();
 for($i = 0 ; $i < $filecount; $i++) {
+	$file_empty = isset($_FILES['userfiles']['name'][$i]) ? $_FILES['userfiles']['name'][$i] : '';
+	if (!empty($file_empty) ) {
+        
 // looop start ------------------------------------------------------------------------------------------
 		$fileName = isset($_FILES['userfiles']['name'][$i]) ? $_FILES['userfiles']['name'][$i] : '';
 		$this_file = new PSend_Upload_File();
@@ -187,8 +190,7 @@ for($i = 0 ; $i < $filecount; $i++) {
 		$url = $fileName;
 		 $fromid = $userindo['id'];
 		 $filenamearray = explode(".",$url);
-		 $filename = $filenamearray[0];		
-		 $array_file_name[] = $filenamearray[0];
+		 $filename = $filenamearray[0];		 $array_file_name[] = $filenamearray[0];
 		 $public_allow = 0;
 		
 		$uploader = $to_name;
@@ -201,12 +203,11 @@ for($i = 0 ; $i < $filecount; $i++) {
 		if($statement->execute()) {
 			$img_id = $dbh->lastInsertId();
 			$filesrelations = $dbh->prepare("INSERT INTO ".TABLE_FILES_RELATIONS." (`timestamp`, `file_id`, `client_id`, `group_id`, `folder_id`, `hidden`, `download_count`) VALUES (CURRENT_TIMESTAMP, ".$img_id.", ".$fromid.", NULL, NULL, '0', '0')");			
-			if($filesrelations->execute()) {
-				$file_status=true;				
-			}		
+			if($filesrelations->execute()) {								$file_status=true;				}		
 		}
-// loop end ---------------------------------------------------------------------------------------------		
-}if($file_status) {
+	}
+	// loop end ---------------------------------------------------------------------------------------------		
+	}if($file_status) {
 	$notify_client = new PSend_Email();	
 	$email_arguments = array(							
 		'type' => 'new_files_for_client',							
@@ -214,7 +215,9 @@ for($i = 0 ; $i < $filecount; $i++) {
 		'files_list' => 
 		$array_file_name						
 	);
-	$try_sending = $notify_client->psend_send_email($email_arguments);		}			
+	$try_sending = $notify_client->psend_send_email($email_arguments);		
+	
+	}			
 //----------------------------------
 //------------------------------------------------------------------------------------
 echo "<div class='alert alert-success alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Success!</strong> Your file has been uploaded successfully.</div>";
@@ -263,8 +266,9 @@ else {
         <label for="to_email_request" class="col-sm-4 control-label">
           <?php _e('File','cftp_admin'); ?>
         </label>
-        <div class="col-sm-6">
+        <div class="col-sm-6 A">
           <input type="file" name="userfiles[]" id="fileone" class="form-control userfiles required" value="" placeholder="upload file" style="padding:0;" />
+		  <div class="error_file_empty" ></div>
         </div>
         <div class="col-sm-2">
         <span class="glyphicon glyphicon-plus cc-add-file" aria-hidden="true"></span>
@@ -305,7 +309,15 @@ $(".mhusermid").hide();
 
 });
 $(document).on('click','.cc-add-file',function() {
-	$(".cc-file-container").append("<div class='form-group'><label for='to_email_request' class='col-sm-4 control-label'>File</label><div class='col-sm-6'><input type='file' name='userfiles[]' id='fileone' class='form-control required userfiles' value='' placeholder='upload file' /></div><div class='col-sm-2'><span class='glyphicon glyphicon-plus cc-add-file' aria-hidden='true'></span><span class='glyphicon glyphicon-remove cc-remove-file' aria-hidden='true'></span></div></div>")
+	//check_empty();
+	var $ccc = $(this).parent().prev('.A').find('.userfiles').val();
+	if($ccc!='') {
+		$(this).parent().prev('.A').find('.error_file_empty').html('');
+	$(".cc-file-container").append("<div class='form-group'><label for='to_email_request' class='col-sm-4 control-label'>File</label><div class='col-sm-6 A'><input type='file' name='userfiles[]' id='fileone' class='form-control required userfiles' value='' placeholder='upload file' /><div class='error_file_empty'></div></div><div class='col-sm-2'><span class='glyphicon glyphicon-plus cc-add-file' aria-hidden='true'></span><span class='glyphicon glyphicon-remove cc-remove-file' aria-hidden='true'></span></div></div>");
+	}
+	else {
+		$(this).parent().prev('.A').find('.error_file_empty').html("Please choose the file first");
+	}
 });
 $(document).on('click','.cc-remove-file',function() {
 	$(this).parent().parent().remove();
@@ -362,4 +374,5 @@ $(document).on('click','.cc-remove-file',function() {
 .note_file_upload {
 	padding-top: 35px;
 }
+.error_file_empty {color:#fb0303;}
 </style>

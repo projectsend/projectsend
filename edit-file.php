@@ -55,7 +55,7 @@ switch($get_prev_id) {
 	$get_prev_url = BASE_URI.'expired.php';
 	break;
 	case 6:
-	$get_prev_url = BASE_URI.'expired.php';
+	$get_prev_url = BASE_URI.'public-files.php';
 	break;
 	default:
 	$get_prev_id = '#';

@@ -49,7 +49,7 @@ switch($get_prev_id) {
 	$get_prev_url = BASE_URI.'outbox.php';
 	break;
 	case 4:
-	$get_prev_url = BASE_URI.'requested_file.php';
+	$get_prev_url = BASE_URI.'draft.php';
 	break;
 	case 5:
 	$get_prev_url = BASE_URI.'expired.php';

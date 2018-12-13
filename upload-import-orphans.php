@@ -150,7 +150,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 														'name'		=> $new_filename,
 														
 														'reason'	=> 'not_on_db',
-														
+														'last_modifed' =>filemtime($new_filename_path)
 													);
 							}
 						}
@@ -202,6 +202,11 @@ $work_folder = UPLOADED_FILES_FOLDER;
 		 * available and allowed.
 		 */
 		if(isset($files_to_add) && count($files_to_add) > 0) {
+			foreach ($files_to_add as $key => $node) {
+		   
+				$files_to[$key]    = $node['last_modifed'];
+			}
+			array_multisort($files_to, SORT_DESC, $files_to_add);
 			
 	?>
           <div class="form_actions_limit_results">
@@ -332,7 +337,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 			  </td>
 			  
               <td data-value="<?php echo filemtime($add_file['path']); ?>">
-			  <?php echo date(TIMEFORMAT_USE, filemtime($add_file['path'])); ?>
+			  <?php echo date(TIMEFORMAT_USE, $add_file['last_modifed']); ?>
 			  </td>
                
               

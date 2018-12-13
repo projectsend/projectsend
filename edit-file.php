@@ -57,6 +57,9 @@ switch($get_prev_id) {
 	case 6:
 	$get_prev_url = BASE_URI.'public-files.php';
 	break;
+	case 7:
+	$get_prev_url = BASE_URI.'manage-files.php';
+	break;
 	default:
 	$get_prev_id = '#';
 }

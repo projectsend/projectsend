@@ -79,49 +79,30 @@ $get_prev_id = isset($_GET['page_id']) ? $_GET['page_id'] : '';
 
 
 switch($get_prev_id) {
-
 	case 1:
-
 	$get_prev_url = BASE_URI.'sent.php';
-
 	break;
-
 	case 2:
-
 	$get_prev_url = BASE_URI.'inbox.php';
-
 	break;
-
 	case 3:
-
 	$get_prev_url = BASE_URI.'outbox.php';
-
 	break;
-
 	case 4:
-
-	$get_prev_url = BASE_URI.'requested_file.php';
-
+	$get_prev_url = BASE_URI.'draft.php';
 	break;
-
 	case 5:
-
 	$get_prev_url = BASE_URI.'expired.php';
-
 	break;
-
 	case 6:
-
-	$get_prev_url = BASE_URI.'expired.php';
-
+	$get_prev_url = BASE_URI.'public-files.php';
 	break;
-
+	case 7:
+	$get_prev_url = BASE_URI.'manage-files.php';
+	break;
 	default:
-
 	$get_prev_id = '#';
-
 }
-
 //var_dump($get_prev_url);
 
 

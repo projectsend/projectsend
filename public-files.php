@@ -713,7 +713,7 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                                         if($current_level != '0' && $curr_usr_nm == $row[uploader])  {
                                     ?>
                   <td>
-                        <a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=1" class="btn-sm">
+                        <a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=6" class="btn-sm">
 <?php
 ?>
                         <?php _e(html_output($row['uploader']),'cftp_admin'); ?>

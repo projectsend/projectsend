@@ -826,7 +826,7 @@ include('header.php');
 											}
 										}
 									?>
-                  <td><a href="edit-file.php?file_id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm">
+                  <td><a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=7" class="btn btn-primary btn-sm">
                     <?php _e('Edit','cftp_admin'); ?>
                     </a></td>
                 </tr>

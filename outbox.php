@@ -456,8 +456,6 @@ include('header.php');
 
 				$sql_file->setFetchMode(PDO::FETCH_ASSOC);
 
-				print_r($sql_file->fetchAll());
-
 				while( $data_file = $sql_file->fetch() ) {
 
 					$all_files[$data_file['id']] = $data_file['filename'];

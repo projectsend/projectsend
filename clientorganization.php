@@ -303,9 +303,9 @@ include('header.php');
                     ?>
                     <tr>
                         <td>
-                            <?php if ($row["id"] != '1') { ?>
+                            
                                 <input type="checkbox" name="groups[]" value="<?php echo $row["id"]; ?>" />
-                            <?php } ?>
+                         
                         </td>
                         <td> <a href="organization-edit-client.php?id=<?php echo $row["id"]; ?>" class=" btn-sm"><?php _e(html_output($row["name"]),'cftp_admin'); ?></a></td>
                         

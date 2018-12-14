@@ -181,16 +181,18 @@ include('header.php');
     
         /** Add the search terms */	
         if ( isset( $_POST['search'] ) && !empty( $_POST['search'] ) ) {
-            $cq .= " WHERE (name LIKE :name OR description LIKE :description)";
+			$term = "%".$_POST['search']."%";
+            $cq .= " WHERE ( name LIKE '$term' OR description LIKE '$term')";
             $next_clause = ' AND';
             $no_results_error = 'search';
-    
+			$next_clause_cc=' AND ';
             $search_terms			= '%'.$_POST['search'].'%';
             $params[':name']		= $search_terms;
             $params[':description']	= $search_terms;
         }
         else {
             $next_clause = ' WHERE';
+			$next_clause_cc=' WHERE ';
         }
         
         /** Add the member */
@@ -198,23 +200,24 @@ include('header.php');
             if ($found_groups != '') {
                 $cq .= $next_clause. " FIND_IN_SET(id, :groups)";
                 $params[':groups']		= $found_groups;
+				$next_clause_cc=' AND ';
             }
             else {
+				$next_clause_cc=' WHERE ';
                 $cq .= $next_clause. " id = NULL";
             }
             $no_results_error = 'is_not_member';
         }
-     $cq .= " WHERE (organization_type='1')";
+		$cq .= $next_clause_cc." (organization_type='1')";
         $cq .= " ORDER BY name ASC";
-        
         $sql = $dbh->prepare( $cq );
-        $sql->execute( $params );
+        $sql->execute();
         $count = $sql->rowCount();
     ?>
     
         <div class="form_actions_left">
             <div class="form_actions_limit_results">
-                <form action="groups-user.php<?php if(isset($member_exists)) { ?>?member=<?php echo html_output($member); } ?>" name="groups_search" method="post" class="form-inline">
+                <form action="userorganization.php<?php if(isset($member_exists)) { ?>?member=<?php echo html_output($member); } ?>" name="groups_search" method="post" class="form-inline">
                     <div class="form-group group_float">
                         <input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box form-control" />
                     </div>
@@ -223,7 +226,7 @@ include('header.php');
             </div>
         </div>
     
-        <form action="groups-user.php<?php if(isset($member_exists)) { ?>?member=<?php echo html_output($member); } ?>" name="groups_list" method="post" class="form-inline">
+        <form action="userorganization.php<?php if(isset($member_exists)) { ?>?member=<?php echo html_output($member); } ?>" name="groups_list" method="post" class="form-inline">
             <div class="form_actions_right">
                 <div class="form_actions">
                     <div class="form_actions_submit">
@@ -295,9 +298,7 @@ include('header.php');
                     ?>
                     <tr>
                         <td>
-                            <?php if ($row["id"] != '1') { ?>
                                 <input type="checkbox" name="groups[]" value="<?php echo $row["id"]; ?>" />
-                            <?php } ?>
                         </td>
                         <td> <a href="organization-edit-user.php?id=<?php echo $row["id"]; ?>" class=" btn-sm"><?php _e(html_output($row["name"]),'cftp_admin'); ?></a></td>
                         

@@ -1637,7 +1637,7 @@ $message = '
 
               <div class="after_form_buttons">
 
-              <!--<a class="btn btn-default btn-wide" href="<?php echo $get_prev_url; ?>" >Back</a>-->
+              <a class="btn btn-default btn-wide" href="<?php echo isset($get_prev_url)?$get_prev_url:''; ?>" >Back</a>
 
                 <button type="submit" name="submit" class="btn btn-wide btn-primary">
 

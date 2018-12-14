@@ -1381,9 +1381,9 @@ $message = '
 
 								{
 
-									
+								      $number_downloads = 0;	
 
-									if(DOWNLOAD_MAX_TRIES>0)
+								/*	if(DOWNLOAD_MAX_TRIES>0)
 
 									{
 
@@ -1398,7 +1398,7 @@ $message = '
 										$number_downloads = '';
 
 									}
-
+                                                                */
 									
 
 								}

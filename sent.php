@@ -663,7 +663,7 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                                     ?>
                   <td>
                   <label class="cc-chk-container">
-                      <input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" />
+                      <input type="checkbox" name="files[]" value="<?php echo $row['file_id']; ?>" />
                       <span class="checkmark"></span>
                   </label>
                   </td>

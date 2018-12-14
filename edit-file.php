@@ -699,8 +699,8 @@ $message = '
 								}
 								else 
 								{
-									
-									if(DOWNLOAD_MAX_TRIES>0)
+									$number_downloads = 0;
+								/*	if(DOWNLOAD_MAX_TRIES>0)
 									{
 										$number_downloads = DOWNLOAD_MAX_TRIES;
 									}
@@ -708,7 +708,7 @@ $message = '
 									{
 										$number_downloads = '';
 									}
-									
+								*/	
 								}
 								?>
 							

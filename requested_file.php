@@ -170,7 +170,7 @@ $actual_link = SITE_URI.'requested_file.php';
 						<?php
 						/** Debug query */
 
-						$q_sent_file = "SELECT * FROM tbl_drop_off_request WHERE from_id = ".$loggedin_id;
+						$q_sent_file = "SELECT * FROM tbl_drop_off_request WHERE from_id = ".$loggedin_id." Order by requested_time DESC";
 
 						$sql_files = $dbh->prepare($q_sent_file);
 						$sql_files->execute();

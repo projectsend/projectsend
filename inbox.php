@@ -794,9 +794,19 @@ include('header.php');
 										if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
 									?>
                   <td>
+				  <?php 
+				  if($edit_access) {
+					  $disabled = '';
+					  $disabled_cc='';
+					}
+				   else {
+					   $disabled='disabled';
+					   $disabled_cc = 'disabled_cc';
+				   }
+				  ?>
                   <label class="cc-chk-container">
-                      <input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" />
-                      <span class="checkmark"></span>
+                      <input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" <?php echo isset($disabled)?$disabled:''; ?> />
+                      <span class="checkmark <?php echo isset($disabled_cc)?$disabled_cc:''; ?>"></span>
                   </label>
                   </td>
                   <?php
@@ -1070,6 +1080,7 @@ $(".refreshcls").on("click", function (e) {
 
 
 <style type="text/css">
+.disabled_cc {background-color: #e7e5e5!important;cursor: default;}
 /*-------------------- Responsive table by B) -----------------------*/
 @media only screen and (max-width: 1200px) {
     #content {

@@ -155,7 +155,8 @@ include('header.php');
 	}
 	
 	/** Get all the existing categories */
-	$get_categories = get_categories();
+	$params['search']= isset($_POST['search'])?$_POST['search']:'';
+	$get_categories = get_categories($params);
 	$categories	= $get_categories['categories'];
 	$arranged	= $get_categories['arranged'];
 
@@ -254,7 +255,7 @@ include('header.php');
 			<div class="form_actions_limit_results">
 				<form action="categories.php" name="cat_search" method="post" class="form-inline">
 					<div class="form-group group_float">
-						<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($search_terms)) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box form-control" />
+						<input type="text" name="search" id="search" value="<?php echo isset($_POST['search'])?$_POST['search']:''; ?>" class="txtfield form_actions_search_box form-control" />
 					</div>
 					<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default"><?php _e('Search','cftp_admin'); ?></button>
 				</form>

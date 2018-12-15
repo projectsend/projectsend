@@ -813,8 +813,8 @@ if($data['g_name']) {echo $data['g_name']."<br>";}
                                         }
                                         else {
                                             if ($current_level != '0') {
-                                                if ( isset( $downloads_information[$row["file_id"]] ) ) {
-                                                    $download_info  = $downloads_information[$row["file_id"]];
+                                                if ( isset( $downloads_information[$row["id"]] ) ) {
+                                                    $download_info  = $downloads_information[$row["id"]];
                                                     $btn_class      = ( $download_info['total'] > 0 ) ? 'downloaders btn-primary' : 'btn-default disabled';
                                                     $total_count    = $download_info['total'];
                                                 }
@@ -823,7 +823,7 @@ if($data['g_name']) {echo $data['g_name']."<br>";}
                                                     $total_count    = 0;
                                                 }
                                     ?>
-                  <td><a href="<?php echo BASE_URI; ?>download-information.php?id=<?php echo $row['file_id']; ?>" class="<?php echo $btn_class; ?> btn btn-sm" rel="<?php echo $row["file_id"]; ?>" title="<?php echo html_output($row['filename']); ?>"> <?php echo $total_count; ?>
+                  <td><a href="<?php echo BASE_URI; ?>download-information.php?id=<?php echo $row['id']; ?>" class="<?php echo $btn_class; ?> btn btn-sm" rel="<?php echo $row["id"]; ?>" title="<?php echo html_output($row['filename']); ?>"> <?php echo $total_count; ?>
                     <?php _e('downloads','cftp_admin'); ?>
  <?php// var_dump($total_count); exit;?> 
                     </a></td>

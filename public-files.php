@@ -493,7 +493,12 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
               <thead>
                 <tr>
                   
-                  <th class="td_checkbox" data-sort-ignore="true">Action
+                  <th class="td_checkbox" data-sort-ignore="true"> 
+                  <label class="cc-chk-container">
+                      <input type="checkbox" name="select_all" id="select_all" value="0" />
+                      <span class="checkmark"></span>
+                  </label>
+
                   </th>
                   
                   <th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('Date','cftp_admin'); ?></th>

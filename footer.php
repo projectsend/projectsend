@@ -25,9 +25,14 @@
 			var status = $(this).prop("checked");
 			/** Uncheck all first in case you used pagination */
 			$(this).closest('table').find('tr td input[type=checkbox]').prop("checked",false);
-			$(this).closest('table').find('tr:visible td input[type=checkbox]').prop("checked",status);
-			//$("tr td input[type=checkbox]").prop("checked",false);
-			//$("tr:visible td input[type=checkbox]").prop("checked",status);
+			
+			//$(this).closest('table').find("tr:visible td input[type=checkbox]").prop("checked",status);
+			$(this).closest('table').find('tr:visible td input[type="checkbox"]').each(function () {
+			   if(!$(this).attr('disabled')) {
+				   $(this).prop("checked",status);
+			   }
+			});
+			
 		});
 		$('.btn_generate_password').click(function(e)
 			{

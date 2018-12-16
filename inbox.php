@@ -431,8 +431,6 @@ include('header.php');
 			if ($current_level == '7' || $current_level == '8' || $current_level == '0' || $current_level == '9') {
 				$conditions[] = "tbl_files_relations.client_id =" . CURRENT_USER_ID;
 				$conditions[] = "tbl_files.future_send_date< DATE('".$today."')";
-				$no_results_error = 'account_level';
-	
 				$params[':uploader'] = $global_user;
 			}
 			
@@ -445,25 +443,40 @@ include('header.php');
 				$statement->bindParam(':cat_id', $this_category['id'], PDO::PARAM_INT);
 				$statement->execute();
 				$statement->setFetchMode(PDO::FETCH_ASSOC);
-				while ( $file_data = $statement->fetch() ) {
-					$files_id_by_cat[] = $file_data['file_id'];
-				}
-				$files_id_by_cat = implode(',',$files_id_by_cat);
-	
-				/** Overwrite the parameter set previously */
-				$conditions[] = "FIND_IN_SET(id, :files)";
-				$params[':files'] = $files_id_by_cat;
+				$file_data = $statement->fetchAll();
 				
-				$no_results_error = 'category';
+				if(!empty($file_data)) {
+					foreach ( $file_data as $data) {
+						$files_id_by_cat[] = $data['file_id'];
+					}
+					
+					$files_id_by_cat = implode(',',$files_id_by_cat);
+					/** Overwrite the parameter set previously */
+					$conditions[] = "FIND_IN_SET(tbl_files.id, '".$files_id_by_cat."')";
+					$params[':files'] = $files_id_by_cat;
+				}
+				else {
+					$conditions[] = "FIND_IN_SET(tbl_files.id, 'not found')";
+					$no_results_error = 'category';
+				}
+				
 			}
 	
 			/**
 			 * Build the final query
 			 */
-			if ( !empty( $conditions ) ) {
-				foreach ( $conditions as $index => $condition ) {
-					$fq .= ( $index == 0 ) ? ' WHERE ' : ' AND ';
-					$fq .= $condition;
+			if ( !empty( $conditions ) ) { 
+				foreach ( $conditions as $index => $condition ) { 
+					
+					//$fq .= if($index == 0) ? ' WHERE ' : ' AND ';
+					if($index == 0) {
+						$var_1 = 'WHERE';
+					}
+					else {
+						$var_1 = 'AND';
+					}
+					$fq .= ' '.$var_1.' '.$condition;
+					
 				}
 			}
 	

@@ -819,13 +819,13 @@ include('header.php');
 
 				$no_results_error = 'account_level';
 
-	
+				$conditions[] = "DATE(tbl_files.future_send_date) > DATE(NOW())";
 
 				$params[':uploader'] = $global_user;
 
 			}
 
-			$conditions[] = "DATE(future_send_date) > DATE(NOW())";
+			
 
 			/**
 
@@ -836,32 +836,31 @@ include('header.php');
 			if ( isset( $results_type ) && $results_type == 'category' ) {
 
 				$files_id_by_cat = array();
-
+				
 				$statement = $dbh->prepare("SELECT file_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE cat_id = :cat_id");
 
 				$statement->bindParam(':cat_id', $this_category['id'], PDO::PARAM_INT);
 				
-				$statement->bindParam(':use_name',CURRENT_USER_USERNAME);
-
 				$statement->execute();
-
+				
 				$statement->setFetchMode(PDO::FETCH_ASSOC);
 
-				while ( $file_data = $statement->fetch() ) {
-
-					$files_id_by_cat[] = $file_data['file_id'];
-
+				$file_data = $statement->fetchAll();
+				
+				if(!empty($file_data)) {
+					foreach ( $file_data as $data) {
+						$files_id_by_cat[] = $data['file_id'];
+					}
+					
+					$files_id_by_cat = implode(',',$files_id_by_cat);
+					
+					$conditions[] = "FIND_IN_SET(tbl_files.id, :files)";
+					$params[':files'] = $files_id_by_cat;
 				}
-
-				$files_id_by_cat = implode(',',$files_id_by_cat);
-
-	
-
-				/** Overwrite the parameter set previously */
-
-				$conditions[] = "FIND_IN_SET(id, :files)";
-
-				$params[':files'] = $files_id_by_cat;
+				else {
+					$conditions[] = "FIND_IN_SET(tbl_files.id, 'not found')";
+					$no_results_error = 'category';
+				}
 
 				
 
@@ -881,16 +880,17 @@ include('header.php');
 
 				foreach ( $conditions as $index => $condition ) {
 
-					$fq .= ( $index == 0 ) ? ' WHERE ' : ' AND ';
-
-					$fq .= $condition;
+					if($index == 0) {
+						$var_1 = 'WHERE';
+					}
+					else {
+						$var_1 = 'AND';
+					}
+					$fq .= ' '.$var_1.' '.$condition;
 
 				}
 
 			}
-
-	
-
 			/** Debug query */
 
 	

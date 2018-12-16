@@ -313,10 +313,6 @@ include('header.php');
 				$term = "%".$_GET['search']."%";
 				$conditions[] = "(filename LIKE '$term' OR description LIKE '$term')";
                 $no_results_error = 'search';
-    
-                $search_terms           = '%'.$_GET['search'].'%';
-                $params[':name']        = $search_terms;
-                $params[':description'] = $search_terms;
             }
     
             /**
@@ -329,9 +325,7 @@ include('header.php');
 				$conditions[] = "tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations)";
 				$conditions[] = "tbl_files.future_send_date <='".$current_date."'";
 				$conditions[] = "tbl_files.public_allow=1";
-                $no_results_error = 'account_level';
-    
-                $params[':uploader'] = $global_user;
+
             }
             
             /**
@@ -343,14 +337,22 @@ include('header.php');
                 $statement->bindParam(':cat_id', $this_category['id'], PDO::PARAM_INT);
                 $statement->execute();
                 $statement->setFetchMode(PDO::FETCH_ASSOC);
-                while ( $file_data = $statement->fetch() ) {
-                    $files_id_by_cat[] = $file_data['file_id'];
-                }
-                $files_id_by_cat = implode(',',$files_id_by_cat);
-    
-                /** Overwrite the parameter set previously */
-                $conditions[] = "FIND_IN_SET(id, :files)";
-                $params[':files'] = $files_id_by_cat;
+                $file_data = $statement->fetchAll();
+				
+				if(!empty($file_data)) {
+					foreach ( $file_data as $data) {
+						$files_id_by_cat[] = $data['file_id'];
+					}
+					
+					$files_id_by_cat = implode(',',$files_id_by_cat);
+					
+					$conditions[] = "FIND_IN_SET(tbl_files.id, :files)";
+					$params[':files'] = $files_id_by_cat;
+				}
+				else {
+					$conditions[] = "FIND_IN_SET(tbl_files.id, 'not found')";
+					$no_results_error = 'category';
+				}
                 
                 $no_results_error = 'category';
             }
@@ -360,13 +362,18 @@ include('header.php');
              */
             if ( !empty( $conditions ) ) {
                 foreach ( $conditions as $index => $condition ) {
-                    $fq .= ( $index == 0 ) ? ' WHERE ' : ' AND ';
-                    $fq .= $condition;
+                    if($index == 0) {
+						$var_1 = 'WHERE';
+					}
+					else {
+						$var_1 = 'AND';
+					}
+					$fq .= ' '.$var_1.' '.$condition;
                 }
             }
             /** Debug query */
             $sql_files = $dbh->prepare($fq);
-            $sql_files->execute();
+            $sql_files->execute($params);
             $count = $sql_files->rowCount();
         }
     ?>
@@ -374,7 +381,7 @@ include('header.php');
             <div class="form_actions_limit_results">
               <form action="<?php echo html_output($form_action_url); ?>" name="files_search" method="GET" class="form-inline">
                 <div class="form-group group_float">
-                  <input type="text" name="search" id="search" value="<?php if(isset($_GET['search']) && !empty($search_terms)) { echo html_output($_GET['search']); } ?>" class="txtfield form_actions_search_box form-control" />
+                  <input type="text" name="search" id="search" value="<?php echo isset($_GET['search'])?$_GET['search']:''; ?>" class="txtfield form_actions_search_box form-control" />
                 </div>
                 
                 <div class="form-group group_float">

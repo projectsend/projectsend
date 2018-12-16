@@ -316,26 +316,26 @@ include('header.php');
              */
 			$current_date = date("Y-m-d");
             $params = array();
-            $fq = "SELECT * FROM tbl_files AS tf LEFT JOIN ".TABLE_FILES_RELATIONS." AS tfr ON tf.id = tfr.file_id where tfr.from_id = '". CURRENT_USER_ID ."' AND tf.future_send_date <='".$current_date."'";
+            $fq = "SELECT * FROM tbl_files AS tf LEFT JOIN ".TABLE_FILES_RELATIONS." AS tfr ON tf.id = tfr.file_id"; 
             if ( isset($search_on) || !empty($gotten_files) ) {
                 $conditions[] = "FIND_IN_SET(id, :files)";
                 $params[':files'] = $gotten_files;
             }
             /** Add the search terms */ 
             if(isset($_GET['search']) && !empty($_GET['search'])) {
-                $conditions[] = "(filename LIKE :name OR description LIKE :description)";
+				$term = "%".$_GET['search']."%";
+				$conditions[] = "(filename LIKE '$term' OR description LIKE '$term')";
                 $no_results_error = 'search';
-                $search_terms           = '%'.$_GET['search'].'%';
-                $params[':name']        = $search_terms;
-                $params[':description'] = $search_terms;
+             
             }
             /**
              * If the user is an uploader, or a client is editing his files
              * only show files uploaded by that account.
             */
             $current_level = get_current_user_level();
-            if ($current_level == '7' && $current_level == '0') {
-                $conditions[] = "uploader = :uploader";
+            if ($current_level == '7' || $current_level == '8' || $current_level == '0' || $current_level == '9') {
+                $conditions[] = "tfr.from_id =" . CURRENT_USER_ID;
+				$conditions[] = "tf.future_send_date<='".$current_date."'";
                 $no_results_error = 'account_level';
                 $params[':uploader'] = $global_user;
             }
@@ -348,28 +348,42 @@ include('header.php');
                 $statement->bindParam(':cat_id', $this_category['id'], PDO::PARAM_INT);
                 $statement->execute();
                 $statement->setFetchMode(PDO::FETCH_ASSOC);
-                while ( $file_data = $statement->fetch() ) {
-                    $files_id_by_cat[] = $file_data['file_id'];
-                }
-                $files_id_by_cat = implode(',',$files_id_by_cat);
-                /** Overwrite the parameter set previously */
-                $conditions[] = "FIND_IN_SET(id, :files)";
-                $params[':files'] = $files_id_by_cat;
-                $no_results_error = 'category';
+				$file_data = $statement->fetchAll();
+				
+				if(!empty($file_data)) {
+					foreach ( $file_data as $data) {
+						$files_id_by_cat[] = $data['file_id'];
+					}
+					
+					$files_id_by_cat = implode(',',$files_id_by_cat);
+					/** Overwrite the parameter set previously */
+					$conditions[] = "FIND_IN_SET(tf.id, '".$files_id_by_cat."')";
+					$params[':files'] = $files_id_by_cat;
+				}
+				else {
+					$conditions[] = "FIND_IN_SET(tfr.id, 'not found')";
+					$no_results_error = 'category';
+				}
             }
             /**
              * Build the final query
              */
             if ( !empty( $conditions ) ) {
-                foreach ( $conditions as $index => $condition ) {
-                    $fq .= ( $index == 0 ) ? ' AND ' : ' WHERE ';
-                    $fq .= $condition;
-                }
+                foreach ( $conditions as $index => $condition ) { 
+					
+					if($index == 0) {
+						$var_1 = 'WHERE';
+					}
+					else {
+						$var_1 = 'AND';
+					}
+					$fq .= ' '.$var_1.' '.$condition;
+					
+				}
             }
             /** Debug query */
-            //echo $fq;
             $sql_files = $dbh->prepare($fq);  
-            $sql_files->execute( $params );  
+            $sql_files->execute();  
 			$count = $sql_files->rowCount();
         }
     ?>
@@ -377,7 +391,7 @@ include('header.php');
             <div class="form_actions_limit_results">
               <form action="<?php echo html_output($form_action_url); ?>" name="files_search" method="GET" class="form-inline">
                 <div class="form-group group_float">
-                  <input type="text" name="search" id="search" value="<?php if(isset($_GET['search']) && !empty($search_terms)) { echo html_output($_GET['search']); } ?>" class="txtfield form_actions_search_box form-control" />
+                  <input type="text" name="search" id="search" value="<?php echo isset($_GET['search'])?$_GET['search']:'';?>" class="txtfield form_actions_search_box form-control" />
                 </div>
                 <?php /*?><div class="form-group group_float">
                         <select name="status" id="status" class="txtfield form-control">

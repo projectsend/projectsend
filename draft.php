@@ -631,27 +631,37 @@ include('header.php');
 						if (checks.length == 0) { 
 							alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
 							return false; 
-						}else{
-					/* move checked file names to an array */
-							var values = new Array();
-							$.each($("input[name='add[]']:checked"), function() {
-								values.push($(this).val());
-							});
-							var jsonStringValues = JSON.stringify(values);
-							var postData = {  "values": jsonStringValues };
-					/*Call ajax to delete orphan files */
-							$.ajax({
-						      type: "POST",
-						      url: "delete-import-orphans.php",
-						      data: postData,
-						      traditional: true,
-						      success: function (data) {
-											if(data='done'){
-												alert('File has been removed successfully!!')
-												location.reload(); 
-											}
-						      }
-						  });
+						}else
+						{
+							var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
+							var msg_2 = '<?php _e("Orphan File. Are you sure you want to continue?",'cftp_admin'); ?>';
+							if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
+								var $reutrn_var =  true;
+							} else {
+								var $reutrn_var =  false;
+							}
+							if($reutrn_var) {
+								/* move checked file names to an array */
+								var values = new Array();
+								$.each($("input[name='add[]']:checked"), function() {
+									values.push($(this).val());
+								});
+								var jsonStringValues = JSON.stringify(values);
+								var postData = {  "values": jsonStringValues };
+								/*Call ajax to delete orphan files */
+								$.ajax({
+								  type: "POST",
+								  url: "delete-import-orphans.php",
+								  data: postData,
+								  traditional: true,
+								  success: function (data) {
+												if(data='done'){
+													alert('File has been removed successfully!!')
+													location.reload(); 
+												}
+								  }
+								});
+							}
 						}  
 					});
 					/**

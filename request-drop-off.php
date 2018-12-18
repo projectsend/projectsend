@@ -235,13 +235,17 @@ if ($_POST) {
 						<tr>
 						  <td style='font-family:sans-serif;font-size:14px;vertical-align:top;'>
 							<p style='font-family:sans-serif;font-size:14px;font-weight:normal;margin:0;Margin-bottom:15px;'>Hi $to_name_request</p>
-	  <p style='font-family:sans-serif;font-size:14px;font-weight:normal;margin:0;Margin-bottom:15px;'>You have asked us to send you this message so that you can drop-off some files for someone</p>
-	
-	  <p>
-	Details:<br>
-	Name : $to_name_request <br>
-	Organization : $from_organization <br>
-	Email : $to_email_request <br></p>
+    <p style='font-family:sans-serif;font-size:14px;font-weight:normal;margin:0;Margin-bottom:15px;'>This message was sent to request that you drop-off some files to MicroHealth Send.</p>
+    
+      <p>
+    Your Details:<br>
+    Name : $to_name_request <br>
+    Organization : $from_organization <br>
+    Email : $to_email_request <br></p>
+      <p>
+    Requester Details:<br>
+    Name : $logged_in_name <br>
+    Email: $from_email <br></p>
 	<p><em>Note: ".$to_note_request."</em></p>
 	  <p>IGNORE THIS MESSAGE IF YOU WERE NOT IMMEDIATELY EXPECTING IT!</p>
 	  <p>Otherwise, continue the process by clicking here!</p>

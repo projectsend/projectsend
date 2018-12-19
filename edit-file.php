@@ -543,7 +543,7 @@ $message = '
 												);
 							$new_record_action = $new_log_action->log_action_save($log_action_args);
 
-							$msg = __('The file has been edited succesfuly.','cftp_admin');
+							$msg = __('The file has been edited successfully.','cftp_admin');
 							echo system_message('ok',$msg);
 							
 							include(ROOT_DIR.'/upload-send-notifications.php');

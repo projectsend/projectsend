@@ -225,7 +225,7 @@ if ($_POST) {
                         <tr>
                           <td style='font-family:sans-serif;font-size:14px;vertical-align:top;'>
                             <p style='font-family:sans-serif;font-size:14px;font-weight:normal;margin:0;Margin-bottom:15px;'>Hi $to_name_request</p>
-      <p style='font-family:sans-serif;font-size:14px;font-weight:normal;margin:0;Margin-bottom:15px;'>You have asked us to send you this message so that you can drop-off some files for someone</p>
+      <p style='font-family:sans-serif;font-size:14px;font-weight:normal;margin:0;Margin-bottom:15px;'>This message was sent so that you can drop-off some files for someone at MicroHealth Send.</p>
     
       <p>
     Details:<br>
@@ -233,8 +233,7 @@ if ($_POST) {
     Organization : $from_organization <br>
     Email : $to_email_request <br></p>
     <p><em>Note: ".$to_note_request."</em></p>
-      <p>IGNORE THIS MESSAGE IF YOU WERE NOT IMMEDIATELY EXPECTING IT!</p>
-      <p>Otherwise, continue the process by clicking here!</p>
+      <p>Continue the uploading process by clicking here!</p>
     
                             <table border='0' cellpadding='0' cellspacing='0' class='btn btn-primary' style='border-collapse:separate;mso-table-lspace:0pt;mso-table-rspace:0pt;box-sizing:border-box;width:100%;'>
                               <tbody>

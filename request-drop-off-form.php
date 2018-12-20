@@ -11,12 +11,12 @@
 
 <form action="<?php echo $form_action; ?>" name="addclient" method="post" class="form-horizontal">
 	<div class="form-group">
-		<div class="col-sm-4"></div><div class="col-sm-8">
+		<div class="col-sm-4"></div>		<div class="col-sm-8" style="padding-bottom: 10px;">
 		This page will allow you to send a request to one or more people requesting that they send (upload) one more files for you.
 		</div>
 		<label for="from_mail_id" class="col-sm-4 control-label"><?php _e('From email','cftp_admin'); ?></label>
-		<div class="col-sm-8">
-			<?php if(!empty($logged_in_email)){echo $logged_in_email;}?>
+		<div class="col-sm-8" style="font-weight:bold">
+			<?php echo isset($logged_in_email)?$logged_in_email:''; ?>
 			
 		</div>
 	</div>
@@ -42,7 +42,7 @@
 		<label for="to_email_request" class="col-sm-4 control-label"><?php _e('E-mail','cftp_admin'); ?></label>
 		<div class="col-sm-8">
 			<input type="text" value="<?php echo $to_email_request; ?>" name="to_email_request" id="to_email_request" class="form-control required"  placeholder="<?php _e("Must be valid and unique",'cftp_admin'); ?>" />
-            <span style="color:#F00"><?php echo $to_emailErr; ?></span>
+            <span style="color:#F00"><?php echo isset($to_emailErr)?$to_emailErr:''; ?></span>
 		</div>	
 	</div>
 

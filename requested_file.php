@@ -168,7 +168,7 @@ $actual_link = SITE_URI.'requested_file.php';
             </div>
           </div>
         </form>
-        <p>After all files have been received for a request, the entry should be deleted to prevent nonrequested uploading.</p>
+        <p>&nbsp<br>After all files have been received for a request, the entry should be deleted to prevent nonrequested uploading.</p>
 						<?php
 						/** Debug query */
 

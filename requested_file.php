@@ -145,7 +145,7 @@ $actual_link = SITE_URI.'requested_file.php';
 
 
 ?>
-          <form action="<?php echo html_output($form_action_url); ?>" name="delete" method="POST" class="form-inline">
+         <form action="<?php echo html_output($form_action_url); ?>" name="delete" method="POST" class="form-inline">
           <div class="form-inline">
             <div class="form_actions_right">
               <div class="form_actions">
@@ -163,10 +163,12 @@ $actual_link = SITE_URI.'requested_file.php';
                   <button type="submit" name="do_action" id="do_action" class="btn btn-sm btn-default">
                   <?php _e('Proceed','cftp_admin'); ?>
                   </button>
-                  </div>
+                </div>
               </div>
             </div>
-						</div>
+          </div>
+        </form>
+        <p>After all files have been received for a request, the entry should be deleted to prevent nonrequested uploading.</p>
 						<?php
 						/** Debug query */
 

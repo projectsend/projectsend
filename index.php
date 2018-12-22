@@ -47,6 +47,7 @@ include('header-unlogged.php');
 		global $dbh;
 		$sysuser_password	= $_POST['login_form_pass'];
 		$selected_form_lang	= $_POST['login_form_lang'];
+		$drop_off_auth      = isset($_POST['drop_off_auth'])?$_POST['drop_off_auth']:'';
 	
 		/** Look up the system users table to see if the entered username exists */
 		$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user= :username OR email= :email");
@@ -119,8 +120,10 @@ include('header-unlogged.php');
 											'affected_account_name' => $global_name
 										);
 					$new_record_action = $new_log_action->log_action_save($log_action_args);
-
-					if ($user_level == '0') {
+					if(!empty($drop_off_auth) && $drop_off_auth!='') {
+						header("location:".BASE_URI."dropoff.php?auth=".$drop_off_auth);
+					}
+					else if ($user_level == '0') {
 						header("location:".BASE_URI."inbox.php");
 					}
 					else {
@@ -214,6 +217,7 @@ catch ( Exception $e ) {
 							});
 						</script>
         <form action="index.php" method="post" name="login_admin" role="form" id="login-form" class="smart-form client-form">
+		<input type="hidden" name="drop_off_auth" value = "<?php echo isset($_GET['auth'])?$_GET['auth']:''; ?>" />
           <header> Sign In </header>
           <?php
 							/**

@@ -539,7 +539,7 @@ while( $row = $statement->fetch() ) {
 
 							$add_arguments['hidden'] = '0';
 
-							$add_arguments['uploader_type'] = 'client';
+							$add_arguments['uploader_type'] = 'user';
 
 							$add_arguments['expires'] = '0';
 

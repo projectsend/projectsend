@@ -106,7 +106,7 @@ if(!empty($_SESSION))
 						<td class='container' style='font-family:sans-serif;font-size:14px;vertical-align:top;display:block;max-width:580px;padding:10px;width:580px;Margin:0 auto !important;'>
 						  <div class='content' style='box-sizing:border-box;display:block;Margin:0 auto;max-width:580px;padding:10px;'>
 							<!-- START CENTERED WHITE CONTAINER -->
-							<span class='preheader' style='color:transparent;display:none;height:0;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;visibility:hidden;width:0;'>This is preheader text. Some clients will show this text as a preview.</span>
+							<span class='preheader' style='color:transparent;display:none;height:0;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;visibility:hidden;width:0;'>$to_subject_request</span>
 							<table class='main' style='border-collapse:separate;mso-table-lspace:0pt;mso-table-rspace:0pt;background:#fff;border-radius:3px;width:100%;'>
 							  <!-- START MAIN CONTENT AREA -->
 							  <tr>
@@ -115,7 +115,7 @@ if(!empty($_SESSION))
 									<tr>
 									  <td style='font-family:sans-serif;font-size:14px;vertical-align:top;'>
 										<p style='font-family:sans-serif;font-size:14px;font-weight:normal;margin:0;Margin-bottom:15px;'>Hi $to_name_request</p>
-				  <p style='font-family:sans-serif;font-size:14px;font-weight:normal;margin:0;Margin-bottom:15px;'>You have asked us to send you this message so that you can drop-off some files for someone</p>
+				  <p style='font-family:sans-serif;font-size:14px;font-weight:normal;margin:0;Margin-bottom:15px;'>This message was sent to remind you to drop-off some files for someone at MicroHealth Send.</p>
 				
 				  <p>
 				Details:<br>
@@ -123,8 +123,7 @@ if(!empty($_SESSION))
 				Organization : $from_organization <br>
 				Email : $to_email_request <br></p>
 				<p><em>Note: ".$to_note_request."</em></p>
-				  <p>IGNORE THIS MESSAGE IF YOU WERE NOT IMMEDIATELY EXPECTING IT!</p>
-				  <p>Otherwise, continue the process by clicking here!</p>
+				  <p>Continue the uploading process by clicking here!</p>
 				
 										<table border='0' cellpadding='0' cellspacing='0' class='btn btn-primary' style='border-collapse:separate;mso-table-lspace:0pt;mso-table-rspace:0pt;box-sizing:border-box;width:100%;'>
 										  <tbody>

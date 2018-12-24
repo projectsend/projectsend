@@ -154,7 +154,7 @@ $target_info = get_client_by_id($target_id);
 						<?php 
 							}
 							else {
-								echo "<h2>";echo "You are already uploaded the file for this request!";	echo "</h2>";
+								echo "<h2>";echo "You have already uploaded the file(s) for this request!";	echo "</h2>";
 							}
 						} 
 						else 

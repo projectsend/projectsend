@@ -163,6 +163,9 @@ $actual_link = SITE_URI.'requested_file.php';
                   <button type="submit" name="do_action" id="do_action" class="btn btn-sm btn-default">
                   <?php _e('Proceed','cftp_admin'); ?>
                   </button>
+				  <!-- Added by rj to view the layout of of requested item listing -->
+				  <a href="<?php echo $grid_layout; ?>" class="cc-grid"><i class="fa fa-th" aria-hidden="true"></i></a> 
+                  <a href="<?php echo $actual_link; ?>" class="cc-grid"><i class="fa fa-bars" aria-hidden="true"></i></a>
                 </div>
               </div>
             </div>
@@ -209,8 +212,10 @@ $actual_link = SITE_URI.'requested_file.php';
 												<p><span class="grid_box_span"><?php _e('Note','cftp_admin'); ?>:</span> <span class="tooltip"> <?php echo $row['to_note_request']; ?> </span></span></p>
 												<p><span class="grid_box_span"><?php _e('email','cftp_admin'); ?>:</span> <?php echo $row['to_email']; ?></p>
 												<?php 
+												$disabled_grid = '';
 												if($row['status']===1)
 												{
+													$disabled_grid="disabled";
 												?>
 													<p><span class="grid_box_span"><?php _e('Status','cftp_admin'); ?>: Uploaded</span></p>
 												<?php 
@@ -221,7 +226,7 @@ $actual_link = SITE_URI.'requested_file.php';
 												<?php 
 												} ?>
 												<p><span class="grid_box_span"><?php _e('Requested Time','cftp_admin'); ?>:</span> <?php echo $row['requested_time']; ?></p>
-												<p><div class="btn btn-primary btn-sm resend_it resend_grid_box"  id="<?php echo $row['id']; ?>" ><?php _e('Resend','cftp_admin'); ?>
+												<p><div class="btn btn-primary btn-sm resend_grid_box <?php echo !empty($disabled_grid)?$disabled_grid:'resend_it'; ?>"  id="<?php echo $row['id']; ?>" ><?php _e('Resend','cftp_admin'); ?>
 												</div></p>
 											</div>
 										</div>
@@ -257,6 +262,10 @@ $actual_link = SITE_URI.'requested_file.php';
 									if ($count > 0) {
 									$sql_files->setFetchMode(PDO::FETCH_ASSOC);
 										while( $row = $sql_files->fetch() ) {
+											$disabled_list='';
+											if($row['status']== 1) {
+												$disabled_list="disabled";
+											}
 										?>
                   <tr>
                     <td><label class="cc-chk-container">
@@ -278,7 +287,7 @@ $actual_link = SITE_URI.'requested_file.php';
 									?>
         <span class="label label-<?php echo $class; ?>"> <?php echo ($hidden == 0) ? $status_hidden : $status_visible; ?> </span></td>
                     <td><?php echo $row['requested_time']; ?></td>
-                    <td><div class="btn btn-primary btn-sm resend_it"  id="<?php echo $row['id']; ?>" >
+                    <td><div class="btn btn-primary btn-sm <?php echo !empty($disabled_list)?$disabled_list:'resend_it'; ?>"  id="<?php echo $row['id']; ?>" >
                         <?php _e('Resend','cftp_admin'); ?>
                       </div></td>
                   </tr>
@@ -310,7 +319,7 @@ $actual_link = SITE_URI.'requested_file.php';
 						      traditional: true,
 						      success: function (data) {
 											if(data='done'){
-												alert('File has been resend successfully!!')
+												alert('Request has been resend successfully!!')
 												location.reload(); 
 											}
 						      }

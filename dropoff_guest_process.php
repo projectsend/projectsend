@@ -287,10 +287,10 @@ if(!empty($auth)){
 	<?php 
 	}
 	else if (!$authorization){
-		echo "<h2 style='text-align: center;'>";echo "You are no authorized to access this page !";	echo "</h2>";
+		echo "<h2 style='text-align: center;'>";echo "You are not authorized to access this page !";	echo "</h2>";
 	}
 	else if(!$duplicate_access) {
-		echo "<h2 style='text-align: center;'>";echo "You are already uploaded the file for this request!";	echo "</h2>";
+		echo "<h2 style='text-align: center;'>";echo "You have already uploaded a file for this request!";	echo "</h2>";
 	}
 	?>
 	</div>

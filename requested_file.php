@@ -53,7 +53,6 @@ $actual_link = SITE_URI.'requested_file.php';
 		 * Apply the corresponding action to the selected files.
 		 */
 		if(isset($_POST['do_action'])) {
-			//echo "<pre>";print_r($_POST);echo "</pre>";exit;
 			/** Continue only if 1 or more files were selected. */
 			if(!empty($_POST['files'])) {
 				$selected_files = array_map('intval',array_unique($_POST['files']));
@@ -145,7 +144,7 @@ $actual_link = SITE_URI.'requested_file.php';
 
 
 ?>
-         <form action="<?php echo html_output($form_action_url); ?>" name="delete" method="POST" class="form-inline">
+         <form action="<?php echo html_output($form_action_url); ?>" name="files_list" method="post" class="form-inline">
           <div class="form-inline">
             <div class="form_actions_right">
               <div class="form_actions">
@@ -170,7 +169,6 @@ $actual_link = SITE_URI.'requested_file.php';
               </div>
             </div>
           </div>
-        </form>
 						<?php
 						/** Debug query */
 
@@ -181,7 +179,6 @@ $actual_link = SITE_URI.'requested_file.php';
 
 						$count = $sql_files->rowCount();
 						?>
-						<form action="<?php echo html_output($form_action_url); ?>" name="files_list" method="post" class="form-inline">
 							<div class="clear"></div>
 							<div class="form_actions_count">
 								<p class="form_count_total">
@@ -312,16 +309,16 @@ $actual_link = SITE_URI.'requested_file.php';
 		var e_id = event.target.id;
 		var postData = {  "e_id": e_id };
 			$.ajax({
-						      type: "POST",
-						      url: "resend_requested_file.php",
-						      data: postData,
-						      traditional: true,
-						      success: function (data) {
-											if(data='done'){
-												alert('Request has been resend successfully!!')
-												location.reload(); 
-											}
-						      }
+				type: "POST",
+				url: "resend_requested_file.php",
+				data: postData,
+				traditional: true,
+				success: function (data) {
+					if(data='done'){
+						alert('Request has been resend successfully!!')
+						location.reload(); 
+					}
+				}
 			});
 		});
 		$("#do_action").click(function() {

@@ -1,0 +1,20 @@
+<footer>
+    <div id="footer">
+        <div class="footer_links">
+            {% if constant('PAGE_POLICY_ENABLE') == 1 %}
+                <ul>
+                    <li>
+                        <a href="/privacy-policy" target="_self">{% trans %}Privacy policy{% endtrans %}</a>
+                    </li>
+                </ul>
+            {% endif %}
+        </div>
+        <div class="clear clearfix"></div>
+
+        {% if constant('FOOTER_CUSTOM_ENABLE') == 1 %}
+            {{ constant('FOOTER_CUSTOM_CONTENT') }}
+        {% else %}
+            {% trans %}Provided by{% endtrans %} <a href="{{ constant('SYSTEM_URI') }}" target="_blank">{{ constant('SYSTEM_NAME') }}</a> {% trans %}Free software{% endtrans %}
+        {% endif %}
+    </div>
+</footer>

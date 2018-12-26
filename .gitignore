@@ -21,8 +21,9 @@ includes/sys.config.php
 css/custom.css
 includes/js/custom.js
 includes/custom.php
-# new possible location
+# new possible locations
 assets/custom
+src/includes/custom.php
 
 # Uploads
 upload/files/*
@@ -37,6 +38,11 @@ upload/thumbnails/*
 !upload/admin/.htaccess
 !upload/branding/.htaccess
 !upload/thumbnails/.htaccess
+
+# Cache and log
+var/*
+!var/cache/.placeholder
+!var/log/.placeholder
 
 # Windows thumbnails
 Thumbs.db

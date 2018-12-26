@@ -27,7 +27,7 @@ $is_template = true;
  */
 $lang = SITE_LANG;
 if(!isset($ld)) { $ld = 'cftp_admin'; }
-ProjectSend\I18n::LoadDomain(ROOT_DIR."/templates/".SELECTED_CLIENTS_TEMPLATE."/lang/{$lang}.mo", $ld);
+ProjectSend\I18n::LoadDomain(TEMPLATES_DIR.DS.SELECTED_CLIENTS_TEMPLATE.DS."lang".DS."{$lang}.mo", $ld);
 
 $this_template = TEMPLATES_URI.'/'.SELECTED_CLIENTS_TEMPLATE.'/';
 

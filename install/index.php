@@ -56,7 +56,7 @@ if ($_POST) {
 /** Define the installation text strings */
 $page_title_install		= __('Install','cftp_admin');
 
-include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
+include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 ?>
 
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
@@ -298,4 +298,4 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 
 
 <?php
-	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';
+	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

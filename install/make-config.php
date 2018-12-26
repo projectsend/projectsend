@@ -21,7 +21,7 @@ if ( file_exists( CONFIG_FILE ) ) {
 }
 
 if ( !empty( $error_msg ) ) {
-	include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
+	include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 ?>
 	<div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 		<div class="white-box">
@@ -35,7 +35,7 @@ if ( !empty( $error_msg ) ) {
 		</div>
 	</div>
 <?php
-	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';
+	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
 	exit;
 }
 
@@ -179,7 +179,7 @@ function pdo_status_label() {
 	}
 }
 
-include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
+include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 ?>
 
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
@@ -441,4 +441,4 @@ include_once ADMIN_TEMPLATES_DIR . DS . 'header-unlogged.php';
 </div>
 
 <?php
-	include_once ADMIN_TEMPLATES_DIR . DS . 'footer.php';
+	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

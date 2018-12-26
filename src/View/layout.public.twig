@@ -1,0 +1,71 @@
+{% set lang = "en" %}
+{% if constant('SITE_LANG') is defined %}
+    {% set lang = (constant('SITE_LANG')|escape) %}
+{% endif %}
+
+<!doctype html>
+<html lang="{{ lang }}">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {% if constant('PRIVACY_NOINDEX_SITE') == 1 %}
+        <meta name="robots" content="noindex">
+    {% endif %}
+
+	<title>{{page_title}} {% if constant('THIS_INSTALL_TITLE') is defined %} | {{constant('THIS_INSTALL_TITLE'|escape)}}{% endif %}</title>
+
+	<link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/img/favicon/favicon.ico') }}" />
+	<link rel="icon" type="image/png" href="{{ asset('favicon/favicon-32.png') }}" sizes="32x32">
+	<link rel="apple-touch-icon" href="{{ asset('favicon/favicon-152.png') }}" sizes="152x152">
+
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('assets/css/dependencies.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/main.min.css') }}">
+    {% endblock %}
+
+    {% block javascript_head %}
+        <script src="{{ asset('assets/lib/jquery.min.js') }}"></script>
+        <script src="{{ asset('assets/lib/jquery-migrate.min.js') }}"></script>
+        <script src="{{ asset('assets/lib/bootstrap.min.js') }}"></script>
+    {% endblock %}
+</head>
+
+<body class="body body_loading {% if body_class is defined %}{{body_class}}{% endif %}" data-page-id="{% if page_id is defined %}{{page_id}}{% endif %}" id="{% if page_id is defined %}{{page_id}}{% endif %}">
+	<div class="container-custom">
+		<header id="header" class="navbar navbar-static-top navbar-fixed-top header_unlogged">
+			<div class="navbar-header text-center">
+				<span class="navbar-brand">
+					{{ header_title }}
+				</span>
+			</div>
+		</header>
+
+		<div class="main_content_unlogged">
+			<div class="container-fluid">
+				<div class="row">
+
+                    {% block body %}{% endblock %}
+
+                </div> <!-- row -->
+            </div> <!-- container-fluid -->
+
+            {% block footer %}
+                {% include 'blocks/footer.twig' %}
+            {% endblock %}
+
+            <?php
+                render_json_variables();
+            ?>
+        </div> <!-- main_content -->
+    </div> <!-- container-custom -->
+
+    {% block javascript_body %}
+        <script src="https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js"></script>
+        <script src="{{ asset('assets/js/dependencies.min.js') }}"></script>
+        <script src="{{ asset('assets/js/projectsend.min.js') }}"></script>
+        <script src="{{ asset('assets/js/ie8compatibility.min.js') }}"></script>
+    {% endblock %}
+</body>
+</html>

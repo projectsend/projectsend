@@ -15,48 +15,30 @@
 	"prefer-stable": true,
 	"autoload": {
 		"psr-4": {
-			"ProjectSend\\": "app/classes/"
+			"ProjectSend\\": "src"
 		},
 		"files": [
-            "app/autoload/database.php",
-            "app/autoload/options.php",
-            "app/autoload/constants.php",
-			"app/autoload/updates.functions.php",
-            "app/autoload/core.update.silent.php",
-			"app/autoload/language.functions.php",
-			"app/autoload/language.locales.names.php",
-            "app/autoload/language.load.php",
-            "app/autoload/functions.system.php",
-            "app/autoload/functions.php",
-            "app/autoload/functions.accounts.php",
-            "app/autoload/functions.clients.php",
-            "app/autoload/functions.files.php",
-            "app/autoload/functions.groups.php",
-            "app/autoload/functions.users.php",
-            "app/autoload/functions.options.php",
-			"app/autoload/assets.functions.php",
-			"app/autoload/actions.log.functions.php",
-			"app/autoload/actions.log.references.php",
-			"app/autoload/session.information.php",
-			"app/autoload/functions.categories.php",
-			"app/autoload/functions.forms.php",
-			"app/autoload/templates.functions.php",
-			"app/autoload/session.check.php",
-			"app/autoload/text.strings.php",
-			"app/autoload/security/xsrf.php"
 		]
 	},
 	"require": {
      	"php": ">=5.6",
-		"phpmailer/phpmailer": "~5.2",
-		"symfony/polyfill-mbstring": "^1.8",
-		"moxiecode/plupload": "3.1.*",
-		"bainternet/php-hooks": "^1.0",
-		"claviska/simpleimage": "^3.3",
-		"paragonie/random_compat": "^2.0",
-		"hybridauth/hybridauth": "^2.11",
-		"slim/slim": "^3.10",
-		"enshrined/svg-sanitize": "^0.8.2",
-		"league/oauth2-google": "^2.2"
+        "awurth/slim-helpers": "^1.0",
+        "bainternet/php-hooks": "^1.0",
+        "claviska/simpleimage": "^3.3",
+        "ckeditor/ckeditor": "dev-basic/4.9.x",
+        "enshrined/svg-sanitize": "^0.8.2",
+        "hybridauth/hybridauth": "^2.11",
+        "league/oauth2-google": "^2.2",
+        "monolog/monolog": "^1.23",
+        "moxiecode/plupload": "3.1.*",
+        "paragonie/random_compat": "^2.0",
+        "phpmailer/phpmailer": "~5.2",
+        "rakit/validation": "^0.17.1",
+        "slim/csrf": "^0.8.0",
+        "slim/flash": "^0.2.0",
+        "slim/slim": "^3.10",
+        "slim/twig-view": "^2.4",
+        "symfony/polyfill-mbstring": "^1.8",
+		"twig/extensions": "^1.5"
 	}
 }

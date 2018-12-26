@@ -22,7 +22,28 @@ Feel free to participate!
 It is recommended that you download an official release (either from the releases tab here or from the official website).
 Downloading a development version directly from the repository might give you unexpected results, such as visible errors, functions that are still not finished, etc.
 
-## How to install on your server:
+## Server requirements
+
+Your server needs to be configured with at least:
+
+* php 5.6 or newer
+* MySQL 5.0 or newer
+* apache 2.2
+* The following php extensions enabled on php.ini
+  * php_pdo.dll
+  * php_pdo_mysql.dll
+  * php_xmlrpc.dll
+
+If possible, make sure to have php configured with:
+
+* memory_limit set to 128M or more
+* The following php extensions enabled:
+  * php_gd2.dll
+  * php_gettext.dll
+  * php_mbstring.dll
+  * php_fileinfo.dll
+
+## How to install on your server
 
 Preparations:
 
@@ -39,16 +60,7 @@ When those are steps are completed, follow this instructions:
 Congratulations! ProjectSend is now installed and ready for action!
 You may login with your new username and password.
 
-**Important Note:** for version r608 and later you will need to enable PDO extension from php.ini
-
-```ini
-extension=php_pdo.dll
-extension=php_pdo_mysql.dll
-```
-
-and restart the service if your are local.
-
-## How to upgrade to a newer version:
+## How to upgrade to a newer version
 
 1. Download your version of choice from the official project page.
 1. Upload the files via FTP to your server and replace the ones of the older version.
@@ -60,16 +72,17 @@ Whenever a new version is available, you will be notified in the admin panel via
 
 ## Developing
 
-####Notice: ProjectSend is currently under refactoring
+### Notice: ProjectSend is currently under refactoring
 
 If you want to help with development, you will need to do a few things via Grunt:
 
 1. Download the composer, bower and npm dependencies. You can use the ````Grunt dependencies_update```` command which should take care of that.
 1. Run the default grunt task simply with ````Grunt```` to compile the main CSS and JS assets files.
 
-## Questions, ideas? Want to join the project?
+## How to join the project
 
-Send your message to contact@projectsend.org or join us on Facebook, on https://www.facebook.com/projectsend/
+Questions, ideas?
+Send your message to contact@projectsend.org or join us on [Facebook](https://www.facebook.com/projectsend/)
 
 ## Translations
 
@@ -85,24 +98,25 @@ ProjectSend is licensed under [GNU GPL v3](https://www.gnu.org/licenses/gpl.html
 
 [Available at the official site](https://www.projectsend.org/change-log/)
 
-## Special thanks!
+## Special thanks
 
 Also, thank you to the following people/communities that helped during development, either by giving support, sending code, translations, etc.
 
-- lenamtl
-- Alejandro D'Ambrosio
-- k.flipflip
-- Diego Carreira Vidal
-- Scott Wright
-- Everyone that commented and gave suggestions on the issues and Facebook pages!
-- stackoverflow.com
-- iconfinder.com
+* lenamtl
+* lenamtl
+* Alejandro D'Ambrosio
+* k.flipflip
+* Diego Carreira Vidal
+* Scott Wright
+* Everyone that commented and gave suggestions on the issues and Facebook pages!
+* stackoverflow.com
+* iconfinder.com
 
 ProjectSend original translators:
 
-- Raúl Elenes (Spanish)
-- Vašík Greif (Czech)
-- Mathieu Noe (French)
-- Levin Germann (German)
+* Vašík Greif (Czech)
+* Raúl Elenes (Spanish)
+* Mathieu Noe (French)
+* Levin Germann (German)
 
 I know that there are more people that deserve to be on this list. I will keep adding them as I find their names/websites.

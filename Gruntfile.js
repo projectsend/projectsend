@@ -2,17 +2,56 @@ module.exports = function(grunt) {
 
 	grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        assets_dir: 'assets/',
-        src_dir: '<%= assets_dir %>src/',
-        dest_dir: '<%= assets_dir %>dist/',
-        options_file: './app/includes/options.get.php',
-        config_file: './app/config/config.php',
-        dependencies_bower_dir: 'bower_components/',
-        dependencies_composer_dir: 'vendor/',
-        dependencies_npm_dir: 'node_modules/',
+        src_dir: './assets/',
+        dest_dir: './public/assets/',
+        options_file: './src/includes/options.get.php',
+        config_file: './src/config/config.php',
+        copy: {
+            jquery: {
+                expand: false,
+                src: './node_modules/jquery/dist/jquery.min.js',
+                dest: '<%= dest_dir %>/lib/jquery.min.js'
+            },
+            jquery_migrate: {
+                expand: false,
+                src: './node_modules/jquery-migrate/dist/jquery-migrate.min.js',
+                dest: '<%= dest_dir %>/lib/jquery-migrate.min.js'
+            },
+            bootstrap: {
+                expand: false,
+                src: './node_modules/bootstrap/dist/js/bootstrap.min.js',
+                dest: '<%= dest_dir %>/lib/bootstrap.min.js'
+            },
+        },
 		concat: {
 			options: {
 				separator: '\n\n',
+			},
+			dependencies_js: {
+				src: [
+                    'node_modules/axios/dist/axios.min.js',
+                    'node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+                    'node_modules/bootstrap-toggle/js/bootstrap-toggle.min.js',
+                    'node_modules/chosen-js/chosen.jquery.min.js',
+                    'node_modules/footable/dist/footable.all.min.js',
+                    'node_modules/chart.js/dist/Chart.bundle.min.js',
+                    'node_modules/js-cookie/src/js.cookie.js',
+                    'node_modules/node-jen/jen.js',
+                    'node_modules/@yaireo/tagify/dist/jQuery.tagify.min.js',
+                    'node_modules/sprintf-js/dist/sprintf.min.js'
+				],
+				dest: '<%= dest_dir %>js/dependencies.js',
+			},
+			dependencies_css: {
+				src: [
+                    'node_modules/bootstrap/dist/css/bootstrap.min.css',
+                    'node_modules/bootstrap/dist/css/bootstrap-theme.min.css',
+                    'node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css',
+                    'node_modules/bootstrap-toggle/css/bootstrap-toggle.min.css',
+                    'node_modules/chosen-js/chosen.min.css',
+                    'node_modules/@yaireo/tagify/dist/tagify.css'
+				],
+				dest: '<%= dest_dir %>css/dependencies.css',
 			},
 			projectsend: {
 				src: [
@@ -42,6 +81,12 @@ module.exports = function(grunt) {
 			},
 			compatibility: {
 				files: { '<%= dest_dir %>js/ie8compatibility.min.js' : '<%= dest_dir %>js/ie8compatibility.js' }
+			},
+			dependencies_js: {
+				files: { '<%= dest_dir %>js/dependencies.min.js' : '<%= dest_dir %>js/dependencies.js' }
+			},
+			dependencies_css: {
+				files: { '<%= dest_dir %>css/dependencies.min.css' : '<%= dest_dir %>css/dependencies.css' }
 			}
 		},
 		sass: {
@@ -98,7 +143,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-shell');
 
-    grunt.registerTask('default', ['concat', 'uglify', 'sass']);
+    grunt.registerTask('default', ['copy', 'concat', 'uglify', 'sass']);
 	grunt.registerTask('prepare_dist', ['compress', 'setPHPConstant']);
 	grunt.registerTask('dependencies_update', ['shell']);
 }

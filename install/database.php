@@ -28,7 +28,7 @@ if (defined('TRY_INSTALL')) {
 								  `public_allow` INT(1) NOT NULL default \'0\',
 								  `public_token` varchar(32) NULL,
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
 								',
 					'params' => array(),
 		),
@@ -37,10 +37,10 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> TABLE_OPTIONS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_OPTIONS.'` (
 								  `id` int(10) NOT NULL AUTO_INCREMENT,
-								  `name` varchar(50) COLLATE utf8_general_ci NOT NULL,
-								  `value` text COLLATE utf8_general_ci NOT NULL,
+								  `name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+								  `value` text COLLATE utf8mb4_general_ci NOT NULL,
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
 								',
 					'params' => array(),
 		),
@@ -55,17 +55,17 @@ if (defined('TRY_INSTALL')) {
 								  `email` varchar(60) NOT NULL,
 								  `level` tinyint(1) NOT NULL DEFAULT \'0\',
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-								  `address` text COLLATE utf8_general_ci NULL,
-								  `phone` varchar(32) COLLATE utf8_general_ci NULL,
+								  `address` text COLLATE utf8mb4_general_ci NULL,
+								  `phone` varchar(32) COLLATE utf8mb4_general_ci NULL,
 								  `notify` tinyint(1) NOT NULL DEFAULT \'0\',
-								  `contact` text COLLATE utf8_general_ci NULL,
+								  `contact` text COLLATE utf8mb4_general_ci NULL,
 								  `created_by` varchar('.MAX_USER_CHARS.') NULL,
 								  `active` tinyint(1) NOT NULL DEFAULT \'1\',
 								  `account_requested` tinyint(1) NOT NULL DEFAULT \'0\',
 								  `account_denied` tinyint(1) NOT NULL DEFAULT \'0\',
 								  `max_file_size` int(20)  NOT NULL DEFAULT \'0\',
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
 								',
 					'params' => array(),
 		),
@@ -81,7 +81,7 @@ if (defined('TRY_INSTALL')) {
 								  `public` tinyint(1) NOT NULL DEFAULT \'0\',
 								  `public_token` varchar(32) NULL,
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
 								',
 					'params' => array(),
 		),
@@ -97,7 +97,7 @@ if (defined('TRY_INSTALL')) {
 								  PRIMARY KEY (`id`),
 								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
 								',
 					'params' => array(),
 		),
@@ -114,7 +114,7 @@ if (defined('TRY_INSTALL')) {
 								  PRIMARY KEY (`id`),
 								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
 								',
 					'params' => array(),
 		),
@@ -132,7 +132,7 @@ if (defined('TRY_INSTALL')) {
 								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
 								',
 					'params' => array(),
 		),
@@ -153,7 +153,7 @@ if (defined('TRY_INSTALL')) {
 								  FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`folder_id`) REFERENCES '.TABLE_FOLDERS.'(`id`) ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
 								',
 					'params' => array(),
 		),
@@ -171,7 +171,7 @@ if (defined('TRY_INSTALL')) {
 								  `affected_file_name` text DEFAULT NULL,
 								  `affected_account_name` text DEFAULT NULL,
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
 								',
 					'params' => array(),
 		),
@@ -189,7 +189,7 @@ if (defined('TRY_INSTALL')) {
 								  FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
 								',
 					'params' => array(),
 		),
@@ -204,7 +204,7 @@ if (defined('TRY_INSTALL')) {
 								  `used` int(1) DEFAULT \'0\',
 								  FOREIGN KEY (`user_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
 								',
 					'params' => array(),
 		),
@@ -222,7 +222,7 @@ if (defined('TRY_INSTALL')) {
 								  FOREIGN KEY (`user_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+								) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
 								',
 					'params' => array(),
 		),
@@ -365,7 +365,7 @@ if (defined('TRY_INSTALL')) {
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  FOREIGN KEY (`parent`) REFERENCES '.TABLE_CATEGORIES.'(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
 								',
 					'params' => array(),
 		),
@@ -380,7 +380,7 @@ if (defined('TRY_INSTALL')) {
 								  FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`cat_id`) REFERENCES '.TABLE_CATEGORIES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
 								',
 					'params' => array(),
 		),

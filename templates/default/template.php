@@ -18,7 +18,7 @@ $page_title = __('File downloads','cftp_template');
 
 $body_class = array('template', 'default-template', 'hide_title');
 
-include_once(ADMIN_TEMPLATES_DIR.'/header.php');
+include_once(ADMIN_VIEWS_DIR.'/header.php');
 
 define('TEMPLATE_THUMBNAILS_WIDTH', '50');
 define('TEMPLATE_THUMBNAILS_HEIGHT', '50');

@@ -1,6 +1,14 @@
 # ProjectSend
 
-![ProjectSend presentation screenshots](https://www.projectsend.org/screenshots.png)
+![ProjectSend logo](https://www.projectsend.org/projectsend-logo-new.png)
+
+## ATTENTION
+
+If you want to use ProjectSend, download the latest version from the official site.
+The source code of that version is on the new [Legacy repository](https://github.com/projectsend/projectsend-legacy/).
+
+Currently ProjectSend is under heavy refactoring.
+This repository is EXTREMELY early into the process, so nothing works at the moment. Controllers, models and views need to be created, and every existing function from the autoloaded files and current classes need to be rewritten.
 
 ## About
 
@@ -11,22 +19,16 @@ Uploaded files can be assigned to specific clients or clients groups.
 
 Other features include auto-expiration of upload, notifications, full logging of actions by users and clients, option to allow clients to also upload files, themes, multiple languages...
 
-Main website: [projectsend.org](https://www.projectsend.org)  
-git: [project page](https://github.com/ignacionelson/ProjectSend)  
-~~Old repository (unused): [Google Code](http://code.google.com/p/clients-oriented-ftp)~~
+Main website: [projectsend.org](https://www.projectsend.org)
+git: [project page](https://github.com/projectsend/projectsend)
 
 Feel free to participate!
-
-## IMPORTANT
-
-It is recommended that you download an official release (either from the releases tab here or from the official website).
-Downloading a development version directly from the repository might give you unexpected results, such as visible errors, functions that are still not finished, etc.
 
 ## Server requirements
 
 Your server needs to be configured with at least:
 
-* php 5.6 or newer
+* php 5.6 or newer (7.1 recommended)
 * MySQL 5.0 or newer
 * apache 2.2
 * The following php extensions enabled on php.ini
@@ -45,15 +47,11 @@ If possible, make sure to have php configured with:
 
 ## How to install on your server
 
-Preparations:
-
-1. Download and unzip the lastest version of ProjectSend to a folder of your choice.
-1. Create a new database on your server. Create/assign a user to it.
-
-When those are steps are completed, follow this instructions:
-
-1. Rename config/config.sample.php to config.php and set your database info there.
+1. Download and unzip the latest version of ProjectSend to a folder of your choice.
+1. Create a new database on your server. Create and assign a user to it.
+1. Rename config/config.sample.php to config.php and set your database information and desired configuration on the available constants.
 1. Upload ProjectSend to your selected destination.
+1. Create a virtual host on Apache and set the DocumentRoot to /path/to/projectsend/public
 1. Open your browser and go to https://your-projectsend-folder/install
 1. Complete the information there and wait for the correct installation message.
 
@@ -103,14 +101,13 @@ ProjectSend is licensed under [GNU GPL v3](https://www.gnu.org/licenses/gpl.html
 Also, thank you to the following people/communities that helped during development, either by giving support, sending code, translations, etc.
 
 * lenamtl
-* lenamtl
 * Alejandro D'Ambrosio
 * k.flipflip
 * Diego Carreira Vidal
 * Scott Wright
+* mschop
 * Everyone that commented and gave suggestions on the issues and Facebook pages!
 * stackoverflow.com
-* iconfinder.com
 
 ProjectSend original translators:
 
@@ -118,5 +115,3 @@ ProjectSend original translators:
 * Raúl Elenes (Spanish)
 * Mathieu Noe (French)
 * Levin Germann (German)
-
-I know that there are more people that deserve to be on this list. I will keep adding them as I find their names/websites.

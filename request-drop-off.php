@@ -136,11 +136,13 @@ if ($_POST) {
 				
 				  <p>
 				Details:<br>
-				Name : $to_name_request <br>
-				Organization : $from_organization <br>
-				Email : $to_email_request <br></p>
-				<p><em>Note: ".$to_note_request."</em></p>
-				  <p>Continue the uploading process by clicking here!</p>
+                From Name: $logged_in_name <br>
+                Email: $logged_in_email <br><br>
+                To Name : $to_name_request <br>
+                Organization : $from_organization <br>
+                Email : $to_email_request <br></p>
+                <p><em>Note: ".$to_note_request."</em></p>
+                  <p>Log in to MicroHealth Send, then continue the uploading process by clicking here!</p>
 				
 										<table border='0' cellpadding='0' cellspacing='0' class='btn btn-primary' style='border-collapse:separate;mso-table-lspace:0pt;mso-table-rspace:0pt;box-sizing:border-box;width:100%;'>
 										  <tbody>

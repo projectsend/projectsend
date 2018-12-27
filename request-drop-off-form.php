@@ -33,7 +33,7 @@
 	<div class="form-group">
 		<label for="from_organization" class="col-sm-4 control-label"><?php _e('Organization','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" value="<?php if(isset($from_organization)) { echo $from_organization; } ?>" name="from_organization" id="from_mail_id" class="form-control required" value="" placeholder="Organization name" />
+			<input type="text" value="<?php if(isset($from_organization)) { echo $from_organization; } ?>" name="from_organization" id="from_organization" class="form-control required" value="" placeholder="Organization name" />
 		</div>
 	</div>
 

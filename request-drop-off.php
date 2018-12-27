@@ -238,10 +238,10 @@ if ($_POST) {
 							 * Finally, send the e-mail.
 							 */
 							if($send_mail->Send()) {
-								$cc_status = "<div class=\"alert alert-success cc-success\"><strong>Success!</strong>Your Request has been submitted successfully.</div>";
+								$cc_status = "<div class=\"alert alert-success cc-success\"><strong>Success! </strong>Your Request has been submitted successfully.</div>";
 							}
 							else {
-								$cc_status = "<div class=\"alert alert-danger cc-failed\"><strong>Oops! </strong>Something went wrong! please try after sometime.</div>";
+								$cc_status = "<div class=\"alert alert-danger cc-failed\"><strong>Oops! </strong>Something went wrong! Please try after sometime.</div>";
 							}
 							echo '<script>$(document).ready(function(){$("#cc-mail-status").modal("toggle");});</script>';
 						}	
@@ -250,7 +250,7 @@ if ($_POST) {
 						$to_emailErr = "The user related with this Email ID is not active.";
 					}
 				}else {
-					$to_emailErr = "This email ID is not registerd with our system";
+					$to_emailErr = "This email ID is not registerd with our system.";
 				}
 			}	/* IF Email Validation close */
         }	/* IF Null check close */

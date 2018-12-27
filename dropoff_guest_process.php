@@ -255,7 +255,7 @@ if(!empty($auth)){
 		  </div>
 		  <div class="form-group">
 			<label for="to_email_request" class="col-sm-4 control-label">
-			  <?php _e('Coments','cftp_admin'); ?>
+			  <?php _e('Comments','cftp_admin'); ?>
 			</label>
 			<div class="col-sm-8">
 			  <textarea name="comments" rows="4" cols="40" class="full-width"> </textarea>

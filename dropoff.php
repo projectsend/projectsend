@@ -159,7 +159,7 @@ $target_info = get_client_by_id($target_id);
 						} 
 						else 
 						{
-							echo "<h2>";echo "You are no authorized to access this page !";	echo "</h2>";
+							echo "<h2>";echo "You are not authorized to access this page!";	echo "</h2>";
 						}
 						?>
 						</div>

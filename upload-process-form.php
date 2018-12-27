@@ -842,7 +842,7 @@ while( $row = $statement->fetch() ) {
 <div class="message message_info"><strong>
   <?php _e('Note','cftp_admin'); ?>
   </strong>:
-  <?php _e('You can skip assigning if you want. The files are retained and you may add them to clients or groups later.','cftp_admin'); ?>
+  <?php _e('Files that are not assigned or made public will be found under Draft. These files will be retained, and you may add them to clients or groups later, or make them public.','cftp_admin'); ?>
 </div>
 <?php
 

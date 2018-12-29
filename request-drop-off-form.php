@@ -49,7 +49,7 @@
 	<div class="form-group">
 		<label for="to_subject_request" class="col-sm-4 control-label"><?php _e('Subject','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-				<input value="<?php echo $to_subject_request; ?>" name="to_subject_request" id="to_subject_request" class="form-control <?php if ($require_pass) { echo 'required'; } ?>" type="test" maxlength="<?php echo MAX_PASS_CHARS; ?>" />
+				<input value="<?php echo $to_subject_request; ?>" name="to_subject_request" id="to_subject_request" class="form-control <?php if ($require_pass) { echo 'required'; } ?>" type="text" maxlength="<?php echo MAX_PASS_CHARS; ?>" />
                 <span style="color:#F00"><?php echo $to_subErr; ?></span>
 		</div>
 	</div>
@@ -80,6 +80,7 @@
 
 	<div class="inside_form_buttons">
 		<button type="submit" name="submit" class="btn btn-wide btn-primary">Send the request</button>
+		<button type="button" name="clear" class="btn btn-wide clear_button">Clear</button>
 	</div>
 
 </form>

@@ -310,3 +310,8 @@ if ($_POST) {
 <?php
     include('footer.php');
 ?>
+<script>
+$(".clear_button").click(function() {
+    $(this).closest('form').find("input[type=text], textarea").val("");
+});
+</script>

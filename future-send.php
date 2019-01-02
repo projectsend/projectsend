@@ -13,10 +13,12 @@ require_once('sys.includes.php');
 	
 	$future_file = $statement->fetchAll();  
 	
-	if(!empty($future_file)) {
-		$files_list = '';			
+	if(!empty($future_file)) { 
+					
 		foreach ($future_file as $key ) 
 		{
+			$files_list = '';
+
 				$files_list.= '<li style="margin-bottom:11px;">';
 				$files_list.= '<p style="font-weight:bold; margin:0 0 5px 0; font-size:14px;">'.$key['filename'].'</p>';
 				if (!empty($key['description'])) {

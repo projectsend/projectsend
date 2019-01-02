@@ -380,6 +380,7 @@ include('header.php');
 					$fq .= ' '.$var_1.' '.$condition;
 					
 				}
+				$fq .= " Group by tf.id ";
             }
             /** Debug query */
             $sql_files = $dbh->prepare($fq);  

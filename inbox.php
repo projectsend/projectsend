@@ -684,7 +684,7 @@ include('header.php');
                   <?php
 									if ( !isset( $search_on ) ) {
 								?>
-                  <th data-hide="phone"><?php _e('Assigned','cftp_admin'); ?></th>
+                  <th class="hideNow" data-hide="phone"><?php _e('Assigned','cftp_admin'); ?></th>
                   <?php
 									}
 								?>
@@ -911,7 +911,7 @@ include('header.php');
 										if($current_level != '0') {
 												if ( !isset( $search_on ) ) {
 											?>
-                  <td><?php
+                  <td class="hideNow"><?php
 															$class	= ($count_assignations == 0) ? 'danger' : 'success';
 															$status	= ($count_assignations == 0) ? __('No','cftp_admin') : __('Yes','cftp_admin');
 														?>
@@ -1093,6 +1093,9 @@ $(".refreshcls").on("click", function (e) {
 
 
 <style type="text/css">
+.hideNow{
+display:none;
+}
 .disabled_cc {background-color: #e7e5e5!important;cursor: default;}
 /*-------------------- Responsive table by B) -----------------------*/
 @media only screen and (max-width: 1200px) {

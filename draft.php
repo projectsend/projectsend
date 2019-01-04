@@ -172,6 +172,7 @@ include('header.php');
       <div class="row">
         <div class="col-md-12">
           <h2 class="page-title txt-color-blueDark"><?php echo $page_title; ?></h2>
+          <h3>Incomplete Uploads</h3>
           <?php
         /**
          * Apply the corresponding action to the selected files.
@@ -361,38 +362,38 @@ include('header.php');
             $current_level = get_current_user_level();
             if ($current_level == '7' || $current_level == '8' || $current_level == '0' || $current_level == '9') {
                 /*$conditions[] = "uploader = :uploader"; */
-				/*$conditions[] = "tbl_files.uploader ='".$global_user."'"; */
+                /*$conditions[] = "tbl_files.uploader ='".$global_user."'"; */
                 $no_results_error = 'account_level';
                 $params[':uploader'] = $global_user;
             }
             /**
              * Add the category filter
              */
-            if ( isset( $results_type ) && $results_type == 'category' ) {	
-				$files_id_by_cat = array();
-				$statement = $dbh->prepare("SELECT file_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE cat_id = :cat_id");
-				$statement->bindParam(':cat_id', $this_category['id'], PDO::PARAM_INT);
-				$statement->execute();
-				$statement->setFetchMode(PDO::FETCH_ASSOC);
-				$file_data = $statement->fetchAll();
-				
-				if(!empty($file_data)) {
-					foreach ( $file_data as $data) {
-						$files_id_by_cat[] = $data['file_id'];
-					}
-					
-					$files_id_by_cat = implode(',',$files_id_by_cat);
-					/** Overwrite the parameter set previously */
-					$conditions1[] = "FIND_IN_SET(tbl_files.id, '".$files_id_by_cat."')";
-					$params[':files'] = $files_id_by_cat;
-				}
-				else {
-					$conditions1[] = "FIND_IN_SET(tbl_files.id, 'not found')";
-					$no_results_error = 'category';
-				}
-				
+            if ( isset( $results_type ) && $results_type == 'category' ) {  
+                $files_id_by_cat = array();
+                $statement = $dbh->prepare("SELECT file_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE cat_id = :cat_id");
+                $statement->bindParam(':cat_id', $this_category['id'], PDO::PARAM_INT);
+                $statement->execute();
+                $statement->setFetchMode(PDO::FETCH_ASSOC);
+                $file_data = $statement->fetchAll();
+                
+                if(!empty($file_data)) {
+                    foreach ( $file_data as $data) {
+                        $files_id_by_cat[] = $data['file_id'];
+                    }
+                    
+                    $files_id_by_cat = implode(',',$files_id_by_cat);
+                    /** Overwrite the parameter set previously */
+                    $conditions1[] = "FIND_IN_SET(tbl_files.id, '".$files_id_by_cat."')";
+                    $params[':files'] = $files_id_by_cat;
+                }
+                else {
+                    $conditions1[] = "FIND_IN_SET(tbl_files.id, 'not found')";
+                    $no_results_error = 'category';
+                }
+                
             }
-			
+            
             /**
              * Build the final query
              */
@@ -402,128 +403,128 @@ include('header.php');
                     $fq .= $condition;
                 }
             }
-			$fq1 = "SELECT * FROM " . TABLE_FILES;
-			if ($current_level == '7' || $current_level == '8' || $current_level == '0' || $current_level == '9') { 
-				$conditions1[] = "tbl_files.uploader ='". CURRENT_USER_USERNAME."'";
-				$conditions1[] = "tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')";
-				$conditions1[] =  "tbl_files.public_allow=0";
-			}
-			if(isset($_GET['search']) && !empty($_GET['search'])) {
-				$term = "%".$_GET['search']."%";
-			
-				$conditions1[] = "(filename LIKE '$term' OR description LIKE '$term')";
-				$no_results_error = 'search';
-			}
-			
+            $fq1 = "SELECT * FROM " . TABLE_FILES;
+            if ($current_level == '7' || $current_level == '8' || $current_level == '0' || $current_level == '9') { 
+                $conditions1[] = "tbl_files.uploader ='". CURRENT_USER_USERNAME."'";
+                $conditions1[] = "tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')";
+                $conditions1[] =  "tbl_files.public_allow=0";
+            }
+            if(isset($_GET['search']) && !empty($_GET['search'])) {
+                $term = "%".$_GET['search']."%";
+            
+                $conditions1[] = "(filename LIKE '$term' OR description LIKE '$term')";
+                $no_results_error = 'search';
+            }
+            
             if ( !empty( $conditions1 ) ) {
 
                 foreach ( $conditions1 as $index => $condition ) {
 
                     if($index == 0) {
-						$var_1 = 'WHERE';
-					}
-					else {
-						$var_1 = 'AND';
-					}
-					$fq1 .= ' '.$var_1.' '.$condition;
+                        $var_1 = 'WHERE';
+                    }
+                    else {
+                        $var_1 = 'AND';
+                    }
+                    $fq1 .= ' '.$var_1.' '.$condition;
 
                 }
 
             }
-			
-			$sql_files_draft = $dbh->prepare($fq1); 
-			$sql_files_draft->execute();  
-			$draft_count = $sql_files_draft->rowCount(); 			
-			
-			$current_date = date("Y-m-d");
-		 $q_sent_file = "SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME ."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')  AND tbl_files.future_send_date <='".$current_date."' AND  tbl_files.public_allow=0 "; 
+            
+            $sql_files_draft = $dbh->prepare($fq1); 
+            $sql_files_draft->execute();  
+            $draft_count = $sql_files_draft->rowCount();            
+            
+            $current_date = date("Y-m-d");
+         $q_sent_file = "SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME ."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')  AND tbl_files.future_send_date <='".$current_date."' AND  tbl_files.public_allow=0 "; 
             $sql_files = $dbh->prepare($q_sent_file);  
             $sql_files->execute();
             $count = $sql_files->rowCount();
-        }	 
-/*=========================================orphan files===========================================================*/	
-		$work_folder = UPLOADED_FILES_FOLDER;
-		/**
-		 * Make a list of existing files on the database.
-		 * When a file doesn't correspond to a record, it can
-		 * be safely renamed.
-		 */
-		$sql = $dbh->query("SELECT url, id, public_allow, uploader FROM " . TABLE_FILES );
-		$db_files = array();
-		$sql->setFetchMode(PDO::FETCH_ASSOC);
-		while ( $row = $sql->fetch() ) {
-			$db_files[$row["url"]] = $row["id"];
-			if ($row['public_allow'] == 1) {
-				$db_files_public[$row["url"]] = $row["id"];
-			}
-		}
-		//var_dump($sql); exit;
-		/** Make an array of already assigned files */
-		$sql = $dbh->query("SELECT DISTINCT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE client_id IS NOT NULL OR group_id IS NOT NULL OR folder_id IS NOT NULL");
-		$assigned = array();
-		$sql->setFetchMode(PDO::FETCH_ASSOC);
-		while ( $row = $sql->fetch() ) {
-			$assigned[] = $row["file_id"];
-		} 
-		//var_dump($sql); exit;
-		/** We consider public file as assigned file */
-		foreach ($db_files_public as $file_id){
-			$assigned[] = $file_id;
-		}
-		/** Read the temp folder and list every allowed file */
-		if ($handle = opendir($work_folder))  {
-			while (false !== ($filename = readdir($handle))) {
-				$filename_path = $work_folder.'//'.$filename;
-				if(!is_dir($filename_path)) {
-					if ($filename != "." && $filename != "..") { 
-						/** Check types of files that are not on the database */	
-						$x_id = CURRENT_USER_USERNAME ;
-						if (!array_key_exists($filename,$db_files)) {
-							$file_object = new PSend_Upload_File();
-							$new_filename = $file_object->safe_rename_on_disk( $filename , $work_folder );
-							/** Check if the filetype is allowed */
-							if ($file_object->is_filetype_allowed($new_filename)) {
-								/** Add it to the array of available files */
-								$new_filename_path = $work_folder.'/'.$new_filename;
-								//$files_to_add[$new_filename] = $new_filename_path;
-								$files_to_add[] = array('path'		=> $new_filename_path,
-														'name'		=> $new_filename,
-														'reason'	=> 'not_on_db',);
-							}
-						}
-					}
-				}
-			}
-			closedir($handle);
-		}
-		if (!empty($_POST['search_orphan'])) {
-			$search = htmlspecialchars($_POST['search_orphan']);
-			function search_text($item) {
-				global $search;
-				if (stripos($item['name'], $search) !== false) {
-					/**
-					 * Items that match the search
-					 */
-					return true;
-				}
-				else {
-					/**
-					 * Remove other items
-					 */
-					unset($item);
-				}
-				return false;
-			}
-			$files_to_add = array_filter($files_to_add, 'search_text');
-		}
+        }    
+/*=========================================orphan files===========================================================*/    
+        $work_folder = UPLOADED_FILES_FOLDER;
+        /**
+         * Make a list of existing files on the database.
+         * When a file doesn't correspond to a record, it can
+         * be safely renamed.
+         */
+        $sql = $dbh->query("SELECT url, id, public_allow, uploader FROM " . TABLE_FILES );
+        $db_files = array();
+        $sql->setFetchMode(PDO::FETCH_ASSOC);
+        while ( $row = $sql->fetch() ) {
+            $db_files[$row["url"]] = $row["id"];
+            if ($row['public_allow'] == 1) {
+                $db_files_public[$row["url"]] = $row["id"];
+            }
+        }
+        //var_dump($sql); exit;
+        /** Make an array of already assigned files */
+        $sql = $dbh->query("SELECT DISTINCT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE client_id IS NOT NULL OR group_id IS NOT NULL OR folder_id IS NOT NULL");
+        $assigned = array();
+        $sql->setFetchMode(PDO::FETCH_ASSOC);
+        while ( $row = $sql->fetch() ) {
+            $assigned[] = $row["file_id"];
+        } 
+        //var_dump($sql); exit;
+        /** We consider public file as assigned file */
+        foreach ($db_files_public as $file_id){
+            $assigned[] = $file_id;
+        }
+        /** Read the temp folder and list every allowed file */
+        if ($handle = opendir($work_folder))  {
+            while (false !== ($filename = readdir($handle))) {
+                $filename_path = $work_folder.'//'.$filename;
+                if(!is_dir($filename_path)) {
+                    if ($filename != "." && $filename != "..") { 
+                        /** Check types of files that are not on the database */    
+                        $x_id = CURRENT_USER_USERNAME ;
+                        if (!array_key_exists($filename,$db_files)) {
+                            $file_object = new PSend_Upload_File();
+                            $new_filename = $file_object->safe_rename_on_disk( $filename , $work_folder );
+                            /** Check if the filetype is allowed */
+                            if ($file_object->is_filetype_allowed($new_filename)) {
+                                /** Add it to the array of available files */
+                                $new_filename_path = $work_folder.'/'.$new_filename;
+                                //$files_to_add[$new_filename] = $new_filename_path;
+                                $files_to_add[] = array('path'      => $new_filename_path,
+                                                        'name'      => $new_filename,
+                                                        'reason'    => 'not_on_db',);
+                            }
+                        }
+                    }
+                }
+            }
+            closedir($handle);
+        }
+        if (!empty($_POST['search_orphan'])) {
+            $search = htmlspecialchars($_POST['search_orphan']);
+            function search_text($item) {
+                global $search;
+                if (stripos($item['name'], $search) !== false) {
+                    /**
+                     * Items that match the search
+                     */
+                    return true;
+                }
+                else {
+                    /**
+                     * Remove other items
+                     */
+                    unset($item);
+                }
+                return false;
+            }
+            $files_to_add = array_filter($files_to_add, 'search_text');
+        }
 /*=========================================orphan files end===========================================================*/
     ?>
-		  
+          
           <div class="form_actions_limit_results form_actions_left">
             <form action="" name="files_search" method="POST" class="form-inline">
               <div class="form-group group_float">
                 <input type="text" name="search_orphan" id="search_orphan" 
-				value="<?php echo isset($_POST['search_orphan'])?$_POST['search_orphan']:''; ?>" class="txtfield form_actions_search_box form-control" />
+                value="<?php echo isset($_POST['search_orphan'])?$_POST['search_orphan']:''; ?>" class="txtfield form_actions_search_box form-control" />
               </div>
               <button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default">
               <?php _e('Search','cftp_admin'); ?>
@@ -531,20 +532,20 @@ include('header.php');
             </form>
           </div>
           <div class="clear"></div>
-			<div class="form-inline">
-				<div class="form_actions_limit_results ">
-					<div class="form-group group_float">
-					<label class="control-label hidden-xs hidden-sm">
-					<i class="glyphicon glyphicon-check"></i>
+            <div class="form-inline">
+                <div class="form_actions_limit_results ">
+                    <div class="form-group group_float">
+                    <label class="control-label hidden-xs hidden-sm">
+                    <i class="glyphicon glyphicon-check"></i>
                     <?php _e('Selected orphan files actions','cftp_admin'); ?>
                     :</label>
-					<select name="files_actions" id="files_actions" class="txtfield form-control" style="width:200px !important;">
-					<option value="delete"><?php _e('Delete','cftp_admin'); ?></option>
-					</select>
-					</div>
-					<button type="submit" name="do_delete" id="do_delete" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
-				</div>
-			</div></br>
+                    <select name="files_actions" id="files_actions" class="txtfield form-control" style="width:200px !important;">
+                    <option value="delete"><?php _e('Delete','cftp_admin'); ?></option>
+                    </select>
+                    </div>
+                    <button type="submit" name="do_delete" id="do_delete" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
+                </div>
+            </div></br>
          <!-- <div class="form_actions_count">
             <p class="form_count_total">
               <?php _e('Showing','cftp_admin'); ?>
@@ -553,13 +554,14 @@ include('header.php');
               </span></p>
           </div>-->
           <div class="clear"></div>
-		  <?php
-			/*echo "<pre>";
-			print_r($files_to_add);
-			echo "</pre>";*/
-		  ?>
+          <?php
+            /*echo "<pre>";
+            print_r($files_to_add);
+            echo "</pre>";*/
+          ?>
+          <p>To complete the uploading processing for a file, click its file name, then fill out and submit the form that displays.<br>&nbsp;</p>
           <form action="upload-process-form.php" name="upload_by_ftp" id="upload_by_ftp" method="post" enctype="multipart/form-data">
-          	<section id="no-more-tables">
+            <section id="no-more-tables">
             <table id="add_files_from_ftp" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER;?>"> 
               <thead>
                 <tr>
@@ -572,14 +574,14 @@ include('header.php');
               </thead>
                 <tbody>
               <?php
-							$curr_usr_id =	CURRENT_USER_ID;
-							if(isset($files_to_add) && count($files_to_add) > 0 ) {
-							foreach ($files_to_add as $add_file){
-								$x=explode("_", $add_file[name]);
-								$cuid_array=explode(".", $add_file[name]);
-								$arr = array_reverse(preg_split('/(_)/',$cuid_array[0],-1, PREG_SPLIT_NO_EMPTY));
-								if($arr[0]==$curr_usr_id){
-			  ?>
+                            $curr_usr_id =  CURRENT_USER_ID;
+                            if(isset($files_to_add) && count($files_to_add) > 0 ) {
+                            foreach ($files_to_add as $add_file){
+                                $x=explode("_", $add_file[name]);
+                                $cuid_array=explode(".", $add_file[name]);
+                                $arr = array_reverse(preg_split('/(_)/',$cuid_array[0],-1, PREG_SPLIT_NO_EMPTY));
+                                if($arr[0]==$curr_usr_id){
+              ?>
                 <tr>
               <td><input type="checkbox" name="add[]" class="select_file_checkbox" value="<?php echo html_output($add_file['name']); ?>" /></td>
               <td><a href="#" name="file_edit" class="btn-edit-file">
@@ -589,22 +591,22 @@ include('header.php');
               <td data-value="<?php echo filemtime($add_file['path']); ?>"><?php echo date(TIMEFORMAT_USE, filemtime($add_file['path'])); ?></td>
                 </tr>
               <?php
-							}
-						}
-							} else {
-								$error_orphan = true;
-							}
-						?>
+                            }
+                        }
+                            } else {
+                                $error_orphan = true;
+                            }
+                        ?>
                 </tbody>
             </table>
             </section>
             <nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
               <div class="pagination_wrapper text-center">
-				<?php 
-				if($error_orphan) {
+                <?php 
+                if($error_orphan) {
                 echo system_message('error','Your search keywords returned no results.');
-				}
-				?>
+                }
+                ?>
               </div>
             </nav>
             
@@ -615,69 +617,71 @@ include('header.php');
             </div>
           </form>
           <script type="text/javascript">
-				$(document).ready(function() {
-					$("#upload_by_ftp").submit(function() {
-						var checks = $("td>input:checkbox").serializeArray(); 
-						if (checks.length == 0) { 
-							alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
-							return false; 
-						} 
-					});
-					/**
-					 * Only select the current file when clicking an "delete" button
-					 */
-					$("#do_delete").click(function() {
-						var checks = $("td>input:checkbox").serializeArray(); 
-						if (checks.length == 0) { 
-							alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
-							return false; 
-						}else
-						{
-							var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
-							var msg_2 = '<?php _e("Orphan File. Are you sure you want to continue?",'cftp_admin'); ?>';
-							if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
-								var $reutrn_var =  true;
-							} else {
-								var $reutrn_var =  false;
-							}
-							if($reutrn_var) {
-								/* move checked file names to an array */
-								var values = new Array();
-								$.each($("input[name='add[]']:checked"), function() {
-									values.push($(this).val());
-								});
-								var jsonStringValues = JSON.stringify(values);
-								var postData = {  "values": jsonStringValues };
-								/*Call ajax to delete orphan files */
-								$.ajax({
-								  type: "POST",
-								  url: "delete-import-orphans.php",
-								  data: postData,
-								  traditional: true,
-								  success: function (data) {
-												if(data='done'){
-													alert('File has been removed successfully!!')
-													location.reload(); 
-												}
-								  }
-								});
-							}
-						}  
-					});
-					/**
-					 * Only select the current file when clicking an "edit" button
-					 */
-					$('.btn-edit-file').click(function(e) {
-						$('#select_all').prop('checked', false);
-						$('td .select_file_checkbox').prop('checked', false);
-						$(this).parents('tr').find('td .select_file_checkbox').prop('checked', true);
-						$('#upload-continue').click();
-					});
-				});
-			</script>
+                $(document).ready(function() {
+                    $("#upload_by_ftp").submit(function() {
+                        var checks = $("td>input:checkbox").serializeArray(); 
+                        if (checks.length == 0) { 
+                            alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
+                            return false; 
+                        } 
+                    });
+                    /**
+                     * Only select the current file when clicking an "delete" button
+                     */
+                    $("#do_delete").click(function() {
+                        var checks = $("td>input:checkbox").serializeArray(); 
+                        if (checks.length == 0) { 
+                            alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
+                            return false; 
+                        }else
+                        {
+                            var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
+                            var msg_2 = '<?php _e("Orphan File. Are you sure you want to continue?",'cftp_admin'); ?>';
+                            if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
+                                var $reutrn_var =  true;
+                            } else {
+                                var $reutrn_var =  false;
+                            }
+                            if($reutrn_var) {
+                                /* move checked file names to an array */
+                                var values = new Array();
+                                $.each($("input[name='add[]']:checked"), function() {
+                                    values.push($(this).val());
+                                });
+                                var jsonStringValues = JSON.stringify(values);
+                                var postData = {  "values": jsonStringValues };
+                                /*Call ajax to delete orphan files */
+                                $.ajax({
+                                  type: "POST",
+                                  url: "delete-import-orphans.php",
+                                  data: postData,
+                                  traditional: true,
+                                  success: function (data) {
+                                                if(data='done'){
+                                                    alert('File has been removed successfully!!')
+                                                    location.reload(); 
+                                                }
+                                  }
+                                });
+                            }
+                        }  
+                    });
+                    /**
+                     * Only select the current file when clicking an "edit" button
+                     */
+                    $('.btn-edit-file').click(function(e) {
+                        $('#select_all').prop('checked', false);
+                        $('td .select_file_checkbox').prop('checked', false);
+                        $(this).parents('tr').find('td .select_file_checkbox').prop('checked', true);
+                        $('#upload-continue').click();
+                    });
+                });
+            </script>
         
-		
+        
 <?php/*========================================orphen end===============================================*/ ?>
+
+<h3>Non Assigned / Non Public Files</h3>
 <div class="form_actions_left" style="padding-top: 35px;">
             <div class="form_actions_limit_results">
               <form action="<?php echo html_output($form_action_url); ?>" name="files_search" method="GET" class="form-inline">
@@ -808,6 +812,7 @@ include('header.php');
                 </span></p>
             </div>
             <div class="clear"></div>
+            <p>To finish the uploading process for a file, click the corresponding Edit button, then fill out and submit the form that displays.<br>&nbsp;</p>
             <?php
                 if (!$draft_count) {
                     if (isset($no_results_error)) {
@@ -912,11 +917,11 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                                  * filtering by client or group.
                                  */
                                 $params = array();
-								//"SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME ."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')  AND tbl_files.future_send_date <='".$current_date."'   ";
-								//$query_this_file = "SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')";
-								$query_this_file="SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME ."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')  AND tbl_files.future_send_date <='".$current_date."'   ";
-								//var_dump($query_this_file);
-								//exit;
+                                //"SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME ."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')  AND tbl_files.future_send_date <='".$current_date."'   ";
+                                //$query_this_file = "SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')";
+                                $query_this_file="SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME ."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')  AND tbl_files.future_send_date <='".$current_date."'   ";
+                                //var_dump($query_this_file);
+                                //exit;
                                 $params[':file_id'] = $row['id'];
                                 if (isset($search_on)) {
                                     $query_this_file .= " AND $search_on = :id";

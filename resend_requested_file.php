@@ -8,6 +8,13 @@ if(!empty($_SESSION))
 	{
 		if($_SESSION['userlevel'] == '9' || $_SESSION['userlevel'] == '8' || $_SESSION['userlevel'] == '7' || $_SESSION['userlevel'] == '0')
 		{
+				/* Get the user email and name */
+				$this_user = CURRENT_USER_USERNAME;
+				$this_current_id = CURRENT_USER_ID;
+				$client_info = get_client_by_username($this_user);
+				$logged_in_email = isset($client_info['email'])?$client_info['email']:'';
+				$logged_in_name = isset($client_info['name'])?$client_info['name']:'';
+
 				$e_id = $_POST['e_id'];
 				$save = $dbh->prepare( "UPDATE tbl_drop_off_request SET requested_time=:requested_time WHERE id=:e_id" );
 				$save->bindParam(':requested_time',date("Y-m-d H:i:s"));
@@ -119,11 +126,13 @@ if(!empty($_SESSION))
 				
 				  <p>
 				Details:<br>
-				Name : $to_name_request <br>
+				From Name: $logged_in_name <br>
+				Email: $logged_in_email <br><br>
+				To Name : $to_name_request <br>
 				Organization : $from_organization <br>
 				Email : $to_email_request <br></p>
 				<p><em>Note: ".$to_note_request."</em></p>
-				  <p>Continue the uploading process by clicking here!</p>
+				  <p>Log in to MicroHealth Send, then continue the uploading process by clicking here!</p>
 				
 										<table border='0' cellpadding='0' cellspacing='0' class='btn btn-primary' style='border-collapse:separate;mso-table-lspace:0pt;mso-table-rspace:0pt;box-sizing:border-box;width:100%;'>
 										  <tbody>

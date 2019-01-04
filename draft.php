@@ -680,9 +680,9 @@ include('header.php');
         
         
 <?php/*========================================orphen end===============================================*/ ?>
-
+<p>&nbsp;</p>
 <h3>Non Assigned / Non Public Files</h3>
-<div class="form_actions_left" style="padding-top: 35px;">
+<div class="form_actions_left">
             <div class="form_actions_limit_results">
               <form action="<?php echo html_output($form_action_url); ?>" name="files_search" method="GET" class="form-inline">
                 <div class="form-group group_float">

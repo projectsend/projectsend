@@ -35,6 +35,7 @@ if (defined('TRY_INSTALL')) {
 								  `public_allow` INT(1) NOT NULL default \'0\',
   								  `number_downloads` int(15) NOT NULL default \'0\',
 								  `public_token` varchar(32) NULL,
+								  `request_type` INT(10) NULL,
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',

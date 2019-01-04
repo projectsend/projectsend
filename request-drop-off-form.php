@@ -80,7 +80,7 @@
 
 	<div class="inside_form_buttons">
 		<button type="submit" name="submit" class="btn btn-wide btn-primary">Send the request</button>
-		<button type="button" name="clear" class="btn btn-wide clear_button">Clear</button>
+		<button type="button" name="clear" class="btn btn-default clear_button">Clear</button>
 	</div>
 
 </form>

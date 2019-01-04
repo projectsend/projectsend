@@ -169,6 +169,7 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 										$add_arguments = array(
 											'file' => $new_filename,
 											'name' => $file['name'],
+											'requestType' => $_POST['request_type'],
 											'description' => $file['description'],
 											'uploader' => $global_user,
 											'uploader_id' => $global_id
@@ -455,6 +456,7 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 							});
 						</script>
 						<form action="upload-process-form-dropoff.php" name="save_files" id="save_files" method="post">
+							<input type="hidden" name="request_type" value="1">
 							<select multiple="multiple" name="new_client[]" class="form-control new_client" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>" style="display:none">
 							
 							<?php

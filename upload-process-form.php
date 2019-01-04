@@ -380,6 +380,7 @@ while( $row = $statement->fetch() ) {
 
 												'name' => $file['name'],
 
+												'requestType' => $_POST['request_type'],
 												'description' => $file['description'],
 
 												'uploader' => $global_user,
@@ -899,7 +900,7 @@ while( $row = $statement->fetch() ) {
 		
 		
 		<form action="upload-process-form.php" name="save_files" id="save_files" method="post">
-
+				<input type="hidden" name="request_type" value="0">
 				<select multiple="multiple" name="new_client[]" class="form-control new_client" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>" style="display:none">
   
 			<?php

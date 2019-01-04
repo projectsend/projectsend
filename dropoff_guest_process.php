@@ -69,6 +69,7 @@ if(!empty($auth)){
 								
 								/*looop start ------------------------------------------------------------------- */
 								$fileName = isset($_FILES['userfiles']['name'][$i]) ? $_FILES['userfiles']['name'][$i] : '';
+								$requestType=$_POST['request_type'];
 								$this_file = new PSend_Upload_File();
 								// Rename the file
 								$fileName = $this_file->safe_rename($fileName);
@@ -180,7 +181,7 @@ if(!empty($auth)){
 								$uploader = $to_name;
 								$time = '2017-03-02 00:00:00';
 								$expdate = '2017-03-09 00:00:00';
-								$statement = $dbh->prepare("INSERT INTO ".TABLE_FILES." (`url`, `filename`, `description`, `timestamp`, `uploader`, `expires`, `expiry_date`, `public_allow`, `public_token`) VALUES ('$url', '$filename', '', CURRENT_TIMESTAMP, '$uploader', '0', '2017-12-09 00:00:00', '0', NULL);");
+								$statement = $dbh->prepare("INSERT INTO ".TABLE_FILES." (`url`, `filename`, `description`, `timestamp`, `uploader`, `expires`, `expiry_date`, `public_allow`, `public_token`,`request_type`) VALUES ('$url', '$filename', '', CURRENT_TIMESTAMP, '$uploader', '0', '2017-12-09 00:00:00', '0', NULL,'$requestType');");
 								if($statement->execute()) {
 									$img_id = $dbh->lastInsertId();
 									$filesrelations = $dbh->prepare("INSERT INTO ".TABLE_FILES_RELATIONS." (`timestamp`, `file_id`, `client_id`, `group_id`, `folder_id`, `hidden`, `download_count`) VALUES (CURRENT_TIMESTAMP, ".$img_id.", ".$fromid.", NULL, NULL, '0', '0')");			
@@ -234,7 +235,8 @@ if(!empty($auth)){
 	  <div class="error_div" style="text-align: center;color: red;padding: 10px;"><?php echo !empty($error_message)?$error_message:''; ?></div>
 	  <div style="width:600px;background: white none repeat scroll 0 0;border: 1px solid #adadad;margin: 0 auto;padding: 64px;width: 600px;">
 		<form action="<?php echo $_SERVER['REQUEST_URI']; ?>" name="addclient" enctype="multipart/form-data" method="post" class="form-horizontal" autocomplete="off">
-		  <div class="form-group">
+			<input type="hidden" name="request_type" value="2">
+			<div class="form-group">
 			<div class="col-sm-4"></div>
 		
 			<div class="col-sm-8"> This web page will allow you to drop-off (upload) one or more files for a MicroHealth user. </div>

@@ -120,6 +120,23 @@ if (isset($_GET['category'])) {
 
 include('header.php');
 ?>
+<style>
+.hideNow{
+display:none;
+}
+.requestType {
+font-weight:bold;
+}
+.requestType.normal {
+color:#5cb85c;
+}
+.requestType.requested {
+color:#337ab7;
+}
+.requestType.guest {
+color:#e33a49;
+}
+</style>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("#do_action").click(function() {
@@ -688,7 +705,7 @@ include('header.php');
                   <?php
 									}
 								?>
-                  <th data-hide="phone"><?php _e('Public','cftp_admin'); ?></th>
+                  <th class="hideNow" data-hide="phone"><?php _e('Public','cftp_admin'); ?></th>
                   <th data-hide="phone"><?php _e('Expiry','cftp_admin'); ?></th>
                   <?php
 							}
@@ -711,7 +728,8 @@ include('header.php');
 							}
 						?>
                  <!--  <th data-hide="phone" data-sort-ignore="true"><?php _e('Actions','cftp_admin'); ?></th> -->
-                </tr>
+								 <th data-hide="phone">Type</th>
+								</tr>
               </thead>
               <tbody>
                 <?php
@@ -919,7 +937,7 @@ include('header.php');
                   <?php
 												}
 											?>
-                  <td class="col_visibility"><?php
+                  <td class="col_visibility hideNow"><?php
 													if ($row['public_allow'] == '1') {
 												?>
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-id="<?php echo $row['id']; ?>" data-token="<?php echo html_output($row['public_token']); ?>" data-placement="top" data-toggle="popover" data-original-title="<?php _e('Public URL','cftp_admin'); ?>">
@@ -1015,7 +1033,19 @@ include('header.php');
                   <!-- <td><a href="edit-file.php?file_id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm">
                     <?php _e('Edit','cftp_admin'); ?>
                     </a></td> -->
-                </tr>
+									<td >
+									<?php
+									 // print_r($row);
+									if ($row['request_type'] == '0' || $row['request_type'] == null)
+														{ echo("<span class='requestType normal'> Normal </span>"); }
+														else if ($row['request_type'] == '1')
+														{ echo("<span class='requestType requested'> Requested </span>"); }
+														else if ($row['request_type'] == '2')
+														{ echo("<span class='requestType guest'>Guest </span>");}
+
+														?>
+														</td>
+								</tr>
                 <?php
 							    }
 							}
@@ -1093,9 +1123,7 @@ $(".refreshcls").on("click", function (e) {
 
 
 <style type="text/css">
-.hideNow{
-display:none;
-}
+
 .disabled_cc {background-color: #e7e5e5!important;cursor: default;}
 /*-------------------- Responsive table by B) -----------------------*/
 @media only screen and (max-width: 1200px) {

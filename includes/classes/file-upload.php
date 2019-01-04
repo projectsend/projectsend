@@ -14,6 +14,7 @@ class PSend_Upload_File
 	var $assign_to;
 	var $uploader;
 	var $file;
+	var $requestType;
 	var $name;
 	var $notify;
 	var $number_downloads;
@@ -148,6 +149,7 @@ class PSend_Upload_File
 	function upload_add_to_database($arguments)
 	{
 		$this->post_file		= $arguments['file'];
+		$this->requestType		= $arguments['requestType'];
 		$this->name			= encode_html($arguments['name']);
 		$this->description		= encode_html($arguments['description']);
 		$this->timestamp 		= date('Y-m-d H:i:s'); 
@@ -164,8 +166,8 @@ class PSend_Upload_File
 		$this->is_public		= (!empty($arguments['public'])) ? 1 : 0;
 		$this->public_token		= generateRandomString(32);
 		if (isset($arguments['add_to_db'])) {
-			$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (url, filename, description, timestamp, uploader, expires,notify, expiry_date,number_downloads,future_send_date, public_allow, public_token)"
-											."VALUES (:url, :name, :description, :timestamp, :uploader, :expires, :notify, :expiry_date,:number_downloads,:future_send_date, :public, :token)");
+			$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (url, filename, description, timestamp, uploader, expires,notify, expiry_date,number_downloads,future_send_date, public_allow, public_token,request_type)"
+											."VALUES (:url, :name, :description, :timestamp, :uploader, :expires, :notify, :expiry_date,:number_downloads,:future_send_date, :public, :token, :requestType)");
 			$this->statement->bindParam(':url', $this->post_file);
 			$this->statement->bindParam(':name', $this->name);
 			$this->statement->bindParam(':description', $this->description);
@@ -178,7 +180,8 @@ class PSend_Upload_File
 			$this->statement->bindParam(':expiry_date', $this->expiry_date);
 			$this->statement->bindParam(':public', $this->is_public, PDO::PARAM_INT);
 			$this->statement->bindParam(':token', $this->public_token);
-			
+			$this->statement->bindParam(':requestType', $this->requestType);
+
 			$this->statement->execute();
 			$this->file_id = $this->dbh->lastInsertId();
 			$this->state['new_file_id'] = $this->file_id;

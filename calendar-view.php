@@ -162,7 +162,7 @@ $(function() {
 						htmlText1 += '<h5>Received Files</h5>';
 						htmlText1 += '<table class="table_calendar_common">';
 						htmlText1 += '<tr>';
-						htmlText1 += '<th>File Name</th><th>File Desc</th><th>Received Date</th>';
+						htmlText1 += '<th>File Name</th><th>File Desc</th><th>Received Date</th><th>Sent From</th>';
 						htmlText1 += '</tr>';
 						for(var i = 0; i < json.receive.length; i++)
 						{ 
@@ -170,6 +170,7 @@ $(function() {
 							htmlText1 += '<td>'+json.receive[i].filename+'</td>';
 							htmlText1 += '<td>'+json.receive[i].description+'</td>';
 							htmlText1 += '<td>'+json.receive[i].timestamp+'</td>';
+							htmlText1 += '<td>'+json.receive[i].uploader+'</td>';
 
 							htmlText1 += '</tr>';
 						};

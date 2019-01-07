@@ -812,7 +812,7 @@ include('header.php');
                 </span></p>
             </div>
             <div class="clear"></div>
-            <p>To finish the uploading process for a file, click the corresponding Edit button, then fill out and submit the form that displays.<br>&nbsp;</p>
+            <p>To assign a file or make it public, click the corresponding Edit button, then fill out and submit the form that displays.</p>
             <?php
                 if (!$draft_count) {
                     if (isset($no_results_error)) {

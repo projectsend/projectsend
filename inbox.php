@@ -825,19 +825,17 @@ color:#e33a49;
 										if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
 									?>
                   <td>
-				  <?php 
-				  if($edit_access) {
-					  $disabled = '';
-					  $disabled_cc='';
-					}
-				   else {
-					   $disabled='disabled';
-					   $disabled_cc = 'disabled_cc';
-				   }
-				  ?>
                   <label class="cc-chk-container">
                       <input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" <?php echo isset($disabled)?$disabled:''; ?> />
-                      <span class="checkmark <?php echo isset($disabled_cc)?$disabled_cc:''; ?>"></span>
+                      <span class="checkmark
+											<?php
+											 if ((trim($row[uploader]) != CURRENT_USER_USERNAME)){
+											 if ( ! in_array($row['request_type'], array('1','2') ) )
+												{ echo ("disabled_cc = disabled ");
+											echo($row['request_type']);}
+											}
+										?>
+											"></span>
                   </label>
                   </td>
                   <?php

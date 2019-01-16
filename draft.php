@@ -12,7 +12,7 @@ $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 $active_nav = 'files';
 $cc_active_page = 'Draft';
-$page_title = __('Draft Files','cftp_admin');
+$page_title = __('Draft','cftp_admin');
 $current_level = get_current_user_level();
 /*
  * Get the total downloads count here. The results are then
@@ -85,6 +85,8 @@ if (isset($_GET['category'])) {
 }
 include('header.php');
 ?>
+<form id="dynamic-draft-form" action="upload-process-form.php" method="post" >
+<input type="hidden" name="add[]" id="draft" value=""></input></form>
 <script type="text/javascript">
     $(document).ready(function() {
         $("#do_action").click(function() {
@@ -117,30 +119,7 @@ include('header.php');
         });
         <?php
             if ($results_type != 'client') {
-                /*
-        ?>
-                $(".downloaders").click(function() {
-                    $(document).psendmodal();
-                    $('.modal_content').html('<p class="loading-img">'+
-                                                '<img src="<?php echo BASE_URI; ?>img/ajax-loader.gif" alt="Loading" /></p>'+
-                                                '<p class="lead text-center text-info"><?php _e('Please wait while the system gets the required information.','cftp_admin'); ?></p>'
-                                            );
-                    var file_name = $(this).attr('title');
-                    var file_id = $(this).attr('rel');
-                    $.get('<?php echo BASE_URI; ?>process.php', { do:"get_downloaders", sys_user:"<?php echo $global_id; ?>", file_id:file_id },
-                        function(data) {
-                            $('.modal_content').html('<h4><?php _e('Downloaders of file:','cftp_admin'); ?> <strong>'+file_name+'</strong></h4>');
-                            $('.modal_content').append('<ul class="downloaders_list"></ul>');
-                            var obj = $.parseJSON(data);
-                            for (i = 0; i < obj.length; i++) {
-                                $('.modal_content .downloaders_list').append('<li><img src="<?php echo BASE_URI; ?>img/downloader-' + obj[i].type + '.png" alt="" /><div class="downloader_count">' +  obj[i].count + ' <?php _e('times','cftp_admin'); ?></div><p class="downloader_name">' + obj[i].name + '</p><p class="downloader_email">' +  obj[i].email + '</p></li>');
-                            }
-                        }
-                    );                  
-                    return false;
-                });
-        <?php
-                */
+
             }
         ?>
         $('.public_link').popover({ 
@@ -172,31 +151,19 @@ include('header.php');
       <div class="row">
         <div class="col-md-12">
           <h2 class="page-title txt-color-blueDark"><?php echo $page_title; ?></h2>
-          <h3>Incomplete Uploads</h3>
           <?php
         /**
          * Apply the corresponding action to the selected files.
          */
         if(isset($_POST['do_action'])) {
             /** Continue only if 1 or more files were selected. */
-            if(!empty($_POST['files'])) {
+            if(!empty($_POST['orphans'])) {
+            $selected_orphans =$_POST['orphans'];
+          }
+
+            if(!empty($_POST['files']) ||!empty($_POST['orphans']) ) {
                 $selected_files = array_map('intval',array_unique($_POST['files']));
                 $files_to_get = implode(',',$selected_files);
-                /**
-                 * Make a list of files to avoid individual queries.
-                 * First, get all the different files under this account.
-                 */
-                /*$sql_distinct_files = $dbh->prepare("SELECT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE FIND_IN_SET(id, :files)");
-                $sql_distinct_files->bindParam(':files', $files_to_get);
-                $sql_distinct_files->execute();
-                $sql_distinct_files->setFetchMode(PDO::FETCH_ASSOC);
-                while( $data_file_relations = $sql_distinct_files->fetch() ) {
-                    $all_files_relations[] = $data_file_relations['file_id']; 
-                    $files_to_get = implode(',',$all_files_relations);
-                }*/
-                /**
-                 * Then get the files names to add to the log action.
-                 */
                 $sql_file = $dbh->prepare("SELECT id, filename FROM " . TABLE_FILES . " WHERE FIND_IN_SET(id, :files)");
                 $sql_file->bindParam(':files', $files_to_get);
                 $sql_file->execute();
@@ -255,17 +222,26 @@ include('header.php');
                                                 'ok'        => 0,
                                                 'errors'    => 0,
                                             );
-                        foreach ($selected_files as $index => $file_id) {
-                            $this_file      = new FilesActions();
-                            $delete_status  = $this_file->delete_files($file_id);
-                            if ( $delete_status == true ) {
-                                $delete_results['ok']++;
-                            }
-                            else {
-                                $delete_results['errors']++;
-                                unset($all_files[$file_id]);
-                            }
+                        if(!empty($selected_files)){
+                          foreach ($selected_files as $index => $file_id) {
+                              $this_file      = new FilesActions();
+                              $delete_status  = $this_file->delete_files($file_id);
+                              if ( $delete_status == true ) {
+                                  $delete_results['ok']++;
+                              }
+                              else {
+                                  $delete_results['errors']++;
+                                  unset($all_files[$file_id]);
+                              }
+                          }
                         }
+                        if(!empty($selected_orphans)){
+                          foreach ($selected_orphans as  $filename) {
+                            unlink(UPLOADED_FILES_FOLDER.$filename);
+                            $delete_results['ok']++;
+                          }
+                        }
+
                         if ( $delete_results['ok'] > 0 ) {
                             $msg = __('The selected files were deleted.','cftp_admin');
                             echo system_message('ok',$msg);
@@ -497,215 +473,20 @@ include('header.php');
             }
             closedir($handle);
         }
-        if (!empty($_POST['search_orphan'])) {
-            $search = htmlspecialchars($_POST['search_orphan']);
-            function search_text($item) {
-                global $search;
-                if (stripos($item['name'], $search) !== false) {
-                    /**
-                     * Items that match the search
-                     */
-                    return true;
-                }
-                else {
-                    /**
-                     * Remove other items
-                     */
-                    unset($item);
-                }
-                return false;
-            }
-            $files_to_add = array_filter($files_to_add, 'search_text');
-        }
+        
 /*=========================================orphan files end===========================================================*/
     ?>
-          
-          <div class="form_actions_limit_results form_actions_left">
-            <form action="" name="files_search" method="POST" class="form-inline">
-              <div class="form-group group_float">
-                <input type="text" name="search_orphan" id="search_orphan" 
-                value="<?php echo isset($_POST['search_orphan'])?$_POST['search_orphan']:''; ?>" class="txtfield form_actions_search_box form-control" />
-              </div>
-              <button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default">
-              <?php _e('Search','cftp_admin'); ?>
-              </button>
-            </form>
-          </div>
+
+
           <div class="clear"></div>
-            <div class="form-inline">
-                <div class="form_actions_limit_results ">
-                    <div class="form-group group_float">
-                    <label class="control-label hidden-xs hidden-sm">
-                    <i class="glyphicon glyphicon-check"></i>
-                    <?php _e('Selected orphan files actions','cftp_admin'); ?>
-                    :</label>
-                    <select name="files_actions" id="files_actions" class="txtfield form-control" style="width:200px !important;">
-                    <option value="delete"><?php _e('Delete','cftp_admin'); ?></option>
-                    </select>
-                    </div>
-                    <button type="submit" name="do_delete" id="do_delete" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
-                </div>
-            </div></br>
-         <!-- <div class="form_actions_count">
-            <p class="form_count_total">
-              <?php _e('Showing','cftp_admin'); ?>
-              : <span><?php echo count($files_to_add); ?>
-              <?php _e('files','cftp_admin'); ?>
-              </span></p>
-          </div>-->
-          <div class="clear"></div>
-          <?php
-            /*echo "<pre>";
-            print_r($files_to_add);
-            echo "</pre>";*/
-          ?>
-          <p>To complete the uploading processing for a file, click its file name, then fill out and submit the form that displays.<br>&nbsp;</p>
-          <form action="upload-process-form.php" name="upload_by_ftp" id="upload_by_ftp" method="post" enctype="multipart/form-data">
-            <section id="no-more-tables">
-            <table id="add_files_from_ftp" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER;?>"> 
-              <thead>
-                <tr>
-                  <th class="td_checkbox" data-sort-ignore="true"> <input type="checkbox" name="select_all" id="select_all" value="0" />
-                  </th>
-                  <th data-sort-initial="true"><?php _e('File Name','cftp_admin'); ?></th>
-                  <th data-type="numeric" data-hide="phone"><?php _e('File Size','cftp_admin'); ?></th>
-                  <th data-type="numeric" data-hide="phone"><?php _e('Last Modified','cftp_admin'); ?></th>
-                </tr>
-              </thead>
-                <tbody>
-              <?php
-                            $curr_usr_id =  CURRENT_USER_ID;
-                            if(isset($files_to_add) && count($files_to_add) > 0 ) {
-                            foreach ($files_to_add as $add_file){
-                                $x=explode("_", $add_file[name]);
-                                $cuid_array=explode(".", $add_file[name]);
-                                $arr = array_reverse(preg_split('/(_)/',$cuid_array[0],-1, PREG_SPLIT_NO_EMPTY));
-                                if($arr[0]==$curr_usr_id){
-              ?>
-                <tr>
-              <td><input type="checkbox" name="add[]" class="select_file_checkbox" value="<?php echo html_output($add_file['name']); ?>" /></td>
-              <td><a href="#" name="file_edit" class="btn-edit-file">
-              <?php _e(html_output($add_file['name']),'cftp_admin'); ?>
-                </a></td>
-              <td data-value="<?php echo filesize($add_file['path']); ?>"><?php echo html_output(format_file_size(get_real_size($add_file['path']))); ?></td>
-              <td data-value="<?php echo filemtime($add_file['path']); ?>"><?php echo date(TIMEFORMAT_USE, filemtime($add_file['path'])); ?></td>
-                </tr>
-              <?php
-                            }
-                        }
-                            } else {
-                                $error_orphan = true;
-                            }
-                        ?>
-                </tbody>
-            </table>
-            </section>
-            <nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
-              <div class="pagination_wrapper text-center">
-                <?php 
-                if($error_orphan) {
-                echo system_message('error','Your search keywords returned no results.');
-                }
-                ?>
-              </div>
-            </nav>
-            
-            <div class="after_form_buttons" hidden>
-              <button type="submit" name="submit" class="btn btn-wide btn-primary" id="upload-continue">
-              <?php _e('Continue','cftp_admin'); ?>
-              </button>
-            </div>
-          </form>
-          <script type="text/javascript">
-                $(document).ready(function() {
-                    $("#upload_by_ftp").submit(function() {
-                        var checks = $("td>input:checkbox").serializeArray(); 
-                        if (checks.length == 0) { 
-                            alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
-                            return false; 
-                        } 
-                    });
-                    /**
-                     * Only select the current file when clicking an "delete" button
-                     */
-                    $("#do_delete").click(function() {
-                        var checks = $("td>input:checkbox").serializeArray(); 
-                        if (checks.length == 0) { 
-                            alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
-                            return false; 
-                        }else
-                        {
-                            var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
-                            var msg_2 = '<?php _e("Orphan File. Are you sure you want to continue?",'cftp_admin'); ?>';
-                            if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
-                                var $reutrn_var =  true;
-                            } else {
-                                var $reutrn_var =  false;
-                            }
-                            if($reutrn_var) {
-                                /* move checked file names to an array */
-                                var values = new Array();
-                                $.each($("input[name='add[]']:checked"), function() {
-                                    values.push($(this).val());
-                                });
-                                var jsonStringValues = JSON.stringify(values);
-                                var postData = {  "values": jsonStringValues };
-                                /*Call ajax to delete orphan files */
-                                $.ajax({
-                                  type: "POST",
-                                  url: "delete-import-orphans.php",
-                                  data: postData,
-                                  traditional: true,
-                                  success: function (data) {
-                                                if(data='done'){
-                                                    alert('File has been removed successfully!!')
-                                                    location.reload(); 
-                                                }
-                                  }
-                                });
-                            }
-                        }  
-                    });
-                    /**
-                     * Only select the current file when clicking an "edit" button
-                     */
-                    $('.btn-edit-file').click(function(e) {
-                        $('#select_all').prop('checked', false);
-                        $('td .select_file_checkbox').prop('checked', false);
-                        $(this).parents('tr').find('td .select_file_checkbox').prop('checked', true);
-                        $('#upload-continue').click();
-                    });
-                });
-            </script>
-        
-        
 <?php/*========================================orphen end===============================================*/ ?>
-<p>&nbsp;</p>
-<h3>Non Assigned / Non Public Files</h3>
 <div class="form_actions_left">
             <div class="form_actions_limit_results">
               <form action="<?php echo html_output($form_action_url); ?>" name="files_search" method="GET" class="form-inline">
                 <div class="form-group group_float">
                   <input type="text" name="search" id="search" value="<?php if(isset($_GET['search']) && !empty($search_terms)) { echo html_output($_GET['search']); } ?>" class="txtfield form_actions_search_box form-control" />
                 </div>
-                <?php /*?><div class="form-group group_float">
-                        <select name="status" id="status" class="txtfield form-control">
-                                    <?php
-                                        $options_status = array(
-                                                                'all'   => __('All statuses','cftp_admin'),
-                                                                '1'     => __('Read','cftp_admin'),
-                                                                '2'     => __('Unread','cftp_admin'),
-                                                                '3'     => __('Downloaded','cftp_admin'),
-                                                                '4'     => __('Not Downloaded','cftp_admin'),
-                                                            );
-                                        foreach ( $options_status as $value => $text ) {
-                                    ?>
-                                            <option value="<?php echo $value; ?>"><?php echo $text; ?></option>
-                                    <?php
-                                        }
-                                    ?>
-                                </select>
-                    </div><?php */?>
+
                 <div class="form-group group_float">
                   <select name="category" id="category" class="txtfield form-control">
                     <option value="0">All categories</option>
@@ -724,38 +505,13 @@ include('header.php');
                 <?php _e('Search','cftp_admin'); ?>
                 </button>
               </form>
-              <?php
-                    /** Filters are not available for clients */
-                    /*if($current_level != '0' && $results_type != 'global') {
-                ?>
-                        <form action="<?php echo html_output($form_action_url); ?>" name="files_filters" method="post" class="form-inline form_filters">
-                            <div class="form-group group_float">
-                                <select name="status" id="status" class="txtfield form-control">
-                                    <?php
-                                        $options_status = array(
-                                                                'all'   => __('All statuses','cftp_admin'),
-                                                                '1'     => __('Hidden','cftp_admin'),
-                                                                '0'     => __('Visible','cftp_admin'),
-                                                            );
-                                    ?>
-                                        foreach ( $options_status as $value => $text ) {
-                                            <option value="<?php echo $value; ?>"><?php echo $text; ?></option>
-                                    <?php
-                                        }
-                                    ?>
-                                </select>
-                            </div>
-                            <button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default"><?php _e('Filter','cftp_admin'); ?></button>
-                        </form>
-                <?php
-                    }*/
-                ?>
+
             </div>
           </div>
           <form action="<?php echo html_output($form_action_url); ?>" name="files_list" method="post" class="form-inline">
             <?php
                 /** Actions are not available for clients */
-                if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
+                // if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
             ?>
             <div class="form_actions_right">
               <div class="form_actions">
@@ -801,7 +557,7 @@ include('header.php');
               </div>
             </div>
             <?php
-                }
+                // }
             ?>
             <div class="clear"></div>
             <div class="form_actions_count">
@@ -812,7 +568,6 @@ include('header.php');
                 </span></p>
             </div>
             <div class="clear"></div>
-            <p>To assign a file or make it public, click the corresponding Edit button, then fill out and submit the form that displays.</p>
             <?php
                 if (!$draft_count) {
                     if (isset($no_results_error)) {
@@ -857,9 +612,7 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                       <span class="checkmark"></span>
                   </label>
                   </th>
-                  <?php
-                            }
-                        ?>
+                  <?php } ?>
                   <th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('Date','cftp_admin'); ?></th>
                   <th data-hide="phone,tablet"><?php _e('Ext.','cftp_admin'); ?></th>
                   <th><?php _e('Title','cftp_admin'); ?></th>
@@ -901,6 +654,35 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                 </tr>
               </thead>
               <tbody>
+              <?php
+							$curr_usr_id =	CURRENT_USER_ID;
+							if(isset($files_to_add) && count($files_to_add) > 0 ) {
+							foreach ($files_to_add as $add_file){
+								$x=explode("_", $add_file[name]);
+								$cuid_array=explode(".", $add_file[name]);
+								$arr = array_reverse(preg_split('/(_)/',$cuid_array[0],-1, PREG_SPLIT_NO_EMPTY));
+								if($arr[0]==$curr_usr_id){
+			        ?>
+                <tr>
+              <td>
+                <label class="cc-chk-container">
+                    <input type="checkbox" name="orphans[]" value="<?php echo html_output($add_file['name']); ?>" />
+                    <span class="checkmark"></span>
+                </label>
+              </td>
+              <td data-value="<?php echo filemtime($add_file['path']); ?>"><?php echo date(TIMEFORMAT_USE, filemtime($add_file['path'])); ?></td>
+              <td><?php echo(pathinfo($add_file['name'], PATHINFO_EXTENSION)); ?></td>
+              <td><a draft-file= "<?php echo html_output($add_file['name']); ?>"  class="btn-ftp">
+              <?php _e(html_output($add_file['name']),'cftp_admin'); ?>
+                </a></td>
+              <td data-value="<?php echo filesize($add_file['path']); ?>"><?php echo html_output(format_file_size(get_real_size($add_file['path']))); ?></td>
+              <td colspan="7"> </td>
+                </tr>
+              <?php
+							}
+						}
+							}
+						?>
                 <?php
                         if ($count > 0) {
                             $sql_files_draft->setFetchMode(PDO::FETCH_ASSOC);
@@ -971,19 +753,23 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
         if(($row['expires'] == '0') || (time() < strtotime($row['expiry_date']))) {
                     ?>
                 <tr>
-                  <?php
-                                        /** Actions are not available for clients */
-                                        if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
-                                    ?>
+
                   <td>
+                    <?php
+                                          /** Actions are not available for clients */
+                                          if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
+                                      ?>
                   <label class="cc-chk-container">
                       <input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" />
                       <span class="checkmark"></span>
                   </label>
+                <?php   } else {   ?>
+                  <label class="cc-chk-container">
+                      <input type="checkbox"  disabled />
+                      <!-- <span class="checkmark"></span> -->
+                  </label>
+                <?php } ?>
                   </td>
-                  <?php
-                                        }
-                                    ?>
                   <td data-value="<?php echo strtotime($row['timestamp']); ?>"><?php echo $date; ?></td>
                   <td><?php
                                             $pathinfo = pathinfo($row['url']);
@@ -1012,8 +798,7 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                                     ?>
                   <td>
                         <a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=4" class="btn-sm">
-<?php
-?>
+<?php 
                         <?php _e(html_output($row['uploader']),'cftp_admin'); ?>
                         </a>
 </td>
@@ -1040,7 +825,7 @@ $senders_list_array = array();
 while ( $data = $senders_list->fetch() ) {
     //echo "<pre>";print_r($data);echo "</pre>";
 //      $senders_list_array[] = $data['user'];
-echo $data['user'].'</br>';
+echo $data['user'].'<br>';
 }
 ?>
                   </td>
@@ -1171,7 +956,6 @@ echo $data['user'].'</br>';
                 echo system_message('info',$msg);
             }
         ?>
-        </div>
       </div>
     </div>
   </div>
@@ -1252,3 +1036,11 @@ totalcount[0].innerHTML = numfiles.length + " files";
 }
 /*-------------------- Responsive table End--------------------------*/
 </style>
+<script >
+$('.btn-ftp').on('click', function(){
+
+    $('#draft').val($( this ).attr( "draft-file" ));
+    $('#dynamic-draft-form').submit();
+
+  });
+</script>

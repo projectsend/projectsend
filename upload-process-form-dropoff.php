@@ -27,6 +27,11 @@ define('CAN_INCLUDE_FILES', true);
 $target_id = isset($_POST['target_id'])?$_POST['target_id']:'';
 $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 ?>
+<style media="screen">
+	.hideNow{
+		display: none;
+	}
+</style>
 <div id="main">
 	<div id="content">
 		<!-- Added by B) -------------------->
@@ -536,98 +541,99 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 														if ($global_level != 0 || 1 == 1) 
 														{
 														?>
-															<div class="col-sm-6 col-xl-3 column_even column">
-																<div class="file_data">
+															<div class="col-sm-6 col-xl-3 hideNow column_even column">
+																<div class="file_data hideNow">
 																	<?php
 																	/**
 																	* Only show the expiration options if the current
 																	* uploader is a system user, and not a client.
 																	*/
 																	?>
-																	<h3><?php _e('Expiration date', 'cftp_admin');?></h3>
-																	<div class="form-group">
+																	<h3><?php // _e('Expiration date', 'cftp_admin');?></h3>
+																	<div class="form-group hideNow">
 																		<label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
-																		<?php 
-																		if($row['expiry_set']>0)
-																		{  
-																			$expiry_date = $expiry_date;
-																		}
-																		else 
-																		{
-																			if(empty($expiry_date) && $expiry_date=='')
-																			{
-																				$expiry_date = date('d-m-Y');
-																			}
-																			$date = strtotime(EXPIRY_MAX_DAYS."day", strtotime("$expiry_date"));
-																			$expiry_date = date("d-m-Y", $date);
-																		}
-																		?>						
+																		<?php
+																		// if($row['expiry_set']>0)
+																		// {
+																		// 	$expiry_date = $expiry_date;
+																		// }
+																		// else
+																		// {
+																		// 	if(empty($expiry_date) && $expiry_date=='')
+																		// 	{
+																		// 		$expiry_date = date('d-m-Y');
+																		// 	}
+																		// 	$date = strtotime(EXPIRY_MAX_DAYS."day", strtotime("$expiry_date"));
+																		// 	$expiry_date = date("d-m-Y", $date);
+																		// }
+																	//	echo($expiry_date."exppppppppppppppp");
+																		?>
 																		<div class="input-group date-container">
-																			<input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" />
+																			<input type="hidden" class="date-field form-control datapick-field" id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="0" />
 																				<div class="input-group-addon">
 																					<i class="glyphicon glyphicon-time"></i>
 																				</div>								
 																		</div>
 																	</div>
-																	<div class="checkbox">
-																		<label for="exp_checkbox_<?php echo $i; ?>">
-																		<?php 
-																		if($row['expiry_set']>0)
-																		{  
-																			$checked = 'checked';
-																		}
-																		else 
-																		{
-																			$checked = '';
-																			if(EXPIRY_MAX_DAYS>0)
-																			{
-																				$checked = 'checked';
-																			}
-																			else
-																			{
-																				$checked = '';
-																			}
-																		}
+																	<div class="checkbox hideNow">
+																		<label for="exp_checkbox_<?php // echo $i; ?>">
+																		<?php
+																		// if($row['expiry_set']>0)
+																		// {
+																		// 	$checked = 'checked';
+																		// }
+																		// else
+																		// {
+																		// 	$checked = '';
+																		// 	if(EXPIRY_MAX_DAYS>0)
+																		// 	{
+																		// 		$checked = 'checked';
+																		// 	}
+																		// 	else
+																		// 	{
+																		// 		$checked = '';
+																		// 	}
+																		// }
 																		?>
 																		<input type="checkbox" name="file[<?php echo $i; ?>][expires]" id="exp_checkbox_<?php echo $i; ?>" value="1" <?php echo $checked; ?>  /><?php _e('File expires', 'cftp_admin');?>
 																		</label>
 																	</div>
-	
-																	<div class="checkbox">
+
+																	<div class="checkbox hideNow">
 																		<label for="notify_checkbox">
 																			<input type="checkbox" id="notify_checkbox" name="file[<?php echo $i; ?>][notify]" value="1" <?php if ($row['notify']) { ?>checked="checked"<?php } ?> /><?php _e('Don\'t Notify Me', 'cftp_admin');?>
 																		</label>
 																	</div>
 	
 																	<div class="divider"></div>
-																	<h3><?php _e('Public downloading', 'cftp_admin');?></h3>
-																	<div class="checkbox">
-																		<label for="pub_checkbox_<?php echo $i; ?>">
-																			<input type="checkbox" class="pub_checkbox_status" id="pub_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][public]" value="1" />
-																			<?php _e('Allow public downloading of this file.', 'cftp_admin');?>
+																	<h3><?php // _e('Public downloading', 'cftp_admin');?></h3>
+																	<!-- <div class="checkbox hideNow">
+																		<label for="pub_checkbox_<?php //echo $i; ?>">
+																			<input type="checkbox" class="pub_checkbox_status" id="pub_checkbox_<?php  //echo $i; ?>" name="file[<?php // echo $i; ?>][public]" value="1" />
+																			<?php // _e('Allow public downloading of this file.', 'cftp_admin');?>
 																		</label>
-																	</div>
+																	</div> -->
 																	<div class="form-group">
-																		<?php 
-																		if($row['number_downloads']>0)
-																		{  
-																			$number_downloads = $row['number_downloads'];
-																		}
-																		else 
-																		{
-																			$number_downloads='';
-																			if(DOWNLOAD_MAX_TRIES>0)
-																			{
-																				$number_downloads = DOWNLOAD_MAX_TRIES;
-																			}
-																			else
-																			{
-																				$number_downloads = '';
-																			}
-																		}
-																		?>	
+																		<?php
+																		// if($row['number_downloads']>0)
+																		// {
+																		// 	$number_downloads = $row['number_downloads'];
+																		// }
+																		// else
+																		// {
+																		// 	$number_downloads='';
+																		// 	if(DOWNLOAD_MAX_TRIES>0)
+																		// 	{
+																		// 		$number_downloads = DOWNLOAD_MAX_TRIES;
+																		// 	}
+																		// 	else
+																		// 	{
+																		// 		$number_downloads = '';
+																		// 	}
+																		// }
+																		?>
 																		<label><?php _e('Number of Downloads Allowed', 'cftp_admin');?></label>
-																		<input type="text" name="file[<?php echo $i; ?>][number_downloads]" value="<?php echo $number_downloads; ?>" size="1" class="form-control1 file_title" placeholder="<?php _e('Enter number of downloads.', 'cftp_admin');?>" />
+																		<input type="text" name="file[<?php echo $i; ?>][number_downloads]" value="<?php// echo  $number_downloads; ?> 0" size="1" class="form-control1 file_title" placeholder="<?php _e('Enter number of downloads.', 'cftp_admin');?>" />
 																	</div>
 																</div>
 															</div>
@@ -641,7 +647,9 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 																	?>
 																	<h3><?php _e('Send To', 'cftp_admin');?></h3>
 																	<label><?php _e('Assign this file to', 'cftp_admin');?>:</label>
-																	<select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]" class="form-control chosen-select chosen-select_pub" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+																	<select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]"
+																	class="form-control chosen-select chosen-select_pub"
+																	data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
 																	<optgroup label="<?php _e('Clients', 'cftp_admin');?>">
 																	<?php
 																	/**

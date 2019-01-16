@@ -58,6 +58,11 @@ $current_level = get_current_user_level();
         </p>
         <script type="text/javascript">
 			$(document).ready(function() {
+				$("form input[type=submit]").click(function() {
+					//Seting up an event to emit an attribute clicked on clicking of submit button
+					    $("input[type=submit]", $(this).parents("form")).removeAttr("clicked");
+					    $(this).attr("clicked", "true");
+					});
 				setInterval(function(){
 					// Send a keep alive action every 1 minute
 					var timestamp = new Date().getTime()
@@ -96,20 +101,20 @@ $current_level = get_current_user_level();
 							$('#uploader_container').removeAttr("title");
 						}
 					}
-					/*
-					,init : {
-						QueueChanged: function(up) {
-							var uploader = $('#uploader').pluploadQueue();
-							uploader.start();
-						}
-					}
-					*/
-				});
+					});
 
 				var uploader = $('#uploader').pluploadQueue();
 
 				$('form').submit(function(e) {
-
+					var uptype = $("input[type=submit][clicked=true]").val();
+					if (uptype== "Batch Upload") {
+						console.log("Batch upload clicked");
+						var zipfield = '<input type="hidden" name="batching" value="1" />'
+						$('form').append(zipfield);
+						$('form').attr('action', 'upload-zip.php');
+					}
+					// e.preventDefault();
+				//	var fcount = $("#uploader_filelist").children().length;  $("#filecount").val(fcount);
 					if (uploader.files.length > 0) {
 						uploader.bind('StateChanged', function() {
 							if (uploader.files.length === (uploader.total.uploaded + uploader.total.failed)) {
@@ -159,7 +164,9 @@ $current_level = get_current_user_level();
 			});
 		</script>
         <form action="upload-process-form.php" name="upload_by_client" id="upload_by_client" method="post" enctype="multipart/form-data">
-          <input type="hidden" name="uploaded_files" id="uploaded_files" value="" />
+        <!-- <form action="upload-zip.php" name="upload_by_client" id="upload_by_client" method="post" enctype="multipart/form-data"> -->
+        <input type="hidden" name="uploaded_files" id="uploaded_files" value="" />
+          <input type="hidden" name="zipping" id="zipping" value="0" />
           <div id="uploader">
             <div class="message message_error">
               <p>
@@ -168,9 +175,9 @@ $current_level = get_current_user_level();
             </div>
           </div>
           <div class="cc-text-right after_form_buttons">
-            <button type="submit" name="Submit" class="btn btn-wide btn-primary" id="btn-submit">
-            <?php _e('Upload files','cftp_admin'); ?>
-            </button>
+						<!-- <input id="filecount" type="hidden" name="filecount" > -->
+            <input type="submit" class="btn btn-wide btn-primary" value="Upload Files" id="btn-submit">
+            <input type="submit" class="btn btn-wide btn-success" value="Batch Upload" id="zip-submit">
           </div>
           <div class="message message_info message_uploading">
             <p>

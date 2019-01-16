@@ -577,12 +577,12 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                   <?php
                                     if ( !isset( $search_on ) ) {
                                 ?>
-                  <th data-hide="phone"><?php _e('Assigned','cftp_admin'); ?></th>
+                  <th data-hide="phone" class="hideNow"><?php _e('Assigned','cftp_admin'); ?></th>
                   <?php
                                     }
                                 ?>
-                  <th data-hide="phone"><?php _e('Public','cftp_admin'); ?></th>
-                  <th data-hide="phone"><?php _e('Expiry','cftp_admin'); ?></th>
+                  <th data-hide="phone" class="hideNow"><?php _e('Public','cftp_admin'); ?></th>
+                  <th data-hide="phone" ><?php _e('Expiry','cftp_admin'); ?></th>
                   <?php
                             }
                             /**
@@ -746,15 +746,17 @@ if($data['g_name']) {echo $data['g_name']."<br>";}
                   <?php
                                                 if ( !isset( $search_on ) ) {
                                             ?>
-                  <td><?php
+                  <td class="hideNow">
+		  <?php
                                                             $class  = ($count_assignations == 0) ? 'danger' : 'success';
                                                             $status = ($count_assignations == 0) ? __('No','cftp_admin') : __('Yes','cftp_admin');
                                                         ?>
-                    <span class="label label-<?php echo $class; ?>"> <?php echo $status; ?> </span></td>
+                    <span class="label label-<?php echo $class; ?>"> <?php echo $status; ?> </span>
+		    </td>
                   <?php
                                                 }
                                             ?>
-                  <td class="col_visibility"><?php
+                  <td class="col_visibility hideNow "><?php
                                                     if ($row['public_allow'] == '1') {
                                                 ?>
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-id="<?php echo $row['id']; ?>" data-token="<?php echo html_output($row['public_token']); ?>" data-placement="top" data-toggle="popover" data-original-title="<?php _e('Public URL','cftp_admin'); ?>">
@@ -886,6 +888,9 @@ totalcount[0].innerHTML = numfiles.length + " files";
 });
  </script>
 <style type="text/css">
+.hideNow{
+  display: none !important;
+}
 /*-------------------- Responsive table by B) -----------------------*/
 @media only screen and (max-width: 1200px) {
     #content {

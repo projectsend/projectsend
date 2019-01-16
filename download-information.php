@@ -95,19 +95,14 @@ include('header.php');
                       <th><?php _e('Client','cftp_admin'); ?></th>
                       <th><?php _e('Anonymous','cftp_admin'); ?></th>
                       <th data-hide="phone"><?php _e("Client's IP",'cftp_admin'); ?></th>
-                      <th data-hide="phone"><?php _e("Client's hostname",'cftp_admin'); ?></th>
                     </tr>
                   </thead>
                   <tfoot>
                     <tr>
-                      <td></td>
-                      <td></td>
-                      <td><?php _e('Unique logged in clients/users','cftp_admin'); ?>
+                      <td colspan="3"><?php _e('Unique logged in clients/users','cftp_admin'); ?>
                         : <span class="label label-primary"><?php echo $file_stats['unique_clients']; ?></span></td>
-                      <td><?php _e('Total public downloads','cftp_admin'); ?>
+                      <td colspan="2"><?php _e('Total public downloads','cftp_admin'); ?>
                         : <span class="label label-primary"><?php echo $file_stats['anonymous_users']; ?></span></td>
-                      <td></td>
-                      <td></td>
                     </tr>
                   </tfoot>
                   <tbody>
@@ -115,7 +110,7 @@ include('header.php');
 									$statement = $dbh->prepare("SELECT * FROM " . TABLE_DOWNLOADS . " WHERE file_id = :id");
 									$statement->bindValue(':id', $file_id, PDO::PARAM_INT);
 									$statement->execute();
-								
+
 									$statement->setFetchMode(PDO::FETCH_ASSOC);
 									while ( $row = $statement->fetch() ) {
 										$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
@@ -133,7 +128,7 @@ include('header.php');
 												?>
                         <span class="label label-<?php echo $class; ?>"> <?php echo $label; ?> </span></td>
                       <td><?php echo $row['remote_ip']; ?></td>
-                      <td><span class="format_url"><?php echo $row['remote_host']; ?></span></td>
+                      <!-- <td><span class="format_url"><// ?php echo $row['remote_host']; ?></span></td> -->
                     </tr>
                     <?php
 									}

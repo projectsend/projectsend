@@ -168,6 +168,45 @@ include('header.php');
 
 		$no_results_error = 'filter';
 	}
+  else if(isset($_POST['submit-all'])){
+    if($_POST['key-activity']=="all"){
+      $date_from = date("Y-m-d", strtotime( $_POST['key-date-from']) );
+      $date_to = date("Y-m-d", strtotime( $_POST['key-date-to']) );
+
+      if($date_from === $date_to) {
+        $cq .= " WHERE (owner_user LIKE :owner OR affected_file_name LIKE :file OR affected_account_name LIKE :account) AND timestamp LIKE :date ";
+        $params[':date']	= '%'.$date_from.'%';
+      }
+      else {
+        $cq .= " WHERE (owner_user LIKE :owner OR affected_file_name LIKE :file OR affected_account_name LIKE :account) AND timestamp >= :date AND timestamp <= :date_to ";
+        $date_to = date('Y-m-d', strtotime($date_to . ' +1 day'));
+  			$params[':date']	= $date_from;
+  			$params[':date_to']	= $date_to;
+
+      }
+    } else {
+      $date_from = date("Y-m-d", strtotime( $_POST['key-date-from']) );
+      $date_to = date("Y-m-d", strtotime( $_POST['key-date-to']) );
+
+      if($date_from === $date_to) {
+        $cq .= " WHERE (owner_user LIKE :owner OR affected_file_name LIKE :file OR affected_account_name LIKE :account)AND action =:status AND timestamp LIKE :date ";
+        $params[':date']	= '%'.$date_from.'%';
+      }
+      else {
+        $cq .= " WHERE (owner_user LIKE :owner OR affected_file_name LIKE :file OR affected_account_name LIKE :account)AND action =:status AND timestamp >= :date AND timestamp <= :date_to ";
+        $date_to = date('Y-m-d', strtotime($date_to . ' +1 day'));
+  			$params[':date']	= $date_from;
+  			$params[':date_to']	= $date_to;
+
+      }
+      $params[':status']	= $_POST['key-activity'];
+    }
+    $search_terms		= '%'.$_POST['key'].'%';
+		$params[':owner']	= $search_terms;
+		$params[':file']	= $search_terms;
+		$params[':account']	= $search_terms;
+
+  }
 	else {
 		
 		$current_date = date("Y-m-d");
@@ -189,7 +228,12 @@ include('header.php');
 		<div class="form_actions_limit_results">
 			<form action="actions-log.php" name="log_search" method="post" class="form-inline">
 				<div class="form-group group_float">
-					<input type="text" name="search" id="search" value="<?php if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); } ?>" class="txtfield form_actions_search_box form-control" />
+					<input type="text" name="search" id="search" 
+          value="<?php
+          if(isset($_POST['search']) && !empty($_POST['search'])) { echo html_output($_POST['search']); }
+          else if(isset($_POST['key']) && !empty($_POST['key'])) { echo html_output($_POST['key']); }
+          ?>"
+          class="txtfield form_actions_search_box form-control" />
 				</div>
 				<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-default"><?php _e('Search','cftp_admin'); ?></button>
 			</form>
@@ -200,7 +244,13 @@ include('header.php');
 			  <?php _e('Date from', 'cftp_admin');?>
 			</label>
 			<div class="input-group date-container">
-			  <input type="text" class="date-field form-control datapick-field" readonly id="date_from" name="date_from" value="<?php echo isset($date_f)?$date_f: date("d-m-Y")?>" />
+			  <input type="text" class="date-field form-control datapick-field" readonly id="date_from" name="date_from"
+        value="<?php
+        if (isset($date_f)) { echo ($date_f); }
+        else if (isset($_POST['key-date-from'])){ echo($_POST['key-date-from']);}
+        else { echo(date("d-m-Y"));}
+        ?>"
+        />
 			  <div class="input-group-addon"> <i class="glyphicon glyphicon-time"></i> </div>
 			</div>
 		      </div>
@@ -209,7 +259,12 @@ include('header.php');
 			  <?php _e('Date to', 'cftp_admin');?>
 			</label>
 			<div class="input-group date-container">
-			  <input type="text" class="date-field form-control datapick-field" readonly id="date_to" name="date_to" value="<?php echo isset($date_t)?$date_t: date("d-m-Y")?>" />
+			  <input type="text" class="date-field form-control datapick-field" readonly id="date_to" name="date_to"
+        value="<?php
+        if (isset($date_t)) { echo ($date_t); }
+        else if (isset($_POST['key-date-to'])){ echo($_POST['key-date-to']);}
+        else { echo(date("d-m-Y"));}
+        ?>" />
 			  <div class="input-group-addon"> <i class="glyphicon glyphicon-time"></i> </div>
 			</div>
 		      </div>
@@ -225,7 +280,15 @@ include('header.php');
 							global $activities_references;
 								foreach ( $activities_references as $val => $text ) {
 							?>
-									<option value="<?php echo $val; ?>"><?php echo $text; ?></option>
+
+									<option value="<?php echo $val; ?>"
+                    <?php
+                    if ( isset($_POST['key-activity'] ) && ($_POST['key-activity'] !='all') && ($_POST['key-activity'] == $val))
+                    { echo("selected='selected'");}
+                    else if (isset($_POST['activity'] ) && ($_POST['key-activity'] !='all') && ($_POST['activity'] == $val) )
+                    { echo("selected='selected'"); }
+                    ?>
+                    ><?php echo $text; ?></option>
 							<?php
 								}
 							?>
@@ -233,6 +296,14 @@ include('header.php');
 				</div>
 				<button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default"><?php _e('Filter','cftp_admin'); ?></button>
 			</form>
+      <br>
+      <form action="actions-log.php" method="post">
+        <input type="hidden" id="key" name="key" value="">
+        <input type="hidden" id="key-date-from" name="key-date-from" value="">
+        <input type="hidden" id="key-date-to" name="key-date-to" value="">
+        <input type="hidden" id="key-activity" name="key-activity" value="all">
+        <button name="submit-all" type="submit" class="btn btn-sm btn-success" >Submit All</button>
+      </form>
 		</div>
 	</div>
 
@@ -407,3 +478,21 @@ include('header.php');
 }
 /*-------------------- Responsive table End--------------------------*/
 </style>
+<script type="text/javascript">
+$('#key').val($('#search').val());
+$('#key-date-from').val($("#date_from").val());
+$('#key-date-to').val($("#date_to").val());
+$("#search").on("change paste keyup", function() {
+  $('#key').val($(this).val());
+});
+
+$("#date_from").on("change paste keyup", function() {
+  $('#key-date-from').val($(this).val());
+});
+$("#date_to").on("change paste keyup", function() {
+  $('#key-date-to').val($(this).val());
+});
+$("#activity").on("change paste keyup", function() {
+  $('#key-activity').val($(this).val());
+});
+</script>

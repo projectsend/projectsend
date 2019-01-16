@@ -85,6 +85,7 @@ if (isset($_GET['category'])) {
 }
 include('header.php');
 ?>
+
 <script type="text/javascript">
     $(document).ready(function() {
         $("#do_action").click(function() {
@@ -888,9 +889,7 @@ totalcount[0].innerHTML = numfiles.length + " files";
 });
  </script>
 <style type="text/css">
-.hideNow{
-  display: none !important;
-}
+
 /*-------------------- Responsive table by B) -----------------------*/
 @media only screen and (max-width: 1200px) {
     #content {

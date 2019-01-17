@@ -928,15 +928,15 @@ color:#e33a49;
 										if($current_level != '0') {
 												if ( !isset( $search_on ) ) {
 											?>
-                  <td class="hideNow"><?php
+                  <!-- <td class="hideNow"><?php
 															$class	= ($count_assignations == 0) ? 'danger' : 'success';
 															$status	= ($count_assignations == 0) ? __('No','cftp_admin') : __('Yes','cftp_admin');
 														?>
-                    <span class="label label-<?php echo $class; ?>"> <?php echo $status; ?> </span></td>
+                    <span class="label label-<?php echo $class; ?>"> <?php echo $status; ?> </span></td> -->
                   <?php
 												}
 											?>
-                  <td class="col_visibility hideNow"><?php
+                  <!-- <td class="col_visibility hideNow"><?php
 													if ($row['public_allow'] == '1') {
 												?>
                     <a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-id="<?php echo $row['id']; ?>" data-token="<?php echo html_output($row['public_token']); ?>" data-placement="top" data-toggle="popover" data-original-title="<?php _e('Public URL','cftp_admin'); ?>">
@@ -951,7 +951,7 @@ color:#e33a49;
 															$status_private	= __('Private','cftp_admin');
 															echo ($row['public_allow'] == 1) ? $status_public : $status_private;
 												?>
-                    </a></td>
+                    </a></td> -->
                   <td><?php
 													if ($row['expires'] == '0') {
 												?>

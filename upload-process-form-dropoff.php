@@ -31,6 +31,12 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 	.hideNow{
 		display: none;
 	}
+	.chosen-container-multi .chosen-choices li.search-field {
+    	display: none !important;
+	}
+	select.form-control + .chosen-container-multi .chosen-choices li.search-choice .search-choice-close {
+    	display: none !important;
+	}
 </style>
 <div id="main">
 	<div id="content">
@@ -648,9 +654,7 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 																	<h3><?php _e('Send To', 'cftp_admin');?></h3>
 																	<label><?php _e('Assign this file to', 'cftp_admin');?>:</label>
 																	<select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]"
-																	class="form-control chosen-select chosen-select_pub"
-																	data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
-																	<optgroup label="<?php _e('Clients', 'cftp_admin');?>">
+																	class="form-control chosen-select  chosen-select_pub disabled">
 																	<?php
 																	/**
 																	* The clients list is generated early on the file so the
@@ -658,35 +662,22 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 																	*/
 																	foreach($clients as $client => $client_name) 
 																	{
+																		if ($client == $target_id){
 																	?>
-																		<option value="<?php echo html_output('c'.$client); ?>"><?php echo html_output($client_name); ?></option>
+																		<option value="<?php echo html_output('c'.$client); ?>" selected><?php echo html_output($client_name); ?></option>
 																	<?php
 																	}
-																	?>
-																	</optgroup>
-																	<optgroup label="<?php _e('Groups', 'cftp_admin');?>">
-																	<?php
-																	/**
-																	 * The groups list is generated early on the file so the
-																	 * array doesn't need to be made once on every file.
-																	 */
-																	foreach($groups as $group => $group_name) 
-																	{
-																	?>
-																		<option value="<?php echo html_output('g'.$group); ?>"><?php echo html_output($group_name); ?></option>
-																	<?php
 																	}
 																	?>
-																	</optgroup>
 																	</select>
-																	<div class="list_mass_members"> <a href="#" class="btn btn-xs btn-primary add-all" data-type="assigns">
-																		<?php _e('Add all','cftp_admin'); ?>
+																	<!-- <div class="list_mass_members"> <a href="#" class="btn btn-xs btn-primary add-all" data-type="assigns">
+																		<?php // _e('Add all','cftp_admin'); ?>
 																		</a> <a href="#" class="btn btn-xs btn-primary remove-all" data-type="assigns">
-																		<?php _e('Remove all','cftp_admin'); ?>
+																		<?php // _e('Remove all','cftp_admin'); ?>
 																		</a> <a href="#" class="btn btn-xs btn-danger copy-all" data-type="assigns">
-																		<?php _e('Copy selections to other files','cftp_admin'); ?>
+																		<?php // _e('Copy selections to other files','cftp_admin'); ?>
 																		</a>
-																	</div>
+																	</div> -->
 																	<div class="divider"></div>
 																	<div class="checkbox">
 																		<label for="hid_checkbox_<?php echo $i; ?>">
@@ -717,9 +708,9 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 																		</a> 
 																	</div>
 																</div>
-																<h3><?php _e('Future Send Date', 'cftp_admin');?></h3>
-	
-																<div class="form-group">
+																<h3><?php // _e('Future Send Date', 'cftp_admin');?></h3>
+
+																<div class="form-group hideNow">
 																	<label for="file[<?php echo $i; ?>][future_send_date]">
 																		<?php _e('Select a date', 'cftp_admin');?>
 																	</label>
@@ -1074,13 +1065,13 @@ else if (!$("#pub_checkbox_1").is(":checked")) {
 	{ ?>
 		<script>
 			$(document).ready(function() {
-				var $target_id = '<?php echo $target_id;  ?>';
-				$target_id = 'c'+$target_id;
-			
-				$('.chosen-select').chosen();
-				$('.chosen-select').val($target_id);
-				$('.chosen-select').trigger("chosen:updated");
-			});
+			// 	var $target_id = '<?php // echo $target_id;  ?>';
+			// 	$target_id = 'c'+$target_id;
+			//
+			// 	$('.chosen-select').chosen();
+			// 	$('.chosen-select').val($target_id);
+			// 	$('.chosen-select').trigger("chosen:updated");
+			// });
 		</script>
 	<?php 
 	}

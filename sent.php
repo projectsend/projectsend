@@ -187,7 +187,8 @@ include('header.php');
                          */
                         foreach ($selected_files as $work_file) {
                             $this_file = new FilesActions();
-                            $hide_file = $this_file->change_files_hide_status($work_file, '1', $_POST['modify_type'], $_POST['modify_id']);
+                            $this_file->hide_n_show($work_file, '1');
+
                         }
                         $msg = __('The selected files were marked as hidden.','cftp_admin');
                         echo system_message('ok',$msg);
@@ -200,7 +201,7 @@ include('header.php');
                          */
                         foreach ($selected_files as $work_file) {
                             $this_file = new FilesActions();
-                            $show_file = $this_file->change_files_hide_status($work_file, '0', $_POST['modify_type'], $_POST['modify_id']);
+                            $show_file = $this_file->hide_n_show($work_file, '0');
                         }
                         $msg = __('The selected files were marked as visible.','cftp_admin');
                         echo system_message('ok',$msg);
@@ -212,16 +213,11 @@ include('header.php');
                          */
                         foreach ($selected_files as $work_file) {
                             $this_file = new FilesActions();
-                            $unassign_file = $this_file->unassign_file($work_file, $_POST['modify_type'], $_POST['modify_id']);
+                            $this_file->unassign($work_file);
                         }
                         $msg = __('The selected files were unassigned from this client.','cftp_admin');
                         echo system_message('ok',$msg);
-                        if ($search_on == 'group_id') {
-                            $log_action_number = 11;
-                        }
-                        elseif ($search_on == 'client_id') {
-                            $log_action_number = 10;
-                        }
+                        $log_action_number = 10;
                         break;
                     case 'delete':
                         $delete_results = array(
@@ -476,19 +472,10 @@ include('header.php');
                     <label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i>
                       <?php _e('Selected files actions','cftp_admin'); ?>
                       :</label>
-                    <?php
-                                        if (isset($search_on)) {
-                                    ?>
-                    <input type="hidden" name="modify_type" id="modify_type" value="<?php echo $search_on; ?>" />
-                    <input type="hidden" name="modify_id" id="modify_id" value="<?php echo $this_id; ?>" />
-                    <?php
-                                        }
-                                    ?>
+                    <input type="hidden" name="modify_type" id="modify_type" value="from_id" />
+                    <input type="hidden" name="modify_id" id="modify_id" value="<?php  echo CURRENT_USER_ID; ?>" />
                     <select name="files_actions" id="files_actions" class="txtfield form-control">
-                      <?php
-                                            /** Options only available when viewing a client/group files list */
-                                            if (isset($search_on)) {
-                                        ?>
+
                       <option value="hide">
                       <?php _e('Hide','cftp_admin'); ?>
                       </option>
@@ -499,7 +486,7 @@ include('header.php');
                       <?php _e('Unassign','cftp_admin'); ?>
                       </option>
                       <?php
-                                            }
+                                          //  }
                                         ?>
                       <option value="delete">
                       <?php _e('Delete','cftp_admin'); ?>
@@ -600,7 +587,6 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                                 }
                             }
                         ?>
-                 <!--  <th data-hide="phone" data-sort-ignore="true"><?php _e('Actions','cftp_admin'); ?></th> -->
                 </tr>
               </thead>
               <tbody>

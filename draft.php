@@ -797,7 +797,7 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                                         if($current_level != '0') {
                                     ?>
                   <td>
-                        <a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=6" class="btn-sm">
+                        <a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=4" class="btn-sm">
                         <?php _e(html_output($row['uploader']),'cftp_admin'); ?>
                         </a>
 </td>
@@ -930,7 +930,7 @@ echo $data['user'].'<br>';
                                             }
                                         }
                                     ?>
-                  <td><a href="edit-to-send.php?file_id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm">
+                  <td><a href="edit-to-send.php?file_id=<?php echo $row["id"]; ?>&page_id=4" class="btn btn-primary btn-sm">
                     <?php _e('Edit','cftp_admin'); ?>
                     </a></td> 
                 </tr>

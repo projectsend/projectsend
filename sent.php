@@ -916,10 +916,8 @@ totalcount[0].innerHTML = numfiles.length + " files";
     td:nth-of-type(5):before { content: "Size"; }
     td:nth-of-type(6):before { content: "Uploader"; }
     td:nth-of-type(7):before { content: "Sent to"; }
-    td:nth-of-type(8):before { content: "Assigned"; }
-    td:nth-of-type(9):before { content: "Public"; }
-    td:nth-of-type(10):before { content: "Expiry"; }
-    td:nth-of-type(11):before { content: "Total downloads"; }
+    td:nth-of-type(8):before { content: "Expiry"; }
+    td:nth-of-type(9):before { content: "Total downloads"; }
 }
 /*-------------------- Responsive table End--------------------------*/
 </style>

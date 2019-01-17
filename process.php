@@ -176,16 +176,25 @@ class process {
 						//echo "<br>-------------------w ".$fileData1;
 						if($fileData1) {
 						$aes1 = new AES($fileData1, ENCRYPTION_KEY, BLOCKSIZE);
+						//$decryptData1 = $aes1->decrypt();
+						//Decryption disabled for zip files
+						if (pathinfo($this->real_file, PATHINFO_EXTENSION) != "zip")
+						{
+
 						$decryptData1 = $aes1->decrypt();
-						//echo "<br>-------------------w ".$decryptData1;
-						//echo UPLOADED_FILES_FOLDER;						
-						
+
+					 }
+					 else {
+						$decryptData1 = $fileData1;
+					 }
+
 						if (!file_exists(UPLOADED_FILES_FOLDER.'temp')) {
 						mkdir(UPLOADED_FILES_FOLDER.'temp', 0777, true);
 						}
 						$real_file1 = UPLOADED_FILES_FOLDER.'temp/'.$this->real_file_url;
 				
 						file_put_contents($real_file1  , $decryptData1);
+						// file_put_contents($real_file1  , $fileData1);
 						/* AES Decryption ended by RJ-07-Oct-2016 */
 						//echo $this->real_file; exit();
 						

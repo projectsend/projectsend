@@ -326,7 +326,7 @@ color:#e33a49;
 											);
 						foreach ($selected_files as $index => $file_id) {
 							$this_file		= new FilesActions();
-							$delete_status	= $this_file->delete_files($file_id);
+							$delete_status	= $this_file->delete_inbox_files($file_id);
 							if ( $delete_status == true ) {
 								$delete_results['ok']++;
 							}
@@ -422,8 +422,9 @@ color:#e33a49;
 			 */
 			$today = date("Y-m-d H:i:s",strtotime("tomorrow"));
 			$params = array();
-			$fq = "SELECT tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id";
-	
+			$fq = "SELECT tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id ";
+
+			 $conditions[] = "tbl_files_relations.client_id =".CURRENT_USER_ID;
 			if ( isset($search_on) && !empty($gotten_files) ) {
 				$conditions[] = "FIND_IN_SET(id, :files)";
 				$params[':files'] = $gotten_files;
@@ -853,7 +854,7 @@ color:#e33a49;
 											
                                         /**
                                         * Clients can download from here.
-                                        It was like client cannot download. But now changed to Can.
+                                        *It was like client cannot download. But now changed to Can.
                                         */
                                         if($current_level == '0' || $current_level=='8') 
                                         {

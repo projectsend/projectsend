@@ -7,7 +7,7 @@
  */
 $load_scripts   = array(
                         'footable',
-                    ); 
+                    );
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 $active_nav = 'files';
@@ -48,7 +48,7 @@ if (isset($_GET['group_id'])) {
     $this_id = $_GET['group_id'];
     $sql_name = $dbh->prepare("SELECT name from " . TABLE_GROUPS . " WHERE id=:id");
     $sql_name->bindParam(':id', $this_id, PDO::PARAM_INT);
-    $sql_name->execute();                           
+    $sql_name->execute();
     if ( $sql_name->rowCount() > 0) {
         $sql_name->setFetchMode(PDO::FETCH_ASSOC);
         while( $row_group = $sql_name->fetch() ) {
@@ -90,11 +90,11 @@ include('header.php');
 <script type="text/javascript">
     $(document).ready(function() {
         $("#do_action").click(function() {
-            var checks = $("td input:checkbox").serializeArray(); 
-            if (checks.length == 0) { 
+            var checks = $("td input:checkbox").serializeArray();
+            if (checks.length == 0) {
                 alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
-                return false; 
-            } 
+                return false;
+            }
             else {
                 var action = $('#files_actions').val();
                 if (action == 'delete') {
@@ -337,8 +337,6 @@ include('header.php');
             */
             $current_level = get_current_user_level();
             if ($current_level == '7' || $current_level == '8' || $current_level == '0' || $current_level == '9') {
-                /*$conditions[] = "uploader = :uploader"; */
-                /*$conditions[] = "tbl_files.uploader ='".$global_user."'"; */
                 $no_results_error = 'account_level';
                 $params[':uploader'] = $global_user;
             }
@@ -417,63 +415,75 @@ include('header.php');
             $sql_files = $dbh->prepare($q_sent_file);  
             $sql_files->execute();
             $count = $sql_files->rowCount();
-        }    
-/*=========================================orphan files===========================================================*/    
-        $work_folder = UPLOADED_FILES_FOLDER;
-        /**
-         * Make a list of existing files on the database.
-         * When a file doesn't correspond to a record, it can
-         * be safely renamed.
-         */
-        $sql = $dbh->query("SELECT url, id, public_allow, uploader FROM " . TABLE_FILES );
-        $db_files = array();
-        $sql->setFetchMode(PDO::FETCH_ASSOC);
-        while ( $row = $sql->fetch() ) {
-            $db_files[$row["url"]] = $row["id"];
-            if ($row['public_allow'] == 1) {
-                $db_files_public[$row["url"]] = $row["id"];
-            }
         }
-        //var_dump($sql); exit;
-        /** Make an array of already assigned files */
-        $sql = $dbh->query("SELECT DISTINCT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE client_id IS NOT NULL OR group_id IS NOT NULL OR folder_id IS NOT NULL");
-        $assigned = array();
-        $sql->setFetchMode(PDO::FETCH_ASSOC);
-        while ( $row = $sql->fetch() ) {
-            $assigned[] = $row["file_id"];
-        } 
-        //var_dump($sql); exit;
-        /** We consider public file as assigned file */
-        foreach ($db_files_public as $file_id){
-            $assigned[] = $file_id;
-        }
-        /** Read the temp folder and list every allowed file */
-        if ($handle = opendir($work_folder))  {
-            while (false !== ($filename = readdir($handle))) {
-                $filename_path = $work_folder.'//'.$filename;
-                if(!is_dir($filename_path)) {
-                    if ($filename != "." && $filename != "..") { 
-                        /** Check types of files that are not on the database */    
-                        $x_id = CURRENT_USER_USERNAME ;
-                        if (!array_key_exists($filename,$db_files)) {
-                            $file_object = new PSend_Upload_File();
-                            $new_filename = $file_object->safe_rename_on_disk( $filename , $work_folder );
-                            /** Check if the filetype is allowed */
-                            if ($file_object->is_filetype_allowed($new_filename)) {
-                                /** Add it to the array of available files */
-                                $new_filename_path = $work_folder.'/'.$new_filename;
-                                //$files_to_add[$new_filename] = $new_filename_path;
-                                $files_to_add[] = array('path'      => $new_filename_path,
-                                                        'name'      => $new_filename,
-                                                        'reason'    => 'not_on_db',);
-                            }
-                        }
-                    }
-                }
-            }
-            closedir($handle);
-        }
-        
+/*=========================================orphan files===========================================================*/
+		$work_folder = UPLOADED_FILES_FOLDER;
+		/**
+		 * Make a list of existing files on the database.
+		 * When a file doesn't correspond to a record, it can
+		 * be safely renamed.
+		 */
+		$sql = $dbh->query("SELECT url, id, public_allow, uploader FROM " . TABLE_FILES );
+		$db_files = array();
+		$sql->setFetchMode(PDO::FETCH_ASSOC);
+		while ( $row = $sql->fetch() ) {
+			$db_files[$row["url"]] = $row["id"];
+			if ($row['public_allow'] == 1) {
+				$db_files_public[$row["url"]] = $row["id"];
+			}
+		}
+		//var_dump($sql); exit;
+		/** Make an array of already assigned files */
+		$sql = $dbh->query("SELECT DISTINCT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE client_id IS NOT NULL OR group_id IS NOT NULL OR folder_id IS NOT NULL");
+		$assigned = array();
+		$sql->setFetchMode(PDO::FETCH_ASSOC);
+		while ( $row = $sql->fetch() ) {
+			$assigned[] = $row["file_id"];
+		}
+		//var_dump($sql); exit;
+		/** We consider public file as assigned file */
+		foreach ($db_files_public as $file_id){
+			$assigned[] = $file_id;
+		}
+		/** Read the temp folder and list every allowed file */
+		if ($handle = opendir($work_folder))  {
+			while (false !== ($filename = readdir($handle))) {
+				$filename_path = $work_folder.'//'.$filename;
+				if(!is_dir($filename_path)) {
+					if ($filename != "." && $filename != "..") {
+						/** Check types of files that are not on the database */
+						$x_id = CURRENT_USER_USERNAME ;
+						if (!array_key_exists($filename,$db_files)) {
+							$file_object = new PSend_Upload_File();
+							$new_filename = $file_object->safe_rename_on_disk( $filename , $work_folder );
+							/** Check if the filetype is allowed */
+							if ($file_object->is_filetype_allowed($new_filename)) {
+								/** Add it to the array of available files */
+								$new_filename_path = $work_folder.'/'.$new_filename;
+								//$files_to_add[$new_filename] = $new_filename_path;
+								$files_to_add[] = array('path'		=> $new_filename_path,
+														'name'		=> $new_filename,
+														'reason'	=> 'not_on_db',);
+							}
+						}
+					}
+				}
+			}
+			closedir($handle);
+		}
+
+    $orphanCount=0;
+    if(isset($files_to_add) && count($files_to_add) > 0 ) {
+    foreach ($files_to_add as $opfile){
+      $x=explode("_", $opfile[name]);
+      $cuid_arr=explode(".", $opfile[name]);
+      $or_arr = array_reverse(preg_split('/(_)/',$cuid_arr[0],-1, PREG_SPLIT_NO_EMPTY));
+      if($or_arr[0]==CURRENT_USER_ID){
+        $orphanCount++;
+      }
+    }
+    }
+    $draft_count = $sql_files_draft->rowCount() + $orphanCount;
 /*=========================================orphan files end===========================================================*/
     ?>
 
@@ -620,16 +630,7 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                   <th data-hide="phone,tablet"><?php _e('Uploader','cftp_admin'); ?></th>
                   <?php
                             if($current_level != '0') {
-                        ?>
-                  <th data-hide="phone,tablet"><?php _e('Sent to','cftp_admin'); ?></th>
-                  <?php
-                                    if ( !isset( $search_on ) ) {
-                                ?>
-                  <th data-hide="phone"><?php _e('Assigned','cftp_admin'); ?></th>
-                  <?php
-                                    }
-                                ?>
-                  <th data-hide="phone"><?php _e('Public','cftp_admin'); ?></th>
+                  ?>
                   <th data-hide="phone"><?php _e('Expiry','cftp_admin'); ?></th>
                   <?php
                             }
@@ -639,15 +640,7 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                             if (isset($search_on)) {
                         ?>
                   <th data-hide="phone"><?php _e('Status','cftp_admin'); ?></th>
-                  <th data-hide="phone"><?php _e('Download count','cftp_admin'); ?></th>
                   <?php
-                            }
-                            else {
-                                if($current_level != '0') {
-                        ?>
-                  <th data-hide="phone"><?php _e('Total downloads','cftp_admin'); ?></th>
-                  <?php
-                                }
                             }
                         ?>
                  <th data-hide="phone" data-sort-ignore="true"><?php _e('Actions','cftp_admin'); ?></th>
@@ -662,7 +655,7 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
 								$cuid_array=explode(".", $add_file[name]);
 								$arr = array_reverse(preg_split('/(_)/',$cuid_array[0],-1, PREG_SPLIT_NO_EMPTY));
 								if($arr[0]==$curr_usr_id){
-			        ?>
+                  ?>
                 <tr>
               <td>
                 <label class="cc-chk-container">
@@ -676,7 +669,7 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
               <?php _e(html_output($add_file['name']),'cftp_admin'); ?>
                 </a></td>
               <td data-value="<?php echo filesize($add_file['path']); ?>"><?php echo html_output(format_file_size(get_real_size($add_file['path']))); ?></td>
-              <td colspan="7"> </td>
+              <td colspan="4"> </td>
                 </tr>
               <?php
 							}
@@ -699,11 +692,8 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                                  * filtering by client or group.
                                  */
                                 $params = array();
-                                //"SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME ."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')  AND tbl_files.future_send_date <='".$current_date."'   ";
-                                //$query_this_file = "SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')";
-                                $query_this_file="SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME ."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')  AND tbl_files.future_send_date <='".$current_date."'   ";
-                                //var_dump($query_this_file);
-                                //exit;
+							$query_this_file="SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME ."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')  AND tbl_files.future_send_date <='".$current_date."'   ";
+								
                                 $params[':file_id'] = $row['id'];
                                 if (isset($search_on)) {
                                     $query_this_file .= " AND $search_on = :id";
@@ -784,7 +774,7 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                                             if(($row['expires'] == '0') || (time() < strtotime($row['expiry_date']))) {
                                                 $download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
                                         ?>
-                    <a href="edit-to-send.php?file_id=<?php echo $row["id"]; ?>&page_id=4" > <?php echo html_output($row['filename']); ?> </a>
+                    <a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=6" > <?php echo html_output($row['filename']); ?> </a>
                     <?php
                                             }
                                         }
@@ -811,50 +801,6 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
 }
     if($current_level != '0') {
 ?>
-<td>
-<?php
-$senders_list = $dbh->prepare("SELECT tfr.*,tu.* FROM " . TABLE_FILES_RELATIONS . " AS tfr INNER JOIN ".TABLE_USERS." AS tu ON tfr.client_id= tu.id  WHERE tfr.file_id=:file_id" );
-//echo "SELECT tfr.*,tu.* FROM " . TABLE_FILES_RELATIONS . " AS tfr ON tfr.client_id= tu.id INNER JOIN ".TABLE_USERS." AS tu ON WHERE tfr.file_id=:file_id";
-//exit;
-$f_id = $row['id'];
-$senders_list->bindParam(':file_id', $f_id , PDO::PARAM_INT);
-$senders_list->execute();
-$senders_list->setFetchMode(PDO::FETCH_ASSOC);
-$senders_list_array = array();
-while ( $data = $senders_list->fetch() ) {
-    //echo "<pre>";print_r($data);echo "</pre>";
-//      $senders_list_array[] = $data['user'];
-echo $data['user'].'<br>';
-}
-?>
-                  </td>
-                  <?php
-                                                if ( !isset( $search_on ) ) {
-                                            ?>
-                  <td><?php
-                                                            $class  = ($count_assignations == 0) ? 'danger' : 'success';
-                                                            $status = ($count_assignations == 0) ? __('No','cftp_admin') : __('Yes','cftp_admin');
-                                                        ?>
-                    <span class="label label-<?php echo $class; ?>"> <?php echo $status; ?> </span></td>
-                  <?php
-                                                }
-                                            ?>
-                  <td class="col_visibility"><?php
-                                                    if ($row['public_allow'] == '1') {
-                                                ?>
-                    <a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-id="<?php echo $row['id']; ?>" data-token="<?php echo html_output($row['public_token']); ?>" data-placement="top" data-toggle="popover" data-original-title="<?php _e('Public URL','cftp_admin'); ?>">
-                    <?php
-                                                    }
-                                                    else {
-                                                ?>
-                    <a href="javascript:void(0);" class="btn btn-default btn-sm disabled" rel="" title="">
-                    <?php
-                                                    }
-                                                            $status_public  = __('Public','cftp_admin');
-                                                            $status_private = __('Private','cftp_admin');
-                                                            echo ($row['public_allow'] == 1) ? $status_public : $status_private;
-                                                ?>
-                    </a></td>
                   <td><?php
                                                     if ($row['expires'] == '0') {
                                                 ?>
@@ -893,44 +839,8 @@ echo $data['user'].'<br>';
                                                     $class          = ($hidden == 1) ? 'danger' : 'success';
                                                 ?>
                     <span class="label label-<?php echo $class; ?>"> <?php echo ($hidden == 1) ? $status_hidden : $status_visible; ?> </span></td>
-                  <td><?php
-                                                    switch ($results_type) {
-                                                        case 'client':
-                                                            echo $download_count; ?>
-                    <?php _e('times11111','cftp_admin');
-                                                            break;
-                                                        case 'group':
-                                                        case 'category':
-                                                ?>
-                    <a href="javascript:void(0);" class="<?php if ($download_count > 0) { echo 'downloaders btn-primary'; } else { echo 'btn-default disabled'; } ?> btn btn-sm" rel="<?php echo $row["id"]; ?>" title="<?php echo html_output($row['filename']); ?>"> <?php echo $download_count; ?>
-                    <?php _e('downloads','cftp_admin'); ?>
-                    </a>
-                    <?php
-                                                        break;
-                                                    }
-                                                ?></td>
-                  <?php
-                                        }
-                                        else {
-                                            if ($current_level != '0') {
-                                                if ( isset( $downloads_information[$row["id"]] ) ) {
-                                                    $download_info  = $downloads_information[$row["id"]];
-                                                    $btn_class      = ( $download_info['total'] > 0 ) ? 'downloaders btn-primary' : 'btn-default disabled';
-                                                    $total_count    = $download_info['total'];
-                                                }
-                                                else {
-                                                    $btn_class      = 'btn-default disabled';
-                                                    $total_count    = 0;
-                                                }
-                                    ?>
-                  <td><a href="<?php echo BASE_URI; ?>download-information.php?id=<?php echo $row['id']; ?>" class="<?php echo $btn_class; ?> btn btn-sm" rel="<?php echo $row["id"]; ?>" title="<?php echo html_output($row['filename']); ?>"> <?php echo $total_count; ?>
-                    <?php _e('downloads','cftp_admin'); ?>
-                    </a></td>
-                  <?php
-                                            }
-                                        }
-                                    ?>
-                  <td><a href="edit-to-send.php?file_id=<?php echo $row["id"]; ?>&page_id=4" class="btn btn-primary btn-sm">
+                    <?php        }      ?>
+                  <td><a href="edit-file.php?file_id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm">
                     <?php _e('Edit','cftp_admin'); ?>
                     </a></td> 
                 </tr>
@@ -1027,11 +937,7 @@ totalcount[0].innerHTML = numfiles.length + " files";
     td:nth-of-type(4):before { content: "Title"; }
     td:nth-of-type(5):before { content: "Size"; }
     td:nth-of-type(6):before { content: "Uploader"; }
-    td:nth-of-type(7):before { content: "Sent to"; }
-    td:nth-of-type(8):before { content: "Assigned"; }
-    td:nth-of-type(9):before { content: "Public"; }
-    td:nth-of-type(10):before { content: "Expiry"; }
-    td:nth-of-type(11):before { content: "Total downloads"; }
+    td:nth-of-type(7):before { content: "Expiry"; }
 }
 /*-------------------- Responsive table End--------------------------*/
 </style>

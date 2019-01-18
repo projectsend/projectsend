@@ -23,7 +23,7 @@ $target_name = isset($_POST['target_name'])?$_POST['target_name']:'';
     $zipname=$withoutExt.".zip";
     $zipFilePath = UPLOADED_FILES_FOLDER.$zipname;
     $r = $zip->open($zipFilePath,  ZipArchive::CREATE);
-		var_dump($r);
+		
     foreach ($_POST['finished_files'] as $p) {
         	$filesToAdd= file_get_contents(UPLOADED_FILES_FOLDER.$p);
         	$img = new AES($filesToAdd, ENCRYPTION_KEY, BLOCKSIZE);
@@ -31,12 +31,12 @@ $target_name = isset($_POST['target_name'])?$_POST['target_name']:'';
 					unlink(UPLOADED_FILES_FOLDER.$p);
 					file_put_contents(UPLOADED_FILES_FOLDER.$p, $decryptData);
 					$r=$zip->addFile(UPLOADED_FILES_FOLDER.$p,$p);
-					var_dump($r);
+					
 				}
 
 
 		$r=$zip->close();
-		var_dump($r);
+		
 		foreach ($_POST['finished_files'] as $p) {
 		unlink(UPLOADED_FILES_FOLDER.$p);
 		 }

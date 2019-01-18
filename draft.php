@@ -774,7 +774,7 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                                             if(($row['expires'] == '0') || (time() < strtotime($row['expiry_date']))) {
                                                 $download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
                                         ?>
-                    <a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=6" > <?php echo html_output($row['filename']); ?> </a>
+                    <a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=4" > <?php echo html_output($row['filename']); ?> </a>
                     <?php
                                             }
                                         }
@@ -840,7 +840,7 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                                                 ?>
                     <span class="label label-<?php echo $class; ?>"> <?php echo ($hidden == 1) ? $status_hidden : $status_visible; ?> </span></td>
                     <?php        }      ?>
-                  <td><a href="edit-file.php?file_id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm">
+                  <td><a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=4" class="btn btn-primary btn-sm">
                     <?php _e('Edit','cftp_admin'); ?>
                     </a></td> 
                 </tr>

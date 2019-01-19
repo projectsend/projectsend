@@ -471,6 +471,27 @@ include('header.php');
 			}
 			closedir($handle);
 		}
+    if (isset($_GET['search'])) {
+
+    			$search = htmlspecialchars($_GET['search']);
+    			function search_text($item) {
+    				global $search;
+    				if (stripos($item['name'], $search) !== false) {
+    					/**
+    					 * Items that match the search
+    					 */
+    					return true;
+    				}
+    				else {
+    					/**
+    					 * Remove other items
+    					 */
+    					unset($item);
+    				}
+    				return false;
+    			}
+    			$files_to_add = array_filter($files_to_add, 'search_text');
+    		}
 
     $orphanCount=0;
     if(isset($files_to_add) && count($files_to_add) > 0 ) {
@@ -483,7 +504,7 @@ include('header.php');
       }
     }
     }
-    $draft_count = $sql_files_draft->rowCount() + $orphanCount;
+    $draft_count += $orphanCount;
 /*=========================================orphan files end===========================================================*/
     ?>
 
@@ -669,7 +690,7 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
               <?php _e(html_output($add_file['name']),'cftp_admin'); ?>
                 </a></td>
               <td data-value="<?php echo filesize($add_file['path']); ?>"><?php echo html_output(format_file_size(get_real_size($add_file['path']))); ?></td>
-              <td colspan="4"> </td>
+              <td colspan="3"> </td>
                 </tr>
               <?php
 							}

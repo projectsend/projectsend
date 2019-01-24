@@ -163,8 +163,8 @@ $work_folder = UPLOADED_FILES_FOLDER;
 		if (!empty($_POST['search'])) {
 			
 			$search = htmlspecialchars($_POST['search']);
-			
-			
+
+			$no_results_error= "search";
 			function search_text($item) {
 				
 				global $search;
@@ -193,15 +193,19 @@ $work_folder = UPLOADED_FILES_FOLDER;
 
 			$files_to_add = array_filter($files_to_add, 'search_text');
 		}
-		
-		
-		
-		
+
+
+		if(isset($_POST['search']) && ($no_results_error=="search")) {
+			echo system_message('error',"Your search keywords returned no results");
+		}
+
+
+
 		/**
 		 * Generate the list of files if there is at least 1
 		 * available and allowed.
 		 */
-		if(isset($files_to_add) && count($files_to_add) > 0) {
+		if(isset($files_to_add)) {
 			foreach ($files_to_add as $key => $node) {
 		   
 				$files_to[$key]    = $node['last_modifed'];

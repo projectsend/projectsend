@@ -20,7 +20,7 @@ if(!check_for_admin()) {
 $active_nav = 'users';
 $cc_active_page = 'Users';
 
-$page_title = __('Users administration','cftp_admin');;
+$page_title = __('Users Administration','cftp_admin');;
 include('header.php');
 ?>
 

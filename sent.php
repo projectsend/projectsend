@@ -105,15 +105,6 @@ include('header.php');
                         return false;
                     }
                 }
-                else if (action == 'unassign') {
-                    var msg_1 = '<?php _e("You are about to unassign",'cftp_admin'); ?>';
-                    var msg_2 = '<?php _e("files from this account. Are you sure you want to continue?",'cftp_admin'); ?>';
-                    if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
             }
         });
         
@@ -206,18 +197,6 @@ include('header.php');
                         $msg = __('The selected files were marked as visible.','cftp_admin');
                         echo system_message('ok',$msg);
                         $log_action_number = 22;
-                        break;
-                    case 'unassign':
-                        /**
-                         * Remove the file from this client or group only.
-                         */
-                        foreach ($selected_files as $work_file) {
-                            $this_file = new FilesActions();
-                            $this_file->unassign($work_file);
-                        }
-                        $msg = __('The selected files were unassigned from this client.','cftp_admin');
-                        echo system_message('ok',$msg);
-                        $log_action_number = 10;
                         break;
                     case 'delete':
                         $delete_results = array(
@@ -313,17 +292,11 @@ include('header.php');
              */
 			$current_date = date("Y-m-d");
             $params = array();
-            $fq = "SELECT * FROM tbl_files AS tf LEFT JOIN ".TABLE_FILES_RELATIONS." AS tfr ON tf.id = tfr.file_id"; 
+            $fq = "SELECT * FROM tbl_files AS tf LEFT JOIN ".TABLE_FILES_RELATIONS." AS tfr ON tf.id = tfr.file_id";
+            $conditions[] = "tfr.hidden = 0";
             if ( isset($search_on) || !empty($gotten_files) ) {
                 $conditions[] = "FIND_IN_SET(id, :files)";
                 $params[':files'] = $gotten_files;
-            }
-            /** Add the search terms */ 
-            if(isset($_GET['search']) && !empty($_GET['search'])) {
-				$term = "%".$_GET['search']."%";
-				$conditions[] = "(filename LIKE '$term' OR description LIKE '$term')";
-                $no_results_error = 'search';
-             
             }
             /**
              * If the user is an uploader, or a client is editing his files
@@ -335,6 +308,14 @@ include('header.php');
 				$conditions[] = "tf.future_send_date<='".$current_date."'";
                 $no_results_error = 'account_level';
                 $params[':uploader'] = $global_user;
+            }
+
+            /** Add the search terms */
+            if(isset($_GET['search']) && !empty($_GET['search'])) {
+      				$term = "%".$_GET['search']."%";
+      				$conditions[] = "(filename LIKE '$term' OR description LIKE '$term')";
+              $no_results_error = 'search';
+
             }
             /**
              * Add the category filter
@@ -482,12 +463,6 @@ include('header.php');
                       <option value="show">
                       <?php _e('Show','cftp_admin'); ?>
                       </option>
-                      <option value="unassign">
-                      <?php _e('Unassign','cftp_admin'); ?>
-                      </option>
-                      <?php
-                                          //  }
-                                        ?>
                       <option value="delete">
                       <?php _e('Delete','cftp_admin'); ?>
                       </option>

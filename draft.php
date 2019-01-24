@@ -11,8 +11,8 @@ $load_scripts   = array(
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 $active_nav = 'files';
-$cc_active_page = 'Draft';
-$page_title = __('Draft','cftp_admin');
+$cc_active_page = 'Draft Files';
+$page_title = __('Draft Files','cftp_admin');
 $current_level = get_current_user_level();
 /*
  * Get the total downloads count here. The results are then

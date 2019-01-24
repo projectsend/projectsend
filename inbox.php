@@ -279,8 +279,8 @@ color:#e33a49;
 						 * account is the client.
 						 */
 						foreach ($selected_files as $work_file) {
-							$this_file = new FilesActions();
-							$hide_file = $this_file->change_files_hide_status($work_file, '1', $_POST['modify_type'], $_POST['modify_id']);
+								$this_file = new FilesActions();
+								$this_file->hide_n_show($work_file, '1');
 						}
 						$msg = __('The selected files were marked as hidden.','cftp_admin');
 						echo system_message('ok',$msg);
@@ -293,8 +293,8 @@ color:#e33a49;
 						 * that the file is visible.
 						 */
 						foreach ($selected_files as $work_file) {
-							$this_file = new FilesActions();
-							$show_file = $this_file->change_files_hide_status($work_file, '0', $_POST['modify_type'], $_POST['modify_id']);
+								$this_file = new FilesActions();
+								$show_file = $this_file->hide_n_show($work_file, '0');
 						}
 						$msg = __('The selected files were marked as visible.','cftp_admin');
 						echo system_message('ok',$msg);
@@ -306,17 +306,17 @@ color:#e33a49;
 						 * Remove the file from this client or group only.
 						 */
 						foreach ($selected_files as $work_file) {
-							$this_file = new FilesActions();
-							$unassign_file = $this_file->unassign_file($work_file, $_POST['modify_type'], $_POST['modify_id']);
+								$this_file = new FilesActions();
+								$this_file->unassign($work_file);
 						}
 						$msg = __('The selected files were unassigned from this client.','cftp_admin');
 						echo system_message('ok',$msg);
-						if ($search_on == 'group_id') {
+						/* if ($search_on == 'group_id') {
 							$log_action_number = 11;
 						}
 						elseif ($search_on == 'client_id') {
 							$log_action_number = 10;
-						}
+						} */
 						break;
 
 					case 'delete':
@@ -425,6 +425,7 @@ color:#e33a49;
 			$fq = "SELECT tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id ";
 
 			 $conditions[] = "tbl_files_relations.client_id =".CURRENT_USER_ID;
+			 $conditions[] = "tbl_files_relations.hidden = 0";
 			if ( isset($search_on) && !empty($gotten_files) ) {
 				$conditions[] = "FIND_IN_SET(id, :files)";
 				$params[':files'] = $gotten_files;
@@ -605,10 +606,6 @@ color:#e33a49;
 										}
 									?>
                     <select name="files_actions" id="files_actions" class="txtfield form-control">
-                      <?php
-											/** Options only available when viewing a client/group files list */
-											if (isset($search_on)) {
-										?>
                       <option value="hide">
                       <?php _e('Hide','cftp_admin'); ?>
                       </option>
@@ -618,9 +615,6 @@ color:#e33a49;
                       <option value="unassign">
                       <?php _e('Unassign','cftp_admin'); ?>
                       </option>
-                      <?php
-											}
-										?>
                       <option value="delete">
                       <?php _e('Delete','cftp_admin'); ?>
                       </option>

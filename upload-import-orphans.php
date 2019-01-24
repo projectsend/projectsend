@@ -18,9 +18,9 @@ $allowed_levels = array(9,8,7);
 require_once('sys.includes.php');
 
 $active_nav = 'files';
-$cc_active_page = 'Orphans files';
+$cc_active_page = 'Orphan Files';
 
-$page_title = __('Find orphan files', 'cftp_admin');
+$page_title = __('Find Orphan Files', 'cftp_admin');
 include('header.php');
 
 /**

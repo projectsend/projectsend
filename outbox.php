@@ -28,11 +28,11 @@ require_once('sys.includes.php');
 
 $active_nav = 'files';
 
-$cc_active_page = 'Outbox';
+$cc_active_page = 'Outbox Files';
 
 
 
-$page_title = __('Outbox','cftp_admin');
+$page_title = __('Outbox Files','cftp_admin');
 
 
 

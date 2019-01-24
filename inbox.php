@@ -149,7 +149,7 @@ color:#e33a49;
 				var action = $('#files_actions').val();
 				if (action == 'delete') {
 					var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
-					var msg_2 = '<?php _e("files permanently and for every client/group. Are you sure you want to continue?",'cftp_admin'); ?>';
+					var msg_2 = '<?php _e("This file will not be deleted permanently. Only your copy will be deleted. Are you sure you want to continue?",'cftp_admin'); ?>';
 					if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
 						return true;
 					} else {

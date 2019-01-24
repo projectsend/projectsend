@@ -11,7 +11,7 @@ $load_scripts   = array(
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 $active_nav = 'files';
-$cc_active_page = 'Sent';
+$cc_active_page = 'Sent Files';
 $page_title = __('Sent Files','cftp_admin');
 $current_level = get_current_user_level();
 /*

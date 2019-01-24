@@ -781,27 +781,7 @@ include('header.php');
 
 			}
 
-	
 
-			/** Add the search terms */	
-
-			if(isset($_GET['search']) && !empty($_GET['search'])) {
-
-				$conditions[] = "(filename LIKE :name OR description LIKE :description)";
-
-				$no_results_error = 'search';
-
-	
-
-				$search_terms			= '%'.$_GET['search'].'%';
-
-				$params[':name']		= $search_terms;
-
-				$params[':description']	= $search_terms;
-
-			}
-
-	
 
 			/**
 
@@ -825,7 +805,21 @@ include('header.php');
 
 			}
 
-			
+			/** Add the search terms */
+
+			if(isset($_GET['search']) && !empty($_GET['search'])) {
+
+				$conditions[] = "(filename LIKE :name OR description LIKE :description)";
+
+				$no_results_error = 'search';
+
+				$search_terms			= '%'.$_GET['search'].'%';
+
+				$params[':name']		= $search_terms;
+
+				$params[':description']	= $search_terms;
+
+			}
 
 			/**
 
@@ -1096,9 +1090,7 @@ include('header.php');
 										<?php
 
 											/** Options only available when viewing a client/group files list */
-
-											if (isset($search_on)) {
-
+																					
 										?>
 
 												<option value="hide"><?php _e('Hide','cftp_admin'); ?></option>
@@ -1106,12 +1098,6 @@ include('header.php');
 												<option value="show"><?php _e('Show','cftp_admin'); ?></option>
 
 												<option value="unassign"><?php _e('Unassign','cftp_admin'); ?></option>
-
-										<?php
-
-											}
-
-										?>
 
 										<option value="delete"><?php _e('Delete','cftp_admin'); ?></option>
 

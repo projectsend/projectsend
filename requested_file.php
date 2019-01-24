@@ -15,9 +15,9 @@ require_once('sys.includes.php');
 $loggedin_id = $_SESSION['loggedin_id'];
 
 $active_nav = 'files';
-$cc_active_page = 'Requested File';
+$cc_active_page = 'Requested Files';
 
-$page_title = __('Requested files','cftp_admin');
+$page_title = __('Requested Files','cftp_admin');
 
 $current_level = get_current_user_level();
 $form_action_url = 'requested_file.php';

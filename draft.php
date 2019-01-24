@@ -172,52 +172,7 @@ include('header.php');
                     $all_files[$data_file['id']] = $data_file['filename'];
                 }
                 switch($_POST['files_actions']) {
-                    case 'hide':
-                        /**
-                         * Changes the value on the "hidden" column value on the database.
-                         * This files are not shown on the client's file list. They are
-                         * also not counted on the home.php files count when the logged in
-                         * account is the client.
-                         */
-                        foreach ($selected_files as $work_file) {
-                            $this_file = new FilesActions();
-                            $hide_file = $this_file->change_files_hide_status($work_file, '1', $_POST['modify_type'], $_POST['modify_id']);
-                        }
-                        $msg = __('The selected files were marked as hidden.','cftp_admin');
-                        echo system_message('ok',$msg);
-                        $log_action_number = 21;
-                        break;
-                    case 'show':
-                        /**
-                         * Reverse of the previous action. Setting the value to 0 means
-                         * that the file is visible.
-                         */
-                        foreach ($selected_files as $work_file) {
-                            $this_file = new FilesActions();
-                            $show_file = $this_file->change_files_hide_status($work_file, '0', $_POST['modify_type'], $_POST['modify_id']);
-                        }
-                        $msg = __('The selected files were marked as visible.','cftp_admin');
-                        echo system_message('ok',$msg);
-                        $log_action_number = 22;
-                        break;
-                    case 'unassign':
-                        /**
-                         * Remove the file from this client or group only.
-                         */
-                        foreach ($selected_files as $work_file) {
-                            $this_file = new FilesActions();
-                            $unassign_file = $this_file->unassign_file($work_file, $_POST['modify_type'], $_POST['modify_id']);
-                        }
-                        $msg = __('The selected files were unassigned from this client.','cftp_admin');
-                        echo system_message('ok',$msg);
-                        if ($search_on == 'group_id') {
-                            $log_action_number = 11;
-                        }
-                        elseif ($search_on == 'client_id') {
-                            $log_action_number = 10;
-                        }
-                        break;
-                    case 'delete':
+                      case 'delete':
                         $delete_results = array(
                                                 'ok'        => 0,
                                                 'errors'    => 0,
@@ -633,17 +588,13 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
             <table id="files_list" class="cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
               <thead>
                 <tr>
-                  <?php
-                            /** Actions are not available for clients if delete own files is false */
-                            if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
-                        ?>
-                  <th class="td_checkbox" data-sort-ignore="true"> 
-                  <label class="cc-chk-container">
-                      <input type="checkbox" name="select_all" class="select_all1" value="0" />
-                      <span class="checkmark"></span>
-                  </label>
+
+                  <th class="td_checkbox" data-sort-ignore="true">
+                      <label class="cc-chk-container">
+                          <input type="checkbox" name="select_all" class="select_all1" value="0" />
+                          <span class="checkmark"></span>
+                      </label>
                   </th>
-                  <?php } ?>
                   <th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('Date','cftp_admin'); ?></th>
                   <th data-hide="phone,tablet"><?php _e('Ext.','cftp_admin'); ?></th>
                   <th><?php _e('Title','cftp_admin'); ?></th>
@@ -664,6 +615,7 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                   <?php
                             }
                         ?>
+                <th><?php _e('Prev. Assigned','cftp_admin'); ?></th>
                  <th data-hide="phone" data-sort-ignore="true"><?php _e('Actions','cftp_admin'); ?></th>
                 </tr>
               </thead>
@@ -766,20 +718,10 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                 <tr>
 
                   <td>
-                    <?php
-                                          /** Actions are not available for clients */
-                                          if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
-                                      ?>
                   <label class="cc-chk-container">
                       <input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" />
                       <span class="checkmark"></span>
                   </label>
-                <?php   } else {   ?>
-                  <label class="cc-chk-container">
-                      <input type="checkbox"  disabled />
-                      <!-- <span class="checkmark"></span> -->
-                  </label>
-                <?php } ?>
                   </td>
                   <td data-value="<?php echo strtotime($row['timestamp']); ?>"><?php echo $date; ?></td>
                   <td><?php
@@ -861,7 +803,18 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
                                                 ?>
                     <span class="label label-<?php echo $class; ?>"> <?php echo ($hidden == 1) ? $status_hidden : $status_visible; ?> </span></td>
                     <?php        }      ?>
-                  <td><a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=4" class="btn btn-primary btn-sm">
+
+                  <td>
+                    <?php
+                    if($row['prev_assign']=='1'){
+                     echo("YES");
+                   }
+                   else {
+                     echo("NO");
+                    }
+                     ?>
+                   </td>
+                  <td><a href="edit-file.php?file_id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm">
                     <?php _e('Edit','cftp_admin'); ?>
                     </a></td> 
                 </tr>

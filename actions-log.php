@@ -12,7 +12,7 @@ $load_scripts	= array(
 		); 
 
 $allowed_levels = array(9);
-$cc_active_page = 'Activities log';
+$cc_active_page = 'Activities Log';
 require_once('sys.includes.php');
 $page_title = __('Activities Log','cftp_admin');;
 

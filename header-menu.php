@@ -40,12 +40,12 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 	<div class="row sendfile1">
 		<div class="sendfile col-md-11">
 		<div>
-		<a href="upload-from-computer.php" class="btn btn-success center-block">Send File</a>
+		<a href="upload-from-computer.php" class="btn btn-success center-block">Send File(s)</a>
 	</div>
 </div>
 	<div class="sendfile col-md-11">
 		<div>
-		<a href="request-drop-off.php" class="btn btn-primary center-block" >Request a File</a>
+		<a href="request-drop-off.php" class="btn btn-primary center-block" >Request File(s)</a>
 		</div>
 	</div>
 </div>
@@ -62,23 +62,23 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 											),
 								'sub'	=> array(
 												/*array(
-													'label'	=> __('Send File', 'cftp_admin'),
+													'label'	=> __('Send File(s)', 'cftp_admin'),
 													'link'	=> 'upload-from-computer.php',
 												),*/
 												array(
-													'label'	=> __('Inbox', 'cftp_admin'),
+													'label'	=> __('Inbox Files', 'cftp_admin'),
 													'link'	=> 'inbox.php',
 												),
 												array(
-													'label'	=> __('Draft', 'cftp_admin'),
+													'label'	=> __('Draft Files', 'cftp_admin'),
 													'link'	=> 'draft.php',
 												),
 												array(
-													'label'	=> __('Outbox', 'cftp_admin'),
+													'label'	=> __('Outbox Files', 'cftp_admin'),
 													'link'	=> 'outbox.php',
 												),
 												array(
-													'label'	=> __('Sent', 'cftp_admin'),
+													'label'	=> __('Sent Files', 'cftp_admin'),
 													'link'	=> 'sent.php',
 												),
 												array(
@@ -86,11 +86,11 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 													'link'	=> 'public-files.php',
 												),
 												array(
-													'label'	=> __('Requested File', 'cftp_admin'),
+													'label'	=> __('Requested Files', 'cftp_admin'),
 													'link'	=> 'requested_file.php',
 												),
 											/*	array(
-													'label'	=> __('Request a File', 'cftp_admin'),
+													'label'	=> __('Request File(s)', 'cftp_admin'),
 													'link'	=> 'request-drop-off.php',
 												),*/
 												array(
@@ -103,11 +103,11 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 												),
 
 											/*	array(
-													'label'	=> __('Manage files', 'cftp_admin'),
+													'label'	=> __('Manage Files', 'cftp_admin'),
 													'link'	=> 'manage-files.php',
 												),
 												array(
-													'label'	=> __('Find orphan files', 'cftp_admin'),
+													'label'	=> __('Find Orphan Files', 'cftp_admin'),
 													'link'	=> 'upload-import-orphans.php',
 												),
 												array(
@@ -129,7 +129,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 											),
 								'sub'	=> array(
 												/*array(
-													'label'	=> __('Add new', 'cftp_admin'),
+													'label'	=> __('Add New', 'cftp_admin'),
 													'link'	=> 'clients-add.php',
 												),*/
 												array(
@@ -166,7 +166,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 												'link'	=> 'home.php',
 												),
 												array(
-													'label'	=> __('Manage files', 'cftp_admin'),
+													'label'	=> __('Manage Files', 'cftp_admin'),
 													'link'	=> 'manage-files.php',
 												),
 												array(
@@ -187,11 +187,11 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 													'link'	=> 'email-templates.php',
 												),
 												array(
-													'label'	=> __('Orphans files', 'cftp_admin'),
+													'label'	=> __('Orphan Files', 'cftp_admin'),
 													'link'	=> 'upload-import-orphans.php',
 												),
 												array(
-													'label'	=> __('Activities log', 'cftp_admin'),
+													'label'	=> __('Activities Log', 'cftp_admin'),
 													'link'	=> 'actions-log.php',
 												),												
 												array(
@@ -208,15 +208,15 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 								'nav'	=> 'groups',
 								'level'	=> array( 9,8 ),
 								'main'	=> array(
-												'label'	=> __('Clients groups', 'cftp_admin'),
+												'label'	=> __('Clients Groups', 'cftp_admin'),
 											),
 								'sub'	=> array(
 												array(
-													'label'	=> __('Add new', 'cftp_admin'),
+													'label'	=> __('Add New', 'cftp_admin'),
 													'link'	=> 'groups-add.php',
 												),
 												array(
-													'label'	=> __('Manage groups', 'cftp_admin'),
+													'label'	=> __('Manage Groups', 'cftp_admin'),
 													'link'	=> 'groups.php',
 												),
 											),
@@ -231,11 +231,11 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 											),
 								'sub'	=> array(
 												array(
-													'label'	=> __('Add new', 'cftp_admin'),
+													'label'	=> __('Add New', 'cftp_admin'),
 													'link'	=> 'users-add.php',
 												),
 												array(
-													'label'	=> __('Manage system users', 'cftp_admin'),
+													'label'	=> __('Manage System Users', 'cftp_admin'),
 													'link'	=> 'users.php',
 												),
 											),
@@ -249,7 +249,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 											),
 								'sub'	=> array(
 												array(
-													'label'	=> __('General options', 'cftp_admin'),
+													'label'	=> __('General Options', 'cftp_admin'),
 													'link'	=> 'options.php',
 												),
 												array(
@@ -260,7 +260,7 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 													'link'	=> 'branding.php',
 												),
 												array(
-													'label'	=> __('E-mail templates', 'cftp_admin'),
+													'label'	=> __('E-mail Templates', 'cftp_admin'),
 													'link'	=> 'email-templates.php',
 												),
 											),
@@ -275,12 +275,12 @@ else
 	<div class="row sendfile1">
 		<div class="sendfile col-md-11">
 		<div>
-		<a href="<?php echo BASE_URI;?>upload-from-computer.php" class="btn btn-success center-block">Send File</a>
+		<a href="<?php echo BASE_URI;?>upload-from-computer.php" class="btn btn-success center-block">Send File(s)</a>
 	</div>
 </div>
 	<div class="sendfile col-md-11">
 		<div>
-		<a href="<?php echo BASE_URI;?>request-drop-off.php" class="btn btn-primary center-block" >Request a File</a>
+		<a href="<?php echo BASE_URI;?>request-drop-off.php" class="btn btn-primary center-block" >Request File(s)</a>
 		</div>
 	</div>
 </div>
@@ -294,23 +294,23 @@ else
 											),
 								'sub'	=> array(
 												/*array(
-													'label'	=> __('Send File', 'cftp_admin'),
+													'label'	=> __('Send File(s)', 'cftp_admin'),
 													'link'	=> 'upload-from-computer.php',
 												),*/
 												array(
-													'label'	=> __('Inbox', 'cftp_admin'),
+													'label'	=> __('Inbox Files', 'cftp_admin'),
 													'link'	=> 'inbox.php',
 												),
 												array(
-													'label'	=> __('Draft', 'cftp_admin'),
+													'label'	=> __('Draft Files', 'cftp_admin'),
 													'link'	=> 'draft.php',
 												),
 												array(
-													'label'	=> __('Outbox', 'cftp_admin'),
+													'label'	=> __('Outbox Files', 'cftp_admin'),
 													'link'	=> 'outbox.php',
 												),
 												array(
-													'label'	=> __('Sent', 'cftp_admin'),
+													'label'	=> __('Sent Files', 'cftp_admin'),
 													'link'	=> 'sent.php',
 												),
 												array(
@@ -318,7 +318,7 @@ else
 													'link'	=> 'public-files.php',
 												),
 												array(
-													'label'	=> __('Requested File', 'cftp_admin'),
+													'label'	=> __('Requested Files', 'cftp_admin'),
 													'link'	=> 'requested_file.php',
 												),
 												array(
@@ -344,7 +344,7 @@ else
 								'nav'	=> 'manage',
 								'level'	=> array( 9,8,7,0 ),
 								'main'	=> array(
-												'label'	=> __('Manage files', 'cftp_admin'),
+												'label'	=> __('Manage Files', 'cftp_admin'),
 												'link'	=> 'manage-files.php',
 											),
 							);

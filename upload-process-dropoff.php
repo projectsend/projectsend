@@ -29,7 +29,7 @@ require_once('sys.includes.php');
 
 $active_nav = 'dropoff';
 
-$page_title = __('Upload files', 'cftp_admin');
+$page_title = __('Upload Files', 'cftp_admin');
 //include('header.php');
 
 

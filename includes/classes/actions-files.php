@@ -112,7 +112,9 @@ class FilesActions
 					$this->sql = $this->dbh->prepare("DELETE FROM " . TABLE_FILES_RELATIONS. " WHERE file_id = :file_id AND client_id =".CURRENT_USER_ID);
 					$this->sql->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
 					$this->sql->execute();
-
+					$prev_assign = $this->dbh->prepare("UPDATE " . TABLE_FILES . " SET prev_assign ='1' WHERE id = :file_id");
+					$prev_assign->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+					$prev_assign->execute();
 					$this->result = true;
 				}
 				else {

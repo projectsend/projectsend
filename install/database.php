@@ -37,6 +37,7 @@ if (defined('TRY_INSTALL')) {
 								  `public_token` varchar(32) NULL,
 								  `request_type` INT(10) NULL,
 								  `prev_assign` ENUM(\'0\',\'1\') NOT NULL DEFAULT \'0\',
+								  `prev_assign` ENUM(\'0\',\'1\') NOT NULL DEFAULT \'0\',
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
@@ -148,6 +149,8 @@ if (defined('TRY_INSTALL')) {
 								  `folder_id` int(11) DEFAULT NULL,
 								  `hidden` int(1) NOT NULL,
 								  `download_count` int(16) NOT NULL DEFAULT \'0\',
+								  `hide_inbox` ENUM(\'0\',\'1\') NOT NULL DEFAULT \'0\' ,
+								  `hide_sent` ENUM(\'0\',\'1\') NOT NULL DEFAULT \'0\' ,
 								  FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,

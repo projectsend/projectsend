@@ -13,9 +13,9 @@ $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 
 $active_nav = 'files';
-$cc_active_page = 'Inbox Files';
+$cc_active_page = 'Inbox';
 
-$page_title = __('Inbox Files','cftp_admin');
+$page_title = __('Inbox','cftp_admin');
 
 $current_level = get_current_user_level();
 $this_user = CURRENT_USER_USERNAME;
@@ -149,7 +149,13 @@ color:#e33a49;
 				var action = $('#files_actions').val();
 				if (action == 'delete') {
 					var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
-					var msg_2 = '<?php _e("This file will not be deleted permanently. Only your copy will be deleted. Are you sure you want to continue?",'cftp_admin'); ?>';
+					if(checks.length > 1){
+						var msg_2 = 'files . Files from your inbox will not be deleted permanently. Only your copy will be deleted. Are you sure you want to continue?';
+					}
+					else{
+						var msg_2 = 'file . File from your inbox will not be deleted permanently. Only your copy will be deleted. Are you sure you want to continue?';
+					}
+
 					if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
 						return true;
 					} else {

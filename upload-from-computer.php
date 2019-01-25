@@ -18,7 +18,7 @@ require_once('sys.includes.php');
 $active_nav = 'files';
 $cc_active_page = 'Send File';
 
-$page_title = __('Upload files', 'cftp_admin');
+$page_title = __('Upload Files', 'cftp_admin');
 
 $allowed_levels = array(9,8,7);
 

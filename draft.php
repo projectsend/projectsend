@@ -11,8 +11,8 @@ $load_scripts   = array(
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 $active_nav = 'files';
-$cc_active_page = 'Draft Files';
-$page_title = __('Draft Files','cftp_admin');
+$cc_active_page = 'Draft';
+$page_title = __('Draft','cftp_admin');
 $current_level = get_current_user_level();
 /*
  * Get the total downloads count here. The results are then
@@ -642,8 +642,8 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
               <?php _e(html_output($add_file['name']),'cftp_admin'); ?>
                 </a></td>
               <td data-value="<?php echo filesize($add_file['path']); ?>"><?php echo html_output(format_file_size(get_real_size($add_file['path']))); ?></td>
-              <td colspan="3"> </td>
-                </tr>
+              <td colspan="4"> </td>
+              </tr>
               <?php
 							}
 						}

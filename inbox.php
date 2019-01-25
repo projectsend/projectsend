@@ -140,11 +140,17 @@ color:#e33a49;
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("#do_action").click(function() {
-			var checks = $("td input:checkbox").serializeArray(); 
-			if (checks.length == 0) { 
-				alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
-				return false; 
-			} 
+			var checks = $("td input:checkbox").serializeArray();
+
+		//	console.log($('#files_actions').val);
+			var actType = $('#files_actions').val();
+			if (actType == 'show') {
+				return true;
+			}
+			else if (checks.length == 0) {
+					alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
+					return false;
+			}
 			else {
 				var action = $('#files_actions').val();
 				if (action == 'delete') {
@@ -293,19 +299,7 @@ color:#e33a49;
 						$log_action_number = 21;
 						break;
 
-					case 'show':
-						/**
-						 * Reverse of the previous action. Setting the value to 0 means
-						 * that the file is visible.
-						 */
-						foreach ($selected_files as $work_file) {
-								$this_file = new FilesActions();
-								$show_file = $this_file->hide_n_show($work_file, '0');
-						}
-						$msg = __('The selected files were marked as visible.','cftp_admin');
-						echo system_message('ok',$msg);
-						$log_action_number = 22;
-						break;
+
 
 					case 'unassign':
 						/**
@@ -369,6 +363,13 @@ color:#e33a49;
 					}
 					$new_record_action = $new_log_action->log_action_save($log_action_args);
 				}
+			}
+			else if ($_POST['files_actions']=='show') {
+				$this_file = new FilesActions();
+				$this_file->show_inbox();
+				$msg = __('All hidden files were marked as visible.','cftp_admin');
+				echo system_message('ok',$msg);
+				$log_action_number = 22;
 			}
 			else {
 				$msg = __('Please select at least one file.','cftp_admin');
@@ -616,7 +617,7 @@ color:#e33a49;
                       <?php _e('Hide','cftp_admin'); ?>
                       </option>
                       <option value="show">
-                      <?php _e('Show','cftp_admin'); ?>
+                      <?php _e('Show All','cftp_admin'); ?>
                       </option>
                       <option value="unassign">
                       <?php _e('Unassign','cftp_admin'); ?>

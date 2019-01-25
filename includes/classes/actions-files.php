@@ -219,6 +219,23 @@ class FilesActions
 			}
 		}
 	}
+	function show_inbox()
+	{
+		$this->check_level = array(9,8,7);
+			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
+				$this->sql = $this->dbh->prepare("UPDATE " . TABLE_FILES_RELATIONS . " SET hide_inbox ='0' WHERE client_id =".CURRENT_USER_ID);
+				$this->sql->execute();
+			}
+	}
+	function show_sent()
+	{
+		$this->check_level = array(9,8,7);
+			/** Do a permissions check */
+			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
+				$this->sql = $this->dbh->prepare("UPDATE " . TABLE_FILES_RELATIONS . " SET hide_sent ='0' WHERE client_id =".CURRENT_USER_ID);
+				$this->sql->execute();
+			}
+	}
 
 	function hide_for_everyone($file_id)
 	{

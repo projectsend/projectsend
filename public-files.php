@@ -12,7 +12,7 @@ $load_scripts   = array(
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 $active_nav = 'files';
-$cc_active_page = 'Public';
+$cc_active_page = 'Public Files';
 $page_title = __('Public Files','cftp_admin');
 $current_level = get_current_user_level();
 $current_user_name = CURRENT_USER_USERNAME;

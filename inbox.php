@@ -286,7 +286,7 @@ color:#e33a49;
 						 */
 						foreach ($selected_files as $work_file) {
 								$this_file = new FilesActions();
-								$this_file->hide_n_show($work_file, '1');
+								$this_file->hide_inbox($work_file);
 						}
 						$msg = __('The selected files were marked as hidden.','cftp_admin');
 						echo system_message('ok',$msg);
@@ -431,7 +431,7 @@ color:#e33a49;
 			$fq = "SELECT tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id ";
 
 			 $conditions[] = "tbl_files_relations.client_id =".CURRENT_USER_ID;
-			 $conditions[] = "tbl_files_relations.hidden = 0";
+			 $conditions[] = "tbl_files_relations.hide_inbox = '0' ";
 			if ( isset($search_on) && !empty($gotten_files) ) {
 				$conditions[] = "FIND_IN_SET(id, :files)";
 				$params[':files'] = $gotten_files;

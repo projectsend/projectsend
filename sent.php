@@ -178,7 +178,7 @@ include('header.php');
                          */
                         foreach ($selected_files as $work_file) {
                             $this_file = new FilesActions();
-                            $this_file->hide_n_show($work_file, '1');
+                            $this_file->hide_sent($work_file);
 
                         }
                         $msg = __('The selected files were marked as hidden.','cftp_admin');
@@ -293,7 +293,7 @@ include('header.php');
 			$current_date = date("Y-m-d");
             $params = array();
             $fq = "SELECT * FROM tbl_files AS tf LEFT JOIN ".TABLE_FILES_RELATIONS." AS tfr ON tf.id = tfr.file_id";
-            $conditions[] = "tfr.hidden = 0";
+            $conditions[] = "tfr.hide_sent = '0' ";
             if ( isset($search_on) || !empty($gotten_files) ) {
                 $conditions[] = "FIND_IN_SET(id, :files)";
                 $params[':files'] = $gotten_files;

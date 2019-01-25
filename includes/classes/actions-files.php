@@ -195,6 +195,30 @@ class FilesActions
 			}
 		}
 	}
+	function hide_inbox($file_id)
+	{
+		$this->check_level = array(9,8,7);
+		if (isset($file_id)) {
+			/** Do a permissions check */
+			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
+				$this->sql = $this->dbh->prepare("UPDATE " . TABLE_FILES_RELATIONS . " SET hide_inbox ='1' WHERE file_id = :file_id");
+				$this->sql->bindParam(':file_id', $file_id, PDO::PARAM_INT);
+				$this->sql->execute();
+			}
+		}
+	}
+	function hide_sent($file_id)
+	{
+		$this->check_level = array(9,8,7);
+		if (isset($file_id)) {
+			/** Do a permissions check */
+			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
+				$this->sql = $this->dbh->prepare("UPDATE " . TABLE_FILES_RELATIONS . " SET hide_sent ='1' WHERE file_id = :file_id");
+				$this->sql->bindParam(':file_id', $file_id, PDO::PARAM_INT);
+				$this->sql->execute();
+			}
+		}
+	}
 
 	function hide_for_everyone($file_id)
 	{

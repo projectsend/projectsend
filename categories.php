@@ -16,7 +16,7 @@ require_once('sys.includes.php');
 $active_nav = 'files';
 $cc_active_page = 'Categories';
 
-$page_title = __('Categories administration','cftp_admin');
+$page_title = __('Categories Administration','cftp_admin');
 
 $current_level = get_current_user_level();
 

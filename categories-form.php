@@ -54,7 +54,7 @@ switch ( $form_information['type'] ) {
 		</div>
 	</div>
 
-	<div class="inside_form_buttons">
+	<div class="inside_form_buttons cc-text-right">
 		<?php if ( $show_cancel === true ) { ?>
 			<a href="<?php echo BASE_URI; ?>categories.php" name="cancel" class="btn btn-wide btn-default"><?php _e('Cancel','cftp_admin'); ?></a>
 		<?php } ?>

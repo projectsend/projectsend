@@ -16,7 +16,7 @@ if(!check_for_admin()) {
 $active_nav = 'users';
 $cc_active_page = 'UserAdd';
 
-$page_title = __('Add system user','cftp_admin');
+$page_title = __('Add System User','cftp_admin');
 
 include('header.php');
 

@@ -58,7 +58,7 @@ exit
 # 5. Install the application
 1.  cd /var/www
 2.  yum install -y git
-3.  git pull https://github.com/MicroHealthLLC/mSend
+3.  git clone https://github.com/MicroHealthLLC/mSend
 4.  don't forget to configure apache to serve up this root directory of /var/www/mSend
 5.  systemctl restart httpd
 

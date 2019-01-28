@@ -1,20 +1,20 @@
 
-#Forked from ProjectSend
+# Forked from ProjectSend
 
-##Prerequisites:
+## Prerequisites:
 
-#1.  Install Apache
+# 1.  Install Apache
 yum -y install httpd
 systemctl start httpd.service
 systemctl enable httpd.servic
 
-#2.  open firewall ports
+# 2.  open firewall ports
 firewall-cmd --permanent --zone=public --add-service=http 
 firewall-cmd --permanent --zone=public --add-service=https
 firewall-cmd --reload
 
 
-#3.  Install PHP
+# 3.  Install PHP
 yum install -y epel-release
 yum install -y http://rpms.remirepo.net/enterprise/remi-release-7.rpm
 yum install -y yum-utils
@@ -24,15 +24,15 @@ yum install -y php72
 
 yum install -y php72-php-fpm php72-php-gd php72-php-json php72-php-mbstring php72-php-mysqlnd php72-php-xml php72-php-xmlrpc php72-php-opcache
 
-##3.1.Install PHP DOM extension and Enable PHP DOM extension.
+## 3.1.Install PHP DOM extension and Enable PHP DOM extension.
 yum -y install php-xml
 
-##3.2.Install GD Image library and Enable GD Image Library.
+## 3.2.Install GD Image library and Enable GD Image Library.
 yum install -y php70u-gd
 
 systemctl restart httpd.service
 
-#4.  Create a new mysql database on your server. Create/assign a user to it.
+# 4.  Create a new mysql database on your server. Create/assign a user to it.
 
 yum install mariadb-server mariadb
 
@@ -52,7 +52,7 @@ mysql> GRANT ALL PRIVILEGES ON *.* TO 'username'@'hostname' IDENTIFIED BY 'passw
 
 exit
 
-# Install the application
+# 5. Install the application
 1.  cd /var/www
 2.  yum install -y git
 3.  git pull https://github.com/MicroHealthLLC/mSend

@@ -10,7 +10,9 @@ systemctl enable httpd.servic
 
 # 2.  open firewall ports
 firewall-cmd --permanent --zone=public --add-service=http 
+
 firewall-cmd --permanent --zone=public --add-service=https
+
 firewall-cmd --reload
 
 

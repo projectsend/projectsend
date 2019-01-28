@@ -12,7 +12,7 @@ require_once('sys.includes.php');
 $active_nav = 'clients';
 $cc_active_page = 'client_add';
 
-$page_title = __('Add client','cftp_admin');
+$page_title = __('Add Client','cftp_admin');
 
 include('header.php');
 

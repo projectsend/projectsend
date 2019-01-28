@@ -112,7 +112,7 @@ define('CAN_INCLUDE_FILES', true);
           <div class="col-sm-4">
             <div class="widget">
               <h4>
-                <?php _e('Recent activites','cftp_admin'); ?>
+                <?php _e('Recent Activites','cftp_admin'); ?>
               </h4>
               <div class="widget_int">
                 <div class="log_change_action"> <a href="#" class="log_action btn btn-sm btn-default" rel="" id="default_log">

@@ -43,7 +43,8 @@ systemctl start mariadb
 systemctl enable mariadb
 
 mysql_secure_installation
-
+ - configure your installation by following the instructions
+ 
 mysql -u root -p
 
 mysql>CREATE USER 'user'@'hostname';

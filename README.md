@@ -50,7 +50,9 @@ mysql_secure_installation
 mysql -u root -p
 
 mysql>CREATE USER 'user'@'hostname';
+
 mysql>  create database database_name CHARACTER SET utf8 COLLATE utf8_general_ci;
+
 mysql> GRANT ALL PRIVILEGES ON *.* TO 'username'@'hostname' IDENTIFIED BY 'password';
 
 exit

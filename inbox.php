@@ -13,9 +13,9 @@ $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 
 $active_nav = 'files';
-$cc_active_page = 'Inbox';
+$cc_active_page = 'Inbox Files';
 
-$page_title = __('Inbox','cftp_admin');
+$page_title = __('Inbox Files','cftp_admin');
 
 $current_level = get_current_user_level();
 $this_user = CURRENT_USER_USERNAME;

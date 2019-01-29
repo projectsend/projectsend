@@ -1475,7 +1475,7 @@ while( $row = $statement->fetch() ) {
 
 				$(".new_client").append('<option val="'+cc_email+'" selected="selected">'+cc_email+'</option>'); 
 
-				$(this).parent().parent().siblings('.chosen-choices').prepend('<li class="search-choice"><span>'+cc_email+'</span><a style="text-decoration:none" class="cc-choice-close">&nbsp;&nbsp;x</a></li>');
+				$(this).parent().parent().siblings('.chosen-choices').prepend('<li class="search-choice"><span>'+cc_email+'</span><a style="text-decoration:none" class="search-choice-close cc-choice-close">&nbsp;&nbsp;x</a></li>');
 
 			});
 

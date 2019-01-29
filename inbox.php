@@ -829,15 +829,7 @@ color:#e33a49;
                   <td>
                   <label class="cc-chk-container">
                       <input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" <?php echo isset($disabled)?$disabled:''; ?> />
-                      <span class="checkmark
-											<?php
-											 if ((trim($row[uploader]) != CURRENT_USER_USERNAME)){
-											 if ( ! in_array($row['request_type'], array('1','2') ) )
-												{ echo ("disabled_cc = disabled ");
-											echo($row['request_type']);}
-											}
-										?>
-											"></span>
+                      <span class="checkmark"></span>
                   </label>
                   </td>
                   <?php

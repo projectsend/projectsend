@@ -1040,7 +1040,7 @@ include('header.php');
 
                                             <option value="hide"><?php _e('Hide','cftp_admin'); ?></option>
 
-                                            <option value="show"><?php _e('Show','cftp_admin'); ?></option>
+                                            <option value="show"><?php _e('Show All','cftp_admin'); ?></option>
 
                                             <option value="delete"><?php _e('Delete','cftp_admin'); ?></option>
 

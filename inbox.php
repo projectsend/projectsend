@@ -156,10 +156,10 @@ color:#e33a49;
 				if (action == 'delete') {
 					var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
 					if(checks.length > 1){
-						var msg_2 = 'files . Files from your inbox will not be deleted permanently. Only your copy will be deleted. Are you sure you want to continue?';
+						var msg_2 = 'files from your Inbox permanently. Only your copy will be deleted. Are you sure you want to continue?';
 					}
 					else{
-						var msg_2 = 'file . File from your inbox will not be deleted permanently. Only your copy will be deleted. Are you sure you want to continue?';
+						var msg_2 = 'file from your Inbox permanently. Only your copy will be deleted. Are you sure you want to continue?';
 					}
 
 					if (confirm(msg_1+' '+checks.length+' '+msg_2)) {

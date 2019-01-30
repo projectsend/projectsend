@@ -654,6 +654,7 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 																	<h3><?php _e('Send To', 'cftp_admin');?></h3>
 																	<label><?php _e('Assign this file to', 'cftp_admin');?>:</label>
 																	<select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]"
+																	id="assignto"
 																	class="form-control chosen-select  chosen-select_pub disabled">
 																	<?php
 																	/**
@@ -690,7 +691,8 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 																<div class="file_data">
 																	<h3><?php _e('Categories', 'cftp_admin');?></h3>
 																	<label><?php _e('Add to', 'cftp_admin');?>:</label>
-																	<select multiple="multiple" name="file[<?php echo $i; ?>][categories][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+																	<select multiple="multiple" name="file[<?php echo $i; ?>][categories][]"
+																		id="addto" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
 																	<?php
 																	/**
 																	 * The categories list is generated early on the file so the
@@ -810,9 +812,16 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 
 		?>
 
-				$('.chosen-select').chosen({
+				$('#assignto').chosen({
 
 				no_results_text	: "<?php _e('Invite User :','cftp_admin'); ?>",
+
+				width			: "98%",
+
+				search_contains	: true,
+
+				});
+				$('#addto').chosen({
 
 				width			: "98%",
 
@@ -828,7 +837,7 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 
 			});
 
-			$(document).on('click', ".no-results", function() {
+			$(document).on('click', "#assignto_chosen .no-results", function() {
 
     			var cc_email = $('span',this).text(); 
 

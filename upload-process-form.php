@@ -1184,10 +1184,10 @@ while( $row = $statement->fetch() ) {
 					<?php _e('Assign this file to', 'cftp_admin');?>
 					:
 				</label>
-				
-				
-				
-    <select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]" class="form-control chosen-select chosen-select_pub" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+
+
+
+    <select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]" id= "assignto" class="form-control chosen-select chosen-select_pub" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
     <optgroup label="<?php _e('Clients', 'cftp_admin');?>">
 	
 	
@@ -1269,9 +1269,9 @@ while( $row = $statement->fetch() ) {
 		<label>
         <?php _e('Add to', 'cftp_admin');?>
         :</label>
-		
-		
-		<select multiple="multiple" name="file[<?php echo $i; ?>][categories][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+
+
+		<select multiple="multiple" name="file[<?php echo $i; ?>][categories][]" id="addto" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
 			<?php
 
 			/**
@@ -1451,9 +1451,19 @@ while( $row = $statement->fetch() ) {
 
 		?>
 
-				$('.chosen-select').chosen({
+				$('#assignto').chosen({
 
 				no_results_text	: "<?php _e('Invite User :','cftp_admin'); ?>",
+
+				width			: "98%",
+
+				search_contains	: true,
+
+				});
+
+				$('#addto').chosen({
+
+				
 
 				width			: "98%",
 
@@ -1469,7 +1479,7 @@ while( $row = $statement->fetch() ) {
 
 			});
 
-			$(document).on('click', ".no-results", function() {
+			$(document).on('click', "#assignto_chosen .no-results", function() {
 
     			var cc_email = $('span',this).text(); 
 

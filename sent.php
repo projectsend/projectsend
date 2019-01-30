@@ -148,7 +148,15 @@ include('header.php');
          */
         if(isset($_POST['do_action'])) {
             /** Continue only if 1 or more files were selected. */
-            if(!empty($_POST['files'])) {
+            
+            if ($_POST['files_actions']=='show') {
+              $this_file = new FilesActions();
+              $this_file->show_sent();
+              $msg = __('All hidden files were marked as visible.','cftp_admin');
+              echo system_message('ok',$msg);
+              $log_action_number = 22;
+            }
+            else if(!empty($_POST['files'])) {
                 $selected_files = array_map('intval',array_unique($_POST['files']));
                 $files_to_get = implode(',',$selected_files);
                 /**
@@ -189,17 +197,6 @@ include('header.php');
                         $msg = __('The selected files were marked as hidden.','cftp_admin');
                         echo system_message('ok',$msg);
                         $log_action_number = 21;
-                        break;
-                    case 'show':
-                        /**
-                         * Reverse of the previous action. Setting the value to 0 means
-                         * that the file is visible.
-                         */
-                            $this_file = new FilesActions();
-                            $show_file = $this_file->show_sent();
-                        $msg = __('The selected files were marked as visible.','cftp_admin');
-                        echo system_message('ok',$msg);
-                        $log_action_number = 22;
                         break;
                     case 'delete':
                         $delete_results = array(
@@ -243,13 +240,6 @@ include('header.php');
                     }
                     $new_record_action = $new_log_action->log_action_save($log_action_args);
                 }
-            }
-            else if ($_POST['files_actions']=='show') {
-              $this_file = new FilesActions();
-              $this_file->show_sent();
-              $msg = __('All hidden files were marked as visible.','cftp_admin');
-              echo system_message('ok',$msg);
-              $log_action_number = 22;
             }
             else {
                 $msg = __('Please select at least one file.','cftp_admin');

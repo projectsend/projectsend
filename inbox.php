@@ -156,10 +156,10 @@ color:#e33a49;
 				if (action == 'delete') {
 					var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
 					if(checks.length > 1){
-						var msg_2 = 'files from your Inbox permanently. Only your copy will be deleted. Are you sure you want to continue?';
+						var msg_2 = 'files . Files from your inbox will not be deleted permanently. Only your copy will be deleted. Are you sure you want to continue?';
 					}
 					else{
-						var msg_2 = 'file from your Inbox permanently. Only your copy will be deleted. Are you sure you want to continue?';
+						var msg_2 = 'file . File from your inbox will not be deleted permanently. Only your copy will be deleted. Are you sure you want to continue?';
 					}
 
 					if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
@@ -249,31 +249,17 @@ color:#e33a49;
 		 */
 		if(isset($_POST['do_action'])) {
 			/** Continue only if 1 or more files were selected. */
-			if(!empty($_POST['files'])) {
+
+			if ($_POST['files_actions']=='show') {
+				$this_file = new FilesActions();
+				$this_file->show_inbox();
+				$msg = __('All hidden files were marked as visible.','cftp_admin');
+				echo system_message('ok',$msg);
+				$log_action_number = 22;
+			}
+		 	else if(!empty($_POST['files'])) {
 				$selected_files = array_map('intval',array_unique($_POST['files']));
 				$files_to_get = implode(',',$selected_files);
-//var_dump($files_to_get);
-//exit;
-				/**
-				 * Make a list of files to avoid individual queries.
-				 * First, get all the different files under this account.
-				 */
-				 //-----------------------------------
-				 
-				/*$sql_distinct_files = $dbh->prepare("SELECT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE FIND_IN_SET(id, :files)");
-				$sql_distinct_files->bindParam(':files', $files_to_get);
-				$sql_distinct_files->execute();
-				$sql_distinct_files->setFetchMode(PDO::FETCH_ASSOC);
-				while( $data_file_relations = $sql_distinct_files->fetch() ) {
-					$all_files_relations[] = $data_file_relations['file_id']; 
-					$files_to_get = implode(',',$all_files_relations);
-				}*/
-				
-				//---------------------------------------
-				
-				/**
-				 * Then get the files names to add to the log action.
-				 */
 				$sql_file = $dbh->prepare("SELECT id, filename FROM " . TABLE_FILES . " WHERE FIND_IN_SET(id, :files)");
 				$sql_file->bindParam(':files', $files_to_get);
 				$sql_file->execute();
@@ -364,13 +350,7 @@ color:#e33a49;
 					$new_record_action = $new_log_action->log_action_save($log_action_args);
 				}
 			}
-			else if ($_POST['files_actions']=='show') {
-				$this_file = new FilesActions();
-				$this_file->show_inbox();
-				$msg = __('All hidden files were marked as visible.','cftp_admin');
-				echo system_message('ok',$msg);
-				$log_action_number = 22;
-			}
+
 			else {
 				$msg = __('Please select at least one file.','cftp_admin');
 				echo system_message('error',$msg);

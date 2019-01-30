@@ -242,71 +242,20 @@ include('header.php');
 
                     }
 
-                }
+				}
+				else {
 
-            }
+						return false;
 
-        });
+					}
 
-        
+				}
 
-        <?php
+			}
 
-            if ($results_type != 'client') {
+		});
 
-                /*
 
-        ?>
-
-                $(".downloaders").click(function() {
-
-                    $(document).psendmodal();
-
-                    $('.modal_content').html('<p class="loading-img">'+
-
-                                                '<img src="<?php echo BASE_URI; ?>img/ajax-loader.gif" alt="Loading" /></p>'+
-
-                                                '<p class="lead text-center text-info"><?php _e('Please wait while the system gets the required information.','cftp_admin'); ?></p>'
-
-                                            );
-
-                    
-
-                    var file_name = $(this).attr('title');
-
-                    var file_id = $(this).attr('rel');
-
-                    $.get('<?php echo BASE_URI; ?>process.php', { do:"get_downloaders", sys_user:"<?php echo $global_id; ?>", file_id:file_id },
-
-                        function(data) {
-
-                            $('.modal_content').html('<h4><?php _e('Downloaders of file:','cftp_admin'); ?> <strong>'+file_name+'</strong></h4>');
-
-                            $('.modal_content').append('<ul class="downloaders_list"></ul>');
-
-                            var obj = $.parseJSON(data);
-
-                            for (i = 0; i < obj.length; i++) {
-
-                                $('.modal_content .downloaders_list').append('<li><img src="<?php echo BASE_URI; ?>img/downloader-' + obj[i].type + '.png" alt="" /><div class="downloader_count">' +  obj[i].count + ' <?php _e('times','cftp_admin'); ?></div><p class="downloader_name">' + obj[i].name + '</p><p class="downloader_email">' +  obj[i].email + '</p></li>');
-
-                            }
-
-                        }
-
-                    );                  
-
-                    return false;
-
-                });
-
-        <?php
-
-                */
-
-            }
-
-        ?>
 
 
 
@@ -388,41 +337,36 @@ include('header.php');
 
         if(isset($_POST['do_action'])) {
 
-            /** Continue only if 1 or more files were selected. */
-
-            if(!empty($_POST['files'])) {
+			/** Continue only if 1 or more files were selected. */
+			if ($_POST['files_actions']=='show') {
+				$this_file = new FilesActions();
+				$filedetails= $this_file->show_sent();
+				$msg = __('All hidden files were marked as visible.','cftp_admin');
+				echo system_message('ok',$msg);
+				$log_action_number = 22;
+				if(!empty($filedetails)){
+					foreach ($filedetails as $work_file) {
+						$affected_name= $dbh->prepare("SELECT filename from ".TABLE_FILES." WHERE id = ".$work_file['file_id']);
+						$affected_name->execute();
+						$af_name= $affected_name->fetchAll(PDO::FETCH_ASSOC);
+							$new_log_action = new LogActions();
+							$log_action_args = array(
+																			'action' => $log_action_number,
+																			'owner_id' => $global_id,
+																			'affected_file' => $work_file['file_id'],
+																			'affected_file_name' => $af_name[0]['filename'],
+																	);
+							$log_action_args['affected_account_name'] = CURRENT_USER_USERNAME ;
+							$new_record_action = $new_log_action->log_action_save($log_action_args);
+							}
+					}
+			}
+			else if(!empty($_POST['files'])) {
 
                 $selected_files = array_map('intval',array_unique($_POST['files']));
 
                 $files_to_get = implode(',',$selected_files);
 
-                /**
-
-                 * Make a list of files to avoid individual queries.
-
-                 * First, get all the different files under this account.
-
-                 */
-
-                /*$sql_distinct_files = $dbh->prepare("SELECT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE FIND_IN_SET(id, :files)");
-
-                $sql_distinct_files->bindParam(':files', $files_to_get);
-
-                $sql_distinct_files->execute();
-
-                $sql_distinct_files->setFetchMode(PDO::FETCH_ASSOC);
-
-                
-
-                while( $data_file_relations = $sql_distinct_files->fetch() ) {
-
-                    $all_files_relations[] = $data_file_relations['file_id']; 
-
-                    $files_to_get = implode(',',$all_files_relations);
-
-                }*/
-
-                
 
                 /**
 
@@ -449,25 +393,16 @@ include('header.php');
 
                 switch($_POST['files_actions']) {
 
-                    case 'hide':
-
-                        /**
-
-                         * Changes the value on the "hidden" column value on the database.
-
-                         * This files are not shown on the client's file list. They are
-
-                         * also not counted on the home.php files count when the logged in
-
-                         * account is the client.
-
-                         */
-
-                        foreach ($selected_files as $work_file) {
-
-                            $this_file = new FilesActions();
-
-                            $hide_file = $this_file->change_files_hide_status($work_file, '1', $_POST['modify_type'], $_POST['modify_id']);
+					case 'hide':
+							/**
+							 * Changes the value on the "hidden" column value on the database.
+							 * This files are not shown on the client's file list. They are
+							 * also not counted on the home.php files count when the logged in
+							 * account is the client.
+							 */
+							foreach ($selected_files as $work_file) {
+									$this_file = new FilesActions();
+									$this_file->hide_sent($work_file);
 
                         }
 
@@ -479,33 +414,6 @@ include('header.php');
 
                         break;
 
-
-
-                    case 'show':
-
-                        /**
-
-                         * Reverse of the previous action. Setting the value to 0 means
-
-                         * that the file is visible.
-
-                         */
-
-                        foreach ($selected_files as $work_file) {
-
-                            $this_file = new FilesActions();
-
-                            $show_file = $this_file->change_files_hide_status($work_file, '0', $_POST['modify_type'], $_POST['modify_id']);
-
-                        }
-
-                        $msg = __('The selected files were marked as visible.','cftp_admin');
-
-                        echo system_message('ok',$msg);
-
-                        $log_action_number = 22;
-
-                        break;
 
 
                     case 'delete':
@@ -638,25 +546,7 @@ include('header.php');
 
 
 
-            /** Add the status filter */    
-
-            if (isset($_POST['status']) && $_POST['status'] != 'all') {
-
-                $set_and = true;
-
-                $cq .= " AND hidden = :hidden";
-
-                $no_results_error = 'filter';
-
-                
-
-                $params[':hidden'] = $_POST['status'];
-
-            }
-
-
-
-            /**
+			/**
 
              * Count the files assigned to this client. If there is none, show
 
@@ -856,41 +746,6 @@ include('header.php');
 
                     </div>
 
-                    <?php /*?><div class="form-group group_float">
-
-                        <select name="status" id="status" class="txtfield form-control">
-
-                                    <?php
-
-                                        $options_status = array(
-
-                                                                'all'   => __('All statuses','cftp_admin'),
-
-                                                                '1'     => __('Read','cftp_admin'),
-
-                                                                '2'     => __('Unread','cftp_admin'),
-
-                                                                '3'     => __('Downloaded','cftp_admin'),
-
-                                                                '4'     => __('Not Downloaded','cftp_admin'),
-
-                                                            );
-
-                                        foreach ( $options_status as $value => $text ) {
-
-                                    ?>
-
-                                            <option value="<?php echo $value; ?>"><?php echo $text; ?></option>
-
-                                    <?php
-
-                                        }
-
-                                    ?>
-
-                                </select>
-
-                    </div><?php */?>
 
                     <div class="form-group group_float">
 
@@ -934,57 +789,6 @@ include('header.php');
 
 
 
-                <?php
-
-                    /** Filters are not available for clients */
-
-                    /*if($current_level != '0' && $results_type != 'global') {
-
-                ?>
-
-                        <form action="<?php echo html_output($form_action_url); ?>" name="files_filters" method="post" class="form-inline form_filters">
-
-                            <div class="form-group group_float">
-
-                                <select name="status" id="status" class="txtfield form-control">
-
-                                    <?php
-
-                                        $options_status = array(
-
-                                                                'all'   => __('All statuses','cftp_admin'),
-
-                                                                '1'     => __('Hidden','cftp_admin'),
-
-                                                                '0'     => __('Visible','cftp_admin'),
-
-                                                            );
-
-                                        foreach ( $options_status as $value => $text ) {
-
-                                    ?>
-
-                                            <option value="<?php echo $value; ?>"><?php echo $text; ?></option>
-
-                                    <?php
-
-                                        }
-
-                                    ?>
-
-                                </select>
-
-                            </div>
-
-                            <button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default"><?php _e('Filter','cftp_admin'); ?></button>
-
-                        </form>
-
-                <?php
-
-                    }*/
-
-                ?>
 
             </div>
 
@@ -1223,23 +1027,9 @@ include('header.php');
 
                             }
 
-                            else {
 
-                                if($current_level != '0') {
+						?>
 
-                        ?>
-
-                                <?php /* <th data-hide="phone"><?php _e('Total downloads','cftp_admin'); ?></th>  */ ?>
-
-                        <?php
-
-                                }
-
-                            }
-
-                        ?>
-
-                        <!-- <th data-hide="phone" data-sort-ignore="true"><?php _e('Actions','cftp_admin'); ?></th> -->
 
                     </tr>
 
@@ -1253,11 +1043,7 @@ include('header.php');
 
                             $sql_files->setFetchMode(PDO::FETCH_ASSOC);
 
-                            while( $row = $sql_files->fetch() ) {
-                                
-                                //echo '<pre>';
-                                //print_r($row);
-                                //echo '</pre>';
+							while( $row = $sql_files->fetch() ) {
 
                                 $file_id = $row['id'];
 
@@ -1281,28 +1067,12 @@ include('header.php');
 
                                  */
 
-                                $params = array();
-                                
-                                //SELECT * from tbl_files_relations LEFT JOIN tbl_files on tbl_files.id = tbl_files_relations.file_id where file_id= :file_id and tbl_files.uploader ='admin'
-                                
-                                
-                                $query_this_file = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id";
-                                
-                                
-                                //$query_this_file = "SELECT * from tbl_files_relations LEFT JOIN tbl_files on tbl_files.id = tbl_files_relations.file_id where file_id= :file_id and tbl_files.uploader = :uploader";
+								$params = array();
 
-                                
+								$query_this_file = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id ";
+								$params[':file_id'] = $row['id'];
 
-                                $params[':file_id'] = $row['id'];
-                                //$conditions[] = "uploader = :uploader";
-                                //$no_results_error = 'account_level'; 
-                                //$params[':uploader'] = $global_user;
-//echo '<pre>';
-//print_r($row['id']);
-//echo '</pre>';
-//echo $row['id'];
-//print_r($query_this_file); 
-                                if (isset($search_on)) {
+								if (isset($search_on)) {
 
                                     $query_this_file .= " AND $search_on = :id";
 
@@ -1398,11 +1168,18 @@ include('header.php');
 
                                     $formatted_size = '-';
 
-                                }
+								}
+								$hidRow= $dbh->prepare( "SELECT hide_sent FROM ".TABLE_FILES_RELATIONS." WHERE file_id = ".$row['id']." AND from_id =".CURRENT_USER_ID);
+								$hidRow->execute();
+								$result = $hidRow->fetchAll(\PDO::FETCH_ASSOC);
+        if( ( isset($result) && $result[0]['hide_sent'] != '1') &&
+						(
+							($row['expires'] == '0') || (time() < strtotime($row['expiry_date']))
+						)
+					) {
 
-        if(($row['expires'] == '0') || (time() < strtotime($row['expiry_date']))) {
-                    
-                    ?>
+
+					?>
 
                                 <tr>
 
@@ -1676,22 +1453,17 @@ include('header.php');
 
                                         
 
-                                    <!-- <td>
-
-                                        <a href="edit-file.php?file_id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm">
-
-                                            <?php _e('Edit','cftp_admin'); ?>
-
-                                        </a>
-
-                                    </td> -->
-
-                                </tr>
+								</tr>
 
                     <?php
 
-                                                        }
-                            }
+	             }
+							 else {
+								 $no_results_error = 'account_level';
+
+							 }
+
+							}
 
                         }
 

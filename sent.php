@@ -151,10 +151,26 @@ include('header.php');
             
             if ($_POST['files_actions']=='show') {
               $this_file = new FilesActions();
-              $this_file->show_sent();
+              $filedetails= $this_file->show_sent();
               $msg = __('All hidden files were marked as visible.','cftp_admin');
               echo system_message('ok',$msg);
               $log_action_number = 22;
+              if(!empty($filedetails)){
+                foreach ($filedetails as $work_file) {
+                  $affected_name= $dbh->prepare("SELECT filename from ".TABLE_FILES." WHERE id = ".$work_file['file_id']);
+          				$affected_name->execute();
+                  $af_name= $affected_name->fetchAll(PDO::FETCH_ASSOC);
+                    $new_log_action = new LogActions();
+                    $log_action_args = array(
+                                            'action' => $log_action_number,
+                                            'owner_id' => $global_id,
+                                            'affected_file' => $work_file['file_id'],
+                                            'affected_file_name' => $af_name[0]['filename'],
+                                        );
+                    $log_action_args['affected_account_name'] = CURRENT_USER_USERNAME ;
+                    $new_record_action = $new_log_action->log_action_save($log_action_args);
+                    }
+                }
             }
             else if(!empty($_POST['files'])) {
                 $selected_files = array_map('intval',array_unique($_POST['files']));

@@ -142,7 +142,7 @@ $target_info = get_client_by_id($target_id);
 									<input type="hidden" value="<?php echo isset($target_info['username'])?$target_info['username']:''; ?>" name="target_name" />									
 									<div class="cc-text-right after_form_buttons">
 										<button type="submit" name="Submit" class="btn btn-wide btn-primary" id="btn-submit">
-											<?php _e('Upload files','cftp_admin'); ?>
+											<?php _e('Upload Files','cftp_admin'); ?>
 										</button>
 									</div>
 									<div class="message message_info message_uploading">

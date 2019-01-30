@@ -16,7 +16,7 @@ require_once('sys.includes.php');
 $active_nav = 'organizations';
 $cc_active_page = 'Manage Organization';
 
-$page_title = __('User Organization listing','cftp_admin');;
+$page_title = __('User Organizations Listing','cftp_admin');;
 
 /**
  * Used when viewing groups a certain client belongs to.

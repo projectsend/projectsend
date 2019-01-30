@@ -106,7 +106,7 @@ $target_info = get_client_by_id($target_id);
 													});
 													return false;
 												} else {
-													alert('<?php _e("You must select at most one file to upload.",'cftp_admin'); ?>');
+													alert('<?php _e("You must select at least one file to upload.",'cftp_admin'); ?>');
 												}
 												return false;
 											});

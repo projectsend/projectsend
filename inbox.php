@@ -604,11 +604,11 @@ color:#e33a49;
 										}
 									?>
                     <select name="files_actions" id="files_actions" class="txtfield form-control">
+										<option value="show">
+										<?php _e('Show All','cftp_admin'); ?>
+										</option>
                       <option value="hide">
                       <?php _e('Hide','cftp_admin'); ?>
-                      </option>
-                      <option value="show">
-                      <?php _e('Show All','cftp_admin'); ?>
                       </option>
                       <option value="unassign">
                       <?php _e('Unassign','cftp_admin'); ?>

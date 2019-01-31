@@ -473,11 +473,11 @@ include('header.php');
                     <input type="hidden" name="modify_id" id="modify_id" value="<?php  echo CURRENT_USER_ID; ?>" />
                     <select name="files_actions" id="files_actions" class="txtfield form-control">
 
-                      <option value="hide">
-                      <?php _e('Hide','cftp_admin'); ?>
-                      </option>
                       <option value="show">
                       <?php _e('Show All','cftp_admin'); ?>
+                      </option>
+                      <option value="hide">
+                      <?php _e('Hide','cftp_admin'); ?>
                       </option>
                       <option value="delete">
                       <?php _e('Delete','cftp_admin'); ?>

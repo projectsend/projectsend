@@ -838,13 +838,13 @@ include('header.php');
 
                                         <?php
 
-                                            /** Options only available when viewing a client/group files list */
-                                                                                    
-                                        ?>
+											/** Options only available when viewing a client/group files list */
+
+										?>
+												<option value="show"><?php _e('Show All','cftp_admin'); ?></option>
 
                                             <option value="hide"><?php _e('Hide','cftp_admin'); ?></option>
 
-                                            <option value="show"><?php _e('Show All','cftp_admin'); ?></option>
 
                                             <option value="delete"><?php _e('Delete','cftp_admin'); ?></option>
 

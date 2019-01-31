@@ -313,12 +313,7 @@ color:#e33a49;
 						}
 						$msg = __('The selected files were unassigned from this client.','cftp_admin');
 						echo system_message('ok',$msg);
-						/* if ($search_on == 'group_id') {
-							$log_action_number = 11;
-						}
-						elseif ($search_on == 'client_id') {
-							$log_action_number = 10;
-						} */
+						$log_action_number = 11;
 						break;
 
 					case 'delete':
@@ -825,7 +820,15 @@ color:#e33a49;
                   <td>
                   <label class="cc-chk-container">
                       <input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" <?php echo isset($disabled)?$disabled:''; ?> />
-                      <span class="checkmark"></span>
+                      <span class="checkmark
+											<?php
+											 if ((trim($row[uploader]) != CURRENT_USER_USERNAME)){
+											 if ( ! in_array($row['request_type'], array('1','2') ) )
+												{ echo ("disabled_cc = disabled ");
+											echo($row['request_type']);}
+											}
+										?>
+											"></span>
                   </label>
                   </td>
                   <?php

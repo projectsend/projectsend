@@ -469,7 +469,7 @@ function default_footer_info($logged = true)
 ?>
 	<footer>
 		<div id="footer">
-			<?php _e('Provided by', 'cftp_admin'); ?> <a href="https://microhealthllc.com/" target="_blank"><?php echo "MicroHealth"; ?></a> <?php _e('Powered by', 'cftp_admin'); ?> <a href="http://www.projectsend.org/" target="_blank"><?php echo "ProjectSend"; ?></a>
+			<?php _e('Provided by', 'cftp_admin'); ?> <a href="https://microhealthllc.com/" target="_blank"><?php echo "MicroHealth, LLC"; ?></a> <?php _e('Powered by', 'cftp_admin'); ?> <a href="http://www.projectsend.org/" target="_blank"><?php echo "ProjectSend"; ?></a>
 		</div>
 	</footer>
 <?php

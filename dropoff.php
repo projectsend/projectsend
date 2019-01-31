@@ -50,6 +50,13 @@ $target_info = get_client_by_id($target_id);
 								</p>
 								<script type="text/javascript">
 										$(document).ready(function() {
+
+											$("form input[type=submit]").click(function() {
+												//Seting up an event to emit an attribute clicked on clicking of submit button
+												    $("input[type=submit]", $(this).parents("form")).removeAttr("clicked");
+												    $(this).attr("clicked", "true");
+												});
+
 											setInterval(function(){
 												// Send a keep alive action every 1 minute
 												var timestamp = new Date().getTime()
@@ -89,7 +96,16 @@ $target_info = get_client_by_id($target_id);
 												}
 											});
 											var uploader = $('#uploader').pluploadQueue();
-											$('form').submit(function(e) { 
+											$('form').submit(function(e) {
+												var uptype = $("input[type=submit][clicked=true]").val();
+												if (uptype== "Batch Upload") {
+													console.log("Batch upload clicked");
+													var zipfield = '<input type="hidden" name="batching" value="1" />'
+													$('form').append(zipfield);
+													$('form').attr('action', 'upload-zip-dropoff.php');
+												}
+
+
 												if (uploader.files.length >0) {
 													uploader.bind('StateChanged', function() {
 														if (uploader.files.length === (uploader.total.uploaded + uploader.total.failed)) {
@@ -127,6 +143,7 @@ $target_info = get_client_by_id($target_id);
 								</script>
 								<form action="upload-process-form-dropoff.php" name="upload_by_client" id="upload_by_client" method="post" enctype="multipart/form-data">
 									<input type="hidden" name="uploaded_files" id="uploaded_files" value="" />
+									<input type="hidden" name="zipping" id="zipping" value="0" />
 									<div id="uploader">
 										<div class="message message_error">
 											<p>
@@ -137,13 +154,12 @@ $target_info = get_client_by_id($target_id);
 									<input type="hidden" value="<?php echo isset($auth)?$auth:''; ?>" name="auth_key" />	 
 									
 									<input type="hidden" value="<?php echo isset($target_id)?$target_id:''; ?>" name="target_id" />
-									
-									<input type="hidden" value="<?php echo isset($target_info['name'])?$target_info['name']:''; ?>" name="target_name" />								
-									<input type="hidden" value="<?php echo isset($target_info['username'])?$target_info['username']:''; ?>" name="target_name" />									
-									<div class="cc-text-right after_form_buttons">
-										<button type="submit" name="Submit" class="btn btn-wide btn-primary" id="btn-submit">
-											<?php _e('Upload Files','cftp_admin'); ?>
-										</button>
+
+									<input type="hidden" value="<?php echo isset($target_info['name'])?$target_info['name']:''; ?>" name="target_name" />
+									<input type="hidden" value="<?php echo isset($target_info['username'])?$target_info['username']:''; ?>" name="target_name" />
+									<div class="after_form_buttons cc-text-right">
+				            <input type="submit" class="btn btn-wide btn-primary" value="Upload Files" id="btn-submit">
+				            <input type="submit" class="btn btn-wide btn-success" value="Batch Upload" id="zip-submit">
 									</div>
 									<div class="message message_info message_uploading">
 										<p>

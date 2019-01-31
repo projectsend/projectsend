@@ -654,8 +654,7 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 																	<h3><?php _e('Send To', 'cftp_admin');?></h3>
 																	<label><?php _e('Assign this file to', 'cftp_admin');?>:</label>
 																	<select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]"
-																	id="assignto"
-																	class="form-control chosen-select  chosen-select_pub disabled">
+																	class="form-control assignto chosen-select  chosen-select_pub disabled">
 																	<?php
 																	/**
 																	* The clients list is generated early on the file so the
@@ -692,7 +691,7 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 																	<h3><?php _e('Categories', 'cftp_admin');?></h3>
 																	<label><?php _e('Add to', 'cftp_admin');?>:</label>
 																	<select multiple="multiple" name="file[<?php echo $i; ?>][categories][]"
-																		id="addto" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+																		 class="form-control addto chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
 																	<?php
 																	/**
 																	 * The categories list is generated early on the file so the
@@ -812,7 +811,7 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 
 		?>
 
-				$('#assignto').chosen({
+				$('.assignto').chosen({
 
 				no_results_text	: "<?php _e('Invite User :','cftp_admin'); ?>",
 
@@ -821,7 +820,7 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 				search_contains	: true,
 
 				});
-				$('#addto').chosen({
+				$('.addto').chosen({
 
 				width			: "98%",
 
@@ -837,7 +836,7 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 
 			});
 
-			$(document).on('click', "#assignto_chosen .no-results", function() {
+			$(document).on('click', ".assigns .no-results", function() {
 
     			var cc_email = $('span',this).text(); 
 

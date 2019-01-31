@@ -1187,7 +1187,7 @@ while( $row = $statement->fetch() ) {
 
 
 
-    <select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]" id= "assignto" class="form-control chosen-select chosen-select_pub" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+    <select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]" class="form-control chosen-select assignto chosen-select_pub" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
     <optgroup label="<?php _e('Clients', 'cftp_admin');?>">
 	
 	
@@ -1271,7 +1271,7 @@ while( $row = $statement->fetch() ) {
         :</label>
 
 
-		<select multiple="multiple" name="file[<?php echo $i; ?>][categories][]" id="addto" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+		<select multiple="multiple" name="file[<?php echo $i; ?>][categories][]" class="form-control chosen-select addto" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
 			<?php
 
 			/**
@@ -1451,7 +1451,7 @@ while( $row = $statement->fetch() ) {
 
 		?>
 
-				$('#assignto').chosen({
+				$('.assignto').chosen({
 
 				no_results_text	: "<?php _e('Invite User :','cftp_admin'); ?>",
 
@@ -1461,7 +1461,7 @@ while( $row = $statement->fetch() ) {
 
 				});
 
-				$('#addto').chosen({
+				$('.addto').chosen({
 
 				
 
@@ -1479,13 +1479,13 @@ while( $row = $statement->fetch() ) {
 
 			});
 
-			$(document).on('click', "#assignto_chosen .no-results", function() {
+			$(document).on('click', ".assigns .no-results", function() {
 
     			var cc_email = $('span',this).text(); 
 
 				$(".new_client").append('<option val="'+cc_email+'" selected="selected">'+cc_email+'</option>'); 
 
-				$(this).parent().parent().siblings('.chosen-choices').prepend('<li class="search-choice"><span>'+cc_email+'</span><a style="text-decoration:none" class="search-choice-close cc-choice-close">&nbsp;&nbsp;x</a></li>');
+				$(this).parent().parent().siblings('.chosen-choices').prepend('<li class="search-choice"><span>'+cc_email+'</span><a style="text-decoration:none" class="cc-choice-close">&nbsp;&nbsp;x</a></li>');
 
 			});
 

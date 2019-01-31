@@ -58,8 +58,9 @@ define('CAN_INCLUDE_FILES', true);
                       </li>
                       <li class="legend_color legend_color2" title="<?php _e('Uploads by clients','cftp_admin'); ?>">
                         <div class="ref_color"></div>
+                        <i class="fa fa-cloud-upload" aria-hidden="true"></i>
                         <?php _e('Uploads by clients','cftp_admin'); ?>
-                        <i class="fa fa-cloud-upload" aria-hidden="true"></i> </li>
+		      </li>
                       <li class="legend_color legend_color3" title="<?php _e('Downloads','cftp_admin'); ?>">
                         <div class="ref_color"></div>
                         <i class="fa fa-download" aria-hidden="true"></i>

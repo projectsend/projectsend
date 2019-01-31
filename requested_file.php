@@ -46,7 +46,7 @@ $actual_link = SITE_URI.'requested_file.php';
 			<div class="row">
 				<div class="col-md-12">
 					<h2 class="page-title txt-color-blueDark"><?php echo $page_title; ?></h2>
-						<a href="request-drop-off.php" class="btn btn-sm btn-primary right-btn">Request a File</a>
+						<a href="request-drop-off.php" class="btn btn-sm btn-primary right-btn">Request File(s)</a>
 
           <?php
 		/**

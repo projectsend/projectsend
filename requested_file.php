@@ -163,8 +163,8 @@ $actual_link = SITE_URI.'requested_file.php';
                   <?php _e('Proceed','cftp_admin'); ?>
                   </button>
 				  <!-- Added by rj to view the layout of of requested item listing -->
-				  <a href="<?php echo $grid_layout; ?>" class="cc-grid"><i class="fa fa-th" aria-hidden="true"></i></a> 
-                  <a href="<?php echo $actual_link; ?>" class="cc-grid"><i class="fa fa-bars" aria-hidden="true"></i></a>
+				  <!-- <a href="<?php echo $grid_layout; ?>" class="cc-grid"><i class="fa fa-th" aria-hidden="true"></i></a> -->
+                  <!-- <a href="<?php echo $actual_link; ?>" class="cc-grid"><i class="fa fa-bars" aria-hidden="true"></i></a> -->
                 </div>
               </div>
             </div>

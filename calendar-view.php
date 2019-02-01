@@ -108,13 +108,6 @@ $(function() {
 	dateFormat: 'dd-mm-yy',
 	beforeShowDay:checkDate,
 	});
-	/*
-	$("#datepicker").on("change",function(){
-        var selectedDate = $(this).val();
-        alert(selectedDate);
-		var url="display-data.php?selectedDate="+selectedDate;
-		$('#d1').load(url);
-    }); */
 	$("#datepicker").on("change",function(){
 		var selectedDate = $(this).val();
 		var obj;
@@ -127,8 +120,8 @@ $(function() {
               success: function(json)
               {
 				 var json = jQuery.parseJSON(json);
-				 console.log(json);
-				 console.log(json.send);
+				 // console.log(json);
+				 // console.log(json.send);
 				 var data_obj = [];
 				 var htmlText='';
 				 var htmlText1='';

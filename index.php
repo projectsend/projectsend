@@ -127,6 +127,9 @@ include('header-unlogged.php');
 						header("location:".BASE_URI."inbox.php");
 					}
 					else {
+						$allfile = new FilesActions();
+						//Marking all hidden files visible
+						$allfile->show_all();
 						header("location:".BASE_URI."home.php");
 					}
 					exit;

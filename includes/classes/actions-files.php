@@ -221,14 +221,11 @@ class FilesActions
 	}
 	function show_inbox()
 	{
-		$this->check_level = array(9,8,7);
-			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
 				$fileinfo= $this->dbh->prepare("SELECT file_id from ".TABLE_FILES_RELATIONS." WHERE hide_inbox= '1' AND client_id =".CURRENT_USER_ID);
 				$fileinfo->execute();
 				$this->sql = $this->dbh->prepare("UPDATE " . TABLE_FILES_RELATIONS . " SET hide_inbox ='0' WHERE  hide_inbox= '1' AND client_id =".CURRENT_USER_ID);
 				$this->sql->execute();
 				return($fileinfo->fetchAll(PDO::FETCH_ASSOC));
-			}
 	}
 	function show_sent()
 	{
@@ -237,6 +234,15 @@ class FilesActions
 				$this->sql = $this->dbh->prepare("UPDATE " . TABLE_FILES_RELATIONS . " SET hide_sent ='0' WHERE hide_sent= '1' AND from_id =".CURRENT_USER_ID);
 				$this->sql->execute();
 				return($fileinfo->fetchAll(PDO::FETCH_ASSOC));
+	}
+	function show_all()
+	{
+
+				$this->sql = $this->dbh->prepare("UPDATE " . TABLE_FILES_RELATIONS . " SET hide_sent ='0' WHERE hide_sent= '1' AND from_id =".$_SESSION['loggedin_id']);
+				$this->sql->execute();
+
+				$this->sql1 = $this->dbh->prepare("UPDATE " . TABLE_FILES_RELATIONS . " SET hide_inbox ='0' WHERE  hide_inbox= '1' AND client_id =".$_SESSION['loggedin_id']);
+				$this->sql1->execute();
 	}
 
 	function hide_for_everyone($file_id)

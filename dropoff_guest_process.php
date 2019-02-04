@@ -61,7 +61,23 @@ if(!empty($auth)){
 					$array_file_name = array();
 					if(!empty($_FILES['userfiles']['name'][0])) 
 					{
-						for($i = 0 ; $i < $filecount; $i++) 
+						if(isset($_POST['zipupload'])){
+							$zip = new ZipArchive();
+							$curr_usr_id= CURRENT_USER_ID;
+						//	echo("Current User Id ".CURRENT_USER_ID.'<br>');
+							$zcount = 1;
+					  	while (file_exists($targetDir . DIRECTORY_SEPARATOR .'guest_' . $zcount.'.zip'))
+					  	$zcount++;
+
+							$zipname='guest_' . $zcount .'.zip';
+					    $zipFilePath = UPLOADED_FILES_FOLDER.$zipname;
+					    $r = $zip->open($zipFilePath,  ZipArchive::CREATE);
+						//	var_dump($r);
+						//	echo("<br>Zip Open ".$zipFilePath."<br>");
+							$guestfiles =array();
+
+						}
+						for($i = 0 ; $i < $filecount; $i++)
 						{
 							$file_empty = isset($_FILES['userfiles']['name'][$i]) ? $_FILES['userfiles']['name'][$i] : '';
 							if (!empty($file_empty) ) 
@@ -161,36 +177,76 @@ if(!empty($auth)){
 									// Strip the temp .part suffix off 
 									rename("{$filePath}.part", $filePath);
 								}
-											
-											/* AES Decryption started by RJ-07-Oct-2016 */
-											//$blockSize = 256;
-												//$inputKey = "project send encryption";
-												
+
 											$fileData = file_get_contents($filePath);
 											$aes = new AES($fileData, ENCRYPTION_KEY, BLOCKSIZE);
 											$encData = $aes->encrypt();
 											unlink($filePath);
 											file_put_contents($filePath , $encData);
 											/* AES Decryption ended by RJ-07-Oct-2016 */
-								
-								$url = $fileName;		 
-								$fromid = $userindo['id'];
-								$filenamearray = explode(".",$url);
-								$filename = $filenamearray[0];		 $array_file_name[] = $filenamearray[0];
-								$public_allow = 0;
-								$uploader = $to_name;
-								$time = '2017-03-02 00:00:00';
-								$expdate = '2017-03-09 00:00:00';
-								$statement = $dbh->prepare("INSERT INTO ".TABLE_FILES." (`url`, `filename`, `description`, `timestamp`, `uploader`, `expires`, `expiry_date`, `public_allow`, `public_token`,`request_type`) VALUES ('$url', '$filename', '', CURRENT_TIMESTAMP, '$uploader', '0', '2017-12-09 00:00:00', '0', NULL,'$requestType');");
-								if($statement->execute()) {
-									$img_id = $dbh->lastInsertId();
-									$filesrelations = $dbh->prepare("INSERT INTO ".TABLE_FILES_RELATIONS." (`timestamp`, `file_id`, `client_id`, `group_id`, `folder_id`, `hidden`, `download_count`) VALUES (CURRENT_TIMESTAMP, ".$img_id.", ".$fromid.", NULL, NULL, '0', '0')");			
-									if($filesrelations->execute()) {
-										$file_status=true;				
-									}		
-								}
+
+											if( !isset($_POST['zipupload'])){
+															$url = $fileName;
+															$fromid = $userindo['id'];
+															$filenamearray = explode(".",$url);
+															$filename = $filenamearray[0];		 $array_file_name[] = $filenamearray[0];
+															$public_allow = 0;
+															$uploader = $to_name;
+															$time = '2017-03-02 00:00:00';
+															$expdate = '2017-03-09 00:00:00';
+															$statement = $dbh->prepare("INSERT INTO ".TABLE_FILES." (`url`, `filename`, `description`, `timestamp`, `uploader`, `expires`, `expiry_date`, `public_allow`, `public_token`,`request_type`) VALUES ('$url', '$filename', '', CURRENT_TIMESTAMP, '$uploader', '0', '2017-12-09 00:00:00', '0', NULL,'$requestType');");
+															if($statement->execute()) {
+																$img_id = $dbh->lastInsertId();
+																$filesrelations = $dbh->prepare("INSERT INTO ".TABLE_FILES_RELATIONS." (`timestamp`, `file_id`, `client_id`, `group_id`, `folder_id`, `hidden`, `download_count`) VALUES (CURRENT_TIMESTAMP, ".$img_id.", ".$fromid.", NULL, NULL, '0', '0')");
+																if($filesrelations->execute()) {
+																	$file_status=true;
+																}
+														}
+
+										} else {
+											$filesToAdd= file_get_contents(UPLOADED_FILES_FOLDER.$fileName);
+											$single_file = new AES($filesToAdd, ENCRYPTION_KEY, BLOCKSIZE);
+											$decryptData =  $single_file->decrypt();
+											unlink(UPLOADED_FILES_FOLDER.$fileName);
+											file_put_contents(UPLOADED_FILES_FOLDER.$fileName, $decryptData);
+											$r=$zip->addFile(UPLOADED_FILES_FOLDER.$fileName,$fileName);
+											$guestfiles[]=$fileName;
+										//	echo("Added  ".$fileName. "<br>");
+										}
+
 							}
 						}
+						if(isset($_POST['zipupload'])){
+
+							$r=$zip->close();
+							if(!empty($guestfiles)){
+								foreach ($guestfiles as $guest) {
+									unlink(UPLOADED_FILES_FOLDER.$guest);
+								}
+							}
+						//	echo("Zip closed");
+							$url = $zipname;
+							$fromid = $userindo['id'];
+							$filenamearray = explode(".",$url);
+							$filename = $filenamearray[0];
+							$array_file_name[] = $filenamearray[0];
+							$public_allow = 0;
+							$uploader = $to_name;
+							$time = '2017-03-02 00:00:00';
+							$expdate = '2017-03-09 00:00:00';
+							$statement = $dbh->prepare("INSERT INTO ".TABLE_FILES." (`url`, `filename`, `description`, `timestamp`, `uploader`, `expires`, `expiry_date`, `public_allow`, `public_token`,`request_type`) VALUES ('$url', '$filename', '', CURRENT_TIMESTAMP, '$uploader', '0', '2017-12-09 00:00:00', '0', NULL,'$requestType');");
+							if($statement->execute()) {
+								$img_id = $dbh->lastInsertId();
+								$filesrelations = $dbh->prepare("INSERT INTO ".TABLE_FILES_RELATIONS." (`timestamp`, `file_id`, `client_id`, `group_id`, `folder_id`, `hidden`, `download_count`) VALUES (CURRENT_TIMESTAMP, ".$img_id.", ".$fromid.", NULL, NULL, '0', '0')");
+								if($filesrelations->execute()) {
+									$file_status=true;
+								}
+							}
+
+
+
+						}
+					//	die();
 					}
 					else {
 						echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> Please choose at least one file.</div>";
@@ -278,7 +334,8 @@ if(!empty($auth)){
 		  </div>
 		  </div>
 		  <div class="inside_form_buttons text-rgt">
-			<button type="submit" name="submit" class="btn btn-default">Submit Upload</button>
+			<input type="submit" name="upload_all" class="btn btn-primary" value="Upload">
+			<input type="submit" name="zipupload" class="btn btn-success" value="Batch Upload">
 		  </div>
 		  <div class="form-group">
 			  <div class="col-md-12 note_file_upload">

@@ -2,7 +2,6 @@
 require_once('sys.includes.php');
 include('header-unlogged.php');
 $page_title = __('Drop-Off Summary','cftp_admin');
-/*$form_action="dropoff_guest_action.php"; */
 
 $auth = isset($_REQUEST['auth']) ? htmlspecialchars($_REQUEST['auth'],ENT_QUOTES, 'UTF-8') : '';
 if(!empty($auth)){
@@ -42,8 +41,6 @@ if(!empty($auth)){
 				$to = ($_REQUEST['to']) ? $_REQUEST['to'] : '';
 				$comments = ($_REQUEST['comments']) ? $_REQUEST['comments'] : '';
 				$auth = ($_REQUEST['auth']) ? $_REQUEST['auth'] : '';
-				/* $file1 = $_FILES['fileone'];
-				var_dump($_FILES['fileone']['tmp_name']); */
 				$statement = $dbh->prepare("select id,user from ".TABLE_USERS." where email = '$to'");
 				$statement->execute();
 				$statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -59,21 +56,22 @@ if(!empty($auth)){
 					$chunks = isset($_REQUEST["chunks"]) ? intval($_REQUEST["chunks"]) : 0;
 					$filecount = count($_FILES['userfiles']['name']);
 					$array_file_name = array();
-					if(!empty($_FILES['userfiles']['name'][0])) 
+
+					if(!empty($_FILES['userfiles']['name'][0]))
 					{
+						//Checking for batchupload
+
 						if(isset($_POST['zipupload'])){
+							//Creating zip file
 							$zip = new ZipArchive();
-							$curr_usr_id= CURRENT_USER_ID;
-						//	echo("Current User Id ".CURRENT_USER_ID.'<br>');
+							//Checking for duplicate files
 							$zcount = 1;
-					  	while (file_exists($targetDir . DIRECTORY_SEPARATOR .'guest_' . $zcount.'.zip'))
+					  	while (file_exists($targetDir . DIRECTORY_SEPARATOR .'guest_'.$userindo['id'].'_'. $zcount.'.zip'))
 					  	$zcount++;
 
-							$zipname='guest_' . $zcount .'.zip';
+							$zipname='guest_'.$userindo['id'].'_' . $zcount .'.zip';
 					    $zipFilePath = UPLOADED_FILES_FOLDER.$zipname;
 					    $r = $zip->open($zipFilePath,  ZipArchive::CREATE);
-						//	var_dump($r);
-						//	echo("<br>Zip Open ".$zipFilePath."<br>");
 							$guestfiles =array();
 
 						}
@@ -204,14 +202,16 @@ if(!empty($auth)){
 														}
 
 										} else {
+											//Decrypting uploaded files before zipping it
 											$filesToAdd= file_get_contents(UPLOADED_FILES_FOLDER.$fileName);
 											$single_file = new AES($filesToAdd, ENCRYPTION_KEY, BLOCKSIZE);
 											$decryptData =  $single_file->decrypt();
 											unlink(UPLOADED_FILES_FOLDER.$fileName);
 											file_put_contents(UPLOADED_FILES_FOLDER.$fileName, $decryptData);
+
+											//Adding decrypted files to zip
 											$r=$zip->addFile(UPLOADED_FILES_FOLDER.$fileName,$fileName);
 											$guestfiles[]=$fileName;
-										//	echo("Added  ".$fileName. "<br>");
 										}
 
 							}

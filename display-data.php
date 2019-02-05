@@ -20,7 +20,7 @@ FROM tbl_files AS tf
 LEFT JOIN ".TABLE_FILES_RELATIONS." AS tfr ON tf.id = tfr.file_id 
 LEFT JOIN  ".TABLE_USERS." As tu ON tfr.client_id=tu.id
 LEFT JOIN  ".TABLE_GROUPS." As tg ON tfr.group_id=tg.id
-where tfr.from_id =" . CURRENT_USER_ID. " AND ( DATE(tf.timestamp)='".$date."' || DATE(tf.future_send_date)='".$date."')";
+where tfr.from_id =" . CURRENT_USER_ID. " AND DATE(tf.future_send_date)='".$date."'";
 
 $statement = $dbh->prepare($q_sent_file);
 $statement->execute();
@@ -58,7 +58,7 @@ else {
 }
 
 /* Expired files */
-$q_expirydate = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id where  (tbl_files_relations.from_id =" . CURRENT_USER_ID." || tbl_files_relations.client_id =" . CURRENT_USER_ID.") AND DATE(tbl_files.expiry_date)='".$date."' AND tbl_files.expires=1" ; 
+$q_expirydate = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id where  (tbl_files_relations.from_id =" . CURRENT_USER_ID." || tbl_files_relations.client_id =" . CURRENT_USER_ID.") AND DATE(tbl_files.expiry_date)='".$date."'" ;
 
 $statement2 = $dbh->prepare($q_expirydate);
 $statement2->execute();

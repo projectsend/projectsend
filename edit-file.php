@@ -77,6 +77,7 @@ while( $row = $statement->fetch() ) {
 		//$clients[$row["id"]] = $row["name"];
 	//}
 	$clients[$row["id"]] = $row["name"]." : ".$row["email"];
+  $cliEmail[$row["id"]] =$row["email"];
 }
 
 /** Fill the groups array that will be used on the form */
@@ -213,10 +214,8 @@ function randomPassword() {
 						* If the uploader is a client, set the "client" var to the current
 						* uploader username, since the "client" field is not posted.
 						*/
-						//if ($current_level == 0) {
-							//$file['assignments'] = 'c'.$global_user;
-						//}
-						
+
+
 						$this_upload = new PSend_Upload_File();
 						/**
 						 * Unassigned files are kept as orphans and can be related
@@ -249,11 +248,8 @@ function randomPassword() {
 						}
 						if (!empty($file['future_send_date'])) {
 							$add_arguments['future_send_date'] = $file['future_send_date'];
-						}					
-						if (!empty($file['hidden'])) {
-							$add_arguments['hidden'] = $file['hidden'];
-							$send_notifications = false;
 						}
+
 						//1 == 1 for all all users added by B)
 						if ($current_level != 0 || 1 == 1) {
 
@@ -271,7 +267,6 @@ function randomPassword() {
 								 * Remove already assigned clients/groups from the list.
 								 * Only adds assignments to the NEWLY selected ones.
 								 */
-								 //var_dump($file['assignments']);
 //------------------------------------------------------------
 
 				$nuser_list = $_POST['new_client'];
@@ -431,9 +426,17 @@ $message = '
 				//print_r($full_list);exit();
 				$full_assi_user = $full_list;
 //------------------------------------------------------------
+                if($get_prev_id != 3){
 
-								foreach ($file_on_clients as $this_client) { $compare_clients[] = 'c'.$this_client; }
-								foreach ($file_on_groups as $this_group) { $compare_groups[] = 'g'.$this_group; }
+                  foreach ($file_on_clients as $this_client) { $compare_clients[] = 'c'.$this_client; }
+    							foreach ($file_on_groups as $this_group) { $compare_groups[] = 'g'.$this_group; }
+
+                }
+                else {
+                  $compare_clients[]=array();
+                  $compare_groups[]=array();
+                }
+
 								if (!empty($compare_clients)) {
 									$full_list = array_diff($full_list,$compare_clients);
 								}
@@ -441,9 +444,7 @@ $message = '
 									$full_list = array_diff($full_list,$compare_groups);
 								}
 								$add_arguments['assign_to'] = $full_list;
-								//echo "www";
-								//var_dump($add_arguments['assign_to']); exit;
-								
+
 								/**
 								 * On cleaning the DB, only remove the clients/groups
 								 * That just have been deselected.
@@ -741,7 +742,21 @@ $message = '
                             <?php _e('Send To', 'cftp_admin');?>
                           </h3>
                           <select multiple="multiple" name="new_client[]" class="form-control new_client" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>" style="display:none">
-</select>
+                          </select>
+                          <?php   if($get_prev_id==3){ ?>
+                              <script type="text/javascript">
+                                //  <?php
+                                // foreach($cliEmail as $cli=>$c_email) {
+                                //   if (in_array($cli,$file_on_clients)) {
+                                //      ?>
+                                //   $(".new_client").append('<option val="<?php echo $c_email; ?>" selected="selected" ><?php echo $c_email; ?></option>');
+                                //
+                                // <?php
+                                // }
+                                // }
+                                // ?>
+                              </script>
+                          <?php  } ?>
                           <label>
                             <?php _e('Assign this file to', 'cftp_admin');?>
                             :</label>

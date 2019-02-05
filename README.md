@@ -32,6 +32,20 @@ yum -y install php-xml
 ## 3.2.Install GD Image library and Enable GD Image Library.
 yum install -y php70u-gd
 
+if that fails then
+
+- Download latest ius-release rpm:
+
+https://centos7.iuscommunity.org/ius-release.rpm
+
+- Install ius-release rpm:
+
+rpm -Uvh ius-release*rpm
+
+- Install php70u-gd rpm package:
+
+yum --enablerepo=ius-archive install php70u-gd
+
 systemctl restart httpd.service
 
 # 4.  Create a new mysql database on your server. Create/assign a user to it.

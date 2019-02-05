@@ -24,7 +24,8 @@ yum-config-manager --enable remi-php72
 yum update
 yum install -y php72
 
-yum install -y php72-php-fpm php72-php-gd php72-php-json php72-php-mbstring php72-php-mysqlnd php72-php-xml php72-php-xmlrpc php72-php-opcache
+yum install -y php72-php-fpm php72-php-gd php72-php-json php72-php-mbstring php72-php-mysqlnd php72-php-xml php72-php-xmlrpc php72-php-opcache php php-common php-opcache php-mcrypt php-cli php-gd php-curl php-mysqlnd
+
 
 ## 3.1.Install PHP DOM extension and Enable PHP DOM extension.
 yum -y install php-xml

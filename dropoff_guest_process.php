@@ -334,8 +334,8 @@ if(!empty($auth)){
 		  </div>
 		  </div>
 		  <div class="inside_form_buttons text-rgt">
-			<input type="submit" name="upload_all" class="btn btn-primary" value="Upload">
-			<input type="submit" name="zipupload" class="btn btn-success" value="Batch Upload">
+			<!-- <input type="submit" name="upload_all" class="btn btn-primary" value="Upload"> -->
+			<input type="submit" name="zipupload" class="btn btn-success" value="Upload">
 		  </div>
 		  <div class="form-group">
 			  <div class="col-md-12 note_file_upload">

@@ -428,11 +428,8 @@ include('header.php');
 					$fq .= $condition;
 				}
 			}
-	
-			/** Debug query */
-			//echo $fq;
-			//print_r( $conditions );
-	
+
+
 			$sql_files = $dbh->prepare($fq);
 			$sql_files->execute( $params );
 			$count = $sql_files->rowCount();
@@ -448,34 +445,7 @@ include('header.php');
                 <?php _e('Search','cftp_admin'); ?>
                 </button>
               </form>
-              <?php
-					/** Filters are not available for clients */
-					if($current_level != '0' && $results_type != 'global') {
-				?>
-              <form action="<?php echo html_output($form_action_url); ?>" name="files_filters" method="post" class="form-inline form_filters">
-                <div class="form-group group_float">
-                  <select name="status" id="status" class="txtfield form-control">
-                    <?php
-										$options_status = array(
-																'all'	=> __('All statuses','cftp_admin'),
-																'1'		=> __('Hidden','cftp_admin'),
-																'0'		=> __('Visible','cftp_admin'),
-															);
-										foreach ( $options_status as $value => $text ) {
-									?>
-                    <option value="<?php echo $value; ?>"><?php echo $text; ?></option>
-                    <?php
-										}
-									?>
-                  </select>
-                </div>
-                <button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default">
-                <?php _e('Filter','cftp_admin'); ?>
-                </button>
-              </form>
-              <?php
-					}
-				?>
+
             </div>
           </div>
           <form action="<?php echo html_output($form_action_url); ?>" name="files_list" method="post" class="form-inline">

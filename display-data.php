@@ -6,14 +6,6 @@ $date=$_POST['date'];
 $date = new DateTime($date);
 $date=$date->format('Y-m-d');
 
-/*$q_sent_file = "SELECT  tf.* FROM tbl_files AS tf LEFT JOIN ".TABLE_FILES_RELATIONS." AS tfr ON tf.id = tfr.file_id where tfr.from_id =" . CURRENT_USER_ID. " AND DATE(tf.timestamp)='".$date."'"; */
-/*
-$q_sent_file = "SELECT tu.name As clientid,  tf.* 
-FROM tbl_files AS tf 
-LEFT JOIN ".TABLE_FILES_RELATIONS." AS tfr ON tf.id = tfr.file_id 
-LEFT JOIN  ".TABLE_USERS." As tu ON tfr.client_id=tu.id
-where tfr.from_id =" . CURRENT_USER_ID. " AND DATE(tf.timestamp)='".$date."'";
-*/
 
 $q_sent_file = "SELECT tu.name As clientid, tg.name As groupid, tf.* 
 FROM tbl_files AS tf 
@@ -40,7 +32,9 @@ else
 	$row_f['send']='false';
 }
 
-$q_received = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id where  tbl_files_relations.client_id =" . CURRENT_USER_ID." AND DATE(tbl_files.timestamp)='".$date."'" ;
+$q_received = "SELECT  tbl_files.* FROM tbl_files
+LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id
+where  tbl_files_relations.client_id =" . CURRENT_USER_ID." AND DATE(tbl_files.timestamp)='".$date."'" ;
 
 $statement1 = $dbh->prepare($q_received);
 $statement1->execute();
@@ -58,7 +52,10 @@ else {
 }
 
 /* Expired files */
-$q_expirydate = "SELECT  tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id where  (tbl_files_relations.from_id =" . CURRENT_USER_ID." || tbl_files_relations.client_id =" . CURRENT_USER_ID.") AND DATE(tbl_files.expiry_date)='".$date."'" ;
+$q_expirydate = "SELECT  tbl_files.* FROM tbl_files
+												LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id
+													where  (tbl_files_relations.from_id =" . CURRENT_USER_ID." || tbl_files_relations.client_id =" . CURRENT_USER_ID.")
+																	AND (DATE(tbl_files.expiry_date)='".$date."' ) AND (tbl_files.expires = 1)" ;
 
 $statement2 = $dbh->prepare($q_expirydate);
 $statement2->execute();
@@ -76,7 +73,5 @@ else {
 }
 $full_files=array_merge($row_f,$row_f1,$row_f2);
 echo json_encode($full_files);
-/*echo "<pre>";
-print_r($full_files);*/
 
 ?>

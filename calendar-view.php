@@ -54,7 +54,9 @@ function checkDate(selectedDate) {
 <?php
 
     $q="SELECT distinct date_format( expiry_date, '%d-%m-%Y' ) as date
-    FROM tbl_files
+    FROM tbl_files LEFT JOIN tbl_files_relations
+    ON tbl_files.id = tbl_files_relations.file_id
+    where  ( tbl_files_relations.client_id =". CURRENT_USER_ID." || tbl_files_relations.from_id =". CURRENT_USER_ID.") AND (tbl_files.expires = 1)
     UNION
     SELECT  distinct date_format( future_send_date, '%d-%m-%Y' ) as date
     FROM tbl_files LEFT JOIN tbl_files_relations

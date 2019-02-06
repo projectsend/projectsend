@@ -12,13 +12,14 @@ $target_name = isset($_POST['target_name'])?$_POST['target_name']:'';
     $fileName = $finishedfile['0'];
     $ext = strrpos($fileName, '.');
   	$fileName_a = substr($fileName, 0, $ext);
-  	$fileName_b = substr($fileName, $ext);	$curr_usr_id= CURRENT_USER_ID;
+  	$fileName_b = substr($fileName, $ext);
+	$curr_usr_id= CURRENT_USER_ID;
 
   	$count = 1;
-  	while (file_exists($targetDir . DIRECTORY_SEPARATOR . $fileName_a . 'compressed_' . $count . '_'. $curr_usr_id . '_'. $fileName_b))
+  	while (file_exists($targetDir . DIRECTORY_SEPARATOR .$fileName_a.'_dropoff_' . $count . '_'. $curr_usr_id . '.zip'))
   	$count++;
 
-  	$fileName = $fileName_a . 'compressed_' . $count. '_' . $curr_usr_id . '_'. $fileName_b;
+  	$fileName =$fileName_a.'_dropoff_' . $count. '_' . $curr_usr_id;
     $withoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $fileName);
     $zipname=$withoutExt.".zip";
     $zipFilePath = UPLOADED_FILES_FOLDER.$zipname;

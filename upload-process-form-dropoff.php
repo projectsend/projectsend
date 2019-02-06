@@ -679,11 +679,7 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 																		</a>
 																	</div> -->
 																	<div class="divider"></div>
-																	<div class="checkbox">
-																		<label for="hid_checkbox_<?php echo $i; ?>">
-																		<input type="checkbox" id="hid_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][hidden]" value="1" /><?php _e('Upload hidden (will not send notifications)', 'cftp_admin');?>
-																	</label>
-																	</div>
+																	
 																</div>
 															</div>
 															<div class="col-sm-6 col-xl-3 categories column">

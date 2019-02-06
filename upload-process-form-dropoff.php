@@ -434,15 +434,6 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 							<?php _e('Please complete the following information to finish the uploading process. Remember that "Title" is a required field.','cftp_admin'); ?>
 						</p>
 						<?php
-						if ($current_level != 0) 
-						{
-						?>
-							<div class="message message_info">
-								<strong><?php _e('Note','cftp_admin'); ?></strong>:
-								<?php _e('You can skip assigning if you want. The files are retained and you may add them to clients or groups later.','cftp_admin'); ?>
-							</div>
-						<?php
-						}
 						/**
 						* First, do a server side validation for files that were submited
 						* via the form, but the name field was left empty.

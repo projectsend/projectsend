@@ -14,10 +14,10 @@ $user_role_9_name = __('System Administrator','cftp_admin');
 $user_role_8_name = __('Account Manager','cftp_admin');
 $user_role_7_name = __('Uploader','cftp_admin');
 $user_role_0_name = __('Client','cftp_admin');
-define('USER_ROLE_LVL_9', $user_role_9_name);
-define('USER_ROLE_LVL_8', $user_role_8_name);
-define('USER_ROLE_LVL_7', $user_role_7_name);
-define('USER_ROLE_LVL_0', $user_role_0_name);
+if (!defined('USER_ROLE_LVL_9')) define('USER_ROLE_LVL_9', $user_role_9_name);
+if (!defined('USER_ROLE_LVL_8')) define('USER_ROLE_LVL_8', $user_role_8_name);
+if (!defined('USER_ROLE_LVL_7')) define('USER_ROLE_LVL_7', $user_role_7_name);
+if (!defined('USER_ROLE_LVL_0')) define('USER_ROLE_LVL_0', $user_role_0_name);
 
 /**
  * Validation class strings

@@ -108,8 +108,13 @@ if ($_POST)
 }
 /** Get all the existing categories */
 $get_categories = get_categories();
-$categories	= $get_categories['categories'];
-$arranged	= $get_categories['arranged'];
+if(isset($get_categories['categories'])){
+	$categories	= $get_categories['categories'];
+}
+if(isset($get_categories['arranged'])){
+	$categories	= $get_categories['arranged'];
+}
+
 ?>
 
 <div id="main">

@@ -434,13 +434,11 @@ class I18n
 		 * but n==1 (english and spanish for example)
 		 * http://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html#Plural-forms
 		 */
-			$fn = create_function
-      (
-				'$n',
-				'$nplurals=2; 
-         $plural = ( $n == 1 ? 0 : 1 );
-         return ( $plural >= $nplurals ? $nplurals - 1 : $plural );'
-			);
+			$fn = function ($n,$nplurals=2) {
+        $plural = ( $n == 1 ? 0 : 1 );
+        return ( $plural >= $nplurals ? $nplurals - 1 : $plural );
+      } ;
+
 		}
 
 		return $fn;

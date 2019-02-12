@@ -199,10 +199,12 @@ if (!empty($found_notifications)) {
 										'files_list' => $files_list
 									);
 			$try_sending = $notify_client->psend_send_email($email_arguments);
-			if ($try_sending == 1) {
+			if ($try_sending == 1) {				
+				$notifications_sent=array();
 				$notifications_sent = array_merge($notifications_sent, $this_client_notifications);
 			}
 			else {
+				$notifications_failed=array();
 				$notifications_failed = array_merge($notifications_failed, $this_client_notifications);
 			}
 		}

@@ -397,9 +397,11 @@ include('header.php');
 		}
 		//var_dump($sql); exit;
 		/** We consider public file as assigned file */
-		foreach ($db_files_public as $file_id){
-			$assigned[] = $file_id;
-		}
+    if(isset($db_files_public)){
+  		foreach ($db_files_public as $file_id){
+  			$assigned[] = $file_id;
+  		}
+    }
 		/** Read the temp folder and list every allowed file */
 		if ($handle = opendir($work_folder))  {
 			while (false !== ($filename = readdir($handle))) {
@@ -451,8 +453,8 @@ include('header.php');
     $orphanCount=0;
     if(isset($files_to_add) && count($files_to_add) > 0 ) {
     foreach ($files_to_add as $opfile){
-      $x=explode("_", $opfile[name]);
-      $cuid_arr=explode(".", $opfile[name]);
+      $x=explode("_", $opfile['name']);
+      $cuid_arr=explode(".", $opfile['name']);
       $or_arr = array_reverse(preg_split('/(_)/',$cuid_arr[0],-1, PREG_SPLIT_NO_EMPTY));
       if($or_arr[0]==CURRENT_USER_ID){
         $orphanCount++;
@@ -583,7 +585,7 @@ include('header.php');
             ?>
             <section id="no-more-tables" class="cc-overflow-scroll">
 <?php
-if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">×</a>The file has been edited successfully.</div>';} 
+if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert">×</a>The file has been edited successfully.</div>';}
 ?>
             <table id="files_list" class="cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
               <thead>
@@ -624,8 +626,8 @@ if($_REQUEST['edit'] == 1){echo '<div class="alert alert-success"><a href="#" cl
 							$curr_usr_id =	CURRENT_USER_ID;
 							if(isset($files_to_add) && count($files_to_add) > 0 ) {
 							foreach ($files_to_add as $add_file){
-								$x=explode("_", $add_file[name]);
-								$cuid_array=explode(".", $add_file[name]);
+								$x=explode("_", $add_file['name']);
+								$cuid_array=explode(".", $add_file['name']);
 								$arr = array_reverse(preg_split('/(_)/',$cuid_array[0],-1, PREG_SPLIT_NO_EMPTY));
 								if($arr[0]==$curr_usr_id){
                   ?>

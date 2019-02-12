@@ -104,11 +104,12 @@ $work_folder = UPLOADED_FILES_FOLDER;
 		}
 		
 		/** We consider public file as assigned file */
-		
-		foreach ($db_files_public as $file_id){
-			
-			$assigned[] = $file_id;
-			
+		if (isset($db_files_public)) {
+			foreach ($db_files_public as $file_id){
+
+				$assigned[] = $file_id;
+
+			}
 		}
 
 		/** Read the temp folder and list every allowed file */
@@ -314,12 +315,12 @@ $work_folder = UPLOADED_FILES_FOLDER;
 						$curr_usr_id =	CURRENT_USER_ID;
 							
 							foreach ($files_to_add as $add_file){
-		
-							
-							
-								$x=explode("_", $add_file[name]);
-			
-									
+
+
+
+								$x=explode("_", $add_file['name']);
+
+
 								//	if($x[2]==$curr_usr_id){
 									
 			  ?>

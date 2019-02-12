@@ -56,7 +56,9 @@ class ClientActions
 		$this->contact = $arguments['contact'];
 		$this->notify = $arguments['notify'];
 		$this->type = $arguments['type'];
-		$this->recaptcha = $arguments['recaptcha'];
+		if(isset($arguments['recaptcha'])){
+			$this->recaptcha = $arguments['recaptcha'];
+		}
 
 		/**
 		 * These validations are done both when creating a new client and
@@ -142,16 +144,11 @@ class ClientActions
 		$this->zipcode		= $arguments['zipcode'];
 		$this->phone		= $arguments['phone'];
 		$this->level		= $arguments['level'];
-		$this->groupid		= $arguments['groupid'];
+		$this->groupid		= (isset($arguments['groupid'])) ? $arguments['groupid'] : '';
 		$this->contact		= $arguments['contact'];
 		$this->notify		= ( $arguments['notify'] == '1' ) ? 1 : 0;
 		$this->active		= ( $arguments['active'] == '1' ) ? 1 : 0;
 		$this->enc_password	= $hasher->HashPassword($this->password);
-		foreach($this->groupid as $gid)
-		{
-			
-		}
-		//var_dump($this->state);exit;
 		if (strlen($this->enc_password) >= 20) {
 
 			$this->state['hash'] = 1;

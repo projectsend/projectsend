@@ -496,11 +496,11 @@ color:#e33a49;
 					
 				}
 			}
-	
-			if (!empty($found_groups)) {
-				$q_sent_file .= " OR FIND_IN_SET(group_id, :groups)";
-			}
-			$q_sent_file .= ") AND hidden = '0'";
+
+			// if (!empty($found_groups)) {
+			// 	$q_sent_file .= " OR FIND_IN_SET(group_id, :groups)";
+			// }
+			// $q_sent_file .= ") AND hidden = '0'";
 
 			$sql_files = $dbh->prepare($fq);
 			if (!empty($found_groups)) {
@@ -730,7 +730,7 @@ color:#e33a49;
 							$sql_files->setFetchMode(PDO::FETCH_ASSOC);
 							//echo CURRENT_USER_USERNAME;
 							while( $row = $sql_files->fetch() ) {
-								$uploader_cc= trim($row[uploader]);
+								$uploader_cc= trim($row['uploader']);
 								if($uploader_cc == CURRENT_USER_USERNAME) {
 									$edit_access = true;
 								}
@@ -822,7 +822,7 @@ color:#e33a49;
                       <input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" <?php echo isset($disabled)?$disabled:''; ?> />
                       <span class="checkmark
 											<?php
-											 if ((trim($row[uploader]) != CURRENT_USER_USERNAME)){
+											 if ((trim($row['uploader']) != CURRENT_USER_USERNAME)){
 											 if ( ! in_array($row['request_type'], array('1','2') ) )
 												{ echo ("disabled_cc = disabled ");
 											echo($row['request_type']);}

@@ -24,7 +24,7 @@ switch ( $form_information['type'] ) {
 ?>
 <form action="<?php echo html_output($form_action); ?>" name="addcategory" id="process_category" method="post" class="form-horizontal">
 <div class="categories_form form-horizontal">
-	<h3><?php echo $form_information['title']; ?></h3>
+	<h3><?php if ( isset ($form_information['title']) ) { echo $form_information['title']; } ?></h3>
 
 	<div class="form-group">
 		<label for="category_name" class="col-sm-4 control-label"><?php _e('Name','cftp_admin'); ?></label>

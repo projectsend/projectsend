@@ -29,7 +29,7 @@
  * Database driver to use with PDO.
  * Possible options: mysql, mssql
 */
-define('DB_DRIVER', 'mysql');
+define('DB_DRIVER', 'mysqli');
 
 /** Database name */
 define('DB_NAME', 'database');

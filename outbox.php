@@ -1172,7 +1172,7 @@ include('header.php');
 								$hidRow= $dbh->prepare( "SELECT hide_sent FROM ".TABLE_FILES_RELATIONS." WHERE file_id = ".$row['id']." AND from_id =".CURRENT_USER_ID);
 								$hidRow->execute();
 								$result = $hidRow->fetchAll(\PDO::FETCH_ASSOC);
-        if( ( isset($result) && $result[0]['hide_sent'] != '1') &&
+        if( ( isset($result[0]) && $result[0]['hide_sent'] != '1') &&
 						(
 							($row['expires'] == '0') || (time() < strtotime($row['expiry_date']))
 						)

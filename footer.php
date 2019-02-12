@@ -8,7 +8,7 @@
 		
 		
 		load_js_files();
-		if($page=="upload-process-dropoff.php"){
+		if(isset($page) && ($page=="upload-process-dropoff.php")){
 ?>
 			<script src="<?php echo BASE_URI;?>includes/js/chosen/chosen.jquery.min.js"></script>
 			<script src="<?php echo BASE_URI;?>includes/js/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>

@@ -85,8 +85,8 @@ if(!empty($options_values)) {
 	}
 	/**
 	 * For versions 364 and up
-	 */	
-	if (isset($options_values['mail_copy_user_upload'])) {
+	 */
+	if (isset($options_values['mail_copy_user_upload']) && ($options_values['mail_copy_user_upload'] != '') ) {
 		define('COPY_MAIL_ON_USER_UPLOADS',$options_values['mail_copy_user_upload']);
 		define('COPY_MAIL_ON_CLIENT_UPLOADS',$options_values['mail_copy_client_upload']);
 		define('COPY_MAIL_MAIN_USER',$options_values['mail_copy_main_user']);
@@ -223,9 +223,9 @@ if(!empty($options_values)) {
 	 * For versions 673 and up
 	 * For Google Login
 	 */
-	include(__DIR__.'/../aes_class.php');
+	include(__DIR__.'/../aes.php');
 
-	if (isset($options_values['google_client_id'])) {
+	if (isset($options_values['google_client_id']) && ($options_values['google_client_id'] !='') ) {
 		$aesgoogleidarray = new AES($options_values['google_client_id'], ENCRYPTION_KEY, BLOCKSIZE);
 		$aesgoogleid = $aesgoogleidarray->decrypt();
 		define('GOOGLE_CLIENT_ID',$aesgoogleid);
@@ -234,13 +234,15 @@ if(!empty($options_values)) {
 		define('GOOGLE_CLIENT_SECRET',$aesgooglesecret);
 		define('GOOGLE_SIGNIN_ENABLED', $options_values['google_signin_enabled']);
 	}
-
+	else{
+		define('GOOGLE_SIGNIN_ENABLED', NULL);
+	}
 		/**
 	 * For versions 673 and up
 	 * For facebook Login
 	 */
-	
-	if (isset($options_values['facebook_client_id'])) {
+
+	if (isset($options_values['facebook_client_id']) && ($options_values['facebook_client_id'] != '')) {
 		$facebookidarray = new AES($options_values['facebook_client_id'], ENCRYPTION_KEY, BLOCKSIZE);
 		$facebookid = $facebookidarray->decrypt();
 		define('FACEBOOK_CLIENT_ID',$facebookid);
@@ -249,11 +251,14 @@ if(!empty($options_values)) {
 		define('FACEBOOK_CLIENT_SECRET',$facebooksecret);
 		define('FACEBOOK_SIGNIN_ENABLED', $options_values['facebook_signin_enabled']);
 	}
+	else{
+		define('FACEBOOK_SIGNIN_ENABLED', NULL);
+	}
 	/**
 	 * For versions 673 and up
 	 * For twitter Login
 	 */
-	if (isset($options_values['twitter_client_id'])) {
+	if (isset($options_values['twitter_client_id']) && ($options_values['twitter_client_id'] !='')) {
 		$twitteridarray = new AES($options_values['twitter_client_id'], ENCRYPTION_KEY, BLOCKSIZE);
 		$twitterid = $twitteridarray->decrypt();
 		define('TWITTER_CLIENT_ID',$twitterid);
@@ -262,11 +267,15 @@ if(!empty($options_values)) {
 		define('TWITTER_CLIENT_SECRET',$twittersecret);
 		define('TWITTER_SIGNIN_ENABLED', $options_values['twitter_signin_enabled']);
 	}
+	else{
+		define('TWITTER_SIGNIN_ENABLED', NULL);
+	}
+
 	/**
 	 * For versions 673 and up
 	 * For YAHOO Login
 	 */
-	if (isset($options_values['yahoo_client_id'])) {
+	if (isset($options_values['yahoo_client_id']) && ($options_values['yahoo_client_id'] != '')) {
 		$yahooidarray = new AES($options_values['yahoo_client_id'], ENCRYPTION_KEY, BLOCKSIZE);
 		$yahooid = $yahooidarray->decrypt();
 		define('YAHOO_CLIENT_ID',$yahooid);
@@ -275,11 +284,14 @@ if(!empty($options_values)) {
 		define('YAHOO_CLIENT_SECRET',$yahoosecret);
 		define('YAHOO_SIGNIN_ENABLED', $options_values['yahoo_signin_enabled']);
 	}
+	else{
+			define('YAHOO_SIGNIN_ENABLED', NULL);
+	}
 	/**
 	 * For versions 673 and up
 	 * For linkedin Login
 	 */
-	if (isset($options_values['linkedin_client_id'])) {
+	if (isset($options_values['linkedin_client_id']) && ($options_values['linkedin_client_id'] != '')) {
 		$linkedinidarray = new AES($options_values['linkedin_client_id'], ENCRYPTION_KEY, BLOCKSIZE);
 		$linkedinid = $linkedinidarray->decrypt();
 		
@@ -288,13 +300,21 @@ if(!empty($options_values)) {
 		$linkedinsecret = $linkedinsecretarray->decrypt();
 		define('LINKEDIN_CLIENT_SECRET',$linkedinsecret);
 		define('LINKEDIN_SIGNIN_ENABLED', $options_values['linkedin_signin_enabled']);
-	}	
-	if (isset($options_values['windows_client_id'])) {
+	}
+	else{
+			define('LINKEDIN_SIGNIN_ENABLED', NULL);
+	}
+
+	if (isset($options_values['windows_client_id']) && ($options_values['windows_client_id'] !='')) {
 		$windowsclientidarray = new AES($options_values['windows_client_id'], ENCRYPTION_KEY, BLOCKSIZE);
 		$windowsclientid = $windowsclientidarray->decrypt();
 		define('WINDOWS_SIGNIN_ENABLED', $options_values['windows_signin_enabled']);
 		define('WINDOWS_CLIENT_ID',$windowsclientid);
 	}
+	else{
+			define('WINDOWS_CLIENT_ID', NULL);
+	}
+
 	if (isset($options_values['ldap_server_url'])) {
 		define('LDAP_SERVER',$options_values['ldap_server_url']);
 		define('LDAP_PORT',$options_values['ldap_bind_port']);
@@ -302,6 +322,10 @@ if(!empty($options_values)) {
 		define('LDAP_BIND_PASS', $options_values['ldap_bind_password']);
 		define('LDAP_SIGNIN_ENABLED', $options_values['ldap_signin_enabled']);
 	}
+	else{
+			define('LDAP_SIGNIN_ENABLED', NULL);
+	}
+
 	if (isset($options_values['saml_signin_enabled'])) {
 		define('SAML_SIGNIN_ENABLED', $options_values['saml_signin_enabled']);
 		define('SAML_BASE_URL', $options_values['saml_baseurl_path']);

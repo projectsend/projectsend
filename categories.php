@@ -157,8 +157,12 @@ include('header.php');
 	/** Get all the existing categories */
 	$params['search']= isset($_POST['search'])?$_POST['search']:'';
 	$get_categories = get_categories($params);
-	$categories	= $get_categories['categories'];
-	$arranged	= $get_categories['arranged'];
+		if(isset($get_categories['categories'])){
+			$categories	= $get_categories['categories'];
+		}
+		if(isset($get_categories['arranged'])){
+			$categories	= $get_categories['arranged'];
+		}
 
 	/**
 	 * Adding or editing a category

@@ -224,7 +224,7 @@ $get_categories = get_categories();
  * Make an array of file urls that are on the DB already.
 
  */
-
+$urls_db_files=array();
 $statement = $dbh->prepare("SELECT DISTINCT url FROM " . TABLE_FILES);
 
 $statement->execute();
@@ -439,11 +439,12 @@ while( $row = $statement->fetch() ) {
 									
 //------------------------------------------------------------
 
-				
 
-				$nuser_list = $_POST['new_client'];
-				
-				
+				if(isset($_POST['new_client'])){
+					$nuser_list = $_POST['new_client'];
+				}
+
+
 
 				if(!empty($file['assignments'])){
 
@@ -1058,15 +1059,17 @@ while( $row = $statement->fetch() ) {
 						}
 						else 
 						{
-							
-							if(empty($expiry_date) && $expiry_date=='')
+
+							if(isset($expiry_date) && empty($expiry_date) && $expiry_date=='')
 							{
 								$expiry_date = date('d-m-Y');
 							}
-						
-							$date = strtotime(EXPIRY_MAX_DAYS."day", strtotime("$expiry_date"));
-							$expiry_date = date("d-m-Y", $date);
-							
+							if(isset($expiry_date) )
+							{
+								$date = strtotime(EXPIRY_MAX_DAYS."day", strtotime("$expiry_date"));
+								$expiry_date = date("d-m-Y", $date);
+							}
+
 						}
 						?>
 									

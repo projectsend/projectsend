@@ -14,7 +14,8 @@ $page_title = __('E-mail templates','cftp_admin');
 $active_nav = 'options';
 $cc_active_page = 'Email Templates';
 include('header.php');
-
+if(!defined('DROPOFF_REQUEST_CUSTOM' )){ define('DROPOFF_REQUEST_CUSTOM','');}
+if(!defined('DROPOFF_REQUEST_CUSTOM_TEXT' )){ define('DROPOFF_REQUEST_CUSTOM_TEXT','');}
 if ($_POST) {
 	/** Checkboxes */
 	$checkboxes				= array(

@@ -401,7 +401,7 @@ foreach ( $items as $item )
 							$cc_active_sub = '';
 						}
 					}*/
-					if($subitem['label'] == $cc_active_page) {
+					if(isset($cc_active_page) && $subitem['label'] == $cc_active_page) {
 						$cc_active_sub = 'cc-active-subpage';
 					}
 					else {

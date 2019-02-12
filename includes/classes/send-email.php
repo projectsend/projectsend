@@ -819,7 +819,7 @@ class PSend_Email
 
 				$this->mail_info = $this->email_new_files_for_client($this->files_list);
 
-				if (COPY_MAIL_ON_USER_UPLOADS == '1') {
+				if ((defined('COPY_MAIL_ON_USER_UPLOADS')) && COPY_MAIL_ON_USER_UPLOADS == '1') {
 
 					$this->try_bcc = true;
 

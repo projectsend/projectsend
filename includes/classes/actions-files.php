@@ -75,40 +75,32 @@ class FilesActions
 			/** Do a permissions check */
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
 				$this->file_id = $rel_id;
-				$this->sql = $this->dbh->prepare("SELECT url, uploader FROM " . TABLE_FILES . " WHERE id = :file_id");
+				$this->sql = $this->dbh->prepare("SELECT url, uploader ,request_type FROM " . TABLE_FILES . " WHERE id = :file_id");
 				$this->sql->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
 				$this->sql->execute();
 				$this->sql->setFetchMode(PDO::FETCH_ASSOC);
 				while( $this->row = $this->sql->fetch() ) {
+					$this->file_url = $this->row['url'];
 					if ( CURRENT_USER_LEVEL == '0' ) {
 						if ( CLIENTS_CAN_DELETE_OWN_FILES == '1' && $this->row['uploader'] == CURRENT_USER_USERNAME ) {
 							$this->can_delete	= true;
+							if ( in_array($this->row['request_type'], array('1','2') ) )
+							{
+								$this->guest_req	= true;
+
+							}
 						}
 					}
 					else {
 						$this->can_delete	= true;
 					}
 
-					$this->file_url = $this->row['url'];
+
 				}
 
 				/** Delete the reference to the file on the database */
 				if ( true === $this->can_delete ) {
-					// $assign = $this->dbh->prepare("SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE file_id =".$this->file_id);
-					// $assign->execute();
-					// if($assign->rowCount() > 1 ){
-					//
-					// 	$this->sql = $this->dbh->prepare("DELETE FROM " . TABLE_FILES_RELATIONS. " WHERE file_id = :file_id AND client_id =".CURRENT_USER_ID);
-					// 	$this->sql->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
-					// 	$this->sql->execute();
-					//
-					// }
-					// else {
-					// 	$this->sql = $this->dbh->prepare("DELETE FROM " . TABLE_FILES . " WHERE id = :file_id");
-					// 	$this->sql->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
-					// 	$this->sql->execute();
-					// 	delete_file_from_disk(UPLOADED_FILES_FOLDER . $this->file_url);
-					// }
+
 					$this->sql = $this->dbh->prepare("DELETE FROM " . TABLE_FILES_RELATIONS. " WHERE file_id = :file_id AND client_id =".CURRENT_USER_ID);
 					$this->sql->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
 					$this->sql->execute();
@@ -116,6 +108,9 @@ class FilesActions
 					$prev_assign->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
 					$prev_assign->execute();
 					$this->result = true;
+					if ( true === $this->guest_req ) {
+							delete_file_from_disk(UPLOADED_FILES_FOLDER . $this->file_url);
+					}
 				}
 				else {
 					$this->result = false;

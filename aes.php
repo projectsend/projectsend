@@ -74,7 +74,7 @@ class AES {
     }
 //it must be the same when you encrypt and decrypt
      protected function getIV() {
-        //return '1234567890123456';
+        return '1234567890123456';
          //return mcrypt_create_iv(mcrypt_get_iv_size($this->cipher, $this->mode), MCRYPT_RAND);
          return openssl_random_pseudo_bytes(openssl_cipher_iv_length($this->method));
      }

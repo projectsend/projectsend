@@ -95,7 +95,6 @@ class FilesActions
 						$this->can_delete	= true;
 					}
 
-
 				}
 
 				/** Delete the reference to the file on the database */

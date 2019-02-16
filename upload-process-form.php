@@ -1072,11 +1072,11 @@ while( $row = $statement->fetch() ) {
 
 						}
 						?>
-									
-		<div class="input-group date-container">
-		
-			<input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" />
-			
+
+		<div class="input-group ex_date">
+
+			<input  type="text" class="date-field exPdate form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y',strtotime("+14 days")); ?>" />
+
 				<div class="input-group-addon">
 				
 					<i class="glyphicon glyphicon-time"></i>
@@ -1311,7 +1311,7 @@ while( $row = $statement->fetch() ) {
 				  <label for="file[<?php echo $i; ?>][future_send_date]">
 					<?php _e('Select a date', 'cftp_admin');?>
 				  </label>
-				  <div class="input-group date-container">
+				  <div class="input-group future_date">
 					<input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][future_send_date]" value="<?php echo (!empty($future_send_date)) ? $future_send_date : date('d-m-Y'); ?>" />
 					<div class="input-group-addon"> <i class="glyphicon glyphicon-time"></i> </div>
 				  </div>
@@ -1503,7 +1503,7 @@ while( $row = $statement->fetch() ) {
 			});
 
 
-				$('.date-container .date-field').datepicker({
+				$('.future_date .date-field').datepicker({
 
 					format		: 'dd-mm-yyyy',
 					autoclose	: true,
@@ -1693,24 +1693,20 @@ else if (!$(this).is(":checked")) {
 chslt.prop('disabled', false).trigger("chosen:updated");
 }
 });
-document.getElementById('pub_checkbox_1').onchange = function() {/* 
+$(document).ready(function() {
+	var today = new Date();
+		    var tomorrow = new Date();
+		    tomorrow.setDate(today.getDate() +1);
+					$('.ex_date .date-field').datepicker({
 
-$('#chslt-0').prop('disabled', true).trigger("chosen:updated");
+						format		: 'dd-mm-yyyy',
+						autoclose	: true,
+						todayHighlight	: true,
+	          startDate       : tomorrow
 
-if ($("#pub_checkbox_1").is(":checked")){
-	
-	$('#chslt-0').prop('disabled', true).val('').trigger('chosen:updated');
-	
-}
+					});
+});
 
-else if (!$("#pub_checkbox_1").is(":checked")) {
-	
-	$('#chslt-0').prop('disabled', false).trigger("chosen:updated");
-	
-}
-
-	
-*/};
 </script>
 
 

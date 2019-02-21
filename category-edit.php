@@ -15,6 +15,7 @@ require_once('sys.includes.php');
 
 $active_nav = 'category';
 
+$page_title = __('Edit Category','cftp_admin');
 
 include('header.php');?>
 <script type="text/javascript">
@@ -40,7 +41,7 @@ $("#process_category").submit(function() {
 		$editing			= !empty( $_POST['editing_id'] ) ? $_POST['editing_id'] : $_GET['id'];
 		$form_information	= array(
 			'type'	=> 'edit_category',
-			'title'	=> __('Edit category','cftp_admin'),
+			'title'	=> __('Edit Category','cftp_admin'),
 		);
 		/**
 		 * Get the current information if just entering edit mode

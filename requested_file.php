@@ -15,9 +15,9 @@ require_once('sys.includes.php');
 $loggedin_id = $_SESSION['loggedin_id'];
 
 $active_nav = 'files';
-$cc_active_page = 'Requested File';
+$cc_active_page = 'Requested Files';
 
-$page_title = __('Requested files','cftp_admin');
+$page_title = __('Requested Files','cftp_admin');
 
 $current_level = get_current_user_level();
 $form_action_url = 'requested_file.php';
@@ -50,8 +50,8 @@ $actual_link = SITE_URI.'requested_file.php';
 			<div class="row">
 				<div class="col-md-12">
 					<h2 class="page-title txt-color-blueDark"><?php echo $page_title; ?></h2>
-						<a href="request-drop-off.php" class="btn btn-sm btn-primary right-btn">Request a File</a>
-							<h4 >Requested by You</h4>
+						<a href="request-drop-off.php" class="btn btn-sm btn-primary right-btn">Request File(s)</a>
+							<h4>Requested by You</h4>
 
           <?php
 		/**

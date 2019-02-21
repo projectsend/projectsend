@@ -3,21 +3,21 @@
  * Allows to hide, show or delete the files assigend to the
  * selected client.
  *
- * @package ProjectSend 
+ * @package ProjectSend
  */
 
 $load_scripts	= array(
 						'footable',
-					); 
+					);
 
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 $loggedin_id = $_SESSION['loggedin_id'];
 
 $active_nav = 'files';
-$cc_active_page = 'Requested Files';
+$cc_active_page = 'Requested File';
 
-$page_title = __('Requested Files','cftp_admin');
+$page_title = __('Requested files','cftp_admin');
 
 $current_level = get_current_user_level();
 $form_action_url = 'requested_file.php';
@@ -36,17 +36,22 @@ include('header.php');
 $grid_layout= SITE_URI.'requested_file.php?view=grid';/*echo $actual_link; */
 $actual_link = SITE_URI.'requested_file.php';
 ?>
-
-<div id="main"> 
+<style media="screen">
+	h4{
+		font-weight: bold;
+	}
+</style>
+<div id="main">
 <!-- MAIN CONTENT -->
-	<div id="content"> 
+	<div id="content">
 
 		<!-- Added by B) -------------------->
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-md-12">
 					<h2 class="page-title txt-color-blueDark"><?php echo $page_title; ?></h2>
-						<a href="request-drop-off.php" class="btn btn-sm btn-primary right-btn">Request File(s)</a>
+						<a href="request-drop-off.php" class="btn btn-sm btn-primary right-btn">Request a File</a>
+							<h4 >Requested by You</h4>
 
           <?php
 		/**
@@ -57,20 +62,8 @@ $actual_link = SITE_URI.'requested_file.php';
 			if(!empty($_POST['files'])) {
 				$selected_files = array_map('intval',array_unique($_POST['files']));
 				$files_to_get = implode(',',$selected_files);
-				/**
-				 * Make a list of files to avoid individual queries.
-				 * First, get all the different files under this account.
-				 */
-				/*$sql_distinct_files = $dbh->prepare("SELECT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE FIND_IN_SET(id, :files)");
-				$sql_distinct_files->bindParam(':files', $files_to_get);
-				$sql_distinct_files->execute();
-				$sql_distinct_files->setFetchMode(PDO::FETCH_ASSOC);
-				
-				while( $data_file_relations = $sql_distinct_files->fetch() ) {
-					$all_files_relations[] = $data_file_relations['file_id']; 
-					$files_to_get = implode(',',$all_files_relations);
-				}*/
-				
+
+
 				/**
 				 * Then get the files names to add to the log action.
 				 */
@@ -82,7 +75,7 @@ $actual_link = SITE_URI.'requested_file.php';
 				while( $data_file = $sql_file->fetch() ) {
 					$all_files[$data_file['id']] = $data_file['filename'];
 				}
-				
+
 				switch($_POST['files_actions']) {
 
 
@@ -105,7 +98,7 @@ $actual_link = SITE_URI.'requested_file.php';
 							}else{
 								$msg_failed = __('Some request could not be deleted.','cftp_admin');
 								$failed_count++;
-								/* echo system_message('error',$msg); */
+								/*echo system_message('error',$msg); */
 							}
 
 						}
@@ -115,7 +108,6 @@ $actual_link = SITE_URI.'requested_file.php';
 						if($failed_count>0) {
 							echo system_message('ok',$msg_failed);
 						}
-
 
 						break;
 				}
@@ -163,8 +155,8 @@ $actual_link = SITE_URI.'requested_file.php';
                   <?php _e('Proceed','cftp_admin'); ?>
                   </button>
 				  <!-- Added by rj to view the layout of of requested item listing -->
-				  <!-- <a href="<?php echo $grid_layout; ?>" class="cc-grid"><i class="fa fa-th" aria-hidden="true"></i></a> -->
-                  <!-- <a href="<?php echo $actual_link; ?>" class="cc-grid"><i class="fa fa-bars" aria-hidden="true"></i></a> -->
+				  <!-- <a href="<?php //echo $grid_layout; ?>" class="cc-grid"><i class="fa fa-th" aria-hidden="true"></i></a> -->
+                  <!-- <a href="<?php //echo $actual_link; ?>" class="cc-grid"><i class="fa fa-bars" aria-hidden="true"></i></a> -->
                 </div>
               </div>
             </div>
@@ -172,8 +164,12 @@ $actual_link = SITE_URI.'requested_file.php';
 						<?php
 						/** Debug query */
 
-						$q_sent_file = "SELECT * FROM tbl_drop_off_request WHERE from_id = ".$loggedin_id." Order by requested_time DESC";
+						$reqstmail = "SELECT email FROM tbl_users WHERE id = ".$loggedin_id;
 
+						$reqst = $dbh->prepare($reqstmail);
+						$reqst->execute();
+						$rfile = $reqst->fetch();
+						$q_sent_file = "SELECT * FROM tbl_drop_off_request WHERE ( from_id = ".$loggedin_id." ) Order by requested_time DESC";
 						$sql_files = $dbh->prepare($q_sent_file);
 						$sql_files->execute();
 
@@ -188,15 +184,15 @@ $actual_link = SITE_URI.'requested_file.php';
 								</span></p>
 							</div>
 							<div class="clear"></div>
-            				<?php if(isset($_GET['view']) && $_GET['view']==='grid')							
+            				<?php if(isset($_GET['view']) && $_GET['view']==='grid')
 							{
 								if($count>0)
-								{ 
+								{
 									$sql_files->setFetchMode(PDO::FETCH_ASSOC);	?>
 									<div class="row">
-									<?php 								
-									while( $row = $sql_files->fetch() ) 
-									{ 
+									<?php
+									while( $row = $sql_files->fetch() )
+									{
 									?>
 										<div class="col-md-4">
 											<div class="grid_box">
@@ -207,47 +203,47 @@ $actual_link = SITE_URI.'requested_file.php';
 												<p><span class="grid_box_span"><?php _e('Subject','cftp_admin'); ?>:</span> <?php echo $row['to_subject_request']; ?></p>
 												<p><span class="grid_box_span"><?php _e('Note','cftp_admin'); ?>:</span> <span class="tooltip"> <?php echo $row['to_note_request']; ?> </span></span></p>
 												<p><span class="grid_box_span"><?php _e('email','cftp_admin'); ?>:</span> <?php echo $row['to_email']; ?></p>
-												<?php 
+												<?php
 												$disabled_grid = '';
 												if($row['status']===1)
 												{
 													$disabled_grid="disabled";
 												?>
 													<p><span class="grid_box_span"><?php _e('Status','cftp_admin'); ?>: Uploaded</span></p>
-												<?php 
-												} 
-												else 
+												<?php
+												}
+												else
 												{ ?>
 													<p><span class="grid_box_span"><?php _e('Status','cftp_admin'); ?>: Pending</span></p>
-												<?php 
+												<?php
 												} ?>
 												<p><span class="grid_box_span"><?php _e('Requested Time','cftp_admin'); ?>:</span> <?php echo $row['requested_time']; ?></p>
 												<p><div class="btn btn-primary btn-sm resend_grid_box <?php echo !empty($disabled_grid)?$disabled_grid:'resend_it'; ?>"  id="<?php echo $row['id']; ?>" ><?php _e('Resend','cftp_admin'); ?>
 												</div></p>
 											</div>
 										</div>
-									<?php 
+									<?php
 									} ?>
 									</div>
-							<?php } 
-							} 							
-							else 
+							<?php }
+							}
+							else
 							{ ?>
             			<section id="no-more-tables">
               				<table id="files_list" class=" cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
                 			<thead>
                   			<tr>
-                    <th class="td_checkbox" data-sort-ignore="true"> 
-		    <label class="cc-chk-container">
+                    <th class="td_checkbox" data-sort-ignore="true">
+		    						<label class="cc-chk-container">
                         <input type="checkbox" name="select_all" id="select_all" value="0" />
                         <span class="checkmark"></span> </label>
                     </th>
                     <th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('To name','cftp_admin'); ?></th>
                     <th data-hide="phone,tablet"><?php _e('Subject.','cftp_admin'); ?></th>
                     <th data-hide="phone,tablet"><?php _e('Organization','cftp_admin'); ?></th>
-					
+
                     <th><?php _e('email','cftp_admin'); ?></th>
-					<th><?php _e('Note','cftp_admin'); ?></th>
+										<th><?php _e('Note','cftp_admin'); ?></th>
                     <th><?php _e('Status','cftp_admin'); ?></th>
                     <th><?php _e('Requested Time','cftp_admin'); ?></th>
                     <th><?php _e('Action','cftp_admin'); ?></th>
@@ -271,7 +267,7 @@ $actual_link = SITE_URI.'requested_file.php';
                     <td class="file_name"><?php echo $row['to_subject_request']; ?></td>
                     <td><?php echo $row['from_organization']; ?></td>
                     <td><?php echo $row['to_email']; ?></td>
-					<td><?php echo $row['to_note_request']; ?></td>
+										<td><?php echo $row['to_note_request']; ?></td>
                     <td class="<?php echo (!empty($row['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>"><?php
 
 										$status_hidden	= __('Pending','cftp_admin');
@@ -281,26 +277,112 @@ $actual_link = SITE_URI.'requested_file.php';
 										$class			= ($hidden == 0) ? 'danger' : 'success';
 
 									?>
-        <span class="label label-<?php echo $class; ?>"> <?php echo ($hidden == 0) ? $status_hidden : $status_visible; ?> </span></td>
-                    <td><?php echo $row['requested_time']; ?></td>
-                    <td><div class="btn btn-primary btn-sm <?php echo !empty($disabled_list)?$disabled_list:'resend_it'; ?>"  id="<?php echo $row['id']; ?>" >
-                        <?php _e('Resend','cftp_admin'); ?>
-                      </div></td>
-                  </tr>
-                  <?php
-										}
-									}
-									?>
-                </tbody>
-              </table>
-            </section>
+		        <span class="label label-<?php echo $class; ?>"> <?php echo ($hidden == 0) ? $status_hidden : $status_visible; ?> </span></td>
+		                    <td><?php echo $row['requested_time']; ?></td>
+		                    <td><div class="btn btn-primary btn-sm <?php echo !empty($disabled_list)?$disabled_list:'resend_it'; ?>"  id="<?php echo $row['id']; ?>" >
+		                        <?php _e('Resend','cftp_admin'); ?>
+		                      </div></td>
+		                  </tr>
+		                  <?php
+												}
+											}
+											?>
+		                </tbody>
+		              </table>
+		            </section>
             <?php } ?>
-          </form>
         </div>
+				<div class="col-md-12">
+					<h4>Requested of You</h4>
+						<?php
+						$reqstmail = "SELECT email FROM tbl_users WHERE id = ".$loggedin_id;
+
+						$reqst = $dbh->prepare($reqstmail);
+						$reqst->execute();
+						$rfile = $reqst->fetch();
+						$req_by = "SELECT * FROM tbl_drop_off_request WHERE ( to_email ='".$rfile['email']."' ) Order by requested_time DESC";
+
+						$req_by_files = $dbh->prepare($req_by);
+						$req_by_files->execute();
+
+						$rqcount = $req_by_files->rowCount();
+
+						$count+=$rqcount;
+						 ?>
+						<table class=" cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
+							<thead>
+								<tr>
+									<th class="td_checkbox" data-sort-ignore="true">
+									<label class="cc-chk-container">
+											<input type="checkbox" name="select_all" id="select_all" value="0" />
+											<span class="checkmark"></span> </label>
+									</th>
+									<th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('To name','cftp_admin'); ?></th>
+									<th data-hide="phone,tablet"><?php _e('Subject.','cftp_admin'); ?></th>
+									<th data-hide="phone,tablet"><?php _e('Organization','cftp_admin'); ?></th>
+
+									<th><?php _e('email','cftp_admin'); ?></th>
+									<th><?php _e('Note','cftp_admin'); ?></th>
+									<th><?php _e('Status','cftp_admin'); ?></th>
+									<th><?php _e('Requested Time','cftp_admin'); ?></th>
+									<th><?php _e('Action','cftp_admin'); ?></th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php
+								if ($rqcount > 0) {
+								$req_by_files->setFetchMode(PDO::FETCH_ASSOC);
+									while( $row = $req_by_files->fetch() ) {
+										$disabled_list='';
+										if($row['status']== 1) {
+											$disabled_list="disabled";
+										}
+									?>
+								<tr>
+										<td><label class="cc-chk-container">
+												<input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" />
+												<span class="checkmark"></span> </label></td>
+										<td><?php echo $row['to_name']; ?></td>
+										<td class="file_name"><?php echo $row['to_subject_request']; ?></td>
+										<td><?php echo $row['from_organization']; ?></td>
+										<td><?php echo $row['to_email']; ?></td>
+										<td><?php echo $row['to_note_request']; ?></td>
+										<td class="<?php echo (!empty($row['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>">
+											<?php
+
+											$status_hidden	= __('Pending','cftp_admin');
+											$hidden = $row['status'];
+											$status_visible	= __('Uploaded','cftp_admin');
+
+											$class			= ($hidden == 0) ? 'danger' : 'success';
+
+											?>
+											<span class="label label-<?php echo $class; ?>"> <?php echo ($hidden == 0) ? $status_hidden : $status_visible; ?> </span>
+										</td>
+										<td><?php echo $row['requested_time']; ?></td>
+										<td>
+											<a <?php if($row['status'] != '1') { ?> href="dropoff.php?auth=<?php echo $row['auth_key']; ?>" <?php } ?> <?php if($row['status'] == '1') { echo ("disabled ='disabled'");} ?> class="btn btn-primary btn-sm"  id="<?php echo $row['id']; ?>" >
+												<?php _e('Go','cftp_admin'); ?>
+											</div>
+										</td>
+								</tr>
+								<?php
+									}
+								}
+								?>
+							</tbody>
+
+						</table>
+
+          </form>
+				</div>
       </div>
     </div>
   </div>
 </div>
+
+
+
 </div>
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -316,17 +398,17 @@ $actual_link = SITE_URI.'requested_file.php';
 				success: function (data) {
 					if(data='done'){
 						alert('Request has been resend successfully!!')
-						location.reload(); 
+						location.reload();
 					}
 				}
 			});
 		});
 		$("#do_action").click(function() {
-			var checks = $("td input:checkbox").serializeArray(); 
-			if (checks.length == 0) { 
+			var checks = $("td input:checkbox").serializeArray();
+			if (checks.length == 0) {
 				alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
-				return false; 
-			} 
+				return false;
+			}
 			else {
 				var action = $('#files_actions').val();
 				if (action == 'delete') {
@@ -351,61 +433,61 @@ $actual_link = SITE_URI.'requested_file.php';
     #content {
         padding-top:30px;
     }
-    
+
     /* Force table to not be like tables anymore */
-    #no-more-tables table, 
-    #no-more-tables thead, 
-    #no-more-tables tbody, 
-    #no-more-tables th, 
-    #no-more-tables td, 
-    #no-more-tables tr { 
-        display: block; 
+    #no-more-tables table,
+    #no-more-tables thead,
+    #no-more-tables tbody,
+    #no-more-tables th,
+    #no-more-tables td,
+    #no-more-tables tr {
+        display: block;
     }
- 
+
     /* Hide table headers (but not display: none;, for accessibility) */
-    #no-more-tables thead tr { 
+    #no-more-tables thead tr {
         position: absolute;
         top: -9999px;
         left: -9999px;
     }
- 
+
     #no-more-tables tr { border: 1px solid #ccc; }
- 
-    #no-more-tables td { 
+
+    #no-more-tables td {
         /* Behave  like a "row" */
         border: none;
-        border-bottom: 1px solid #eee; 
+        border-bottom: 1px solid #eee;
         position: relative;
-        padding-left: 50%; 
+        padding-left: 50%;
         white-space: normal;
         text-align:left;
     }
- 
-    #no-more-tables td:before { 
+
+    #no-more-tables td:before {
         /* Now like a table header */
         position: absolute;
         /* Top/left values mimic padding */
         top: 6px;
         left: 6px;
-        width: 45%; 
-        padding-right: 10px; 
+        width: 45%;
+        padding-right: 10px;
         white-space: nowrap;
         text-align:left;
         font-weight: bold;
     }
- 
+
     /*
     Label the data
     */
 
-    
+
     td:nth-of-type(1):before { content: ""; }
     td:nth-of-type(2):before { content: "To Name"; }
     td:nth-of-type(3):before { content: "Subject"; }
     td:nth-of-type(4):before { content: "Organization"; }
     td:nth-of-type(5):before { content: "Email"; }
     td:nth-of-type(6):before { content: "Note"; }
-	td:nth-of-type(7):before { content: "Status"; }
+		td:nth-of-type(7):before { content: "Status"; }
     td:nth-of-type(8):before { content: "Requested Time"; }
     td:nth-of-type(9):before { content: "Action"; }
 }

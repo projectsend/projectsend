@@ -68,6 +68,7 @@ class FilesActions
 	function delete_inbox_files($rel_id)
 	{
 		$this->can_delete		= false;
+		$guest_req	= false;
 		$this->result			= '';
 		$this->check_level		= array(9,8,0);
 
@@ -84,31 +85,41 @@ class FilesActions
 					if ( CURRENT_USER_LEVEL == '0' ) {
 						if ( CLIENTS_CAN_DELETE_OWN_FILES == '1' && $this->row['uploader'] == CURRENT_USER_USERNAME ) {
 							$this->can_delete	= true;
-							if ( in_array($this->row['request_type'], array('1','2') ) )
+							if ( in_array($this->row['request_type'], array(1,2) ) )
 							{
-								$this->guest_req	= true;
+								$guest_req	= true;
 
 							}
 						}
 					}
 					else {
 						$this->can_delete	= true;
+						if ( in_array($this->row['request_type'], array(1,2) ) )
+						{
+							$guest_req	= true;
+
+						}
 					}
 
 				}
 
 				/** Delete the reference to the file on the database */
 				if ( true === $this->can_delete ) {
-
-					$this->sql = $this->dbh->prepare("DELETE FROM " . TABLE_FILES_RELATIONS. " WHERE file_id = :file_id AND client_id =".CURRENT_USER_ID);
-					$this->sql->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
-					$this->sql->execute();
-					$prev_assign = $this->dbh->prepare("UPDATE " . TABLE_FILES . " SET prev_assign ='1' WHERE id = :file_id");
-					$prev_assign->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
-					$prev_assign->execute();
-					$this->result = true;
-					if ( true === $this->guest_req ) {
+					if ($guest_req) {
+							$this->sql = $this->dbh->prepare("DELETE FROM " . TABLE_FILES. " WHERE id = :file_id ");
+							$this->sql->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+							$this->sql->execute();
 							delete_file_from_disk(UPLOADED_FILES_FOLDER . $this->file_url);
+							$this->result = true;
+					}
+					else{
+						$this->sql = $this->dbh->prepare("DELETE FROM " . TABLE_FILES_RELATIONS. " WHERE file_id = :file_id AND client_id =".CURRENT_USER_ID);
+						$this->sql->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+						$this->sql->execute();
+						$prev_assign = $this->dbh->prepare("UPDATE " . TABLE_FILES . " SET prev_assign ='1' WHERE id = :file_id");
+						$prev_assign->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+						$prev_assign->execute();
+						$this->result = true;
 					}
 				}
 				else {

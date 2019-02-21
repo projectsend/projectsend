@@ -15,12 +15,9 @@
  *
  */
 
-
-
 $allowed_levels = array(9,8,7,0);
 
 require_once('sys.includes.php');
-
 $page_title = __('Log in','cftp_admin');
 
 include('header-unlogged.php');

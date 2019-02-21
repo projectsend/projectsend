@@ -143,7 +143,7 @@ if ($_POST) {
 
 $page_title = __('Edit system user','cftp_admin');
 if ($global_user == $add_user_data_user) {
-	$page_title = __('My account','cftp_admin');
+	$page_title = __('My Account','cftp_admin');
 }
 
 include('header.php');

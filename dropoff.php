@@ -114,6 +114,7 @@ $target_info = get_client_by_id($target_id);
 													});
 													uploader.start();
 													$("#btn-submit").hide();
+                                                                                                        $("#zip-submit").hide();
 													$(".message_uploading").fadeIn();
 													uploader.bind('FileUploaded', function (up, file, info) {
 														var obj = JSON.parse(info.response);

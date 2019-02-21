@@ -132,8 +132,11 @@ if(!empty($_SESSION))
 				Organization : $from_organization <br>
 				Email : $to_email_request <br></p>
 				<p><em>Note: ".$to_note_request."</em></p>
-				  <p>Log in to MicroHealth Send, then continue the uploading process by clicking here!</p>
-				
+					<p>INSTRUCTIONS</p>
+					<p>Step1 : Click the Go link</p><br>
+					<p>Step2 : If already logged in to the MicroHealth Send in this browser , goto Step3. Otherwise , Sign in using the form on the index screen</p><br>
+					<p>Step3 : Continue the uploading process on the Dropoff-Request Screen</p><br>
+
 										<table border='0' cellpadding='0' cellspacing='0' class='btn btn-primary' style='border-collapse:separate;mso-table-lspace:0pt;mso-table-rspace:0pt;box-sizing:border-box;width:100%;'>
 										  <tbody>
 											<tr>

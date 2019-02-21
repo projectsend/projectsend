@@ -15,7 +15,6 @@ require_once('sys.includes.php');
 
 $active_nav = 'category';
 
-$page_title = __('Create New Category','cftp_admin');
 
 include('header.php');?>
 <script type="text/javascript">
@@ -103,7 +102,11 @@ $("#process_category").submit(function() {
 		}
 	}
 ?>
-
+<style media="screen">
+	.categories_form h3 {
+	font-size: 25px;
+	}
+</style>
 <div id="main">
 	
 	<div id="content"> 

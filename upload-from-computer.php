@@ -125,6 +125,7 @@ $current_level = get_current_user_level();
 						uploader.start();
 
 						$("#btn-submit").hide();
+						$("#zip-submit").hide();
 						$(".message_uploading").fadeIn();
 
 						uploader.bind('FileUploaded', function (up, file, info) {

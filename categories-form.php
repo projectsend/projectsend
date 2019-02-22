@@ -13,6 +13,7 @@ switch ( $form_information['type'] ) {
 	case 'new_category':
 		$submit_value	= __('Create','cftp_admin');
 		$form_action = 'category-add.php';
+                $show_cancel    = true;
 		break;
 	case 'edit_category':
 		$submit_value	= __('Save','cftp_admin');

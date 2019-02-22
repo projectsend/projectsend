@@ -225,6 +225,7 @@ switch ($clients_form_type) {
 	?>
 
 	<div class="inside_form_buttons cc-text-right">
+                <a href="<?php echo BASE_URI; ?>clients.php" name="cancel" class="btn btn-wide btn-default"><?php _e('Cancel','cftp_admin'); ?></a>
 		<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php echo html_output($submit_value); ?></button>
 	</div>
 

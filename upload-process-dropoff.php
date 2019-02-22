@@ -668,17 +668,7 @@ $filesrelations = $dbh->prepare("INSERT INTO ".TABLE_FILES_RELATIONS." (`timesta
 						?>
 						<td>
 							<a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>" class="btn-primary btn btn-sm"><?php _e('Edit file','cftp_admin'); ?></a>
-							<?php
-								/*
-								 * Show the "My files" button only to clients
-								 */
-								if ($current_level == 0) {
-							?>
-									<a href="my_files/" class="btn-primary btn btn-sm"><?php _e('View my files','cftp_admin'); ?></a>
-							<?php
-								}
-							?>
-						</td>
+							</td>
 					</tr>
 			<?php
 				}

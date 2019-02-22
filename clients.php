@@ -376,13 +376,8 @@ $(document).ready(function() {
                     <?php _e('Manage files','cftp_admin'); ?>
                     </a> <a href="<?php echo $groups_link; ?>" class="btn btn-sm <?php echo $groups_button; ?>">
                     <?php _e('View groups','cftp_admin'); ?>
-                    </a> <a href="my_files/?client=<?php echo html_output($row["user"]); ?>" class="btn btn-primary btn-sm" target="_blank">
-                    <?php _e('View as client','cftp_admin'); ?>
-                    </a> 
-                    
-                   
-
-                    </td>
+                    </a>
+									</td>
                 </tr>
                 <?php
 							}

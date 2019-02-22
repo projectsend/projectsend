@@ -78,8 +78,9 @@ switch ($organization_form_type) {
 		</div>
 	</div>
 
-	<div class="inside_form_buttons">
-		<button type="submit" name="submit" class="btn btn-wide btn-primary right-btn"><?php echo html_output($submit_value); ?></button>
+	<div class="inside_form_buttons cc-text-right">
+                <a href="<?php echo BASE_URI; ?>clientorganization.php" name="cancel" class="btn btn-wide btn-default"><?php _e('Cancel','cftp_admin'); ?></a>
+		<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php echo html_output($submit_value); ?></button>
 	</div>
 </form>
 

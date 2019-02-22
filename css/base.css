@@ -1,5 +1,5 @@
 /********************************************************************************************************************************************
-	BACKEND specific styles 
+	BACKEND specific styles
 	Not shared with the DEFAULT TEMPLATE
 ********************************************************************************************************************************************/
 @import url('https://fonts.googleapis.com/css?family=Raleway:100,300,400,600,700');
@@ -804,16 +804,9 @@ span.label {
 ********************************************************************************************************************************************/
 
 .categories_form {
-	padding:20px;
-	background:white;
-	margin-bottom:40px;
-	border:1px solid #ccc;
-	-moz-border-radius:5px;
-	-moz-box-shadow:3px 3px 5px #dedede;
-	-webkit-border-radius:5px;
-	-webkit-box-shadow:3px 3px 5px #dedede;
-	border-radius:5px;
-	box-shadow:3px 3px 5px #dedede;
+	padding: 10px;
+	background: white;
+	margin-bottom: 10px;
 }
 
 	.categories_form h3 {

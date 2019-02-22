@@ -130,9 +130,9 @@ if ($_POST) {
 	}
 }
 
-$page_title = __('Edit client','cftp_admin');
+$page_title = __('Edit Client','cftp_admin');
 if (isset($add_client_data_user) && $global_user == $add_client_data_user) {
-	$page_title = __('My account','cftp_admin');
+	$page_title = __('My Account','cftp_admin');
 }
 
 include('header.php');

@@ -135,7 +135,7 @@ if ($_POST) {
 										<p style='font-family:sans-serif;font-size:14px;font-weight:normal;margin:0;Margin-bottom:15px;'>This message was sent so that you can drop-off some files for someone at MicroHealth Send.</p>
 				
                   <p>
-                Details:<br>
+                DETAILS:<br>
                 From Name: $logged_in_name<br>
                 Email: $logged_in_email<br><br>
                 To Name: $to_name_request<br>

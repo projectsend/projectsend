@@ -51,7 +51,6 @@ $actual_link = SITE_URI.'requested_file.php';
 				<div class="col-md-12">
 					<h2 class="page-title txt-color-blueDark"><?php echo $page_title; ?></h2>
 						<a href="request-drop-off.php" class="btn btn-sm btn-primary right-btn">Request File(s)</a>
-							<h4>Requested by You</h4>
 
           <?php
 		/**
@@ -161,6 +160,10 @@ $actual_link = SITE_URI.'requested_file.php';
               </div>
             </div>
           </div>
+					<br>
+					<br>
+						<h4>Requested by You</h4>
+					<br>
 						<?php
 						/** Debug query */
 
@@ -293,7 +296,9 @@ $actual_link = SITE_URI.'requested_file.php';
             <?php } ?>
         </div>
 				<div class="col-md-12">
+					<br>
 					<h4>Requested of You</h4>
+					<br>
 						<?php
 						$reqstmail = "SELECT email FROM tbl_users WHERE id = ".$loggedin_id;
 
@@ -309,6 +314,14 @@ $actual_link = SITE_URI.'requested_file.php';
 
 						$count+=$rqcount;
 						 ?>
+						 <div class="clear"></div>
+						 <div class="form_actions_count">
+							 <p class="form_count_total">
+							 <?php _e('Showing','cftp_admin'); ?>
+							 : <span><?php echo $rqcount; ?>
+							 <?php _e('files','cftp_admin'); ?>
+							 </span></p>
+						 </div>
 						<table class=" cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
 							<thead>
 								<tr>

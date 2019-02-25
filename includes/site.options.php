@@ -41,10 +41,10 @@ if(!empty($options_values)) {
 	 * forms currently).
 	 */
 	$allowed_file_types = $options_values['allowed_file_types'];
-	
+
 	define('BASE_URI',$options_values['base_uri']);
 	define('BLOCKSIZE',256);
-	define('ENCRYPTION_KEY','psend_key1234567'); // 16 bit , 32 
+	define('ENCRYPTION_KEY','psend_key1234567'); // 16 bit , 32
 	define('THUMBS_MAX_WIDTH',$options_values['max_thumbnail_width']);
 	define('THUMBS_MAX_HEIGHT',$options_values['max_thumbnail_height']);
 	define('THUMBS_FOLDER',$options_values['thumbnails_folder']);
@@ -52,7 +52,7 @@ if(!empty($options_values)) {
 	define('THUMBS_USE_ABSOLUTE',$options_values['thumbnails_use_absolute']);
 	define('LOGO_MAX_WIDTH',$options_values['max_logo_width']);
 	define('LOGO_MAX_HEIGHT',$options_values['max_logo_height']);
-	define('LOGO_FILENAME',$options_values['logo_filename']);		
+	define('LOGO_FILENAME',$options_values['logo_filename']);
 	define('FAVICO_FILENAME',$options_values['favicon_filename']);
 	define('THIS_INSTALL_SET_TITLE',$options_values['this_install_title']);
 	define('TEMPLATE_USE',$options_values['selected_clients_template']);
@@ -64,16 +64,16 @@ if(!empty($options_values)) {
 	/** Define the template path */
 	define('TEMPLATE_PATH',ROOT_DIR.'/templates/'.TEMPLATE_USE.'/template.php');
 	/**
-	 * Wrap the e-mail definition in an IF statement in case the user 
+	 * Wrap the e-mail definition in an IF statement in case the user
 	 * just updated to r135 and this value doesn't exist yet to prevent
 	 * a php notice.
-	 */	
+	 */
 	if (isset($options_values['admin_email_address'])) {
 		define('ADMIN_EMAIL_ADDRESS',$options_values['admin_email_address']);
 	}
 	/**
 	 * For versions 282 and up
-	 */	
+	 */
 
 	if (isset($options_values['mail_system_use'])) {
 		define('MAIL_SYSTEM',$options_values['mail_system_use']);
@@ -91,12 +91,17 @@ if(!empty($options_values)) {
 		define('COPY_MAIL_ON_CLIENT_UPLOADS',$options_values['mail_copy_client_upload']);
 		define('COPY_MAIL_MAIN_USER',$options_values['mail_copy_main_user']);
 		define('COPY_MAIL_ADDRESSES',$options_values['mail_copy_addresses']);
-		define('MAIL_DROP_OFF_REQUEST',$options_values['mail_drop_off_request']);
+		if ( isset($options_values['mail_drop_off_request']) &&
+				($options_values['mail_drop_off_request'] != '')
+				)
+				{
+					define('MAIL_DROP_OFF_REQUEST',$options_values['mail_drop_off_request']);
+				}
 	}
 
 	/**
 	 * For versions 377 and up
-	 */	
+	 */
 	if (isset($options_values['version_last_check'])) {
 		define('VERSION_LAST_CHECK',$options_values['version_last_check']);
 		define('VERSION_NEW_FOUND',$options_values['version_new_found']);
@@ -111,7 +116,7 @@ if(!empty($options_values)) {
 	}
 	/**
 	 * For versions 386 and up
-	 */	
+	 */
 	if (isset($options_values['clients_auto_approve'])) {
 		define('CLIENTS_AUTO_APPROVE',$options_values['clients_auto_approve']);
 		define('CLIENTS_AUTO_GROUP',$options_values['clients_auto_group']);
@@ -120,7 +125,7 @@ if(!empty($options_values)) {
 
 	/**
 	 * For versions 419 and up
-	 */	
+	 */
 	if (isset($options_values['email_new_file_by_user_customize'])) {
 		/** Checkboxes */
 		define('EMAILS_FILE_BY_USER_USE_CUSTOM',$options_values['email_new_file_by_user_customize']);
@@ -138,7 +143,7 @@ if(!empty($options_values)) {
 
 	/**
 	 * For versions 426 and up
-	 */	
+	 */
 	if (isset($options_values['email_header_footer_customize'])) {
 		/** Checkbox */
 		define('EMAILS_HEADER_FOOTER_CUSTOM',$options_values['email_header_footer_customize']);
@@ -149,7 +154,7 @@ if(!empty($options_values)) {
 
 	/**
 	 * For versions 442 and up
-	 */	
+	 */
 	if (isset($options_values['email_pass_reset_customize'])) {
 		/** Checkbox */
 		define('EMAILS_PASS_RESET_USE_CUSTOM',$options_values['email_pass_reset_customize']);
@@ -165,14 +170,14 @@ if(!empty($options_values)) {
 	}
 	/**
 	 * For versions 464 and up
-	 */	
+	 */
 	if (isset($options_values['expired_files_hide'])) {
 		define('EXPIRED_FILES_HIDE',$options_values['expired_files_hide']);
 	}
 
 	/**
 	 * For versions 487 and up
-	 */	
+	 */
 	if (isset($options_values['notifications_max_tries'])) {
 		define('NOTIFICATIONS_MAX_TRIES',$options_values['notifications_max_tries']);
 		define('NOTIFICATIONS_MAX_DAYS',$options_values['notifications_max_days']);
@@ -181,21 +186,21 @@ if(!empty($options_values)) {
 		define('NOTIFICATIONS_MAX_TRIES','2');
 		define('NOTIFICATIONS_MAX_DAYS','15');
 	}
-	
+
 	/* Code added by rj to limit downloading the files */
 	if (isset($options_values['download_limit_max_tries'])) {
 		define('DOWNLOAD_MAX_TRIES',$options_values['download_limit_max_tries']);
 	}
-	
+
 	/* code added by rj to expire files  */
 	if (isset($options_values['file_expiry_max_days'])) {
 		define('EXPIRY_MAX_DAYS',$options_values['file_expiry_max_days']);
 	}
-	
+
 
 	/**
 	 * For versions 528 and up
-	 */	
+	 */
 	if (isset($options_values['file_types_limit_to'])) {
 		define('FILE_TYPES_LIMIT_TO',$options_values['file_types_limit_to']);
 		define('PASS_REQ_UPPER',$options_values['pass_require_upper']);
@@ -207,14 +212,14 @@ if(!empty($options_values)) {
 
 	/**
 	 * For versions 645 and up
-	 */	
+	 */
 	if (isset($options_values['use_browser_lang'])) {
 		define('USE_BROWSER_LANG',$options_values['use_browser_lang']);
 	}
-	
+
 	/**
 	 * For versions 672 and up
-	 */	
+	 */
 	if (isset($options_values['clients_can_delete_own_files'])) {
 		define('CLIENTS_CAN_DELETE_OWN_FILES',$options_values['clients_can_delete_own_files']);
 	}
@@ -294,7 +299,7 @@ if(!empty($options_values)) {
 	if (isset($options_values['linkedin_client_id']) && ($options_values['linkedin_client_id'] != '')) {
 		$linkedinidarray = new AES($options_values['linkedin_client_id'], ENCRYPTION_KEY, BLOCKSIZE);
 		$linkedinid = $linkedinidarray->decrypt();
-		
+
 		define('LINKEDIN_CLIENT_ID',$linkedinid);
 		$linkedinsecretarray = new AES($options_values['linkedin_client_secret'], ENCRYPTION_KEY, BLOCKSIZE);
 		$linkedinsecret = $linkedinsecretarray->decrypt();
@@ -340,7 +345,7 @@ if(!empty($options_values)) {
 		define('RECAPTCHA_ENABLED', $options_values['recaptcha_enabled']);
 		define('RECAPTCHA_SITE_KEY', $options_values['recaptcha_site_key']);
 		define('RECAPTCHA_SECRET_KEY', $options_values['recaptcha_secret_key']);
-		
+
 		if (
 				RECAPTCHA_ENABLED == 1 &&
 				!empty($options_values['recaptcha_site_key']) &&

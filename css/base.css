@@ -318,29 +318,16 @@ body {
 	Main white content boxes
 ********************************************************************************************************************************************/
 
-.whitebox {
-	background-color:white;
-	border:1px solid #ccc;
-	-moz-border-radius:5px;
-	-moz-box-shadow:3px 3px 5px #dedede;
-	-webkit-border-radius:5px;
-	-webkit-box-shadow:3px 3px 5px #dedede;
-	border-radius:5px;
-	box-shadow:3px 3px 5px #dedede;
-}
-
 .white-box {
-	margin-top:35px;
-	background-color:white;
-	border:1px solid #ccc;
-
-	-moz-border-radius:5px;
-	-webkit-border-radius:5px;
-	border-radius:5px;
-
-	-moz-box-shadow:3px 3px 5px #dedede;
-	-webkit-box-shadow:3px 3px 5px #dedede;
-	box-shadow:3px 3px 5px #dedede;
+	margin-top: 35px;
+	background-color: white;
+	border: 2px solid #ccc;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	-moz-box-shadow: 3px 3px 5px #dedede;
+	-webkit-box-shadow: 3px 3px 5px #dedede;
+	box-shadow: 5px 5px 10px #dedede;
 }
 
 	.white-box-interior {

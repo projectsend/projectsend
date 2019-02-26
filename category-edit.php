@@ -8,7 +8,7 @@
  */
 $load_scripts	= array(
 	'chosen',
-); 
+);
 
 $allowed_levels = array(9,8);
 require_once('sys.includes.php');
@@ -29,14 +29,14 @@ $("#process_category").submit(function() {
 		});
 </script>
 <?php
-	if (isset($_GET['id'])) 
+	if (isset($_GET['id']))
 		$edit_id = $_GET['id'];
 	//var_dump($edit_id);
 	/** Get all the existing categories */
 	$get_categories = get_categories();
 	$categories	= $get_categories['categories'];
 	$arranged	= $get_categories['arranged'];
-	if(!empty( $_GET['action'] ) && $_GET['action'] == 'edit' ){ 
+	if(!empty( $_GET['action'] ) && $_GET['action'] == 'edit' ){
 		$action				= 'edit';
 		$editing			= !empty( $_POST['editing_id'] ) ? $_POST['editing_id'] : $_GET['id'];
 		$form_information	= array(
@@ -58,7 +58,7 @@ $("#process_category").submit(function() {
 		 * Applies for both ADDING a new category as well
 		 * as editing one but with the form already sent.
 		 */
-		
+
 		$category_name			= $_POST['category_name'];
 		$category_parent		= $_POST['category_parent'];
 		$category_description	= $_POST['category_description'];
@@ -105,9 +105,9 @@ $("#process_category").submit(function() {
 ?>
 
 <div id="main">
-	
-	<div id="content"> 
-    
+
+	<div id="content">
+
     <!-- Added by B) -------------------->
     <div class="container-fluid">
       <div class="row">
@@ -119,7 +119,7 @@ $("#process_category").submit(function() {
 						 */
 						$valid_me->list_errors();
 					?>
-					
+
 					<?php
 						if (isset($new_response)) {
 							/**
@@ -129,7 +129,7 @@ $("#process_category").submit(function() {
 								case 1:
 									$msg = __('Organization added correctly.','cftp_admin');
 									echo system_message('ok',$msg);
-			
+
 									/** Record the action log */
 									$new_log_action = new LogActions();
 									$log_action_args = array(

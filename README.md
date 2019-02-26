@@ -62,7 +62,7 @@ gpgcheck=1
 
 yum install MariaDB-server MariaDB-client -y
 
-yum install mysql-devel
+yum install  MariaDB-devel
 
 systemctl start mariadb
 

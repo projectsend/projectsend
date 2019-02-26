@@ -51,7 +51,16 @@ systemctl restart httpd.service
 
 # 4.  Create a new mysql database on your server. Create/assign a user to it.
 
-yum install mariadb-server mariadb
+Get the latest mariadb
+nano /etc/yum.repos.d/MariaDB.repo
+
+[mariadb]
+name = MariaDB
+baseurl = http://yum.mariadb.org/10.1/centos7-amd64
+gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+gpgcheck=1
+
+yum install MariaDB-server MariaDB-client -y
 
 yum install mysql-devel
 

@@ -51,7 +51,7 @@ systemctl restart httpd.service
 
 # 4.  Create a new mysql database on your server. Create/assign a user to it.
 
-Get the latest mariadb
+Get the latest mariadb (YOU CANNOT USE MYSQL versions earlier than 5.6 or Maridb earlier than 10.1)
 nano /etc/yum.repos.d/MariaDB.repo
 
 paste-----

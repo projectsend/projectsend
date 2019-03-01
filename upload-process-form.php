@@ -1658,6 +1658,13 @@ $(document).ready(function() {
      $(".chosen-select").attr('id',function(i){return 'chslt-' + i;});
 	 
 });
+$(document).ready(function() {
+	if($('.file_number').length == 1)
+	{
+		$('.copy-all').css("display","none");
+	 }
+
+});
 
 </script> 
 

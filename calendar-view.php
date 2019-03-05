@@ -134,10 +134,10 @@ $(function() {
 				 var htmlText3='';
 				 if(json.send!='false') {
 					 if(json.send.length >0) {
-					  htmlText += '<h5>Send Files</h5>';
+					  htmlText += '<h5>Sent Files</h5>';
 					  htmlText += '<table class="table_calendar_common">';
 					  htmlText += '<tr>';
-					  htmlText += '<th>File Name</th><th>File Desc</th><th>Send Date</th><th>Send To</th>';
+					  htmlText += '<th>File Name</th><th>File Desc</th><th>Sent Date</th><th>Sent To</th>';
 					  htmlText += '</tr>';
 					  for(var i = 0; i < json.send.length; i++)
 					   { 

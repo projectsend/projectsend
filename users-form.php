@@ -192,7 +192,6 @@ switch ($user_form_type) {
 		?>
 
 	<div class="inside_form_buttons cc-text-right">
-               <a href="<?php echo BASE_URI; ?>users.php" name="cancel" class="btn btn-wide btn-default"><?php _e('Cancel','cftp_admin'); ?></a>
 		<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php echo $submit_value; ?></button>
 	</div>
 

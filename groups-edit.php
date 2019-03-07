@@ -15,7 +15,7 @@ require_once('sys.includes.php');
 
 $active_nav = 'groups';
 
-$page_title = __('Edit group','cftp_admin');
+$page_title = __('Edit Group','cftp_admin');
 
 include('header.php');
 
@@ -98,13 +98,12 @@ if ($_POST) {
 }
 ?>
 
-<div id="main">
-	<h2><?php echo $page_title; ?></h2>
-	
+<div id="main">	
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box">
 				<div class="white-box-interior">
+	                            <h2><?php echo $page_title; ?></h2>
 		
 					<?php
 						/**

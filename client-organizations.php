@@ -182,13 +182,9 @@ exit;*/
 				dataType:'html',
 				data:{group_id:group_id,client_id:client_id,action:"remove_organization"}
 			}).done(function(data){
-				if(data == "done"){
-					alert('deleted successfully!!');	
-					location.reload();
-				}else{
-					alert("Not deleted successfully!!");
-				}
-			
+						alert('Deleted successfully!!');
+						location.reload();
+
 			});
 		    } 
 		});
@@ -201,13 +197,10 @@ exit;*/
 				dataType:'html',
 				data:{cat_id:cat_id,client_id:client_id,action:"add_new_client_organization"}
 			}).done(function(data){
-				if(data == "done"){
-					alert('added successfully!!');	
-					location.reload();
-				}else{
-					alert("Not added successfully!!");
-				}
-			
+
+				alert('Added successfully!!');
+				location.reload();
+
 			});
 		    
 		});
@@ -220,13 +213,8 @@ exit;*/
 				dataType:'html',
 				data:{cat_id:cat_id,client_id:client_id,action:"add_new_user_organization"}
 			}).done(function(data){
-				if(data == "done"){
-					alert('added successfully!!');	
-					location.reload();
-				}else{
-					alert("Not added successfully!!");
-				}
-			
+				alert('Added successfully!!');
+				location.reload();
 			});
 		    
 		});

@@ -455,9 +455,23 @@ color:#e33a49;
 			 * Add the category filter
 			 */
 			if ( isset( $results_type ) && $results_type == 'category' ) {
+				$children = array();
+				$stat = $dbh->prepare("SELECT id FROM tbl_categories WHERE parent = :parent_id");
+				$stat->bindParam(':parent_id', $this_category['id'], PDO::PARAM_INT);
+				$stat->execute();
+				$stat->setFetchMode(PDO::FETCH_ASSOC);
+				$children = $stat->fetchAll();
+				$cats = array();
+				$cats['0']= $this_category['id'];
+					if(!empty($children)){
+						foreach ($children as $child) {
+							$cats[]= $child['id'];
+						}
+					}
+				// print_r($cats);
 				$files_id_by_cat = array();
-				$statement = $dbh->prepare("SELECT file_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE cat_id = :cat_id");
-				$statement->bindParam(':cat_id', $this_category['id'], PDO::PARAM_INT);
+				$catquery = "SELECT file_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE cat_id IN (".implode(',',$cats).")";
+				$statement = $dbh->prepare($catquery);
 				$statement->execute();
 				$statement->setFetchMode(PDO::FETCH_ASSOC);
 				$file_data = $statement->fetchAll();

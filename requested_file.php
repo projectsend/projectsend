@@ -355,7 +355,7 @@ $actual_link = SITE_URI.'requested_file.php';
 										<td><label class="cc-chk-container">
 												<input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" />
 												<span class="checkmark"></span> </label></td>
-										<td><?php echo $row['to_name']; ?></td>
+										<td><?php echo $row['from_name']; ?></td>
 										<td class="file_name"><?php echo $row['to_subject_request']; ?></td>
 										<td><?php echo $row['from_organization']; ?></td>
 										<td><?php echo $row['from_email']; ?></td>

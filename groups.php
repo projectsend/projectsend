@@ -288,6 +288,7 @@ include('header.php');
                   </th>
                   <th data-sort-initial="true"><?php _e('Group name','cftp_admin'); ?></th>
                   <th data-hide="phone"><?php _e('Description','cftp_admin'); ?></th>
+                  <th data-hide="phone"><?php _e('Type','cftp_admin'); ?></th>
                   <th data-type="numeric"><?php _e('Members','cftp_admin'); ?></th>
                   <th data-hide="phone" data-type="numeric"><?php _e('Files','cftp_admin'); ?></th>
                   <th data-hide="phone"><?php _e('Created by','cftp_admin'); ?></th>
@@ -308,6 +309,15 @@ include('header.php');
                   <td><?php echo html_output($row["name"]); ?></td>
                   <td><?php echo html_output($row["description"]); ?></td>
                   <td><?php
+												if($row["organization_type"]=='1')
+												{
+													echo("User");
+												}
+												else {
+													echo("Client");
+											 }?>
+									</td>
+                  <td><?php
 							if (isset($members_amount[$row['id']])) {
 								echo $members_amount[$row['id']];
 							}
@@ -327,7 +337,7 @@ include('header.php');
                   <td data-value="<?php echo html_output($row['timestamp']); ?>"><?php echo $date; ?></td>
                   <td><a href="manage-files.php?group_id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm">
                     <?php _e('Manage files','cftp_admin'); ?>
-                    </a> <a href="groups-edit.php?id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm">
+									</a> <a href="organization-edit-client.php?id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm">
                     <?php _e('Edit','cftp_admin'); ?>
                     </a></td>
                 </tr>

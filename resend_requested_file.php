@@ -125,17 +125,17 @@ if(!empty($_SESSION))
 				  <p style='font-family:sans-serif;font-size:14px;font-weight:normal;margin:0;Margin-bottom:15px;'>This message was sent to remind you to drop-off some files for someone at MicroHealth Send.</p>
 				
 				  <p>
-				Details:<br>
-				From Name: $logged_in_name <br>
-				Email: $logged_in_email <br><br>
-				To Name : $to_name_request <br>
-				Organization : $from_organization <br>
-				Email : $to_email_request <br></p>
-				<p><em>Note: ".$to_note_request."</em></p>
-					<p>INSTRUCTIONS</p>
-					<p>Step1 : Click the Go link</p><br>
-					<p>Step2 : If already logged in to the MicroHealth Send in this browser , goto Step3. Otherwise , Sign in using the form on the index screen</p><br>
-					<p>Step3 : Continue the uploading process on the Dropoff-Request Screen</p><br>
+				DETAILS:<br>
+				From Name: $logged_in_name<br>
+				Email: $logged_in_email<br><br>
+				To Name: $to_name_request<br>
+				Organization: $from_organization<br>
+				Email: $to_email_request<br></p>
+                <p><em>Note: ".$to_note_request."</em><br></p>
+                  <p>INSTRUCTIONS:<br>
+                  Step 1: Click the Go link below.<br>
+                  Step 2: If already logged in to MicroHealth Send in this browser, go to Step 3. Otherwise, log in on the Index screen.<br>
+                  Step 3: Continue the uploading process on the Drop-off Request screen.</p>
 
 										<table border='0' cellpadding='0' cellspacing='0' class='btn btn-primary' style='border-collapse:separate;mso-table-lspace:0pt;mso-table-rspace:0pt;box-sizing:border-box;width:100%;'>
 										  <tbody>

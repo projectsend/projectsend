@@ -12,7 +12,7 @@
 <form action="<?php echo $form_action; ?>" name="addclient" method="post" class="form-horizontal">
 	<div class="form-group">
 		<div class="col-sm-4"></div>		<div class="col-sm-8" style="padding-bottom: 10px;">
-		This page will allow you to send a request to one or more people requesting that they send (upload) one more files for you.
+		This page will allow you to send a request to one or more people requesting that they send (upload) one or more files for you.
 		</div>
 		<label for="from_mail_id" class="col-sm-4 control-label"><?php _e('From email','cftp_admin'); ?></label>
 		<div class="col-sm-8" style="font-weight:bold">

@@ -403,6 +403,8 @@ if (defined('TRY_INSTALL')) {
 							  `requested_time` datetime DEFAULT NULL,
 							  `auth_key` varchar(50) NOT NULL,
 							  `status` int(11) NOT NULL,
+							  `from_name` varchar(255) DEFAULT NULL,
+							  `from_email` varchar(255) DEFAULT NULL,
 							  PRIMARY KEY (id) 
 							) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 								',

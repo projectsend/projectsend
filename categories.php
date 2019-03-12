@@ -318,7 +318,7 @@ include('header.php');
 										<input type="checkbox" name="select_all" id="select_all" value="0" />
 									</th>
 									<th data-sort-ignore="true"><?php _e('Name','cftp_admin'); ?></th>
-									<th data-sort-ignore="true"><?php _e('Files','cftp_admin'); ?></th>
+									<th data-sort-ignore="true"><?php _e('Files*','cftp_admin'); ?></th>
 									<th data-hide="phone" data-sort-ignore="true"><?php _e('Description','cftp_admin'); ?></th>
 									<th data-hide="phone" data-sort-ignore="true"><?php _e('Actions','cftp_admin'); ?></th>
 								</tr>
@@ -382,6 +382,7 @@ include('header.php');
 								?>											
 							</tbody>
 						</table>
+			    <p>*NOTE: Count does not include files in subfolders.</p>
                     </section>
 			
 			

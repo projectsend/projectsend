@@ -285,7 +285,7 @@ include('header.php');
                         <th class="td_checkbox" data-sort-ignore="true">
                             <input type="checkbox" name="select_all" id="select_all" value="0" />
                         </th>
-                        <th data-sort-initial="true"><?php _e('Organization name','cftp_admin'); ?></th>
+                        <th data-sort-initial="true"><?php _e('Organization Name','cftp_admin'); ?></th>
                         <th data-hide="phone"><?php _e('Description','cftp_admin'); ?></th>
                         <th data-type="numeric"><?php _e('Members','cftp_admin'); ?></th>
                         <th data-hide="phone" data-type="numeric"><?php _e('Files','cftp_admin'); ?></th>

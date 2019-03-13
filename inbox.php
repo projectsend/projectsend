@@ -179,36 +179,6 @@ color:#e33a49;
 				}
 			}
 		});
-		
-		<?php
-			if ($results_type != 'client') {
-				/*
-		?>
-				$(".downloaders").click(function() {
-					$(document).psendmodal();
-					$('.modal_content').html('<p class="loading-img">'+
-												'<img src="<?php echo BASE_URI; ?>img/ajax-loader.gif" alt="Loading" /></p>'+
-												'<p class="lead text-center text-info"><?php _e('Please wait while the system gets the required information.','cftp_admin'); ?></p>'
-											);
-					
-					var file_name = $(this).attr('title');
-					var file_id = $(this).attr('rel');
-					$.get('<?php echo BASE_URI; ?>process.php', { do:"get_downloaders", sys_user:"<?php echo $global_id; ?>", file_id:file_id },
-						function(data) {
-							$('.modal_content').html('<h4><?php _e('Downloaders of file:','cftp_admin'); ?> <strong>'+file_name+'</strong></h4>');
-							$('.modal_content').append('<ul class="downloaders_list"></ul>');
-							var obj = $.parseJSON(data);
-							for (i = 0; i < obj.length; i++) {
-								$('.modal_content .downloaders_list').append('<li><img src="<?php echo BASE_URI; ?>img/downloader-' + obj[i].type + '.png" alt="" /><div class="downloader_count">' +  obj[i].count + ' <?php _e('times','cftp_admin'); ?></div><p class="downloader_name">' + obj[i].name + '</p><p class="downloader_email">' +  obj[i].email + '</p></li>');
-							}
-						}
-					);					
-					return false;
-				});
-		<?php
-				*/
-			}
-		?>
 
 	    $('.public_link').popover({ 
 			html : true,

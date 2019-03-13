@@ -250,17 +250,16 @@ class FilesActions
 				$this->sql1->execute();
 	}
 
-	function hide_for_everyone($file_id)
+	function manage_hide($file_id)
 	{
-		$this->check_level = array(9,8,7);
-		if (isset($file_id)) {
-			/** Do a permissions check */
-			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
-				$this->sql = $this->dbh->prepare("UPDATE " . TABLE_FILES_RELATIONS . " SET hidden='1' WHERE file_id = :file_id");
-				$this->sql->bindParam(':file_id', $file_id, PDO::PARAM_INT);
-				$this->sql->execute();
-			}
-		}
+	 			$this->sql = $this->dbh->prepare("UPDATE " . TABLE_FILES ." SET hidden= '1' WHERE id = :file_id");
+	 			$this->sql->bindParam(':file_id', $file_id);
+	 			$this->sql->execute();
+	}
+	function manage_show()
+	{
+	 			$this->sql = $this->dbh->prepare("UPDATE " . TABLE_FILES ." SET hidden= '0' ");
+	 			$this->sql->execute();
 	}
 
 	function unassign_file($file_id,$modify_type,$modify_id)

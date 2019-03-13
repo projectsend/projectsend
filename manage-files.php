@@ -93,64 +93,49 @@ include('header.php');
 ?>
 <script type="text/javascript">
 	$(document).ready(function() {
-		$("#do_action").click(function() {
-			var checks = $("td>input:checkbox").serializeArray(); 
-			if (checks.length == 0) { 
-				alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
-				return false; 
-			} 
-			else {
-				var action = $('#files_actions').val();
-				if (action == 'delete') {
-					var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
-					var msg_2 = '<?php _e("files permanently and for every client/group. Are you sure you want to continue?",'cftp_admin'); ?>';
-					if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
-						return true;
-					} else {
-						return false;
-					}
+
+			//console.log("On");
+			$("#do_action").click(function(e) {
+				// e.preventDefault();
+				var checks = $("td input:checkbox").serializeArray();
+				var actType = $('#files_actions').val();
+				console.log(actType);
+				if (actType == 'show') {
+					return true;
 				}
-				else if (action == 'unassign') {
-					var msg_1 = '<?php _e("You are about to unassign",'cftp_admin'); ?>';
-					var msg_2 = '<?php _e("files from this account. Are you sure you want to continue?",'cftp_admin'); ?>';
-					if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
-						return true;
-					} else {
+				else if (checks.length == 0) {
+						alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
 						return false;
-					}
 				}
-			}
-		});
-		
-		<?php
-			if ($results_type != 'client') {
-				/*
-		?>
-				$(".downloaders").click(function() {
-					$(document).psendmodal();
-					$('.modal_content').html('<p class="loading-img">'+
-												'<img src="<?php echo BASE_URI; ?>img/ajax-loader.gif" alt="Loading" /></p>'+
-												'<p class="lead text-center text-info"><?php _e('Please wait while the system gets the required information.','cftp_admin'); ?></p>'
-											);
-					
-					var file_name = $(this).attr('title');
-					var file_id = $(this).attr('rel');
-					$.get('<?php echo BASE_URI; ?>process.php', { do:"get_downloaders", sys_user:"<?php echo $global_id; ?>", file_id:file_id },
-						function(data) {
-							$('.modal_content').html('<h4><?php _e('Downloaders of file:','cftp_admin'); ?> <strong>'+file_name+'</strong></h4>');
-							$('.modal_content').append('<ul class="downloaders_list"></ul>');
-							var obj = $.parseJSON(data);
-							for (i = 0; i < obj.length; i++) {
-								$('.modal_content .downloaders_list').append('<li><img src="<?php echo BASE_URI; ?>img/downloader-' + obj[i].type + '.png" alt="" /><div class="downloader_count">' +  obj[i].count + ' <?php _e('times','cftp_admin'); ?></div><p class="downloader_name">' + obj[i].name + '</p><p class="downloader_email">' +  obj[i].email + '</p></li>');
-							}
+				else {
+					var action = $('#files_actions').val();
+					if (action == 'delete') {
+						var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
+						if(checks.length > 1){
+							var msg_2 = 'files from your Inbox permanently. Only your copy will be deleted. Are you sure you want to continue?';
 						}
-					);					
-					return false;
-				});
-		<?php
-				*/
-			}
-		?>
+						else{
+							var msg_2 = 'file from your Inbox permanently. Only your copy will be deleted. Are you sure you want to continue?';
+						}
+
+						if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
+							return true;
+						} else {
+							return false;
+						}
+					}
+					else if (action == 'unassign') {
+						var msg_1 = '<?php _e("You are about to unassign",'cftp_admin'); ?>';
+						var msg_2 = '<?php _e("files from this account. Are you sure you want to continue?",'cftp_admin'); ?>';
+						if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
+							return true;
+						} else {
+							return false;
+						}
+					}
+				}
+			});
+
 
 	    $('.public_link').popover({ 
 			html : true,
@@ -188,27 +173,21 @@ include('header.php');
 		 */
 		if(isset($_POST['do_action'])) {
 			/** Continue only if 1 or more files were selected. */
-			if(!empty($_POST['files'])) {
+			if ($_POST['files_actions']=='show') {
+				$log_action_number = 22;
+						$this_file = new FilesActions();
+						$this_file->manage_show();
+						$msg = __('All hidden files were marked as visible.','cftp_admin');
+						echo system_message('ok',$msg);
+
+			}
+			else if(!empty($_POST['files'])) {
 				$selected_files = array_map('intval',array_unique($_POST['files']));
 				$files_to_get = implode(',',$selected_files);
 				/**
-				 * Make a list of files to avoid individual queries.
-				 * First, get all the different files under this account.
-				 */
-				/*$sql_distinct_files = $dbh->prepare("SELECT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE FIND_IN_SET(id, :files)");
-				$sql_distinct_files->bindParam(':files', $files_to_get);
-				$sql_distinct_files->execute();
-				$sql_distinct_files->setFetchMode(PDO::FETCH_ASSOC);
-				
-				while( $data_file_relations = $sql_distinct_files->fetch() ) {
-					$all_files_relations[] = $data_file_relations['file_id']; 
-					$files_to_get = implode(',',$all_files_relations);
-				}*/
-				
-				/**
 				 * Then get the files names to add to the log action.
 				 */
-				$sql_file = $dbh->prepare("SELECT id, filename FROM " . TABLE_FILES . " WHERE FIND_IN_SET(id, :files)");
+				$sql_file = $dbh->prepare("SELECT id, filename FROM " . TABLE_FILES . " WHERE ( FIND_IN_SET(id, :files) AND  hidden = '0' )");
 				$sql_file->bindParam(':files', $files_to_get);
 				$sql_file->execute();
 				$sql_file->setFetchMode(PDO::FETCH_ASSOC);
@@ -227,45 +206,24 @@ include('header.php');
 						 */
 						foreach ($selected_files as $work_file) {
 							$this_file = new FilesActions();
-							$hide_file = $this_file->change_files_hide_status($work_file, '1', $_POST['modify_type'], $_POST['modify_id']);
+							$hide_file = $this_file->manage_hide($work_file);
 						}
 						$msg = __('The selected files were marked as hidden.','cftp_admin');
 						echo system_message('ok',$msg);
 						$log_action_number = 21;
 						break;
 
-					case 'show':
-						/**
-						 * Reverse of the previous action. Setting the value to 0 means
-						 * that the file is visible.
-						 */
-						foreach ($selected_files as $work_file) {
-							$this_file = new FilesActions();
-							$show_file = $this_file->change_files_hide_status($work_file, '0', $_POST['modify_type'], $_POST['modify_id']);
-						}
-						$msg = __('The selected files were marked as visible.','cftp_admin');
-						echo system_message('ok',$msg);
-						$log_action_number = 22;
-						break;
 
-					case 'unassign':
-						/**
-						 * Remove the file from this client or group only.
-						 */
-						foreach ($selected_files as $work_file) {
-							$this_file = new FilesActions();
-							$unassign_file = $this_file->unassign_file($work_file, $_POST['modify_type'], $_POST['modify_id']);
-						}
-						$msg = __('The selected files were unassigned from this client.','cftp_admin');
-						echo system_message('ok',$msg);
-						if ($search_on == 'group_id') {
-							$log_action_number = 11;
-						}
-						elseif ($search_on == 'client_id') {
-							$log_action_number = 10;
-						}
-						break;
 
+						case 'unassign':
+									foreach ($selected_files as $work_file) {
+											$this_file = new FilesActions();
+											$this_file->unassign($work_file);
+											}
+										$msg = __('The selected files were unassigned from this client.','cftp_admin');
+										echo system_message('ok',$msg);
+										$log_action_number = 11;
+										break;
 					case 'delete':
 						$delete_results	= array(
 												'ok'		=> 0,
@@ -370,7 +328,7 @@ include('header.php');
 			 */
 			$params = array();
 			$fq = "SELECT * FROM " . TABLE_FILES;
-	
+			$conditions[] = "hidden = '0' ";
 			if ( isset($search_on) && !empty($gotten_files) ) {
 				$conditions[] = "FIND_IN_SET(id, :files)";
 				$params[':files'] = $gotten_files;
@@ -461,30 +419,23 @@ include('header.php');
                       <?php _e('Selected files actions','cftp_admin'); ?>
                       :</label>
                     <?php
-										if (isset($search_on)) {
+									//	if (isset($search_on)) {
 									?>
                     <input type="hidden" name="modify_type" id="modify_type" value="<?php echo $search_on; ?>" />
                     <input type="hidden" name="modify_id" id="modify_id" value="<?php echo $this_id; ?>" />
                     <?php
-										}
+										//}
 									?>
                     <select name="files_actions" id="files_actions" class="txtfield form-control">
-                      <?php
-											/** Options only available when viewing a client/group files list */
-											if (isset($search_on)) {
-										?>
+											<option value="show">
+											<?php _e('Show All','cftp_admin'); ?>
+											</option>
                       <option value="hide">
                       <?php _e('Hide','cftp_admin'); ?>
-                      </option>
-                      <option value="show">
-                      <?php _e('Show','cftp_admin'); ?>
                       </option>
                       <option value="unassign">
                       <?php _e('Unassign','cftp_admin'); ?>
                       </option>
-                      <?php
-											}
-										?>
                       <option value="delete">
                       <?php _e('Delete','cftp_admin'); ?>
                       </option>

@@ -19,7 +19,13 @@
 		});
 	});
 </script>
+<style media="screen">
+.search-choice.Pending {
+	color: red !important;
+	border: solid 2px red !important;
+	}
 
+</style>
 <?php
 switch ($organization_form_type) {
 	case 'new_organization':
@@ -57,6 +63,13 @@ switch ($organization_form_type) {
 					$sql->execute();
 					$sql->setFetchMode(PDO::FETCH_ASSOC);
 					while ( $row = $sql->fetch() ) {
+						$mem_ber = $dbh->prepare("SELECT * FROM " . TABLE_MEMBERS. " WHERE ( group_id = :groupid AND client_id = :clientid )");
+						$mem_ber->bindParam(':groupid', $_GET["id"], PDO::PARAM_INT);
+						$mem_ber->bindParam(':clientid', $row["id"], PDO::PARAM_INT);
+						$mem_ber->execute();
+						$mem_ber->setFetchMode(PDO::FETCH_ASSOC);
+						$mems = $mem_ber->fetch();
+
 				?>
 						<option value="<?php echo $row["id"]; ?>"
 							<?php
@@ -66,7 +79,7 @@ switch ($organization_form_type) {
 									}
 								}
 							?>
-						><?php echo html_output($row["name"]); ?></option>
+						><?php echo html_output($row["name"]); if($mems['m_org_status']=='0') {echo(" <span class='pending' >Pending </span>");}?> </option>
 				<?php
 					}
 				?>
@@ -90,6 +103,8 @@ switch ($organization_form_type) {
 			no_results_text	: "<?php _e('No results where found.','cftp_admin'); ?>",
 			search_contains	: true
 		});
+
+		$('.search-choice').has('span').addClass("Pending");
 
 		$('.add-all').click(function(){
 			var selector = $(this).closest('.assigns').find('select');

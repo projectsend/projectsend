@@ -557,9 +557,18 @@ color:#e33a49;
 									if(!empty($categories)){
 
 										foreach ( $categories as $cat ) {
+											if($cat['parent'] == ''){
 									?>
                     <option <?php if(!empty($this_id)){if($this_id == $cat['id'] ){ echo "selected";}}?> value="<?php echo $cat['id']; ?>"><?php echo $cat['name']; ?></option>
                     <?php
+										foreach ($categories as $childcat) {
+											if($childcat['parent'] == $cat['id']){
+											 ?>
+											<option <?php if(!empty($this_id)){if($this_id == $childcat['id'] ){ echo "selected";}}?> value="<?php echo $childcat['id']; ?>"> &nbsp&nbsp<?php echo $childcat['name']; ?></option>
+											<?php
+												}
+											}
+											}
 										}
 									}
 									?>

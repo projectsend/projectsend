@@ -4,7 +4,7 @@
  * sharing web application.
  * Clients are created and assigned a username and a password. Then you can
  * upload as much files as you want under each account, and optionally add
- * a name and description to them. 
+ * a name and description to them.
  *
  * ProjectSend is hosted on Google Code.
  * Feel free to participate!
@@ -33,11 +33,17 @@ include('header-unlogged.php');
 		$googleClient->setClientId(GOOGLE_CLIENT_ID);
 		$googleClient->setAccessType('online');
 		$googleClient->setApprovalPrompt('auto');
-		$googleClient->setRedirectUri(BASE_URI . 'sociallogin/google/callback.php');
+		if(isset($_GET['auth'])) {
+			$drop_off_active =$_GET['auth'];
+				 $googleClient->setRedirectUri(BASE_URI . 'sociallogin/google/callback.php?auth='.$drop_off_active);
+		}
+		 else{
+				$googleClient->setRedirectUri(BASE_URI . 'sociallogin/google/callback.php');
+		 }
 		$googleClient->setScopes(array('profile','email'));
 		$auth_url = $googleClient->createAuthUrl();
 	}
-	
+
 	/** The form was submitted */
 	if ($_POST) {
 	//echo "post";exit;
@@ -45,7 +51,7 @@ include('header-unlogged.php');
 		$sysuser_password	= $_POST['login_form_pass'];
 		$selected_form_lang	= $_POST['login_form_lang'];
 		$drop_off_auth      = isset($_POST['drop_off_auth'])?$_POST['drop_off_auth']:'';
-	
+
 		/** Look up the system users table to see if the entered username exists */
 		$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user= :username OR email= :email");
 		$statement->execute(
@@ -108,7 +114,7 @@ include('header-unlogged.php');
 						*/
 						setcookie("rememberwho",$sysuser_username,time()+COOKIE_EXP_TIME);
 					}
-					
+
 					/** Record the action log */
 					$new_log_action = new LogActions();
 					$log_action_args = array(
@@ -144,14 +150,14 @@ include('header-unlogged.php');
 			//$errorstate = 'wrong_username';
 			$errorstate = 'invalid_credentials';
 		}
-	
+
 	}
 	//echo "else";exit;
 
 if ( isset($_SESSION['errorstate'] ) ) {
 	$errorstate = $_SESSION['errorstate'];
 	unset($_SESSION['errorstate']);
-}	 
+}
 $statement = $dbh->prepare("SELECT * FROM tbl_home_page WHERE hid = 1");
 $statement->execute();
 $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -202,15 +208,15 @@ catch ( Exception $e ) {
       </div>
     </div>
     <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
-      <div class="well no-padding"> 
+      <div class="well no-padding">
         <script type="text/javascript">
 							$(document).ready(function() {
 								$("form").submit(function() {
 									clean_form(this);
-					
+
 									is_complete(this.login_form_user,'<?php _e('Username was not completed','cftp_admin'); ?>');
 									is_complete(this.login_form_pass,'<?php _e('Password was not completed','cftp_admin'); ?>');
-					
+
 									// show the errors or continue if everything is ok
 									if (show_form_errors() == false) { return false; }
 								});
@@ -250,7 +256,7 @@ catch ( Exception $e ) {
 										$login_err_message = __('You must approve the requested permissions to sign in with Google.','cftp_admin');
 										break;
 								}
-				
+
 								echo system_message('error',$login_err_message,'login_error');
 							}
 						?>
@@ -308,66 +314,76 @@ catch ( Exception $e ) {
       <ul class="list-inline text-center">
         <li>
           <?php if(SAML_SIGNIN_ENABLED == '1'): ?>
-          <a href="<?php echo BASE_URI; ?>saml_app" name="Sign in with SAML" class="" title="Sign in with SAML"><img style="width: 150px;" src="img/saml_logo.png" class="img-responsive"/></a>
+          <a href="<?php echo BASE_URI; ?>saml_app/inde.php" name="Sign in with SAML" class="" title="Sign in with SAML"><img style="width: 150px;" src="img/saml_logo.png" class="img-responsive"/></a>
           <?php endif; ?>
+					<?php if(SAML_SIGNIN_ENABLED == '1'){
+						if(isset($_GET['auth'])) {
+							$drop_off_auth =$_GET['auth'];?>
+							<a href="<?php echo BASE_URI; ?>saml_app/index.php<?php echo("auth=".$drop_off_auth ?>" name="Sign in with SAML" class="" title="Sign in with SAML"><img style="width: 150px;" src="img/saml_logo.png" class="img-responsive"/></a>
+						<?php
+						} else { ?>
+							<a href="<?php echo BASE_URI; ?>saml_app/inde.php" name="Sign in with SAML" class="" title="Sign in with SAML"><img style="width: 150px;" src="img/saml_logo.png" class="img-responsive"/></a>
+		          <?php	}
+						} ?>
         </li>
       </ul>
       <ul class="list-inline text-center">
-	    
-		<?php
-/*
-		require_once('simplesamlsp/lib/_autoload.php');
-		$auth = new SimpleSAML_Auth_Simple('default-sp');
-		$login_url =  $auth->getLoginURL();
-		if (!$auth->isAuthenticated()) {
-			print('<li><a href="'.htmlspecialchars($login_url).'">SAML</a></li>');
-		}else{
-			$attributes = $auth->getAttributes();
-			echo "Attributes present!!";
-			echo "<pre>";print_r($attributes);echo "</pre>";	
-			$url = $auth->getLogoutURL();
-			print('<li><a href="' . htmlspecialchars($url) . '">SAML Logout</a></li>');
-		}
-
-*/		
-		//print('<li><a href="https://msend.microhealthllc.com/saml_app">SAML</a></li>');
-        ?>
-
         <li>
           <?php if(GOOGLE_SIGNIN_ENABLED == '1'): ?>
           <a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="btn btn-default btn-circle"><i class="fa fa-google"></i></a>
           <?php endif; ?>
         </li>
-        <?php if(FACEBOOK_SIGNIN_ENABLED == '1'): ?>
-        <li> <a href="sociallogin/facebook_special/fbconfig.php" name="Sign in with Facebook" class="btn btn-primary btn-circle" title="facebook"><i class="fa fa-facebook"></i></a> </li>
-        <?php endif; ?>
-        <?php if(TWITTER_SIGNIN_ENABLED == '1'): ?>
-        <li> <a href="sociallogin/login-with.php?provider=Twitter" name="Sign in with Twitter" class="btn btn-info btn-circle" title="twitter"><i class="fa fa-twitter"></i></a> </li>
-        <?php endif; ?>
-        <?php if(YAHOO_SIGNIN_ENABLED == '1'): ?>
-        <li> <a href="sociallogin/login-with.php?provider=yahoo" name="Sign in with yahoo" class="btn btn-danger btn-circle" title="Yahoo"><i class="fa fa-yahoo" aria-hidden="true"></i></a> </li>
-        <?php endif; ?>
-        <?php if(LINKEDIN_SIGNIN_ENABLED == '1'): ?>
-        <li> <a href="sociallogin/login-with.php?provider=LinkedIn" name="Sign in with linkedin" class="btn btn-warning btn-circle" title="Linkedin"><i class="fa fa-linkedin"></i></a> </li>
-        <?php endif; ?>
-		<?php if(LDAP_SIGNIN_ENABLED == '1'): ?>
-        <li> <a href="sociallogin/ldap-login.php" name="Sign in with LDAP" class="btn btn-success btn-circle" id="display_ldap_form" title="LDAP"> <i class="fa fa-universal-access"></i></a> </li>
-		<?php endif; ?>
+        <?php if(FACEBOOK_SIGNIN_ENABLED == '1'){
+					if(isset($_GET['auth'])) {
+						$drop_off_auth =$_GET['auth'];?>
+		        <li> <a href="sociallogin/facebook_special/fbconfig.php?<?php echo("auth=".$drop_off_auth ?>" name="Sign in with Facebook" class="btn btn-primary btn-circle" title="facebook"><i class="fa fa-facebook"></i></a> </li>
+						<?php
+					} else { ?>
+	        <li> <a href="sociallogin/facebook_special/fbconfig.php" name="Sign in with Facebook" class="btn btn-primary btn-circle" title="facebook"><i class="fa fa-facebook"></i></a> </li>
+		        <?php	}
+					} ?>
+        <?php if(TWITTER_SIGNIN_ENABLED == '1'){
+					if(isset($_GET['auth'])) {
+						$drop_off_auth =$_GET['auth'];?>
+						<li> <a href="sociallogin/login-with.php?provider=Twitter&<?php echo("auth=".$drop_off_auth ?>" name="Sign in with Twitter" class="btn btn-info btn-circle" title="twitter"><i class="fa fa-twitter"></i></a> </li>
+		        <?php
+					} else { ?>
+						<li> <a href="sociallogin/login-with.php?provider=Twitter" name="Sign in with Twitter" class="btn btn-info btn-circle" title="twitter"><i class="fa fa-twitter"></i></a> </li>
+		        <?php	}
+					} ?>
+        <?php if(YAHOO_SIGNIN_ENABLED == '1'){
+					if(isset($_GET['auth'])) {
+						$drop_off_auth =$_GET['auth'];?>
+						<li> <a href="sociallogin/login-with.php?provider=yahoo&<?php echo("auth=".$drop_off_auth ?>" name="Sign in with yahoo" class="btn btn-danger btn-circle" title="Yahoo"><i class="fa fa-yahoo" aria-hidden="true"></i></a> </li>
+		        <?php
+					} else { ?>
+						<li> <a href="sociallogin/login-with.php?provider=yahoo" name="Sign in with yahoo" class="btn btn-danger btn-circle" title="Yahoo"><i class="fa fa-yahoo" aria-hidden="true"></i></a> </li>
+		        <?php	}
+					} ?>
+        <?php if(LINKEDIN_SIGNIN_ENABLED == '1'){
+					if(isset($_GET['auth'])) {
+						$drop_off_auth =$_GET['auth'];?>
+						<li> <a href="sociallogin/login-with.php?provider=LinkedIn&<?php echo("auth=".$drop_off_auth ?>" name="Sign in with linkedin" class="btn btn-warning btn-circle" title="Linkedin"><i class="fa fa-linkedin"></i></a> </li>
+		        <?php
+					} else { ?>
+						<li> <a href="sociallogin/login-with.php?provider=LinkedIn" name="Sign in with linkedin" class="btn btn-warning btn-circle" title="Linkedin"><i class="fa fa-linkedin"></i></a> </li>
+		        <?php	}
+					} ?>
+        <?php if(LDAP_SIGNIN_ENABLED == '1'){
+					if(isset($_GET['auth'])) {
+						$drop_off_auth =$_GET['auth'];?>
+						<li> <a href="sociallogin/ldap-login.php<?php echo("auth=".$drop_off_auth ?>" name="Sign in with LDAP" class="btn btn-success btn-circle" id="display_ldap_form" title="LDAP"> <i class="fa fa-universal-access"></i></a> </li>
+						<?php
+							} else { ?>
+						<li> <a href="sociallogin/ldap-login.php" name="Sign in with LDAP" class="btn btn-success btn-circle" id="display_ldap_form" title="LDAP"> <i class="fa fa-universal-access"></i></a> </li>
+						<?php	}
+					} ?>
         <?php if(WINDOWS_SIGNIN_ENABLED == '1'): ?>
         <li> <a href="#" name="office365" class="btn btn-default btn-circle" id="office365" onclick="signIn()" title="Sign in with office 365"> <i class="fa fa-windows"></i></a> </li>
         <?php endif; ?>
       </ul>
-<!--	<div id="ldap_login_div" style="display:none">
-		<div id="message"></div>
-		Email<br/>
-		<input type="text" id="ldap_email" placeholder="email" value="riemann@ldap.forumsys.com"><br/>
-		Password:<br/>						
-		<input type="password" id="ldap_password" placeholder="password" value="password"><br/>
-		<a href="#" id="ldap_submit">LOGIN</a>
-
-	</div>-->
             <div id="ldap_login_div" style="display:none">
-            <div class="well no-padding"> 
+            <div class="well no-padding">
             <form role="form" id="login-form1" class="smart-form client-form">
             <fieldset>
             	<section>
@@ -378,13 +394,13 @@ catch ( Exception $e ) {
                     </label>
                     </section>
                     <section>
-                    <label class="label">Password</label>	
-                    <label class="input"> <i class="icon-append fa fa-lock"></i>				
+                    <label class="label">Password</label>
+                    <label class="input"> <i class="icon-append fa fa-lock"></i>
                     <input type="password" id="ldap_password" placeholder="password" value="password" class="form-control">
                     </label>
                     </section>
                     <a href="#" id="ldap_submit" class="btn  btn-primary">LOGIN</a>
-            	
+
             </fieldset>
             </form>
             </div>
@@ -416,7 +432,7 @@ function validateEmail($email) {
 					var password = $('#ldap_password').val();
 					//alert(email+' '+password);
 					if(email){
-					if(validateEmail(email)){		
+					if(validateEmail(email)){
 					$.ajax({
 						type:'POST',
 						url:'<?php echo BASE_URI; ?>ldap_ajax.php',
@@ -426,9 +442,9 @@ function validateEmail($email) {
 						if(data="success"){
 							     window.location = "<?php echo BASE_URI;?>sociallogin/ldap-login.php?email="+email;
 						}else{
-							
+
 						}
-			
+
 					});
 				}else{
 			$('#message').text('Not a valid email');
@@ -436,7 +452,7 @@ function validateEmail($email) {
 			$('#message').text('The Email field is required');
 		}
 		});
-					
+
 		});
 	});
 </script>
@@ -450,7 +466,7 @@ function validateEmail($email) {
 	$dbh = null;
 	ob_end_flush();
 ?>
-<!-- Trigger the modal with a button 
+<!-- Trigger the modal with a button
 <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#cc-ldap">Open Modal</button>-->
 
 <!-- Modal -->
@@ -466,15 +482,15 @@ function validateEmail($email) {
       <div class="modal-body">
         <!----------------------------------------------------------------------->
         <div id="ldap_login_div">
-            <div class="well no-padding"> 
+            <div class="well no-padding">
             <fieldset>
             	<section>
                     <div id="message"></div>
                     <label class="label">Email</label>
                     <label class="input"> <i class="icon-append fa fa-user"></i>
                     <input type="text" id="ldap_email" placeholder="email" value="riemann@ldap.forumsys.com" class="form-control">
-                    <label class="label">Password</label>	
-                    <label class="input"> <i class="icon-append fa fa-lock"></i>				
+                    <label class="label">Password</label>
+                    <label class="input"> <i class="icon-append fa fa-lock"></i>
                     <input type="password" id="ldap_password" placeholder="password" value="password" class="form-control"><br/>
                     <a href="#" id="ldap_submit" class="btn  btn-primary">LOGIN</a>
             	</section>
@@ -490,5 +506,3 @@ function validateEmail($email) {
 
   </div>
   </div>
-  
-

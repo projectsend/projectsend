@@ -6,7 +6,13 @@ $oauth2 = new Google_Oauth2Service($googleClient);
 $googleClient->setApplicationName(THIS_INSTALL_SET_TITLE);
 $googleClient->setClientSecret(GOOGLE_CLIENT_SECRET);
 $googleClient->setClientId(GOOGLE_CLIENT_ID);
-$googleClient->setRedirectUri(BASE_URI . 'sociallogin/google/callback.php');
+if(isset($_GET['auth'])) {
+    $drop_off_active =$_GET['auth'];
+     $googleClient->setRedirectUri(BASE_URI . 'sociallogin/google/callback.php?auth='.$drop_off_active);
+}
+ else{
+    $googleClient->setRedirectUri(BASE_URI . 'sociallogin/google/callback.php');
+ }
 $googleClient->setScopes(array('profile', 'email'));
 
 if (isset($_GET['error'])) {
@@ -81,10 +87,17 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']->id_
         $new_record_action = $new_log_action->log_action_save($log_action_args);
 
         if ($user_level == '0') {
-          header("location:" . BASE_URI . "my_files/");
+          header("location:".BASE_URI."inbox.php");
         }
         else {
-          header("location:" . BASE_URI . "home.php");
+           if(isset($_GET['auth'])) {
+             $drop_off_auth =$_GET['auth'];
+   						header("location:".BASE_URI."dropoff.php?auth=".$drop_off_auth);
+           }
+          else{
+            header("location:" . BASE_URI . "home.php");
+          }
+
         }
         exit;
       }

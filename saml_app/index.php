@@ -8,6 +8,13 @@ $as->requireAuth();
 $attributes = $as->getAttributes();
 $email = $attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'][0];
 $loc = '../sociallogin/saml-login.php?email='.$email;
+if(isset($_GET['auth'])) {
+   $drop_off_auth =$_GET['auth'];
+   $loc = '../sociallogin/saml-login.php?email='.$email.'&auth='.$drop_off_auth;
+}
+else {
+  $loc = '../sociallogin/saml-login.php?email='.$email;
+}
 echo "<script type='text/javascript'>window.location.href = '$loc';</script>";
 exit();
 // Get a logout URL

@@ -8,10 +8,10 @@ if(isset($_GET['provider'])){
 	$provider = $_GET['provider'];
 	try{
 		if($_GET['provider'] == 'office365') {
-			
+
 					$office_u_name = $_GET['user'];
 					$office_u_email = $_GET['useremail'];
-	
+
 				$email = $office_u_email;
 				if (!isset($_SESSION['office365'])){
 					$userData = $office_u_name;
@@ -21,13 +21,13 @@ if(isset($_GET['provider'])){
 					$_SESSION['office365']['name']= $name;
 				}else {
 					$email = $_SESSION['office365']['email'];
-					$name = $_SESSION['office365']['name']; 
+					$name = $_SESSION['office365']['name'];
 					unset($_SESSION['office365']);
 				}
 				$user_level=0;
 
 			}elseif($_GET['provider'] == 'Facebook') {
-				
+
 				$name = $_SESSION['FULLNAME'] ;
 				$email =$_SESSION['EMAIL'];
 				if (!isset($_SESSION['facebook_user'])){
@@ -36,40 +36,21 @@ if(isset($_GET['provider'])){
 					$_SESSION['facebook_user']['name']= $name;
 				}else {
 					$email = $_SESSION['facebook_user']['email'];
-					$name = $_SESSION['facebook_user']['name']; 
+					$name = $_SESSION['facebook_user']['name'];
 					unset($_SESSION['facebook_user']);
 				}
 				$user_level=0;
 			}
-			
-		else { 
+
+		else {
 		$hybridauth = new Hybrid_Auth( $config );
 		$authProvider = $hybridauth->authenticate($provider);
 		$user_profile = $authProvider->getUserProfile();
 		$user_identifier = $user_profile->identifier;
 		}
-			
-		//echo "<pre>";print_r($user_profile);echo "</pre>";exit();	
+
+		//echo "<pre>";print_r($user_profile);echo "</pre>";exit();
 		if((isset($user_profile) && isset($user_identifier)) || $_GET['provider'] == 'office365' || $_GET['provider'] == 'Facebook'){
-			//if($user_profile && isset($user_profile->identifier)){
-			//for facebook
-		/*	if($provider=='Facebook'){
-				$email = $user_profile->email;
-				if (!isset($_SESSION['facebook_user'])){
-					//echo "not set";
-					$userData = $user_profile;
-					$name = $user_profile->displayName;
-					$email = $user_profile->email;
-					$_SESSION['facebook_user']['email']= $email;
-					$_SESSION['facebook_user']['name']= $name;
-					//echo $email." ".$name ;
-				}else {
-					$email = $_SESSION['facebook_user']['email'];
-					$name = $_SESSION['facebook_user']['name']; 
-					unset($_SESSION['facebook_user']);
-				}
-				$user_level=0;
-			}*/
 			//for Twitter
 			if($provider=='Twitter'){
 				$email = $user_profile->email;
@@ -81,7 +62,7 @@ if(isset($_GET['provider'])){
 					$_SESSION['twitter_user']['name']= $name;
 				}else {
 					$email = $_SESSION['twitter_user']['email'];
-					$name = $_SESSION['twitter_user']['name']; 
+					$name = $_SESSION['twitter_user']['name'];
 					unset($_SESSION['twitter_user']);
 				}
 				$user_level=0;
@@ -99,7 +80,7 @@ if(isset($_GET['provider'])){
 					//$_SESSION['linkedin_user']['name']= $name;
 				}else {
 					$email = $_SESSION['linkedin_user']['email'];
-					$name = $_SESSION['linkedin_user']['name']; 
+					$name = $_SESSION['linkedin_user']['name'];
 					unset($_SESSION['linkedin_user']['email']);
 					unset($_SESSION['linkedin_user']['name']);
 				}
@@ -119,7 +100,7 @@ if(isset($_GET['provider'])){
 					$_SESSION['yahoo_user']['name']= $name;
 				}else {
 					$email = $_SESSION['yahoo_user']['email'];
-					$name = $_SESSION['yahoo_user']['name']; 
+					$name = $_SESSION['yahoo_user']['name'];
 					unset($_SESSION['yahoo_user']);
 				}
 				$user_level=0;
@@ -132,8 +113,8 @@ if(isset($_GET['provider'])){
 			$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE email= :email");
 			$statement->execute(array(':email' => $email));
 			$count_user = $statement->rowCount();
-			
-			if ($count_user > 0){ 
+
+			if ($count_user > 0){
 				//echo "present";
 				/** If the username was found on the users table */
 				$statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -178,36 +159,55 @@ if(isset($_GET['provider'])){
 					header("location:" . BASE_URI . "inbox.php/");
 				}
 				else {
-					header("location:" . BASE_URI . "home.php");
+
+					if(isset($_GET['auth'])) {
+						$drop_off_auth =$_GET['auth'];
+						 header("location:".BASE_URI."dropoff.php?auth=".$drop_off_auth);
+					}
+				 else{
+					 header("location:" . BASE_URI . "home.php");
+				 }
 				}
 				exit;
-				}else{  
+				}else{
 					$_SESSION['errorstate'] = 'inactive_client';
 					if($_GET['provider'] == 'office365') {
 						echo "0";
 						exit;
-					} 
+					}
 					else {
-						header("location:" . BASE_URI . "home.php");
+						if(isset($_GET['auth'])) {
+              $drop_off_auth =$_GET['auth'];
+    						header("location:".BASE_URI."dropoff.php?auth=".$drop_off_auth);
+            }
+           else{
+             header("location:" . BASE_URI . "home.php");
+           }
 						exit;
 					}
 					if($_GET['provider'] == 'Facebook') {
 						echo "0";
 						exit;
-					} 
+					}
 					else {
-						header("location:" . BASE_URI . "home.php");
+						if(isset($_GET['auth'])) {
+              $drop_off_auth =$_GET['auth'];
+    						header("location:".BASE_URI."dropoff.php?auth=".$drop_off_auth);
+            }
+           else{
+             header("location:" . BASE_URI . "home.php");
+           }
 						exit;
 					}
 				}
-				
+
 			}else {
 			if(CLIENTS_CAN_REGISTER == '0') {
 				$_SESSION['errorstate'] = 'no_self_registration';
 				header("location:" . BASE_URI);
 				return;
 			}else {
-				//echo 'can';  
+				//echo 'can';
 				$_SESSION['errorstate'] = 'no_account'; //TODO: create new account
 				$new_client = new ClientActions();
 				$username = $new_client->generateUsername($name);
@@ -272,7 +272,7 @@ if(isset($_GET['provider'])){
 						header("location:" . BASE_URI);
 					return;
 					}
-					
+
 				}
 					//$_SESSION['facebook_user'] = $userData;
 					//header("location:" . BASE_URI . "sociallogin/facebook/callback.php");
@@ -291,11 +291,11 @@ if(isset($_GET['provider'])){
 			header("location:" . BASE_URI . "process.php?do=logout");
 			exit();
 		}
-		}	        
+		}
 
 	}
 	catch( Exception $e )
-	{ 
+	{
 
 		switch( $e->getCode() )
 		{
@@ -322,6 +322,6 @@ if(isset($_GET['provider'])){
 
 		echo "<hr /><h3>Trace</h3> <pre>" . $e->getTraceAsString() . "</pre>";
 	}
-	exit;        
+	exit;
 }
 ?>

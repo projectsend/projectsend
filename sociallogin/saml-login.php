@@ -54,11 +54,15 @@ if(isset($_GET['email']))
 		$new_record_action = $new_log_action->log_action_save($log_action_args);
 
 		if ($user_level == '0') {
-			header("location:" . BASE_URI . "my_files/");
+			header("location:" . BASE_URI . "inbox.php");
 		}
-		else{
-			header("location:" . BASE_URI . "home.php");
+		if(isset($_GET['auth'])) {
+			$drop_off_auth =$_GET['auth'];
+			 header("location:".BASE_URI."dropoff.php?auth=".$drop_off_auth);
 		}
+	 else{
+		 header("location:" . BASE_URI . "home.php");
+	 }
 		exit;
 		}
 		else {
@@ -67,7 +71,7 @@ if(isset($_GET['email']))
 			exit;
 		}
 	}else {
-	
+
 		$_SESSION['errorstate'] = 'no_account'; //TODO: create new account
 		$new_client = new ClientActions();
 		$username = $new_client->generateUsername("saml guest");
@@ -100,7 +104,7 @@ if(isset($_GET['email']))
 			$add_to_group->bindParam(':id', $client_id, PDO::PARAM_INT);
 			$add_to_group->bindParam(':group', $group_id);
 			$add_to_group->execute();
-		} 
+		}
 		/*
 		$notify_admin = new PSend_Email();
 		$email_arguments = array(

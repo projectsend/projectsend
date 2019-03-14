@@ -314,7 +314,7 @@ catch ( Exception $e ) {
       <ul class="list-inline text-center">
         <li>
           <?php if(SAML_SIGNIN_ENABLED == '1'): ?>
-          <a href="<?php echo BASE_URI; ?>saml_app/index.php" name="Sign in with SAML" class="" title="Sign in with SAML"><img style="width: 150px;" src="img/saml_logo.png" class="img-responsive"/></a>
+          <a href="<?php echo BASE_URI; ?>saml_app/inde.php" name="Sign in with SAML" class="" title="Sign in with SAML"><img style="width: 150px;" src="img/saml_logo.png" class="img-responsive"/></a>
           <?php endif; ?>
 					<?php if(SAML_SIGNIN_ENABLED == '1'){
 						if(isset($_GET['auth'])) {
@@ -322,7 +322,7 @@ catch ( Exception $e ) {
 							<a href="<?php echo BASE_URI; ?>saml_app/index.php<?php echo("auth=".$drop_off_auth ?>" name="Sign in with SAML" class="" title="Sign in with SAML"><img style="width: 150px;" src="img/saml_logo.png" class="img-responsive"/></a>
 						<?php
 						} else { ?>
-							<a href="<?php echo BASE_URI; ?>saml_app/index.php" name="Sign in with SAML" class="" title="Sign in with SAML"><img style="width: 150px;" src="img/saml_logo.png" class="img-responsive"/></a>
+							<a href="<?php echo BASE_URI; ?>saml_app/inde.php" name="Sign in with SAML" class="" title="Sign in with SAML"><img style="width: 150px;" src="img/saml_logo.png" class="img-responsive"/></a>
 		          <?php	}
 						} ?>
         </li>

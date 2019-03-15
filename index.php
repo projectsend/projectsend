@@ -19,128 +19,139 @@ $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 $page_title = __('Log in','cftp_admin');
 include('header-unlogged.php');
-    //session_destroy();
-    /**
-     * Google Sign-in
-     */
-    if ( GOOGLE_SIGNIN_ENABLED == '1' ) {
-        $googleClient = new Google_Client();
-        $googleClient->setApplicationName(THIS_INSTALL_SET_TITLE);
-        $googleClient->setClientSecret(GOOGLE_CLIENT_SECRET);
-        $googleClient->setClientId(GOOGLE_CLIENT_ID);
-        $googleClient->setAccessType('online');
-        $googleClient->setApprovalPrompt('auto');
-        $googleClient->setRedirectUri(BASE_URI . 'sociallogin/google/callback.php');
-        $googleClient->setScopes(array('profile','email'));
-        $auth_url = $googleClient->createAuthUrl();
-    }
-    
-    /** The form was submitted */
-    if ($_POST) {
-    //echo "post";exit;
-        global $dbh;
-        $sysuser_password   = $_POST['login_form_pass'];
-        $selected_form_lang = $_POST['login_form_lang'];
-        $drop_off_auth      = isset($_POST['drop_off_auth'])?$_POST['drop_off_auth']:'';
-    
-        /** Look up the system users table to see if the entered username exists */
-        $statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user= :username OR email= :email");
-        $statement->execute(
-                        array(
-                            ':username' => $_POST['login_form_user'],
-                            ':email'    => $_POST['login_form_user'],
-                        )
-                    );
-        $count_user = $statement->rowCount();
-    //echo '---------'.$count_user;exit();
-        if ($count_user > 0){
-            /** If the username was found on the users table */
-            $statement->setFetchMode(PDO::FETCH_ASSOC);
-            while ( $row = $statement->fetch() ) {
-                $sysuser_username   = $row['user'];
-                $db_pass            = $row['password'];
-                $user_level         = $row["level"];
-                $active_status      = $row['active'];
-                $logged_id          = $row['id'];
-                $global_name        = $row['name'];
-            }
-            $check_password = $hasher->CheckPassword($sysuser_password, $db_pass);
-            if ($check_password) {
-    //      echo $check_password;exit();
-            //if ($db_pass == $sysuser_password) {
-                if ($active_status != '0') {
-                    /** Set SESSION values */
-                    $_SESSION['loggedin_id'] = $logged_id;
-                    $_SESSION['loggedin'] = $sysuser_username;
-                    $_SESSION['userlevel'] = $user_level;
-                    $_SESSION['lang'] = $selected_form_lang;
-                    /**
-                     * Language cookie
-                     * TODO: Implement.
-                     * Must decide how to refresh language in the form when the user
-                     * changes the language <select> field.
-                     * By using a cookie and not refreshing here, the user is
-                     * stuck in a language and must use it to recover password or
-                     * create account, since the lang cookie is only at login now.
-                     */
-                    //setcookie('projectsend_language', $selected_form_lang, time() + (86400 * 30), '/');
-                    if ($user_level != '0') {
-                        $access_string = 'admin';
-                        $_SESSION['access'] = $access_string;
-                    }
-                    else {
-                        $access_string = $sysuser_username;
-                        $_SESSION['access'] = $sysuser_username;
-                    }
-                    /** If "remember me" checkbox is on, set the cookie */
-                    if (!empty($_POST['login_form_remember'])) {
-                        /*
-                        setcookie("loggedin",$sysuser_username,time()+COOKIE_EXP_TIME);
-                        setcookie("password",$sysuser_password,time()+COOKIE_EXP_TIME);
-                        setcookie("access",$access_string,time()+COOKIE_EXP_TIME);
-                        setcookie("userlevel",$user_level,time()+COOKIE_EXP_TIME);
-                        */
-                        setcookie("rememberwho",$sysuser_username,time()+COOKIE_EXP_TIME);
-                    }
-                    
-                    /** Record the action log */
-                    $new_log_action = new LogActions();
-                    $log_action_args = array(
-                                            'action' => 1,
-                                            'owner_id' => $logged_id,
-                                            'affected_account_name' => $global_name
-                                        );
-                    $new_record_action = $new_log_action->log_action_save($log_action_args);
-                    if(!empty($drop_off_auth) && $drop_off_auth!='') {
-                        header("location:".BASE_URI."dropoff.php?auth=".$drop_off_auth);
-                    }
-                    else if ($user_level == '0') {
-                        header("location:".BASE_URI."inbox.php");
-                    }
-                    else {
-                        $allfile = new FilesActions();
-                        //Marking all hidden files visible
-                        $allfile->show_all();
-                        header("location:".BASE_URI."home.php");
-                    }
-                    exit;
-                }
-                else {
-                    $errorstate = 'inactive_client';
-                }
-            }
-            else {
-                //$errorstate = 'wrong_password';
-                $errorstate = 'invalid_credentials';
-            }
-        }
-        else {
-            //$errorstate = 'wrong_username';
-            $errorstate = 'invalid_credentials';
-        }
-    
-    }
-    //echo "else";exit;
+
+	//session_destroy();
+	/**
+	 * Google Sign-in
+	 */
+	if ( GOOGLE_SIGNIN_ENABLED == '1' ) {
+		$googleClient = new Google_Client();
+		$googleClient->setApplicationName(THIS_INSTALL_SET_TITLE);
+		$googleClient->setClientSecret(GOOGLE_CLIENT_SECRET);
+		$googleClient->setClientId(GOOGLE_CLIENT_ID);
+		$googleClient->setAccessType('online');
+		$googleClient->setApprovalPrompt('auto');
+		if(isset($_GET['auth'])) {
+			$drop_off_active =$_GET['auth'];
+				 $googleClient->setRedirectUri(BASE_URI . 'sociallogin/google/callback.php?auth='.$drop_off_active);
+		}
+		 else{
+				$googleClient->setRedirectUri(BASE_URI . 'sociallogin/google/callback.php');
+		 }
+		$googleClient->setScopes(array('profile','email'));
+		$auth_url = $googleClient->createAuthUrl();
+	}
+
+	/** The form was submitted */
+	if ($_POST) {
+	//echo "post";exit;
+		global $dbh;
+		$sysuser_password	= $_POST['login_form_pass'];
+		$selected_form_lang	= $_POST['login_form_lang'];
+		$drop_off_auth      = isset($_POST['drop_off_auth'])?$_POST['drop_off_auth']:'';
+
+		/** Look up the system users table to see if the entered username exists */
+		$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user= :username OR email= :email");
+		$statement->execute(
+						array(
+							':username'	=> $_POST['login_form_user'],
+							':email'	=> $_POST['login_form_user'],
+						)
+					);
+		$count_user = $statement->rowCount();
+	//echo '---------'.$count_user;exit();
+		if ($count_user > 0){
+			/** If the username was found on the users table */
+			$statement->setFetchMode(PDO::FETCH_ASSOC);
+			while ( $row = $statement->fetch() ) {
+				$sysuser_username	= $row['user'];
+				$db_pass			= $row['password'];
+				$user_level			= $row["level"];
+				$active_status		= $row['active'];
+				$logged_id			= $row['id'];
+				$global_name		= $row['name'];
+			}
+			$check_password = $hasher->CheckPassword($sysuser_password, $db_pass);
+			if ($check_password) {
+	//		echo $check_password;exit();
+			//if ($db_pass == $sysuser_password) {
+				if ($active_status != '0') {
+					/** Set SESSION values */
+					$_SESSION['loggedin_id'] = $logged_id;
+					$_SESSION['loggedin'] = $sysuser_username;
+					$_SESSION['userlevel'] = $user_level;
+					$_SESSION['lang'] = $selected_form_lang;
+
+					/**
+					 * Language cookie
+					 * TODO: Implement.
+					 * Must decide how to refresh language in the form when the user
+					 * changes the language <select> field.
+					 * By using a cookie and not refreshing here, the user is
+					 * stuck in a language and must use it to recover password or
+					 * create account, since the lang cookie is only at login now.
+					 */
+					//setcookie('projectsend_language', $selected_form_lang, time() + (86400 * 30), '/');
+
+					if ($user_level != '0') {
+						$access_string = 'admin';
+						$_SESSION['access'] = $access_string;
+					}
+					else {
+						$access_string = $sysuser_username;
+						$_SESSION['access'] = $sysuser_username;
+					}
+
+					/** If "remember me" checkbox is on, set the cookie */
+					if (!empty($_POST['login_form_remember'])) {
+						/*
+						setcookie("loggedin",$sysuser_username,time()+COOKIE_EXP_TIME);
+						setcookie("password",$sysuser_password,time()+COOKIE_EXP_TIME);
+						setcookie("access",$access_string,time()+COOKIE_EXP_TIME);
+						setcookie("userlevel",$user_level,time()+COOKIE_EXP_TIME);
+						*/
+						setcookie("rememberwho",$sysuser_username,time()+COOKIE_EXP_TIME);
+					}
+
+					/** Record the action log */
+					$new_log_action = new LogActions();
+					$log_action_args = array(
+											'action' => 1,
+											'owner_id' => $logged_id,
+											'affected_account_name' => $global_name
+										);
+					$new_record_action = $new_log_action->log_action_save($log_action_args);
+					if(!empty($drop_off_auth) && $drop_off_auth!='') {
+						header("location:".BASE_URI."dropoff.php?auth=".$drop_off_auth);
+					}
+					else if ($user_level == '0') {
+						header("location:".BASE_URI."inbox.php");
+					}
+					else {
+						$allfile = new FilesActions();
+						//Marking all hidden files visible
+						$allfile->show_all();
+						header("location:".BASE_URI."home.php");
+					}
+					exit;
+				}
+				else {
+					$errorstate = 'inactive_client';
+				}
+			}
+			else {
+				//$errorstate = 'wrong_password';
+				$errorstate = 'invalid_credentials';
+			}
+		}
+		else {
+			//$errorstate = 'wrong_username';
+			$errorstate = 'invalid_credentials';
+		}
+
+	}
+	//echo "else";exit;
+
 if ( isset($_SESSION['errorstate'] ) ) {
     $errorstate = $_SESSION['errorstate'];
     unset($_SESSION['errorstate']);
@@ -296,63 +307,72 @@ catch ( Exception $e ) {
       <h5 class="text-center"> - Or sign in using -</h5>
       <ul class="list-inline text-center">
         <li>
-          <?php if(SAML_SIGNIN_ENABLED == '1'): ?>
-          <a href="<?php echo BASE_URI; ?>saml_app" name="Sign in with SAML" class="" title="Sign in with SAML"><img style="width: 150px;" src="img/saml_logo.png" class="img-responsive"/></a>
-          <?php endif; ?>
+					<?php if(SAML_SIGNIN_ENABLED == '1'){
+						if(isset($_GET['auth'])) {
+							$drop_off_auth =$_GET['auth']; ?>
+							<a href="<?php echo BASE_URI; ?>saml_app/index.php? <?php echo('auth='.$drop_off_auth); ?>" name="Sign in with SAML" class="" title="Sign in with SAML"><img style="width: 150px;" src="img/saml_logo.png" class="img-responsive"/></a>
+						<?php
+						} else { ?>
+							<a href="<?php echo BASE_URI; ?>saml_app/index.php" name="Sign in with SAML" class="" title="Sign in with SAML"><img style="width: 150px;" src="img/saml_logo.png" class="img-responsive"/></a>
+		          <?php	}
+						} ?>
         </li>
       </ul>
       <ul class="list-inline text-center">
-        
-        <?php
-/*
-        require_once('simplesamlsp/lib/_autoload.php');
-        $auth = new SimpleSAML_Auth_Simple('default-sp');
-        $login_url =  $auth->getLoginURL();
-        if (!$auth->isAuthenticated()) {
-            print('<li><a href="'.htmlspecialchars($login_url).'">SAML</a></li>');
-        }else{
-            $attributes = $auth->getAttributes();
-            echo "Attributes present!!";
-            echo "<pre>";print_r($attributes);echo "</pre>";    
-            $url = $auth->getLogoutURL();
-            print('<li><a href="' . htmlspecialchars($url) . '">SAML Logout</a></li>');
-        }
-*/      
-        //print('<li><a href="https://msend.microhealthllc.com/saml_app">SAML</a></li>');
-        ?>
-
         <li>
           <?php if(GOOGLE_SIGNIN_ENABLED == '1'): ?>
           <a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="btn btn-default btn-circle"><i class="fa fa-google"></i></a>
           <?php endif; ?>
         </li>
-        <?php if(FACEBOOK_SIGNIN_ENABLED == '1'): ?>
-        <li> <a href="sociallogin/facebook_special/fbconfig.php" name="Sign in with Facebook" class="btn btn-primary btn-circle" title="facebook"><i class="fa fa-facebook"></i></a> </li>
-        <?php endif; ?>
-        <?php if(TWITTER_SIGNIN_ENABLED == '1'): ?>
-        <li> <a href="sociallogin/login-with.php?provider=Twitter" name="Sign in with Twitter" class="btn btn-info btn-circle" title="twitter"><i class="fa fa-twitter"></i></a> </li>
-        <?php endif; ?>
-        <?php if(YAHOO_SIGNIN_ENABLED == '1'): ?>
-        <li> <a href="sociallogin/login-with.php?provider=yahoo" name="Sign in with yahoo" class="btn btn-danger btn-circle" title="Yahoo"><i class="fa fa-yahoo" aria-hidden="true"></i></a> </li>
-        <?php endif; ?>
-        <?php if(LINKEDIN_SIGNIN_ENABLED == '1'): ?>
-        <li> <a href="sociallogin/login-with.php?provider=LinkedIn" name="Sign in with linkedin" class="btn btn-warning btn-circle" title="Linkedin"><i class="fa fa-linkedin"></i></a> </li>
-        <?php endif; ?>
-        <?php if(LDAP_SIGNIN_ENABLED == '1'): ?>
-        <li> <a href="sociallogin/ldap-login.php" name="Sign in with LDAP" class="btn btn-success btn-circle" id="display_ldap_form" title="LDAP"> <i class="fa fa-universal-access"></i></a> </li>
-        <?php endif; ?>
+        <?php if(FACEBOOK_SIGNIN_ENABLED == '1'){
+					if(isset($_GET['auth'])) {
+						$drop_off_auth =$_GET['auth'];?>
+		        <li> <a href="sociallogin/facebook_special/fbconfig.php?<?php echo('auth='.$drop_off_auth); ?>" name="Sign in with Facebook" class="btn btn-primary btn-circle" title="facebook"><i class="fa fa-facebook"></i></a> </li>
+						<?php
+					} else { ?>
+	        <li> <a href="sociallogin/facebook_special/fbconfig.php" name="Sign in with Facebook" class="btn btn-primary btn-circle" title="facebook"><i class="fa fa-facebook"></i></a> </li>
+		        <?php	}
+					} ?>
+        <?php if(TWITTER_SIGNIN_ENABLED == '1'){
+					if(isset($_GET['auth'])) {
+						$drop_off_auth =$_GET['auth'];?>
+						<li> <a href="sociallogin/login-with.php?provider=Twitter&<?php echo('auth='.$drop_off_auth); ?>" name="Sign in with Twitter" class="btn btn-info btn-circle" title="twitter"><i class="fa fa-twitter"></i></a> </li>
+		        <?php
+					} else { ?>
+						<li> <a href="sociallogin/login-with.php?provider=Twitter" name="Sign in with Twitter" class="btn btn-info btn-circle" title="twitter"><i class="fa fa-twitter"></i></a> </li>
+		        <?php	}
+					} ?>
+        <?php if(YAHOO_SIGNIN_ENABLED == '1'){
+					if(isset($_GET['auth'])) {
+						$drop_off_auth =$_GET['auth'];?>
+						<li> <a href="sociallogin/login-with.php?provider=yahoo&<?php echo('auth='.$drop_off_auth); ?>" name="Sign in with yahoo" class="btn btn-danger btn-circle" title="Yahoo"><i class="fa fa-yahoo" aria-hidden="true"></i></a> </li>
+		        <?php
+					} else { ?>
+						<li> <a href="sociallogin/login-with.php?provider=yahoo" name="Sign in with yahoo" class="btn btn-danger btn-circle" title="Yahoo"><i class="fa fa-yahoo" aria-hidden="true"></i></a> </li>
+		        <?php	}
+					} ?>
+        <?php if(LINKEDIN_SIGNIN_ENABLED == '1'){
+					if(isset($_GET['auth'])) {
+						$drop_off_auth =$_GET['auth'];?>
+						<li> <a href="sociallogin/login-with.php?provider=LinkedIn&<?php echo('auth='.$drop_off_auth); ?>" name="Sign in with linkedin" class="btn btn-warning btn-circle" title="Linkedin"><i class="fa fa-linkedin"></i></a> </li>
+		        <?php
+					} else { ?>
+						<li> <a href="sociallogin/login-with.php?provider=LinkedIn" name="Sign in with linkedin" class="btn btn-warning btn-circle" title="Linkedin"><i class="fa fa-linkedin"></i></a> </li>
+		        <?php	}
+					} ?>
+        <?php if(LDAP_SIGNIN_ENABLED == '1'){
+					if(isset($_GET['auth'])) {
+						$drop_off_auth =$_GET['auth'];?>
+						<li> <a href="sociallogin/ldap-login.php<?php echo('auth='.$drop_off_auth); ?>" name="Sign in with LDAP" class="btn btn-success btn-circle" id="display_ldap_form" title="LDAP"> <i class="fa fa-universal-access"></i></a> </li>
+						<?php
+							} else { ?>
+						<li> <a href="sociallogin/ldap-login.php" name="Sign in with LDAP" class="btn btn-success btn-circle" id="display_ldap_form" title="LDAP"> <i class="fa fa-universal-access"></i></a> </li>
+						<?php	}
+					} ?>
         <?php if(WINDOWS_SIGNIN_ENABLED == '1'): ?>
         <li> <a href="#" name="office365" class="btn btn-default btn-circle" id="office365" onclick="signIn()" title="Sign in with office 365"> <i class="fa fa-windows"></i></a> </li>
         <?php endif; ?>
       </ul>
-<!--    <div id="ldap_login_div" style="display:none">
-        <div id="message"></div>
-        Email<br/>
-        <input type="text" id="ldap_email" placeholder="email" value="riemann@ldap.forumsys.com"><br/>
-        Password:<br/>                      
-        <input type="password" id="ldap_password" placeholder="password" value="password"><br/>
-        <a href="#" id="ldap_submit">LOGIN</a>
-    </div>-->
             <div id="ldap_login_div" style="display:none">
             <div class="well no-padding"> 
             <form role="form" id="login-form1" class="smart-form client-form">

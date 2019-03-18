@@ -674,7 +674,7 @@ $message = '
                             </label>
                           </div>
                           <div class="checkbox">
-                            <label for="exp_checkbox">
+                            <label for="notify_checkbox">
                               <input type="checkbox" id="notify_checkbox" name="file[<?php echo $i; ?>][notify]" value="1" <?php if ($row['notify']) { ?>checked="checked"<?php } ?> />
                               <?php _e('Don\'t Notify Me', 'cftp_admin');?>
                             </label>

@@ -2,7 +2,7 @@
 # Forked from ProjectSend
 ## This is a simple managed file system transfer.  Looks like an email program and works like one to.  You can send a file, request a file, set limits on the number of downloads or time and categorize files.  Features drag and drop.  Once the time or download limit is reached, the file is deleted.  Files are encrypted for added security. Enhanced social login including SAML. Its also responsive to work on mobile.  Completely brand it yourself...configurations are in the menu for administrators.
 
-![Test Image 1](2019-03-21 12_19_10-Inbox Files » mSend - Brave)
+![Inbox](inbox.png)
 
 ## Prerequisites:
 

@@ -1,6 +1,7 @@
 
-# Forked from ProjectSend
-## This is a simple managed file system transfer.  Looks like an email program and works like one to.  You can send a file, request a file, set limits on the number of downloads or time and categorize files.  Features drag and drop.  Once the time or download limit is reached, the file is deleted.  Files are encrypted for added security. Enhanced social login including SAML. Its also responsive to work on mobile.  Completely brand it yourself...configurations are in the menu for administrators.
+# mSend
+##Forked from ProjectSend
+This is a simple managed file system transfer.  Looks like an email program and works like one to.  You can send a file, request a file, set limits on the number of downloads or time and categorize files.  Up to 2 gigs you set in php.ini.  Features drag and drop.  Once the time or download limit is reached, the file is deleted.  Files are encrypted for added security. Enhanced social login including SAML. Its also responsive to work on mobile.  Completely brand it yourself...configurations are in the menu for administrators.
 
 ![Inbox](inbox.png)
 
@@ -104,6 +105,7 @@ When those are steps are completed, follow this instructions:
 2. Open your browser and go to http://hostname/install
 3. Complete the information there and wait for the correct installation message.
 4. go to the settings page to setup all the keys for social authentication and email.
+5. Don't forget to configure PHP.ini https://mediatemple.net/community/products/dv/204404784/how-do-i-increase-the-php-upload-limits
 
 
 Congratulations! MicroHealth Send is now installed and ready for action!

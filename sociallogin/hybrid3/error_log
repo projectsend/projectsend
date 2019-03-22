@@ -1,0 +1,141 @@
+[21-Mar-2019 12:46:35 UTC] PHP Warning:  include(hybrid3/src/autoload.php): failed to open stream: No such file or directory in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/index.php on line 6
+[21-Mar-2019 12:46:35 UTC] PHP Warning:  include(hybrid3/src/autoload.php): failed to open stream: No such file or directory in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/index.php on line 6
+[21-Mar-2019 12:46:35 UTC] PHP Warning:  include(): Failed opening 'hybrid3/src/autoload.php' for inclusion (include_path='.:/php/includes') in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/index.php on line 6
+[21-Mar-2019 12:46:35 UTC] PHP Parse error:  syntax error, unexpected ',' in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/config.php on line 34
+[21-Mar-2019 12:46:59 UTC] PHP Warning:  include(hybrid3/src/autoload.php): failed to open stream: No such file or directory in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/index.php on line 6
+[21-Mar-2019 12:46:59 UTC] PHP Warning:  include(hybrid3/src/autoload.php): failed to open stream: No such file or directory in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/index.php on line 6
+[21-Mar-2019 12:46:59 UTC] PHP Warning:  include(): Failed opening 'hybrid3/src/autoload.php' for inclusion (include_path='.:/php/includes') in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/index.php on line 6
+[21-Mar-2019 12:46:59 UTC] PHP Parse error:  syntax error, unexpected ',' in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/config.php on line 34
+[21-Mar-2019 12:47:54 UTC] PHP Warning:  include(hybrid3/src/autoload.php): failed to open stream: No such file or directory in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/index.php on line 6
+[21-Mar-2019 12:47:54 UTC] PHP Warning:  include(hybrid3/src/autoload.php): failed to open stream: No such file or directory in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/index.php on line 6
+[21-Mar-2019 12:47:54 UTC] PHP Warning:  include(): Failed opening 'hybrid3/src/autoload.php' for inclusion (include_path='.:/php/includes') in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/index.php on line 6
+[21-Mar-2019 12:47:54 UTC] PHP Parse error:  syntax error, unexpected ',' in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/config.php on line 34
+[21-Mar-2019 12:47:56 UTC] PHP Warning:  include(hybrid3/src/autoload.php): failed to open stream: No such file or directory in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/index.php on line 6
+[21-Mar-2019 12:47:56 UTC] PHP Warning:  include(hybrid3/src/autoload.php): failed to open stream: No such file or directory in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/index.php on line 6
+[21-Mar-2019 12:47:56 UTC] PHP Warning:  include(): Failed opening 'hybrid3/src/autoload.php' for inclusion (include_path='.:/php/includes') in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/index.php on line 6
+[21-Mar-2019 12:47:56 UTC] PHP Parse error:  syntax error, unexpected ',' in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/config.php on line 34
+[21-Mar-2019 12:50:02 UTC] PHP Warning:  include(hybrid3/src/autoload.php): failed to open stream: No such file or directory in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/index.php on line 8
+[21-Mar-2019 12:50:02 UTC] PHP Warning:  include(hybrid3/src/autoload.php): failed to open stream: No such file or directory in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/index.php on line 8
+[21-Mar-2019 12:50:02 UTC] PHP Warning:  include(): Failed opening 'hybrid3/src/autoload.php' for inclusion (include_path='.:/php/includes') in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/index.php on line 8
+[21-Mar-2019 12:50:02 UTC] PHP Parse error:  syntax error, unexpected ',' in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/config.php on line 34
+[21-Mar-2019 12:51:25 UTC] PHP Warning:  include(/hybrid3/src/autoload.php): failed to open stream: No such file or directory in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/index.php on line 8
+[21-Mar-2019 12:51:25 UTC] PHP Warning:  include(/hybrid3/src/autoload.php): failed to open stream: No such file or directory in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/index.php on line 8
+[21-Mar-2019 12:51:25 UTC] PHP Warning:  include(): Failed opening '/hybrid3/src/autoload.php' for inclusion (include_path='.:/php/includes') in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/index.php on line 8
+[21-Mar-2019 12:51:25 UTC] PHP Parse error:  syntax error, unexpected ',' in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/config.php on line 34
+[21-Mar-2019 12:52:40 UTC] PHP Parse error:  syntax error, unexpected ',' in /home/demo4rndshosting/public_html/msend/hybrid3/examples/working1/config.php on line 34
+[21-Mar-2019 13:05:53 UTC] PHP Fatal error:  Uncaught Hybridauth\Exception\HttpRequestFailedException: Signed API request has returned an error. HTTP error 410. Raw Provider API response: {
+  "errorCode": 0,
+  "message": "This resource is no longer available under v1 APIs",
+  "requestId": "P76LBEQL17",
+  "status": 410,
+  "timestamp": 1553173553288
+}. in /home/demo4rndshosting/public_html/msend/hybrid3/src/Adapter/AbstractAdapter.php:363
+Stack trace:
+#0 /home/demo4rndshosting/public_html/msend/hybrid3/src/Adapter/OAuth2.php(682): Hybridauth\Adapter\AbstractAdapter->validateApiResponse('Signed API requ...')
+#1 /home/demo4rndshosting/public_html/msend/hybrid3/src/Provider/LinkedIn.php(67): Hybridauth\Adapter\OAuth2->apiRequest('https://api.lin...', 'GET', Array)
+#2 /home/demo4rndshosting/public_html/msend/hybrid3/latest/index.php(43): Hybridauth\Provider\LinkedIn->getUserProfile()
+#3 {main}
+  thrown in /home/demo4rndshosting/public_html/msend/hybrid3/src/Adapter/AbstractAdapter.php on line 363
+[21-Mar-2019 13:06:30 UTC] PHP Fatal error:  Uncaught Hybridauth\Exception\HttpRequestFailedException: Signed API request has returned an error. HTTP error 410. Raw Provider API response: {
+  "errorCode": 0,
+  "message": "This resource is no longer available under v1 APIs",
+  "requestId": "YQ1234E9GI",
+  "status": 410,
+  "timestamp": 1553173590880
+}. in /home/demo4rndshosting/public_html/msend/hybrid3/src/Adapter/AbstractAdapter.php:363
+Stack trace:
+#0 /home/demo4rndshosting/public_html/msend/hybrid3/src/Adapter/OAuth2.php(682): Hybridauth\Adapter\AbstractAdapter->validateApiResponse('Signed API requ...')
+#1 /home/demo4rndshosting/public_html/msend/hybrid3/src/Provider/LinkedIn.php(67): Hybridauth\Adapter\OAuth2->apiRequest('https://api.lin...', 'GET', Array)
+#2 /home/demo4rndshosting/public_html/msend/hybrid3/latest/index.php(43): Hybridauth\Provider\LinkedIn->getUserProfile()
+#3 {main}
+  thrown in /home/demo4rndshosting/public_html/msend/hybrid3/src/Adapter/AbstractAdapter.php on line 363
+[21-Mar-2019 13:07:47 UTC] PHP Fatal error:  Uncaught Hybridauth\Exception\HttpRequestFailedException: Signed API request has returned an error. HTTP error 410. Raw Provider API response: {
+  "errorCode": 0,
+  "message": "This resource is no longer available under v1 APIs",
+  "requestId": "9WE5EW77JZ",
+  "status": 410,
+  "timestamp": 1553173667593
+}. in /home/demo4rndshosting/public_html/msend/hybrid3/src/Adapter/AbstractAdapter.php:363
+Stack trace:
+#0 /home/demo4rndshosting/public_html/msend/hybrid3/src/Adapter/OAuth2.php(682): Hybridauth\Adapter\AbstractAdapter->validateApiResponse('Signed API requ...')
+#1 /home/demo4rndshosting/public_html/msend/hybrid3/src/Provider/LinkedIn.php(67): Hybridauth\Adapter\OAuth2->apiRequest('https://api.lin...', 'GET', Array)
+#2 /home/demo4rndshosting/public_html/msend/hybrid3/latest/index.php(43): Hybridauth\Provider\LinkedIn->getUserProfile()
+#3 {main}
+  thrown in /home/demo4rndshosting/public_html/msend/hybrid3/src/Adapter/AbstractAdapter.php on line 363
+[21-Mar-2019 13:08:03 UTC] PHP Fatal error:  Uncaught Hybridauth\Exception\HttpRequestFailedException: Signed API request has returned an error. HTTP error 410. Raw Provider API response: {
+  "errorCode": 0,
+  "message": "This resource is no longer available under v1 APIs",
+  "requestId": "4XVEDFTIPW",
+  "status": 410,
+  "timestamp": 1553173683825
+}. in /home/demo4rndshosting/public_html/msend/hybrid3/src/Adapter/AbstractAdapter.php:363
+Stack trace:
+#0 /home/demo4rndshosting/public_html/msend/hybrid3/src/Adapter/OAuth2.php(682): Hybridauth\Adapter\AbstractAdapter->validateApiResponse('Signed API requ...')
+#1 /home/demo4rndshosting/public_html/msend/hybrid3/src/Provider/LinkedIn.php(67): Hybridauth\Adapter\OAuth2->apiRequest('https://api.lin...', 'GET', Array)
+#2 /home/demo4rndshosting/public_html/msend/hybrid3/latest/index.php(43): Hybridauth\Provider\LinkedIn->getUserProfile()
+#3 {main}
+  thrown in /home/demo4rndshosting/public_html/msend/hybrid3/src/Adapter/AbstractAdapter.php on line 363
+[21-Mar-2019 13:08:04 UTC] PHP Fatal error:  Uncaught Hybridauth\Exception\HttpRequestFailedException: Signed API request has returned an error. HTTP error 410. Raw Provider API response: {
+  "errorCode": 0,
+  "message": "This resource is no longer available under v1 APIs",
+  "requestId": "EC5FU5C4AB",
+  "status": 410,
+  "timestamp": 1553173684305
+}. in /home/demo4rndshosting/public_html/msend/hybrid3/src/Adapter/AbstractAdapter.php:363
+Stack trace:
+#0 /home/demo4rndshosting/public_html/msend/hybrid3/src/Adapter/OAuth2.php(682): Hybridauth\Adapter\AbstractAdapter->validateApiResponse('Signed API requ...')
+#1 /home/demo4rndshosting/public_html/msend/hybrid3/src/Provider/LinkedIn.php(67): Hybridauth\Adapter\OAuth2->apiRequest('https://api.lin...', 'GET', Array)
+#2 /home/demo4rndshosting/public_html/msend/hybrid3/latest/index.php(43): Hybridauth\Provider\LinkedIn->getUserProfile()
+#3 {main}
+  thrown in /home/demo4rndshosting/public_html/msend/hybrid3/src/Adapter/AbstractAdapter.php on line 363
+[21-Mar-2019 13:08:13 UTC] PHP Fatal error:  Uncaught Hybridauth\Exception\HttpRequestFailedException: Signed API request has returned an error. HTTP error 410. Raw Provider API response: {
+  "errorCode": 0,
+  "message": "This resource is no longer available under v1 APIs",
+  "requestId": "4FZTH4K05G",
+  "status": 410,
+  "timestamp": 1553173693111
+}. in /home/demo4rndshosting/public_html/msend/hybrid3/src/Adapter/AbstractAdapter.php:363
+Stack trace:
+#0 /home/demo4rndshosting/public_html/msend/hybrid3/src/Adapter/OAuth2.php(682): Hybridauth\Adapter\AbstractAdapter->validateApiResponse('Signed API requ...')
+#1 /home/demo4rndshosting/public_html/msend/hybrid3/src/Provider/LinkedIn.php(67): Hybridauth\Adapter\OAuth2->apiRequest('https://api.lin...', 'GET', Array)
+#2 /home/demo4rndshosting/public_html/msend/hybrid3/latest/index.php(43): Hybridauth\Provider\LinkedIn->getUserProfile()
+#3 {main}
+  thrown in /home/demo4rndshosting/public_html/msend/hybrid3/src/Adapter/AbstractAdapter.php on line 363
+[21-Mar-2019 13:17:46 UTC] PHP Parse error:  syntax error, unexpected 'catch' (T_CATCH) in /home/demo4rndshosting/public_html/msend/hybrid3/latest/callback.php on line 139
+[21-Mar-2019 13:18:53 UTC] PHP Parse error:  syntax error, unexpected 'catch' (T_CATCH) in /home/demo4rndshosting/public_html/msend/hybrid3/latest/callback.php on line 140
+[21-Mar-2019 13:18:55 UTC] PHP Parse error:  syntax error, unexpected 'catch' (T_CATCH) in /home/demo4rndshosting/public_html/msend/hybrid3/latest/callback.php on line 140
+[21-Mar-2019 13:20:30 UTC] PHP Parse error:  syntax error, unexpected 'catch' (T_CATCH) in /home/demo4rndshosting/public_html/msend/hybrid3/latest/callback.php on line 138
+[21-Mar-2019 13:20:44 UTC] PHP Parse error:  syntax error, unexpected 'catch' (T_CATCH) in /home/demo4rndshosting/public_html/msend/hybrid3/latest/callback.php on line 138
+[21-Mar-2019 13:32:30 UTC] PHP Parse error:  syntax error, unexpected 'catch' (T_CATCH) in /home/demo4rndshosting/public_html/msend/hybrid3/latest/callback.php on line 138
+[21-Mar-2019 13:32:43 UTC] PHP Parse error:  syntax error, unexpected 'catch' (T_CATCH) in /home/demo4rndshosting/public_html/msend/hybrid3/latest/callback.php on line 138
+[21-Mar-2019 13:33:54 UTC] PHP Parse error:  syntax error, unexpected 'catch' (T_CATCH) in /home/demo4rndshosting/public_html/msend/hybrid3/latest/callback.php on line 138
+[21-Mar-2019 13:37:50 UTC] PHP Fatal error:  Uncaught Hybridauth\Exception\HttpRequestFailedException: Signed API request has returned an error. HTTP error 410. Raw Provider API response: {
+  "errorCode": 0,
+  "message": "This resource is no longer available under v1 APIs",
+  "requestId": "VRBF70UBEP",
+  "status": 410,
+  "timestamp": 1553175470786
+}. in /home/demo4rndshosting/public_html/msend/hybrid3/src/Adapter/AbstractAdapter.php:363
+Stack trace:
+#0 /home/demo4rndshosting/public_html/msend/hybrid3/src/Adapter/OAuth2.php(682): Hybridauth\Adapter\AbstractAdapter->validateApiResponse('Signed API requ...')
+#1 /home/demo4rndshosting/public_html/msend/hybrid3/src/Provider/LinkedIn.php(67): Hybridauth\Adapter\OAuth2->apiRequest('https://api.lin...', 'GET', Array)
+#2 /home/demo4rndshosting/public_html/msend/hybrid3/latest/index.php(43): Hybridauth\Provider\LinkedIn->getUserProfile()
+#3 {main}
+  thrown in /home/demo4rndshosting/public_html/msend/hybrid3/src/Adapter/AbstractAdapter.php on line 363
+[21-Mar-2019 13:48:14 UTC] PHP Warning:  include(../src/autoload.php): failed to open stream: No such file or directory in /home/demo4rndshosting/public_html/msend/hybrid3/index.php on line 8
+[21-Mar-2019 13:48:14 UTC] PHP Warning:  include(../src/autoload.php): failed to open stream: No such file or directory in /home/demo4rndshosting/public_html/msend/hybrid3/index.php on line 8
+[21-Mar-2019 13:48:14 UTC] PHP Warning:  include(): Failed opening '../src/autoload.php' for inclusion (include_path='.:/php/includes') in /home/demo4rndshosting/public_html/msend/hybrid3/index.php on line 8
+[21-Mar-2019 13:48:14 UTC] PHP Fatal error:  Uncaught Error: Class 'Hybridauth\Hybridauth' not found in /home/demo4rndshosting/public_html/msend/hybrid3/index.php:13
+Stack trace:
+#0 {main}
+  thrown in /home/demo4rndshosting/public_html/msend/hybrid3/index.php on line 13
+[22-Mar-2019 06:05:47 UTC] PHP Notice:  Use of undefined constant LINKEDIN_SIGNIN_ENABLED - assumed 'LINKEDIN_SIGNIN_ENABLED' in /home/demo4rndshosting/public_html/msend/hybrid3/config.php on line 5
+[22-Mar-2019 06:05:47 UTC] PHP Notice:  Use of undefined constant LINKEDIN_CLIENT_ID - assumed 'LINKEDIN_CLIENT_ID' in /home/demo4rndshosting/public_html/msend/hybrid3/config.php on line 28
+[22-Mar-2019 06:05:47 UTC] PHP Notice:  Use of undefined constant LINKEDIN_CLIENT_SECRET - assumed 'LINKEDIN_CLIENT_SECRET' in /home/demo4rndshosting/public_html/msend/hybrid3/config.php on line 29
+[22-Mar-2019 06:05:47 UTC] PHP Warning:  session_start(): Cannot send session cache limiter - headers already sent (output started at /home/demo4rndshosting/public_html/msend/hybrid3/config.php:5) in /home/demo4rndshosting/public_html/msend/sys.vars.php on line 12
+[22-Mar-2019 08:33:20 UTC] PHP Parse error:  syntax error, unexpected 'catch' (T_CATCH) in /home/demo4rndshosting/public_html/msend/hybrid3/callback.php on line 191
+[22-Mar-2019 08:39:14 UTC] PHP Parse error:  syntax error, unexpected 'catch' (T_CATCH) in /home/demo4rndshosting/public_html/msend/hybrid3/callback.php on line 193
+[22-Mar-2019 08:54:46 UTC] PHP Parse error:  syntax error, unexpected '}', expecting end of file in /home/demo4rndshosting/public_html/msend/hybrid3/callback.php on line 284
+[22-Mar-2019 08:59:31 UTC] PHP Parse error:  syntax error, unexpected 'else' (T_ELSE) in /home/demo4rndshosting/public_html/msend/hybrid3/callback.php on line 182
+[22-Mar-2019 09:07:20 UTC] PHP Parse error:  syntax error, unexpected ',' in /home/demo4rndshosting/public_html/msend/hybrid3/config.php on line 57
+[22-Mar-2019 09:07:20 UTC] PHP Parse error:  syntax error, unexpected ',' in /home/demo4rndshosting/public_html/msend/hybrid3/config.php on line 57

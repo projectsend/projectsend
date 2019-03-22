@@ -336,28 +336,28 @@ catch ( Exception $e ) {
         <?php if(TWITTER_SIGNIN_ENABLED == '1'){
 					if(isset($_GET['auth'])) {
 						$drop_off_auth =$_GET['auth'];?>
-						<li> <a href="sociallogin/login-with.php?provider=Twitter&<?php echo('auth='.$drop_off_auth); ?>" name="Sign in with Twitter" class="btn btn-info btn-circle" title="twitter"><i class="fa fa-twitter"></i></a> </li>
+						<li> <a href="sociallogin/hybrid3/callback.php?provider=Twitter&<?php echo('auth='.$drop_off_auth); ?>" name="Sign in with Twitter" class="btn btn-info btn-circle" title="twitter"><i class="fa fa-twitter"></i></a> </li>
 		        <?php
 					} else { ?>
-						<li> <a href="sociallogin/login-with.php?provider=Twitter" name="Sign in with Twitter" class="btn btn-info btn-circle" title="twitter"><i class="fa fa-twitter"></i></a> </li>
+						<li> <a href="sociallogin/hybrid3/callback.php?provider=Twitter" name="Sign in with Twitter" class="btn btn-info btn-circle" title="twitter"><i class="fa fa-twitter"></i></a> </li>
 		        <?php	}
 					} ?>
         <?php if(YAHOO_SIGNIN_ENABLED == '1'){
 					if(isset($_GET['auth'])) {
 						$drop_off_auth =$_GET['auth'];?>
-						<li> <a href="sociallogin/login-with.php?provider=yahoo&<?php echo('auth='.$drop_off_auth); ?>" name="Sign in with yahoo" class="btn btn-danger btn-circle" title="Yahoo"><i class="fa fa-yahoo" aria-hidden="true"></i></a> </li>
+						<li> <a href="sociallogin/hybrid3/callback.php?provider=yahoo&<?php echo('auth='.$drop_off_auth); ?>" name="Sign in with yahoo" class="btn btn-danger btn-circle" title="Yahoo"><i class="fa fa-yahoo" aria-hidden="true"></i></a> </li>
 		        <?php
 					} else { ?>
-						<li> <a href="sociallogin/login-with.php?provider=yahoo" name="Sign in with yahoo" class="btn btn-danger btn-circle" title="Yahoo"><i class="fa fa-yahoo" aria-hidden="true"></i></a> </li>
+						<li> <a href="sociallogin/hybrid3/callback.php?provider=yahoo" name="Sign in with yahoo" class="btn btn-danger btn-circle" title="Yahoo"><i class="fa fa-yahoo" aria-hidden="true"></i></a> </li>
 		        <?php	}
 					} ?>
         <?php if(LINKEDIN_SIGNIN_ENABLED == '1'){
 					if(isset($_GET['auth'])) {
 						$drop_off_auth =$_GET['auth'];?>
-						<li> <a href="sociallogin/login-with.php?provider=LinkedIn&<?php echo('auth='.$drop_off_auth); ?>" name="Sign in with linkedin" class="btn btn-warning btn-circle" title="Linkedin"><i class="fa fa-linkedin"></i></a> </li>
+						<li> <a href="sociallogin/hybrid3/callback.php?provider=LinkedIn&<?php echo('auth='.$drop_off_auth); ?>" name="Sign in with linkedin" class="btn btn-warning btn-circle" title="Linkedin"><i class="fa fa-linkedin"></i></a> </li>
 		        <?php
 					} else { ?>
-						<li> <a href="sociallogin/login-with.php?provider=LinkedIn" name="Sign in with linkedin" class="btn btn-warning btn-circle" title="Linkedin"><i class="fa fa-linkedin"></i></a> </li>
+						<li> <a href="sociallogin/hybrid3/callback.php?provider=LinkedIn" name="Sign in with linkedin" class="btn btn-warning btn-circle" title="Linkedin"><i class="fa fa-linkedin"></i></a> </li>
 		        <?php	}
 					} ?>
         <?php if(LDAP_SIGNIN_ENABLED == '1'){

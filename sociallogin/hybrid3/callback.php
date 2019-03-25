@@ -31,7 +31,7 @@ try {
      */
     if (isset($_GET['provider'])) {
         $storage->set('provider', $_GET['provider']);
-        echo("Insside callback");
+        echo("Inside callback");
     }
 
     /**
@@ -44,11 +44,13 @@ try {
     if ($provider = $storage->get('provider')) {
         // $hybridauth->authenticate($provider);
         $adapter = $hybridauth->authenticate($provider);
-        //Returns a boolean of whether the user is connected with Twitter
+        //Returns a boolean of whether the user is connected with
+
         $isConnected = $adapter->isConnected();
         //Retrieve the user's profile
         $userProfile = $adapter->getUserProfile();
-        print_r($userProfile);
+
+
         //Inspect profile's public attributes
         if($provider=='LinkedIn'){
           // echo("Inside loop");
@@ -88,9 +90,12 @@ try {
           $user_level=0;
         }
         else if($provider=='yahoo'){
+                $gotData= $userProfile;
+                // print_r($gotData);
+                // die();
         				$email = $userProfile->email;
         				if (!isset($_SESSION['yahoo_user'])){
-        					//print_r($userProfile);exit;
+        					// echo "<pre>";print_r($userProfile);exit;
         					$userData = $userProfile;
         					$firstName = $userProfile->firstName;
         					$lastName = $userProfile->lastName;
@@ -105,28 +110,14 @@ try {
         				}
         				$user_level=0;
         			}
-          else  if($_GET['provider'] == 'Facebook') {
-        				$name = $_SESSION['FULLNAME'] ;
-        				$email =$_SESSION['EMAIL'];
-        				if (!isset($_SESSION['facebook_user'])){
-        					//$userData = $Facebook_u_name;
-        					$_SESSION['facebook_user']['email']= $email;
-        					$_SESSION['facebook_user']['name']= $name;
-        				}else {
-        					$email = $_SESSION['facebook_user']['email'];
-        					$name = $_SESSION['facebook_user']['name'];
-        					unset($_SESSION['facebook_user']);
-        				}
-        				$user_level=0;
-        			}
+
 
         //Disconnect the adapter
         $adapter->disconnect();
 
         $storage->set('provider', null);
-        // echo("<br> Before Session");
-        // print_r($_SESSION);
-        //die();
+        echo("<br> Before Session");
+
         global $dbh;
         if(!empty($email)){
                     			$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE email= :email");
@@ -151,7 +142,7 @@ try {
                             $_SESSION['loggedin_id'] = $logged_id;
                             $_SESSION['userlevel'] = $user_level;
 
-                            if ($user_level != '0') {
+                            if ($user_level != 0) {
                               $access_string = 'admin';
                               $_SESSION['access'] = $access_string;
                             }
@@ -174,48 +165,23 @@ try {
                               );
                             $new_record_action = $new_log_action->log_action_save($log_action_args);
 
-                            if ($user_level == '0') {
-                              header("location:" . BASE_URI . "inbox.php/");
-                            }
-                            else {
-
-                              if(isset($_GET['auth'])) {
-                                $drop_off_auth =$_GET['auth'];
-                                 header("location:".BASE_URI."dropoff.php?auth=".$drop_off_auth);
-                              }
-                             else{
-                               header("location:" . BASE_URI . "home.php");
-                             }
-                            }
+                                if ($user_level == 0) {
+                                  header("location:" . BASE_URI . "inbox.php/");
+                                }
+                                else {
+                                  // echo("HERE WE ARE");
+                                  header("location:" . BASE_URI . "home.php");
+                                }
                             exit;
-                            }else{
+                            }
+                            else{
                               $_SESSION['errorstate'] = 'inactive_client';
                               if($_GET['provider'] == 'office365') {
                                 echo "0";
                                 exit;
                               }
                               else {
-                                if(isset($_GET['auth'])) {
-                                  $drop_off_auth =$_GET['auth'];
-                                    header("location:".BASE_URI."dropoff.php?auth=".$drop_off_auth);
-                                }
-                               else{
-                                 header("location:" . BASE_URI . "home.php");
-                               }
-                                exit;
-                              }
-                              if($_GET['provider'] == 'Facebook') {
-                                echo "0";
-                                exit;
-                              }
-                              else {
-                                if(isset($_GET['auth'])) {
-                                  $drop_off_auth =$_GET['auth'];
-                                    header("location:".BASE_URI."dropoff.php?auth=".$drop_off_auth);
-                                }
-                               else{
-                                 header("location:" . BASE_URI . "home.php");
-                               }
+                                header("location:" . BASE_URI . "home.php");
                                 exit;
                               }
                             }
@@ -272,7 +238,7 @@ try {
   				$_SESSION['loggedin'] = $username;
   				$_SESSION['userlevel'] = 0;
 
-  				if ($user_level != '0') {
+  				if ($user_level != 0) {
   					$access_string = 'admin';
   					$_SESSION['access'] = $username;
   				}else{
@@ -280,10 +246,9 @@ try {
   					$_SESSION['access'] = $username;
   				}
 
-  				if ($user_level == '0') {
+  				if ($user_level == 0) {
   					header("location:" . BASE_URI . "inbox.php");
   				}else{
-
   					header("location:" . BASE_URI . "home.php");
   				}
   			}

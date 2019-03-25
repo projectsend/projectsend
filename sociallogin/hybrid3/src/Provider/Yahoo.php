@@ -20,7 +20,8 @@ class Yahoo extends OAuth2
     /**
     * {@inheritdoc}
     */
-    protected $scope = 'sdps-r';
+    //protected $scope = 'sdct-r';
+    protected $scope = 'sdpp-w';
 
     /**
     * {@inheritdoc}
@@ -41,6 +42,8 @@ class Yahoo extends OAuth2
     * {@inheritdoc}
     */
     protected $apiDocumentation = 'https://developer.yahoo.com/oauth2/guide/';
+
+    protected $openidIdentifier = 'https://open.login.yahooapis.com/openid20/www.yahoo.com/xrds';
 
     /**
     * Currently authenticated user
@@ -113,6 +116,7 @@ class Yahoo extends OAuth2
         $userProfile->profileURL  = $data->get('profileUrl');
         $userProfile->language    = $data->get('lang');
         $userProfile->address     = $data->get('location');
+        // $userProfile->email     = $data->get('emails');
 
         if ('F' == $data->get('gender')) {
             $userProfile->gender = 'female';
@@ -122,12 +126,17 @@ class Yahoo extends OAuth2
 
         // I ain't getting no emails on my tests. go figures..
         foreach ($data->filter('emails')->toArray() as $item) {
-            if ($data->get('primary')) {
-                $userProfile->email         = $data->get('handle');
-                $userProfile->emailVerified = $data->get('handle');
-            }
+             if ($item->primary) {
+               $userProfile->email         = $item->handle;
+               $userProfile->emailVerified = $item->handle;
+             }
         }
 
+
+
         return $userProfile;
-    }
+
+
+        }
+
 }

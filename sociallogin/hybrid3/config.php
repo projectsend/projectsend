@@ -6,13 +6,13 @@
  ini_set('display_startup_errors', 1);
  error_reporting(E_ALL);
 require_once('../../sys.includes.php');
-
+$callbac= BASE_URI.'sociallogin/hybrid3/callback.php';
 $config = [
   /**
    * Set the Authorization callback URL to https://path/to/hybridauth/examples/example_06/callback.php.
    * Understandably, you need to replace 'path/to/hybridauth' with the real path to this script.
    */
-  'callback' => 'http://demo4.rndshosting.com/msend/sociallogin/hybrid3/callback.php',
+  'callback' => $callbac,
   'providers' => [
     'Twitter' => [
       'enabled' => true,

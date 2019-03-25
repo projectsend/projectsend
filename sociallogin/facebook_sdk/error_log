@@ -1,0 +1,31 @@
+[23-Mar-2019 13:12:23 UTC] PHP Fatal error:  Uncaught Error: Class 'Facebook\Facebook' not found in /home/demo4rndshosting/public_html/msend/sociallogin/facebook2019/index.php:2
+Stack trace:
+#0 {main}
+  thrown in /home/demo4rndshosting/public_html/msend/sociallogin/facebook2019/index.php on line 2
+[23-Mar-2019 13:12:27 UTC] PHP Fatal error:  Uncaught Error: Class 'Facebook\Facebook' not found in /home/demo4rndshosting/public_html/msend/sociallogin/facebook2019/index.php:2
+Stack trace:
+#0 {main}
+  thrown in /home/demo4rndshosting/public_html/msend/sociallogin/facebook2019/index.php on line 2
+[23-Mar-2019 13:12:32 UTC] PHP Fatal error:  Uncaught Error: Class 'Facebook\Facebook' not found in /home/demo4rndshosting/public_html/msend/sociallogin/facebook2019/index.php:2
+Stack trace:
+#0 {main}
+  thrown in /home/demo4rndshosting/public_html/msend/sociallogin/facebook2019/index.php on line 2
+[25-Mar-2019 05:21:18 UTC] PHP Fatal error:  Uncaught Error: Class 'Facebook\Facebook' not found in /home/demo4rndshosting/public_html/msend/sociallogin/facebook2019/login.php:3
+Stack trace:
+#0 {main}
+  thrown in /home/demo4rndshosting/public_html/msend/sociallogin/facebook2019/login.php on line 3
+[25-Mar-2019 05:21:22 UTC] PHP Fatal error:  Uncaught Error: Class 'Facebook\Facebook' not found in /home/demo4rndshosting/public_html/msend/sociallogin/facebook2019/login.php:3
+Stack trace:
+#0 {main}
+  thrown in /home/demo4rndshosting/public_html/msend/sociallogin/facebook2019/login.php on line 3
+[25-Mar-2019 05:21:54 UTC] PHP Fatal error:  Uncaught Error: Class 'Facebook\Facebook' not found in /home/demo4rndshosting/public_html/msend/sociallogin/facebook2019/login.php:3
+Stack trace:
+#0 {main}
+  thrown in /home/demo4rndshosting/public_html/msend/sociallogin/facebook2019/login.php on line 3
+[25-Mar-2019 05:44:28 UTC] PHP Fatal error:  Uncaught Facebook\Exceptions\FacebookSDKException: Access token metadata contains unexpected app ID. in /home/demo4rndshosting/public_html/msend/sociallogin/facebook2019/Facebook/Authentication/AccessTokenMetadata.php:329
+Stack trace:
+#0 /home/demo4rndshosting/public_html/msend/sociallogin/facebook2019/fb-callback.php(53): Facebook\Authentication\AccessTokenMetadata->validateAppId('{app-id}')
+#1 {main}
+  thrown in /home/demo4rndshosting/public_html/msend/sociallogin/facebook2019/Facebook/Authentication/AccessTokenMetadata.php on line 329
+[25-Mar-2019 06:57:35 UTC] PHP Parse error:  syntax error, unexpected 'echo' (T_ECHO) in /home/demo4rndshosting/public_html/msend/sociallogin/facebook2019/fb-callback.php on line 92
+[25-Mar-2019 06:57:42 UTC] PHP Parse error:  syntax error, unexpected 'echo' (T_ECHO) in /home/demo4rndshosting/public_html/msend/sociallogin/facebook2019/fb-callback.php on line 92

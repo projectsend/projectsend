@@ -20,7 +20,6 @@ class Yahoo extends OAuth2
     /**
     * {@inheritdoc}
     */
-    //protected $scope = 'sdct-r';
     protected $scope = 'sdpp-w';
 
     /**
@@ -116,7 +115,6 @@ class Yahoo extends OAuth2
         $userProfile->profileURL  = $data->get('profileUrl');
         $userProfile->language    = $data->get('lang');
         $userProfile->address     = $data->get('location');
-        // $userProfile->email     = $data->get('emails');
 
         if ('F' == $data->get('gender')) {
             $userProfile->gender = 'female';
@@ -131,9 +129,6 @@ class Yahoo extends OAuth2
                $userProfile->emailVerified = $item->handle;
              }
         }
-
-
-
         return $userProfile;
 
 

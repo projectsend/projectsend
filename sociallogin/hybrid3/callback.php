@@ -31,7 +31,6 @@ try {
      */
     if (isset($_GET['provider'])) {
         $storage->set('provider', $_GET['provider']);
-        echo("Inside callback");
     }
 
     /**
@@ -53,17 +52,13 @@ try {
 
         //Inspect profile's public attributes
         if($provider=='LinkedIn'){
-          // echo("Inside loop");
           $email = $userProfile->email;
           if (!isset($_SESSION['linkedin_user'])){
-            // echo("<br> Inside If");
             $userData = $userProfile;
             $_SESSION['linkedin_user']='';
             $name = $userProfile->displayName;
             $email = $userProfile->email;
           }else {
-            // echo("<br> Inside else");
-            // print_r($_SESSION);
             $email = $_SESSION['linkedin_user']['email'];
             $name = $_SESSION['linkedin_user']['name'];
             unset($_SESSION['linkedin_user']['email']);
@@ -72,10 +67,8 @@ try {
           $user_level=0;
         }
         else if($provider=='Twitter'){
-          // echo("Inside Twitter");
           $email = $userProfile->email;
           if (!isset($_SESSION['twitter_user'])){
-            // echo("Inside If");
             $userData = $userProfile;
             $name = $userProfile->displayName;
             $email = $userProfile->email;
@@ -90,12 +83,8 @@ try {
           $user_level=0;
         }
         else if($provider=='yahoo'){
-                $gotData= $userProfile;
-                // print_r($gotData);
-                // die();
         				$email = $userProfile->email;
         				if (!isset($_SESSION['yahoo_user'])){
-        					// echo "<pre>";print_r($userProfile);exit;
         					$userData = $userProfile;
         					$firstName = $userProfile->firstName;
         					$lastName = $userProfile->lastName;
@@ -125,7 +114,6 @@ try {
                           $count_user = $statement->rowCount();
                           echo("Row Count".$count_user);
                           if ($count_user > 0){
-                            //echo "present";
                             /** If the username was found on the users table */
                             $statement->setFetchMode(PDO::FETCH_ASSOC);
                             while ($row = $statement->fetch()) {
@@ -194,12 +182,10 @@ try {
         				return;
         			}
         else {
-  				//echo
   				$_SESSION['errorstate'] = 'no_account'; //TODO: create new account
   				$new_client = new ClientActions();
   				$username = $new_client->generateUsername($name);
   				$password = generate_password();
-  				//echo "<br>".$username." ".$password."<br>".CLIENTS_AUTO_APPROVE;
   				$clientData = array(
   					'username' => $email,
   					'password' => $password,
@@ -268,8 +254,6 @@ try {
     /**
      * Redirects user to home page (i.e., index.php in our case)
      */
-    // HttpClient\Util::redirect('http://demo4.rndshosting.com/msend/');
-    echo("Success");
 } catch (Exception $e) {
     echo $e->getMessage();
 }

@@ -21,13 +21,6 @@ $config = [
         'secret' => TWITTER_CLIENT_SECRET,
       ],
     ],
-    'Facebook' => [
-      'enabled' => true,
-      'keys' => [
-        'key' => FACEBOOK_CLIENT_ID,
-        'secret' => FACEBOOK_CLIENT_SECRET,
-      ],
-    ],
     'LinkedIn' => [
       'enabled' =>true,
       'keys' => [

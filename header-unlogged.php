@@ -38,7 +38,7 @@ else {
 		header("Location:install/index.php");
 		exit;
 	}
-	
+
 	if(isset($active_nav) != 'dropoff') {
 	$load_scripts = array(
 						'social_login',
@@ -50,19 +50,19 @@ else {
 						'plupload',
 					);
 	}
-	
+
 	/**
 	 * This is defined on the public download page.
 	 * So even logged in users can access it.
 	 */
-	if (!isset($dont_redirect_if_logged)) { 
+	if (!isset($dont_redirect_if_logged)) {
 		if(isset($active_nav) != 'dropoff') {
 		/** If logged as a system user, go directly to the back-end homepage */
 		if (in_session_or_cookies($allowed_levels)) {
 			header("Location:".BASE_URI."home.php");
 		}
 		}
-	
+
 		/** If client is logged in, redirect to the files list. */
 		//check_for_client();
 	}
@@ -84,7 +84,7 @@ else {
 	<script src="<?php echo BASE_URI; ?>includes/js/jquery.1.12.4.min.js"></script>
 
     	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    
+
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<!--[if lt IE 9]>
@@ -107,10 +107,7 @@ else {
       tenant: 'common', //COMMON OR YOUR TENANT ID
 
       clientId: '<?php echo WINDOWS_CLIENT_ID; ?>', //This is your client ID
-	  // msend a301616f-53ad-45da-b63f-9ba907ccc66f
-	  //pw local aohLgNis3YpAdFWTLS2WgzF
-      //redirectUri: 'http://localhost:3333/ms/oauth.php', //This is your redirect URI
-	  redirectUri: <?php echo '\''.BASE_URI.'\''; ?>,
+	  	redirectUri: <?php echo '\''.BASE_URI.'\''; ?>,
 
       callback: userSignedIn,
       popUp: true
@@ -133,32 +130,19 @@ else {
 
   function showWelcomeMessage() {
       var user = ADAL.getCachedUser();
-	  //console.log(user.profile);
-      //var divWelcome = document.getElementById('WelcomeMessage');
-      //divWelcome.innerHTML = "Welcome " + user.profile.name + "Email : " + user.userName;
-	  
+
 	  var data = {provider:"office365", user:user.profile.name, useremail:user.userName};
-	  //console.log(data);
-	  
-	  $.ajax({ url: '<?php echo BASE_URI; ?>sociallogin/login-with.php',
+
+	  $.ajax({ url: '<?php echo BASE_URI; ?>sociallogin/hybrid3/callback.php',
          data: data,
          type: 'get',
          success: function(output) {
-					//alert(output);
-                 //    console.log('vvvvvv '+output);
-					  if(output == 0) { 
-					  //console.log('showw '+output);
-						  //$("#office365").show();
-					  }
-					  else if (output == 1) {
-						  location.reload();
-					  }
-					  location.reload();
-                  }
+					  											location.reload();
+                  							}
 });
   }
 
-</script> 
+</script>
 <!-- script for office 365 -->
 </head>
 
@@ -168,18 +152,7 @@ else {
 			<div id="logo-group">
 				<span id="logo"> <a class="title-link" href="<?php echo BASE_URI; ?>" ?><?php echo BRAND_NAME; ?></a></span>
 			</div>
-<?php
- /*?>								if (CLIENTS_CAN_REGISTER == '1') {
-							?>
-									<span id="extr-page-header-space"> <span><?php _e("Don't have an account yet?",'cftp_admin'); ?></span> <a class="btn btn-danger cc-signup" href="<?php echo BASE_URI; ?>register.php"><?php _e('Register as a new client','cftp_admin'); ?></a></span>
-							<?php
-								} else {
-							?>
-									<span><?php _e("This server does not allow self registrations.",'cftp_admin'); ?></span>
-									<span><?php _e("If you need an account, please contact a server administrator.",'cftp_admin'); ?></span>
-							<?php
-								}
-							?><?php */?>
+
 
 </header>
 

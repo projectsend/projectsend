@@ -75,7 +75,7 @@ try {
             $_SESSION['twitter_user']['email']= $email;
             $_SESSION['twitter_user']['name']= $name;
           }else {
-            echo("Inside Else");
+            // echo("Inside Else");
             $email = $_SESSION['twitter_user']['email'];
             $name = $_SESSION['twitter_user']['name'];
             unset($_SESSION['twitter_user']);
@@ -105,14 +105,14 @@ try {
         $adapter->disconnect();
 
         $storage->set('provider', null);
-        echo("<br> Before Session");
 
         global $dbh;
         if(!empty($email)){
+                          // echo("Mail not empty");
                     			$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE email= :email");
                     			$statement->execute(array(':email' => $email));
                           $count_user = $statement->rowCount();
-                          echo("Row Count".$count_user);
+                          // echo("Row Count".$count_user);
                           if ($count_user > 0){
                             /** If the username was found on the users table */
                             $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -175,69 +175,75 @@ try {
                             }
 
                           }
-        }else
-            if(CLIENTS_CAN_REGISTER == '0') {
-        				$_SESSION['errorstate'] = 'no_self_registration';
-        				header("location:" . BASE_URI);
-        				return;
-        			}
-        else {
-  				$_SESSION['errorstate'] = 'no_account'; //TODO: create new account
-  				$new_client = new ClientActions();
-  				$username = $new_client->generateUsername($name);
-  				$password = generate_password();
-  				$clientData = array(
-  					'username' => $email,
-  					'password' => $password,
-  					'name' => $name,
-  					'email' => $email,
-  					'address' => '',
-  					'phone' => '',
-  					'contact' => '',
-  					'notify' => 0,
-  					'type' => 'new_client',
-  					'active' => 0,
-  					);
-  				$new_response = $new_client->create_client($clientData);
+                          else
+                              if(CLIENTS_CAN_REGISTER == '0') {
 
-  				if (CLIENTS_AUTO_GROUP != '0') {
-  					$admin_name = 'SELFREGISTERED';
-  					$client_id = $new_response['new_id'];
-  					$group_id = CLIENTS_AUTO_GROUP;
+                          				$_SESSION['errorstate'] = 'no_self_registration';
+                          				header("location:" . BASE_URI);
+                          				return;
+                          			}
+                                else {
 
-  					$add_to_group = $dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
-  					." VALUES (:admin, :id, :group)");
-  					$add_to_group->bindParam(':admin', $admin_name);
-  					$add_to_group->bindParam(':id', $client_id, PDO::PARAM_INT);
-  					$add_to_group->bindParam(':group', $group_id);
-  					$add_to_group->execute();
-  				}
-  				$notify_admin = new PSend_Email();
-  				$email_arguments = array(
-  					'type' => 'new_client_self',
-  					'address' => ADMIN_EMAIL_ADDRESS,
-  					'username' => $add_client_data_user,
-  					'name' => $add_client_data_name
-  					);
-  				$notify_admin_status = $notify_admin->psend_send_email($email_arguments);
-  				/** Set SESSION values */
-  				$_SESSION['loggedin'] = $username;
-  				$_SESSION['userlevel'] = 0;
+                                  $_SESSION['errorstate'] = 'no_account'; //TODO: create new account
+                                  $new_client = new ClientActions();
+                                  $username = $new_client->generateUsername($name);
+                                  $password = generate_password();
+                                  $clientData = array(
+                                    'username' => $email,
+                                    'password' => $password,
+                                    'name' => $name,
+                                    'email' => $email,
+                                    'address' => '',
+                                    'phone' => '',
+                                    'contact' => '',
+                                    'notify' => 0,
+                                    'type' => 'new_client',
+                                    'active' => 0,
+                                    );
+                                  $new_response = $new_client->create_client($clientData);
 
-  				if ($user_level != 0) {
-  					$access_string = 'admin';
-  					$_SESSION['access'] = $username;
-  				}else{
-  					$access_string = $username;
-  					$_SESSION['access'] = $username;
-  				}
+                                  if (CLIENTS_AUTO_GROUP != '0') {
+                                    $admin_name = 'SELFREGISTERED';
+                                    $client_id = $new_response['new_id'];
+                                    $group_id = CLIENTS_AUTO_GROUP;
 
-  				if ($user_level == 0) {
-  					header("location:" . BASE_URI . "inbox.php");
-  				}else{
-  					header("location:" . BASE_URI . "home.php");
-  				}
-  			}
+                                    $add_to_group = $dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
+                                    ." VALUES (:admin, :id, :group)");
+                                    $add_to_group->bindParam(':admin', $admin_name);
+                                    $add_to_group->bindParam(':id', $client_id, PDO::PARAM_INT);
+                                    $add_to_group->bindParam(':group', $group_id);
+                                    $add_to_group->execute();
+                                  }
+                                  $notify_admin = new PSend_Email();
+                                  $email_arguments = array(
+                                    'type' => 'new_client_self',
+                                    'address' => ADMIN_EMAIL_ADDRESS,
+                                    'username' => $add_client_data_user,
+                                    'name' => $add_client_data_name
+                                    );
+                                  $notify_admin_status = $notify_admin->psend_send_email($email_arguments);
+                                  /** Set SESSION values */
+                                  $_SESSION['loggedin'] = $username;
+                                  $_SESSION['userlevel'] = 0;
+
+                                  if ($user_level != 0) {
+                                    $access_string = 'admin';
+                                    $_SESSION['access'] = $username;
+                                  }else{
+                                    $access_string = $username;
+                                    $_SESSION['access'] = $username;
+                                  }
+
+                                  if ($user_level == 0) {
+                                    header("location:" . BASE_URI . "inbox.php");
+                                  }else{
+                                    header("location:" . BASE_URI . "home.php");
+                                  }
+                                }
+        }
+        else{
+          echo("No email address found related to your Account");
+        }
 
     }
 

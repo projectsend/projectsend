@@ -1,24 +1,2 @@
-plupload.addI18n({
-'Select files' : 'Wybierz pliki:',
-'Add files to the upload queue and click the start button.' : 'Dodaj pliki i kliknij \'Rozpocznij transfer\'.',
-'Filename' : 'Nazwa pliku',
-'Status' : 'Status',
-'Size' : 'Rozmiar',
-'Add files' : 'Dodaj pliki',
-'Stop current upload' : 'Przerwij aktualny transfer',
-'Start uploading queue' : 'Rozpocznij wysyłanie',
-'Uploaded %d/%d files': 'Wysłano %d/%d plików',
-'N/A' : 'Nie dostępne',
-'Drag files here.' : 'Przeciągnij tu pliki',
-'File extension error.': 'Nieobsługiwany format pliku.',
-'File size error.': 'Plik jest zbyt duży.',
-'Init error.': 'Błąd inicjalizacji.',
-'HTTP Error.': 'Błąd HTTP.',
-'Security error.': 'Błąd bezpieczeństwa.',
-'Generic error.': 'Błąd ogólny.',
-'IO error.': 'Błąd IO.',
-'Stop Upload': 'Przerwij transfer.',
-'Add Files': 'Dodaj pliki',
-'Start upload': 'Rozpocznij transfer.',
-'%d files queued': '%d plików w kolejce.'
-});
+// Polish (pl)
+plupload.addI18n({"%d files queued":"%d plików w kolejce.","%s already present in the queue.":"%s już występuje w kolejce.","%s specified, but cannot be found.":"%s określony ale nie można znaleźć.","Add Files":"Dodaj pliki","Add files to the upload queue and click the start button.":"Dodaj pliki i kliknij 'Rozpocznij transfer'.","b":"b","Close":"Zamknij","Drag files here.":"Przeciągnij tu pliki","Duplicate file error.":"Błąd: duplikacja pliku.","Error: File too large:":"Błąd: Plik za duży:","Error: Invalid file extension:":"Błąd: Nieprawidłowe rozszerzenie pliku:","File count error.":"Błąd liczenia pliku.","File extension error.":"Nie obsługiwany format pliku.","File size error.":"Plik jest zbyt duży.","File: %s":"Plik: %s","File: %s, size: %d, max file size: %d":"Plik: %s, rozmiar: %d, maksymalny rozmiar pliku: %d","Filename":"Nazwa pliku","gb":"gb","HTTP Error.":"Błąd HTTP.","Image format either wrong or not supported.":"Format zdjęcia jest zły lub nieobsługiwany","Init error.":"Błąd inicjalizacji.","kb":"kb","List":"Lista","mb":"mb","N/A":"Nie dostępne","Resoultion out of boundaries! <b>%s</b> runtime supports images only up to %wx%hpx.":"Za duża rozdzielczość! <b>%s</b> maksymalna rozdzielczość to: %wx%hpx.","Runtime ran out of available memory.":"Wyczerpano pamięć RAM.","Select files":"Wybierz pliki:","Size":"Rozmiar","Start Upload":"Wyślij","Status":"Status","Stop Upload":"Przerwij transfer.","tb":"tb","Thumbnails":"Miniatury","Upload element accepts only %d file(s) at a time. Extra files were stripped.":"Można jednocześnie dodać %d plików. Dodatkowe pliki zostały usunięte.","Upload URL might be wrong or doesn't exist.":"Adres URL może być nieprawidłowy lub może nie istnieć","Uploaded %d/%d files":"Wysłano %d/%d plików","You must specify either browse_button or drop_element.":"Musisz określić browse_button albo drop_element."});

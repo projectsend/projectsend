@@ -45,10 +45,10 @@ $load_js_files[]	= BASE_URI . 'assets/wrap/js/speech/voicecommand.min.js';
 $load_js_files[]	= BASE_URI . 'assets/wrap/js/smart-chat-ui/smart.chat.manager.min.js';
 $load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/flot/jquery.flot.cust.min.js';
 $load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/flot/jquery.flot.resize.min.js';
-$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/flot/jquery.flot.time.min.js';	
-$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/flot/jquery.flot.tooltip.min.js';		
-$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/vectormap/jquery-jvectormap-1.2.2.min.js';	
-$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/moment/moment.min.js';	
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/flot/jquery.flot.time.min.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/flot/jquery.flot.tooltip.min.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/vectormap/jquery-jvectormap-1.2.2.min.js';
+$load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/moment/moment.min.js';
 $load_js_files[]	= BASE_URI . 'assets/wrap/js/plugin/fullcalendar/jquery.fullcalendar.min.js';
 $load_js_files[]	= 'https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js';
 $load_js_files[]	= BASE_URI . 'includes/js/jquery.psendmodal.js';
@@ -96,10 +96,10 @@ if ( !empty( $load_scripts ) ) {
 				$load_js_files[]		= BASE_URI . 'includes/js/chosen/chosen.jquery.min.js';
 				break;
 			case 'plupload':
-				$load_css_files[]		= BASE_URI . 'includes/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css';
-				$load_js_files[]		= BASE_URI . 'includes/js/browserplus-min.js';
-				$load_js_files[]		= BASE_URI . 'includes/plupload/js/plupload.full.js';
-				$load_js_files[]		= BASE_URI . 'includes/plupload/js/jquery.plupload.queue/jquery.plupload.queue.js';
+			$load_css_files[]		= BASE_URI . 'includes/pluploadOld/js/jquery.plupload.queue/css/jquery.plupload.queue.css';
+			// $load_js_files[]		= BASE_URI . 'includes/plupload/js/plupload.dev.js';
+			$load_js_files[]		= BASE_URI . 'includes/plupload/js/plupload.full.min.js';
+			$load_js_files[]		= BASE_URI . 'includes/plupload/js/jquery.plupload.queue/jquery.plupload.queue.min.js';
 
 				if ( LOADED_LANG != 'en' ) {
 					$plupload_lang_file = 'includes/plupload/js/i18n/'.LOADED_LANG.'.js';

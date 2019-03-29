@@ -40,14 +40,14 @@ $load_scripts	= array(
 
 						'chosen',
 
-					); 
+					);
 
 
 
 $allowed_levels = array(9,8,7,0);
 
 require_once('sys.includes.php');
-//require_once('future-send.php'); 
+//require_once('future-send.php');
 
 
 $active_nav = 'files';
@@ -137,7 +137,7 @@ if(isset($upload_failed_hidden_post) && count($upload_failed_hidden_post) > 0) {
 
 	foreach ($upload_failed_hidden_post as $failed) {
 
-		$delete_key = array_search($failed, $uploaded_files);					
+		$delete_key = array_search($failed, $uploaded_files);
 
 		unset($uploaded_files[$delete_key]);
 
@@ -177,7 +177,7 @@ $statement->execute();
 
 $statement->setFetchMode(PDO::FETCH_ASSOC);
 
-while( $row = $statement->fetch() ) { 
+while( $row = $statement->fetch() ) {
 
 	$users[$row["id"]] = $row["name"];
 
@@ -283,14 +283,14 @@ while( $row = $statement->fetch() ) {
 
 		}
 
-		
+
 
 		$n = 0;
 
 
 
 		foreach ($_POST['file'] as $file) {
-			
+
 
 			$n++;
 
@@ -312,7 +312,7 @@ while( $row = $statement->fetch() ) {
 
 				}*/
 
-				
+
 
 				$this_upload = new PSend_Upload_File();
 
@@ -356,7 +356,7 @@ while( $row = $statement->fetch() ) {
 
 					if (!empty($new_filename)) {
 
-						$delete_key = array_search($file['original'], $uploaded_files);					
+						$delete_key = array_search($file['original'], $uploaded_files);
 
 						unset($uploaded_files[$delete_key]);
 
@@ -405,7 +405,7 @@ while( $row = $statement->fetch() ) {
 
 						}
 
-						
+
 
 						if (!empty($file['hidden'])) {
 
@@ -430,13 +430,13 @@ while( $row = $statement->fetch() ) {
 							$add_arguments['future_send_date'] = $file['future_send_date'];
 
 						}
-						
-						
+
+
 
 						if (!empty($file['assignments']) || !empty($_POST['new_client']) ) {
 
-									//echo "test";	exit();					 
-									
+									//echo "test";	exit();
+
 //------------------------------------------------------------
 
 
@@ -464,7 +464,7 @@ while( $row = $statement->fetch() ) {
 
 						//echo "SELECT id FROM `".TABLE_USERS."` WHERE `email` = '".$nuser."'";exit();
 
-						$euser_query->execute(); 
+						$euser_query->execute();
 
 						$euser = $euser_query->fetch();
 
@@ -474,13 +474,13 @@ while( $row = $statement->fetch() ) {
 
 							//echo "Here";exit();
 
-							$npw = randomPassword(); 
+							$npw = randomPassword();
 
 							$cc_enpass = $hasher->HashPassword($npw);
 
 							$nuser_query = $dbh->prepare("INSERT INTO `".TABLE_USERS."` (`user`, `password`, `name`, `email`, `level`, `timestamp`, `address`, `phone`, `notify`, `contact`, `created_by`, `active`) VALUES ('".$nuser."', '".$cc_enpass."', '', '".$nuser."', '0', CURRENT_TIMESTAMP, NULL, NULL, '1', NULL, NULL, '1')");
 
-							$nuser_query->execute(); 
+							$nuser_query->execute();
 
 							$nuser_id = $dbh->lastInsertId();
 
@@ -494,14 +494,14 @@ while( $row = $statement->fetch() ) {
 										'username'	=> $nuser,
 										'password'	=> $npw
 									);
-									
+
 							$notify_send = $e_notify->psend_send_email($e_arg);
-			
+
 
 
 }
 
-               
+
 
 						array_push($full_list,'c'.$nuser_id);
 
@@ -510,8 +510,8 @@ while( $row = $statement->fetch() ) {
 				}
 
 				$full_assi_user = $full_list;
-				
-				
+
+
 
 //------------------------------------------------------------
 
@@ -531,7 +531,7 @@ while( $row = $statement->fetch() ) {
 
 						}
 
-						
+
 
 						/** Uploader is a client */
 
@@ -569,7 +569,7 @@ while( $row = $statement->fetch() ) {
 
 						}
 
-						
+
 
 						if (!in_array($new_filename,$urls_db_files)) {
 
@@ -785,7 +785,7 @@ while( $row = $statement->fetch() ) {
 							}
 
 						?>
-      <td><a href="edit-to-send.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>" class="btn-primary btn btn-sm">
+      <td><a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>" class="btn-primary btn btn-sm">
         <?php _e('Edit file','cftp_admin'); ?>
 			</td>
     </tr>
@@ -860,7 +860,7 @@ while( $row = $statement->fetch() ) {
 
 
 
-					$(this).find('input[name$="[name]"]').each(function() {	
+					$(this).find('input[name$="[name]"]').each(function() {
 
 						is_complete($(this)[0],'<?php echo $validation_no_title; ?>');
 
@@ -879,16 +879,16 @@ while( $row = $statement->fetch() ) {
 			});
 
 		</script>
-		
-		
+
+
 		<form action="upload-process-form.php" name="save_files" id="save_files" method="post">
 				<input type="hidden" name="request_type" value="0">
 				<select multiple="multiple" name="new_client[]" class="form-control new_client" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>" style="display:none">
-  
+
 			<?php
 
-				foreach($uploaded_files as $add_uploaded_field) 
-				
+				foreach($uploaded_files as $add_uploaded_field)
+
 				{
 
 					echo '<input type="hidden" name="finished_files[]" value="'.$add_uploaded_field.'" />';
@@ -896,10 +896,10 @@ while( $row = $statement->fetch() ) {
 				}
 
 			?>
-			
-			
+
+
     <div class="container-fluid">
-    <?php 
+    <?php
 
 					$i = 1;
 
@@ -968,8 +968,8 @@ while( $row = $statement->fetch() ) {
 				</div>
 			</div>
 		</div>
-		
-		
+
+
 		<div class="row edit_files">
 			<div class="col-sm-12">
 				<div class="row edit_files_blocks">
@@ -982,14 +982,14 @@ while( $row = $statement->fetch() ) {
 									</h3>
 									<input type="hidden" name="file[<?php echo $i; ?>][original]" value="<?php echo html_output($file_original); ?>" />
 									<input type="hidden" name="file[<?php echo $i; ?>][file]" value="<?php echo html_output($file); ?>" />
-									
+
 				<div class="form-group">
 							<label>
 							<?php _e('Title', 'cftp_admin');?>
 							</label>
 							<input type="text" name="file[<?php echo $i; ?>][name]" value="<?php echo html_output($file_title); ?>" class="form-control file_title" placeholder="<?php _e('Enter here the required file title.', 'cftp_admin');?>" />
 				</div>
-				
+
 				<div class="form-group">
 					<label>
 					<?php _e('Description', 'cftp_admin');?>
@@ -1009,8 +1009,8 @@ while( $row = $statement->fetch() ) {
 													if ($global_level != 0 || 1 == 1) {
 
 												?>
-												
-												
+
+
 			<div class="col-sm-6 col-xl-3 column_even column">
 				<div class="file_data">
 					<?php
@@ -1027,18 +1027,18 @@ while( $row = $statement->fetch() ) {
 					<h3>
 					<?php _e('Expiration date', 'cftp_admin');?>
 					</h3>
-					
-					
+
+
 	<div class="form-group">
 		<label for="file[<?php echo $i; ?>][expires_date]">
 			<?php _e('Select a date', 'cftp_admin');?>
 		</label>
-						<?php 
+						<?php
 						if($row['expiry_set']>0)
-						{  
+						{
 							$expiry_date = $expiry_date;
 						}
-						else 
+						else
 						{
 
 							if(isset($expiry_date) && empty($expiry_date) && $expiry_date=='')
@@ -1059,23 +1059,23 @@ while( $row = $statement->fetch() ) {
 			<input  type="text" class="date-field exPdate form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y',strtotime("+14 days")); ?>" />
 
 				<div class="input-group-addon">
-				
+
 					<i class="glyphicon glyphicon-time"></i>
-					
+
 				</div>
-				
+
 		</div>
-		
+
     </div>
-	
+
     <div class="checkbox">
 		<label for="exp_checkbox_<?php echo $i; ?>">
-							<?php 
+							<?php
 							if($row['expiry_set']>0)
-							{  
+							{
 								$checked = 'checked';
 							}
-							else 
+							else
 							{
 								$checked = '';
 								if(EXPIRY_MAX_DAYS>0)
@@ -1092,14 +1092,14 @@ while( $row = $statement->fetch() ) {
 			<?php _e('File expires', 'cftp_admin');?>
 		</label>
     </div>
-	
+
     <div class="checkbox">
 		<label for="notify_checkbox">
 			<input type="checkbox" id="notify_checkbox" name="file[<?php echo $i; ?>][notify]" value="1" <?php if ($row['notify']) { ?>checked="checked"<?php } ?> />
 				<?php _e('Don\'t Notify Me', 'cftp_admin');?>
 		</label>
     </div>
-	
+
     <div class="divider">
     </div>
 			<h3>
@@ -1111,15 +1111,15 @@ while( $row = $statement->fetch() ) {
 			<?php _e('Allow public downloading of this file.', 'cftp_admin');?>
 		</label>
     </div>
-	
+
     <div class="form-group">
-	
-				<?php 
+
+				<?php
 				if($row['number_downloads']>0)
-				{  
+				{
 					$number_downloads = $row['number_downloads'];
 				}
-				else 
+				else
 				{
 					$number_downloads='';
 					if(DOWNLOAD_MAX_TRIES>0)
@@ -1132,22 +1132,22 @@ while( $row = $statement->fetch() ) {
 					}
 				}
 				?>
-				
-				
+
+
 			<label>
 				<?php _e('Number of Downloads Allowed', 'cftp_admin');?>
 			</label>
-			
-			
+
+
 			<input type="text" name="file[<?php echo $i; ?>][number_downloads]" value="<?php echo $number_downloads; ?>" size="1" class="form-control1 file_title" placeholder="<?php _e('Enter number of downloads.', 'cftp_admin');?>" />
-			
-			
+
+
     </div>
 		</div>
 			</div>
-			
+
 	<div class="col-sm-6 col-xl-3 assigns column">
-	
+
 		<div class="file_data" id="rn_assign" >
 				<?php
 
@@ -1163,7 +1163,7 @@ while( $row = $statement->fetch() ) {
 				<h3>
 					<?php _e('Send To', 'cftp_admin');?>
 				</h3>
-				
+
 				<label>
 					<?php _e('Assign this file to', 'cftp_admin');?>
 					:
@@ -1173,8 +1173,8 @@ while( $row = $statement->fetch() ) {
 
     <select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]" class="form-control chosen-select assignto chosen-select_pub" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
     <optgroup label="<?php _e('Clients', 'cftp_admin');?>">
-	
-	
+
+
     <?php
 
 	/**
@@ -1187,10 +1187,10 @@ while( $row = $statement->fetch() ) {
 
 		foreach($clients as $client => $client_name) {
 
-																			
+
 	?>
-	
-	
+
+
     <option value="<?php echo html_output('c'.$client); ?>">
 	<?php echo html_output($client_name); ?>
 	</option>
@@ -1200,8 +1200,8 @@ while( $row = $statement->fetch() ) {
 
 	?>
     </optgroup>
-	
-	
+
+
     <optgroup label="<?php _e('Groups', 'cftp_admin');?>">
     <?php
 
@@ -1224,8 +1224,8 @@ while( $row = $statement->fetch() ) {
 	?>
     </optgroup>
   </select>
-  
-  
+
+
 					<div class="list_mass_members"> <a href="#" class="btn btn-xs btn-primary add-all" data-type="assigns">
 						<?php _e('Add all','cftp_admin'); ?>
 						</a> <a href="#" class="btn btn-xs btn-primary remove-all" data-type="assigns">
@@ -1235,8 +1235,8 @@ while( $row = $statement->fetch() ) {
 						</a>
 					</div>
 					<div class="divider"></div>
-					
-									
+
+
 				  <div class="checkbox">
 					<label for="hid_checkbox_<?php echo $i; ?>">
 					  <input type="checkbox" id="hid_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][hidden]" value="1" />
@@ -1270,24 +1270,24 @@ while( $row = $statement->fetch() ) {
 
 			?>
       </select>
-	  
-	  
-	  
-	  
+
+
+
+
 			<div class="list_mass_members"> <a href="#" class="btn btn-xs btn-primary add-all" data-type="categories">
 				<?php _e('Add all','cftp_admin'); ?>
 				</a> <a href="#" class="btn btn-xs btn-primary remove-all" data-type="categories">
 				<?php _e('Remove all','cftp_admin'); ?>
 				</a> <a href="#" class="btn btn-xs btn-danger copy-all" data-type="categories">
 				<?php _e('Copy selections to other files','cftp_admin'); ?>
-				</a> 
+				</a>
 			</div>
 		</div>
-		
+
     <h3>
       <?php _e('Future Send Date', 'cftp_admin');?>
     </h3>
-	
+
 				<div class="form-group">
 				  <label for="file[<?php echo $i; ?>][future_send_date]">
 					<?php _e('Select a date', 'cftp_admin');?>
@@ -1325,9 +1325,9 @@ while( $row = $statement->fetch() ) {
 
 				?>
   </div>
-  
+
   <!-- container -->
-  
+
 			<?php
 
 				/**
@@ -1343,12 +1343,12 @@ while( $row = $statement->fetch() ) {
 				$upload_failed_hidden = implode(',',$upload_failed);
 
 			?>
-			
-			
+
+
 				<input type="hidden" name="upload_failed" value="<?php echo $upload_failed_hidden; ?>" />
-				
-				
-				
+
+
+
 			  <div class="after_form_buttons">
 				<button type="submit" name="submit" class="btn btn-wide btn-primary" id="upload-continue">
 				<?php _e('Continue','cftp_admin'); ?>
@@ -1373,7 +1373,7 @@ while( $row = $statement->fetch() ) {
 
 	}
 
-		
+
 
 	/**
 
@@ -1387,8 +1387,8 @@ while( $row = $statement->fetch() ) {
 						<h3>
 						  <?php _e('Files not uploaded','cftp_admin'); ?>
 						</h3>
-						
-						
+
+
 <table id="failed_files_tbl" class="footable" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
 
 
@@ -1397,8 +1397,8 @@ while( $row = $statement->fetch() ) {
 						  <th data-sort-initial="true"><?php _e('File Name','cftp_admin'); ?></th>
 						</tr>
 					  </thead>
-					  
-					  
+
+
 					  <tbody>
 								<?php
 
@@ -1447,7 +1447,7 @@ while( $row = $statement->fetch() ) {
 
 				$('.addto').chosen({
 
-				
+
 
 				width			: "98%",
 
@@ -1465,9 +1465,9 @@ while( $row = $statement->fetch() ) {
 
 			$(document).on('click', ".assigns .no-results", function() {
 
-    			var cc_email = $('span',this).text(); 
+    			var cc_email = $('span',this).text();
 
-				$(".new_client").append('<option val="'+cc_email+'" selected="selected">'+cc_email+'</option>'); 
+				$(".new_client").append('<option val="'+cc_email+'" selected="selected">'+cc_email+'</option>');
 
 				$(this).parent().parent().siblings('.chosen-choices').prepend('<li class="search-choice"><span>'+cc_email+'</span><a style="text-decoration:none" class="cc-choice-close">&nbsp;&nbsp;x</a></li>');
 
@@ -1511,7 +1511,7 @@ while( $row = $statement->fetch() ) {
 
 				});
 
-		
+
 
 				$('.remove-all').click(function(){
 
@@ -1541,7 +1541,7 @@ while( $row = $statement->fetch() ) {
 
 						var selector = $(this).closest('.' + type).find('select');
 
-	
+
 
 						var selected = new Array();
 
@@ -1551,7 +1551,7 @@ while( $row = $statement->fetch() ) {
 
 						});
 
-	
+
 
 						$('.' + type + ' .chosen-select').each(function() {
 
@@ -1567,7 +1567,7 @@ while( $row = $statement->fetch() ) {
 
 								//	$(this).attr('selected', 'selected');
 									$(this).prop('selected', true);
-									
+
 
 								}
 
@@ -1594,7 +1594,7 @@ while( $row = $statement->fetch() ) {
 
 
 
-		$('.public_link').popover({ 
+		$('.public_link').popover({
 
 			html : true,
 
@@ -1646,17 +1646,17 @@ while( $row = $statement->fetch() ) {
 
 $(document).ready(function() {
      $("[type='text']").attr('id',function(i){return 'chk' + i;});
-	 
+
 });
 
 $(document).ready(function() {
      $(".chosen-choices").attr('id',function(i){return 'chosen-' + i;});
-	 
+
 });
 
 $(document).ready(function() {
      $(".chosen-select").attr('id',function(i){return 'chslt-' + i;});
-	 
+
 });
 $(document).ready(function() {
 	if($('.file_number').length == 1)
@@ -1666,16 +1666,16 @@ $(document).ready(function() {
 
 });
 
-</script> 
+</script>
 
 <script language="javascript">
 $('[id^=pub_checkbox_]').change(function(e) {
 var chslt = $(this).closest('.edit_files').find('.chosen-select_pub');
     chslt.prop('disabled', true).trigger("chosen:updated");
 if ($(this).is(":checked")){
-	
+
 	chslt.prop('disabled', true).val('').trigger('chosen:updated');
-	
+
 }
 else if (!$(this).is(":checked")) {
 chslt.prop('disabled', false).trigger("chosen:updated");

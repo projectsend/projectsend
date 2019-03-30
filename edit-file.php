@@ -516,7 +516,7 @@ $message = '
 								 */
 								if (!empty($file['hideall'])) {
 									$this_file = new FilesActions();
-									$hide_file = $this_file->hide_for_everyone($this_file_id);
+									$hide_file = $this_file->manage_hide($this_file_id);
 								}
 								
 								

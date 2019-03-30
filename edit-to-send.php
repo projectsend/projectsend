@@ -1527,6 +1527,7 @@ $message = '
 
                           </div>
 
+                          <?php if ($get_prev_id != 3) { ?>
                           <div class="checkbox">
 
                             <label for="hid_existing_checkbox">
@@ -1538,6 +1539,7 @@ $message = '
                             </label>
 
                           </div>
+                        <?php } ?>
 
                         </div>
 

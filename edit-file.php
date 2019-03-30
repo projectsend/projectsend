@@ -152,6 +152,7 @@ function randomPassword() {
 			while( $row = $sql->fetch() ) {
 				$edit_file_info['url'] = $row['url'];
 				$edit_file_info['id'] = $row['id'];
+				$edit_file_info['expiry_date'] = $row['expiry_date'];
 
 				$edit_file_allowed = array(7,0);
 				if (in_session_or_cookies($edit_file_allowed)) {
@@ -654,9 +655,13 @@ $message = '
                               <?php _e('Select a date', 'cftp_admin');?>
                             </label>
                             <div class="input-group date-container">
-								<?php 
-								$date = date('d-m-Y'); 
-								if($row['expires']==1) {
+								<?php
+                $date = date('d-m-Y');
+                if(($get_prev_id == 6) || ($get_prev_id == 2)) {
+                    $expiry_date = date('d-m-Y', strtotime($edit_file_info['expiry_date'])) ;
+                  }
+
+								 else if($row['expires']==1) {
 									$expiry_date = date('d-m-Y', strtotime($date. ' + 14 days'));
 								}
 								else {
@@ -742,21 +747,7 @@ $message = '
                             <?php _e('Send To', 'cftp_admin');?>
                           </h3>
                           <select multiple="multiple" name="new_client[]" class="form-control new_client" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>" style="display:none">
-                          </select>
-                          <?php   if($get_prev_id==3){ ?>
-                              <script type="text/javascript">
-                                //  <?php
-                                // foreach($cliEmail as $cli=>$c_email) {
-                                //   if (in_array($cli,$file_on_clients)) {
-                                //      ?>
-                                //   $(".new_client").append('<option val="<?php echo $c_email; ?>" selected="selected" ><?php echo $c_email; ?></option>');
-                                //
-                                // <?php
-                                // }
-                                // }
-                                // ?>
-                              </script>
-                          <?php  } ?>
+</select>
                           <label>
                             <?php _e('Assign this file to', 'cftp_admin');?>
                             :</label>
@@ -797,15 +788,17 @@ $message = '
                           <div class="checkbox">
                             <label for="hid_checkbox">
                               <input type="checkbox" id="hid_checkbox" name="file[<?php echo $i; ?>][hidden]" value="1" />
-                              <?php _e('Mark as hidden (will not send notifications) for new assigned clients and groups.', 'cftp_admin');?>
+                              <?php _e('Upload hidden (will not send notifications)', 'cftp_admin');?>
                             </label>
                           </div>
+                          <?php if ($get_prev_id != 4) { ?>
                           <div class="checkbox">
                             <label for="hid_existing_checkbox">
                               <input type="checkbox" id="hid_existing_checkbox" name="file[<?php echo $i; ?>][hideall]" value="1" />
                               <?php _e('Hide from every already assigned clients and groups.', 'cftp_admin');?>
                             </label>
                           </div>
+                        <?php } ?>
                         </div>
                       </div>
                       <div class="col-sm-6 col-xl-3 categories column">

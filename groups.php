@@ -41,9 +41,17 @@ if(!empty($_GET['member'])) {
 		$sql_is_member->execute();
 
 		if ( $sql_is_member->rowCount() > 0) {
+			$memStatus = array();
 			$sql_is_member->setFetchMode(PDO::FETCH_ASSOC);
 			while ( $row_groups = $sql_is_member->fetch() ) {
+
 				$groups_ids[] = $row_groups["group_id"];
+				$gpId=$row_groups["group_id"];
+				//Creating an array with groupIds In which user is a member
+				if($row_groups["m_org_status"] != NULL){
+					$memStatus[] =$gpId;
+					}
+					// print_r($memStatus);
 			}
 			$found_groups = implode(',',$groups_ids);
 		}
@@ -290,6 +298,7 @@ include('header.php');
                   <th data-hide="phone"><?php _e('Description','cftp_admin'); ?></th>
                   <th data-hide="phone"><?php _e('Type','cftp_admin'); ?></th>
                   <th data-type="numeric"><?php _e('Members','cftp_admin'); ?></th>
+				<?php if(isset($member)){ ?><th data-type="member"><?php _e('Status','cftp_admin'); ?></th><?php } ?>
                   <th data-hide="phone" data-type="numeric"><?php _e('Files','cftp_admin'); ?></th>
                   <th data-hide="phone"><?php _e('Created by','cftp_admin'); ?></th>
                   <th data-hide="phone" data-type="numeric"><?php _e('Added on','cftp_admin'); ?></th>
@@ -325,6 +334,20 @@ include('header.php');
 								echo '0';
 							}
 						?></td>
+					<?php if(isset($member)){ ?>
+						<td>
+							<?php
+							if (isset($memStatus) && in_array($row['id'], $memStatus))
+							  {
+							  echo "Active";
+							  }
+							else
+							  {
+							  echo "Pending";
+							  }
+								 ?>
+						</td>
+						<?php } ?>
                   <td><?php
 							if (isset($files_amount[$row['id']])) {
 								echo $files_amount[$row['id']];

@@ -52,6 +52,13 @@ if ($_POST) {
 	{
 		$to_subErr = '';
     }
+		if($from_organization == '')
+	{
+		$from_OrgErr  = "<div class=\"alert alert-danger cc-failed\">Specify your Organization</div>";
+	}else
+	{
+		$from_OrgErr = '';
+    }
 	if($to_name_request == '')
 	{ 
 		$to_nameErr  = "<div class=\"alert alert-danger cc-failed\">Invalid To Name</div>"; 

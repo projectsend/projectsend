@@ -481,10 +481,10 @@ color:#e33a49;
 				}
 			}
 
-			// if (!empty($found_groups)) {
-			// 	$q_sent_file .= " OR FIND_IN_SET(group_id, :groups)";
-			// }
-			// $q_sent_file .= ") AND hidden = '0'";
+			 if (!empty($found_groups)) {
+			 	$fq .= " OR FIND_IN_SET(group_id, :groups)";
+			 }
+			
 
 			$sql_files = $dbh->prepare($fq);
 			if (!empty($found_groups)) {

@@ -30,7 +30,7 @@ switch ( $form_information['type'] ) {
 	<div class="form-group">
 		<label for="category_name" class="col-sm-4 control-label"><?php _e('Name','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" name="category_name" id="category_name" class="form-control required" value="<?php echo (isset($category_name)) ? html_output(stripslashes($category_name)) : ''; ?>" />
+			<input type="text" required name="category_name" id="category_name" class="form-control required" value="<?php echo (isset($category_name)) ? html_output(stripslashes($category_name)) : ''; ?>" />
 		</div>
 	</div>
 

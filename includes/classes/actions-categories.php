@@ -24,20 +24,16 @@ class CategoriesActions
 	{
 		require(ROOT_DIR.'/includes/vars.php');
 
-		global $valid_me;
+		//global $valid_me;
 		$this->state = array();
 
 		$this->name			= $arguments['name'];
 		$this->parent_id	= $arguments['parent'];
 		$this->description	= $arguments['description'];
 
-		/**
-		 * These validations are done both when creating a new client and
-		 * when editing an existing one.
-		 */
-		$valid_me->validate('completed',$this->name,$validation_no_name);
 
-		if ($valid_me->return_val) {
+
+		if (!empty($this->name)) {
 			return 1;
 		}
 		else {

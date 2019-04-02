@@ -28,6 +28,9 @@ $("#process_category").submit(function() {
 			if (show_form_errors() == false) { return false; }
 		});
 </script>
+
+<div id="main">
+	<div id="content"> 
 <?php
 	if (isset($_GET['id']))
 		$edit_id = $_GET['id'];
@@ -103,11 +106,6 @@ $("#process_category").submit(function() {
 		}
 	}
 ?>
-
-<div id="main">
-
-	<div id="content">
-
     <!-- Added by B) -------------------->
     <div class="container-fluid">
       <div class="row">

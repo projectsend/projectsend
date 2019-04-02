@@ -337,9 +337,11 @@ include('header.php');
                   <td data-value="<?php echo html_output($row['timestamp']); ?>"><?php echo $date; ?></td>
                   <td><a href="manage-files.php?group_id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm">
                     <?php _e('Manage files','cftp_admin'); ?>
-									</a> <a href="organization-edit-client.php?id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm">
-                    <?php _e('Edit','cftp_admin'); ?>
-                    </a></td>
+									</a>
+									<!-- <a href="organization-edit-client.php?id=<?php // echo $row["id"]; ?>" class="btn btn-primary btn-sm">
+                    <?php // _e('Edit','cftp_admin'); ?>
+                    </a> -->
+					</td>
                 </tr>
                 <?php
 				}

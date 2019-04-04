@@ -66,7 +66,7 @@ if ($_POST) {
 	{
 		$to_nameErr = '';
     }  
-	if($to_email_request!='' && $to_subject_request != '' && $to_name_request != '' ) { 
+	if($to_email_request!='' && $to_subject_request != '' && $to_name_request != '' && $from_organization != '' ) { 
 		if (!filter_var($to_email_request, FILTER_VALIDATE_EMAIL) === false) 
 		{
 			/* check email ID exist in the system */

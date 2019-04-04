@@ -19,13 +19,6 @@
 		});
 	});
 </script>
-<style media="screen">
-.search-choice.Pending {
-	color: red !important;
-	border: solid 2px red !important;
-	}
-
-</style>
 <?php
 switch ($organization_form_type) {
 	case 'new_organization':
@@ -79,7 +72,14 @@ switch ($organization_form_type) {
 									}
 								}
 							?>
-						><?php echo html_output($row["name"]); if($mems['m_org_status']=='0') {echo(" <span class='pending' >Pending </span>");}?> </option>
+						><?php if($mems['m_org_status']==NuLL) {
+
+							echo html_output($row['name']);
+							if($mems['m_org_status'] == NuLL) {
+								echo (" (PENDING)");
+							 }
+						  }
+							?> </option>
 				<?php
 					}
 				?>
@@ -103,8 +103,6 @@ switch ($organization_form_type) {
 			no_results_text	: "<?php _e('No results where found.','cftp_admin'); ?>",
 			search_contains	: true
 		});
-
-		$('.search-choice').has('span').addClass("Pending");
 
 		$('.add-all').click(function(){
 			var selector = $(this).closest('.assigns').find('select');

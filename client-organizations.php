@@ -80,17 +80,14 @@ include('header.php');
 			</thead>
 			<tbody>
 			<?php
-/*			echo "<pre>";
-			print_r($my_categories);
-			echo "</pre>";
-			exit;*/
 			if(!empty($my_categories)){
 			foreach($my_categories as $cat){
+				//print_r($cat);
 			?>
 			<tr>
 			<td> <?php _e(html_output($cat["name"]),'cftp_admin'); ?></td>
 			<td><?php echo html_output($cat["description"]); ?></td>
-            <td><?php if($cat['m_org_status'] === 0) {echo "Pending";} else if($cat['m_org_status'] == 1) { echo "Active";} else {echo "Active";} ?></td>
+            <td><?php if($cat['m_org_status'] === '0')  {echo "Pending" ;} else { echo "Active";} ?></td>
 			<td><span class="btn btn-danger btn-small remove_category"  id="<?php echo "del_".$cat["id"]."_".$cat["client_id"];?>">remove</span></td>
 			</tr>
 			<?php

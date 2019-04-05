@@ -106,6 +106,7 @@ class GroupActions
 		$this->name = $arguments['name'];
 		$this->description = $arguments['description'];
 		$this->members = $arguments['members'];
+		$this->status = $arguments['status'];
 		$this->timestamp = time();
 
 		/** Who is adding the members to the group? */
@@ -126,11 +127,12 @@ class GroupActions
 		/** Create the members records */
 		if (!empty($this->members)) {
 			foreach ($this->members as $this->member) {
-				$this->sql_member = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
-														." VALUES (:admin, :member, :id)");
+				$this->sql_member = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id,m_org_status)"
+														." VALUES (:admin, :member, :id , :mstatus)");
 				$this->sql_member->bindParam(':admin', $this->this_admin);
 				$this->sql_member->bindParam(':member', $this->member, PDO::PARAM_INT);
 				$this->sql_member->bindParam(':id', $this->id, PDO::PARAM_INT);
+				$this->sql_member->bindParam(':mstatus',$this->status);
 				$this->sql_member->execute();
 			}
 		}

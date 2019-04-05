@@ -85,7 +85,8 @@ if ($_POST) {
 							'id' => $group_id,
 							'name' => $add_group_data_name,
 							'description' => $add_group_data_description,
-							'members' => $add_group_data_members
+							'members' => $add_group_data_members,
+							'status'=> '1'
 						);
 
 	/** Validate the information from the posted form. */

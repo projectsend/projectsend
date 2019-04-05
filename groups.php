@@ -36,22 +36,20 @@ if(!empty($_GET['member'])) {
 		$member_exists = 1;
 
 		/** Find groups where the client is member */
-		$sql_is_member = $dbh->prepare("SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE client_id=:id");
+		$sql_is_member = $dbh->prepare("SELECT * FROM " . TABLE_MEMBERS . " WHERE client_id=:id");
 		$sql_is_member->bindParam(':id', $member, PDO::PARAM_INT);
 		$sql_is_member->execute();
 
-		if ( $sql_is_member->rowCount() > 0) {
 			$memStatus = array();
+		if ( $sql_is_member->rowCount() > 0) {
 			$sql_is_member->setFetchMode(PDO::FETCH_ASSOC);
 			while ( $row_groups = $sql_is_member->fetch() ) {
 
 				$groups_ids[] = $row_groups["group_id"];
 				$gpId=$row_groups["group_id"];
-				//Creating an array with groupIds In which user is a member
-				if($row_groups["m_org_status"] != NULL){
-					$memStatus[] =$gpId;
-					}
-					// print_r($memStatus);
+
+					$memStatus[$gpId] =$row_groups["m_org_status"];
+
 			}
 			$found_groups = implode(',',$groups_ids);
 		}
@@ -337,7 +335,7 @@ include('header.php');
 					<?php if(isset($member)){ ?>
 						<td>
 							<?php
-							if (isset($memStatus) && in_array($row['id'], $memStatus))
+							if ($memStatus[$row['id']] == '1')
 							  {
 							  echo "Active";
 							  }

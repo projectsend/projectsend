@@ -104,7 +104,7 @@ if (defined('TRY_INSTALL')) {
 								  `added_by` varchar(32) NOT NULL,
 								  `client_id` int(11) NOT NULL,
 								  `group_id` int(11) NOT NULL,
-								  `m_org_status` INT(11) NULL DEFAULT NULL,
+								  `m_org_status` ENUM(\'0\',\'1\') NOT NULL DEFAULT \'0\' ,
 								  PRIMARY KEY (`id`),
 								  KEY `client_id` (`client_id`),
 								  KEY `group_id` (`group_id`),

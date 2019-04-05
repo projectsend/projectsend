@@ -72,13 +72,12 @@ switch ($organization_form_type) {
 									}
 								}
 							?>
-						><?php if($mems['m_org_status']==NuLL) {
-
+						<?php
 							echo html_output($row['name']);
-							if($mems['m_org_status'] == NuLL) {
-								echo (" (PENDING)");
+							if($mems['m_org_status'] == 0) {
+								echo ("(PENDING)");
 							 }
-						  }
+
 							?> </option>
 				<?php
 					}

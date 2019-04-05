@@ -15,7 +15,7 @@ include('header-unlogged.php');
 
 	/** The form was submitted */
 	if ($_POST) {
-		
+
 		if ( defined('RECAPTCHA_AVAILABLE') ) {
 			$recaptcha_user_ip		= $_SERVER["REMOTE_ADDR"];
 			$recaptcha_response		= $_POST['g-recaptcha-response'];
@@ -24,7 +24,7 @@ include('header-unlogged.php');
 		}
 
 		$new_client = new ClientActions();
-	
+
 		/**
 		 * Clean the posted form values to be used on the clients actions,
 		 * and again on the form if validation failed.
@@ -43,7 +43,7 @@ include('header-unlogged.php');
 		$add_client_data_groups = (isset($_POST["add_group_form_members"])) ? encode_html($_POST["add_group_form_members"]) : '';
 		$add_client_data_intcont = (isset($_POST["add_client_form_intcont"])) ? encode_html($_POST["add_client_form_intcont"]) : '';
 		$add_client_data_notity = (isset($_POST["add_client_form_notify"])) ? 1 : 0;
-	
+
 		/** Arguments used on validation and client creation. */
 		$new_arguments = array(
 								'id'		=> '',
@@ -64,18 +64,18 @@ include('header-unlogged.php');
 								'notify'	=> $add_client_data_notity,
 								'type'		=> 'new_client',
 							);
-		
+
 
 		$new_arguments['active']	= (CLIENTS_AUTO_APPROVE == 0) ? 0 : 1;
 		$new_arguments['recaptcha']	= ( defined('RECAPTCHA_AVAILABLE') ) ? $recaptcha_request : null;
-	
+
 		/** Validate the information from the posted form. */
 		$new_validate = $new_client->validate_client($new_arguments);
 		//var_dump($new_validate);exit;
 		/** Create the client if validation is correct. */
 		if ($new_validate == 1) {
 			$new_response = $new_client->create_client($new_arguments);
-			
+
 			/**
 			 * Check if the option to auto-add to a group
 			 * is active.
@@ -121,12 +121,12 @@ include('header-unlogged.php');
 								 * If the form was submited with errors, show them here.
 								 */
 								$valid_me->list_errors();
-				
+
 								if (isset($new_response)) {
 									/**
 									 * Get the process state and show the corresponding ok or error messages.
 									 */
-				
+
 									$error_msg = '</p><br /><p>';
 									$error_msg .= __('Please contact a system administrator.','cftp_admin');
 									//var_dump($new_response);exit;
@@ -134,7 +134,7 @@ include('header-unlogged.php');
 										case 1:
 											$msg = __('Account added correctly.','cftp_admin');
 											echo system_message('ok',$msg);
-				
+
 											if (CLIENTS_AUTO_APPROVE == 0) {
 												$msg = __('Please remember that an administrator needs to approve your account before you can log in.','cftp_admin');
 											}
@@ -142,7 +142,7 @@ include('header-unlogged.php');
 												$msg = __('You may now log in with your new credentials.','cftp_admin');
 											}
 											echo system_message('info',$msg);
-				
+
 											/** Record the action log */
 											$new_log_action = new LogActions();
 											$log_action_args = array(
@@ -201,9 +201,9 @@ include('header-unlogged.php');
 									<a href="index.php" class="btn btn-danger btn-sm">Already on MicroHealth Send? login here ! </a>
 								</div>
 							</div>
-							
+
 							<img src="img/demo/iphoneview.png" alt="" class="pull-right display-image" style="width:210px">
-							
+
 						</div>
 
 						<div class="row">
@@ -233,7 +233,7 @@ include('header-unlogged.php');
 				is_length(this.add_client_form_user,<?php echo MIN_USER_CHARS; ?>,<?php echo MAX_USER_CHARS; ?>,'<?php echo $validation_length_user; ?>');
 				is_email(this.add_client_form_email,'<?php echo $validation_invalid_mail; ?>');
 				is_alpha_or_dot(this.add_client_form_user,'<?php echo $validation_alpha_user; ?>');
-			
+
 			<?php
 				/**
 				 * Password validation is optional only when editing a client.
@@ -285,7 +285,7 @@ switch ($clients_form_type) {
 	/** User is editing an existing client */
 	case 'edit_client':
 		$submit_value = __('Save client','cftp_admin');
-		$disable_user = true;
+		$disable_user = false;
 		$require_pass = false;
 		$form_action = 'clients-edit.php?id='.$client_id;
 		$info_box = false;
@@ -314,12 +314,12 @@ switch ($clients_form_type) {
 ?>
 <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
 	<div class="well no-padding">
-								
+
 		<form action="<?php echo $form_action; ?>" name="addclient" id="smart-form-register" method="post" class="smart-form client-form">
      <header>Registration is FREE*</header>
      <fieldset>
      <section>
-     
+
 	<?php
 		if ($info_box == true) {
 			$msg = __('This account information will be e-mailed to the address supplied above','cftp_admin');
@@ -329,23 +329,23 @@ switch ($clients_form_type) {
      </section>
      <section>
      	Name
-		<label class="input"> 
+		<label class="input">
         	<i class="icon-append fa fa-user"></i>
             <input type="text" name="add_client_form_name" id="add_client_form_name" class="form-control required" value="<?php echo (isset($add_client_data_name)) ? html_output(stripslashes($add_client_data_name)) : ''; ?>" placeholder="<?php echo $name_placeholder; ?>" />
-			<b class="tooltip tooltip-bottom-right">Needed to enter the website</b> 
+			<b class="tooltip tooltip-bottom-right">Needed to enter the website</b>
         </label>
 	</section>
      <section>Log in username
      	<label class="input">
 	 		<i class="icon-append fa fa-user-circle"></i>
      		<input type="text" name="add_client_form_user" id="add_client_form_user" class="form-control <?php if (!$disable_user) { echo 'required'; } ?>" minlength="4" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($add_client_data_user)) ? html_output(stripslashes($add_client_data_user)) : ''; ?>" <?php if ($disable_user) { echo 'readonly'; }?> placeholder="<?php _e("Must be alphanumeric",'cftp_admin'); ?>" />
-	 		<b class="tooltip tooltip-bottom-right">Needed to enter the website</b> 
+	 		<b class="tooltip tooltip-bottom-right">Needed to enter the website</b>
      	</label>
 	 </section>
-     
+
      <section><?php _e('Password','cftp_admin'); ?>
      <label class="input">
-     
+
 	 <i class="icon-append fa fa-user"></i>
      <div class="col-md-10">
      <input name="add_client_form_pass" id="add_client_form_pass" class="form-control password_toggle <?php if ($require_pass) { echo 'required'; } ?>" type="password" maxlength="<?php echo MAX_PASS_CHARS; ?>" />
@@ -354,28 +354,28 @@ switch ($clients_form_type) {
      <button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="add_client_form_pass" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate','cftp_admin'); ?></button>
      </div>
      </label>
-     
+
 			<?php echo password_notes(); ?>
 	 </section>
-     
+
      <section><?php _e('E-mail','cftp_admin'); ?>
      <label class="input">
-     
+
 	 <i class="icon-append fa fa-envelope"></i>
      <input type="text" name="add_client_form_email" id="add_client_form_email" class="form-control required" value="<?php echo (isset($add_client_data_email)) ? html_output(stripslashes($add_client_data_email)) : ''; ?>" placeholder="<?php _e("Must be valid and unique",'cftp_admin'); ?>" />
      </label>
 	 </section>
-     
+
      <section><?php _e('Address Line 1','cftp_admin'); ?>
      <label class="input">
-     
+
 	 <i class="icon-append fa fa-address-card-o"></i>
      <input type="text" name="add_client_form_address" id="add_client_form_address" class="form-control" value="<?php echo (isset($add_client_data_addr)) ? html_output(stripslashes($add_client_data_addr)) : ''; ?>" />
      </label>
 	 </section>
      <section><?php _e('Address Line 2','cftp_admin'); ?>
      <label class="input">
-     
+
 	 <i class="icon-append fa fa-address-card-o"></i>
      <input type="text" name="add_client_form_address_line2" id="add_client_form_address_line2" class="form-control" value="<?php echo (isset($add_client_data_addr2)) ? html_output(stripslashes($add_client_data_addr2)) : ''; ?>" />
      </label>
@@ -383,7 +383,7 @@ switch ($clients_form_type) {
      <!-- city -->
      <section><?php _e('City','cftp_admin'); ?>
      <label class="input">
-     
+
 	 <i class="icon-append fa fa-building-o"></i>
      <input type="text" name="add_client_city" id="add_client_city" class="form-control" value="<?php echo (isset($add_client_data_city)) ? html_output(stripslashes($add_client_data_city)) : ''; ?>" />
      </label>
@@ -391,7 +391,7 @@ switch ($clients_form_type) {
      <!-- State -->
      <section><?php _e('State','cftp_admin'); ?>
      <label class="input">
-     
+
 	 <i class="icon-append fa fa-building"></i>
      <input type="text" name="add_client_form_state" id="add_client_form_state" class="form-control" value="<?php echo (isset($add_client_data_state)) ? html_output(stripslashes($add_client_data_state)) : ''; ?>" />
      </label>
@@ -399,7 +399,7 @@ switch ($clients_form_type) {
      <!-- zicode -->
      <section><?php _e('Zip','cftp_admin'); ?>
      <label class="input">
-     
+
 	 <i class="icon-append fa fa-location-arrow"></i>
      <input type="text" name="add_client_form_zip" id="add_client_form_zip" class="form-control" value="<?php echo (isset($add_client_data_zip)) ? html_output(stripslashes($add_client_data_zip)) : ''; ?>" />
      </label>
@@ -407,7 +407,7 @@ switch ($clients_form_type) {
      <!-- Telephone -->
      <section><?php _e('Telephone','cftp_admin'); ?>
      <label class="input">
-     
+
 	 <i class="icon-append fa fa-phone"></i>
      <input type="text" name="add_client_form_phone" id="add_client_form_phone" class="form-control" value="<?php echo (isset($add_client_data_phone)) ? html_output(stripslashes($add_client_data_phone)) : ''; ?>" />
      </label>
@@ -426,45 +426,45 @@ switch ($clients_form_type) {
      <?php _e('User','cftp_admin'); ?>
          <label for="add_group_form_members" class="col-sm-4 control-label"><?php _e('Members','cftp_admin'); ?></label>
             <select multiple="multiple" id="members-select" class="form-control chosen-select" name="add_group_form_members[]" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
-				
+
 			</select>
          </label>
-	 
-     
+
+
      <?php
 			if ($extra_fields == true) {
 	 ?>
      <section><?php _e('Internal contact name','cftp_admin'); ?>
      <label class="input">
-     
+
 	 <i class="icon-append fa fa-user"></i>
      <input type="text" name="add_client_form_intcont" id="add_client_form_intcont" class="form-control" value="<?php echo (isset($add_client_data_intcont)) ? html_output(stripslashes($add_client_data_intcont)) : ''; ?>" />
      </label>
 	 </section>
-     
+
      <section><?php _e('Internal contact name','cftp_admin'); ?>
      <label class="input">
 	 <i class="icon-append fa fa-user"></i>
      <input type="checkbox" name="add_client_form_active" id="add_client_form_active" <?php echo (isset($add_client_data_active) && $add_client_data_active == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Active (client can log in)','cftp_admin'); ?>
-                
+
      </label>
 	 </section>
-                
+
        	<?php
 			}
-		?>         
-     
-     
+		?>
 
-	
-				
-	
+
+
+
+
+
 	<section>
 			<label for="add_client_form_notify">
 				<input type="checkbox" name="add_client_form_notify" id="add_client_form_notify" <?php echo (isset($add_client_data_notity) && $add_client_data_notity == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Notify new uploads by e-mail','cftp_admin'); ?>
 			</label>
 	</section>
-	
+
 	<?php
 		if ( $clients_form_type == 'new_client_self' ) {
 			if ( defined('RECAPTCHA_AVAILABLE') ) {
@@ -487,7 +487,7 @@ switch ($clients_form_type) {
     <p class="note text-center">*FREE Registration ends on October 2015.</p>
 						<h5 class="text-center">- Or sign up using -</h5>
 						<ul class="list-inline text-center">
-                        <li> 
+                        <li>
       <?php if(GOOGLE_SIGNIN_ENABLED == '1'): ?>
 		<a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="btn btn-default btn-circle"><i class="fa fa-google"></i></a></a>
 		<?php endif; ?>

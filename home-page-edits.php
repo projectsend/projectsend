@@ -18,13 +18,15 @@ $page_title = __('Home Page Edits','cftp_admin');
 
 $current_level = get_current_user_level();
 
+
 /*
  * Get the total downloads count here. The results are then
  * referenced on the results table.
  */ 
  
 include('header.php');
-global $dbh;	
+if ($current_level == '9') {
+global $dbh;
 $statement = $dbh->prepare("SELECT * FROM tbl_home_page WHERE hid = 1");
 $statement->execute();
 $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -132,4 +134,19 @@ if($_POST) {
     </div>
   </div>
 </div>
-<?php include('footer.php'); ?>
+<?php
+} else { ?>
+	<div id="main">
+	  <div id="content">
+	    <div class="container-fluid">
+	      <div class="row">
+					<?php echo "You don't have access to this page "; ?>
+				</div>
+				</div>
+				</div>
+				</div>
+<?php
+}
+include('footer.php');
+ ?>
+

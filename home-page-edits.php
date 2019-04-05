@@ -8,7 +8,7 @@ $load_scripts	= array(
 						'footable',
 					); 
 
-$allowed_levels = array(9,8,7,0);
+$allowed_levels = array(9);
 require_once('sys.includes.php');
 
 $active_nav = 'Admin';
@@ -25,7 +25,6 @@ $current_level = get_current_user_level();
  */ 
  
 include('header.php');
-if ($current_level == '9') {
 global $dbh;
 $statement = $dbh->prepare("SELECT * FROM tbl_home_page WHERE hid = 1");
 $statement->execute();
@@ -135,18 +134,6 @@ if($_POST) {
   </div>
 </div>
 <?php
-} else { ?>
-	<div id="main">
-	  <div id="content">
-	    <div class="container-fluid">
-	      <div class="row">
-					<?php echo "You don't have access to this page "; ?>
-				</div>
-				</div>
-				</div>
-				</div>
-<?php
-}
 include('footer.php');
  ?>
 

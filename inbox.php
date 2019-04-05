@@ -21,7 +21,7 @@ $current_level = get_current_user_level();
 $this_user = CURRENT_USER_USERNAME;
 $client_info = get_client_by_username($this_user);
 
-$sql_groups = $dbh->prepare( "SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE client_id=:id" );
+$sql_groups = $dbh->prepare( "SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE (client_id=:id AND m_org_status= '1') " );
 $sql_groups->bindParam(':id', $client_info['id'], PDO::PARAM_INT);
 $sql_groups->execute();
 $count_groups = $sql_groups->rowCount();

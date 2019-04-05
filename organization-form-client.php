@@ -72,9 +72,9 @@ switch ($organization_form_type) {
 									}
 								}
 							?>
-						<?php
+						> <?php
 							echo html_output($row['name']);
-							if($mems['m_org_status'] == 0) {
+							 if( (in_array($row["id"],$current_members) ) && ( $mems['m_org_status'] == 0)) {
 								echo ("(PENDING)");
 							 }
 

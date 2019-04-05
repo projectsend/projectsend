@@ -319,6 +319,7 @@ class PSend_Upload_File
 	{
 		$this->uploader_type = $arguments['uploader_type'];
 		$this->file_id = $arguments['new_file_id'];
+		$this->send_status = 1;
 
 		/** Define type of uploader for the notifications queries. */
 		if ($this->uploader_type == 'user') {
@@ -349,8 +350,9 @@ class PSend_Upload_File
 				
 				if ($this->add_to == 'group_id') {
 
-					$this->statement = $this->dbh->prepare("SELECT DISTINCT client_id FROM " . TABLE_MEMBERS . " WHERE group_id = :id");
+					$this->statement = $this->dbh->prepare("SELECT DISTINCT client_id FROM " . TABLE_MEMBERS . " WHERE (group_id = :id AND m_org_status = :sendstatus ) ");
 					$this->statement->bindParam(':id', $this->id_only, PDO::PARAM_INT);
+					$this->statement->bindParam(':sendstatus', $this->send_status);
 					$this->statement->execute();
 					$this->statement->setFetchMode(PDO::FETCH_ASSOC);
 					while( $this->row = $this->statement->fetch() ) {

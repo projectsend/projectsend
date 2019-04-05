@@ -268,7 +268,7 @@ $(document).ready(function() {
                   <th data-hide="phone,tablet"><?php _e('Log In Username','cftp_admin'); ?></th>
                   <th data-hide="phone,tablet"><?php _e('E-mail','cftp_admin'); ?></th>
                   <th data-hide="phone" data-type="numeric"><?php _e('Files: Own','cftp_admin'); ?></th>
-                  <th data-hide="phone" data-type="numeric"><?php _e('Files: Organization','cftp_admin'); ?></th>
+                  <th data-hide="phone" data-type="numeric"><?php _e('Files: Orgs.','cftp_admin'); ?></th>
                   <th><?php _e('Status','cftp_admin'); ?></th>
                   <th data-hide="phone" data-type="numeric"><?php _e('Orgs. on','cftp_admin'); ?></th>
                   <th data-hide="phone,tablet"><?php _e('Notify','cftp_admin'); ?></th>
@@ -460,7 +460,7 @@ $(document).ready(function() {
     td:nth-of-type(3):before { content: "Log In Username"; }
     td:nth-of-type(4):before { content: "E-mail"; }
     td:nth-of-type(5):before { content: "Files: Own"; }
-    td:nth-of-type(6):before { content: "Files: Organization"; }
+    td:nth-of-type(6):before { content: "Files: Orgs."; }
     td:nth-of-type(7):before { content: "Status"; }
     td:nth-of-type(8):before { content: "Orgs. on"; }
     td:nth-of-type(9):before { content: "Notify"; }

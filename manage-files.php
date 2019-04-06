@@ -9,7 +9,12 @@ $load_scripts	= array(
 						'footable',
 					); 
 
-$allowed_levels = array(9,8,7,0);
+
+if(!empty ($_GET['client_id']) ||!empty ($_GET['group_id']) ||!empty ($_GET['category']) ){
+	$allowed_levels = array(7,8,0,9);
+} else{
+	$allowed_levels = array(9);
+}
 require_once('sys.includes.php');
 
 $active_nav = 'files';

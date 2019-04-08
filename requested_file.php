@@ -1,3 +1,4 @@
+
 <?php
 /**
  * Allows to hide, show or delete the files assigend to the
@@ -5,20 +6,15 @@
  *
  * @package ProjectSend
  */
-
 $load_scripts   = array(
                         'footable',
                     );
-
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
 $loggedin_id = $_SESSION['loggedin_id'];
-
 $active_nav = 'files';
 $cc_active_page = 'Requested Files';
-
 $page_title = __('Requested Files','cftp_admin');
-
 $current_level = get_current_user_level();
 $form_action_url = 'requested_file.php';
 /*
@@ -26,12 +22,10 @@ $form_action_url = 'requested_file.php';
  * referenced on the results table.
  */
 $downloads_information = generate_downloads_count();
-
 /**
  * The client's id is passed on the URI.
  * Then get_client_by_id() gets all the other account values.
  */
-
 include('header.php');
 $grid_layout= SITE_URI.'requested_file.php?view=grid';/*echo $actual_link; */
 $actual_link = SITE_URI.'requested_file.php';
@@ -61,8 +55,6 @@ $actual_link = SITE_URI.'requested_file.php';
             if(!empty($_POST['files'])) {
                 $selected_files = array_map('intval',array_unique($_POST['files']));
                 $files_to_get = implode(',',$selected_files);
-
-
                 /**
                  * Then get the files names to add to the log action.
                  */
@@ -70,14 +62,10 @@ $actual_link = SITE_URI.'requested_file.php';
                 $sql_file->bindParam(':files', $files_to_get);
                 $sql_file->execute();
                 $sql_file->setFetchMode(PDO::FETCH_ASSOC);
-
                 while( $data_file = $sql_file->fetch() ) {
                     $all_files[$data_file['id']] = $data_file['filename'];
                 }
-
                 switch($_POST['files_actions']) {
-
-
                     case 'delete':
                         $delete_results = array(
                                                 'ok'        => 0,
@@ -99,7 +87,6 @@ $actual_link = SITE_URI.'requested_file.php';
                                 $failed_count++;
                                 /*echo system_message('error',$msg); */
                             }
-
                         }
                         if($success_count>0) {
                             echo system_message('ok',$msg_succes);
@@ -107,10 +94,8 @@ $actual_link = SITE_URI.'requested_file.php';
                         if($failed_count>0) {
                             echo system_message('ok',$msg_failed);
                         }
-
                         break;
                 }
-
                 /** Record the action log */
                 foreach ($all_files as $work_file_id => $work_file) {
                     $new_log_action = new LogActions();
@@ -132,8 +117,6 @@ $actual_link = SITE_URI.'requested_file.php';
                 echo system_message('error',$msg);
             }
         }
-
-
 ?>
          <form action="<?php echo html_output($form_action_url); ?>" name="files_list" method="post" class="form-inline">
           <div class="form-inline">
@@ -166,16 +149,13 @@ $actual_link = SITE_URI.'requested_file.php';
                     <br>
                         <?php
                         /** Debug query */
-
                         $reqstmail = "SELECT email FROM tbl_users WHERE id = ".$loggedin_id;
-
                         $reqst = $dbh->prepare($reqstmail);
                         $reqst->execute();
                         $rfile = $reqst->fetch();
                         $q_sent_file = "SELECT * FROM tbl_drop_off_request WHERE ( from_id = ".$loggedin_id." ) Order by requested_time DESC";
                         $sql_files = $dbh->prepare($q_sent_file);
                         $sql_files->execute();
-
                         $count = $sql_files->rowCount();
                         ?>
                             <div class="clear"></div>
@@ -232,7 +212,7 @@ $actual_link = SITE_URI.'requested_file.php';
                             }
                             else
                             { ?>
-                        <section class="no-more-tables">
+                        <section id="no-more-tables">
                             <table id="files_list" class=" cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
                             <thead>
                             <tr>
@@ -242,7 +222,7 @@ $actual_link = SITE_URI.'requested_file.php';
                         <span class="checkmark"></span> </label>
                     </th>
                     <th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('To name','cftp_admin'); ?></th>
-                    <th data-hide="phone,tablet"><?php _e('Subject','cftp_admin'); ?></th>
+                    <th data-hide="phone,tablet"><?php _e('Subject.','cftp_admin'); ?></th>
                     <th data-hide="phone,tablet"><?php _e('Organization','cftp_admin'); ?></th>
 
                     <th><?php _e('email','cftp_admin'); ?></th>
@@ -272,13 +252,10 @@ $actual_link = SITE_URI.'requested_file.php';
                     <td><?php echo $row['to_email']; ?></td>
                                         <td><?php echo $row['to_note_request']; ?></td>
                     <td class="<?php echo (!empty($row['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>"><?php
-
                                         $status_hidden  = __('Pending','cftp_admin');
                                         $hidden = $row['status'];
                                         $status_visible = __('Uploaded','cftp_admin');
-
                                         $class          = ($hidden == 0) ? 'danger' : 'success';
-
                                     ?>
                 <span class="label label-<?php echo $class; ?>"> <?php echo ($hidden == 0) ? $status_hidden : $status_visible; ?> </span></td>
                             <td><?php echo $row['requested_time']; ?></td>
@@ -292,7 +269,7 @@ $actual_link = SITE_URI.'requested_file.php';
                                             ?>
                         </tbody>
                       </table>
-                  </section>
+                    </section>
             <?php } ?>
         </div>
                 <div class="col-md-12">
@@ -301,17 +278,13 @@ $actual_link = SITE_URI.'requested_file.php';
                     <br>
                         <?php
                         $reqstmail = "SELECT email FROM tbl_users WHERE id = ".$loggedin_id;
-
                         $reqst = $dbh->prepare($reqstmail);
                         $reqst->execute();
                         $rfile = $reqst->fetch();
                         $req_by = "SELECT * FROM tbl_drop_off_request WHERE ( to_email ='".$rfile['email']."' ) Order by requested_time DESC";
-
                         $req_by_files = $dbh->prepare($req_by);
                         $req_by_files->execute();
-
                         $rqcount = $req_by_files->rowCount();
-
                         $count+=$rqcount;
                          ?>
                          <div class="clear"></div>
@@ -322,7 +295,6 @@ $actual_link = SITE_URI.'requested_file.php';
                              <?php _e('files','cftp_admin'); ?>
                              </span></p>
                          </div>
-                    <section class="no-more-tables">
                         <table class=" cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
                             <thead>
                                 <tr>
@@ -332,8 +304,8 @@ $actual_link = SITE_URI.'requested_file.php';
                                             <span class="checkmark"></span> </label>
                                     </th>
                                     <th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('From name','cftp_admin'); ?></th>
-                                    <th data-hide="phone,tablet"><?php _e('Subject','cftp_admin'); ?></th>
-                                    <th data-hide="phone,tablet"></th>
+                                    <th data-hide="phone,tablet"><?php _e('Subject.','cftp_admin'); ?></th>
+                                    <th data-hide="phone,tablet"><?php _e('Organization','cftp_admin'); ?></th>
 
                                     <th><?php _e('email','cftp_admin'); ?></th>
                                     <th><?php _e('Note','cftp_admin'); ?></th>
@@ -363,13 +335,10 @@ $actual_link = SITE_URI.'requested_file.php';
                                         <td><?php echo $row['to_note_request']; ?></td>
                                         <td class="<?php echo (!empty($row['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>">
                                             <?php
-
                                             $status_hidden  = __('Pending','cftp_admin');
                                             $hidden = $row['status'];
                                             $status_visible = __('Uploaded','cftp_admin');
-
                                             $class          = ($hidden == 0) ? 'danger' : 'success';
-
                                             ?>
                                             <span class="label label-<?php echo $class; ?>"> <?php echo ($hidden == 0) ? $status_hidden : $status_visible; ?> </span>
                                         </td>
@@ -387,7 +356,6 @@ $actual_link = SITE_URI.'requested_file.php';
                             </tbody>
 
                         </table>
-                    </section>
 
           </form>
                 </div>
@@ -401,7 +369,6 @@ $actual_link = SITE_URI.'requested_file.php';
 </div>
 <script type="text/javascript">
     $(document).ready(function() {
-
         $(".resend_it").click(function(event) {
         var e_id = event.target.id;
         var postData = {  "e_id": e_id };
@@ -448,27 +415,23 @@ $actual_link = SITE_URI.'requested_file.php';
     #content {
         padding-top:30px;
     }
-
     /* Force table to not be like tables anymore */
-    .no-more-tables table,
-    .no-more-tables thead,
-    .no-more-tables tbody,
-    .no-more-tables th,
-    .no-more-tables td,
-    .no-more-tables tr {
+    #no-more-tables table,
+    #no-more-tables thead,
+    #no-more-tables tbody,
+    #no-more-tables th,
+    #no-more-tables td,
+    #no-more-tables tr {
         display: block;
     }
-
     /* Hide table headers (but not display: none;, for accessibility) */
-    .no-more-tables thead tr {
+    #no-more-tables thead tr {
         position: absolute;
         top: -9999px;
         left: -9999px;
     }
-
-    .no-more-tables tr { border: 1px solid #ccc; }
-
-    .no-more-tables td {
+    #no-more-tables tr { border: 1px solid #ccc; }
+    #no-more-tables td {
         /* Behave  like a "row" */
         border: none;
         border-bottom: 1px solid #eee;
@@ -477,8 +440,7 @@ $actual_link = SITE_URI.'requested_file.php';
         white-space: normal;
         text-align:left;
     }
-
-    .no-more-tables td:before {
+    #no-more-tables td:before {
         /* Now like a table header */
         position: absolute;
         /* Top/left values mimic padding */
@@ -490,19 +452,16 @@ $actual_link = SITE_URI.'requested_file.php';
         text-align:left;
         font-weight: bold;
     }
-
     /*
     Label the data
     */
-
-
     td:nth-of-type(1):before { content: ""; }
     td:nth-of-type(2):before { content: "To Name"; }
     td:nth-of-type(3):before { content: "Subject"; }
     td:nth-of-type(4):before { content: "Organization"; }
     td:nth-of-type(5):before { content: "Email"; }
     td:nth-of-type(6):before { content: "Note"; }
-    td:nth-of-type(7):before { content: "Status"; }
+        td:nth-of-type(7):before { content: "Status"; }
     td:nth-of-type(8):before { content: "Requested Time"; }
     td:nth-of-type(9):before { content: "Action"; }
 }

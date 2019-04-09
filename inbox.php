@@ -351,14 +351,7 @@ color:#e33a49;
 			$params[':id'] = $this_id;
 			$form_action_url .= '?'.$search_on.'='.$this_id;
 
-			/** Add the status filter */	
-			if (isset($_POST['status']) && $_POST['status'] != 'all') {
-				$set_and = true;
-				$cq .= " AND hidden = :hidden";
-				$no_results_error = 'filter';
-				
-				$params[':hidden'] = $_POST['status'];
-			}
+			
 
 			/**
 			 * Count the files assigned to this client. If there is none, show
@@ -815,11 +808,11 @@ color:#e33a49;
                       <input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" <?php echo isset($disabled)?$disabled:''; ?> />
                       <span class="checkmark
 											<?php
-											 if ((trim($row['uploader']) != CURRENT_USER_USERNAME)){
-											 if ( ! in_array($row['request_type'], array('1','2') ) )
-												{ echo ("disabled_cc = disabled ");
-											echo($row['request_type']);}
-											}
+											//  if ((trim($row[uploader]) != CURRENT_USER_USERNAME)){
+											//  if ( ! in_array($row['request_type'], array('1','2') ) )
+											// 	{ echo ("disabled_cc = disabled ");
+											// echo($row['request_type']);}
+											// }
 										?>
 											"></span>
                   </label>

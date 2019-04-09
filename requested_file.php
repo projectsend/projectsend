@@ -40,7 +40,7 @@ $actual_link = SITE_URI.'requested_file.php';
     <div id="content">
 
         <!-- Added by B) -------------------->
-        <div class="container-fluid">
+        <div id="no-more-tables" class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
                     <h2 class="page-title txt-color-blueDark"><?php echo $page_title; ?></h2>
@@ -212,7 +212,6 @@ $actual_link = SITE_URI.'requested_file.php';
                             }
                             else
                             { ?>
-                        <section id="no-more-tables">
                             <table id="files_list" class=" cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
                             <thead>
                             <tr>
@@ -269,7 +268,6 @@ $actual_link = SITE_URI.'requested_file.php';
                                             ?>
                         </tbody>
                       </table>
-                    </section>
             <?php } ?>
         </div>
                 <div class="col-md-12">
@@ -305,7 +303,6 @@ $actual_link = SITE_URI.'requested_file.php';
                                     </th>
                                     <th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('From name','cftp_admin'); ?></th>
                                     <th data-hide="phone,tablet"><?php _e('Subject','cftp_admin'); ?></th>
-                                    <th data-hide="phone,tablet"><?php _e('Organization','cftp_admin'); ?></th>
 
                                     <th><?php _e('email','cftp_admin'); ?></th>
                                     <th><?php _e('Note','cftp_admin'); ?></th>
@@ -330,7 +327,6 @@ $actual_link = SITE_URI.'requested_file.php';
                                                 <span class="checkmark"></span> </label></td>
                                         <td><?php echo $row['from_name']; ?></td>
                                         <td class="file_name"><?php echo $row['to_subject_request']; ?></td>
-                                        <td></td>
                                         <td><?php echo $row['from_email']; ?></td>
                                         <td><?php echo $row['to_note_request']; ?></td>
                                         <td class="<?php echo (!empty($row['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>">

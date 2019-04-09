@@ -224,7 +224,6 @@ class ClientActions
 	{
 		global $hasher;
 		global $dbh;
-		$this->state = array();
 
 		/** Define the account information */
 		$this->id			= $arguments['id'];
@@ -244,8 +243,6 @@ class ClientActions
 		$this->enc_password	= $hasher->HashPassword($arguments['password']);
 
 		if (strlen($this->enc_password) >= 20) {
-
-			$this->state['hash'] = 1;
 
 			/** SQL query */
 			$this->edit_client_query = "UPDATE " . TABLE_USERS . " SET 

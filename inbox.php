@@ -834,7 +834,7 @@ color:#e33a49;
                                         * Clients can download from here.
                                         *It was like client cannot download. But now changed to Can.
                                         */
-                                        if($current_level == '0' || $current_level=='8') 
+                                        if($current_level == '0')
                                         {
                                             if((($current_download_count>=$row['number_downloads'] && $current_download_count>0 && $row['number_downloads']!=0)) || (($row['expires'] != '0') && (time() > strtotime($row['expiry_date'])))) {
                                                 echo html_output($row['filename']);

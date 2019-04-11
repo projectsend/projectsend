@@ -61,8 +61,8 @@ class process {
 					}
 					$this->can_download = true;	
 					$curr_usr_nm = CURRENT_USER_USERNAME;
-					if ((CURRENT_USER_LEVEL == 0 || CURRENT_USER_LEVEL==8) && ($curr_usr_nm != $this->row['uploader'])) {
-					
+					if ((CURRENT_USER_LEVEL == 0 ) && ($curr_usr_nm != $this->row['uploader'])) {
+
 						if ($this->expires == '0' || $this->expired == false) {
 							/**
 							 * Does the client have permission to download the file?
@@ -93,7 +93,7 @@ class process {
 								$this->params[':groups'] = $this->found_groups;
 							}
 							// Continue assembling the query
-							$this->fq .= ') AND file_id=:file_id AND hidden = "0"';
+							$this->fq .= ') AND file_id=:file_id';
 							$this->params[':file_id'] = (int)$_GET['id'];
 
 							$this->files = $this->dbh->prepare( $this->fq );

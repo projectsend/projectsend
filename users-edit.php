@@ -162,8 +162,11 @@ include('header.php');
       
           <div class="row">
             <div class="col-sm-12">
+				<?php if(CURRENT_USER_LEVEL == 9 ) { ?>
 <a href="user-organizations.php?id=<?php echo $user_id_mic; ?>" class="btn btn-sm btn-primary right-btn"><?php if($global_level == 0) { echo "My organizations"; } else { echo 'Manage Organization';} ?></a>
-              <div class="air air-bottom-right padding-10"> <a data-toggle="modal" data-target="#cc-edit-info" class="btn txt-color-white bg-color-teal btn-sm"><i class="fa fa-pencil-square-o"></i> Edit</a></div>
+
+	<?php } ?>
+	<div class="air air-bottom-right padding-10"> <a data-toggle="modal" data-target="#cc-edit-info" class="btn txt-color-white bg-color-teal btn-sm"><i class="fa fa-pencil-square-o"></i> Edit</a></div>
               <div class="cc-user-cover"></div>
             </div>
             <div class="col-sm-12">

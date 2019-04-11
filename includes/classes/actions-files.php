@@ -264,23 +264,18 @@ class FilesActions
 
 	function unassign_file($file_id,$modify_type,$modify_id)
 	{
-		$this->check_level = array(9,8,7);
 		if (isset($file_id)) {
-			/** Do a permissions check */
-			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
 				$this->sql = $this->dbh->prepare("DELETE FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id AND $modify_type = :modify_id");
 				$this->sql->bindParam(':file_id', $file_id, PDO::PARAM_INT);
 				$this->sql->bindParam(':modify_id', $modify_id, PDO::PARAM_INT);
 				$this->sql->execute();
-			}
+
 		}
 	}
 	function unassign($file_id)
 	{
-		$this->check_level = array(9,8,7);
 		if (isset($file_id)) {
 			/** Do a permissions check */
-			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
 				$check = $this->dbh->prepare("SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE file_id =".$file_id);
 				$check->execute();
 				if($check->rowCount() > 1 ){
@@ -298,7 +293,7 @@ class FilesActions
 				$unassign->bindParam(':file_id', $file_id, PDO::PARAM_INT);
 				$unassign->execute();
 
-			}
+
 		}
 	}
 

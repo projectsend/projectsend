@@ -110,8 +110,8 @@ if ($_POST) {
 		/** Default level to 7 just in case */
 		$add_user_data_level = (isset($_POST["add_user_form_level"])) ? $_POST['add_user_form_level'] : '7';
 		$add_user_data_active = (isset($_POST["add_user_form_active"])) ? 1 : 0;
+		$add_user_data_notity		= (isset($_POST["add_user_form_notify"])) ? 1 : 0;
 	}
-	$add_user_data_notity		= (isset($_POST["add_user_form_notify"])) ? 1 : 0;
 	/** Arguments used on validation and user creation. */
 	$edit_arguments = array(
 							'id'		=> $user_id,

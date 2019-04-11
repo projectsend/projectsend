@@ -435,12 +435,13 @@ $actual_link = SITE_URI.'requested_file.php';
         padding-left: 50%;
         white-space: normal;
         text-align:left;
+				margin-top: 10px;
     }
     #no-more-tables td:before {
         /* Now like a table header */
         position: absolute;
         /* Top/left values mimic padding */
-        top: 6px;
+        top: 12px;
         left: 6px;
         width: 45%;
         padding-right: 10px;
@@ -454,12 +455,13 @@ $actual_link = SITE_URI.'requested_file.php';
     td:nth-of-type(1):before { content: ""; }
     td:nth-of-type(2):before { content: "To Name"; }
     td:nth-of-type(3):before { content: "Subject"; }
-    td:nth-of-type(4):before { content: "Organization"; }
-    td:nth-of-type(5):before { content: "Email"; }
-    td:nth-of-type(6):before { content: "Note"; }
-        td:nth-of-type(7):before { content: "Status"; }
-    td:nth-of-type(8):before { content: "Requested Time"; }
-    td:nth-of-type(9):before { content: "Action"; }
+
+    .tb1 td:nth-of-type(5):before ,.tb2 td:nth-of-type(4):before{ content: "Email"; }
+    .tb1 td:nth-of-type(4):before { content: "Organization"; }
+    .tb1 td:nth-of-type(6):before ,.tb2 td:nth-of-type(5):before{ content: "Note"; }
+		.tb1 td:nth-of-type(7):before ,.tb2 td:nth-of-type(6):before{ content: "Status"; }
+    .tb1 td:nth-of-type(8):before ,.tb2 td:nth-of-type(7):before{ content: "Requested Time"; }
+    .tb1 td:nth-of-type(9):before ,.tb2 td:nth-of-type(8):before{ content: "Action"; }
 }
 /*-------------------- Responsive table End--------------------------*/
 </style>

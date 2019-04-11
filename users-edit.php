@@ -136,7 +136,7 @@ if ($_POST) {
 	/** Create the user if validation is correct. */
 	if ($edit_validate == 1) {
 		$edit_response = $edit_user->edit_user($edit_arguments);
-		header("Location:".SITE_URI."users.php");
+		//header("Location:".SITE_URI."users.php");
 	}
 
 }

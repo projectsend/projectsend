@@ -212,7 +212,7 @@ $actual_link = SITE_URI.'requested_file.php';
                             }
                             else
                             { ?>
-                            <table id="files_list" class=" cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
+                            <table id="files_list" class=" tb1 cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
                             <thead>
                             <tr>
                     <th class="td_checkbox" data-sort-ignore="true">
@@ -270,86 +270,92 @@ $actual_link = SITE_URI.'requested_file.php';
                       </table>
             <?php } ?>
         </div>
-                <div class="col-md-12">
-                    <br>
-                    <h4>Requested of You</h4>
-                    <br>
-                        <?php
-                        $reqstmail = "SELECT email FROM tbl_users WHERE id = ".$loggedin_id;
-                        $reqst = $dbh->prepare($reqstmail);
-                        $reqst->execute();
-                        $rfile = $reqst->fetch();
-                        $req_by = "SELECT * FROM tbl_drop_off_request WHERE ( to_email ='".$rfile['email']."' ) Order by requested_time DESC";
-                        $req_by_files = $dbh->prepare($req_by);
-                        $req_by_files->execute();
-                        $rqcount = $req_by_files->rowCount();
-                        $count+=$rqcount;
-                         ?>
-                         <div class="clear"></div>
-                         <div class="form_actions_count">
-                             <p class="form_count_total">
-                             <?php _e('Showing','cftp_admin'); ?>
-                             : <span><?php echo $rqcount; ?>
-                             <?php _e('files','cftp_admin'); ?>
-                             </span></p>
-                         </div>
-                        <table class=" cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
-                            <thead>
-                                <tr>
-                                    <th class="td_checkbox" data-sort-ignore="true">
-                                    <label class="cc-chk-container">
-                                            <input type="checkbox" name="select_all" id="select_all" value="0" />
-                                            <span class="checkmark"></span> </label>
-                                    </th>
-                                    <th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('From name','cftp_admin'); ?></th>
-                                    <th data-hide="phone,tablet"><?php _e('Subject','cftp_admin'); ?></th>
+				<div class="col-md-12">
+					<br>
+					<h4>Requested of You</h4>
+					<br>
+						<?php
+						$reqstmail = "SELECT email FROM tbl_users WHERE id = ".$loggedin_id;
 
-                                    <th><?php _e('email','cftp_admin'); ?></th>
-                                    <th><?php _e('Note','cftp_admin'); ?></th>
-                                    <th><?php _e('Status','cftp_admin'); ?></th>
-                                    <th><?php _e('Requested Time','cftp_admin'); ?></th>
-                                    <th><?php _e('Action','cftp_admin'); ?></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                if ($rqcount > 0) {
-                                $req_by_files->setFetchMode(PDO::FETCH_ASSOC);
-                                    while( $row = $req_by_files->fetch() ) {
-                                        $disabled_list='';
-                                        if($row['status']== 1) {
-                                            $disabled_list="disabled";
-                                        }
-                                    ?>
-                                <tr>
-                                        <td><label class="cc-chk-container">
-                                                <input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" />
-                                                <span class="checkmark"></span> </label></td>
-                                        <td><?php echo $row['from_name']; ?></td>
-                                        <td class="file_name"><?php echo $row['to_subject_request']; ?></td>
-                                        <td><?php echo $row['from_email']; ?></td>
-                                        <td><?php echo $row['to_note_request']; ?></td>
-                                        <td class="<?php echo (!empty($row['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>">
-                                            <?php
-                                            $status_hidden  = __('Pending','cftp_admin');
-                                            $hidden = $row['status'];
-                                            $status_visible = __('Uploaded','cftp_admin');
-                                            $class          = ($hidden == 0) ? 'danger' : 'success';
-                                            ?>
-                                            <span class="label label-<?php echo $class; ?>"> <?php echo ($hidden == 0) ? $status_hidden : $status_visible; ?> </span>
-                                        </td>
-                                        <td><?php echo $row['requested_time']; ?></td>
-                                        <td>
-                                            <a <?php if($row['status'] != '1') { ?> href="dropoff.php?auth=<?php echo $row['auth_key']; ?>" <?php } ?> <?php if($row['status'] == '1') { echo ("disabled ='disabled'");} ?> class="btn btn-primary btn-sm"  id="<?php echo $row['id']; ?>" >
-                                                <?php _e('Go','cftp_admin'); ?>
-                                            </div>
-                                        </td>
-                                </tr>
-                                <?php
-                                    }
-                                }
-                                ?>
-                            </tbody>
+						$reqst = $dbh->prepare($reqstmail);
+						$reqst->execute();
+						$rfile = $reqst->fetch();
+						$req_by = "SELECT * FROM tbl_drop_off_request WHERE ( to_email ='".$rfile['email']."' ) Order by requested_time DESC";
+
+						$req_by_files = $dbh->prepare($req_by);
+						$req_by_files->execute();
+
+						$rqcount = $req_by_files->rowCount();
+
+						$count+=$rqcount;
+						 ?>
+						 <div class="clear"></div>
+						 <div class="form_actions_count">
+							 <p class="form_count_total">
+							 <?php _e('Showing','cftp_admin'); ?>
+							 : <span><?php echo $rqcount; ?>
+							 <?php _e('files','cftp_admin'); ?>
+							 </span></p>
+						 </div>
+						<table  class=" tb2 cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
+							<thead>
+								<tr>
+									<th class="td_checkbox" data-sort-ignore="true">
+									<label class="cc-chk-container">
+											<input type="checkbox" name="select_all" id="select_all" value="0" />
+											<span class="checkmark"></span> </label>
+									</th>
+									<th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('From name','cftp_admin'); ?></th>
+									<th data-hide="phone,tablet"><?php _e('Subject.','cftp_admin'); ?></th>
+									<th><?php _e('email','cftp_admin'); ?></th>
+									<th><?php _e('Note','cftp_admin'); ?></th>
+									<th><?php _e('Status','cftp_admin'); ?></th>
+									<th><?php _e('Requested Time','cftp_admin'); ?></th>
+									<th><?php _e('Action','cftp_admin'); ?></th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php
+								if ($rqcount > 0) {
+								$req_by_files->setFetchMode(PDO::FETCH_ASSOC);
+									while( $row = $req_by_files->fetch() ) {
+										$disabled_list='';
+										if($row['status']== 1) {
+											$disabled_list="disabled";
+										}
+									?>
+								<tr>
+										<td><label class="cc-chk-container">
+												<input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" />
+												<span class="checkmark"></span> </label></td>
+										<td><?php echo $row['from_name']; ?></td>
+										<td class="file_name"><?php echo $row['to_subject_request']; ?></td>
+										<td><?php echo $row['from_email']; ?></td>
+										<td><?php echo $row['to_note_request']; ?></td>
+										<td class="<?php echo (!empty($row['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>">
+											<?php
+
+											$status_hidden	= __('Pending','cftp_admin');
+											$hidden = $row['status'];
+											$status_visible	= __('Uploaded','cftp_admin');
+
+											$class			= ($hidden == 0) ? 'danger' : 'success';
+
+											?>
+											<span class="label label-<?php echo $class; ?>"> <?php echo ($hidden == 0) ? $status_hidden : $status_visible; ?> </span>
+										</td>
+										<td><?php echo $row['requested_time']; ?></td>
+										<td>
+											<a <?php if($row['status'] != '1') { ?> href="dropoff.php?auth=<?php echo $row['auth_key']; ?>" <?php } ?> <?php if($row['status'] == '1') { echo ("disabled ='disabled'");} ?> class="btn btn-primary btn-sm"  id="<?php echo $row['id']; ?>" >
+												<?php _e('Go','cftp_admin'); ?>
+											</div>
+										</td>
+								</tr>
+								<?php
+									}
+								}
+								?>
+							</tbody>
 
                         </table>
 

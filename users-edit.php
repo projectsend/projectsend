@@ -341,8 +341,20 @@ include('header.php');
 								}
 								?>
                                 <!-- Modal -->
-								<div id="cc-edit-info" class="modal fade" role="dialog">
-  									<div class="modal-dialog">
+
+                                <?php
+
+							}
+						}
+					?>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+<div id="cc-edit-info" class="modal fade" role="dialog">
+		<div class="modal-dialog">
 
                                         <!-- Modal content-->
                                         <div class="modal-content">
@@ -360,18 +372,7 @@ include('header.php');
                                           </div>
                                         </div>
 
-  									</div>
-								</div>
-                                <?php
-								
-							}
-						}
-					?>
-        </div>
-      </div>
-    </div>
-  </div>
-  </div>
+		</div>
 </div>
 <?php
 	include('footer.php');

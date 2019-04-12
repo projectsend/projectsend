@@ -177,6 +177,13 @@ function randomPassword() {
 					break;
 			}
 	?>
+	<style media="screen">
+			.whitebox_text {
+			background-color: #c26565;
+			color: #fff;
+			border-radius: 8px;
+			}
+	</style>
           <div class="whiteform whitebox whitebox_text"> <?php echo $no_results_message; ?> </div>
           <?php
 		}

@@ -75,7 +75,7 @@ switch ($organization_form_type) {
 						> <?php
 							echo html_output($row['name']);
 							 if( (in_array($row["id"],$current_members) ) && ( $mems['m_org_status'] == 0)) {
-								echo ("(PENDING)");
+								echo (" (PENDING)");
 							 }
 
 							?> </option>

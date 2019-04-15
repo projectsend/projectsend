@@ -72,7 +72,7 @@ include('header.php');
 			<table id="groups_tbl" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
 			<thead>
 			<tr>
-			<th data-sort-initial="true"><?php _e('User Organization name','cftp_admin'); ?></th>
+			<th data-sort-initial="true"><?php _e('Client Organization Name','cftp_admin'); ?></th>
 			<th data-hide="phone"><?php _e('Description','cftp_admin'); ?></th>
                         <th data-hide="status"><?php _e('Status','cftp_admin'); ?></th>
 			<th data-hide="action"><?php _e('Action','cftp_admin'); ?></th>
@@ -125,7 +125,7 @@ exit;*/
 			<table id="groups_tbl" class="table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
 			<thead>
 			<tr>
-			<th data-sort-initial="true"><?php _e('Client Organization name','cftp_admin'); ?></th>
+			<th data-sort-initial="true"><?php _e('Client Organization Name','cftp_admin'); ?></th>
 			<th data-hide="phone"><?php _e('Description','cftp_admin'); ?></th>
             <th><?php _e('Action','cftp_admin'); ?></th>
 			</tr>

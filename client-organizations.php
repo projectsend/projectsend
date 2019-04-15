@@ -74,7 +74,7 @@ include('header.php');
 			<tr>
 			<th data-sort-initial="true"><?php _e('User Organization name','cftp_admin'); ?></th>
 			<th data-hide="phone"><?php _e('Description','cftp_admin'); ?></th>
-                        <td><?php echo "Status"; ?></td>
+                        <th data-hide="status"><?php _e('Status','cftp_admin'); ?></th>
 			<th data-hide="action"><?php _e('Action','cftp_admin'); ?></th>
 			</tr>
 			</thead>

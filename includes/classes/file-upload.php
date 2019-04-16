@@ -165,9 +165,14 @@ class PSend_Upload_File
 		$this->uploader_type		= $arguments['uploader_type'];
 		$this->is_public		= (!empty($arguments['public'])) ? 1 : 0;
 		$this->public_token		= generateRandomString(32);
+		if($arguments['prev_assign'] == '2'){
+			$prev_assign = '2';
+			} else{
+				$prev_assign = '0';
+				}
 		if (isset($arguments['add_to_db'])) {
-			$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (url, filename, description, timestamp, uploader, expires,notify, expiry_date,number_downloads,future_send_date, public_allow, public_token,request_type)"
-											."VALUES (:url, :name, :description, :timestamp, :uploader, :expires, :notify, :expiry_date,:number_downloads,:future_send_date, :public, :token, :requestType)");
+			$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (url, filename, description, timestamp, uploader, expires,notify, expiry_date,number_downloads,future_send_date, public_allow, public_token,request_type,prev_assign)"
+											."VALUES (:url, :name, :description, :timestamp, :uploader, :expires, :notify, :expiry_date,:number_downloads,:future_send_date, :public, :token, :requestType, :prev_assign)");
 			$this->statement->bindParam(':url', $this->post_file);
 			$this->statement->bindParam(':name', $this->name);
 			$this->statement->bindParam(':description', $this->description);
@@ -181,6 +186,7 @@ class PSend_Upload_File
 			$this->statement->bindParam(':public', $this->is_public, PDO::PARAM_INT);
 			$this->statement->bindParam(':token', $this->public_token);
 			$this->statement->bindParam(':requestType', $this->requestType);
+			$this->statement->bindParam(':prev_assign', $prev_assign);
 
 			$this->statement->execute();
 			$this->file_id = $this->dbh->lastInsertId();

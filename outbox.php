@@ -374,7 +374,7 @@ include('header.php');
 
                  */
 
-                $sql_file = $dbh->prepare("SELECT id, filename FROM " . TABLE_FILES . " WHERE FIND_IN_SET(id, :files) AND  DATE(future_send_date) > DATE(NOW())");
+                $sql_file = $dbh->prepare("SELECT id, filename FROM " . TABLE_FILES . " WHERE FIND_IN_SET(id, :files) AND  DATE(future_send_date) > DATE(NOW()) AND prev_assign != '2' ");
 
                 $sql_file->bindParam(':files', $files_to_get);
 
@@ -634,7 +634,7 @@ include('header.php');
 
                 $no_results_error = 'account_level';
 
-                $conditions[] = "DATE(tbl_files.future_send_date) > DATE(NOW())";
+                $conditions[] = "DATE(tbl_files.future_send_date) > DATE(NOW()) AND prev_assign != '2' ";
 
                 $params[':uploader'] = $global_user;
 

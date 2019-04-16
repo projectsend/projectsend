@@ -167,7 +167,7 @@ include('header.php');
          * Generate an array of amount of users on each group
          */
         $members_amount = array();
-        $count_members_sql = $dbh->prepare("SELECT group_id, COUNT(client_id) as members FROM " . TABLE_MEMBERS . " GROUP BY group_id");
+        $count_members_sql = $dbh->prepare("SELECT group_id ,m_org_status, COUNT(client_id) as members FROM " . TABLE_MEMBERS . " GROUP BY group_id");
         $count_members_sql->execute();
         $count_members = $count_members_sql->rowCount();
         if ($count_members > 0) {
@@ -175,9 +175,25 @@ include('header.php');
                 $members_amount[$mrow['group_id']] = $mrow['members'];
             }
         }
-    
-    
-    
+				// echo("<pre>");
+				// print_r($members_amount);
+				// echo("</pre>");
+        $pending_count = array();
+        $pending_members = $dbh->prepare("SELECT group_id, COUNT(client_id) as members FROM " . TABLE_MEMBERS . " where m_org_status = '0' GROUP BY group_id");
+				$pending_members->execute();
+				$pending_members->setFetchMode(PDO::FETCH_ASSOC);
+				$pending = $pending_members->fetchAll();
+				if(!empty($pending)){
+					foreach ($pending as $pend) {
+						$pending_count[$pend['group_id']]= $pend['members'];
+					}
+				}
+				// echo("<pre>");
+				// print_r($pending_count);
+				// echo("</pre>");
+
+
+
         $params = array();
         $cq = "SELECT * FROM " . TABLE_GROUPS;
 
@@ -287,7 +303,7 @@ include('header.php');
                         </th>
                         <th data-sort-initial="true"><?php _e('Organization Name','cftp_admin'); ?></th>
                         <th data-hide="phone"><?php _e('Description','cftp_admin'); ?></th>
-                        <th data-type="numeric"><?php _e('Members','cftp_admin'); ?></th>
+                        <th data-type="numeric"><?php _e('Members','cftp_admin'); ?>*</th>
                         <th data-hide="phone" data-type="numeric"><?php _e('Files','cftp_admin'); ?></th>
                         <th data-hide="phone"><?php _e('Created by','cftp_admin'); ?></th>
                         <th data-hide="phone" data-type="numeric"><?php _e('Added on','cftp_admin'); ?></th>
@@ -310,7 +326,12 @@ include('header.php');
                         <td> <a href="organization-edit-client.php?id=<?php echo $row["id"]; ?>" class=" btn-sm"><?php _e(html_output($row["name"]),'cftp_admin'); ?></a></td>
                         
                         <td><?php echo html_output($row["description"]); ?></td>
-                        <td>
+                        <td
+												<?php
+												if (isset($pending_count[$row['id']] )) {
+													echo "class='member_pending'";
+												}
+												?>>
                             <?php
                                 if (isset($members_amount[$row['id']])) {
                                     echo $members_amount[$row['id']];
@@ -362,6 +383,9 @@ include('header.php');
 
 
 <style type="text/css">
+.member_pending{
+	color:red !important;
+}
 /*-------------------- Responsive table by B) -----------------------*/
 @media only screen and (max-width: 1200px) {
     #content {

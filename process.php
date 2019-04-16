@@ -37,7 +37,7 @@ class process {
 	
 	function download_file() {
 		$this->check_level = array(9,8,7,0);
-		if (isset($_GET['id']) && isset($_GET['client'])) {
+		if (isset($_GET['id']) && isset($_GET['client']) && ($_GET['client']== $_SESSION['loggedin'])) {
 			/** Do a permissions check for logged in user */
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
 				

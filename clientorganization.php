@@ -368,6 +368,7 @@ include('header.php');
                 </tbody>
             </table>
             </section>
+	    <p>The color red indicates that at least one member has status="Pending". Click the coresponding Organization Name link to accept or decline member(s).</p>
     
             <nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
                 <div class="pagination_wrapper text-center">

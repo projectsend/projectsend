@@ -531,7 +531,10 @@ while( $row = $statement->fetch() ) {
 
 						}
 
+						if ($assignations_count == '0'){
 
+							$add_arguments['prev_assign'] ='2';
+						}
 
 						/** Uploader is a client */
 

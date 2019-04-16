@@ -248,6 +248,11 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 										{
 											$assignations_count	= '0';
 										}
+										if ($assignations_count == '0'){
+
+												$add_arguments['prev_assign'] ='2';
+											}
+
 										/** Uploader is a client */
 										if ($current_level == 0) {
 											$add_arguments['assign_to'] = $file['assignments'];

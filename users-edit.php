@@ -304,6 +304,12 @@ include('header.php');
 									echo system_message('error',$msg);
 								break;
 							}
+							if (($global_level == 7) || ($global_user == $add_user_data_user)) {
+								$user_form_type = 'edit_user_self';
+							}
+								else {
+									$user_form_type = 'edit_user';
+							}
 						}
 						else {
 						/**
@@ -328,21 +334,12 @@ include('header.php');
 								/**
 								 * Include the form.
 								 */
-								if ($global_level == 7) {
+								if (($global_level == 7) || ($global_user == $add_user_data_user)) {
 									$user_form_type = 'edit_user_self';
 								}
-								else {
-									if ($global_user == $add_user_data_user) {
-										$user_form_type = 'edit_user_self';
-									}
 									else {
 										$user_form_type = 'edit_user';
-									}
 								}
-								?>
-                                <!-- Modal -->
-
-                                <?php
 
 							}
 						}

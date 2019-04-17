@@ -221,16 +221,7 @@ used as it is.
 							$('#' + id + '_count').val(inputCount);
 						}
 
-						fileList.append(
-							'<li id="' + file.id + '">' +
-								'<div class="plupload_file_name"><span>' + file.name + '</span></div>' +
-								'<div class="plupload_file_action"><a href="#"></a></div>' +
-								'<div class="plupload_file_status">' + file.percent + '%</div>' +
-								'<div class="plupload_file_size">' + plupload.formatSize(file.size) + '</div>' +
-								'<div class="plupload_clearer">&nbsp;</div>' +
-								inputHTML +
-							'</li>'
-						);
+						fileList.append( '<li id="' + file.id + '" class="plupload_delete">' + '<div class="plupload_file_name"><span>' + file.name + '</span></div>' + '<div class="plupload_file_action"><a href="#"></a></div>' + '<div class="plupload_file_status">' + file.percent + '%</div>' + '<div class="plupload_file_size">' + plupload.formatSize(file.size) + '</div>' + '<div class="plupload_clearer">&nbsp;</div>' + inputHTML + '</li>' );
 
 						handleStatus(file);
 

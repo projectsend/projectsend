@@ -313,7 +313,15 @@ include('header.php');
                   <td><?php if ($row["id"] != '1') { ?>
                     <input type="checkbox" name="groups[]" value="<?php echo $row["id"]; ?>" />
                     <?php } ?></td>
-                  <td><?php echo html_output($row["name"]); ?></td>
+                  <td><?php
+												if($row["organization_type"]=='1')
+												{ ?>
+ 										<a href="organization-edit-client.php?id=<?php echo $row['id']; ?>"> <?php echo html_output($row["name"]); ?></a>
+												<?php }
+												else { ?>
+									 <a href="organization-edit-user.php?id=<?php echo $row['id']; ?>"> <?php echo html_output($row["name"]); ?></a>
+										<?php  }?>
+										</td>
                   <td><?php echo html_output($row["description"]); ?></td>
                   <td><?php
 												if($row["organization_type"]=='1')

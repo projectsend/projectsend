@@ -254,7 +254,6 @@ include('header.php');
                         <div class="form-group group_float">
                             <label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected Organization actions','cftp_admin'); ?>:</label>
                             <select name="groups_actions" id="groups_actions" class="txtfield form-control">
-                                <option value="none"><?php _e('Select action','cftp_admin'); ?></option>
                                 <option value="delete"><?php _e('Delete','cftp_admin'); ?></option>
                             </select>
                         </div>

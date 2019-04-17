@@ -250,6 +250,9 @@ class process {
 					
 			}
 		}
+		else {
+			header('Location:'.SITE_URI.'access-denied.php');
+		}
 	}
 
 	function download_zip() {

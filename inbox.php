@@ -33,7 +33,6 @@ if ($count_groups > 0) {
 	}
 	$found_groups = implode(',',$groups_ids);
 }
-//echo "<pre>"; print_r($found_groups); echo "</pre>";
 
 /*
  * Get the total downloads count here. The results are then
@@ -92,10 +91,7 @@ if (isset($_GET['group_id'])) {
 	}
 }
 
-/**
-Fetch all categories
-
-*/
+/** Fetch all categories */
 	$statement = $dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES);
 	$statement->execute();
 	$statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -685,11 +681,10 @@ color:#e33a49;
 									}
 								?>
                   <th class="hideNow" data-hide="phone"><?php _e('Public','cftp_admin'); ?></th>
-                  <th data-hide="phone"><?php _e('Expiry','cftp_admin'); ?></th>
                   <?php
-							}
-
-							/**
+							} ?>
+							<th data-hide="phone"><?php _e('Expiry','cftp_admin'); ?></th>
+						<?php 	/**
 							 * These columns are only available when filtering by client or group.
 							 */
 							if (isset($search_on)) {
@@ -930,35 +925,35 @@ color:#e33a49;
 															echo ($row['public_allow'] == 1) ? $status_public : $status_private;
 												?>
                     </a></td> -->
-                  <td><?php
-													if ($row['expires'] == '0') {
-												?>
-                    <a href="javascript:void(0);" class="btn btn-success disabled btn-sm">
-                    <?php _e('Does not expire','cftp_admin'); ?>
-                    </a>
-                    <?php
+
+                  <?php
+								} ?>
+								<td><?php
+												if ($row['expires'] == '0') {
+											?>
+									<a href="javascript:void(0);" class="btn btn-success disabled btn-sm">
+									<?php _e('Does not expire','cftp_admin'); ?>
+									</a>
+									<?php
+												}
+												else {
+													if (time() > strtotime($row['expiry_date'])) {
+											?>
+									<a href="javascript:void(0);" class="btn btn-danger disabled btn-sm" rel="" title="">
+									<?php _e('Expired on','cftp_admin'); ?>
+									<?php echo date(TIMEFORMAT_USE,strtotime($row['expiry_date'])); ?> </a>
+									<?php
 													}
 													else {
-														if (time() > strtotime($row['expiry_date'])) {
-												?>
-                    <a href="javascript:void(0);" class="btn btn-danger disabled btn-sm" rel="" title="">
-                    <?php _e('Expired on','cftp_admin'); ?>
-                    <?php echo date(TIMEFORMAT_USE,strtotime($row['expiry_date'])); ?> </a>
-                    <?php
-														}
-														else {
-												?>
-                    <a href="javascript:void(0);" class="btn btn-info disabled btn-sm" rel="" title="">
-                    <?php _e('Expires on','cftp_admin'); ?>
-                    <?php echo date(TIMEFORMAT_USE,strtotime($row['expiry_date'])); ?> </a>
-                    <?php
-														}
+											?>
+									<a href="javascript:void(0);" class="btn btn-info disabled btn-sm" rel="" title="">
+									<?php _e('Expires on','cftp_admin'); ?>
+									<?php echo date(TIMEFORMAT_USE,strtotime($row['expiry_date'])); ?> </a>
+									<?php
 													}
-												?></td>
-                  <?php
-										}
-
-										/**
+												}
+											?></td>
+										<?php /**
 										 * These columns are only available when filtering by client or group.
 										 */
 										if (isset($search_on)) {

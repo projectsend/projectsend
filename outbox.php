@@ -1003,15 +1003,12 @@ include('header.php');
 
                                 <th data-hide="phone"><?php _e('Public','cftp_admin'); ?></th>
 
-                                <th data-hide="phone"><?php _e('Expiry','cftp_admin'); ?></th>
-
                         <?php
 
-                            }
+                      } ?>
+                      <th data-hide="phone"><?php _e('Expiry','cftp_admin'); ?></th>
 
-
-
-                            /**
+                      <?php      /**
 
                              * These columns are only available when filtering by client or group.
 
@@ -1356,7 +1353,11 @@ include('header.php');
 
                                             </td>
 
-                                            <td>
+
+
+                                    <?php
+                                  } ?>
+                                  <td>
 
                                                 <?php
 
@@ -1410,12 +1411,7 @@ include('header.php');
 
                                             </td>
 
-                                    <?php
-
-                                        }
-
-
-
+                                        <?php
                                         /**
 
                                          * These columns are only available when filtering by client or group.

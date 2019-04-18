@@ -510,15 +510,16 @@ if(isset($_REQUEST['edit'] )== 1){echo '<div class="alert alert-success"><a href
             <table id="files_list" class="cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
               <thead>
                 <tr>
-                  
-                  <th class="td_checkbox" data-sort-ignore="true"> 
+                  <?php if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') { ?>
+                  <th class="td_checkbox" data-sort-ignore="true">
                   <label class="cc-chk-container">
                       <input type="checkbox" name="select_all" id="select_all" value="0" />
                       <span class="checkmark"></span>
                   </label>
 
                   </th>
-                  
+                <?php } ?>
+
                   <th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('Date','cftp_admin'); ?></th>
                   <th data-hide="phone,tablet"><?php _e('Ext.','cftp_admin'); ?></th>
                   <th><?php _e('Title','cftp_admin'); ?></th>
@@ -796,34 +797,34 @@ if($data['g_name']) {echo $data['g_name']."<br>";}
                                                             echo ($row['public_allow'] == 1) ? $status_public : $status_private;
                                                 ?>
                     </a></td>
-                  <td><?php
-                                                    if ($row['expires'] == '0') {
-                                                ?>
-                    <a href="javascript:void(0);" class="btn btn-success disabled btn-sm">
-                    <?php _e('Does not expire','cftp_admin'); ?>
-                    </a>
-                    <?php
-                                                    }
-                                                    else {
-                                                        if (time() > strtotime($row['expiry_date'])) {
-                                                ?>
-                    <a href="javascript:void(0);" class="btn btn-danger disabled btn-sm" rel="" title="">
-                    <?php _e('Expired on','cftp_admin'); ?>
-                    <?php echo date(TIMEFORMAT_USE,strtotime($row['expiry_date'])); ?> </a>
-                    <?php
-                                                        }
-                                                        else {
-                                                ?>
-                    <a href="javascript:void(0);" class="btn btn-info disabled btn-sm" rel="" title="">
-                    <?php _e('Expires on','cftp_admin'); ?>
-                    <?php echo date(TIMEFORMAT_USE,strtotime($row['expiry_date'])); ?> </a>
-                    <?php
-                                                        }
-                                                    }
-                                                ?></td>
                   <?php
-                                        }
-                                        /**
+                } ?>
+                <td><?php
+                                                  if ($row['expires'] == '0') {
+                                              ?>
+                  <a href="javascript:void(0);" class="btn btn-success disabled btn-sm">
+                  <?php _e('Does not expire','cftp_admin'); ?>
+                  </a>
+                  <?php
+                                                  }
+                                                  else {
+                                                      if (time() > strtotime($row['expiry_date'])) {
+                                              ?>
+                  <a href="javascript:void(0);" class="btn btn-danger disabled btn-sm" rel="" title="">
+                  <?php _e('Expired on','cftp_admin'); ?>
+                  <?php echo date(TIMEFORMAT_USE,strtotime($row['expiry_date'])); ?> </a>
+                  <?php
+                                                      }
+                                                      else {
+                                              ?>
+                  <a href="javascript:void(0);" class="btn btn-info disabled btn-sm" rel="" title="">
+                  <?php _e('Expires on','cftp_admin'); ?>
+                  <?php echo date(TIMEFORMAT_USE,strtotime($row['expiry_date'])); ?> </a>
+                  <?php
+                                                      }
+                                                  }
+                    ?></td>
+                        <?php                /**
                                          * These columns are only available when filtering by client or group.
                                          */
                                         if (isset($search_on)) {

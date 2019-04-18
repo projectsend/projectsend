@@ -614,12 +614,8 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
                   <th><?php _e('Title','cftp_admin'); ?></th>
                   <th><?php _e('Size','cftp_admin'); ?></th>
                   <th data-hide="phone,tablet"><?php _e('Uploader','cftp_admin'); ?></th>
-                  <?php
-                            if($current_level != '0') {
-                  ?>
                   <th data-hide="phone"><?php _e('Expiry','cftp_admin'); ?></th>
                   <?php
-                            }
                             /**
                              * These columns are only available when filtering by client or group.
                              */
@@ -776,7 +772,6 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
                                     </td>
 <?php
 }
-    if($current_level != '0') {
 ?>
                   <td><?php
                                                     if ($row['expires'] == '0') {
@@ -804,7 +799,6 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
                                                     }
                                                 ?></td>
                   <?php
-                                        }
                                         /**
                                          * These columns are only available when filtering by client or group.
                                          */

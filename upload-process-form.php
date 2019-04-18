@@ -822,7 +822,7 @@ while( $row = $statement->fetch() ) {
 </p>
 <?php
 
-			if ($current_level != 0) {
+			//  if ($current_level != 0) {
 
 		?>
 <div class="message message_info"><strong>
@@ -832,7 +832,7 @@ while( $row = $statement->fetch() ) {
 </div>
 <?php
 
-			}
+		//	}
 
 
 

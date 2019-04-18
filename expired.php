@@ -1545,27 +1545,13 @@ include('header.php');
 									</td>
 
 									<td data-value="<?php echo $this_file_size; ?>"><?php echo $formatted_size; ?></td>
-                  <?php
-
-										if($current_level != '0') {
-									?>
                   <td>
                   		<a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=5" class="btn-sm">
-<?php
-?>
                    		<?php _e(html_output($row['uploader']),'cftp_admin'); ?>
                     	</a>
-
-</td>
-<?php
-}else{ 
-?>
-                  <td>
-                   		<?php _e(html_output($row['uploader']),'cftp_admin'); ?>
 									</td>
 
 <?php
-}
 	if($current_level != '0') {
 ?>
 <td>

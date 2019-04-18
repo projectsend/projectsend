@@ -540,9 +540,11 @@ if(isset($_REQUEST['edit'] )== 1){echo '<div class="alert alert-success"><a href
                                     }
                                 ?>
                   <th data-hide="phone"><?php _e('Public','cftp_admin'); ?></th>
-                  <th data-hide="phone"><?php _e('Expiry','cftp_admin'); ?></th>
                   <?php
-                            }
+                } ?>
+
+                <th data-hide="phone"><?php _e('Expiry','cftp_admin'); ?></th>
+                <?php
                             /**
                              * These columns are only available when filtering by client or group.
                              */
@@ -734,7 +736,7 @@ if(isset($_REQUEST['edit'] )== 1){echo '<div class="alert alert-success"><a href
                   <?php
                   
                                         $curr_usr_nm = CURRENT_USER_USERNAME;
-                                        if($current_level != '0' && $curr_usr_nm == $row[uploader])  {
+                                        if($curr_usr_nm == $row[uploader])  {
                                     ?>
                   <td>
                         <a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=6" class="btn-sm">

@@ -811,7 +811,7 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
                     }
                      ?>
                    </td>
-                  <td><a href="edit-file.php?file_id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm">
+                  <td><a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=4" class="btn btn-primary btn-sm">
                     <?php _e('Edit','cftp_admin'); ?>
                     </a></td> 
                 </tr>

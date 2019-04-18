@@ -280,7 +280,7 @@ $actual_link = SITE_URI.'requested_file.php';
 						$reqst = $dbh->prepare($reqstmail);
 						$reqst->execute();
 						$rfile = $reqst->fetch();
-						$req_by = "SELECT * FROM tbl_drop_off_request WHERE ( to_email ='".$rfile['email']."' ) Order by requested_time DESC";
+						$req_by = "SELECT * FROM tbl_drop_off_request WHERE ( to_email ='".$rfile['email']."' AND from_id IS NOT NULL) Order by requested_time DESC";
 
 						$req_by_files = $dbh->prepare($req_by);
 						$req_by_files->execute();

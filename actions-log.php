@@ -67,7 +67,7 @@ include('header.php');
 		});
 	});
 </script>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
 <div id="main">
   <div id="content"> 
     
@@ -271,11 +271,11 @@ include('header.php');
 		      <button type="submit" id="btn_proceed_date_search" class="btn btn-sm btn-default"><?php _e('Filter','cftp_admin'); ?></button>
 		    </form>
 		    <br>
-			<form action="actions-log.php" name="actions_filters" method="post" class="form-inline form_filters">
+        <form action="actions-log.php" name="actions_filters" method="post" class="form-inline form_filters">
 				<div class="form-group group_float">
 					<label for="activity" class="sr-only"><?php _e('Filter activities','cftp_admin'); ?></label>
-					<select name="activity" id="activity" class="form-control">
-						<option value="all"><?php _e('All activities','cftp_admin'); ?></option>
+					<select name="activity[]" id="activity" multiple data-live-search="true">
+						<option value="all" ><?php _e('All activities','cftp_admin'); ?></option>
 						<?php
 							global $activities_references;
 								foreach ( $activities_references as $val => $text ) {
@@ -495,4 +495,9 @@ $("#date_to").on("change paste keyup", function() {
 $("#activity").on("change paste keyup", function() {
   $('#key-activity').val($(this).val());
 });
+</script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+<script type="text/javascript">
+  $('#activity').selectpicker();
 </script>

@@ -905,4 +905,5 @@ totalcount[0].innerHTML = numfiles.length + " files";
     td:nth-of-type(9):before { content: "Total downloads"; }
 }
 /*-------------------- Responsive table End--------------------------*/
+
 </style>

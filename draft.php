@@ -648,9 +648,11 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
               </td>
               <td data-value="<?php echo filemtime($add_file['path']); ?>"><?php echo date(TIMEFORMAT_USE, filemtime($add_file['path'])); ?></td>
               <td><?php echo(pathinfo($add_file['name'], PATHINFO_EXTENSION)); ?></td>
-              <td><a draft-file= "<?php echo html_output($add_file['name']); ?>"  class="btn-ftp">
+              <td>
+                <a draft-file= "<?php echo html_output($add_file['name']); ?>"  class="btn-ftp">
               <?php _e(html_output($add_file['name']),'cftp_admin'); ?>
-                </a></td>
+                </a>
+              </td>
               <td data-value="<?php echo filesize($add_file['path']); ?>"><?php echo html_output(format_file_size(get_real_size($add_file['path']))); ?></td>
               <td colspan="4"> </td>
               </tr>
@@ -740,21 +742,10 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
                                             echo html_output($extension);
                                         ?></td>
                   <td class="file_name"><?php
-                                            /**
-                                             * Clients cannot download from here.
-                                             */
-                                    if($current_level != '0') {
-                                            if(($row['expires'] == '0') || (time() < strtotime($row['expiry_date']))) {
-                                                $download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
+                                            $download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
                                         ?>
-                    <a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=4" > <?php echo html_output($row['filename']); ?> </a>
-                    <?php
-                                            }
-                                        }
-                                            else {
-                                                echo html_output($row['filename']);
-                                            }
-                                        ?></td>
+                                      <a href="<?php echo $download_link; ?>" target="_blank"> <?php echo html_output($row['filename']); ?> </a>
+                                      </td>
                   <td data-value="<?php echo $this_file_size; ?>"><?php echo $formatted_size; ?></td>
                   <td>
                         <a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=4" class="btn-sm">

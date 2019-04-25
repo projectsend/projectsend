@@ -790,6 +790,7 @@ while( $row = $statement->fetch() ) {
 						?>
       <td><a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>" class="btn-primary btn btn-sm">
         <?php _e('Edit file','cftp_admin'); ?>
+z
 			</td>
     </tr>
     <?php
@@ -1105,6 +1106,7 @@ while( $row = $statement->fetch() ) {
 
     <div class="divider">
     </div>
+		<?php if ($current_level != 0) { ?>
 			<h3>
 				<?php _e('Public downloading', 'cftp_admin');?>
 			</h3>
@@ -1114,6 +1116,7 @@ while( $row = $statement->fetch() ) {
 			<?php _e('Allow public downloading of this file.', 'cftp_admin');?>
 		</label>
     </div>
+	<?php } ?>
 
     <div class="form-group">
 

@@ -203,12 +203,6 @@ include('header.php');
 				
 				switch($_POST['files_actions']) {
 					case 'hide':
-						/**
-						 * Changes the value on the "hidden" column value on the database.
-						 * This files are not shown on the client's file list. They are
-						 * also not counted on the home.php files count when the logged in
-						 * account is the client.
-						 */
 						foreach ($selected_files as $work_file) {
 							$this_file = new FilesActions();
 							$hide_file = $this_file->manage_hide($work_file);
@@ -516,10 +510,10 @@ include('header.php');
 									if ( !isset( $search_on ) ) {
 								?>
                   <th data-hide="phone"><?php _e('Assigned','cftp_admin'); ?></th>
-                  <?php
+                  <th data-hide="phone"><?php _e('Public','cftp_admin'); ?></th>
+									<?php
 									}
 								?>
-                  <th data-hide="phone"><?php _e('Public','cftp_admin'); ?></th>
                   <th data-hide="phone"><?php _e('Expiry','cftp_admin'); ?></th>
                   <?php
 							}
@@ -656,9 +650,6 @@ include('header.php');
 															$status	= ($count_assignations == 0) ? __('No','cftp_admin') : __('Yes','cftp_admin');
 														?>
                     <span class="label label-<?php echo $class; ?>"> <?php echo $status; ?> </span></td>
-                  <?php
-												}
-											?>
                   <td class="col_visibility"><?php
 													if ($row['public_allow'] == '1') {
 												?>
@@ -675,6 +666,10 @@ include('header.php');
 															echo ($row['public_allow'] == 1) ? $status_public : $status_private;
 												?>
                     </a></td>
+
+                  <?php
+												}
+											?>
                   <td><?php
 													if ($row['expires'] == '0') {
 												?>

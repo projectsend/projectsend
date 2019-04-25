@@ -198,9 +198,6 @@ switch ($clients_form_type) {
 						</label>
 					</div>
 				</div>
-		<?php
-			}
-		?>
 	<div class="form-group">
 		<div class="col-sm-8 col-sm-offset-4">
 			<label for="add_client_form_notify">
@@ -208,7 +205,9 @@ switch ($clients_form_type) {
 			</label>
 		</div>
 	</div>
-	
+	<?php
+		}
+	?>
 	<?php
 		if ( $clients_form_type == 'new_client_self' ) {
 			if ( defined('RECAPTCHA_AVAILABLE') ) {

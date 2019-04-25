@@ -187,6 +187,10 @@ if ( in_session_or_cookies( array( 9,8,7 ) ) )
 													'link'	=> 'email-templates.php',
 												),
 												array(
+													'label'	=> __('Guest Files', 'cftp_admin'),
+													'link'	=> 'guest-files.php',
+												),
+												array(
 													'label'	=> __('Orphan Files', 'cftp_admin'),
 													'link'	=> 'upload-import-orphans.php',
 												),

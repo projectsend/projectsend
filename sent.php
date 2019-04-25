@@ -566,13 +566,7 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
                   <th><?php _e('Title','cftp_admin'); ?></th>
                   <th><?php _e('Size','cftp_admin'); ?></th>
                   <th data-hide="phone,tablet"><?php _e('Uploader','cftp_admin'); ?></th>
-                  <?php
-                            if($current_level != '0') {
-                        ?>
                   <th data-hide="phone,tablet"><?php _e('Sent to','cftp_admin'); ?></th>
-                  <?php
-                            }
-                  ?>
                   <th data-hide="phone" ><?php _e('Expiry','cftp_admin'); ?></th>
                   <?php
                             /**
@@ -712,9 +706,6 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
 											<?php _e(html_output($row['uploader']),'cftp_admin'); ?>
 									</td>
                 <?php } ?>
-									<?php
-									if($current_level != '0')
-									{?>
 										<td >
 											<?php
 											$senders_list = $dbh->prepare("SELECT tfr.*,tu.*,tg.name as g_name FROM " . TABLE_FILES_RELATIONS . " AS tfr LEFT JOIN ".TABLE_USERS." AS tu ON tfr.client_id= tu.id LEFT JOIN ".TABLE_GROUPS." AS tg ON tg.id = tfr.group_id WHERE tfr.file_id=:file_id" );
@@ -730,43 +721,38 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
 											}
 											?>
 										</td>
-
-										
-											<?php
-									 } ?>
-									 <td>
-											<?php
-											if ($row['expires'] == '0')
-											{
-											?>
-												<a href="javascript:void(0);" class="btn btn-success disabled btn-sm">
-													<?php _e('Does not expire','cftp_admin'); ?>
-												</a>
-											<?php
-											}
-											else
-											{
-												if (time() > strtotime($row['expiry_date']))
-												{
-												?>
-													<a href="javascript:void(0);" class="btn btn-danger disabled btn-sm" rel="" title="">
-													<?php _e('Expired on','cftp_admin'); ?>
-													<?php echo date(TIMEFORMAT_USE,strtotime($row['expiry_date'])); ?> </a>
-												<?php
-												}
-												else
-												{
-												?>
-													<a href="javascript:void(0);" class="btn btn-info disabled btn-sm" rel="" title="">
-													<?php _e('Expires on','cftp_admin'); ?>
-													<?php echo date(TIMEFORMAT_USE,strtotime($row['expiry_date'])); ?> </a>
-													<?php
-												}
-											}
-											?>
-											</td>
-									 <?php
-									/**
+                  <td>
+                    <?php
+                    if ($row['expires'] == '0')
+                    {
+                    ?>
+                      <a href="javascript:void(0);" class="btn btn-success disabled btn-sm">
+                        <?php _e('Does not expire','cftp_admin'); ?>
+                      </a>
+                    <?php
+                    }
+                    else
+                    {
+                      if (time() > strtotime($row['expiry_date']))
+                      {
+                      ?>
+                        <a href="javascript:void(0);" class="btn btn-danger disabled btn-sm" rel="" title="">
+                        <?php _e('Expired on','cftp_admin'); ?>
+                        <?php echo date(TIMEFORMAT_USE,strtotime($row['expiry_date'])); ?> </a>
+                      <?php
+                      }
+                      else
+                      {
+                      ?>
+                        <a href="javascript:void(0);" class="btn btn-info disabled btn-sm" rel="" title="">
+                        <?php _e('Expires on','cftp_admin'); ?>
+                        <?php echo date(TIMEFORMAT_USE,strtotime($row['expiry_date'])); ?> </a>
+                        <?php
+                      }
+                    }
+                    ?>
+                    </td>
+								<?php	/**
 									 * These columns are only available when filtering by client or group.
 									 */
 									if (isset($search_on))

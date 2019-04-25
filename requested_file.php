@@ -307,6 +307,7 @@ $actual_link = SITE_URI.'requested_file.php';
 									</th>
 									<th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('From name','cftp_admin'); ?></th>
 									<th data-hide="phone,tablet"><?php _e('Subject.','cftp_admin'); ?></th>
+									<th data-hide="phone,tablet"><?php _e('From Organization.','cftp_admin'); ?></th>
 									<th><?php _e('email','cftp_admin'); ?></th>
 									<th><?php _e('Note','cftp_admin'); ?></th>
 									<th><?php _e('Status','cftp_admin'); ?></th>
@@ -330,6 +331,7 @@ $actual_link = SITE_URI.'requested_file.php';
 												<span class="checkmark"></span> </label></td>
 										<td><?php echo $row['from_name']; ?></td>
 										<td class="file_name"><?php echo $row['to_subject_request']; ?></td>
+                    <td><?php if($row['from_organization'] != NULL){ echo $row['from_organization']; } else { echo ("--"); } ?></td>
 										<td><?php echo $row['from_email']; ?></td>
 										<td><?php echo $row['to_note_request']; ?></td>
 										<td class="<?php echo (!empty($row['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>">
@@ -461,13 +463,12 @@ $actual_link = SITE_URI.'requested_file.php';
     td:nth-of-type(1):before { content: ""; }
     td:nth-of-type(2):before { content: "To Name"; }
     td:nth-of-type(3):before { content: "Subject"; }
-
-    .tb1 td:nth-of-type(5):before ,.tb2 td:nth-of-type(4):before{ content: "Email"; }
-    .tb1 td:nth-of-type(4):before { content: "Organization"; }
-    .tb1 td:nth-of-type(6):before ,.tb2 td:nth-of-type(5):before{ content: "Note"; }
-		.tb1 td:nth-of-type(7):before ,.tb2 td:nth-of-type(6):before{ content: "Status"; }
-    .tb1 td:nth-of-type(8):before ,.tb2 td:nth-of-type(7):before{ content: "Requested Time"; }
-    .tb1 td:nth-of-type(9):before ,.tb2 td:nth-of-type(8):before{ content: "Action"; }
+    .tb1 td:nth-of-type(4):before ,.tb2 td:nth-of-type(4):before{ content: "Organization"; }
+    .tb1 td:nth-of-type(5):before ,.tb2 td:nth-of-type(5):before{ content: "Email"; }
+    .tb1 td:nth-of-type(6):before ,.tb2 td:nth-of-type(6):before{ content: "Note"; }
+		.tb1 td:nth-of-type(7):before ,.tb2 td:nth-of-type(7):before{ content: "Status"; }
+    .tb1 td:nth-of-type(8):before ,.tb2 td:nth-of-type(8):before{ content: "Requested Time"; }
+    .tb1 td:nth-of-type(9):before ,.tb2 td:nth-of-type(9):before{ content: "Action"; }
 }
 /*-------------------- Responsive table End--------------------------*/
 </style>

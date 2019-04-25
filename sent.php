@@ -690,8 +690,6 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
 										/**
 										 * Clients cannot download from here.
 										 */
-										if($current_level != '0')
-										{
 											if(($row['expires'] == '0') || (time() < strtotime($row['expiry_date'])))
 											{
 												$download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['file_id'].'&amp;n=1';
@@ -699,11 +697,6 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
 												<a href="<?php echo $download_link; ?>" target="_blank"> <?php echo html_output($row['filename']); ?> </a>
 											<?php
 											}
-										}
-										else
-										{
-											echo html_output($row['filename']);
-										}
 										?>
 									</td>
 									<td data-value="<?php echo $this_file_size; ?>"><?php echo $formatted_size; ?></td>

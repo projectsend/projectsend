@@ -18,8 +18,8 @@
 				is_complete(this.add_client_form_email,'<?php echo $validation_no_email; ?>');
 				is_length(this.add_client_form_user,<?php echo MIN_USER_CHARS; ?>,<?php echo MAX_USER_CHARS; ?>,'<?php echo $validation_length_user; ?>');
 				is_email(this.add_client_form_email,'<?php echo $validation_invalid_mail; ?>');
-				is_alpha_or_dot(this.add_client_form_user,'<?php echo $validation_alpha_user; ?>');
-			
+				// is_alpha_or_dot(this.add_client_form_user,'<?php // echo $validation_alpha_user; ?>');
+
 			<?php
 				/**
 				 * Password validation is optional only when editing a client.
@@ -38,7 +38,7 @@
 						//is_complete(this.add_client_form_pass2,'<?php echo $validation_no_pass2; ?>');
 						is_length(this.add_client_form_pass,<?php echo MIN_PASS_CHARS; ?>,<?php echo MAX_PASS_CHARS; ?>,'<?php echo $validation_length_pass; ?>');
 						is_password(this.add_client_form_pass,'<?php $chars = addslashes($validation_valid_chars); echo $validation_valid_pass." ".$chars; ?>');
-						//is_match(this.add_client_form_pass,this.add_client_form_pass2,'<?php echo $validation_match_pass; ?>');
+						//is_match(this.add_client_form_pass,this.add_client_form_pass2,'<?php //echo $validation_match_pass; ?>');
 
 			<?php
 				/** Close the jquery IF statement. */

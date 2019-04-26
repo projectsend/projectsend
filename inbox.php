@@ -566,10 +566,6 @@ color:#e33a49;
             </div>
           </div>
           <form action="<?php echo html_output($form_action_url); ?>" name="files_list" method="post" class="form-inline">
-            <?php
-				/** Actions are not available for clients */
-				if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
-			?>
             <div class="form_actions_right">
               <div class="form_actions">
                 <div class="form_actions_submit">
@@ -592,9 +588,16 @@ color:#e33a49;
                       <option value="hide">
                       <?php _e('Hide','cftp_admin'); ?>
                       </option>
+											<?php
+												/** Actions are not available for clients */
+												if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
+											?>
                       <option value="unassign">
                       <?php _e('Unassign','cftp_admin'); ?>
                       </option>
+											<?php
+											}
+										?>
                       <option value="delete">
                       <?php _e('Delete','cftp_admin'); ?>
                       </option>
@@ -606,9 +609,7 @@ color:#e33a49;
                 </div>
               </div>
             </div>
-            <?php
-				}
-			?>
+
             <div class="clear"></div>
             <div class="form_actions_count">
               <p class="form_count_total">
@@ -651,7 +652,7 @@ color:#e33a49;
                 <tr>
                   <?php
 							/** Actions are not available for clients if delete own files is false */
-							if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
+							// if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
 						?>
                   <th class="td_checkbox" data-sort-ignore="true"> 
                   <label class="cc-chk-container">
@@ -660,7 +661,7 @@ color:#e33a49;
                   </label>
                   </th>
                   <?php
-							}
+							// }
 						?>
                   <th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('Date','cftp_admin'); ?></th>
                   <th data-hide="phone,tablet"><?php _e('Ext.','cftp_admin'); ?></th>
@@ -796,7 +797,7 @@ color:#e33a49;
                 
                   <?php
 										/** Actions are not available for clients */
-										if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
+										// if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
 									?>
                   <td>
                   <label class="cc-chk-container">
@@ -813,7 +814,7 @@ color:#e33a49;
                   </label>
                   </td>
                   <?php
-										}
+										// }
 									?>
                   <td data-value="<?php echo strtotime($row['timestamp']); ?>"><?php echo $date; ?></td>
                   <td><?php

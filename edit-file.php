@@ -99,11 +99,6 @@ $get_categories = get_categories();
  * system user or a client.
  */
 $current_level = get_current_user_level();
-
-
-
-//echo '<pre>'; print_r($_POST); echo '</pre>'; // DEBUG
-//exit;
 ?>
 
 <div id="main">
@@ -429,9 +424,6 @@ $message = '
 						array_push($full_list,'c'.$nuser_id);
 					}
 				}
-									//	echo "HERE !!!222 ";print_r($full_list);exit;
-
-				//print_r($full_list);exit();
 				$full_assi_user = $full_list;
 //------------------------------------------------------------
                 if($get_prev_id != 3){

@@ -300,7 +300,10 @@ class PSend_Upload_File
 				$this->statement->bindParam(':assignment', $this->assignment);
 				$this->statement->bindParam(':hidden', $this->hidden, PDO::PARAM_INT);
 				$this->statement->execute();
-				
+				$this->statement = $this->dbh->prepare("UPDATE tbl_files SET prev_assign ='0' WHERE id = :file_id");
+				$this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+				$this->statement->execute();
+
 				if ($this->uploader_type == 'user') {
 					/** Record the action log */
 					$new_log_action = new LogActions();
@@ -469,7 +472,9 @@ class PSend_Upload_File
 										'groups' => $this->delete_from_db_groups,
 										'owner_id' => $this->owner_id
 									);
-
+		$this->statement = $this->dbh->prepare("UPDATE tbl_files SET prev_assign ='2' WHERE id = :file_id");
+		$this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+		$this->statement->execute();
 		$this->delete_assignments($this->delete_arguments);
 	}
 

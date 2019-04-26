@@ -692,7 +692,8 @@ $message = '
                             </label>
                           </div>
                           <div class="divider"></div>
-                          <h3>
+			<?php if($current_level != 0){ ?>
+                          <h3> 
                             <?php _e('Public downloading', 'cftp_admin');?>
                           </h3>
                           <div class="checkbox">
@@ -701,6 +702,7 @@ $message = '
                               <?php _e('Allow public downloading of this file.', 'cftp_admin');?>
                             </label>
                           </div>
+			<?php } ?>
                           <div class="form-group">
                             <label>
                               <?php _e('Number of Downloads Allowed', 'cftp_admin');?>

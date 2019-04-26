@@ -539,7 +539,7 @@ color:#e33a49;
               </form>
               <?php
 					/** Filters are not available for clients */
-					/*if($current_level != '0' && $results_type != 'global') {
+					/*if($current_level != 0 && $results_type != 'global') {
 				?>
 						<form action="<?php echo html_output($form_action_url); ?>" name="files_filters" method="post" class="form-inline form_filters">
 							<div class="form-group group_float">
@@ -590,7 +590,7 @@ color:#e33a49;
                       </option>
 											<?php
 												/** Actions are not available for clients */
-												if($current_level != '0') {
+												if($current_level != 0) {
 											?>
                       <option value="unassign">
                       <?php _e('Unassign','cftp_admin'); ?>
@@ -652,7 +652,7 @@ color:#e33a49;
                 <tr>
                   <?php
 							/** Actions are not available for clients if delete own files is false */
-							// if($current_level != '0') {
+							// if($current_level != 0) {
 						?>
                   <th class="td_checkbox" data-sort-ignore="true"> 
                   <label class="cc-chk-container">
@@ -671,7 +671,7 @@ color:#e33a49;
 				  <th data-hide="phone,tablet" data-sort-ignore="true"><?php _e('Download/Limit','cftp_admin'); ?></th>
                   <th data-hide="phone,tablet"><?php _e('Uploader','cftp_admin'); ?></th>
                   <?php
-							if($current_level != '0') {
+							if($current_level != 0) {
 						?>
 
                   <?php
@@ -695,7 +695,7 @@ color:#e33a49;
                   <?php
 							}
 							else {
-								if($current_level != '0') {
+								if($current_level != 0) {
 						?>
                   <th data-hide="phone"><?php _e('Total downloads','cftp_admin'); ?></th>
                   <?php
@@ -797,7 +797,7 @@ color:#e33a49;
                 
                   <?php
 										/** Actions are not available for clients */
-										// if($current_level != '0') {
+										// if($current_level != 0) {
 									?>
                   <td>
                   <label class="cc-chk-container">
@@ -899,7 +899,7 @@ color:#e33a49;
 
                   
                   <?php
-										if($current_level != '0') {
+										if($current_level != 0) {
 												if ( !isset( $search_on ) ) {
 											?>
                   <!-- <td class="hideNow"><?php

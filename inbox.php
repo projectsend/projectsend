@@ -5,9 +5,7 @@
  *
  * @package ProjectSend
  */
-$load_scripts	= array(
-						'footable',
-					); 
+$load_scripts	= array('footable',); 
 
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');

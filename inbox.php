@@ -5,7 +5,9 @@
  *
  * @package ProjectSend
  */
-$load_scripts	= array('footable',); 
+$load_scripts	= array(
+						'footable',
+					);
 
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
@@ -588,17 +590,17 @@ color:#e33a49;
                       </option>
 											<?php
 												/** Actions are not available for clients */
-												if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
+												if($current_level != '0') {
 											?>
                       <option value="unassign">
                       <?php _e('Unassign','cftp_admin'); ?>
                       </option>
-											<?php
-											}
-										?>
                       <option value="delete">
                       <?php _e('Delete','cftp_admin'); ?>
                       </option>
+											<?php
+											}
+										?>
                     </select>
                   </div>
                   <button type="submit" name="do_action" id="do_action" class="btn btn-sm btn-default">
@@ -650,7 +652,7 @@ color:#e33a49;
                 <tr>
                   <?php
 							/** Actions are not available for clients if delete own files is false */
-							// if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
+							// if($current_level != '0') {
 						?>
                   <th class="td_checkbox" data-sort-ignore="true"> 
                   <label class="cc-chk-container">
@@ -795,7 +797,7 @@ color:#e33a49;
                 
                   <?php
 										/** Actions are not available for clients */
-										// if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
+										// if($current_level != '0') {
 									?>
                   <td>
                   <label class="cc-chk-container">

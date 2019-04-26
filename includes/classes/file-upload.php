@@ -165,7 +165,9 @@ class PSend_Upload_File
 		$this->uploader_type		= $arguments['uploader_type'];
 		$this->is_public		= (!empty($arguments['public'])) ? 1 : 0;
 		$this->public_token		= generateRandomString(32);
-		if($arguments['prev_assign'] == '2'){
+		if($this->is_public = 1){
+			$prev_assign = '0'; }
+		else if($arguments['prev_assign'] == '2'){
 			$prev_assign = '2';
 			} else{
 				$prev_assign = '0';
@@ -238,7 +240,8 @@ class PSend_Upload_File
 												future_send_date = :future_send_date,
 												expiry_date = :expiry_date,
 												public_allow = :public,
-												public_token = :token
+												public_token = :token,
+												prev_assign = :prev_assign
 												WHERE id = :id
 											");
 			$this->statement->bindParam(':title', $this->name);
@@ -250,6 +253,7 @@ class PSend_Upload_File
 			$this->statement->bindParam(':expiry_date', $this->expiry_date);
 			$this->statement->bindParam(':public', $this->is_public, PDO::PARAM_INT);
 			$this->statement->bindParam(':token', $this->public_token);
+			$this->statement->bindParam(':prev_assign', $prev_assign);
 			$this->statement->bindParam(':id', $this->file_id, PDO::PARAM_INT);
 			$this->statement->execute();
 		}

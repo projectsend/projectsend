@@ -419,7 +419,7 @@ include('header.php');
           <form action="<?php echo html_output($form_action_url); ?>" name="files_list" method="post" class="form-inline">
             <?php
                 /** Actions are not available for clients */
-                if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
+                if($current_level != '0'  ) {
             ?>
             <div class="form_actions_right">
               <div class="form_actions">
@@ -510,7 +510,7 @@ if(isset($_REQUEST['edit'] )== 1){echo '<div class="alert alert-success"><a href
             <table id="files_list" class="cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
               <thead>
                 <tr>
-                  <?php if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') { ?>
+                  <?php if($current_level != '0'  ) { ?>
                   <th class="td_checkbox" data-sort-ignore="true">
                   <label class="cc-chk-container">
                       <input type="checkbox" name="select_all" id="select_all" value="0" />
@@ -636,7 +636,7 @@ if(isset($_REQUEST['edit'] )== 1){echo '<div class="alert alert-success"><a href
                 <tr>
                   <?php
                                         /** Actions are not available for clients */
-                                        if($current_level != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
+                                        if($current_level != '0') {
                                     ?>
                   <td>
 				  <?php 

@@ -106,7 +106,7 @@ class GroupActions
 		$this->name = $arguments['name'];
 		$this->description = $arguments['description'];
 		$this->members = $arguments['members'];
-		$this->status = $arguments['status'];
+		$this->status = '1';
 		$this->timestamp = time();
 
 		/** Who is adding the members to the group? */

@@ -711,15 +711,19 @@ include('header.php');
                     <span class="label label-<?php echo $class; ?>"> <?php echo ($hidden == 1) ? $status_hidden : $status_visible; ?> </span></td>
                   <td><?php
 													switch ($results_type) {
-														case 'client':
-															echo $download_count; ?>
-                    <?php _e('times','cftp_admin');
+														case 'client':?>
+														<a href="javascript:void(0);" class="<?php if ($download_count > 0) { echo 'downloaders btn-primary'; } else { echo 'btn-default disabled'; } ?> btn btn-sm" rel="<?php echo $row["id"]; ?>" title="<?php echo html_output($row['filename']); ?>">
+															<?php echo $download_count; ?>
+				                    <?php _e('downloads','cftp_admin'); ?>
+				                    </a>
+                    <?php
 															break;
 				
 														case 'group':
 														case 'category':
 												?>
-                    <a href="javascript:void(0);" class="<?php if ($download_count > 0) { echo 'downloaders btn-primary'; } else { echo 'btn-default disabled'; } ?> btn btn-sm" rel="<?php echo $row["id"]; ?>" title="<?php echo html_output($row['filename']); ?>"> <?php echo $download_count; ?>
+                    <a href="javascript:void(0);" class="<?php if ($download_count > 0) { echo 'downloaders btn-primary'; } else { echo 'btn-default disabled'; } ?> btn btn-sm" rel="<?php echo $row["id"]; ?>" title="<?php echo html_output($row['filename']); ?>">
+											<?php echo $download_count; ?>
                     <?php _e('downloads','cftp_admin'); ?>
                     </a>
                     <?php

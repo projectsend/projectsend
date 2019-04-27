@@ -165,7 +165,7 @@ class PSend_Upload_File
 		$this->uploader_type		= $arguments['uploader_type'];
 		$this->is_public		= (!empty($arguments['public'])) ? 1 : 0;
 		$this->public_token		= generateRandomString(32);
-		if($this->is_public = 1){
+		if($this->is_public == 1){
 			$prev_assign = '0'; }
 		else if($arguments['prev_assign'] == '2'){
 			$prev_assign = '2';

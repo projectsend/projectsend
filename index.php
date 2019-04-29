@@ -364,7 +364,7 @@ catch ( Exception $e ) {
                     <div id="message"></div>
                     <label class="label">Email</label>
                     <label class="input"> <i class="icon-append fa fa-user"></i>
-                    <input type="text" id="ldap_email" placeholder="email" value="riemann@ldap.forumsys.com" class="form-control">
+                    <input type="text" id="ldap_email" placeholder="email" value="" class="form-control">
                     </label>
                     </section>
                     <section>

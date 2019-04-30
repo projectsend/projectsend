@@ -1242,13 +1242,14 @@ z
 					</div>
 					<div class="divider"></div>
 
-
+        <?php if ($current_level != 0) { ?>
 				  <div class="checkbox">
 					<label for="hid_checkbox_<?php echo $i; ?>">
 					  <input type="checkbox" id="hid_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][hidden]" value="1" />
 					  <?php _e('Upload hidden (will not send notifications)', 'cftp_admin');?>
 					</label>
 				  </div>
+        <?php } ?>
 				</div>
 			</div>
   <div class="col-sm-6 col-xl-3 categories column">

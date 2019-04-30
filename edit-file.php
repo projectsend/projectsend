@@ -786,20 +786,22 @@ $message = '
                             <?php _e('Remove all','cftp_admin'); ?>
                             </a> </div>
                           <div class="divider"></div>
+                        <?php if ($current_level != 0) { ?>			      
                           <div class="checkbox">
                             <label for="hid_checkbox">
                               <input type="checkbox" id="hid_checkbox" name="file[<?php echo $i; ?>][hidden]" value="1" />
                               <?php _e('Upload hidden (will not send notifications)', 'cftp_admin');?>
                             </label>
                           </div>
-                          <?php if ($get_prev_id != 4) { ?>
+			<?php } ?>
+                        <?php if ($current_level != 0) { if ($get_prev_id != 4) { ?>
                           <div class="checkbox">
                             <label for="hid_existing_checkbox">
                               <input type="checkbox" id="hid_existing_checkbox" name="file[<?php echo $i; ?>][hideall]" value="1" />
                               <?php _e('Hide from every already assigned clients and groups.', 'cftp_admin');?>
                             </label>
                           </div>
-                        <?php } ?>
+                       <?php } } ?>
                         </div>
                       </div>
                       <div class="col-sm-6 col-xl-3 categories column">

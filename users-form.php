@@ -180,16 +180,16 @@ switch ($user_form_type) {
 				</div>
 			</div>
 			
-			<div class="form-group">
+		<?php
+			}
+		?>
+	<div class="form-group">
 		<div class="col-sm-8 col-sm-offset-4">
 			<label for="add_user_form_notify">
  			    <input type="checkbox" name="add_user_form_notify" id="add_user_form_notify" <?php echo (isset($add_user_data_notity) && $add_user_data_notity == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Notify new uploads by e-mail','cftp_admin'); ?>
 			</label>
 		</div>
 	</div>
-		<?php
-			}
-		?>
 
 	<div class="inside_form_buttons cc-text-right">
 		<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php echo $submit_value; ?></button>

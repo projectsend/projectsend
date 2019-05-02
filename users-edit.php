@@ -112,6 +112,8 @@ if ($_POST) {
 		$add_user_data_active = (isset($_POST["add_user_form_active"])) ? 1 : 0;
 		$add_user_data_notity		= (isset($_POST["add_user_form_notify"])) ? 1 : 0;
 	}
+
+	$add_user_data_notity		= (isset($_POST["add_user_form_notify"])) ? 1 : 0;
 	/** Arguments used on validation and user creation. */
 	$edit_arguments = array(
 							'id'		=> $user_id,

@@ -546,7 +546,13 @@ while( $row = $statement->fetch() ) {
 
 							$add_arguments['uploader_type'] = 'user';
 
-							$add_arguments['expires'] = '0';
+							if (!empty($file['expires'])) {
+
+								$add_arguments['expires'] = '1';
+
+								$add_arguments['expiry_date'] = $file['expiry_date'];
+
+							}
 
 							$add_arguments['public'] = '0';
 

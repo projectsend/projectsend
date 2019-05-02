@@ -1449,8 +1449,9 @@ z
 		?>
 
 				$('.assignto').chosen({
-
+				<?php if ($current_level != 0) { ?>
 				no_results_text	: "<?php _e('Invite User :','cftp_admin'); ?>",
+				<?php } ?>
 
 				width			: "98%",
 

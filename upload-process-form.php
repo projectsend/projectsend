@@ -496,7 +496,14 @@ while( $row = $statement->fetch() ) {
 									);
 
 							$notify_send = $e_notify->psend_send_email($e_arg);
-
+							$new_log_action = new LogActions();
+							$log_action_args = array(
+													'action' => 2,
+													'owner_id' => $global_id,
+													'affected_account' =>$nuser_id,
+													'affected_account_name' => $nuser
+												);
+							$new_record_action = $new_log_action->log_action_save($log_action_args);
 
 
 }

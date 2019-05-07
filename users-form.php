@@ -76,7 +76,7 @@ switch ($user_form_type) {
 		break;
 	case 'edit_user_self':
 		$submit_value = __('Update account','cftp_admin');
-		$disable_user = true;
+		$disable_user = false;
 		$require_pass = false;
 		$form_action = 'users-edit.php?id='.$user_id_mic;
 		$extra_fields = false;

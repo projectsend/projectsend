@@ -105,7 +105,9 @@ $email_strings_invite_client = array(
 
 									'body2'			=> __('You can log in following this link','cftp_admin'),
 
-									'body3'			=> __('Please contact the administrator if you need further assistance.','cftp_admin'),
+									'body3'			=> __('After Signing in click "My account" link and update your account Information.','cftp_admin'),
+
+									'body4'			=> __('Please contact the administrator if you need further assistance.','cftp_admin'),
 
 									'label_user'	=> __('Your username','cftp_admin'),
 
@@ -388,6 +390,7 @@ class PSend_Email
 		global $email_strings_invite_client;
 		//global $email_strings_new_client;
 		$this->email_body = $this->email_prepare_body('new_client');
+		$body3 = $email_strings_invite_client['body3'].'<br>'.$email_strings_invite_client['body4'];
 
 		$this->email_body = str_replace(
 
@@ -401,7 +404,7 @@ class PSend_Email
 
 										$email_strings_invite_client['body2'],
 
-										$email_strings_invite_client['body3'],
+										$body3,
 
 										$email_strings_invite_client['label_user'],
 

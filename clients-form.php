@@ -71,7 +71,7 @@ switch ($clients_form_type) {
 	/** User is editing an existing client */
 	case 'edit_client':
 		$submit_value = __('Save client','cftp_admin');
-		$disable_user = false;
+		$disable_user = true;
 		$require_pass = false;
 		$form_action = 'clients-edit.php?id='.$client_id;
 		$info_box = false;

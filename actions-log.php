@@ -163,6 +163,7 @@ border: solid 1px #ccc;
 
 
 		$no_results_error = 'filter';
+		
 	}
   else if(isset($_POST['submit-all'])){
     if($_POST['key-activity']=="all"){

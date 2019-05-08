@@ -18,7 +18,11 @@ $page_title = __('Activities Log','cftp_admin');;
 
 include('header.php');
 ?>
-
+<style media="screen">
+.btn.dropdown-toggle.bs-placeholder.btn-light {
+border: solid 1px #ccc;
+}
+</style>
 <script type="text/javascript">
 	$(document).ready( function() {
 		$("#do_action").click(function() {
@@ -149,22 +153,14 @@ include('header.php');
 			$params[':date']	= '%'.$date.'%';
 		}				
 		else {
-			$date_to = date('Y-m-d', strtotime($date_to . ' +1 day'));	
-			//$cq .= " WHERE (timestamp BETWEEN :date AND :date_to)";	
-			$cq .= " WHERE (timestamp >= :date AND timestamp <= :date_to)";					
-			$next_clause = ' AND';						
-			$no_results_error = 'date search';						
-			$params[':date']	= $date;						
-			$params[':date_to']	= $date_to;							
-		}				
-		
-	}
-	else if(isset($_POST['activity']) && $_POST['activity'] != 'all') {
-		$next_clause = ' WHERE';
-		$cq .= $next_clause. " action=:status";
+			$date_to = date('Y-m-d', strtotime($date_to . ' +1 day'));
+			$cq .= " WHERE (timestamp >= :date AND timestamp <= :date_to)";
+			$next_clause = ' AND';
+			$no_results_error = 'date search';
+			$params[':date']	= $date;
+			$params[':date_to']	= $date_to;
+		}
 
-		$status_filter		= $_POST['activity'];
-		$params[':status']	= $status_filter;
 
 		$no_results_error = 'filter';
 	}
@@ -187,19 +183,21 @@ include('header.php');
     } else {
       $date_from = date("Y-m-d", strtotime( $_POST['key-date-from']) );
       $date_to = date("Y-m-d", strtotime( $_POST['key-date-to']) );
+        $k_activity = $_POST['key-activity'];
+        $k_activity=array_map('intval', explode(',', $k_activity));
+        $k_activity = implode("','",$k_activity);
 
       if($date_from === $date_to) {
-        $cq .= " WHERE (owner_user LIKE :owner OR affected_file_name LIKE :file OR affected_account_name LIKE :account)AND action =:status AND timestamp LIKE :date ";
+        $cq .= " WHERE (owner_user LIKE :owner OR affected_file_name LIKE :file OR affected_account_name LIKE :account)AND action IN ('".$k_activity."') AND timestamp LIKE :date ";
         $params[':date']	= '%'.$date_from.'%';
       }
       else {
-        $cq .= " WHERE (owner_user LIKE :owner OR affected_file_name LIKE :file OR affected_account_name LIKE :account)AND action =:status AND timestamp >= :date AND timestamp <= :date_to ";
+        $cq .= " WHERE (owner_user LIKE :owner OR affected_file_name LIKE :file OR affected_account_name LIKE :account)AND action IN ('".$k_activity."') AND timestamp >= :date AND timestamp <= :date_to ";
         $date_to = date('Y-m-d', strtotime($date_to . ' +1 day'));
   			$params[':date']	= $date_from;
   			$params[':date_to']	= $date_to;
 
       }
-      $params[':status']	= $_POST['key-activity'];
     }
     $search_terms		= '%'.$_POST['key'].'%';
 		$params[':owner']	= $search_terms;
@@ -269,17 +267,16 @@ include('header.php');
 			</div>
 		      </div>
 		      <button type="submit" id="btn_proceed_date_search" class="btn btn-sm btn-default"><?php _e('Filter','cftp_admin'); ?></button>
-		    </form>
-		    <br>
-        <form action="actions-log.php" name="actions_filters" method="post" class="form-inline form_filters">
+<br>
+<br>
 				<div class="form-group group_float">
+          Select actions  :
 					<label for="activity" class="sr-only"><?php _e('Filter activities','cftp_admin'); ?></label>
 					<select name="activity[]" id="activity" multiple data-live-search="true">
 						<option value="all" ><?php _e('All activities','cftp_admin'); ?></option>
 						<?php
 							global $activities_references;
-								foreach ( $activities_references as $val => $text ) {
-							?>
+								foreach ( $activities_references as $val => $text ) {							?>
 
 									<option value="<?php echo $val; ?>"
                     <?php
@@ -293,8 +290,8 @@ include('header.php');
 								}
 							?>
 					</select>
+  				<!-- <button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default"><?php _e('Filter','cftp_admin'); ?></button> -->
 				</div>
-				<button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default"><?php _e('Filter','cftp_admin'); ?></button>
 			</form>
       <br>
       <form action="actions-log.php" method="post">

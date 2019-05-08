@@ -28,17 +28,14 @@
 			?>
 					// Only check password if any of the 2 fields is completed
 					var password_1 = $("#add_client_form_pass").val();
-					//var password_2 = $("#add_client_form_pass2").val();
-					if ($.trim(password_1).length > 0/* || $.trim(password_2).length > 0*/) {
+					if ($.trim(password_1).length > 0) {
 			<?php
 				}
 			?>
 
 						is_complete(this.add_client_form_pass,'<?php echo $validation_no_pass; ?>');
-						//is_complete(this.add_client_form_pass2,'<?php echo $validation_no_pass2; ?>');
 						is_length(this.add_client_form_pass,<?php echo MIN_PASS_CHARS; ?>,<?php echo MAX_PASS_CHARS; ?>,'<?php echo $validation_length_pass; ?>');
 						is_password(this.add_client_form_pass,'<?php $chars = addslashes($validation_valid_chars); echo $validation_valid_pass." ".$chars; ?>');
-						//is_match(this.add_client_form_pass,this.add_client_form_pass2,'<?php //echo $validation_match_pass; ?>');
 
 			<?php
 				/** Close the jquery IF statement. */
@@ -63,6 +60,7 @@ switch ($clients_form_type) {
 	case 'new_client':
 		$submit_value = __('Add client','cftp_admin');
 		$disable_user = false;
+		$disable_password = false;
 		$require_pass = true;
 		$form_action = 'clients-add.php';
 		$info_box = true;
@@ -72,6 +70,7 @@ switch ($clients_form_type) {
 	case 'edit_client':
 		$submit_value = __('Save client','cftp_admin');
 		$disable_user = true;
+		$disable_password = true;
 		$require_pass = false;
 		$form_action = 'clients-edit.php?id='.$client_id;
 		$info_box = false;
@@ -81,6 +80,7 @@ switch ($clients_form_type) {
 	case 'new_client_self':
 		$submit_value = __('Register account','cftp_admin');
 		$disable_user = false;
+		$disable_password = false;
 		$require_pass = true;
 		$form_action = 'register.php';
 		$info_box = true;
@@ -113,7 +113,7 @@ switch ($clients_form_type) {
 			<input type="text" name="add_client_form_user" id="add_client_form_user" class="form-control <?php if (!$disable_user) { echo 'required'; } ?>" minlength="4" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($add_client_data_user)) ? html_output(stripslashes($add_client_data_user)) : ''; ?>" <?php if ($disable_user) { echo 'readonly'; }?> placeholder="<?php _e("Must be alphanumeric",'cftp_admin'); ?>" />
 		</div>
 	</div>
-
+<?php if (!$disable_password) {  ?>
 	<div class="form-group">
 		<label for="add_client_form_pass" class="col-sm-4 control-label"><?php _e('Password','cftp_admin'); ?></label>
 		<div class="col-sm-8">
@@ -127,7 +127,7 @@ switch ($clients_form_type) {
 			<?php echo password_notes(); ?>
 		</div>		
 	</div>
-
+<?php } ?>
 	<div class="form-group">
 		<label for="add_client_form_email" class="col-sm-4 control-label"><?php _e('E-mail','cftp_admin'); ?></label>
 		<div class="col-sm-8">

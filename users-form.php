@@ -31,17 +31,14 @@
 			?>
 					// Only check password if any of the 2 fields is completed
 					var password_1 = $("#add_user_form_pass").val();
-					//var password_2 = $("#add_user_form_pass2").val();
-					if ($.trim(password_1).length > 0/* || $.trim(password_2).length > 0*/) {
+					if ($.trim(password_1).length > 0) {
 			<?php
 				}
 			?>
 
 						is_complete(this.add_user_form_pass,'<?php echo $validation_no_pass; ?>');
-						//is_complete(this.add_user_form_pass2,'<?php echo $validation_no_pass2; ?>');
 						is_length(this.add_user_form_pass,<?php echo MIN_PASS_CHARS; ?>,<?php echo MAX_PASS_CHARS; ?>,'<?php echo $validation_length_pass; ?>');
 						is_password(this.add_user_form_pass,'<?php $chars = addslashes($validation_valid_chars); echo $validation_valid_pass." ".$chars; ?>');
-						//is_match(this.add_user_form_pass,this.add_user_form_pass2,'<?php echo $validation_match_pass; ?>');
 
 			<?php
 				/** Close the jquery IF statement. */
@@ -63,6 +60,7 @@ switch ($user_form_type) {
 	case 'new_user':
 		$submit_value = __('Add user','cftp_admin');
 		$disable_user = false;
+		$disable_password = false;
 		$require_pass = true;
 		$form_action = 'users-add.php';
 		$extra_fields = true;
@@ -70,6 +68,7 @@ switch ($user_form_type) {
 	case 'edit_user':
 		$submit_value = __('Save user','cftp_admin');
 		$disable_user = true;
+		$disable_password = true;
 		$require_pass = false;
 		$form_action = 'users-edit.php?id='.$user_id_mic;
 		$extra_fields = true;
@@ -77,6 +76,7 @@ switch ($user_form_type) {
 	case 'edit_user_self':
 		$submit_value = __('Update account','cftp_admin');
 		$disable_user = false;
+		$disable_password = false;
 		$require_pass = false;
 		$form_action = 'users-edit.php?id='.$user_id_mic;
 		$extra_fields = false;
@@ -98,6 +98,7 @@ switch ($user_form_type) {
 		</div>
 	</div>
 
+<?php if (!$disable_password) {  ?>
 	<div class="form-group">
 		<label for="add_user_form_pass" class="col-sm-4 control-label"><?php _e('Password','cftp_admin'); ?></label>
 		<div class="col-sm-8">
@@ -111,6 +112,7 @@ switch ($user_form_type) {
 			<?php echo password_notes(); ?>
 		</div>
 	</div>
+	<?php } ?>
 
 	<div class="form-group">
 		<label for="add_user_form_email" class="col-sm-4 control-label"><?php _e('E-mail','cftp_admin'); ?></label>

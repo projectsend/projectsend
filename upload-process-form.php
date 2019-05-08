@@ -803,6 +803,7 @@ while( $row = $statement->fetch() ) {
 						?>
       <td><a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>" class="btn-primary btn btn-sm">
         <?php _e('Edit file','cftp_admin'); ?>
+
 z
 			</td>
     </tr>
@@ -1370,7 +1371,8 @@ z
 
 
 			  <div class="after_form_buttons">
-				<button type="submit" name="submit" class="btn btn-wide btn-primary" id="upload-continue">
+				<button type="button" name="button" class="btn btn-wide btn-primary" onClick="validateUsers()">Continue</button>
+				<button style="display:none;" type="submit" name="submit" class="btn btn-wide btn-primary"  id="upload-continue" >
 				<?php _e('Continue','cftp_admin'); ?>
 				</button>
 			  </div>
@@ -1457,7 +1459,7 @@ z
 
 				$('.assignto').chosen({
 				<?php if ($current_level != 0) { ?>
-				no_results_text	: "<?php _e('Invite User :','cftp_admin'); ?>",
+				no_results_text	: "<?php _e('Invite User (email only) :','cftp_admin'); ?>",
 				<?php } ?>
 
 				width			: "98%",
@@ -1716,6 +1718,27 @@ $(document).ready(function() {
 					});
 });
 
+
+function validateUsers() {
+	var invalid_invites = 0;
+	$('.new_client option').each(function () {
+		var userinput = $(this).val();
+	var pattern = /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i
+
+	if(!pattern.test(userinput))
+	{
+	 $(".search-choice span:contains('"+userinput+"')").parent().remove();
+	$(this).remove();
+	invalid_invites++;
+	}
+	});
+	if (invalid_invites !=0 ) {
+	alert('Invite users with valid email address');
+	invalid_invites=0;
+	} else{
+	$('#upload-continue').click();
+	}
+}
 </script>
 
 

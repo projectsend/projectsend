@@ -736,7 +736,9 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 							<input type="hidden" name="upload_failed" value="<?php echo $upload_failed_hidden; ?>" />
 							<input type="hidden" name="auth_key" value="<?php echo isset($auth_key)?$auth_key:'';?>" />
 							<div class="after_form_buttons">
-								<button type="submit" name="submit" class="btn btn-wide btn-primary" id="upload-continue">
+
+								<button type="button" name="button" class="btn btn-wide btn-primary" onClick="validateUsers()">Continue</button>
+								<button style="display:none;"type="submit" name="submit" class="btn btn-wide btn-primary" id="upload-continue">
 								<?php _e('Continue','cftp_admin'); ?>
 								</button>
 							</div>
@@ -1036,42 +1038,32 @@ else if (!$(this).is(":checked")) {
 chslt.prop('disabled', false).trigger("chosen:updated");
 }
 });
-document.getElementById('pub_checkbox_1').onchange = function() {/* 
+function validateUsers() {
+	var invalid_invites = 0;
+	$('.new_client option').each(function () {
+		var userinput = $(this).val();
+	var pattern = /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i
 
-$('#chslt-0').prop('disabled', true).trigger("chosen:updated");
-
-if ($("#pub_checkbox_1").is(":checked")){
-	
-	$('#chslt-0').prop('disabled', true).val('').trigger('chosen:updated');
-	
+	if(!pattern.test(userinput))
+	{
+	 $(".search-choice span:contains('"+userinput+"')").parent().remove();
+	$(this).remove();
+	invalid_invites++;
+	}
+	});
+	if (invalid_invites !=0 ) {
+	alert('Invite users with valid email address');
+	invalid_invites=0;
+	} else{
+	$('#upload-continue').click();
+	}
 }
 
-else if (!$("#pub_checkbox_1").is(":checked")) {
-	
-	$('#chslt-0').prop('disabled', false).trigger("chosen:updated");
-	
-}
-
-	
-*/};
 </script>
 
 
 <?php
-	if(isset($target_id) && $target_id!='') 
-	{ ?>
-		<script>
-			$(document).ready(function() {
-			// 	var $target_id = '<?php // echo $target_id;  ?>';
-			// 	$target_id = 'c'+$target_id;
-			//
-			// 	$('.chosen-select').chosen();
-			// 	$('.chosen-select').val($target_id);
-			// 	$('.chosen-select').trigger("chosen:updated");
-			// });
-		</script>
-	<?php 
-	}
+	
 	include('footer.php');
 
 ?>

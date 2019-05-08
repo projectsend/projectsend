@@ -251,9 +251,7 @@ include('header.php');
 
 				}
 
-			}
-
-		});
+			});
 
 
 

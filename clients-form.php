@@ -90,7 +90,7 @@ switch ($clients_form_type) {
 	/** A client is editing his profile */
 	case 'edit_client_self':
 		$submit_value = __('Update account','cftp_admin');
-		$disable_user = true;
+		$disable_user = false;
 		$require_pass = false;
 		$form_action = 'clients-edit.php?id='.$client_id;
 		$info_box = false;

@@ -71,10 +71,9 @@ border: solid 1px #ccc;
 		});
 	});
 </script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
 <div id="main">
-  <div id="content"> 
-    
+  <div id="content">
+
     <!-- Added by B) -------------------->
     <div class="container-fluid">
       <div class="row">
@@ -161,7 +160,12 @@ border: solid 1px #ccc;
 			$params[':date_to']	= $date_to;
 		}
 
-
+	}
+	else if(isset($_POST['activity']) && $_POST['activity'] != 'all') {
+		$next_clause = ' WHERE';
+		$cq .= $next_clause. " action=:status";
+    $status_filter		= $_POST['activity'];
+		$params[':status']	= $status_filter;
 		$no_results_error = 'filter';
 		
 	}
@@ -268,8 +272,9 @@ border: solid 1px #ccc;
 			</div>
 		      </div>
 		      <button type="submit" id="btn_proceed_date_search" class="btn btn-sm btn-default"><?php _e('Filter','cftp_admin'); ?></button>
-<br>
-<br>
+        </form>
+        <br>
+        <form action="actions-log.php" name="actions_filters" method="post" class="form-inline form_filters">
 				<div class="form-group group_float">
           Select actions  :
 					<label for="activity" class="sr-only"><?php _e('Filter activities','cftp_admin'); ?></label>
@@ -291,7 +296,7 @@ border: solid 1px #ccc;
 								}
 							?>
 					</select>
-  				<!-- <button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default"><?php _e('Filter','cftp_admin'); ?></button> -->
+  				<button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default"><?php _e('Filter','cftp_admin'); ?></button>
 				</div>
 			</form>
       <br>
@@ -493,9 +498,4 @@ $("#date_to").on("change paste keyup", function() {
 $("#activity").on("change paste keyup", function() {
   $('#key-activity').val($(this).val());
 });
-</script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
-<script type="text/javascript">
-  $('#activity').selectpicker();
 </script>

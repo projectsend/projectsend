@@ -988,7 +988,7 @@ while( $row = $statement->fetch() ) {
 		<div class="row edit_files">
 			<div class="col-sm-12">
 				<div class="row edit_files_blocks">
-					<div class="<?php echo ($global_level != 0) ? 'col-sm-6 col-xl-3' : 'col-sm-12 col-md-12'; ?> column">
+					<div class="col-sm-6 col-xl-3 column_even column">
 						<div class="file_data">
 							<div class="row">
 								<div class="col-sm-12">

@@ -278,10 +278,12 @@ border: solid 1px #ccc;
 				<div class="form-group group_float">
           Select actions  :
 					<label for="activity" class="sr-only"><?php _e('Filter activities','cftp_admin'); ?></label>
-					<select name="activity[]" id="activity" multiple data-live-search="true">
+					<?php global $activities_references;
+           ?>
+					<select name="activity" id="activity" class="form-control">
 						<option value="all" ><?php _e('All activities','cftp_admin'); ?></option>
 						<?php
-							global $activities_references;
+
 								foreach ( $activities_references as $val => $text ) {							?>
 
 									<option value="<?php echo $val; ?>"

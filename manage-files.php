@@ -11,9 +11,9 @@ $load_scripts	= array(
 
 
 if(!empty ($_GET['client_id']) ||!empty ($_GET['group_id']) ||!empty ($_GET['category']) ){
-	$allowed_levels = array(7,8,0,9);
+	$allowed_levels = array(8,9);
 } else{
-	$allowed_levels = array(9);
+	$allowed_levels = array(0,7,8,9);
 }
 require_once('sys.includes.php');
 

@@ -10,7 +10,7 @@ $load_scripts	= array(
 						'footable',
 					); 
 
-$allowed_levels = array(9,8,7);
+$allowed_levels = array(9,8);
 require_once('sys.includes.php');
 
 $active_nav = 'files';

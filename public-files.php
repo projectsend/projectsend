@@ -670,7 +670,7 @@ if(isset($_REQUEST['edit'] )== 1){echo '<div class="alert alert-success"><a href
                   <td class="file_name">
                                         <?php
                                             $download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
-                                            $current_download_count = current_download_count_user($row['id'],CURRENT_USER_ID);
+                                            $current_download_count = current_download_count_user($row['id']);
                                             $curr_usr_id    =   CURRENT_USER_ID;
                                         /**
                                         * Clients can download from here.

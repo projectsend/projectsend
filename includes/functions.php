@@ -958,15 +958,14 @@ function current_download_count($file_id)
 	else
 		return 0;
 }
-function current_download_count_user($file_id,$user_id)
+function current_download_count_user($file_id)
 {
 	global $client_info;
 
 	global $dbh;
-	$statement = $dbh->prepare('SELECT count(*) FROM tbl_downloads WHERE user_id = :user_id AND file_id = :file_id');
+	$statement = $dbh->prepare('SELECT count(*) FROM tbl_downloads WHERE file_id = :file_id');
 	$statement->execute([
-    'user_id' => $user_id,
-    'file_id' => $file_id
+       'file_id' => $file_id
 	]);
 	$result = $statement->fetchColumn();
 

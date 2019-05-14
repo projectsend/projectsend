@@ -425,6 +425,8 @@ $message = '
 					}
 				}
 				$full_assi_user = $full_list;
+				$add_arguments['assign_to'] = $full_assi_user;
+				$assignations_count	= count($full_assi_user);
 //------------------------------------------------------------
                 if($get_prev_id != 3){
 
@@ -453,6 +455,7 @@ $message = '
 							}
 							else {
 								$clean_who = 'All';
+								$assignations_count='0';
 							}
 							
 							/** CLEAN deletes the removed users/groups from the assignments table */
@@ -482,18 +485,13 @@ $message = '
 													);
 							$this_upload->upload_save_categories( $categories_arguments );
 						}
-						
-						/** Uploader is a client */
-						if ($current_level == 0) {
-/*							$add_arguments['assign_to'] = array('c'.$global_id);
-							$add_arguments['hidden'] = '0';
-							$add_arguments['uploader_type'] = 'client';
-							$action_log_number = 33;*/
+
+						if ($assignations_count == '0'){
+							$add_arguments['prev_assign'] ='2';
 						}
-						//else {
 							$add_arguments['uploader_type'] = 'user';
 							$action_log_number = 32;
-						//}
+
 						/**
 						 * 1- Add the file to the database
 						 */

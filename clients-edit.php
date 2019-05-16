@@ -144,7 +144,7 @@ include('header.php');
 		<div class="row">
         <h2><?php echo $page_title; ?></h2>
 		<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 ">
-			<a href="client-organizations.php?id=<?php echo $client_id; ?>" class="btn btn-sm btn-primary right-btn"><?php if($global_level == 0) { echo "My organizations"; } else { echo 'Manage Organization';} ?></a>
+			<a href="client-organizations.php?id=<?php echo $client_id; ?>" <?php if($add_client_data_name ==''){ echo"disabled"; } ?> class="btn btn-sm btn-primary right-btn"><?php if($global_level == 0) { echo "My organizations"; } else { echo 'Manage Organization';} ?></a>
 		</div>
 			<!--div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box"-->
 			<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 white-box">

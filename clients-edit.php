@@ -24,7 +24,7 @@ else {
 	 * Return 0 if the id is not set.
 	 */
 	$page_status = 0;
-} 
+}
 
 /**
  * Get the clients information from the database to use on the form.
@@ -123,16 +123,16 @@ if ($_POST) {
 
 	/** Validate the information from the posted form. */
 	$edit_validate = $edit_client->validate_client($edit_arguments);
-	
+
 	/** Create the client if validation is correct. */
 	if ($edit_validate == 1) {
 		$edit_response = $edit_client->edit_client($edit_arguments);
 	}
 }
 
-$page_title = __('Edit Client','cftp_admin');
+$page_title = __('Edit client','cftp_admin');
 if (isset($add_client_data_user) && $global_user == $add_client_data_user) {
-	$page_title = __('My Account','cftp_admin');
+	$page_title = __('My account','cftp_admin');
 }
 
 include('header.php');
@@ -144,21 +144,21 @@ include('header.php');
 		<div class="row">
         <h2><?php echo $page_title; ?></h2>
 		<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 ">
-			<a href="client-organizations.php?id=<?php echo $client_id; ?>" <?php if($add_client_data_name ==''){ echo"disabled"; } ?> class="btn btn-sm btn-primary right-btn"><?php if($global_level == 0) { echo "My organizations"; } else { echo 'Manage Organization';} ?></a>
+			<a <?php if($add_client_data_name !=''){?> href="client-organizations.php?id=<?php echo $client_id; ?>"  <?php } if($add_client_data_name ==''){ echo"disabled"; } ?> class="btn btn-sm btn-primary right-btn"><?php if($global_level == 0) { echo "My organizations"; } else { echo 'Manage Organization';} ?></a>
 		</div>
 			<!--div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 white-box"-->
 			<div class="col-xs-12 col-xs-offset-0 col-sm-8 col-sm-offset-2 col-md-6 white-box">
 
 				<div class="white-box-interior">
-                
-		
+
+
 					<?php
 						/**
 						 * If the form was submited with errors, show them here.
 						 */
 						$valid_me->list_errors();
 					?>
-					
+
 					<?php
 						if (isset($edit_response)) {
 							/**
@@ -168,7 +168,7 @@ include('header.php');
 								case 1:
 									$msg = __('Client edited correctly.','cftp_admin');
 									echo system_message('ok',$msg);
-			
+
 									$saved_client = get_client_by_id($client_id);
 									/** Record the action log */
 									$new_log_action = new LogActions();
@@ -181,57 +181,57 @@ include('header.php');
 														);
 									$new_record_action = $new_log_action->log_action_save($log_action_args);
 
-									/*For avatar upload start */
-								//	$this_file = new PSend_Upload_File();
-									// Rename the file
-									//$fileName = $this_file->safe_rename($fileName);
-							if($_FILES){
-									
+								/*For avatar upload start */
+							//	$this_file = new PSend_Upload_File();
+								// Rename the file
+								//$fileName = $this_file->safe_rename($fileName);
+						if($_FILES){
 
-									if (!file_exists($target_dir)) {
-											mkdir($target_dir, 0777, true);
-									}
-									$target_file = $target_dir;
+
+								if (!file_exists($target_dir)) {
+										mkdir($target_dir, 0777, true);
+								}
+								$target_file = $target_dir;
+								$uploadOk = 1;
+								$target_file = $target_dir . "/".basename($_FILES["userfiles"]["name"]);
+								$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+								$fl_name = $client_id.".".$imageFileType;
+								$target_file = $target_dir.$fl_name;
+								$uploadOk = 1;
+								// Check if image file is a actual image or fake image
+								$check = getimagesize($_FILES["userfiles"]["tmp_name"]);
+								if($check !== false) {
+							//		echo "File is an image - " . $check["mime"] . ".";
 									$uploadOk = 1;
-									$target_file = $target_dir . "/".basename($_FILES["userfiles"]["name"]);
-									$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
-									$fl_name = $client_id.".".$imageFileType;
-									$target_file = $target_dir.$fl_name;
-									$uploadOk = 1;
-									// Check if image file is a actual image or fake image
-									$check = getimagesize($_FILES["userfiles"]["tmp_name"]);
-									if($check !== false) {
-								//		echo "File is an image - " . $check["mime"] . ".";
-										$uploadOk = 1;
-									} else {
-										echo "File is not an image.";
+								} else {
+									echo "File is not an image.";
+									$uploadOk = 0;
+								}
+								// Allow certain file formats
+								if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+								&& $imageFileType != "gif" ) {
+										echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
 										$uploadOk = 0;
+								}
+								// Check if $uploadOk is set to 0 by an error
+								if ($uploadOk == 0) {
+										echo "Sorry, your file was not uploaded.";
+								// if everything is ok, try to upload file
+								} else {
+									if (file_exists($target_file)) {
+											unlink($target_file);
 									}
-									// Allow certain file formats
-									if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-									&& $imageFileType != "gif" ) {
-											echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-											$uploadOk = 0;
-									}
-									// Check if $uploadOk is set to 0 by an error
-									if ($uploadOk == 0) {
-											echo "Sorry, your file was not uploaded.";
-									// if everything is ok, try to upload file
+									if (move_uploaded_file($_FILES["userfiles"]["tmp_name"], $target_file)) {
+										if(!empty($fl_name)){
+											$statement = $dbh->query("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$client_id." AND name='profile_pic'");
+
+											$alternate_email_save = $dbh->query( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$client_id.",'profile_pic','".$fl_name."' ) ");
+										}
+
 									} else {
-										if (file_exists($target_file)) {
-												unlink($target_file);
-										}
-										if (move_uploaded_file($_FILES["userfiles"]["tmp_name"], $target_file)) {
-											if(!empty($fl_name)){
-												$statement = $dbh->query("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$client_id." AND name='profile_pic'");
-
-												$alternate_email_save = $dbh->query( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$client_id.",'profile_pic','".$fl_name."' ) ");
-											}
-
-										} else {
-									echo "Sorry, there was an error uploading your file.";
-										}
+								echo "Sorry, there was an error uploading your file.";
 									}
+								}
 
 								}
 										//	exit;

@@ -10,8 +10,14 @@ $load_scripts	= array(
 						'footable'
 					); 
 
-$allowed_levels = array(9,8,0);
 require_once('sys.includes.php');
+$current_level = get_current_user_level();
+if ($current_level =='0' && $global_name ==''){
+	$allowed_levels = array(9);
+} else{
+
+	$allowed_levels = array(9,8,0);
+}
 
 $active_nav = 'organizations';
 $cc_active_page = 'Manage Organization';

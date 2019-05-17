@@ -12,7 +12,25 @@ $load_scripts	= array(
 
 require_once('sys.includes.php');
 $current_level = get_current_user_level();
-if ($current_level =='0' && $global_name ==''){
+
+$clId = $_GET['id'];
+if(!empty($clId)){
+	$org_cl = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
+	$org_cl->bindParam(':id', $clId, PDO::PARAM_INT);
+	$org_cl->execute();
+	$org_cl->setFetchMode(PDO::FETCH_ASSOC);
+	$org_cl_name = '';
+	while ( $data = $org_cl->fetch() ) {
+		$org_cl_name		= $data['name'];
+	}
+	if($org_cl_name ==''){
+		$allowed_levels = array();
+	}else{
+		$allowed_levels = array(9,8,0);
+	}
+
+}
+else if ($current_level =='0' && $global_name ==''){
 	$allowed_levels = array(9);
 } else{
 

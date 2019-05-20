@@ -257,7 +257,7 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 										if ($current_level == 0) {
 											$add_arguments['assign_to'] = $file['assignments'];
 											$add_arguments['hidden'] = '0';
-											$add_arguments['uploader_type'] = 'user';
+											$add_arguments['uploader_type'] = 'client';
 											$add_arguments['expires'] = '0';
 											$add_arguments['public'] = '0';
 										}

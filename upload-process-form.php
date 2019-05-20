@@ -517,18 +517,8 @@ while( $row = $statement->fetch() ) {
 				}
 
 				$full_assi_user = $full_list;
-
-
-
-//------------------------------------------------------------
-
-							//$add_arguments['assign_to'] = $file['assignments'];
-
-							$add_arguments['assign_to'] = $full_assi_user;
-
-							//$assignations_count	= count($file['assignments']);
-
-							$assignations_count	= count($full_assi_user);
+				$add_arguments['assign_to'] = $full_assi_user;
+				$assignations_count	= count($full_assi_user);
 
 						}
 
@@ -551,7 +541,7 @@ while( $row = $statement->fetch() ) {
 
 							$add_arguments['hidden'] = '0';
 
-							$add_arguments['uploader_type'] = 'user';
+							$add_arguments['uploader_type'] = 'client';
 
 							if (!empty($file['expires'])) {
 

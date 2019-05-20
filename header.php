@@ -174,7 +174,7 @@ print_r($alternate_email_list);
 
 	if(!empty($profile_pic_img)){?>
 
-				<img src="<?php echo SITE_URI . "/img/avatars/".$profile_pic_img;?>" alt="demo user">
+				<img src="<?php echo SITE_URI . "/img/avatars/".$profile_pic_img."?".rand();?>" alt="demo user">
 	<?php }else{
 ?>
 						<img src="<?php echo SITE_URI . '/img/avatars/no-image.png';?>" alt="demo user">

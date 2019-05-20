@@ -54,15 +54,7 @@ if ($page_status === 1) {
 			$alternate_email_array[] = $data['value'];
 	}
 }
-	$profile_pic = $dbh->prepare("SELECT * FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id=:user_id AND name = :name");
-	$profile_pic->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-	$profile_pic->bindValue(':name', 'profile_pic');
-	$profile_pic->execute();
-	$profile_pic->setFetchMode(PDO::FETCH_ASSOC);
-	$profile_pic_email_array = array();
-	while ( $data = $profile_pic->fetch() ) {
-			$profile_pic_img = $data['value'];
-	}
+
 /**
  * Compare the client editing this account to the on the db.
  */
@@ -176,9 +168,20 @@ include('header.php');
 			
                 <div class="col-sm-3 profile-pic"> 
 				<?php
+
+				$profile_pic = $dbh->prepare("SELECT * FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id=:user_id AND name = :name");
+				$profile_pic->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+				$profile_pic->bindValue(':name', 'profile_pic');
+				$profile_pic->execute();
+				$profile_pic->setFetchMode(PDO::FETCH_ASSOC);
+				$profile_pic_email_array = array();
+				while ( $data = $profile_pic->fetch() ) {
+						$profile_pic_img = $data['value'];
+				}
+
 					if(!empty($profile_pic_img)){?>
 
-								<img src="<?php echo "img/avatars/".$profile_pic_img;?>" alt="demo user">
+								<img src="<?php echo "img/avatars/".$profile_pic_img;?>?<?php echo rand();?>" alt="demo user">
 					<?php }else{
 				?>
 										<img src="img/avatars/no-image.png" alt="demo user">
@@ -232,13 +235,11 @@ include('header.php');
 														);
 									$new_record_action = $new_log_action->log_action_save($log_action_args);
 									/* Insert alternative emails to table prefix-user_extra_profile */
-									//echo "<pre>";print_r($_POST['add_user_form_email_alternate']);echo "</pre>";exit;
 									$alternate_emails = $_POST['add_user_form_email_alternate'];
 									if(!empty($alternate_emails)){
 										$statement = $dbh->query("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$user_id_mic." AND name='alternate_email'");
 
 										foreach($alternate_emails as $a_email){
-													//	echo "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$user_id.",'alternate_email',".$a_email." )"; 
 												if(!empty($a_email)){
 														$alternate_email_save = $dbh->query( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$user_id_mic.",'alternate_email','".$a_email."' ) ");
 												}
@@ -246,9 +247,7 @@ include('header.php');
 									}
 
 									/*For avatar upload start */
-								//	$this_file = new PSend_Upload_File();
-									// Rename the file
-									//$fileName = $this_file->safe_rename($fileName);
+									// print_r($_FILES);
 							if($_FILES){
 									
 
@@ -287,9 +286,12 @@ include('header.php');
 										}
 										if (move_uploaded_file($_FILES["userfiles"]["tmp_name"], $target_file)) {
 											if(!empty($fl_name)){
-												$statement = $dbh->query("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$user_id_mic." AND name='profile_pic'");
-
-												$alternate_email_save = $dbh->query( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$user_id_mic.",'profile_pic','".$fl_name."' ) ");
+												$statement = $dbh->prepare("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$user_id_mic." AND name='profile_pic'");
+										    $statement->execute();
+												
+												$alternate_email_save = $dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$user_id_mic.",'profile_pic','".$fl_name."' ) ");
+												$alternate_email_save->execute();
+												
 											}
 
 										} else {

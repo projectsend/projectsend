@@ -64,6 +64,7 @@ switch ($user_form_type) {
 		$require_pass = true;
 		$form_action = 'users-add.php';
 		$extra_fields = true;
+		$nUser = true;
 		break;
 	case 'edit_user':
 		$submit_value = __('Save user','cftp_admin');

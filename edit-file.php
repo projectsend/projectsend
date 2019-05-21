@@ -68,7 +68,7 @@ switch($get_prev_id) {
 
 /** Fill the users array that will be used on the notifications process */
 $users = array();
-$statement = $dbh->prepare("SELECT id, name, email, level FROM " . TABLE_USERS . " ORDER BY name ASC");
+$statement = $dbh->prepare("SELECT id, name, email, level FROM " . TABLE_USERS . "WHERE active = 1 ORDER BY name ASC");
 $statement->execute();
 $statement->setFetchMode(PDO::FETCH_ASSOC);
 while( $row = $statement->fetch() ) {
@@ -833,7 +833,8 @@ $message = '
                             <?php _e('Select a date', 'cftp_admin');?>
                           </label>						  
                           <div class="input-group date-container">
-                            <input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][future_send_date]" name="file[<?php echo $i; ?>][future_send_date]" value="<?php echo (!empty($future_send_date)) ? $future_send_date : date('d-m-Y'); ?>" />
+                            <input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][future_send_date]" name="file[<?php echo $i; ?>][future_send_date]" value="<?php echo ($get_prev_id !=3) ?  date('d-m-Y') : $future_send_date; ?>" />
+                            <!-- <input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][future_send_date]" name="file[<?php echo $i; ?>][future_send_date]" value="<?php echo (!empty($future_send_date)) ? $future_send_date : date('d-m-Y'); ?>" /> -->
                             <div class="input-group-addon"> <i class="glyphicon glyphicon-time"></i> </div>
                           </div>
                         </div>

@@ -196,11 +196,22 @@ if (!empty($found_notifications)) {
 			$email_arguments = array(
 										'type' => 'new_files_for_client',
 										'address' => $address,
-										'files_list' => $files_list
+										'files_list' => $files_list,
+										'expires'=> $file['expires'],
+										'expiry_date'=>$file['expiry_date']
 									);
 			$try_sending = $notify_client->psend_send_email($email_arguments);
-			if ($try_sending == 1) {				
-				$notifications_sent=array();
+			$tdy = date('d-m-Y');
+			if (( strtotime($file['expiry_date']) == strtotime($tdy))){
+				$exp_arguments = array(
+											'type' => 'file_expired',
+											'address' => $address,
+											'files_list' => $files_list,
+										);
+			$send_exp = $notify_client->psend_send_email($exp_arguments);
+			// echo"<br>DONE";
+			}
+			if ($try_sending == 1) {
 				$notifications_sent = array_merge($notifications_sent, $this_client_notifications);
 			}
 			else {

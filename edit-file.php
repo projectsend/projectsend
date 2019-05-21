@@ -68,7 +68,7 @@ switch($get_prev_id) {
 
 /** Fill the users array that will be used on the notifications process */
 $users = array();
-$statement = $dbh->prepare("SELECT id, name, email, level FROM " . TABLE_USERS . "WHERE active = 1 ORDER BY name ASC");
+$statement = $dbh->prepare("SELECT id, name, email, level FROM " . TABLE_USERS . " ORDER BY name ASC");
 $statement->execute();
 $statement->setFetchMode(PDO::FETCH_ASSOC);
 while( $row = $statement->fetch() ) {
@@ -446,6 +446,10 @@ $message = '
 									$full_list = array_diff($full_list,$compare_groups);
 								}
 								$add_arguments['assign_to'] = $full_list;
+								$today = date("d-m-Y");
+								if($file['expires'] && ($file['expiry_date'] == $today) ){
+									$add_arguments['assign_to']= $full_assi_user;
+								}
 
 								/**
 								 * On cleaning the DB, only remove the clients/groups
@@ -523,9 +527,11 @@ $message = '
 								 
 								 
 							 $today = date("d-m-Y");
-							 
-							if ($send_notifications == true && $file['future_send_date'] == $today)  {
-								
+
+							if (($send_notifications == true && $file['future_send_date'] == $today)
+									||($send_notifications == true && $file['expiry_date'] == $today && $file['expires'] == '1' ))
+									{
+
 									$process_notifications = $this_upload->upload_add_notifications($add_arguments);
 									
 								}
@@ -549,9 +555,7 @@ $message = '
 						}
 					}
 				}
-				//header("location:".BASE_URI."sent.php?edit=1");
-				//exit;
-				
+
 			}
 			/** Validations OK, show the editor */
 	?>

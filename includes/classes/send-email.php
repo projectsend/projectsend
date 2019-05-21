@@ -299,6 +299,12 @@ class PSend_Email
 					$body_text	= EMAILS_PASS_RESET_TEXT;
 				break;
 
+			case 'file_expired':
+					$filename	= 'file-expired.html';
+					$body_check	= '0';
+					$body_text	= "File Expires Today";
+				break;
+
 		}
 
 
@@ -643,6 +649,35 @@ class PSend_Email
 				);
 
 	}
+	function email_files_expired($files_list)
+	{
+		$this->email_body = $this->email_prepare_body('file_expired');
+
+		$this->email_body = str_replace(
+
+									array('%SUBJECT%','%FILES%','%BODY1%','%BODY2%','%URI%'),
+									array(
+										'File expires today',
+										$files_list['0'],
+										'You can access a list of all your files or upload your own',
+										'by logging in here',
+										BASE_URI
+
+									),
+
+									$this->email_body
+
+								);
+
+		return array(
+
+					'subject' => 'File Expires Today',
+
+					'body' => $this->email_body
+
+				);
+
+	}
 
 
 
@@ -796,7 +831,9 @@ class PSend_Email
 
 		$this->token		= (!empty($arguments['token'])) ? $arguments['token'] : '';
 
-		
+		$this->expires		= (!empty($arguments['expires'])) ? $arguments['expires'] : '';
+
+		$this->expiry_date		= (!empty($arguments['expiry_date'])) ? $arguments['expiry_date'] : '';
 
 		require_once(ROOT_DIR.'/includes/phpmailer/class.phpmailer.php');
 
@@ -816,13 +853,20 @@ class PSend_Email
 			case 'invite_user_to_download_file':
 				$this->mail_info = $this->invite_user_to_download_file($this->username,$this->password);
 			break;
-			
+
+		case 'file_expired':
+
+				$this->mail_info = $this->email_files_expired($this->files_list);
+				// print_r($this->mail_info);
+
+			break;
 
 			case 'new_files_for_client':
 
 				$this->mail_info = $this->email_new_files_for_client($this->files_list);
 
-				if ((defined('COPY_MAIL_ON_USER_UPLOADS')) && COPY_MAIL_ON_USER_UPLOADS == '1') {
+
+				if (COPY_MAIL_ON_USER_UPLOADS == '1') {
 
 					$this->try_bcc = true;
 

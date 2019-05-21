@@ -35,19 +35,17 @@ else {
 /**
  * Automatic log out if account is deactivated while session is on.
  */
-/*if ($global_account['active'] == '0') {*/
-
+if ($global_account['active'] == '0') {
 	/** Prevent an infinite loop */
-/*	if (!isset($_SESSION['logout'])) {
+if (!isset($_SESSION['logout'])) {
 		$_SESSION['logout'] = '1';
 	}
 	else {
 		unset($_SESSION['logout']);
 		header("location:".BASE_URI.'process.php?do=logout');
-		//echo "ssssssssssododododo";
 		exit;
 	}
-}*/
+}
 
 /**
  * Save all the data on different constants

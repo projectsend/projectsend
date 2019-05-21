@@ -171,7 +171,7 @@ $empty_fields = 0;
 
 $users = array();
 
-$statement = $dbh->prepare("SELECT id, name, email, level FROM " . TABLE_USERS . " ORDER BY name ASC");
+$statement = $dbh->prepare("SELECT id, name, email, level FROM " . TABLE_USERS . " WHERE active = 1 ORDER BY name ASC");
 
 $statement->execute();
 

@@ -74,7 +74,7 @@ switch($get_prev_id) {
 
 /** Fill the users array that will be used on the notifications process */
 $users = array();
-$statement = $dbh->prepare("SELECT id, name, email, level FROM " . TABLE_USERS . " ORDER BY name ASC");
+$statement = $dbh->prepare("SELECT id, name, email, level FROM " . TABLE_USERS . " WHERE ACTIVE = 1 ORDER BY name ASC");
 $statement->execute();
 $statement->setFetchMode(PDO::FETCH_ASSOC);
 while( $row = $statement->fetch() ) {

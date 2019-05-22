@@ -302,12 +302,12 @@ class PSend_Email
 			case 'file_expired':
 					$filename	= 'file-expired.html';
 					$body_check	= '0';
-					$body_text	= "File Expires Today";
+					$body_text	= "File Expired Today";
 				break;
 
 		}
 
-
+ 
 
 		if ($body_check == '0') {
 
@@ -657,7 +657,7 @@ class PSend_Email
 
 									array('%SUBJECT%','%FILES%','%BODY1%','%BODY2%','%URI%'),
 									array(
-										'File expires today',
+										'',
 										$files_list['0'],
 										'You can access a list of all your files or upload your own',
 										'by logging in here',
@@ -671,7 +671,7 @@ class PSend_Email
 
 		return array(
 
-					'subject' => 'File Expires Today',
+					'subject' => 'File Expired Today',
 
 					'body' => $this->email_body
 

@@ -54,7 +54,15 @@ if ($page_status === 1) {
 			$alternate_email_array[] = $data['value'];
 	}
 }
-
+$profile_pic = $dbh->prepare("SELECT * FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id=:user_id AND name = :name");
+$profile_pic->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+$profile_pic->bindValue(':name', 'profile_pic');
+$profile_pic->execute();
+$profile_pic->setFetchMode(PDO::FETCH_ASSOC);
+$profile_pic_email_array = array();
+while ( $data = $profile_pic->fetch() ) {
+		$profile_pic_img = $data['value'];
+}
 /**
  * Compare the client editing this account to the on the db.
  */

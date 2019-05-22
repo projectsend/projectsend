@@ -658,15 +658,11 @@ $message = '
                             <div class="input-group date-container">
 								<?php
                 $date = date('d-m-Y');
-                if(($get_prev_id == 6) || ($get_prev_id == 2)) {
+                if(($get_prev_id == 6) || ($get_prev_id == 2) || ($row['expires']==1) ) {
                     $expiry_date = date('d-m-Y', strtotime($edit_file_info['expiry_date'])) ;
                   }
-
-								 else if($row['expires']==1) {
-									$expiry_date = date('d-m-Y', strtotime($date. ' + 14 days'));
-								}
 								else {
-									$expiry_date ='';
+									$expiry_date = date('d-m-Y', strtotime($date. ' + 14 days'));
 								}
 								?>
                               <input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" />

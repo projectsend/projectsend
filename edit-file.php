@@ -501,7 +501,12 @@ $message = '
 							$add_arguments['prev_assign'] ='2';
 						}
 							$add_arguments['uploader_type'] = 'user';
-							$action_log_number = 32;
+							if ($current_level = 0 ){
+								$action_log_number = 32;
+							}else{
+								$action_log_number = 33;
+							}
+
 
 						/**
 						 * 1- Add the file to the database

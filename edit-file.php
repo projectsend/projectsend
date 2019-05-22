@@ -427,8 +427,7 @@ $message = '
 				$full_assi_user = $full_list;
 				$add_arguments['assign_to'] = $full_assi_user;
 				$assignations_count	= count($full_assi_user);
-//------------------------------------------------------------
-                if($get_prev_id != 3){
+				$newassigns=0;
 
                   foreach ($file_on_clients as $this_client) { $compare_clients[] = 'c'.$this_client; }
     							foreach ($file_on_groups as $this_group) { $compare_groups[] = 'g'.$this_group; }
@@ -441,9 +440,11 @@ $message = '
 
 								if (!empty($compare_clients)) {
 									$full_list = array_diff($full_list,$compare_clients);
+									$newassigns=1;
 								}
 								if (!empty($compare_groups)) {
 									$full_list = array_diff($full_list,$compare_groups);
+									$newassigns=1;
 								}
 								$add_arguments['assign_to'] = $full_list;
 								$today = date("d-m-Y");

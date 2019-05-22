@@ -243,6 +243,7 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 											$full_assi_user = $full_list;
 											$add_arguments['assign_to'] = $full_assi_user;
 											$assignations_count	= count($full_assi_user);
+											$newassigns=1;
 										}
 										else 
 										{

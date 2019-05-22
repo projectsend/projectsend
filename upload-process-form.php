@@ -519,7 +519,7 @@ while( $row = $statement->fetch() ) {
 				$full_assi_user = $full_list;
 				$add_arguments['assign_to'] = $full_assi_user;
 				$assignations_count	= count($full_assi_user);
-
+				$newassigns=1;
 						}
 
 						else {

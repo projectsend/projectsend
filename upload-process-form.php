@@ -791,7 +791,7 @@ while( $row = $statement->fetch() ) {
 							}
 
 						?>
-      <td><a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>" class="btn-primary btn btn-sm">
+      <td><a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>&page_id=8" class="btn-primary btn btn-sm">
         <?php _e('Edit file','cftp_admin'); ?></td>
     </tr>
     <?php

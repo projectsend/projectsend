@@ -60,6 +60,12 @@ switch($get_prev_id) {
 	case 7:
 	$get_prev_url = BASE_URI.'manage-files.php';
 	break;
+	case 8:
+	$get_prev_url = BASE_URI.'upload-process-form.php';
+	break;
+	case 9:
+	$get_prev_url = BASE_URI.'upload-process-form-dropoff.php';
+	break;
 	default:
 	$get_prev_id = '#';
 }
@@ -834,7 +840,7 @@ $message = '
                             <?php _e('Select a date', 'cftp_admin');?>
                           </label>						  
                           <div class="input-group date-container">
-                            <input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][future_send_date]" name="file[<?php echo $i; ?>][future_send_date]" value="<?php echo ($get_prev_id !=3) ?  date('d-m-Y') : $future_send_date; ?>" />
+                            <input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][future_send_date]" name="file[<?php echo $i; ?>][future_send_date]" value="<?php if(($get_prev_id ==3)||($get_prev_id ==8)||($get_prev_id ==9)) {echo($future_send_date);} else { echo(date('d-m-Y'));} ?>" />
                             <!-- <input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][future_send_date]" name="file[<?php echo $i; ?>][future_send_date]" value="<?php echo (!empty($future_send_date)) ? $future_send_date : date('d-m-Y'); ?>" /> -->
                             <div class="input-group-addon"> <i class="glyphicon glyphicon-time"></i> </div>
                           </div>

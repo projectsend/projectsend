@@ -213,6 +213,46 @@ color:#e33a49;
 		/**
 		 * Apply the corresponding action to the selected files.
 		 */
+
+		 if(isset($_POST['delete_file'])) {
+			 print_r($_POST);
+			 $file_id = $_POST['delete_file'];
+			 $delete_results	= array(
+									 'ok'		=> 0,
+									 'errors'	=> 0,
+								 );
+				 $this_file		= new FilesActions();
+				 $delete_status	= $this_file->delete_inbox_files($file_id);
+				 if ( $delete_status == true ) {
+					 $delete_results['ok']++;
+				 }
+				 else {
+					 $delete_results['errors']++;
+					 unset($all_files[$file_id]);
+				 }
+
+			 if ( $delete_results['ok'] > 0 ) {
+				 $msg = __('The selected files were deleted.','cftp_admin');
+				 echo system_message('ok',$msg);
+				 $log_action_number = 12;
+			 }
+			 if ( $delete_results['errors'] > 0 ) {
+				 $msg = __('Some files could not be deleted.','cftp_admin');
+				 echo system_message('error',$msg);
+			 }
+		  }
+		 if(isset($_POST['unassign_file'])) {
+			 print_r($_POST);
+			 $file_id = $_POST['unassign_file'];
+			 $this_file = new FilesActions();
+			 $this_file->unassign($file_id);
+			 $msg = __('The selected files were unassigned from this client.','cftp_admin');
+			 echo system_message('ok',$msg);
+			 $log_action_number = 11;
+
+		  }
+
+
 		if(isset($_POST['do_action'])) {
 			/** Continue only if 1 or more files were selected. */
 
@@ -490,24 +530,7 @@ color:#e33a49;
                 <div class="form-group group_float">
                   <input type="text" name="search" id="search" value="<?php if(isset($_GET['search']) && !empty($search_terms)) { echo html_output($_GET['search']); } ?>" class="txtfield form_actions_search_box form-control" />
                 </div>
-                <?php /*?><div class="form-group group_float">
-						<select name="status" id="status" class="txtfield form-control">
-									<?php
-										$options_status = array(
-																'all'	=> __('All statuses','cftp_admin'),
-																'1'		=> __('Read','cftp_admin'),
-																'2'		=> __('Unread','cftp_admin'),
-																'3'		=> __('Downloaded','cftp_admin'),
-																'4'		=> __('Not Downloaded','cftp_admin'),
-															);
-										foreach ( $options_status as $value => $text ) {
-									?>
-											<option value="<?php echo $value; ?>"><?php echo $text; ?></option>
-									<?php
-										}
-									?>
-								</select>
-					</div><?php */?>
+
                 <div class="form-group group_float">
                   <select name="category" id="category" class="txtfield form-control">
                     <option value="0">All categories</option>
@@ -537,32 +560,6 @@ color:#e33a49;
                 <?php _e('Search','cftp_admin'); ?>
                 </button>
               </form>
-              <?php
-					/** Filters are not available for clients */
-					/*if($current_level != 0 && $results_type != 'global') {
-				?>
-						<form action="<?php echo html_output($form_action_url); ?>" name="files_filters" method="post" class="form-inline form_filters">
-							<div class="form-group group_float">
-								<select name="status" id="status" class="txtfield form-control">
-									<?php
-										$options_status = array(
-																'all'	=> __('All statuses','cftp_admin'),
-																'1'		=> __('Hidden','cftp_admin'),
-																'0'		=> __('Visible','cftp_admin'),
-															);
-										foreach ( $options_status as $value => $text ) {
-									?>
-											<option value="<?php echo $value; ?>"><?php echo $text; ?></option>
-									<?php
-										}
-									?>
-								</select>
-							</div>
-							<button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default"><?php _e('Filter','cftp_admin'); ?></button>
-						</form>
-				<?php
-					}*/
-				?>
             </div>
           </div>
           <form action="<?php echo html_output($form_action_url); ?>" name="files_list" method="post" class="form-inline">
@@ -590,7 +587,7 @@ color:#e33a49;
                       </option>
 											<?php
 												/** Actions are not available for clients */
-												if($current_level != 0) {
+												if($current_level != 0) { /*
 											?>
                       <option value="unassign">
                       <?php _e('Unassign','cftp_admin'); ?>
@@ -599,7 +596,7 @@ color:#e33a49;
                       <?php _e('Delete','cftp_admin'); ?>
                       </option>
 											<?php
-											}
+										*/	}
 										?>
                     </select>
                   </div>
@@ -702,8 +699,9 @@ color:#e33a49;
 								}
 							}
 						?>
-                 <!--  <th data-hide="phone" data-sort-ignore="true"><?php _e('Actions','cftp_admin'); ?></th> -->
-								 <th data-hide="phone">Type</th>
+                  <th data-hide="phone">Type</th>
+		  <th data-hide="phone" data-sort-ignore="true"><?php _e('Actions','cftp_admin'); ?></th>
+								 
 								</tr>
               </thead>
               <tbody>
@@ -1003,12 +1001,9 @@ color:#e33a49;
 											}
 										}
 									?>
-                  <!-- <td><a href="edit-file.php?file_id=<?php echo $row["id"]; ?>" class="btn btn-primary btn-sm">
-                    <?php _e('Edit','cftp_admin'); ?>
-                    </a></td> -->
+
 									<td >
 									<?php
-									 // print_r($row);
 									if ($row['request_type'] == '0' || $row['request_type'] == null)
 														{ echo("<span class='requestType normal'> Normal </span>"); }
 														else if ($row['request_type'] == '1')
@@ -1018,6 +1013,36 @@ color:#e33a49;
 
 														?>
 														</td>
+														                  <td>
+										<style media="screen">
+											.delBtn ,.unAssnBtn{
+											-webkit-appearance: none;
+											background-color: transparent;
+											border: none;
+											}
+											.delBtn{
+											 color: red;
+										 }
+										 .unAssnBtn{
+											color: black;
+										}
+										</style>
+										<?php if ($row['request_type'] == '1' || $row['request_type'] == '2')  {  ?>
+										<form  class="inForms" action="" method="post">
+										<input name="delete_file" value="<?php echo $row["id"]; ?>" type="hidden">
+										<button class="delBtn"  type="submit">
+											<i class="fa fa-times" aria-hidden="true"></i>
+										</button>
+										</form>
+									<?php } else if ($row['group_id'] == NULL) {  ?>
+										<form  class="inForms" action="" method="post">
+										<input name="unassign_file" value="<?php echo $row["id"]; ?>" type="hidden">
+										<button  type="submit" class="unAssnBtn">
+											<i class="fa fa-sign-out" aria-hidden="true"></i>
+										</button>
+										</form>
+									<?php } else { echo(" -- ");  }?>
+								</td>
 								</tr>
                 <?php
 							    }

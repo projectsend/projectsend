@@ -216,12 +216,6 @@ include('header.php');
       
       <!------------------------------------------------------------------------------------>
           <?php
-						/**
-						 * If the form was submited with errors, show them here.
-						 */
-						$valid_me->list_errors();
-					?>
-          <?php
 						if (isset($edit_response)) {
 							/**
 							 * Get the process state and show the corresponding ok or error message.
@@ -365,24 +359,39 @@ include('header.php');
 <div id="cc-edit-info" class="modal fade" role="dialog">
 		<div class="modal-dialog">
 
-                                        <!-- Modal content-->
-                                        <div class="modal-content">
-                                          <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                            <h4 class="modal-title"><?php echo $page_title; ?></h4>
-                                          </div>
-                                          <div class="modal-body">
-                                            <?php
-																						include('users-form.php');
-																						?>
-                                          </div>
-                                          <div class="modal-footer">
-                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                          </div>
-                                        </div>
+												<!-- Modal content-->
+												<div class="modal-content">
+													<div class="modal-header">
+														<button type="button" class="close" data-dismiss="modal">&times;</button>
+														<h4 class="modal-title"><?php echo $page_title; ?></h4>
+													</div>
+													<div class="modal-body">
+														<?php
+															/**
+															 * If the form was submited with errors, show them here.
+															 */
+															$valid_me->list_errors();
+															?>
+														<?php
+														include('users-form.php');
+														?>
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+													</div>
+												</div>
 
 		</div>
 </div>
 <?php
 	include('footer.php');
 ?>
+
+<script type="text/javascript">
+if($('#cc-edit-info').find('div.alert').length !== 0){
+	 console.log("Error in edit found");
+	 $('#cc-edit-info').modal('show');
+ }else{
+	 console.log("No errors found");
+ }
+</script>

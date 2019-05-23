@@ -284,7 +284,7 @@ include('header.php');
 
 		if (isset($search_on)) {
 			$params = array();
-			$cq = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE $search_on = :id";
+			$cq = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE  ($search_on = :id AND from_id =".CURRENT_USER_ID." )";
 			$params[':id'] = $this_id;
 			$form_action_url .= '?'.$search_on.'='.$this_id;
 

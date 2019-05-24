@@ -132,6 +132,17 @@ color:#337ab7;
 .requestType.guest {
 color:#e33a49;
 }
+.delBtn ,.unAssnBtn{
+-webkit-appearance: none;
+background-color: transparent;
+border: none;
+}
+.delBtn{
+ color: red;
+ }
+ .unAssnBtn{
+ color: black;
+}
 </style>
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -148,31 +159,31 @@ color:#e33a49;
 					return false;
 			}
 			else {
-				var action = $('#files_actions').val();
-				if (action == 'delete') {
-					var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
-					if(checks.length > 1){
-						var msg_2 = 'files from your Inbox permanently. Only your copy will be deleted. Are you sure you want to continue?';
-					}
-					else{
-						var msg_2 = 'file from your Inbox permanently. Only your copy will be deleted. Are you sure you want to continue?';
-					}
-
-					if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
-						return true;
-					} else {
-						return false;
-					}
-				}
-				else if (action == 'unassign') {
-					var msg_1 = '<?php _e("You are about to unassign",'cftp_admin'); ?>';
-					var msg_2 = '<?php _e("files from this account. Are you sure you want to continue?",'cftp_admin'); ?>';
-					if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
-						return true;
-					} else {
-						return false;
-					}
-				}
+				// var action = $('#files_actions').val();
+				// if (action == 'delete') {
+				// 	var msg_1 = '<?php // _e("You are about to delete",'cftp_admin'); ?>';
+				// 	if(checks.length > 1){
+				// 		var msg_2 = 'files from your Inbox permanently. Only your copy will be deleted. Are you sure you want to continue?';
+				// 	}
+				// 	else{
+				// 		var msg_2 = 'file from your Inbox permanently. Only your copy will be deleted. Are you sure you want to continue?';
+				// 	}
+				//
+				// 	if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
+				// 		return true;
+				// 	} else {
+				// 		return false;
+				// 	}
+				// }
+				// else if (action == 'unassign') {
+				// 	var msg_1 = '<?php //_e("You are about to unassign",'cftp_admin'); ?>';
+				// 	var msg_2 = '<?php //_e("files from this account. Are you sure you want to continue?",'cftp_admin'); ?>';
+				// 	if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
+				// 		return true;
+				// 	} else {
+				// 		return false;
+				// 	}
+				// }
 			}
 		});
 
@@ -1002,7 +1013,7 @@ color:#e33a49;
 										}
 									?>
 
-									<td >
+									<td>
 									<?php
 									if ($row['request_type'] == '0' || $row['request_type'] == null)
 														{ echo("<span class='requestType normal'> Normal </span>"); }
@@ -1013,34 +1024,16 @@ color:#e33a49;
 
 														?>
 														</td>
-														                  <td>
-										<style media="screen">
-											.delBtn ,.unAssnBtn{
-											-webkit-appearance: none;
-											background-color: transparent;
-											border: none;
-											}
-											.delBtn{
-											 color: red;
-										 }
-										 .unAssnBtn{
-											color: black;
-										}
-										</style>
+									<td style="text-align:center;">
+
 										<?php if ($row['request_type'] == '1' || $row['request_type'] == '2')  {  ?>
-										<form  class="inForms" action="" method="post">
-										<input name="delete_file" value="<?php echo $row["id"]; ?>" type="hidden">
-										<button class="delBtn"  type="submit">
+										<a del-id="<?php echo $row["id"]; ?>" class="delBtn" id="delBtn" >
 											<i class="fa fa-times" aria-hidden="true"></i>
-										</button>
-										</form>
+										</a>
 									<?php } else if ($row['group_id'] == NULL) {  ?>
-										<form  class="inForms" action="" method="post">
-										<input name="unassign_file" value="<?php echo $row["id"]; ?>" type="hidden">
-										<button  type="submit" class="unAssnBtn">
+										<a  un-id="<?php echo $row["id"]; ?>" id="unAssBtn" class="unAssnBtn">
 											<i class="fa fa-sign-out" aria-hidden="true"></i>
-										</button>
-										</form>
+										</a>
 									<?php } else { echo(" -- ");  }?>
 								</td>
 								</tr>
@@ -1071,7 +1064,12 @@ color:#e33a49;
   </div>
 </div>
 </div>
-
+<form  id="deleteForm" action="" method="POST" style="display:none;">
+	<input id="delete_file" name="delete_file" type="text" value="">
+</form>
+<form id="unassignForm"  action="" method="POST" style="display:none;">
+	<input id="unassign_file" name="unassign_file"  type="text" value="">
+</form>
 <div id="myModal" class="modal fade" role="dialog">
   <div class="modal-dialog">
 
@@ -1189,3 +1187,25 @@ $(".refreshcls").on("click", function (e) {
 }
 /*-------------------- Responsive table End--------------------------*/
 </style>
+<script type="text/javascript">
+ $(document).ready(function(e) {
+	 $("#delBtn").click(function() {
+				var msg_1 = 'You are about to delete a file from your Inbox permanently. Only your copy will be deleted. Are you sure you want to continue?';
+					if (confirm(msg_1)) {
+						$('#delete_file').val($(this).attr('del-id'));
+					  $('#deleteForm').submit();
+				} else {
+					return false;
+				}
+		});
+	 $("#unAssBtn").click(function() {
+				var msg_1 = 'You are about to unassign a file from your Inbox permanently. Only your copy will be deleted. Are you sure you want to continue?';
+					if (confirm(msg_1)) {
+						$('#unassign_file').val($(this).attr('un-id'));
+						$('#unassignForm').submit();
+				} else {
+					return false;
+				}
+		});
+		});
+</script>

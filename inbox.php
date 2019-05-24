@@ -215,7 +215,7 @@ color:#e33a49;
 		 */
 
 		 if(isset($_POST['delete_file'])) {
-			 print_r($_POST);
+			 // print_r($_POST);
 			 $file_id = $_POST['delete_file'];
 			 $delete_results	= array(
 									 'ok'		=> 0,
@@ -242,7 +242,7 @@ color:#e33a49;
 			 }
 		  }
 		 if(isset($_POST['unassign_file'])) {
-			 print_r($_POST);
+			 // print_r($_POST);
 			 $file_id = $_POST['unassign_file'];
 			 $this_file = new FilesActions();
 			 $this_file->unassign($file_id);

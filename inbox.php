@@ -136,6 +136,7 @@ color:#e33a49;
 -webkit-appearance: none;
 background-color: transparent;
 border: none;
+cursor: pointer;
 }
 .delBtn{
  color: red;
@@ -1189,7 +1190,7 @@ $(".refreshcls").on("click", function (e) {
 </style>
 <script type="text/javascript">
  $(document).ready(function(e) {
-	 $("#delBtn").click(function() {
+	 $(".delBtn").click(function() {
 				var msg_1 = 'You are about to delete a file from your Inbox permanently. Only your copy will be deleted. Are you sure you want to continue?';
 					if (confirm(msg_1)) {
 						$('#delete_file').val($(this).attr('del-id'));
@@ -1198,7 +1199,7 @@ $(".refreshcls").on("click", function (e) {
 					return false;
 				}
 		});
-	 $("#unAssBtn").click(function() {
+	 $(".unAssnBtn").click(function() {
 				var msg_1 = 'You are about to unassign a file from your Inbox permanently. Only your copy will be deleted. Are you sure you want to continue?';
 					if (confirm(msg_1)) {
 						$('#unassign_file').val($(this).attr('un-id'));

@@ -44,9 +44,9 @@ $activities_references = array(
 							30	=> __('ProjectSend was updated','cftp_admin'),
 							32	=> __('A system user edited a file.','cftp_admin'),
 							33	=> __('A client edited a file.','cftp_admin'),
-							34	=> __('A client created a category.','cftp_admin'),
-							35	=> __('A client edited a category.','cftp_admin'),
-							36	=> __('A client deleted a category.','cftp_admin'),
+							34	=> __('A system user  created a category.','cftp_admin'),
+							35	=> __('A system user  edited a category.','cftp_admin'),
+							36	=> __('A system user  deleted a category.','cftp_admin'),
 							37	=> __('An anonymous user downloaded a public file.','cftp_admin'),
 						);
  /**

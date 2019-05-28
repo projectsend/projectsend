@@ -25,9 +25,24 @@ $page_title = __('Guest Drop-off','cftp_admin');
 			$message = "Please Fill all the fields";
 		}
 		if($your_name && $your_organization && $your_email){
-			if (!filter_var($your_email, FILTER_VALIDATE_EMAIL)) {
-				$message = "Invalid email format";
-			}
+			$email_blocked= 0;
+					$blocked_mails = $dbh->prepare("SELECT mail from tbl_blacklist");
+					$blocked_mails->execute();
+					if ( $blocked_mails->rowCount() > 0) {
+						$blocked_mails->setFetchMode(PDO::FETCH_ASSOC);
+						while( $blacklisted = $blocked_mails->fetch() ) {
+							if($your_email == $blacklisted['mail'])
+							{
+								$email_blocked++;
+							}
+						}
+				}
+				if(	$email_blocked>0){
+				$message = "Balcklisted email please contact System administrator";
+				}
+				else if (!filter_var($your_email, FILTER_VALIDATE_EMAIL)) {
+		 			$message = "Invalid email format";
+		 	 }
 			else{
 				$sql1 = $dbh->prepare("INSERT INTO `".TABLE_DROPOFF."` (`to_name`,`from_organization`, `to_email`, `requested_time`, `auth_key`, `status`) VALUES ('".$your_name."', '".$your_organization."', '".$your_email."', '".date("Y-m-d H:i:s")."', '".$randomString."', '0')");				
 				if($sql1->execute()) {

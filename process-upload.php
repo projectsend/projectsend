@@ -143,10 +143,14 @@ if (!$chunks || $chunk == $chunks - 1) {
 			/* AES Decryption started by RJ-07-Oct-2016 */
 			//$blockSize = 256;
     			//$inputKey = "project send encryption";
-				
+			$ext = pathinfo($fileName, PATHINFO_EXTENSION);
 			$fileData = file_get_contents($filePath);
-			$aes = new AES($fileData, ENCRYPTION_KEY, BLOCKSIZE);
-			$encData = $aes->encrypt();
+			if($ext !='zip'){
+				$aes = new AES($fileData, ENCRYPTION_KEY, BLOCKSIZE);
+				$encData = $aes->encrypt();
+			} else{
+				$encData = $fileData;
+			}
 			unlink($filePath);
 			file_put_contents($filePath , $encData);
 			/* AES Decryption ended by RJ-07-Oct-2016 */

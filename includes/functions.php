@@ -44,19 +44,19 @@ function generate_password() {
 	try {
 		$password = random_bytes(12);
 	} catch (TypeError $e) {
-		die($error_unexpected); 
+		die($error_unexpected);
 	} catch (Error $e) {
-		die($error_unexpected); 
+		die($error_unexpected);
 	} catch (Exception $e) {
-		die($error_os_fail); 
+		die($error_os_fail);
 	}
-	
+
 	return bin2hex($password);
 }
 
 
 /**
- * Reads the lang folder and scans for .mo files. 
+ * Reads the lang folder and scans for .mo files.
  * Returns an array of avaiable languages.
  */
 function get_available_languages() {
@@ -75,7 +75,7 @@ function get_available_languages() {
 			else {
 				$lang_name = $lang_file;
 			}
-	
+
 			$langs[$lang_file] = $lang_name;
 		}
 	}
@@ -102,9 +102,9 @@ function generate_downloads_count( $id = null ) {
 	if ( !empty( $id ) ) {
 		$sql .= ' WHERE file_id = :id';
 	}
-	
+
 	$sql .=  " GROUP BY file_id";
-	
+
 	$statement	= $dbh->prepare( $sql );
 
 	if ( !empty( $id ) ) {
@@ -123,7 +123,7 @@ function generate_downloads_count( $id = null ) {
 									'anonymous_users'	=> $row['anonymous_users'],
 								);
 	}
-	
+
 	return $data;
 }
 
@@ -497,7 +497,7 @@ function message_no_clients()
  * - message_error
  * - message_info
  *
- */	
+ */
 function system_message($type,$message,$div_id = '')
 {
 	$close = false;
@@ -541,7 +541,7 @@ function system_message($type,$message,$div_id = '')
 /**
  * Function used accross the system to determine if the current logged in
  * account has permission to do something.
- * 
+ *
  */
 function in_session_or_cookies($levels)
 {
@@ -607,7 +607,7 @@ function get_current_user_username()
 
 /**
  * Wrapper for html_entities with default options
- * 
+ *
  */
 function html_output($str, $flags = ENT_QUOTES, $encoding = 'UTF-8', $double_encode = false)
 {
@@ -691,7 +691,7 @@ function format_file_size($file)
 	} else {
 		$formatted = round($file / 1208925819614629174706176, 2) . ' YB';
 	}
-	
+
 	return $formatted;
 }
 
@@ -818,16 +818,16 @@ function generate_logo_url()
 	}
 	return $branding;
 }
-function generate_favico_url(){	
-	$favico = array();	
-	$favico['exists'] = false;	
-	$favico['url'] = 'img/custom/logo/'.FAVICO_FILENAME;	
-	if (file_exists(ROOT_DIR.'/'.$favico['url'])) {		
-		$favico['exists'] = true;		
-			if (THUMBS_USE_ABSOLUTE == '1') {			
-				$favico['url'] = BASE_URI.$favico['url'];		
-				}	
-	}	
+function generate_favico_url(){
+	$favico = array();
+	$favico['exists'] = false;
+	$favico['url'] = 'img/custom/logo/'.FAVICO_FILENAME;
+	if (file_exists(ROOT_DIR.'/'.$favico['url'])) {
+		$favico['exists'] = true;
+			if (THUMBS_USE_ABSOLUTE == '1') {
+				$favico['url'] = BASE_URI.$favico['url'];
+				}
+	}
 	return $favico;
 }
 
@@ -907,7 +907,7 @@ function password_notes()
 			$rules_active[$rule] = $data['text'];
 		}
 	}
-	
+
 	if ( count( $rules_active ) > 0 ) {
 		$pass_notes_output = '<p class="field_note">' . __('The password must contain, at least:','cftp_admin') . '</strong><br />';
 			foreach ( $rules_active as $rule => $text ) {
@@ -915,7 +915,7 @@ function password_notes()
 			}
 		$pass_notes_output .= '</p>';
 	}
-	
+
 	return $pass_notes_output;
 }
 
@@ -989,7 +989,7 @@ function render_log_action($params)
 	$affected_file_name = $params['affected_file_name'];
 	$affected_account = $params['affected_account'];
 	$affected_account_name = $params['affected_account_name'];
-	
+
 	switch ($action) {
 		case 0:
 			$action_ico = 'install';
@@ -1225,6 +1225,12 @@ function render_log_action($params)
 			$action_text = __('downloaded the file','cftp_admin');
 			$part2 = $affected_file_name;
 			break;
+		case 38:
+			$action_ico = 'guest-upload';
+			$part1 = __('Guest','cftp_admin');
+			$action_text = __('uploaded the file','cftp_admin');
+			$part2 = $affected_file_name;
+			break;
 	}
 	$date = date(TIMEFORMAT_USE,strtotime($timestamp));
 
@@ -1235,7 +1241,7 @@ function render_log_action($params)
 	$log['icon'] = $action_ico;
 	$log['timestamp'] = $date;
 	$log['text'] = $action_text;
-	
+
 	return $log;
 }
 ?>

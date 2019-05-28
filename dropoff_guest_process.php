@@ -246,7 +246,6 @@ if(!empty($auth)){
 
 
 						}
-					//	die();
 					}
 					else {
 						echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> Please choose at least one file.</div>";
@@ -262,7 +261,15 @@ if(!empty($auth)){
 								'files_list' => 
 								$array_file_name						
 							);
-							$try_sending = $notify_client->psend_send_email($email_arguments);	
+							$try_sending = $notify_client->psend_send_email($email_arguments);
+						        $new_log_action = new LogActions();
+							$log_action_args = array(
+													'action' => 38,
+													'owner_id' => $userindo["id"],
+													'affected_file_name' =>$fileName,
+													'affected_account_name' => $to
+												);
+							$new_record_action = $new_log_action->log_action_save($log_action_args);
 								echo "<div class='alert alert-success alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Success!</strong> Your file has been uploaded successfully.</div>";
 						}
 					

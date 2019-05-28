@@ -48,7 +48,7 @@ $activities_references = array(
 							35	=> __('A system user  edited a category.','cftp_admin'),
 							36	=> __('A system user  deleted a category.','cftp_admin'),
 							37	=> __('An anonymous user downloaded a public file.','cftp_admin'),
-							38      => __('Guest uploaded and assigned a file','cftp_admin')
+							38      => __('A file is uploaded and assigned by a guest','cftp_admin')
 						);
  /**
  * More to be added soon.

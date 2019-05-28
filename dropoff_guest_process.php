@@ -267,7 +267,8 @@ if(!empty($auth)){
 													'action' => 38,
 													'owner_id' => $userindo["id"],
 													'affected_file_name' =>$fileName,
-													'affected_account_name' => $to
+													'affected_account_name' => $userindo["user"],
+													'owner_user' => $to,
 												);
 							$new_record_action = $new_log_action->log_action_save($log_action_args);
 								echo "<div class='alert alert-success alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Success!</strong> Your file has been uploaded successfully.</div>";

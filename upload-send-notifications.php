@@ -101,14 +101,18 @@ if (!empty($found_notifications)) {
 									'created_by'	=> $row['created_by'],
 									'active'		=> $row['active']
 								);
-		$creators[] = $row['created_by'];
-		$mail_by_user[$row['user']] = $row['email'];
+								
+								if($row['created_by'] !=''){
+									$creators[] = $row['created_by'];
+								}
+								$mail_by_user[$row['user']] = $row['email'];
 	}
 	
 	/**
 	 * Add the creatros of the previous clients to the mails array.
 	 */
 	$creators = implode( ',', $creators);
+	$creators_data= array();
 	if (!empty($creators)) {
 		$statement = $dbh->prepare("SELECT id, name, user, email, active FROM " . TABLE_USERS . " WHERE FIND_IN_SET(user, :users)");
 		$statement->bindParam(':users', $creators);
@@ -146,23 +150,21 @@ if (!empty($found_notifications)) {
 						$notes_to_admin[$client['created_by']][$client['name']][] = array(
 																		'notif_id' => $notification['id'],
 																		'file_name' => $file_data[$use_id]['filename'],
+																		'mAddress'=>$client['email'],
 																		'description' => make_excerpt($file_data[$use_id]['description'],200)
 																	);
 					}
 					elseif ($notification['upload_type'] == '1') {
 						if ($client['notify'] == '1') {
-							if ($client['active'] == '1') {
 								/** If file is uploaded by user, add to client's email body */
 								$use_id = $notification['file_id'];
 								$notes_to_clients[$client['user']][] = array(
 																			'notif_id' => $notification['id'],
 																			'file_name' => $file_data[$use_id]['filename'],
+																			'mAddress'=>$client['email'],
 																			'description' => make_excerpt($file_data[$use_id]['description'],200)
 																		);
-							}
-							else {
-								$notifications_inactive[] = $notification['id'];
-							}
+
 						}
 					}
 				}
@@ -229,16 +231,16 @@ if (!empty($found_notifications)) {
 		foreach ($notes_to_admin as $mail_username => $admin_files) {
 			
 			/** Check if the admin is active */
-			if ($creators_data[$mail_username]['active'] == '1') {
+			// if ($creators_data[$mail_username]['active'] == '1') {
 				/** Reset the files list UL contents */
 				$files_list = '';
 				foreach ($admin_files as $client_uploader => $mail_files) {
-	
-					$files_list.= '<li style="font-size:15px; font-weight:bold; margin-bottom:5px;">'.$client_uploader.'</li>';
+
+					$files_list = '';
 					foreach ($mail_files as $mail_file) {
 						/** Make the list of files */
 						$files_list.= '<li style="margin-bottom:11px;">';
-						$files_list.= '<p style="font-weight:bold; margin:0 0 5px 0;">'.$mail_file['file_name'].'</p>';
+						$files_list.= '<p style="font-weight:bold; margin:0 0 5px 0; font-size:14px;">'.$mail_file['file_name'].'</p>';
 						if (!empty($mail_file['description'])) {
 							$files_list.= '<p>'.$mail_file['description'].'</p>';
 						}
@@ -248,8 +250,8 @@ if (!empty($found_notifications)) {
 						 */
 						$this_admin_notifications[] = $mail_file['notif_id'];
 					}
-	
-					$address = $mail_by_user[$mail_username];
+
+					$address = $mail_file['mAddress'];
 					/** Create the object and send the email */
 					$notify_admin = new PSend_Email();
 					$email_arguments = array(
@@ -265,15 +267,15 @@ if (!empty($found_notifications)) {
 						$notifications_failed = array_merge($notifications_failed, $this_admin_notifications);
 					}
 				}
-			}
-			else {
-				/** Admin is not active */
-				foreach ($admin_files as $mail_files) {
-					foreach ($mail_files as $mail_file) {
-						$notifications_inactive[] = $mail_file['notif_id'];
-					}
-				}
-			}
+			// }
+			// else {
+			// 	/** Admin is not active */
+			// 	foreach ($admin_files as $mail_files) {
+			// 		foreach ($mail_files as $mail_file) {
+			// 			$notifications_inactive[] = $mail_file['notif_id'];
+			// 		}
+			// 	}
+			// }
 		}
 	}
 

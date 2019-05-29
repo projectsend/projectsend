@@ -696,7 +696,13 @@ class PSend_Email
 	{
 
 		global $email_strings_file_by_client;
-
+		if(is_array($files_list)) {
+			$repairArray = array();
+			foreach($files_list as $files) {
+				$repairArray[] = $files;
+			}
+			$files_list = implode("<br />", $repairArray);
+		}
 		$this->email_body = $this->email_prepare_body('new_file_by_client');
 
 		$this->email_body = str_replace(

@@ -370,9 +370,13 @@ include('header.php');
 				$files_id_by_cat = implode(',',$files_id_by_cat);
 	
 				/** Overwrite the parameter set previously */
+
+				$conditions[] = "uploader = :uploader";
 				$conditions[] = "FIND_IN_SET(id, :files)";
 				$params[':files'] = $files_id_by_cat;
-				
+				$params[':uploader'] = $global_user;
+
+
 				$no_results_error = 'category';
 			}
 	

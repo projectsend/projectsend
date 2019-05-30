@@ -304,9 +304,9 @@ border: solid 1px #ccc;
       <br>
       <form action="actions-log.php" method="post">
         <input type="hidden" id="key" name="key" value="">
-        <input type="hidden" id="key-date-from" name="key-date-from" value="">
-        <input type="hidden" id="key-date-to" name="key-date-to" value="">
-        <input type="hidden" id="key-activity" name="key-activity" value="all">
+        <input type="hidden" id="key-date-from" name="key-date-from" value="<?php if(isset($_POST['key-date-from'])){echo($_POST['key-date-from']);} else{ echo(date('d-m-Y'));} ?>">
+        <input type="hidden" id="key-date-to" name="key-date-to" value="<?php if(isset($_POST['key-date-to'])){echo($_POST['key-date-to']);} else{ echo(date('d-m-Y'));} ?>">
+        <input type="hidden" id="key-activity" name="key-activity" value="<?php if(isset($_POST['key-activity'])){echo($_POST['key-activity']);} else{ echo("all");} ?>">
         <button name="submit-all" type="submit" class="btn btn-sm btn-success" >Submit All</button>
       </form>
 		</div>

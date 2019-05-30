@@ -1225,12 +1225,12 @@ function render_log_action($params)
 			$action_text = __('downloaded the file','cftp_admin');
 			$part2 = $affected_file_name;
 			break;
-      case 38:
-  			$action_ico = 'guest-upload';
-  			$part1 = __('Guest','cftp_admin');
-  			$action_text = __('(guest) uploaded and assigned the file','cftp_admin');
-  			$part2 = $affected_file_name;
-  			$part4 = $affected_account_name;;
+    case 38:
+  		$action_ico = 'guest-upload';
+  		$part1 = $owner_user;
+  		$action_text = __('(guest) uploaded and assigned the file','cftp_admin');
+  		$part2 = $affected_file_name;
+  		$part4 = $affected_account_name;
 			$part3 = __('assigned to:','cftp_admin');
   			break;
 	}

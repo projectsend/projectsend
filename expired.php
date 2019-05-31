@@ -892,7 +892,7 @@ include('header.php');
 
 			}
 
-
+			$fq .= "ORDER BY id DESC";
 
 			/** Debug query */
 

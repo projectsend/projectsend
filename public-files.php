@@ -372,6 +372,7 @@ include('header.php');
                 }
             }
             /** Debug query */
+            $fq .= "ORDER BY id DESC";
             $sql_files = $dbh->prepare($fq);
             $sql_files->execute($params);
             $count = $sql_files->rowCount();
@@ -609,6 +610,7 @@ if(isset($_REQUEST['edit'] )== 1){echo '<div class="alert alert-success"><a href
                                             break;
                                     }
                                 }
+                                $query_this_file .="ORDER BY id DESC";
                                 $sql_this_file = $dbh->prepare($query_this_file);
                                 $sql_this_file->execute( $params );
                                 $sql_this_file->setFetchMode(PDO::FETCH_ASSOC);

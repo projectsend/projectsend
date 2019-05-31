@@ -431,7 +431,7 @@ cursor: pointer;
 			 */
 			$today = date("Y-m-d H:i:s",strtotime("tomorrow"));
 			$params = array();
-			$fq = "SELECT tbl_files.* ,tbl_files_relations.group_id FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id ";
+			$fq = "SELECT tbl_files.* ,tbl_files_relations.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id ";
 
 			 $conditions[] = "tbl_files_relations.client_id =".CURRENT_USER_ID;
 			 $conditions[] = "tbl_files_relations.hide_inbox = '0' ";
@@ -522,11 +522,10 @@ cursor: pointer;
 				}
 			}
 
-			 if (!empty($found_groups)) {
-			 	$fq .= " OR FIND_IN_SET(group_id, :groups)";
-			 }
-			
-
+			if (!empty($found_groups)) {
+				$fq .= " OR FIND_IN_SET(group_id, :groups)";
+			}
+			$fq .= "ORDER BY tbl_files_relations.id DESC";
 			$sql_files = $dbh->prepare($fq);
 			if (!empty($found_groups)) {
 				$sql_files->bindParam(':groups', $found_groups);

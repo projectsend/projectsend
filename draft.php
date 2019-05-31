@@ -164,7 +164,7 @@ include('header.php');
             if(!empty($_POST['files']) ||!empty($_POST['orphans']) ) {
                 $selected_files = array_map('intval',array_unique($_POST['files']));
                 $files_to_get = implode(',',$selected_files);
-                $sql_file = $dbh->prepare("SELECT id, filename FROM " . TABLE_FILES . " WHERE FIND_IN_SET(id, :files)");
+                $sql_file = $dbh->prepare("SELECT id, filename FROM " . TABLE_FILES . " WHERE FIND_IN_SET(id, :files) ORDER BY id DESC");
                 $sql_file->bindParam(':files', $files_to_get);
                 $sql_file->execute();
                 $sql_file->setFetchMode(PDO::FETCH_ASSOC);
@@ -250,6 +250,7 @@ include('header.php');
              * Count the files assigned to this client. If there is none, show
              * an error message.
              */
+            $cq .= "ORDER BY DESC";
             $sql = $dbh->prepare($cq);
             $sql->execute( $params );
             if ( $sql->rowCount() > 0) {
@@ -366,8 +367,8 @@ include('header.php');
             $draft_count = $sql_files_draft->rowCount();            
             
             $current_date = date("Y-m-d");
-         $q_sent_file = "SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME ."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')  AND tbl_files.future_send_date >='".$current_date."' AND  tbl_files.public_allow=0 "; 
-            $sql_files = $dbh->prepare($q_sent_file);  
+         $q_sent_file = "SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME ."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')  AND tbl_files.future_send_date >='".$current_date."' AND  tbl_files.public_allow=0 ORDER BY tbl_files.id DESC";
+            $sql_files = $dbh->prepare($q_sent_file);
             $sql_files->execute();
             $count = $sql_files->rowCount();
         }

@@ -551,7 +551,7 @@ include('header.php');
              * an error message.
 
              */
-
+             $cq .="ORDER BY id DESC";
             $sql = $dbh->prepare($cq);
 
             $sql->execute( $params );
@@ -1120,7 +1120,7 @@ include('header.php');
                                 }
 
 
-
+                                $query_this_file .= "ORDER BY id DESC";
                                 $sql_this_file = $dbh->prepare($query_this_file);
 
                                 $sql_this_file->execute( $params );

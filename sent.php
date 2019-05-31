@@ -379,8 +379,9 @@ include('header.php');
 			/*$fq . = "Group by tf.id";
 			echo $fq */
             /** Debug query */
-            $sql_files = $dbh->prepare($fq);  
-            $sql_files->execute();  
+            $fq .= "ORDER BY tfr.id DESC";
+            $sql_files = $dbh->prepare($fq);
+            $sql_files->execute();
 			$count = $sql_files->rowCount();
 			/*$sql_files->setFetchMode(PDO::FETCH_ASSOC);
 			$arr = $sql_files->fetchAll(); */

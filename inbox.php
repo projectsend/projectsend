@@ -431,7 +431,7 @@ cursor: pointer;
 			 */
 			$today = date("Y-m-d H:i:s",strtotime("tomorrow"));
 			$params = array();
-			$fq = "SELECT tbl_files.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id ";
+			$fq = "SELECT tbl_files.* ,tbl_files_relations.group_id FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id ";
 
 			 $conditions[] = "tbl_files_relations.client_id =".CURRENT_USER_ID;
 			 $conditions[] = "tbl_files_relations.hide_inbox = '0' ";
@@ -1031,7 +1031,8 @@ cursor: pointer;
 										<a del-id="<?php echo $row["id"]; ?>" class="delBtn" id="delBtn" >
 											<i class="fa fa-times" aria-hidden="true"></i>
 										</a>
-									<?php } else if ($row['group_id'] == NULL) {  ?>
+									<?php } else if (empty($row['group_id'])) {
+									?>
 										<a  un-id="<?php echo $row["id"]; ?>" id="unAssBtn" class="unAssnBtn">
 											<i class="fa fa-sign-out" aria-hidden="true"></i>
 										</a>
@@ -1191,7 +1192,7 @@ $(".refreshcls").on("click", function (e) {
 <script type="text/javascript">
  $(document).ready(function(e) {
 	 $(".delBtn").click(function() {
-				var msg_1 = 'You are about to delete a file from your Inbox permanently. Only your copy will be deleted. Are you sure you want to continue?';
+				var msg_1 = 'You are about to delete 1 clients and all of the assigned files. Are you sure you want to continue?';
 					if (confirm(msg_1)) {
 						$('#delete_file').val($(this).attr('del-id'));
 					  $('#deleteForm').submit();

@@ -311,6 +311,9 @@ class ClientActions
 		if (isset($client_id)) {
 			/** Do a permissions check */
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
+				$this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_FILES_RELATIONS . ' WHERE client_id=:cl_id');
+				$this->sql->bindParam(':cl_id', $client_id, PDO::PARAM_INT);
+				$this->sql->execute();
 				$this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_USERS . ' WHERE id=:id');
 				$this->sql->bindParam(':id', $client_id, PDO::PARAM_INT);
 				$this->sql->execute();

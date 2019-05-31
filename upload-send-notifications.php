@@ -235,8 +235,7 @@ if (!empty($found_notifications)) {
 				/** Reset the files list UL contents */
 				$files_list = '';
 				foreach ($admin_files as $client_uploader => $mail_files) {
-
-					$files_list = '';
+				$files_list.= '<li style="font-size:15px; font-weight:bold; margin-bottom:5px;">'.CURRENT_USER_USERNAME.'</li>';
 					foreach ($mail_files as $mail_file) {
 						/** Make the list of files */
 						$files_list.= '<li style="margin-bottom:11px;">';

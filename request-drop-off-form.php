@@ -23,6 +23,14 @@
 	
 
 	<div class="form-group">
+		<label for="from_organization" class="col-sm-4 control-label"><?php _e('From Organization','cftp_admin'); ?></label>
+		<div class="col-sm-8">
+			<input type="text" value="<?php if(isset($from_organization)) { echo $from_organization; } ?>" name="from_organization" id="from_organization" class="form-control required" value="" placeholder="Organization name" />
+			<span style="color:#F00"><?php if(isset($from_OrgErr)){  echo $from_OrgErr; } ?></span>
+		</div>
+	</div>
+
+	<div class="form-group">
 		<label for="to_name_request" class="col-sm-4 control-label"><?php _e('To Name','cftp_admin'); ?></label>
 		<div class="col-sm-8">
 			<input type="text" value="<?php if(isset($to_name_request)){ echo $to_name_request; }?>" name="to_name_request" id="to_name_request" class="form-control <?php if (! isset($disable_user) ){ echo 'required'; } ?>" maxlength="<?php echo MAX_USER_CHARS; ?>" placeholder="<?php _e("Enter To name",'cftp_admin'); ?>" />
@@ -31,10 +39,10 @@
 	</div>
 
 	<div class="form-group">
-		<label for="from_organization" class="col-sm-4 control-label"><?php _e('Organization','cftp_admin'); ?></label>
+		<label for="from_organization" class="col-sm-4 control-label"><?php _e('To Organization','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" value="<?php if(isset($from_organization)) { echo $from_organization; } ?>" name="from_organization" id="from_organization" class="form-control required" value="" placeholder="Organization name" />
-			<span style="color:#F00"><?php echo $from_OrgErr; ?></span>
+			<input type="text" value="<?php if(isset($to_organization)) { echo $to_organization; } ?>" name="to_organization" id="to_organization" class="form-control required" value="" placeholder="Organization name" />
+			<span style="color:#F00"><?php if(isset($to_OrgErr)){  echo $to_OrgErr; } ?></span>
 		</div>
 	</div>
 

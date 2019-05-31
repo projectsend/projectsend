@@ -398,6 +398,7 @@ if (defined('TRY_INSTALL')) {
 							  `to_name` varchar(50) DEFAULT NULL,
 							  `to_subject_request` varchar(500) DEFAULT NULL,
 							  `from_organization` varchar(100) DEFAULT NULL,
+							  `to_organization` varchar(100) DEFAULT NULL,
 							  `to_email` varchar(50) DEFAULT NULL,
 							  `to_note_request` varchar(500) DEFAULT NULL,
 							  `requested_time` datetime DEFAULT NULL,

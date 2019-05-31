@@ -32,6 +32,7 @@ if ($_POST) {
 	/* Insert into DB and check with request during drop */
 	$randomString = generateRandomString(30);
 	$from_organization = $_POST['from_organization'];
+	$to_organization = $_POST['to_organization'];
 	$to_name_request = $_POST['to_name_request'];
 	$to_email_request = $_POST['to_email_request'];
 	$to_subject_request = $_POST['to_subject_request'];
@@ -59,15 +60,23 @@ if ($_POST) {
 	{
 		$from_OrgErr = '';
     }
+if($to_organization == '')
+{
+  $to_OrgErr  = "<div class=\"alert alert-danger cc-failed\">Specify To Organization</div>";
+}else
+{
+  $to_OrgErr = '';
+}
 	if($to_name_request == '')
 	{ 
 		$to_nameErr  = "<div class=\"alert alert-danger cc-failed\">Invalid To Name</div>"; 
 	}else
 	{
 		$to_nameErr = '';
-    }  
-	if($to_email_request!='' && $to_subject_request != '' && $to_name_request != '' && $from_organization != '' ) { 
-		if (!filter_var($to_email_request, FILTER_VALIDATE_EMAIL) === false) 
+    }
+	if($to_email_request!='' && $to_subject_request != '' && $to_name_request != '' && $from_organization != ''&& $to_organization != '' ) {
+
+		if (!filter_var($to_email_request, FILTER_VALIDATE_EMAIL) === false)
 		{
 			/* check email ID exist in the system */
 			$stmt = $dbh->prepare("SELECT * FROM ".TABLE_USERS." WHERE email=:email");
@@ -80,11 +89,12 @@ if ($_POST) {
 				{
 					/*$statement = $dbh->prepare("INSERT INTO `tbl_drop_off_request` (`from_id`, `to_name`, `to_subject_request`, `from_organization`, `to_email`, `to_note_request`, `requested_time`, `auth_key`, `status`) VALUES ('".$logged_in_id."', '".$to_name_request."', '".$to_subject_request."', '".$from_organization."', '".$to_email_request."', '".$to_note_request."', '".date("Y-m-d H:i:s")."', '".$randomString."', '0')"); */
 
-					$statement = $dbh->prepare("INSERT INTO ".TABLE_DROPOFF." (from_id,to_name,to_subject_request,from_organization,to_email,to_note_request,requested_time,auth_key,status,from_name,from_email) VALUES (:from_id, :to_name, :to_subject_request, :from_organization, :to_email, :to_note_request, :requested_time, :auth_key, :status,:from_name, :from_email )");
+					$statement = $dbh->prepare("INSERT INTO ".TABLE_DROPOFF." (from_id,to_name,to_subject_request,from_organization,to_organization,to_email,to_note_request,requested_time,auth_key,status,from_name,from_email) VALUES (:from_id, :to_name, :to_subject_request, :from_organization,:to_organization, :to_email, :to_note_request, :requested_time, :auth_key, :status,:from_name, :from_email )");
 					$statement->bindParam(':from_id', $this_current_id);
 					$statement->bindValue(':to_name', $to_name_request);
 					$statement->bindValue(':to_subject_request', $to_subject_request);
 					$statement->bindValue(':from_organization', $from_organization);
+					$statement->bindValue(':to_organization', $to_organization);
 					$statement->bindValue(':to_email', $to_email_request);
 					$statement->bindValue(':to_note_request', $to_note_request);
 					$statement->bindValue(':requested_time', date("Y-m-d H:i:s"));

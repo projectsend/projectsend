@@ -156,9 +156,10 @@ if($to_organization == '')
                   <p>
                 DETAILS:<br>
                 From Name: $logged_in_name<br>
+                From Organization: $from_organization<br>
                 Email: $logged_in_email<br><br>
                 To Name: $to_name_request<br>
-                Organization: $from_organization<br>
+                To Organization: $to_organization<br>
                 Email: $to_email_request<br></p>
                 <p><em>Note: ".$to_note_request."</em><br></p>
                   <p>INSTRUCTIONS:<br>

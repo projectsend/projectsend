@@ -6,12 +6,12 @@
  *
  * @package ProjectSend
  */
- 
+
 
 $load_scripts	= array(
 						'datepicker',
 						'chosen',
-					); 
+					);
 
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
@@ -36,7 +36,7 @@ if (!empty($_GET['file_id'])) {
 }
 $get_prev_id = isset($_GET['page_id']) ? $_GET['page_id'] : '';
 //1 for send.php
-//2 for 
+//2 for
 
 switch($get_prev_id) {
 	case 1:
@@ -108,8 +108,8 @@ $current_level = get_current_user_level();
 ?>
 
 <div id="main">
-  <div id="content"> 
-    
+  <div id="content">
+
     <!-- Added by B) -------------------->
     <div class="container-fluid">
       <div class="row">
@@ -145,7 +145,7 @@ function randomPassword() {
 			if ( $count == 0 ) {
 				$no_results_error = 'id_not_exists';
 			}
-	
+
 			/**
 			 * Continue if client exists and has files under his account.
 			 */
@@ -197,13 +197,13 @@ function randomPassword() {
 			$file_on_groups = array();
 
 			if ( isset($_POST['submit'] ) ) {
-				
-				
+
+
 				$assignments = $dbh->prepare("SELECT file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :id");
 				$assignments->bindParam(':id', $this_file_id, PDO::PARAM_INT);
-				$assignments->execute(); 
+				$assignments->execute();
 				//echo $assignments->rowCount();
-				
+
 				if ($assignments->rowCount() > 0) {
 					while ( $assignment_row = $assignments->fetch() ) {
 						if (!empty($assignment_row['client_id'])) {
@@ -216,7 +216,7 @@ function randomPassword() {
 				}
 
 				$n = 0;
-				foreach ($_POST['file'] as $file) { 
+				foreach ($_POST['file'] as $file) {
 					$n++;
 					if(!empty($file['name'])) {
 						/**
@@ -230,7 +230,7 @@ function randomPassword() {
 						 * Unassigned files are kept as orphans and can be related
 						 * to clients or groups later.
 						 */
-					
+
 						/** Add to the database for each client / group selected */
 						$add_arguments = array(
 												'file' => $edit_file_info['url'],
@@ -240,8 +240,8 @@ function randomPassword() {
 												'uploader_id' => $global_id,
 												'expiry_date' => $file['expiry_date']
 											);
-											
-					
+
+
 						/** Set notifications to YES by default */
 						$send_notifications = true;
 						if (!empty($file['notify'])) {
@@ -249,7 +249,7 @@ function randomPassword() {
 						}else{
 							$add_arguments['notify'] = false;
 						}
-						
+
 						if (!empty($file['number_downloads'])) {
 							$add_arguments['number_downloads'] = $file['number_downloads'];
 						}else{
@@ -271,7 +271,7 @@ function randomPassword() {
 							}
 							//echo "----------------------".$file['assignments']."--------------------------------------";
 							if (!empty($file['assignments']) || !empty($_POST['new_client']) ) {
-								
+
 								/**
 								 * Remove already assigned clients/groups from the list.
 								 * Only adds assignments to the NEWLY selected ones.
@@ -288,7 +288,7 @@ function randomPassword() {
 					foreach($nuser_list as $nuser) {
 						$euser_query = $dbh->prepare("SELECT id FROM `".TABLE_USERS."` WHERE `email` = '".$nuser."'");
 						//echo "SELECT id FROM `".TABLE_USERS."` WHERE `email` = '".$nuser."'";exit();
-						$euser_query->execute(); 
+						$euser_query->execute();
 						$euser = $euser_query->fetch();
 						$nuser_id = $euser['id'];
 						if( $euser_query->rowCount() == 0 ) {
@@ -296,7 +296,7 @@ function randomPassword() {
 							$npw = randomPassword();
 							$cc_enpass = $hasher->HashPassword($npw);
 							$nuser_query = $dbh->prepare("INSERT INTO `".TABLE_USERS."` (`user`, `password`, `name`, `email`, `level`, `timestamp`, `address`, `phone`, `notify`, `contact`, `created_by`, `active`) VALUES ('".$nuser."', '".$cc_enpass."', '', '".$nuser."', '0', CURRENT_TIMESTAMP, NULL, NULL, '0', NULL, NULL, '1')");
-							$nuser_query->execute(); 
+							$nuser_query->execute();
 							$nuser_id = $dbh->lastInsertId();
 // --------------------------------- email notification start here!
 $to_email_request = $nuser; // note the comma
@@ -342,7 +342,7 @@ $message = '
 					$send_mail->Port = SMTP_PORT;
 					$send_mail->Username = SMTP_USER;
 					$send_mail->Password = SMTP_PASS;
-					
+
 					if ( defined('SMTP_AUTH') && SMTP_AUTH != 'none' ) {
 						$send_mail->SMTPSecure = SMTP_AUTH;
 					}
@@ -360,7 +360,7 @@ $message = '
 					$send_mail->IsSendmail();
 				break;
 		}
-		
+
 		$send_mail->CharSet = EMAIL_ENCODING;
 //
 		$send_mail->Subject = "Invitation to Download";
@@ -372,7 +372,7 @@ $message = '
 		$send_mail->AddReplyTo(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
 //
 		$send_mail->AddAddress($to_email_request);
-		
+
 		/**
 		 * Check if BCC is enabled and get the list of
 		 * addresses to add, based on the email type.
@@ -406,11 +406,11 @@ $message = '
 					$send_mail->AddBCC($set_bcc);
 				}
 			}
-			 
+
 		}
 
 
-	
+
 		/**
 		 * Finally, send the e-mail.
 		 */
@@ -421,7 +421,7 @@ $message = '
 			$cc_status = "<div class=\"alert alert-danger cc-failed\"><strong>Oops! </strong>Something went wrong! please try after sometime.</div>";
 		}
 
-		
+
 			echo "<script>$(document).ready(function(){ $('#cc-mail-status').modal('toggle');});</script>";
 
 //--------------------------------------------------------------------------------------------
@@ -435,14 +435,8 @@ $message = '
 				$assignations_count	= count($full_assi_user);
 				$newassigns=0;
 
-                  foreach ($file_on_clients as $this_client) { $compare_clients[] = 'c'.$this_client; }
-    							foreach ($file_on_groups as $this_group) { $compare_groups[] = 'g'.$this_group; }
-
-                }
-                else {
-                  $compare_clients[]=array();
-                  $compare_groups[]=array();
-                }
+								foreach ($file_on_clients as $this_client) { $compare_clients[] = 'c'.$this_client; }
+								foreach ($file_on_groups as $this_group) { $compare_groups[] = 'g'.$this_group; }
 
 								if (!empty($compare_clients)) {
 									$full_list = array_diff($full_list,$compare_clients);
@@ -468,7 +462,7 @@ $message = '
 								$clean_who = 'All';
 								$assignations_count='0';
 							}
-							
+
 							/** CLEAN deletes the removed users/groups from the assignments table */
 							if ($clean_who == 'All') {
 								$clean_all_arguments = array(
@@ -478,7 +472,7 @@ $message = '
 															);
 								$clean_assignments = $this_upload->clean_all_assignments($clean_all_arguments);
 							}
-							else {						
+							else {
 								$clean_arguments = array (
 														'owner_id' => $global_id, /** For the log */
 														'file_id' => $this_file_id,
@@ -517,7 +511,7 @@ $message = '
 							$add_arguments['all_users'] = $users;
 							$add_arguments['all_groups'] = $groups;
 							$add_arguments['from_id'] = $global_id;
-							
+
 							if ($current_level != 0 || 1 == 1) {
 								/**
 								 * 2- Add the assignments to the database
@@ -531,13 +525,13 @@ $message = '
 									$this_file = new FilesActions();
 									$hide_file = $this_file->manage_hide($this_file_id);
 								}
-								
-								
+
+
 								/**
 								 * 4- Add the notifications to the database
 								 */
-								 
-								 
+
+
 							 $today = date("d-m-Y");
 
 							if (($send_notifications == true && $file['future_send_date'] == $today)
@@ -545,9 +539,9 @@ $message = '
 									{
 
 									$process_notifications = $this_upload->upload_add_notifications($add_arguments);
-									
+
 								}
-								
+
 							}
 
 							$new_log_action = new LogActions();
@@ -562,7 +556,7 @@ $message = '
 
 							$msg = __('The file has been edited successfully.','cftp_admin');
 							echo system_message('ok',$msg);
-							
+
 							include(ROOT_DIR.'/upload-send-notifications.php');
 						}
 					}
@@ -601,8 +595,8 @@ $message = '
 								$current_categories[] = $assignment_row['cat_id'];
 							}
 						}
-	
-	
+
+
 						$i = 1;
 						$statement = $dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE id = :id");
 						$statement->bindParam(':id', $this_file_id, PDO::PARAM_INT);
@@ -655,7 +649,7 @@ $message = '
 																* Only show the EXPIRY options if the current
 																* uploader is a system user, and not a client.
 																*/
-																
+
 																if (!empty($row['future_send_date'])) {
 																	$future_send_date = date('d-m-Y', strtotime($row['future_send_date']));
 																}
@@ -695,7 +689,7 @@ $message = '
                           </div>
                           <div class="divider"></div>
 			<?php if($current_level != 0){ ?>
-                          <h3> 
+                          <h3>
                             <?php _e('Public downloading', 'cftp_admin');?>
                           </h3>
                           <div class="checkbox">
@@ -709,12 +703,12 @@ $message = '
                             <label>
                               <?php _e('Number of Downloads Allowed', 'cftp_admin');?>
                             </label>
-							<?php 
+							<?php
 								if($row['number_downloads']>0)
-								{  
+								{
 									$number_downloads = $row['number_downloads'];
 								}
-								else 
+								else
 								{
 									$number_downloads = 0;
 								/*	if(DOWNLOAD_MAX_TRIES>0)
@@ -725,10 +719,10 @@ $message = '
 									{
 										$number_downloads = '';
 									}
-								*/	
+								*/
 								}
 								?>
-							
+
                             <input type="text" name="file[<?php echo $i; ?>][number_downloads]" value="<?php echo html_output($number_downloads); ?>" size="1" class="form-control1 file_title" placeholder="<?php _e('Enter number of downloads.', 'cftp_admin');?>" />
                           </div>
                         </div>
@@ -742,18 +736,18 @@ $message = '
 																*/
 															?>
                           <h3>
-							<?php 
-							if($row['public_allow']){ 
+							<?php
+							if($row['public_allow']){
 							?>
-								<script> 
+								<script>
 								$(document).ready(function() {
 									$('.chosen-select_pub').prop('disabled', true).val('').trigger('chosen:updated').chosen();
 								});
 								</script>
-							<?php 
+							<?php
 							}
 							?>
-						  
+
 						  </script>
                             <?php _e('Send To', 'cftp_admin');?>
                           </h3>
@@ -796,7 +790,7 @@ $message = '
                             <?php _e('Remove all','cftp_admin'); ?>
                             </a> </div>
                           <div class="divider"></div>
-                        <?php if ($current_level != 0) { ?>			      
+                        <?php if ($current_level != 0) { ?>
                           <div class="checkbox">
                             <label for="hid_checkbox">
                               <input type="checkbox" id="hid_checkbox" name="file[<?php echo $i; ?>][hidden]" value="1" />
@@ -843,7 +837,7 @@ $message = '
                         <div class="form-group">
                           <label for="file[<?php echo $i; ?>][future_send_date]">
                             <?php _e('Select a date', 'cftp_admin');?>
-                          </label>						  
+                          </label>
                           <div class="input-group date-container">
                             <input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][future_send_date]" name="file[<?php echo $i; ?>][future_send_date]" value="<?php if(($get_prev_id ==3)||($get_prev_id ==8)||($get_prev_id ==9)) {echo($future_send_date);} else { echo(date('d-m-Y'));} ?>" />
                             <!-- <input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][future_send_date]" name="file[<?php echo $i; ?>][future_send_date]" value="<?php echo (!empty($future_send_date)) ? $future_send_date : date('d-m-Y'); ?>" /> -->
@@ -882,7 +876,7 @@ function window_back() {
 			//window.history.back(-1);
 }
 	$(document).ready(function() {
-		
+
 		$('.chosen-select').chosen({
 			no_results_text	: "<?php _e('Invite User :','cftp_admin'); ?>",
 			width			: "98%",
@@ -893,8 +887,8 @@ function window_back() {
     			console.log($('span',this).text());
 			});
 			$(document).on('click', ".no-results", function() {
-    			var cc_email = $('span',this).text(); 
-				$(".new_client").append('<option val="'+cc_email+'" selected="selected">'+cc_email+'</option>'); 
+    			var cc_email = $('span',this).text();
+				$(".new_client").append('<option val="'+cc_email+'" selected="selected">'+cc_email+'</option>');
 				$(this).parent().parent().siblings('.chosen-choices').prepend('<li class="search-choice"><span>'+cc_email+'</span><a style="text-decoration:none" class="cc-choice-close">&nbsp;&nbsp;x</a></li>');
 			});
 			$(document).on('click', ".cc-choice-close", function() {
@@ -933,7 +927,7 @@ function window_back() {
 		$("form").submit(function() {
 			clean_form(this);
 
-			$(this).find('input[name$="[name]"]').each(function() {	
+			$(this).find('input[name$="[name]"]').each(function() {
 				is_complete($(this)[0],'<?php echo $validation_no_title; ?>');
 			});
 
@@ -962,6 +956,5 @@ function window_back() {
     </div>
 
   </div>
-</div><script language="javascript">$(document).ready(function() {     $("[type='text']").attr('id',function(i){return 'chk' + i;});	 });$(document).ready(function() {     $(".chosen-choices").attr('id',function(i){return 'chosen-' + i;});	 });$(document).ready(function() {     $(".chosen-select").attr('id',function(i){return 'chslt-' + i;});	 });</script> <script language="javascript">document.getElementById('pub_checkbox').onchange = function() { $('#chslt-0').prop('disabled', true).trigger("chosen:updated");if ($("#pub_checkbox").is(":checked")){		$('#chslt-0').prop('disabled', true).val('').trigger('chosen:updated');	}else if (!$("#pub_checkbox").is(":checked")) {		$('#chslt-0').prop('disabled', false).trigger("chosen:updated");	}	};</script> 
+</div><script language="javascript">$(document).ready(function() {     $("[type='text']").attr('id',function(i){return 'chk' + i;});	 });$(document).ready(function() {     $(".chosen-choices").attr('id',function(i){return 'chosen-' + i;});	 });$(document).ready(function() {     $(".chosen-select").attr('id',function(i){return 'chslt-' + i;});	 });</script> <script language="javascript">document.getElementById('pub_checkbox').onchange = function() { $('#chslt-0').prop('disabled', true).trigger("chosen:updated");if ($("#pub_checkbox").is(":checked")){		$('#chslt-0').prop('disabled', true).val('').trigger('chosen:updated');	}else if (!$("#pub_checkbox").is(":checked")) {		$('#chslt-0').prop('disabled', false).trigger("chosen:updated");	}	};</script>
 <?php include('footer.php'); ?>
-

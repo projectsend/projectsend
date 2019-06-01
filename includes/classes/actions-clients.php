@@ -314,6 +314,23 @@ class ClientActions
 				$this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_FILES_RELATIONS . ' WHERE client_id=:cl_id');
 				$this->sql->bindParam(':cl_id', $client_id, PDO::PARAM_INT);
 				$this->sql->execute();
+				//
+				$this->sql = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS ." WHERE id=:id");
+				$this->sql->bindParam(':id', $client_id, PDO::PARAM_INT);
+				$this->sql->execute();
+				$this->sql->setFetchMode(PDO::FETCH_ASSOC);
+				$userEmail = $this->sql->fetchAll();
+
+				if(!empty($userEmail['0']['email'])){
+				  $usemail =$userEmail['0']['email'];
+					$this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_DROPOFF . ' WHERE (from_id=:cl_id OR to_email ="'.$usemail.'")');
+					$this->sql->bindParam(':cl_id', $client_id);
+					$this->sql->execute();
+				}else {
+					$this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_DROPOFF . ' WHERE from_id=:cl_id');
+					$this->sql->bindParam(':cl_id', $client_id, PDO::PARAM_INT);
+					$this->sql->execute();
+				}
 				$this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_USERS . ' WHERE id=:id');
 				$this->sql->bindParam(':id', $client_id, PDO::PARAM_INT);
 				$this->sql->execute();

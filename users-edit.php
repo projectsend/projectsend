@@ -110,7 +110,6 @@ if ($_POST) {
 		/** Default level to 7 just in case */
 		$add_user_data_level = (isset($_POST["add_user_form_level"])) ? $_POST['add_user_form_level'] : '7';
 		$add_user_data_active = (isset($_POST["add_user_form_active"])) ? 1 : 0;
-		$add_user_data_notity		= (isset($_POST["add_user_form_notify"])) ? 1 : 0;
 	}
 
 	$add_user_data_notity		= (isset($_POST["add_user_form_notify"])) ? 1 : 0;
@@ -278,22 +277,27 @@ include('header.php');
 										//	echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
 											$uploadOk = 0;
 									}
+
+									// echo("<br>Upload Ok = ".$uploadOk);
 									// Check if $uploadOk is set to 0 by an error
 									if ($uploadOk == 0) {
-											//echo "Sorry, your file was not uploaded.";
+											echo "Sorry, your file was not uploaded.";
 									// if everything is ok, try to upload file
 									} else {
 										if (file_exists($target_file)) {
 												unlink($target_file);
+												// echo("<br>Unlinked Oldfile");
 										}
 										if (move_uploaded_file($_FILES["userfiles"]["tmp_name"], $target_file)) {
+											// echo("<br>Moved Uploaded file");
+											// echo("<br> Fl name : ".$fl_name);
 											if(!empty($fl_name)){
 												$statement = $dbh->prepare("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$user_id_mic." AND name='profile_pic'");
 										    $statement->execute();
-												
+												// echo("DONE");
 												$alternate_email_save = $dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$user_id_mic.",'profile_pic','".$fl_name."' ) ");
 												$alternate_email_save->execute();
-												
+												// echo("DONE");
 											}
 
 										} else {

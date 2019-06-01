@@ -221,8 +221,8 @@ $actual_link = SITE_URI.'requested_file.php';
                         <span class="checkmark"></span> </label>
                     </th>
                     <th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('To name','cftp_admin'); ?></th>
-                    <th data-hide="phone,tablet"><?php _e('Subject','cftp_admin'); ?></th>
-                    <th data-hide="phone,tablet"><?php _e('Organization','cftp_admin'); ?></th>
+                    <th data-hide="phone,tablet"><?php _e('Subject.','cftp_admin'); ?></th>
+                    <th data-hide="phone,tablet"><?php _e('To Organization','cftp_admin'); ?></th>
 
                     <th><?php _e('email','cftp_admin'); ?></th>
                                         <th><?php _e('Note','cftp_admin'); ?></th>
@@ -247,7 +247,7 @@ $actual_link = SITE_URI.'requested_file.php';
                         <span class="checkmark"></span> </label></td>
                     <td><?php echo $row['to_name']; ?></td>
                     <td class="file_name"><?php echo $row['to_subject_request']; ?></td>
-                    <td><?php if($row['from_organization'] != NULL){ echo $row['from_organization']; } else { echo ("--"); } ?></td>
+                    <td><?php if($row['to_organization'] != NULL){ echo $row['to_organization']; } else { echo ("--"); } ?></td>
                     <td><?php echo $row['to_email']; ?></td>
                                         <td><?php echo $row['to_note_request']; ?></td>
                     <td class="<?php echo (!empty($row['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>"><?php

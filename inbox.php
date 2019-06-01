@@ -1191,7 +1191,7 @@ $(".refreshcls").on("click", function (e) {
 <script type="text/javascript">
  $(document).ready(function(e) {
 	 $(".delBtn").click(function() {
-				var msg_1 = 'You are about to delete 1 clients and all of the assigned files. Are you sure you want to continue?';
+				var msg_1 = 'You are about to delete a file from your Inbox permanently. Only your copy will be deleted. Are you sure you want to continue??';
 					if (confirm(msg_1)) {
 						$('#delete_file').val($(this).attr('del-id'));
 					  $('#deleteForm').submit();

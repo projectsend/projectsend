@@ -186,7 +186,7 @@ catch ( Exception $e ) {
       <div class="hero">
         <div class="col-xs-6 pull-left login-desc-box-l">
           <h4 class="paragraph-header"><?php echo html_entity_decode(isset($row['topleft'])?$row['topleft']:''); ?></h4>
-          <div class="login-app-icons"><a href="dropoff_guest.php" class="btn btn-danger btn-sm"><i class="fa fa-upload" aria-hidden="true"></i>&nbsp;&nbsp;drop off</a></div>
+          <div class="login-app-icons"><a href="dropoff_guest.php" class="btn btn-danger btn-sm"><i class="fa fa-upload" aria-hidden="true"></i>&nbsp;&nbsp;Guest Drop-off</a></div>
         </div>
         <div class="col-xs-6 pull-right hidden-xs">
           <img src="<?php echo BASE_URI ?>img/custom/logo/<?php echo html_entity_decode(isset($row['topright'])?$row['topright']:''); ?>" class="display-image" alt="">

@@ -244,7 +244,7 @@ cursor: pointer;
 				 }
 
 			 if ( $delete_results['ok'] > 0 ) {
-				 $msg = __('The selected files were deleted.','cftp_admin');
+				 $msg = __('The selected file deleted.','cftp_admin');
 				 echo system_message('ok',$msg);
 				 $log_action_number = 12;
 			 }
@@ -258,7 +258,7 @@ cursor: pointer;
 			 $file_id = $_POST['unassign_file'];
 			 $this_file = new FilesActions();
 			 $this_file->unassign($file_id);
-			 $msg = __('The selected files were unassigned from this client.','cftp_admin');
+			 $msg = __('The selected file unassigned from this client.','cftp_admin');
 			 echo system_message('ok',$msg);
 			 $log_action_number = 11;
 
@@ -810,16 +810,8 @@ cursor: pointer;
 									?>
                   <td>
                   <label class="cc-chk-container">
-                      <input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" <?php echo isset($disabled)?$disabled:''; ?> />
-                      <span class="checkmark
-											<?php
-											//  if ((trim($row[uploader]) != CURRENT_USER_USERNAME)){
-											//  if ( ! in_array($row['request_type'], array('1','2') ) )
-											// 	{ echo ("disabled_cc = disabled ");
-											// echo($row['request_type']);}
-											// }
-										?>
-											"></span>
+                      <input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" <?php echo  isset($disabled)?$disabled:''; ?> />
+                      <span class="checkmark"></span>
                   </label>
                   </td>
                   <?php
@@ -1027,12 +1019,12 @@ cursor: pointer;
 									<td style="text-align:center;">
 
 										<?php if ($row['request_type'] == '1' || $row['request_type'] == '2')  {  ?>
-										<a del-id="<?php echo $row["id"]; ?>" class="delBtn" id="delBtn" >
+										<a del-id="<?php echo $row["file_id"]; ?>" class="delBtn" id="delBtn" >
 											<i class="fa fa-times" aria-hidden="true"></i>
 										</a>
 									<?php } else if (empty($row['group_id'])) {
 									?>
-										<a  un-id="<?php echo $row["id"]; ?>" id="unAssBtn" class="unAssnBtn">
+										<a  un-id="<?php echo $row["file_id"]; ?>" id="unAssBtn" class="unAssnBtn">
 											<i class="fa fa-sign-out" aria-hidden="true"></i>
 										</a>
 									<?php } else { echo(" -- ");  }?>

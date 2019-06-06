@@ -435,9 +435,9 @@ include('header.php');
                       <option value="hide">
                       <?php _e('Hide','cftp_admin'); ?>
                       </option>
-                      <option value="unassign">
-                      <?php _e('Unassign','cftp_admin'); ?>
-                      </option>
+                      <!-- <option value="unassign">
+                      <?php //  _e('Unassign','cftp_admin'); ?>
+                      </option> -->
                       <option value="delete">
                       <?php _e('Delete','cftp_admin'); ?>
                       </option>

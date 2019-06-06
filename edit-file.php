@@ -58,7 +58,10 @@ switch($get_prev_id) {
 	$get_prev_url = BASE_URI.'public-files.php';
 	break;
 	case 7:
-	$get_prev_url = BASE_URI.'manage-files.php';
+	if($_GET['client_id']){ $get_prev_url = BASE_URI."manage-files.php?client_id=".$_GET['client_id'];}
+	else if($_GET['group_id']){ $get_prev_url = BASE_URI."manage-files.php?group_id=".$_GET['group_id'];}
+	else if($_GET['category']){ $get_prev_url = BASE_URI."manage-files.php?category=".$_GET['category'];}
+	else {	$get_prev_url = BASE_URI.'manage-files.php'; }
 	break;
 	case 8:
 	$get_prev_url = BASE_URI.'upload-process-form.php';

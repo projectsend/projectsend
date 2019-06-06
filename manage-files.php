@@ -754,7 +754,9 @@ include('header.php');
 											}
 										}
 									?>
-                  <td><a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=7" class="btn btn-primary btn-sm">
+                  <td><a href="edit-file.php?file_id=<?php echo $row["id"]; ?>&page_id=7<?php if($_GET['client_id']){ echo("&client_id=".$_GET['client_id']);}else if($_GET['group_id']){ echo("&group_id=".$_GET['group_id']);} else if($_GET['category']){ echo("&category=".$_GET['category']); }
+													?>"
+										class="btn btn-primary btn-sm">
                     <?php _e('Edit','cftp_admin'); ?>
                     </a></td>
                 </tr>

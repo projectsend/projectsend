@@ -89,7 +89,7 @@ $actual_link = SITE_URI.'requested_file.php';
 			<div class="row">
 				<div class="col-md-12">
 					<h2 class="page-title txt-color-blueDark"><?php echo $page_title; ?></h2>
-						<a href="request-drop-off.php" class="btn btn-sm btn-primary right-btn">Request File(s)</a>
+						<!-- <a href="request-drop-off.php" class="btn btn-sm btn-primary right-btn">Request File(s)</a> -->
 
           <?php
 		/**
@@ -282,11 +282,10 @@ $actual_link = SITE_URI.'requested_file.php';
 											<span class="label label-<?php echo $class; ?>"> <?php echo ($hidden == 0) ? $status_hidden : $status_visible; ?> </span>
 										</td>
 										<td><?php echo $row['requested_time']; ?></td>
-										<td>
-											<a <?php if($row['status'] != '1') { ?> href="dropoff.php?auth=<?php echo $row['auth_key']; ?>" <?php } ?> <?php if($row['status'] == '1') { echo ("disabled ='disabled'");} ?> class="btn btn-primary btn-sm"  id="<?php echo $row['id']; ?>" >
+										<!-- <td>
+											<a <?php  if($row['status'] != '1') { ?> href="dropoff.php?auth=<?php echo $row['auth_key']; ?>" <?php } ?> <?php if($row['status'] == '1') { echo ("disabled ='disabled'");} ?> class="btn btn-primary btn-sm"  id="<?php echo $row['id']; ?>" >
 												<?php _e('Go','cftp_admin'); ?>
-
-										</td>
+										</td> -->
 								</tr>
 								<?php
 									}

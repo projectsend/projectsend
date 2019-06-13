@@ -696,7 +696,7 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
 									</td>
 									<td data-value="<?php echo $this_file_size; ?>"><?php echo $formatted_size; ?></td>
                   <?php
-									if(($current_level != '0')&& ($row['request_type']=='0'))
+									if(($current_level != '0')&& ($row['request_type']!='2'))
 									{?>
 									<td>
 											<a href="edit-file.php?file_id=<?php echo $row["file_id"]; ?>&page_id=1" class="btn-sm"><?php _e(html_output($row['uploader']),'cftp_admin'); ?></a>

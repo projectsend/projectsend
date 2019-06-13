@@ -68,7 +68,7 @@ $email_strings_file_by_client = array(
 
 									'subject'	=> __('New files uploaded by clients','cftp_admin'),
 
-									'body'		=> __('New files has been uploaded by the following clients','cftp_admin'),
+									'body'		=> __('New files has been uploaded by the following clients <br><p style="font-size:15px; font-weight:bold; margin-bottom:5px;">'.CURRENT_USER_USERNAME.'</p>','cftp_admin'),
 
 									'body2'		=> __("You can manage these files",'cftp_admin'),
 

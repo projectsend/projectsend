@@ -498,7 +498,7 @@ $message = '
 							$add_arguments['prev_assign'] ='2';
 						}
 							$add_arguments['uploader_type'] = 'user';
-							if ($current_level = 0 ){
+							if ($current_level == 0 ){
 								$action_log_number = 32;
 							}else{
 								$action_log_number = 33;

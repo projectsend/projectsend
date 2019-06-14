@@ -14,7 +14,7 @@ if(!empty($auth)){
 	{
 		$authorization = true;
 		if($grow['status']==0) {
-			$to_name = $grow["to_name"];
+			$to_name = $grow["from_name"];
 			$from_organization = $grow["from_organization"];
 			$to_email = $grow["to_email"];
 			$duplicate_access= true;
@@ -191,7 +191,7 @@ if(!empty($auth)){
 						echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> Please choose at least one file.</div>";
 					}
 					if($file_status) {
-						$notification_auth = $dbh->prepare("UPDATE " . TABLE_DROPOFF . " SET status = '1' WHERE auth_key=:auth_key");
+						$notification_auth = $dbh->prepare("UPDATE " . TABLE_DROPOFF . " SET `status` = '1' , `to_note_request`= '".$comments."',`from_email`= '".$to."' WHERE auth_key=:auth_key");
 						$notification_auth->bindParam(':auth_key', $auth);
 						if($notification_auth->execute()) {
 							$notify_client = new PSend_Email();	
@@ -247,7 +247,7 @@ if(!empty($auth)){
 			<label for="from_mail_id" class="col-sm-4 control-label">
 			  <?php _e('From','cftp_admin'); ?>
 			</label>
-			<div class="col-sm-8"> <span style="width:100%;border:1px solid #ccc;padding:25px;float:left;"> <?php echo $to_name; ?></span> </div>
+			<div class="col-sm-8"> <span style="width:100%;border:1px solid #ccc;padding:15px;float:left;"> <?php echo $to_name; ?></span> </div>
 		  </div>
 		  <div class="form-group">
 			<label for="from_organization" class="col-sm-4 control-label">

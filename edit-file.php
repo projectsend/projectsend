@@ -498,11 +498,6 @@ $message = '
 							$add_arguments['prev_assign'] ='2';
 						}
 							$add_arguments['uploader_type'] = 'user';
-							if ($current_level == 0 ){
-								$action_log_number = 32;
-							}else{
-								$action_log_number = 33;
-							}
 
 
 						/**
@@ -548,6 +543,11 @@ $message = '
 							}
 
 							$new_log_action = new LogActions();
+							if ($current_level == 0 ){
+								$action_log_number = 33;
+							}else{
+								$action_log_number = 32;
+							}
 							$log_action_args = array(
 													'action' => $action_log_number,
 													'owner_id' => $global_id,

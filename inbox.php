@@ -825,8 +825,8 @@ cursor: pointer;
 										?></td>
                                     <td class="file_name">
                                         <?php
-                                            $download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
-											
+                                            $download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['file_id'].'&amp;n=1';
+
                                         /**
                                         * Clients can download from here.
                                         *It was like client cannot download. But now changed to Can.

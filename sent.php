@@ -821,7 +821,11 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
               </tbody>
             </table>
 		<?php 
-		    if($current_level != '0'){ _e('*Note: File without uploader link is requested.','cftp_admin'); } 
+		  if($current_level != '0'){
+		?>
+		    <p>*Note: File without uploader link is requested.</p>
+		<?php
+		  }
 		?>
             </section>
             <nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">

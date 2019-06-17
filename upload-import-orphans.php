@@ -214,6 +214,7 @@ $work_folder = UPLOADED_FILES_FOLDER;
 			array_multisort($files_to, SORT_DESC, $files_to_add);
 			
 	?>
+	<div class="form_actions_left">
           <div class="form_actions_limit_results">
 		  
             <form action="" name="files_search" method="post" class="form-inline">
@@ -233,13 +234,9 @@ $work_folder = UPLOADED_FILES_FOLDER;
 			  
             </form>
 			
-          </div>
+          </div>		  
+        </div>
 		  
-          <div class="clear"></div>
-		  
-          <div class="clear"></div>
-		  
-          <div class="clear"></div>
 		  
 			<div class="form-inline">
 			

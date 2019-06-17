@@ -88,7 +88,7 @@ $email_strings_new_client = array(
 
 									'body'			=> __('A new account was created for you. From now on, you can access the files that have been uploaded under your account using the following credentials:','cftp_admin'),
 
-									'body2'			=> __('You can log in following this link','cftp_admin'),
+									'body2'			=> __('You can log in following this link in any browser except Edge','cftp_admin'),
 
 									'body3'			=> __('Please contact the administrator if you need further assistance.','cftp_admin'),
 
@@ -103,7 +103,7 @@ $email_strings_invite_client = array(
 
 									'body'			=> __('A new account was created for you. From now on, you can access the files that have been uploaded under your account using the following credentials:','cftp_admin'),
 
-									'body2'			=> __('You can log in following this link','cftp_admin'),
+									'body2'			=> __('You can log in following this link in any browser except Edge','cftp_admin'),
 
 									'body3'			=> __('After Signing in click "My account" link and update your account Information.','cftp_admin'),
 

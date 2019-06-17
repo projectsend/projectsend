@@ -234,7 +234,7 @@ cursor: pointer;
 									 'errors'	=> 0,
 								 );
 				 $this_file		= new FilesActions();
-				 $delete_status	= $this_file->delete_inbox_files($file_id);
+				 $delete_status	= $this_file->delete_files($file_id);
 				 if ( $delete_status == true ) {
 					 $delete_results['ok']++;
 				 }

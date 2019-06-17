@@ -236,10 +236,10 @@ $actual_link = SITE_URI.'requested_file.php';
 											<input type="checkbox" name="select_all" id="select_all" value="0" />
 											<span class="checkmark"></span> </label>
 									</th>
-									<th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('From name','cftp_admin'); ?></th>
-									<th data-hide="phone,tablet"><?php _e('Organization','cftp_admin'); ?></th>
+									<th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('From Name','cftp_admin'); ?></th>
+									<th data-hide="phone,tablet"><?php _e('From Organization','cftp_admin'); ?></th>
 
-									<th><?php _e('email','cftp_admin'); ?></th>
+									<th><?php _e('Sent To','cftp_admin'); ?></th>
 									<th data-hide="phone,tablet"><?php _e('Comment','cftp_admin'); ?></th>
 									<th><?php _e('Status','cftp_admin'); ?></th>
 									<th><?php _e('Requested Time','cftp_admin'); ?></th>

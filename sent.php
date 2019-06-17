@@ -820,6 +820,7 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
                 ?>
               </tbody>
             </table>
+            </section>
 		<?php 
 		  if($current_level != '0'){
 		?>
@@ -827,7 +828,6 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
 		<?php
 		  }
 		?>
-            </section>
             <nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
               <div class="pagination_wrapper text-center">
                 <ul class="pagination hide-if-no-paging">

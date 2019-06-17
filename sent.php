@@ -566,7 +566,7 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
                   <th data-hide="phone,tablet"><?php _e('Ext.','cftp_admin'); ?></th>
                   <th><?php _e('Title','cftp_admin'); ?></th>
                   <th><?php _e('Size','cftp_admin'); ?></th>
-                  <th data-hide="phone,tablet"><?php _e('Uploader','cftp_admin'); ?></th>
+                  <th data-hide="phone,tablet"><?php _e('Uploader','cftp_admin'); ?><?php if($current_level != '0'){ _e('*','cftp_admin'); } ?></th>
                   <th data-hide="phone,tablet"><?php _e('Sent to','cftp_admin'); ?></th>
                   <th data-hide="phone" ><?php _e('Expiry','cftp_admin'); ?></th>
                   <?php
@@ -820,6 +820,9 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
                 ?>
               </tbody>
             </table>
+		<?php 
+		    if($current_level != '0'){ _e('*Note: File without uploader link is requested.','cftp_admin'); } 
+		?>
             </section>
             <nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
               <div class="pagination_wrapper text-center">

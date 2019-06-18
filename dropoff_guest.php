@@ -44,7 +44,7 @@ $page_title = __('Guest Drop-off','cftp_admin');
 		 			$message = "Invalid email format";
 		 	 }
 			else{
-				$sql1 = $dbh->prepare("INSERT INTO ".TABLE_DROPOFF." (from_name,from_organization,from_email,requested_time,auth_key,status) VALUES 
+				$sql1 = $dbh->prepare("INSERT INTO ".TABLE_DROPOFF." (from_name,from_organization,to_email,requested_time,auth_key,status) VALUES 
 				('".$your_name."', '".$your_organization."', '".$your_email."', '".date("Y-m-d H:i:s")."', '".$randomString."', '0')");
 				print_r($sql1);
 				if($sql1->execute()) {

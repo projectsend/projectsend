@@ -1017,8 +1017,8 @@ cursor: pointer;
 														?>
 														</td>
 										<td style="text-align:center;">
-										<?php //if ($row['request_type'] == '1' || $row['request_type'] == '2')  {  ?>
-										<?php if ($row['request_type'] == '2')  {  ?>
+										<?php if ($row['request_type'] == '1' || $row['request_type'] == '2')  {  ?>
+										<?php // if ($row['request_type'] == '2')  {  ?>
 										<a del-id="<?php echo $row["file_id"]; ?>" class="delBtn" id="delBtn" >
 											<i class="fa fa-times" aria-hidden="true"></i>
 										</a>

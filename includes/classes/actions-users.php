@@ -63,6 +63,7 @@ class UserActions
 		 * Validations for USER EDITING only.
 		 */
 		else if ($this->type == 'edit_user') {
+			$this->username = $arguments['username'];
 			/**
 			 * Changing password is optional.
 			 * Proceed only if any of the 2 fields is completed.
@@ -75,6 +76,7 @@ class UserActions
 			 * If not, then check if it exists.
 			 */
 			$valid_me->validate('email_exists',$this->email,$add_user_mail_exists,'','','','','',$this->id);
+			$valid_me->validate('username_exists',array('username'=>$this->username,'id'=>$this->id),$add_user_exists);
 		}
 
 		/** Password checks */
@@ -172,6 +174,7 @@ class UserActions
 
 		/** Define the account information */
 		$this->id			= $arguments['id'];
+		$this->username		= $arguments['username'];
 		$this->name			= $arguments['name'];
 		$this->email		= $arguments['email'];
 		$this->role			= $arguments['role'];
@@ -188,6 +191,7 @@ class UserActions
 			/** SQL query */
 			$this->edit_user_query = "UPDATE " . TABLE_USERS . " SET 
 									name = :name,
+									user = :username,
 									email = :email,
 									level = :level,
 									active = :active,
@@ -210,7 +214,8 @@ class UserActions
 			if (!empty($arguments['password'])) {
 				$this->sql_query->bindParam(':password', $this->enc_password);
 			}
-
+			$this->sql_query->bindParam(':username', $this->username);
+			$this->state['username_edited'] = 1;
 			$this->sql_query->execute();
 
 	

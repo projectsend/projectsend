@@ -179,6 +179,23 @@ class Validate_Form
 			$this->return_val = false;
 		}
 	}
+	private function is_username_exists($field, $err)
+	{
+		$this->statement = $this->dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE user = :user" );
+		$this->statement->execute(
+							array(
+								':user'	=> $field['username'],
+							)
+						);
+		$this->statement->setFetchMode(PDO::FETCH_ASSOC);
+		while( $data_file =	$this->statement->fetch() ) {
+			if($data_file['id'] != $field['id']){
+				$this->error_msg .= '<li>'.$err.'</li>';
+				$this->return_val = false;
+			}
+		}
+
+	}
 
 	/**
 	 * Check if the supplied e-mail address already is already assigned to 
@@ -250,6 +267,9 @@ class Validate_Form
 			break;
 			case 'user_exists':
 				$this->is_user_exists($field, $err);
+			break;
+			case 'username_exists':
+				$this->is_username_exists($field, $err);
 			break;
 			case 'email_exists':
 				$this->is_email_exists($field, $err, $current_id);

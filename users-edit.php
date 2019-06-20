@@ -117,6 +117,7 @@ if ($_POST) {
 	$edit_arguments = array(
 							'id'		=> $user_id,
 							'name'		=> $add_user_data_name,
+							'username'=> $add_user_data_user,
 							'email'		=> $add_user_data_email,
 							'role'		=> $add_user_data_level,
 							'active'	=> $add_user_data_active,
@@ -129,6 +130,7 @@ if ($_POST) {
 	 * send an empty value to prevent notices.
 	 */
 	$edit_arguments['password'] = (isset($_POST['add_user_form_pass'])) ? $_POST['add_user_form_pass'] : '';
+	$edit_arguments['username'] = (isset($_POST['add_user_form_user'])) ? $_POST['add_user_form_user'] : $add_user_data_user;
 	//$edit_arguments['password_repeat'] = (isset($_POST['add_user_form_pass2'])) ? $_POST['add_user_form_pass2'] : '';
 
 	/** Validate the information from the posted form. */
@@ -137,7 +139,7 @@ if ($_POST) {
 	/** Create the user if validation is correct. */
 	if ($edit_validate == 1) {
 		$edit_response = $edit_user->edit_user($edit_arguments);
-		//header("Location:".SITE_URI."users.php");
+		
 	}
 
 }
@@ -313,6 +315,20 @@ include('header.php');
 									$msg = __('There was an error. Please try again.','cftp_admin');
 									echo system_message('error',$msg);
 								break;
+							}
+
+							if($edit_response['username_edited']=='1'){
+
+								if($edit_arguments['id'] == $global_id ){
+									$msg = __('Your account will be logged out in 10seconds','cftp_admin');
+									echo system_message('ok',$msg);
+									session_destroy() ;
+									header("Location:".SITE_URI."index.php");
+								} else{
+									$msg = __('User edited Successfully','cftp_admin');
+									echo system_message('ok',$msg);
+									header("Location:".SITE_URI."users-edit.php?id=".$edit_arguments['id']);
+								}
 							}
 							if (($global_level == 7) || ($global_user == $add_user_data_user)) {
 								$user_form_type = 'edit_user_self';

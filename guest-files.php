@@ -205,13 +205,14 @@ $actual_link = SITE_URI.'requested_file.php';
 
 				<div class="col-md-12">
 						<?php
-						$reqstmail = "SELECT email FROM tbl_users WHERE id = ".$loggedin_id;
+						// $reqstmail = "SELECT email FROM tbl_users WHERE id = ".$loggedin_id;
 
-						$reqst = $dbh->prepare($reqstmail);
-						$reqst->execute();
-						$rfile = $reqst->fetch();
+						// $reqst = $dbh->prepare($reqstmail);
+						// $reqst->execute();
+						// $rfile = $reqst->fetch();
 
-						$req_by = "SELECT * FROM tbl_drop_off_request WHERE ( to_email ='".$rfile['email']."'  AND from_id IS NULL) Order by requested_time DESC";
+						// $req_by = "SELECT * FROM tbl_drop_off_request WHERE ( to_email ='".$rfile['email']."'  AND from_id IS NULL) Order by requested_time DESC";
+                                                $req_by = "SELECT * FROM tbl_drop_off_request WHERE (from_id IS NULL) Order by requested_time DESC";
 
 						$req_by_files = $dbh->prepare($req_by);
 						$req_by_files->execute();

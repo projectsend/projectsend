@@ -1017,16 +1017,17 @@ cursor: pointer;
 														?>
 														</td>
 										<td style="text-align:center;">
-                                        <?php if (($current_level != '0') && (($row['request_type'] == '1' || $row['request_type'] == '2'))) { ?>
-                                        <a del-id="<?php echo $row["file_id"]; ?>" class="delBtn" id="delBtn" >
-                                            <i class="fa fa-times" aria-hidden="true"></i>
-                                        </a>
-                                    <?php } else if ((empty($row['group_id'])) && (($current_level != '0') || ($current_level == '0') && ($row['request_type'] != '1'))) {
-                                    ?>
-                                        <a  un-id="<?php echo $row["file_id"]; ?>" id="unAssBtn" class="unAssnBtn">
-                                            <i class="fa fa-sign-out" aria-hidden="true"></i>
-                                        </a>
-                                    <?php } else { echo(" -- ");  }?>
+										<?php //if ($row['request_type'] == '1' || $row['request_type'] == '2')  {  ?>
+										<?php if ($row['request_type'] == '2')  {  ?>
+										<a del-id="<?php echo $row["file_id"]; ?>" class="delBtn" id="delBtn" >
+											<i class="fa fa-times" aria-hidden="true"></i>
+										</a>
+									<?php } else if (empty($row['group_id'])) {
+									?>
+										<a  un-id="<?php echo $row["file_id"]; ?>" id="unAssBtn" class="unAssnBtn">
+											<i class="fa fa-sign-out" aria-hidden="true"></i>
+										</a>
+									<?php } else { echo(" -- ");  }?>
 								</td>
 								</tr>
                 <?php

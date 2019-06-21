@@ -665,15 +665,16 @@ $message = '
                               <?php _e('Select a date', 'cftp_admin');?>
                             </label>
                             <div class="input-group date-container">
-								<?php
+	<?php
                 $date = date('d-m-Y');
-                if(($get_prev_id == 6) || ($get_prev_id == 2) || ($row['expires']==1) ) {
+                if ($get_prev_id == 5) {
+		    $expiry_date = date('d-m-Y', strtotime($date. ' + 14 days'));										
+		} elseif (($get_prev_id == 6) || ($get_prev_id == 2) || ($row['expires']==1)) {
                     $expiry_date = date('d-m-Y', strtotime($edit_file_info['expiry_date'])) ;
-                  }
-								else {
-									$expiry_date = date('d-m-Y', strtotime($date. ' + 14 days'));
-								}
-								?>
+                } else {
+		    $expiry_date = date('d-m-Y', strtotime($date. ' + 14 days'));
+		}
+	?>
                               <input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" />
                               <div class="input-group-addon"> <i class="glyphicon glyphicon-time"></i> </div>
                             </div>

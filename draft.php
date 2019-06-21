@@ -658,7 +658,7 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
               <td></td>
               <td></td>
               <td></td>
-	      <td style="text-align:center"><span class="glyphicon glyphicon-warning-sign" aria-hidden="true" style="color:red"></span></td>
+	      <td><span class="glyphicon glyphicon-warning-sign" aria-hidden="true" style="color:red"></span></td>
               </tr>
               <?php
 							}

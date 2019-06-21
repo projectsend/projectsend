@@ -655,7 +655,10 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
                 </a>
               </td>
               <td data-value="<?php echo filesize($add_file['path']); ?>"><?php echo html_output(format_file_size(get_real_size($add_file['path']))); ?></td>
-              <td colspan="4"> </td>
+              <td></td>
+              <td></td>
+              <td></td>
+	      <td style="text-align:center"><span class="glyphicon glyphicon-warning-sign" aria-hidden="true" style="color:red"></span></td>
               </tr>
               <?php
 							}
@@ -815,6 +818,8 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
               </tbody>
             </table>
             </section>
+            <p><span class="glyphicon glyphicon-warning-sign" aria-hidden="true" style="color:red"></span> Complete upload or delete this file.</p>
+		  
             <nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
               <div class="pagination_wrapper text-center">
                 <ul class="pagination hide-if-no-paging">
@@ -901,6 +906,8 @@ totalcount[0].innerHTML = numfiles.length + " files";
     td:nth-of-type(5):before { content: "Size"; }
     td:nth-of-type(6):before { content: "Uploader"; }
     td:nth-of-type(7):before { content: "Expiry"; }
+    td:nth-of-type(8):before { content: "Prev. Assigned"; }
+    td:nth-of-type(9):before { content: "Actions"; }	
 }
 /*-------------------- Responsive table End--------------------------*/
 </style>

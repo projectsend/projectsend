@@ -818,7 +818,7 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
               </tbody>
             </table>
             </section>
-            <p><span class="glyphicon glyphicon-warning-sign" aria-hidden="true" style="color:red"></span> Complete upload or delete this file.</p>
+            <p><span class="glyphicon glyphicon-warning-sign" aria-hidden="true" style="color:red"></span> Click "Title" link, then complete upload process form; or delete this file.</p>
 		  
             <nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
               <div class="pagination_wrapper text-center">

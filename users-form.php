@@ -76,7 +76,7 @@ switch ($user_form_type) {
 		break;
 	case 'edit_user_self':
 		$submit_value = __('Update account','cftp_admin');
-		$disable_user = false;
+		$disable_user = true;
 		$disable_password = false;
 		$require_pass = false;
 		$form_action = 'users-edit.php?id='.$user_id_mic;
@@ -95,7 +95,12 @@ switch ($user_form_type) {
 	<div class="form-group">
 		<label for="add_user_form_user" class="col-sm-4 control-label"><?php _e('Log in username','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" name="add_user_form_user" id="add_user_form_user" class="form-control <?php if (!$disable_user) { echo 'required'; } ?>" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($add_user_data_user)) ? html_output(stripslashes($add_user_data_user)) : ''; ?>" <?php if ($disable_user) { echo 'readonly'; } ?> placeholder="<?php _e("Must be alphanumeric",'cftp_admin'); ?>" />
+			<?php if (!$disable_user) { ?>
+			<input type="text" name="add_user_form_user" id="add_user_form_user" class="form-control <?php if (!$disable_user) { echo 'required'; } ?>" maxlength="<?php echo MAX_USER_CHARS; ?>"
+			value="<?php echo (isset($add_user_data_user)) ? html_output(stripslashes($add_user_data_user)) : ''; ?>"  placeholder="<?php _e("Must be alphanumeric",'cftp_admin'); ?>" />
+		<?php } else { ?>
+			<p class="form-control" style="background-color: #eee;" ><?php echo ($add_user_data_user);?></p>
+		<?php } ?>
 		</div>
 	</div>
 

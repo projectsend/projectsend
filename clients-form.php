@@ -79,7 +79,7 @@ switch ($clients_form_type) {
 	/** A client is creating a new account for himself */
 	case 'new_client_self':
 		$submit_value = __('Register account','cftp_admin');
-		$disable_user = false;
+		$disable_user = true;
 		$disable_password = false;
 		$require_pass = true;
 		$form_action = 'register.php';
@@ -90,7 +90,7 @@ switch ($clients_form_type) {
 	/** A client is editing his profile */
 	case 'edit_client_self':
 		$submit_value = __('Update account','cftp_admin');
-		$disable_user = false;
+		$disable_user = true;
 		$require_pass = false;
 		$form_action = 'clients-edit.php?id='.$client_id;
 		$info_box = false;
@@ -110,7 +110,12 @@ switch ($clients_form_type) {
 	<div class="form-group">
 		<label for="add_client_form_user" class="col-sm-4 control-label"><?php _e('Log in username','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" name="add_client_form_user" id="add_client_form_user" class="form-control <?php if (!$disable_user) { echo 'required'; } ?>" minlength="4" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($add_client_data_user)) ? html_output(stripslashes($add_client_data_user)) : ''; ?>" <?php if ($disable_user) { echo 'readonly'; }?> placeholder="<?php _e("Must be alphanumeric",'cftp_admin'); ?>" />
+				<?php if (!$disable_user) { ?>
+			<input type="text" name="add_client_form_user" id="add_client_form_user" class="form-control <?php if (!$disable_user) { echo 'required'; } ?>" minlength="4" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($add_client_data_user)) ? html_output(stripslashes($add_client_data_user)) : ''; ?>"
+			placeholder="<?php _e("Must be alphanumeric",'cftp_admin'); ?>" />
+			<?php } else { ?>
+				<p class="form-control" style="background-color: #eee;" ><?php echo ($add_client_data_user);?></p>
+			<?php } ?>
 		</div>
 	</div>
 <?php if (!$disable_password) {  ?>

@@ -632,6 +632,7 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
               </thead>
               <tbody>
               <?php
+		      if ($draft_count > 0) {
 							$curr_usr_id =	CURRENT_USER_ID;
 							if(isset($files_to_add) && count($files_to_add) > 0 ) {
 							foreach ($files_to_add as $add_file){
@@ -814,6 +815,9 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
                                 }
                             }
                         }
+                    } else {
+                        $no_results_error = 'account_level';
+                    }
                     ?>
               </tbody>
             </table>

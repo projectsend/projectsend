@@ -37,7 +37,8 @@ if ($_POST) {
 							'name' => $add_group_data_name,
 							'description' => $add_group_data_description,
 							'organization_type'=>$add_type,
-							'members' => $add_group_data_members
+							'members' => $add_group_data_members,
+                                                        'status'=> '1'
 							
 						);
 

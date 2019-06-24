@@ -237,11 +237,11 @@ $actual_link = SITE_URI.'requested_file.php';
 											<input type="checkbox" name="select_all" id="select_all" value="0" />
 											<span class="checkmark"></span> </label>
 									</th>
-									<th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('From name','cftp_admin'); ?></th>
-									<th data-hide="phone,tablet"><?php _e('Organization','cftp_admin'); ?></th>
+									<th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('From Name','cftp_admin'); ?></th>
+									<th data-hide="phone,tablet"><?php _e('From Organization','cftp_admin'); ?></th>
 
-									<th><?php _e('From email','cftp_admin'); ?></th>
-									<th><?php _e('To email','cftp_admin'); ?></th>
+									<th><?php _e('From Email','cftp_admin'); ?></th>
+									<th><?php _e('To Email','cftp_admin'); ?></th>
 									<th data-hide="phone,tablet"><?php _e('Comment','cftp_admin'); ?></th>
 									<th><?php _e('Status','cftp_admin'); ?></th>
 									<th><?php _e('Requested Time','cftp_admin'); ?></th>
@@ -264,8 +264,8 @@ $actual_link = SITE_URI.'requested_file.php';
 												<span class="checkmark"></span> </label></td>
 										<td><?php echo $row['from_name']; ?></td>
 										<td><?php echo $row['from_organization']; ?></td>
-										<td><?php echo $row['from_email']; ?></td>
 										<td><?php echo $row['to_email']; ?></td>
+										<td><?php echo $row['from_email']; ?></td>
 										<td><?php echo $row['to_note_request']; ?></td>
 										<td class="<?php echo (!empty($row['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>">
 											<?php

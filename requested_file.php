@@ -182,10 +182,10 @@ $actual_link = SITE_URI.'requested_file.php';
                                                 <label class="cc-chk-container cc-chk-container-grid-box">
                                                 <input type="checkbox" name="files[]" value="<?php echo $row['id']; ?>" />
                                                 <span class="checkmark"></span></label>
-                                                <p><span class="grid_box_span"><?php _e('To name','cftp_admin'); ?>:</span> <?php echo $row['to_name']; ?></p>
+                                                <p><span class="grid_box_span"><?php _e('To Name','cftp_admin'); ?>:</span> <?php echo $row['to_name']; ?></p>
                                                 <p><span class="grid_box_span"><?php _e('Subject','cftp_admin'); ?>:</span> <?php echo $row['to_subject_request']; ?></p>
                                                 <p><span class="grid_box_span"><?php _e('Note','cftp_admin'); ?>:</span> <span class="tooltip"> <?php echo $row['to_note_request']; ?> </span></span></p>
-                                                <p><span class="grid_box_span"><?php _e('email','cftp_admin'); ?>:</span> <?php echo $row['to_email']; ?></p>
+                                                <p><span class="grid_box_span"><?php _e('Email','cftp_admin'); ?>:</span> <?php echo $row['to_email']; ?></p>
                                                 <?php
                                                 $disabled_grid = '';
                                                 if($row['status']===1)
@@ -220,12 +220,11 @@ $actual_link = SITE_URI.'requested_file.php';
                         <input type="checkbox" name="select_all" id="select_all" value="0" />
                         <span class="checkmark"></span> </label>
                     </th>
-                    <th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('To name','cftp_admin'); ?></th>
-                    <th data-hide="phone,tablet"><?php _e('Subject.','cftp_admin'); ?></th>
+                    <th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('To Name','cftp_admin'); ?></th>
+                    <th data-hide="phone,tablet"><?php _e('Subject','cftp_admin'); ?></th>
                     <th data-hide="phone,tablet"><?php _e('To Organization','cftp_admin'); ?></th>
-
-                    <th><?php _e('email','cftp_admin'); ?></th>
-                                        <th><?php _e('Note','cftp_admin'); ?></th>
+                    <th><?php _e('To Email','cftp_admin'); ?></th>
+                    <th><?php _e('Note','cftp_admin'); ?></th>
                     <th><?php _e('Status','cftp_admin'); ?></th>
                     <th><?php _e('Requested Time','cftp_admin'); ?></th>
                     <th><?php _e('Action','cftp_admin'); ?></th>
@@ -305,10 +304,10 @@ $actual_link = SITE_URI.'requested_file.php';
 											<input type="checkbox" name="select_all" id="select_all" value="0" />
 											<span class="checkmark"></span> </label>
 									</th>
-									<th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('From name','cftp_admin'); ?></th>
-									<th data-hide="phone,tablet"><?php _e('Subject.','cftp_admin'); ?></th>
-									<th data-hide="phone,tablet"><?php _e('From Organization.','cftp_admin'); ?></th>
-									<th><?php _e('email','cftp_admin'); ?></th>
+									<th data-type="numeric" data-sort-initial="descending" data-hide="phone"><?php _e('From Name','cftp_admin'); ?></th>
+									<th data-hide="phone,tablet"><?php _e('Subject','cftp_admin'); ?></th>
+									<th data-hide="phone,tablet"><?php _e('From Organization','cftp_admin'); ?></th>
+									<th><?php _e('From Email','cftp_admin'); ?></th>
 									<th><?php _e('Note','cftp_admin'); ?></th>
 									<th><?php _e('Status','cftp_admin'); ?></th>
 									<th><?php _e('Requested Time','cftp_admin'); ?></th>
@@ -461,7 +460,7 @@ $actual_link = SITE_URI.'requested_file.php';
     Label the data
     */
     td:nth-of-type(1):before { content: ""; }
-    td:nth-of-type(2):before { content: "To Name"; }
+    td:nth-of-type(2):before { content: "Name"; }
     td:nth-of-type(3):before { content: "Subject"; }
     .tb1 td:nth-of-type(4):before ,.tb2 td:nth-of-type(4):before{ content: "Organization"; }
     .tb1 td:nth-of-type(5):before ,.tb2 td:nth-of-type(5):before{ content: "Email"; }

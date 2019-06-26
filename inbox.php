@@ -1016,7 +1016,7 @@ cursor: pointer;
 
 														?>
 														</td>
-										<td style="text-align:center;">
+										<td>
 									<?php if (($current_level != '0') && (($row['request_type'] == '1' || $row['request_type'] == '2'))) { ?>
                                         <a del-id="<?php echo $row["file_id"]; ?>" class="delBtn" id="delBtn" >
                                             <i class="fa fa-times" aria-hidden="true"></i>
@@ -1176,6 +1176,7 @@ $(".refreshcls").on("click", function (e) {
     td:nth-of-type(8):before { content: "Expiry"; }
     td:nth-of-type(9):before { content: "Total downloads"; }
     td:nth-of-type(10):before { content: "Type"; }
+    td:nth-of-type(11):before { content: "Action"; }
 }
 /*-------------------- Responsive table End--------------------------*/
 </style>

@@ -460,14 +460,14 @@ $actual_link = SITE_URI.'requested_file.php';
     Label the data
     */
     td:nth-of-type(1):before { content: ""; }
-    td:nth-of-type(2):before { content: "Name"; }
+    .tb1 td:nth-of-type(2):before { content: "To Name"; },.tb2 td:nth-of-type(2):before { content: "From Name"; }
     td:nth-of-type(3):before { content: "Subject"; }
-    .tb1 td:nth-of-type(4):before ,.tb2 td:nth-of-type(4):before{ content: "Organization"; }
-    .tb1 td:nth-of-type(5):before ,.tb2 td:nth-of-type(5):before{ content: "Email"; }
-    .tb1 td:nth-of-type(6):before ,.tb2 td:nth-of-type(6):before{ content: "Note"; }
-		.tb1 td:nth-of-type(7):before ,.tb2 td:nth-of-type(7):before{ content: "Status"; }
-    .tb1 td:nth-of-type(8):before ,.tb2 td:nth-of-type(8):before{ content: "Requested Time"; }
-    .tb1 td:nth-of-type(9):before ,.tb2 td:nth-of-type(9):before{ content: "Action"; }
+    .tb1 td:nth-of-type(4):before{ content: "To Organization"; },.tb2 td:nth-of-type(4):before{ content: "From Organization"; }
+    .tb1 td:nth-of-type(5):before{ content: "To Email"; },.tb2 td:nth-of-type(5):before{ content: "From Email"; }
+    td:nth-of-type(6):before{ content: "Note"; }
+    td:nth-of-type(7):before{ content: "Status"; }
+    td:nth-of-type(8):before{ content: "Requested Time"; }
+    td:nth-of-type(9):before{ content: "Action"; }
 }
 /*-------------------- Responsive table End--------------------------*/
 </style>

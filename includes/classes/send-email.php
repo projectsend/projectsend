@@ -833,7 +833,7 @@ class PSend_Email
 
 		$this->name			= (!empty($arguments['name'])) ? $arguments['name'] : '';
 
-		$this->files_list	= (!empty($arguments['files_list'])) ? $arguments['files_list'] : '';
+		$this->files_list	= (!empty($arguments['files_list'])) ? array($arguments['files_list']) : '';
 
 		$this->token		= (!empty($arguments['token'])) ? $arguments['token'] : '';
 

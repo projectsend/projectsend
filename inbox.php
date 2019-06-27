@@ -728,9 +728,9 @@ cursor: pointer;
 								else {
 									$edit_access = '';
 								}
-								
-								$current_download_count = current_download_count_user($row['id'],CURRENT_USER_ID);
-								
+
+								$current_download_count = current_download_count_user($row['file_id']);
+
 								//echo $current_download_count;
 								//echo $file_id = $row['id'];
 								

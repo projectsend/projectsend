@@ -264,8 +264,8 @@ $actual_link = SITE_URI.'requested_file.php';
 												<span class="checkmark"></span> </label></td>
 										<td><?php echo $row['from_name']; ?></td>
 										<td><?php echo $row['from_organization']; ?></td>
-										<td><?php echo $row['from_email']; ?></td>
 										<td><?php echo $row['to_email']; ?></td>
+										<td><?php echo $row['from_email']; ?></td>
 										<td><?php echo $row['to_note_request']; ?></td>
 										<td class="<?php echo (!empty($row['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>">
 											<?php

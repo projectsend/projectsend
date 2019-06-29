@@ -17,36 +17,36 @@ if (CLIENTS_CAN_UPLOAD == 1) {
 $page_title = __('Drop-off Request','cftp_admin');
 include('header.php');
 $auth = isset($_GET['auth']) ? htmlspecialchars($_GET['auth'],ENT_QUOTES, 'UTF-8') : '';
-$this_user = CURRENT_USER_USERNAME;	
-/* check auth key is authorized to current user */	
-$this_user = CURRENT_USER_USERNAME;	
-$client_info = get_client_by_username($this_user);	
-$logged_in_email = isset($client_info['email'])?$client_info['email']:'';	
-$sql_auth = $dbh->prepare( 'SELECT * FROM '.TABLE_DROPOFF.' WHERE auth_key = "'.$auth.'" AND to_email="'.$logged_in_email.'"');		
-$sql_auth->execute(); 	
-$sql_auth = $sql_auth->fetch();	
-/* Get the target user ID */	
-$target_id = $sql_auth['from_id'];	
-/* Get the targe user ID inof */	
+$this_user = CURRENT_USER_USERNAME;
+/* check auth key is authorized to current user */
+$this_user = CURRENT_USER_USERNAME;
+$client_info = get_client_by_username($this_user);
+$logged_in_email = isset($client_info['email'])?$client_info['email']:'';
+$sql_auth = $dbh->prepare( 'SELECT * FROM '.TABLE_DROPOFF.' WHERE auth_key = "'.$auth.'" AND to_email="'.$logged_in_email.'"');
+$sql_auth->execute();
+$sql_auth = $sql_auth->fetch();
+/* Get the target user ID */
+$target_id = $sql_auth['from_id'];
+/* Get the targe user ID inof */
 $target_info = get_client_by_id($target_id);
 /*echo "<pre>"; print_r($target_info); echo "</pre>"; */
-?>	
+?>
 		<div id="main">
-			<div id="content"> 
+			<div id="content">
 				<!-- Added by B) -------------------->
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-md-12">
-						<?php if(!empty($sql_auth) && count($sql_auth)>0) 
-						{ 
-							if($sql_auth['status']==0) 
+						<?php if(!empty($sql_auth) && count($sql_auth)>0)
+						{
+							if($sql_auth['status']==0)
 							{?>
-								<h2><?php echo $page_title; ?></h2>							
+								<h2><?php echo $page_title; ?></h2>
 								<p>
 								<?php
 								$msg = __('Click on Add files to select all the files that you want to upload, and then click continue. On the next step, you will be able to set a name and description for each uploaded file. Remember that the maximum allowed file size (in mb.) is ','cftp_admin') . ' <strong>'.MAX_FILESIZE.'</strong>';
 								echo system_message('info', $msg);
-								?>							
+								?>
 								</p>
 								<script type="text/javascript">
 										$(document).ready(function() {
@@ -76,7 +76,7 @@ $target_info = get_client_by_id($target_id);
 												runtimes : 'html5,flash,silverlight,html4',
 												url : 'process-upload.php',
 												max_file_size : '<?php echo MAX_FILESIZE; ?>mb',
-												chunk_size : '1mb',
+											//	chunk_size : '1mb',
 												multipart : true,
 												<?php
 												if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
@@ -153,8 +153,8 @@ $target_info = get_client_by_id($target_id);
 											</p>
 										</div>
 									</div>
-									<input type="hidden" value="<?php echo isset($auth)?$auth:''; ?>" name="auth_key" />	 
-									
+									<input type="hidden" value="<?php echo isset($auth)?$auth:''; ?>" name="auth_key" />
+
 									<input type="hidden" value="<?php echo isset($target_id)?$target_id:''; ?>" name="target_id" />
 
 									<input type="hidden" value="<?php echo isset($target_info['name'])?$target_info['name']:''; ?>" name="target_name" />
@@ -169,13 +169,13 @@ $target_info = get_client_by_id($target_id);
 										</p>
 									</div>
 								</form>
-						<?php 
+						<?php
 							}
 							else {
 								echo "<h2>";echo "You have already uploaded the file(s) for this request!";	echo "</h2>";
 							}
-						} 
-						else 
+						}
+						else
 						{
 							echo "<h2>";echo "You are not authorized to access this page!";	echo "</h2>";
 						}
@@ -185,6 +185,6 @@ $target_info = get_client_by_id($target_id);
 				</div>
 			</div>
 		</div>
-		<?php 
+		<?php
 		include('footer.php');
 		?>

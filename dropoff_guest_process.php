@@ -305,15 +305,7 @@ if(!empty($auth)){
 </div>
 <script type="text/javascript">
 $(document).ready(function(e) {
-	$("#microhealthuserid").keyup(function(){
-		var search_string = $("#microhealthuserid").val();
-		if(search_string == ''){$("#searchres").html('');}
-		else{postdata = {'checkmicrosenduser' : search_string}
-		$.post("checkmicrosenduser.php",postdata,function(data){	
-		
-		$("#searchres").html(data);	
-		});
-	}});
+
 	$(document).on('click', ".mhusermid li", function() {
 		$("#microhealthuserid").val($(this).text());
 		//$(".mhusermid").toggle();

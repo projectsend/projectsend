@@ -96,10 +96,10 @@ if ( !empty( $load_scripts ) ) {
 				$load_js_files[]		= BASE_URI . 'includes/js/chosen/chosen.jquery.min.js';
 				break;
 			case 'plupload':
-			$load_css_files[]		= BASE_URI . 'includes/pluploadOld/js/jquery.plupload.queue/css/jquery.plupload.queue.css';
-			// $load_js_files[]		= BASE_URI . 'includes/plupload/js/plupload.dev.js';
-			$load_js_files[]		= BASE_URI . 'includes/plupload/js/plupload.full.min.js';
-			$load_js_files[]		= BASE_URI . 'includes/plupload/js/jquery.plupload.queue/jquery.plupload.queue.js';
+				$load_css_files[]		= BASE_URI . 'includes/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css';
+				 $load_js_files[]		= BASE_URI . 'includes/plupload/js/plupload.dev.js';
+				$load_js_files[]		= BASE_URI . 'includes/plupload/js/plupload.full.min.js';
+				$load_js_files[]		= BASE_URI . 'includes/plupload/js/jquery.plupload.queue/jquery.plupload.queue.js';
 
 				if ( LOADED_LANG != 'en' ) {
 					$plupload_lang_file = 'includes/plupload/js/i18n/'.LOADED_LANG.'.js';

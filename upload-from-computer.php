@@ -80,7 +80,7 @@ $current_level = get_current_user_level();
 
 			$(function() {
 				$("#uploader").pluploadQueue({
-					runtimes : 'html5,flash,silverlight,html4',
+					runtimes : 'html5,silverlight,html4',
 					url : 'process-upload.php',
 					max_file_size : '<?php echo MAX_FILESIZE; ?>mb',
 					// chunk_size : '<?php // echo MAX_FILESIZE; ?>mb',
@@ -94,7 +94,7 @@ $current_level = get_current_user_level();
 					<?php
 						}
 					?>
-					flash_swf_url : 'includes/plupload/js/plupload.flash.swf',
+					// flash_swf_url : 'includes/plupload/js/plupload.flash.swf',
 					silverlight_xap_url : 'includes/plupload/js/plupload.silverlight.xap',
 					preinit: {
 						Init: function (up, info) {
@@ -171,7 +171,7 @@ $current_level = get_current_user_level();
           <div id="uploader">
             <div class="message message_error">
               <p>
-                <?php _e("Your browser doesn't support HTML5, Flash or Silverlight. Please update your browser or install Adobe Flash or Silverlight to continue.",'cftp_admin'); ?>
+                <?php _e("Your browser doesn't support HTML5, Silverlight. Please update your browser or install Adobe Flash or Silverlight to continue.",'cftp_admin'); ?>
               </p>
             </div>
           </div>

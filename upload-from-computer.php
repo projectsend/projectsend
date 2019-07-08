@@ -79,29 +79,21 @@ $current_level = get_current_user_level();
 			});
 
 			$(function() {
-				$("#uploader").pluploadQueue({
-					runtimes : 'html5,silverlight,html4',
-					url : 'process-upload.php',
-					max_file_size : '<?php echo MAX_FILESIZE; ?>mb',
-					// chunk_size : '<?php // echo MAX_FILESIZE; ?>mb',
-					multipart : true,
-					<?php
-						if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
-					?>
-							filters : [
-								{title : "Allowed files", extensions : "<?php echo $options_values['allowed_file_types']; ?>"}
-							],
-					<?php
-						}
-					?>
-					// flash_swf_url : 'includes/plupload/js/plupload.flash.swf',
-					silverlight_xap_url : 'includes/plupload/js/plupload.silverlight.xap',
-					preinit: {
-						Init: function (up, info) {
-							$('#uploader_container').removeAttr("title");
-						}
-					}
+
+					// Setup html5 version
+					$("#uploader").pluploadQueue({
+						// General settings
+						runtimes : 'html5,silverlight,html4',
+						url : 'process-upload.php',
+						chunk_size: '20mb',
+						rename : true,
+						dragdrop: true,
+
+						filters : {
+							// Maximum file size
+							max_file_size : '2048mb'}
 					});
+
 
 				var uploader = $('#uploader').pluploadQueue();
 
@@ -115,12 +107,6 @@ $current_level = get_current_user_level();
 					}
 					// e.preventDefault();
 				//	var fcount = $("#uploader_filelist").children().length;  $("#filecount").val(fcount);
-					if (uploader.files.length > 0) {
-						uploader.bind('StateChanged', function() {
-							if (uploader.files.length === (uploader.total.uploaded + uploader.total.failed)) {
-								$('form')[0].submit();
-							}
-						});
 
 						uploader.start();
 
@@ -130,9 +116,16 @@ $current_level = get_current_user_level();
 
 						uploader.bind('FileUploaded', function (up, file, info) {
 							var obj = JSON.parse(info.response);
-							var new_file_field = '<input type="hidden" name="finished_files[]" value="'+obj.NewFileName+'" />'
-							$('form').append(new_file_field);
+							var new_file_field = '<input type="hidden" name="finished_files[]" value="'+obj.NewFileName+'" />';
+							console.log(obj);
+							$('form#upload_by_client').append(new_file_field);
 						});
+						if (uploader.files.length > 0) {
+							uploader.bind('StateChanged', function() {
+								if (uploader.files.length === (uploader.total.uploaded + uploader.total.failed)) {
+								 $('form')[0].submit();
+								}
+							});
 
 						return false;
 					} else {
@@ -171,7 +164,7 @@ $current_level = get_current_user_level();
           <div id="uploader">
             <div class="message message_error">
               <p>
-                <?php _e("Your browser doesn't support HTML5, Silverlight. Please update your browser or install Adobe Flash or Silverlight to continue.",'cftp_admin'); ?>
+                <?php _e("Your browser doesn't support HTML5, Flash or Silverlight. Please update your browser or install Adobe Flash or Silverlight to continue.",'cftp_admin'); ?>
               </p>
             </div>
           </div>

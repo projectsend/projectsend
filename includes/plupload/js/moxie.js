@@ -1,7 +1,7 @@
 ;var MXI_DEBUG = true;
 /**
  * mOxie - multi-runtime File API & XMLHttpRequest L2 Polyfill
- * v1.5.8
+ * v1.5.7
  *
  * Copyright 2013, Moxiecode Systems AB
  * Released under GPL License.
@@ -9,7 +9,7 @@
  * License: http://www.plupload.com/license
  * Contributing: http://www.plupload.com/contributing
  *
- * Date: 2018-02-19
+ * Date: 2017-11-03
  */
 ;(function (global, factory) {
 	var extract = function() {
@@ -4009,13 +4009,13 @@ define('moxie/file/File', [
 		} else if (this.type) {
 			var prefix = this.type.split('/')[0];
 			name = Basic.guid((prefix !== '' ? prefix : 'file') + '_');
-
+			
 			if (Mime.extensions[this.type]) {
 				name += '.' + Mime.extensions[this.type][0]; // append proper extension if possible
 			}
 		}
-
-
+		
+		
 		Basic.extend(this, {
 			/**
 			File name
@@ -4034,7 +4034,7 @@ define('moxie/file/File', [
 			@default ''
 			*/
 			relativePath: '',
-
+			
 			/**
 			Date of last modification
 
@@ -4042,7 +4042,7 @@ define('moxie/file/File', [
 			@type {String}
 			@default now
 			*/
-			lastModifiedDate: file.lastModified ? new Date(file.lastModified) : file.lastModifiedDate || (new Date()).toLocaleString() // Thu Aug 23 2012 19:40:00 GMT+0400 (GET)
+			lastModifiedDate: file.lastModifiedDate || (new Date()).toLocaleString() // Thu Aug 23 2012 19:40:00 GMT+0400 (GET)
 		});
 	}
 
@@ -6822,10 +6822,8 @@ define("moxie/runtime/html5/Runtime", [
 					return !(
 						(Env.browser === 'Chrome' && Env.verComp(Env.version, 28, '<')) || 
 						(Env.browser === 'IE' && Env.verComp(Env.version, 10, '<')) || 
-						(Env.browser === 'Safari' && Env.verComp(Env.version, 11, '<=')) ||
-						(Env.browser === 'Firefox' && Env.verComp(Env.version, 37, '<')) ||
-						Env.os === 'iOS' || // as of iOS11, no extensions are supported in accept attribute
-						Env.os === 'Android'
+						(Env.browser === 'Safari' && Env.verComp(Env.version, 7, '<')) ||
+						(Env.browser === 'Firefox' && Env.verComp(Env.version, 37, '<'))
 					);
 				}()),
 				return_response_headers: True,
@@ -11082,10 +11080,8 @@ define("moxie/runtime/html4/Runtime", [
 				return !(
 					(Env.browser === 'Chrome' && Env.verComp(Env.version, 28, '<')) || 
 					(Env.browser === 'IE' && Env.verComp(Env.version, 10, '<')) || 
-					(Env.browser === 'Safari' && Env.verComp(Env.version, 11, '<=')) ||
-					(Env.browser === 'Firefox' && Env.verComp(Env.version, 37, '<')) ||
-					Env.os === 'iOS' || // as of iOS11, no extensions are supported in accept attribute
-					Env.os === 'Android'
+					(Env.browser === 'Safari' && Env.verComp(Env.version, 7, '<')) ||
+					(Env.browser === 'Firefox' && Env.verComp(Env.version, 37, '<'))
 				);
 			}()),
 			resize_image: function() {

@@ -1,8 +1,8 @@
 /**
  * jquery.plupload.queue.js
  *
- * Copyright 2017, Ephox
- * Released under AGPLv3 License.
+ * Copyright 2009, Moxiecode Systems AB
+ * Released under GPL License.
  *
  * License: http://www.plupload.com/license
  * Contributing: http://www.plupload.com/contributing
@@ -39,7 +39,7 @@ used as it is.
 	var uploader = $('#uploader').pluploadQueue();
 
 	uploader.bind('FilesAdded', function() {
-		
+
 		// Autostart
 		setTimeout(uploader.start, 1); // "detach" from the main thread
 	});
@@ -73,7 +73,7 @@ used as it is.
 	@param {Boolean} [settings.rename=false] Enable ability to rename files in the queue.
 	@param {Boolean} [settings.multiple_queues=true] Re-activate the widget after each upload procedure.
 */
-;(function($) {
+;(function($, plupload) {
 	var uploaders = {};
 
 	function _(str) {
@@ -190,7 +190,7 @@ used as it is.
 
 					var icon = $('#' + file.id).attr('class', actionClass).find('a').css('display', 'block');
 					if (file.hint) {
-						icon.attr('title', file.hint);	
+						icon.attr('title', file.hint);
 					}
 				}
 
@@ -215,13 +215,22 @@ used as it is.
 
 							inputHTML += '<input type="hidden" name="' + id + '_' + inputCount + '_name" value="' + plupload.xmlEncode(file.name) + '" />';
 							inputHTML += '<input type="hidden" name="' + id + '_' + inputCount + '_status" value="' + (file.status == plupload.DONE ? 'done' : 'failed') + '" />';
-	
+
 							inputCount++;
 
 							$('#' + id + '_count').val(inputCount);
 						}
 
-						fileList.append( '<li id="' + file.id + '" class="plupload_delete">' + '<div class="plupload_file_name"><span>' + file.name + '</span></div>' + '<div class="plupload_file_action"><a href="#"></a></div>' + '<div class="plupload_file_status">' + file.percent + '%</div>' + '<div class="plupload_file_size">' + plupload.formatSize(file.size) + '</div>' + '<div class="plupload_clearer">&nbsp;</div>' + inputHTML + '</li>' );
+						fileList.append(
+							'<li id="' + file.id + '">' +
+								'<div class="plupload_file_name"><span>' + file.name + '</span></div>' +
+								'<div class="plupload_file_action"><a href="#"></a></div>' +
+								'<div class="plupload_file_status">' + file.percent + '%</div>' +
+								'<div class="plupload_file_size">' + plupload.formatSize(file.size) + '</div>' +
+								'<div class="plupload_clearer">&nbsp;</div>' +
+								inputHTML +
+							'</li>'
+						);
 
 						handleStatus(file);
 
@@ -270,6 +279,11 @@ used as it is.
 					if (!settings.unique_names && settings.rename) {
 						target.on('click', '#' + id + '_filelist div.plupload_file_name span', function(e) {
 							var targetSpan = $(e.target), file, parts, name, ext = "";
+							var fileContainer = targetSpan.closest('li');
+
+							if (!fileContainer.hasClass('plupload_delete')) {
+								return;
+							}
 
 							// Get file name and split out name and extension
 							file = up.getFile(targetSpan.parents('li')[0].id);
@@ -334,7 +348,7 @@ used as it is.
 						if (err.code == plupload.FILE_EXTENSION_ERROR) {
 							alert(_("Error: Invalid file extension:") + " " + file.name);
 						}
-						
+
 						file.hint = message;
 						$('#' + file.id).attr('class', 'plupload_failed').find('a').css('display', 'block').attr('title', message);
 					}
@@ -416,4 +430,4 @@ used as it is.
 			return uploaders[$(this[0]).attr('id')];
 		}
 	};
-})(jQuery);
+})(jQuery, plupload);

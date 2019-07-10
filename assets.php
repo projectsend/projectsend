@@ -97,7 +97,6 @@ if ( !empty( $load_scripts ) ) {
 				break;
 			case 'plupload':
 			$load_css_files[]		= BASE_URI . 'includes/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css';
-			// $load_js_files[]		= BASE_URI . 'includes/plupload/js/plupload.dev.js';
 			$load_js_files[]		= BASE_URI . 'includes/plupload/js/plupload.full.min.js';
 			$load_js_files[]		= BASE_URI . 'includes/plupload/js/jquery.plupload.queue/jquery.plupload.queue.js';
 			$load_js_files[]		= BASE_URI . 'includes/plupload/js/moxie.js';

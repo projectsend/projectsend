@@ -46,8 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 // usleep(5000);
 
 // Settings
-$targetDir = 'uploads'; //ini_get("upload_tmp_dir") . DIRECTORY_SEPARATOR . "plupload";
-//$targetDir = 'uploads';
+$targetDir = UPLOADED_FILES_FOLDER; 
 $cleanupTargetDir = true; // Remove old files
 $maxFileAge = 5 * 3600; // Temp file age in seconds
 

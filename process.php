@@ -34,13 +34,13 @@ class process {
 				break;
 		}
 	}
-	
+
 	function download_file() {
 		$this->check_level = array(9,8,7,0);
 		if (isset($_GET['id']) && isset($_GET['client']) && ($_GET['client']== $_SESSION['loggedin'])) {
 			/** Do a permissions check for logged in user */
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
-				
+
 					/**
 					 * Get the file name
 					 */
@@ -54,12 +54,12 @@ class process {
 					$this->expiry_date		= $this->row['expiry_date'];
 					$this->uploader		= $this->row['uploader'];
 					//var_dump($this->row);exit;
-					
+
 					$this->expired			= false;
 					if ($this->expires == '1' && time() > strtotime($this->expiry_date)) {
 						$this->expired		= true;
 					}
-					$this->can_download = true;	
+					$this->can_download = true;
 					$curr_usr_nm = CURRENT_USER_USERNAME;
 					if ((CURRENT_USER_LEVEL == 0 ) && ($curr_usr_nm != $this->row['uploader'])) {
 
@@ -99,7 +99,7 @@ class process {
 							$this->files = $this->dbh->prepare( $this->fq );
 							$this->files->execute( $this->params );
 
-							
+
 							if ( $this->files->rowCount() > 0 ) {
 								$this->can_download = true;
 							}
@@ -138,19 +138,19 @@ class process {
 						}
 
 					}
-					else { 
-						 
+					else {
+
 						$this->can_download = true;
 						$log_action = 7;
 						$global_user = get_current_user_username();
 						$global_id = get_logged_account_id($global_user);
 						$log_action_owner_id = $global_id;
 					}
-					
+
 					if ($this->can_download == true) {
 						/** Record the action log */
 						$new_log_action = new LogActions();
-						
+
 						$log_action_args = array(
 												'action'				=> $log_action,
 												'owner_id'				=> $log_action_owner_id,
@@ -163,41 +163,26 @@ class process {
 											);
 						$new_record_action = $new_log_action->log_action_save($log_action_args);
 						$this->real_file = UPLOADED_FILES_FOLDER.$this->real_file_url;
-						
-						/* AES Decryption started by RJ-07-Oct-2016. 
+
+						/* AES Decryption started by RJ-07-Oct-2016.
 						Encrypted file is decrypted and saved to temp folder.This file will be downloaded.
 						After downloading the file, this file will be removed from the server.
-						
+
 						*/
 						//echo $this->real_file;
-						
+
 						$fileData1 = file_get_contents($this->real_file);
-						
+
 						//echo "<br>-------------------w ".$fileData1;
 						if($fileData1) {
-						$aes1 = new AES($fileData1, ENCRYPTION_KEY, BLOCKSIZE);
-						//$decryptData1 = $aes1->decrypt();
-						//Decryption disabled for zip files
-						if (pathinfo($this->real_file, PATHINFO_EXTENSION) != "zip")
-						{
-
-						$decryptData1 = $aes1->decrypt();
-
-					 }
-					 else {
-						$decryptData1 = $fileData1;
-					 }
 
 						if (!file_exists(UPLOADED_FILES_FOLDER.'temp')) {
 						mkdir(UPLOADED_FILES_FOLDER.'temp', 0777, true);
 						}
 						$real_file1 = UPLOADED_FILES_FOLDER.'temp/'.$this->real_file_url;
-				
-						file_put_contents($real_file1  , $decryptData1);
-						// file_put_contents($real_file1  , $fileData1);
-						/* AES Decryption ended by RJ-07-Oct-2016 */
-						//echo $this->real_file; exit();
-						
+
+						file_put_contents($real_file1  , $fileData1);
+
 						}
 						if (file_exists($real_file1)) {
 							session_write_close();
@@ -211,7 +196,7 @@ class process {
 							header('Content-Length: ' . get_real_size($real_file1));
 							header('Connection: close');
 							//readfile($this->real_file);
-							
+
 							$context = stream_context_create();
 							$file = fopen($real_file1, 'rb', FALSE, $context);
 							while( !feof( $file ) ) {
@@ -221,19 +206,19 @@ class process {
 							fclose( $file );
 							unlink($real_file1);
 							exit;
-							
+
 						}
-						
+
 						else {
 							header("HTTP/1.1 404 Not Found");
 							?>
-								<div id="main" role="main"> 
+								<div id="main" role="main">
                                   <!-- MAIN CONTENT -->
-                                  <div id="content"> 
-                                    
+                                  <div id="content">
+
                                     <!-- Added by B) -------------------->
                                     <div class="container-fluid">
-                                      <div class="row"> 
+                                      <div class="row">
                                         <div class="col-md-12">
 										<h2><?php _e('File not found','cftp_admin'); ?></h2>
 									</div>
@@ -243,11 +228,11 @@ class process {
                                 </div>
 								<?php
                                 header('Location:'.SITE_URI.'inbox.php?status=1');
-							
+
 							//exit;
 						}
 					}
-					
+
 			}
 		}
 		else {
@@ -308,7 +293,7 @@ class process {
 
 				$this->filename = $this->row['filename'];
 
-				
+
 
 				$this->sql_who = $this->dbh->prepare("SELECT user_id, COUNT(*) AS downloads FROM " . TABLE_DOWNLOADS . " WHERE file_id=:file_id GROUP BY user_id");
 				$this->sql_who->bindParam(':file_id', $file_id, PDO::PARAM_INT);

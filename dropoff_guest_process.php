@@ -160,13 +160,6 @@ if(!empty($auth)){
 									rename("{$filePath}.part", $filePath);
 								}
 
-											$fileData = file_get_contents($filePath);
-											$aes = new AES($fileData, ENCRYPTION_KEY, BLOCKSIZE);
-											$encData = $aes->encrypt();
-											unlink($filePath);
-											file_put_contents($filePath , $encData);
-											/* AES Decryption ended by RJ-07-Oct-2016 */
-
 								$url = $fileName;
 								$fromid = $userindo['id'];
 								$filenamearray = explode(".",$url);

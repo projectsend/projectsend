@@ -72,29 +72,21 @@ $target_info = get_client_by_id($target_id);
 											},1000*60);
 										});
 										$(function() {
-											$("#uploader").pluploadQueue({
-												runtimes : 'html5,flash,silverlight,html4',
-												url : 'process-upload.php',
-												max_file_size : '<?php echo MAX_FILESIZE; ?>mb',
-											//	chunk_size : '1mb',
-												multipart : true,
-												<?php
-												if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
-												?>
-														filters : [
-															{title : "Allowed files", extensions : "<?php echo $options_values['allowed_file_types']; ?>"}
-														],
-												<?php
-													}
-												?>
-												flash_swf_url : 'includes/plupload/js/plupload.flash.swf',
-												silverlight_xap_url : 'includes/plupload/js/plupload.silverlight.xap',
-												preinit: {
-													Init: function (up, info) {
-														$('#uploader_container').removeAttr("title");
-													}
-												}
-											});
+															// Setup html5 version
+															$("#uploader").pluploadQueue({
+																// General settings
+																runtimes : 'html5,silverlight,html4',
+																url : 'process-upload.php',
+																chunk_size: '20mb',
+																rename : true,
+																dragdrop: true,
+
+																filters : {
+																	// Maximum file size
+																	max_file_size : '2048mb'}
+															});
+
+
 											var uploader = $('#uploader').pluploadQueue();
 											$('form').submit(function(e) {
 												var uptype = $("input[type=submit][clicked=true]").val();
@@ -114,7 +106,6 @@ $target_info = get_client_by_id($target_id);
 													});
 													uploader.start();
 													$("#btn-submit").hide();
-													$("#zip-submit").hide();
                                                                                                         $("#zip-submit").hide();
 													$(".message_uploading").fadeIn();
 													uploader.bind('FileUploaded', function (up, file, info) {

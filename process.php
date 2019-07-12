@@ -163,27 +163,7 @@ class process {
 											);
 						$new_record_action = $new_log_action->log_action_save($log_action_args);
 						$this->real_file = UPLOADED_FILES_FOLDER.$this->real_file_url;
-
-						/* AES Decryption started by RJ-07-Oct-2016.
-						Encrypted file is decrypted and saved to temp folder.This file will be downloaded.
-						After downloading the file, this file will be removed from the server.
-
-						*/
-						//echo $this->real_file;
-
-						$fileData1 = file_get_contents($this->real_file);
-
-						//echo "<br>-------------------w ".$fileData1;
-						if($fileData1) {
-
-						if (!file_exists(UPLOADED_FILES_FOLDER.'temp')) {
-						mkdir(UPLOADED_FILES_FOLDER.'temp', 0777, true);
-						}
-						$real_file1 = UPLOADED_FILES_FOLDER.'temp/'.$this->real_file_url;
-
-						file_put_contents($real_file1  , $fileData1);
-
-						}
+						$real_file1 = $this->real_file;
 						if (file_exists($real_file1)) {
 							session_write_close();
 							while (ob_get_level()) ob_end_clean();

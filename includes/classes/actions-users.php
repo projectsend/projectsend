@@ -174,7 +174,7 @@ class UserActions
 
 		/** Define the account information */
 		$this->id			= $arguments['id'];
-		$this->username		= $arguments['username'];
+		// $this->username		= $arguments['username'];
 		$this->name			= $arguments['name'];
 		$this->email		= $arguments['email'];
 		$this->role			= $arguments['role'];
@@ -191,7 +191,6 @@ class UserActions
 			/** SQL query */
 			$this->edit_user_query = "UPDATE " . TABLE_USERS . " SET 
 									name = :name,
-									user = :username,
 									email = :email,
 									level = :level,
 									active = :active,
@@ -214,8 +213,8 @@ class UserActions
 			if (!empty($arguments['password'])) {
 				$this->sql_query->bindParam(':password', $this->enc_password);
 			}
-			$this->sql_query->bindParam(':username', $this->username);
-			$this->state['username_edited'] = 1;
+			// $this->sql_query->bindParam(':username', $this->username);
+			
 			$this->sql_query->execute();
 
 	

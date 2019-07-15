@@ -247,7 +247,6 @@ class ClientActions
 			/** SQL query */
 			$this->edit_client_query = "UPDATE " . TABLE_USERS . " SET 
 										name = :name,
-										user = :username,
 										address = :address,
 										address2 = :address2,
 										city 	= :city,
@@ -270,7 +269,7 @@ class ClientActions
 
 			$this->sql_query = $this->dbh->prepare( $this->edit_client_query );
 			$this->sql_query->bindParam(':name', $this->name);
-			$this->sql_query->bindParam(':username', $this->username);
+			// $this->sql_query->bindParam(':username', $this->username);
 			$this->sql_query->bindParam(':address', $this->address);
 			$this->sql_query->bindParam(':address2', $this->address2);
 			$this->sql_query->bindParam(':city', $this->city);

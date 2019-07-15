@@ -140,7 +140,7 @@ $target_info = get_client_by_id($target_id);
 									<div id="uploader">
 										<div class="message message_error">
 											<p>
-												<?php _e("Your browser doesn't support HTML5, Flash or Silverlight. Please update your browser or install Adobe Flash or Silverlight to continue.",'cftp_admin'); ?>
+												<?php _e("Your browser doesn't support HTML5 or Silverlight. Please update your browser or install Silverlight to continue.",'cftp_admin'); ?>
 											</p>
 										</div>
 									</div>

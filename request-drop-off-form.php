@@ -14,7 +14,7 @@
 		<div class="col-sm-4"></div>		<div class="col-sm-8" style="padding-bottom: 10px;">
 		This page will allow you to send a request to one or more people requesting that they send (upload) one or more files for you.
 		</div>
-		<label for="from_mail_id" class="col-sm-4 control-label"><?php _e('From email','cftp_admin'); ?></label>
+		<label for="from_mail_id" class="col-sm-4 control-label"><?php _e('From Email','cftp_admin'); ?></label>
 		<div class="col-sm-8" style="font-weight:bold">
 			<?php echo isset($logged_in_email)?$logged_in_email:''; ?>
 			
@@ -48,7 +48,7 @@
 
 	<div class="form-group">
 			
-		<label for="to_email_request" class="col-sm-4 control-label"><?php _e('E-mail','cftp_admin'); ?></label>
+		<label for="to_email_request" class="col-sm-4 control-label"><?php _e('To Email','cftp_admin'); ?></label>
 		<div class="col-sm-8">
 			<input type="text" value="<?php if(isset($to_email_request)){  echo $to_email_request; }   ?>" name="to_email_request" id="to_email_request" class="form-control required"  placeholder="<?php _e("Must be valid and unique",'cftp_admin'); ?>" />
             <span style="color:#F00"><?php echo isset($to_emailErr)?$to_emailErr:''; ?></span>

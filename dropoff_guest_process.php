@@ -275,7 +275,7 @@ if(!empty($auth)){
 		  </div>
 		  </div>
 		  <div class="inside_form_buttons text-rgt">
-			<button type="submit" name="submit" class="btn btn-default">Submit Upload</button>
+			<button type="submit" name="submit" class="btn btn-success">Submit Upload</button>
 		  </div>
 		  <div class="form-group">
 			  <div class="col-md-12 note_file_upload">

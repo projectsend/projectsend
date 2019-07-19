@@ -4,34 +4,7 @@ if (! check_for_session() ) {
 	die();
 }
 $targetDir = UPLOADED_FILES_FOLDER;
-//   if(count($_POST['finished_files']) ==1 ){
-//     $finishedfile=$_POST['finished_files'];
-//     $fileName = $finishedfile['0'];
-//     $filePath = $targetDir . DIRECTORY_SEPARATOR . $fileName;
-//     $blockSize = 256;
-//         $inputKey = "project send encryption";
-//
-//     $fileData = file_get_contents($filePath);
-//     $aes = new AES($fileData, ENCRYPTION_KEY, BLOCKSIZE);
-//     $encData = $aes->encrypt();
-//     unlink($filePath);
-//     file_put_contents($filePath , $encData);
-// ?>
-  <!-- <form id="myForm" action="upload-process-form.php" method="post">
-      <input type="hidden" value="<?php // echo $_POST['uploader_0_name']; ?>" name="uploader_0_name">
-      <input type="hidden" value="0" name="zipupload">
-      <input type="hidden" value="<?php // echo $finishedfile['0']; ?>" name="finished_files[]">
-      <input type="hidden" value="done" name="uploader_0_status">
-      <input type="hidden" value="1" name="uploader_count">
-  </form>
-  <script type="text/javascript">
-    document.getElementById('myForm').submit();
-  </script> -->
-<?php
-// }
-//
-//   else {
-    //Create an object from the ZipArchive class.
+
     $zip = new ZipArchive();
     $finishedfile=$_POST['finished_files'];
     $fileName = $finishedfile['0'];
@@ -51,11 +24,7 @@ $targetDir = UPLOADED_FILES_FOLDER;
     $r = $zip->open($zipFilePath,  ZipArchive::CREATE);
 
     foreach ($_POST['finished_files'] as $p) {
-        	$filesToAdd= file_get_contents(UPLOADED_FILES_FOLDER.$p);
-        	$img = new AES($filesToAdd, ENCRYPTION_KEY, BLOCKSIZE);
-					$decryptData =  $img->decrypt();
-					unlink(UPLOADED_FILES_FOLDER.$p);
-					file_put_contents(UPLOADED_FILES_FOLDER.$p, $decryptData);
+
 					$r=$zip->addFile(UPLOADED_FILES_FOLDER.$p,$p);
 					
 				}
@@ -70,13 +39,6 @@ $targetDir = UPLOADED_FILES_FOLDER;
     "uploader_0_name" => $zipname,
     "zipupload"=>1
     );
-
-		// Encrypting the zip file
-      // $fileData = file_get_contents( UPLOADED_FILES_FOLDER. $zipname);
-      // $aes = new AES($fileData, ENCRYPTION_KEY, BLOCKSIZE);
-      // $encData = $aes->encrypt();
-      // unlink( UPLOADED_FILES_FOLDER. $zipname);
-      // file_put_contents(UPLOADED_FILES_FOLDER. $zipname , $encData);
       ?>
     <form id="myForm" action="upload-process-form.php" method="post">
 

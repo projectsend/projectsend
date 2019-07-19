@@ -26,11 +26,6 @@ $target_name = isset($_POST['target_name'])?$_POST['target_name']:'';
     $r = $zip->open($zipFilePath,  ZipArchive::CREATE);
 		
     foreach ($_POST['finished_files'] as $p) {
-        	$filesToAdd= file_get_contents(UPLOADED_FILES_FOLDER.$p);
-        	$img = new AES($filesToAdd, ENCRYPTION_KEY, BLOCKSIZE);
-					$decryptData =  $img->decrypt();
-					unlink(UPLOADED_FILES_FOLDER.$p);
-					file_put_contents(UPLOADED_FILES_FOLDER.$p, $decryptData);
 					$r=$zip->addFile(UPLOADED_FILES_FOLDER.$p,$p);
 					
 				}
@@ -46,12 +41,6 @@ $target_name = isset($_POST['target_name'])?$_POST['target_name']:'';
     "zipupload"=>1
     );
 
-		// Encrypting the zip file
-      // $fileData = file_get_contents( UPLOADED_FILES_FOLDER. $zipname);
-      // $aes = new AES($fileData, ENCRYPTION_KEY, BLOCKSIZE);
-      // $encData = $aes->encrypt();
-      // unlink( UPLOADED_FILES_FOLDER. $zipname);
-      // file_put_contents(UPLOADED_FILES_FOLDER. $zipname , $encData);
       ?>
     <form id="myForm" action="upload-process-form-dropoff.php" method="post">
         <input type="hidden" value="<?php echo isset($auth_key)?$auth_key:''; ?>" name="auth_key" />

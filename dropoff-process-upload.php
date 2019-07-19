@@ -5,8 +5,6 @@
 
 $allowed_levels = array(9,8,7,0);
 require_once('sys.includes.php');
-/* included aes class file by RJ-07-Oct-2016 */
-//include('aes_class.php');
 /**
  * If there is no valid session/user block the upload of files
  */
@@ -144,16 +142,6 @@ if (!$chunks || $chunk == $chunks - 1) {
 	rename("{$filePath}.part", $filePath);
 //echo '------------------------------';exit();
 }
-	
-	/* AES Decryption started by RJ-07-Oct-2016 */
-	$blockSize = BLOCKSIZE;
-	$inputKey = ENCRYPTION_KEY;
-	$fileData = file_get_contents($filePath);
-	$aes = new AES($fileData, $inputKey, $blockSize);
-	$encData = $aes->encrypt();
-	unlink($filePath);
-	file_put_contents($filePath , $encData);
-	/* AES Decryption ended by RJ-07-Oct-2016 */
 
 // Return JSON-RPC response
 die('{"jsonrpc" : "2.0", "result" : null, "id" : "id", "NewFileName" : "'.$fileName.'"}');

@@ -59,6 +59,26 @@ if(!empty($auth)){
 
 					if(!empty($_FILES['userfiles']['name'][0]))
 					{
+
+						$zip = new ZipArchive();
+						$zipName = isset($_FILES['userfiles']['name'][0]) ? $_FILES['userfiles']['name'][0] : '';
+						$this_file = new PSend_Upload_File();
+						// Rename the file
+						$zipName = $this_file->safe_rename($zipName);
+						$ext = strrpos($zipName, '.');
+						$zipName_a = substr($zipName, 0, $ext);
+						$zipName_b = substr($zipName, $ext);
+
+						$count = 1;
+						while (file_exists($targetDir . DIRECTORY_SEPARATOR . $zipName_a . '_guestdrop_' . $count .'_'. $zipName_b))
+						$count++;
+						$zipRealName = $zipName_a . '_guestdrop_' . $count.'_'. $zipName_b;
+						    $withoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $zipRealName);
+						    $zipRealName=$withoutExt.".zip";
+								echo($zipRealName);
+						    $r = $zip->open(UPLOADED_FILES_FOLDER.$zipRealName,  ZipArchive::CREATE);
+
+
 						for($i = 0 ; $i < $filecount; $i++)
 						{
 							$file_empty = isset($_FILES['userfiles']['name'][$i]) ? $_FILES['userfiles']['name'][$i] : '';
@@ -159,24 +179,28 @@ if(!empty($auth)){
 									// Strip the temp .part suffix off 
 									rename("{$filePath}.part", $filePath);
 								}
+								$r=$zip->addFile($filePath,$fileName);
+								unlink(UPLOADED_FILES_FOLDER.$fileName);
 
-								$url = $fileName;
-								$fromid = $userindo['id'];
-								$filenamearray = explode(".",$url);
-								$filename = $filenamearray[0];		 $array_file_name[] = $filenamearray[0];
-								$public_allow = 0;
-								$uploader = $to_name;
-								$time = '2017-03-02 00:00:00';
-								$expdate = '2017-03-09 00:00:00';
-								$statement = $dbh->prepare("INSERT INTO ".TABLE_FILES." (`url`, `filename`, `description`, `timestamp`, `uploader`, `expires`, `expiry_date`, `public_allow`, `public_token`,`request_type`) VALUES ('$url', '$filename', '', CURRENT_TIMESTAMP, '$uploader', '0', '2017-12-09 00:00:00', '0', NULL,'$requestType');");
-								if($statement->execute()) {
-									$img_id = $dbh->lastInsertId();
-									$filesrelations = $dbh->prepare("INSERT INTO ".TABLE_FILES_RELATIONS." (`timestamp`, `file_id`, `client_id`, `group_id`, `folder_id`, `hidden`, `download_count`) VALUES (CURRENT_TIMESTAMP, ".$img_id.", ".$fromid.", NULL, NULL, '0', '0')");
-									if($filesrelations->execute()) {
-										$file_status=true;
+							}
+						}
 
-									}
-								}
+						$r=$zip->close();
+						$url = $zipRealName;
+						$fromid = $userindo['id'];
+						$filenamearray = explode(".",$url);
+						$filename = $filenamearray[0];		 $array_file_name[] = $filenamearray[0];
+						$public_allow = 0;
+						$uploader = $to_name;
+						$time = '2017-03-02 00:00:00';
+						$expdate = '2017-03-09 00:00:00';
+						$statement = $dbh->prepare("INSERT INTO ".TABLE_FILES." (`url`, `filename`, `description`, `timestamp`, `uploader`, `expires`, `expiry_date`, `public_allow`, `public_token`,`request_type`) VALUES ('$url', '$zipRealName', '', CURRENT_TIMESTAMP, '$uploader', '0', '2017-12-09 00:00:00', '0', NULL,'$requestType');");
+						if($statement->execute()) {
+							$img_id = $dbh->lastInsertId();
+							$filesrelations = $dbh->prepare("INSERT INTO ".TABLE_FILES_RELATIONS." (`timestamp`, `file_id`, `client_id`, `group_id`, `folder_id`, `hidden`, `download_count`) VALUES (CURRENT_TIMESTAMP, ".$img_id.", ".$fromid.", NULL, NULL, '0', '0')");
+							if($filesrelations->execute()) {
+								$file_status=true;
+
 							}
 						}
 					}

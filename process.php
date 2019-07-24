@@ -163,7 +163,22 @@ class process {
 											);
 						$new_record_action = $new_log_action->log_action_save($log_action_args);
 						$this->real_file = UPLOADED_FILES_FOLDER.$this->real_file_url;
-						$real_file1 = $this->real_file;
+
+
+						$fileData1 = file_get_contents($this->real_file);
+						
+						if($fileData1) {
+						
+						$decryptData1 = $fileData1;
+
+						if (!file_exists(UPLOADED_FILES_FOLDER.'temp')) {
+						mkdir(UPLOADED_FILES_FOLDER.'temp', 0777, true);
+						}
+						$real_file1 = UPLOADED_FILES_FOLDER.'temp/'.$this->real_file_url;
+
+						file_put_contents($real_file1  , $decryptData1);
+
+						}
 						if (file_exists($real_file1)) {
 							session_write_close();
 							while (ob_get_level()) ob_end_clean();
@@ -208,8 +223,6 @@ class process {
                                 </div>
 								<?php
                                 header('Location:'.SITE_URI.'inbox.php?status=1');
-
-							//exit;
 						}
 					}
 

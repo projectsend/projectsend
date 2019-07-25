@@ -75,7 +75,6 @@ if(!empty($auth)){
 						$zipRealName = $zipName_a . '_guestdrop_' . $count.'_'. $zipName_b;
 						    $withoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $zipRealName);
 						    $zipRealName=$withoutExt.".zip";
-							//	echo($zipRealName);
 						    $r = $zip->open(UPLOADED_FILES_FOLDER.$zipRealName,  ZipArchive::CREATE);
 
 
@@ -180,7 +179,6 @@ if(!empty($auth)){
 									rename("{$filePath}.part", $filePath);
 								}
 								$r=$zip->addFile($filePath,$fileName);
-								unlink(UPLOADED_FILES_FOLDER.$fileName);
 
 							}
 						}

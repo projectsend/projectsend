@@ -6,11 +6,11 @@ $page_title = __('Drop-Off Summary','cftp_admin');
 $auth = isset($_REQUEST['auth']) ? htmlspecialchars($_REQUEST['auth'],ENT_QUOTES, 'UTF-8') : '';
 if(!empty($auth)){
 	define('TABLE_DROPOFF','tbl_drop_off_request');
-	$sql = $dbh->prepare( 'SELECT * FROM '.TABLE_DROPOFF.' WHERE auth_key = "'.$auth.'"' );	
+	$sql = $dbh->prepare( 'SELECT * FROM '.TABLE_DROPOFF.' WHERE auth_key = "'.$auth.'"' );
 	$sql->execute();
 	$sql->setFetchMode(PDO::FETCH_ASSOC);
 	$grow = $sql->fetch();
-	if(!empty($grow) && count($grow)>0) 
+	if(!empty($grow) && count($grow)>0)
 	{
 		$authorization = true;
 		if($grow['status']==0) {
@@ -36,7 +36,7 @@ if(!empty($auth)){
 		$uploadOk = 1;
 		$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
 		if($duplicate_access) {
-			if($_POST) 
+			if($_POST)
 			{
 				$to = ($_REQUEST['to']) ? $_REQUEST['to'] : '';
 				$comments = ($_REQUEST['comments']) ? $_REQUEST['comments'] : '';
@@ -45,7 +45,7 @@ if(!empty($auth)){
 				$statement->execute();
 				$statement->setFetchMode(PDO::FETCH_ASSOC);
 				$userindo = $statement->fetch();
-				if($userindo) 
+				if($userindo)
 				{
 					$targetDir = UPLOADED_FILES_FOLDER;
 					$cleanupTargetDir = true; // Remove old files
@@ -75,62 +75,62 @@ if(!empty($auth)){
 						$zipRealName = $zipName_a . '_guestdrop_' . $count.'_'. $zipName_b;
 						    $withoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $zipRealName);
 						    $zipRealName=$withoutExt.".zip";
-								echo($zipRealName);
+							//	echo($zipRealName);
 						    $r = $zip->open(UPLOADED_FILES_FOLDER.$zipRealName,  ZipArchive::CREATE);
 
 
 						for($i = 0 ; $i < $filecount; $i++)
 						{
 							$file_empty = isset($_FILES['userfiles']['name'][$i]) ? $_FILES['userfiles']['name'][$i] : '';
-							if (!empty($file_empty) ) 
+							if (!empty($file_empty) )
 							{
-								
+
 								/*looop start ------------------------------------------------------------------- */
 								$fileName = isset($_FILES['userfiles']['name'][$i]) ? $_FILES['userfiles']['name'][$i] : '';
 								$requestType=$_POST['request_type'];
 								$this_file = new PSend_Upload_File();
 								// Rename the file
 								$fileName = $this_file->safe_rename($fileName);
-								
+
 								// Make sure the fileName is unique but only if chunking is disabled
 								if ($chunks < 2 && file_exists($targetDir . $fileName)) {
 									$ext = strrpos($fileName, '.');
 									$fileName_a = substr($fileName, 0, $ext);
 									$fileName_b = substr($fileName, $ext);
-								
+
 									$count = 1;
 									while (file_exists($targetDir . DIRECTORY_SEPARATOR . $fileName_a . '_' . $count . $fileName_b))
 										$count++;
-								
+
 									$fileName = $fileName_a . '_' . $count . $fileName_b;
 								}
-								
+
 								$filePath = $targetDir .$fileName;
 								// Create target dir
 								if (!file_exists($targetDir))
 									@mkdir($targetDir);
-								
-								// Remove old temp files	
+
+								// Remove old temp files
 								if ($cleanupTargetDir && is_dir($targetDir) && ($dir = opendir($targetDir))) {
 									while (($file = readdir($dir)) !== false) {
 										$tmpfilePath = $targetDir . DIRECTORY_SEPARATOR . $file;
-								
+
 										// Remove temp file if it is older than the max age and is not the current file
 										if (preg_match('/\.part$/', $file) && (filemtime($tmpfilePath) < time() - $maxFileAge) && ($tmpfilePath != "{$filePath}.part")) {
 											@unlink($tmpfilePath);
 										}
 									}
-								
+
 									closedir($dir);
-								} else { 
+								} else {
 									die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}');
 								}
-									
-								
+
+
 								// Look for the content type header
 								if (isset($_SERVER["HTTP_CONTENT_TYPE"]))
 									$contentType = $_SERVER["HTTP_CONTENT_TYPE"];
-								
+
 								if (isset($_SERVER["CONTENT_TYPE"]))
 									$contentType = $_SERVER["CONTENT_TYPE"];
 								// Handle non multipart uploads older WebKit versions didn't support multipart in HTML5
@@ -141,7 +141,7 @@ if(!empty($auth)){
 										if ($out) {
 											// Read binary input stream and append it to temp file
 											$in = fopen($_FILES['userfiles']['tmp_name'][$i], "rb");
-								
+
 											if ($in) {
 												while ($buff = fread($in, 4096))
 													fwrite($out, $buff);
@@ -149,7 +149,7 @@ if(!empty($auth)){
 												die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
 											fclose($in);
 											fclose($out);
-											
+
 											@unlink($_FILES['userfiles']['tmp_name'][$i]);
 										} else
 											die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
@@ -161,22 +161,22 @@ if(!empty($auth)){
 									if ($out) {
 										// Read binary input stream and append it to temp file
 										$in = fopen("php://input", "rb");
-								
+
 										if ($in) {
 											while ($buff = fread($in, 4096))
 												fwrite($out, $buff);
 										} else
 											die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
-								
+
 										fclose($in);
 										fclose($out);
 									} else
 										die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
 								}
-								
+
 								// Check if file has been uploaded
 								if (!$chunks || $chunk == $chunks - 1) {
-									// Strip the temp .part suffix off 
+									// Strip the temp .part suffix off
 									rename("{$filePath}.part", $filePath);
 								}
 								$r=$zip->addFile($filePath,$fileName);
@@ -211,12 +211,12 @@ if(!empty($auth)){
 						$notification_auth = $dbh->prepare("UPDATE " . TABLE_DROPOFF . " SET `status` = '1' , `to_note_request`= '".$comments."',`from_email`= '".$to."' WHERE auth_key=:auth_key");
 						$notification_auth->bindParam(':auth_key', $auth);
 						if($notification_auth->execute()) {
-							$notify_client = new PSend_Email();	
-							$email_arguments = array(							
-								'type' => 'new_files_for_client',							
-								'address' => $to,							
-								'files_list' => 
-								$array_file_name						
+							$notify_client = new PSend_Email();
+							$email_arguments = array(
+								'type' => 'new_files_for_client',
+								'address' => $to,
+								'files_list' =>
+								$array_file_name
 							);
 							$try_sending = $notify_client->psend_send_email($email_arguments);
 						        $new_log_action = new LogActions();
@@ -230,10 +230,10 @@ if(!empty($auth)){
 							$new_record_action = $new_log_action->log_action_save($log_action_args);
 								echo "<div class='alert alert-success alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Success!</strong> Your file has been uploaded successfully.</div>";
 						}
-					
-					}			
+
+					}
 				}
-				else 
+				else
 				{
 					if(empty($to) && $to=='') {
 						echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> Please fill the Email ID.</div>";
@@ -244,12 +244,12 @@ if(!empty($auth)){
 					else {
 						echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> Email ID is not exist in our record.</div>";
 					}
-					
-				}	
+
+				}
 			}
 		}
 	?>
-	<?php 
+	<?php
 	if($duplicate_access) {
 	?>
 	  <h2><?php echo $page_title; ?></h2>
@@ -259,7 +259,7 @@ if(!empty($auth)){
 			<input type="hidden" name="request_type" value="2">
 			<div class="form-group">
 			<div class="col-sm-4"></div>
-		
+
 			<div class="col-sm-8"> This web page will allow you to drop-off (upload) one or more files for a MicroHealth user. </div>
 			<label for="from_mail_id" class="col-sm-4 control-label">
 			  <?php _e('From','cftp_admin'); ?>
@@ -309,7 +309,7 @@ if(!empty($auth)){
 		</form>
 	  </div>
 	</div>
-	<?php 
+	<?php
 	}
 	else if (!$authorization){
 		echo "<h2 style='text-align: center;'>";echo "You are not authorized to access this page !";	echo "</h2>";
@@ -326,7 +326,7 @@ $(document).ready(function(e) {
 	$(document).on('click', ".mhusermid li", function() {
 		$("#microhealthuserid").val($(this).text());
 		//$(".mhusermid").toggle();
-		
+
 	});
 	$('body').click(function() {
 $(".mhusermid").hide();
@@ -347,7 +347,7 @@ $(document).on('click','.cc-remove-file',function() {
 	$(this).parent().parent().remove();
 });
 });
-	
+
 
 </script>
 <style type="text/css">

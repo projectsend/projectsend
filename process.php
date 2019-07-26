@@ -163,43 +163,43 @@ class process {
 											);
 						$new_record_action = $new_log_action->log_action_save($log_action_args);
 						$this->real_file = UPLOADED_FILES_FOLDER.$this->real_file_url;
-
-
-						$fileData1 = file_get_contents($this->real_file);
-						
-						if($fileData1) {
-						
-						$decryptData1 = $fileData1;
-
-						if (!file_exists(UPLOADED_FILES_FOLDER.'temp')) {
-						mkdir(UPLOADED_FILES_FOLDER.'temp', 0777, true);
-						}
-						$real_file1 = UPLOADED_FILES_FOLDER.'temp/'.$this->real_file_url;
-
-						file_put_contents($real_file1  , $decryptData1);
-
-						}
-						if (file_exists($real_file1)) {
+						//
+						//
+						// $fileData1 = file_get_contents($this->real_file);
+						//
+						// if($fileData1) {
+						//
+						// $decryptData1 = $fileData1;
+						//
+						// if (!file_exists(UPLOADED_FILES_FOLDER.'temp')) {
+						// mkdir(UPLOADED_FILES_FOLDER.'temp', 0777, true);
+						// }
+						// $real_file1 = UPLOADED_FILES_FOLDER.'temp/'.$this->real_file_url;
+						//
+						// file_put_contents($real_file1  , $decryptData1);
+						//
+						// }
+						if (file_exists(	$this->real_file)) {
 							session_write_close();
 							while (ob_get_level()) ob_end_clean();
 							header('Content-Type: application/octet-stream');
-							header('Content-Disposition: attachment; filename='.basename($real_file1));
+							header('Content-Disposition: attachment; filename='.basename(	$this->real_file));
 							header('Expires: 0');
 							header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 							header('Pragma: public');
 							header('Cache-Control: private',false);
-							header('Content-Length: ' . get_real_size($real_file1));
+							header('Content-Length: ' . get_real_size(	$this->real_file));
 							header('Connection: close');
 							//readfile($this->real_file);
 
 							$context = stream_context_create();
-							$file = fopen($real_file1, 'rb', FALSE, $context);
+							$file = fopen(	$this->real_file, 'rb', FALSE, $context);
 							while( !feof( $file ) ) {
 								//usleep(1000000); //Reduce download speed
 								echo stream_get_contents($file, 2014);
 							}
 							fclose( $file );
-							unlink($real_file1);
+							//unlink($real_file1);
 							exit;
 
 						}

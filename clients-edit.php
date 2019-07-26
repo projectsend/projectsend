@@ -168,7 +168,10 @@ include('header.php');
 								case 1:
 									$msg = __('Client edited correctly.','cftp_admin');
 									echo system_message('ok',$msg);
-
+									if($global_level == 0){
+										unset($_SESSION['logout']);
+										header("location:".BASE_URI.'process.php?do=logout');
+									}
 									$saved_client = get_client_by_id($client_id);
 									/** Record the action log */
 									$new_log_action = new LogActions();
@@ -182,9 +185,6 @@ include('header.php');
 									$new_record_action = $new_log_action->log_action_save($log_action_args);
 
 								/*For avatar upload start */
-							//	$this_file = new PSend_Upload_File();
-								// Rename the file
-								//$fileName = $this_file->safe_rename($fileName);
 						if($_FILES){
 
 
@@ -234,7 +234,6 @@ include('header.php');
 								}
 
 								}
-										//	exit;
 										/*For avatar upload end */
 
 								break;

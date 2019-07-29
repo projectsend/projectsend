@@ -196,7 +196,8 @@ $work_folder = UPLOADED_FILES_FOLDER;
 		}
 
 
-		if(isset($_POST['search']) && ($no_results_error=="search")) {
+		// if(isset($_POST['search']) && ($no_results_error=="search")) {
+		if(isset($_POST['search']) && (count($files_to_add) == 0)) {
 			echo system_message('error',"Your search keywords returned no results");
 		}
 

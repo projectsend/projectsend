@@ -252,7 +252,7 @@ if(!empty($auth)){
 	?>
 	  <h2><?php echo $page_title; ?></h2>
 	  <div class="error_div" style="text-align: center;color: red;padding: 10px;"><?php echo !empty($error_message)?$error_message:''; ?></div>
-	  <div style="width:600px;background: white none repeat scroll 0 0;border: 1px solid #adadad;margin: 0 auto;padding: 64px;width: 600px;">
+	  <div style="width:600px;background: white none repeat scroll 0 0;border: 1px solid #adadad;margin: 0 auto;padding: 32px 64px;width: 600px;">
 		<form action="<?php echo $_SERVER['REQUEST_URI']; ?>" name="addclient" enctype="multipart/form-data" method="post" class="form-horizontal" autocomplete="off">
 			<input type="hidden" name="request_type" value="2">
 			<div class="form-group">
@@ -301,7 +301,7 @@ if(!empty($auth)){
 		  </div>
 		  <div class="form-group">
 			  <div class="col-md-12 note_file_upload">
-				<p>NOTES:<br><em>For Multiple file upload please choose '+' icon near the upload file.<br>The maximum allowed file size (in mb.) is 2048.</em></p>
+				<p>NOTES:<br><em>For Multiple file upload please choose '+' icon near the upload file.<br>The maximum allowed file size (in mb.) is 2048.<br>No empty files (0 KB) allowed.</em></p>
 			  </div>
 		  </div>
 		</form>
@@ -394,7 +394,7 @@ $(document).on('click','.cc-remove-file',function() {
 }
 .userfiles {padding:0}
 .note_file_upload {
-	padding-top: 35px;
+	padding-top: 24px;
 }
 .error_file_empty {color:#fb0303;}
 </style>

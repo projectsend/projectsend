@@ -184,3 +184,22 @@ li.plupload_droptext {
 	border: 0;
 	line-height: 165px;
 }
+
+
+@media (min-width: 560px) {
+    .plupload_filelist .plupload_file_name {
+        width: 255px;
+    }
+}
+
+@media (min-width: 700px) {
+    .plupload_filelist .plupload_file_name {
+        width: 355px;
+    }
+}
+
+@media (min-width: 980px) {
+    .plupload_filelist .plupload_file_name {
+        width: 455px;
+    }
+}

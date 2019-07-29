@@ -71,7 +71,7 @@ if(isset($_GET['email']))
 			exit;
 		}
 	}else {
-
+/*
 		$_SESSION['errorstate'] = 'no_account'; //TODO: create new account
 		$new_client = new ClientActions();
 		$username = $new_client->generateUsername("saml guest");
@@ -117,6 +117,7 @@ if(isset($_GET['email']))
 		*/
 		//echo "CLIENTS_AUTO_APPROVE :".CLIENTS_AUTO_APPROVE;
 		//echo " BASE_URI :".BASE_URI;
+/*
 		if (CLIENTS_AUTO_APPROVE == '0') {
 			$_SESSION['errorstate'] = 'inactive_client';
 			header("location:" . BASE_URI);
@@ -124,6 +125,7 @@ if(isset($_GET['email']))
 			return;
 		}
 		//exit;
+*/
 	}
 }else{
 	echo "Email is empty, Retry!!";

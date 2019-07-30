@@ -252,7 +252,7 @@ if(!empty($auth)){
 	?>
 	  <h2><?php echo $page_title; ?></h2>
 	  <div class="error_div" style="text-align: center;color: red;padding: 10px;"><?php echo !empty($error_message)?$error_message:''; ?></div>
-	  <div style="width:600px;background: white none repeat scroll 0 0;border: 1px solid #adadad;margin: 0 auto;padding: 32px 64px;width: 600px;">
+	  <div style="width:600px;background: white none repeat scroll 0 0;border: 1px solid #adadad;margin: 0 auto;padding: 32px 64px 12px 64px;width: 600px;">
 		<form action="<?php echo $_SERVER['REQUEST_URI']; ?>" name="addclient" enctype="multipart/form-data" method="post" class="form-horizontal" autocomplete="off">
 			<input type="hidden" name="request_type" value="2">
 			<div class="form-group">

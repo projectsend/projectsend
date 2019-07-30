@@ -342,7 +342,7 @@ used as it is.
 						}
 
 						if (err.code == plupload.FILE_SIZE_ERROR) {
-							alert(_("Error: File too large:") + " " + file.name);
+							alert(_("Error: File too large or empty:") + " " + file.name);
 						}
 
 						if (err.code == plupload.FILE_EXTENSION_ERROR) {

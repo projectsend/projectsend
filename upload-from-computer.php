@@ -119,7 +119,7 @@ $current_level = get_current_user_level();
 							var new_file_field = '<input type="hidden" name="finished_files[]" value="'+obj.NewFileName+'" />';
 							console.log(obj);
 							$('form#upload_by_client').append(new_file_field);
-						});
+
 						if (uploader.files.length > 0) {
 							uploader.bind('StateChanged', function() {
 								if (uploader.files.length === (uploader.total.uploaded + uploader.total.failed)) {
@@ -131,7 +131,7 @@ $current_level = get_current_user_level();
 					} else {
 						alert('<?php _e("You must select at least one file to upload.",'cftp_admin'); ?>');
 					}
-
+					});
 					return false;
 				});
 

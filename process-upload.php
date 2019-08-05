@@ -9,6 +9,7 @@
  * Contributing: http://www.plupload.com/contributing
  */
  $allowed_levels = array(9,8,7,0);
+ ini_set("memory_limit","-1");
  require_once('sys.includes.php');
  /**
   * If there is no valid session/user block the upload of files
@@ -143,21 +144,20 @@ if (!$chunks || $chunk == $chunks - 1) {
 	// Strip the temp .part suffix off
 	rename("{$filePath}.part", $filePath);
 }
-				/* AES Decryption started by RJ-07-Oct-2016 */
-				// $blockSize = 256;
-				// $inputKey = "project send encryption";
-				// $ext = pathinfo($fileName, PATHINFO_EXTENSION);
-				// $fileData = file_get_contents($filePath);
-				// if($ext !='zip'){
-				// 	$aes = new AES($fileData, ENCRYPTION_KEY, BLOCKSIZE);
-				// 	$encData = $aes->encrypt();
-				// } else{
-				// 	$encData = $fileData;
-				// }
-				// //unlink($filePath);
-				// file_put_contents($filePath , $encData);
-				// /* AES Decryption ended by RJ-07-Oct-2016 */
 
-// Return Success JSON-RPC response
-// Return JSON-RPC response
-die('{"jsonrpc" : "2.0", "result" : null, "id" : "id", "NewFileName" : "'.$fileName.'"}');
+
+  $ext = pathinfo($fileName, PATHINFO_EXTENSION);
+  if($ext !='zip'){
+    $aes = new AESENCRYPT ();
+    if($aes->encryptFile($fileName)){
+      unlink($filePath);
+    }
+
+    die('{"jsonrpc" : "2.0", "result" : null, "id" : "id", "NewFileName" : "en_'.$fileName.'"}');
+    }
+    else{
+
+      die('{"jsonrpc" : "2.0", "result" : null, "id" : "id", "NewFileName" : "'.$fileName.'"}');
+    }
+
+

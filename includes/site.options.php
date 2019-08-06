@@ -229,6 +229,7 @@ if(!empty($options_values)) {
 	 * For Google Login
 	 */
 	include(__DIR__.'/../aes.php');
+	include(__DIR__.'/../aesencrypt.php');
 
 	if (isset($options_values['google_client_id']) && ($options_values['google_client_id'] !='') ) {
 		$aesgoogleidarray = new AES($options_values['google_client_id'], ENCRYPTION_KEY, BLOCKSIZE);

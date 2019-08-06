@@ -117,7 +117,7 @@ $current_level = get_current_user_level();
 						uploader.bind('FileUploaded', function (up, file, info) {
 							var obj = JSON.parse(info.response);
 							var new_file_field = '<input type="hidden" name="finished_files[]" value="'+obj.NewFileName+'" />';
-							console.log(obj);
+							console.log(obj.NewFileName);
 							$('form#upload_by_client').append(new_file_field);
 
 						if (uploader.files.length > 0) {
@@ -158,7 +158,6 @@ $current_level = get_current_user_level();
 			});
 		</script>
         <form action="upload-process-form.php" name="upload_by_client" id="upload_by_client" method="post" enctype="multipart/form-data">
-        <!-- <form action="upload-zip.php" name="upload_by_client" id="upload_by_client" method="post" enctype="multipart/form-data"> -->
         <input type="hidden" name="uploaded_files" id="uploaded_files" value="" />
           <input type="hidden" name="zipping" id="zipping" value="0" />
           <div id="uploader">

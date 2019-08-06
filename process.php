@@ -166,10 +166,14 @@ class process {
 						$filePath = $this->real_file;
 						$handle = @fopen($filePath, "r");
 						if ($handle) {
-
+							$ext = pathinfo($filePath, PATHINFO_EXTENSION);
+							if($ext !='zip'){
 								 $aes = new AESENCRYPT();
 								 $decfile=$aes->decryptFile($this->real_file_url);
 								 $real_file1 = UPLOADED_FILES_FOLDER."temp/".$this->real_file_url;
+							 } else {
+								 $real_file1 = UPLOADED_FILES_FOLDER.$this->real_file_url;
+							 }
 
 						if (file_exists($real_file1)) {
 							session_write_close();
@@ -191,7 +195,10 @@ class process {
 								echo stream_get_contents($file, 2014);
 							}
 							fclose( $file );
-							unlink($real_file1);
+							$ext = pathinfo($this->real_file, PATHINFO_EXTENSION);
+							if($ext !='zip'){
+								unlink($real_file1);
+							}
 							exit;
 						}
 

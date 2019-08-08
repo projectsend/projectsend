@@ -22,17 +22,20 @@ $targetDir = UPLOADED_FILES_FOLDER;
     $zipname=$withoutExt.".zip";
     $zipFilePath = UPLOADED_FILES_FOLDER.$zipname;
     $r = $zip->open($zipFilePath,  ZipArchive::CREATE);
+		foreach ($_POST['finished_files'] as $p) {
 
-    foreach ($_POST['finished_files'] as $p) {
+					$aes = new AESENCRYPT();
+					$decfile=$aes->decryptFile($p);
+					$zip->addFile(UPLOADED_FILES_FOLDER.'temp/'.$p,$p);
 
-					$r=$zip->addFile(UPLOADED_FILES_FOLDER.$p,$p);
-					
 				}
+
 
 
 		$r=$zip->close();
 
 		foreach ($_POST['finished_files'] as $p) {
+		unlink(UPLOADED_FILES_FOLDER.'temp/'.$p);
 		unlink(UPLOADED_FILES_FOLDER.$p);
 		 }
     $repost = array(

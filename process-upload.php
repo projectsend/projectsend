@@ -76,7 +76,7 @@ if ($chunks < 2) {
 	$fileName_b = substr($fileName, $ext);	$curr_usr_id= CURRENT_USER_ID;
 
 	$count = 1;
-	while (file_exists($targetDir . DIRECTORY_SEPARATOR . $fileName_a . '_' . $count . '_'. $curr_usr_id . '_'. $fileName_b))
+	while (file_exists($targetDir . DIRECTORY_SEPARATOR . "en_".$fileName_a . '_' . $count . '_'. $curr_usr_id . '_'. $fileName_b))
 	$count++;
 
 	$fileName = $fileName_a . '_' . $count. '_' . $curr_usr_id . '_'. $fileName_b;
@@ -143,19 +143,17 @@ while ($buff = fread($in, 4096)) {
 if (!$chunks || $chunk == $chunks - 1) {
 	// Strip the temp .part suffix off
 	rename("{$filePath}.part", $filePath);
-}
+
 
 
   $ext = pathinfo($fileName, PATHINFO_EXTENSION);
   if($ext !='zip'){
     $aes = new AESENCRYPT ();
     $aes->encryptFile($fileName);
-    
-    die('{"jsonrpc" : "2.0", "result" : null, "id" : "id", "NewFileName" : "'.$fileName.'"}');
+    die('{"jsonrpc" : "2.0", "result" : null, "id" : "id", "NewFileName" : "en_'.$fileName.'"}');
     }
     else{
 
       die('{"jsonrpc" : "2.0", "result" : null, "id" : "id", "NewFileName" : "'.$fileName.'"}');
-    }
-
-
+}
+}

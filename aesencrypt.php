@@ -18,7 +18,7 @@ class AESENCRYPT {
           if ($fpIn = fopen($source, 'rb')) {
               while (!feof($fpIn)) {
                   $plaintext = fread($fpIn, 32 * $fileEncryptionblocks);
-                  $ciphertext = openssl_encrypt($plaintext, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
+                  $ciphertext = openssl_encrypt($plaintext, 'AES-256-ECB', $key, OPENSSL_RAW_DATA, $iv);
                   // Use the first 32 bytes of the ciphertext as the next initialization vector
                   $iv = substr($ciphertext, 0, 32);
                   fwrite($fpOut, $ciphertext);
@@ -27,7 +27,7 @@ class AESENCRYPT {
           } else {
               $error = true;
           }
-          fclose($fpOut);
+          // fclose($fpOut);
           unlink($source);
           // copy($dest, $source);
           // unlink($dest);
@@ -52,7 +52,7 @@ class AESENCRYPT {
               $iv = fread($fpIn, 32);
               while (!feof($fpIn)) {
                   $ciphertext = fread($fpIn, 32 * ($fileEncryptionblocks + 1)); // we have to read one block more for decrypting than for encrypting
-                  $plaintext = openssl_decrypt($ciphertext, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
+                  $plaintext = openssl_decrypt($ciphertext, 'AES-256-ECB', $key, OPENSSL_RAW_DATA, $iv);
                   // Use the first 32 bytes of the ciphertext as the next initialization vector
                   $iv = substr($ciphertext, 0, 32);
                   fwrite($fpOut, $plaintext);

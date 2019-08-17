@@ -4,8 +4,9 @@ class AESENCRYPT {
 
   function encryptFile($source)
   {
-      $dest = 'upload/files/en_'.$source;
-      $source = 'upload/files/'.$source;
+      rename('upload/files/'.$source,'upload/files/en_'.$source);
+      $dest = 'upload/files/'.$source;
+      $source = 'upload/files/en_'.$source;
       $key = "8765416198765416187654161987654161";
       $fileEncryptionblocks = 10000000;
       $key = substr(sha1($key, true), 0, 16);
@@ -27,10 +28,7 @@ class AESENCRYPT {
           } else {
               $error = true;
           }
-          // fclose($fpOut);
           unlink($source);
-          // copy($dest, $source);
-          // unlink($dest);
       } else {
           $error = true;
       }

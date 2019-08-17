@@ -150,10 +150,7 @@ if (!$chunks || $chunk == $chunks - 1) {
   if($ext !='zip'){
     $aes = new AESENCRYPT ();
     $aes->encryptFile($fileName);
-    die('{"jsonrpc" : "2.0", "result" : null, "id" : "id", "NewFileName" : "en_'.$fileName.'"}');
     }
-    else{
-
-      die('{"jsonrpc" : "2.0", "result" : null, "id" : "id", "NewFileName" : "'.$fileName.'"}');
+    die('{"jsonrpc" : "2.0", "result" : null, "id" : "id", "NewFileName" : "'.$fileName.'"}');
 }
 }

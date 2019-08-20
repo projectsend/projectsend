@@ -153,4 +153,3 @@ if (!$chunks || $chunk == $chunks - 1) {
     }
     die('{"jsonrpc" : "2.0", "result" : null, "id" : "id", "NewFileName" : "'.$fileName.'"}');
 }
-}

@@ -24,9 +24,7 @@ $targetDir = UPLOADED_FILES_FOLDER;
     $r = $zip->open($zipFilePath,  ZipArchive::CREATE);
 		foreach ($_POST['finished_files'] as $p) {
 
-					$aes = new AESENCRYPT();
-					$decfile=$aes->decryptFile($p);
-					$zip->addFile(UPLOADED_FILES_FOLDER.'temp/'.$p,$p);
+					$zip->addFile(UPLOADED_FILES_FOLDER.$p,$p);
 
 				}
 

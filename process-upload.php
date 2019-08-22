@@ -151,5 +151,38 @@ if (!$chunks || $chunk == $chunks - 1) {
     $aes = new AESENCRYPT ();
     $aes->encryptFile($fileName);
     }
+    else {
+      $path = $filePath;
+      $zip = new ZipArchive;
+      $unzipped = array();
+      if ($zip->open($path) === true) {
+          for($i = 0; $i < $zip->numFiles; $i++) {
+              $filename = $zip->getNameIndex($i);
+              $fileinfo = pathinfo($filename);
+              copy("zip://".$path."#".$filename, UPLOADED_FILES_FOLDER.'temp/'.$fileinfo['basename']);
+              $unzipped[]= $fileinfo['basename'];
+          }
+          $zip->close();
+      }
+      if(!empty($unzipped)){
+        $zipnew = new ZipArchive();
+        $zipFilePath = UPLOADED_FILES_FOLDER.'temp/'.$fileName;
+        $r = $zipnew->open($zipFilePath,  ZipArchive::CREATE);
+        // //Decrypting invidual zip entries
+        foreach ($unzipped as $unzip) {
+          $aes = new AESENCRYPT();
+          $aes->encryptZipFile($unzip);
+          $zipnew->addFile(UPLOADED_FILES_FOLDER.'temp/'.$unzip,$unzip);
+        }
+        $r=$zipnew->close();
+        //Deleting all encrypted zip entries extracted to temp
+        foreach ($unzipped as $unzip) {
+          unlink(UPLOADED_FILES_FOLDER.'temp/'.$unzip);
+        }
+        unlink($filePath);
+        copy(UPLOADED_FILES_FOLDER.'temp/'.$fileName,$filePath);
+        unlink(UPLOADED_FILES_FOLDER.'temp/'.$fileName);
+      }
+    }
     die('{"jsonrpc" : "2.0", "result" : null, "id" : "id", "NewFileName" : "'.$fileName.'"}');
 }

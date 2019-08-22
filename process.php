@@ -172,7 +172,38 @@ class process {
 								 $decfile=$aes->decryptFile($this->real_file_url);
 								 $real_file1 = UPLOADED_FILES_FOLDER."temp/".$this->real_file_url;
 							 } else {
-								 $real_file1 = UPLOADED_FILES_FOLDER.$this->real_file_url;
+								 $path = UPLOADED_FILES_FOLDER.$this->real_file_url;
+									$zip = new ZipArchive;
+									$unzipped = array();
+									if ($zip->open($path) === true) {
+									    for($i = 0; $i < $zip->numFiles; $i++) {
+									        $filename = $zip->getNameIndex($i);
+									        $fileinfo = pathinfo($filename);
+									        copy("zip://".$path."#".$filename, UPLOADED_FILES_FOLDER.'temp/'.$fileinfo['basename']);
+													$unzipped[]= $fileinfo['basename'];
+									    }
+									    $zip->close();
+									}
+									if(!empty($unzipped)){
+										$zip = new ZipArchive();
+										$zipFilePath = UPLOADED_FILES_FOLDER.'temp/'.$this->real_file_url;
+										$r = $zip->open($zipFilePath,  ZipArchive::CREATE);
+										if(!file_exists(UPLOADED_FILES_FOLDER.'temp/zip')){
+											mkdir(UPLOADED_FILES_FOLDER.'temp/zip');
+										}
+										//Decrypting invidual zip entries
+										foreach ($unzipped as $unzip) {
+											$aes = new AESENCRYPT();
+											$aes->decryptZipFile($unzip);
+											$zip->addFile(UPLOADED_FILES_FOLDER.'temp/zip/'.$unzip,$unzip);
+										}
+										$r=$zip->close();
+										//Deleting all encrypted zip entries extracted to temp
+										foreach ($unzipped as $unzip) {
+											unlink(UPLOADED_FILES_FOLDER.'temp/'.$unzip);
+										}
+									}
+									$real_file1 = $zipFilePath;
 							 }
 
 						if (file_exists($real_file1)) {
@@ -195,10 +226,13 @@ class process {
 								echo stream_get_contents($file, 2014);
 							}
 							fclose( $file );
-							$ext = pathinfo($this->real_file, PATHINFO_EXTENSION);
-							if($ext !='zip'){
-								unlink($real_file1);
-							}
+							unlink($real_file1);
+							//Deleting all decrypted zip entries extracted in temp/zip folder
+							$zentries = glob(UPLOADED_FILES_FOLDER.'temp/zip/*'); // get all file names
+								foreach($zentries as $zentry){ // iterate files
+								  if(is_file($zentry))
+								    unlink($zentry); // delete file
+								}
 							exit;
 						}
 

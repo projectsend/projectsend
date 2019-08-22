@@ -93,7 +93,6 @@ class AESENCRYPT {
       } else {
           $error = true;
       }
-
       return $error ? false : $dest;
   }
 }

@@ -76,10 +76,10 @@ if ($chunks < 2) {
 	$fileName_b = substr($fileName, $ext);	$curr_usr_id= CURRENT_USER_ID;
 
 	$count = 1;
-	while (file_exists($targetDir . DIRECTORY_SEPARATOR . "en_".$fileName_a . '_' . $count . '_'. $curr_usr_id . '_'. $fileName_b))
+	while (file_exists($targetDir . DIRECTORY_SEPARATOR .$fileName_a . '_' . $curr_usr_id. '_'.$count.$fileName_b))
 	$count++;
 
-	$fileName = $fileName_a . '_' . $count. '_' . $curr_usr_id . '_'. $fileName_b;
+	$fileName = $fileName_a . '_' . $curr_usr_id. '_' . $count.$fileName_b;
 }
 
 $filePath = $targetDir . DIRECTORY_SEPARATOR . $fileName;

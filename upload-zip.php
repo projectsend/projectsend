@@ -14,10 +14,10 @@ $targetDir = UPLOADED_FILES_FOLDER;
 		$curr_usr_id= CURRENT_USER_ID;
 
 		$count = 1;
-  	while (file_exists($targetDir . DIRECTORY_SEPARATOR . $fileName_a . 'compressed_' . $count . '_'. $curr_usr_id . '.zip'))
+  	while (file_exists($targetDir . DIRECTORY_SEPARATOR . $fileName_a . 'compressed_' . $curr_usr_id . '_'. $count . '.zip'))
   	$count++;
 
-  	$fileName = $fileName_a . 'compressed_' . $count. '_' . $curr_usr_id;
+  	$fileName = $fileName_a . 'compressed_' . $curr_usr_id. '_' . $count;
     $withoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $fileName);
     $zipname=$withoutExt.".zip";
     $zipFilePath = UPLOADED_FILES_FOLDER.$zipname;

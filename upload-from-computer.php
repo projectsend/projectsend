@@ -90,6 +90,9 @@ $current_level = get_current_user_level();
 						dragdrop: true,
 
 						filters : {
+							mime_types : [
+								{title : 'Files ', extensions :'7z,ace,ai,avi,bin,bmp,cdr,doc,docm,docx,eps,fla,flv,gif,htm,html,iso,jpeg,jpg,mp3,mp4,mpg,odt,oog,ppt,pptx,pptm,pps,ppsx,pdf,png,psd,rar,rtf,tar,tif,tiff,txt,wav,xls,xlsm,xlsx,zip'}
+							],
 							// Maximum file size
 							max_file_size : '2048mb'}
 					});
@@ -100,8 +103,7 @@ $current_level = get_current_user_level();
 				$('form').submit(function(e) {
 					var uptype = $("input[type=submit][clicked=true]").val();
 					if (uptype== "Batch Upload") {
-						console.log("Batch upload clicked");
-						var zipfield = '<input type="hidden" name="batching" value="1" />'
+						var zipfield = '<input type="hidden" id="zipload" name="batching" value="1" />';
 						$('form').append(zipfield);
 						$('form').attr('action', 'upload-zip.php');
 					}
@@ -116,11 +118,24 @@ $current_level = get_current_user_level();
 
 						uploader.bind('FileUploaded', function (up, file, info) {
 							var obj = JSON.parse(info.response);
-							var new_file_field = '<input type="hidden" name="finished_files[]" value="'+obj.NewFileName+'" />';
-							console.log(obj.NewFileName);
-							$('form#upload_by_client').append(new_file_field);
+							var fname= obj.NewFileName;
+							var ext = fname.substr( (fname.lastIndexOf('.') +1) );
+							if(ext =='zip'){
+								var uptype = $("input[type=submit][clicked=true]").val();
+								if (uptype== "Batch Upload") {
+									$("#btn-submit").show();
+									$("#zip-submit").show();
+									alert("Compressed files are not allowed in Batch upload. Continuing normal upload..!! ");
+									$("form")[0].reset();
+									$('form').attr('action', 'upload-process-form.php');
+								}
+							}
+								var new_file_field = '<input type="hidden" name="finished_files[]" value="'+obj.NewFileName+'" />';
+								$('form#upload_by_client').append(new_file_field);
+
 
 						if (uploader.files.length > 0) {
+
 							uploader.bind('StateChanged', function() {
 								if (uploader.files.length === (uploader.total.uploaded + uploader.total.failed)) {
 								 $('form')[0].submit();

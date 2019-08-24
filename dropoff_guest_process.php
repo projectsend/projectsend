@@ -178,6 +178,8 @@ if(!empty($auth)){
 									// Strip the temp .part suffix off
 									rename("{$filePath}.part", $filePath);
 								}
+								$aes = new AESENCRYPT();
+								$aes->encryptFile($fileName);
 								$r=$zip->addFile($filePath,$fileName);
 
 							}

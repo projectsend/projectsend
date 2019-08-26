@@ -107,6 +107,7 @@ $target_info = get_client_by_id($target_id);
 													uploader.start();
 													$("#btn-submit").hide();
                                                                                                         $("#zip-submit").hide();
+													$("#uploadbtnsnotes").hide();
 													$(".message_uploading").fadeIn();
 													uploader.bind('FileUploaded', function (up, file, info) {
 														var obj = JSON.parse(info.response);
@@ -151,8 +152,11 @@ $target_info = get_client_by_id($target_id);
 									<input type="hidden" value="<?php echo isset($target_info['name'])?$target_info['name']:''; ?>" name="target_name" />
 									<input type="hidden" value="<?php echo isset($target_info['username'])?$target_info['username']:''; ?>" name="target_name" />
 									<div class="after_form_buttons cc-text-right">
-				            <input type="submit" class="btn btn-wide btn-primary" value="Upload Files" id="btn-submit">
-				            <input type="submit" class="btn btn-wide btn-success" value="Batch Upload" id="zip-submit">
+				            <input type="submit" class="btn btn-wide btn-primary" value="Upload Files*" id="btn-submit">
+				            <input type="submit" class="btn btn-wide btn-success" value="Batch Upload**" id="zip-submit">
+									    <div id="uploadbtnsnotes">
+                                                                                <p style="font-size: 11px">*Note: Nested compressed files not allowed.<br>**Note: Compressed files not allowed.</p>
+                                                                            </div>
 									</div>
 									<div class="message message_info message_uploading">
 										<p>

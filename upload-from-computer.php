@@ -114,6 +114,7 @@ $current_level = get_current_user_level();
 
 						$("#btn-submit").hide();
 						$("#zip-submit").hide();
+					        $("#uploadbtnsnotes").hide();
 						$(".message_uploading").fadeIn();
 
 						uploader.bind('FileUploaded', function (up, file, info) {
@@ -125,6 +126,7 @@ $current_level = get_current_user_level();
 								if (uptype== "Batch Upload") {
 									$("#btn-submit").show();
 									$("#zip-submit").show();
+									$("#uploadbtnsnotes").show();
 									alert("Compressed files are not allowed in Batch upload. Continuing normal upload..!! ");
 									$("form")[0].reset();
 									$('form').attr('action', 'upload-process-form.php');
@@ -184,8 +186,11 @@ $current_level = get_current_user_level();
           </div>
           <div class="cc-text-right after_form_buttons">
 						<!-- <input id="filecount" type="hidden" name="filecount" > -->
-            <input type="submit" class="btn btn-wide btn-primary" value="Upload Files" id="btn-submit">
-            <input type="submit" class="btn btn-wide btn-success" value="Batch Upload" id="zip-submit">
+            <input type="submit" class="btn btn-wide btn-primary" value="Upload Files*" id="btn-submit">
+            <input type="submit" class="btn btn-wide btn-success" value="Batch Upload**" id="zip-submit">
+	    <div id="uploadbtnsnotes">
+               <p style="font-size: 11px">*Note: Nested compressed files not allowed.<br>**Note: Compressed files not allowed.</p>
+            </div>
           </div>
           <div class="message message_info message_uploading">
             <p>

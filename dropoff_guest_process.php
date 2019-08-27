@@ -318,7 +318,7 @@ if(!empty($auth)){
 		  </div>
 		  <div class="form-group">
 			  <div class="col-md-12 note_file_upload">
-				<p>NOTES:<br><em>For Multiple file upload please choose '+' icon near the upload file.<br>The maximum allowed file size (in mb.) is 2048.<br>No empty files (0 KB) allowed.</em><br>Compressed files not allowed.</p>
+				<p>NOTES:<br><em>For Multiple file upload please choose '+' icon near the upload file.<br>The maximum allowed file size (in mb.) is 2048, and no empty files (0 KB) allowed.</em><br>Compressed files not allowed.</p>
 			  </div>
 		  </div>
 		</form>

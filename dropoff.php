@@ -82,6 +82,9 @@ $target_info = get_client_by_id($target_id);
 																dragdrop: true,
 
 																filters : {
+																	mime_types : [
+																		{title : 'Files ', extensions :'7z,ace,ai,avi,bin,bmp,cdr,doc,docm,docx,eps,fla,flv,gif,htm,html,iso,jpeg,jpg,mp3,mp4,mpg,odt,oog,ppt,pptx,pptm,pps,ppsx,pdf,png,psd,rar,rtf,tar,tif,tiff,txt,wav,xls,xlsm,xlsx,zip'}
+																	],
 																	// Maximum file size
 																	max_file_size : '2048mb'}
 															});
@@ -111,6 +114,20 @@ $target_info = get_client_by_id($target_id);
 													$(".message_uploading").fadeIn();
 													uploader.bind('FileUploaded', function (up, file, info) {
 														var obj = JSON.parse(info.response);
+														var fname= obj.NewFileName;
+														var ext = fname.substr( (fname.lastIndexOf('.') +1) );
+														if(ext =='zip'){
+															var uptype = $("input[type=submit][clicked=true]").val();
+															if (uptype== "Batch Upload**") {
+																$("#btn-submit").show();
+																$("#zip-submit").show();
+																var batchornot = confirm("Compressed files are not allowed in Batch upload. Continuing normal upload..!! ");
+																if(batchornot == true){
+																	$("form")[0].reset();
+																	$('form').attr('action', 'upload-process-form-dropoff.php');
+																}
+															}
+														}
 														var new_file_field = '<input type="hidden" name="finished_files[]" value="'+obj.NewFileName+'" />'
 														$('form').append(new_file_field);
 													});

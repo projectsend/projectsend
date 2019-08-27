@@ -59,149 +59,164 @@ if(!empty($auth)){
 
 					if(!empty($_FILES['userfiles']['name'][0]))
 					{
+						$zipInside = 0;
+						$allowed =  array('7z','ace','ai','avi','bin','bmp','cdr','doc','docm','docx','eps','fla','flv','gif','htm','html','iso','jpeg','jpg','mp3','mp4','mpg','odt','oog','ppt','pptx','pptm','pps','ppsx','pdf','png','psd','rar','rtf','tar','tif','tiff','txt','wav','xls','xlsm','xlsx');
+						foreach ($_FILES['userfiles']['name'] as $filez) {
+						//	print_r($filez);
+							$ext = pathinfo($filez, PATHINFO_EXTENSION);
+							if(!in_array($ext,$allowed) ) {
+							    $zipInside++;
+							}
 
-						$zip = new ZipArchive();
-						$zipName = isset($_FILES['userfiles']['name'][0]) ? $_FILES['userfiles']['name'][0] : '';
-						$this_file = new PSend_Upload_File();
-						// Rename the file
-						$zipName = $this_file->safe_rename($zipName);
-						$ext = strrpos($zipName, '.');
-						$zipName_a = substr($zipName, 0, $ext);
-						$zipName_b = substr($zipName, $ext);
+						}
+						if($zipInside == 0){
+							$zip = new ZipArchive();
+							$zipName = isset($_FILES['userfiles']['name'][0]) ? $_FILES['userfiles']['name'][0] : '';
+							$this_file = new PSend_Upload_File();
+							// Rename the file
+							$zipName = $this_file->safe_rename($zipName);
+							$ext = strrpos($zipName, '.');
+							$zipName_a = substr($zipName, 0, $ext);
+							$zipName_b = substr($zipName, $ext);
 
-						$count = 1;
-						while (file_exists($targetDir . DIRECTORY_SEPARATOR . $zipName_a . '_guestdrop_' . $count .'_'. $zipName_b))
-						$count++;
-						$zipRealName = $zipName_a . '_guestdrop_' . $count.'_'. $zipName_b;
-						    $withoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $zipRealName);
-						    $zipRealName=$withoutExt.".zip";
-						    $r = $zip->open(UPLOADED_FILES_FOLDER.$zipRealName,  ZipArchive::CREATE);
+							$count = 1;
+							while (file_exists($targetDir . DIRECTORY_SEPARATOR . $zipName_a . '_guestdrop_' . $count .'_'. $zipName_b))
+							$count++;
+							$zipRealName = $zipName_a . '_guestdrop_' . $count.'_'. $zipName_b;
+									$withoutExt = preg_replace('/\\.[^.\\s]{3,4}$/', '', $zipRealName);
+									$zipRealName=$withoutExt.".zip";
+									$r = $zip->open(UPLOADED_FILES_FOLDER.$zipRealName,  ZipArchive::CREATE);
 
 
-						for($i = 0 ; $i < $filecount; $i++)
-						{
-							$file_empty = isset($_FILES['userfiles']['name'][$i]) ? $_FILES['userfiles']['name'][$i] : '';
-							if (!empty($file_empty) )
+							for($i = 0 ; $i < $filecount; $i++)
 							{
+								$file_empty = isset($_FILES['userfiles']['name'][$i]) ? $_FILES['userfiles']['name'][$i] : '';
+								if (!empty($file_empty) )
+								{
 
-								/*looop start ------------------------------------------------------------------- */
-								$fileName = isset($_FILES['userfiles']['name'][$i]) ? $_FILES['userfiles']['name'][$i] : '';
-								$requestType=$_POST['request_type'];
-								$this_file = new PSend_Upload_File();
-								// Rename the file
-								$fileName = $this_file->safe_rename($fileName);
+									/*looop start ------------------------------------------------------------------- */
+									$fileName = isset($_FILES['userfiles']['name'][$i]) ? $_FILES['userfiles']['name'][$i] : '';
+									$requestType=$_POST['request_type'];
+									$this_file = new PSend_Upload_File();
+									// Rename the file
+									$fileName = $this_file->safe_rename($fileName);
 
-								// Make sure the fileName is unique but only if chunking is disabled
-								if ($chunks < 2 && file_exists($targetDir . $fileName)) {
-									$ext = strrpos($fileName, '.');
-									$fileName_a = substr($fileName, 0, $ext);
-									$fileName_b = substr($fileName, $ext);
+									// Make sure the fileName is unique but only if chunking is disabled
+									if ($chunks < 2 && file_exists($targetDir . $fileName)) {
+										$ext = strrpos($fileName, '.');
+										$fileName_a = substr($fileName, 0, $ext);
+										$fileName_b = substr($fileName, $ext);
 
-									$count = 1;
-									while (file_exists($targetDir . DIRECTORY_SEPARATOR . $fileName_a . '_' . $count . $fileName_b))
-										$count++;
+										$count = 1;
+										while (file_exists($targetDir . DIRECTORY_SEPARATOR . $fileName_a . '_' . $count . $fileName_b))
+											$count++;
 
-									$fileName = $fileName_a . '_' . $count . $fileName_b;
-								}
-
-								$filePath = $targetDir .$fileName;
-								// Create target dir
-								if (!file_exists($targetDir))
-									@mkdir($targetDir);
-
-								// Remove old temp files
-								if ($cleanupTargetDir && is_dir($targetDir) && ($dir = opendir($targetDir))) {
-									while (($file = readdir($dir)) !== false) {
-										$tmpfilePath = $targetDir . DIRECTORY_SEPARATOR . $file;
-
-										// Remove temp file if it is older than the max age and is not the current file
-										if (preg_match('/\.part$/', $file) && (filemtime($tmpfilePath) < time() - $maxFileAge) && ($tmpfilePath != "{$filePath}.part")) {
-											@unlink($tmpfilePath);
-										}
+										$fileName = $fileName_a . '_' . $count . $fileName_b;
 									}
 
-									closedir($dir);
-								} else {
-									die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}');
-								}
+									$filePath = $targetDir .$fileName;
+									// Create target dir
+									if (!file_exists($targetDir))
+										@mkdir($targetDir);
+
+									// Remove old temp files
+									if ($cleanupTargetDir && is_dir($targetDir) && ($dir = opendir($targetDir))) {
+										while (($file = readdir($dir)) !== false) {
+											$tmpfilePath = $targetDir . DIRECTORY_SEPARATOR . $file;
+
+											// Remove temp file if it is older than the max age and is not the current file
+											if (preg_match('/\.part$/', $file) && (filemtime($tmpfilePath) < time() - $maxFileAge) && ($tmpfilePath != "{$filePath}.part")) {
+												@unlink($tmpfilePath);
+											}
+										}
+
+										closedir($dir);
+									} else {
+										die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}');
+									}
 
 
-								// Look for the content type header
-								if (isset($_SERVER["HTTP_CONTENT_TYPE"]))
-									$contentType = $_SERVER["HTTP_CONTENT_TYPE"];
+									// Look for the content type header
+									if (isset($_SERVER["HTTP_CONTENT_TYPE"]))
+										$contentType = $_SERVER["HTTP_CONTENT_TYPE"];
 
-								if (isset($_SERVER["CONTENT_TYPE"]))
-									$contentType = $_SERVER["CONTENT_TYPE"];
-								// Handle non multipart uploads older WebKit versions didn't support multipart in HTML5
-								if (strpos($contentType, "multipart") !== false) {
-									if (isset($_FILES['userfiles']['tmp_name'][$i]) && is_uploaded_file($_FILES['userfiles']['tmp_name'][$i])) {
+									if (isset($_SERVER["CONTENT_TYPE"]))
+										$contentType = $_SERVER["CONTENT_TYPE"];
+									// Handle non multipart uploads older WebKit versions didn't support multipart in HTML5
+									if (strpos($contentType, "multipart") !== false) {
+										if (isset($_FILES['userfiles']['tmp_name'][$i]) && is_uploaded_file($_FILES['userfiles']['tmp_name'][$i])) {
+											// Open temp file
+											$out = fopen("{$filePath}.part", $chunk == 0 ? "wb" : "ab");
+											if ($out) {
+												// Read binary input stream and append it to temp file
+												$in = fopen($_FILES['userfiles']['tmp_name'][$i], "rb");
+
+												if ($in) {
+													while ($buff = fread($in, 4096))
+														fwrite($out, $buff);
+												} else
+													die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
+												fclose($in);
+												fclose($out);
+
+												@unlink($_FILES['userfiles']['tmp_name'][$i]);
+											} else
+												die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
+										} else
+											die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
+									} else {
 										// Open temp file
 										$out = fopen("{$filePath}.part", $chunk == 0 ? "wb" : "ab");
 										if ($out) {
 											// Read binary input stream and append it to temp file
-											$in = fopen($_FILES['userfiles']['tmp_name'][$i], "rb");
+											$in = fopen("php://input", "rb");
 
 											if ($in) {
 												while ($buff = fread($in, 4096))
 													fwrite($out, $buff);
 											} else
 												die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
+
 											fclose($in);
 											fclose($out);
-
-											@unlink($_FILES['userfiles']['tmp_name'][$i]);
 										} else
 											die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
-									} else
-										die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
-								} else {
-									// Open temp file
-									$out = fopen("{$filePath}.part", $chunk == 0 ? "wb" : "ab");
-									if ($out) {
-										// Read binary input stream and append it to temp file
-										$in = fopen("php://input", "rb");
+									}
 
-										if ($in) {
-											while ($buff = fread($in, 4096))
-												fwrite($out, $buff);
-										} else
-											die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
+									// Check if file has been uploaded
+									if (!$chunks || $chunk == $chunks - 1) {
+										// Strip the temp .part suffix off
+										rename("{$filePath}.part", $filePath);
+									}
+									$aes = new AESENCRYPT();
+									$aes->encryptFile($fileName);
+									$r=$zip->addFile($filePath,$fileName);
 
-										fclose($in);
-										fclose($out);
-									} else
-										die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
 								}
+							}
 
-								// Check if file has been uploaded
-								if (!$chunks || $chunk == $chunks - 1) {
-									// Strip the temp .part suffix off
-									rename("{$filePath}.part", $filePath);
+							$r=$zip->close();
+							$url = $zipRealName;
+							$fromid = $userindo['id'];
+							$filenamearray = explode(".",$url);
+							$filename = $filenamearray[0];		 $array_file_name[] = $filenamearray[0];
+							$public_allow = 0;
+							$uploader = $to_name;
+							$time = '2017-03-02 00:00:00';
+							$expdate = '2017-03-09 00:00:00';
+							$statement = $dbh->prepare("INSERT INTO ".TABLE_FILES." (`url`, `filename`, `description`, `timestamp`, `uploader`, `expires`, `expiry_date`, `public_allow`, `public_token`,`request_type`) VALUES ('$url', '$zipRealName', '', CURRENT_TIMESTAMP, '$uploader', '0', '2017-12-09 00:00:00', '0', NULL,'$requestType');");
+							if($statement->execute()) {
+								$img_id = $dbh->lastInsertId();
+								$filesrelations = $dbh->prepare("INSERT INTO ".TABLE_FILES_RELATIONS." (`timestamp`, `file_id`, `client_id`, `group_id`, `folder_id`, `hidden`, `download_count`) VALUES (CURRENT_TIMESTAMP, ".$img_id.", ".$fromid.", NULL, NULL, '0', '0')");
+								if($filesrelations->execute()) {
+									$file_status=true;
+
 								}
-								$aes = new AESENCRYPT();
-								$aes->encryptFile($fileName);
-								$r=$zip->addFile($filePath,$fileName);
-
 							}
 						}
+						else{
+							echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> No Compressed files are allowed.</div>";
 
-						$r=$zip->close();
-						$url = $zipRealName;
-						$fromid = $userindo['id'];
-						$filenamearray = explode(".",$url);
-						$filename = $filenamearray[0];		 $array_file_name[] = $filenamearray[0];
-						$public_allow = 0;
-						$uploader = $to_name;
-						$time = '2017-03-02 00:00:00';
-						$expdate = '2017-03-09 00:00:00';
-						$statement = $dbh->prepare("INSERT INTO ".TABLE_FILES." (`url`, `filename`, `description`, `timestamp`, `uploader`, `expires`, `expiry_date`, `public_allow`, `public_token`,`request_type`) VALUES ('$url', '$zipRealName', '', CURRENT_TIMESTAMP, '$uploader', '0', '2017-12-09 00:00:00', '0', NULL,'$requestType');");
-						if($statement->execute()) {
-							$img_id = $dbh->lastInsertId();
-							$filesrelations = $dbh->prepare("INSERT INTO ".TABLE_FILES_RELATIONS." (`timestamp`, `file_id`, `client_id`, `group_id`, `folder_id`, `hidden`, `download_count`) VALUES (CURRENT_TIMESTAMP, ".$img_id.", ".$fromid.", NULL, NULL, '0', '0')");
-							if($filesrelations->execute()) {
-								$file_status=true;
-
-							}
 						}
 					}
 					else {

@@ -123,13 +123,15 @@ $current_level = get_current_user_level();
 							var ext = fname.substr( (fname.lastIndexOf('.') +1) );
 							if(ext =='zip'){
 								var uptype = $("input[type=submit][clicked=true]").val();
-								if (uptype== "Batch Upload") {
+								if (uptype== "Batch Upload**") {
 									$("#btn-submit").show();
 									$("#zip-submit").show();
 									$("#uploadbtnsnotes").show();
-									alert("Compressed files are not allowed in Batch upload. Continuing normal upload..!! ");
-									$("form")[0].reset();
-									$('form').attr('action', 'upload-process-form.php');
+									var batchornot = confirm("Compressed files are not allowed in Batch upload. Continuing normal upload..!! ");
+									if(batchornot == true){
+										$("form")[0].reset();
+										$('form').attr('action', 'upload-process-form.php');
+									}
 								}
 							}
 								var new_file_field = '<input type="hidden" name="finished_files[]" value="'+obj.NewFileName+'" />';

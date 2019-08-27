@@ -102,7 +102,7 @@ $current_level = get_current_user_level();
 
 				$('form').submit(function(e) {
 					var uptype = $("input[type=submit][clicked=true]").val();
-					if (uptype== "Batch Upload") {
+					if (uptype== "Batch Upload**") {
 						var zipfield = '<input type="hidden" id="zipload" name="batching" value="1" />';
 						$('form').append(zipfield);
 						$('form').attr('action', 'upload-zip.php');

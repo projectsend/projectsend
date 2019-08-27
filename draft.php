@@ -638,7 +638,7 @@ if(isset($_REQUEST['edit']) == 1){echo '<div class="alert alert-success"><a href
 								$x=explode("_", $add_file['name']);
 								$cuid_array=explode(".", $add_file['name']);
 								$arr = array_reverse(preg_split('/(_)/',$cuid_array[0],-1, PREG_SPLIT_NO_EMPTY));
-								if($arr[0]==$curr_usr_id){
+								if($arr[1]==$curr_usr_id){
                   ?>
                 <tr>
               <td>

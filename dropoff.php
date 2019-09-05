@@ -83,7 +83,7 @@ $target_info = get_client_by_id($target_id);
 
 																filters : {
 																	mime_types : [
-																		{title : 'Files ', extensions :'7z,ace,ai,avi,bin,bmp,cdr,doc,docm,docx,eps,fla,flv,gif,htm,html,iso,jpeg,jpg,mp3,mp4,mpg,odt,oog,ppt,pptx,pptm,pps,ppsx,pdf,png,psd,rar,rtf,tar,tif,tiff,txt,wav,xls,xlsm,xlsx,zip'}
+																		{title : 'Files ', extensions :'ai,avi,bin,bmp,cdr,doc,docm,docx,eps,fla,flv,gif,htm,html,iso,jpeg,jpg,mp3,mp4,mpg,odt,oog,ppt,pptx,pptm,pps,ppsx,pdf,png,psd,rtf,tif,tiff,txt,wav,xls,xlsm,xlsx'}
 																	],
 																	// Maximum file size
 																	max_file_size : '2048mb'}

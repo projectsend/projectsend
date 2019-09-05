@@ -60,7 +60,7 @@ if(!empty($auth)){
 					if(!empty($_FILES['userfiles']['name'][0]))
 					{
 						$zipInside = 0;
-						$allowed =  array('7z','ace','ai','avi','bin','bmp','cdr','doc','docm','docx','eps','fla','flv','gif','htm','html','iso','jpeg','jpg','mp3','mp4','mpg','odt','oog','ppt','pptx','pptm','pps','ppsx','pdf','png','psd','rar','rtf','tar','tif','tiff','txt','wav','xls','xlsm','xlsx');
+						$allowed =  array('ace','ai','avi','bin','bmp','cdr','doc','docm','docx','eps','fla','flv','gif','htm','html','iso','jpeg','jpg','mp3','mp4','mpg','odt','oog','ppt','pptx','pptm','pps','ppsx','pdf','png','psd','rtf','tif','tiff','txt','wav','xls','xlsm','xlsx');
 						foreach ($_FILES['userfiles']['name'] as $filez) {
 						//	print_r($filez);
 							$ext = pathinfo($filez, PATHINFO_EXTENSION);

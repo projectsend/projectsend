@@ -44,7 +44,7 @@ $target_info = get_client_by_id($target_id);
 								<h2><?php echo $page_title; ?></h2>
 								<p>
 								<?php
-								$msg = __('Click on Add files to select all the files that you want to upload, and then click continue. On the next step, you will be able to set a name and description for each uploaded file. Remember that the file may not be empty (0 KB) and the maximum allowed file size (in mb.) is ','cftp_admin') . ' <strong>'.MAX_FILESIZE.'</strong>';
+								$msg = __('Click on "Add Files" to select all the files that you want to upload (compressed files not allowed); and then click an upload button. On the next step, you will be able to set a name and description for each uploaded file. Remember that the file may not be empty (0 kb) and the maximum allowed file size (in mb.) is ','cftp_admin') . ' <strong>'.MAX_FILESIZE.'</strong>';
 								echo system_message('info', $msg);
 								?>
 								</p>
@@ -93,7 +93,7 @@ $target_info = get_client_by_id($target_id);
 											var uploader = $('#uploader').pluploadQueue();
 											$('form').submit(function(e) {
 												var uptype = $("input[type=submit][clicked=true]").val();
-												if (uptype== "Batch Upload**") {
+												if (uptype== "Batch Upload") {
 													console.log("Batch upload clicked");
 													var zipfield = '<input type="hidden" name="batching" value="1" />'
 													$('form').append(zipfield);
@@ -110,7 +110,6 @@ $target_info = get_client_by_id($target_id);
 													uploader.start();
 													$("#btn-submit").hide();
                                                                                                         $("#zip-submit").hide();
-													$("#uploadbtnsnotes").hide();
 													$(".message_uploading").fadeIn();
 													uploader.bind('FileUploaded', function (up, file, info) {
 														var obj = JSON.parse(info.response);
@@ -118,10 +117,9 @@ $target_info = get_client_by_id($target_id);
 														var ext = fname.substr( (fname.lastIndexOf('.') +1) );
 														if(ext =='zip'){
 															var uptype = $("input[type=submit][clicked=true]").val();
-															if (uptype== "Batch Upload**") {
+															if (uptype== "Batch Upload") {
 																$("#btn-submit").show();
 																$("#zip-submit").show();
-																$("#uploadbtnsnotes").show();
 																var batchornot = confirm("Compressed files are not allowed in Batch upload. Continue with normal upload?");
 																if(batchornot == true){
 																	$("form")[0].reset();
@@ -170,11 +168,8 @@ $target_info = get_client_by_id($target_id);
 									<input type="hidden" value="<?php echo isset($target_info['name'])?$target_info['name']:''; ?>" name="target_name" />
 									<input type="hidden" value="<?php echo isset($target_info['username'])?$target_info['username']:''; ?>" name="target_name" />
 									<div class="after_form_buttons cc-text-right">
-				            <input type="submit" class="btn btn-wide btn-primary" value="Upload Files*" id="btn-submit">
-				            <input type="submit" class="btn btn-wide btn-success" value="Batch Upload**" id="zip-submit">
-									    <div id="uploadbtnsnotes">
-                                                                                <p style="font-size: 11px">*Note: Nested compressed files not allowed.<br>**Note: Compressed files not allowed.</p>
-                                                                            </div>
+				            <input type="submit" class="btn btn-wide btn-primary" value="Upload Files" id="btn-submit">
+				            <input type="submit" class="btn btn-wide btn-success" value="Batch Upload" id="zip-submit">
 									</div>
 									<div class="message message_info message_uploading">
 										<p>

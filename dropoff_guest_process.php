@@ -60,7 +60,7 @@ if(!empty($auth)){
 					if(!empty($_FILES['userfiles']['name'][0]))
 					{
 						$zipInside = 0;
-						$allowed =  array('ace','ai','avi','bin','bmp','cdr','doc','docm','docx','eps','fla','flv','gif','htm','html','iso','jpeg','jpg','mp3','mp4','mpg','odt','oog','ppt','pptx','pptm','pps','ppsx','pdf','png','psd','rtf','tif','tiff','txt','wav','xls','xlsm','xlsx');
+						$allowed =  array('ai','avi','bin','bmp','cdr','doc','docm','docx','eps','fla','flv','gif','htm','html','iso','jpeg','jpg','mp3','mp4','mpg','odt','oog','ppt','pptx','pptm','pps','ppsx','pdf','png','psd','rtf','tif','tiff','txt','wav','xls','xlsm','xlsx');
 						foreach ($_FILES['userfiles']['name'] as $filez) {
 						//	print_r($filez);
 							$ext = pathinfo($filez, PATHINFO_EXTENSION);
@@ -318,7 +318,7 @@ if(!empty($auth)){
 		  </div>
 		  <div class="form-group">
 			  <div class="col-md-12 note_file_upload">
-				<p>NOTES:<br><em>For Multiple file upload please choose '+' icon near the upload file.<br>The maximum allowed file size (in mb.) is 2048.<br>No empty files (0 KB) or compressed files allowed.</em></p>
+				<p>NOTES:<br><em>For Multiple file upload please choose '+' icon near the upload file.<br>The maximum allowed file size (in mb.) is 2048.<br>No empty files (0 kb) or compressed files allowed.</em></p>
 			  </div>
 		  </div>
 		</form>

@@ -52,8 +52,8 @@ $current_level = get_current_user_level();
 	?>
         <p>
           <?php
-				$msg = __('Click on Add files to select all the files that you want to upload, and then the next step click continue. On, you will be able to set a name and description for each uploaded file. Remember that the file may not be empty (0 KB) and the maximum allowed file size (in mb.) is ','cftp_admin') . ' <strong>'.MAX_FILESIZE.'</strong>';
-				echo system_message('info', $msg);
+				$msg = __('Click on "Add Files" to select all the files that you want to upload (compressed files not allowed); and then click an upload button. On the next step, you will be able to set a name and description for each uploaded file. Remember that the file may not be empty (0 kb) and the maximum allowed file size (in mb.) is ','cftp_admin') . ' <strong>'.MAX_FILESIZE.'</strong>';
+                                echo system_message('info', $msg);
 			?>
         </p>
         <script type="text/javascript">
@@ -102,7 +102,7 @@ $current_level = get_current_user_level();
 
 				$('form').submit(function(e) {
 					var uptype = $("input[type=submit][clicked=true]").val();
-					if (uptype== "Batch Upload**") {
+					if (uptype== "Batch Upload") {
 						var zipfield = '<input type="hidden" id="zipload" name="batching" value="1" />';
 						$('form').append(zipfield);
 						$('form').attr('action', 'upload-zip.php');
@@ -114,8 +114,7 @@ $current_level = get_current_user_level();
 
 						$("#btn-submit").hide();
 						$("#zip-submit").hide();
-					        $("#uploadbtnsnotes").hide();
-						$(".message_uploading").fadeIn();
+					        $(".message_uploading").fadeIn();
 
 						uploader.bind('FileUploaded', function (up, file, info) {
 							var obj = JSON.parse(info.response);
@@ -123,10 +122,9 @@ $current_level = get_current_user_level();
 							var ext = fname.substr( (fname.lastIndexOf('.') +1) );
 							if(ext =='zip'){
 								var uptype = $("input[type=submit][clicked=true]").val();
-								if (uptype== "Batch Upload**") {
+								if (uptype== "Batch Upload") {
 									$("#btn-submit").show();
 									$("#zip-submit").show();
-									$("#uploadbtnsnotes").show();
 									var batchornot = confirm("Compressed files are not allowed in Batch upload. Continue with normal upload?");
 									if(batchornot == true){
 										$("form")[0].reset();
@@ -188,11 +186,8 @@ $current_level = get_current_user_level();
           </div>
           <div class="cc-text-right after_form_buttons">
 						<!-- <input id="filecount" type="hidden" name="filecount" > -->
-            <input type="submit" class="btn btn-wide btn-primary" value="Upload Files*" id="btn-submit">
-            <input type="submit" class="btn btn-wide btn-success" value="Batch Upload**" id="zip-submit">
-	    <div id="uploadbtnsnotes">
-               <p style="font-size: 11px">*Note: Nested compressed files not allowed.<br>**Note: Compressed files not allowed.</p>
-            </div>
+            <input type="submit" class="btn btn-wide btn-primary" value="Upload Files" id="btn-submit">
+            <input type="submit" class="btn btn-wide btn-success" value="Batch Upload" id="zip-submit">
           </div>
           <div class="message message_info message_uploading">
             <p>

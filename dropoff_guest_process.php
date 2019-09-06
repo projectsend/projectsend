@@ -60,7 +60,7 @@ if(!empty($auth)){
 					if(!empty($_FILES['userfiles']['name'][0]))
 					{
 						$zipInside = 0;
-						$allowed =  array('ace','ai','avi','bin','bmp','cdr','doc','docm','docx','eps','epub','fjsw','fla','flp','flv','gif','htm','html','ins','isf','iso','ist','jpeg','jpg','kes','kmz','m4a','m4v','mov','mp3','mp4','mpg','odt','oog','pdf','png','pps','ppsx','ppt','pptm','pptx','psd','rtf','swf','te','tif','tiff','txt','wav','wmv','wxr','xbk','xls','xlsm','xlsx');
+						$allowed =  array('ai','avi','bin','bmp','cdr','doc','docm','docx','eps','epub','fjsw','fla','flp','flv','gif','htm','html','ins','isf','iso','ist','jpeg','jpg','kes','kmz','m4a','m4v','mov','mp3','mp4','mpg','odt','oog','pdf','png','pps','ppsx','ppt','pptm','pptx','psd','rtf','swf','te','tif','tiff','txt','wav','wmv','wxr','xbk','xls','xlsm','xlsx');
 						foreach ($_FILES['userfiles']['name'] as $filez) {
 						//	print_r($filez);
 							$ext = pathinfo($filez, PATHINFO_EXTENSION);

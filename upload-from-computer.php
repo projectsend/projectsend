@@ -56,7 +56,36 @@ $current_level = get_current_user_level();
                                 echo system_message('info', $msg);
 			?>
         </p>
+				  <div class="panel panel-default">
+				     <div class="panel-heading">
+				         <h4 class="panel-title"
+				             data-toggle="collapse"
+				             data-target="#collapseOne">
+				             File extensions allowed
+				         </h4>
+				      </div>
+				      <div id="collapseOne" class="panel-collapse collapse">
+				        <div class="panel-body">
+				         ace,ai,avi,bin,bmp,cdr,doc,docm,docx,eps,epub,fjsw,fla,flp,flv,gif,htm,html,ins,isf,iso,ist,jpeg,jpg,kes,kmz,m4a,m4v,mov,mp3,mp4,mpg,odt,oog,pdf,png,pps,ppsx,ppt,pptm,pptx,psd,rtf,swf,te,tif,tiff,txt,wav,wmv,wxr,xbk,xls,xlsm,xlsx</div>
+				      </div>
+				  </div>
+					<div class="panel panel-default">
+						 <div class="panel-heading">
+								 <h4 class="panel-title"
+										 data-toggle="collapse"
+										 data-target="#collapseTwo">
+										 File extensions not allowed
+								 </h4>
+							</div>
+							<div id="collapseTwo" class="panel-collapse collapse">
+								<div class="panel-body">
+									.0,.000,.7Z,.7Z.001,.7Z.002,.A00,.A01,.A02,.ACE,.AGG,.AIN,.ALZ,.APZ,.AR,.ARC,.ARCHIVER,.ARDUBOY,.ARH,.ARI,.ARJ,.ARK,.ASR,.B1,.B64,.B6Z,.BA,.BDOC,.BH,.BNDL,.BOO,.BUNDLE,.BZ,.BZ2,.BZA,.BZIP,.BZIP2,.C00,.C01,.C02,.C10,.CAR,.CB7,.CBA,.CBR,.CBT,.CBZ,.CDZ,.COMPPKG.HAUPTWERK.RAR,.COMPPKG_HAUPTWERK_RAR,.CP9,.CPGZ,.CPT,.CTX,.CTZ,.CXARCHIVE,.CZIP,.DAF,.DAR,.DD,.DEB,.DGC,.DIST,.DL_,.DZ,.ECS,.ECSBX,.EDZ,.EFW,.EGG,.EPI,.F,.F3Z,.FDP,.FP8,.FZBZ,.FZPZ,.GCA,.GMZ,.GZ,.GZ2,.GZA,.GZI,.GZIP,.HA,.HBC,.HBC2,.HBE,.HKI,.HKI1,.HKI2,.HKI3,.HPK,.HPKG,.HYP,.IADPROJ,.ICE,.IPG,.IPK,.ISH,.ISX,.ITA,.IZE,.J,.JAR.PACK,.JGZ,.JIC,.JSONLZ4,.KGB,.KZ,.LAYOUT,.LBR,.LEMON,.LHA,.LHZD,.LIBZIP,.LNX,.LPKG,.LQR,.LZ,.LZH,.LZM,.LZMA,.LZO,.LZX,.MBZ,.MD,.MINT,.MOU,.MPKG,.MZP,.NEX,.NPK,.NZ,.OAR,.OPK,.OZ,.P01,.P19,.P7Z,.PA,.PACK.GZ,.PACKAGE,.PAE,.PAK,.PAQ6,.PAQ7,.PAQ8,.PAQ8F,.PAQ8L,.PAQ8P,.PAR,.PAR2,.PAX,.PBI,.PCV,.PEA,.PET,.PF,.PIM,.PIT,.PIZ,.PKG,.PKG.TAR.XZ,.PRS,.PSZ,.PUP,.PUZ,.PVMZ,.PWA,.QDA,.R0,.R00,.R01,.R02,.R03,.R04,.R1,.R2,.R21,.R30,.RAR,.REV,.RK,.RNC,.RP9,.RPM,.RSS,.RTE,.RZ,.S00,.S01,.S02,.S09,.S7Z,.SAR,.SBX,.SDC,.SDN,.SEA,.SEN,.SFG,.SFS,.SFX,.SH,.SHAR,.SHK,.SHR,.SIFZ,.SIT,.SITX,.SMPF,.SNAPPY,.SNB,.SPD,.SPL,.SPM,.SPT,.SQX,.SQZ,.SREP,.STPROJ,.SY_,.TAR.BZ2,.TAR.GZ,.TAR.GZ2,.TAR.LZ,.TAR.LZMA,.TAR.XZ,.TAR.Z,.TAZ,.TBZ,.TBZ2,.TCX,.TG,.TGZ,.TLZ,.TLZMA,.TRS,.TXZ,.TX_,.TZ,.TZST,.UC2,.UFS.UZIP,.UHA,.UZIP,.VEM,.VFS,.VIP,.VOCA,.VPK,.VSI,.WA,.WAFF,.WAR,.WDZ,.WHL,.WLB,.WOT,.WUX,.XAPK,.XAR,.XEF,.XEZ,.XIP,.XMCDZ,.XX,.XZ,.XZM,.Y,.YZ,.YZ1,.Z,.Z01,.Z02,.Z03,.Z04,.ZAP,.ZFSENDTOTARGET,.ZI,.ZIP,.ZIPX,.ZIX,.ZI_,.ZL,.ZOO,.ZPI,.ZSPLIT,.ZST,.ZW,.ZZ
+									 </div>
+					</div>
         <script type="text/javascript">
+				$(document).on('click',function(){
+				$('.collapse').collapse('hide');
+			});
 			$(document).ready(function() {
 				$("form input[type=submit]").click(function() {
 					//Seting up an event to emit an attribute clicked on clicking of submit button
@@ -91,7 +120,7 @@ $current_level = get_current_user_level();
 
 						filters : {
 							mime_types : [
-								{title : 'Files ', extensions :'ai,avi,bin,bmp,cdr,doc,docm,docx,eps,fla,flv,gif,htm,html,iso,jpeg,jpg,mp3,mp4,mpg,odt,oog,ppt,pptx,pptm,pps,ppsx,pdf,png,psd,rtf,tif,tiff,txt,wav,xls,xlsm,xlsx'}
+								{title : 'Files ', extensions :'ace,ai,avi,bin,bmp,cdr,doc,docm,docx,eps,epub,fjsw,fla,flp,flv,gif,htm,html,ins,isf,iso,ist,jpeg,jpg,kes,kmz,m4a,m4v,mov,mp3,mp4,mpg,odt,oog,pdf,png,pps,ppsx,ppt,pptm,pptx,psd,rtf,swf,te,tif,tiff,txt,wav,wmv,wxr,xbk,xls,xlsm,xlsx'}
 							],
 							// Maximum file size
 							max_file_size : '2048mb'}

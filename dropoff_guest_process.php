@@ -215,7 +215,7 @@ if(!empty($auth)){
 							}
 						}
 						else{
-							echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> No Compressed files are allowed.</div>";
+							echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> File extension(s) not allowed.</div>";
 
 						}
 					}

@@ -58,7 +58,7 @@ $target_info = get_client_by_id($target_id);
 										</div>
 										<div id="collapseOne" class="panel-collapse collapse">
 											<div class="panel-body">
-											 ai,avi,bin,bmp,cdr,doc,docm,docx,eps,fla,flv,gif,htm,html,iso,jpeg,jpg,mp3,mp4,mpg,odt,oog,ppt,pptx,pptm,pps,ppsx,pdf,png,psd,rtf,tif,tiff,txt,wav,xls,xlsm,xlsx</div>
+											 ai,avi,bin,bmp,cdr,doc,docm,docx,eps,epub,fjsw,fla,flp,flv,gif,htm,html,ins,isf,iso,ist,jpeg,jpg,kes,kmz,m4a,m4v,mov,mp3,mp4,mpg,odt,oog,pdf,png,pps,ppsx,ppt,pptm,pptx,psd,rtf,swf,te,tif,tiff,txt,wav,wmv,wxr,xbk,xls,xlsm,xlsx</div>
 										</div>
 								</div>
 								<div class="panel panel-default">

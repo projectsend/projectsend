@@ -426,6 +426,8 @@ $(document).on('click','.cc-remove-file',function() {
 .userfiles {padding:0}
 .note_file_upload {
 	padding-top: 24px;
+	background-color: white;
+        margin-bottom: 15px;
 }
 .error_file_empty {color:#fb0303;}
 </style>

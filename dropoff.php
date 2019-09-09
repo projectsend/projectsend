@@ -61,7 +61,8 @@ $target_info = get_client_by_id($target_id);
 											 ai, avi, bin, bmp, cdr, doc, docm, docx, eps, epub, fjsw, fla, flp, flv, gif, htm, html, ins, isf, iso, ist, jpeg, jpg, kes, kmz, m4a, m4v, mov, mp3, mp4, mpg, odt, oog, pdf, png, pps, ppsx, ppt, pptm, pptx, psd, rtf, swf, te, tif, tiff, txt, wav, wmv, wxr, xbk, xls, xlsm, xlsx</div>
 										</div>
 								</div>
-								<div class="panel panel-default">
+                                                           <!-- 
+ 								<div class="panel panel-default">
 									 <div class="panel-heading">
 											 <h4 class="panel-title"
 													 data-toggle="collapse"
@@ -75,6 +76,7 @@ $target_info = get_client_by_id($target_id);
 												</div>
 										</div>
 								</div>
+                                                             -->
 								<script type="text/javascript">
 								$(document).on('click',function(){
 										$('.collapse').collapse('hide');

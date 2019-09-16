@@ -305,7 +305,7 @@ if(!empty($auth)){
 			  <?php _e('File','cftp_admin'); ?>
 			</label>
 			<div class="col-sm-6 A">
-				<?php $accept = '.avi, .bin, .bmp, .cdr, .doc, .docm, .docx, .eps, .epub, .fjsw, .fla, .flp, .flv, .gif, .htm, .html, .ins, .isf, .iso, .ist, .jpeg, .jpg, .kes, .kmz, .m4a, .m4v, .mov, .mp3, .mp4, .mpg, .odt, .oog, .pdf, .png, .pps, .ppsx, .ppt, .pptm, .pptx, .psd, .rtf, .swf, .te, .tif, .tiff, .txt, .wav, .wmv, .wxr, .xbk, .xls, .xlsm, .xlsx '; ?>
+				<?php $accept = '.ai, .avi, .bin, .bmp, .cdr, .doc, .docm, .docx, .eps, .epub, .fjsw, .fla, .flp, .flv, .gif, .htm, .html, .ins, .isf, .iso, .ist, .jpeg, .jpg, .kes, .kmz, .m4a, .m4v, .mov, .mp3, .mp4, .mpg, .odt, .oog, .pdf, .png, .pps, .ppsx, .ppt, .pptm, .pptx, .psd, .rtf, .swf, .te, .tif, .tiff, .txt, .wav, .wmv, .wxr, .xbk, .xls, .xlsm, .xlsx '; ?>
 			  <input type="file" name="userfiles[]" id="fileone" accept ="<?php echo($accept); ?>" class="form-control userfiles required" value="" placeholder="upload file" style="padding:0;" />
 			  <div class="error_file_empty" ></div>
 			</div>

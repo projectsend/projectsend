@@ -178,6 +178,18 @@ class Validate_Form
 			$this->error_msg .= '<li>'.$err.'</li>';
 			$this->return_val = false;
 		}
+
+		$this->statement = $this->dbh->prepare( "SELECT * FROM " . TABLE_FILES . " WHERE uploader = :user" );
+		$this->statement->execute(
+							array(
+								':user'	=> $field,
+							)
+						);
+
+		if ( $this->statement->rowCount() > 0 ) {
+			$this->error_msg .= '<li>'.$err.'</li>';
+			$this->return_val = false;
+		}
 	}
 	private function is_username_exists($field, $err)
 	{

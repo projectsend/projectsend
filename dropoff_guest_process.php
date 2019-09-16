@@ -367,7 +367,7 @@ $(document).on('click','.cc-add-file',function() {
 	var $ccc = $(this).parent().prev('.A').find('.userfiles').val();
 	if($ccc!='') {
 		$(this).parent().prev('.A').find('.error_file_empty').html('');
-	$(".cc-file-container").append("<div class='form-group'><label for='to_email_request' class='col-sm-4 control-label'>File</label><div class='col-sm-6 A'><input type='file' name='userfiles[]' id='fileone' class='form-control required userfiles' value='' placeholder='upload file' /><div class='error_file_empty'></div></div><div class='col-sm-2'><span class='glyphicon glyphicon-plus cc-add-file' aria-hidden='true'></span><span class='glyphicon glyphicon-remove cc-remove-file' aria-hidden='true'></span></div></div>");
+	$(".cc-file-container").append("<div class='form-group'><label for='to_email_request' class='col-sm-4 control-label'>File</label><div class='col-sm-6 A'><?php $accept = '.ai, .avi, .bin, .bmp, .cdr, .doc, .docm, .docx, .eps, .epub, .fjsw, .fla, .flp, .flv, .gif, .htm, .html, .ins, .isf, .iso, .ist, .jpeg, .jpg, .kes, .kmz, .m4a, .m4v, .mov, .mp3, .mp4, .mpg, .odt, .oog, .pdf, .png, .pps, .ppsx, .ppt, .pptm, .pptx, .psd, .rtf, .swf, .te, .tif, .tiff, .txt, .wav, .wmv, .wxr, .xbk, .xls, .xlsm, .xlsx '; ?><input type='file' name='userfiles[]' id='fileone' class='form-control required userfiles' value='' placeholder='upload file' /><div class='error_file_empty'></div></div><div class='col-sm-2'><span class='glyphicon glyphicon-plus cc-add-file' aria-hidden='true'></span><span class='glyphicon glyphicon-remove cc-remove-file' aria-hidden='true'></span></div></div>");
 	}
 	else {
 		$(this).parent().prev('.A').find('.error_file_empty').html("Please choose the file first");

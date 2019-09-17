@@ -376,8 +376,13 @@ include('header.php');
 										}
 									}
 
-									if ( $get_categories['count'] > 0 ) {
-										format_category_row( $get_categories['arranged'] );
+										if ( $get_categories['count'] > 0 ) {
+										if(!empty($get_categories['arranged'])){
+											format_category_row( $get_categories['arranged'] );
+										}
+										else{
+											format_category_row( $get_categories['categories'] );
+										}
 									}
 								?>											
 							</tbody>

@@ -524,6 +524,15 @@ cursor: pointer;
 
 			if (!empty($found_groups)) {
 				$fq .= " OR FIND_IN_SET(group_id, :groups)";
+				if(isset($_GET['search']) && !empty($_GET['search'])) {
+					$term = "%".$_GET['search']."%";
+					$fq .=  "AND (filename LIKE '$term' OR description LIKE '$term')";
+					$no_results_error = 'search';
+
+					$search_terms			= $term;
+					$params[':name']		= $search_terms;
+					$params[':description']	= $search_terms;
+				}
 			}
 			$fq .= "ORDER BY tbl_files_relations.id DESC";
 			$sql_files = $dbh->prepare($fq);

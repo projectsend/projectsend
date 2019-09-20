@@ -310,16 +310,30 @@ class ClientActions
 		if (isset($client_id)) {
 			/** Do a permissions check */
 			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
+				
+				//Deleting inbox files
 				$this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_FILES_RELATIONS . ' WHERE client_id=:cl_id');
 				$this->sql->bindParam(':cl_id', $client_id, PDO::PARAM_INT);
 				$this->sql->execute();
-				//
+
+				// Delete draft
+				$this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_FILES .' WHERE tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '.$client_id.')');
+				$this->sql->execute();
+
+				//Collecting user data
 				$this->sql = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS ." WHERE id=:id");
 				$this->sql->bindParam(':id', $client_id, PDO::PARAM_INT);
 				$this->sql->execute();
 				$this->sql->setFetchMode(PDO::FETCH_ASSOC);
 				$userEmail = $this->sql->fetchAll();
 
+				//Deleting Outbox files
+				if(!empty($userEmail['0']['user'])){
+					$useName =$userEmail['0']['user'];
+					$this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_FILES .' WHERE (uploader=:uploader AND DATE(tbl_files.future_send_date) > DATE(NOW()))');
+					$this->sql->bindParam(':uploader', $useName);
+					$this->sql->execute();
+				}
 				if(!empty($userEmail['0']['email'])){
 				  $usemail =$userEmail['0']['email'];
 					$this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_DROPOFF . ' WHERE (from_id=:cl_id OR to_email ="'.$usemail.'")');

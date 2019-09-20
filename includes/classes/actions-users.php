@@ -235,18 +235,55 @@ class UserActions
 	/**
 	 * Delete an existing user.
 	 */
-	function delete_user($user_id)
-	{
-		$this->check_level = array(9);
-		if (isset($user_id)) {
-			/** Do a permissions check */
-			if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
-				$this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_USERS . ' WHERE id=:id');
-				$this->sql->bindParam(':id', $user_id, PDO::PARAM_INT);
-				$this->sql->execute();
-			}
-		}
-	}
+	 function delete_user($user_id)
+	 {
+	   $this->check_level = array(9);
+	   if (isset($user_id)) {
+	     /** Do a permissions check */
+	     if (isset($this->check_level) && in_session_or_cookies($this->check_level)) {
+				 // Delete draft
+	       $this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_FILES .' WHERE tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '.$user_id.')');
+	       $this->sql->execute();
+
+				 //Deleting inbox
+	       $this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_FILES_RELATIONS . ' WHERE client_id=:us_id');
+	       $this->sql->bindParam(':us_id', $user_id, PDO::PARAM_INT);
+	       $this->sql->execute();
+
+				 //Collecting user data
+	       $this->sql = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS ." WHERE id=:id");
+	       $this->sql->bindParam(':id', $user_id, PDO::PARAM_INT);
+	       $this->sql->execute();
+	       $this->sql->setFetchMode(PDO::FETCH_ASSOC);
+	       $userEmail = $this->sql->fetchAll();
+
+				 //Deleting Outbox files
+	       if(!empty($userEmail['0']['user'])){
+	         $useName =$userEmail['0']['user'];
+					 $this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_FILES .' WHERE (uploader=:uploader AND DATE(tbl_files.future_send_date) > DATE(NOW()))');
+					 $this->sql->bindParam(':uploader', $useName);
+					 $this->sql->execute();
+				 }
+				 
+				 //Deleting Drop off
+	       if(!empty($userEmail['0']['email'])){
+	         $usemail =$userEmail['0']['email'];
+
+	         $this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_DROPOFF . ' WHERE (from_id=:us_id OR to_email ="'.$usemail.'")');
+	         $this->sql->bindParam(':us_id', $user_id);
+	         $this->sql->execute();
+	       }else {
+	         $this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_DROPOFF . ' WHERE from_id=:us_id');
+	         $this->sql->bindParam(':us_id', $user_id, PDO::PARAM_INT);
+	         $this->sql->execute();
+	       }
+	       $this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_USERS . ' WHERE id=:id');
+	       $this->sql->bindParam(':id', $user_id, PDO::PARAM_INT);
+	       $this->sql->execute();
+	     }
+	   }
+	 }
+
 
 	/**
 	 * Mark the user as active or inactive.

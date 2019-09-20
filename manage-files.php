@@ -390,7 +390,7 @@ include('header.php');
 				}
 			}
 
-
+			$fq .= "ORDER BY timestamp DESC";
 			$sql_files = $dbh->prepare($fq);
 			$sql_files->execute( $params );
 			$count = $sql_files->rowCount();

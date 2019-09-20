@@ -534,7 +534,7 @@ cursor: pointer;
 					$params[':description']	= $search_terms;
 				}
 			}
-			$fq .= "ORDER BY tbl_files_relations.id DESC";
+			$fq .= "ORDER BY tbl_files_relations.timestamp DESC";
 			$sql_files = $dbh->prepare($fq);
 			if (!empty($found_groups)) {
 				$sql_files->bindParam(':groups', $found_groups);

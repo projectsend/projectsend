@@ -379,7 +379,7 @@ include('header.php');
 			/*$fq . = "Group by tf.id";
 			echo $fq */
             /** Debug query */
-            $fq .= "ORDER BY tfr.id DESC";
+            $fq .= "ORDER BY tfr.timestamp DESC";
             $sql_files = $dbh->prepare($fq);
             $sql_files->execute();
 			$count = $sql_files->rowCount();

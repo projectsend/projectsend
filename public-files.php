@@ -372,7 +372,7 @@ include('header.php');
                 }
             }
             /** Debug query */
-            // $fq .= "ORDER BY id DESC";
+            $fq .= " ORDER BY tbl_files.timestamp DESC";
             $sql_files = $dbh->prepare($fq);
             $sql_files->execute($params);
             $count = $sql_files->rowCount();

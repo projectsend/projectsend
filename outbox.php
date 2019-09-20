@@ -551,7 +551,7 @@ include('header.php');
              * an error message.
 
              */
-             $cq .="ORDER BY id DESC";
+
             $sql = $dbh->prepare($cq);
 
             $sql->execute( $params );
@@ -720,8 +720,8 @@ include('header.php');
             }
             /** Debug query */
 
-    
 
+            $fq .="ORDER BY timestamp DESC";
             $sql_files = $dbh->prepare($fq);
 
             $sql_files->execute( $params );

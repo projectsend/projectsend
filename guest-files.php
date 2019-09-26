@@ -229,7 +229,8 @@ $actual_link = SITE_URI.'requested_file.php';
 							 <?php _e('files','cftp_admin'); ?>
 							 </span></p>
 						 </div>
-						<table class=" cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
+						 <section id="no-more-tables" class="cc-overflow-scroll">
+						<table id="files_list" class=" cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
 							<thead>
 								<tr>
 									<th class="td_checkbox" data-sort-ignore="true">
@@ -292,6 +293,7 @@ $actual_link = SITE_URI.'requested_file.php';
 							</tbody>
 
 						</table>
+					</section>
 					</div>
           </form>
 				</div>
@@ -492,14 +494,13 @@ $(document).on('click', 'span.closeOp', function () {
 
 
     td:nth-of-type(1):before { content: ""; }
-    td:nth-of-type(2):before { content: "To Name"; }
-    td:nth-of-type(3):before { content: "Subject"; }
-    td:nth-of-type(4):before { content: "Organization"; }
-    td:nth-of-type(5):before { content: "Email"; }
-    td:nth-of-type(6):before { content: "Note"; }
-		td:nth-of-type(7):before { content: "Status"; }
-    td:nth-of-type(8):before { content: "Requested Time"; }
-    td:nth-of-type(9):before { content: "Action"; }
+    td:nth-of-type(2):before { content: "From Name"; }
+    td:nth-of-type(3):before { content: "From Organization "; }
+    td:nth-of-type(4):before { content: "From Email"; }
+    td:nth-of-type(5):before { content: "Comment"; }
+		td:nth-of-type(6):before { content: "Status"; }
+    td:nth-of-type(7):before { content: "Requested Time"; }
+    td:nth-of-type(8):before { content: "Action"; }
 }
 /*-------------------- Responsive table End--------------------------*/
 </style>

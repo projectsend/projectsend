@@ -497,10 +497,10 @@ $(document).on('click', 'span.closeOp', function () {
     td:nth-of-type(2):before { content: "From Name"; }
     td:nth-of-type(3):before { content: "From Organization "; }
     td:nth-of-type(4):before { content: "From Email"; }
-    td:nth-of-type(5):before { content: "Comment"; }
-		td:nth-of-type(6):before { content: "Status"; }
-    td:nth-of-type(7):before { content: "Requested Time"; }
-    td:nth-of-type(8):before { content: "Action"; }
+    td:nth-of-type(5):before { content: "To Email"; }
+    td:nth-of-type(6):before { content: "Comment"; }
+    td:nth-of-type(7):before { content: "Status"; }
+    td:nth-of-type(8):before { content: "Requested Time"; }
 }
 /*-------------------- Responsive table End--------------------------*/
 </style>

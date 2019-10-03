@@ -270,12 +270,12 @@ if(!empty($auth)){
 	  <h2><?php echo $page_title; ?></h2>
 	  <div class="error_div" style="text-align: center;color: red;padding: 10px;"><?php echo !empty($error_message)?$error_message:''; ?></div>
 	  <div style="width:600px;background: white none repeat scroll 0 0;border: 1px solid #adadad;margin: 0 auto;padding: 32px 64px 12px 64px;width: 600px;">
-		<form action="<?php echo $_SERVER['REQUEST_URI']; ?>" name="addclient" enctype="multipart/form-data" method="post" class="form-horizontal" autocomplete="off">
+      		<div class="col-sm-4"></div>
+			<div class="col-sm-8"> This web page will allow you to drop-off (upload) one or more files for a MicroHealth user. </div>
+        <div class="dgp-notice"></div>    
+		<form action="<?php echo $_SERVER['REQUEST_URI']; ?>" name="addclient" enctype="multipart/form-data" method="post" class="form-horizontal form-dgp" autocomplete="off">
 			<input type="hidden" name="request_type" value="2">
 			<div class="form-group">
-			<div class="col-sm-4"></div>
-
-			<div class="col-sm-8"> This web page will allow you to drop-off (upload) one or more files for a MicroHealth user. </div>
 			<label for="from_mail_id" class="col-sm-4 control-label">
 			  <?php _e('From','cftp_admin'); ?>
 			</label>
@@ -315,9 +315,11 @@ if(!empty($auth)){
 		  </div>
 		  </div>
 		  <div class="inside_form_buttons text-rgt">
-			<button type="submit" name="submit" class="btn btn-success">Submit Upload</button>
+			<button type="submit" name="submit" class="btn btn-success submit-dgp">Submit Upload</button>
 		  </div>
-		  <div class="form-group">
+		  
+		</form>
+        <div class="form-group">
 			  <div class="col-md-12 note_file_upload">
 				<p>NOTES:<br><em>For Multiple file upload please choose '+' icon near the upload file.<br>The maximum allowed file size (in mb.) is 2048.<br>No empty files (0 KB) allowed.</em></p>
 			  </div>
@@ -336,7 +338,6 @@ if(!empty($auth)){
 						</div>
 				</div>
 		  </div>
-		</form>
 	  </div>
 	</div>
 	<?php
@@ -375,6 +376,10 @@ $(document).on('click','.cc-add-file',function() {
 });
 $(document).on('click','.cc-remove-file',function() {
 	$(this).parent().parent().remove();
+		$(".submit-dgp").click(function(){
+		$(".form-dgp").fadeOut();
+		$(".dgp-notice").html('<div class="alert alert-success" role="alert">Uploading..</div>');
+	});
 });
 });
 

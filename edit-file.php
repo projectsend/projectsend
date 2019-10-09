@@ -532,13 +532,23 @@ $message = '
 
 							 $today = date("d-m-Y");
 
-							if (($send_notifications == true && $file['future_send_date'] == $today)
+                                                /*
+								if (($send_notifications == true && $file['future_send_date'] == $today)
 									||($send_notifications == true && $file['expiry_date'] == $today && $file['expires'] == '1' ))
 									{
 
 									$process_notifications = $this_upload->upload_add_notifications($add_arguments);
 
 								}
+						*/
+				                /* ***************    TEST TEST TEST     ****************  */
+                                if ($send_notifications == true && $file['future_send_date'] == $today) {
+                                    if (($file['expires'] == '0') || ($file['expires'] == '1' && $file['expiry_date'] != $today)) {
+                                        $process_notifications = $this_upload->upload_add_notifications($add_arguments);
+                                    }
+
+                                }
+								
 
 							}
 

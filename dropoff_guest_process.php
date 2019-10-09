@@ -374,12 +374,21 @@ $(document).on('click','.cc-add-file',function() {
 		$(this).parent().prev('.A').find('.error_file_empty').html("Please choose the file first");
 	}
 });
+/*
 $(document).on('click','.cc-remove-file',function() {
 	$(this).parent().parent().remove();
 		$(".submit-dgp").click(function(){
 		$(".form-dgp").fadeOut();
 		$(".dgp-notice").html('<div class="alert alert-success" role="alert">Uploading..</div>');
 	});
+});
+*/
+$(document).on('click','.cc-remove-file',function() {
+    $(this).parent().parent().remove();
+});
+$(document).on('click','.submit-dgp',function() {
+    $(".form-dgp").fadeOut();
+    $(".dgp-notice").html('<div class="alert alert-success" role="alert">Uploading..</div>');
 });
 });
 

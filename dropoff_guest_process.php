@@ -390,6 +390,16 @@ $(document).on('click','.submit-dgp',function() {
     $(".form-dgp").fadeOut();
     $(".dgp-notice").html('<div class="alert alert-success" role="alert">Uploading..</div>');
 });
+	
+function canceldgp() {
+    $(".form-dgp").fadeIn();
+    $(".dgp-notice").html('');
+});
+var dismissable = document.getElementsByClassName('alert-dismissable');
+if (dismissable.length > 0) {
+    canceldgp();
+}
+	
 });
 
 

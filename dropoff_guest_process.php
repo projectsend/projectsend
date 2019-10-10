@@ -394,7 +394,7 @@ $(document).on('click','.submit-dgp',function() {
 function canceldgp() {
     $(".form-dgp").fadeIn();
     $(".dgp-notice").html('');
-});
+}
 var dismissable = document.getElementsByClassName('alert-dismissable');
 if (dismissable.length > 0) {
     canceldgp();

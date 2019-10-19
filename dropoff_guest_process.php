@@ -59,6 +59,7 @@ if(!empty($auth)){
                     {
                         $zipInside = 0;
                         $allowed =  array('ai','avi','bin','bmp','cdr','doc','docm','docx','eps','epub','fjsw','fla','flp','flv','gif','htm','html','ins','isf','iso','ist','jpeg','jpg','kes','kmz','m4a','m4v','mov','mp3','mp4','mpg','odt','oog','pdf','png','pps','ppsx','ppt','pptm','pptx','psd','rtf','swf','te','tif','tiff','txt','wav','wmv','wxr','xbk','xls','xlsm','xlsx');
+						$file_n = implode(", ",$_FILES['userfiles']['name']);
                         foreach ($_FILES['userfiles']['name'] as $filez) {
                         //  print_r($filez);
                             $ext = pathinfo($filez, PATHINFO_EXTENSION);
@@ -204,8 +205,7 @@ if(!empty($auth)){
                             $email_arguments = array(
                                 'type' => 'new_files_for_client',
                                 'address' => $to,
-                                'files_list' =>
-                                $array_file_name
+                                'files_list' => $file_n
                             );
                             $try_sending = $notify_client->psend_send_email($email_arguments);
                                 $new_log_action = new LogActions();

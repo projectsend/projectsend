@@ -249,3 +249,6 @@ table.cc-mail-listing-style span.label {
 .table_calendar_common {font-family: arial, sans-serif;border-collapse: collapse;width: 100%;}
 .table_calendar_common td, .table_calendar_common th {border: 1px solid #dddddd;text-align: left;padding: 8px;}
 .display-image {margin-top: -50px;width:100%;}
+.panel-collapse {
+	    word-break: break-all;
+}

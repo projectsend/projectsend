@@ -58,7 +58,9 @@ $target_info = get_client_by_id($target_id);
 										</div>
 										<div id="collapseOne" class="panel-collapse collapse">
 											<div class="panel-body">
-											 ai, avi, bin, bmp, cdr, doc, docm, docx, eps, epub, fjsw, fla, flp, flv, gif, htm, html, ins, isf, iso, ist, jpeg, jpg, kes, kmz, m4a, m4v, mov, mp3, mp4, mpg, odt, oog, pdf, png, pps, ppsx, ppt, pptm, pptx, psd, rtf, swf, te, tif, tiff, txt, wav, wmv, wxr, xbk, xls, xlsm, xlsx</div>
+											 <?php
+							                                    echo $allowed_file_types; 
+						                                         ?></div>
 										</div>
 								</div>
                                                            <!-- 
@@ -115,8 +117,8 @@ $target_info = get_client_by_id($target_id);
 
 																filters : {
 																	mime_types : [
-																		{title : 'Files ', extensions :'ai,avi,bin,bmp,cdr,doc,docm,docx,eps,epub,fjsw,fla,flp,flv,gif,htm,html,ins,isf,iso,ist,jpeg,jpg,kes,kmz,m4a,m4v,mov,mp3,mp4,mpg,odt,oog,pdf,png,pps,ppsx,ppt,pptm,pptx,psd,rtf,swf,te,tif,tiff,txt,wav,wmv,wxr,xbk,xls,xlsm,xlsx'}
-																	],
+								                                                                           {title : 'Files ', extensions :'<?php echo $allowed_file_types; ?>'}
+							                                                                                ],
 																	// Maximum file size
 																	max_file_size : '2048mb'}
 															});

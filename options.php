@@ -548,7 +548,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
                     </div>
                     <div class="options_nested_note">
                       <p>
-                        <?php _e('Define here who will receive copies of this emails. These are sent as BCC so neither recipient will see the other addresses.','cftp_admin'); ?>
+                        <?php _e('Define here who will receive copies of these emails. These are sent as BCC so neither recipient will see the other addresses.','cftp_admin'); ?>
                       </p>
                     </div>
                     <div class="form-group">
@@ -581,7 +581,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
                       <div class="col-sm-8">
                         <input type="text" name="notifications_max_tries" id="notifications_max_tries" class="form-control" value="<?php echo NOTIFICATIONS_MAX_TRIES; ?>" />
                         <p class="field_note">
-                          <?php _e('Define how many times will the system attemp to send each notification.','cftp_admin'); ?>
+                          <?php _e('Define how many times will the system attempt to send each notification.','cftp_admin'); ?>
                         </p>
                       </div>
                     </div>
@@ -692,12 +692,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
                       <?php _e('Allowed file extensions','cftp_admin'); ?>
                     </h3>
                     <p>
-                      <?php _e('Be careful when changing this options. They could affect not only the system but the whole server it is installed on.','cftp_admin'); ?>
-                      <br />
-                      <strong>
-                      <?php _e('Important','cftp_admin'); ?>
-                      </strong>:
-                      <?php _e('Separate allowed file types with a comma.','cftp_admin'); ?>
+                      <?php _e('Be careful when changing these options. They could affect not only the system, but the whole server it is installed on.','cftp_admin'); ?>
                     </p>
                     <div class="form-group">
                       <label for="file_types_limit_to" class="col-sm-4 control-label">
@@ -717,6 +712,12 @@ $allowed_file_types = implode(',',$allowed_file_types);
                         </select>
                       </div>
                     </div>
+                    <p>
+                      <strong>
+                      <?php _e('Important','cftp_admin'); ?>
+                      </strong>:
+                      <?php _e('Separate allowed file types with a comma.','cftp_admin'); ?>
+                    </p>
                     <div class="form-group">
                       <input name="allowed_file_types" id="allowed_file_types" value="<?php echo $allowed_file_types; ?>" />
                     </div>
@@ -725,7 +726,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
                       <?php _e('Passwords','cftp_admin'); ?>
                     </h3>
                     <p>
-                      <?php _e('When setting up a password for an account, requiere at least:','cftp_admin'); ?>
+                      <?php _e('When setting up a password for an account, require at least:','cftp_admin'); ?>
                     </p>
                     <div class="form-group">
                       <div class="col-sm-8 col-sm-offset-4">
@@ -793,7 +794,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 			$doc_link_recaptcha = 'https://developers.google.com/recaptcha/docs/start';
 												?>
                         <a href="<?php echo $doc_link_recaptcha; ?>" class="external_link" target="_blank">
-                        <?php _e('How do I obtain this credentials?','cftp_admin'); ?>
+                        <?php _e('How do I obtain these credentials?','cftp_admin'); ?>
                         </a> 
 			</div>
                     </div>

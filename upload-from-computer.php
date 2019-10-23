@@ -52,7 +52,7 @@ $current_level = get_current_user_level();
 	?>
         <p>
           <?php
-				$msg = __('Click on "Add Files" to select all the files that you want to upload (compressed files not allowed); and then click an upload button. On the next step, you will be able to set a name and description for each uploaded file. Remember that the file may not be empty (0 kb) and the maximum allowed file size (in mb.) is ','cftp_admin') . ' <strong>'.MAX_FILESIZE.'</strong>';
+				$msg = __('Click on "Add Files" to select all the files that you want to upload, and then click an upload button. On the next step, you will be able to set a name and description for each uploaded file. Remember that the file may not be empty (0 kb) and the maximum allowed file size (in mb.) is ','cftp_admin') . ' <strong>'.MAX_FILESIZE.'</strong>';
                                 echo system_message('info', $msg);
 			?>
         </p>

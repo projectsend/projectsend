@@ -41,7 +41,6 @@ if(!empty($options_values)) {
 	 * forms currently).
 	 */
 	$allowed_file_types = $options_values['allowed_file_types'];
-        $orphan_deletion_settings = $options_values['orphan_deletion_settings'];
 
 	define('BASE_URI',$options_values['base_uri']);
 	define('BLOCKSIZE',256);
@@ -359,13 +358,13 @@ if(!empty($options_values)) {
 			define('RECAPTCHA_AVAILABLE', true);
 		}
 	}
-/*
+
 	if (isset($options_values['orphan_deletion_settings'])) {
 		define('ORPHAN_DELETION_SETTINGS', $options_values['orphan_deletion_settings']);
 	}else{
 		define('ORPHAN_DELETION_SETTINGS', '0');
 	}
-*/
+
 
 	/**
 	 * Set the default timezone based on the value of the Timezone select box

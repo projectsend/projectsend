@@ -201,10 +201,8 @@ if(!empty($options_values)) {
 	/**
 	 * For versions 528 and up
 	 */
-        $file_types_limit_to = $options_values['file_types_limit_to'];
-	//  if (isset($options_values['file_types_limit_to'])) {
-        if ($file_types_limit_to != 'noone') {
-	//	define('FILE_TYPES_LIMIT_TO',$options_values['file_types_limit_to']);
+	  if (isset($options_values['file_types_limit_to'])) {
+		define('FILE_TYPES_LIMIT_TO',$options_values['file_types_limit_to']);
 		define('PASS_REQ_UPPER',$options_values['pass_require_upper']);
 		define('PASS_REQ_LOWER',$options_values['pass_require_lower']);
 		define('PASS_REQ_NUMBER',$options_values['pass_require_number']);

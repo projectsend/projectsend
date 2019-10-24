@@ -116,11 +116,17 @@ $target_info = get_client_by_id($target_id);
 																dragdrop: true,
 
 																filters : {
-																	mime_types : [
-								                                                                           {title : 'Files ', extensions :'<?php echo $allowed_file_types; ?>'}
-							                                                                                ],
-																	// Maximum file size
-																	max_file_size : '2048mb'}
+																    max_file_size : '2048mb'
+																    <?php
+																	if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
+																    ?>
+																	,mime_types: [
+																	    {title : "Allowed files", extensions : "<?php echo ALLOWED_FILE_TYPES; ?>"}
+																	]
+																    <?php
+																	}
+																    ?>
+															       }
 															});
 
 

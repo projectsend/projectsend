@@ -25,7 +25,22 @@ if(!empty($auth)){
     else {
         $authorization = false;
     }
-} ?>
+} 
+
+
+/**
+ * Replace | with , to use the tags system when showing
+ * the allowed filetypes on the form. This value comes from
+ * site.options.php
+*/
+
+$allowed_file_types = str_replace('|',',',$allowed_file_types);
+/** Explode, sort, and implode the values to list them alphabetically */
+$allowed_file_types = explode(',',$allowed_file_types);
+sort($allowed_file_types);
+// $allowed_file_types = implode(',',$allowed_file_types);
+// var_dump($allowed_file_types);die();
+?>
 <div id="main">
     <div id="content" class="container">
         <div class="row">
@@ -35,8 +50,10 @@ if(!empty($auth)){
         $uploadOk = 1;
         $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
         if($duplicate_access) {
+
             if($_POST)
             {
+
                 $to = ($_REQUEST['to']) ? $_REQUEST['to'] : '';
                 $comments = ($_REQUEST['comments']) ? $_REQUEST['comments'] : '';
                 $auth = ($_REQUEST['auth']) ? $_REQUEST['auth'] : '';
@@ -58,7 +75,9 @@ if(!empty($auth)){
                     if(!empty($_FILES['userfiles']['name'][0]))
                     {
                         $zipInside = 0;
-                        $allowed =  array('ai','avi','bin','bmp','cdr','doc','docm','docx','eps','epub','fjsw','fla','flp','flv','gif','htm','html','ins','isf','iso','ist','jpeg','jpg','kes','kmz','m4a','m4v','mov','mp3','mp4','mpg','odt','oog','pdf','png','pps','ppsx','ppt','pptm','pptx','psd','rtf','swf','te','tif','tiff','txt','wav','wmv','wxr','xbk','xls','xlsm','xlsx');
+                        // $allowed =  array('ai','avi','bin','bmp','cdr','doc','docm','docx','eps','epub','fjsw','fla','flp','flv','gif','htm','html','ins','isf','iso','ist','jpeg','jpg','kes','kmz','m4a','m4v','mov','mp3','mp4','mpg','odt','oog','pdf','png','pps','ppsx','ppt','pptm','pptx','psd','rtf','swf','te','tif','tiff','txt','wav','wmv','wxr','xbk','xls','xlsm','xlsx');
+                        $allowed =  $allowed_file_types; 
+
 						$file_n = implode(", ",$_FILES['userfiles']['name']);
                         foreach ($_FILES['userfiles']['name'] as $filez) {
                         //  print_r($filez);
@@ -277,7 +296,12 @@ if(!empty($auth)){
               <?php _e('File','cftp_admin'); ?>
             </label>
             <div class="col-sm-6 A">
-                <?php $accept = '.ai, .avi, .bin, .bmp, .cdr, .doc, .docm, .docx, .eps, .epub, .fjsw, .fla, .flp, .flv, .gif, .htm, .html, .ins, .isf, .iso, .ist, .jpeg, .jpg, .kes, .kmz, .m4a, .m4v, .mov, .mp3, .mp4, .mpg, .odt, .oog, .pdf, .png, .pps, .ppsx, .ppt, .pptm, .pptx, .psd, .rtf, .swf, .te, .tif, .tiff, .txt, .wav, .wmv, .wxr, .xbk, .xls, .xlsm, .xlsx '; ?>
+                <?php 
+                    // $accept = '.ai, .avi, .bin, .bmp, .cdr, .doc, .docm, .docx, .eps, .epub, .fjsw, .fla, .flp, .flv, .gif, .htm, .html, .ins, .isf, .iso, .ist, .jpeg, .jpg, .kes, .kmz, .m4a, .m4v, .mov, .mp3, .mp4, .mpg, .odt, .oog, .pdf, .png, .pps, .ppsx, .ppt, .pptm, .pptx, .psd, .rtf, .swf, .te, .tif, .tiff, .txt, .wav, .wmv, .wxr, .xbk, .xls, .xlsm, .xlsx '; 
+                $allowed_file_types = preg_filter('/^/', ' .', $allowed_file_types);
+                $allowed_file_types = implode(',',$allowed_file_types);
+                $accept=$allowed_file_types;
+                ?>
               <input type="file" name="userfiles[]" id="fileone" accept ="<?php echo($accept); ?>" class="form-control userfiles required" value="" placeholder="upload file" style="padding:0;" />
               <div class="error_file_empty" ></div>
             </div>
@@ -303,9 +327,14 @@ if(!empty($auth)){
                                      File Extensions Allowed
                              </h4>
                         </div>
+
                         <div id="collapseOne" class="panel-collapse collapse">
                             <div class="panel-body">
-                                ai, avi, bin, bmp, cdr, doc, docm, docx, eps, epub, fjsw, fla, flp, flv, gif, htm, html, ins, isf, iso, ist, jpeg, jpg, kes, kmz, m4a, m4v, mov, mp3, mp4, mpg, odt, oog, pdf, png, pps, ppsx, ppt, pptm, pptx, psd, rtf, swf, te, tif, tiff, txt, wav, wmv, wxr, xbk, xls, xlsm, xlsx
+                                <?php
+                                    $allowed_file_types = str_replace('.',' ',$allowed_file_types);
+                                    echo $allowed_file_types;
+                                ?>
+                               <!--  ai, avi, bin, bmp, cdr, doc, docm, docx, eps, epub, fjsw, fla, flp, flv, gif, htm, html, ins, isf, iso, ist, jpeg, jpg, kes, kmz, m4a, m4v, mov, mp3, mp4, mpg, odt, oog, pdf, png, pps, ppsx, ppt, pptm, pptx, psd, rtf, swf, te, tif, tiff, txt, wav, wmv, wxr, xbk, xls, xlsm, xlsx -->
                                 </div>
                         </div>
                 </div>
@@ -337,7 +366,7 @@ $(document).on('click','.cc-add-file',function() {
     var $ccc = $(this).parent().prev('.A').find('.userfiles').val();
     if($ccc!='') {
         $(this).parent().prev('.A').find('.error_file_empty').html('');
-    $(".cc-file-container").append("<div class='form-group'><label for='to_email_request' class='col-sm-4 control-label'>File</label><div class='col-sm-6 A'><?php $accept = '.ai, .avi, .bin, .bmp, .cdr, .doc, .docm, .docx, .eps, .epub, .fjsw, .fla, .flp, .flv, .gif, .htm, .html, .ins, .isf, .iso, .ist, .jpeg, .jpg, .kes, .kmz, .m4a, .m4v, .mov, .mp3, .mp4, .mpg, .odt, .oog, .pdf, .png, .pps, .ppsx, .ppt, .pptm, .pptx, .psd, .rtf, .swf, .te, .tif, .tiff, .txt, .wav, .wmv, .wxr, .xbk, .xls, .xlsm, .xlsx '; ?><input type='file' name='userfiles[]' id='fileone' class='form-control required userfiles' value='' placeholder='upload file' /><div class='error_file_empty'></div></div><div class='col-sm-2'><span class='glyphicon glyphicon-plus cc-add-file' aria-hidden='true'></span><span class='glyphicon glyphicon-remove cc-remove-file' aria-hidden='true'></span></div></div>");
+    $(".cc-file-container").append("<div class='form-group'><label for='to_email_request' class='col-sm-4 control-label'>File</label><div class='col-sm-6 A'><?php //$accept = '.ai, .avi, .bin, .bmp, .cdr, .doc, .docm, .docx, .eps, .epub, .fjsw, .fla, .flp, .flv, .gif, .htm, .html, .ins, .isf, .iso, .ist, .jpeg, .jpg, .kes, .kmz, .m4a, .m4v, .mov, .mp3, .mp4, .mpg, .odt, .oog, .pdf, .png, .pps, .ppsx, .ppt, .pptm, .pptx, .psd, .rtf, .swf, .te, .tif, .tiff, .txt, .wav, .wmv, .wxr, .xbk, .xls, .xlsm, .xlsx '; ?><?php $accept = $accept; ?><input type='file' name='userfiles[]' id='fileone' class='form-control required userfiles' value='' placeholder='upload file' /><div class='error_file_empty'></div></div><div class='col-sm-2'><span class='glyphicon glyphicon-plus cc-add-file' aria-hidden='true'></span><span class='glyphicon glyphicon-remove cc-remove-file' aria-hidden='true'></span></div></div>");
     }
     else {
         $(this).parent().prev('.A').find('.error_file_empty').html("Please choose the file first");

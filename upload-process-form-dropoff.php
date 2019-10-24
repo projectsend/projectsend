@@ -423,7 +423,8 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 						<?php
 					}
 					/* Generate the table of files ready to be assigned to a client */
-					if(!empty($uploaded_files)) 
+					//  if(!empty($uploaded_files)) 
+					if(count($uploaded_files) > 0)
 					{
 					?>
 						<h3><?php _e('Files ready to upload','cftp_admin'); ?> </h3>

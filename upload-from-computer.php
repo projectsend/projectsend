@@ -123,12 +123,18 @@ $current_level = get_current_user_level();
 						rename : true,
 						dragdrop: true,
 
-						filters : {
-							mime_types : [
-								{title : 'Files ', extensions :'<?php echo $allowed_file_types; ?>'}
-							],
-							// Maximum file size
-							max_file_size : '2048mb'}
+                                                filters : {
+                                                    max_file_size : '2048mb'
+                                                    <?php
+                                                        if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
+                                                    ?>
+                                                        ,mime_types: [
+                                                            {title : "Allowed files", extensions : "<?php echo ALLOWED_FILE_TYPES; ?>"}
+                                                        ]
+                                                    <?php
+                                                        }
+                                                    ?>
+                                               }
 					});
 
 

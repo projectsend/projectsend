@@ -56,6 +56,9 @@ $current_level = get_current_user_level();
                                 echo system_message('info', $msg);
 			?>
         </p>
+	        <?php
+                    if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
+                ?>
 				  <div class="panel panel-default">
 				     <div class="panel-heading">
 				         <h4 class="panel-title"
@@ -71,6 +74,9 @@ $current_level = get_current_user_level();
 						?></div>
 				      </div>
 				  </div>
+                <?php
+                    }
+                ?>	      
                                   <!--
 					<div class="panel panel-default">
 						 <div class="panel-heading">

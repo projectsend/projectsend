@@ -48,6 +48,9 @@ $target_info = get_client_by_id($target_id);
 								echo system_message('info', $msg);
 								?>
 								</p>
+							<?php
+							    if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
+							?>							
 								<div class="panel panel-default">
 									 <div class="panel-heading">
 											 <h4 class="panel-title"
@@ -63,6 +66,9 @@ $target_info = get_client_by_id($target_id);
 						                                         ?></div>
 										</div>
 								</div>
+							<?php
+							    }
+							?>							
                                                            <!-- 
  								<div class="panel panel-default">
 									 <div class="panel-heading">

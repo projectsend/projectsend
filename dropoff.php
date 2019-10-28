@@ -127,7 +127,7 @@ $target_info = get_client_by_id($target_id);
 																	if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
 																    ?>
 																	,mime_types: [
-																	    {title : "Allowed files", extensions : "<?php echo ALLOWED_FILE_TYPES; ?>"}
+																	    {title : "Allowed files", extensions : "<?php echo $allowed_file_types; ?>"}
 																	]
 																    <?php
 																	}

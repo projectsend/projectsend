@@ -135,7 +135,7 @@ $current_level = get_current_user_level();
                                                         if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
                                                     ?>
                                                         ,mime_types: [
-                                                            {title : "Allowed files", extensions : "<?php echo ALLOWED_FILE_TYPES; ?>"}
+                                                            {title : "Allowed files", extensions : "<?php echo $allowed_file_types; ?>"}
                                                         ]
                                                     <?php
                                                         }

@@ -81,10 +81,12 @@ sort($allowed_file_types);
 						$file_n = implode(", ",$_FILES['userfiles']['name']);
                         foreach ($_FILES['userfiles']['name'] as $filez) {
                         //  print_r($filez);
-                            $ext = pathinfo($filez, PATHINFO_EXTENSION);
-                            if(!in_array($ext,$allowed) ) {
-                                $zipInside++;
-                            }
+			    if ($filez != '') {
+				$ext = pathinfo($filez, PATHINFO_EXTENSION);
+				if(!in_array($ext,$allowed) ) {
+			            $zipInside++;
+				}
+			    }
                         }
                         if($zipInside == 0){
                             $zip = new ZipArchive();

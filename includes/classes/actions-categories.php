@@ -32,13 +32,25 @@ class CategoriesActions
 		$this->description	= $arguments['description'];
 
 
+		$editing= $this->dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES . " WHERE parent=:parent AND name=:name");
+		$editing->bindParam(':parent', $this->parent_id, PDO::PARAM_INT);
+		$editing->bindParam(':name', $this->name, PDO::PARAM_INT);
+		$editing->execute();
+		$editing->setFetchMode(PDO::FETCH_ASSOC);
+		$this->duplicate=$editing->fetch();
+		if($this->duplicate==false){
+			if (!empty($this->name)) {
+				return 1;
+			}
+			else {
+				return 0;
+			}
+		}else{
+			return 2;
+		}
 
-		if (!empty($this->name)) {
-			return 1;
-		}
-		else {
-			return 0;
-		}
+
+
 	}
 
 

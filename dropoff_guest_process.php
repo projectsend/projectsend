@@ -242,21 +242,17 @@ sort($allowed_file_types);
                 }
                 else
                 {
-                    if(empty($to) && $to=='' && $_FILES['userfiles']['name'][0]=='') {
-                        echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> Please fill the Email ID.</div>";
-                        if($_FILES['userfiles']['name'][0]==''){
-                            echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> Please choose at least one file.</div>";
-                        }
+                    if(empty($to) && $to=='') {
+                        echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> Please fill the email ID.</div>";
                     }
                     else if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
                         echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> Please type valid email ID.</div>";
-                        echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> Please choose at least one file.</div>";
                     }
                     else {
-                        echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> Email ID is not exist in our record.</div>";
-                        if($_FILES['userfiles']['name'][0]==''){
-                            echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> Please choose at least one file.</div>";
-                        }
+                        echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> Email ID does not exist in our record.</div>";
+                    }
+                    if($_FILES['userfiles']['name'][0]=='') {
+                        echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> Please choose at least one file.</div>";
                     }
                 }
             }

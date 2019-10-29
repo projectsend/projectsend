@@ -242,14 +242,21 @@ sort($allowed_file_types);
                 }
                 else
                 {
-                    if(empty($to) && $to=='') {
+                    if(empty($to) && $to=='' && $_FILES['userfiles']['name'][0]=='') {
                         echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> Please fill the Email ID.</div>";
+                        if($_FILES['userfiles']['name'][0]==''){
+                            echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> Please choose at least one file.</div>";
+                        }
                     }
                     else if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
-                                echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> Please type valid email ID.</div>";
+                        echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> Please type valid email ID.</div>";
+                        echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> Please choose at least one file.</div>";
                     }
                     else {
                         echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> Email ID is not exist in our record.</div>";
+                        if($_FILES['userfiles']['name'][0]==''){
+                            echo "<div class='alert alert-warning alert-dismissable'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><strong>Failed!</strong> Please choose at least one file.</div>";
+                        }
                     }
                 }
             }
@@ -301,6 +308,7 @@ sort($allowed_file_types);
                 $allowed_file_types = preg_filter('/^/', ' .', $allowed_file_types);
                 $allowed_file_types = implode(',',$allowed_file_types);
                 $accept=$allowed_file_types;
+                $acceptfiletype=$accept;
                 ?>
               <input type="file" name="userfiles[]" id="fileone" accept ="<?php echo($accept); ?>" class="form-control userfiles required" value="" placeholder="upload file" style="padding:0;" />
               <div class="error_file_empty" ></div>
@@ -331,8 +339,8 @@ sort($allowed_file_types);
                         <div id="collapseOne" class="panel-collapse collapse">
                             <div class="panel-body">
                                 <?php
-                                    $allowed_file_types = str_replace('.',' ',$allowed_file_types);
-                                    echo $allowed_file_types;
+                                    $allowed_file_typesdisp = str_replace('.',' ',$allowed_file_types);
+                                    echo $allowed_file_typesdisp;
                                 ?>
                                <!--  ai, avi, bin, bmp, cdr, doc, docm, docx, eps, epub, fjsw, fla, flp, flv, gif, htm, html, ins, isf, iso, ist, jpeg, jpg, kes, kmz, m4a, m4v, mov, mp3, mp4, mpg, odt, oog, pdf, png, pps, ppsx, ppt, pptm, pptx, psd, rtf, swf, te, tif, tiff, txt, wav, wmv, wxr, xbk, xls, xlsm, xlsx -->
                                 </div>
@@ -366,7 +374,7 @@ $(document).on('click','.cc-add-file',function() {
     var $ccc = $(this).parent().prev('.A').find('.userfiles').val();
     if($ccc!='') {
         $(this).parent().prev('.A').find('.error_file_empty').html('');
-    $(".cc-file-container").append("<div class='form-group'><label for='to_email_request' class='col-sm-4 control-label'>File</label><div class='col-sm-6 A'><?php //$accept = '.ai, .avi, .bin, .bmp, .cdr, .doc, .docm, .docx, .eps, .epub, .fjsw, .fla, .flp, .flv, .gif, .htm, .html, .ins, .isf, .iso, .ist, .jpeg, .jpg, .kes, .kmz, .m4a, .m4v, .mov, .mp3, .mp4, .mpg, .odt, .oog, .pdf, .png, .pps, .ppsx, .ppt, .pptm, .pptx, .psd, .rtf, .swf, .te, .tif, .tiff, .txt, .wav, .wmv, .wxr, .xbk, .xls, .xlsm, .xlsx '; ?><?php $accept = $accept; ?><input type='file' name='userfiles[]' id='fileone' class='form-control required userfiles' value='' placeholder='upload file' /><div class='error_file_empty'></div></div><div class='col-sm-2'><span class='glyphicon glyphicon-plus cc-add-file' aria-hidden='true'></span><span class='glyphicon glyphicon-remove cc-remove-file' aria-hidden='true'></span></div></div>");
+    $(".cc-file-container").append("<div class='form-group'><label for='to_email_request' class='col-sm-4 control-label'>File</label><div class='col-sm-6 A'><?php //$accept = '.ai, .avi, .bin, .bmp, .cdr, .doc, .docm, .docx, .eps, .epub, .fjsw, .fla, .flp, .flv, .gif, .htm, .html, .ins, .isf, .iso, .ist, .jpeg, .jpg, .kes, .kmz, .m4a, .m4v, .mov, .mp3, .mp4, .mpg, .odt, .oog, .pdf, .png, .pps, .ppsx, .ppt, .pptm, .pptx, .psd, .rtf, .swf, .te, .tif, .tiff, .txt, .wav, .wmv, .wxr, .xbk, .xls, .xlsm, .xlsx '; ?><?php $accept = $acceptfiletype; ?><input type='file' name='userfiles[]' id='fileone' class='form-control required userfiles' value='' placeholder='upload file' /><div class='error_file_empty'></div></div><div class='col-sm-2'><span class='glyphicon glyphicon-plus cc-add-file' aria-hidden='true'></span><span class='glyphicon glyphicon-remove cc-remove-file' aria-hidden='true'></span></div></div>");
     }
     else {
         $(this).parent().prev('.A').find('.error_file_empty').html("Please choose the file first");

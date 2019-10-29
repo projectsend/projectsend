@@ -194,45 +194,47 @@ include('header.php');
 								$target_file = $target_dir;
 								$uploadOk = 1;
 								$target_file = $target_dir . "/".basename($_FILES["userfiles"]["name"]);
+
 								$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
 								$fl_name = $client_id.".".$imageFileType;
 								$target_file = $target_dir.$fl_name;
 								$uploadOk = 1;
 								// Check if image file is a actual image or fake image
 								$check = getimagesize($_FILES["userfiles"]["tmp_name"]);
-								if($check !== false) {
-							//		echo "File is an image - " . $check["mime"] . ".";
-									$uploadOk = 1;
-								} else {
-									echo "File is not an image.";
-									$uploadOk = 0;
-								}
-								// Allow certain file formats
-								if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-								&& $imageFileType != "gif" ) {
-										echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-										$uploadOk = 0;
-								}
-								// Check if $uploadOk is set to 0 by an error
-								if ($uploadOk == 0) {
-										echo "Sorry, your file was not uploaded.";
-								// if everything is ok, try to upload file
-								} else {
-									if (file_exists($target_file)) {
-											unlink($target_file);
-									}
-									if (move_uploaded_file($_FILES["userfiles"]["tmp_name"], $target_file)) {
-										if(!empty($fl_name)){
-											$statement = $dbh->query("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$client_id." AND name='profile_pic'");
-
-											$alternate_email_save = $dbh->query( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$client_id.",'profile_pic','".$fl_name."' ) ");
-										}
-
+								if($_FILES["userfiles"]["name"]!=''){
+									if($check !== false) {
+								//		echo "File is an image - " . $check["mime"] . ".";
+										$uploadOk = 1;
 									} else {
-								echo "Sorry, there was an error uploading your file.";
+										echo "File is not an image.";
+										$uploadOk = 0;
+									}
+									// Allow certain file formats
+									if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+									&& $imageFileType != "gif" ) {
+											echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+											$uploadOk = 0;
+									}
+									// Check if $uploadOk is set to 0 by an error
+									if ($uploadOk == 0) {
+											echo "Sorry, your file was not uploaded.";
+									// if everything is ok, try to upload file
+									} else {
+										if (file_exists($target_file)) {
+												unlink($target_file);
+										}
+										if (move_uploaded_file($_FILES["userfiles"]["tmp_name"], $target_file)) {
+											if(!empty($fl_name)){
+												$statement = $dbh->query("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$client_id." AND name='profile_pic'");
+
+												$alternate_email_save = $dbh->query( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$client_id.",'profile_pic','".$fl_name."' ) ");
+											}
+
+										} else {
+									echo "Sorry, there was an error uploading your file.";
+										}
 									}
 								}
-
 								}
 										/*For avatar upload end */
 

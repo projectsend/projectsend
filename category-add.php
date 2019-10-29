@@ -52,7 +52,7 @@ if ($_POST)
 					);
 	
 	$validate = $category_object->validate_category( $arguments );
-
+	
 	$redirect_status		= 'added';				
 	
 	
@@ -67,8 +67,10 @@ if ($_POST)
 			$msg = __('There was a problem savint to the database.','cftp_admin');
 			echo system_message('error', $msg);
 		}
-	}
-	else {
+	}else if( $validate==2 ){
+		$msg = __('Subcategory already exist.','cftp_admin');
+		echo system_message('warning', $msg);
+	}else {
 		$msg = __('Please complete all the required fields.','cftp_admin');
 		echo system_message('error', $msg);
 	}
@@ -133,7 +135,9 @@ if(isset($get_categories['arranged'])){
 						/**
 						 * If the form was submited with errors, show them here.
 						 */
-						$valid_me->list_errors();
+						if($validate!=2){
+							$valid_me->list_errors();
+						}
 					?>
 					
 					<?php

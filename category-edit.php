@@ -93,8 +93,30 @@ $("#process_category").submit(function() {
 			}
 		}
 		else {
-			$msg = __('Please complete all the required fields.','cftp_admin');
-			echo system_message('error', $msg);
+			if ( $validate == 2 ) {
+				$validateedit = $category_object->validate_categoryedit( $arguments );
+				if ( $validateedit == 1 ) {
+					$process = $category_object->save_category( $arguments );
+					if ( $process['query'] === 1 ) {
+						$redirect = true;
+						$status = $redirect_status;
+					}
+					else {
+						$msg = __('There was a problem savint to the database.','cftp_admin');
+						echo system_message('error', $msg);
+					}
+				}else{
+					if($arguments['parent']==0){
+						$msg = __('Category already exist.','cftp_admin');
+					}else{
+						$msg = __('Subcategory already exist.','cftp_admin');
+					}
+					echo system_message('warning', $msg);
+				}
+			}else{
+				$msg = __('Please complete all the required fields.','cftp_admin');
+				echo system_message('error', $msg);
+			}
 		}
 
 		/** Redirect so the actions are reflected immediatly */

@@ -55,7 +55,7 @@ if ($_POST)
 	
 	$redirect_status		= 'added';				
 	
-	
+
 	if ( $validate === 1 ) {
 		$process = $category_object->save_category( $arguments );
 		//var_dump($process);exit;
@@ -68,7 +68,11 @@ if ($_POST)
 			echo system_message('error', $msg);
 		}
 	}else if( $validate==2 ){
-		$msg = __('Subcategory already exist.','cftp_admin');
+		if($arguments['parent']==0){
+			$msg = __('Category already exist.','cftp_admin');
+		}else{
+			$msg = __('Subcategory already exist.','cftp_admin');
+		}
 		echo system_message('warning', $msg);
 	}else {
 		$msg = __('Please complete all the required fields.','cftp_admin');

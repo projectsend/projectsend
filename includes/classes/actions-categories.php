@@ -30,10 +30,12 @@ class CategoriesActions
 		$this->name			= $arguments['name'];
 		$this->parent_id	= $arguments['parent'];
 		$this->description	= $arguments['description'];
-
-
-		$editing= $this->dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES . " WHERE parent=:parent AND name=:name");
-		$editing->bindParam(':parent', $this->parent_id, PDO::PARAM_INT);
+		if($this->parent_id==0){
+			$editing= $this->dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES . " WHERE name=:name");
+		}else{
+			$editing= $this->dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES . " WHERE parent=:parent AND name=:name");
+			$editing->bindParam(':parent', $this->parent_id, PDO::PARAM_INT);
+		}
 		$editing->bindParam(':name', $this->name, PDO::PARAM_INT);
 		$editing->execute();
 		$editing->setFetchMode(PDO::FETCH_ASSOC);
@@ -176,6 +178,49 @@ class CategoriesActions
 			}
 		}
 	}
+
+	/**
+	 * Validate the information from the category edit form.
+	 */
+	function validate_categoryedit($arguments)
+	{
+		require(ROOT_DIR.'/includes/vars.php');
+
+		//global $valid_me;
+		$this->state = array();
+
+		$this->name			= $arguments['name'];
+		$this->parent_id	= $arguments['parent'];
+		$this->description	= $arguments['description'];
+		$this->id	= $arguments['id'];
+		// var_dump($arguments);die();
+		if($this->parent_id==0){
+			$editing= $this->dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES . " WHERE name=:name AND id!=:id");
+			$editing->bindParam(':id', $this->id, PDO::PARAM_INT);
+		}else{
+			$editing= $this->dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES . " WHERE parent=:parent AND name=:name AND id!=:id");
+			$editing->bindParam(':parent', $this->parent_id, PDO::PARAM_INT);
+			$editing->bindParam(':id', $this->id, PDO::PARAM_INT);
+		}
+		$editing->bindParam(':name', $this->name, PDO::PARAM_INT);
+		$editing->execute();
+		$editing->setFetchMode(PDO::FETCH_ASSOC);
+		$this->duplicate=$editing->fetch();
+		if($this->duplicate==false){
+			if (!empty($this->name)) {
+				return 1;
+			}
+			else {
+				return 0;
+			}
+		}else{
+			return 2;
+		}
+
+
+
+	}
+
 
 }
 

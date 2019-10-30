@@ -327,7 +327,8 @@ function timestamp_check_for_orphan_file_deletion(){
 	$diff = strtotime($next_date_orphans_delete) - strtotime($today_for_delete);
 	//echo "<br>".$diff;
 	if($diff <= '0'){
-		echo delete_orphan_files();
+		// echo delete_orphan_files();
+		delete_orphan_files();
 	}
 	//exit();
 	if(ORPHAN_DELETION_SETTINGS =='0'){

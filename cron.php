@@ -3,7 +3,8 @@
 
 //exit;
 	require_once('sys.includes.php');
-	echo timestamp_check_for_orphan_file_deletion();
+	// echo timestamp_check_for_orphan_file_deletion();
+	timestamp_check_for_orphan_file_deletion();
 	$work_folder = UPLOADED_FILES_FOLDER;
 	/** Count clients to show an error message, or the form */
 	$statement		= $dbh->query("SELECT id FROM " . TABLE_USERS . " WHERE level = '0'");

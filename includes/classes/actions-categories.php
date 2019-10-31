@@ -30,8 +30,9 @@ class CategoriesActions
 		$this->name			= $arguments['name'];
 		$this->parent_id	= $arguments['parent'];
 		$this->description	= $arguments['description'];
+		$this->parent_status=NULL;
 		if($this->parent_id==0){
-			$editing= $this->dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES . " WHERE name=:name");
+			$editing= $this->dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES . " WHERE parent IS NULL AND name=:name");
 		}else{
 			$editing= $this->dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES . " WHERE parent=:parent AND name=:name");
 			$editing->bindParam(':parent', $this->parent_id, PDO::PARAM_INT);

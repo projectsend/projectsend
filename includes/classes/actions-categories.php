@@ -222,6 +222,35 @@ class CategoriesActions
 
 	}
 
+		/**
+	 * Delete an existing category.check_category
+	 */
+	function check_category($cat_id) {
+		$this->check_level = array(9,8,7);
+		if (isset($cat_id)) {
+				$siblings='';
+				$sep=',';
+			/** Do a permissions check */
+				$checking= $this->dbh->prepare("SELECT name FROM " . TABLE_CATEGORIES . " WHERE name IN(SELECT name FROM " . TABLE_CATEGORIES . " WHERE parent =:id) AND parent IS NULL");
+				$checking->bindParam(':id', $cat_id, PDO::PARAM_INT);
+				$checking->execute();
+				$checking->setFetchMode(PDO::FETCH_ASSOC);
+				$this->duplicate=$checking->fetchAll();
+				if($this->duplicate==false){
+					return array('status'=>true,'msg'=>'The selected categories were deleted.');
+				}else{
+					$len = count($this->duplicate);
+					foreach ($this->duplicate as  $key => $val ) {
+						$siblings.=$val['name'];
+						if ($key != $len - 1) {
+							$siblings.=$sep;
+						}
+					}
+					return array('status'=>false,'msg'=>'"'.$siblings.'" Already Exist.');
+				}
+		}
+	}
+
 
 }
 

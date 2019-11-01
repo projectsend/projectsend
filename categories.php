@@ -129,10 +129,16 @@ include('header.php');
 				case 'delete':
 					foreach ($selected_categories as $category) {
 						$this_category		= new CategoriesActions();
-						$delete_category	= $this_category->delete_category($category);
+						$check_category	= $this_category->check_category($category);
+						if($check_category['status']==true){
+							$delete_category	= $this_category->delete_category($category);
+							$msg = __($check_category['msg'],'cftp_admin');
+							echo system_message('ok',$msg);
+						}else{
+							$msg = __($check_category['msg'],'cftp_admin');
+							echo system_message('error',$msg);
+						}
 					}
-					$msg = __('The selected categories were deleted.','cftp_admin');
-					echo system_message('ok',$msg);
 					$log_action_number = 36;
 					break;
 			}

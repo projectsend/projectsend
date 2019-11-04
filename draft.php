@@ -571,7 +571,7 @@ include('header.php');
             </div>
             <div class="clear"></div>
             <?php
-                if ((!$draft_count) && (!$count)) {
+                if (!$draft_count) {
                     if (isset($no_results_error)) {
                         switch ($no_results_error) {
                             case 'search':

@@ -458,7 +458,7 @@ include('header.php');
       $x=explode("_", $opfile['name']);
       $cuid_arr=explode(".", $opfile['name']);
       $or_arr = array_reverse(preg_split('/(_)/',$cuid_arr[0],-1, PREG_SPLIT_NO_EMPTY));
-      if($or_arr[0]==CURRENT_USER_ID){
+      if($or_arr[1]==CURRENT_USER_ID){
         $orphanCount++;
       }
     }

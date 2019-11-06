@@ -309,6 +309,10 @@ include('header.php');
 			$current_date = date("Y-m-d");
             $params = array();
             $fq = "SELECT * FROM tbl_files AS tf LEFT JOIN ".TABLE_FILES_RELATIONS." AS tfr ON tf.id = tfr.file_id";
+
+            /** Check expires status for no file message */
+               $conditions[] = "tf.expires = '0' || tf.expires = '1' && tf.expiry_date >'".$current_date."'";
+
             $conditions[] = "tfr.hide_sent = '0' ";
             if ( isset($search_on) || !empty($gotten_files) ) {
                 $conditions[] = "FIND_IN_SET(id, :files)";
@@ -382,6 +386,7 @@ include('header.php');
             $fq .= "ORDER BY tfr.timestamp DESC";
             $sql_files = $dbh->prepare($fq);
             $sql_files->execute();
+            // var_dump($sql_files);die();
 			$count = $sql_files->rowCount();
 			/*$sql_files->setFetchMode(PDO::FETCH_ASSOC);
 			$arr = $sql_files->fetchAll(); */

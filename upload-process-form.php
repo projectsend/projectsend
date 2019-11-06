@@ -705,7 +705,8 @@ while( $row = $statement->fetch() ) {
 	 * assigned files will be displayed.
 
 	 */
-	if(!empty($upload_finish)) {
+	// if(!empty($upload_finish)) {
+	if(sizeof($upload_finish) > 0) {
 
 ?>
 		<h3>

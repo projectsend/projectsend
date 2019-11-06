@@ -360,7 +360,7 @@ if(!empty($options_values)) {
 	if (isset($options_values['orphan_deletion_settings'])) {
 		define('ORPHAN_DELETION_SETTINGS', $options_values['orphan_deletion_settings']);
 	}else{
-		define('ORPHAN_DELETION_SETTINGS', '0');
+		define('ORPHAN_DELETION_SETTINGS', 'm');
 	}
 
 

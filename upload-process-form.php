@@ -705,9 +705,7 @@ while( $row = $statement->fetch() ) {
 	 * assigned files will be displayed.
 
 	 */
-	// if(!empty($upload_finish)) {
-	if(sizeof($upload_finish) > 0) {
-
+	if(!empty($upload_finish)) {
 ?>
 		<h3>
 		  <?php _e('Files uploaded correctly','cftp_admin'); ?>
@@ -817,6 +815,7 @@ while( $row = $statement->fetch() ) {
 	if(!empty($uploaded_files)) {
 
 ?>
+<div class="readydiv">
 <h3>
   <?php _e('Files ready to upload','cftp_admin'); ?>
 </h3>
@@ -904,7 +903,7 @@ while( $row = $statement->fetch() ) {
 			?>
 
 
-    <div class="container-fluid">
+    <div class="container-fluid readyfiles">
     <?php
 
 					$i = 1;
@@ -1365,6 +1364,8 @@ while( $row = $statement->fetch() ) {
 				</button>
 			  </div>
 		</form>
+</div>
+			
 <?php
 
 	}

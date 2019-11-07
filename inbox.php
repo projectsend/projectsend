@@ -433,12 +433,12 @@ cursor: pointer;
 			$params = array();
 			$fq = "SELECT tbl_files.* ,tbl_files_relations.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id ";
 
-			 /** Check expires status for no file message */
-			 	$current_date = date("Y-m-d");
-            	$conditions[] = "tbl_files.expires = '0' || tbl_files.expires = '1' && tbl_files.expiry_date >'".$current_date."'";
 
-			 $conditions[] = "tbl_files_relations.client_id =".CURRENT_USER_ID;
-			 $conditions[] = "tbl_files_relations.hide_inbox = '0' ";
+			$conditions[] = "tbl_files_relations.client_id =".CURRENT_USER_ID;
+			$conditions[] = "tbl_files_relations.hide_inbox = '0' ";
+			/** Check expires status for no file message */
+		 	$current_date = date("Y-m-d");
+        	$conditions[] = "tbl_files.expires = '0' || tbl_files.expires = '1' && tbl_files.expiry_date >'".$current_date."'";
 			if ( isset($search_on) && !empty($gotten_files) ) {
 				$conditions[] = "FIND_IN_SET(id, :files)";
 				$params[':files'] = $gotten_files;

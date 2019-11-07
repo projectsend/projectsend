@@ -815,7 +815,7 @@ while( $row = $statement->fetch() ) {
 	if(!empty($uploaded_files)) {
 
 ?>
-<div class="readydiv">
+<div id="readydiv">
 <h3>
   <?php _e('Files ready to upload','cftp_admin'); ?>
 </h3>
@@ -903,7 +903,7 @@ while( $row = $statement->fetch() ) {
 			?>
 
 
-    <div class="container-fluid readyfiles">
+    <div id="readyfiles" class="container-fluid">
     <?php
 
 					$i = 1;
@@ -1707,6 +1707,12 @@ $(document).ready(function() {
 					});
 });
 
+$(document).ready(function() {
+    var readyfiles = $("#readyfiles").innerHTML.trim();
+    if (readyfiles == "") {
+        $("#readydiv").hide();
+    }
+});
 
 function validateUsers() {
 	var invalid_invites = 0;

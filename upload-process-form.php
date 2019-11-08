@@ -1708,7 +1708,7 @@ $(document).ready(function() {
 });
 
 $(document).ready(function() {
-    var readyfiles = $("#readyfiles").innerHTML.trim();
+    var readyfiles = $("#readyfiles").html().trim();
     if (readyfiles == "") {
         $("#readydiv").hide();
     }

@@ -257,7 +257,6 @@ include('header.php');
 									// print_r($_FILES);
 							if($_FILES){
 									
-
 									if (!file_exists($target_dir)) {
 											mkdir($target_dir, 0777, true);
 									}
@@ -301,16 +300,19 @@ include('header.php');
 												$statement = $dbh->prepare("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$user_id_mic." AND name='profile_pic'");
 										    $statement->execute();
 												// echo("DONE");
+
 												$alternate_email_save = $dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$user_id_mic.",'profile_pic','".$fl_name."' ) ");
-												$alternate_email_save->execute();
+												$prochange=$alternate_email_save->execute();
+												if($prochange==true){
+													header("Location:".SITE_URI."users-edit.php?id=".$edit_arguments['id']);
+												}
 												// echo("DONE");
 											}
 
 										} else {
-									echo "Sorry, there was an error uploading your file.";
+											echo "Sorry, there was an error uploading your file.";
 										}
 									}
-
 								}
 										//	exit;
 										/*For avatar upload end */

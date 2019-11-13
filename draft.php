@@ -368,7 +368,10 @@ include('header.php');
             $draft_count = $sql_files_draft->rowCount();
 
             $current_date = date("Y-m-d");
-            $q_sent_file = "SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME ."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')  AND tbl_files.future_send_date >='".$current_date."' AND  tbl_files.public_allow=0 ORDER BY tbl_files.timestamp DESC";
+            $q_sent_file = "SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME ."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')  AND tbl_files.future_send_date >='".$current_date."' AND tbl_files.expires = '0' || tbl_files.expires = '1' && tbl_files.expiry_date >'".$current_date."' AND  tbl_files.public_allow=0 ORDER BY tbl_files.timestamp DESC";
+
+            // $conditions[] = "tbl_files.expires = '0' || tbl_files.expires = '1' && tbl_files.expiry_date >'".$current_date."'";
+
             $sql_files = $dbh->prepare($q_sent_file);
             $sql_files->execute();
             $count = $sql_files->rowCount();

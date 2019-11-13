@@ -634,6 +634,10 @@ include('header.php');
 
                 $conditions[] = "DATE(tbl_files.future_send_date) > DATE(NOW()) AND prev_assign != '2' ";
 
+                $current_date = date("Y-m-d");
+                $conditions[] = "tbl_files.expires = '0' || tbl_files.expires = '1' && tbl_files.expiry_date >'".$current_date."'";
+
+
                 $params[':uploader'] = $global_user;
 
             }

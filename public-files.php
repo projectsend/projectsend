@@ -325,7 +325,8 @@ include('header.php');
 				$conditions[] = "tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations)";
 				$conditions[] = "tbl_files.future_send_date <='".$current_date."'";
 				$conditions[] = "tbl_files.public_allow=1";
-
+                
+                $conditions[] = "tbl_files.expires = '0' || tbl_files.expires = '1' && tbl_files.expiry_date >'".$current_date."'";
             }
             
             /**

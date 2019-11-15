@@ -601,11 +601,8 @@ include('header.php');
              */
 
             $params = array();
-
             $fq = "SELECT * FROM " . TABLE_FILES;
-
-    
-
+            // $fq = "SELECT tbl_files_relations.* FROM tbl_files LEFT JOIN tbl_files_relations ON tbl_files.id = tbl_files_relations.file_id";
             if ( isset($search_on) && !empty($gotten_files) ) {
 
                 $conditions[] = "FIND_IN_SET(id, :files)";
@@ -633,9 +630,8 @@ include('header.php');
                 $no_results_error = 'account_level';
 
                 $conditions[] = "DATE(tbl_files.future_send_date) > DATE(NOW()) AND prev_assign != '2' ";
-
-                $current_date = date("Y-m-d");
-                $conditions[] = "tbl_files.expires = '0' || tbl_files.expires = '1' && tbl_files.expiry_date >'".$current_date."'";
+                // $current_date = date("Y-m-d");
+                // $conditions[] = "tbl_files.expires = '0' || tbl_files.expires = '1' && tbl_files.expiry_date >'".$current_date."'";
 
 
                 $params[':uploader'] = $global_user;
@@ -677,7 +673,6 @@ include('header.php');
                 $statement->setFetchMode(PDO::FETCH_ASSOC);
 
                 $file_data = $statement->fetchAll();
-                
                 if(!empty($file_data)) {
                     foreach ( $file_data as $data) {
                         $files_id_by_cat[] = $data['file_id'];

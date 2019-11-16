@@ -56,7 +56,7 @@ else {
 	require_once INCLUDES_DIR . DS . 'core.update.silent.php';
 }
 
-if ( !isset( $body_class ) ) { $body_class = ''; }
+if ( !isset( $body_class ) ) { $body_class = array(); }
 ?>
 <!doctype html>
 <html lang="<?php echo $header_vars['html_lang']; ?>">

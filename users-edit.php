@@ -1,4 +1,5 @@
 <?php
+	
 /**
  * Show the form to edit a system user.
  *
@@ -14,6 +15,7 @@ $active_nav = 'users';
 $edit_user = new UserActions();
 $target_dir = UPLOADED_FILES_FOLDER.'../../img/avatars/';
 /** Check if the id parameter is on the URI. */
+
 if (isset($_GET['id'])) {
 	$user_id = $_GET['id'];
 	$user_id_mic = $_GET['id'];
@@ -221,6 +223,10 @@ include('header.php');
       
       <!------------------------------------------------------------------------------------>
           <?php
+	          		if(isset($_GET['fid'])){
+						$msg = __('User edited correctly.','cftp_admin');
+						echo system_message('ok',$msg);
+					}
 						if (isset($edit_response)) {
 							/**
 							 * Get the process state and show the corresponding ok or error message.
@@ -254,8 +260,8 @@ include('header.php');
 									}
 
 									/*For avatar upload start */
-									// print_r($_FILES);
-							if($_FILES){
+								if($_FILES){
+								// echo 'updated';die();
 									
 									if (!file_exists($target_dir)) {
 											mkdir($target_dir, 0777, true);
@@ -304,7 +310,7 @@ include('header.php');
 												$alternate_email_save = $dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$user_id_mic.",'profile_pic','".$fl_name."' ) ");
 												$prochange=$alternate_email_save->execute();
 												if($prochange==true){
-													header("Location:".SITE_URI."users-edit.php?id=".$edit_arguments['id']);
+													header("Location:".SITE_URI."users-edit.php?id=".$edit_arguments['id']."&fid=1");
 												}
 												// echo("DONE");
 											}

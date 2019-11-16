@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /assets/
+Disallow: /emails/
+Disallow: /includes/
+Disallow: /install/
+Disallow: /lang/
+Disallow: /sociallogin/
+Disallow: /templates/
+Disallow: /upload/
+Disallow: /vendor/

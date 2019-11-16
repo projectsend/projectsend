@@ -1,13 +1,13 @@
 {
-	"name": "projectsend/projectsend",
-	"description": "ProjectSend is an open source, clients-oriented, private file sharing web application.",
+	"name": "projectsend/projectsend-legacy",
+	"description": "ProjectSend is an open source, clients-oriented, private file sharing web application. Legacy is the repository for patches and maintenance of the pre-1.0 version, with version number rxxxx",
 	"type": "project",
 	"license": "GPL-3.0-or-later",
 	"homepage": "https://www.projectsend.org/",
 	"support": {
 			"email": "contact@projectsend.org",
-			"issues": "https://github.com/projectsend/ProjectSend/issues",
-			"source": "https://github.com/projectsend/ProjectSend/"
+			"issues": "https://github.com/projectsend/projectsend-legacy/issues",
+			"source": "https://github.com/projectsend/projectsend-legacy/"
 	},
 	"config": {
 		"preferred-install": "dist"
@@ -15,30 +15,22 @@
 	"prefer-stable": true,
 	"autoload": {
 		"psr-4": {
-			"ProjectSend\\": "src"
+			"ProjectSend\\": "includes"
 		},
 		"files": [
 		]
 	},
 	"require": {
-     	"php": ">=5.6",
-        "awurth/slim-helpers": "^1.0",
+     	"php": ">=7.0",
         "bainternet/php-hooks": "^1.0",
         "claviska/simpleimage": "^3.3",
-        "ckeditor/ckeditor": "dev-basic/4.9.x",
         "enshrined/svg-sanitize": "^0.8.2",
-        "hybridauth/hybridauth": "^2.11",
         "league/oauth2-google": "^2.2",
-        "monolog/monolog": "^1.23",
         "moxiecode/plupload": "3.1.*",
         "paragonie/random_compat": "^2.0",
-        "phpmailer/phpmailer": "~5.2",
-        "rakit/validation": "^0.17.1",
-        "slim/csrf": "^0.8.0",
-        "slim/flash": "^0.2.0",
-        "slim/slim": "^3.10",
-        "slim/twig-view": "^2.4",
-        "symfony/polyfill-mbstring": "^1.8",
-		"twig/extensions": "^1.5"
+        "phpmailer/phpmailer": "~6.0",
+		"tamtamchik/simple-flash": "^1.2",
+		"cartalyst/sentinel": "^2.0",
+		"hybridauth/hybridauth": "^3.0"
 	}
 }

@@ -1,3 +1,14 @@
+/*
+	PinBoxes Template for ProjectSend
+	Version 1.1
+*/
+
+/*
+Copyright (c) 2011, Yahoo! Inc. All rights reserved.
+Code licensed under the BSD License:
+http://developer.yahoo.com/yui/license.html
+version: 2.9.0
+*/
 html{color:#000;background:#FFF}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,select,p,blockquote,th,td{margin:0;padding:0}table{border-collapse:collapse;border-spacing:0}fieldset,img{border:0}address,button,caption,cite,code,dfn,em,input,optgroup,option,select,strong,textarea,th,var{font:inherit}del,ins{text-decoration:none}li{list-style:none}caption,th{text-align:left}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}q:before,q:after{content:''}abbr,acronym{border:0;font-variant:normal}sup{vertical-align:baseline}sub{vertical-align:baseline}legend{color:#000}
 
 $highlight 			: #de3c4b;
@@ -27,15 +38,15 @@ $border_color 		: #eee;
 	line-height: 0;
 	height: 0;
 }
-
+ 
 .clearfix {
 	display: inline-block;
 }
-
+ 
 html[xmlns] .clearfix {
 	display: block;
 }
-
+ 
 * html .clearfix {
 	height: 1%;
 }
@@ -81,13 +92,7 @@ body
 	#branding {
 		margin:0 auto;
 		text-align:center;
-
-      img, svg {
-         width:100%;
-         height:auto;
-         max-width:400px;
-      }
-    }
+	}
 }
 
 p.welcome {
@@ -107,12 +112,12 @@ p.welcome {
 	#menu ul {
 		list-style:none;
 		text-align:right;
-
+	
 		li {
 			display:inline-block;
 			zoom:1;
 			margin-right: -4px;
-
+			
 			a {
 				display:block;
 				padding:15px 20px;
@@ -179,7 +184,7 @@ p.welcome {
 
 		@include border-radius(6px);
 	}
-
+	
 	.photo:hover {
 		margin-top:0;
 		border-top:8px solid $highlight_hover;
@@ -208,7 +213,7 @@ p.welcome {
 		-moz-transition: all 0.5s ease-out;
 		-webkit-transition: all 0.5s ease-out;
 	}
-
+	
 		.photo_list .photo:hover .ext_prev a {
 			text-decoration:none;
 			background:$highlight_hover;
@@ -325,6 +330,10 @@ p.welcome {
 	border:1px solid $highlight_hover !important;
 }
 
+.button:hover {
+}
+
+
 .categories_trigger {
 	position:relative;
 }
@@ -339,20 +348,20 @@ p.welcome {
 	min-width:200px;
 	z-index:999999;
 	border:1px solid $border_color;
-
+	
 	li {
 		display:block;
-
+	
 		a {
 			font-size:.9em;
 			padding:5px 15px;
 		}
 	}
-
+	
 	.filter_all_files {
 		border-bottom:1px solid $border_color;
 		text-transform:uppercase;
-
+		
 		a {
 			color:$highlight;
 		}

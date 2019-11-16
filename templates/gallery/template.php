@@ -15,20 +15,26 @@ $ld = 'cftp_template_gallery'; // specify the language domain for this template
 
 define('TEMPLATE_RESULTS_PER_PAGE', -1);
 
-include_once(TEMPLATES_DIR.'/common.php'); // include the required functions for every template
+if ( !empty( $_GET['category'] ) ) {
+	$category_filter = $_GET['category'];
+}
 
-$page_title = __('Gallery','cftp_template_gallery');
+include_once ROOT_DIR.'/templates/common.php'; // include the required functions for every template
+
+$window_title = __('Gallery','cftp_template_gallery');
 
 /**
  * Filter files by type, only save images.
 */
+$img_formats = array('gif','jpg','pjpeg','jpeg','png');
 foreach ($my_files as $file) {
-	if ( file_is_image( $file['dir'] ) ) {
+	$pathinfo = pathinfo($file['url']);
+	$extension = strtolower($pathinfo['extension']);
+	if (in_array($extension,$img_formats)) {
 		$img_files[] = $file;
 	}
 }
-
-$count = count($img_files);
+$count = (isset($img_files)) ? count($img_files) : 0;
 
 define('TEMPLATE_THUMBNAILS_WIDTH', '280');
 define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
@@ -39,7 +45,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title><?php echo html_output( $client_info['name'].' | '.$page_title . ' &raquo; ' . SYSTEM_NAME ); ?></title>
+	<title><?php echo html_output( $client_info['name'].' | '.$window_title . ' &raquo; ' . SYSTEM_NAME ); ?></title>
 	<?php meta_favicon(); ?>
 
 	<link rel="stylesheet" href="<?php echo $this_template; ?>/font-awesome-4.6.3/css/font-awesome.min.css">
@@ -65,16 +71,16 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 						<li><a href="<?php echo BASE_URI; ?>upload-from-computer.php" target="_self" id="upload"><i class="fa fa-cloud-upload" aria-hidden="true"></i> <?php _e('Upload files', 'cftp_admin'); ?></a></li>
 					</ul>
 				</nav>
-
+				
 				<?php
 					if ( !empty( $get_categories['categories'] ) ) {
 						$url_client_id	= ( !empty($_GET['client'] ) && CURRENT_USER_LEVEL != '0') ? $_GET['client'] : null;
-						$link_template	= CLIENT_VIEW_FILE_LIST_URI;
+						$link_template	= CLIENT_VIEW_FILE_LIST_URL;
 				?>
 						<h4><?php _e('Filter by category', 'cftp_admin'); ?></h4>
 						<nav class="categories">
 							<ul>
-								<li class="filter_all_files"><a href="<?php echo CLIENT_VIEW_FILE_LIST_URI; if ( !empty( $url_client_id ) ) { echo '?client=' . $url_client_id; }; ?>"><?php  _e('All files', 'pinboxes_template'); ?></a></li>
+								<li class="filter_all_files"><a href="<?php echo CLIENT_VIEW_FILE_LIST_URL; if ( !empty( $url_client_id ) ) { echo '?client=' . $url_client_id; }; ?>"><?php  _e('All files', 'pinboxes_template'); ?></a></li>
 								<?php
 									foreach ( $get_categories['categories'] as $category ) {
 										$link_data	= array(
@@ -86,7 +92,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 										<li><a href="<?php echo $link_template . '?' . $link_query; ?>"><?php echo $category['name']; ?></a></li>
 								<?php
 									}
-								?>
+								?>							
 							</ul>
 						</nav>
 				<?php
@@ -102,9 +108,9 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 				</div>
 			<?php } ?>
 		</header>
-
+			
 		<div id="content">
-
+		
 			<?php
 				if (!$count) {
 					_e('There are no files.','cftp_template_gallery');
@@ -127,10 +133,8 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 										else {
 									?>
 										<div class="img_prev">
-											<a href="<?php echo $download_link; ?>" target="_blank">
-												<?php
-													$thumbnail = make_thumbnail( UPLOADED_FILES_DIR.DS.$this_file['url'], null, TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT );
-												?>
+                                            <a href="<?php echo $download_link; ?>" target="_blank">
+                                                <?php $thumbnail = make_thumbnail( UPLOADED_FILES_DIR.DS.$this_file['url'], null, TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT ); ?>
 												<img src="<?php echo $thumbnail['thumbnail']['url']; ?>" class="thumbnail" alt="<?php echo htmlentities($this_file['name']); ?>" />
 											</a>
 										</div>

@@ -1,42 +1,43 @@
 {
-	"name": "projectsend",
-	"description": "ProjectSend is an open source, clients-oriented, private file sharing web application.",
-	"repository": "https://github.com/projectsend/projectsend",
-	"author": "Ignacio Nelson <info@subwaydesign.com.ar>",
-	"version": "1.0.0",
-	"license": "GPL-3.0-or-later",
-	"main": "index.js",
-	"scripts": {
-		"build_own_assets": "grunt",
-		"replace_constants": "grunt php_constants",
-		"prepare_dist": "grunt prepare_dist"
-	},
-	"dependencies": {
-        "axios": "0.18.0",
-        "jquery": "3.3.1",
-        "jquery-migrate": "3.0.1",
+    "name": "projectsend-legacy",
+    "description": "ProjectSend is an open source, clients-oriented, private file sharing web application. Legacy is the repository for patches and maintenance of the pre-1.0 version, with version number rxxxx",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/projectsend/projectsend-legacy.git"
+    },
+    "author": "Ignacio Nelson <info@subwaydesign.com.ar>",
+    "license": "GPL-3.0-or-later",
+    "dependencies": {
+        "@yaireo/tagify": "2.9.1",
         "bootstrap": "3.3.7",
         "bootstrap-datepicker": "1.8.0",
         "bootstrap-toggle": "2.2.2",
         "chosen-js": "1.8.7",
         "font-awesome": "4.7.0",
         "footable": "2.0.6",
-        "chart.js": "2.7.3",
+        "jquery": "^3.4.1",
+        "jquery-migrate": "3.0.1",
+        "jquery-validation": "^1.19.1",
         "js-cookie": "2.2.0",
         "node-jen": "1.1.0",
-        "@yaireo/tagify": "2.9.1",
         "sprintf-js": "1.1.2"
-	},
-	"devDependencies": {
-		"grunt": "^1.0.2",
-		"grunt-contrib-compress": "^1.4.3",
-		"grunt-contrib-concat": "^1.0.1",
-		"grunt-contrib-copy": "^1.0.0",
-		"grunt-contrib-jshint": "^1.1.0",
-		"grunt-contrib-nodeunit": "^2.0.0",
-		"grunt-contrib-sass": "^1.0.0",
-		"grunt-contrib-uglify": "^3.4.0",
-		"grunt-php-set-constant": "0.0.15",
-		"grunt-shell": "^2.1.0"
-	}
+    },
+    "devDependencies": {
+        "babel-preset-env": "^1.6.1",
+        "gulp": "^3.9.1",
+        "gulp-autoprefixer": "^3.1.1",
+        "gulp-babel": "^6.1.2",
+        "gulp-clean-css": "^3.9.0",
+        "gulp-concat": "^2.6.1",
+        "gulp-postcss": "^8.0.0",
+        "gulp-rename": "^1.2.2",
+        "gulp-sass": "^3.1.0",
+        "gulp-sourcemaps": "^2.6.5",
+        "gulp-uglify": "^3.0.2",
+        "postcss-scss": "^2.0.0",
+        "pump": "^1.0.3"
+    },
+    "//": {
+        "semantic-ui": "^2.2.13"
+    }
 }

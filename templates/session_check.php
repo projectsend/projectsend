@@ -12,16 +12,12 @@
  */
 if (isset($_SESSION['access']) && $_SESSION['access'] == 'admin') { $grant_access = 1; }
 if (isset($_SESSION['access']) && $_SESSION['access'] == CURRENT_USER_USERNAME) { $grant_access = 1; $is_client = 1; }
-/*
-if (isset($_COOKIE['access']) && $_COOKIE['access'] == 'admin') { $grant_access = 1; }
-if (isset($_COOKIE['access']) && $_COOKIE['access'] == CURRENT_USER_USERNAME) { $grant_access = 1; $is_client = 1; }
-*/
 
 /** In case a client has a session or cookie but is deactivated */
 if (isset($is_client)) {
 	global $dbh;
 	$current_user_username = CURRENT_USER_USERNAME;
-	$sql = $dbh->prepare("SELECT active FROM ". TABLE_USERS . " WHERE username=:current_user_username");
+	$sql = $dbh->prepare("SELECT active FROM ". TABLE_USERS . " WHERE user=:current_user_username");
   	$sql->bindParam(':current_user_username', $current_user_username, PDO::PARAM_STR);
  	$sql->execute();
 	$row = $sql->fetch();

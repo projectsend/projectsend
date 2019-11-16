@@ -6,6 +6,13 @@ bower_components
 
 # Compiled files
 assets/dist
+assets/css
+assets/fonts
+assets/js
+
+# Cache
+cache/*
+!cache/.gitkeep
 
 # NPM / Yarn
 .npm
@@ -23,7 +30,7 @@ includes/js/custom.js
 includes/custom.php
 # new possible locations
 assets/custom
-src/includes/custom.php
+app/includes/custom.php
 
 # Uploads
 upload/files/*
@@ -38,11 +45,6 @@ upload/thumbnails/*
 !upload/admin/.htaccess
 !upload/branding/.htaccess
 !upload/thumbnails/.htaccess
-
-# Cache and log
-var/*
-!var/cache/.placeholder
-!var/log/.placeholder
 
 # Windows thumbnails
 Thumbs.db

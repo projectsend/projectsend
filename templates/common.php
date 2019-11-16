@@ -27,16 +27,17 @@ $is_template = true;
  */
 $lang = SITE_LANG;
 if(!isset($ld)) { $ld = 'cftp_admin'; }
-ProjectSend\I18n::LoadDomain(TEMPLATES_DIR.DS.SELECTED_CLIENTS_TEMPLATE.DS."lang".DS."{$lang}.mo", $ld);
+require_once ROOT_DIR.'/includes/classes/i18n.php';
+I18n::LoadDomain(ROOT_DIR.DS."templates".DS.SELECTED_CLIENTS_TEMPLATE."/lang/{$lang}.mo", $ld);
 
-$this_template = TEMPLATES_URI.'/'.SELECTED_CLIENTS_TEMPLATE.'/';
+$this_template = BASE_URI.'templates/'.SELECTED_CLIENTS_TEMPLATE.'/';
 
-include_once(TEMPLATES_DIR . DS . 'session_check.php');
+include_once ROOT_DIR.'/templates/session_check.php';
 
 /**
  * URI to the default template CSS file.
  */
-$this_template_css = $this_template.'/main.css';
+$this_template_css = BASE_URI.'templates/'.SELECTED_CLIENTS_TEMPLATE.'/main.css';
 
 global $dbh;
 
@@ -48,12 +49,12 @@ $client_info = get_client_by_username($this_user);
 /**
  * Get the list of different groups the client belongs to.
  */
-$get_groups		= new \ProjectSend\MembersActions();
+$get_groups		= new ProjectSend\Classes\MembersActions;
 $get_arguments	= array(
 						'client_id'	=> $client_info['id'],
 						'return'	=> 'list',
 					);
-$found_groups	= $get_groups->client_get_groups($get_arguments);
+$found_groups	= $get_groups->client_get_groups($get_arguments); 
 
 /**
  * Define the arrays so they can't be empty
@@ -61,11 +62,6 @@ $found_groups	= $get_groups->client_get_groups($get_arguments);
 $found_all_files_array	= array();
 $found_own_files_temp	= array();
 $found_group_files_temp	= array();
-
-/** Category filter */
-if ( !empty( $_GET['category'] ) ) {
-	$category_filter = $_GET['category'];
-}
 
 /**
  * Get the client's own files
@@ -159,7 +155,7 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 						':search_ids' => $ids_to_search
 					);
 
-	/** Add the search terms */
+	/** Add the search terms */	
 	if ( isset($_GET['search']) && !empty($_GET['search']) ) {
 		$files_query		.= " AND (filename LIKE :title OR description LIKE :description)";
 		$no_results_error	= 'search';
@@ -180,7 +176,7 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 	*/
 	$count_sql = $dbh->prepare( $files_query );
 	$count_sql->execute($params);
-	$count_for_pagination = $count_sql->rowCount();
+    $count_for_pagination = $count_sql->rowCount();
 
 	/**
 	 * Repeat the query but this time, limited by pagination
@@ -220,16 +216,15 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 			if (in_array($data['id'], $found_group_files_temp)) {
 				$origin = 'group';
 			}
-			*/
-			$pathinfo = pathinfo($data['url']);
+            */
+            $pathinfo = pathinfo($data['url']);
 
 			$my_files[$f] = array(
 								//'origin'		=> $origin,
 								'id'			=> $data['id'],
 								'url'			=> $data['url'],
-								'dir'			=> UPLOADED_FILES_DIR . DS . $data['url'],
-								'save_as'		=> (!empty( $data['original_url'] ) ) ? $data['original_url'] : $data['url'],
-								'extension'		=> strtolower($pathinfo['extension']),
+                                'save_as'		=> (!empty( $data['original_url'] ) ) ? $data['original_url'] : $data['url'],
+                                'extension'		=> strtolower($pathinfo['extension']),
 								'name'			=> $data['filename'],
 								'description'	=> $data['description'],
 								'timestamp'		=> $data['timestamp'],
@@ -240,7 +235,7 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 			$f++;
 		}
 	}
-
+	
 }
 
 // DEBUG

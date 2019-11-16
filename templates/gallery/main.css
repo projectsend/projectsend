@@ -11,6 +11,9 @@ a:hover { text-decoration:underline; }
 
 .clear { clear:both; }
 
+html, body {
+}
+
 body {
 	color:#f0f0f0;
     font-family: 'Montserrat', sans-serif;
@@ -93,6 +96,9 @@ body {
 			padding-top:30px;
 		}
 
+		#offsite_nav a {
+		}
+		
 .account_actions {
 	font-size:1.1em;
 	margin:20px 0;
@@ -161,14 +167,7 @@ header {
 
 #logo {
 	margin:0;
-    padding:30px 0;
-    
-}
-
-#logo img, #logo svg {
-    width:100%;
-    height:auto;
-    max-width:300px;
+	padding:30px 0;
 }
 
 .photo_list {
@@ -231,6 +230,12 @@ header {
 		border-radius:4px;
 		color:#333;
 	}
+
+#logout {
+}
+
+#upload {
+}
 
 /*
 .header_button {

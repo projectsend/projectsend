@@ -11,11 +11,16 @@ $ld = 'pinboxes_template'; // specify the language domain for this template
 
 define('TEMPLATE_RESULTS_PER_PAGE', -1);
 
-include_once(TEMPLATES_DIR.'/common.php'); // include the required functions for every template
+if ( !empty( $_GET['category'] ) ) {
+	$category_filter = $_GET['category'];
+}
 
-$page_title = __('Available files','pinboxes_template');
+include_once ROOT_DIR.'/templates/common.php'; // include the required functions for every template
+
+$window_title = __('Available files','pinboxes_template');
 
 $count = count($my_files);
+
 define('TEMPLATE_THUMBNAILS_WIDTH', '250');
 define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 ?>
@@ -23,16 +28,16 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title><?php echo html_output( $client_info['name'].' | '.$page_title . ' &raquo; ' . SYSTEM_NAME ); ?></title>
+		<title><?php echo html_output( $client_info['name'].' | '.$window_title . ' &raquo; ' . SYSTEM_NAME ); ?></title>
 		<link rel="stylesheet" media="all" type="text/css" href="<?php echo $this_template; ?>main.css" />
 		<?php meta_favicon(); ?>
 		<link href='<?php echo PROTOCOL; ?>://fonts.googleapis.com/css?family=Metrophobic' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="<?php echo $this_template; ?>/font-awesome-4.6.3/css/font-awesome.min.css">
-
+		
 		<script src="<?php echo PROTOCOL; ?>://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
 		<script type="text/javascript" src="<?php echo $this_template; ?>/js/jquery.masonry.min.js"></script>
 		<script type="text/javascript" src="<?php echo $this_template; ?>/js/imagesloaded.pkgd.min.js"></script>
-
+		
 		<script type="text/javascript">
 			$(document).ready(function()
 				{
@@ -47,7 +52,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 					$('.button').click(function() {
 						$(this).blur();
 					});
-
+					
 					$('.categories_trigger a').click(function(e) {
 						if ( $('.categories').hasClass('visible') ) {
 							close_menu();
@@ -56,11 +61,11 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 							open_menu();
 						}
 					});
-
+					
 					$('.content_cover').click(function(e) {
 						close_menu();
 					});
-
+					
 					function open_menu() {
 						$('.categories').addClass('visible');
 						$('.categories').stop().slideDown();
@@ -76,12 +81,12 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 			);
 		</script>
 	</head>
-
+	
 	<body>
 		<div id="header">
 			<?php if ($logo_file_info['exists'] === true) { ?>
 				<div id="branding">
-                <?php echo get_branding_layout(true); // true: returns the thumbnail, not the full image ?>
+                    <?php echo get_branding_layout(true); // true: returns the thumbnail, not the full image ?>
 				</div>
 			<?php } ?>
 		</div>
@@ -100,12 +105,12 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 				<?php
 					if ( !empty( $get_categories['categories'] ) ) {
 						$url_client_id	= ( !empty($_GET['client'] ) && CURRENT_USER_LEVEL != '0') ? $_GET['client'] : null;
-						$link_template	= CLIENT_VIEW_FILE_LIST_URI;
+						$link_template	= CLIENT_VIEW_FILE_LIST_URL;
 				?>
 						<li class="categories_trigger">
 							<a href="#" target="_self"><i class="fa fa-filter" aria-hidden="true"></i> <?php _e('Categories', 'pinboxes_template'); ?></a>
 							<ul class="categories">
-								<li class="filter_all_files"><a href="<?php echo CLIENT_VIEW_FILE_LIST_URI; if ( !empty( $url_client_id ) ) { echo '?client=' . $url_client_id; }; ?>"><?php  _e('All files', 'pinboxes_template'); ?></a></li>
+								<li class="filter_all_files"><a href="<?php echo CLIENT_VIEW_FILE_LIST_URL; if ( !empty( $url_client_id ) ) { echo '?client=' . $url_client_id; }; ?>"><?php  _e('All files', 'pinboxes_template'); ?></a></li>
 								<?php
 									foreach ( $get_categories['categories'] as $category ) {
 										$link_data	= array(
@@ -117,7 +122,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 										<li><a href="<?php echo $link_template . '?' . $link_query; ?>"><?php echo $category['name']; ?></a></li>
 								<?php
 									}
-								?>
+								?>							
 							</ul>
 						</li>
 				<?php
@@ -131,11 +136,11 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 				</li>
 			</ul>
 		</div>
-
+			
 		<div id="content">
 			<div class="content_cover"></div>
 			<div class="wrapper">
-
+		
 		<?php
 			if (!$count) {
 		?>
@@ -151,8 +156,8 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 				<div class="photo_list">
 				<?php
 					foreach ($my_files as $file) {
-						$download_link = make_download_link($file);
-						$date = date(TIMEFORMAT,strtotime($file['timestamp']));
+                        $download_link = make_download_link($file);
+                        $date = format_date($file['timestamp']);
 				?>
 						<div class="photo <?php if ($file['expired'] == true) { echo 'expired'; } ?>">
 							<div class="photo_int">
@@ -160,16 +165,15 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 									/**
 									 * Generate the thumbnail if the file is an image.
 									 */
-									 if ( file_is_image( $file['dir'] ) ) {
+									$img_formats = array('gif','jpg','pjpeg','jpeg','png');
+									if (in_array($file['extension'],$img_formats)) {
 								?>
 										<div class="img_prev">
 											<?php
 												if ($file['expired'] == false) {
 											?>
 													<a href="<?php echo $download_link; ?>" target="_blank">
-														<?php
-															$thumbnail = make_thumbnail( UPLOADED_FILES_DIR.DS.$file['url'], 'proportional', TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT );
-														?>
+                                                        <?php $thumbnail = make_thumbnail( UPLOADED_FILES_DIR.DS.$file['url'], 'proportional', TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT ); ?>
 														<img src="<?php echo $thumbnail['thumbnail']['url']; ?>" alt="<?php echo htmlentities($file['name']); ?>" />
 													</a>
 											<?php
@@ -240,12 +244,12 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 			<?php
 			}
 			?>
-
+		
 			</div>
-
+	
 			<?php default_footer_info(); ?>
-
+	
 		</div>
-
+	
 	</body>
 </html>

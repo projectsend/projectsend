@@ -12,13 +12,17 @@ $ld = 'cftp_template'; // specify the language domain for this template
 
 define('TEMPLATE_RESULTS_PER_PAGE', 10);
 
-include_once(TEMPLATES_DIR.'/common.php'); // include the required functions for every template
+if ( !empty( $_GET['category'] ) ) {
+	$category_filter = $_GET['category'];
+}
 
-$page_title = __('File downloads','cftp_template');
+include_once ROOT_DIR.'/templates/common.php'; // include the required functions for every template
+
+$window_title = __('File downloads','cftp_template');
 
 $body_class = array('template', 'default-template', 'hide_title');
 
-include_once(ADMIN_VIEWS_DIR.'/header.php');
+include_once ROOT_DIR.'/header.php';
 
 define('TEMPLATE_THUMBNAILS_WIDTH', '50');
 define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
@@ -27,7 +31,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 <div class="col-xs-12">
 	<div id="wrapper">
 		<div id="right_column">
-
+	
 			<div class="form_actions_left">
 				<div class="form_actions_limit_results">
 					<?php show_search_form(); ?>
@@ -53,8 +57,8 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 					?>
 				</div>
 			</div>
-
-			<form action="" name="files_list" method="get" class="form-inline">
+		
+			<form action="" name="files_list" method="get" class="form-inline batch_actions">
 				<?php form_add_existing_parameters(); ?>
 				<div class="form_actions_right">
 					<div class="form_actions">
@@ -79,17 +83,17 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 						</div>
 					</div>
 				</div>
-
+		
 				<div class="right_clear"></div><br />
 
 				<div class="form_actions_count">
-					<p class="form_count_total"><?php _e('Found','cftp_admin'); ?>: <span><?php echo $count_for_pagination; ?> <?php _e('files','cftp_admin'); ?></span></p>
+					<p class="form_count_total"><?php _e('Found','cftp_admin'); ?>: <span><?php echo (isset($count_for_pagination)) ? $count_for_pagination : 0; ?> <?php _e('files','cftp_admin'); ?></span></p>
 				</div>
-
+	
 				<div class="right_clear"></div>
-
+	
 				<?php
-					if (!$count_for_pagination) {
+					if (!isset($count_for_pagination)) {
 						if (isset($no_results_error)) {
 							switch ($no_results_error) {
 								case 'search':
@@ -104,7 +108,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 					}
 
 
-					if ($count > 0) {
+					if (isset($count) && $count > 0) {
 						/**
 						 * Generate the table using the class.
 						 */
@@ -112,18 +116,14 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 													'id'		=> 'files_list',
 													'class'		=> 'footable table',
 												);
-						$table = new \ProjectSend\TableGenerate( $table_attributes );
-
+						$table = new \ProjectSend\Classes\TableGenerate( $table_attributes );
+		
 						$thead_columns		= array(
 													array(
 														'select_all'	=> true,
 														'attributes'	=> array(
 																				'class'		=> array( 'td_checkbox' ),
 																			),
-													),
-													array(
-														'content'		=> __('Thumbnail','cftp_admin'),
-														'hide'			=> 'phone,tablet',
 													),
 													array(
 														'sortable'		=> true,
@@ -158,17 +158,21 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 														'hide'			=> 'phone',
 													),
 													array(
+														'content'		=> __('Image preview','cftp_admin'),
+														'hide'			=> 'phone,tablet',
+													),
+													array(
 														'content'		=> __('Download','cftp_admin'),
 														'hide'			=> 'phone',
 													),
 												);
-
+	
 						$table->thead( $thead_columns );
 
 						foreach ($my_files as $file) {
 							$download_link = make_download_link($file);
 
-							$table->add_row();
+							$table->addRow();
 
 							/**
 							 * Prepare the information to be used later on the cells array
@@ -185,13 +189,14 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 							else {
 								$filetitle = $file_title_content;
 							}
-
+							
 							/** Extension */
-							$extension_cell = '<span class="label label-success label_big">' . $file['extension'] . '</span>';
+							$extension = strtolower($file['extension']);
+							$extension_cell = '<span class="label label-success label_big">' . $extension . '</span>';
 
 							/** Description */
 							$description = htmlentities_allowed($file['description']);
-
+							
 							/** File size */
 							$file_size_cell = '-'; // default
 							$file_absolute_path = UPLOADED_FILES_DIR . DS . $file['url'];
@@ -199,10 +204,10 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 								$this_file_size = get_real_size(UPLOADED_FILES_DIR.DS.$file['url']);
 								$file_size_cell = format_file_size($this_file_size);
 							}
-
-							/** Date */
-							$date = date(TIMEFORMAT,strtotime($file['timestamp']));
-
+							
+                            /** Date */
+                            $date = format_date($file['timestamp']);
+							
 							/** Expiration */
 							if ( $file['expires'] == '1' ) {
 								if ( $file['expired'] == false ) {
@@ -210,13 +215,13 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 								} else {
 									$class = 'danger';
 								}
-
+								
 								$value = date( TIMEFORMAT, strtotime( $file['expiry_date'] ) );
 							} else {
 								$class = 'success';
 								$value = __('Never','cftp_template');
 							}
-
+							
 							$expiration_cell = '<span class="label label-' . $class . ' label_big">' . $value . '</span>';
 
 							/** Thumbnail */
@@ -243,16 +248,10 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 							$download_cell = '<a href="' . $download_link . '" class="' . $download_btn_class . '" target="_blank">' . $download_text . '</a>';
 
 
-
+							
 							$tbody_cells = array(
 													array(
 														'content'		=> $checkbox,
-													),
-													array(
-														'content'		=> $preview_cell,
-														'attributes'	=> array(
-																				'class'		=> array( 'extra' ),
-																			),
 													),
 													array(
 														'content'		=> $filetitle,
@@ -282,6 +281,12 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 														'content'		=> $expiration_cell,
 													),
 													array(
+														'content'		=> $preview_cell,
+														'attributes'	=> array(
+																				'class'		=> array( 'extra' ),
+																			),
+													),
+													array(
 														'content'		=> $download_cell,
 														'attributes'	=> array(
 																				'class'		=> array( 'text-center' ),
@@ -290,9 +295,9 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 												);
 
 							foreach ( $tbody_cells as $cell ) {
-								$table->add_cell( $cell );
+								$table->addCell( $cell );
 							}
-
+			
 							$table->end_row();
 						}
 
@@ -306,21 +311,21 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 												'current'	=> $pagination_page,
 												'pages'		=> ceil( $count_for_pagination / TEMPLATE_RESULTS_PER_PAGE ),
 											);
-
+						
 						echo $table->pagination( $pagination_args );
-
+						
 
 					}
 				?>
 			</form>
-
+		
 		</div> <!-- right_column -->
 	</div> <!-- wrapper -->
-
+	
 	<?php default_footer_info(); ?>
 
 </div>
-	<?php
+<?php
         render_json_variables();
 
 		load_js_files();

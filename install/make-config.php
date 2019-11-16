@@ -10,18 +10,18 @@ error_reporting(E_ALL);
 define( 'IS_INSTALL', true );
 define( 'IS_MAKE_CONFIG', true );
 
-define( 'ABS_PARENT', dirname( __DIR__ ) );
-require_once( ABS_PARENT . '/bootstrap.php' );
+define( 'ABS_PARENT', dirname( dirname(__FILE__) ) );
+require_once ABS_PARENT . '/bootstrap.php';
 
-$page_title_install	= __('Install','cftp_admin');
+$page_id = 'make_config';
 
 /** Config file exists. Do not continue and show the message */
-if ( file_exists( CONFIG_FILE ) ) {
+if ( file_exists( ROOT_DIR.'/includes/sys.config.php' ) ) {
 	$error_msg[] = __('The configuration file already exists.','cftp_admin');
 }
 
 if ( !empty( $error_msg ) ) {
-	include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
+	include_once ABS_PARENT . '/header-unlogged.php';
 ?>
 	<div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 		<div class="white-box">
@@ -35,17 +35,19 @@ if ( !empty( $error_msg ) ) {
 		</div>
 	</div>
 <?php
-	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+	include_once ABS_PARENT . '/footer.php';
 	exit;
 }
+
+$page_title_install		= __('Install','cftp_admin');
 
 // array of POST variables to check, with associated default value
 $post_vars = array(
 	'dbdriver'		=> 'mysql',
-	'dbname'		=> 'projectsend',
-	'dbuser'		=> 'root',
+	'dbname'			=> 'projectsend',
+	'dbuser'			=> 'root',
 	'dbpassword'	=> 'root',
-	'dbhost'		=> 'localhost',
+	'dbhost'			=> 'localhost',
 	'dbprefix'		=> 'tbl_',
 	'dbreuse'		=> 'no',
 	'lang'			=> 'en',
@@ -82,7 +84,7 @@ if (!$pdo_mysql_available && $pdo_mssql_available) {
 if ($pdo_driver_available) {
 	$dsn = $post_vars['dbdriver'] . ':host=' . $post_vars['dbhost'] . ';dbname=' . $post_vars['dbname'];
 	try{
-		$db = new PDO($dsn, $post_vars['dbuser'], $post_vars['dbpassword'], array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+		$pdo = new PDO($dsn, $post_vars['dbuser'], $post_vars['dbpassword'], array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
 		$pdo_connected = true;
 	}
 	catch(PDOException $ex){
@@ -90,18 +92,18 @@ if ($pdo_driver_available) {
 	}
 }
 
-/** List of tables comes from sys.vars.php */
+/** List of tables comes from includes/app.php */
 
 // check if tables exists
 $table_exists = true;
 if ($pdo_connected) {
-    $availableTables = $pdo->query("SHOW TABLES")->fetchAll(\PDO::FETCH_COLUMN);
+	$availableTables = $pdo->query("SHOW TABLES")->fetchAll(\PDO::FETCH_COLUMN);
 	foreach ($all_system_tables as $name) {
-	    $prefixed = $post_vars['dbprefix'].$name;
-	    if (!in_array($prefixed, $availableTables)) {
-	        $table_exists = false;
-	        break;
-        }
+		$prefixed = $post_vars['dbprefix'].$name;
+		if (!in_array($prefixed, $availableTables)) {
+			$table_exists = false;
+			break;
+		}
 	}
 }
 $reuse_tables =  $post_vars['dbreuse'] == 'reuse';
@@ -113,11 +115,13 @@ $langs = get_available_languages();
 $lang_ok = array_key_exists($post_vars['lang'], $langs);
 
 // check file & folders are writable
-$config_file = CONFIG_FILE;
+$config_file = ROOT_DIR.'/includes/sys.config.php';
 $config_file_writable = is_writable($config_file) || is_writable(dirname($config_file));
-$upload_dir = UPLOADED_FILES_ROOT;
-$upload_files_dir = UPLOADED_FILES_DIR;
+$upload_dir = ROOT_DIR.'/upload';
+$upload_files_dir = ROOT_DIR.'/upload/files';
 $upload_files_dir_writable = is_writable($upload_files_dir) || is_writable($upload_dir);
+$upload_temp_dir = ROOT_DIR.'/upload/temp';
+$upload_temp_dir_writable = is_writable($upload_temp_dir) || is_writable($upload_dir);
 
 // retrieve user data for web server
 if (function_exists('posix_getpwuid')) {
@@ -128,11 +132,11 @@ if (function_exists('posix_getpwuid')) {
 }
 
 // if everything is ok, we can proceed
-$ready_to_go = $pdo_connected && (!$table_exists || $reuse_tables) && $lang_ok && $config_file_writable && $upload_files_dir_writable;
+$ready_to_go = $pdo_connected && (!$table_exists || $reuse_tables) && $lang_ok && $config_file_writable && $upload_files_dir_writable && $upload_temp_dir_writable;
 
 // if the user requested to write the config file AND we can proceed, we try to write the new configuration
 if (isset($_POST['submit-start']) && $ready_to_go) {
-	$template			= file_get_contents(CONFIG_SAMPLE);
+	$template			= file_get_contents(ROOT_DIR . '/includes/sys.config.sample.php');
 	$template_search	= array(
 								"'mysql'",
 								"'database'",
@@ -179,7 +183,7 @@ function pdo_status_label() {
 	}
 }
 
-include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
+include_once ABS_PARENT . '/header-unlogged.php';
 ?>
 
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
@@ -349,6 +353,11 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 																			'file'		=> $upload_files_dir,
 																			'status'	=> $upload_files_dir_writable,
 																		),
+													'temp'			=> array(
+																			'label'		=> 'Temp directory',
+																			'file'		=> $upload_temp_dir,
+																			'status'	=> $upload_temp_dir_writable,
+																		),
 												);
 							foreach ( $write_checks as $check => $values ) {
 						?>
@@ -441,4 +450,4 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 </div>
 
 <?php
-	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+	include_once ABS_PARENT . '/footer.php';

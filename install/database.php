@@ -8,6 +8,7 @@
  */
 if (defined('TRY_INSTALL')) {
 	$timestamp = time();
+	$current_version = substr(CURRENT_VERSION, 1);
 	$now = date('d-m-Y');
 	$expiry_default = date('Y') + 1 . "-01-01 00:00:00";
 
@@ -20,15 +21,15 @@ if (defined('TRY_INSTALL')) {
 								  `url` text NOT NULL,
 								  `original_url` text NOT NULL,
 								  `filename` text NOT NULL,
-								  `description` text NOT NULL,
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+								  `description` text NULL,
 								  `uploader` varchar('.MAX_USER_CHARS.') NOT NULL,
 								  `expires` INT(1) NOT NULL default \'0\',
 								  `expiry_date` TIMESTAMP NOT NULL DEFAULT "' . $expiry_default . '",
 								  `public_allow` INT(1) NOT NULL default \'0\',
 								  `public_token` varchar(32) NULL,
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
 					'params' => array(),
 		),
@@ -37,10 +38,10 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> TABLE_OPTIONS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_OPTIONS.'` (
 								  `id` int(10) NOT NULL AUTO_INCREMENT,
-								  `name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-								  `value` text COLLATE utf8mb4_general_ci NOT NULL,
+								  `name` varchar(50) COLLATE utf8_general_ci NOT NULL,
+								  `value` text COLLATE utf8_general_ci NOT NULL,
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
 					'params' => array(),
 		),
@@ -49,23 +50,23 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> TABLE_USERS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_USERS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
-								  `username` varchar('.MAX_USER_CHARS.') NOT NULL,
-								  `password` varchar(255) NOT NULL,
+								  `user` varchar('.MAX_USER_CHARS.') NOT NULL,
+								  `password` varchar('.MAX_PASS_CHARS.') NOT NULL,
 								  `name` text NOT NULL,
 								  `email` varchar(60) NOT NULL,
 								  `level` tinyint(1) NOT NULL DEFAULT \'0\',
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-								  `address` text COLLATE utf8mb4_general_ci NULL,
-								  `phone` varchar(32) COLLATE utf8mb4_general_ci NULL,
+								  `address` text COLLATE utf8_general_ci NULL,
+								  `phone` varchar(32) COLLATE utf8_general_ci NULL,
 								  `notify` tinyint(1) NOT NULL DEFAULT \'0\',
-								  `contact` text COLLATE utf8mb4_general_ci NULL,
+								  `contact` text COLLATE utf8_general_ci NULL,
 								  `created_by` varchar('.MAX_USER_CHARS.') NULL,
 								  `active` tinyint(1) NOT NULL DEFAULT \'1\',
 								  `account_requested` tinyint(1) NOT NULL DEFAULT \'0\',
 								  `account_denied` tinyint(1) NOT NULL DEFAULT \'0\',
 								  `max_file_size` int(20)  NOT NULL DEFAULT \'0\',
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
 					'params' => array(),
 		),
@@ -74,14 +75,14 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> TABLE_GROUPS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_GROUPS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-								  `created_by` varchar(32) NOT NULL,
 								  `name` varchar(32) NOT NULL,
 								  `description` text NOT NULL,
 								  `public` tinyint(1) NOT NULL DEFAULT \'0\',
 								  `public_token` varchar(32) NULL,
+								  `created_by` varchar(32) NOT NULL,
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
 					'params' => array(),
 		),
@@ -90,14 +91,14 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> TABLE_MEMBERS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_MEMBERS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `added_by` varchar(32) NOT NULL,
 								  `client_id` int(11) NOT NULL,
 								  `group_id` int(11) NOT NULL,
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  PRIMARY KEY (`id`),
 								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
 					'params' => array(),
 		),
@@ -106,15 +107,15 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> TABLE_MEMBERS_REQUESTS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_MEMBERS_REQUESTS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `requested_by` varchar(32) NOT NULL,
 								  `client_id` int(11) NOT NULL,
 								  `group_id` int(11) NOT NULL,
 								  `denied` int(1) NOT NULL DEFAULT \'0\',
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  PRIMARY KEY (`id`),
 								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
 					'params' => array(),
 		),
@@ -132,7 +133,7 @@ if (defined('TRY_INSTALL')) {
 								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
 					'params' => array(),
 		),
@@ -141,28 +142,27 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> TABLE_FILES_RELATIONS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_FILES_RELATIONS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `file_id` int(11) NOT NULL,
 								  `client_id` int(11) DEFAULT NULL,
 								  `group_id` int(11) DEFAULT NULL,
 								  `folder_id` int(11) DEFAULT NULL,
 								  `hidden` int(1) NOT NULL,
 								  `download_count` int(16) NOT NULL DEFAULT \'0\',
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`folder_id`) REFERENCES '.TABLE_FOLDERS.'(`id`) ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
 					'params' => array(),
 		),
 
 		'8' =>  array(
-					'table'	=> TABLE_ACTIONS_LOG,
-					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_ACTIONS_LOG.'` (
+					'table'	=> TABLE_LOG,
+					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_LOG.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `action` int(2) NOT NULL,
 								  `owner_id` int(11) NOT NULL,
 								  `owner_user` text DEFAULT NULL,
@@ -170,8 +170,9 @@ if (defined('TRY_INSTALL')) {
 								  `affected_account` int(11) DEFAULT NULL,
 								  `affected_file_name` text DEFAULT NULL,
 								  `affected_account_name` text DEFAULT NULL,
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
 					'params' => array(),
 		),
@@ -180,16 +181,16 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> TABLE_NOTIFICATIONS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_NOTIFICATIONS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `file_id` int(11) NOT NULL,
 								  `client_id` int(11) NOT NULL,
 								  `upload_type` int(11) NOT NULL,
 								  `sent_status` int(2) NOT NULL,
 								  `times_failed` int(11) NOT NULL,
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
 					'params' => array(),
 		),
@@ -200,11 +201,11 @@ if (defined('TRY_INSTALL')) {
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `user_id` int(11) DEFAULT NULL,
 								  `token` varchar(32) NOT NULL,
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `used` int(1) DEFAULT \'0\',
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  FOREIGN KEY (`user_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
 					'params' => array(),
 		),
@@ -215,14 +216,14 @@ if (defined('TRY_INSTALL')) {
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `user_id` int(11) DEFAULT NULL,
 								  `file_id` int(11) NOT NULL,
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `remote_ip` varchar(45) DEFAULT NULL,
 								  `remote_host` text NULL,
 								  `anonymous` tinyint(1) DEFAULT \'0\',
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  FOREIGN KEY (`user_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
+								) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
 					'params' => array(),
 		),
@@ -231,11 +232,18 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> '',
 					'query'	=> "INSERT INTO ".TABLE_OPTIONS." (name, value) VALUES
 								('base_uri', :base_uri),
+								('max_thumbnail_width', '100'),
+								('max_thumbnail_height', '100'),
+								('thumbnails_folder', '../../assets/img/custom/thumbs/'),
+								('thumbnail_default_quality', '90'),
+								('max_logo_width', '300'),
+								('max_logo_height', '300'),
 								('this_install_title', :title),
 								('selected_clients_template', 'default'),
+								('logo_thumbnails_folder', '/assets/img/custom/thumbs'),
 								('timezone', 'America/Argentina/Buenos_Aires'),
 								('timeformat', 'd/m/Y'),
-								('allowed_file_types', '7z,ace,ai,avi,bin,bmp,bz2,cdr,doc,docm,docx,eps,fla,flv,gif,gz,gzip,htm,html,iso,jpeg,jpg,mp3,mp4,mpg,odt,oog,ppt,pptx,pptm,pps,ppsx,pdf,png,psd,rar,rtf,svg,tar,tif,tiff,tgz,txt,wav,xls,xlsm,xlsx,xz,zip'),
+								('allowed_file_types', '7z,ace,ai,avi,bin,bmp,bz2,cdr,doc,docm,docx,eps,fla,flv,gif,gz,gzip,htm,html,iso,jpeg,jpg,mp3,mp4,mpg,odt,oog,ppt,pptx,pptm,pps,ppsx,pdf,png,psd,rar,rtf,tar,tif,tiff,tgz,txt,wav,xls,xlsm,xlsx,xz,zip'),
 								('logo_filename', ''),
 								('admin_email_address', :email),
 								('clients_can_register', '0'),
@@ -246,6 +254,7 @@ if (defined('TRY_INSTALL')) {
 								('mail_smtp_user', ''),
 								('mail_smtp_pass', ''),
 								('mail_from_name', :from),
+								('thumbnails_use_absolute', '0'),
 								('mail_copy_user_upload', ''),
 								('mail_copy_client_upload', ''),
 								('mail_copy_main_user', ''),
@@ -327,16 +336,13 @@ if (defined('TRY_INSTALL')) {
 								('public_listing_page_enable', '0'),
 								('public_listing_logged_only', '0'),
 								('public_listing_show_all_files', '0'),
-								('public_listing_use_download_link', '0'),
-								('page_policy_enable', '0'),
-								('page_policy_title', ''),
-								('page_policy_content', '')
+								('public_listing_use_download_link', '0')
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,
-										':title'	=> $this_install_title,
-										':email'	=> $got_admin_email,
-										':version'	=> DATABASE_VERSION,
+										':title'	=> $install_title,
+										':email'	=> $admin_email,
+										':version'	=> $current_version,
 										':from'		=> $this_install_title,
 										':now'		=> $now,
 								),
@@ -344,13 +350,13 @@ if (defined('TRY_INSTALL')) {
 
 		'13' =>  array(
 						'table'	=> '',
-						'query'	=> "INSERT INTO ".TABLE_USERS." (id, username, password, name, email, level, active) VALUES
+						'query'	=> "INSERT INTO ".TABLE_USERS." (id, user, password, name, email, level, active) VALUES
 									(1, :username, :password, :name, :email, 9, 1)",
 						'params' => array(
-										':username'	=> $got_admin_username,
-										':password'	=> $got_admin_pass,
-										':name'		=> $got_admin_name,
-										':email'	=> $got_admin_email,
+										':username'	=> $admin_username,
+										':password'	=> $admin_pass,
+										':name'		=> $admin_name,
+										':email'	=> $admin_email,
 						),
 		),
 
@@ -365,7 +371,7 @@ if (defined('TRY_INSTALL')) {
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  FOREIGN KEY (`parent`) REFERENCES '.TABLE_CATEGORIES.'(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
 					'params' => array(),
 		),
@@ -374,16 +380,31 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> TABLE_CATEGORIES_RELATIONS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_CATEGORIES_RELATIONS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `file_id` int(11) NOT NULL,
 								  `cat_id` int(11) NOT NULL,
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`cat_id`) REFERENCES '.TABLE_CATEGORIES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8mb4_general_ci;
+								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
 					'params' => array(),
-		),
+        ),
+        
+        '16' => array(
+            'table' => TABLE_USER_META,
+            'query' => 'CREATE TABLE IF NOT EXISTS `'.TABLE_USER_META.'` (
+                `id` int(11) NOT NULL AUTO_INCREMENT,
+                `name` varchar(255) NOT NULL,
+                `value` TEXT NULL,
+                `user_id` int(11) DEFAULT NULL,
+                `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+                FOREIGN KEY (`user_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+            ',
+            'params' => array(),
+        )
 
 	);
 }

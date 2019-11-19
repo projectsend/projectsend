@@ -53,5 +53,7 @@ $target_name = isset($_POST['target_name'])?$_POST['target_name']:'';
         <input type="hidden" value="1" name="uploader_count">
     </form>
     <script type="text/javascript">
+    setTimeout(function(){ 
       document.getElementById('myForm').submit();
-    </script>
+    }, 3000);
+   </script>

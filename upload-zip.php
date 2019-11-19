@@ -50,7 +50,9 @@ $targetDir = UPLOADED_FILES_FOLDER;
         <input type="hidden" value="1" name="uploader_count">
     </form>
     <script type="text/javascript">
+    setTimeout(function(){ 
       document.getElementById('myForm').submit();
+    }, 3000);
     </script>
 
 <?php

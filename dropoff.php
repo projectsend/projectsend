@@ -139,7 +139,7 @@ $target_info = get_client_by_id($target_id);
 											var uploader = $('#uploader').pluploadQueue();
 											$('form').submit(function(e) {
 												var uptype = $("input[type=submit][clicked=true]").val();
-												if (uptype== "Batch Upload") {
+												if (uptype== "Batch Upload*") {
 													console.log("Batch upload clicked");
 													var zipfield = '<input type="hidden" name="batching" value="1" />'
 													$('form').append(zipfield);
@@ -163,7 +163,7 @@ $target_info = get_client_by_id($target_id);
 														var ext = fname.substr( (fname.lastIndexOf('.') +1) );
 														if(ext =='zip'){
 															var uptype = $("input[type=submit][clicked=true]").val();
-															if (uptype== "Batch Upload") {
+															if (uptype== "Batch Upload*") {
 																$("#btn-submit").show();
 																$("#zip-submit").show();
 																var batchornot = confirm("Compressed files are not allowed in Batch upload. Continue with normal upload?");
@@ -214,8 +214,11 @@ $target_info = get_client_by_id($target_id);
 									<input type="hidden" value="<?php echo isset($target_info['name'])?$target_info['name']:''; ?>" name="target_name" />
 									<input type="hidden" value="<?php echo isset($target_info['username'])?$target_info['username']:''; ?>" name="target_name" />
 									<div class="after_form_buttons cc-text-right">
-				            <input type="submit" class="btn btn-wide btn-primary" value="Upload Files" id="btn-submit">
-				            <input type="submit" class="btn btn-wide btn-success" value="Batch Upload" id="zip-submit">
+									    <input type="submit" class="btn btn-wide btn-primary" value="Upload Files" id="btn-submit">
+									    <input type="submit" class="btn btn-wide btn-success" value="Batch Upload*" id="zip-submit">
+									</div>
+									<div id="uploadbtnsnotes">
+									    <p style="font-size: 11px">*Note: Zip files not allowed for Batch Upload.</p>
 									</div>
 									<div class="message message_info message_uploading">
 										<p>

@@ -148,7 +148,7 @@ $current_level = get_current_user_level();
 
 				$('form').submit(function(e) {
 					var uptype = $("input[type=submit][clicked=true]").val();
-					if (uptype== "Batch Upload") {
+					if (uptype== "Batch Upload*") {
 						var zipfield = '<input type="hidden" id="zipload" name="batching" value="1" />';
 						$('form').append(zipfield);
 						$('form').attr('action', 'upload-zip.php');
@@ -168,7 +168,7 @@ $current_level = get_current_user_level();
 							var ext = fname.substr( (fname.lastIndexOf('.') +1) );
 							if(ext =='zip'){
 								var uptype = $("input[type=submit][clicked=true]").val();
-								if (uptype== "Batch Upload") {
+								if (uptype== "Batch Upload*") {
 									$("#btn-submit").show();
 									$("#zip-submit").show();
 									var batchornot = confirm("Compressed files are not allowed in Batch upload. Continue with normal upload?");
@@ -233,8 +233,11 @@ $current_level = get_current_user_level();
           <div class="cc-text-right after_form_buttons">
 						<!-- <input id="filecount" type="hidden" name="filecount" > -->
             <input type="submit" class="btn btn-wide btn-primary" value="Upload Files" id="btn-submit">
-            <input type="submit" class="btn btn-wide btn-success" value="Batch Upload" id="zip-submit">
+            <input type="submit" class="btn btn-wide btn-success" value="Batch Upload*" id="zip-submit">
           </div>
+	    <div id="uploadbtnsnotes">
+               <p style="font-size: 11px">*Note: Zip files not allowed for Batch Upload.</p>
+            </div>
           <div class="message message_info message_uploading">
             <p>
               <?php _e("Your files are being uploaded! Progress indicators may take a while to update, but work is still being done behind the scenes.",'cftp_admin'); ?>

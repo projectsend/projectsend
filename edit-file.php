@@ -534,7 +534,7 @@ $message = '
 
                                                 
 								if (($send_notifications == true && $file['future_send_date'] == $today)
-									||($send_notifications == true && $file['expiry_date'] == $today && $file['expires'] == '1' ))
+									||($send_notifications == true && $file['expiry_date'] == $today && $file['expires'] == '1' && $get_prev_id != 3))
 									{
 
 									$process_notifications = $this_upload->upload_add_notifications($add_arguments);

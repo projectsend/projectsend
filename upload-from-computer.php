@@ -236,7 +236,7 @@ $current_level = get_current_user_level();
             <input type="submit" class="btn btn-wide btn-success" value="Batch Upload*" id="zip-submit">
           </div>
 	    <div id="uploadbtnsnotes">
-               <p style="font-size: 11px">*Note: Zip files not allowed for Batch Upload.</p>
+               <p style="font-size: 12px; text-align: right;">*Note: Zip files not allowed for Batch Upload.</p>
             </div>
           <div class="message message_info message_uploading">
             <p>

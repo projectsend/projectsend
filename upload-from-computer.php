@@ -160,6 +160,7 @@ $current_level = get_current_user_level();
 
 						$("#btn-submit").hide();
 						$("#zip-submit").hide();
+					        $("#uploadbtnsnotes").hide();
 					        $(".message_uploading").fadeIn();
 
 						uploader.bind('FileUploaded', function (up, file, info) {
@@ -171,6 +172,7 @@ $current_level = get_current_user_level();
 								if (uptype== "Batch Upload*") {
 									$("#btn-submit").show();
 									$("#zip-submit").show();
+									$("#uploadbtnsnotes").show();
 									var batchornot = confirm("Compressed files are not allowed in Batch upload. Continue with normal upload?");
 									if(batchornot == true){
 										$("form")[0].reset();

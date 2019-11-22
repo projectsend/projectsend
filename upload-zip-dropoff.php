@@ -55,5 +55,5 @@ $target_name = isset($_POST['target_name'])?$_POST['target_name']:'';
     <script type="text/javascript">
     setTimeout(function(){ 
       document.getElementById('myForm').submit();
-    }, 1200);
+    }, 1800);
    </script>

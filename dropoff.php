@@ -156,6 +156,7 @@ $target_info = get_client_by_id($target_id);
 													uploader.start();
 													$("#btn-submit").hide();
                                                                                                         $("#zip-submit").hide();
+													$("#uploadbtnsnotes").hide();
 													$(".message_uploading").fadeIn();
 													uploader.bind('FileUploaded', function (up, file, info) {
 														var obj = JSON.parse(info.response);
@@ -166,6 +167,7 @@ $target_info = get_client_by_id($target_id);
 															if (uptype== "Batch Upload*") {
 																$("#btn-submit").show();
 																$("#zip-submit").show();
+																$("#uploadbtnsnotes").show();
 																var batchornot = confirm("Compressed files are not allowed in Batch upload. Continue with normal upload?");
 																if(batchornot == true){
 																	$("form")[0].reset();

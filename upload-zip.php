@@ -52,7 +52,7 @@ $targetDir = UPLOADED_FILES_FOLDER;
     <script type="text/javascript">
     setTimeout(function(){ 
       document.getElementById('myForm').submit();
-    }, 1200);
+    }, 1800);
     </script>
 
 <?php

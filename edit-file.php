@@ -677,13 +677,13 @@ $message = '
 		    $expiry_date = date('d-m-Y', strtotime($date. ' + 14 days'));
 		}
 	?>
-                              <input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" />
+                              <input type="text" class="date-field form-control datapick-field exPdate" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" />
                               <div class="input-group-addon"> <i class="glyphicon glyphicon-time"></i> </div>
                             </div>
                           </div>
                           <div class="checkbox">
                             <label for="exp_checkbox">
-                              <input type="checkbox" id="exp_checkbox" name="file[<?php echo $i; ?>][expires]" value="1" <?php if ($row['expires']) { ?>checked="checked"<?php } ?> />
+                              <input type="checkbox" class="expires" id="exp_checkbox" name="file[<?php echo $i; ?>][expires]" value="1" <?php if ($row['expires']) { ?>checked="checked"<?php } ?> />
                               <?php _e('File expires', 'cftp_admin');?>
                             </label>
                           </div>
@@ -845,7 +845,7 @@ $message = '
                             <?php _e('Select a date', 'cftp_admin');?>
                           </label>
                           <div class="input-group date-container">
-                            <input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][future_send_date]" name="file[<?php echo $i; ?>][future_send_date]" value="<?php if(($get_prev_id ==3)||($get_prev_id ==8)||($get_prev_id ==9)) {echo($future_send_date);} else { echo(date('d-m-Y'));} ?>" />
+                            <input type="text" class="futuredate date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][future_send_date]" name="file[<?php echo $i; ?>][future_send_date]" value="<?php if(($get_prev_id ==3)||($get_prev_id ==8)||($get_prev_id ==9)) {echo($future_send_date);} else { echo(date('d-m-Y'));} ?>" />
                             <!-- <input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][future_send_date]" name="file[<?php echo $i; ?>][future_send_date]" value="<?php echo (!empty($future_send_date)) ? $future_send_date : date('d-m-Y'); ?>" /> -->
                             <div class="input-group-addon"> <i class="glyphicon glyphicon-time"></i> </div>
                           </div>
@@ -877,10 +877,31 @@ $message = '
     </div>
   </div>
 </div>
+
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Error!</h4>
+      </div>
+      <div class="modal-body">
+        <p>Future date is shouldn't be greater than the expiry date</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
 <script type="text/javascript">
 function window_back() {
 			//window.history.back(-1);
 }
+
 	$(document).ready(function() {
 
 		$('.chosen-select').chosen({
@@ -931,6 +952,14 @@ function window_back() {
 		});
 
 		$("form").submit(function() {
+			if($(".expires").prop('checked') == true){
+				var date= new Date($('.exPdate').val());
+				var date1= new Date($('.futuredate').val());
+			    if (date.getTime() <= date1.getTime()){
+			    	$('#myModal').modal('show'); 
+			    	return false;
+			    }
+			}
 			clean_form(this);
 
 			$(this).find('input[name$="[name]"]').each(function() {

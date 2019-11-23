@@ -290,8 +290,6 @@ while( $row = $statement->fetch() ) {
 
 
 		foreach ($_POST['file'] as $file) {
-
-
 			$n++;
 
 
@@ -685,9 +683,7 @@ while( $row = $statement->fetch() ) {
 				$empty_fields++;
 
 			}
-
 		}
-
 	}
 				/*echo '<pre>';
 				print_r($pass);
@@ -1061,7 +1057,7 @@ while( $row = $statement->fetch() ) {
 
 		<div class="input-group ex_date">
 
-			<input  type="text" class="date-field exPdate form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y',strtotime("+14 days")); ?>" />
+			<input  type="text" class="date-field exPdate form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y',strtotime("+14 days")); ?>" / >
 
 				<div class="input-group-addon">
 
@@ -1093,7 +1089,7 @@ while( $row = $statement->fetch() ) {
 								}
 							}
 							?>
-			<input type="checkbox" name="file[<?php echo $i; ?>][expires]" id="exp_checkbox_<?php echo $i; ?>" value="1" <?php echo $checked; ?>  />
+			<input type="checkbox" class="expires" name="file[<?php echo $i; ?>][expires]" id="exp_checkbox_<?php echo $i; ?>" value="1" <?php echo $checked; ?>  />
 			<?php _e('File expires', 'cftp_admin');?>
 		</label>
     </div>
@@ -1301,7 +1297,7 @@ while( $row = $statement->fetch() ) {
 					<?php _e('Select a date', 'cftp_admin');?>
 				  </label>
 				  <div class="input-group future_date">
-					<input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][future_send_date]" value="<?php echo (!empty($future_send_date)) ? $future_send_date : date('d-m-Y'); ?>" />
+					<input type="text" class="date-field form-control datapick-field futuredate" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][future_send_date]" value="<?php echo (!empty($future_send_date)) ? $future_send_date : date('d-m-Y'); ?>" / >
 					<div class="input-group-addon"> <i class="glyphicon glyphicon-time"></i> </div>
 				  </div>
 				</div>
@@ -1436,6 +1432,27 @@ while( $row = $statement->fetch() ) {
 				</div>
 						</div>
 								</div>
+
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Error!</h4>
+      </div>
+      <div class="modal-body">
+        <p>Future date is shouldn't be greater than the expiry date</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <script type="text/javascript">
 
 	$(document).ready(function() {
@@ -1715,6 +1732,17 @@ $(document).ready(function() {
 });
 
 function validateUsers() {
+	if($(".expires").prop('checked') == true){
+		var date= new Date($('.exPdate').val());
+		var date1= new Date($('.futuredate').val());
+	    if (date.getTime() <= date1.getTime()){
+	    	$('#myModal').modal('show'); 
+	    	return false;
+	    }
+	}
+
+
+
 	var invalid_invites = 0;
 	$('.new_client option').each(function () {
 		var userinput = $(this).val();
@@ -1734,6 +1762,33 @@ function validateUsers() {
 	$('#upload-continue').click();
 	}
 }
+
+// function expdatechange(){
+
+
+// alert(timeStamp($('.exPdate').val()));
+
+	// var exPdate=$('.exPdate').val();
+	// console.log(exPdate);
+	// var futuredate=$('.futuredate').val();
+	// console.log(futuredate);
+
+	// var date1 = new Date(exPdate);
+	// console.log(date1);
+	// var date2 = new Date(futuredate);
+	// console.log(date2);
+
+	// var d1 = Date.parse($('.exPdate').val());
+	// console.log(d1);
+	// var d2 = Date.parse($('.futuredate').val());
+	// console.log(d2);
+	// if(date1 <= date2)
+	// {
+	// 	console.log('less');
+	// }else{
+	// 	console.log('grater');	
+	// }
+// }
 </script>
 
 

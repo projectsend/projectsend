@@ -1733,62 +1733,50 @@ $(document).ready(function() {
 
 function validateUsers() {
 	if($(".expires").prop('checked') == true){
-		var date= new Date($('.exPdate').val());
-		var date1= new Date($('.futuredate').val());
-	    if (date.getTime() <= date1.getTime()){
+
+		var date=$('.exPdate').val();
+		date=date.split("-");
+		var exPdate=date[1]+"/"+date[0]+"/"+date[2];
+		var newexpdate=new Date(exPdate).getTime();
+
+		var date1=$('.futuredate').val();
+		date1=date1.split("-");
+		var futuredate=date1[1]+"/"+date1[0]+"/"+date1[2];
+		var newfuturedate=new Date(futuredate).getTime();
+
+		if (newexpdate <= newfuturedate){
 	    	$('#myModal').modal('show'); 
 	    	return false;
 	    }
+
+		// var date= new Date($('.exPdate').val());
+		// var date1= new Date($('.futuredate').val());
+	 //    if (date.getTime() <= date1.getTime()){
+	 //    	$('#myModal').modal('show'); 
+	 //    	return false;
+	 //    }
 	}
-
-
 
 	var invalid_invites = 0;
 	$('.new_client option').each(function () {
 		var userinput = $(this).val();
-	var pattern = /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i
+		var pattern = /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i
 
-	if(!pattern.test(userinput))
-	{
-	 $(".search-choice span:contains('"+userinput+"')").parent().remove();
-	$(this).remove();
-	invalid_invites++;
-	}
+		if(!pattern.test(userinput))
+		{
+		 $(".search-choice span:contains('"+userinput+"')").parent().remove();
+		$(this).remove();
+		invalid_invites++;
+		}
 	});
 	if (invalid_invites !=0 ) {
-	alert('Invite users with valid email address');
-	invalid_invites=0;
+		alert('Invite users with valid email address');
+		invalid_invites=0;
 	} else{
-	$('#upload-continue').click();
+		$('#upload-continue').click();
 	}
 }
 
-// function expdatechange(){
-
-
-// alert(timeStamp($('.exPdate').val()));
-
-	// var exPdate=$('.exPdate').val();
-	// console.log(exPdate);
-	// var futuredate=$('.futuredate').val();
-	// console.log(futuredate);
-
-	// var date1 = new Date(exPdate);
-	// console.log(date1);
-	// var date2 = new Date(futuredate);
-	// console.log(date2);
-
-	// var d1 = Date.parse($('.exPdate').val());
-	// console.log(d1);
-	// var d2 = Date.parse($('.futuredate').val());
-	// console.log(d2);
-	// if(date1 <= date2)
-	// {
-	// 	console.log('less');
-	// }else{
-	// 	console.log('grater');	
-	// }
-// }
 </script>
 
 

@@ -953,9 +953,18 @@ function window_back() {
 
 		$("form").submit(function() {
 			if($(".expires").prop('checked') == true){
-				var date= new Date($('.exPdate').val());
-				var date1= new Date($('.futuredate').val());
-			    if (date.getTime() <= date1.getTime()){
+
+				var date=$('.exPdate').val();
+				date=date.split("-");
+				var exPdate=date[1]+"/"+date[0]+"/"+date[2];
+				var newexpdate=new Date(exPdate).getTime();
+
+				var date1=$('.futuredate').val();
+				date1=date1.split("-");
+				var futuredate=date1[1]+"/"+date1[0]+"/"+date1[2];
+				var newfuturedate=new Date(futuredate).getTime();
+		
+			    if (newexpdate <= newfuturedate){
 			    	$('#myModal').modal('show'); 
 			    	return false;
 			    }

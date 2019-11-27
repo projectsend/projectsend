@@ -878,9 +878,8 @@ $message = '
   </div>
 </div>
 
-<div id="myModal" class="modal fade" role="dialog">
+<div id="myModal1" class="modal fade" role="dialog">
   <div class="modal-dialog">
-
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
@@ -888,13 +887,29 @@ $message = '
         <h4 class="modal-title">Error!</h4>
       </div>
       <div class="modal-body">
-        <p>Future date is shouldn't be greater than the expiry date</p>
+        <p>Future send date shouldn't be greater than the expiry date.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
-
+  </div>
+</div>
+<div id="myModal2" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Error!</h4>
+      </div>
+      <div class="modal-body">
+        <p>Expiry date shouldn't be less than the future send date.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
   </div>
 </div>
 <script type="text/javascript">
@@ -964,9 +979,14 @@ function window_back() {
 				var futuredate=date1[1]+"/"+date1[0]+"/"+date1[2];
 				var newfuturedate=new Date(futuredate).getTime();
 		
-			    if (newexpdate <= newfuturedate){
-			    	$('#myModal').modal('show'); 
+			    if ((newexpdate <= newfuturedate) && ($get_prev_id != 1) && ($get_prev_id != 2) && ($get_prev_id != 6)) {
+			    	$('#myModal1').modal('show'); 
 			    	return false;
+			    } else {
+                                if ((newexpdate < newfuturedate) && ($get_prev_id == 1) && ($get_prev_id == 2) && ($get_prev_id == 6)) {
+                                    $('#myModal2').modal('show'); 
+                                    return false;
+				}
 			    }
 			}
 			clean_form(this);

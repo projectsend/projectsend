@@ -979,11 +979,11 @@ function window_back() {
 				var futuredate=date1[1]+"/"+date1[0]+"/"+date1[2];
 				var newfuturedate=new Date(futuredate).getTime();
 		                var prevpageid = window.location.href;
-			    if ((newexpdate <= newfuturedate) && (prevpageid.indexOf("page_id=1") == 0) && (prevpageid.indexOf("page_id=2") == 0) && (prevpageid.indexOf("page_id=6") == 0)) {
+			    if ((newexpdate <= newfuturedate) && (prevpageid.indexOf("page_id=1") == -1) && (prevpageid.indexOf("page_id=2") == -1) && (prevpageid.indexOf("page_id=6") == -1)) {
 			    	$('#myModal1').modal('show'); 
 			    	return false;
 			    } else {
-                                if ((newexpdate < newfuturedate) && ((prevpageid.indexOf("page_id=1") != 0) || (prevpageid.indexOf("page_id=2") != 0) || (prevpageid.indexOf("page_id=6") != 0))) {
+                                if ((newexpdate < newfuturedate) && ((prevpageid.indexOf("page_id=1") != -1) || (prevpageid.indexOf("page_id=2") != -1) || (prevpageid.indexOf("page_id=6") != -1))) {
                                     $('#myModal2').modal('show'); 
                                     return false;
 				}

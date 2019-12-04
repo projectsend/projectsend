@@ -862,7 +862,7 @@ $message = '
 						}
 					?>
               <div class="after_form_buttons">
-              <a class="btn btn-default btn-wide" href="<?php echo $get_prev_url; ?>" >Back</a>
+              <a class="btn btn-default btn-wide" href="<?php  if($get_prev_id==1){echo BASE_URI.'inbox.php';}else{echo $get_prev_url;} ?>" ><?php  if($get_prev_id==1){echo 'Cancel';}else{?>Back <?php }?></a>
                 <button type="submit" name="submit" class="btn btn-wide btn-primary">
                 <?php _e('Save','cftp_admin'); ?>
                 </button>

@@ -971,7 +971,7 @@ while( $row = $statement->fetch() ) {
 		</div>
 
 
-		<div class="row edit_files">
+		<div class="row edit_files filevalues">
 			<div class="col-sm-12">
 				<div class="row edit_files_blocks">
 					<div class="col-sm-6 col-xl-3 column_even column">
@@ -1731,32 +1731,85 @@ $(document).ready(function() {
     }
 });
 
+
+
+// function validateUsers() {
+// 	$(".filevalues").get().forEach(function(entry, index, array) {
+// 		var expirstatus=$(entry).find('.expires').prop('checked');
+// 		if(expirstatus==true){
+// 			var exPdateinputValues=$(entry).find('.exPdate').val();
+// 			var futuredateinputValues=$(entry).find('.futuredate').val();
+
+// 			exPdateinputValues=exPdateinputValues.split("-");
+// 			var exPdate=exPdateinputValues[1]+"/"+exPdateinputValues[0]+"/"+exPdateinputValues[2];
+// 			var newexpdate=new Date(exPdate).getTime();
+
+// 			var futuredateinputValues=$('.futuredate').val();
+// 			futuredateinputValues=futuredateinputValues.split("-");
+// 			var futuredate=futuredateinputValues[1]+"/"+futuredateinputValues[0]+"/"+futuredateinputValues[2];
+// 			var newfuturedate=new Date(futuredate).getTime();
+
+// 			if (newexpdate <= newfuturedate){
+// 		    	$('#myModal').modal('show'); 
+// 		    	return false;
+// 		    }
+// 		}
+// 	});
+// 	var invalid_invites = 0;
+// 	$('.new_client option').each(function () {
+// 		var userinput = $(this).val();
+// 		var pattern = /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i
+
+// 		if(!pattern.test(userinput))
+// 		{
+// 		 $(".search-choice span:contains('"+userinput+"')").parent().remove();
+// 		$(this).remove();
+// 		invalid_invites++;
+// 		}
+// 	});
+// 	if (invalid_invites !=0 ) {
+// 		alert('Invite users with valid email address');
+// 		invalid_invites=0;
+// 	} else{
+// 		$('#upload-continue').click();
+// 	}
+
+// }
+
+
 function validateUsers() {
-	if($(".expires").prop('checked') == true){
+	var savestatus=0;
+	$(".filevalues").get().forEach(function(entry, index, array) {
+		var expirstatus=$(entry).find('.expires').prop('checked');
+		if(expirstatus == true){
+			var exPdateinputValues = $('.exPdate').map(function(key,val) {
+		    return $(this).val();
+			}).toArray();
+			var futuredateinputValues = $('.futuredate').map(function() {
+			    return $(this).val();
+			}).toArray();
 
-		var date=$('.exPdate').val();
-		date=date.split("-");
-		var exPdate=date[1]+"/"+date[0]+"/"+date[2];
-		var newexpdate=new Date(exPdate).getTime();
+			for (var i = 0; i < exPdateinputValues.length; i++) {
+				var date=exPdateinputValues[i];
+				date=date.split("-");
+				var exPdate=date[1]+"/"+date[0]+"/"+date[2];
+				var newexpdate=new Date(exPdate).getTime();
 
-		var date1=$('.futuredate').val();
-		date1=date1.split("-");
-		var futuredate=date1[1]+"/"+date1[0]+"/"+date1[2];
-		var newfuturedate=new Date(futuredate).getTime();
+				var date1=futuredateinputValues[i];
+				date1=date1.split("-");
+				var futuredate=date1[1]+"/"+date1[0]+"/"+date1[2];
+				var newfuturedate=new Date(futuredate).getTime();
 
-		if (newexpdate <= newfuturedate){
-	    	$('#myModal').modal('show'); 
-	    	return false;
-	    }
-
-		// var date= new Date($('.exPdate').val());
-		// var date1= new Date($('.futuredate').val());
-	 //    if (date.getTime() <= date1.getTime()){
-	 //    	$('#myModal').modal('show'); 
-	 //    	return false;
-	 //    }
-	}
-
+				if (newexpdate <= newfuturedate){
+					savestatus=1;
+					$('#myModal').modal('show'); 
+					return false;
+				}
+			}
+		}
+	});
+	
+	
 	var invalid_invites = 0;
 	$('.new_client option').each(function () {
 		var userinput = $(this).val();
@@ -1773,10 +1826,11 @@ function validateUsers() {
 		alert('Invite users with valid email address');
 		invalid_invites=0;
 	} else{
-		$('#upload-continue').click();
+		if(savestatus==0){
+			$('#upload-continue').click();
+		}
 	}
 }
-
 </script>
 
 

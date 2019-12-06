@@ -861,12 +861,30 @@ cursor: pointer;
                                             if (($row['expires'] == '0') || (time() < strtotime($row['expiry_date']))) {
                                         ?>
                                             <a href="<?php echo $download_link; ?>" class="refreshcls" target="_blank">
-                                            <?php echo html_output($row['filename']); ?>
+                                            <?php
+	                                            $targetDir = UPLOADED_FILES_FOLDER;
+												$zip = zip_open($targetDir.$row['filename']);
+												if ($zip) {
+													while ($zip_entry = zip_read($zip)) {
+														echo zip_entry_name($zip_entry) . ",";
+													}
+													zip_close($zip);
+												}
+
+                                            // echo html_output($row['filename']); ?>
                                             </a>
 
                                         <?php 
                                             } else {
-                                                echo html_output($row['filename']);
+                                            	$targetDir = UPLOADED_FILES_FOLDER;
+												$zip = zip_open($targetDir.$row['filename']);
+												if ($zip) {
+													while ($zip_entry = zip_read($zip)) {
+														echo zip_entry_name($zip_entry) . ",";
+													}
+													zip_close($zip);
+												}
+                                                // echo html_output($row['filename']);
                                             }
                                         }
                                         ?>

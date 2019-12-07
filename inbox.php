@@ -864,9 +864,10 @@ cursor: pointer;
                                             <?php
 	                                            $targetDir = UPLOADED_FILES_FOLDER;
 												$zip = zip_open($targetDir.$row['filename']);
+												
 												if ($zip) {
 													while ($zip_entry = zip_read($zip)) {
-														echo zip_entry_name($zip_entry) . ",";
+														echo zip_entry_name($zip_entry) .",";
 													}
 													zip_close($zip);
 												}

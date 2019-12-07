@@ -95,8 +95,10 @@ sort($allowed_file_types);
                             // Rename the file
                             $zipName = $this_file->safe_rename($zipName);
                             $ext = strrpos($zipName, '.');
+                            // var_dump($file_n);die();
                             $zipName_a = substr($zipName, 0, $ext);
                             $zipName_b = substr($zipName, $ext);
+                            // var_dump($zipName);die();
                             $count = 1;
                             while (file_exists($targetDir . DIRECTORY_SEPARATOR . $zipName_a . '_guestdrop_' . $count .'_'. $zipName_b))
                             $count++;

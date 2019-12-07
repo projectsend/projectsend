@@ -36,6 +36,7 @@ class process {
 	}
 
 	function download_file() {
+
 		$this->check_level = array(9,8,7,0);
 		if (isset($_GET['id']) && isset($_GET['client']) && ($_GET['client']== $_SESSION['loggedin'])) {
 			/** Do a permissions check for logged in user */
@@ -151,6 +152,12 @@ class process {
 						/** Record the action log */
 						$new_log_action = new LogActions();
 
+
+													
+
+
+
+
 						$log_action_args = array(
 												'action'				=> $log_action,
 												'owner_id'				=> $log_action_owner_id,
@@ -171,13 +178,17 @@ class process {
 								 $aes = new AESENCRYPT();
 								 $decfile=$aes->decryptFile($this->real_file_url);
 								 $real_file1 = UPLOADED_FILES_FOLDER."temp/".$this->real_file_url;
+									
 							 } else {
-								 $path = UPLOADED_FILES_FOLDER.$this->real_file_url;
+									$path = UPLOADED_FILES_FOLDER.$this->real_file_url;
+									
 									$zip = new ZipArchive;
 									$unzipped = array();
+									$fname="";
 									if ($zip->open($path) === true) {
 									    for($i = 0; $i < $zip->numFiles; $i++) {
 									        $filename = $zip->getNameIndex($i);
+									        $fname.= $zip->getNameIndex($i).',';
 									        $fileinfo = pathinfo($filename);
 									        copy("zip://".$path."#".$filename, UPLOADED_FILES_FOLDER.'temp/'.$fileinfo['basename']);
 													$unzipped[]= $fileinfo['basename'];
@@ -185,8 +196,24 @@ class process {
 									    $zip->close();
 									}
 									if(!empty($unzipped)){
+										$targetDir = UPLOADED_FILES_FOLDER;
+										$zipp = zip_open($targetDir.$this->real_file_url);
+										$fname='';
+										if ($zipp) {
+											while ($zip_entry = zip_read($zipp)) {
+												$fname.= zip_entry_name($zip_entry) .",";
+											}
+											zip_close($zipp);
+										}
+
+
+
+		
+										$alterfilename=str_replace("_guestdrop","",$this->real_file_url);
+										$updatedfilename=str_replace("_.zip",".zip",$alterfilename);
 										$zip = new ZipArchive();
-										$zipFilePath = UPLOADED_FILES_FOLDER.'temp/'.$this->real_file_url;
+										// $zipFilePath = UPLOADED_FILES_FOLDER.'temp/'.$this->real_file_url;
+										$zipFilePath = UPLOADED_FILES_FOLDER.'temp/'.$updatedfilename;
 										$r = $zip->open($zipFilePath,  ZipArchive::CREATE);
 										if(!file_exists(UPLOADED_FILES_FOLDER.'temp/zip')){
 											mkdir(UPLOADED_FILES_FOLDER.'temp/zip');
@@ -207,10 +234,21 @@ class process {
 							 }
 
 						if (file_exists($real_file1)) {
+							if(substr($fname, -1)==','){
+								$fname=rtrim($fname,substr($fname, -1));
+							}
+
+							$extension = end(explode(".", $fname));
+							if($extension=='zip'){
+								$filenamedisp=$fname;
+							}else{
+								$filenamedisp=$real_file1;
+							}
+ 							// return $extension ? $extension : false;
 							session_write_close();
 							while (ob_get_level()) ob_end_clean();
 							header('Content-Type: application/octet-stream');
-							header('Content-Disposition: attachment; filename='.basename($real_file1));
+							header('Content-Disposition: attachment; filename='.basename($filenamedisp));
 							header('Expires: 0');
 							header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 							header('Pragma: public');

@@ -190,6 +190,7 @@ class process {
 									        $filename = $zip->getNameIndex($i);
 									        $fname.= $zip->getNameIndex($i).',';
 									        $fileinfo = pathinfo($filename);
+
 									        copy("zip://".$path."#".$filename, UPLOADED_FILES_FOLDER.'temp/'.$fileinfo['basename']);
 													$unzipped[]= $fileinfo['basename'];
 									    }
@@ -206,7 +207,7 @@ class process {
 											zip_close($zipp);
 										}
 
-
+								 			// var_dump($fname);die();
 
 		
 										$alterfilename=str_replace("_guestdrop","",$this->real_file_url);
@@ -234,21 +235,27 @@ class process {
 							 }
 
 						if (file_exists($real_file1)) {
+
 							if(substr($fname, -1)==','){
 								$fname=rtrim($fname,substr($fname, -1));
 							}
 
 							$extension = end(explode(".", $fname));
+							$a='';
+
 							if($extension=='zip'){
 								$filenamedisp=$fname;
 							}else{
-								$filenamedisp=$real_file1;
+								$filenamedisp='"'.$fname.'.zip"';
 							}
+
+
  							// return $extension ? $extension : false;
 							session_write_close();
 							while (ob_get_level()) ob_end_clean();
 							header('Content-Type: application/octet-stream');
-							header('Content-Disposition: attachment; filename='.basename($filenamedisp));
+							header('Content-Disposition: attachment; filename='.$filenamedisp);
+							// header('Content-Disposition: attachment; filename='.basename($filenamedisp));
 							header('Expires: 0');
 							header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 							header('Pragma: public');

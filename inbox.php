@@ -864,28 +864,31 @@ cursor: pointer;
                                             <?php
 	                                            $targetDir = UPLOADED_FILES_FOLDER;
 												$zip = zip_open($targetDir.$row['filename']);
-												
-												if ($zip) {
-													while ($zip_entry = zip_read($zip)) {
-														echo zip_entry_name($zip_entry) .",";
+												if($row['request_type'] != '0' || $row['request_type'] != null){
+													if ($zip) {
+														while ($zip_entry = zip_read($zip)) {
+															echo zip_entry_name($zip_entry) .",";
+														}
+														zip_close($zip);
 													}
-													zip_close($zip);
+												}else{
+                                            		echo html_output($row['filename']);
 												}
+                                            ?>
 
-                                            // echo html_output($row['filename']); ?>
                                             </a>
 
                                         <?php 
                                             } else {
-                                            	$targetDir = UPLOADED_FILES_FOLDER;
-												$zip = zip_open($targetDir.$row['filename']);
-												if ($zip) {
-													while ($zip_entry = zip_read($zip)) {
-														echo zip_entry_name($zip_entry) . ",";
-													}
-													zip_close($zip);
-												}
-                                                // echo html_output($row['filename']);
+            //                                 	$targetDir = UPLOADED_FILES_FOLDER;
+												// $zip = zip_open($targetDir.$row['filename']);
+												// if ($zip) {
+												// 	while ($zip_entry = zip_read($zip)) {
+												// 		echo zip_entry_name($zip_entry) . ",";
+												// 	}
+												// 	zip_close($zip);
+												// }
+                                                echo html_output($row['filename']);
                                             }
                                         }
                                         ?>

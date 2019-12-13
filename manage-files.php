@@ -95,6 +95,7 @@ if (isset($_GET['category'])) {
 }
 
 include('header.php');
+error_reporting(E_ALL);
 ?>
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -627,15 +628,32 @@ include('header.php');
 											$extension = strtolower($pathinfo['extension']);
 											echo html_output($extension);
 										?></td>
-                  <td class="file_name"><?php
+					                  <td class="file_name">
+					                  	<?php
 											/**
 											 * Clients cannot download from here.
 											 */
 											if($current_level != '0') {
-												$download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1';
+												$download_link = BASE_URI.'process.php?do=download&amp;client='.$global_user.'&amp;id='.$row['id'].'&amp;n=1&amp;request_type='.$row['request_type'].'';
 										?>
-                    <a href="<?php echo $download_link; ?>" target="_blank"> <?php echo html_output($row['filename']); ?> </a>
-                    <?php
+					                    <a href="<?php echo $download_link; ?>" target="_blank"> 
+					                    	<?php //echo html_output($row['filename']); ?> 
+					                    	 <?php $targetDir = UPLOADED_FILES_FOLDER;
+												$zip = zip_open($targetDir.$row['filename']);
+												if($row['request_type'] != '0' || $row['request_type'] != null){
+													if ($zip) {
+														while ($zip_entry = zip_read($zip)) {
+															echo zip_entry_name($zip_entry) .",";
+														}
+														zip_close($zip);
+													}
+												}else{
+					                        		echo html_output($row['filename']);
+												}
+											?>
+
+					                    </a>
+					                    <?php
 											}
 											else {
 												echo html_output($row['filename']);

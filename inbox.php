@@ -867,7 +867,7 @@ cursor: pointer;
                                             <?php
 	                                            $targetDir = UPLOADED_FILES_FOLDER;
 												$zip = zip_open($targetDir.$row['filename']);
-												if($row['request_type'] != '0' || $row['request_type'] != null){
+												if($row['request_type'] == '2'){
 													if ($zip) {
 														while ($zip_entry = zip_read($zip)) {
 															echo zip_entry_name($zip_entry) .",";
@@ -876,6 +876,7 @@ cursor: pointer;
 													}
 												}else{
                                             		echo html_output($row['filename']);
+
 												}
                                             ?>
 

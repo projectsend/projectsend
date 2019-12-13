@@ -1733,7 +1733,7 @@ $(document).ready(function() {
 
 
 
-// function validateUsers() {
+// function validateUsers_old() {
 // 	$(".filevalues").get().forEach(function(entry, index, array) {
 // 		var expirstatus=$(entry).find('.expires').prop('checked');
 // 		if(expirstatus==true){
@@ -1780,6 +1780,7 @@ $(document).ready(function() {
 function validateUsers() {
 	var savestatus=0;
 	$(".filevalues").get().forEach(function(entry, index, array) {
+
 		var expirstatus=$(entry).find('.expires').prop('checked');
 		if(expirstatus == true){
 			var exPdateinputValues = $('.exPdate').map(function(key,val) {
@@ -1799,37 +1800,42 @@ function validateUsers() {
 				date1=date1.split("-");
 				var futuredate=date1[1]+"/"+date1[0]+"/"+date1[2];
 				var newfuturedate=new Date(futuredate).getTime();
-
-				if (newexpdate <= newfuturedate){
-					savestatus=1;
-					$('#myModal').modal('show'); 
-					return false;
+				if($(array[i]).find('.expires').prop('checked')==true){
+					if (newexpdate <= newfuturedate){
+						savestatus=1;
+						$('#myModal').modal('show'); 
+						// return false;
+					}else{
+						savestatus=0;
+					}
 				}
 			}
-		}
-	});
-	
-	
-	var invalid_invites = 0;
-	$('.new_client option').each(function () {
-		var userinput = $(this).val();
-		var pattern = /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i
 
-		if(!pattern.test(userinput))
-		{
-		 $(".search-choice span:contains('"+userinput+"')").parent().remove();
-		$(this).remove();
-		invalid_invites++;
 		}
 	});
-	if (invalid_invites !=0 ) {
-		alert('Invite users with valid email address');
-		invalid_invites=0;
-	} else{
-		if(savestatus==0){
-			$('#upload-continue').click();
+	if(savestatus==0){
+		var invalid_invites = 0;
+		$('.new_client option').each(function () {
+			var userinput = $(this).val();
+			var pattern = /^\b[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i
+
+			if(!pattern.test(userinput))
+			{
+			 $(".search-choice span:contains('"+userinput+"')").parent().remove();
+			$(this).remove();
+			invalid_invites++;
+			}
+		});
+		if (invalid_invites !=0 ) {
+			alert('Invite users with valid email address');
+			invalid_invites=0;
+		} else{
+			if(savestatus==0){
+				$('#upload-continue').click();
+			}
 		}
 	}
+	
 }
 </script>
 

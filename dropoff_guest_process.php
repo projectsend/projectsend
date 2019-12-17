@@ -68,13 +68,13 @@ if(!empty($auth)){
 
 */
 //guestallowed_file_types
-$allowed_file_types = str_replace('|',',',$allowed_file_types);
-
+$allowed_file_types_2 = str_replace('|',',',$allowed_file_types);
+$allowed_file_types_2 = str_replace(',zip','',$allowed_file_types_2);
 /** Explode, sort, and implode the values to list them alphabetically */
 
-$allowed_file_types = explode(',',$allowed_file_types);
+$allowed_file_types_2 = explode(',',$allowed_file_types_2);
 
-sort($allowed_file_types);
+sort($allowed_file_types_2);
 
 // $allowed_file_types = implode(',',$allowed_file_types);
 
@@ -172,7 +172,7 @@ sort($allowed_file_types);
 
                         // $allowed =  array('ai','avi','bin','bmp','cdr','doc','docm','docx','eps','epub','fjsw','fla','flp','flv','gif','htm','html','ins','isf','iso','ist','jpeg','jpg','kes','kmz','m4a','m4v','mov','mp3','mp4','mpg','odt','oog','pdf','png','pps','ppsx','ppt','pptm','pptx','psd','rtf','swf','te','tif','tiff','txt','wav','wmv','wxr','xbk','xls','xlsm','xlsx');
 
-                        $allowed =  $allowed_file_types; 
+                        $allowed =  $allowed_file_types_2; 
 
 
 
@@ -632,11 +632,11 @@ sort($allowed_file_types);
 
                     // $accept = '.ai, .avi, .bin, .bmp, .cdr, .doc, .docm, .docx, .eps, .epub, .fjsw, .fla, .flp, .flv, .gif, .htm, .html, .ins, .isf, .iso, .ist, .jpeg, .jpg, .kes, .kmz, .m4a, .m4v, .mov, .mp3, .mp4, .mpg, .odt, .oog, .pdf, .png, .pps, .ppsx, .ppt, .pptm, .pptx, .psd, .rtf, .swf, .te, .tif, .tiff, .txt, .wav, .wmv, .wxr, .xbk, .xls, .xlsm, .xlsx '; 
 
-                $allowed_file_types = preg_filter('/^/', ' .', $allowed_file_types);
+                $allowed_file_types_2 = preg_filter('/^/', ' .', $allowed_file_types_2);
 
-                $allowed_file_types = implode(',',$allowed_file_types);
+                $allowed_file_types_2 = implode(',',$allowed_file_types_2);
 
-                $accept=$allowed_file_types;
+                $accept=$allowed_file_types_2;
 
                 $acceptfiletype=$accept;
 
@@ -700,7 +700,7 @@ sort($allowed_file_types);
 
                                 <?php
 
-                                    $allowed_file_typesdisp = str_replace('.',' ',$allowed_file_types);
+                                    $allowed_file_typesdisp = str_replace('.',' ',$allowed_file_types_2);
 
                                     echo $allowed_file_typesdisp;
 

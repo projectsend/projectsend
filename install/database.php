@@ -30,6 +30,7 @@ if (defined('TRY_INSTALL')) {
 								  `uploader` varchar('.MAX_USER_CHARS.') NOT NULL,
 								  `expires` INT(1) NOT NULL default \'0\',
 								  `notify` int(11) NOT NULL default \'0\',
+								  `hidden` int(11) NOT NULL default \'0\',
 								  `expiry_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `future_send_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `public_allow` INT(1) NOT NULL default \'0\',
@@ -456,6 +457,16 @@ if (defined('TRY_INSTALL')) {
 (1, '<p>It\'s Okay to be Smart. Whats that supposed to mean? Who comes up with these taglines?</p>', 'microhealth.png', '<h4><font size=\"3\" style=\"\"><b>About MicroHealth Send ?</b></font><br></h4><div><font size=\"3\" style=\"\"><p></p></font></div><div><p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa.</p><font size=\"3\" style=\"\"><br></font></div><p></p>', '<b><font size=\"3\">Not just your average template!</font></b><div><p></p></div><div><p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa.</p></div>', 1, 1)",
 					
 		),
+	'20' =>  array(
+				'table'	=> tbl_blacklist,
+				'query'	=> 'CREATE TABLE IF NOT EXISTS `'.tbl_blacklist.'` (
+							  `id` int(10) NOT NULL AUTO_INCREMENT,
+							  `mail` varchar(255) COLLATE utf8_general_ci NOT NULL,
+							  PRIMARY KEY (`id`)
+							) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+							',
+				'params' => array(),
+	),
 	);
 }
 

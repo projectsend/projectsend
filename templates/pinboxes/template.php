@@ -9,7 +9,7 @@ Description: Inspired by the awesome design of Pinterest!
 */
 $ld = 'pinboxes_template'; // specify the language domain for this template
 
-define('TEMPLATE_RESULTS_PER_PAGE', -1);
+define('TEMPLATE_RESULTS_PER_PAGE', 10);
 
 if ( !empty( $_GET['category'] ) ) {
 	$category_filter = $_GET['category'];

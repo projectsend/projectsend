@@ -273,7 +273,7 @@ include('header.php');
 		
 
 		<?php
-
+			 // var_dump($results_type);die();
 			if ($results_type != 'client') {
 
 				/*

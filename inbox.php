@@ -125,6 +125,7 @@ if (isset($_GET['client_id'])) {
 		$name_for_actions = $this_client['username'];
 
 		$results_type = 'client';
+		// var_dump($this_client);die();
 
 	}
 

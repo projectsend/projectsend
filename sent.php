@@ -73,6 +73,8 @@ Fetch all categories
 /**
  * Filtering by category
  */
+ // var_dump($_GET['category']);die();
+
 if (isset($_GET['category'])) {
     $this_id = $_GET['category'];
     $this_category = get_category($this_id);

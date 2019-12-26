@@ -16,7 +16,7 @@ $cc_active_page = 'Public Files';
 $page_title = __('Public Files','cftp_admin');
 $current_level = get_current_user_level();
 $current_user_name = CURRENT_USER_USERNAME;
-
+// var_dump($current_user_name);die();
 /*
  * Get the total downloads count here. The results are then
  * referenced on the results table.

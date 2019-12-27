@@ -86,6 +86,8 @@ if (isset($_GET['category'])) {
     }
 }
 include('header.php');
+// var_dump($this_category);die();
+
 ?>
 
 <script type="text/javascript">

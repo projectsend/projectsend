@@ -232,6 +232,7 @@ if (isset($_GET['category'])) {
 
 
 include('header.php');
+// var_dump($this_category);die();
 
 ?>
 
@@ -922,7 +923,6 @@ cursor: pointer;
 			*/
 
 			$current_level = get_current_user_level();
-
 			if ($current_level == '7' || $current_level == '8' || $current_level == '0' || $current_level == '9') {
 
 				$conditions[] = "tbl_files_relations.client_id =" . CURRENT_USER_ID;

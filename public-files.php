@@ -90,6 +90,7 @@ if (isset($_GET['category'])) {
     }
 }
 include('header.php');
+// var_dump($results_type);
 ?>
 
 <script type="text/javascript">

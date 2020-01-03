@@ -85,6 +85,7 @@ if (isset($_GET['category'])) {
 }
 include('header.php');
 // var_dump($this_category);die();
+// var_dump($this_category);die();
 
 ?>
 <form id="dynamic-draft-form" action="upload-process-form.php" method="post" >

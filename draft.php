@@ -348,6 +348,7 @@ include('header.php');
                 $conditions1[] = "(filename LIKE '$term' OR description LIKE '$term')";
                 $no_results_error = 'search';
             }
+            $current_date = date("Y-m-d");
             
             if ( !empty( $conditions1 ) ) {
 
@@ -364,7 +365,8 @@ include('header.php');
                 }
 
             }
-            $fq1 .=" ORDER BY tbl_files.timestamp DESC";
+            // $fq1 .=" ORDER BY tbl_files.timestamp DESC";
+            $fq1 .=" AND tbl_files.expires = '0' || tbl_files.expires = '1' && tbl_files.expiry_date >'".$current_date."' ORDER BY tbl_files.timestamp DESC";
             // echo("<pre>".$fq1."</pre>");
             $sql_files_draft = $dbh->prepare($fq1);
             $sql_files_draft->execute();
@@ -372,6 +374,8 @@ include('header.php');
 
             $current_date = date("Y-m-d");
             $q_sent_file = "SELECT * FROM tbl_files WHERE tbl_files.uploader ='".CURRENT_USER_USERNAME ."' AND tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')  AND tbl_files.future_send_date >='".$current_date."' AND tbl_files.expires = '0' || tbl_files.expires = '1' && tbl_files.expiry_date >'".$current_date."' AND  tbl_files.public_allow=0 ORDER BY tbl_files.timestamp DESC";
+
+
 
             // $conditions[] = "tbl_files.expires = '0' || tbl_files.expires = '1' && tbl_files.expiry_date >'".$current_date."'";
 

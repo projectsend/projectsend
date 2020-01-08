@@ -24,7 +24,7 @@
      	"php": ">=7.0",
         "bainternet/php-hooks": "^1.0",
         "claviska/simpleimage": "^3.3",
-        "enshrined/svg-sanitize": "^0.8.2",
+        "enshrined/svg-sanitize": "^0.12.0",
         "league/oauth2-google": "^2.2",
         "moxiecode/plupload": "3.1.*",
         "paragonie/random_compat": "^2.0",

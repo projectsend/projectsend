@@ -42,7 +42,7 @@ $(document).ready(function() {
 			var action = $('#clients_actions').val();
 			if (action == 'delete') {
 				var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
-				var msg_2 = '<?php _e("clients and unassign/delete their files. Are you sure you want to continue?",'cftp_admin'); ?>';
+				var msg_2 = '<?php _e("clients and unassign/delete their files. Clients should have Inactive status before deleting. Are you sure you want to continue?",'cftp_admin'); ?>';
 				if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
 					return true;
 				} else {

@@ -332,7 +332,7 @@ include('header.php');
                 $params[':uploader'] = $global_user;
             }
             /** Check expires status for no file message */
-            // $conditions[] = "tf.expires = '0' || tf.expires = '1' && tf.expiry_date >'".$current_date."'";
+            $conditions[] = "tf.expires = '0' || tf.expires = '1' && tf.expiry_date >'".$current_date."'";
 
             /** Add the search terms */
             if(isset($_GET['search']) && !empty($_GET['search'])) {

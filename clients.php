@@ -114,6 +114,10 @@ $(document).ready(function() {
 					break;
 
 				case 'delete':
+					foreach ($selected_clients as $work_client) {
+						$this_client = new ClientActions();
+						$hide_client = $this_client->change_client_active_status($work_client,'0');
+					}
 					foreach ($selected_clients as $client) {
 						$this_client = new ClientActions();
 						$delete_client = $this_client->delete_client($client);

@@ -36,7 +36,7 @@ include('header.php');
 				var action = $('#users_actions').val();
 				if (action == 'delete') {
 					var msg_1 = '<?php _e("You are about to delete",'cftp_admin'); ?>';
-					var msg_2 = '<?php _e("users. Are you sure you want to continue?",'cftp_admin'); ?>';
+					var msg_2 = '<?php _e("users. Users should have Inactive status before deleting. Are you sure you want to continue?",'cftp_admin'); ?>';
 					if (confirm(msg_1+' '+checks.length+' '+msg_2)) {
 						return true;
 					} else {

@@ -723,9 +723,12 @@ while( $row = $statement->fetch() ) {
       <?php
 
 						}
-
 					?>
+	<?php
+		if ($current_level != 0) {
+	?>
       <th data-hide="phone" data-sort-ignore="true"><?php _e("Actions",'cftp_admin'); ?></th>
+    <?php }?>
     </tr>
   </thead>
   <tbody>
@@ -786,8 +789,12 @@ while( $row = $statement->fetch() ) {
 							}
 
 						?>
+	<?php 
+		if ($current_level != 0) {
+	?>
       <td><a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>&page_id=8" class="btn-primary btn btn-sm">
         <?php _e('Edit file','cftp_admin'); ?></td>
+    <?php }?>
     </tr>
     <?php
 

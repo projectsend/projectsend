@@ -86,7 +86,7 @@ if (isset($_GET['category'])) {
     }
 }
 include('header.php');
-// var_dump($this_category);die();
+// var_dump(CURRENT_USER_ID);die();
 
 ?>
 
@@ -312,10 +312,18 @@ include('header.php');
              */
 			$current_date = date("Y-m-d");
             $params = array();
+            // $fq = "SELECT * FROM tbl_files AS tf LEFT JOIN ".TABLE_FILES_RELATIONS." AS tfr ON tf.id = tfr.file_id";
             $fq = "SELECT * FROM tbl_files AS tf LEFT JOIN ".TABLE_FILES_RELATIONS." AS tfr ON tf.id = tfr.file_id";
-            
+            // tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations)
 
             $conditions[] = "tfr.hide_sent = '0' ";
+
+            $conditions[] = "tf.public_allow = 0 ";
+
+// check user id
+            $conditions[] = "tfr.from_id = '". CURRENT_USER_ID ."'";
+
+
             if ( isset($search_on) || !empty($gotten_files) ) {
                 $conditions[] = "FIND_IN_SET(id, :files)";
                 $params[':files'] = $gotten_files;
@@ -327,12 +335,12 @@ include('header.php');
             $current_level = get_current_user_level();
             if ($current_level == '7' || $current_level == '8' || $current_level == '0' || $current_level == '9') {
                 $conditions[] = "tfr.from_id =" . CURRENT_USER_ID;
-				$conditions[] = "tf.future_send_date<='".$current_date."'";
+				$conditions[] = "(tf.future_send_date<='".$current_date."'";
                 $no_results_error = 'account_level';
                 $params[':uploader'] = $global_user;
             }
             /** Check expires status for no file message */
-            $conditions[] = "tf.expires = '0' || tf.expires = '1' && tf.expiry_date >'".$current_date."'";
+            $conditions[] = "tf.expires = '0' || tf.expires = '1' && tf.expiry_date >'".$current_date."')";
 
             /** Add the search terms */
             if(isset($_GET['search']) && !empty($_GET['search'])) {

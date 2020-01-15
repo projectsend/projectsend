@@ -1277,7 +1277,6 @@ include('header.php');
 								<th data-hide="phone,tablet"><?php _e('Uploader','cftp_admin'); ?></th>
 						<?php
 
-							if($current_level != '0') {
 
 						?>
 
@@ -1285,6 +1284,7 @@ include('header.php');
                   <th data-hide="phone,tablet"><?php _e('Sent to','cftp_admin'); ?></th>
 
 								<?php
+							if($current_level != '0') {
 
 									if ( !isset( $search_on ) ) {
 
@@ -1554,9 +1554,6 @@ include('header.php');
                     	</a>
 									</td>
 
-<?php
-	if($current_level != '0') {
-?>
 <td>
 <?php
 
@@ -1577,6 +1574,9 @@ echo $data['user'].'</br>';
 ?>
 
                   </td>
+<?php
+	if($current_level != '0') {
+?>
 											<?php
 
 												if ( !isset( $search_on ) ) {

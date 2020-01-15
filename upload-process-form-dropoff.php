@@ -352,13 +352,13 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 									if ($current_level != 0) 
 									{
 									?>
-										<th data-hide="phone"><?php _e("Status",'cftp_admin'); ?></th>
-										<th data-hide="phone"><?php _e('Assignations','cftp_admin'); ?></th>
-										<th data-hide="phone"><?php _e('Public','cftp_admin'); ?></th>
+										<!-- <th data-hide="phone"><?php //_e("Status",'cftp_admin'); ?></th>
+										<th data-hide="phone"><?php //_e('Assignations','cftp_admin'); ?></th>
+										<th data-hide="phone"><?php //_e('Public','cftp_admin'); ?></th>
+										<th data-hide="phone" data-sort-ignore="true"><?php //_e("Actions",'cftp_admin'); ?></th> -->
 									<?php
 									}
 									?>
-									<th data-hide="phone" data-sort-ignore="true"><?php _e("Actions",'cftp_admin'); ?></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -370,50 +370,55 @@ $auth_key = isset($_POST['auth_key'])?$_POST['auth_key']:'';
 									<td><?php echo html_output($uploaded['name']); ?></td>
 									<td><?php echo html_output($uploaded['description']); ?></td>
 									<td><?php echo html_output($uploaded['file']); ?></td>
-									<?php
-									if ($current_level != 0) 
-									{
-									?>
-										<td class="<?php echo (!empty($uploaded['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>">
-											<?php
-											$status_hidden	= __('Hidden','cftp_admin');
-											$status_visible	= __('Visible','cftp_admin');
-											$class			= (!empty($uploaded['hidden'])) ? 'danger' : 'success';
-											?>
-											<span class="label label-<?php echo $class; ?>"> <?php echo ( !empty( $hidden ) && $hidden == 1) ? $status_hidden : $status_visible; ?> </span>
-										</td>
-										<td>
-											<?php 
-											$class = ($uploaded['assignations'] > 0) ? 'success' : 'danger'; 
-											?>
-											<span class="label label-<?php echo $class; ?>"> <?php echo $uploaded['assignations']; ?> </span>
-										</td>
-										<td class="col_visibility">
-											<?php
-											if ($uploaded['public'] == '1') 
-											{
-											?>
-												<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-id="<?php echo $uploaded['file_id']; ?>" data-token="<?php echo html_output($uploaded['public_token']); ?>" data-placement="top" data-toggle="popover" data-original-title="<?php _e('Public URL','cftp_admin'); ?>">
-											<?php
-											}
-											else 
-											{
-											?>
-												<a href="javascript:void(0);" class="btn btn-default btn-sm disabled" rel="" title="">
-											<?php
-											}
-												$status_public	= __('Public','cftp_admin');
-												$status_private	= __('Private','cftp_admin');
-												echo ($uploaded['public'] == 1) ? $status_public : $status_private;
-											?>
-											</a>
-										</td>
-									<?php
-									}
-									?>
-									<td>
-										<a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>&page_id=9" class="btn-primary btn btn-sm" disabled><?php _e('Edit file','cftp_admin'); ?></a>
-									</td>
+
+
+
+<!-- <?php
+//if ($current_level != 0) 
+//{
+?>
+	<td class="<?php //echo (!empty($uploaded['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>">
+		<?php
+		//$status_hidden	= __('Hidden','cftp_admin');
+		//$status_visible	= __('Visible','cftp_admin');
+		//$class			= (!empty($uploaded['hidden'])) ? 'danger' : 'success';
+		?>
+		<span class="label label-<?php //echo $class; ?>"> <?php //echo ( !empty( $hidden ) && $hidden == 1) ? $status_hidden : $status_visible; ?> </span>
+	</td>
+	<td>
+		<?php 
+		//$class = ($uploaded['assignations'] > 0) ? 'success' : 'danger'; 
+		?>
+		<span class="label label-<?php //echo $class; ?>"> <?php //echo $uploaded['assignations']; ?> </span>
+	</td>
+	<td class="col_visibility">
+		<?php
+		//if ($uploaded['public'] == '1') 
+		//{
+		?>
+			<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-id="<?php //echo $uploaded['file_id']; ?>" data-token="<?php //echo html_output($uploaded['public_token']); ?>" data-placement="top" data-toggle="popover" data-original-title="<?php //_e('Public URL','cftp_admin'); ?>">
+		<?php
+		//}
+		//else 
+		//{
+		?>
+			<a href="javascript:void(0);" class="btn btn-default btn-sm disabled" rel="" title="">
+		<?php
+		//}
+			//$status_public	= __('Public','cftp_admin');
+			//$status_private	= __('Private','cftp_admin');
+			//echo ($uploaded['public'] == 1) ? $status_public : $status_private;
+		?>
+		</a>
+	</td>
+	<td>
+		<a href="edit-file.php?file_id=<?php //echo html_output($uploaded['new_file_id']); ?>&page_id=9" class="btn-primary btn btn-sm" disabled><?php //_e('Edit file','cftp_admin'); ?></a>
+	</td>
+<?php
+}
+?>
+ -->
+
 								</tr>
 							<?php
 							}

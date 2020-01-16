@@ -14,6 +14,7 @@ $active_nav = 'files';
 $cc_active_page = 'Sent Files';
 $page_title = __('Sent Files','cftp_admin');
 $current_level = get_current_user_level();
+
 /*
  * Get the total downloads count here. The results are then
  * referenced on the results table.

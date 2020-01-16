@@ -340,7 +340,7 @@ include('header.php');
             if ($current_level == '7' || $current_level == '8' || $current_level == '0' || $current_level == '9') { 
                 $conditions1[] = "tbl_files.uploader ='". CURRENT_USER_USERNAME."'";
                 $conditions1[] = "tbl_files.id NOT IN(SELECT tbl_files_relations.file_id FROM tbl_files_relations WHERE tbl_files_relations.from_id = '". CURRENT_USER_ID."')";
-                $conditions1[] =  "(tbl_files.public_allow=0";
+                $conditions1[] =  "tbl_files.public_allow=0";
             }
             if(isset($_GET['search']) && !empty($_GET['search'])) {
                 $term = "%".$_GET['search']."%";
@@ -366,7 +366,7 @@ include('header.php');
 
             }
             // $fq1 .=" ORDER BY tbl_files.timestamp DESC";
-            $fq1 .=" AND tbl_files.expires = '0' || tbl_files.expires = '1' && tbl_files.expiry_date >'".$current_date."') ORDER BY tbl_files.timestamp DESC";
+            $fq1 .=" AND (tbl_files.expires = '0' || tbl_files.expires = '1' && tbl_files.expiry_date >'".$current_date."') ORDER BY tbl_files.timestamp DESC";
             // echo("<pre>".$fq1."</pre>");
             $sql_files_draft = $dbh->prepare($fq1);
             $sql_files_draft->execute();

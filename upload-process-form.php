@@ -713,14 +713,14 @@ while( $row = $statement->fetch() ) {
       <th data-hide="phone"><?php _e('Description','cftp_admin'); ?></th>
       <th data-hide="phone"><?php _e('File Name','cftp_admin'); ?></th>
 		<?php
-			if ($current_level != 0) {
+			//if ($current_level != 0) {
 		?>
 			<!-- <th data-hide="phone"><?php //_e("Status",'cftp_admin'); ?></th>
 			<th data-hide="phone"><?php //_e('Assignations','cftp_admin'); ?></th>
 			<th data-hide="phone"><?php //_e('Public','cftp_admin'); ?></th>
 			<th data-hide="phone" data-sort-ignore="true"><?php //_e("Actions",'cftp_admin'); ?></th> -->
 		<?php
-			}
+			//}
 		?>
     </tr>
   </thead>
@@ -734,10 +734,10 @@ while( $row = $statement->fetch() ) {
       <td><?php echo html_output($uploaded['name']); ?></td>
       <td><?php echo html_output($uploaded['description']); ?></td>
       <td><?php echo html_output($uploaded['file']); ?></td>
-<!--       
+      
 
 
-<?php
+<!-- <?php
 	//if ($current_level != 0) {
 	?>
 		<td class="<?php //echo (!empty($uploaded['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>"><?php
@@ -783,12 +783,6 @@ while( $row = $statement->fetch() ) {
 	<?php
 	//}
 	?> -->
-
-
-
-
-
-
 
 
 

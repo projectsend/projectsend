@@ -616,7 +616,7 @@ $message = '
                     </div>
                   </div>
                 </div>
-                <div class="row edit_files">
+                <div class="row edit_files filevalues">
                   <div class="col-sm-12">
                     <div class="row edit_files_blocks">
                       <div class="col-sm-6 col-xl-3 column_even column">
@@ -863,9 +863,10 @@ $message = '
 					?>
               <div class="after_form_buttons">
               <a class="btn btn-default btn-wide" href="<?php  if(($get_prev_id==8)||($get_prev_id==9)){echo BASE_URI.'inbox.php';}else{echo $get_prev_url;} ?>" ><?php  if(($get_prev_id==8)||($get_prev_id==9)){echo 'Cancel';}else{?>Back <?php }?></a>
-                <button type="submit" name="submit" class="btn btn-wide btn-primary">
+                <button type="button"  name="submit" class="btn btn-wide btn-primary" onclick="submitform()">
                 <?php _e('Save','cftp_admin'); ?>
                 </button>
+                <button type="submit"  name="submit" class="btn btn-wide btn-primary" id="submitformid" style="display: none;"></button>
               </div>
             </div>
           </form>
@@ -910,6 +911,25 @@ $message = '
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
+  </div>
+</div>
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Error!</h4>
+      </div>
+      <div class="modal-body">
+        <p>Expiry date should be greater than the Future send date.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
   </div>
 </div>
 <script type="text/javascript">
@@ -965,41 +985,59 @@ function window_back() {
 			$('select').trigger('chosen:updated');
 			return false;
 		});
+	});
 
-		$("form").submit(function() {
-			if($(".expires").prop('checked') == true){
+function submitform(){
+	// $("form").submit(function() {
+		var savestatus=0;
+		$(".filevalues").get().forEach(function(entry, index, array) {
+			var expirstatus=$(entry).find('.expires').prop('checked');
+		if(expirstatus == true){
+			var exPdateinputValues = $('.exPdate').map(function(key,val) {
+		    return $(this).val();
+			}).toArray();
+			var futuredateinputValues = $('.futuredate').map(function() {
+			    return $(this).val();
+			}).toArray();
 
-				var date=$('.exPdate').val();
+			for (var i = 0; i < exPdateinputValues.length; i++) {
+				var date=exPdateinputValues[i];
 				date=date.split("-");
 				var exPdate=date[1]+"/"+date[0]+"/"+date[2];
 				var newexpdate=new Date(exPdate).getTime();
 
-				var date1=$('.futuredate').val();
+				var date1=futuredateinputValues[i];
 				date1=date1.split("-");
 				var futuredate=date1[1]+"/"+date1[0]+"/"+date1[2];
 				var newfuturedate=new Date(futuredate).getTime();
-		                var prevpageid = window.location.href;
-			    if ((newexpdate <= newfuturedate) && (prevpageid.indexOf("page_id=1") == -1) && (prevpageid.indexOf("page_id=2") == -1) && (prevpageid.indexOf("page_id=6") == -1)) {
-			    	$('#myModal1').modal('show'); 
-			    	return false;
-			    } else {
-                                if ((newexpdate < newfuturedate) && ((prevpageid.indexOf("page_id=1") != -1) || (prevpageid.indexOf("page_id=2") != -1) || (prevpageid.indexOf("page_id=6") != -1))) {
-                                    $('#myModal2').modal('show'); 
-                                    return false;
+				if($(array[i]).find('.expires').prop('checked')==true){
+					if (newexpdate <= newfuturedate){
+						savestatus=1;
+						$('#myModal').modal('show'); 
+						// return false;
+					}else{
+						savestatus=0;
+						$('#submitformid').click();
+					}
 				}
-			    }
 			}
-			clean_form(this);
 
-			$(this).find('input[name$="[name]"]').each(function() {
-				is_complete($(this)[0],'<?php echo $validation_no_title; ?>');
-			});
-
-			// show the errors or continue if everything is ok
-			if (show_form_errors() == false) { return false; }
-
+		}else{
+			$('#submitformid').click();
+		}
+			
 		});
-	});
+		clean_form(this);
+
+		$(this).find('input[name$="[name]"]').each(function() {
+			is_complete($(this)[0],'<?php echo $validation_no_title; ?>');
+		});
+
+		// show the errors or continue if everything is ok
+		if (show_form_errors() == false) { return false; }
+
+	// });
+}
 </script>
 <!-- Modal -->
 <div id="cc-mail-status" class="modal fade" role="dialog">
@@ -1021,4 +1059,8 @@ function window_back() {
 
   </div>
 </div><script language="javascript">$(document).ready(function() {     $("[type='text']").attr('id',function(i){return 'chk' + i;});	 });$(document).ready(function() {     $(".chosen-choices").attr('id',function(i){return 'chosen-' + i;});	 });$(document).ready(function() {     $(".chosen-select").attr('id',function(i){return 'chslt-' + i;});	 });</script> <script language="javascript">document.getElementById('pub_checkbox').onchange = function() { $('#chslt-0').prop('disabled', true).trigger("chosen:updated");if ($("#pub_checkbox").is(":checked")){		$('#chslt-0').prop('disabled', true).val('').trigger('chosen:updated');	}else if (!$("#pub_checkbox").is(":checked")) {		$('#chslt-0').prop('disabled', false).trigger("chosen:updated");	}	};</script>
+
+<script type="text/javascript">
+	
+</script>
 <?php include('footer.php'); ?>

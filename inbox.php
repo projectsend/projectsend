@@ -1837,51 +1837,14 @@ cursor: pointer;
 
 
 
-                  <?php
 
-										if(($current_level != '0') && ($edit_access==true)) {
-
-									?>
 
                   <td>
 
-
-
-                  		<a href="edit-file.php?file_id=<?php echo $row["file_id"]; ?>&page_id=2" class="btn-sm">
-
                     	<?php _e(html_output($row['uploader']),'cftp_admin'); ?>
-
-                    	</a>
-
-
 
                   </td>
 
-	<?php
-
-	}else{
-
-?>
-
-                  <td>
-
-                  	
-
-                    	<?php _e(html_output($row['uploader']),'cftp_admin'); ?>
-
-
-
-                  </td>
-
-
-
-<?php
-
-
-
-}
-
-?>
 
 
 

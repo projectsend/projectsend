@@ -1827,7 +1827,7 @@ function validateUsers() {
 			}
 		});
 		if (invalid_invites !=0 ) {
-			alert('Invite users with valid email address');
+			alert('Invite user with invalid email address');
 			invalid_invites=0;
 		} else{
 			if(savestatus==0){

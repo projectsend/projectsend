@@ -78,12 +78,12 @@ $actual_link = SITE_URI.'requested_file.php';
                             $sql =$dbh->prepare("DELETE FROM tbl_drop_off_request WHERE id = :file_id");
                             $sql->bindParam(':file_id', $file_id);
                             if($sql->execute()){
-                                $msg_succes = __('The selected request were deleted.','cftp_admin');
+                                $msg_succes = __('The selected requests were deleted.','cftp_admin');
                                 $success_count++;
                                 /*echo system_message('ok',$msg); */
                                 $log_action_number = 12;
                             }else{
-                                $msg_failed = __('Some request could not be deleted.','cftp_admin');
+                                $msg_failed = __('Some requests could not be deleted.','cftp_admin');
                                 $failed_count++;
                                 /*echo system_message('error',$msg); */
                             }
@@ -125,7 +125,7 @@ $actual_link = SITE_URI.'requested_file.php';
                 <div class="form_actions_submit">
                   <div class="form-group group_float">
                     <label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i>
-                      <?php _e('Selected files actions','cftp_admin'); ?>
+                      <?php _e('Selected requests actions','cftp_admin'); ?>
                       :</label>
                     <select name="files_actions" id="files_actions" class="txtfield form-control">
                       <option value="delete">
@@ -163,7 +163,7 @@ $actual_link = SITE_URI.'requested_file.php';
                                 <p class="form_count_total">
                                 <?php _e('Showing','cftp_admin'); ?>
                                 : <span><?php echo $count; ?>
-                                <?php _e('files','cftp_admin'); ?>
+                                <?php _e('requests','cftp_admin'); ?>
                                 </span></p>
                             </div>
                             <div class="clear"></div>
@@ -293,7 +293,7 @@ $actual_link = SITE_URI.'requested_file.php';
 							 <p class="form_count_total">
 							 <?php _e('Showing','cftp_admin'); ?>
 							 : <span><?php echo $rqcount; ?>
-							 <?php _e('files','cftp_admin'); ?>
+							 <?php _e('requests','cftp_admin'); ?>
 							 </span></p>
 						 </div>
 						<table  class=" tb2 cc-mail-listing-style table table-striped table-bordered table-hover dataTable no-footer" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">

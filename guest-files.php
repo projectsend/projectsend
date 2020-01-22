@@ -129,12 +129,12 @@ $actual_link = SITE_URI.'requested_file.php';
 							$sql =$dbh->prepare("DELETE FROM tbl_drop_off_request WHERE id = :file_id");
 							$sql->bindParam(':file_id', $file_id);
 							if($sql->execute()){
-								$msg_succes = __('The selected request were deleted.','cftp_admin');
+								$msg_succes = __('The selected requests were deleted.','cftp_admin');
 								$success_count++;
 								/*echo system_message('ok',$msg); */
 								$log_action_number = 12;
 							}else{
-								$msg_failed = __('Some request could not be deleted.','cftp_admin');
+								$msg_failed = __('Some requests could not be deleted.','cftp_admin');
 								$failed_count++;
 								/*echo system_message('error',$msg); */
 							}
@@ -167,7 +167,7 @@ $actual_link = SITE_URI.'requested_file.php';
 				}
 			}
 			else {
-				$msg = __('Please select at least one file.','cftp_admin');
+				$msg = __('Please select at least one request.','cftp_admin');
 				echo system_message('error',$msg);
 			}
 		}
@@ -184,7 +184,7 @@ $actual_link = SITE_URI.'requested_file.php';
                 <div class="form_actions_submit">
                   <div class="form-group group_float">
                     <label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i>
-                      <?php _e('Selected files actions','cftp_admin'); ?>
+                      <?php _e('Selected requests actions','cftp_admin'); ?>
                       :</label>
                     <select name="files_actions" id="files_actions" class="txtfield form-control">
                       <option value="delete">
@@ -226,7 +226,7 @@ $actual_link = SITE_URI.'requested_file.php';
 							 <p class="form_count_total">
 							 <?php _e('Showing','cftp_admin'); ?>
 							 : <span><?php echo $rqcount; ?>
-							 <?php _e('files','cftp_admin'); ?>
+							 <?php _e('requests','cftp_admin'); ?>
 							 </span></p>
 						 </div>
 						 <section id="no-more-tables" class="cc-overflow-scroll">
@@ -418,7 +418,7 @@ $(document).on('click', 'span.closeOp', function () {
 		$("#do_action").click(function() {
 			var checks = $("td input:checkbox").serializeArray();
 			if (checks.length == 0) {
-				alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
+				alert('<?php _e('Please select at least one request to proceed.','cftp_admin'); ?>');
 				return false;
 			}
 			else {

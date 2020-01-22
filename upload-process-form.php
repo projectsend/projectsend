@@ -713,14 +713,14 @@ while( $row = $statement->fetch() ) {
       <th data-hide="phone"><?php _e('Description','cftp_admin'); ?></th>
       <th data-hide="phone"><?php _e('File Name','cftp_admin'); ?></th>
 		<?php
-			//if ($current_level != 0) {
+			if ($current_level != 0) {
 		?>
 			<!-- <th data-hide="phone"><?php //_e("Status",'cftp_admin'); ?></th>
 			<th data-hide="phone"><?php //_e('Assignations','cftp_admin'); ?></th>
-			<th data-hide="phone"><?php //_e('Public','cftp_admin'); ?></th>
-			<th data-hide="phone" data-sort-ignore="true"><?php //_e("Actions",'cftp_admin'); ?></th> -->
+			<th data-hide="phone"><?php //_e('Public','cftp_admin'); ?></th>-->
+			<th data-hide="phone" data-sort-ignore="true"><?php _e("Actions",'cftp_admin'); ?></th> 
 		<?php
-			//}
+			}
 		?>
     </tr>
   </thead>
@@ -737,10 +737,10 @@ while( $row = $statement->fetch() ) {
       
 
 
-<!-- <?php
-	//if ($current_level != 0) {
+ <?php
+	if ($current_level != 0) {
 	?>
-		<td class="<?php //echo (!empty($uploaded['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>"><?php
+		<!--<td class="<?php //echo (!empty($uploaded['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>"><?php
 
 		//$status_hidden	= __('Hidden','cftp_admin');
 
@@ -777,12 +777,12 @@ while( $row = $statement->fetch() ) {
 	//echo ($uploaded['public'] == 1) ? $status_public : $status_private;
 
 	?>
-	</a></td>
-	<td><a href="edit-file.php?file_id=<?php //echo html_output($uploaded['new_file_id']); ?>&page_id=8" class="btn-primary btn btn-sm">
-	<?php //_e('Edit file','cftp_admin'); ?></td>
+	</a></td> -->
+	<td><a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>&page_id=8" class="btn-primary btn btn-sm">
+	<?php _e('Edit file','cftp_admin'); ?></td>
 	<?php
-	//}
-	?> -->
+	}
+	?>
 
 
 

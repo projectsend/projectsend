@@ -113,7 +113,7 @@ $actual_link = SITE_URI.'requested_file.php';
                 }
             }
             else {
-                $msg = __('Please select at least one file.','cftp_admin');
+                $msg = __('Please select at least one request.','cftp_admin');
                 echo system_message('error',$msg);
             }
         }
@@ -391,7 +391,7 @@ $actual_link = SITE_URI.'requested_file.php';
         $("#do_action").click(function() {
             var checks = $("td input:checkbox").serializeArray();
             if (checks.length == 0) {
-                alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
+                alert('<?php _e('Please select at least one request to proceed.','cftp_admin'); ?>');
                 return false;
             }
             else {

@@ -475,8 +475,8 @@ while( $row = $statement->fetch() ) {
 							$npw = randomPassword();
 
 							$cc_enpass = $hasher->HashPassword($npw);
-
-							$nuser_query = $dbh->prepare("INSERT INTO `".TABLE_USERS."` (`user`, `password`, `name`, `email`, `level`, `timestamp`, `address`, `phone`, `notify`, `contact`, `created_by`, `active`) VALUES ('".$nuser."', '".$cc_enpass."', '', '".$nuser."', '0', CURRENT_TIMESTAMP, NULL, NULL, '1', NULL, NULL, '1')");
+							$newclient_name=explode('@',$nuser);
+							$nuser_query = $dbh->prepare("INSERT INTO `".TABLE_USERS."` (`user`, `password`, `name`, `email`, `level`, `timestamp`, `address`, `phone`, `notify`, `contact`, `created_by`, `active`) VALUES ('".$nuser."', '".$cc_enpass."', '".$newclient_name[0]."', '".$nuser."', '0', CURRENT_TIMESTAMP, NULL, NULL, '1', NULL, NULL, '1')");
 
 							$nuser_query->execute();
 

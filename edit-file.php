@@ -72,7 +72,7 @@ switch($get_prev_id) {
 	default:
 	$get_prev_id = '#';
 }
-var_dump($get_prev_url);
+// var_dump($get_prev_url);
 
 
 /** Fill the users array that will be used on the notifications process */

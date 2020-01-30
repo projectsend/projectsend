@@ -122,7 +122,8 @@ while ( $row = $sql_client_categories->fetch() ) {
 if ( !empty( $cat_ids ) ) {
 	$get_categories	= get_categories(
 									array(
-										'id'	=> $cat_ids,
+										'id' => $cat_ids,
+                                        'is_tree' => true
 									)
 								);
 }

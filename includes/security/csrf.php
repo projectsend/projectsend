@@ -24,7 +24,7 @@ function validateCsrfToken()
     return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $_REQUEST['csrf_token']);
 }
 
-if ($_POST && !validateCsrfToken()) {
+if (!defined('IS_INSTALL') && $_POST && !validateCsrfToken()) {
     header("Location: ".PAGE_STATUS_CODE_403);
     exit;
 }

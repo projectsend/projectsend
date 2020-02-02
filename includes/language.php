@@ -51,5 +51,5 @@ else {
 
 define('LOADED_LANG', $lang);
 define('I18N_DEFAULT_DOMAIN', 'cftp_admin');
-require_once ROOT_DIR.'/includes/classes/i18n.php';
+require_once ROOT_DIR.'/includes/Classes/i18n.php';
 I18n::LoadDomain(ROOT_DIR."/lang/{$lang}.mo", 'cftp_admin' );

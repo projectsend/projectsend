@@ -3,12 +3,14 @@
     {
         global $dbh;
 
-        $get = $dbh->prepare( "SELECT name FROM " . TABLE_OPTIONS . " WHERE name=:name" );
-        $get->bindParam(':name', $name);
-        $get->execute();
-        $row = $get->fetch(PDO::FETCH_ASSOC);
-        if ($row) {
-            return true;
+        if (!empty($dbh)) {
+            $get = $dbh->prepare( "SELECT name FROM " . TABLE_OPTIONS . " WHERE name=:name" );
+            $get->bindParam(':name', $name);
+            $get->execute();
+            $row = $get->fetch(PDO::FETCH_ASSOC);
+            if ($row) {
+                return true;
+            }
         }
 
         return false;
@@ -18,12 +20,14 @@
     {
         global $dbh;
 
-        $get = $dbh->prepare( "SELECT value FROM " . TABLE_OPTIONS . " WHERE name=:name" );
-        $get->bindParam(':name', $name);
-        $get->execute();
-        $row = $get->fetch(PDO::FETCH_ASSOC);
-        if ($row) {
-            return $row['value'];
+        if (!empty($dbh)) {
+            $get = $dbh->prepare( "SELECT value FROM " . TABLE_OPTIONS . " WHERE name=:name" );
+            $get->bindParam(':name', $name);
+            $get->execute();
+            $row = $get->fetch(PDO::FETCH_ASSOC);
+            if ($row) {
+                return $row['value'];
+            }
         }
     }
 
@@ -38,11 +42,13 @@
             $result = $save->execute();
         }
         else {
-            $save = $dbh->prepare("INSERT INTO " . TABLE_OPTIONS . " (name, value)"
-            ." VALUES (:name, :value)");
-            $save->bindParam(':name', $name);
-            $save->bindParam(':value', $value);
-            $result = $save->execute();
+            if (!empty($dbh)) {
+                $save = $dbh->prepare("INSERT INTO " . TABLE_OPTIONS . " (name, value)"
+                ." VALUES (:name, :value)");
+                $save->bindParam(':name', $name);
+                $save->bindParam(':value', $value);
+                $result = $save->execute();
+            }
         }
 
         return $result;

@@ -66,6 +66,9 @@ define('CHARSET', 'UTF-8');
  * @link http://www.php.net/manual/en/function.error-reporting.php
  */
 if ( DEBUG === true ) {
+	ini_set('display_errors', 'on');
+	ini_set('error_reporting', 'E_ALL');
+	ini_set('display_startup_errors', 'On');
 	error_reporting(E_ALL);
 }
 else {

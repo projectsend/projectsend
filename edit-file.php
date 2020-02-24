@@ -1011,10 +1011,19 @@ function submitform(){
 				var futuredate=date1[1]+"/"+date1[0]+"/"+date1[2];
 				var newfuturedate=new Date(futuredate).getTime();
 				if($(array[i]).find('.expires').prop('checked')==true){
-					if (newexpdate <= newfuturedate){
+					if (newexpdate < newfuturedate){
 						savestatus=1;
 						$('#myModal').modal('show'); 
 						// return false;
+					}else if (newexpdate == newfuturedate){
+						var pageid='<?php echo $get_prev_id;?>';
+						if(pageid!=1 && pageid!=6){
+							savestatus=1;
+							$('#myModal').modal('show'); 
+						}else{
+							savestatus=0;
+							$('#submitformid').click();
+						}
 					}else{
 						savestatus=0;
 						$('#submitformid').click();

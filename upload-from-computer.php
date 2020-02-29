@@ -156,6 +156,13 @@ $current_level = get_current_user_level();
 					// e.preventDefault();
 				//	var fcount = $("#uploader_filelist").children().length;  $("#filecount").val(fcount);
 
+					if (uploader.files.length > 0) {
+
+							uploader.bind('StateChanged', function() {
+								if (uploader.files.length === (uploader.total.uploaded + uploader.total.failed)) {
+								 $('form')[0].submit();
+								}
+							});
 						uploader.start();
 
 						$("#btn-submit").hide();
@@ -184,19 +191,12 @@ $current_level = get_current_user_level();
 								$('form#upload_by_client').append(new_file_field);
 
 
-						if (uploader.files.length > 0) {
 
-							uploader.bind('StateChanged', function() {
-								if (uploader.files.length === (uploader.total.uploaded + uploader.total.failed)) {
-								 $('form')[0].submit();
-								}
-							});
-
+					});
 						return false;
 					} else {
 						alert('<?php _e("You must select at least one file to upload.",'cftp_admin'); ?>');
 					}
-					});
 					return false;
 				});
 

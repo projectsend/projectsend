@@ -70,6 +70,13 @@
 			<textarea name="to_note_request" id="to_note_request" class="form-control" ><?php echo isset($to_note_request)?$to_note_request:''; ?></textarea>
 		</div>
 	</div>
+
+	<!-- <div class="form-group">
+		<label for="signaturestatus" class="col-sm-4 control-label"><?php //_e('Signature','cftp_admin'); ?></label>
+		<div class="col-sm-8">
+			<input type="checkbox" name="signaturestatus" id="signaturestatus" /> <?php //_e('Check if Signature is required','cftp_admin'); ?>
+		</div>
+	</div> -->
 	
 	<?php
 		if ( isset($clients_form_type ) && ($clients_form_type != 'new_client_self') ) {

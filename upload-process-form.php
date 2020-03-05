@@ -1247,6 +1247,15 @@ while( $row = $statement->fetch() ) {
 					</label>
 				  </div>
         <?php } ?>
+
+			<!-- 	<div class="checkbox">
+					<label for="sigreq" style="font-weight: bold;">
+						<input type="checkbox" id="sigreq" name="sigreq" value="1" />
+						<?php //_e('Signature Requested', 'cftp_admin');?>
+					</label>
+				</div> -->
+
+
 				</div>
 			</div>
   <div class="col-sm-6 col-xl-3 categories column">

@@ -135,7 +135,67 @@ class UserActions
 			if ($this->sql_query) {
 				$this->state['query'] = 1;
 				$this->state['new_id'] = $this->dbh->lastInsertId();
-	
+				// signature save start
+				// if($this->state['new_id']!='' && $this->state['new_id']!=null){
+				// 	$old_name = UPLOADED_FILES_FOLDER.'../../img/avatars/tempsignature/temp.png' ;
+				// 	$files = glob($old_name);
+				// 	if($files){
+				// 		$destination_path = UPLOADED_FILES_FOLDER.'../../img/avatars/signature/';
+				// 		if (!file_exists($destination_path)) {
+				// 				mkdir($destination_path, 0777, true);
+				// 		}
+				// 		$new_name = UPLOADED_FILES_FOLDER.'../../img/avatars/tempsignature/'.$this->state['new_id'].'.png'; 
+				// 		if(file_exists($new_name))
+				// 		{ 
+				// 		    unlink($new_name);
+				// 		    rename($old_name, $new_name);
+				// 			rename($new_name, $destination_path . pathinfo($new_name, PATHINFO_BASENAME));
+				// 			$fl_name = $this->state['new_id'].'.png';
+				// 			$isexit = $this->dbh->prepare("SELECT * FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id=:user_id AND name = :name");
+				// 			$isexit->bindParam(':user_id', $this->state['new_id'], PDO::PARAM_INT);
+				// 			$isexit->bindValue(':name', 'signature_pic');
+				// 			$isexit->execute();
+				// 			$isexit->setFetchMode(PDO::FETCH_ASSOC);
+				// 			$data = $isexit->fetch();
+				// 			if(!empty($data)){
+				// 				$statement = $this->dbh->prepare("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$this->state['new_id']." AND name='signature_pic'");
+				// 				$statement->execute();
+				// 				$statement1 = $this->dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$this->state['new_id'].",'signature_pic','".$fl_name."' ) ");
+				// 				$statement1=$statement1->execute();
+				// 			}else{
+				// 				$statement1 = $this->dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$this->state['new_id'].",'signature_pic','".$fl_name."' ) ");
+				// 				$statement1=$statement1->execute();
+				// 			}
+				// 		}
+				// 		else
+				// 		{
+				// 		    rename($old_name, $new_name);
+				// 			rename($new_name, $destination_path . pathinfo($new_name, PATHINFO_BASENAME));
+				// 			$fl_name = $this->state['new_id'].'.png';
+				// 			$isexit = $this->dbh->prepare("SELECT * FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id=:user_id AND name = :name");
+				// 			$isexit->bindParam(':user_id', $this->state['new_id'], PDO::PARAM_INT);
+				// 			$isexit->bindValue(':name', 'signature_pic');
+				// 			$isexit->execute();
+				// 			$isexit->setFetchMode(PDO::FETCH_ASSOC);
+				// 			$data = $isexit->fetch();
+				// 			if(!empty($data)){
+				// 				$statement = $this->dbh->prepare("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$this->state['new_id']." AND name='signature_pic'");
+				// 				$statement->execute();
+				// 				$statement1 = $this->dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$this->state['new_id'].",'signature_pic','".$fl_name."' ) ");
+				// 				$statement1=$statement1->execute();
+				// 			}else{
+				// 				$statement1 = $this->dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$this->state['new_id'].",'signature_pic','".$fl_name."' ) ");
+				// 				$statement1=$statement1->execute();
+				// 			}
+				// 		    unlink($new_name);
+				// 		}
+				// 	}
+				// }else{
+					// unlink(UPLOADED_FILES_FOLDER.'../../img/avatars/tempsignature/temp.png');
+				// }
+				// signature save end
+
+
 				/** Send account data by email */
 				$this->notify_user = new PSend_Email();
 				$this->email_arguments = array(
@@ -219,6 +279,39 @@ class UserActions
 
 	
 			if ($this->sql_query) {
+
+				if($this->id!='' && $this->id!=null){
+					$old_name = UPLOADED_FILES_FOLDER.'../../img/avatars/tempsignature/'.$this->id.'.png' ;
+					$files = glob($old_name);
+					if($files){
+						$destination_path = UPLOADED_FILES_FOLDER.'../../img/avatars/signature/';
+						if (!file_exists($destination_path)) {
+								mkdir($destination_path, 0777, true);
+						}
+						$new_name = UPLOADED_FILES_FOLDER.'../../img/avatars/tempsignature/'.$this->id.'.png'; 
+						if(file_exists($new_name))
+						{ 
+							rename($new_name, $destination_path . pathinfo($new_name, PATHINFO_BASENAME));
+							$fl_name = $this->id.'.png';
+							$isexit = $this->dbh->prepare("SELECT * FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id=:user_id AND name = :name");
+							$isexit->bindParam(':user_id', $this->id, PDO::PARAM_INT);
+							$isexit->bindValue(':name', 'signature_pic');
+							$isexit->execute();
+							$isexit->setFetchMode(PDO::FETCH_ASSOC);
+							$data = $isexit->fetch();
+							if(!empty($data)){
+								$statement = $this->dbh->prepare("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$this->id." AND name='signature_pic'");
+							$statement->execute();
+							$statement1 = $this->dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$this->id.",'signature_pic','".$fl_name."' ) ");
+							$statement1=$statement1->execute();
+							}else{
+							    $statement1 = $this->dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$this->id.",'signature_pic','".$fl_name."' ) ");
+								$statement1=$statement1->execute();
+
+							}
+						}
+					}
+				}
 				$this->state['query'] = 1;
 			}
 			else {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Show the form to add a new system user.
  *
@@ -8,7 +9,6 @@
  */
 $allowed_levels = array(9);
 require_once('sys.includes.php');
-
 if(!check_for_admin()) {
     return;
 }
@@ -20,16 +20,17 @@ $page_title = __('Add System User','cftp_admin');
 
 include('header.php');
 
+
 /**
  * Set checkboxes as 1 to defaul them to checked when first entering
  * the form
  */
 $add_user_data_active = 1;
 $add_user_data_notity = 1;
-
+$target_dir = UPLOADED_FILES_FOLDER.'../../img/avatars/';
+$targetsignature_dir = UPLOADED_FILES_FOLDER.'../../img/avatars/signature/';
 if ($_POST) {
 	$new_user = new UserActions();
-
 	/**
 	 * Clean the posted form values to be used on the user actions,
 	 * and again on the form if validation failed.
@@ -57,10 +58,135 @@ if ($_POST) {
 
 	/** Validate the information from the posted form. */
 	$new_validate = $new_user->validate_user($new_arguments);
-	
 	/** Create the user if validation is correct. */
 	if ($new_validate == 1) {
 		$new_response = $new_user->create_user($new_arguments);
+		if($new_response){
+			$user_id_mic=$new_response['new_id'];
+			if($_FILES){
+				if($_FILES["userfiles"]["error"] == 0) {
+				// echo 'updated';die();
+					
+					if (!file_exists($target_dir)) {
+							mkdir($target_dir, 0777, true);
+					}
+					$target_file = $target_dir;
+					$uploadOk = 1;
+					$target_file = $target_dir . "/".basename($_FILES["userfiles"]["name"]);
+					$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+					$fl_name = $user_id_mic.".".$imageFileType;
+					$target_file = $target_dir.$fl_name;
+					$uploadOk = 1;
+					// Check if image file is a actual image or fake image
+					$check = getimagesize($_FILES["userfiles"]["tmp_name"]);
+					if($check !== false) {
+						//echo "File is an image - " . $check["mime"] . ".";
+						$uploadOk = 1;
+					} else {
+					//	echo "File is not an image.";
+						$uploadOk = 0;
+					}
+					// Allow certain file formats
+					if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+					&& $imageFileType != "gif" ) {
+						//	echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+							$uploadOk = 0;
+					}
+
+					// echo("<br>Upload Ok = ".$uploadOk);
+					// Check if $uploadOk is set to 0 by an error
+					if ($uploadOk == 0) {
+							echo "Sorry, your file was not uploaded.";
+					// if everything is ok, try to upload file
+					} else {
+						if (file_exists($target_file)) {
+								unlink($target_file);
+								// echo("<br>Unlinked Oldfile");
+						}
+						if (move_uploaded_file($_FILES["userfiles"]["tmp_name"], $target_file)) {
+							// echo("<br>Moved Uploaded file");
+							// echo("<br> Fl name : ".$fl_name);
+							if(!empty($fl_name)){
+								$statement = $dbh->prepare("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$user_id_mic." AND name='profile_pic'");
+						    $statement->execute();
+								// echo("DONE");
+
+								$alternate_email_save = $dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$user_id_mic.",'profile_pic','".$fl_name."' ) ");
+								$prochange=$alternate_email_save->execute();
+								if($prochange==true){
+									header("Location:".SITE_URI."users-add.php");
+								}
+								// echo("DONE");
+							}
+
+						} else {
+							echo "Sorry, there was an error uploading your file.";
+						}
+					}
+				}
+				if($_FILES["usersignature"]["error"] == 0) {
+				// echo 'updated';die();
+					
+					if (!file_exists($targetsignature_dir)) {
+							mkdir($targetsignature_dir, 0777, true);
+					}
+					$target_file = $targetsignature_dir;
+					$uploadOk = 1;
+					$target_file = $targetsignature_dir . "/".basename($_FILES["usersignature"]["name"]);
+					$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+					$fl_name = $user_id_mic.".".$imageFileType;
+					$target_file = $targetsignature_dir.$fl_name;
+					$uploadOk = 1;
+					// Check if image file is a actual image or fake image
+					$check = getimagesize($_FILES["usersignature"]["tmp_name"]);
+					if($check !== false) {
+						//echo "File is an image - " . $check["mime"] . ".";
+						$uploadOk = 1;
+					} else {
+					//	echo "File is not an image.";
+						$uploadOk = 0;
+					}
+					// Allow certain file formats
+					if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+					&& $imageFileType != "gif" ) {
+						//	echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+							$uploadOk = 0;
+					}
+
+					// echo("<br>Upload Ok = ".$uploadOk);
+					// Check if $uploadOk is set to 0 by an error
+					if ($uploadOk == 0) {
+							echo "Sorry, your file was not uploaded.";
+					// if everything is ok, try to upload file
+					} else {
+						if (file_exists($target_file)) {
+								unlink($target_file);
+								// echo("<br>Unlinked Oldfile");
+						}
+						if (move_uploaded_file($_FILES["usersignature"]["tmp_name"], $target_file)) {
+							// echo("<br>Moved Uploaded file");
+							// echo("<br> Fl name : ".$fl_name);
+							if(!empty($fl_name)){
+								$statement = $dbh->prepare("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$user_id_mic." AND name='signature_pic'");
+						    $statement->execute();
+								// echo("DONE");
+
+								$alternate_email_save = $dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$user_id_mic.",'signature_pic','".$fl_name."' ) ");
+								$prochange=$alternate_email_save->execute();
+								if($prochange==true){
+									header("Location:".SITE_URI."users-add.php");
+								}
+								// echo("DONE");
+							}
+
+						} else {
+							echo "Sorry, there was an error uploading your file.";
+						}
+					}
+				}
+
+			}
+		}
 	}
 	
 }
@@ -138,6 +264,44 @@ if ($_POST) {
     </div>
   </div>
 </div>
+<div id="sig" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+
+		<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" onclick="signaturemodalclose()">&times;</button>
+					<h4 class="modal-title">Draw New Signature </h4>
+				</div>
+				<div class="modal-body">
+					<input type="hidden" id="uid" value="<?php echo $user_id_mic;?>">
+					<?php
+						include('signature.php');
+					?>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" onclick="signaturemodalclose()">Close</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
 <?php
 	include('footer.php');
 ?>
+
+<script type="text/javascript">
+// function signaturefun(argument) {
+// 	if(argument==1){
+// 		$('#signaturechen').removeClass('disnone');
+// 	}else{
+// 		$('#signaturechen').removeClass('disnone').addClass('disnone');
+// 		$('#sig').modal('show');
+// 	}
+// }
+//  function signaturemodalclose() {
+//  	$('#sig').modal('toggle');
+//  	$('.sig1').prop("checked", true).trigger('change');
+//  	signaturefun(1);
+//  }
+</script>

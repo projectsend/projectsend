@@ -1,3 +1,9 @@
+
+<style type="text/css">
+	.disnone{
+		display: none;
+	}
+</style>
 <?php
 /**
  * Contains the form that is used when adding or editing users.
@@ -161,11 +167,27 @@ switch ($user_form_type) {
 		}
 	}?>
 <div class="form-group">
-	<label for="add_user_form_email_alternate1" class="col-sm-4 control-label"><?php _e('Upload profile pic','cftp_admin'); ?></label>
+	<label  class="col-sm-4 control-label"><?php _e('Upload profile pic','cftp_admin'); ?></label>
 	<div class="col-sm-8">
 		<input type="file" name="userfiles" class="required" value="" placeholder="upload file" />
 	</div>
-</div>		
+</div>	
+<?php if (CURRENT_USER_ID == $user_id_mic) { ?>
+<div class="form-group">
+	<div class="col-sm-8  col-sm-offset-4">
+		<label>
+			<input type="radio" name="add_user_signature" class="sig1" / onclick="signaturefun('1')" checked="true"> <?php _e('Upload Signature','cftp_admin'); ?>
+			<input type="radio" name="add_user_signature" class="sig2" / onclick="signaturefun('2')" class='data-toggle="modal" data-target="#sig"'> <?php _e('Draw Signature','cftp_admin'); ?>
+		</label>
+	</div>
+</div>
+<div class="form-group disnone" id="signaturechen">
+	<label  class="col-sm-4 control-label"><?php _e('Upload Signature pic','cftp_admin'); ?></label>
+	<div class="col-sm-8">
+		<input type="file" name="usersignature"  id="usersignature" class="required usersignature" value="" placeholder="upload file" />
+	</div>
+</div>	
+<?php }?>		
 	<?php
 		if ($extra_fields == true) {
 		?>
@@ -211,3 +233,10 @@ switch ($user_form_type) {
 	?>
 </form>
 
+<script type="text/javascript">
+
+
+	$(document).ready(function() {
+		signaturefun(1);
+	});
+</script>

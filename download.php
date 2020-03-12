@@ -70,7 +70,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 				$statement = $dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (file_id, remote_ip, remote_host, anonymous)"
 											." VALUES (:file_id, :remote_ip, :remote_host, :anonymous)");
 				$statement->bindParam(':file_id', $got_file_id, PDO::PARAM_INT);
-				$statement->bindParam(':remote_ip', $_SERVER['REMOTE_ADDR']);
+				$statement->bindParam(':remote_ip', get_client_ip());
 				$statement->bindParam(':remote_host', $_SERVER['REMOTE_HOST']);
 				$statement->bindValue(':anonymous', 1, PDO::PARAM_INT);
 				$statement->execute();

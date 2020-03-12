@@ -1,3 +1,14 @@
+<style type="text/css">
+	.zoom {
+	    transition: transform .2s;
+	    height: 80px;
+	}
+
+
+	.zoom:hover {
+	    transform: scale(1.5);
+	}
+</style>
 <?php
 	
 /**
@@ -14,7 +25,6 @@ $active_nav = 'users';
 /** Create the object */
 $edit_user = new UserActions();
 $target_dir = UPLOADED_FILES_FOLDER.'../../img/avatars/';
-$targetsignature_dir = UPLOADED_FILES_FOLDER.'../../img/avatars/signature/';
 /** Check if the id parameter is on the URI. */
 
 if (isset($_GET['id'])) {
@@ -29,6 +39,7 @@ else {
 	$page_status = 0;
 }
 
+$targetsignature_dir = UPLOADED_FILES_FOLDER.'../../img/avatars/signature/'.$user_id_mic.'/';
 /**
  * Get the user information from the database to use on the form.
  */
@@ -197,10 +208,33 @@ include('header.php');
 
 					if(!empty($profile_pic_img)){?>
 
-								<img src="<?php echo "img/avatars/".$profile_pic_img;?>?<?php echo rand();?>" alt="demo user">
+								<img src="<?php echo "img/avatars/".$profile_pic_img;?>?<?php echo rand();?>" alt="demo user" class="zoom">
 					<?php }else{
 				?>
 										<img src="img/avatars/no-image.png" alt="demo user">
+
+				<?php }?>
+				<?php
+					$signature_pic = $dbh->prepare("SELECT * FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id=:user_id AND name = :name");
+					$signature_pic->bindParam(':user_id', $pic_id, PDO::PARAM_INT);
+					$signature_pic->bindValue(':name', 'signature_pic');
+					$signature_pic->execute();
+					$signature_pic->setFetchMode(PDO::FETCH_ASSOC);
+					while ( $data = $signature_pic->fetch() ) {
+							$signature_pic_img = $data['value'];
+							$signature_type = $data['sig_type'];
+					}
+
+						if(!empty($signature_pic_img)){
+							if($signature_type==1){?>
+								<img src="<?php echo "img/avatars/signature/".$pic_id."/temp/".$signature_pic_img;?>?<?php echo rand();?>" alt="demo user" style="top: -5px;" class="zoom">
+							<?php }else{?>
+								<img src="<?php echo "img/avatars/tempsignature/".$pic_id."/temp/".$signature_pic_img;?>?<?php echo rand();?>" alt="demo user" style="top: -5px;" class="zoom">
+
+							<?php }?>
+						<?php }else{
+					?>
+							<img src="img/avatars/no-image.png" alt="demo user" style="top: -5px;">
 
 				<?php }?>
                 </div>
@@ -322,11 +356,15 @@ include('header.php');
 											}
 										}
 									}
+									// var_dump($_FILES);die();
 									if($_FILES["usersignature"]["error"] == 0) {
 									// echo 'updated';die();
 										
 										if (!file_exists($targetsignature_dir)) {
 												mkdir($targetsignature_dir, 0777, true);
+										}
+										if (!file_exists($targetsignature_dir.'temp/')) {
+											mkdir($targetsignature_dir.'temp/', 0777, true);
 										}
 										$target_file = $targetsignature_dir;
 										$uploadOk = 1;
@@ -362,14 +400,21 @@ include('header.php');
 													// echo("<br>Unlinked Oldfile");
 											}
 											if (move_uploaded_file($_FILES["usersignature"]["tmp_name"], $target_file)) {
-												// echo("<br>Moved Uploaded file");
-												// echo("<br> Fl name : ".$fl_name);
+												$aes = new AESENCRYPT ();					
+												$result  = $aes->encryptFile($fl_name,'upload',$user_id_mic);
+								// WORKING DECRYPTION CODE START
+												// if($result){
+													$result1  = $aes->decryptFile($fl_name,'upload',$user_id_mic);
+												// echo "<pre>"; print_r($result1); echo "</pre>"; exit;
+												// }
+								// WORKING DECRYPTION CODE END
+												
 												if(!empty($fl_name)){
 													$statement = $dbh->prepare("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$user_id_mic." AND name='signature_pic'");
-											    $statement->execute();
+											    	$statement->execute();
 													// echo("DONE");
 
-													$alternate_email_save = $dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$user_id_mic.",'signature_pic','".$fl_name."' ) ");
+													$alternate_email_save = $dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value,sig_type) VALUES (".$user_id_mic.",'signature_pic','".$fl_name."',1 ) ");
 													$prochange=$alternate_email_save->execute();
 													if($prochange==true){
 														header("Location:".SITE_URI."users-edit.php?id=".$edit_arguments['id']."&fid=1");

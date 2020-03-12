@@ -196,6 +196,7 @@ function savepic(argument,id) {
     data: { 'img_data':argument,'user_id_mic':id },
     type: 'post',
     dataType: 'json',
+    async: false,
     success:function(arg){
       if(arg.status==true){
         $('#sig').modal('toggle');

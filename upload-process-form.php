@@ -1,4 +1,5 @@
 <?php
+	// var_dump($_POST);die();
 
 /**
 
@@ -122,7 +123,6 @@ if(isset($_POST['add'])) {
  */
 
 if(isset($_POST['upload_failed'])) {
-
 	$upload_failed_hidden_post = array_filter(explode(',',$_POST['upload_failed']));
 
 }
@@ -1248,10 +1248,10 @@ while( $row = $statement->fetch() ) {
 				  </div>
         <?php } ?>
 
-			<!-- 	<div class="checkbox">
+				<!-- <div class="checkbox">
 					<label for="sigreq" style="font-weight: bold;">
 						<input type="checkbox" id="sigreq" name="sigreq" value="1" />
-						<?php //_e('Signature Requested', 'cftp_admin');?>
+						<?php// _e('Signature Requested', 'cftp_admin');?>
 					</label>
 				</div> -->
 

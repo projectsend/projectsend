@@ -6,7 +6,7 @@
  * @package		ProjectSend
  * @subpackage	Classes
  */
-
+require_once('sys.includes.php');
 class UserActions
 {
 
@@ -279,19 +279,32 @@ class UserActions
 
 	
 			if ($this->sql_query) {
-
 				if($this->id!='' && $this->id!=null){
 					$old_name = UPLOADED_FILES_FOLDER.'../../img/avatars/tempsignature/'.$this->id.'.png' ;
-					$files = glob($old_name);
-					if($files){
-						$destination_path = UPLOADED_FILES_FOLDER.'../../img/avatars/signature/';
-						if (!file_exists($destination_path)) {
-								mkdir($destination_path, 0777, true);
-						}
-						$new_name = UPLOADED_FILES_FOLDER.'../../img/avatars/tempsignature/'.$this->id.'.png'; 
-						if(file_exists($new_name))
-						{ 
-							rename($new_name, $destination_path . pathinfo($new_name, PATHINFO_BASENAME));
+					// $files = glob($old_name);
+					// if($files){
+						// $destination_path = UPLOADED_FILES_FOLDER.'../../img/avatars/signature/';
+						// if (!file_exists($destination_path)) {
+						// 		mkdir($destination_path, 0777, true);
+						// }
+						// if (!file_exists( UPLOADED_FILES_FOLDER.'../../img/avatars/signature/temp/')) {
+						// 		mkdir( UPLOADED_FILES_FOLDER.'../../img/avatars/signature/temp/', 0777, true);
+						// }
+						// $new_name = UPLOADED_FILES_FOLDER.'../../img/avatars/tempsignature/'.$this->id.'.png'; 
+						// if(file_exists($new_name))
+						// { 
+
+							// rename($new_name, $destination_path . pathinfo($new_name, PATHINFO_BASENAME));
+
+
+
+							// $aes = new AESENCRYPT ();					
+							// $result  = $aes->decryptFile($this->id.'.png','sig');
+							// echo "<pre>"; print_r($result); echo "</pre>"; exit;
+
+
+
+
 							$fl_name = $this->id.'.png';
 							$isexit = $this->dbh->prepare("SELECT * FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id=:user_id AND name = :name");
 							$isexit->bindParam(':user_id', $this->id, PDO::PARAM_INT);
@@ -302,15 +315,15 @@ class UserActions
 							if(!empty($data)){
 								$statement = $this->dbh->prepare("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$this->id." AND name='signature_pic'");
 							$statement->execute();
-							$statement1 = $this->dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$this->id.",'signature_pic','".$fl_name."' ) ");
+							$statement1 = $this->dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value,sig_type) VALUES (".$this->id.",'signature_pic','".$fl_name."',2 ) ");
 							$statement1=$statement1->execute();
 							}else{
-							    $statement1 = $this->dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value) VALUES (".$this->id.",'signature_pic','".$fl_name."' ) ");
+							    $statement1 = $this->dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value,sig_type) VALUES (".$this->id.",'signature_pic','".$fl_name."',2 ) ");
 								$statement1=$statement1->execute();
 
 							}
-						}
-					}
+						// }
+					// }
 				}
 				$this->state['query'] = 1;
 			}

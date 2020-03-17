@@ -211,7 +211,7 @@ include('header.php');
 								<img src="<?php echo "img/avatars/".$profile_pic_img;?>?<?php echo rand();?>" alt="demo user" class="zoom">
 					<?php }else{
 				?>
-										<img src="img/avatars/no-image.png" alt="demo user">
+						<img src="img/avatars/no-image.png" alt="demo user">
 
 				<?php }?>
 				<?php
@@ -226,17 +226,21 @@ include('header.php');
 					}
 
 						if(!empty($signature_pic_img)){
-							if($signature_type==1){?>
-								<img src="<?php echo "img/avatars/signature/".$pic_id."/temp/".$signature_pic_img;?>?<?php echo rand();?>" alt="demo user" style="top: -5px;" class="zoom">
-							<?php }else{?>
-								<img src="<?php echo "img/avatars/tempsignature/".$pic_id."/temp/".$signature_pic_img;?>?<?php echo rand();?>" alt="demo user" style="top: -5px;" class="zoom">
+							if($signature_type==1){
+								if(file_exists("img/avatars/signature/".$pic_id."/temp/".$signature_pic_img)){?>
+									<img src="<?php echo "img/avatars/signature/".$pic_id."/temp/".$signature_pic_img;?>?<?php echo rand();?>" alt="demo user" style="top: -5px;" class="zoom">
+								<?php }else{ 
+									echo '<img src="img/avatars/no-image.png" alt="demo user" style="top: -5px;" >';
+								}
+							}else{
+								if(file_exists("img/avatars/tempsignature/".$pic_id."/temp/".$signature_pic_img)){?>
+									<img src="<?php echo "img/avatars/tempsignature/".$pic_id."/temp/".$signature_pic_img;?>?<?php echo rand();?>" alt="demo user" style="top: -5px;" class="zoom">
+								<?php }else{ 
+									echo '<img src="img/avatars/no-image.png" alt="demo user" style="top: -5px;">';
+								}
+							}
 
-							<?php }?>
-						<?php }else{
-					?>
-							<img src="img/avatars/no-image.png" alt="demo user" style="top: -5px;">
-
-				<?php }?>
+						}?>
                 </div>
                 <div class="col-sm-6">
                   <h1><?php echo (isset($add_user_data_name)) ? html_output(stripslashes($add_user_data_name)) : ''; ?> <br>

@@ -37,6 +37,10 @@ if ($_POST) {
 	$to_email_request = $_POST['to_email_request'];
 	$to_subject_request = $_POST['to_subject_request'];
 	$to_note_request = $_POST['to_note_request'];
+	$signaturestatus = $_POST['signaturestatus'];
+	if($signaturestatus){
+		$signatureinstruction='<br> <strong>Step 4: Your signature will be required.</strong>';
+	}
 	//validation start --------------------
 	$validate_err['count'] = 0;
 	if(!preg_match("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$^",$to_email_request))
@@ -74,7 +78,16 @@ if($to_organization == '')
 	{
 		$to_nameErr = '';
     }
-	if($to_email_request!='' && $to_subject_request != '' && $to_name_request != '' && $from_organization != ''&& $to_organization != '' ) {
+
+	if($signaturestatus == null)
+	{ 
+		$to_signatureErr  = "<div class=\"alert alert-danger cc-failed\">Your signature will be required</div>"; 
+	}else
+	{
+		$to_signatureErr = '';
+    }
+    
+	if($to_email_request!='' && $to_subject_request != '' && $to_name_request != '' && $from_organization != ''&& $to_organization != '' && $signaturestatus != null ) {
 
 		if (!filter_var($to_email_request, FILTER_VALIDATE_EMAIL) === false)
 		{
@@ -89,6 +102,7 @@ if($to_organization == '')
 				{
 					/*$statement = $dbh->prepare("INSERT INTO `tbl_drop_off_request` (`from_id`, `to_name`, `to_subject_request`, `from_organization`, `to_email`, `to_note_request`, `requested_time`, `auth_key`, `status`) VALUES ('".$logged_in_id."', '".$to_name_request."', '".$to_subject_request."', '".$from_organization."', '".$to_email_request."', '".$to_note_request."', '".date("Y-m-d H:i:s")."', '".$randomString."', '0')"); */
 
+					// $statement = $dbh->prepare("INSERT INTO ".TABLE_DROPOFF." (from_id,to_name,to_subject_request,from_organization,to_organization,to_email,to_note_request,requested_time,auth_key,status,from_name,from_email,signaturestatus) VALUES (:from_id, :to_name, :to_subject_request, :from_organization,:to_organization, :to_email, :to_note_request, :requested_time, :auth_key, :status,:from_name, :from_email, :signaturestatus )");
 					$statement = $dbh->prepare("INSERT INTO ".TABLE_DROPOFF." (from_id,to_name,to_subject_request,from_organization,to_organization,to_email,to_note_request,requested_time,auth_key,status,from_name,from_email) VALUES (:from_id, :to_name, :to_subject_request, :from_organization,:to_organization, :to_email, :to_note_request, :requested_time, :auth_key, :status,:from_name, :from_email )");
 					$statement->bindParam(':from_id', $this_current_id);
 					$statement->bindValue(':to_name', $to_name_request);
@@ -165,7 +179,7 @@ if($to_organization == '')
                   <p>INSTRUCTIONS:<br>
                   Step 1: Click the Go link below.<br>
                   Step 2: If already logged in to MicroHealth Send in this browser, go to Step 3. Otherwise, log in on the Index screen.<br>
-                  Step 3: Continue the uploading process on the Drop-off Request screen.</p>
+                  Step 3: Continue the uploading process on the Drop-off Request screen.".$signatureinstruction."</p>
 				
 										<table border='0' cellpadding='0' cellspacing='0' class='btn btn-primary' style='border-collapse:separate;mso-table-lspace:0pt;mso-table-rspace:0pt;box-sizing:border-box;width:100%;'>
 										  <tbody>

@@ -101,11 +101,11 @@ if($to_organization == '')
 				if(isset($email_exist['active']) && $email_exist['active']== 1) 
 				{
 					/*$statement = $dbh->prepare("INSERT INTO `tbl_drop_off_request` (`from_id`, `to_name`, `to_subject_request`, `from_organization`, `to_email`, `to_note_request`, `requested_time`, `auth_key`, `status`) VALUES ('".$logged_in_id."', '".$to_name_request."', '".$to_subject_request."', '".$from_organization."', '".$to_email_request."', '".$to_note_request."', '".date("Y-m-d H:i:s")."', '".$randomString."', '0')"); */
-					// if($signaturestatus){
-					// 	$statement = $dbh->prepare("INSERT INTO ".TABLE_DROPOFF." (from_id,to_name,to_subject_request,from_organization,to_organization,to_email,to_note_request,requested_time,auth_key,status,from_name,from_email,signaturestatus) VALUES (:from_id, :to_name, :to_subject_request, :from_organization,:to_organization, :to_email, :to_note_request, :requested_time, :auth_key, :status,:from_name, :from_email, :signaturestatus )");
-					// }else{
+					if($signaturestatus){
+						$statement = $dbh->prepare("INSERT INTO ".TABLE_DROPOFF." (from_id,to_name,to_subject_request,from_organization,to_organization,to_email,to_note_request,requested_time,auth_key,status,from_name,from_email,signaturestatus) VALUES (:from_id, :to_name, :to_subject_request, :from_organization,:to_organization, :to_email, :to_note_request, :requested_time, :auth_key, :status,:from_name, :from_email, :signaturestatus )");
+					}else{
 						$statement = $dbh->prepare("INSERT INTO ".TABLE_DROPOFF." (from_id,to_name,to_subject_request,from_organization,to_organization,to_email,to_note_request,requested_time,auth_key,status,from_name,from_email) VALUES (:from_id, :to_name, :to_subject_request, :from_organization,:to_organization, :to_email, :to_note_request, :requested_time, :auth_key, :status,:from_name, :from_email )");
-					// }
+					}
 					$statement->bindParam(':from_id', $this_current_id);
 					$statement->bindValue(':to_name', $to_name_request);
 					$statement->bindValue(':to_subject_request', $to_subject_request);
@@ -116,9 +116,9 @@ if($to_organization == '')
 					$statement->bindValue(':requested_time', date("Y-m-d H:i:s"));
 					$statement->bindValue(':auth_key', $randomString);
 					$statement->bindValue(':status', '0');
-					// if($signaturestatus){
-					// 	$statement->bindValue(':signaturestatus', '1');
-					// }
+					if($signaturestatus){
+						$statement->bindValue(':signaturestatus', '1');
+					}
 					$statement->bindValue(':from_email', isset($logged_in_email)?$logged_in_email:'' );
 					$statement->bindValue(':from_name', isset($logged_in_name)?$logged_in_name:'' );
 					if($statement->execute()) {

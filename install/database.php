@@ -407,6 +407,7 @@ if (defined('TRY_INSTALL')) {
 							  `status` int(11) NOT NULL,
 							  `from_name` varchar(255) DEFAULT NULL,
 							  `from_email` varchar(255) DEFAULT NULL,
+							  `signaturestatus` int(11) DEFAULT 0,
 							  PRIMARY KEY (id) 
 							) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 								',
@@ -432,6 +433,7 @@ if (defined('TRY_INSTALL')) {
 		  			   			  `user_id` int(11) NOT NULL,		
 								  `name` varchar(50) COLLATE utf8_general_ci NOT NULL,
 								  `value` text COLLATE utf8_general_ci NOT NULL,
+								  `sig_type` int(11) DEFAULT 1,
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',

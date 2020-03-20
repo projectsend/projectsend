@@ -229,7 +229,7 @@ class UserActions
 	 */
 	function edit_user($arguments)
 	{
-		require_once('../sys.includes.php');
+		// require_once('../sys.includes.php');
 		global $hasher;
 		$this->state = array();
 
@@ -344,7 +344,7 @@ class UserActions
 	 */
 	 function delete_user($user_id)
 	 {
-		require_once('../sys.includes.php');
+		// require_once('../sys.includes.php');
 	   $this->check_level = array(9);
 	   if (isset($user_id)) {
 	     /** Do a permissions check */
@@ -398,7 +398,7 @@ class UserActions
 	 */
 	function change_user_active_status($user_id,$change_to)
 	{
-		require_once('../sys.includes.php');
+		// require_once('../sys.includes.php');
 		
 		$this->check_level = array(9);
 		if (isset($user_id)) {

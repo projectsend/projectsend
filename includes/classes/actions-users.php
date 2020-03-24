@@ -100,7 +100,7 @@ class UserActions
 	 */
 	function create_user($arguments)
 	{
-		require_once('../sys.includes.php');
+		// require_once('../sys.includes.php');
 		global $hasher;
 		$this->state = array();
 

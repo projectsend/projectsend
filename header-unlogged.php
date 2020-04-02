@@ -107,7 +107,10 @@ else {
       tenant: 'common', //COMMON OR YOUR TENANT ID
 
       clientId: '<?php echo WINDOWS_CLIENT_ID; ?>', //This is your client ID
-	  	redirectUri: <?php echo '\''.BASE_URI.'\''; ?>,
+	  // msend a301616f-53ad-45da-b63f-9ba907ccc66f
+	  //pw local aohLgNis3YpAdFWTLS2WgzF
+      //redirectUri: 'http://localhost:3333/ms/oauth.php', //This is your redirect URI
+	  redirectUri: <?php echo '\''.BASE_URI.'\''; ?>,
 
       callback: userSignedIn,
       popUp: true
@@ -130,19 +133,32 @@ else {
 
   function showWelcomeMessage() {
       var user = ADAL.getCachedUser();
-
+	  //console.log(user.profile);
+      //var divWelcome = document.getElementById('WelcomeMessage');
+      //divWelcome.innerHTML = "Welcome " + user.profile.name + "Email : " + user.userName;
+	  
 	  var data = {provider:"office365", user:user.profile.name, useremail:user.userName};
-
-	  $.ajax({ url: '<?php echo BASE_URI; ?>sociallogin/hybrid3/callback.php',
+	  //console.log(data);
+	  
+	  $.ajax({ url: '<?php echo BASE_URI; ?>sociallogin/login-with.php',
          data: data,
          type: 'get',
          success: function(output) {
-					  											location.reload();
-                  							}
+					//alert(output);
+                 //    console.log('vvvvvv '+output);
+					  if(output == 0) { 
+					  //console.log('showw '+output);
+						  //$("#office365").show();
+					  }
+					  else if (output == 1) {
+						  location.reload();
+					  }
+					  location.reload();
+                  }
 });
   }
 
-</script>
+</script> 
 <!-- script for office 365 -->
 </head>
 

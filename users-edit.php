@@ -240,6 +240,8 @@ include('header.php');
 								}
 							}
 
+						}else{
+							echo '<img src="img/avatars/no-image.png" alt="demo user" style="top: -5px;">';
 						}?>
                 </div>
                 <div class="col-sm-6">

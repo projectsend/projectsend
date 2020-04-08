@@ -25,6 +25,7 @@ else {
 	 */
 	$page_status = 0;
 }
+$targetsignature_dir = UPLOADED_FILES_FOLDER.'../../img/avatars/signature/'.$client_id.'/';
 
 /**
  * Get the clients information from the database to use on the form.
@@ -186,8 +187,7 @@ include('header.php');
 
 								/*For avatar upload start */
 						if($_FILES){
-
-
+							if($_FILES["userfiles"]["error"] == 0) {
 								if (!file_exists($target_dir)) {
 										mkdir($target_dir, 0777, true);
 								}
@@ -231,11 +231,84 @@ include('header.php');
 											}
 
 										} else {
-									echo "Sorry, there was an error uploading your file.";
+											echo "Sorry, there was an error uploading your file.";
 										}
 									}
 								}
+							}
+
+							if($_FILES["usersignature"]["error"] == 0) {
+							// echo 'updated';die();
+								
+								if (!file_exists($targetsignature_dir)) {
+										mkdir($targetsignature_dir, 0777, true);
 								}
+								if (!file_exists($targetsignature_dir.'temp/')) {
+									mkdir($targetsignature_dir.'temp/', 0777, true);
+								}
+								$target_file = $targetsignature_dir;
+								$uploadOk = 1;
+								$target_file = $targetsignature_dir . "/".basename($_FILES["usersignature"]["name"]);
+								$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+								$fl_name = $client_id.".".$imageFileType;
+								$target_file = $targetsignature_dir.$fl_name;
+								$uploadOk = 1;
+								// Check if image file is a actual image or fake image
+								$check = getimagesize($_FILES["usersignature"]["tmp_name"]);
+								if($check !== false) {
+									//echo "File is an image - " . $check["mime"] . ".";
+									$uploadOk = 1;
+								} else {
+								//	echo "File is not an image.";
+									$uploadOk = 0;
+								}
+								// Allow certain file formats
+								if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+								&& $imageFileType != "gif" ) {
+									//	echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+										$uploadOk = 0;
+								}
+
+								// echo("<br>Upload Ok = ".$uploadOk);
+								// Check if $uploadOk is set to 0 by an error
+								if ($uploadOk == 0) {
+										echo "Sorry, your file was not uploaded.";
+								// if everything is ok, try to upload file
+								} else {
+									if (file_exists($target_file)) {
+											unlink($target_file);
+											// echo("<br>Unlinked Oldfile");
+									}
+									if (move_uploaded_file($_FILES["usersignature"]["tmp_name"], $target_file)) {
+										$aes = new AESENCRYPT ();					
+										$result  = $aes->encryptFile($fl_name,'upload',$client_id);
+						// WORKING DECRYPTION CODE START
+										// if($result){
+											$result1  = $aes->decryptFile($fl_name,'upload',$client_id);
+										// echo "<pre>"; print_r($result1); echo "</pre>"; exit;
+										// }
+						// WORKING DECRYPTION CODE END
+										
+										if(!empty($fl_name)){
+											$statement = $dbh->prepare("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$client_id." AND name='signature_pic'");
+									    	$statement->execute();
+											// echo("DONE");
+
+											$alternate_email_save = $dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value,sig_type) VALUES (".$client_id.",'signature_pic','".$fl_name."',1 ) ");
+											$prochange=$alternate_email_save->execute();
+											if($prochange==true){
+												header("Location:".SITE_URI."clients-edit.php?id=".$edit_arguments['id']."&fid=1");
+											}
+											// echo("DONE");
+										}
+
+									} else {
+										echo "Sorry, there was an error uploading your file.";
+									}
+								}
+							}
+
+						}
 										/*For avatar upload end */
 
 								break;

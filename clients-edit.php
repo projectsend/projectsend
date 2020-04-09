@@ -166,12 +166,14 @@ include('header.php');
 							 * Get the process state and show the corresponding ok or error message.
 							 */
 							switch ($edit_response['query']) {
+
 								case 1:
 									$msg = __('Client edited correctly.','cftp_admin');
 									echo system_message('ok',$msg);
 									if($global_level == 0){
-										unset($_SESSION['logout']);
-										header("location:".BASE_URI.'process.php?do=logout');
+										// unset($_SESSION['logout']);
+										// header("location:".BASE_URI.'process.php?do=logout');
+										header("Location:".SITE_URI."clientsedit.php?id=".$edit_arguments['id']);
 									}
 									$saved_client = get_client_by_id($client_id);
 									/** Record the action log */
@@ -297,7 +299,8 @@ include('header.php');
 											$alternate_email_save = $dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value,sig_type) VALUES (".$client_id.",'signature_pic','".$fl_name."',1 ) ");
 											$prochange=$alternate_email_save->execute();
 											if($prochange==true){
-												header("Location:".SITE_URI."clients-edit.php?id=".$edit_arguments['id']."&fid=1");
+												// header("Location:".SITE_URI."clients-edit.php?id=".$edit_arguments['id']."&fid=1");
+												header("Location:".SITE_URI."clientsedit.php?id=".$edit_arguments['id']);
 											}
 											// echo("DONE");
 										}

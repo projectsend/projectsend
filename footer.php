@@ -89,7 +89,7 @@
 
 							<?php
 								if (CURRENT_USER_LEVEL == 0) {
-									$my_account_link = 'clients-edit.php';
+									$my_account_link = 'clientsedit.php';
 								}
 								else {
 									$my_account_link = 'users-edit.php';

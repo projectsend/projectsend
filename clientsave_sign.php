@@ -3,6 +3,7 @@ require_once('sys.includes.php');
 // Define the Base64 value you need to save as an image
 $b64 = $_POST['img_data'];
 $user_id_mic =$_POST['user_id_mic'];
+
   $targetsignature_dir = UPLOADED_FILES_FOLDER.'../../img/avatars/tempsignature/'.$user_id_mic.'/';
 if (!file_exists($targetsignature_dir)) {
     mkdir($targetsignature_dir, 0777, true);

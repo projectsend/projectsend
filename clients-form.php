@@ -193,7 +193,7 @@ switch ($clients_form_type) {
 		<input type="file" name="userfiles" class="required" value="" placeholder="upload file" />
 	</div>
 </div>
-<?php if (CURRENT_USER_ID == $client_id) { ?>
+<?php //if (CURRENT_USER_ID == $client_id) { ?>
 	<div class="form-group">
 		<div class="col-sm-8  col-sm-offset-4">
 			<label>
@@ -208,7 +208,7 @@ switch ($clients_form_type) {
 			<input type="file" name="usersignature"  id="usersignature" class="required usersignature" value="" placeholder="upload file" />
 		</div>
 	</div>	
-<?php }?>	
+<?php //}?>	
 		<?php
 			if ($extra_fields == true) {
 		?>

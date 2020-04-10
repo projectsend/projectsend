@@ -182,13 +182,17 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 	/**
 	 * Repeat the query but this time, limited by pagination
 	 */
-	$files_query .= " LIMIT :limit_start, :limit_number";
+    if (TEMPLATE_RESULTS_PER_PAGE > 0) {
+        $files_query .= " LIMIT :limit_start, :limit_number";
+    }
 	$sql_files = $dbh->prepare( $files_query );
 
-	$pagination_page			= ( isset( $_GET["page"] ) ) ? $_GET["page"] : 1;
-	$pagination_start			= ( $pagination_page - 1 ) * TEMPLATE_RESULTS_PER_PAGE;
-	$params[':limit_start']		= $pagination_start;
-	$params[':limit_number']	= TEMPLATE_RESULTS_PER_PAGE;
+    if (TEMPLATE_RESULTS_PER_PAGE > 0) {
+	    $pagination_page			= ( isset( $_GET["page"] ) ) ? $_GET["page"] : 1;
+	    $pagination_start			= ( $pagination_page - 1 ) * TEMPLATE_RESULTS_PER_PAGE;
+	    $params[':limit_start']		= $pagination_start;
+        $params[':limit_number']	= TEMPLATE_RESULTS_PER_PAGE;
+    }
 
 	$sql_files->execute( $params );
 	$count = $sql_files->rowCount();

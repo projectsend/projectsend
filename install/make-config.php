@@ -185,7 +185,6 @@ function pdo_status_label() {
 
 include_once ABS_PARENT . '/header-unlogged.php';
 ?>
-
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 	<div class="white-box">
 		<div class="white-box-interior">
@@ -213,7 +212,7 @@ include_once ABS_PARENT . '/header-unlogged.php';
 								<div class="radio <?php if ( !$pdo_mysql_available ) { echo 'disabled'; } ?>">
 									<label for="dbdriver_mysql">
 										<input type="radio" id="dbdriver_mysql" name="dbdriver" value="mysql" <?php echo !$pdo_mysql_available ? 'disabled' : ''; ?> <?php echo $post_vars['dbdriver'] == 'mysql' ? 'checked' : ''; ?> />
-										MySQL <?php if ( !$pdo_mysql_available ) { _e('(not supported)','cftp_admin'); } ?>
+										MySQL/MariaDB <?php if ( !$pdo_mysql_available ) { _e('(not supported)','cftp_admin'); } ?>
 									</label>
 								</div>
 								<div class="radio <?php if ( !$pdo_mssql_available ) { echo 'disabled'; } ?>">
@@ -358,19 +357,21 @@ include_once ABS_PARENT . '/header-unlogged.php';
 																			'file'		=> $upload_temp_dir,
 																			'status'	=> $upload_temp_dir_writable,
 																		),
-												);
+                                                );
 							foreach ( $write_checks as $check => $values ) {
 						?>
 								<div class="form-group">
-									<label class="col-sm-4 control-label"><?php _e($values['label'], 'cftp_admin'); ?></label>
-									<div class="col-sm-6">
+									<label class="col-sm-4 control-label">
+                                        <?php _e($values['label'], 'cftp_admin'); ?>
+                                    </label>
+									<div class="col-sm-5">
 										<span class="format_url"><?php echo $values['file']; ?></span>
 									</div>
-									<div class="col-sm-2">
-										<?php if ( $values['status'] ) : ?>
+									<div class="col-sm-3">
+										<?php if ( $values['status'] == true ) : ?>
 											<span class="label label-success"><?php _e('Writable','cftp_admin'); ?></span>
 										<?php else : ?>
-											<span class="label label-important"><?php _e('Not writable','cftp_admin'); ?></span>
+											<span class="label label-danger"><?php _e('Not writable','cftp_admin'); ?></span>
 										<?php endif; ?>
 									</div>
 								</div>
@@ -433,12 +434,13 @@ include_once ABS_PARENT . '/header-unlogged.php';
 						?>
 
 						<div class="inside_form_buttons">
-							<?php if ($ready_to_go) : ?>
+							<?php if ($ready_to_go) { ?>
 								<button type="submit" name="submit" class="btn btn-wide btn-secondary"><?php _e('Check again','cftp_admin'); ?></button>
 								<button type="submit" name="submit-start" class="btn btn-wide btn-primary"><?php _e('Write config file','cftp_admin'); ?></button>
-							<?php else : ?>
-								<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Check','cftp_admin'); ?></button>
-							<?php endif; ?>
+                            <?php } else { ?>
+                            <?php $btn_label = (empty($_POST)) ? __('Check','cftp_admin') : __('Check again','cftp_admin'); ?>
+								<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php echo $btn_label; ?></button>
+							<?php } ?>
 						</div>
 
 					</form>

@@ -430,7 +430,16 @@ if (current_role_in($allowed_update)) {
 		 * chmod the emails folder and files to 777
 		 */
 		if ($last_update < 348) {
-			update_chmod_emails();
+            $update_chmod_emails = update_chmod_emails();
+            if (!empty($update_chmod_emails)) {
+                foreach ($update_chmod_emails as $error) {
+                    $updates_error_messages[] = $update_chmod_emails;
+                    $updates_errors++;
+                }
+            }
+            else {
+                $updates_made++;
+            }
 		}
 
 		/**
@@ -438,7 +447,16 @@ if (current_role_in($allowed_update)) {
 		 * chmod the main system files to 644
 		 */
 		if ($last_update < 352) {
-			chmod_main_files();
+            $chmod_main_files = chmod_main_files();
+            if (!empty($chmod_main_files)) {
+                foreach ($chmod_main_files as $error) {
+                    $updates_error_messages[] = $chmod_main_files;
+                    $updates_errors++;
+                }
+            }
+            else {
+                $updates_made++;
+            }
 		}
 
 		/**

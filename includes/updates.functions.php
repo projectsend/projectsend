@@ -73,62 +73,64 @@ function add_option_if_not_exists ($row, $value) {
 /** Called on r348 */
 function update_chmod_emails()
 {
-	global $updates_made;
-	global $updates_errors;
-	global $updates_error_messages;
-
 	$chmods = 0;
-	$emails_folder = ROOT_DIR.'/emails';
-	if (@chmod($emails_folder, 0755)) { $chmods++; } else { $updates_errors++; }
+    $errors = [];
+
+    $emails_folder = ROOT_DIR.'/emails';
+	if (!@chmod($emails_folder, 0755)) {
+        $errors[] = sprintf(__("A safe chmod value of 755 could not be set for directory: %s", 'cftp_admin'), $emails_folder);
+    }
 
 	$emails_files = glob($emails_folder."*", GLOB_NOSORT);
 
 	foreach ($emails_files as $emails_file) {
-		if(is_file($emails_file)) {
-			if (@chmod($emails_file, 0755)) { $chmods++; } else { $updates_errors++; }
+		if (is_file($emails_file)) {
+			if (!@chmod($emails_file, 0755)) {
+                $errors[] = sprintf(__("A safe chmod value of 644 could not be set for file: %s", 'cftp_admin'), $emails_file);
+            }
 		}
 	}
 
-	if ($chmods > 0) {
-		$updates_made++;
-	}
-	
-	if ($updates_errors > 0) {
-		$updates_error_messages[] = __("The chmod values of the emails folder and the html templates inside couldn't be set. If ProjectSend isn't sending notifications emails, please set them manually to 777.", 'cftp_admin');
-	}
+    if (!empty($errors)) {
+        $return = [];
+        $return[] = __("Please correct the following errors to make sure that ProjectSend can send notifications emails.", 'cftp_admin');
+        foreach ($errors as $error) {
+            $return[] = $error;
+        }
+
+        return $errors;
+    }
+    
+    return null;
 }
 
 /** Called on r352 */
 function chmod_main_files() {
-	global $updates_made;
-	global $updates_errors;
-	global $updates_error_messages;
-
-	$chmods = 0;
+    $chmods = 0;
+    $errors = [];
 	$system_files = array(
 							'sys' => ROOT_DIR.'/includes/app.php',
 							'cfg' => ROOT_DIR.'/includes/sys.config.php'
 						);
 	foreach ($system_files as $sys_file) {
 		if (!file_exists($sys_file)) {
-			$updates_errors++;
+            $errors[] = sprintf(__("System file does not exist: %s", 'cftp_admin'), $sys_file);
 		}
 		else {
 			$current_chmod = substr(sprintf('%o', fileperms($sys_file)), -4);
 			if ($current_chmod != '0644') {
-				@chmod($sys_file, 0644);
-				$chmods++;
+				if (!@chmod($sys_file, 0644)) {
+                    $errors[] = sprintf(__("A safe chmod value of 644 could not be set for file: %s", 'cftp_admin'), $sys_file);
+                }
 			}
 		}
 	}
 
-	if ($chmods > 0) {
-		$updates_made++;
-	}
-	
-	if ($updates_errors > 0) {
-		$updates_error_messages[] = __("A safe chmod value couldn't be set for one or more system files. Please make sure that at least includes/sys.config.php has a chmod of 644 for security reasons.", 'cftp_admin');
-	}
+	if (!empty($errors)) {
+		return $errors;
+    }
+    
+    return null;
 }
 
 /** Called on r354 */

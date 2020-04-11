@@ -68,7 +68,9 @@ require_once ROOT_DIR.'/includes/functions.forms.php';
 require_once ROOT_DIR.'/includes/functions.groups.php';
 
 /** Social login */
-require_once ROOT_DIR.'/includes/hybridauth.php';
+if (!defined('IS_INSTALL')) {
+    require_once ROOT_DIR.'/includes/hybridauth.php';
+}
 
 /** Security */
 require_once ROOT_DIR . '/includes/security/csrf.php';

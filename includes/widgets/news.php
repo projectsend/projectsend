@@ -23,7 +23,7 @@
                         ?>
                                 <li>
                                     <span class="date"><?php echo $published_date; ?></span>
-                                    <a href="<?php echo html_output($item->url); ?>" target="_blank">
+                                    <a href="<?php echo html_output($item->link); ?>" target="_blank">
                                         <h5><?php echo html_output($item->title); ?></h5>
                                     </a>
                                     <p><?php echo make_excerpt(html_output(strip_tags($item->content, '<br />')),200); ?>

@@ -140,7 +140,7 @@ function get_groups($arguments)
         return $all_groups;
     }
     else {
-        return false;
+        return array();
     }
 }
 

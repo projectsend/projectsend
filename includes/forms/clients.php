@@ -230,7 +230,7 @@ switch ($clients_form_type) {
 
 	<div class="form-group">
 		<div class="col-sm-8 col-sm-offset-4">
-			<label for="notify">
+			<label for="notify_upload">
 				<input type="checkbox" name="notify_upload" id="notify_upload" <?php echo (isset($client_arguments['notify_upload']) && $client_arguments['notify_upload'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Notify new uploads by e-mail','cftp_admin'); ?>
 			</label>
 		</div>

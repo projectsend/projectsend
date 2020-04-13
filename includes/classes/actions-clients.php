@@ -185,27 +185,27 @@ class ClientActions
 				$this->state['new_id']	= $this->dbh->lastInsertId();
 // Signature feature start
 
-				if($this->id!='' && $this->id!=null){
-					$old_name = UPLOADED_FILES_FOLDER.'../../img/avatars/tempsignature/'.$this->state['new_id'].'.png' ;
+				// if($this->id!='' && $this->id!=null){
+				// 	$old_name = UPLOADED_FILES_FOLDER.'../../img/avatars/tempsignature/'.$this->state['new_id'].'.png' ;
 
-					$fl_name = $this->state['new_id'].'.png';
-					$isexit = $this->dbh->prepare("SELECT * FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id=:user_id AND name = :name");
-					$isexit->bindParam(':user_id', $this->state['new_id'], PDO::PARAM_INT);
-					$isexit->bindValue(':name', 'signature_pic');
-					$isexit->execute();
-					$isexit->setFetchMode(PDO::FETCH_ASSOC);
-					$data = $isexit->fetch();
-					if(!empty($data)){
-						$statement = $this->dbh->prepare("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$this->state['new_id']." AND name='signature_pic'");
-					$statement->execute();
-					$statement1 = $this->dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value,sig_type) VALUES (".$this->state['new_id'].",'signature_pic','".$fl_name."',2 ) ");
-					$statement1=$statement1->execute();
-					}else{
-					    $statement1 = $this->dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value,sig_type) VALUES (".$this->state['new_id'].",'signature_pic','".$fl_name."',2 ) ");
-						$statement1=$statement1->execute();
+				// 	$fl_name = $this->state['new_id'].'.png';
+				// 	$isexit = $this->dbh->prepare("SELECT * FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id=:user_id AND name = :name");
+				// 	$isexit->bindParam(':user_id', $this->state['new_id'], PDO::PARAM_INT);
+				// 	$isexit->bindValue(':name', 'signature_pic');
+				// 	$isexit->execute();
+				// 	$isexit->setFetchMode(PDO::FETCH_ASSOC);
+				// 	$data = $isexit->fetch();
+				// 	if(!empty($data)){
+				// 		$statement = $this->dbh->prepare("DELETE FROM " . TABLE_USER_EXTRA_PROFILE . " WHERE user_id =".$this->state['new_id']." AND name='signature_pic'");
+				// 	$statement->execute();
+				// 	$statement1 = $this->dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value,sig_type) VALUES (".$this->state['new_id'].",'signature_pic','".$fl_name."',2 ) ");
+				// 	$statement1=$statement1->execute();
+				// 	}else{
+				// 	    $statement1 = $this->dbh->prepare( "INSERT INTO " . TABLE_USER_EXTRA_PROFILE . " (user_id, name, value,sig_type) VALUES (".$this->state['new_id'].",'signature_pic','".$fl_name."',2 ) ");
+				// 		$statement1=$statement1->execute();
 
-					}
-				}
+				// 	}
+				// }
 
 // Signature feature end
 

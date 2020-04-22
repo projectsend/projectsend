@@ -136,7 +136,7 @@ class DoProcess
                 $this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (user_id , file_id, remote_ip, remote_host) VALUES (:user_id, :file_id, :remote_ip, :remote_host)");
                 $this->statement->bindValue(':user_id', CURRENT_USER_ID, PDO::PARAM_INT);
                 $this->statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
-                $this->statement->bindParam(':remote_ip', $_SERVER['REMOTE_ADDR']);
+                $this->statement->bindParam(':remote_ip', get_client_ip());
                 $this->statement->bindParam(':remote_host', $_SERVER['REMOTE_HOST']);
                 $this->statement->execute();
 

@@ -28,11 +28,13 @@ Downloading a development version directly from the repository might give you un
 Your server needs to be configured with at least:
 
 * php 5.6 or newer (7.1 to be the minimum required version soon)
-* MySQL 5.0 or newer
+* MySQL 5.0 or newer(*)
 * apache 2.2
 * The following php extensions enabled on php.ini
   * php_pdo.dll
   * php_pdo_mysql.dll
+
+(*) If you are using version 8.x or newer, please set the authentication method of your database so it uses the MySQL native password. The default method (caching_sha2_password) will not work. Thanks to user jellevdbos for pointing this out.
 
 If possible, make sure to have php configured with:
 

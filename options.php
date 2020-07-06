@@ -14,6 +14,7 @@ switch ( $section ) {
 	case 'general':
 		$section_title	= __('General options','cftp_admin');
 		$checkboxes		= array(
+                                'xsendfile_enable',
 								'footer_custom_enable',
 								'files_descriptions_use_ckeditor',
 								'use_browser_lang',
@@ -92,6 +93,7 @@ if ($_POST) {
 	 */
 	/** Values that can be empty */
 	$allowed_empty_values	= array(
+                                'xsendfile_enable',
                                 'footer_custom_content',
 								'mail_copy_addresses',
 								'mail_smtp_host',

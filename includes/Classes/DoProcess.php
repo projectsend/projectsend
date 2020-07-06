@@ -350,24 +350,33 @@ class DoProcess
         if (file_exists($filename)) {
             session_write_close();
             while (ob_get_level()) ob_end_clean();
-            header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename='.basename($save_as));
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-            header('Pragma: public');
-            header('Cache-Control: private',false);
-            header('Content-Length: ' . get_real_size($filename));
-            header('Connection: close');
-            //readfile($this->file_location);
 
-            $this->context = stream_context_create();
-            $this->file = fopen($filename, 'rb', false, $this->context);
-            while ( !feof( $this->file ) ) {
-                //usleep(1000000); //Reduce download speed
-                echo stream_get_contents($this->file, 2014);
+            if (defined('XSENDFILE_ENABLE') && XSENDFILE_ENABLE == 1) {
+                header("X-Sendfile: $filename");
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename='.basename($save_as));
+                exit;
+            } else {
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename='.basename($save_as));
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+                header('Pragma: public');
+                header('Cache-Control: private',false);
+                header('Content-Length: ' . get_real_size($filename));
+                header('Connection: close');
+                //readfile($this->file_location);
+
+                $this->context = stream_context_create();
+                $this->file = fopen($filename, 'rb', false, $this->context);
+                while ( !feof( $this->file ) ) {
+                    //usleep(1000000); //Reduce download speed
+                    echo stream_get_contents($this->file, 2014);
+                }
+
+                fclose( $this->file );
+                exit;
             }
-
-            fclose( $this->file );
         }
         else {
             header('Location:' . PAGE_STATUS_CODE_404);

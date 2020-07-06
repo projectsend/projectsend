@@ -72,6 +72,18 @@
 
 <div class="options_divide"></div>
 
+<h3><?php _e('Downloads','cftp_admin'); ?></h3>
+<div class="form-group">
+    <div class="col-sm-8 col-sm-offset-4">
+        <label for="xsendfile_enable">
+            <input type="checkbox" value="1" name="xsendfile_enable" id="xsendfile_enable" class="checkbox_options" <?php echo (defined('XSENDFILE_ENABLE') && XSENDFILE_ENABLE == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Use XSendFile to serve files",'cftp_admin'); ?>
+            <p class="field_note"><?php _e("xsendfile improves downloads by allowing the web server to send the file directly (without php and it's limitations in the middle). This provides several optimizations, such as resumable, more stable downloads. This in an advanced feature that requires you to install and enable a module on your server.",'cftp_admin'); ?></p>
+        </label>
+    </div>
+</div>
+
+<div class="options_divide"></div>
+
 <h3><?php _e('System location','cftp_admin'); ?></h3>
 <p class="text-warning"><?php _e('These options are to be changed only if you are moving the system to another place. Changes here can cause ProjectSend to stop working.','cftp_admin'); ?></p>
 

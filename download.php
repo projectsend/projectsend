@@ -89,27 +89,34 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 				$real_file = UPLOADED_FILES_DIR.DS.basename($real_file_url);
 				$random_file = realpath(UPLOADED_FILES_DIR.DS.basename($file_on_disk));
 				if (file_exists($random_file)) {
-					session_write_close();
-					while (ob_get_level()) ob_end_clean();
-					header('Content-Type: application/octet-stream');
-					header('Content-Disposition: attachment; filename='.basename($real_file));
-					header('Expires: 0');
-					header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-					header('Pragma: public');
-					header('Cache-Control: private',false);
-					header('Content-Length: ' . get_real_size($random_file));
-					header('Connection: close');
-					//readfile($real_file);
-					
-					$context = stream_context_create();
-					$file = fopen($random_file, 'rb', FALSE, $context);
-					while ( !feof( $file ) ) {
-						//usleep(1000000); //Reduce download speed
-						echo stream_get_contents($file, 2014);
-					}
-					
-					fclose( $file );
-					die();
+                    if (defined('XSENDFILE_ENABLE') && XSENDFILE_ENABLE == 1) {
+                        header("X-Sendfile: $random_file");
+                        header('Content-Type: application/octet-stream');
+                        header('Content-Disposition: attachment; filename='.basename($real_file));
+                        exit;
+                    } else {
+                        session_write_close();
+                        while (ob_get_level()) ob_end_clean();
+                        header('Content-Type: application/octet-stream');
+                        header('Content-Disposition: attachment; filename='.basename($real_file));
+                        header('Expires: 0');
+                        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+                        header('Pragma: public');
+                        header('Cache-Control: private',false);
+                        header('Content-Length: ' . get_real_size($random_file));
+                        header('Connection: close');
+                        //readfile($real_file);
+                        
+                        $context = stream_context_create();
+                        $file = fopen($random_file, 'rb', FALSE, $context);
+                        while ( !feof( $file ) ) {
+                            //usleep(1000000); //Reduce download speed
+                            echo stream_get_contents($file, 2014);
+                        }
+                        
+                        fclose( $file );
+                        exit;
+                    }
 				}
 			}
 		}

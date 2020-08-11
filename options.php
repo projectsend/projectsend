@@ -116,6 +116,12 @@ if ($_POST) {
                                 'windowslive_client_secret',
                                 'yahoo_client_id',
                                 'yahoo_client_secret',
+                                'oidc_signin_enabled',
+                                'oidc_identifier_url',
+                                'ldap_signin_enabled',
+                                'ldap_host',
+                                'ldap_dn',
+                                'ldap_password'
 							);
 
 	foreach ($checkboxes as $checkbox) {

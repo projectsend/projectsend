@@ -139,3 +139,11 @@
         </select>
     </div>
 </div>
+
+<div class="options_divide"></div>
+
+<p class="warning">
+    <a href="email-test.php">
+        <?php _e('After saving your options, you can test your configuration here', 'cftp_admin'); ?>
+    </a>
+</p>

@@ -289,11 +289,15 @@ if ( current_role_in( array( 9,8,7 ) ) )
 												'icon'	=> 'wrench',
 											),
 								'sub'	=> array(
-												array(
-													'label'	=> __('Actions log', 'cftp_admin'),
-													'link'	=> 'actions-log.php',
-												),
-											),
+                                            array(
+                                                'label'	=> __('Actions log', 'cftp_admin'),
+                                                'link'	=> 'actions-log.php',
+                                            ),
+                                            array(
+                                                'label'	=> __('Test email configuration', 'cftp_admin'),
+                                                'link'	=> 'email-test.php',
+                                            ),
+                                        ),
 							);
 
 }

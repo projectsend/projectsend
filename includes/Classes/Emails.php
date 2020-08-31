@@ -35,11 +35,16 @@ class Emails
     private $strings_new_user;
     private $strings_pass_reset;
     private $strings_client_edited;
+    private $email_successful;
+    private $debug_result;
 
     function __construct()
     {
         global $dbh;
         $this->dbh = $dbh;
+
+        global $debug_message;
+        $debug_message = '';
 
 		/** Define the messages texts */
 		$this->header = file_get_contents(EMAIL_TEMPLATES_DIR . DS . EMAIL_TEMPLATE_HEADER);
@@ -198,6 +203,16 @@ class Emails
 					$body_check	= (!defined('EMAIL_CLIENT_EDITED_CUSTOMIZE') || EMAIL_CLIENT_EDITED_CUSTOMIZE == '0') ? '0' : EMAIL_CLIENT_EDITED_CUSTOMIZE;
 					$body_text	= EMAIL_CLIENT_EDITED_TEXT;
 				break;
+			case 'client_edited':
+					$filename	= EMAIL_TEMPLATE_CLIENT_EDITED;
+					$body_check	= (!defined('EMAIL_CLIENT_EDITED_CUSTOMIZE') || EMAIL_CLIENT_EDITED_CUSTOMIZE == '0') ? '0' : EMAIL_CLIENT_EDITED_CUSTOMIZE;
+					$body_text	= EMAIL_CLIENT_EDITED_TEXT;
+                break;
+            case 'test_settings':
+                    $filename	= 'test_settings.html';
+                    $body_check	= 0;
+                    $body_text	= null;
+                break;
 		}
 
 		if ($body_check == '0') {
@@ -553,6 +568,40 @@ class Emails
 
 
 	/**
+	 * Prepare the body for the e-mail sent when a client changes group
+	 *  membeship requests.
+	 */
+	private function email_test_settings($message)
+	{
+		$this->email_body = $this->email_prepare_body('test_settings');
+		$this->email_body = str_replace(
+									array('%BODY%'),
+									array(
+										$message,
+										),
+									$this->email_body
+								);
+		return array(
+					'subject' => __('Email configuration test', 'cftp_admin'),
+					'body' => $this->email_body
+				);
+	}
+
+    public function getDebugResult()
+    {
+        return $this->debug_result;
+    }
+
+    public function emailWasSuccessful()
+    {
+        if (!empty($this->email_successful) && $this->email_successful == true) {
+            return true;
+        }
+
+        return false;
+    }
+
+	/**
 	 * Finally, try to send the e-mail and return a status, where
 	 * 1 = Message sent OK
 	 * 2 = Error sending the e-mail
@@ -572,10 +621,21 @@ class Emails
 		$this->name			= (!empty($arguments['name'])) ? $arguments['name'] : '';
 		$this->files_list	= (!empty($arguments['files_list'])) ? $arguments['files_list'] : '';
 		$this->token		= (!empty($arguments['token'])) ? $arguments['token'] : '';
-		$this->memberships	= (!empty($arguments['memberships'])) ? $arguments['memberships'] : '';
+        $this->memberships	= (!empty($arguments['memberships'])) ? $arguments['memberships'] : '';
+        
+        $test_message = (!empty($arguments['message'])) ? filter_var($arguments['message'], FILTER_SANITIZE_STRING) : __('This is a test message', 'cftp_admin');
 
-		$this->try_bcc = false;
-		switch($this->type) {
+        $this->try_bcc = false;
+        $this->email_successful = false;
+
+        $debug = false;
+
+        switch($this->type) {
+            case 'test_settings':
+                $this->body_variables = [ $test_message ];
+                $this->addresses = $arguments['to'];
+                $debug = true;
+			break;
             case 'new_files_by_user':
                 $this->body_variables = [ $this->files_list, ];
 				if (MAIL_COPY_USER_UPLOAD == '1') {
@@ -637,13 +697,20 @@ class Emails
 			return $this->mail_info['body'];
 		}
 		else {
-
 			/**
 			 * phpMailer
 			 */
 			$this->send_mail = new PHPMailer();
             $this->send_mail->SMTPDebug = 0;
-			$this->send_mail->CharSet = EMAIL_ENCODING;
+            $this->send_mail->CharSet = EMAIL_ENCODING;
+            
+            if ($debug == true) {
+                $this->send_mail->SMTPDebug = 3;
+                $this->send_mail->Debugoutput = function($str, $level) {
+                    echo $str.'<br>';
+                    $GLOBALS['debug_message'] .= "$str\n";
+                };
+            }
 
             switch (MAIL_SYSTEM_USE) {
 				case 'smtp':
@@ -723,10 +790,13 @@ class Emails
 			//echo $this->mail_info['body'];
 			//die();
 
-			/**
-			 * Finally, send the e-mail.
-			 */
-			if($this->send_mail->Send()) {
+            // Finally, send the e-mail.
+            $send = $this->send_mail->Send();
+            $this->debug_result = $GLOBALS['debug_message'];
+            // $this->debug_result = $this->send_mail->ErrorInfo;
+
+			if ($send) {
+                $this->email_successful = true;
 				return 1;
 			}
 			else {

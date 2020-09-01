@@ -27,9 +27,9 @@ Downloading a development version directly from the repository might give you un
 
 Your server needs to be configured with at least:
 
-* php 5.6 or newer (7.1 to be the minimum required version soon)
+* php 7.1 or newer
 * MySQL 5.0 or newer(*)
-* apache 2.2
+* Apache 2.2 or NGINX
 * The following php extensions enabled on php.ini
   * php_pdo.dll
   * php_pdo_mysql.dll
@@ -44,6 +44,16 @@ If possible, make sure to have php configured with:
   * php_gd2.dll
   * php_gettext.dll
   * php_mbstring.dll
+
+## Optional: Improve downloads by using XSendFile
+
+If you have access to edit your Apache or NGINX modules and configurations, it's recommended that you enable XSendFile so the files are served directly, eliminating php as a middle-man, which can be the cause of slow, interrupted downloads, or corrupted files.
+After enabling the module, make sure to also enable the option in the General options panel of ProjectSend.
+
+Here are a few links to get started:
+[mod_xsendfile for Apache2/Apache2.2](https://tn123.org/mod_xsendfile/)
+[XSendfile on NGINX wiki](https://www.nginx.com/resources/wiki/start/topics/examples/xsendfile/)
+
 
 ## How to install on your server
 

@@ -7,3 +7,4 @@ Disallow: /lang/
 Disallow: /sociallogin/
 Disallow: /templates/
 Disallow: /upload/
+Disallow: /vendor/

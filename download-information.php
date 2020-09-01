@@ -4,14 +4,8 @@
  *
  * @package ProjectSend
  */
-$footable_min = true; // delete this line after finishing pagination on every table
-$load_scripts	= array(
-						'footable',
-						'flot',
-					); 
-
 $allowed_levels = array(9,8,7);
-require_once('sys.includes.php');
+require_once 'bootstrap.php';
 
 $active_nav = 'files';
 
@@ -56,19 +50,19 @@ if ($page_status === 1) {
 	}
 }
 
-include('header.php');
+include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 
 <div class="col-xs-12">
 	<?php	
 		if ($page_status === 0) {
 			$msg = __('No file was selected.','cftp_admin');
-			echo system_message('error',$msg);
+			echo system_message('danger',$msg);
 			echo '<p>'.$direct_access_error.'</p>';
 		}
 		else if ($page_status === 2) {
 			$msg = __('There is no information with that file ID number.','cftp_admin');
-			echo system_message('error',$msg);
+			echo system_message('danger',$msg);
 			echo '<p>'.$direct_access_error.'</p>';
 		}
 		else {
@@ -127,7 +121,7 @@ include('header.php');
 													'id'		=> 'download_info_tbl',
 													'class'		=> 'footable table',
 												);
-						$table = new generateTable( $table_attributes );
+						$table = new \ProjectSend\Classes\TableGenerate( $table_attributes );
 
 						$thead_columns		= array(
 													array(
@@ -188,14 +182,14 @@ include('header.php');
 
 						$sql->setFetchMode(PDO::FETCH_ASSOC);
 						while ( $row = $sql->fetch() ) {
-							$table->add_row();
+							$table->addRow();
 		
 							/**
 							 * Prepare the information to be used later on the cells array
 							 * 1- Get account download time and date
 							 */
-							$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
-							$time = date('h:i:s',strtotime($row['timestamp']));
+                            $date = format_date($row['timestamp']);
+                            $time = format_time($row['timestamp']);
 							
 							/**
 							 * 2- Check if it's from a know user or anonymous
@@ -231,7 +225,7 @@ include('header.php');
 							
 							
 							foreach ( $tbody_cells as $cell ) {
-								$table->add_cell( $cell );
+								$table->addCell( $cell );
 							}
 							
 							$table->end_row();
@@ -259,4 +253,4 @@ include('header.php');
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

@@ -15,11 +15,14 @@ if ( !empty( $_GET['category'] ) ) {
 	$category_filter = $_GET['category'];
 }
 
-include_once(ROOT_DIR.'/templates/common.php'); // include the required functions for every template
+include_once ROOT_DIR.'/templates/common.php'; // include the required functions for every template
 
 $window_title = __('Available files','pinboxes_template');
 
 $count = count($my_files);
+
+define('TEMPLATE_THUMBNAILS_WIDTH', '250');
+define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 ?>
 <!DOCTYPE html>
 <html>
@@ -83,7 +86,7 @@ $count = count($my_files);
 		<div id="header">
 			<?php if ($logo_file_info['exists'] === true) { ?>
 				<div id="branding">
-					<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $logo_file_info['url']; ?>&amp;w=300" alt="<?php echo html_output(THIS_INSTALL_SET_TITLE); ?>" />
+                    <?php echo get_branding_layout(true); // true: returns the thumbnail, not the full image ?>
 				</div>
 			<?php } ?>
 		</div>
@@ -102,12 +105,12 @@ $count = count($my_files);
 				<?php
 					if ( !empty( $get_categories['categories'] ) ) {
 						$url_client_id	= ( !empty($_GET['client'] ) && CURRENT_USER_LEVEL != '0') ? $_GET['client'] : null;
-						$link_template	= BASE_URI . 'my_files/';
+						$link_template	= CLIENT_VIEW_FILE_LIST_URL;
 				?>
 						<li class="categories_trigger">
 							<a href="#" target="_self"><i class="fa fa-filter" aria-hidden="true"></i> <?php _e('Categories', 'pinboxes_template'); ?></a>
 							<ul class="categories">
-								<li class="filter_all_files"><a href="<?php echo BASE_URI . 'my_files/'; if ( !empty( $url_client_id ) ) { echo '?client=' . $url_client_id; }; ?>"><?php  _e('All files', 'pinboxes_template'); ?></a></li>
+								<li class="filter_all_files"><a href="<?php echo CLIENT_VIEW_FILE_LIST_URL; if ( !empty( $url_client_id ) ) { echo '?client=' . $url_client_id; }; ?>"><?php  _e('All files', 'pinboxes_template'); ?></a></li>
 								<?php
 									foreach ( $get_categories['categories'] as $category ) {
 										$link_data	= array(
@@ -153,8 +156,8 @@ $count = count($my_files);
 				<div class="photo_list">
 				<?php
 					foreach ($my_files as $file) {
-						$download_link = make_download_link($file);
-						$date = date(TIMEFORMAT_USE,strtotime($file['timestamp']));
+                        $download_link = make_download_link($file);
+                        $date = format_date($file['timestamp']);
 				?>
 						<div class="photo <?php if ($file['expired'] == true) { echo 'expired'; } ?>">
 							<div class="photo_int">
@@ -162,23 +165,16 @@ $count = count($my_files);
 									/**
 									 * Generate the thumbnail if the file is an image.
 									 */
-									$pathinfo = pathinfo($file['url']);
-									$extension = strtolower($pathinfo['extension']);
 									$img_formats = array('gif','jpg','pjpeg','jpeg','png');
-									if (in_array($extension,$img_formats)) {
+									if (in_array($file['extension'],$img_formats)) {
 								?>
 										<div class="img_prev">
 											<?php
 												if ($file['expired'] == false) {
 											?>
 													<a href="<?php echo $download_link; ?>" target="_blank">
-														<?php
-															$this_thumbnail_url = UPLOADED_FILES_URL.$file['url'];
-															if (THUMBS_USE_ABSOLUTE == '1') {
-																$this_thumbnail_url = BASE_URI.$this_thumbnail_url;
-															}
-														?>
-														<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $this_thumbnail_url; ?>&amp;w=250&amp;q=<?php echo THUMBS_QUALITY; ?>" alt="<?php echo htmlentities($file['name']); ?>" />
+                                                        <?php $thumbnail = make_thumbnail( UPLOADED_FILES_DIR.DS.$file['url'], 'proportional', TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT ); ?>
+														<img src="<?php echo $thumbnail['thumbnail']['url']; ?>" alt="<?php echo htmlentities($file['name']); ?>" />
 													</a>
 											<?php
 												}
@@ -190,7 +186,7 @@ $count = count($my_files);
 								?>
 											<div class="ext_prev">
 												<a href="<?php echo $download_link; ?>" target="_blank">
-													<h6><?php echo $extension; ?></h6>
+													<h6><?php echo $file['extension']; ?></h6>
 												</a>
 											</div>
 								<?php
@@ -204,9 +200,9 @@ $count = count($my_files);
 									<?php echo htmlentities_allowed($file['description']); ?>
 									<p class="file_size">
 										<?php
-											$file_absolute_path = UPLOADED_FILES_FOLDER . $file['url'];
+											$file_absolute_path = UPLOADED_FILES_DIR . DS . $file['url'];
 											if ( file_exists( $file_absolute_path ) ) {
-												$this_file_size = format_file_size(get_real_size(UPLOADED_FILES_FOLDER.$file['url']));
+												$this_file_size = format_file_size(get_real_size(UPLOADED_FILES_DIR.DS.$file['url']));
 												_e('File size:','pinboxes_template'); ?> <strong><?php echo $this_file_size; ?></strong>
 										<?php
 											}
@@ -216,7 +212,7 @@ $count = count($my_files);
 									<p class="exp_date">
 										<?php
 											if ( $file['expires'] == '1' ) {
-												$exp_date = date( TIMEFORMAT_USE, strtotime( $file['expiry_date'] ) );
+												$exp_date = date( TIMEFORMAT, strtotime( $file['expiry_date'] ) );
 												_e('Expiration date:','pinboxes_template'); ?> <span><?php echo $exp_date; ?></span>
 										<?php
 											}

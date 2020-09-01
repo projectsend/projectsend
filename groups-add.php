@@ -6,86 +6,60 @@
  * @subpackage	Groups
  *
  */
-$load_scripts	= array(
-						'chosen',
-						'ckeditor',
-					);
-
 $allowed_levels = array(9,8);
-require_once('sys.includes.php');
+require_once 'bootstrap.php';
 
 $active_nav = 'groups';
 
 $page_title = __('Add clients group','cftp_admin');
 
-include('header.php');
+$page_id = 'group_form';
+
+$new_group = new \ProjectSend\Classes\Groups($dbh);
+
+include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 if ($_POST) {
-	$new_group = new GroupActions();
-
 	/**
 	 * Clean the posted form values to be used on the groups actions,
 	 * and again on the form if validation failed.
 	 */
-	$add_group_data_name = encode_html($_POST['add_group_form_name']);
-	$add_group_data_description = encode_html($_POST['add_group_form_description']);
-	$add_group_data_members = ( !empty( $_POST['add_group_form_members'] ) ) ? $_POST['add_group_form_members'] : null;
-	$add_group_data_public = (isset($_POST["add_group_form_public"])) ? 1 : 0;
-
-	/** Arguments used on validation and group creation. */
-	$new_arguments = array(
-							'id' => '',
-							'name' => $add_group_data_name,
-							'description' => $add_group_data_description,
-							'members' => $add_group_data_members,
-							'public' => $add_group_data_public,
-						);
+    $group_arguments = [
+        'name'          => $_POST['name'],
+        'description'   => $_POST['description'],
+        'members'       => ( !empty( $_POST['members'] ) ) ? $_POST['members'] : null,
+        'public'        => (isset($_POST["public"])) ? 1 : 0,
+    ];
 
 	/** Validate the information from the posted form. */
-	$new_validate = $new_group->validate_group($new_arguments);
+    $new_group->set($group_arguments);
+	if ($new_group->validate()) {
+        $new_response = $new_group->create();
 
-	/** Create the group if validation is correct. */
-	if ($new_validate == 1) {
-		$new_response = $new_group->create_group($new_arguments);
+        if (!empty($new_response['id'])) {
+            $rediret_to = BASE_URI . 'groups-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1';
+            header('Location:' . $rediret_to);
+            exit;
+        }
 	}
-
 }
 ?>
-
 <div class="col-xs-12 col-sm-12 col-lg-6">
 	<div class="white-box">
 		<div class="white-box-interior">
 
 			<?php
-				/**
-				 * If the form was submited with errors, show them here.
-				 */
-				$valid_me->list_errors();
-			?>
+                // If the form was submited with errors, show them here.
+                echo $new_group->getValidationErrors();
 
-			<?php
-				if (isset($new_response)) {
+                if (isset($new_response)) {
 					/**
 					 * Get the process state and show the corresponding ok or error messages.
 					 */
 					switch ($new_response['query']) {
-						case 1:
-							$msg = __('Group added correctly.','cftp_admin');
-							echo system_message('ok',$msg);
-
-							/** Record the action log */
-							$new_log_action = new LogActions();
-							$log_action_args = array(
-													'action' => 23,
-													'owner_id' => CURRENT_USER_ID,
-													'affected_account' => $new_response['new_id'],
-													'affected_account_name' => $add_group_data_name
-												);
-							$new_record_action = $new_log_action->log_action_save($log_action_args);
-						break;
 						case 0:
 							$msg = __('There was an error. Please try again.','cftp_admin');
-							echo system_message('error',$msg);
+							echo system_message('danger',$msg);
 						break;
 					}
 				}
@@ -95,7 +69,7 @@ if ($_POST) {
 					 * Include the form.
 					 */
 					$groups_form_type = 'new_group';
-					include('groups-form.php');
+					include_once FORMS_DIR . DS . 'groups.php';
 				}
 			?>
 
@@ -104,4 +78,4 @@ if ($_POST) {
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

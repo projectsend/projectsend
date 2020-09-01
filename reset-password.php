@@ -6,11 +6,16 @@
  *
  */
 $allowed_levels = array(9,8,7,0);
-require_once('sys.includes.php');
+require_once 'bootstrap.php';
 
 $page_title = __('Lost password','cftp_admin');
 
-include('header-unlogged.php');
+$page_id = 'reset_password_enter_email';
+if (!empty($_GET['token']) && !empty($_GET['user'])) {
+    $page_id = 'reset_password_enter_new';
+}
+
+include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 	$show_form = 'enter_email';
 
 	if (!empty($_GET['token']) && !empty($_GET['user'])) {
@@ -20,33 +25,23 @@ include('header-unlogged.php');
 		/**
 		 * Get the user's id
 		 */
-		$query_user_id	= $dbh->prepare("SELECT id, user FROM " . TABLE_USERS . " WHERE user = :user");
-		$query_user_id->bindParam(':user', $got_user);
-		$query_user_id->execute();
-		$result_user_id = $query_user_id->fetch();
-		$got_user_id	= $result_user_id['id'];
-
+        $user_data = get_user_by_username($got_user);
 		$sql_request = $dbh->prepare("SELECT * FROM " . TABLE_PASSWORD_RESET . " WHERE BINARY token = :token AND user_id = :id");
 		$sql_request->bindParam(':token', $got_token);
-		$sql_request->bindParam(':id', $got_user_id, PDO::PARAM_INT);
-		$sql_request->execute();
-		$count_request = $sql_request->rowCount();
+		$sql_request->bindParam(':id', $user_data['id'], PDO::PARAM_INT);
+        $sql_request->execute();
+        $count_request = $sql_request->rowCount();
 
-		if ( $count_request > 0 ) {
+		if ($count_request > 0) {
 			$sql_request->setFetchMode(PDO::FETCH_ASSOC);
 			$token_info = $sql_request->fetch();
-			$request_id = $token_info['id'];
 
 			/** Check if the token has been used already */
 			if ($token_info['used'] == '1') {
-				/** Clean the ID to fix security holes */
-				$got_user_id = '';
 				$errorstate = 'token_used';
 			}
-
 			/** Check if the token has expired. */
-			elseif (time() - strtotime($token_info['timestamp']) > 60*60*24) {
-			$got_user_id = '';
+			elseif (time() - strtotime($token_info['timestamp']) > PASSWORD_RECOVERY_TOKEN_EXPIRATION_TIME) {
 				$errorstate = 'token_expired';
 			}
 
@@ -55,7 +50,6 @@ include('header-unlogged.php');
 			}
 		}
 		else {
-			$got_user_id = '';
 			$errorstate = 'token_invalid';
 			$show_form = 'none';
 		}
@@ -69,31 +63,22 @@ include('header-unlogged.php');
 		$form_type = encode_html($_POST['form_type']);
 		
 		switch ($form_type) {
-
 			/**
 			 * The form submited contains a new token request
 			 */
-			case 'new_request':
-				$sql_user = $dbh->prepare("SELECT id, user, email FROM " . TABLE_USERS . " WHERE email = :email");
-				$sql_user->bindParam(':email', $_POST['reset_password_email']);
-				$sql_user->execute();
-				$count_user = $sql_user->rowCount();
+            case 'new_request':
+                $get_user = get_user_by('user', 'email', $_POST['email']);
 		
-				if ( $count_user > 0 ) {
+				if ( $get_user ) {
 					/** Email exists on the database */
-					$sql_user->setFetchMode(PDO::FETCH_ASSOC);
-					$row = $sql_user->fetch();
-					$id			= $row['id'];
-					$username	= $row['user'];
-					$email		= $row['email'];
-					$token		= generateRandomString(32);
+					$token = generateRandomString(32);
 					
 					/**
 					 * Count how many request were made by this user today.
 					 * No more than 3 unused should exist at a time.
 					 */
 					$sql_amount = $dbh->prepare("SELECT * FROM " . TABLE_PASSWORD_RESET . " WHERE user_id = :id AND used = '0' AND timestamp > NOW() - INTERVAL 1 DAY");
-					$sql_amount->bindParam(':id', $id, PDO::PARAM_INT);
+					$sql_amount->bindParam(':id', $get_user['id'], PDO::PARAM_INT);
 					$sql_amount->execute();
 					$count_requests = $sql_amount->rowCount();
 					if ($count_requests >= 3){
@@ -103,18 +88,18 @@ include('header-unlogged.php');
 						$sql_pass = $dbh->prepare("INSERT INTO " . TABLE_PASSWORD_RESET . " (user_id, token)"
 														."VALUES (:id, :token)");
 						$sql_pass->bindParam(':token', $token);
-						$sql_pass->bindParam(':id', $id, PDO::PARAM_INT);
+						$sql_pass->bindParam(':id', $get_user['id'], PDO::PARAM_INT);
 						$sql_pass->execute();
 			
 						/** Send email */
-						$notify_user = new PSend_Email();
+						$notify_user = new \ProjectSend\Classes\Emails;
 						$email_arguments = array(
-														'type' => 'password_reset',
-														'address' => $email,
-														'username' => $username,
-														'token' => $token
-													);
-						$notify_send = $notify_user->psend_send_email($email_arguments);
+                            'type' => 'password_reset',
+                            'address' => $get_user['email'],
+                            'username' => $get_user['username'],
+                            'token' => $token
+                        );
+                        $notify_send = $notify_user->send($email_arguments);
 			
 						if ($notify_send == 1){
 							$state['email'] = 1;
@@ -127,7 +112,10 @@ include('header-unlogged.php');
 					$show_form = 'none';
 				}
 				else {
-					$errorstate = 'email_not_found';
+                    //$errorstate = 'email_not_found';
+                    // Simulate that the request has been set, do not show that email exists or not on the database
+                    $state['email'] = 1;
+                    $show_form = 'none';
 				}
 			break;
 
@@ -135,18 +123,18 @@ include('header-unlogged.php');
 			 * The form submited contains the new password
 			 */
 			case 'new_password':
-				if (!empty($got_user_id)) {
-					$reset_password_new = $_POST['reset_password_new'];
+				if (!empty($user_data['id'])) {
+					$reset_password_new = $_POST['password'];
 	
-					/** Password checks */
-					$valid_me->validate('completed',$reset_password_new,$validation_no_pass);
-					$valid_me->validate('password',$reset_password_new,$validation_valid_pass.' '.$validation_valid_chars);
-					$valid_me->validate('pass_rules',$reset_password_new,$validation_rules_pass);
-					$valid_me->validate('length',$reset_password_new,$validation_length_pass,MIN_PASS_CHARS,MAX_PASS_CHARS);
-			
-					if ($valid_me->return_val) {
-	
-						$enc_password = $hasher->HashPassword($reset_password_new);
+                    /** Password checks */
+                    $validation = new \ProjectSend\Classes\Validation;
+                    $validation->validate('completed',$reset_password_new,$json_strings['validation']['no_pass']);
+					$validation->validate('password',$reset_password_new,$json_strings['validation']['valid_pass'].' '.$json_strings['validation']['valid_chars']);
+					$validation->validate('pass_rules',$reset_password_new,$json_strings['validation']['rules_pass']);
+					$validation->validate('length',$reset_password_new,$json_strings['validation']['length_pass'],MIN_PASS_CHARS,MAX_PASS_CHARS);
+
+					if ($validation->passed()) {	
+                        $enc_password = password_hash($reset_password_new, PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
 				
 						if (strlen($enc_password) >= 20) {
 				
@@ -159,7 +147,7 @@ include('header-unlogged.php');
 														WHERE id = :id"
 												);
 							$sql_query->bindParam(':password', $enc_password);
-							$sql_query->bindParam(':id', $got_user_id, PDO::PARAM_INT);
+							$sql_query->bindParam(':id', $user_data['id'], PDO::PARAM_INT);
 							$sql_query->execute();							
 					
 							if ($sql_query) {
@@ -169,7 +157,7 @@ include('header-unlogged.php');
 															used = '1' 
 															WHERE id = :id"
 													);
-								$sql_query->bindParam(':id', $request_id, PDO::PARAM_INT);
+								$sql_query->bindParam(':id', $token_info['id'], PDO::PARAM_INT);
 								$sql_query->execute();							
 
 								$show_form = 'none';
@@ -191,7 +179,7 @@ include('header-unlogged.php');
 
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 
-	<?php echo generate_branding_layout(); ?>
+	<?php echo get_branding_layout(true); ?>
 
 	<div class="white-box">
 		<div class="white-box-interior">
@@ -199,7 +187,9 @@ include('header-unlogged.php');
 				/**
 				 * If the form was submited with errors, show them here.
 				 */
-				$valid_me->list_errors();
+                if (!empty($validation)) {
+                    echo $validation->list_errors();
+                }
 			?>
 	
 			<?php
@@ -225,7 +215,7 @@ include('header-unlogged.php');
 							break;
 					}
 	
-					echo system_message('error',$login_err_message,'login_error');
+					echo system_message('danger',$login_err_message,'login_error');
 				}
 
 				/**
@@ -235,12 +225,12 @@ include('header-unlogged.php');
 					switch ($state['email']) {
 						case 1:
 							$msg = __('An e-mail with further instructions has been sent. Please check your inbox to proceed.','cftp_admin');
-							echo system_message('ok',$msg);
+							echo system_message('success',$msg);
 						break;
 						case 0:
 							$msg = __("E-mail couldn't be sent.",'cftp_admin');
 							$msg .= ' ' . __("If the problem persists, please contact an administrator.",'cftp_admin');
-							echo system_message('error',$msg);
+							echo system_message('danger',$msg);
 						break;
 					}
 				}
@@ -252,106 +242,27 @@ include('header-unlogged.php');
 					switch ($state['reset']) {
 						case 1:
 							$msg = __('Your new password has been set. You can now log in using it.','cftp_admin');
-							echo system_message('ok',$msg);
+							echo system_message('success',$msg);
 						break;
 						case 0:
 							$msg = __("Your new password couldn't be set.",'cftp_admin');
 							$msg .= ' ' . __("If the problem persists, please contact an administrator.",'cftp_admin');
-							echo system_message('error',$msg);
+							echo system_message('danger',$msg);
 						break;
 					}
 				}
-				 
+
 				switch ($show_form) {
 					case 'enter_email':
-					default:
-			?>
-						<script type="text/javascript">
-							$(document).ready(function() {
-								$("form").submit(function() {
-									clean_form(this);
-						
-									is_complete(this.reset_password_email,'<?php echo $validation_no_email; ?>');
-									is_email(this.reset_password_email,'<?php echo $validation_invalid_mail; ?>');
-						
-									// show the errors or continue if everything is ok
-									if (show_form_errors() == false) { return false; }
-								});
-							});
-						</script>
-						
-						<form action="reset-password.php" name="resetpassword" method="post" role="form">
-							<fieldset>
-								<input type="hidden" name="form_type" id="form_type" value="new_request" />
-
-								<div class="form-group">
-									<label for="reset_password_email"><?php _e('E-mail','cftp_admin'); ?></label>
-									<input type="text" name="reset_password_email" id="reset_password_email" class="form-control" />
-								</div>
-
-								<p><?php _e("Please enter your account's e-mail address. You will receive a link to continue the process.",'cftp_admin'); ?></p>
-
-								<div class="inside_form_buttons">
-									<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Get a new password','cftp_admin'); ?></button>
-								</div>
-							</fieldset>
-						</form>
-			<?php
+                    default:
+                        include_once FORMS_DIR . DS . 'reset-password' . DS . 'enter-email.php';
 					break;
 					case 'enter_new_password':
-			?>
-						<script type="text/javascript">
-							/**
-							 * Quick hack to ignore the col-sm-* classes
-							 * when adding the errors to the form
-							 */
-							var ignore_columns = true;
-
-							$(document).ready(function() {
-								$("form").submit(function() {
-
-									clean_form(this);
-						
-									is_complete(this.reset_password_new,'<?php echo $validation_no_pass; ?>');
-									is_length(this.reset_password_new,<?php echo MIN_PASS_CHARS; ?>,<?php echo MAX_PASS_CHARS; ?>,'<?php echo $validation_length_pass; ?>');
-									is_password(this.reset_password_new,'<?php $chars = addslashes($validation_valid_chars); echo $validation_valid_pass." ".$chars; ?>');
-						
-									// show the errors or continue if everything is ok
-									if (show_form_errors() == false) { return false; }
-								});
-							});
-						</script>
-						
-						<form action="reset-password.php?token=<?php echo html_output($got_token); ?>&user=<?php echo html_output($got_user); ?>" name="newpassword" method="post" role="form">
-							<fieldset>
-								<input type="hidden" name="form_type" id="form_type" value="new_password" />
-
-								<div class="form-group">
-									<label for="reset_password_new"><?php _e('New password','cftp_admin'); ?></label>
-									<div class="input-group">
-										<input type="password" name="reset_password_new" id="reset_password_new" class="form-control password_toggle" />
-										<div class="input-group-btn password_toggler">
-											<button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button>
-										</div>
-									</div>
-									<button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="reset_password_new" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate','cftp_admin'); ?></button>
-								</div>
-								<?php echo password_notes(); ?>
-								
-								<p><?php _e("Please enter your desired new password. After that, you will be able to log in normally.",'cftp_admin'); ?></p>
-
-								<div class="inside_form_buttons">
-									<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Set new password','cftp_admin'); ?></button>
-								</div>
-							</fieldset>
-						</form>
-			<?php
+                        include_once FORMS_DIR . DS . 'reset-password' . DS . 'enter-password.php';
+                    break;
+    			    case 'none':
 					break;
-					case 'none':
-			?>
-			<?php
-					break;
-				 }
+	            }
 			?>
 
 			<div class="login_form_links">
@@ -362,4 +273,4 @@ include('header-unlogged.php');
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

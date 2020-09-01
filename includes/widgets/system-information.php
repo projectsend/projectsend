@@ -1,6 +1,6 @@
 <?php
 	if ( isset( $_GET['ajax_call'] ) ) {
-		require_once('../../sys.includes.php');
+		require_once '../../bootstrap.php';
 	}
 ?>
 <div class="widget widget_system_info">
@@ -21,7 +21,7 @@
 			<dd><?php echo MAX_FILESIZE; ?> mb.</dd>
 
 			<dt><?php _e('Template','cftp_admin'); ?></dt>
-			<dd><?php echo ucfirst(TEMPLATE_USE); ?> <a href="<?php echo BASE_URI; ?>templates.php">[<?php _e('Change','cftp_admin'); ?>]</a></dd>
+			<dd><?php echo ucfirst(SELECTED_CLIENTS_TEMPLATE); ?> <a href="<?php echo BASE_URI; ?>templates.php">[<?php _e('Change','cftp_admin'); ?>]</a></dd>
 
 			<?php
 				/** Get the data to show on the bars graphic */
@@ -66,7 +66,7 @@
 				<dd><?php echo ROOT_DIR; ?></dd>
 
 				<dt><?php _e('Uploads folder','cftp_admin'); ?></dt>
-				<dd><?php echo UPLOADED_FILES_FOLDER; ?></dd>
+				<dd><?php echo UPLOADED_FILES_DIR; ?></dd>
 				*/
 			?>
 		</dl>

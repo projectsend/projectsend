@@ -1,6 +1,6 @@
 <?php
 /**
- * Show updates status messages
+ * Show updates status messages.
  *
  * @package		ProjectSend
  * @subpackage	Updates
@@ -29,20 +29,17 @@
 				</div>
 			</div>
 <?php
-			/**
-			 * Resets the database so it doesn't show the
-			 * 'vew version' message.
-			 */
+			// Resets the database so it doesn't show the 'vew version' message.
 			// reset_update_status();
 		}
 		else {
 			// Used when a new version is found, but not if the current installation has just been updated.
-            if ( CURRENT_USER_LEVEL != '0' ) {
+            if ( CURRENT_USER_LEVEL != '0') {
                 $update_data = get_latest_version_data();
                 $update_data = json_decode($update_data);
                 if ($update_data->update_available == '1') {
 ?>
-                    <div class="system_msg update_msg">
+                    <div class="alert alert-warning update_msg">
                         <div class="row">
                             <div class="col-sm-8">
                                 <strong><?php _e('Update available!', 'cftp_admin'); ?></strong> <?php echo sprintf( __('ProjectSend %s has been released', 'cftp_admin'), $update_data->latest_version); ?>

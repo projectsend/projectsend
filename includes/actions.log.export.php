@@ -9,9 +9,9 @@
 /**
  *  Call the required system files
  */
-require_once('../sys.includes.php');
+require_once '../bootstrap.php';
 
-if(!check_for_admin()) {
+if (!check_for_admin()) {
     return;
 }
 
@@ -35,19 +35,21 @@ if ($log_count > 0) {
 	while ( $log = $log_sql->fetch() ) {
 		$render = '';
 		$rendered = array();
-		$render = render_log_action(
+
+        $render = render_log_action(
 							array(
-								'action'						=> filter_pipe($log['action']),
-								'timestamp'					=> filter_pipe($log['timestamp']),
-								'owner_id'					=> filter_pipe($log['owner_id']),
-								'owner_user'				=> filter_pipe($log['owner_user']),
-								'affected_file'			=> filter_pipe($log['affected_file']),
-								'affected_file_name'		=> filter_pipe($log['affected_file_name']),
-								'affected_account'		=> filter_pipe($log['affected_account']),
+								'action' => filter_pipe($log['action']),
+								'timestamp' => filter_pipe($log['timestamp']),
+								'owner_id' => filter_pipe($log['owner_id']),
+								'owner_user' => filter_pipe($log['owner_user']),
+								'affected_file' => filter_pipe($log['affected_file']),
+								'affected_file_name' => filter_pipe($log['affected_file_name']),
+								'affected_account' => filter_pipe($log['affected_account']),
 								'affected_account_name'	=> filter_pipe($log['affected_account_name'])
 							)
 		);
-		if (!empty($render['timestamp'])) { $rendered['timestamp'] = $render['timestamp']; };
+
+        if (!empty($render['timestamp'])) { $rendered['timestamp'] = $render['timestamp']; };
 		if (!empty($render['1'])) { $rendered['1'] = $render['1']; };
 		if (!empty($render['text'])) { $rendered['text'] = $render['text']; };
 		if (!empty($render['2'])) { $rendered['2'] = $render['2']; };

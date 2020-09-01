@@ -7,12 +7,12 @@
  *
  */
 $allowed_levels = array(9,8,7,0);
-require_once('sys.includes.php');
+require_once 'bootstrap.php';
 
 /**
  * If the option to show this page is not enabled, redirect
  */
-if ( PUBLIC_LISTING_ENABLE != 1 ) {
+if ( PUBLIC_LISTING_PAGE_ENABLE != 1 ) {
 	header("location:" . BASE_URI . "index.php");
 	die();
 }
@@ -33,13 +33,10 @@ $mode = 'files';
  * If viewing a particular group, make sure it's public
  */
 if (!empty($_GET['token']) && !empty($_GET['id'])) {
-	$got_group		= $_GET['id'];
-	$got_token		= $_GET['token'];
-
 	$can_view_group = false;
 
-	$test_group = get_group_by_id( $got_group );
-	if ( $test_group['public_token'] == $got_token ) {
+	$test_group = get_group_by_id($_GET['id']);
+	if ( $test_group['public_token'] == $_GET['token'] ) {
 		if ( $test_group['public'] == 1 ) {
 			$can_view_group = true;
 		}
@@ -57,7 +54,7 @@ $page_title = __('Public groups and files','cftp_admin');
 
 $dont_redirect_if_logged = 1;
 
-include('header-unlogged.php');
+include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 
 /**
  * General function that defines the formating of files lines
@@ -89,7 +86,7 @@ function list_file($data, $origin) {
 ?>
 <div class="col-xs-12 col-sm-12 col-lg-6 col-lg-offset-3">
 
-	<?php echo generate_branding_layout(); ?>
+	<?php echo get_branding_layout(true); ?>
 
 	<div class="white-box">
 		<div class="white-box-interior">
@@ -97,12 +94,12 @@ function list_file($data, $origin) {
 				<?php
 					switch ( $mode ) {
 						case 'files':
-								$title	= __('Public groups and files','cftp_admin');
-								$desc		= ''; //__('Public navigation','cftp_admin');
+								$title = __('Public groups and files','cftp_admin');
+								$desc = ''; //__('Public navigation','cftp_admin');
 							break;
 						case 'group':
-								$title	= $test_group['name'];
-								$desc		= $test_group['description'];
+								$title = $test_group['name'];
+								$desc = $test_group['description'];
 							break;
 					}
 				?>
@@ -116,7 +113,6 @@ function list_file($data, $origin) {
 				<div class="listing">
 					<ul>
 						<?php
-
 							/**
 							 * 1- Make a list of files IDs
 							 */
@@ -153,14 +149,14 @@ function list_file($data, $origin) {
 									$filename_on_disk = (!empty( $row['original_url'] ) ) ? $row['original_url'] : $row['url'];
 
 									$all_files[$row['id']] = array(
-																		'id'				=> encode_html($row['id']),
-																		'filename'		=> encode_html($filename_on_disk),
-																		'title'			=> encode_html($row['filename']),
-																		'public'			=> encode_html($row['public_allow']),
-																		'token'			=> encode_html($row['public_token']),
-																		'expired'		=> $expired,
-																		'expire_date'	=> encode_html($row['expiry_date']),
-																	);
+                                        'id' => encode_html($row['id']),
+                                        'filename' => encode_html($filename_on_disk),
+                                        'title' => encode_html($row['filename']),
+                                        'public' => encode_html($row['public_allow']),
+                                        'token' => encode_html($row['public_token']),
+                                        'expired' => $expired,
+                                        'expire_date' => encode_html($row['expiry_date']),
+                                    );
 									if ( $row['public_allow'] == 1 ) {
 										$public_files[] = $row['id'];
 									}
@@ -176,18 +172,16 @@ function list_file($data, $origin) {
 							 * 2- Get public groups
 							 */
 							$groups = array();
-							$get_groups		= new GroupActions();
-							$get_arguments	= array(
-													 	'public'	=> true,
-													);
-							$found_groups	= $get_groups->get_groups($get_arguments);
+							$found_groups = get_groups([
+                                'public' => true,
+                            ]);
 							foreach ($found_groups as $group_id => $group_data) {
 								$groups[$group_id] = array(
-															'id'		=> $group_data['id'],
-															'name'	=> $group_data['name'],
-															'token'	=> $group_data['public_token'],
-															'files'	=> array(),
-														);
+                                    'id' => $group_data['id'],
+                                    'name'	=> $group_data['name'],
+                                    'token'	=> $group_data['public_token'],
+                                    'files'	=> array(),
+                                );
 								/**
 								 * 3- Get list of files from this group
 								 */
@@ -251,7 +245,7 @@ function list_file($data, $origin) {
 									}
 									else {
 										foreach ( $groups as $group ) {
-											$group_link = PUBLIC_GROUP_URI . '?group=' . $group['id'] . '&token=' . $group['token'];
+											$group_link = PUBLIC_GROUP_URL . '?group=' . $group['id'] . '&token=' . $group['token'];
 						?>
 											<li>
 												<a href="<?php echo $group_link; ?>">
@@ -303,4 +297,4 @@ function list_file($data, $origin) {
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

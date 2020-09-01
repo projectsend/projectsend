@@ -6,61 +6,26 @@
  * @subpackage	Clients
  *
  */
-$footable_min = true; // delete this line after finishing pagination on every table
-$load_scripts	= array(
-						'footable',
-						'toggle',
-					); 
-
 $allowed_levels = array(9,8);
-require_once('sys.includes.php');
+require_once 'bootstrap.php';
 
 $active_nav = 'clients';
 $this_page = 'clients-requests.php';
 
 $page_title = __('Account requests','cftp_admin');
-include('header.php');
+include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		$('.change_all').click(function(e) {
-			e.preventDefault();
-			var target = $(this).data('target');
-			var check = $(this).data('check');
-			$("input[data-client='"+target+"']").prop("checked",check).change();
-			check_client(target);
-		});
-		
-		$('.account_action').on("change", function() {
-			if ( $(this).prop('checked') == false )  {
-				var target = $(this).data('client');
-				$(".membership_action[data-client='"+target+"']").prop("checked",false).change();
-			}
-		});
-
-		$('.checkbox_toggle').change(function() {
-			var target = $(this).data('client');
-			check_client(target);
-		});
-
-		function check_client(client_id) {
-			$("input[data-clientid='"+client_id+"']").prop("checked",true);
-		}
-	});
-</script>
-
 <div class="col-xs-12">
 <?php
 	if (isset($_GET['action'])) {
 		switch ($_GET['action']) {
 			case 'apply':
 				$msg = __('The selected actions were applied.','cftp_admin');
-				echo system_message('ok',$msg);
+				echo system_message('success',$msg);
 				break;
 			case 'delete':
 				$msg = __('The selected clients were deleted.','cftp_admin');
-				echo system_message('ok',$msg);
+				echo system_message('success',$msg);
 				break;
 		}
 	}
@@ -96,20 +61,21 @@ include('header.php');
 				case 'apply':
 					$selected_clients = $_POST['accounts'];
 					foreach ( $selected_clients as $client ) {
-						$process_memberships	= new MembersActions();
+						$process_memberships	= new \ProjectSend\Classes\MembersActions;
 
 						/**
 						 * 1- Approve or deny account
 						 */
-						$process_account = new ClientActions();
+                        $process_account = new \ProjectSend\Classes\Users($dbh);
+                        $process_account->setId($client['id']);
 
 						/** $client['account'] == 1 means approve that account */
 						if ( !empty( $client['account'] ) and $client['account'] == '1' ) {
-							$email_type = 'client_approve';
+							$email_type = 'account_approve';
 							/**
 							 * 1 - Approve account
 							 */
-							$approve = $process_account->client_account_approve( $client['id'] );
+							$approve = $process_account->accountApprove();
 							/**
 							 * 2 - Prepare memberships information
 							 */
@@ -123,12 +89,12 @@ include('header.php');
 														);
 						}
 						else {
-							$email_type = 'client_deny';
+							$email_type = 'account_deny';
 
 							/**
 							 * 1 - Deny account
 							 */
-							$deny = $process_account->client_account_deny( $client['id'] );
+							$deny = $process_account->accountDeny();
 							/**
 							 * 2 - Deny all memberships
 							 */
@@ -150,7 +116,7 @@ include('header.php');
 						$processed_requests = $process_requests['memberships'];
 						$client_information = get_client_by_id( $client['id'] );
 
-						$notify_client = new PSend_Email();
+						$notify_client = new \ProjectSend\Classes\Emails;
 						$email_arguments = array(
 														'type'			=> $email_type,
 														'username'		=> $client_information['username'],
@@ -159,34 +125,18 @@ include('header.php');
 														'memberships'	=> $processed_requests,
 														'preview'		=> true,
 													);
-						$notify_send = $notify_client->psend_send_email($email_arguments);
+						$notify_send = $notify_client->send($email_arguments);
 					}
-
-					$log_action_number = 38;
 					break;
 				case 'delete':
 					foreach ($selected_clients as $client) {
-						$this_client = new ClientActions();
-						$delete_client = $this_client->delete_client($client['id']);
+                        $this_client = new \ProjectSend\Classes\Users($dbh);
+                        $this_client->setId($client['id']);
+						$delete_client = $this_client->delete();
 					}
-					
-					$log_action_number = 17;
 					break;
 				default:
 					break;
-			}
-
-			/** Record the action log */
-			if ( !empty( $log_action_number ) ) {
-				foreach ($selected_clients_ids as $client) {
-					$new_log_action = new LogActions();
-					$log_action_args = array(
-											'action' => $log_action_number,
-											'owner_id' => CURRENT_USER_ID,
-											'affected_account_name' => $all_users[$client]
-										);
-					$new_record_action = $new_log_action->log_action_save($log_action_args);
-				}
 			}
 
 			/** Redirect after processing */
@@ -201,7 +151,7 @@ include('header.php');
 		}
 		else {
 			$msg = __('Please select at least one client.','cftp_admin');
-			echo system_message('error',$msg);
+			echo system_message('danger',$msg);
 		}
 	}
 
@@ -266,7 +216,9 @@ include('header.php');
 			</div>
 		</div>
 
-		<form action="<?php echo $this_page; ?>" name="clients_list" method="post" class="form-inline">
+		<form action="<?php echo $this_page; ?>" name="clients_list" method="post" class="form-inline batch_actions">
+            <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
+
 			<?php form_add_existing_parameters(); ?>
 			<div class="form_actions_right">
 				<div class="form_actions">
@@ -276,10 +228,10 @@ include('header.php');
 							<select name="action" id="action" class="txtfield form-control">
 								<?php
 									$actions_options = array(
-															'none'				=> __('Select action','cftp_admin'),
-															'apply'				=> __('Apply selection','cftp_admin'),
-															'delete'			=> __('Delete requests','cftp_admin'),
-														);
+                                        'none' => __('Select action','cftp_admin'),
+                                        'apply' => __('Apply selection','cftp_admin'),
+                                        'delete' => __('Delete requests','cftp_admin'),
+                                    );
 									foreach ( $actions_options as $val => $text ) {
 								?>
 										<option value="<?php echo $val; ?>"><?php echo $text; ?></option>
@@ -301,16 +253,16 @@ include('header.php');
 			<div class="form_results_filter">
 				<?php
 					$filters = array(
-									'new'		=> array(
-														'title'	=> __('New account requests','cftp_admin'),
-														'link'	=> $this_page,
-														'count'	=> COUNT_CLIENTS_REQUESTS,
-													),
-									'denied'	=> array(
-														'title'	=> __('Denied accounts','cftp_admin'),
-														'link'	=> $this_page . '?denied=1',
-														'count'	=> COUNT_CLIENTS_DENIED,
-													),
+									'new' => array(
+                                        'title'	=> __('New account requests','cftp_admin'),
+                                        'link' => $this_page,
+                                        'count'	=> COUNT_CLIENTS_REQUESTS,
+                                    ),
+									'denied' => array(
+                                        'title'	=> __('Denied accounts','cftp_admin'),
+                                        'link' => $this_page . '?denied=1',
+                                        'count'	=> COUNT_CLIENTS_DENIED,
+                                    ),
 								);
 					foreach ( $filters as $type => $filter ) {
 				?>
@@ -337,14 +289,14 @@ include('header.php');
 					else {
 						$no_results_message = __('There are no requests at the moment','cftp_admin');
 					}
-					echo system_message('error',$no_results_message);
+					echo system_message('danger',$no_results_message);
 				}
 
 				if ($count > 0) {
 					/**
 					 * Pre-populate a membership requests array
 					 */
-					$get_requests	= new MembersActions();
+					$get_requests	= new \ProjectSend\Classes\MembersActions;
 					$arguments		= array();
 					if ( $current_filter == 'denied' ) {
 						$arguments['denied'] = 1;
@@ -358,7 +310,7 @@ include('header.php');
 												'id'		=> 'clients_tbl',
 												'class'		=> 'footable table',
 											);
-					$table = new generateTable( $table_attributes );
+					$table = new \ProjectSend\Classes\TableGenerate( $table_attributes );
 	
 					$thead_columns		= array(
 												array(
@@ -416,7 +368,7 @@ include('header.php');
 					 */
 					$toggle_attr = 'data-toggle="toggle" data-style="membership_toggle" data-on="Accept" data-off="Deny" data-onstyle="success" data-offstyle="danger" data-size="mini"';
 					while ( $row = $sql->fetch() ) {
-						$table->add_row();
+						$table->addRow();
 
 						$client_user	= $row["user"];
 						$client_id		= $row["id"];
@@ -424,7 +376,7 @@ include('header.php');
 						/**
 						 * Get account creation date
 						 */
-						$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
+                        $date = format_date($row['timestamp']);
 						
 						/**
 						 * Make an array of group membership requests
@@ -501,7 +453,7 @@ include('header.php');
 											);
 
 						foreach ( $tbody_cells as $cell ) {
-							$table->add_cell( $cell );
+							$table->addCell( $cell );
 						}
 		
 						$table->end_row();
@@ -513,11 +465,11 @@ include('header.php');
 					 * PAGINATION
 					 */
 					$pagination_args = array(
-											'link'		=> $this_page,
-											'current'	=> $pagination_page,
-											'pages'		=> ceil( $count_for_pagination / RESULTS_PER_PAGE ),
-										);
-					
+                        'link' => $this_page,
+                        'current' => $pagination_page,
+                        'pages' => ceil( $count_for_pagination / RESULTS_PER_PAGE ),
+                    );
+
 					echo $table->pagination( $pagination_args );
 				}
 			?>
@@ -526,4 +478,4 @@ include('header.php');
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

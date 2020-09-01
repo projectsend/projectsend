@@ -6,22 +6,15 @@
  * @subpackage	Users
  *
  */
-$footable_min = true; // delete this line after finishing pagination on every table
-$load_scripts	= array(
-						'footable',
-					); 
-
 $allowed_levels = array(9);
-require_once('sys.includes.php');
+require_once 'bootstrap.php';
 
-if(!check_for_admin()) {
-    return;
-}
+if (!check_for_admin()) { return; }
 
 $active_nav = 'users';
 
 $page_title = __('Users administration','cftp_admin');
-include('header.php');
+include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 
 <div class="col-xs-12">
@@ -34,21 +27,7 @@ include('header.php');
 		/** Continue only if 1 or more users were selected. */
 		if(!empty($_GET['batch'])) {
 			$selected_users = $_GET['batch'];
-			$users_to_get = implode( ',', array_map( 'intval', array_unique( $selected_users ) ) );
 
-			/**
-			 * Make a list of users to avoid individual queries.
-			 */
-			$sql_user = $dbh->prepare( "SELECT id, name FROM " . TABLE_USERS . " WHERE FIND_IN_SET(id, :users)" );
-			$sql_user->bindParam(':users', $users_to_get);
-			$sql_user->execute();
-			$sql_user->setFetchMode(PDO::FETCH_ASSOC);
-			while ( $data_user = $sql_user->fetch() ) {
-				$all_users[$data_user['id']] = $data_user['name'];
-			}
-
-
-			$my_info = get_user_by_username(get_current_user_username());
 			$affected_users = 0;
 
 			switch($_GET['action']) {
@@ -58,14 +37,15 @@ include('header.php');
 					 * Inactive users are not allowed to log in.
 					 */
 					foreach ($selected_users as $work_user) {
-						$this_user = new UserActions();
-						$hide_user = $this_user->change_user_active_status($work_user,'1');
+                        $this_user = new \ProjectSend\Classes\Users($dbh);
+                        if ($this_user->get($work_user)) {
+                            $hide_user = $this_user->setActiveStatus(1);
+                        }
 					}
-					$msg = __('The selected users were marked as active.','cftp_admin');
-					echo system_message('ok',$msg);
-					$log_action_number = 27;
-					break;
 
+                    $msg = __('The selected users were marked as active.','cftp_admin');
+					echo system_message('success',$msg);
+					break;
 				case 'deactivate':
 					/**
 					 * Reverse of the previous action. Setting the value to 0 means
@@ -75,68 +55,58 @@ include('header.php');
 						/**
 						 * A user should not be able to deactivate himself
 						 */
-						if ($work_user != $my_info['id']) {
-							$this_user = new UserActions();
-							$hide_user = $this_user->change_user_active_status($work_user,'0');
+						if ($work_user != CURRENT_USER_ID) {
+                            $this_user = new \ProjectSend\Classes\Users($dbh);
+                            if ($this_user->get($work_user)) {
+                                $hide_user = $this_user->setActiveStatus(0);
+                            }
 							$affected_users++;
 						}
 						else {
 							$msg = __('You cannot deactivate your own account.','cftp_admin');
-							echo system_message('error',$msg);
+							echo system_message('danger',$msg);
 						}
 					}
 
 					if ($affected_users > 0) {
 						$msg = __('The selected users were marked as inactive.','cftp_admin');
-						echo system_message('ok',$msg);
-						$log_action_number = 28;
+						echo system_message('success',$msg);
 					}
 					break;
-
 				case 'delete':		
 					foreach ($selected_users as $work_user) {
 						/**
 						 * A user should not be able to delete himself
 						 */
-						if ($work_user != $my_info['id']) {
-							$this_user = new UserActions();
-							$delete_user = $this_user->delete_user($work_user);
-							$affected_users++;
+						if ($work_user != CURRENT_USER_ID) {
+                            $this_user = new \ProjectSend\Classes\Users($dbh);
+                            if ($this_user->get($work_user)) {
+                                $delete_user = $this_user->delete();
+                                $affected_users++;
+                            }
 						}
 						else {
 							$msg = __('You cannot delete your own account.','cftp_admin');
-							echo system_message('error',$msg);
+							echo system_message('danger',$msg);
 						}
 					}
 					
 					if ($affected_users > 0) {
 						$msg = __('The selected users were deleted.','cftp_admin');
-						echo system_message('ok',$msg);
-						$log_action_number = 16;
+						echo system_message('success',$msg);
 					}
 				break;
-			}
-
-			/** Record the action log */
-			foreach ($selected_users as $user) {
-				$new_log_action = new LogActions();
-				$log_action_args = array(
-										'action' => $log_action_number,
-										'owner_id' => CURRENT_USER_ID,
-										'affected_account_name' => $all_users[$user]
-									);
-				$new_record_action = $new_log_action->log_action_save($log_action_args);
 			}
 		}
 		else {
 			$msg = __('Please select at least one user.','cftp_admin');
-			echo system_message('error',$msg);
+			echo system_message('danger',$msg);
 		}
 	}
 
 	$params	= array();
 
-	$cq = "SELECT * FROM " . TABLE_USERS . " WHERE level != '0'";
+	$cq = "SELECT id FROM " . TABLE_USERS . " WHERE level != '0'";
 
 	/** Add the search terms */	
 	if ( isset( $_GET['search'] ) && !empty( $_GET['search'] ) ) {
@@ -238,7 +208,7 @@ include('header.php');
 		</div>
 	</div>
 
-	<form action="users.php" name="users_list" method="get" class="form-inline">
+	<form action="users.php" name="users_list" method="get" class="form-inline batch_actions">
 		<?php form_add_existing_parameters(); ?>
 		<div class="form_actions_right">
 			<div class="form_actions">
@@ -283,7 +253,7 @@ include('header.php');
 						$no_results_message = __('The filters you selected returned no results.','cftp_admin');
 						break;
 				}
-				echo system_message('error',$no_results_message);
+				echo system_message('danger',$no_results_message);
 			}
 			
 			if ($count > 0) {
@@ -294,7 +264,7 @@ include('header.php');
 											'id'		=> 'users_tbl',
 											'class'		=> 'footable table',
 										);
-				$table = new generateTable( $table_attributes );
+				$table = new \ProjectSend\Classes\TableGenerate( $table_attributes );
 
 				$thead_columns		= array(
 											array(
@@ -354,32 +324,26 @@ include('header.php');
 
 				$sql->setFetchMode(PDO::FETCH_ASSOC);
 				while ( $row = $sql->fetch() ) {
-					$table->add_row();
+					$table->addRow();
 
-					/**
-					 * Prepare the information to be used later on the cells array
-					 * 1- Get the role name
-					 */
-					switch( $row["level"] ) {
+                    $user_object = new \ProjectSend\Classes\Users($dbh);
+                    $user_object->get($row["id"]);
+                    $user_data = $user_object->getProperties();
+
+                    /* Get account creation date */
+                    $created_at = format_date($user_data['created_date']);
+
+					/* Role name */
+					switch( $user_data["role"] ) {
 						case '9': $role_name = USER_ROLE_LVL_9; break;
 						case '8': $role_name = USER_ROLE_LVL_8; break;
 						case '7': $role_name = USER_ROLE_LVL_7; break;
 					}
 					 
-					/**
-					 * 2- Get active status
-					 */
-					$status_hidden	= __('Inactive','cftp_admin');
-					$status_visible	= __('Active','cftp_admin');
-					$label			= ($row['active'] == 0) ? $status_hidden : $status_visible;
-					$class			= ($row['active'] == 0) ? 'danger' : 'success';
+                    /* Get active status */
+                    $label = ($user_data['active'] == 0) ? __('Inactive','cftp_admin') : __('Active','cftp_admin');
+                    $class = ($user_data['active'] == 0) ? 'danger' : 'success';
 					
-					/**
-					 * 3- Get account creation date
-					 */
-					$date = date( TIMEFORMAT_USE, strtotime( $row['timestamp'] ) );
-
-
 					/**
 					 * Add the cells to the row
 					 */
@@ -389,19 +353,19 @@ include('header.php');
 					else {
 						$cell = array(
 									'checkbox'		=> true,
-									'value'			=> $row["id"],
+									'value'			=> $user_data["id"],
 									);
 					}
 					$tbody_cells = array(
 											$cell,
 											array(
-													'content'		=> html_output( $row["name"] ),
+													'content'		=> $user_data["name"],
 												),
 											array(
-													'content'		=> html_output( $row["user"] ),
+													'content'		=> $user_data["username"],
 												),
 											array(
-													'content'		=> html_output( $row["email"] ),
+													'content'		=> $user_data["email"],
 												),
 											array(
 													'content'		=> $role_name,
@@ -410,19 +374,19 @@ include('header.php');
 													'content'		=> '<span class="label label-' . $class . '">' . $label . '</span>',
 												),
 											array(
-													'content'		=> ( $row["max_file_size"] == '0' ) ? __('Default','cftp_admin') : $row["max_file_size"] . 'mb',
+													'content'		=> ( $user_data["max_file_size"] == '0' ) ? __('Default','cftp_admin') : $user_data["max_file_size"] . 'mb',
 												),
 											array(
-													'content'		=> $date,
+													'content'		=> $created_at,
 												),
 											array(
 													'actions'		=> true,
-													'content'		=>  '<a href="users-edit.php?id=' . html_output( $row["id"] ) . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a>' . "\n"
+													'content'		=>  '<a href="users-edit.php?id=' . $user_data["id"] . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a>' . "\n"
 												),
 										);
 
 					foreach ( $tbody_cells as $cell ) {
-						$table->add_cell( $cell );
+						$table->addCell( $cell );
 					}
 	
 					$table->end_row();
@@ -446,4 +410,4 @@ include('header.php');
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

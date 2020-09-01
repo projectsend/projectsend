@@ -6,13 +6,8 @@
  * @subpackage	Groups
  *
  */
-$footable_min = true; // delete this line after finishing pagination on every table
-$load_scripts	= array(
-						'footable',
-					); 
-
 $allowed_levels = array(9,8);
-require_once('sys.includes.php');
+require_once 'bootstrap.php';
 
 $active_nav = 'groups';
 
@@ -22,24 +17,16 @@ $page_title = __('Groups administration','cftp_admin');
  * Used when viewing groups a certain client belongs to.
  */
 if(!empty($_GET['member'])) {
-	$member = $_GET['member'];
+    $member = get_client_by_id($_GET['member']);
 	/** Add the name of the client to the page's title. */
-	$sql_name = $dbh->prepare("SELECT name from " . TABLE_USERS . " WHERE id=:id");
-	$sql_name->bindParam(':id', $member, PDO::PARAM_INT);
-	$sql_name->execute();
-
-	if ( $sql_name->rowCount() > 0) {
-		$sql_name->setFetchMode(PDO::FETCH_ASSOC);
-		while ( $row_member = $sql_name->fetch() ) {
-			$page_title = ' '.__('Groups where','cftp_admin').' '.html_entity_decode($row_member['name']).' '.__('is member','cftp_admin');
-		}
+	if ($member) {
+		$page_title = __('Groups where','cftp_admin').' '.html_entity_decode($member['name']).' '.__('is member','cftp_admin');
 		$member_exists = 1;
 
-
 		/** Get groups where this client is member */
-		$get_groups		= new MembersActions();
+		$get_groups		= new \ProjectSend\Classes\MembersActions();
 		$get_arguments	= array(
-								'client_id'	=> $member,
+								'client_id'	=> $member['id'],
 								'return'	=> 'list',
 							);
 		$found_groups	= $get_groups->client_get_groups($get_arguments); 
@@ -52,7 +39,7 @@ if(!empty($_GET['member'])) {
 	}
 }
 
-include('header.php');
+include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 
 <div class="col-xs-12">
@@ -66,86 +53,34 @@ include('header.php');
 		/** Continue only if 1 or more users were selected. */
 		if(!empty($_GET['batch'])) {
 			$selected_groups = $_GET['batch'];
-			$groups_to_get = implode( ',', array_map( 'intval', array_unique( $selected_groups ) ) );
-
-			/**
-			 * Make a list of groups to avoid individual queries.
-			 */
-			$sql_grps = $dbh->prepare("SELECT id, name FROM " . TABLE_GROUPS . " WHERE FIND_IN_SET(id, :groups)");
-			$sql_grps->bindParam(':groups', $groups_to_get);
-			$sql_grps->execute();
-			$sql_grps->setFetchMode(PDO::FETCH_ASSOC);
-			while( $data_group = $sql_grps->fetch() ) {
-				$all_groups[$data_group['id']] = $data_group['name'];
-			}
 
 			switch($_GET['action']) {
 				case 'delete':
 					$deleted_groups = 0;
 
-					foreach ($selected_groups as $groups) {
-						$this_group = new GroupActions();
-						$delete_group = $this_group->delete_group($groups);
-						$deleted_groups++;
-
-						/** Record the action log */
-						$new_log_action = new LogActions();
-						$log_action_args = array(
-												'action' => 18,
-												'owner_id' => CURRENT_USER_ID,
-												'affected_account_name' => $all_groups[$groups]
-											);
-						$new_record_action = $new_log_action->log_action_save($log_action_args);		
+					foreach ($selected_groups as $group) {
+						$this_group = new \ProjectSend\Classes\Groups($dbh);
+                        if ($this_group->get($group)) {
+                            $delete_user = $this_group->delete();
+                            $deleted_groups++;
+                        }
 					}
 					
 					if ($deleted_groups > 0) {
 						$msg = __('The selected groups were deleted.','cftp_admin');
-						echo system_message('ok',$msg);
+						echo system_message('success',$msg);
 					}
 				break;
 			}
 		}
 		else {
 			$msg = __('Please select at least one group.','cftp_admin');
-			echo system_message('error',$msg);
+			echo system_message('danger',$msg);
 		}
 	}
 	
-	/**
-	 * Generate the list of available groups.
-	 */
-
-	/**
-	 * Generate an array of file count per group
-	 */
-	$files_amount = array();
-	$count_files_sql = $dbh->prepare("SELECT group_id, COUNT(file_id) as files FROM " . TABLE_FILES_RELATIONS . " WHERE group_id IS NOT NULL GROUP BY group_id");
-	$count_files_sql->execute();
-	$count_files = $count_files_sql->rowCount();
-	if ($count_files > 0) {
-		$count_files_sql->setFetchMode(PDO::FETCH_ASSOC);
-		while ( $crow = $count_files_sql->fetch() ) {
-			$files_amount[$crow['group_id']] = $crow['files'];
-		}
-	}
-
-	/**
-	 * Generate an array of amount of users on each group
-	 */
-	$members_amount = array();
-	$count_members_sql = $dbh->prepare("SELECT group_id, COUNT(client_id) as members FROM " . TABLE_MEMBERS . " GROUP BY group_id");
-	$count_members_sql->execute();
-	$count_members = $count_members_sql->rowCount();
-	if ($count_members > 0) {
-		while ( $mrow = $count_members_sql->fetch() ) {
-			$members_amount[$mrow['group_id']] = $mrow['members'];
-		}
-	}
-
-
-
 	$params = array();
-	$cq = "SELECT * FROM " . TABLE_GROUPS;
+	$cq = "SELECT id FROM " . TABLE_GROUPS;
 
 	/** Add the search terms */	
 	if ( isset( $_GET['search'] ) && !empty( $_GET['search'] ) ) {
@@ -165,7 +100,7 @@ include('header.php');
 	if (isset($found_groups)) {
 		if ($found_groups != '') {
 			$cq .= $next_clause. " FIND_IN_SET(id, :groups)";
-			$params[':groups']		= $found_groups;
+			$params[':groups'] = $found_groups;
 		}
 		else {
 			$cq .= $next_clause. " id = NULL";
@@ -207,7 +142,7 @@ include('header.php');
 		</div>
 	</div>
 
-	<form action="groups.php" name="groups_list" method="get" class="form-inline">
+	<form action="groups.php" name="groups_list" method="get" class="form-inline batch_actions">
 		<?php form_add_existing_parameters(); ?>
 		<div class="form_actions_right">
 			<div class="form_actions">
@@ -261,7 +196,7 @@ include('header.php');
 				else {
 					$no_results_message = __('There are no groups created yet.','cftp_admin');
 				}
-				echo system_message('error',$no_results_message);
+				echo system_message('danger',$no_results_message);
 			}
 
 
@@ -273,7 +208,7 @@ include('header.php');
 											'id'		=> 'groups_tbl',
 											'class'		=> 'footable table',
 										);
-				$table = new generateTable( $table_attributes );
+				$table = new \ProjectSend\Classes\TableGenerate( $table_attributes );
 
 				$thead_columns		= array(
 											array(
@@ -331,19 +266,18 @@ include('header.php');
 
 				$sql->setFetchMode(PDO::FETCH_ASSOC);
 				while ( $row = $sql->fetch() ) {
-					$table->add_row();
+					$table->addRow();
 
-					/**
-					 * Prepare the information to be used later on the cells array
-					 * 1- Get account creation date
-					 */
-					$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
+                    $group_object = new \ProjectSend\Classes\Groups($dbh);
+                    $group_object->get($row["id"]);
+                    $group_data = $group_object->getProperties();
+
+                    /* Get group creation date */
+                    $created_at = format_date($group_data['created_date']);
 					
-					/**
-					 * 2- Button class for the manage files link
-					 */
-					if ( isset( $files_amount[$row['id']] ) ) {
-						$files_link	= 'manage-files.php?group_id=' . html_output( $row["id"] );
+					/* Button class for the manage files link */
+					if (!empty($group_data['files'])) {
+						$files_link	= 'manage-files.php?group_id=' . $group_data["id"];
 						$files_btn	= 'btn-primary';
 					}
 					else {
@@ -354,8 +288,8 @@ include('header.php');
 					/**
 					 * 3- Visibility
 					 */
-					 if ($row['public'] == '1') {
-						 $visibility_link	= '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="group" data-id="' . $row['id'] .'" data-token="' . html_output($row['public_token']) .'">';
+					 if ($group_data['public'] == '1') {
+						 $visibility_link	= '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="group" data-id="' . $group_data['id'] .'" data-token="' . html_output($group_data['public_token']) .'">';
 						 $visibility_label	= __('Public','cftp_admin');
 					 }
 					 else {
@@ -369,29 +303,29 @@ include('header.php');
 					$tbody_cells = array(
 											array(
 													'checkbox'		=> true,
-													'value'			=> $row["id"],
+													'value'			=> $group_data["id"],
 												),
 											array(
-													'content'		=> html_output( $row["name"] ),
+													'content'		=> $group_data["name"],
 												),
 											array(
-													'content'		=> html_output( $row["description"] ),
+													'content'		=> $group_data["description"],
 												),
 											array(
-													'content'		=> ( isset( $members_amount[$row['id']] ) ) ? $members_amount[$row['id']] : '0',
+													'content'		=> (!empty($group_data['members'])) ? count($group_data['members']) : '0',
 												),
 											array(
-													'content'		=> ( isset( $files_amount[$row['id']] ) ) ? $files_amount[$row['id']] : '0',
+													'content'		=> (!empty($group_data['files'])) ? count($group_data['files']) : '0',
 												),
 											array(
 													//'content'		=> ( $row["public"] == '1' ) ? __('Yes','cftp_admin') : __('No','cftp_admin'),
 													'content'		=> $visibility_link . $visibility_label . '</a>',
 												),
 											array(
-													'content'		=> html_output( $row["created_by"] ),
+													'content'		=> $group_data["created_by"],
 												),
 											array(
-													'content'		=> $date,
+													'content'		=> $created_at,
 												),
 											array(
 													'actions'		=> true,
@@ -399,13 +333,13 @@ include('header.php');
 												),
 											array(
 													'actions'		=> true,
-													'content'		=> '<a href="groups-edit.php?id=' . html_output( $row["id"] ) . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a>' . "\n"
+													'content'		=> '<a href="groups-edit.php?id=' . $group_data["id"] . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a>' . "\n"
 												),
 										);
 
 
 					foreach ( $tbody_cells as $cell ) {
-						$table->add_cell( $cell );
+						$table->addCell( $cell );
 					}
 	
 					$table->end_row();
@@ -431,4 +365,4 @@ include('header.php');
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

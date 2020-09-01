@@ -1,0 +1,115 @@
+// This file includes pieces that overrides some of the dependencies default styles
+
+// Bootstrap Main button colors
+
+.btn {
+	white-space: normal;
+}
+
+.btn-wide {
+	padding:4px 20px !important;
+}
+
+.btn-primary {
+	background:$main_color;
+
+	&:hover,
+	&:focus
+	{
+		background:$main_lighten;
+	}
+}
+
+// Other bootstrap styles
+
+.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
+    background: $main_color;
+    border-color: $main_color;
+}
+
+.form-horizontal .control-label {
+	text-align: left;
+}
+
+label input[type="checkbox"] {
+	cursor: pointer;
+}
+
+.checkbox label {
+	line-height:20px;
+}
+
+span.label {
+	font-size:12px;
+}
+
+.text-warning {
+	color:#c9302c;
+}
+
+
+// Plupload
+
+.plupload_header {
+	display: none;
+}
+
+.plupload_filelist_header,
+.plupload_filelist_footer
+{
+	background: #e2e5e9;
+}
+
+.plupload_filelist_footer {
+	height:auto;
+}
+
+.plupload_button {
+	color:white;
+	background:$main_color;
+	margin-right: 4px;
+	padding:4px 30px;
+	font-family:$font_body;
+	font-size:14px;
+	line-height:20px;
+	text-decoration: none;
+	text-align:center;
+	border:1px solid #004380;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	border-radius:4px;
+
+	&:hover
+	{
+		color:white;
+		background:$main_lighten;
+    }
+    
+    &:focus,
+    &:active
+    {
+        color: white;
+    }
+}
+
+.plupload_wrapper {
+	@include box-shadow(3px 3px 5px, #dedede);
+}
+
+.plupload_container {
+	padding:1px;
+}
+
+a.plupload_start {
+	display:none;
+}
+
+.message_uploading {
+	display:none;
+}
+
+// Datepicker
+
+.datapick-field {
+	cursor:pointer !important;
+}

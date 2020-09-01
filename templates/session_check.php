@@ -12,10 +12,6 @@
  */
 if (isset($_SESSION['access']) && $_SESSION['access'] == 'admin') { $grant_access = 1; }
 if (isset($_SESSION['access']) && $_SESSION['access'] == CURRENT_USER_USERNAME) { $grant_access = 1; $is_client = 1; }
-/*
-if (isset($_COOKIE['access']) && $_COOKIE['access'] == 'admin') { $grant_access = 1; }
-if (isset($_COOKIE['access']) && $_COOKIE['access'] == CURRENT_USER_USERNAME) { $grant_access = 1; $is_client = 1; }
-*/
 
 /** In case a client has a session or cookie but is deactivated */
 if (isset($is_client)) {

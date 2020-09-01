@@ -19,7 +19,7 @@ if ( !empty( $_GET['category'] ) ) {
 	$category_filter = $_GET['category'];
 }
 
-include_once(ROOT_DIR.'/templates/common.php'); // include the required functions for every template
+include_once ROOT_DIR.'/templates/common.php'; // include the required functions for every template
 
 $window_title = __('Gallery','cftp_template_gallery');
 
@@ -34,7 +34,10 @@ foreach ($my_files as $file) {
 		$img_files[] = $file;
 	}
 }
-$count = count($img_files);
+$count = (isset($img_files)) ? count($img_files) : 0;
+
+define('TEMPLATE_THUMBNAILS_WIDTH', '280');
+define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 ?>
 <!doctype html>
 <html lang="<?php echo SITE_LANG; ?>">
@@ -72,12 +75,12 @@ $count = count($img_files);
 				<?php
 					if ( !empty( $get_categories['categories'] ) ) {
 						$url_client_id	= ( !empty($_GET['client'] ) && CURRENT_USER_LEVEL != '0') ? $_GET['client'] : null;
-						$link_template	= BASE_URI . 'my_files/';
+						$link_template	= CLIENT_VIEW_FILE_LIST_URL;
 				?>
 						<h4><?php _e('Filter by category', 'cftp_admin'); ?></h4>
 						<nav class="categories">
 							<ul>
-								<li class="filter_all_files"><a href="<?php echo BASE_URI . 'my_files/'; if ( !empty( $url_client_id ) ) { echo '?client=' . $url_client_id; }; ?>"><?php  _e('All files', 'pinboxes_template'); ?></a></li>
+								<li class="filter_all_files"><a href="<?php echo CLIENT_VIEW_FILE_LIST_URL; if ( !empty( $url_client_id ) ) { echo '?client=' . $url_client_id; }; ?>"><?php  _e('All files', 'pinboxes_template'); ?></a></li>
 								<?php
 									foreach ( $get_categories['categories'] as $category ) {
 										$link_data	= array(
@@ -101,7 +104,7 @@ $count = count($img_files);
 		<header>
 			<?php if ($logo_file_info['exists'] === true) { ?>
 				<div id="logo">
-					<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $logo_file_info['url']; ?>&amp;w=<?php echo LOGO_MAX_WIDTH; ?>" alt="<?php echo html_output(THIS_INSTALL_SET_TITLE); ?>" />
+                    <?php echo get_branding_layout(true); // true: returns the thumbnail, not the full image ?>
 				</div>
 			<?php } ?>
 		</header>
@@ -130,14 +133,9 @@ $count = count($img_files);
 										else {
 									?>
 										<div class="img_prev">
-											<a href="<?php echo $download_link; ?>" target="_blank">
-												<?php
-													$this_thumbnail_url = UPLOADED_FILES_URL.$this_file['url'];
-													if (THUMBS_USE_ABSOLUTE == '1') {
-														$this_thumbnail_url = BASE_URI.$this_thumbnail_url;
-													}
-												?>
-												<img src="<?php echo TIMTHUMB_URL; ?>?src=<?php echo $this_thumbnail_url; ?>&amp;w=280&amp;h=215&amp;f=2&amp;q=<?php echo THUMBS_QUALITY; ?>" class="thumbnail" alt="<?php echo htmlentities($this_file['name']); ?>" />
+                                            <a href="<?php echo $download_link; ?>" target="_blank">
+                                                <?php $thumbnail = make_thumbnail( UPLOADED_FILES_DIR.DS.$this_file['url'], null, TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT ); ?>
+												<img src="<?php echo $thumbnail['thumbnail']['url']; ?>" class="thumbnail" alt="<?php echo htmlentities($this_file['name']); ?>" />
 											</a>
 										</div>
 										<div class="img_data">

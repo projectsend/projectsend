@@ -6,4 +6,4 @@
  * @package	ProjectSend
  */
 header("location:../../index.php");
-die();
+exit;

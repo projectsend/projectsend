@@ -1,9 +1,9 @@
 <?php
-require_once('../../sys.includes.php');
+require_once '../../bootstrap.php';
 
 $googleClient = new Google_Client();
 $oauth2 = new Google_Oauth2Service($googleClient);
-$googleClient->setApplicationName(THIS_INSTALL_SET_TITLE);
+$googleClient->setApplicationName(THIS_INSTALL_TITLE);
 $googleClient->setClientSecret(GOOGLE_CLIENT_SECRET);
 $googleClient->setClientId(GOOGLE_CLIENT_ID);
 $googleClient->setRedirectUri(BASE_URI . 'sociallogin/google/callback.php');
@@ -66,25 +66,20 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']->id_
           $_SESSION['access'] = $sysuser_username;
         }
 
-        /** If "remember me" checkbox is on, set the cookie */
-        if (!empty($_POST['login_form_remember'])) {
-          setcookie("rememberwho", $sysuser_username, time() + COOKIE_EXP_TIME);
-        }
-
         /** Record the action log */
-        $new_log_action = new LogActions();
+        $logger = new \ProjectSend\Classes\ActionsLog();
         $log_action_args = array(
           'action' => 1,
           'owner_id' => $logged_id,
           'affected_account_name' => $global_name
         );
-        $new_record_action = $new_log_action->log_action_save($log_action_args);
+        $new_record_action = $logger->addEntry($log_action_args);
 
         if ($user_level == '0') {
-          header("location:" . BASE_URI . "my_files/");
+          header("location:" . CLIENT_VIEW_FILE_LIST_URL);
         }
         else {
-          header("location:" . BASE_URI . "home.php");
+          header("location:" . BASE_URI . "dashboard.php");
         }
         exit;
       }
@@ -99,57 +94,59 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']->id_
         header("location:" . BASE_URI);
         return;
       }else {
-        $_SESSION['errorstate'] = 'no_account'; //TODO: create new account
-        $new_client = new ClientActions();
-        $username = $new_client->generateUsername($userData['name']);
+        $_SESSION['errorstate'] = 'no_account';
+        $new_client = new \ProjectSend\Classes\Users($dbh);
+        $username = generateUsername($userData['name']);
         $password = generate_password();
 
         $clientData = array(
-          'id' => '',
           'username' => $username,
           'password' => $password,
           'name' => $userData['name'],
           'email' => $userData['email'],
-          'address' => '',
-          'phone' => '',
-          'contact' => '',
-          'notify' => 0,
-          'type' => 'new_client',
+          'address' => null,
+          'phone' => null,
+          'contact' => null,
+          'notify_account' => 0,
           'active' => CLIENTS_AUTO_APPROVE,
         );
 
-        $new_client->create_client($clientData);
+        $new_client->setType('new_client');
+        $new_client->set($clientData);
+        if ($new_client->validate()) {
+            $new_response = $new_client->create();
+    
+            if (CLIENTS_AUTO_GROUP != '0') {
+            $admin_name = 'SELFREGISTERED';
+            $client_id = $new_response['new_id'];
+            $group_id = CLIENTS_AUTO_GROUP;
 
-        if (CLIENTS_AUTO_GROUP != '0') {
-          $admin_name = 'SELFREGISTERED';
-          $client_id = $new_response['new_id'];
-          $group_id = CLIENTS_AUTO_GROUP;
+            $add_to_group = $dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
+                ." VALUES (:admin, :id, :group)");
+            $add_to_group->bindParam(':admin', $admin_name);
+            $add_to_group->bindParam(':id', $client_id, PDO::PARAM_INT);
+            $add_to_group->bindParam(':group', $group_id);
+            $add_to_group->execute();
+            }
 
-          $add_to_group = $dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
-            ." VALUES (:admin, :id, :group)");
-          $add_to_group->bindParam(':admin', $admin_name);
-          $add_to_group->bindParam(':id', $client_id, PDO::PARAM_INT);
-          $add_to_group->bindParam(':group', $group_id);
-          $add_to_group->execute();
+            $notify_admin = new \ProjectSend\Classes\Emails;
+            $email_arguments = array(
+            'type' => 'new_client_self',
+            'address' => ADMIN_EMAIL_ADDRESS,
+            'username' => $add_client_data_user,
+            'name' => $add_client_data_name
+            );
+            $notify_admin_status = $notify_admin->send($email_arguments);
+
+            if (CLIENTS_AUTO_APPROVE == '0') {
+            $_SESSION['errorstate'] = 'inactive_client';
+            header("location:" . BASE_URI);
+            return;
+            }
+            $_SESSION['google_user'] = $userData;
+            header("location:" . BASE_URI . "sociallogin/google/callback.php");
+            return;
         }
-
-        $notify_admin = new PSend_Email();
-        $email_arguments = array(
-          'type' => 'new_client_self',
-          'address' => ADMIN_EMAIL_ADDRESS,
-          'username' => $add_client_data_user,
-          'name' => $add_client_data_name
-        );
-        $notify_admin_status = $notify_admin->psend_send_email($email_arguments);
-
-        if (CLIENTS_AUTO_APPROVE == '0') {
-          $_SESSION['errorstate'] = 'inactive_client';
-          header("location:" . BASE_URI);
-          return;
-        }
-        $_SESSION['google_user'] = $userData;
-        header("location:" . BASE_URI . "sociallogin/google/callback.php");
-        return;
       }
     }
   }

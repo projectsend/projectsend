@@ -1,6 +1,6 @@
 # ProjectSend
 
-![ProjectSend logo](https://www.projectsend.org/projectsend-logo-600.png)
+![ProjectSend logo](https://www.projectsend.org/projectsend-logo-new.png)
 
 ## About
 
@@ -12,7 +12,7 @@ Uploaded files can be assigned to specific clients or clients groups.
 Other featres include auto-expiration of upload, notifications, full logging of actions by users and clients, option to allow clients to also upload files, themes, multiple languages...
 
 Main website: [projectsend.org](https://www.projectsend.org)  
-git: [project page for the legacy line](https://github.com/projectsend/projectsend-legacy/)
+git: [current repository](https://github.com/projectsend/projectsend/)
 ~~Old repository (unused): [Google Code](http://code.google.com/p/clients-oriented-ftp)~~
 
 Feel free to participate!
@@ -23,18 +23,18 @@ It is recommended that you download the latest release from the official website
 
 Downloading a development version directly from the repository might give you unexpected results, such as visible errors, functions that are still not finished, etc.
 
-**If you want to download directly from the repository, please be aware that you will need to follow the instructions on the "Developing" section.**
-
 ## Server requirements
 
 Your server needs to be configured with at least:
 
-* php 5.6 or newer
-* MySQL 5.0 or newer
+* php 5.6 or newer (7.1 to be the minimum required version soon)
+* MySQL 5.0 or newer(*)
 * apache 2.2
 * The following php extensions enabled on php.ini
   * php_pdo.dll
   * php_pdo_mysql.dll
+
+(*) If you are using version 8.x or newer, please set the authentication method of your database so it uses the MySQL native password. The default method (caching_sha2_password) will not work. Thanks to user jellevdbos for pointing this out.
 
 If possible, make sure to have php configured with:
 
@@ -44,7 +44,6 @@ If possible, make sure to have php configured with:
   * php_gd2.dll
   * php_gettext.dll
   * php_mbstring.dll
-  * php_xmlrpc.dll
 
 ## How to install on your server
 
@@ -73,6 +72,15 @@ Your personal configuration file (sys.config.php) is never included on the downl
 When a system user logs in to the system version, a check for database missing data will be made, and if anything is found, it will be updated automatically and a message will appear under the menu one time only.
 Whenever a new version is available, you will be notified in the admin panel via a message shown under the main menu.
 
+## Developing
+
+### Notice: ProjectSend is currently under refactoring
+
+If you want to help with development, you will need to do a few things via the command line:
+
+1. Download the composer and npm dependencies with the commands ````npm install```` and ````composer update````
+1. Run the default gulp task simply with ````gulp```` to compile the main CSS and JS assets files.
+
 ## How to join the project
 
 Questions, ideas?
@@ -83,7 +91,9 @@ Send your message to contact@projectsend.org or join us on our [Facebook page](h
 
 Thanks. Arigatō. Danke. Gracias. Grazie. Mahadsanid. Salamat po. Merci. אַ דאַנק.
 
-If you want to translate ProjectSend in your language or download an existing translation, please join the project on [Transifex](https://www.transifex.com/projects/p/projectsend)
+You can download the compiled, translated files for the available languages from [projectsend.org/translations](https://www.projectsend.org/translations/)
+
+If you want to translate ProjectSend in your language or work on an existing translation, please join the project on [Transifex](https://www.transifex.com/projects/p/projectsend)
 
 ## License
 
@@ -104,13 +114,7 @@ Also, thank you to the following people/communities that helped during developme
 * k.flipflip
 * Diego Carreira Vidal
 * Scott Wright
+* mschop
 * Everyone that commented and gave suggestions on the issues and Facebook pages!
 * stackoverflow.com
 * iconfinder.com
-
-ProjectSend original translators:
-
-* Raúl Elenes (Spanish)
-* Vašík Greif (Czech)
-* Mathieu Noe (French)
-* Levin Germann (German)

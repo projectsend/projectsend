@@ -7,7 +7,7 @@
  * @subpackage Options
  */
 $allowed_levels = array(9);
-require_once('sys.includes.php');
+require_once 'bootstrap.php';
 
 $section = ( !empty( $_GET['section'] ) ) ? $_GET['section'] : $_POST['section'];
 
@@ -18,14 +18,14 @@ switch ( $section ) {
 								'email_header_footer_customize',
 							);
 		break;
-	case 'new_files_for_client':
+	case 'new_files_by_user':
 		$section_title	= __('New file by user','cftp_admin');
 		$checkboxes		= array(
 								'email_new_file_by_user_customize',
 								'email_new_file_by_user_subject_customize',
 							);
 		break;
-	case 'new_file_by_client':
+	case 'new_files_by_client':
 		$section_title	= __('New file by client','cftp_admin');
 		$checkboxes		= array(
 								'email_new_file_by_client_customize',
@@ -46,14 +46,14 @@ switch ( $section ) {
 								'email_new_client_by_self_subject_customize',
 							);
 		break;
-	case 'client_approve':
+	case 'account_approve':
 		$section_title	= __('Approve client account','cftp_admin');
 		$checkboxes		= array(
 								'email_account_approve_subject_customize',
 								'email_account_approve_customize',
 							);
 		break;
-	case 'client_deny':
+	case 'account_deny':
 		$section_title	= __('Deny client account','cftp_admin');
 		$checkboxes		= array(
 								'email_account_deny_subject_customize',
@@ -90,8 +90,10 @@ switch ( $section ) {
 
 $page_title = $section_title;
 
+$page_id = 'email_templates';
+
 $active_nav = 'emails';
-include('header.php');
+include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 if ($_POST) {
 	foreach ($checkboxes as $checkbox) {
@@ -141,11 +143,11 @@ if ($_POST) {
 			switch ($_GET['status']) {
 				case '1':
 					$msg = __('Options updated succesfuly.','cftp_admin');
-					echo system_message('ok',$msg);
+					echo system_message('success',$msg);
 					break;
 				case '2':
 					$msg = __('There was an error. Please try again.','cftp_admin');
-					echo system_message('error',$msg);
+					echo system_message('danger',$msg);
 					break;
 			}
 		}
@@ -158,32 +160,32 @@ if ($_POST) {
 				$href_string = ' ' . __('(to be used as href on a link tag)','cftp_admin');
 		
 				$options_groups = array(
-										'new_files_for_client'	=> array(
+										'new_files_by_user'	=> array(
 																		'subject_checkbox'	=> 'email_new_file_by_user_subject_customize',
 																		'subject'			=> 'email_new_file_by_user_subject',
 																		'body_checkbox'		=> 'email_new_file_by_user_customize',
 																		'body_textarea'		=> 'email_new_file_by_user_text',
 																		'description'		=> __('This email will be sent to a client whenever a new file has been assigned to his account.','cftp_admin'),
-																		'subject_check'		=> EMAILS_FILE_BY_USER_USE_SUBJECT_CUSTOM,
-																		'subject_text'		=> EMAILS_FILE_BY_USER_SUBJECT,
-																		'body_check'		=> EMAILS_FILE_BY_USER_USE_CUSTOM,
-																		'body_text'			=> EMAILS_FILE_BY_USER_TEXT,
+																		'subject_check'		=> EMAIL_NEW_FILE_BY_USER_SUBJECT_CUSTOMIZE,
+																		'subject_text'		=> EMAIL_NEW_FILE_BY_USER_SUBJECT,
+																		'body_check'		=> EMAIL_NEW_FILE_BY_USER_CUSTOMIZE,
+																		'body_text'			=> EMAIL_NEW_FILE_BY_USER_TEXT,
 																		'tags'				=> array(
 																										'%FILES%'		=> __('Shows the list of files','cftp_admin'),
 																										'%URI%'			=> __('The login link','cftp_admin') . $href_string,
 																									),
 																		'default_text'		=> EMAIL_TEMPLATE_NEW_FILE_BY_USER,
 																	),
-										'new_file_by_client'	=> array(
+										'new_files_by_client'	=> array(
 																		'subject_checkbox'	=> 'email_new_file_by_client_subject_customize',
 																		'subject'			=> 'email_new_file_by_client_subject',
 																		'body_checkbox'		=> 'email_new_file_by_client_customize',
 																		'body_textarea'		=> 'email_new_file_by_client_text',
 																		'description'		=> __('This email will be sent to the system administrator whenever a client uploads a new file.','cftp_admin'),
-																		'subject_check'		=> EMAILS_FILE_BY_CLIENT_USE_SUBJECT_CUSTOM,
-																		'subject_text'		=> EMAILS_FILE_BY_CLIENT_SUBJECT,
-																		'body_check'		=> EMAILS_FILE_BY_CLIENT_USE_CUSTOM,
-																		'body_text'			=> EMAILS_FILE_BY_CLIENT_TEXT,
+																		'subject_check'		=> EMAIL_NEW_FILE_BY_CLIENT_SUBJECT_CUSTOMIZE,
+																		'subject_text'		=> EMAIL_NEW_FILE_BY_CLIENT_SUBJECT,
+																		'body_check'		=> EMAIL_NEW_FILE_BY_CLIENT_CUSTOMIZE,
+																		'body_text'			=> EMAIL_NEW_FILE_BY_CLIENT_TEXT,
 																		'tags'				=> array(
 																										'%FILES%'		=> __('Shows the list of files','cftp_admin'),
 																										'%URI%'			=> __('The login link','cftp_admin') . $href_string,
@@ -196,10 +198,10 @@ if ($_POST) {
 																		'body_checkbox'		=> 'email_new_client_by_user_customize',
 																		'body_textarea'		=> 'email_new_client_by_user_text',
 																		'description'		=> __('This email will be sent to the new client after an administrator has created his new account. It would be best to include the log in details (username and password).','cftp_admin'),
-																		'subject_check'		=> EMAILS_CLIENT_BY_USER_USE_SUBJECT_CUSTOM,
-																		'subject_text'		=> EMAILS_CLIENT_BY_USER_SUBJECT,
-																		'body_check'		=> EMAILS_CLIENT_BY_USER_USE_CUSTOM,
-																		'body_text'			=> EMAILS_CLIENT_BY_USER_TEXT,
+																		'subject_check'		=> EMAIL_NEW_CLIENT_BY_USER_SUBJECT_CUSTOMIZE,
+																		'subject_text'		=> EMAIL_NEW_CLIENT_BY_USER_SUBJECT,
+																		'body_check'		=> EMAIL_NEW_CLIENT_BY_USER_CUSTOMIZE,
+																		'body_text'			=> EMAIL_NEW_CLIENT_BY_USER_TEXT,
 																		'tags'				=> array(
 																										'%USERNAME%'	=> __('The new username for this account','cftp_admin'),
 																										'%PASSWORD%'	=> __('The new password for this account','cftp_admin'),
@@ -213,10 +215,10 @@ if ($_POST) {
 																		'body_checkbox'		=> 'email_new_client_by_self_customize',
 																		'body_textarea'		=> 'email_new_client_by_self_text',
 																		'description'		=> __('This email will be sent to the system administrator after a new client has created a new account for himself.','cftp_admin'),
-																		'subject_check'		=> EMAILS_CLIENT_BY_SELF_USE_SUBJECT_CUSTOM,
-																		'subject_text'		=> EMAILS_CLIENT_BY_SELF_SUBJECT,
-																		'body_check'		=> EMAILS_CLIENT_BY_SELF_USE_CUSTOM,
-																		'body_text'			=> EMAILS_CLIENT_BY_SELF_TEXT,
+																		'subject_check'		=> EMAIL_NEW_CLIENT_BY_SELF_SUBJECT_CUSTOMIZE,
+																		'subject_text'		=> EMAIL_NEW_CLIENT_BY_SELF_SUBJECT,
+																		'body_check'		=> EMAIL_NEW_CLIENT_BY_SELF_CUSTOMIZE,
+																		'body_text'			=> EMAIL_NEW_CLIENT_BY_SELF_TEXT,
 																		'tags'				=> array(
 																										'%FULLNAME%'		=> __('The full name the client registered with','cftp_admin'),
 																										'%USERNAME%'		=> __('The new username for this account','cftp_admin'),
@@ -225,16 +227,16 @@ if ($_POST) {
 																									),
 																		'default_text'		=> EMAIL_TEMPLATE_NEW_CLIENT_SELF,
 																	),
-										'client_approve'		=> array(
+										'account_approve'		=> array(
 																		'subject_checkbox'	=> 'email_account_approve_subject_customize',
 																		'subject'			=> 'email_account_approve_subject',
 																		'body_checkbox'		=> 'email_account_approve_customize',
 																		'body_textarea'		=> 'email_account_approve_text',
 																		'description'		=> __('This email will be sent to a client that requested an account if it gets approved. Group membership requests are also mentioned on the email, separated by their approval status.','cftp_admin'),
-																		'subject_check'		=> EMAILS_ACCOUNT_APPROVE_USE_SUBJECT_CUSTOM,
-																		'subject_text'		=> EMAILS_ACCOUNT_APPROVE_SUBJECT,
-																		'body_check'		=> EMAILS_ACCOUNT_APPROVE_USE_CUSTOM,
-																		'body_text'			=> EMAILS_ACCOUNT_APPROVE_TEXT,
+																		'subject_check'		=> EMAIL_ACCOUNT_APPROVE_SUBJECT_CUSTOMIZE,
+																		'subject_text'		=> EMAIL_ACCOUNT_APPROVE_SUBJECT,
+																		'body_check'		=> EMAIL_ACCOUNT_APPROVE_CUSTOMIZE,
+																		'body_text'			=> EMAIL_ACCOUNT_APPROVE_TEXT,
 																		'tags'				=> array(
 																										'%GROUPS_APPROVED%'	=> __('List of approved group memberships','cftp_admin'),
 																										'%GROUPS_DENIED%'	=> __('List of denied group memberships','cftp_admin'),
@@ -242,16 +244,16 @@ if ($_POST) {
 																									),
 																		'default_text'		=> EMAIL_TEMPLATE_ACCOUNT_APPROVE,
 																	),
-										'client_deny'		=> array(
+										'account_deny'		=> array(
 																		'subject_checkbox'	=> 'email_account_deny_subject_customize',
 																		'subject'			=> 'email_account_deny_subject',
 																		'body_checkbox'		=> 'email_account_deny_customize',
 																		'body_textarea'		=> 'email_account_deny_text',
 																		'description'		=> __('This email will be sent to a client that requested an account if it gets denied. All group membership requests for this account are denied automatically.','cftp_admin'),
-																		'subject_check'		=> EMAILS_ACCOUNT_DENY_USE_SUBJECT_CUSTOM,
-																		'subject_text'		=> EMAILS_ACCOUNT_DENY_SUBJECT,
-																		'body_check'		=> EMAILS_ACCOUNT_DENY_USE_CUSTOM,
-																		'body_text'			=> EMAILS_ACCOUNT_DENY_TEXT,
+																		'subject_check'		=> EMAIL_ACCOUNT_DENY_SUBJECT_CUSTOMIZE,
+																		'subject_text'		=> EMAIL_ACCOUNT_DENY_SUBJECT,
+																		'body_check'		=> EMAIL_ACCOUNT_DENY_CUSTOMIZE,
+																		'body_text'			=> EMAIL_ACCOUNT_DENY_TEXT,
 																		'tags'				=> array(
 																									),
 																		'default_text'		=> EMAIL_TEMPLATE_ACCOUNT_DENY,
@@ -262,10 +264,10 @@ if ($_POST) {
 																		'body_checkbox'		=> 'email_new_user_customize',
 																		'body_textarea'		=> 'email_new_user_text',
 																		'description'		=> __('This email will be sent to the new system user after an administrator has created his new account. It would be best to include the log in details (username and password).','cftp_admin'),
-																		'subject_check'		=> EMAILS_NEW_USER_USE_SUBJECT_CUSTOM,
-																		'subject_text'		=> EMAILS_NEW_USER_SUBJECT,
-																		'body_check'		=> EMAILS_NEW_USER_USE_CUSTOM,
-																		'body_text'			=> EMAILS_NEW_USER_TEXT,
+																		'subject_check'		=> EMAIL_NEW_USER_SUBJECT_CUSTOMIZE,
+																		'subject_text'		=> EMAIL_NEW_USER_SUBJECT,
+																		'body_check'		=> EMAIL_NEW_USER_CUSTOMIZE,
+																		'body_text'			=> EMAIL_NEW_USER_TEXT,
 																		'tags'				=> array(
 																										'%USERNAME%'	=> __('The new username for this account','cftp_admin'),
 																										'%PASSWORD%'	=> __('The new password for this account','cftp_admin'),
@@ -279,10 +281,10 @@ if ($_POST) {
 																		'body_checkbox'		=> 'email_pass_reset_customize',
 																		'body_textarea'		=> 'email_pass_reset_text',
 																		'description'		=> __('This email will be sent to a user or client when they try to reset their password.','cftp_admin'),
-																		'subject_check'		=> EMAILS_PASS_RESET_USE_SUBJECT_CUSTOM,
-																		'subject_text'		=> EMAILS_PASS_RESET_SUBJECT,
-																		'body_check'		=> EMAILS_PASS_RESET_USE_CUSTOM,
-																		'body_text'			=> EMAILS_PASS_RESET_TEXT,
+																		'subject_check'		=> EMAIL_PASS_RESET_SUBJECT_CUSTOMIZE,
+																		'subject_text'		=> EMAIL_PASS_RESET_SUBJECT,
+																		'body_check'		=> EMAIL_PASS_RESET_CUSTOMIZE,
+																		'body_text'			=> EMAIL_PASS_RESET_TEXT,
 																		'tags'				=> array(
 																										'%USERNAME%'	=> __('The username for this account','cftp_admin'),
 																										'%TOKEN%'		=> __('The text string unique to this request. Must be included somewhere.','cftp_admin'),
@@ -296,10 +298,10 @@ if ($_POST) {
 																		'body_checkbox'		=> 'email_client_edited_customize',
 																		'body_textarea'		=> 'email_client_edited_text',
 																		'description'		=> __('This email will be sent to the system administrator when a client edits his account and changes the public groups membership requests.','cftp_admin'),
-																		'subject_check'		=> EMAILS_CLIENT_EDITED_USE_SUBJECT_CUSTOM,
-																		'subject_text'		=> EMAILS_CLIENT_EDITED_SUBJECT,
-																		'body_check'		=> EMAILS_CLIENT_EDITED_USE_CUSTOM,
-																		'body_text'			=> EMAILS_CLIENT_EDITED_TEXT,
+																		'subject_check'		=> EMAIL_CLIENT_EDITED_SUBJECT_CUSTOMIZE,
+																		'subject_text'		=> EMAIL_CLIENT_EDITED_SUBJECT,
+																		'body_check'		=> EMAIL_CLIENT_EDITED_CUSTOMIZE,
+																		'body_text'			=> EMAIL_CLIENT_EDITED_TEXT,
 																		'tags'				=> array(
 																										'%FULLNAME%'		=> __('The full name the client registered with','cftp_admin'),
 																										'%USERNAME%'		=> __('The new username for this account','cftp_admin'),
@@ -313,6 +315,7 @@ if ($_POST) {
 
 
 			<form action="email-templates.php" name="templatesform" method="post" enctype="multipart/form-data" class="form-horizontal">
+                <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
 				<input type="hidden" name="section" value="<?php echo $section; ?>">
 	
 				<?php
@@ -327,7 +330,7 @@ if ($_POST) {
 						<div class="form-group">
 							<div class="col-sm-12">
 								<label for="email_header_footer_customize">
-									<input type="checkbox" value="1" id="email_header_footer_customize" name="email_header_footer_customize" <?php echo (EMAILS_HEADER_FOOTER_CUSTOM == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Use custom header / footer','cftp_admin'); ?>
+									<input type="checkbox" value="1" id="email_header_footer_customize" name="email_header_footer_customize" <?php echo (EMAIL_HEADER_FOOTER_CUSTOMIZE == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Use custom header / footer','cftp_admin'); ?>
 								</label>
 							</div>
 						</div>
@@ -335,7 +338,7 @@ if ($_POST) {
 						<div class="form-group">
 							<div class="col-sm-12">
 								<label for="email_header_text"><?php _e('Header','cftp_admin'); ?></label>
-								<textarea name="email_header_text" id="email_header_text" class="form-control textarea_high"><?php echo EMAILS_HEADER_TEXT; ?></textarea>
+								<textarea name="email_header_text" id="email_header_text" class="form-control textarea_high"><?php echo EMAIL_HEADER_TEXT; ?></textarea>
 								<p class="field_note"><?php _e('You can use HTML tags here.','cftp_admin'); ?></p>
 							</div>
 						</div>
@@ -349,7 +352,7 @@ if ($_POST) {
 						<div class="form-group">
 							<div class="col-sm-12">
 								<label for="email_footer_text"><?php _e('Footer','cftp_admin'); ?></label>
-								<textarea name="email_footer_text" id="email_footer_text" class="form-control textarea_high"><?php echo EMAILS_FOOTER_TEXT; ?></textarea>
+								<textarea name="email_footer_text" id="email_footer_text" class="form-control textarea_high"><?php echo EMAIL_FOOTER_TEXT; ?></textarea>
 								<p class="field_note"><?php _e('You can use HTML tags here.','cftp_admin'); ?></p>
 							</div>
 						</div>
@@ -438,36 +441,5 @@ if ($_POST) {
 	</div>
 </div>
 
-<script type="text/javascript">
-	$(document).ready(function(e) {
-		$('.load_default').click(function(e) {
-			e.preventDefault();
-			var file		= jQuery(this).data('file');
-			var textarea	= '#'+jQuery(this).data('textarea');
-			var accept		= confirm('<?php _e('Please confirm: replace the custom template text with the default one?','cftp_admin'); ?>');
-			if ( accept ) {
-				$.ajax({
-					url: "emails/"+file,
-					async: false,
-					cache: false,
-					success: function (data){
-						$(textarea).text(data);
-					},
-					error: function() {
-						alert("<?php _e('Error: the content could not be loaded','cftp_admin'); ?>");
-					}
-				});
-			}
-		});
-
-		$('.preview').click(function(e) {
-			e.preventDefault();
-			var type	= jQuery(this).data('preview');
-			var url		= '<?php echo BASE_URI; ?>email-preview.php?t=' + type;
-		    window.open(url, "previewWindow", "width=800,height=600,scrollbars=yes");
-		});
-	});
-</script>
-
 <?php
-	include('footer.php');
+	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

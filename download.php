@@ -6,13 +6,13 @@
  *
  */
 $allowed_levels = array(9,8,7,0);
-require_once('sys.includes.php');
+require_once 'bootstrap.php';
 
 $page_title = __('File information','cftp_admin');
 
 $dont_redirect_if_logged = 1;
 
-include('header-unlogged.php');
+include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 
 	if (!empty($_GET['token']) && !empty($_GET['id'])) {
 		$got_token		= $_GET['token'];
@@ -70,46 +70,53 @@ include('header-unlogged.php');
 				$statement = $dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (file_id, remote_ip, remote_host, anonymous)"
 											." VALUES (:file_id, :remote_ip, :remote_host, :anonymous)");
 				$statement->bindParam(':file_id', $got_file_id, PDO::PARAM_INT);
-				$statement->bindParam(':remote_ip', $_SERVER['REMOTE_ADDR']);
+				$statement->bindParam(':remote_ip', get_client_ip());
 				$statement->bindParam(':remote_host', $_SERVER['REMOTE_HOST']);
 				$statement->bindValue(':anonymous', 1, PDO::PARAM_INT);
 				$statement->execute();
 
 				/** Record the action log */
-				$new_log_action = new LogActions();
+				$logger = new \ProjectSend\Classes\ActionsLog();
 				$log_action_args = array(
 										'action'				=> 37,
 										'owner_id'				=> 0,
 										'affected_file'			=> (int)$got_file_id,
 										'affected_file_name'	=> $real_file_url,
 									);
-				$new_record_action = $new_log_action->log_action_save($log_action_args);
+				$new_record_action = $logger->addEntry($log_action_args);
 
 				// DOWNLOAD
-				$real_file = UPLOADED_FILES_FOLDER.basename($real_file_url);
-				$random_file = realpath(UPLOADED_FILES_FOLDER.basename($file_on_disk));
+				$real_file = UPLOADED_FILES_DIR.DS.basename($real_file_url);
+				$random_file = realpath(UPLOADED_FILES_DIR.DS.basename($file_on_disk));
 				if (file_exists($random_file)) {
-					session_write_close();
-					while (ob_get_level()) ob_end_clean();
-					header('Content-Type: application/octet-stream');
-					header('Content-Disposition: attachment; filename='.basename($real_file));
-					header('Expires: 0');
-					header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-					header('Pragma: public');
-					header('Cache-Control: private',false);
-					header('Content-Length: ' . get_real_size($random_file));
-					header('Connection: close');
-					//readfile($real_file);
-					
-					$context = stream_context_create();
-					$file = fopen($random_file, 'rb', FALSE, $context);
-					while ( !feof( $file ) ) {
-						//usleep(1000000); //Reduce download speed
-						echo stream_get_contents($file, 2014);
-					}
-					
-					fclose( $file );
-					die();
+                    if (defined('XSENDFILE_ENABLE') && XSENDFILE_ENABLE == 1) {
+                        header("X-Sendfile: $random_file");
+                        header('Content-Type: application/octet-stream');
+                        header('Content-Disposition: attachment; filename='.basename($real_file));
+                        exit;
+                    } else {
+                        session_write_close();
+                        while (ob_get_level()) ob_end_clean();
+                        header('Content-Type: application/octet-stream');
+                        header('Content-Disposition: attachment; filename='.basename($real_file));
+                        header('Expires: 0');
+                        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+                        header('Pragma: public');
+                        header('Cache-Control: private',false);
+                        header('Content-Length: ' . get_real_size($random_file));
+                        header('Connection: close');
+                        //readfile($real_file);
+                        
+                        $context = stream_context_create();
+                        $file = fopen($random_file, 'rb', FALSE, $context);
+                        while ( !feof( $file ) ) {
+                            //usleep(1000000); //Reduce download speed
+                            echo stream_get_contents($file, 2014);
+                        }
+                        
+                        fclose( $file );
+                        exit;
+                    }
 				}
 			}
 		}
@@ -127,7 +134,7 @@ include('header-unlogged.php');
 
 <div class="col-xs-12 col-sm-12 col-lg-6 col-lg-offset-3">
 
-	<?php echo generate_branding_layout(); ?>
+	<?php echo get_branding_layout(true); ?>
 
 	<div class="white-box">
 		<div class="white-box-interior">
@@ -146,7 +153,7 @@ include('header-unlogged.php');
 							break;
 					}
 	
-					echo system_message('error',$login_err_message,'login_error');
+					echo system_message('danger',$login_err_message,'login_error');
 				}
 				
 				if (isset($download_link)) {
@@ -186,4 +193,4 @@ include('header-unlogged.php');
 </div>
 
 <?php
-	include('footer.php');
+	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

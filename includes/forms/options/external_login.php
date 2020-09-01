@@ -2,6 +2,7 @@
     $blocks = array(
         'social_networks' => array(
             'title' => __('Social Networks','cftp_admin'),
+            'description' => sprintf(__('Note: %s requires all accounts to be available locally. When a user connects via a social network or any other external source, a local account will be created with a random password.','cftp_admin'), SYSTEM_NAME),
             'items' => array(
                 'facebook' => array(
                     'name' => 'Facebook',
@@ -11,6 +12,7 @@
                         'id' => 'facebook_client_id',
                         'secret' => 'facebook_client_secret',
                     ),
+                    'callback' => true,
                     'instructions' => LINK_DOC_FACEBOOK_LOGIN,
                 ),
                 'google' => array(
@@ -21,6 +23,7 @@
                         'id' => 'google_client_id',
                         'secret' => 'google_client_secret',
                     ),
+                    'callback' => true,
                     'instructions' => LINK_DOC_GOOGLE_SIGN_IN,
                 ),
                 'linkedin' => array(
@@ -31,6 +34,7 @@
                         'id' => 'linkedin_client_id',
                         'secret' => 'linkedin_client_secret',
                     ),
+                    'callback' => true,
                     'instructions' => LINK_DOC_LINKEDIN_LOGIN,
                 ),
                 'twitter' => array(
@@ -41,6 +45,7 @@
                         'id' => 'twitter_client_id',
                         'secret' => 'twitter_client_secret',
                     ),
+                    'callback' => true,
                 ),
                 'windowslive' => array(
                     'name' => 'Windows Live',
@@ -50,6 +55,7 @@
                         'id' => 'windowslive_client_id',
                         'secret' => 'windowslive_client_secret',
                     ),
+                    'callback' => true,
                 ),
                 'yahoo' => array(
                     'name' => 'Yahoo',
@@ -59,6 +65,7 @@
                         'id' => 'yahoo_client_id',
                         'secret' => 'yahoo_client_secret',
                     ),
+                    'callback' => true,
                 ),
             ),
         ),
@@ -67,6 +74,7 @@
     foreach ($blocks as $block => $block_data) {
 ?>
         <h3><?php echo $block_data['title']; ?></h3>
+        <p><?php echo $block_data['description']; ?></p>
 <?php
 
         foreach ($block_data['items'] as $network => $item_data) {
@@ -102,7 +110,7 @@
                             <?php _e('Callback URI','cftp_admin'); ?>
                         </div>
                         <div class="col-sm-8">
-                            <span class="format_url"><?php echo OAUTH_LOGIN_CALLBACK_URL.'?service='.$network; ?></span>
+                            <span class="format_url"><?php echo BASE_URI . 'login-callback.php?service='.$network; ?></span>
                         </div>
                     </div>
                 <?php } ?>
@@ -127,6 +135,7 @@
     $ldap_enabled = get_option('ldap_signin_enabled');
 ?>
 <h5><i class="fa fa-users"></i> LDAP</h5>
+<p><?php _e('Please note that the "mail" attribute will be used to identify users', 'cftp_admin'); ?></p>
 
 <div class="options_column">
     <div class="form-group">
@@ -140,20 +149,32 @@
     </div>
     <?php
         $ldap_fields = array(
-            'host' => array(
-                'label' => __('Host','cftp_admin'),
-                'name' => 'ldap_host',
+            'server' => array(
+                'label' => __('Server','cftp_admin'),
+                'name' => 'ldap_server',
                 'type' => 'text',
+                'note' => sprintf(__('Enter the host name, including protocol and port if needed. Example format: %s', 'cftp_admin'), 'ldap://<server_address>:<port>')
             ),
-            'dn' => array(
+            'bind_dn' => array(
                 'label' => __('Bind DN','cftp_admin'),
-                'name' => 'ldap_dn',
+                'name' => 'ldap_bind_dn',
                 'type' => 'text',
             ),
-            'password' => array(
-                'label' => __('Password','cftp_admin'),
-                'name' => 'ldap_password',
+            'admin_user' => array(
+                'label' => __('Admin user','cftp_admin'),
+                'name' => 'ldap_admin_user',
+                'type' => 'text',
+            ),
+            'admin_password' => array(
+                'label' => __('Admin password','cftp_admin'),
+                'name' => 'ldap_admin_password',
                 'type' => 'password',
+            ),
+            'search_base' => array(
+                'label' => __('Search base','cftp_admin'),
+                'name' => 'ldap_search_base',
+                'type' => 'text',
+                'note' => sprintf(__('The tree where to search users on. Eg: %s', 'cftp_admin'), 'cn=Users,dc=domain,dc=com'),
             ),
         );
         foreach ($ldap_fields as $field => $field_data) {
@@ -162,14 +183,28 @@
                 <label for="<?php echo $field_data['name']; ?>" class="col-sm-4 control-label"><?php echo $field_data['label']; ?></label>
                 <div class="col-sm-8">
                     <input type="<?php echo $field_data['type']; ?>" name="<?php echo $field_data['name']; ?>" id="<?php echo $field_data['name']; ?>" class="form-control empty" value="<?php echo html_output(get_option($field_data['name'])); ?>" />
+                    <?php if (!empty($field_data['note'])) { ?>
+                        <p class="field_note"><?php echo $field_data['note']; ?></p>
+                    <?php } ?>
                 </div>
             </div>
     <?php
         }
+
+        $ldap_protocol_version = get_option('ldap_protocol_version');
     ?>
+    <div class="form-group">
+        <label for="ldap_protocol_version" class="col-sm-4 control-label"><?php _e('Protocol Version','cftp_admin'); ?></label>
+        <div class="col-sm-8">
+            <select name="ldap_protocol_version" id="ldap_protocol_version" class="form-control">
+                <option value="3" <?php echo (!empty($ldap_protocol_version) && $ldap_protocol_version == '3') ? 'selected="selected"' : ''; ?>><?php _e('3','cftp_admin'); ?></option>
+                <option value="2" <?php echo (!empty($ldap_protocol_version) && $ldap_protocol_version == '2') ? 'selected="selected"' : ''; ?>><?php _e('2','cftp_admin'); ?></option>
+            </select>
+        </div>
+    </div>
 </div>
 
-<h5><i class="fa fa-openid"></i> OpenID Connect</h5>
+<h5><i class="fa fa-openid"></i> OpenID</h5>
 <?php
     $oidc_enabled = get_option('oidc_signin_enabled');
 ?>

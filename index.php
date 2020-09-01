@@ -41,6 +41,8 @@ if (!empty($_GET['external_login']) && $_GET['external_login'] == '1' && !empty(
     $process->socialLogin($_GET['provider']);
 }
 
+$csrf_token = getCsrfToken();
+
 include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 ?>
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
@@ -73,7 +75,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 		
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active"><a href="#local" aria-controls="local" role="tab" data-toggle="tab">Local account</a></li>
-                <?php if ($login_types['ldap'] == '1') { ?>
+                <?php if ($login_types['ldap'] == 'true') { ?>
                     <li role="presentation"><a href="#ldap" aria-controls="ldap" role="tab" data-toggle="tab">LDAP</a></li>
                 <?php } ?>
             </ul>
@@ -98,7 +100,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                     </div>
                 </div>
 
-                <?php if ($login_types['ldap'] == '1') { ?>
+                <?php if ($login_types['ldap'] == 'true') { ?>
                     <div role="tabpanel" class="tab-pane fade" id="ldap">
                         <?php include_once FORMS_DIR . DS . 'login-ldap.php'; ?>
                     </div>

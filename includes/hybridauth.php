@@ -2,7 +2,7 @@
     global $hybridauth;
     $config = array(
         "base_url" => BASE_URI,
-        'callback' => OAUTH_LOGIN_CALLBACK_URL,
+        'callback' => BASE_URI . 'login-callback.php',
         "providers" => array(
             "Facebook" => array(
                 "enabled" => get_option('facebook_signin_enabled'),

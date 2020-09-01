@@ -109,7 +109,6 @@ while( $row = $statement->fetch() ) {
  * @todo
  */
 	if (isset($_POST['submit'])) {
-
         $n = 0;
 
         /** Edit each file and its assignations */
@@ -117,6 +116,11 @@ while( $row = $statement->fetch() ) {
 			$n++;
 
 			if (!empty($file['name'])) {
+                // @todo
+                // Process file
+                // It's already on the database so we need to save the new config from the form
+                // (title, description, expiration, public, assignments, upload as hidden, categories)
+                pa($file);
 			}
 			else {
 				$empty_fields++;

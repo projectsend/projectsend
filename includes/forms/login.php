@@ -8,7 +8,7 @@
  */
 ?>
 <form action="process.php?do=login" name="login_admin" role="form" id="login_form" method="post">
-    <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
+    <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>" />
     <input type="hidden" name="do" value="login">
     <fieldset>
         <div class="form-group">

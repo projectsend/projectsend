@@ -146,11 +146,6 @@ class Options
             define('PAGE_STATUS_CODE_URL', BASE_URI . 'error.php');
             define('PAGE_STATUS_CODE_403', PAGE_STATUS_CODE_URL . '?e=403');
             define('PAGE_STATUS_CODE_404', PAGE_STATUS_CODE_URL . '?e=404');
-
-            /** Oauth login callback */
-            define('OAUTH_LOGIN_CALLBACK_URL', BASE_URI . 'login-callback.php');
-            define('LOGIN_CALLBACK_URI_GOOGLE', OAUTH_LOGIN_CALLBACK_URL . '?service=google');
-            define('LOGIN_CALLBACK_URI_FACEBOOK', OAUTH_LOGIN_CALLBACK_URL . '?service=facebook');
 		} else {
 			define('BASE_URI', '/');
         }

@@ -236,15 +236,112 @@ class Auth
         }
 
         pax($userProfile);
-        // If !user_exists
-            // $user->create
-            // $uid = $user->getId();
-            // get_user_by_id($uid);
+        /*
+            @todo
+            Check if user exists on database
+                Create if not
+                Login if exists
+                Log action
+                Redirect
+        */
+    }
 
-        // login
-            // Set $_SESSION
-            // $logger->addEntry
-            // redirect according to account type (user or client)
+    public function login_ldap($email, $password, $language)
+    {
+        global $logger;
+        
+        if ( !$email || !$password ) {
+            $return = [
+                'status' => 'error',
+                'message' => __("Email and password cannot be empty.",'cftp_admin')
+            ];
+    
+            return json_encode($return);    
+        }
+
+		$selected_form_lang = (!empty( $language ) ) ? $language : SITE_LANG;
+
+        // Bind to server
+        $ldap_server = get_option('ldap_server');
+        $ldap_bind_dn = get_option('ldap_bind_dn');
+        $ldap_admin_user = get_option('ldap_admin_user');
+        $ldap_admin_password = get_option('ldap_admin_password');
+
+        try {
+            $ldap = ldap_connect($ldap_server);
+        } catch (\Exception $e) {
+            $return = [
+                'status' => 'error',
+                'message' => sprintf(__("LDAP connection error: %s", 'cftp_admin'), $e->getMessage())
+            ];
+
+            return json_encode($return);
+        }
+
+        ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, get_option('ldap_protocol_version'));
+        ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
+
+        try {
+            $bind = ldap_bind($ldap, $ldap_admin_user, $ldap_admin_password);
+            if ($bind) {
+                $ldap_search_base = get_option('ldap_search_base');
+                
+                $arr = array('dn', 1);
+                $result = ldap_search($ldap, $ldap_bind_dn, "(mail=$email)", $arr);
+                $entries = ldap_get_entries($ldap, $result);
+
+                if ($entries['count'] > 0) {
+                    // Bind with user
+                    if (ldap_bind($ldap, $entries[0]['dn'], $password)) {
+                        /*
+                            @todo
+                            Check if user exists on database
+                                Create if not
+                                Login if exists
+                                Log action
+                                Redirect
+                        */
+                        $return = [
+                            'status' => 'success',
+                        ];
+            
+                        return json_encode($return);
+                    }
+                    else {
+                        $return = [
+                            'status' => 'error',
+                            'message' => __("The supplied email or password does not match an existing record.", 'cftp_admin')
+                        ];
+            
+                        return json_encode($return);        
+                    }
+                }
+                else {
+                    // Email not found
+                    $return = [
+                        'status' => 'error',
+                        'message' => __("The supplied email or password does not match an existing record.", 'cftp_admin')
+                    ];
+        
+                    return json_encode($return);        
+                }
+            }
+            else {
+                $return = [
+                    'status' => 'error',
+                    'message' => __("Error binding to LDAP server.",'cftp_admin')
+                ];
+    
+                return json_encode($return);    
+            }
+        } catch (\Exception $e) {
+            $return = [
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ];
+
+            return json_encode($return);
+        }
     }
 
     /**
@@ -300,7 +397,11 @@ class Auth
         session_destroy();
         
         global $hybridauth;
-        $hybridauth->disconnectAllAdapters();
+        try {
+            $hybridauth->disconnectAllAdapters();
+        } catch (\Exception $e) {
+
+        }
 
 		/*
 		$language_cookie = 'projectsend_language';

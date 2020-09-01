@@ -1,6 +1,6 @@
 {
-	"name": "projectsend/projectsend-legacy",
-	"description": "ProjectSend is an open source, clients-oriented, private file sharing web application. Legacy is the repository for patches and maintenance of the pre-1.0 version, with version number rxxxx",
+	"name": "projectsend/projectsend",
+	"description": "ProjectSend is an open source, clients-oriented, private file sharing web application.",
 	"type": "project",
 	"license": "GPL-3.0-or-later",
 	"homepage": "https://www.projectsend.org/",

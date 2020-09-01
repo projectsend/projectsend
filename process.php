@@ -5,7 +5,7 @@ require_once 'bootstrap.php';
 
 $_SESSION['last_call'] = time();
 
-if ( !empty( $_GET['do'] ) && $_GET['do'] != 'login' ) {
+if ( !empty( $_GET['do'] ) && ($_GET['do'] != 'login' && $_GET['do'] != 'login_ldap') ) {
     check_for_session();
     can_see_content($allowed_levels);
 }
@@ -15,6 +15,9 @@ $process = new \ProjectSend\Classes\DoProcess($dbh);
 switch ($_GET['do']) {
     case 'login':
         $process->login($_POST['username'], $_POST['password'], $_POST['language']);
+        break;
+    case 'login_ldap':
+        $process->login_ldap($_POST['ldap_email'], $_POST['ldap_password'], $_POST['language']);
         break;
     case 'logout':
         $process->logout();

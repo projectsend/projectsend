@@ -147,6 +147,5 @@ if (!$chunks || $chunk == $chunks - 1) {
     $add_to_db = $this_file->addToDatabase();
 }
 
-
 // Return JSON-RPC response
 die('{"jsonrpc" : "2.0", "result" : null, "id" : "'.$add_to_db['id'].'", "NewFileName" : "'.$fileName.'"}');

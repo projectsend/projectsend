@@ -37,20 +37,23 @@ class DoProcess
 
     public function login($username, $password, $language = SITE_LANG)
     {
-        $this->try_login = $this->auth->login($username, $password, $language);
-
-        return $this->try_login;
+        return $this->auth->login($username, $password, $language);
 	}
 
     public function socialLogin($provider)
     {
-        $this->try_login = $this->auth->socialLogin($provider);
+        $this->auth->socialLogin($provider);
 	}
 
     public function logout()
     {
         return $this->auth->logout();
-	}
+    }
+    
+    public function login_ldap($email, $password, $language = SITE_LANG)
+    {
+        return $this->auth->login_ldap($email, $password, $language);
+    }
 
 
     /**

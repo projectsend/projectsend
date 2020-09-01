@@ -569,7 +569,8 @@ class Files
 		$this->uploader_id = CURRENT_USER_ID;
 		$this->uploader_type = CURRENT_USER_TYPE;
 		$this->hidden = 0;
-		$this->public_token = generateRandomString(32);
+        $this->public_token = generateRandomString(32);
+        $this->state = [];
 		
         $this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (url, original_url, filename, description, uploader, expires, expiry_date, public_allow, public_token)"
                                         ."VALUES (:url, :original_url, :title, :description, :uploader, :expires, :expiry_date, :public, :public_token)");
@@ -588,7 +589,7 @@ class Files
         $this->state['id'] = $this->file_id;
         $this->state['public_token'] = $this->public_token;
 
-		if (!empty($this->statement)) {
+		if (!empty($this->file_id)) {
             /** Record the action log */
             if ($this->uploader_type == 'user') {
                 $this->action_type = 5;

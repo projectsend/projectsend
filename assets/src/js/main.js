@@ -14,6 +14,7 @@
                 break;
             case 'login':
                 admin.pages.loginForm();
+                admin.pages.loginLdapForm();
                 break;
             case 'dashboard':
                 admin.pages.dashboard();

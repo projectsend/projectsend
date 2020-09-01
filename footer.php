@@ -8,9 +8,7 @@
 				 *
 				 * @package ProjectSend
 				 */
-                    default_footer_info();
-                    
-                    render_json_variables();
+					default_footer_info();
 					
 					load_js_files();
 				?>

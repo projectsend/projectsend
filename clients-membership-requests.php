@@ -6,29 +6,61 @@
  * @subpackage	Clients
  *
  */
+$footable_min = true; // delete this line after finishing pagination on every table
+$load_scripts	= array(
+						'footable',
+						'toggle',
+					); 
+
 $allowed_levels = array(9,8);
-require_once 'bootstrap.php';
+require_once('sys.includes.php');
 
 $active_nav = 'groups';
 $this_page = 'clients-membership-requests.php';
 
 $page_title = __('Membership requests','cftp_admin');
-
-$page_id = 'clients_memberships_requests';
-
-include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+include('header.php');
 ?>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('.change_all').click(function(e) {
+			e.preventDefault();
+			var target = $(this).data('target');
+			var check = $(this).data('check');
+			$("input[data-client='"+target+"']").prop("checked",check).change();
+			check_client(target);
+		});
+		
+		$('.account_action').on("change", function() {
+			if ( $(this).prop('checked') == false )  {
+				var target = $(this).data('client');
+				$(".membership_action[data-client='"+target+"']").prop("checked",false).change();
+			}
+		});
+
+		$('.checkbox_toggle').change(function() {
+			var target = $(this).data('client');
+			check_client(target);
+		});
+
+		function check_client(client_id) {
+			$("input[data-clientid='"+client_id+"']").prop("checked",true);
+		}
+	});
+</script>
+
 <div class="col-xs-12">
 <?php
 	if (isset($_GET['action'])) {
 		switch ($_GET['action']) {
 			case 'apply':
 				$msg = __('The selected actions were applied.','cftp_admin');
-				echo system_message('success',$msg);
+				echo system_message('ok',$msg);
 				break;
 			case 'delete':
 				$msg = __('The selected requests were deleted.','cftp_admin');
-				echo system_message('success',$msg);
+				echo system_message('ok',$msg);
 				break;
 		}
 	}
@@ -49,38 +81,88 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 			}
 			$clients_to_get = implode( ',', array_map( 'intval', array_unique( $selected_clients_ids ) ) );
 
-			switch ($_POST['action']) {
-				case 'apply':
-					foreach ( $selected_clients as $client ) {
-						$process_memberships	= new \ProjectSend\Classes\MembersActions;
+			/**
+			 * Make a list of users to avoid individual queries.
+			 */
+			$sql_user = $dbh->prepare( "SELECT id, name FROM " . TABLE_USERS . " WHERE FIND_IN_SET(id, :clients)" );
+			$sql_user->bindParam(':clients', $clients_to_get);
+			$sql_user->execute();
+			$sql_user->setFetchMode(PDO::FETCH_ASSOC);
+			while ( $data_user = $sql_user->fetch() ) {
+				$all_users[$data_user['id']] = $data_user['name'];
+			}
 
-						/** Process memberships requests */
+
+			switch($_POST['action']) {
+				case 'apply':
+					$selected_clients = $_POST['accounts'];
+					foreach ( $selected_clients as $client ) {
+						$email_type = 'client_memberships_process';
+						$process_memberships	= new MembersActions();
+
+						/**
+						 * 1 - Process memberships requests
+						 */
 						if ( empty( $client['groups'] ) ) {
 							$client['groups'] = array();
 						}
 
 						$memberships_arguments = array(
-                            'client_id'	=> $client['id'],
-                            'approve' => $client['groups'],
-                        );
+														'client_id'	=> $client['id'],
+														'approve'	=> $client['groups'],
+													);
 
-						$process_requests = $process_memberships->group_process_memberships( $memberships_arguments );
+						$process_requests	= $process_memberships->group_process_memberships( $memberships_arguments );
+
+						/**
+						 * 3- Send email to the client
+						 */
+						/** Send email */
+						$processed_requests = $process_requests['memberships'];
+						$client_information = get_client_by_id( $client['id'] );
+
+						$notify_client = new PSend_Email();
+						$email_arguments = array(
+														'type'			=> $email_type,
+														'username'		=> $client_information['username'],
+														'name'			=> $client_information['name'],
+														'addresses'		=> $client_information['email'],
+														'memberships'	=> $processed_requests,
+													);
+						$notify_send = $notify_client->psend_send_email($email_arguments);
 					}
+					
+					$log_action_number = 39;
 					break;
 				case 'delete':
 					foreach ($selected_clients as $client) {
-						$process_memberships = new \ProjectSend\Classes\MembersActions;
+						$process_memberships	= new MembersActions();
 
 						$memberships_arguments = array(
-                            'client_id'	=> $client['id'],
-                            'type' => ( !empty( $_POST['denied'] ) && $_POST['denied'] == 1 ) ? 'denied' : 'new',
-                        );
+														'client_id'	=> $client['id'],
+														'type'		=> ( !empty( $_POST['denied'] ) && $_POST['denied'] == 1 ) ? 'denied' : 'new',
+													);
 
 						$delete_requests = $process_memberships->group_delete_requests( $memberships_arguments );
 					}
+					
+					$log_action_number = 39;
 					break;
 				default:
 					break;
+			}
+
+			/** Record the action log */
+			if ( !empty( $log_action_number ) ) {
+				foreach ($selected_clients_ids as $client) {
+					$new_log_action = new LogActions();
+					$log_action_args = array(
+											'action' => $log_action_number,
+											'owner_id' => CURRENT_USER_ID,
+											'affected_account_name' => $all_users[$client]
+										);
+					$new_record_action = $new_log_action->log_action_save($log_action_args);
+				}
 			}
 
 			/** Redirect after processing */
@@ -95,7 +177,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 		}
 		else {
 			$msg = __('Please select at least one client.','cftp_admin');
-			echo system_message('danger',$msg);
+			echo system_message('error',$msg);
 		}
 	}
 
@@ -107,7 +189,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 	$params = array();
 
-	$cq = "(SELECT client_id, COUNT(group_id) as amount, GROUP_CONCAT(group_id SEPARATOR ',') AS groups FROM " . TABLE_MEMBERS_REQUESTS;
+	$cq = "SELECT client_id, COUNT(group_id) as amount, GROUP_CONCAT(group_id SEPARATOR ',') AS groups FROM " . TABLE_MEMBERS_REQUESTS;
 	
 	if ( isset( $_GET['denied'] ) && !empty( $_GET['denied'] ) ) {
 		$cq .= " WHERE denied='1'";
@@ -120,13 +202,13 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 		$found_count = COUNT_MEMBERSHIP_REQUESTS;
 	}
 	
-	$cq .= " GROUP BY client_id)";
+	$cq .= " GROUP BY client_id";
 
 	/**
 	 * Pre-query to count the total results
 	*/
 	$tq = $cq;
-	$tq .= "UNION ALL (SELECT COUNT(DISTINCT client_id) as clients, COUNT(group_id) as total, null FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='0') LIMIT 0";
+	$tq .= " LIMIT 0 UNION ALL SELECT COUNT(DISTINCT client_id) as clients, COUNT(group_id) as total, null FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='0'";
 	//echo $tq;
 
 	$count_sql	= $dbh->prepare( $tq );
@@ -159,9 +241,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 			</div>
 		</div>
 
-		<form action="<?php echo $this_page; ?>" name="requests_list" method="post" class="form-inline batch_actions">
-            <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
-
+		<form action="<?php echo $this_page; ?>" name="requests_list" method="post" class="form-inline">
 			<?php form_add_existing_parameters(); ?>
 			<div class="form_actions_right">
 				<div class="form_actions">
@@ -171,10 +251,10 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 							<select name="action" id="action" class="txtfield form-control">
 								<?php
 									$actions_options = array(
-                                        'none'				=> __('Select action','cftp_admin'),
-                                        'apply'				=> __('Apply selection','cftp_admin'),
-                                        'delete'			=> __('Delete requests','cftp_admin'),
-                                    );
+															'none'				=> __('Select action','cftp_admin'),
+															'apply'				=> __('Apply selection','cftp_admin'),
+															'delete'			=> __('Delete requests','cftp_admin'),
+														);
 									foreach ( $actions_options as $val => $text ) {
 								?>
 										<option value="<?php echo $val; ?>"><?php echo $text; ?></option>
@@ -196,16 +276,16 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 			<div class="form_results_filter">
 				<?php
 					$filters = array(
-									'new' => array(
-                                                'title'	=> __('New requests','cftp_admin'),
-                                                'link'	=> $this_page,
-                                                'count'	=> COUNT_MEMBERSHIP_REQUESTS,
-                                            ),
-									'denied' => array(
-                                                'title'	=> __('Denied requests','cftp_admin'),
-                                                'link'	=> $this_page . '?denied=1',
-                                                'count'	=> COUNT_MEMBERSHIP_DENIED,
-                                            ),
+									'new'		=> array(
+														'title'	=> __('New requests','cftp_admin'),
+														'link'	=> $this_page,
+														'count'	=> COUNT_MEMBERSHIP_REQUESTS,
+													),
+									'denied'	=> array(
+														'title'	=> __('Denied requests','cftp_admin'),
+														'link'	=> $this_page . '?denied=1',
+														'count'	=> COUNT_MEMBERSHIP_DENIED,
+													),
 								);
 					foreach ( $filters as $type => $filter ) {
 				?>
@@ -232,16 +312,19 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					else {
 						$no_results_message = __('There are no requests at the moment','cftp_admin');
 					}
-					echo system_message('danger',$no_results_message);
+					echo system_message('error',$no_results_message);
 				}
 
 				if ($count > 0) {
-					$all_groups	= get_groups([]);
+					$get_groups	= new GroupActions();
+					$arguments	= array();
+					$all_groups	= $get_groups->get_groups($arguments);
+
 
 					/**
 					 * Pre-populate a membership requests array
 					 */
-					$get_requests	= new \ProjectSend\Classes\MembersActions;
+					$get_requests	= new MembersActions();
 					$arguments		= array();
 					if ( $current_filter == 'denied' ) {
 						$arguments['denied'] = 1;
@@ -255,7 +338,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 												'id'		=> 'clients_tbl',
 												'class'		=> 'footable table',
 											);
-					$table = new \ProjectSend\Classes\TableGenerate( $table_attributes );
+					$table = new generateTable( $table_attributes );
 	
 					$thead_columns		= array(
 												array(
@@ -303,7 +386,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					 */
 					$toggle_attr = 'data-toggle="toggle" data-style="membership_toggle" data-on="Accept" data-off="Deny" data-onstyle="success" data-offstyle="danger" data-size="mini"';
 					while ( $row = $sql->fetch() ) {
-						$table->addRow();
+						$table->add_row();
 						
 						$client_id		= $row["client_id"];
 
@@ -367,7 +450,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 											);
 
 						foreach ( $tbody_cells as $cell ) {
-							$table->addCell( $cell );
+							$table->add_cell( $cell );
 						}
 		
 						$table->end_row();
@@ -392,4 +475,4 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 </div>
 
 <?php
-	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+	include('footer.php');

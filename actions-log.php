@@ -6,14 +6,19 @@
  * @subpackage	Log
  *
  */
+$footable_min = true; // delete this line after finishing pagination on every table
+$load_scripts	= array(
+						'footable',
+					); 
+
 $allowed_levels = array(9);
-require_once 'bootstrap.php';
+require_once('sys.includes.php');
 
 $active_nav = 'tools';
 
 $page_title = __('Recent activities log','cftp_admin');
 
-include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+include('header.php');
 ?>
 
 <div class="col-xs-12">
@@ -37,14 +42,14 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 							$statement->execute( $params );
 						
 							$msg = __('The selected activities were deleted.','cftp_admin');
-							echo system_message('success',$msg);
+							echo system_message('ok',$msg);
 					}
 					else {
 						$msg = __('Please select at least one activity.','cftp_admin');
-						echo system_message('danger',$msg);
+						echo system_message('error',$msg);
 					}
 				break;
-				case 'log_clear':
+				case 'clear':
 					$keep = '5,8,9';
 					$statement = $dbh->prepare("DELETE FROM " . TABLE_LOG . " WHERE NOT ( FIND_IN_SET(action, :keep) ) ");
 					$params = array(
@@ -53,7 +58,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					$statement->execute( $params );
 
 					$msg = __('The log was cleared. Only data used for statistics remained. You can delete them manually if you want.','cftp_admin');
-					echo system_message('success',$msg);
+					echo system_message('ok',$msg);
 				break;
 			}
 	}
@@ -128,9 +133,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					<label for="activity" class="sr-only"><?php _e('Filter activities','cftp_admin'); ?></label>
 					<select name="activity" id="activity" class="form-control">
 						<option value="all"><?php _e('All activities','cftp_admin'); ?></option>
-                            <?php
-                                $logger = new \ProjectSend\Classes\ActionsLog;
-								$activities_references = $logger->getActivitiesReferences();
+							<?php
+								global $activities_references;
 								foreach ( $activities_references as $val => $text ) {
 							?>
 									<option value="<?php echo $val; ?>" <?php if ( isset( $_GET['activity'] ) && $_GET['activity'] == $val ) { echo 'selected="selected"'; } ?>><?php echo $text; ?></option>
@@ -144,7 +148,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 		</div>
 	</div>
 
-	<form action="actions-log.php" name="actions_list" method="get" class="form-inline batch_actions">
+	<form action="actions-log.php" name="actions_list" method="get" class="form-inline">
 		<?php form_add_existing_parameters(); ?>
 		<div class="form_actions_right">
 			<div class="form_actions">
@@ -153,14 +157,14 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Activities actions','cftp_admin'); ?>:</label>
 						<select name="action" id="action" class="form-control">
 								<?php
-                                    $actions_options = array(
-                                        'none'				=> __('Select action','cftp_admin'),
-                                        'log_download'		=> __('Download as csv','cftp_admin'),
-                                        'delete'			=> __('Delete selected','cftp_admin'),
-                                        'log_clear'			=> __('Clear entire log','cftp_admin'),
-                                    );
-                                    foreach ( $actions_options as $val => $text ) {
-                                ?>
+								$actions_options = array(
+														'none'				=> __('Select action','cftp_admin'),
+														'log_download'		=> __('Download as csv','cftp_admin'),
+														'delete'			=> __('Delete selected','cftp_admin'),
+														'log_clear'			=> __('Clear entire log','cftp_admin'),
+													);
+								foreach ( $actions_options as $val => $text ) {
+							?>
 									<option value="<?php echo $val; ?>"><?php echo $text; ?></option>
 							<?php
 								}
@@ -191,7 +195,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 				else {
 					$no_results_message = __('There are no activities recorded.','cftp_admin');
 				}
-				echo system_message('danger',$no_results_message);
+				echo system_message('error',$no_results_message);
 			}
 		?>
 
@@ -203,7 +207,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 										'id'		=> 'activities_tbl',
 										'class'		=> 'footable table',
 									);
-			$table = new \ProjectSend\Classes\TableGenerate( $table_attributes );
+			$table = new generateTable( $table_attributes );
 
 			$thead_columns		= array(
 										array(
@@ -259,10 +263,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 										'affected_account_name'	=> $log['affected_account_name']
 									)
 				);
+				$date = date(TIMEFORMAT_USE,strtotime($log['timestamp']));
 
-                $date = format_date($log['timestamp']);
-
-				$table->addRow();
+				$table->add_row();
 				
 				$tbody_cells = array(
 										array(
@@ -290,7 +293,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 									);
 
 				foreach ( $tbody_cells as $cell ) {
-					$table->addCell( $cell );
+					$table->add_cell( $cell );
 				}
 
 				$table->end_row();
@@ -314,4 +317,4 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 </div>
 
 <?php
-	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+	include('footer.php');

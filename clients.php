@@ -6,13 +6,18 @@
  * @subpackage	Clients
  *
  */
+$footable_min = true; // delete this line after finishing pagination on every table
+$load_scripts	= array(
+						'footable',
+					); 
+
 $allowed_levels = array(9,8);
-require_once 'bootstrap.php';
+require_once('sys.includes.php');
 
 $active_nav = 'clients';
 
 $page_title = __('Clients Administration','cftp_admin');
-include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+include('header.php');
 ?>
 
 <div class="col-xs-12">
@@ -24,6 +29,18 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 		/** Continue only if 1 or more clients were selected. */
 		if(!empty($_GET['batch'])) {
 			$selected_clients = $_GET['batch'];
+			$clients_to_get = implode( ',', array_map( 'intval', array_unique( $selected_clients ) ) );
+
+			/**
+			 * Make a list of users to avoid individual queries.
+			 */
+			$sql_user = $dbh->prepare( "SELECT id, name FROM " . TABLE_USERS . " WHERE FIND_IN_SET(id, :clients)" );
+			$sql_user->bindParam(':clients', $clients_to_get);
+			$sql_user->execute();
+			$sql_user->setFetchMode(PDO::FETCH_ASSOC);
+			while ( $data_user = $sql_user->fetch() ) {
+				$all_users[$data_user['id']] = $data_user['name'];
+			}
 
 			switch($_GET['action']) {
 				case 'activate':
@@ -32,53 +49,61 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					 * Inactive clients are not allowed to log in.
 					 */
 					foreach ($selected_clients as $work_client) {
-                        $this_client = new \ProjectSend\Classes\Users($dbh);
-                        if ($this_client->get($work_client)) {
-                            $hide_user = $this_client->setActiveStatus(1);
-                        }
+						$this_client = new ClientActions();
+						$hide_client = $this_client->change_client_active_status($work_client,'1');
 					}
-                    
-                    $msg = __('The selected clients were marked as active.','cftp_admin');
-					echo system_message('success',$msg);
+					$msg = __('The selected clients were marked as active.','cftp_admin');
+					echo system_message('ok',$msg);
+					$log_action_number = 19;
 					break;
+
 				case 'deactivate':
 					/**
 					 * Reverse of the previous action. Setting the value to 0 means
 					 * that the client is inactive.
 					 */
 					foreach ($selected_clients as $work_client) {
-                        $this_client = new \ProjectSend\Classes\Users($dbh);
-                        if ($this_client->get($work_client)) {
-                            $hide_user = $this_client->setActiveStatus(0);
-                        }
+						$this_client = new ClientActions();
+						$hide_client = $this_client->change_client_active_status($work_client,'0');
 					}
-                    
-                    $msg = __('The selected clients were marked as inactive.','cftp_admin');
-					echo system_message('success',$msg);
+					$msg = __('The selected clients were marked as inactive.','cftp_admin');
+					echo system_message('ok',$msg);
+					$log_action_number = 20;
 					break;
+
 				case 'delete':
-					foreach ($selected_clients as $work_client) {
-                        $this_client = new \ProjectSend\Classes\Users($dbh);
-                        if ($this_client->get($work_client)) {
-                            $delete_user = $this_client->delete();
-                        }
+					foreach ($selected_clients as $client) {
+						$this_client = new ClientActions();
+						$delete_client = $this_client->delete_client($client);
 					}
 					
 					$msg = __('The selected clients were deleted.','cftp_admin');
-					echo system_message('success',$msg);
+					echo system_message('ok',$msg);
+					$log_action_number = 17;
 					break;
+			}
+
+			/** Record the action log */
+			foreach ($selected_clients as $client) {
+				$new_log_action = new LogActions();
+				$log_action_args = array(
+										'action' => $log_action_number,
+										'owner_id' => CURRENT_USER_ID,
+										'affected_account_name' => $all_users[$client]
+									);
+				$new_record_action = $new_log_action->log_action_save($log_action_args);
 			}
 		}
 		else {
 			$msg = __('Please select at least one client.','cftp_admin');
-			echo system_message('danger',$msg);
+			echo system_message('error',$msg);
 		}
 	}
 
 	/** Query the clients */
 	$params = array();
 
-	$cq = "SELECT id FROM " . TABLE_USERS . " WHERE level='0' AND account_requested='0'";
+	$cq = "SELECT * FROM " . TABLE_USERS . " WHERE level='0' AND account_requested='0'";
 
 	/** Add the search terms */	
 	if ( isset( $_GET['search'] ) && !empty( $_GET['search'] ) ) {
@@ -156,7 +181,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 			</div>
 		</div>
 
-		<form action="clients.php" name="clients_list" method="get" class="form-inline batch_actions">
+		<form action="clients.php" name="clients_list" method="get" class="form-inline">
 			<?php form_add_existing_parameters(); ?>
 			<div class="form_actions_right">
 				<div class="form_actions">
@@ -206,7 +231,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					else {
 						$no_results_message = __('There are no clients at the moment','cftp_admin');
 					}
-					echo system_message('danger',$no_results_message);
+					echo system_message('error',$no_results_message);
 				}
 
 				if ($count > 0) {
@@ -217,7 +242,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 												'id'		=> 'clients_tbl',
 												'class'		=> 'footable table',
 											);
-					$table = new \ProjectSend\Classes\TableGenerate( $table_attributes );
+					$table = new generateTable( $table_attributes );
 	
 					$thead_columns		= array(
 												array(
@@ -281,6 +306,20 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 													'content'		=> __('Added on','cftp_admin'),
 													'hide'			=> 'phone,tablet',
 												),
+												/*
+												array(
+													'content'		=> __('Address','cftp_admin'),
+													'hide'			=> 'phone,tablet',
+												),
+												array(
+													'content'		=> __('Telephone','cftp_admin'),
+													'hide'			=> 'phone,tablet',
+												),
+												array(
+													'content'		=> __('Internal contact','cftp_admin'),
+													'hide'			=> 'phone,tablet',
+												),
+												*/
 												array(
 													'content'		=> __('View','cftp_admin'),
 													'hide'			=> 'phone',
@@ -294,36 +333,58 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 	
 					$sql->setFetchMode(PDO::FETCH_ASSOC);
 					while ( $row = $sql->fetch() ) {
-                        $table->addRow();
-                        
-                        $client_object = new \ProjectSend\Classes\Users($dbh);
-                        $client_object->get($row["id"]);
-                        $client_data = $client_object->getProperties();
+						$table->add_row();
 
-						$count_groups = count($client_data['groups']);
-						
-                        /* Get account creation date */
-                        $created_at = format_date($client_data['created_date']);
+						$client_user	= $row["user"];
+						$client_id		= $row["id"];
 
-                        /* Count uploads */
-                        $count_files = (!empty($client_data['files'])) ? count($client_data['files']) : 0;
+						/**
+						 * Prepare the information to be used later on the cells array
+						 * 1- Count GROUPS where the client is member
+						 */
+						$get_groups		= new MembersActions();
+						$get_arguments	= array(
+												'client_id'	=> $client_id,
+											);
+						$found_groups	= $get_groups->client_get_groups($get_arguments); 
+						$count_groups	= count( $found_groups );
+
+						$found_groups = ($count_groups > 0) ? implode( ',', $found_groups ) : '';
 						
-						/* Count OWN and GROUP files */
+						/**
+						 * 2- Get account creation date
+						 */
+						$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
+
+						/**
+						 * Prepare the information to be used later on the cells array
+						 * 3- Count uploads
+						 */
+						$uploads_query = "SELECT DISTINCT id FROM " . TABLE_FILES . " WHERE uploader=:username";
+						$uploads_files = $dbh->prepare( $uploads_query );
+						$uploads_files->bindParam(':username', $client_user);
+						$uploads_files->execute();
+						$uploads_count = $uploads_files->rowCount();
+						
+						/**
+						 * 4- Count OWN and GROUP files
+						 */
 						$own_files = 0;
 						$groups_files = 0;
 
-						$found_groups = ($count_groups > 0) ? implode( ',', $client_data['groups'] ) : '';
-                        $files_query = "SELECT DISTINCT id, file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE client_id=:id";
+						$files_query = "SELECT DISTINCT id, file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE client_id=:id";
 						if ( !empty( $found_groups ) ) {
 							$files_query .= " OR FIND_IN_SET(group_id, :group_id)";
 						}
 						$sql_files = $dbh->prepare( $files_query );
-						$sql_files->bindParam(':id', $client_data['id'], PDO::PARAM_INT);
+						$sql_files->bindParam(':id', $client_id, PDO::PARAM_INT);
 						if ( !empty( $found_groups ) ) {
 							$sql_files->bindParam(':group_id', $found_groups);
 						}
 
 						$sql_files->execute();
+						$count_files = $sql_files->rowCount();
+
 						$sql_files->setFetchMode(PDO::FETCH_ASSOC);
 						while ( $row_files = $sql_files->fetch() ) {
 							if (!is_null($row_files['client_id'])) {
@@ -334,13 +395,20 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 							}
 						}
 
-						/* Get active status */
-						$label = ($client_data['active'] == 0) ? __('Inactive','cftp_admin') : __('Active','cftp_admin');
-						$class = ($client_data['active'] == 0) ? 'danger' : 'success';
-												
-						/* Actions buttons */
+						/**
+						 * 5- Get active status
+						 */
+						$status_hidden	= __('Inactive','cftp_admin');
+						$status_visible	= __('Active','cftp_admin');
+						$label			= ($row['active'] == 0) ? $status_hidden : $status_visible;
+						$class			= ($row['active'] == 0) ? 'danger' : 'success';
+						
+						
+						/**
+						 * 6- Actions buttons
+						 */
 						if ($own_files + $groups_files > 0) {
-							$files_link		= 'manage-files.php?client_id='.$client_data["id"];
+							$files_link		= 'manage-files.php?client_id='.$row["id"];
 							$files_button	= 'btn-primary';
 						}
 						else {
@@ -349,7 +417,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						}
 
 						if ($count_groups > 0) {
-							$groups_link	= 'groups.php?member='.$client_data["id"];
+							$groups_link	= 'groups.php?member='.$row["id"];
 							$groups_button	= 'btn-primary';
 						}
 						else {
@@ -363,19 +431,19 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						$tbody_cells = array(
 												array(
 														'checkbox'		=> true,
-														'value'			=> $client_data["id"],
+														'value'			=> $row["id"],
 													),
 												array(
-														'content'		=> $client_data["name"],
+														'content'		=> html_output( $row["name"] ),
 													),
 												array(
-														'content'		=> $client_data["username"],
+														'content'		=> html_output( $row["user"] ),
 													),
 												array(
-														'content'		=> $client_data["email"],
+														'content'		=> html_output( $row["email"] ),
 													),
 												array(
-														'content'		=> $count_files,
+														'content'		=> $uploads_count,
 													),
 												array(
 														'content'		=> $own_files,
@@ -390,28 +458,39 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 														'content'		=> $count_groups,
 													),
 												array(
-														'content'		=> ( $client_data["notify_upload"] == '1' ) ? __('Yes','cftp_admin') : __('No','cftp_admin'),
+														'content'		=> ( $row["notify"] == '1' ) ? __('Yes','cftp_admin') : __('No','cftp_admin'),
 													),
 												array(
-														'content'		=> ( $client_data["max_file_size"] == '0' ) ? __('Default','cftp_admin') : $client_data["max_file_size"] . 'mb',
+														'content'		=> ( $row["max_file_size"] == '0' ) ? __('Default','cftp_admin') : $row["max_file_size"] . 'mb',
 													),
 												array(
-														'content'		=> $created_at,
+														'content'		=> $date,
 													),
+												/*
+												array(
+														'content'		=> html_output( $row["address"] ),
+													),
+												array(
+														'content'		=> html_output( $row["phone"] ),
+													),
+												array(
+														'content'		=> html_output( $row["contact"] ),
+													),
+												*/
 												array(
 														'actions'		=> true,
 														'content'		=>  '<a href="' . $files_link . '" class="btn btn-sm ' . $files_button . '">' . __("Files","cftp_admin") . '</a>' . "\n" .
 																			'<a href="' . $groups_link . '" class="btn btn-sm ' . $groups_button . '">' . __("Groups","cftp_admin") . '</a>' . "\n" .
-																			'<a href="' . CLIENT_VIEW_FILE_LIST_URL . '?client=' . html_output( $client_data["username"] ) . '" class="btn btn-primary btn-sm" target="_blank">' . __('As client','cftp_admin') . '</a>' . "\n"
+																			'<a href="my_files/?client=' . html_output( $row["user"] ) . '" class="btn btn-primary btn-sm" target="_blank">' . __('As client','cftp_admin') . '</a>' . "\n"
 													),
 												array(
 														'actions'		=> true,
-														'content'		=>  '<a href="clients-edit.php?id=' . $client_data["id"] . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a>' . "\n"
+														'content'		=>  '<a href="clients-edit.php?id=' . html_output( $row["id"] ) . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a>' . "\n"
 													),
 											);
 
 						foreach ( $tbody_cells as $cell ) {
-							$table->addCell( $cell );
+							$table->add_cell( $cell );
 						}
 		
 						$table->end_row();
@@ -436,4 +515,4 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 </div>
 
 <?php
-	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+	include('footer.php');

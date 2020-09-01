@@ -14,101 +14,177 @@
  * @package		ProjectSend
  *
  */
-use ProjectSend\Classes\Session as Session;
-
 $allowed_levels = array(9,8,7,0);
-require_once 'bootstrap.php';
+require_once('sys.includes.php');
 
 $page_title = __('Log in','cftp_admin');
 
 $body_class = array('login');
-$page_id = 'login';
 
-if ( isset($_SESSION['errorstate'] ) ) {
-    $errorstate = $_SESSION['errorstate'];
-    unset($_SESSION['errorstate']);
-}
+include('header-unlogged.php');
 
-// Social login
-if (!empty($_GET['external_login']) && $_GET['external_login'] == '1' && !empty($_GET['provider']) )
-{
-    if (Session::has('SOCIAL_LOGIN_NETWORK')) {
-        Session::remove('SOCIAL_LOGIN_NETWORK');
-    }
-    Session::add('SOCIAL_LOGIN_NETWORK', $_GET['provider']);
+$login_button_text = __('Log in','cftp_admin');
+	
+	/**
+	 * Google Sign-in
+	 */
+	if ( GOOGLE_SIGNIN_ENABLED == '1' ) {
+		$googleClient = new Google_Client();
+		$googleClient->setApplicationName(THIS_INSTALL_SET_TITLE);
+		$googleClient->setClientSecret(GOOGLE_CLIENT_SECRET);
+		$googleClient->setClientId(GOOGLE_CLIENT_ID);
+		$googleClient->setAccessType('online');
+		$googleClient->setApprovalPrompt('auto');
+		$googleClient->setRedirectUri(BASE_URI . 'sociallogin/google/callback.php');
+		$googleClient->setScopes(array('profile','email'));
+		$auth_url = $googleClient->createAuthUrl();
+	}
+	
 
-    $process = new \ProjectSend\Classes\DoProcess($dbh);
-    $process->socialLogin($_GET['provider']);
-}
-
-$csrf_token = getCsrfToken();
-
-include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
+	if ( isset($_SESSION['errorstate'] ) ) {
+		$errorstate = $_SESSION['errorstate'];
+		unset($_SESSION['errorstate']);
+	}
 ?>
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 
-	<?php echo get_branding_layout(true); ?>
+	<?php echo generate_branding_layout(); ?>
 
-    <?php
-        $login_types = array(
-            'local' => '1',
-            'ldap' => get_option('ldap_signin_enabled'),
-        );
-    ?>
 	<div class="white-box">
 		<div class="white-box-interior">
-			<div class="ajax_response">
+			<div class="ajax_response alert">
 				<?php
 					/** Coming from an external form */
 					if ( isset( $_GET['error'] ) ) {
 						switch ( $_GET['error'] ) {
 							case 1:
-								echo system_message('danger',__("The supplied credentials are not valid.",'cftp_admin'),'login_error');
+								echo system_message('error',__("The supplied credentials are not valid.",'cftp_admin'),'login_error');
 								break;
 							case 'timeout':
-								echo system_message('danger',__("Session timed out. Please log in again.",'cftp_admin'),'login_error');
+								echo system_message('error',__("Session timed out. Please log in again.",'cftp_admin'),'login_error');
 								break;
 						}
 					}
 				?>
 			</div>
+			<script type="text/javascript">
+				$(document).ready(function() {
+					$("#login_form").submit(function(e) {
+						e.preventDefault();
+						e.stopImmediatePropagation();
+						$('.ajax_response').html();
+						clean_form(this);
 		
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#local" aria-controls="local" role="tab" data-toggle="tab">Local account</a></li>
-                <?php if ($login_types['ldap'] == 'true') { ?>
-                    <li role="presentation"><a href="#ldap" aria-controls="ldap" role="tab" data-toggle="tab">LDAP</a></li>
-                <?php } ?>
-            </ul>
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane fade in active" id="local">
-                    <?php include_once FORMS_DIR . DS . 'login.php'; ?>
+						is_complete(this.username, "<?php _e('Username was not completed','cftp_admin'); ?>");
+						is_complete(this.password, "<?php _e('Password was not completed','cftp_admin'); ?>");
+		
+						// show the errors or continue if everything is ok
+						if (show_form_errors() == false) {
+							return false;
+						}
+						else {
+							var url = $(this).attr('action');
+							$('.ajax_response').html('').removeClass('alert-danger alert-success').slideUp();
+							$('#submit').html('<i class="fa fa-cog fa-spin fa-fw"></i><span class="sr-only"></span> <?php _e('Logging in','cftp_admin'); ?>...');
+							$.ajax({
+									cache: false,
+									type: "post",
+									url: url,
+									data: $(this).serialize(), // serializes the form's elements.
+									success: function(response)
+									{
+										var json = jQuery.parseJSON(response);
+										if ( json.status == 'success' ) {
+											// $('.ajax_response').html(json.message);
+                                            // $('.ajax_response').addClass('alert-success');
+											$('#submit').html('<i class="fa fa-check"></i><span class="sr-only"></span> <?php _e('Redirecting','cftp_admin'); ?>...');
+											$('#submit').removeClass('btn-primary').addClass('btn-success');
+											setTimeout('window.location.href = "'+json.location+'"', 1000);
+										}
+										else {
+                                            $('.ajax_response').addClass('alert-danger').slideDown().html(json.message);
+											$('#submit').html('<?php echo $login_button_text; ?>');
+										}
+									}
+							});
+							return false;
+						}
+					});
+				});
+			</script>
+		
+            <form action="process.php?do=login" name="login_admin" role="form" id="login_form">
+				<input type="hidden" name="do" value="login">
+				<fieldset>
+					<div class="form-group">
+						<label for="username"><?php _e('Username','cftp_admin'); ?> / <?php _e('E-mail','cftp_admin'); ?></label>
+						<input type="text" name="username" id="username" value="<?php if (isset($sysuser_username)) { echo htmlspecialchars($sysuser_username); } ?>" class="form-control" autofocus />
+					</div>
 
-                    <div class="login_form_links">
-                        <p id="reset_pass_link"><?php _e("Forgot your password?",'cftp_admin'); ?> <a href="<?php echo BASE_URI; ?>reset-password.php"><?php _e('Set up a new one.','cftp_admin'); ?></a></p>
-                        <?php
-                            if (CLIENTS_CAN_REGISTER == '1') {
-                        ?>
-                                <p id="register_link"><?php _e("Don't have an account yet?",'cftp_admin'); ?> <a href="<?php echo BASE_URI; ?>register.php"><?php _e('Register as a new client.','cftp_admin'); ?></a></p>
-                        <?php
-                            } else {
-                        ?>
-                                <p><?php _e("This server does not allow self registrations.",'cftp_admin'); ?></p>
-                                <p><?php _e("If you need an account, please contact a server administrator.",'cftp_admin'); ?></p>
-                        <?php
-                            }
-                        ?>
-                    </div>
-                </div>
+					<div class="form-group">
+						<label for="password"><?php _e('Password','cftp_admin'); ?></label>
+						<input type="password" name="password" id="password" class="form-control" />
+					</div>
 
-                <?php if ($login_types['ldap'] == 'true') { ?>
-                    <div role="tabpanel" class="tab-pane fade" id="ldap">
-                        <?php include_once FORMS_DIR . DS . 'login-ldap.php'; ?>
-                    </div>
-                <?php } ?>
-            </div>
+					<div class="form-group">
+						<label for="language"><?php _e('Language','cftp_admin'); ?></label>
+						<select name="language" id="language" class="form-control">
+							<?php
+								// scan for language files
+								$available_langs = get_available_languages();
+								foreach ($available_langs as $filename => $lang_name) {
+							?>
+									<option value="<?php echo $filename;?>" <?php echo ( LOADED_LANG == $filename ) ? 'selected' : ''; ?>>
+										<?php
+											echo $lang_name;
+											if ( $filename == SITE_LANG ) {
+												echo ' [' . __('default','cftp_admin') . ']';
+											}
+										?>
+									</option>
+							<?php
+								}
+							?>
+						</select>
+					</div>
+<?php
+/*
+					<label for="login_form_remember">
+						<input type="checkbox" name="login_form_remember" id="login_form_remember" value="on" />
+						<?php _e('Remember me','cftp_admin'); ?>
+					</label>
+*/?>
+					<div class="inside_form_buttons">
+						<button type="submit" id="submit" class="btn btn-wide btn-primary"><?php echo $login_button_text; ?></button>
+					</div>
+
+					<div class="social-login">
+						<?php if(GOOGLE_SIGNIN_ENABLED == '1'): ?>
+							<a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="google-login"><img src="<?php echo BASE_URI; ?>img/google/btn_google_signin_light_normal_web.png" alt="Google Signin" /></a>
+						<?php endif; ?>
+					</div>
+				</fieldset>
+			</form>
+
+			<div class="login_form_links">
+				<p id="reset_pass_link"><?php _e("Forgot your password?",'cftp_admin'); ?> <a href="<?php echo BASE_URI; ?>reset-password.php"><?php _e('Set up a new one.','cftp_admin'); ?></a></p>
+				<?php
+					if (CLIENTS_CAN_REGISTER == '1') {
+				?>
+						<p id="register_link"><?php _e("Don't have an account yet?",'cftp_admin'); ?> <a href="<?php echo BASE_URI; ?>register.php"><?php _e('Register as a new client.','cftp_admin'); ?></a></p>
+				<?php
+					} else {
+				?>
+						<p><?php _e("This server does not allow self registrations.",'cftp_admin'); ?></p>
+						<p><?php _e("If you need an account, please contact a server administrator.",'cftp_admin'); ?></p>
+				<?php
+					}
+				?>
+			</div>
+
 		</div>
 	</div>
 </div>
 
 <?php
-	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+	include('footer.php');

@@ -4,8 +4,14 @@
  *
  * @package ProjectSend
  */
+$footable_min = true; // delete this line after finishing pagination on every table
+$load_scripts	= array(
+						'footable',
+						'flot',
+					); 
+
 $allowed_levels = array(9,8,7);
-require_once 'bootstrap.php';
+require_once('sys.includes.php');
 
 $active_nav = 'files';
 
@@ -50,19 +56,19 @@ if ($page_status === 1) {
 	}
 }
 
-include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+include('header.php');
 ?>
 
 <div class="col-xs-12">
 	<?php	
 		if ($page_status === 0) {
 			$msg = __('No file was selected.','cftp_admin');
-			echo system_message('danger',$msg);
+			echo system_message('error',$msg);
 			echo '<p>'.$direct_access_error.'</p>';
 		}
 		else if ($page_status === 2) {
 			$msg = __('There is no information with that file ID number.','cftp_admin');
-			echo system_message('danger',$msg);
+			echo system_message('error',$msg);
 			echo '<p>'.$direct_access_error.'</p>';
 		}
 		else {
@@ -121,7 +127,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 													'id'		=> 'download_info_tbl',
 													'class'		=> 'footable table',
 												);
-						$table = new \ProjectSend\Classes\TableGenerate( $table_attributes );
+						$table = new generateTable( $table_attributes );
 
 						$thead_columns		= array(
 													array(
@@ -182,14 +188,14 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 						$sql->setFetchMode(PDO::FETCH_ASSOC);
 						while ( $row = $sql->fetch() ) {
-							$table->addRow();
+							$table->add_row();
 		
 							/**
 							 * Prepare the information to be used later on the cells array
 							 * 1- Get account download time and date
 							 */
-                            $date = format_date($row['timestamp']);
-                            $time = format_time($row['timestamp']);
+							$date = date(TIMEFORMAT_USE,strtotime($row['timestamp']));
+							$time = date('h:i:s',strtotime($row['timestamp']));
 							
 							/**
 							 * 2- Check if it's from a know user or anonymous
@@ -225,7 +231,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 							
 							
 							foreach ( $tbody_cells as $cell ) {
-								$table->addCell( $cell );
+								$table->add_cell( $cell );
 							}
 							
 							$table->end_row();
@@ -253,4 +259,4 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 </div>
 
 <?php
-	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+	include('footer.php');

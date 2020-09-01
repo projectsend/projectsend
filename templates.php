@@ -5,13 +5,16 @@
  * @package ProjectSend
  * @subpackage Design
  */
+$load_scripts	= array(
+					); 
+
 $allowed_levels = array(9);
-require_once 'bootstrap.php';
+require_once('sys.includes.php');
 
 $page_title	= __("Templates",'cftp_admin');
 
 $active_nav = 'templates';
-include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+include('header.php');
 
 /**
  * Changing the client's template
@@ -50,11 +53,11 @@ if ( isset($_GET['activate_template']) ) {
 			switch ($_GET['status']) {
 				case '1':
 					$msg = __('Options updated succesfuly.','cftp_admin');
-					echo system_message('success',$msg);
+					echo system_message('ok',$msg);
 					break;
 				case '2':
 					$msg = __('There was an error. Please try again.','cftp_admin');
-					echo system_message('danger',$msg);
+					echo system_message('error',$msg);
 					break;
 			}
 		}
@@ -67,7 +70,7 @@ if ( isset($_GET['activate_template']) ) {
 				foreach ($templates as $template) {
 			?>
 				<div class="col-xs-12 col-sm-6 col-md-3">
-					<div class="template <?php if ( $template['location'] == SELECTED_CLIENTS_TEMPLATE ) { echo 'current_template'; } ?>">
+					<div class="template <?php if ( $template['location'] == TEMPLATE_USE ) { echo 'current_template'; } ?>">
 						<div class="col-xs-12">
 							<div class="images">
 								<?php
@@ -107,7 +110,7 @@ if ( isset($_GET['activate_template']) ) {
 						<div class="col-xs-4">
 							<div class="buttons">
 								<?php
-									if ( $template['location'] == SELECTED_CLIENTS_TEMPLATE ) {
+									if ( $template['location'] == TEMPLATE_USE ) {
 								?>
 										<a href="#" class="btn btn-default disabled">
 											<?php _e('Active','cftp_admin'); ?>
@@ -134,4 +137,4 @@ if ( isset($_GET['activate_template']) ) {
 </div>
 
 <?php
-	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+	include('footer.php');

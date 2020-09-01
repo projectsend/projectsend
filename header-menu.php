@@ -10,7 +10,7 @@ $items = array();
 /**
  * Items for system users
  */
-if ( current_role_in( array( 9,8,7 ) ) )
+if ( in_session_or_cookies( array( 9,8,7 ) ) )
 {
 
 	/** Count inactive CLIENTS */
@@ -56,7 +56,7 @@ if ( current_role_in( array( 9,8,7 ) ) )
 								'main'	=> array(
 												'label'	=> __('Dashboard', 'cftp_admin'),
 												'icon'	=> 'tachometer',
-												'link'	=> 'dashboard.php',
+												'link'	=> 'home.php',
 											),
 							);
 
@@ -218,12 +218,16 @@ if ( current_role_in( array( 9,8,7 ) ) )
 													'link'	=> 'options.php?section=security',
 												),
 												array(
+													'label'	=> __('Thumbnails', 'cftp_admin'),
+													'link'	=> 'options.php?section=thumbnails',
+												),
+												array(
 													'label'	=> __('Branding', 'cftp_admin'),
 													'link'	=> 'options.php?section=branding',
 												),
 												array(
-													'label'	=> __('External Login', 'cftp_admin'),
-													'link'	=> 'options.php?section=external_login',
+													'label'	=> __('Social Login', 'cftp_admin'),
+													'link'	=> 'options.php?section=social_login',
 												),
 											),
 							);
@@ -242,11 +246,11 @@ if ( current_role_in( array( 9,8,7 ) ) )
 												),
 												array(
 													'label'	=> __('New file by user', 'cftp_admin'),
-													'link'	=> 'email-templates.php?section=new_files_by_user',
+													'link'	=> 'email-templates.php?section=new_files_for_client',
 												),
 												array(
 													'label'	=> __('New file by client', 'cftp_admin'),
-													'link'	=> 'email-templates.php?section=new_files_by_client',
+													'link'	=> 'email-templates.php?section=new_file_by_client',
 												),
 												array(
 													'label'	=> __('New client (welcome)', 'cftp_admin'),
@@ -258,11 +262,11 @@ if ( current_role_in( array( 9,8,7 ) ) )
 												),
 												array(
 													'label'	=> __('Approve client account', 'cftp_admin'),
-													'link'	=> 'email-templates.php?section=account_approve',
+													'link'	=> 'email-templates.php?section=client_approve',
 												),
 												array(
 													'label'	=> __('Deny client account', 'cftp_admin'),
-													'link'	=> 'email-templates.php?section=account_deny',
+													'link'	=> 'email-templates.php?section=client_deny',
 												),
 												array(
 													'label'	=> __('Client updated memberships', 'cftp_admin'),
@@ -289,15 +293,11 @@ if ( current_role_in( array( 9,8,7 ) ) )
 												'icon'	=> 'wrench',
 											),
 								'sub'	=> array(
-                                            array(
-                                                'label'	=> __('Actions log', 'cftp_admin'),
-                                                'link'	=> 'actions-log.php',
-                                            ),
-                                            array(
-                                                'label'	=> __('Test email configuration', 'cftp_admin'),
-                                                'link'	=> 'email-test.php',
-                                            ),
-                                        ),
+												array(
+													'label'	=> __('Actions log', 'cftp_admin'),
+													'link'	=> 'actions-log.php',
+												),
+											),
 							);
 
 }
@@ -334,7 +334,7 @@ else
 								'level'	=> array( 9,8,7,0 ),
 								'main'	=> array(
 												'label'	=> __('View my files', 'cftp_admin'),
-												'link'	=> CLIENT_VIEW_FILE_LIST_URL_PATH,
+												'link'	=> 'my_files/',
 												'icon'	=> 'th-list',
 											),
 							);
@@ -354,7 +354,7 @@ foreach ( $items as $item )
 		continue;
 	}
 
-	if ( current_role_in( $item['level'] ) )
+	if ( in_session_or_cookies( $item['level'] ) )
 	{
 		$current	= ( !empty( $active_nav ) && $active_nav == $item['nav'] ) ? 'current_nav' : '';
 		$badge		= ( !empty( $item['main']['badge'] ) ) ? ' <span class="badge">' . $item['main']['badge'] . '</span>' : '';

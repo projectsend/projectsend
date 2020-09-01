@@ -50,10 +50,10 @@ If possible, make sure to have php configured with:
 If you have access to edit your Apache or NGINX modules and configurations, it's recommended that you enable XSendFile so the files are served directly, eliminating php as a middle-man, which can be the cause of slow, interrupted downloads, or corrupted files.
 After enabling the module, make sure to also enable the option in the General options panel of ProjectSend.
 
-Here are a few links to get started:
-[mod_xsendfile for Apache2/Apache2.2](https://tn123.org/mod_xsendfile/)
-[XSendfile on NGINX wiki](https://www.nginx.com/resources/wiki/start/topics/examples/xsendfile/)
+A few resources on how to get started:
 
+* [mod_xsendfile for Apache2/Apache2.2](https://tn123.org/mod_xsendfile/)
+* [XSendfile on NGINX wiki](https://www.nginx.com/resources/wiki/start/topics/examples/xsendfile/)
 
 ## How to install on your server
 

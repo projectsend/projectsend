@@ -14,7 +14,6 @@ Other featres include auto-expiration of upload, notifications, full logging of 
 Main website: [projectsend.org](https://www.projectsend.org)  
 git: [project page for the legacy line](https://github.com/projectsend/projectsend-legacy/)
 ~~Old repository (unused): [Google Code](http://code.google.com/p/clients-oriented-ftp)~~
-
 Feel free to participate!
 
 ## IMPORTANT
@@ -35,7 +34,7 @@ Your server needs to be configured with at least:
 * The following php extensions enabled on php.ini
   * php_pdo.dll
   * php_pdo_mysql.dll
-
+* php 5.6 newer for best perfomance
 If possible, make sure to have php configured with:
 
 * memory_limit set to 128M or more

@@ -1333,8 +1333,7 @@ function add_body_class( $custom = '' )
 	if ( check_for_session( false ) ) {
 		$classes[] = 'logged-in';
 
-		global $client_info;
-		$logged_type = $client_info['level'] == '0' ? 'client' : 'admin';
+		$logged_type = CURRENT_USER_LEVEL == '0' ? 'client' : 'admin';
 
 		$classes[] = 'logged-as-' . $logged_type;
 	}

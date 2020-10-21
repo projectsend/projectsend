@@ -72,7 +72,7 @@ if ( current_role_in( array( 9,8,7 ) ) )
 								'sub'	=> array(
 												array(
 													'label'	=> __('Upload', 'cftp_admin'),
-													'link'	=> 'upload-from-computer.php',
+													'link'	=> 'upload.php',
 												),
 												array(
 													'divider'	=> true,
@@ -83,7 +83,7 @@ if ( current_role_in( array( 9,8,7 ) ) )
 												),
 												array(
 													'label'	=> __('Find orphan files', 'cftp_admin'),
-													'link'	=> 'upload-import-orphans.php',
+													'link'	=> 'import-orphans.php',
 												),
 												array(
 													'divider'	=> true,
@@ -306,14 +306,14 @@ if ( current_role_in( array( 9,8,7 ) ) )
  */
 else
 {
-	if (CLIENTS_CAN_UPLOAD == 1)
+	if (get_option('clients_can_upload') == 1)
 	{
 		$items['upload'] = array(
 									'nav'	=> 'upload',
 									'level'	=> array( 9,8,7,0 ),
 									'main'	=> array(
 													'label'	=> __('Upload', 'cftp_admin'),
-													'link'	=> 'upload-from-computer.php',
+													'link'	=> 'upload.php',
 													'icon'	=> 'cloud-upload',
 												),
 								);

@@ -379,6 +379,7 @@ class UploadFile
 
     public function removeAssignment($type, $id)
     {
+        // @todo
         if (empty($type) || empty($id)) {
             return false;
         }

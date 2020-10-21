@@ -22,17 +22,19 @@
             });
 
 
-            $('.copy-all').click(function() {
+            $('.copy-all').on('click', function() {
                 if ( confirm( json_strings.translations.upload_form.copy_selection ) ) {
                     var type = $(this).data('type');
-                    var selector = $(this).closest('.' + type).find('select');
+                    var id = $(this).data('file-id');
+                    var selector = $('select[data-type="' + type + '"][data-file-id="'+id+'"]');
 
                     var selected = new Array();
                     $(selector).find('option:selected').each(function() {
                         selected.push($(this).val());
                     });
+                    console.log(selected);
 
-                    $('.' + type + ' .chosen-select').each(function() {
+                    $('.chosen-select[data-type="'+type+'"]').each(function() {
                         $(this).find('option').each(function() {
                             if ($.inArray($(this).val(), selected) === -1) {
                                 $(this).removeAttr('selected');

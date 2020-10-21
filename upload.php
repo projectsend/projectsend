@@ -18,7 +18,7 @@ $page_title = __('Upload files', 'cftp_admin');
 $page_id = 'upload_form';
 
 $allowed_levels = array(9,8,7);
-if (CLIENTS_CAN_UPLOAD == 1) {
+if (get_option('clients_can_upload') == 1) {
 	$allowed_levels[] = 0;
 }
 

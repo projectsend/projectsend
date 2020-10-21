@@ -81,20 +81,23 @@ if ($handle = opendir(UPLOADED_FILES_DIR)) {
             if (!in_array($filename, $ignore)) {
                 /** Check types of files that are not on the database */							
                 if (!array_key_exists($filename,$db_files)) {
-                    $file_object = new ProjectSend\Classes\UploadFile;
-                    $new_filename = $file_object->safeRenameOnDisk($filename,UPLOADED_FILES_DIR);
-                    /** Check if the filetype is allowed */
-                    if ($file_object->isFiletypeAllowed($new_filename)) {
+                    $file = new \ProjectSend\Classes\Files;
+                    $rename = $file->moveToUploadDirectory($filename_path);
 
-                        /** Add it to the array of available files */
-                        $new_filename_path = UPLOADED_FILES_DIR.DS.$new_filename;
-                        //$files_to_add[$new_filename] = $new_filename_path;
-                        $files_to_add[] = array(
-                                                'path'		=> $new_filename_path,
-                                                'name'		=> $new_filename,
-                                                'reason'	=> 'not_on_db',
-                                            );
+                    if (!$file->isFiletypeAllowed()) {
+                        continue;
                     }
+
+                    $file->setDefaults();
+                    $file->addToDatabase();
+                
+                    /** Add it to the array of available files */
+                    $new_filename_path = UPLOADED_FILES_DIR.DS.$rename['filename_disk'];
+                    $files_to_add[] = array(
+                                            'path'		=> $new_filename_path,
+                                            'name'		=> $rename['filename_disk'],
+                                            'reason'	=> 'not_on_db',
+                                        );
                 }
             }
         }
@@ -130,7 +133,7 @@ if (!empty($_GET['search'])) {
 ?>
 <div class="col-xs-12">
 	<div class="form_actions_limit_results">
-		<?php show_search_form('upload-import-orphans.php'); ?>
+		<?php show_search_form('import-orphans.php'); ?>
 	</div>
 
 	<div class="form_actions_count">
@@ -138,7 +141,7 @@ if (!empty($_GET['search'])) {
 	</div>
 
 
-	<form action="upload-process-form.php" name="import_orphans" id="import_orphans" method="post" enctype="multipart/form-data">
+	<form action="files-edit.php" name="import_orphans" id="import_orphans" method="post" enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
 
 		<?php		
@@ -147,6 +150,11 @@ if (!empty($_GET['search'])) {
 			 * available and allowed.
 			 */
 			if ( isset( $files_to_add ) && count( $files_to_add ) > 0 ) {
+        ?>
+            <div class="alert alert-success">
+                <?php _e('The following files have been found and imported automatically.','cftp_admin'); ?>
+            </div>
+        <?php
 	
 				$table_attributes	= array(
 											'id'				=> 'import_orphans_table',
@@ -233,12 +241,8 @@ if (!empty($_GET['search'])) {
 						<ul class="pagination hide-if-no-paging"></ul>
 					</div>
 				</nav>
-		<?php
-				$msg = __('Please note that the listed files will be renamed if they contain invalid characters.','cftp_admin');
-				echo system_message('info',$msg);
-		?>
 				<div class="after_form_buttons">
-					<button type="submit" class="btn btn-wide btn-primary" id="upload-continue"><?php _e('Continue','cftp_admin'); ?></button>
+					<button type="submit" class="btn btn-wide btn-primary" id="upload-continue"><?php _e('Edit selected files','cftp_admin'); ?></button>
 				</div>
 		<?php
 			}

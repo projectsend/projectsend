@@ -238,7 +238,7 @@ class Files
 		else {
             self::getExtension();
 
-            $allowed_extensions = explode(',', ALLOWED_FILE_TYPES );
+            $allowed_extensions = explode(',', get_option('allowed_file_types') );
             if (in_array($this->extension, $allowed_extensions)) {
                 $this->is_filetype_allowed = true;
             }
@@ -557,7 +557,7 @@ class Files
         $this->description = null;
         $this->expires = 0;
         $this->public = 0;
-        // $this->expiry_date = date('Y-m-d');
+        $this->expiry_date = date('Y-m-d', strtotime('+30 days'));
     }
 
     /**

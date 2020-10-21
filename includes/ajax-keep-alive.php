@@ -5,7 +5,7 @@
  * If "remember me" is not selected, after finishing uploading
  * a big file, the user is returned to the log in form since the
  * session has expired.
- * Used on upload-from-computer.php.
+ * Used on upload.php.
  *
  * @package ProjectSend
  */

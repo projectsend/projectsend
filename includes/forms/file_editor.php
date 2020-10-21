@@ -1,4 +1,4 @@
-<form action="upload-process-form.php" name="files" id="files" method="post" enctype="multipart/form-data">
+<form action="files-edit.php" name="files" id="files" method="post" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
 
     <?php
@@ -125,39 +125,46 @@
                                                         */
                                                     ?>
                                                     <h3><?php _e('Assignations', 'cftp_admin');?></h3>
-                                                    <label><?php _e('Assign this file to', 'cftp_admin');?>:</label>
-                                                    <select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
-                                                        <optgroup label="<?php _e('Clients', 'cftp_admin');?>">
-                                                            <?php
-                                                                /**
-                                                                 * The clients list is generated early on the file so the
-                                                                 * array doesn't need to be made once on every file.
-                                                                 */
-                                                                foreach($clients as $client => $client_name) {
-                                                                ?>
-                                                                    <option value="<?php echo html_output('c'.$client); ?>"><?php echo html_output($client_name); ?></option>
-                                                                <?php
-                                                                }
+                                                    <label><?php _e('Clients', 'cftp_admin');?></label>
+                                                    <select multiple="multiple" name="file[<?php echo $i; ?>][assignments][clients][]" class="form-control chosen-select assignments_clients" data-file-id="<?php echo $file->id; ?>" data-type="clients" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+                                                        <?php
+                                                            /**
+                                                             * The clients list is generated early on the file so the
+                                                             * array doesn't need to be made once on every file.
+                                                             */
+                                                            foreach($clients as $client => $client_name) {
                                                             ?>
-                                                        </optgroup>
-                                                        <optgroup label="<?php _e('Groups', 'cftp_admin');?>">
+                                                                <option value="<?php echo html_output($client); ?>"><?php echo html_output($client_name); ?></option>
                                                             <?php
-                                                                /**
-                                                                 * The groups list is generated early on the file so the
-                                                                 * array doesn't need to be made once on every file.
-                                                                 */
-                                                                foreach($groups as $group => $group_name) {
-                                                                ?>
-                                                                    <option value="<?php echo html_output('g'.$group); ?>"><?php echo html_output($group_name); ?></option>
-                                                                <?php
-                                                                }
-                                                            ?>
-                                                        </optgroup>
+                                                            }
+                                                        ?>
                                                     </select>
                                                     <div class="list_mass_members">
-                                                        <a href="#" class="btn btn-xs btn-primary add-all" data-type="assigns"><?php _e('Add all','cftp_admin'); ?></a>
-                                                        <a href="#" class="btn btn-xs btn-primary remove-all" data-type="assigns"><?php _e('Remove all','cftp_admin'); ?></a>
-                                                        <a href="#" class="btn btn-xs btn-danger copy-all" data-type="assigns"><?php _e('Copy selections to other files','cftp_admin'); ?></a>
+                                                        <button class="btn btn-xs btn-primary add-all" data-type="clients" data-file-id="<?php echo $file->id; ?>"><?php _e('Add all','cftp_admin'); ?></button>
+                                                        <button class="btn btn-xs btn-primary remove-all" data-type="clients" data-file-id="<?php echo $file->id; ?>"><?php _e('Remove all','cftp_admin'); ?></button>
+                                                        <button class="btn btn-xs btn-danger copy-all" data-type="clients" data-file-id="<?php echo $file->id; ?>"><?php _e('Copy selections to other files','cftp_admin'); ?></button>
+                                                    </div>
+
+                                                    <div class="divider"></div>
+
+                                                    <label><?php _e('Groups', 'cftp_admin');?></label>
+                                                    <select multiple="multiple" name="file[<?php echo $i; ?>][assignments][groups][]" class="form-control chosen-select assignments_groups" data-file-id="<?php echo $file->id; ?>" data-type="groups" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+                                                        <?php
+                                                            /**
+                                                             * The groups list is generated early on the file so the
+                                                             * array doesn't need to be made once on every file.
+                                                             */
+                                                            foreach($groups as $group => $group_name) {
+                                                            ?>
+                                                                <option value="<?php echo html_output($group); ?>"><?php echo html_output($group_name); ?></option>
+                                                            <?php
+                                                            }
+                                                        ?>
+                                                    </select>
+                                                    <div class="list_mass_members">
+                                                        <button class="btn btn-xs btn-primary add-all" data-type="groups" data-file-id="<?php echo $file->id; ?>"><?php _e('Add all','cftp_admin'); ?></button>
+                                                        <button class="btn btn-xs btn-primary remove-all" data-type="groups" data-file-id="<?php echo $file->id; ?>"><?php _e('Remove all','cftp_admin'); ?></button>
+                                                        <button class="btn btn-xs btn-danger copy-all" data-type="groups" data-file-id="<?php echo $file->id; ?>"><?php _e('Copy selections to other files','cftp_admin'); ?></button>
                                                     </div>
 
                                                     <div class="divider"></div>

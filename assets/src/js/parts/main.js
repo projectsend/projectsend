@@ -145,24 +145,25 @@
                 });
             }
 
-            $('.add-all').click(function(){
+            $('.add-all').on('click', function() {
                 var type = $(this).data('type');
-                var id = $(this).data('fileid');
-                var selector = $('#select_' + type + '_' + id);
+                var id = $(this).data('file-id');
+                var selector = $('select[data-type="' + type + '"][data-file-id="'+id+'"]');
+                $(selector).hide();
                 //var selector = $(this).previous('.select_' + type);
-                $(selector).find('option').each(function(){
+                $(selector).find('option').each(function() {
                     $(this).prop('selected', true);
                 });
                 $(selector).trigger('chosen:updated');
                 return false;
             });
 
-            $('.remove-all').click(function(){
+            $('.remove-all').on('click', function() {
                 var type = $(this).data('type');
-                var id = $(this).data('fileid');
-                var selector = $('#select_' + type + '_' + id);
+                var id = $(this).data('file-id');
+                var selector = $('select[data-type="' + type + '"][data-file-id="'+id+'"]');
                 //var selector = $(this).previous('.select_' + type);
-                $(selector).find('option').each(function(){
+                $(selector).find('option').each(function() {
                     $(this).prop('selected', false);
                 });
                 $(selector).trigger('chosen:updated');
@@ -171,7 +172,7 @@
 
 
             /** Misc */
-            $('button').click(function() {
+            $('button').on('click', function() {
                 $(this).blur();
             });
 

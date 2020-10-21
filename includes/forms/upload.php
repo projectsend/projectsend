@@ -7,7 +7,7 @@
  *
  */
 ?>
-<form action="upload-process-form.php" name="upload_form" id="upload_form" method="post" enctype="multipart/form-data">
+<form action="files-edit.php" name="upload_form" id="upload_form" method="post" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
     <input type="hidden" name="uploaded_files" id="uploaded_files" value="" />
     

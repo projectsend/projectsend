@@ -214,7 +214,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
  * site.options.php
 */
 /** Explode, sort, and implode the values to list them alphabetically */
-$allowed_file_types = explode('|',ALLOWED_FILE_TYPES);
+$allowed_file_types = explode('|',get_option('allowed_file_types'));
 sort($allowed_file_types);
 
 /** If .php files are allowed, set the flag for the warning message */

@@ -129,7 +129,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 					}
 				?>
 				<li>
-					<a href="<?php echo BASE_URI; ?>upload-from-computer.php" target="_self"><i class="fa fa-cloud-upload" aria-hidden="true"></i> <?php _e('Upload files', 'pinboxes_template'); ?></a>
+					<a href="<?php echo BASE_URI; ?>upload.php" target="_self"><i class="fa fa-cloud-upload" aria-hidden="true"></i> <?php _e('Upload files', 'pinboxes_template'); ?></a>
 				</li>
 				<li>
 					<a href="<?php echo BASE_URI; ?>process.php?do=logout" target="_self"><i class="fa fa-sign-out" aria-hidden="true"></i> <?php _e('Logout', 'pinboxes_template'); ?></a>

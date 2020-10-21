@@ -60,12 +60,14 @@ if ($global_account['active'] == '0') {
 /**
  * Save all the data on different constants
  */
-define('CURRENT_USER_ID',$global_account['id']);
-define('CURRENT_USER_USERNAME',$global_account['username']);
-define('CURRENT_USER_NAME',$global_account['name']);
-define('CURRENT_USER_EMAIL',$global_account['email']);
-define('CURRENT_USER_LEVEL',$global_account['level']);
-define('CURRENT_USER_TYPE',return_account_type());
+if (!empty($global_account)) {
+    define('CURRENT_USER_ID',$global_account['id']);
+    define('CURRENT_USER_USERNAME',$global_account['username']);
+    define('CURRENT_USER_NAME',$global_account['name']);
+    define('CURRENT_USER_EMAIL',$global_account['email']);
+    define('CURRENT_USER_LEVEL',$global_account['level']);
+    define('CURRENT_USER_TYPE',return_account_type());
+}    
 
 /**
  * Check if account has a custom value for upload max file size

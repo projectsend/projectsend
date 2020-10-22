@@ -42,42 +42,40 @@ else {
 	$global_account = get_client_by_username($global_user);
 }
 
-/**
- * Automatic log out if account is deactivated while session is on.
- */
-if ($global_account['active'] == '0') {
-	/** Prevent an infinite loop */
-	if (!isset($_SESSION['logout'])) {
-		$_SESSION['logout'] = '1';
-	}
-	else {
-		unset($_SESSION['logout']);
-		header("location:".BASE_URI.'process.php?do=logout');
-		exit;
-	}
-}
-
-/**
- * Save all the data on different constants
- */
 if (!empty($global_account)) {
+    /**
+     * Automatic log out if account is deactivated while session is on.
+     */
+    if ($global_account['active'] == '0') {
+        /** Prevent an infinite loop */
+        if (!isset($_SESSION['logout'])) {
+            $_SESSION['logout'] = '1';
+        }
+        else {
+            unset($_SESSION['logout']);
+            header("location:".BASE_URI.'process.php?do=logout');
+            exit;
+        }
+    }
+
+    /**
+     * Save all the data on different constants
+     */
     define('CURRENT_USER_ID',$global_account['id']);
     define('CURRENT_USER_USERNAME',$global_account['username']);
     define('CURRENT_USER_NAME',$global_account['name']);
     define('CURRENT_USER_EMAIL',$global_account['email']);
     define('CURRENT_USER_LEVEL',$global_account['level']);
     define('CURRENT_USER_TYPE',return_account_type());
-}    
 
-/**
- * Check if account has a custom value for upload max file size
- */
-if ( $global_account['max_file_size'] == 0 || empty( $global_account['max_file_size'] ) ) {
-	define('UPLOAD_MAX_FILESIZE', MAX_FILESIZE);
-}
-else {
-	define('UPLOAD_MAX_FILESIZE', $global_account['max_file_size']);
-}
+    // Check if account has a custom value for upload max file size
+    if ( $global_account['max_file_size'] == 0 || empty( $global_account['max_file_size'] ) ) {
+        define('UPLOAD_MAX_FILESIZE', MAX_FILESIZE);
+    }
+    else {
+        define('UPLOAD_MAX_FILESIZE', $global_account['max_file_size']);
+    }
+}    
 
 /**
  * Files types limitation

@@ -102,7 +102,6 @@ class Auth
 
 					$results = array(
 									'status'	=> 'success',
-									'message'	=> system_message('success','Login success. Redirecting...','login_response'),
 								);
 					if ($this->user_level == '0') {
 						$results['location']	= CLIENT_VIEW_FILE_LIST_URL;
@@ -140,7 +139,7 @@ class Auth
         $this->error_message = $this->getLoginError($this->errorstate);
 		$results = array(
 						'status'	=> 'error',
-						'message'	=> system_message('danger',$this->error_message,'login_error'),
+						'message'	=> $this->error_message,
 					);
 
 		/** Using an external form */

@@ -4,7 +4,7 @@
     admin.pages.importOrphans = function () {
 
         $(document).ready(function(){
-            $("#upload_by_ftp").submit(function() {
+            $("#import_orphans").submit(function() {
 				var checks = $("td>input:checkbox").serializeArray(); 
 				
 				if (checks.length == 0) { 
@@ -20,7 +20,7 @@
 				$('#select_all').prop('checked', false);
 				$('td .select_file_checkbox').prop('checked', false);
 				$(this).parents('tr').find('td .select_file_checkbox').prop('checked', true);
-				$('#upload-continue').click();
+				$("#import_orphans").submit();
 			});
         });
     };

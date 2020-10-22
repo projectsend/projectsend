@@ -4,6 +4,7 @@
     admin.pages.uploadForm = function () {
 
         $(document).ready(function(){
+            var file_ids = [];
 
             // Send a keep alive action every 1 minute
             setInterval(function(){
@@ -21,11 +22,12 @@
 
             var uploader = $('#uploader').pluploadQueue();
 
-            $('#upload_form').submit(function(e) {
-
+            $('#upload_form').on('submit', function(e) {
                 if (uploader.files.length > 0) {
                     uploader.bind('StateChanged', function() {
                         if (uploader.files.length === (uploader.total.uploaded + uploader.total.failed)) {
+                            var action = $('#upload_form').attr('action') + '?ids=' + file_ids.toString();
+                            $('#upload_form').attr('action', action);
                             $('#upload_form')[0].submit();
                         }
                     });
@@ -37,9 +39,7 @@
 
                     uploader.bind('FileUploaded', function (up, file, info) {
                         var obj = JSON.parse(info.response);
-                        var new_file_field = '<input type="hidden" name="file_ids[]" value="'+obj.id+'" />'
-                        // var new_file_field = '<input type="hidden" name="finished_files[]" value="'+obj.NewFileName+'" />'
-                        $('#upload_form').append(new_file_field);
+                        file_ids.push(obj.id);
                     });
 
                     return false;

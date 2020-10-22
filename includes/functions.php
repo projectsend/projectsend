@@ -1469,20 +1469,29 @@ function format_date($date)
         return false;
     }
 
-    $formatted = date(TIMEFORMAT, strtotime($date));
+    $formatted = date(get_option('timeformat'), strtotime($date));
 
     return $formatted;
 }
 
 function format_time($date)
 {
-    if (!date) {
+    if (!$date) {
         return false;
     }
 
     $formatted = date('h:i:s', strtotime($date));
 
     return $formatted;
+}
+
+function extensionIsAllowed($extension) {
+    $allowed_extensions = explode(',', get_option('allowed_file_types') );
+    if (in_array($extension, $allowed_extensions)) {
+        return true;
+    }
+
+    return false;
 }
 
 /**

@@ -67,6 +67,39 @@ if ( !empty( $db_files_public ) ) {
 
 $files_to_add = array();
 
+// Import selected files and redirect to editor
+if ($_POST) {
+    $added = [];
+
+    if (!empty($_POST['files'])) {
+        foreach ($_POST['files'] as $filename) {
+            $filename_path = UPLOADED_FILES_DIR.DS.$filename;
+            if (!file_exists($filename_path)) {
+                continue;
+            }
+
+            $file = new \ProjectSend\Classes\Files;
+            $rename = $file->moveToUploadDirectory($filename_path);
+    
+            if (!$file->isFiletypeAllowed()) {
+                continue;
+            }
+    
+            $file->setDefaults();
+            $file->addToDatabase();
+        
+            // Add it to the array of editable files
+            $added[] = $file->getId();
+        }
+    }
+
+    if (!empty($added)) {
+        $url = get_option('base_uri').'files-edit.php?ids=' . implode(',', $added);
+        header("Location: $url");
+        exit;
+    }
+}
+
 /** Read the temp folder and list every allowed file */
 if ($handle = opendir(UPLOADED_FILES_DIR)) {
     while (false !== ($filename = readdir($handle))) {
@@ -81,23 +114,11 @@ if ($handle = opendir(UPLOADED_FILES_DIR)) {
             if (!in_array($filename, $ignore)) {
                 /** Check types of files that are not on the database */							
                 if (!array_key_exists($filename,$db_files)) {
-                    $file = new \ProjectSend\Classes\Files;
-                    $rename = $file->moveToUploadDirectory($filename_path);
-
-                    if (!$file->isFiletypeAllowed()) {
-                        continue;
-                    }
-
-                    $file->setDefaults();
-                    $file->addToDatabase();
-                
-                    /** Add it to the array of available files */
-                    $new_filename_path = UPLOADED_FILES_DIR.DS.$rename['filename_disk'];
-                    $files_to_add[] = array(
-                                            'path'		=> $new_filename_path,
-                                            'name'		=> $rename['filename_disk'],
-                                            'reason'	=> 'not_on_db',
-                                        );
+                    $files_to_add[] = [
+                        'name' => $filename,
+                        'path' => UPLOADED_FILES_DIR.DS.$filename,
+                        'reason' => 'not_on_db',
+                    ];
                 }
             }
         }
@@ -141,10 +162,10 @@ if (!empty($_GET['search'])) {
 	</div>
 
 
-	<form action="files-edit.php" name="import_orphans" id="import_orphans" method="post" enctype="multipart/form-data">
+	<form action="import-orphans.php" name="import_orphans" id="import_orphans" method="post" enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
 
-		<?php		
+        <?php
 			/**
 			 * Generate the list of files if there is at least 1
 			 * available and allowed.
@@ -152,7 +173,7 @@ if (!empty($_GET['search'])) {
 			if ( isset( $files_to_add ) && count( $files_to_add ) > 0 ) {
         ?>
             <div class="alert alert-success">
-                <?php _e('The following files have been found and imported automatically.','cftp_admin'); ?>
+                <?php _e('The following files can be imported','cftp_admin'); ?>
             </div>
         <?php
 	
@@ -204,7 +225,7 @@ if (!empty($_GET['search'])) {
 					 */
 					$tbody_cells = array(
                                         array(
-                                                'content'		=> '<input type="checkbox" name="file_ids[]" class="batch_checkbox select_file_checkbox" value="' . html_output( $add_file['name'] ) . '" />',
+                                                'content'		=> '<input type="checkbox" name="files[]" class="batch_checkbox select_file_checkbox" value="' . html_output( $add_file['name'] ) . '" />',
                                             ),
                                         array(
                                                 'content'		=> html_output( $add_file['name'] ),
@@ -212,18 +233,18 @@ if (!empty($_GET['search'])) {
                                         array(
                                                 'content'		=> html_output( format_file_size( get_real_size( $add_file['path'] ) ) ),
                                                 'attributes'	=> array(
-                                                                        'data-value'	=> filesize( $add_file['path'] ),
+                                                                        'data-value' => filesize( $add_file['path'] ),
                                                                     ),
                                             ),
                                         array(
-                                                'content'		=> date( TIMEFORMAT, filemtime( $add_file['path'] ) ),
+                                                'content'		=> date( get_option('timeformat'), filemtime( $add_file['path'] ) ),
                                                 'attributes'	=> array(
-                                                                        'data-value'	=> filemtime( $add_file['path'] ),
+                                                                        'data-value' => filemtime( $add_file['path'] ),
                                                                     ),
                                             ),
                                         array(
                                                 'actions'		=> true,
-                                                'content'		=>  '<button type="button" name="file_edit" class="btn btn-primary btn-sm btn-edit-file"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></button>' . "\n"
+                                                'content'		=> '<button type="button" name="file_edit" data-name="'.html_output($add_file['name']).'" class="btn btn-primary btn-sm btn-edit-file"><i class="fa fa-pencil"></i><span class="button_label">' . __('Import','cftp_admin') . '</span></button>' . "\n"
                                             ),
                                     );
 
@@ -242,7 +263,7 @@ if (!empty($_GET['search'])) {
 					</div>
 				</nav>
 				<div class="after_form_buttons">
-					<button type="submit" class="btn btn-wide btn-primary" id="upload-continue"><?php _e('Edit selected files','cftp_admin'); ?></button>
+					<button type="submit" class="btn btn-wide btn-primary" id="upload-continue"><?php _e('Import selected files','cftp_admin'); ?></button>
 				</div>
 		<?php
 			}

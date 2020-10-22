@@ -310,7 +310,7 @@ class Files
 		$this->path = UPLOADED_FILES_DIR.DS.$this->filename_on_disk;
 		if (rename($temp_name, $this->path)) {
 
-            chmod($this->path, 0644);
+            @chmod($this->path, 0644);
 
             $this->return = array(
                 'filename_original' => $this->filename_original,
@@ -588,6 +588,7 @@ class Files
         $this->file_id = $this->dbh->lastInsertId();
         $this->state['id'] = $this->file_id;
         $this->state['public_token'] = $this->public_token;
+        $this->id = $this->file_id;
 
 		if (!empty($this->file_id)) {
             /** Record the action log */

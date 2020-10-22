@@ -10,6 +10,7 @@
 <form action="files-edit.php" name="upload_form" id="upload_form" method="post" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
     <input type="hidden" name="uploaded_files" id="uploaded_files" value="" />
+    <input type="hidden" name="editor_type" value="new_files" />
     
     <div id="uploader">
         <div class="message message_error">

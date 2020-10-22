@@ -70,10 +70,10 @@ if (!empty($global_account)) {
 
     // Check if account has a custom value for upload max file size
     if ( $global_account['max_file_size'] == 0 || empty( $global_account['max_file_size'] ) ) {
-        define('UPLOAD_MAX_FILESIZE', MAX_FILESIZE);
+        define('UPLOAD_MAX_FILESIZE', (int)MAX_FILESIZE);
     }
     else {
-        define('UPLOAD_MAX_FILESIZE', $global_account['max_file_size']);
+        define('UPLOAD_MAX_FILESIZE', (int)$global_account['max_file_size']);
     }
 }    
 

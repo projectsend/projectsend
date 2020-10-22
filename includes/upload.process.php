@@ -1,4 +1,6 @@
 <?php
+define('FILE_UPLOADING', true);
+
 /**
  *  Call the required system files
  */
@@ -10,6 +12,23 @@ require_once '../bootstrap.php';
  */
 if ( !check_for_session() ) {
 	exit;
+}
+
+function dieWithError($message = null, $code = 400)
+{
+    header('Content-Type: application/json');
+    $response = [
+        'OK' => 0,
+        'error' => [
+            'code' => $code,
+            'message' => $message,
+            'filename' => $_REQUEST["name"]
+        ]
+    ];
+
+    echo json_encode($response);
+    http_response_code($code);
+    exit;
 }
 
 /**
@@ -49,7 +68,7 @@ $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
 $allowedExt = explode(',', ALLOWED_FILE_TYPES );
 if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
     if (!in_array($fileExt, $allowedExt)) {
-        die('{"jsonrpc" : "2.0", "error" : {"code": 104, "message": "Invalid Extension."}, "id" : "id"}');
+        dieWithError('Invalid Extension');
     };
 }
 
@@ -73,7 +92,7 @@ if (!file_exists($targetDir))
 	@mkdir($targetDir);
 
 // Remove old temp files	
-if ($cleanupTargetDir && is_dir($targetDir) && ($dir = opendir($targetDir))) {
+if ($cleanupTargetDir && is_dir($targetDir) && ($dir = @opendir($targetDir))) {
 	while (($file = readdir($dir)) !== false) {
 		$tmpfilePath = $targetDir . DS . $file;
 
@@ -85,7 +104,7 @@ if ($cleanupTargetDir && is_dir($targetDir) && ($dir = opendir($targetDir))) {
 
 	closedir($dir);
 } else
-	die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}');
+    dieWithError('Failed to open temp directory');
 	
 
 // Look for the content type header
@@ -107,15 +126,17 @@ if (strpos($contentType, "multipart") !== false) {
 			if ($in) {
 				while ($buff = fread($in, 4096))
 					fwrite($out, $buff);
-			} else
-				die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
+            } else
+                dieWithError('Failed to open input stream');
 			fclose($in);
 			fclose($out);
 			@unlink($_FILES['file']['tmp_name']);
-		} else
-			die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
-	} else
-		die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
+        } else {
+            dieWithError('Failed to open output stream');
+        }
+    } else {
+        dieWithError('Failed to move uploaded file');
+    }
 } else {
 	// Open temp file
 	$out = fopen("{$filePath}.part", $chunk == 0 ? "wb" : "ab");
@@ -126,13 +147,15 @@ if (strpos($contentType, "multipart") !== false) {
 		if ($in) {
 			while ($buff = fread($in, 4096))
 				fwrite($out, $buff);
-		} else
-			die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
+        } else {
+            dieWithError('Failed to open input stream');
+        }
 
 		fclose($in);
 		fclose($out);
-	} else
-		die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
+    } else {
+        dieWithError('Failed to open output stream');
+    }
 }
 
 // Check if file has been uploaded
@@ -145,7 +168,17 @@ if (!$chunks || $chunk == $chunks - 1) {
     $move = $this_file->moveToUploadDirectory($filePath);
     $set_defaults = $this_file->setDefaults();
     $add_to_db = $this_file->addToDatabase();
-}
 
-// Return JSON-RPC response
-die('{"jsonrpc" : "2.0", "result" : null, "id" : "'.$add_to_db['id'].'", "NewFileName" : "'.$fileName.'"}');
+    // Return JSON-RPC response
+    $response = [
+        'OK' => 1,
+        'info' => [
+            'id' => $add_to_db['id'],
+            'NewFileName' => $fileName
+        ]
+    ];
+    
+    echo json_encode($response);
+    http_response_code(200);
+    exit;
+}

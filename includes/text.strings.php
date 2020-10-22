@@ -54,6 +54,8 @@ $json_strings = [
             'no_files' => __("You must select at least one file to upload.",'cftp_admin'),
             'leave_confirm' => __("Are you sure? Files currently being uploaded will be discarded if you leave this page.",'cftp_admin'),
             'copy_selection' => __("Copy selection to all files?",'cftp_admin'),
+            'some_files_had_errors' => __("Some of your files uploaded correctly, but others could not be uploaded.",'cftp_admin'),
+            'continue_to_editor' => __("Go to the file editor",'cftp_admin'),
         ]
     ],
     'validation' => [

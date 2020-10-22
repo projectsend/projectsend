@@ -93,7 +93,10 @@ span.label {
 }
 
 .plupload_wrapper {
-	@include box-shadow(3px 3px 5px, #dedede);
+    @include box-shadow(3px 3px 5px, #dedede);
+    font-family:$font_body;
+    font-size:1.15em;
+    line-height:1.2em;
 }
 
 .plupload_container {

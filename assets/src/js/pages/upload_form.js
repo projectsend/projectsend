@@ -5,6 +5,8 @@
 
         $(document).ready(function(){
             var file_ids = [];
+            var errors = 0;
+            var successful = 0;
 
             // Send a keep alive action every 1 minute
             setInterval(function(){
@@ -28,7 +30,18 @@
                         if (uploader.files.length === (uploader.total.uploaded + uploader.total.failed)) {
                             var action = $('#upload_form').attr('action') + '?ids=' + file_ids.toString();
                             $('#upload_form').attr('action', action);
-                            $('#upload_form')[0].submit();
+                            if (successful > 0) {
+                                if (errors == 0) {
+                                    window.location = action;
+                                } else {
+                                    $(`
+                                        <div class="alert alert-info">`+json_strings.translations.upload_form.some_files_had_errors+`</div>
+                                        <a class="btn btn-wide btn-primary" href="`+action+`">`+json_strings.translations.upload_form.continue_to_editor+`</a>
+                                    `).insertBefore( "#upload_form" );
+                                }
+                                return;
+                            }
+                            // $('#upload_form')[0].submit();
                         }
                     });
 
@@ -37,9 +50,18 @@
                     $("#btn-submit").hide();
                     $(".message_uploading").fadeIn();
 
-                    uploader.bind('FileUploaded', function (up, file, info) {
+                    uploader.bind('Error', function(uploader, error) {
+                        var obj = JSON.parse(error.response);
+                        $(
+                            `<div class="alert alert-danger">`+obj.error.filename+`: `+obj.error.message+`</div>`
+                        ).insertBefore( "#upload_form" );
+                        //console.log(obj);
+                    });
+        
+                    uploader.bind('FileUploaded', function (uploader, file, info) {
                         var obj = JSON.parse(info.response);
-                        file_ids.push(obj.id);
+                        file_ids.push(obj.info.id);
+                        successful++;
                     });
 
                     return false;

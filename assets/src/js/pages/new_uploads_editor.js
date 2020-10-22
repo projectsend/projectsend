@@ -32,7 +32,6 @@
                     $(selector).find('option:selected').each(function() {
                         selected.push($(this).val());
                     });
-                    console.log(selected);
 
                     $('.chosen-select[data-type="'+type+'"]').each(function() {
                         $(this).find('option').each(function() {

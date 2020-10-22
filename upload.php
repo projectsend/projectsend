@@ -27,7 +27,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 <div class="col-xs-12">
 	<?php
-		/** Count the clients to show an error or the form */
+		/** Count the clients to show a warning message or the form */
 		$statement		= $dbh->query("SELECT id FROM " . TABLE_USERS . " WHERE level = '0'");
 		$count_clients	= $statement->rowCount();
 		$statement		= $dbh->query("SELECT id FROM " . TABLE_GROUPS);
@@ -59,7 +59,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 							if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
 						?>
 								,mime_types: [
-									{title : "Allowed files", extensions : "<?php echo ALLOWED_FILE_TYPES; ?>"}
+									{title : "Allowed files", extensions : "<?php echo get_option('allowed_file_types'); ?>"}
 								]
 						<?php
 							}
@@ -73,15 +73,6 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						}
 					},
 					init : {
-						/*
-						FilesAdded: function(up, files) {
-					        uploader.start();
-					    },
-						QueueChanged: function(up) {
-							var uploader = $('#uploader').pluploadQueue();
-							uploader.start();
-						}
-						*/
 					}
 				});
 			});

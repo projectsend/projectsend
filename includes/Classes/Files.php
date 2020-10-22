@@ -14,6 +14,7 @@ use \PDO;
 class Files
 {
     public $id;
+    public $user_id;
     public $title;
     public $description;
     public $uploaded_by;
@@ -69,7 +70,7 @@ class Files
     {
         $this->id = $id;
     }
-  
+
     /**
      * Return the ID
      * @return int
@@ -131,6 +132,7 @@ class Files
     
         while ($this->row = $this->statement->fetch() ) {
             $this->id = html_output($this->row['id']);
+            $this->user_id = html_output($this->row['user_id']);
             $this->title = html_output($this->row['filename']);
             $this->description = html_output($this->row['description']);
             $this->uploaded_by = html_output($this->row['uploader']);
@@ -565,15 +567,16 @@ class Files
 	 */
 	public function addToDatabase()
 	{
-		$this->uploader = CURRENT_USER_NAME;
+		$this->uploader = CURRENT_USER_USERNAME;
 		$this->uploader_id = CURRENT_USER_ID;
 		$this->uploader_type = CURRENT_USER_TYPE;
 		$this->hidden = 0;
         $this->public_token = generateRandomString(32);
         $this->state = [];
 		
-        $this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (url, original_url, filename, description, uploader, expires, expiry_date, public_allow, public_token)"
-                                        ."VALUES (:url, :original_url, :title, :description, :uploader, :expires, :expiry_date, :public, :public_token)");
+        $this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (user_id, url, original_url, filename, description, uploader, expires, expiry_date, public_allow, public_token)"
+                                        ."VALUES (:user_id, :url, :original_url, :title, :description, :uploader, :expires, :expiry_date, :public, :public_token)");
+        $this->statement->bindParam(':user_id', $this->uploader_id, PDO::PARAM_INT);
         $this->statement->bindParam(':url', $this->filename_on_disk);
         $this->statement->bindParam(':original_url', $this->filename_original);
         $this->statement->bindParam(':title', $this->title);
@@ -629,6 +632,10 @@ class Files
          */
         if ( CURRENT_USER_LEVEL == 0 ) {
             $this->public = $file_data["public"];
+        }
+
+        if (empty($this->name)) {
+            $this->name = $this->filename_original;
         }
 
         $this->statement = $this->dbh->prepare("UPDATE " . TABLE_FILES . " SET

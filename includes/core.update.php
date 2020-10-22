@@ -1355,5 +1355,14 @@ if (current_role_in($allowed_update)) {
 			}
 		}
 
+        /**
+		 * Add foreign keys to files.
+		 */
+		if ($last_update < 1130) {
+            $statement = $dbh->query("ALTER TABLE `" . TABLE_FILES . "` ADD COLUMN `user_id` int(11) DEFAULT NULL AFTER `id`");
+			$statement = $dbh->query("ALTER TABLE " . TABLE_FILES . " ADD CONSTRAINT fk_file_user_id FOREIGN KEY (`user_id`) REFERENCES " . TABLE_USERS . "(`id`) ON DELETE RESTRICT ON UPDATE CASCADE");
+			$updates_made++;
+		}
+
     }
 }

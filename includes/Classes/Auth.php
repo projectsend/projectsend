@@ -424,9 +424,4 @@ class Auth
 		header("Location: " . $redirect_to);
 		exit;
     }
-
-    public function unauthorized(Request $request, Response $response)
-    {
-        return $this->render($response, 'auth/unauthorized.twig');
-    }
 }

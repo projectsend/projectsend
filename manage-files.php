@@ -391,56 +391,50 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 		<form action="manage-files.php" name="files_list" method="get" class="form-inline batch_actions">
 			<?php form_add_existing_parameters( array( 'modify_id', 'modify_type' ) ); ?>
-			<?php
-				/** Actions are not available for clients */
-				if(CURRENT_USER_LEVEL != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
-			?>
-					<div class="form_actions_right">
-						<div class="form_actions">
-							<div class="form_actions_submit">
-								<div class="form-group group_float">
-									<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected files actions','cftp_admin'); ?>:</label>
-									<?php
-										if (isset($search_on)) {
-									?>
-										<input type="hidden" name="modify_type" id="modify_type" value="<?php echo $search_on; ?>" />
-										<input type="hidden" name="modify_id" id="modify_id" value="<?php echo $this_id; ?>" />
-									<?php
-										}
-									?>
-									<select name="action" id="action" class="txtfield form-control">
-										<?php
-											$actions_options = array(
-                                                'none' => __('Select action','cftp_admin'),
-                                                'edit' => __('Edit','cftp_admin'),
-                                                'zip' => __('Download zipped','cftp_admin'),
-                                            );
+            <div class="form_actions_right">
+                <div class="form_actions">
+                    <div class="form_actions_submit">
+                        <div class="form-group group_float">
+                            <label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected files actions','cftp_admin'); ?>:</label>
+                            <?php
+                                if (isset($search_on)) {
+                            ?>
+                                <input type="hidden" name="modify_type" id="modify_type" value="<?php echo $search_on; ?>" />
+                                <input type="hidden" name="modify_id" id="modify_id" value="<?php echo $this_id; ?>" />
+                            <?php
+                                }
+                            ?>
+                            <select name="action" id="action" class="txtfield form-control">
+                                <?php
+                                    $actions_options = array(
+                                        'none' => __('Select action','cftp_admin'),
+                                        'edit' => __('Edit','cftp_admin'),
+                                        'zip' => __('Download zipped','cftp_admin'),
+                                    );
 
-                                            /** Options only available when viewing a client/group files list */
-											if (isset($search_on)) {
-												$actions_options['hide'] = __('Hide','cftp_admin');
-												$actions_options['show'] = __('Show','cftp_admin');
-												$actions_options['unassign'] = __('Unassign','cftp_admin');
-											}
-											else {
-												$actions_options['delete'] = __('Delete','cftp_admin');
-											}
+                                    /** Options only available when viewing a client/group files list */
+                                    if (CURRENT_USER_LEVEL != '0' && isset($search_on)) {
+                                        $actions_options['hide'] = __('Hide','cftp_admin');
+                                        $actions_options['show'] = __('Show','cftp_admin');
+                                        $actions_options['unassign'] = __('Unassign','cftp_admin');
+                                    }
+                                    else {
+                                        if (CURRENT_USER_LEVEL != '0' || (CURRENT_USER_LEVEL == '0' && CLIENTS_CAN_DELETE_OWN_FILES == '1'))
+                                        $actions_options['delete'] = __('Delete','cftp_admin');
+                                    }
 
-											foreach ( $actions_options as $val => $text ) {
-										?>
-												<option value="<?php echo $val; ?>"><?php echo $text; ?></option>
-										<?php
-											}
-										?>
-									</select>
-								</div>
-								<button type="submit" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
-							</div>
-						</div>
-					</div>
-			<?php
-				}
-			?>
+                                    foreach ( $actions_options as $val => $text ) {
+                                ?>
+                                        <option value="<?php echo $val; ?>"><?php echo $text; ?></option>
+                                <?php
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                        <button type="submit" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
+                    </div>
+                </div>
+            </div>
 
 			<div class="clear"></div>
 	
@@ -493,7 +487,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					 * They will be used to generate or no certain columns
 					 */
 					$conditions = array(
-										'select_all'		=> ( CURRENT_USER_LEVEL != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1' ) ? true : false,
+										'select_all'		=> true,
 										'is_not_client'		=> ( CURRENT_USER_LEVEL != '0' ) ? true : false,
 										'total_downloads'	=> ( CURRENT_USER_LEVEL != '0' && !isset( $search_on ) ) ? true : false,
 										'is_search_on'		=> ( isset( $search_on ) ) ? true : false,

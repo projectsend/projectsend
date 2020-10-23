@@ -1,18 +1,13 @@
-<form action="files-edit.php" name="files" id="files" method="post" enctype="multipart/form-data">
+<form action="files-edit.php?ids=<?php echo html_output($_GET['ids']); ?>" name="files" id="files" method="post" enctype="multipart/form-data">
     <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
-
-    <?php
-        foreach($uploaded_files as $add_uploaded_field) {
-    ?>
-            <input type="hidden" name="file_ids[]" value="<?php echo $add_uploaded_field; ?>" />
-    <?php
-        }
-    ?>
 
     <div class="container-fluid">
         <?php
             $i = 1;
-            foreach ($uploaded_files as $file_id) {
+            $clients = fileEditorGetAllClients();
+            $groups = fileEditorGetAllGroups();
+
+            foreach ($editable as $file_id) {
                 clearstatcache();
                 $file = new ProjectSend\Classes\Files;
                 $file->get($file_id);
@@ -36,11 +31,12 @@
                         <div class="row edit_files">
                             <div class="col-sm-12">
                                 <div class="row edit_files_blocks">
-                                    <div class="<?php echo (CURRENT_USER_LEVEL != 0 || CLIENTS_CAN_SET_EXPIRATION_DATE == '1' ) ? 'col-sm-6 col-md-3' : 'col-sm-12 col-md-12'; ?> column">
+                                    <div class="<?php echo (CURRENT_USER_LEVEL != 0 || get_option('clients_can_set_expiration_date') == '1' ) ? 'col-sm-6 col-md-3' : 'col-sm-12 col-md-12'; ?> column">
                                         <div class="file_data">
                                             <div class="row">
                                                 <div class="col-sm-12">
                                                     <h3><?php _e('File information', 'cftp_admin');?></h3>
+                                                    <input type="hidden" name="file[<?php echo $i; ?>][id]" value="<?php echo $file->id; ?>" />
                                                     <input type="hidden" name="file[<?php echo $i; ?>][original]" value="<?php echo $file->filename_original; ?>" />
                                                     <input type="hidden" name="file[<?php echo $i; ?>][file]" value="<?php echo $file->filename_on_disk; ?>" />
 
@@ -51,7 +47,7 @@
 
                                                     <div class="form-group">
                                                         <label><?php _e('Description', 'cftp_admin');?></label>
-                                                        <textarea name="file[<?php echo $i; ?>][description]" class="<?php if ( FILES_DESCRIPTIONS_USE_CKEDITOR == 1 ) { echo 'ckeditor'; } ?> form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php if (!empty($file->description)) { echo $file->description; } ?></textarea>
+                                                        <textarea name="file[<?php echo $i; ?>][description]" class="<?php if ( get_option('files_descriptions_use_ckeditor') == 1 ) { echo 'ckeditor'; } ?> form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php if (!empty($file->description)) { echo $file->description; } ?></textarea>
                                                     </div>
 
                                                 </div>
@@ -61,7 +57,7 @@
 
                                     <?php
                                         /** The following options are available to users or client if clients_can_set_expiration_date set. */
-                                        if (CURRENT_USER_LEVEL != 0 || CLIENTS_CAN_SET_EXPIRATION_DATE == '1' ) {
+                                        if (CURRENT_USER_LEVEL != 0 || get_option('clients_can_set_expiration_date') == '1' ) {
                                     ?>
                                         <div class="col-sm-6 col-md-3 column_even column">
                                             <div class="file_data">
@@ -128,13 +124,9 @@
                                                     <label><?php _e('Clients', 'cftp_admin');?></label>
                                                     <select multiple="multiple" name="file[<?php echo $i; ?>][assignments][clients][]" class="form-control chosen-select assignments_clients" data-file-id="<?php echo $file->id; ?>" data-type="clients" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
                                                         <?php
-                                                            /**
-                                                             * The clients list is generated early on the file so the
-                                                             * array doesn't need to be made once on every file.
-                                                             */
-                                                            foreach($clients as $client => $client_name) {
+                                                            foreach($clients as $id => $name) {
                                                             ?>
-                                                                <option value="<?php echo html_output($client); ?>"><?php echo html_output($client_name); ?></option>
+                                                                <option value="<?php echo html_output($id); ?>"><?php echo html_output($name); ?></option>
                                                             <?php
                                                             }
                                                         ?>
@@ -150,13 +142,9 @@
                                                     <label><?php _e('Groups', 'cftp_admin');?></label>
                                                     <select multiple="multiple" name="file[<?php echo $i; ?>][assignments][groups][]" class="form-control chosen-select assignments_groups" data-file-id="<?php echo $file->id; ?>" data-type="groups" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
                                                         <?php
-                                                            /**
-                                                             * The groups list is generated early on the file so the
-                                                             * array doesn't need to be made once on every file.
-                                                             */
-                                                            foreach($groups as $group => $group_name) {
+                                                            foreach($groups as $id => $name) {
                                                             ?>
-                                                                <option value="<?php echo html_output($group); ?>"><?php echo html_output($group_name); ?></option>
+                                                                <option value="<?php echo html_output($id); ?>"><?php echo html_output($name); ?></option>
                                                             <?php
                                                             }
                                                         ?>
@@ -212,20 +200,9 @@
                 }
             }
         ?>
-
     </div> <!-- container -->
 
-    <?php
-        /**
-         * Take the list of failed files and store them as a text string
-         * that will be passed on a hidden field when posting the form.
-         */
-        $upload_failed = array_filter($upload_failed);
-        $upload_failed_hidden = implode(',',$upload_failed);
-    ?>
-    <input type="hidden" name="upload_failed" value="<?php echo $upload_failed_hidden; ?>" />
-
     <div class="after_form_buttons">
-        <button type="submit" name="submit" class="btn btn-wide btn-primary" id="upload-continue"><?php _e('Save','cftp_admin'); ?></button>
+        <button type="submit" name="save" class="btn btn-wide btn-primary" id="upload-continue"><?php _e('Save','cftp_admin'); ?></button>
     </div>
 </form>

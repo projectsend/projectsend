@@ -784,7 +784,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 													'condition'		=> $conditions['total_downloads'],
 												),
 												array(
-													'content'		=> '<a href="edit-file.php?file_id=' . $row["id"] .'" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a>',
+													'content'		=> '<a href="files-edit.php?ids=' . $row["id"] .'" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a>',
 												),
 									);
 	

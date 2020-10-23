@@ -28,7 +28,7 @@
                 if (uploader.files.length > 0) {
                     uploader.bind('StateChanged', function() {
                         if (uploader.files.length === (uploader.total.uploaded + uploader.total.failed)) {
-                            var action = $('#upload_form').attr('action') + '?ids=' + file_ids.toString();
+                            var action = $('#upload_form').attr('action') + '?ids=' + file_ids.toString() + '&type=new';
                             $('#upload_form').attr('action', action);
                             if (successful > 0) {
                                 if (errors == 0) {

@@ -46,11 +46,13 @@ function generateUsername($string, $i = 1) {
 }
 
 function isUniqueUsername($string) {
-    $statement = $this->dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE user = :user" );
+    global $dbh;
+    $statement = $dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE user = :user" );
     $statement->execute(array(':user'	=> $string));
-    if($statement->rowCount() > 0) {
+    if ($statement->rowCount() > 0) {
         return false;
     }
+
     return true;
 }
 
@@ -556,6 +558,7 @@ function get_file_by_id($id)
 	while ( $row = $statement->fetch() ) {
 		$information = array(
             'id' => html_output($row['id']),
+            'user_id' => html_output($row['user_id']),
             'title'=> html_output($row['filename']),
             'original_url' => html_output($row['original_url']),
             'url' => html_output($row['url']),
@@ -1494,6 +1497,69 @@ function extensionIsAllowed($extension) {
     return false;
 }
 
+function fileEditorGetAllClients()
+{
+	global $dbh;
+
+    /** Fill the users array that will be used on the notifications process */
+    //$users = [];
+    $clients = [];
+
+    $statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . " ORDER BY name ASC");
+    $statement->execute();
+    $statement->setFetchMode(PDO::FETCH_ASSOC);
+    while( $row = $statement->fetch() ) {
+        //$users[$row["id"]] = $row["name"];
+        if ($row["level"] == '0') {
+            $clients[$row["id"]] = $row["name"];
+        }
+    }
+
+    return $clients;
+}
+
+function fileEditorGetAllGroups()
+{
+	global $dbh;
+
+    /** Fill the groups array that will be used on the form */
+    $groups = [];
+    $statement = $dbh->prepare("SELECT id, name FROM " . TABLE_GROUPS . " ORDER BY name ASC");
+    $statement->execute();
+    $statement->setFetchMode(PDO::FETCH_ASSOC);
+    while( $row = $statement->fetch() ) {
+        $groups[$row["id"]] = $row["name"];
+    }
+
+    return $groups;
+}
+
+function userCanEditFile($user_id = null, $file_id = null)
+{
+    if (empty($user_id) or empty($file_id)) {
+        return false;
+    }
+
+    $user = get_user_by_id($user_id);
+
+    if ($user['level'] != 0) {
+        return true;
+    } else {
+        $file = get_file_by_id($file_id);
+
+        // Pre-update when column didn't exist
+        if ($file['user_id'] == null) {
+            if ($user['username'] == $file['uploaded_by']) {
+                return true;
+            }    
+        }
+        if ($user['id'] == $file['user_id']) {
+            return true;
+        }
+    }
+
+    return false;
+}
 /**
  * Renders an action recorded on the log.
  */

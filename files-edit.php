@@ -22,121 +22,72 @@ require_once 'bootstrap.php';
 
 $active_nav = 'files';
 
-$page_title = __('Upload files', 'cftp_admin');
+$page_title = __('Edit files', 'cftp_admin');
 
 $page_id = 'new_uploads_editor';
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 define('CAN_INCLUDE_FILES', true);
-?>
 
-<div class="col-xs-12">
-
-<?php
-/** Coming from the web uploader */
-if (isset($_POST['file_ids'])) {
-	$uploaded_files = array_filter($_POST['file_ids']);
+// Editable
+$editable = [];
+$files = explode(',', $_GET['ids']);
+foreach ($files as $file_id) {
+    if (is_numeric($file_id)) {
+        if (userCanEditFile(CURRENT_USER_ID, $file_id))
+        {
+            $editable[] = (int)$file_id;
+        }
+    }
 }
 
-/**
- * A hidden field sends the list of failed files as a string,
- * where each filename is separated by a comma.
- * Here we change it into an array so we can list the files
- * on a separate table.
- */
-if (isset($_POST['upload_failed'])) {
-	$upload_failed_hidden_post = array_filter(explode(',',$_POST['upload_failed']));
-}
-/**
- * Files that failed are removed from the uploaded files list.
- */
-if (isset($upload_failed_hidden_post) && count($upload_failed_hidden_post) > 0) {
-	foreach ($upload_failed_hidden_post as $failed) {
-		$delete_key = array_search($failed, $uploaded_files);
-		unset($uploaded_files[$delete_key]);
-	}
-}
-
-/** Define the arrays */
-$upload_failed = array();
-$move_failed = array();
-
-/**
- * $empty_fields counts the amount of "name" fields that
- * were not completed.
- */
-$empty_fields = 0;
-
-/** Fill the users array that will be used on the notifications process */
-$users = array();
-$statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . " ORDER BY name ASC");
-$statement->execute();
-$statement->setFetchMode(PDO::FETCH_ASSOC);
-while( $row = $statement->fetch() ) {
-	$users[$row["id"]] = $row["name"];
-	if ($row["level"] == '0') {
-		$clients[$row["id"]] = $row["name"];
-	}
-}
-
-/** Fill the groups array that will be used on the form */
-$groups = array();
-$statement = $dbh->prepare("SELECT id, name FROM " . TABLE_GROUPS . " ORDER BY name ASC");
-$statement->execute();
-$statement->setFetchMode(PDO::FETCH_ASSOC);
-while( $row = $statement->fetch() ) {
-	$groups[$row["id"]] = $row["name"];
-}
+$saved_files = [];
 
 /** Fill the categories array that will be used on the form */
-$categories = array();
+$categories = [];
 $get_categories = get_categories();
-
-/**
- * Make an array of file urls that are on the DB already.
- */
-$statement = $dbh->prepare("SELECT DISTINCT url FROM " . TABLE_FILES);
-$statement->execute();
-$statement->setFetchMode(PDO::FETCH_ASSOC);
-while( $row = $statement->fetch() ) {
-	$urls_db_files[] = $row["url"];
-}
-
-/**
- * A posted form will include information of the uploaded files
- * (name, description and client).
- * @todo
- */
-	if (isset($_POST['submit'])) {
-        $n = 0;
-
-        /** Edit each file and its assignations */
+?>
+<div class="col-xs-12">
+<?php
+    /**
+     * A posted form will include information of the uploaded files
+     * (name, description and client).
+     * @todo
+     */
+	if (isset($_POST['save'])) {
+        // Edit each file and its assignations
 		foreach ($_POST['file'] as $file) {
-			$n++;
+            pa($file);
+            // @todo
+            $object = new \ProjectSend\Classes\Files();
+            $object->get($file_id);
+            $object->save();
+            $saved_files[] = $file['id'];
+        }
+exit;
+        // Send the notifications
+        require_once INCLUDES_DIR . DS . 'upload-send-notifications.php';
 
-			if (!empty($file['name'])) {
-                // @todo
-                // Process file
-                // It's already on the database so we need to save the new config from the form
-                // (title, description, expiration, public, assignments, upload as hidden, categories)
-                pa($file);
-			}
-			else {
-				$empty_fields++;
-			}
-		}
+        // Redirect
+        $saved = implode(',', $saved_files);
+        header("Location: files-edit.php?ids=".$saved.'&saved=true');
 	}
 
-	/**
-	 * Generate the table of files that were assigned to a client
-	 * on this last POST. These files appear on this table only once,
-	 * so if there is another submition of the form, only the new
-	 * assigned files will be displayed.
-	 */
-	if (!empty($upload_finish)) {
+    // Saved files
+    $saved_files = [];
+	if (!empty($_GET['saved'])) {
+        foreach ($editable as $file_id) {
+            if (is_numeric($file_id)) {
+                $object = new \ProjectSend\Classes\Files();
+                $object->get($file_id);
+                $saved_files[$file_id] = $object->getData();
+            }
+        }
+        pa($saved_files);
+
+        echo system_message('success', __('Files saved correctly','cftp_admin'));
 ?>
-		<h3><?php _e('Files uploaded correctly','cftp_admin'); ?></h3>
 		<table id="uploaded_files_tbl" class="footable" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
 			<thead>
 				<tr>
@@ -146,8 +97,6 @@ while( $row = $statement->fetch() ) {
 					<?php
 						if (CURRENT_USER_LEVEL != 0) {
 					?>
-							<th data-hide="phone"><?php _e("Status",'cftp_admin'); ?></th>
-							<th data-hide="phone"><?php _e('Assignations','cftp_admin'); ?></th>
 							<th data-hide="phone"><?php _e('Public','cftp_admin'); ?></th>
 					<?php
 						}
@@ -157,37 +106,20 @@ while( $row = $statement->fetch() ) {
 			</thead>
 			<tbody>
 			<?php
-				foreach($upload_finish as $uploaded) {
+				foreach($saved_files as $id => $file) {
 			?>
 					<tr>
-						<td><?php echo html_output($uploaded['name']); ?></td>
-						<td><?php echo htmlentities_allowed($uploaded['description']); ?></td>
-						<td><?php echo html_output($uploaded['file']); ?></td>
+						<td><?php echo html_output($file['title']); ?></td>
+						<td><?php echo htmlentities_allowed($file['description']); ?></td>
+						<td><?php echo html_output($file['filename_original']); ?></td>
 						<?php
 							if (CURRENT_USER_LEVEL != 0) {
 						?>
-								<td class="<?php echo (!empty($uploaded['hidden'])) ? 'file_status_hidden' : 'file_status_visible'; ?>">
-
-									<?php
-										$status_hidden	= __('Hidden','cftp_admin');
-										$status_visible	= __('Visible','cftp_admin');
-										$class			= (!empty($uploaded['hidden'])) ? 'danger' : 'success';
-									?>
-									<span class="label label-<?php echo $class; ?>">
-										<?php echo ( !empty( $hidden ) && $hidden == 1) ? $status_hidden : $status_visible; ?>
-									</span>
-								</td>
-								<td>
-									<?php $class = ($uploaded['assignations'] > 0) ? 'success' : 'danger'; ?>
-									<span class="label label-<?php echo $class; ?>">
-										<?php echo $uploaded['assignations']; ?>
-									</span>
-								</td>
 								<td class="col_visibility">
 									<?php
-										if ($uploaded['public'] == '1') {
+										if ($file['public'] == '1') {
 									?>
-											<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="file" data-id="<?php echo $uploaded['file_id']; ?>" data-token="<?php echo html_output($uploaded['public_token']); ?>">
+											<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="file" data-id="<?php echo $file['id']; ?>" data-token="<?php echo html_output($file['public_token']); ?>">
 									<?php
 										}
 										else {
@@ -197,7 +129,7 @@ while( $row = $statement->fetch() ) {
 										}
 												$status_public	= __('Public','cftp_admin');
 												$status_private	= __('Private','cftp_admin');
-												echo ($uploaded['public'] == 1) ? $status_public : $status_private;
+												echo ($file['public'] == 1) ? $status_public : $status_private;
 									?>
 											</a>
 								</td>
@@ -205,7 +137,7 @@ while( $row = $statement->fetch() ) {
 							}
 						?>
 						<td>
-							<a href="edit-file.php?file_id=<?php echo html_output($uploaded['new_file_id']); ?>" class="btn-primary btn btn-sm">
+							<a href="files-edit.php?ids=<?php echo html_output($file['id']); ?>" class="btn-primary btn btn-sm">
 								<i class="fa fa-pencil"></i><span class="button_label"><?php _e('Edit file','cftp_admin'); ?></span>
 							</a>
 							<?php
@@ -220,76 +152,25 @@ while( $row = $statement->fetch() ) {
 							?>
 						</td>
 					</tr>
-			<?php
-				}
-			?>
+                <?php
+                    }
+                ?>
 			</tbody>
 		</table>
 <?php
-	}
-
-	/**
-	 * Generate the table of files ready to be assigned to a client.
-	 */
-	if (!empty($uploaded_files)) {
-?>
-		<h3><?php _e('Successfully uploaded files','cftp_admin'); ?></h3>
-
-		<?php
-			if (CURRENT_USER_LEVEL != 0) {
-		?>
-			<div class="message message_info"><strong><?php _e('Note','cftp_admin'); ?></strong>: <?php _e('You can skip assigning if you want. The files are retained and you may add them to clients or groups later.','cftp_admin'); ?></div>
-		<?php
-			}
-
-		/**
-		 * First, do a server side validation for files that were submited
-		 * via the form, but the name field was left empty.
-		 */
-		if(!empty($empty_fields)) {
-			$msg = __('Title is a required field for all uploaded files.', 'cftp_admin');
-			echo system_message('danger', $msg);
-		}
-
+	} else {
         /**
-         * Include the form.
+         * Generate the table of files ready to be edited
          */
-        include_once FORMS_DIR . DS . 'file_editor.php';
-    }
-	/**
-	 * There are no more files to assign.
-	 * Send the notifications
-	 */
-	else {
-        require_once INCLUDES_DIR . DS . 'upload-send-notifications.php';
-	}
+        if (!empty($editable)) {
+            if (CURRENT_USER_LEVEL != 0) {
+                $msg = __('You can skip assigning if you want. The files are retained and you may add them to clients or groups later.','cftp_admin');
+                echo system_message('info',$msg);
+            }
 
-	/**
-	 * Generate the table for the failed files.
-	 */
-	if (count($upload_failed) > 0) {
-?>
-		<h3><?php _e('Files not uploaded','cftp_admin'); ?></h3>
-		<table id="failed_files_tbl" class="footable" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
-			<thead>
-				<tr>
-					<th data-sort-initial="true"><?php _e('File Name','cftp_admin'); ?></th>
-				</tr>
-			</thead>
-			<tbody>
-			<?php
-				foreach($upload_failed as $failed) {
-			?>
-					<tr>
-						<td><?php echo $failed; ?></td>
-					</tr>
-			<?php
-				}
-			?>
-			</tbody>
-		</table>
-<?php
-	}
+            include_once FORMS_DIR . DS . 'file_editor.php';
+        }
+    }
 ?>
 </div>
 

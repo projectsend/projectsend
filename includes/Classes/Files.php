@@ -84,6 +84,11 @@ class Files
         return false;
     }
 
+    public function currentUserCanEdit()
+    {
+        return userCanEditFile(CURRENT_USER_ID, $this->id);
+    }
+
     /**
      * Set the properties when saving to the database (data comnes from the form)
      */
@@ -106,11 +111,10 @@ class Files
 
         $this->categories = !empty( $arguments['categories'] ) ? to_array_if_not($arguments['categories']) : null;
 
-        self::setFullPath();
-        self::setSize();
-        self::setExtension();
-        self::checkIfExpired();
-        self::isFiletypeAllowed();
+        $this->setFullPath();
+        $this->setExtension();
+        $this->isFiletypeAllowed();
+        $this->isExpired();
     }
 
     /**
@@ -145,6 +149,9 @@ class Files
             $this->public_token = html_output($this->row['public_token']);
         }
 
+        $this->isExpired();
+        $this->setExtension();
+
         /** Reconstruct the current assignments arrays */
         $statement = $this->dbh->prepare("SELECT file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :id");
         $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
@@ -171,6 +178,36 @@ class Files
         }
 
         return true;
+    }
+
+    public function isExpired()
+    {
+        $this->expired = false;
+        if ($this->expires == '1' && time() > strtotime($this->expiry_date)) {
+            $this->expired = true;
+        }
+    }
+
+    public function getData()
+    {
+        $data = [
+            'id' => $this->id,
+            'user_id' => $this->user_id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'uploaded_by' => $this->uploaded_by,
+            'filename_on_disk' => $this->filename_on_disk,
+            'filename_original' => $this->filename_original,
+            'extension' => $this->extension,
+            'expires' => $this->expires,
+            'expiry_date' => $this->expiry_date,
+            'expired' => $this->expired,
+            'uploaded_date' => $this->uploaded_date,
+            'public' => $this->public,
+            'public_token' => $this->public_token,
+        ];
+
+        return $data;
     }
 
     public function getSafeFilename()
@@ -616,13 +653,19 @@ class Files
 	}
 
     /**
-	 * Called after correctly moving the file to the final location.
+	 * Update file information
 	 */
 	public function save()
 	{
         if (empty($this->id)) {
             return false;
         }
+
+        if (!$this->currentUserCanEdit()) {
+            echo 'cant';
+            //return false;
+        }
+        echo 'can'; exit;
 
         $file_data = get_file_by_id($this->id);
 		

@@ -215,7 +215,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 									$class = 'danger';
 								}
 								
-								$value = date( TIMEFORMAT, strtotime( $file['expiry_date'] ) );
+								$value = date( get_option('timeformat'), strtotime( $file['expiry_date'] ) );
 							} else {
 								$class = 'success';
 								$value = __('Never','cftp_template');

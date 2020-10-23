@@ -212,7 +212,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 									<p class="exp_date">
 										<?php
 											if ( $file['expires'] == '1' ) {
-												$exp_date = date( TIMEFORMAT, strtotime( $file['expiry_date'] ) );
+												$exp_date = date( get_option('timeformat'), strtotime( $file['expiry_date'] ) );
 												_e('Expiration date:','pinboxes_template'); ?> <span><?php echo $exp_date; ?></span>
 										<?php
 											}

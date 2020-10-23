@@ -669,7 +669,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 							$expires_label	= __('Does not expire','cftp_admin');
 						}
 						else {
-							$expires_date = date( TIMEFORMAT, strtotime ($row['expiry_date'] ) );
+							$expires_date = date( get_option('timeformat'), strtotime ($row['expiry_date'] ) );
 	
 							if (time() > strtotime($row['expiry_date'])) {
 								$expires_button	= 'danger';

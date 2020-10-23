@@ -52,7 +52,7 @@
 <div class="form-group">
     <div class="col-sm-8 col-sm-offset-4">
         <label for="files_descriptions_use_ckeditor">
-            <input type="checkbox" value="1" name="files_descriptions_use_ckeditor" id="files_descriptions_use_ckeditor" class="checkbox_options" <?php echo (FILES_DESCRIPTIONS_USE_CKEDITOR == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Use the visual editor on files descriptions",'cftp_admin'); ?>
+            <input type="checkbox" value="1" name="files_descriptions_use_ckeditor" id="files_descriptions_use_ckeditor" class="checkbox_options" <?php echo (get_option('files_descriptions_use_ckeditor') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Use the visual editor on files descriptions",'cftp_admin'); ?>
         </label>
     </div>
 </div>

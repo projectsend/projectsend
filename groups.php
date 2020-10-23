@@ -309,7 +309,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 													'content'		=> $group_data["name"],
 												),
 											array(
-													'content'		=> $group_data["description"],
+													'content'		=> htmlentities_allowed($group_data["description"]),
 												),
 											array(
 													'content'		=> (!empty($group_data['members'])) ? count($group_data['members']) : '0',

@@ -14,9 +14,10 @@
 	},
 	"prefer-stable": true,
 	"autoload": {
-		"psr-4": {
-			"ProjectSend\\": "includes"
-		},
+        "psr-4": {
+            "ProjectSend\\": "includes/"
+        },
+        "classmap": ["includes"],
 		"files": [
 		]
 	},

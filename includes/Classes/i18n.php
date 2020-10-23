@@ -1,4 +1,6 @@
 <?php
+namespace ProjectSend\Classes;
+
 /**
  * Implement the I18n class and some useful functions.
  * Slightly modified version where the functions names are replaced
@@ -11,70 +13,6 @@
  * @subpackage	Classes
  *
  */
-
-/**
- * Define this constant to be use as the default domain
- * using in auxilar functions around {@link I18n} class.
- *
- */
-if( ! defined( 'I18N_DEFAULT_DOMAIN' ) ) {
-  define( 'I18N_DEFAULT_DOMAIN', '' );
-}
-
-/**
- * Get a translated string
- *
- * @param String $string To be translated
- * @param String $domain String domain text
- * @return String Translated string if possible
- *
- */
-function __( $string, $domain = I18N_DEFAULT_DOMAIN )
-{
-  return I18n::Translate( $string, $domain );
-}
-
-/**
- * Print a translated string
- *
- * @param String $string To be translated
- * @param String $domain String domain text
- *
- */
-function _e( $string, $domain = I18N_DEFAULT_DOMAIN ) 
-{
-  echo I18n::Translate( $string, $domain );
-}
-
-/**
- * Get a translated singular or plural string
- *
- * @param String $singular Singular string version
- * @param String $plural Plural string version
- * @param Integer $count Determine what string version use
- * @param String $domain String domain text
- * @return String Translated string if possible
- *
- */
-function _n( $singular, $plural, $count, $domain = I18N_DEFAULT_DOMAIN )
-{
-  return I18n::NTranslate( $singular, $plural, $count, $domain );
-}
-
-/**
- * Print a translated singular or plural string
- *
- * @param String $singular Singular string version
- * @param String $plural Plural string version
- * @param Integer $count Determine what string version use
- * @param String $domain String domain text
- *
- */
-function _ne( $singular, $plural, $count, $domain = I18N_DEFAULT_DOMAIN )
-{
-  echo I18n::NTranslate( $singular, $plural, $count, $domain );
-}
-
 /**
  * Useful class to deal with I18n and L10n
  *
@@ -87,100 +25,98 @@ function _ne( $singular, $plural, $count, $domain = I18N_DEFAULT_DOMAIN )
  */
 class I18n
 {
-  /**#@+
-   * @static
-   * @access private
-   */
+/**#@+
+ * @static
+ * @access private
+ */
 
-  /**
-   * @var Array Loaded text domains and messages
-   *
-   */
-  private static $messages = array();
+/**
+ * @var Array Loaded text domains and messages
+ *
+ */
+private static $messages = array();
 
-  /**
-   * @var Array Loaded MO files
-   *
-   */
-  private static $moFiles = array();
+/**
+ * @var Array Loaded MO files
+ *
+ */
+private static $moFiles = array();
 
-  /**
-   * @see ParseFile()
-   *
-   * @var String Plural function ID to be used
-   *
-   */
-  private static $pluralFunc = array();
+/**
+ * @see ParseFile()
+ *
+ * @var String Plural function ID to be used
+ *
+ */
+private static $pluralFunc = array();
 
-  /**#@-*/
+/**#@-*/
 
-  /**#@+
-   * @final
-   * @access private
-   */
+/**#@+
+ * @final
+ * @access private
+ */
 
-  /**
-   * Disable object instances
-   *
-   */
-  private final function  __construct(){}
+/**
+ * Disable object instances
+ *
+ */
+private final function  __construct(){}
 
-  /**
-   * Disable object clones
-   *
-   */
-  private final function  __clone(){}
+/**
+ * Disable object clones
+ *
+ */
+private final function  __clone(){}
 
-  /**#@-*/
+/**#@+
+ * @access public
+ */
 
-  /**#@+
-   * @access public
-   */
-
-  /**
-   * Load a internationalization text domain
-   *
-   * You need to call this method in order to put messages
-   * of a MO files availables to be use.
-   *
-   * The text domain using here is that you need to use
-   * when translate strings.
-   *
-   * More than one domain text (and MO files) can be loaded.
-   *
-   * @param String $moFile MO file path to be loaded
-   * @param String $domain Text domain to store the messages
-   * @return Boolean True on success or False on failure
-   * 
-   */
-  public static function LoadDomain( $moFile, $domain )
-  {
+/**
+ * Load a internationalization text domain
+ *
+ * You need to call this method in order to put messages
+ * of a MO files availables to be use.
+ *
+ * The text domain using here is that you need to use
+ * when translate strings.
+ *
+ * More than one domain text (and MO files) can be loaded.
+ *
+ * @param String $moFile MO file path to be loaded
+ * @param String $domain Text domain to store the messages
+ * @return Boolean True on success or False on failure
+ * 
+ */
+public static function LoadDomain( $moFile, $domain )
+{
     return self::LoadFile( $moFile, $domain );
-  }
+}
 
-  /**
-   * Get a translated string
-   *
-   * Of course you can use this method but look the above implemented
-   * function {@link t()} that finally call this method for you.
-   *
-   * In other words, the existence of {@link t()} have sense because
-   * the identifier is tiny and fast, ideal to a profuse use.
-   *
-   * @param String $string To be translate
-   * @param String $domain Text domain where find
-   * @return Strint Translated string if possible
-   *
-   */
-	public static function Translate( $string, $domain )
-  {
-		if( isset( self::$messages[ $domain ][ $string ] ) )
+/**
+ * Get a translated string
+ *
+ * Of course you can use this method but look the above implemented
+ * function {@link t()} that finally call this method for you.
+ *
+ * In other words, the existence of {@link t()} have sense because
+ * the identifier is tiny and fast, ideal to a profuse use.
+ *
+ * @param String $string To be translate
+ * @param String $domain Text domain where find
+ * @return Strint Translated string if possible
+ *
+ */
+public static function Translate( $string, $domain )
+{
+    if( isset( self::$messages[ $domain ][ $string ] ) )
     {
-			$string = self::$messages[ $domain ][ $string ][1][0];
-		}
+        $string = self::$messages[ $domain ][ $string ][1][0];
+    }
 
-		return $string;
-	}
+    return $string;
+}
 
 /**
  * Get a translated singular or plural string
@@ -200,11 +136,10 @@ class I18n
 		if( isset( self::$messages[ $domain ][ $singular ] ) )
     {
 			$fn = self::$pluralFunc;
-      
 			$n = $fn( $count );
 
 			if( isset( self::$messages[ $domain ][ $singular ][1][ $n ] ) )
-      {
+            {
 				return self::$messages[ $domain ][ $singular ][1][ $n ];
 			}
 		}
@@ -212,54 +147,51 @@ class I18n
 		return $count == 1 ? $singular : $plural;
 	}
 
-  /**#@-*/
+/**#@-*/
 
-  /**#@+
-   * @access private
-   */
+/**#@+
+ * @access private
+ */
 
-  /**
-   * Load MO files
-   *
-   * @param String $moPath MO file path to be loaded
-   * @param String $domain Text domain messages to set
-   * @return Boolean True on success or False on failure
-   *
-   */
-  private static function LoadFile( $moPath, $domain )
-  {
+/**
+ * Load MO files
+ *
+ * @param String $moPath MO file path to be loaded
+ * @param String $domain Text domain messages to set
+ * @return Boolean True on success or False on failure
+ *
+ */
+private static function LoadFile( $moPath, $domain )
+{
     if( in_array( $moPath, self::$moFiles ) )
     {
-      return true;
+        return true;
     }
     else
     {
-      if( self::ParseFile( $moPath, $domain ) )
-      {
-        self::$moFiles[] = $moPath;
-
-        return true;
-      }
-      else
-      {
-        return false;
-      }
+        if( self::ParseFile( $moPath, $domain ) )
+        {
+            self::$moFiles[] = $moPath;
+            return true;
+        } else {
+            return false;
+        }
     }
-  }
+}
 
-  /**
-   * Parse MO files
-   *
-   * I think originally writen to PHP-gettext by Danilo Segan
-   * <danilo@kvota.net>.
-   *
-   * @param String $moPath Absolute MO file path
-   * @param String $domain Text domain messages to set
-   * @return Boolean True on success or False on failure
-   *
-   */
-	private static function ParseFile( $moPath, $domain )
-  {
+/**
+ * Parse MO files
+ *
+ * I think originally writen to PHP-gettext by Danilo Segan
+ * <danilo@kvota.net>.
+ *
+ * @param String $moPath Absolute MO file path
+ * @param String $domain Text domain messages to set
+ * @return Boolean True on success or False on failure
+ *
+ */
+private static function ParseFile( $moPath, $domain )
+{
     if( ! is_readable( $moPath ) )
     {
 			return false;
@@ -280,18 +212,18 @@ class I18n
     list( , $magic )= unpack( 'V1', substr( $data, 0, 4 ) );
 
 		switch ( $magic & 0xFFFFFFFF )
-    {
-		  case (int)0x950412de:
-        $littleEndian = true;
+        {
+		    case (int)0x950412de:
+                $littleEndian = true;
 				break;
 
 			case (int)0xde120495:
-			  $littleEndian = false;
+			    $littleEndian = false;
 				break;
 
 			default:
-			  /** Invalid magic number */
-			  return false;
+			    /** Invalid magic number */
+			    return false;
 		}
 
 		$revision = substr( $data, 4, 4 );
@@ -304,11 +236,11 @@ class I18n
 
 		if( $data && strlen( $data ) >= 20 )
     {
-		  $header = substr( $data, 8, 12 );
+            $header = substr( $data, 8, 12 );
 			$header = unpack( "{$l}1msgcount/{$l}1msgblock/{$l}1transblock", $header );
 
 			if($header['msgblock'] + ($header['msgcount'] - 1) * 8 > filesize($moPath))
-      {
+    {
 			  /** Message count out of bounds */
         return false;
 			}
@@ -316,15 +248,15 @@ class I18n
 			$lo = "{$l}1length/{$l}1offset";
 
 			for( $msgindex = 0; $msgindex < $header[ 'msgcount' ]; $msgindex++ )
-      {
-			  $msginfo = unpack
+    {
+                $msginfo = unpack
         (
           $lo, substr( $data, $header[ 'msgblock' ] + $msgindex * 8, 8 )
         );
 
 				$msgids = explode
         (
-          '\0', substr( $data, $msginfo[ 'offset' ], $msginfo[ 'length' ] )
+            '\0', substr( $data, $msginfo[ 'offset' ], $msginfo[ 'length' ] )
         );
 
 				$transinfo = unpack
@@ -334,7 +266,7 @@ class I18n
 
 				$transids = explode
         ( 
-          '\0', substr( $data, $transinfo[ 'offset' ], $transinfo[ 'length' ] )
+            '\0', substr( $data, $transinfo[ 'offset' ], $transinfo[ 'length' ] )
         );
 
 				self::$messages[ $domain ][ $msgids[0] ] = array( $msgids, $transids );
@@ -343,49 +275,49 @@ class I18n
 
 		self::$pluralFunc = self::GetPluralFunc
     (
-      self::$messages[ $domain ][''][1][0]
+        self::$messages[ $domain ][''][1][0]
     );
 
     return 
-      isset( self::$messages[ $domain ] )
+        isset( self::$messages[ $domain ] )
         && count( self::$messages[ $domain ] ) > 0;
 	}
 
-  /**
-   * Appropiate plural function from a MO file header
-   *
-   * Completly taken from Habari project <http://habariproject.org/>.
-   *
-   * @see ParseFile()
-   * @return Unique function name as a string or False on error
-   *
-   */
-	private static function GetPluralFunc( $moHeader )
-	{
+/**
+ * Appropiate plural function from a MO file header
+ *
+ * Completly taken from Habari project <http://habariproject.org/>.
+ *
+ * @see ParseFile()
+ * @return Unique function name as a string or False on error
+ *
+ */
+private static function GetPluralFunc( $moHeader )
+{
 		if
     (
-      preg_match
-      (
+        preg_match
+        (
         '/plural-forms: (.*?)$/i', $moHeader, $matches
-      )
-      && preg_match
-         (
-           '/^\s*nplurals\s*=\s*(\d+)\s*;\s*plural=(.*)$/', 
-           $matches[1],
-           $matches
-         )
+        )
+        && preg_match
+            (
+            '/^\s*nplurals\s*=\s*(\d+)\s*;\s*plural=(.*)$/', 
+            $matches[1],
+            $matches
+            )
     )
     {
 			/** sanitize */
 			$nplurals = preg_replace( '/[^0-9]/', '', $matches[1] );
 
 			$plural = preg_replace
-      (
+        (
         '/[^n0-9:\(\)\?\|\&=!<>+*/\%-]/', '', $matches[2]
-      );
+        );
 
 			$body = str_replace
-      (
+        (
 				array( 'plural',  'n',  '$n$plurals', ),
 				array( '$plural', '$n', '$nplurals', ),
         "nplurals={$nplurals}; plural={$plural}"
@@ -399,7 +331,7 @@ class I18n
 			$p = 0;
 
 			for ( $i = 0; $i < strlen( $body ); $i++ )
-      {
+        {
 				$ch = $body[$i];
         
 				switch ( $ch )
@@ -424,7 +356,6 @@ class I18n
 			}
 
 			$body = $res . 'return ( $plural >= $nplurals ? $nplurals - 1: $plural );';
-      
 			$fn = create_function( '$n', $body );
 		}
 		else
@@ -443,6 +374,4 @@ class I18n
 
 		return $fn;
 	}
-
-  /**#@-*/
 }

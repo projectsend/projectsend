@@ -100,7 +100,7 @@ function look_for_templates()
 			else {
 				// Generate another array with the templates that are not complete
 				$templates_error[] = array(
-										'templates_error'	=> $folder
+										'templates_error'	=> $directory
 									);
 			}
 		}
@@ -131,7 +131,6 @@ function check_template_integrity($folder)
 {
 	$required_files = array(
 							'template.php',
-							'main.css'
 						);
 	$miss	= 0;
 	$found	= glob($folder . "/*");

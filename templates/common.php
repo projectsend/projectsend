@@ -14,30 +14,27 @@
  */
 $allowed_levels = array(9,8,7,0);
 
-/**
- * Define a variable that will tell header.php if session_start()
- * needs to be called or not (since it is also called from
- * session_check.php
- */
-$is_template = true;
+include_once ROOT_DIR.DS.'templates'.DS.'session_check.php';
+
+$template = get_option('selected_clients_template');
 
 /**
  * Loads a language file from the current template folder based on
  * the system options.
  */
-$lang = SITE_LANG;
+$lang = (isset($_SESSION['lang'])) ? $_SESSION['lang'] : SITE_LANG;
 if(!isset($ld)) { $ld = 'cftp_admin'; }
-require_once ROOT_DIR.'/includes/classes/i18n.php';
-I18n::LoadDomain(ROOT_DIR.DS."templates".DS.SELECTED_CLIENTS_TEMPLATE."/lang/{$lang}.mo", $ld);
+$mo_file = ROOT_DIR.DS."templates".DS.$template.DS."lang".DS."{$lang}.mo";
+ProjectSend\Classes\I18n::LoadDomain($mo_file, $ld);
 
-$this_template = BASE_URI.'templates/'.SELECTED_CLIENTS_TEMPLATE.'/';
-
-include_once ROOT_DIR.'/templates/session_check.php';
+$this_template = BASE_URI.'templates/'.$template.'/';
 
 /**
  * URI to the default template CSS file.
  */
-$this_template_css = BASE_URI.'templates/'.SELECTED_CLIENTS_TEMPLATE.'/main.css';
+if (file_exists(ROOT_DIR.DS."templates".DS.$template.DS."main.css")) {
+    $this_template_css = BASE_URI.'templates/'.$template.'/main.css';
+}
 
 global $dbh;
 
@@ -59,12 +56,27 @@ $found_groups	= $get_groups->client_get_groups($get_arguments);
 /**
  * Define the arrays so they can't be empty
  */
-$found_all_files_array	= array();
-$found_own_files_temp	= array();
-$found_group_files_temp	= array();
+$found_all_files_array = array();
+$found_own_files_temp = array();
+$found_client_files_temp = array();
+$found_group_files_temp = array();
 
 /**
- * Get the client's own files
+ * Get files uploaded by this user
+ */
+$files_query = "SELECT * FROM " . TABLE_FILES . " WHERE user_id=:user_id";
+$files_sql = $dbh->prepare($files_query);
+$files_sql->bindParam(':user_id', $client_info['id'], PDO::PARAM_INT);
+$files_sql->execute();
+$files_sql->setFetchMode(PDO::FETCH_ASSOC);
+while ( $row_files = $files_sql->fetch() ) {
+    $found_all_files_array[] = $row_files['id'];
+    $found_own_files_temp[] = $row_files['id'];
+}
+$found_client_files_ids	= (!empty($found_own_files_temp)) ? implode(',', array_unique($found_own_files_temp)) : '';
+
+/**
+ * Get files assigned directly to the client
  * Construct the query first.
  */
 $files_query = "SELECT id, file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE (client_id = :id";
@@ -86,7 +98,7 @@ $files_sql->setFetchMode(PDO::FETCH_ASSOC);
 while ( $row_files = $files_sql->fetch() ) {
 	if (!is_null($row_files['client_id'])) {
 		$found_all_files_array[]	= $row_files['file_id'];
-		$found_own_files_temp[]		= $row_files['file_id'];
+		$found_client_files_temp[]		= $row_files['file_id'];
 	}
 	if (!is_null($row_files['group_id'])) {
 		$found_all_files_array[]	= $row_files['file_id'];
@@ -94,7 +106,7 @@ while ( $row_files = $files_sql->fetch() ) {
 	}
 }
 
-$found_own_files_ids	= (!empty($found_own_files_temp)) ? implode(',', array_unique($found_own_files_temp)) : '';
+$found_client_files_ids	= (!empty($found_client_files_temp)) ? implode(',', array_unique($found_client_files_temp)) : '';
 $found_group_files_ids	= (!empty($found_group_files_temp)) ? implode(',', array_unique($found_group_files_temp)) : '';
 
 $found_unique_files_ids = array_unique($found_all_files_array);
@@ -147,13 +159,12 @@ else {
 /** Create the files list */
 $my_files = array();
 
-
-if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
+if (!empty($found_client_files_ids) || !empty($found_group_files_ids)) {
 	$f = 0;
 	$files_query = "SELECT * FROM " . TABLE_FILES . " WHERE FIND_IN_SET(id,:search_ids)";
 
 	$params		= array(
-						':search_ids' => $ids_to_search
+                        ':search_ids' => $ids_to_search,
 					);
 
 	/** Add the search terms */	
@@ -215,7 +226,7 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 		/** Make the list of files */
 		if ($add_file == true) {
 			/*
-			if (in_array($data['id'], $found_own_files_temp)) {
+			if (in_array($data['id'], $found_client_files_temp)) {
 				$origin = 'own';
 			}
 			if (in_array($data['id'], $found_group_files_temp)) {
@@ -242,10 +253,6 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 	}
 	
 }
-
-// DEBUG
-//echo '<pre>'; print_r($my_files); echo '</pre>';
-
 
 /** Get the url for the logo from "Branding" */
 $logo_file_info = generate_logo_url();

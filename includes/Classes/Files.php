@@ -655,26 +655,41 @@ class Files
     /**
 	 * Update file information
 	 */
-	public function save()
+	public function save($data)
 	{
+        if (empty($data)) {
+            return false;
+        }
+
         if (empty($this->id)) {
             return false;
         }
 
         if (!$this->currentUserCanEdit()) {
-            echo 'cant';
-            //return false;
+            return false;
         }
-        echo 'can'; exit;
 
         $file_data = get_file_by_id($this->id);
-		
+
+        if (isset($data["expiry_date"])) {
+            $expiration = \DateTime::createFromFormat('d-m-Y', $data["expiry_date"]);
+            $expiration_str = $expiration->format('Y-m-d');
+        }
+
+        // Set data
+        $this->name = $data["name"];
+        $this->description = $data["description"];
+        $this->expires = (isset($data["expires"])) ? $data["expires"] : 0;
+        $this->expiry_date = (isset($expiration_str)) ? $expiration_str : $file_data["expiry_date"];
+        $this->is_public = (isset($data["public"])) ? $data["public"] : 0;
+    
         /**
-         * If a client is editing a file, the public settings should
-         * not be reset.
+         * If a client is editing a file, only a few properties can be changed
          */
         if ( CURRENT_USER_LEVEL == 0 ) {
-            $this->public = $file_data["public"];
+            $this->expires = $file_data["expires"];
+            $this->expiry_date = $file_data["expiry_date"];
+            $this->is_public = $file_data["public"];
         }
 
         if (empty($this->name)) {
@@ -686,8 +701,7 @@ class Files
             description = :description,
             expires = :expires,
             expiry_date = :expiry_date,
-            public_allow = :public,
-            public_token = :token
+            public_allow = :public
             WHERE id = :id
         ");
         $this->statement->bindParam(':title', $this->name);
@@ -695,8 +709,7 @@ class Files
         $this->statement->bindParam(':expires', $this->expires, PDO::PARAM_INT);
         $this->statement->bindParam(':expiry_date', $this->expiry_date);
         $this->statement->bindParam(':public', $this->is_public, PDO::PARAM_INT);
-        $this->statement->bindParam(':token', $this->public_token);
-        $this->statement->bindParam(':id', $this->file_id, PDO::PARAM_INT);
+        $this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $this->statement->execute();
 
 		if (!empty($this->statement)) {

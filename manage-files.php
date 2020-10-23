@@ -144,7 +144,12 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 							$msg = __('Some files could not be deleted.','cftp_admin');
 							echo system_message('danger',$msg);
 						}
-						break;
+                        break;
+                    case 'edit':
+                        $url = BASE_URI.'files-edit.php?ids='.implode(',', $selected_files);
+                        header("Location: ".$url);
+                        exit;
+                        break;
 				}
 			}
 			else {
@@ -407,6 +412,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 										<?php
 											$actions_options = array(
                                                 'none' => __('Select action','cftp_admin'),
+                                                'edit' => __('Edit','cftp_admin'),
                                                 'zip' => __('Download zipped','cftp_admin'),
                                             );
 

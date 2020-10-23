@@ -359,7 +359,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					}
 
 					/** Filters are not available for clients */
-					if(CURRENT_USER_LEVEL != '0' && $results_type != 'global') {
+					if (CURRENT_USER_LEVEL != '0' && $results_type != 'global') {
 				?>
 						<form action="manage-files.php" name="files_filters" method="get" class="form-inline form_filters">
 							<?php form_add_existing_parameters( array('hidden', 'action', 'uploader') ); ?>
@@ -409,8 +409,11 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                                     $actions_options = array(
                                         'none' => __('Select action','cftp_admin'),
                                         'edit' => __('Edit','cftp_admin'),
-                                        'zip' => __('Download zipped','cftp_admin'),
                                     );
+
+                                    if (CURRENT_USER_LEVEL != '0') {
+                                        $actions_options['zip'] = __('Download zipped','cftp_admin');
+                                    }
 
                                     /** Options only available when viewing a client/group files list */
                                     if (CURRENT_USER_LEVEL != '0' && isset($search_on)) {

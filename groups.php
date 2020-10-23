@@ -288,14 +288,14 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					/**
 					 * 3- Visibility
 					 */
-					 if ($group_data['public'] == '1') {
-						 $visibility_link	= '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="group" data-id="' . $group_data['id'] .'" data-token="' . html_output($group_data['public_token']) .'">';
-						 $visibility_label	= __('Public','cftp_admin');
-					 }
-					 else {
-						 $visibility_link	= '<a href="javascript:void(0);" class="btn btn-default btn-sm disabled" title="">';
-						 $visibility_label	= __('Private','cftp_admin');
-					 }
+					if ($group_data['public'] == '1') {
+						$visibility_link	= '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="group" data-id="' . $group_data['id'] .'" data-token="' . html_output($group_data['public_token']) .'">';
+						$visibility_label	= __('Public','cftp_admin');
+					}
+					else {
+						$visibility_link	= '<a href="javascript:void(0);" class="btn btn-default btn-sm disabled" title="">';
+						$visibility_label	= __('Private','cftp_admin');
+					}
 					
 					/**
 					 * Add the cells to the row
@@ -309,7 +309,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 													'content'		=> $group_data["name"],
 												),
 											array(
-													'content'		=> htmlentities_allowed($group_data["description"]),
+													'content'		=> $group_data["description"],
 												),
 											array(
 													'content'		=> (!empty($group_data['members'])) ? count($group_data['members']) : '0',

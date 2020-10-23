@@ -138,7 +138,7 @@ class Groups
         $return = [
             'id' => $this->id,
             'name' => $this->name,
-            'description' => $this->description,
+            'description' => htmlentities_allowed($this->description),
             'members' => $this->members,
             'files' => $this->files,
             'public' => $this->public,

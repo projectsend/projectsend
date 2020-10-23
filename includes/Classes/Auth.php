@@ -399,7 +399,12 @@ class Auth
         try {
             $hybridauth->disconnectAllAdapters();
         } catch (\Exception $e) {
+            $return = [
+                'status' => 'error',
+                'message' => sprintf(__("Logout error: %s", 'cftp_admin'), $e->getMessage())
+            ];
 
+            return json_encode($return);
         }
 
 		/*

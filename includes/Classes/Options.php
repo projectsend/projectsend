@@ -137,8 +137,7 @@ class Options
             define('ASSETS_LIB_URL', ASSETS_URL . '/lib');
 
             /** Client's landing URI */
-            define('CLIENT_VIEW_FILE_LIST_URL_PATH', 'my_files/');
-            //define('CLIENT_VIEW_FILE_LIST_URL_PATH', 'private.php');
+            define('CLIENT_VIEW_FILE_LIST_URL_PATH', 'my_files/index.php');
             define('CLIENT_VIEW_FILE_LIST_URL', BASE_URI . CLIENT_VIEW_FILE_LIST_URL_PATH);
 
             /* Set a page for each status code */

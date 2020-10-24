@@ -144,7 +144,7 @@ if ( !empty( $cat_ids ) ) {
  * that are assigned to the selected one.
  */
 if ( !empty( $category_filter ) && $category_filter != '0' ) {
-	$filtered_file_ids = array();
+	$filtered_file_ids = [];
 	foreach ( $files_keep as $keep_file_id => $keep_cat_ids ) {
 		if ( in_array( $category_filter, $keep_cat_ids ) ) {
 			$filtered_file_ids[] = $keep_file_id;
@@ -157,7 +157,7 @@ else {
 }
 
 /** Create the files list */
-$my_files = array();
+$my_files = [];
 
 if (!empty($found_client_files_ids) || !empty($found_group_files_ids)) {
 	$f = 0;
@@ -176,7 +176,6 @@ if (!empty($found_client_files_ids) || !empty($found_group_files_ids)) {
 		$params[':description']	= '%'.$_GET['search'].'%';
 	}
 
-
 	/**
 	 * Add the order.
 	 * Defaults to order by: timestamp, order: DESC (shows last uploaded files first)
@@ -187,10 +186,25 @@ if (!empty($found_client_files_ids) || !empty($found_group_files_ids)) {
 	 * Pre-query to count the total results
 	*/
 	$count_sql = $dbh->prepare( $files_query );
-	$count_sql->execute($params);
-    $count_for_pagination = $count_sql->rowCount();
+    $count_sql->execute($params);
+    
+    $count_for_pagination = 0;
+    while ( $data = $count_sql->fetch() ) {
+        /** Does it expire? */
+        $counts = true;
+		if ($data['expires'] == '1') {
+			if (time() > strtotime($data['expiry_date'])) {
+                if (get_option('expired_files_hide') == '1') {
+                    $counts = false;
+				}
+			}
+        }
+        if ($counts) { $count_for_pagination++; }
+    }
 
-	/**
+    //$count_for_pagination = $count_sql->rowCount();
+
+    /**
 	 * Repeat the query but this time, limited by pagination
 	 */
     if (TEMPLATE_RESULTS_PER_PAGE > 0) {
@@ -225,14 +239,6 @@ if (!empty($found_client_files_ids) || !empty($found_group_files_ids)) {
 
 		/** Make the list of files */
 		if ($add_file == true) {
-			/*
-			if (in_array($data['id'], $found_client_files_temp)) {
-				$origin = 'own';
-			}
-			if (in_array($data['id'], $found_group_files_temp)) {
-				$origin = 'group';
-			}
-            */
             $pathinfo = pathinfo($data['url']);
 
 			$my_files[$f] = array(
@@ -251,7 +257,6 @@ if (!empty($found_client_files_ids) || !empty($found_group_files_ids)) {
 			$f++;
 		}
 	}
-	
 }
 
 /** Get the url for the logo from "Branding" */

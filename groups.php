@@ -264,7 +264,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 										);
 				$table->thead( $thead_columns );
 
-				$sql->setFetchMode(PDO::FETCH_ASSOC);
+                $sql->setFetchMode(PDO::FETCH_ASSOC);
+                $public_groups = 0;
 				while ( $row = $sql->fetch() ) {
 					$table->addRow();
 
@@ -289,12 +290,16 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					 * 3- Visibility
 					 */
 					if ($group_data['public'] == '1') {
-						$visibility_link	= '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="group" data-id="' . $group_data['id'] .'" data-token="' . html_output($group_data['public_token']) .'">';
-						$visibility_label	= __('Public','cftp_admin');
+                        $public_groups++;
+                        $pre = (get_option('public_listing_page_enable') != 1) ? '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>' : null;
+                        $visibility_link = '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="group" data-public-url="'.$group_data['public_url'].'">'
+                                .$pre . ' ' . __('Public','cftp_admin').'
+                            </a>';
 					}
 					else {
-						$visibility_link	= '<a href="javascript:void(0);" class="btn btn-default btn-sm disabled" title="">';
-						$visibility_label	= __('Private','cftp_admin');
+                        $visibility_link = '<a href="javascript:void(0);" class="btn btn-default btn-sm disabled" title="">'
+                                .__('Private','cftp_admin').'
+                            </a>';
 					}
 					
 					/**
@@ -318,8 +323,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 													'content'		=> (!empty($group_data['files'])) ? count($group_data['files']) : '0',
 												),
 											array(
-													//'content'		=> ( $row["public"] == '1' ) ? __('Yes','cftp_admin') : __('No','cftp_admin'),
-													'content'		=> $visibility_link . $visibility_label . '</a>',
+													'content'		=> $visibility_link,
 												),
 											array(
 													'content'		=> $group_data["created_by"],
@@ -361,7 +365,16 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 		?>
 	</form>
-	
+    
+    <?php
+        if ($public_groups > 0) {
+            if ( get_option('public_listing_page_enable') != 1 ) {
+                $msg = '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> ' . __('There are public groups, but the public page is disabled so the public links will not show anything.');
+                $msg .= ' <a href="'.BASE_URI.'options.php?section=privacy" class="underline">'.__('Go to privacy options', 'cftp_admin').'</a>';
+                echo system_message('danger', $msg);
+            }
+        }
+    ?>
 </div>
 
 <?php

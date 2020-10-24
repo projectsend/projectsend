@@ -122,11 +122,13 @@
                                                     ?>
                                                     <h3><?php _e('Assignations', 'cftp_admin');?></h3>
                                                     <label><?php _e('Clients', 'cftp_admin');?></label>
-                                                    <select multiple="multiple" name="file[<?php echo $i; ?>][assignments][clients][]" class="form-control chosen-select assignments_clients" data-file-id="<?php echo $file->id; ?>" data-type="clients" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+                                                    <select multiple="multiple" name="file[<?php echo $i; ?>][assignments][clients][]" class="form-control chosen-select assignments_clients none" data-file-id="<?php echo $file->id; ?>" data-type="clients" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
                                                         <?php
                                                             foreach($clients as $id => $name) {
                                                             ?>
-                                                                <option value="<?php echo html_output($id); ?>"><?php echo html_output($name); ?></option>
+                                                                <option value="<?php echo html_output($id); ?>" <?php if (in_array($id, $file->assignments_clients)) { echo ' selected="selected"'; } ?>>
+                                                                    <?php echo html_output($name); ?>
+                                                                </option>
                                                             <?php
                                                             }
                                                         ?>
@@ -134,17 +136,21 @@
                                                     <div class="list_mass_members">
                                                         <button class="btn btn-xs btn-primary add-all" data-type="clients" data-file-id="<?php echo $file->id; ?>"><?php _e('Add all','cftp_admin'); ?></button>
                                                         <button class="btn btn-xs btn-primary remove-all" data-type="clients" data-file-id="<?php echo $file->id; ?>"><?php _e('Remove all','cftp_admin'); ?></button>
-                                                        <button class="btn btn-xs btn-danger copy-all" data-type="clients" data-file-id="<?php echo $file->id; ?>"><?php _e('Copy selections to other files','cftp_admin'); ?></button>
+                                                        <?php if (count($editable) > 1) { ?>
+                                                            <button class="btn btn-xs btn-success copy-all" data-type="clients" data-file-id="<?php echo $file->id; ?>"><?php _e('Copy selections to other files','cftp_admin'); ?></button>
+                                                        <?php } ?>
                                                     </div>
 
                                                     <div class="divider"></div>
 
                                                     <label><?php _e('Groups', 'cftp_admin');?></label>
-                                                    <select multiple="multiple" name="file[<?php echo $i; ?>][assignments][groups][]" class="form-control chosen-select assignments_groups" data-file-id="<?php echo $file->id; ?>" data-type="groups" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+                                                    <select multiple="multiple" name="file[<?php echo $i; ?>][assignments][groups][]" class="form-control chosen-select assignments_groups none" data-file-id="<?php echo $file->id; ?>" data-type="groups" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
                                                         <?php
                                                             foreach($groups as $id => $name) {
                                                             ?>
-                                                                <option value="<?php echo html_output($id); ?>"><?php echo html_output($name); ?></option>
+                                                                <option value="<?php echo html_output($id); ?>" <?php if (in_array($id, $file->assignments_groups)) { echo ' selected="selected"'; } ?>>
+                                                                    <?php echo html_output($name); ?>
+                                                                </option>
                                                             <?php
                                                             }
                                                         ?>
@@ -152,7 +158,9 @@
                                                     <div class="list_mass_members">
                                                         <button class="btn btn-xs btn-primary add-all" data-type="groups" data-file-id="<?php echo $file->id; ?>"><?php _e('Add all','cftp_admin'); ?></button>
                                                         <button class="btn btn-xs btn-primary remove-all" data-type="groups" data-file-id="<?php echo $file->id; ?>"><?php _e('Remove all','cftp_admin'); ?></button>
-                                                        <button class="btn btn-xs btn-danger copy-all" data-type="groups" data-file-id="<?php echo $file->id; ?>"><?php _e('Copy selections to other files','cftp_admin'); ?></button>
+                                                        <?php if (count($editable) > 1) { ?>
+                                                            <button class="btn btn-xs btn-success copy-all" data-type="groups" data-file-id="<?php echo $file->id; ?>"><?php _e('Copy selections to other files','cftp_admin'); ?></button>
+                                                        <?php } ?>
                                                     </div>
 
                                                     <div class="divider"></div>
@@ -169,19 +177,21 @@
                                                 <div class="file_data">
                                                     <h3><?php _e('Categories', 'cftp_admin');?></h3>
                                                     <label><?php _e('Add to', 'cftp_admin');?>:</label>
-                                                    <select multiple="multiple" name="file[<?php echo $i; ?>][categories][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+                                                    <select multiple="multiple" name="file[<?php echo $i; ?>][categories][]" class="form-control chosen-select none" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
                                                         <?php
                                                             /**
                                                              * The categories list is generated early on the file so the
                                                              * array doesn't need to be made once on every file.
                                                              */
-                                                            echo generate_categories_options( $get_categories['arranged'], 0 );
+                                                            echo generate_categories_options( $get_categories['arranged'], 0, $file->categories );
                                                         ?>
                                                     </select>
                                                     <div class="list_mass_members">
                                                         <a href="#" class="btn btn-xs btn-primary add-all" data-type="categories"><?php _e('Add all','cftp_admin'); ?></a>
                                                         <a href="#" class="btn btn-xs btn-primary remove-all" data-type="categories"><?php _e('Remove all','cftp_admin'); ?></a>
-                                                        <a href="#" class="btn btn-xs btn-danger copy-all" data-type="categories"><?php _e('Copy selections to other files','cftp_admin'); ?></a>
+                                                        <?php if (count($editable) > 1) { ?>
+                                                            <a href="#" class="btn btn-xs btn-success copy-all" data-type="categories"><?php _e('Copy selections to other files','cftp_admin'); ?></a>
+                                                        <?php } ?>
                                                     </div>
                                                 </div>
                                             </div>

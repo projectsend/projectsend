@@ -422,7 +422,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                                         $actions_options['unassign'] = __('Unassign','cftp_admin');
                                     }
                                     else {
-                                        if (CURRENT_USER_LEVEL != '0' || (CURRENT_USER_LEVEL == '0' && CLIENTS_CAN_DELETE_OWN_FILES == '1'))
+                                        if (CURRENT_USER_LEVEL != '0' || (CURRENT_USER_LEVEL == '0' && get_option('clients_can_delete_own_files') == '1'))
                                         $actions_options['delete'] = __('Delete','cftp_admin');
                                     }
 

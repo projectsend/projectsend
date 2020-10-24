@@ -43,7 +43,7 @@ class FilesActions
 				$this->sql->setFetchMode(PDO::FETCH_ASSOC);
 				while( $this->row = $this->sql->fetch() ) {
 					if ( CURRENT_USER_LEVEL == '0' ) {
-						if ( CLIENTS_CAN_DELETE_OWN_FILES == '1' && $this->row['uploader'] == CURRENT_USER_USERNAME ) {
+						if ( get_option('clients_can_delete_own_files') == '1' && $this->row['uploader'] == CURRENT_USER_USERNAME ) {
 							$this->can_delete	= true;
 						}
 					}

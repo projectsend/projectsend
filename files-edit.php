@@ -58,20 +58,23 @@ $get_categories = get_categories();
 	if (isset($_POST['save'])) {
         // Edit each file and its assignations
 		foreach ($_POST['file'] as $file) {
-            pa($file);
             // @todo
             $object = new \ProjectSend\Classes\Files();
             $object->get($file_id);
-            $object->save();
-            $saved_files[] = $file['id'];
+            if ($object->save($file) != false) {
+                // @todo
+                // Also save assignments
+                $saved_files[] = $file['id'];
+            }
         }
-exit;
+
         // Send the notifications
         require_once INCLUDES_DIR . DS . 'upload-send-notifications.php';
 
         // Redirect
         $saved = implode(',', $saved_files);
         header("Location: files-edit.php?ids=".$saved.'&saved=true');
+        exit;
 	}
 
     // Saved files
@@ -84,7 +87,6 @@ exit;
                 $saved_files[$file_id] = $object->getData();
             }
         }
-        pa($saved_files);
 
         echo system_message('success', __('Files saved correctly','cftp_admin'));
 ?>

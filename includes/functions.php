@@ -849,12 +849,13 @@ function html_output($str, $flags = ENT_QUOTES, $encoding = CHARSET, $double_enc
 }
 
 /**
- * Allow some html tags for file descriptions on htmlentities
+ * Allow some html tags for file and group descriptions on htmlentities
  *
  */
 function htmlentities_allowed($str, $quoteStyle = ENT_COMPAT, $charset = CHARSET, $doubleEncode = false)
 {
-	$description = htmlentities($str, $quoteStyle, $charset, $doubleEncode);
+    //$description = htmlspecialchars($str, $quoteStyle, $charset, $doubleEncode);
+    $description = htmlspecialchars_decode($str, $quoteStyle);
 	$allowed_tags = array('i','b','strong','em','p','br','ul','ol','li','u','sup','sub','s');
 
 	$find = array();

@@ -22,6 +22,7 @@ class Groups
     private $description;
     private $public;
     private $public_token;
+    private $public_url;
     private $members;
     private $files;
     private $created_by;
@@ -99,6 +100,7 @@ class Groups
             $this->description = html_output($this->row['description']);
             $this->public = html_output($this->row['public']);
             $this->public_token = html_output($this->row['public_token']);
+            $this->public_url = BASE_URI.'public.php?id='.$this->id.'&token='.$this->public_token;
             $this->created_by = html_output($this->row['created_by']);
             $this->created_date = html_output($this->row['timestamp']);
         }
@@ -143,6 +145,7 @@ class Groups
             'files' => $this->files,
             'public' => $this->public,
             'public_token' => $this->public_token,
+            'public_url' => $this->public_url,
             'created_by' => $this->created_by,
             'created_date' => $this->created_date,
         ];

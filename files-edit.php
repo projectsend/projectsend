@@ -82,9 +82,7 @@ $get_categories = get_categories();
 	if (!empty($_GET['saved'])) {
         foreach ($editable as $file_id) {
             if (is_numeric($file_id)) {
-                $object = new \ProjectSend\Classes\Files();
-                $object->get($file_id);
-                $saved_files[$file_id] = $object->getData();
+                $saved_files[] = $file_id;
             }
         }
 
@@ -108,20 +106,22 @@ $get_categories = get_categories();
 			</thead>
 			<tbody>
 			<?php
-				foreach($saved_files as $id => $file) {
-			?>
+				foreach($saved_files as $file_id) {
+                    $file = new \ProjectSend\Classes\Files();
+                    $file->get($file_id);
+            ?>
 					<tr>
-						<td><?php echo html_output($file['title']); ?></td>
-						<td><?php echo htmlentities_allowed($file['description']); ?></td>
-						<td><?php echo html_output($file['filename_original']); ?></td>
+						<td><?php echo html_output($file->title); ?></td>
+						<td><?php echo htmlentities_allowed($file->description); ?></td>
+						<td><?php echo html_output($file->filename_original); ?></td>
 						<?php
 							if (CURRENT_USER_LEVEL != 0) {
 						?>
 								<td class="col_visibility">
 									<?php
-										if ($file['public'] == '1') {
+										if ($file->public == '1') {
 									?>
-											<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="file" data-id="<?php echo $file['id']; ?>" data-token="<?php echo html_output($file['public_token']); ?>">
+											<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="file" data-public-url="<?php echo $file->public_url; ?>">
 									<?php
 										}
 										else {
@@ -131,7 +131,7 @@ $get_categories = get_categories();
 										}
 												$status_public	= __('Public','cftp_admin');
 												$status_private	= __('Private','cftp_admin');
-												echo ($file['public'] == 1) ? $status_public : $status_private;
+												echo ($file->public == 1) ? $status_public : $status_private;
 									?>
 											</a>
 								</td>
@@ -139,7 +139,7 @@ $get_categories = get_categories();
 							}
 						?>
 						<td>
-							<a href="files-edit.php?ids=<?php echo html_output($file['id']); ?>" class="btn-primary btn btn-sm">
+							<a href="files-edit.php?ids=<?php echo html_output($file->id); ?>" class="btn-primary btn btn-sm">
 								<i class="fa fa-pencil"></i><span class="button_label"><?php _e('Edit file','cftp_admin'); ?></span>
 							</a>
 							<?php

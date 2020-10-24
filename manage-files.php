@@ -124,9 +124,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 												'ok'		=> 0,
 												'errors'	=> 0,
 											);
-						foreach ($selected_files as $index => $file_id) {
+						foreach ($selected_files as $index => $file->id) {
 							$this_file		= new ProjectSend\Classes\FilesActions;
-							$delete_status	= $this_file->deleteFiles($file_id);
+							$delete_status	= $this_file->deleteFiles($file->id);
 
 							if ( $delete_status == true ) {
 								$delete_results['ok']++;
@@ -576,27 +576,18 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 												),
 											);
 	
-											//echo '<pre>'; 
-											//print_r($thead_columns);
-											//echo '</pre>';
-	
 					$table->thead( $thead_columns );
-	
 	
 					$sql->setFetchMode(PDO::FETCH_ASSOC);
 					while ( $row = $sql->fetch() ) {
-						$table->addRow();
-	
-						/**
-						 * Prepare the information to be used later on the cells array
-						 */
-						$file_id = $row['id'];
-						$download_link = make_download_link( array( 'id' => $file_id ) );
+                        $table->addRow();
+                        $file = new \ProjectSend\Classes\Files();
+                        $file->get($row['id']);
 	
 						/**
 						 * Visibility is only available when filtering by client or group.
 						 */
-                        $assignations = get_file_assignations($row['id']);
+                        $assignations = get_file_assignations($file->id);
 
                         $count_assignations = 0;
                         if (!empty($assignations['clients'])) { $count_assignations += count($assignations['clients']); }
@@ -612,31 +603,10 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                         }
 
 	
-                        $date = format_date($row['timestamp']);
-
-                        $file_absolute_path = UPLOADED_FILES_DIR . DS . $row['url'];
-
-						/**
-						 * Get file size only if the file exists
-						 */
-						$this_file_absolute = UPLOADED_FILES_DIR . $row['url'];
-						if ( file_exists( $this_file_absolute ) ) {
-							$this_file_size = get_real_size($this_file_absolute);
-							$formatted_size = html_output(format_file_size($this_file_size));
-						}
-						else {
-							$this_file_size = '0';
-							$formatted_size = '-';
-						}
-	
-						/***/
-						$pathinfo = pathinfo($row['url']);
-                        $extension = ( !empty( $pathinfo['extension'] ) ) ? strtolower($pathinfo['extension']) : '';
-                        
                         /** Thumbnail */
 						$thumbnail_cell = '';
-						if ( file_is_image( $file_absolute_path ) ) {
-							$thumbnail = make_thumbnail( $file_absolute_path, null, 50, 50 );
+						if ( file_is_image( $file->full_path ) ) {
+							$thumbnail = make_thumbnail( $file->full_path, null, 50, 50 );
 							if ( !empty( $thumbnail['thumbnail']['url'] ) ) {
 								$thumbnail_cell = '<img src="' . $thumbnail['thumbnail']['url'] . '" class="thumbnail" />';
 							}
@@ -649,32 +619,29 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						/**
 						 * Visibility
 						 */
-						if ($row['public_allow'] == '1') {
-							$visibility_link	= '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="file" data-id="' . $row['id'] .'" data-token="' . html_output($row['public_token']) .'">';
-							$visibility_label	= __('Download','cftp_admin');
+						if ($file->isPublic()) {
+							$visibility_link = '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="file" data-public-url="'.$file->public_url.'">'.__('Download','cftp_admin').'</a>';
 						}
 						else {
-							if ( ENABLE_LANDING_FOR_ALL_FILES == '1' ) {
-								$visibility_link	= '<a href="javascript:void(0);" class="btn btn-default btn-sm public_link" data-type="file" data-id="' . $row['id'] .'" data-token="' . html_output($row['public_token']) .'">';
-								$visibility_label	= __('View information','cftp_admin');
+							if ( get_option('enable_landing_for_all_files') == '1' ) {
+								$visibility_link = '<a href="javascript:void(0);" class="btn btn-default btn-sm public_link" data-type="file" data-public-url="'.$file->public_url.'">'.__('View information','cftp_admin').'</a>';
 							}
 							else {
-								$visibility_link	= '<a href="javascript:void(0);" class="btn btn-default btn-sm disabled" title="">';
-								$visibility_label	= __('None','cftp_admin');
+								$visibility_link = '<a href="javascript:void(0);" class="btn btn-default btn-sm disabled" title="">'.__('None','cftp_admin').'</a>';
 							}
 						}
 	
 						/**
 						 * Expiration
 						 */
-						if ($row['expires'] == '0') {
+						if ($file->expires == '0') {
 							$expires_button	= 'success';
 							$expires_label	= __('Does not expire','cftp_admin');
 						}
 						else {
-							$expires_date = date( get_option('timeformat'), strtotime ($row['expiry_date'] ) );
+							$expires_date = date( get_option('timeformat'), strtotime ($file->expiry_date) );
 	
-							if (time() > strtotime($row['expiry_date'])) {
+							if ($file->expired == true) {
 								$expires_button	= 'danger';
 								$expires_label	= __('Expired on','cftp_admin') . ' ' . $expires_date;
 							}
@@ -706,7 +673,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 								case 'group':
 								case 'category':
 									$download_count_class	= ( $row['download_count'] > 0 ) ? 'downloaders btn-primary' : 'btn-default disabled';
-									$download_count_content	= '<a href="' . BASE_URI .'download-information.php?id=' . $row['id'] .'" class="' . $download_count_class . ' btn btn-sm" title="' . html_output( $row['filename'] ) . '">' . $download_count_content . '</a>';
+									$download_count_content	= '<a href="' . BASE_URI .'download-information.php?id=' . $file->id .'" class="' . $download_count_class . ' btn btn-sm" title="' . html_output( $row['filename'] ) . '">' . $download_count_content . '</a>';
 								break;
 							}
 						}
@@ -724,7 +691,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 									$btn_class		= 'btn-default disabled';
 								}
 	
-								$downloads_table_link = '<a href="' . BASE_URI .'download-information.php?id=' . $row['id'] .'" class="' . $btn_class .' btn btn-sm" title="' .html_output($row['filename']) .'">' . $row["download_count"] . ' ' . __('downloads','cftp_admin') .'</a>';
+								$downloads_table_link = '<a href="' . BASE_URI .'download-information.php?id=' . $file->id .'" class="' . $btn_class .' btn btn-sm" title="' .html_output($row['filename']) .'">' . $row["download_count"] . ' ' . __('downloads','cftp_admin') .'</a>';
 							}
 						}
 	
@@ -734,29 +701,29 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						$tbody_cells = array(
 												array(
 													'checkbox'		=> true,
-													'value'			=> $row["id"],
+													'value'			=> $file->id,
 													'condition'		=> $conditions['select_all'],
 												),
 												array(
 													'content'		=> $thumbnail_cell,
 												),
                                                 array(
-													'content'		=> $date,
+													'content'		=> format_date($file->uploaded_date),
 												),
 												array(
-													'content'		=> html_output( $extension ),
+													'content'		=> $file->extension,
 												),
 												array(
 													'attributes'	=> array(
 																			'class'		=> array( 'file_name' ),
 																		),
-													'content'		=> '<a href="' . $download_link . '" target="_blank">' . html_output($row['filename']) . '</a>',
+													'content'		=> '<a href="' . $file->download_link . '" target="_blank">' . $file->filename_original . '</a>',
 												),
 												array(
-													'content'		=> $formatted_size,
+													'content'		=> $file->size_formatted,
 												),
 												array(
-													'content'		=> html_output( $row['uploader'] ),
+													'content'		=> $file->uploaded_by,
 													'condition'		=> $conditions['is_not_client'],
 												),
 												array(
@@ -767,7 +734,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 													'attributes'	=> array(
 																			'class'		=> array( 'col_visibility' ),
 																		),
-													'content'		=> $visibility_link . $visibility_label . '</a>',
+													'content'		=> $visibility_link,
 													'condition'		=> $conditions['is_not_client'],
 												),
 												array(
@@ -787,7 +754,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 													'condition'		=> $conditions['total_downloads'],
 												),
 												array(
-													'content'		=> '<a href="files-edit.php?ids=' . $row["id"] .'" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a>',
+													'content'		=> '<a href="files-edit.php?ids=' . $file->id .'" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a>',
 												),
 									);
 	

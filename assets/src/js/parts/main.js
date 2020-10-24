@@ -181,9 +181,8 @@
              */
             $('body').on('click', '.public_link', function(e) {
                 $(document).psendmodal();
-                var type	= $(this).data('type');
-                var id		= $(this).data('id');
-                var token	= $(this).data('token');
+                var type = $(this).data('type');
+                var public_url = $(this).data('public-url');
 
                 if ( type == 'group' ) {
                     var link_base = json_strings.uri.public_group + '?';
@@ -199,7 +198,7 @@
                                     '<div class="copied">'+json_strings.translations.copy_ok+'</div>'+
                                     '<div class="copied_not">'+json_strings.translations.copy_error+'</div>'+
                                     '<div class="form-group">'+
-                                        '<textarea class="input-large public_link_copy form-control" rows="4" readonly>' + link_base + 'id=' + id + '&token=' + token + '</textarea>'+
+                                        '<textarea class="input-large public_link_copy form-control" rows="4" readonly>' + public_url + '</textarea>'+
                                     '</div>'+
                                     '<span class="note">' + note_text + '</span>'+
                                 '</div>';

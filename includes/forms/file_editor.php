@@ -71,12 +71,12 @@
 
                                                 <div class="form-group">
                                                     <label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
-                                                        <div class="input-group date-container">
-                                                            <input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($file->expiry_date)) ? date('d-m-Y', strtotime($file->expiry_date)) : date('d-m-Y'); ?>" />
-                                                            <div class="input-group-addon">
-                                                                <i class="glyphicon glyphicon-time"></i>
-                                                            </div>
+                                                    <div class="input-group date-container">
+                                                        <input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($file->expiry_date)) ? date('d-m-Y', strtotime($file->expiry_date)) : date('d-m-Y'); ?>" />
+                                                        <div class="input-group-addon">
+                                                            <i class="glyphicon glyphicon-time"></i>
                                                         </div>
+                                                    </div>
                                                 </div>
 
                                                 <div class="checkbox">
@@ -167,7 +167,7 @@
 
                                                     <div class="checkbox">
                                                         <label for="hid_checkbox_<?php echo $i; ?>">
-                                                            <input type="checkbox" id="hid_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][hidden]" value="1" /> <?php _e('Upload hidden (will not send notifications)', 'cftp_admin');?>
+                                                            <input type="checkbox" id="hid_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][hidden]" value="1" /> <?php _e('Hidden (will not send notifications or show into the files list)', 'cftp_admin');?>
                                                         </label>
                                                     </div>
                                                 </div>

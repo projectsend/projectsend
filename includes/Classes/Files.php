@@ -20,6 +20,7 @@ class Files
     public $uploaded_by;
     public $filename_on_disk; // the safe name given to the file to ensure uniqueness when moving it to the uploads directory
     public $filename_original; // the original filename as the user uploads it
+    public $download_link;
     public $expires;
     public $expired;
     public $expiry_date;
@@ -32,16 +33,11 @@ class Files
     public $size_formatted;
     public $public;
     public $public_token;
+    public $public_url;
     public $location;
     public $full_path;
 
     private $is_filetype_allowed;
-
-    private $validation_passed;
-    private $validation_errors;
-
-    // Permissions
-    private $allowed_actions_roles;
 
     public function __construct(PDO $dbh = null)
     {
@@ -52,7 +48,6 @@ class Files
         $this->dbh = $dbh;
         $this->logger = new \ProjectSend\Classes\ActionsLog;
 
-        $this->allowed_actions_roles = [9, 8];
         $this->location = UPLOADED_FILES_DIR;
 
         $this->is_filetype_allowed = false;
@@ -138,23 +133,27 @@ class Files
             return false;
         }
     
-        while ($this->row = $statement->fetch() ) {
-            $this->id = html_output($this->row['id']);
-            $this->user_id = html_output($this->row['user_id']);
-            $this->title = html_output($this->row['filename']);
-            $this->description = html_output($this->row['description']);
-            $this->uploaded_by = html_output($this->row['uploader']);
-            $this->filename_on_disk = html_output($this->row['url']);
-            $this->filename_original = html_output($this->row['original_url']);
-            $this->expires = html_output($this->row['expires']);
-            $this->expiry_date = html_output($this->row['expiry_date']);
-            $this->uploaded_date = html_output($this->row['timestamp']);
-            $this->public = html_output($this->row['public_allow']);
-            $this->public_token = html_output($this->row['public_token']);
+        while ($row = $statement->fetch() ) {
+            $this->id = html_output($row['id']);
+            $this->user_id = html_output($row['user_id']);
+            $this->title = html_output($row['filename']);
+            $this->description = html_output($row['description']);
+            $this->uploaded_by = html_output($row['uploader']);
+            $this->filename_on_disk = html_output($row['url']);
+            $this->filename_original = html_output($row['original_url']);
+            $this->download_link = make_download_link(array('id' => $this->id));
+            $this->expires = html_output($row['expires']);
+            $this->expiry_date = html_output($row['expiry_date']);
+            $this->uploaded_date = html_output($row['timestamp']);
+            $this->public = html_output($row['public_allow']);
+            $this->public_token = html_output($row['public_token']);
+            $this->public_url = BASE_URI . 'download.php?id=' . $this->id . '&token=' . $this->public_token;
         }
 
+        $this->setFullPath();
         $this->isExpired();
         $this->setExtension();
+        $this->getSize();
 
         $this->getCurrentAssignments();
         $this->getCurrentCategories();
@@ -206,6 +205,15 @@ class Files
         }
     }
 
+    public function isPublic()
+    {
+        if ($this->public == '1') {
+            return true;
+        }
+
+        return false;
+    }
+
     public function getData()
     {
         $data = [
@@ -219,10 +227,11 @@ class Files
             'extension' => $this->extension,
             'expires' => $this->expires,
             'expiry_date' => $this->expiry_date,
-            'expired' => $this->expired,
+            'expired' => (bool)$this->expired,
             'uploaded_date' => $this->uploaded_date,
             'public' => $this->public,
             'public_token' => $this->public_token,
+            'public_url' => $this->public_url,
             'assignments' => [
                 'clients' => $this->assignments_clients,
                 'groups' => $this->assignments_groups,

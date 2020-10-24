@@ -122,7 +122,30 @@ if (current_role_in($core_update_allowed)) {
 						</div>
 				<?php
 					}
-				?>
+
+                    // Check important directories write permissions
+                    $write_errors = [];
+                    $directories = [
+                        'upload'.DS.'admin',
+                        'upload'.DS.'files',
+                        'upload'.DS.'thumbnails',
+                    ];
+                    foreach ($directories as $directory) {
+                        if (!is_writable(ROOT_DIR.DS.$directory)) {
+                            $write_errors[] = $directory;
+                        }
+                    }
+
+                    if ( !empty($write_errors) ) {
+                        $msg = '<p><strong>'.__('Warning:', 'cftp_admin').'</strong>' . ' ' . __('The following directories do not have write permissions.', 'cftp_admin').'</p>';
+                        $msg .= '<p>'.__('File uploading or other important functions might not work.', 'cftp_admin').'</p>';
+                        foreach ($write_errors as $directory) {
+                            $msg .= '<p>'.$directory.'</p>';
+                        }
+
+                        echo system_message('danger', $msg);
+                    }
+                ?>
 
 				<div class="row">
 					<div class="col-xs-12">

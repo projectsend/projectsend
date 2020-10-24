@@ -12,7 +12,7 @@ require_once 'bootstrap.php';
 /**
  * If the option to show this page is not enabled, redirect
  */
-if ( PUBLIC_LISTING_PAGE_ENABLE != 1 ) {
+if ( get_option('public_listing_page_enable') != 1 ) {
 	header("location:" . BASE_URI . "index.php");
 	die();
 }
@@ -20,7 +20,7 @@ if ( PUBLIC_LISTING_PAGE_ENABLE != 1 ) {
 /**
  * Check the option to show the page to logged in users only
  */
-if ( PUBLIC_LISTING_LOGGED_ONLY == 1 ) {
+if ( get_option('public_listing_logged_only') == 1 ) {
 	check_for_session();
 }
 
@@ -61,7 +61,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
  */
 function list_file($data, $origin) {
 	$show = false;
-	if ( $origin == 'group' && PUBLIC_LISTING_SHOW_ALL_FILES == 1 ) {
+	if ( $origin == 'group' && get_option('public_listing_show_all_files') == 1 ) {
 	}
 	else {
 		if ( $data['public'] != 1 ) {
@@ -70,7 +70,7 @@ function list_file($data, $origin) {
 	}
 
 	$output = '<li class="file"><i class="fa fa-file-o" aria-hidden="true"></i> ';
-	if ( PUBLIC_LISTING_USE_DOWNLOAD_LINK == 1 && $data['expired'] != true && $data['public'] == 1 ) {
+	if ( get_option('public_listing_use_download_link') == 1 && $data['expired'] != true && $data['public'] == 1 ) {
 		$download_link = BASE_URI . 'download.php?id=' . $data['id'] . '&token=' . $data['token'];
 		$output .= '<a href="' . $download_link . '">' . $data['filename'] . '</a>';
 	}
@@ -95,11 +95,11 @@ function list_file($data, $origin) {
 					switch ( $mode ) {
 						case 'files':
 								$title = __('Public groups and files','cftp_admin');
-								$desc = ''; //__('Public navigation','cftp_admin');
+								$desc = null;
 							break;
 						case 'group':
 								$title = $test_group['name'];
-								$desc = $test_group['description'];
+								$desc = htmlentities_allowed($test_group['description']);
 							break;
 					}
 				?>
@@ -123,7 +123,7 @@ function list_file($data, $origin) {
 							$files_sql = "SELECT * FROM " . TABLE_FILES;
 
 							/** All files or just the public ones? */
-							if ( PUBLIC_LISTING_SHOW_ALL_FILES != 1 && $mode != 'group' ) {
+							if ( get_option('public_listing_show_all_files') != 1 && $mode != 'group' ) {
 								$files_sql .= " WHERE public_allow=1";
 							}
 
@@ -138,7 +138,7 @@ function list_file($data, $origin) {
 
 								if ($row['expires'] == '1') {
 									if (time() > strtotime($row['expiry_date'])) {
-										if (EXPIRED_FILES_HIDE == '1') {
+										if (get_option('expired_files_hide') == '1') {
 											$add_file = false;
 										}
 										$expired = true;
@@ -188,23 +188,23 @@ function list_file($data, $origin) {
 								$group_files = array();
 								$files_groups_sql = "SELECT id, file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE group_id=:group_id AND hidden = '0'";
 								// Don't include private files
-								if ( PUBLIC_LISTING_SHOW_ALL_FILES != 1 ) {
+								if ( get_option('public_listing_show_all_files') != 1 ) {
 									$files_groups_sql .= " AND FIND_IN_SET(file_id, :public_files)";
 								}
 
 								// Don't include expired files
-								if (EXPIRED_FILES_HIDE == '1') {
+								if (get_option('expired_files_hide') == '1') {
 									$files_groups_sql .= " AND !FIND_IN_SET(file_id, :excluded_files)";
 								}
 
 								$sql = $dbh->prepare($files_groups_sql);
 								$sql->bindParam(':group_id', $group_id, PDO::PARAM_INT);
 
-								if ( PUBLIC_LISTING_SHOW_ALL_FILES != 1 ) {
+								if ( get_option('public_listing_show_all_files') != 1 ) {
 									$included_files = implode( ',', array_map( 'intval', array_unique( $public_files ) ) );
 									$sql->bindParam(':public_files', $included_files);
 								}
-								if (EXPIRED_FILES_HIDE == '1') {
+								if (get_option('expired_files_hide') == '1') {
 									$excluded_files = implode( ',', array_map( 'intval', array_unique( $expired_files ) ) );
 									$sql->bindParam(':excluded_files', $excluded_files);
 								}

@@ -25,7 +25,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 		 * Get the user's id
 		 */
 		$sql_query = "SELECT * FROM " . TABLE_FILES . " WHERE id = :file_id AND BINARY public_token = :token";
-		if ( ENABLE_LANDING_FOR_ALL_FILES != '1' ) {
+		if ( get_option('enable_landing_for_all_files') != '1' ) {
 			$sql_query .= " AND public_allow = '1'";
 		}
 		$statement = $dbh->prepare( $sql_query );
@@ -56,7 +56,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 		}
 
 		/** If landing for all files is enabled but the file is not public, do not allow download */
-		if ( ENABLE_LANDING_FOR_ALL_FILES == '1' && $is_public == '0' ) {
+		if ( get_option('enable_landing_for_all_files') == '1' && $is_public == '0' ) {
 			$can_download = false;
 			$can_view = true;
 		}

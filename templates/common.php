@@ -216,7 +216,7 @@ if (!empty($found_client_files_ids) || !empty($found_group_files_ids)) {
 		/** Does it expire? */
 		if ($data['expires'] == '1') {
 			if (time() > strtotime($data['expiry_date'])) {
-				if (EXPIRED_FILES_HIDE == '1') {
+				if (get_option('expired_files_hide') == '1') {
 					$add_file = false;
 				}
 				$expired = true;

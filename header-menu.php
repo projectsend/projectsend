@@ -365,12 +365,12 @@ foreach ( $items as $item )
 		{
 			$format			= "<li class='%s'>\n\t<a href='%s' class='nav_top_level'>%s<span class='menu_label'>%s%s</span></a>\n</li>\n";
 			$menu_output 	.= sprintf( $format, $current, BASE_URI . $item['main']['link'], $icon, $badge, $item['main']['label'] );
-		}
-
-		else
+		} else
 		{
-			$format			= "<li class='has_dropdown %s'>\n\t<a href='#' class='nav_top_level'>%s<span class='menu_label'>%s%s</span></a>\n\t<ul class='dropdown_content'>\n";
-			$menu_output 	.= sprintf( $format, $current, $icon, $item['main']['label'], $badge );
+            $first_child = $item['sub'][0];
+            $top_level_link = (!empty($first_child)) ? $first_child['link'] : '#';
+			$format			= "<li class='has_dropdown %s'>\n\t<a href='%s' class='nav_top_level'>%s<span class='menu_label'>%s%s</span></a>\n\t<ul class='dropdown_content'>\n";
+			$menu_output 	.= sprintf( $format, $current, $top_level_link, $icon, $item['main']['label'], $badge );
 			/**
 			 * Submenu
 			*/

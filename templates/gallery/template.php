@@ -26,11 +26,10 @@ $window_title = __('Gallery','cftp_template_gallery');
 /**
  * Filter files by type, only save images.
 */
-$img_formats = array('gif','jpg','pjpeg','jpeg','png');
-foreach ($my_files as $file) {
-	$pathinfo = pathinfo($file['url']);
-	$extension = strtolower($pathinfo['extension']);
-	if (in_array($extension,$img_formats)) {
+foreach ($available_files as $file_id) {
+    $file = new \ProjectSend\Classes\Files();
+    $file->get($file_id);
+    if ($file->isImage()) {
 		$img_files[] = $file;
 	}
 }
@@ -67,8 +66,9 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 			<div id="offsite_nav">
 				<nav class="account_actions">
 					<ul>
-						<li><a href="<?php echo BASE_URI; ?>process.php?do=logout" target="_self" id="logout"><i class="fa fa-sign-out" aria-hidden="true"></i> <?php _e('Logout', 'cftp_admin'); ?></a></li>
-						<li><a href="<?php echo BASE_URI; ?>upload.php" target="_self" id="upload"><i class="fa fa-cloud-upload" aria-hidden="true"></i> <?php _e('Upload files', 'cftp_admin'); ?></a></li>
+                        <li><a href="<?php echo BASE_URI; ?>process.php?do=logout" target="_self" id="logout"><i class="fa fa-sign-out" aria-hidden="true"></i> <?php _e('Logout', 'cftp_admin'); ?></a></li>
+                        <li><a href="<?php echo BASE_URI; ?>manage-files.php" target="_self" id="manage"><i class="fa fa-file" aria-hidden="true"></i> <?php _e('Manage files', 'cftp_admin'); ?></a></li>
+						<li><a href="<?php echo BASE_URI; ?>upload.php" target="_self" id="upload"><i class="fa fa-cloud-upload" aria-hidden="true"></i> <?php _e('Upload', 'cftp_admin'); ?></a></li>
 					</ul>
 				</nav>
 				
@@ -119,28 +119,27 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 			?>
 					<ul class="photo_list">
 						<?php
-							foreach ($img_files as $this_file) {
-								$download_link = make_download_link($this_file);
+							foreach ($img_files as $file) {
 						?>
 								<li>
-									<h5><?php echo htmlentities($this_file['name']); ?></h5>
+									<h5><?php echo $file->title; ?></h5>
 									<?php
-										if ($this_file['expired'] == true) {
+										if ($file->expired == true) {
 									?>
 											<?php _e('File expired','cftp_template_gallery'); ?>
 									<?php
 										}
 										else {
+                                            $thumbnail = make_thumbnail( $file->full_path, null, TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT );
 									?>
 										<div class="img_prev">
-                                            <a href="<?php echo $download_link; ?>" target="_blank">
-                                                <?php $thumbnail = make_thumbnail( UPLOADED_FILES_DIR.DS.$this_file['url'], null, TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT ); ?>
-												<img src="<?php echo $thumbnail['thumbnail']['url']; ?>" class="thumbnail" alt="<?php echo htmlentities($this_file['name']); ?>" />
+                                            <a href="<?php echo $file->download_link; ?>" target="_blank">
+												<img src="<?php echo $thumbnail['thumbnail']['url']; ?>" class="thumbnail" alt="<?php echo $file->title; ?>" />
 											</a>
 										</div>
 										<div class="img_data">
 											<div class="download_link">
-												<a href="<?php echo $download_link; ?>" target="_blank">
+												<a href="<?php echo $file->download_link; ?>" target="_blank">
 													<i class="fa fa-cloud-download" aria-hidden="true"></i> <?php _e('Download original','cftp_template_gallery'); ?>
 												</a>
 											</div>

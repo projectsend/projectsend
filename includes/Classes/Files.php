@@ -138,7 +138,7 @@ class Files
             $this->id = html_output($row['id']);
             $this->user_id = html_output($row['user_id']);
             $this->title = html_output($row['filename']);
-            $this->description = html_output($row['description']);
+            $this->description = htmlentities_allowed($row['description']);
             $this->uploaded_by = html_output($row['uploader']);
             $this->filename_on_disk = html_output($row['url']);
             $this->filename_original = (!empty( $row['original_url'] ) ) ? html_output($row['original_url']) : html_output($row['url']);
@@ -210,6 +210,25 @@ class Files
     public function isPublic()
     {
         if ($this->public == '1') {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function getTypeByMime()
+    {
+        if (!$this->existsOnDisk()) {
+            return null;
+        }
+
+        $mimeType = mime_content_type($this->full_path);
+        return explode('/', $mimeType)[0];
+    }
+
+    public function isImage()
+    {
+        if ($this->getTypeByMime() == 'image') {
             return true;
         }
 

@@ -130,27 +130,23 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 			else {
 		?>
 				<div class="photo_list">
-				<?php
-					foreach ($my_files as $file) {
-                        $download_link = make_download_link($file);
-                        $date = format_date($file['timestamp']);
+                <?php
+					foreach ($available_files as $file_id) {
+                        $file = new \ProjectSend\Classes\Files();
+                        $file->get($file_id);
 				?>
-						<div class="photo <?php if ($file['expired'] == true) { echo 'expired'; } ?>">
+						<div class="photo <?php if ($file->expired == true) { echo 'expired'; } ?>">
 							<div class="photo_int">
-								<?php
-									/**
-									 * Generate the thumbnail if the file is an image.
-									 */
-									$img_formats = array('gif','jpg','pjpeg','jpeg','png');
-									if (in_array($file['extension'],$img_formats)) {
+                                <?php
+                                    if ($file->isImage()) {
 								?>
 										<div class="img_prev">
 											<?php
-												if ($file['expired'] == false) {
+												if ($file->expired == false) {
 											?>
-													<a href="<?php echo $download_link; ?>" target="_blank">
-                                                        <?php $thumbnail = make_thumbnail( UPLOADED_FILES_DIR.DS.$file['url'], 'proportional', TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT ); ?>
-														<img src="<?php echo $thumbnail['thumbnail']['url']; ?>" alt="<?php echo htmlentities($file['name']); ?>" />
+													<a href="<?php echo $file->download_link; ?>" target="_blank">
+                                                        <?php $thumbnail = make_thumbnail( UPLOADED_FILES_DIR.DS.$file->filename_on_disk, 'proportional', TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT ); ?>
+														<img src="<?php echo $thumbnail['thumbnail']['url']; ?>" alt="<?php echo $file->title; ?>" />
 													</a>
 											<?php
 												}
@@ -158,11 +154,11 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 										</div>
 								<?php
 									} else {
-										if ($file['expired'] == false) {
+										if ($file->expired == false) {
 								?>
 											<div class="ext_prev">
-												<a href="<?php echo $download_link; ?>" target="_blank">
-													<h6><?php echo $file['extension']; ?></h6>
+												<a href="<?php echo $file->download_link; ?>" target="_blank">
+													<h6><?php echo $file->extension; ?></h6>
 												</a>
 											</div>
 								<?php
@@ -171,24 +167,17 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 								?>
 							</div>
 							<div class="img_data">
-								<h2><?php echo htmlentities($file['name']); ?></h2>
+								<h2><?php echo $file->title; ?></h2>
 								<div class="photo_info">
-									<?php echo htmlentities_allowed($file['description']); ?>
+									<?php echo $file->description; ?>
 									<p class="file_size">
-										<?php
-											$file_absolute_path = UPLOADED_FILES_DIR . DS . $file['url'];
-											if ( file_exists( $file_absolute_path ) ) {
-												$this_file_size = format_file_size(get_real_size(UPLOADED_FILES_DIR.DS.$file['url']));
-												_e('File size:','pinboxes_template'); ?> <strong><?php echo $this_file_size; ?></strong>
-										<?php
-											}
-										?>
+										<?php _e('File size:','pinboxes_template'); ?> <strong><?php echo $file->size_formatted; ?></strong>
 									</p>
 
 									<p class="exp_date">
 										<?php
-											if ( $file['expires'] == '1' ) {
-												$exp_date = date( get_option('timeformat'), strtotime( $file['expiry_date'] ) );
+											if ( $file->expires == '1' ) {
+												$exp_date = date( get_option('timeformat'), strtotime( $file->expiry_date ) );
 												_e('Expiration date:','pinboxes_template'); ?> <span><?php echo $exp_date; ?></span>
 										<?php
 											}
@@ -197,14 +186,14 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 								</div>
 								<div class="download_link">
 									<?php
-										if ($file['expired'] == false) {
+										if ($file->expired == false) {
                                     ?>
-											<a href="<?php echo $download_link; ?>" target="_blank" class="button button_gray">
+											<a href="<?php echo $file->download_link; ?>" target="_blank" class="button button_gray">
 												<?php _e('Download','pinboxes_template'); ?>
                                             </a>
                                             <div class="checkbox">
-                                                <input type="checkbox" class="checkbox_file" name="file_id" value="<?php echo $file['id']; ?>" id="checkbox_file_<?php echo $file['id']; ?>">
-                                                <label for="checkbox_file_<?php echo $file['id']; ?>"></label>
+                                                <input type="checkbox" class="checkbox_file" name="file_id" value="<?php echo $file->id; ?>" id="checkbox_file_<?php echo $file->id; ?>">
+                                                <label for="checkbox_file_<?php echo $file->id; ?>"></label>
                                             </div>
 									<?php
 										}
@@ -221,9 +210,9 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 						}
 					?>
 				</div>
-			<?php
+        <?php
 			}
-			?>
+        ?>
 		
 			</div>
 	

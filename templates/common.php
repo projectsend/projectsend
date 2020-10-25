@@ -157,6 +157,7 @@ else {
 }
 
 /** Create the files list */
+$available_files = [];
 $my_files = [];
 
 if (!empty($found_client_files_ids) || !empty($found_group_files_ids)) {
@@ -239,8 +240,10 @@ if (!empty($found_client_files_ids) || !empty($found_group_files_ids)) {
 
 		/** Make the list of files */
 		if ($add_file == true) {
+            $available_files[] = $data['id'];
+            
+            // Leaving this here in case a  custom template is using this array
             $pathinfo = pathinfo($data['url']);
-
 			$my_files[$f] = array(
 								//'origin'		=> $origin,
 								'id'			=> $data['id'],
@@ -253,7 +256,8 @@ if (!empty($found_client_files_ids) || !empty($found_group_files_ids)) {
 								'expires'		=> $data['expires'],
 								'expiry_date'	=> $data['expiry_date'],
 								'expired'		=> $expired,
-							);
+                            );
+            // End deprecated array block
 			$f++;
 		}
 	}

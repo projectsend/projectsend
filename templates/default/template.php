@@ -168,9 +168,10 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 	
 						$table->thead( $thead_columns );
 
-						foreach ($my_files as $file) {
-							$download_link = make_download_link($file);
-
+						foreach ($available_files as $file_id) {
+                            $file = new \ProjectSend\Classes\Files();
+                            $file->get($file_id);
+    
 							$table->addRow();
 
 							/**
@@ -178,44 +179,32 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 							 */
 
 							/** Checkbox */
-							$checkbox = ($file['expired'] == false) ? '<input type="checkbox" name="files[]" value="' . $file["id"] . '" class="batch_checkbox" />' : null;
+							$checkbox = ($file->expired == false) ? '<input type="checkbox" name="files[]" value="' . $file->id . '" class="batch_checkbox" />' : null;
 
 							/** File title */
-							$file_title_content = '<strong>' . htmlentities($file['name']) . '</strong>';
-							if ($file['expired'] == false) {
-								$filetitle = '<a href="' . $download_link . '" target="_blank">' . $file_title_content . '</a>';
+							$file_title_content = '<strong>' . $file->title . '</strong>';
+							if ($file->expired == false) {
+								$filetitle = '<a href="' . $file->download_link . '" target="_blank">' . $file_title_content . '</a>';
 							}
 							else {
 								$filetitle = $file_title_content;
 							}
 							
 							/** Extension */
-							$extension = strtolower($file['extension']);
-							$extension_cell = '<span class="label label-success label_big">' . $extension . '</span>';
+							$extension_cell = '<span class="label label-success label_big">' . $file->extension . '</span>';
 
-							/** Description */
-							$description = htmlentities_allowed($file['description']);
-							
-							/** File size */
-							$file_size_cell = '-'; // default
-							$file_absolute_path = UPLOADED_FILES_DIR . DS . $file['url'];
-							if ( file_exists( $file_absolute_path ) ) {
-								$this_file_size = get_real_size(UPLOADED_FILES_DIR.DS.$file['url']);
-								$file_size_cell = format_file_size($this_file_size);
-							}
-							
                             /** Date */
-                            $date = format_date($file['timestamp']);
+                            $date = format_date($file->uploaded_date);
 							
 							/** Expiration */
-							if ( $file['expires'] == '1' ) {
-								if ( $file['expired'] == false ) {
+							if ( $file->expires == '1' ) {
+								if ( $file->expired == false ) {
 									$class = 'primary';
 								} else {
 									$class = 'danger';
 								}
 								
-								$value = date( get_option('timeformat'), strtotime( $file['expiry_date'] ) );
+								$value = date( get_option('timeformat'), strtotime( $file->expiry_date ) );
 							} else {
 								$class = 'success';
 								$value = __('Never','cftp_template');
@@ -223,19 +212,19 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 							
 							$expiration_cell = '<span class="label label-' . $class . ' label_big">' . $value . '</span>';
 
-							/** Thumbnail */
+                            /** Thumbnail */
 							$preview_cell = '';
-							if ( $file['expired'] == false ) {
-								if ( file_is_image( $file_absolute_path ) ) {
-									$thumbnail = make_thumbnail( $file_absolute_path, null, TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT );
+							if ( $file->expired == false) {
+								if ( $file->isImage() ) {
+									$thumbnail = make_thumbnail( $file->full_path, null, TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT );
 									if ( !empty( $thumbnail['thumbnail']['url'] ) ) {
-										$preview_cell = '<img src="' . $thumbnail['thumbnail']['url'] . '" class="thumbnail" alt="' . htmlentities($file['name']) .'" />';
+										$preview_cell = '<img src="' . $thumbnail['thumbnail']['url'] . '" class="thumbnail" alt="' . $file->title .'" />';
 									}
 								}
 							}
 
 							/** Download */
-							if ($file['expired'] == true) {
+							if ($file->expired == true) {
 								$download_link		= 'javascript:void(0);';
 								$download_btn_class	= 'btn btn-danger btn-sm disabled';
 								$download_text		= __('File expired','cftp_template');
@@ -244,7 +233,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 								$download_btn_class	= 'btn btn-primary btn-sm btn-wide';
 								$download_text		= __('Download','cftp_template');
 							}
-							$download_cell = '<a href="' . $download_link . '" class="' . $download_btn_class . '" target="_blank">' . $download_text . '</a>';
+							$download_cell = '<a href="' . $file->download_link . '" class="' . $download_btn_class . '" target="_blank">' . $download_text . '</a>';
 
 
 							
@@ -265,13 +254,13 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 																			),
 													),
 													array(
-														'content'		=> $description,
+														'content'		=> $file->description,
 														'attributes'	=> array(
 																				'class'		=> array( 'description' ),
 																			),
 													),
 													array(
-														'content'		=> $file_size_cell,
+														'content'		=> $file->size_formatted,
 													),
 													array(
 														'content'		=> $date,

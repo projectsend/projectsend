@@ -141,7 +141,7 @@ class Files
             $this->description = html_output($row['description']);
             $this->uploaded_by = html_output($row['uploader']);
             $this->filename_on_disk = html_output($row['url']);
-            $this->filename_original = html_output($row['original_url']);
+            $this->filename_original = (!empty( $row['original_url'] ) ) ? html_output($row['original_url']) : html_output($row['url']);
             $this->filename_unfiltered = $row['original_url'];
             $this->download_link = make_download_link(array('id' => $this->id));
             $this->expires = html_output($row['expires']);

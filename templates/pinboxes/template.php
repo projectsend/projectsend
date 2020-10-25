@@ -97,7 +97,12 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 				</li>
 				<li>
                     <a href="<?php echo BASE_URI; ?>upload.php" target="_self">
-                        <i class="fa fa-cloud-upload" aria-hidden="true"></i> <?php _e('Upload files', 'pinboxes_template'); ?>
+                        <i class="fa fa-cloud-upload" aria-hidden="true"></i> <?php _e('Upload', 'pinboxes_template'); ?>
+                    </a>
+				</li>
+				<li>
+                    <a href="<?php echo BASE_URI; ?>manage-files.php" target="_self">
+                        <i class="fa fa-file" aria-hidden="true"></i> <?php _e('Manage', 'pinboxes_template'); ?>
                     </a>
 				</li>
 				<li>

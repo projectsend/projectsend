@@ -198,19 +198,17 @@ header {
     height:220px;
 
     img {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
         margin: auto;
-        width: 90%;
+        width: 100%;
         height: auto;
     }
 }
 
 .actions {
-	padding:8px 5px;
+	padding:8px 0;
 	color:#999999;
 	font-size:.85em;
     text-decoration:none;
@@ -224,7 +222,6 @@ header {
 
 	.download_link {
         display: block;
-        margin:0 0 15px;
 
         a {
             color:#999999;

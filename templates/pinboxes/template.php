@@ -33,53 +33,15 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 		<?php meta_favicon(); ?>
 		<link href='<?php echo PROTOCOL; ?>://fonts.googleapis.com/css?family=Metrophobic' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="<?php echo $this_template; ?>/font-awesome-4.6.3/css/font-awesome.min.css">
-		
-		<script src="<?php echo PROTOCOL; ?>://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
-		<script type="text/javascript" src="<?php echo $this_template; ?>/js/jquery.masonry.min.js"></script>
-		<script type="text/javascript" src="<?php echo $this_template; ?>/js/imagesloaded.pkgd.min.js"></script>
-		
-		<script type="text/javascript">
-			$(document).ready(function()
-				{
-					var $container = $('.photo_list');
-					$container.imagesLoaded(function(){
-						$container.masonry({
-							itemSelector	: '.photo',
-							columnWidth		: '.photo'
-						});
-					});
-
-					$('.button').click(function() {
-						$(this).blur();
-					});
-					
-					$('.categories_trigger a').click(function(e) {
-						if ( $('.categories').hasClass('visible') ) {
-							close_menu();
-						}
-						else {
-							open_menu();
-						}
-					});
-					
-					$('.content_cover').click(function(e) {
-						close_menu();
-					});
-					
-					function open_menu() {
-						$('.categories').addClass('visible');
-						$('.categories').stop().slideDown();
-						$('.content_cover').stop().fadeIn(200);
-					}
-
-					function close_menu() {
-						$('.categories').removeClass('visible');
-						$('.content_cover').stop().fadeOut(200);
-						$('.categories').stop().slideUp();
-					}
-				}
-			);
-		</script>
+        
+        <script>
+            window.base_url = '<?php echo BASE_URI; ?>';
+        </script>
+        <script src="<?php echo PROTOCOL; ?>://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
+        <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+		<script src="<?php echo $this_template; ?>/js/jquery.masonry.min.js"></script>
+        <script src="<?php echo $this_template; ?>/js/imagesloaded.pkgd.min.js"></script>
+        <script src="<?php echo $this_template; ?>/js/template.js"></script>
 	</head>
 	
 	<body>
@@ -114,9 +76,9 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 								<?php
 									foreach ( $get_categories['categories'] as $category ) {
 										$link_data	= array(
-																'client'	=> $url_client_id,
-																'category'	=> $category['id'],
-															);
+                                            'client' => $url_client_id,
+                                            'category' => $category['id'],
+                                        );
 										$link_query	= http_build_query($link_data);
 								?>
 										<li><a href="<?php echo $link_template . '?' . $link_query; ?>"><?php echo $category['name']; ?></a></li>
@@ -129,10 +91,19 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 					}
 				?>
 				<li>
-					<a href="<?php echo BASE_URI; ?>upload.php" target="_self"><i class="fa fa-cloud-upload" aria-hidden="true"></i> <?php _e('Upload files', 'pinboxes_template'); ?></a>
+                    <a href="<?php echo BASE_URI; ?>process.php" id="zip_download" target="_self" class="disabled">
+                        <i class="fa fa-download" aria-hidden="true"></i> <?php _e('Download zipped', 'pinboxes_template'); ?>
+                    </a>
 				</li>
 				<li>
-					<a href="<?php echo BASE_URI; ?>process.php?do=logout" target="_self"><i class="fa fa-sign-out" aria-hidden="true"></i> <?php _e('Logout', 'pinboxes_template'); ?></a>
+                    <a href="<?php echo BASE_URI; ?>upload.php" target="_self">
+                        <i class="fa fa-cloud-upload" aria-hidden="true"></i> <?php _e('Upload files', 'pinboxes_template'); ?>
+                    </a>
+				</li>
+				<li>
+                    <a href="<?php echo BASE_URI; ?>process.php?do=logout" target="_self">
+                        <i class="fa fa-sign-out" aria-hidden="true"></i> <?php _e('Logout', 'pinboxes_template'); ?>
+                    </a>
 				</li>
 			</ul>
 		</div>
@@ -222,10 +193,14 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 								<div class="download_link">
 									<?php
 										if ($file['expired'] == false) {
-									?>
+                                    ?>
 											<a href="<?php echo $download_link; ?>" target="_blank" class="button button_gray">
 												<?php _e('Download','pinboxes_template'); ?>
-											</a>
+                                            </a>
+                                            <div class="checkbox">
+                                                <input type="checkbox" class="checkbox_file" name="file_id" value="<?php echo $file['id']; ?>" id="checkbox_file_<?php echo $file['id']; ?>">
+                                                <label for="checkbox_file_<?php echo $file['id']; ?>"></label>
+                                            </div>
 									<?php
 										}
 										else {
@@ -249,7 +224,11 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 	
 			<?php default_footer_info(); ?>
 	
-		</div>
+        </div>
+        
+        <div class="downloading">
+            <img src="<?php echo $this_template; ?>/img/loading.svg">
+        </div>
 	
 	</body>
 </html>

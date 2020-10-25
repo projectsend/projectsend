@@ -26,6 +26,18 @@
 
 <div class="options_divide"></div>
 
+<h3><?php _e('SVG files','cftp_admin'); ?></h3>
+<div class="form-group">
+    <div class="col-sm-8 col-sm-offset-4">
+        <label for="svg_show_as_thumbnail">
+            <input type="checkbox" value="1" name="svg_show_as_thumbnail" id="svg_show_as_thumbnail" class="checkbox_options" <?php echo (get_option('svg_show_as_thumbnail') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Show thumbnails for SVG files','cftp_admin'); ?>
+        </label>
+    </div>
+</div>
+
+
+<div class="options_divide"></div>
+
 <h3><?php _e('Passwords','cftp_admin'); ?></h3>
 <p><?php _e('When setting up a password for an account, require at least:','cftp_admin'); ?></p>
 

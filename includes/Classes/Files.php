@@ -216,19 +216,9 @@ class Files
         return false;
     }
 
-    public function getTypeByMime()
-    {
-        if (!$this->existsOnDisk()) {
-            return null;
-        }
-
-        $mimeType = mime_content_type($this->full_path);
-        return explode('/', $mimeType)[0];
-    }
-
     public function isImage()
     {
-        if ($this->getTypeByMime() == 'image') {
+        if (getFileTypeByMime($this->full_path) == 'image') {
             return true;
         }
 

@@ -1061,26 +1061,28 @@ function generateRandomString($length = 10)
     return $rnd_result;
 }
 
-/**
- * Try to recognize if a file is an image
- *
- * @todo Check the mime type also
- */
-function file_is_image( $file )
+function getFileTypeByMime($full_path)
 {
-	$is_image = false;
-	$pathinfo = pathinfo( $file );
-	$extension = strtolower( $pathinfo['extension'] );
+    if (!file_exists($full_path)) {
+        return null;
+    }
 
-	if ( file_exists( $file ) ) {
-		/** Check the extension */
-		$image_extensions = array('jpg', 'jpeg', 'jpe', 'png', 'gif');
-		if ( in_array( $extension, $image_extensions ) ) {
-			$is_image = true;
-		}
-	}
+    $mimeType = mime_content_type($full_path);
+    return explode('/', $mimeType)[0];
+}
 
-	return $is_image;
+function isImage($full_path)
+{
+    if (getFileTypeByMime($full_path) == 'image') {
+        return true;
+    }
+
+    return false;
+}
+
+function file_is_image($file)
+{
+    return isImage($file);
 }
 
 /**
@@ -1118,6 +1120,16 @@ function make_thumbnail( $file, $type = 'thumbnail', $width = THUMBS_MAX_WIDTH, 
     }
     else {
         if ( file_is_image( $file ) ) {
+            if (file_is_svg($file)) {
+                if (get_option('svg_show_as_thumbnail') == '1') {
+                    $file = str_replace(ROOT_DIR, BASE_URI, $file);
+                    $thumbnail['original']['url'] = $file;
+                    $thumbnail['thumbnail']['location'] = $file;
+                    $thumbnail['thumbnail']['url'] = $file;
+                }
+
+                return $thumbnail;
+            }
             /** Original extension */
             $pathinfo	= pathinfo( $file );
             $filename	= md5( $pathinfo['basename'] );

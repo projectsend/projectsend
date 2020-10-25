@@ -29,6 +29,8 @@
                 return $row['value'];
             }
         }
+
+        return false;
     }
 
     function save_option($name, $value)

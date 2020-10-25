@@ -20,6 +20,7 @@ class Files
     public $uploaded_by;
     public $filename_on_disk; // the safe name given to the file to ensure uniqueness when moving it to the uploads directory
     public $filename_original; // the original filename as the user uploads it
+    public $filename_unfiltered; // save as
     public $download_link;
     public $expires;
     public $expired;
@@ -141,6 +142,7 @@ class Files
             $this->uploaded_by = html_output($row['uploader']);
             $this->filename_on_disk = html_output($row['url']);
             $this->filename_original = html_output($row['original_url']);
+            $this->filename_unfiltered = $row['original_url'];
             $this->download_link = make_download_link(array('id' => $this->id));
             $this->expires = html_output($row['expires']);
             $this->expiry_date = html_output($row['expiry_date']);
@@ -282,6 +284,15 @@ class Files
         return false;
     }
 
+    public function existsOnDisk()
+    {
+        if ( file_exists( $this->full_path ) ) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function setExtension()
     {
         $this->extension = pathinfo($this->filename_on_disk, PATHINFO_EXTENSION);
@@ -295,7 +306,6 @@ class Files
 
         return $this->extension;
     }
-
 
     /**
 	 * Check if the file extension is among the allowed ones, that are defined on

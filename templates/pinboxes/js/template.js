@@ -52,7 +52,7 @@ $(document).ready(function() {
     });
 
     $('#zip_download').on('click', function(e) {
-        if (!$(this).hasClass('.disabled')) {
+        if (!$(this).hasClass('disabled')) {
             var ids = [];
             $('.checkbox_file:checked').each(function () {
                 ids.push($(this).val());

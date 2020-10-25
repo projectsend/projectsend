@@ -51,7 +51,13 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 	<script src="<?php echo PROTOCOL; ?>://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
 	<link href='<?php echo PROTOCOL; ?>://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
 
-	<link rel="stylesheet" media="all" type="text/css" href="<?php echo $this_template; ?>main.css" />
+	<link rel="stylesheet" media="all" type="text/css" href="<?php echo $this_template; ?>main.min.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+    <script src="<?php echo $this_template; ?>/js/template.js"></script>
+    <script>
+        window.base_url = '<?php echo BASE_URI; ?>';
+    </script>
 </head>
 
 <body>
@@ -132,18 +138,26 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 										else {
                                             $thumbnail = make_thumbnail( $file->full_path, null, TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT );
 									?>
-										<div class="img_prev">
-                                            <a href="<?php echo $file->download_link; ?>" target="_blank">
-												<img src="<?php echo $thumbnail['thumbnail']['url']; ?>" class="thumbnail" alt="<?php echo $file->title; ?>" />
-											</a>
-										</div>
-										<div class="img_data">
-											<div class="download_link">
-												<a href="<?php echo $file->download_link; ?>" target="_blank">
-													<i class="fa fa-cloud-download" aria-hidden="true"></i> <?php _e('Download original','cftp_template_gallery'); ?>
-												</a>
-											</div>
-										</div>
+                                            <div class="img_prev">
+                                                <a href="<?php echo $file->download_link; ?>" target="_blank">
+                                                    <img src="<?php echo $thumbnail['thumbnail']['url']; ?>" class="thumbnail" alt="<?php echo $file->title; ?>" />
+                                                </a>
+                                            </div>
+                                            <div class="actions">
+                                                <div class="action">
+                                                    <div class="download_link">
+                                                        <a href="<?php echo $file->download_link; ?>" target="_blank">
+                                                            <?php _e('Download','cftp_template_gallery'); ?>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="action">
+                                                    <div class="checkbox">
+                                                        <input type="checkbox" class="checkbox_file" name="file_id" value="<?php echo $file->id; ?>" id="checkbox_file_<?php echo $file->id; ?>">
+                                                        <label for="checkbox_file_<?php echo $file->id; ?>"><?php _e('Select', 'cftp_template_gallery'); ?></label>
+                                                    </div>
+                                                </div>
+                                            </div>
 									<?php
 										}
 									?>
@@ -160,15 +174,12 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 	</div>
 </div>
 
-<script type="text/javascript">
-	$(document).ready(function(e) {
-		$('.btn_nav').click(function(e) {
-			e.preventDefault();
-			$('#wrapper').toggleClass('show-nav');
-			$('#wrapper').toggleClass('open-nav');
-		});
-	});
-</script>
+<div id="zip_download">
+    <a href="<?php echo BASE_URI; ?>process.php" target="_self" class="disabled" id="trigger">
+        <i class="fa fa-cloud-download" aria-hidden="true"></i>
+    </a>
+    <img src="<?php echo $this_template; ?>/img/loading.svg" id="indicator">
+</div>
 
 </body>
 </html>

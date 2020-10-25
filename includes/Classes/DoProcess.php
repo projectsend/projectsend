@@ -8,7 +8,6 @@
  */
 namespace ProjectSend\Classes;
 
-use \ProjectSend\Classes\MembersActions;
 use \PDO;
 use \ZipArchive;
 
@@ -16,10 +15,6 @@ class DoProcess
 {
     private $dbh;
     private $logger;
-
-    private $username;
-    private $password;
-    private $language;
 
     public function __construct(PDO $dbh = null, Auth $auth = null)
     {
@@ -55,95 +50,18 @@ class DoProcess
         return $this->auth->login_ldap($email, $password, $language);
     }
 
-
-    /**
-     * @todo From here on, move everything into a Download class
-     */
-
-    
     public function download($file_id)
     {
-        if ( !$file_id )
-            return false;
-
-        /** Do a permissions check for logged in user */
-		$this->check_level = array(9,8,7,0);
-        if (isset($this->check_level) && current_role_in($this->check_level)) {
-
-            /** Get the file name */
-            $file = new \ProjectSend\Classes\Files();
-            $file->get($file_id);
-
-            $can_download = false;
-
-            if (CURRENT_USER_LEVEL == 0) {
-                if ($file->user_id == CURRENT_USER_ID) {
-                    $can_download = true;
-                    $log_action = 8;
-                } else {
-                    if ($file->expires == '0' || $file->expired == false) {
-                        /**
-                         * Does the client have permission to download the file?
-                         * First, get the list of different groups the client belongs to.
-                         * @todo move into a method for an yet to create File class, for example can_download_this_file($client_id)
-                         */
-                        $get_groups		= new \ProjectSend\Classes\MembersActions();
-                        $get_arguments	= array(
-                                                        'client_id'	=> CURRENT_USER_ID,
-                                                        'return'	=> 'list',
-                                                    );
-                        $found_groups	= $get_groups->client_get_groups($get_arguments);
-    
-                        /** Get assignments */
-                        $params = array(
-                                            ':client_id'	=> CURRENT_USER_ID,
-                                        );
-                        $fq = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE (client_id=:client_id";
-                        // Add found groups, if any
-                        if ( !empty( $found_groups ) ) {
-                            $fq .= ' OR FIND_IN_SET(group_id, :groups)';
-                            $params[':groups'] = $found_groups;
-                        }
-                        // Continue assembling the query
-                        $fq .= ') AND file_id=:file_id AND hidden = "0"';
-                        $params[':file_id'] = (int)$file->id;
-    
-                        $files = $this->dbh->prepare( $fq );
-                        $files->execute( $params );
-    
-                        /** Continue */
-                        if ( $files->rowCount() > 0 ) {
-                            $can_download = true;
-                            $log_action = 8;
-                        }
-                    }
-                }
-            }
-            else {
-                $can_download = true;
-                $log_action = 7;
-            }
-
-            if ($can_download == true) {
-                /**
-                 * Add +1 to the download count
-                 * @todo move into a method for an yet to create File class, for example add_to_download_count($file, $amount = 1)
-                 */
-                $statement = $this->dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (user_id , file_id, remote_ip, remote_host) VALUES (:user_id, :file_id, :remote_ip, :remote_host)");
-                $statement->bindValue(':user_id', CURRENT_USER_ID, PDO::PARAM_INT);
-                $statement->bindParam(':file_id', $file->id, PDO::PARAM_INT);
-                $statement->bindParam(':remote_ip', get_client_ip());
-                $statement->bindParam(':remote_host', $_SERVER['REMOTE_HOST']);
-                $statement->execute();
-
-                $this->downloadFile($file->filename_on_disk, $file->filename_unfiltered, $file->id, $log_action);
-            }
-            else {
-                header('Location:' . PAGE_STATUS_CODE_403);
-                exit;
-            }
+        if (!$file_id || !defined('CURRENT_USER_LEVEL') || !userCanDownloadFile(CURRENT_USER_ID, $file_id)) {
+            header('Location:' . PAGE_STATUS_CODE_403);
+            exit;
         }
-	}
+
+        $file = new \ProjectSend\Classes\Files();
+        $file->get($file_id);
+        recordNewDownload(CURRENT_USER_ID, $file->id);
+        $this->downloadFile($file->filename_on_disk, $file->filename_unfiltered, $file->id);
+    }
 
     /**
      * Make a list of files ids to download on a compressed zip file
@@ -155,7 +73,7 @@ class DoProcess
 		$this->check_level = array(9,8,7,0);
 		if (isset($file_ids)) {
 			// do a permissions check for logged in user
-			if (isset($this->check_level) && current_role_in($this->check_level)) {
+			if (current_role_in($this->check_level)) {
 				$file_list = array();
 				foreach($file_ids as $key => $data) {
 					$file_list[] = $data['value'];
@@ -188,52 +106,15 @@ class DoProcess
             if (!$file->existsOnDisk()) {
                 unset( $files_to_zip[$file_id] );
             }
+            unset($file);
         }
         
         $added_files = 0;
-        
-        /**
-         * Get the list of different groups the client belongs to.
-         */
-        $get_groups		= new \ProjectSend\Classes\MembersActions();
-        $get_arguments	= array(
-                                        'client_id'	=> CURRENT_USER_ID,
-                                        'return'	=> 'list',
-                                    );
-        $found_groups	= $get_groups->client_get_groups($get_arguments);
-
         $allowed_to_zip = []; // Files allowed to be downloaded
-
-        foreach ($files_to_zip as $file_id) {
-            $file = new \ProjectSend\Classes\Files();
-            $file->get($file_id);
         
-            /**
-             * Check download permission
-             */
-            if (CURRENT_USER_LEVEL == 0) {
-                if ($file->user_id == CURRENT_USER_ID) {
-                    $allowed_to_zip[$file->id] = $file;
-                }
-                else {
-                    if ($file->expires == '0' || $file->expired == false) {
-                        $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE (client_id = :client_id OR FIND_IN_SET(group_id, :groups)) AND file_id = :file_id AND hidden = '0'");
-                        $statement->bindValue(':client_id', CURRENT_USER_ID, PDO::PARAM_INT);
-                        $statement->bindParam(':groups', $found_groups);
-                        $statement->bindParam(':file_id', $file->id, PDO::PARAM_INT);
-                        $statement->execute();
-                        $statement->setFetchMode(PDO::FETCH_ASSOC);
-                        $row = $statement->fetch();
-            
-                        if ($row) {
-                            /** Add the file */
-                            $allowed_to_zip[$file->id] = $file;
-                        }
-                    }
-                }
-            }
-            else {
-                $allowed_to_zip[$file->id] = $file;
+        foreach ($files_to_zip as $file_id) {
+            if (userCanDownloadFile(CURRENT_USER_ID, $file_id)) {
+                $allowed_to_zip[] = $file_id;
             }
         }
         
@@ -243,23 +124,12 @@ class DoProcess
             $zip = new \ZipArchive();
             $zip->open($zip_file, ZipArchive::OVERWRITE);
 
-            foreach ($allowed_to_zip as $file_id => $file_data) {
-                if ( $zip->addFile($file_data->full_path, $file_data->filename_unfiltered) ) {
+            foreach ($allowed_to_zip as $file_id) {
+                $file = new \ProjectSend\Classes\Files();
+                $file->get($file_id);
+                if ( $zip->addFile($file->full_path, $file->filename_unfiltered) ) {
                     $added_files++;
-
-                    /**
-                     * Add +1 to the download count
-                     * @todo move into a method for an yet to create File class, for example add_to_download_count($file, $amount = 1)
-                     */
-                    $statement = $this->dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (user_id , file_id, remote_ip, remote_host)"
-                                                ." VALUES (:user_id, :file_id, :remote_ip, :remote_host)");
-                    $statement->bindValue(':user_id', CURRENT_USER_ID, PDO::PARAM_INT);
-                    $statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
-                    $statement->bindParam(':remote_ip', $_SERVER['REMOTE_ADDR']);
-                    $statement->bindParam(':remote_host', $_SERVER['REMOTE_HOST']);
-                    $statement->execute();
-
-                    /** @todo log this specific file download */
+                    recordNewDownload(CURRENT_USER_ID, $file_id);
                 }
             }
         
@@ -290,11 +160,23 @@ class DoProcess
      *
      * @return void
      */
-    private function downloadFile($filename, $save_as, $file_id, $log_action_number)
+    private function downloadFile($filename, $save_as, $file_id)
     {
-        $this->file_location = UPLOADED_FILES_DIR . DS . $filename;
+        $file_location = UPLOADED_FILES_DIR . DS . $filename;
 
-        if (file_exists($this->file_location)) {
+        switch (CURRENT_USER_LEVEL) {
+            case 0:
+                $log_action_number = 8;
+            break;
+            default:
+            case 9:
+            case 8:
+            case 7:
+                $log_action_number = 8;
+            break;
+        }
+
+        if (file_exists($file_location)) {
             /** Record the action log */
             $record = $this->logger->addEntry([
                 'action' => $log_action_number,
@@ -305,9 +187,9 @@ class DoProcess
                 'file_title_column' => true
             ]);
             
-            $this->save_file_as = UPLOADED_FILES_DIR . DS . $save_as;
+            $save_file_as = UPLOADED_FILES_DIR . DS . $save_as;
 
-            $this->serveFile($this->file_location, $this->save_file_as);
+            $this->serveFile($file_location, $save_file_as);
             exit;
         }
         else {
@@ -323,14 +205,14 @@ class DoProcess
      * @param string $save_as original filename
      * @return void
      */
-    private function serveFile($filename, $save_as)
+    public function serveFile($file_location, $save_as)
     {
-        if (file_exists($filename)) {
+        if (file_exists($file_location)) {
             session_write_close();
             while (ob_get_level()) ob_end_clean();
 
-            if (defined('XSENDFILE_ENABLE') && XSENDFILE_ENABLE == 1) {
-                header("X-Sendfile: $filename");
+            if (get_option('xsendfile_enable') == 1) {
+                header("X-Sendfile: $file_location");
                 header('Content-Type: application/octet-stream');
                 header('Content-Disposition: attachment; filename='.basename($save_as));
                 exit;
@@ -341,18 +223,18 @@ class DoProcess
                 header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
                 header('Pragma: public');
                 header('Cache-Control: private',false);
-                header('Content-Length: ' . get_real_size($filename));
+                header('Content-Length: ' . get_real_size($file_location));
                 header('Connection: close');
                 //readfile($this->file_location);
 
-                $this->context = stream_context_create();
-                $this->file = fopen($filename, 'rb', false, $this->context);
-                while ( !feof( $this->file ) ) {
+                $context = stream_context_create();
+                $file = fopen($file_location, 'rb', false, $context);
+                while ( !feof( $file ) ) {
                     //usleep(1000000); //Reduce download speed
-                    echo stream_get_contents($this->file, 2014);
+                    echo stream_get_contents($file, 2014);
                 }
 
-                fclose( $this->file );
+                fclose( $file );
                 exit;
             }
         }

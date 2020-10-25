@@ -1589,6 +1589,91 @@ function userCanEditFile($user_id = null, $file_id = null)
 
     return false;
 }
+
+function recordNewDownload($user_id = CURRENT_USER_ID, $file_id = null)
+{
+    global $dbh;
+    if (empty($file_id)) {
+        return false;
+    }
+
+    if (!is_numeric($user_id) || !is_numeric($file_id)) {
+        return false;
+    }
+
+    // Anonymous download
+    if ($user_id == 0) {
+        $statement = $dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (file_id, remote_ip, remote_host, anonymous) VALUES (:file_id, :remote_ip, :remote_host, :anonymous)");
+        $statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
+        $statement->bindParam(':remote_ip', get_client_ip());
+        $statement->bindParam(':remote_host', $_SERVER['REMOTE_HOST']);
+        $statement->bindValue(':anonymous', 1, PDO::PARAM_INT);
+        $statement->execute();
+    } else {
+        $statement = $dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (user_id , file_id, remote_ip, remote_host) VALUES (:user_id, :file_id, :remote_ip, :remote_host)");
+        $statement->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
+        $statement->bindParam(':remote_ip', get_client_ip());
+        $statement->bindParam(':remote_host', $_SERVER['REMOTE_HOST']);
+        $statement->execute();
+    }
+
+    if (!empty($statement)) {
+        return true;
+    }
+
+    return false;
+}
+
+function userCanDownloadFile($user_id = CURRENT_USER_ID, $file_id = null)
+{
+    global $dbh;
+    if (empty($file_id)) {
+        return false;
+    }
+
+    if (!is_numeric($user_id) || !is_numeric($file_id)) {
+        return false;
+    }
+
+
+    if (CURRENT_USER_LEVEL != 0) {
+        return true;
+    }
+
+    // Get the file
+    $file = new \ProjectSend\Classes\Files();
+    $file->get($file_id);
+
+    // Get groups
+    $get_groups = new \ProjectSend\Classes\MembersActions();
+    $found_groups = $get_groups->client_get_groups([
+        'client_id' => $user_id,
+        'return' => 'list',
+    ]);
+
+    if ($file->user_id == $user_id) {
+        return true;
+    }
+    else {
+        if ($file->expires == '0' || $file->expired == false) {
+            $statement = $dbh->prepare("SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE (client_id = :client_id OR FIND_IN_SET(group_id, :groups)) AND file_id = :file_id AND hidden = '0'");
+            $statement->bindValue(':client_id', $user_id, PDO::PARAM_INT);
+            $statement->bindParam(':groups', $found_groups);
+            $statement->bindParam(':file_id', $file->id, PDO::PARAM_INT);
+            $statement->execute();
+            $statement->setFetchMode(PDO::FETCH_ASSOC);
+            $row = $statement->fetch();
+
+            if ($row) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 /**
  * Renders an action recorded on the log.
  */

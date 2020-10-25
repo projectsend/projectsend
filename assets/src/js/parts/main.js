@@ -7,6 +7,12 @@
             $(document).ready(function() {
                 $('input:first').focus();
             });
+
+            $('.confirm_generic').on('click', function(e) {
+                if (!confirm(json_strings.translations.confirm_generic)) {
+                    e.preventDefault();
+                }
+            });
     
             // Dismiss messages
             $('.message .close').on('click', function () {

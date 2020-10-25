@@ -56,7 +56,8 @@ $json_strings = [
             'copy_selection' => __("Copy selection to all files?",'cftp_admin'),
             'some_files_had_errors' => __("Some of your files uploaded correctly, but others could not be uploaded.",'cftp_admin'),
             'continue_to_editor' => __("Go to the file editor",'cftp_admin'),
-        ]
+        ],
+        'confirm_generic' => __('Confirm this action?', 'cftp_admin'),
     ],
     'validation' => [
         'errors_found_title' => __('The following errors were found','cftp_admin'),

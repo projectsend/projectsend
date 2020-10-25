@@ -22,6 +22,11 @@
     <p class="preview_logo_note">
         <?php _e('This preview uses a maximum width of 300px.','cftp_admin'); ?>
     </p>
+    <?php if (!empty(get_option('logo_filename'))) { ?>
+        <div class="form-grup">
+            <a class="btn btn-default confirm_generic" href="<?php echo BASE_URI . 'options.php?section=branding&clear=logo'; ?>"><?php _e('Delete current logo'); ?></a>
+        </div>
+    <?php } ?>
 </div>
 
 <div id="form_upload_logo">

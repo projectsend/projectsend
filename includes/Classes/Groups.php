@@ -17,16 +17,16 @@ class Groups
     private $dbh;
     private $logger;
 
-    private $id;
-    private $name;
-    private $description;
-    private $public;
-    private $public_token;
-    private $public_url;
-    private $members;
-    private $files;
-    private $created_by;
-    private $created_date;
+    public $id;
+    public $name;
+    public $description;
+    public $public;
+    public $public_token;
+    public $public_url;
+    public $members;
+    public $files;
+    public $created_by;
+    public $created_date;
 
     private $validation_passed;
     private $validation_errors;

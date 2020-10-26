@@ -701,7 +701,17 @@ class Files
 
 		if (!empty($statement)) {
             // Update assignments
-            $this->saveAssignments($data['assignments'], $hidden);
+            $assignments = (!empty($data['assignments'])) ? $data['assignments'] : null;
+            $assignments = $this->saveAssignments($assignments, $hidden);
+
+            // Create notifications if uploaded by client, or if file is not set as hidden
+            if (CURRENT_USER_LEVEL == 0 || $hidden == 0) {
+                $notification_type = (CURRENT_USER_LEVEL == 0) ? 0 : 1;
+                $users = (CURRENT_USER_LEVEL == 0) ? [CURRENT_USER_ID] : $assignments['added']['clients'];
+                $this->createNotifications($users, $notification_type);
+            }
+
+            // Categories
             $this->saveCategories($data['categories']);
             $this->refresh();
 
@@ -740,21 +750,31 @@ class Files
 
         $hidden = (int)$hidden;
 
+        if (empty($new_values['clients'])) { $new_values['clients'] = []; } 
+        if (empty($new_values['groups'])) { $new_values['groups'] = []; } 
+
         // Get current assignments from database to compare with new values
         $current = [
             'clients' => $this->assignments_clients,
             'groups' => $this->assignments_groups,
         ];
 
+        $added_clients = [];
+        $added_groups = [];
+        $removed_clients = [];
+        $removed_groups = [];
+
         // Remove each item that is current but not on the new values
         foreach ($current['clients'] as $client_id) {
             if (!in_array($client_id, $new_values['clients'])) {
                 $this->removeAssignment('client', $client_id);
+                $removed_clients[] = $client_id;
             }
         }
         foreach ($current['groups'] as $group_id) {
             if (!in_array($group_id, $new_values['groups'])) {
                 $this->removeAssignment('group', $group_id);
+                $removed_groups[] = $group_id;
             }
         }
 
@@ -762,11 +782,66 @@ class Files
         foreach ($new_values['clients'] as $client_id) {
             if (!in_array($client_id, $current['clients'])) {
                 $this->addAssignment('client', $client_id, $hidden);
+                $added_clients[] = $client_id;
             }
         }
         foreach ($new_values['groups'] as $group_id) {
             if (!in_array($group_id, $current['groups'])) {
                 $this->addAssignment('group', $group_id, $hidden);
+                $added_groups[] = $group_id;
+            }
+        }
+
+        // Response
+        foreach ($added_groups as $group_id) {
+            $group = new \ProjectSend\Classes\Groups();
+            $group->get($group_id);
+            if (!empty($group->members)) {
+                foreach ($group->members as $user_id) {
+                    if (!in_array($user_id, $added_clients)) {
+                        $added_clients[] = $user_id;
+                    }
+                }
+            }
+        }
+
+        $return = [
+            'added' => [
+                'clients' => $added_clients,
+                'groups' => $added_groups,
+            ],
+            'removed' => [
+                'clients' => $removed_clients,
+                'groups' => $removed_groups,
+            ]
+        ];
+
+        return $return;
+    }
+
+    private function createNotifications($user_ids = [], $notification_type = 0)
+    {
+        if (empty($user_ids)) {
+            return false;
+        }
+
+        foreach ($user_ids as $user_id) {
+            // See if there's a pending notification already.
+            $statement = $this->dbh->prepare("SELECT id FROM " . TABLE_NOTIFICATIONS . " WHERE file_id = :file_id AND client_id = :client_id AND upload_type = :type AND sent_status = '0' AND times_failed <= :times_failed");
+            $statement->bindParam(':file_id', $this->id, PDO::PARAM_INT);
+            $statement->bindParam(':type', $notification_type, PDO::PARAM_INT);
+            $statement->bindParam(':client_id', $user_id, PDO::PARAM_INT);
+            $statement->bindParam(':times_failed', get_option('notifications_max_tries'), PDO::PARAM_INT);
+            $statement->execute();
+            $found = $statement->rowCount();
+
+            if ($found < 1) {
+                $statement = $this->dbh->prepare("INSERT INTO " . TABLE_NOTIFICATIONS . " (file_id, client_id, upload_type, sent_status, times_failed)
+                VALUES (:file_id, :client_id, :type, '0', '0')");
+                $statement->bindParam(':file_id', $this->id, PDO::PARAM_INT);
+                $statement->bindParam(':client_id', $user_id, PDO::PARAM_INT);
+                $statement->bindParam(':type', $notification_type, PDO::PARAM_INT);
+                $statement->execute();
             }
         }
     }

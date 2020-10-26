@@ -654,7 +654,7 @@ if (current_role_in($allowed_update)) {
 			}
 
 			$new_database_values = array(
-										'expired_files_hide'		=> '1',
+										'expired_files_hide' => '1',
 									);
 			
 			foreach($new_database_values as $row => $value) {
@@ -1361,6 +1361,16 @@ if (current_role_in($allowed_update)) {
 		if ($last_update < 1130) {
             $statement = $dbh->query("ALTER TABLE `" . TABLE_FILES . "` ADD COLUMN `user_id` int(11) DEFAULT NULL AFTER `id`");
 			$statement = $dbh->query("ALTER TABLE " . TABLE_FILES . " ADD CONSTRAINT fk_file_user_id FOREIGN KEY (`user_id`) REFERENCES " . TABLE_USERS . "(`id`) ON DELETE RESTRICT ON UPDATE CASCADE");
+			$updates_made++;
+		}
+
+        /**
+		 * r1145 updates
+		 * Option value could be null
+		 */
+		if ($last_update < 1145) {
+			$statement = $dbh->query("ALTER TABLE `" . TABLE_OPTIONS . "` CHANGE `value` `value` TEXT NULL");
+
 			$updates_made++;
 		}
 

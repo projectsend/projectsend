@@ -12,6 +12,8 @@ require_once 'bootstrap.php';
 $active_nav = 'clients';
 $this_page = 'clients-requests.php';
 
+$page_id = 'clients_accounts_requests';
+
 $page_title = __('Account requests','cftp_admin');
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>

@@ -46,20 +46,16 @@ $client_info = get_client_by_username($this_user);
 /**
  * Get the list of different groups the client belongs to.
  */
-$get_groups		= new ProjectSend\Classes\MembersActions;
-$get_arguments	= array(
-						'client_id'	=> $client_info['id'],
-						'return'	=> 'list',
-					);
-$found_groups	= $get_groups->client_get_groups($get_arguments); 
+$get_groups = new ProjectSend\Classes\MembersActions;
+$found_groups = $get_groups->client_get_groups([
+    'client_id' => $client_info['id'],
+    'return' => 'list',
+]);
 
 /**
  * Define the arrays so they can't be empty
  */
 $found_all_files_array = array();
-$found_own_files_temp = array();
-$found_client_files_temp = array();
-$found_group_files_temp = array();
 
 /**
  * Get files uploaded by this user
@@ -71,9 +67,7 @@ $files_sql->execute();
 $files_sql->setFetchMode(PDO::FETCH_ASSOC);
 while ( $row_files = $files_sql->fetch() ) {
     $found_all_files_array[] = $row_files['id'];
-    $found_own_files_temp[] = $row_files['id'];
 }
-$found_client_files_ids	= (!empty($found_own_files_temp)) ? implode(',', array_unique($found_own_files_temp)) : '';
 
 /**
  * Get files assigned directly to the client
@@ -97,19 +91,14 @@ $files_sql->setFetchMode(PDO::FETCH_ASSOC);
 
 while ( $row_files = $files_sql->fetch() ) {
 	if (!is_null($row_files['client_id'])) {
-		$found_all_files_array[]	= $row_files['file_id'];
-		$found_client_files_temp[]		= $row_files['file_id'];
+		$found_all_files_array[] = $row_files['file_id'];
 	}
 	if (!is_null($row_files['group_id'])) {
-		$found_all_files_array[]	= $row_files['file_id'];
-		$found_group_files_temp[]	= $row_files['file_id'];
+		$found_all_files_array[] = $row_files['file_id'];
 	}
 }
 
-$found_client_files_ids	= (!empty($found_client_files_temp)) ? implode(',', array_unique($found_client_files_temp)) : '';
-$found_group_files_ids	= (!empty($found_group_files_temp)) ? implode(',', array_unique($found_group_files_temp)) : '';
-
-$found_unique_files_ids = array_unique($found_all_files_array);
+$found_unique_files_ids = implode(',', array_unique($found_all_files_array));
 
 /**
  * Make an array of the categories containing the
@@ -119,16 +108,15 @@ $cat_ids	= array();
 $file_ids	= array();
 $files_keep	= array();
 
-$files_ids_to_search = implode(',', $found_unique_files_ids);
 $sql_sentence = "SELECT file_id, cat_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE FIND_IN_SET(file_id, :files)";
 $sql_client_categories = $dbh->prepare( $sql_sentence );
-$sql_client_categories->bindParam(':files', $files_ids_to_search);
+$sql_client_categories->bindParam(':files', $found_unique_files_ids);
 $sql_client_categories->execute();
 $sql_client_categories->setFetchMode(PDO::FETCH_ASSOC);
 
 while ( $row = $sql_client_categories->fetch() ) {
-	$cat_ids[$row['cat_id']]		= $row['cat_id'];
-	$files_keep[$row['file_id']][]	= $row['cat_id'];
+	$cat_ids[$row['cat_id']] = $row['cat_id'];
+	$files_keep[$row['file_id']][] = $row['cat_id'];
 }
 
 if ( !empty( $cat_ids ) ) {
@@ -153,14 +141,14 @@ if ( !empty( $category_filter ) && $category_filter != '0' ) {
 	$ids_to_search = implode(',', $filtered_file_ids);
 }
 else {
-	$ids_to_search = implode(',', $found_unique_files_ids);
+	$ids_to_search = $found_unique_files_ids;
 }
 
 /** Create the files list */
 $available_files = [];
 $my_files = [];
 
-if (!empty($found_client_files_ids) || !empty($found_group_files_ids)) {
+if (!empty($found_all_files_array)) {
 	$f = 0;
 	$files_query = "SELECT * FROM " . TABLE_FILES . " WHERE FIND_IN_SET(id,:search_ids)";
 

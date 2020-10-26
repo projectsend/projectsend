@@ -234,6 +234,7 @@ class Auth
             }
         }
 
+        // User does not exist, create if self-registrations are allowed
         pax($userProfile);
         /*
             @todo
@@ -388,23 +389,21 @@ class Auth
     public function logout()
     {
         header("Cache-control: private");
-		unset($_SESSION['loggedin']);
-		unset($_SESSION['access']);
-		unset($_SESSION['userlevel']);
-		unset($_SESSION['lang']);
-		unset($_SESSION['last_call']);
+		$_SESSION = array();
         session_destroy();
         
         global $hybridauth;
         try {
             $hybridauth->disconnectAllAdapters();
         } catch (\Exception $e) {
+            /*
             $return = [
                 'status' => 'error',
                 'message' => sprintf(__("Logout error: %s", 'cftp_admin'), $e->getMessage())
             ];
 
             return json_encode($return);
+            */
         }
 
 		/*
@@ -421,7 +420,7 @@ class Auth
             'affected_account_name' => CURRENT_USER_NAME
         ]);
 
-		$redirect_to = 'index.php';
+		$redirect_to = BASE_URI.'index.php';
 		if ( isset( $_GET['timeout'] ) ) {
 			$redirect_to .= '?error=timeout';
 		}

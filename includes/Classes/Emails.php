@@ -786,15 +786,10 @@ class Emails
 
 			}
 
-			/** Debug by echoing the email on page */
-			//echo $this->mail_info['body'];
-			//die();
-
             // Finally, send the e-mail.
             $send = $this->send_mail->Send();
-            $this->debug_result = $_SESSION['debug_message'];
+            $this->debug_result = (!empty($_SESSION['debug_message'])) ? $_SESSION['debug_message'] : null;
             unset($_SESSION['debug_message']);
-            // $this->debug_result = $this->send_mail->ErrorInfo;
 
 			if ($send) {
                 $this->email_successful = true;

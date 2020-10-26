@@ -291,8 +291,10 @@ class Emails
 										$this->strings_new_client_self['body3'],
 										$this->strings_new_client_self['label_name'],
 										$this->strings_new_client_self['label_user'],
-										$fullname,$username,BASE_URI
-										),
+                                        $fullname,
+                                        $username,
+                                        BASE_URI
+									),
 									$this->email_body
 								);
 		if ( !empty( $memberships_requests ) ) {
@@ -315,7 +317,17 @@ class Emails
 									),
 								$this->email_body
 							);
-		}
+        }
+        else {
+			$this->email_body = str_replace(
+                array('%LABEL_REQUESTS%', '%GROUPS_REQUESTS%'),
+                array(
+                    __('No group requests made', 'cftp_admin'),
+                    null,
+                ),
+                $this->email_body
+        )   ;
+        }
 		return array(
 					'subject' => $this->strings_new_client_self['subject'],
 					'body' => $this->email_body

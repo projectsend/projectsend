@@ -18,7 +18,7 @@
                                 return false;
                             }
                             else {
-                                _formatted = sprintf(json_strings.translations.confirm_delete, checks.length);
+                                var _formatted = sprintf(json_strings.translations.confirm_delete, checks.length);
                                 if (!confirm(_formatted)) {
                                     e.preventDefault();
                                 }
@@ -50,7 +50,7 @@
 
                         // Manage files actions
                         if (action == 'unassign') {
-                            _formatted = sprintf(json_strings.translations.confirm_unassign, checks.length);
+                            var _formatted = sprintf(json_strings.translations.confirm_unassign, checks.length);
                             if (!confirm(_formatted)) {
                                 e.preventDefault();
                             }

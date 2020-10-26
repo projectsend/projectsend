@@ -124,16 +124,18 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 												'ok'		=> 0,
 												'errors'	=> 0,
 											);
-						foreach ($selected_files as $index => $file->id) {
-							$this_file		= new ProjectSend\Classes\FilesActions;
-							$delete_status	= $this_file->deleteFiles($file->id);
-
-							if ( $delete_status == true ) {
-								$delete_results['ok']++;
-							}
-							else {
-								$delete_results['errors']++;
-							}
+						foreach ($selected_files as $index => $file_id) {
+                            if (!empty($file_id)) {
+                                $this_file		= new ProjectSend\Classes\FilesActions;
+                                $delete_status	= $this_file->deleteFiles($file_id);
+    
+                                if ( $delete_status == true ) {
+                                    $delete_results['ok']++;
+                                }
+                                else {
+                                    $delete_results['errors']++;
+                                }
+                            }
 						}
 
 						if ( $delete_results['ok'] > 0 ) {

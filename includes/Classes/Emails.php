@@ -36,15 +36,11 @@ class Emails
     private $strings_pass_reset;
     private $strings_client_edited;
     private $email_successful;
-    private $debug_result;
 
     function __construct()
     {
         global $dbh;
         $this->dbh = $dbh;
-
-        global $debug_message;
-        $debug_message = '';
 
 		/** Define the messages texts */
 		$this->header = file_get_contents(EMAIL_TEMPLATES_DIR . DS . EMAIL_TEMPLATE_HEADER);
@@ -573,16 +569,18 @@ class Emails
 	 */
 	private function email_test_settings($message)
 	{
+        $subject = __('Email configuration test', 'cftp_admin');
 		$this->email_body = $this->email_prepare_body('test_settings');
 		$this->email_body = str_replace(
-									array('%BODY%'),
+									array('%BODY%', '%SUBJECT%'),
 									array(
-										$message,
+                                        $message,
+                                        $subject,
 										),
 									$this->email_body
 								);
 		return array(
-					'subject' => __('Email configuration test', 'cftp_admin'),
+					'subject' => $subject,
 					'body' => $this->email_body
 				);
 	}
@@ -706,9 +704,11 @@ class Emails
             
             if ($debug == true) {
                 $this->send_mail->SMTPDebug = 3;
+                $_SESSION['debug_message'] = null;
                 $this->send_mail->Debugoutput = function($str, $level) {
-                    echo $str.'<br>';
-                    $GLOBALS['debug_message'] .= "$str\n";
+                    //echo $str.'<br>';
+                    $_SESSION['debug_message'] .= $str."\n";
+                    //$GLOBALS['debug_message'] .= "$str\n";
                 };
             }
 
@@ -792,7 +792,8 @@ class Emails
 
             // Finally, send the e-mail.
             $send = $this->send_mail->Send();
-            $this->debug_result = $GLOBALS['debug_message'];
+            $this->debug_result = $_SESSION['debug_message'];
+            unset($_SESSION['debug_message']);
             // $this->debug_result = $this->send_mail->ErrorInfo;
 
 			if ($send) {

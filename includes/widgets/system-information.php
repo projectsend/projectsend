@@ -11,8 +11,10 @@
 			<dt><?php _e('Version','cftp_admin'); ?></dt>
 			<dd>
 				<?php echo CURRENT_VERSION; ?> <?php
-					if (defined('VERSION_NEW_NUMBER')) {
-						echo ' - <strong>'; _e('New version available','cftp_admin'); echo ':</strong> <a href="'. VERSION_NEW_URL . '">' . VERSION_NEW_NUMBER . '</a>';
+                    $update_data = get_latest_version_data();
+                    $update_data = json_decode($update_data);
+                    if ($update_data->update_available == '1') {
+						echo ' - <strong>'; _e('New version available','cftp_admin'); echo ':</strong> <a href="'. $update_data->url . '">' . $update_data->latest_version . '</a>';
 					}
 				?>
 			</dd>

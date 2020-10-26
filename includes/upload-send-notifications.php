@@ -11,11 +11,6 @@
 require_once 'bootstrap.php';
 prevent_direct_access();
 
-$get_file_info = array();
-$get_client_info = array();
-$notifications_sent = array();
-$notifications_inactive = array();
-
 /**
  * First, get the list of different files that have
  * notifications to be sent. Requires that the amount
@@ -35,104 +30,79 @@ $notifications_inactive = array();
  *
  * UPDATE: 2 is now unused.
  */
-$params = array();
-$query = "SELECT * FROM " . TABLE_NOTIFICATIONS . " WHERE sent_status = '0' AND times_failed < :times";
-$params[':times'] = NOTIFICATIONS_MAX_TRIES;
-/** Add the time limit */
-if (NOTIFICATIONS_MAX_DAYS != '0') {
-	$query .= " AND timestamp >= DATE_SUB(NOW(), INTERVAL :days DAY)";
-	$params[':days'] = NOTIFICATIONS_MAX_DAYS;
-}
+$notes_to_clients = [];
+$notes_to_admin = [];
+$clients_data = [];
+$file_data = [];
+$creators = [];
 
+// Get notifications
+$params = [];
+$query = "SELECT * FROM " . TABLE_NOTIFICATIONS . " WHERE sent_status = '0' AND times_failed < :times";
+$params[':times'] = get_option('notifications_max_tries');
+/** Add the time limit */
+if (get_option('notifications_max_days') != '0') {
+	$query .= " AND timestamp >= DATE_SUB(NOW(), INTERVAL :days DAY)";
+	$params[':days'] = get_option('notifications_max_days');
+}
 $statement = $dbh->prepare( $query );
 $statement->execute( $params );
-
 $statement->setFetchMode(PDO::FETCH_ASSOC);
-while( $row = $statement->fetch() ) {
-	$get_file_info[]		= $row['file_id'];
-	$get_client_info[]		= $row['client_id'];
-	$found_notifications[]	= array(
-									'id'			=> $row['id'],
-									'client_id'		=> $row['client_id'],
-									'file_id'		=> $row['file_id'],
-									'timestamp'		=> $row['timestamp'],
-									'upload_type'	=> $row['upload_type']
-								);
-}
+while ($row = $statement->fetch()) {
+	$found_notifications[] = array(
+        'id'			=> $row['id'],
+        'client_id'		=> $row['client_id'],
+        'file_id'		=> $row['file_id'],
+        'timestamp'		=> $row['timestamp'],
+        'upload_type'	=> $row['upload_type']
+    );
 
-$files_to_get	= implode( ',', array_unique( $get_file_info) );
-$clients_to_get	= implode( ',', array_unique( $get_client_info) );
+    // Add the file data to the global array
+    $file_id = $row['file_id'];
+    if (!array_key_exists($file_id, $file_data)) {
+        $file = new \ProjectSend\Classes\Files();
+        $file->get($file_id);
+		$file_data[$file->id] = array(
+            'id'			=> $file->id,
+            'filename'		=> $file->filename_original,
+            'description'	=> $file->description,
+        );
+    }
+
+    // Add the file data to the global array
+    $user_id = $row['client_id'];
+    if (!array_key_exists($row['client_id'], $clients_data)) {
+        $client = get_client_by_id($user_id);
+        if (!empty($client)) {
+            $clients_data[$user_id] = $client;
+            $mail_by_user[$client['username']] = $client['email'];
+    
+            $created_by = $client['created_by'];
+            if (!array_key_exists($created_by, $creators)) {
+                $user = get_user_by_username($created_by);
+                if (!empty($user)) {
+                    $creators[$created_by] = $user;
+                    $mail_by_user[$created_by] = $user['email'];
+                }
+            }
+        }
+    }
+}
 
 /**
  * Continue if there are notifications to be sent.
  */
 if (!empty($found_notifications)) {
-	/**
-	 * Get the information of each file
-	 */
-	$statement = $dbh->prepare("SELECT id, filename, description FROM " . TABLE_FILES . " WHERE FIND_IN_SET(id, :files)");
-	$statement->bindParam(':files', $files_to_get);
-	$statement->execute();
-	$statement->setFetchMode(PDO::FETCH_ASSOC);
-	while ( $row = $statement->fetch() ) {
-		$file_data[$row['id']] = array(
-									'id'			=> $row['id'],
-									'filename'		=> $row['filename'],
-									'description'	=> htmlentities_allowed($row['description'])
-								);
-	}
-	
-	/**
-	 * Get the information of each client
-	 */
-	$creators = array();
-	$statement = $dbh->prepare("SELECT id, user, name, email, level, notify, created_by, active FROM " . TABLE_USERS . " WHERE FIND_IN_SET(id, :clients)");
-	$statement->bindParam(':clients', $clients_to_get);
-	$statement->execute();
-	$statement->setFetchMode(PDO::FETCH_ASSOC);
-	while ( $row = $statement->fetch() ) {
-		$clients_data[$row['id']] = array(
-									'id'			=> $row['id'],
-									'user'			=> $row['user'],
-									'name'			=> $row['name'],
-									'email'			=> $row['email'],
-									'level'			=> $row['level'],
-									'notify'		=> $row['notify'],
-									'created_by'	=> $row['created_by'],
-									'active'		=> $row['active']
-								);
-		$creators[] = $row['created_by'];
-		$mail_by_user[$row['user']] = $row['email'];
-	}
-	
-	/**
-	 * Add the creatros of the previous clients to the mails array.
-	 */
-	$creators = implode( ',', $creators);
-	if (!empty($creators)) {
-		$statement = $dbh->prepare("SELECT id, name, user, email, active FROM " . TABLE_USERS . " WHERE FIND_IN_SET(user, :users)");
-		$statement->bindParam(':users', $creators);
-		$statement->execute();
-		$statement->setFetchMode(PDO::FETCH_ASSOC);
-		while ( $row = $statement->fetch() ) {
-			$creators_data[$row['user']] = array(
-										'id' => $row['id'],
-										'user' => $row['user'],
-										'name' => $row['name'],
-										'email' => $row['email'],
-										'active' => $row['active']
-									);
-			$mail_by_user[$row['user']] = $row['email'];
-		}
-	}
-	
+    $notifications_sent = [];
+    $notifications_inactive = [];
+    $notifications_failed = [];
+
 	/**
 	 * Prepare the list of clients and admins that will be
 	 * notified, adding to each one the corresponding files.
 	 */
 	if (!empty($clients_data)) {
-		foreach ($clients_data as $client) {
-			$email_body = '';
+        foreach ($clients_data as $client) {
 			/**
 			 * Upload types values:
 			 * 0 - File was uploaded by a client	-> notify admin
@@ -150,11 +120,11 @@ if (!empty($found_notifications)) {
 																	);
 					}
 					elseif ($notification['upload_type'] == '1') {
-						if ($client['notify'] == '1') {
+                        if ($client['notify_upload'] == '1') {
 							if ($client['active'] == '1') {
 								/** If file is uploaded by user, add to client's email body */
 								$use_id = $notification['file_id'];
-								$notes_to_clients[$client['user']][] = array(
+								$notes_to_clients[$client['username']][] = array(
 																			'notif_id' => $notification['id'],
 																			'file_name' => $file_data[$use_id]['filename'],
 																			'description' => make_excerpt($file_data[$use_id]['description'],200)
@@ -192,21 +162,22 @@ if (!empty($found_notifications)) {
 
 			$address = $mail_by_user[$mail_username];
 			/** Create the object and send the email */
-			$notify_client = new \ProjectSend\Classes\Emails;
+			$email = new \ProjectSend\Classes\Emails;
 			$email_arguments = array(
 										'type' => 'new_files_by_user',
 										'address' => $address,
-										'files_list' => $files_list
-									);
-			$try_sending = $notify_client->send($email_arguments);
-			if ($try_sending == 1) {
+                                        'files_list' => $files_list,
+                                        //'preview' => true,
+                                    );
+            $send = $email->send($email_arguments);
+			if ($send == 1) {
 				$notifications_sent = array_merge($notifications_sent, $this_client_notifications);
 			}
 			else {
 				$notifications_failed = array_merge($notifications_failed, $this_client_notifications);
 			}
 		}
-	}
+    }
 	
 	/** Prepare the emails for ADMINS */
 	
@@ -214,7 +185,7 @@ if (!empty($found_notifications)) {
 		foreach ($notes_to_admin as $mail_username => $admin_files) {
 			
 			/** Check if the admin is active */
-			if (isset($creators_data[$mail_username]) && $creators_data[$mail_username]['active'] == '1') {
+			if (isset($creators[$mail_username]) && $creators[$mail_username]['active'] == '1') {
 				/** Reset the files list UL contents */
 				$files_list = '';
 				foreach ($admin_files as $client_uploader => $mail_files) {
@@ -236,14 +207,14 @@ if (!empty($found_notifications)) {
 	
 					$address = $mail_by_user[$mail_username];
 					/** Create the object and send the email */
-					$notify_admin = new \ProjectSend\Classes\Emails;
+					$email = new \ProjectSend\Classes\Emails;
 					$email_arguments = array(
 												'type' => 'new_files_by_client',
 												'address' => $address,
 												'files_list' => $files_list
 											);
-					$try_sending = $notify_admin->send($email_arguments);
-					if ($try_sending == 1) {
+					$send = $email->send($email_arguments);
+					if ($send == 1) {
 						$notifications_sent = array_merge($notifications_sent, $this_admin_notifications);
 					}
 					else {
@@ -322,11 +293,11 @@ if (!empty($found_notifications)) {
 	/**
 	 * DEBUG
 	 */
-	 /*
-	 echo '<h2>Notifications Found</h2><br /><pre>';
-	 print_r($notes_to_admin);
-	 echo '</pre><br /><br />';
+    /*
+    echo '<h2>Notifications Found</h2><br /><pre>';
+    print_r($notes_to_admin);
+    echo '</pre><br /><br />';
 
-	 echo '<h2>Notifications sent query</h2><br />' . $notifications_sent_query . '<br /><br />';
-	 */
+    echo '<h2>Notifications sent query</h2><br />' . $notifications_sent_query . '<br /><br />';
+    */
 }

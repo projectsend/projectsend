@@ -68,9 +68,6 @@ $get_categories = get_categories();
             }
         }
 
-        // Send the notifications
-        require_once INCLUDES_DIR . DS . 'upload-send-notifications.php';
-
         // Redirect
         $saved = implode(',', $saved_files);
         header("Location: files-edit.php?ids=".$saved.'&saved=true');
@@ -80,6 +77,9 @@ $get_categories = get_categories();
     // Saved files
     $saved_files = [];
 	if (!empty($_GET['saved'])) {
+        // Send the notifications
+        require_once INCLUDES_DIR . DS . 'upload-send-notifications.php';
+
         foreach ($editable as $file_id) {
             if (is_numeric($file_id)) {
                 $saved_files[] = $file_id;

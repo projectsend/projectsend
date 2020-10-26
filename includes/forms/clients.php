@@ -149,13 +149,14 @@ switch ($clients_form_type) {
 			 */
 			$arguments = array();
 
-			/** Groups to search on based on the current user level */
-			if ( CURRENT_USER_LEVEL == 9 || CURRENT_USER_LEVEL == 8 ) {
+            /** Groups to search on based on the current user level */
+            $role = (defined('CURRENT_USER_LEVEL')) ? CURRENT_USER_LEVEL : null;
+			if ( !empty($role) && in_array($role, [8, 9])) {
 				/** An admin or client manager is creating a client account */
 			}
 			else {
 				/** Someone is registering an account for himself */
-				if ( CLIENTS_CAN_SELECT_GROUP == 'public' ) {
+				if ( get_option('clients_can_select_group') == 'public' ) {
 					$arguments['public'] = true;
 				}
 			}
@@ -182,7 +183,7 @@ switch ($clients_form_type) {
 				<div class="form-group assigns">
 					<label for="groups_request" class="col-sm-4 control-label"><?php echo $group_label; ?></label>
 					<div class="col-sm-8">
-						<select multiple="multiple" name="groups_request[]" id="groups-select" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+						<select multiple="multiple" name="groups_request[]" id="groups-select" class="form-control chosen-select none" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
 							<?php
 								foreach ( $sql_groups as $group ) {
 							?>
@@ -198,11 +199,11 @@ switch ($clients_form_type) {
 							?>
 						</select>
 						<?php
-							if ( CURRENT_USER_LEVEL == 9 || CURRENT_USER_LEVEL == 8 ) {
+							if ( !empty($role) && in_array($role, [8, 9])) {
 						?>
 								<div class="list_mass_members">
-									<a href="#" class="btn btn-default add-all" data-type="assigns"><?php _e('Add all','cftp_admin'); ?></a>
-									<a href="#" class="btn btn-default remove-all" data-type="assigns"><?php _e('Remove all','cftp_admin'); ?></a>
+									<button type="button" class="btn btn-default add-all" data-target="groups-select"><?php _e('Add all','cftp_admin'); ?></button>
+									<button type="button" class="btn btn-default remove-all" data-target="groups-select"><?php _e('Remove all','cftp_admin'); ?></button>
 								</div>
 						<?php
 							}

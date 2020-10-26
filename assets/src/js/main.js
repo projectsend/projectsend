@@ -28,9 +28,6 @@
             case 'clients_accounts_requests':
                 admin.pages.clientsAccountsRequests();
                 break;
-            case 'new_uploads_editor':
-                admin.pages.newUploadsEditor();
-                break;
             case 'file_editor':
                 admin.pages.fileEditor();
                 break;

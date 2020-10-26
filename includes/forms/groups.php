@@ -62,8 +62,8 @@ switch ($groups_form_type) {
 				?>
 			</select>
 			<div class="list_mass_members">
-				<a href="#" class="btn btn-default add-all" data-type="assigns"><?php _e('Add all','cftp_admin'); ?></a>
-				<a href="#" class="btn btn-default remove-all" data-type="assigns"><?php _e('Remove all','cftp_admin'); ?></a>
+				<a href="#" class="btn btn-default add-all" data-target="members"><?php _e('Add all','cftp_admin'); ?></a>
+				<a href="#" class="btn btn-default remove-all" data-target="members"><?php _e('Remove all','cftp_admin'); ?></a>
 			</div>
 		</div>
 	</div>

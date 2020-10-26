@@ -152,9 +152,8 @@
             }
 
             $('.add-all').on('click', function() {
-                var type = $(this).data('type');
-                var id = $(this).data('file-id');
-                var selector = $('select[data-type="' + type + '"][data-file-id="'+id+'"]');
+                var target = $(this).data('target');
+                var selector = $('#'+target);
                 $(selector).hide();
                 //var selector = $(this).previous('.select_' + type);
                 $(selector).find('option').each(function() {
@@ -165,9 +164,8 @@
             });
 
             $('.remove-all').on('click', function() {
-                var type = $(this).data('type');
-                var id = $(this).data('file-id');
-                var selector = $('select[data-type="' + type + '"][data-file-id="'+id+'"]');
+                var target = $(this).data('target');
+                var selector = $('#'+target);
                 //var selector = $(this).previous('.select_' + type);
                 $(selector).find('option').each(function() {
                     $(this).prop('selected', false);

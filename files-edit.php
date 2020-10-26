@@ -24,7 +24,7 @@ $active_nav = 'files';
 
 $page_title = __('Edit files', 'cftp_admin');
 
-$page_id = 'new_uploads_editor';
+$page_id = 'file_editor';
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 

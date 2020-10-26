@@ -37,6 +37,7 @@ class Files
     public $public_url;
     public $location;
     public $full_path;
+    public $record_exists;
 
     private $is_filetype_allowed;
 
@@ -52,6 +53,7 @@ class Files
         $this->location = UPLOADED_FILES_DIR;
 
         $this->is_filetype_allowed = false;
+        $this->record_exists = false;
 
         $this->assignments_clients = [];
         $this->assignments_groups = [];
@@ -133,6 +135,8 @@ class Files
         if ($statement->rowCount() == 0) {
             return false;
         }
+
+        $this->record_exists = true;
     
         while ($row = $statement->fetch() ) {
             $this->id = html_output($row['id']);
@@ -161,6 +165,11 @@ class Files
         $this->getCurrentCategories();
 
         return true;
+    }
+
+    public function recordExists()
+    {
+        return $this->record_exists;
     }
 
     public function getCurrentAssignments()
@@ -613,6 +622,7 @@ class Files
         $this->state['id'] = $this->file_id;
         $this->state['public_token'] = $this->public_token;
         $this->id = $this->file_id;
+        $this->record_exists = true;
 
 		if (!empty($this->file_id)) {
             /** Record the action log */

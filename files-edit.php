@@ -53,18 +53,16 @@ $get_categories = get_categories();
     /**
      * A posted form will include information of the uploaded files
      * (name, description and client).
-     * @todo
      */
 	if (isset($_POST['save'])) {
         // Edit each file and its assignations
 		foreach ($_POST['file'] as $file) {
-            // @todo
             $object = new \ProjectSend\Classes\Files();
             $object->get($file_id);
-            if ($object->save($file) != false) {
-                // @todo
-                // Also save assignments
-                $saved_files[] = $file['id'];
+            if ($object->recordExists()) {
+                if ($object->save($file) != false) {
+                    $saved_files[] = $file['id'];
+                }
             }
         }
 
@@ -109,52 +107,54 @@ $get_categories = get_categories();
 				foreach($saved_files as $file_id) {
                     $file = new \ProjectSend\Classes\Files();
                     $file->get($file_id);
+                    if ($file->recordExists()) {
             ?>
-					<tr>
-						<td><?php echo html_output($file->title); ?></td>
-						<td><?php echo htmlentities_allowed($file->description); ?></td>
-						<td><?php echo html_output($file->filename_original); ?></td>
-						<?php
-							if (CURRENT_USER_LEVEL != 0) {
-						?>
-								<td class="col_visibility">
-									<?php
-										if ($file->public == '1') {
-									?>
-											<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="file" data-public-url="<?php echo $file->public_url; ?>">
-									<?php
-										}
-										else {
-									?>
-											<a href="javascript:void(0);" class="btn btn-default btn-sm disabled" rel="" title="">
-									<?php
-										}
-												$status_public	= __('Public','cftp_admin');
-												$status_private	= __('Private','cftp_admin');
-												echo ($file->public == 1) ? $status_public : $status_private;
-									?>
-											</a>
-								</td>
-						<?php
-							}
-						?>
-						<td>
-							<a href="files-edit.php?ids=<?php echo html_output($file->id); ?>" class="btn-primary btn btn-sm">
-								<i class="fa fa-pencil"></i><span class="button_label"><?php _e('Edit file','cftp_admin'); ?></span>
-							</a>
-							<?php
-								/*
-								 * Show the "My files" button only to clients
-								 */
-								if (CURRENT_USER_LEVEL == 0) {
-							?>
-									<a href="<?php echo CLIENT_VIEW_FILE_LIST_URL; ?>" class="btn-primary btn btn-sm"><?php _e('View my files','cftp_admin'); ?></a>
-							<?php
-								}
-							?>
-						</td>
-					</tr>
+                        <tr>
+                            <td><?php echo html_output($file->title); ?></td>
+                            <td><?php echo htmlentities_allowed($file->description); ?></td>
+                            <td><?php echo html_output($file->filename_original); ?></td>
+                            <?php
+                                if (CURRENT_USER_LEVEL != 0) {
+                            ?>
+                                    <td class="col_visibility">
+                                        <?php
+                                            if ($file->public == '1') {
+                                        ?>
+                                                <a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="file" data-public-url="<?php echo $file->public_url; ?>">
+                                        <?php
+                                            }
+                                            else {
+                                        ?>
+                                                <a href="javascript:void(0);" class="btn btn-default btn-sm disabled" rel="" title="">
+                                        <?php
+                                            }
+                                                    $status_public	= __('Public','cftp_admin');
+                                                    $status_private	= __('Private','cftp_admin');
+                                                    echo ($file->public == 1) ? $status_public : $status_private;
+                                        ?>
+                                                </a>
+                                    </td>
+                            <?php
+                                }
+                            ?>
+                            <td>
+                                <a href="files-edit.php?ids=<?php echo html_output($file->id); ?>" class="btn-primary btn btn-sm">
+                                    <i class="fa fa-pencil"></i><span class="button_label"><?php _e('Edit file','cftp_admin'); ?></span>
+                                </a>
+                                <?php
+                                    /*
+                                    * Show the "My files" button only to clients
+                                    */
+                                    if (CURRENT_USER_LEVEL == 0) {
+                                ?>
+                                        <a href="<?php echo CLIENT_VIEW_FILE_LIST_URL; ?>" class="btn-primary btn btn-sm"><?php _e('View my files','cftp_admin'); ?></a>
+                                <?php
+                                    }
+                                ?>
+                            </td>
+                        </tr>
                 <?php
+                        }
                     }
                 ?>
 			</tbody>

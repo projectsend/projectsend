@@ -682,8 +682,10 @@ class Files
          * If a client is editing a file, only a few properties can be changed
          */
         if ( CURRENT_USER_LEVEL == 0 ) {
-            $this->expires = $current["expires"];
-            $this->expiry_date = $current["expiry_date"];
+            if (get_option('clients_can_set_expiration_date') != '1') {
+                $this->expires = $current["expires"];
+                $this->expiry_date = $current["expiry_date"];
+            }
             $this->is_public = $current["public"];
         }
 

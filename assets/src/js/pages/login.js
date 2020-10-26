@@ -47,7 +47,7 @@
                             }
                             else {
                                 $('.ajax_response').addClass('alert alert-danger').slideDown().html(json.message);
-                                $('#submit').html("'"+button_text+"'");
+                                $('#submit').html(button_text);
                             }
                         }
                     });

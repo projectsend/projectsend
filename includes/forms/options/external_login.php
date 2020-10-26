@@ -110,7 +110,8 @@
                             <?php _e('Callback URI','cftp_admin'); ?>
                         </div>
                         <div class="col-sm-8">
-                            <span class="format_url"><?php echo BASE_URI . 'login-callback.php?service='.$network; ?></span>
+                            <?php /*<span class="format_url"><?php echo BASE_URI . 'login-callback.php?service='.$network; ?></span>*/ ?>
+                            <span class="format_url"><?php echo BASE_URI . 'login-callback.php'; ?></span>
                         </div>
                     </div>
                 <?php } ?>

@@ -8,6 +8,7 @@
  */
 $name_placeholder = __("Will be visible on the client's file list",'cftp_admin');
 
+$clients_can_select_group = get_option('clients_can_select_group');
 switch ($clients_form_type) {
 	/** User is creating a new client */
 	case 'new_client':
@@ -43,7 +44,7 @@ switch ($clients_form_type) {
 		$extra_fields = false;
 		$name_placeholder = __("Your full name",'cftp_admin');
 		$group_field = false;
-		if ( CLIENTS_CAN_SELECT_GROUP == 'public' || CLIENTS_CAN_SELECT_GROUP == 'all' ) {
+		if ( $clients_can_select_group == 'public' || $clients_can_select_group == 'all' ) {
 			$group_field = true;
 			$group_label = __('Request access to groups','cftp_admin');
 		}
@@ -57,10 +58,10 @@ switch ($clients_form_type) {
 		$info_box = false;
 		$extra_fields = false;
 		$group_field = false;
-		if ( CLIENTS_CAN_SELECT_GROUP == 'public' || CLIENTS_CAN_SELECT_GROUP == 'all' ) {
+		if ( $clients_can_select_group == 'public' || $clients_can_select_group == 'all' ) {
 			$group_field			= true;
 			$group_label			= __('Request access to groups','cftp_admin');
-			$override_groups_list	= $found_requests[$client_id]['group_ids'];
+			$override_groups_list	= (!empty($found_requests[$client_id]['group_ids'])) ? $found_requests[$client_id]['group_ids'] : null;
 		}
 		$ignore_size = true;
 		break;
@@ -156,7 +157,7 @@ switch ($clients_form_type) {
 			}
 			else {
 				/** Someone is registering an account for himself */
-				if ( get_option('clients_can_select_group') == 'public' ) {
+				if ( $clients_can_select_group == 'public' ) {
 					$arguments['public'] = true;
 				}
 			}

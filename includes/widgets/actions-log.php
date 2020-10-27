@@ -20,7 +20,7 @@
 							),
 						);
 
-	if ( CLIENTS_CAN_REGISTER == 1 ) {
+	if ( get_option('clients_can_register') == 1 ) {
 		$actions_buttons[] = array(
 									'action'	=> '4',
 									'title'		=> __('Clients self-registrations','cftp_admin'),

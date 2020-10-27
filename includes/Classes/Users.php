@@ -343,12 +343,12 @@ class Users
 	{
 		$this->state = array();
 
-        $this->password_hashed = self::hashPassword($this->password);
+        $this->password_hashed = $this->hashPassword($this->password);
 
 		if (strlen($this->password_hashed) >= 20) {
 
 			/** Who is creating the client? */
-			$this->created_by = CURRENT_USER_USERNAME;
+			$this->created_by = (defined('CURRENT_USER_USERNAME')) ? CURRENT_USER_USERNAME : 'SELFREGISTERED';
 
 			/** Insert the client information into the database */
 			$this->timestamp = time();
@@ -382,9 +382,10 @@ class Users
                 $this->state['query'] = 1;
 
                 /** Record the action log */
-                $created_by = !empty(CURRENT_USER_ID) ? CURRENT_USER_ID : $this->id;
+                $created_by = (defined('CURRENT_USER_ID')) ? CURRENT_USER_ID : $this->id;
                 $record = $this->logger->addEntry([
                     'action' => 2,
+                    'owner_user' => $this->username,
                     'owner_id' => $created_by,
                     'affected_account' => $this->id,
                     'affected_account_name' => $this->name
@@ -432,7 +433,55 @@ class Users
 		}
 
 		return $this->state;
-	}
+    }
+    
+    public function triggerAfterSelfRegister($arguments = null)
+    {
+        define('REGISTERING', true);
+
+        /**
+         * Check if the option to auto-add to a group
+         * is active.
+         */
+        if (get_option('clients_auto_group') != '0') {
+            $group_id = get_option('clients_auto_group');
+
+            $autogroup	= new \ProjectSend\Classes\MembersActions;
+            $autogroup->client_add_to_groups([
+                'client_id'	=> $this->id,
+                'group_ids'	=> $group_id,
+                'added_by'	=> $this->created_by
+            ]);
+        }
+
+        /**
+         * Check if the client requested memberships to groups
+         */
+        if (!empty($arguments['groups'])) {
+            $request = new \ProjectSend\Classes\MembersActions;
+            $request->group_request_membership([
+                'client_id'		=> $this->id,
+                'group_ids'		=> $arguments['groups'],
+                'request_by'	=> $this->created_by,
+            ]);
+        }
+
+        /**
+         * Prepare and send an email to administrator(s)
+         */
+        $notify_admin = new \ProjectSend\Classes\Emails;
+        $email_arguments = array(
+                                        'type'			=> 'new_client_self',
+                                        'address'		=> get_option('admin_email_address'),
+                                        'username'		=> $this->username,
+                                        'name'			=> $this->name,
+                                    );
+        if ( !empty( $execute_requests['requests'] ) ) {
+            $email_arguments['memberships'] = $execute_requests['requests'];
+        }
+
+        $notify_admin->send($email_arguments);
+    }
 
 	/**
 	 * Edit an existing user.
@@ -445,7 +494,7 @@ class Users
 
         $this->state = array();
 
-        $this->password_hashed = self::hashPassword($this->password);
+        $this->password_hashed = $this->hashPassword($this->password);
 
 		if (strlen($this->password_hashed) >= 20) {
 

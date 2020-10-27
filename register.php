@@ -22,7 +22,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 		if ( defined('RECAPTCHA_AVAILABLE') ) {
 			$recaptcha_user_ip		= $_SERVER["REMOTE_ADDR"];
 			$recaptcha_response		= $_POST['g-recaptcha-response'];
-			$recaptcha_secret_key	= RECAPTCHA_SECRET_KEY;
+			$recaptcha_secret_key	= get_option('recaptcha_secret_key');
 			$recaptcha_request		= file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptcha_secret_key}&response={$recaptcha_response}&remoteip={$recaptcha_user_ip}");
 		}
 
@@ -35,12 +35,11 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
             'address' => (isset($_POST["address"])) ? $_POST['address'] : null,
             'phone' => (isset($_POST["phone"])) ? $_POST['phone'] : null,
             'contact' => (isset($_POST["contact"])) ? $_POST['contact'] : null,
-            'max_file_size' => UPLOAD_MAX_FILESIZE,
+            'max_file_size' => 0,
             'notify_upload' => (isset($_POST["notify_upload"])) ? 1 : 0,
             'notify_account' => (isset($_POST["notify_account"])) ? 1 : 0,
-            'active' => (CLIENTS_AUTO_APPROVE == 0) ? 0 : 1,
-            'account_requested'	=> (CLIENTS_AUTO_APPROVE == 0) ? 1 : 0,
-            'group' => (isset($_POST["groups_request"])) ? $_POST["groups_request"] : null,
+            'active' => (get_option('clients_auto_approve') == 0) ? 0 : 1,
+            'account_requested'	=> (get_option('clients_auto_approve') == 0) ? 1 : 0,
             'type' => 'new_client',
             'recaptcha' => ( defined('RECAPTCHA_AVAILABLE') ) ? $recaptcha_request : null,
         );
@@ -51,55 +50,13 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
         $new_client->set($client_arguments);
         if ($new_client->validate()) {
             $new_response = $new_client->create();
+            $new_client->triggerAfterSelfRegister([
+                'groups' => (isset($_POST["groups_request"])) ? $_POST["groups_request"] : null,
+            ]);
 
-			$admin_name = 'SELFREGISTERED';
-			/**
-			 * Check if the option to auto-add to a group
-			 * is active.
-			 */
-			if (CLIENTS_AUTO_GROUP != '0') {
-				$group_id = CLIENTS_AUTO_GROUP;
-				define('AUTOGROUP', true);
-
-				$autogroup	= new \ProjectSend\Classes\MembersActions;
-				$arguments	= array(
-									'client_id'	=> $new_client->getId(),
-									'group_ids'	=> $group_id,
-									'added_by'	=> $admin_name,
-								);
-		
-				$execute = $autogroup->client_add_to_groups($arguments);
-			}
-
-			/**
-			 * Check if the client requested memberships to groups
-			 */
-			define('REGISTERING', true);
-			$request	= new \ProjectSend\Classes\MembersActions;
-			$arguments	= array(
-								'client_id'		=> $new_client->getId(),
-								'group_ids'		=> $client_arguments['group'],
-								'request_by'	=> $admin_name,
-							);
-	
-			$execute_requests = $request->group_request_membership($arguments);
-
-			/**
-			 * Prepare and send an email to administrator(s)
-			 */
-			$notify_admin = new \ProjectSend\Classes\Emails;
-			$email_arguments = array(
-											'type'			=> 'new_client_self',
-											'address'		=> ADMIN_EMAIL_ADDRESS,
-											'username'		=> $client_arguments['username'],
-											'name'			=> $client_arguments['name'],
-										);
-
-			if ( !empty( $execute_requests['requests'] ) ) {
-				$email_arguments['memberships'] = $execute_requests['requests'];
-			}
-
-			$notify_admin_status = $notify_admin->send($email_arguments);
+            $url = BASE_URI.'register.php?success=1';
+            header("Location:".$url);
+            exit;
         }
 	}
 ?>
@@ -115,10 +72,28 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 	<div class="white-box">
 		<div class="white-box-interior">
 
-			<?php
-				if (CLIENTS_CAN_REGISTER == '0') {
+            <?php
+                $form = true;
+                if (isset($_GET['success']) && $_GET['success'] == '1') {
+                    $msg = __('Account added correctly.','cftp_admin');
+                    echo system_message('success',$msg);
+
+                    if (get_option('clients_auto_approve') == 0) {
+                        $msg = __('Please remember that an administrator needs to approve your account before you can log in.','cftp_admin');
+                        $type = 'warning';
+                    }
+                    else {
+                        $msg = __('You may now log in with your new credentials.','cftp_admin');
+                        $type = 'success';
+                    }
+                    echo system_message($type,$msg);
+                    $form = false;
+                }
+
+                if (get_option('clients_can_register') == '0') {
 					$msg = __('Client self registration is not allowed. If you need an account, please contact a system administrator.','cftp_admin');
                     echo system_message('danger',$msg);
+                    $form = false;
 				}
 				else {
                     // If the form was submited with errors, show them here.
@@ -133,20 +108,6 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 						$error_msg .= __('Please contact a system administrator.','cftp_admin');
 	
 						switch ($new_response['query']) {
-							case 1:
-                                $msg = __('Account added correctly.','cftp_admin');
-								echo system_message('success',$msg);
-	
-								if (CLIENTS_AUTO_APPROVE == 0) {
-                                    $msg = __('Please remember that an administrator needs to approve your account before you can log in.','cftp_admin');
-                                    $type = 'warning';
-								}
-								else {
-                                    $msg = __('You may now log in with your new credentials.','cftp_admin');
-                                    $type = 'success';
-								}
-								echo system_message($type,$msg);
-                                break;
 							case 0:
 								$msg = __('There was an error. Please try again.','cftp_admin');
 								$msg .= $error_msg;
@@ -176,16 +137,17 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 								echo system_message('danger',$msg);
 							break;
 						}
-					}
-					else {
-						/**
-						 * If not $new_response is set, it means we are just entering for the first time.
-						 * Include the form.
-						 */
-						$clients_form_type = 'new_client_self';
-						include_once FORMS_DIR . DS . 'clients.php';
-					}
+                    }
 				}
+
+                if ($form == true) {
+                    /**
+                     * If not $new_response is set, it means we are just entering for the first time.
+                     * Include the form.
+                     */
+                    $clients_form_type = 'new_client_self';
+                    include_once FORMS_DIR . DS . 'clients.php';
+                }
 			?>
 
 			<div class="login_form_links">

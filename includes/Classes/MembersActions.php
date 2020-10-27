@@ -124,9 +124,9 @@ class MembersActions
 	{
 		$this->client_id	= $arguments['client_id'];
 		$this->group_ids	= is_array( $arguments['group_ids'] ) ? $arguments['group_ids'] : array( $arguments['group_ids'] );
-		$this->added_by		= $arguments['added_by'];
+        $this->added_by		= $arguments['added_by'];
 		
-		if ( in_array( CURRENT_USER_LEVEL, array(9,8) ) || ( defined('AUTOGROUP') ) ) {
+		if ( defined('REGISTERING') or (defined('CURRENT_USER_LEVEL') && in_array( CURRENT_USER_LEVEL, array(9,8) )) ) {
 			$this->results 		= array(
 										'added'		=> 0,
 										'queue'		=> count( $this->group_ids ),
@@ -149,7 +149,7 @@ class MembersActions
 														'group'	=> $this->group_id,
 													);
 				}
-			}
+            }
 			
 			return $this->results;
 		}
@@ -255,7 +255,7 @@ class MembersActions
 	
 	function group_request_membership($arguments)
 	{
-		if ( in_array( CURRENT_USER_LEVEL, array(9,8) ) || ( defined('REGISTERING') ) || ( defined('EDITING_SELF_ACCOUNT') ) ) {
+		if ( (defined('CURRENT_USER_LEVEL') && in_array( CURRENT_USER_LEVEL, array(9,8) )) || ( defined('REGISTERING') ) || ( defined('EDITING_SELF_ACCOUNT') ) ) {
 			if (CLIENTS_CAN_SELECT_GROUP == 'public' || CLIENTS_CAN_SELECT_GROUP == 'all') {
 				$this->client_id	= $arguments['client_id'];
 				$this->group_ids	= is_array( $arguments['group_ids'] ) ? $arguments['group_ids'] : array( $arguments['group_ids'] );

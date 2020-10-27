@@ -65,7 +65,8 @@ class Auth
 
 			if (password_verify($password, $this->db_pass)) {
 				if ($this->active_status != '0') {
-					/** Set SESSION values */
+                    /** Set SESSION values */
+                    $_SESSION['user_id']	= $this->logged_id;
 					$_SESSION['loggedin']	= $this->db_username;
 					$_SESSION['userlevel']	= $this->user_level;
 					$_SESSION['lang']		= $this->selected_form_lang;
@@ -200,6 +201,7 @@ class Auth
                 $user_data = $user->getProperties();
 
 				if ($user->isActive()) {
+                    $_SESSION['user_id'] = $user_data['id'];
 					$_SESSION['loggedin'] = $user_data['username'];
 					$_SESSION['userlevel'] = $user_data['role'];
 

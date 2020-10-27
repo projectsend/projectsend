@@ -357,7 +357,7 @@ class MembersActions
 	/**
 	 * Approve and deny group memberships requests
 	 */
-	function group_process_memberships($arguments)
+	function group_process_memberships($arguments, $email = false)
 	{
 		$this->client_id = $arguments['client_id'];
 		$this->approve = !empty( $arguments['approve'] ) ? $arguments['approve'] : '';
@@ -430,14 +430,16 @@ class MembersActions
         ]);
 
         /** Send email */
-        $notify_client = new \ProjectSend\Classes\Emails;
-        $notify_send = $notify_client->send([
-            'type'			=> 'client_memberships_process',
-            'username'		=> $client['username'],
-            'name'			=> $client['name'],
-            'addresses'		=> $client['email'],
-            'memberships'	=> $return_info['memberships'],
-        ]);
+        if ($email) {
+            $notify_client = new \ProjectSend\Classes\Emails;
+            $send = $notify_client->send([
+                'type'			=> 'client_memberships_process',
+                'username'		=> $client['username'],
+                'name'			=> $client['name'],
+                'address'		=> $client['email'],
+                'memberships'	=> $this->return_info['memberships'],
+            ]);
+        }
 		
 		return $this->return_info;
 	}
@@ -536,15 +538,13 @@ class MembersActions
 				$this->client_info = get_client_by_id($this->client_id);
 				$notify_admin = new \ProjectSend\Classes\Emails;
 
-				$email_arguments = array(
-												'type'			=> 'client_edited',
-												'address'		=> ADMIN_EMAIL_ADDRESS,
-												'username'		=> $this->client_info['username'],
-												'name'			=> $this->client_info['name'],
-												'memberships'	=> $this->group_ids
-											);
-
-				$notify_admin_status = $notify_admin->send($email_arguments);
+                $send = $notify_admin->send([
+                    'type'			=> 'client_edited',
+                    'address'		=> ADMIN_EMAIL_ADDRESS,
+                    'username'		=> $this->client_info['username'],
+                    'name'			=> $this->client_info['name'],
+                    'memberships'	=> $this->group_ids
+                ]);
 			}
 		}
 	}

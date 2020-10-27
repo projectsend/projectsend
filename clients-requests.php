@@ -119,15 +119,13 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						$client_information = get_client_by_id( $client['id'] );
 
 						$notify_client = new \ProjectSend\Classes\Emails;
-						$email_arguments = array(
-														'type'			=> $email_type,
-														'username'		=> $client_information['username'],
-														'name'			=> $client_information['name'],
-														'addresses'		=> $client_information['email'],
-														'memberships'	=> $processed_requests,
-														'preview'		=> true,
-													);
-						$notify_send = $notify_client->send($email_arguments);
+                        $notify_send = $notify_client->send([
+                            'type'			=> $email_type,
+                            'username'		=> $client_information['username'],
+                            'name'			=> $client_information['name'],
+                            'address'		=> $client_information['email'],
+                            'memberships'	=> $processed_requests,
+                        ]);
 					}
 					break;
 				case 'delete':

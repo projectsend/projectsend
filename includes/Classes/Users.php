@@ -404,16 +404,13 @@ class Users
                 
 				/** Send account data by email */
 				$this->notify_user = new \ProjectSend\Classes\Emails;
-				$this->email_arguments = array(
-												'type'		=> $email_type,
-												'address'	=> $this->email,
-												'username'	=> $this->username,
-												'password'	=> $this->password
-											);
 				if ($this->notify_account == 1) {
-					$this->notify_send = $this->notify_user->send($this->email_arguments);
-
-					if ($this->notify_send == 1){
+					if ($this->notify_user->send([
+                        'type'		=> $email_type,
+                        'address'	=> $this->email,
+                        'username'	=> $this->username,
+                        'password'	=> $this->password
+                    ])) {
 						$this->state['email'] = 1;
 					}
 					else {

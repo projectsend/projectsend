@@ -93,15 +93,12 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 			
 						/** Send email */
 						$notify_user = new \ProjectSend\Classes\Emails;
-						$email_arguments = array(
+                        if ($notify_user->send([
                             'type' => 'password_reset',
                             'address' => $get_user['email'],
                             'username' => $get_user['username'],
                             'token' => $token
-                        );
-                        $notify_send = $notify_user->send($email_arguments);
-			
-						if ($notify_send == 1){
+                        ])) {
 							$state['email'] = 1;
 						}
 						else {

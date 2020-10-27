@@ -163,14 +163,11 @@ if (!empty($found_notifications)) {
 			$address = $mail_by_user[$mail_username];
 			/** Create the object and send the email */
 			$email = new \ProjectSend\Classes\Emails;
-			$email_arguments = array(
-										'type' => 'new_files_by_user',
-										'address' => $address,
-                                        'files_list' => $files_list,
-                                        //'preview' => true,
-                                    );
-            $send = $email->send($email_arguments);
-			if ($send == 1) {
+            if ($email->send([
+                'type' => 'new_files_by_user',
+                'address' => $address,
+                'files_list' => $files_list,
+            ])) {
 				$notifications_sent = array_merge($notifications_sent, $this_client_notifications);
 			}
 			else {
@@ -208,13 +205,11 @@ if (!empty($found_notifications)) {
 					$address = $mail_by_user[$mail_username];
 					/** Create the object and send the email */
 					$email = new \ProjectSend\Classes\Emails;
-					$email_arguments = array(
-												'type' => 'new_files_by_client',
-												'address' => $address,
-												'files_list' => $files_list
-											);
-					$send = $email->send($email_arguments);
-					if ($send == 1) {
+					if ($email->send([
+                        'type' => 'new_files_by_client',
+                        'address' => $address,
+                        'files_list' => $files_list
+                    ])) {
 						$notifications_sent = array_merge($notifications_sent, $this_admin_notifications);
 					}
 					else {

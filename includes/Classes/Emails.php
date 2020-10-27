@@ -716,11 +716,11 @@ class Emails
             
             if ($debug == true) {
                 $this->send_mail->SMTPDebug = 3;
-                $_SESSION['debug_message'] = null;
+                $_SESSION['email_debug_message'] = null;
                 $this->send_mail->Debugoutput = function($str, $level) {
                     //echo $str.'<br>';
-                    $_SESSION['debug_message'] .= $str."\n";
-                    //$GLOBALS['debug_message'] .= "$str\n";
+                    $_SESSION['email_debug_message'] .= $str."\n";
+                    //$GLOBALS['email_debug_message'] .= "$str\n";
                 };
             }
 
@@ -800,16 +800,11 @@ class Emails
 
             // Finally, send the e-mail.
             $send = $this->send_mail->Send();
-            $this->debug_result = (!empty($_SESSION['debug_message'])) ? $_SESSION['debug_message'] : null;
-            unset($_SESSION['debug_message']);
+            $this->debug_result = (!empty($_SESSION['email_debug_message'])) ? $_SESSION['email_debug_message'] : null;
+            unset($_SESSION['email_debug_message']);
 
-			if ($send) {
-                $this->email_successful = true;
-				return 1;
-			}
-			else {
-				return 2;
-			}
+            $this->email_successful = $send;
+            return $send;
 		}
 	}
 }

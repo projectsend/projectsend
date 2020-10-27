@@ -14,17 +14,31 @@
  */
 function check_for_session( $redirect = true )
 {
-	$is_logged_now = false;
-	if (isset($_SESSION['loggedin'])) {
+    $is_logged_now = false;
+
+    if (isset($_SESSION['user_id'])) {
+        $user = new \ProjectSend\Classes\Users();
+        if (!$user->get($_SESSION['user_id'])) {
+            $_SESSION = [];
+            session_destroy();
+            header("location:" . BASE_URI . "index.php");
+            exit;
+        }
+    }
+
+    if (isset($_SESSION['loggedin'])) {
 		$is_logged_now = true;
 	}
 	elseif (isset($_SESSION['access']) && $_SESSION['access'] == 'admin') {
 		$is_logged_now = true;
 	}
-	if ( !$is_logged_now && $redirect == true ) {
-		header("location:" . BASE_URI . "index.php");
+
+    if ( !$is_logged_now && $redirect == true ) {
+        header("location:" . BASE_URI . "index.php");
+        exit;
 	}
-	return $is_logged_now;
+
+    return $is_logged_now;
 }
 
 /**

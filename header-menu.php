@@ -20,10 +20,12 @@ if ( current_role_in( array( 9,8,7 ) ) )
 	define('COUNT_CLIENTS_INACTIVE', $sql_inactive->rowCount());
 	*/
 
-	/** Count new groups MEMBERSHIP requests */
-	$sql_requests = $dbh->prepare( "SELECT DISTINCT id FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='0'" );
-	$sql_requests->execute();
-	define('COUNT_MEMBERSHIP_REQUESTS', $sql_requests->rowCount());
+	/**
+     * Count new groups MEMBERSHIP requests only from active clients
+     * to make sure they are from not new accounts (since those are
+     * shown in the Account Request menu item)
+     */
+	define('COUNT_MEMBERSHIP_REQUESTS', countGroupsRequestsForNewClients());
 
 	/** Count ALREADY DENIED groups MEMBERSHIP requests */
 	$sql_requests = $dbh->prepare( "SELECT DISTINCT id FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='1'" );

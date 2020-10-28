@@ -1686,14 +1686,14 @@ function userCanDownloadFile($user_id = CURRENT_USER_ID, $file_id = null)
     return false;
 }
 
-function countGroupsRequestsForNewClients()
+function countGroupsRequestsForExistingClients()
 {
     global $dbh;
     $count = 0;
     $ignore_user_ids = [];
 
     // First, get accounts requests. This will give us the ids of the clients that we need to ignore later
-    $statement = $dbh->prepare( "SELECT id FROM " . TABLE_USERS . " WHERE account_requested='1' AND account_denied='0'" );
+    $statement = $dbh->prepare( "SELECT id FROM " . TABLE_USERS . " WHERE level='0' AND active='1' AND account_denied='0'" );
     $statement->execute();
     if ($statement->rowCount() > 0) {
         $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -1705,7 +1705,7 @@ function countGroupsRequestsForNewClients()
     if (!empty($ignore_user_ids)) {
         $ignore_user_ids = implode(',', $ignore_user_ids);
     
-        $statement = $dbh->prepare( "SELECT id FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='0' AND NOT FIND_IN_SET(client_id, :ignore)");
+        $statement = $dbh->prepare( "SELECT id FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='0' AND FIND_IN_SET(client_id, :ignore)");
         $statement->bindParam(':ignore', $ignore_user_ids);
         $statement->execute();
         $count = $statement->rowCount();

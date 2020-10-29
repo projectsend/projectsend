@@ -169,10 +169,14 @@ if ($_POST) {
 	/** If every option is completed, continue */
 	if ($query_state == '0') {
         // Convert file types, they are posted as a json string via tagify
-        $_POST['allowed_file_types'] = str_replace(' ', '', implode(', ', array_column(json_decode($_POST['allowed_file_types']), 'value')));
+        if (!empty($_POST['allowed_file_types'])) {
+            $_POST['allowed_file_types'] = str_replace(' ', '', implode(', ', array_column(json_decode($_POST['allowed_file_types']), 'value')));
+        }
 
         // Base URI should always end with /
-        if ($_POST['base_uri']{(strlen($_POST['base_uri']) - 1)} != '/') { $_POST['base_uri'] .= '/'; }
+        if (!empty($_POST['base_uri'])) {
+            if (substr($_POST['base_uri'], -1) != '/') { $_POST['base_uri'] .= '/'; }
+        }
 
         $updated = 0;
 		for ($j = 0; $j < $options_total; $j++) {

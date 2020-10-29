@@ -64,7 +64,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                             'approve' => $client['groups'],
                         );
 
-						$process_requests = $process_memberships->group_process_memberships( $memberships_arguments );
+						$process_requests = $process_memberships->group_process_memberships( $memberships_arguments, true );
 					}
 					break;
 				case 'delete':
@@ -99,40 +99,47 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 		}
 	}
 
-	/** Query the clients */
-	/**
-	 * TODO: Make a list of existing clients to exclude those with pending account requests
-	 * from the membership requests query
+    /**
+	 * Make a list of active client accounts to include those only on from the membership requests query
 	 */
+    $include_user_ids = [];
+    $statement = $dbh->prepare( "SELECT id FROM " . TABLE_USERS . " WHERE level='0' AND active='1' AND account_denied='0'" );
+    $statement->execute();
+    if ($statement->rowCount() > 0) {
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
+        while( $row = $statement->fetch() ) {
+            $include_user_ids[] = $row['id'];
+        }
+    }
 
-	$params = array();
+    // Continue
+	$params = [];
 
-	$cq = "(SELECT client_id, COUNT(group_id) as amount, GROUP_CONCAT(group_id SEPARATOR ',') AS groups FROM " . TABLE_MEMBERS_REQUESTS;
+	$cq = "SELECT `client_id`, COUNT(`group_id`) as `amount`, GROUP_CONCAT(`group_id` SEPARATOR ',') AS `groups` FROM " . TABLE_MEMBERS_REQUESTS;
 	
 	if ( isset( $_GET['denied'] ) && !empty( $_GET['denied'] ) ) {
 		$cq .= " WHERE denied='1'";
-		$current_filter = 'denied';  // Which link to highlight
+		$current_filter = 'denied'; // Which link to highlight
 		$found_count = COUNT_MEMBERSHIP_DENIED;
 	}
 	else {
 		$cq .= " WHERE denied='0'";
 		$current_filter = 'new';
 		$found_count = COUNT_MEMBERSHIP_REQUESTS;
-	}
+    }
+    
+    if (!empty($include_user_ids)) {
+        $cq .= " AND FIND_IN_SET(`client_id`, :include)";
+        $params[':include'] = implode(',', $include_user_ids);
+    }
 	
-	$cq .= " GROUP BY client_id)";
-
+    $cq .= " GROUP BY client_id";
 	/**
 	 * Pre-query to count the total results
-	*/
-	$tq = $cq;
-	$tq .= "UNION ALL (SELECT COUNT(DISTINCT client_id) as clients, COUNT(group_id) as total, null FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='0') LIMIT 0";
-	//echo $tq;
-
-	$count_sql	= $dbh->prepare( $tq );
-	$tq_row		= $count_sql->execute($params);
-	$tq_row		= $count_sql->fetch();
-	$count_for_pagination = $tq_row['client_id'];
+    */
+    $count_sql = $dbh->prepare( $cq );
+	$count_sql->execute($params);
+    $count_for_pagination = ($count_sql->rowCount());
 
 	/**
 	 * Add the order.
@@ -151,7 +158,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 	$params[':limit_start']		= $pagination_start;
 	$params[':limit_number']	= RESULTS_PER_PAGE;
 	
-	$sql->execute( $params );
+    $sql->execute( $params );
 	$count = $sql->rowCount();
 ?>
 		<div class="form_actions_left">

@@ -7,12 +7,12 @@
  * @subpackage	Classes
  */
 
- namespace ProjectSend\Classes;
- 
- use \ProjectSend\Classes\Validation;
- use \ProjectSend\Classes\MembersActions;
- use \PDO;
- 
+namespace ProjectSend\Classes;
+
+use \ProjectSend\Classes\Validation;
+use \ProjectSend\Classes\MembersActions;
+use \PDO;
+
 class Users
 {
     private $dbh;
@@ -75,7 +75,7 @@ class Users
     {
         $this->id = $id;
     }
-  
+
     /**
      * Return the ID
      * @return int
@@ -88,7 +88,7 @@ class Users
 
         return false;
     }
-  
+
     /**
      * Set the validation type (user or client, new or edit)
      */
@@ -657,7 +657,6 @@ class Users
         return false;
 	}
 
-
 	/**
 	 * Approve account
 	 */
@@ -686,7 +685,7 @@ class Users
 
         return false;
     }
- 
+
     /**
      * Deny account
      */
@@ -714,8 +713,7 @@ class Users
                 return true;
             }
         }
- 
+
         return false;
     }
- 
 }

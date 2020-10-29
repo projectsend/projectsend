@@ -11,6 +11,7 @@
  * If options exists, call the method to set the constants.
  */
 global $dbh;
+global $options;
 
 try {
 	$options = $dbh->query("SELECT * FROM " . TABLE_OPTIONS);

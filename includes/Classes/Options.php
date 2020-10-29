@@ -29,18 +29,18 @@ class Options
         }
 
 		try {
-			$this->statement = $this->dbh->prepare("SELECT value FROM " . TABLE_OPTIONS . " WHERE name = :option");
-            $this->statement->bindParam(':option', $option);
-            $this->statement->execute();
-            $this->results = $this->statement->fetch();
+			$statement = $this->dbh->prepare("SELECT value FROM " . TABLE_OPTIONS . " WHERE name = :option");
+            $statement->bindParam(':option', $option);
+            $statement->execute();
+            $results = $statement->fetch();
 
-            $value = $this->results['value'];
+            $value = $results['value'];
 
 			if ((!empty($value)) ) {
 				return $value;
 			}
 		}
-		catch ( Exception $e ) {
+		catch ( \Exception $e ) {
 			return false;
         }
 	}
@@ -53,20 +53,22 @@ class Options
 	 */
 	private function getOptions()
 	{
-		$this->options = array();
+		$options = array();
 		try {
-			$this->query = $this->dbh->query("SELECT * FROM " . TABLE_OPTIONS);
-			$this->query->setFetchMode(\PDO::FETCH_ASSOC);
+			$query = $this->dbh->query("SELECT * FROM " . TABLE_OPTIONS);
+			$query->setFetchMode(\PDO::FETCH_ASSOC);
 
-			if ( $this->query->rowCount() > 0) {
-				while ( $this->row = $this->query->fetch() ) {
-					$this->options[$this->row['name']] = $this->row['value'];
+			if ( $query->rowCount() > 0) {
+				while ( $row = $query->fetch() ) {
+					$options[$row['name']] = $row['value'];
 				}
-			}
+            }
+            
+            $this->options = $options;
 
-			return $this->options;
+			return $options;
 		}
-		catch ( Exception $e ) {
+		catch ( \Exception $e ) {
 			return false;
         }
 	}
@@ -76,39 +78,39 @@ class Options
 	 */
 	public function getAll()
 	{
-		$this->options = $this->getOptions();
+        $this->getOptions();
 
 		/** In case an option should not be set as a const */
-		$this->exceptions = [
+		$exceptions = [
 		];
 
 		if ( !empty( $this->options ) ) {
 			/**
 			 * Set a const for each value on the options table
 			 */
-			foreach ( $this->options as $this->name => $this->value ) {
-				if ( in_array( $this->name, $this->exceptions ) ) {
+			foreach ( $this->options as $name => $value ) {
+				if ( in_array( $name, $exceptions ) ) {
 					continue;
                 }
                 
-				$const = strtoupper( $this->name );
-				define( $const, $this->value );
-			}
+				$const = strtoupper( $name );
+				define( $const, $value );
+            }
 
 			/**
 			 * Set the default timezone based on the value of the Timezone select box
 			 * of the options page.
 			 */
-            date_default_timezone_set(TIMEZONE);
+            date_default_timezone_set($this->options['timezone']);
             
             /** Options that do not come from the db */
-            define('TEMPLATE_PATH',ROOT_DIR.DS.'templates'.DS.SELECTED_CLIENTS_TEMPLATE.DS.'template.php');
+            define('TEMPLATE_PATH',ROOT_DIR.DS.'templates'.DS.$this->options['selected_clients_template'].DS.'template.php');
 
             /* Recaptcha */
             if (
-				RECAPTCHA_ENABLED == 1 &&
-				!empty(RECAPTCHA_SITE_KEY) &&
-				!empty(RECAPTCHA_SECRET_KEY)
+				$this->options['recaptcha_enabled'] == 1 &&
+				!empty($this->options['recaptcha_site_key']) &&
+				!empty($this->options['recaptcha_secret_key'])
 			) {
 			    define('RECAPTCHA_AVAILABLE', true);
             }
@@ -152,6 +154,7 @@ class Options
 
 	/**
 	 * Save to the database
+     * @todo
 	 */
 	public function save($options)
 	{

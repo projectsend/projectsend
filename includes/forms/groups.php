@@ -39,7 +39,7 @@ switch ($groups_form_type) {
 	<div class="form-group assigns">
 		<label for="members" class="col-sm-4 control-label"><?php _e('Members','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<select multiple="multiple" id="members" class="form-control chosen-select" name="members[]" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+			<select multiple="multiple" id="members" class="form-control chosen-select none" name="members[]" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
 				<?php
 					$sql = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE level = '0' ORDER BY name ASC");
 					$sql->execute();

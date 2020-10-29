@@ -11,7 +11,7 @@ namespace ProjectSend\Classes;
 class TableGenerate
 {
 	function __construct( $attributes ) {
-		$this->contents = self::open( $attributes );
+		$this->contents = $this->open( $attributes );
 
 		$this->current_row = 1;
 	}
@@ -111,7 +111,7 @@ class TableGenerate
 					}
 					
 					if ( $sortable == true && !empty( $sort_url ) ) {
-						$content = self::buildSortableThContent( $sort_url, $is_current_sorted, $content );
+						$content = $this->buildSortableThContent( $sort_url, $is_current_sorted, $content );
                     }
                     else {
                         $data_attr['sort-ignore'] = 'true';
@@ -269,10 +269,10 @@ class TableGenerate
 			/** First and previous */
 			if ( $params['current'] > 1 ) {
 				$this->output .= '<li>
-										<a href="' . self::constructPaginationLink( $params['link'] ) .'" data-page="first"><span aria-hidden="true">&laquo;</span></a>
+										<a href="' . $this->constructPaginationLink( $params['link'] ) .'" data-page="first"><span aria-hidden="true">&laquo;</span></a>
 									</li>
 									<li>
-										<a href="'. self::constructPaginationLink( $params['link'], $params['current'] - 1 ) .'" data-page="prev">&lsaquo;</a>
+										<a href="'. $this->constructPaginationLink( $params['link'], $params['current'] - 1 ) .'" data-page="prev">&lsaquo;</a>
 									</li>';
 			}
 
@@ -294,7 +294,7 @@ class TableGenerate
 					$this->output .= '<li class="active"><a href="#">' . $i .'</a></li>';
 				}
 				else {
-					$this->output .= '<li><a href="' . self::constructPaginationLink( $params['link'], $i) .'">' . $i .'</a></li>';
+					$this->output .= '<li><a href="' . $this->constructPaginationLink( $params['link'], $i) .'">' . $i .'</a></li>';
 				}
 				
 				if ( $i > $params['current'] ) {
@@ -305,10 +305,10 @@ class TableGenerate
 			/** Next and last */
 			if ( $params['current'] != $params['pages'] ) {
 				$this->output .= '<li>
-										<a href="' . self::constructPaginationLink( $params['link'], $params['current'] + 1 ) .'" data-page="next">&rsaquo;</a>
+										<a href="' . $this->constructPaginationLink( $params['link'], $params['current'] + 1 ) .'" data-page="next">&rsaquo;</a>
 									</li>
 									<li>
-										<a href="' . self::constructPaginationLink( $params['link'], $params['pages'] ) .'" data-page="last"><span aria-hidden="true">&raquo;</span></a>
+										<a href="' . $this->constructPaginationLink( $params['link'], $params['pages'] ) .'" data-page="last"><span aria-hidden="true">&raquo;</span></a>
 									</li>';
 			}
 
@@ -320,7 +320,7 @@ class TableGenerate
             $this->output .= '<div class="go_to_page">
                                 <div class="form-group">
 									<label class="control-label hidden-xs hidden-sm">' . __('Go to:','cftp_admin') . '</label>
-									<input type="text" class="form-control" name="page" id="page_number" data-link="' . self::constructPaginationLink( $params['link'], '_pgn_' ) .'" value="' . $params['current'] .'" />
+									<input type="text" class="form-control" name="page" id="page_number" data-link="' . $this->constructPaginationLink( $params['link'], '_pgn_' ) .'" value="' . $params['current'] .'" />
 								</div>
 								<div class="form-group">
 									<button type="button" class="form-control"><span aria-hidden="true" class="glyphicon glyphicon-ok"></span></button>

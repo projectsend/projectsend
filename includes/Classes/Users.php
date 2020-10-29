@@ -96,7 +96,7 @@ class Users
     {
         $this->validation_type = $type;
 
-        self::setActionsPermissions();
+        $this->setActionsPermissions();
     }
 
     /**
@@ -142,7 +142,7 @@ class Users
         $this->account_request = (!empty($arguments['account_requested'])) ? (int)$arguments['account_requested'] : 0;
         $this->recaptcha = (!empty($arguments['recaptcha'])) ? $arguments['recaptcha'] : null;
 
-        self::setActionsPermissions();
+        $this->setActionsPermissions();
     }
 
     /**
@@ -200,7 +200,7 @@ class Users
             $this->validation_type = "existing_user";
         }
 
-        self::setActionsPermissions();
+        $this->setActionsPermissions();
 
         return true;
     }
@@ -618,7 +618,7 @@ class Users
             return false;
         }
 
-        $user = self::get($this->id);
+        $user = $this->get($this->id);
         if (!$user) {
             return false;
         }

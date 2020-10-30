@@ -47,21 +47,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 				<?php
 					/** Coming from an external form */
 					if ( isset( $_GET['error'] ) ) {
-						switch ( $_GET['error'] ) {
-                            default:
-							case 1:
-								echo system_message('danger',__("The supplied credentials are not valid.",'cftp_admin'),'login_error');
-								break;
-							case 'timeout':
-								echo system_message('danger',__("Session timed out. Please log in again.",'cftp_admin'),'login_error');
-                                break;
-                            case 'account_inactive':
-                                echo system_message('danger', $auth->getLoginError('inactive_client'));
-                                break;
-                            case 'no_self_registration':
-                                echo system_message('danger', $auth->getLoginError('no_self_registration'));
-                                break;
-                        }
+                        echo system_message('danger', $auth->getLoginError($_GET['error']));
 					}
 				?>
 			</div>

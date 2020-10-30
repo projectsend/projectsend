@@ -14,10 +14,10 @@ if ( defined('IS_INSTALL') ) {
 	$lang = ( defined('SITE_LANG') ) ? SITE_LANG : 'en';
 
 	$header_vars = array(
-						'html_lang'		=> $lang,
-						'title'			=> $page_title_install . ' &raquo; ' . SYSTEM_NAME,
-						'header_title'	=> SYSTEM_NAME . ' ' . __('setup','cftp_admin'),
-					);
+        'html_lang'		=> $lang,
+        'title'			=> $page_title_install . ' &raquo; ' . SYSTEM_NAME,
+        'header_title'	=> SYSTEM_NAME . ' ' . __('setup','cftp_admin'),
+    );
 }
 
 else {
@@ -27,28 +27,30 @@ else {
 	 * is set.
 	 */
 	$header_vars = array(
-						'html_lang'		=> SITE_LANG,
-						'title'			=> $page_title . ' &raquo; ' . html_output(get_option('this_install_title')),
-						'header_title'	=> html_output(get_option('this_install_title')),
-					);
+        'html_lang'		=> SITE_LANG,
+        'title'			=> $page_title . ' &raquo; ' . html_output(get_option('this_install_title')),
+        'header_title'	=> html_output(get_option('this_install_title')),
+    );
 
 	if ( !is_projectsend_installed() ) {
 		header("Location:install/index.php");
 		exit;
 	}
-	
-	/**
+
+    /**
 	 * This is defined on the public download page.
 	 * So even logged in users can access it.
 	 */
 	if (!isset($dont_redirect_if_logged)) {
-		/** If logged as a system user, go directly to the back-end homepage */
+        if (CURRENT_USER_LEVEL == 0) {
+            header("location:" . CLIENT_VIEW_FILE_LIST_URL);
+            exit;    
+        }
+
+        /** If logged as a system user, go directly to the back-end homepage */
 		if (current_role_in($allowed_levels)) {
-			header("Location:".BASE_URI."dashboard.php");
+            header("Location:".BASE_URI."dashboard.php");
 		}
-	
-		/** If client is logged in, redirect to the files list. */
-		check_for_client();
 	}
 	/**
 	 * Silent updates that are needed even if no user is logged in.

@@ -56,16 +56,22 @@ function isUniqueUsername($string) {
     return true;
 }
 
-function return_account_type()
+/** Prevents an infinite loop */
+function forceLogout($error_type = null)
 {
-    if (!defined('CURRENT_USER_LEVEL')) {
-        return 'client';
+    if (!isset($_SESSION['logout'])) {
+        $_SESSION['logout'] = '1';
     }
-    
-    $type = (CURRENT_USER_LEVEL == 0) ? 'client' : 'user';
-    return $type;
+    else {
+        unset($_SESSION['logout']);
+        $url = BASE_URI.'process.php?do=logout';
+        if (!empty($error_type)) {
+            $url .= '&logout_error_type='.$error_type;
+        }
+        header("location:".$url);
+        exit;
+    }    
 }
-
 
 /** Gets a Json file from and url and caches the result */
 function getJson($url, $cache_time) {

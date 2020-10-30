@@ -33,6 +33,24 @@ class Auth
         $_SESSION['lang'] = $selected_form_lang;
     }
 
+    // Save user to session
+    private function login($user)
+    {
+        $this->user = $user;
+
+        $_SESSION['user_id'] = $user->id;
+        $_SESSION['username'] = $user->username;
+        $_SESSION['role'] = $user->role;
+        $_SESSION['account_type'] = $user->account_type;
+
+        if ($user->isClient()) {
+            $_SESSION['access'] = $user->username;
+        }
+        else {
+            $_SESSION['access'] = 'admin';
+        }
+    }
+
     public function authenticate($username, $password)
     {
         if ( !$username || !$password )
@@ -56,17 +74,7 @@ class Auth
 
 			if (password_verify($password, $user->getRawPassword())) {
 				if ($user->isActive()) {
-                    /** Set SESSION values */
-                    $_SESSION['user_id'] = $user->id;
-					$_SESSION['username'] = $user->username;
-					$_SESSION['role'] = $user->role;
-
-					if ($user->isClient()) {
-                        $_SESSION['access'] = $user->username;
-					}
-					else {
-                        $_SESSION['access'] = 'admin';
-					}
+                    $this->login($user);
 
 					/** Record the action log */
 					$new_record_action = $this->logger->addEntry([
@@ -141,12 +149,10 @@ class Auth
 
 		/** Look up the system users table to see if the entered username exists */
 		$statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:username OR email=:email");
-		$statement->execute(
-						array(
-							':username'	=> $userProfile->email,
-							':email'	=> $userProfile->email,
-						)
-					);
+		$statement->execute([
+            ':username'	=> $userProfile->email,
+            ':email'	=> $userProfile->email,
+        ]);
 		$count_user = $statement->rowCount();
 		if ($count_user > 0) {
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -157,18 +163,9 @@ class Auth
                 $user_data = $user->getProperties();
 
 				if ($user->isActive()) {
-                    $_SESSION['user_id'] = $user->id;
-					$_SESSION['username'] = $user->username;
-					$_SESSION['role'] = $user->role;
+                    $this->login($user);
 
-					if ($user_data['role'] != '0') {
-						$_SESSION['access'] = 'admin';
-					}
-					else {
-						$_SESSION['access'] = $user->username;
-					}
-
-					/** Record the action log */
+                    /** Record the action log */
 					$this->new_record_action = $this->logger->addEntry([
                         'action' => 1,
                         'owner_id' => $user->id,
@@ -358,6 +355,7 @@ class Auth
 
 		if (isset($this->errorstate)) {
 			switch ($this->errorstate) {
+                default:
 				case 'invalid_credentials':
 					$error = __("The supplied credentials are not valid.",'cftp_admin');
 					break;
@@ -366,7 +364,8 @@ class Auth
 					break;
 				case 'wrong_password':
 					$error = __("The supplied password is incorrect.",'cftp_admin');
-					break;
+                    break;
+                case 'account_inactive':
 				case 'inactive_client':
 					$error = __("This account is not active.",'cftp_admin');
 					if (get_option('clients_auto_approve') == 0) {
@@ -381,44 +380,54 @@ class Auth
 					break;
 				case 'access_denied':
 					$error = __('You must approve the requested permissions to sign in with Google.','cftp_admin');
-					break;
+                    break;
+                case 'timeout':
+                    $error = __('Session timed out. Please log in again.','cftp_admin');
+                    break;
 			}
         }
         
         return $error;
     }
 
-    public function logout()
+    public function logout($error_code = null)
     {
         header("Cache-control: private");
 		$_SESSION = array();
         session_destroy();
         
         global $hybridauth;
-        try {
-            $hybridauth->disconnectAllAdapters();
-        } catch (\Exception $e) {
-            /*
-            $return = [
-                'status' => 'error',
-                'message' => sprintf(__("Logout error: %s", 'cftp_admin'), $e->getMessage())
-            ];
-
-            return json_encode($return);
-            */
+        if (!empty($hybridauth)) {
+            try {
+                $hybridauth->disconnectAllAdapters();
+            } catch (\Exception $e) {
+                /*
+                $return = [
+                    'status' => 'error',
+                    'message' => sprintf(__("Logout error: %s", 'cftp_admin'), $e->getMessage())
+                ];
+    
+                return json_encode($return);
+                */
+            }
         }
 
-		/** Record the action log */
-		$new_record_action = $this->logger->addEntry([
-            'action'	=> 31,
-            'owner_id'	=> CURRENT_USER_ID,
-            'affected_account_name' => CURRENT_USER_NAME
-        ]);
+        /** Record the action log */
+        if (defined('CURRENT_USER_ID')) {
+            $new_record_action = $this->logger->addEntry([
+                'action'	=> 31,
+                'owner_id'	=> CURRENT_USER_ID,
+                'affected_account_name' => CURRENT_USER_NAME
+            ]);
+        }
 
-		$redirect_to = BASE_URI.'index.php';
 		if ( isset( $_GET['timeout'] ) ) {
-			$redirect_to .= '?error=timeout';
-		}
+            $error_code = 'timeout';
+        }
+        $redirect_to = BASE_URI.'index.php';
+        if (!empty($error_code)) {
+            $redirect_to .= '?error='.$error_code;
+        }
 
 		header("Location: " . $redirect_to);
 		exit;

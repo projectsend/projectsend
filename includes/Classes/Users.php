@@ -22,12 +22,15 @@ class Users
     private $validation_passed;
     private $validation_errors;
 
+    public $exists;
+
     public $id;
     public $name;
     public $email;
     public $username;
     public $password;
     public $password_raw;
+    public $account_type;
     public $role;
     public $active;
     public $notify_account;
@@ -67,6 +70,7 @@ class Users
         $this->role = 0; // by default, create "client" role
 
         $this->allowed_actions_roles = [9];
+        $this->exists = false;
     }
 
     /**
@@ -88,6 +92,11 @@ class Users
         }
 
         return false;
+    }
+
+    public function userExists()
+    {
+        return $this->exists;
     }
 
     /**
@@ -162,6 +171,8 @@ class Users
         if ($this->statement->rowCount() == 0) {
             return false;
         }
+
+        $this->exists = true;
     
         while ($this->row = $this->statement->fetch() ) {
             $this->name = html_output($this->row['name']);
@@ -170,6 +181,7 @@ class Users
             $this->password = html_output($this->row['password']);
             $this->password_raw = $this->row['password'];
             $this->role = html_output($this->row['level']);
+            $this->account_type = ($this->role == 0) ? 'client' : 'user';
             $this->active = html_output($this->row['active']);
             $this->max_file_size = html_output($this->row['max_file_size']);
             $this->created_date = html_output($this->row['timestamp']);

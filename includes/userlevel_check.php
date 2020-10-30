@@ -24,14 +24,9 @@ function check_for_session( $redirect = true )
             header("location:" . BASE_URI . "index.php");
             exit;
         }
-    }
 
-    if (isset($_SESSION['username'])) {
-		$is_logged_now = true;
-	}
-	elseif (isset($_SESSION['access']) && $_SESSION['access'] == 'admin') {
-		$is_logged_now = true;
-	}
+        return true;
+    }
 
     if ( !$is_logged_now && $redirect == true ) {
         header("location:" . BASE_URI . "index.php");
@@ -39,40 +34,6 @@ function check_for_session( $redirect = true )
 	}
 
     return $is_logged_now;
-}
-
-/**
- * Used on header.php to check if the current logged in account is either
- * a system user or a client.
- *
- * Clients are then redirected to the index page, where another check is
- * performed and then a second redirection takes the client to the
- * correspondent file list.
- *
- * @see check_for_client
- */
-function check_for_admin() {
-	$is_logged_admin = false;
-	if (isset($_SESSION['access']) && $_SESSION['access'] == 'admin') {
-		$is_logged_admin = true;
-	}
-	if (!$is_logged_admin) {
-	    ob_clean();
-		header("location:" . BASE_URI . "index.php");
-	}
-    return $is_logged_admin;
-}
-
-/**
- * Used on the log in form page (index.php) to take the clients directly to their
- * files list.
- * Also used on the self-registration form (register.php).
- */
-function check_for_client() {
-	if (isset($_SESSION['role']) && $_SESSION['role'] == '0') {
-		header("location:" . CLIENT_VIEW_FILE_LIST_URL);
-		exit;
-	}
 }
 
 /**

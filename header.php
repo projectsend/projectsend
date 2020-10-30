@@ -8,7 +8,6 @@
  *
  * @package ProjectSend
  * @see check_for_session
- * @see check_for_admin
  * @see can_see_content
  */
 /** Check for an active session or cookie */
@@ -21,9 +20,6 @@ check_for_session();
  * inclusion of this file.
  */
 can_see_content($allowed_levels);
-
-/** Check if the active account belongs to a system user or a client. */
-//check_for_admin();
 
 /** If no page title is defined, revert to a default one */
 if (!isset($page_title)) { $page_title = __('System Administration','cftp_admin'); }

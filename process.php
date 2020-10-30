@@ -1,6 +1,5 @@
 <?php
 use ProjectSend\Classes\Session as Session;
-
 /** Process an action */
 $allowed_levels = array(9,8,7,0);
 require_once 'bootstrap.php';
@@ -10,11 +9,11 @@ $download = new \ProjectSend\Classes\Download;
 
 $_SESSION['last_call'] = time();
 
-if ( !empty( $_GET['do'] ) && ($_GET['do'] != 'login'  && $_GET['do'] != 'social_login' && $_GET['do'] != 'login_ldap') ) {
+$public = ['login', 'social_login', 'login_ldap', 'logout'];
+if (!empty($_GET['do']) && !in_array($_GET['do'], $public)) {
     check_for_session();
     can_see_content($allowed_levels);
 }
-
 switch ($_GET['do']) {
     case 'login':
         $login = $auth->authenticate($_POST['username'], $_POST['password']);
@@ -25,10 +24,9 @@ switch ($_GET['do']) {
             /** Success */
             if ( $results['status'] == 'success' ) {
                 header('Location: ' . $results['location']);
-            }
-                else {
+            } else {
                 header('Location: ' . BASE_URI . '?error=invalid_credentials');
-                }
+            }
             exit;
         }
 
@@ -48,7 +46,8 @@ switch ($_GET['do']) {
         echo $login;
         break;
     case 'logout':
-        $auth->logout();
+        $error = (!empty($_GET['logout_error_type'])) ? $_GET['logout_error_type'] : null;
+        $auth->logout($error);
         break;
     case 'download':
         $download->download($_GET['id']);

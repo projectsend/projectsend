@@ -244,7 +244,7 @@ class Categories
             $new_record_action = $this->logger->addEntry([
                 'action'				=> 35,
                 'owner_id'				=> CURRENT_USER_ID,
-                'affected_account'		=> $arguments['id'],
+                'affected_account'		=> $this->id,
                 'affected_account_name'	=> $this->name
             ]);
         }

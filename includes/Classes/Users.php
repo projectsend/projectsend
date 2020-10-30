@@ -22,34 +22,35 @@ class Users
     private $validation_passed;
     private $validation_errors;
 
-    private $id;
-    private $name;
-    private $email;
-    private $username;
-    private $password;
-    private $role;
-    private $active;
-    private $notify_account;
-    private $max_file_size;
-    private $created_by;
-    private $created_date;
+    public $id;
+    public $name;
+    public $email;
+    public $username;
+    public $password;
+    public $password_raw;
+    public $role;
+    public $active;
+    public $notify_account;
+    public $max_file_size;
+    public $created_by;
+    public $created_date;
 
     // Uploaded files
-    private $files;
+    public $files;
 
     // Groups where the client is member
-    private $groups;
+    public $groups;
     
     // @todo implement meta data
-    private $meta;
+    public $meta;
 
     // @todo Move this to meta
-    private $address;
-    private $phone;
-    private $contact_name;
-    private $notify_upload;
-    private $account_request;
-    private $recaptcha;
+    public $address;
+    public $phone;
+    public $contact_name;
+    public $notify_upload;
+    public $account_request;
+    public $recaptcha;
 
     // Permissions
     private $allowed_actions_roles;
@@ -167,6 +168,7 @@ class Users
             $this->email = html_output($this->row['email']);
             $this->username = html_output($this->row['user']);
             $this->password = html_output($this->row['password']);
+            $this->password_raw = $this->row['password'];
             $this->role = html_output($this->row['level']);
             $this->active = html_output($this->row['active']);
             $this->max_file_size = html_output($this->row['max_file_size']);
@@ -203,6 +205,11 @@ class Users
         $this->setActionsPermissions();
 
         return true;
+    }
+
+    public function getRawPassword()
+    {
+        return $this->password_raw;
     }
 
     /**
@@ -243,6 +250,15 @@ class Users
         }
 
         return false;
+    }
+
+    public function isClient()
+    {
+        if (!empty($this->role) && $this->role != 0) {
+            return false;
+        }
+
+        return true;
     }
 
 	/**
@@ -468,11 +484,11 @@ class Users
          */
         $notify_admin = new \ProjectSend\Classes\Emails;
         $email_arguments = array(
-                                        'type'			=> 'new_client_self',
-                                        'address'		=> get_option('admin_email_address'),
-                                        'username'		=> $this->username,
-                                        'name'			=> $this->name,
-                                    );
+            'type'			=> 'new_client_self',
+            'address'		=> get_option('admin_email_address'),
+            'username'		=> $this->username,
+            'name'			=> $this->name,
+        );
         if ( !empty( $execute_requests['requests'] ) ) {
             $email_arguments['memberships'] = $execute_requests['requests'];
         }

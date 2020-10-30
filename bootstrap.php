@@ -75,3 +75,6 @@ if (!defined('IS_INSTALL')) {
 
 /** Security */
 require_once ROOT_DIR . '/includes/security/csrf.php';
+
+global $auth;
+$auth = new \ProjectSend\Classes\Auth();

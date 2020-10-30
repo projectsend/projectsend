@@ -14,8 +14,6 @@
  * @package		ProjectSend
  *
  */
-use ProjectSend\Classes\Session as Session;
-
 $allowed_levels = array(9,8,7,0);
 require_once 'bootstrap.php';
 
@@ -27,18 +25,6 @@ $page_id = 'login';
 if ( isset($_SESSION['errorstate'] ) ) {
     $errorstate = $_SESSION['errorstate'];
     unset($_SESSION['errorstate']);
-}
-
-// Social login
-if (!empty($_GET['external_login']) && $_GET['external_login'] == '1' && !empty($_GET['provider']) )
-{
-    if (Session::has('SOCIAL_LOGIN_NETWORK')) {
-        Session::remove('SOCIAL_LOGIN_NETWORK');
-    }
-    Session::add('SOCIAL_LOGIN_NETWORK', $_GET['provider']);
-
-    $process = new \ProjectSend\Classes\DoProcess();
-    $process->socialLogin($_GET['provider']);
 }
 
 $csrf_token = getCsrfToken();
@@ -62,13 +48,20 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 					/** Coming from an external form */
 					if ( isset( $_GET['error'] ) ) {
 						switch ( $_GET['error'] ) {
+                            default:
 							case 1:
 								echo system_message('danger',__("The supplied credentials are not valid.",'cftp_admin'),'login_error');
 								break;
 							case 'timeout':
 								echo system_message('danger',__("Session timed out. Please log in again.",'cftp_admin'),'login_error');
-								break;
-						}
+                                break;
+                            case 'account_inactive':
+                                echo system_message('danger', $auth->getLoginError('inactive_client'));
+                                break;
+                            case 'no_self_registration':
+                                echo system_message('danger', $auth->getLoginError('no_self_registration'));
+                                break;
+                        }
 					}
 				?>
 			</div>

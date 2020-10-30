@@ -6,7 +6,7 @@
  *
  */
 
-use ProjectSend\Classes\DoProcess;
+use ProjectSend\Classes\Download;
 
 $allowed_levels = array(9,8,7,0);
 require_once 'bootstrap.php';
@@ -63,7 +63,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
             $new_record_action = $logger->addEntry($log_action_args);
 
             // DOWNLOAD
-            $process = new \ProjectSend\Classes\DoProcess();
+            $process = new \ProjectSend\Classes\Download();
             $process->serveFile($file->full_path, $file->filename_original);
         }
     }

@@ -11,12 +11,12 @@ namespace ProjectSend\Classes;
 use \PDO;
 use \ZipArchive;
 
-class DoProcess
+class Download
 {
     private $dbh;
     private $logger;
 
-    public function __construct(PDO $dbh = null, Auth $auth = null)
+    public function __construct(PDO $dbh = null)
     {
         if (empty($dbh)) {
             global $dbh;
@@ -24,30 +24,6 @@ class DoProcess
 
         $this->dbh = $dbh;
         $this->logger = new \ProjectSend\Classes\ActionsLog;
-
-        if (empty($auth)) {
-            $this->auth = new \ProjectSend\Classes\Auth($this->dbh);
-        }
-    }
-
-    public function login($username, $password, $language = SITE_LANG)
-    {
-        return $this->auth->login($username, $password, $language);
-	}
-
-    public function socialLogin($provider)
-    {
-        $this->auth->socialLogin($provider);
-	}
-
-    public function logout()
-    {
-        return $this->auth->logout();
-    }
-    
-    public function login_ldap($email, $password, $language = SITE_LANG)
-    {
-        return $this->auth->login_ldap($email, $password, $language);
     }
 
     public function download($file_id)

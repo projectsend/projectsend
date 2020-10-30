@@ -346,6 +346,36 @@ function get_client_by_id($client)
     }
 }
 
+function username_exists($username)
+{
+    global $dbh;
+    $statement = $dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE user = :user" );
+    $statement->execute([
+        ':user'	=> $username,
+    ]);
+
+    if ( $statement->rowCount() > 0 ) {
+        return true;
+    }
+
+    return false;
+}
+
+function generate_random_password() {
+    return bin2hex(openssl_random_pseudo_bytes(5));
+}
+
+function generate_username($from)
+{
+    $cut = substr($from, 0, MAX_USER_CHARS);
+    if (!username_exists($cut)) {
+        return $cut;
+    }
+
+    $rand = substr(uniqid(), 0, MAX_USER_CHARS);
+
+    return $rand;
+}
 
 /**
 * Get all the client information knowing only the log in username
@@ -372,8 +402,7 @@ function get_client_by_username($client)
         }
     }
 }
- 
- 
+
 /**
  * Get all the client information knowing only the log in username
  *
@@ -771,7 +800,7 @@ function current_role_in($levels)
         $levels = array($levels);
     }
     
-	if (isset($_SESSION['userlevel']) && (in_array($_SESSION['userlevel'],$levels))) {
+	if (isset($_SESSION['role']) && (in_array($_SESSION['role'],$levels))) {
 		return true;
 	}
 	else {
@@ -789,8 +818,8 @@ function current_role_in($levels)
 function get_current_user_level()
 {
 	$level = 0;
-	if (isset($_SESSION['userlevel'])) {
-		$level = $_SESSION['userlevel'];
+	if (isset($_SESSION['role'])) {
+		$level = $_SESSION['role'];
 	}
 
     return $level;
@@ -833,8 +862,8 @@ function get_current_user_username()
 {
 	$user = '';
 
-    if (isset($_SESSION['loggedin'])) {
-		$user = $_SESSION['loggedin'];
+    if (isset($_SESSION['username'])) {
+		$user = $_SESSION['username'];
 	}
 	return $user;
 }

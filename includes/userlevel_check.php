@@ -26,7 +26,7 @@ function check_for_session( $redirect = true )
         }
     }
 
-    if (isset($_SESSION['loggedin'])) {
+    if (isset($_SESSION['username'])) {
 		$is_logged_now = true;
 	}
 	elseif (isset($_SESSION['access']) && $_SESSION['access'] == 'admin') {
@@ -69,7 +69,7 @@ function check_for_admin() {
  * Also used on the self-registration form (register.php).
  */
 function check_for_client() {
-	if (isset($_SESSION['userlevel']) && $_SESSION['userlevel'] == '0') {
+	if (isset($_SESSION['role']) && $_SESSION['role'] == '0') {
 		header("location:" . CLIENT_VIEW_FILE_LIST_URL);
 		exit;
 	}
@@ -88,7 +88,7 @@ function can_see_content($allowed_levels) {
 		 *
 		 * $allowed_levels in defined on each page before the inclusion of header.php
 		*/
-		if (isset($_SESSION['userlevel']) && in_array($_SESSION['userlevel'],$allowed_levels)) {
+		if (isset($_SESSION['role']) && in_array($_SESSION['role'],$allowed_levels)) {
 			$permission = true;
 		}
 		/**

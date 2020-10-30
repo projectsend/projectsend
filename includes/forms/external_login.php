@@ -35,7 +35,7 @@
             if ($data['enabled'] == 'true')
             {
     ?>
-                <a href="index.php?external_login=1&provider=<?php echo $provider; ?>" name="Sign in with <?php echo $provider; ?>" class="button_<?php echo $provider; ?>">
+                <a href="process.php?do=social_login&provider=<?php echo $provider; ?>" name="Sign in with <?php echo $provider; ?>" class="button_<?php echo $provider; ?>">
                     <span class="fa-stack fa-lg">
                         <i class="fa fa-circle fa-stack-2x"></i>
                         <i class="fa fa-<?php echo $data['icon']; ?> fa-stack-1x fa-inverse"></i>

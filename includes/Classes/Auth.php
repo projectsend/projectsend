@@ -7,13 +7,15 @@
  */
 namespace ProjectSend\Classes;
 use \PDO;
+use ProjectSend\Classes\Session as Session;
 
 class Auth
 {
     private $dbh;
     private $logger;
+    private $errorstate;
 
-    private $user;
+    public $user;
 
     public function __construct(PDO $dbh = null)
     {
@@ -25,134 +27,87 @@ class Auth
         $this->logger = new \ProjectSend\Classes\ActionsLog;
     }
 
-    /**
-     * Try to log in with a username and password
-     *
-     * @param $username
-     * @param $password
-     * @param $language
-     */
-    public function login($username, $password, $language)
+    public function setLanguage($language = null)
     {
-        global $logger;
-        global $hasher;
-        
+        $selected_form_lang	= (!empty( $language ) ) ? $language : SITE_LANG;
+        $_SESSION['lang'] = $selected_form_lang;
+    }
+
+    public function authenticate($username, $password)
+    {
         if ( !$username || !$password )
             return false;
 
-		$this->selected_form_lang	= (!empty( $language ) ) ? $language : SITE_LANG;
-
 		/** Look up the system users table to see if the entered username exists */
-		$this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:username OR email=:email");
-		$this->statement->execute(
-						array(
-							':username'	=> $username,
-							':email'	=> $username,
-						)
-					);
-		$this->count_user = $this->statement->rowCount();
-		if ($this->count_user > 0) {
+		$statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:username OR email=:email");
+		$statement->execute([
+            ':username' => $username,
+            ':email' => $username,
+        ]);
+		$count_user = $statement->rowCount();
+		if ($count_user > 0) {
 			/** If the username was found on the users table */
-			$this->statement->setFetchMode(PDO::FETCH_ASSOC);
-			while ( $this->row = $this->statement->fetch() ) {
-				$this->db_username	    = $this->row['user'];
-				$this->db_pass			= $this->row['password'];
-				$this->user_level		= $this->row["level"];
-				$this->active_status	= $this->row['active'];
-				$this->logged_id		= $this->row['id'];
-				$this->name	        	= $this->row['name'];
-			}
+			$statement->setFetchMode(PDO::FETCH_ASSOC);
+			while ( $row = $statement->fetch() ) {
+                $user = new \ProjectSend\Classes\Users;
+                $user->get($row['id']);
+                $this->user = $user;
+            }
 
-			if (password_verify($password, $this->db_pass)) {
-				if ($this->active_status != '0') {
+			if (password_verify($password, $user->getRawPassword())) {
+				if ($user->isActive()) {
                     /** Set SESSION values */
-                    $_SESSION['user_id']	= $this->logged_id;
-					$_SESSION['loggedin']	= $this->db_username;
-					$_SESSION['userlevel']	= $this->user_level;
-					$_SESSION['lang']		= $this->selected_form_lang;
+                    $_SESSION['user_id'] = $user->id;
+					$_SESSION['username'] = $user->username;
+					$_SESSION['role'] = $user->role;
 
-					/**
-					 * Language cookie
-                     * Must decide how to refresh language in the form when the user
-                     * changes the language <select> field.
-                     * By using a cookie and not refreshing here, the user is
-                     * stuck in a language and must use it to recover password or
-                     * create account, since the lang cookie is only at login now.
-                     * 
-					 * @todo Implement.
-					 */
-					//setcookie('projectsend_language', $selected_form_lang, time() + (86400 * 30), '/');
-
-					if ($this->user_level != '0') {
-						$this->access_string	= 'admin';
-						$_SESSION['access']		= $this->access_string;
+					if ($user->isClient()) {
+                        $_SESSION['access'] = $user->username;
 					}
 					else {
-						$this->access_string	= $this->db_username;
-						$_SESSION['access']		= $this->db_username;
+                        $_SESSION['access'] = 'admin';
 					}
 
 					/** Record the action log */
-					$this->new_record_action = $this->logger->addEntry([
+					$new_record_action = $this->logger->addEntry([
                         'action' => 1,
-                        'owner_id' => $this->logged_id,
-                        'owner_user' => $this->name,
-                        'affected_account_name' => $this->name
+                        'owner_id' => $user->id,
+                        'owner_user' => $user->username,
+                        'affected_account_name' => $user->username
                     ]);
 
-
 					$results = array(
-									'status'	=> 'success',
+									'status' => 'success',
 								);
-					if ($this->user_level == '0') {
-						$results['location']	= CLIENT_VIEW_FILE_LIST_URL;
+					if ($user->isClient()) {
+						$results['location'] = CLIENT_VIEW_FILE_LIST_URL;
 					}
 					else {
-						$results['location']	= BASE_URI."dashboard.php";
-					}
-
-					/** Using an external form */
-					if ( !empty( $_GET['external'] ) && $_GET['external'] == '1' && empty( $_GET['ajax'] ) ) {
-						/** Success */
-						if ( $results['status'] == 'success' ) {
-							header('Location: ' . $results['location']);
-							exit;
-						}
-					}
-
-					echo json_encode($results);
-					exit;
+						$results['location'] = BASE_URI."dashboard.php";
+                    }
+                    
+                    return json_encode($results);
 				}
 				else {
 					$this->errorstate = 'inactive_client';
 				}
 			}
 			else {
-				//$errorstate = 'wrong_password';
+				//$this->errorstate = 'wrong_password';
 				$this->errorstate = 'invalid_credentials';
 			}
 		}
 		else {
-			//$errorstate = 'wrong_username';
+			//$this->errorstate = 'wrong_username';
 			$this->errorstate = 'invalid_credentials';
         }
-        
-        $this->error_message = $this->getLoginError($this->errorstate);
-		$results = array(
-						'status'	=> 'error',
-						'message'	=> $this->error_message,
-					);
 
-		/** Using an external form */
-		if ( !empty( $_GET['external'] ) && $_GET['external'] == '1' && empty( $_GET['ajax'] ) ) {
-			/** Error */
-			if ( $results['status'] == 'error' ) {
-				header('Location: ' . BASE_URI . '?error=invalid_credentials');
-                exit;
-			}
-		}
+		$results = [
+            'status'	=> 'error',
+            'message'	=> $this->getLoginError(),
+        ];
 
-        echo json_encode($results);
+        return json_encode($results);
     }
 
     /** Social Login via hybridauth */
@@ -182,7 +137,7 @@ class Auth
         if ($adapter->isConnected($provider)) {
             $userProfile = $adapter->getUserProfile();
             Session::remove('SOCIAL_LOGIN_NETWORK');
-        }    
+        }
 
 		/** Look up the system users table to see if the entered username exists */
 		$statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:username OR email=:email");
@@ -198,29 +153,30 @@ class Auth
 			while ( $row = $statement->fetch() ) {
                 $user = new \ProjectSend\Classes\Users;
                 $user->get($row['id']);
+                $this->user = $user;
                 $user_data = $user->getProperties();
 
 				if ($user->isActive()) {
-                    $_SESSION['user_id'] = $user_data['id'];
-					$_SESSION['loggedin'] = $user_data['username'];
-					$_SESSION['userlevel'] = $user_data['role'];
+                    $_SESSION['user_id'] = $user->id;
+					$_SESSION['username'] = $user->username;
+					$_SESSION['role'] = $user->role;
 
 					if ($user_data['role'] != '0') {
 						$_SESSION['access'] = 'admin';
 					}
 					else {
-						$_SESSION['access'] = $user_data['username'];
+						$_SESSION['access'] = $user->username;
 					}
 
 					/** Record the action log */
 					$this->new_record_action = $this->logger->addEntry([
                         'action' => 1,
-                        'owner_id' => $user_data['id'],
-                        'owner_user' => $user_data['username'],
-                        'affected_account_name' => $user_data['name']
+                        'owner_id' => $user->id,
+                        'owner_user' => $user->username,
+                        'affected_account_name' => $user->name
                     ]);
 
-					if ($user_data['role'] == '0') {
+					if ($user->isClient()) {
                         header('Location: ' . CLIENT_VIEW_FILE_LIST_URL);
                         exit;
 					}
@@ -230,22 +186,62 @@ class Auth
 					}
 				}
 				else {
-					$this->errorstate = 'inactive_client';
+					header('Location: ' . BASE_URI."?error=account_inactive");
 				}
-
             }
-        }
+        } else {
+            // User does not exist, create if self-registrations are allowed
+            //pax($userProfile);
 
-        // User does not exist, create if self-registrations are allowed
-        pax($userProfile);
-        /*
-            @todo
-            Check if user exists on database
-                Create if not
-                Login if exists
-                Log action
-                Redirect
-        */
+            if (get_option('clients_can_register') == '0') {
+                header('Location: ' . BASE_URI."index.php?error=no_self_registration");
+                exit;
+            }
+
+            $email_parts = explode('@', $userProfile->email);
+            $username = (!username_exists($email_parts[0])) ? $email_parts[0] : generate_username($email_parts[0]);
+            $password = generate_random_password();
+            /*
+                @todo
+                Check if user exists on database
+                    Create if not
+                    Login if exists
+                    Log action
+                    Redirect
+            */
+
+            /** Validate the information from the posted form. */
+            /** Create the user if validation is correct. */
+            $new_client = new \ProjectSend\Classes\Users();
+            $new_client->setType('new_client');
+            $new_client->set([
+                'username' => $username,
+                'password' => $password,
+                'name' => $userProfile->firstName . ' ' . $userProfile->lastName,
+                'email' => $userProfile->email,
+                'address' => null,
+                'phone' => null,
+                'contact' => null,
+                'max_file_size' => 0,
+                'notify_upload' => 1,
+                'notify_account' => 1,
+                'active' => (get_option('clients_auto_approve') == 0) ? 0 : 1,
+                'account_requested'	=> (get_option('clients_auto_approve') == 0) ? 1 : 0,
+                'type' => 'new_client',
+                'recaptcha' => null,
+            ]);
+
+            if ($new_client->validate()) {
+                $new_response = $new_client->create();
+                $new_client->triggerAfterSelfRegister();
+                $this->authenticate($username, $password);
+
+                $url = BASE_URI.'register.php?success=1';
+                header("Location:".$url);
+                exit;
+            }
+
+        }
     }
 
     public function login_ldap($email, $password, $language)
@@ -352,40 +348,44 @@ class Auth
      * @param string errorstate
      * @return string
      */
-    public function getLoginError($errorstate)
+    public function getLoginError($state = null)
     {
-        $this->error = __("Error during log in.",'cftp_admin');;
+        $error = __("Error during log in.",'cftp_admin');;
 
-		if (isset($errorstate)) {
-			switch ($errorstate) {
+        if (!empty($state)) {
+            $this->errorstate = $state;
+        }
+
+		if (isset($this->errorstate)) {
+			switch ($this->errorstate) {
 				case 'invalid_credentials':
-					$this->error = __("The supplied credentials are not valid.",'cftp_admin');
+					$error = __("The supplied credentials are not valid.",'cftp_admin');
 					break;
 				case 'wrong_username':
-					$this->error = __("The supplied username doesn't exist.",'cftp_admin');
+					$error = __("The supplied username doesn't exist.",'cftp_admin');
 					break;
 				case 'wrong_password':
-					$this->error = __("The supplied password is incorrect.",'cftp_admin');
+					$error = __("The supplied password is incorrect.",'cftp_admin');
 					break;
 				case 'inactive_client':
-					$this->error = __("This account is not active.",'cftp_admin');
-					if (CLIENTS_AUTO_APPROVE == 0) {
-						$this->error .= ' '.__("If you just registered, please wait until a system administrator approves your account.",'cftp_admin');
+					$error = __("This account is not active.",'cftp_admin');
+					if (get_option('clients_auto_approve') == 0) {
+						$error .= ' '.__("If you just registered, please wait until a system administrator approves your account.",'cftp_admin');
 					}
 					break;
 				case 'no_self_registration':
-					$this->error = __('Client self registration is not allowed. If you need an account, please contact a system administrator.','cftp_admin');
+					$error = __('Client self registration is not allowed. If you need an account, please contact a system administrator.','cftp_admin');
 					break;
 				case 'no_account':
-					$this->error = __('Sign-in with Google cannot be used to create new accounts at this time.','cftp_admin');
+					$error = __('Sign-in with Google cannot be used to create new accounts at this time.','cftp_admin');
 					break;
 				case 'access_denied':
-					$this->error = __('You must approve the requested permissions to sign in with Google.','cftp_admin');
+					$error = __('You must approve the requested permissions to sign in with Google.','cftp_admin');
 					break;
 			}
         }
         
-        return $this->error;
+        return $error;
     }
 
     public function logout()
@@ -407,13 +407,6 @@ class Auth
             return json_encode($return);
             */
         }
-
-		/*
-		$language_cookie = 'projectsend_language';
-		setcookie ($language_cookie, "", 1);
-		setcookie ($language_cookie, false);
-		unset($_COOKIE[$language_cookie]);
-		*/
 
 		/** Record the action log */
 		$new_record_action = $this->logger->addEntry([

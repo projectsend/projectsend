@@ -40,16 +40,17 @@ function check_for_session( $redirect = true )
  * Used on header.php to check if the current logged in system user has the
  * permission to view this page.
  */
-function can_see_content($allowed_levels) {
+function can_see_content($allowed_levels = null) {
 	$permission = false;
-	if(isset($allowed_levels)) {
+
+    if (!empty($allowed_levels)) {
 		/**
 		 * Check for a session, and if found see if the user
 		 * level is among those defined by the page.
 		 *
 		 * $allowed_levels in defined on each page before the inclusion of header.php
-		*/
-		if (isset($_SESSION['role']) && in_array($_SESSION['role'],$allowed_levels)) {
+        */
+		if (isset($_SESSION['role']) && in_array($_SESSION['role'], $allowed_levels)) {
 			$permission = true;
 		}
 		/**
@@ -57,8 +58,9 @@ function can_see_content($allowed_levels) {
 		 * If not, show the "Not allowed message", then the footer, then die(); so the
 		 * actual page content is not generated.
 		*/
-	}
-	if (!$permission) {
+    }
+
+    if ($permission == false) {
 		header("location:".PAGE_STATUS_CODE_URL);
 		exit;
     }

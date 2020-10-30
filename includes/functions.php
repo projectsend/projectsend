@@ -1513,14 +1513,11 @@ function fileEditorGetAllClients()
     //$users = [];
     $clients = [];
 
-    $statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . " ORDER BY name ASC");
+    $statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . " WHERE level='0' AND account_requested='0' ORDER BY name ASC");
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
     while( $row = $statement->fetch() ) {
-        //$users[$row["id"]] = $row["name"];
-        if ($row["level"] == '0') {
-            $clients[$row["id"]] = $row["name"];
-        }
+        $clients[$row["id"]] = $row["name"];
     }
 
     return $clients;

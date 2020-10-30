@@ -80,7 +80,25 @@ if (current_role_in($core_update_allowed)) {
 			<ul class="nav pull-right nav_account">
 				<li id="header_welcome">
 					<span><?php echo CURRENT_USER_NAME; ?></span>
-				</li>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php _e('Language', 'cftp_admin'); ?> <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <?php
+                                // scan for language files
+                                $available_langs = get_available_languages();
+                                foreach ($available_langs as $filename => $lang_name) {
+                            ?>
+                                    <li>
+                                        <a href="<?php echo BASE_URI.'process.php?do=change_language&language='.$filename; ?>">
+                                            <?php echo $lang_name; ?>
+                                        </a>
+                                    </li>
+                            <?php
+                                }
+                            ?>
+                        </ul>
+                </li>
 				<li>
 					<?php
 						$my_account_link = (CURRENT_USER_LEVEL == 0) ? 'clients-edit.php' : 'users-edit.php';

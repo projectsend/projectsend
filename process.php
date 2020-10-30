@@ -5,10 +5,8 @@ $allowed_levels = array(9,8,7,0);
 require_once 'bootstrap.php';
 
 global $auth;
-$download = new \ProjectSend\Classes\Download;
 
 $_SESSION['last_call'] = time();
-
 $public = ['login', 'social_login', 'login_ldap', 'logout'];
 if (!empty($_GET['do']) && !in_array($_GET['do'], $public)) {
     check_for_session();
@@ -49,13 +47,21 @@ switch ($_GET['do']) {
         $error = (!empty($_GET['logout_error_type'])) ? $_GET['logout_error_type'] : null;
         $auth->logout($error);
         break;
+    case 'change_language':
+        $auth->setLanguage(html_output($_GET['language']));
+        header('Location: ' . BASE_URI . 'index.php');
+        exit;
+        break;
     case 'download':
+        $download = new \ProjectSend\Classes\Download;
         $download->download($_GET['id']);
         break;
     case 'return_files_ids':
+        $download = new \ProjectSend\Classes\Download;
         $download->returnFilesIds($_GET['files']);
         break;
     case 'download_zip':
+        $download = new \ProjectSend\Classes\Download;
         $download->downloadZip($_GET['files']);
         break;
     default:

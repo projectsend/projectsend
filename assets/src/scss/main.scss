@@ -959,37 +959,43 @@ body.login {
         border-radius:0;
         font-size:0;
 
-        .nav > li {
-            margin:0;
-            font-size:13px;
-
-            > a {
-                color:#f0f0f0;
-                line-height:33px;
-                padding:3px 10px;
-                border-left:1px solid #474b58;
+        .nav {
+            > li {
                 margin:0;
-
-                &:hover {
-                    color:#fff;
-                    background:$top_bar_hover;
-                }
-
-                &.toggle_main_menu {
-                    font-size:2em;
-                    margin-top:3px;
-                    border-left:none;
-
-                    span {
-                        display:none;
+                font-size:13px;
+    
+                > a {
+                    color:#f0f0f0;
+                    line-height:33px;
+                    padding:3px 10px;
+                    border-left:1px solid #474b58;
+                    margin:0;
+    
+                    &:hover, &:focus {
+                        color:#fff;
+                        background:$top_bar_hover;
                     }
-
-                    &:hover,
-                    &:focus
-                    {
-                        background:none;
+    
+                    &.toggle_main_menu {
+                        font-size:2em;
+                        margin-top:3px;
+                        border-left:none;
+    
+                        span {
+                            display:none;
+                        }
+    
+                        &:hover,
+                        &:focus
+                        {
+                            background:none;
+                        }
                     }
                 }
+            }
+
+            .open > a, .nav .open > a:focus, .nav .open > a:hover {
+                background: #333;
             }
         }
 

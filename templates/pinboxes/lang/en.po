@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Projectsend theme: PinBoxes\n"
-"POT-Creation-Date: 2018-02-26 02:22-0300\n"
-"PO-Revision-Date: 2018-02-26 02:23-0300\n"
+"POT-Creation-Date: 2020-10-30 18:41-0300\n"
+"PO-Revision-Date: 2020-10-30 18:41-0300\n"
 "Last-Translator: \n"
 "Language-Team: ProjectSend <contact@projectsend.org>\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.3\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-KeywordsList: _e;__\n"
@@ -21,46 +21,54 @@ msgstr ""
 msgid "Available files"
 msgstr ""
 
-#: template.php:93
+#: template.php:58
 msgid "Welcome"
 msgstr ""
 
-#: template.php:98
+#: template.php:63
 msgid "Search..."
 msgstr ""
 
-#: template.php:108
+#: template.php:73
 msgid "Categories"
 msgstr ""
 
-#: template.php:110
+#: template.php:75
 msgid "All files"
 msgstr ""
 
-#: template.php:129
-msgid "Upload files"
+#: template.php:95
+msgid "Download zipped"
 msgstr ""
 
-#: template.php:132
+#: template.php:100
+msgid "Upload"
+msgstr ""
+
+#: template.php:105
+msgid "Manage"
+msgstr ""
+
+#: template.php:110
 msgid "Logout"
 msgstr ""
 
-#: template.php:146
+#: template.php:125
 msgid "There are no files."
 msgstr ""
 
-#: template.php:210
+#: template.php:174
 msgid "File size:"
 msgstr ""
 
-#: template.php:220
+#: template.php:181
 msgid "Expiration date:"
 msgstr ""
 
-#: template.php:231
+#: template.php:192
 msgid "Download"
 msgstr ""
 
-#: template.php:237
+#: template.php:202
 msgid "File expired"
 msgstr ""

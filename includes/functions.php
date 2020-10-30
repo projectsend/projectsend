@@ -410,59 +410,6 @@ function get_client_by_username($client)
 }
 
 /**
- * Get all the client information knowing only the log in username
- *
- * @return array
- */
-function get_logged_account_id($username)
-{
-	global $dbh;
-	$statement = $dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE user=:user");
-	$statement->execute(
-						array(
-							':user'	=> $username
-						)
-					);
-	$statement->setFetchMode(PDO::FETCH_ASSOC);
-
-	while ( $row = $statement->fetch() ) {
-		$return_id = html_output($row['id']);
-		if ( !empty( $return_id ) ) {
-			return $return_id;
-		}
-		else {
-			return false;
-		}
-	}
-}
-
-
-/**
- * Used on the file uploading process to determine if the client
- * needs to be notified by e-mail.
- */
-function check_if_notify_client($client)
-{
-	global $dbh;
-	$statement = $dbh->prepare("SELECT notify, email FROM " . TABLE_USERS . " WHERE user=:user");
-	$statement->execute(
-						array(
-							':user'	=> $client
-						)
-					);
-	$statement->setFetchMode(PDO::FETCH_ASSOC);
-
-	while ( $row = $statement->fetch() ) {
-		if ( $row['notify'] == '1' ) {
-			return html_output($row['email']);
-		}
-		else {
-			return false;
-		}
-	}
-}
-
-/**
 * Get a user using any of the accepted field names
 * 
 * @uses get_user_by_id
@@ -859,22 +806,6 @@ function pax($array)
 }
 
 /**
- * Returns the current logged in account username either from the active
- * session or the cookies.
- *
- * @todo Validate the returned value against the one stored on the database
- */
-function get_current_user_username()
-{
-	$user = '';
-
-    if (isset($_SESSION['username'])) {
-		$user = $_SESSION['username'];
-	}
-	return $user;
-}
-
-/**
  * Wrapper for htmlentities with default options
  *
  */
@@ -1063,10 +994,10 @@ function delete_recursive($dir)
 						unlink($dir.$file);
 					}
 				}
-		   }
-		   closedir($dh);
-		   rmdir($dir);
-	   }
+		    }
+		    closedir($dh);
+		    rmdir($dir);
+	    }
 	}
 }
 
@@ -1293,14 +1224,15 @@ function prevent_direct_access()
 	}
 }
 
-
 /**
  * Add a noindex to the header
  */
 function meta_noindex()
 {
-	if ( defined('PRIVACY_NOINDEX_SITE') ) {
-		if ( PRIVACY_NOINDEX_SITE == 1 ) {
+    $option = get_option('privacy_noindex_site');
+
+    if ( !empty($option) ) {
+		if ( (int)$option == 1 ) {
 			echo '<meta name="robots" content="noindex">';
 		}
 	}

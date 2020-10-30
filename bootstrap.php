@@ -46,7 +46,7 @@ require_once ROOT_DIR.'/includes/functions.options.php';
 require_once ROOT_DIR.'/includes/updates.functions.php';
 
 /** Contains the session and cookies validation functions */
-require_once ROOT_DIR.'/includes/userlevel_check.php';
+require_once ROOT_DIR.'/includes/functions.session.permissions.php';
 
 /** Template list functions */
 require_once ROOT_DIR.'/includes/functions.templates.php';

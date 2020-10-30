@@ -255,7 +255,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 				$conditions[] = "uploader = :uploader";
 				$no_results_error = 'account_level';
 	
-				$params[':uploader'] = $global_user;
+				$params[':uploader'] = CURRENT_USER_USERNAME;
 			}
 			
 			/**

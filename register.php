@@ -13,7 +13,7 @@ $page_title = __('Register new account','cftp_admin');
 
 $page_id = 'client_form';
 
-$new_client = new \ProjectSend\Classes\Users($dbh);
+$new_client = new \ProjectSend\Classes\Users();
 
 include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 
@@ -26,8 +26,10 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 			$recaptcha_request		= file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptcha_secret_key}&response={$recaptcha_response}&remoteip={$recaptcha_user_ip}");
 		}
 
-		/** Arguments used on validation and client creation. */
-        $client_arguments = array(
+        /** Validate the information from the posted form. */
+        /** Create the user if validation is correct. */
+        $new_client->setType('new_client');
+        $new_client->set([
             'username' => $_POST['username'],
             'password' => $_POST['password'],
             'name' => $_POST['name'],
@@ -42,12 +44,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
             'account_requested'	=> (get_option('clients_auto_approve') == 0) ? 1 : 0,
             'type' => 'new_client',
             'recaptcha' => ( defined('RECAPTCHA_AVAILABLE') ) ? $recaptcha_request : null,
-        );
-
-        /** Validate the information from the posted form. */
-        /** Create the user if validation is correct. */
-        $new_client->setType('new_client');
-        $new_client->set($client_arguments);
+        ]);
         if ($new_client->validate()) {
             $new_response = $new_client->create();
             $new_client->triggerAfterSelfRegister([

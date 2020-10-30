@@ -41,7 +41,7 @@ switch ($_GET['do']) {
         Session::add('SOCIAL_LOGIN_NETWORK', $_GET['provider']);
     
         $login = $auth->socialLogin($_GET['provider']);
-        pax($login);
+        break;
     case 'login_ldap':
         $login = $auth->login_ldap($_POST['ldap_email'], $_POST['ldap_password']);
         $auth->setLanguage($_POST['language']);

@@ -57,8 +57,8 @@ $get_categories = get_categories();
 	if (isset($_POST['save'])) {
         // Edit each file and its assignations
 		foreach ($_POST['file'] as $file) {
-            $object = new \ProjectSend\Classes\Files();
-            $object->get($file_id);
+            $object = new \ProjectSend\Classes\Files;
+            $object->get($file['id']);
             if ($object->recordExists()) {
                 if ($object->save($file) != false) {
                     $saved_files[] = $file['id'];

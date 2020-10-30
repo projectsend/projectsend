@@ -59,7 +59,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					$deleted_groups = 0;
 
 					foreach ($selected_groups as $group) {
-						$this_group = new \ProjectSend\Classes\Groups($dbh);
+						$this_group = new \ProjectSend\Classes\Groups();
                         if ($this_group->get($group)) {
                             $delete_user = $this_group->delete();
                             $deleted_groups++;
@@ -269,7 +269,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 				while ( $row = $sql->fetch() ) {
 					$table->addRow();
 
-                    $group_object = new \ProjectSend\Classes\Groups($dbh);
+                    $group_object = new \ProjectSend\Classes\Groups();
                     $group_object->get($row["id"]);
                     $group_data = $group_object->getProperties();
 

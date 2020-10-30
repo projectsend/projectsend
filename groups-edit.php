@@ -18,7 +18,7 @@ $page_id = 'group_form';
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 /** Create the object */
-$edit_group = new \ProjectSend\Classes\Groups($dbh);
+$edit_group = new \ProjectSend\Classes\Groups();
 
 /** Check if the id parameter is on the URI. */
 if (isset($_GET['id'])) {

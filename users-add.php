@@ -19,7 +19,7 @@ $page_title = __('Add system user','cftp_admin');
 
 $page_id = 'user_form';
 
-$new_user = new \ProjectSend\Classes\Users($dbh);
+$new_user = new \ProjectSend\Classes\Users();
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 

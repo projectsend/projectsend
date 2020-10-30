@@ -137,7 +137,7 @@ if ( isset( $_POST['btn_process'] ) ) {
 	$category_parent		= $_POST['category_parent'];
     $category_description	= $_POST['category_description'];
     
-	$category_object = new \ProjectSend\Classes\Categories($dbh);
+	$category_object = new \ProjectSend\Classes\Categories();
 
 	$arguments = array(
 						'name'			=> $category_name,

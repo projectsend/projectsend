@@ -68,7 +68,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						/**
 						 * 1- Approve or deny account
 						 */
-                        $process_account = new \ProjectSend\Classes\Users($dbh);
+                        $process_account = new \ProjectSend\Classes\Users();
                         $process_account->setId($client['id']);
 
 						/** $client['account'] == 1 means approve that account */
@@ -130,7 +130,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					break;
 				case 'delete':
 					foreach ($selected_clients as $client) {
-                        $this_client = new \ProjectSend\Classes\Users($dbh);
+                        $this_client = new \ProjectSend\Classes\Users();
                         $this_client->setId($client['id']);
 						$delete_client = $this_client->delete();
 					}

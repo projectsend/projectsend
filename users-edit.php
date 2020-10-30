@@ -12,7 +12,7 @@ require_once 'bootstrap.php';
 $active_nav = 'users';
 
 /** Create the object */
-$edit_user = new \ProjectSend\Classes\Users($dbh);
+$edit_user = new \ProjectSend\Classes\Users();
 
 /** Check if the id parameter is on the URI. */
 if (isset($_GET['id'])) {

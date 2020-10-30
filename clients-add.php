@@ -15,7 +15,7 @@ $page_title = __('Add client','cftp_admin');
 
 $page_id = 'client_form';
 
-$new_client = new \ProjectSend\Classes\Users($dbh);
+$new_client = new \ProjectSend\Classes\Users();
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 

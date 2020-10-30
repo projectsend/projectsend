@@ -32,7 +32,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					 * Inactive clients are not allowed to log in.
 					 */
 					foreach ($selected_clients as $work_client) {
-                        $this_client = new \ProjectSend\Classes\Users($dbh);
+                        $this_client = new \ProjectSend\Classes\Users();
                         if ($this_client->get($work_client)) {
                             $hide_user = $this_client->setActiveStatus(1);
                         }
@@ -47,7 +47,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					 * that the client is inactive.
 					 */
 					foreach ($selected_clients as $work_client) {
-                        $this_client = new \ProjectSend\Classes\Users($dbh);
+                        $this_client = new \ProjectSend\Classes\Users();
                         if ($this_client->get($work_client)) {
                             $hide_user = $this_client->setActiveStatus(0);
                         }
@@ -58,7 +58,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					break;
 				case 'delete':
 					foreach ($selected_clients as $work_client) {
-                        $this_client = new \ProjectSend\Classes\Users($dbh);
+                        $this_client = new \ProjectSend\Classes\Users();
                         if ($this_client->get($work_client)) {
                             $delete_user = $this_client->delete();
                         }
@@ -296,7 +296,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					while ( $row = $sql->fetch() ) {
                         $table->addRow();
                         
-                        $client_object = new \ProjectSend\Classes\Users($dbh);
+                        $client_object = new \ProjectSend\Classes\Users();
                         $client_object->get($row["id"]);
                         $client_data = $client_object->getProperties();
 

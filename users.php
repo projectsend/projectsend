@@ -37,7 +37,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					 * Inactive users are not allowed to log in.
 					 */
 					foreach ($selected_users as $work_user) {
-                        $this_user = new \ProjectSend\Classes\Users($dbh);
+                        $this_user = new \ProjectSend\Classes\Users();
                         if ($this_user->get($work_user)) {
                             $hide_user = $this_user->setActiveStatus(1);
                         }
@@ -56,7 +56,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						 * A user should not be able to deactivate himself
 						 */
 						if ($work_user != CURRENT_USER_ID) {
-                            $this_user = new \ProjectSend\Classes\Users($dbh);
+                            $this_user = new \ProjectSend\Classes\Users();
                             if ($this_user->get($work_user)) {
                                 $hide_user = $this_user->setActiveStatus(0);
                             }
@@ -79,7 +79,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						 * A user should not be able to delete himself
 						 */
 						if ($work_user != CURRENT_USER_ID) {
-                            $this_user = new \ProjectSend\Classes\Users($dbh);
+                            $this_user = new \ProjectSend\Classes\Users();
                             if ($this_user->get($work_user)) {
                                 $delete_user = $this_user->delete();
                                 $affected_users++;
@@ -326,7 +326,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 				while ( $row = $sql->fetch() ) {
 					$table->addRow();
 
-                    $user_object = new \ProjectSend\Classes\Users($dbh);
+                    $user_object = new \ProjectSend\Classes\Users();
                     $user_object->get($row["id"]);
                     $user_data = $user_object->getProperties();
 

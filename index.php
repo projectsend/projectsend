@@ -37,7 +37,7 @@ if (!empty($_GET['external_login']) && $_GET['external_login'] == '1' && !empty(
     }
     Session::add('SOCIAL_LOGIN_NETWORK', $_GET['provider']);
 
-    $process = new \ProjectSend\Classes\DoProcess($dbh);
+    $process = new \ProjectSend\Classes\DoProcess();
     $process->socialLogin($_GET['provider']);
 }
 

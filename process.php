@@ -10,7 +10,7 @@ if ( !empty( $_GET['do'] ) && ($_GET['do'] != 'login' && $_GET['do'] != 'login_l
     can_see_content($allowed_levels);
 }
 
-$process = new \ProjectSend\Classes\DoProcess($dbh);
+$process = new \ProjectSend\Classes\DoProcess();
 
 switch ($_GET['do']) {
     case 'login':

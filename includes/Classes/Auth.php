@@ -198,14 +198,6 @@ class Auth
             $email_parts = explode('@', $userProfile->email);
             $username = (!username_exists($email_parts[0])) ? $email_parts[0] : generate_username($email_parts[0]);
             $password = generate_random_password();
-            /*
-                @todo
-                Check if user exists on database
-                    Create if not
-                    Login if exists
-                    Log action
-                    Redirect
-            */
 
             /** Validate the information from the posted form. */
             /** Create the user if validation is correct. */
@@ -233,6 +225,17 @@ class Auth
                 $new_client->triggerAfterSelfRegister();
                 $this->authenticate($username, $password);
 
+                // Save as metadata
+                $meta_name = 'social_network';
+                $meta_value = json_encode($userProfile);
+                $statement = $this->dbh->prepare("INSERT INTO " . TABLE_USER_META . " (user_id, name, value)"
+                                ."VALUES (:id, :name, :value)");
+                $statement->bindParam(':id', $this->user->id, PDO::PARAM_INT);
+                $statement->bindParam(':name', $meta_name);
+                $statement->bindParam(':value', $meta_value);
+                $statement->execute();
+
+                // Redirect
                 $url = BASE_URI.'register.php?success=1';
                 header("Location:".$url);
                 exit;

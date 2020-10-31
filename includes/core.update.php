@@ -1340,9 +1340,9 @@ if (current_role_in($allowed_update)) {
 				$query = "
 				CREATE TABLE IF NOT EXISTS `".TABLE_USER_META."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
+				  `user_id` int(11) DEFAULT NULL,
                   `name` varchar(255) NOT NULL,
                   `value` TEXT NULL,
-				  `user_id` int(11) DEFAULT NULL,
 				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 				  FOREIGN KEY (`user_id`) REFERENCES ".TABLE_USERS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 				  PRIMARY KEY (`id`)

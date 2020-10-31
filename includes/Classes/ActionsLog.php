@@ -81,6 +81,7 @@ class ActionsLog
             37	=> __('An anonymous user downloaded a public file.','cftp_admin'),
             38	=> __('A client account request was processed.','cftp_admin'),
             39	=> __("A client's groups membership requests were processed.",'cftp_admin'),
+            41	=> __("A file preview request was made",'cftp_admin'),
         );
 
         return $this->activities_references;

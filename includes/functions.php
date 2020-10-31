@@ -1034,12 +1034,34 @@ function getFileTypeByMime($full_path)
     }
 
     $mimeType = mime_content_type($full_path);
-    return explode('/', $mimeType)[0];
+
+    return $mimeType;
 }
 
 function isImage($full_path)
 {
-    if (getFileTypeByMime($full_path) == 'image') {
+    $mimeType = getFileTypeByMime($full_path);
+    if (explode('/', $mimeType)[0] == 'image') {
+        return true;
+    }
+
+    return false;
+}
+
+function isVideo($full_path)
+{
+    $mimeType = getFileTypeByMime($full_path);
+    if (explode('/', $mimeType)[0] == 'video') {
+        return true;
+    }
+
+    return false;
+}
+
+function isAudio($full_path)
+{
+    $mimeType = getFileTypeByMime($full_path);
+    if (explode('/', $mimeType)[0] == 'audio') {
         return true;
     }
 
@@ -1943,7 +1965,13 @@ function render_log_action($params)
 			$action_text = __('processed group memberships requests for','cftp_admin');
 			$part2 = $affected_account_name;
 			break;
-	}
+        case 41:
+            $action_ico = 'file-preview';
+            $part1 = $owner_user;
+            $action_text = __('requested a preview for the file','cftp_admin');
+            $part2 = $affected_file_name;
+            break;
+        }
 
     $date = format_date($timestamp);
 

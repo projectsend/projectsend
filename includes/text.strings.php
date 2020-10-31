@@ -58,6 +58,7 @@ $json_strings = [
             'continue_to_editor' => __("Go to the file editor",'cftp_admin'),
         ],
         'confirm_generic' => __('Confirm this action?', 'cftp_admin'),
+        'preview_failed' => __('Failed to load file preview', 'cftp_admin'),
     ],
     'validation' => [
         'errors_found_title' => __('The following errors were found','cftp_admin'),

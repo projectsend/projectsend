@@ -19,6 +19,8 @@ include_once ROOT_DIR.'/templates/common.php'; // include the required functions
 
 $window_title = __('File downloads','cftp_template');
 
+$page_id = 'default_template';
+
 $body_class = array('template', 'default-template', 'hide_title');
 
 include_once ROOT_DIR.'/header.php';
@@ -157,7 +159,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 														'hide'			=> 'phone',
 													),
 													array(
-														'content'		=> __('Image preview','cftp_admin'),
+														'content'		=> __('Preview','cftp_admin'),
 														'hide'			=> 'phone,tablet',
 													),
 													array(
@@ -218,9 +220,16 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 								if ( $file->isImage() ) {
 									$thumbnail = make_thumbnail( $file->full_path, null, TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT );
 									if ( !empty( $thumbnail['thumbnail']['url'] ) ) {
-										$preview_cell = '<img src="' . $thumbnail['thumbnail']['url'] . '" class="thumbnail" alt="' . $file->title .'" />';
+                                        $preview_cell = '
+                                            <a href="#" class="get-preview" data-url="'.BASE_URI.'process.php?do=get_preview&file_id='.$file->id.'">
+                                                <img src="' . $thumbnail['thumbnail']['url'] . '" class="thumbnail" alt="' . $file->title .'" />
+                                            </a>';
 									}
-								}
+                                } else {
+                                    if ($file->embeddable) {
+                                        $preview_cell = '<button class="btn btn-warning btn-sm btn-wide get-preview" data-url="'.BASE_URI.'process.php?do=get_preview&file_id='.$file->id.'">'.__('Preview', 'cftp_admin').'</button>';
+                                    }
+                                }
 							}
 
 							/** Download */
@@ -308,15 +317,14 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 			</form>
 		
 		</div> <!-- right_column -->
-	</div> <!-- wrapper -->
+    </div> <!-- wrapper -->
 	
 	<?php default_footer_info(); ?>
-
 </div>
 <?php
-        render_json_variables();
+    render_json_variables();
 
-		load_js_files();
-	?>
+    load_js_files();
+?>
 </body>
 </html>

@@ -12,6 +12,8 @@ $active_nav = 'files';
 
 $page_title = __('Manage files','cftp_admin');
 
+$page_id = 'manage_files';
+
 /**
  * Used to distinguish the current page results.
  * Global means all files.
@@ -507,7 +509,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 													'condition'		=> $conditions['select_all'],
 												),
 												array(
-													'content'		=> __('Thumbnail','cftp_admin'),
+													'content'		=> __('Preview','cftp_admin'),
 													'hide'			=> 'phone,tablet',
 												),
                                                 array(
@@ -605,14 +607,20 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                         }
 
 	
-                        /** Thumbnail */
-						$thumbnail_cell = '';
+                        /** Preview */
+						$preview_cell = '';
+                        if ($file->embeddable) {
+                            $preview_cell = '<button class="btn btn-warning btn-sm btn-wide get-preview" data-url="'.BASE_URI.'process.php?do=get_preview&file_id='.$file->id.'">'.__('Preview', 'cftp_admin').'</button>';
+                        }
 						if ( file_is_image( $file->full_path ) ) {
 							$thumbnail = make_thumbnail( $file->full_path, null, 50, 50 );
 							if ( !empty( $thumbnail['thumbnail']['url'] ) ) {
-								$thumbnail_cell = '<img src="' . $thumbnail['thumbnail']['url'] . '" class="thumbnail" />';
+                                $preview_cell = '<a href="#" class="get-preview" data-url="'.BASE_URI.'process.php?do=get_preview&file_id='.$file->id.'">
+                                    <img src="' . $thumbnail['thumbnail']['url'] . '" class="thumbnail" />
+                                </a>';
 							}
 						}
+
 
 						/** Is file assigned? */
 						$assigned_class		= ($count_assignations == 0) ? 'danger' : 'success';
@@ -707,7 +715,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 													'condition'		=> $conditions['select_all'],
 												),
 												array(
-													'content'		=> $thumbnail_cell,
+													'content'		=> $preview_cell,
 												),
                                                 array(
 													'content'		=> format_date($file->uploaded_date),

@@ -43,6 +43,10 @@
             case 'email_templates':
                 admin.pages.emailTemplates();
                 break;
+            case 'default_template':
+            case 'manage_files':
+                admin.parts.filePreviewModal();
+                break;
             case 'reset_password_enter_email':
                 admin.pages.resetPasswordEnterEmail();
                 break;

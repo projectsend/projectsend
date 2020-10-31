@@ -1,10 +1,13 @@
 <?php
 use ProjectSend\Classes\Session as Session;
+use ProjectSend\Classes\Download;
+
 /** Process an action */
 $allowed_levels = array(9,8,7,0);
 require_once 'bootstrap.php';
 
 global $auth;
+global $logger;
 
 $_SESSION['last_call'] = time();
 $public = ['login', 'social_login', 'login_ldap', 'logout'];
@@ -52,16 +55,29 @@ switch ($_GET['do']) {
         header('Location: ' . BASE_URI . 'index.php');
         exit;
         break;
+    case 'get_preview':
+        $return = [];
+        if (!empty($_GET['file_id'])) {
+            $file = new \ProjectSend\Classes\Files;
+            $file->get($_GET['file_id']);
+            if ($file->existsOnDisk() && $file->embeddable) {
+                $return = json_decode($file->getEmbedData());
+            }
+        }
+
+        echo json_encode($return);
+        exit;
+        break;
     case 'download':
-        $download = new \ProjectSend\Classes\Download;
+        $download = new Download;
         $download->download($_GET['id']);
         break;
     case 'return_files_ids':
-        $download = new \ProjectSend\Classes\Download;
+        $download = new Download;
         $download->returnFilesIds($_GET['files']);
         break;
     case 'download_zip':
-        $download = new \ProjectSend\Classes\Download;
+        $download = new Download;
         $download->downloadZip($_GET['files']);
         break;
     default:

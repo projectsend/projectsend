@@ -38,6 +38,9 @@ class Files
     public $location;
     public $full_path;
     public $record_exists;
+    public $mime_type;
+    public $embeddable;
+    public $embeddable_type;
 
     private $is_filetype_allowed;
 
@@ -58,6 +61,8 @@ class Files
         $this->assignments_clients = [];
         $this->assignments_groups = [];
         $this->categories = [];
+
+        $this->embeddable = false;
     }
 
     public function __get($name)
@@ -117,6 +122,9 @@ class Files
         $this->setExtension();
         $this->isFiletypeAllowed();
         $this->isExpired();
+
+        $this->mime_type = getFileTypeByMime($this->full_path);
+        $this->setEmbeddableType();
     }
 
     /**
@@ -160,6 +168,9 @@ class Files
         $this->isExpired();
         $this->setExtension();
         $this->getSize();
+
+        $this->mime_type = getFileTypeByMime($this->full_path);
+        $this->setEmbeddableType();
 
         $this->getCurrentAssignments();
         $this->getCurrentCategories();
@@ -227,11 +238,74 @@ class Files
 
     public function isImage()
     {
-        if (getFileTypeByMime($this->full_path) == 'image') {
+        if (isImage($this->full_path)) {
             return true;
         }
 
         return false;
+    }
+
+    public function setEmbeddableType()
+    {
+        if (empty($this->mime_type)) {
+            return null;
+        }
+
+        if ($this->isImage()) {
+            $this->embeddable = true;
+            $this->embeddable_type = 'image';
+        }
+
+        // Video
+        $embeddable = ['mp4', 'ogg', 'webm'];
+        if (isVideo($this->full_path) && in_array($this->extension, $embeddable)) {
+            $this->embeddable = true;
+            $this->embeddable_type = 'video';
+        }
+
+        // Audio
+        $embeddable = ['mp3', 'wav'];
+        if (isAudio($this->full_path) || in_array($this->extension, $embeddable)) {
+            $this->embeddable = true;
+            $this->embeddable_type = 'audio';
+        }
+
+        // PDF
+        if ($this->mime_type == 'application/pdf') {
+            $this->embeddable = true;
+            $this->embeddable_type = 'pdf';
+        }
+    }
+
+    public function getEmbedData()
+    {
+        if ($this->embeddable) {
+            $file_url = str_replace(ROOT_DIR, BASE_URI, $this->full_path);
+
+            if ($this->isImage()) {
+                $file_url = make_thumbnail( $this->full_path, 'proportional', 500 )['thumbnail']['url'];
+            }
+            $return = [
+                'name' => $this->filename_original,
+                'file_url' => $file_url,
+                'type' => $this->embeddable_type,
+                'mime_type' => $this->mime_type,
+            ];
+
+            // Record request
+            $new_record_action = $this->logger->addEntry([
+                'action' => 41,
+                'owner_id' => CURRENT_USER_ID,
+                'affected_file' => $this->id,
+                'affected_file_name' => $this->filename_on_disk,
+                'affected_account' => CURRENT_USER_ID,
+                'file_title_column' => true
+            ]);
+
+            return json_encode($return);
+        }
+
+        return null;
     }
 
     public function getData()

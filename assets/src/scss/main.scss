@@ -1560,6 +1560,26 @@ body.download {
     }
 }
 
+// Preview modal
+#previewModal {
+    .modal-header {
+        .modal-title {
+            display: inline-block;
+            margin-bottom: 0;
+        }
+    }
+
+    .modal-body {
+        audio {
+            width: 100%;
+        }
+    }
+
+    .embed-responsive {
+        background: black;
+    }
+}
+
 // Misc Mobile only styles
 
 @include bk(xs) {

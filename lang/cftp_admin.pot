@@ -412,7 +412,7 @@ msgid "Uploads"
 msgstr ""
 
 #: clients.php:252
-msgid "Files: Own"
+msgid "Files: Direct"
 msgstr ""
 
 #: clients.php:256

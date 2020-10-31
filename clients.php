@@ -249,7 +249,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 													'hide'			=> 'phone',
 												),
 												array(
-													'content'		=> __('Files: Own','cftp_admin'),
+													'content'		=> __('Files: Direct','cftp_admin'),
 													'hide'			=> 'phone',
 												),
 												array(

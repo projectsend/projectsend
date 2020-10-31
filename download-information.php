@@ -197,7 +197,23 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 							$anon_yes	= __('Yes','cftp_admin');
 							$anon_no	= __('No','cftp_admin');
 							$label		= ($row['anonymous'] == '1') ? $anon_yes : $anon_no;
-							$class		= ($row['anonymous'] == '1') ? 'warning' : 'success';
+                            $class		= ($row['anonymous'] == '1') ? 'warning' : 'success';
+                            
+                            // Downloader
+                            $downloader_row = null;
+                            if (!empty($row['user_id'])) {
+                                $user = new \ProjectSend\Classes\Users;
+                                $user->get($row['user_id']);
+                                if ($user->exists) {
+                                    if ($user->isClient()) {
+                                        $link = BASE_URI.'clients-edit.php?id='.$user->id;
+                                    } else {
+                                        $link = BASE_URI.'users-edit.php?id='.$user->id;
+                                    }
+                                    $downloader_row = '<a href="'.$link.'">' . $user->name . '<br>' . $user->email . '</a>';
+                                }
+                            }
+
 		
 							/**
 							 * Add the cells to the row
@@ -210,7 +226,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 															'content'		=> $time,
 														),
 													array(
-															'content'		=> ( !empty( $users_names[$row['user_id']] ) ) ? html_output( $users_names[$row['user_id']] ) : '',
+															'content'		=> $downloader_row,
 														),
 													array(
 															'content'		=> '<span class="label label-' . $class . '">' . $label . '</span>',

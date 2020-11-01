@@ -51,6 +51,9 @@ require_once ROOT_DIR.'/includes/functions.session.permissions.php';
 /** Template list functions */
 require_once ROOT_DIR.'/includes/functions.templates.php';
 
+/** User Meta functions */
+require_once ROOT_DIR.'/includes/functions.usermeta.php';
+
 /** Contains the current session information */
 if ( !defined( 'IS_INSTALL' ) ) {
     require_once ROOT_DIR.'/includes/active.session.php';

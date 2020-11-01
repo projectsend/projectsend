@@ -37,6 +37,7 @@ class Users
     public $max_file_size;
     public $created_by;
     public $created_date;
+    public $metadata;
 
     // Uploaded files
     public $files;
@@ -71,6 +72,8 @@ class Users
 
         $this->allowed_actions_roles = [9];
         $this->exists = false;
+
+        $this->metadata = [];
     }
 
     /**
@@ -249,6 +252,13 @@ class Users
         ];
 
         return $return;
+    }
+
+    public function getAllMetaData()
+    {
+        $this->metadata = get_all_user_meta($this->id);
+
+        return $this->metadata;
     }
 
     /**

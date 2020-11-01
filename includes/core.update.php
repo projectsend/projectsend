@@ -1374,5 +1374,15 @@ if (current_role_in($allowed_update)) {
 			$updates_made++;
 		}
 
+        /**
+		 * r1192 updates
+		 * Added meta updated time colume
+		 */
+		if ($last_update < 1192) {
+			$statement = $dbh->query("ALTER TABLE `" . TABLE_USER_META . "` ADD COLUMN `updated_at` TIMESTAMP DEFAULT NULL");
+
+			$updates_made++;
+		}
+
     }
 }

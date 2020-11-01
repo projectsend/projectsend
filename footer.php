@@ -16,8 +16,7 @@
 				?>
 			</div> <!-- main_content -->
 		</div> <!-- container-custom -->
-
-	</body>
+    </body>
 </html>
 <?php
 	if ( DEBUG === true ) {

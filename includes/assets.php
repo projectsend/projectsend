@@ -17,7 +17,6 @@ $load_compat_js_files	= array();
 /** JS */
 $load_js_files[]	= 'https://www.google.com/recaptcha/api.js';
 $load_js_files[]	= ASSETS_JS_URL . '/assets.js';
-$load_js_files[]	= ASSETS_LIB_URL . '/ckeditor/ckeditor.js';
 $load_js_files[]	= ASSETS_JS_URL . '/app.js';
 
 /** CSS */
@@ -40,10 +39,10 @@ if ( LOADED_LANG != 'en' ) {
     }
 }
 
-$load_compat_js_files[]	= array(
-                                'file'	=> ASSETS_LIB_URL . '/flot/excanvas.js',
-                                'cond'	=> 'lt IE 9',
-                            );
+// $load_compat_js_files[]	= array(
+//     'file'	=> ASSETS_LIB_URL . '/flot/excanvas.js',
+//     'cond'	=> 'lt IE 9',
+// );
 
 $load_css_files[]	= ASSETS_CSS_URL . '/assets.css';
 $load_css_files[]	= ASSETS_CSS_URL . '/main.css';
@@ -122,6 +121,7 @@ function load_js_header_files() {
 ?>
     <script type="text/javascript" src="<?php echo ASSETS_LIB_URL; ?>/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="<?php echo ASSETS_LIB_URL; ?>/jquery-migrate/jquery-migrate.min.js"></script>
+    <script type="text/javascript" src="<?php echo BASE_URI; ?>/node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
 
     <!--[if lt IE 9]>
         <script src="<?php echo ASSETS_LIB_URL; ?>/html5shiv.min.js"></script>

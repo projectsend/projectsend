@@ -219,12 +219,6 @@
                     search_contains	: true
                 });
             }
-
-            // CKEditor
-            if ( typeof CKEDITOR !== "undefined" ) {
-                CKEDITOR.replaceAll( 'ckeditor' );
-            }
-
         });
 
         /**

@@ -8,6 +8,7 @@
     "author": "Ignacio Nelson <info@subwaydesign.com.ar>",
     "license": "GPL-3.0-or-later",
     "dependencies": {
+        "@ckeditor/ckeditor5-build-classic": "^23.1.0",
         "@yaireo/tagify": "2.9.1",
         "bootstrap": "3.4.1",
         "bootstrap-datepicker": "1.8.0",

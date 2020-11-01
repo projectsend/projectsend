@@ -92,6 +92,12 @@ class Options
 				if ( in_array( $name, $exceptions ) ) {
 					continue;
                 }
+
+                if ($name == 'base_uri') {
+                    if (substr($value, -1) !== '/') {
+                        $value .= '/';
+                    }
+                }
                 
 				$const = strtoupper( $name );
 				define( $const, $value );

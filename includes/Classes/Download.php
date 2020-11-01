@@ -148,7 +148,7 @@ class Download
             case 9:
             case 8:
             case 7:
-                $log_action_number = 8;
+                $log_action_number = 7;
             break;
         }
 

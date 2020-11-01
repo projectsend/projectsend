@@ -21,7 +21,7 @@ if ($_POST) {
     $email->send([
         'type' => 'test_settings',
         'to' => $_POST['to'],
-        'body' => $_POST['message'],
+        'message' => $_POST['message'],
     ]);
 }
 ?>

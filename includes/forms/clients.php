@@ -9,6 +9,7 @@
 $name_placeholder = __("Will be visible on the client's file list",'cftp_admin');
 
 $clients_can_select_group = get_option('clients_can_select_group');
+
 switch ($clients_form_type) {
 	/** User is creating a new client */
 	case 'new_client':
@@ -20,7 +21,7 @@ switch ($clients_form_type) {
 		$extra_fields = true;
 		$group_field = true;
 		$group_label = __('Groups','cftp_admin');
-		$ignore_size = false;
+        $ignore_size = false;
 		break;
 	/** User is editing an existing client */
 	case 'edit_client':
@@ -248,10 +249,18 @@ switch ($clients_form_type) {
 					</label>
 				</div>
 			</div>
+
+			<div class="form-group">
+				<div class="col-sm-8 col-sm-offset-4">
+					<label for="require_password_change">
+						<input type="checkbox" name="require_password_change" id="require_password_change" <?php echo (isset($client_arguments['require_password_change']) && $client_arguments['require_password_change'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Require password change after first login','cftp_admin'); ?>
+					</label>
+				</div>
+			</div>
 	<?php
 		}
 	?>
-	
+
 	<?php
 		if ( $clients_form_type == 'new_client_self' ) {
 			if ( defined('RECAPTCHA_AVAILABLE') ) {

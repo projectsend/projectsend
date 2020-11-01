@@ -121,6 +121,14 @@ switch ($user_form_type) {
 							</label>
 						</div>
 					</div>
+
+                    <div class="form-group">
+                        <div class="col-sm-8 col-sm-offset-4">
+                            <label for="require_password_change">
+                                <input type="checkbox" name="require_password_change" id="require_password_change" <?php echo (isset($user_arguments['require_password_change']) && $user_arguments['require_password_change'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Require password change after first login','cftp_admin'); ?>
+                            </label>
+                        </div>
+                    </div>
 			<?php
 				}
 			}

@@ -38,6 +38,7 @@ class Users
     public $created_by;
     public $created_date;
     public $metadata;
+    public $require_password_change;
 
     // Uploaded files
     public $files;
@@ -72,6 +73,7 @@ class Users
 
         $this->allowed_actions_roles = [9];
         $this->exists = false;
+        $this->require_password_change = false;
 
         $this->metadata = [];
     }
@@ -146,6 +148,7 @@ class Users
         $this->active = (!empty($arguments['active'])) ? (int)$arguments['active'] : 0;
 		$this->notify_account = (!empty($arguments['notify_account'])) ? $arguments['notify_account'] : 0;
         $this->max_file_size = (!empty($arguments['max_file_size'])) ? $arguments['max_file_size'] : 0;
+        $this->require_password_change = (!empty($arguments['require_password_change'])) ? $arguments['require_password_change'] : false;
 
         // Specific for clients
 		$this->address = (!empty($arguments['address'])) ? encode_html($arguments['address']) : null;
@@ -190,6 +193,12 @@ class Users
             $this->created_date = html_output($this->row['timestamp']);
             $this->created_by = html_output($this->row['created_by']);
 
+            // See if user requires password change
+            if (user_meta_exists($this->id, 'require_password_change')) {
+                $meta = (get_user_meta($this->id, 'require_password_change'));
+                $this->require_password_change = ($meta['value'] == 'true') ? true : false;
+            }
+
             // Specific for clients
             $this->address = html_output($this->row['address']);
             $this->phone = html_output($this->row['phone']);
@@ -220,6 +229,11 @@ class Users
         $this->setActionsPermissions();
 
         return true;
+    }
+
+    public function requiresPasswordChange()
+    {
+        return $this->require_password_change;
     }
 
     public function getRawPassword()
@@ -410,7 +424,6 @@ class Users
 			$this->statement->bindParam(':active', $this->active, PDO::PARAM_INT);
 			$this->statement->bindParam(':request', $this->account_request, PDO::PARAM_INT);
 			$this->statement->bindParam(':max_file_size', $this->max_file_size, PDO::PARAM_INT);
-
 			$this->statement->execute();
 
 			if ($this->statement) {
@@ -418,6 +431,10 @@ class Users
                 $this->state['id'] = $this->id;
 
                 $this->state['query'] = 1;
+
+                if ($this->require_password_change == true) {
+                    save_user_meta($this->id, 'require_password_change', 'true');
+                }
 
                 /** Record the action log */
                 $created_by = (defined('CURRENT_USER_ID')) ? CURRENT_USER_ID : $this->id;
@@ -573,6 +590,13 @@ class Users
             $this->statement->execute();
 
 			if ($this->statement) {
+                // See if user requires password change
+                if (user_meta_exists($this->id, 'require_password_change')) {
+                    if (!empty($this->password)) {
+                        delete_user_meta($this->id, 'require_password_change');
+                    }
+                }
+
 				$this->state['query'] = 1;
 
                 switch ($this->role) {
@@ -601,7 +625,7 @@ class Users
 		}
 		else {
 			$this->state['hash'] = 0;
-		}
+        }
 
 		return $this->state;
 	}

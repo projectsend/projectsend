@@ -21,6 +21,8 @@ check_for_session();
  */
 can_see_content($allowed_levels);
 
+global $flash;
+
 /** If no page title is defined, revert to a default one */
 if (!isset($page_title)) { $page_title = __('System Administration','cftp_admin'); }
 
@@ -45,6 +47,8 @@ $core_update_allowed = array(9,8,7);
 if (current_role_in($core_update_allowed)) {
 	require_once INCLUDES_DIR . DS . 'core.update.php';
 }
+
+password_change_required();
 ?>
 <!doctype html>
 <html lang="<?php echo SITE_LANG; ?>">
@@ -168,5 +172,12 @@ if (current_role_in($core_update_allowed)) {
 						</div>
 					</div>
 				</div>
+
+                <?php
+                    // Flash messages
+                    if ($flash->hasMessages()) {
+                        echo $flash;
+                    }
+                ?>
 
 				<div class="row">

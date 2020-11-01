@@ -472,9 +472,11 @@ body.login {
             padding:5px;
         }
 
-        .statistics_graph {
+        #chart_container canvas {
             display:block;
-            height:360px;
+            width: 100%;
+            padding: 0;
+            margin: 0;
         }
     }
 

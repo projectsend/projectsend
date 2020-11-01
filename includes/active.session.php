@@ -64,8 +64,8 @@ if (!empty($_SESSION['user_id'])) {
  * Files types limitation
  */
 $limit_files = true;
-if ( defined( 'FILE_TYPES_LIMIT_TO' ) ) {
-	switch ( FILE_TYPES_LIMIT_TO ) {
+if (!empty(get_option('file_types_limit_to'))) {
+	switch ( get_option('file_types_limit_to') ) {
 		case 'noone':
 			$limit_files = false;
 			break;

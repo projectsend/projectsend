@@ -21,6 +21,7 @@ let assetsCss = [
     'node_modules/chosen-js/chosen.min.css',
     'node_modules/footable/css/footable.core.min.css',
     'node_modules/@yaireo/tagify/dist/tagify.css',
+    'node_modules/chart.js/dist/Chart.min.css',
     'vendor/moxiecode/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css'
 ];
 
@@ -35,9 +36,10 @@ let assetsJs = [
     'node_modules/js-cookie/src/js.cookie.js',
     'node_modules/jquery-validation/dist/jquery.validate.min.js',
     'node_modules/sprintf-js/dist/sprintf.min.js',
-    'assets/lib/flot/jquery.flot.min.js',
-    'assets/lib/flot/jquery.flot.resize.min.js',
-    'assets/lib/flot/jquery.flot.time.min.js',
+    'node_modules/chart.js/dist/Chart.bundle.min.js',
+    'node_modules/chart.js/dist/Chart.min.js',
+    'node_modules/flot/dist/es5/jquery.flot.js',
+    'node_modules/flot/source/jquery.flot.resize.js',
     'vendor/moxiecode/plupload/js/plupload.full.min.js',
     'vendor/moxiecode/plupload/js/jquery.plupload.queue/jquery.plupload.queue.min.js'
 ];

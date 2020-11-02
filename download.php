@@ -50,7 +50,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
 
     if ($can_download == true) {
         if (isset($_GET['download'])) {
-            recordNewDownload(0, $file_id);
+            recordNewDownload(0, $file->id);
 
             /** Record the action log */
             $logger = new \ProjectSend\Classes\ActionsLog();
@@ -58,8 +58,8 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
                 'action' => 37,
                 'owner_user' => null,
                 'owner_id' => 0,
-                'affected_file' => $file_id,
-                'affected_file_name' => $real_file_url,
+                'affected_file' => $file->id,
+                'affected_file_name' => $file->filename_original,
             );
             $new_record_action = $logger->addEntry($log_action_args);
 

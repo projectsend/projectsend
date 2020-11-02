@@ -58,7 +58,7 @@ if ($_POST) {
             $logger = new \ProjectSend\Classes\ActionsLog;
             $record = $logger->addEntry([
                 'action' => 2,
-                'owner_user' => $new_user->username,
+                'owner_user' => CURRENT_USER_USERNAME,
                 'owner_id' => CURRENT_USER_ID,
                 'affected_account' => $new_user->id,
                 'affected_account_name' => $new_user->name

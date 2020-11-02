@@ -1376,7 +1376,7 @@ if (current_role_in($allowed_update)) {
 
         /**
 		 * r1192 updates
-		 * Added meta updated time colume
+		 * Added meta updated time column
 		 */
 		if ($last_update < 1192) {
 			$statement = $dbh->query("ALTER TABLE `" . TABLE_USER_META . "` ADD COLUMN `updated_at` TIMESTAMP DEFAULT NULL");
@@ -1384,5 +1384,14 @@ if (current_role_in($allowed_update)) {
 			$updates_made++;
 		}
 
+        /**
+		 * r1216 updates
+		 * Set nullable columns
+		 */
+		if ($last_update < 1216) {
+			$statement = $dbh->query("ALTER TABLE `" . TABLE_MEMBERS . "` CHANGE `added_by` `added_by` varchar(32) DEFAULT NULL");
+
+			$updates_made++;
+		}
     }
 }

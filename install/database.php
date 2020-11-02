@@ -18,6 +18,7 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> TABLE_FILES,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_FILES.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
+                                  `user_id` int(11) DEFAULT NULL,
 								  `url` text NOT NULL,
 								  `original_url` text NOT NULL,
 								  `filename` text NOT NULL,
@@ -28,7 +29,8 @@ if (defined('TRY_INSTALL')) {
 								  `public_allow` INT(1) NOT NULL default \'0\',
 								  `public_token` varchar(32) NULL,
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-								  PRIMARY KEY (`id`)
+                                  PRIMARY KEY (`id`),
+                                  FOREIGN KEY (`user_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
 					'params' => array(),
@@ -39,7 +41,7 @@ if (defined('TRY_INSTALL')) {
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_OPTIONS.'` (
 								  `id` int(10) NOT NULL AUTO_INCREMENT,
 								  `name` varchar(50) COLLATE utf8_general_ci NOT NULL,
-								  `value` text COLLATE utf8_general_ci NOT NULL,
+								  `value` text COLLATE utf8_general_ci NULL,
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
@@ -76,7 +78,7 @@ if (defined('TRY_INSTALL')) {
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_GROUPS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `name` varchar(32) NOT NULL,
-								  `description` text NOT NULL,
+								  `description` text NULL,
 								  `public` tinyint(1) NOT NULL DEFAULT \'0\',
 								  `public_token` varchar(32) NULL,
 								  `created_by` varchar(32) NOT NULL,
@@ -91,7 +93,7 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> TABLE_MEMBERS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_MEMBERS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
-								  `added_by` varchar(32) NOT NULL,
+								  `added_by` varchar(32) DEFAULT NULL,
 								  `client_id` int(11) NOT NULL,
 								  `group_id` int(11) NOT NULL,
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
@@ -400,6 +402,7 @@ if (defined('TRY_INSTALL')) {
                 `name` varchar(255) NOT NULL,
                 `value` TEXT NULL,
                 `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+                `updated_at` TIMESTAMP DEFAULT NULL,
                 FOREIGN KEY (`user_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
                 PRIMARY KEY (`id`)
                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

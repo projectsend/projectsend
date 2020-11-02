@@ -400,7 +400,7 @@ class Users
 		if (strlen($this->password_hashed) >= 20) {
 
 			/** Who is creating the client? */
-			$this->created_by = (defined('CURRENT_USER_USERNAME')) ? CURRENT_USER_USERNAME : 'SELFREGISTERED';
+			$this->created_by = (defined('CURRENT_USER_USERNAME')) ? CURRENT_USER_USERNAME : null;
 
 			/** Insert the client information into the database */
 			$this->timestamp = time();
@@ -748,7 +748,6 @@ class Users
         $autogroup->client_add_to_groups([
             'client_id'	=> $this->id,
             'group_ids'	=> $group_id,
-            'added_by'	=> CURRENT_USER_USERNAME
         ]);
     }
 

@@ -59,6 +59,7 @@ $json_strings = [
         ],
         'confirm_generic' => __('Confirm this action?', 'cftp_admin'),
         'preview_failed' => __('Failed to load file preview', 'cftp_admin'),
+        'failed_loading_resource' => __('Failed to load resource', 'cftp_admin'),
     ],
     'validation' => [
         'errors_found_title' => __('The following errors were found','cftp_admin'),

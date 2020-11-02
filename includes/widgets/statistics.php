@@ -23,8 +23,8 @@
                 ?>
             </div>
 
-            <div class="chart_loading none">
-                <img src="<?php echo ASSETS_IMG_URL; ?>/ajax-loader.gif" alt="Loading" />
+            <div class="loading-icon none">
+                <img src="<?php echo ASSETS_IMG_URL; ?>/loading.svg" alt="Loading" />
             </div>
 
             <div id="chart_container"></div>

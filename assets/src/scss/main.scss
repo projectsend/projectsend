@@ -461,6 +461,17 @@ body.login {
         }
     }
 
+    .loading-icon {
+        text-align: center;
+        margin: 30px auto;
+        padding: 0;
+
+        svg {
+            width: 100px;
+            height: auto;
+        }
+    }
+
     // Home statistics tooltip
 
     .widget_statistics {

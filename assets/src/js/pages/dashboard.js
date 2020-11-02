@@ -10,7 +10,7 @@
             function ajax_widget_statistics(days) {
                 var _chart_container = $('.widget_statistics #chart_container');
                 _chart_container.find('canvas').remove();
-                $('.widget_statistics .chart_loading').removeClass('none');
+                $('.widget_statistics .loading-icon').removeClass('none');
                 if (chart) {
                     chart.destroy();
                 }
@@ -49,8 +49,9 @@
                         }
                     });
                 }).fail(function(data) {
+                    _chart_container.html(json_strings.translations.failed_loading_resource);
                 }).always(function() {
-                    $('.widget_statistics .chart_loading').addClass('none');
+                    $('.widget_statistics .loading-icon').addClass('none');
                 });
     
                 return;
@@ -60,7 +61,7 @@
             function ajax_widget_log( action ) {
                 var target = $('.activities_log');
                 target.html('<div class="loading-graph">'+
-                                '<img src="'+json_strings.uri.assets_img+'/ajax-loader.gif" alt="Loading" />'+
+                                '<img src="'+json_strings.uri.assets_img+'/loading.svg" alt="Loading" />'+
                             '</div>'
                         );
                 $.ajax({

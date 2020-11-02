@@ -95,10 +95,11 @@ class ActionsLog
 		global $dbh;
 		$this->state = array();
 
-		/** Define the account information */
+        /** Define the account information */
+        $default_user = (defined('CURRENT_USER_NAME')) ? CURRENT_USER_NAME : null;
 		$this->action = $arguments['action'];
 		$this->owner_id = $arguments['owner_id'];
-		$this->owner_user = (!empty($arguments['owner_user'])) ? $arguments['owner_user'] : CURRENT_USER_NAME;
+		$this->owner_user = (!empty($arguments['owner_user'])) ? $arguments['owner_user'] : $default_user;
 		$this->affected_file = (!empty($arguments['affected_file'])) ? $arguments['affected_file'] : null;
 		$this->affected_account = (!empty($arguments['affected_account'])) ? $arguments['affected_account'] : null;
 		$this->affected_file_name = (!empty($arguments['affected_file_name'])) ? $arguments['affected_file_name'] : null;

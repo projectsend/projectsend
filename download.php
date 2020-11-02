@@ -55,10 +55,11 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
             /** Record the action log */
             $logger = new \ProjectSend\Classes\ActionsLog();
             $log_action_args = array(
-                'action'				=> 37,
-                'owner_id'				=> 0,
-                'affected_file'			=> $file_id,
-                'affected_file_name'	=> $real_file_url,
+                'action' => 37,
+                'owner_user' => null,
+                'owner_id' => 0,
+                'affected_file' => $file_id,
+                'affected_file_name' => $real_file_url,
             );
             $new_record_action = $logger->addEntry($log_action_args);
 

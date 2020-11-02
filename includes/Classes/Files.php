@@ -947,10 +947,16 @@ class Files
             case 'client':
                 $column = 'client_id';
                 $log_action_number = 25;
+                $client = new \ProjectSend\Classes\Users;
+                $client->get($to_id);
+                $log_name = $client->name;
                 break;
             case 'group':
                 $column = 'group_id';
                 $log_action_number = 26;
+                $group = new \ProjectSend\Classes\Groups;
+                $group->get($to_id);
+                $log_name = $group->name;
                 break;
             default:
                 throw new \Exception('Invalid type');
@@ -962,7 +968,17 @@ class Files
         $statement->bindParam(':file_id', $this->id, PDO::PARAM_INT);
         $statement->bindParam(':assignment', $to_id);
         $statement->bindParam(':hidden', $hidden, PDO::PARAM_INT);
-        $statement->execute();
+        if ($statement->execute()) {
+            $record = $this->logger->addEntry([
+                /** Record the action log */
+                'action' => $log_action_number,
+                'owner_id' => CURRENT_USER_ID,
+                'affected_file' => $this->id,
+                'affected_file_name' => $this->name,
+                'affected_account' => $to_id,
+                'affected_account_name' => $log_name
+            ]);
+        }
     }
 
     private function removeAssignment($from_type, $from_id)

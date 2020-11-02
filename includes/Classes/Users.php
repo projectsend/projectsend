@@ -485,15 +485,8 @@ class Users
          * Check if the option to auto-add to a group
          * is active.
          */
-        if (get_option('clients_auto_group') != '0') {
-            $group_id = get_option('clients_auto_group');
-
-            $autogroup	= new \ProjectSend\Classes\MembersActions;
-            $autogroup->client_add_to_groups([
-                'client_id'	=> $this->id,
-                'group_ids'	=> $group_id,
-                'added_by'	=> $this->created_by
-            ]);
+        if (get_option('clients_auto_group') != '0' && get_option('clients_auto_approve') == 1) {
+            $this->addToAutoGroup();
         }
 
         /**
@@ -724,9 +717,18 @@ class Users
                 $this->sql->bindValue(':id', $this->id, PDO::PARAM_INT);
                 $this->status = $this->sql->execute();
 
+                /**
+                 * Check if the option to auto-add to a group
+                 * is active.
+                 */
+                if (get_option('clients_auto_group') != '0') {
+                    $this->addToAutoGroup();
+                }
+
+
                 /** Record the action log */
                 $record = $this->logger->addEntry([
-                    'action' => 38,
+                    'action' => 44,
                     'owner_id' => CURRENT_USER_ID,
                     'affected_account_name' => $this->name,
                 ]);
@@ -736,6 +738,18 @@ class Users
         }
 
         return false;
+    }
+
+    private function addToAutoGroup()
+    {
+        $group_id = get_option('clients_auto_group');
+
+        $autogroup	= new \ProjectSend\Classes\MembersActions;
+        $autogroup->client_add_to_groups([
+            'client_id'	=> $this->id,
+            'group_ids'	=> $group_id,
+            'added_by'	=> CURRENT_USER_USERNAME
+        ]);
     }
 
     /**
@@ -755,12 +769,10 @@ class Users
 
                 /** Record the action log */
                 $record = $this->logger->addEntry([
-                    'action' => 38,
+                    'action' => 45,
                     'owner_id' => CURRENT_USER_ID,
                     'affected_account_name' => $this->name,
                 ]);
-                
-                return true;
                 
                 return true;
             }

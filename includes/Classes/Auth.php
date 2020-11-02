@@ -77,7 +77,8 @@ class Auth
                     $this->login($user);
 
 					$results = array(
-									'status' => 'success',
+                                    'status' => 'success',
+                                    'user_id' => $user->id,
 								);
 					if ($user->isClient()) {
 						$results['location'] = CLIENT_VIEW_FILE_LIST_URL;

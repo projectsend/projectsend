@@ -61,8 +61,18 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                 'affected_account_name' => $new_client->name
             ]);
 
-            $url = BASE_URI.'register.php?success=1';
-            header("Location:".$url);
+            if (get_option('clients_auto_approve') == 1) {
+                global $auth;
+                global $flash;
+                $auth->authenticate($_POST['username'], $_POST['password']);
+                $flash->success(__('Thank you for registering. Your account has been activated.', 'cftp_admin'));
+                $redirect_url = 'my_files/index.php';
+            } else {
+                $redirect_url = BASE_URI.'register.php?success=1';
+            }
+
+            // Redirect
+            header("Location:".$redirect_url);
             exit;
         }
 	}

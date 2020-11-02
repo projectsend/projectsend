@@ -36,8 +36,8 @@ switch ($clients_form_type) {
 		$ignore_size = false;
 		break;
 	/** A client is creating a new account for himself */
-	case 'new_client_self':
-		$submit_value = __('Register account','cftp_admin');
+    case 'new_client_self':
+		$submit_value = (get_option('clients_auto_approve') == 1) ? __('Create account','cftp_admin') : __('Request account','cftp_admin');
 		$disable_user = false;
 		$require_pass = true;
 		$form_action = 'register.php';

@@ -9,7 +9,7 @@
  * ProjectSend is hosted on Google Code.
  * Feel free to participate!
  *
- * @link		http://code.google.com/p/clients-oriented-ftp/
+ * @link		https://github.com/projectsend/projectsend
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU GPL version 2
  * @package		ProjectSend
  *

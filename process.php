@@ -1,6 +1,7 @@
 <?php
 use ProjectSend\Classes\Session as Session;
 use ProjectSend\Classes\Download;
+use ProjectSend\Classes\ActionsLog;
 
 /** Process an action */
 $allowed_levels = array(9,8,7,0);
@@ -18,6 +19,20 @@ if (!empty($_GET['do']) && !in_array($_GET['do'], $public)) {
 switch ($_GET['do']) {
     case 'login':
         $login = $auth->authenticate($_POST['username'], $_POST['password']);
+        $decoded = json_decode($login);
+        if ($decoded->status = 'success') {
+            $user = new \ProjectSend\Classes\Users;
+            $user->get($decoded->user_id);
+
+            /** Record the action log */
+            $logger = new ActionsLog;
+            $new_record_action = $logger->addEntry([
+                'action' => 1,
+                'owner_id' => $user->id,
+                'owner_user' => $user->username,
+                'affected_account_name' => $user->name
+            ]);
+        }
         $auth->setLanguage($_POST['language']);
 
         /** Using an external form */

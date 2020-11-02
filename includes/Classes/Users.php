@@ -529,6 +529,11 @@ class Users
 
         $this->state = array();
 
+        $previous_data = get_user_by_id($this->id);
+        if ($previous_data['active'] != $this->active) {
+            $this->setActiveStatus($this->active);
+        }
+
         $this->password_hashed = $this->hashPassword($this->password);
 
 		if (strlen($this->password_hashed) >= 20) {
@@ -544,7 +549,6 @@ class Users
 										email = :email,
 										contact = :contact,
 										notify = :notify_upload,
-										active = :active,
 										max_file_size = :max_file_size
 										";
 
@@ -563,7 +567,6 @@ class Users
 			$this->statement->bindParam(':email', $this->email);
 			$this->statement->bindParam(':contact', $this->contact);
 			$this->statement->bindParam(':notify_upload', $this->notify_upload, PDO::PARAM_INT);
-			$this->statement->bindParam(':active', $this->active, PDO::PARAM_INT);
 			$this->statement->bindParam(':max_file_size', $this->max_file_size, PDO::PARAM_INT);
 			$this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
 			if (!empty($this->password)) {

@@ -214,7 +214,6 @@ class Auth
             if ($new_client->validate()) {
                 $new_client->create();
                 $new_client->triggerAfterSelfRegister();
-                $this->authenticate($username, $password);
 
                 // Save as metadata
                 $meta_name = 'social_network';
@@ -229,14 +228,20 @@ class Auth
                 /** Record the action log */
                 $new_record_action = $this->logger->addEntry([
                     'action' => 42,
-                    'owner_id' => $this->user->id,
-                    'owner_user' => $this->user->username,
-                    'affected_account_name' => $this->user->username
+                    'owner_id' => $new_client->id,
+                    'owner_user' => $new_client->username,
+                    'affected_account_name' => $new_client->username
                 ]);
 
+                if (get_option('clients_auto_approve') == 1) {
+                    $this->authenticate($username, $password);
+                    $redirect_url = 'my_files/index.php';
+                } else {
+                    $redirect_url = BASE_URI.'register.php?success=1';
+                }
+
                 // Redirect
-                $url = BASE_URI.'register.php?success=1';
-                header("Location:".$url);
+                header("Location:".$redirect_url);
                 exit;
             }
 

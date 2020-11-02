@@ -105,14 +105,14 @@ $get_categories = get_categories();
 			<tbody>
 			<?php
 				foreach($saved_files as $file_id) {
-                    $file = new \ProjectSend\Classes\Files();
+                    $file = new \ProjectSend\Classes\Files;
                     $file->get($file_id);
                     if ($file->recordExists()) {
             ?>
                         <tr>
-                            <td><?php echo html_output($file->title); ?></td>
+                            <td><?php echo $file->title; ?></td>
                             <td><?php echo htmlentities_allowed($file->description); ?></td>
-                            <td><?php echo html_output($file->filename_original); ?></td>
+                            <td><?php echo $file->filename_original; ?></td>
                             <?php
                                 if (CURRENT_USER_LEVEL != 0) {
                             ?>
@@ -138,7 +138,7 @@ $get_categories = get_categories();
                                 }
                             ?>
                             <td>
-                                <a href="files-edit.php?ids=<?php echo html_output($file->id); ?>" class="btn-primary btn btn-sm">
+                                <a href="files-edit.php?ids=<?php echo $file->id; ?>" class="btn-primary btn btn-sm">
                                     <i class="fa fa-pencil"></i><span class="button_label"><?php _e('Edit file','cftp_admin'); ?></span>
                                 </a>
                                 <?php

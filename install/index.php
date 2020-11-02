@@ -209,7 +209,7 @@ include_once '../header-unlogged.php';
                                     $log_action_args = array(
                                                             'action' => 0,
                                                             'owner_id' => 1,
-                                                            'owner_user' => $admin_name
+                                                            'owner_user' => $admin_username
                                                         );
                                     $new_record_action = $logger->addEntry($log_action_args);
                                     

@@ -59,26 +59,27 @@
                         // Templates
                         if (action == 'zip') {
                             e.preventDefault();
-                            var checkboxes = $("td>input:checkbox").serializeArray();
-
-                            $(document).psendmodal();
-
-                            Cookies.set('download_started', 0, { expires: 100 });
-                            setTimeout(check_download_cookie, 1000);
-                            $('.modal_content').html('<p class="loading-img"><img src="'+json_strings.uri.assets_img+'/ajax-loader.gif" alt="Loading" /></p>'+
-                                                        '<p class="lead text-center text-info">'+json_strings.translations.download_wait+'</p>'+
-                                                        '<p class="text-center text-info">'+json_strings.translations.download_long_wait+'</p>'
-                                                    );
-                            $.ajax({
-                                method: 'GET',
-                                url: json_strings.uri.base + 'process.php',
-                                data: { do:"return_files_ids", files:checkboxes }
-                            }).done( function(rsp) {
-                                var url = json_strings.uri.base + 'process.php?do=download_zip&files=' + rsp;
-                                $('.modal_content').append("<iframe id='modal_zip'></iframe>");
-                                $('#modal_zip').attr('src', url);
-                            });
-                            return false;
+                            var checkboxes = $("td>input:checkbox:checked").serializeArray();
+                            if (checkboxes.length > 0) {
+                                $(document).psendmodal();
+    
+                                Cookies.set('download_started', 0, { expires: 100 });
+                                setTimeout(check_download_cookie, 1000);
+                                $('.modal_content').html('<p class="loading-img"><img src="'+json_strings.uri.assets_img+'/ajax-loader.gif" alt="Loading" /></p>'+
+                                                            '<p class="lead text-center text-info">'+json_strings.translations.download_wait+'</p>'+
+                                                            '<p class="text-center text-info">'+json_strings.translations.download_long_wait+'</p>'
+                                                        );
+                                $.ajax({
+                                    method: 'GET',
+                                    url: json_strings.uri.base + 'process.php',
+                                    data: { do:"return_files_ids", files:checkboxes }
+                                }).done( function(rsp) {
+                                    var url = json_strings.uri.base + 'process.php?do=download_zip&files=' + rsp;
+                                    $('.modal_content').append("<iframe id='modal_zip'></iframe>");
+                                    $('#modal_zip').attr('src', url);
+                                });
+                                return false;
+                            }
                         }
                 }
                 else {

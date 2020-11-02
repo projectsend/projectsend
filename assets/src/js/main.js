@@ -7,6 +7,7 @@
         admin.parts.jqueryValidationCustomMethods();
         admin.parts.passwordVisibilityToggle();
         admin.parts.loadCKEditor();
+        admin.parts.downloadCookieHandler();
 
         // Switch pages
         switch ($("body").data("page-id")) {

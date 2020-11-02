@@ -131,9 +131,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                             <?php
                                 $logger = new \ProjectSend\Classes\ActionsLog;
 								$activities_references = $logger->getActivitiesReferences();
-								foreach ( $activities_references as $val => $text ) {
+								foreach ($activities_references as $action_number => $name) {
 							?>
-									<option value="<?php echo $val; ?>" <?php if ( isset( $_GET['activity'] ) && $_GET['activity'] == $val ) { echo 'selected="selected"'; } ?>><?php echo $text; ?></option>
+									<option value="<?php echo $action_number; ?>" <?php if ( isset( $_GET['activity'] ) && $_GET['activity'] == $action_number ) { echo 'selected="selected"'; } ?>><?php echo $name; ?></option>
 							<?php
 								}
 							?>
@@ -247,18 +247,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 			$sql->setFetchMode(PDO::FETCH_ASSOC);
 			while ( $log = $sql->fetch() ) {
 
-				$this_action = render_log_action(
-									array(
-										'action'				=> $log['action'],
-										'timestamp'				=> $log['timestamp'],
-										'owner_id'				=> $log['owner_id'],
-										'owner_user'			=> $log['owner_user'],
-										'affected_file'			=> $log['affected_file'],
-										'affected_file_name'	=> $log['affected_file_name'],
-										'affected_account'		=> $log['affected_account'],
-										'affected_account_name'	=> $log['affected_account_name']
-									)
-				);
+				$this_action = format_action_log_record($log);
 
                 $date = format_date($log['timestamp']);
 

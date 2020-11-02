@@ -10,11 +10,6 @@
 :focus { outline:none !important; }
 ::-moz-focus-inner { border:0 !important; }
 
-ul {
-    margin:0;
-    list-style:none;
-}
-
 strong,
 .bold
 {
@@ -84,6 +79,10 @@ body.login {
     left:0px;
     background:$side_menu_background;
     border-right:1px solid #ccc;
+
+    ul {
+        list-style: none;
+    }
 }
 
 
@@ -326,6 +325,15 @@ body.login {
     }
 
     // Home LOG widget
+    #widget_actions_log {
+        #log_container {
+            dd {
+                padding-bottom: 7px;
+                margin-bottom: 7px;
+                border-bottom: 1px solid #dedede;
+            }
+        }
+    }
 
     .activities_log {
         padding:0;

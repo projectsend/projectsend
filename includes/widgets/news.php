@@ -9,7 +9,7 @@
 		<div class="widget">
 			<h4><?php _e('ProjectSend news','cftp_admin'); ?></h4>
 			<div class="widget_int">
-                <ul class="home_news">
+                <ul class="home_news list-unstyled">
                     <?php
                         // $feed = simplexml_load_file(NEWS_FEED_URI);
                         $feed = getJson(NEWS_FEED_URI, '-1 days');

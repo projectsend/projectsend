@@ -111,7 +111,7 @@ function list_file($data, $origin) {
 
 			<div class="treeview">
 				<div class="listing">
-					<ul>
+					<ul class="list-unstyled">
 						<?php
 							/**
 							 * 1- Make a list of files IDs

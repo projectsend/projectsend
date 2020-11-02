@@ -26,6 +26,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 $user_arguments = array(
     'active' => 1,
     'notify_account' => 1,
+    'require_password_change' => 1,
 );
 
 if ($_POST) {

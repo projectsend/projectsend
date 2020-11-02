@@ -24,9 +24,10 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
  * the form
  */
 $client_arguments = array(
-    'notify_upload'     => 1,
-    'active'            => 1,
-    'notify_account'    => 1,
+    'notify_upload' => 1,
+    'active' => 1,
+    'notify_account' => 1,
+    'require_password_change' => 1,
 );
 
 if ($_POST) {
@@ -61,7 +62,7 @@ if ($_POST) {
         $logger = new \ProjectSend\Classes\ActionsLog;
         $record = $logger->addEntry([
             'action' => 3,
-            'owner_user' => $new_client->username,
+            'owner_user' => CURRENT_USER_USERNAME,
             'owner_id' => CURRENT_USER_ID,
             'affected_account' => $new_client->id,
             'affected_account_name' => $new_client->name
@@ -70,14 +71,12 @@ if ($_POST) {
         $add_to_groups = (!empty( $_POST['groups_request'] ) ) ? $_POST['groups_request'] : '';
         if ( !empty( $add_to_groups ) ) {
             array_map('encode_html', $add_to_groups);
-            $memberships	= new \ProjectSend\Classes\MembersActions;
-            $arguments		= array(
-                                    'client_id'	=> $new_client->getId(),
-                                    'group_ids'	=> $add_to_groups,
-                                    'added_by'	=> CURRENT_USER_USERNAME,
-                                );
-    
-            $memberships->client_add_to_groups($arguments);
+            $memberships = new \ProjectSend\Classes\MembersActions;
+            $memberships->client_add_to_groups([
+                'client_id' => $new_client->getId(),
+                'group_ids' => $add_to_groups,
+                'added_by' => CURRENT_USER_USERNAME,
+            ]);
         }
 
         if (!empty($new_response['id'])) {

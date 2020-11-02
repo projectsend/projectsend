@@ -51,6 +51,16 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                 'groups' => (isset($_POST["groups_request"])) ? $_POST["groups_request"] : null,
             ]);
 
+            /** Record the action log */
+            $logger = new \ProjectSend\Classes\ActionsLog;
+            $record = $logger->addEntry([
+                'action' => 4,
+                'owner_user' => $new_client->username,
+                'owner_id' => $new_client->id,
+                'affected_account' => $new_client->id,
+                'affected_account_name' => $new_client->name
+            ]);
+
             $url = BASE_URI.'register.php?success=1';
             header("Location:".$url);
             exit;

@@ -1700,10 +1700,32 @@ function countGroupsRequestsForExistingClients()
     return $count;
 }
 
+// Function to get the client ip address
+function get_client_ip() {
+    $ipaddress = '';
+    if ($_SERVER['HTTP_CLIENT_IP'])
+        $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+    else if($_SERVER['HTTP_X_FORWARDED_FOR'])
+        $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    else if($_SERVER['HTTP_X_FORWARDED'])
+        $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+    else if($_SERVER['HTTP_FORWARDED_FOR'])
+        $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+    else if($_SERVER['HTTP_FORWARDED'])
+        $ipaddress = $_SERVER['HTTP_FORWARDED'];
+    else if($_SERVER['REMOTE_ADDR'])
+        $ipaddress = $_SERVER['REMOTE_ADDR'];
+    else
+        $ipaddress = 'UNKNOWN';
+
+    return $ipaddress;
+}
+
 /**
  * Renders an action recorded on the log.
+ * @todo This is really messy. Replace!!
  */
-function render_log_action($params)
+function format_action_log_record($params)
 {
 	$action = $params['action'];
 	$timestamp = $params['timestamp'];
@@ -1712,7 +1734,8 @@ function render_log_action($params)
 	$affected_file = $params['affected_file'];
 	$affected_file_name = $params['affected_file_name'];
 	$affected_account = $params['affected_account'];
-	$affected_account_name = html_output($params['affected_account_name']);
+    $affected_account_name = html_output($params['affected_account_name']);
+    $formatted = null;
 
 	switch ($action) {
 		case 0:
@@ -1951,7 +1974,8 @@ function render_log_action($params)
 			$action_ico = 'download-anonymous';
 			$part1 = __('An anonymous user','cftp_admin');
 			$action_text = __('downloaded the file','cftp_admin');
-			$part2 = $affected_file_name;
+            $part2 = $affected_file_name;
+            $formatted = sprintf(__('An anonymous user downloaded the file %s','cftp_admin'), $affected_file_name);
 			break;
 		case 38:
 			$action_ico = 'client-request-processed';
@@ -1971,6 +1995,16 @@ function render_log_action($params)
             $action_text = __('requested a preview for the file','cftp_admin');
             $part2 = $affected_file_name;
             break;
+        case 42:
+            $action_ico = 'login';
+            $part1 = $owner_user;
+            $action_text = __('created an account with a social profile','cftp_admin');
+            break;
+        case 43:
+            $action_ico = 'login';
+            $part1 = $owner_user;
+            $action_text = __('logged in with a social profile','cftp_admin');
+            break;
         }
 
     $date = format_date($timestamp);
@@ -1981,27 +2015,9 @@ function render_log_action($params)
 	if (!empty($part4)) { $log['4'] = $part4; }
 	$log['icon'] = $action_ico;
 	$log['timestamp'] = $date;
-	$log['text'] = $action_text;
+    $log['text'] = $action_text;
 
-	return $log;
-}
-// Function to get the client ip address
-function get_client_ip() {
-    $ipaddress = '';
-    if ($_SERVER['HTTP_CLIENT_IP'])
-        $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
-    else if($_SERVER['HTTP_X_FORWARDED_FOR'])
-        $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-    else if($_SERVER['HTTP_X_FORWARDED'])
-        $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
-    else if($_SERVER['HTTP_FORWARDED_FOR'])
-        $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
-    else if($_SERVER['HTTP_FORWARDED'])
-        $ipaddress = $_SERVER['HTTP_FORWARDED'];
-    else if($_SERVER['REMOTE_ADDR'])
-        $ipaddress = $_SERVER['REMOTE_ADDR'];
-    else
-        $ipaddress = 'UNKNOWN';
+    $log['formatted'] = $formatted;
 
-    return $ipaddress;
+    return $log;
 }

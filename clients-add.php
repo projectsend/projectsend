@@ -56,6 +56,16 @@ if ($_POST) {
     $new_client->set($client_arguments);
 	if ($new_client->validate()) {
         $new_response = $new_client->create();
+
+        /** Record the action log */
+        $logger = new \ProjectSend\Classes\ActionsLog;
+        $record = $logger->addEntry([
+            'action' => 3,
+            'owner_user' => $new_client->username,
+            'owner_id' => CURRENT_USER_ID,
+            'affected_account' => $new_client->id,
+            'affected_account_name' => $new_client->name
+        ]);
     
         $add_to_groups = (!empty( $_POST['groups_request'] ) ) ? $_POST['groups_request'] : '';
         if ( !empty( $add_to_groups ) ) {

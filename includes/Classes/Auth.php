@@ -76,14 +76,6 @@ class Auth
 				if ($user->isActive()) {
                     $this->login($user);
 
-					/** Record the action log */
-					$new_record_action = $this->logger->addEntry([
-                        'action' => 1,
-                        'owner_id' => $user->id,
-                        'owner_user' => $user->username,
-                        'affected_account_name' => $user->username
-                    ]);
-
 					$results = array(
 									'status' => 'success',
 								);
@@ -160,14 +152,13 @@ class Auth
                 $user = new \ProjectSend\Classes\Users;
                 $user->get($row['id']);
                 $this->user = $user;
-                $user_data = $user->getProperties();
 
 				if ($user->isActive()) {
                     $this->login($user);
 
                     /** Record the action log */
 					$this->new_record_action = $this->logger->addEntry([
-                        'action' => 1,
+                        'action' => 43,
                         'owner_id' => $user->id,
                         'owner_user' => $user->username,
                         'affected_account_name' => $user->name
@@ -221,7 +212,7 @@ class Auth
             ]);
 
             if ($new_client->validate()) {
-                $new_response = $new_client->create();
+                $new_client->create();
                 $new_client->triggerAfterSelfRegister();
                 $this->authenticate($username, $password);
 
@@ -234,6 +225,14 @@ class Auth
                 $statement->bindParam(':name', $meta_name);
                 $statement->bindParam(':value', $meta_value);
                 $statement->execute();
+
+                /** Record the action log */
+                $new_record_action = $this->logger->addEntry([
+                    'action' => 42,
+                    'owner_id' => $this->user->id,
+                    'owner_user' => $this->user->username,
+                    'affected_account_name' => $this->user->username
+                ]);
 
                 // Redirect
                 $url = BASE_URI.'register.php?success=1';

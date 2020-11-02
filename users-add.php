@@ -54,6 +54,16 @@ if ($_POST) {
         $new_response = $new_user->create();
 
         if (!empty($new_response['id'])) {
+            /** Record the action log */
+            $logger = new \ProjectSend\Classes\ActionsLog;
+            $record = $logger->addEntry([
+                'action' => 2,
+                'owner_user' => $new_user->username,
+                'owner_id' => CURRENT_USER_ID,
+                'affected_account' => $new_user->id,
+                'affected_account_name' => $new_user->name
+            ]);
+
             $rediret_to = BASE_URI . 'users-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1&notification=' . $new_response['email'];
             header('Location:' . $rediret_to);
             exit;

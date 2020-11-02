@@ -436,16 +436,6 @@ class Users
                     save_user_meta($this->id, 'require_password_change', 'true');
                 }
 
-                /** Record the action log */
-                $created_by = (defined('CURRENT_USER_ID')) ? CURRENT_USER_ID : $this->id;
-                $record = $this->logger->addEntry([
-                    'action' => 2,
-                    'owner_user' => $this->username,
-                    'owner_id' => $created_by,
-                    'affected_account' => $this->id,
-                    'affected_account_name' => $this->name
-                ]);
-
                 switch ($this->role) {
                     case 0:
                         $email_type = "new_client";

@@ -185,6 +185,9 @@ class Files
 
     public function getCurrentAssignments()
     {
+        $this->assignments_clients = [];
+        $this->assignments_groups = [];
+
         $statement = $this->dbh->prepare("SELECT file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :id");
         $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $statement->execute();
@@ -813,7 +816,6 @@ class Files
                 'owner_id' => CURRENT_USER_ID,
                 'affected_file' => $this->id,
                 'affected_file_name' => $this->name,
-                'affected_account_name' => CURRENT_USER_NAME
             ]);
 
             return true;
@@ -996,10 +998,16 @@ class Files
             case 'client':
                 $column = 'client_id';
                 $log_action_number = 10;
+                $client = new \ProjectSend\Classes\Users;
+                $client->get($from_id);
+                $log_name = $client->name;
                 break;
             case 'group':
                 $column = 'group_id';
                 $log_action_number = 11;
+                $group = new \ProjectSend\Classes\Groups;
+                $group->get($from_id);
+                $log_name = $group->name;
                 break;
             default:
                 throw new \Exception('Invalid modify type');
@@ -1018,7 +1026,9 @@ class Files
                 'action' => $log_action_number,
                 'owner_id' => CURRENT_USER_ID,
                 'affected_file' => $this->id,
-                'affected_file_name' => $this->title
+                'affected_file_name' => $this->title,
+                'affected_account' => $from_id,
+                'affected_account_name' => $log_name
             ]);
 
             return true;

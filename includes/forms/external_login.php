@@ -25,10 +25,6 @@
                 'enabled' => get_option('yahoo_signin_enabled'),
                 'icon' => 'yahoo',
             ),
-            'oidc' => array(
-                'enabled' => get_option('oidc_signin_enabled'),
-                'icon' => 'oidc',
-            ),
         );
         foreach ($login_links as $provider => $data)
         {

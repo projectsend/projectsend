@@ -205,6 +205,7 @@
     </div>
 </div>
 
+<?php /*
 <h5><i class="fa fa-openid"></i> OpenID</h5>
 <?php
     $oidc_enabled = get_option('oidc_signin_enabled');
@@ -238,3 +239,4 @@
         }
     ?>
 </div>
+*/

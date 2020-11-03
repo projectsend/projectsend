@@ -22,16 +22,13 @@
 		]
 	},
 	"require": {
-     	"php": ">=7.0",
-        "bainternet/php-hooks": "^1.0",
-        "claviska/simpleimage": "^3.3",
-        "enshrined/svg-sanitize": "^0.13.1",
-        "league/oauth2-google": "^2.2",
-        "moxiecode/plupload": "3.1.*",
+        "php": ">=7.0",
+        "claviska/simpleimage": "~3",
+        "enshrined/svg-sanitize": "^0.13",
+        "moxiecode/plupload": "3.1.2",
         "paragonie/random_compat": "^2.0",
-        "phpmailer/phpmailer": "~6.0",
+        "phpmailer/phpmailer": "~6.1",
 		"tamtamchik/simple-flash": "^1.2",
-		"cartalyst/sentinel": "^2.0",
 		"hybridauth/hybridauth": "^3.0"
 	}
 }

@@ -1,6 +1,4 @@
 <?php
-use function GuzzleHttp\json_encode;
-
 /**
  * Define the common functions used on the installer and updates.
  *

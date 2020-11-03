@@ -821,23 +821,26 @@ function html_output($str, $flags = ENT_QUOTES, $encoding = CHARSET, $double_enc
 function htmlentities_allowed($str, $quoteStyle = ENT_COMPAT, $charset = CHARSET, $doubleEncode = false)
 {
     //$description = htmlspecialchars($str, $quoteStyle, $charset, $doubleEncode);
-    $description = htmlspecialchars_decode($str, $quoteStyle);
+    $string = htmlspecialchars_decode($str, $quoteStyle);
+    return strip_tags($string, '<i><b><strong><em><p><br><ul><ol><li><u><sup><sub><s>');
+    /*
 	$allowed_tags = array('i','b','strong','em','p','br','ul','ol','li','u','sup','sub','s');
 
 	$find = array();
 	$replace = array();
 
 	foreach ( $allowed_tags as $tag ) {
-		/** Opening tags */
+		// Opening tags
 		$find[] = '&lt;' . $tag . '&gt;';
 		$replace[] = '<' . $tag . '>';
-		/** Closing tags */
+		// Closing tags
 		$find[] = '&lt;/' . $tag . '&gt;';
         $replace[] = '</' . $tag . '>';
 	}
 
 	$description = str_replace($find, $replace, $description);
-	return $description;
+    return $description
+    */;
 }
 
 

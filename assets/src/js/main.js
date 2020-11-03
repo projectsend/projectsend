@@ -20,6 +20,8 @@
                 break;
             case 'dashboard':
                 admin.pages.dashboard();
+                admin.parts.widgetStatistics();
+                admin.parts.widgetActionLog();
                 break;
             case 'categories_list':
                 admin.pages.categoriesAdmin();

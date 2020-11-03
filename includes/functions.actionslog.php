@@ -17,20 +17,17 @@ function format_action_log_record($params)
 
 	switch ($action) {
 		case 0:
-			$action_ico = 'install';
             $action_text = __('ProjectSend was installed','cftp_admin');
             $formatted = __('ProjectSend was installed','cftp_admin');
             $type = 'system';
 			break;
 		case 1:
-			$action_ico = 'login';
 			$part1 = $owner_user;
             $action_text = __('logged in to the system.','cftp_admin');
             $formatted = sprintf(__('%s logged in to the system','cftp_admin'), $affected_account_name);
             $type = 'auth';
 			break;
 		case 2:
-			$action_ico = 'user-add';
 			$part1 = $owner_user;
 			$action_text = __('created the user account','cftp_admin');
 			$part2 = $affected_account_name;
@@ -38,7 +35,6 @@ function format_action_log_record($params)
             $type = 'users';
 			break;
 		case 3:
-			$action_ico = 'client-add';
 			$part1 = $owner_user;
 			$action_text = __('created the client account ','cftp_admin');
 			$part2 = $affected_account_name;
@@ -46,14 +42,12 @@ function format_action_log_record($params)
             $type = 'clients';
 			break;
 		case 4:
-			$action_ico = 'client-add';
 			$part1 = $affected_account_name;
 			$action_text = __('created a client account for themself.','cftp_admin');
             $formatted = sprintf(__('%s registered as a new client','cftp_admin'), $affected_account_name);
             $type = 'clients';
 			break;
 		case 5:
-			$action_ico = 'file-add';
 			$part1 = $owner_user;
 			$action_text = __('(user) uploaded the file','cftp_admin');
             $part2 = $affected_file_name;
@@ -61,7 +55,6 @@ function format_action_log_record($params)
             $type = 'files';
 			break;
 		case 6:
-			$action_ico = 'file-add';
 			$part1 = $owner_user;
 			$action_text = __('(client) uploaded the file','cftp_admin');
 			$part2 = $affected_file_name;
@@ -69,7 +62,6 @@ function format_action_log_record($params)
             $type = 'files';
 			break;
 		case 7:
-			$action_ico = 'file-download';
 			$part1 = $owner_user;
 			$action_text = __('(user) downloaded the file','cftp_admin');
             $part2 = $affected_file_name;
@@ -77,7 +69,6 @@ function format_action_log_record($params)
             $type = 'files';
 			break;
 		case 8:
-			$action_ico = 'file-download';
 			$part1 = $owner_user;
 			$action_text = __('(client) downloaded the file','cftp_admin');
             $part2 = $affected_file_name;
@@ -85,14 +76,12 @@ function format_action_log_record($params)
             $type = 'files';
 			break;
 		case 9:
-			$action_ico = 'download-zip';
 			$part1 = $owner_user;
             $action_text = __('generated a zip file','cftp_admin');
             $formatted = sprintf(__('%s generated a zip file','cftp_admin'), $owner_user);
             $type = 'files';
 			break;
 		case 10:
-			$action_ico = 'file-unassign';
 			$part1 = $owner_user;
 			$action_text = __('unassigned the file','cftp_admin');
 			$part2 = $affected_file_name;
@@ -102,7 +91,6 @@ function format_action_log_record($params)
             $type = 'files';
 			break;
 		case 11:
-			$action_ico = 'file-unassign';
 			$part1 = $owner_user;
 			$action_text = __('unassigned the file','cftp_admin');
 			$part2 = $affected_file_name;
@@ -112,7 +100,6 @@ function format_action_log_record($params)
             $type = 'files';
 			break;
 		case 12:
-			$action_ico = 'file-delete';
 			$part1 = $owner_user;
 			$action_text = __('deleted the file','cftp_admin');
             $part2 = $affected_file_name;
@@ -120,7 +107,6 @@ function format_action_log_record($params)
             $type = 'files';
 			break;
 		case 13:
-			$action_ico = 'user-edit';
 			$part1 = $owner_user;
 			$action_text = __('edited the user','cftp_admin');
             $part2 = $affected_account_name;
@@ -128,7 +114,6 @@ function format_action_log_record($params)
             $type = 'users';
 			break;
 		case 14:
-			$action_ico = 'client-edit';
 			$part1 = $owner_user;
             $action_text = __('edited the client','cftp_admin');
 			$part2 = $affected_account_name;
@@ -136,7 +121,6 @@ function format_action_log_record($params)
             $type = 'clients';
 			break;
 		case 15:
-			$action_ico = 'group-edit';
 			$part1 = $owner_user;
 			$action_text = __('edited the group','cftp_admin');
             $part2 = $affected_account_name;
@@ -144,7 +128,6 @@ function format_action_log_record($params)
             $type = 'groups';
 			break;
 		case 16:
-			$action_ico = 'user-delete';
 			$part1 = $owner_user;
 			$action_text = __('deleted the user','cftp_admin');
             $part2 = $affected_account_name;
@@ -152,7 +135,6 @@ function format_action_log_record($params)
             $type = 'users';
 			break;
 		case 17:
-			$action_ico = 'client-delete';
 			$part1 = $owner_user;
 			$action_text = __('deleted the client','cftp_admin');
             $part2 = $affected_account_name;
@@ -160,7 +142,6 @@ function format_action_log_record($params)
             $type = 'clients';
 			break;
 		case 18:
-			$action_ico = 'group-delete';
 			$part1 = $owner_user;
 			$action_text = __('deleted the group','cftp_admin');
             $part2 = $affected_account_name;
@@ -168,7 +149,6 @@ function format_action_log_record($params)
             $type = 'groups';
 			break;
 		case 19:
-			$action_ico = 'client-activate';
 			$part1 = $owner_user;
 			$action_text = __('activated the client','cftp_admin');
             $part2 = $affected_account_name;
@@ -176,7 +156,6 @@ function format_action_log_record($params)
             $type = 'clients';
 			break;
 		case 20:
-			$action_ico = 'client-deactivate';
 			$part1 = $owner_user;
 			$action_text = __('deactivated the client','cftp_admin');
             $part2 = $affected_account_name;
@@ -184,7 +163,6 @@ function format_action_log_record($params)
             $type = 'clients';
 			break;
 		case 21:
-			$action_ico = 'file-hidden';
 			$part1 = $owner_user;
 			$action_text = __('marked as hidden the file','cftp_admin');
 			$part2 = $affected_file_name;
@@ -194,7 +172,6 @@ function format_action_log_record($params)
             $type = 'files';
 			break;
         case 40:
-			$action_ico = 'file-hidden';
 			$part1 = $owner_user;
 			$action_text = __('marked as hidden for everyone the file','cftp_admin');
             $part2 = $affected_file_name;
@@ -202,7 +179,6 @@ function format_action_log_record($params)
             $type = 'files';
 			break;
 		case 22:
-			$action_ico = 'file-visible';
 			$part1 = $owner_user;
 			$action_text = __('marked as visible the file','cftp_admin');
 			$part2 = $affected_file_name;
@@ -212,7 +188,6 @@ function format_action_log_record($params)
             $type = 'files';
 			break;
 		case 23:
-			$action_ico = 'group-add';
 			$part1 = $owner_user;
 			$action_text = __('created the group','cftp_admin');
             $part2 = $affected_account_name;
@@ -220,14 +195,12 @@ function format_action_log_record($params)
             $type = 'groups';
 			break;
 		case 24: // cookies log in, not used
-			$action_ico = 'login';
 			$part1 = $owner_user;
             $action_text = __('logged in to the system.','cftp_admin');
             $formatted = sprintf(__('%s logged in to the system','cftp_admin'), $owner_user);
             $type = 'auth';
 			break;
 		case 25:
-			$action_ico = 'file-assign';
 			$part1 = $owner_user;
 			$action_text = __('assigned the file','cftp_admin');
 			$part2 = $affected_file_name;
@@ -237,7 +210,6 @@ function format_action_log_record($params)
             $type = 'files';
 			break;
 		case 26:
-			$action_ico = 'file-assign';
 			$part1 = $owner_user;
 			$action_text = __('assigned the file','cftp_admin');
 			$part2 = $affected_file_name;
@@ -247,7 +219,6 @@ function format_action_log_record($params)
             $type = 'files';
 			break;
 		case 27:
-			$action_ico = 'user-activate';
 			$part1 = $owner_user;
 			$action_text = __('activated the user','cftp_admin');
             $part2 = $affected_account_name;
@@ -255,7 +226,6 @@ function format_action_log_record($params)
             $type = 'users';
 			break;
 		case 28:
-			$action_ico = 'user-deactivate';
 			$part1 = $owner_user;
 			$action_text = __('deactivated the user','cftp_admin');
             $part2 = $affected_account_name;
@@ -263,14 +233,12 @@ function format_action_log_record($params)
             $type = 'users';
 			break;
 		case 29:
-			$action_ico = 'branding-change';
 			$part1 = $owner_user;
             $action_text = __('uploaded a new logo on "Branding"','cftp_admin');
             $formatted = sprintf(__('%s uploaded a new logo on "Branding"','cftp_admin'), $owner_user);
             $type = 'system';
 			break;
 		case 30:
-			$action_ico = 'update';
 			$part1 = $owner_user;
 			$action_text = __('updated ProjectSend to version','cftp_admin');
             $part2 = $affected_account_name;
@@ -278,14 +246,12 @@ function format_action_log_record($params)
             $type = 'system';
 			break;
 		case 31:
-			$action_ico = 'logout';
 			$part1 = $owner_user;
             $action_text = __('logged out of the system.','cftp_admin');
             $formatted = sprintf(__('%s logged out of the system','cftp_admin'), $owner_user);
             $type = 'auth';
 			break;
 		case 32:
-			$action_ico = 'file-edit';
 			$part1 = $owner_user;
 			$action_text = __('(user) edited the file','cftp_admin');
 			$part2 = $affected_file_name;
@@ -293,7 +259,6 @@ function format_action_log_record($params)
             $type = 'files';
 			break;
 		case 33:
-			$action_ico = 'file-edit';
 			$part1 = $owner_user;
 			$action_text = __('(client) edited the file','cftp_admin');
             $part2 = $affected_file_name;
@@ -301,7 +266,6 @@ function format_action_log_record($params)
             $type = 'files';
 			break;
 		case 34:
-			$action_ico = 'category-add';
 			$part1 = $owner_user;
 			$action_text = __('created the category','cftp_admin');
             $part2 = $affected_account_name;
@@ -309,7 +273,6 @@ function format_action_log_record($params)
             $type = 'categories';
 			break;
 		case 35:
-			$action_ico = 'category-edit';
 			$part1 = $owner_user;
 			$action_text = __('edited the category','cftp_admin');
             $part2 = $affected_account_name;
@@ -317,7 +280,6 @@ function format_action_log_record($params)
             $type = 'categories';
 			break;
 		case 36:
-			$action_ico = 'category-delete';
 			$part1 = $owner_user;
 			$action_text = __('deleted the category','cftp_admin');
             $part2 = $affected_account_name;
@@ -325,7 +287,6 @@ function format_action_log_record($params)
             $type = 'categories';
 			break;
 		case 37:
-			$action_ico = 'download-anonymous';
 			$part1 = __('An anonymous user','cftp_admin');
 			$action_text = __('downloaded the file','cftp_admin');
             $part2 = $affected_file_name;
@@ -333,7 +294,6 @@ function format_action_log_record($params)
             $type = 'files';
 			break;
 		case 38:
-			$action_ico = 'client-request-processed';
 			$part1 = $owner_user;
 			$action_text = __('processed an account request for','cftp_admin');
             $part2 = $affected_account_name;
@@ -341,7 +301,6 @@ function format_action_log_record($params)
             $type = 'clients';
 			break;
 		case 39:
-			$action_ico = 'client-request-processed';
 			$part1 = $owner_user;
             $action_text = __('processed group memberships requests for','cftp_admin');
 			$part2 = $affected_account_name;
@@ -349,7 +308,6 @@ function format_action_log_record($params)
             $type = 'clients';
 			break;
         case 41:
-            $action_ico = 'file-preview';
             $part1 = $owner_user;
             $action_text = __('requested a preview for the file','cftp_admin');
             $part2 = $affected_file_name;
@@ -357,21 +315,18 @@ function format_action_log_record($params)
             $type = 'files';
             break;
         case 42:
-            $action_ico = 'login';
             $part1 = $owner_user;
             $action_text = __('created an account with a social profile','cftp_admin');
             $formatted = sprintf(__('%s created an account with a social profile','cftp_admin'), $owner_user);
             $type = 'auth';
             break;
         case 43:
-            $action_ico = 'login';
             $part1 = $owner_user;
             $action_text = __('logged in with a social profile','cftp_admin');
             $formatted = sprintf(__('%s logged in with a social profile','cftp_admin'), $owner_user);
             $type = 'auth';
             break;
         case 44:
-            $action_ico = 'client-request-processed';
             $part1 = $owner_user;
             $action_text = __('approved an account request for','cftp_admin');
             $part2 = $affected_account_name;
@@ -379,7 +334,6 @@ function format_action_log_record($params)
             $type = 'clients';
             break;
         case 45:
-            $action_ico = 'client-request-processed';
             $part1 = $owner_user;
             $action_text = __('denied an account request for','cftp_admin');
             $part2 = $affected_account_name;
@@ -395,7 +349,6 @@ function format_action_log_record($params)
 	if (!empty($part3)) { $log['part3'] = $part3; }
     if (!empty($part4)) { $log['part4'] = $part4; }
     $log['type'] = (!empty($type)) ? $type : 'system';
-	$log['icon'] = $action_ico;
 	$log['timestamp'] = $date;
     $log['action'] = $action_text;
 

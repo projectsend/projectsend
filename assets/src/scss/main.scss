@@ -327,10 +327,44 @@ body.login {
     // Home LOG widget
     #widget_actions_log {
         #log_container {
-            dd {
-                padding-bottom: 7px;
-                margin-bottom: 7px;
-                border-bottom: 1px solid #dedede;
+            ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+
+                li {
+                    padding: 7px 0;
+                    border-bottom: 1px solid #dedede;
+                    display: flex;
+
+                    &:nth-child(odd) {
+                        background: #f6f6f6;
+                    }
+
+                    &:hover {
+                        background: #fbf8e9;
+                    }
+
+                    i {
+                        margin-right: 1em;
+                        opacity: .3;
+                        display: none;
+                    }
+
+                    .date {
+                        text-align: right;
+                    }
+
+                    .action {
+                        flex: 2;
+                        margin-left: 15px;
+
+                        .item_part1, .item_part2, .item_part4 {
+                            color: $main_color;
+                            font-weight: bold;
+                        }
+                    }
+                }
             }
         }
     }
@@ -374,10 +408,6 @@ body.login {
             span.secondary {
                 color:#86AE00;
             }
-        }
-
-        .home_log_text {
-            margin-left:45px;
         }
     }
 

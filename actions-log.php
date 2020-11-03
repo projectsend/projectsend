@@ -262,19 +262,19 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 												'content'		=> $date,
 											),
 										array(
-												'content'		=> ( !empty( $this_action["1"] ) ) ? html_output( $this_action["1"] ) : '',
+												'content'		=> ( !empty( $this_action["part1"] ) ) ? html_output( $this_action["part1"] ) : '',
 											),
 										array(
-												'content'		=> html_output( $this_action["text"] ),
+												'content'		=> html_output( $this_action["action"] ),
 											),
 										array(
-												'content'		=> ( !empty( $this_action["2"] ) ) ? html_output( $this_action["2"] ) : '',
+												'content'		=> ( !empty( $this_action["part2"] ) ) ? html_output( $this_action["part2"] ) : '',
 											),
 										array(
-												'content'		=> ( !empty( $this_action["3"] ) ) ? html_output( $this_action["3"] ) : '',
+												'content'		=> ( !empty( $this_action["part3"] ) ) ? html_output( $this_action["part3"] ) : '',
 											),
 										array(
-												'content'		=> ( !empty( $this_action["4"] ) ) ? html_output( $this_action["4"] ) : '',
+												'content'		=> ( !empty( $this_action["part4"] ) ) ? html_output( $this_action["part4"] ) : '',
 											),
 									);
 

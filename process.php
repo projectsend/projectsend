@@ -57,10 +57,13 @@ switch ($_GET['do']) {
         $login = $auth->socialLogin($_GET['provider']);
         break;
     case 'login_ldap':
+        /*
         $login = $auth->login_ldap($_POST['ldap_email'], $_POST['ldap_password']);
         $auth->setLanguage($_POST['language']);
         echo $login;
         break;
+        */
+        exit;
     case 'logout':
         $error = (!empty($_GET['logout_error_type'])) ? $_GET['logout_error_type'] : null;
         $auth->logout($error);

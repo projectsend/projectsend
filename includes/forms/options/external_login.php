@@ -128,6 +128,7 @@
     }
 
     // LDAP
+    /*
 ?>
 <div class="options_divide"></div>
 
@@ -204,7 +205,7 @@
         </div>
     </div>
 </div>
-
+*/ ?>
 <?php /*
 <h5><i class="fa fa-openid"></i> OpenID</h5>
 <?php

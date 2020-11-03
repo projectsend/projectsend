@@ -51,13 +51,14 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 					}
 				?>
 			</div>
-		
+        
+            <?php /*
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active"><a href="#local" aria-controls="local" role="tab" data-toggle="tab">Local account</a></li>
                 <?php if ($login_types['ldap'] == 'true') { ?>
                     <li role="presentation"><a href="#ldap" aria-controls="ldap" role="tab" data-toggle="tab">LDAP</a></li>
                 <?php } ?>
-            </ul>
+            </ul> */ ?>
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane fade in active" id="local">
                     <?php include_once FORMS_DIR . DS . 'login.php'; ?>
@@ -79,11 +80,11 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                     </div>
                 </div>
 
-                <?php if ($login_types['ldap'] == 'true') { ?>
+                <?php /* if ($login_types['ldap'] == 'true') { ?>
                     <div role="tabpanel" class="tab-pane fade" id="ldap">
                         <?php include_once FORMS_DIR . DS . 'login-ldap.php'; ?>
                     </div>
-                <?php } ?>
+                <?php } */ ?>
             </div>
 		</div>
 	</div>

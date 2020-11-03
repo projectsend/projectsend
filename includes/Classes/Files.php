@@ -806,16 +806,16 @@ class Files
 
             /** Record the action log */
             if (CURRENT_USER_TYPE == 'user') {
-                $this->action_type = 32;
+                $action_type = 32;
             }
             elseif (CURRENT_USER_TYPE == 'client') {
-                $this->action_type = 33;
+                $action_type = 33;
             }
             $new_record_action = $this->logger->addEntry([
-                'action' => $this->action_type,
+                'action' => $action_type,
                 'owner_id' => CURRENT_USER_ID,
                 'affected_file' => $this->id,
-                'affected_file_name' => $this->name,
+                'affected_file_name' => $this->filename_original,
             ]);
 
             return true;

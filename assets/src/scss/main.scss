@@ -333,7 +333,7 @@ body.login {
                 padding: 0;
 
                 li {
-                    padding: 7px 0;
+                    padding: 7px;
                     border-bottom: 1px solid #dedede;
                     display: flex;
 
@@ -346,18 +346,25 @@ body.login {
                     }
 
                     i {
-                        margin-right: 1em;
-                        opacity: .3;
-                        display: none;
+                        margin:0 1em;
+                        color: #1ec4a7;
+                        text-align: center;
+                        font-size: 14px;
                     }
 
                     .date {
                         text-align: right;
+
+                        span {
+                            display: inline-block;
+                            padding: 3px 0 0 0;
+                            font-weight: bold;
+                            line-height: 1;
+                        }
                     }
 
                     .action {
                         flex: 2;
-                        margin-left: 15px;
 
                         .item_part1, .item_part2, .item_part4 {
                             color: $main_color;

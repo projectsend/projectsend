@@ -53,12 +53,12 @@
                             .appendTo(list)
                             .html(`
                                 <div class="date">
-                                    <span class="label label-default">`+
+                                    <span>`+
                                         item.timestamp+`
                                     </span>
+                                    <i class="fa fa-`+icon+`" aria-hidden="true"></i>
                                 </div>
-                                <div class="action">
-                                    <i class="fa fa-`+icon+`" aria-hidden="true"></i>`+ 
+                                <div class="action">`+
                                     line+`
                                 </div>
                             `);

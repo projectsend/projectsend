@@ -69,7 +69,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						 * 1- Approve or deny account
 						 */
                         $process_account = new \ProjectSend\Classes\Users();
-                        $process_account->setId($client['id']);
+                        $process_account->get($client['id']);
 
 						/** $client['account'] == 1 means approve that account */
 						if ( !empty( $client['account'] ) and $client['account'] == '1' ) {

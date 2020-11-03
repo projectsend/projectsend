@@ -136,9 +136,9 @@ switch ($clients_form_type) {
 				<div class="col-sm-8">
 					<div class="input-group">
 						<input type="text" name="max_file_size" id="max_file_size" class="form-control" value="<?php echo (isset($client_arguments['max_file_size'])) ? format_form_value($client_arguments['max_file_size']) : '0'; ?>" />
-						<span class="input-group-addon">mb</span>
+						<span class="input-group-addon">MB</span>
 					</div>
-					<p class="field_note"><?php _e("Set to 0 to use the default system limit",'cftp_admin'); ?> (<?php echo MAX_FILESIZE; ?> mb)</p>
+					<p class="field_note"><?php _e("Set to 0 to use the default system limit",'cftp_admin'); ?> (<?php echo MAX_FILESIZE; ?> MB)</p>
 				</div>
 			</div>
 	<?php

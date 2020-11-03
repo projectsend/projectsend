@@ -54,6 +54,7 @@ function get_group_by_id($id)
 /**
  * Return an array of existing groups
  * @todo add limit and order to the query
+ * @todo use Group class on response
  */
 function get_groups($arguments)
 {
@@ -127,13 +128,13 @@ function get_groups($arguments)
     $statement->setFetchMode(PDO::FETCH_ASSOC);
     while( $data_group = $statement->fetch() ) {
         $all_groups[$data_group['id']] = array(
-                                    'id'            => $data_group['id'],
-                                    'name'          => $data_group['name'],
-                                    'description'   => $data_group['description'],
-                                    'created_by'    => $data_group['created_by'],
-                                    'public'        => $data_group['public'],
-                                    'public_token'  => $data_group['public_token'],
-                                );
+            'id'            => $data_group['id'],
+            'name'          => $data_group['name'],
+            'description'   => $data_group['description'],
+            'created_by'    => $data_group['created_by'],
+            'public'        => $data_group['public'],
+            'public_token'  => $data_group['public_token'],
+        );
     }
     
     if ( !empty($all_groups) > 0 ) {
@@ -141,114 +142,5 @@ function get_groups($arguments)
     }
     else {
         return array();
-    }
-}
-
-/**
- * Get a count of files assigned to a group
- *
- * @param int $group_id
- * @return int
- */
-function count_files_on_group($group_id)
-{
-    global $dbh;
-
-    $group_id = (int)$group_id;
-    $allowed_levels = array(9,8);
-    // Do a permissions check
-    if (isset($allowed_levels) && current_role_in($allowed_levels)) {
-        if ( group_exists_id($group_id) ) {
-            $statement = $dbh->prepare("SELECT COUNT(file_id) as count FROM " . TABLE_FILES_RELATIONS . " WHERE group_id = :group_id");
-            $statement->bindValue(':group_id', $group_id, PDO::PARAM_INT);
-            $statement->execute();
-            $result = $statement->fetch();
-            $count = $result['count'];
-        
-            return $count;
-        }
-        else {
-            return 0;
-        }
-    }
-    else {
-        return 0;
-    }
-}
-
-/**
- * Get a count of members assigned to a group
- *
- * @param int $group_id
- * @return int
- */
-function count_members_on_group($group_id)
-{
-    global $dbh;
-
-    $group_id = (int)$group_id;
-    $allowed_levels = array(9,8);
-    // Do a permissions check
-    if (isset($allowed_levels) && current_role_in($allowed_levels)) {
-        if ( group_exists_id($group_id) ) {
-            $statement = $dbh->prepare("SELECT COUNT(client_id) as count FROM " . TABLE_MEMBERS . " WHERE group_id = :group_id");
-            $statement->bindValue(':group_id', $group_id, PDO::PARAM_INT);
-            $statement->execute();
-            $result = $statement->fetch();
-            $count = $result['count'];
-        
-            return $count;
-        }
-        else {
-            return 0;
-        }
-    }
-    else {
-        return 0;
-    }
-}
-
- /**
- * Delete an existing group.
- * @param int $group_id
- * @return bool
- */
-function delete_group($group_id)
-{
-    global $dbh;
-
-    $allowed_levels = array(9,8);
-    if (isset($group_id)) {
-        $group_id = (int)$group_id;
-        // Do a permissions check
-        if (isset($allowed_levels) && current_role_in($allowed_levels)) {
-            $group_data = get_group_by_id($group_id);
-
-            if ( !empty( $group_data ) ) {
-                $statement = $dbh->prepare('DELETE FROM ' . TABLE_GROUPS . ' WHERE id=:id');
-                $statement->bindParam(':id', $group, PDO::PARAM_INT);
-                $statement->execute();
-
-                // Record the action log
-                $logger = new ProjectSend\Classes\ActionsLog;
-                $log_action_args = array(
-                                        'action' => 18,
-                                        'owner_id' => CURRENT_USER_ID,
-                                        'affected_account_name' => $group_data['name']
-                                    );
-                $new_record_action = $logger->addEntry($log_action_args);		
-
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-        else {
-            return false;
-        }
-    }
-    else {
-        return false;
     }
 }

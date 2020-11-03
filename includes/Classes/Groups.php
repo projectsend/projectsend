@@ -97,7 +97,7 @@ class Groups
     
         while ($this->row = $this->statement->fetch() ) {
             $this->name = html_output($this->row['name']);
-            $this->description = html_output($this->row['description']);
+            $this->description = htmlentities_allowed($this->row['description']);
             $this->public = html_output($this->row['public']);
             $this->public_token = html_output($this->row['public_token']);
             $this->public_url = BASE_URI.'public.php?id='.$this->id.'&token='.$this->public_token;

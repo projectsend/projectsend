@@ -59,7 +59,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					$deleted_groups = 0;
 
 					foreach ($selected_groups as $group) {
-						$this_group = new \ProjectSend\Classes\Groups();
+						$this_group = new \ProjectSend\Classes\Groups;
                         if ($this_group->get($group)) {
                             $delete_user = $this_group->delete();
                             $deleted_groups++;
@@ -110,9 +110,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 	/**
 	 * Add the order.
-	 * Defaults to order by: name, order: ASC
 	 */
-	$cq .= sql_add_order( TABLE_GROUPS, 'name', 'asc' );
+	$cq .= sql_add_order( TABLE_GROUPS, 'id', 'desc' );
 
 	/**
 	 * Pre-query to count the total results
@@ -219,8 +218,14 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 											),
 											array(
 												'sortable'		=> true,
+												'sort_url'		=> 'timestamp',
+												'content'		=> __('Created','cftp_admin'),
+                                                'sort_default'	=> true,
+												'hide'			=> 'phone',
+											),
+											array(
+												'sortable'		=> true,
 												'sort_url'		=> 'name',
-												'sort_default'	=> true,
 												'content'		=> __('Group name','cftp_admin'),
 											),
 											array(
@@ -248,12 +253,6 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 												'hide'			=> 'phone',
 											),
 											array(
-												'sortable'		=> true,
-												'sort_url'		=> 'timestamp',
-												'content'		=> __('Added on','cftp_admin'),
-												'hide'			=> 'phone',
-											),
-											array(
 												'content'		=> __('View','cftp_admin'),
 												'hide'			=> 'phone',
 											),
@@ -269,16 +268,12 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 				while ( $row = $sql->fetch() ) {
 					$table->addRow();
 
-                    $group_object = new \ProjectSend\Classes\Groups();
-                    $group_object->get($row["id"]);
-                    $group_data = $group_object->getProperties();
+                    $group = new \ProjectSend\Classes\Groups();
+                    $group->get($row["id"]);
 
-                    /* Get group creation date */
-                    $created_at = format_date($group_data['created_date']);
-					
 					/* Button class for the manage files link */
-					if (!empty($group_data['files'])) {
-						$files_link	= 'manage-files.php?group_id=' . $group_data["id"];
+					if (!empty($group->files)) {
+						$files_link	= 'manage-files.php?group_id=' . $group->id;
 						$files_btn	= 'btn-primary';
 					}
 					else {
@@ -289,10 +284,10 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					/**
 					 * 3- Visibility
 					 */
-					if ($group_data['public'] == '1') {
+					if ($group->public == '1') {
                         $public_groups++;
                         $pre = (get_option('public_listing_page_enable') != 1) ? '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>' : null;
-                        $visibility_link = '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="group" data-public-url="'.$group_data['public_url'].'">'
+                        $visibility_link = '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="group" data-public-url="'.$group->public_url.'">'
                                 .$pre . ' ' . __('Public','cftp_admin').'
                             </a>';
 					}
@@ -308,28 +303,28 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					$tbody_cells = array(
 											array(
 													'checkbox'		=> true,
-													'value'			=> $group_data["id"],
+													'value'			=> $group->id,
+												),
+                                            array(
+                                                    'content'		=> format_date($group->created_date),
+                                            ),
+											array(
+													'content'		=> $group->name,
 												),
 											array(
-													'content'		=> $group_data["name"],
+													'content'		=> $group->description,
 												),
 											array(
-													'content'		=> $group_data["description"],
+													'content'		=> (!empty($group->members)) ? count($group->members) : '0',
 												),
 											array(
-													'content'		=> (!empty($group_data['members'])) ? count($group_data['members']) : '0',
-												),
-											array(
-													'content'		=> (!empty($group_data['files'])) ? count($group_data['files']) : '0',
+													'content'		=> (!empty($group->files)) ? count($group->files) : '0',
 												),
 											array(
 													'content'		=> $visibility_link,
 												),
 											array(
-													'content'		=> $group_data["created_by"],
-												),
-											array(
-													'content'		=> $created_at,
+													'content'		=> $group->created_by,
 												),
 											array(
 													'actions'		=> true,
@@ -337,7 +332,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 												),
 											array(
 													'actions'		=> true,
-													'content'		=> '<a href="groups-edit.php?id=' . $group_data["id"] . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a>' . "\n"
+													'content'		=> '<a href="groups-edit.php?id=' . $group->id . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a>' . "\n"
 												),
 										);
 

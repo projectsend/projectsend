@@ -54,7 +54,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						 * A user should not be able to deactivate himself
 						 */
 						if ($work_user != CURRENT_USER_ID) {
-                            $this_user = new \ProjectSend\Classes\Users();
+                            $this_user = new \ProjectSend\Classes\Users;
                             if ($this_user->get($work_user)) {
                                 $hide_user = $this_user->setActiveStatus(0);
                             }
@@ -135,9 +135,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 	/**
 	 * Add the order.
-	 * Defaults to order by: name, order: ASC
 	 */
-	$cq .= sql_add_order( TABLE_USERS, 'name', 'asc' );
+	$cq .= sql_add_order( TABLE_USERS, 'id', 'desc' );
 
 	/**
 	 * Pre-query to count the total results
@@ -273,8 +272,14 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 											),
 											array(
 												'sortable'		=> true,
-												'sort_url'		=> 'name',
+												'sort_url'		=> 'timestamp',
 												'sort_default'	=> true,
+												'content'		=> __('Created','cftp_admin'),
+												'hide'			=> 'phone,tablet',
+											),
+											array(
+												'sortable'		=> true,
+												'sort_url'		=> 'name',
 												'content'		=> __('Full name','cftp_admin'),
 											),
 											array(
@@ -307,13 +312,6 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 												'hide'			=> 'phone',
 											),
 											array(
-												'sortable'		=> true,
-												'sort_url'		=> 'timestamp',
-												'sort_default'	=> true,
-												'content'		=> __('Added on','cftp_admin'),
-												'hide'			=> 'phone,tablet',
-											),
-											array(
 												'content'		=> __('Actions','cftp_admin'),
 												'hide'			=> 'phone',
 											),
@@ -324,46 +322,46 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 				while ( $row = $sql->fetch() ) {
 					$table->addRow();
 
-                    $user_object = new \ProjectSend\Classes\Users();
-                    $user_object->get($row["id"]);
-                    $user_data = $user_object->getProperties();
+                    $user = new \ProjectSend\Classes\Users();
+                    $user->get($row["id"]);
 
-                    /* Get account creation date */
-                    $created_at = format_date($user_data['created_date']);
-
-					/* Role name */
-					switch( $user_data["role"] ) {
+                    /* Role name */
+					switch( $user->role ) {
 						case '9': $role_name = USER_ROLE_LVL_9; break;
 						case '8': $role_name = USER_ROLE_LVL_8; break;
 						case '7': $role_name = USER_ROLE_LVL_7; break;
 					}
-					 
+
                     /* Get active status */
-                    $label = ($user_data['active'] == 0) ? __('Inactive','cftp_admin') : __('Active','cftp_admin');
-                    $class = ($user_data['active'] == 0) ? 'danger' : 'success';
+                    $label = ($user->active == 0) ? __('Inactive','cftp_admin') : __('Active','cftp_admin');
+                    $class = ($user->active == 0) ? 'danger' : 'success';
 					
 					/**
 					 * Add the cells to the row
+                     * @todo allow deleting first user
 					 */
-					if ( $row['id'] == 1 ) {
+					if ( $user->id == 1 ) {
 						$cell = array( 'content' => '' );
 					}
 					else {
 						$cell = array(
 									'checkbox'		=> true,
-									'value'			=> $user_data["id"],
+									'value'			=> $user->id,
 									);
 					}
 					$tbody_cells = array(
 											$cell,
 											array(
-													'content'		=> $user_data["name"],
+                                                    'content'		=> format_date($user->created_date),
+                                            ),
+                                            array(
+													'content'		=> $user->name,
 												),
 											array(
-													'content'		=> $user_data["username"],
+													'content'		=> $user->username,
 												),
 											array(
-													'content'		=> $user_data["email"],
+													'content'		=> $user->email,
 												),
 											array(
 													'content'		=> $role_name,
@@ -372,14 +370,11 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 													'content'		=> '<span class="label label-' . $class . '">' . $label . '</span>',
 												),
 											array(
-													'content'		=> ( $user_data["max_file_size"] == '0' ) ? __('Default','cftp_admin') : $user_data["max_file_size"] . 'mb',
-												),
-											array(
-													'content'		=> $created_at,
+													'content'		=> ( $user->max_file_size == '0' ) ? __('Default','cftp_admin') : $user->max_file_size . ' ' . 'MB',
 												),
 											array(
 													'actions'		=> true,
-													'content'		=>  '<a href="users-edit.php?id=' . $user_data["id"] . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a>' . "\n"
+													'content'		=>  '<a href="users-edit.php?id=' . $user->id . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a>' . "\n"
 												),
 										);
 

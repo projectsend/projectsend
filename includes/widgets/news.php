@@ -6,7 +6,7 @@
 	$allowed_news = array(9,8,7);
 	if (in_array(CURRENT_USER_LEVEL,$allowed_news)) {
 ?>
-		<div class="widget">
+		<div class="widget" id="widget_projectsend_news">
 			<h4><?php _e('ProjectSend news','cftp_admin'); ?></h4>
 			<div class="widget_int">
                 <ul class="home_news list-unstyled">

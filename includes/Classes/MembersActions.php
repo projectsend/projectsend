@@ -361,8 +361,12 @@ class MembersActions
 		$get_requests = $this->get_membership_requests([
             'client_id'	=> $client_id,
         ]);
+
+        if (empty($get_requests)) {
+            return false;
+        }
+
 		$got_requests = $get_requests[$client_id]['group_ids'];
-		pa($get_requests); return;
 		$return_info = array(
             'memberships' => array(
                 'approved' => [],

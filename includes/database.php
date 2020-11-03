@@ -7,6 +7,7 @@
  * @subpackage	Classes
  *
  */
+use ProjectSend\Classes\Session;
 
 /** Extension class to count the total of executed queries */
 if ( DEBUG === true ) {
@@ -59,10 +60,7 @@ if ( defined('DB_NAME') ) {
 		$dbh->setAttribute( PDO::ATTR_EMULATE_PREPARES, false );
 	}
 	catch(PDOException $e) {
-	/*
-		print "Error!: " . $e->getMessage() . "<br/>";
-		die();
-	*/
-		return false;
+        echo $e->getMessage();
+        exit;
 	}
 }

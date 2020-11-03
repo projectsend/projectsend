@@ -13,8 +13,33 @@ if (defined('TRY_INSTALL')) {
 	$expiry_default = date('Y') + 1 . "-01-01 00:00:00";
 
 	$install_queries = array(
+		'0' =>  array(
+            'table'	=> TABLE_USERS,
+            'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_USERS.'` (
+                          `id` int(11) NOT NULL AUTO_INCREMENT,
+                          `user` varchar('.MAX_USER_CHARS.') NOT NULL,
+                          `password` varchar('.MAX_PASS_CHARS.') NOT NULL,
+                          `name` text NOT NULL,
+                          `email` varchar(60) NOT NULL,
+                          `level` tinyint(1) NOT NULL DEFAULT \'0\',
+                          `address` text COLLATE utf8_general_ci NULL,
+                          `phone` varchar(32) COLLATE utf8_general_ci NULL,
+                          `notify` tinyint(1) NOT NULL DEFAULT \'0\',
+                          `contact` text COLLATE utf8_general_ci NULL,
+                          `created_by` varchar('.MAX_USER_CHARS.') NULL,
+                          `active` tinyint(1) NOT NULL DEFAULT \'1\',
+                          `account_requested` tinyint(1) NOT NULL DEFAULT \'0\',
+                          `account_denied` tinyint(1) NOT NULL DEFAULT \'0\',
+                          `max_file_size` int(20)  NOT NULL DEFAULT \'0\',
+                          `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+                          PRIMARY KEY (`id`)
+                        ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+                        ',
+            'params' => array(),
+        ),
 
-		'0' => array(
+
+		'1' => array(
 					'table'	=> TABLE_FILES,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_FILES.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -36,37 +61,12 @@ if (defined('TRY_INSTALL')) {
 					'params' => array(),
 		),
 
-		'1' =>  array(
+		'2' =>  array(
 					'table'	=> TABLE_OPTIONS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_OPTIONS.'` (
 								  `id` int(10) NOT NULL AUTO_INCREMENT,
 								  `name` varchar(50) COLLATE utf8_general_ci NOT NULL,
 								  `value` text COLLATE utf8_general_ci NULL,
-								  PRIMARY KEY (`id`)
-								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-								',
-					'params' => array(),
-		),
-
-		'2' =>  array(
-					'table'	=> TABLE_USERS,
-					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_USERS.'` (
-								  `id` int(11) NOT NULL AUTO_INCREMENT,
-								  `user` varchar('.MAX_USER_CHARS.') NOT NULL,
-								  `password` varchar('.MAX_PASS_CHARS.') NOT NULL,
-								  `name` text NOT NULL,
-								  `email` varchar(60) NOT NULL,
-								  `level` tinyint(1) NOT NULL DEFAULT \'0\',
-								  `address` text COLLATE utf8_general_ci NULL,
-								  `phone` varchar(32) COLLATE utf8_general_ci NULL,
-								  `notify` tinyint(1) NOT NULL DEFAULT \'0\',
-								  `contact` text COLLATE utf8_general_ci NULL,
-								  `created_by` varchar('.MAX_USER_CHARS.') NULL,
-								  `active` tinyint(1) NOT NULL DEFAULT \'1\',
-								  `account_requested` tinyint(1) NOT NULL DEFAULT \'0\',
-								  `account_denied` tinyint(1) NOT NULL DEFAULT \'0\',
-								  `max_file_size` int(20)  NOT NULL DEFAULT \'0\',
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',

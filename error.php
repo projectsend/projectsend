@@ -1,4 +1,6 @@
 <?php
+use ProjectSend\Classes\Session;
+
 $allowed_levels = array(9,8,7,0);
 require_once 'bootstrap.php';
 
@@ -26,6 +28,12 @@ switch ($error_type) {
         $page_title = __('Error 403','cftp_admin');
         $error_message = __("Forbidden.",'cftp_admin');
         break;
+    case 'database':
+        http_response_code(403);
+        $page_title = __('Database error','cftp_admin');
+        $error_message = (Session::has('database_connection_error')) ? Session::get('database_connection_error') : __("Can not connect to database",'cftp_admin');
+        Session::remove('database_connection_error');
+        break;
 }
 ?>
 <!doctype html>
@@ -35,7 +43,7 @@ switch ($error_type) {
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
     
-        <title><?php echo html_output( $page_title . ' &raquo; ' . THIS_INSTALL_TITLE ); ?></title>
+        <title><?php echo html_output( $page_title . ' &raquo; ' . get_option('this_install_title') ); ?></title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <?php meta_favicon(); ?>
         

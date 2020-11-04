@@ -37,8 +37,6 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 	 * Apply the corresponding action to the selected clients.
 	 */
 	if ( !empty($_POST) ) {
-		//print_array($_POST);
-
 		/** Continue only if 1 or more clients were selected. */
 		if(!empty($_POST['accounts'])) {
 			$selected_clients = $_POST['accounts'];
@@ -64,8 +62,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                             'approve' => $client['groups'],
                         );
 
-						$process_requests = $process_memberships->group_process_memberships( $memberships_arguments, true );
+                        $process_requests = $process_memberships->group_process_memberships( $memberships_arguments, true );
 					}
+                    exit;
 					break;
 				case 'delete':
 					foreach ($selected_clients as $client) {
@@ -168,6 +167,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 		<form action="<?php echo $this_page; ?>" name="requests_list" method="post" class="form-inline batch_actions">
             <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
+            <input type="hidden" name="denied" value="<?php echo (isset($_GET['denied']) && is_numeric($_GET['denied'])) ? $_GET['denied'] : 0; ?>" />
 
 			<?php form_add_existing_parameters(); ?>
 			<div class="form_actions_right">

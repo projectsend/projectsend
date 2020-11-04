@@ -178,7 +178,14 @@ function format_action_log_record($params)
             $formatted = sprintf(__('%s marked as hidden for everyone the file %s','cftp_admin'), $owner_user, $affected_file_name);
             $type = 'files';
 			break;
-		case 22:
+        case 46:
+            $part1 = $owner_user;
+            $action_text = __('marked as visible for everyone the file','cftp_admin');
+            $part2 = $affected_file_name;
+            $formatted = sprintf(__('%s marked as visible for everyone the file %s','cftp_admin'), $owner_user, $affected_file_name);
+            $type = 'files';
+            break;
+        case 22:
 			$part1 = $owner_user;
 			$action_text = __('marked as visible the file','cftp_admin');
 			$part2 = $affected_file_name;

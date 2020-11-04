@@ -96,10 +96,6 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						echo system_message('success',$msg);
 						break;
 					case 'show':
-						/**
-						 * Reverse of the previous action. Setting the value to 0 means
-						 * that the file is visible.
-						 */
 						foreach ($selected_files as $file_id) {
                             $file = new \ProjectSend\Classes\Files;
                             $file->get($file_id);
@@ -108,7 +104,24 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						$msg = __('The selected files were marked as visible.','cftp_admin');
 						echo system_message('success',$msg);
 						break;
-
+                    case 'hide_everyone':
+                        foreach ($selected_files as $file_id) {
+                            $file = new \ProjectSend\Classes\Files;
+                            $file->get($file_id);
+                            $file->hideFromEveryone();
+                        }
+                        $msg = __('The selected files were marked as hidden.','cftp_admin');
+                        echo system_message('success',$msg);
+                        break;
+                    case 'show_everyone':
+                        foreach ($selected_files as $file_id) {
+                            $file = new \ProjectSend\Classes\Files;
+                            $file->get($file_id);
+                            $file->showToEveryone();
+                        }
+                        $msg = __('The selected files were marked as visible.','cftp_admin');
+                        echo system_message('success',$msg);
+                        break;
 					case 'unassign':
 						/**
 						 * Remove the file from this client or group only.
@@ -121,7 +134,6 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						$msg = __('The selected files were succesfully unassigned.','cftp_admin');
 						echo system_message('success',$msg);
 						break;
-
 					case 'delete':
 						$delete_results	= array(
 												'ok'		=> 0,
@@ -417,12 +429,16 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
                                     if (CURRENT_USER_LEVEL != '0') {
                                         $actions_options['zip'] = __('Download zipped','cftp_admin');
+                                        if (!isset($search_on)) {
+                                            $actions_options['hide_everyone'] = __('Set to hidden from everyone already assigned','cftp_admin');
+                                            $actions_options['show_everyone'] = __('Set to visible to everyone already assigned','cftp_admin');
+                                        }
                                     }
 
                                     /** Options only available when viewing a client/group files list */
                                     if (CURRENT_USER_LEVEL != '0' && isset($search_on)) {
-                                        $actions_options['hide'] = __('Hide','cftp_admin');
-                                        $actions_options['show'] = __('Show','cftp_admin');
+                                        $actions_options['hide'] = __('Set to hidden','cftp_admin');
+                                        $actions_options['show'] = __('Set to visible','cftp_admin');
                                         $actions_options['unassign'] = __('Unassign','cftp_admin');
                                     }
                                     else {

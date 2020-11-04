@@ -562,7 +562,7 @@ class Files
         return false;
 	}
 
-	public function hideForEveryone()
+	public function hideFromEveryone()
 	{
         $this->check_level = array(9,8,7);
 
@@ -581,6 +581,36 @@ class Files
             /** Record the action log */
             $record = $this->logger->addEntry([
                 'action' => 40,
+                'owner_id' => CURRENT_USER_ID,
+                'affected_file' => $this->id,
+                'affected_file_name' => $this->title
+            ]);
+
+            return true;
+        }
+
+        return false;
+	}
+
+	public function showToEveryone()
+	{
+        $this->check_level = array(9,8,7);
+
+        if (empty($this->id)) {
+            return false;
+        }
+
+        /** Do a permissions check */
+        if (isset($this->check_level) && current_role_in($this->check_level)) {
+            $statement = $this->dbh->prepare("UPDATE " . TABLE_FILES_RELATIONS . " SET hidden='0' WHERE file_id = :file_id");
+            $statement->bindParam(':file_id', $this->id, PDO::PARAM_INT);
+            $statement->execute();
+
+            unset($this->check_level);
+
+            /** Record the action log */
+            $record = $this->logger->addEntry([
+                'action' => 46,
                 'owner_id' => CURRENT_USER_ID,
                 'affected_file' => $this->id,
                 'affected_file_name' => $this->title

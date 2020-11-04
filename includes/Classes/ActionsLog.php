@@ -68,6 +68,7 @@ class ActionsLog
             21	=> __('A file was marked as hidden','cftp_admin'),
             22	=> __('A file was marked as visible','cftp_admin'),
             40	=> __('A file was marked as hidden for everyone','cftp_admin'),
+            46	=> __('A file was marked as hidden for everyone','cftp_admin'),
             23	=> __('A user creates a new group','cftp_admin'),
             25	=> __('A file is assigned to a client','cftp_admin'),
             26	=> __('A file is assigned to a group','cftp_admin'),

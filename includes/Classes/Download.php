@@ -75,6 +75,9 @@ class Download
     public function downloadZip($file_ids)
     {
         $files_to_zip = array_map( 'intval', explode( ',', $file_ids ) );
+        $log_details = [
+            'files' => []
+        ];
         
         foreach ($files_to_zip as $file_id) {
             $file = new \ProjectSend\Classes\Files();
@@ -106,6 +109,10 @@ class Download
                 if ( $zip->addFile($file->full_path, $file->filename_unfiltered) ) {
                     $added_files++;
                     recordNewDownload(CURRENT_USER_ID, $file_id);
+                    $log_details['files'][] = [
+                        'id' => $file_id,
+                        'filename' => $file->filename_original
+                    ];
                 }
             }
         
@@ -116,7 +123,8 @@ class Download
                 $record = $this->logger->addEntry([
                     'action' => 9,
                     'owner_id' => CURRENT_USER_ID,
-                    'affected_account_name' => CURRENT_USER_USERNAME
+                    'affected_account_name' => CURRENT_USER_USERNAME,
+                    'details' => $log_details,
                 ]);
             
                 if (file_exists($zip_file)) {

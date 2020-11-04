@@ -26,8 +26,8 @@ $results_type = 'global';
  * The client's id is passed on the URI.
  * Then get_client_by_id() gets all the other account values.
  */
-if (isset($_GET['client_id'])) {
-	$this_id = $_GET['client_id'];
+if (isset($_GET['client'])) {
+	$this_id = $_GET['client'];
     $this_client = get_client_by_id($this_id);
     
 	/** Add the name of the client to the page's title. */
@@ -41,8 +41,8 @@ if (isset($_GET['client_id'])) {
 /**
  * The group's id is passed on the URI also.
  */
-if (isset($_GET['group_id'])) {
-    $this_id = $_GET['group_id'];
+if (isset($_GET['group'])) {
+    $this_id = $_GET['group'];
     $group = get_group_by_id($this_id);
 
     /** Add the name of the client to the page's title. */
@@ -79,7 +79,6 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 			/** Continue only if 1 or more files were selected. */
 			if(!empty($_GET['batch'])) {
 				$selected_files = array_map('intval',array_unique($_GET['batch']));
-
                 switch($_GET['action']) {
 					case 'hide':
 						/**
@@ -88,22 +87,23 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						 * also not counted on the dashboard.php files count when the logged in
 						 * account is the client.
 						 */
-						foreach ($selected_files as $work_file) {
-							$this_file = new ProjectSend\Classes\FilesActions;
-							$hide_file = $this_file->changeHiddenStatus('1', $work_file, $_GET['modify_type'], $_GET['modify_id']);
+						foreach ($selected_files as $file_id) {
+                            $file = new \ProjectSend\Classes\Files;
+                            $file->get($file_id);
+                            $file->hide($results_type, $_GET['modify_id']);
 						}
 						$msg = __('The selected files were marked as hidden.','cftp_admin');
 						echo system_message('success',$msg);
 						break;
-
 					case 'show':
 						/**
 						 * Reverse of the previous action. Setting the value to 0 means
 						 * that the file is visible.
 						 */
-						foreach ($selected_files as $work_file) {
-							$this_file = new ProjectSend\Classes\FilesActions;
-							$show_file = $this_file->changeHiddenStatus('0', $work_file, $_GET['modify_type'], $_GET['modify_id']);
+						foreach ($selected_files as $file_id) {
+                            $file = new \ProjectSend\Classes\Files;
+                            $file->get($file_id);
+                            $file->show($results_type, $_GET['modify_id']);
 						}
 						$msg = __('The selected files were marked as visible.','cftp_admin');
 						echo system_message('success',$msg);
@@ -113,11 +113,12 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						/**
 						 * Remove the file from this client or group only.
 						 */
-						foreach ($selected_files as $work_file) {
-							$this_file = new ProjectSend\Classes\FilesActions;
-							$unassign_file = $this_file->unassignFile($work_file, $_GET['modify_type'], $_GET['modify_id']);
+						foreach ($selected_files as $file_id) {
+                            $file = new \ProjectSend\Classes\Files;
+                            $file->get($file_id);
+                            $file->removeAssignment($results_type, $_GET['modify_id']);
 						}
-						$msg = __('The selected files were unassigned from this client.','cftp_admin');
+						$msg = __('The selected files were succesfully unassigned.','cftp_admin');
 						echo system_message('success',$msg);
 						break;
 
@@ -128,10 +129,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 											);
 						foreach ($selected_files as $index => $file_id) {
                             if (!empty($file_id)) {
-                                $this_file		= new ProjectSend\Classes\FilesActions;
-                                $delete_status	= $this_file->deleteFiles($file_id);
-    
-                                if ( $delete_status == true ) {
+                                $file = new \ProjectSend\Classes\Files;
+                                $file->get($file_id);
+                                if ($file->deleteFiles()) {
                                     $delete_results['ok']++;
                                 }
                                 else {

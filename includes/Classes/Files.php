@@ -523,9 +523,13 @@ class Files
         switch ($to_type) {
             case 'client':
                 $column = 'client_id';
+                $client = get_client_by_id($to_id);
+                $log_to = $client['username'];
                 break;
             case 'group':
                 $column = 'group_id';
+                $group = get_group_by_id($to_id);
+                $log_to = $group['name'];
                 break;
             default:
                 throw new \Exception('Invalid modify type');
@@ -548,7 +552,8 @@ class Files
                 'action' => $log_action_number,
                 'owner_id' => CURRENT_USER_ID,
                 'affected_file' => $this->id,
-                'affected_file_name' => $this->title
+                'affected_file_name' => $this->title,
+                'affected_account_name' => $log_to,
             ]);
 
             return true;
@@ -618,7 +623,7 @@ class Files
                 return false;
             }
         }
-
+        
         /** Do a permissions check */
         if (isset($this->check_level) && current_role_in($this->check_level)) {
             /*
@@ -631,28 +636,26 @@ class Files
             //print_array($this->find_thumbnails);
 
             // Delete the reference to the file on the database
-            if ( true === $this->can_delete ) {
-                $sql = $this->dbh->prepare("DELETE FROM " . TABLE_FILES . " WHERE id = :file_id");
-                $sql->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
-                $sql->execute();
-                // Use the id and uri information to delete the file.
-                delete_file_from_disk(UPLOADED_FILES_DIR . DS . $this->filename_on_disk);
-                
-                // Delete the thumbnails
-                foreach ( $this->find_thumbnails as $this->thumbnail ) {
-                    delete_file_from_disk($this->thumbnail);
-                }
-
-                /** Record the action log */
-                $record = $this->logger->addEntry([
-                    'action' => 12,
-                    'owner_id' => CURRENT_USER_ID,
-                    'affected_file' => $this->id,
-                    'affected_file_name' => $this->title
-                ]);
-    
-                return true;
+            $sql = $this->dbh->prepare("DELETE FROM " . TABLE_FILES . " WHERE id = :file_id");
+            $sql->bindParam(':file_id', $this->id, PDO::PARAM_INT);
+            $sql->execute();
+            // Use the id and uri information to delete the file.
+            delete_file_from_disk(UPLOADED_FILES_DIR . DS . $this->filename_on_disk);
+            
+            // Delete the thumbnails
+            foreach ( $this->find_thumbnails as $this->thumbnail ) {
+                delete_file_from_disk($this->thumbnail);
             }
+
+            /** Record the action log */
+            $record = $this->logger->addEntry([
+                'action' => 12,
+                'owner_id' => CURRENT_USER_ID,
+                'affected_file' => $this->id,
+                'affected_file_name' => $this->title
+            ]);
+
+            return true;
 
             unset($this->check_level);
         }
@@ -934,7 +937,7 @@ class Files
         }
     }
 
-    private function addAssignment($type = null, $to_id, $hidden = 0)
+    public function addAssignment($type = null, $to_id, $hidden = 0)
     {
         $allowed = array(9,8,7);
         if (!current_role_in($allowed)) {
@@ -983,7 +986,7 @@ class Files
         }
     }
 
-    private function removeAssignment($from_type, $from_id)
+    public function removeAssignment($from_type, $from_id)
 	{
         $allowed = array(9,8,7);
         if (!current_role_in($allowed)) {

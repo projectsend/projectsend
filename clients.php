@@ -332,7 +332,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 												
 						/* Actions buttons */
 						if ($own_files + $groups_files > 0) {
-							$files_link		= 'manage-files.php?client_id='.$client->id;
+							$files_link		= 'manage-files.php?client='.$client->id;
 							$files_button	= 'btn-primary';
 						}
 						else {

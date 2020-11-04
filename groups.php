@@ -273,7 +273,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 					/* Button class for the manage files link */
 					if (!empty($group->files)) {
-						$files_link	= 'manage-files.php?group_id=' . $group->id;
+						$files_link	= 'manage-files.php?group=' . $group->id;
 						$files_btn	= 'btn-primary';
 					}
 					else {

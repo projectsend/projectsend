@@ -13,11 +13,11 @@ require_once ROOT_DIR . '/vendor/autoload.php';
 /** Basic system constants */
 require_once ROOT_DIR.'/includes/app.php';
 
-/** Flash messages */
-require_once ROOT_DIR . '/includes/flash.php';
-
 /** Load the database class */
 require_once ROOT_DIR.'/includes/database.php';
+
+/** Flash messages */
+require_once ROOT_DIR . '/includes/flash.php';
 
 /** Load the site options */
 if ( !defined( 'IS_MAKE_CONFIG' ) ) {

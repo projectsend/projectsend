@@ -85,6 +85,8 @@ class ActionsLog
             30	=> __('ProjectSend was updated','cftp_admin'),
             44	=> __('A client account request was approved','cftp_admin'),
             45	=> __('A client account request was denied','cftp_admin'),
+            47	=> __('System options were updated','cftp_admin'),
+            48	=> __('An email template was updated','cftp_admin'),
         );
 
         return $this->activities_references;
@@ -99,7 +101,7 @@ class ActionsLog
 		$this->state = array();
 
         /** Define the account information */
-        $default_user = (defined('CURRENT_USER_NAME')) ? CURRENT_USER_NAME : null;
+        $default_user = (defined('CURRENT_USER_USERNAME')) ? CURRENT_USER_USERNAME : null;
 		$this->action = $arguments['action'];
 		$this->owner_id = $arguments['owner_id'];
 		$this->owner_user = (!empty($arguments['owner_user'])) ? $arguments['owner_user'] : $default_user;
@@ -107,6 +109,7 @@ class ActionsLog
 		$this->affected_account = (!empty($arguments['affected_account'])) ? $arguments['affected_account'] : null;
 		$this->affected_file_name = (!empty($arguments['affected_file_name'])) ? $arguments['affected_file_name'] : null;
 		$this->affected_account_name = (!empty($arguments['affected_account_name'])) ? $arguments['affected_account_name'] : null;
+		$this->details = (!empty($arguments['details'])) ? $arguments['details'] : null;
 		
 		/** Get the real name of the client or user */
 		if (!empty($arguments['username_column'])) {
@@ -118,22 +121,27 @@ class ActionsLog
 		if (!empty($arguments['file_title_column'])) {
             $file = get_file_by_filename($this->affected_file_name);
     		$this->affected_file_name = $file['title'];
-		}
+        }
+        
+        if (is_array($this->details)) {
+            $this->details = json_encode($this->details);
+        }
 
 		/** Insert the client information into the database */
-		$lq = "INSERT INTO " . TABLE_LOG . " (action,owner_id,owner_user";
+		$lq = "INSERT INTO " . TABLE_LOG . " (action,owner_id,owner_user,details";
 		
 			if (!empty($this->affected_file)) { $lq .= ",affected_file"; }
 			if (!empty($this->affected_account)) { $lq .= ",affected_account"; }
 			if (!empty($this->affected_file_name)) { $lq .= ",affected_file_name"; }
 			if (!empty($this->affected_account_name)) { $lq .= ",affected_account_name"; }
 		
-		$lq .= ") VALUES (:action, :owner_id, :owner_user";
+		$lq .= ") VALUES (:action, :owner_id, :owner_user, :details";
 
 			$params = array(
 							':action'		=> $this->action,
 							':owner_id'		=> $this->owner_id,
 							':owner_user'	=> $this->owner_user,
+							':details'		=> $this->details,
 						);
 		
 			if (!empty($this->affected_file)) {			$lq .= ", :file";		$params['file'] = $this->affected_file; }

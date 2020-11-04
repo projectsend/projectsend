@@ -5,7 +5,6 @@
  * @package		ProjectSend
  *
  */
-
 use ProjectSend\Classes\Download;
 
 $allowed_levels = array(9,8,7,0);
@@ -28,7 +27,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
     $can_download = false;
     $can_view = false; // Can only view information about the file, not download it
     
-    $file = new \ProjectSend\Classes\Files();
+    $file = new \ProjectSend\Classes\Files;
     $file->get($file_id);
 
     if ($file->public_token != $token || $file->expired == true) {
@@ -53,18 +52,17 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
             recordNewDownload(0, $file->id);
 
             /** Record the action log */
-            $logger = new \ProjectSend\Classes\ActionsLog();
-            $log_action_args = array(
+            $logger = new \ProjectSend\Classes\ActionsLog;
+            $new_record_action = $logger->addEntry([
                 'action' => 37,
                 'owner_user' => null,
                 'owner_id' => 0,
                 'affected_file' => $file->id,
                 'affected_file_name' => $file->filename_original,
-            );
-            $new_record_action = $logger->addEntry($log_action_args);
+            ]);
 
             // DOWNLOAD
-            $process = new \ProjectSend\Classes\Download();
+            $process = new \ProjectSend\Classes\Download;
             $process->serveFile($file->full_path, $file->filename_original);
         }
     }

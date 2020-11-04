@@ -172,6 +172,7 @@ if (defined('TRY_INSTALL')) {
 								  `affected_account` int(11) DEFAULT NULL,
 								  `affected_file_name` text DEFAULT NULL,
 								  `affected_account_name` text DEFAULT NULL,
+                                  `details` text DEFAULT NULL,
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

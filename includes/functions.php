@@ -1476,12 +1476,11 @@ function option_file_upload( $file, $validate_ext = '', $option = '', $action = 
 
 				/** Record the action log */
 				if ( !empty( $action ) ) {
-					$logger = new \ProjectSend\Classes\ActionsLog();
-					$log_action_args = array(
-											'action' => $action,
-											'owner_id' => CURRENT_USER_ID
-										);
-					$new_record_action = $logger->addEntry($log_action_args);
+					$logger = new \ProjectSend\Classes\ActionsLog;
+					$new_record_action = $logger->addEntry([
+                        'action' => $action,
+                        'owner_id' => CURRENT_USER_ID
+                    ]);
 				}
 			}
 			else {

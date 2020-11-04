@@ -508,21 +508,6 @@ if (current_role_in($allowed_update)) {
 			}
 		}
 
-		/** Update the database */
-		$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :version WHERE name='last_update'");
-		$statement->bindParam(':version', $current_version);
-		$statement->execute();
-
-		/** Record the action log */
-		$logger = new \ProjectSend\Classes\ActionsLog();
-		$log_action_args = array(
-								'action' => 30,
-								'owner_id' => CURRENT_USER_ID,
-								'affected_account_name' => $current_version
-							);
-		$new_record_action = $logger->addEntry($log_action_args);
-
-
 		/**
 		 * r377 updates
 		 * Add new options to store the last time the system checked
@@ -1296,7 +1281,7 @@ if (current_role_in($allowed_update)) {
  		 * r1071 updates
  		 * Started replacing timthumb with SimpleImage
  		 */
- 		if ($last_update < 1071) {
+        if ($last_update < 1071) {
             chmod(THUMBNAILS_FILES_DIR, 0755);
             chmod(ADMIN_UPLOADS_DIR, 0755);
 
@@ -1393,5 +1378,31 @@ if (current_role_in($allowed_update)) {
 
 			$updates_made++;
 		}
+
+        /**
+		 * r1241 updates
+		 * Added action log details
+		 */
+		if ($last_update < 1241) {
+			$statement = $dbh->query("ALTER TABLE `" . TABLE_LOG . "` ADD COLUMN `details` TEXT DEFAULT NULL after `affected_account_name`");
+
+			$updates_made++;
+		}
+
+
+        /** Update the database */
+		$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :version WHERE name='last_update'");
+		$statement->bindParam(':version', $current_version);
+		$statement->execute();
+
+		/** Record the action log */
+		$logger = new \ProjectSend\Classes\ActionsLog;
+		$new_record_action = $logger->addEntry([
+            'action' => 30,
+            'owner_id' => CURRENT_USER_ID,
+            'details' => [
+                'version' => $current_version,
+            ],
+        ]);
     }
 }

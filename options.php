@@ -99,39 +99,39 @@ if ($_POST) {
 	 * Defined on functions.php
 	 */
 	/** Values that can be empty */
-	$allowed_empty_values	= array(
-                                'xsendfile_enable',
-                                'footer_custom_content',
-								'mail_copy_addresses',
-								'mail_smtp_host',
-								'mail_smtp_port',
-								'mail_smtp_user',
-                                'mail_smtp_pass',
-                                'recaptcha_site_key',
-                                'recaptcha_secret_key',
-                                'google_client_id',
-                                'google_client_secret',
-                                'facebook_client_id',
-                                'facebook_client_secret',
-                                'linkedin_client_id',
-                                'linkedin_client_secret',
-                                'openid_client_id',
-                                'openid_client_secret',
-                                'twitter_client_id',
-                                'twitter_client_secret',
-                                'windowslive_client_id',
-                                'windowslive_client_secret',
-                                'yahoo_client_id',
-                                'yahoo_client_secret',
-                                'oidc_identifier_url',
-                                'ldap_signin_enabled',
-                                'ldap_hosts',
-                                'ldap_port',
-                                'ldap_bind_dn',
-                                'ldap_admin_user',
-                                'ldap_admin_password',
-                                'ldap_search_base',
-							);
+	$allowed_empty_values	= [
+        'xsendfile_enable',
+        'footer_custom_content',
+        'mail_copy_addresses',
+        'mail_smtp_host',
+        'mail_smtp_port',
+        'mail_smtp_user',
+        'mail_smtp_pass',
+        'recaptcha_site_key',
+        'recaptcha_secret_key',
+        'google_client_id',
+        'google_client_secret',
+        'facebook_client_id',
+        'facebook_client_secret',
+        'linkedin_client_id',
+        'linkedin_client_secret',
+        'openid_client_id',
+        'openid_client_secret',
+        'twitter_client_id',
+        'twitter_client_secret',
+        'windowslive_client_id',
+        'windowslive_client_secret',
+        'yahoo_client_id',
+        'yahoo_client_secret',
+        'oidc_identifier_url',
+        'ldap_signin_enabled',
+        'ldap_hosts',
+        'ldap_port',
+        'ldap_bind_dn',
+        'ldap_admin_user',
+        'ldap_admin_password',
+        'ldap_search_base',
+    ];
 
 	foreach ($checkboxes as $checkbox) {
 		$_POST[$checkbox] = (empty($_POST[$checkbox]) || !isset($_POST[$checkbox])) ? 0 : 1;
@@ -195,12 +195,22 @@ if ($_POST) {
 	}
 
 	/** If uploading a logo on the branding page */
-	$file_logo = $_FILES['select_logo'];
-	if ( !empty( $file_logo ) ) {
-		$logo = option_file_upload( $file_logo, 'image', 'logo_filename', 29 );
+	if (isset($_FILES['select_logo']) && !empty($_FILES['select_logo'])) {
+		$logo = option_file_upload( $_FILES['select_logo'], 'image', 'logo_filename', 29 );
 		$file_status = $logo['status'];
 	}
 
+    /** Record the action log */
+    $logger = new \ProjectSend\Classes\ActionsLog;
+    $new_record_action = $logger->addEntry([
+        'action' => 47,
+        'owner_id' => CURRENT_USER_ID,
+        'owner_user' => CURRENT_USER_USERNAME,
+        'details' => [
+            'section' => $section,
+        ],
+    ]);
+    
 	/** Redirect so the options are reflected immediatly */
 	while (ob_get_level()) ob_end_clean();
 	$section_redirect = html_output($_POST['section']);

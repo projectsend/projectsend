@@ -124,6 +124,17 @@ if ($_POST) {
 		$query_state = '2';
 	}
 
+    /** Record the action log */
+    $logger = new \ProjectSend\Classes\ActionsLog;
+    $new_record_action = $logger->addEntry([
+        'action' => 48,
+        'owner_id' => CURRENT_USER_ID,
+        'owner_user' => CURRENT_USER_USERNAME,
+        'details' => [
+            'section' => html_output($_POST['section']),
+        ],
+    ]);
+    
 	/** Redirect so the options are reflected immediatly */
 	while (ob_get_level()) ob_end_clean();
 	$section_redirect = html_output($_POST['section']);

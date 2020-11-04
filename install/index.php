@@ -15,13 +15,13 @@ $version_php	= phpversion();
 $version_mysql	= $dbh->query('SELECT version()')->fetchColumn();
 
 /** php */
-$version_not_met =  __('minimum version not met. Please upgrade to at least version','cftp_admin');
+$version_not_met =  __('%s minimum version not met. Please upgrade to at least version %s','cftp_admin');
 if ( version_compare( $version_php, REQUIRED_VERSION_PHP, "<" ) ) {
-    $error_msg[] = 'php' . ' ' . $version_not_met . ' ' . REQUIRED_VERSION_PHP;
+    $error_msg[] = sprintf($version_not_met, 'php', REQUIRED_VERSION_PHP);
 }
 /** mysql */
 if ( version_compare( $version_mysql, REQUIRED_VERSION_MYSQL, "<" ) ) {
-    $error_msg[] = 'MySQL' . ' ' . $version_not_met . ' ' . REQUIRED_VERSION_MYSQL;
+    $error_msg[] = sprintf($version_not_met, 'MySQL', REQUIRED_VERSION_MYSQL);
 }
 
 
@@ -205,13 +205,12 @@ include_once '../header-unlogged.php';
                                     $other_errors[] = chmod_main_files();
 
                                     /** Record the action log */
-                                    $logger = new \ProjectSend\Classes\ActionsLog();
-                                    $log_action_args = array(
-                                                            'action' => 0,
-                                                            'owner_id' => 1,
-                                                            'owner_user' => $admin_username
-                                                        );
-                                    $new_record_action = $logger->addEntry($log_action_args);
+                                    $logger = new \ProjectSend\Classes\ActionsLog;
+                                    $new_record_action = $logger->addEntry([
+                                        'action' => 0,
+                                        'owner_id' => 1,
+                                        'owner_user' => $admin_username
+                                    ]);
                                     
                                     if (!empty($create_errors) || !empty($chmod_errors) || $other_errors) {
                                         $msg = '<strong>' . __('Database installation was successful, but errors were encountered.','cftp_admin') . '</strong>';

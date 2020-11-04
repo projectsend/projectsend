@@ -13,6 +13,7 @@ function format_action_log_record($params)
 	$affected_file_name = $params['affected_file_name'];
 	$affected_account = $params['affected_account'];
     $affected_account_name = html_output($params['affected_account_name']);
+    $details = json_decode($params['details']);
     $formatted = null;
 
 	switch ($action) {
@@ -347,19 +348,34 @@ function format_action_log_record($params)
             $formatted = sprintf(__('%s denied an account request for %s','cftp_admin'), $owner_user, $affected_account_name);
             $type = 'clients';
             break;
+        case 47:
+            $part1 = $owner_user;
+            $action_text = __('updated system options','cftp_admin');
+            $part2 = $affected_account_name;
+            $section = (isset($details->section)) ? $details->section : null;
+            $formatted = sprintf(__('%s updated system options: %s','cftp_admin'), $owner_user, $section);
+            $type = 'system';
+            break;
+        case 48:
+            $part1 = $owner_user;
+            $action_text = __('updated an email template','cftp_admin');
+            $part2 = $affected_account_name;
+            $section = (isset($details->section)) ? $details->section : null;
+            $formatted = sprintf(__('%s updated email template: %s','cftp_admin'), $owner_user, $section);
+            $type = 'system';
+            break;
         }
 
     $date = format_date($timestamp);
 
+	$log['timestamp'] = $date;
 	if (!empty($part1)) { $log['part1'] = $part1; }
 	if (!empty($part2)) { $log['part2'] = $part2; }
 	if (!empty($part3)) { $log['part3'] = $part3; }
     if (!empty($part4)) { $log['part4'] = $part4; }
     $log['type'] = (!empty($type)) ? $type : 'system';
-	$log['timestamp'] = $date;
-    $log['action'] = $action_text;
-
-    $log['formatted'] = $formatted;
+    $log['action'] = (!empty($action_text)) ? $action_text : null;
+    $log['formatted'] = (!empty($formatted)) ? $formatted : null;
 
     return $log;
 }

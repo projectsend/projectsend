@@ -11,11 +11,12 @@
  * where is it being called from.
  */
 if ( defined('IS_INSTALL') ) {
-	$lang = ( defined('SITE_LANG') ) ? SITE_LANG : 'en';
+    $lang = ( defined('SITE_LANG') ) ? SITE_LANG : 'en';
+    $title = (isset($page_title_install)) ? $page_title_install . ' &raquo; ' . SYSTEM_NAME : SYSTEM_NAME;
 
 	$header_vars = array(
         'html_lang'		=> $lang,
-        'title'			=> $page_title_install . ' &raquo; ' . SYSTEM_NAME,
+        'title'			=> $title,
         'header_title'	=> SYSTEM_NAME . ' ' . __('setup','cftp_admin'),
     );
 }

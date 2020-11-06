@@ -28,7 +28,7 @@
 
                 foreach ( $groups as $group ) {
             ?>
-                    <option value="<?php echo filter_var($group["id"],FILTER_VALIDATE_INT); ?>"
+                    <option value="<?php echo filter_var($group["id"], FILTER_VALIDATE_INT); ?>"
                         <?php
                             if (get_option('clients_auto_group') == $group["id"]) {
                                 echo 'selected="selected"';

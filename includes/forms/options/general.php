@@ -4,7 +4,7 @@
 <div class="form-group">
     <label for="this_install_title" class="col-sm-4 control-label"><?php _e('Site name','cftp_admin'); ?></label>
     <div class="col-sm-8">
-        <input type="text" name="this_install_title" id="this_install_title" class="form-control" value="<?php echo html_output(THIS_INSTALL_TITLE); ?>" required />
+        <input type="text" name="this_install_title" id="this_install_title" class="form-control" value="<?php echo html_output(get_option('this_install_title')); ?>" required />
     </div>
 </div>
 
@@ -33,7 +33,7 @@
 <div class="form-group">
     <div class="col-sm-8 col-sm-offset-4">
         <label for="footer_custom_enable">
-            <input type="checkbox" value="1" name="footer_custom_enable" id="footer_custom_enable" class="checkbox_options" <?php echo (FOOTER_CUSTOM_ENABLE == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Use custom footer text",'cftp_admin'); ?>
+            <input type="checkbox" value="1" name="footer_custom_enable" id="footer_custom_enable" class="checkbox_options" <?php echo (get_option('footer_custom_enable') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Use custom footer text",'cftp_admin'); ?>
         </label>
     </div>
 </div>
@@ -41,7 +41,7 @@
 <div class="form-group">
     <label for="footer_custom_content" class="col-sm-4 control-label"><?php _e('Footer content','cftp_admin'); ?></label>
     <div class="col-sm-8">
-        <input type="text" name="footer_custom_content" id="footer_custom_content" class="form-control" value="<?php echo html_output(FOOTER_CUSTOM_CONTENT); ?>" />
+        <input type="text" name="footer_custom_content" id="footer_custom_content" class="form-control" value="<?php echo html_output(get_option('footer_custom_content')); ?>" />
     </div>
 </div>
 
@@ -64,7 +64,7 @@
 <div class="form-group">
     <div class="col-sm-8 col-sm-offset-4">
         <label for="use_browser_lang">
-            <input type="checkbox" value="1" name="use_browser_lang" id="use_browser_lang" class="checkbox_options" <?php echo (USE_BROWSER_LANG == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Detect user browser language",'cftp_admin'); ?>
+            <input type="checkbox" value="1" name="use_browser_lang" id="use_browser_lang" class="checkbox_options" <?php echo (get_option('use_browser_lang') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Detect user browser language",'cftp_admin'); ?>
             <p class="field_note"><?php _e("If available, will override the default one from the system configuration file. Affects all users and clients.",'cftp_admin'); ?></p>
         </label>
     </div>
@@ -76,7 +76,7 @@
 <div class="form-group">
     <div class="col-sm-8 col-sm-offset-4">
         <label for="xsendfile_enable">
-            <input type="checkbox" value="1" name="xsendfile_enable" id="xsendfile_enable" class="checkbox_options" <?php echo (defined('XSENDFILE_ENABLE') && XSENDFILE_ENABLE == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Use XSendFile to serve files",'cftp_admin'); ?>
+            <input type="checkbox" value="1" name="xsendfile_enable" id="xsendfile_enable" class="checkbox_options" <?php echo (get_option('xsendfile_enable') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Use XSendFile to serve files",'cftp_admin'); ?>
             <p class="field_note"><?php _e("xsendfile improves downloads by allowing the web server to send the file directly (without php and it's limitations in the middle). This provides several optimizations, such as resumable, more stable downloads. This in an advanced feature that requires you to install and enable a module on your server.",'cftp_admin'); ?></p>
         </label>
     </div>

@@ -2,19 +2,8 @@
 /**
  * Class that handles all the e-mails that the system can send.
  *
- * Currently there are emails defined for the following actions:
- * - A new file has been uploaded by a system user.
- * - A new file has been uploaded by a client.
- * - A new client has been created by a system user.
- * - A new client has self-registered.
- * - A new system user has been created.
- * - A user or client requested a password reset.
- *
  * @package		ProjectSend
  * @subpackage	Classes
- * 
- * @todo move the sending part into its own class
- * @todo add a method to send a fully custom email, for example, from a credentials testing page
  */
 
 namespace ProjectSend\Classes;
@@ -23,7 +12,6 @@ use PHPMailer\PHPMailer\Exception;
 
 class Emails
 {
-    private $dbh;
     private $header;
     private $footer;
     private $strings_file_by_user;
@@ -39,39 +27,35 @@ class Emails
 
     function __construct()
     {
-        global $dbh;
-        $this->dbh = $dbh;
-
 		/** Define the messages texts */
 		$this->header = file_get_contents(EMAIL_TEMPLATES_DIR . DS . EMAIL_TEMPLATE_HEADER);
         $this->footer = file_get_contents(EMAIL_TEMPLATES_DIR . DS . EMAIL_TEMPLATE_FOOTER);
         
 		/** Strings for the "New file uploaded" BY A SYSTEM USER e-mail */
 		$this->strings_file_by_user = array(
-			'subject'	=> ( defined('EMAIL_NEW_FILE_BY_USER_SUBJECT_CUSTOMIZE' ) && EMAIL_NEW_FILE_BY_USER_SUBJECT_CUSTOMIZE == 1 && defined( 'EMAIL_NEW_FILE_BY_USER_SUBJECT' ) ) ? EMAIL_NEW_FILE_BY_USER_SUBJECT : __('New files uploaded for you','cftp_admin'),
-			'body'		=> __('The following files are now available for you to download.','cftp_admin'),
-			'body2'		=> __("If you prefer not to be notified about new files, please go to My Account and deactivate the notifications checkbox.",'cftp_admin'),
-			'body3'		=> __('You can access a list of all your files or upload your own','cftp_admin'),
-			'body4'		=> __('by logging in here','cftp_admin')
+			'subject' => (get_option('email_new_file_by_user_subject_customize') == 1 && !empty(get_option('email_new_file_by_user_subject'))) ? get_option('email_new_file_by_user_subject') : __('New files uploaded for you','cftp_admin'),
+			'body' => __('The following files are now available for you to download.','cftp_admin'),
+			'body2' => __("If you prefer not to be notified about new files, please go to My Account and deactivate the notifications checkbox.",'cftp_admin'),
+			'body3' => __('You can access a list of all your files or upload your own','cftp_admin'),
+			'body4' => __('by logging in here','cftp_admin')
 		);
 
 		/** Strings for the "New file uploaded" BY A CLIENT e-mail */
 		$this->strings_file_by_client = array(
-			'subject'	=> ( defined('EMAIL_NEW_FILE_BY_CLIENT_SUBJECT_CUSTOMIZE' ) && EMAIL_NEW_FILE_BY_CLIENT_SUBJECT_CUSTOMIZE == 1 && defined( 'EMAIL_NEW_FILE_BY_CLIENT_SUBJECT' ) ) ? EMAIL_NEW_FILE_BY_CLIENT_SUBJECT : __('New files uploaded by clients','cftp_admin'),
-			'body'		=> __('New files has been uploaded by the following clients','cftp_admin'),
-			'body2'		=> __("You can manage these files",'cftp_admin'),
-			'body3'		=> __('by logging in here','cftp_admin')
+			'subject' => (get_option('email_new_file_by_client_subject_customize') == 1 && !empty(get_option('email_new_file_by_client_subject'))) ? get_option('email_new_file_by_client_subject') : __('New files uploaded by clients','cftp_admin'),
+			'body' => __('New files has been uploaded by the following clients','cftp_admin'),
+			'body2' => __("You can manage these files",'cftp_admin'),
+			'body3' => __('by logging in here','cftp_admin')
 		);
-
 
 		/** Strings for the "New client created" e-mail */
 		$this->strings_new_client = array(
-			'subject'		=> ( defined('EMAIL_NEW_CLIENT_BY_USER_SUBJECT_CUSTOMIZE' ) && EMAIL_NEW_CLIENT_BY_USER_SUBJECT_CUSTOMIZE == 1 && defined( 'EMAIL_NEW_CLIENT_BY_USER_SUBJECT' ) ) ? EMAIL_NEW_CLIENT_BY_USER_SUBJECT : __('Welcome to ProjectSend','cftp_admin'),
-			'body'			=> __('A new account was created for you. From now on, you can access the files that have been uploaded under your account using the following credentials:','cftp_admin'),
-			'body2'			=> __('You can log in following this link','cftp_admin'),
-			'body3'			=> __('Please contact the administrator if you need further assistance.','cftp_admin'),
-			'label_user'	=> __('Your username','cftp_admin'),
-			'label_pass'	=> __('Your password','cftp_admin')
+			'subject' => (get_option('email_new_client_by_user_subject_customize') == 1 && !empty(get_option('email_new_client_by_user_subject'))) ? get_option('email_new_client_by_user_subject') : __('Welcome to ProjectSend','cftp_admin'),
+			'body' => __('A new account was created for you. From now on, you can access the files that have been uploaded under your account using the following credentials:','cftp_admin'),
+			'body2' => __('You can log in following this link','cftp_admin'),
+			'body3' => __('Please contact the administrator if you need further assistance.','cftp_admin'),
+			'label_user' => __('Your username','cftp_admin'),
+			'label_pass' => __('Your password','cftp_admin')
 		);
 
 		/**
@@ -79,13 +63,13 @@ class Emails
 		* on self registration.
 		*/
 		$this->strings_new_client_self = array(
-			'subject'		=> ( defined('EMAIL_NEW_CLIENT_BY_SELF_SUBJECT_CUSTOMIZE' ) && EMAIL_NEW_CLIENT_BY_SELF_SUBJECT_CUSTOMIZE == 1 && defined( 'EMAIL_NEW_CLIENT_BY_SELF_SUBJECT' ) ) ? EMAIL_NEW_CLIENT_BY_SELF_SUBJECT : __('A new client has registered.','cftp_admin'),
-			'body'			=> __('A new account was created using the self registration form on your site. Registration information:','cftp_admin'),
-			'label_name'	=> __('Full name','cftp_admin'),
-			'label_user'	=> __('Username','cftp_admin'),
-			'label_request'	=> __('Additionally, the client requests access to the following group(s)','cftp_admin')
+			'subject' => (get_option('email_new_client_by_self_subject_customize') == 1 && !empty(get_option('email_new_client_by_self_subject'))) ? get_option('email_new_client_by_self_subject') : __('A new client has registered','cftp_admin'),
+			'body' => __('A new account was created using the self registration form on your site. Registration information:','cftp_admin'),
+			'label_name' => __('Full name','cftp_admin'),
+			'label_user' => __('Username','cftp_admin'),
+			'label_request' => __('Additionally, the client requests access to the following group(s)','cftp_admin')
 		);
-		if ( defined('CLIENTS_AUTO_APPROVE') && CLIENTS_AUTO_APPROVE == '0') {
+		if ( get_option('clients_auto_approve') == '0') {
 			$this->strings_new_client_self['body2'] = __('Please log in to process the request.','cftp_admin');
 			$this->strings_new_client_self['body3'] = __('Remember, your new client will not be able to log in until an administrator has approved their account.','cftp_admin');
 		}
@@ -97,53 +81,53 @@ class Emails
 
 		/** Strings for the "Account approved" e-mail */
 		$this->strings_account_approved = array(
-			'subject'			=> ( defined('EMAIL_ACCOUNT_APPROVE_SUBJECT_CUSTOMIZE' ) && EMAIL_ACCOUNT_APPROVE_SUBJECT_CUSTOMIZE == 1 && defined( 'EMAIL_ACCOUNT_APPROVE_SUBJECT' ) ) ? EMAIL_ACCOUNT_APPROVE_SUBJECT : __('You account has been approved','cftp_admin'),
-			'body'				=> __('Your account has been approved.','cftp_admin'),
-			'title_memberships'	=> __('Additionally, your group membership requests have been processed.','cftp_admin'),
-			'title_approved'	=> __('Approved requests:','cftp_admin'),
-			'title_denied'		=> __('Denied requests:','cftp_admin'),
-			'body2'				=> __('You can log in following this link','cftp_admin'),
-			'body3'				=> __('Please contact the administrator if you need further assistance.','cftp_admin')
+            'subject' => (get_option('email_account_approve_subject_customize') == 1 && !empty(get_option('email_account_approve_subject'))) ? get_option('email_account_approve_subject') : __('You account has been approved','cftp_admin'),
+			'body' => __('Your account has been approved.','cftp_admin'),
+			'title_memberships' => __('Additionally, your group membership requests have been processed.','cftp_admin'),
+			'title_approved' => __('Approved requests:','cftp_admin'),
+			'title_denied' => __('Denied requests:','cftp_admin'),
+			'body2' => __('You can log in following this link','cftp_admin'),
+			'body3' => __('Please contact the administrator if you need further assistance.','cftp_admin')
 		);
 
 		/** Strings for the "Account denied" e-mail */
 		$this->strings_account_denied = array(
-			'subject'		=> ( defined('EMAIL_ACCOUNT_DENY_SUBJECT_CUSTOMIZE' ) && EMAIL_ACCOUNT_DENY_SUBJECT_CUSTOMIZE == 1 && defined( 'EMAIL_ACCOUNT_DENY_SUBJECT' ) ) ? EMAIL_ACCOUNT_DENY_SUBJECT : __('You account has been denied','cftp_admin'),
-			'body'			=> __('Your account request has been denied.','cftp_admin'),
-			'body2'			=> __('Please contact the administrator if you need further assistance.','cftp_admin')
+            'subject' => (get_option('email_account_deny_subject_customize') == 1 && !empty(get_option('email_account_deny_subject'))) ? get_option('email_account_deny_subject') : __('You account has been denied','cftp_admin'),
+			'body' => __('Your account request has been denied.','cftp_admin'),
+			'body2' => __('Please contact the administrator if you need further assistance.','cftp_admin')
 		);
 
 		/** Strings for the "New system user created" e-mail */
 		$this->strings_new_user = array(
-			'subject'		=> ( defined('EMAIL_NEW_USER_SUBJECT_CUSTOMIZE' ) && EMAIL_NEW_USER_SUBJECT_CUSTOMIZE == 1 && defined( 'EMAIL_NEW_USER_SUBJECT' ) ) ? EMAIL_NEW_USER_SUBJECT : __('Welcome to ProjectSend','cftp_admin'),
-			'body'			=> __('A new account was created for you. From now on, you can access the system administrator using the following credentials:','cftp_admin'),
-			'body2'			=> __('Access the system panel here','cftp_admin'),
-			'body3'			=> __('Thank you for using ProjectSend.','cftp_admin'),
-			'label_user'	=> __('Your username','cftp_admin'),
-			'label_pass'	=> __('Your password','cftp_admin')
+            'subject' => (get_option('email_new_user_subject_customize') == 1 && !empty(get_option('email_new_user_subject'))) ? get_option('email_new_user_subject') : __('Welcome to ProjectSend','cftp_admin'),
+			'body' => __('A new account was created for you. From now on, you can access the system administrator using the following credentials:','cftp_admin'),
+			'body2' => __('Access the system panel here','cftp_admin'),
+			'body3' => __('Thank you for using ProjectSend.','cftp_admin'),
+			'label_user' => __('Your username','cftp_admin'),
+			'label_pass' => __('Your password','cftp_admin')
 		);
 
 
 		/** Strings for the "Reset password" e-mail */
 		$this->strings_pass_reset = array(
-			'subject'		=> ( defined('EMAIL_PASS_RESET_SUBJECT_CUSTOMIZE' ) && EMAIL_PASS_RESET_SUBJECT_CUSTOMIZE == 1 && defined( 'EMAIL_PASS_RESET_SUBJECT' ) ) ? EMAIL_PASS_RESET_SUBJECT : __('Password reset instructions','cftp_admin'),
-			'body'			=> __('A request has been received to reset the password for the following account:','cftp_admin'),
-			'body2'			=> __('To continue, please visit the following link','cftp_admin'),
-			'body3'			=> __('The request is valid only for 24 hours.','cftp_admin'),
-			'body4'			=> __('If you did not make this request, simply ignore this email.','cftp_admin'),
-			'label_user'	=> __('Username','cftp_admin'),
+            'subject' => (get_option('email_pass_reset_subject_customize') == 1 && !empty(get_option('email_pass_reset_subject'))) ? get_option('email_pass_reset_subject') : __('Password reset instructions','cftp_admin'),
+			'body' => __('A request has been received to reset the password for the following account:','cftp_admin'),
+			'body2' => __('To continue, please visit the following link','cftp_admin'),
+			'body3' => __('The request is valid only for 24 hours.','cftp_admin'),
+			'body4' => __('If you did not make this request, simply ignore this email.','cftp_admin'),
+			'label_user' => __('Username','cftp_admin'),
 		);
 
 		/**
 		* Strings for the "Review client group requests" e-mail to the admin
 		*/
 		$this->strings_client_edited = array(
-			'subject'			=> ( defined('EMAIL_CLIENT_EDITED_SUBJECT_CUSTOMIZE' ) && EMAIL_CLIENT_EDITED_SUBJECT_CUSTOMIZE == 1 && defined( 'EMAIL_CLIENT_EDITED_SUBJECT' ) ) ? EMAIL_CLIENT_EDITED_SUBJECT : __('A client has changed memberships requests.','cftp_admin'),
-			'body'				=> __('A client on you site has just changed his groups membership requests and needs your approval.','cftp_admin'),
-			'label_name'		=> __('Full name','cftp_admin'),
-			'label_user'		=> __('Username','cftp_admin'),
-			'label_request' 	=> __('The client requests access to the following group(s)','cftp_admin'),
-			'body2'				=> __('Please log in to process the request.','cftp_admin')
+            'subject' => (get_option('email_client_edited_subject_customize') == 1 && !empty(get_option('email_client_edited_subject'))) ? get_option('email_client_edited_subject') : __('A client has changed memberships requests','cftp_admin'),
+			'body' => __('A client on you site has just changed his groups membership requests and needs your approval.','cftp_admin'),
+			'label_name' => __('Full name','cftp_admin'),
+			'label_user' => __('Username','cftp_admin'),
+			'label_request' => __('The client requests access to the following group(s)','cftp_admin'),
+			'body2' => __('Please log in to process the request.','cftp_admin')
 		);
     }
 
@@ -155,96 +139,70 @@ class Emails
 	{
 		switch ($type) {
 			case 'new_client':
-					$filename	= EMAIL_TEMPLATE_NEW_CLIENT;
-					$body_check	= (!defined('EMAIL_NEW_CLIENT_BY_USER_CUSTOMIZE') || EMAIL_NEW_CLIENT_BY_USER_CUSTOMIZE == '0') ? '0' : EMAIL_NEW_CLIENT_BY_USER_CUSTOMIZE;
-					$body_text	= EMAIL_NEW_CLIENT_BY_USER_TEXT;
+					$filename = EMAIL_TEMPLATE_NEW_CLIENT;
+					$customize_body = get_option('email_new_client_by_user_customize');
+					$body_text_option = 'email_new_client_by_user_text';
 				break;
 			case 'new_client_self':
-					$filename	= EMAIL_TEMPLATE_NEW_CLIENT_SELF;
-					$body_check	= (!defined('EMAIL_NEW_CLIENT_BY_SELF_CUSTOMIZE') || EMAIL_NEW_CLIENT_BY_SELF_CUSTOMIZE == '0') ? '0' : EMAIL_NEW_CLIENT_BY_SELF_CUSTOMIZE;
-					$body_text	= EMAIL_NEW_CLIENT_BY_SELF_TEXT;
+					$filename = EMAIL_TEMPLATE_NEW_CLIENT_SELF;
+					$customize_body = get_option('email_new_client_by_self_customize');
+					$body_text_option = 'email_new_client_by_self_text';
 				break;
 			case 'account_approve':
-					$filename	= EMAIL_TEMPLATE_ACCOUNT_APPROVE;
-					$body_check	= (!defined('EMAIL_ACCOUNT_APPROVE_CUSTOMIZE') || EMAIL_ACCOUNT_APPROVE_CUSTOMIZE == '0') ? '0' : EMAIL_ACCOUNT_APPROVE_CUSTOMIZE;
-					$body_text	= EMAIL_ACCOUNT_APPROVE_TEXT;
+					$filename = EMAIL_TEMPLATE_ACCOUNT_APPROVE;
+					$customize_body = get_option('email_account_approve_customize');
+					$body_text_option = 'email_account_approve_text';
 				break;
 			case 'account_deny':
-					$filename	= EMAIL_TEMPLATE_ACCOUNT_DENY;
-					$body_check	= (!defined('EMAIL_ACCOUNT_DENY_CUSTOMIZE') || EMAIL_ACCOUNT_DENY_CUSTOMIZE == '0') ? '0' : EMAIL_ACCOUNT_DENY_CUSTOMIZE;
-					$body_text	= EMAIL_ACCOUNT_DENY_TEXT;
+					$filename = EMAIL_TEMPLATE_ACCOUNT_DENY;
+					$customize_body = get_option('email_account_deny_customize');
+					$body_text_option = 'email_account_deny_text';
 				break;
 			case 'new_user':
-					$filename	= EMAIL_TEMPLATE_NEW_USER;
-					$body_check	= (!defined('EMAIL_NEW_USER_CUSTOMIZE') || EMAIL_NEW_USER_CUSTOMIZE == '0') ? '0' : EMAIL_NEW_USER_CUSTOMIZE;
-					$body_text	= EMAIL_NEW_USER_TEXT;
+					$filename = EMAIL_TEMPLATE_NEW_USER;
+					$customize_body = get_option('email_new_user_customize');
+					$body_text_option = 'email_new_user_text';
 				break;
 			case 'new_file_by_user':
-					$filename	= EMAIL_TEMPLATE_NEW_FILE_BY_USER;
-					$body_check	= (!defined('EMAIL_NEW_FILE_BY_USER_CUSTOMIZE') || EMAIL_NEW_FILE_BY_USER_CUSTOMIZE == '0') ? '0' : EMAIL_NEW_FILE_BY_USER_CUSTOMIZE;
-					$body_text	= EMAIL_NEW_FILE_BY_USER_TEXT;
+					$filename = EMAIL_TEMPLATE_NEW_FILE_BY_USER;
+					$customize_body = get_option('email_new_file_by_user_customize');
+					$body_text_option = 'email_new_file_by_user_text';
 				break;
 			case 'new_files_by_client':
-					$filename	= EMAIL_TEMPLATE_NEW_FILE_BY_CLIENT;
-					$body_check	= (!defined('EMAIL_NEW_FILE_BY_CLIENT_CUSTOMIZE') || EMAIL_NEW_FILE_BY_CLIENT_CUSTOMIZE == '0') ? '0' : EMAIL_NEW_FILE_BY_CLIENT_CUSTOMIZE;
-					$body_text	= EMAIL_NEW_FILE_BY_CLIENT_TEXT;
+					$filename = EMAIL_TEMPLATE_NEW_FILE_BY_CLIENT;
+					$customize_body = get_option('email_new_file_by_client_customize');
+					$body_text_option = 'email_new_file_by_client_text';
 				break;
 			case 'password_reset':
-					$filename	= EMAIL_TEMPLATE_PASSWORD_RESET;
-					$body_check	= (!defined('EMAIL_PASS_RESET_CUSTOMIZE') || EMAIL_PASS_RESET_CUSTOMIZE == '0') ? '0' : EMAIL_PASS_RESET_CUSTOMIZE;
-					$body_text	= EMAIL_PASS_RESET_TEXT;
+					$filename = EMAIL_TEMPLATE_PASSWORD_RESET;
+					$customize_body = get_option('email_pass_reset_customize');
+					$body_text_option = 'email_pass_reset_text';
 				break;
 			case 'client_edited':
-					$filename	= EMAIL_TEMPLATE_CLIENT_EDITED;
-					$body_check	= (!defined('EMAIL_CLIENT_EDITED_CUSTOMIZE') || EMAIL_CLIENT_EDITED_CUSTOMIZE == '0') ? '0' : EMAIL_CLIENT_EDITED_CUSTOMIZE;
-					$body_text	= EMAIL_CLIENT_EDITED_TEXT;
+					$filename = EMAIL_TEMPLATE_CLIENT_EDITED;
+					$customize_body = get_option('email_client_edited_customize');
+					$body_text_option = 'email_client_edited_text';
 				break;
-			case 'client_edited':
-					$filename	= EMAIL_TEMPLATE_CLIENT_EDITED;
-					$body_check	= (!defined('EMAIL_CLIENT_EDITED_CUSTOMIZE') || EMAIL_CLIENT_EDITED_CUSTOMIZE == '0') ? '0' : EMAIL_CLIENT_EDITED_CUSTOMIZE;
-					$body_text	= EMAIL_CLIENT_EDITED_TEXT;
-                break;
             case 'test_settings':
-                    $filename	= 'test_settings.html';
-                    $body_check	= 0;
-                    $body_text	= null;
+                    $filename = 'test_settings.html';
+                    $customize_body = 0;
+                    $body_text_option	= null;
                 break;
 		}
 
-		if ($body_check == '0') {
-            $this->get_body = file_get_contents(EMAIL_TEMPLATES_DIR . DS . $filename);
-		}
-		else {
-			$this->get_body = $body_text;
-		}
+		// Header
+		$header = (get_option('email_header_footer_customize') == '1') ? get_option('email_header_text') : $this->header;
 
-		/**
-		 * Header
-		 */
-		if (!defined('EMAIL_HEADER_FOOTER_CUSTOMIZE') || EMAIL_HEADER_FOOTER_CUSTOMIZE == '0') {
-			$this->make_body = $this->header;
-		}
-		else {
-			$this->make_body = EMAIL_HEADER_TEXT;
-		}
+		// Content
+		$content = ($customize_body == '1' && !empty(get_option($body_text_option))) ? get_option($body_text_option) : file_get_contents(EMAIL_TEMPLATES_DIR . DS . $filename);
 
-		/**
-		 * Body
-		 */
-		$this->make_body .= $this->get_body;
+		// Footer
+        $footer = (get_option('email_header_footer_customize') == '1') ? get_option('email_footer_text') : $this->footer;
+        
+        // Full body
+        $body = $header . $content . $footer;
 
-		/**
-		 * Footer
-		 */
-		if (!defined('EMAIL_HEADER_FOOTER_CUSTOMIZE') || EMAIL_HEADER_FOOTER_CUSTOMIZE == '0') {
-			$this->make_body .= $this->footer;
-		}
-		else {
-			$this->make_body .= EMAIL_FOOTER_TEXT;
-		}
-
-
-		return $this->make_body;
+		return $body;
 	}
 
 	/**
@@ -326,7 +284,7 @@ class Emails
                     null,
                 ),
                 $this->email_body
-        )   ;
+            );
         }
 		return array(
 					'subject' => $this->strings_new_client_self['subject'],
@@ -568,6 +526,16 @@ class Emails
 								$this->email_body
 							);
 		}
+        else {
+			$this->email_body = str_replace(
+                array('%LABEL_REQUESTS%', '%GROUPS_REQUESTS%'),
+                array(
+                    __('No group requests made', 'cftp_admin'),
+                    null,
+                ),
+                $this->email_body
+            );
+        }
 		return array(
 					'subject' => $this->strings_client_edited['subject'],
 					'body' => $this->email_body
@@ -648,13 +616,13 @@ class Emails
 			break;
             case 'new_files_by_user':
                 $this->body_variables = [ $this->files_list, ];
-				if (MAIL_COPY_USER_UPLOAD == '1') {
+				if (get_option('mail_copy_user_upload') == '1') {
 					$this->try_bcc = true;
 				}
 			break;
             case 'new_files_by_client':
                 $this->body_variables = [ $this->files_list, ];
-				if (MAIL_COPY_CLIENT_UPLOAD == '1') {
+				if (get_option('mail_copy_client_upload') == '1') {
 					$this->try_bcc = true;
 				}
 			break;
@@ -710,62 +678,70 @@ class Emails
 			/**
 			 * phpMailer
 			 */
-			$this->send_mail = new PHPMailer();
-            $this->send_mail->SMTPDebug = 0;
-            $this->send_mail->CharSet = EMAIL_ENCODING;
+			$email = new PHPMailer();
+            $email->SMTPDebug = 0;
+            $email->CharSet = EMAIL_ENCODING;
+
+            $email->SMTPOptions = array(
+                'ssl' => array(
+                    'verify_peer' => (!empty(get_option('mail_ssl_verify_peer')) && get_option('mail_ssl_verify_peer') == 1) ? true : false,
+                    'verify_peer_name' => (!empty(get_option('mail_ssl_verify_peer_name')) && get_option('mail_ssl_verify_peer_name') == 1) ? true : false,
+                    'allow_self_signed' => (!empty(get_option('mail_ssl_allow_self_signed')) && get_option('mail_ssl_allow_self_signed') == 1) ? true : false
+                )
+            );
             
             if ($debug == true) {
-                $this->send_mail->SMTPDebug = 3;
+                $email->SMTPDebug = 3;
                 $_SESSION['email_debug_message'] = null;
-                $this->send_mail->Debugoutput = function($str, $level) {
+                $email->Debugoutput = function($str, $level) {
                     //echo $str.'<br>';
                     $_SESSION['email_debug_message'] .= $str."\n";
                     //$GLOBALS['email_debug_message'] .= "$str\n";
                 };
             }
 
-            switch (MAIL_SYSTEM_USE) {
+            switch (get_option('mail_system_use')) {
 				case 'smtp':
-						$this->send_mail->IsSMTP();
-						$this->send_mail->Host = MAIL_SMTP_HOST;
-						$this->send_mail->Port = MAIL_SMTP_PORT;
-						$this->send_mail->Username = MAIL_SMTP_USER;
-						$this->send_mail->Password = MAIL_SMTP_PASS;
+						$email->IsSMTP();
+						$email->Host = get_option('mail_smtp_host');
+						$email->Port = get_option('mail_smtp_port');
+						$email->Username = get_option('mail_smtp_user');
+						$email->Password = get_option('mail_smtp_pass');
 
-						if ( defined('MAIL_SMTP_AUTH') && MAIL_SMTP_AUTH != 'none' ) {
-							$this->send_mail->SMTPAuth = true;
-							$this->send_mail->SMTPSecure = MAIL_SMTP_AUTH;
+						if ( get_option('mail_smtp_auth') != 'none' ) {
+							$email->SMTPAuth = true;
+							$email->SMTPSecure = get_option('mail_smtp_auth');
 						}
 						else {
-							$this->send_mail->SMTPAuth = false;
+							$email->SMTPAuth = false;
 						}
 					break;
 				case 'gmail':
-						$this->send_mail->IsSMTP();
-						$this->send_mail->SMTPAuth = true;
-						$this->send_mail->SMTPSecure = "tls";
-						$this->send_mail->Host = 'smtp.gmail.com';
-						$this->send_mail->Port = 587;
-						$this->send_mail->Username = MAIL_SMTP_USER;
-						$this->send_mail->Password = MAIL_SMTP_PASS;
+						$email->IsSMTP();
+						$email->SMTPAuth = true;
+						$email->SMTPSecure = "tls";
+						$email->Host = 'smtp.gmail.com';
+						$email->Port = 587;
+						$email->Username = get_option('mail_smtp_user');
+						$email->Password = get_option('mail_smtp_pass');
 					break;
 				case 'sendmail':
-						$this->send_mail->IsSendmail();
+						$email->IsSendmail();
 					break;
 			}
 
-			$this->send_mail->Subject = $this->mail_info['subject'];
-			$this->send_mail->MsgHTML($this->mail_info['body']);
-			$this->send_mail->AltBody = __('This email contains HTML formatting and cannot be displayed right now. Please use an HTML compatible reader.','cftp_admin');
+			$email->Subject = $this->mail_info['subject'];
+			$email->MsgHTML($this->mail_info['body']);
+			$email->AltBody = __('This email contains HTML formatting and cannot be displayed right now. Please use an HTML compatible reader.','cftp_admin');
 
-			$this->send_mail->SetFrom(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
-			$this->send_mail->AddReplyTo(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
+			$email->SetFrom(get_option('admin_email_address'), get_option('mail_from_name'));
+			$email->AddReplyTo(get_option('admin_email_address'), get_option('mail_from_name'));
 
             if ( !empty( $this->name ) ) {
-                $this->send_mail->AddAddress($this->addresses, $this->name);
+                $email->AddAddress($this->addresses, $this->name);
             }
             else {
-                $this->send_mail->AddAddress($this->addresses);
+                $email->AddAddress($this->addresses);
             }
 
 			/**
@@ -774,13 +750,13 @@ class Emails
 			 */
 			if ($this->try_bcc === true) {
 				$this->add_bcc_to = array();
-				if (MAIL_COPY_MAIN_USER == '1') {
-					$this->add_bcc_to[] = ADMIN_EMAIL_ADDRESS;
+				if (get_option('mail_copy_main_user') == '1') {
+					$this->add_bcc_to[] = get_option('admin_email_address');
 				}
-				$this->more_addresses = MAIL_COPY_ADDRESSES;
-				if (!empty($this->more_addresses)) {
-					$this->more_addresses = explode(',',$this->more_addresses);
-					foreach ($this->more_addresses as $this->add_bcc) {
+				$more_addresses = get_option('mail_copy_addresses');
+				if (!empty($more_addresses)) {
+					$more_addresses = explode(',',$more_addresses);
+					foreach ($more_addresses as $this->add_bcc) {
 						$this->add_bcc_to[] = $this->add_bcc;
 					}
 				}
@@ -792,14 +768,14 @@ class Emails
 				if (!empty($this->add_bcc_to)) {
 					$this->add_bcc_to = array_unique($this->add_bcc_to);
 					foreach ($this->add_bcc_to as $this->set_bcc) {
-						$this->send_mail->AddBCC($this->set_bcc);
+						$email->AddBCC($this->set_bcc);
 					}
 				}
 
 			}
 
             // Finally, send the e-mail.
-            $send = $this->send_mail->Send();
+            $send = $email->Send();
             $this->debug_result = (!empty($_SESSION['email_debug_message'])) ? $_SESSION['email_debug_message'] : null;
             unset($_SESSION['email_debug_message']);
 

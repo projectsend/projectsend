@@ -25,7 +25,7 @@ session_start();
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r1242');
+define('CURRENT_VERSION', 'r1250');
 
 /**
  * Required software versions
@@ -45,7 +45,7 @@ define('PROTOCOL', empty($_SERVER['HTTPS'])? 'http' : 'https');
  * - Changes the error_reporting php value
  * - Enables the PDOEX extension (on the database class) to count queries
  */
-define('DEBUG', true);
+define('DEBUG', false);
 
 /**
  * IS_DEV is set to true during development to show a sitewide remainder

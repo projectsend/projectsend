@@ -68,6 +68,6 @@
 			return $structure;
 		}
 
-		echo timezonechoice(TIMEZONE);
+		echo timezonechoice(get_option('timezone'));
 	?>
 </select>

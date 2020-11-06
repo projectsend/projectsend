@@ -46,12 +46,16 @@ switch ( $section ) {
 		$checkboxes		= array(
 								'mail_copy_user_upload',
 								'mail_copy_client_upload',
-								'mail_copy_main_user',
+                                'mail_copy_main_user',
+                                'mail_ssl_verify_peer',
+                                'mail_ssl_verify_peer_name',
+                                'mail_ssl_allow_self_signed',
 							);
 		break;
 	case 'security':
 		$section_title	= __('Security','cftp_admin');
 		$checkboxes		= array(
+                                'svg_show_as_thumbnail',
 								'pass_require_upper',
 								'pass_require_lower',
 								'pass_require_number',
@@ -86,8 +90,8 @@ $active_nav = 'options';
 $logo_file_info = generate_logo_url();
 
 // Clear logo
+save_option('logo_filename', null);
 if ($section == 'branding' && !empty($_GET['clear']) && $_GET['clear'] == 'logo') {
-    save_option('logo_filename', null);
     $location = BASE_URI . 'options.php?section=branding';
     header("Location: $location");
 }
@@ -99,8 +103,7 @@ if ($_POST) {
 	 * Defined on functions.php
 	 */
 	/** Values that can be empty */
-	$allowed_empty_values	= [
-        'xsendfile_enable',
+	$allowed_empty_values = [
         'footer_custom_content',
         'mail_copy_addresses',
         'mail_smtp_host',

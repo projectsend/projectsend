@@ -6,9 +6,9 @@
     <label for="file_types_limit_to" class="col-sm-4 control-label"><?php _e('Limit file types uploading to','cftp_admin'); ?></label>
     <div class="col-sm-8">
         <select class="form-control" name="file_types_limit_to" id="file_types_limit_to" required>
-            <option value="noone" <?php echo (FILE_TYPES_LIMIT_TO == 'noone') ? 'selected="selected"' : ''; ?>><?php _e('No one','cftp_admin'); ?></option>
-            <option value="all" <?php echo (FILE_TYPES_LIMIT_TO == 'all') ? 'selected="selected"' : ''; ?>><?php _e('Everyone','cftp_admin'); ?></option>
-            <option value="clients" <?php echo (FILE_TYPES_LIMIT_TO == 'clients') ? 'selected="selected"' : ''; ?>><?php _e('Clients only','cftp_admin'); ?></option>
+            <option value="noone" <?php echo (get_option('file_types_limit_to') == 'noone') ? 'selected="selected"' : ''; ?>><?php _e('No one','cftp_admin'); ?></option>
+            <option value="all" <?php echo (get_option('file_types_limit_to') == 'all') ? 'selected="selected"' : ''; ?>><?php _e('Everyone','cftp_admin'); ?></option>
+            <option value="clients" <?php echo (get_option('file_types_limit_to') == 'clients') ? 'selected="selected"' : ''; ?>><?php _e('Clients only','cftp_admin'); ?></option>
         </select>
     </div>
 </div>
@@ -44,7 +44,7 @@
 <div class="form-group">
     <div class="col-sm-8 col-sm-offset-4">
         <label for="pass_require_upper">
-            <input type="checkbox" value="1" name="pass_require_upper" id="pass_require_upper" class="checkbox_options" <?php echo (PASS_REQUIRE_UPPER == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $json_strings['validation']['req_upper']; ?>
+            <input type="checkbox" value="1" name="pass_require_upper" id="pass_require_upper" class="checkbox_options" <?php echo (get_option('pass_require_upper') == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $json_strings['validation']['req_upper']; ?>
         </label>
     </div>
 </div>
@@ -52,7 +52,7 @@
 <div class="form-group">
     <div class="col-sm-8 col-sm-offset-4">
         <label for="pass_require_lower">
-            <input type="checkbox" value="1" name="pass_require_lower" id="pass_require_lower" class="checkbox_options" <?php echo (PASS_REQUIRE_LOWER == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $json_strings['validation']['req_lower']; ?>
+            <input type="checkbox" value="1" name="pass_require_lower" id="pass_require_lower" class="checkbox_options" <?php echo (get_option('pass_require_lower') == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $json_strings['validation']['req_lower']; ?>
         </label>
     </div>
 </div>
@@ -60,7 +60,7 @@
 <div class="form-group">
     <div class="col-sm-8 col-sm-offset-4">
         <label for="pass_require_number">
-            <input type="checkbox" value="1" name="pass_require_number" id="pass_require_number" class="checkbox_options" <?php echo (PASS_REQUIRE_NUMBER == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $json_strings['validation']['req_number']; ?>
+            <input type="checkbox" value="1" name="pass_require_number" id="pass_require_number" class="checkbox_options" <?php echo (get_option('pass_require_number') == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $json_strings['validation']['req_number']; ?>
         </label>
     </div>
 </div>
@@ -68,7 +68,7 @@
 <div class="form-group">
     <div class="col-sm-8 col-sm-offset-4">
         <label for="pass_require_special">
-            <input type="checkbox" value="1" name="pass_require_special" id="pass_require_special" class="checkbox_options" <?php echo (PASS_REQUIRE_SPECIAL == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $json_strings['validation']['req_special']; ?>
+            <input type="checkbox" value="1" name="pass_require_special" id="pass_require_special" class="checkbox_options" <?php echo (get_option('pass_require_special') == 1) ? 'checked="checked"' : ''; ?> /> <?php echo $json_strings['validation']['req_special']; ?>
         </label>
     </div>
 </div>
@@ -81,7 +81,7 @@
 <div class="form-group">
     <div class="col-sm-8 col-sm-offset-4">
         <label for="recaptcha_enabled">
-            <input type="checkbox" value="1" name="recaptcha_enabled" id="recaptcha_enabled" class="checkbox_options" <?php echo (RECAPTCHA_ENABLED == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Use reCAPTCHA','cftp_admin'); ?>
+            <input type="checkbox" value="1" name="recaptcha_enabled" id="recaptcha_enabled" class="checkbox_options" <?php echo (get_option('recaptcha_enabled') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Use reCAPTCHA','cftp_admin'); ?>
         </label>
     </div>
 </div>
@@ -89,14 +89,14 @@
 <div class="form-group">
     <label for="recaptcha_site_key" class="col-sm-4 control-label"><?php _e('Site key','cftp_admin'); ?></label>
     <div class="col-sm-8">
-        <input type="text" name="recaptcha_site_key" id="recaptcha_site_key" class="form-control" value="<?php echo html_output(RECAPTCHA_SITE_KEY); ?>" />
+        <input type="text" name="recaptcha_site_key" id="recaptcha_site_key" class="form-control" value="<?php echo html_output(get_option('recaptcha_site_key')); ?>" />
     </div>
 </div>
 
 <div class="form-group">
     <label for="recaptcha_secret_key" class="col-sm-4 control-label"><?php _e('Secret key','cftp_admin'); ?></label>
     <div class="col-sm-8">
-        <input type="text" name="recaptcha_secret_key" id="recaptcha_secret_key" class="form-control" value="<?php echo html_output(RECAPTCHA_SECRET_KEY); ?>" />
+        <input type="text" name="recaptcha_secret_key" id="recaptcha_secret_key" class="form-control" value="<?php echo html_output(get_option('recaptcha_secret_key')); ?>" />
     </div>
 </div>
 

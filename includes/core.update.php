@@ -389,7 +389,7 @@ if (current_role_in($allowed_update)) {
 											'mail_smtp_port' => '',
 											'mail_smtp_user' => '',
 											'mail_smtp_pass' => '',
-											'mail_from_name' => THIS_INSTALL_TITLE
+											'mail_from_name' => get_option('this_install_title')
 										);
 			
 			foreach($new_database_values as $row => $value) {

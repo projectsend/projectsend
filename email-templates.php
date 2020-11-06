@@ -418,15 +418,16 @@ if ($_POST) {
 							if (!empty($group['tags'])) {
 						?>
 								<p><strong><?php _e("The following tags can be used on this e-mails' body.",'cftp_admin'); ?></strong></p>
-								<ul>
+								<dl class="dl-horizontal">
 									<?php
 										foreach ($group['tags'] as $tag => $description) {
 									?>
-											<li><i class="icon-ok"></i> <strong><?php echo $tag; ?></strong>: <?php echo $description; ?></li>
+                                            <dt><strong><?php echo $tag; ?></strong></dt>
+                                            <dd><?php echo $description; ?></dd>
 									<?php
 										}
 									?>
-								</ul>
+								</dl>
 						<?php
 							}
 						?>

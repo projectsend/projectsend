@@ -1316,29 +1316,6 @@ if (current_role_in($allowed_update)) {
 			$updates_made++;
 		}
 
-		/**
-		 * r1118 updates
-		 * A new database table was added to store users meta data
-		 */
-		if ($last_update < 1118) {
-			if ( !tableExists( TABLE_USER_META ) ) {
-				$query = "
-				CREATE TABLE IF NOT EXISTS `".TABLE_USER_META."` (
-				  `id` int(11) NOT NULL AUTO_INCREMENT,
-				  `user_id` int(11) DEFAULT NULL,
-                  `name` varchar(255) NOT NULL,
-                  `value` TEXT NULL,
-				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-				  FOREIGN KEY (`user_id`) REFERENCES ".TABLE_USERS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-				  PRIMARY KEY (`id`)
-				) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-				";
-				$statement = $dbh->prepare($query);
-				$statement->execute();
-
-				$updates_made++;
-			}
-		}
 
         /**
 		 * Add foreign keys to files.
@@ -1360,16 +1337,6 @@ if (current_role_in($allowed_update)) {
 		}
 
         /**
-		 * r1192 updates
-		 * Added meta updated time column
-		 */
-		if ($last_update < 1192) {
-			$statement = $dbh->query("ALTER TABLE `" . TABLE_USER_META . "` ADD COLUMN `updated_at` TIMESTAMP NULL DEFAULT NULL");
-
-			$updates_made++;
-		}
-
-        /**
 		 * r1216 updates
 		 * Set nullable columns
 		 */
@@ -1378,17 +1345,6 @@ if (current_role_in($allowed_update)) {
 
 			$updates_made++;
 		}
-
-        /**
-		 * r1241 updates
-		 * Added action log details
-		 */
-		if ($last_update < 1241) {
-			$statement = $dbh->query("ALTER TABLE `" . TABLE_LOG . "` ADD COLUMN `details` TEXT DEFAULT NULL after `affected_account_name`");
-
-			$updates_made++;
-		}
-
 
         /** Update the database */
 		$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :version WHERE name='last_update'");

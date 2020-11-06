@@ -403,7 +403,7 @@ if (defined('TRY_INSTALL')) {
                 `name` varchar(255) NOT NULL,
                 `value` TEXT NULL,
                 `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-                `updated_at` TIMESTAMP DEFAULT NULL,
+                `updated_at` TIMESTAMP NULL DEFAULT NULL,
                 FOREIGN KEY (`user_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
                 PRIMARY KEY (`id`)
                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

@@ -1364,7 +1364,7 @@ if (current_role_in($allowed_update)) {
 		 * Added meta updated time column
 		 */
 		if ($last_update < 1192) {
-			$statement = $dbh->query("ALTER TABLE `" . TABLE_USER_META . "` ADD COLUMN `updated_at` TIMESTAMP DEFAULT NULL");
+			$statement = $dbh->query("ALTER TABLE `" . TABLE_USER_META . "` ADD COLUMN `updated_at` TIMESTAMP NULL DEFAULT NULL");
 
 			$updates_made++;
 		}

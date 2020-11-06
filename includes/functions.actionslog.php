@@ -249,8 +249,8 @@ function format_action_log_record($params)
 		case 30:
 			$part1 = $owner_user;
 			$action_text = __('updated ProjectSend to version','cftp_admin');
-            $part2 = $affected_account_name;
-            $formatted = sprintf(__('%s updated ProjectSend to version %s','cftp_admin'), $owner_user, $affected_account_name);
+            $part2 = (isset($details->version)) ? $details->version : null;
+            $formatted = sprintf(__('%s updated ProjectSend to version %s','cftp_admin'), $owner_user, $part2);
             $type = 'system';
 			break;
 		case 31:

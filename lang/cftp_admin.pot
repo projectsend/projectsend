@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend admin\n"
-"POT-Creation-Date: 2020-11-04 01:18-0300\n"
+"POT-Creation-Date: 2020-11-07 12:37-0300\n"
 "PO-Revision-Date: 2016-09-14 15:19-0300\n"
 "Last-Translator: \n"
 "Language-Team: ProjectSend <contact@projectsend.org>\n"
@@ -215,7 +215,7 @@ msgid "Add client"
 msgstr ""
 
 #: clients-add.php:104 clients-edit.php:166 email-templates.php:160
-#: groups-add.php:61 groups-edit.php:92 options.php:259 register.php:129
+#: groups-add.php:61 groups-edit.php:92 options.php:262 register.php:129
 #: templates.php:56 users-add.php:89 users-edit.php:159
 msgid "There was an error. Please try again."
 msgstr ""
@@ -311,7 +311,7 @@ msgid "There are no requests at the moment"
 msgstr ""
 
 #: clients-membership-requests.php:278 clients-requests.php:326 clients.php:238
-#: includes/Classes/Emails.php:84 includes/Classes/Emails.php:143
+#: includes/Classes/Emails.php:68 includes/Classes/Emails.php:127
 #: install/index.php:297 users.php:283
 msgid "Full name"
 msgstr ""
@@ -570,7 +570,7 @@ msgstr ""
 msgid "Client updated memberships"
 msgstr ""
 
-#: email-templates.php:156 options.php:255 templates.php:52
+#: email-templates.php:156 options.php:258 templates.php:52
 msgid "Options updated succesfuly."
 msgstr ""
 
@@ -708,7 +708,7 @@ msgstr ""
 msgid "You can use HTML tags here."
 msgstr ""
 
-#: email-templates.php:358 email-templates.php:372 email-templates.php:436
+#: email-templates.php:358 email-templates.php:372 email-templates.php:437
 msgid "Replace with default"
 msgstr ""
 
@@ -736,17 +736,17 @@ msgstr ""
 msgid "The following tags can be used on this e-mails' body."
 msgstr ""
 
-#: email-templates.php:437
+#: email-templates.php:438
 msgid "Preview this template"
 msgstr ""
 
-#: email-templates.php:439
+#: email-templates.php:440
 msgid ""
 "Before trying this function, please save your changes to see them reflected "
 "on the preview."
 msgstr ""
 
-#: email-templates.php:448 options.php:312
+#: email-templates.php:449 options.php:315
 msgid "Save options"
 msgstr ""
 
@@ -1003,15 +1003,15 @@ msgstr ""
 msgid "E-mail notifications"
 msgstr ""
 
-#: header-menu.php:219 options.php:53
+#: header-menu.php:219 options.php:56
 msgid "Security"
 msgstr ""
 
-#: header-menu.php:223 options.php:63
+#: header-menu.php:223 options.php:67
 msgid "Branding"
 msgstr ""
 
-#: header-menu.php:227 options.php:68
+#: header-menu.php:227 options.php:72
 msgid "External Login"
 msgstr ""
 
@@ -1058,15 +1058,16 @@ msgid ""
 "working correctly."
 msgstr ""
 
-#: header.php:158
+#: header.php:162
 msgid "Warning:"
 msgstr ""
 
-#: header.php:158
-msgid "The following directories do not have write permissions."
+#: header.php:162
+msgid ""
+"The following directories do not exist or have write permissions errors."
 msgstr ""
 
-#: header.php:159
+#: header.php:163
 msgid "File uploading or other important functions might not work."
 msgstr ""
 
@@ -1370,195 +1371,195 @@ msgstr ""
 msgid "Session timed out. Please log in again."
 msgstr ""
 
-#: includes/Classes/Emails.php:51
+#: includes/Classes/Emails.php:36
 msgid "New files uploaded for you"
 msgstr ""
 
-#: includes/Classes/Emails.php:52
+#: includes/Classes/Emails.php:37
 msgid "The following files are now available for you to download."
 msgstr ""
 
-#: includes/Classes/Emails.php:53
+#: includes/Classes/Emails.php:38
 msgid ""
 "If you prefer not to be notified about new files, please go to My Account "
 "and deactivate the notifications checkbox."
 msgstr ""
 
-#: includes/Classes/Emails.php:54
+#: includes/Classes/Emails.php:39
 msgid "You can access a list of all your files or upload your own"
 msgstr ""
 
-#: includes/Classes/Emails.php:55 includes/Classes/Emails.php:63
+#: includes/Classes/Emails.php:40 includes/Classes/Emails.php:48
 msgid "by logging in here"
 msgstr ""
 
-#: includes/Classes/Emails.php:60
+#: includes/Classes/Emails.php:45
 msgid "New files uploaded by clients"
 msgstr ""
 
-#: includes/Classes/Emails.php:61
+#: includes/Classes/Emails.php:46
 msgid "New files has been uploaded by the following clients"
 msgstr ""
 
-#: includes/Classes/Emails.php:62
+#: includes/Classes/Emails.php:47
 msgid "You can manage these files"
 msgstr ""
 
-#: includes/Classes/Emails.php:69 includes/Classes/Emails.php:118
+#: includes/Classes/Emails.php:53 includes/Classes/Emails.php:102
 msgid "Welcome to ProjectSend"
 msgstr ""
 
-#: includes/Classes/Emails.php:70
+#: includes/Classes/Emails.php:54
 msgid ""
 "A new account was created for you. From now on, you can access the files "
 "that have been uploaded under your account using the following credentials:"
 msgstr ""
 
-#: includes/Classes/Emails.php:71 includes/Classes/Emails.php:105
+#: includes/Classes/Emails.php:55 includes/Classes/Emails.php:89
 msgid "You can log in following this link"
 msgstr ""
 
-#: includes/Classes/Emails.php:72 includes/Classes/Emails.php:106
-#: includes/Classes/Emails.php:113
+#: includes/Classes/Emails.php:56 includes/Classes/Emails.php:90
+#: includes/Classes/Emails.php:97
 msgid "Please contact the administrator if you need further assistance."
 msgstr ""
 
-#: includes/Classes/Emails.php:73 includes/Classes/Emails.php:122
+#: includes/Classes/Emails.php:57 includes/Classes/Emails.php:106
 msgid "Your username"
 msgstr ""
 
-#: includes/Classes/Emails.php:74 includes/Classes/Emails.php:123
+#: includes/Classes/Emails.php:58 includes/Classes/Emails.php:107
 msgid "Your password"
 msgstr ""
 
-#: includes/Classes/Emails.php:82
-msgid "A new client has registered."
+#: includes/Classes/Emails.php:66
+msgid "A new client has registered"
 msgstr ""
 
-#: includes/Classes/Emails.php:83
+#: includes/Classes/Emails.php:67
 msgid ""
 "A new account was created using the self registration form on your site. "
 "Registration information:"
 msgstr ""
 
-#: includes/Classes/Emails.php:85 includes/Classes/Emails.php:134
-#: includes/Classes/Emails.php:144 includes/forms/login.php:15
+#: includes/Classes/Emails.php:69 includes/Classes/Emails.php:118
+#: includes/Classes/Emails.php:128 includes/forms/login.php:15
 #: includes/forms/options/email.php:100 install/make-config.php:251
 msgid "Username"
 msgstr ""
 
-#: includes/Classes/Emails.php:86
+#: includes/Classes/Emails.php:70
 msgid "Additionally, the client requests access to the following group(s)"
 msgstr ""
 
-#: includes/Classes/Emails.php:89 includes/Classes/Emails.php:146
+#: includes/Classes/Emails.php:73 includes/Classes/Emails.php:130
 msgid "Please log in to process the request."
 msgstr ""
 
-#: includes/Classes/Emails.php:90
+#: includes/Classes/Emails.php:74
 msgid ""
 "Remember, your new client will not be able to log in until an administrator "
 "has approved their account."
 msgstr ""
 
-#: includes/Classes/Emails.php:93
+#: includes/Classes/Emails.php:77
 msgid "Auto-approvals of new accounts are currently enabled."
 msgstr ""
 
-#: includes/Classes/Emails.php:94
+#: includes/Classes/Emails.php:78
 msgid "You can log in to manually deactivate it."
 msgstr ""
 
-#: includes/Classes/Emails.php:100
+#: includes/Classes/Emails.php:84
 msgid "You account has been approved"
 msgstr ""
 
-#: includes/Classes/Emails.php:101
+#: includes/Classes/Emails.php:85
 msgid "Your account has been approved."
 msgstr ""
 
-#: includes/Classes/Emails.php:102
+#: includes/Classes/Emails.php:86
 msgid "Additionally, your group membership requests have been processed."
 msgstr ""
 
-#: includes/Classes/Emails.php:103
+#: includes/Classes/Emails.php:87
 msgid "Approved requests:"
 msgstr ""
 
-#: includes/Classes/Emails.php:104
+#: includes/Classes/Emails.php:88
 msgid "Denied requests:"
 msgstr ""
 
-#: includes/Classes/Emails.php:111
+#: includes/Classes/Emails.php:95
 msgid "You account has been denied"
 msgstr ""
 
-#: includes/Classes/Emails.php:112
+#: includes/Classes/Emails.php:96
 msgid "Your account request has been denied."
 msgstr ""
 
-#: includes/Classes/Emails.php:119
+#: includes/Classes/Emails.php:103
 msgid ""
 "A new account was created for you. From now on, you can access the system "
 "administrator using the following credentials:"
 msgstr ""
 
-#: includes/Classes/Emails.php:120
+#: includes/Classes/Emails.php:104
 msgid "Access the system panel here"
 msgstr ""
 
-#: includes/Classes/Emails.php:121
+#: includes/Classes/Emails.php:105
 msgid "Thank you for using ProjectSend."
 msgstr ""
 
-#: includes/Classes/Emails.php:129
+#: includes/Classes/Emails.php:113
 msgid "Password reset instructions"
 msgstr ""
 
-#: includes/Classes/Emails.php:130
+#: includes/Classes/Emails.php:114
 msgid ""
 "A request has been received to reset the password for the following account:"
 msgstr ""
 
-#: includes/Classes/Emails.php:131
+#: includes/Classes/Emails.php:115
 msgid "To continue, please visit the following link"
 msgstr ""
 
-#: includes/Classes/Emails.php:132
+#: includes/Classes/Emails.php:116
 msgid "The request is valid only for 24 hours."
 msgstr ""
 
-#: includes/Classes/Emails.php:133
+#: includes/Classes/Emails.php:117
 msgid "If you did not make this request, simply ignore this email."
 msgstr ""
 
-#: includes/Classes/Emails.php:141
-msgid "A client has changed memberships requests."
+#: includes/Classes/Emails.php:125
+msgid "A client has changed memberships requests"
 msgstr ""
 
-#: includes/Classes/Emails.php:142
+#: includes/Classes/Emails.php:126
 msgid ""
 "A client on you site has just changed his groups membership requests and "
 "needs your approval."
 msgstr ""
 
-#: includes/Classes/Emails.php:145
+#: includes/Classes/Emails.php:129
 msgid "The client requests access to the following group(s)"
 msgstr ""
 
-#: includes/Classes/Emails.php:325
+#: includes/Classes/Emails.php:283 includes/Classes/Emails.php:533
 msgid "No group requests made"
 msgstr ""
 
-#: includes/Classes/Emails.php:584
+#: includes/Classes/Emails.php:552
 msgid "Email configuration test"
 msgstr ""
 
-#: includes/Classes/Emails.php:636
+#: includes/Classes/Emails.php:604
 msgid "This is a test message"
 msgstr ""
 
-#: includes/Classes/Emails.php:759
+#: includes/Classes/Emails.php:733
 msgid ""
 "This email contains HTML formatting and cannot be displayed right now. "
 "Please use an HTML compatible reader."
@@ -1990,7 +1991,23 @@ msgstr ""
 msgid "Authentication"
 msgstr ""
 
-#: includes/forms/options/email.php:147
+#: includes/forms/options/email.php:145
+msgid "SSL options"
+msgstr ""
+
+#: includes/forms/options/email.php:150
+msgid "Verify peer"
+msgstr ""
+
+#: includes/forms/options/email.php:158
+msgid "Verify peer name"
+msgstr ""
+
+#: includes/forms/options/email.php:166
+msgid "Allow self signed"
+msgstr ""
+
+#: includes/forms/options/email.php:175
 msgid "After saving your options, you can test your configuration here"
 msgstr ""
 
@@ -3541,35 +3558,35 @@ msgstr ""
 msgid "downloads"
 msgstr ""
 
-#: options.php:263
+#: options.php:266
 msgid "Some fields were not completed. Options could not be saved."
 msgstr ""
 
-#: options.php:276
+#: options.php:279
 msgid "The file could not be moved to the corresponding folder."
 msgstr ""
 
-#: options.php:277
+#: options.php:280
 msgid ""
 "This is most likely a permissions issue. If that's the case, it can be "
 "corrected via FTP by setting the chmod value of the"
 msgstr ""
 
-#: options.php:279
+#: options.php:282
 msgid "directory to 755, or 777 as a last resource."
 msgstr ""
 
-#: options.php:280
+#: options.php:283
 msgid ""
 "If this doesn't solve the issue, try giving the same values to the "
 "directories above that one until it works."
 msgstr ""
 
-#: options.php:284
+#: options.php:287
 msgid "The file you selected is not an allowed format."
 msgstr ""
 
-#: options.php:288
+#: options.php:291
 msgid "There was an error uploading the file. Please try again."
 msgstr ""
 

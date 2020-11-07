@@ -144,18 +144,22 @@ password_change_required();
                     // Check important directories write permissions
                     $write_errors = [];
                     $directories = [
-                        'upload'.DS.'admin',
-                        'upload'.DS.'files',
-                        'upload'.DS.'thumbnails',
+                        ADMIN_UPLOADS_DIR,
+                        UPLOADED_FILES_DIR,
+                        THUMBNAILS_FILES_DIR,
                     ];
                     foreach ($directories as $directory) {
-                        if (!is_writable(ROOT_DIR.DS.$directory)) {
+                        if (!file_exists($directory)) {
+                            @mkdir($directory, 0775, true);
+                        }
+
+                        if (!is_writable($directory)) {
                             $write_errors[] = $directory;
                         }
                     }
 
                     if ( !empty($write_errors) ) {
-                        $msg = '<p><strong>'.__('Warning:', 'cftp_admin').'</strong>' . ' ' . __('The following directories do not have write permissions.', 'cftp_admin').'</p>';
+                        $msg = '<p><strong>'.__('Warning:', 'cftp_admin').'</strong>' . ' ' . __('The following directories do not exist or have write permissions errors.', 'cftp_admin').'</p>';
                         $msg .= '<p>'.__('File uploading or other important functions might not work.', 'cftp_admin').'</p>';
                         foreach ($write_errors as $directory) {
                             $msg .= '<p>'.$directory.'</p>';

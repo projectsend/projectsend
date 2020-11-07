@@ -694,9 +694,7 @@ class Emails
                 $email->SMTPDebug = 3;
                 $_SESSION['email_debug_message'] = null;
                 $email->Debugoutput = function($str, $level) {
-                    //echo $str.'<br>';
                     $_SESSION['email_debug_message'] .= $str."\n";
-                    //$GLOBALS['email_debug_message'] .= "$str\n";
                 };
             }
 

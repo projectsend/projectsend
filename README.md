@@ -84,11 +84,9 @@ Whenever a new version is available, you will be notified in the admin panel via
 
 ## Developing
 
-### Notice: ProjectSend is currently under refactoring
-
 If you want to help with development, you will need to do a few things via the command line:
 
-1. Download the composer and npm dependencies with the commands ````npm install```` and ````composer update````
+1. Download the npm and composer dependencies with the commands ````npm install```` and ````composer update````
 1. Run the default gulp task simply with ````gulp```` to compile the main CSS and JS assets files.
 
 ## How to join the project

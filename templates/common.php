@@ -14,30 +14,27 @@
  */
 $allowed_levels = array(9,8,7,0);
 
-/**
- * Define a variable that will tell header.php if session_start()
- * needs to be called or not (since it is also called from
- * session_check.php
- */
-$is_template = true;
+include_once ROOT_DIR.DS.'templates'.DS.'session_check.php';
+
+$template = get_option('selected_clients_template');
 
 /**
  * Loads a language file from the current template folder based on
  * the system options.
  */
-$lang = SITE_LANG;
+$lang = (isset($_SESSION['lang'])) ? $_SESSION['lang'] : SITE_LANG;
 if(!isset($ld)) { $ld = 'cftp_admin'; }
-require_once(ROOT_DIR.'/includes/classes/i18n.php');
-I18n::LoadDomain(ROOT_DIR."/templates/".TEMPLATE_USE."/lang/{$lang}.mo", $ld);
+$mo_file = ROOT_DIR.DS."templates".DS.$template.DS."lang".DS."{$lang}.mo";
+ProjectSend\Classes\I18n::LoadDomain($mo_file, $ld);
 
-$this_template = BASE_URI.'templates/'.TEMPLATE_USE.'/';
-
-include_once(ROOT_DIR.'/templates/session_check.php');
+$this_template = BASE_URI.'templates/'.$template.'/';
 
 /**
  * URI to the default template CSS file.
  */
-$this_template_css = BASE_URI.'templates/'.TEMPLATE_USE.'/main.css';
+if (file_exists(ROOT_DIR.DS."templates".DS.$template.DS."main.css")) {
+    $this_template_css = BASE_URI.'templates/'.$template.'/main.css';
+}
 
 global $dbh;
 
@@ -49,22 +46,31 @@ $client_info = get_client_by_username($this_user);
 /**
  * Get the list of different groups the client belongs to.
  */
-$get_groups		= new MembersActions();
-$get_arguments	= array(
-						'client_id'	=> $client_info['id'],
-						'return'	=> 'list',
-					);
-$found_groups	= $get_groups->client_get_groups($get_arguments); 
+$get_groups = new ProjectSend\Classes\MembersActions;
+$found_groups = $get_groups->client_get_groups([
+    'client_id' => $client_info['id'],
+    'return' => 'list',
+]);
 
 /**
  * Define the arrays so they can't be empty
  */
-$found_all_files_array	= array();
-$found_own_files_temp	= array();
-$found_group_files_temp	= array();
+$found_all_files_array = array();
 
 /**
- * Get the client's own files
+ * Get files uploaded by this user
+ */
+$files_query = "SELECT * FROM " . TABLE_FILES . " WHERE user_id=:user_id";
+$files_sql = $dbh->prepare($files_query);
+$files_sql->bindParam(':user_id', $client_info['id'], PDO::PARAM_INT);
+$files_sql->execute();
+$files_sql->setFetchMode(PDO::FETCH_ASSOC);
+while ( $row_files = $files_sql->fetch() ) {
+    $found_all_files_array[] = $row_files['id'];
+}
+
+/**
+ * Get files assigned directly to the client
  * Construct the query first.
  */
 $files_query = "SELECT id, file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE (client_id = :id";
@@ -85,19 +91,14 @@ $files_sql->setFetchMode(PDO::FETCH_ASSOC);
 
 while ( $row_files = $files_sql->fetch() ) {
 	if (!is_null($row_files['client_id'])) {
-		$found_all_files_array[]	= $row_files['file_id'];
-		$found_own_files_temp[]		= $row_files['file_id'];
+		$found_all_files_array[] = $row_files['file_id'];
 	}
 	if (!is_null($row_files['group_id'])) {
-		$found_all_files_array[]	= $row_files['file_id'];
-		$found_group_files_temp[]	= $row_files['file_id'];
+		$found_all_files_array[] = $row_files['file_id'];
 	}
 }
 
-$found_own_files_ids	= (!empty($found_own_files_temp)) ? implode(',', array_unique($found_own_files_temp)) : '';
-$found_group_files_ids	= (!empty($found_group_files_temp)) ? implode(',', array_unique($found_group_files_temp)) : '';
-
-$found_unique_files_ids = array_unique($found_all_files_array);
+$found_unique_files_ids = implode(',', array_unique($found_all_files_array));
 
 /**
  * Make an array of the categories containing the
@@ -107,22 +108,22 @@ $cat_ids	= array();
 $file_ids	= array();
 $files_keep	= array();
 
-$files_ids_to_search = implode(',', $found_unique_files_ids);
 $sql_sentence = "SELECT file_id, cat_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE FIND_IN_SET(file_id, :files)";
 $sql_client_categories = $dbh->prepare( $sql_sentence );
-$sql_client_categories->bindParam(':files', $files_ids_to_search);
+$sql_client_categories->bindParam(':files', $found_unique_files_ids);
 $sql_client_categories->execute();
 $sql_client_categories->setFetchMode(PDO::FETCH_ASSOC);
 
 while ( $row = $sql_client_categories->fetch() ) {
-	$cat_ids[$row['cat_id']]		= $row['cat_id'];
-	$files_keep[$row['file_id']][]	= $row['cat_id'];
+	$cat_ids[$row['cat_id']] = $row['cat_id'];
+	$files_keep[$row['file_id']][] = $row['cat_id'];
 }
 
 if ( !empty( $cat_ids ) ) {
 	$get_categories	= get_categories(
 									array(
-										'id'	=> $cat_ids,
+										'id' => $cat_ids,
+                                        'is_tree' => true
 									)
 								);
 }
@@ -131,7 +132,7 @@ if ( !empty( $cat_ids ) ) {
  * that are assigned to the selected one.
  */
 if ( !empty( $category_filter ) && $category_filter != '0' ) {
-	$filtered_file_ids = array();
+	$filtered_file_ids = [];
 	foreach ( $files_keep as $keep_file_id => $keep_cat_ids ) {
 		if ( in_array( $category_filter, $keep_cat_ids ) ) {
 			$filtered_file_ids[] = $keep_file_id;
@@ -140,19 +141,19 @@ if ( !empty( $category_filter ) && $category_filter != '0' ) {
 	$ids_to_search = implode(',', $filtered_file_ids);
 }
 else {
-	$ids_to_search = implode(',', $found_unique_files_ids);
+	$ids_to_search = $found_unique_files_ids;
 }
 
 /** Create the files list */
-$my_files = array();
+$available_files = [];
+$my_files = [];
 
-
-if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
+if (!empty($found_all_files_array)) {
 	$f = 0;
 	$files_query = "SELECT * FROM " . TABLE_FILES . " WHERE FIND_IN_SET(id,:search_ids)";
 
 	$params		= array(
-						':search_ids' => $ids_to_search
+                        ':search_ids' => $ids_to_search,
 					);
 
 	/** Add the search terms */	
@@ -164,7 +165,6 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 		$params[':description']	= '%'.$_GET['search'].'%';
 	}
 
-
 	/**
 	 * Add the order.
 	 * Defaults to order by: timestamp, order: DESC (shows last uploaded files first)
@@ -175,19 +175,38 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 	 * Pre-query to count the total results
 	*/
 	$count_sql = $dbh->prepare( $files_query );
-	$count_sql->execute($params);
-	$count_for_pagination = $count_sql->rowCount();
+    $count_sql->execute($params);
+    
+    $count_for_pagination = 0;
+    while ( $data = $count_sql->fetch() ) {
+        /** Does it expire? */
+        $counts = true;
+		if ($data['expires'] == '1') {
+			if (time() > strtotime($data['expiry_date'])) {
+                if (get_option('expired_files_hide') == '1') {
+                    $counts = false;
+				}
+			}
+        }
+        if ($counts) { $count_for_pagination++; }
+    }
 
-	/**
+    //$count_for_pagination = $count_sql->rowCount();
+
+    /**
 	 * Repeat the query but this time, limited by pagination
 	 */
-	$files_query .= " LIMIT :limit_start, :limit_number";
+    if (TEMPLATE_RESULTS_PER_PAGE > 0) {
+        $files_query .= " LIMIT :limit_start, :limit_number";
+    }
 	$sql_files = $dbh->prepare( $files_query );
 
-	$pagination_page			= ( isset( $_GET["page"] ) ) ? $_GET["page"] : 1;
-	$pagination_start			= ( $pagination_page - 1 ) * TEMPLATE_RESULTS_PER_PAGE;
-	$params[':limit_start']		= $pagination_start;
-	$params[':limit_number']	= TEMPLATE_RESULTS_PER_PAGE;
+    if (TEMPLATE_RESULTS_PER_PAGE > 0) {
+	    $pagination_page			= ( isset( $_GET["page"] ) ) ? $_GET["page"] : 1;
+	    $pagination_start			= ( $pagination_page - 1 ) * TEMPLATE_RESULTS_PER_PAGE;
+	    $params[':limit_start']		= $pagination_start;
+        $params[':limit_number']	= TEMPLATE_RESULTS_PER_PAGE;
+    }
 
 	$sql_files->execute( $params );
 	$count = $sql_files->rowCount();
@@ -200,7 +219,7 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 		/** Does it expire? */
 		if ($data['expires'] == '1') {
 			if (time() > strtotime($data['expiry_date'])) {
-				if (EXPIRED_FILES_HIDE == '1') {
+				if (get_option('expired_files_hide') == '1') {
 					$add_file = false;
 				}
 				$expired = true;
@@ -209,36 +228,28 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 
 		/** Make the list of files */
 		if ($add_file == true) {
-			/*
-			if (in_array($data['id'], $found_own_files_temp)) {
-				$origin = 'own';
-			}
-			if (in_array($data['id'], $found_group_files_temp)) {
-				$origin = 'group';
-			}
-			*/
-
+            $available_files[] = $data['id'];
+            
+            // Leaving this here in case a  custom template is using this array
+            $pathinfo = pathinfo($data['url']);
 			$my_files[$f] = array(
 								//'origin'		=> $origin,
 								'id'			=> $data['id'],
 								'url'			=> $data['url'],
-								'save_as'		=> (!empty( $data['original_url'] ) ) ? $data['original_url'] : $data['url'],
+                                'save_as'		=> (!empty( $data['original_url'] ) ) ? $data['original_url'] : $data['url'],
+                                'extension'		=> strtolower($pathinfo['extension']),
 								'name'			=> $data['filename'],
 								'description'	=> $data['description'],
 								'timestamp'		=> $data['timestamp'],
 								'expires'		=> $data['expires'],
 								'expiry_date'	=> $data['expiry_date'],
 								'expired'		=> $expired,
-							);
+                            );
+            // End deprecated array block
 			$f++;
 		}
 	}
-	
 }
-
-// DEBUG
-//echo '<pre>'; print_r($my_files); echo '</pre>';
-
 
 /** Get the url for the logo from "Branding" */
 $logo_file_info = generate_logo_url();

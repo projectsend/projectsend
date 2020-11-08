@@ -6,6 +6,8 @@
  * @subpackage	Functions
  */
 
+use enshrined\svgSanitize\Sanitizer;
+
 /**
  * Check if ProjectSend is installed by trying to find the main users table.
  * If it is missing, the installation is invalid.
@@ -18,7 +20,7 @@ function is_projectsend_installed()
 
 	$tables_missing = 0;
 	/**
-	 * This table list is defined on sys.vars.php
+	 * This table list is defined on app.php
 	 */
 	foreach ($tables_need as $table) {
 		if ( !tableExists( $table ) ) {
@@ -33,6 +35,44 @@ function is_projectsend_installed()
 	}
 }
 
+function generateUsername($string, $i = 1) {
+    $string = preg_replace('/[^A-Za-z0-9]/', "", $string);
+    $username = $string;
+    while(isUniqueUsername($username)) {
+        $username = $string . $i;
+        $i++;
+    }
+    return $username;
+}
+
+function isUniqueUsername($string) {
+    global $dbh;
+    $statement = $dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE user = :user" );
+    $statement->execute(array(':user'	=> $string));
+    if ($statement->rowCount() > 0) {
+        return false;
+    }
+
+    return true;
+}
+
+/** Prevents an infinite loop */
+function forceLogout($error_type = null)
+{
+    if (!isset($_SESSION['logout'])) {
+        $_SESSION['logout'] = '1';
+    }
+    else {
+        unset($_SESSION['logout']);
+        $url = BASE_URI.'process.php?do=logout';
+        if (!empty($error_type)) {
+            $url .= '&logout_error_type='.$error_type;
+        }
+        header("location:".$url);
+        exit;
+    }    
+}
+
 /** Gets a Json file from and url and caches the result */
 function getJson($url, $cache_time) {
     $cache_dir = JSON_CACHE_DIR;
@@ -41,103 +81,25 @@ function getJson($url, $cache_time) {
     if (file_exists($cacheFile)) {
         $fh = fopen($cacheFile, 'r');
         $cacheTime = trim(fgets($fh));
+
         // if data was cached recently, return cached data
         if ($cacheTime > strtotime($cache_time)) {
             return fread($fh, filesize($cacheFile));
         }
+
         // else delete cache file
         fclose($fh);
         unlink($cacheFile);
     }
+
     $json = file_get_contents($url);
+
     $fh = fopen($cacheFile, 'w');
     fwrite($fh, time() . "\n");
     fwrite($fh, $json);
     fclose($fh);
+
     return $json;
-}
-
-function get_latest_version_data()
-{
-    /** Remove "r" from version */
-    $current_version = substr(CURRENT_VERSION, 1);
-    
-    /**
-     * Compare against the online value.
-     */
-    $versions = getJson(UPDATES_FEED_URI, '-1 days');
-    $versions = json_decode($versions);
-    $latest = $versions[0];
-    $online_version = substr($latest->version, 1);
-    if ($online_version > $current_version) {
-        $return = [
-            'local_version' => $current_version,
-            'latest_version' => $online_version,
-            'update_available' => '1',
-            'url' => $latest->download,
-            'chlog' => $latest->changelog,
-            'diff' => [
-                'security' => $latest->diff->security,
-                'features' => $latest->diff->features,
-                'important' => $latest->diff->important,
-            ],
-        ];
-        return json_encode($return);
-    }
-    else {
-        $return = [
-            'local_version' => $current_version,
-            'latest_version' => $online_version,
-            'update_available' => '0',
-        ];
-        return json_encode($return);
-    }
-}
-
-function format_date($date)
-{
-    if (!$date) {
-        return false;
-    }
-
-    $formatted = date(TIMEFORMAT_USE, strtotime($date));
-
-    return $formatted;
-}
-
-function format_time($date)
-{
-    if (!$date) {
-        return false;
-    }
-
-    $formatted = date('h:i:s', strtotime($date));
-
-    return $formatted;
-}
-
-/**
- * Add any existing $_GET parameters as hidden fields on a form
- */
-function form_add_existing_parameters( $ignore = array() )
-{
-	// Don't add the pagination parameter
-	$ignore[] = 'page';
-
-	// Remove this parameters so they only exist when the action is done
-	$remove = array('action', 'batch', 'status');
-
-	if ( !empty( $_GET ) ) {
-		foreach ( $_GET as $param => $value ) {
-			// Remove status and actions
-			if ( in_array( $param, $remove ) ) {
-				unset( $_GET[$param] );
-			}
-			if ( !is_array( $value ) && !in_array( $param, $ignore ) ) {
-				echo '<input type="hidden" name="' . encode_html($param) . '" value="' . encode_html($value) . '">';
-			}
-		}
-	}
 }
 
 /**
@@ -169,11 +131,6 @@ function sql_add_order( $table, $column = 'id', $initial_order = 'ASC' )
 
 function generate_password()
 {
-	/**
-	 * Random compat library, a polyfill for PHP 7's random_bytes();
-	 * @link: https://github.com/paragonie/random_compat
-	 */
-	require_once(ROOT_DIR . '/includes/random_compat/random_compat.phar' );
 	$error_unexpected	= __('An unexpected error has occurred', 'cftp_admin');
 	$error_os_fail		= __('Could not generate a random password', 'cftp_admin');
 
@@ -197,24 +154,24 @@ function generate_password()
  */
 function get_available_languages()
 {
-	global $locales_names;
+    /** Load the language and locales names list */
+    require_once ROOT_DIR . '/includes/language.locales.names.php';
 
 	$langs = array();
 
-	$mo_files = scandir(ROOT_DIR.'/lang/');
+	$mo_files = glob(ROOT_DIR.'/lang/*.mo');
 	foreach ($mo_files as $file) {
 		$lang_file	= pathinfo($file, PATHINFO_FILENAME);
-		$extension	= pathinfo($file, PATHINFO_EXTENSION);
-		if ( $extension == 'mo' ) {
-			if ( array_key_exists( $lang_file, $locales_names ) ) {
-				$lang_name = $locales_names[$lang_file];
-			}
-			else {
-				$lang_name = $lang_file;
-			}
+        $extension	= pathinfo($file, PATHINFO_EXTENSION);
 
-			$langs[$lang_file] = $lang_name;
-		}
+        if ( array_key_exists( $lang_file, $locales_names ) ) {
+            $lang_name = $locales_names[$lang_file];
+        }
+        else {
+            $lang_name = $lang_file;
+        }
+
+        $langs[$lang_file] = $lang_name;
 	}
 
 	/** Sort alphabetically */
@@ -351,227 +308,220 @@ function user_exists_id($id)
 }
 
 /**
- * Check if a group id exists on the database.
- * Used on the Edit group page.
- *
- * @return bool
- */
-function group_exists_id($id)
-{
-	global $dbh;
-	$statement = $dbh->prepare("SELECT * FROM " . TABLE_GROUPS . " WHERE id=:id");
-	$statement->bindParam(':id', $id, PDO::PARAM_INT);
-	$statement->execute();
-	if ( $statement->rowCount() > 0 ) {
-		return true;
-	}
-	else {
-		return false;
-	}
-}
-
-/**
- * Get all the client information knowing only the id
- * Used on the Manage files page.
- *
- * @return array
- */
+* Get all the client information knowing only the id
+* Used on the Manage files page.
+*
+* @return array
+*/
 function get_client_by_id($client)
 {
-	global $dbh;
-	$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
-	$statement->bindParam(':id', $client, PDO::PARAM_INT);
-	$statement->execute();
-	$statement->setFetchMode(PDO::FETCH_ASSOC);
+    global $dbh;
 
-	while ( $row = $statement->fetch() ) {
-		$information = array(
-							'id'					=> html_output($row['id']),
-							'username'			=> html_output($row['user']),
-							'name'				=> html_output($row['name']),
-							'address'			=> html_output($row['address']),
-							'phone'				=> html_output($row['phone']),
-							'email'				=> html_output($row['email']),
-							'notify'				=> html_output($row['notify']),
-							'level'				=> html_output($row['level']),
-							'active'				=> html_output($row['active']),
-							'max_file_size'	=> html_output($row['max_file_size']),
-							'contact'			=> html_output($row['contact']),
-							'created_date'		=> html_output($row['timestamp']),
-							'created_by'		=> html_output($row['created_by'])
-						);
-		if ( !empty( $information ) ) {
-			return $information;
-		}
-		else {
-			return false;
-		}
-	}
+    $statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
+    $statement->bindParam(':id', $client, PDO::PARAM_INT);
+    $statement->execute();
+    $statement->setFetchMode(PDO::FETCH_ASSOC);
+
+    if ( $statement->rowCount() > 0 ) {
+        while ( $row = $statement->fetch() ) {
+            $information = array(
+                                'id'				=> html_output($row['id']),
+                                'username'			=> html_output($row['user']),
+                                'name'				=> html_output($row['name']),
+                                'address'			=> html_output($row['address']),
+                                'phone'				=> html_output($row['phone']),
+                                'email'				=> html_output($row['email']),
+                                'notify_upload'		=> html_output($row['notify']),
+                                'level'				=> html_output($row['level']),
+                                'active'			=> html_output($row['active']),
+                                'max_file_size' 	=> html_output($row['max_file_size']),
+                                'contact'			=> html_output($row['contact']),
+                                'created_date'		=> html_output($row['timestamp']),
+                                'created_by'		=> html_output($row['created_by'])
+                            );
+            if ( !empty( $information ) ) {
+                return $information;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+    else {
+        return false;
+    }
 }
 
+function username_exists($username)
+{
+    global $dbh;
+    $statement = $dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE user = :user" );
+    $statement->execute([
+        ':user'	=> $username,
+    ]);
+
+    if ( $statement->rowCount() > 0 ) {
+        return true;
+    }
+
+    return false;
+}
+
+function generate_random_password() {
+    return bin2hex(openssl_random_pseudo_bytes(5));
+}
+
+function generate_username($from)
+{
+    $cut = substr($from, 0, MAX_USER_CHARS);
+    if (!username_exists($cut)) {
+        return $cut;
+    }
+
+    $rand = substr(uniqid(), 0, MAX_USER_CHARS);
+
+    return $rand;
+}
 
 /**
- * Get all the client information knowing only the log in username
- *
- * @return array
- */
+* Get all the client information knowing only the log in username
+*
+* @return array
+*/
 function get_client_by_username($client)
 {
-	global $dbh;
-	$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:username");
-	$statement->bindParam(':username', $client);
-	$statement->execute();
-	$statement->setFetchMode(PDO::FETCH_ASSOC);
+    global $dbh;
 
-	while ( $row = $statement->fetch() ) {
-		$information = array(
-							'id'					=> html_output($row['id']),
-							'name'				=> html_output($row['name']),
-							'username'			=> html_output($row['user']),
-							'address'			=> html_output($row['address']),
-							'phone'				=> html_output($row['phone']),
-							'email'				=> html_output($row['email']),
-							'notify'				=> html_output($row['notify']),
-							'level'				=> html_output($row['level']),
-							'active'				=> html_output($row['active']),
-							'max_file_size'	=> html_output($row['max_file_size']),
-							'contact'			=> html_output($row['contact']),
-							'created_date'		=> html_output($row['timestamp']),
-							'created_by'		=> html_output($row['created_by'])
-						);
-		if ( !empty( $information ) ) {
-			return $information;
-		}
-		else {
-			return false;
-		}
-	}
+    $statement = $dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE user=:username");
+    $statement->bindParam(':username', $client);
+    $statement->execute();
+    $statement->setFetchMode(PDO::FETCH_ASSOC);
+
+    while ( $row = $statement->fetch() ) {
+        $found_id = html_output($row['id']);
+        if ( !empty( $found_id ) ) {
+            $information = get_client_by_id($found_id);
+            return $information;
+        }
+        else {
+            return false;
+        }
+    }
 }
 
 /**
- * Get all the client information knowing only the log in username
- *
- * @return array
- */
-function get_logged_account_id($username)
+* Get a user using any of the accepted field names
+* 
+* @uses get_user_by_id
+* @return array
+*/
+function get_user_by($user_type, $field, $value)
 {
-	global $dbh;
-	$statement = $dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE user=:user");
-	$statement->execute(
-						array(
-							':user'	=> $username
-						)
-					);
-	$statement->setFetchMode(PDO::FETCH_ASSOC);
+    global $dbh;
 
-	while ( $row = $statement->fetch() ) {
-		$return_id = html_output($row['id']);
-		if ( !empty( $return_id ) ) {
-			return $return_id;
-		}
-		else {
-			return false;
-		}
-	}
-}
+    $field = (string)$field;
+    $field = trim( strip_Tags( htmlentities( strtolower( $field ) ) ) );
+    $acceptable_fields = [
+        'username',
+        'name',
+        'email',
+    ];
 
+    if ( in_array( $field, $acceptable_fields ) ) {
+        $statement = $dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE `$field`=:value");
+        $statement->bindParam(':value', $value);
+        $statement->execute();
+        
+        $result = $statement->fetchColumn();
+        if ( $result ) {
+            switch ( $user_type ) {
+                case 'user':
+                    $user_data = get_user_by_id($result);
+                    break;
+                case 'client':
+                    $user_data = get_client_by_id($result);
+            }
 
-/**
- * Used on the file uploading process to determine if the client
- * needs to be notified by e-mail.
- */
-function check_if_notify_client($client)
-{
-	global $dbh;
-	$statement = $dbh->prepare("SELECT notify, email FROM " . TABLE_USERS . " WHERE user=:user");
-	$statement->execute(
-						array(
-							':user'	=> $client
-						)
-					);
-	$statement->setFetchMode(PDO::FETCH_ASSOC);
-
-	while ( $row = $statement->fetch() ) {
-		if ( $row['notify'] == '1' ) {
-			return html_output($row['email']);
-		}
-		else {
-			return false;
-		}
-	}
-}
-
-
-/**
- * Get all the user information knowing only the log in username
- *
- * @return array
- */
-function get_user_by_username($user)
-{
-	global $dbh;
-	$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:user");
-	$statement->execute(
-						array(
-							':user'	=> $user
-						)
-					);
-	$statement->setFetchMode(PDO::FETCH_ASSOC);
-
-	if ( $statement->rowCount() > 0 ) {
-		while ( $row = $statement->fetch() ) {
-			$information = array(
-								'id'					=> html_output($row['id']),
-								'username'			=> html_output($row['user']),
-								'name'				=> html_output($row['name']),
-								'email'				=> html_output($row['email']),
-								'level'				=> html_output($row['level']),
-								'active'				=> html_output($row['active']),
-								'max_file_size'	=> html_output($row['max_file_size']),
-								'created_date'		=> html_output($row['timestamp'])
-							);
-			if ( !empty( $information ) ) {
-				return $information;
-			}
-			else {
-				return false;
-			}
-		}
-	}
+            return $user_data;
+        }
+        else {
+            return false;
+        }
+    }
+    else {
+        return false;
+    }
 }
 
 /**
- * Get all the user information knowing only the log in username
- *
- * @return array
- */
+* Get all the user information knowing only the id
+*
+* @return array
+*/
 function get_user_by_id($id)
 {
-	global $dbh;
-	$statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
-	$statement->bindParam(':id', $id, PDO::PARAM_INT);
-	$statement->execute();
-	$statement->setFetchMode(PDO::FETCH_ASSOC);
+    global $dbh;
 
-	while ( $row = $statement->fetch() ) {
-		$information = array(
-							'id'					=> html_output($row['id']),
-							'username'			=> html_output($row['user']),
-							'name'				=> html_output($row['name']),
-							'email'				=> html_output($row['email']),
-							'level'				=> html_output($row['level']),
-							'max_file_size'	=> html_output($row['max_file_size']),
-							'created_date'		=> html_output($row['timestamp']),
-						);
-		if ( !empty( $information ) ) {
-			return $information;
-		}
-		else {
-			return false;
-		}
-	}
+    $statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
+    $statement->bindParam(':id', $id, PDO::PARAM_INT);
+    $statement->execute();
+    $statement->setFetchMode(PDO::FETCH_ASSOC);
+
+    while ( $row = $statement->fetch() ) {
+        $information = array(
+                            'id'			=> html_output($row['id']),
+                            'username'		=> html_output($row['user']),
+                            'name'			=> html_output($row['name']),
+                            'email'			=> html_output($row['email']),
+                            'level'			=> html_output($row['level']),
+                            'active'		=> html_output($row['active']),
+                            'max_file_size'	=> html_output($row['max_file_size']),
+                            'created_date'	=> html_output($row['timestamp']),
+                        );
+        if ( !empty( $information ) ) {
+            return $information;
+        }
+        else {
+            return false;
+        }
+    }
 }
 
+/**
+* Get all the user information knowing only the log in username
+*
+* @return array
+* @uses get_user_by_id
+*/
+function get_user_by_username($user)
+{
+    global $dbh;
+
+    $statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:user");
+    $statement->execute(
+                        array(
+                            ':user'	=> $user
+                        )
+                    );
+    $statement->setFetchMode(PDO::FETCH_ASSOC);
+
+    if ( $statement->rowCount() > 0 ) {
+        while ( $row = $statement->fetch() ) {
+            $found_id = html_output($row['id']);
+            if ( !empty( $found_id ) ) {
+                $information = get_user_by_id($found_id);
+                return $information;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+    else {
+        return false;
+    }
+}
+ 
 
 /**
  * Get all the file information knowing only the id
@@ -589,12 +539,21 @@ function get_file_by_id($id)
 
 	while ( $row = $statement->fetch() ) {
 		$information = array(
-							'id'				=> html_output($row['id']),
-							'title'			=> html_output($row['filename']),
-							'original_url'	=> html_output($row['original_url']),
-							'url'				=> html_output($row['url']),
-						);
-		if ( !empty( $information ) ) {
+            'id' => html_output($row['id']),
+            'user_id' => html_output($row['user_id']),
+            'title'=> html_output($row['filename']),
+            'original_url' => html_output($row['original_url']),
+            'url' => html_output($row['url']),
+            'description' => html_output($row['description']),
+            'uploaded_date' => html_output($row['timestamp']),
+            'uploaded_by' => html_output($row['uploader']),
+            'expires' => html_output($row['expires']),
+            'expiry_date' => html_output($row['expiry_date']),
+            'public' => html_output($row['public_allow']),
+            'public_token' => html_output($row['public_token']),
+        );
+
+        if ( !empty( $information ) ) {
 			return $information;
 		}
 		else {
@@ -603,39 +562,82 @@ function get_file_by_id($id)
 	}
 }
 
-
 /**
- * Get all the group information knowing only the id
+ * Get all the file information knowing only the id
+ * Used on the Download information page.
  *
  * @return array
  */
-function get_group_by_id($id)
+function get_file_by_filename($filename)
 {
 	global $dbh;
-	$statement = $dbh->prepare("SELECT * FROM " . TABLE_GROUPS . " WHERE id=:id");
-	$statement->bindParam(':id', $id, PDO::PARAM_INT);
-	$statement->execute();
-	$statement->setFetchMode(PDO::FETCH_ASSOC);
+	$statement = $dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE url=:filename");
+    $statement->execute(
+        array(
+            ':filename'	=> $filename
+        )
+    );
 
-	while ( $row = $statement->fetch() ) {
-		$information = array(
-							'id'				=> html_output($row['id']),
-							'created_by'	=> html_output($row['created_by']),
-							'created_date'	=> html_output($row['timestamp']),
-							'name'			=> html_output($row['name']),
-							'description'	=> html_output($row['description']),
-							'public'			=> html_output($row['public']),
-							'public_token'	=> html_output($row['public_token']),
-						);
-		if ( !empty( $information ) ) {
-			return $information;
-		}
-		else {
-			return false;
-		}
-	}
+    if ( $statement->rowCount() > 0 ) {
+        while ( $row = $statement->fetch() ) {
+            $found_id = $row['id'];
+            if ( !empty( $found_id ) ) {
+                $information = get_file_by_id($found_id);
+                return $information;
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+    return false;
 }
 
+function get_file_assignations($file_id)
+{
+    if (empty($file_id)) {
+        return false;
+    }
+
+    if (!is_numeric($file_id)) {
+        return false;
+    }
+
+    global $dbh;
+
+    $statement = $dbh->prepare("SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id");
+    $statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
+    $statement->execute();
+    $statement->setFetchMode(PDO::FETCH_ASSOC);
+
+    $count = $statement->rowCount();
+
+    $return = [
+        'clients' => [],
+        'groups' => [],
+    ];
+
+    if ($count > 0) {
+        while ($row = $statement->fetch()) {
+            if (!empty($row['client_id'])) {
+                $return['clients'][$row['client_id']] = [
+                    'hidden' => $row['hidden'],
+                ];
+            }
+
+            if (!empty($row['group_id'])) {
+                $return['groups'][$row['group_id']] = [
+                    'hidden' => $row['hidden'],
+                ];
+            }
+        }
+
+        return $return;
+    }
+
+    return false;    
+}
 
 /**
  * Standard footer mark up and information generated on this function to
@@ -651,7 +653,6 @@ function default_footer_info($logged = true)
 			<?php
 				if ( defined('FOOTER_CUSTOM_ENABLE') && FOOTER_CUSTOM_ENABLE == '1' ) {
 					echo strip_tags(FOOTER_CUSTOM_CONTENT, '<br><span><a><strong><em><b><i><u><s>');
-					//echo htmlentities_allowed(FOOTER_CUSTOM_CONTENT);
 				}
 				else {
 					_e('Provided by', 'cftp_admin'); ?> <a href="<?php echo SYSTEM_URI; ?>" target="_blank"><?php echo SYSTEM_NAME; ?></a> <?php if ($logged == true) { _e('version', 'cftp_admin'); echo ' ' . CURRENT_VERSION; } ?> - <?php _e('Free software', 'cftp_admin');
@@ -662,6 +663,24 @@ function default_footer_info($logged = true)
 <?php
 }
 
+/**
+ * function render_json_variables
+ * 
+ * Adds a CDATA block with variables that are used on the main JS file
+ * URLs. text strings, etc.
+ */
+function render_json_variables()
+{
+	global $json_strings;
+    $output = json_encode( $json_strings );
+?>
+    <script type="text/javascript">
+        /*<![CDATA[*/
+            var json_strings = <?php echo $output; ?>;
+        /*]]>*/
+    </script>
+<?php
+}
 
 /**
  * Standard "There are no clients" message mark up and information
@@ -685,36 +704,34 @@ function message_no_clients()
  * - message_info
  *
  */
+/**
+ * Generate a system text message using Bootstrap's alert box.
+ */
 function system_message( $type, $message, $div_id = '' )
 {
-	$close = false;
+    if ( empty( $type ) ) {
+        $type = 'success';
+    }
 
 	switch ($type) {
-		case 'ok':
-			$class = 'success';
-			$close = true;
-			break;
-		case 'error':
-			$class = 'danger';
-			$close = true;
+        case 'success':
+            break;
+		case 'danger':
 			break;
 		case 'info':
-			$class = 'info';
-			break;
-		case 'warning':
-			$class = 'warning';
-			break;
+            break;
+        case 'warning':
+            break;
 	}
 
-	//$return = '<div class="message message_'.$type.'"';
-	$return = '<div class="alert alert-'.$class.'"';
+	$return = '<div class="alert alert-'.$type.'"';
 	if ( isset( $div_id ) && $div_id != '' ) {
 		$return .= ' id="' . $div_id . '"';
 	}
 
 	$return .= '>';
 
-	if ($close == true) {
+	if (isset($close) && $close == true) {
 		$return .= '<a href="#" class="close" data-dismiss="alert">&times;</a>';
 	}
 
@@ -730,20 +747,15 @@ function system_message( $type, $message, $div_id = '' )
  * account has permission to do something.
  *
  */
-function in_session_or_cookies($levels)
+function current_role_in($levels)
 {
-	if (isset($_SESSION['userlevel']) && (in_array($_SESSION['userlevel'],$levels))) {
+    if (!is_array($levels)) {
+        $levels = array($levels);
+    }
+    
+	if (isset($_SESSION['role']) && (in_array($_SESSION['role'],$levels))) {
 		return true;
 	}
-	/**
-	 * Cookies are no longer used this way.
-	 * userlevel_check.php has the answer.
-	 */
-	/*
-	else if (isset($_COOKIE['userlevel']) && (in_array($_COOKIE['userlevel'],$levels))) {
-		return true;
-	}
-	*/
 	else {
 		return false;
 	}
@@ -759,71 +771,76 @@ function in_session_or_cookies($levels)
 function get_current_user_level()
 {
 	$level = 0;
-	if (isset($_SESSION['userlevel'])) {
-		$level = $_SESSION['userlevel'];
+	if (isset($_SESSION['role'])) {
+		$level = $_SESSION['role'];
 	}
-	/*
-	elseif (isset($_COOKIE['userlevel'])) {
-		$level = $_COOKIE['userlevel'];
-	}
-	*/
-	return $level;
+
+    return $level;
 }
 
+/**
+ * Wrap print_r with pre tags
+ */
+function print_array($array)
+{
+    echo '<pre>';
+        print_r($array);
+    echo '</pre>';
+}
 
 /**
- * Returns the current logged in account username either from the active
- * session or the cookies.
- *
- * @todo Validate the returned value against the one stored on the database
+ * Alias for previous function
  */
-function get_current_user_username()
+function pa($array)
 {
-	$user = '';
-	/*
-	if (isset($_COOKIE['loggedin'])) {
-		$user = $_COOKIE['loggedin'];
-	}
-	*/
-	/*else*/
-	if (isset($_SESSION['loggedin'])) {
-		$user = $_SESSION['loggedin'];
-	}
-	return $user;
+    print_array($array);
+}
+
+/**
+ * Prints array and ends execution
+ */
+function pax($array)
+{
+    print_array($array);
+    exit;
 }
 
 /**
  * Wrapper for htmlentities with default options
  *
  */
-function html_output($str, $flags = ENT_QUOTES, $encoding = 'UTF-8', $double_encode = false)
+function html_output($str, $flags = ENT_QUOTES, $encoding = CHARSET, $double_encode = false)
 {
 	return htmlentities($str, $flags, $encoding, $double_encode);
 }
 
 /**
- * Allow some html tags for file descriptions on htmlentities
+ * Allow some html tags for file and group descriptions on htmlentities
  *
  */
-function htmlentities_allowed($str)
+function htmlentities_allowed($str, $quoteStyle = ENT_COMPAT, $charset = CHARSET, $doubleEncode = false)
 {
-	$description = htmlentities($str);
+    //$description = htmlspecialchars($str, $quoteStyle, $charset, $doubleEncode);
+    $string = htmlspecialchars_decode($str, $quoteStyle);
+    return strip_tags($string, '<i><b><strong><em><p><br><ul><ol><li><u><sup><sub><s>');
+    /*
 	$allowed_tags = array('i','b','strong','em','p','br','ul','ol','li','u','sup','sub','s');
 
 	$find = array();
 	$replace = array();
 
 	foreach ( $allowed_tags as $tag ) {
-		/** Opening tags */
-		$find[] = '&amp;lt;' . $tag . '&amp;gt;';
+		// Opening tags
+		$find[] = '&lt;' . $tag . '&gt;';
 		$replace[] = '<' . $tag . '>';
-		/** Closing tags */
-		$find[] = '&amp;lt;/' . $tag . '&amp;gt;';
-		$replace[] = '</' . $tag . '>';
+		// Closing tags
+		$find[] = '&lt;/' . $tag . '&gt;';
+        $replace[] = '</' . $tag . '>';
 	}
 
 	$description = str_replace($find, $replace, $description);
-	return $description;
+    return $description
+    */;
 }
 
 
@@ -832,7 +849,7 @@ function htmlentities_allowed($str)
  * characters when saving to the database.
  */
 function encode_html($str) {
-	$str = htmlentities($str, ENT_QUOTES, $encoding='utf-8');
+	$str = htmlentities($str, ENT_QUOTES, $encoding=CHARSET);
 	$str = nl2br($str);
 	//$str = addslashes($str);
 	return $str;
@@ -980,10 +997,10 @@ function delete_recursive($dir)
 						unlink($dir.$file);
 					}
 				}
-		   }
-		   closedir($dh);
-		   rmdir($dir);
-	   }
+		    }
+		    closedir($dh);
+		    rmdir($dir);
+	    }
 	}
 }
 
@@ -1013,6 +1030,140 @@ function generateRandomString($length = 10)
     return $rnd_result;
 }
 
+function getFileTypeByMime($full_path)
+{
+    if (!file_exists($full_path)) {
+        return null;
+    }
+
+    $mimeType = mime_content_type($full_path);
+
+    return $mimeType;
+}
+
+function isImage($full_path)
+{
+    $mimeType = getFileTypeByMime($full_path);
+    if (explode('/', $mimeType)[0] == 'image') {
+        return true;
+    }
+
+    return false;
+}
+
+function isVideo($full_path)
+{
+    $mimeType = getFileTypeByMime($full_path);
+    if (explode('/', $mimeType)[0] == 'video') {
+        return true;
+    }
+
+    return false;
+}
+
+function isAudio($full_path)
+{
+    $mimeType = getFileTypeByMime($full_path);
+    if (explode('/', $mimeType)[0] == 'audio') {
+        return true;
+    }
+
+    return false;
+}
+
+function file_is_image($file)
+{
+    return isImage($file);
+}
+
+/**
+ * Try to recognize if a file is a valid svg
+ */
+function file_is_svg( $file )
+{
+	if ( file_exists( $file ) ) {
+        $svg_sanitizer = new Sanitizer();
+        $source_file = file_get_contents($file);
+        $sanitized_file = $svg_sanitizer->sanitize($source_file);
+    }
+    else {
+        return false;
+    }
+
+	return $sanitized_file;
+}
+
+/**
+ * Make a thumbnail with SimpleImage
+ */
+function make_thumbnail( $file, $type = 'thumbnail', $width = THUMBS_MAX_WIDTH, $height = THUMBS_MAX_HEIGHT, $quality = THUMBS_QUALITY )
+{
+    $thumbnail = array();
+    
+    if ( !file_exists($file) ) {
+        $thumbnail_file = 'thumb_unavailable_' . $width . 'x' . $height . '.png';
+
+        $thumbnail['original']['url'] = ASSETS_IMG_URL . '/thumbnail-unavailable.png';
+		$thumbnail['thumbnail']['location'] = THUMBNAILS_FILES_DIR . DS . $thumbnail_file;
+        $thumbnail['thumbnail']['url'] = THUMBNAILS_FILES_URL . '/' . $thumbnail_file;
+        
+        $file = ASSETS_IMG_DIR . DS . '/thumbnail-unavailable.png'; // Reset to make thumbnail
+    }
+    else {
+        if ( file_is_image( $file ) ) {
+            if (file_is_svg($file)) {
+                if (get_option('svg_show_as_thumbnail') == '1') {
+                    $file = str_replace(ROOT_DIR, BASE_URI, $file);
+                    $thumbnail['original']['url'] = $file;
+                    $thumbnail['thumbnail']['location'] = $file;
+                    $thumbnail['thumbnail']['url'] = $file;
+                }
+
+                return $thumbnail;
+            }
+            /** Original extension */
+            $pathinfo	= pathinfo( $file );
+            $filename	= md5( $pathinfo['basename'] );
+            $extension	= strtolower( $pathinfo['extension'] );
+            $mime_type	= mime_content_type($file);
+
+            $thumbnail_file = 'thumb_' . $filename . '_' . $width . 'x' . $height . '.' . $extension;
+
+            $thumbnail['original']['url'] = $file;
+            $thumbnail['thumbnail']['location'] = THUMBNAILS_FILES_DIR . DS . $thumbnail_file;
+            $thumbnail['thumbnail']['url'] = THUMBNAILS_FILES_URL . '/' . $thumbnail_file;
+        }
+    }
+
+    if ( !file_exists( $thumbnail['thumbnail']['location'] ) ) {
+        try {
+            $image = new \claviska\SimpleImage();
+            $image
+                ->fromFile($file)
+                ->autoOrient();
+
+            switch ( $type ) {
+                case 'proportional':
+                    $method = 'bestFit';
+                    break;
+                case 'thumbnail':
+                default:
+                    $method = 'thumbnail';
+                    break;
+            }
+
+            $image->$method($width, $height);
+
+            $image
+                ->toFile($thumbnail['thumbnail']['location'], $mime_type, $quality);
+
+        } catch(Exception $err) {
+            $thumbnail['error'] = $err->getMessage();
+        }
+    }
+
+	return $thumbnail;
+}
 
 /**
  * Prepare the branding image file using the database options
@@ -1022,48 +1173,69 @@ function generate_logo_url()
 {
 	$branding = array();
 	$branding['exists'] = false;
+    // LOGO_FILENAME: filename gotten from the database
+    if ( empty( LOGO_FILENAME ) ) {
+        $branding['dir'] = ASSETS_IMG_DIR . DS . DEFAULT_LOGO_FILENAME;
+        $branding['url'] = ASSETS_IMG_URL . '/' . DEFAULT_LOGO_FILENAME;
+    }
+    else {
+        $branding['dir'] = ADMIN_UPLOADS_DIR . DS . LOGO_FILENAME;
+        $branding['url'] = ADMIN_UPLOADS_URI . LOGO_FILENAME;
+    }
 
-	$logo_filename = LOGO_FILENAME;
-	if ( empty( $logo_filename ) ) {
-		$branding['filename'] = 'img/projectsend-logo.png';
-	}
-	else {
-		$branding['filename'] = 'img/custom/logo/'.LOGO_FILENAME;
-	}
+	if (file_exists( $branding['dir'] )) {
+        $branding['exists'] = true;
+        
+        /* Make thumbnails for raster files */
+        if ( file_is_image($branding['dir']) ) {
+            $thumbnail = make_thumbnail($branding['dir'], 'proportional', LOGO_MAX_WIDTH, LOGO_MAX_HEIGHT);
+		    $branding['thumbnail'] = ( !empty( $thumbnail['thumbnail']['url'] ) ) ? $thumbnail['thumbnail']['url'] : $branding['url'];
+            $branding['thumbnail_info'] = $thumbnail;
+            $branding['type'] = 'raster';
+        }
+        elseif ( file_is_svg($branding['dir']) ) {
+            $branding['type'] = 'vector';
+            $branding['thumbnail'] = $branding['dir']; // no thumbnail, just return the original file
+        }
 
-	if (file_exists(ROOT_DIR . '/' . $branding['filename'])) {
-		$branding['exists'] = true;
-		$branding['url'] = BASE_URI.$branding['filename'];
-	}
+        $branding['ext'] = pathinfo($branding['dir'], PATHINFO_EXTENSION);
+    }
+
 	return $branding;
 }
 
-
 /**
- * Returns the full layout with the branding image.
- * Used on the unlogged header file.
+ * Returns the corresponding layout to show an image tag or the svg contents
+ * of the current uploaded logo file.
  */
-function generate_branding_layout()
+function get_branding_layout($return_thumbnail = false)
 {
-	$branding	= generate_logo_url();
-	$layout		= '';
+    $layout = '<div class="row">
+                <div class="col-xs-12 branding_unlogged">
+                    %LOGO%
+                </div>
+                </div>';
+
+    $branding = generate_logo_url();
 
 	if ($branding['exists'] === true) {
-		$branding_image = $branding['url'];
+        $branding_image = ( $return_thumbnail === true ) ? $branding['thumbnail'] : $branding['url'];
 	}
 	else {
-		$branding_image = BASE_URI . 'img/projectsend-logo.png';
-	}
+		$branding_image = ASSETS_IMG_URL . DEFAULT_LOGO_FILENAME;
+    }
+    
+    if ($branding['type'] == 'raster') {
+        $replace = '<img src="' . $branding_image . '" alt="' . html_output(THIS_INSTALL_TITLE) . '" />';
+    }
+    elseif ($branding['type'] == 'vector') {
+        $replace = file_is_svg($branding['dir']);
+    }
 
-	$layout = '<div class="row">
-					<div class="col-xs-12 branding_unlogged">
-						<img src="' . $branding_image . '" alt="' . html_output(THIS_INSTALL_SET_TITLE) . '" />
-					</div>
-				</div>';
+    $layout = str_replace('%LOGO%', $replace, $layout);
 
 	return $layout;
 }
-
 
 /**
  * This function is called when a file is loaded
@@ -1077,14 +1249,15 @@ function prevent_direct_access()
 	}
 }
 
-
 /**
  * Add a noindex to the header
  */
 function meta_noindex()
 {
-	if ( defined('PRIVACY_NOINDEX_SITE') ) {
-		if ( PRIVACY_NOINDEX_SITE == 1 ) {
+    $option = get_option('privacy_noindex_site');
+
+    if ( !empty($option) ) {
+		if ( (int)$option == 1 ) {
 			echo '<meta name="robots" content="noindex">';
 		}
 	}
@@ -1095,10 +1268,12 @@ function meta_noindex()
  */
 function meta_favicon()
 {
-	$favicon_location = BASE_URI . 'img/favicon/';
-	echo '<link rel="shortcut icon" type="image/x-icon" href="' . BASE_URI . 'favicon.ico" />' . "\n";
-	echo '<link rel="icon" type="image/png" href="' . $favicon_location . 'favicon-32.png" sizes="32x32">' . "\n";
-	echo '<link rel="apple-touch-icon" href="' . $favicon_location . 'favicon-152.png" sizes="152x152">' . "\n";
+    $favicon_location = BASE_URI . 'assets/img/favicon/';
+    echo '<link rel="apple-touch-icon" sizes="180x180" href="' . $favicon_location . 'apple-touch-icon.png">';
+    echo '<link rel="icon" type="image/png" sizes="32x32" href="' . $favicon_location . 'favicon-32x32.png">';
+    echo '<link rel="icon" type="image/png" sizes="16x16" href="' . $favicon_location . 'favicon-16x16.png">';
+    echo '<link rel="manifest" href="' . $favicon_location . 'site.webmanifest">';
+    echo '<meta name="theme-color" content="#4c2ab6">';
 }
 
 
@@ -1107,30 +1282,26 @@ function meta_favicon()
  */
 function password_notes()
 {
-	$pass_notes_output = '';
-
-	global $validation_req_upper;
-	global $validation_req_lower;
-	global $validation_req_number;
-	global $validation_req_special;
+    $pass_notes_output = '';
+    global $json_strings;
 
 	$rules_active	= array();
 	$rules			= array(
 							'lower'		=> array(
-												'value'	=> PASS_REQ_UPPER,
-												'text'	=> $validation_req_upper,
+												'value'	=> PASS_REQUIRE_UPPER,
+												'text'	=> $json_strings['validation']['req_upper'],
 											),
 							'upper'		=> array(
-												'value'	=> PASS_REQ_LOWER,
-												'text'	=> $validation_req_lower,
+												'value'	=> PASS_REQUIRE_LOWER,
+												'text'	=> $json_strings['validation']['req_lower'],
 											),
 							'number'	=> array(
-												'value'	=> PASS_REQ_NUMBER,
-												'text'	=> $validation_req_number,
+												'value'	=> PASS_REQUIRE_NUMBER,
+												'text'	=> $json_strings['validation']['req_number'],
 											),
 							'special'	=> array(
-												'value'	=> PASS_REQ_SPECIAL,
-												'text'	=> $validation_req_special,
+												'value'	=> PASS_REQUIRE_SPECIAL,
+												'text'	=> $json_strings['validation']['req_special'],
 											),
 						);
 
@@ -1172,8 +1343,7 @@ function add_body_class( $custom = '' )
 	if ( check_for_session( false ) ) {
 		$classes[] = 'logged-in';
 
-		global $client_info;
-		$logged_type = $client_info['level'] == '0' ? 'client' : 'admin';
+		$logged_type = CURRENT_USER_LEVEL == '0' ? 'client' : 'admin';
 
 		$classes[] = 'logged-as-' . $logged_type;
 	}
@@ -1192,6 +1362,16 @@ function add_body_class( $custom = '' )
 	return $render;
 }
 
+function add_page_id($id)
+{
+    $return = '';
+
+    if (!empty($id)) {
+        $return .= 'data-page-id="'.$id.'"';
+    }
+
+    return $return;
+}
 
 /**
  * Creates a standarized download link. Used on
@@ -1199,25 +1379,53 @@ function add_body_class( $custom = '' )
  */
 function make_download_link($file_info)
 {
-	global $client_info;
 	$download_link = BASE_URI.'process.php?do=download&amp;id='.$file_info['id'];
-	/*
-						&amp;origin='.$file_info['origin'];
-	if (!empty($file_info['group_id'])) {
-		$download_link .= '&amp;group_id='.$file_info['group_id'];
-	}
-	*/
-	return $download_link;
+
+    return $download_link;
 }
 
 /**
- * print_r a variable with a more human readable format
+ * Convert to array only if it's not one already
  */
-function print_array( $data = array() )
+function to_array_if_not($data)
 {
-	echo '<pre>';
-	print_r($data);
-	echo '</pre>';
+    if (!is_array($data)) {
+        $value = array($data);
+    }
+    else {
+        $value = $data;
+    }
+
+    return $value;
+}
+
+function generateSafeFilename($filename)
+{
+    $original_filename = pathinfo(trim($filename));
+    $filename = $original_filename['filename'];
+    $extension = $original_filename['extension'];
+
+    // Replace accent characters, forien languages
+    $search = array('À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ', 'Ā', 'ā', 'Ă', 'ă', 'Ą', 'ą', 'Ć', 'ć', 'Ĉ', 'ĉ', 'Ċ', 'ċ', 'Č', 'č', 'Ď', 'ď', 'Đ', 'đ', 'Ē', 'ē', 'Ĕ', 'ĕ', 'Ė', 'ė', 'Ę', 'ę', 'Ě', 'ě', 'Ĝ', 'ĝ', 'Ğ', 'ğ', 'Ġ', 'ġ', 'Ģ', 'ģ', 'Ĥ', 'ĥ', 'Ħ', 'ħ', 'Ĩ', 'ĩ', 'Ī', 'ī', 'Ĭ', 'ĭ', 'Į', 'į', 'İ', 'ı', 'Ĳ', 'ĳ', 'Ĵ', 'ĵ', 'Ķ', 'ķ', 'Ĺ', 'ĺ', 'Ļ', 'ļ', 'Ľ', 'ľ', 'Ŀ', 'ŀ', 'Ł', 'ł', 'Ń', 'ń', 'Ņ', 'ņ', 'Ň', 'ň', 'ŉ', 'Ō', 'ō', 'Ŏ', 'ŏ', 'Ő', 'ő', 'Œ', 'œ', 'Ŕ', 'ŕ', 'Ŗ', 'ŗ', 'Ř', 'ř', 'Ś', 'ś', 'Ŝ', 'ŝ', 'Ş', 'ş', 'Š', 'š', 'Ţ', 'ţ', 'Ť', 'ť', 'Ŧ', 'ŧ', 'Ũ', 'ũ', 'Ū', 'ū', 'Ŭ', 'ŭ', 'Ů', 'ů', 'Ű', 'ű', 'Ų', 'ų', 'Ŵ', 'ŵ', 'Ŷ', 'ŷ', 'Ÿ', 'Ź', 'ź', 'Ż', 'ż', 'Ž', 'ž', 'ſ', 'ƒ', 'Ơ', 'ơ', 'Ư', 'ư', 'Ǎ', 'ǎ', 'Ǐ', 'ǐ', 'Ǒ', 'ǒ', 'Ǔ', 'ǔ', 'Ǖ', 'ǖ', 'Ǘ', 'ǘ', 'Ǚ', 'ǚ', 'Ǜ', 'ǜ', 'Ǻ', 'ǻ', 'Ǽ', 'ǽ', 'Ǿ', 'ǿ'); 
+    $replace = array('A', 'A', 'A', 'A', 'A', 'A', 'AE', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'D', 'N', 'O', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 's', 'a', 'a', 'a', 'a', 'a', 'a', 'ae', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'n', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y', 'A', 'a', 'A', 'a', 'A', 'a', 'C', 'c', 'C', 'c', 'C', 'c', 'C', 'c', 'D', 'd', 'D', 'd', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'G', 'g', 'G', 'g', 'G', 'g', 'G', 'g', 'H', 'h', 'H', 'h', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'IJ', 'ij', 'J', 'j', 'K', 'k', 'L', 'l', 'L', 'l', 'L', 'l', 'L', 'l', 'l', 'l', 'N', 'n', 'N', 'n', 'N', 'n', 'n', 'O', 'o', 'O', 'o', 'O', 'o', 'OE', 'oe', 'R', 'r', 'R', 'r', 'R', 'r', 'S', 's', 'S', 's', 'S', 's', 'S', 's', 'T', 't', 'T', 't', 'T', 't', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'W', 'w', 'Y', 'y', 'Y', 'Z', 'z', 'Z', 'z', 'Z', 'z', 's', 'f', 'O', 'o', 'U', 'u', 'A', 'a', 'I', 'i', 'O', 'o', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'A', 'a', 'AE', 'ae', 'O', 'o'); 
+    $filename = str_replace($search, $replace, $filename);
+
+    // Replace common characters
+    $search = array('&', '£', '$'); 
+    $replace = array('and', 'pounds', 'dollars'); 
+    $filename= str_replace($search, $replace, $filename);
+
+    // Remove - for spaces and union characters
+    $search = array(' ', '&', '\r\n', '\n', '+', ',', '//');
+    $replace = '-';
+    $filename = str_replace($search, $replace, $filename);
+
+    // Delete and replace rest of special chars
+    $search = array('/[^a-z0-9\-<>_]/', '/[\-]+/', '/<[^>]*>/', '/[  *]/');
+    $replace = array('', '-', '', '-');
+    $filename = preg_replace($search, $replace, $filename);
+
+    return strtolower($filename.'.'.$extension);
 }
 
 /**
@@ -1242,21 +1450,20 @@ function option_file_upload( $file, $validate_ext = '', $option = '', $action = 
 
 	if ( is_uploaded_file( $file['tmp_name'] ) ) {
 
-		$this_upload = new PSend_Upload_File();
-		$safe_filename = $this_upload->safe_rename( $file['name'] );
+        $safe_filename = generateSafeFilename($file['name']);
 		/**
 		 * Check the file type for allowed extensions.
 		 */
 		if ( !empty( $validate_types) && !preg_match( $validate_types, strrchr( $safe_filename, '.' ) ) ) {
 			$continue = false;
-		}
+        }
 
 		if ( $continue ) {
 			/**
-			 * Move the file to the destination defined on sys.vars.php. If ok, add the
+			 * Move the file to the destination defined on app.php. If ok, add the
 			 * new file name to the database.
 			 */
-			if ( move_uploaded_file( $file['tmp_name'], LOGO_FOLDER . $safe_filename ) ) {
+			if ( move_uploaded_file( $file['tmp_name'], ADMIN_UPLOADS_DIR . DS . $safe_filename ) ) {
 				if ( !empty( $option ) ) {
 					$query = "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name='" . $option . "'";
 					$sql = $dbh->prepare( $query );
@@ -1271,12 +1478,11 @@ function option_file_upload( $file, $validate_ext = '', $option = '', $action = 
 
 				/** Record the action log */
 				if ( !empty( $action ) ) {
-					$new_log_action = new LogActions();
-					$log_action_args = array(
-											'action' => $action,
-											'owner_id' => CURRENT_USER_ID
-										);
-					$new_record_action = $new_log_action->log_action_save($log_action_args);
+					$logger = new \ProjectSend\Classes\ActionsLog;
+					$new_record_action = $logger->addEntry([
+                        'action' => $action,
+                        'owner_id' => CURRENT_USER_ID
+                    ]);
 				}
 			}
 			else {
@@ -1294,278 +1500,227 @@ function option_file_upload( $file, $validate_ext = '', $option = '', $action = 
 	return $return;
 }
 
-/**
- * Renders an action recorded on the log.
- */
-function render_log_action($params)
+function format_date($date)
 {
-	$action = $params['action'];
-	$timestamp = $params['timestamp'];
-	$owner_id = $params['owner_id'];
-	$owner_user = html_output($params['owner_user']);
-	$affected_file = $params['affected_file'];
-	$affected_file_name = $params['affected_file_name'];
-	$affected_account = $params['affected_account'];
-	$affected_account_name = html_output($params['affected_account_name']);
+    if (!$date) {
+        return false;
+    }
 
-	switch ($action) {
-		case 0:
-			$action_ico = 'install';
-			$action_text = __('ProjectSend was installed','cftp_admin');
-			break;
-		case 1:
-			$action_ico = 'login';
-			$part1 = $owner_user;
-			$action_text = __('logged in to the system.','cftp_admin');
-			break;
-		case 2:
-			$action_ico = 'user-add';
-			$part1 = $owner_user;
-			$action_text = __('created the user account','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 3:
-			$action_ico = 'client-add';
-			$part1 = $owner_user;
-			$action_text = __('created the client account ','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 4:
-			$action_ico = 'client-add';
-			$part1 = $affected_account_name;
-			$action_text = __('created a client account for themself.','cftp_admin');
-			break;
-		case 5:
-			$action_ico = 'file-add';
-			$part1 = $owner_user;
-			$action_text = __('(user) uploaded the file','cftp_admin');
-			$part2 = $affected_file_name;
-			break;
-		case 6:
-			$action_ico = 'file-add';
-			$part1 = $owner_user;
-			$action_text = __('(client) uploaded the file','cftp_admin');
-			$part2 = $affected_file_name;
-			break;
-		case 7:
-			$action_ico = 'file-download';
-			$part1 = $owner_user;
-			$action_text = __('(user) downloaded the file','cftp_admin');
-			$part2 = $affected_file_name;
-			$part3 = __('assigned to:','cftp_admin');
-			$part4 = $affected_account_name;
-			break;
-		case 8:
-			$action_ico = 'file-download';
-			$part1 = $owner_user;
-			$action_text = __('(client) downloaded the file','cftp_admin');
-			$part2 = $affected_file_name;
-			break;
-		case 9:
-			$action_ico = 'download-zip';
-			$part1 = $owner_user;
-			$action_text = __('generated a zip file','cftp_admin');
-			break;
-		case 10:
-			$action_ico = 'file-unassign';
-			$part1 = $owner_user;
-			$action_text = __('unassigned the file','cftp_admin');
-			$part2 = $affected_file_name;
-			$part3 = __('from the client:','cftp_admin');
-			$part4 = $affected_account_name;
-			break;
-		case 11:
-			$action_ico = 'file-unassign';
-			$part1 = $owner_user;
-			$action_text = __('unassigned the file','cftp_admin');
-			$part2 = $affected_file_name;
-			$part3 = __('from the group:','cftp_admin');
-			$part4 = $affected_account_name;
-			break;
-		case 12:
-			$action_ico = 'file-delete';
-			$part1 = $owner_user;
-			$action_text = __('deleted the file','cftp_admin');
-			$part2 = $affected_file_name;
-			break;
-		case 13:
-			$action_ico = 'user-edit';
-			$part1 = $owner_user;
-			$action_text = __('edited the user','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 14:
-			$action_ico = 'client-edit';
-			$part1 = $owner_user;
-			$action_text = __('edited the client','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 15:
-			$action_ico = 'group-edit';
-			$part1 = $owner_user;
-			$action_text = __('edited the group','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 16:
-			$action_ico = 'user-delete';
-			$part1 = $owner_user;
-			$action_text = __('deleted the user','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 17:
-			$action_ico = 'client-delete';
-			$part1 = $owner_user;
-			$action_text = __('deleted the client','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 18:
-			$action_ico = 'group-delete';
-			$part1 = $owner_user;
-			$action_text = __('deleted the group','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 19:
-			$action_ico = 'client-activate';
-			$part1 = $owner_user;
-			$action_text = __('activated the client','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 20:
-			$action_ico = 'client-deactivate';
-			$part1 = $owner_user;
-			$action_text = __('deactivated the client','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 21:
-			$action_ico = 'file-hidden';
-			$part1 = $owner_user;
-			$action_text = __('marked as hidden the file','cftp_admin');
-			$part2 = $affected_file_name;
-			$part3 = __('to:','cftp_admin');
-			$part4 = $affected_account_name;
-			break;
-		case 22:
-			$action_ico = 'file-visible';
-			$part1 = $owner_user;
-			$action_text = __('marked as visible the file','cftp_admin');
-			$part2 = $affected_file_name;
-			$part3 = __('to:','cftp_admin');
-			$part4 = $affected_account_name;
-			break;
-		case 23:
-			$action_ico = 'group-add';
-			$part1 = $owner_user;
-			$action_text = __('created the group','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 24:
-			$action_ico = 'login';
-			$part1 = $owner_user;
-			$action_text = __('logged in to the system.','cftp_admin');
-			break;
-		case 25:
-			$action_ico = 'file-assign';
-			$part1 = $owner_user;
-			$action_text = __('assigned the file','cftp_admin');
-			$part2 = $affected_file_name;
-			$part3 = __('to the client:','cftp_admin');
-			$part4 = $affected_account_name;
-			break;
-		case 26:
-			$action_ico = 'file-assign';
-			$part1 = $owner_user;
-			$action_text = __('assigned the file','cftp_admin');
-			$part2 = $affected_file_name;
-			$part3 = __('to the group:','cftp_admin');
-			$part4 = $affected_account_name;
-			break;
-		case 27:
-			$action_ico = 'user-activate';
-			$part1 = $owner_user;
-			$action_text = __('activated the user','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 28:
-			$action_ico = 'user-deactivate';
-			$part1 = $owner_user;
-			$action_text = __('deactivated the user','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 29:
-			$action_ico = 'branding-change';
-			$part1 = $owner_user;
-			$action_text = __('uploaded a new logo on "Branding"','cftp_admin');
-			break;
-		case 30:
-			$action_ico = 'update';
-			$part1 = $owner_user;
-			$action_text = __('updated ProjectSend to version','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 31:
-			$action_ico = 'logout';
-			$part1 = $owner_user;
-			$action_text = __('logged out of the system.','cftp_admin');
-			break;
-		case 32:
-			$action_ico = 'file-edit';
-			$part1 = $owner_user;
-			$action_text = __('(user) edited the file','cftp_admin');
-			$part2 = $affected_file_name;
-			break;
-		case 33:
-			$action_ico = 'file-edit';
-			$part1 = $owner_user;
-			$action_text = __('(client) edited the file','cftp_admin');
-			$part2 = $affected_file_name;
-			break;
-		case 34:
-			$action_ico = 'category-add';
-			$part1 = $owner_user;
-			$action_text = __('created the category','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 35:
-			$action_ico = 'category-edit';
-			$part1 = $owner_user;
-			$action_text = __('edited the category','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 36:
-			$action_ico = 'category-delete';
-			$part1 = $owner_user;
-			$action_text = __('deleted the category','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 37:
-			$action_ico = 'download-anonymous';
-			$part1 = __('An anonymous user','cftp_admin');
-			$action_text = __('downloaded the file','cftp_admin');
-			$part2 = $affected_file_name;
-			break;
-		case 38:
-			$action_ico = 'client-request-processed';
-			$part1 = $owner_user;
-			$action_text = __('processed an account request for','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-		case 39:
-			$action_ico = 'client-request-processed';
-			$part1 = $owner_user;
-			$action_text = __('processed group memberships requests for','cftp_admin');
-			$part2 = $affected_account_name;
-			break;
-	}
+    $formatted = date(get_option('timeformat'), strtotime($date));
 
-	$date = date(TIMEFORMAT_USE,strtotime($timestamp));
+    return $formatted;
+}
 
-	if (!empty($part1)) { $log['1'] = $part1; }
-	if (!empty($part2)) { $log['2'] = $part2; }
-	if (!empty($part3)) { $log['3'] = $part3; }
-	if (!empty($part4)) { $log['4'] = $part4; }
-	$log['icon'] = $action_ico;
-	$log['timestamp'] = $date;
-	$log['text'] = $action_text;
+function format_time($date)
+{
+    if (!$date) {
+        return false;
+    }
 
-	return $log;
+    $formatted = date('h:i:s', strtotime($date));
+
+    return $formatted;
+}
+
+function extensionIsAllowed($extension) {
+    $allowed_extensions = explode(',', get_option('allowed_file_types') );
+    if (in_array($extension, $allowed_extensions)) {
+        return true;
+    }
+
+    return false;
+}
+
+function fileEditorGetAllClients()
+{
+	global $dbh;
+
+    /** Fill the users array that will be used on the notifications process */
+    //$users = [];
+    $clients = [];
+
+    $statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . " WHERE level='0' AND account_requested='0' ORDER BY name ASC");
+    $statement->execute();
+    $statement->setFetchMode(PDO::FETCH_ASSOC);
+    while( $row = $statement->fetch() ) {
+        $clients[$row["id"]] = $row["name"];
+    }
+
+    return $clients;
+}
+
+function fileEditorGetAllGroups()
+{
+	global $dbh;
+
+    /** Fill the groups array that will be used on the form */
+    $groups = [];
+    $statement = $dbh->prepare("SELECT id, name FROM " . TABLE_GROUPS . " ORDER BY name ASC");
+    $statement->execute();
+    $statement->setFetchMode(PDO::FETCH_ASSOC);
+    while( $row = $statement->fetch() ) {
+        $groups[$row["id"]] = $row["name"];
+    }
+
+    return $groups;
+}
+
+function userCanEditFile($user_id = null, $file_id = null)
+{
+    if (empty($user_id) or empty($file_id)) {
+        return false;
+    }
+
+    $user = get_user_by_id($user_id);
+
+    if ($user['level'] != 0) {
+        return true;
+    } else {
+        $file = get_file_by_id($file_id);
+
+        // Pre-update when column didn't exist
+        if ($file['user_id'] == null) {
+            if ($user['username'] == $file['uploaded_by']) {
+                return true;
+            }    
+        }
+        if ($user['id'] == $file['user_id']) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function recordNewDownload($user_id = CURRENT_USER_ID, $file_id = null)
+{
+    global $dbh;
+    if (empty($file_id)) {
+        return false;
+    }
+
+    if (!is_numeric($user_id) || !is_numeric($file_id)) {
+        return false;
+    }
+
+    // Anonymous download
+    if ($user_id == 0) {
+        $statement = $dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (file_id, remote_ip, remote_host, anonymous) VALUES (:file_id, :remote_ip, :remote_host, :anonymous)");
+        $statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
+        $statement->bindParam(':remote_ip', get_client_ip());
+        $statement->bindParam(':remote_host', $_SERVER['REMOTE_HOST']);
+        $statement->bindValue(':anonymous', 1, PDO::PARAM_INT);
+        $statement->execute();
+    } else {
+        $statement = $dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (user_id , file_id, remote_ip, remote_host) VALUES (:user_id, :file_id, :remote_ip, :remote_host)");
+        $statement->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
+        $statement->bindParam(':remote_ip', get_client_ip());
+        $statement->bindParam(':remote_host', $_SERVER['REMOTE_HOST']);
+        $statement->execute();
+    }
+
+    if (!empty($statement)) {
+        return true;
+    }
+
+    return false;
+}
+
+function userCanDownloadFile($user_id = CURRENT_USER_ID, $file_id = null)
+{
+    global $dbh;
+    if (empty($file_id)) {
+        return false;
+    }
+
+    if (!is_numeric($user_id) || !is_numeric($file_id)) {
+        return false;
+    }
+
+
+    if (CURRENT_USER_LEVEL != 0) {
+        return true;
+    }
+
+    // Get the file
+    $file = new \ProjectSend\Classes\Files();
+    $file->get($file_id);
+
+    // Get groups
+    $get_groups = new \ProjectSend\Classes\MembersActions();
+    $found_groups = $get_groups->client_get_groups([
+        'client_id' => $user_id,
+        'return' => 'list',
+    ]);
+
+    if ($file->user_id == $user_id) {
+        return true;
+    }
+    else {
+        if ($file->expires == '0' || $file->expired == false) {
+            $statement = $dbh->prepare("SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE (client_id = :client_id OR FIND_IN_SET(group_id, :groups)) AND file_id = :file_id AND hidden = '0'");
+            $statement->bindValue(':client_id', $user_id, PDO::PARAM_INT);
+            $statement->bindParam(':groups', $found_groups);
+            $statement->bindParam(':file_id', $file->id, PDO::PARAM_INT);
+            $statement->execute();
+            $statement->setFetchMode(PDO::FETCH_ASSOC);
+            $row = $statement->fetch();
+
+            if ($row) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+function countGroupsRequestsForExistingClients()
+{
+    global $dbh;
+    $count = 0;
+    $ignore_user_ids = [];
+
+    // First, get accounts requests. This will give us the ids of the clients that we need to ignore later
+    $statement = $dbh->prepare( "SELECT id FROM " . TABLE_USERS . " WHERE level='0' AND active='1' AND account_denied='0'" );
+    $statement->execute();
+    if ($statement->rowCount() > 0) {
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
+        while( $row = $statement->fetch() ) {
+            $ignore_user_ids[] = $row['id'];
+        }
+    }
+
+    if (!empty($ignore_user_ids)) {
+        $ignore_user_ids = implode(',', $ignore_user_ids);
+    
+        $statement = $dbh->prepare( "SELECT id FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='0' AND FIND_IN_SET(client_id, :ignore)");
+        $statement->bindParam(':ignore', $ignore_user_ids);
+        $statement->execute();
+        $count = $statement->rowCount();
+    }
+
+    return $count;
+}
+
+// Function to get the client ip address
+function get_client_ip() {
+    $ipaddress = '';
+    if ($_SERVER['HTTP_CLIENT_IP'])
+        $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+    else if($_SERVER['HTTP_X_FORWARDED_FOR'])
+        $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    else if($_SERVER['HTTP_X_FORWARDED'])
+        $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+    else if($_SERVER['HTTP_FORWARDED_FOR'])
+        $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+    else if($_SERVER['HTTP_FORWARDED'])
+        $ipaddress = $_SERVER['HTTP_FORWARDED'];
+    else if($_SERVER['REMOTE_ADDR'])
+        $ipaddress = $_SERVER['REMOTE_ADDR'];
+    else
+        $ipaddress = 'UNKNOWN';
+
+    return $ipaddress;
 }

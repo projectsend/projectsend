@@ -7,133 +7,104 @@
  *
  */
 $allowed_levels = array(9);
-require_once('sys.includes.php');
-
-if(!check_for_admin()) {
-    return;
-}
+require_once 'bootstrap.php';
 
 $active_nav = 'users';
 
 $page_title = __('Add system user','cftp_admin');
 
-include('header.php');
+$page_id = 'user_form';
+
+$new_user = new \ProjectSend\Classes\Users();
+
+include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 /**
  * Set checkboxes as 1 to defaul them to checked when first entering
  * the form
  */
-$add_user_data_active = 1;
-$add_user_data_notify_account = 1;
+$user_arguments = array(
+    'active' => 1,
+    'notify_account' => 1,
+    'require_password_change' => 1,
+);
 
 if ($_POST) {
-	$new_user = new UserActions();
+    /**
+     * Clean the posted form values to be used on the user actions,
+     * and again on the form if validation failed.
+     */
+    $user_arguments = array(
+        'username' => $_POST['username'],
+        'password' => $_POST['password'],
+        'name' => $_POST['name'],
+        'email' => $_POST['email'],
+        'role' => $_POST['level'],
+        'max_file_size' => (isset($_POST["max_file_size"])) ? $_POST['max_file_size'] : '',
+        'notify_account' => (isset($_POST["notify_account"])) ? 1 : 0,
+        'active' => (isset($_POST["active"])) ? 1 : 0,
+        'require_password_change' => (isset($_POST["require_password_change"])) ? true : false,
+        'type' => 'new_user',
+    );
 
-	/**
-	 * Clean the posted form values to be used on the user actions,
-	 * and again on the form if validation failed.
-	 */
-	$add_user_data_name = encode_html($_POST['add_user_form_name']);
-	$add_user_data_email = encode_html($_POST['add_user_form_email']);
-	$add_user_data_level = encode_html($_POST['add_user_form_level']);
-	$add_user_data_user = encode_html($_POST['add_user_form_user']);
-	$add_user_data_maxfilesize = (isset($_POST["add_user_form_maxfilesize"])) ? encode_html($_POST["add_user_form_maxfilesize"]) : '';
-	$add_user_data_active = (isset($_POST["add_user_form_active"])) ? 1 : 0;
-	$add_user_data_notify_account = (isset($_POST["add_user_form_notify_account"])) ? 1 : 0;
+    /** Validate the information from the posted form. */
+    /** Create the user if validation is correct. */
+    $new_user->setType('new_user');
+    $new_user->set($user_arguments);
+    if ($new_user->validate()) {
+        $new_response = $new_user->create();
 
-	/** Arguments used on validation and user creation. */
-	$new_arguments = array(
-							'id' => '',
-							'username' => $add_user_data_user,
-							'password' => $_POST['add_user_form_pass'],
-							//'password_repeat' => $_POST['add_user_form_pass2'],
-							'name' => $add_user_data_name,
-							'email' => $add_user_data_email,
-							'role' => $add_user_data_level,
-							'active' => $add_user_data_active,
-							'max_file_size'	=> $add_user_data_maxfilesize,
-							'notify_account' => $add_user_data_notify_account,
-							'type' => 'new_user'
-						);
+        if (!empty($new_response['id'])) {
+            /** Record the action log */
+            $logger = new \ProjectSend\Classes\ActionsLog;
+            $record = $logger->addEntry([
+                'action' => 2,
+                'owner_user' => CURRENT_USER_USERNAME,
+                'owner_id' => CURRENT_USER_ID,
+                'affected_account' => $new_user->id,
+                'affected_account_name' => $new_user->name
+            ]);
 
-	/** Validate the information from the posted form. */
-	$new_validate = $new_user->validate_user($new_arguments);
-	
-	/** Create the user if validation is correct. */
-	if ($new_validate == 1) {
-		$new_response = $new_user->create_user($new_arguments);
-	}
-	
+            $rediret_to = BASE_URI . 'users-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1&notification=' . $new_response['email'];
+            header('Location:' . $rediret_to);
+            exit;
+        }
+    }
 }
 ?>
-<div class="col-xs-12 col-sm-12 col-lg-6">
-	<div class="white-box">
-		<div class="white-box-interior">
-		
-			<?php
-				/**
-				 * If the form was submited with errors, show them here.
-				 */
-				$valid_me->list_errors();
-			?>
-			
-			<?php
-				if (isset($new_response)) {
-					/**
-					 * Get the process state and show the corresponding ok or error message.
-					 */
-					switch ($new_response['query']) {
-						case 1:
-							$msg = __('User added correctly.','cftp_admin');
-							echo system_message('ok',$msg);
-	
-							/** Record the action log */
-							$new_log_action = new LogActions();
-							$log_action_args = array(
-													'action' => 2,
-													'owner_id' => CURRENT_USER_ID,
-													'affected_account' => $new_response['new_id'],
-													'affected_account_name' => $add_user_data_name
-												);
-							$new_record_action = $new_log_action->log_action_save($log_action_args);
-	
-						break;
-						case 0:
-							$msg = __('There was an error. Please try again.','cftp_admin');
-							echo system_message('error',$msg);
-						break;
-					}
-					/**
-					 * Show the ok or error message for the email notification.
-					 */
-					switch ($new_response['email']) {
-						case 2:
-							$msg = __('A welcome message was not sent to the new user.','cftp_admin');
-							echo system_message('ok',$msg);
-						break;
-						case 1:
-							$msg = __('A welcome message with login information was sent to the new user.','cftp_admin');
-							echo system_message('ok',$msg);
-						break;
-						case 0:
-							$msg = __("E-mail notification couldn't be sent.",'cftp_admin');
-							echo system_message('error',$msg);
-						break;
-					}
-				}
-				else {
-					/**
-					 * If not $new_response is set, it means we are just entering for the first time.
-					 * Include the form.
-					 */
-					$user_form_type = 'new_user';
-					include('users-form.php');
-				}
-			?>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-lg-6">
+        <div class="white-box">
+            <div class="white-box-interior">
+            
+                <?php
+                    // If the form was submited with errors, show them here.
+                    echo $new_user->getValidationErrors();
 
-		</div>
-	</div>
+                    if (isset($new_response)) {
+                        /**
+                         * Get the process state and show the corresponding ok or error message.
+                         */
+                        switch ($new_response['query']) {
+                            case 0:
+                                $msg = __('There was an error. Please try again.','cftp_admin');
+                                echo system_message('danger',$msg);
+                            break;
+                        }
+                    }
+                    else {
+                        /**
+                         * If not $new_response is set, it means we are just entering for the first time.
+                         * Include the form.
+                         */
+                        $user_form_type = 'new_user';
+                        include_once FORMS_DIR . DS . 'users.php';
+                    }
+                ?>
+
+            </div>
+        </div>
+    </div>
 </div>
-
 <?php
-	include('footer.php');
+    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

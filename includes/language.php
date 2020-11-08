@@ -1,4 +1,6 @@
 <?php
+use ProjectSend\Classes\I18n;
+
 /**
  * Load the i18n class and the corresponding language files
  *
@@ -17,13 +19,14 @@ if ( !defined( 'SITE_LANG' ) ) {
 	define( 'SITE_LANG', 'en' );
 }
 $lang = SITE_LANG;
+$default_domain = 'cftp_admin';
 
 /**
  * If a user selected a language on the log in form, use it
  */
 if ( isset( $_SESSION['lang'] ) ) {
 	$lang_sess = $_SESSION['lang'];
-	$lang_file		= ROOT_DIR . '/lang/' . $lang_sess . '.mo';
+	$lang_file = ROOT_DIR . DS . 'lang' . DS . $lang_sess . '.mo';
 	if ( file_exists( $lang_file ) ) {
 		$lang = $lang_sess;
 	}
@@ -40,7 +43,7 @@ else {
 				break;
 			case '1':
 				$browser_lang	= substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
-				$lang_file		= ROOT_DIR . '/lang/' . $browser_lang . '.mo';
+				$lang_file		= ROOT_DIR . DS . 'lang' . DS . $browser_lang . '.mo';
 				if ( file_exists( $lang_file ) ) {
 					$lang = $browser_lang;
 				}
@@ -50,6 +53,5 @@ else {
 }
 
 define('LOADED_LANG', $lang);
-define('I18N_DEFAULT_DOMAIN', 'cftp_admin');
-require_once(ROOT_DIR.'/includes/classes/i18n.php');
-I18n::LoadDomain(ROOT_DIR."/lang/{$lang}.mo", 'cftp_admin' );
+
+I18n::LoadDomain(ROOT_DIR.DS."lang".DS."{$lang}.mo", 'cftp_admin' );

@@ -1,0 +1,36 @@
+@mixin bk($class) {
+	@if $class == xs {
+		@media (max-width: 767px) { @content; }
+	}
+
+	@else if $class == sm {
+		@media (min-width: 768px) { @content; }
+	}
+
+	@else if $class == md {
+		@media (min-width: 992px) { @content; }
+	}
+
+	@else if $class == lg {
+		@media (min-width: 1200px) { @content; }
+	}
+}
+
+@mixin border-radius($radius) {
+	-webkit-border-radius: $radius;
+	-moz-border-radius: $radius;
+	-ms-border-radius: $radius;
+	border-radius: $radius;
+}
+
+@mixin opacity($opacity) {
+	-moz-opacity: $opacity;
+	-webkit-opacity: $opacity;
+	opacity: $opacity;
+}
+
+@mixin box-shadow($size, $color) {
+	-moz-box-shadow:$size $color;
+	-webkit-box-shadow:$size $color;
+	box-shadow:$size $color;
+}

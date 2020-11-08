@@ -49,6 +49,7 @@ function get_categories( $params = array() ) {
 	$orderby	= ( !empty( $params['orderby'] ) ) ? $params['orderby'] : 'name';
 	$order		= ( !empty( $params['order'] ) ) ? $params['order'] : 'ASC';
 	$parent		= ( !empty( $params['parent'] ) ) ? $params['parent'] : false;
+    $is_tree	= ( !empty( $params['is_tree'] ) ) ? $params['is_tree'] : false;
 	$id			= ( !empty( $params['id'] ) ) ? $params['id'] : array();
 	// pagination
 	$page		= ( !empty( $params['page'] ) ) ? $params['page'] : '';
@@ -100,7 +101,7 @@ function get_categories( $params = array() ) {
 		$sql_params[':description']		= $search_terms;
 	}
 	
-	/**
+	/*
 		Clients can only manage their own categories
 		TODO: Implement this
 	*/
@@ -174,12 +175,53 @@ function get_categories( $params = array() ) {
 		$statement->execute( $sql_params );
 		$count = $statement->rowCount();
 
+        if ($is_tree == true) {
+            $found_categories = add_missing_to_tree($found_categories, $files_count);
+        }
+
 		$return['arranged'] = arrange_categories( $found_categories );
 
 		$return['categories'] = $found_categories;
 	}
 
 	return $return;	
+}
+
+function add_missing_to_tree($categories, $files_count)
+{
+    global $dbh;
+    $return = $categories;
+
+    foreach ($categories as $category) {
+        if (!empty($category['parent']) && !array_key_exists($category['parent'], $categories)) {
+            $query = "SELECT * FROM " . TABLE_CATEGORIES . " WHERE id=:id";
+            $statement = $dbh->prepare($query);
+            $statement->bindParam(':id', $category['parent'], PDO::PARAM_INT);
+            $statement->execute();
+            while ( $row = $statement->fetch() ) {
+                $file_count = ( !empty( $files_count ) && array_key_exists( $row['id'], $files_count ) ) ? $files_count[$row['id']] : 0;
+
+                $return[$row['id']] = array(
+                    'id'			=> $row['id'],
+                    'name'			=> $row['name'],
+                    'parent'		=> (empty( $row['parent'] ) ) ? 0 : $row['parent'],
+                    'description'	=> $row['description'],
+                    'created_by'	=> $row['created_by'],
+                    'timestamp'		=> $row['timestamp'],
+                    'depth'			=> 0,
+                    'file_count'	=> $file_count,
+                    'children'		=> null,
+                );
+
+                if (!empty($row['parent']) && !array_key_exists($row['parent'], $return)) {
+                    $return = add_missing_to_tree($return, $files_count);
+                }
+            }
+
+        }
+    }
+
+    return $return;
 }
 
 /**

@@ -11,7 +11,9 @@ define( 'IS_INSTALL', true );
 define( 'IS_MAKE_CONFIG', true );
 
 define( 'ABS_PARENT', dirname( dirname(__FILE__) ) );
-require_once( ABS_PARENT . '/sys.includes.php' );
+require_once ABS_PARENT . '/bootstrap.php';
+
+$page_id = 'make_config';
 
 /** Config file exists. Do not continue and show the message */
 if ( file_exists( ROOT_DIR.'/includes/sys.config.php' ) ) {
@@ -19,7 +21,7 @@ if ( file_exists( ROOT_DIR.'/includes/sys.config.php' ) ) {
 }
 
 if ( !empty( $error_msg ) ) {
-	include_once( ABS_PARENT . '/header-unlogged.php' );
+	include_once ABS_PARENT . '/header-unlogged.php';
 ?>
 	<div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 		<div class="white-box">
@@ -33,7 +35,7 @@ if ( !empty( $error_msg ) ) {
 		</div>
 	</div>
 <?php
-	include_once( ABS_PARENT . '/footer.php' );
+	include_once ABS_PARENT . '/footer.php';
 	exit;
 }
 
@@ -90,18 +92,18 @@ if ($pdo_driver_available) {
 	}
 }
 
-/** List of tables comes from sys.vars.php */
+/** List of tables comes from includes/app.php */
 
 // check if tables exists
 $table_exists = true;
 if ($pdo_connected) {
-    $availableTables = $pdo->query("SHOW TABLES")->fetchAll(\PDO::FETCH_COLUMN);
+	$availableTables = $pdo->query("SHOW TABLES")->fetchAll(\PDO::FETCH_COLUMN);
 	foreach ($all_system_tables as $name) {
-        $prefixed = $post_vars['dbprefix'].$name;
-        if (!in_array($prefixed, $availableTables)) {
-            $table_exists = false;
-            break;
-        }
+		$prefixed = $post_vars['dbprefix'].$name;
+		if (!in_array($prefixed, $availableTables)) {
+			$table_exists = false;
+			break;
+		}
 	}
 }
 $reuse_tables =  $post_vars['dbreuse'] == 'reuse';
@@ -113,14 +115,13 @@ $langs = get_available_languages();
 $lang_ok = array_key_exists($post_vars['lang'], $langs);
 
 // check file & folders are writable
-$ds = DIRECTORY_SEPARATOR;
-$config_file = ROOT_DIR.$ds.'includes'.$ds.'sys.config.php';
+$config_file = ROOT_DIR.'/includes/sys.config.php';
 $config_file_writable = is_writable($config_file) || is_writable(dirname($config_file));
-$upload_dir = ROOT_DIR.$ds.'upload';
-$upload_files_dir = ROOT_DIR.$ds.'upload'.$ds.'files';
+$upload_dir = ROOT_DIR.'/upload';
+$upload_files_dir = ROOT_DIR.'/upload/files';
 $upload_files_dir_writable = is_writable($upload_files_dir) || is_writable($upload_dir);
-$cache_dir = ROOT_DIR.$ds.'cache';
-$cache_dir_writable = is_writable($cache_dir);
+$upload_temp_dir = ROOT_DIR.'/upload/temp';
+$upload_temp_dir_writable = is_writable($upload_temp_dir) || is_writable($upload_dir);
 
 // retrieve user data for web server
 if (function_exists('posix_getpwuid')) {
@@ -131,7 +132,7 @@ if (function_exists('posix_getpwuid')) {
 }
 
 // if everything is ok, we can proceed
-$ready_to_go = $pdo_connected && (!$table_exists || $reuse_tables) && $lang_ok && $config_file_writable && $upload_files_dir_writable && $cache_dir_writable;
+$ready_to_go = $pdo_connected && (!$table_exists || $reuse_tables) && $lang_ok && $config_file_writable && $upload_files_dir_writable && $upload_temp_dir_writable;
 
 // if the user requested to write the config file AND we can proceed, we try to write the new configuration
 if (isset($_POST['submit-start']) && $ready_to_go) {
@@ -182,16 +183,15 @@ function pdo_status_label() {
 	}
 }
 
-include_once( ABS_PARENT . '/header-unlogged.php' );
+include_once ABS_PARENT . '/header-unlogged.php';
 ?>
-
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 	<div class="white-box">
 		<div class="white-box-interior">
 			<?php
 				if ( !empty( $config_file_written ) ) {
 					$msg = __('Successfully wrote the config file.','cftp_admin');
-					echo system_message('ok',$msg);
+					echo system_message('success',$msg);
 			?>
 						<div class="inside_form_buttons">
 							<a href="index.php" class="btn btn-wide btn-primary"><?php _e('Continue to installation','cftp_admin'); ?></a>
@@ -212,7 +212,7 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 								<div class="radio <?php if ( !$pdo_mysql_available ) { echo 'disabled'; } ?>">
 									<label for="dbdriver_mysql">
 										<input type="radio" id="dbdriver_mysql" name="dbdriver" value="mysql" <?php echo !$pdo_mysql_available ? 'disabled' : ''; ?> <?php echo $post_vars['dbdriver'] == 'mysql' ? 'checked' : ''; ?> />
-										MySQL <?php if ( !$pdo_mysql_available ) { _e('(not supported)','cftp_admin'); } ?>
+										MySQL/MariaDB <?php if ( !$pdo_mysql_available ) { _e('(not supported)','cftp_admin'); } ?>
 									</label>
 								</div>
 								<div class="radio <?php if ( !$pdo_mssql_available ) { echo 'disabled'; } ?>">
@@ -352,24 +352,26 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 																			'file'		=> $upload_files_dir,
 																			'status'	=> $upload_files_dir_writable,
 																		),
-													'cache'			=> array(
-																			'label'		=> 'Cache directory',
-																			'file'		=> $cache_dir,
-																			'status'	=> $cache_dir_writable,
+													'temp'			=> array(
+																			'label'		=> 'Temp directory',
+																			'file'		=> $upload_temp_dir,
+																			'status'	=> $upload_temp_dir_writable,
 																		),
-												);
+                                                );
 							foreach ( $write_checks as $check => $values ) {
 						?>
 								<div class="form-group">
-									<label class="col-sm-4 control-label"><?php _e($values['label'], 'cftp_admin'); ?></label>
-									<div class="col-sm-6">
+									<label class="col-sm-4 control-label">
+                                        <?php _e($values['label'], 'cftp_admin'); ?>
+                                    </label>
+									<div class="col-sm-5">
 										<span class="format_url"><?php echo $values['file']; ?></span>
 									</div>
-									<div class="col-sm-2">
-										<?php if ( $values['status'] ) : ?>
+									<div class="col-sm-3">
+										<?php if ( $values['status'] == true ) : ?>
 											<span class="label label-success"><?php _e('Writable','cftp_admin'); ?></span>
 										<?php else : ?>
-											<span class="label label-important"><?php _e('Not writable','cftp_admin'); ?></span>
+											<span class="label label-danger"><?php _e('Not writable','cftp_admin'); ?></span>
 										<?php endif; ?>
 									</div>
 								</div>
@@ -432,12 +434,13 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 						?>
 
 						<div class="inside_form_buttons">
-							<?php if ($ready_to_go) : ?>
+							<?php if ($ready_to_go) { ?>
 								<button type="submit" name="submit" class="btn btn-wide btn-secondary"><?php _e('Check again','cftp_admin'); ?></button>
 								<button type="submit" name="submit-start" class="btn btn-wide btn-primary"><?php _e('Write config file','cftp_admin'); ?></button>
-							<?php else : ?>
-								<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Check','cftp_admin'); ?></button>
-							<?php endif; ?>
+                            <?php } else { ?>
+                            <?php $btn_label = (empty($_POST)) ? __('Check','cftp_admin') : __('Check again','cftp_admin'); ?>
+								<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php echo $btn_label; ?></button>
+							<?php } ?>
 						</div>
 
 					</form>
@@ -449,4 +452,4 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 </div>
 
 <?php
-	include_once( ABS_PARENT . '/footer.php' );
+	include_once ABS_PARENT . '/footer.php';

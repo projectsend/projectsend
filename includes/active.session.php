@@ -18,73 +18,54 @@ if (!is_projectsend_installed()) {
 
 if ( defined('SESSION_TIMEOUT_EXPIRE') && SESSION_TIMEOUT_EXPIRE == true ) {
 	if (isset($_SESSION['last_call']) && (time() - $_SESSION['last_call'] > SESSION_EXPIRE_TIME)) {
-		$logout_location = BASE_URI . 'process.php?do=logout&timeout=1';
-		header('Location: ' . $logout_location);
-		die();
+		header('Location: ' . BASE_URI . 'process.php?do=logout&timeout=1');
+		exit;
 	}
 }
 $_SESSION['last_call'] = time(); // update last activity time stamp
 
-
 /**
  * Global information on the current account to use accross the system.
  */
-$global_user = get_current_user_username();
-$global_level = get_current_user_level();
-
-/**
- * Get the user information from the database
- */
-if ($global_level != 0) {
-	$global_account = get_user_by_username($global_user);
-}
-else {
-	$global_account = get_client_by_username($global_user);
-}
-
-/**
- * Automatic log out if account is deactivated while session is on.
- */
-if ($global_account['active'] == '0') {
-	/** Prevent an infinite loop */
-	if (!isset($_SESSION['logout'])) {
-		$_SESSION['logout'] = '1';
-	}
-	else {
-		unset($_SESSION['logout']);
-		header("location:".BASE_URI.'process.php?do=logout');
-		exit;
-	}
-}
-
-/**
- * Save all the data on different constants
- */
-define('CURRENT_USER_ID',$global_account['id']);
-define('CURRENT_USER_USERNAME',$global_account['username']);
-define('CURRENT_USER_NAME',$global_account['name']);
-define('CURRENT_USER_EMAIL',$global_account['email']);
-define('CURRENT_USER_LEVEL',$global_account['level']);
-
-$global_id = $global_account['id'];
-$global_name = $global_account['name'];
-
-/**
- * Check if account has a custom value for upload max file size
- */
-if ( $global_account['max_file_size'] == 0 || empty( $global_account['max_file_size'] ) ) {
-	define('UPLOAD_MAX_FILESIZE', MAX_FILESIZE);
-}
-else {
-	define('UPLOAD_MAX_FILESIZE', $global_account['max_file_size']);
+if (!empty($_SESSION['user_id'])) {
+    $session_user = new \ProjectSend\Classes\Users;
+    $session_user->get($_SESSION['user_id']);
+    if ($session_user->userExists()) {
+        /**
+         * Automatic log out if account is deactivated while session is on.
+         */
+        if (!$session_user->isActive()) {
+            forceLogout('account_inactive');
+        }
+    
+        /**
+         * Save all the data on different constants
+         */
+        define('CURRENT_USER_ID', $session_user->id);
+        define('CURRENT_USER_USERNAME', $session_user->username);
+        define('CURRENT_USER_NAME', $session_user->name);
+        define('CURRENT_USER_EMAIL', $session_user->email);
+        define('CURRENT_USER_LEVEL', $session_user->role);
+        define('CURRENT_USER_TYPE', $session_user->account_type);
+    
+        // Check if account has a custom value for upload max file size
+        if ( $session_user->max_file_size == 0 || empty( $session_user->max_file_size ) ) {
+            define('UPLOAD_MAX_FILESIZE', (int)MAX_FILESIZE);
+        }
+        else {
+            define('UPLOAD_MAX_FILESIZE', (int)$session_user->max_file_size);
+        }
+    } else {
+        forceLogout();
+    }
 }
 
 /**
  * Files types limitation
  */
 $limit_files = true;
-if ( defined( 'FILE_TYPES_LIMIT_TO' ) ) {
-	switch ( FILE_TYPES_LIMIT_TO ) {
+if (!empty(get_option('file_types_limit_to'))) {
+	switch ( get_option('file_types_limit_to') ) {
 		case 'noone':
 			$limit_files = false;
 			break;

@@ -1,0 +1,45 @@
+{
+    "name": "projectsend-legacy",
+    "description": "ProjectSend is an open source, clients-oriented, private file sharing web application. Legacy is the repository for patches and maintenance of the pre-1.0 version, with version number rxxxx",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/projectsend/projectsend-legacy.git"
+    },
+    "author": "Ignacio Nelson <info@subwaydesign.com.ar>",
+    "license": "GPL-3.0-or-later",
+    "dependencies": {
+        "@ckeditor/ckeditor5-build-classic": "^23.1.0",
+        "@yaireo/tagify": "2.9.1",
+        "bootstrap": "3.4.1",
+        "bootstrap-datepicker": "1.8.0",
+        "bootstrap-toggle": "2.2.2",
+        "chart.js": "^2.9.4",
+        "chosen-js": "1.8.7",
+        "font-awesome": "4.7.0",
+        "footable": "2.0.6",
+        "jquery": "^3.5.0",
+        "jquery-migrate": "3.0.1",
+        "jquery-validation": "^1.19.1",
+        "js-cookie": "2.2.0",
+        "node-jen": "1.1.0",
+        "sprintf-js": "1.1.2"
+    },
+    "devDependencies": {
+        "babel-preset-env": "^1.6.1",
+        "gulp": "^3.9.1",
+        "gulp-autoprefixer": "^3.1.1",
+        "gulp-babel": "^6.1.2",
+        "gulp-clean-css": "^3.9.0",
+        "gulp-concat": "^2.6.1",
+        "gulp-postcss": "^8.0.0",
+        "gulp-rename": "^1.2.2",
+        "gulp-sass": "^3.1.0",
+        "gulp-sourcemaps": "^2.6.5",
+        "gulp-uglify": "^3.0.2",
+        "postcss-scss": "^2.0.0",
+        "pump": "^1.0.3"
+    },
+    "//": {
+        "semantic-ui": "^2.2.13"
+    }
+}

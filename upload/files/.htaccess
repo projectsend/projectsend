@@ -1,3 +1,4 @@
+Options -Indexes
 Order Deny,Allow
 Deny from All
 <FilesMatch "^$|(index)\.php$">

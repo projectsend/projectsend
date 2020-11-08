@@ -12,15 +12,14 @@
  */
 
 $allowed_update = array(9,8,7);
-if (in_session_or_cookies($allowed_update)) {
-
+if (current_role_in($allowed_update)) {
     $update_data = get_latest_version_data();
     $update_data = json_decode($update_data);
 
     $updates_made = 0;
-	$updates_errors = 0;
-	$updates_error_messages = array();
-	
+    $updates_errors = 0;
+    $updates_error_messages = array();
+
 	/**
 	 * r264 updates
 	 * Save the value of the last update on the database, to prevent
@@ -49,7 +48,7 @@ if (in_session_or_cookies($allowed_update)) {
 		 */
 		if ($last_update < 92) {
 			$new_database_values = array(
-											'logo_filename' => 'logo.png'
+											'logo_filename' => ''
 										);
 			
 			foreach ($new_database_values as $row => $value) {
@@ -65,17 +64,20 @@ if (in_session_or_cookies($allowed_update)) {
 		 * user that created it.
 		 * If the column doesn't exist, create it.
 		 */
-		 /* DEPRECATED
-		 	table tbl_clients doesn't exist anymore
-		if ($last_update < 94) {
-			$statement = $dbh->prepare("SELECT created_by FROM tbl_clients");
-			$statement->execute();
+         /*
+
+        DEPRECATED
+        table tbl_clients doesn't exist anymore
+
+             if ($last_update < 94) {
+			    $statement = $dbh->prepare("SELECT created_by FROM tbl_clients");
+			    $statement->execute();
 	
-			if( $statement->rowCount() == 0 ) {
-				$statement = $dbh->query("ALTER TABLE tbl_clients ADD created_by VARCHAR(".MAX_USER_CHARS.") NOT NULL");
-				$updates_made++;
-			}
-		}
+			    if( $statement->rowCount() == 0 ) {
+				    $statement = $dbh->query("ALTER TABLE tbl_clients ADD created_by VARCHAR(".MAX_USER_CHARS.") NOT NULL");
+				    $updates_made++;
+			    }
+		    }
 		*/
 
 		/**
@@ -125,8 +127,9 @@ if (in_session_or_cookies($allowed_update)) {
 		 * client as active (1).
 		 */
 		if ($last_update < 183) {
-		 /* DEPRECATED
-		 	table tbl_clients doesn't exist anymore
+         /*
+        DEPRECATED
+		table tbl_clients doesn't exist anymore
 
 			$q = $database->query("SELECT active FROM tbl_clients");
 			if (!$q) {
@@ -171,10 +174,10 @@ if (in_session_or_cookies($allowed_update)) {
 					}
 				}
 			}
-			$work_folder = UPLOADED_FILES_FOLDER;
+			$work_folder = UPLOADED_FILES_DIR;
 			if (!empty($mark_for_moving)) {
 				foreach ($mark_for_moving as $filename => $path) {
-					$new = UPLOADED_FILES_FOLDER.'/'.$filename;
+					$new = UPLOADED_FILES_DIR.DS.$filename;
 					$try_moving = rename($path, $new);
 					chmod($new, 0644);
 				}
@@ -386,7 +389,7 @@ if (in_session_or_cookies($allowed_update)) {
 											'mail_smtp_port' => '',
 											'mail_smtp_user' => '',
 											'mail_smtp_pass' => '',
-											'mail_from_name' => THIS_INSTALL_SET_TITLE
+											'mail_from_name' => get_option('this_install_title')
 										);
 			
 			foreach($new_database_values as $row => $value) {
@@ -423,19 +426,20 @@ if (in_session_or_cookies($allowed_update)) {
 		}
 
 		/**
-		 * r346 updates
-		 * chmod the cache folder and main files of timthumb to 775
-		 */
-		if ($last_update < 346) {
-			update_chmod_timthumb();
-		}
-
-		/**
 		 * r348 updates
 		 * chmod the emails folder and files to 777
 		 */
 		if ($last_update < 348) {
-			update_chmod_emails();
+            $update_chmod_emails = update_chmod_emails();
+            if (!empty($update_chmod_emails)) {
+                foreach ($update_chmod_emails as $error) {
+                    $updates_error_messages[] = $update_chmod_emails;
+                    $updates_errors++;
+                }
+            }
+            else {
+                $updates_made++;
+            }
 		}
 
 		/**
@@ -443,25 +447,16 @@ if (in_session_or_cookies($allowed_update)) {
 		 * chmod the main system files to 644
 		 */
 		if ($last_update < 352) {
-			chmod_main_files();
-		}
-
-		/**
-		 * r353 updates
-		 * Create a new option to let the user decide wheter to
-		 * use the relative or absolute file url when generating
-		 * thumbnails with timthumb.php
-		 */
-		if ($last_update < 353) {
-			$new_database_values = array(
-											'thumbnails_use_absolute' => '0'
-										);
-			
-			foreach($new_database_values as $row => $value) {
-				if ( add_option_if_not_exists($row, $value) ) {
-					$updates_made++;
-				}
-			}
+            $chmod_main_files = chmod_main_files();
+            if (!empty($chmod_main_files)) {
+                foreach ($chmod_main_files as $error) {
+                    $updates_error_messages[] = $chmod_main_files;
+                    $updates_errors++;
+                }
+            }
+            else {
+                $updates_made++;
+            }
 		}
 
 		/**
@@ -512,21 +507,6 @@ if (in_session_or_cookies($allowed_update)) {
 				}
 			}
 		}
-
-		/** Update the database */
-		$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :version WHERE name='last_update'");
-		$statement->bindParam(':version', $current_version);
-		$statement->execute();
-
-		/** Record the action log */
-		$new_log_action = new LogActions();
-		$log_action_args = array(
-								'action' => 30,
-								'owner_id' => CURRENT_USER_ID,
-								'affected_account_name' => $current_version
-							);
-		$new_record_action = $new_log_action->log_action_save($log_action_args);
-
 
 		/**
 		 * r377 updates
@@ -659,7 +639,7 @@ if (in_session_or_cookies($allowed_update)) {
 			}
 
 			$new_database_values = array(
-										'expired_files_hide'		=> '1',
+										'expired_files_hide' => '1',
 									);
 			
 			foreach($new_database_values as $row => $value) {
@@ -1295,7 +1275,90 @@ if (in_session_or_cookies($allowed_update)) {
 				$statement2->execute();
 				$updates_made++;
 			}
+        }
+        
+        /**
+ 		 * r1071 updates
+ 		 * Started replacing timthumb with SimpleImage
+ 		 */
+        if ($last_update < 1071) {
+            chmod(THUMBNAILS_FILES_DIR, 0755);
+            chmod(ADMIN_UPLOADS_DIR, 0755);
+
+            /* Move the logo into the new folder */
+            $old_logo_location = ROOT_DIR . DS . 'img' . DS . 'custom' . DS . 'logo' . DS . LOGO_FILENAME;
+            if (file_exists($old_logo_location)) {
+                $new_logo_location = ADMIN_UPLOADS_DIR . DS . LOGO_FILENAME;
+                rename($old_logo_location, $new_logo_location);
+            }
+
+            $updates_made++;
+        }
+
+
+		/**
+		 * r1105 updates
+		 * Description column for groups should not be required
+		 */
+		if ($last_update < 1105) {
+			$statement = $dbh->query("ALTER TABLE `" . TABLE_GROUPS . "` CHANGE `description` `description` TEXT NULL");
+
+			$updates_made++;
 		}
 
-	}
+		/**
+		 * r1115 updates
+		 * Set nullable columns
+		 */
+		if ($last_update < 1115) {
+			$statement = $dbh->query("ALTER TABLE `" . TABLE_FILES . "` CHANGE `description` `description` TEXT NULL");
+
+			$updates_made++;
+		}
+
+
+        /**
+		 * Add foreign keys to files.
+		 */
+		if ($last_update < 1130) {
+            $statement = $dbh->query("ALTER TABLE `" . TABLE_FILES . "` ADD COLUMN `user_id` int(11) DEFAULT NULL AFTER `id`");
+			$statement = $dbh->query("ALTER TABLE " . TABLE_FILES . " ADD CONSTRAINT fk_file_user_id FOREIGN KEY (`user_id`) REFERENCES " . TABLE_USERS . "(`id`) ON DELETE SET NULL ON UPDATE CASCADE");
+			$updates_made++;
+		}
+
+        /**
+		 * r1145 updates
+		 * Option value could be null
+		 */
+		if ($last_update < 1145) {
+			$statement = $dbh->query("ALTER TABLE `" . TABLE_OPTIONS . "` CHANGE `value` `value` TEXT NULL");
+
+			$updates_made++;
+		}
+
+        /**
+		 * r1216 updates
+		 * Set nullable columns
+		 */
+		if ($last_update < 1216) {
+			$statement = $dbh->query("ALTER TABLE `" . TABLE_MEMBERS . "` CHANGE `added_by` `added_by` varchar(32) DEFAULT NULL");
+
+			$updates_made++;
+		}
+
+        /** Update the database */
+		$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :version WHERE name='last_update'");
+		$statement->bindParam(':version', $current_version);
+		$statement->execute();
+
+		/** Record the action log */
+		$logger = new \ProjectSend\Classes\ActionsLog;
+		$new_record_action = $logger->addEntry([
+            'action' => 30,
+            'owner_id' => CURRENT_USER_ID,
+            'details' => [
+                'version' => $current_version,
+            ],
+        ]);
+    }
 }

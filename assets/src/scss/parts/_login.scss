@@ -1,0 +1,32 @@
+.login_form_links {
+    margin-top:25px;
+
+    p {
+        margin:10px 0 0;
+    }
+}
+
+.hide_title h2 {
+    display:none;
+}
+
+.login {
+    .tab-content {
+        padding-top: 20px;
+    }
+}
+
+// Social icons
+
+.social_login_links {
+    text-align: center;
+    margin: 20px auto 0;
+
+    @each $brand, $hex in $brands_colors {
+        .button_#{$brand} {
+            .fa-circle {
+                color: #{$hex};
+            }
+        }
+    }
+}

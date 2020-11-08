@@ -128,8 +128,8 @@ if( (DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND') ) {
 	<p>This extension is required for database comunication.</p>
 	<p>You can install this extension via the package manager of your linux distro, most likely with one of these commands:</p>
 	<ul>
-		<li>sudo apt-get install php5-mysql   	<strong># debian/ubuntu</strong></li>
-		<li>sudo yum install php-mysql   		<strong># centos/fedora</strong></li>
+		<li>sudo apt-get install php-mysql <strong># debian/ubuntu</strong></li>
+		<li>sudo yum install php-mysql <strong># centos/fedora</strong></li>
 	</ul>
 	<p>You also need to restart the webserver after the installation of PDO_mysql.</p>";
 	exit;
@@ -140,8 +140,8 @@ if( (DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers) ) {
 	<p>This extension is required for database comunication.</p>
 	<p>You can install this extension via the package manager of your linux distro, most likely with one of these commands:</p>
 	<ul>
-		<li>sudo apt-get install php5-sybase	<strong># debian/ubuntu</strong></li>
-		<li>sudo yum install php-mssql			<strong># centos/fedora (you need EPEL)</strong></li>
+		<li>sudo apt-get install php-sybase	<strong># debian/ubuntu</strong></li>
+		<li>sudo yum install php-mssql <strong># centos/fedora (you need EPEL)</strong></li>
 	</ul>
 	<p>You also need to restart the webserver after the installation of PDO_mssql.</p>";
 	exit;

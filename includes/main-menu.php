@@ -347,7 +347,9 @@ else
  */
 $current_filename = basename($_SERVER['REQUEST_URI']);
 
-$menu_output = "<ul class='main_menu' role='menu'>\n";
+$menu_output = "
+    <div class='main_side_menu'>
+        <ul class='main_menu' role='menu'>\n";
 
 foreach ( $items as $item )
 {
@@ -396,7 +398,7 @@ foreach ( $items as $item )
 	}
 }
 
-$menu_output .= "</ul>\n";
+$menu_output .= "</ul></div>\n";
 
 $menu_output = str_replace( "'", '"', $menu_output );
 

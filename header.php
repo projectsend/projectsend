@@ -10,15 +10,10 @@
  * @see check_for_session
  * @see can_see_content
  */
-/** Check for an active session or cookie */
+// Check for an active session
 check_for_session();
 
-/**
- * Check if the current user has permission to view this page.
- * If not, an error message is generated instead of the actual content.
- * The allowed levels are defined on each individual page before the
- * inclusion of this file.
- */
+// Check if the current user has permission to view this page.
 can_see_content($allowed_levels);
 
 global $flash;
@@ -48,6 +43,7 @@ if (current_role_in($core_update_allowed)) {
 	require_once INCLUDES_DIR . DS . 'core.update.php';
 }
 
+// Redirect if password needs to be changed
 password_change_required();
 ?>
 <!doctype html>
@@ -104,11 +100,8 @@ password_change_required();
                         </ul>
                 </li>
 				<li>
-					<?php
-						$my_account_link = (CURRENT_USER_LEVEL == 0) ? 'clients-edit.php' : 'users-edit.php';
-						$my_account_link .= '?id='.CURRENT_USER_ID;
-					?>
-					<a href="<?php echo BASE_URI.$my_account_link; ?>" class="my_account"><i class="fa fa-user-circle" aria-hidden="true"></i> <?php _e('My Account', 'cftp_admin'); ?></a>
+					<?php $my_account_link = (CURRENT_USER_LEVEL == 0) ? 'clients-edit.php' : 'users-edit.php'; ?>
+					<a href="<?php echo BASE_URI.$my_account_link; ?>?id=<?php echo CURRENT_USER_ID; ?>" class="my_account"><i class="fa fa-user-circle" aria-hidden="true"></i> <?php _e('My Account', 'cftp_admin'); ?></a>
 				</li>
 				<li>
 					<a href="<?php echo BASE_URI; ?>process.php?do=logout" ><i class="fa fa-sign-out" aria-hidden="true"></i> <?php _e('Logout', 'cftp_admin'); ?></a>
@@ -116,11 +109,7 @@ password_change_required();
 			</ul>
 		</header>
 
-		<div class="main_side_menu">
-			<?php
-				include_once 'header-menu.php';
-			?>
-		</div>
+        <?php include_once 'includes' . DS . 'main-menu.php'; ?>
 
 		<div class="main_content">
 			<div class="container-fluid">
@@ -128,45 +117,7 @@ password_change_required();
 					// Gets the mark up and values for the System Updated and errors messages.
 					include_once INCLUDES_DIR . DS . 'updates.messages.php';
 
-					// Check if we are on a development version
-					if ( IS_DEV == true ) {
-				?>
-						<div class="row">
-							<div class="col-sm-12">
-								<div class="system_msg">
-									<p><strong><?php _e('System Notice:', 'cftp_admin');?></strong> <?php _e('You are using a development version. Some features may be unfinished or not working correctly.', 'cftp_admin'); ?></p>
-								</div>
-							</div>
-						</div>
-				<?php
-					}
-
-                    // Check important directories write permissions
-                    $write_errors = [];
-                    $directories = [
-                        ADMIN_UPLOADS_DIR,
-                        UPLOADED_FILES_DIR,
-                        THUMBNAILS_FILES_DIR,
-                    ];
-                    foreach ($directories as $directory) {
-                        if (!file_exists($directory)) {
-                            @mkdir($directory, 0775, true);
-                        }
-
-                        if (!is_writable($directory)) {
-                            $write_errors[] = $directory;
-                        }
-                    }
-
-                    if ( !empty($write_errors) ) {
-                        $msg = '<p><strong>'.__('Warning:', 'cftp_admin').'</strong>' . ' ' . __('The following directories do not exist or have write permissions errors.', 'cftp_admin').'</p>';
-                        $msg .= '<p>'.__('File uploading or other important functions might not work.', 'cftp_admin').'</p>';
-                        foreach ($write_errors as $directory) {
-                            $msg .= '<p>'.$directory.'</p>';
-                        }
-
-                        echo system_message('danger', $msg);
-                    }
+                    include_once INCLUDES_DIR . DS . 'header-messages.php';
                 ?>
 
 				<div class="row">

@@ -24,55 +24,8 @@
 
 			<dt><?php _e('Template','cftp_admin'); ?></dt>
 			<dd><?php echo ucfirst(get_option('selected_clients_template')); ?> <a href="<?php echo BASE_URI; ?>templates.php">[<?php _e('Change','cftp_admin'); ?>]</a></dd>
-
-			<?php
-				/** Get the data to show on the bars graphic */
-				$statement = $dbh->query("SELECT distinct id FROM " . TABLE_FILES );
-				$total_files = $statement->rowCount();
-			
-				$statement = $dbh->query("SELECT distinct id FROM " . TABLE_USERS . " WHERE level = '0'");
-				$total_clients = $statement->rowCount();
-			
-				$statement = $dbh->query("SELECT distinct id FROM " . TABLE_GROUPS);
-				$total_groups = $statement->rowCount();
-			
-				$statement = $dbh->query("SELECT distinct id FROM " . TABLE_USERS . " WHERE level != '0'");
-				$total_users = $statement->rowCount();
-
-				$statement = $dbh->query("SELECT distinct id FROM " . TABLE_CATEGORIES);
-				$total_categories = $statement->rowCount();
-			?>
 		</dl>
 
-		<h3><?php _e('Data','cftp_admin'); ?></h3>
-		<dl class="dl-horizontal">
-			<dt><?php _e('Files','cftp_admin'); ?></dt>
-			<dd><?php echo $total_files; ?></dd>
-
-			<dt><?php _e('Clients','cftp_admin'); ?></dt>
-			<dd><?php echo $total_clients; ?></dd>
-
-			<dt><?php _e('System users','cftp_admin'); ?></dt>
-			<dd><?php echo $total_users; ?></dd>
-
-			<dt><?php _e('Groups','cftp_admin'); ?></dt>
-			<dd><?php echo $total_groups; ?></dd>
-
-			<dt><?php _e('Categories','cftp_admin'); ?></dt>
-			<dd><?php echo $total_categories; ?></dd>
-
-			<?php
-				/*
-				// Hidden so it doesn't get shared by accident in any bug report
-				<dt><?php _e('Root directory','cftp_admin'); ?></dt>
-				<dd><?php echo ROOT_DIR; ?></dd>
-
-				<dt><?php _e('Uploads folder','cftp_admin'); ?></dt>
-				<dd><?php echo UPLOADED_FILES_DIR; ?></dd>
-				*/
-			?>
-		</dl>
-		
 		<h3><?php _e('System','cftp_admin'); ?></h3>
 		<dl class="dl-horizontal">
 			<dt><?php _e('Server','cftp_admin'); ?></dt>

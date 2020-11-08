@@ -73,11 +73,11 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
 
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 
-	<?php echo get_branding_layout(true); ?>
+    <?php echo get_branding_layout(true); ?>
 
-	<div class="white-box">
-		<div class="white-box-interior">
-			<?php
+    <div class="white-box">
+        <div class="white-box-interior">
+            <?php
                 if ($can_view) {
             ?>
                     <div class="text-center">
@@ -102,14 +102,14 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
                     </div>
             <?php
                 }
-			?>
-		</div>
-	</div>
+            ?>
+        </div>
+    </div>
 
-	<div class="login_form_links">
-		<p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.','cftp_admin'); ?></a></p>
-	</div>
+    <div class="login_form_links">
+        <p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.','cftp_admin'); ?></a></p>
+    </div>
 </div>
 
 <?php
-	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

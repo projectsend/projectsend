@@ -17,14 +17,14 @@ $new_client = new \ProjectSend\Classes\Users();
 
 include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 
-	/** The form was submitted */
-	if ($_POST) {
-		if ( defined('RECAPTCHA_AVAILABLE') ) {
-			$recaptcha_user_ip		= $_SERVER["REMOTE_ADDR"];
-			$recaptcha_response		= $_POST['g-recaptcha-response'];
-			$recaptcha_secret_key	= get_option('recaptcha_secret_key');
-			$recaptcha_request		= file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptcha_secret_key}&response={$recaptcha_response}&remoteip={$recaptcha_user_ip}");
-		}
+    /** The form was submitted */
+    if ($_POST) {
+        if ( defined('RECAPTCHA_AVAILABLE') ) {
+            $recaptcha_user_ip		= $_SERVER["REMOTE_ADDR"];
+            $recaptcha_response		= $_POST['g-recaptcha-response'];
+            $recaptcha_secret_key	= get_option('recaptcha_secret_key');
+            $recaptcha_request		= file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptcha_secret_key}&response={$recaptcha_response}&remoteip={$recaptcha_user_ip}");
+        }
 
         /** Validate the information from the posted form. */
         /** Create the user if validation is correct. */
@@ -75,19 +75,19 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
             header("Location:".$redirect_url);
             exit;
         }
-	}
+    }
 ?>
 
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 
-	<div class="row">
+    <div class="row">
         <div class="col-xs-12 branding_unlogged">
             <?php echo get_branding_layout(); ?>
         </div>
     </div>
 
-	<div class="white-box">
-		<div class="white-box-interior">
+    <div class="white-box">
+        <div class="white-box-interior">
 
             <?php
                 $form = true;
@@ -108,54 +108,54 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                 }
 
                 if (get_option('clients_can_register') == '0') {
-					$msg = __('Client self registration is not allowed. If you need an account, please contact a system administrator.','cftp_admin');
+                    $msg = __('Client self registration is not allowed. If you need an account, please contact a system administrator.','cftp_admin');
                     echo system_message('danger',$msg);
                     $form = false;
-				}
-				else {
+                }
+                else {
                     // If the form was submited with errors, show them here.
                     echo $new_client->getValidationErrors();
         
-					if (isset($new_response)) {
-						/**
-						 * Get the process state and show the corresponding ok or error messages.
-						 */
-	
-						$error_msg = '</p><br /><p>';
-						$error_msg .= __('Please contact a system administrator.','cftp_admin');
-	
-						switch ($new_response['query']) {
-							case 0:
-								$msg = __('There was an error. Please try again.','cftp_admin');
-								$msg .= $error_msg;
-								echo system_message('danger',$msg);
-							break;
-							case 2:
-								$msg = __('A folder for this account could not be created. Probably because of a server configuration.','cftp_admin');
-								$msg .= $error_msg;
-								echo system_message('danger',$msg);
-							break;
-							case 3:
-								$msg = __('The account could not be created. A folder with this name already exists.','cftp_admin');
-								$msg .= $error_msg;
-								echo system_message('danger',$msg);
-							break;
-						}
-						/**
-						 * Show the ok or error message for the email notification.
-						 */
-						switch ($new_response['email']) {
-							case 1:
-								$msg = __('An e-mail notification with login information was sent to the specified address.','cftp_admin');
-								echo system_message('success',$msg);
-							break;
-							case 0:
-								$msg = __("E-mail notification couldn't be sent.",'cftp_admin');
-								echo system_message('danger',$msg);
-							break;
-						}
+                    if (isset($new_response)) {
+                        /**
+                         * Get the process state and show the corresponding ok or error messages.
+                         */
+    
+                        $error_msg = '</p><br /><p>';
+                        $error_msg .= __('Please contact a system administrator.','cftp_admin');
+    
+                        switch ($new_response['query']) {
+                            case 0:
+                                $msg = __('There was an error. Please try again.','cftp_admin');
+                                $msg .= $error_msg;
+                                echo system_message('danger',$msg);
+                            break;
+                            case 2:
+                                $msg = __('A folder for this account could not be created. Probably because of a server configuration.','cftp_admin');
+                                $msg .= $error_msg;
+                                echo system_message('danger',$msg);
+                            break;
+                            case 3:
+                                $msg = __('The account could not be created. A folder with this name already exists.','cftp_admin');
+                                $msg .= $error_msg;
+                                echo system_message('danger',$msg);
+                            break;
+                        }
+                        /**
+                         * Show the ok or error message for the email notification.
+                         */
+                        switch ($new_response['email']) {
+                            case 1:
+                                $msg = __('An e-mail notification with login information was sent to the specified address.','cftp_admin');
+                                echo system_message('success',$msg);
+                            break;
+                            case 0:
+                                $msg = __("E-mail notification couldn't be sent.",'cftp_admin');
+                                echo system_message('danger',$msg);
+                            break;
+                        }
                     }
-				}
+                }
 
                 if ($form == true) {
                     /**
@@ -165,13 +165,13 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                     $clients_form_type = 'new_client_self';
                     include_once FORMS_DIR . DS . 'clients.php';
                 }
-			?>
+            ?>
 
-			<div class="login_form_links">
-				<p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.','cftp_admin'); ?></a></p>
-			</div>
-		</div>
-	</div> <!-- main -->
+            <div class="login_form_links">
+                <p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.','cftp_admin'); ?></a></p>
+            </div>
+        </div>
+    </div> <!-- main -->
 
 <?php
-	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

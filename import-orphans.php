@@ -149,145 +149,146 @@ if (!empty($_GET['search'])) {
 
     $files_to_add = array_filter($files_to_add, 'search_text');
 }
-		
+        
 // var_dump($result);
 ?>
-<div class="col-xs-12">
-	<div class="form_actions_limit_results">
-		<?php show_search_form('import-orphans.php'); ?>
-	</div>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="form_actions_limit_results">
+            <?php show_search_form('import-orphans.php'); ?>
+        </div>
 
-	<div class="form_actions_count">
-		<p class="form_count_total"><?php _e('Showing','cftp_admin'); ?>: <span><?php echo count($files_to_add); ?> <?php _e('files','cftp_admin'); ?></span></p>
-	</div>
+        <div class="form_actions_count">
+            <p class="form_count_total"><?php _e('Showing','cftp_admin'); ?>: <span><?php echo count($files_to_add); ?> <?php _e('files','cftp_admin'); ?></span></p>
+        </div>
 
 
-	<form action="import-orphans.php" name="import_orphans" id="import_orphans" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
+        <form action="import-orphans.php" name="import_orphans" id="import_orphans" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
 
-        <?php
-			/**
-			 * Generate the list of files if there is at least 1
-			 * available and allowed.
-			 */
-			if ( isset( $files_to_add ) && count( $files_to_add ) > 0 ) {
-        ?>
-            <div class="alert alert-success">
-                <?php _e('The following files can be imported','cftp_admin'); ?>
-            </div>
-        <?php
-	
-				$table_attributes	= array(
-											'id'				=> 'import_orphans_table',
-											'class'				=> 'footable table',
-											'data-page-size'	=> FOOTABLE_PAGING_NUMBER,
-										);
-				$table = new \ProjectSend\Classes\TableGenerate( $table_attributes );
-	
-				$thead_columns		= array(
-											array(
-												'select_all'	=> true,
-												'attributes'	=> array(
-																		'class'			=> array( 'td_checkbox' ),
-																		'data-sortable'	=> 'false',
-																	),
-											),
-											array(
-												'content'		=> __('File name','cftp_admin'),
-												'attributes'	=> array(
-																		'data-sort-initial'	=> 'true',
-																	),
-											),
-											array(
-												'content'		=> __('File size','cftp_admin'),
-												'hide'			=> 'phone',
-												'attributes'	=> array(
-																		'data-type'	=> 'numeric',
-																	),
-											),
-											array(
-												'content'		=> __('Last modified','cftp_admin'),
-												'hide'			=> 'phone',
-												'attributes'	=> array(
-																		'data-type'	=> 'numeric',
-																	),
-											),
-											array(
-												'content'		=> __('Actions','cftp_admin'),
-											),
-										);
-				$table->thead( $thead_columns );
+            <?php
+                /**
+                 * Generate the list of files if there is at least 1
+                 * available and allowed.
+                 */
+                if ( isset( $files_to_add ) && count( $files_to_add ) > 0 ) {
+            ?>
+                <div class="alert alert-success">
+                    <?php _e('The following files can be imported','cftp_admin'); ?>
+                </div>
+            <?php
+        
+                    $table_attributes	= array(
+                                                'id'				=> 'import_orphans_table',
+                                                'class'				=> 'footable table',
+                                                'data-page-size'	=> FOOTABLE_PAGING_NUMBER,
+                                            );
+                    $table = new \ProjectSend\Classes\TableGenerate( $table_attributes );
+        
+                    $thead_columns		= array(
+                                                array(
+                                                    'select_all'	=> true,
+                                                    'attributes'	=> array(
+                                                                            'class'			=> array( 'td_checkbox' ),
+                                                                            'data-sortable'	=> 'false',
+                                                                        ),
+                                                ),
+                                                array(
+                                                    'content'		=> __('File name','cftp_admin'),
+                                                    'attributes'	=> array(
+                                                                            'data-sort-initial'	=> 'true',
+                                                                        ),
+                                                ),
+                                                array(
+                                                    'content'		=> __('File size','cftp_admin'),
+                                                    'hide'			=> 'phone',
+                                                    'attributes'	=> array(
+                                                                            'data-type'	=> 'numeric',
+                                                                        ),
+                                                ),
+                                                array(
+                                                    'content'		=> __('Last modified','cftp_admin'),
+                                                    'hide'			=> 'phone',
+                                                    'attributes'	=> array(
+                                                                            'data-type'	=> 'numeric',
+                                                                        ),
+                                                ),
+                                                array(
+                                                    'content'		=> __('Actions','cftp_admin'),
+                                                ),
+                                            );
+                    $table->thead( $thead_columns );
 
-				foreach ($files_to_add as $add_file) {
-					$table->addRow();
-					/**
-					 * Add the cells to the row
-					 */
-					$tbody_cells = array(
-                                        array(
-                                                'content'		=> '<input type="checkbox" name="files[]" class="batch_checkbox select_file_checkbox" value="' . html_output( $add_file['name'] ) . '" />',
-                                            ),
-                                        array(
-                                                'content'		=> html_output( $add_file['name'] ),
-                                            ),
-                                        array(
-                                                'content'		=> html_output( format_file_size( get_real_size( $add_file['path'] ) ) ),
-                                                'attributes'	=> array(
-                                                                        'data-value' => filesize( $add_file['path'] ),
-                                                                    ),
-                                            ),
-                                        array(
-                                                'content'		=> date( get_option('timeformat'), filemtime( $add_file['path'] ) ),
-                                                'attributes'	=> array(
-                                                                        'data-value' => filemtime( $add_file['path'] ),
-                                                                    ),
-                                            ),
-                                        array(
-                                                'actions'		=> true,
-                                                'content'		=> '<button type="button" name="file_edit" data-name="'.html_output($add_file['name']).'" class="btn btn-primary btn-sm btn-edit-file"><i class="fa fa-pencil"></i><span class="button_label">' . __('Import','cftp_admin') . '</span></button>' . "\n"
-                                            ),
-                                    );
+                    foreach ($files_to_add as $add_file) {
+                        $table->addRow();
+                        /**
+                         * Add the cells to the row
+                         */
+                        $tbody_cells = array(
+                                            array(
+                                                    'content'		=> '<input type="checkbox" name="files[]" class="batch_checkbox select_file_checkbox" value="' . html_output( $add_file['name'] ) . '" />',
+                                                ),
+                                            array(
+                                                    'content'		=> html_output( $add_file['name'] ),
+                                                ),
+                                            array(
+                                                    'content'		=> html_output( format_file_size( get_real_size( $add_file['path'] ) ) ),
+                                                    'attributes'	=> array(
+                                                                            'data-value' => filesize( $add_file['path'] ),
+                                                                        ),
+                                                ),
+                                            array(
+                                                    'content'		=> date( get_option('timeformat'), filemtime( $add_file['path'] ) ),
+                                                    'attributes'	=> array(
+                                                                            'data-value' => filemtime( $add_file['path'] ),
+                                                                        ),
+                                                ),
+                                            array(
+                                                    'actions'		=> true,
+                                                    'content'		=> '<button type="button" name="file_edit" data-name="'.html_output($add_file['name']).'" class="btn btn-primary btn-sm btn-edit-file"><i class="fa fa-pencil"></i><span class="button_label">' . __('Import','cftp_admin') . '</span></button>' . "\n"
+                                                ),
+                                        );
 
-					foreach ( $tbody_cells as $cell ) {
-						$table->addCell( $cell );
-					}
-	
-					$table->end_row();
-				}
+                        foreach ( $tbody_cells as $cell ) {
+                            $table->addCell( $cell );
+                        }
+        
+                        $table->end_row();
+                    }
 
-				echo $table->render();
-		?>
-				<nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
-					<div class="pagination_wrapper text-center">
-						<ul class="pagination hide-if-no-paging"></ul>
-					</div>
-				</nav>
-				<div class="after_form_buttons">
-					<button type="submit" class="btn btn-wide btn-primary" id="upload-continue"><?php _e('Import selected files','cftp_admin'); ?></button>
-				</div>
-		<?php
-			}
+                    echo $table->render();
+            ?>
+                    <nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
+                        <div class="pagination_wrapper text-center">
+                            <ul class="pagination hide-if-no-paging"></ul>
+                        </div>
+                    </nav>
+                    <div class="after_form_buttons">
+                        <button type="submit" class="btn btn-wide btn-primary" id="upload-continue"><?php _e('Import selected files','cftp_admin'); ?></button>
+                    </div>
+            <?php
+                }
 
-			/** No files found */
-			else {
-				if (isset($no_results_error)) {
-					switch ($no_results_error) {
-						case 'search':
-							$no_results_message = __('Your search keywords returned no results.','cftp_admin');
-							break;
-					}
-				}
-				else {
-					$no_results_message = __('There are no files available to add right now.','cftp_admin');
-					$no_results_message .= __('To use this feature you need to upload your files via FTP to the folder','cftp_admin');
-					$no_results_message .= ' <span class="format_url"><strong>'.html_output(UPLOADED_FILES_DIR).'</strong></span>.';
-				}
-	
-				echo system_message('danger',$no_results_message);
-			}
-		?>
-	</form>
+                /** No files found */
+                else {
+                    if (isset($no_results_error)) {
+                        switch ($no_results_error) {
+                            case 'search':
+                                $no_results_message = __('Your search keywords returned no results.','cftp_admin');
+                                break;
+                        }
+                    }
+                    else {
+                        $no_results_message = __('There are no files available to add right now.','cftp_admin');
+                        $no_results_message .= __('To use this feature you need to upload your files via FTP to the folder','cftp_admin');
+                        $no_results_message .= ' <span class="format_url"><strong>'.html_output(UPLOADED_FILES_DIR).'</strong></span>.';
+                    }
+        
+                    echo system_message('danger',$no_results_message);
+                }
+            ?>
+        </form>
+    </div>
 </div>
-	
 <?php
-	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

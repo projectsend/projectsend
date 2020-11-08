@@ -25,43 +25,44 @@ if ($_POST) {
     ]);
 }
 ?>
-<div class="col-xs-12 col-sm-12 col-lg-6">
-	<div class="white-box">
-		<div class="white-box-interior">
-			<form action="email-test.php" name="email_test" method="post" enctype="multipart/form-data" class="form-horizontal">
-                <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
-				<input type="hidden" name="section" value="<?php echo $section; ?>">
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-lg-6">
+        <div class="white-box">
+            <div class="white-box-interior">
+                <form action="email-test.php" name="email_test" method="post" enctype="multipart/form-data" class="form-horizontal">
+                    <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
+                    <input type="hidden" name="section" value="<?php echo $section; ?>">
 
-                <?php if ($_POST) { ?>
+                    <?php if ($_POST) { ?>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label for="result"><?php _e('Result','cftp_admin'); ?></label>
+                                <textarea name="result" id="result" class="form-control textarea_high" readonly><?php echo $email->getDebugResult(); ?></textarea>
+                            </div>
+                        </div>
+                    <?php } ?>
+
                     <div class="form-group">
                         <div class="col-sm-12">
-                            <label for="result"><?php _e('Result','cftp_admin'); ?></label>
-                            <textarea name="result" id="result" class="form-control textarea_high" readonly><?php echo $email->getDebugResult(); ?></textarea>
+                            <label for="to"><?php _e('Send to:','cftp_admin'); ?></label>
+                            <input type="text" name="to" id="to" class="form-control" value="<?php echo CURRENT_USER_EMAIL; ?>">
                         </div>
                     </div>
-                <?php } ?>
 
-                <div class="form-group">
-                    <div class="col-sm-12">
-                        <label for="to"><?php _e('Send to:','cftp_admin'); ?></label>
-                        <input type="text" name="to" id="to" class="form-control" value="<?php echo CURRENT_USER_EMAIL; ?>">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <label for="message"><?php _e('Message','cftp_admin'); ?></label>
+                            <textarea name="message" id="message" class="form-control textarea_high"></textarea>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <div class="col-sm-12">
-                        <label for="message"><?php _e('Message','cftp_admin'); ?></label>
-                        <textarea name="message" id="message" class="form-control textarea_high"></textarea>
+                    <div class="after_form_buttons">
+                        <button type="submit" name="submit" class="btn btn-wide btn-primary empty"><?php _e('Send test email','cftp_admin'); ?></button>
                     </div>
-                </div>
-
-				<div class="after_form_buttons">
-					<button type="submit" name="submit" class="btn btn-wide btn-primary empty"><?php _e('Send test email','cftp_admin'); ?></button>
-				</div>
-			</form>
-		</div>
-	</div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
-
 <?php
-	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

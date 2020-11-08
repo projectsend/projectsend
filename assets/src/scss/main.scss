@@ -324,6 +324,49 @@ body.login {
 
     }
 
+    // Counters
+    .widget_counters {
+        ul {
+            list-style: none;
+            margin: 0 0 30px;
+            padding: 0;
+            display: flex;
+
+            li {
+                flex: 1;
+                margin: 0 15px;
+                background: red;
+                color: white;
+                padding: 20px;
+                position: relative;
+
+                &:nth-child(1) { background: #f2b705; }
+                &:nth-child(2) { background: #86ae00; }
+                &:nth-child(3) { background: #717bbb; }
+                &:nth-child(4) { background: #de629d; }
+                &:nth-child(5) { background: #0094bb; }
+
+                h6 {
+                    font-weight: bold;
+                    font-size: 35px;
+                }
+
+                h5 {
+                    font-weight: normal;
+                    font-size: 22px;
+                }
+
+                i {
+                    position: absolute;
+                    right: 20px;
+                    top: 20px;
+                    font-size: 100px;
+                    opacity: .2;
+                }
+            }
+        }
+    }
+
     // Home LOG widget
     #widget_actions_log {
         #log_container {

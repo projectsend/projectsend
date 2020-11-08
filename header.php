@@ -24,7 +24,7 @@ if (!isset($page_title)) { $page_title = __('System Administration','cftp_admin'
 if (!isset($body_class)) { $body_class = array(); }
 
 if ( !empty( $_COOKIE['menu_contracted'] ) && $_COOKIE['menu_contracted'] == 'true' ) {
-	$body_class[] = 'menu_contracted';
+    $body_class[] = 'menu_contracted';
 }
 
 $body_class[] = 'menu_hidden';
@@ -40,7 +40,7 @@ require_once INCLUDES_DIR . DS .'core.update.silent.php';
  */
 $core_update_allowed = array(9,8,7);
 if (current_role_in($core_update_allowed)) {
-	require_once INCLUDES_DIR . DS . 'core.update.php';
+    require_once INCLUDES_DIR . DS . 'core.update.php';
 }
 
 // Redirect if password needs to be changed
@@ -50,36 +50,36 @@ password_change_required();
 <html lang="<?php echo SITE_LANG; ?>">
 <head>
     <meta charset="<?php echo(CHARSET); ?>">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<title><?php echo html_output( $page_title . ' &raquo; ' . htmlspecialchars(get_option('this_install_title'), ENT_QUOTES, CHARSET) ); ?></title>
-	<?php meta_favicon(); ?>
+    <title><?php echo html_output( $page_title . ' &raquo; ' . htmlspecialchars(get_option('this_install_title'), ENT_QUOTES, CHARSET) ); ?></title>
+    <?php meta_favicon(); ?>
 
-	<?php
-		require_once INCLUDES_DIR . DS . 'assets.php';
+    <?php
+        require_once INCLUDES_DIR . DS . 'assets.php';
 
         load_js_header_files();
-		load_css_files();
-	?>
+        load_css_files();
+    ?>
 </head>
 
 <body <?php echo add_body_class( $body_class ); ?> <?php if (!empty($page_id)) { echo add_page_id($page_id); } ?>>
-	<div class="container-custom">
-		<header id="header" class="navbar navbar-static-top navbar-fixed-top">
-			<ul class="nav pull-left nav_toggler">
-				<li>
-					<a href="#" class="toggle_main_menu"><i class="fa fa-bars" aria-hidden="true"></i><span><?php _e('Toogle menu', 'cftp_admin'); ?></span></a>
-				</li>
-			</ul>
+    <div class="container-custom">
+        <header id="header" class="navbar navbar-static-top navbar-fixed-top">
+            <ul class="nav pull-left nav_toggler">
+                <li>
+                    <a href="#" class="toggle_main_menu"><i class="fa fa-bars" aria-hidden="true"></i><span><?php _e('Toogle menu', 'cftp_admin'); ?></span></a>
+                </li>
+            </ul>
 
-			<div class="navbar-header">
-				<span class="navbar-brand"><a href="<?php echo SYSTEM_URI; ?>" target="_blank"><?php include_once 'assets/img/ps-icon.svg'; ?></a> <?php echo html_output(get_option('this_install_title')); ?></span>
-			</div>
+            <div class="navbar-header">
+                <span class="navbar-brand"><a href="<?php echo SYSTEM_URI; ?>" target="_blank"><?php include_once 'assets/img/ps-icon.svg'; ?></a> <?php echo html_output(get_option('this_install_title')); ?></span>
+            </div>
 
-			<ul class="nav pull-right nav_account">
-				<li id="header_welcome">
-					<span><?php echo CURRENT_USER_NAME; ?></span>
+            <ul class="nav pull-right nav_account">
+                <li id="header_welcome">
+                    <span><?php echo CURRENT_USER_NAME; ?></span>
                 </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php _e('Language', 'cftp_admin'); ?> <span class="caret"></span></a>
@@ -99,40 +99,37 @@ password_change_required();
                             ?>
                         </ul>
                 </li>
-				<li>
-					<?php $my_account_link = (CURRENT_USER_LEVEL == 0) ? 'clients-edit.php' : 'users-edit.php'; ?>
-					<a href="<?php echo BASE_URI.$my_account_link; ?>?id=<?php echo CURRENT_USER_ID; ?>" class="my_account"><i class="fa fa-user-circle" aria-hidden="true"></i> <?php _e('My Account', 'cftp_admin'); ?></a>
-				</li>
-				<li>
-					<a href="<?php echo BASE_URI; ?>process.php?do=logout" ><i class="fa fa-sign-out" aria-hidden="true"></i> <?php _e('Logout', 'cftp_admin'); ?></a>
-				</li>
-			</ul>
-		</header>
+                <li>
+                    <?php $my_account_link = (CURRENT_USER_LEVEL == 0) ? 'clients-edit.php' : 'users-edit.php'; ?>
+                    <a href="<?php echo BASE_URI.$my_account_link; ?>?id=<?php echo CURRENT_USER_ID; ?>" class="my_account"><i class="fa fa-user-circle" aria-hidden="true"></i> <?php _e('My Account', 'cftp_admin'); ?></a>
+                </li>
+                <li>
+                    <a href="<?php echo BASE_URI; ?>process.php?do=logout" ><i class="fa fa-sign-out" aria-hidden="true"></i> <?php _e('Logout', 'cftp_admin'); ?></a>
+                </li>
+            </ul>
+        </header>
 
         <?php include_once 'includes' . DS . 'main-menu.php'; ?>
 
-		<div class="main_content">
-			<div class="container-fluid">
-				<?php
-					// Gets the mark up and values for the System Updated and errors messages.
-					include_once INCLUDES_DIR . DS . 'updates.messages.php';
+        <div class="main_content">
+            <div class="container-fluid">
+                <?php
+                    // Gets the mark up and values for the System Updated and errors messages.
+                    include_once INCLUDES_DIR . DS . 'updates.messages.php';
 
                     include_once INCLUDES_DIR . DS . 'header-messages.php';
                 ?>
 
-				<div class="row">
-					<div class="col-xs-12">
-					    <div id="section_title">
-							<h2><?php echo $page_title; ?></h2>
-						</div>
-					</div>
-				</div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div id="section_title">
+                            <h2><?php echo $page_title; ?></h2>
+                        </div>
+                    </div>
+                </div>
 
                 <?php
                     // Flash messages
                     if ($flash->hasMessages()) {
                         echo $flash;
                     }
-                ?>
-
-				<div class="row">

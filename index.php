@@ -33,7 +33,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 ?>
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 
-	<?php echo get_branding_layout(true); ?>
+    <?php echo get_branding_layout(true); ?>
 
     <?php
         $login_types = array(
@@ -41,16 +41,16 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
             'ldap' => get_option('ldap_signin_enabled'),
         );
     ?>
-	<div class="white-box">
-		<div class="white-box-interior">
-			<div class="ajax_response">
-				<?php
-					/** Coming from an external form */
-					if ( isset( $_GET['error'] ) ) {
+    <div class="white-box">
+        <div class="white-box-interior">
+            <div class="ajax_response">
+                <?php
+                    /** Coming from an external form */
+                    if ( isset( $_GET['error'] ) ) {
                         echo system_message('danger', $auth->getLoginError($_GET['error']));
-					}
-				?>
-			</div>
+                    }
+                ?>
+            </div>
         
             <?php /*
             <ul class="nav nav-tabs" role="tablist">
@@ -86,9 +86,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                     </div>
                 <?php } */ ?>
             </div>
-		</div>
-	</div>
+        </div>
+    </div>
 </div>
 
 <?php
-	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

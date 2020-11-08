@@ -22,6 +22,7 @@
                 admin.pages.dashboard();
                 admin.parts.widgetStatistics();
                 admin.parts.widgetActionLog();
+                admin.parts.widgetNews();
                 break;
             case 'categories_list':
                 admin.pages.categoriesAdmin();

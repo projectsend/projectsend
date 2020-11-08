@@ -1268,10 +1268,12 @@ function meta_noindex()
  */
 function meta_favicon()
 {
-	$favicon_location = BASE_URI . 'assets/img/favicon/';
-	echo '<link rel="shortcut icon" type="image/x-icon" href="' . BASE_URI . 'favicon.ico" />' . "\n";
-	echo '<link rel="icon" type="image/png" href="' . $favicon_location . 'favicon-32.png" sizes="32x32">' . "\n";
-	echo '<link rel="apple-touch-icon" href="' . $favicon_location . 'favicon-152.png" sizes="152x152">' . "\n";
+    $favicon_location = BASE_URI . 'assets/img/favicon/';
+    echo '<link rel="apple-touch-icon" sizes="180x180" href="' . $favicon_location . 'apple-touch-icon.png">';
+    echo '<link rel="icon" type="image/png" sizes="32x32" href="' . $favicon_location . 'favicon-32x32.png">';
+    echo '<link rel="icon" type="image/png" sizes="16x16" href="' . $favicon_location . 'favicon-16x16.png">';
+    echo '<link rel="manifest" href="' . $favicon_location . 'site.webmanifest">';
+    echo '<meta name="theme-color" content="#4c2ab6">';
 }
 
 

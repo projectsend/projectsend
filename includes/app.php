@@ -25,12 +25,12 @@ define('DONATIONS_URL','https://www.projectsend.org/donations/');
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r1260');
+define('CURRENT_VERSION', 'r1265');
 
 /**
  * Required software versions
  */
-define('REQUIRED_VERSION_PHP', '7.0');
+define('REQUIRED_VERSION_PHP', '7.1');
 define('REQUIRED_VERSION_MYSQL', '5.0');
 
 /**

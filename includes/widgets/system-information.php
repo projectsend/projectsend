@@ -1,7 +1,12 @@
 <?php
 	if ( isset( $_GET['ajax_call'] ) ) {
 		require_once '../../bootstrap.php';
-	}
+    }
+    
+    $allowed_news = array(9);
+    if (!in_array(CURRENT_USER_LEVEL,$allowed_news)) {
+        exit;
+    }
 ?>
 <div class="widget widget_system_info">
 	<h4><?php _e('System information','cftp_admin'); ?></h4>

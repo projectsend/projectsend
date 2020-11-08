@@ -16,11 +16,11 @@ session_start();
  * on the footer blocks.
  *
  */
- define('SYSTEM_NAME','ProjectSend');
- define('SYSTEM_URI','https://www.projectsend.org/');
- define('SYSTEM_URI_LABEL','ProjectSend on github');
- define('DONATIONS_URL','https://www.projectsend.org/donations/');
- 
+define('SYSTEM_NAME','ProjectSend');
+define('SYSTEM_URI','https://www.projectsend.org/');
+define('SYSTEM_URI_LABEL','ProjectSend on github');
+define('DONATIONS_URL','https://www.projectsend.org/donations/');
+
 /**
  * Current version.
  * Updated only when releasing a new downloadable complete version.
@@ -66,13 +66,13 @@ define('CHARSET', 'UTF-8');
  * @link http://www.php.net/manual/en/function.error-reporting.php
  */
 if ( DEBUG === true ) {
-	ini_set('display_errors', 'on');
-	ini_set('error_reporting', 'E_ALL');
-	ini_set('display_startup_errors', 'On');
-	error_reporting(E_ALL);
+    ini_set('display_errors', 'on');
+    ini_set('error_reporting', 'E_ALL');
+    ini_set('display_startup_errors', 'On');
+    error_reporting(E_ALL);
 }
 else {
-	error_reporting(0);
+    error_reporting(0);
 }
 
 define('GLOBAL_TIME_LIMIT', 240*60);
@@ -97,25 +97,25 @@ define('UPDATES_FEED_URI','https://projectsend.org/serve/versions');
  * @see sys.config.sample.php
  */
 if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') ) {
-	if ( !defined( 'IS_MAKE_CONFIG' ) ) {
-		// the following script returns only after the creation of the configuration file
-		if ( defined('IS_INSTALL') ) {
-			header('Location:make-config.php');
-		}
-		else {
-			header('Location:install/make-config.php');
-		}
-	}
+    if ( !defined( 'IS_MAKE_CONFIG' ) ) {
+        // the following script returns only after the creation of the configuration file
+        if ( defined('IS_INSTALL') ) {
+            header('Location:make-config.php');
+        }
+        else {
+            header('Location:install/make-config.php');
+        }
+    }
 }
 else {
-	include_once ROOT_DIR.'/includes/sys.config.php';
+    include_once ROOT_DIR.'/includes/sys.config.php';
 }
 
 /**
  * Database connection driver
  */
 if (!defined('DB_DRIVER')) {
-	define('DB_DRIVER', 'mysql');
+    define('DB_DRIVER', 'mysql');
 }
 
 /**
@@ -123,35 +123,35 @@ if (!defined('DB_DRIVER')) {
  */
 $pdo_available_drivers = PDO::getAvailableDrivers();
 if( (DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND') ) {
-	echo '<h1>Missing a required extension</h1>';
-	echo "<p>The system couldn't find the configuration the <strong>PDO extension for mysql</strong>.</p>
-	<p>This extension is required for database comunication.</p>
-	<p>You can install this extension via the package manager of your linux distro, most likely with one of these commands:</p>
-	<ul>
-		<li>sudo apt-get install php-mysql <strong># debian/ubuntu</strong></li>
-		<li>sudo yum install php-mysql <strong># centos/fedora</strong></li>
-	</ul>
-	<p>You also need to restart the webserver after the installation of PDO_mysql.</p>";
-	exit;
+    echo '<h1>Missing a required extension</h1>';
+    echo "<p>The system couldn't find the configuration the <strong>PDO extension for mysql</strong>.</p>
+    <p>This extension is required for database comunication.</p>
+    <p>You can install this extension via the package manager of your linux distro, most likely with one of these commands:</p>
+    <ul>
+        <li>sudo apt-get install php-mysql <strong># debian/ubuntu</strong></li>
+        <li>sudo yum install php-mysql <strong># centos/fedora</strong></li>
+    </ul>
+    <p>You also need to restart the webserver after the installation of PDO_mysql.</p>";
+    exit;
 }
 if( (DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers) ) {
-	echo '<h1>Missing a required extension</h1>';
-	echo "<p>The system couldn't find the configuration the <strong>PDO extension for MS SQL Server</strong>.</p>
-	<p>This extension is required for database comunication.</p>
-	<p>You can install this extension via the package manager of your linux distro, most likely with one of these commands:</p>
-	<ul>
-		<li>sudo apt-get install php-sybase	<strong># debian/ubuntu</strong></li>
-		<li>sudo yum install php-mssql <strong># centos/fedora (you need EPEL)</strong></li>
-	</ul>
-	<p>You also need to restart the webserver after the installation of PDO_mssql.</p>";
-	exit;
+    echo '<h1>Missing a required extension</h1>';
+    echo "<p>The system couldn't find the configuration the <strong>PDO extension for MS SQL Server</strong>.</p>
+    <p>This extension is required for database comunication.</p>
+    <p>You can install this extension via the package manager of your linux distro, most likely with one of these commands:</p>
+    <ul>
+        <li>sudo apt-get install php-sybase	<strong># debian/ubuntu</strong></li>
+        <li>sudo yum install php-mssql <strong># centos/fedora (you need EPEL)</strong></li>
+    </ul>
+    <p>You also need to restart the webserver after the installation of PDO_mssql.</p>";
+    exit;
 }
 
 /**
  * Define the tables names
  */
 if (!defined('TABLES_PREFIX')) {
-	define('TABLES_PREFIX', 'tbl_');
+    define('TABLES_PREFIX', 'tbl_');
 }
 define('TABLE_FILES', TABLES_PREFIX . 'files');
 define('TABLE_FILES_RELATIONS', TABLES_PREFIX . 'files_relations');
@@ -170,29 +170,28 @@ define('TABLE_LOG', TABLES_PREFIX . 'actions_log');
 define('TABLE_PASSWORD_RESET', TABLES_PREFIX . 'password_reset');
 
 $original_basic_tables = array(
-								TABLE_FILES,
-								TABLE_OPTIONS,
-								TABLE_USERS
-							);
+    TABLE_FILES,
+    TABLE_OPTIONS,
+    TABLE_USERS
+);
 
 $all_system_tables = array(
-							'files',
-							'files_relations',
-							'downloads',
-							'notifications',
-							'options',
-							'users',
-							'groups',
-							'members',
-							'members_requests',
-							'folders',
-							'categories',
-							'categories_relations',
-							'actions_log',
-							'password_reset',
-						);
-
-//$current_tables = array(TABLE_FILES,TABLE_FILES_RELATIONS,TABLE_OPTIONS,TABLE_USERS,TABLE_GROUPS,TABLE_MEMBERS,TABLE_FOLDERS,TABLES_PREFIX,TABLE_LOG,TABLE_CATEGORIES,TABLE_CATEGORIES_RELATIONS);
+    'files',
+    'files_relations',
+    'downloads',
+    'notifications',
+    'options',
+    'users',
+    'groups',
+    'members',
+    'members_requests',
+    'folders',
+    'categories',
+    'categories_relations',
+    'actions_log',
+    'password_reset',
+    'user_meta',
+);
 
 /**
  * This values affect both validation methods (client and server side)
@@ -206,9 +205,9 @@ define('MAX_PASS_CHARS', 60);
 define('MIN_GENERATE_PASS_CHARS', 10);
 define('MAX_GENERATE_PASS_CHARS', 20);
 /*
- * Cookie expiration time (in seconds).
- * Set by default to 30 days (60*60*24*30).
- */
+* Cookie expiration time (in seconds).
+* Set by default to 30 days (60*60*24*30).
+*/
 define('COOKIE_EXP_TIME', 60*60*24*30);
 
 /* Password recovery */

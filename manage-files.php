@@ -545,6 +545,11 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                                                         'content'		=> __('Title','cftp_admin'),
                                                     ),
                                                     array(
+                                                        'sortable'		=> true,
+                                                        'sort_url'		=> 'description',
+                                                        'content'		=> __('Description','cftp_admin'),
+                                                    ),
+                                                    array(
                                                         'content'		=> __('Size','cftp_admin'),
                                                     ),
                                                     array(
@@ -744,6 +749,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                                                                                 'class'		=> array( 'file_name' ),
                                                                             ),
                                                         'content'		=> '<a href="' . $file->download_link . '" target="_blank">' . $file->filename_original . '</a>',
+                                                    ),
+                                                    array(
+                                                        'content'		=> $file->description,
                                                     ),
                                                     array(
                                                         'content'		=> $file->size_formatted,

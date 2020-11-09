@@ -92,6 +92,10 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
                             <?php echo $file->description; ?>
                         </div>
 
+                        <div class="size">
+                            <?php echo $file->size_formatted; ?>
+                        </div>
+
                         <?php if ($can_download == true) { ?>
                             <div class="actions">
                                 <a href="<?php echo $file->public_url . '&download'; ?>" class="btn btn-primary">

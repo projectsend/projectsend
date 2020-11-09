@@ -82,14 +82,14 @@ if ($last_update < $current_version || !isset($last_update)) {
     }
 
     /**
-     * r1192 updates
-     * Added meta updated time column
+     * r1270 updates
+     * Added meta updated time column and action log details column
      */
-    if ($last_update < 1192) {
+    if ($last_update < 1270) {
         $statement = $dbh->prepare("SHOW COLUMNS FROM `" . TABLE_USER_META . "` LIKE 'updated_at'");  
         try {
             $statement->execute();
-            if ($statement->fetchColumn()) {
+            if (!$statement->fetchColumn()) {
                 $statement = $dbh->query("
                     ALTER TABLE `" . TABLE_USER_META . "` ADD COLUMN `updated_at` TIMESTAMP NULL DEFAULT NULL
                 ");
@@ -99,17 +99,11 @@ if ($last_update < $current_version || !isset($last_update)) {
         }
 
         $updates_made++;
-    }
 
-    /**
-     * r1241 updates
-     * Added action log details
-     */
-    if ($last_update < 1241) {
         $statement = $dbh->prepare("SHOW COLUMNS FROM `" . TABLE_LOG . "` LIKE 'details'");  
         try {
             $statement->execute();
-            if ($statement->fetchColumn()) {
+            if (!$statement->fetchColumn()) {
                 $statement = $dbh->query("ALTER TABLE `" . TABLE_LOG . "` ADD COLUMN `details` TEXT DEFAULT NULL after `affected_account_name`");
             }
         } catch(PDOException $e){

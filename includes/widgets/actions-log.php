@@ -9,7 +9,7 @@
     }
 ?>
     <div class="widget" id="widget_actions_log">
-        <h4><?php _e('Recent activites','cftp_admin'); ?></h4>
+        <h4><?php _e('Recent activities','cftp_admin'); ?></h4>
         <div class="widget_int">
             <div class="log_change_action">
                 <select name="action" id="widget_actions_log_change" class="form-control">

@@ -1604,10 +1604,11 @@ function recordNewDownload($user_id = CURRENT_USER_ID, $file_id = null)
     }
 
     // Anonymous download
+    $ip = get_client_ip();
     if ($user_id == 0) {
         $statement = $dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (file_id, remote_ip, remote_host, anonymous) VALUES (:file_id, :remote_ip, :remote_host, :anonymous)");
         $statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
-        $statement->bindParam(':remote_ip', get_client_ip());
+        $statement->bindParam(':remote_ip', $ip);
         $statement->bindParam(':remote_host', $_SERVER['REMOTE_HOST']);
         $statement->bindValue(':anonymous', 1, PDO::PARAM_INT);
         $statement->execute();
@@ -1615,7 +1616,7 @@ function recordNewDownload($user_id = CURRENT_USER_ID, $file_id = null)
         $statement = $dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (user_id , file_id, remote_ip, remote_host) VALUES (:user_id, :file_id, :remote_ip, :remote_host)");
         $statement->bindValue(':user_id', $user_id, PDO::PARAM_INT);
         $statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
-        $statement->bindParam(':remote_ip', get_client_ip());
+        $statement->bindParam(':remote_ip', $ip);
         $statement->bindParam(':remote_host', $_SERVER['REMOTE_HOST']);
         $statement->execute();
     }

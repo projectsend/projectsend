@@ -1360,5 +1360,6 @@ if (current_role_in($allowed_update)) {
                 'version' => $current_version,
             ],
         ]);
+        
     }
 }

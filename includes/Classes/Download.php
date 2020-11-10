@@ -75,37 +75,26 @@ class Download
     public function downloadZip($file_ids)
     {
         $files_to_zip = array_map( 'intval', explode( ',', $file_ids ) );
+        $added_files = 0;
         $log_details = [
             'files' => []
         ];
         
-        foreach ($files_to_zip as $file_id) {
-            $file = new \ProjectSend\Classes\Files();
-            $file->get($file_id);
-            if (!$file->existsOnDisk()) {
-                unset( $files_to_zip[$file_id] );
-            }
-            unset($file);
-        }
-        
-        $added_files = 0;
-        $allowed_to_zip = []; // Files allowed to be downloaded
-        
-        foreach ($files_to_zip as $file_id) {
-            if (userCanDownloadFile(CURRENT_USER_ID, $file_id)) {
-                $allowed_to_zip[] = $file_id;
-            }
-        }
-        
         /** Start adding the files to the zip */
-        if ( count( $allowed_to_zip ) > 0 ) {
-            $zip_file = tempnam("tmp", "zip");
+        if ( count( $files_to_zip ) > 0 ) {
+            $zip_file = tempnam(UPLOADS_TEMP_DIR, "zip_");
             $zip = new \ZipArchive();
             $zip->open($zip_file, ZipArchive::OVERWRITE);
 
-            foreach ($allowed_to_zip as $file_id) {
+            foreach ($files_to_zip as $file_id) {
                 $file = new \ProjectSend\Classes\Files();
                 $file->get($file_id);
+                if (!$file->existsOnDisk()) {
+                    continue;
+                }
+                if (!userCanDownloadFile(CURRENT_USER_ID, $file_id)) {
+                    continue;
+                }
                 if ( $zip->addFile($file->full_path, $file->filename_unfiltered) ) {
                     $added_files++;
                     recordNewDownload(CURRENT_USER_ID, $file_id);
@@ -114,10 +103,10 @@ class Download
                         'filename' => $file->filename_original
                     ];
                 }
-            }
-        
+            }        
+            $zip_name = basename($zip->filename);
             $zip->close();
-        
+
             if ($added_files > 0) {
                 /** Record the action log */
                 $record = $this->logger->addEntry([
@@ -131,9 +120,20 @@ class Download
                     setCookie("download_started", 1, time() + 20, '/', "", false, false);
 
                     $save_as = 'files_'.generateRandomString().'.zip';
-                    $this->serveFile($zip_file, $save_as);
+                    switch (get_option('download_method')) {
+                        default:
+                        case 'php':
+                        case 'apache_xsendfile':
+                            $alias = null;
+                        break;
+                        case 'nginx_xaccel':
+                            $alias = XACCEL_FILES_URL.'/temp/'.$zip_name;
+                        break;
+                    }
+                    $this->serveFile($zip_file, $save_as, $alias);
 
-                    unlink($zip_file);
+                    //unlink($zip_file);
+                    exit;
                 }
             }
         }
@@ -228,21 +228,20 @@ class Download
                     }
 
                     fclose( $file );
-                    exit;
                 break;
                 case 'apache_xsendfile':
                     header("X-Sendfile: $file_location");
                     header('Content-Type: application/octet-stream');
                     header('Content-Disposition: attachment; filename='.basename($save_as));
-                    exit;
                 break;
                 case 'nginx_xaccel':
                     header("X-Accel-Redirect: $xaccel");
                     header('Content-Type: application/octet-stream');
                     header('Content-Disposition: attachment; filename='.basename($save_as));
-                    exit;
                 break;
             }
+
+            return;
         }
         else {
             header('Location:' . PAGE_STATUS_CODE_404);

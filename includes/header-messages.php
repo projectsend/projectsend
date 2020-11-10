@@ -18,6 +18,7 @@ $directories = [
     ADMIN_UPLOADS_DIR,
     UPLOADED_FILES_DIR,
     THUMBNAILS_FILES_DIR,
+    UPLOADS_TEMP_DIR,
 ];
 foreach ($directories as $directory) {
     if (!file_exists($directory)) {
@@ -29,7 +30,7 @@ foreach ($directories as $directory) {
     }
 }
 
-if ( !empty($write_errors) ) {
+if ( !empty($write_errors) && in_array(CURRENT_USER_LEVEL, [9,8,7]) ) {
     $msg = '<p><strong>'.__('Warning:', 'cftp_admin').'</strong>' . ' ' . __('The following directories do not exist or have write permissions errors.', 'cftp_admin').'</p>';
     $msg .= '<p>'.__('File uploading or other important functions might not work.', 'cftp_admin').'</p>';
     foreach ($write_errors as $directory) {
@@ -37,4 +38,25 @@ if ( !empty($write_errors) ) {
     }
 
     echo system_message('danger', $msg);
+}
+
+// Delete old zip files
+$zip_files = glob(UPLOADS_TEMP_DIR.'/zip_*');
+if (!empty($zip_files)) {
+    $found = 0;
+    $deleted = 0;
+    foreach ($zip_files as $file) {
+        if(is_file($file) and time()-filemtime($file) > ZIP_TMP_EXPIRATION_TIME) {
+            $found++;
+            if (@unlink($file)) {
+                $deleted++;
+            }
+        }
+    }
+
+    if ($deleted < $found && in_array(CURRENT_USER_LEVEL, [9,8,7])) {
+        $msg = '<p><strong>'.__('Warning:', 'cftp_admin').'</strong>' . ' ' . sprintf(__('One or more temporary zip files could not be deleted. Files older than %s hours are generally considered safe to delete.', 'cftp_admin'), convertSeconds(ZIP_TMP_EXPIRATION_TIME)['hours']);
+        $msg .= '<p>'.sprintf(__('To make space on your disk, you can manually delete old files from %s', 'cftp_admin'), UPLOADS_TEMP_DIR).'</p>';
+        echo system_message('danger', $msg);
+    }
 }

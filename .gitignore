@@ -35,14 +35,17 @@ app/includes/custom.php
 # Uploads
 upload/files/*
 upload/admin/*
+upload/temp/*
 upload/branding/*
 upload/thumbnails/*
 !upload/files/index.php
 !upload/admin/index.php
+!upload/temp/index.php
 !upload/branding/index.php
 !upload/thumbnails/index.php
 !upload/files/.htaccess
 !upload/admin/.htaccess
+!upload/temp/.htaccess
 !upload/branding/.htaccess
 !upload/thumbnails/.htaccess
 

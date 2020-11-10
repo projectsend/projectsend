@@ -90,9 +90,9 @@
         </div>
         <div class="method_note none" data-method="nginx_xaccel">
             <p class="field_note"><?php _e("X-Accel is a method available in nginx that allows the system to serve files directly, bypassing php and it's limitations. To configure it, you need to edit your server block and add the following code (adapted to your path)",'cftp_admin'); ?></p>
-            <pre>location /download {
+            <pre>location <?php echo XACCEL_FILES_URL; ?> {
     internal;
-    alias /var/www/projectsend/upload/files/;
+    alias /var/www/projectsend/upload/;
 }</pre>
         </div>
     </div>

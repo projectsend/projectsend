@@ -89,10 +89,10 @@
             <p class="field_note"><?php _e("Be aware that if the module is not set up correctly, downloads will trigger but the files will have a length of 0 bytes.",'cftp_admin'); ?></p>
         </div>
         <div class="method_note none" data-method="nginx_xaccel">
-            <p class="field_note"><?php _e("X-Accel is a method available in nginx that allows the system to serve files directly, bypassing php and it's limitations. To configure it, you need to edit your server block and add the following code (adapted to your path)",'cftp_admin'); ?></p>
+            <p class="field_note"><?php _e("X-Accel is a method available in nginx that allows the system to serve files directly, bypassing php and it's limitations. To configure it, you need to edit your server block and add the following code:",'cftp_admin'); ?></p>
             <pre>location <?php echo XACCEL_FILES_URL; ?> {
     internal;
-    alias /var/www/projectsend/upload/;
+    alias <?php echo UPLOADED_FILES_ROOT; ?>/;
 }</pre>
         </div>
     </div>

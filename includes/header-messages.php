@@ -18,6 +18,7 @@ $directories = [
     ADMIN_UPLOADS_DIR,
     UPLOADED_FILES_DIR,
     THUMBNAILS_FILES_DIR,
+    UPLOADS_TEMP_DIR,
 ];
 foreach ($directories as $directory) {
     if (!file_exists($directory)) {

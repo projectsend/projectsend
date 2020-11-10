@@ -45,7 +45,7 @@ define('PROTOCOL', empty($_SERVER['HTTPS'])? 'http' : 'https');
  * - Changes the error_reporting php value
  * - Enables the PDOEX extension (on the database class) to count queries
  */
-define('DEBUG', false);
+define('DEBUG', true);
 
 /**
  * IS_DEV is set to true during development to show a sitewide remainder
@@ -225,6 +225,7 @@ define('SESSION_EXPIRE_TIME', $session_expire_time);
 /* Define the folder where uploaded files will reside */
 define('UPLOADED_FILES_ROOT', ROOT_DIR . DS . 'upload');
 define('UPLOADED_FILES_DIR', UPLOADED_FILES_ROOT . DS . 'files');
+define('UPLOADS_TEMP_DIR', UPLOADED_FILES_ROOT . DS . 'temp');
 define('THUMBNAILS_FILES_DIR', UPLOADED_FILES_ROOT . DS . 'thumbnails');
 define('UPLOADED_FILES_URL', 'upload/files/');
 

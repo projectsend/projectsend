@@ -46,7 +46,7 @@ if (!empty($zip_files)) {
     $found = 0;
     $deleted = 0;
     foreach ($zip_files as $file) {
-        if(is_file($file) and filemtime($file)<time()-ZIP_TMP_EXPIRATION_TIME) {
+        if(is_file($file) and time()-filemtime($file) > ZIP_TMP_EXPIRATION_TIME) {
             $found++;
             if (@unlink($file)) {
                 $deleted++;

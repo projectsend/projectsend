@@ -1725,3 +1725,14 @@ function get_client_ip() {
 
     return $ipaddress;
 }
+
+function convertSeconds($seconds)
+{
+
+    $return = [
+        'hours' => floor($seconds / 3600),
+        'minutes' => floor(($seconds / 60 % 60)),
+    ];
+
+    return $return;
+}

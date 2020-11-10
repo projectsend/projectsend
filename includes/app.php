@@ -228,6 +228,7 @@ define('UPLOADED_FILES_DIR', UPLOADED_FILES_ROOT . DS . 'files');
 define('UPLOADS_TEMP_DIR', UPLOADED_FILES_ROOT . DS . 'temp');
 define('THUMBNAILS_FILES_DIR', UPLOADED_FILES_ROOT . DS . 'thumbnails');
 define('UPLOADED_FILES_URL', 'upload/files/');
+define('XACCEL_FILES_URL', '/serve-file');
 
 /* Assets */
 define('ASSETS_DIR', ROOT_DIR . DS . 'assets');
@@ -275,6 +276,9 @@ define('EMAIL_TEMPLATE_PASSWORD_RESET', 'password-reset.html');
 /** Passwords */
 define('HASH_COST_LOG2', 8);
 define('HASH_PORTABLE', false);
+
+/** ZIP files */
+define('ZIP_TMP_EXPIRATION_TIME', 172800); // Delete zip files from the temp folder older than this value (in seconds)
 
 /**
  * Footable

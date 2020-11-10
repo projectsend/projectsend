@@ -127,7 +127,7 @@ class Download
                             $alias = null;
                         break;
                         case 'nginx_xaccel':
-                            $alias = '/download/temp/'.$zip_name;
+                            $alias = XACCEL_FILES_URL.'/temp/'.$zip_name;
                         break;
                     }
                     $this->serveFile($zip_file, $save_as, $alias);

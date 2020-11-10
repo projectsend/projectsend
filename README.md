@@ -13,7 +13,6 @@ Other featres include auto-expiration of upload, notifications, full logging of 
 
 Main website: [projectsend.org](https://www.projectsend.org)  
 git: [current repository](https://github.com/projectsend/projectsend/)
-~~Old repository (unused): [Google Code](http://code.google.com/p/clients-oriented-ftp)~~
 
 Feel free to participate!
 

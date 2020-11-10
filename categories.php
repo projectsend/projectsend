@@ -279,10 +279,10 @@ if ( isset( $_POST['btn_process'] ) ) {
                 $c = 0;
 
                 $pagination_page	= $page;
-                $pagination_start	= ( $pagination_page - 1 ) * RESULTS_PER_PAGE;
+                $pagination_start	= ( $pagination_page - 1 ) * get_option('pagination_results_per_page');
                 $limit_start		= $pagination_start;
-                $limit_number		= RESULTS_PER_PAGE;
-                $limit_amount		= $limit_start + RESULTS_PER_PAGE;
+                $limit_number		= get_option('pagination_results_per_page');
+                $limit_amount		= $limit_start + get_option('pagination_results_per_page');
 
                 $i = 0;
                 
@@ -370,7 +370,7 @@ if ( isset( $_POST['btn_process'] ) ) {
                 echo $table->pagination([
                     'link' => basename($_SERVER['SCRIPT_FILENAME']),
                     'current' => $params['page'],
-                    'pages' => ceil( $get_categories['count'] / RESULTS_PER_PAGE ),
+                    'pages' => ceil( $get_categories['count'] / get_option('pagination_results_per_page') ),
                 ]);
             ?>
         </form>

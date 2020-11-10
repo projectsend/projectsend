@@ -123,9 +123,25 @@ if ($last_update < $current_version || !isset($last_update)) {
         if (get_option('xsendfile_enable') == 1) {
             $download_method = 'apache_xsendfile';
         }
-        $new_database_values = array(
-                                        'download_method' => $download_method,
-                                    );
+        $new_database_values = [
+            'download_method' => $download_method,
+        ];
+        
+        foreach($new_database_values as $row => $value) {
+            if ( add_option_if_not_exists($row, $value) ) {
+                $updates_made++;
+            }
+        }
+    }
+
+    /**
+     * r1275 updates
+     * Added download method option. Set according to XSendFile value
+     */
+    if ($last_update < 1275) {
+        $new_database_values = [
+            'pagination_results_per_page' => RESULTS_PER_PAGE,
+        ];
         
         foreach($new_database_values as $row => $value) {
             if ( add_option_if_not_exists($row, $value) ) {

@@ -45,6 +45,23 @@
     </div>
 </div>
 
+<div class="form-group">
+    <label for="pagination_results_per_page" class="col-sm-4 control-label"><?php _e('Pagination results per page','cftp_admin'); ?></label>
+    <div class="col-sm-8">
+        <select class="form-control" name="pagination_results_per_page" id="pagination_results_per_page" required>
+            <?php
+                $pagination_amounts = [10, 20, 50, 100];
+                foreach ($pagination_amounts as $pagination_amount) {
+            ?>
+                    <option value="<?php echo $pagination_amount; ?>" <?php echo (get_option('pagination_results_per_page') == $pagination_amount) ? 'selected="selected"' : ''; ?>><?php echo $pagination_amount; ?></option>
+            <?php
+                }
+            ?>
+        </select>
+        <p class="field_note"><?php _e('Applies to pagination in all administration areas','cftp_admin'); ?>
+    </div>
+</div>
+
 <div class="options_divide"></div>
 
 <h3><?php _e('Editor','cftp_admin'); ?></h3>
@@ -89,10 +106,10 @@
             <p class="field_note"><?php _e("Be aware that if the module is not set up correctly, downloads will trigger but the files will have a length of 0 bytes.",'cftp_admin'); ?></p>
         </div>
         <div class="method_note none" data-method="nginx_xaccel">
-            <p class="field_note"><?php _e("X-Accel is a method available in nginx that allows the system to serve files directly, bypassing php and it's limitations. To configure it, you need to edit your server block and add the following code (adapted to your path)",'cftp_admin'); ?></p>
+            <p class="field_note"><?php _e("X-Accel is a method available in nginx that allows the system to serve files directly, bypassing php and it's limitations. To configure it, you need to edit your server block and add the following code:",'cftp_admin'); ?></p>
             <pre>location <?php echo XACCEL_FILES_URL; ?> {
     internal;
-    alias /var/www/projectsend/upload/;
+    alias <?php echo UPLOADED_FILES_ROOT; ?>/;
 }</pre>
         </div>
     </div>

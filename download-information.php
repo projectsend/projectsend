@@ -108,9 +108,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                             $sql = $dbh->prepare( $cq );
                         
                             $pagination_page			= ( isset( $_GET["page"] ) ) ? $_GET["page"] : 1;
-                            $pagination_start			= ( $pagination_page - 1 ) * RESULTS_PER_PAGE;
+                            $pagination_start			= ( $pagination_page - 1 ) * get_option('pagination_results_per_page');
                             $params[':limit_start']		= $pagination_start;
-                            $params[':limit_number']	= RESULTS_PER_PAGE;
+                            $params[':limit_number']	= get_option('pagination_results_per_page');
                         
                             $sql->execute( $params );
 
@@ -255,7 +255,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                             echo $table->pagination([
                                 'link' => 'download-information.php',
                                 'current' => $pagination_page,
-                                'pages' => ceil( $count_for_pagination / RESULTS_PER_PAGE ),
+                                'pages' => ceil( $count_for_pagination / get_option('pagination_results_per_page') ),
                             ]);
                         ?>
                     </div>

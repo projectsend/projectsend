@@ -45,6 +45,23 @@
     </div>
 </div>
 
+<div class="form-group">
+    <label for="pagination_results_per_page" class="col-sm-4 control-label"><?php _e('Pagination results per page','cftp_admin'); ?></label>
+    <div class="col-sm-8">
+        <select class="form-control" name="pagination_results_per_page" id="pagination_results_per_page" required>
+            <?php
+                $pagination_amounts = [10, 20, 50, 100];
+                foreach ($pagination_amounts as $pagination_amount) {
+            ?>
+                    <option value="<?php echo $pagination_amount; ?>" <?php echo (get_option('pagination_results_per_page') == $pagination_amount) ? 'selected="selected"' : ''; ?>><?php echo $pagination_amount; ?></option>
+            <?php
+                }
+            ?>
+        </select>
+        <p class="field_note"><?php _e('Applies to pagination in all administration areas','cftp_admin'); ?>
+    </div>
+</div>
+
 <div class="options_divide"></div>
 
 <h3><?php _e('Editor','cftp_admin'); ?></h3>

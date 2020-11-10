@@ -173,7 +173,19 @@ class Download
             
             $save_file_as = UPLOADED_FILES_DIR . DS . $save_as;
 
-            $this->serveFile($file_location, $save_file_as);
+            $file = new \ProjectSend\Classes\Files;
+            $file->get($file_id);
+            switch (get_option('download_method')) {
+                default:
+                case 'php':
+                case 'apache_xsendfile':
+                    $alias = null;
+                break;
+                case 'nginx_xaccel':
+                    $alias = $file->download_link_xaccel;
+                break;
+            }
+            $this->serveFile($file_location, $save_file_as, $alias);
             exit;
         }
         else {
@@ -189,37 +201,47 @@ class Download
      * @param string $save_as original filename
      * @return void
      */
-    public function serveFile($file_location, $save_as)
+    public function serveFile($file_location, $save_as, $xaccel = null)
     {
         if (file_exists($file_location)) {
             session_write_close();
             while (ob_get_level()) ob_end_clean();
 
-            if (get_option('xsendfile_enable') == 1) {
-                header("X-Sendfile: $file_location");
-                header('Content-Type: application/octet-stream');
-                header('Content-Disposition: attachment; filename='.basename($save_as));
-                exit;
-            } else {
-                header('Content-Type: application/octet-stream');
-                header('Content-Disposition: attachment; filename='.basename($save_as));
-                header('Expires: 0');
-                header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-                header('Pragma: public');
-                header('Cache-Control: private',false);
-                header('Content-Length: ' . get_real_size($file_location));
-                header('Connection: close');
-                //readfile($this->file_location);
+            switch (get_option('download_method')) {
+                default:
+                case 'php':
+                    header('Content-Type: application/octet-stream');
+                    header('Content-Disposition: attachment; filename='.basename($save_as));
+                    header('Expires: 0');
+                    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+                    header('Pragma: public');
+                    header('Cache-Control: private',false);
+                    header('Content-Length: ' . get_real_size($file_location));
+                    header('Connection: close');
+                    //readfile($this->file_location);
 
-                $context = stream_context_create();
-                $file = fopen($file_location, 'rb', false, $context);
-                while ( !feof( $file ) ) {
-                    //usleep(1000000); //Reduce download speed
-                    echo stream_get_contents($file, 2014);
-                }
+                    $context = stream_context_create();
+                    $file = fopen($file_location, 'rb', false, $context);
+                    while ( !feof( $file ) ) {
+                        //usleep(1000000); //Reduce download speed
+                        echo stream_get_contents($file, 2014);
+                    }
 
-                fclose( $file );
-                exit;
+                    fclose( $file );
+                    exit;
+                break;
+                case 'apache_xsendfile':
+                    header("X-Sendfile: $file_location");
+                    header('Content-Type: application/octet-stream');
+                    header('Content-Disposition: attachment; filename='.basename($save_as));
+                    exit;
+                break;
+                case 'nginx_xaccel':
+                    header("X-Accel-Redirect: $xaccel");
+                    header('Content-Type: application/octet-stream');
+                    header('Content-Disposition: attachment; filename='.basename($save_as));
+                    exit;
+                break;
             }
         }
         else {

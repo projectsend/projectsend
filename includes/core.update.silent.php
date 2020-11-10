@@ -112,4 +112,25 @@ if ($last_update < $current_version || !isset($last_update)) {
 
         $updates_made++;
     }
+
+
+    /**
+     * r1271 updates
+     * Added download method option. Set according to XSendFile value
+     */
+    if ($last_update < 1271) {
+        $download_method = 'php';
+        if (get_option('xsendfile_enable') == 1) {
+            $download_method = 'apache_xsendfile';
+        }
+        $new_database_values = array(
+                                        'download_method' => $download_method,
+                                    );
+        
+        foreach($new_database_values as $row => $value) {
+            if ( add_option_if_not_exists($row, $value) ) {
+                $updates_made++;
+            }
+        }
+    }
 }

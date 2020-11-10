@@ -15,6 +15,14 @@
                     error.appendTo(element.parent('div'));
                 },
             });
+
+            $('#download_method').on('change', function(e) {
+                var method = $(this).find('option:selected').val();
+                $('.method_note').hide();
+                $('.method_note[data-method="'+method+'"]').show();
+            });
+
+            $('#download_method').trigger('change');
         });
     };
 })();

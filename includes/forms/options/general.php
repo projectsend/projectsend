@@ -74,11 +74,27 @@
 
 <h3><?php _e('Downloads','cftp_admin'); ?></h3>
 <div class="form-group">
-    <div class="col-sm-8 col-sm-offset-4">
-        <label for="xsendfile_enable">
-            <input type="checkbox" value="1" name="xsendfile_enable" id="xsendfile_enable" class="checkbox_options" <?php echo (get_option('xsendfile_enable') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Use XSendFile to serve files",'cftp_admin'); ?>
-            <p class="field_note"><?php _e("xsendfile improves downloads by allowing the web server to send the file directly (without php and it's limitations in the middle). This provides several optimizations, such as resumable, more stable downloads. This in an advanced feature that requires you to install and enable a module on your server.",'cftp_admin'); ?></p>
-        </label>
+    <label for="download_method" class="col-sm-4 control-label"><?php _e('Download method','cftp_admin'); ?></label>
+    <div class="col-sm-8">
+        <select class="form-control" name="download_method" id="download_method" required>
+            <option value="php" <?php echo (get_option('download_method') == 'php') ? 'selected="selected"' : ''; ?>>php</option>
+            <option value="apache_xsendfile" <?php echo (get_option('download_method') == 'apache_xsendfile') ? 'selected="selected"' : ''; ?>>XSendFile (apache)</option>
+            <option value="nginx_xaccel" <?php echo (get_option('download_method') == 'nginx_xaccel') ? 'selected="selected"' : ''; ?>>X-Accel (nginx)</option>
+        </select>
+        <div class="method_note none" data-method="php">
+            <p class="field_note"><?php _e("Serving files with php is the default method and does not require any changes to your webserver. However, very large files could download with errors depending on your php configuration.",'cftp_admin'); ?></p>
+        </div>
+        <div class="method_note none" data-method="apache_xsendfile">
+            <p class="field_note"><?php _e("XSendfile improves downloads by allowing the web server to send the file directly bypassing php and it's limitations. This in an advanced feature that requires you to install and enable a module on your server.",'cftp_admin'); ?></p>
+            <p class="field_note"><?php _e("Be aware that if the module is not set up correctly, downloads will trigger but the files will have a length of 0 bytes.",'cftp_admin'); ?></p>
+        </div>
+        <div class="method_note none" data-method="nginx_xaccel">
+            <p class="field_note"><?php _e("X-Accel is a method available in nginx that allows the system to serve files directly, bypassing php and it's limitations. To configure it, you need to edit your server block and add the following code (adapted to your path)",'cftp_admin'); ?></p>
+            <pre>location /download {
+    internal;
+    alias /var/www/projectsend/upload/files/;
+}</pre>
+        </div>
     </div>
 </div>
 

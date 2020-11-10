@@ -22,6 +22,7 @@ class Files
     public $filename_original; // the original filename as the user uploads it
     public $filename_unfiltered; // save as
     public $download_link;
+    public $download_link_xaccel;
     public $expires;
     public $expired;
     public $expiry_date;
@@ -156,6 +157,7 @@ class Files
             $this->filename_original = (!empty( $row['original_url'] ) ) ? html_output($row['original_url']) : html_output($row['url']);
             $this->filename_unfiltered = $row['original_url'];
             $this->download_link = make_download_link(array('id' => $this->id));
+            $this->download_link_xaccel = '/download/'.$this->filename_on_disk;
             $this->expires = html_output($row['expires']);
             $this->expiry_date = html_output($row['expiry_date']);
             $this->uploaded_date = html_output($row['timestamp']);

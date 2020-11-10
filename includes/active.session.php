@@ -72,7 +72,7 @@ if (!empty(get_option('file_types_limit_to'))) {
 		case 'all':
 			break;
 		case 'clients':
-			if ( CURRENT_USER_LEVEL != 0 ) {
+			if ( defined('CURRENT_USER_LEVEL') && CURRENT_USER_LEVEL != 0 ) {
 				$limit_files = false;
 			}
 			break;

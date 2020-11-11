@@ -76,16 +76,11 @@ class Auth
 				if ($user->isActive()) {
                     $this->login($user);
 
-					$results = array(
-                                    'status' => 'success',
-                                    'user_id' => $user->id,
-								);
-					if ($user->isClient()) {
-						$results['location'] = CLIENT_VIEW_FILE_LIST_URL;
-					}
-					else {
-						$results['location'] = BASE_URI."dashboard.php";
-                    }
+					$results = [
+                        'status' => 'success',
+                        'user_id' => $user->id,
+                        'location' => $user->isClient() ? CLIENT_VIEW_FILE_LIST_URL : BASE_URI."dashboard.php",
+					];
                     
                     return json_encode($results);
 				}

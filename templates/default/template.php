@@ -304,7 +304,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                              * PAGINATION
                              */
                             echo $table->pagination([
-                                'link' => 'users.php',
+                                'link' => 'my_files/index.php',
                                 'current' => $pagination_page,
                                 'pages' => ceil( $count_for_pagination / TEMPLATE_RESULTS_PER_PAGE ),
                             ]);

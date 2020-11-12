@@ -72,7 +72,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
 }
 ?>
 
-<div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
+<div class="col-xs-12 col-sm-12 col-lg-8 col-lg-offset-2">
 
     <?php echo get_branding_layout(true); ?>
 

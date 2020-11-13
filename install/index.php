@@ -10,40 +10,6 @@ define( 'IS_INSTALL', true );
 define( 'ABS_PARENT', dirname( dirname(__FILE__) ) );
 require_once ABS_PARENT . '/bootstrap.php';
 
-/** Version requirements check */
-$version_php	= phpversion();
-$version_mysql	= $dbh->query('SELECT version()')->fetchColumn();
-
-/** php */
-$version_not_met =  __('%s minimum version not met. Please upgrade to at least version %s','cftp_admin');
-if ( version_compare( $version_php, REQUIRED_VERSION_PHP, "<" ) ) {
-    $error_msg[] = sprintf($version_not_met, 'php', REQUIRED_VERSION_PHP);
-}
-/** mysql */
-if ( version_compare( $version_mysql, REQUIRED_VERSION_MYSQL, "<" ) ) {
-    $error_msg[] = sprintf($version_not_met, 'MySQL', REQUIRED_VERSION_MYSQL);
-}
-
-
-if ( !empty( $error_msg ) ) {
-    include_once ABS_PARENT . '/header-unlogged.php';
-?>
-    <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
-        <div class="white-box">
-            <div class="white-box-interior">
-                <?php
-                    foreach ( $error_msg as $msg ) {
-                        echo system_message( 'error', $msg );
-                    }
-                ?>
-            </div>
-        </div>
-    </div>
-<?php
-    include_once ABS_PARENT . '/footer.php';
-    exit;
-}
-
 global $dbh;
 /**
  * Function that takes an array of SQL queries and executes them in order.

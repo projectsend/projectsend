@@ -17,11 +17,15 @@ function check_server_requirements()
      * Check for PDO extensions
      */
     $pdo_available_drivers = PDO::getAvailableDrivers();
-    if ((DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND')) {
+    if (empty($pdo_available_drivers)) {
         $error_msg[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
-    }
-    if ((DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers)) {
-        $error_msg[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
+    } else {
+        if ((DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND')) {
+            $error_msg[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
+        }
+        if ((DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers)) {
+            $error_msg[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
+        }
     }
     
     /** Version requirements */

@@ -9,7 +9,7 @@ Description: The default template uses the same style as the system backend, all
 */
 $ld = 'cftp_template'; // specify the language domain for this template
 
-define('TEMPLATE_RESULTS_PER_PAGE', 10);
+define('TEMPLATE_RESULTS_PER_PAGE', get_option('pagination_results_per_page'));
 
 if ( !empty( $_GET['category'] ) ) {
     $category_filter = $_GET['category'];

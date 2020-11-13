@@ -20,7 +20,7 @@ switch ($_GET['do']) {
     case 'login':
         $login = $auth->authenticate($_POST['username'], $_POST['password']);
         $decoded = json_decode($login);
-        if ($decoded->status = 'success') {
+        if ($decoded->status == 'success') {
             $user = new \ProjectSend\Classes\Users;
             $user->get($decoded->user_id);
 

@@ -55,6 +55,11 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
         }
     }
 
+    /** Fix CVE-2020-28874 */
+    if (!empty($errorstate)) {
+        unset($user_data);
+    }
+
     /** The form was submitted */
     if ($_POST) {
         /**

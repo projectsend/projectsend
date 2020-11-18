@@ -17,37 +17,6 @@ if (!empty($_GET['do']) && !in_array($_GET['do'], $public)) {
     can_see_content($allowed_levels);
 }
 switch ($_GET['do']) {
-    case 'login':
-        $login = $auth->authenticate($_POST['username'], $_POST['password']);
-        $decoded = json_decode($login);
-        if ($decoded->status == 'success') {
-            $user = new \ProjectSend\Classes\Users;
-            $user->get($decoded->user_id);
-
-            /** Record the action log */
-            $logger = new ActionsLog;
-            $new_record_action = $logger->addEntry([
-                'action' => 1,
-                'owner_id' => $user->id,
-                'owner_user' => $user->username,
-                'affected_account_name' => $user->name
-            ]);
-        }
-        $auth->setLanguage($_POST['language']);
-
-        /** Using an external form */
-        if ( !empty( $_GET['external'] ) && $_GET['external'] == '1' && empty( $_GET['ajax'] ) ) {
-            /** Success */
-            if ( $results['status'] == 'success' ) {
-                header('Location: ' . $results['location']);
-            } else {
-                header('Location: ' . BASE_URI . '?error=invalid_credentials');
-            }
-            exit;
-        }
-
-        echo $login;
-        break;
     case 'social_login':
         if (Session::has('SOCIAL_LOGIN_NETWORK')) {
             Session::remove('SOCIAL_LOGIN_NETWORK');
@@ -100,6 +69,7 @@ switch ($_GET['do']) {
         break;
     default:
         header('Location:' . BASE_URI);
+        exit;
         break;
 }
 

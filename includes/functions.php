@@ -1479,11 +1479,11 @@ function generateSafeFilename($filename)
     $filename = str_replace($search, $replace, $filename);
 
     // Delete and replace rest of special chars
-    $search = array('/[^a-z0-9\-<>_]/', '/[\-]+/', '/<[^>]*>/', '/[  *]/');
+    $search = array('/[^a-zA-Z0-9\-<>_]/', '/[\-]+/', '/<[^>]*>/', '/[  *]/');
     $replace = array('', '-', '', '-');
     $filename = preg_replace($search, $replace, $filename);
 
-    return strtolower($filename.'.'.$extension);
+    return $filename.'.'.$extension;
 }
 
 /**

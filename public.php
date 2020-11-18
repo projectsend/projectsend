@@ -44,7 +44,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
 
     if ( !$can_view_group ) {
         header("location:" . BASE_URI . "index.php");
-        die();
+        exit;
     }
 
     $mode = 'group';

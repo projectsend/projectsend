@@ -220,7 +220,7 @@ include_once '../header-unlogged.php';
                                     else {
                                         $location = 'index.php?status=success';
                                         header("Location: $location");
-                                        die();
+                                        exit;
                                     }
                                 break;
                                 case 'err':

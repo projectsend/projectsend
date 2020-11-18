@@ -91,7 +91,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                     $location .= '&denied=1';
                 }
                 header("Location: $location");
-                die();
+                exit;
             }
             else {
                 $msg = __('Please select at least one client.','cftp_admin');

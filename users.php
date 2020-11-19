@@ -392,7 +392,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                     echo $table->pagination([
                         'link' => 'users.php',
                         'current' => $pagination_page,
-                        'pages' => ceil( $count_for_pagination / get_option('pagination_results_per_page') ),
+                        'item_count' => $count_for_pagination,
                     ]);
                 }
             ?>

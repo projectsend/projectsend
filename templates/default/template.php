@@ -306,7 +306,8 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                             echo $table->pagination([
                                 'link' => 'my_files/index.php',
                                 'current' => $pagination_page,
-                                'pages' => ceil( $count_for_pagination / TEMPLATE_RESULTS_PER_PAGE ),
+                                'item_count' => $count_for_pagination,
+                                'items_per_page' => TEMPLATE_RESULTS_PER_PAGE,
                             ]);
                         }
                     ?>

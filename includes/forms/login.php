@@ -7,7 +7,7 @@
  *
  */
 ?>
-<form action="process.php?do=login" name="login_admin" role="form" id="login_form" method="post">
+<form action="index.php" name="login_admin" role="form" id="login_form" method="post">
     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>" />
     <input type="hidden" name="do" value="login">
     <fieldset>
@@ -27,9 +27,13 @@
                 <?php
                     // scan for language files
                     $available_langs = get_available_languages();
+                    $current_lang = LOADED_LANG;
+                    if (!empty($_POST['language'])) {
+                        $current_lang = $_POST['language'];
+                    }
                     foreach ($available_langs as $filename => $lang_name) {
                 ?>
-                        <option value="<?php echo $filename;?>" <?php echo ( LOADED_LANG == $filename ) ? 'selected' : ''; ?>>
+                        <option value="<?php echo $filename;?>" <?php echo ( $current_lang == $filename ) ? 'selected' : ''; ?>>
                             <?php
                                 echo $lang_name;
                                 if ( $filename == SITE_LANG ) {
@@ -44,7 +48,7 @@
         </div>
 
         <div class="inside_form_buttons">
-            <button type="submit" id="submit" class="btn btn-wide btn-primary" data-text="<?php echo $json_strings['login']['button_text']; ?>" data-loading-text="<?php echo $json_strings['login']['logging_in']; ?>"><?php echo $json_strings['login']['button_text']; ?></button>
+            <button type="submit" id="btn_submit" class="btn btn-wide btn-primary" data-text="<?php echo $json_strings['login']['button_text']; ?>" data-loading-text="<?php echo $json_strings['login']['logging_in']; ?>"><?php echo $json_strings['login']['button_text']; ?></button>
         </div>
 
         <?php include_once 'external_login.php'; ?>

@@ -25,34 +25,41 @@
                     error.appendTo(element.parent('div'));
                 },
                 submitHandler: function(form) {
-                    var button_text = json_strings.login.button_text;
-                    var button_loading_text = json_strings.login.logging_in;
-                    var button_redirecting_text = json_strings.login.redirecting;
+                    form.submit();
 
+                    var button_loading_text = json_strings.login.logging_in;
+                    $('#btn_submit').html('<i class="fa fa-cog fa-spin fa-fw"></i><span class="sr-only"></span> '+button_loading_text+'...').attr('disabled', 'disabled');
+                    /*
+                    
+                    var button_text = json_strings.login.button_text;
+                    var button_redirecting_text = json_strings.login.redirecting;
                     var url = $(form).attr('action');
                     $('.ajax_response').html('').removeClass('alert alert-danger alert-success').slideUp();
-                    $('#submit').html('<i class="fa fa-cog fa-spin fa-fw"></i><span class="sr-only"></span> '+button_loading_text+'...');
+                    
+
                     $.ajax({
                         cache: false,
-                        type: "post",
+                        method: 'POST',
                         url: url,
                         data: $(form).serialize(),
-                        success: function(response)
-                        {
-                            var json = jQuery.parseJSON(response);
-                            if ( json.status == 'success' ) {
-                                $('#submit').html('<i class="fa fa-check"></i><span class="sr-only"></span> '+button_redirecting_text+'...');
-                                $('#submit').removeClass('btn-primary').addClass('btn-success');
-                                setTimeout('window.location.href = "'+json.location+'"', 1000);
-                            }
-                            else {
-                                $('.ajax_response').addClass('alert alert-danger').slideDown().html(json.message);
-                                $('#submit').html(button_text);
-                            }
+                    }).done( function(data) {
+                        var obj = JSON.parse(data);
+                        if ( obj.status == 'success' ) {
+                            $('#submit').html('<i class="fa fa-check"></i><span class="sr-only"></span> '+button_redirecting_text+'...');
+                            $('#submit').removeClass('btn-primary').addClass('btn-success');
+                            setTimeout('window.location.href = "'+obj.location+'"', 1000);
+                        } else {
+                            $('.ajax_response').addClass('alert alert-danger').slideDown().html(obj.message);
+                            $('#submit').html(button_text).removeAttr('disabled');
                         }
+                    }).fail( function(data) {
+                        $('.ajax_response').addClass('alert alert-danger').slideDown().html('Uncaught error');
+                        $('#submit').html(button_text).removeAttr('disabled');
+                    }).always( function() {
                     });
 
                     return false;
+                    */
                 }
             });
         });

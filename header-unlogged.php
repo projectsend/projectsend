@@ -51,8 +51,9 @@ else {
         }
 
         /** If logged as a system user, go directly to the back-end homepage */
-        if (current_role_in($allowed_levels)) {
+        if (defined('CURRENT_USER_LEVEL') && !empty($allowed_levels) && current_role_in($allowed_levels)) {
             header("Location:".BASE_URI."dashboard.php");
+            exit;
         }
     }
     /**

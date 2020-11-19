@@ -9,7 +9,7 @@ Description: The default template uses the same style as the system backend, all
 */
 $ld = 'cftp_template'; // specify the language domain for this template
 
-define('TEMPLATE_RESULTS_PER_PAGE', 10);
+define('TEMPLATE_RESULTS_PER_PAGE', get_option('pagination_results_per_page'));
 
 if ( !empty( $_GET['category'] ) ) {
     $category_filter = $_GET['category'];
@@ -304,9 +304,10 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                              * PAGINATION
                              */
                             echo $table->pagination([
-                                'link' => 'users.php',
+                                'link' => 'my_files/index.php',
                                 'current' => $pagination_page,
-                                'pages' => ceil( $count_for_pagination / TEMPLATE_RESULTS_PER_PAGE ),
+                                'item_count' => $count_for_pagination,
+                                'items_per_page' => TEMPLATE_RESULTS_PER_PAGE,
                             ]);
                         }
                     ?>

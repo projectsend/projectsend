@@ -32,6 +32,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
 
     if ($file->public_token != $token || $file->expired == true) {
         header("Location: ".PAGE_STATUS_CODE_403);
+        exit;
     }
 
     if ($file->public == 1 && $file->public_token == $token) {
@@ -44,6 +45,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
     } else {
         if ($file->public == 0) {
             header("Location: ".PAGE_STATUS_CODE_403);
+            exit;
         }
     }
 
@@ -69,6 +71,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
     }
 } else {
     header("Location: ".PAGE_STATUS_CODE_403);
+    exit;
 }
 ?>
 

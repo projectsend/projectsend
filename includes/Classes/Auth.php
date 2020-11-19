@@ -99,8 +99,9 @@ class Auth
         }
 
 		$results = [
-            'status'	=> 'error',
-            'message'	=> $this->getLoginError(),
+            'status' => 'error',
+            'type' => $this->errorstate,
+            'message' => $this->getLoginError(),
         ];
 
         return json_encode($results);

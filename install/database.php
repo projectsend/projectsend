@@ -340,7 +340,8 @@ if (defined('TRY_INSTALL')) {
 								('public_listing_logged_only', '0'),
 								('public_listing_show_all_files', '0'),
                                 ('public_listing_use_download_link', '0'),
-                                ('svg_show_as_thumbnail', '0')
+                                ('svg_show_as_thumbnail', '0'),
+                                ('pagination_results_per_page', '10')
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,

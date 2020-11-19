@@ -84,7 +84,7 @@ switch ( $section ) {
     default:
         $location = BASE_URI . 'email-templates.php?section=header_footer';
         header("Location: $location");
-        die();
+        exit;
         break;
 }
 
@@ -145,7 +145,7 @@ if ($_POST) {
     }
 
     header("Location: $location");
-    die();
+    exit;
 }
 ?>
 <div class="row">

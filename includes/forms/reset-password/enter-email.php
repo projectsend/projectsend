@@ -1,4 +1,5 @@
 <form action="reset-password.php" name="reset_password_enter_email" id="reset_password_enter_email" method="post" role="form">
+    <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
     <fieldset>
         <input type="hidden" name="form_type" id="form_type" value="new_request" />
 

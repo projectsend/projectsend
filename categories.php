@@ -370,7 +370,7 @@ if ( isset( $_POST['btn_process'] ) ) {
                 echo $table->pagination([
                     'link' => basename($_SERVER['SCRIPT_FILENAME']),
                     'current' => $params['page'],
-                    'pages' => ceil( $get_categories['count'] / get_option('pagination_results_per_page') ),
+                    'item_count' => $get_categories['count'],
                 ]);
             ?>
         </form>

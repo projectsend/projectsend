@@ -25,7 +25,7 @@ define('DONATIONS_URL','https://www.projectsend.org/donations/');
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r1275');
+define('CURRENT_VERSION', 'r1294');
 
 /**
  * Required software versions
@@ -45,7 +45,7 @@ define('PROTOCOL', empty($_SERVER['HTTPS'])? 'http' : 'https');
  * - Changes the error_reporting php value
  * - Enables the PDOEX extension (on the database class) to count queries
  */
-define('DEBUG', true);
+define('DEBUG', false);
 
 /**
  * IS_DEV is set to true during development to show a sitewide remainder
@@ -116,35 +116,6 @@ else {
  */
 if (!defined('DB_DRIVER')) {
     define('DB_DRIVER', 'mysql');
-}
-
-/**
- * Check for PDO extensions
- */
-$pdo_available_drivers = PDO::getAvailableDrivers();
-if( (DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND') ) {
-    echo '<h1>Missing a required extension</h1>';
-    echo "<p>The system couldn't find the configuration the <strong>PDO extension for mysql</strong>.</p>
-    <p>This extension is required for database comunication.</p>
-    <p>You can install this extension via the package manager of your linux distro, most likely with one of these commands:</p>
-    <ul>
-        <li>sudo apt-get install php-mysql <strong># debian/ubuntu</strong></li>
-        <li>sudo yum install php-mysql <strong># centos/fedora</strong></li>
-    </ul>
-    <p>You also need to restart the webserver after the installation of PDO_mysql.</p>";
-    exit;
-}
-if( (DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers) ) {
-    echo '<h1>Missing a required extension</h1>';
-    echo "<p>The system couldn't find the configuration the <strong>PDO extension for MS SQL Server</strong>.</p>
-    <p>This extension is required for database comunication.</p>
-    <p>You can install this extension via the package manager of your linux distro, most likely with one of these commands:</p>
-    <ul>
-        <li>sudo apt-get install php-sybase	<strong># debian/ubuntu</strong></li>
-        <li>sudo yum install php-mssql <strong># centos/fedora (you need EPEL)</strong></li>
-    </ul>
-    <p>You also need to restart the webserver after the installation of PDO_mssql.</p>";
-    exit;
 }
 
 /**

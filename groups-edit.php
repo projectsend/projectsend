@@ -68,7 +68,7 @@ if ($_POST) {
 
         $location = BASE_URI . 'groups-edit.php?id=' . $group_id . '&status=' . $edit_response['query'];
         header("Location: $location");
-        die();
+        exit;
     }
 }
 ?>

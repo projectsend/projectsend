@@ -1,7 +1,7 @@
 <?php
 require_once '../../../bootstrap.php';
 
-if (!defined('CURRENT_USER_LEVEL') or CURRENT_USER_LEVEL != 9) {
+if (!defined('CURRENT_USER_LEVEL') or !in_array(CURRENT_USER_LEVEL, array(9,8,7))) {
     header("Location: ".BASE_URI);
     exit;
 }

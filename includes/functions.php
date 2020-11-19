@@ -8,6 +8,64 @@
 
 use enshrined\svgSanitize\Sanitizer;
 
+function check_server_requirements()
+{
+    $absParent = dirname( dirname(__FILE__) );
+    $error_msg = [];
+
+    /**
+     * Check for PDO extensions
+     */
+    $pdo_available_drivers = PDO::getAvailableDrivers();
+    if (empty($pdo_available_drivers)) {
+        $error_msg[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
+    } else {
+        if ((DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND')) {
+            $error_msg[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
+        }
+        if ((DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers)) {
+            $error_msg[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
+        }
+    }
+    
+    /** Version requirements */
+    $version_not_met =  __('%s minimum version not met. Please upgrade to at least version %s','cftp_admin');
+    
+    /** php */
+    if ( version_compare( phpversion(), REQUIRED_VERSION_PHP, "<" ) ) {
+        $error_msg[] = sprintf($version_not_met, 'php', REQUIRED_VERSION_PHP);
+    }
+    
+    /** mysql */
+    global $dbh;
+    if (!empty($dbh)) {
+        $version_mysql	= $dbh->query('SELECT version()')->fetchColumn();
+        if ( version_compare( $version_mysql, REQUIRED_VERSION_MYSQL, "<" ) ) {
+            $error_msg[] = sprintf($version_not_met, 'MySQL', REQUIRED_VERSION_MYSQL);
+        }
+    }
+    
+    if ( !empty( $error_msg ) ) {
+        $page_title = __('Error', 'cftp_admin');
+        include_once $absParent . '/header-unlogged.php';
+    ?>
+        <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
+            <div class="white-box">
+                <div class="white-box-interior">
+                    <?php
+                        foreach ( $error_msg as $msg ) {
+                            echo system_message( 'error', $msg );
+                        }
+                    ?>
+                </div>
+            </div>
+        </div>
+    <?php
+        include_once $absParent . '/footer.php';
+        exit;
+    }
+}
+
 /**
  * Check if ProjectSend is installed by trying to find the main users table.
  * If it is missing, the installation is invalid.
@@ -1421,11 +1479,11 @@ function generateSafeFilename($filename)
     $filename = str_replace($search, $replace, $filename);
 
     // Delete and replace rest of special chars
-    $search = array('/[^a-z0-9\-<>_]/', '/[\-]+/', '/<[^>]*>/', '/[  *]/');
+    $search = array('/[^a-zA-Z0-9\-<>_]/', '/[\-]+/', '/<[^>]*>/', '/[  *]/');
     $replace = array('', '-', '', '-');
     $filename = preg_replace($search, $replace, $filename);
 
-    return strtolower($filename.'.'.$extension);
+    return $filename.'.'.$extension;
 }
 
 /**

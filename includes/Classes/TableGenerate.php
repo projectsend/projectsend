@@ -256,9 +256,18 @@ class TableGenerate
             $params['current'] = (int)$params['current'];
         }
         
-		$this->output = '';
+        $this->output = '';
+        
+        $pages = 0;
+        $items_per_page = get_option('pagination_results_per_page');
+        if (!empty($params['items_per_page']) && is_numeric($params['items_per_page'])) {
+            $items_per_page = $params['items_per_page'];
+        }
+        if (!empty($params['item_count']) && is_numeric($params['item_count'])) {
+            $pages = ceil( $params['item_count'] / $items_per_page );
+        }
 
-		if ( $params['pages'] > 1 ) {
+		if ( $pages > 1 ) {
 			$this->output = '<div class="container-fluid">
 								<div class="row">
 									<div class="col-xs-12 text-center">
@@ -278,10 +287,10 @@ class TableGenerate
 
 			/** Pages */
 			$already_spaced = false;
-			for ( $i = 1; $i <= $params['pages']; $i++ ) {
+			for ( $i = 1; $i <= $pages; $i++ ) {
 				if (
 						( $i < $params['current'] - 3 || $i > $params['current'] + 3 ) &&
-						( $i != 1 && $i != $params['pages'] )
+						( $i != 1 && $i != $pages )
 					)
 				{
 					if ( $already_spaced == false ) {
@@ -303,12 +312,12 @@ class TableGenerate
 			}
 			
 			/** Next and last */
-			if ( $params['current'] != $params['pages'] ) {
+			if ( $params['current'] != $pages ) {
 				$this->output .= '<li>
 										<a href="' . $this->constructPaginationLink( $params['link'], $params['current'] + 1 ) .'" data-page="next">&rsaquo;</a>
 									</li>
 									<li>
-										<a href="' . $this->constructPaginationLink( $params['link'], $params['pages'] ) .'" data-page="last"><span aria-hidden="true">&raquo;</span></a>
+										<a href="' . $this->constructPaginationLink( $params['link'], $pages ) .'" data-page="last"><span aria-hidden="true">&raquo;</span></a>
 									</li>';
 			}
 

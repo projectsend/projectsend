@@ -231,7 +231,7 @@ if ($_POST) {
         $location .= '&file_status=' . $file_status;
     }
     header("Location: $location");
-    die();
+    exit;
 }
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';

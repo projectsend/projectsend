@@ -21,6 +21,39 @@ $page_title = __('Log in','cftp_admin');
 
 $body_class = array('login');
 $page_id = 'login';
+global $auth;
+
+if ($_POST) {
+    switch ($_POST['do']) {
+        default:
+            header("Location: ".PAGE_STATUS_CODE_403);
+            exit;
+        break;
+        case 'login':
+            $login = $auth->authenticate($_POST['username'], $_POST['password']);
+            $decoded = json_decode($login);
+            if ($decoded->status == 'success') {
+                $user = new \ProjectSend\Classes\Users;
+                $user->get($decoded->user_id);
+
+                /** Record the action log */
+                $logger = new \ProjectSend\Classes\ActionsLog;
+                $new_record_action = $logger->addEntry([
+                    'action' => 1,
+                    'owner_id' => $user->id,
+                    'owner_user' => $user->username,
+                    'affected_account_name' => $user->name
+                ]);
+
+                header("Location: ".$decoded->location);
+                exit;
+            } else {
+                $login_error = $decoded->type;
+            }
+            $auth->setLanguage($_POST['language']);
+        break;
+    }
+}
 
 if ( isset($_SESSION['errorstate'] ) ) {
     $errorstate = $_SESSION['errorstate'];
@@ -46,8 +79,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
             <div class="ajax_response">
                 <?php
                     /** Coming from an external form */
-                    if ( isset( $_GET['error'] ) ) {
-                        echo system_message('danger', $auth->getLoginError($_GET['error']));
+                    if ( isset( $login_error ) ) {
+                        echo system_message('danger', $auth->getLoginError($login_error));
                     }
                 ?>
             </div>

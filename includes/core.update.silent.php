@@ -140,7 +140,7 @@ if ($last_update < $current_version || !isset($last_update)) {
      */
     if ($last_update < 1275) {
         $new_database_values = [
-            'pagination_results_per_page' => RESULTS_PER_PAGE,
+            'pagination_results_per_page' => 10,
         ];
         
         foreach($new_database_values as $row => $value) {

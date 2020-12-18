@@ -30,19 +30,19 @@ Your server needs to be configured with at least:
 * MySQL 5.0 or newer(*)
 * Apache 2.2 or NGINX
 * The following php extensions enabled on php.ini
-  * php_pdo.dll
-  * php_pdo_mysql.dll
+  * pdo
+  * pdo_mysql
+  * mbstring
+  * gettext
+  * fileinfo
+  * gd2
+  * xml
 
 (*) If you are using version 8.x or newer, please set the authentication method of your database so it uses the MySQL native password. The default method (caching_sha2_password) will not work. Thanks to user jellevdbos for pointing this out.
 
 If possible, make sure to have php configured with:
 
 * memory_limit set to 128M or more
-* The following php extensions enabled:
-  * php_fileinfo.dll
-  * php_gd2.dll
-  * php_gettext.dll
-  * php_mbstring.dll
 
 ## Optional: Improve downloads by using XSendFile
 

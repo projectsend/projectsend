@@ -33,9 +33,9 @@ $load_css_files[]	= 'https://fonts.googleapis.com/css?family=Open+Sans:400,700,3
  * corresponding plupload file exists.
  */
 if ( LOADED_LANG != 'en' ) {
-    $plupload_lang_file = 'plupload/js/i18n/'.LOADED_LANG.'.js';
-    if ( file_exists( ASSETS_LIB_DIR . DS . $plupload_lang_file ) ) {
-        $load_js_files[] = ASSETS_LIB_URL . '/' . $plupload_lang_file;
+    $plupload_lang_file = 'vendor/moxiecode/plupload/js/i18n/'.LOADED_LANG.'.js';
+    if ( file_exists( ROOT_DIR . DS . $plupload_lang_file ) ) {
+        $load_js_files[] = BASE_URI . '/' . $plupload_lang_file;
     }
 }
 

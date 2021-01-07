@@ -87,7 +87,7 @@ include_once '../header-unlogged.php';
                             /**
                              * The URI must end with a /, so add it if it wasn't posted.
                              */
-                            if ($base_uri{(strlen($base_uri) - 1)} != '/') { $base_uri .= '/'; }
+                            if (substr($base_uri, -1) != '/') { $base_uri .= '/'; }
                             /** Begin form validation */
                             $validation = new \ProjectSend\Classes\Validation;
 

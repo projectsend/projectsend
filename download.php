@@ -64,8 +64,18 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
             ]);
 
             // DOWNLOAD
-            $process = new \ProjectSend\Classes\Download;
-            $process->serveFile($file->full_path, $file->filename_original);
+            $download = new \ProjectSend\Classes\Download;
+            switch (get_option('download_method')) {
+                default:
+                case 'php':
+                case 'apache_xsendfile':
+                    $alias = null;
+                break;
+                case 'nginx_xaccel':
+                    $alias = $file->download_link_xaccel;
+                break;
+            }
+            $download->serveFile($file->full_path, $file->filename_original, $alias);
             exit;
         }
     }

@@ -63,7 +63,7 @@ class TableGenerate
 		}
 		$query = http_build_query($params);
 		
-		$build_url = BASE_URI . basename( $url_parse['path'] ) . '?' . $query;
+		$build_url = BASE_URI . substr( $url_parse['path'], 1 ) . '?' . $query;
 
 		$sortable_link = '<a href="' . $build_url . '">';
 		$sortable_link .= $content;

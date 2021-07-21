@@ -52,7 +52,7 @@ class Download
 			if (current_role_in($this->check_level)) {
 				$file_list = array();
 				foreach($file_ids as $key => $data) {
-					$file_list[] = $data['value'];
+					$file_list[] = int($data['value']); //file-id must be int
 				}
 				ob_clean();
 				flush();

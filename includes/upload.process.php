@@ -64,8 +64,8 @@ $chunks = isset($_REQUEST["chunks"]) ? intval($_REQUEST["chunks"]) : 0;
 $fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
 
 // Validate file has an acceptable extension
-$fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
-$allowedExt = explode(',', get_option('allowed_file_types') );
+$fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+$allowedExt = explode(',', strtolower(get_option('allowed_file_types')) );
 if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
     if (!in_array($fileExt, $allowedExt)) {
         dieWithError('Invalid Extension');

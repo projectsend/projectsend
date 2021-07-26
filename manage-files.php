@@ -748,7 +748,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                                                         'attributes'	=> array(
                                                                                 'class'		=> array( 'file_name' ),
                                                                             ),
-                                                        'content'		=> '<a href="' . $file->download_link . '" target="_blank">' . $file->filename_original . '</a>',
+                                                        'content'		=> '<a href="' . $file->download_link . '" target="_blank">' . $file->title . '</a>',
                                                     ),
                                                     array(
                                                         'content'		=> $file->description,

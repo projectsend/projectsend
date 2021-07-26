@@ -1,6 +1,17 @@
 Options -Indexes
-Order Deny,Allow
-Deny from All
-<FilesMatch "^$|(index)\.php$">
-Allow from All
-</FilesMatch>
+
+<FilesMatch "\.(html|htm|asp|js|ico|swp)$">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+<Files *.php>
+    Order Deny,Allow
+    Deny from all
+    Allow from 127.0.0.1
+</Files>
+
+<Files index.php>
+    Order Allow,Deny
+    Allow from all
+</Files>

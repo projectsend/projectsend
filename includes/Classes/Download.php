@@ -173,18 +173,9 @@ class Download
             
             $save_file_as = UPLOADED_FILES_DIR . DS . $save_as;
 
-            $file = new \ProjectSend\Classes\Files;
+            $file = new Files;
             $file->get($file_id);
-            switch (get_option('download_method')) {
-                default:
-                case 'php':
-                case 'apache_xsendfile':
-                    $alias = null;
-                break;
-                case 'nginx_xaccel':
-                    $alias = $file->download_link_xaccel;
-                break;
-            }
+            $alias=$this->getAlias($file);
             $this->serveFile($file_location, $save_file_as, $alias);
             exit;
         }
@@ -194,10 +185,28 @@ class Download
         }
     }
 
+
+    /**
+     * @param object $file
+     * @return string
+     */
+    public function getAlias($file)
+    {
+        switch (get_option('download_method')) {
+            default:
+            case 'php':
+            case 'apache_xsendfile':
+                return null;
+            case 'nginx_xaccel':
+                return $file->download_link_xaccel;
+        }
+
+    }
+
     /**
      * Send file to the browser
      *
-     * @param string $filename absolute full path to the file on disk
+     * @param string $file_location absolute full path to the file on disk
      * @param string $save_as original filename
      * @return void
      */

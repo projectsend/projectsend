@@ -27,7 +27,9 @@ $results_type = 'global';
  * Then get_client_by_id() gets all the other account values.
  */
 if (isset($_GET['client'])) {
-    $this_id = $_GET['client'];
+    if (!is_numeric($_GET['client'])) { exit; }
+
+    $this_id = (int)$_GET['client'];
     $this_client = get_client_by_id($this_id);
     
     /** Add the name of the client to the page's title. */

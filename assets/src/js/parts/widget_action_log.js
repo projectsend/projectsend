@@ -59,7 +59,7 @@
                                     <i class="fa fa-`+icon+`" aria-hidden="true"></i>
                                 </div>
                                 <div class="action">`+
-                                    item.formatted+`
+                                    htmlEncode(item.formatted)+`
                                 </div>
                             `);
                     });

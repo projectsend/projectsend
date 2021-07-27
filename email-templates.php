@@ -11,6 +11,22 @@ require_once 'bootstrap.php';
 
 $section = ( !empty( $_GET['section'] ) ) ? $_GET['section'] : $_POST['section'];
 
+$allowed_sections = [
+    'header_footer',
+    'new_files_by_user',
+    'new_files_by_client',
+    'new_client',
+    'new_client_self',
+    'account_approve',
+    'account_deny',
+    'new_user',
+    'password_reset',
+    'client_edited',
+];
+if (!in_array($section, $allowed_sections)) {
+    $section = 'header_footer';
+}
+
 switch ( $section ) {
     case 'header_footer':
         $section_title	= __('Header / footer','cftp_admin');

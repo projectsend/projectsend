@@ -49,6 +49,8 @@ class Auth
         else {
             $_SESSION['access'] = 'admin';
         }
+
+        session_regenerate_id(true);
     }
 
     public function authenticate($username, $password)
@@ -399,6 +401,7 @@ class Auth
         header("Cache-control: private");
 		$_SESSION = array();
         session_destroy();
+        session_regenerate_id(true);
         
         global $hybridauth;
         if (!empty($hybridauth)) {

@@ -367,7 +367,7 @@ class Files
         {
             if ( file_exists( $this->full_path ) ) {
                 $this->size = get_real_size($this->full_path);
-                $this->size_formatted = format_file_size($this->full_path);
+                $this->size_formatted = format_file_size($this->size);
             }
             else {
                 $this->size = '0';

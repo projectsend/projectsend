@@ -66,7 +66,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
             // DOWNLOAD
             $process = new Download;
             $alias=$process->getAlias($file);
-            $process->serveFile($file->full_path, $file->filename_original,$alias);
+            $process->serveFile($file->full_path, $file->filename_unfiltered,$alias);
             exit;
         }
     }

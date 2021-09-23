@@ -52,7 +52,7 @@ class Download
 			if (current_role_in($this->check_level)) {
 				$file_list = array();
 				foreach($file_ids as $key => $data) {
-					$file_list[] = int($data['value']); //file-id must be int
+					$file_list[] = (int)$data['value']; //file-id must be int
 				}
 				ob_clean();
 				flush();
@@ -215,6 +215,7 @@ class Download
         if (file_exists($file_location)) {
             session_write_close();
             while (ob_get_level()) ob_end_clean();
+            $save_as = sanitize_filename_for_download($save_as);
 
             switch (get_option('download_method')) {
                 default:

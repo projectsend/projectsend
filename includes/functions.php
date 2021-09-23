@@ -1794,3 +1794,13 @@ function convertSeconds($seconds)
 
     return $return;
 }
+
+function sanitize_filename_for_download($file_name)
+{
+    $file_name = str_replace([
+        '"', "'", ' ', ','],
+        '_', $file_name
+    );
+
+    return $file_name;
+}

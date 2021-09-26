@@ -172,6 +172,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
             </div>
         </div>
     </div> <!-- main -->
+</div>
 
 <?php
     include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

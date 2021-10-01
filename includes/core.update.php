@@ -13,6 +13,10 @@
 
 $allowed_update = array(9,8,7);
 if (current_role_in($allowed_update)) {
+	
+    $statement = $dbh->prepare("SET SQL_MODE='ALLOW_INVALID_DATES';");
+    $statement->execute();
+	
     $update_data = get_latest_version_data();
     $update_data = json_decode($update_data);
 
@@ -1362,4 +1366,7 @@ if (current_role_in($allowed_update)) {
         ]);
         
     }
+	
+    $statement = $dbh->prepare("SET SQL_MODE='';");
+    $statement->execute();
 }

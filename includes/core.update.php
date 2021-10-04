@@ -1346,7 +1346,9 @@ if (current_role_in($allowed_update)) {
 		 */
 		if ($last_update < 1216) {
 			$statement = $dbh->query("ALTER TABLE `" . TABLE_MEMBERS . "` CHANGE `added_by` `added_by` varchar(32) DEFAULT NULL");
-
+			$updates_made++;
+			
+			$statement = $dbh->query(ALTER TABLE " . TABLE_USERS . " MODIFY address TEXT NULL, MODIFY phone varchar(32) NULL, MODIFY notify TINYINT(1) NOT NULL, MODIFY contact TEXT NULL, MODIFY created_by varchar(32) NULL, MODIFY active TINYINT(1) NOT NULL");
 			$updates_made++;
 		}
 

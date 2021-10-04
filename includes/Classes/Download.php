@@ -36,7 +36,7 @@ class Download
         $file = new \ProjectSend\Classes\Files();
         $file->get($file_id);
         recordNewDownload(CURRENT_USER_ID, $file->id);
-        $this->downloadFile($file->filename_on_disk, $file->filename_unfiltered, $file->id);
+        $this->downloadFile($file->filename_on_disk, $file->filename_original, $file->id);
     }
 
     /**

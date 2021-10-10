@@ -383,20 +383,21 @@ function get_client_by_id($client)
     if ( $statement->rowCount() > 0 ) {
         while ( $row = $statement->fetch() ) {
             $information = array(
-                                'id'				=> html_output($row['id']),
-                                'username'			=> html_output($row['user']),
-                                'name'				=> html_output($row['name']),
-                                'address'			=> html_output($row['address']),
-                                'phone'				=> html_output($row['phone']),
-                                'email'				=> html_output($row['email']),
-                                'notify_upload'		=> html_output($row['notify']),
-                                'level'				=> html_output($row['level']),
-                                'active'			=> html_output($row['active']),
-                                'max_file_size' 	=> html_output($row['max_file_size']),
-                                'contact'			=> html_output($row['contact']),
-                                'created_date'		=> html_output($row['timestamp']),
-                                'created_by'		=> html_output($row['created_by'])
-                            );
+                'id'				=> html_output($row['id']),
+                'username'			=> html_output($row['user']),
+                'name'				=> html_output($row['name']),
+                'address'			=> html_output($row['address']),
+                'phone'				=> html_output($row['phone']),
+                'email'				=> html_output($row['email']),
+                'notify_upload'		=> html_output($row['notify']),
+                'level'				=> html_output($row['level']),
+                'active'			=> html_output($row['active']),
+                'max_file_size' 	=> html_output($row['max_file_size']),
+                'can_upload_public'	=> html_output($row['can_upload_public']),
+                'contact'			=> html_output($row['contact']),
+                'created_date'		=> html_output($row['timestamp']),
+                'created_by'		=> html_output($row['created_by'])
+            );
             if ( !empty( $information ) ) {
                 return $information;
             }
@@ -579,7 +580,40 @@ function get_user_by_username($user)
         return false;
     }
 }
- 
+
+function client_can_upload_public($client_id)
+{
+    switch (get_option('clients_can_set_public')) {
+        case 'all':
+            return true;
+        break;
+        case 'allowed':
+            $client = get_client_by_id($client_id);
+            return (bool)$client['can_upload_public'];
+        break;
+    }
+
+    return false;
+}
+
+
+function current_user_can_upload_public()
+{
+    switch (CURRENT_USER_LEVEL) {
+        case 9:
+        case 8:
+        case 7:
+            return true;
+        break;
+        case 0:
+            return client_can_upload_public(CURRENT_USER_ID);
+        break;
+        default:
+        break;
+
+        return false;
+    }
+}
 
 /**
  * Get all the file information knowing only the id

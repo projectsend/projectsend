@@ -94,6 +94,7 @@ if ($_POST) {
         'contact' => (isset($_POST["contact"])) ? $_POST['contact'] : null,
         'notify_upload' => (isset($_POST["notify_upload"])) ? 1 : 0,
         'max_file_size' => $client_arguments['max_file_size'],
+        'can_upload_public' => $client_arguments['can_upload_public'],
         'active' => $client_arguments['active'],
         'type' => 'edit_client',
     );
@@ -103,6 +104,7 @@ if ($_POST) {
     }
 
     if (CURRENT_USER_LEVEL != 0) {
+        $client_arguments['can_upload_public'] = (isset($_POST["can_upload_public"])) ? 1 : 0;
         $client_arguments['active']	= (isset($_POST["active"])) ? 1 : 0;
     }
 

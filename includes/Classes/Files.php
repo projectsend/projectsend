@@ -798,7 +798,7 @@ class Files
                 $this->expires = $current["expires"];
                 $this->expiry_date = $current["expiry_date"];
             }
-            $this->is_public = $current["public"];
+            $this->is_public = current_user_can_upload_public() ? $data['public'] : $current["public"];
         }
 
         if (empty($this->name)) {

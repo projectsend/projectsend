@@ -30,6 +30,7 @@ switch ( $section ) {
                                 'clients_can_upload',
                                 'clients_can_delete_own_files',
                                 'clients_can_set_expiration_date',
+                                'clients_new_default_can_set_public',
                             );
         break;
     case 'privacy':

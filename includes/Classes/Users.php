@@ -35,6 +35,7 @@ class Users
     public $active;
     public $notify_account;
     public $max_file_size;
+    public $can_upload_public;
     public $created_by;
     public $created_date;
     public $metadata;
@@ -146,8 +147,9 @@ class Users
 		$this->password = (!empty($arguments['password'])) ? $arguments['password'] : null;
         $this->role = (!empty($arguments['role'])) ? (int)$arguments['role'] : 0;
         $this->active = (!empty($arguments['active'])) ? (int)$arguments['active'] : 0;
-		$this->notify_account = (!empty($arguments['notify_account'])) ? $arguments['notify_account'] : 0;
-        $this->max_file_size = (!empty($arguments['max_file_size'])) ? $arguments['max_file_size'] : 0;
+		$this->notify_account = (!empty($arguments['notify_account'])) ? (int)$arguments['notify_account'] : 0;
+        $this->max_file_size = (!empty($arguments['max_file_size'])) ? (int)$arguments['max_file_size'] : 0;
+        $this->can_upload_public = (!empty($arguments['can_upload_public'])) ? (int)$arguments['can_upload_public'] : 0;
         $this->require_password_change = (!empty($arguments['require_password_change'])) ? $arguments['require_password_change'] : false;
 
         // Specific for clients
@@ -204,6 +206,7 @@ class Users
             $this->phone = html_output($this->row['phone']);
             $this->contact = html_output($this->row['contact']);
             $this->notify_upload = html_output($this->row['notify']);
+            $this->can_upload_public = html_output($this->row['can_upload_public']);
 
             // Files
             $this->statement = $this->dbh->prepare("SELECT DISTINCT id FROM " . TABLE_FILES . " WHERE uploader = :username");
@@ -255,6 +258,7 @@ class Users
             'role' => $this->role,
             'active' => $this->active,
             'max_file_size' => $this->max_file_size,
+            'can_upload_public' => $this->can_upload_public,
             'created_date' => $this->created_date,
             'address' => $this->address,
             'phone' => $this->phone,
@@ -286,6 +290,15 @@ class Users
         }
 
         return false;
+    }
+
+    public function canUploadPublic()
+    {
+        if (!$this->isClient()) {
+            return true;
+        }
+        
+        return client_can_upload_public($this->id);
     }
 
     public function isClient()
@@ -405,10 +418,10 @@ class Users
 			/** Insert the client information into the database */
 			$this->timestamp = time();
 			$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_USERS . " (
-                    name, user, password, level, address, phone, email, notify, contact, created_by, active, account_requested, max_file_size
+                    name, user, password, level, address, phone, email, notify, contact, created_by, active, account_requested, max_file_size, can_upload_public
                 )
 			    VALUES (
-                    :name, :username, :password, :role, :address, :phone, :email, :notify_upload, :contact, :created_by, :active, :request, :max_file_size 
+                    :name, :username, :password, :role, :address, :phone, :email, :notify_upload, :contact, :created_by, :active, :request, :max_file_size, :can_upload_public
                 )"
             );
 			$this->statement->bindParam(':name', $this->name);
@@ -424,6 +437,7 @@ class Users
 			$this->statement->bindParam(':active', $this->active, PDO::PARAM_INT);
 			$this->statement->bindParam(':request', $this->account_request, PDO::PARAM_INT);
 			$this->statement->bindParam(':max_file_size', $this->max_file_size, PDO::PARAM_INT);
+            $this->statement->bindParam(':can_upload_public', $this->can_upload_public, PDO::PARAM_INT);
 			$this->statement->execute();
 
 			if ($this->statement) {
@@ -549,7 +563,8 @@ class Users
 										email = :email,
 										contact = :contact,
 										notify = :notify_upload,
-										max_file_size = :max_file_size
+										max_file_size = :max_file_size,
+                                        can_upload_public = :can_upload_public
 										";
 
 			/** Add the password to the query if it's not the dummy value '' */
@@ -568,6 +583,7 @@ class Users
 			$this->statement->bindParam(':contact', $this->contact);
 			$this->statement->bindParam(':notify_upload', $this->notify_upload, PDO::PARAM_INT);
 			$this->statement->bindParam(':max_file_size', $this->max_file_size, PDO::PARAM_INT);
+            $this->statement->bindParam(':can_upload_public', $this->can_upload_public, PDO::PARAM_INT);
 			$this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
 			if (!empty($this->password)) {
 				$this->statement->bindParam(':password', $this->password_hashed);

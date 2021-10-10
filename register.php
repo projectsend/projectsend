@@ -41,6 +41,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
             'notify_upload' => (isset($_POST["notify_upload"])) ? 1 : 0,
             'notify_account' => (isset($_POST["notify_account"])) ? 1 : 0,
             'active' => (get_option('clients_auto_approve') == 0) ? 0 : 1,
+            'can_upload_public' => (get_option('clients_new_default_can_set_public') == 1) ? 1 : 0,
             'account_requested'	=> (get_option('clients_auto_approve') == 0) ? 1 : 0,
             'type' => 'new_client',
             'recaptcha' => ( defined('RECAPTCHA_AVAILABLE') ) ? $recaptcha_request : null,

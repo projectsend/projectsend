@@ -1360,6 +1360,24 @@ if (current_role_in($allowed_update)) {
                 'version' => $current_version,
             ],
         ]);
-        
+
+        /**
+		 * r1325 updates
+		 * Add new options for allowing clients to set public files
+		 */
+		if ($last_update < 1325) {
+			$statement = $dbh->query("ALTER TABLE `" . TABLE_USERS . "` ADD COLUMN `can_upload_public` int(20) NOT NULL DEFAULT '0' AFTER `max_file_size`");
+
+            $new_database_values = array(
+                'clients_can_set_public' => 'none',
+                'clients_new_default_can_set_public' => '0',
+            );
+			
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
+				}
+			}
+		}
     }
 }

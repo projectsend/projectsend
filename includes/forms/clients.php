@@ -227,7 +227,18 @@ switch ($clients_form_type) {
 					</label>
 				</div>
 			</div>
-	<?php
+
+            <div class="form-group">
+				<div class="col-sm-8 col-sm-offset-4">
+					<label for="can_upload_public">
+						<input type="checkbox" name="can_upload_public" id="can_upload_public" <?php echo (isset($client_arguments['can_upload_public']) && $client_arguments['can_upload_public'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Can set own files as public','cftp_admin'); ?>
+					</label>
+                    <?php if (get_option('clients_can_set_public') != 'allowed') { ?>
+                        <p class="field_note"><?php _e("This has no effect according to your current settings.",'cftp_admin'); ?> <a href="options.php?section=clients" target="blank"><?php _e("Go to settings",'cftp_admin'); ?></a></p>
+                    <?php } ?>
+				</div>
+			</div>
+    <?php
 		}
 	?>
 

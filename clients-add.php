@@ -47,6 +47,7 @@ if ($_POST) {
         'notify_upload' => (isset($_POST["notify_upload"])) ? 1 : 0,
         'notify_account' => (isset($_POST["notify_account"])) ? 1 : 0,
         'active' => (isset($_POST["active"])) ? 1 : 0,
+        'can_upload_public' => (isset($_POST["can_upload_public"])) ? 1 : 0,
         'require_password_change' => (isset($_POST["require_password_change"])) ? true : false,
         'type' => 'new_client',
     );

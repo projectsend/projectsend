@@ -80,7 +80,7 @@
 
                                                     <?php
                                                         /** The following options are available to users only */
-                                                        if (CURRENT_USER_LEVEL != 0) {
+                                                        if (CURRENT_USER_LEVEL != 0 || current_user_can_upload_public()) {
                                                     ?>
 
                                                         <div class="divider"></div>

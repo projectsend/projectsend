@@ -94,6 +94,36 @@
 </div>
 
 <div class="form-group">
+    <label for="clients_can_select_group" class="col-sm-4 control-label"><?php _e('Clients can set own files as public:','cftp_admin'); ?></label>
+    <div class="col-sm-8">
+        <select class="form-control" name="clients_can_set_public" id="clients_can_set_public" required>
+            <?php
+                $pub_clients_files_options = array(
+                    'none' => __("None",'cftp_admin'),
+                    'allowed' => __("Allowed ones",'cftp_admin'),
+                    'all' => __("All clients",'cftp_admin'),
+                );
+                foreach ( $pub_clients_files_options as $value => $label ) {
+            ?>
+                    <option value="<?php echo $value; ?>" <?php if (get_option('clients_can_set_public') == $value) { echo 'selected="selected"'; } ?>><?php echo $label; ?></option>
+            <?php
+                }
+            ?>
+        </select>
+        <p class="field_note"><?php _e("If selecting 'allowed ones': please edit each allowed client and set the corresponding permissions.",'cftp_admin'); ?></p>
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-sm-8 col-sm-offset-4">
+        <label for="clients_new_default_can_set_public">
+            <input type="checkbox" value="1" name="clients_new_default_can_set_public" id="clients_new_default_can_set_public" class="checkbox_options" <?php echo (get_option('clients_new_default_can_set_public') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('New self registered clients can upload public files by default.','cftp_admin'); ?>
+        </label>
+        <p class="field_note"><?php _e("Specific option when selecting 'allowed ones' in the previous option.",'cftp_admin'); ?></p>
+    </div>
+</div>
+
+<div class="form-group">
     <label for="expired_files_hide" class="col-sm-4 control-label"><?php _e('When a file expires:','cftp_admin'); ?></label>
     <div class="col-sm-8">
         <select class="form-control" name="expired_files_hide" id="expired_files_hide" required>

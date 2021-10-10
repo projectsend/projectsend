@@ -514,6 +514,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                         $conditions = array(
                                             'select_all'		=> true,
                                             'is_not_client'		=> ( CURRENT_USER_LEVEL != '0' ) ? true : false,
+                                            'can_set_public' => ( CURRENT_USER_LEVEL != '0' || current_user_can_upload_public()) ? true : false,
                                             'total_downloads'	=> ( CURRENT_USER_LEVEL != '0' && !isset( $search_on ) ) ? true : false,
                                             'is_search_on'		=> ( isset( $search_on ) ) ? true : false,
                                         );
@@ -571,7 +572,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                                                         'sort_url'		=> 'public_allow',
                                                         'content'		=> __('Public permissions','cftp_admin'),
                                                         'hide'			=> 'phone',
-                                                        'condition'		=> $conditions['is_not_client'],
+                                                        'condition'		=> $conditions['can_set_public'],
                                                     ),
                                                     array(
                                                         'content'		=> __('Expiry','cftp_admin'),
@@ -771,7 +772,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                                                                                 'class'		=> array( 'col_visibility' ),
                                                                             ),
                                                         'content'		=> $visibility_link,
-                                                        'condition'		=> $conditions['is_not_client'],
+                                                        'condition'		=> $conditions['can_set_public'],
                                                     ),
                                                     array(
                                                         'content'		=> '<a href="javascript:void(0);" class="btn btn-' . $expires_button . ' disabled btn-sm" rel="" title="">' . $expires_label . '</a>',

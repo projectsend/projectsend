@@ -94,7 +94,7 @@ $get_categories = get_categories();
                         <th data-hide="phone"><?php _e('Description','cftp_admin'); ?></th>
                         <th data-hide="phone"><?php _e('File Name','cftp_admin'); ?></th>
                         <?php
-                            if (CURRENT_USER_LEVEL != 0) {
+                            if (CURRENT_USER_LEVEL != 0 || current_user_can_upload_public()) {
                         ?>
                                 <th data-hide="phone"><?php _e('Public','cftp_admin'); ?></th>
                         <?php
@@ -115,7 +115,7 @@ $get_categories = get_categories();
                                 <td><?php echo htmlentities_allowed($file->description); ?></td>
                                 <td><?php echo $file->filename_original; ?></td>
                                 <?php
-                                    if (CURRENT_USER_LEVEL != 0) {
+                                    if (CURRENT_USER_LEVEL != 0 || current_user_can_upload_public()) {
                                 ?>
                                         <td class="col_visibility">
                                             <?php

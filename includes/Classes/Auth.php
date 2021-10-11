@@ -125,6 +125,7 @@ class Auth
             case 'windowslive':
             case 'yahoo':
             case 'openid':
+            case 'microsoftgraph':
                 break;
             default:
                 header("location:".PAGE_STATUS_CODE_404);

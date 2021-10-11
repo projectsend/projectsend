@@ -33,6 +33,11 @@
             "OpenID" => array(
                 "enabled" => get_option('oidc_signin_enabled'),
             ),
+            "MicrosoftGraph" => array(
+                "enabled" => get_option('microsoftgraph_signin_enabled'),
+                "keys" => array("id" => get_option("microsoftgraph_client_id"), "secret" => get_option("microsoftgraph_client_secret")),
+                "tenant" => get_option('microsoftgraph_client_tenant')
+            )
         ),
         // debug_mode possible values
         // - "error" log only error messages

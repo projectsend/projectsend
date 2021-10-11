@@ -67,6 +67,17 @@
                     ),
                     'callback' => true,
                 ),
+                'microsoftgraph' => array(
+                    'name' => 'Microsoft Graph (Azure)',
+                    'icon' => 'windows',
+                    'fields' => array(
+                        'enabled' => 'microsoftgraph_signin_enabled',
+                        'id' => 'microsoftgraph_client_id',
+                        'secret' => 'microsoftgraph_client_secret',
+                        'tenant' => 'microsoftgraph_client_tenant',
+                    ),
+                    'callback' => true,
+                ),
             ),
         ),
     );
@@ -104,6 +115,14 @@
                         <input type="text" name="<?php echo $item_data['fields']['secret']; ?>" id="<?php echo $item_data['fields']['secret']; ?>" class="form-control empty" value="<?php echo html_output(get_option($item_data['fields']['secret'])); ?>" />
                     </div>
                 </div>
+                <?php if (!empty($item_data['fields']['tenant'])) { ?>
+                    <div class="form-group">
+                        <label for="<?php echo $item_data['fields']['tenant']; ?>" class="col-sm-4 control-label"><?php _e('App Tenant','cftp_admin'); ?></label>
+                        <div class="col-sm-8">
+                            <input type="text" name="<?php echo $item_data['fields']['tenant']; ?>" id="<?php echo $item_data['fields']['tenant']; ?>" class="form-control empty" value="<?php echo html_output(get_option($item_data['fields']['tenant'])); ?>" />
+                        </div>
+                    </div>
+                <?php } ?>
                 <?php if (!empty($item_data['callback'])) { ?>
                     <div class="form-group">
                         <div class="col-sm-4">

@@ -25,6 +25,10 @@
                 'enabled' => get_option('yahoo_signin_enabled'),
                 'icon' => 'yahoo',
             ),
+            'microsoftgraph' => array(
+                'enabled' => get_option('microsoftgraph_signin_enabled'),
+                'icon' => 'windows',
+            ),
         );
         foreach ($login_links as $provider => $data)
         {

@@ -72,24 +72,22 @@ if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
     };
 }
 
-// Make sure the fileName is unique but only if chunking is disabled
-if ($chunks < 2 && file_exists($targetDir . DS . $fileName)) {
-	$ext = strrpos($fileName, '.');
-	$fileName_a = substr($fileName, 0, $ext);
-	$fileName_b = substr($fileName, $ext);
-
-	$count = 1;
-	while (file_exists($targetDir . DS . $fileName_a . '_' . $count . $fileName_b))
-		$count++;
-
-	$fileName = $fileName_a . '_' . $count . $fileName_b;
-}
-
-$filePath = $targetDir . DS . $fileName;
-
 // Create target dir
 if (!file_exists($targetDir))
 	@mkdir($targetDir);
+
+// Check for directory traversal
+$basePath = $targetDir . DS;
+$realBase = realpath($basePath);
+
+$filePath = dirname($basePath . $fileName);
+$realFilePath = realpath($filePath);
+
+if ($realFilePath === false || strpos($realFilePath, $realBase) !== 0) {
+    dieWithError("Directory Traversal Detected!");
+}
+
+$filePath = $targetDir . DS . $fileName;
 
 // Remove old temp files	
 if ($cleanupTargetDir && is_dir($targetDir) && ($dir = @opendir($targetDir))) {

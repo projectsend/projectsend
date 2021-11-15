@@ -464,7 +464,33 @@ class Files
 		$this->makehash = sha1($this->username);
 
 		$this->filename_on_disk = time().'-'.$this->makehash.'-'.$safe_filename;
-		$this->path = UPLOADED_FILES_DIR.DS.$this->filename_on_disk;
+        $this->path = UPLOADED_FILES_DIR.DS.$this->filename_on_disk;
+
+        if (file_exists($this->path)) {
+            $ext_pos = strrpos($this->path, '.');
+            $path_name = substr($this->path, 0, $ext_pos);
+            $path_ext = substr($this->path, $ext_pos);
+
+            // Disk name
+            $disk_ext_pos = strrpos($this->filename_on_disk, '.');
+            $disk_name = substr($this->filename_on_disk, 0, $disk_ext_pos);
+            $disk_ext = substr($this->filename_on_disk, $disk_ext_pos);
+
+            // Original name
+            $original_ext_pos = strrpos($this->filename_original, '.');
+            $original_name = substr($this->filename_original, 0, $original_ext_pos);
+            $original_ext = substr($this->filename_original, $original_ext_pos);
+            
+            $count = 1;
+            while (file_exists($path_name . '_' . $count . $path_ext))
+                $count++;
+            
+            $this->filename_on_disk = $disk_name . '_' . $count . $disk_ext;
+            $this->filename_original = $original_name . '_' . $count . $original_ext;
+            $this->path = $path_name . '_' . $count . $path_ext;
+        }
+
+		
 		if (rename($temp_name, $this->path)) {
 
             @chmod($this->path, 0644);

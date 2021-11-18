@@ -45,7 +45,7 @@ define('PROTOCOL', empty($_SERVER['HTTPS'])? 'http' : 'https');
  * - Changes the error_reporting php value
  * - Enables the PDOEX extension (on the database class) to count queries
  */
-define('DEBUG', false);
+define('DEBUG', true);
 
 /**
  * IS_DEV is set to true during development to show a sitewide remainder
@@ -262,7 +262,7 @@ define('FOOTABLE_PAGING_NUMBER_LOG', '15');
 /**
  * External links
  */
-define('LINK_DOC_RECAPTCHA', 'https://developers.google.com/recaptcha/docs/start');
+define('LINK_DOC_RECAPTCHA', 'https://developers.google.com/recaptcha/intro');
 define('LINK_DOC_GOOGLE_SIGN_IN', 'https://developers.google.com/identity/protocols/OpenIDConnect');
 define('LINK_DOC_FACEBOOK_LOGIN', 'https://developers.facebook.com/docs/facebook-login/');
 define('LINK_DOC_LINKEDIN_LOGIN', 'https://www.linkedin.com/developers/');

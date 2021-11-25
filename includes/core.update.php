@@ -1387,6 +1387,10 @@ if (current_role_in($allowed_update)) {
 					$updates_made++;
 				}
 			}
+			
+			 $statement = $dbh->query("UPDATE `" . TABLE_FILES . "` SET original_url = url WHERE original_url IS NULL");
+			 $updates_made++;
+
 		}
     }
 	

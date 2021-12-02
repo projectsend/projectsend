@@ -31,6 +31,7 @@ if (defined('TRY_INSTALL')) {
                           `account_requested` tinyint(1) NOT NULL DEFAULT \'0\',
                           `account_denied` tinyint(1) NOT NULL DEFAULT \'0\',
                           `max_file_size` int(20)  NOT NULL DEFAULT \'0\',
+                          `can_upload_public` int(20)  NOT NULL DEFAULT \'0\',
                           `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
                           PRIMARY KEY (`id`)
                         ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

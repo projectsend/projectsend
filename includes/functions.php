@@ -1029,25 +1029,26 @@ function format_file_size($file)
 function get_real_size($file)
 {
 	clearstatcache();
-    if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
-		if (class_exists("COM")) {
-			$fsobj = new COM('Scripting.FileSystemObject');
-			$f = $fsobj->GetFile(realpath($file));
-			$ff = $f->Size;
-		}
-		else {
-	        $ff = trim(exec("for %F in (\"" . escapeshellarg($file) . "\") do @echo %~zF"));
-		}
+    $ff = filesize($file);
+
+    if (isEnabled('shell_exec')) {
+        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+            if (class_exists("COM")) {
+                $fsobj = new COM('Scripting.FileSystemObject');
+                $f = $fsobj->GetFile(realpath($file));
+                $ff = $f->Size;
+            }
+            else {
+                $ff = trim(exec("for %F in (\"" . escapeshellarg($file) . "\") do @echo %~zF"));
+            }
+        }
+        elseif (PHP_OS == 'Darwin') {
+            $ff = trim(shell_exec("stat -L -f %z " . escapeshellarg($file)));
+        }
+        elseif ((PHP_OS == 'Linux') || (PHP_OS == 'FreeBSD') || (PHP_OS == 'Unix') || (PHP_OS == 'SunOS')) {
+            $ff = trim(shell_exec("stat -L -c%s " . escapeshellarg($file)));
+        }
     }
-	elseif (PHP_OS == 'Darwin') {
-		$ff = trim(shell_exec("stat -L -f %z " . escapeshellarg($file)));
-    }
-	elseif ((PHP_OS == 'Linux') || (PHP_OS == 'FreeBSD') || (PHP_OS == 'Unix') || (PHP_OS == 'SunOS')) {
-		$ff = trim(shell_exec("stat -L -c%s " . escapeshellarg($file)));
-    }
-	else {
-		$ff = filesize($file);
-	}
 
 	/** Fix for 0kb downloads by AlanReiblein */
 	if (!ctype_digit($ff)) {
@@ -1056,6 +1057,14 @@ function get_real_size($file)
 	}
 
 	return $ff;
+}
+
+/**
+ * function isEnabled()
+ * From https://stackoverflow.com/questions/21581560/php-how-to-know-if-server-allows-shell-exec
+ */
+function isEnabled(string $func) {
+    return is_callable($func) && false === stripos(ini_get('disable_functions'), $func);
 }
 
 /**
@@ -1837,4 +1846,18 @@ function sanitize_filename_for_download($file_name)
     );
 
     return $file_name;
+}
+
+function getRecaptcha2Request()
+{
+    $recaptcha_request = null;
+
+    if ( defined('RECAPTCHA_AVAILABLE') ) {
+        $recaptcha_user_ip		= $_SERVER["REMOTE_ADDR"];
+        $recaptcha_response		= $_POST['g-recaptcha-response'];
+        $recaptcha_secret_key	= get_option('recaptcha_secret_key');
+        $recaptcha_request		= file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptcha_secret_key}&response={$recaptcha_response}&remoteip={$recaptcha_user_ip}");
+    }
+
+    return $recaptcha_request;
 }

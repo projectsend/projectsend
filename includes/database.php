@@ -15,9 +15,9 @@ if ( DEBUG === true ) {
 	{
 		private $queries = 0;
 
-		public function query($query, $options = array()) {
+		public function query($query, $fetchMode = PDO::ATTR_DEFAULT_FETCH_MODE, $options = array()) {
 			++$this->queries;
-			return parent::query($query);
+			return parent::query($query, $fetchMode);
 		}
 
 		public function prepare($statement, $options = array()) {

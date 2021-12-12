@@ -264,7 +264,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 
                 /**
-                 * If the user is an uploader, or a client is editing his files
+                 * If the user is an uploader, or a client is editing their files
                  * only show files uploaded by that account.
                 */
                 if (CURRENT_USER_LEVEL == '7' || CURRENT_USER_LEVEL == '0') {

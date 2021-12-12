@@ -50,7 +50,7 @@ switch ($clients_form_type) {
 			$group_label = __('Request access to groups','cftp_admin');
 		}
 		break;
-	/** A client is editing his profile */
+	/** A client is editing their profile */
 	case 'edit_client_self':
 		$submit_value = __('Update account','cftp_admin');
 		$disable_user = true;
@@ -167,7 +167,7 @@ switch ($clients_form_type) {
 			
 			$selected_groups	= ( !empty( $found_groups ) ) ? $found_groups : '';
 			$my_current_groups	= array();
-			/** Dirty and awful quick test, mark as selected the current groups which have requests for a client that's editing his own account */
+			/** Dirty and awful quick test, mark as selected the current groups which have requests for a client that's editing their own account */
 			if ( isset( $override_groups_list ) ) {
 				$selected_groups = $override_groups_list;
 				if ( !empty( $found_groups ) ) {

@@ -579,7 +579,7 @@ msgstr ""
 #: email-templates.php:180
 msgid ""
 "This email will be sent to a client whenever a new file has been assigned to "
-"his account."
+"their account."
 msgstr ""
 
 #: email-templates.php:186 email-templates.php:202
@@ -601,7 +601,7 @@ msgstr ""
 #: email-templates.php:212
 msgid ""
 "This email will be sent to the new client after an administrator has created "
-"his new account. It would be best to include the log in details (username "
+"their new account. It would be best to include the log in details (username "
 "and password)."
 msgstr ""
 
@@ -653,7 +653,7 @@ msgstr ""
 #: email-templates.php:278
 msgid ""
 "This email will be sent to the new system user after an administrator has "
-"created his new account. It would be best to include the log in details "
+"created their new account. It would be best to include the log in details "
 "(username and password)."
 msgstr ""
 
@@ -677,7 +677,7 @@ msgstr ""
 
 #: email-templates.php:312
 msgid ""
-"This email will be sent to the system administrator when a client edits his "
+"This email will be sent to the system administrator when a client edits their "
 "account and changes the public groups membership requests."
 msgstr ""
 
@@ -1436,7 +1436,7 @@ msgstr ""
 
 #: includes/Classes/Emails.php:126
 msgid ""
-"A client on you site has just changed his groups membership requests and "
+"A client on your site has just changed their groups membership requests and "
 "needs your approval."
 msgstr ""
 

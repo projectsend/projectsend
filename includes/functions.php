@@ -1542,7 +1542,7 @@ function option_file_upload( $file, $validate_ext = '', $option = '', $action = 
 	if ( !empty( $validate_ext ) ) {
 		switch ( $validate_ext ) {
 			case 'image':
-				$validate_types = "/^\.(jpg|jpeg|gif|png){1}$/i";
+				$validate_types = "/^\.(jpg|jfif|jpeg|gif|png){1}$/i";
 				break;
 			default:
 				break;

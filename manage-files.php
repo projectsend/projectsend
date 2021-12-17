@@ -637,7 +637,11 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                                 $preview_cell = '<button class="btn btn-warning btn-sm btn-wide get-preview" data-url="'.BASE_URI.'process.php?do=get_preview&file_id='.$file->id.'">'.__('Preview', 'cftp_admin').'</button>';
                             }
                             if ( file_is_image( $file->full_path ) ) {
-                                $thumbnail = make_thumbnail( $file->full_path, null, 50, 50 );
+                                if ($file->embeddable) {
+                                    $thumbnail = make_thumbnail( $file->full_path, null, 50, 50 );
+                                } else {
+                                    $thumbnail = make_thumbnail( "", null, 50, 50 );
+                                }
                                 if ( !empty( $thumbnail['thumbnail']['url'] ) ) {
                                     $preview_cell = '<a href="#" class="get-preview" data-url="'.BASE_URI.'process.php?do=get_preview&file_id='.$file->id.'">
                                         <img src="' . $thumbnail['thumbnail']['url'] . '" class="thumbnail" />

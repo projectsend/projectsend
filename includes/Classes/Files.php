@@ -257,7 +257,7 @@ class Files
         }
 
         // Image
-        $embeddable = ["gif", "jpeg", "jfif", "png", "webp", "bmp", "svg"];
+        $embeddable = ["gif", "jpg", "jpeg", "jfif", "png", "webp", "bmp", "svg"];
         if (isImage($this->full_path) && in_array($this->extension, $embeddable)) {
             $this->embeddable = true;
             $this->embeddable_type = 'image';

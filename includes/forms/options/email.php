@@ -59,10 +59,10 @@
 <h3><?php _e('Expiration','cftp_admin'); ?></h3>
 
 <div class="form-group">
-    <label for="notifications_max_tries" class="col-sm-4 control-label"><?php _e('Maximum sending attemps','cftp_admin'); ?></label>
+    <label for="notifications_max_tries" class="col-sm-4 control-label"><?php _e('Maximum sending attempts','cftp_admin'); ?></label>
     <div class="col-sm-8">
         <input type="number" name="notifications_max_tries" id="notifications_max_tries" class="form-control" value="<?php echo get_option('notifications_max_tries'); ?>" min="1" max="10" step="1" required />
-        <p class="field_note"><?php _e('Define how many times will the system attemp to send each notification.','cftp_admin'); ?></p>
+        <p class="field_note"><?php _e('Define how many times the system will attempt to send each notification.','cftp_admin'); ?></p>
     </div>
 </div>
 

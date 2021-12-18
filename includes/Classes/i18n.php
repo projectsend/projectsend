@@ -16,11 +16,11 @@ namespace ProjectSend\Classes;
 /**
  * Useful class to deal with I18n and L10n
  *
- * This class is enterily taken from Habari project and also have
- * code writen (I think) by Danilo Segan <danilo@kvota.net>.
+ * This class is entirely taken from Habari project and also have
+ * code written (I think) by Danilo Segan <danilo@kvota.net>.
  *
- * Use this class to load text domain to be availables, then use
- * the auxiliar functions (implemented above) to work.
+ * Use this class to load text domain to be available, then use
+ * the auxiliary functions (implemented above) to work.
  *
  */
 class I18n
@@ -74,10 +74,10 @@ private final function  __clone(){}
  */
 
 /**
- * Load a internationalization text domain
+ * Load an internationalization text domain
  *
- * You need to call this method in order to put messages
- * of a MO files availables to be use.
+ * You need to call this method in order to make messages
+ * of a MO file available to be used.
  *
  * The text domain using here is that you need to use
  * when translate strings.
@@ -284,9 +284,9 @@ private static function ParseFile( $moPath, $domain )
 	}
 
 /**
- * Appropiate plural function from a MO file header
+ * Appropriate plural function from a MO file header
  *
- * Completly taken from Habari project <http://habariproject.org/>.
+ * Completely taken from Habari project <http://habariproject.org/>.
  *
  * @see ParseFile()
  * @return Unique function name as a string or False on error

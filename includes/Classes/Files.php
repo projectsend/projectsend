@@ -455,7 +455,7 @@ class Files
     /**
 	 * Used to copy a file from the temporary folder (the default location where it's put
 	 * after uploading it) to the final folder.
-	 * If succesful, the original file is then deleted.
+	 * If successful, the original file is then deleted.
 	 */
 	public function moveToUploadDirectory($temp_name)
 	{

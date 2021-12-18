@@ -488,7 +488,7 @@ class Emails
 
 	/**
 	 * Prepare the body for the e-mail sent when a client changes group
-	 *  membeship requests.
+	 *  membership requests.
 	 */
 	private function email_client_edited($username,$fullname,$memberships_requests)
 	{
@@ -545,7 +545,7 @@ class Emails
 
 	/**
 	 * Prepare the body for the e-mail sent when a client changes group
-	 *  membeship requests.
+	 *  membership requests.
 	 */
 	private function email_test_settings($message)
 	{

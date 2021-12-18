@@ -133,7 +133,7 @@ include_once '../header-unlogged.php';
 
                     <?php
                         if(isset($validation)) {
-                            /** If the form was submited with errors, show them here */
+                            /** If the form was submitted with errors, show them here */
                             $validation->list_errors();
                         }
 

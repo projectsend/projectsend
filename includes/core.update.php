@@ -949,7 +949,7 @@ if (current_role_in($allowed_update)) {
 		 * r738 updates
 		 * New columns where added to the downloads table, to
 		 * store the ip and hostname of the user, and a boolean
-		 * fieled set to true for anonymous downloads (public files)
+		 * field set to true for anonymous downloads (public files)
 		 */
 		if ($last_update < 738) {
 			try {
@@ -964,7 +964,7 @@ if (current_role_in($allowed_update)) {
 		
 		/**
 		 * r757 updates
-		 * Add new options that clients can set expiration date when Uploded New files 
+		 * Add new options that clients can set expiration date when Uploaded New files 
 		 */
 		 
 		if ($last_update < 757) {

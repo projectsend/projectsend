@@ -69,7 +69,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
         
         switch ($form_type) {
             /**
-             * The form submited contains a new token request
+             * The form submitted contains a new token request
              */
             case 'new_request':
                 $get_user = get_user_by('user', 'email', $_POST['email']);
@@ -122,7 +122,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
             break;
 
             /**
-             * The form submited contains the new password
+             * The form submitted contains the new password
              */
             case 'new_password':
                 if (!empty($user_data['id'])) {
@@ -187,7 +187,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
         <div class="white-box-interior">
             <?php
                 /**
-                 * If the form was submited with errors, show them here.
+                 * If the form was submitted with errors, show them here.
                  */
                 if (!empty($validation)) {
                     echo $validation->list_errors();

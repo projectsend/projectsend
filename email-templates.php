@@ -151,7 +151,7 @@ if ($_POST) {
         ],
     ]);
     
-    /** Redirect so the options are reflected immediatly */
+    /** Redirect so the options are reflected immediately */
     while (ob_get_level()) ob_end_clean();
     $section_redirect = html_output($_POST['section']);
     $location = BASE_URI . 'email-templates.php?section=' . $section_redirect;
@@ -170,7 +170,7 @@ if ($_POST) {
             if (isset($_GET['status'])) {
                 switch ($_GET['status']) {
                     case '1':
-                        $msg = __('Options updated succesfuly.','cftp_admin');
+                        $msg = __('Options updated successfully.','cftp_admin');
                         echo system_message('success',$msg);
                         break;
                     case '2':

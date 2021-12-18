@@ -25,7 +25,7 @@ if ( defined('SESSION_TIMEOUT_EXPIRE') && SESSION_TIMEOUT_EXPIRE == true ) {
 $_SESSION['last_call'] = time(); // update last activity time stamp
 
 /**
- * Global information on the current account to use accross the system.
+ * Global information on the current account to use across the system.
  */
 if (!empty($_SESSION['user_id'])) {
     $session_user = new \ProjectSend\Classes\Users;

@@ -1,6 +1,6 @@
 <?php
 /**
- * Allows to hide, show or delete the files assigend to the
+ * Allows to hide, show or delete the files assigned to the
  * selected client.
  *
  * @package ProjectSend
@@ -133,7 +133,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                                 $file->get($file_id);
                                 $file->removeAssignment($results_type, $_GET['modify_id']);
                             }
-                            $msg = __('The selected files were succesfully unassigned.','cftp_admin');
+                            $msg = __('The selected files were successfully unassigned.','cftp_admin');
                             echo system_message('success',$msg);
                             break;
                         case 'delete':

@@ -3,7 +3,7 @@
  * Shows a list of files found on the upload/ folder that
  * are not yet on the database, meaning they were uploaded
  * via FTP.
- * Only shows files that are allowed according to the sytem
+ * Only shows files that are allowed according to the system
  * settings.
  * Submits an array of file names.
  *

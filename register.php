@@ -114,7 +114,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                     $form = false;
                 }
                 else {
-                    // If the form was submited with errors, show them here.
+                    // If the form was submitted with errors, show them here.
                     echo $new_client->getValidationErrors();
         
                     if (isset($new_response)) {

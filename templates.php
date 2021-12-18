@@ -21,12 +21,12 @@ if ( isset($_GET['activate_template']) ) {
 
     global $flash;
     if ($save) {
-        $flash->success(__('Options updated succesfuly.', 'cftp_admin'));
+        $flash->success(__('Options updated successfully.', 'cftp_admin'));
     } else {
         $flash->error(__('There was an error. Please try again.', 'cftp_admin'));
     }
 
-    /** Redirect so the options are reflected immediatly */
+    /** Redirect so the options are reflected immediately */
     while (ob_get_level()) ob_end_clean();
     $section_redirect = 'templates';
     $location = BASE_URI . 'templates.php';

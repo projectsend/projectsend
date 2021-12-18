@@ -287,7 +287,7 @@ class Groups
 		$this->sql_query->bindParam(':id', $this->id, PDO::PARAM_INT);
 		$this->sql_query->execute();
 
-		/** Clean the memmbers table */
+		/** Clean the members table */
 		$this->sql_clean = $this->dbh->prepare("DELETE FROM " . TABLE_MEMBERS . " WHERE group_id = :id");
 		$this->sql_clean->bindParam(':id', $this->id, PDO::PARAM_INT);
 		$this->sql_clean->execute();

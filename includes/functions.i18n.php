@@ -10,7 +10,7 @@ use ProjectSend\Classes\I18n;
 
 /**
  * Define this constant to be use as the default domain
- * using in auxilar functions around {@link I18n} class.
+ * using in auxiliary functions around {@link I18n} class.
  *
  */
 if (!defined('I18N_DEFAULT_DOMAIN') && !defined('IS_TEMPLATE_VIEW')) {

@@ -55,6 +55,9 @@ Thumbs.db
 # macOS
 .DS_Store
 
+# VSCode Files
+.vscode
+
 # Test results
 test-results
 

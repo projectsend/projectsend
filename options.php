@@ -95,7 +95,7 @@ $logo_file_info = generate_logo_url();
 // Clear logo
 if ($section == 'branding' && !empty($_GET['clear']) && $_GET['clear'] == 'logo') {
     save_option('logo_filename', null);
-    $flash->success(__('Options updated succesfuly.', 'cftp_admin'));
+    $flash->success(__('Options updated successfully.', 'cftp_admin'));
     $location = BASE_URI . 'options.php?section=branding';
     header("Location: $location");
     exit;
@@ -222,7 +222,7 @@ if ($_POST) {
         ],
     ]);
     
-    /** Redirect so the options are reflected immediatly */
+    /** Redirect so the options are reflected immediately */
     while (ob_get_level()) ob_end_clean();
     $section_redirect = html_output($_POST['section']);
     $location = BASE_URI . 'options.php?section=' . $section_redirect;
@@ -262,7 +262,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
             if (isset($_GET['status'])) {
                 switch ($_GET['status']) {
                     case '1':
-                        $msg = __('Options updated succesfuly.','cftp_admin');
+                        $msg = __('Options updated successfully.','cftp_admin');
                         echo system_message('success',$msg);
                         break;
                     case '2':

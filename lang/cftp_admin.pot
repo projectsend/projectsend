@@ -233,7 +233,7 @@ msgid "Client edited correctly."
 msgstr ""
 
 #: clients-edit.php:161
-msgid "Client created successfuly."
+msgid "Client created successfully."
 msgstr ""
 
 #: clients-edit.php:178 users-edit.php:171
@@ -569,7 +569,7 @@ msgid "Client updated memberships"
 msgstr ""
 
 #: email-templates.php:157 options.php:97 options.php:261 templates.php:24
-msgid "Options updated succesfuly."
+msgid "Options updated successfully."
 msgstr ""
 
 #: email-templates.php:172
@@ -866,7 +866,7 @@ msgid "Group edited correctly."
 msgstr ""
 
 #: groups-edit.php:86
-msgid "Group created successfuly."
+msgid "Group created successfully."
 msgstr ""
 
 #: groups-edit.php:107
@@ -948,7 +948,7 @@ msgid "System Administration"
 msgstr ""
 
 #: header.php:72
-msgid "Toogle menu"
+msgid "Toggle menu"
 msgstr ""
 
 #: header.php:85 includes/forms/login-ldap.php:16 includes/forms/login.php:25
@@ -1184,7 +1184,7 @@ msgid "A file preview request was made"
 msgstr ""
 
 #: includes/Classes/ActionsLog.php:84
-msgid "ProjecSend has been installed"
+msgid "ProjectSend has been installed"
 msgstr ""
 
 #: includes/Classes/ActionsLog.php:85
@@ -2275,7 +2275,7 @@ msgid "%s created the client account %s"
 msgstr ""
 
 #: includes/functions.actionslog.php:47
-msgid "created a client account for themself."
+msgid "created a client account for themselves."
 msgstr ""
 
 #: includes/functions.actionslog.php:48
@@ -2885,7 +2885,7 @@ msgid "Click to select and copy"
 msgstr ""
 
 #: includes/text.strings.php:39
-msgid "Succesfully copied to clipboard"
+msgid "successfully copied to clipboard"
 msgstr ""
 
 #: includes/text.strings.php:40
@@ -3482,7 +3482,7 @@ msgid "The selected files were marked as visible."
 msgstr ""
 
 #: manage-files.php:134
-msgid "The selected files were succesfully unassigned."
+msgid "The selected files were successfully unassigned."
 msgstr ""
 
 #: manage-files.php:156
@@ -3749,7 +3749,7 @@ msgid "User edited correctly."
 msgstr ""
 
 #: users-edit.php:154
-msgid "User created successfuly."
+msgid "User created successfully."
 msgstr ""
 
 #: users-edit.php:194

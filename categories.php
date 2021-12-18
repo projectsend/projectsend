@@ -1,6 +1,6 @@
 <?php
 /**
- * Allows to hide, show or delete the files assigend to the
+ * Allows to hide, show or delete the files assigned to the
  * selected client.
  *
  * @package		ProjectSend
@@ -166,7 +166,7 @@ if ( isset( $_POST['btn_process'] ) ) {
         echo system_message('danger', $msg);
     }
 
-    /** Redirect so the actions are reflected immediatly */
+    /** Redirect so the actions are reflected immediately */
     if ( isset( $redirect ) && $redirect === true ) {
         while (ob_get_level()) ob_end_clean();
         $location = BASE_URI . 'categories.php?status=' . $form_information['redirect_status'];

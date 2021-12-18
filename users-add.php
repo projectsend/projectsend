@@ -20,7 +20,7 @@ $new_user = new \ProjectSend\Classes\Users();
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 /**
- * Set checkboxes as 1 to defaul them to checked when first entering
+ * Set checkboxes as 1 to default them to checked when first entering
  * the form
  */
 $user_arguments = array(
@@ -65,8 +65,8 @@ if ($_POST) {
                 'affected_account_name' => $new_user->name
             ]);
 
-            $rediret_to = BASE_URI . 'users-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1&notification=' . $new_response['email'];
-            header('Location:' . $rediret_to);
+            $redirect_to = BASE_URI . 'users-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1&notification=' . $new_response['email'];
+            header('Location:' . $redirect_to);
             exit;
         }
     }
@@ -78,7 +78,7 @@ if ($_POST) {
             <div class="white-box-interior">
             
                 <?php
-                    // If the form was submited with errors, show them here.
+                    // If the form was submitted with errors, show them here.
                     echo $new_user->getValidationErrors();
 
                     if (isset($new_response)) {

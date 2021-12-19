@@ -29,6 +29,7 @@
         "paragonie/random_compat": "^2.0",
         "phpmailer/phpmailer": "~6.1",
 		"tamtamchik/simple-flash": "^1.2",
-		"hybridauth/hybridauth": "^3.0"
+		"hybridauth/hybridauth": "^3.0",
+        "dmhendricks/file-icon-vectors": "^1.0"
 	}
 }

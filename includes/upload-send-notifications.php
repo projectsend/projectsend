@@ -50,11 +50,11 @@ $statement->execute( $params );
 $statement->setFetchMode(PDO::FETCH_ASSOC);
 while ($row = $statement->fetch()) {
 	$found_notifications[] = array(
-        'id'			=> $row['id'],
-        'client_id'		=> $row['client_id'],
-        'file_id'		=> $row['file_id'],
-        'timestamp'		=> $row['timestamp'],
-        'upload_type'	=> $row['upload_type']
+        'id' => $row['id'],
+        'client_id' => $row['client_id'],
+        'file_id' => $row['file_id'],
+        'timestamp' => $row['timestamp'],
+        'upload_type' => $row['upload_type']
     );
 
     // Add the file data to the global array
@@ -63,9 +63,10 @@ while ($row = $statement->fetch()) {
         $file = new \ProjectSend\Classes\Files();
         $file->get($file_id);
 		$file_data[$file->id] = array(
-            'id'			=> $file->id,
-            'filename'		=> $file->filename_original,
-            'description'	=> $file->description,
+            'id'=> $file->id,
+            'filename' => $file->filename_original,
+            'title' => $file->title,
+            'description' => $file->description,
         );
     }
 
@@ -114,10 +115,10 @@ if (!empty($found_notifications)) {
 						/** Add the file to the account's creator email */
 						$use_id = $notification['file_id'];
 						$notes_to_admin[$client['created_by']][$client['name']][] = array(
-																		'notif_id' => $notification['id'],
-																		'file_name' => $file_data[$use_id]['filename'],
-																		'description' => make_excerpt($file_data[$use_id]['description'],200)
-																	);
+                            'notif_id' => $notification['id'],
+                            'file_name' => $file_data[$use_id]['title'],
+                            'description' => make_excerpt($file_data[$use_id]['description'],200)
+                        );
 					}
 					elseif ($notification['upload_type'] == '1') {
                         if ($client['notify_upload'] == '1') {
@@ -125,10 +126,10 @@ if (!empty($found_notifications)) {
 								/** If file is uploaded by user, add to client's email body */
 								$use_id = $notification['file_id'];
 								$notes_to_clients[$client['username']][] = array(
-																			'notif_id' => $notification['id'],
-																			'file_name' => $file_data[$use_id]['filename'],
-																			'description' => make_excerpt($file_data[$use_id]['description'],200)
-																		);
+                                    'notif_id' => $notification['id'],
+                                    'file_name' => $file_data[$use_id]['title'],
+                                    'description' => make_excerpt($file_data[$use_id]['description'],200)
+                                );
 							}
 							else {
 								$notifications_inactive[] = $notification['id'];
@@ -149,7 +150,7 @@ if (!empty($found_notifications)) {
 			foreach ($mail_files as $mail_file) {
 				/** Make the list of files */
 				$files_list.= '<li style="margin-bottom:11px;">';
-				$files_list.= '<p style="font-weight:bold; margin:0 0 5px 0; font-size:14px;">'.$mail_file['file_name'].'</p>';
+                $files_list.= '<p style="font-weight:bold; margin:0 0 5px 0; font-size:14px;">'.$mail_file['title'].'<br>('.$mail_file['file_name'].')</p>';
 				if (!empty($mail_file['description'])) {
 					$files_list.= '<p>'.$mail_file['description'].'</p>';
 				}
@@ -177,7 +178,6 @@ if (!empty($found_notifications)) {
     }
 	
 	/** Prepare the emails for ADMINS */
-	
 	if (!empty($notes_to_admin)) {
 		foreach ($notes_to_admin as $mail_username => $admin_files) {
 			

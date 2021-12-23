@@ -1,6 +1,8 @@
 <?php
 require_once '../../../bootstrap.php';
 
+header("Content-type: application/json");
+
 if (!defined('CURRENT_USER_LEVEL') or CURRENT_USER_LEVEL != 9) {
     header("Location: ".BASE_URI);
     exit;

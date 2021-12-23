@@ -69,7 +69,7 @@ password_change_required();
         <header id="header" class="navbar navbar-static-top navbar-fixed-top">
             <ul class="nav pull-left nav_toggler">
                 <li>
-                    <a href="#" class="toggle_main_menu"><i class="fa fa-bars" aria-hidden="true"></i><span><?php _e('Toogle menu', 'cftp_admin'); ?></span></a>
+                    <a href="#" class="toggle_main_menu"><i class="fa fa-bars" aria-hidden="true"></i><span><?php _e('Toggle menu', 'cftp_admin'); ?></span></a>
                 </li>
             </ul>
 

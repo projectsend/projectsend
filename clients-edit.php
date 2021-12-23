@@ -160,7 +160,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                     case 1:
                         $msg = __('Client edited correctly.','cftp_admin');
                         if (isset($_GET['is_new'])) {
-                            $msg = __('Client created successfuly.','cftp_admin');
+                            $msg = __('Client created successfully.','cftp_admin');
                         }
                         echo system_message('success',$msg);
                     break;
@@ -195,7 +195,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
             <div class="white-box-interior">
         
                 <?php
-                    // If the form was submited with errors, show them here.
+                    // If the form was submitted with errors, show them here.
                     echo $edit_client->getValidationErrors();
 
                     $direct_access_error = __('This page is not intended to be accessed directly.','cftp_admin');

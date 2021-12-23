@@ -123,7 +123,7 @@ class Emails
 		*/
 		$this->strings_client_edited = array(
             'subject' => (get_option('email_client_edited_subject_customize') == 1 && !empty(get_option('email_client_edited_subject'))) ? get_option('email_client_edited_subject') : __('A client has changed memberships requests','cftp_admin'),
-			'body' => __('A client on you site has just changed his groups membership requests and needs your approval.','cftp_admin'),
+			'body' => __('A client on your site has just changed their groups membership requests and needs your approval.','cftp_admin'),
 			'label_name' => __('Full name','cftp_admin'),
 			'label_user' => __('Username','cftp_admin'),
 			'label_request' => __('The client requests access to the following group(s)','cftp_admin'),
@@ -488,7 +488,7 @@ class Emails
 
 	/**
 	 * Prepare the body for the e-mail sent when a client changes group
-	 *  membeship requests.
+	 *  membership requests.
 	 */
 	private function email_client_edited($username,$fullname,$memberships_requests)
 	{
@@ -545,7 +545,7 @@ class Emails
 
 	/**
 	 * Prepare the body for the e-mail sent when a client changes group
-	 *  membeship requests.
+	 *  membership requests.
 	 */
 	private function email_test_settings($message)
 	{

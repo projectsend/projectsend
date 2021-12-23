@@ -151,7 +151,7 @@ if ($_POST) {
         ],
     ]);
     
-    /** Redirect so the options are reflected immediatly */
+    /** Redirect so the options are reflected immediately */
     while (ob_get_level()) ob_end_clean();
     $section_redirect = html_output($_POST['section']);
     $location = BASE_URI . 'email-templates.php?section=' . $section_redirect;
@@ -170,7 +170,7 @@ if ($_POST) {
             if (isset($_GET['status'])) {
                 switch ($_GET['status']) {
                     case '1':
-                        $msg = __('Options updated succesfuly.','cftp_admin');
+                        $msg = __('Options updated successfully.','cftp_admin');
                         echo system_message('success',$msg);
                         break;
                     case '2':
@@ -193,7 +193,7 @@ if ($_POST) {
                                                                             'subject'			=> 'email_new_file_by_user_subject',
                                                                             'body_checkbox'		=> 'email_new_file_by_user_customize',
                                                                             'body_textarea'		=> 'email_new_file_by_user_text',
-                                                                            'description'		=> __('This email will be sent to a client whenever a new file has been assigned to his account.','cftp_admin'),
+                                                                            'description'		=> __('This email will be sent to a client whenever a new file has been assigned to their account.','cftp_admin'),
                                                                             'subject_check'		=> EMAIL_NEW_FILE_BY_USER_SUBJECT_CUSTOMIZE,
                                                                             'subject_text'		=> EMAIL_NEW_FILE_BY_USER_SUBJECT,
                                                                             'body_check'		=> EMAIL_NEW_FILE_BY_USER_CUSTOMIZE,
@@ -225,7 +225,7 @@ if ($_POST) {
                                                                             'subject'			=> 'email_new_client_by_user_subject',
                                                                             'body_checkbox'		=> 'email_new_client_by_user_customize',
                                                                             'body_textarea'		=> 'email_new_client_by_user_text',
-                                                                            'description'		=> __('This email will be sent to the new client after an administrator has created his new account. It would be best to include the log in details (username and password).','cftp_admin'),
+                                                                            'description'		=> __('This email will be sent to the new client after an administrator has created their new account. It would be best to include the log in details (username and password).','cftp_admin'),
                                                                             'subject_check'		=> EMAIL_NEW_CLIENT_BY_USER_SUBJECT_CUSTOMIZE,
                                                                             'subject_text'		=> EMAIL_NEW_CLIENT_BY_USER_SUBJECT,
                                                                             'body_check'		=> EMAIL_NEW_CLIENT_BY_USER_CUSTOMIZE,
@@ -291,7 +291,7 @@ if ($_POST) {
                                                                             'subject'			=> 'email_new_user_subject',
                                                                             'body_checkbox'		=> 'email_new_user_customize',
                                                                             'body_textarea'		=> 'email_new_user_text',
-                                                                            'description'		=> __('This email will be sent to the new system user after an administrator has created his new account. It would be best to include the log in details (username and password).','cftp_admin'),
+                                                                            'description'		=> __('This email will be sent to the new system user after an administrator has created their new account. It would be best to include the log in details (username and password).','cftp_admin'),
                                                                             'subject_check'		=> EMAIL_NEW_USER_SUBJECT_CUSTOMIZE,
                                                                             'subject_text'		=> EMAIL_NEW_USER_SUBJECT,
                                                                             'body_check'		=> EMAIL_NEW_USER_CUSTOMIZE,
@@ -325,7 +325,7 @@ if ($_POST) {
                                                                             'subject'			=> 'email_client_edited_subject',
                                                                             'body_checkbox'		=> 'email_client_edited_customize',
                                                                             'body_textarea'		=> 'email_client_edited_text',
-                                                                            'description'		=> __('This email will be sent to the system administrator when a client edits his account and changes the public groups membership requests.','cftp_admin'),
+                                                                            'description'		=> __('This email will be sent to the system administrator when a client edits their account and changes the public groups membership requests.','cftp_admin'),
                                                                             'subject_check'		=> EMAIL_CLIENT_EDITED_SUBJECT_CUSTOMIZE,
                                                                             'subject_text'		=> EMAIL_CLIENT_EDITED_SUBJECT,
                                                                             'body_check'		=> EMAIL_CLIENT_EDITED_CUSTOMIZE,

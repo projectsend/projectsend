@@ -44,7 +44,7 @@ function format_action_log_record($params)
 			break;
 		case 4:
 			$part1 = $affected_account_name;
-			$action_text = __('created a client account for themself.','cftp_admin');
+			$action_text = __('created a client account for themselves.','cftp_admin');
             $formatted = sprintf(__('%s registered as a new client','cftp_admin'), $affected_account_name);
             $type = 'clients';
 			break;

@@ -37,8 +37,8 @@ if ($_POST) {
         $new_response = $new_group->create();
 
         if (!empty($new_response['id'])) {
-            $rediret_to = BASE_URI . 'groups-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1';
-            header('Location:' . $rediret_to);
+            $redirect_to = BASE_URI . 'groups-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1';
+            header('Location:' . $redirect_to);
             exit;
         }
     }
@@ -50,7 +50,7 @@ if ($_POST) {
             <div class="white-box-interior">
 
                 <?php
-                    // If the form was submited with errors, show them here.
+                    // If the form was submitted with errors, show them here.
                     echo $new_group->getValidationErrors();
 
                     if (isset($new_response)) {

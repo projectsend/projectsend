@@ -72,7 +72,7 @@ switch ($groups_form_type) {
 		<div class="col-sm-8 col-sm-offset-4">
 			<label for="public">
 				<input type="checkbox" name="public" id="public" <?php echo (isset($group_arguments['public']) && $group_arguments['public'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Public','cftp_admin'); ?>
-				<p class="field_note"><?php _e('Allows clients to request access to this group in the registraron process and when editing their own profile.','cftp_admin'); ?></p>
+				<p class="field_note"><?php _e('Allows clients to request access to this group in the registration process and when editing their own profile.','cftp_admin'); ?></p>
                 <?php
                     if ( get_option('public_listing_page_enable') != 1 ) {
                         $msg = '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> ' . __('The group cannot be made publicly visible while the public page is disabled.');

@@ -43,7 +43,6 @@ define('PROTOCOL', empty($_SERVER['HTTPS'])? 'http' : 'https');
 /**
  * DEBUG constant effects:
  * - Changes the error_reporting php value
- * - Enables the PDOEX extension (on the database class) to count queries
  */
 define('DEBUG', false);
 

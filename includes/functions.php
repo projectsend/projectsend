@@ -1848,7 +1848,19 @@ function sanitize_filename_for_download($file_name)
     return $file_name;
 }
 
-function getRecaptcha2Request()
+function recaptcha2RenderWidget()
+{
+    if ( defined('RECAPTCHA_AVAILABLE') ) {
+?>
+        <div class="form-group">
+            <!-- <label><?php _e('Verification','cftp_admin'); ?></label> -->
+            <div class="g-recaptcha" data-sitekey="<?php echo get_option('recaptcha_site_key'); ?>"></div>
+        </div>
+<?php
+    }
+}
+
+function recaptcha2GetRequest()
 {
     $recaptcha_request = null;
 
@@ -1860,4 +1872,26 @@ function getRecaptcha2Request()
     }
 
     return $recaptcha_request;
+}
+
+function recaptcha2ValidateRequest($redirect = true)
+{
+    $validation_passed = false;
+
+    if ( defined('RECAPTCHA_AVAILABLE') ) {
+        $validation = new \ProjectSend\Classes\Validation;
+        $validation->validate('recaptcha', recaptcha2GetRequest());
+        if ($validation->passed()) {
+            $validation_passed = true;
+        }
+    } else {
+        $validation_passed = true;
+    }
+
+    if ($redirect && !$validation_passed) {
+        header("Location: ".PAGE_STATUS_CODE_403);
+        exit;
+    }
+
+    return $validation_passed;
 }

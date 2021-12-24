@@ -30,6 +30,8 @@ if ($_POST) {
             exit;
         break;
         case 'login':
+            recaptcha2ValidateRequest();
+
             $login = $auth->authenticate($_POST['username'], $_POST['password']);
             $decoded = json_decode($login);
             if ($decoded->status == 'success') {

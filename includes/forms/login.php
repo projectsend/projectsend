@@ -47,6 +47,8 @@
             </select>
         </div>
 
+        <?php recaptcha2RenderWidget(); ?>
+
         <div class="inside_form_buttons">
             <button type="submit" id="btn_submit" class="btn btn-wide btn-primary" data-text="<?php echo $json_strings['login']['button_text']; ?>" data-loading-text="<?php echo $json_strings['login']['logging_in']; ?>"><?php echo $json_strings['login']['button_text']; ?></button>
         </div>

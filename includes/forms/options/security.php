@@ -76,7 +76,7 @@
 <div class="options_divide"></div>
 
 <h3><?php _e('reCAPTCHA','cftp_admin'); ?></h3>
-<p><?php _e('Helps prevent SPAM on your registration form.','cftp_admin'); ?></p>
+<p><?php _e('Helps prevent SPAM on your login, registration and password forgotten forms.','cftp_admin'); ?></p>
 
 <div class="form-group">
     <div class="col-sm-8 col-sm-offset-4">

@@ -274,17 +274,7 @@ switch ($clients_form_type) {
 
 	<?php
 		if ( $clients_form_type == 'new_client_self' ) {
-			if ( defined('RECAPTCHA_AVAILABLE') ) {
-	?>
-				<div class="form-group">
-					<label class="col-sm-4 control-label"><?php _e('Verification','cftp_admin'); ?></label>
-					<div class="col-sm-8">
-						<div class="g-recaptcha" data-sitekey="<?php echo RECAPTCHA_SITE_KEY; ?>"></div>
-					</div>
-				</div>
-	<?php
-			}
-			
+            recaptcha2RenderWidget();
 		}
 	?>
 

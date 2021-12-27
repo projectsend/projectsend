@@ -19,13 +19,6 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 
     /** The form was submitted */
     if ($_POST) {
-        if ( defined('RECAPTCHA_AVAILABLE') ) {
-            $recaptcha_user_ip		= $_SERVER["REMOTE_ADDR"];
-            $recaptcha_response		= $_POST['g-recaptcha-response'];
-            $recaptcha_secret_key	= get_option('recaptcha_secret_key');
-            $recaptcha_request		= file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptcha_secret_key}&response={$recaptcha_response}&remoteip={$recaptcha_user_ip}");
-        }
-
         /** Validate the information from the posted form. */
         /** Create the user if validation is correct. */
         $new_client->setType('new_client');
@@ -44,7 +37,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
             'can_upload_public' => (get_option('clients_new_default_can_set_public') == 1) ? 1 : 0,
             'account_requested'	=> (get_option('clients_auto_approve') == 0) ? 1 : 0,
             'type' => 'new_client',
-            'recaptcha' => ( defined('RECAPTCHA_AVAILABLE') ) ? $recaptcha_request : null,
+            'recaptcha' => ( defined('RECAPTCHA_AVAILABLE') ) ? recaptcha2GetRequest() : null,
         ]);
         if ($new_client->validate()) {
             $new_response = $new_client->create();

@@ -72,6 +72,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
              * The form submitted contains a new token request
              */
             case 'new_request':
+                recaptcha2ValidateRequest();
+
                 $get_user = get_user_by('user', 'email', $_POST['email']);
         
                 if ( $get_user ) {

@@ -98,7 +98,7 @@ class Files
     }
 
     /**
-     * Set the properties when saving to the database (data comnes from the form)
+     * Set the properties when saving to the database (data comes from the form)
      */
     public function set($arguments = [])
     {
@@ -256,7 +256,9 @@ class Files
             return null;
         }
 
-        if ($this->isImage()) {
+        // Image
+        $embeddable = ["gif", "jpg", "jpeg", "jfif", "png", "webp", "bmp", "svg"];
+        if (isImage($this->full_path) && in_array($this->extension, $embeddable)) {
             $this->embeddable = true;
             $this->embeddable_type = 'image';
         }

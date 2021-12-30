@@ -218,7 +218,12 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                                 $preview_cell = '';
                                 if ( $file->expired == false) {
                                     if ( $file->isImage() ) {
-                                        $thumbnail = make_thumbnail( $file->full_path, null, TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT );
+                                        if ($file->embeddable) {
+                                            $thumbnail = make_thumbnail( $file->full_path, null, TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT );
+                                        } else {
+                                            $thumbnail = make_thumbnail( "", null, TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT );
+                                        }
+                                        
                                         if ( !empty( $thumbnail['thumbnail']['url'] ) ) {
                                             $preview_cell = '
                                                 <a href="#" class="get-preview" data-url="'.BASE_URI.'process.php?do=get_preview&file_id='.$file->id.'">

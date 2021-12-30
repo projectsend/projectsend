@@ -61,5 +61,8 @@ Thumbs.db
 # Test results
 test-results
 
+# VSCode config files
+.vscode
+
 # Misc
 .idea/

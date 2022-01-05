@@ -17,8 +17,9 @@ $new_client = new \ProjectSend\Classes\Users();
 
 include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 
-    /** The form was submitted */
-    if ($_POST) {
+/** The form was submitted */
+if ($_POST) {
+    if (get_option('clients_can_register') == '1') {
         /** Validate the information from the posted form. */
         /** Create the user if validation is correct. */
         $new_client->setType('new_client');
@@ -70,6 +71,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
             exit;
         }
     }
+}
 ?>
 
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
@@ -165,7 +167,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                 <p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.','cftp_admin'); ?></a></p>
             </div>
         </div>
-    </div> <!-- main -->
+    </div>
+</div>
 
 <?php
     include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

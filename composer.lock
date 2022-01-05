@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6eba239b6b138c2c64db029d58a1bc8b",
+    "content-hash": "6953b14f998ed6990c251d6d9caf4595",
     "packages": [
         {
             "name": "claviska/simpleimage",
@@ -253,16 +253,16 @@
         },
         {
             "name": "moxiecode/plupload",
-            "version": "v3.1.2",
+            "version": "v3.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/moxiecode/plupload.git",
-                "reference": "d1aee329d3ed75491a9c8d1e9eecd96464fc8b76"
+                "reference": "b5d0cfc8c3ad3a16ed893f389fae96a3ab2d2f1f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/moxiecode/plupload/zipball/d1aee329d3ed75491a9c8d1e9eecd96464fc8b76",
-                "reference": "d1aee329d3ed75491a9c8d1e9eecd96464fc8b76",
+                "url": "https://api.github.com/repos/moxiecode/plupload/zipball/b5d0cfc8c3ad3a16ed893f389fae96a3ab2d2f1f",
+                "reference": "b5d0cfc8c3ad3a16ed893f389fae96a3ab2d2f1f",
                 "shasum": ""
             },
             "type": "library",
@@ -285,7 +285,11 @@
                 "multi-runtime",
                 "plupload"
             ],
-            "time": "2018-02-20T06:20:41+00:00"
+            "support": {
+                "issues": "https://github.com/moxiecode/plupload/issues",
+                "source": "https://github.com/moxiecode/plupload/tree/v3.1.5"
+            },
+            "time": "2021-11-15T09:43:12+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -583,5 +587,5 @@
         "php": ">=7.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "1.1.0"
+    "plugin-api-version": "2.1.0"
 }

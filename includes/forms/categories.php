@@ -21,7 +21,7 @@ switch ( $form_information['type'] ) {
 ?>
 <form action="categories.php" class="form-horizontal" name="process_category" id="process_category" method="post">
     <input type="hidden" name="processing" id="processing" value="1">
-    <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
+    <?php addCsrf(); ?>
     <?php
         if ( !empty( $action ) && $action == 'edit' ) {
     ?>

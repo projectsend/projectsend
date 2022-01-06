@@ -167,7 +167,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
             </div>
 
             <form action="<?php echo $this_page; ?>" name="requests_list" method="post" class="form-inline batch_actions">
-                <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
+                <?php addCsrf(); ?>
                 <input type="hidden" name="denied" value="<?php echo (isset($_GET['denied']) && is_numeric($_GET['denied'])) ? $_GET['denied'] : 0; ?>" />
 
                 <?php form_add_existing_parameters(); ?>

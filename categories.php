@@ -16,6 +16,7 @@ $page_title = __('Categories administration','cftp_admin');
 $page_id = 'categories_list';
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+$current_url = get_form_action_with_existing_parameters(basename(__FILE__));
 
 /**
  * Messages set when adding or editing a category
@@ -40,32 +41,32 @@ if ( !empty( $_GET['status'] ) ) {
 /**
  * Apply the corresponding action to the selected categories.
  */
-if ( isset( $_GET['action'] ) ) {
-    if ( $_GET['action'] != 'none' ) {
+if ( isset( $_POST['action'] ) ) {
+    if ( $_POST['action'] != 'none' ) {
         /** Continue only if 1 or more categories were selected. */
-        if ( !empty($_GET['batch'] ) ) {
+        if ( !empty($_POST['batch'] ) ) {
             /**
              * Make a list of categories to avoid individual queries.
              */
-            $selected_categories = $_GET['batch'];
+            $selected_categories = $_POST['batch'];
 
             if (count($selected_categories) < 1 ) {
-                $msg = __('Please select at least one category.','cftp_admin');
-                echo system_message('danger',$msg);
+                $flash->error(__('Please select at least one category.', 'cftp_admin'));
+            } else {
+                switch ($_POST['action']) {
+                    case 'delete':
+                        foreach ($selected_categories as $category_id) {
+                            $category = new \ProjectSend\Classes\Categories();
+                            $category->get($category_id);
+                            $delete_category = $category->delete();
+                        }
+                        
+                        $flash->success(__('The selected categories were deleted.', 'cftp_admin'));
+                    break;
+                }
             }
 
-            switch($_GET['action']) {
-                case 'delete':
-                    foreach ($selected_categories as $category_id) {
-                        $category = new \ProjectSend\Classes\Categories();
-                        $category->get($category_id);
-                        $delete_category = $category->delete();
-                    }
-                    
-                    $msg = __('The selected categories were deleted.','cftp_admin');
-                    echo system_message('success',$msg);
-                    break;
-            }
+            ps_redirect($current_url);
         }
     }
 }
@@ -184,8 +185,8 @@ if ( isset( $_POST['btn_process'] ) ) {
             </div>
         </div>
 
-        <form action="categories.php" class="form-inline batch_actions" name="selected_categories" id="selected_categories" method="get">
-
+        <form action="<?php echo $current_url; ?>" class="form-inline batch_actions" name="selected_categories" id="selected_categories" method="post">
+            <?php addCsrf(); ?>
             <div class="form_actions_right form-inline">
                 <div class="form_actions">
                     <div class="form_actions_submit">
@@ -194,9 +195,9 @@ if ( isset( $_POST['btn_process'] ) ) {
                             <select name="action" id="action" class="txtfield form-control">
                                 <?php
                                     $actions_options = array(
-                                                            'none'			=> __('Select action','cftp_admin'),
-                                                            'delete'		=> __('Delete','cftp_admin'),
-                                                        );
+                                        'none' => __('Select action','cftp_admin'),
+                                        'delete' => __('Delete','cftp_admin'),
+                                    );
                                     foreach ( $actions_options as $val => $text ) {
                                 ?>
                                         <option value="<?php echo $val; ?>"><?php echo $text; ?></option>

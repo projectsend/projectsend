@@ -13,6 +13,8 @@ $active_nav = 'users';
 
 $page_title = __('Users administration','cftp_admin');
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+
+$current_url = get_form_action_with_existing_parameters(basename(__FILE__));
 ?>
 <div class="row">
     <div class="col-xs-12">
@@ -20,14 +22,14 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
         /**
          * Apply the corresponding action to the selected users.
          */
-        if(isset($_GET['action'])) {
+        if (isset($_POST['action'])) {
             /** Continue only if 1 or more users were selected. */
-            if(!empty($_GET['batch'])) {
-                $selected_users = $_GET['batch'];
+            if (!empty($_POST['batch'])) {
+                $selected_users = $_POST['batch'];
 
                 $affected_users = 0;
 
-                switch($_GET['action']) {
+                switch ($_POST['action']) {
                     case 'activate':
                         /**
                          * Changes the value on the "active" column value on the database.
@@ -40,9 +42,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                             }
                         }
 
-                        $msg = __('The selected users were marked as active.','cftp_admin');
-                        echo system_message('success',$msg);
-                        break;
+                        $flash->success(__('The selected users were marked as active.', 'cftp_admin'));
+                    break;
                     case 'deactivate':
                         /**
                          * Reverse of the previous action. Setting the value to 0 means
@@ -60,16 +61,14 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                                 $affected_users++;
                             }
                             else {
-                                $msg = __('You cannot deactivate your own account.','cftp_admin');
-                                echo system_message('danger',$msg);
+                                $flash->error(__('You cannot deactivate your own account.', 'cftp_admin'));
                             }
                         }
 
                         if ($affected_users > 0) {
-                            $msg = __('The selected users were marked as inactive.','cftp_admin');
-                            echo system_message('success',$msg);
+                            $flash->success(__('The selected users were marked as inactive.', 'cftp_admin'));
                         }
-                        break;
+                    break;
                     case 'delete':		
                         foreach ($selected_users as $work_user) {
                             /**
@@ -83,22 +82,21 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                                 }
                             }
                             else {
-                                $msg = __('You cannot delete your own account.','cftp_admin');
-                                echo system_message('danger',$msg);
+                                $flash->error(__('You cannot delete your own account.', 'cftp_admin'));
                             }
                         }
                         
                         if ($affected_users > 0) {
-                            $msg = __('The selected users were deleted.','cftp_admin');
-                            echo system_message('success',$msg);
+                            $flash->success(__('The selected users were deleted.', 'cftp_admin'));
                         }
                     break;
                 }
             }
             else {
-                $msg = __('Please select at least one user.','cftp_admin');
-                echo system_message('danger',$msg);
+                $flash->error(__('Please select at least one user.', 'cftp_admin'));
             }
+
+            ps_redirect($current_url);
         }
 
         $params	= array();
@@ -204,8 +202,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
             </div>
         </div>
 
-        <form action="users.php" name="users_list" method="get" class="form-inline batch_actions">
-            <?php form_add_existing_parameters(); ?>
+        <form action="<?php echo $current_url; ?>" name="users_list" method="post" class="form-inline batch_actions">
+            <?php addCsrf(); ?>
             <div class="form_actions_right">
                 <div class="form_actions">
                     <div class="form_actions_submit">
@@ -214,11 +212,11 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                             <select name="action" id="action" class="txtfield form-control">
                                 <?php
                                     $actions_options = array(
-                                                            'none'			=> __('Select action','cftp_admin'),
-                                                            'activate'		=> __('Activate','cftp_admin'),
-                                                            'deactivate'	=> __('Deactivate','cftp_admin'),
-                                                            'delete'		=> __('Delete','cftp_admin'),
-                                                        );
+                                        'none' => __('Select action','cftp_admin'),
+                                        'activate' => __('Activate','cftp_admin'),
+                                        'deactivate' => __('Deactivate','cftp_admin'),
+                                        'delete' => __('Delete','cftp_admin'),
+                                    );
                                     foreach ( $actions_options as $val => $text ) {
                                 ?>
                                         <option value="<?php echo $val; ?>"><?php echo $text; ?></option>

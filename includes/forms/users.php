@@ -31,7 +31,7 @@ switch ($user_form_type) {
 }
 ?>
 <form action="<?php echo html_output($form_action); ?>" name="user_form" id="user_form" method="post" class="form-horizontal" data-form-type="<?php echo $user_form_type; ?>">
-    <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
+    <?php addCsrf(); ?>
 
 	<div class="form-group">
 		<label for="name" class="col-sm-4 control-label"><?php _e('Name','cftp_admin'); ?></label>

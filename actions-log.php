@@ -14,50 +14,50 @@ $active_nav = 'tools';
 $page_title = __('Recent activities log','cftp_admin');
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+$current_url = get_form_action_with_existing_parameters(basename(__FILE__));
+
+/**
+ * Apply the corresponding action to the selected users.
+ */
+if (isset($_POST['action']) && $_POST['action'] != 'none') {
+    /** Continue only if 1 or more users were selected. */
+    switch ($_POST['action']) {
+        case 'delete':
+            $selected_actions = $_POST['batch'];
+            $delete_ids = implode( ',', $selected_actions );
+
+            if ( !empty( $_POST['batch'] ) ) {
+                $statement = $dbh->prepare("DELETE FROM " . TABLE_LOG . " WHERE FIND_IN_SET(id, :delete)");
+                $params = array(
+                    ':delete' => $delete_ids,
+                );
+                $statement->execute( $params );
+
+                $flash->success(__('The selected activities were deleted.', 'cftp_admin'));
+            }
+            else {
+                $flash->error(__('Please select at least one activity.', 'cftp_admin'));
+            }
+        break;
+        case 'log_clear':
+            $keep = '5,6,7,8,37';
+            $statement = $dbh->prepare("DELETE FROM " . TABLE_LOG . " WHERE NOT ( FIND_IN_SET(action, :keep) ) ");
+            $params = array(
+                ':keep'	=> $keep,
+            );
+            $statement->execute( $params );
+
+            $flash->success(__('The log was cleared. Only data used for statistics remained. You can delete them manually if you want.', 'cftp_admin'));
+            echo system_message('success',$msg);
+        break;
+    }
+
+    ps_redirect($current_url);
+}
 ?>
 <div class="row">
     <div class="col-xs-12">
     <?php
-        /**
-         * Apply the corresponding action to the selected users.
-         */
-        if (isset($_GET['action']) && $_GET['action'] != 'none') {
-            /** Continue only if 1 or more users were selected. */
-                switch($_GET['action']) {
-                    case 'delete':
-
-                        $selected_actions = $_GET['batch'];
-                        $delete_ids = implode( ',', $selected_actions );
-
-                        if ( !empty( $_GET['batch'] ) ) {
-                                $statement = $dbh->prepare("DELETE FROM " . TABLE_LOG . " WHERE FIND_IN_SET(id, :delete)");
-                                $params = array(
-                                                ':delete'	=> $delete_ids,
-                                            );
-                                $statement->execute( $params );
-                            
-                                $msg = __('The selected activities were deleted.','cftp_admin');
-                                echo system_message('success',$msg);
-                        }
-                        else {
-                            $msg = __('Please select at least one activity.','cftp_admin');
-                            echo system_message('danger',$msg);
-                        }
-                    break;
-                    case 'log_clear':
-                        $keep = '5,6,7,8,37';
-                        $statement = $dbh->prepare("DELETE FROM " . TABLE_LOG . " WHERE NOT ( FIND_IN_SET(action, :keep) ) ");
-                        $params = array(
-                                        ':keep'	=> $keep,
-                                    );
-                        $statement->execute( $params );
-
-                        $msg = __('The log was cleared. Only data used for statistics remained. You can delete them manually if you want.','cftp_admin');
-                        echo system_message('success',$msg);
-                    break;
-                }
-        }
-
         $params	= array();
 
         /**
@@ -144,8 +144,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
             </div>
         </div>
 
-        <form action="actions-log.php" name="actions_list" method="get" class="form-inline batch_actions">
-            <?php form_add_existing_parameters(); ?>
+        <form action="<?php echo $current_url; ?>" name="actions_list" method="post" class="form-inline batch_actions">
+            <?php addCsrf(); ?>
             <div class="form_actions_right">
                 <div class="form_actions">
                     <div class="form_actions_submit">

@@ -13,68 +13,68 @@ $active_nav = 'clients';
 
 $page_title = __('Clients Administration','cftp_admin');
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+
+$current_url = get_form_action_with_existing_parameters(basename(__FILE__));
+
+/**
+ * Apply the corresponding action to the selected clients.
+ */
+if (isset($_POST['action'])) {
+    /** Continue only if 1 or more clients were selected. */
+    if (!empty($_POST['batch'])) {
+        $selected_clients = $_POST['batch'];
+
+        switch ($_POST['action']) {
+            case 'activate':
+                /**
+                 * Changes the value on the "active" column value on the database.
+                 * Inactive clients are not allowed to log in.
+                 */
+                foreach ($selected_clients as $work_client) {
+                    $this_client = new \ProjectSend\Classes\Users();
+                    if ($this_client->get($work_client)) {
+                        $hide_user = $this_client->setActiveStatus(1);
+                    }
+                }
+                
+                $flash->success(__('The selected clients were marked as active.', 'cftp_admin'));
+            break;
+            case 'deactivate':
+                /**
+                 * Reverse of the previous action. Setting the value to 0 means
+                 * that the client is inactive.
+                 */
+                foreach ($selected_clients as $work_client) {
+                    $this_client = new \ProjectSend\Classes\Users();
+                    if ($this_client->get($work_client)) {
+                        $hide_user = $this_client->setActiveStatus(0);
+                    }
+                }
+                
+                $flash->success(__('The selected clients were marked as inactive.', 'cftp_admin'));
+            break;
+            case 'delete':
+                foreach ($selected_clients as $work_client) {
+                    $this_client = new \ProjectSend\Classes\Users();
+                    if ($this_client->get($work_client)) {
+                        $delete_user = $this_client->delete();
+                    }
+                }
+                
+                $flash->success(__('The selected clients were deleted.', 'cftp_admin'));
+            break;
+        }
+    }
+    else {
+        $flash->error(__('Please select at least one client.', 'cftp_admin'));
+    }
+
+    ps_redirect($current_url);
+}
 ?>
 <div class="row">
     <div class="col-xs-12">
     <?php
-        /**
-         * Apply the corresponding action to the selected clients.
-         */
-        if(isset($_GET['action'])) {
-            /** Continue only if 1 or more clients were selected. */
-            if(!empty($_GET['batch'])) {
-                $selected_clients = $_GET['batch'];
-
-                switch($_GET['action']) {
-                    case 'activate':
-                        /**
-                         * Changes the value on the "active" column value on the database.
-                         * Inactive clients are not allowed to log in.
-                         */
-                        foreach ($selected_clients as $work_client) {
-                            $this_client = new \ProjectSend\Classes\Users();
-                            if ($this_client->get($work_client)) {
-                                $hide_user = $this_client->setActiveStatus(1);
-                            }
-                        }
-                        
-                        $msg = __('The selected clients were marked as active.','cftp_admin');
-                        echo system_message('success',$msg);
-                        break;
-                    case 'deactivate':
-                        /**
-                         * Reverse of the previous action. Setting the value to 0 means
-                         * that the client is inactive.
-                         */
-                        foreach ($selected_clients as $work_client) {
-                            $this_client = new \ProjectSend\Classes\Users();
-                            if ($this_client->get($work_client)) {
-                                $hide_user = $this_client->setActiveStatus(0);
-                            }
-                        }
-                        
-                        $msg = __('The selected clients were marked as inactive.','cftp_admin');
-                        echo system_message('success',$msg);
-                        break;
-                    case 'delete':
-                        foreach ($selected_clients as $work_client) {
-                            $this_client = new \ProjectSend\Classes\Users();
-                            if ($this_client->get($work_client)) {
-                                $delete_user = $this_client->delete();
-                            }
-                        }
-                        
-                        $msg = __('The selected clients were deleted.','cftp_admin');
-                        echo system_message('success',$msg);
-                        break;
-                }
-            }
-            else {
-                $msg = __('Please select at least one client.','cftp_admin');
-                echo system_message('danger',$msg);
-            }
-        }
-
         /** Query the clients */
         $params = array();
 
@@ -155,8 +155,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                 </div>
             </div>
 
-            <form action="clients.php" name="clients_list" method="get" class="form-inline batch_actions">
-                <?php form_add_existing_parameters(); ?>
+            <form action="<?php echo $current_url; ?>" name="clients_list" method="post" class="form-inline batch_actions">
+                <?php addCsrf(); ?>
                 <div class="form_actions_right">
                     <div class="form_actions">
                         <div class="form_actions_submit">

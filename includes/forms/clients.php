@@ -70,7 +70,7 @@ switch ($clients_form_type) {
 ?>
 
 <form action="<?php echo html_output($form_action); ?>" name="client_form" id="client_form" method="post" class="form-horizontal" data-form-type="<?php echo $clients_form_type; ?>">
-    <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
+    <?php addCsrf(); ?>
 
 	<div class="form-group">
 		<label for="name" class="col-sm-4 control-label"><?php _e('Name','cftp_admin'); ?></label>

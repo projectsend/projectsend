@@ -164,7 +164,7 @@ if (!empty($_GET['search'])) {
 
 
         <form action="import-orphans.php" name="import_orphans" id="import_orphans" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
+            <?php addCsrf(); ?>
 
             <?php
                 /**

@@ -1,5 +1,5 @@
 <form action="reset-password.php?token=<?php echo html_output($got_token); ?>&user=<?php echo html_output($got_user); ?>" name="reset_password_enter_new" id="reset_password_enter_new" method="post" role="form">
-    <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
+    <?php addCsrf(); ?>
     <fieldset>
         <input type="hidden" name="form_type" id="form_type" value="new_password" />
 

@@ -20,7 +20,7 @@ switch ($groups_form_type) {
 ?>
 
 <form action="<?php echo html_output($form_action); ?>" name="group_form" id="group_form" method="post" class="form-horizontal">
-    <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
+    <?php addCsrf(); ?>
 
 	<div class="form-group">
 		<label for="name" class="col-sm-4 control-label"><?php _e('Group name','cftp_admin'); ?></label>

@@ -218,7 +218,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
             </div>
 
             <form action="<?php echo $this_page; ?>" name="clients_list" method="post" class="form-inline batch_actions">
-                <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
+                <?php addCsrf(); ?>
 
                 <?php form_add_existing_parameters(); ?>
                 <div class="form_actions_right">

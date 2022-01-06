@@ -45,6 +45,39 @@ function form_add_existing_parameters( $ignore = array() )
 }
 
 /**
+ * Add any existing $_GET parameters to the form's action url
+ */
+function get_form_action_with_existing_parameters( $action = null, $ignore = array() )
+{
+    $use = [];
+
+    // Don't add the pagination parameter
+	$ignore[] = 'page';
+
+	// Remove this parameters so they only exist when the action is done
+	$remove = array('action', 'batch', 'status');
+
+	if ( !empty( $_GET ) ) {
+		foreach ( $_GET as $param => $value ) {
+			// Remove status and actions
+			if ( in_array( $param, $remove ) ) {
+				unset( $_GET[$param] );
+			}
+			if ( !is_array( $value ) && !in_array( $param, $ignore ) ) {
+				$use[$param] = encode_html($value);
+			}
+		}
+	}
+
+    $return = $action;
+    if (!empty($use)) {
+        $return .= '?' . http_build_query($use);
+    }
+
+    return $return;
+}
+
+/**
  * Returns an existing or empty value to an input
  * 
  * @param string

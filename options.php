@@ -306,7 +306,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
             <div class="white-box-interior">
 
                 <form action="options.php" name="options" id="options" method="post" enctype="multipart/form-data" class="form-horizontal">
-                    <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
+                    <?php addCsrf(); ?>
                     <input type="hidden" name="section" value="<?php echo $section; ?>">
 
                     <?php

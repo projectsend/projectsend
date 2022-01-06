@@ -30,7 +30,7 @@ if ($_POST) {
         <div class="white-box">
             <div class="white-box-interior">
                 <form action="email-test.php" name="email_test" method="post" enctype="multipart/form-data" class="form-horizontal">
-                    <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
+                    <?php addCsrf(); ?>
                     <input type="hidden" name="section" value="<?php echo $section; ?>">
 
                     <?php if ($_POST) { ?>

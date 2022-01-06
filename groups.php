@@ -13,10 +13,12 @@ $active_nav = 'groups';
 
 $page_title = __('Groups administration','cftp_admin');
 
+$current_url = get_form_action_with_existing_parameters(basename(__FILE__));
+
 /**
  * Used when viewing groups a certain client belongs to.
  */
-if(!empty($_GET['member'])) {
+if (!empty($_GET['member'])) {
     $member = get_client_by_id($_GET['member']);
     /** Add the name of the client to the page's title. */
     if ($member) {
@@ -39,46 +41,45 @@ if(!empty($_GET['member'])) {
     }
 }
 
+/**
+ * Apply the corresponding action to the selected groups.
+ */
+if (isset($_POST['action']) && $_POST['action'] != 'none') {
+    /** Continue only if 1 or more groups were selected. */
+    if (!empty($_POST['batch'])) {
+        $selected_groups = $_POST['batch'];
+
+        switch ($_POST['action']) {
+            case 'delete':
+                $deleted_groups = 0;
+
+                foreach ($selected_groups as $group) {
+                    $this_group = new \ProjectSend\Classes\Groups;
+                    if ($this_group->get($group)) {
+                        $delete_user = $this_group->delete();
+                        $deleted_groups++;
+                    }
+                }
+                
+                if ($deleted_groups > 0) {
+                    $flash->success(__('The selected groups were deleted.', 'cftp_admin'));
+                }
+            break;
+        }
+    }
+    else {
+        $flash->error(__('Please select at least one group.', 'cftp_admin'));
+    }
+
+    ps_redirect($current_url);
+}
+
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 
 <div class="row">
     <div class="col-xs-12">
     <?php
-
-        /**
-         * Apply the corresponding action to the selected users.
-         */
-        if(isset($_GET['action']) && $_GET['action'] != 'none') {
-            /** Continue only if 1 or more users were selected. */
-            if(!empty($_GET['batch'])) {
-                $selected_groups = $_GET['batch'];
-
-                switch($_GET['action']) {
-                    case 'delete':
-                        $deleted_groups = 0;
-
-                        foreach ($selected_groups as $group) {
-                            $this_group = new \ProjectSend\Classes\Groups;
-                            if ($this_group->get($group)) {
-                                $delete_user = $this_group->delete();
-                                $deleted_groups++;
-                            }
-                        }
-                        
-                        if ($deleted_groups > 0) {
-                            $msg = __('The selected groups were deleted.','cftp_admin');
-                            echo system_message('success',$msg);
-                        }
-                    break;
-                }
-            }
-            else {
-                $msg = __('Please select at least one group.','cftp_admin');
-                echo system_message('danger',$msg);
-            }
-        }
-        
         $params = array();
         $cq = "SELECT id FROM " . TABLE_GROUPS;
 
@@ -141,8 +142,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
             </div>
         </div>
 
-        <form action="groups.php" name="groups_list" method="get" class="form-inline batch_actions">
-            <?php form_add_existing_parameters(); ?>
+        <form action="<?php echo $current_url; ?>" name="groups_list" method="post" class="form-inline batch_actions">
+            <?php addCsrf(); ?>
             <div class="form_actions_right">
                 <div class="form_actions">
                     <div class="form_actions_submit">
@@ -151,9 +152,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                             <select name="action" id="action" class="txtfield form-control">
                                 <?php
                                     $actions_options = array(
-                                                            'none'			=> __('Select action','cftp_admin'),
-                                                            'delete'		=> __('Delete','cftp_admin'),
-                                                        );
+                                        'none' => __('Select action','cftp_admin'),
+                                        'delete' => __('Delete','cftp_admin'),
+                                    );
                                     foreach ( $actions_options as $val => $text ) {
                                 ?>
                                         <option value="<?php echo $val; ?>"><?php echo $text; ?></option>

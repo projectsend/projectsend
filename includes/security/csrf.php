@@ -13,6 +13,11 @@ function getCsrfToken()
     return $_SESSION['csrf_token'];
 }
 
+function addCsrf()
+{
+    echo '<input type="hidden" name="csrf_token" value="'.getCsrfToken().'" />';
+}
+
 /**
  * Validates the send csrf token with a stable string comparison algorithm.
  * Do not optimize for speed!!!

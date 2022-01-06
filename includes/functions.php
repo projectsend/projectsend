@@ -1895,3 +1895,9 @@ function recaptcha2ValidateRequest($redirect = true)
 
     return $validation_passed;
 }
+
+function ps_redirect($location, $status = 303)
+{
+    header("Location: $location", true, $status);
+    exit;
+}

@@ -2172,7 +2172,7 @@ msgid "reCAPTCHA"
 msgstr ""
 
 #: includes/forms/options/security.php:79
-msgid "Helps prevent SPAM on your registration form."
+msgid "Helps prevent SPAM on your login, registration and password forgotten forms."
 msgstr ""
 
 #: includes/forms/options/security.php:84

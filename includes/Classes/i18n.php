@@ -226,12 +226,6 @@ private static function ParseFile( $moPath, $domain )
 			    return false;
 		}
 
-		$revision = substr( $data, 4, 4 );
-		if( $revision != 0 ) {
-			/** Unknown revision number */
-			return false;
-		}
-
 		$l = $littleEndian ? 'V' : 'N';
 
 		if( $data && strlen( $data ) >= 20 )

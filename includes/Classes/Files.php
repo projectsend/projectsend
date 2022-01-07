@@ -995,7 +995,7 @@ class Files
         }
     }
 
-    public function addAssignment($type = null, $to_id, $hidden = 0)
+    public function addAssignment($type = null, $to_id = 0, $hidden = 0)
     {
         $allowed = array(9,8,7);
         if (!current_role_in($allowed)) {
@@ -1003,6 +1003,10 @@ class Files
         }
         
         if (empty($this->id)) {
+            return false;
+        }
+
+        if (empty($to_id)) {
             return false;
         }
 

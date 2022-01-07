@@ -44,7 +44,7 @@ if ( isset($_GET['activate_template']) ) {
                     foreach ($templates as $template) {
                 ?>
                     <div class="col-xs-12 col-sm-6 col-md-3">
-                        <div class="template <?php if ( $template['location'] == SELECTED_CLIENTS_TEMPLATE ) { echo 'current_template'; } ?>">
+                        <div class="template <?php if ( $template['location'] == get_option('selected_clients_template') ) { echo 'current_template'; } ?>">
                             <div class="col-xs-12">
                                 <div class="images">
                                     <?php
@@ -72,7 +72,7 @@ if ( isset($_GET['activate_template']) ) {
                                         <?php echo $template['description']; ?>
                                     </div>
                                     
-                                    <h5>Author</h5>
+                                    <h5><?php _e('Author','cftp_admin'); ?></h5>
                                     <p>
                                         <a href="<?php echo $template['authoruri']; ?>" target="_blank">
                                             <?php echo $template['author']; ?>
@@ -84,7 +84,7 @@ if ( isset($_GET['activate_template']) ) {
                             <div class="col-xs-4">
                                 <div class="buttons">
                                     <?php
-                                        if ( $template['location'] == SELECTED_CLIENTS_TEMPLATE ) {
+                                        if ( $template['location'] == get_option('selected_clients_template') ) {
                                     ?>
                                             <a href="#" class="btn btn-default disabled">
                                                 <?php _e('Active','cftp_admin'); ?>

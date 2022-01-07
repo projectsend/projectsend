@@ -54,7 +54,7 @@ function extract_template_info($template_directory)
     $template_info['location'] = $folder;
     
     // Currently active template
-    if ( $folder == SELECTED_CLIENTS_TEMPLATE ) {
+    if ( $folder == get_option('selected_clients_template') ) {
         $template_info['active'] = 1;
     }
     
@@ -72,12 +72,12 @@ function extract_template_info($template_directory)
     return $template_info;
 }
 
- /**
+/**
   * Generates an array of valid templates to use on the options page.
   * 
   * The template name must be defined on line 4 of template.php
   *
-  * @return void
+  * @return array
   */
 function look_for_templates()
 {

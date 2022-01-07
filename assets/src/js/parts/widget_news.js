@@ -16,8 +16,8 @@
                     url: json_strings.uri.widgets+'ajax/news.php',
                     cache: false,
                 }).done(function(data) {
-                    var obj = JSON.parse(data);
-                    console.log(obj);
+                    // var obj = JSON.parse(data);
+                    var obj = data;
                     $.each(obj.items, function(i, item) {
                         var li = $('<li/>')
                             .appendTo(list)

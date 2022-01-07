@@ -19,7 +19,8 @@
                     data: { days:days },
                     cache: false,
                 }).done(function(data) {
-                    var obj = JSON.parse(data);
+                    // var obj = JSON.parse(data);
+                    var obj = data;
                     _chart_container.append('<canvas id="chart_statistics"><canvas>');
                     chart = new Chart(document.getElementById('chart_statistics'), {
                         type: 'line',

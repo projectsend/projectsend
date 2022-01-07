@@ -20,8 +20,6 @@
 <?php
     if ( DEBUG === true ) {
         echo "\n" . '<!-- DEBUG INFORMATION' . "\n";
-        // Print the total count of queries made by PDO
-        _e('Executed queries','cftp_admin'); echo ': ' . $dbh->GetCount();
         echo "\n" . '-->' . "\n" ;
     }
 

@@ -3,7 +3,7 @@ Options -Indexes
 <FilesMatch "\.(html|htm|asp|js|ico|swp)$">
     Order Deny,Allow
     Deny from all
-</Files>
+</FilesMatch>
 
 <Files *.php>
     Order Deny,Allow

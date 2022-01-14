@@ -38,7 +38,7 @@ function form_add_existing_parameters( $ignore = array() )
 				unset( $_GET[$param] );
 			}
 			if ( !is_array( $value ) && !in_array( $param, $ignore ) ) {
-				echo '<input type="hidden" name="' . $param . '" value="' . encode_html($value) . '">';
+				echo '<input type="hidden" name="' . htmlentities($param) . '" value="' . html_output($value) . '">';
 			}
 		}
 	}

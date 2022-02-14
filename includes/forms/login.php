@@ -12,7 +12,7 @@
     <input type="hidden" name="do" value="login">
     <fieldset>
         <div class="form-group">
-            <label for="username"><?php _e('Username','cftp_admin'); ?> / <?php _e('E-mail','cftp_admin'); ?></label>
+            <label for="username"><?php _e('Username','cftp_admin'); if ( ! ENCRYPT_PI ) { echo " / "; _e('E-mail','cftp_admin'); } ?></label>
             <input type="text" name="username" id="username" value="<?php if (isset($sysuser_username)) { echo htmlspecialchars($sysuser_username); } ?>" class="form-control" autofocus />
         </div>
 
@@ -46,8 +46,6 @@
                 ?>
             </select>
         </div>
-
-        <?php recaptcha2RenderWidget(); ?>
 
         <div class="inside_form_buttons">
             <button type="submit" id="btn_submit" class="btn btn-wide btn-primary" data-text="<?php echo $json_strings['login']['button_text']; ?>" data-loading-text="<?php echo $json_strings['login']['logging_in']; ?>"><?php echo $json_strings['login']['button_text']; ?></button>

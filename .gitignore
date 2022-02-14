@@ -54,6 +54,8 @@ Thumbs.db
 
 # macOS
 .DS_Store
+._.DS_Store
+._README.md
 
 # VSCode Files
 .vscode
@@ -63,3 +65,8 @@ test-results
 
 # Misc
 .idea/
+tmp/*
+*.orig
+*.rej
+._*
+*.diff

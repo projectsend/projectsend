@@ -27,15 +27,15 @@ function check_server_requirements()
             $error_msg[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
         }
     }
-    
+
     /** Version requirements */
     $version_not_met =  __('%s minimum version not met. Please upgrade to at least version %s','cftp_admin');
-    
+
     /** php */
     if ( version_compare( phpversion(), REQUIRED_VERSION_PHP, "<" ) ) {
         $error_msg[] = sprintf($version_not_met, 'php', REQUIRED_VERSION_PHP);
     }
-    
+
     /** mysql */
     global $dbh;
     if (!empty($dbh)) {
@@ -44,7 +44,7 @@ function check_server_requirements()
             $error_msg[] = sprintf($version_not_met, 'MySQL', REQUIRED_VERSION_MYSQL);
         }
     }
-    
+
     if ( !empty( $error_msg ) ) {
         $page_title = __('Error', 'cftp_admin');
         include_once $absParent . '/header-unlogged.php';
@@ -128,14 +128,14 @@ function forceLogout($error_type = null)
         }
         header("location:".$url);
         exit;
-    }    
+    }
 }
 
 /** Gets a Json file from and url and caches the result */
 function getJson($url, $cache_time) {
     $cache_dir = JSON_CACHE_DIR;
     $cacheFile = $cache_dir . DS . md5($url);
-    
+
     if (file_exists($cacheFile)) {
         $fh = fopen($cacheFile, 'r');
         $cacheTime = trim(fgets($fh));
@@ -386,9 +386,9 @@ function get_client_by_id($client)
                 'id'				=> html_output($row['id']),
                 'username'			=> html_output($row['user']),
                 'name'				=> html_output($row['name']),
-                'address'			=> html_output($row['address']),
+                'address'			=> ENCRYPT_PI ? decrypt_output($row['address']): html_output($row['address']),
                 'phone'				=> html_output($row['phone']),
-                'email'				=> html_output($row['email']),
+                'email'				=> ENCRYPT_PI ? decrypt_output($row['email']) : html_output($row['email']),
                 'notify_upload'		=> html_output($row['notify']),
                 'level'				=> html_output($row['level']),
                 'active'			=> html_output($row['active']),
@@ -470,7 +470,7 @@ function get_client_by_username($client)
 
 /**
 * Get a user using any of the accepted field names
-* 
+*
 * @uses get_user_by_id
 * @return array
 */
@@ -490,7 +490,7 @@ function get_user_by($user_type, $field, $value)
         $statement = $dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE `$field`=:value");
         $statement->bindParam(':value', $value);
         $statement->execute();
-        
+
         $result = $statement->fetchColumn();
         if ( $result ) {
             switch ( $user_type ) {
@@ -531,7 +531,7 @@ function get_user_by_id($id)
                             'id'			=> html_output($row['id']),
                             'username'		=> html_output($row['user']),
                             'name'			=> html_output($row['name']),
-                            'email'			=> html_output($row['email']),
+                            'email'			=> ENCRYPT_PI ? decrypt_output($row['email']) : html_output($row['email']),
                             'level'			=> html_output($row['level']),
                             'active'		=> html_output($row['active']),
                             'max_file_size'	=> html_output($row['max_file_size']),
@@ -728,7 +728,7 @@ function get_file_assignations($file_id)
         return $return;
     }
 
-    return false;    
+    return false;
 }
 
 /**
@@ -757,7 +757,7 @@ function default_footer_info($logged = true)
 
 /**
  * function render_json_variables
- * 
+ *
  * Adds a CDATA block with variables that are used on the main JS file
  * URLs. text strings, etc.
  */
@@ -844,7 +844,7 @@ function current_role_in($levels)
     if (!is_array($levels)) {
         $levels = array($levels);
     }
-    
+
 	if (isset($_SESSION['role']) && (in_array($_SESSION['role'],$levels))) {
 		return true;
 	}
@@ -898,6 +898,43 @@ function pax($array)
 }
 
 /**
+ * Decrypt String
+ *
+ */
+function decrypt_output($input)
+{
+$pos = strpos($input,"@");
+if ( $pos !== false) {
+    return html_output($input);
+}
+
+$first_key = base64_decode(FIRSTKEY);
+$second_key = base64_decode(SECONDKEY);
+$mix = base64_decode($input);
+
+$method = "aes-128-gcm";
+if (in_array($method, openssl_get_cipher_methods()))
+{
+        $iv_length = openssl_cipher_iv_length($method);
+        $tag_length = 16;
+
+        $iv = substr($mix,0,$iv_length);
+        $tag = substr($mix, $iv_length, $tag_length);
+        $second_encrypted = substr($mix,$iv_length+$tag_length,64);
+        $first_encrypted = substr($mix,$iv_length+$tag_length+64);
+
+        $data = openssl_decrypt($first_encrypted,$method,$first_key,$options=0,$iv,$tag);
+        $second_encrypted_new = hash_hmac('sha3-512', $first_encrypted, $second_key, TRUE);
+
+        if (hash_equals($second_encrypted,$second_encrypted_new))
+        return html_output($data);
+}
+
+return false;
+}
+
+
+/**
  * Wrapper for htmlentities with default options
  *
  */
@@ -905,6 +942,7 @@ function html_output($str, $flags = ENT_QUOTES, $encoding = CHARSET, $double_enc
 {
 	return htmlentities($str, $flags, $encoding, $double_encode);
 }
+
 
 /**
  * Allow some html tags for file and group descriptions on htmlentities
@@ -933,6 +971,32 @@ function htmlentities_allowed($str, $quoteStyle = ENT_COMPAT, $charset = CHARSET
 	$description = str_replace($find, $replace, $description);
     return $description
     */;
+}
+
+
+/**
+ * Encrypt String
+ *
+ */
+function html_encrypt($data)
+{
+$data = encode_html($data);
+$first_key = base64_decode(FIRSTKEY);
+$second_key = base64_decode(SECONDKEY);
+
+$method = "aes-128-gcm";
+if (in_array($method, openssl_get_cipher_methods()))
+{
+        $iv_length = openssl_cipher_iv_length($method);
+        $iv = openssl_random_pseudo_bytes($iv_length);
+
+        $first_encrypted = openssl_encrypt($data,$method,$first_key,$options=0,$iv,$tag);
+        $second_encrypted = hash_hmac('sha3-512',$first_encrypted,$second_key,TRUE);
+
+        $output = base64_encode($iv.$tag.$second_encrypted.$first_encrypted);
+        return $output;
+}
+        return false;
 }
 
 
@@ -1200,14 +1264,14 @@ function file_is_svg( $file )
 function make_thumbnail( $file, $type = 'thumbnail', $width = THUMBS_MAX_WIDTH, $height = THUMBS_MAX_HEIGHT, $quality = THUMBS_QUALITY )
 {
     $thumbnail = array();
-    
+
     if ( !file_exists($file) ) {
         $thumbnail_file = 'thumb_unavailable_' . $width . 'x' . $height . '.png';
 
         $thumbnail['original']['url'] = ASSETS_IMG_URL . '/thumbnail-unavailable.png';
 		$thumbnail['thumbnail']['location'] = THUMBNAILS_FILES_DIR . DS . $thumbnail_file;
         $thumbnail['thumbnail']['url'] = THUMBNAILS_FILES_URL . '/' . $thumbnail_file;
-        
+
         $file = ASSETS_IMG_DIR . DS . '/thumbnail-unavailable.png'; // Reset to make thumbnail
     }
     else {
@@ -1286,7 +1350,7 @@ function generate_logo_url()
 
 	if (file_exists( $branding['dir'] )) {
         $branding['exists'] = true;
-        
+
         /* Make thumbnails for raster files */
         if ( file_is_image($branding['dir']) ) {
             $thumbnail = make_thumbnail($branding['dir'], 'proportional', LOGO_MAX_WIDTH, LOGO_MAX_HEIGHT);
@@ -1325,7 +1389,7 @@ function get_branding_layout($return_thumbnail = false)
 	else {
 		$branding_image = ASSETS_IMG_URL . DEFAULT_LOGO_FILENAME;
     }
-    
+
     if ($branding['type'] == 'raster') {
         $replace = '<img src="' . $branding_image . '" alt="' . html_output(THIS_INSTALL_TITLE) . '" />';
     }
@@ -1507,13 +1571,13 @@ function generateSafeFilename($filename)
     $extension = $original_filename['extension'];
 
     // Replace accent characters, foreign languages
-    $search = array('À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ', 'Ā', 'ā', 'Ă', 'ă', 'Ą', 'ą', 'Ć', 'ć', 'Ĉ', 'ĉ', 'Ċ', 'ċ', 'Č', 'č', 'Ď', 'ď', 'Đ', 'đ', 'Ē', 'ē', 'Ĕ', 'ĕ', 'Ė', 'ė', 'Ę', 'ę', 'Ě', 'ě', 'Ĝ', 'ĝ', 'Ğ', 'ğ', 'Ġ', 'ġ', 'Ģ', 'ģ', 'Ĥ', 'ĥ', 'Ħ', 'ħ', 'Ĩ', 'ĩ', 'Ī', 'ī', 'Ĭ', 'ĭ', 'Į', 'į', 'İ', 'ı', 'Ĳ', 'ĳ', 'Ĵ', 'ĵ', 'Ķ', 'ķ', 'Ĺ', 'ĺ', 'Ļ', 'ļ', 'Ľ', 'ľ', 'Ŀ', 'ŀ', 'Ł', 'ł', 'Ń', 'ń', 'Ņ', 'ņ', 'Ň', 'ň', 'ŉ', 'Ō', 'ō', 'Ŏ', 'ŏ', 'Ő', 'ő', 'Œ', 'œ', 'Ŕ', 'ŕ', 'Ŗ', 'ŗ', 'Ř', 'ř', 'Ś', 'ś', 'Ŝ', 'ŝ', 'Ş', 'ş', 'Š', 'š', 'Ţ', 'ţ', 'Ť', 'ť', 'Ŧ', 'ŧ', 'Ũ', 'ũ', 'Ū', 'ū', 'Ŭ', 'ŭ', 'Ů', 'ů', 'Ű', 'ű', 'Ų', 'ų', 'Ŵ', 'ŵ', 'Ŷ', 'ŷ', 'Ÿ', 'Ź', 'ź', 'Ż', 'ż', 'Ž', 'ž', 'ſ', 'ƒ', 'Ơ', 'ơ', 'Ư', 'ư', 'Ǎ', 'ǎ', 'Ǐ', 'ǐ', 'Ǒ', 'ǒ', 'Ǔ', 'ǔ', 'Ǖ', 'ǖ', 'Ǘ', 'ǘ', 'Ǚ', 'ǚ', 'Ǜ', 'ǜ', 'Ǻ', 'ǻ', 'Ǽ', 'ǽ', 'Ǿ', 'ǿ'); 
-    $replace = array('A', 'A', 'A', 'A', 'A', 'A', 'AE', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'D', 'N', 'O', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 's', 'a', 'a', 'a', 'a', 'a', 'a', 'ae', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'n', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y', 'A', 'a', 'A', 'a', 'A', 'a', 'C', 'c', 'C', 'c', 'C', 'c', 'C', 'c', 'D', 'd', 'D', 'd', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'G', 'g', 'G', 'g', 'G', 'g', 'G', 'g', 'H', 'h', 'H', 'h', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'IJ', 'ij', 'J', 'j', 'K', 'k', 'L', 'l', 'L', 'l', 'L', 'l', 'L', 'l', 'l', 'l', 'N', 'n', 'N', 'n', 'N', 'n', 'n', 'O', 'o', 'O', 'o', 'O', 'o', 'OE', 'oe', 'R', 'r', 'R', 'r', 'R', 'r', 'S', 's', 'S', 's', 'S', 's', 'S', 's', 'T', 't', 'T', 't', 'T', 't', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'W', 'w', 'Y', 'y', 'Y', 'Z', 'z', 'Z', 'z', 'Z', 'z', 's', 'f', 'O', 'o', 'U', 'u', 'A', 'a', 'I', 'i', 'O', 'o', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'A', 'a', 'AE', 'ae', 'O', 'o'); 
+    $search = array('À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ', 'Ā', 'ā', 'Ă', 'ă', 'Ą', 'ą', 'Ć', 'ć', 'Ĉ', 'ĉ', 'Ċ', 'ċ', 'Č', 'č', 'Ď', 'ď', 'Đ', 'đ', 'Ē', 'ē', 'Ĕ', 'ĕ', 'Ė', 'ė', 'Ę', 'ę', 'Ě', 'ě', 'Ĝ', 'ĝ', 'Ğ', 'ğ', 'Ġ', 'ġ', 'Ģ', 'ģ', 'Ĥ', 'ĥ', 'Ħ', 'ħ', 'Ĩ', 'ĩ', 'Ī', 'ī', 'Ĭ', 'ĭ', 'Į', 'į', 'İ', 'ı', 'Ĳ', 'ĳ', 'Ĵ', 'ĵ', 'Ķ', 'ķ', 'Ĺ', 'ĺ', 'Ļ', 'ļ', 'Ľ', 'ľ', 'Ŀ', 'ŀ', 'Ł', 'ł', 'Ń', 'ń', 'Ņ', 'ņ', 'Ň', 'ň', 'ŉ', 'Ō', 'ō', 'Ŏ', 'ŏ', 'Ő', 'ő', 'Œ', 'œ', 'Ŕ', 'ŕ', 'Ŗ', 'ŗ', 'Ř', 'ř', 'Ś', 'ś', 'Ŝ', 'ŝ', 'Ş', 'ş', 'Š', 'š', 'Ţ', 'ţ', 'Ť', 'ť', 'Ŧ', 'ŧ', 'Ũ', 'ũ', 'Ū', 'ū', 'Ŭ', 'ŭ', 'Ů', 'ů', 'Ű', 'ű', 'Ų', 'ų', 'Ŵ', 'ŵ', 'Ŷ', 'ŷ', 'Ÿ', 'Ź', 'ź', 'Ż', 'ż', 'Ž', 'ž', 'ſ', 'ƒ', 'Ơ', 'ơ', 'Ư', 'ư', 'Ǎ', 'ǎ', 'Ǐ', 'ǐ', 'Ǒ', 'ǒ', 'Ǔ', 'ǔ', 'Ǖ', 'ǖ', 'Ǘ', 'ǘ', 'Ǚ', 'ǚ', 'Ǜ', 'ǜ', 'Ǻ', 'ǻ', 'Ǽ', 'ǽ', 'Ǿ', 'ǿ');
+    $replace = array('A', 'A', 'A', 'A', 'A', 'A', 'AE', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'D', 'N', 'O', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 's', 'a', 'a', 'a', 'a', 'a', 'a', 'ae', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'n', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y', 'A', 'a', 'A', 'a', 'A', 'a', 'C', 'c', 'C', 'c', 'C', 'c', 'C', 'c', 'D', 'd', 'D', 'd', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'G', 'g', 'G', 'g', 'G', 'g', 'G', 'g', 'H', 'h', 'H', 'h', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'IJ', 'ij', 'J', 'j', 'K', 'k', 'L', 'l', 'L', 'l', 'L', 'l', 'L', 'l', 'l', 'l', 'N', 'n', 'N', 'n', 'N', 'n', 'n', 'O', 'o', 'O', 'o', 'O', 'o', 'OE', 'oe', 'R', 'r', 'R', 'r', 'R', 'r', 'S', 's', 'S', 's', 'S', 's', 'S', 's', 'T', 't', 'T', 't', 'T', 't', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'W', 'w', 'Y', 'y', 'Y', 'Z', 'z', 'Z', 'z', 'Z', 'z', 's', 'f', 'O', 'o', 'U', 'u', 'A', 'a', 'I', 'i', 'O', 'o', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'A', 'a', 'AE', 'ae', 'O', 'o');
     $filename = str_replace($search, $replace, $filename);
 
     // Replace common characters
-    $search = array('&', '£', '$'); 
-    $replace = array('and', 'pounds', 'dollars'); 
+    $search = array('&', '£', '$');
+    $replace = array('and', 'pounds', 'dollars');
     $filename= str_replace($search, $replace, $filename);
 
     // Remove - for spaces and union characters
@@ -1683,7 +1747,7 @@ function userCanEditFile($user_id = null, $file_id = null)
         if ($file['user_id'] == null) {
             if ($user['username'] == $file['uploaded_by']) {
                 return true;
-            }    
+            }
         }
         if ($user['id'] == $file['user_id']) {
             return true;
@@ -1796,7 +1860,7 @@ function countGroupsRequestsForExistingClients()
 
     if (!empty($ignore_user_ids)) {
         $ignore_user_ids = implode(',', $ignore_user_ids);
-    
+
         $statement = $dbh->prepare( "SELECT id FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='0' AND FIND_IN_SET(client_id, :ignore)");
         $statement->bindParam(':ignore', $ignore_user_ids);
         $statement->execute();

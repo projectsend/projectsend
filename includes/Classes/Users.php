@@ -46,7 +46,7 @@ class Users
 
     // Groups where the client is member
     public $groups;
-    
+
     // @todo implement meta data
     public $meta;
 
@@ -60,7 +60,7 @@ class Users
 
     // Permissions
     private $allowed_actions_roles;
-    
+
     public function __construct(PDO $dbh = null)
     {
         if (empty($dbh)) {
@@ -78,6 +78,7 @@ class Users
 
         $this->metadata = [];
     }
+
 
     /**
      * Set the ID
@@ -181,10 +182,10 @@ class Users
         }
 
         $this->exists = true;
-    
+
         while ($this->row = $this->statement->fetch() ) {
             $this->name = html_output($this->row['name']);
-            $this->email = html_output($this->row['email']);
+            $this->email = ENCRYPT_PI ? decrypt_output($this->row['email']) : html_output($this->row['email']);
             $this->username = html_output($this->row['user']);
             $this->password = html_output($this->row['password']);
             $this->password_raw = $this->row['password'];
@@ -202,7 +203,7 @@ class Users
             }
 
             // Specific for clients
-            $this->address = html_output($this->row['address']);
+            $this->address = ENCRYPT_PI ? decrypt_output($this->row['address']): html_output($this->row['address']);
             $this->phone = html_output($this->row['phone']);
             $this->contact = html_output($this->row['contact']);
             $this->notify_upload = html_output($this->row['notify']);
@@ -219,12 +220,12 @@ class Users
                     $this->files[] = $this->file['id'];
                 }
             }
-    
+
             // Groups
             $groups_object = new \ProjectSend\Classes\MembersActions($this->dbh);
             $this->groups = $groups_object->client_get_groups([
                 'client_id'	=> $this->id
-            ]); 
+            ]);
 
             $this->validation_type = "existing_user";
         }
@@ -297,7 +298,7 @@ class Users
         if (!$this->isClient()) {
             return true;
         }
-        
+
         return client_can_upload_public($this->id);
     }
 
@@ -332,9 +333,12 @@ class Users
 
 		/**
 		 * Validations for NEW USER submission only.
+		 * With encryption this validation will never work. Skip it to save execution time.
 		 */
 		if ($this->validation_type == 'new_user' || $this->validation_type == 'new_client') {
-			$validation->validate('email_exists',$this->email,$json_strings['validation']['email_exists']);
+            if (! ENCRYPT_PI) {
+			     $validation->validate('email_exists',$this->email,$json_strings['validation']['email_exists']);
+            }
 			$validation->validate('user_exists',$this->username,$json_strings['validation']['user_exists']);
 			$validation->validate('completed',$this->username,$json_strings['validation']['no_user']);
 			$validation->validate('alpha_dot',$this->username,$json_strings['validation']['alpha_user']);
@@ -354,9 +358,12 @@ class Users
 			}
 			/**
 			 * Check if the email is currently assigned to this users's id.
+		     * With encryption this validation will never work. Skip it to save execution time.
 			 * If not, then check if it exists.
 			 */
-			$validation->validate('email_exists',$this->email,$json_strings['validation']['email_exists'],'','','','','',$this->id);
+            if (! ENCRYPT_PI) {
+			    $validation->validate('email_exists',$this->email,$json_strings['validation']['email_exists'],'','','','','',$this->id);
+            }
 		}
 
 		/** Password checks */
@@ -428,9 +435,15 @@ class Users
 			$this->statement->bindParam(':username', $this->username);
             $this->statement->bindParam(':password', $this->password_hashed);
             $this->statement->bindParam(':role', $this->role, PDO::PARAM_INT);
-			$this->statement->bindParam(':address', $this->address);
+            if (ENCRYPT_PI) {
+			    $this->statement->bindParam(':address', html_encrypt($this->address));
+            } else {
+			    $this->statement->bindParam(':address', $this->address);}
 			$this->statement->bindParam(':phone', $this->phone);
-			$this->statement->bindParam(':email', $this->email);
+            if (ENCRYPT_PI) {
+			    $this->statement->bindParam(':email', html_encrypt($this->email));
+            } else {
+			    $this->statement->bindParam(':email', $this->email);}
 			$this->statement->bindParam(':notify_upload', $this->notify_upload, PDO::PARAM_INT);
 			$this->statement->bindParam(':contact', $this->contact);
 			$this->statement->bindParam(':created_by', $this->created_by);
@@ -460,7 +473,7 @@ class Users
                         $email_type = "new_user";
                         break;
                 }
-                
+
 				/** Send account data by email */
 				$this->notify_user = new \ProjectSend\Classes\Emails;
 				if ($this->notify_account == 1) {
@@ -490,7 +503,7 @@ class Users
 
 		return $this->state;
     }
-    
+
     public function triggerAfterSelfRegister($arguments = null)
     {
         define('REGISTERING', true);
@@ -579,15 +592,21 @@ class Users
 			if (!empty($this->password)) {
 				$this->query .= ", password = :password";
             }
-            
+
             $this->query .= " WHERE id = :id";
-            
+
 			$this->statement = $this->dbh->prepare($this->query);
             $this->statement->bindParam(':name', $this->name);
             $this->statement->bindParam(':role', $this->role, PDO::PARAM_INT);
-			$this->statement->bindParam(':address', $this->address);
+            if (ENCRYPT_PI) {
+			    $this->statement->bindParam(':address', html_encrypt($this->address));
+            } else {
+			    $this->statement->bindParam(':address', $this->address);}
 			$this->statement->bindParam(':phone', $this->phone);
-			$this->statement->bindParam(':email', $this->email);
+            if (ENCRYPT_PI) {
+			    $this->statement->bindParam(':email', html_encrypt($this->email));
+            } else {
+			    $this->statement->bindParam(':email', $this->email);}
 			$this->statement->bindParam(':contact', $this->contact);
 			$this->statement->bindParam(':notify_upload', $this->notify_upload, PDO::PARAM_INT);
 			$this->statement->bindParam(':max_file_size', $this->max_file_size, PDO::PARAM_INT);
@@ -673,11 +692,11 @@ class Users
                     'owner_id' => CURRENT_USER_ID,
                     'affected_account_name' => $this->name,
                 ]);
-                
+
                 return true;
 			}
         }
-        
+
         return false;
 	}
 
@@ -721,11 +740,11 @@ class Users
                     'owner_id' => CURRENT_USER_ID,
                     'affected_account_name' => $this->name,
                 ]);
-                
+
                 return true;
 			}
         }
-        
+
         return false;
 	}
 
@@ -759,7 +778,7 @@ class Users
                     'owner_id' => CURRENT_USER_ID,
                     'affected_account_name' => $this->name,
                 ]);
-                
+
                 return true;
             }
         }
@@ -799,7 +818,7 @@ class Users
                     'owner_id' => CURRENT_USER_ID,
                     'affected_account_name' => $this->name,
                 ]);
-                
+
                 return true;
             }
         }

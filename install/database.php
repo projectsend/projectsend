@@ -20,7 +20,7 @@ if (defined('TRY_INSTALL')) {
                           `user` varchar('.MAX_USER_CHARS.') NOT NULL,
                           `password` varchar('.MAX_PASS_CHARS.') NOT NULL,
                           `name` text NOT NULL,
-                          `email` varchar(60) NOT NULL,
+                          `email` text NOT NULL,
                           `level` tinyint(1) NOT NULL DEFAULT \'0\',
                           `address` text COLLATE utf8_general_ci NULL,
                           `phone` varchar(32) COLLATE utf8_general_ci NULL,

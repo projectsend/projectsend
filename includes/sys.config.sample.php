@@ -81,3 +81,15 @@ define('MAX_FILESIZE',2048);
  * Encoding to use on the e-mails sent to new clients, users, files, etc.
  */
 define('EMAIL_ENCODING', 'utf-8');
+
+/**
+ * Define encryption of personal identifiable data (PI Data)
+ * if "ENCRYPT_PI" is True you need to add the relevant keys as well.
+ * As an Example:
+ *    define('FIRSTKEY','..................................................................');
+ *    define('SECONDKEY','...................................');
+ * These can be created with the script in the install subdirectory install/create_encryption_keys.php.
+ * 
+ */
+define('ENCRYPT_PI', False);
+

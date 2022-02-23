@@ -843,7 +843,8 @@ class Files
         $statement->bindParam(':description', $this->description);
         $statement->bindParam(':expires', $this->expires, PDO::PARAM_INT);
         $statement->bindParam(':expiry_date', $this->expiry_date);
-        $statement->bindParam(':public', $this->is_public, PDO::PARAM_INT);
+	$is_public = (is_null($this->is_public)?0:$this->is_public);
+        $statement->bindParam(':public', $is_public, PDO::PARAM_INT);
         $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $statement->execute();
 

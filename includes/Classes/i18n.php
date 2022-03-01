@@ -61,13 +61,13 @@ private static $pluralFunc = array();
  * Disable object instances
  *
  */
-private final function  __construct(){}
+private function  __construct(){}
 
 /**
  * Disable object clones
  *
  */
-private final function  __clone(){}
+private function  __clone(){}
 
 /**#@+
  * @access public

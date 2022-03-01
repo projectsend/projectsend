@@ -70,7 +70,7 @@ if ($_POST) {
                 switch ($bfstatus['status']) {
                     case 'delay':
                         if (is_numeric($bfstatus['message'])) {
-                            $flash->error(sprintf(__('Please wait %s seconds before attempting to log in again.', 'cftp_admin'), '<span class="seconds_countdown">'.$bfstatus['message'].'</span>'));
+                            $flash->error('<div id="message_countdown">'.sprintf(__('Please wait %s seconds before attempting to log in again.', 'cftp_admin'), '<span class="seconds_countdown">'.$bfstatus['message'].'</span>').'</div>');
                             if ($bfstatus['message'] > 150) {
                                 $flash->error(sprintf(__('Warning: You are about to reach the failed attempts limit, which will completely block your access for a few minutes.', 'cftp_admin'), $bfstatus['message']));
                             }

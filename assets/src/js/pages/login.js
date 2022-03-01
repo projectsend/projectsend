@@ -4,6 +4,20 @@
     admin.pages.loginForm = function () {
 
         $(document).ready(function(){
+            var initial = $('.seconds_countdown').text();
+            if (initial) {
+                $('#btn_submit').attr('disabled', 'disabled');
+            }
+            var downloadTimer = setInterval(function(){
+                if (initial <= 0) {
+                    clearInterval(downloadTimer);
+                    $('#btn_submit').removeAttr('disabled');
+                    $('#message_countdown').slideUp();
+                }
+                $('.seconds_countdown').text(initial);
+                initial -= 1;
+            }, 1000);
+
             var validator = $("#login_form").validate({
                 rules: {
                     username: {

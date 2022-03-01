@@ -63,11 +63,18 @@ class Auth
             return false;
 
 		/** Look up the system users table to see if the entered username exists */
-		$statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:username OR email=:email");
-		$statement->execute([
+                if ( ENCRYPT_PI ) {
+		  $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:username");
+		  $statement->execute([
+            ':username' => $username
+        ]);
+                } else {
+		  $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:username OR email=:email");
+		  $statement->execute([
             ':username' => $username,
             ':email' => $username,
         ]);
+                }
 		$count_user = $statement->rowCount();
 		if ($count_user > 0) {
 			/** If the username was found on the users table */

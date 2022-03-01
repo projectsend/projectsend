@@ -437,7 +437,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                                                             'content'		=> html_output( $row["user"] ),
                                                         ),
                                                     array(
-                                                            'content'		=> html_output( $row["email"] ),
+                                                            'content'		=> ENCRYPT_PI ? decrypt_output( $row['email'] ) : html_output( llll$row['email'] ),
                                                         ),
                                                     array(
                                                             'content'		=> $account_request,
@@ -477,4 +477,4 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
     </div>
 </div>
 <?php
-    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+    include_once ADMIN_VIEWS_DIR . DS . 'footer.php‘;

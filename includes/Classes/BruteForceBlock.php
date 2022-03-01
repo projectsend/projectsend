@@ -50,6 +50,48 @@ class BruteForceBlock {
         return $this->default_throttle_settings;
     }
 
+    public function unblockIp($ip_address)
+    {
+        if (empty($ip_address)) {
+            return [
+                'status' => 'error',
+                'message' => __('IP address must not be empty'),
+            ];
+        }
+
+        $search = $this->dbh->prepare("SELECT * FROM " . TABLE_LOGINS_FAILED . " WHERE ip_address=:ip_address");
+        $search->bindParam(':ip_address', $ip_address);
+        $search->execute();
+        $count = $search->rowCount();
+
+        if ($count < 1) {
+            return [
+                'status' => 'error',
+                'message' => __('IP address not found'),
+            ];
+        }
+
+        try {
+            $statement = $this->dbh->prepare("DELETE FROM " . TABLE_LOGINS_FAILED . " WHERE ip_address=:ip_address");
+            $params = array(
+                ':ip_address' => $ip_address,
+            );
+            $statement->execute( $params );
+
+            return [
+                'status' => 'success',
+                'message' => __('IP address successfully unblocked'),
+            ];
+        } catch (\PDOException $e) {
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ];
+        }
+
+        return false;
+    }
+
     private function makeIpList($list = null)
     {
         if (empty($list)) {

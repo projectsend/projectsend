@@ -299,6 +299,10 @@ if ( current_role_in( array( 9,8,7 ) ) )
                                                 'label'	=> __('Test email configuration', 'cftp_admin'),
                                                 'link'	=> 'email-test.php',
                                             ),
+                                            array(
+                                                'label'	=> __('Unblock IP', 'cftp_admin'),
+                                                'link'	=> 'unblock-ip.php',
+                                            ),
                                         ),
 							);
 

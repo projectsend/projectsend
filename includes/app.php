@@ -138,6 +138,7 @@ define('TABLE_CATEGORIES', TABLES_PREFIX . 'categories');
 define('TABLE_CATEGORIES_RELATIONS', TABLES_PREFIX . 'categories_relations');
 define('TABLE_LOG', TABLES_PREFIX . 'actions_log');
 define('TABLE_PASSWORD_RESET', TABLES_PREFIX . 'password_reset');
+define('TABLE_LOGINS_FAILED', TABLES_PREFIX . 'logins_failed');
 
 $original_basic_tables = array(
     TABLE_FILES,
@@ -161,6 +162,7 @@ $all_system_tables = array(
     'actions_log',
     'password_reset',
     'user_meta',
+    'logins_failed',
 );
 
 /**

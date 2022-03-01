@@ -84,5 +84,8 @@ require_once ROOT_DIR . '/includes/security/csrf.php';
 
 check_server_requirements();
 
+global $bfchecker;
+$bfchecker = new \ProjectSend\Classes\BruteForceBlock($dbh);
+
 global $auth;
 $auth = new \ProjectSend\Classes\Auth();

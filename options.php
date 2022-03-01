@@ -142,6 +142,8 @@ if ($_POST) {
         'ldap_admin_user',
         'ldap_admin_password',
         'ldap_search_base',
+        'ip_whitelist',
+        'ip_blacklist',
     ];
 
     foreach ($checkboxes as $checkbox) {

@@ -1381,6 +1381,29 @@ if (current_role_in($allowed_update)) {
             $updates_made++;
 		}
 
+        /**
+		 * r1372 updates
+		 * A new database table was added.
+		 * Failed log in attempts are recorded to throttle future requests
+		 */
+		if ($last_update < 1372) {
+			if ( !tableExists( TABLE_LOGINS_FAILED ) ) {
+				$query = "
+				CREATE TABLE IF NOT EXISTS `".TABLE_LOGINS_FAILED."` (
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `ip_address` VARCHAR(60) NOT NULL,
+                  `username` VARCHAR(60) NOT NULL,
+				  `attempted_at` datetime NOT NULL,
+				  PRIMARY KEY (`id`)
+				) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+				";
+				$statement = $dbh->prepare($query);
+				$statement->execute();
+
+				$updates_made++;
+			}
+		}
+
         /** Update the database */
 		$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :version WHERE name='last_update'");
 		$statement->bindParam(':version', $current_version);

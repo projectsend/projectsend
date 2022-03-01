@@ -105,3 +105,24 @@
         <a href="<?php echo LINK_DOC_RECAPTCHA; ?>" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
     </div>
 </div>
+
+<div class="options_divide"></div>
+
+<h3><?php _e('Log in throttle','cftp_admin'); ?></h3>
+<p><?php _e('Multiple failed log in attempts will increase timeouts for the originating IP address. Helps prevent brute force attacks.','cftp_admin'); ?></p>
+
+<div class="form-group">
+    <label for="ip_whitelist" class="col-sm-4 control-label"><?php _e('IP whitelist','cftp_admin'); ?></label>
+    <div class="col-sm-8 col-sm-offset-4">
+        <textarea name="ip_whitelist" id="ip_whitelist" class="form-control textarea_medium"><?php echo html_output(get_option('ip_whitelist')); ?></textarea>
+        <p class="field_note"><?php _e('Enter one IP address per line','cftp_admin'); ?>.
+    </div>
+</div>
+
+<div class="form-group">
+    <label for="ip_blacklist" class="col-sm-4 control-label"><?php _e('IP blacklist','cftp_admin'); ?></label>
+    <div class="col-sm-8 col-sm-offset-4">
+        <textarea name="ip_blacklist" id="ip_blacklist" class="form-control textarea_medium"><?php echo html_output(get_option('ip_blacklist')); ?></textarea>
+        <p class="field_note"><?php _e('Enter one IP address per line','cftp_admin'); ?>.
+    </div>
+</div>

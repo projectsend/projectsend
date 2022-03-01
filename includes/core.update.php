@@ -20,6 +20,10 @@ if (current_role_in($allowed_update)) {
     $update_data = get_latest_version_data();
     $update_data = json_decode($update_data);
 
+    if (empty($update_data)) {
+        return;
+    }
+
     $updates_made = 0;
     $updates_errors = 0;
     $updates_error_messages = array();
@@ -1375,7 +1379,6 @@ if (current_role_in($allowed_update)) {
 			
             $statement = $dbh->query("UPDATE `" . TABLE_FILES . "` SET original_url = url WHERE original_url IS NULL");
             $updates_made++;
-
 		}
 
         /** Update the database */

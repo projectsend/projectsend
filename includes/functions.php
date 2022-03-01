@@ -131,6 +131,13 @@ function forceLogout($error_type = null)
     }    
 }
 
+/**
+ * Check if curl is enabled
+ */
+function curlIsEnabled(){
+    return function_exists('curl_version');
+}
+
 /** Gets a Json file from and url and caches the result */
 function getJson($url, $cache_time) {
     $cache_dir = JSON_CACHE_DIR;
@@ -150,12 +157,25 @@ function getJson($url, $cache_time) {
         unlink($cacheFile);
     }
 
-    $json = file_get_contents($url);
-
-    $fh = fopen($cacheFile, 'w');
-    fwrite($fh, time() . "\n");
-    fwrite($fh, $json);
-    fclose($fh);
+    if (curlIsEnabled()) {
+        $ch = curl_init();
+    
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, CURL_TIMEOUT_SECONDS);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, CURL_TIMEOUT_SECONDS);
+    
+        $json = curl_exec($ch);
+        curl_close($ch);
+    
+        $fh = fopen($cacheFile, 'w');
+        fwrite($fh, time() . "\n");
+        fwrite($fh, $json);
+        fclose($fh);
+    } else {
+        $json = file_get_contents($url);
+    }
 
     return $json;
 }
@@ -1809,17 +1829,17 @@ function countGroupsRequestsForExistingClients()
 // Function to get the client ip address
 function get_client_ip() {
     $ipaddress = '';
-    if ($_SERVER['HTTP_CLIENT_IP'])
+    if (!empty($_SERVER['HTTP_CLIENT_IP']))
         $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
-    else if($_SERVER['HTTP_X_FORWARDED_FOR'])
+    else if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
         $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-    else if($_SERVER['HTTP_X_FORWARDED'])
+    else if (!empty($_SERVER['HTTP_X_FORWARDED']))
         $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
-    else if($_SERVER['HTTP_FORWARDED_FOR'])
+    else if (!empty($_SERVER['HTTP_FORWARDED_FOR']))
         $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
-    else if($_SERVER['HTTP_FORWARDED'])
+    else if (!empty($_SERVER['HTTP_FORWARDED']))
         $ipaddress = $_SERVER['HTTP_FORWARDED'];
-    else if($_SERVER['REMOTE_ADDR'])
+    else if (!empty($_SERVER['REMOTE_ADDR']))
         $ipaddress = $_SERVER['REMOTE_ADDR'];
     else
         $ipaddress = 'UNKNOWN';

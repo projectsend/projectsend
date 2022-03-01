@@ -10,42 +10,42 @@ function get_latest_version_data()
 {
     /** Remove "r" from version */
     $current_version = substr(CURRENT_VERSION, 1);
-    
+
+    $return = [
+        'local_version' => $current_version,
+        'latest_version' => 0,
+        'update_available' => '0',
+    ];
+
     /**
      * Compare against the online value.
      */
     $versions = getJson(UPDATES_FEED_URI, '-1 days');
-    $versions = json_decode($versions);
-
-    $latest = $versions[0];
-
-    $online_version = substr($latest->version, 1);
-
-    if ($online_version > $current_version) {
-        $return = [
-            'local_version' => $current_version,
-            'latest_version' => $online_version,
-            'update_available' => '1',
-            'url' => $latest->download,
-            'chlog' => $latest->changelog,
-            'diff' => [
-                'security' => $latest->diff->security,
-                'features' => $latest->diff->features,
-                'important' => $latest->diff->important,
-            ],
-        ];
-
-        return json_encode($return);
+    if (!empty($versions)) {
+        $versions = json_decode($versions);
+    
+        $latest = $versions[0];
+    
+        $online_version = substr($latest->version, 1);
+    
+        if ($online_version > $current_version) {
+            $return = [
+                'local_version' => $current_version,
+                'update_available' => '1',
+                'url' => $latest->download,
+                'chlog' => $latest->changelog,
+                'diff' => [
+                    'security' => $latest->diff->security,
+                    'features' => $latest->diff->features,
+                    'important' => $latest->diff->important,
+                ],
+            ];
+        }
     }
-    else {
-        $return = [
-            'local_version' => $current_version,
-            'latest_version' => $online_version,
-            'update_available' => '0',
-        ];
 
-        return json_encode($return);
-    }
+    $return['latest_version'] = $online_version;
+
+    return json_encode($return);
 }
 
 /** Add a new row to the options table */

@@ -25,7 +25,7 @@ define('DONATIONS_URL','https://www.projectsend.org/donations/');
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r1335');
+define('CURRENT_VERSION', 'r1371');
 
 /**
  * Required software versions
@@ -249,6 +249,9 @@ define('HASH_PORTABLE', false);
 
 /** ZIP files */
 define('ZIP_TMP_EXPIRATION_TIME', 172800); // Delete zip files from the temp folder older than this value (in seconds)
+
+/** cURL timeout */
+define('CURL_TIMEOUT_SECONDS', 5);
 
 /**
  * Footable

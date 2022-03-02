@@ -12,6 +12,28 @@
 session_start();
 
 /**
+ * Check if the personal configuration file exists
+ * Otherwise will start a configuration page
+ *
+ * @see sys.config.sample.php
+ */
+if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') ) {
+    if ( !defined( 'IS_MAKE_CONFIG' ) ) {
+        // the following script returns only after the creation of the configuration file
+        if ( defined('IS_INSTALL') ) {
+            header('Location:make-config.php');
+            exit;
+        }
+
+        header('Location:install/make-config.php');
+        exit;
+    }
+}
+
+// Load custom config file
+include_once ROOT_DIR.'/includes/sys.config.php';
+
+/**
  * Define the system name, and the information that will be used
  * on the footer blocks.
  *
@@ -41,10 +63,11 @@ define('REQUIRED_VERSION_MYSQL', '5.0');
 define('PROTOCOL', empty($_SERVER['HTTPS'])? 'http' : 'https');
 
 /**
- * DEBUG constant effects:
- * - Changes the error_reporting php value
+ * DEBUG
  */
-define('DEBUG', false);
+if (!defined("DEBUG")) {
+    define('DEBUG', false);
+}
 
 /**
  * IS_DEV is set to true during development to show a sitewide remainder
@@ -88,27 +111,6 @@ define('NEWS_FEED_URI','https://www.projectsend.org/serve/news');
  * number.
  */
 define('UPDATES_FEED_URI','https://projectsend.org/serve/versions');
-
-/**
- * Check if the personal configuration file exists
- * Otherwise will start a configuration page
- *
- * @see sys.config.sample.php
- */
-if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') ) {
-    if ( !defined( 'IS_MAKE_CONFIG' ) ) {
-        // the following script returns only after the creation of the configuration file
-        if ( defined('IS_INSTALL') ) {
-            header('Location:make-config.php');
-        }
-        else {
-            header('Location:install/make-config.php');
-        }
-    }
-}
-else {
-    include_once ROOT_DIR.'/includes/sys.config.php';
-}
 
 /**
  * Database connection driver

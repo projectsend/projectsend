@@ -81,3 +81,9 @@ define('MAX_FILESIZE',2048);
  * Encoding to use on the e-mails sent to new clients, users, files, etc.
  */
 define('EMAIL_ENCODING', 'utf-8');
+
+/**
+ * DEBUG constant effects:
+ * - Changes the error_reporting php value
+ */
+define('DEBUG', false);

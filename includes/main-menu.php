@@ -323,9 +323,7 @@ else
 													'icon'	=> 'cloud-upload',
 												),
 								);
-	}
-
-	$items['manage_files'] = array(
+		$items['manage_files'] = array(
 								'nav'	=> 'manage',
 								'level'	=> array( 9,8,7,0 ),
 								'main'	=> array(
@@ -334,6 +332,9 @@ else
 												'icon'	=> 'file',
 											),
 							);
+	}
+
+	
 
 	$items['view_files'] = array(
 								'nav'	=> 'template',

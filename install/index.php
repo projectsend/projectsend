@@ -169,7 +169,8 @@ include_once '../header-unlogged.php';
                     
                                     $other_errors[] = update_chmod_emails();
                                     $other_errors[] = chmod_main_files();
-
+                                    $other_errors = array_filter($other_errors);
+                                    
                                     /** Record the action log */
                                     $logger = new \ProjectSend\Classes\ActionsLog;
                                     $new_record_action = $logger->addEntry([

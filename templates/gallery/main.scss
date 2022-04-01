@@ -161,6 +161,10 @@ header {
 #logo {
 	margin:0;
 	padding:30px 0;
+
+    img, svg {
+        max-width: 300px;
+    }
 }
 
 .photo_list {

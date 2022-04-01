@@ -11,6 +11,7 @@ if (defined('TRY_INSTALL')) {
 	$current_version = substr(CURRENT_VERSION, 1);
 	$now = date('d-m-Y');
 	$expiry_default = date('Y') + 1 . "-01-01 00:00:00";
+    $timezone = date_default_timezone_get();
 
 	$install_queries = array(
 		'0' =>  array(
@@ -245,7 +246,7 @@ if (defined('TRY_INSTALL')) {
 								('this_install_title', :title),
 								('selected_clients_template', 'default'),
 								('logo_thumbnails_folder', '/assets/img/custom/thumbs'),
-								('timezone', 'America/Argentina/Buenos_Aires'),
+								('timezone', '".$timezone."'),
 								('timeformat', 'd/m/Y'),
 								('allowed_file_types', '7z,ace,ai,avi,bin,bmp,bz2,cdr,csv,doc,docm,docx,eps,fla,flv,gif,gz,gzip,htm,html,iso,jpeg,jpg,mp3,mp4,mpg,odt,oog,ppt,pptx,pptm,pps,ppsx,pdf,png,psd,rar,rtf,tar,tif,tiff,tgz,txt,wav,xls,xlsm,xlsx,xz,zip'),
 								('logo_filename', ''),

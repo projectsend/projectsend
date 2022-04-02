@@ -206,10 +206,21 @@ class Categories
       if($this->id == $this->parent)
         return false;
       else{
-          //TODO: Check if the parent is not a child of the current category id
+          //Check if the parent is not a child of the current category id
+          $category_parent_query = "select id, parent from ".TABLE_CATEGORIES;
+          $category_parent_query_statment = $this->dbh->prepare($category_parent_query);
+          $category_parent_query_statment->execute();
+
+          $array_category_parent = $category_parent_query_statment->fetchAll(PDO::FETCH_KEY_PAIR);
+
+          $point = $this->parent;
+          while($array_category_parent[$point]!=null){
+            if($array_category_parent[$point]==$this->id)
+              return false;
+            $point = $point->parent;
+          }
 
       }
-
       return true;
     }
 
@@ -224,13 +235,13 @@ class Categories
 
         $this->state = array();
 
-        $queryUpdateParent = "";
+        $query_update_parent = "";
         if($this->parent == '0' || $this->checkParentValidation() )
-          $queryUpdateParent = "parent = :parent,";
+          $query_update_parent = "parent = :parent,";
         /** SQL query */
         $this->edit_category_query = "UPDATE " . TABLE_CATEGORIES . " SET
                                     name = :name,
-                                    ".$queryUpdateParent."
+                                    ".$query_update_parent."
                                     description = :description
                                     WHERE id = :id
                                     ";
@@ -243,7 +254,7 @@ class Categories
             $this->statement->bindValue(':parent', $this->parent, PDO::PARAM_NULL);
         }
         else
-          if($queryUpdateParent!=""){
+          if($query_update_parent!=""){
             $this->statement->bindValue(':parent', $this->parent, PDO::PARAM_INT);
           }
         $this->statement->bindParam(':description', $this->description);

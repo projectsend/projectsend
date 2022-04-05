@@ -43,7 +43,7 @@ function get_latest_version_data()
         }
     }
 
-    $return['latest_version'] = $online_version;
+    $return['latest_version'] = (!empty($online_version)) ? $online_version : null;
 
     return json_encode($return);
 }

@@ -34,6 +34,10 @@ $body_class[] = 'menu_hidden';
  */
 require_once INCLUDES_DIR . DS .'core.update.silent.php';
 
+// Run required database upgrades
+$db_upgrade = new \ProjectSend\Classes\DatabaseUpgrade;
+$db_upgrade->upgradeDatabase(false);
+
 /**
  * Call the database update file to see if any change is needed,
  * but only if logged in as a system user.

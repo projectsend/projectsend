@@ -1404,6 +1404,23 @@ if (current_role_in($allowed_update)) {
 			}
 		}
 
+        /**
+		 * r1375 updates
+		 * Added database version number
+		 */
+		if ($last_update < 1375) {
+			$new_database_values = array(
+                'database_version' => INITIAL_DATABASE_VERSION,
+            );
+			
+			foreach($new_database_values as $row => $value) {
+				if ( add_option_if_not_exists($row, $value) ) {
+					$updates_made++;
+				}
+			}
+		}
+
+
         /** Update the database */
 		$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :version WHERE name='last_update'");
 		$statement->bindParam(':version', $current_version);

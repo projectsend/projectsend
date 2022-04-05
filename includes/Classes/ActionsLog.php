@@ -9,10 +9,6 @@
 namespace ProjectSend\Classes;
 use \PDO;
 
- /**
- * More to be added soon.
- */
-
 class ActionsLog
 {
 
@@ -34,7 +30,7 @@ class ActionsLog
 
         $this->dbh = $dbh;
     }
-   
+
     public function getActivitiesReferences()
     {
         $this->activities_references = array(
@@ -83,6 +79,7 @@ class ActionsLog
             41	=> __("A file preview request was made",'cftp_admin'),
             0	=> __('ProjectSend has been installed','cftp_admin'),
             30	=> __('ProjectSend was updated','cftp_admin'),
+            49	=> __('The database was updated','cftp_admin'),
             44	=> __('A client account request was approved','cftp_admin'),
             45	=> __('A client account request was denied','cftp_admin'),
             47	=> __('System options were updated','cftp_admin'),

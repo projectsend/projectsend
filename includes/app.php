@@ -47,7 +47,7 @@ define('DONATIONS_URL','https://www.projectsend.org/donations/');
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r1371');
+define('CURRENT_VERSION', 'r1375');
 
 /**
  * Required software versions
@@ -118,6 +118,8 @@ define('UPDATES_FEED_URI','https://projectsend.org/serve/versions');
 if (!defined('DB_DRIVER')) {
     define('DB_DRIVER', 'mysql');
 }
+
+define('INITIAL_DATABASE_VERSION', '2022040101');
 
 /**
  * Define the tables names

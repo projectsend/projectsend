@@ -177,6 +177,10 @@ include_once '../header-unlogged.php';
                                         'owner_id' => 1,
                                         'owner_user' => $admin_username
                                     ]);
+
+                                    // Run required database upgrades
+                                    $upgrade = new \ProjectSend\Classes\DatabaseUpgrade;
+                                    $upgrade->upgradeDatabase(false);
                                     
                                     if (!empty($create_errors) || !empty($chmod_errors) || $other_errors) {
                                         $msg = '<strong>' . __('Database installation was successful, but errors were encountered.','cftp_admin') . '</strong>';

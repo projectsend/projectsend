@@ -24,9 +24,9 @@ if ( !defined( 'IS_MAKE_CONFIG' ) ) {
     require_once ROOT_DIR.'/includes/site.options.php';
 }
 
-if (defined('IS_MAKE_CONFIG') || defined('IS_INSTALL')) {
+//if (defined('IS_MAKE_CONFIG') || defined('IS_INSTALL')) {
     require_once ROOT_DIR.'/includes/install.constants.php';
-}
+//}
 
 /** Load the language class and translation file */
 require_once ROOT_DIR.'/includes/language.php';

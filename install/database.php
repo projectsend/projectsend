@@ -9,6 +9,7 @@
 if (defined('TRY_INSTALL')) {
 	$timestamp = time();
 	$current_version = substr(CURRENT_VERSION, 1);
+    $database_version = INITIAL_DATABASE_VERSION;
 	$now = date('d-m-Y');
 	$expiry_default = date('Y') + 1 . "-01-01 00:00:00";
     $timezone = date_default_timezone_get();
@@ -253,6 +254,7 @@ if (defined('TRY_INSTALL')) {
 								('admin_email_address', :email),
 								('clients_can_register', '0'),
 								('last_update', :version),
+                                ('database_version', :db_version),
 								('mail_system_use', 'mail'),
 								('mail_smtp_host', ''),
 								('mail_smtp_port', ''),
@@ -352,6 +354,7 @@ if (defined('TRY_INSTALL')) {
 										':title'	=> $install_title,
 										':email'	=> $admin_email,
 										':version'	=> $current_version,
+                                        ':db_version' => $database_version,
 										':from'		=> $install_title,
 										':now'		=> $now,
 								),

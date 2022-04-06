@@ -31,9 +31,9 @@ class DatabaseUpgrade
         $this->current_database_version = get_option('database_version');
         $this->sql_mode_dates_status = false;
 
-        $this->upgrades = [
-            '2022040501',
-        ];
+        foreach (glob(UPGRADES_DIR.DS.'*.php') as $file) {
+            $this->upgrades[] = basename($file, '.php');
+        }
     }
 
     public function getAppliedUpdates()
@@ -93,8 +93,9 @@ class DatabaseUpgrade
             $this->runBeforeUpgrades();
         }
 
-        $func = 'upgrade_'.$number;
-        $this->$func();
+        require_once(UPGRADES_DIR.DS.$number.'.php');
+        $function = 'upgrade_'.$number;
+        $function();
 
         $this->setCurrentVersion($number);
 
@@ -106,10 +107,5 @@ class DatabaseUpgrade
         $this->last_upgrade = $version;
 
         save_option('database_version', $version);
-    }
-
-    private function upgrade_2022040501()
-    {
-        // Run an update here
     }
 }

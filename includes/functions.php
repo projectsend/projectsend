@@ -8,6 +8,30 @@
 
 use enshrined\svgSanitize\Sanitizer;
 
+function try_query($queries)
+{
+    global $dbh;
+
+    if ( empty( $error_str ) ) {
+        global $error_str;
+    }
+    foreach ($queries as $i => $value) {
+        try {
+            $statement = $dbh->prepare( $queries[$i]['query'] );
+            $params = $queries[$i]['params'];
+            if ( !empty( $params ) ) {
+                foreach ( $params as $name => $value ) {
+                    $statement->bindValue( $name, $value );
+                }
+            }
+            $statement->execute( $params );
+        } catch (Exception $e) {
+            $error_str .= $e . '<br>';
+        }
+    }
+    return $statement;
+}
+
 function check_server_requirements()
 {
     $absParent = dirname( dirname(__FILE__) );

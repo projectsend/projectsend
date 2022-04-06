@@ -12,7 +12,7 @@
  */
 if ( defined('IS_INSTALL') ) {
     $lang = ( defined('SITE_LANG') ) ? SITE_LANG : 'en';
-    $title = (isset($page_title_install)) ? $page_title_install . ' &raquo; ' . SYSTEM_NAME : SYSTEM_NAME;
+    $title = __('Install','cftp_admin') . ' &raquo; ' . SYSTEM_NAME;
 
     $header_vars = array(
         'html_lang'		=> $lang,

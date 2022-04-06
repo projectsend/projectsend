@@ -55,17 +55,16 @@ class DatabaseUpgrade
         $this->sql_mode_dates_status = false;
 
 		/** Record the action log */
-        if (!defined('IS_INSTALL')) {
-            $logger = new \ProjectSend\Classes\ActionsLog;
-            $logger->addEntry([
-                'action' => 49,
-                'owner_id' => CURRENT_USER_ID,
-                'details' => [
-                    'database_version' => $this->last_upgrade,
-                ],
-            ]);
-            unset($logger);
-        }
+        $user_id = (defined('IS_INSTALL')) ? 1 : CURRENT_USER_ID;
+        $logger = new \ProjectSend\Classes\ActionsLog;
+        $logger->addEntry([
+            'action' => 49,
+            'owner_id' => $user_id,
+            'details' => [
+                'database_version' => $this->last_upgrade,
+            ],
+        ]);
+        unset($logger);
     }
 
     public function upgradeDatabase($requires_system_user = false)
@@ -106,11 +105,7 @@ class DatabaseUpgrade
     {
         $this->last_upgrade = $version;
 
-        $option = 'database_version';
-        $save = $this->dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name=:name" );
-        $save->bindParam(':value', $version);
-        $save->bindParam(':name', $option);
-        $save->execute();
+        save_option('database_version', $version);
     }
 
     private function upgrade_2022040501()

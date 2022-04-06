@@ -39,19 +39,17 @@ if ( !empty( $error_msg ) ) {
 	exit;
 }
 
-$page_title_install		= __('Install','cftp_admin');
-
 // array of POST variables to check, with associated default value
 $post_vars = array(
-	'dbdriver'		=> 'mysql',
-	'dbname'			=> 'projectsend',
-	'dbuser'			=> 'root',
-	'dbpassword'	=> 'root',
-	'dbhost'			=> 'localhost',
-	'dbprefix'		=> 'tbl_',
-	'dbreuse'		=> 'no',
-	'lang'			=> 'en',
-	'maxfilesize'	=> '2048'
+    'dbdriver' => 'mysql',
+    'dbname' => 'projectsend',
+    'dbuser' => 'root',
+    'dbpassword' => 'root',
+    'dbhost' => 'localhost',
+    'dbprefix' => 'tbl_',
+    'dbreuse' => 'no',
+    'lang' => 'en',
+    'maxfilesize' => '2048',
 );
 
 // parse all variables in the above array and fill in whatever is sent via POST

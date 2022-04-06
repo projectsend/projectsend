@@ -11,64 +11,110 @@ define( 'ABS_PARENT', dirname( dirname(__FILE__) ) );
 require_once ABS_PARENT . '/bootstrap.php';
 
 global $dbh;
-/**
- * Function that takes an array of SQL queries and executes them in order.
- */
-function try_query($queries)
-{
-    global $dbh;
-
-    if ( empty( $error_str ) ) {
-        global $error_str;
-    }
-    foreach ($queries as $i => $value) {
-        try {
-            $statement = $dbh->prepare( $queries[$i]['query'] );
-            $params = $queries[$i]['params'];
-            if ( !empty( $params ) ) {
-                foreach ( $params as $name => $value ) {
-                    $statement->bindValue( $name, $value );
-                }
-            }
-            $statement->execute( $params );
-        } catch (Exception $e) {
-            $error_str .= $e . '<br>';
-        }
-    }
-    return $statement;
-}
-
-/** Define the installation text strings */
-$page_title_install		= __('Install','cftp_admin');
-$install_no_sitename	= __('Sitename was not completed.','cftp_admin');
-$install_no_baseuri		= __('ProjectSend URI was not completed.','cftp_admin');
 
 $page_id = 'install';
 
 include_once '../header-unlogged.php';
+
+$form = true;
 ?>
 
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
     <div class="white-box">
         <div class="white-box-interior">
-
             <?php
                 if ( isset( $_GET['status'] ) && !empty( $_GET['status'] ) ) {
+                    $form = false;
+
+                    if (option_exists('post_install_complete')) {
+                        header('Location: ../index.php');
+                        exit;
+                    }
+
+                    save_option('post_install_complete', '1');
+
+                    // Run required database upgrades
+                    $upgrade = new \ProjectSend\Classes\DatabaseUpgrade;
+                    $upgrade->upgradeDatabase(false);
+
                     switch ( $_GET['status'] ) {
                         case 'success';
+                            // Create/Chmod the upload directories to 755 to avoid errors later.
+                            $create_errors = [];
+                            $chmod_errors = [];
+                            $other_errors = [];
+
+                            $directories = array(
+                                'main' => ROOT_DIR.'/upload',
+                                'temp' => ROOT_DIR.'/upload/temp',
+                                'files'	=> ROOT_DIR.'/upload/files',
+                                'thumbnails' => ROOT_DIR.'/upload/thumbnails',
+                            );
+                            foreach ($directories as $directory) {
+                                if (!file_exists($directory)) {
+                                    if (!@mkdir($directory, 0755)) {
+                                        $create_errors[] = $directory;
+                                    }
+                                }
+                                else {
+                                    if (!@chmod($directory, 0755)) {
+                                        $chmod_errors[] = $directory;
+                                    }
+                                }
+                            }
+            
+                            $other_errors[] = update_chmod_emails();
+                            $other_errors[] = chmod_main_files();
+
+                            if (!empty($create_errors) || !empty($chmod_errors) || $other_errors) {
+                                $msg = '<strong>' . __('Database installation was successful, but errors were encountered.','cftp_admin') . '</strong>';
+
+                                if (!empty($other_errors)) {
+                                    foreach ($other_errors as $error) {
+                                        if (is_array($error)) {
+                                            foreach ($error as $e) {
+                                                $msg .= '<p>' . $e . '</p>';
+                                            }
+                                        }
+                                        else {
+                                            $msg .= '<p>' . $error . '</p>';
+                                        }
+                                    }
+                                }
+
+                                if (!empty($create_errors)) {
+                                    $msg .= '<p>' . __('The following directories could not be created:','cftp_admin') . '</p>';
+                                    foreach ($create_errors as $dir) {
+                                        $msg .= '<p>' . $dir . '</p>';
+                                    }
+                                }
+
+                                if (!empty($chmod_errors)) {
+                                    $msg .= '<p>' . __('The following directories could not be chmodded to 755:','cftp_admin') . '</p>';
+                                    foreach ($chmod_errors as $dir) {
+                                        $msg .= '<p>' . $dir . '</p>';
+                                    }
+                                }
+
+                                echo system_message('warning',$msg);
+                            }
+
                             $msg = '<p><strong>' . __('Congratulations! Everything is up and running.','cftp_admin') . '</strong></p>';
                             $msg .= '<p>' . __('You may proceed to log in with your newely created username and password.','cftp_admin') . '</p>';
                             echo system_message('success',$msg);
-                            ?>
-                                <div class="text-center">
-                                    <a href="<?php echo BASE_URI; ?>" class="btn btn-primary btn-wide" target="_self"><?php _e('Log in','cftp_admin'); ?></a>
-                                </div>
-                            <?php
+            ?>
+                            <div class="text-center">
+                                <a href="<?php echo BASE_URI; ?>" class="btn btn-primary btn-wide" target="_self">
+                                    <?php _e('Log in','cftp_admin'); ?>
+                                </a>
+                            </div>
+            <?php
                         break;
                     }
                 }
                 else {
                     if (is_projectsend_installed()) {
+                        $form = false;
             ?>
                         <h3><?php _e('Already installed','cftp_admin'); ?></h3>
                         <p><?php _e('It seems that ProjectSend is already installed here.','cftp_admin'); ?></p>
@@ -108,68 +154,15 @@ include_once '../header-unlogged.php';
                             $validation->validate('password',$_POST['admin_pass'],$json_strings['validation']['alpha_pass']);
 
                             if ($validation->passed()) {
-                                /**
-                                 * Call the file that creates the tables and fill it with the data we got previously
-                                 */
+                                // Call the file that creates the tables and fill it with the data we got previously
                                 define('TRY_INSTALL',true);
                                 include_once ROOT_DIR.'/install/database.php';
-                                /**
-                                 * Try to execute each query individually
-                                 */
+
+                                // Try to execute each query individually
                                 try_query($install_queries);
-                                /**
-                                 * Continue based on the value returned from the above function
-                                 */
-                                if (!empty($error_str)) {
-                                    $query_state = 'err';
-                                }
-                                else {
-                                    $query_state = 'ok';
-                                }
-                            }
 
-                        }
-                    ?>
-
-                    <?php
-                        if(isset($validation)) {
-                            /** If the form was submitted with errors, show them here */
-                            $validation->list_errors();
-                        }
-
-                        if (isset($query_state)) {
-                            switch ($query_state) {
-                                case 'ok':
-                                    /**
-                                     * Create/Chmod the upload directories to 755 to avoid
-                                     * errors later.
-                                     */
-                                    $create_errors = [];
-                                    $chmod_errors = [];
-                                    $other_errors = [];
-
-                                    $up_folders = array(
-                                                            'main' => ROOT_DIR.'/upload',
-                                                            'temp' => ROOT_DIR.'/upload/temp',
-                                                            'files'	=> ROOT_DIR.'/upload/files',
-                                                            'thumbnails' => ROOT_DIR.'/upload/thumbnails',
-                                                        );
-                                    foreach ($up_folders as $work_folder) {
-                                        if (!file_exists($work_folder)) {
-                                            if (!@mkdir($work_folder, 0755)) {
-                                                $create_errors[] = $work_folder;
-                                            }
-                                        }
-                                        else {
-                                            if (!@chmod($work_folder, 0755)) {
-                                                $chmod_errors[] = $work_folder;
-                                            }
-                                        }
-                                    }
-                    
-                                    $other_errors[] = update_chmod_emails();
-                                    $other_errors[] = chmod_main_files();
-
+                                // Continue based on the value returned from the above function
+                                if (empty($error_str)) {
                                     /** Record the action log */
                                     $logger = new \ProjectSend\Classes\ActionsLog;
                                     $new_record_action = $logger->addEntry([
@@ -178,65 +171,23 @@ include_once '../header-unlogged.php';
                                         'owner_user' => $admin_username
                                     ]);
 
-                                    // Run required database upgrades
-                                    $upgrade = new \ProjectSend\Classes\DatabaseUpgrade;
-                                    $upgrade->upgradeDatabase(false);
-                                    
-                                    if (!empty($create_errors) || !empty($chmod_errors) || $other_errors) {
-                                        $msg = '<strong>' . __('Database installation was successful, but errors were encountered.','cftp_admin') . '</strong>';
-
-                                        if (!empty($other_errors)) {
-                                            foreach ($other_errors as $error) {
-                                                if (is_array($error)) {
-                                                    foreach ($error as $e) {
-                                                        $msg .= '<p>' . $e . '</p>';
-                                                    }
-                                                }
-                                                else {
-                                                    $msg .= '<p>' . $error . '</p>';
-                                                }
-                                            }
-                                        }
-
-                                        if (!empty($create_errors)) {
-                                            $msg .= '<p>' . __('The following directories could not be created:','cftp_admin') . '</p>';
-                                            foreach ($create_errors as $dir) {
-                                                $msg .= '<p>' . $dir . '</p>';
-                                            }
-                                        }
-
-                                        if (!empty($chmod_errors)) {
-                                            $msg .= '<p>' . __('The following directories could not be chmodded to 755:','cftp_admin') . '</p>';
-                                            foreach ($chmod_errors as $dir) {
-                                                $msg .= '<p>' . $dir . '</p>';
-                                            }
-                                        }
-
-                                        echo system_message('warning',$msg);
-                        ?>
-                                        <div class="text-center">
-                                            <a href="<?php echo BASE_URI; ?>" class="btn btn-primary btn-wide" target="_self">
-                                                <?php _e('Log in','cftp_admin'); ?>
-                                            </a>
-                                        </div>
-                        <?php
-                                    }
-                                    else {
-                                        $location = 'index.php?status=success';
-                                        header("Location: $location");
-                                        exit;
-                                    }
-                                break;
-                                case 'err':
+                                    header("Location: index.php?status=success");
+                                    exit;
+                                } else {
                                     $msg = __('There was an error writing to the database.','cftp_admin');
-                                    $msg .= '<p>';
-                                    $msg .= $error_str;
-                                    $msg .= '</p>';
+                                    $msg .= '<p>' . $error_str . '</p>';
                                     echo system_message('danger',$msg);
-                                break;
+                                }
                             }
-                        } else {
-                        ?>
+                        }
+
+                        // If the form was submitted with errors, show them here
+                        if (isset($validation)) {
+                            $validation->list_errors();
+                        }
+
+                        if ($form == true) {
+                    ?>
                             <form action="index.php" name="install_form" id="install_form" method="post" class="form-horizontal">
 
                                 <h3><?php _e('Basic system options','cftp_admin'); ?></h3>
@@ -316,7 +267,6 @@ include_once '../header-unlogged.php';
         </div>
     </div>
 </div>
-
 
 <?php
     include_once '../footer.php';

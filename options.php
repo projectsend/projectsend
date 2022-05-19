@@ -76,6 +76,15 @@ switch ( $section ) {
         $checkboxes		= array(
                             );
         break;
+    case 'cron':
+        $section_title	= __('Scheduled tasks (cron)','cftp_admin');
+        $checkboxes	= array(
+            'cron_enable',
+            'cron_send_emails',
+            'cron_delete_expired_files',
+            'cron_delete_orphan_files',
+        );
+    break;
     default:
         $location = BASE_URI . 'options.php?section=general';
         header("Location: $location");

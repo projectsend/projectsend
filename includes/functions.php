@@ -231,13 +231,13 @@ function sql_add_order( $table, $column = 'id', $initial_order = 'ASC' )
 	}
 }
 
-function generate_password()
+function generate_password($length = 12)
 {
 	$error_unexpected	= __('An unexpected error has occurred', 'cftp_admin');
 	$error_os_fail		= __('Could not generate a random password', 'cftp_admin');
 
 	try {
-		$password = random_bytes(12);
+		$password = random_bytes($length);
 	} catch (TypeError $e) {
 		die($error_unexpected);
 	} catch (Error $e) {

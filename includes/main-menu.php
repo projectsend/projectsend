@@ -227,6 +227,10 @@ if ( current_role_in( array( 9,8,7 ) ) )
 													'label'	=> __('External Login', 'cftp_admin'),
 													'link'	=> 'options.php?section=external_login',
 												),
+												array(
+													'label'	=> __('Scheduled tasks (cron)', 'cftp_admin'),
+													'link'	=> 'options.php?section=cron',
+												),
 											),
 							);
 

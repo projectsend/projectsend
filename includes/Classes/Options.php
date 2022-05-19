@@ -126,6 +126,9 @@ class Options
             define('PUBLIC_LANDING_URI',BASE_URI.'public.php');
             define('PUBLIC_GROUP_URL',BASE_URI.'public.php');
 
+            /* Cron */
+            define('CRON_URL',BASE_URI.'cron.php?key='.$this->options['cron_key']);
+
             /* URLs */
             define('THUMBNAILS_FILES_URL', BASE_URI.'upload/thumbnails');
             define('EMAIL_TEMPLATES_URL', BASE_URI.'emails/');

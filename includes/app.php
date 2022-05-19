@@ -47,7 +47,7 @@ define('DONATIONS_URL','https://www.projectsend.org/donations/');
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r1375');
+define('CURRENT_VERSION', 'r1380');
 
 /**
  * Required software versions
@@ -217,6 +217,7 @@ define('ASSETS_LIB_DIR', ASSETS_DIR . DS . 'lib');
 define('CORE_LANG_DIR', ROOT_DIR . DS . 'lang');
 define('INCLUDES_DIR', ROOT_DIR . DS . 'includes');
 define('FORMS_DIR', INCLUDES_DIR . DS . 'forms');
+define('UPGRADES_DIR', INCLUDES_DIR . DS . 'upgrades');
 define('ADMIN_VIEWS_DIR', ROOT_DIR);
 define('EMAIL_TEMPLATES_DIR', ADMIN_VIEWS_DIR . DS . 'emails');
 define('TEMPLATES_DIR', ROOT_DIR . DS . 'templates');

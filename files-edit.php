@@ -67,8 +67,30 @@ $get_categories = get_categories();
                 }
             }
 
+            // Send the notifications
+            $notifications = new \ProjectSend\Classes\EmailNotifications();
+            $notifications->sendNotifications();
+            if (!empty($notifications->getNotificationsSent())) {
+                $flash->success(__('E-mail notifications have been sent.', 'cftp_admin'));
+            }
+            if (!empty($notifications->getNotificationsFailed())) {
+                $flash->error(__("One or more notifications couldn't be sent.", 'cftp_admin'));
+            }
+            if (!empty($notifications->getNotificationsInactiveAccounts())) {
+                if (CURRENT_USER_LEVEL == 0) {
+                    /**
+                     * Clients do not need to know about the status of the
+                     * creator's account. Show the ok message instead.
+                     */
+                    $flash->success(__('E-mail notifications have been sent.', 'cftp_admin'));
+                } else {
+                    $flash->warning(__('E-mail notifications for inactive clients were not sent.', 'cftp_admin'));
+                }
+            }
+
             // Redirect
             $saved = implode(',', $saved_files);
+
             header("Location: files-edit.php?ids=".$saved.'&saved=true');
             exit;
         }
@@ -76,8 +98,7 @@ $get_categories = get_categories();
         // Saved files
         $saved_files = [];
         if (!empty($_GET['saved'])) {
-            // Send the notifications
-            require_once INCLUDES_DIR . DS . 'upload-send-notifications.php';
+            // require_once INCLUDES_DIR . DS . 'upload-send-notifications.php';
 
             foreach ($editable as $file_id) {
                 if (is_numeric($file_id)) {

@@ -74,6 +74,14 @@
     </div>
 </div>
 
+<div class="form-group">
+    <label for="notifications_max_emails_at_once" class="col-sm-4 control-label"><?php _e('Max. emails to send at once','cftp_admin'); ?></label>
+    <div class="col-sm-8">
+        <input type="number" name="notifications_max_emails_at_once" id="notifications_max_emails_at_once" class="form-control" value="<?php echo get_option('notifications_max_emails_at_once'); ?>" min="0" max="10000" step="1" required />
+        <p class="field_note"><?php _e('Sending too many emails at once can lead to issues. If you set up a notifications cron job, you can set this to a convenient, safe amount of emails to attempt to send per run (ie: 20).','cftp_admin'); ?><br /><strong><?php _e('Set to 0 to disable.','cftp_admin'); ?></strong></p>
+    </div>
+</div>
+
 <div class="options_divide"></div>
 
 <h3><?php _e('E-mail sending options','cftp_admin'); ?></h3>

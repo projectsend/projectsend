@@ -107,12 +107,14 @@ class EmailNotifications
             // Add the file data to the global array
             if (!array_key_exists($row['client_id'], $this->clients_data)) {
                 $client = get_client_by_id($row['client_id']);
+
                 if (!empty($client)) {
                     $this->clients_data[$row['client_id']] = $client;
                     $this->mail_by_user[$client['username']] = $client['email'];
-            
+
                     if (!array_key_exists($client['created_by'], $this->creators)) {
                         $user = get_user_by_username($client['created_by']);
+
                         if (!empty($user)) {
                             $this->creators[$client['created_by']] = $user;
                             $this->mail_by_user[$client['created_by']] = $user['email'];
@@ -186,12 +188,27 @@ class EmailNotifications
 
     private function sendNotificationsToAdmins($notifications = [])
     {
+        $system_admin_email = get_option('admin_email_address');
+
         if (!empty($notifications)) {
             foreach ($notifications as $mail_username => $admin_files) {
-                // Check if the admin is active
-                if (isset($this->creators[$mail_username]) && $this->creators[$mail_username]['active'] == '1') {
-                    $processed_notifications = [];
+                // If username is empty, client is self registered. Email default admin account in this case.
+                if (empty($mail_username)) {
+                    if (empty($system_admin_email)) {
+                        continue;
+                    }
+                    
+                    $email_to = $system_admin_email;
+                } else {
+                    // Check if the admin is active
+                    if (isset($this->creators[$mail_username]) && $this->creators[$mail_username]['active'] == '1') {
+                        $email_to = $this->mail_by_user[$mail_username];
+                    }    
+                }
 
+                if (!empty($email_to)) {
+                    $processed_notifications = [];
+                    
                     foreach ($admin_files as $client_uploader => $files) {
                         $files_list_html = $this->makeFilesListHtml($files, $client_uploader);
 
@@ -199,12 +216,11 @@ class EmailNotifications
                         foreach ($files as $file) {
                             $processed_notifications[] = $file['notification_id'];
                         }
-
                         // Create the object and send the email
                         $email = new \ProjectSend\Classes\Emails;
                         if ($email->send([
                             'type' => 'new_files_by_client',
-                            'address' => $this->mail_by_user[$mail_username],
+                            'address' => $email_to,
                             'files_list' => $files_list_html
                         ])) {
                             $this->notifications_sent = array_merge($this->notifications_sent, $processed_notifications);

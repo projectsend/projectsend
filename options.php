@@ -80,9 +80,11 @@ switch ( $section ) {
         $section_title	= __('Scheduled tasks (cron)','cftp_admin');
         $checkboxes	= array(
             'cron_enable',
+            'cron_command_line_only',
             'cron_send_emails',
             'cron_delete_expired_files',
             'cron_delete_orphan_files',
+            'cron_email_summary_send',
         );
     break;
     default:
@@ -153,6 +155,7 @@ if ($_POST) {
         'ldap_search_base',
         'ip_whitelist',
         'ip_blacklist',
+        'cron_email_summary_address_to',
     ];
 
     foreach ($checkboxes as $checkbox) {

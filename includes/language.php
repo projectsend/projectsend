@@ -42,11 +42,13 @@ else {
 			default:
 				break;
 			case '1':
-				$browser_lang	= substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
-				$lang_file		= ROOT_DIR . DS . 'lang' . DS . $browser_lang . '.mo';
-				if ( file_exists( $lang_file ) ) {
-					$lang = $browser_lang;
-				}
+                if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+                    $browser_lang	= substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+                    $lang_file		= ROOT_DIR . DS . 'lang' . DS . $browser_lang . '.mo';
+                    if ( file_exists( $lang_file ) ) {
+                        $lang = $browser_lang;
+                    }
+                }
 				break;
 		}
 	}

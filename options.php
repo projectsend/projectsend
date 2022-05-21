@@ -53,6 +53,7 @@ switch ( $section ) {
                                 'mail_ssl_verify_peer',
                                 'mail_ssl_verify_peer_name',
                                 'mail_ssl_allow_self_signed',
+                                'notifications_send_when_saving_files',
                             );
         break;
     case 'security':

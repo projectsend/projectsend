@@ -16,6 +16,22 @@
 
 <div class="options_divide"></div>
 
+<h3><?php _e('System performance','cftp_admin'); ?></h3>
+
+<div class="form-group">
+    <div class="col-sm-8 col-sm-offset-4">
+        <label for="notifications_send_when_saving_files">
+            <input type="checkbox" value="1" name="notifications_send_when_saving_files" id="notifications_send_when_saving_files" <?php echo (get_option('notifications_send_when_saving_files') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Send "New file" email notifications during the file saving process.','cftp_admin'); ?>
+        </label>
+        <p class="field_note">
+            <?php _e('By unchecking this option, notifications are not sent during the file uploading and editing operations which results in much faster page loading and a better user experience.','cftp_admin'); ?><br>
+            <strong><?php _e('Warning: only disable this setting if you have a cron job that takes care of sending the notifications.','cftp_admin'); ?></strong>
+        </p>
+    </div>
+</div>
+
+<div class="options_divide"></div>
+
 <h3><?php _e('Send copies','cftp_admin'); ?></h3>
 
 <div class="form-group">

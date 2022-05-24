@@ -149,7 +149,7 @@ class Cron
             if ($statement->rowCount() > 0) {
                 $statement->setFetchMode(PDO::FETCH_ASSOC);
                 while( $row = $statement->fetch() ) {
-                    $files[] = $row['id'];
+                    $files[$row['id']] = $row['original_url'];
                 }
             }
 
@@ -162,15 +162,15 @@ class Cron
                 'items' => []
             ];
 
-            foreach ($files as $file_id) {
+            foreach ($files as $file_id => $file_name) {
                 $file = new \ProjectSend\Classes\Files();
                 $file->get($file_id);
                 if ($file->isExpired()) {
-                    $results['elements']['found']['items'][] = $file_id;
+                    $results['elements']['found']['items'][] = $file_name;
                     if ($file->deleteFiles()) {
-                        $results['elements']['success']['items'][] = $file_id;
+                        $results['elements']['success']['items'][] = $file_name;
                     } else {
-                        $results['elements']['failed']['items'][] = $file_id;
+                        $results['elements']['failed']['items'][] = $file_name;
                     }
                 }
             }
@@ -203,7 +203,7 @@ class Cron
                 $this->results_formatted .= $data['label'].PHP_EOL;
                 $this->results_formatted .= __('Total:', 'cftp_admin').' '.count($data['items']).PHP_EOL;
                 if (!empty($data['items'])) {
-                    $this->results_formatted .= 'IDs'.PHP_EOL.$items.PHP_EOL;
+                    $this->results_formatted .= 'Items'.PHP_EOL.$items.PHP_EOL;
                 }
                 $this->results_formatted .= PHP_EOL;
             }

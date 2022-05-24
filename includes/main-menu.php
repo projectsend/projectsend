@@ -300,6 +300,10 @@ if ( current_role_in( array( 9,8,7 ) ) )
                                                 'link'	=> 'actions-log.php',
                                             ),
                                             array(
+                                                'label'	=> __('Cron log', 'cftp_admin'),
+                                                'link'	=> 'cron-log.php',
+                                            ),
+                                            array(
                                                 'label'	=> __('Test email configuration', 'cftp_admin'),
                                                 'link'	=> 'email-test.php',
                                             ),

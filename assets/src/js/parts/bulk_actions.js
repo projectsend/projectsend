@@ -48,6 +48,21 @@
                             return false;
                         }
 
+                        if (action == 'cron_log_download') {
+                            e.preventDefault();
+                            $(document).psendmodal();
+                            Cookies.set('log_download_started', 0, { expires: 100 });
+                            setTimeout(check_log_download_cookie, 1000);
+
+                            $('.modal_content').html(`<p class="loading-icon">
+                                                        <img src="`+json_strings.uri.assets_img+`/loading.svg" alt="Loading" /></p>
+                                                        <p class="lead text-center text-info">`+json_strings.translations.download_wait+`</p>
+                                                    `);
+                            $('.modal_content').append('<iframe src="'+json_strings.uri.base+'includes/cron.log.export.php?format=csv"></iframe>');
+
+                            return false;
+                        }
+
                         // Manage files actions
                         if (action == 'unassign') {
                             var _formatted = sprintf(json_strings.translations.confirm_unassign, checks.length);

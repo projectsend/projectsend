@@ -48,7 +48,6 @@ if (isset($_POST['action']) && $_POST['action'] != 'none') {
             $statement->execute( $params );
 
             $flash->success(__('The log was cleared. Only data used for statistics remained. You can delete them manually if you want.', 'cftp_admin'));
-            echo system_message('success',$msg);
         break;
     }
 

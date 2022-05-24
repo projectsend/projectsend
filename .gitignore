@@ -49,6 +49,18 @@ upload/thumbnails/*
 !upload/branding/.htaccess
 !upload/thumbnails/.htaccess
 
+# Translations
+lang/*
+!lang/cftp_admin.pot
+!lang/en.po
+!lang/en.mo
+templates/*/lang/*
+!templates/*/lang/en.po
+!templates/*/lang/en.mo
+!templates/default/lang/default.pot
+!templates/gallery/lang/gallery.pot
+!templates/pinboxes/lang/pinboxes.pot
+
 # Windows thumbnails
 Thumbs.db
 

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend admin\n"
-"POT-Creation-Date: 2022-05-21 12:28-0300\n"
-"PO-Revision-Date: 2022-05-21 12:28-0300\n"
+"POT-Creation-Date: 2022-05-24 00:42-0300\n"
+"PO-Revision-Date: 2022-05-24 00:42-0300\n"
 "Last-Translator: \n"
 "Language-Team: ProjectSend <contact@projectsend.org>\n"
 "Language: en\n"
@@ -83,8 +83,9 @@ msgid "Proceed"
 msgstr ""
 
 #: actions-log.php:177 categories.php:217 clients-membership-requests.php:201
-#: clients-requests.php:251 clients.php:188 groups.php:173 manage-files.php:469
-#: users.php:235
+#: clients-requests.php:251 clients.php:188 groups.php:173
+#: includes/Classes/Cron.php:106 includes/Classes/Cron.php:146
+#: manage-files.php:469 users.php:235
 msgid "Found"
 msgstr ""
 
@@ -1306,7 +1307,39 @@ msgstr ""
 msgid "IP address blacklisted"
 msgstr ""
 
-#: includes/Classes/EmailNotificacions.php:171
+#: includes/Classes/Cron.php:97
+msgid "Send email notifications"
+msgstr ""
+
+#: includes/Classes/Cron.php:116
+msgid "Succesfully sent"
+msgstr ""
+
+#: includes/Classes/Cron.php:120 includes/Classes/Cron.php:169
+msgid "Failed"
+msgstr ""
+
+#: includes/Classes/Cron.php:124
+msgid "Skipped (inactive accounts)"
+msgstr ""
+
+#: includes/Classes/Cron.php:136 includes/forms/options/cron.php:51
+msgid "Delete expired files"
+msgstr ""
+
+#: includes/Classes/Cron.php:165
+msgid "Succesfully deleted"
+msgstr ""
+
+#: includes/Classes/Cron.php:192
+msgid "Task disabled. Skipping."
+msgstr ""
+
+#: includes/Classes/Cron.php:200
+msgid "Total:"
+msgstr ""
+
+#: includes/Classes/EmailNotificacions.php:172
 msgid "No pending notifications found"
 msgstr ""
 
@@ -1923,19 +1956,25 @@ msgid ""
 "once\" to throttle emails and prevent issues."
 msgstr ""
 
-#: includes/forms/options/cron.php:51
-msgid "Delete expired files"
-msgstr ""
-
-#: includes/forms/options/cron.php:59
-msgid "Delete orphan files"
-msgstr ""
-
-#: includes/forms/options/cron.php:67
-msgid "E-mail results summary after each execution"
+#: includes/forms/options/cron.php:68
+msgid "Execution results"
 msgstr ""
 
 #: includes/forms/options/cron.php:73
+msgid "Save results on database"
+msgstr ""
+
+#: includes/forms/options/cron.php:75
+msgid ""
+"Important: each run of the cron job will add a record to the database. Watch "
+"the size of the cron log table and clean it if it gets too big."
+msgstr ""
+
+#: includes/forms/options/cron.php:82
+msgid "E-mail results summary after each execution"
+msgstr ""
+
+#: includes/forms/options/cron.php:88
 msgid "E-mail to send the summary to"
 msgstr ""
 
@@ -2162,12 +2201,18 @@ msgstr ""
 msgid "For example, d/m/Y h:i:s will result in something like"
 msgstr ""
 
-#: includes/forms/options/general.php:29
-msgid "For the full list of available values, visit"
+#: includes/forms/options/general.php:28
+msgid "(current server time)"
+msgstr ""
+
+#: includes/forms/options/general.php:28
+msgid "This date will be used for files expiration settings."
 msgstr ""
 
 #: includes/forms/options/general.php:29
-msgid "this page"
+#, php-format
+msgid ""
+"For the full list of available values, visit %s the official PHP Manual %s"
 msgstr ""
 
 #: includes/forms/options/general.php:36
@@ -2954,11 +2999,11 @@ msgid ""
 "assign them later."
 msgstr ""
 
-#: includes/functions.php:1460
+#: includes/functions.php:1462
 msgid "The password must contain, at least:"
 msgstr ""
 
-#: includes/functions.php:1900
+#: includes/functions.php:1902
 msgid "Verification"
 msgstr ""
 

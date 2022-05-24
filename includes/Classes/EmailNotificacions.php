@@ -26,6 +26,10 @@ class EmailNotifications
         global $dbh;
         $this->dbh = $dbh;
 
+        $this->notifications_sent = [];
+        $this->notifications_failed = [];
+        $this->notifications_inactive_accounts = [];
+
         $this->mail_by_user = [];
         $this->clients_data = [];
         $this->files_data = [];
@@ -160,9 +164,6 @@ class EmailNotifications
 
     public function sendNotifications()
     {
-        $this->notifications_sent = [];
-        $this->notifications_failed = [];
-
         $notifications = $this->getPendingNotificationsFromDatabase();
 
         if (empty($notifications['pending'])) {

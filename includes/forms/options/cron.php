@@ -53,11 +53,26 @@
     </div>
 </div>
 
+<?php /*
 <div class="form-group">
     <div class="col-sm-8 col-sm-offset-4">
         <label for="cron_delete_orphan_files">
             <input type="checkbox" value="1" name="cron_delete_orphan_files" id="cron_delete_orphan_files" class="checkbox_options" <?php echo (get_option('cron_delete_orphan_files') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Delete orphan files",'cftp_admin'); ?>
         </label>
+    </div>
+</div>
+*/ ?>
+
+<div class="options_divide"></div>
+
+<h3><?php _e('Execution results','cftp_admin'); ?></h3>
+
+<div class="form-group">
+    <div class="col-sm-8 col-sm-offset-4">
+        <label for="cron_save_log_database">
+            <input type="checkbox" value="1" name="cron_save_log_database" id="cron_save_log_database" class="checkbox_options" <?php echo (get_option('cron_save_log_database') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Save results on database",'cftp_admin'); ?>
+        </label>
+        <p class="field_note"><?php _e('Important: each run of the cron job will add a record to the database. Watch the size of the cron log table and clean it if it gets too big.','cftp_admin'); ?></p>
     </div>
 </div>
 

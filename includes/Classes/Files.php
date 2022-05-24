@@ -230,6 +230,8 @@ class Files
         if ($this->expires == '1' && time() > strtotime($this->expiry_date)) {
             $this->expired = true;
         }
+
+        return $this->expired;
     }
 
     public function isPublic()
@@ -650,6 +652,41 @@ class Files
         return false;
 	}
 
+    private function currentUserCanDeleteFile()
+    {
+        if (defined('CRON_TASKS_AUTHORIZED') && CRON_TASKS_AUTHORIZED == true) {
+            return true;
+        }
+
+        if (!defined('CURRENT_USER_LEVEL')) {
+            return false;
+        }
+
+        if (CURRENT_USER_LEVEL == '0') {
+            if (get_option('clients_can_delete_own_files') == '1') {
+                if ($this->uploaded_by == CURRENT_USER_USERNAME) {
+                    return true;
+                }
+                if ($this->user_id == CURRENT_USER_ID) {
+                    return true;
+                }
+            }
+        }
+        
+        // Uploaders can only delete their own files
+        if ( CURRENT_USER_LEVEL == '7' ) {
+            if ( $this->uploaded_by == CURRENT_USER_USERNAME ) {
+                return true;
+            }
+        }
+
+        if (isset($this->check_level) && current_role_in(array(9,8))) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Delete the file and its thumbnails
      *
@@ -657,67 +694,49 @@ class Files
      */
     function deleteFiles()
 	{
-		$this->can_delete = false;
-		$this->check_level = array(9,8,7,0);
-
-        if (empty($this->id) || empty($this->uploaded_by)) {
+        if (!$this->currentUserCanDeleteFile()) {
             return false;
         }
 
-        // Clients can only delete files if allowed
-        if (CURRENT_USER_LEVEL == '0') {
-            if (get_option('clients_can_delete_own_files') != '1') {
-                return false;
-            }
+        /*
+        * Thumbnails should be deleted too.
+        * Start by making a pattern with the file name, a shorter version of what's
+        * used on make_thumbnail.
+        */
+        $this->thumbnails_pattern = 'thumb_' . md5($this->filename_on_disk);
+        $this->find_thumbnails = glob( THUMBNAILS_FILES_DIR . DS . $this->thumbnails_pattern . '*.*' );
 
-            if ($this->uploaded_by != CURRENT_USER_USERNAME) {
-                return false;
-            }
-        }
-        
-        // Uploaders can only delete their own files
-        if ( CURRENT_USER_LEVEL == '7' ) {
-            if ( $this->uploaded_by != CURRENT_USER_USERNAME ) {
-                return false;
-            }
-        }
-        
-        /** Do a permissions check */
-        if (isset($this->check_level) && current_role_in($this->check_level)) {
-            /*
-             * Thumbnails should be deleted too.
-             * Start by making a pattern with the file name, a shorter version of what's
-             * used on make_thumbnail.
-            */
-            $this->thumbnails_pattern = 'thumb_' . md5($this->filename_on_disk);
-            $this->find_thumbnails = glob( THUMBNAILS_FILES_DIR . DS . $this->thumbnails_pattern . '*.*' );
-            //print_array($this->find_thumbnails);
-
-            // Delete the reference to the file on the database
-            $sql = $this->dbh->prepare("DELETE FROM " . TABLE_FILES . " WHERE id = :file_id");
-            $sql->bindParam(':file_id', $this->id, PDO::PARAM_INT);
-            $sql->execute();
+        try {
             // Use the id and uri information to delete the file.
-            delete_file_from_disk(UPLOADED_FILES_DIR . DS . $this->filename_on_disk);
-            
-            // Delete the thumbnails
-            foreach ( $this->find_thumbnails as $this->thumbnail ) {
-                delete_file_from_disk($this->thumbnail);
-            }
+            $delete = delete_file_from_disk(UPLOADED_FILES_DIR . DS . $this->filename_on_disk);
 
-            /** Record the action log */
-            $record = $this->logger->addEntry([
-                'action' => 12,
-                'owner_id' => CURRENT_USER_ID,
-                'affected_file' => $this->id,
-                'affected_file_name' => $this->title
-            ]);
+            // Delete the reference to the file on the database only if file is deleted from disk
+            if ($delete) {
+                $sql = $this->dbh->prepare("DELETE FROM " . TABLE_FILES . " WHERE id = :file_id");
+                $sql->bindParam(':file_id', $this->id, PDO::PARAM_INT);
+                $sql->execute();
+
+                // Delete the thumbnails
+                foreach ( $this->find_thumbnails as $this->thumbnail ) {
+                    $delete = delete_file_from_disk($this->thumbnail);
+                }
+
+                /** Record the action log */
+                if (defined('CURRENT_USER_ID')) {
+                    $this->logger->addEntry([
+                        'action' => 12,
+                        'owner_id' => CURRENT_USER_ID,
+                        'affected_file' => $this->id,
+                        'affected_file_name' => $this->title
+                    ]);
+                }    
+            }
 
             return true;
-
-            unset($this->check_level);
+        } catch (\Exception $e) {
+            return false;
         }
-        
+
         return false;
     }
     

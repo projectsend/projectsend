@@ -50,6 +50,7 @@
         <label for="cron_delete_expired_files">
             <input type="checkbox" value="1" name="cron_delete_expired_files" id="cron_delete_expired_files" class="checkbox_options" <?php echo (get_option('cron_delete_expired_files') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Delete expired files",'cftp_admin'); ?>
         </label>
+        <p class="field_note"><?php echo sprintf(__("Current date/time according to your settings is %s.",'cftp_admin'), date('Y-m-d H:i:s')); ?></p>
     </div>
 </div>
 

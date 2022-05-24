@@ -173,7 +173,7 @@ if (isset($_POST['action']) && $_POST['action'] != 'none') {
             <div class="clear"></div>
 
             <div class="form_actions_count">
-                <p><?php _e('Found','cftp_admin'); ?>: <span><?php echo $count_for_pagination; ?> <?php _e('activities','cftp_admin'); ?></span></p>
+                <p><?php echo sprintf(__('Found %d elements','cftp_admin'), (int)$count_for_pagination); ?>
             </div>
 
             <div class="clear"></div>

@@ -214,7 +214,7 @@ if ( isset( $_POST['btn_process'] ) ) {
             <div class="clear"></div>
 
             <div class="form_actions_count">
-                <p class="form_count_total"><?php _e('Found','cftp_admin'); ?>: <span><?php echo $get_categories['count']; ?> <?php _e('categories','cftp_admin'); ?></span></p>
+                <?php echo sprintf(__('Found %d elements','cftp_admin'), (int)$get_categories['count']); ?>
             </div>
 
             <div class="clear"></div>

@@ -159,7 +159,7 @@ if (!empty($_GET['search'])) {
         </div>
 
         <div class="form_actions_count">
-            <p class="form_count_total"><?php _e('Showing','cftp_admin'); ?>: <span><?php echo count($files_to_add); ?> <?php _e('files','cftp_admin'); ?></span></p>
+            <p><?php echo sprintf(__('Found %d elements','cftp_admin'), (int)count($files_to_add)); ?>
         </div>
 
 

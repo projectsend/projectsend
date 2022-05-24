@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend admin\n"
-"POT-Creation-Date: 2022-05-24 00:42-0300\n"
-"PO-Revision-Date: 2022-05-24 00:42-0300\n"
+"POT-Creation-Date: 2022-05-24 02:06-0300\n"
+"PO-Revision-Date: 2022-05-24 02:06-0300\n"
 "Last-Translator: \n"
 "Language-Team: ProjectSend <contact@projectsend.org>\n"
 "Language: en\n"
@@ -41,77 +41,73 @@ msgid ""
 "them manually if you want."
 msgstr ""
 
-#: actions-log.php:128
+#: actions-log.php:127
 msgid "Filter activities"
 msgstr ""
 
-#: actions-log.php:130 includes/widgets/actions-log.php:16
+#: actions-log.php:129 includes/widgets/actions-log.php:16
 msgid "All activities"
 msgstr ""
 
-#: actions-log.php:142 clients.php:153 manage-files.php:376
+#: actions-log.php:141 clients.php:153 manage-files.php:376
 #: manage-files.php:403 users.php:200
 msgid "Filter"
 msgstr ""
 
-#: actions-log.php:153
+#: actions-log.php:152
 msgid "Activities actions"
 msgstr ""
 
-#: actions-log.php:157 categories.php:198 clients-membership-requests.php:182
-#: clients-requests.php:232 clients.php:168 groups.php:155 manage-files.php:430
-#: users.php:215
+#: actions-log.php:156 categories.php:198 clients-membership-requests.php:182
+#: clients-requests.php:232 clients.php:168 cron-log.php:125 groups.php:155
+#: manage-files.php:430 users.php:215
 msgid "Select action"
 msgstr ""
 
-#: actions-log.php:158
+#: actions-log.php:157 cron-log.php:126
 msgid "Download as csv"
 msgstr ""
 
-#: actions-log.php:159
+#: actions-log.php:158 cron-log.php:127
 msgid "Delete selected"
 msgstr ""
 
-#: actions-log.php:160
+#: actions-log.php:159 cron-log.php:128
 msgid "Clear entire log"
 msgstr ""
 
-#: actions-log.php:170 categories.php:209 clients-membership-requests.php:194
-#: clients-requests.php:244 clients.php:181 groups.php:166 manage-files.php:461
-#: users.php:228
+#: actions-log.php:169 categories.php:209 clients-membership-requests.php:194
+#: clients-requests.php:244 clients.php:181 cron-log.php:138 groups.php:166
+#: manage-files.php:461 users.php:228
 msgid "Proceed"
 msgstr ""
 
-#: actions-log.php:177 categories.php:217 clients-membership-requests.php:201
-#: clients-requests.php:251 clients.php:188 groups.php:173
-#: includes/Classes/Cron.php:106 includes/Classes/Cron.php:146
-#: manage-files.php:469 users.php:235
-msgid "Found"
+#: actions-log.php:176 categories.php:217 clients-membership-requests.php:201
+#: clients-requests.php:251 clients.php:188 cron-log.php:145 groups.php:173
+#: import-orphans.php:162 manage-files.php:469 users.php:235
+#, php-format
+msgid "Found %d elements"
 msgstr ""
 
-#: actions-log.php:177
-msgid "activities"
-msgstr ""
-
-#: actions-log.php:187 clients-membership-requests.php:236
+#: actions-log.php:186 clients-membership-requests.php:236
 #: clients-requests.php:286 clients.php:201 groups.php:186 manage-files.php:485
 #: users.php:247
 msgid "The filters you selected returned no results."
 msgstr ""
 
-#: actions-log.php:192
+#: actions-log.php:191
 msgid "There are no activities recorded."
 msgstr ""
 
-#: actions-log.php:219 download-information.php:131
+#: actions-log.php:218 cron-log.php:182 download-information.php:131
 msgid "Date"
 msgstr ""
 
-#: actions-log.php:224 templates.php:75
+#: actions-log.php:223 cron-log.php:187 templates.php:75
 msgid "Author"
 msgstr ""
 
-#: actions-log.php:229
+#: actions-log.php:228 cron-log.php:192
 msgid "Activity"
 msgstr ""
 
@@ -160,10 +156,6 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: categories.php:217
-msgid "categories"
-msgstr ""
-
 #: categories.php:227 clients-membership-requests.php:233
 #: clients-requests.php:283 clients.php:198 groups.php:183
 #: import-orphans.php:277 manage-files.php:479 users.php:244
@@ -196,12 +188,12 @@ msgstr ""
 msgid "View"
 msgstr ""
 
-#: categories.php:270 clients.php:288 files-edit.php:128 groups.php:261
-#: import-orphans.php:217 manage-files.php:604 users.php:312
+#: categories.php:270 clients.php:288 cron-log.php:121 files-edit.php:128
+#: groups.php:261 import-orphans.php:217 manage-files.php:604 users.php:312
 msgid "Actions"
 msgstr ""
 
-#: categories.php:341 includes/main-menu.php:83 includes/main-menu.php:336
+#: categories.php:341 includes/main-menu.php:83 includes/main-menu.php:340
 #: manage-files.php:13
 msgid "Manage files"
 msgstr ""
@@ -293,10 +285,6 @@ msgstr ""
 
 #: clients-membership-requests.php:184 clients-requests.php:234
 msgid "Delete requests"
-msgstr ""
-
-#: clients-membership-requests.php:201 clients-requests.php:251
-msgid "requests"
 msgstr ""
 
 #: clients-membership-requests.php:208
@@ -398,10 +386,6 @@ msgstr ""
 msgid "Deactivate"
 msgstr ""
 
-#: clients.php:188
-msgid "clients"
-msgstr ""
-
 #: clients.php:206
 msgid "There are no clients at the moment"
 msgstr ""
@@ -459,6 +443,26 @@ msgstr ""
 
 #: clients.php:397
 msgid "As client"
+msgstr ""
+
+#: cron-log.php:14
+msgid "Cron execution log"
+msgstr ""
+
+#: cron-log.php:36
+msgid "The selected entries were deleted."
+msgstr ""
+
+#: cron-log.php:39
+msgid "Please select at least one entries."
+msgstr ""
+
+#: cron-log.php:50
+msgid "The log was cleared."
+msgstr ""
+
+#: cron-log.php:155
+msgid "There are no executions recorded."
 msgstr ""
 
 #: dashboard.php:10 includes/main-menu.php:59
@@ -749,7 +753,7 @@ msgstr ""
 msgid "Save options"
 msgstr ""
 
-#: email-test.php:12 includes/main-menu.php:303
+#: email-test.php:12 includes/main-menu.php:307
 msgid "Test email configuration"
 msgstr ""
 
@@ -858,7 +862,7 @@ msgstr ""
 msgid "Edit file"
 msgstr ""
 
-#: files-edit.php:176 includes/main-menu.php:346
+#: files-edit.php:176 includes/main-menu.php:350
 msgid "View my files"
 msgstr ""
 
@@ -914,10 +918,6 @@ msgstr ""
 
 #: groups.php:151
 msgid "Selected groups actions"
-msgstr ""
-
-#: groups.php:173
-msgid "groups"
 msgstr ""
 
 #: groups.php:189
@@ -992,14 +992,6 @@ msgid ""
 "This list only shows the files that are allowed according to your security "
 "settings. If the file type you need to add is not listed here, add the "
 "extension to the \"Allowed file extensions\" box on the options page."
-msgstr ""
-
-#: import-orphans.php:162
-msgid "Showing"
-msgstr ""
-
-#: import-orphans.php:162 manage-files.php:469
-msgid "files"
 msgstr ""
 
 #: import-orphans.php:177
@@ -1311,11 +1303,15 @@ msgstr ""
 msgid "Send email notifications"
 msgstr ""
 
+#: includes/Classes/Cron.php:106 includes/Classes/Cron.php:146
+msgid "Found"
+msgstr ""
+
 #: includes/Classes/Cron.php:116
 msgid "Succesfully sent"
 msgstr ""
 
-#: includes/Classes/Cron.php:120 includes/Classes/Cron.php:169
+#: includes/Classes/Cron.php:120 includes/Classes/Cron.php:161
 msgid "Failed"
 msgstr ""
 
@@ -1327,15 +1323,15 @@ msgstr ""
 msgid "Delete expired files"
 msgstr ""
 
-#: includes/Classes/Cron.php:165
+#: includes/Classes/Cron.php:157
 msgid "Succesfully deleted"
 msgstr ""
 
-#: includes/Classes/Cron.php:192
+#: includes/Classes/Cron.php:196
 msgid "Task disabled. Skipping."
 msgstr ""
 
-#: includes/Classes/Cron.php:200
+#: includes/Classes/Cron.php:204
 msgid "Total:"
 msgstr ""
 
@@ -3046,7 +3042,7 @@ msgstr ""
 msgid "To make space on your disk, you can manually delete old files from %s"
 msgstr ""
 
-#: includes/main-menu.php:76 includes/main-menu.php:325
+#: includes/main-menu.php:76 includes/main-menu.php:329
 msgid "Upload"
 msgstr ""
 
@@ -3115,7 +3111,11 @@ msgstr ""
 msgid "Actions log"
 msgstr ""
 
-#: includes/main-menu.php:307 unblock-ip.php:11 unblock-ip.php:49
+#: includes/main-menu.php:303
+msgid "Cron log"
+msgstr ""
+
+#: includes/main-menu.php:311 unblock-ip.php:11 unblock-ip.php:49
 msgid "Unblock IP"
 msgstr ""
 
@@ -4071,8 +4071,4 @@ msgstr ""
 
 #: users.php:211
 msgid "Selected users actions"
-msgstr ""
-
-#: users.php:235
-msgid "users"
 msgstr ""

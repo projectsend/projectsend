@@ -198,7 +198,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                 <div class="clear"></div>
 
                 <div class="form_actions_count">
-                    <p><?php _e('Found','cftp_admin'); ?>: <span><?php echo $found_count; ?> <?php _e('requests','cftp_admin'); ?></span></p>
+                    <p><?php echo sprintf(__('Found %d elements','cftp_admin'), (int)$found_count); ?>
                 </div>
 
                 <div class="form_results_filter">

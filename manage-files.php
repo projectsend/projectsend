@@ -466,7 +466,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                 <div class="clear"></div>
         
                 <div class="form_actions_count">
-                    <p class="form_count_total"><?php _e('Found','cftp_admin'); ?>: <span><?php echo $count_for_pagination; ?> <?php _e('files','cftp_admin'); ?></span></p>
+                    <p><?php echo sprintf(__('Found %d elements','cftp_admin'), (int)$count_for_pagination); ?>
                 </div>
         
                 <div class="clear"></div>

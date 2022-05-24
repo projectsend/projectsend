@@ -232,7 +232,7 @@ $current_url = get_form_action_with_existing_parameters(basename(__FILE__));
             <div class="clear"></div>
 
             <div class="form_actions_count">
-                <p><?php _e('Found','cftp_admin'); ?>: <span><?php echo $count_for_pagination; ?> <?php _e('users','cftp_admin'); ?></span></p>
+                <p><?php echo sprintf(__('Found %d elements','cftp_admin'), (int)$count_for_pagination); ?>
             </div>
 
             <div class="clear"></div>

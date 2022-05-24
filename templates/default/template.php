@@ -88,7 +88,8 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                     <div class="right_clear"></div><br />
 
                     <div class="form_actions_count">
-                        <p class="form_count_total"><?php _e('Found','cftp_admin'); ?>: <span><?php echo (isset($count_for_pagination)) ? $count_for_pagination : 0; ?> <?php _e('files','cftp_admin'); ?></span></p>
+                        <?php $count = (isset($count_for_pagination)) ? $count_for_pagination : 0; ?>
+                        <p><?php echo sprintf(__('Found %d elements','cftp_admin'), (int)$count); ?></p>
                     </div>
         
                     <div class="right_clear"></div>

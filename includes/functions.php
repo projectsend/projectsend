@@ -1118,7 +1118,7 @@ function isEnabled(string $func) {
 function delete_file_from_disk($filename)
 {
 	if ( file_exists( $filename ) ) {
-		chmod($filename, 0777);
+		@chmod($filename, 0777);
 		return unlink($filename);
 	}
 
@@ -1140,7 +1140,7 @@ function delete_recursive($dir)
 						rmdir( $dir . $file );
 					}
 					else {
-						chmod($dir.$file, 0777);
+						@chmod($dir.$file, 0777);
 						unlink($dir.$file);
 					}
 				}

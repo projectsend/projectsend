@@ -25,8 +25,8 @@
     <label for="timeformat" class="col-sm-4 control-label"><?php _e('Time format','cftp_admin'); ?></label>
     <div class="col-sm-8">
         <input type="text" class="form-control" name="timeformat" id="timeformat" value="<?php echo get_option('timeformat'); ?>" required />
-        <p class="field_note"><?php _e('For example, d/m/Y h:i:s will result in something like','cftp_admin'); ?> <strong><?php echo date('d/m/Y h:i:s'); ?></strong>.
-        <?php _e('For the full list of available values, visit','cftp_admin'); ?> <a href="http://php.net/manual/en/function.date.php" target="_blank"><?php _e('this page','cftp_admin'); ?></a>.</p>
+        <p class="field_note"><?php _e('For example, d/m/Y h:i:s will result in something like','cftp_admin'); ?> <strong><?php echo date('d/m/Y h:i:s'); ?></strong> <?php _e('(current server time)','cftp_admin'); ?>. <?php _e("This date will be used for files expiration settings.",'cftp_admin'); ?><br>
+        <?php echo sprintf(__("For the full list of available values, visit %s the official PHP Manual %s",'cftp_admin'), '<a href="http://php.net/manual/en/function.date.php" target="_blank">', '</a>'); ?></p>
     </div>
 </div>
 

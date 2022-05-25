@@ -625,7 +625,7 @@ class Emails
         $this->memberships	= (!empty($arguments['memberships'])) ? $arguments['memberships'] : '';
         
         $test_message = (!empty($arguments['message'])) ? filter_var($arguments['message'], FILTER_SANITIZE_STRING) : __('This is a test message', 'cftp_admin');
-        $generic_message = (!empty($arguments['message'])) ? filter_var($arguments['message'], FILTER_SANITIZE_STRING) : null;
+        $generic_message = (!empty($arguments['message'])) ? $arguments['message'] : null;
 
         $this->try_bcc = false;
         $this->email_successful = false;

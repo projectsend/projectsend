@@ -84,11 +84,17 @@ class Cron
 
         $this->emailResults();
 
-        $this->outputResults();
-
         $this->saveResultsToDatabase();
+    }
 
-        exit;
+    public function outputResults()
+    {
+        if (PHP_SAPI != 'cli') {
+            echo nl2br($this->results_formatted);
+            return;
+        }
+
+        echo $this->results_formatted;
     }
 
     private function runTaskSendEmails()
@@ -267,16 +273,23 @@ class Cron
 
     private function emailResults()
     {
-    }
+        if (get_option('cron_email_summary_send') == '1') {
+            $option_to = get_option('cron_email_summary_address_to');
+            $to = (!empty($option_to)) ? $option_to : get_option('admin_email_address');
+            if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
+                return;
+            }
 
-    private function outputResults()
-    {
-        if (PHP_SAPI != 'cli') {
-            echo nl2br($this->results_formatted);
-            return;
+            $message = nl2br($this->results_formatted);
+
+            $email = new \ProjectSend\Classes\Emails;
+            $email->send([
+                'type' => 'generic',
+                'to' => $to,
+                'subject' => __('Cron results', 'cftp_admin'),
+                'message' => $message,
+            ]);
         }
-
-        echo $this->results_formatted;
     }
 
     private function saveResultsToDatabase()

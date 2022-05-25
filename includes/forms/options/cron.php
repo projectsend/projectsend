@@ -114,6 +114,7 @@
     <label for="cron_email_summary_address_to" class="col-sm-4 control-label"><?php _e('E-mail to send the summary to','cftp_admin'); ?></label>
     <div class="col-sm-8">
         <input type="text" name="cron_email_summary_address_to" id="cron_email_summary_address_to" class="form-control" value="<?php echo html_output(get_option('cron_email_summary_address_to')); ?>" />
+        <p class="field_note"><?php _e('Leaving this field empty will send the results to the default "from" address.','cftp_admin'); ?></p>
     </div>
 </div>
 

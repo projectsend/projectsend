@@ -186,7 +186,12 @@ class Emails
             case 'test_settings':
                     $filename = 'test_settings.html';
                     $customize_body = 0;
-                    $body_text_option	= null;
+                    $body_text_option = null;
+                break;
+            case 'generic':
+                    $filename = 'generic.html';
+                    $customize_body = 0;
+                    $body_text_option = null;
                 break;
 		}
 
@@ -542,15 +547,33 @@ class Emails
 				);
 	}
 
-
 	/**
-	 * Prepare the body for the e-mail sent when a client changes group
-	 *  membership requests.
+	 * E-mail sent when testing email settings.
 	 */
 	private function email_test_settings($message)
 	{
         $subject = __('Email configuration test', 'cftp_admin');
 		$this->email_body = $this->email_prepare_body('test_settings');
+		$this->email_body = str_replace(
+									array('%BODY%', '%SUBJECT%'),
+									array(
+                                        $message,
+                                        $subject,
+										),
+									$this->email_body
+								);
+		return array(
+					'subject' => $subject,
+					'body' => $this->email_body
+				);
+	}
+
+    /**
+	 * Generic w-mail with custom content only
+	 */
+	private function email_generic($subject, $message = null)
+	{
+		$this->email_body = $this->email_prepare_body('generic');
 		$this->email_body = str_replace(
 									array('%BODY%', '%SUBJECT%'),
 									array(
@@ -602,6 +625,7 @@ class Emails
         $this->memberships	= (!empty($arguments['memberships'])) ? $arguments['memberships'] : '';
         
         $test_message = (!empty($arguments['message'])) ? filter_var($arguments['message'], FILTER_SANITIZE_STRING) : __('This is a test message', 'cftp_admin');
+        $generic_message = (!empty($arguments['message'])) ? filter_var($arguments['message'], FILTER_SANITIZE_STRING) : null;
 
         $this->try_bcc = false;
         $this->email_successful = false;
@@ -613,6 +637,11 @@ class Emails
                 $this->body_variables = [ $test_message ];
                 $this->addresses = $arguments['to'];
                 $debug = true;
+			break;
+            case 'generic':
+                $subject = (!empty($arguments['subject'])) ? $arguments['subject'] : sprintf(__('Sent from %s', 'cftp_admin'), get_option('this_install_title'));
+                $this->body_variables = [ $subject, $generic_message ];
+                $this->addresses = $arguments['to'];
 			break;
             case 'new_files_by_user':
                 $this->body_variables = [ $this->files_list, ];

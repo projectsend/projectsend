@@ -49,7 +49,7 @@ class Cron
     private function exitIfCliOnly()
     {
         $cli_ony = get_option('cron_command_line_only');
-        if (PHP_SAPI == 'cli' && $cli_ony == 1) {
+        if (PHP_SAPI != 'cli' && $cli_ony == '1') {
             exit;
         }
     }

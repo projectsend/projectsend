@@ -14,17 +14,13 @@ $allowed_levels = array(9,8,7);
 require_once 'bootstrap.php';
 
 $active_nav = 'files';
+$this_page = 'import-orphans.php';
 
 $page_title = __('Find orphan files', 'cftp_admin');
 
 $page_id = 'import_orphans';
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
-
-if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
-    $msg = __('This list only shows the files that are allowed according to your security settings. If the file type you need to add is not listed here, add the extension to the "Allowed file extensions" box on the options page.', 'cftp_admin');
-    echo system_message('warning',$msg);
-}
 
 /** Count clients to show an error message, or the form */
 $statement		= $dbh->query("SELECT id FROM " . TABLE_USERS . " WHERE level = '0'");
@@ -36,36 +32,30 @@ if ( ( !$count_clients or $count_clients < 1 ) && ( !$count_groups or $count_gro
     message_no_clients();
 }
 
-/**
- * Make a list of existing files on the database.
- * When a file doesn't correspond to a record, it can
- * be safely renamed.
- */
-$sql = $dbh->query("SELECT original_url, url, id, public_allow FROM " . TABLE_FILES );
-$db_files = array();
-$sql->setFetchMode(PDO::FETCH_ASSOC);
-while ( $row = $sql->fetch() ) {
-    $db_files[$row["url"]] = $row["id"];
-    $db_files[$row["original_url"]] = $row["id"];
-    if ($row['public_allow'] == 1) {$db_files_public[$row["url"]] = $row["id"];}
+$orphan_files = new \ProjectSend\Classes\OrphanFiles;
+$settings = [];
+if (isset($_GET['search']) && !empty($_GET['search'])) {
+    $no_results_error = 'search';
+    $settings['search'] = $_GET['search'];
 }
 
-/** Make an array of already assigned files */
-$sql = $dbh->query("SELECT DISTINCT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE client_id IS NOT NULL OR group_id IS NOT NULL OR folder_id IS NOT NULL");
-$assigned = array();
-$sql->setFetchMode(PDO::FETCH_ASSOC);
-while ( $row = $sql->fetch() ) {
-    $assigned[] = $row["file_id"];
-}
+$settings['allowed_type'] = (isset($_GET['allowed_type'])) ? $_GET['allowed_type'] : '';
 
-/** We consider public file as assigned file */
-if ( !empty( $db_files_public ) ) {
-    foreach ($db_files_public as $file_id){
-        $assigned[] = $file_id;
-    }
-}
+$orphan_files->findOrphanFiles($settings);
+$orphans = $orphan_files->getFiles();
 
-$files_to_add = array();
+// Table options
+$can_import = false;
+switch ($_GET['allowed_type']) {
+    case 'allowed':
+    default:
+        $files = $orphans['allowed'];
+        $can_import = true;
+        break;
+    case 'not_allowed':
+        $files = $orphans['not_allowed'];
+        break;
+}
 
 // Import selected files and redirect to editor
 if ($_POST) {
@@ -78,13 +68,12 @@ if ($_POST) {
                 continue;
             }
 
-            $file = new \ProjectSend\Classes\Files;
-            $rename = $file->moveToUploadDirectory($filename_path);
-    
-            if (!$file->isFiletypeAllowed()) {
+            if (!file_is_allowed($filename)) {
                 continue;
             }
-    
+
+            $file = new \ProjectSend\Classes\Files;
+            $file->moveToUploadDirectory($filename_path);
             $file->setDefaults();
             $file->addToDatabase();
         
@@ -94,63 +83,11 @@ if ($_POST) {
     }
 
     if (!empty($added)) {
-        $url = get_option('base_uri').'files-edit.php?ids=' . implode(',', $added);
+        $url = BASE_URI.'files-edit.php?ids=' . implode(',', $added);
         header("Location: $url");
         exit;
     }
 }
-
-/** Read the temp folder and list every allowed file */
-if ($handle = opendir(UPLOADED_FILES_DIR)) {
-    while (false !== ($filename = readdir($handle))) {
-        $filename_path = UPLOADED_FILES_DIR.DS.$filename;
-        if(!is_dir($filename_path)) {
-            $ignore = [
-                ".",
-                "..",
-                ".htaccess",
-                "index.php"
-            ];
-            if (!in_array($filename, $ignore)) {
-                /** Check types of files that are not on the database */							
-                if (!array_key_exists($filename,$db_files)) {
-                    $files_to_add[] = [
-                        'name' => $filename,
-                        'path' => UPLOADED_FILES_DIR.DS.$filename,
-                        'reason' => 'not_on_db',
-                    ];
-                }
-            }
-        }
-    }
-    closedir($handle);
-}
-
-if (!empty($_GET['search'])) {
-    $no_results_error = 'search';
-    $search = htmlspecialchars($_GET['search']);
-    
-    function search_text($item) {
-        global $search;
-        if (stripos($item['name'], $search) !== false) {
-            /**
-             * Items that match the search
-             */
-            return true;
-        }
-        else {
-            /**
-             * Remove other items
-             */
-            unset($item);
-        }
-        return false;
-    }
-
-    $files_to_add = array_filter($files_to_add, 'search_text');
-}
-        
-// var_dump($result);
 ?>
 <div class="row">
     <div class="col-xs-12">
@@ -159,9 +96,32 @@ if (!empty($_GET['search'])) {
         </div>
 
         <div class="form_actions_count">
-            <p><?php echo sprintf(__('Found %d elements','cftp_admin'), (int)count($files_to_add)); ?>
+            <p><?php echo sprintf(__('Found %d elements','cftp_admin'), (int)count($files)); ?>
         </div>
 
+        <div class="form_results_filter">
+            <?php
+                $filters = array(
+                                'allowed' => array(
+                                    'title'	=> __('Allowed','cftp_admin'),
+                                    'link' => $this_page . '?allowed_type=allowed',
+                                    'count'	=> count($orphans['allowed']),
+                                ),
+                                'not_allowed' => array(
+                                    'title'	=> __('Not allowed','cftp_admin'),
+                                    'link' => $this_page . '?allowed_type=not_allowed',
+                                    'count'	=> count($orphans['not_allowed']),
+                                ),
+                            );
+                foreach ( $filters as $type => $filter ) {
+            ?>
+                    <a href="<?php echo $filter['link']; ?>" class="<?php echo $current_filter == $type ? 'filter_current' : 'filter_option' ?>"><?php echo $filter['title']; ?> (<?php echo $filter['count']; ?>)</a>
+            <?php
+                }
+            ?>
+        </div>
+
+        <div class="clear"></div>
 
         <form action="import-orphans.php" name="import_orphans" id="import_orphans" method="post" enctype="multipart/form-data">
             <?php addCsrf(); ?>
@@ -171,12 +131,12 @@ if (!empty($_GET['search'])) {
                  * Generate the list of files if there is at least 1
                  * available and allowed.
                  */
-                if ( isset( $files_to_add ) && count( $files_to_add ) > 0 ) {
-            ?>
-                <div class="alert alert-success">
-                    <?php _e('The following files can be imported','cftp_admin'); ?>
-                </div>
-            <?php
+                if ( isset( $files ) && count( $files ) > 0 ) {
+                    if ( false === CAN_UPLOAD_ANY_FILE_TYPE && $settings['allowed_type'] != 'not_allowed') {
+                        $settings['only_allowed'] = true;
+                        echo system_message('warning', __('This list only shows the files that are allowed according to your security settings. If the file type you need to add is not listed here, add the extension to the "Allowed file extensions" box on the options page.', 'cftp_admin'));
+                        echo system_message('success', __('The following files can be imported', 'cftp_admin'));
+                    }
         
                     $table_attributes	= array(
                                                 'id'				=> 'import_orphans_table',
@@ -185,9 +145,10 @@ if (!empty($_GET['search'])) {
                                             );
                     $table = new \ProjectSend\Classes\TableGenerate( $table_attributes );
         
-                    $thead_columns		= array(
+                    $thead_columns = array(
                                                 array(
                                                     'select_all'	=> true,
+                                                    'condition' => $can_import,
                                                     'attributes'	=> array(
                                                                             'class'			=> array( 'td_checkbox' ),
                                                                             'data-sortable'	=> 'false',
@@ -215,37 +176,40 @@ if (!empty($_GET['search'])) {
                                                 ),
                                                 array(
                                                     'content'		=> __('Actions','cftp_admin'),
+                                                    'condition' => $can_import,
                                                 ),
                                             );
                     $table->thead( $thead_columns );
 
-                    foreach ($files_to_add as $add_file) {
+                    foreach ($files as $file) {
                         $table->addRow();
                         /**
                          * Add the cells to the row
                          */
                         $tbody_cells = array(
                                             array(
-                                                    'content'		=> '<input type="checkbox" name="files[]" class="batch_checkbox select_file_checkbox" value="' . html_output( $add_file['name'] ) . '" />',
+                                                    'content'		=> '<input type="checkbox" name="files[]" class="batch_checkbox select_file_checkbox" value="' . html_output( $file['name'] ) . '" />',
+                                                    'condition' => $can_import,
                                                 ),
                                             array(
-                                                    'content'		=> html_output( $add_file['name'] ),
+                                                    'content'		=> html_output( $file['name'] ),
                                                 ),
                                             array(
-                                                    'content'		=> html_output( format_file_size( get_real_size( $add_file['path'] ) ) ),
+                                                    'content'		=> html_output( format_file_size( get_real_size( $file['path'] ) ) ),
                                                     'attributes'	=> array(
-                                                                            'data-value' => filesize( $add_file['path'] ),
+                                                                            'data-value' => filesize( $file['path'] ),
                                                                         ),
                                                 ),
                                             array(
-                                                    'content'		=> date( get_option('timeformat'), filemtime( $add_file['path'] ) ),
+                                                    'content'		=> date( get_option('timeformat'), filemtime( $file['path'] ) ),
                                                     'attributes'	=> array(
-                                                                            'data-value' => filemtime( $add_file['path'] ),
+                                                                            'data-value' => filemtime( $file['path'] ),
                                                                         ),
                                                 ),
                                             array(
                                                     'actions'		=> true,
-                                                    'content'		=> '<button type="button" name="file_edit" data-name="'.html_output($add_file['name']).'" class="btn btn-primary btn-sm btn-edit-file"><i class="fa fa-pencil"></i><span class="button_label">' . __('Import','cftp_admin') . '</span></button>' . "\n"
+                                                    'condition' => $can_import,
+                                                    'content'		=> '<button type="button" name="file_edit" data-name="'.html_output($file['name']).'" class="btn btn-primary btn-sm btn-edit-file"><i class="fa fa-pencil"></i><span class="button_label">' . __('Import','cftp_admin') . '</span></button>' . "\n"
                                                 ),
                                         );
 
@@ -257,16 +221,18 @@ if (!empty($_GET['search'])) {
                     }
 
                     echo $table->render();
+                    if ($can_import) {
             ?>
-                    <nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
-                        <div class="pagination_wrapper text-center">
-                            <ul class="pagination hide-if-no-paging"></ul>
+                        <nav aria-label="<?php _e('Results navigation','cftp_admin'); ?>">
+                            <div class="pagination_wrapper text-center">
+                                <ul class="pagination hide-if-no-paging"></ul>
+                            </div>
+                        </nav>
+                        <div class="after_form_buttons">
+                            <button type="submit" class="btn btn-wide btn-primary" id="upload-continue"><?php _e('Import selected files','cftp_admin'); ?></button>
                         </div>
-                    </nav>
-                    <div class="after_form_buttons">
-                        <button type="submit" class="btn btn-wide btn-primary" id="upload-continue"><?php _e('Import selected files','cftp_admin'); ?></button>
-                    </div>
             <?php
+                    }
                 }
 
                 /** No files found */
@@ -284,7 +250,7 @@ if (!empty($_GET['search'])) {
                         $no_results_message .= ' <span class="format_url"><strong>'.html_output(UPLOADED_FILES_DIR).'</strong></span>.';
                     }
         
-                    echo system_message('danger',$no_results_message);
+                    echo system_message('danger', $no_results_message);
                 }
             ?>
         </form>

@@ -1029,6 +1029,21 @@ function get_current_url()
 	}
 }
 
+function file_is_allowed($filename)
+{
+    if ( true === CAN_UPLOAD_ANY_FILE_TYPE ) {
+        return true;
+    }
+
+    $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+    $allowed_extensions = explode(',', strtolower(get_option('allowed_file_types')) );
+    if (in_array($extension, $allowed_extensions)) {
+        return true;
+    }
+
+    return false;    
+}
+
 /**
  * Receives the size of a file in bytes, and formats it for readability.
  * Used on files listings (templates and the files manager).

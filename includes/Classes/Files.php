@@ -412,18 +412,8 @@ class Files
 	 */
 	public function isFiletypeAllowed()
 	{
-		if ( true === CAN_UPLOAD_ANY_FILE_TYPE ) {
-            $this->is_filetype_allowed = true;
-		}
-		else {
-            $this->getExtension();
+        $this->is_filetype_allowed = file_is_allowed($this->filename_on_disk);
 
-            $allowed_extensions = explode(',', get_option('allowed_file_types') );
-            if (in_array($this->extension, $allowed_extensions)) {
-                $this->is_filetype_allowed = true;
-            }
-        }
-        
         return $this->is_filetype_allowed;
 	}
 

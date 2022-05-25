@@ -80,7 +80,7 @@ class Cron
 
         $this->runTaskDeleteExpiredFiles();
 
-        // $this->runTaskDeleteOrphanFiles();
+        $this->runTaskDeleteOrphanFiles();
 
         $this->emailResults();
 
@@ -182,6 +182,59 @@ class Cron
 
     private function runTaskDeleteOrphanFiles()
     {
+        $results = [
+            'title' => __('Delete orphan files', 'cftp_admin'),
+            'enabled' => get_option('cron_delete_orphan_files'),
+            'elements' => [],
+        ];
+
+        if (get_option('cron_delete_expired_files') == '1') {
+            $files = [];
+            $object = new \ProjectSend\Classes\OrphanFiles;
+            $orphan_files = $object->getFiles();
+
+            $results['elements'] = [
+                'found' => [
+                    'label' => __('Found', 'cftp_admin'),
+                    'items' => []
+                ],
+                'success' => [
+                    'label' => __('Succesfully deleted', 'cftp_admin'),
+                    'items' => []
+                ],
+                'failed' => [
+                    'label' => __('Failed', 'cftp_admin'),
+                    'items' => []
+                ],
+            ];
+
+            // Add allowed files to the found files array
+            if (get_option('cron_delete_orphan_files_types') == 'all') {
+                if (!empty($orphan_files['allowed'])) {
+                    foreach ($orphan_files['allowed'] as $file) {
+                        $results['elements']['found']['items'][] = $file['name'];
+                    }
+                }
+            }
+
+            // Add not allowed files to the found files array
+            if (!empty($orphan_files['not_allowed'])) {
+                foreach ($orphan_files['not_allowed'] as $file) {
+                    $results['elements']['found']['items'][] = $file['name'];
+                }
+            }
+
+            foreach ($results['elements']['found']['items'] as $file) {
+                if (delete_file_from_disk(UPLOADED_FILES_DIR.DS.$file)) {
+                    $results['elements']['success']['items'][] = $file;
+                } else {
+                    $results['elements']['failed']['items'][] = $file;
+                }
+            }
+        }
+
+        $this->results['delete_expired_files'] = $results;
+        $this->formatResultsForDisplay($results);
     }
 
     private function formatResultsForDisplay($results = [])

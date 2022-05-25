@@ -48,6 +48,7 @@ upload/thumbnails/*
 !upload/temp/.htaccess
 !upload/branding/.htaccess
 !upload/thumbnails/.htaccess
+!upload/files/web.config
 
 # Translations
 lang/*

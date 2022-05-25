@@ -31,15 +31,19 @@ class OrphanFiles
         $this->not_allowed_files = [];
     }
 
-    public function getFiles()
+    public function getFiles($settings = [])
     {
+        if (empty($this->allowed_files) && empty($this->not_allowed_files)) {
+            $this->findOrphanFiles($settings);
+        }
+
         return [
             'allowed' => $this->allowed_files,
             'not_allowed' => $this->not_allowed_files,
         ];
     }
 
-    public function findOrphanFiles($settings = [])
+    private function findOrphanFiles($settings = [])
     {
         $db_files = [];
 
@@ -56,7 +60,8 @@ class OrphanFiles
             ".",
             "..",
             ".htaccess",
-            "index.php"
+            "index.php",
+            "web.config",
         ];
 
         if ($handle = opendir(UPLOADED_FILES_DIR)) {

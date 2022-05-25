@@ -54,7 +54,6 @@
     </div>
 </div>
 
-<?php /*
 <div class="form-group">
     <div class="col-sm-8 col-sm-offset-4">
         <label for="cron_delete_orphan_files">
@@ -62,7 +61,33 @@
         </label>
     </div>
 </div>
-*/ ?>
+
+<div class="form-group">
+    <label for="cron_delete_orphan_files_types" class="col-sm-4 control-label"><?php _e('Orphan files to delete:','cftp_admin'); ?></label>
+    <div class="col-sm-8">
+        <select class="form-control" name="cron_delete_orphan_files_types" id="cron_delete_orphan_files_types" required>
+            <?php
+                $orphan_options = [
+                    'all' => __('All orphan files','cftp_admin'),
+                    'not_allowed' => __('Only files with extensions that are not allowed','cftp_admin'),
+                ];
+
+                foreach ( $orphan_options as $value => $label ) {
+            ?>
+                    <option value="<?php echo $value; ?>"
+                        <?php
+                            if (get_option('cron_delete_orphan_files_types') == $value) {
+                                echo 'selected="selected"';
+                            }
+                        ?>
+                        ><?php echo $label; ?>
+                    </option>
+            <?php
+                }
+            ?>
+        </select>
+    </div>
+</div>
 
 <div class="options_divide"></div>
 

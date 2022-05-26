@@ -52,7 +52,7 @@ define('DONATIONS_URL','https://www.projectsend.org/donations/');
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r1405');
+define('CURRENT_VERSION', 'r1413');
 
 /**
  * Required software versions

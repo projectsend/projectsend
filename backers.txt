@@ -2,27 +2,30 @@ This file is dedicated to those who support the project via Patreon (https://www
 Your contribution helps PS become better every day!
 
 Backers
-giovanni loda
-Alessandro Vicente
-Strater Patrick
+jason burkeman
+Bình Đặng
+Raj Sanariya
+Billy Willoughby
+Alan Pickett-Nunn
+Peter
 
 ------------------------------------------------------------------------------------------------------
 
 Awesome backers
 Ricardo Quintero
-Brian Michalski
+Jason Sikes
 
 ------------------------------------------------------------------------------------------------------
 
 Super backers
 FERRARI GIORGIO
-Eric Horstmann
-Benjamin Genevay
+Accountable IT Group
+Matthew Porter
 
 ------------------------------------------------------------------------------------------------------
 
 Amazing backers
-George Kelly
+Eric Horstmann
 
 ------------------------------------------------------------------------------------------------------
 

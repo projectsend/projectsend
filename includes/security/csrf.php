@@ -30,6 +30,5 @@ function validateCsrfToken()
 }
 
 if (!defined('IS_INSTALL') && !defined('FILE_UPLOADING') && $_POST && !validateCsrfToken()) {
-    header("Location: ".PAGE_STATUS_CODE_403);
-    exit;
+    exitWithErrorCode(403);
 }

@@ -118,8 +118,7 @@ class Auth
     /** Social Login via hybridauth */
     public function socialLogin($provider) {
         if (empty($provider)) {
-            header("location:".PAGE_STATUS_CODE_404);
-            exit;
+            exitWithErrorCode(404);
         }
 
         //Attempt to authenticate users with a provider by name
@@ -134,8 +133,8 @@ class Auth
             case 'microsoftgraph':
                 break;
             default:
-                header("location:".PAGE_STATUS_CODE_404);
-                exit;
+                exitWithErrorCode(404);
+                break;
         }
             
         global $hybridauth;

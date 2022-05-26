@@ -29,8 +29,7 @@ class Download
     public function download($file_id)
     {
         if (!$file_id || !defined('CURRENT_USER_LEVEL') || !userCanDownloadFile(CURRENT_USER_ID, $file_id)) {
-            header('Location:' . PAGE_STATUS_CODE_403);
-            exit;
+            exitWithErrorCode(403);
         }
 
         $file = new \ProjectSend\Classes\Files();
@@ -180,8 +179,7 @@ class Download
             exit;
         }
         else {
-            header('Location:' . PAGE_STATUS_CODE_404);
-            exit;
+            exitWithErrorCode(404);
         }
     }
 
@@ -237,8 +235,7 @@ class Download
             return;
         }
         else {
-            header('Location:' . PAGE_STATUS_CODE_404);
-            exit;
+            exitWithErrorCode(404);
         }
     }
 	

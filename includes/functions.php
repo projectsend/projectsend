@@ -1950,8 +1950,7 @@ function recaptcha2ValidateRequest($redirect = true)
     }
 
     if ($redirect && !$validation_passed) {
-        header("Location: ".PAGE_STATUS_CODE_403);
-        exit;
+        exitWithErrorCode(403);
     }
 
     return $validation_passed;
@@ -1961,4 +1960,20 @@ function ps_redirect($location, $status = 303)
 {
     header("Location: $location", true, $status);
     exit;
+}
+
+function exitWithErrorCode($code = 403)
+{
+    switch ($code) {
+        default:
+        case 403:
+            $url = PAGE_STATUS_CODE_403;
+            break;
+        case 404:
+            $url = PAGE_STATUS_CODE_404;
+            break;
+    }
+    header('Location:' . $url);
+    exit;
+
 }

@@ -18,6 +18,11 @@ session_start();
  * @see sys.config.sample.php
  */
 if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') ) {
+    header("Cache-control: private");
+    $_SESSION = array();
+    session_destroy();
+    session_regenerate_id(true);
+
     if ( !defined( 'IS_MAKE_CONFIG' ) ) {
         // the following script returns only after the creation of the configuration file
         if ( defined('IS_INSTALL') ) {

@@ -65,6 +65,7 @@ $form = true;
             
                             $other_errors[] = update_chmod_emails();
                             $other_errors[] = chmod_main_files();
+                            $other_errors = array_filter($other_errors); // Fix by michaelkrieger
 
                             if (!empty($create_errors) || !empty($chmod_errors) || $other_errors) {
                                 $msg = '<strong>' . __('Database installation was successful, but errors were encountered.','cftp_admin') . '</strong>';

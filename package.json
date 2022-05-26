@@ -9,7 +9,7 @@
     "license": "GPL-3.0-or-later",
     "dependencies": {
         "@ckeditor/ckeditor5-build-classic": "^23.1.0",
-        "@yaireo/tagify": "2.9.1",
+        "@yaireo/tagify": "4.9.8",
         "bootstrap": "3.4.1",
         "bootstrap-datepicker": "1.8.0",
         "bootstrap-toggle": "2.2.2",

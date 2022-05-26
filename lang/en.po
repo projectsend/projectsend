@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend admin\n"
-"POT-Creation-Date: 2022-05-24 02:06-0300\n"
-"PO-Revision-Date: 2022-05-24 02:06-0300\n"
+"POT-Creation-Date: 2022-05-25 22:42-0300\n"
+"PO-Revision-Date: 2022-05-25 22:42-0300\n"
 "Last-Translator: \n"
 "Language-Team: ProjectSend <contact@projectsend.org>\n"
 "Language: en\n"
@@ -59,32 +59,32 @@ msgid "Activities actions"
 msgstr ""
 
 #: actions-log.php:156 categories.php:198 clients-membership-requests.php:182
-#: clients-requests.php:232 clients.php:168 cron-log.php:125 groups.php:155
+#: clients-requests.php:232 clients.php:168 cron-log.php:122 groups.php:155
 #: manage-files.php:430 users.php:215
 msgid "Select action"
 msgstr ""
 
-#: actions-log.php:157 cron-log.php:126
+#: actions-log.php:157 cron-log.php:123
 msgid "Download as csv"
 msgstr ""
 
-#: actions-log.php:158 cron-log.php:127
+#: actions-log.php:158 cron-log.php:124
 msgid "Delete selected"
 msgstr ""
 
-#: actions-log.php:159 cron-log.php:128
+#: actions-log.php:159 cron-log.php:125
 msgid "Clear entire log"
 msgstr ""
 
 #: actions-log.php:169 categories.php:209 clients-membership-requests.php:194
-#: clients-requests.php:244 clients.php:181 cron-log.php:138 groups.php:166
+#: clients-requests.php:244 clients.php:181 cron-log.php:135 groups.php:166
 #: manage-files.php:461 users.php:228
 msgid "Proceed"
 msgstr ""
 
 #: actions-log.php:176 categories.php:217 clients-membership-requests.php:201
-#: clients-requests.php:251 clients.php:188 cron-log.php:145 groups.php:173
-#: import-orphans.php:162 manage-files.php:469 users.php:235
+#: clients-requests.php:251 clients.php:188 cron-log.php:142 groups.php:173
+#: import-orphans.php:101 manage-files.php:469 users.php:235
 #, php-format
 msgid "Found %d elements"
 msgstr ""
@@ -99,15 +99,15 @@ msgstr ""
 msgid "There are no activities recorded."
 msgstr ""
 
-#: actions-log.php:218 cron-log.php:182 download-information.php:131
+#: actions-log.php:218 cron-log.php:179 download-information.php:131
 msgid "Date"
 msgstr ""
 
-#: actions-log.php:223 cron-log.php:187 templates.php:75
+#: actions-log.php:223 templates.php:75
 msgid "Author"
 msgstr ""
 
-#: actions-log.php:228 cron-log.php:192
+#: actions-log.php:228
 msgid "Activity"
 msgstr ""
 
@@ -158,7 +158,7 @@ msgstr ""
 
 #: categories.php:227 clients-membership-requests.php:233
 #: clients-requests.php:283 clients.php:198 groups.php:183
-#: import-orphans.php:277 manage-files.php:479 users.php:244
+#: import-orphans.php:245 manage-files.php:479 users.php:244
 msgid "Your search keywords returned no results."
 msgstr ""
 
@@ -188,8 +188,8 @@ msgstr ""
 msgid "View"
 msgstr ""
 
-#: categories.php:270 clients.php:288 cron-log.php:121 files-edit.php:128
-#: groups.php:261 import-orphans.php:217 manage-files.php:604 users.php:312
+#: categories.php:270 clients.php:288 cron-log.php:118 files-edit.php:128
+#: groups.php:261 import-orphans.php:180 manage-files.php:604 users.php:312
 msgid "Actions"
 msgstr ""
 
@@ -457,12 +457,20 @@ msgstr ""
 msgid "Please select at least one entries."
 msgstr ""
 
-#: cron-log.php:50
+#: cron-log.php:47
 msgid "The log was cleared."
 msgstr ""
 
-#: cron-log.php:155
+#: cron-log.php:152
 msgid "There are no executions recorded."
+msgstr ""
+
+#: cron-log.php:184
+msgid "SAPI"
+msgstr ""
+
+#: cron-log.php:189
+msgid "Results"
 msgstr ""
 
 #: dashboard.php:10 includes/main-menu.php:59
@@ -517,11 +525,11 @@ msgstr ""
 msgid "File information"
 msgstr ""
 
-#: download.php:107
+#: download.php:104
 msgid "Download file"
 msgstr ""
 
-#: download.php:119 public.php:295 register.php:167 reset-password.php:273
+#: download.php:116 public.php:295 register.php:167 reset-password.php:273
 msgid "Go back to the homepage."
 msgstr ""
 
@@ -971,7 +979,7 @@ msgid "Toggle menu"
 msgstr ""
 
 #: header.php:89 includes/forms/login-ldap.php:16 includes/forms/login.php:25
-#: includes/forms/options/general.php:79 install/make-config.php:315
+#: includes/forms/options/general.php:82 install/make-config.php:315
 msgid "Language"
 msgstr ""
 
@@ -983,50 +991,58 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: import-orphans.php:18 includes/main-menu.php:87
+#: import-orphans.php:19 includes/main-menu.php:87
 msgid "Find orphan files"
 msgstr ""
 
-#: import-orphans.php:25
+#: import-orphans.php:108
+msgid "Allowed"
+msgstr ""
+
+#: import-orphans.php:113
+msgid "Not allowed"
+msgstr ""
+
+#: import-orphans.php:139
 msgid ""
 "This list only shows the files that are allowed according to your security "
 "settings. If the file type you need to add is not listed here, add the "
 "extension to the \"Allowed file extensions\" box on the options page."
 msgstr ""
 
-#: import-orphans.php:177
+#: import-orphans.php:140
 msgid "The following files can be imported"
 msgstr ""
 
-#: import-orphans.php:197
+#: import-orphans.php:160
 msgid "File name"
 msgstr ""
 
-#: import-orphans.php:203
+#: import-orphans.php:166
 msgid "File size"
 msgstr ""
 
-#: import-orphans.php:210
+#: import-orphans.php:173
 msgid "Last modified"
 msgstr ""
 
-#: import-orphans.php:248
+#: import-orphans.php:214
 msgid "Import"
 msgstr ""
 
-#: import-orphans.php:261 includes/Classes/TableGenerate.php:275
+#: import-orphans.php:228 includes/Classes/TableGenerate.php:275
 msgid "Results navigation"
 msgstr ""
 
-#: import-orphans.php:267
+#: import-orphans.php:234
 msgid "Import selected files"
 msgstr ""
 
-#: import-orphans.php:282
+#: import-orphans.php:250
 msgid "There are no files available to add right now."
 msgstr ""
 
-#: import-orphans.php:283
+#: import-orphans.php:251
 msgid "To use this feature you need to upload your files via FTP to the folder"
 msgstr ""
 
@@ -1222,64 +1238,64 @@ msgstr ""
 msgid "An email template was updated"
 msgstr ""
 
-#: includes/Classes/Auth.php:264
+#: includes/Classes/Auth.php:263
 msgid "Email and password cannot be empty."
 msgstr ""
 
-#: includes/Classes/Auth.php:283
+#: includes/Classes/Auth.php:282
 #, php-format
 msgid "LDAP connection error: %s"
 msgstr ""
 
-#: includes/Classes/Auth.php:321 includes/Classes/Auth.php:331
+#: includes/Classes/Auth.php:320 includes/Classes/Auth.php:330
 msgid "The supplied email or password does not match an existing record."
 msgstr ""
 
-#: includes/Classes/Auth.php:340
+#: includes/Classes/Auth.php:339
 msgid "Error binding to LDAP server."
 msgstr ""
 
-#: includes/Classes/Auth.php:363
+#: includes/Classes/Auth.php:362
 msgid "Error during log in."
 msgstr ""
 
-#: includes/Classes/Auth.php:373
+#: includes/Classes/Auth.php:372
 msgid "The supplied credentials are not valid."
 msgstr ""
 
-#: includes/Classes/Auth.php:376
+#: includes/Classes/Auth.php:375
 msgid "The supplied username doesn't exist."
 msgstr ""
 
-#: includes/Classes/Auth.php:379
+#: includes/Classes/Auth.php:378
 msgid "The supplied password is incorrect."
 msgstr ""
 
-#: includes/Classes/Auth.php:383
+#: includes/Classes/Auth.php:382
 msgid "This account is not active."
 msgstr ""
 
-#: includes/Classes/Auth.php:385
+#: includes/Classes/Auth.php:384
 msgid ""
 "If you just registered, please wait until a system administrator approves "
 "your account."
 msgstr ""
 
-#: includes/Classes/Auth.php:389 register.php:107
+#: includes/Classes/Auth.php:388 register.php:107
 msgid ""
 "Client self registration is not allowed. If you need an account, please "
 "contact a system administrator."
 msgstr ""
 
-#: includes/Classes/Auth.php:392
+#: includes/Classes/Auth.php:391
 msgid "Sign-in with Google cannot be used to create new accounts at this time."
 msgstr ""
 
-#: includes/Classes/Auth.php:395
+#: includes/Classes/Auth.php:394
 msgid "You must approve the requested permissions to sign in with Google."
 msgstr ""
 
-#: includes/Classes/Auth.php:398
+#: includes/Classes/Auth.php:397
 msgid "Session timed out. Please log in again."
 msgstr ""
 
@@ -1299,40 +1315,50 @@ msgstr ""
 msgid "IP address blacklisted"
 msgstr ""
 
-#: includes/Classes/Cron.php:97
+#: includes/Classes/Cron.php:103
 msgid "Send email notifications"
 msgstr ""
 
-#: includes/Classes/Cron.php:106 includes/Classes/Cron.php:146
+#: includes/Classes/Cron.php:112 includes/Classes/Cron.php:152
+#: includes/Classes/Cron.php:204
 msgid "Found"
 msgstr ""
 
-#: includes/Classes/Cron.php:116
+#: includes/Classes/Cron.php:122
 msgid "Succesfully sent"
 msgstr ""
 
-#: includes/Classes/Cron.php:120 includes/Classes/Cron.php:161
+#: includes/Classes/Cron.php:126 includes/Classes/Cron.php:167
+#: includes/Classes/Cron.php:212
 msgid "Failed"
 msgstr ""
 
-#: includes/Classes/Cron.php:124
+#: includes/Classes/Cron.php:130
 msgid "Skipped (inactive accounts)"
 msgstr ""
 
-#: includes/Classes/Cron.php:136 includes/forms/options/cron.php:51
+#: includes/Classes/Cron.php:142 includes/forms/options/cron.php:51
 msgid "Delete expired files"
 msgstr ""
 
-#: includes/Classes/Cron.php:157
+#: includes/Classes/Cron.php:163 includes/Classes/Cron.php:208
 msgid "Succesfully deleted"
 msgstr ""
 
-#: includes/Classes/Cron.php:196
+#: includes/Classes/Cron.php:192 includes/forms/options/cron.php:60
+msgid "Delete orphan files"
+msgstr ""
+
+#: includes/Classes/Cron.php:255
 msgid "Task disabled. Skipping."
 msgstr ""
 
-#: includes/Classes/Cron.php:204
+#: includes/Classes/Cron.php:263
 msgid "Total:"
+msgstr ""
+
+#: includes/Classes/Cron.php:289
+msgid "Cron results"
 msgstr ""
 
 #: includes/Classes/EmailNotificacions.php:172
@@ -1515,19 +1541,24 @@ msgstr ""
 msgid "The client requests access to the following group(s)"
 msgstr ""
 
-#: includes/Classes/Emails.php:283 includes/Classes/Emails.php:533
+#: includes/Classes/Emails.php:288 includes/Classes/Emails.php:538
 msgid "No group requests made"
 msgstr ""
 
-#: includes/Classes/Emails.php:552
+#: includes/Classes/Emails.php:555
 msgid "Email configuration test"
 msgstr ""
 
-#: includes/Classes/Emails.php:604
+#: includes/Classes/Emails.php:627
 msgid "This is a test message"
 msgstr ""
 
-#: includes/Classes/Emails.php:733
+#: includes/Classes/Emails.php:642
+#, php-format
+msgid "Sent from %s"
+msgstr ""
+
+#: includes/Classes/Emails.php:762
 msgid ""
 "This email contains HTML formatting and cannot be displayed right now. "
 "Please use an HTML compatible reader."
@@ -1952,26 +1983,49 @@ msgid ""
 "once\" to throttle emails and prevent issues."
 msgstr ""
 
-#: includes/forms/options/cron.php:68
+#: includes/forms/options/cron.php:53
+#, php-format
+msgid "Current date/time according to your settings is %s."
+msgstr ""
+
+#: includes/forms/options/cron.php:66
+msgid "Orphan files to delete:"
+msgstr ""
+
+#: includes/forms/options/cron.php:71
+msgid "All orphan files"
+msgstr ""
+
+#: includes/forms/options/cron.php:72
+msgid "Only files with extensions that are not allowed"
+msgstr ""
+
+#: includes/forms/options/cron.php:94
 msgid "Execution results"
 msgstr ""
 
-#: includes/forms/options/cron.php:73
+#: includes/forms/options/cron.php:99
 msgid "Save results on database"
 msgstr ""
 
-#: includes/forms/options/cron.php:75
+#: includes/forms/options/cron.php:101
 msgid ""
 "Important: each run of the cron job will add a record to the database. Watch "
 "the size of the cron log table and clean it if it gets too big."
 msgstr ""
 
-#: includes/forms/options/cron.php:82
+#: includes/forms/options/cron.php:108
 msgid "E-mail results summary after each execution"
 msgstr ""
 
-#: includes/forms/options/cron.php:88
+#: includes/forms/options/cron.php:114
 msgid "E-mail to send the summary to"
+msgstr ""
+
+#: includes/forms/options/cron.php:117
+msgid ""
+"Leaving this field empty will send the results to the default \"from\" "
+"address."
 msgstr ""
 
 #: includes/forms/options/email.php:1
@@ -2194,15 +2248,8 @@ msgid "Time format"
 msgstr ""
 
 #: includes/forms/options/general.php:28
-msgid "For example, d/m/Y h:i:s will result in something like"
-msgstr ""
-
-#: includes/forms/options/general.php:28
-msgid "(current server time)"
-msgstr ""
-
-#: includes/forms/options/general.php:28
-msgid "This date will be used for files expiration settings."
+#, php-format
+msgid "For example, %s will display the current date and time like this: %s"
 msgstr ""
 
 #: includes/forms/options/general.php:29
@@ -2211,86 +2258,96 @@ msgid ""
 "For the full list of available values, visit %s the official PHP Manual %s"
 msgstr ""
 
-#: includes/forms/options/general.php:36
+#: includes/forms/options/general.php:30
+msgid "This date will be considered for files expiration."
+msgstr ""
+
+#: includes/forms/options/general.php:31
+msgid ""
+"You can adjust your timezone if your local date/time does not match your "
+"server's settings."
+msgstr ""
+
+#: includes/forms/options/general.php:39
 msgid "Use custom footer text"
 msgstr ""
 
-#: includes/forms/options/general.php:42
+#: includes/forms/options/general.php:45
 msgid "Footer content"
 msgstr ""
 
-#: includes/forms/options/general.php:49
+#: includes/forms/options/general.php:52
 msgid "Pagination results per page"
 msgstr ""
 
-#: includes/forms/options/general.php:61
+#: includes/forms/options/general.php:64
 msgid "Applies to pagination in all administration areas"
 msgstr ""
 
-#: includes/forms/options/general.php:67
+#: includes/forms/options/general.php:70
 msgid "Editor"
 msgstr ""
 
-#: includes/forms/options/general.php:72
+#: includes/forms/options/general.php:75
 msgid "Use the visual editor on files descriptions"
 msgstr ""
 
-#: includes/forms/options/general.php:84
+#: includes/forms/options/general.php:87
 msgid "Detect user browser language"
 msgstr ""
 
-#: includes/forms/options/general.php:85
+#: includes/forms/options/general.php:88
 msgid ""
 "If available, will override the default one from the system configuration "
 "file. Affects all users and clients."
 msgstr ""
 
-#: includes/forms/options/general.php:92 includes/widgets/counters.php:37
+#: includes/forms/options/general.php:95 includes/widgets/counters.php:37
 msgid "Downloads"
 msgstr ""
 
-#: includes/forms/options/general.php:94
+#: includes/forms/options/general.php:97
 msgid "Download method"
 msgstr ""
 
-#: includes/forms/options/general.php:102
+#: includes/forms/options/general.php:105
 msgid ""
 "Serving files with php is the default method and does not require any "
 "changes to your webserver. However, very large files could download with "
 "errors depending on your php configuration."
 msgstr ""
 
-#: includes/forms/options/general.php:105
+#: includes/forms/options/general.php:108
 msgid ""
 "XSendfile improves downloads by allowing the web server to send the file "
 "directly bypassing php and it's limitations. This in an advanced feature "
 "that requires you to install and enable a module on your server."
 msgstr ""
 
-#: includes/forms/options/general.php:106
+#: includes/forms/options/general.php:109
 msgid ""
 "Be aware that if the module is not set up correctly, downloads will trigger "
 "but the files will have a length of 0 bytes."
 msgstr ""
 
-#: includes/forms/options/general.php:109
+#: includes/forms/options/general.php:112
 msgid ""
 "X-Accel is a method available in nginx that allows the system to serve files "
 "directly, bypassing php and it's limitations. To configure it, you need to "
 "edit your server block and add the following code:"
 msgstr ""
 
-#: includes/forms/options/general.php:120
+#: includes/forms/options/general.php:123
 msgid "System location"
 msgstr ""
 
-#: includes/forms/options/general.php:121
+#: includes/forms/options/general.php:124
 msgid ""
 "These options are to be changed only if you are moving the system to another "
 "place. Changes here can cause ProjectSend to stop working."
 msgstr ""
 
-#: includes/forms/options/general.php:124
+#: includes/forms/options/general.php:127
 msgid "System URI"
 msgstr ""
 
@@ -2995,11 +3052,11 @@ msgid ""
 "assign them later."
 msgstr ""
 
-#: includes/functions.php:1462
+#: includes/functions.php:1477
 msgid "The password must contain, at least:"
 msgstr ""
 
-#: includes/functions.php:1902
+#: includes/functions.php:1917
 msgid "Verification"
 msgstr ""
 
@@ -3527,38 +3584,38 @@ msgstr ""
 msgid "Driver"
 msgstr ""
 
-#: index.php:73
+#: index.php:71
 #, php-format
 msgid "Please wait %s seconds before attempting to log in again."
 msgstr ""
 
-#: index.php:75
+#: index.php:73
 msgid ""
 "Warning: You are about to reach the failed attempts limit, which will "
 "completely block your access for a few minutes."
 msgstr ""
 
-#: index.php:130
+#: index.php:128
 msgid "Forgot your password?"
 msgstr ""
 
-#: index.php:130
+#: index.php:128
 msgid "Set up a new one."
 msgstr ""
 
-#: index.php:134 public.php:291
+#: index.php:132 public.php:291
 msgid "Don't have an account yet?"
 msgstr ""
 
-#: index.php:134 public.php:291
+#: index.php:132 public.php:291
 msgid "Register as a new client."
 msgstr ""
 
-#: index.php:138
+#: index.php:136
 msgid "This server does not allow self registrations."
 msgstr ""
 
-#: index.php:139
+#: index.php:137
 msgid "If you need an account, please contact a server administrator."
 msgstr ""
 

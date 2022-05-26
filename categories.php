@@ -108,7 +108,7 @@ $form_information = array(
                         );
 
 /** Loading the form in EDIT mode */
-if ( (!empty( $_GET['action'] ) && $_GET['action'] == 'edit' ) or !empty( $_POST['editing_id'] )) {
+if ( (isset( $_GET['form'] ) && $_GET['form'] == 'edit' ) or !empty( $_POST['editing_id'] )) {
     $action				= 'edit';
     $editing			= !empty( $_POST['editing_id'] ) ? $_POST['editing_id'] : $_GET['id'];
     $form_information	= array(
@@ -341,7 +341,7 @@ if ( isset( $_POST['btn_process'] ) ) {
                                                                 'content'		=> '<a href="'. $files_link .'" class="btn btn-sm ' . $files_button . '">' . __('Manage files','cftp_admin') . '</a>',
                                                             ),
                                                         array(
-                                                                'content'		=> '<a href="categories.php?action=edit&id=' . $category["id"] .'" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a>'
+                                                                'content'		=> '<a href="categories.php?form=edit&id=' . $category["id"] .'" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a>'
                                                             ),
                                                     );
                                 foreach ( $tbody_cells as $cell ) {

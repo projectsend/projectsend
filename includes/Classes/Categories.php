@@ -87,7 +87,7 @@ class Categories
         if ($this->statement->rowCount() == 0) {
             return false;
         }
-    
+
         while ($this->row = $this->statement->fetch() ) {
             $this->name = html_output($this->row['name']);
             $this->parent = html_output($this->row['parent']);
@@ -111,7 +111,7 @@ class Categories
 
         return $return;
     }
- 
+
 	/**
 	 * Validate the information from the form.
 	 */
@@ -166,7 +166,7 @@ class Categories
         $this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_CATEGORIES . " (name,parent,description,created_by)"
                                             ."VALUES (:name, :parent, :description, :created_by)");
         $this->statement->bindParam(':name', $this->name);
-        
+
         if (empty($this->parent)) {
             $this->parent = 0;
             $this->statement->bindValue(':parent', $this->parent, PDO::PARAM_NULL);
@@ -174,7 +174,7 @@ class Categories
         else {
             $this->statement->bindValue(':parent', $this->parent, PDO::PARAM_INT);
         }
-        
+
         $this->statement->bindParam(':description', $this->description);
         $this->statement->bindParam(':created_by', $this->created_by);
 
@@ -201,6 +201,29 @@ class Categories
         return $this->state;
     }
 
+    private function checkParentValidation()
+    {
+      if($this->id == $this->parent)
+        return false;
+      else{
+          //Check if the parent is not a child of the current category id
+          $category_parent_query = "select id, parent from ".TABLE_CATEGORIES;
+          $category_parent_query_statment = $this->dbh->prepare($category_parent_query);
+          $category_parent_query_statment->execute();
+
+          $array_category_parent = $category_parent_query_statment->fetchAll(PDO::FETCH_KEY_PAIR);
+
+          $point = $this->parent;
+          while($array_category_parent[$point]!=null){
+            if($array_category_parent[$point]==$this->id)
+              return false;
+            $point = $point->parent;
+          }
+
+      }
+      return true;
+    }
+
 	/**
 	 * Edit an existing user.
 	 */
@@ -211,11 +234,14 @@ class Categories
         }
 
         $this->state = array();
- 
+
+        $query_update_parent = "";
+        if($this->parent == '0' || $this->checkParentValidation() )
+          $query_update_parent = "parent = :parent,";
         /** SQL query */
-        $this->edit_category_query = "UPDATE " . TABLE_CATEGORIES . " SET 
+        $this->edit_category_query = "UPDATE " . TABLE_CATEGORIES . " SET
                                     name = :name,
-                                    parent = :parent,
+                                    ".$query_update_parent."
                                     description = :description
                                     WHERE id = :id
                                     ";
@@ -227,9 +253,10 @@ class Categories
             $this->parent == null;
             $this->statement->bindValue(':parent', $this->parent, PDO::PARAM_NULL);
         }
-        else {
+        else
+          if($query_update_parent!=""){
             $this->statement->bindValue(':parent', $this->parent, PDO::PARAM_INT);
-        }
+          }
         $this->statement->bindParam(':description', $this->description);
         $this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
 
@@ -268,7 +295,7 @@ class Categories
             $this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_CATEGORIES . ' WHERE id=:id');
             $this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
             $this->sql->execute();
-            
+
             /** Record the action log */
             $record = $this->logger->addEntry([
                 'action' => 36,

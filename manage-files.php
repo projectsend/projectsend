@@ -71,6 +71,23 @@ if (isset($_GET['category'])) {
     }
 }
 
+// Setting the filter options to avoid duplicates
+$filter_options_uploader = array(
+    '0' => __('Uploader','cftp_admin'),
+);
+$sql_uploaders = $dbh->prepare("SELECT uploader FROM " . TABLE_FILES . " GROUP BY uploader");
+$sql_uploaders->execute();
+$sql_uploaders->setFetchMode(PDO::FETCH_ASSOC);
+while( $data_uploaders = $sql_uploaders->fetch() ) {
+    $filter_options_uploader[$data_uploaders['uploader']] = $data_uploaders['uploader'];
+}
+
+$filter_options_assigned = array(
+    '0'	=> __('All files','cftp_admin'),
+    'assigned' => __('Assigned','cftp_admin'),
+    'not_assigned' => __('Not assigned','cftp_admin'),
+);
+
 /**
  * Apply the corresponding action to the selected files.
  */
@@ -264,6 +281,26 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                     $params[':uploader'] = $_GET['uploader'];
                 }
 
+                /**
+                 * Filter by assignations
+                 */	
+                if(isset($_GET['assigned']) && !empty($_GET['assigned'])) {
+                    if (array_key_exists($_GET['assigned'], $filter_options_assigned)) {
+                        $assigned_files_id = array();
+                        $statement = $dbh->prepare("SELECT DISTINCT file_id FROM " . TABLE_FILES_RELATIONS);
+                        $statement->execute();
+                        $statement->setFetchMode(PDO::FETCH_ASSOC);
+                        while ( $file_data = $statement->fetch() ) {
+                            $assigned_files_id[] = $file_data['file_id'];
+                        }
+                        $assigned_files_id = implode(',',$assigned_files_id);
+            
+                        /** Overwrite the parameter set previously */
+                        $pre = ($_GET['assigned'] == 'not_assigned') ? 'NOT ' : '';
+                        $conditions[] = $pre."FIND_IN_SET(id, :files)";
+                        $params[':files'] = $assigned_files_id;
+                    }
+                }
 
                 /**
                  * If the user is an uploader, or a client is editing their files
@@ -350,24 +387,24 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                         if( CURRENT_USER_LEVEL != '0' && $results_type == 'global') {
                     ?>
                         <form action="manage-files.php" name="files_filters" method="get" class="form-inline form_filters">
-                            <?php form_add_existing_parameters( array('hidden', 'action', 'uploader') ); ?>
+                            <?php form_add_existing_parameters( array('hidden', 'action', 'uploader', 'assigned') ); ?>
                             <div class="form-group group_float">
                                 <select name="uploader" id="uploader" class="txtfield form-control">
                                     <?php
-                                        $status_options = array(
-                                                                '0'		=> __('Uploader','cftp_admin'),
-                                                            );
-                                        $sql_uploaders = $dbh->prepare("SELECT uploader FROM " . TABLE_FILES . " GROUP BY uploader");
-                                        $sql_uploaders->execute();
-                                        $sql_uploaders->setFetchMode(PDO::FETCH_ASSOC);
-
-                                        while( $data_uploaders = $sql_uploaders->fetch() ) {
-                                            $status_options[$data_uploaders['uploader']] = $data_uploaders['uploader'];
-                                        }
-
-                                        foreach ( $status_options as $val => $text ) {
+                                        foreach ( $filter_options_uploader as $val => $text ) {
                                     ?>
                                             <option value="<?php echo $val; ?>" <?php if ( isset( $_GET['uploader'] ) && $_GET['uploader'] == $val ) { echo 'selected="selected"'; } ?>><?php echo $text; ?></option>
+                                    <?php
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="form-group group_float">
+                                <select name="assigned" id="assigned" class="txtfield form-control">
+                                    <?php
+                                        foreach ( $filter_options_assigned as $val => $text ) {
+                                    ?>
+                                            <option value="<?php echo $val; ?>" <?php if ( isset( $_GET['assigned'] ) && $_GET['assigned'] == $val ) { echo 'selected="selected"'; } ?>><?php echo $text; ?></option>
                                     <?php
                                         }
                                     ?>

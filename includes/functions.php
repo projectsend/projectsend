@@ -1135,7 +1135,9 @@ function delete_file_from_disk($filename)
 	if ( file_exists( $filename ) ) {
 		@chmod($filename, 0777);
 		return unlink($filename);
-	}
+	} else {
+        return true;
+    }
 
     return false;
 }

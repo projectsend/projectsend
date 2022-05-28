@@ -37,6 +37,7 @@ Your server needs to be configured with at least:
   * fileinfo
   * gd2
   * xml
+* cURL extension is recommended
 
 (*) If you are using version 8.x or newer, please set the authentication method of your database so it uses the MySQL native password. The default method (caching_sha2_password) will not work. Thanks to user jellevdbos for pointing this out.
 
@@ -63,9 +64,11 @@ Preparations:
 
 When those are steps are completed, follow this instructions:
 
-1. Rename includes/sys.config.sample.php to sys.config.php and set your database info there.
-2. Upload ProjectSend to your selected destination.
-3. Open your browser and go to https://your-projectsend-folder/install
+1. Upload ProjectSend to your selected destination folder.
+2. Either:
+    * Rename includes/sys.config.sample.php to sys.config.php and set your database info there.
+    * Skip to next item to generate the file by inputting the data into a form in your browser.
+3. Go to https://your-projectsend-folder/install
 4. Complete the information there and wait for the correct installation message.
 
 Congratulations! ProjectSend is now installed and ready for action!

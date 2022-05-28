@@ -670,7 +670,7 @@ class Files
             }
         }
 
-        if (isset($this->check_level) && current_role_in(array(9,8))) {
+        if (current_role_in(array(9,8))) {
             return true;
         }
 

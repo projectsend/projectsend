@@ -19,6 +19,38 @@
 
 <div class="options_divide"></div>
 
+<h3><?php _e('Downloads','cftp_admin'); ?></h3>
+
+<div class="form-group">
+    <label for="privacy_record_downloads_ip_address" class="col-sm-4 control-label"><?php _e('Log IP address and host for:','cftp_admin'); ?></label>
+    <div class="col-sm-8">
+        <select class="form-control" name="privacy_record_downloads_ip_address" id="privacy_record_downloads_ip_address" required>
+            <?php
+                $orphan_options = [
+                    'all' => __('All downloads','cftp_admin'),
+                    'anonymous' => __('Anonymous users only','cftp_admin'),
+                    'none' => __('Never record IP address and host','cftp_admin'),
+                ];
+
+                foreach ( $orphan_options as $value => $label ) {
+            ?>
+                    <option value="<?php echo $value; ?>"
+                        <?php
+                            if (get_option('privacy_record_downloads_ip_address') == $value) {
+                                echo 'selected="selected"';
+                            }
+                        ?>
+                        ><?php echo $label; ?>
+                    </option>
+            <?php
+                }
+            ?>
+        </select>
+    </div>
+</div>
+
+<div class="options_divide"></div>
+
 <h3><?php _e('Public groups and files listings page','cftp_admin'); ?></h3>
 
 <div class="form-group">

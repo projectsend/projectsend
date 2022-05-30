@@ -664,6 +664,10 @@ body.login {
         }
     }
 
+    .readonly-not-grayed {
+        background-color: white !important;
+    }
+
     .field_error {
         border:1px solid #B94A48 !important;
     }

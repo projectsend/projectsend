@@ -79,6 +79,29 @@
 
 <div class="options_divide"></div>
 
+<h3><?php _e('Uploads defaults','cftp_admin'); ?></h3>
+
+<div class="form-group">
+    <div class="col-sm-8 col-sm-offset-4">
+        <label for="files_default_expire">
+            <input type="checkbox" value="1" name="files_default_expire" id="files_default_expire" class="checkbox_options" <?php echo (get_option('files_default_expire') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Files expire by default",'cftp_admin'); ?>
+        </label>
+        <p class="field_note">
+            <?php _e('Users can always set an expiration date for files. This option just makes the checkbox marked by default in the editor.', 'cftp_admin'); ?>
+            <?php _e('For clients not allowed to set it, this setting will be directly applied to the file.', 'cftp_admin'); ?>
+        </p>
+    </div>
+</div>
+
+<div class="form-group">
+    <label for="files_default_expire_days_after" class="col-sm-4 control-label"><?php _e('After these many days:','cftp_admin'); ?></label>
+    <div class="col-sm-8">
+        <input type="text" name="files_default_expire_days_after" id="files_default_expire_days_after" class="form-control" value="<?php echo html_output(get_option('files_default_expire_days_after')); ?>" />
+    </div>
+</div>
+
+<div class="options_divide"></div>
+
 <h3><?php _e('Language','cftp_admin'); ?></h3>
 
 <div class="form-group">

@@ -732,11 +732,14 @@ class Files
     
     public function setDefaults()
     {
+        $expire = get_option('files_default_expire');
+        $expire_days_option = get_option('files_default_expire_days_after');
+        $expire_days = (!empty($expire_days_option) && is_numeric($expire_days_option)) ? $expire_days_option : 30;
         $this->title = $this->filename_original;
         $this->description = null;
-        $this->expires = 0;
+        $this->expires = (!empty($expire)) ? $expire : 0;
         $this->public = 0;
-        $this->expiry_date = date('Y-m-d', strtotime('+30 days'));
+        $this->expiry_date = date('Y-m-d', strtotime("+$expire_days days"));
     }
 
     /**
@@ -840,6 +843,7 @@ class Files
             $this->name = $this->filename_original;
         }
 
+        $is_public = (is_null($this->is_public) ? 0 : $this->is_public);
         $statement = $this->dbh->prepare("UPDATE " . TABLE_FILES . " SET
             filename = :title,
             description = :description,
@@ -852,7 +856,6 @@ class Files
         $statement->bindParam(':description', $this->description);
         $statement->bindParam(':expires', $this->expires, PDO::PARAM_INT);
         $statement->bindParam(':expiry_date', $this->expiry_date);
-	$is_public = (is_null($this->is_public)?0:$this->is_public);
         $statement->bindParam(':public', $is_public, PDO::PARAM_INT);
         $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $statement->execute();

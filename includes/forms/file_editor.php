@@ -65,7 +65,7 @@
                                                     <div class="form-group">
                                                         <label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
                                                         <div class="input-group date-container">
-                                                            <input type="text" class="date-field form-control datapick-field readonly-not-grayed" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($file->expiry_date)) ? date('d-m-Y', strtotime($file->expiry_date)) : date('d-m-Y'); ?>" />
+                                                            <input type="text" class="date-field form-control datapick-field readonly-not-grayed" readonly id="file_expiry_date_<?php echo $i; ?>" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($file->expiry_date)) ? date('d-m-Y', strtotime($file->expiry_date)) : date('d-m-Y'); ?>" />
                                                             <div class="input-group-addon">
                                                                 <i class="glyphicon glyphicon-time"></i>
                                                             </div>
@@ -74,9 +74,13 @@
 
                                                     <div class="checkbox">
                                                         <label for="exp_checkbox_<?php echo $i; ?>">
-                                                            <input type="checkbox" name="file[<?php echo $i; ?>][expires]" id="exp_checkbox_<?php echo $i; ?>" value="1" <?php if ($file->expires) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?>
+                                                            <input type="checkbox" class="checkbox_setting_expires" name="file[<?php echo $i; ?>][expires]" id="exp_checkbox_<?php echo $i; ?>" value="1" <?php if ($file->expires) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?>
                                                         </label>
                                                     </div>
+
+                                                    <?php if (count($editable) > 1) { ?>
+                                                        <button type="button" class="btn btn-xs btn-success copy-expiration-settings" data-copy-from="exp_checkbox_<?php echo $i; ?>" data-copy-date-from="file_expiry_date_<?php echo $i; ?>"><?php _e('Apply to all other files','cftp_admin'); ?></button>
+                                                    <?php } ?>
 
                                                     <?php
                                                         /** The following options are available to users only */
@@ -89,9 +93,13 @@
 
                                                         <div class="checkbox">
                                                             <label for="pub_checkbox_<?php echo $i; ?>">
-                                                                <input type="checkbox" id="pub_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][public]" value="1" <?php if ($file->public) { ?>checked="checked"<?php } ?>/> <?php _e('Allow public downloading of this file.', 'cftp_admin');?>
+                                                                <input type="checkbox" class="checkbox_setting_public" id="pub_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][public]" value="1" <?php if ($file->public) { ?>checked="checked"<?php } ?>/> <?php _e('Allow public downloading of this file.', 'cftp_admin');?>
                                                             </label>
                                                         </div>
+
+                                                        <?php if (count($editable) > 1) { ?>
+                                                            <button type="button" class="btn btn-xs btn-success copy-public-settings" data-copy-from="pub_checkbox_<?php echo $i; ?>"><?php _e('Copy to all other files','cftp_admin'); ?></button>
+                                                        <?php } ?>
                                                 <?php
                                                     } /** Close CURRENT_USER_LEVEL check */
                                                 ?>
@@ -160,9 +168,13 @@
 
                                                         <div class="checkbox">
                                                             <label for="hid_checkbox_<?php echo $i; ?>">
-                                                                <input type="checkbox" id="hid_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][hidden]" value="1" /> <?php _e('Hidden (will not send notifications or show into the files list)', 'cftp_admin');?>
+                                                                <input type="checkbox" class="checkbox_setting_hidden" id="hid_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][hidden]" value="1" /> <?php _e('Hidden (will not send notifications or show into the files list)', 'cftp_admin');?>
                                                             </label>
                                                         </div>
+
+                                                        <?php if (count($editable) > 1) { ?>
+                                                            <button type="button" class="btn btn-xs btn-success copy-hidden-settings" data-copy-from="hid_checkbox_<?php echo $i; ?>"><?php _e('Copy to all other files','cftp_admin'); ?></button>
+                                                        <?php } ?>
                                                     </div>
                                                 </div>
 

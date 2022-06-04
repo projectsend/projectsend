@@ -1104,7 +1104,10 @@ function get_real_size($file)
         elseif (PHP_OS == 'Darwin') {
             $ff = trim(shell_exec("stat -L -f %z " . escapeshellarg($file)));
         }
-        elseif ((PHP_OS == 'Linux') || (PHP_OS == 'FreeBSD') || (PHP_OS == 'Unix') || (PHP_OS == 'SunOS')) {
+        elseif (PHP_OS == 'FreeBSD') {
+            $ff = trim(shell_exec("stat -L -f%z " . escapeshellarg($file)));
+        }
+        elseif ((PHP_OS == 'Linux') || (PHP_OS == 'Unix') || (PHP_OS == 'SunOS')) {
             $ff = trim(shell_exec("stat -L -c%s " . escapeshellarg($file)));
         }
     }

@@ -1,9 +1,9 @@
 {
-    "name": "projectsend-legacy",
-    "description": "ProjectSend is an open source, clients-oriented, private file sharing web application. Legacy is the repository for patches and maintenance of the pre-1.0 version, with version number rxxxx",
+    "name": "projectsend",
+    "description": "ProjectSend is an open source, clients-oriented, private file sharing web application.",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/projectsend/projectsend-legacy.git"
+        "url": "git+https://github.com/projectsend/projectsend.git"
     },
     "author": "Ignacio Nelson <info@subwaydesign.com.ar>",
     "license": "GPL-3.0-or-later",

@@ -6,8 +6,8 @@
 	"homepage": "https://www.projectsend.org/",
 	"support": {
 			"email": "contact@projectsend.org",
-			"issues": "https://github.com/projectsend/projectsend-legacy/issues",
-			"source": "https://github.com/projectsend/projectsend-legacy/"
+			"issues": "https://github.com/projectsend/projectsend/issues",
+			"source": "https://github.com/projectsend/projectsend/"
 	},
 	"config": {
 		"preferred-install": "dist"

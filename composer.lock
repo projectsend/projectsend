@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eb54b5f38a2445123b096e7e56cf282f",
+    "content-hash": "91d2234258728dba65edefba4f9664e7",
     "packages": [
         {
             "name": "claviska/simpleimage",
@@ -394,29 +394,29 @@
         },
         {
             "name": "tamtamchik/simple-flash",
-            "version": "1.2.5",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tamtamchik/simple-flash.git",
-                "reference": "a68ad8d98c527043d1a51d1e7069d3d98c0e3249"
+                "reference": "62fc3d59df2cc5bbd746af25f488b76585362c45"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tamtamchik/simple-flash/zipball/a68ad8d98c527043d1a51d1e7069d3d98c0e3249",
-                "reference": "a68ad8d98c527043d1a51d1e7069d3d98c0e3249",
+                "url": "https://api.github.com/repos/tamtamchik/simple-flash/zipball/62fc3d59df2cc5bbd746af25f488b76585362c45",
+                "reference": "62fc3d59df2cc5bbd746af25f488b76585362c45",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.4.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "4.*",
+                "phpunit/phpunit": "^8",
                 "scrutinizer/ocular": "1.*"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.3.x-dev",
+                    "dev-master": "2.0.x-dev",
                     "1.2.x": "1.2.x-dev",
                     "1.1.x": "1.1.x-dev",
                     "1.0.x": "1.0.x-dev"
@@ -451,9 +451,9 @@
             ],
             "support": {
                 "issues": "https://github.com/tamtamchik/simple-flash/issues",
-                "source": "https://github.com/tamtamchik/simple-flash/tree/master"
+                "source": "https://github.com/tamtamchik/simple-flash/tree/2.0.1"
             },
-            "time": "2018-09-04T13:47:00+00:00"
+            "time": "2020-12-28T10:04:47+00:00"
         }
     ],
     "packages-dev": [],

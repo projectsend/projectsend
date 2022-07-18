@@ -28,7 +28,7 @@
         "moxiecode/plupload": "3.1.5",
         "paragonie/random_compat": "^2.0",
         "phpmailer/phpmailer": "~6.1",
-		"tamtamchik/simple-flash": "^1.2",
+		"tamtamchik/simple-flash": "^2.0",
 		"hybridauth/hybridauth": "^3.0"
 	}
 }

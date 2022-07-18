@@ -1,4 +1,6 @@
 <?php
+use \Tamtamchik\SimpleFlash\Flash;
+
 /**
  * Show the list of current groups.
  *
@@ -62,13 +64,13 @@ if (isset($_POST['action']) && $_POST['action'] != 'none') {
                 }
                 
                 if ($deleted_groups > 0) {
-                    $flash->success(__('The selected groups were deleted.', 'cftp_admin'));
+                    Flash::success(__('The selected groups were deleted.', 'cftp_admin'));
                 }
             break;
         }
     }
     else {
-        $flash->error(__('Please select at least one group.', 'cftp_admin'));
+        Flash::error(__('Please select at least one group.', 'cftp_admin'));
     }
 
     ps_redirect($current_url);

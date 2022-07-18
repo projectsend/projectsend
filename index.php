@@ -1,4 +1,6 @@
 <?php
+use \Tamtamchik\SimpleFlash\Flash;
+
 /**
  * ProjectSend (previously cFTP) is a free, clients-oriented, private file
  * sharing web application.
@@ -19,7 +21,6 @@ require_once 'bootstrap.php';
 
 global $dbh;
 global $auth;
-global $flash;
 global $bfchecker;
 
 $page_title = __('Log in','cftp_admin');
@@ -32,7 +33,7 @@ $current_ip = get_client_ip();
 $bfstatus = $bfchecker->getLoginStatus(get_client_ip());
 switch ($bfstatus['status']) {
     case 'error_403':
-        $flash->clear(); // @todo hack, since flash messages after the last error should not be retained
+        Flash::clear(); // @todo hack, since flash messages after the last error should not be retained
         exitWithErrorCode(403);
     break;
 }
@@ -63,14 +64,14 @@ if ($_POST) {
                 header("Location: ".$decoded->location);
                 exit;
             } else {
-                $flash->error($auth->getLoginError($decoded->type));
+                Flash::error($auth->getLoginError($decoded->type));
 
                 switch ($bfstatus['status']) {
                     case 'delay':
                         if (is_numeric($bfstatus['message'])) {
-                            $flash->error('<div id="message_countdown">'.sprintf(__('Please wait %s seconds before attempting to log in again.', 'cftp_admin'), '<span class="seconds_countdown">'.$bfstatus['message'].'</span>').'</div>');
+                            Flash::error('<div id="message_countdown">'.sprintf(__('Please wait %s seconds before attempting to log in again.', 'cftp_admin'), '<span class="seconds_countdown">'.$bfstatus['message'].'</span>').'</div>');
                             if ($bfstatus['message'] > 150) {
-                                $flash->error(sprintf(__('Warning: You are about to reach the failed attempts limit, which will completely block your access for a few minutes.', 'cftp_admin'), $bfstatus['message']));
+                                Flash::error(sprintf(__('Warning: You are about to reach the failed attempts limit, which will completely block your access for a few minutes.', 'cftp_admin'), $bfstatus['message']));
                             }
                         }
                     break;
@@ -107,8 +108,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
         <div class="white-box-interior">
             <div class="ajax_response">
                 <?php
-                    if ($flash->hasMessages()) {
-                        echo $flash;
+                    if (Flash::hasMessages()) {
+                        echo Flash::display();
                     }
                 ?>
             </div>

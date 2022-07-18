@@ -1,4 +1,6 @@
 <?php
+use \Tamtamchik\SimpleFlash\Flash;
+
 /**
  * Show the form to register a new account for yourself.
  *
@@ -58,9 +60,8 @@ if ($_POST) {
 
             if (get_option('clients_auto_approve') == 1) {
                 global $auth;
-                global $flash;
                 $auth->authenticate($_POST['username'], $_POST['password']);
-                $flash->success(__('Thank you for registering. Your account has been activated.', 'cftp_admin'));
+                Flash::success(__('Thank you for registering. Your account has been activated.', 'cftp_admin'));
                 $redirect_url = 'my_files/index.php';
             } else {
                 $redirect_url = BASE_URI.'register.php?success=1';

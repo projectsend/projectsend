@@ -16,9 +16,6 @@ require_once ROOT_DIR.'/includes/app.php';
 /** Load the database class */
 require_once ROOT_DIR.'/includes/database.php';
 
-/** Flash messages */
-require_once ROOT_DIR . '/includes/flash.php';
-
 /** Load the site options */
 if ( !defined( 'IS_MAKE_CONFIG' ) ) {
     require_once ROOT_DIR.'/includes/site.options.php';

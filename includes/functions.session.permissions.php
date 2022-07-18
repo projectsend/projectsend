@@ -1,4 +1,6 @@
 <?php
+use \Tamtamchik\SimpleFlash\Flash;
+
 /**
  * Contains all the functions used to validate the current logged in
  * client or user.
@@ -69,14 +71,13 @@ function can_see_content($allowed_levels = null) {
 // Requires password change?
 function password_change_required()
 {
-    global $flash;
     $session_user = new \ProjectSend\Classes\Users;
     $session_user->get(CURRENT_USER_ID);
 
     if ($session_user->requiresPasswordChange()) {
         $url = (CURRENT_USER_LEVEL == 0) ? 'clients-edit.php' : 'users-edit.php';
         if (basename($_SERVER["SCRIPT_FILENAME"]) != $url) {
-            $flash->warning(__('Password change is required for your account', 'cftp_admin'));
+            Flash::warning(__('Password change is required for your account', 'cftp_admin'));
 
             $url .= '?id='.CURRENT_USER_ID;
             header("Location: ".BASE_URI.$url);

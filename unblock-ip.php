@@ -1,4 +1,6 @@
 <?php
+use \Tamtamchik\SimpleFlash\Flash;
+
 /**
  * Unblock an IP from the failed logins table
  *
@@ -15,15 +17,13 @@ $page_id = 'unblock_ip';
 $active_nav = 'tools';
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
-global $flash;
-
 if ($_POST) {
     global $bfchecker;
     $unblock = $bfchecker->unblockIp($_POST['ip']);
     if ($unblock['status'] == 'success') {
-        $flash->success(__('IP address succesfully unblocked', 'cftp_admin'));
+        Flash::success(__('IP address succesfully unblocked', 'cftp_admin'));
     } else {
-        $flash->error($unblock['message']);
+        Flash::error($unblock['message']);
     }
 
     header("Location: unblock-ip.php");

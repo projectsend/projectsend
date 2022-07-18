@@ -1,4 +1,6 @@
 <?php
+use \Tamtamchik\SimpleFlash\Flash;
+
 /**
  * Show the list of activities logged.
  *
@@ -33,10 +35,10 @@ if (isset($_POST['action']) && $_POST['action'] != 'none') {
                 );
                 $statement->execute( $params );
 
-                $flash->success(__('The selected entries were deleted.', 'cftp_admin'));
+                Flash::success(__('The selected entries were deleted.', 'cftp_admin'));
             }
             else {
-                $flash->error(__('Please select at least one entries.', 'cftp_admin'));
+                Flash::error(__('Please select at least one entries.', 'cftp_admin'));
             }
         break;
         case 'log_clear':
@@ -44,7 +46,7 @@ if (isset($_POST['action']) && $_POST['action'] != 'none') {
             $statement = $dbh->prepare("DELETE FROM " . TABLE_CRON_LOG);
             $statement->execute( $params );
 
-            $flash->success(__('The log was cleared.', 'cftp_admin'));
+            Flash::success(__('The log was cleared.', 'cftp_admin'));
         break;
     }
 

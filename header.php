@@ -1,4 +1,6 @@
 <?php
+use \Tamtamchik\SimpleFlash\Flash;
+
 /**
  * This file generates the header for the back-end and also for the default
  * template.
@@ -15,8 +17,6 @@ check_for_session();
 
 // Check if the current user has permission to view this page.
 can_see_content($allowed_levels);
-
-global $flash;
 
 /** If no page title is defined, revert to a default one */
 if (!isset($page_title)) { $page_title = __('System Administration','cftp_admin'); }
@@ -134,6 +134,6 @@ password_change_required();
 
                 <?php
                     // Flash messages
-                    if ($flash->hasMessages()) {
-                        echo $flash;
+                    if (Flash::hasMessages()) {
+                        echo Flash::display();
                     }

@@ -1,6 +1,4 @@
 <?php
-use \Tamtamchik\SimpleFlash\Flash;
-
 /**
  * Show the list of current users.
  *
@@ -44,7 +42,7 @@ $current_url = get_form_action_with_existing_parameters(basename(__FILE__));
                             }
                         }
 
-                        Flash::success(__('The selected users were marked as active.', 'cftp_admin'));
+                        $flash->success(__('The selected users were marked as active.', 'cftp_admin'));
                     break;
                     case 'deactivate':
                         /**
@@ -63,12 +61,12 @@ $current_url = get_form_action_with_existing_parameters(basename(__FILE__));
                                 $affected_users++;
                             }
                             else {
-                                Flash::error(__('You cannot deactivate your own account.', 'cftp_admin'));
+                                $flash->error(__('You cannot deactivate your own account.', 'cftp_admin'));
                             }
                         }
 
                         if ($affected_users > 0) {
-                            Flash::success(__('The selected users were marked as inactive.', 'cftp_admin'));
+                            $flash->success(__('The selected users were marked as inactive.', 'cftp_admin'));
                         }
                     break;
                     case 'delete':		
@@ -84,18 +82,18 @@ $current_url = get_form_action_with_existing_parameters(basename(__FILE__));
                                 }
                             }
                             else {
-                                Flash::error(__('You cannot delete your own account.', 'cftp_admin'));
+                                $flash->error(__('You cannot delete your own account.', 'cftp_admin'));
                             }
                         }
                         
                         if ($affected_users > 0) {
-                            Flash::success(__('The selected users were deleted.', 'cftp_admin'));
+                            $flash->success(__('The selected users were deleted.', 'cftp_admin'));
                         }
                     break;
                 }
             }
             else {
-                Flash::error(__('Please select at least one user.', 'cftp_admin'));
+                $flash->error(__('Please select at least one user.', 'cftp_admin'));
             }
 
             ps_redirect($current_url);

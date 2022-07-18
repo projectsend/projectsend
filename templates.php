@@ -1,6 +1,4 @@
 <?php
-use \Tamtamchik\SimpleFlash\Flash;
-
 /**
  * List of available client's templates
  *
@@ -21,10 +19,11 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 if ( isset($_GET['activate_template']) ) {
     $save = save_option('selected_clients_template', $_GET['activate_template']);
 
+    global $flash;
     if ($save) {
-        Flash::success(__('Options updated successfully.', 'cftp_admin'));
+        $flash->success(__('Options updated successfully.', 'cftp_admin'));
     } else {
-        Flash::error(__('There was an error. Please try again.', 'cftp_admin'));
+        $flash->error(__('There was an error. Please try again.', 'cftp_admin'));
     }
 
     /** Redirect so the options are reflected immediately */

@@ -1,6 +1,4 @@
 <?php
-use \Tamtamchik\SimpleFlash\Flash;
-
 /**
  * Allows to hide, show or delete the files assigned to the
  * selected client.
@@ -53,7 +51,7 @@ if ( isset( $_POST['action'] ) ) {
             $selected_categories = $_POST['batch'];
 
             if (count($selected_categories) < 1 ) {
-                Flash::error(__('Please select at least one category.', 'cftp_admin'));
+                $flash->error(__('Please select at least one category.', 'cftp_admin'));
             } else {
                 switch ($_POST['action']) {
                     case 'delete':
@@ -63,7 +61,7 @@ if ( isset( $_POST['action'] ) ) {
                             $delete_category = $category->delete();
                         }
                         
-                        Flash::success(__('The selected categories were deleted.', 'cftp_admin'));
+                        $flash->success(__('The selected categories were deleted.', 'cftp_admin'));
                     break;
                 }
             }

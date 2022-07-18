@@ -1,6 +1,4 @@
 <?php
-use \Tamtamchik\SimpleFlash\Flash;
-
 /**
  * Uploading files, step 2
  *
@@ -74,10 +72,10 @@ $get_categories = get_categories();
                 $notifications = new \ProjectSend\Classes\EmailNotifications();
                 $notifications->sendNotifications();
                 if (!empty($notifications->getNotificationsSent())) {
-                    Flash::success(__('E-mail notifications have been sent.', 'cftp_admin'));
+                    $flash->success(__('E-mail notifications have been sent.', 'cftp_admin'));
                 }
                 if (!empty($notifications->getNotificationsFailed())) {
-                    Flash::error(__("One or more notifications couldn't be sent.", 'cftp_admin'));
+                    $flash->error(__("One or more notifications couldn't be sent.", 'cftp_admin'));
                 }
                 if (!empty($notifications->getNotificationsInactiveAccounts())) {
                     if (CURRENT_USER_LEVEL == 0) {
@@ -85,13 +83,13 @@ $get_categories = get_categories();
                          * Clients do not need to know about the status of the
                          * creator's account. Show the ok message instead.
                          */
-                        Flash::success(__('E-mail notifications have been sent.', 'cftp_admin'));
+                        $flash->success(__('E-mail notifications have been sent.', 'cftp_admin'));
                     } else {
-                        Flash::warning(__('E-mail notifications for inactive clients were not sent.', 'cftp_admin'));
+                        $flash->warning(__('E-mail notifications for inactive clients were not sent.', 'cftp_admin'));
                     }
                 }
             } else {
-                Flash::warning(__('E-mail notifications were not sent according to your settings. Make sure you have a cron job enabled if you need to send them.', 'cftp_admin'));
+                $flash->warning(__('E-mail notifications were not sent according to your settings. Make sure you have a cron job enabled if you need to send them.', 'cftp_admin'));
             }
 
             // Redirect

@@ -1,6 +1,4 @@
 <?php
-use \Tamtamchik\SimpleFlash\Flash;
-
 /**
  * Allows to hide, show or delete the files assigned to the
  * selected client.
@@ -112,7 +110,7 @@ if (isset($_POST['action'])) {
                     $file->hide($results_type, $_POST['modify_id']);
                 }
 
-                Flash::success(__('The selected files were marked as hidden.', 'cftp_admin'));
+                $flash->success(__('The selected files were marked as hidden.', 'cftp_admin'));
             break;
             case 'show':
                 foreach ($selected_files as $file_id) {
@@ -121,7 +119,7 @@ if (isset($_POST['action'])) {
                     $file->show($results_type, $_POST['modify_id']);
                 }
 
-                Flash::success(__('The selected files were marked as visible.', 'cftp_admin'));
+                $flash->success(__('The selected files were marked as visible.', 'cftp_admin'));
             break;
             case 'hide_everyone':
                 foreach ($selected_files as $file_id) {
@@ -130,7 +128,7 @@ if (isset($_POST['action'])) {
                     $file->hideFromEveryone();
                 }
 
-                Flash::success(__('The selected files were marked as hidden.', 'cftp_admin'));
+                $flash->success(__('The selected files were marked as hidden.', 'cftp_admin'));
             break;
             case 'show_everyone':
                 foreach ($selected_files as $file_id) {
@@ -139,7 +137,7 @@ if (isset($_POST['action'])) {
                     $file->showToEveryone();
                 }
 
-                Flash::success(__('The selected files were marked as visible.', 'cftp_admin'));
+                $flash->success(__('The selected files were marked as visible.', 'cftp_admin'));
             break;
             case 'unassign':
                 /**
@@ -151,7 +149,7 @@ if (isset($_POST['action'])) {
                     $file->removeAssignment($results_type, $_POST['modify_id']);
                 }
 
-                Flash::success(__('The selected files were successfully unassigned.', 'cftp_admin'));
+                $flash->success(__('The selected files were successfully unassigned.', 'cftp_admin'));
             break;
             case 'delete':
                 $delete_results	= array(
@@ -172,10 +170,10 @@ if (isset($_POST['action'])) {
                 }
 
                 if ( $delete_results['ok'] > 0 ) {
-                    Flash::success(__('The selected files were deleted.', 'cftp_admin'));
+                    $flash->success(__('The selected files were deleted.', 'cftp_admin'));
                 }
                 if ( $delete_results['errors'] > 0 ) {
-                    Flash::error(__('Some files could not be deleted.', 'cftp_admin'));
+                    $flash->error(__('Some files could not be deleted.', 'cftp_admin'));
                 }
             break;
             case 'edit':
@@ -186,7 +184,7 @@ if (isset($_POST['action'])) {
         }
     }
     else {
-        Flash::error(__('Please select at least one file.', 'cftp_admin'));
+        $flash->error(__('Please select at least one file.', 'cftp_admin'));
     }
 
     ps_redirect($current_url);

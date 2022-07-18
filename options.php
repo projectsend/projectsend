@@ -1,6 +1,4 @@
 <?php
-use \Tamtamchik\SimpleFlash\Flash;
-
 /**
  * Options page and form.
  *
@@ -11,6 +9,8 @@ $allowed_levels = array(9);
 require_once 'bootstrap.php';
 
 $section = ( !empty( $_GET['section'] ) ) ? $_GET['section'] : $_POST['section'];
+
+global $flash;
 
 switch ( $section ) {
     case 'general':
@@ -108,7 +108,7 @@ $logo_file_info = generate_logo_url();
 // Clear logo
 if ($section == 'branding' && !empty($_GET['clear']) && $_GET['clear'] == 'logo') {
     save_option('logo_filename', null);
-    Flash::success(__('Options updated successfully.', 'cftp_admin'));
+    $flash->success(__('Options updated successfully.', 'cftp_admin'));
     $location = BASE_URI . 'options.php?section=branding';
     header("Location: $location");
     exit;

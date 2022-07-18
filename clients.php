@@ -1,6 +1,4 @@
 <?php
-use \Tamtamchik\SimpleFlash\Flash;
-
 /**
  * Show the list of current clients.
  *
@@ -39,7 +37,7 @@ if (isset($_POST['action'])) {
                     }
                 }
                 
-                Flash::success(__('The selected clients were marked as active.', 'cftp_admin'));
+                $flash->success(__('The selected clients were marked as active.', 'cftp_admin'));
             break;
             case 'deactivate':
                 /**
@@ -53,7 +51,7 @@ if (isset($_POST['action'])) {
                     }
                 }
                 
-                Flash::success(__('The selected clients were marked as inactive.', 'cftp_admin'));
+                $flash->success(__('The selected clients were marked as inactive.', 'cftp_admin'));
             break;
             case 'delete':
                 foreach ($selected_clients as $work_client) {
@@ -63,12 +61,12 @@ if (isset($_POST['action'])) {
                     }
                 }
                 
-                Flash::success(__('The selected clients were deleted.', 'cftp_admin'));
+                $flash->success(__('The selected clients were deleted.', 'cftp_admin'));
             break;
         }
     }
     else {
-        Flash::error(__('Please select at least one client.', 'cftp_admin'));
+        $flash->error(__('Please select at least one client.', 'cftp_admin'));
     }
 
     ps_redirect($current_url);

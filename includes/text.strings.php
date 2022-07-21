@@ -33,6 +33,7 @@ $json_strings = [
         'redirecting' => __('Redirecting','cftp_admin'),
     ],
     'translations' => [
+        'cannot_load_content' => __('Content could not be loaded','cftp_admin'),
         'public_group_note' => __('Send this URL to someone to view the allowed group contents according to your privacy settings.','cftp_admin'),
         'public_file_note' => __('Send this URL to someone to download the file without registering or logging in.','cftp_admin'),
         'copy_click_select' => __('Click the URL to select it and copy','cftp_admin'),

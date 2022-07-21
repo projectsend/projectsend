@@ -1,0 +1,161 @@
+#side_modal_cover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    background: rgba(0, 0, 0, .3);
+    transition: opacity .25s linear, z-index .25s linear;
+    z-index: -1;
+
+    &.visible {
+        opacity: 1;
+        z-index: 1030;
+    }
+}
+
+#side_modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    background: #f4f4f4;
+    z-index: 1040;
+    border-color: #f4f4f4;
+    border-left: 1px ridge #eee;
+    box-shadow: -5px 0 5px rgba(0, 0, 0, 0.2);
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    transition: opacity .5s linear, right .5s linear;
+    width: 100%;
+    max-width: 850px;
+    height: 100%;
+    transform: none;
+    visibility: visible;
+    opacity: 1;
+
+    @include bk(xs) {
+        border-left: none;
+        width: calc(100% - 30px);
+        /*
+        height: calc(100% - 30px);
+        right: 15px;
+        top: 15px;
+        */
+        height: 100%;
+        top: 0;
+        right: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    &.hidden {
+        right: -100%;
+        visibility: hidden;
+        opacity: 0;
+    }
+
+    #side_modal_internal {
+        position: relative;
+        height: 100%;
+    }
+    
+    #sm_header {
+        text-align: left;
+        padding: 20px;
+        position: relative;
+        height: 80px;
+
+        @include bk(xs) {
+            padding: 10px;
+        }
+
+        .title {
+            margin-right: 80px;
+
+            h5 {
+                font-weight: bold;
+                font-size: 1.25rem;
+                margin: 1rem 0 0;
+
+                @include bk(xs) {
+                    font-size: 1rem;
+                }
+            }
+        }
+        
+        span.dismiss {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            font-size: .9rem;
+            display: inline-block;
+            transition: .2s all linear;
+            color: #777;
+            padding: 5px;
+
+            @include bk(xs) {
+                right: 1.5rem;
+                top: 1.5rem;
+            }
+
+            &:hover {
+                cursor: pointer;
+                color: #444;
+            }
+        }
+    }
+
+    .loader {
+        display: none;
+
+        &.visible {
+            display: block;
+        }
+    }
+
+    .contentarea {
+        height: calc(100% - 80px);
+        overflow: auto;
+        background-color: white;
+        padding-top: 30px;
+
+        .content {
+            position: relative;
+            height: 100%;
+            padding: 0 20px 20px;
+            overflow: auto;
+    
+            @include bk(xs) {
+                padding: 0 10px 10px;
+            }
+        }
+
+        .loading_placeholder {
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            vertical-align: middle;
+
+            td {
+                text-align: center;
+                vertical-align: middle;
+                border-top: none !important;
+
+                &:hover {
+                    background: none;
+                }
+            }
+        }
+
+        table {
+            table-layout: fixed;
+            width: 100%;
+
+            td {
+                word-break: break-all;
+            }
+        }
+    }
+}

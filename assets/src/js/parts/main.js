@@ -93,18 +93,8 @@
 
             /** Used on the public link modal on both manage files and the upload results */
             $(document).on('click', '.public_link_copy', function(e) {
-                $(this).select();
-                if ( document.execCommand("copy") ) {
-                    var copied = '.copied';
-                }
-                else {
-                    var copied = '.copied_not';
-                }
-                $(this).parents('.public_link_modal').find(copied).stop().fadeIn().delay(2000).fadeOut();
-                $(this).mouseup(function() {
-                    $(this).unbind("mouseup");
-                    return false;
-                });
+                var text = $(this).data('copy-text');
+                copyTextToClipboard(text);
             });
 
 
@@ -186,6 +176,7 @@
             $('body').on('click', '.public_link', function(e) {
                 $(document).psendmodal();
                 var type = $(this).data('type');
+                var title = $(this).data('title');
                 var public_url = $(this).data('public-url');
 
                 if ( type == 'group' ) {
@@ -197,15 +188,16 @@
                     var note_text = json_strings.translations.public_file_note;
                 }
 
-                var content =  '<div class="public_link_modal">'+
-                                    '<strong>'+json_strings.translations.copy_click_select+'</strong>'+
-                                    '<div class="copied">'+json_strings.translations.copy_ok+'</div>'+
-                                    '<div class="copied_not">'+json_strings.translations.copy_error+'</div>'+
-                                    '<div class="form-group">'+
-                                        '<textarea class="input-large public_link_copy form-control" rows="4" readonly>' + public_url + '</textarea>'+
-                                    '</div>'+
-                                    '<span class="note">' + note_text + '</span>'+
-                                '</div>';
+                var content = `<div class="public_link_modal">
+                                    <p>`+title+`</p>
+                                    <div class="form-group">
+                                        <textarea class="input-large form-control" rows="4" readonly>`+public_url+`</textarea>
+                                        <button class="public_link_copy btn btn-primary" data-copy-text="`+public_url+`">
+                                            <i class="fa fa-files-o" aria-hidden="true"></i> `+json_strings.translations.click_to_copy+`
+                                        </button>
+                                    </div>
+                                    <p class="note">` + note_text + `</p>
+                                </div>`;
                 var title 	= json_strings.translations.public_url;
                 $('.modal_title span').html(title);
                 $('.modal_content').html(content);

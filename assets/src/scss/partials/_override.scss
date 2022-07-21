@@ -116,3 +116,8 @@ a.plupload_start {
 .datapick-field {
 	cursor:pointer !important;
 }
+
+// Toastr
+#toast-container > div {
+    opacity:1;
+}

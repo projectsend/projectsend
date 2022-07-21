@@ -693,11 +693,11 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                              * Visibility
                              */
                             if ($file->isPublic()) {
-                                $visibility_link = '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="file" data-public-url="'.$file->public_url.'">'.__('Download','cftp_admin').'</a>';
+                                $visibility_link = '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="file" data-public-url="'.$file->public_url.'" data-title="'. $file->title .'">'.__('Download','cftp_admin').'</a>';
                             }
                             else {
                                 if ( get_option('enable_landing_for_all_files') == '1' ) {
-                                    $visibility_link = '<a href="javascript:void(0);" class="btn btn-default btn-sm public_link" data-type="file" data-public-url="'.$file->public_url.'">'.__('View information','cftp_admin').'</a>';
+                                    $visibility_link = '<a href="javascript:void(0);" class="btn btn-default btn-sm public_link" data-type="file" data-public-url="'.$file->public_url.'" data-title="'. $file->title .'">'.__('View information','cftp_admin').'</a>';
                                 }
                                 else {
                                     $visibility_link = '<a href="javascript:void(0);" class="btn btn-default btn-sm disabled" title="">'.__('None','cftp_admin').'</a>';

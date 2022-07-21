@@ -288,7 +288,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                         if ($group->public == '1') {
                             $public_groups++;
                             $pre = (get_option('public_listing_page_enable') != 1) ? '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>' : null;
-                            $visibility_link = '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="group" data-public-url="'.$group->public_url.'">'
+                            $visibility_link = '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-title="'.$group->name.'" data-type="group" data-public-url="'.$group->public_url.'">'
                                     .$pre . ' ' . __('Public','cftp_admin').'
                                 </a>';
                         }

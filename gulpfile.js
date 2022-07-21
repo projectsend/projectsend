@@ -22,6 +22,7 @@ let assetsCss = [
     'node_modules/footable/css/footable.core.min.css',
     'node_modules/@yaireo/tagify/dist/tagify.css',
     'node_modules/chart.js/dist/Chart.min.css',
+    'node_modules/toastr/build/toastr.min.css',
     'vendor/moxiecode/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css'
 ];
 
@@ -41,6 +42,8 @@ let assetsJs = [
     'node_modules/chart.js/dist/Chart.min.js',
     'node_modules/flot/dist/es5/jquery.flot.js',
     'node_modules/flot/source/jquery.flot.resize.js',
+    'node_modules/sjcl/sjcl.js',
+    'node_modules/toastr/build/toastr.min.js',
     'vendor/moxiecode/plupload/js/plupload.full.min.js',
     'vendor/moxiecode/plupload/js/jquery.plupload.queue/jquery.plupload.queue.min.js'
 ];

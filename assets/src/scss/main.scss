@@ -4,6 +4,7 @@
 @import "partials/chosen";
 @import "partials/tagsinput";
 @import "partials/override";
+@import "partials/side_modal";
 
 // Backend and default theme shared styles
 
@@ -1573,34 +1574,10 @@ li .required.password_toggle {
 
 .public_link_copy {
     padding:5px;
-    width:100%;
-    margin:10px auto !important;
-}
-
-.public_link_modal {
-    .copied {
-        display:none;
-        padding:7px;
-        margin:8px 0;
-        font-weight:bold;
-        color:#849F4F;
-        background:#ECF5DA;
-        border:1px solid #B1C786;
-    }
-
-    .copied_not {
-        display:none;
-        padding:7px;
-        margin:8px 0;
-        font-weight:bold;
-        color:#B94A48;
-        background:#F2DEDE;
-        border:1px solid #EED3D7;
-    }
+    margin:10px 0 10px auto !important;
 }
 
 // Misc
-
 .forbidden {
     h2 {
         margin-top:40px;
@@ -1746,6 +1723,18 @@ body.download {
     .group_float {
         float:left;
         margin-right:5px;
+    }
+}
+
+#browser_encrypt_data {
+    margin-top: 2rem;
+
+    #keys_list {
+        background-color: mediumturquoise;
+
+        #keys {
+            list-style: none;
+        }
     }
 }
 

@@ -146,7 +146,7 @@ $get_categories = get_categories();
                                             <?php
                                                 if ($file->public == '1') {
                                             ?>
-                                                    <a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="file" data-public-url="<?php echo $file->public_url; ?>">
+                                                    <a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="file" data-public-url="<?php echo $file->public_url; ?>" data-title="<?php echo $file->title; ?>">
                                             <?php
                                                 }
                                                 else {

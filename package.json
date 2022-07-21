@@ -23,7 +23,9 @@
         "js-cookie": "2.2.0",
         "node-jen": "1.1.0",
         "prop-types": "^15.8.1",
-        "sprintf-js": "1.1.2"
+        "sjcl": "^1.0.8",
+        "sprintf-js": "1.1.2",
+        "toastr": "^2.1.4"
     },
     "devDependencies": {
         "babel-preset-env": "^1.6.1",

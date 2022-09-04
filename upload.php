@@ -47,7 +47,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
             <script type="text/javascript">
                 $(function() {
                     $("#uploader").pluploadQueue({
-                        runtimes : 'html5,flash,silverlight,html4',
+                        runtimes : 'html5',
                         url : 'includes/upload.process.php',
                         chunk_size : '1mb',
                         rename : true,

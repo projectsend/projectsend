@@ -38,6 +38,7 @@ let sideModal = class {
         this.loader = this.modal.querySelector('.loader');
         this.contentArea = this.modal.querySelector('.content');
         this.isOpen = false;
+        this.closeWithButtonOnly = false;
     }
 
     setUp() {
@@ -47,15 +48,29 @@ let sideModal = class {
             trigger.addEventListener("click", this.openSideModalAndLoadContent.bind(this));
         });
 
-        this.cover.addEventListener("click", this.closeSideModal.bind(this));
+        this.cover.addEventListener("click", this.closeSideModalFromCover.bind(this));
         this.closeButton.addEventListener("click", this.closeSideModal.bind(this));
 
         document.addEventListener("keydown", this.closeWithEscKey.bind(this));
     }
 
+    changeCloseWithButtonOnly(value)
+    {
+        if (typeof value == "boolean") {
+            this.closeWithButtonOnly = value;
+        }
+    }
+
     closeWithEscKey(e)
     {
-        if (e.keyCode === 27) {
+        if (e.keyCode === 27 && this.closeWithButtonOnly == false) {
+            this.closeSideModal();
+        }
+    }
+
+    closeSideModalFromCover()
+    {
+        if (this.closeWithButtonOnly == false) {
             this.closeSideModal();
         }
     }

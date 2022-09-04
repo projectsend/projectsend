@@ -1738,5 +1738,32 @@ body.download {
     }
 }
 
+.encrypt_warning {
+    .encrypt_actions {
+        margin-top: 30px;
+    }
+
+    table.files_keys {
+        width: auto !important;
+    
+        tr {
+            &:hover {
+                background: #f0f0f0;
+            }
+    
+            td {
+                padding: .75rem 0;
+                border-bottom: 1px solid #dedede;
+                min-width: 30%;
+    
+                &:last-child {
+                    max-width: 20%;
+                    text-align: right;
+                }
+            }
+        }
+    }
+}
+
 @import "parts/login";
 @import "parts/modal";

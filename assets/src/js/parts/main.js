@@ -97,7 +97,6 @@
                 copyTextToClipboard(text);
             });
 
-
             /** Common for all tables */
             $("#select_all").click(function(){
                 var status = $(this).prop("checked");

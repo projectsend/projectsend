@@ -4,7 +4,8 @@ const babel        = require('gulp-babel');
 // const cleanCSS     = require('gulp-clean-css');
 const concat       = require('gulp-concat');
 const rename       = require('gulp-rename');
-const sass         = require('gulp-sass');
+// const sass         = require('gulp-sass');
+const sass         = require('gulp-sass')(require('sass'));
 // const postcss      = require('gulp-postcss');
 const sourcemaps   = require('gulp-sourcemaps');
 const uglify       = require('gulp-uglify');
@@ -40,8 +41,6 @@ let assetsJs = [
     'node_modules/sprintf-js/dist/sprintf.min.js',
     'node_modules/chart.js/dist/Chart.bundle.min.js',
     'node_modules/chart.js/dist/Chart.min.js',
-    'node_modules/flot/dist/es5/jquery.flot.js',
-    'node_modules/flot/source/jquery.flot.resize.js',
     'node_modules/sjcl/sjcl.js',
     'node_modules/toastr/build/toastr.min.js',
     'vendor/moxiecode/plupload/js/plupload.full.min.js',
@@ -58,7 +57,7 @@ let appJs = [
 
 let dest = 'assets/';
 
-gulp.task('sass', function () {
+gulp.task('sass', (done) => {
     gulp.src(sassFiles)
         .pipe(sourcemaps.init())
         .pipe(sass())
@@ -71,9 +70,10 @@ gulp.task('sass', function () {
         .pipe(concat('assets.css'))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(dest + 'css/'));
+    done();
 });
 
-gulp.task('javascript', function () {
+gulp.task('javascript', (done) => {
     gulp.src(appJs)
         .pipe(sourcemaps.init())
         .pipe(concat('app.js'))
@@ -84,9 +84,10 @@ gulp.task('javascript', function () {
         .pipe(concat('assets.js'))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(dest + 'js/'));
+    done();
 });
 
-gulp.task('copy', function () {
+gulp.task('copy', (done) => {
     gulp.src('node_modules/bootstrap/fonts/*.*')
         .pipe(gulp.dest(dest + 'fonts/'));
     gulp.src('node_modules/font-awesome/fonts/*.*')
@@ -99,6 +100,7 @@ gulp.task('copy', function () {
         .pipe(gulp.dest(dest + 'lib/jquery/'));
     gulp.src('node_modules/jquery-migrate/dist/jquery-migrate.min.js')
         .pipe(gulp.dest(dest + 'lib/jquery-migrate/'));
+    done();
 });
 
 gulp.task('minify-css', function () {
@@ -117,16 +119,17 @@ gulp.task('minify-js', function (cb) {
     ], cb);
 });
 
-gulp.task('minify', ['minify-css', 'minify-js']);
+gulp.task('minify', gulp.series(['minify-css', 'minify-js']));
 
-gulp.task('build', ['copy', 'sass', 'javascript']);
+gulp.task('build', gulp.series(['copy', 'sass', 'javascript']));
 
-gulp.task('prod', ['build', 'minify']);
+gulp.task('prod', gulp.series(['build', 'minify']));
 
-gulp.task('watch', function () {
-    gulp.watch(sassFiles, ['copy']);
-    gulp.watch([sassFiles, sassPartials], ['sass']);
-    gulp.watch([appJs], ['javascript']);
+gulp.task('watch', (done) => {
+    gulp.watch(sassFiles, gulp.series(['copy']));
+    gulp.watch([sassFiles, sassPartials], gulp.series(['sass']));
+    gulp.watch(appJs, gulp.series(['javascript']));
+    done();
 });
 
-gulp.task('default', ['build', 'watch']);
+gulp.task('default', gulp.series(['build', 'watch']));

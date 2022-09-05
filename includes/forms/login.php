@@ -21,6 +21,7 @@
             <input type="password" name="password" id="password" class="form-control" />
         </div>
 
+        <?php /*
         <div class="form-group">
             <label for="language"><?php _e('Language','cftp_admin'); ?></label>
             <select name="language" id="language" class="form-control">
@@ -46,6 +47,7 @@
                 ?>
             </select>
         </div>
+        */ ?>
 
         <?php recaptcha2RenderWidget(); ?>
 

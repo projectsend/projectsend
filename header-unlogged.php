@@ -87,13 +87,7 @@ if ( !isset( $body_class ) ) { $body_class = array(); }
 
 <body <?php echo add_body_class( $body_class ); ?> <?php if (!empty($page_id)) { echo add_page_id($page_id); } ?>>
     <div class="container-custom">
-        <header id="header" class="navbar navbar-static-top navbar-fixed-top header_unlogged">
-            <div class="navbar-header text-center">
-                <span class="navbar-brand">
-                    <?php echo $header_vars['header_title']; ?>
-                </span>
-            </div>
-        </header>
+        <?php include_once LAYOUT_DIR . DS . 'header-top.php'; ?>
 
         <div class="main_content_unlogged">
             <div class="container-fluid">

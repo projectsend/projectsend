@@ -224,6 +224,7 @@ define('ASSETS_LIB_DIR', ASSETS_DIR . DS . 'lib');
 define('CORE_LANG_DIR', ROOT_DIR . DS . 'lang');
 define('INCLUDES_DIR', ROOT_DIR . DS . 'includes');
 define('FORMS_DIR', INCLUDES_DIR . DS . 'forms');
+define('LAYOUT_DIR', INCLUDES_DIR . DS . 'layout');
 define('UPGRADES_DIR', INCLUDES_DIR . DS . 'upgrades');
 define('ADMIN_VIEWS_DIR', ROOT_DIR);
 define('EMAIL_TEMPLATES_DIR', ADMIN_VIEWS_DIR . DS . 'emails');

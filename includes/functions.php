@@ -257,7 +257,7 @@ function generate_password($length = 12)
 function get_available_languages()
 {
     /** Load the language and locales names list */
-    require_once ROOT_DIR . '/includes/language.locales.names.php';
+    require ROOT_DIR . '/includes/language.locales.names.php';
 
 	$langs = array();
 

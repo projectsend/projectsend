@@ -11,7 +11,7 @@ global $auth;
 global $logger;
 
 $_SESSION['last_call'] = time();
-$public = ['login', 'social_login', 'login_ldap', 'logout'];
+$public = ['login', 'social_login', 'login_ldap', 'logout', 'change_language'];
 if (!empty($_GET['do']) && !in_array($_GET['do'], $public)) {
     check_for_session();
     can_see_content($allowed_levels);
@@ -39,7 +39,11 @@ switch ($_GET['do']) {
         break;
     case 'change_language':
         $auth->setLanguage(html_output($_GET['language']));
-        header('Location: ' . BASE_URI . 'index.php');
+        $location = 'index.php';
+        if (!empty($_GET['return_to']) && strpos($_GET['return_to'], BASE_URI) === 0) {
+            $location = str_replace(BASE_URI, '', $_GET['return_to']);
+        }
+        header('Location: ' . BASE_URI . $location);
         exit;
         break;
     case 'get_preview':

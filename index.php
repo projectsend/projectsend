@@ -79,7 +79,7 @@ if ($_POST) {
                 header("Location: index.php");
                 exit;
             }
-            $auth->setLanguage($_POST['language']);
+            // $auth->setLanguage($_POST['language']);
         break;
     }
 }

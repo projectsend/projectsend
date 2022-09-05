@@ -4,6 +4,18 @@
     admin.pages.loginForm = function () {
 
         $(document).ready(function(){
+            // let data_changed = false;
+            // $('body').on('input', '#username, #password', function(e) {
+            //     data_changed = true;
+            // });
+
+            // $('body').on('change', '#language', function (e) {
+            //     if (data_changed == false) {
+            //         let change_locale_uri = json_strings.uri.base + 'process.php?do=change_language&language=' + $(this).val();
+            //         window.location.replace(change_locale_uri);;
+            //     }
+            // });
+
             var initial = $('.seconds_countdown').text();
             if (initial) {
                 $('#btn_submit').attr('disabled', 'disabled');

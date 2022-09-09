@@ -51,24 +51,22 @@ if ($_POST) {
     /** Create the user if validation is correct. */
     $new_user->setType('new_user');
     $new_user->set($user_arguments);
-    if ($new_user->validate()) {
-        $new_response = $new_user->create();
+    $new_response = $new_user->create();
 
-        if (!empty($new_response['id'])) {
-            /** Record the action log */
-            $logger = new \ProjectSend\Classes\ActionsLog;
-            $record = $logger->addEntry([
-                'action' => 2,
-                'owner_user' => CURRENT_USER_USERNAME,
-                'owner_id' => CURRENT_USER_ID,
-                'affected_account' => $new_user->id,
-                'affected_account_name' => $new_user->name
-            ]);
+    if (!empty($new_response['id'])) {
+        /** Record the action log */
+        $logger = new \ProjectSend\Classes\ActionsLog;
+        $record = $logger->addEntry([
+            'action' => 2,
+            'owner_user' => CURRENT_USER_USERNAME,
+            'owner_id' => CURRENT_USER_ID,
+            'affected_account' => $new_user->id,
+            'affected_account_name' => $new_user->name
+        ]);
 
-            $redirect_to = BASE_URI . 'users-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1&notification=' . $new_response['email'];
-            header('Location:' . $redirect_to);
-            exit;
-        }
+        $redirect_to = BASE_URI . 'users-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1&notification=' . $new_response['email'];
+        header('Location:' . $redirect_to);
+        exit;
     }
 }
 ?>

@@ -211,55 +211,55 @@ class Groups
 	 */
 	public function create()
 	{
-        $this->state = array();
+		$this->state = array(
+            'query' => 0,
+        );
         
-        if (!empty($this->name)) {
+        if (!$this->validate()) {
+            return $this->state;
+        }
 
-   			/** Who is creating the client? */
-			$this->created_by = CURRENT_USER_USERNAME;
+        /** Who is creating the client? */
+        $this->created_by = CURRENT_USER_USERNAME;
 
-            /** Define the group information */
-            $this->public_token = generateRandomString(32);
+        /** Define the group information */
+        $this->public_token = generateRandomString(32);
 
-            $this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_GROUPS . " (name, description, public, public_token, created_by)"
-                                                    ." VALUES (:name, :description, :public, :token, :admin)");
-            $this->sql_query->bindParam(':name', $this->name);
-            $this->sql_query->bindParam(':description', $this->description);
-            $this->sql_query->bindParam(':public', $this->public, PDO::PARAM_INT);
-            $this->sql_query->bindParam(':admin', $this->created_by);
-            $this->sql_query->bindParam(':token', $this->public_token);
-            $this->sql_query->execute();
+        $this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_GROUPS . " (name, description, public, public_token, created_by)"
+                                                ." VALUES (:name, :description, :public, :token, :admin)");
+        $this->sql_query->bindParam(':name', $this->name);
+        $this->sql_query->bindParam(':description', $this->description);
+        $this->sql_query->bindParam(':public', $this->public, PDO::PARAM_INT);
+        $this->sql_query->bindParam(':admin', $this->created_by);
+        $this->sql_query->bindParam(':token', $this->public_token);
+        $this->sql_query->execute();
 
-            $this->id = $this->dbh->lastInsertId();
-            $this->state['id'] = $this->id;
-            $this->state['public_token'] = $this->public_token;
+        $this->id = $this->dbh->lastInsertId();
+        $this->state['id'] = $this->id;
+        $this->state['public_token'] = $this->public_token;
 
-            /** Create the members records */
-            if ( !empty( $this->members ) ) {
-                foreach ($this->members as $this->member) {
-                    $this->sql_member = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
-                                                            ." VALUES (:admin, :member, :id)");
-                    $this->sql_member->bindParam(':admin', $this->created_by);
-                    $this->sql_member->bindParam(':member', $this->member, PDO::PARAM_INT);
-                    $this->sql_member->bindParam(':id', $this->id, PDO::PARAM_INT);
-                    $this->sql_member->execute();
-                }
+        /** Create the members records */
+        if ( !empty( $this->members ) ) {
+            foreach ($this->members as $this->member) {
+                $this->sql_member = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
+                                                        ." VALUES (:admin, :member, :id)");
+                $this->sql_member->bindParam(':admin', $this->created_by);
+                $this->sql_member->bindParam(':member', $this->member, PDO::PARAM_INT);
+                $this->sql_member->bindParam(':id', $this->id, PDO::PARAM_INT);
+                $this->sql_member->execute();
             }
+        }
 
-            if ($this->sql_query) {
-                $this->state['query'] = 1;
+        if ($this->sql_query) {
+            $this->state['query'] = 1;
 
-                /** Record the action log */
-                $new_record_action = $this->logger->addEntry([
-                    'action' => 23,
-                    'owner_id' => CURRENT_USER_ID,
-                    'affected_account' => $this->id,
-                    'affected_account_name' => $this->name,
-                ]);
-            }
-            else {
-                $this->state['query'] = 0;
-            }
+            /** Record the action log */
+            $this->logger->addEntry([
+                'action' => 23,
+                'owner_id' => CURRENT_USER_ID,
+                'affected_account' => $this->id,
+                'affected_account_name' => $this->name,
+            ]);
         }
 		
 		return $this->state;
@@ -274,7 +274,13 @@ class Groups
             return false;
         }
 
-        $this->state = array();
+		$this->state = array(
+            'query' => 0,
+        );
+
+        if (!$this->validate()) {
+            return $this->state;
+        }
 
         /** Who is creating the client? */
         $this->created_by = CURRENT_USER_USERNAME;
@@ -308,16 +314,13 @@ class Groups
 			$this->state['query'] = 1;
 
             /** Record the action log */
-            $new_record_action = $this->logger->addEntry([
+            $this->logger->addEntry([
                 'action' => 15,
                 'owner_id' => CURRENT_USER_ID,
                 'affected_account' => $this->id,
                 'affected_account_name' => $this->name,
             ]);
         }
-		else {
-			$this->state['query'] = 0;
-		}
 		
 		return $this->state;
 	}
@@ -339,7 +342,7 @@ class Groups
         }
         
         /** Record the action log */
-        $record = $this->logger->addEntry([
+        $this->logger->addEntry([
             'action' => 18,
             'owner_id' => CURRENT_USER_ID,
             'affected_account_name' => $this->name,

@@ -162,7 +162,7 @@ class Auth
                     $this->login($user);
 
                     /** Record the action log */
-					$this->new_record_action = $this->logger->addEntry([
+					$this->logger->addEntry([
                         'action' => 43,
                         'owner_id' => $user->id,
                         'owner_user' => $user->username,
@@ -216,40 +216,37 @@ class Auth
                 'recaptcha' => null,
             ]);
 
-            if ($new_client->validate()) {
-                $new_client->create();
-                $new_client->triggerAfterSelfRegister();
+            $new_client->create();
+            $new_client->triggerAfterSelfRegister();
 
-                // Save as metadata
-                $meta_name = 'social_network';
-                $meta_value = json_encode($userProfile);
-                $statement = $this->dbh->prepare("INSERT INTO " . TABLE_USER_META . " (user_id, name, value)"
-                                ."VALUES (:id, :name, :value)");
-                $statement->bindParam(':id', $this->user->id, PDO::PARAM_INT);
-                $statement->bindParam(':name', $meta_name);
-                $statement->bindParam(':value', $meta_value);
-                $statement->execute();
+            // Save as metadata
+            $meta_name = 'social_network';
+            $meta_value = json_encode($userProfile);
+            $statement = $this->dbh->prepare("INSERT INTO " . TABLE_USER_META . " (user_id, name, value)"
+                            ."VALUES (:id, :name, :value)");
+            $statement->bindParam(':id', $this->user->id, PDO::PARAM_INT);
+            $statement->bindParam(':name', $meta_name);
+            $statement->bindParam(':value', $meta_value);
+            $statement->execute();
 
-                /** Record the action log */
-                $new_record_action = $this->logger->addEntry([
-                    'action' => 42,
-                    'owner_id' => $new_client->id,
-                    'owner_user' => $new_client->username,
-                    'affected_account_name' => $new_client->username
-                ]);
+            /** Record the action log */
+            $this->logger->addEntry([
+                'action' => 42,
+                'owner_id' => $new_client->id,
+                'owner_user' => $new_client->username,
+                'affected_account_name' => $new_client->username
+            ]);
 
-                if (get_option('clients_auto_approve') == 1) {
-                    $this->authenticate($username, $password);
-                    $redirect_url = 'my_files/index.php';
-                } else {
-                    $redirect_url = BASE_URI.'register.php?success=1';
-                }
-
-                // Redirect
-                header("Location:".$redirect_url);
-                exit;
+            if (get_option('clients_auto_approve') == 1) {
+                $this->authenticate($username, $password);
+                $redirect_url = 'my_files/index.php';
+            } else {
+                $redirect_url = BASE_URI.'register.php?success=1';
             }
 
+            // Redirect
+            header("Location:".$redirect_url);
+            exit;
         }
     }
 
@@ -427,7 +424,7 @@ class Auth
 
         /** Record the action log */
         if (defined('CURRENT_USER_ID')) {
-            $new_record_action = $this->logger->addEntry([
+            $this->logger->addEntry([
                 'action'	=> 31,
                 'owner_id'	=> CURRENT_USER_ID,
                 'affected_account_name' => CURRENT_USER_NAME

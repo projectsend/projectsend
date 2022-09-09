@@ -121,13 +121,11 @@ if ($_POST) {
     /** Validate the information from the posted form. */
     $edit_user->set($user_arguments);
     $edit_user->setType("existing_user");
-    if ($edit_user->validate()) {
-        $edit_response = $edit_user->edit();
+    $edit_response = $edit_user->edit();
 
-        $location = BASE_URI . 'users-edit.php?id=' . $user_id . '&status=' . $edit_response['query'];
-        header("Location: $location");
-        exit;
-    }
+    $location = BASE_URI . 'users-edit.php?id=' . $user_id . '&status=' . $edit_response['query'];
+    header("Location: $location");
+    exit;
 }
 
 $page_title = __('Edit system user','cftp_admin');

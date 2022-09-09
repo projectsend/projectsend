@@ -397,7 +397,7 @@ class Users
 
     private function hashPassword($password)
     {
-        $hashed = password_hash($this->password, PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
+        $hashed = password_hash($password, PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
         return $hashed;
     }
 
@@ -406,9 +406,15 @@ class Users
 	 */
     public function create()
 	{
-		$this->state = array();
+		$this->state = array(
+            'query' => 0,
+        );
 
         $this->password_hashed = $this->hashPassword($this->password);
+
+        if (!$this->validate()) {
+            return $this->state;
+        }
 
 		if (strlen($this->password_hashed) >= 20) {
 
@@ -480,9 +486,6 @@ class Users
 					$this->state['email'] = 2;
 				}
 			}
-			else {
-				$this->state['query'] = 0;
-			}
 		}
 		else {
 			$this->state['hash'] = 0;
@@ -541,7 +544,13 @@ class Users
             return false;
         }
 
-        $this->state = array();
+		$this->state = array(
+            'query' => 0,
+        );
+
+        if (!$this->validate()) {
+            return $this->state;
+        }
 
         $previous_data = get_user_by_id($this->id);
         if ($previous_data['active'] != $this->active) {
@@ -621,7 +630,7 @@ class Users
                 }
 
                 /** Record the action log */
-                $record = $this->logger->addEntry([
+                $this->logger->addEntry([
                     'action' => $log_action_number,
                     'owner_id' => CURRENT_USER_ID,
                     'affected_account' => $this->id,
@@ -629,9 +638,6 @@ class Users
                     'username_column' => true
                 ]);
             }
-			else {
-				$this->state['query'] = 0;
-			}
 		}
 		else {
 			$this->state['hash'] = 0;
@@ -668,7 +674,7 @@ class Users
                 }
 
                 /** Record the action log */
-                $record = $this->logger->addEntry([
+                $this->logger->addEntry([
                     'action' => $log_action_number,
                     'owner_id' => CURRENT_USER_ID,
                     'affected_account_name' => $this->name,
@@ -716,7 +722,7 @@ class Users
                 $this->sql->execute();
 
                 /** Record the action log */
-                $record = $this->logger->addEntry([
+                $this->logger->addEntry([
                     'action' => $log_action_number,
                     'owner_id' => CURRENT_USER_ID,
                     'affected_account_name' => $this->name,
@@ -754,7 +760,7 @@ class Users
 
 
                 /** Record the action log */
-                $record = $this->logger->addEntry([
+                $this->logger->addEntry([
                     'action' => 44,
                     'owner_id' => CURRENT_USER_ID,
                     'affected_account_name' => $this->name,
@@ -794,7 +800,7 @@ class Users
                 $this->status = $this->sql->execute();
 
                 /** Record the action log */
-                $record = $this->logger->addEntry([
+                $this->logger->addEntry([
                     'action' => 45,
                     'owner_id' => CURRENT_USER_ID,
                     'affected_account_name' => $this->name,

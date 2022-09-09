@@ -63,13 +63,11 @@ if ($_POST) {
 
     /** Validate the information from the posted form. */
     $edit_group->set($group_arguments);
-    if ($edit_group->validate()) {
-        $edit_response = $edit_group->edit();
+    $edit_response = $edit_group->edit();
 
-        $location = BASE_URI . 'groups-edit.php?id=' . $group_id . '&status=' . $edit_response['query'];
-        header("Location: $location");
-        exit;
-    }
+    $location = BASE_URI . 'groups-edit.php?id=' . $group_id . '&status=' . $edit_response['query'];
+    header("Location: $location");
+    exit;
 }
 ?>
 <div class="row">

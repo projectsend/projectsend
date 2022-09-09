@@ -53,38 +53,35 @@ if ($_POST) {
     );
 
     /** Validate the information from the posted form. */
-    /** Create the user if validation is correct. */
     $new_client->setType('new_client');
     $new_client->set($client_arguments);
-    if ($new_client->validate()) {
-        $new_response = $new_client->create();
+    $new_response = $new_client->create();
 
-        /** Record the action log */
-        $logger = new \ProjectSend\Classes\ActionsLog;
-        $record = $logger->addEntry([
-            'action' => 3,
-            'owner_user' => CURRENT_USER_USERNAME,
-            'owner_id' => CURRENT_USER_ID,
-            'affected_account' => $new_client->id,
-            'affected_account_name' => $new_client->name
+    /** Record the action log */
+    $logger = new \ProjectSend\Classes\ActionsLog;
+    $record = $logger->addEntry([
+        'action' => 3,
+        'owner_user' => CURRENT_USER_USERNAME,
+        'owner_id' => CURRENT_USER_ID,
+        'affected_account' => $new_client->id,
+        'affected_account_name' => $new_client->name
+    ]);
+
+    $add_to_groups = (!empty( $_POST['groups_request'] ) ) ? $_POST['groups_request'] : '';
+    if ( !empty( $add_to_groups ) ) {
+        array_map('encode_html', $add_to_groups);
+        $memberships = new \ProjectSend\Classes\MembersActions;
+        $memberships->client_add_to_groups([
+            'client_id' => $new_client->getId(),
+            'group_ids' => $add_to_groups,
+            'added_by' => CURRENT_USER_USERNAME,
         ]);
-    
-        $add_to_groups = (!empty( $_POST['groups_request'] ) ) ? $_POST['groups_request'] : '';
-        if ( !empty( $add_to_groups ) ) {
-            array_map('encode_html', $add_to_groups);
-            $memberships = new \ProjectSend\Classes\MembersActions;
-            $memberships->client_add_to_groups([
-                'client_id' => $new_client->getId(),
-                'group_ids' => $add_to_groups,
-                'added_by' => CURRENT_USER_USERNAME,
-            ]);
-        }
+    }
 
-        if (!empty($new_response['id'])) {
-            $redirect_to = BASE_URI . 'clients-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1&notification=' . $new_response['email'];
-            header('Location:' . $redirect_to);
-            exit;
-        }
+    if (!empty($new_response['id'])) {
+        $redirect_to = BASE_URI . 'clients-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1&notification=' . $new_response['email'];
+        header('Location:' . $redirect_to);
+        exit;
     }
 }
 ?>

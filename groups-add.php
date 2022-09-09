@@ -33,14 +33,12 @@ if ($_POST) {
 
     /** Validate the information from the posted form. */
     $new_group->set($group_arguments);
-    if ($new_group->validate()) {
-        $new_response = $new_group->create();
+    $new_response = $new_group->create();
 
-        if (!empty($new_response['id'])) {
-            $redirect_to = BASE_URI . 'groups-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1';
-            header('Location:' . $redirect_to);
-            exit;
-        }
+    if (!empty($new_response['id'])) {
+        $redirect_to = BASE_URI . 'groups-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1';
+        header('Location:' . $redirect_to);
+        exit;
     }
 }
 ?>

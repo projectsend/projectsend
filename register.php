@@ -40,36 +40,35 @@ if ($_POST) {
             'type' => 'new_client',
             'recaptcha' => ( defined('RECAPTCHA_AVAILABLE') ) ? recaptcha2GetRequest() : null,
         ]);
-        if ($new_client->validate()) {
-            $new_response = $new_client->create();
-            $new_client->triggerAfterSelfRegister([
-                'groups' => (isset($_POST["groups_request"])) ? $_POST["groups_request"] : null,
-            ]);
 
-            /** Record the action log */
-            $logger = new \ProjectSend\Classes\ActionsLog;
-            $record = $logger->addEntry([
-                'action' => 4,
-                'owner_user' => $new_client->username,
-                'owner_id' => $new_client->id,
-                'affected_account' => $new_client->id,
-                'affected_account_name' => $new_client->name
-            ]);
+        $new_response = $new_client->create();
+        $new_client->triggerAfterSelfRegister([
+            'groups' => (isset($_POST["groups_request"])) ? $_POST["groups_request"] : null,
+        ]);
 
-            if (get_option('clients_auto_approve') == 1) {
-                global $auth;
-                global $flash;
-                $auth->authenticate($_POST['username'], $_POST['password']);
-                $flash->success(__('Thank you for registering. Your account has been activated.', 'cftp_admin'));
-                $redirect_url = 'my_files/index.php';
-            } else {
-                $redirect_url = BASE_URI.'register.php?success=1';
-            }
+        /** Record the action log */
+        $logger = new \ProjectSend\Classes\ActionsLog;
+        $record = $logger->addEntry([
+            'action' => 4,
+            'owner_user' => $new_client->username,
+            'owner_id' => $new_client->id,
+            'affected_account' => $new_client->id,
+            'affected_account_name' => $new_client->name
+        ]);
 
-            // Redirect
-            header("Location:".$redirect_url);
-            exit;
+        if (get_option('clients_auto_approve') == 1) {
+            global $auth;
+            global $flash;
+            $auth->authenticate($_POST['username'], $_POST['password']);
+            $flash->success(__('Thank you for registering. Your account has been activated.', 'cftp_admin'));
+            $redirect_url = 'my_files/index.php';
+        } else {
+            $redirect_url = BASE_URI.'register.php?success=1';
         }
+
+        // Redirect
+        header("Location:".$redirect_url);
+        exit;
     }
 }
 ?>

@@ -117,22 +117,20 @@ if ($_POST) {
     /** Validate the information from the posted form. */
     $edit_client->set($client_arguments);
     $edit_client->setType("existing_client");
-    if ($edit_client->validate()) {
-        $edit_response = $edit_client->edit();
+    $edit_response = $edit_client->edit();
 
-        $edit_groups = (!empty( $_POST['groups_request'] ) ) ? $_POST['groups_request'] : array();
-        $memberships	= new \ProjectSend\Classes\MembersActions;
-        $arguments		= array(
-                                'client_id'		=> $client_id,
-                                'group_ids'		=> $edit_groups,
-                                'request_by'	=> CURRENT_USER_USERNAME,
-                            );
+    $edit_groups = (!empty( $_POST['groups_request'] ) ) ? $_POST['groups_request'] : array();
+    $memberships	= new \ProjectSend\Classes\MembersActions;
+    $arguments		= array(
+                            'client_id'		=> $client_id,
+                            'group_ids'		=> $edit_groups,
+                            'request_by'	=> CURRENT_USER_USERNAME,
+                        );
 
-        if (in_array(CURRENT_USER_LEVEL, [8 ,9])) {
-            $memberships->client_edit_groups($arguments);
-        } else {
-            $memberships->update_membership_requests($arguments);
-        }
+    if (in_array(CURRENT_USER_LEVEL, [8 ,9])) {
+        $memberships->client_edit_groups($arguments);
+    } else {
+        $memberships->update_membership_requests($arguments);
     }
 
     $location = BASE_URI . 'clients-edit.php?id=' . $client_id . '&status=' . $edit_response['query'];

@@ -108,7 +108,7 @@ class Download
 
             if ($added_files > 0) {
                 /** Record the action log */
-                $record = $this->logger->addEntry([
+                $this->logger->addEntry([
                     'action' => 9,
                     'owner_id' => CURRENT_USER_ID,
                     'affected_account_name' => CURRENT_USER_USERNAME,
@@ -161,7 +161,7 @@ class Download
 
         if (file_exists($file_location)) {
             /** Record the action log */
-            $record = $this->logger->addEntry([
+            $this->logger->addEntry([
                 'action' => $log_action_number,
                 'owner_id' => CURRENT_USER_ID,
                 'affected_file' => (int)$file_id,

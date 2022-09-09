@@ -420,7 +420,7 @@ class MembersActions
         
         // Add to the log
         $client = get_client_by_id($client_id);
-        $new_record_action = $this->logger->addEntry([
+        $this->logger->addEntry([
             'action' => 39,
             'owner_id' => CURRENT_USER_ID,
             'affected_account_name' => $client['name']
@@ -458,7 +458,7 @@ class MembersActions
 
             // Add to the log
             $client = get_client_by_id($client_id);
-            $new_record_action = $this->logger->addEntry([
+            $this->logger->addEntry([
                 'action' => 39,
                 'owner_id' => CURRENT_USER_ID,
                 'affected_account_name' => $client['name']

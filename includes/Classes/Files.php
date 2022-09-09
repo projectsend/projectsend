@@ -300,7 +300,7 @@ class Files
             ];
 
             // Record request
-            $new_record_action = $this->logger->addEntry([
+            $this->logger->addEntry([
                 'action' => 41,
                 'owner_id' => CURRENT_USER_ID,
                 'affected_file' => $this->id,
@@ -568,7 +568,7 @@ class Files
             unset($this->check_level);
 
             /** Record the action log */
-            $record = $this->logger->addEntry([
+            $this->logger->addEntry([
                 'action' => $log_action_number,
                 'owner_id' => CURRENT_USER_ID,
                 'affected_file' => $this->id,
@@ -599,7 +599,7 @@ class Files
             unset($this->check_level);
 
             /** Record the action log */
-            $record = $this->logger->addEntry([
+            $this->logger->addEntry([
                 'action' => 40,
                 'owner_id' => CURRENT_USER_ID,
                 'affected_file' => $this->id,
@@ -629,7 +629,7 @@ class Files
             unset($this->check_level);
 
             /** Record the action log */
-            $record = $this->logger->addEntry([
+            $this->logger->addEntry([
                 'action' => 46,
                 'owner_id' => CURRENT_USER_ID,
                 'affected_file' => $this->id,
@@ -782,7 +782,7 @@ class Files
             elseif ($this->uploader_type == 'client') {
                 $this->action_type = 6;
             }
-            $new_record_action = $this->logger->addEntry([
+            $this->logger->addEntry([
                 'action' => $this->action_type,
                 'owner_id' => $this->uploader_id,
                 'affected_file' => $this->file_id,
@@ -885,7 +885,7 @@ class Files
             elseif (CURRENT_USER_TYPE == 'client') {
                 $action_type = 33;
             }
-            $new_record_action = $this->logger->addEntry([
+            $this->logger->addEntry([
                 'action' => $action_type,
                 'owner_id' => CURRENT_USER_ID,
                 'affected_file' => $this->id,
@@ -1049,7 +1049,7 @@ class Files
         $statement->bindParam(':assignment', $to_id);
         $statement->bindParam(':hidden', $hidden, PDO::PARAM_INT);
         if ($statement->execute()) {
-            $record = $this->logger->addEntry([
+            $this->logger->addEntry([
                 /** Record the action log */
                 'action' => $log_action_number,
                 'owner_id' => CURRENT_USER_ID,
@@ -1099,7 +1099,7 @@ class Files
         $statement->execute();
 
         if (!empty($statement)) {
-            $record = $this->logger->addEntry([
+            $this->logger->addEntry([
                 /** Record the action log */
                 'action' => $log_action_number,
                 'owner_id' => CURRENT_USER_ID,

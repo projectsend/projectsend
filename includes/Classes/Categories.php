@@ -157,7 +157,9 @@ class Categories
 	 */
 	function create()
 	{
-		$this->state = array();
+		$this->state = array(
+            'query' => 0,
+        );
 
         /** Who is creating the category? */
         $this->created_by = CURRENT_USER_USERNAME;
@@ -186,16 +188,12 @@ class Categories
             $this->state['id'] = $this->id;
 
             /** Record the action log */
-            $new_record_action = $this->logger->addEntry([
+            $this->logger->addEntry([
                 'action'				=> 34,
                 'owner_id'				=> CURRENT_USER_ID,
                 'affected_account'		=> $this->id,
                 'affected_account_name'	=> $this->name
             ]);
-        }
-        else {
-            /** Query couldn't be executed */
-            $this->state['query'] = 0;
         }
 
         return $this->state;
@@ -233,7 +231,9 @@ class Categories
             return false;
         }
 
-        $this->state = array();
+		$this->state = array(
+            'query' => 0,
+        );
 
         $query_update_parent = "";
         if($this->parent == '0' || $this->checkParentValidation() )
@@ -268,15 +268,12 @@ class Categories
             $this->state['query'] = 1;
 
             /** Record the action log */
-            $new_record_action = $this->logger->addEntry([
+            $this->logger->addEntry([
                 'action'				=> 35,
                 'owner_id'				=> CURRENT_USER_ID,
                 'affected_account'		=> $this->id,
                 'affected_account_name'	=> $this->name
             ]);
-        }
-        else {
-            $this->state['query'] = 0;
         }
 
 		return $this->state;
@@ -297,11 +294,11 @@ class Categories
             $this->sql->execute();
 
             /** Record the action log */
-            $record = $this->logger->addEntry([
+            $this->logger->addEntry([
                 'action' => 36,
                 'owner_id' => CURRENT_USER_ID,
                 'affected_account_name' => $this->name,
-                ]);
+            ]);
         }
 
         return true;

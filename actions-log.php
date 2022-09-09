@@ -53,70 +53,68 @@ if (isset($_POST['action']) && $_POST['action'] != 'none') {
 
     ps_redirect($current_url);
 }
+
+$params	= array();
+
+/**
+ * Get the actually requested items
+ */
+$cq = "SELECT * FROM " . TABLE_LOG;
+
+/** Add the search terms */	
+if ( isset($_GET['search']) && !empty($_GET['search'] ) ) {
+    $cq .= " WHERE (owner_user LIKE :owner OR affected_file_name LIKE :file OR affected_account_name LIKE :account)";
+    $next_clause = ' AND';
+    $no_results_error = 'search';
+    
+    $search_terms		= '%'.$_GET['search'].'%';
+    $params[':owner']	= $search_terms;
+    $params[':file']	= $search_terms;
+    $params[':account']	= $search_terms;
+}
+else {
+    $next_clause = ' WHERE';
+}
+
+/** Add the activities filter */	
+if (isset($_GET['activity']) && $_GET['activity'] != 'all') {
+    $cq .= $next_clause. " action=:status";
+
+    $status_filter		= $_GET['activity'];
+    $params[':status']	= $status_filter;
+
+    $no_results_error = 'filter';
+}
+
+/**
+ * Add the order.
+ * Defaults to order by: id, order: DESC
+ */
+$cq .= sql_add_order( TABLE_LOG, 'id', 'DESC' );
+
+/**
+ * Pre-query to count the total results
+*/
+$count_sql = $dbh->prepare( $cq );
+$count_sql->execute($params);
+$count_for_pagination = $count_sql->rowCount();
+
+/**
+ * Repeat the query but this time, limited by pagination
+ */
+$cq .= " LIMIT :limit_start, :limit_number";
+$sql = $dbh->prepare( $cq );
+
+$pagination_page			= ( isset( $_GET["page"] ) ) ? $_GET["page"] : 1;
+$pagination_start			= ( $pagination_page - 1 ) * get_option('pagination_results_per_page');
+$params[':limit_start']		= $pagination_start;
+$params[':limit_number']	= get_option('pagination_results_per_page');
+
+$sql->execute( $params );
+$count = $sql->rowCount();
 ?>
-<div class="row">
-    <div class="col-xs-12">
-    <?php
-        $params	= array();
-
-        /**
-         * Get the actually requested items
-         */
-        $cq = "SELECT * FROM " . TABLE_LOG;
-
-        /** Add the search terms */	
-        if ( isset($_GET['search']) && !empty($_GET['search'] ) ) {
-            $cq .= " WHERE (owner_user LIKE :owner OR affected_file_name LIKE :file OR affected_account_name LIKE :account)";
-            $next_clause = ' AND';
-            $no_results_error = 'search';
-            
-            $search_terms		= '%'.$_GET['search'].'%';
-            $params[':owner']	= $search_terms;
-            $params[':file']	= $search_terms;
-            $params[':account']	= $search_terms;
-        }
-        else {
-            $next_clause = ' WHERE';
-        }
-
-        /** Add the activities filter */	
-        if (isset($_GET['activity']) && $_GET['activity'] != 'all') {
-            $cq .= $next_clause. " action=:status";
-
-            $status_filter		= $_GET['activity'];
-            $params[':status']	= $status_filter;
-
-            $no_results_error = 'filter';
-        }
-        
-        /**
-         * Add the order.
-         * Defaults to order by: id, order: DESC
-         */
-        $cq .= sql_add_order( TABLE_LOG, 'id', 'DESC' );
-
-        /**
-         * Pre-query to count the total results
-        */
-        $count_sql = $dbh->prepare( $cq );
-        $count_sql->execute($params);
-        $count_for_pagination = $count_sql->rowCount();
-
-        /**
-         * Repeat the query but this time, limited by pagination
-         */
-        $cq .= " LIMIT :limit_start, :limit_number";
-        $sql = $dbh->prepare( $cq );
-
-        $pagination_page			= ( isset( $_GET["page"] ) ) ? $_GET["page"] : 1;
-        $pagination_start			= ( $pagination_page - 1 ) * get_option('pagination_results_per_page');
-        $params[':limit_start']		= $pagination_start;
-        $params[':limit_number']	= get_option('pagination_results_per_page');
-
-        $sql->execute( $params );
-        $count = $sql->rowCount();
-    ?>
-
+    <div class="row">
+        <div class="col-xs-12">
         <div class="form_actions_left">
             <div class="form_actions_limit_results">
                 <?php show_search_form('actions-log.php'); ?>
@@ -170,21 +168,24 @@ if (isset($_POST['action']) && $_POST['action'] != 'none') {
                     </div>
                 </div>
             </div>
-            <div class="clear"></div>
-
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
             <div class="form_actions_count">
                 <p><?php echo sprintf(__('Found %d elements','cftp_admin'), (int)$count_for_pagination); ?>
             </div>
-
-            <div class="clear"></div>
-
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
             <?php
                 if (!$count) {
                     if (isset($no_results_error)) {
                         switch ($no_results_error) {
                             case 'filter':
                                 $no_results_message = __('The filters you selected returned no results.','cftp_admin');
-                                break;
+                            break;
                         }
                     }
                     else {
@@ -192,9 +193,7 @@ if (isset($_POST['action']) && $_POST['action'] != 'none') {
                     }
                     echo system_message('danger',$no_results_message);
                 }
-            ?>
 
-            <?php
                 /**
                  * Generate the table using the class.
                  */

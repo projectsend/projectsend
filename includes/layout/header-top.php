@@ -8,7 +8,7 @@
     <?php } ?>
 
     <div class="navbar-header">
-        <span class="navbar-brand"><a href="<?php echo SYSTEM_URI; ?>" target="_blank"><?php include_once 'assets/img/ps-icon.svg'; ?></a> <?php echo html_output(get_option('this_install_title')); ?></span>
+        <span class="navbar-brand"><a href="<?php echo SYSTEM_URI; ?>" target="_blank"><?php include_once ROOT_DIR.'/assets/img/ps-icon.svg'; ?></a> <?php echo html_output(get_option('this_install_title')); ?></span>
     </div>
 
     <ul class="nav pull-right nav_account">

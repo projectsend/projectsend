@@ -1455,19 +1455,19 @@ function password_notes()
 	$rules_active	= array();
 	$rules			= array(
 							'lower'		=> array(
-												'value'	=> PASS_REQUIRE_UPPER,
-												'text'	=> $json_strings['validation']['req_upper'],
-											),
-							'upper'		=> array(
-												'value'	=> PASS_REQUIRE_LOWER,
+												'value'	=> get_option('pass_require_lower'),
 												'text'	=> $json_strings['validation']['req_lower'],
 											),
+							'upper'		=> array(
+												'value'	=> get_option('pass_require_upper'),
+												'text'	=> $json_strings['validation']['req_upper'],
+											),
 							'number'	=> array(
-												'value'	=> PASS_REQUIRE_NUMBER,
+												'value'	=> get_option('pass_require_number'),
 												'text'	=> $json_strings['validation']['req_number'],
 											),
 							'special'	=> array(
-												'value'	=> PASS_REQUIRE_SPECIAL,
+												'value'	=> get_option('pass_require_special'),
 												'text'	=> $json_strings['validation']['req_special'],
 											),
 						);
@@ -1963,7 +1963,12 @@ function recaptcha2ValidateRequest($redirect = true)
 
     if ( defined('RECAPTCHA_AVAILABLE') ) {
         $validation = new \ProjectSend\Classes\Validation;
-        $validation->validate('recaptcha', recaptcha2GetRequest());
+        $validation->validate_items([
+            recaptcha2GetRequest() => [
+                'recaptcha2' => [],
+            ],
+        ]);
+
         if ($validation->passed()) {
             $validation_passed = true;
         }
@@ -1998,4 +2003,19 @@ function exitWithErrorCode($code = 403)
     header('Location:' . $url);
     exit;
 
+}
+
+function formatAssetLanguageName($name)
+{
+    switch ($name) {
+        case 'html':
+        case 'css':
+            $formatted = strtoupper($name);
+        break;
+        case 'js':
+            $formatted = 'JavaScript';
+        break;
+    }
+
+    return $formatted;
 }

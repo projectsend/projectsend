@@ -140,24 +140,37 @@ $form = true;
                              * The URI must end with a /, so add it if it wasn't posted.
                              */
                             if (substr($base_uri, -1) != '/') { $base_uri .= '/'; }
-                            /** Begin form validation */
-                            $validation = new \ProjectSend\Classes\Validation;
 
                             global $json_strings;
+
+                            /** Begin form validation */
+                            $validation = new \ProjectSend\Classes\Validation;
+                            $validation->validate_items([
+                                $install_title => [
+                                    'required' => ['error' => $json_strings['validation']['install_no_sitename']],
+                                ],
+                                $base_uri => [
+                                    'required' => ['error' => $json_strings['validation']['install_no_baseuri']],
+                                ],
+                                $admin_name => [
+                                    'required' => ['error' => $json_strings['validation']['no_name']],
+                                ],
+                                $admin_email => [
+                                    'required' => ['error' => $json_strings['validation']['no_email']],
+                                    'email' => ['error' => $json_strings['validation']['invalid_email']],
+                                ],
+                                $admin_username => [
+                                    'required' => ['error' => $json_strings['validation']['no_user']],
+                                    'alpha_or_dot' => ['error' => $json_strings['validation']['alpha_user']],
+                                    'length' => ['error' => $json_strings['validation']['length_user'], 'min' => MIN_USER_CHARS, 'max' => MAX_USER_CHARS],
                     
-                            $validation->validate('completed',$install_title,$json_strings['validation']['install_no_sitename']);
-                            $validation->validate('completed',$base_uri,$json_strings['validation']['install_no_baseuri']);
-                            $validation->validate('completed',$admin_name,$json_strings['validation']['no_name']);
-                            $validation->validate('completed',$admin_email,$json_strings['validation']['no_email']);
-                            /** Username validation */
-                            $validation->validate('completed',$admin_username,$json_strings['validation']['no_user']);
-                            $validation->validate('length',$admin_username,$json_strings['validation']['length_user'],MIN_USER_CHARS,MAX_USER_CHARS);
-                            $validation->validate('alpha_dot',$admin_username,$json_strings['validation']['alpha_user']);
-                            /** Password fields validation */
-                            $validation->validate('completed',$_POST['admin_pass'],$json_strings['validation']['no_pass']);
-                            $validation->validate('email',$admin_email,$json_strings['validation']['invalid_email']);
-                            $validation->validate('length',$_POST['admin_pass'],$json_strings['validation']['length_pass'],MIN_USER_CHARS,MAX_USER_CHARS);
-                            $validation->validate('password',$_POST['admin_pass'],$json_strings['validation']['alpha_pass']);
+                                ],
+                                $_POST['admin_pass'] => [
+                                    'required' => ['error' => $json_strings['validation']['no_pass']],
+                                    'password' => ['error' => $json_strings['validation']['alpha_pass']],
+                                    'length' => ['error' => $json_strings['validation']['length_pass'], 'min' => MIN_PASS_CHARS, 'max' => MAX_PASS_CHARS],
+                                ],
+                            ]);
 
                             if ($validation->passed()) {
                                 // Call the file that creates the tables and fill it with the data we got previously

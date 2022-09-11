@@ -132,13 +132,17 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
     
                     /** Password checks */
                     $validation = new \ProjectSend\Classes\Validation;
-                    $validation->validate('completed',$reset_password_new,$json_strings['validation']['no_pass']);
-                    $validation->validate('password',$reset_password_new,$json_strings['validation']['valid_pass'].' '.$json_strings['validation']['valid_chars']);
-                    $validation->validate('pass_rules',$reset_password_new,$json_strings['validation']['rules_pass']);
-                    $validation->validate('length',$reset_password_new,$json_strings['validation']['length_pass'],MIN_PASS_CHARS,MAX_PASS_CHARS);
+                    $validation->validate_items([
+                        $_POST['password'] => [
+                            'required' => ['error' => $json_strings['validation']['no_pass']],
+                            'password' => ['error' => $json_strings['validation']['valid_pass'].' '.$json_strings['validation']['valid_chars']],
+                            'password_rules' => ['error' => $json_strings['validation']['rules_pass']],
+                            'length' => ['error' => $json_strings['validation']['length_pass'], 'min' => MIN_PASS_CHARS, 'max' => MAX_PASS_CHARS],
+                        ],
+                    ]);
 
                     if ($validation->passed()) {	
-                        $enc_password = password_hash($reset_password_new, PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
+                        $enc_password = password_hash($_POST['password'], PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
                 
                         if (strlen($enc_password) >= 20) {
                 

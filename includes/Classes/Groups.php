@@ -171,16 +171,14 @@ class Groups
 	 */
 	public function validate()
 	{
-        $validation = new \ProjectSend\Classes\Validation;
-
 		global $json_strings;
-		$this->state = array();
 
-		/**
-		 * These validations are done both when creating a new group and
-		 * when editing an existing one.
-		 */
-		$validation->validate('completed',$this->name,$json_strings['validation']['no_name']);
+        $validation = new \ProjectSend\Classes\Validation;
+        $validation->validate_items([
+            $this->name => [
+                'required' => ['error' => $json_strings['validation']['no_name']],
+            ],
+        ]);
 
         if ($validation->passed()) {
             $this->validation_passed = true;
@@ -211,12 +209,13 @@ class Groups
 	 */
 	public function create()
 	{
-		$this->state = array(
+		$state = array(
             'query' => 0,
         );
         
         if (!$this->validate()) {
-            return $this->state;
+            $state = [];
+            return $state;
         }
 
         /** Who is creating the client? */
@@ -235,8 +234,8 @@ class Groups
         $this->sql_query->execute();
 
         $this->id = $this->dbh->lastInsertId();
-        $this->state['id'] = $this->id;
-        $this->state['public_token'] = $this->public_token;
+        $state['id'] = $this->id;
+        $state['public_token'] = $this->public_token;
 
         /** Create the members records */
         if ( !empty( $this->members ) ) {
@@ -251,7 +250,7 @@ class Groups
         }
 
         if ($this->sql_query) {
-            $this->state['query'] = 1;
+            $state['query'] = 1;
 
             /** Record the action log */
             $this->logger->addEntry([
@@ -262,7 +261,7 @@ class Groups
             ]);
         }
 		
-		return $this->state;
+		return $state;
 	}
 
 	/**
@@ -274,12 +273,13 @@ class Groups
             return false;
         }
 
-		$this->state = array(
+		$state = array(
             'query' => 0,
         );
 
         if (!$this->validate()) {
-            return $this->state;
+            $state = [];
+            return $state;
         }
 
         /** Who is creating the client? */
@@ -311,7 +311,7 @@ class Groups
 		}
 
 		if ($this->sql_query) {
-			$this->state['query'] = 1;
+			$state['query'] = 1;
 
             /** Record the action log */
             $this->logger->addEntry([
@@ -322,7 +322,7 @@ class Groups
             ]);
         }
 		
-		return $this->state;
+		return $state;
 	}
 
 	/**

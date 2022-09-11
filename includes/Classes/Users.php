@@ -315,61 +315,61 @@ class Users
 	 */
     public function validate()
 	{
-        $validation = new \ProjectSend\Classes\Validation;
-
 		global $json_strings;
-		$this->state = array();
 
-		/**
-		 * These validations are done both when creating a new user and
-		 * when editing an existing one.
-		 */
-		$validation->validate('completed',$this->name,$json_strings['validation']['no_name']);
-		$validation->validate('completed',$this->email,$json_strings['validation']['no_email']);
-		$validation->validate('completed',$this->role,$json_strings['validation']['no_role']);
-		$validation->validate('email',$this->email,$json_strings['validation']['invalid_email']);
-		$validation->validate('number',$this->max_file_size,$json_strings['validation']['file_size']);
+        $validation = new \ProjectSend\Classes\Validation;
+        $validate_password = false;
 
-		/**
-		 * Validations for NEW USER submission only.
-		 */
-		if ($this->validation_type == 'new_user' || $this->validation_type == 'new_client') {
-			$validation->validate('email_exists',$this->email,$json_strings['validation']['email_exists']);
-			$validation->validate('user_exists',$this->username,$json_strings['validation']['user_exists']);
-			$validation->validate('completed',$this->username,$json_strings['validation']['no_user']);
-			$validation->validate('alpha_dot',$this->username,$json_strings['validation']['alpha_user']);
-			$validation->validate('length',$this->username,$json_strings['validation']['length_user'],MIN_USER_CHARS,MAX_USER_CHARS);
+        $validation_items = [
+            $this->name => [
+                'required' => ['error' => $json_strings['validation']['no_name']],
+            ],
+            $this->email => [
+                'required' => ['error' => $json_strings['validation']['no_email']],
+                'email' => ['error' => $json_strings['validation']['invalid_email']],
+            ],
+            $this->role => [
+                'required' => ['error' => $json_strings['validation']['no_role']],
+            ],
+            $this->max_file_size => [
+                'number' => ['error' => $json_strings['validation']['file_size']],
+            ],
+        ];
 
-			$this->validate_password = true;
-		}
-		/**
-		 * Validations for USER EDITING only.
-		 */
-		else if ($this->validation_type == 'existing_user') {
-			/**
-			 * Changing password is optional.
-			 */
-			if(!empty($this->password)) {
-				$this->validate_password = true;
-			}
-			/**
-			 * Check if the email is currently assigned to this users's id.
-			 * If not, then check if it exists.
-			 */
-			$validation->validate('email_exists',$this->email,$json_strings['validation']['email_exists'],'','','','','',$this->id);
-		}
+        if ($this->validation_type == 'new_user' || $this->validation_type == 'new_client') {
+            $validation_items[$this->email]['email_exists'] = ['error' => $json_strings['validation']['email_exists']];
+            $validation_items[$this->username] = [
+                'required' => ['error' => $json_strings['validation']['no_user']],
+                'user_exists' => ['error' => $json_strings['validation']['user_exists']],
+                'alpha_or_dot' => ['error' => $json_strings['validation']['alpha_user']],
+                'length' => ['error' => $json_strings['validation']['length_user'], 'min' => MIN_USER_CHARS, 'max' => MAX_USER_CHARS],
+            ];
 
-		/** Password checks */
-		if (isset($this->validate_password) && $this->validate_password === true) {
-			$validation->validate('completed',$this->password,$json_strings['validation']['no_pass']);
-			$validation->validate('password',$this->password,$json_strings['validation']['valid_pass'] . " " . addslashes($json_strings['validation']['valid_chars']));
-			$validation->validate('pass_rules',$this->password,$json_strings['validation']['rules_pass']);
-			$validation->validate('length',$this->password,$json_strings['validation']['length_pass'],MIN_PASS_CHARS,MAX_PASS_CHARS);
-		}
+            $validate_password = true;
+        } else if ($this->validation_type == 'existing_user') {
+            $validation_items[$this->email]['email_exists'] = ['error' => $json_strings['validation']['email_exists'], 'id_ignore' => $this->id];
+
+			// Changing password is optional.
+			if (!empty($this->password)) {
+				$validate_password = true;
+            }
+        }
+
+		// Password checks
+        if ($validate_password === true) {
+            $validation_items[$this->password] = [
+                'required' => ['error' => $json_strings['validation']['no_pass']],
+                'password' => ['error' => $json_strings['validation']['valid_pass'] . " " . addslashes($json_strings['validation']['valid_chars'])],
+                'password_rules' => ['error' => $json_strings['validation']['rules_pass']],
+                'length' => ['error' => $json_strings['validation']['length_pass'], 'min' => MIN_PASS_CHARS, 'max' => MAX_PASS_CHARS],
+            ];
+        }
 
         if (!empty($this->recaptcha)) {
-			$validation->validate('recaptcha',$this->recaptcha,$json_strings['validation']['recaptcha']);
+            $validation_items[$this->recaptcha]['recaptcha2'] = ['error' => $json_strings['validation']['recaptcha']];
 		}
+
+        $validation->validate_items($validation_items);
 
 		if ($validation->passed()) {
             $this->validation_passed = true;
@@ -406,15 +406,16 @@ class Users
 	 */
     public function create()
 	{
-		$this->state = array(
+		$state = array(
             'query' => 0,
         );
 
-        $this->password_hashed = $this->hashPassword($this->password);
-
         if (!$this->validate()) {
-            return $this->state;
+            $state = [];
+            return $state;
         }
+
+        $this->password_hashed = $this->hashPassword($this->password);
 
 		if (strlen($this->password_hashed) >= 20) {
 
@@ -448,9 +449,8 @@ class Users
 
 			if ($this->statement) {
                 $this->id = $this->dbh->lastInsertId();
-                $this->state['id'] = $this->id;
-
-                $this->state['query'] = 1;
+                $state['id'] = $this->id;
+                $state['query'] = 1;
 
                 if ($this->require_password_change == true) {
                     save_user_meta($this->id, 'require_password_change', 'true');
@@ -476,22 +476,22 @@ class Users
                         'username'	=> $this->username,
                         'password'	=> $this->password
                     ])) {
-						$this->state['email'] = 1;
+						$state['email'] = 1;
 					}
 					else {
-						$this->state['email'] = 0;
+						$state['email'] = 0;
 					}
 				}
 				else {
-					$this->state['email'] = 2;
+					$state['email'] = 2;
 				}
 			}
 		}
 		else {
-			$this->state['hash'] = 0;
+			$state['hash'] = 0;
 		}
 
-		return $this->state;
+		return $state;
     }
     
     public function triggerAfterSelfRegister($arguments = null)
@@ -544,12 +544,13 @@ class Users
             return false;
         }
 
-		$this->state = array(
+		$state = array(
             'query' => 0,
         );
 
         if (!$this->validate()) {
-            return $this->state;
+            $state = [];
+            return $state;
         }
 
         $previous_data = get_user_by_id($this->id);
@@ -569,7 +570,7 @@ class Users
 
 		if (strlen($this->password_hashed) >= 20) {
 
-			$this->state['hash'] = 1;
+			$state['hash'] = 1;
 
 			/** SQL query */
 			$this->query = "UPDATE " . TABLE_USERS . " SET
@@ -616,7 +617,7 @@ class Users
                     }
                 }
 
-				$this->state['query'] = 1;
+				$state['query'] = 1;
 
                 switch ($this->role) {
                     case 0:
@@ -640,10 +641,10 @@ class Users
             }
 		}
 		else {
-			$this->state['hash'] = 0;
+			$state['hash'] = 0;
         }
 
-		return $this->state;
+		return $state;
 	}
 
 	/**

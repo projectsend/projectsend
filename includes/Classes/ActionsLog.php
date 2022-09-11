@@ -90,12 +90,11 @@ class ActionsLog
     }
 
 	/**
-	 * Create a new client.
+	 * Create entry in database
 	 */
 	function addEntry($arguments)
 	{
 		global $dbh;
-		$this->state = array();
 
         /** Define the account information */
         $default_user = (defined('CURRENT_USER_USERNAME')) ? CURRENT_USER_USERNAME : null;

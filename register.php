@@ -19,29 +19,31 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 
 /** The form was submitted */
 if ($_POST) {
-    if (get_option('clients_can_register') == '1') {
-        /** Validate the information from the posted form. */
-        /** Create the user if validation is correct. */
-        $new_client->setType('new_client');
-        $new_client->set([
-            'username' => $_POST['username'],
-            'password' => $_POST['password'],
-            'name' => $_POST['name'],
-            'email' => $_POST['email'],
-            'address' => (isset($_POST["address"])) ? $_POST['address'] : null,
-            'phone' => (isset($_POST["phone"])) ? $_POST['phone'] : null,
-            'contact' => (isset($_POST["contact"])) ? $_POST['contact'] : null,
-            'max_file_size' => 0,
-            'notify_upload' => (isset($_POST["notify_upload"])) ? 1 : 0,
-            'notify_account' => (isset($_POST["notify_account"])) ? 1 : 0,
-            'active' => (get_option('clients_auto_approve') == 0) ? 0 : 1,
-            'can_upload_public' => (get_option('clients_new_default_can_set_public') == 1) ? 1 : 0,
-            'account_requested'	=> (get_option('clients_auto_approve') == 0) ? 1 : 0,
-            'type' => 'new_client',
-            'recaptcha' => ( defined('RECAPTCHA_AVAILABLE') ) ? recaptcha2GetRequest() : null,
-        ]);
+    if (get_option('clients_can_register') != '1') {
+        exitWithErrorCode(403);
+    }
 
-        $new_response = $new_client->create();
+    $new_client->setType('new_client');
+    $new_client->set([
+        'username' => $_POST['username'],
+        'password' => $_POST['password'],
+        'name' => $_POST['name'],
+        'email' => $_POST['email'],
+        'address' => (isset($_POST["address"])) ? $_POST['address'] : null,
+        'phone' => (isset($_POST["phone"])) ? $_POST['phone'] : null,
+        'contact' => (isset($_POST["contact"])) ? $_POST['contact'] : null,
+        'max_file_size' => 0,
+        'notify_upload' => (isset($_POST["notify_upload"])) ? 1 : 0,
+        'notify_account' => (isset($_POST["notify_account"])) ? 1 : 0,
+        'active' => (get_option('clients_auto_approve') == 0) ? 0 : 1,
+        'can_upload_public' => (get_option('clients_new_default_can_set_public') == 1) ? 1 : 0,
+        'account_requested'	=> (get_option('clients_auto_approve') == 0) ? 1 : 0,
+        'type' => 'new_client',
+        'recaptcha' => ( defined('RECAPTCHA_AVAILABLE') ) ? recaptcha2GetRequest() : null,
+    ]);
+
+    $new_response = $new_client->create();
+    if (!empty($new_response['id'])) {
         $new_client->triggerAfterSelfRegister([
             'groups' => (isset($_POST["groups_request"])) ? $_POST["groups_request"] : null,
         ]);
@@ -56,14 +58,14 @@ if ($_POST) {
             'affected_account_name' => $new_client->name
         ]);
 
+        $redirect_url = BASE_URI.'register.php?success=1';
+
         if (get_option('clients_auto_approve') == 1) {
             global $auth;
             global $flash;
             $auth->authenticate($_POST['username'], $_POST['password']);
             $flash->success(__('Thank you for registering. Your account has been activated.', 'cftp_admin'));
             $redirect_url = 'my_files/index.php';
-        } else {
-            $redirect_url = BASE_URI.'register.php?success=1';
         }
 
         // Redirect
@@ -72,9 +74,7 @@ if ($_POST) {
     }
 }
 ?>
-
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
-
     <div class="row">
         <div class="col-xs-12 branding_unlogged">
             <?php echo get_branding_layout(); ?>
@@ -115,39 +115,28 @@ if ($_POST) {
                         /**
                          * Get the process state and show the corresponding ok or error messages.
                          */
-    
-                        $error_msg = '</p><br /><p>';
-                        $error_msg .= __('Please contact a system administrator.','cftp_admin');
-    
-                        switch ($new_response['query']) {
-                            case 0:
-                                $msg = __('There was an error. Please try again.','cftp_admin');
-                                $msg .= $error_msg;
-                                echo system_message('danger',$msg);
-                            break;
-                            case 2:
-                                $msg = __('A folder for this account could not be created. Probably because of a server configuration.','cftp_admin');
-                                $msg .= $error_msg;
-                                echo system_message('danger',$msg);
-                            break;
-                            case 3:
-                                $msg = __('The account could not be created. A folder with this name already exists.','cftp_admin');
-                                $msg .= $error_msg;
-                                echo system_message('danger',$msg);
-                            break;
+                        if (!empty($new_response['query'])) {
+                            switch ($new_response['query']) {
+                                case 0:
+                                    $msg = __('There was an error. Please try again.','cftp_admin');
+                                    echo system_message('danger',$msg);
+                                break;
+                            }
                         }
                         /**
                          * Show the ok or error message for the email notification.
                          */
-                        switch ($new_response['email']) {
-                            case 1:
-                                $msg = __('An e-mail notification with login information was sent to the specified address.','cftp_admin');
-                                echo system_message('success',$msg);
-                            break;
-                            case 0:
-                                $msg = __("E-mail notification couldn't be sent.",'cftp_admin');
-                                echo system_message('danger',$msg);
-                            break;
+                        if (!empty($new_response['email'])) {
+                            switch ($new_response['email']) {
+                                case 1:
+                                    $msg = __('An e-mail notification with login information was sent to the specified address.','cftp_admin');
+                                    echo system_message('success',$msg);
+                                break;
+                                case 0:
+                                    $msg = __("E-mail notification couldn't be sent.",'cftp_admin');
+                                    echo system_message('danger',$msg);
+                                break;
+                            }
                         }
                     }
                 }

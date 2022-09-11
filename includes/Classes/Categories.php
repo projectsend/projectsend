@@ -117,16 +117,14 @@ class Categories
 	 */
 	function validate()
 	{
-        $validation = new \ProjectSend\Classes\Validation;
-
 		global $json_strings;
-		$this->state = array();
 
-		/**
-		 * These validations are done both when creating a new client and
-		 * when editing an existing one.
-		 */
-		$validation->validate('completed',$this->name,$json_strings['validation']['no_name']);
+		$validation = new \ProjectSend\Classes\Validation;
+        $validation->validate_items([
+            $this->name => [
+                'required' => ['error' => $json_strings['validation']['no_name']],
+            ],
+        ]);
 
         if ($validation->passed()) {
             $this->validation_passed = true;

@@ -73,47 +73,47 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
 }
 ?>
 
-<div class="col-xs-12 col-sm-12 col-lg-8 col-lg-offset-2">
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-lg-8 col-lg-offset-2">
 
-    <?php echo get_branding_layout(true); ?>
+        <div class="white-box">
+            <div class="white-box-interior">
+                <?php
+                    if ($can_view) {
+                ?>
+                        <div class="text-center">
+                            <h2 class="file_title">
+                                <span class="label label-default">    
+                                    <?php echo $file->filename_original; ?>
+                                </span>
+                            </h2>
+                            <h3><?php echo $file->title; ?></h3>
 
-    <div class="white-box">
-        <div class="white-box-interior">
-            <?php
-                if ($can_view) {
-            ?>
-                    <div class="text-center">
-                        <h2 class="file_title">
-                            <span class="label label-default">    
-                                <?php echo $file->filename_original; ?>
-                            </span>
-                        </h2>
-                        <h3><?php echo $file->title; ?></h3>
-
-                        <div class="description">
-                            <?php echo $file->description; ?>
-                        </div>
-
-                        <div class="size">
-                            <?php echo $file->size_formatted; ?>
-                        </div>
-
-                        <?php if ($can_download == true) { ?>
-                            <div class="actions">
-                                <a href="<?php echo $file->public_url . '&download'; ?>" class="btn btn-primary">
-                                    <?php _e('Download file','cftp_admin'); ?>
-                                </a>
+                            <div class="description">
+                                <?php echo $file->description; ?>
                             </div>
-                        <?php } ?>
-                    </div>
-            <?php
-                }
-            ?>
-        </div>
-    </div>
 
-    <div class="login_form_links">
-        <p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.','cftp_admin'); ?></a></p>
+                            <div class="size">
+                                <?php echo $file->size_formatted; ?>
+                            </div>
+
+                            <?php if ($can_download == true) { ?>
+                                <div class="actions">
+                                    <a href="<?php echo $file->public_url . '&download'; ?>" class="btn btn-primary">
+                                        <?php _e('Download file','cftp_admin'); ?>
+                                    </a>
+                                </div>
+                            <?php } ?>
+                        </div>
+                <?php
+                    }
+                ?>
+            </div>
+        </div>
+
+        <div class="login_form_links">
+            <p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.','cftp_admin'); ?></a></p>
+        </div>
     </div>
 </div>
 

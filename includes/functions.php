@@ -73,14 +73,16 @@ function check_server_requirements()
         $page_title = __('Error', 'cftp_admin');
         include_once $absParent . '/header-unlogged.php';
     ?>
-        <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
-            <div class="white-box">
-                <div class="white-box-interior">
-                    <?php
-                        foreach ( $error_msg as $msg ) {
-                            echo system_message( 'error', $msg );
-                        }
-                    ?>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
+                <div class="white-box">
+                    <div class="white-box-interior">
+                        <?php
+                            foreach ( $error_msg as $msg ) {
+                                echo system_message( 'error', $msg );
+                            }
+                        ?>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1340,14 +1342,15 @@ function generate_logo_url()
 {
 	$branding = array();
 	$branding['exists'] = false;
+    $logo_filename = get_option('logo_filename');
     // LOGO_FILENAME: filename gotten from the database
-    if ( empty( LOGO_FILENAME ) ) {
+    if ( empty( $logo_filename ) ) {
         $branding['dir'] = ASSETS_IMG_DIR . DS . DEFAULT_LOGO_FILENAME;
         $branding['url'] = ASSETS_IMG_URL . '/' . DEFAULT_LOGO_FILENAME;
     }
     else {
-        $branding['dir'] = ADMIN_UPLOADS_DIR . DS . LOGO_FILENAME;
-        $branding['url'] = ADMIN_UPLOADS_URI . LOGO_FILENAME;
+        $branding['dir'] = ADMIN_UPLOADS_DIR . DS . $logo_filename;
+        $branding['url'] = ADMIN_UPLOADS_URI . $logo_filename;
     }
 
 	if (file_exists( $branding['dir'] )) {
@@ -1377,11 +1380,7 @@ function generate_logo_url()
  */
 function get_branding_layout($return_thumbnail = false)
 {
-    $layout = '<div class="row">
-                <div class="col-xs-12 branding_unlogged">
-                    %LOGO%
-                </div>
-                </div>';
+    $layout = '<figure>%LOGO%</figure>';
 
     $branding = generate_logo_url();
 
@@ -1393,7 +1392,7 @@ function get_branding_layout($return_thumbnail = false)
     }
     
     if ($branding['type'] == 'raster') {
-        $replace = '<img src="' . $branding_image . '" alt="' . html_output(THIS_INSTALL_TITLE) . '" />';
+        $replace = '<img src="' . $branding_image . '" alt="' . html_output(get_option('this_install_title')) . '" />';
     }
     elseif ($branding['type'] == 'vector') {
         $replace = file_is_svg($branding['dir']);

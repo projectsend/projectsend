@@ -93,59 +93,54 @@ $csrf_token = getCsrfToken();
 
 include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 ?>
-<div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 
-    <?php echo get_branding_layout(true); ?>
-
-    <?php
-        $login_types = array(
-            'local' => '1',
-            'ldap' => get_option('ldap_signin_enabled'),
-        );
-    ?>
-    <div class="white-box">
-        <div class="white-box-interior">
-            <div class="ajax_response">
-                <?php
-                    if ($flash->hasMessages()) {
-                        echo $flash;
-                    }
-                ?>
-            </div>
-        
-            <?php /*
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#local" aria-controls="local" role="tab" data-toggle="tab">Local account</a></li>
-                <?php if ($login_types['ldap'] == 'true') { ?>
-                    <li role="presentation"><a href="#ldap" aria-controls="ldap" role="tab" data-toggle="tab">LDAP</a></li>
-                <?php } ?>
-            </ul> */ ?>
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane fade in active" id="local">
-                    <?php include_once FORMS_DIR . DS . 'login.php'; ?>
-
-                    <div class="login_form_links">
-                        <p id="reset_pass_link"><?php _e("Forgot your password?",'cftp_admin'); ?> <a href="<?php echo BASE_URI; ?>reset-password.php"><?php _e('Set up a new one.','cftp_admin'); ?></a></p>
-                        <?php
-                            if (get_option('clients_can_register') == '1') {
-                        ?>
-                                <p id="register_link"><?php _e("Don't have an account yet?",'cftp_admin'); ?> <a href="<?php echo BASE_URI; ?>register.php"><?php _e('Register as a new client.','cftp_admin'); ?></a></p>
-                        <?php
-                            } else {
-                        ?>
-                                <p><?php _e("This server does not allow self registrations.",'cftp_admin'); ?></p>
-                                <p><?php _e("If you need an account, please contact a server administrator.",'cftp_admin'); ?></p>
-                        <?php
-                            }
-                        ?>
-                    </div>
+        <?php
+            $login_types = array(
+                'local' => '1',
+                'ldap' => get_option('ldap_signin_enabled'),
+            );
+        ?>
+        <div class="white-box">
+            <div class="white-box-interior">
+                <div class="ajax_response">
                 </div>
+            
+                <?php /*
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#local" aria-controls="local" role="tab" data-toggle="tab">Local account</a></li>
+                    <?php if ($login_types['ldap'] == 'true') { ?>
+                        <li role="presentation"><a href="#ldap" aria-controls="ldap" role="tab" data-toggle="tab">LDAP</a></li>
+                    <?php } ?>
+                </ul> */ ?>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane fade in active" id="local">
+                        <?php include_once FORMS_DIR . DS . 'login.php'; ?>
 
-                <?php /* if ($login_types['ldap'] == 'true') { ?>
-                    <div role="tabpanel" class="tab-pane fade" id="ldap">
-                        <?php include_once FORMS_DIR . DS . 'login-ldap.php'; ?>
+                        <div class="login_form_links">
+                            <p id="reset_pass_link"><?php _e("Forgot your password?",'cftp_admin'); ?> <a href="<?php echo BASE_URI; ?>reset-password.php"><?php _e('Set up a new one.','cftp_admin'); ?></a></p>
+                            <?php
+                                if (get_option('clients_can_register') == '1') {
+                            ?>
+                                    <p id="register_link"><?php _e("Don't have an account yet?",'cftp_admin'); ?> <a href="<?php echo BASE_URI; ?>register.php"><?php _e('Register as a new client.','cftp_admin'); ?></a></p>
+                            <?php
+                                } else {
+                            ?>
+                                    <p><?php _e("This server does not allow self registrations.",'cftp_admin'); ?></p>
+                                    <p><?php _e("If you need an account, please contact a server administrator.",'cftp_admin'); ?></p>
+                            <?php
+                                }
+                            ?>
+                        </div>
                     </div>
-                <?php } */ ?>
+
+                    <?php /* if ($login_types['ldap'] == 'true') { ?>
+                        <div role="tabpanel" class="tab-pane fade" id="ldap">
+                            <?php include_once FORMS_DIR . DS . 'login-ldap.php'; ?>
+                        </div>
+                    <?php } */ ?>
+                </div>
             </div>
         </div>
     </div>

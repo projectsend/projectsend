@@ -91,4 +91,20 @@ if ( !isset( $body_class ) ) { $body_class = array(); }
 
         <div class="main_content_unlogged">
             <div class="container-fluid">
+
                 <div class="row">
+                    <div class="col-xs-12 branding_unlogged">
+                        <?php echo get_branding_layout(true); ?>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
+                        <?php
+                            // Flash messages
+                            if ($flash->hasMessages()) {
+                                echo $flash;
+                            }
+                        ?>
+                    </div>
+                </div>

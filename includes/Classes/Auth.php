@@ -238,11 +238,11 @@ class Auth
                     'affected_account_name' => $new_client->username
                 ]);
 
+                $redirect_url = BASE_URI.'register.php?success=1';
+
                 if (get_option('clients_auto_approve') == 1) {
                     $this->authenticate($username, $password);
                     $redirect_url = 'my_files/index.php';
-                } else {
-                    $redirect_url = BASE_URI.'register.php?success=1';
                 }
 
                 // Redirect

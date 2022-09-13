@@ -36,10 +36,15 @@ if ($_POST) {
     $create = $group->create();
 
     if (!empty($create['id'])) {
-        $redirect_to = BASE_URI . 'groups-edit.php?id=' . $create['id'] . '&status=' . $create['query'] . '&is_new=1';
-        header('Location:' . $redirect_to);
-        exit;
+        $flash->success(__('Group created successfully'));
+        $redirect_to = BASE_URI . 'groups-edit.php?id=' . $create['id'];
+    } else {
+        $flash->error(__('There was an error saving to the database'));
+        $redirect_to = BASE_URI . 'groups-add.php';
     }
+
+    header('Location:' . $redirect_to);
+    exit;
 }
 ?>
 <div class="row">

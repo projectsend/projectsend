@@ -51,10 +51,9 @@ if ($_POST) {
     /** Create the user if validation is correct. */
     $new_user->setType('new_user');
     $new_user->set($user_arguments);
-    $new_response = $new_user->create();
+    $create = $new_user->create();
 
-    if (!empty($new_response['id'])) {
-        /** Record the action log */
+    if (!empty($create['id'])) {
         $logger = new \ProjectSend\Classes\ActionsLog;
         $record = $logger->addEntry([
             'action' => 2,
@@ -64,42 +63,42 @@ if ($_POST) {
             'affected_account_name' => $new_user->name
         ]);
 
-        $redirect_to = BASE_URI . 'users-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1&notification=' . $new_response['email'];
-        header('Location:' . $redirect_to);
-        exit;
+        $flash->success(__('User created successfully'));
+        $redirect_to = BASE_URI . 'users-edit.php?id=' . $create['id'];
+    } else {
+        $flash->error(__('There was an error saving to the database'));
+        $redirect_to = BASE_URI . 'users-add.php';
     }
+
+    if (isset($create['email'])) {
+        switch ($create['email']) {
+            case 2:
+                $flash->success(__('A welcome message was not sent to the new account owner.','cftp_admin'));
+            break;
+            case 1:
+                $flash->success(__('A welcome message with login information was sent to the new account owner.','cftp_admin'));
+            break;
+            case 0:
+                $flash->error(__("E-mail notification couldn't be sent.",'cftp_admin'));
+            break;
+        }
+    }
+
+    header('Location:' . $redirect_to);
+    exit;
 }
 ?>
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-lg-6">
         <div class="white-box">
             <div class="white-box-interior">
-            
                 <?php
                     // If the form was submitted with errors, show them here.
                     echo $new_user->getValidationErrors();
 
-                    if (isset($new_response)) {
-                        /**
-                         * Get the process state and show the corresponding ok or error message.
-                         */
-                        switch ($new_response['query']) {
-                            case 0:
-                                $msg = __('There was an error. Please try again.','cftp_admin');
-                                echo system_message('danger',$msg);
-                            break;
-                        }
-                    }
-                    else {
-                        /**
-                         * If not $new_response is set, it means we are just entering for the first time.
-                         * Include the form.
-                         */
-                        $user_form_type = 'new_user';
-                        include_once FORMS_DIR . DS . 'users.php';
-                    }
+                    $user_form_type = 'new_user';
+                    include_once FORMS_DIR . DS . 'users.php';
                 ?>
-
             </div>
         </div>
     </div>

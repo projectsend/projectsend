@@ -55,7 +55,7 @@ if ($_POST) {
     /** Validate the information from the posted form. */
     $new_client->setType('new_client');
     $new_client->set($client_arguments);
-    $new_response = $new_client->create();
+    $create = $new_client->create();
 
     /** Record the action log */
     $logger = new \ProjectSend\Classes\ActionsLog;
@@ -78,11 +78,30 @@ if ($_POST) {
         ]);
     }
 
-    if (!empty($new_response['id'])) {
-        $redirect_to = BASE_URI . 'clients-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1&notification=' . $new_response['email'];
-        header('Location:' . $redirect_to);
-        exit;
+    if (!empty($create['id'])) {
+        $flash->success(__('Client created successfully'));
+        $redirect_to = BASE_URI . 'clients-edit.php?id=' . $create['id'];
+    } else {
+        $flash->error(__('There was an error saving to the database'));
+        $redirect_to = BASE_URI . 'clients-add.php';
     }
+
+    if (isset($create['email'])) {
+        switch ($create['email']) {
+            case 2:
+                $flash->success(__('A welcome message was not sent to the new account owner.','cftp_admin'));
+            break;
+            case 1:
+                $flash->success(__('A welcome message with login information was sent to the new account owner.','cftp_admin'));
+            break;
+            case 0:
+                $flash->error(__("E-mail notification couldn't be sent.",'cftp_admin'));
+            break;
+        }
+    }
+
+    header('Location:' . $redirect_to);
+    exit;
 }
 ?>
 
@@ -94,25 +113,8 @@ if ($_POST) {
                     // If the form was submitted with errors, show them here.
                     echo $new_client->getValidationErrors();
 
-                    if (isset($new_response)) {
-                        /**
-                         * Get the process state and show the corresponding ok or error messages.
-                         */
-                        switch ($new_response['query']) {
-                            case 0:
-                                $msg = __('There was an error. Please try again.','cftp_admin');
-                                echo system_message('danger',$msg);
-                            break;
-                        }
-                    }
-                    else {
-                        /**
-                         * If not $new_response is set, it means we are just entering for the first time.
-                         * Include the form.
-                         */
-                        $clients_form_type = 'new_client';
-                        include_once FORMS_DIR . DS . 'clients.php';
-                    }
+                    $clients_form_type = 'new_client';
+                    include_once FORMS_DIR . DS . 'clients.php';
                 ?>
             </div>
         </div>

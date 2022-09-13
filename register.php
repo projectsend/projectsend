@@ -17,12 +17,15 @@ $new_client = new \ProjectSend\Classes\Users();
 
 include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 
+global $auth;
+global $flash;
+
+if (get_option('clients_can_register') != '1') {
+    exitWithErrorCode(403);
+}
+
 /** The form was submitted */
 if ($_POST) {
-    if (get_option('clients_can_register') != '1') {
-        exitWithErrorCode(403);
-    }
-
     $new_client->setType('new_client');
     $new_client->set([
         'username' => $_POST['username'],
@@ -42,8 +45,8 @@ if ($_POST) {
         'recaptcha' => ( defined('RECAPTCHA_AVAILABLE') ) ? recaptcha2GetRequest() : null,
     ]);
 
-    $new_response = $new_client->create();
-    if (!empty($new_response['id'])) {
+    $create = $new_client->create();
+    if (!empty($create['id'])) {
         $new_client->triggerAfterSelfRegister([
             'groups' => (isset($_POST["groups_request"])) ? $_POST["groups_request"] : null,
         ]);
@@ -60,99 +63,54 @@ if ($_POST) {
 
         $redirect_url = BASE_URI.'register.php?success=1';
 
-        if (get_option('clients_auto_approve') == 1) {
-            global $auth;
-            global $flash;
+        if (get_option('clients_auto_approve') != 1) {
+            $flash->success(__('Account created successfully', 'cftp_admin'));
+            $flash->warning(__('Please remember that an administrator needs to approve your account before you can log in.', 'cftp_admin'));
+        }
+        else {
+            // Auto approve accounts: redirect to files list
             $auth->authenticate($_POST['username'], $_POST['password']);
             $flash->success(__('Thank you for registering. Your account has been activated.', 'cftp_admin'));
             $redirect_url = 'my_files/index.php';
         }
-
-        // Redirect
-        header("Location:".$redirect_url);
-        exit;
+    } else {
+        $flash->error(__('There was an error saving to the database'));
+        $redirect_to = BASE_URI . 'register.php';
     }
+
+    if (isset($create['email'])) {
+        switch ($create['email']) {
+            case 1:
+                $flash->success(__('An e-mail notification with login information was sent to the specified address.','cftp_admin'));
+            break;
+            case 0:
+                $flash->error(__("E-mail notification couldn't be sent.",'cftp_admin'));
+            break;
+        }
+    }
+
+    // Redirect
+    header("Location:".$redirect_url);
+    exit;
 }
 ?>
-<div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
-    <div class="row">
-        <div class="col-xs-12 branding_unlogged">
-            <?php echo get_branding_layout(); ?>
-        </div>
-    </div>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
+        <div class="white-box">
+            <div class="white-box-interior">
+                <?php
+                    if (!isset($_GET['success'])) {
+                        // If the form was submitted with errors, show them here.
+                        echo $new_client->getValidationErrors();
 
-    <div class="white-box">
-        <div class="white-box-interior">
-
-            <?php
-                $form = true;
-                if (isset($_GET['success']) && $_GET['success'] == '1') {
-                    $msg = __('Account added correctly.','cftp_admin');
-                    echo system_message('success',$msg);
-
-                    if (get_option('clients_auto_approve') == 0) {
-                        $msg = __('Please remember that an administrator needs to approve your account before you can log in.','cftp_admin');
-                        $type = 'warning';
+                        $clients_form_type = 'new_client_self';
+                        include_once FORMS_DIR . DS . 'clients.php';
                     }
-                    else {
-                        $msg = __('You may now log in with your new credentials.','cftp_admin');
-                        $type = 'success';
-                    }
-                    echo system_message($type,$msg);
-                    $form = false;
-                }
+                ?>
 
-                if (get_option('clients_can_register') == '0') {
-                    $msg = __('Client self registration is not allowed. If you need an account, please contact a system administrator.','cftp_admin');
-                    echo system_message('danger',$msg);
-                    $form = false;
-                }
-                else {
-                    // If the form was submitted with errors, show them here.
-                    echo $new_client->getValidationErrors();
-        
-                    if (isset($new_response)) {
-                        /**
-                         * Get the process state and show the corresponding ok or error messages.
-                         */
-                        if (!empty($new_response['query'])) {
-                            switch ($new_response['query']) {
-                                case 0:
-                                    $msg = __('There was an error. Please try again.','cftp_admin');
-                                    echo system_message('danger',$msg);
-                                break;
-                            }
-                        }
-                        /**
-                         * Show the ok or error message for the email notification.
-                         */
-                        if (!empty($new_response['email'])) {
-                            switch ($new_response['email']) {
-                                case 1:
-                                    $msg = __('An e-mail notification with login information was sent to the specified address.','cftp_admin');
-                                    echo system_message('success',$msg);
-                                break;
-                                case 0:
-                                    $msg = __("E-mail notification couldn't be sent.",'cftp_admin');
-                                    echo system_message('danger',$msg);
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if ($form == true) {
-                    /**
-                     * If not $new_response is set, it means we are just entering for the first time.
-                     * Include the form.
-                     */
-                    $clients_form_type = 'new_client_self';
-                    include_once FORMS_DIR . DS . 'clients.php';
-                }
-            ?>
-
-            <div class="login_form_links">
-                <p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.','cftp_admin'); ?></a></p>
+                <div class="login_form_links">
+                    <p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.','cftp_admin'); ?></a></p>
+                </div>
             </div>
         </div>
     </div>

@@ -37,13 +37,6 @@ Class AssetsLoader
                 'js_app' =>['url' => ASSETS_JS_URL . '/app.js'],
             ] 
         ];
-
-        if ( LOADED_LANG != 'en' ) {
-            $plupload_lang_file = 'vendor/moxiecode/plupload/js/i18n/'.LOADED_LANG.'.js';
-            if ( file_exists( ROOT_DIR . DS . $plupload_lang_file ) ) {
-                $this->js_assets['head']['plupload_language'] = ['url' => BASE_URI . '/' . $plupload_lang_file];
-            }
-        }
     }
 
     private function addCustomFilesAssets()

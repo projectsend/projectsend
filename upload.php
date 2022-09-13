@@ -22,6 +22,13 @@ if (get_option('clients_can_upload') == 1) {
     $allowed_levels[] = 0;
 }
 
+if ( LOADED_LANG != 'en' ) {
+    $plupload_lang_file = 'vendor/moxiecode/plupload/js/i18n/'.LOADED_LANG.'.js';
+    if ( file_exists( ROOT_DIR . DS . $plupload_lang_file ) ) {
+        add_asset('js', 'plupload_language', BASE_URI . '/' . $plupload_lang_file, 'footer');
+    }
+}
+
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 <div class="row">

@@ -319,11 +319,13 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
     </div> <!-- row -->
 </div> <!-- container -->
 
-<?php default_footer_info(); ?>
 <?php
+    default_footer_info();
+
     render_json_variables();
 
-    load_js_files();
+    render_assets('js', 'footer');
+    render_assets('css', 'footer');
 ?>
 </body>
 </html>

@@ -74,11 +74,8 @@ if ( !isset( $body_class ) ) { $body_class = array(); }
     <?php meta_favicon(); ?>
 
     <?php
-        $load_theme_css = true;
-        require_once INCLUDES_DIR . DS . 'assets.php';
-
-        load_js_header_files();
-        load_css_files();
+        render_assets('js', 'head');
+        render_assets('css', 'head');
     ?>
 </head>
 

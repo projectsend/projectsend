@@ -981,6 +981,15 @@ function htmlentities_allowed($str, $quoteStyle = ENT_COMPAT, $charset = CHARSET
     */;
 }
 
+// Remove script and style tags
+function htmlentities_allowed_code_editor($html, $quoteStyle = ENT_COMPAT, $charset = CHARSET, $doubleEncode = false)
+{
+    $html = htmlspecialchars_decode($html, $quoteStyle);
+    // $html = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $html);
+    // $html = preg_replace('#<style(.*?)>(.*?)</style>#is', '', $html);
+
+    return $html;
+}
 
 /**
  * Solution by Philippe Flipflip. Fixes an error that would not convert special
@@ -2016,4 +2025,20 @@ function formatAssetLanguageName($name)
     }
 
     return $formatted;
+}
+
+function add_asset($type, $name, $url, $position = null, $arguments = [])
+{
+    if (!in_array($type, ['js', 'css'])) {
+        return;
+    }
+
+    global $assets_loader;
+    $assets_loader->addAsset($type, $name, $url, $position, $arguments);
+}
+
+function render_assets($type, $location)
+{
+    global $assets_loader;
+    $assets_loader->renderAssets($type, $location);
 }

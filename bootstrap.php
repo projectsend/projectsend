@@ -89,3 +89,6 @@ $bfchecker = new \ProjectSend\Classes\BruteForceBlock($dbh);
 
 global $auth;
 $auth = new \ProjectSend\Classes\Auth();
+
+global $assets_loader;
+$assets_loader = new \ProjectSend\Classes\AssetsLoader();

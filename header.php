@@ -61,10 +61,8 @@ password_change_required();
     <?php meta_favicon(); ?>
 
     <?php
-        require_once INCLUDES_DIR . DS . 'assets.php';
-
-        load_js_header_files();
-        load_css_files();
+        render_assets('js', 'head');
+        render_assets('css', 'head');
     ?>
 </head>
 

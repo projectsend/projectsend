@@ -33,7 +33,7 @@ $this_template = BASE_URI.'templates/'.$template.'/';
  * URI to the default template CSS file.
  */
 if (file_exists(ROOT_DIR.DS."templates".DS.$template.DS."main.css")) {
-    $this_template_css = BASE_URI.'templates/'.$template.'/main.css';
+    add_asset('css', 'ps_theme_css', BASE_URI.'templates/'.$template.'/main.css', 'head');
 }
 
 global $dbh;

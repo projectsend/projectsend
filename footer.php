@@ -11,7 +11,8 @@
                     
                     render_json_variables();
                     
-                    load_js_files();
+                    render_assets('js', 'footer');
+                    render_assets('css', 'footer');
                 ?>
             </div> <!-- main_content -->
         </div> <!-- container-custom -->

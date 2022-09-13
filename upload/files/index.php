@@ -5,5 +5,4 @@
  *
  * @package	ProjectSend
  */
-header("location:../../index.php");
-exit;
+ps_redirect('../../index.php');

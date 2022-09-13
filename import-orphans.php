@@ -85,9 +85,7 @@ if ($_POST) {
     }
 
     if (!empty($added)) {
-        $url = BASE_URI.'files-edit.php?ids=' . implode(',', $added);
-        header("Location: $url");
-        exit;
+        ps_redirect(BASE_URI.'files-edit.php?ids=' . implode(',', $added));
     }
 }
 ?>

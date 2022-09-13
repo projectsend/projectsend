@@ -177,9 +177,7 @@ if (isset($_POST['action'])) {
                 }
             break;
             case 'edit':
-                $url = BASE_URI.'files-edit.php?ids='.implode(',', $selected_files);
-                header("Location: ".$url);
-                exit;
+                ps_redirect(BASE_URI.'files-edit.php?ids='.implode(',', $selected_files));
             break;
         }
     }

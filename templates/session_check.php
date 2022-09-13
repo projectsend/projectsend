@@ -18,13 +18,11 @@ if (isset($is_client)) {
     $client = get_client_by_username(CURRENT_USER_USERNAME);
 
 	if ( $client['active'] == '0' ) {
-		header("location:".BASE_URI.'process.php?do=logout');
-		exit;
+        ps_redirect(BASE_URI.'process.php?do=logout');
 	}
 }
 
 /** If the info is not found, redirect to the log in page. */
 if (!isset($grant_access)) {
-	header("location:".BASE_URI);
-	exit;
+    ps_redirect(BASE_URI);
 }

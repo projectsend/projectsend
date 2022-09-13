@@ -12,14 +12,12 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 
 /** Check for a complete installation */
 if (!is_projectsend_installed()) {
-	header("Location:install/index.php");
-	exit;
+    ps_redirect('install/index.php');
 }
 
 if ( defined('SESSION_TIMEOUT_EXPIRE') && SESSION_TIMEOUT_EXPIRE == true ) {
 	if (isset($_SESSION['last_call']) && (time() - $_SESSION['last_call'] > SESSION_EXPIRE_TIME)) {
-		header('Location: ' . BASE_URI . 'process.php?do=logout&timeout=1');
-		exit;
+        ps_redirect(BASE_URI . 'process.php?do=logout&timeout=1');
 	}
 }
 $_SESSION['last_call'] = time(); // update last activity time stamp

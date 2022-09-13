@@ -4,8 +4,7 @@ require_once '../../../bootstrap.php';
 header("Content-type: application/json");
 
 if (!defined('CURRENT_USER_LEVEL') or CURRENT_USER_LEVEL != 9) {
-    header("Location: ".BASE_URI);
-    exit;
+    ps_redirect(BASE_URI);
 }
 
 // $feed = simplexml_load_file(NEWS_FEED_URI);

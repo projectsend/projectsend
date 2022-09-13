@@ -147,8 +147,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                 if ( !empty( $_POST['denied'] ) && $_POST['denied'] == 1 ) {
                     $location .= '&denied=1';
                 }
-                header("Location: $location");
-                exit;
+                ps_redirect($location);
             }
             else {
                 $msg = __('Please select at least one client.','cftp_admin');

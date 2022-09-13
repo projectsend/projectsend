@@ -43,8 +43,7 @@ if ($_POST) {
         $redirect_to = BASE_URI . 'groups-add.php';
     }
 
-    header('Location:' . $redirect_to);
-    exit;
+    ps_redirect($redirect_to);
 }
 ?>
 <div class="row">

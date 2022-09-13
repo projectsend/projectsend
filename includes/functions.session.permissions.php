@@ -21,16 +21,14 @@ function check_for_session( $redirect = true )
         if (!$user->get($_SESSION['user_id'])) {
             $_SESSION = [];
             session_destroy();
-            header("location:" . BASE_URI . "index.php");
-            exit;
+            ps_redirect(BASE_URI . "index.php");
         }
 
         return true;
     }
 
     if ( !$is_logged_now && $redirect == true ) {
-        header("location:" . BASE_URI . "index.php");
-        exit;
+        ps_redirect(BASE_URI . "index.php");
 	}
 
     return $is_logged_now;
@@ -61,8 +59,7 @@ function can_see_content($allowed_levels = null) {
     }
 
     if ($permission == false) {
-		header("location:".PAGE_STATUS_CODE_URL);
-		exit;
+        ps_redirect(PAGE_STATUS_CODE_URL);
     }
 }
 
@@ -79,8 +76,7 @@ function password_change_required()
             $flash->warning(__('Password change is required for your account', 'cftp_admin'));
 
             $url .= '?id='.CURRENT_USER_ID;
-            header("Location: ".BASE_URI.$url);
-            exit;
+            ps_redirect(BASE_URI.$url);
         }
     }
 }

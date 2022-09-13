@@ -13,8 +13,7 @@ require_once 'bootstrap.php';
  * If the option to show this page is not enabled, redirect
  */
 if ( get_option('public_listing_page_enable') != 1 ) {
-    header("location:" . BASE_URI . "index.php");
-    die();
+    ps_redirect(BASE_URI . "index.php");
 }
 
 /**
@@ -43,8 +42,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
     }
 
     if ( !$can_view_group ) {
-        header("location:" . BASE_URI . "index.php");
-        exit;
+        ps_redirect(BASE_URI . "index.php");
     }
 
     $mode = 'group';

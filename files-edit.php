@@ -95,22 +95,18 @@ $get_categories = get_categories();
             // Redirect
             $saved = implode(',', $saved_files);
 
-            header("Location: files-edit.php?ids=".$saved.'&saved=true');
-            exit;
+            $flash->success(__('Files saved successfully', 'cftp_admin'));
+            ps_redirect('files-edit.php?ids='.$saved.'&saved=true');
         }
 
         // Saved files
         $saved_files = [];
         if (!empty($_GET['saved'])) {
-            // require_once INCLUDES_DIR . DS . 'upload-send-notifications.php';
-
             foreach ($editable as $file_id) {
                 if (is_numeric($file_id)) {
                     $saved_files[] = $file_id;
                 }
             }
-
-            echo system_message('success', __('Files saved correctly','cftp_admin'));
     ?>
             <table id="uploaded_files_tbl" class="footable" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
                 <thead>

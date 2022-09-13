@@ -100,8 +100,7 @@ if ($_POST) {
         }
     }
 
-    header('Location:' . $redirect_to);
-    exit;
+    ps_redirect($redirect_to);
 }
 ?>
 

@@ -19,7 +19,7 @@ if (!isset($_GET['id'])) {
     exitWithErrorCode(403);
 }
  
-$client_id = $_GET['id'];
+$client_id = (int)$_GET['id'];
 if (!client_exists_id($client_id)) {
     exitWithErrorCode(403);
 }
@@ -134,9 +134,7 @@ if ($_POST) {
         $flash->error(__('There was an error saving to the database'));
     }
 
-    $location = BASE_URI . 'clients-edit.php?id=' . $client_id;
-    header("Location: $location");
-    exit;
+    ps_redirect(BASE_URI . 'clients-edit.php?id=' . $client_id);
 }
 
 $page_title = __('Edit client','cftp_admin');

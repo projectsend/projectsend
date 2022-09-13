@@ -34,8 +34,7 @@ else {
     );
 
     if ( !is_projectsend_installed() ) {
-        header("Location:install/index.php");
-        exit;
+        ps_redirect('install/index.php');
     }
 
     /**
@@ -45,15 +44,13 @@ else {
     if (!isset($dont_redirect_if_logged)) {
         if (defined('CURRENT_USER_LEVEL')) {
             if (CURRENT_USER_LEVEL == 0) {
-                header("location:" . CLIENT_VIEW_FILE_LIST_URL);
-                exit;    
+                ps_redirect(CLIENT_VIEW_FILE_LIST_URL);
             }
         }
 
         /** If logged as a system user, go directly to the back-end homepage */
         if (defined('CURRENT_USER_LEVEL') && !empty($allowed_levels) && current_role_in($allowed_levels)) {
-            header("Location:".BASE_URI."dashboard.php");
-            exit;
+            ps_redirect(BASE_URI."dashboard.php");
         }
     }
     /**

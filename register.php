@@ -61,7 +61,7 @@ if ($_POST) {
             'affected_account_name' => $new_client->name
         ]);
 
-        $redirect_url = BASE_URI.'register.php?success=1';
+        $redirect_to = BASE_URI.'register.php?success=1';
 
         if (get_option('clients_auto_approve') != 1) {
             $flash->success(__('Account created successfully', 'cftp_admin'));
@@ -71,7 +71,7 @@ if ($_POST) {
             // Auto approve accounts: redirect to files list
             $auth->authenticate($_POST['username'], $_POST['password']);
             $flash->success(__('Thank you for registering. Your account has been activated.', 'cftp_admin'));
-            $redirect_url = 'my_files/index.php';
+            $redirect_to = 'my_files/index.php';
         }
     } else {
         $flash->error(__('There was an error saving to the database'));
@@ -89,9 +89,7 @@ if ($_POST) {
         }
     }
 
-    // Redirect
-    header("Location:".$redirect_url);
-    exit;
+    ps_redirect($redirect_to);
 }
 ?>
 <div class="row">

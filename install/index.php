@@ -27,8 +27,7 @@ $form = true;
                         $form = false;
 
                         if (option_exists('post_install_complete')) {
-                            header('Location: ../index.php');
-                            exit;
+                            ps_redirect('../index.php');
                         }
 
                         save_option('post_install_complete', '1');
@@ -190,8 +189,7 @@ $form = true;
                                             'owner_user' => $admin_username
                                         ]);
 
-                                        header("Location: index.php?status=success");
-                                        exit;
+                                        ps_redirect('index.php?status=success');
                                     } else {
                                         $msg = __('There was an error writing to the database.','cftp_admin');
                                         $msg .= '<p>' . $error_str . '</p>';

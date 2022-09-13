@@ -98,9 +98,7 @@ switch ( $section ) {
                             );
         break;
     default:
-        $location = BASE_URI . 'email-templates.php?section=header_footer';
-        header("Location: $location");
-        exit;
+        ps_redirect(BASE_URI . 'email-templates.php?section=header_footer');
         break;
 }
 
@@ -160,8 +158,7 @@ if ($_POST) {
         $location .= '&status=' . $query_state;
     }
 
-    header("Location: $location");
-    exit;
+    ps_redirect($location);
 }
 ?>
 <div class="row">

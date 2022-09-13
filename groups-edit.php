@@ -59,9 +59,8 @@ if ($_POST) {
         $flash->error(__('There was an error saving to the database'));
     }
 
-    $location = BASE_URI . 'groups-edit.php?id=' . $group_id . '&status=' . $edit_response['query'];
-    header("Location: $location");
-    exit;
+    $location = BASE_URI . 'groups-edit.php?id=' . $group_id;
+    ps_redirect($location);
 }
 ?>
 <div class="row">

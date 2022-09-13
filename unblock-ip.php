@@ -26,8 +26,7 @@ if ($_POST) {
         $flash->error($unblock['message']);
     }
 
-    header("Location: unblock-ip.php");
-    exit;
+    ps_redirect(BASE_URI.'unblock-ip.php');
 }
 ?>
 <div class="row">

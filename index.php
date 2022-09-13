@@ -60,8 +60,7 @@ if ($_POST) {
                     'affected_account_name' => $user->name
                 ]);
 
-                header("Location: ".$decoded->location);
-                exit;
+                ps_redirect($decoded->location);
             } else {
                 $flash->error($auth->getLoginError($decoded->type));
 
@@ -76,8 +75,7 @@ if ($_POST) {
                     break;
                 }
 
-                header("Location: index.php");
-                exit;
+                ps_redirect('index.php');
             }
             // $auth->setLanguage($_POST['language']);
         break;

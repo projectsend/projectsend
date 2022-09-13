@@ -43,8 +43,7 @@ switch ($_GET['do']) {
         if (!empty($_GET['return_to']) && strpos($_GET['return_to'], BASE_URI) === 0) {
             $location = str_replace(BASE_URI, '', $_GET['return_to']);
         }
-        header('Location: ' . BASE_URI . $location);
-        exit;
+        ps_redirect(BASE_URI . $location);
         break;
     case 'get_preview':
         $return = [];
@@ -72,8 +71,7 @@ switch ($_GET['do']) {
         $download->downloadZip($_GET['files']);
         break;
     default:
-        header('Location:' . BASE_URI);
-        exit;
+        ps_redirect(BASE_URI);
         break;
 }
 

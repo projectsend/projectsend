@@ -170,16 +170,14 @@ class Auth
                     ]);
 
 					if ($user->isClient()) {
-                        header('Location: ' . CLIENT_VIEW_FILE_LIST_URL);
-                        exit;
+                        ps_redirect(CLIENT_VIEW_FILE_LIST_URL);
 					}
 					else {
-                        header('Location: ' . BASE_URI."dashboard.php");
-                        exit;
+                        ps_redirect(BASE_URI.'dashboard.php');
 					}
 				}
 				else {
-					header('Location: ' . BASE_URI."?error=account_inactive");
+                    ps_redirect(BASE_URI.'?error=account_inactive');
 				}
             }
         } else {
@@ -187,8 +185,7 @@ class Auth
             //pax($userProfile);
 
             if (get_option('clients_can_register') == '0') {
-                header('Location: ' . BASE_URI."index.php?error=no_self_registration");
-                exit;
+                ps_redirect(BASE_URI.'index.php?error=no_self_registration');
             }
 
             $email_parts = explode('@', $userProfile->email);
@@ -238,16 +235,15 @@ class Auth
                     'affected_account_name' => $new_client->username
                 ]);
 
-                $redirect_url = BASE_URI.'register.php?success=1';
+                $redirect_to = BASE_URI.'register.php?success=1';
 
                 if (get_option('clients_auto_approve') == 1) {
                     $this->authenticate($username, $password);
-                    $redirect_url = 'my_files/index.php';
+                    $redirect_to = 'my_files/index.php';
                 }
 
                 // Redirect
-                header("Location:".$redirect_url);
-                exit;
+                ps_redirect($redirect_to);
             }
         }
     }
@@ -441,7 +437,6 @@ class Auth
             $redirect_to .= '?error='.$error_code;
         }
 
-		header("Location: " . $redirect_to);
-		exit;
+        ps_redirect($redirect_to);
     }
 }

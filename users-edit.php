@@ -125,9 +125,7 @@ if ($_POST) {
         $flash->error(__('There was an error saving to the database'));
     }
 
-    $location = BASE_URI . 'users-edit.php?id=' . $user_id;
-    header("Location: $location");
-    exit;
+    ps_redirect(BASE_URI . 'users-edit.php?id=' . $user_id);
 }
 
 $page_title = __('Edit system user','cftp_admin');

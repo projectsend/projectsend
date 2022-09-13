@@ -152,8 +152,8 @@ function forceLogout($error_type = null)
         if (!empty($error_type)) {
             $url .= '&logout_error_type='.$error_type;
         }
-        header("location:".$url);
-        exit;
+
+        ps_redirect($url);
     }    
 }
 
@@ -1999,9 +1999,8 @@ function exitWithErrorCode($code = 403)
             $url = PAGE_STATUS_CODE_404;
             break;
     }
-    header('Location:' . $url);
-    exit;
 
+    ps_redirect($url);
 }
 
 function formatAssetLanguageName($name)

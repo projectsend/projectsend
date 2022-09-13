@@ -90,10 +90,8 @@ switch ( $section ) {
         );
     break;
     default:
-        $location = BASE_URI . 'options.php?section=general';
-        header("Location: $location");
-        exit;
-        break;
+        ps_redirect(BASE_URI . 'options.php?section=general');
+    break;
 }
 
 $page_title = $section_title;
@@ -109,9 +107,7 @@ $logo_file_info = generate_logo_url();
 if ($section == 'branding' && !empty($_GET['clear']) && $_GET['clear'] == 'logo') {
     save_option('logo_filename', null);
     $flash->success(__('Options updated successfully.', 'cftp_admin'));
-    $location = BASE_URI . 'options.php?section=branding';
-    header("Location: $location");
-    exit;
+    ps_redirect(BASE_URI . 'options.php?section=branding');
 }
 
 /** Form sent */
@@ -250,8 +246,8 @@ if ($_POST) {
     if ( !empty( $file_status ) ) {
         $location .= '&file_status=' . $file_status;
     }
-    header("Location: $location");
-    exit;
+
+    ps_redirect($location);
 }
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';

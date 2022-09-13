@@ -32,5 +32,9 @@
                 window.open(url, "previewWindow", "width=800,height=600,scrollbars=yes");
             });
         });
+
+        $('.insert_tag').on('click', function(e) {
+            insertAtCaret('textarea_tags', $(this).data('tag'));
+        });
     };
 })();

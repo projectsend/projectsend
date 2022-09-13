@@ -423,7 +423,7 @@ if ($_POST) {
                             <div class="form-group">
                                 <div class="col-sm-12">
                                     <label for="<?php echo $group['body_textarea']; ?>"><?php _e('Template text','cftp_admin'); ?></label>
-                                    <textarea name="<?php echo $group['body_textarea']; ?>" id="<?php echo $group['body_textarea']; ?>"  class="form-control textarea_high"><?php echo $group['body_text']; ?></textarea>
+                                    <textarea name="<?php echo $group['body_textarea']; ?>" id="textarea_tags" class="form-control textarea_high"><?php echo $group['body_text']; ?></textarea>
                                     <p class="field_note"><?php _e('You can use HTML tags here.','cftp_admin'); ?></p>
                                 </div>
                             </div>	
@@ -436,7 +436,7 @@ if ($_POST) {
                                         <?php
                                             foreach ($group['tags'] as $tag => $description) {
                                         ?>
-                                                <dt><strong><?php echo $tag; ?></strong></dt>
+                                                <dt><button type="button" class="btn btn-sm btn-default insert_tag" data-tag="<?php echo $tag; ?>"><?php echo $tag; ?></button></dt>
                                                 <dd><?php echo $description; ?></dd>
                                         <?php
                                             }

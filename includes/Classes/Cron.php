@@ -42,7 +42,7 @@ class Cron
     private function exitIfCronIsDisabled()
     {
         if (get_option('cron_enable') != '1') {
-            exitWithErrorCode(403);
+            exit_with_error_code(403);
         }
     }
 
@@ -50,7 +50,7 @@ class Cron
     {
         $cli_ony = get_option('cron_command_line_only');
         if (PHP_SAPI != 'cli' && $cli_ony == '1') {
-            exitWithErrorCode(403);
+            exit_with_error_code(403);
         }
     }
 
@@ -66,11 +66,11 @@ class Cron
         }
 
         if (empty($key)) {
-            exitWithErrorCode(403);
+            exit_with_error_code(403);
         }
 
         if (get_option('cron_key') != $key) {
-            exitWithErrorCode(403);
+            exit_with_error_code(403);
         }
     }
 

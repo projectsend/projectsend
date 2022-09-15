@@ -67,6 +67,9 @@
             case 'options':
                 admin.pages.options();
                 break;
+            case 'asset_editor':
+                admin.pages.assetEditor();
+                break;
             default:
                 // do nothing
                 break;

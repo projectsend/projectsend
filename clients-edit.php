@@ -16,12 +16,12 @@ $edit_client = new \ProjectSend\Classes\Users();
 
 /** Check if the id parameter is on the URI. */
 if (!isset($_GET['id'])) {
-    exitWithErrorCode(403);
+    exit_with_error_code(403);
 }
  
 $client_id = (int)$_GET['id'];
 if (!client_exists_id($client_id)) {
-    exitWithErrorCode(403);
+    exit_with_error_code(403);
 }
 
 $edit_client->get($client_id);
@@ -56,7 +56,7 @@ else {
  */
 if (CURRENT_USER_LEVEL == 0) {
     if (isset($client_arguments) && CURRENT_USER_USERNAME != $client_arguments['username']) {
-        exitWithErrorCode(403);
+        exit_with_error_code(403);
     }
 }
 
@@ -67,7 +67,7 @@ if ($_POST) {
      */
     if (CURRENT_USER_LEVEL == 0 || CURRENT_USER_LEVEL == 7) {
         if ($client_id != CURRENT_USER_ID) {
-            exitWithErrorCode(403);
+            exit_with_error_code(403);
         }
     }
 

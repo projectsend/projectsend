@@ -31,7 +31,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
     $file->get($file_id);
 
     if ($file->public_token != $token || $file->expired == true) {
-        exitWithErrorCode(403);
+        exit_with_error_code(403);
     }
 
     if ($file->public == 1 && $file->public_token == $token) {
@@ -43,7 +43,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
         $can_view = true;
     } else {
         if ($file->public == 0) {
-            exitWithErrorCode(403);
+            exit_with_error_code(403);
         }
     }
 
@@ -69,7 +69,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
         }
     }
 } else {
-    exitWithErrorCode(403);
+    exit_with_error_code(403);
 }
 ?>
 

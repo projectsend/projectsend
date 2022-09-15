@@ -20,7 +20,7 @@ if ( get_option('public_listing_page_enable') != 1 ) {
  * Check the option to show the page to logged in users only
  */
 if ( get_option('public_listing_logged_only') == 1 ) {
-    check_for_session();
+    redirect_if_not_logged_in();
 }
 
 /**
@@ -282,7 +282,7 @@ function list_file($data, $origin) {
 
         <div class="login_form_links">
             <?php
-                if ( !check_for_session(false) && get_option('clients_can_register') == '1') {
+                if ( !user_is_logged_in() && get_option('clients_can_register') == '1') {
             ?>
                     <p id="register_link"><?php _e("Don't have an account yet?",'cftp_admin'); ?> <a href="<?php echo BASE_URI; ?>register.php"><?php _e('Register as a new client.','cftp_admin'); ?></a></p>
             <?php

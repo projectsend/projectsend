@@ -29,7 +29,7 @@ class Download
     public function download($file_id)
     {
         if (!$file_id || !defined('CURRENT_USER_LEVEL') || !userCanDownloadFile(CURRENT_USER_ID, $file_id)) {
-            exitWithErrorCode(403);
+            exit_with_error_code(403);
         }
 
         $file = new \ProjectSend\Classes\Files();
@@ -179,7 +179,7 @@ class Download
             exit;
         }
         else {
-            exitWithErrorCode(404);
+            exit_with_error_code(404);
         }
     }
 
@@ -235,7 +235,7 @@ class Download
             return;
         }
         else {
-            exitWithErrorCode(404);
+            exit_with_error_code(404);
         }
     }
 	

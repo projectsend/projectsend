@@ -5,6 +5,7 @@
  *
  * @package ProjectSend
  */
+define('VIEW_TYPE', 'public');
 
 /**
  * This file is shared with the installer. Let's start by checking
@@ -76,12 +77,18 @@ if ( !isset( $body_class ) ) { $body_class = array(); }
     <?php
         render_assets('js', 'head');
         render_assets('css', 'head');
+
+        render_custom_assets('head');
     ?>
 </head>
 
 <body <?php echo add_body_class( $body_class ); ?> <?php if (!empty($page_id)) { echo add_page_id($page_id); } ?>>
     <div class="container-custom">
         <?php include_once LAYOUT_DIR . DS . 'header-top.php'; ?>
+
+        <?php
+            render_custom_assets('body_top');
+        ?>
 
         <div class="main_content_unlogged">
             <div class="container-fluid">

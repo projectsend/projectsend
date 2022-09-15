@@ -14,9 +14,9 @@ $active_nav = 'options';
 
 /** Do a couple of functions that are in header.php */
 /** Check for an active session or cookie */
-check_for_session();
+redirect_if_not_logged_in();
 
-can_see_content($allowed_levels);
+redirect_if_role_not_allowed($allowed_levels);
 
 /** Get the preview type */
 $type = $_GET['t'];

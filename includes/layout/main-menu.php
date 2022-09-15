@@ -311,6 +311,10 @@ if ( current_role_in( array( 9,8,7 ) ) )
                                                 'label'	=> __('Unblock IP', 'cftp_admin'),
                                                 'link'	=> 'unblock-ip.php',
                                             ),
+                                            array(
+                                                'label'	=> __('Custom HTML/CSS/JS', 'cftp_admin'),
+                                                'link'	=> 'custom-assets.php',
+                                            ),
                                         ),
 							);
 

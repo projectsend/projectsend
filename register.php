@@ -21,7 +21,7 @@ global $auth;
 global $flash;
 
 if (get_option('clients_can_register') != '1') {
-    exitWithErrorCode(403);
+    exit_with_error_code(403);
 }
 
 /** The form was submitted */

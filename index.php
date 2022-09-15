@@ -33,14 +33,14 @@ $bfstatus = $bfchecker->getLoginStatus(get_client_ip());
 switch ($bfstatus['status']) {
     case 'error_403':
         $flash->clear(); // @todo hack, since flash messages after the last error should not be retained
-        exitWithErrorCode(403);
+        exit_with_error_code(403);
     break;
 }
 
 if ($_POST) {
     switch ($_POST['do']) {
         default:
-            exitWithErrorCode(403);
+            exit_with_error_code(403);
         break;
         case 'login':
             recaptcha2ValidateRequest();

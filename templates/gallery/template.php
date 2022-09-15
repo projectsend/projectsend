@@ -169,7 +169,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 				<?php
 				}
 				?>
-			<?php default_footer_info(); ?>
+			<?php render_footer_text(); ?>
 		</div>
 	</div>
 </div>

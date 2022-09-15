@@ -16,12 +16,12 @@ $edit_user = new \ProjectSend\Classes\Users();
 
 /** Check if the id parameter is on the URI. */
 if (!isset($_GET['id'])) {
-    exitWithErrorCode(403);
+    exit_with_error_code(403);
 }
 
 $user_id = $_GET['id'];
 if (!user_exists_id($user_id)) {
-    exitWithErrorCode(403);
+    exit_with_error_code(403);
 }
 
 /**
@@ -53,7 +53,7 @@ else {
  */
 if (CURRENT_USER_LEVEL != 9) {
     if (CURRENT_USER_USERNAME != $user_arguments['username']) {
-        exitWithErrorCode(403);
+        exit_with_error_code(403);
     }
 }
 
@@ -64,7 +64,7 @@ if ($_POST) {
      */
     if (CURRENT_USER_LEVEL != 9) {
         if ($user_id != CURRENT_USER_ID) {
-            exitWithErrorCode(403);
+            exit_with_error_code(403);
         }
     }
 

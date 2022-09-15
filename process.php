@@ -13,8 +13,8 @@ global $logger;
 $_SESSION['last_call'] = time();
 $public = ['login', 'social_login', 'login_ldap', 'logout', 'change_language'];
 if (!empty($_GET['do']) && !in_array($_GET['do'], $public)) {
-    check_for_session();
-    can_see_content($allowed_levels);
+    redirect_if_not_logged_in();
+    redirect_if_role_not_allowed($allowed_levels);
 }
 switch ($_GET['do']) {
     case 'social_login':

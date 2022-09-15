@@ -7,14 +7,14 @@
  * menu items, and the content of the page that called this file.
  *
  * @package ProjectSend
- * @see check_for_session
- * @see can_see_content
  */
+if (!defined('VIEW_TYPE')) define('VIEW_TYPE', 'private');
+
 // Check for an active session
-check_for_session();
+redirect_if_not_logged_in();
 
 // Check if the current user has permission to view this page.
-can_see_content($allowed_levels);
+redirect_if_role_not_allowed($allowed_levels);
 
 global $flash;
 
@@ -63,6 +63,8 @@ password_change_required();
     <?php
         render_assets('js', 'head');
         render_assets('css', 'head');
+
+        render_custom_assets('head');
     ?>
 </head>
 
@@ -73,6 +75,9 @@ password_change_required();
 
         <div class="main_content">
             <div class="container-fluid">
+                <?php
+                    render_custom_assets('body_top');
+                ?>
                 <?php
                     // Gets the mark up and values for the System Updated and errors messages.
                     include_once INCLUDES_DIR . DS . 'updates.messages.php';

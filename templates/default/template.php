@@ -320,12 +320,14 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 </div> <!-- container -->
 
 <?php
-    default_footer_info();
+    render_footer_text();
 
     render_json_variables();
 
     render_assets('js', 'footer');
     render_assets('css', 'footer');
+
+    render_custom_assets('body_bottom');
 ?>
 </body>
 </html>

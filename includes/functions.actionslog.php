@@ -371,7 +371,40 @@ function format_action_log_record($params)
             $formatted = sprintf(__('%s updated email template: %s','cftp_admin'), $owner_user, $section);
             $type = 'system';
             break;
-        }
+
+        // Custom assets
+        case 50:
+            $part1 = $owner_user;
+            $action_text = __('Created an asset','cftp_admin');
+            $formatted = sprintf(__('%s created the asset "%s" (%s)','cftp_admin'), $owner_user, $details->title, $details->type);
+            $type = 'system';
+        break;
+        case 51:
+            $part1 = $owner_user;
+            $action_text = __('Edited an asset','cftp_admin');
+            $formatted = sprintf(__('%s edited the asset "%s" (%s)','cftp_admin'), $owner_user, $details->title, $details->type);
+            $type = 'system';
+        break;
+        case 52:
+            $part1 = $owner_user;
+            $action_text = __('Deleted an asset','cftp_admin');
+            $formatted = sprintf(__('%s deleted the asset "%s" (%s)','cftp_admin'), $owner_user, $details->title, $details->type);
+            $type = 'system';
+        break;
+        case 53:
+            $part1 = $owner_user;
+            $action_text = __('Enabled an asset','cftp_admin');
+            $formatted = sprintf(__('%s enabled the asset "%s" (%s)','cftp_admin'), $owner_user, $details->title, $details->type);
+            $type = 'system';
+        break;
+        case 54:
+            $part1 = $owner_user;
+            $action_text = __('Disabled an asset','cftp_admin');
+            $formatted = sprintf(__('%s disabled the asset "%s" (%s)','cftp_admin'), $owner_user, $details->title, $details->type);
+            $type = 'system';
+        break;
+    }
+
 
     $date = format_date($timestamp);
 

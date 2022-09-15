@@ -783,7 +783,7 @@ function get_file_assignations($file_id)
  * Used on the default template, log in page, install page and the back-end
  * footer file.
  */
-function default_footer_info($logged = true)
+function render_footer_text()
 {
 ?>
 	<footer>
@@ -793,7 +793,9 @@ function default_footer_info($logged = true)
 					echo strip_tags(get_option('footer_custom_content'), '<br><span><a><strong><em><b><i><u><s>');
 				}
 				else {
-					_e('Provided by', 'cftp_admin'); ?> <a href="<?php echo SYSTEM_URI; ?>" target="_blank"><?php echo SYSTEM_NAME; ?></a> <?php if ($logged == true) { _e('version', 'cftp_admin'); echo ' ' . CURRENT_VERSION; } ?> - <?php _e('Free software', 'cftp_admin');
+                    // $link = '<a href="'.SYSTEM_URI.'" target="_blank">'.SYSTEM_NAME.'</a>';
+                    // echo sprintf(__('Provided by %s', 'cftp_admin'), $link);
+					_e('Provided by', 'cftp_admin'); ?> <a href="<?php echo SYSTEM_URI; ?>" target="_blank"><?php echo SYSTEM_NAME; ?></a> <?php if (user_is_logged_in() == true) { _e('version', 'cftp_admin'); echo ' ' . CURRENT_VERSION; } ?> - <?php _e('Free software', 'cftp_admin');
 				}
 			?>
 		</div>
@@ -1515,7 +1517,7 @@ function add_body_class( $custom = '' )
 					);
 	}
 
-	if ( check_for_session( false ) ) {
+	if ( user_is_logged_in() ) {
 		$classes[] = 'logged-in';
 
 		$logged_type = CURRENT_USER_LEVEL == '0' ? 'client' : 'admin';
@@ -1985,7 +1987,7 @@ function recaptcha2ValidateRequest($redirect = true)
     }
 
     if ($redirect && !$validation_passed) {
-        exitWithErrorCode(403);
+        exit_with_error_code(403);
     }
 
     return $validation_passed;
@@ -1997,7 +1999,7 @@ function ps_redirect($location, $status = 303)
     exit;
 }
 
-function exitWithErrorCode($code = 403)
+function exit_with_error_code($code = 403)
 {
     switch ($code) {
         default:
@@ -2012,33 +2014,25 @@ function exitWithErrorCode($code = 403)
     ps_redirect($url);
 }
 
-function formatAssetLanguageName($name)
+function is_view_type($type)
 {
-    switch ($name) {
-        case 'html':
-        case 'css':
-            $formatted = strtoupper($name);
+    switch ($type) {
+        case 'public':
+        case 'private':
+        case 'template':
+            return get_current_view_type() == $type;
         break;
-        case 'js':
-            $formatted = 'JavaScript';
+        default:
+            return false;
         break;
     }
-
-    return $formatted;
 }
 
-function add_asset($type, $name, $url, $position = null, $arguments = [])
+function get_current_view_type()
 {
-    if (!in_array($type, ['js', 'css'])) {
-        return;
+    if (defined('VIEW_TYPE')) {
+        return VIEW_TYPE;
     }
 
-    global $assets_loader;
-    $assets_loader->addAsset($type, $name, $url, $position, $arguments);
-}
-
-function render_assets($type, $location)
-{
-    global $assets_loader;
-    $assets_loader->renderAssets($type, $location);
+    return null;
 }

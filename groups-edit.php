@@ -22,12 +22,12 @@ $edit_group = new \ProjectSend\Classes\Groups();
 
 /** Check if the id parameter is on the URI. */
 if (!isset($_GET['id'])) {
-    exitWithErrorCode(403);
+    exit_with_error_code(403);
 }
 
 $group_id = $_GET['id'];
 if (!group_exists_id($group_id)) {
-    exitWithErrorCode(403);
+    exit_with_error_code(403);
 }
 
 $edit_group->get($group_id);

@@ -10,7 +10,7 @@ require_once '../bootstrap.php';
 /**
  * If there is no valid session/user block the upload of files
  */
-if ( !check_for_session() ) {
+if ( !user_is_logged_in() ) {
 	exit;
 }
 

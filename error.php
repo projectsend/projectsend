@@ -52,6 +52,8 @@ switch ($error_type) {
         <?php
             render_assets('js', 'head');
             render_assets('css', 'head');
+
+            render_custom_assets('head');
         ?>
     </head>
     <body class="backend forbidden">
@@ -69,6 +71,9 @@ switch ($error_type) {
                 </div>
             </div>
         </div>
+        <?php
+            render_custom_assets('body_bottom');
+        ?>
     </body>
 </html>
 <?php

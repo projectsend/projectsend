@@ -1,5 +1,5 @@
 <?php
-	define('IS_TEMPLATE_VIEW', true);
+    define('VIEW_TYPE', 'template');
     
     require_once '../bootstrap.php';
     

@@ -39,6 +39,9 @@ require_once ROOT_DIR.'/includes/text.strings.php';
 /** Basic functions to be accessed from anywhere */
 require_once ROOT_DIR.'/includes/functions.php';
 
+/** Assets */
+require_once ROOT_DIR.'/includes/functions.assets.php';
+
 /** Options functions */
 require_once ROOT_DIR.'/includes/functions.options.php';
 

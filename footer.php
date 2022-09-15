@@ -1,27 +1,22 @@
                 </div> <!-- container-fluid -->
 
-                <?php
-                /**
-                 * Footer for the backend. Outputs the default mark up and
-                 * information generated on functions.php.
-                 *
-                 * @package ProjectSend
-                 */
-                    default_footer_info();
-                    
-                    render_json_variables();
-                    
-                    render_assets('js', 'footer');
-                    render_assets('css', 'footer');
-                ?>
+                <?php render_footer_text(); ?>
             </div> <!-- main_content -->
         </div> <!-- container-custom -->
+        <?php
+            render_json_variables();
+            
+            render_assets('js', 'footer');
+            render_assets('css', 'footer');
+
+            render_custom_assets('body_bottom');
+        ?>
     </body>
 </html>
 <?php
     if ( DEBUG === true ) {
-        echo "\n" . '<!-- DEBUG INFORMATION' . "\n";
-        echo "\n" . '-->' . "\n" ;
+        // echo "\n" . '<!-- DEBUG INFORMATION' . "\n";
+        // echo "\n" . '-->' . "\n" ;
     }
 
     ob_end_flush();

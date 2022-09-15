@@ -24,7 +24,8 @@ let assetsCss = [
     'node_modules/@yaireo/tagify/dist/tagify.css',
     'node_modules/chart.js/dist/Chart.min.css',
     'node_modules/toastr/build/toastr.min.css',
-    'vendor/moxiecode/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css'
+    'vendor/moxiecode/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css',
+    'node_modules/codemirror-minified/lib/codemirror.css',
 ];
 
 let assetsJs = [
@@ -43,6 +44,7 @@ let assetsJs = [
     'node_modules/chart.js/dist/Chart.min.js',
     'node_modules/sjcl/sjcl.js',
     'node_modules/toastr/build/toastr.min.js',
+    'node_modules/codemirror-minified/lib/codemirror.js',
     'vendor/moxiecode/plupload/js/plupload.full.min.js',
     'vendor/moxiecode/plupload/js/jquery.plupload.queue/jquery.plupload.queue.min.js'
 ];

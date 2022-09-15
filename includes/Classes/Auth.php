@@ -118,7 +118,7 @@ class Auth
     /** Social Login via hybridauth */
     public function socialLogin($provider) {
         if (empty($provider)) {
-            exitWithErrorCode(404);
+            exit_with_error_code(404);
         }
 
         //Attempt to authenticate users with a provider by name
@@ -133,7 +133,7 @@ class Auth
             case 'microsoftgraph':
                 break;
             default:
-                exitWithErrorCode(404);
+                exit_with_error_code(404);
                 break;
         }
             

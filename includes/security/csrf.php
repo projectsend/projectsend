@@ -30,5 +30,5 @@ function validateCsrfToken()
 }
 
 if (!defined('IS_INSTALL') && !defined('FILE_UPLOADING') && $_POST && !validateCsrfToken()) {
-    exitWithErrorCode(403);
+    exit_with_error_code(403);
 }

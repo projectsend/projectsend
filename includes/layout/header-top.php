@@ -1,5 +1,5 @@
 <header id="header" class="navbar navbar-static-top navbar-fixed-top">
-    <?php if ( check_for_session( false ) ) { ?>
+    <?php if ( user_is_logged_in() ) { ?>
         <ul class="nav pull-left nav_toggler">
             <li>
                 <a href="#" class="toggle_main_menu"><i class="fa fa-bars" aria-hidden="true"></i><span><?php _e('Toggle menu', 'cftp_admin'); ?></span></a>
@@ -12,7 +12,7 @@
     </div>
 
     <ul class="nav pull-right nav_account">
-        <?php if ( check_for_session( false ) ) { ?>
+        <?php if ( user_is_logged_in() ) { ?>
             <li id="header_welcome">
                 <span><?php echo CURRENT_USER_NAME; ?></span>
             </li>
@@ -35,7 +35,7 @@
                     ?>
                 </ul>
         </li>
-        <?php if ( check_for_session( false ) ) { ?>
+        <?php if ( user_is_logged_in() ) { ?>
             <li>
                 <?php $my_account_link = (CURRENT_USER_LEVEL == 0) ? 'clients-edit.php' : 'users-edit.php'; ?>
                 <a href="<?php echo BASE_URI.$my_account_link; ?>?id=<?php echo CURRENT_USER_ID; ?>" class="my_account"><i class="fa fa-user-circle" aria-hidden="true"></i> <?php _e('My Account', 'cftp_admin'); ?></a>

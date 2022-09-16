@@ -42,9 +42,13 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 		<script src="<?php echo $this_template; ?>/js/jquery.masonry.min.js"></script>
         <script src="<?php echo $this_template; ?>/js/imagesloaded.pkgd.min.js"></script>
         <script src="<?php echo $this_template; ?>/js/template.js"></script>
+
+        <?php render_custom_assets('head'); ?>
 	</head>
 	
 	<body>
+        <?php render_custom_assets('body_top'); ?>
+
 		<div id="header">
 			<?php if ($logo_file_info['exists'] === true) { ?>
 				<div id="branding">
@@ -223,6 +227,8 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
         <div class="downloading">
             <img src="<?php echo $this_template; ?>/img/loading.svg">
         </div>
+
+        <?php render_custom_assets('body_bottom'); ?>
 	
 	</body>
 </html>

@@ -58,9 +58,12 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
     <script>
         window.base_url = '<?php echo BASE_URI; ?>';
     </script>
+
+    <?php render_custom_assets('head'); ?>    
 </head>
 
 <body>
+    <?php render_custom_assets('body_top'); ?>
 
 <div id="wrapper">
 
@@ -180,6 +183,8 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
     </a>
     <img src="<?php echo $this_template; ?>/img/loading.svg" id="indicator">
 </div>
+
+<?php render_custom_assets('body_bottom'); ?>
 
 </body>
 </html>

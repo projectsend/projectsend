@@ -35,7 +35,7 @@ $editable = [];
 $files = explode(',', $_GET['ids']);
 foreach ($files as $file_id) {
     if (is_numeric($file_id)) {
-        if (userCanEditFile(CURRENT_USER_ID, $file_id))
+        if (user_can_edit_file(CURRENT_USER_ID, $file_id))
         {
             $editable[] = (int)$file_id;
         }

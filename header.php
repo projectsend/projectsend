@@ -77,8 +77,7 @@ password_change_required();
             <div class="container-fluid">
                 <?php
                     render_custom_assets('body_top');
-                ?>
-                <?php
+
                     // Gets the mark up and values for the System Updated and errors messages.
                     include_once INCLUDES_DIR . DS . 'updates.messages.php';
 

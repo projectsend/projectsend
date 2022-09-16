@@ -44,6 +44,7 @@ if ($_POST) {
         'notify_account' => (isset($_POST["notify_account"])) ? 1 : 0,
         'active' => (isset($_POST["active"])) ? 1 : 0,
         'require_password_change' => (isset($_POST["require_password_change"])) ? true : false,
+        'limit_upload_to' => (isset($_POST["limit_upload_to"])) ? $_POST["limit_upload_to"] : null,
         'type' => 'new_user',
     );
 

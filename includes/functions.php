@@ -1708,7 +1708,7 @@ function extensionIsAllowed($extension) {
     return false;
 }
 
-function fileEditorGetAllClients()
+function file_editor_get_all_clients()
 {
 	global $dbh;
 
@@ -1726,7 +1726,26 @@ function fileEditorGetAllClients()
     return $clients;
 }
 
-function fileEditorGetAllGroups()
+function file_editor_get_clients_by_ids($clients_ids = [])
+{
+	global $dbh;
+
+    if (empty($clients_ids)) { return []; }
+
+    $clients = [];
+    $clients_ids = implode(',', $clients_ids);
+    $statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . " WHERE level='0' AND account_requested='0' AND FIND_IN_SET(id, :clients_ids) ORDER BY name ASC");
+    $statement->bindParam(':clients_ids', $clients_ids);
+    $statement->execute();
+    $statement->setFetchMode(PDO::FETCH_ASSOC);
+    while( $row = $statement->fetch() ) {
+        $clients[$row["id"]] = $row["name"];
+    }
+
+    return $clients;
+}
+
+function file_editor_get_all_groups()
 {
 	global $dbh;
 
@@ -1742,7 +1761,43 @@ function fileEditorGetAllGroups()
     return $groups;
 }
 
-function userCanEditFile($user_id = null, $file_id = null)
+function file_editor_get_groups_by_members($clients_ids = [])
+{
+    if (empty($clients_ids)) {
+        return [];
+    }
+
+    global $dbh;
+
+    $groups_find_in = [];
+    $clients_ids = implode(',', $clients_ids);
+    $statement = $dbh->prepare("SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE FIND_IN_SET(client_id, :clients_ids)");
+    $statement->bindParam(':clients_ids', $clients_ids);
+    $statement->execute();
+    $statement->setFetchMode(PDO::FETCH_ASSOC);
+    while( $row = $statement->fetch() ) {
+        $groups_find_in[] = $row['group_id'];
+    }
+
+    if (empty($groups_find_in)) {
+        return [];
+    }
+
+    /** Fill the groups array that will be used on the form */
+    $groups = [];
+    $groups_find_in = implode(',', $groups_find_in);
+    $statement = $dbh->prepare("SELECT id, name FROM " . TABLE_GROUPS . " WHERE FIND_IN_SET(id, :groups_ids) ORDER BY name ASC");
+    $statement->bindParam(':groups_ids', $groups_find_in);
+    $statement->execute();
+    $statement->setFetchMode(PDO::FETCH_ASSOC);
+    while( $row = $statement->fetch() ) {
+        $groups[$row["id"]] = $row["name"];
+    }
+
+    return $groups;
+}
+
+function user_can_edit_file($user_id = null, $file_id = null)
 {
     if (empty($user_id) or empty($file_id)) {
         return false;
@@ -1750,8 +1805,11 @@ function userCanEditFile($user_id = null, $file_id = null)
 
     $user = get_user_by_id($user_id);
 
-    if ($user['level'] != 0) {
+    if (in_array($user['level'], [9, 8])) {
         return true;
+    // Special case for uploader?
+    // } elseif ($user['level'] == 7) {
+    //     return true;
     } else {
         $file = get_file_by_id($file_id);
 

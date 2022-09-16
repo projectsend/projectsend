@@ -6,27 +6,30 @@
  * @subpackage	Users
  *
  */
+$disable_user = true;
+$require_pass = true;
+$form_action = 'users-add.php';
+$extra_fields = false;
+$limit_field_class = 'none';
+
 switch ($user_form_type) {
 	case 'new_user':
 		$submit_value = __('Add user','cftp_admin');
-		$disable_user = false;
-		$require_pass = true;
 		$form_action = 'users-add.php';
+		$disable_user = false;
 		$extra_fields = true;
 		break;
 	case 'edit_user':
 		$submit_value = __('Save user','cftp_admin');
-		$disable_user = true;
-		$require_pass = false;
 		$form_action = 'users-edit.php?id='.$user_id;
+		$require_pass = false;
 		$extra_fields = true;
+        if ($user_arguments['role'] == '7') $limit_field_class = '';
 		break;
 	case 'edit_user_self':
 		$submit_value = __('Update account','cftp_admin');
-		$disable_user = true;
-		$require_pass = false;
 		$form_action = 'users-edit.php?id='.$user_id;
-		$extra_fields = false;
+		$require_pass = false;
 		break;
 }
 ?>
@@ -101,6 +104,37 @@ switch ($user_form_type) {
 					<p class="field_note"><?php _e("Set to 0 to use the default system limit",'cftp_admin'); ?> (<?php echo MAX_FILESIZE; ?> MB)</p>
 				</div>
 			</div>
+
+            <div class="form-group <?php echo $limit_field_class; ?>" id="limit_upload_to_container">
+                <label for="limit_upload_to" class="col-sm-4 control-label"><?php _e('Limit account to this clients only','cftp_admin'); ?></label>
+                <div class="col-sm-8">
+                    <select multiple="multiple" id="limit_upload_to" class="form-control chosen-select none" name="limit_upload_to[]" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+                        <?php
+                            $sql = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE level = '0' ORDER BY name ASC");
+                            $sql->execute();
+                            $sql->setFetchMode(PDO::FETCH_ASSOC);
+                            while ( $row = $sql->fetch() ) {
+                        ?>
+                                <option value="<?php echo $row["id"]; ?>"
+                                    <?php
+                                        if ($user_form_type == 'edit_user') {
+                                            if (!empty($user_arguments['limit_upload_to'])) {
+                                                if (in_array($row["id"], $user_arguments['limit_upload_to'])) {
+                                                    echo ' selected="selected"';
+                                                }
+                                            }
+                                        }
+                                    ?>
+                                    ><?php echo sprintf('%d - %s - %s', html_output($row["id"]), html_output($row["name"]), html_output($row["email"])); ?>
+                                </option>
+                        <?php
+                            }
+                        ?>
+                    </select>
+                    <p class="field_note"><?php _e('Leave empty to allow access to all clients','cftp_admin'); ?></p>
+                    <p class="field_note"><?php _e('Important: at the moment limiting to specific users also limits uploading to groups that these clients are members of.','cftp_admin'); ?></p>
+                </div>
+            </div>
 
 			<div class="form-group">
 				<div class="col-sm-8 col-sm-offset-4">

@@ -84,6 +84,7 @@ if ($_POST) {
         'max_file_size' => $user_arguments['max_file_size'],
         'active' => $user_arguments['active'],
         'type' => 'edit_user',
+        'limit_upload_to' => (isset($_POST["limit_upload_to"])) ? $_POST["limit_upload_to"] : null,
     );
 
     if ( $ignore_size == false ) {

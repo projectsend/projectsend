@@ -4,6 +4,18 @@
     admin.pages.userForm = function () {
 
         $(document).ready(function(){
+            // Display or not the limit accounts selector
+            $('#level').on('change', function(e) {
+                var el = document.getElementById('limit_upload_to_container');
+                if (typeof(el) != 'undefined' && el != null) {
+                    if ($(this).val() == '7') {
+                        $('#limit_upload_to_container').slideDown();
+                    } else {
+                        $('#limit_upload_to_container').slideUp();
+                    }
+                }
+            });
+
             var form_type = $("#user_form").data('form-type');
 
             var validator = $("#user_form").validate({

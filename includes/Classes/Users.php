@@ -40,6 +40,7 @@ class Users
     public $created_date;
     public $metadata;
     public $require_password_change;
+    public $limit_upload_to;
 
     // Uploaded files
     public $files;
@@ -151,6 +152,7 @@ class Users
         $this->max_file_size = (!empty($arguments['max_file_size'])) ? (int)$arguments['max_file_size'] : 0;
         $this->can_upload_public = (!empty($arguments['can_upload_public'])) ? (int)$arguments['can_upload_public'] : 0;
         $this->require_password_change = (!empty($arguments['require_password_change'])) ? $arguments['require_password_change'] : false;
+        $this->limit_upload_to = (!empty($arguments['limit_upload_to'])) ? $arguments['limit_upload_to'] : null;
 
         // Specific for clients
 		$this->address = (!empty($arguments['address'])) ? encode_html($arguments['address']) : null;
@@ -200,6 +202,8 @@ class Users
                 $meta = (get_user_meta($this->id, 'require_password_change'));
                 $this->require_password_change = ($meta['value'] == 'true') ? true : false;
             }
+
+            $this->limit_upload_to = $this->limitUploadToGet();
 
             // Specific for clients
             $this->address = html_output($this->row['address']);
@@ -267,6 +271,7 @@ class Users
             'files' => $this->files,
             'groups' => $this->groups,
             'meta' => $this->meta,
+            'limit_upload_to' => $this->limit_upload_to,
         ];
 
         return $return;
@@ -456,6 +461,9 @@ class Users
                     save_user_meta($this->id, 'require_password_change', 'true');
                 }
 
+                // Uploader role: limit who user can upload to
+                $this->limitUploadToSave($this->limit_upload_to);
+
                 switch ($this->role) {
                     case 0:
                         $email_type = "new_client";
@@ -616,6 +624,8 @@ class Users
                         delete_user_meta($this->id, 'require_password_change');
                     }
                 }
+
+                $this->limitUploadToSave($this->limit_upload_to);
 
 				$state['query'] = 1;
 
@@ -812,5 +822,90 @@ class Users
         }
 
         return false;
+    }
+
+    // Methods to handle who this user is limited to upload to. Only Uploader role
+    /**
+     * Get from database. Returns array of client ids
+     *
+     * @return array
+     */
+    private function limitUploadToGet()
+    {
+        $clients_ids = [];
+        if ( !tableExists( TABLE_USER_LIMIT_UPLOAD_TO ) ) {
+            return $clients_ids;
+        }
+
+        $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USER_LIMIT_UPLOAD_TO . " WHERE user_id = :user_id");
+        $statement->bindParam(':user_id', $this->id, PDO::PARAM_INT);
+        $statement->execute();
+        if ( $statement->rowCount() > 0) {
+            $statement->setFetchMode(PDO::FETCH_ASSOC);
+            while( $row = $statement->fetch() ) {
+                $clients_ids[] = $row['client_id'];
+            }
+        }
+
+        $this->limit_upload_to = $clients_ids;
+
+        return $clients_ids;    
+    }
+
+    private function limitUploadToSave($clients_ids = [])
+    {
+        if (CURRENT_USER_LEVEL == 7) {
+            return;
+        }
+
+        if (CURRENT_USER_ID == $this->id)
+        {
+            return;
+        }
+
+        $current_client_ids = $this->limitUploadToGet();
+
+        // Remove clients that are not in the new array
+        $delete = [];
+        foreach ($current_client_ids as $client_id) {
+            if (empty($clients_ids) || !in_array($client_id, $clients_ids)) {
+                $delete[] = $client_id;
+            }
+        }
+        
+        if (!empty($delete)) {
+            $delete = implode(',', $delete);
+            $statement = $this->dbh->prepare("DELETE FROM " . TABLE_USER_LIMIT_UPLOAD_TO . " WHERE user_id = :user_id AND FIND_IN_SET(client_id, :delete)");
+            $statement->bindParam(':user_id', $this->id);
+            $statement->bindParam(':delete', $delete);
+            $statement->execute();
+
+            $this->limit_upload_to = [];
+        }
+
+        // Add those that are new and do not exist in the database
+        $add = [];
+        foreach ($clients_ids as $client_id) {
+            if (!in_array($client_id, $current_client_ids)) {
+                $add[] = $client_id;
+            }
+        }
+
+        foreach ($add as $client_id) {
+            $statement = $this->dbh->prepare("INSERT INTO " . TABLE_USER_LIMIT_UPLOAD_TO . " (user_id, client_id) VALUES (:user_id, :client_id)");
+            $statement->bindParam(':user_id', $this->id);
+            $statement->bindParam(':client_id', $client_id, PDO::PARAM_INT);
+            $statement->execute();
+        }
+
+        // Get again to refresh the properties
+        $this->limitUploadToGet();
+    }
+
+    public function shouldLimitUploadTo()
+    {
+        if (!$this->isClient() && $this->role == '7') {
+            return true;
+        }
     }
 }

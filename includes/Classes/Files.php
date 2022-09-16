@@ -94,7 +94,7 @@ class Files
 
     public function currentUserCanEdit()
     {
-        return userCanEditFile(CURRENT_USER_ID, $this->id);
+        return user_can_edit_file(CURRENT_USER_ID, $this->id);
     }
 
     /**
@@ -914,6 +914,27 @@ class Files
 
         if (empty($new_values['clients'])) { $new_values['clients'] = []; } 
         if (empty($new_values['groups'])) { $new_values['groups'] = []; } 
+
+        // Clean new ids based on user permissions
+        if (CURRENT_USER_LEVEL == 7) {
+            $get_user = new \ProjectSend\Classes\Users();
+            $get_user->get(CURRENT_USER_ID);
+            if (!empty($get_user->limit_upload_to)) {
+                // If client ID is not allowed, remove from array
+                foreach ($new_values['clients'] as $key => $client_id) {
+                    if (!in_array($client_id, $get_user->limit_upload_to)) {
+                        unset($new_values['clients'][$key]);
+                    }
+                }
+                // Do the same for groups. First get allowed groups
+                $allowed_groups = array_keys(file_editor_get_groups_by_members($get_user->limit_upload_to));
+                foreach ($new_values['groups'] as $key => $group_id) {
+                    if (!in_array($group_id, $allowed_groups)) {
+                        unset($new_values['groups'][$key]);
+                    }
+                }
+            }
+        }
 
         // Get current assignments from database to compare with new values
         $current = [

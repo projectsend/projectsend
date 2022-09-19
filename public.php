@@ -53,6 +53,7 @@ $page_title = __('Public groups and files','cftp_admin');
 $dont_redirect_if_logged = 1;
 
 include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
+// include_once TEMPLATE_PATH;
 
 /**
  * General function that defines the formating of files lines

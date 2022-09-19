@@ -165,3 +165,12 @@ function set_up_template()
 
     // Include the main template file
 }
+
+function template_load_translation($template)
+{
+    $lang = (isset($_SESSION['lang'])) ? $_SESSION['lang'] : SITE_LANG;
+    if(!isset($ld)) { $ld = 'cftp_admin'; }
+    $mo_file = ROOT_DIR.DS."templates".DS.$template.DS."lang".DS."{$lang}.mo";
+
+    ProjectSend\Classes\I18n::LoadDomain($mo_file, $ld);
+}

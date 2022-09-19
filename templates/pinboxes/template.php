@@ -31,17 +31,17 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 		<title><?php echo html_output( $client_info['name'].' | '.$window_title . ' &raquo; ' . SYSTEM_NAME ); ?></title>
 		<?php meta_favicon(); ?>
 		<link href='<?php echo PROTOCOL; ?>://fonts.googleapis.com/css?family=Metrophobic' rel='stylesheet' type='text/css'>
-		<link rel="stylesheet" href="<?php echo $this_template; ?>/font-awesome-4.6.3/css/font-awesome.min.css">
-		<link rel="stylesheet" media="all" type="text/css" href="<?php echo $this_template; ?>main.min.css" />
+		<link rel="stylesheet" href="<?php echo $this_template_url; ?>/font-awesome-4.6.3/css/font-awesome.min.css">
+		<link rel="stylesheet" media="all" type="text/css" href="<?php echo $this_template_url; ?>main.min.css" />
         
         <script>
             window.base_url = '<?php echo BASE_URI; ?>';
         </script>
         <script src="<?php echo PROTOCOL; ?>://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
         <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
-		<script src="<?php echo $this_template; ?>/js/jquery.masonry.min.js"></script>
-        <script src="<?php echo $this_template; ?>/js/imagesloaded.pkgd.min.js"></script>
-        <script src="<?php echo $this_template; ?>/js/template.js"></script>
+		<script src="<?php echo $this_template_url; ?>/js/jquery.masonry.min.js"></script>
+        <script src="<?php echo $this_template_url; ?>/js/imagesloaded.pkgd.min.js"></script>
+        <script src="<?php echo $this_template_url; ?>/js/template.js"></script>
 
         <?php render_custom_assets('head'); ?>
 	</head>
@@ -225,7 +225,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
         </div>
         
         <div class="downloading">
-            <img src="<?php echo $this_template; ?>/img/loading.svg">
+            <img src="<?php echo $this_template_url; ?>/img/loading.svg">
         </div>
 
         <?php render_custom_assets('body_bottom'); ?>

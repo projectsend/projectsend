@@ -140,3 +140,24 @@ function user_can_upload_any_file_type($user_id = CURRENT_USER_ID)
     
     return true;
 }
+
+function current_user_can_view_files_list()
+{
+    $user = new \ProjectSend\Classes\Users();
+    $user->get(CURRENT_USER_ID);
+    $props = $user->getProperties();
+
+    if ( $props['active'] == '0' ) {
+        return false;
+    }
+
+    if (!$user->isClient()) {
+        return true;
+    } else {
+        if ($props['username'] == CURRENT_USER_USERNAME) {
+            return true;
+        }
+    }
+
+    return false;
+}

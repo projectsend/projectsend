@@ -3,9 +3,10 @@
     
     require_once '../bootstrap.php';
     
-    $this_user = CURRENT_USER_USERNAME;
-	if (!empty($_GET['client']) && CURRENT_USER_LEVEL != '0') {
-        $this_user = $_GET['client'];
-	}
+    if (!defined('CURRENT_USER_USERNAME')) {
+        ps_redirect('../index.php');
+    }
+
+    $view_files_as = (!empty($_GET['client']) && CURRENT_USER_LEVEL != '0') ? $_GET['client'] : CURRENT_USER_USERNAME;
 
     include_once TEMPLATE_PATH;

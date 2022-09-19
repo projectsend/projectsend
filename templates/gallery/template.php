@@ -47,14 +47,14 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 	<title><?php echo html_output( $client_info['name'].' | '.$window_title . ' &raquo; ' . SYSTEM_NAME ); ?></title>
 	<?php meta_favicon(); ?>
 
-	<link rel="stylesheet" href="<?php echo $this_template; ?>/font-awesome-4.6.3/css/font-awesome.min.css">
+	<link rel="stylesheet" href="<?php echo $this_template_url; ?>/font-awesome-4.6.3/css/font-awesome.min.css">
 	<script src="<?php echo PROTOCOL; ?>://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
 	<link href='<?php echo PROTOCOL; ?>://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
 
-	<link rel="stylesheet" media="all" type="text/css" href="<?php echo $this_template; ?>main.min.css" />
+	<link rel="stylesheet" media="all" type="text/css" href="<?php echo $this_template_url; ?>main.min.css" />
 
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
-    <script src="<?php echo $this_template; ?>/js/template.js"></script>
+    <script src="<?php echo $this_template_url; ?>/js/template.js"></script>
     <script>
         window.base_url = '<?php echo BASE_URI; ?>';
     </script>
@@ -181,7 +181,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
     <a href="<?php echo BASE_URI; ?>process.php" target="_self" class="disabled" id="trigger">
         <i class="fa fa-cloud-download" aria-hidden="true"></i>
     </a>
-    <img src="<?php echo $this_template; ?>/img/loading.svg" id="indicator">
+    <img src="<?php echo $this_template_url; ?>/img/loading.svg" id="indicator">
 </div>
 
 <?php render_custom_assets('body_bottom'); ?>

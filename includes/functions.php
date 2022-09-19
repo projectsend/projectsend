@@ -141,7 +141,7 @@ function isUniqueUsername($string) {
 }
 
 /** Prevents an infinite loop */
-function forceLogout($error_type = null)
+function force_logout($error_type = null)
 {
     if (!isset($_SESSION['logout'])) {
         $_SESSION['logout'] = '1';
@@ -1044,7 +1044,7 @@ function get_current_url()
 
 function file_is_allowed($filename)
 {
-    if ( true === CAN_UPLOAD_ANY_FILE_TYPE ) {
+    if ( true == user_can_upload_any_file_type(CURRENT_USER_ID) ) {
         return true;
     }
 

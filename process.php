@@ -10,7 +10,8 @@ require_once 'bootstrap.php';
 global $auth;
 global $logger;
 
-$_SESSION['last_call'] = time();
+extend_session();
+
 $public = ['login', 'social_login', 'login_ldap', 'logout', 'change_language'];
 if (!empty($_GET['do']) && !in_array($_GET['do'], $public)) {
     redirect_if_not_logged_in();

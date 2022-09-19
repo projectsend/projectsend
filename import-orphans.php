@@ -22,7 +22,7 @@ $page_id = 'import_orphans';
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
-/** Count clients to show an error message, or the form */
+// Count clients to show an error message, or the form
 $statement		= $dbh->query("SELECT id FROM " . TABLE_USERS . " WHERE level = '0'");
 $count_clients	= $statement->rowCount();
 $statement		= $dbh->query("SELECT id FROM " . TABLE_GROUPS);
@@ -127,12 +127,9 @@ if ($_POST) {
             <?php addCsrf(); ?>
 
             <?php
-                /**
-                 * Generate the list of files if there is at least 1
-                 * available and allowed.
-                 */
+                // Generate the list of files if there is at least 1 available and allowed.
                 if ( isset( $files ) && count( $files ) > 0 ) {
-                    if ( false === CAN_UPLOAD_ANY_FILE_TYPE && $settings['allowed_type'] != 'not_allowed') {
+                    if ( !user_can_upload_any_file_type(CURRENT_USER_ID) && $settings['allowed_type'] != 'not_allowed') {
                         $settings['only_allowed'] = true;
                         echo system_message('warning', __('This list only shows the files that are allowed according to your security settings. If the file type you need to add is not listed here, add the extension to the "Allowed file extensions" box on the options page.', 'cftp_admin'));
                         echo system_message('success', __('The following files can be imported', 'cftp_admin'));
@@ -235,7 +232,7 @@ if ($_POST) {
                     }
                 }
 
-                /** No files found */
+                // No files found
                 else {
                     if (isset($no_results_error)) {
                         switch ($no_results_error) {

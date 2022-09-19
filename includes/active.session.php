@@ -15,12 +15,11 @@ if (!is_projectsend_installed()) {
     ps_redirect('install/index.php');
 }
 
-if ( defined('SESSION_TIMEOUT_EXPIRE') && SESSION_TIMEOUT_EXPIRE == true ) {
-	if (isset($_SESSION['last_call']) && (time() - $_SESSION['last_call'] > SESSION_EXPIRE_TIME)) {
-        ps_redirect(BASE_URI . 'process.php?do=logout&timeout=1');
-	}
+if ( session_expired() ) {
+    ps_redirect(BASE_URI . 'process.php?do=logout&timeout=1');
 }
-$_SESSION['last_call'] = time(); // update last activity time stamp
+
+extend_session(); // update last activity time stamp
 
 /**
  * Global information on the current account to use across the system.
@@ -33,7 +32,7 @@ if (!empty($_SESSION['user_id'])) {
          * Automatic log out if account is deactivated while session is on.
          */
         if (!$session_user->isActive()) {
-            forceLogout('account_inactive');
+            force_logout('account_inactive');
         }
     
         /**
@@ -54,31 +53,6 @@ if (!empty($_SESSION['user_id'])) {
             define('UPLOAD_MAX_FILESIZE', (int)$session_user->max_file_size);
         }
     } else {
-        forceLogout();
+        force_logout();
     }
-}
-
-/**
- * Files types limitation
- */
-$limit_files = true;
-if (!empty(get_option('file_types_limit_to'))) {
-	switch ( get_option('file_types_limit_to') ) {
-		case 'noone':
-			$limit_files = false;
-			break;
-		case 'all':
-			break;
-		case 'clients':
-			if ( defined('CURRENT_USER_LEVEL') && CURRENT_USER_LEVEL != 0 ) {
-				$limit_files = false;
-			}
-			break;
-	}
-}
-if ( $limit_files === true ) {
-	define('CAN_UPLOAD_ANY_FILE_TYPE', false);
-}
-else {
-	define('CAN_UPLOAD_ANY_FILE_TYPE', true);
 }

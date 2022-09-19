@@ -63,7 +63,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                         filters : {
                             max_file_size : '<?php echo UPLOAD_MAX_FILESIZE; ?>mb'
                             <?php
-                                if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
+                                if ( !user_can_upload_any_file_type(CURRENT_USER_ID) ) {
                             ?>
                                     ,mime_types: [
                                         {title : "Allowed files", extensions : "<?php echo get_option('allowed_file_types'); ?>"}

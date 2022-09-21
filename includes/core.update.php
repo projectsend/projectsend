@@ -215,7 +215,7 @@ if (current_role_in($allowed_update)) {
 		 * A new database table was added, that allows the creation of clients groups.
 		 */
 		if ($last_update < 210) {
-			if ( !tableExists( TABLE_GROUPS ) ) {
+			if ( !table_exists( TABLE_GROUPS ) ) {
 				/** Create the GROUPS table */
 				$query = "
 				CREATE TABLE IF NOT EXISTS `".TABLE_GROUPS."` (
@@ -254,7 +254,7 @@ if (current_role_in($allowed_update)) {
 		 * Folders are related to clients or groups.
 		 */
 		if ($last_update < 219) {
-			if ( !tableExists( TABLE_FOLDERS ) ) {
+			if ( !table_exists( TABLE_FOLDERS ) ) {
 				$query = "
 				CREATE TABLE IF NOT EXISTS `".TABLE_FOLDERS."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -282,7 +282,7 @@ if (current_role_in($allowed_update)) {
 		 * with clients and groups.
 		 */
 		if ($last_update < 217) {
-			if ( !tableExists( TABLE_FILES_RELATIONS ) ) {
+			if ( !table_exists( TABLE_FILES_RELATIONS ) ) {
 				$query = "
 				CREATE TABLE IF NOT EXISTS `".TABLE_FILES_RELATIONS."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -312,7 +312,7 @@ if (current_role_in($allowed_update)) {
 		 * A new database table was added, that stores users and clients actions.
 		 */
 		if ($last_update < 241) {
-			if ( !tableExists( TABLE_LOG ) ) {
+			if ( !table_exists( TABLE_LOG ) ) {
 				$query = "
 				CREATE TABLE IF NOT EXISTS `".TABLE_LOG."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -354,7 +354,7 @@ if (current_role_in($allowed_update)) {
 		 * used on notifications.
 		 */
 		if ($last_update < 275) {
-			if ( !tableExists( TABLE_NOTIFICATIONS ) ) {
+			if ( !table_exists( TABLE_NOTIFICATIONS ) ) {
 				$query = "
 				CREATE TABLE IF NOT EXISTS `".TABLE_NOTIFICATIONS."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -412,7 +412,7 @@ if (current_role_in($allowed_update)) {
 		 * The Members table wasn't being created on existing installations.
 		 */
 		if ($last_update < 338) {
-			if ( !tableExists( TABLE_MEMBERS ) ) {
+			if ( !table_exists( TABLE_MEMBERS ) ) {
 				/** Create the MEMBERS table */
 				$query = "
 				CREATE TABLE IF NOT EXISTS `".TABLE_MEMBERS."` (
@@ -665,7 +665,7 @@ if (current_role_in($allowed_update)) {
 		 * individual downloads even if the origin is a group.
 		 */
 		if ($last_update < 474 ) {
-			if ( !tableExists( TABLE_DOWNLOADS ) ) {
+			if ( !table_exists( TABLE_DOWNLOADS ) ) {
 				$query = "
 				CREATE TABLE IF NOT EXISTS `" . TABLE_DOWNLOADS . "` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -884,7 +884,7 @@ if (current_role_in($allowed_update)) {
 		 * Files categories.
 		 */
 		if ($last_update < 678) {
-			if ( !tableExists( TABLE_CATEGORIES ) ) {
+			if ( !table_exists( TABLE_CATEGORIES ) ) {
 				$query = "
 				CREATE TABLE IF NOT EXISTS `".TABLE_CATEGORIES."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -910,7 +910,7 @@ if (current_role_in($allowed_update)) {
 		 * Relates files categories to files.
 		 */
 		if ($last_update < 680) {
-			if ( !tableExists( TABLE_CATEGORIES_RELATIONS ) ) {
+			if ( !table_exists( TABLE_CATEGORIES_RELATIONS ) ) {
 				$query = "
 				CREATE TABLE IF NOT EXISTS `".TABLE_CATEGORIES_RELATIONS."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1030,7 +1030,7 @@ if (current_role_in($allowed_update)) {
 		 * Add a new table to handle clients requests to groups
 		 */
 		if ($last_update < 840) {
-			if ( !tableExists( TABLE_MEMBERS_REQUESTS ) ) {
+			if ( !table_exists( TABLE_MEMBERS_REQUESTS ) ) {
 				/** Create the MEMBERS table */
 				$query = "
 				CREATE TABLE IF NOT EXISTS `".TABLE_MEMBERS_REQUESTS."` (
@@ -1276,7 +1276,7 @@ if (current_role_in($allowed_update)) {
 			$statement->execute();
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
 			while( $group = $statement->fetch() ) {
-				$public_token = generateRandomString(32);
+				$public_token = generate_random_string(32);
 				$statement2 = $dbh->prepare("UPDATE " . TABLE_GROUPS . " SET public_token=:token WHERE id=:id");
 				$statement2->bindParam(':token', $public_token);
 				$statement2->bindParam(':id', $group['id'], PDO::PARAM_INT);
@@ -1387,7 +1387,7 @@ if (current_role_in($allowed_update)) {
 		 * Failed log in attempts are recorded to throttle future requests
 		 */
 		if ($last_update < 1372) {
-			if ( !tableExists( TABLE_LOGINS_FAILED ) ) {
+			if ( !table_exists( TABLE_LOGINS_FAILED ) ) {
 				$query = "
 				CREATE TABLE IF NOT EXISTS `".TABLE_LOGINS_FAILED."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,

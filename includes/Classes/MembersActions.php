@@ -27,7 +27,7 @@ class MembersActions
         $this->logger = new \ProjectSend\Classes\ActionsLog;
     }
 
-	function group_add_members($arguments)
+	function groupAddMembers($arguments)
 	{
 		$client_ids	= is_array( $arguments['client_id'] ) ? $arguments['client_id'] : array( $arguments['client_id'] );
 		$group_id = $arguments['group_id'];
@@ -59,7 +59,7 @@ class MembersActions
 		return $results;
 	}
 
-	function group_remove_members($arguments)
+	function groupRemoveMembers($arguments)
 	{
 		$client_ids	= is_array( $arguments['client_id'] ) ? $arguments['client_id'] : array( $arguments['client_id'] );
 		$group_id = $arguments['group_id'];
@@ -89,7 +89,7 @@ class MembersActions
 		return $results;
 	}
 
-	function client_get_groups($arguments)
+	function getGroupsByClient($arguments)
 	{
 		$client_id = $arguments['client_id'];
 		$return_type = !empty( $arguments['return'] ) ? $arguments['return'] : 'array';
@@ -119,7 +119,7 @@ class MembersActions
 		return $results;
 	}
 
-	function client_add_to_groups($arguments)
+	function clientAddToGroups($arguments)
 	{
 		$client_id = $arguments['client_id'];
 		$group_ids = is_array( $arguments['group_ids'] ) ? $arguments['group_ids'] : array( $arguments['group_ids'] );
@@ -153,7 +153,7 @@ class MembersActions
 		}
 	}
 
-	function client_edit_groups($arguments)
+	function clientEditGroups($arguments)
 	{
 		$client_id = $arguments['client_id'];
 		$group_ids = is_array( $arguments['group_ids'] ) ? $arguments['group_ids'] : array( $arguments['group_ids'] );
@@ -199,7 +199,7 @@ class MembersActions
 			$new_groups = array_diff($group_ids, $found_groups);
 			if ( !empty( $new_groups) ) {
 				$new_groups_add	= new \ProjectSend\Classes\MembersActions;
-				$results['new']	= $new_groups_add->client_add_to_groups([
+				$results['new']	= $new_groups_add->clientAddToGroups([
                     'client_id' => $client_id,
                     'group_ids' => $new_groups,
                     'added_by' => CURRENT_USER_USERNAME,
@@ -210,7 +210,7 @@ class MembersActions
 		}
 	}
 
-	function get_membership_requests($arguments = '')
+	function getMembershipRequests($arguments = '')
 	{
 		$client_id = !empty( $arguments['client_id'] ) ? $arguments['client_id'] : '';
 		$denied = !empty( $arguments['denied'] ) ? $arguments['denied'] : 0;
@@ -250,7 +250,7 @@ class MembersActions
 		}
 	}
 	
-	function group_request_membership($arguments)
+	function groupRequestMembership($arguments)
 	{
 		if ( (defined('CURRENT_USER_LEVEL') && in_array( CURRENT_USER_LEVEL, array(9,8) )) || ( defined('REGISTERING') ) || ( defined('EDITING_SELF_ACCOUNT') ) ) {
 			if (get_option('clients_can_select_group') == 'public' || get_option('clients_can_select_group') == 'all') {
@@ -259,7 +259,7 @@ class MembersActions
 				$request_by = $arguments['request_by'];
 
 				/** Make a list of current groups to ignore new requests to them */
-				$current_groups = $this->client_get_groups(
+				$current_groups = $this->getGroupsByClient(
                     array(
                         'client_id' => $client_id
                     )
@@ -274,7 +274,7 @@ class MembersActions
 				}
 
 				/** Make a list of current requests to avoid duplicates */
-				$current_requests = $this->get_membership_requests([
+				$current_requests = $this->getMembershipRequests([
                     'client_id' => $client_id
                 ]);
 
@@ -352,13 +352,13 @@ class MembersActions
 	/**
 	 * Approve and deny group memberships requests
 	 */
-	function group_process_memberships($arguments, $email = false)
+	function clientProcessMemberships($arguments, $email = false)
 	{
 		$client_id = $arguments['client_id'];
 		$approve = !empty( $arguments['approve'] ) ? $arguments['approve'] : null;
 		$deny_all = !empty( $arguments['deny_all'] ) ? $arguments['deny_all'] : null;
 		
-		$get_requests = $this->get_membership_requests([
+		$get_requests = $this->getMembershipRequests([
             'client_id'	=> $client_id,
         ]);
 
@@ -445,7 +445,7 @@ class MembersActions
 	/**
 	 * Delete memberships requests
 	 */
-	function group_delete_requests($arguments)
+	function clientDeleteRequests($arguments)
 	{
 		$client_id = $arguments['client_id'];
 		$type = ( !empty( $arguments['type'] ) && $arguments['type'] == 'denied' ) ? 1 : 0;
@@ -470,14 +470,14 @@ class MembersActions
 	 * Takes a submitted memberships array. Adds new ones and removes
 	 * those that are in the database but not in the new request.
 	 */
-	function update_membership_requests($arguments)
+	function updateMembershipRequests($arguments)
 	{
 		$client_id = $arguments['client_id'];
 		$group_ids = is_array( $arguments['group_ids'] ) ? $arguments['group_ids'] : array( $arguments['group_ids'] );
 		$request_by = $arguments['request_by'];
 
 		if ( !empty( $client_id ) ) {
-			$get_requests = $this->get_membership_requests([
+			$get_requests = $this->getMembershipRequests([
                 'client_id' => $client_id,
             ]);
 			$on_database = $get_requests[$client_id]['group_ids'];
@@ -514,7 +514,7 @@ class MembersActions
 					}
 				}
 				if ( !empty( $add ) ) {
-					$process_add = $this->group_request_membership([
+					$process_add = $this->groupRequestMembership([
                         'client_id' => $client_id,
                         'group_ids' => $add,
                         'request_by' => $request_by,

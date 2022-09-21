@@ -28,13 +28,13 @@ class Download
 
     public function download($file_id)
     {
-        if (!$file_id || !defined('CURRENT_USER_LEVEL') || !userCanDownloadFile(CURRENT_USER_ID, $file_id)) {
+        if (!$file_id || !defined('CURRENT_USER_LEVEL') || !user_can_download_file(CURRENT_USER_ID, $file_id)) {
             exit_with_error_code(403);
         }
 
         $file = new \ProjectSend\Classes\Files();
         $file->get($file_id);
-        recordNewDownload(CURRENT_USER_ID, $file->id);
+        record_new_download(CURRENT_USER_ID, $file->id);
         $this->downloadFile($file->filename_on_disk, $file->filename_unfiltered, $file->id);
     }
 
@@ -91,12 +91,12 @@ class Download
                 if (!$file->existsOnDisk()) {
                     continue;
                 }
-                if (!userCanDownloadFile(CURRENT_USER_ID, $file_id)) {
+                if (!user_can_download_file(CURRENT_USER_ID, $file_id)) {
                     continue;
                 }
                 if ( $zip->addFile($file->full_path, $file->filename_unfiltered) ) {
                     $added_files++;
-                    recordNewDownload(CURRENT_USER_ID, $file_id);
+                    record_new_download(CURRENT_USER_ID, $file_id);
                     $log_details['files'][] = [
                         'id' => $file_id,
                         'filename' => $file->filename_original
@@ -118,7 +118,7 @@ class Download
                 if (file_exists($zip_file)) {
                     setCookie("download_started", 1, time() + 20, '/', "", false, false);
 
-                    $save_as = 'files_'.generateRandomString().'.zip';
+                    $save_as = 'files_'.generate_random_string().'.zip';
                     switch (get_option('download_method')) {
                         default:
                         case 'php':

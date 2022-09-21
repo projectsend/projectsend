@@ -31,7 +31,7 @@ if (!empty($_GET['member'])) {
                                 'client_id'	=> $member['id'],
                                 'return'	=> 'list',
                             );
-        $found_groups	= $get_groups->client_get_groups($get_arguments); 
+        $found_groups	= $get_groups->getGroupsByClient($get_arguments); 
         if ( empty( $found_groups ) ) {
             $found_groups = '';
         }

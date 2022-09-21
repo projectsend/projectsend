@@ -8,7 +8,7 @@ if (!defined('CURRENT_USER_LEVEL') or CURRENT_USER_LEVEL != 9) {
 }
 
 // $feed = simplexml_load_file(NEWS_FEED_URI);
-$feed = getJson(NEWS_FEED_URI, '-1 days');
+$feed = get_json(NEWS_FEED_URI, '-1 days');
 $news = json_decode($feed);
 
 $return = [

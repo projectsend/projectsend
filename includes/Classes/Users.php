@@ -226,7 +226,7 @@ class Users
     
             // Groups
             $groups_object = new \ProjectSend\Classes\MembersActions($this->dbh);
-            $this->groups = $groups_object->client_get_groups([
+            $this->groups = $groups_object->getGroupsByClient([
                 'client_id'	=> $this->id
             ]); 
 
@@ -519,7 +519,7 @@ class Users
          */
         if (!empty($arguments['groups'])) {
             $request = new \ProjectSend\Classes\MembersActions;
-            $request->group_request_membership([
+            $request->groupRequestMembership([
                 'client_id'		=> $this->id,
                 'group_ids'		=> $arguments['groups'],
                 'request_by'	=> $this->created_by,
@@ -789,7 +789,7 @@ class Users
         $group_id = get_option('clients_auto_group');
 
         $autogroup	= new \ProjectSend\Classes\MembersActions;
-        $autogroup->client_add_to_groups([
+        $autogroup->clientAddToGroups([
             'client_id'	=> $this->id,
             'group_ids'	=> $group_id,
         ]);
@@ -833,7 +833,7 @@ class Users
     private function limitUploadToGet()
     {
         $clients_ids = [];
-        if ( !tableExists( TABLE_USER_LIMIT_UPLOAD_TO ) ) {
+        if ( !table_exists( TABLE_USER_LIMIT_UPLOAD_TO ) ) {
             return $clients_ids;
         }
 

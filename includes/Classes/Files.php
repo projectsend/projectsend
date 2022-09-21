@@ -124,7 +124,7 @@ class Files
         $this->isFiletypeAllowed();
         $this->isExpired();
 
-        $this->mime_type = getFileTypeByMime($this->full_path);
+        $this->mime_type = get_file_type_by_mime($this->full_path);
         $this->setEmbeddableType();
     }
 
@@ -171,7 +171,7 @@ class Files
         $this->setExtension();
         $this->getSize();
 
-        $this->mime_type = getFileTypeByMime($this->full_path);
+        $this->mime_type = get_file_type_by_mime($this->full_path);
         $this->setEmbeddableType();
 
         $this->getCurrentAssignments();
@@ -245,7 +245,7 @@ class Files
 
     public function isImage()
     {
-        if (isImage($this->full_path)) {
+        if (file_is_image($this->full_path)) {
             return true;
         }
 
@@ -265,14 +265,14 @@ class Files
 
         // Video
         $embeddable = ['mp4', 'ogg', 'webm'];
-        if (isVideo($this->full_path) && in_array($this->extension, $embeddable)) {
+        if (file_is_video($this->full_path) && in_array($this->extension, $embeddable)) {
             $this->embeddable = true;
             $this->embeddable_type = 'video';
         }
 
         // Audio
         $embeddable = ['mp3', 'wav'];
-        if (isAudio($this->full_path) || in_array($this->extension, $embeddable)) {
+        if (file_is_audio($this->full_path) || in_array($this->extension, $embeddable)) {
             $this->embeddable = true;
             $this->embeddable_type = 'audio';
         }
@@ -433,7 +433,7 @@ class Files
         }
         
 		$original_filename = basename(trim($original_filename));
-        $filename = generateSafeFilename($original_filename);
+        $filename = generate_safe_filename($original_filename);
         
         // Set the properties
         $this->filename_original = $original_filename;
@@ -751,7 +751,7 @@ class Files
 		$this->uploader_id = CURRENT_USER_ID;
 		$this->uploader_type = CURRENT_USER_TYPE;
 		$this->hidden = 0;
-        $this->public_token = generateRandomString(32);
+        $this->public_token = generate_random_string(32);
         $this->state = [];
 		
         $statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (user_id, url, original_url, filename, description, uploader, expires, expiry_date, public_allow, public_token)"

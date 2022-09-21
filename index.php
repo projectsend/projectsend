@@ -43,7 +43,7 @@ if ($_POST) {
             exit_with_error_code(403);
         break;
         case 'login':
-            recaptcha2ValidateRequest();
+            recaptcha2_validate_request();
 
             $login = $auth->authenticate($_POST['username'], $_POST['password']);
             $decoded = json_decode($login);

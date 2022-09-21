@@ -50,14 +50,14 @@ class FormGenerate {
 	 * Create the form
 	 */
 	public function create( $arguments ) {
-		$this->open			.= $this->generate_tag( 'form', false, false, false, $arguments );
+		$this->open			.= $this->generateElementTag( 'form', false, false, false, $arguments );
 	}
 
 	/**
 	 * Generate each tag
 	 * form, input, textarea, etc
 	 */
-	private function generate_tag( $element, $close_tag, $type, $add_type, $arguments ) {
+	private function generateElementTag( $element, $close_tag, $type, $add_type, $arguments ) {
 
 		$this->attributes 	= !( empty( $arguments['attributes'] ) )	? $arguments['attributes'] : null;
 		$this->value		= !( empty( $arguments['value'] ) )			? $arguments['value'] : null;
@@ -133,7 +133,7 @@ class FormGenerate {
 		/** Used on select */
 		if ( !empty( $this->options ) ) {
 			foreach ( $this->options as $val => $name ) {
-				$this->result .= $this->generate_option( $val, $name, $this->selected );
+				$this->result .= $this->generateOption( $val, $name, $this->selected );
 			}
 		}
 
@@ -148,7 +148,7 @@ class FormGenerate {
 	/**
 	 * Generate the options for a select field
 	 */
-	private function generate_option( $value, $name, $selected ) {
+	private function generateOption( $value, $name, $selected ) {
 		$this->option_properties = array();
 
 		$this->option = "\t\t\t" . '<option ';
@@ -168,7 +168,7 @@ class FormGenerate {
 	/**
 	 * Generate a simple separator
 	 */
-	private function generate_separator() {
+	private function generateSeparator() {
 		$this->option = "\n" . '<div class="separator"></div>' . "\n\n";
 		return $this->option;
 	}
@@ -178,7 +178,7 @@ class FormGenerate {
 	 * a new random password. The $field_name param is the input
 	 * that the result will be applied to.
 	 */
-	private function generate_password_button( $field_name ) {
+	private function generatePasswordButton( $field_name ) {
 		$this->button_arguments = array(
 									'type'			=> 'button',
 									'content'		=> 'Generate',
@@ -190,7 +190,7 @@ class FormGenerate {
 															'data-max'		=> MAX_PASS_CHARS,
 														)
 									);
-		$this->button = $this->generate_tag( 'button', true, $this->button_arguments['type'], true, $this->button_arguments );
+		$this->button = $this->generateElementTag( 'button', true, $this->button_arguments['type'], true, $this->button_arguments );
 		$this->new_password_fields[] = $this->button_arguments['attributes']['name'];
 
 		return $this->button;
@@ -228,30 +228,30 @@ class FormGenerate {
 		switch ( $type ) {
 			case 'text':
 			default:
-				$this->field = $this->generate_tag( 'input', false, $type, true, $arguments );
+				$this->field = $this->generateElementTag( 'input', false, $type, true, $arguments );
 				break;
 			case 'password':
-				$this->field = $this->generate_tag( 'input', false, $type, true, $arguments );
+				$this->field = $this->generateElementTag( 'input', false, $type, true, $arguments );
 				break;
 			case 'hidden':
-				$this->field = $this->generate_tag( 'input', false, $type, true, $arguments );
+				$this->field = $this->generateElementTag( 'input', false, $type, true, $arguments );
 				break;
 			case 'textarea':
-				$this->field = $this->generate_tag( 'textarea', true, $type, false, $arguments );
+				$this->field = $this->generateElementTag( 'textarea', true, $type, false, $arguments );
 				break;
 			case 'select':
-				$this->field = $this->generate_tag( 'select', true, $type, false, $arguments );
+				$this->field = $this->generateElementTag( 'select', true, $type, false, $arguments );
 				break;
 			case 'checkbox':
 			case 'radio':
 				$this->label_location = 'wrap';
-				$this->field = $this->generate_tag( 'input', false, $type, true, $arguments );
+				$this->field = $this->generateElementTag( 'input', false, $type, true, $arguments );
 				break;
 			case 'button':
-				$this->field = $this->generate_tag( 'button', true, $type, false, $arguments );
+				$this->field = $this->generateElementTag( 'button', true, $type, false, $arguments );
 				break;
 			case 'separator':
-				$this->field = $this->generate_separator();
+				$this->field = $this->generateSeparator();
 				break;
 		}
 		
@@ -278,7 +278,7 @@ class FormGenerate {
 								$this->layout .= "\t\t" . '</div>' . "\n";
 								
 								if ( !empty( $arguments['pass_type'] ) && $arguments['pass_type'] == 'create' ) {
-									$this->layout .= $this->generate_password_button( $arguments['attributes']['name'] );
+									$this->layout .= $this->generatePasswordButton( $arguments['attributes']['name'] );
 								}
 							}
 							else {

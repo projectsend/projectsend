@@ -32,11 +32,11 @@ $get_groups = new \ProjectSend\Classes\MembersActions;
 $get_arguments = [
     'client_id'	=> $client_id,
 ];
-$found_groups = $get_groups->client_get_groups($get_arguments); 
+$found_groups = $get_groups->getGroupsByClient($get_arguments); 
 
 /** Get current membership requests */
 $get_arguments['denied'] = 0;
-$found_requests	= $get_groups->get_membership_requests($get_arguments); 
+$found_requests	= $get_groups->getMembershipRequests($get_arguments); 
 
 /**
  * Form type
@@ -123,9 +123,9 @@ if ($_POST) {
     ];
 
     if (in_array(CURRENT_USER_LEVEL, [8 ,9])) {
-        $memberships->client_edit_groups($arguments);
+        $memberships->clientEditGroups($arguments);
     } else {
-        $memberships->update_membership_requests($arguments);
+        $memberships->updateMembershipRequests($arguments);
     }
 
     if ($edit_response['query'] == 1) {

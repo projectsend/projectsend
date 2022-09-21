@@ -27,7 +27,7 @@ if ($last_update < $current_version || !isset($last_update)) {
 	 * Password reset support is now supported.
 	 */
 	if ($last_update < 431) {
-		if ( !tableExists( TABLE_PASSWORD_RESET ) ) {
+		if ( !table_exists( TABLE_PASSWORD_RESET ) ) {
 			$query = '
 			CREATE TABLE IF NOT EXISTS `' . TABLE_PASSWORD_RESET . '` (
 			  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -62,7 +62,7 @@ if ($last_update < $current_version || !isset($last_update)) {
      * A new database table was added to store users meta data
      */
     if ($last_update < 1118) {
-        if ( !tableExists( TABLE_USER_META ) ) {
+        if ( !table_exists( TABLE_USER_META ) ) {
             $query = "
             CREATE TABLE IF NOT EXISTS `".TABLE_USER_META."` (
                 `id` int(11) NOT NULL AUTO_INCREMENT,

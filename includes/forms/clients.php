@@ -274,7 +274,7 @@ switch ($clients_form_type) {
 
 	<?php
 		if ( $clients_form_type == 'new_client_self' ) {
-            recaptcha2RenderWidget();
+            recaptcha2_render_widget();
 		}
 	?>
 

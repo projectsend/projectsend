@@ -109,19 +109,6 @@ class Options
 			 */
             date_default_timezone_set($this->options['timezone']);
             
-            /** Options that do not come from the db */
-            define('TEMPLATE_PATH',ROOT_DIR.DS.'templates'.DS.$this->options['selected_clients_template'].DS);
-            define('DEFAULT_TEMPLATE_PATH',ROOT_DIR.DS.'templates'.DS.'default'.DS);
-
-            /* Recaptcha */
-            if (
-				$this->options['recaptcha_enabled'] == 1 &&
-				!empty($this->options['recaptcha_site_key']) &&
-				!empty($this->options['recaptcha_secret_key'])
-			) {
-			    define('RECAPTCHA_AVAILABLE', true);
-            }
-
             /* Landing page for public groups and files */
             define('PUBLIC_DOWNLOAD_URL',BASE_URI.'download.php');
             define('PUBLIC_LANDING_URI',BASE_URI.'public.php');

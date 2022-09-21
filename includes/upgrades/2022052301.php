@@ -3,7 +3,7 @@ function upgrade_2022052301()
 {
     add_option_if_not_exists('cron_save_log_database', '1');
 
-    if ( !tableExists( TABLE_CRON_LOG ) ) {
+    if ( !table_exists( TABLE_CRON_LOG ) ) {
         global $dbh;
         $query = "
         CREATE TABLE IF NOT EXISTS `".TABLE_CRON_LOG."` (

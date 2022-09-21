@@ -71,7 +71,7 @@ if ($_POST) {
     if ( !empty( $add_to_groups ) ) {
         array_map('encode_html', $add_to_groups);
         $memberships = new \ProjectSend\Classes\MembersActions;
-        $memberships->client_add_to_groups([
+        $memberships->clientAddToGroups([
             'client_id' => $new_client->getId(),
             'group_ids' => $add_to_groups,
             'added_by' => CURRENT_USER_USERNAME,

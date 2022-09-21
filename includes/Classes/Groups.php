@@ -222,7 +222,7 @@ class Groups
         $this->created_by = CURRENT_USER_USERNAME;
 
         /** Define the group information */
-        $this->public_token = generateRandomString(32);
+        $this->public_token = generate_random_string(32);
 
         $this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_GROUPS . " (name, description, public, public_token, created_by)"
                                                 ." VALUES (:name, :description, :public, :token, :admin)");

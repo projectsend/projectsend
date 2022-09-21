@@ -20,7 +20,7 @@ function get_latest_version_data()
     /**
      * Compare against the online value.
      */
-    $versions = getJson(UPDATES_FEED_URI, '-1 days');
+    $versions = get_json(UPDATES_FEED_URI, '-1 days');
     if (!empty($versions)) {
         $versions = json_decode($versions);
     

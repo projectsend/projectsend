@@ -248,7 +248,7 @@ class Auth
         }
     }
 
-    public function login_ldap($email, $password, $language)
+    public function loginLdap($email, $password, $language)
     {
         global $logger;
         
@@ -400,7 +400,7 @@ class Auth
     public function logout($error_code = null)
     {
         header("Cache-control: private");
-		$_SESSION = array();
+		$_SESSION = [];
         session_destroy();
         session_regenerate_id(true);
         

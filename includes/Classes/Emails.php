@@ -135,7 +135,7 @@ class Emails
 	 * The body of the e-mails is gotten from the html templates
 	 * found on the /emails folder.
 	 */
-	private function email_prepare_body($type)
+	private function prepareBody($type)
 	{
 		switch ($type) {
 			case 'new_client':
@@ -216,7 +216,7 @@ class Emails
 	 */
 	private function email_new_client($username,$password)
 	{
-        $this->email_body = $this->email_prepare_body('new_client');
+        $this->email_body = $this->prepareBody('new_client');
 		$this->email_body = str_replace(
 									array('%SUBJECT%','%BODY1%','%BODY2%','%BODY3%','%LBLUSER%','%LBLPASS%','%USERNAME%','%PASSWORD%','%URI%'),
 									array(
@@ -244,7 +244,7 @@ class Emails
 	 */
 	private function email_new_client_self($username,$fullname,$memberships_requests)
 	{
-		$this->email_body = $this->email_prepare_body('new_client_self');
+		$this->email_body = $this->prepareBody('new_client_self');
 		$this->email_body = str_replace(
 									array('%SUBJECT%','%BODY1%','%BODY2%','%BODY3%','%LBLNAME%','%LBLUSER%','%FULLNAME%','%USERNAME%','%URI%'),
 									array(
@@ -338,7 +338,7 @@ class Emails
 
 		$requests_title = ( $requests_title_replace == true ) ? '<p>'.$this->strings_account_approved['title_approved'].'</p>' : '';
 
-		$this->email_body = $this->email_prepare_body('account_approve');
+		$this->email_body = $this->prepareBody('account_approve');
 		$this->email_body = str_replace(
 									array('%SUBJECT%','%BODY1%', '%REQUESTS_TITLE%', '%APPROVED_TITLE%','%GROUPS_APPROVED%','%DENIED_TITLE%','%GROUPS_DENIED%','%BODY2%','%BODY3%','%URI%'),
 									array(
@@ -366,7 +366,7 @@ class Emails
 	 */
 	private function email_account_deny($username,$name)
 	{
-		$this->email_body = $this->email_prepare_body('account_deny');
+		$this->email_body = $this->prepareBody('account_deny');
 		$this->email_body = str_replace(
 									array('%SUBJECT%','%BODY1%','%BODY2%'),
 									array(
@@ -388,7 +388,7 @@ class Emails
 	 */
 	private function email_new_user($username,$password)
 	{
-		$this->email_body = $this->email_prepare_body('new_user');
+		$this->email_body = $this->prepareBody('new_user');
 		$this->email_body = str_replace(
 									array('%SUBJECT%','%BODY1%','%BODY2%','%BODY3%','%LBLUSER%','%LBLPASS%','%USERNAME%','%PASSWORD%','%URI%'),
 									array(
@@ -417,7 +417,7 @@ class Emails
 	 */
 	private function email_new_files_by_user($files_list)
 	{
-		$this->email_body = $this->email_prepare_body('new_file_by_user');
+		$this->email_body = $this->prepareBody('new_file_by_user');
 		$this->email_body = str_replace(
 									array('%SUBJECT%','%BODY1%','%FILES%','%BODY2%','%BODY3%','%BODY4%','%URI%'),
 									array(
@@ -444,7 +444,7 @@ class Emails
 	 */
 	private function email_new_files_by_client($files_list)
 	{
-		$this->email_body = $this->email_prepare_body('new_files_by_client');
+		$this->email_body = $this->prepareBody('new_files_by_client');
 		$this->email_body = str_replace(
 									array('%SUBJECT%','%BODY1%','%FILES%','%BODY2%','%BODY3%','%URI%'),
 									array(
@@ -470,7 +470,7 @@ class Emails
 	 */
 	private function email_password_reset($username, $token)
 	{
-		$this->email_body = $this->email_prepare_body('password_reset');
+		$this->email_body = $this->prepareBody('password_reset');
 		$this->email_body = str_replace(
 									array('%SUBJECT%','%BODY1%','%BODY2%','%BODY3%','%BODY4%','%LBLUSER%','%USERNAME%','%URI%'),
 									array(
@@ -497,7 +497,7 @@ class Emails
 	 */
 	private function email_client_edited($username,$fullname,$memberships_requests)
 	{
-		$this->email_body = $this->email_prepare_body('client_edited');
+		$this->email_body = $this->prepareBody('client_edited');
 		$this->email_body = str_replace(
 									array('%SUBJECT%','%BODY1%','%BODY2%','%LBLNAME%','%LBLUSER%','%FULLNAME%','%USERNAME%','%URI%'),
 									array(
@@ -553,7 +553,7 @@ class Emails
 	private function email_test_settings($message)
 	{
         $subject = __('Email configuration test', 'cftp_admin');
-		$this->email_body = $this->email_prepare_body('test_settings');
+		$this->email_body = $this->prepareBody('test_settings');
 		$this->email_body = str_replace(
 									array('%BODY%', '%SUBJECT%'),
 									array(
@@ -573,7 +573,7 @@ class Emails
 	 */
 	private function email_generic($subject, $message = null)
 	{
-		$this->email_body = $this->email_prepare_body('generic');
+		$this->email_body = $this->prepareBody('generic');
 		$this->email_body = str_replace(
 									array('%BODY%', '%SUBJECT%'),
 									array(

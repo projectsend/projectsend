@@ -1,7 +1,7 @@
 <?php
 function upgrade_2022091101()
 {
-    if ( !tableExists( TABLE_CUSTOM_ASSETS ) ) {
+    if ( !table_exists( TABLE_CUSTOM_ASSETS ) ) {
         global $dbh;
         $query = "
         CREATE TABLE IF NOT EXISTS `".TABLE_CUSTOM_ASSETS."` (

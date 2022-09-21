@@ -28,7 +28,7 @@ switch ($_GET['do']) {
         break;
     case 'login_ldap':
         /*
-        $login = $auth->login_ldap($_POST['ldap_email'], $_POST['ldap_password']);
+        $login = $auth->loginLdap($_POST['ldap_email'], $_POST['ldap_password']);
         $auth->setLanguage($_POST['language']);
         echo $login;
         break;

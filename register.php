@@ -42,7 +42,7 @@ if ($_POST) {
         'can_upload_public' => (get_option('clients_new_default_can_set_public') == 1) ? 1 : 0,
         'account_requested'	=> (get_option('clients_auto_approve') == 0) ? 1 : 0,
         'type' => 'new_client',
-        'recaptcha' => ( defined('RECAPTCHA_AVAILABLE') ) ? recaptcha2GetRequest() : null,
+        'recaptcha' => ( recaptcha2_is_enabled() ) ? recaptcha2_get_request() : null,
     ]);
 
     $create = $new_client->create();

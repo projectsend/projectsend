@@ -177,13 +177,25 @@ function template_load_translation($template)
 
 function get_template_file_location($file)
 {
-    $location = TEMPLATE_PATH . $file;
+    $location = get_selected_template_path() . $file;
     if (file_exists($location)) {
         return $location;
     }
 
-    $default_location = DEFAULT_TEMPLATE_PATH . $file;
+    $default_location = get_default_template_path() . $file;
     if (file_exists($default_location)) {
         return $default_location;
     }
+}
+
+function get_selected_template_path()
+{
+    $path = ROOT_DIR.DS.'templates'.DS.get_option('selected_clients_template').DS;
+    return $path;
+}
+
+function get_default_template_path()
+{
+    $path = ROOT_DIR.DS.'templates'.DS.'default'.DS;
+    return $path;
 }

@@ -10,7 +10,7 @@
 
         <p><?php _e("Please enter your account's e-mail address. You will receive a link to continue the process.",'cftp_admin'); ?></p>
 
-        <?php recaptcha2RenderWidget(); ?>
+        <?php recaptcha2_render_widget(); ?>
 
         <div class="inside_form_buttons">
             <button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Get a new password','cftp_admin'); ?></button>

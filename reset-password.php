@@ -72,13 +72,13 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
              * The form submitted contains a new token request
              */
             case 'new_request':
-                recaptcha2ValidateRequest();
+                recaptcha2_validate_request();
 
                 $get_user = get_user_by('user', 'email', $_POST['email']);
         
                 if ( $get_user ) {
                     /** Email exists on the database */
-                    $token = generateRandomString(32);
+                    $token = generate_random_string(32);
                     
                     /**
                      * Count how many request were made by this user today.

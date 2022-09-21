@@ -49,7 +49,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
 
     if ($can_download == true) {
         if (isset($_GET['download'])) {
-            recordNewDownload(0, $file->id);
+            record_new_download(0, $file->id);
 
             /** Record the action log */
             $logger = new \ProjectSend\Classes\ActionsLog;

@@ -107,7 +107,7 @@ function is_projectsend_installed()
 	 * This table list is defined on app.php
 	 */
 	foreach ($tables_need as $table) {
-		if ( !tableExists( $table ) ) {
+		if ( !table_exists( $table ) ) {
 			$tables_missing++;
 		}
 	}
@@ -119,17 +119,7 @@ function is_projectsend_installed()
 	}
 }
 
-function generateUsername($string, $i = 1) {
-    $string = preg_replace('/[^A-Za-z0-9]/', "", $string);
-    $username = $string;
-    while(isUniqueUsername($username)) {
-        $username = $string . $i;
-        $i++;
-    }
-    return $username;
-}
-
-function isUniqueUsername($string) {
+function is_unique_username($string) {
     global $dbh;
     $statement = $dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE user = :user" );
     $statement->execute(array(':user'	=> $string));
@@ -160,12 +150,12 @@ function force_logout($error_type = null)
 /**
  * Check if curl is enabled
  */
-function curlIsEnabled(){
+function curl_is_enabled(){
     return function_exists('curl_version');
 }
 
 /** Gets a Json file from and url and caches the result */
-function getJson($url, $cache_time) {
+function get_json($url, $cache_time) {
     $cache_dir = JSON_CACHE_DIR;
     $cacheFile = $cache_dir . DS . md5($url);
     
@@ -183,7 +173,7 @@ function getJson($url, $cache_time) {
         unlink($cacheFile);
     }
 
-    if (curlIsEnabled()) {
+    if (curl_is_enabled()) {
         $ch = curl_init();
     
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -333,7 +323,7 @@ function generate_downloads_count( $id = null )
  * @return bool TRUE if table exists, FALSE if no table found.
  * by esbite on http://stackoverflow.com/questions/1717495/check-if-a-database-table-exists-using-php-pdo
  */
-function tableExists($table)
+function table_exists($table)
 {
 	global $dbh;
 
@@ -1200,7 +1190,7 @@ function make_excerpt($string, $length, $break = "...")
  * Generates a random string to be used on the automatically
  * created zip files and tokens.
  */
-function generateRandomString($length = 10)
+function generate_random_string($length = 10)
 {
     $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     $rnd_result = '';
@@ -1210,7 +1200,7 @@ function generateRandomString($length = 10)
     return $rnd_result;
 }
 
-function getFileTypeByMime($full_path)
+function get_file_type_by_mime($full_path)
 {
     if (!file_exists($full_path)) {
         return null;
@@ -1221,9 +1211,9 @@ function getFileTypeByMime($full_path)
     return $mimeType;
 }
 
-function isImage($full_path)
+function file_is_image($full_path)
 {
-    $mimeType = getFileTypeByMime($full_path);
+    $mimeType = get_file_type_by_mime($full_path);
     if (explode('/', $mimeType)[0] == 'image') {
         return true;
     }
@@ -1231,9 +1221,9 @@ function isImage($full_path)
     return false;
 }
 
-function isVideo($full_path)
+function file_is_video($full_path)
 {
-    $mimeType = getFileTypeByMime($full_path);
+    $mimeType = get_file_type_by_mime($full_path);
     if (explode('/', $mimeType)[0] == 'video') {
         return true;
     }
@@ -1241,9 +1231,9 @@ function isVideo($full_path)
     return false;
 }
 
-function isAudio($full_path)
+function file_is_audio($full_path)
 {
-    $mimeType = getFileTypeByMime($full_path);
+    $mimeType = get_file_type_by_mime($full_path);
     if (explode('/', $mimeType)[0] == 'audio') {
         return true;
     }
@@ -1251,15 +1241,10 @@ function isAudio($full_path)
     return false;
 }
 
-function file_is_image($file)
-{
-    return isImage($file);
-}
-
 /**
  * Try to recognize if a file is a valid svg
  */
-function file_is_svg( $file )
+function file_is_svg($file)
 {
 	if ( file_exists( $file ) ) {
         $svg_sanitizer = new Sanitizer();
@@ -1276,7 +1261,7 @@ function file_is_svg( $file )
 /**
  * Make a thumbnail with SimpleImage
  */
-function make_thumbnail( $file, $type = 'thumbnail', $width = THUMBS_MAX_WIDTH, $height = THUMBS_MAX_HEIGHT, $quality = THUMBS_QUALITY )
+function make_thumbnail($file, $type = 'thumbnail', $width = THUMBS_MAX_WIDTH, $height = THUMBS_MAX_HEIGHT, $quality = THUMBS_QUALITY)
 {
     $thumbnail = array();
     
@@ -1576,7 +1561,7 @@ function to_array_if_not($data)
     return $value;
 }
 
-function generateSafeFilename($filename)
+function generate_safe_filename($filename)
 {
     $original_filename = pathinfo(trim($filename));
     $filename = $original_filename['filename'];
@@ -1627,7 +1612,7 @@ function option_file_upload( $file, $validate_ext = '', $option = '', $action = 
 
 	if ( is_uploaded_file( $file['tmp_name'] ) ) {
 
-        $safe_filename = generateSafeFilename($file['name']);
+        $safe_filename = generate_safe_filename($file['name']);
 		/**
 		 * Check the file type for allowed extensions.
 		 */
@@ -1827,7 +1812,7 @@ function user_can_edit_file($user_id = null, $file_id = null)
     return false;
 }
 
-function recordNewDownload($user_id = CURRENT_USER_ID, $file_id = null)
+function record_new_download($user_id = CURRENT_USER_ID, $file_id = null)
 {
     global $dbh;
     if (empty($file_id)) {
@@ -1880,7 +1865,7 @@ function recordNewDownload($user_id = CURRENT_USER_ID, $file_id = null)
     return false;
 }
 
-function userCanDownloadFile($user_id = CURRENT_USER_ID, $file_id = null)
+function user_can_download_file($user_id = CURRENT_USER_ID, $file_id = null)
 {
     global $dbh;
     if (empty($file_id)) {
@@ -1902,7 +1887,7 @@ function userCanDownloadFile($user_id = CURRENT_USER_ID, $file_id = null)
 
     // Get groups
     $get_groups = new \ProjectSend\Classes\MembersActions();
-    $found_groups = $get_groups->client_get_groups([
+    $found_groups = $get_groups->getGroupsByClient([
         'client_id' => $user_id,
         'return' => 'list',
     ]);
@@ -1929,7 +1914,7 @@ function userCanDownloadFile($user_id = CURRENT_USER_ID, $file_id = null)
     return false;
 }
 
-function countGroupsRequestsForExistingClients()
+function count_groups_requests_for_existing_clients()
 {
     global $dbh;
     $count = 0;
@@ -1978,7 +1963,7 @@ function get_client_ip() {
     return $ipaddress;
 }
 
-function convertSeconds($seconds)
+function convert_seconds($seconds)
 {
 
     $return = [
@@ -1999,9 +1984,22 @@ function sanitize_filename_for_download($file_name)
     return $file_name;
 }
 
-function recaptcha2RenderWidget()
+function recaptcha2_is_enabled()
 {
-    if ( defined('RECAPTCHA_AVAILABLE') ) {
+    if (
+        get_option('recaptcha_enabled') == 1 &&
+        !empty(get_option('recaptcha_site_key')) &&
+        !empty(get_option('recaptcha_secret_key'))
+    ) {
+        return true;
+    }
+
+    return false;
+}
+
+function recaptcha2_render_widget()
+{
+    if ( recaptcha2_is_enabled() ) {
 ?>
         <div class="form-group">
             <!-- <label><?php _e('Verification','cftp_admin'); ?></label> -->
@@ -2011,11 +2009,11 @@ function recaptcha2RenderWidget()
     }
 }
 
-function recaptcha2GetRequest()
+function recaptcha2_get_request()
 {
     $recaptcha_request = null;
 
-    if ( defined('RECAPTCHA_AVAILABLE') ) {
+    if ( recaptcha2_is_enabled() ) {
         $recaptcha_user_ip		= $_SERVER["REMOTE_ADDR"];
         $recaptcha_response		= $_POST['g-recaptcha-response'];
         $recaptcha_secret_key	= get_option('recaptcha_secret_key');
@@ -2025,14 +2023,14 @@ function recaptcha2GetRequest()
     return $recaptcha_request;
 }
 
-function recaptcha2ValidateRequest($redirect = true)
+function recaptcha2_validate_request($redirect = true)
 {
     $validation_passed = false;
 
-    if ( defined('RECAPTCHA_AVAILABLE') ) {
+    if ( recaptcha2_is_enabled() ) {
         $validation = new \ProjectSend\Classes\Validation;
         $validation->validate_items([
-            recaptcha2GetRequest() => [
+            recaptcha2_get_request() => [
                 'recaptcha2' => [],
             ],
         ]);

@@ -63,7 +63,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                                 'approve' => $client['groups'],
                             );
 
-                            $process_requests = $process_memberships->group_process_memberships( $memberships_arguments, true );
+                            $process_requests = $process_memberships->clientProcessMemberships( $memberships_arguments, true );
                         }
                         exit;
                         break;
@@ -76,7 +76,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                                 'type' => ( !empty( $_POST['denied'] ) && $_POST['denied'] == 1 ) ? 'denied' : 'new',
                             );
 
-                            $delete_requests = $process_memberships->group_delete_requests( $memberships_arguments );
+                            $delete_requests = $process_memberships->clientDeleteRequests( $memberships_arguments );
                         }
                         break;
                     default:
@@ -253,7 +253,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                         if ( $current_filter == 'denied' ) {
                             $arguments['denied'] = 1;
                         }
-                        $get_requests	= $get_requests->get_membership_requests( $arguments );
+                        $get_requests	= $get_requests->getMembershipRequests( $arguments );
 
                         /**
                          * Generate the table using the class.

@@ -55,7 +55,7 @@ if (!empty($zip_files)) {
     }
 
     if ($deleted < $found && in_array(CURRENT_USER_LEVEL, [9,8,7])) {
-        $msg = '<p><strong>'.__('Warning:', 'cftp_admin').'</strong>' . ' ' . sprintf(__('One or more temporary zip files could not be deleted. Files older than %s hours are generally considered safe to delete.', 'cftp_admin'), convertSeconds(ZIP_TMP_EXPIRATION_TIME)['hours']);
+        $msg = '<p><strong>'.__('Warning:', 'cftp_admin').'</strong>' . ' ' . sprintf(__('One or more temporary zip files could not be deleted. Files older than %s hours are generally considered safe to delete.', 'cftp_admin'), convert_seconds(ZIP_TMP_EXPIRATION_TIME)['hours']);
         $msg .= '<p>'.sprintf(__('To make space on your disk, you can manually delete old files from %s', 'cftp_admin'), UPLOADS_TEMP_DIR).'</p>';
         echo system_message('danger', $msg);
     }

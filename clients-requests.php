@@ -110,7 +110,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                             /**
                              * 2 - Process memberships requests
                              */
-                            $process_requests	= $process_memberships->group_process_memberships( $memberships_arguments );
+                            $process_requests	= $process_memberships->clientProcessMemberships( $memberships_arguments );
 
                             /**
                              * 3- Send email to the client
@@ -301,7 +301,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                         if ( $current_filter == 'denied' ) {
                             $arguments['denied'] = 1;
                         }
-                        $get_requests	= $get_requests->get_membership_requests( $arguments );
+                        $get_requests	= $get_requests->getMembershipRequests( $arguments );
 
                         /**
                          * Generate the table using the class.

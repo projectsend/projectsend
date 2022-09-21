@@ -25,7 +25,7 @@ if ( current_role_in( array( 9,8,7 ) ) )
      * to make sure they are from not new accounts (since those are
      * shown in the Account Request menu item)
      */
-	define('COUNT_MEMBERSHIP_REQUESTS', countGroupsRequestsForExistingClients());
+	define('COUNT_MEMBERSHIP_REQUESTS', count_groups_requests_for_existing_clients());
 
 	/** Count ALREADY DENIED groups MEMBERSHIP requests */
 	$sql_requests = $dbh->prepare( "SELECT DISTINCT id FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='1'" );

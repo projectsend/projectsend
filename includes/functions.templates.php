@@ -174,3 +174,16 @@ function template_load_translation($template)
 
     ProjectSend\Classes\I18n::LoadDomain($mo_file, $ld);
 }
+
+function get_template_file_location($file)
+{
+    $location = TEMPLATE_PATH . $file;
+    if (file_exists($location)) {
+        return $location;
+    }
+
+    $default_location = DEFAULT_TEMPLATE_PATH . $file;
+    if (file_exists($default_location)) {
+        return $default_location;
+    }
+}

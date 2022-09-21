@@ -43,6 +43,7 @@ switch ( $section ) {
                                 'public_listing_logged_only',
                                 'public_listing_show_all_files',
                                 'public_listing_use_download_link',
+                                'public_listing_enable_preview',
                             );
         break;
     case 'email':

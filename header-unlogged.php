@@ -99,6 +99,16 @@ if ( !isset( $body_class ) ) { $body_class = array(); }
                     </div>
                 </div>
 
+                <?php if (isset($show_page_title) && $show_page_title == true) { ?>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div id="section_title">
+                                <h2><?php echo $page_title; ?></h2>
+                            </div>
+                        </div>
+                    </div>
+                <?php } ?>
+
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
                         <?php

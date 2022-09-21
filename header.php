@@ -57,6 +57,8 @@ password_change_required();
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <?php meta_noindex(); ?>
+
     <title><?php echo html_output( $page_title . ' &raquo; ' . htmlspecialchars(get_option('this_install_title'), ENT_QUOTES, CHARSET) ); ?></title>
     <?php meta_favicon(); ?>
 

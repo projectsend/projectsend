@@ -77,6 +77,9 @@ require_once ROOT_DIR.'/includes/functions.forms.php';
 /** Search, filters and actions forms */
 require_once ROOT_DIR.'/includes/functions.groups.php';
 
+/** Public files display functins */
+require_once ROOT_DIR.'/includes/functions.public.php';
+
 /** Social login */
 if (!defined('IS_INSTALL')) {
     require_once ROOT_DIR.'/includes/hybridauth.php';

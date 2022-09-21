@@ -143,6 +143,10 @@ function user_can_upload_any_file_type($user_id = CURRENT_USER_ID)
 
 function current_user_can_view_files_list()
 {
+    if (defined('IS_PUBLIC_VIEW')) {
+        return true;
+    }
+
     $user = new \ProjectSend\Classes\Users();
     $user->get(CURRENT_USER_ID);
     $props = $user->getProperties();

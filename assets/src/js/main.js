@@ -70,6 +70,10 @@
             case 'asset_editor':
                 admin.pages.assetEditor();
                 break;
+            case 'public_files_list':
+                admin.parts.filePreviewModal();
+                admin.pages.publicFilesList();
+                break;
             default:
                 // do nothing
                 break;

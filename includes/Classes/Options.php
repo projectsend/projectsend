@@ -110,7 +110,8 @@ class Options
             date_default_timezone_set($this->options['timezone']);
             
             /** Options that do not come from the db */
-            define('TEMPLATE_PATH',ROOT_DIR.DS.'templates'.DS.$this->options['selected_clients_template'].DS.'template.php');
+            define('TEMPLATE_PATH',ROOT_DIR.DS.'templates'.DS.$this->options['selected_clients_template'].DS);
+            define('DEFAULT_TEMPLATE_PATH',ROOT_DIR.DS.'templates'.DS.'default'.DS);
 
             /* Recaptcha */
             if (

@@ -89,4 +89,12 @@
     </div>
 </div>
 
+<div class="form-group">
+    <div class="col-sm-8 col-sm-offset-4">
+        <label for="public_listing_enable_preview">
+            <input type="checkbox" value="1" name="public_listing_enable_preview" id="public_listing_enable_preview" class="checkbox_options" <?php echo (get_option('public_listing_enable_preview') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Enable files previews','cftp_admin'); ?>
+        </label>
+    </div>
+</div>
+
 <div class="options_divide"></div>

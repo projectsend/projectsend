@@ -144,3 +144,64 @@ function get_groups($arguments)
         return array();
     }
 }
+
+function can_view_public_group($group_id, $group_token)
+{
+    $can_view_group = false;
+
+    $group = get_group_by_id($group_id);
+    if ( $group['public_token'] == $group_token ) {
+        if ( $group['public'] == 1 ) {
+            $can_view_group = true;
+        }
+    }
+
+    return $can_view_group;
+}
+
+function get_group_assigned_files($group_id)
+{
+    $return = [];
+    if (empty($group_id)) {
+        return $return;
+    }
+
+    global $dbh;
+
+    $files_ids = [];
+    $query = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE group_id = :group_id";
+    $sql = $dbh->prepare($query);
+    $sql->bindParam(':group_id', $group_id);
+    $sql->execute();
+    $sql->setFetchMode(PDO::FETCH_ASSOC);
+    while ( $row = $sql->fetch() ) {
+        $return[] = $row['file_id'];
+    }
+
+    return $return;
+}
+
+function get_groups_assigned_files($groups_ids = [])
+{
+    $return = [];
+    if (empty($groups_ids)) {
+        return $return;
+    }
+
+    global $dbh;
+
+    if (is_array($groups_ids)) {
+        $groups_ids = implode(',', $groups_ids);
+    }
+
+    $query = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE FIND_IN_SET(group_id, :groups_ids)";
+    $sql = $dbh->prepare($query);
+    $sql->bindParam(':groups_ids', $groups_ids);
+    $sql->execute();
+    $sql->setFetchMode(PDO::FETCH_ASSOC);
+    while ( $row = $sql->fetch() ) {
+        $return[] = $row['file_id'];
+    }
+
+    return $return;
+}

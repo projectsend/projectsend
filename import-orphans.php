@@ -39,24 +39,24 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
     $settings['search'] = $_GET['search'];
 }
 
-$settings['allowed_type'] = (isset($_GET['allowed_type'])) ? $_GET['allowed_type'] : '';
+$search_type = (isset($_GET['allowed_type'])) ? $_GET['allowed_type'] : 'allowed';
+
+$settings['allowed_type'] = $search_type;
 $orphans = $orphan_files->getFiles($settings);
 
 // Table options
 $can_import = false;
 $files = $orphans['allowed'];
 
-if (isset($_GET['allowed_type'])) {
-    switch ($_GET['allowed_type']) {
-        case 'allowed':
-        default:
-            $files = $orphans['allowed'];
-            $can_import = true;
-            break;
-        case 'not_allowed':
-            $files = $orphans['not_allowed'];
-            break;
-    }
+switch ($search_type) {
+    case 'allowed':
+    default:
+        $files = $orphans['allowed'];
+        $can_import = true;
+        break;
+    case 'not_allowed':
+        $files = $orphans['not_allowed'];
+        break;
 }
 
 // Import selected files and redirect to editor

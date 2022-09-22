@@ -10,7 +10,7 @@
 namespace ProjectSend\Classes;
 
 use \ProjectSend\Classes\Validation;
-use \ProjectSend\Classes\MembersActions;
+use \ProjectSend\Classes\GroupsMemberships;
 use \PDO;
 
 class Users
@@ -225,7 +225,7 @@ class Users
             }
     
             // Groups
-            $groups_object = new \ProjectSend\Classes\MembersActions($this->dbh);
+            $groups_object = new \ProjectSend\Classes\GroupsMemberships($this->dbh);
             $this->groups = $groups_object->getGroupsByClient([
                 'client_id'	=> $this->id
             ]); 
@@ -518,7 +518,7 @@ class Users
          * Check if the client requested memberships to groups
          */
         if (!empty($arguments['groups'])) {
-            $request = new \ProjectSend\Classes\MembersActions;
+            $request = new \ProjectSend\Classes\GroupsMemberships;
             $request->groupRequestMembership([
                 'client_id'		=> $this->id,
                 'group_ids'		=> $arguments['groups'],
@@ -788,7 +788,7 @@ class Users
     {
         $group_id = get_option('clients_auto_group');
 
-        $autogroup	= new \ProjectSend\Classes\MembersActions;
+        $autogroup	= new \ProjectSend\Classes\GroupsMemberships;
         $autogroup->clientAddToGroups([
             'client_id'	=> $this->id,
             'group_ids'	=> $group_id,

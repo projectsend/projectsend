@@ -28,7 +28,7 @@ $edit_client->get($client_id);
 $client_arguments = $edit_client->getProperties();
 
 /** Get groups where this client is member */
-$get_groups = new \ProjectSend\Classes\MembersActions;
+$get_groups = new \ProjectSend\Classes\GroupsMemberships;
 $get_arguments = [
     'client_id'	=> $client_id,
 ];
@@ -115,7 +115,7 @@ if ($_POST) {
     $edit_response = $edit_client->edit();
 
     $edit_groups = (!empty( $_POST['groups_request'] ) ) ? $_POST['groups_request'] : array();
-    $memberships = new \ProjectSend\Classes\MembersActions;
+    $memberships = new \ProjectSend\Classes\GroupsMemberships;
     $arguments = [
         'client_id' => $client_id,
         'group_ids' => $edit_groups,

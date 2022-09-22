@@ -39,7 +39,7 @@ $client_info = get_client_by_username($view_files_as);
 /**
  * Get the list of different groups the client belongs to.
  */
-$get_groups = new ProjectSend\Classes\MembersActions;
+$get_groups = new ProjectSend\Classes\GroupsMemberships;
 $found_groups = $get_groups->getGroupsByClient([
     'client_id' => $client_info['id'],
     'return' => 'list',

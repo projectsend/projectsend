@@ -26,7 +26,7 @@ if (!empty($_GET['member'])) {
         $member_exists = 1;
 
         /** Get groups where this client is member */
-        $get_groups		= new \ProjectSend\Classes\MembersActions();
+        $get_groups		= new \ProjectSend\Classes\GroupsMemberships();
         $get_arguments	= array(
                                 'client_id'	=> $member['id'],
                                 'return'	=> 'list',

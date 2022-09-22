@@ -51,7 +51,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                 switch ($_POST['action']) {
                     case 'apply':
                         foreach ( $selected_clients as $client ) {
-                            $process_memberships	= new \ProjectSend\Classes\MembersActions;
+                            $process_memberships	= new \ProjectSend\Classes\GroupsMemberships;
 
                             /** Process memberships requests */
                             if ( empty( $client['groups'] ) ) {
@@ -69,7 +69,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                         break;
                     case 'delete':
                         foreach ($selected_clients as $client) {
-                            $process_memberships = new \ProjectSend\Classes\MembersActions;
+                            $process_memberships = new \ProjectSend\Classes\GroupsMemberships;
 
                             $memberships_arguments = array(
                                 'client_id'	=> $client['id'],
@@ -248,7 +248,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                         /**
                          * Pre-populate a membership requests array
                          */
-                        $get_requests	= new \ProjectSend\Classes\MembersActions;
+                        $get_requests	= new \ProjectSend\Classes\GroupsMemberships;
                         $arguments		= array();
                         if ( $current_filter == 'denied' ) {
                             $arguments['denied'] = 1;

@@ -70,7 +70,7 @@ if ($_POST) {
     $add_to_groups = (!empty( $_POST['groups_request'] ) ) ? $_POST['groups_request'] : '';
     if ( !empty( $add_to_groups ) ) {
         array_map('encode_html', $add_to_groups);
-        $memberships = new \ProjectSend\Classes\MembersActions;
+        $memberships = new \ProjectSend\Classes\GroupsMemberships;
         $memberships->clientAddToGroups([
             'client_id' => $new_client->getId(),
             'group_ids' => $add_to_groups,

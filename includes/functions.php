@@ -1886,7 +1886,7 @@ function user_can_download_file($user_id = CURRENT_USER_ID, $file_id = null)
     $file->get($file_id);
 
     // Get groups
-    $get_groups = new \ProjectSend\Classes\MembersActions();
+    $get_groups = new \ProjectSend\Classes\GroupsMemberships();
     $found_groups = $get_groups->getGroupsByClient([
         'client_id' => $user_id,
         'return' => 'list',

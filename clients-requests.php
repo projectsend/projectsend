@@ -64,7 +64,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                     case 'apply':
                         $selected_clients = $_POST['accounts'];
                         foreach ( $selected_clients as $client ) {
-                            $process_memberships	= new \ProjectSend\Classes\MembersActions;
+                            $process_memberships	= new \ProjectSend\Classes\GroupsMemberships;
 
                             /**
                              * 1- Approve or deny account
@@ -296,7 +296,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                         /**
                          * Pre-populate a membership requests array
                          */
-                        $get_requests	= new \ProjectSend\Classes\MembersActions;
+                        $get_requests	= new \ProjectSend\Classes\GroupsMemberships;
                         $arguments		= array();
                         if ( $current_filter == 'denied' ) {
                             $arguments['denied'] = 1;

@@ -1,6 +1,7 @@
 <?php
 /**
  * Class that handles all the actions and functions regarding groups memberships.
+ * @todo: this needs to be redone. It's a mix of loose functions that do not belong to an object ATM
  *
  * @package		ProjectSend
  * @subpackage	Classes
@@ -9,13 +10,10 @@
 namespace ProjectSend\Classes;
 use \PDO;
 
-class MembersActions
+class GroupsMemberships
 {
     private $dbh;
     private $logger;
-
-	var $client	= '';
-	var $groups	= '';
 
     public function __construct(PDO $dbh = null)
     {
@@ -198,7 +196,7 @@ class MembersActions
 			 */
 			$new_groups = array_diff($group_ids, $found_groups);
 			if ( !empty( $new_groups) ) {
-				$new_groups_add	= new \ProjectSend\Classes\MembersActions;
+				$new_groups_add	= new \ProjectSend\Classes\GroupsMemberships;
 				$results['new']	= $new_groups_add->clientAddToGroups([
                     'client_id' => $client_id,
                     'group_ids' => $new_groups,

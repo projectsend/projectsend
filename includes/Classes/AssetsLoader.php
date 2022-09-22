@@ -16,7 +16,7 @@ Class AssetsLoader
     {
         $this->css_assets = [
             'head' => [
-                'font_opensans' => ['url' => 'https://fonts.googleapis.com/css?family=Open+Sans:400,700,300'],
+                //'font_opensans' => ['url' => 'https://fonts.googleapis.com/css?family=Open+Sans:400,700,300'],
                 'css_assets' =>['url' => ASSETS_CSS_URL . '/assets.css'],
                 'css_main' =>['url' => ASSETS_CSS_URL . '/main.css'],
             ],

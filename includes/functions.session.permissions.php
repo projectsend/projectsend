@@ -106,7 +106,7 @@ function password_change_required()
     if ($session_user->requiresPasswordChange()) {
         $url = (CURRENT_USER_LEVEL == 0) ? 'clients-edit.php' : 'users-edit.php';
         if (basename($_SERVER["SCRIPT_FILENAME"]) != $url) {
-            $flash->warning(__('Password change is required for your account', 'cftp_admin'));
+            $flash->error(__('Password change is required for your account', 'cftp_admin'));
 
             $url .= '?id='.CURRENT_USER_ID;
             ps_redirect(BASE_URI.$url);

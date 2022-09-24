@@ -114,7 +114,6 @@ function password_change_required()
     }
 }
 
-
 function user_can_upload_any_file_type($user_id = CURRENT_USER_ID)
 {
     $user = new \ProjectSend\Classes\Users;

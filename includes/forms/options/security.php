@@ -108,6 +108,18 @@
 
 <div class="options_divide"></div>
 
+<h3><?php _e('Authentication','cftp_admin'); ?></h3>
+<div class="form-group">
+    <div class="col-sm-8 col-sm-offset-4">
+        <label for="authentication_require_email_code">
+            <input type="checkbox" value="1" name="authentication_require_email_code" id="authentication_require_email_code" class="checkbox_options" <?php echo (get_option('authentication_require_email_code') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Enable simple 2 factor authentication','cftp_admin'); ?>
+            <p class="field_note"><?php _e('If enabled, an email with a one time use verification code will be sent to the user after they enter their credentials.','cftp_admin'); ?></p>
+        </label>
+    </div>
+</div>
+
+<div class="options_divide"></div>
+
 <h3><?php _e('Log in throttle','cftp_admin'); ?></h3>
 <p><?php _e('Multiple failed log in attempts will increase timeouts for the originating IP address. Helps prevent brute force attacks.','cftp_admin'); ?></p>
 

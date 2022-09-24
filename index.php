@@ -51,15 +51,6 @@ if ($_POST) {
                 $user = new \ProjectSend\Classes\Users;
                 $user->get($decoded->user_id);
 
-                /** Record the action log */
-                $logger = new \ProjectSend\Classes\ActionsLog;
-                $new_record_action = $logger->addEntry([
-                    'action' => 1,
-                    'owner_id' => $user->id,
-                    'owner_user' => $user->username,
-                    'affected_account_name' => $user->name
-                ]);
-
                 ps_redirect($decoded->location);
             } else {
                 $flash->error($auth->getLoginError($decoded->type));
@@ -79,27 +70,52 @@ if ($_POST) {
             }
             // $auth->setLanguage($_POST['language']);
         break;
+        case '2fa_verify':
+            recaptcha2_validate_request();
+            $code = $_POST['n1'].$_POST['n2'].$_POST['n3'].$_POST['n4'].$_POST['n5'].$_POST['n6'];
+
+            $login = $auth->validate2faRequest($_POST['token'], $code);
+            $decoded = json_decode($login);
+            if ($decoded->status == 'success') {
+                $user = new \ProjectSend\Classes\Users;
+                $user->get($decoded->user_id);
+
+                ps_redirect($decoded->location);
+            } else {
+                $flash->error($auth->getLoginError($decoded->type));
+
+                ps_redirect(BASE_URI."index.php?form=2fa_verify&token=".$_POST['token']);
+            }
+        break;
     }
 }
 
-if ( isset($_SESSION['errorstate'] ) ) {
-    $errorstate = $_SESSION['errorstate'];
-    unset($_SESSION['errorstate']);
-}
-
 $csrf_token = getCsrfToken();
+
+$login_types = array(
+    'local' => '1',
+    'ldap' => get_option('ldap_signin_enabled'),
+);
+
+$valid_forms = ['login', '2fa_verify'];
+$form = (isset($_GET['form']) && in_array($_GET['form'], $valid_forms)) ? $_GET['form'] : 'login';
+
+if ($form == '2fa_verify') {
+    $request = new \ProjectSend\Classes\AuthenticationCode();
+    $get_request = $request->getByToken($_GET['token']);
+    if ($get_request == false) {
+        exit_with_error_code(403);
+    }
+
+    $props = $request->getProperties();
+    $user = get_user_by_id($props['user_id']);
+    $masked_email = mask_email($user['email']);
+}
 
 include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 ?>
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
-
-        <?php
-            $login_types = array(
-                'local' => '1',
-                'ldap' => get_option('ldap_signin_enabled'),
-            );
-        ?>
         <div class="white-box">
             <div class="white-box-interior">
                 <div class="ajax_response">
@@ -114,23 +130,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                 </ul> */ ?>
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane fade in active" id="local">
-                        <?php include_once FORMS_DIR . DS . 'login.php'; ?>
-
-                        <div class="login_form_links">
-                            <p id="reset_pass_link"><?php _e("Forgot your password?",'cftp_admin'); ?> <a href="<?php echo BASE_URI; ?>reset-password.php"><?php _e('Set up a new one.','cftp_admin'); ?></a></p>
-                            <?php
-                                if (get_option('clients_can_register') == '1') {
-                            ?>
-                                    <p id="register_link"><?php _e("Don't have an account yet?",'cftp_admin'); ?> <a href="<?php echo BASE_URI; ?>register.php"><?php _e('Register as a new client.','cftp_admin'); ?></a></p>
-                            <?php
-                                } else {
-                            ?>
-                                    <p><?php _e("This server does not allow self registrations.",'cftp_admin'); ?></p>
-                                    <p><?php _e("If you need an account, please contact a server administrator.",'cftp_admin'); ?></p>
-                            <?php
-                                }
-                            ?>
-                        </div>
+                        <?php
+                            include_once FORMS_DIR . DS . $form . '.php';
+                        ?>
                     </div>
 
                     <?php /* if ($login_types['ldap'] == 'true') { ?>
@@ -143,6 +145,5 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
         </div>
     </div>
 </div>
-
 <?php
     include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

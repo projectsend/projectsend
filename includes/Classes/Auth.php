@@ -31,6 +31,11 @@ class Auth
         $this->bfchecker = $bfchecker;
     }
 
+    public function requires2fa()
+    {
+        return (bool)get_option('authentication_require_email_code');
+    }
+
     public function setLanguage($language = null)
     {
         $selected_form_lang	= (!empty( $language ) ) ? $language : SITE_LANG;
@@ -55,6 +60,49 @@ class Auth
         }
 
         session_regenerate_id(true);
+
+        // Record the action log
+        $logger = new \ProjectSend\Classes\ActionsLog;
+        $logger->addEntry([
+            'action' => 1,
+            'owner_id' => $user->id,
+            'owner_user' => $user->username,
+            'affected_account_name' => $user->name
+        ]);
+    }
+
+    public function validate2faRequest($token, $code)
+    {
+        $auth_code = new \ProjectSend\Classes\AuthenticationCode();
+        if (!$auth_code->validateRequest($token, $code)) {
+            $this->errorstate = '2fa_invalid';
+
+            return json_encode([
+                'status' => 'error',
+                'message' => $this->getLoginError(),
+            ]);
+        }
+        
+        $props =  $auth_code->getProperties();
+        $user = new \ProjectSend\Classes\Users;
+        $user->get($props['user_id']);
+            
+        if ($user->isActive()) {
+            $this->user = $user;
+            $this->login($user);
+
+            $results = [
+                'status' => 'success',
+                'user_id' => $user->id,
+                'location' => $user->isClient() ? CLIENT_VIEW_FILE_LIST_URL : BASE_URI."dashboard.php",
+            ];
+            
+            return json_encode($results);
+        }
+
+        return json_encode([
+            'status' => 'error',
+        ]);
     }
 
     public function authenticate($username, $password)
@@ -68,8 +116,7 @@ class Auth
             ':username' => $username,
             ':email' => $username,
         ]);
-		$count_user = $statement->rowCount();
-		if ($count_user > 0) {
+		if ($statement->rowCount() > 0) {
 			/** If the username was found on the users table */
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
 			while ( $row = $statement->fetch() ) {
@@ -80,6 +127,19 @@ class Auth
 
 			if (password_verify($password, $user->getRawPassword())) {
 				if ($user->isActive()) {
+                    if ($this->requires2fa()) {
+                        $new2fa = new \ProjectSend\Classes\AuthenticationCode();
+                        $request2fa = $new2fa->createNew($user->id);
+
+                        $results = [
+                            'status' => 'success',
+                            'user_id' => $user->id,
+                            'location' => BASE_URI."index.php?form=2fa_verify&token=".$request2fa['token'],
+                        ];
+                        
+                        return json_encode($results);
+                    }
+
                     $this->login($user);
 
 					$results = [
@@ -390,6 +450,12 @@ class Auth
                     break;
                 case 'timeout':
                     $error = __('Session timed out. Please log in again.','cftp_admin');
+                    break;
+                case '2fa_invalid':
+                    $error = __('Invalid code','cftp_admin');
+                    break;
+                case '2fa_expire':
+                    $error = __('Code expired','cftp_admin');
                     break;
 			}
         }

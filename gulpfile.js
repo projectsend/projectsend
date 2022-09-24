@@ -12,7 +12,7 @@ const uglify       = require('gulp-uglify');
 const pump         = require('pump');
 
 let sassFiles = 'assets/src/scss/main.scss';
-let sassPartials = 'assets/src/scss/partials/**/*.scss';
+let sassPartials = 'assets/src/scss/**/*.scss';
 
 let assetsCss = [
     'node_modules/bootstrap/dist/css/bootstrap.min.css',

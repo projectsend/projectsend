@@ -22,8 +22,10 @@ class BruteForceBlock {
     private $ip_whitelist;
     private $ip_blacklist;
     
-    public function __construct($dbh)
+    public function __construct()
     {
+        global $dbh;
+
         $this->dbh = $dbh;
         $this->auto_clear = true;
 

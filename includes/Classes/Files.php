@@ -45,11 +45,9 @@ class Files
 
     private $is_filetype_allowed;
 
-    public function __construct(PDO $dbh = null)
+    public function __construct($file_id = null)
     {
-        if (empty($dbh)) {
-            global $dbh;
-        }
+        global $dbh;
 
         $this->dbh = $dbh;
         $this->logger = new \ProjectSend\Classes\ActionsLog;
@@ -64,6 +62,10 @@ class Files
         $this->categories = [];
 
         $this->embeddable = false;
+
+        if (!empty($file_id)) {
+            $this->get($file_id);
+        }
     }
 
     public function __get($name)

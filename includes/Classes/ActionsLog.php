@@ -22,11 +22,9 @@ class ActionsLog
 
     private $dbh;
 
-    public function __construct(PDO $dbh = null)
+    public function __construct()
     {
-        if (empty($dbh)) {
-            global $dbh;
-        }
+        global $dbh;
 
         $this->dbh = $dbh;
     }

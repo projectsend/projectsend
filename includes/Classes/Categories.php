@@ -27,16 +27,18 @@ class Categories
     // Permissions
     private $allowed_actions_roles;
 
-    public function __construct(PDO $dbh = null)
+    public function __construct($category_id = null)
     {
-        if (empty($dbh)) {
-            global $dbh;
-        }
+        global $dbh;
 
         $this->dbh = $dbh;
         $this->logger = new \ProjectSend\Classes\ActionsLog;
 
         $this->allowed_actions_roles = [9, 8, 7];
+
+        if (!empty($category_id)) {
+            $this->get($category_id);
+        }
     }
 
     /**

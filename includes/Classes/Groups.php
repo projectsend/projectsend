@@ -34,16 +34,18 @@ class Groups
     // Permissions
     private $allowed_actions_roles;
 
-    public function __construct(PDO $dbh = null)
+    public function __construct($group_id = null)
     {
-        if (empty($dbh)) {
-            global $dbh;
-        }
+        global $dbh;
 
         $this->dbh = $dbh;
         $this->logger = new \ProjectSend\Classes\ActionsLog;
 
         $this->allowed_actions_roles = [9, 8];
+
+        if (!empty($group_id)) {
+            $this->get($group_id);
+        }
     }
 
     /**

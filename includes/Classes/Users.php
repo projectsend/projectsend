@@ -62,11 +62,9 @@ class Users
     // Permissions
     private $allowed_actions_roles;
     
-    public function __construct(PDO $dbh = null)
+    public function __construct($user_id = null)
     {
-        if (empty($dbh)) {
-            global $dbh;
-        }
+        global $dbh;
 
         $this->dbh = $dbh;
         $this->logger = new \ProjectSend\Classes\ActionsLog;
@@ -78,6 +76,10 @@ class Users
         $this->require_password_change = false;
 
         $this->metadata = [];
+
+        if (!empty($user_id)) {
+            $this->get($user_id);
+        }
     }
 
     /**
@@ -225,7 +227,7 @@ class Users
             }
     
             // Groups
-            $groups_object = new \ProjectSend\Classes\GroupsMemberships($this->dbh);
+            $groups_object = new \ProjectSend\Classes\GroupsMemberships();
             $this->groups = $groups_object->getGroupsByClient([
                 'client_id'	=> $this->id
             ]); 

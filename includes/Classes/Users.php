@@ -423,7 +423,6 @@ class Users
         $this->password_hashed = $this->hashPassword($this->password);
 
 		if (strlen($this->password_hashed) >= 20) {
-
 			/** Who is creating the client? */
 			$this->created_by = (defined('CURRENT_USER_USERNAME')) ? CURRENT_USER_USERNAME : null;
 
@@ -495,9 +494,6 @@ class Users
 				}
 			}
 		}
-		else {
-			$state['hash'] = 0;
-		}
 
 		return $state;
     }
@@ -566,8 +562,6 @@ class Users
             $this->setActiveStatus($this->active);
         }
 
-        $this->password_hashed = $this->hashPassword($this->password);
-
         // Some fields should not be allowed to be written if the current user is not a client,
         // as they are meant to be null for system users
         if ($this->role != 0) {
@@ -576,82 +570,75 @@ class Users
             $this->contact = null;
         }
 
-		if (strlen($this->password_hashed) >= 20) {
+        /** SQL query */
+        $this->query = "UPDATE " . TABLE_USERS . " SET
+                                    name = :name,
+                                    level = :role,
+                                    address = :address,
+                                    phone = :phone,
+                                    email = :email,
+                                    contact = :contact,
+                                    notify = :notify_upload,
+                                    max_file_size = :max_file_size,
+                                    can_upload_public = :can_upload_public
+                                    ";
 
-			$state['hash'] = 1;
+        /** Add the password to the query if it's not the dummy value '' */
+        if (!empty($this->password)) {
+            $this->query .= ", password = :password";
+        }
+        
+        $this->query .= " WHERE id = :id";
+        
+        $this->statement = $this->dbh->prepare($this->query);
+        $this->statement->bindParam(':name', $this->name);
+        $this->statement->bindParam(':role', $this->role, PDO::PARAM_INT);
+        $this->statement->bindParam(':address', $this->address);
+        $this->statement->bindParam(':phone', $this->phone);
+        $this->statement->bindParam(':email', $this->email);
+        $this->statement->bindParam(':contact', $this->contact);
+        $this->statement->bindParam(':notify_upload', $this->notify_upload, PDO::PARAM_INT);
+        $this->statement->bindParam(':max_file_size', $this->max_file_size, PDO::PARAM_INT);
+        $this->statement->bindParam(':can_upload_public', $this->can_upload_public, PDO::PARAM_INT);
+        $this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
+        if (!empty($this->password)) {
+            $this->password_hashed = $this->hashPassword($this->password);
+            $this->statement->bindParam(':password', $this->password_hashed);
+        }
 
-			/** SQL query */
-			$this->query = "UPDATE " . TABLE_USERS . " SET
-                                        name = :name,
-                                        level = :role,
-										address = :address,
-										phone = :phone,
-										email = :email,
-										contact = :contact,
-										notify = :notify_upload,
-										max_file_size = :max_file_size,
-                                        can_upload_public = :can_upload_public
-										";
+        $this->statement->execute();
 
-			/** Add the password to the query if it's not the dummy value '' */
-			if (!empty($this->password)) {
-				$this->query .= ", password = :password";
-            }
-            
-            $this->query .= " WHERE id = :id";
-            
-			$this->statement = $this->dbh->prepare($this->query);
-            $this->statement->bindParam(':name', $this->name);
-            $this->statement->bindParam(':role', $this->role, PDO::PARAM_INT);
-			$this->statement->bindParam(':address', $this->address);
-			$this->statement->bindParam(':phone', $this->phone);
-			$this->statement->bindParam(':email', $this->email);
-			$this->statement->bindParam(':contact', $this->contact);
-			$this->statement->bindParam(':notify_upload', $this->notify_upload, PDO::PARAM_INT);
-			$this->statement->bindParam(':max_file_size', $this->max_file_size, PDO::PARAM_INT);
-            $this->statement->bindParam(':can_upload_public', $this->can_upload_public, PDO::PARAM_INT);
-			$this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
-			if (!empty($this->password)) {
-				$this->statement->bindParam(':password', $this->password_hashed);
-			}
-
-            $this->statement->execute();
-
-			if ($this->statement) {
-                // See if user requires password change
-                if (user_meta_exists($this->id, 'require_password_change')) {
-                    if (!empty($this->password)) {
-                        delete_user_meta($this->id, 'require_password_change');
-                    }
+        if ($this->statement) {
+            // See if user requires password change
+            if (user_meta_exists($this->id, 'require_password_change')) {
+                if (!empty($this->password)) {
+                    delete_user_meta($this->id, 'require_password_change');
                 }
-
-                $this->limitUploadToSave($this->limit_upload_to);
-
-				$state['query'] = 1;
-
-                switch ($this->role) {
-                    case 0:
-                        $log_action_number = 14;
-                        break;
-                    case 7:
-                    case 8:
-                    case 9:
-                    $log_action_number = 13;
-                        break;
-                }
-
-                /** Record the action log */
-                $this->logger->addEntry([
-                    'action' => $log_action_number,
-                    'owner_id' => CURRENT_USER_ID,
-                    'affected_account' => $this->id,
-                    'affected_account_name' => $this->username,
-                    'username_column' => true
-                ]);
             }
-		}
-		else {
-			$state['hash'] = 0;
+
+            $this->limitUploadToSave($this->limit_upload_to);
+
+            $state['query'] = 1;
+
+            switch ($this->role) {
+                case 0:
+                    $log_action_number = 14;
+                    break;
+                case 7:
+                case 8:
+                case 9:
+                $log_action_number = 13;
+                    break;
+            }
+
+            /** Record the action log */
+            $this->logger->addEntry([
+                'action' => $log_action_number,
+                'owner_id' => CURRENT_USER_ID,
+                'affected_account' => $this->id,
+                'affected_account_name' => $this->username,
+                'username_column' => true
+            ]);
         }
 
 		return $state;

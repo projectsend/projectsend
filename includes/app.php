@@ -151,6 +151,7 @@ define('TABLE_LOGINS_FAILED', TABLES_PREFIX . 'logins_failed');
 define('TABLE_CRON_LOG', TABLES_PREFIX . 'cron_log');
 define('TABLE_CUSTOM_ASSETS', TABLES_PREFIX . 'custom_assets');
 define('TABLE_USER_LIMIT_UPLOAD_TO', TABLES_PREFIX . 'user_limit_upload_to');
+define('TABLE_AUTHENTICATION_CODES', TABLES_PREFIX . 'authentication_codes');
 
 $original_basic_tables = array(
     TABLE_FILES,
@@ -178,6 +179,7 @@ $all_system_tables = array(
     'cron_log',
     'custom_assets',
     'user_limit_upload_to',
+    'authentication_codes',
 );
 
 /**
@@ -261,6 +263,7 @@ define('EMAIL_TEMPLATE_ACCOUNT_DENY', 'account-deny.html');
 define('EMAIL_TEMPLATE_NEW_FILE_BY_USER', 'new-file-by-user.html');
 define('EMAIL_TEMPLATE_NEW_FILE_BY_CLIENT', 'new-file-by-client.html');
 define('EMAIL_TEMPLATE_PASSWORD_RESET', 'password-reset.html');
+define('EMAIL_TEMPLATE_2FA_CODE', '2fa-code.html');
 
 /** Passwords */
 define('HASH_COST_LOG2', 8);

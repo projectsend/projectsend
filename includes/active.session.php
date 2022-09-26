@@ -15,8 +15,8 @@ if (!is_projectsend_installed()) {
     ps_redirect('install/index.php');
 }
 
-if ( session_expired() ) {
-    ps_redirect(BASE_URI . 'process.php?do=logout&timeout=1');
+if ( session_expired() && user_is_logged_in()) {
+    force_logout();
 }
 
 extend_session(); // update last activity time stamp
@@ -32,7 +32,7 @@ if (!empty($_SESSION['user_id'])) {
          * Automatic log out if account is deactivated while session is on.
          */
         if (!$session_user->isActive()) {
-            force_logout('account_inactive');
+            force_logout();
         }
     
         /**

@@ -30,3 +30,27 @@
         }
     }
 }
+
+form#verify_2fa {
+    .form_info {
+        h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+    }
+
+    #otp_inputs {
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin: 25px auto;
+    
+        input {
+            width: 48px;
+            height: 48px;
+            font-size: 25px;
+        }
+    }
+}

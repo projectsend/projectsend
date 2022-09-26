@@ -13,9 +13,9 @@ class Auth
 {
     private $dbh;
     private $logger;
-    private $errorstate;
+    private $error_message;
     private $bfchecker;
-
+    private $error_strings;
     public $user;
 
     public function __construct(PDO $dbh = null)
@@ -29,11 +29,9 @@ class Auth
         $this->dbh = $dbh;
         $this->logger = new \ProjectSend\Classes\ActionsLog;
         $this->bfchecker = $bfchecker;
-    }
 
-    public function requires2fa()
-    {
-        return (bool)get_option('authentication_require_email_code');
+        global $json_strings;
+        $this->error_strings = $json_strings['login']['errors'];
     }
 
     public function setLanguage($language = null)
@@ -52,13 +50,6 @@ class Auth
         $_SESSION['role'] = $user->role;
         $_SESSION['account_type'] = $user->account_type;
 
-        if ($user->isClient()) {
-            $_SESSION['access'] = $user->username;
-        }
-        else {
-            $_SESSION['access'] = 'admin';
-        }
-
         session_regenerate_id(true);
 
         // Record the action log
@@ -74,12 +65,13 @@ class Auth
     public function validate2faRequest($token, $code)
     {
         $auth_code = new \ProjectSend\Classes\AuthenticationCode();
-        if (!$auth_code->validateRequest($token, $code)) {
-            $this->errorstate = '2fa_invalid';
+        $validate = json_decode($auth_code->validateRequest($token, $code));
+        if ($validate->status != 'success') {
+            $this->setError($validate->message);
 
             return json_encode([
                 'status' => 'error',
-                'message' => $this->getLoginError(),
+                'message' => $this->getError(),
             ]);
         }
         
@@ -102,6 +94,7 @@ class Auth
 
         return json_encode([
             'status' => 'error',
+            'message' => $this->error_strings['2fa']['invalid'],
         ]);
     }
 
@@ -127,19 +120,28 @@ class Auth
 
 			if (password_verify($password, $user->getRawPassword())) {
 				if ($user->isActive()) {
-                    if ($this->requires2fa()) {
-                        $new2fa = new \ProjectSend\Classes\AuthenticationCode();
-                        $request2fa = $new2fa->createNew($user->id);
-
-                        $results = [
-                            'status' => 'success',
-                            'user_id' => $user->id,
-                            'location' => BASE_URI."index.php?form=2fa_verify&token=".$request2fa['token'],
-                        ];
+                    $new2fa = new \ProjectSend\Classes\AuthenticationCode();
+                    if ($new2fa->requires2fa()) {
+                        $request2fa = json_decode($new2fa->requestNewCode($user->id));
+                        if ($request2fa->status == 'success') {
+                            $results = [
+                                'status' => 'success',
+                                'user_id' => $user->id,
+                                'location' => BASE_URI."index.php?form=2fa_verify&token=".$request2fa->token,
+                            ];
+                        } else {
+                            $this->setError($request2fa->message);
+                            $results = [
+                                'status' => 'error',
+                                'message' => $request2fa->message,
+                                'location' => BASE_URI,
+                            ];
+                        }
                         
                         return json_encode($results);
                     }
 
+                    // When 2FA is not required, login
                     $this->login($user);
 
 					$results = [
@@ -151,28 +153,35 @@ class Auth
                     return json_encode($results);
 				}
 				else {
-					$this->errorstate = 'inactive_client';
+                    $this->setError($this->getAccountInactiveError());
 				}
 			}
 			else {
-				//$this->errorstate = 'wrong_password';
-				$this->errorstate = 'invalid_credentials';
+				$this->setError($this->error_strings['invalid_credentials']);
 			}
 		}
 		else {
-            //$this->errorstate = 'wrong_username';
             $this->bfchecker->addFailedLoginAttempt($username, get_client_ip());
 
-            $this->errorstate = 'invalid_credentials';
+            $this->setError($this->error_strings['invalid_credentials']);
         }
 
 		$results = [
             'status' => 'error',
-            'type' => $this->errorstate,
-            'message' => $this->getLoginError(),
+            'message' => $this->getError(),
         ];
 
         return json_encode($results);
+    }
+
+    private function getAccountInactiveError()
+    {
+        $error = $this->error_strings['account_inactive'];
+        if (get_option('clients_auto_approve') == 0) {
+            $error .= ' ' . $this->error_strings['account_inactive_notice'];
+        }
+
+        return $error;
     }
 
     /** Social Login via hybridauth */
@@ -237,7 +246,8 @@ class Auth
 					}
 				}
 				else {
-                    ps_redirect(BASE_URI.'?error=account_inactive');
+                    $this->setError($this->getAccountInactiveError());
+                    ps_redirect(BASE_URI);
 				}
             }
         } else {
@@ -245,7 +255,8 @@ class Auth
             //pax($userProfile);
 
             if (get_option('clients_can_register') == '0') {
-                ps_redirect(BASE_URI.'index.php?error=no_self_registration');
+                $this->setError($this->error_strings['no_self_registration']);
+                ps_redirect(BASE_URI);
             }
 
             $email_parts = explode('@', $userProfile->email);
@@ -406,64 +417,21 @@ class Auth
         }
     }
 
-    /**
-     * Login error strings
-     * 
-     * @param string errorstate
-     * @return string
-     */
-    public function getLoginError($state = null)
+    private function setError($message)
     {
-        $error = __("Error during log in.",'cftp_admin');;
-
-        if (!empty($state)) {
-            $this->errorstate = $state;
-        }
-
-		if (isset($this->errorstate)) {
-			switch ($this->errorstate) {
-                default:
-				case 'invalid_credentials':
-					$error = __("The supplied credentials are not valid.",'cftp_admin');
-					break;
-				case 'wrong_username':
-					$error = __("The supplied username doesn't exist.",'cftp_admin');
-					break;
-				case 'wrong_password':
-					$error = __("The supplied password is incorrect.",'cftp_admin');
-                    break;
-                case 'account_inactive':
-				case 'inactive_client':
-					$error = __("This account is not active.",'cftp_admin');
-					if (get_option('clients_auto_approve') == 0) {
-						$error .= ' '.__("If you just registered, please wait until a system administrator approves your account.",'cftp_admin');
-					}
-					break;
-				case 'no_self_registration':
-					$error = __('Client self registration is not allowed. If you need an account, please contact a system administrator.','cftp_admin');
-					break;
-				case 'no_account':
-					$error = __('Sign-in with Google cannot be used to create new accounts at this time.','cftp_admin');
-					break;
-				case 'access_denied':
-					$error = __('You must approve the requested permissions to sign in with Google.','cftp_admin');
-                    break;
-                case 'timeout':
-                    $error = __('Session timed out. Please log in again.','cftp_admin');
-                    break;
-                case '2fa_invalid':
-                    $error = __('Invalid code','cftp_admin');
-                    break;
-                case '2fa_expire':
-                    $error = __('Code expired','cftp_admin');
-                    break;
-			}
-        }
-        
-        return $error;
+        $this->error_message = $message;
     }
 
-    public function logout($error_code = null)
+    public function getError()
+    {
+        if (empty($this->error_message)) {
+            return __("Error during log in.",'cftp_admin');
+        }
+
+        return $this->error_message;
+    }
+
+    public function logout()
     {
         header("Cache-control: private");
 		$_SESSION = [];
@@ -495,14 +463,8 @@ class Auth
             ]);
         }
 
-		if ( isset( $_GET['timeout'] ) ) {
-            $error_code = 'timeout';
-        }
-        $redirect_to = BASE_URI.'index.php';
-        if (!empty($error_code)) {
-            $redirect_to .= '?error='.$error_code;
-        }
-
-        ps_redirect($redirect_to);
+		// if ( isset( $_GET['timeout'] ) ) {
+        //     $error_code = 'timeout';
+        // }
     }
 }

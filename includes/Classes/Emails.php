@@ -23,6 +23,7 @@ class Emails
     private $strings_new_user;
     private $strings_pass_reset;
     private $strings_client_edited;
+    private $strings_2fa_code;
     private $email_successful;
 
     function __construct()
@@ -129,6 +130,18 @@ class Emails
 			'label_request' => __('The client requests access to the following group(s)','cftp_admin'),
 			'body2' => __('Please log in to process the request.','cftp_admin')
 		);
+
+        // Send 2FA (OTP) code
+        $this->strings_2fa_code = [
+            'subject' => (get_option('email_2fa_code_subject_customize') == 1 && !empty(get_option('email_2fa_code_subject'))) ? get_option('email_2fa_code_subject') : __('Your login verification code','cftp_admin'),
+			'body' => __('Someone has attempted to log in to your account.','cftp_admin'),
+            'body2' => __('To continue the process, you need to enter the following code:','cftp_admin'),
+            // 'label_location' => __('Location','cftp_admin'),
+			// 'label_device' => __('Device','cftp_admin'),
+			// 'label_browser' => __('Browser','cftp_admin'),
+            'label_expiry' => __('This code will expire on:','cftp_admin'),
+			'body3' => __('If you did not initiate the log in process, please change your password as soon as possible.','cftp_admin'),
+        ];
     }
 
 	/**
@@ -183,6 +196,11 @@ class Emails
 					$customize_body = get_option('email_client_edited_customize');
 					$body_text_option = 'email_client_edited_text';
 				break;
+            case '2fa_code':
+                $filename = EMAIL_TEMPLATE_2FA_CODE;
+                $customize_body = get_option('email_2fa_code_customize');
+                $body_text_option = 'email_2fa_code_text';
+            break;
             case 'test_settings':
                     $filename = 'test_settings.html';
                     $customize_body = 0;
@@ -569,6 +587,39 @@ class Emails
 	}
 
     /**
+	 * Prepare the body for the authentication code sent to the user during log in.
+	 */
+	// private function email_2fa_code($code,$location,$device,$browser,$expiry_date)
+    private function email_2fa_code($code,$expiry_date)
+	{
+		$this->email_body = $this->prepareBody('2fa_code');
+		$this->email_body = str_replace(
+									// array('%SUBJECT%','%BODY1%','%BODY2%','%BODY3%', '%CODE%', '%LBLLOCAITON%','%LOCATION%','%LBLDEVICE%','%DEVICE%','%LBLBROWSER%', '%BROWSER%', '%LABEL_EXPIRY%', '%EXPIRY_DATE%', ),
+                                    array('%SUBJECT%','%BODY1%','%BODY2%','%BODY3%', '%CODE%', '%LABEL_EXPIRY%', '%EXPIRY_DATE%'),
+									array(
+										$this->strings_2fa_code['subject'],
+										$this->strings_2fa_code['body'],
+										$this->strings_2fa_code['body2'],
+										$this->strings_2fa_code['body3'],
+                                        $code,
+										// $this->strings_2fa_code['label_location'],
+										// $location,
+										// $this->strings_2fa_code['label_device'],
+										// $device,
+										// $this->strings_2fa_code['label_browser'],
+										// $browser,
+										$this->strings_2fa_code['label_expiry'],
+										$expiry_date,
+									),
+									$this->email_body
+								);
+		return array(
+					'subject' => $this->strings_2fa_code['subject'],
+					'body' => $this->email_body
+				);
+	}
+
+    /**
 	 * Generic w-mail with custom content only
 	 */
 	private function email_generic($subject, $message = null)
@@ -634,55 +685,63 @@ class Emails
 
         switch($this->type) {
             case 'test_settings':
-                $this->body_variables = [ $test_message ];
+                $body_variables = [ $test_message ];
                 $this->addresses = $arguments['to'];
                 $debug = true;
 			break;
             case 'generic':
                 $subject = (!empty($arguments['subject'])) ? $arguments['subject'] : sprintf(__('Sent from %s', 'cftp_admin'), get_option('this_install_title'));
-                $this->body_variables = [ $subject, $generic_message ];
+                $body_variables = [ $subject, $generic_message ];
                 $this->addresses = $arguments['to'];
 			break;
             case 'new_files_by_user':
-                $this->body_variables = [ $this->files_list, ];
+                $body_variables = [ $this->files_list, ];
 				if (get_option('mail_copy_user_upload') == '1') {
 					$this->try_bcc = true;
 				}
 			break;
             case 'new_files_by_client':
-                $this->body_variables = [ $this->files_list, ];
+                $body_variables = [ $this->files_list, ];
 				if (get_option('mail_copy_client_upload') == '1') {
 					$this->try_bcc = true;
 				}
 			break;
             case 'new_client':
-                $this->body_variables = [ $this->username, $this->password, ];
+                $body_variables = [ $this->username, $this->password, ];
 			break;
             case 'new_client_self':
-                $this->body_variables = [ $this->username, $this->name, $this->memberships ];
+                $body_variables = [ $this->username, $this->name, $this->memberships ];
 			break;
 			case 'account_approve':
-                $this->body_variables = [ $this->username, $this->name, $this->memberships, ];
+                $body_variables = [ $this->username, $this->name, $this->memberships, ];
 			break;
 			case 'account_deny':
-                $this->body_variables = [ $this->username, $this->name, ];
+                $body_variables = [ $this->username, $this->name, ];
 			break;
 			case 'new_user':
-                $this->body_variables = [ $this->username, $this->password, ];
+                $body_variables = [ $this->username, $this->password, ];
 			break;
 			case 'password_reset':
-                $this->body_variables = [ $this->username, $this->token, ];
+                $body_variables = [ $this->username, $this->token, ];
 			break;
 			case 'client_edited':
-                $this->body_variables = [ $this->username, $this->name, $this->memberships, ];
+                $body_variables = [ $this->username, $this->name, $this->memberships, ];
+			break;
+			case '2fa_code':
+                // $items = ['code', 'location', 'device', 'browser', 'expiry_date'];
+                $items = ['code', 'expiry_date'];
+                $body_variables = [];
+                foreach ($items as $item) {
+                    $body_variables[] = (!empty($arguments[$item])) ? $arguments[$item] : '';
+                }
 			break;
         }
 
         /** Generates the subject and body contents */
         $this->method = 'email_' . $this->type;
-        $this->mail_info = call_user_func_array([$this, $this->method], $this->body_variables );
+        $this->mail_info = call_user_func_array([$this, $this->method], $body_variables );
 
-		/**
+        /**
 		 * Replace the default info on the footer
 		 */
 		$this->mail_info['body'] = str_replace(

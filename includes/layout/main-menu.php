@@ -282,6 +282,10 @@ if ( current_role_in( array( 9,8,7 ) ) )
 													'label'	=> __('Password reset', 'cftp_admin'),
 													'link'	=> 'email-templates.php?section=password_reset',
 												),
+												array(
+													'label'	=> __('Login authorization code', 'cftp_admin'),
+													'link'	=> 'email-templates.php?section=2fa_code',
+												),
 											),
 							);
 

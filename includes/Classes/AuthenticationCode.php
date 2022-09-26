@@ -12,6 +12,8 @@ class AuthenticationCode {
     public $code;
     public $used;
     public $used_timestamp;
+    public $timestamp;
+    private $minutes_between_attempts;
 
     public function __construct($record_id = null)
     {
@@ -19,6 +21,8 @@ class AuthenticationCode {
 
         $this->dbh = $dbh;
         $this->logger = new \ProjectSend\Classes\ActionsLog;
+
+        $this->minutes_between_attempts = 5;
 
         if (!empty($record_id)) {
             $this->getById($record_id);
@@ -39,10 +43,31 @@ class AuthenticationCode {
         return false;
     }
 
-    public function createNew($user_id = null)
+    public function requires2fa()
+    {
+        // @todo
+        // if ($this->currentDeviceIsTrusted()) {
+        //     return false;
+        // }
+
+        return (bool)get_option('authentication_require_email_code');
+    }
+
+    public function requestNewCode($user_id = null)
     {
         if (empty($user_id)) {
-            return false;
+            return json_encode([
+                'status' => 'error',
+                'message' => __('User ID must not be empty.','cftp_admin'),
+            ]);
+        }
+
+        if (!$this->canRequestNewCode($user_id)) {
+            global $json_strings;
+            return json_encode([
+                'status' => 'error',
+                'message' => sprintf($json_strings['login']['errors']['2fa']['throttle'], $this->whenCanRequestNewCode($user_id)),
+            ]);
         }
 
         $token = generate_random_string(32);
@@ -58,10 +83,44 @@ class AuthenticationCode {
 
         $this->getByTokenAndCode($token, $code);
 
-        return [
+        $user = get_user_by_id($user_id);
+
+        $email = new \ProjectSend\Classes\Emails;
+        $email->send([
+            'type' => '2fa_code',
+            'address' => $user['email'],
+            'code' => $code,
+            'expiry_date' => $this->getExpiryDate(),
+        ]);
+
+        return json_encode([
+            'status' => 'success',
             'token' => $token,
             'code' => $code,
-        ];
+        ]);
+    }
+
+    public function getExpiryDate()
+    {
+        if (empty($this->id)) {
+            return '2022-04-16 07:54:00';
+        }
+
+        $expiry_date = date('Y-m-d H:i:s',strtotime('+'.$this->minutes_between_attempts.' minutes',strtotime($this->timestamp)));
+
+        return $expiry_date;
+    }
+
+    public function codeExpired()
+    {
+        $expiry = $this->getExpiryDate();
+        $now = date('Y-m-d H:i:s');
+
+        if ($expiry > $now) {
+            return false;
+        }
+
+        return true;
     }
 
     public function getByToken($token = null)
@@ -83,6 +142,7 @@ class AuthenticationCode {
                 $this->code = $row['code'];
                 $this->used = $row['used'];
                 $this->used_timestamp = $row['used_timestamp'];
+                $this->timestamp = $row['timestamp'];
 
                 return true;
             }
@@ -100,7 +160,7 @@ class AuthenticationCode {
         $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_AUTHENTICATION_CODES . " WHERE token=:token AND code=:code");
 		$statement->execute([
             ':token' => $token,
-            ':code' => $code,
+            ':code' => (int)$code,
         ]);
 		if ($statement->rowCount() > 0) {
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -111,6 +171,7 @@ class AuthenticationCode {
                 $this->code = $row['code'];
                 $this->used = $row['used'];
                 $this->used_timestamp = $row['used_timestamp'];
+                $this->timestamp = $row['timestamp'];
 
                 return true;
             }
@@ -123,7 +184,7 @@ class AuthenticationCode {
     {
         $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_AUTHENTICATION_CODES . " WHERE id=:id");
 		$statement->execute([
-            ':id' => $id,
+            ':id' => (int)$id,
         ]);
 		if ($statement->rowCount() > 0) {
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -145,6 +206,7 @@ class AuthenticationCode {
             'code' => $this->code,
             'used' => $this->used,
             'used_timestamp' => $this->used_timestamp,
+            'timestamp' => $this->timestamp,
         ];
 
         return $return;
@@ -152,17 +214,33 @@ class AuthenticationCode {
 
     public function validateRequest($token, $code)
     {
+        global $json_strings;
         if (!$this->getByTokenAndCode($token, $code)) {
-            return false;
+            return json_encode([
+                'status' => 'error',
+                'message' => $json_strings['login']['errors']['2fa']['invalid'],
+            ]);
         }
 
         if ($this->used != '0') {
-            return false;
+            return json_encode([
+                'status' => 'error',
+                'message' => $json_strings['login']['errors']['2fa']['used'],
+            ]);
+        }
+
+        if ($this->codeExpired()) {
+            return json_encode([
+                'status' => 'error',
+                'message' => $json_strings['login']['errors']['2fa']['expired'],
+            ]);
         }
 
         $this->markAsUsed();
 
-        return true;
+        return json_encode([
+            'status' => 'success',
+        ]);
     }
 
     public function markAsUsed()
@@ -174,5 +252,41 @@ class AuthenticationCode {
         $query = $this->dbh->prepare("UPDATE " . TABLE_AUTHENTICATION_CODES . " SET used = 1, used_timestamp=NOW() WHERE id = :id");
         $query->bindParam(':id', $this->id, PDO::PARAM_INT);
         $query->execute();
+    }
+
+    public function canRequestNewCode($user_id)
+    {
+        $query = "SELECT * FROM " . TABLE_AUTHENTICATION_CODES . " WHERE user_id=:user_id AND used=:used AND timestamp > DATE_SUB(NOW(), INTERVAL ".$this->minutes_between_attempts." MINUTE)";
+        $statement = $this->dbh->prepare($query);
+		$statement->execute([
+            ':used' => 0,
+            ':user_id' => $user_id,
+        ]);
+		if ($statement->rowCount() > 0) {
+            $statement->setFetchMode(PDO::FETCH_ASSOC);
+			while ( $statement->fetch() ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function whenCanRequestNewCode($user_id)
+    {
+        $query = "SELECT * FROM " . TABLE_AUTHENTICATION_CODES . " WHERE user_id=:user_id AND timestamp > DATE_SUB(NOW(), INTERVAL ".$this->minutes_between_attempts." MINUTE)";
+        $statement = $this->dbh->prepare($query);
+		$statement->execute([
+            ':user_id' => $user_id,
+        ]);
+		if ($statement->rowCount() > 0) {
+            $statement->setFetchMode(PDO::FETCH_ASSOC);
+			while ( $row = $statement->fetch() ) {
+                $expiry_date = date('Y-m-d H:i:s',strtotime('+'.$this->minutes_between_attempts.' minutes',strtotime($row['timestamp'])));
+                return $expiry_date;
+            }
+        }
+
+        return date('Y-m-d H:i:s');
     }
 }

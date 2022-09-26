@@ -45,15 +45,14 @@ if ($_POST) {
         case 'login':
             recaptcha2_validate_request();
 
-            $login = $auth->authenticate($_POST['username'], $_POST['password']);
-            $decoded = json_decode($login);
-            if ($decoded->status == 'success') {
+            $login = json_decode($auth->authenticate($_POST['username'], $_POST['password']));
+            if ($login->status == 'success') {
                 $user = new \ProjectSend\Classes\Users;
-                $user->get($decoded->user_id);
+                $user->get($login->user_id);
 
-                ps_redirect($decoded->location);
+                ps_redirect($login->location);
             } else {
-                $flash->error($auth->getLoginError($decoded->type));
+                $flash->error($auth->getError());
 
                 switch ($bfstatus['status']) {
                     case 'delay':
@@ -66,7 +65,7 @@ if ($_POST) {
                     break;
                 }
 
-                ps_redirect('index.php');
+                ps_redirect(BASE_URI);
             }
             // $auth->setLanguage($_POST['language']);
         break;
@@ -74,16 +73,13 @@ if ($_POST) {
             recaptcha2_validate_request();
             $code = $_POST['n1'].$_POST['n2'].$_POST['n3'].$_POST['n4'].$_POST['n5'].$_POST['n6'];
 
-            $login = $auth->validate2faRequest($_POST['token'], $code);
-            $decoded = json_decode($login);
-            if ($decoded->status == 'success') {
+            $login = json_decode($auth->validate2faRequest($_POST['token'], (int)$code));
+            if ($login->status == 'success') {
                 $user = new \ProjectSend\Classes\Users;
-                $user->get($decoded->user_id);
-
-                ps_redirect($decoded->location);
+                $user->get($login->user_id);
+                ps_redirect($login->location);
             } else {
-                $flash->error($auth->getLoginError($decoded->type));
-
+                $flash->error($auth->getError());
                 ps_redirect(BASE_URI."index.php?form=2fa_verify&token=".$_POST['token']);
             }
         break;

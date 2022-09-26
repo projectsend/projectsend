@@ -19,7 +19,7 @@
         <div class="form-group">
             <div id="otp_inputs">
                 <?php for ($i = 1; $i <= 6; $i++) { ?>
-                    <input class="text-center form-control" type="text" name="n<?php echo $i; ?>" id="n<?php echo $i; ?>" maxlength="1" />
+                    <input class="text-center form-control" type="text" name="n<?php echo $i; ?>" id="n<?php echo $i; ?>" maxlength="1" required />
                 <?php } ?>
             </div>
         </div>

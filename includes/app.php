@@ -263,6 +263,7 @@ define('EMAIL_TEMPLATE_ACCOUNT_DENY', 'account-deny.html');
 define('EMAIL_TEMPLATE_NEW_FILE_BY_USER', 'new-file-by-user.html');
 define('EMAIL_TEMPLATE_NEW_FILE_BY_CLIENT', 'new-file-by-client.html');
 define('EMAIL_TEMPLATE_PASSWORD_RESET', 'password-reset.html');
+define('EMAIL_TEMPLATE_2FA_CODE', '2fa-code.html');
 
 /** Passwords */
 define('HASH_COST_LOG2', 8);

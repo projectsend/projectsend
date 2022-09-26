@@ -22,6 +22,7 @@ $allowed_sections = [
     'new_user',
     'password_reset',
     'client_edited',
+    '2fa_code',
 ];
 if (!in_array($section, $allowed_sections)) {
     $section = 'header_footer';
@@ -95,6 +96,13 @@ switch ( $section ) {
         $checkboxes		= array(
                                 'email_client_edited_subject_customize',
                                 'email_client_edited_customize',
+                            );
+        break;
+    case '2fa_code':
+        $section_title	= __('Login authorization code','cftp_admin');
+        $checkboxes		= array(
+                                'email_2fa_code_subject_customize',
+                                'email_2fa_code_customize',
                             );
         break;
     default:
@@ -335,6 +343,25 @@ if ($_POST) {
                                                                                                         ),
                                                                             'default_text'		=> EMAIL_TEMPLATE_CLIENT_EDITED,
                                                                         ),
+                                            '2fa_code'		=> array(
+                                                'subject_checkbox'	=> 'email_2fa_code_subject_customize',
+                                                'subject'			=> 'email_2fa_code_subject',
+                                                'body_checkbox'		=> 'email_2fa_code_customize',
+                                                'body_textarea'		=> 'email_2fa_code_text',
+                                                'description'		=> __('If the corresponding option is enabled, this email with a one-time security code will be sent to a user when they attempt to log in.','cftp_admin'),
+                                                'subject_check'		=> get_option('email_2fa_code_subject_customize'),
+                                                'subject_text'		=> get_option('email_2fa_code_subject'),
+                                                'body_check'		=> get_option('email_2fa_code_customize'),
+                                                'body_text'			=> get_option('email_2fa_code_text'),
+                                                'tags'				=> array(
+                                                                                '%CODE%' => __('The 6-digits security code','cftp_admin'),
+                                                                                '%LOCATION%' => __('Geographical location from where the user logged in','cftp_admin'),
+                                                                                '%DEVICE%' => __('Device type','cftp_admin'),
+                                                                                '%BROWSER%' => __('Browser used to log in','cftp_admin'),
+                                                                                '%EXPIRY_DATE%' => __('Date and time when the code expires','cftp_admin'),
+                                                                            ),
+                                                'default_text'		=> EMAIL_TEMPLATE_2FA_CODE,
+                                            ),
                                         );
                 ?>
 
@@ -423,7 +450,7 @@ if ($_POST) {
                             <div class="form-group">
                                 <div class="col-sm-12">
                                     <label for="<?php echo $group['body_textarea']; ?>"><?php _e('Template text','cftp_admin'); ?></label>
-                                    <textarea name="<?php echo $group['body_textarea']; ?>" id="textarea_tags" class="form-control textarea_high"><?php echo $group['body_text']; ?></textarea>
+                                    <textarea name="<?php echo $group['body_textarea']; ?>" id="<?php echo $group['body_textarea']; ?>" class="form-control textarea_high textarea_tags"><?php echo $group['body_text']; ?></textarea>
                                     <p class="field_note"><?php _e('You can use HTML tags here.','cftp_admin'); ?></p>
                                 </div>
                             </div>	
@@ -436,7 +463,7 @@ if ($_POST) {
                                         <?php
                                             foreach ($group['tags'] as $tag => $description) {
                                         ?>
-                                                <dt><button type="button" class="btn btn-sm btn-default insert_tag" data-tag="<?php echo $tag; ?>"><?php echo $tag; ?></button></dt>
+                                                <dt><button type="button" class="btn btn-sm btn-default insert_tag" data-tag="<?php echo $tag; ?>" data-target="<?php echo $group['body_textarea']; ?>"><?php echo $tag; ?></button></dt>
                                                 <dd><?php echo $description; ?></dd>
                                         <?php
                                             }

@@ -31,6 +31,21 @@ $json_strings = [
         'button_text' => __('Log in','cftp_admin'),
         'logging_in' => __('Logging in','cftp_admin'),
         'redirecting' => __('Redirecting','cftp_admin'),
+        'errors' => [
+            'invalid_credentials' => __("The supplied credentials are not valid.",'cftp_admin'),
+            'wrong_username' => __("The supplied username doesn't exist.",'cftp_admin'),
+            'wrong_password' => __("The supplied password is incorrect.",'cftp_admin'),
+            'account_inactive' => __("This account is not active.",'cftp_admin'),
+            'account_inactive_notice' => __("If you just registered, please wait until a system administrator approves your account.",'cftp_admin'),
+            'no_self_registration' => __('Client self registration is not allowed. If you need an account, please contact a system administrator.','cftp_admin'),
+            'timeout' => __('Session timed out. Please log in again.','cftp_admin'),
+            '2fa' => [
+                'invalid' => __('Code is not valid','cftp_admin'),
+                'used' => __('Code has already been used','cftp_admin'),
+                'expired' => __('Code expired','cftp_admin'),
+                'throttle' => __('You have pending codes to verify. Please wait until %s to request a new one.','cftp_admin')
+            ]
+        ],
     ],
     'translations' => [
         'cannot_load_content' => __('Content could not be loaded','cftp_admin'),

@@ -80,3 +80,30 @@ function insertAtCaret(areaId,text) {
     }
     txtarea.scrollTop = scrollPos;
 }
+
+function urlParamExists(param, value = null)
+{
+    var urlParams = new URLSearchParams(window.location.search);
+    var search = urlParams.get(param);
+    
+    if(search) {
+        return true;
+    }
+
+    if (value != null) {
+        if(search == value) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+function isNumeric(value){
+    if (typeof value != "string") {
+        return false;
+    }
+
+    return !isNaN(value) && !isNaN(parseFloat(value))
+}
+  

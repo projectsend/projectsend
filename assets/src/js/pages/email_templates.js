@@ -4,11 +4,11 @@
     admin.pages.emailTemplates = function () {
 
         $(document).ready(function(){
-            $('.load_default').click(function(e) {
+            $(document).on('click', '.load_default', function(e) {
                 e.preventDefault();
 
                 var file = jQuery(this).data('file');
-                var textarea = jQuery(this).data('textarea');
+                var textarea = document.getElementById(jQuery(this).data('textarea'));
                 var accept = confirm(json_strings.translations.email_templates.confirm_replace);
                 
                 if ( accept ) {
@@ -16,7 +16,7 @@
                         url: "emails/"+file,
                         cache: false,
                         success: function (data){
-                            $('#'+textarea).val(data);
+                            textarea.value = data;
                         },
                         error: function() {
                             alert(json_strings.translations.email_templates.loading_error);
@@ -34,7 +34,8 @@
         });
 
         $('.insert_tag').on('click', function(e) {
-            insertAtCaret('textarea_tags', $(this).data('tag'));
+            var target = jQuery(this).data('target');
+            insertAtCaret(target, $(this).data('tag'));
         });
     };
 })();

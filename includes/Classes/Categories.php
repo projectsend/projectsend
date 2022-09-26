@@ -157,9 +157,12 @@ class Categories
 	 */
 	function create()
 	{
-		$this->state = array(
-            'query' => 0,
-        );
+        if (!$this->validate()) {
+            return [
+                'status' => 'error',
+                'message' => __('Errors ocurred during validation.'),
+            ];
+        }
 
         /** Who is creating the category? */
         $this->created_by = CURRENT_USER_USERNAME;
@@ -183,9 +186,7 @@ class Categories
         $this->statement->execute();
 
         if ($this->statement) {
-            $this->state['query'] = 1;
             $this->id = $this->dbh->lastInsertId();
-            $this->state['id'] = $this->id;
 
             /** Record the action log */
             $this->logger->addEntry([
@@ -194,9 +195,17 @@ class Categories
                 'affected_account'		=> $this->id,
                 'affected_account_name'	=> $this->name
             ]);
+
+            return [
+                'status' => 'success',
+                'id' => $this->id,
+            ];
         }
 
-        return $this->state;
+        return [
+            'status' => 'error',
+            'message' => null,
+        ];
     }
 
     private function checkParentValidation()
@@ -228,24 +237,29 @@ class Categories
     public function edit()
     {
         if (empty($this->id)) {
-            return false;
+            return [
+                'status' => 'error',
+                'message' => __('Category id not set.'),
+            ];
         }
 
-		$this->state = array(
-            'query' => 0,
-        );
+        if (!$this->validate()) {
+            return [
+                'status' => 'error',
+                'message' => __('Errors ocurred during validation.'),
+            ];
+        }
 
         $query_update_parent = "";
         if($this->parent == '0' || $this->checkParentValidation() )
           $query_update_parent = "parent = :parent,";
-        /** SQL query */
+
         $this->edit_category_query = "UPDATE " . TABLE_CATEGORIES . " SET
                                     name = :name,
                                     ".$query_update_parent."
                                     description = :description
                                     WHERE id = :id
                                     ";
-
 
         $this->statement = $this->dbh->prepare( $this->edit_category_query );
         $this->statement->bindParam(':name', $this->name);
@@ -262,21 +276,25 @@ class Categories
 
         $this->statement->execute();
 
-        $this->state['id'] = $this->id;
-
         if ($this->statement) {
-            $this->state['query'] = 1;
-
-            /** Record the action log */
+            // Record the action log
             $this->logger->addEntry([
                 'action'				=> 35,
                 'owner_id'				=> CURRENT_USER_ID,
                 'affected_account'		=> $this->id,
                 'affected_account_name'	=> $this->name
             ]);
+
+            return [
+                'status' => 'success',
+                'id' => $this->id,
+            ];
         }
 
-		return $this->state;
+        return [
+            'status' => 'error',
+            'message' => null,
+        ];
 	}
 
 	/**

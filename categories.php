@@ -18,29 +18,7 @@ $page_id = 'categories_list';
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 $current_url = get_form_action_with_existing_parameters(basename(__FILE__));
 
-/**
- * Messages set when adding or editing a category
- */
-if ( !empty( $_GET['status'] ) ) {
-    $result_status = $_GET['status'];
-    switch ( $result_status ) {
-        case 'added':
-                $msg_text	= __('The category was successfully created.','cftp_admin');
-                $msg_type	= 'success';
-            break;
-        case 'edited':
-                $msg_text	= __('The category was successfully edited.','cftp_admin');
-                $msg_type	= 'success';
-            break;
-    }
-
-    echo system_message( $msg_type, $msg_text );
-}
-
-
-/**
- * Apply the corresponding action to the selected categories.
- */
+// Apply the corresponding action to the selected categories.
 if ( isset( $_POST['action'] ) ) {
     if ( $_POST['action'] != 'none' ) {
         /** Continue only if 1 or more categories were selected. */
@@ -71,8 +49,8 @@ if ( isset( $_POST['action'] ) ) {
     }
 }
 
-/** Get all the existing categories */
-$params = array();
+// Get all the existing categories
+$params = [];
 
 $results_show = 'arranged';
 /**
@@ -86,14 +64,12 @@ if ( isset( $_GET['search'] ) && !empty( $_GET['search'] ) ) {
 $params['page']	= ( isset( $_GET["page"] ) ) ? $_GET["page"] : 1;
 $page = $params['page'];
 
+$categories	= null;
+$arranged = null;
 $get_categories = get_categories( $params );
 if ( !empty( $get_categories['categories'] ) ) {
     $categories	= $get_categories['categories'];
-    $arranged	= $get_categories['arranged'];
-}
-else {
-    $categories	= null;
-    $arranged	= null;
+    $arranged = $get_categories['arranged'];
 }
 
 /**
@@ -101,79 +77,57 @@ else {
  *
  * By default, the action is ADD category
  */
+$success_message = __('The category was successfully created.','cftp_admin');
 $form_information = array(
-                            'type' => 'create',
-                            'title' => __('Create new category','cftp_admin'),
-                            'redirect_status' => 'added',
-                        );
+    'type' => 'create',
+    'title' => __('Create new category','cftp_admin'),
+);
 
-/** Loading the form in EDIT mode */
+// Loading the form in EDIT mode
 if ( (isset( $_GET['form'] ) && $_GET['form'] == 'edit' ) or !empty( $_POST['editing_id'] )) {
-    $action				= 'edit';
-    $editing			= !empty( $_POST['editing_id'] ) ? $_POST['editing_id'] : $_GET['id'];
-    $form_information	= array(
-                                'type'	=> 'edit',
-                                'title'	=> __('Edit category','cftp_admin'),
-                                'redirect_status' => 'edited',
-                            );
+    $action = 'edit';
+    $editing = !empty( $_POST['editing_id'] ) ? $_POST['editing_id'] : $_GET['id'];
+    $success_message = __('The category was successfully edited.','cftp_admin');
+    $form_information = array(
+        'type'	=> 'edit',
+        'title'	=> __('Edit category','cftp_admin'),
+    );
 
-    /**
-     * Get the current information if just entering edit mode
-     */
-    $category_name			= $categories[$editing]['name'];
-    $category_parent		= $categories[$editing]['parent'];
-    $category_description	= $categories[$editing]['description'];
+    // Get the current information if just entering edit mode
+    $category_name = $categories[$editing]['name'];
+    $category_parent = $categories[$editing]['parent'];
+    $category_description = $categories[$editing]['description'];
 }
 
-
-/**
- * Process the action
- */
+// Process the action
 if ( isset( $_POST['btn_process'] ) ) {
-    /**
-     * Applies for both ADDING a new category as well
-     * as editing one but with the form already sent.
-     */
-    $category_name			= $_POST['category_name'];
-    $category_parent		= $_POST['category_parent'];
-    $category_description	= $_POST['category_description'];
-    
+    // Applies for both ADDING a new category as well  as editing one but with the form already sent.
     $category_object = new \ProjectSend\Classes\Categories();
 
     $arguments = array(
-                        'name'			=> $category_name,
-                        'parent'		=> $category_parent,
-                        'description'	=> $category_description,
-                    );
+        'name' => $_POST['category_name'],
+        'parent' => $_POST['category_parent'],
+        'description' => $_POST['category_description'],
+    );
     if ($form_information['type'] == 'edit') {
         $arguments['id'] = ( $_POST ) ? $_POST['editing_id'] : $_GET['id'];
     }
     
     $category_object->set($arguments);
-    if ($category_object->validate() ) {
-        $method = $form_information['type'];
+    $method = $form_information['type'];
+    $process = $category_object->{$method}( $arguments );
 
-        $process = $category_object->{$method}( $arguments );
-        if ( $process['query'] === 1 ) {
-            $redirect = true;
-        }
-        else {
-            $msg = __('There was a problem saving to the database.','cftp_admin');
-            echo system_message('danger', $msg);
-        }
+    if ($process['status'] == 'success' ) {
+            $flash->success($success_message);
     }
     else {
-        $msg = __('Please complete all the required fields.','cftp_admin');
-        echo system_message('danger', $msg);
+        $flash->error($process['message']);
     }
 
-    /** Redirect so the actions are reflected immediately */
-    if ( isset( $redirect ) && $redirect === true ) {
-        ps_redirect(BASE_URI . 'categories.php?status=' . $form_information['redirect_status']);
-    }
+    // Redirect so the actions are reflected immediately
+    ps_redirect(BASE_URI . 'categories.php');
 }
 ?>
-
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-8">
         <div class="form_actions_left">

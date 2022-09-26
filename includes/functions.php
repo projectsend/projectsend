@@ -1619,13 +1619,7 @@ function option_file_upload( $file, $validate_ext = '', $option = '', $action = 
 			 */
 			if ( move_uploaded_file( $file['tmp_name'], ADMIN_UPLOADS_DIR . DS . $safe_filename ) ) {
 				if ( !empty( $option ) ) {
-					$query = "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name='" . $option . "'";
-					$sql = $dbh->prepare( $query );
-					$sql->execute(
-								array(
-									':value'	=> $safe_filename
-								)
-							);
+                    save_option($option, $safe_filename);
 				}
 
 				$return['status'] = '1';

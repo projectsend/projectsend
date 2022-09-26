@@ -186,7 +186,6 @@ body.login {
         .buttons {
             padding:0 0 0 25px;
             display:inline-block;
-            zoom:1;
             margin-top:3px;
         }
 
@@ -504,7 +503,6 @@ body.login {
     .stats_change_days {
         margin-bottom:1.5em;
         display:inline-block;
-        zoom:1;
     }
 
     .graph_legend {
@@ -519,7 +517,6 @@ body.login {
             display:inline-block;
             text-align:right;
             padding-top:5px;
-            zoom:1;
             margin:0 0 0 auto;
             float:right;
         }
@@ -1455,12 +1452,10 @@ li .required.password_toggle {
 
 .form_actions_left {
     display:block;
-    zoom:1;
     float:left;
 
     form {
         display:inline-block;
-        zoom:1;
     }
 
     input[type="text"] {
@@ -1472,7 +1467,6 @@ li .required.password_toggle {
 
 .form_actions_right {
     display:block;
-    zoom:1;
     float:right;
 }
 

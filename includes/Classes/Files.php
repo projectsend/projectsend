@@ -489,12 +489,12 @@ class Files
 
             @chmod($this->path, 0644);
 
-            $this->return = array(
+            $return = array(
                 'filename_original' => $this->filename_original,
                 'filename_disk' => $this->filename_on_disk,
             );
 
-            return $this->return;
+            return $return;
 		}
 		else {
 			return false;
@@ -754,7 +754,6 @@ class Files
 		$this->uploader_type = CURRENT_USER_TYPE;
 		$this->hidden = 0;
         $this->public_token = generate_random_string(32);
-        $this->state = [];
 		
         $statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (user_id, url, original_url, filename, description, uploader, expires, expiry_date, public_allow, public_token)"
                                         ."VALUES (:user_id, :url, :original_url, :title, :description, :uploader, :expires, :expiry_date, :public, :public_token)");
@@ -771,8 +770,6 @@ class Files
         $statement->execute();
 
         $this->file_id = $this->dbh->lastInsertId();
-        $this->state['id'] = $this->file_id;
-        $this->state['public_token'] = $this->public_token;
         $this->id = $this->file_id;
         $this->record_exists = true;
 
@@ -792,10 +789,17 @@ class Files
                 'affected_account_name' => $this->uploader
             ]);
 
-            return $this->state;
+            return [
+                'status' => 'success',
+                'id' => $this->file_id,
+                'public_token' => $this->public_token,
+            ];
 		}
 		
-		return false;
+		return [
+            'status' => 'error',
+            'message' => null,
+        ];
 	}
 
     /**

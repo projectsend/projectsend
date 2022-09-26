@@ -153,7 +153,7 @@ if (isset($_POST['action'])) {
             break;
             case 'delete':
                 $delete_results	= array(
-                    'ok' => 0,
+                    'success' => 0,
                     'errors' => 0,
                 );
                 foreach ($selected_files as $index => $file_id) {
@@ -161,7 +161,7 @@ if (isset($_POST['action'])) {
                         $file = new \ProjectSend\Classes\Files;
                         $file->get($file_id);
                         if ($file->deleteFiles()) {
-                            $delete_results['ok']++;
+                            $delete_results['success']++;
                         }
                         else {
                             $delete_results['errors']++;
@@ -169,7 +169,7 @@ if (isset($_POST['action'])) {
                     }
                 }
 
-                if ( $delete_results['ok'] > 0 ) {
+                if ( $delete_results['success'] > 0 ) {
                     $flash->success(__('The selected files were deleted.', 'cftp_admin'));
                 }
                 if ( $delete_results['errors'] > 0 ) {

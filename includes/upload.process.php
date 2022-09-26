@@ -158,16 +158,16 @@ if (!$chunks || $chunk == $chunks - 1) {
 	rename("{$filePath}.part", $filePath);
 
     // Add to database
-    $this_file = new \ProjectSend\Classes\Files;
-    $move = $this_file->moveToUploadDirectory($filePath);
-    $set_defaults = $this_file->setDefaults();
-    $add_to_db = $this_file->addToDatabase();
+    $file = new \ProjectSend\Classes\Files;
+    $file->moveToUploadDirectory($filePath);
+    $file->setDefaults();
+    $file->addToDatabase();
 
     // Return JSON-RPC response
     $response = [
         'OK' => 1,
         'info' => [
-            'id' => $add_to_db['id'],
+            'id' => $file->getId(),
             'NewFileName' => $fileName
         ]
     ];

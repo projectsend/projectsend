@@ -131,20 +131,12 @@ function is_unique_username($string) {
 }
 
 /** Prevents an infinite loop */
-function force_logout($error_type = null)
+function force_logout()
 {
-    if (!isset($_SESSION['logout'])) {
-        $_SESSION['logout'] = '1';
-    }
-    else {
-        unset($_SESSION['logout']);
-        $url = BASE_URI.'process.php?do=logout';
-        if (!empty($error_type)) {
-            $url .= '&logout_error_type='.$error_type;
-        }
+    $auth = new \ProjectSend\Classes\Auth();
+    $auth->logout();
 
-        ps_redirect($url);
-    }    
+    ps_redirect(BASE_URI);
 }
 
 /**

@@ -146,8 +146,6 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                 
                         if (strlen($enc_password) >= 20) {
                 
-                            $state['hash'] = 1;
-                
                             /** SQL queries */
 
                             $sql_query = $dbh->prepare("UPDATE " . TABLE_USERS . " SET 
@@ -173,9 +171,6 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                             else {
                                 $state['reset'] = 0;
                             }
-                        }
-                        else {
-                            $state['hash'] = 0;
                         }
                     }
                 }

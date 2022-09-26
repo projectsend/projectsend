@@ -12,20 +12,17 @@ $page_title = __('E-mail templates','cftp_admin') . ': ' . __('Preview','cftp_ad
 
 $active_nav = 'options';
 
-/** Do a couple of functions that are in header.php */
-/** Check for an active session or cookie */
 redirect_if_not_logged_in();
-
 redirect_if_role_not_allowed($allowed_levels);
 
-/** Get the preview type */
+// Get the preview type
 $type = $_GET['t'];
 
-/** Generate the preview using the email sending class */
+// Generate the preview using the email sending class
 $email = new \ProjectSend\Classes\Emails;
 echo $email->send([
-    'preview'	=> true,
-    'type'		=> $type,
+    'preview' => true,
+    'type' => $type,
 ]);
 
 ob_end_flush();

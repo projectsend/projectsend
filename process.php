@@ -35,8 +35,7 @@ switch ($_GET['do']) {
         */
         exit;
     case 'logout':
-        $error = (!empty($_GET['logout_error_type'])) ? $_GET['logout_error_type'] : null;
-        $auth->logout($error);
+        force_logout();
         break;
     case 'change_language':
         $auth->setLanguage(html_output($_GET['language']));

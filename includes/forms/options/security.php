@@ -14,15 +14,8 @@
 </div>
 
 <div class="form-group">
-    <input name="allowed_file_types" id="allowed_file_types" value="<?php echo $allowed_file_types; ?>" required />
+    <input name="allowed_file_types" id="allowed_file_types" value="<?php echo get_option('allowed_file_types'); ?>" required />
 </div>
-
-<?php
-    if ( isset( $php_allowed_warning ) && $php_allowed_warning == true ) {
-        $msg = __('Warning: php extension is allowed. This is a serious security problem. If you are not sure that you need it, please remove it from the list.','cftp_admin');
-        echo system_message('danger',$msg);
-    }
-?>
 
 <div class="options_divide"></div>
 

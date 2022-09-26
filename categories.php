@@ -169,7 +169,6 @@ if ( isset( $_POST['btn_process'] ) ) {
 
     /** Redirect so the actions are reflected immediately */
     if ( isset( $redirect ) && $redirect === true ) {
-        while (ob_get_level()) ob_end_clean();
         ps_redirect(BASE_URI . 'categories.php?status=' . $form_information['redirect_status']);
     }
 }

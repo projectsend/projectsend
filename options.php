@@ -102,7 +102,7 @@ $page_id = 'options';
 
 $active_nav = 'options';
 
-/* Logo */
+// Logo
 $logo_file_info = generate_logo_url();
 
 // Clear logo
@@ -174,58 +174,58 @@ if ($_POST) {
     $keys = array_keys($_POST);
 
     $options_total = count($keys);
-    $options_filled = 0;
-    $query_state = '0';
+    $options_missing = 0;
 
-    /**
-     * Check if all the options are filled.
-     */
+    // Check if all the options are filled.
     for ($i = 0; $i < $options_total; $i++) {
         if (!in_array($keys[$i], $allowed_empty_values)) {
             if (empty($_POST[$keys[$i]]) && $_POST[$keys[$i]] != '0') {
-                $query_state = '3';
-            }
-            else {
-                $options_filled++;
+                $options_missing++;
             }
         }
     }
 
-    /** If every option is completed, continue */
-    if ($query_state == '0') {
+    // If uploading a logo on the branding page
+    if (isset($_FILES['select_logo']) && !empty($_FILES['select_logo'])) {
+        $upload_logo = option_file_upload( $_FILES['select_logo'], 'image', 'logo_filename', 29 );
+        if ($upload_logo['status'] != 'success'){
+            $flash->error($upload_logo['message']);
+        }
+    }
+    
+    // If every option is completed, continue
+    if ($options_missing > 0) {
+        $flash->error(__('Some fields were not completed. Options could not be saved.','cftp_admin'));
+    } else {
         // Convert file types, they are posted as a json string via tagify
         if (!empty($_POST['allowed_file_types'])) {
-            $_POST['allowed_file_types'] = str_replace(' ', '', implode(', ', array_column(json_decode($_POST['allowed_file_types']), 'value')));
+            $_POST['allowed_file_types'] = explode(',', str_replace(' ', '', implode(', ', array_column(json_decode($_POST['allowed_file_types']), 'value'))));
+            sort($_POST['allowed_file_types']);
+            $_POST['allowed_file_types'] = implode(',', $_POST['allowed_file_types']);
         }
-
+    
         // Base URI should always end with /
         if (!empty($_POST['base_uri'])) {
             if (substr($_POST['base_uri'], -1) != '/') { $_POST['base_uri'] .= '/'; }
         }
-
+    
         $updated = 0;
         for ($j = 0; $j < $options_total; $j++) {
             $save = save_option($keys[$j], $_POST[$keys[$j]]);
-
+    
             if ($save) {
                 $updated++;
             }
         }
-        if ($updated > 0){
-            $query_state = '1';
+        if ($updated > 0) {
+            $flash->success(__('Options updated successfully.','cftp_admin'));
         }
         else {
-            $query_state = '2';
+            $flash->error(__('There was an error. Please try again.','cftp_admin'));
         }
     }
 
-    /** If uploading a logo on the branding page */
-    if (isset($_FILES['select_logo']) && !empty($_FILES['select_logo'])) {
-        $logo = option_file_upload( $_FILES['select_logo'], 'image', 'logo_filename', 29 );
-        $file_status = $logo['status'];
-    }
-
-    /** Record the action log */
+    // Record the action log
     $logger = new \ProjectSend\Classes\ActionsLog;
     $new_record_action = $logger->addEntry([
         'action' => 47,
@@ -236,86 +236,22 @@ if ($_POST) {
         ],
     ]);
     
-    /** Redirect so the options are reflected immediately */
-    while (ob_get_level()) ob_end_clean();
-    $section_redirect = html_output($_POST['section']);
-    $location = BASE_URI . 'options.php?section=' . $section_redirect;
+    // Redirect so the options are reflected immediately
+    ps_redirect(BASE_URI . 'options.php?section=' . html_output($_POST['section']));
+}
 
-    if ( !empty( $query_state ) ) {
-        $location .= '&status=' . $query_state;
+if ($section == 'security') {
+    // If .php files are allowed, set the flag for the warning message
+    $allowed_file_types = explode(',', get_option('allowed_file_types'));
+    if ( in_array( 'php', $allowed_file_types ) ) {
+        $flash->warning(__('Warning: php extension is allowed. This is a serious security problem. If you are not sure that you need it, please remove it from the list.','cftp_admin'));
     }
-
-    if ( !empty( $file_status ) ) {
-        $location .= '&file_status=' . $file_status;
-    }
-
-    ps_redirect($location);
 }
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
-
-/**
- * Replace | with , to use the tags system when showing
- * the allowed filetypes on the form. This value comes from
- * site.options.php
-*/
-/** Explode, sort, and implode the values to list them alphabetically */
-$allowed_file_types = explode('|',get_option('allowed_file_types'));
-sort($allowed_file_types);
-
-/** If .php files are allowed, set the flag for the warning message */
-if ( in_array( 'php', $allowed_file_types ) ) {
-    $php_allowed_warning = true;
-}
-
-$allowed_file_types = implode(',',$allowed_file_types);
 ?>
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-lg-6">
-        <?php
-            if (isset($_GET['status'])) {
-                switch ($_GET['status']) {
-                    case '1':
-                        $msg = __('Options updated successfully.','cftp_admin');
-                        echo system_message('success',$msg);
-                        break;
-                    case '2':
-                        $msg = __('There was an error. Please try again.','cftp_admin');
-                        echo system_message('danger',$msg);
-                        break;
-                    case '3':
-                        $msg = __('Some fields were not completed. Options could not be saved.','cftp_admin');
-                        echo system_message('danger',$msg);
-                        $show_options_form = 1;
-                        break;
-                }
-            }
-
-            /** Logo uploading status */
-            if (isset($_GET['file_status'])) {
-                switch ($_GET['file_status']) {
-                    case '1':
-                        break;
-                    case '2':
-                        $msg = __('The file could not be moved to the corresponding folder.','cftp_admin');
-                        $msg .= __("This is most likely a permissions issue. If that's the case, it can be corrected via FTP by setting the chmod value of the",'cftp_admin');
-                        $msg .= ' '.ADMIN_UPLOADS_DIR.' ';
-                        $msg .= __('directory to 755, or 777 as a last resource.','cftp_admin');
-                        $msg .= __("If this doesn't solve the issue, try giving the same values to the directories above that one until it works.",'cftp_admin');
-                        echo system_message('danger',$msg);
-                        break;
-                    case '3':
-                        $msg = __('The file you selected is not an allowed format.','cftp_admin');
-                        echo system_message('danger',$msg);
-                        break;
-                    case '4':
-                        $msg = __('There was an error uploading the file. Please try again.','cftp_admin');
-                        echo system_message('danger',$msg);
-                        break;
-                }
-            }
-        ?>
-
         <div class="white-box">
             <div class="white-box-interior">
 

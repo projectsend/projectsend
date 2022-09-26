@@ -84,7 +84,6 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                 }
 
                 /** Redirect after processing */
-                while (ob_get_level()) ob_end_clean();
                 $action_redirect = html_output($_POST['action']);
                 $location = BASE_URI . $this_page . '?action=' . $action_redirect;
                 if ( !empty( $_POST['denied'] ) && $_POST['denied'] == 1 ) {

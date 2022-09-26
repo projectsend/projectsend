@@ -27,7 +27,6 @@ if ( isset($_GET['activate_template']) ) {
     }
 
     /** Redirect so the options are reflected immediately */
-    while (ob_get_level()) ob_end_clean();
     $section_redirect = 'templates';
 
     ps_redirect(BASE_URI . 'templates.php');

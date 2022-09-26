@@ -1588,7 +1588,6 @@ function generate_safe_filename($filename)
 function option_file_upload( $file, $validate_ext = '', $option = '', $action = '' )
 {
 	global $dbh;
-	$return = array();
 	$continue = true;
 
 	/** Validate file extensions */
@@ -1603,7 +1602,6 @@ function option_file_upload( $file, $validate_ext = '', $option = '', $action = 
 	}
 
 	if ( is_uploaded_file( $file['tmp_name'] ) ) {
-
         $safe_filename = generate_safe_filename($file['name']);
 		/**
 		 * Check the file type for allowed extensions.
@@ -1622,9 +1620,7 @@ function option_file_upload( $file, $validate_ext = '', $option = '', $action = 
                     save_option($option, $safe_filename);
 				}
 
-				$return['status'] = '1';
-
-				/** Record the action log */
+				// Record the action log
 				if ( !empty( $action ) ) {
 					$logger = new \ProjectSend\Classes\ActionsLog;
 					$new_record_action = $logger->addEntry([
@@ -1632,20 +1628,36 @@ function option_file_upload( $file, $validate_ext = '', $option = '', $action = 
                         'owner_id' => CURRENT_USER_ID
                     ]);
 				}
+
+                return [
+                    'status' => 'success'
+                ];
 			}
 			else {
-				$return['status'] = '2';
+                $error = __('The file could not be moved to the corresponding folder.','cftp_admin');
+                $error .= __("This is most likely a permissions issue. If that's the case, it can be corrected via FTP by setting the chmod value of the",'cftp_admin');
+                $error .= ' '.ADMIN_UPLOADS_DIR.' ';
+                $error .= __('directory to 755, or 777 as a last resource.','cftp_admin');
+                $error .= __("If this doesn't solve the issue, try giving the same values to the directories above that one until it works.",'cftp_admin');
+
+                return [
+                    'status' => 'error',
+                    'message' => $error,
+                ];
 			}
 		}
 		else {
-			$return['status'] = '3';
+            return [
+                'status' => 'error',
+                'message' => __('The file you selected is not an allowed format.','cftp_admin'),
+            ];
 		}
 	}
-	else {
-		$return['status'] = '4';
-	}
 
-	return $return;
+    return [
+        'status' => 'error',
+        'message' => __('There was an error uploading the file. Please try again.','cftp_admin'),
+    ];
 }
 
 function format_date($date)
@@ -2037,6 +2049,7 @@ function recaptcha2_validate_request($redirect = true)
 
 function ps_redirect($location, $status = 303)
 {
+    while (ob_get_level()) ob_end_clean();
     header("Location: $location", true, $status);
     exit;
 }

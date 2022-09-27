@@ -2,7 +2,8 @@
 namespace ProjectSend\Classes;
 use \PDO;
 
-class AuthenticationCode {
+class AuthenticationCode
+{
     private $dbh;
     private $logger;
 

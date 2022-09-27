@@ -897,4 +897,55 @@ class Users
             return true;
         }
     }
+
+    public function validatePassword($password = null)
+    {
+        if (empty($password)) {
+            return [
+                'status' => 'error',
+                'message' => null,
+            ];
+        }
+
+        // Validate password
+        global $json_strings;
+        $validation = new \ProjectSend\Classes\Validation;
+        $validation->validate_items([
+            $_POST['password'] => [
+                'required' => ['error' => $json_strings['validation']['no_pass']],
+                'password' => ['error' => $json_strings['validation']['valid_pass'] . ' ' . $json_strings['validation']['valid_chars']],
+                'password_rules' => ['error' => $json_strings['validation']['rules_pass']],
+                'length' => ['error' => $json_strings['validation']['length_pass'], 'min' => MIN_PASS_CHARS, 'max' => MAX_PASS_CHARS],
+            ],
+        ]);
+
+        return $validation->passed();
+    }
+    
+    public function setNewPassword($password = null)
+    {
+        if (empty($this->id)) {
+            return false;
+        }
+
+        if (empty($password)) {
+            return false;
+        }
+
+        if (!$this->validatePassword($password)) {
+            return false;
+        }
+
+        $hashed = $this->hashPassword($password);
+        if (strlen($hashed) >= 20) {
+            $statement = $this->dbh->prepare("UPDATE " . TABLE_USERS . " SET password = :password WHERE id = :id");
+            $statement->bindParam(':password', $hashed);
+            $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
+            if ($statement->execute()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

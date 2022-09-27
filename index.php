@@ -83,6 +83,23 @@ if ($_POST) {
                 ps_redirect(BASE_URI."index.php?form=2fa_verify&token=".$_POST['token']);
             }
         break;
+        case '2fa_request_another':
+            recaptcha2_validate_request();
+
+            $auth_code = new \ProjectSend\Classes\AuthenticationCode();
+            if (!$auth_code->getByToken($_POST['token'])) {
+                exit_with_error_code(403);
+            }
+            $props = $auth_code->getProperties();
+
+            if ($auth_code->canRequestNewCode($props['user_id'])) {
+                $request = json_decode($auth_code->requestNewCode($props['user_id']));
+                if ($request->status == 'success') {
+                    ps_redirect(BASE_URI."index.php?form=2fa_verify&token=".$request->token);
+                }
+                ps_redirect(BASE_URI);
+            }
+        break;
     }
 }
 

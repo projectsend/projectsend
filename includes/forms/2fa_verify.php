@@ -29,7 +29,27 @@
         <div class="inside_form_buttons">
             <button type="submit" id="btn_submit" class="btn btn-wide btn-primary"><?php _e('Verify','cftp_admin'); ?></button>
         </div>
+
     </fieldset>
+</form>
+
+<form action="index.php" role="form" id="verify_2fa" method="post">
+    <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>" />
+    <input type="hidden" name="do" value="2fa_request_another">
+    <input type="hidden" name="token" value="<?php echo htmlentities($_GET['token']); ?>">
+
+    <div id="otp_request_new_container">
+        <h4><?php echo __("Didn't receive the email?",'cftp_admin'); ?></h4>
+        <div>
+            <?php
+                $request_text = __('Request new code','cftp_admin');
+                $request_text_wait = sprintf(__('Please wait %s seconds to request a new code', 'cftp_admin'), '{seconds}');
+            ?>
+            <div>
+                <button class="btn btn-sm" id="request_new_2fa_code" data-text="<?php echo $request_text; ?>" data-text-wait="<?php echo $request_text_wait; ?>" data-time="<?php echo $props['expiry_date']; ?>" disabled></button>
+            </div>
+        </div>
+    </div>
 </form>
 
 <div class="login_form_links">

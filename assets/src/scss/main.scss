@@ -1448,6 +1448,19 @@ li .required.password_toggle {
     height:150px;
 }
 
+// 2FA
+#otp_request_new_container {
+    text-align: center;
+    border: 1px solid #dedede;
+    padding: 10px;
+    margin-top: 20px;
+
+    h4 {
+        padding: 0;
+        margin: 0 0 10px;
+    }
+}
+
 // Files actions
 
 .form_actions_left {
@@ -1537,6 +1550,7 @@ li .required.password_toggle {
 .inside_form_buttons {
     margin-top:25px;
     text-align:center;
+    display: block;
 }
 
 .whitebox .alert-info {

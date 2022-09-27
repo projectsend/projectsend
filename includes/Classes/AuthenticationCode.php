@@ -14,6 +14,7 @@ class AuthenticationCode
     public $used;
     public $used_timestamp;
     public $timestamp;
+    public $expiry_date;
     private $minutes_between_attempts;
 
     public function __construct($record_id = null)
@@ -137,15 +138,7 @@ class AuthenticationCode
 		if ($statement->rowCount() > 0) {
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
 			while ( $row = $statement->fetch() ) {
-                $this->id = $row['id'];
-                $this->user_id = $row['user_id'];
-                $this->token = $row['token'];
-                $this->code = $row['code'];
-                $this->used = $row['used'];
-                $this->used_timestamp = $row['used_timestamp'];
-                $this->timestamp = $row['timestamp'];
-
-                return true;
+                return $this->getByTokenAndCode($row['token'], $row['code']);
             }
         }
 
@@ -173,6 +166,7 @@ class AuthenticationCode
                 $this->used = $row['used'];
                 $this->used_timestamp = $row['used_timestamp'];
                 $this->timestamp = $row['timestamp'];
+                $this->expiry_date = $this->getExpiryDate();
 
                 return true;
             }
@@ -208,6 +202,7 @@ class AuthenticationCode
             'used' => $this->used,
             'used_timestamp' => $this->used_timestamp,
             'timestamp' => $this->timestamp,
+            'expiry_date' => $this->expiry_date,
         ];
 
         return $return;

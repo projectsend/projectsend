@@ -15,20 +15,20 @@
             ),
             "LinkedIn" => array(
                 "enabled" => get_option('linkedin_signin_enabled'),
-                "keys" => array("id" => get_option("SOCIAL_LOGIN_LINKEDIN_ID"), "secret" => get_option("SOCIAL_LOGIN_LINKEDIN_SECRET")),
+                "keys" => array("id" => get_option("linkedin_client_id"), "secret" => get_option("linkedin_client_secret")),
                 "fields" => array(),
             ),
             "Twitter" => array(
                 "enabled" => get_option('twitter_signin_enabled'),
-                "keys" => array("id" => get_option("SOCIAL_LOGIN_LIVE_ID"), "secret" => get_option("SOCIAL_LOGIN_LIVE_SECRET")),
+                "keys" => array("id" => get_option("twitter_client_id"), "secret" => get_option("twitter_client_secret")),
             ),
             "WindowsLive" => array(
                 "enabled" => get_option('windowslive_signin_enabled'),
-                "keys" => array("id" => get_option("SOCIAL_LOGIN_LIVE_ID"), "secret" => get_option("SOCIAL_LOGIN_LIVE_SECRET")),
+                "keys" => array("id" => get_option("windowslive_client_id"), "secret" => get_option("windowslive_client_secret")),
             ),
             "Yahoo" => array(
                 "enabled" => get_option('yahoo_signin_enabled'),
-                "keys" => array("id" => get_option("SOCIAL_LOGIN_LIVE_ID"), "secret" => get_option("SOCIAL_LOGIN_LIVE_SECRET")),
+                "keys" => array("id" => get_option("yahoo_client_id"), "secret" => get_option("yahoo_client_secret")),
             ),
             "OpenID" => array(
                 "enabled" => get_option('oidc_signin_enabled'),

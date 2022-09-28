@@ -1,10 +1,7 @@
 <?php
-
 /**
  * Class that handles all the e-mails that the system can send.
- *
- * @package		ProjectSend
- * @subpackage	Classes
+ * @todo Separate each Email type into classes that extend this one
  */
 
 namespace ProjectSend\Classes;
@@ -90,9 +87,6 @@ class Emails
                         'tags' => [
                             '%FILES%' => __('Shows the list of files', 'cftp_admin'),
                             '%URI%' => $uri_note,
-                        ],
-                        'tags_important' => [
-                            '%FILES%',
                         ],
                     ],
                 ];
@@ -1127,7 +1121,7 @@ class Emails
              * addresses to add, based on the email type.
              */
             if ($this->try_bcc === true) {
-                $this->add_bcc_to = array();
+                $this->add_bcc_to = [];
                 if (get_option('mail_copy_main_user') == '1') {
                     $this->add_bcc_to[] = get_option('admin_email_address');
                 }

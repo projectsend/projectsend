@@ -27,8 +27,8 @@
     
             $('.preview').click(function(e) {
                 e.preventDefault();
-                var type	= jQuery(this).data('preview');
-                var url		= json_strings.uri.base+ 'email-preview.php?t=' + type;
+                var type = jQuery(this).data('preview');
+                var url = json_strings.uri.base+ 'email-preview.php?t=' + type;
                 window.open(url, "previewWindow", "width=800,height=600,scrollbars=yes");
             });
         });
@@ -37,5 +37,32 @@
             var target = jQuery(this).data('target');
             insertAtCaret(target, $(this).data('tag'));
         });
+
+        // Check if each tag is used or not
+        var tags_dt = document.querySelectorAll('#email_available_tags dt button');
+        var tags = [];
+        Array.prototype.forEach.call(tags_dt, function(tag) {
+            tags.push(tag.dataset.tag);
+        });
+
+        var textareas = document.querySelectorAll('#form_email_template textarea');
+
+        const check_tags_usage = setInterval(() => {
+            tags.forEach(tag => {
+                checkTagsUsage(tag);
+            });
+        }, 1000);
+
+        function checkTagsUsage(tag)
+        {
+            textareas.forEach(element => {
+                const el = document.querySelector('button[data-tag="'+tag+'"]');
+                if (!element.value.includes(tag)) {
+                    el.classList.add('btn-warning');
+                } else {
+                    el.classList.remove('btn-warning');
+                }
+            });
+        }
     };
 })();

@@ -56,7 +56,7 @@ if ($_POST) {
     <div class="col-xs-12 col-sm-12 col-lg-6">
         <div class="white-box">
             <div class="white-box-interior">
-                <form action="email-templates.php" name="templatesform" method="post" enctype="multipart/form-data" class="form-horizontal">
+                <form action="email-templates.php" id="form_email_template" name="templatesform" method="post" enctype="multipart/form-data" class="form-horizontal">
                     <?php addCsrf(); ?>
                     <input type="hidden" name="section" value="<?php echo $section; ?>">
 
@@ -149,7 +149,7 @@ if ($_POST) {
                         if (!empty($group['tags'])) {
                         ?>
                             <p><strong><?php _e("The following tags can be used on this e-mails' body.", 'cftp_admin'); ?></strong></p>
-                            <dl class="dl-horizontal">
+                            <dl class="dl-horizontal" id="email_available_tags">
                                 <?php
                                 foreach ($group['tags'] as $tag => $description) {
                                 ?>

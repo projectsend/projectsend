@@ -1,10 +1,6 @@
 <?php
 /**
  * Contains the form that is used when adding or editing clients.
- *
- * @package		ProjectSend
- * @subpackage	Clients
- *
  */
 $name_placeholder = __("Will be visible on the client's file list",'cftp_admin');
 
@@ -149,7 +145,7 @@ switch ($clients_form_type) {
 			 * Make a list of public groups in case clients can only request
 			 * membership to those
 			 */
-			$arguments = array();
+			$arguments = [];
 
             /** Groups to search on based on the current user level */
             $role = (defined('CURRENT_USER_LEVEL')) ? CURRENT_USER_LEVEL : null;
@@ -166,7 +162,7 @@ switch ($clients_form_type) {
 			$sql_groups = get_groups($arguments);
 			
 			$selected_groups	= ( !empty( $found_groups ) ) ? $found_groups : '';
-			$my_current_groups	= array();
+			$my_current_groups	= [];
 			/** Dirty and awful quick test, mark as selected the current groups which have requests for a client that's editing their own account */
 			if ( isset( $override_groups_list ) ) {
 				$selected_groups = $override_groups_list;

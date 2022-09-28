@@ -2,22 +2,15 @@
 /**
  * Define the language strings that are used on several parts of
  * the system, to avoid repetition.
- *
- * @package        ProjectSend
- * @subpackage    Core
  */
 
-/**
- * System User Roles names
- */
+// System User Roles names
 define('USER_ROLE_LVL_9', __('System Administrator','cftp_admin'));
 define('USER_ROLE_LVL_8', __('Account Manager','cftp_admin'));
 define('USER_ROLE_LVL_7', __('Uploader','cftp_admin'));
 define('USER_ROLE_LVL_0', __('Client','cftp_admin'));
 
-/**
- * Strings served as a json array to use in JS
- */
+// Strings served as a json array to use in JS
 global $json_strings;
 $json_strings = [
     'uri' => [
@@ -106,17 +99,17 @@ $json_strings = [
         'complete_all_options' => __('Please complete all the fields.','cftp_admin'),
         'enum_invalid' => __('Type is not valid','cftp_admin'),
         
-        /* Validation strings for the length of usernames and passwords. */
+        // Validation strings for the length of usernames and passwords
         'length_user' => sprintf(__('Length should be between %d and %d characters long', 'cftp_admin'), MIN_USER_CHARS, MAX_USER_CHARS),
         'length_pass' => sprintf(__('Length should be between %d and %d characters long', 'cftp_admin'), MIN_PASS_CHARS, MAX_PASS_CHARS),
 
-        /* Password requirements */
+        // Password requirements
         'req_upper' => __('1 uppercase character','cftp_admin'),
         'req_lower' => __('1 lowercase character','cftp_admin'),
         'req_number' => __('1 number','cftp_admin'),
         'req_special' => __('1 special character','cftp_admin'),
         
-        /* Installation strings */
+        // Installation strings
         'install_no_sitename' => __('Sitename was not completed.','cftp_admin'),
         'install_no_baseuri' => __('ProjectSend URI was not completed.','cftp_admin'),
     ],

@@ -1,7 +1,6 @@
 <?php
 /**
- * @package		ProjectSend
- * @subpackage	Classes
+ * Handle Cron tasks
  */
 namespace ProjectSend\Classes;
 

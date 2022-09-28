@@ -22,7 +22,7 @@ $language = $asset_arguments['language'];
 
 $active_nav = 'tools';
 
-$page_title = sprintf(__('Edit %s asset','cftp_admin'), format_asset_language_name($language));
+$page_title = sprintf(__('Edit %s asset', 'cftp_admin'), format_asset_language_name($language));
 
 $page_id = 'asset_editor';
 
@@ -60,19 +60,19 @@ if ($_POST) {
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-lg-6">
 
-    <div class="white-box">
+        <div class="white-box">
             <div class="white-box-interior">
 
                 <?php
-                    // If the form was submitted with errors, show them here.
-                    echo $asset->getValidationErrors();
+                // If the form was submitted with errors, show them here.
+                echo $asset->getValidationErrors();
 
-                    $asset_form_type = 'edit';
-                    include_once FORMS_DIR . DS . 'assets.php';
+                $asset_form_type = 'edit';
+                include_once FORMS_DIR . DS . 'assets.php';
                 ?>
             </div>
         </div>
     </div>
 </div>
 <?php
-    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

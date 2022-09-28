@@ -1,8 +1,6 @@
 <?php
 /**
  * Contains the form that is used on the login page
- *
- * @package		ProjectSend
  */
 ?>
 <form action="index.php" name="login_admin" role="form" id="login_form" method="post">

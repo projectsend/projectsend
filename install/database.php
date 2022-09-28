@@ -2,9 +2,6 @@
 /**
  * Contains the queries that will be used to create the database structure
  * when installing the system.
- *
- * @package		ProjectSend
- * @subpackage	Install
  */
 if (defined('TRY_INSTALL')) {
 	$timestamp = time();

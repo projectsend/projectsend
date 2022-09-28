@@ -1,9 +1,6 @@
 <?php
 /**
  * Show a preview of the currently selected e-mail template
- *
- * @package ProjectSend
- * @subpackage Options
  */
 $allowed_levels = array(9);
 require_once 'bootstrap.php';

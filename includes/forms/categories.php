@@ -1,10 +1,6 @@
 <?php
 /**
  * Contains the form that is used when adding or editing categories.
- *
- * @package		ProjectSend
- * @subpackage	Files
- *
  */
 
 $show_cancel = false;

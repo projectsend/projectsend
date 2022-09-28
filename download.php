@@ -1,16 +1,14 @@
 <?php
 /**
  * Serves the public downloads.
- *
- * @package		ProjectSend
- *
  */
-use ProjectSend\Classes\Download;
 
-$allowed_levels = array(9,8,7,0);
+ use ProjectSend\Classes\Download;
+
+$allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
 
-$page_title = __('File information','cftp_admin');
+$page_title = __('File information', 'cftp_admin');
 
 $dont_redirect_if_logged = 1;
 
@@ -26,7 +24,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
 
     $can_download = false;
     $can_view = false; // Can only view information about the file, not download it
-    
+
     $file = new \ProjectSend\Classes\Files;
     $file->get($file_id);
 
@@ -63,8 +61,8 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
 
             // DOWNLOAD
             $process = new Download;
-            $alias=$process->getAlias($file);
-            $process->serveFile($file->full_path, $file->filename_unfiltered,$alias);
+            $alias = $process->getAlias($file);
+            $process->serveFile($file->full_path, $file->filename_unfiltered, $alias);
             exit;
         }
     }
@@ -79,43 +77,43 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
         <div class="white-box">
             <div class="white-box-interior">
                 <?php
-                    if ($can_view) {
+                if ($can_view) {
                 ?>
-                        <div class="text-center">
-                            <h2 class="file_title">
-                                <span class="label label-default">    
-                                    <?php echo $file->filename_original; ?>
-                                </span>
-                            </h2>
-                            <h3><?php echo $file->title; ?></h3>
+                    <div class="text-center">
+                        <h2 class="file_title">
+                            <span class="label label-default">
+                                <?php echo $file->filename_original; ?>
+                            </span>
+                        </h2>
+                        <h3><?php echo $file->title; ?></h3>
 
-                            <div class="description">
-                                <?php echo $file->description; ?>
-                            </div>
-
-                            <div class="size">
-                                <?php echo $file->size_formatted; ?>
-                            </div>
-
-                            <?php if ($can_download == true) { ?>
-                                <div class="actions">
-                                    <a href="<?php echo $file->public_url . '&download'; ?>" class="btn btn-primary">
-                                        <?php _e('Download file','cftp_admin'); ?>
-                                    </a>
-                                </div>
-                            <?php } ?>
+                        <div class="description">
+                            <?php echo $file->description; ?>
                         </div>
+
+                        <div class="size">
+                            <?php echo $file->size_formatted; ?>
+                        </div>
+
+                        <?php if ($can_download == true) { ?>
+                            <div class="actions">
+                                <a href="<?php echo $file->public_url . '&download'; ?>" class="btn btn-primary">
+                                    <?php _e('Download file', 'cftp_admin'); ?>
+                                </a>
+                            </div>
+                        <?php } ?>
+                    </div>
                 <?php
-                    }
+                }
                 ?>
             </div>
         </div>
 
         <div class="login_form_links">
-            <p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.','cftp_admin'); ?></a></p>
+            <p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.', 'cftp_admin'); ?></a></p>
         </div>
     </div>
 </div>
 
 <?php
-    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

@@ -1,9 +1,6 @@
 <?php
 /**
  * Class that generates a table element.
- *
- * @package		ProjectSend
- * @subpackage	Classes
  */
 
 namespace ProjectSend\Classes;

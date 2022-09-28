@@ -2,8 +2,6 @@
 /**
  * This file generates the header for pages shown to unlogged users and
  * clients (log in form and, if allowed, self registration form).
- *
- * @package ProjectSend
  */
 define('VIEW_TYPE', 'public');
 
@@ -60,7 +58,7 @@ else {
     require_once INCLUDES_DIR . DS . 'core.update.silent.php';
 }
 
-if ( !isset( $body_class ) ) { $body_class = array(); }
+if ( !isset( $body_class ) ) { $body_class = []; }
 ?>
 <!doctype html>
 <html lang="<?php echo $header_vars['html_lang']; ?>">

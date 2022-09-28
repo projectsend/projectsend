@@ -1,9 +1,6 @@
 <?php
 /**
  * Class that handles log in, log out and account status checks.
- *
- * @package		ProjectSend
- * @subpackage	Classes
  */
 namespace ProjectSend\Classes;
 use \PDO;

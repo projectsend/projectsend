@@ -1,9 +1,6 @@
 <?php
 /**
  * Contains all the functions related to categories
- *
- * @package		ProjectSend
- * 
  */
 
 function get_category( $id ) {
@@ -41,9 +38,9 @@ function get_category( $id ) {
 	return $return;
 }
 
-function get_categories( $params = array() ) {
+function get_categories( $params = [] ) {
 	global $dbh;
-	$sql_params = array();
+	$sql_params = [];
 
 	// Set some defaults
 	$orderby	= ( !empty( $params['orderby'] ) ) ? $params['orderby'] : 'name';
@@ -58,7 +55,7 @@ function get_categories( $params = array() ) {
 	 * By default, count files assigned to each category.
 	 * Avoids doing this individually later if needed.
 	 */
-	$files_count = array();
+	$files_count = [];
 	$statement = $dbh->prepare("SELECT cat_id, COUNT(file_id) as count FROM " . TABLE_CATEGORIES_RELATIONS . " GROUP BY cat_id");
 	$statement->execute();
 	$statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -142,7 +139,7 @@ function get_categories( $params = array() ) {
 		 * Fetch all initially to only do it once.
 		 */
 		$rows = $statement->fetchAll();
-		$found_categories = array();
+		$found_categories = [];
 		foreach ($rows as $row) {
 			$file_count = ( !empty( $files_count ) && array_key_exists( $row['id'], $files_count ) ) ? $files_count[$row['id']] : 0;
 
@@ -229,7 +226,7 @@ function add_missing_to_tree($categories, $files_count)
  * Returns an array of categories nested by parent
  */
 function arrange_categories(array &$elements, $parent = 0, $depth = 0) {
-    $branch = array();
+    $branch = [];
 
     foreach ($elements as $element) {
         if ($element['parent'] == $parent) {
@@ -249,7 +246,7 @@ function arrange_categories(array &$elements, $parent = 0, $depth = 0) {
 }
 
 
-function generate_categories_options( $categories, $parent = 0, $selected = array(), $filter_type = '', $filter_values = array(0) ) {
+function generate_categories_options( $categories, $parent = 0, $selected = [], $filter_type = '', $filter_values = array(0) ) {
 	$return = '';
 
 	if ( !empty( $categories ) ) {

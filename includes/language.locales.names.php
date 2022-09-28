@@ -4,9 +4,6 @@
  * files on the options page.
  * Adapted from Michel Müller's response on
  * http://stackoverflow.com/questions/3191664/list-of-all-locales-and-their-short-codes
- *
- * @package		ProjectSend
- * @subpackage	Language
  */
 $locales_names = array(
     'af_NA' => "Afrikaans (Namibia)",

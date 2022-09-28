@@ -1,10 +1,6 @@
 <?php
 /**
  * Contains the form that is used when adding or editing users.
- *
- * @package		ProjectSend
- * @subpackage	Users
- *
  */
 $disable_user = true;
 $require_pass = true;

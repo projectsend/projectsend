@@ -1,8 +1,6 @@
 <?php
 /**
  * Contains the form that is used on the login page
- *
- * @package		ProjectSend
  */
 ?>
 <form action="index.php" role="form" id="verify_2fa" method="post">

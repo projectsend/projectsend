@@ -1,24 +1,20 @@
 <?php
 /**
  * Show the form to edit an existing client.
- *
- * @package		ProjectSend
- * @subpackage	Clients
- *
  */
-$allowed_levels = array(9,8,0);
+$allowed_levels = array(9, 8, 0);
 require_once 'bootstrap.php';
 
 $active_nav = 'clients';
 
-/** Create the object */
+// Create the object
 $edit_client = new \ProjectSend\Classes\Users();
 
-/** Check if the id parameter is on the URI. */
+// Check if the id parameter is on the URI.
 if (!isset($_GET['id'])) {
     exit_with_error_code(403);
 }
- 
+
 $client_id = (int)$_GET['id'];
 if (!client_exists_id($client_id)) {
     exit_with_error_code(403);
@@ -27,33 +23,28 @@ if (!client_exists_id($client_id)) {
 $edit_client->get($client_id);
 $client_arguments = $edit_client->getProperties();
 
-/** Get groups where this client is member */
+// Get groups where this client is member
 $get_groups = new \ProjectSend\Classes\GroupsMemberships;
 $get_arguments = [
-    'client_id'	=> $client_id,
+    'client_id' => $client_id,
 ];
-$found_groups = $get_groups->getGroupsByClient($get_arguments); 
+$found_groups = $get_groups->getGroupsByClient($get_arguments);
 
-/** Get current membership requests */
+// Get current membership requests
 $get_arguments['denied'] = 0;
-$found_requests	= $get_groups->getMembershipRequests($get_arguments); 
+$found_requests = $get_groups->getMembershipRequests($get_arguments);
 
-/**
- * Form type
- */
+// Form type
 if (CURRENT_USER_LEVEL != 0) {
     $clients_form_type = 'edit_client';
     $ignore_size = false;
-}
-else {
+} else {
     $clients_form_type = 'edit_client_self';
     define('EDITING_SELF_ACCOUNT', true);
     $ignore_size = true;
 }
 
-/**
- * Compare the client editing this account to the on the db.
- */
+// Compare the client editing this account to the on the db.
 if (CURRENT_USER_LEVEL == 0) {
     if (isset($client_arguments) && CURRENT_USER_USERNAME != $client_arguments['username']) {
         exit_with_error_code(403);
@@ -94,13 +85,13 @@ if ($_POST) {
         'type' => 'edit_client',
     );
 
-    if ( $ignore_size == false ) {
+    if ($ignore_size == false) {
         $client_arguments['max_file_size'] = (isset($_POST["max_file_size"])) ? $_POST["max_file_size"] : null;
     }
 
     if (CURRENT_USER_LEVEL != 0) {
         $client_arguments['can_upload_public'] = (isset($_POST["can_upload_public"])) ? 1 : 0;
-        $client_arguments['active']	= (isset($_POST["active"])) ? 1 : 0;
+        $client_arguments['active'] = (isset($_POST["active"])) ? 1 : 0;
     }
 
     /**
@@ -114,7 +105,7 @@ if ($_POST) {
     $edit_client->setType("existing_client");
     $edit_response = $edit_client->edit();
 
-    $edit_groups = (!empty( $_POST['groups_request'] ) ) ? $_POST['groups_request'] : array();
+    $edit_groups = (!empty($_POST['groups_request'])) ? $_POST['groups_request'] : array();
     $memberships = new \ProjectSend\Classes\GroupsMemberships;
     $arguments = [
         'client_id' => $client_id,
@@ -122,7 +113,7 @@ if ($_POST) {
         'request_by' => CURRENT_USER_USERNAME,
     ];
 
-    if (in_array(CURRENT_USER_LEVEL, [8 ,9])) {
+    if (in_array(CURRENT_USER_LEVEL, [8, 9])) {
         $memberships->clientEditGroups($arguments);
     } else {
         $memberships->updateMembershipRequests($arguments);
@@ -137,9 +128,9 @@ if ($_POST) {
     ps_redirect(BASE_URI . 'clients-edit.php?id=' . $client_id);
 }
 
-$page_title = __('Edit client','cftp_admin');
+$page_title = __('Edit client', 'cftp_admin');
 if (isset($client_arguments['username']) && CURRENT_USER_USERNAME == $client_arguments['username']) {
-    $page_title = __('My account','cftp_admin');
+    $page_title = __('My account', 'cftp_admin');
 }
 
 $page_id = 'client_form';
@@ -151,14 +142,14 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
         <div class="white-box">
             <div class="white-box-interior">
                 <?php
-                    // If the form was submitted with errors, show them here.
-                    echo $edit_client->getValidationErrors();
+                // If the form was submitted with errors, show them here.
+                echo $edit_client->getValidationErrors();
 
-                    include_once FORMS_DIR . DS . 'clients.php';
+                include_once FORMS_DIR . DS . 'clients.php';
                 ?>
             </div>
         </div>
     </div>
 </div>
 <?php
-    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

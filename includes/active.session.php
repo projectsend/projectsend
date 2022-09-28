@@ -2,9 +2,6 @@
 /**
  * Define the information about the current logged in user or client
  * used on the different validations across the system.
- *
- * @package		ProjectSend
- * @subpackage	Session
  */
 ob_start();
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");

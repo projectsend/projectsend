@@ -2,9 +2,6 @@
 /**
  * These functions can be called to show the search,
  * filters and actions forms.
- *
- * @package		ProjectSend
- * 
  */
 
 function show_search_form( $action = '' )
@@ -23,7 +20,7 @@ function show_search_form( $action = '' )
 /**
  * Add any existing $_GET parameters as hidden fields on a form
  */
-function form_add_existing_parameters( $ignore = array() )
+function form_add_existing_parameters( $ignore = [] )
 {
 	// Don't add the pagination parameter
 	$ignore[] = 'page';
@@ -47,7 +44,7 @@ function form_add_existing_parameters( $ignore = array() )
 /**
  * Add any existing $_GET parameters to the form's action url
  */
-function get_form_action_with_existing_parameters( $action = null, $ignore = array() )
+function get_form_action_with_existing_parameters( $action = null, $ignore = [] )
 {
     $use = [];
 

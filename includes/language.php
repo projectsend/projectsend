@@ -3,9 +3,6 @@ use ProjectSend\Classes\I18n;
 
 /**
  * Load the i18n class and the corresponding language files
- *
- * @package		ProjectSend
- * @subpackage	Language
  */
 
 /**

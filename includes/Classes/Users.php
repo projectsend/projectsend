@@ -2,9 +2,6 @@
 /**
  * Class that handles all the actions and functions that can be applied to
  * users accounts.
- *
- * @package		ProjectSend
- * @subpackage	Classes
  */
 
 namespace ProjectSend\Classes;

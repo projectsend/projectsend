@@ -2,9 +2,6 @@
 /**
  * This file includes updates that should be done regardless of the
  * user / client status.
- *
- * @package		ProjectSend
- * @subpackage	Updates
  */
 global $updates_made;
 

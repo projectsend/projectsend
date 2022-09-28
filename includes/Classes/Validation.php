@@ -4,9 +4,6 @@
  *
  * Every generated error is added as an element to a list that will be returned
  * if any error was found.
- *
- * @package		ProjectSend
- * @subpackage	Classes
  */
 
 namespace ProjectSend\Classes;

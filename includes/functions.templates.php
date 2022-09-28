@@ -1,10 +1,6 @@
 <?php
 /**
  * Functions related to the files list templates
- *
- * @package		ProjectSend
- * @subpackage	Templates
- * 
  */
 
 /**
@@ -82,8 +78,8 @@ function extract_template_info($template_directory)
 function look_for_templates()
 {
 	// Get all folders under the templates directory
-	$templates = array();
-	$templates_error = array();
+	$templates = [];
+	$templates_error = [];
 
 	$ignore = array('.', '..');
     $base_directory = TEMPLATES_DIR . DS;

@@ -2,9 +2,6 @@
 /**
  * Class that handles all the actions and functions regarding groups memberships.
  * @todo: this needs to be redone. It's a mix of loose functions that do not belong to an object ATM
- *
- * @package		ProjectSend
- * @subpackage	Classes
  */
 
 namespace ProjectSend\Classes;
@@ -90,7 +87,7 @@ class GroupsMemberships
 		$client_id = $arguments['client_id'];
 		$return_type = !empty( $arguments['return'] ) ? $arguments['return'] : 'array';
 
-		$found_groups = array();
+		$found_groups = [];
 		$statement = $this->dbh->prepare("SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE client_id=:id");
 		$statement->bindParam(':id', $client_id, PDO::PARAM_INT);
 		$statement->execute();
@@ -162,7 +159,7 @@ class GroupsMemberships
                 'errors' => array(),
             ];
 
-			$found_groups = array();
+			$found_groups = [];
 			$sql_groups = $this->dbh->prepare("SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE client_id=:id");
 			$sql_groups->bindParam(':id', $client_id, PDO::PARAM_INT);
 			$sql_groups->execute();
@@ -299,11 +296,11 @@ class GroupsMemberships
                 ];
 		
 				if ( !empty( $group_ids ) ) {
-					$requests = array();
+					$requests = [];
 					foreach ( $group_ids as $group_id ) {
 						if ( defined('REGISTERING') ) {
 							if ( get_option('clients_can_select_group') == 'public' ) {
-								$permitted = array();
+								$permitted = [];
 								foreach ( $public_groups as $public_group ) {
 									$permitted[] = $public_group['id'];
 								}
@@ -383,7 +380,7 @@ class GroupsMemberships
 			/**
 			 * Process request
 			 */
-			$requests_to_remove = array();
+			$requests_to_remove = [];
 			if ( in_array( $request, $approve ) ) {
 				/** Insert into memberships */
 				$statement = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
@@ -482,7 +479,7 @@ class GroupsMemberships
 			 * On database but not on array:
 			 * delete it from requests table
 			 */
-			$remove = array();
+			$remove = [];
 			if ( !empty( $on_database ) ) {
 				foreach ( $on_database as $key => $group_id ) {
 					if ( !in_array( $group_id, $group_ids ) ) {
@@ -502,7 +499,7 @@ class GroupsMemberships
 			 * On array but not on database:
 			 * add the request
 			 */
-			$add = array();
+			$add = [];
 			if ( !empty( $group_ids ) ) {
 				foreach ( $group_ids as $key => $group_id ) {
 					if ( !in_array( $group_id, $on_database ) ) {

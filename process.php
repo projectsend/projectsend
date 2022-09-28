@@ -4,7 +4,7 @@ use ProjectSend\Classes\Download;
 use ProjectSend\Classes\ActionsLog;
 
 /** Process an action */
-$allowed_levels = array(9,8,7,0);
+$allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
 
 global $auth;
@@ -23,7 +23,7 @@ switch ($_GET['do']) {
             Session::remove('SOCIAL_LOGIN_NETWORK');
         }
         Session::add('SOCIAL_LOGIN_NETWORK', $_GET['provider']);
-    
+
         $login = $auth->socialLogin($_GET['provider']);
         break;
     case 'login_ldap':

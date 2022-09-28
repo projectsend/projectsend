@@ -3,9 +3,6 @@ use ProjectSend\Classes\I18n;
 
 /**
  * Translation functions
- *
- * @package		ProjectSend
- * @subpackage	Functions
  */
 
 /**

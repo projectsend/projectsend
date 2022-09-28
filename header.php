@@ -5,8 +5,6 @@
  *
  * Other checks for user level are performed later to generate the different
  * menu items, and the content of the page that called this file.
- *
- * @package ProjectSend
  */
 if (!defined('VIEW_TYPE')) define('VIEW_TYPE', 'private');
 
@@ -21,7 +19,7 @@ global $flash;
 /** If no page title is defined, revert to a default one */
 if (!isset($page_title)) { $page_title = __('System Administration','cftp_admin'); }
 
-if (!isset($body_class)) { $body_class = array(); }
+if (!isset($body_class)) { $body_class = []; }
 
 if ( !empty( $_COOKIE['menu_contracted'] ) && $_COOKIE['menu_contracted'] == 'true' ) {
     $body_class[] = 'menu_contracted';

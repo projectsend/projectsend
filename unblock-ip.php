@@ -1,14 +1,11 @@
 <?php
 /**
  * Unblock an IP from the failed logins table
- *
- * @package ProjectSend
- * @subpackage Tools
  */
 $allowed_levels = array(9);
 require_once 'bootstrap.php';
 
-$page_title = __('Unblock IP','cftp_admin');
+$page_title = __('Unblock IP', 'cftp_admin');
 
 $page_id = 'unblock_ip';
 
@@ -26,7 +23,7 @@ if ($_POST) {
         $flash->error($unblock['message']);
     }
 
-    ps_redirect(BASE_URI.'unblock-ip.php');
+    ps_redirect(BASE_URI . 'unblock-ip.php');
 }
 ?>
 <div class="row">
@@ -39,13 +36,13 @@ if ($_POST) {
 
                     <div class="form-group">
                         <div class="col-sm-12">
-                            <label for="ip"><?php _e('IP address','cftp_admin'); ?></label>
+                            <label for="ip"><?php _e('IP address', 'cftp_admin'); ?></label>
                             <input type="text" name="ip" id="ip" class="form-control" value="">
                         </div>
                     </div>
 
                     <div class="after_form_buttons">
-                        <button type="submit" name="submit" class="btn btn-wide btn-primary empty"><?php _e('Unblock IP','cftp_admin'); ?></button>
+                        <button type="submit" name="submit" class="btn btn-wide btn-primary empty"><?php _e('Unblock IP', 'cftp_admin'); ?></button>
                     </div>
                 </form>
             </div>
@@ -53,4 +50,4 @@ if ($_POST) {
     </div>
 </div>
 <?php
-    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

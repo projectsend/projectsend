@@ -6,9 +6,6 @@
  * In case you are updating from an old one, the new values, columns
  * and rows will be created, and a message will appear under the menu
  * one time only.
- *
- * @package		ProjectSend
- * @subpackage	Updates
  */
 
 $allowed_update = array(9,8,7);
@@ -26,7 +23,7 @@ if (current_role_in($allowed_update)) {
 
     $updates_made = 0;
     $updates_errors = 0;
-    $updates_error_messages = array();
+    $updates_error_messages = [];
 
 	/**
 	 * r264 updates
@@ -790,7 +787,7 @@ if (current_role_in($allowed_update)) {
 		 * Change the database collations
 		 */
 		if ($last_update < 557) {
-			$alter = array();			
+			$alter = [];			
 			$statement = $dbh->exec('ALTER DATABASE ' . DB_NAME . ' CHARACTER SET utf8 COLLATE utf8_general_ci');
 			$statement = $dbh->query('SET foreign_key_checks = 0');
 			$statement = $dbh->query('SHOW TABLES');

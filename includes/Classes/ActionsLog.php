@@ -1,10 +1,6 @@
 <?php
 /**
  * Class that handles all the actions that are logged on the database.
- *
- * @package		ProjectSend
- * @subpackage	Classes
- *
  */
 namespace ProjectSend\Classes;
 use \PDO;

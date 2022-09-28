@@ -12,9 +12,8 @@
  * @link		https://github.com/projectsend/projectsend
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU GPL version 2
  * @package		ProjectSend
- *
  */
-$allowed_levels = array(9,8,7,0);
+$allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
 
 global $dbh;
@@ -22,7 +21,7 @@ global $auth;
 global $flash;
 global $bfchecker;
 
-$page_title = __('Log in','cftp_admin');
+$page_title = __('Log in', 'cftp_admin');
 
 $body_class = array('login');
 $page_id = 'login';
@@ -34,14 +33,14 @@ switch ($bfstatus['status']) {
     case 'error_403':
         $flash->clear(); // @todo hack, since flash messages after the last error should not be retained
         exit_with_error_code(403);
-    break;
+        break;
 }
 
 if ($_POST) {
     switch ($_POST['do']) {
         default:
             exit_with_error_code(403);
-        break;
+            break;
         case 'login':
             recaptcha2_validate_request();
 
@@ -57,21 +56,21 @@ if ($_POST) {
                 switch ($bfstatus['status']) {
                     case 'delay':
                         if (is_numeric($bfstatus['message'])) {
-                            $flash->error('<div id="message_countdown">'.sprintf(__('Please wait %s seconds before attempting to log in again.', 'cftp_admin'), '<span class="seconds_countdown">'.$bfstatus['message'].'</span>').'</div>');
+                            $flash->error('<div id="message_countdown">' . sprintf(__('Please wait %s seconds before attempting to log in again.', 'cftp_admin'), '<span class="seconds_countdown">' . $bfstatus['message'] . '</span>') . '</div>');
                             if ($bfstatus['message'] > 150) {
                                 $flash->error(sprintf(__('Warning: You are about to reach the failed attempts limit, which will completely block your access for a few minutes.', 'cftp_admin'), $bfstatus['message']));
                             }
                         }
-                    break;
+                        break;
                 }
 
                 ps_redirect(BASE_URI);
             }
             // $auth->setLanguage($_POST['language']);
-        break;
+            break;
         case '2fa_verify':
             recaptcha2_validate_request();
-            $code = $_POST['n1'].$_POST['n2'].$_POST['n3'].$_POST['n4'].$_POST['n5'].$_POST['n6'];
+            $code = $_POST['n1'] . $_POST['n2'] . $_POST['n3'] . $_POST['n4'] . $_POST['n5'] . $_POST['n6'];
 
             $login = json_decode($auth->validate2faRequest($_POST['token'], (int)$code));
             if ($login->status == 'success') {
@@ -80,9 +79,9 @@ if ($_POST) {
                 ps_redirect($login->location);
             } else {
                 $flash->error($auth->getError());
-                ps_redirect(BASE_URI."index.php?form=2fa_verify&token=".$_POST['token']);
+                ps_redirect(BASE_URI . "index.php?form=2fa_verify&token=" . $_POST['token']);
             }
-        break;
+            break;
         case '2fa_request_another':
             recaptcha2_validate_request();
 
@@ -95,11 +94,11 @@ if ($_POST) {
             if ($auth_code->canRequestNewCode($props['user_id'])) {
                 $request = json_decode($auth_code->requestNewCode($props['user_id']));
                 if ($request->status == 'success') {
-                    ps_redirect(BASE_URI."index.php?form=2fa_verify&token=".$request->token);
+                    ps_redirect(BASE_URI . "index.php?form=2fa_verify&token=" . $request->token);
                 }
                 ps_redirect(BASE_URI);
             }
-        break;
+            break;
     }
 }
 
@@ -133,7 +132,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
             <div class="white-box-interior">
                 <div class="ajax_response">
                 </div>
-            
+
                 <?php /*
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#local" aria-controls="local" role="tab" data-toggle="tab">Local account</a></li>
@@ -144,7 +143,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane fade in active" id="local">
                         <?php
-                            include_once FORMS_DIR . DS . $form . '.php';
+                        include_once FORMS_DIR . DS . $form . '.php';
                         ?>
                     </div>
 
@@ -159,4 +158,4 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
     </div>
 </div>
 <?php
-    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

@@ -2,14 +2,11 @@
 /**
  * Allows the administrator to customize the emails
  * sent by the system.
- *
- * @package ProjectSend
- * @subpackage Options
  */
 $allowed_levels = array(9);
 require_once 'bootstrap.php';
 
-$page_title = __('Test email configuration','cftp_admin');
+$page_title = __('Test email configuration', 'cftp_admin');
 
 $page_id = 'email_test';
 
@@ -36,7 +33,7 @@ if ($_POST) {
                     <?php if ($_POST) { ?>
                         <div class="form-group">
                             <div class="col-sm-12">
-                                <label for="result"><?php _e('Result','cftp_admin'); ?></label>
+                                <label for="result"><?php _e('Result', 'cftp_admin'); ?></label>
                                 <textarea name="result" id="result" class="form-control textarea_high" readonly><?php echo $email->getDebugResult(); ?></textarea>
                             </div>
                         </div>
@@ -44,20 +41,20 @@ if ($_POST) {
 
                     <div class="form-group">
                         <div class="col-sm-12">
-                            <label for="to"><?php _e('Send to:','cftp_admin'); ?></label>
+                            <label for="to"><?php _e('Send to:', 'cftp_admin'); ?></label>
                             <input type="text" name="to" id="to" class="form-control" value="<?php echo CURRENT_USER_EMAIL; ?>">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <div class="col-sm-12">
-                            <label for="message"><?php _e('Message','cftp_admin'); ?></label>
+                            <label for="message"><?php _e('Message', 'cftp_admin'); ?></label>
                             <textarea name="message" id="message" class="form-control textarea_high"></textarea>
                         </div>
                     </div>
 
                     <div class="after_form_buttons">
-                        <button type="submit" name="submit" class="btn btn-wide btn-primary empty"><?php _e('Send test email','cftp_admin'); ?></button>
+                        <button type="submit" name="submit" class="btn btn-wide btn-primary empty"><?php _e('Send test email', 'cftp_admin'); ?></button>
                     </div>
                 </form>
             </div>
@@ -65,4 +62,4 @@ if ($_POST) {
     </div>
 </div>
 <?php
-    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

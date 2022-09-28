@@ -2,10 +2,6 @@
 /**
  * Simple database connection and query class.
  * Uses the information defined on sys.config.php.
- *
- * @package		ProjectSend
- * @subpackage	Classes
- *
  */
 use ProjectSend\Classes\Session;
 

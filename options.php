@@ -1,88 +1,83 @@
 <?php
 /**
  * Options page and form.
- *
- * @package ProjectSend
- * @subpackage Options
  */
 $allowed_levels = array(9);
 require_once 'bootstrap.php';
 
-$section = ( !empty( $_GET['section'] ) ) ? $_GET['section'] : $_POST['section'];
+$section = (!empty($_GET['section'])) ? $_GET['section'] : $_POST['section'];
 
 global $flash;
 
-switch ( $section ) {
+switch ($section) {
     case 'general':
-        $section_title	= __('General options','cftp_admin');
-        $checkboxes		= array(
-                                'xsendfile_enable',
-                                'footer_custom_enable',
-                                'files_default_expire',
-                                'files_descriptions_use_ckeditor',
-                                'use_browser_lang',
-                            );
+        $section_title = __('General options', 'cftp_admin');
+        $checkboxes = array(
+            'xsendfile_enable',
+            'footer_custom_enable',
+            'files_default_expire',
+            'files_descriptions_use_ckeditor',
+            'use_browser_lang',
+        );
         break;
     case 'clients':
-        $section_title	= __('Clients','cftp_admin');
-        $checkboxes		= array(
-                                'clients_can_register',
-                                'clients_auto_approve',
-                                'clients_can_upload',
-                                'clients_can_delete_own_files',
-                                'clients_can_set_expiration_date',
-                                'clients_new_default_can_set_public',
-                            );
+        $section_title = __('Clients', 'cftp_admin');
+        $checkboxes = array(
+            'clients_can_register',
+            'clients_auto_approve',
+            'clients_can_upload',
+            'clients_can_delete_own_files',
+            'clients_can_set_expiration_date',
+            'clients_new_default_can_set_public',
+        );
         break;
     case 'privacy':
-        $section_title	= __('Privacy','cftp_admin');
-        $checkboxes		= array(
-                                'privacy_noindex_site',
-                                'enable_landing_for_all_files',
-                                'public_listing_page_enable',
-                                'public_listing_logged_only',
-                                'public_listing_show_all_files',
-                                'public_listing_use_download_link',
-                                'public_listing_enable_preview',
-                            );
+        $section_title = __('Privacy', 'cftp_admin');
+        $checkboxes = array(
+            'privacy_noindex_site',
+            'enable_landing_for_all_files',
+            'public_listing_page_enable',
+            'public_listing_logged_only',
+            'public_listing_show_all_files',
+            'public_listing_use_download_link',
+            'public_listing_enable_preview',
+        );
         break;
     case 'email':
-        $section_title	= __('E-mail notifications','cftp_admin');
-        $checkboxes		= array(
-                                'mail_copy_user_upload',
-                                'mail_copy_client_upload',
-                                'mail_copy_main_user',
-                                'mail_ssl_verify_peer',
-                                'mail_ssl_verify_peer_name',
-                                'mail_ssl_allow_self_signed',
-                                'notifications_send_when_saving_files',
-                            );
+        $section_title = __('E-mail notifications', 'cftp_admin');
+        $checkboxes = array(
+            'mail_copy_user_upload',
+            'mail_copy_client_upload',
+            'mail_copy_main_user',
+            'mail_ssl_verify_peer',
+            'mail_ssl_verify_peer_name',
+            'mail_ssl_allow_self_signed',
+            'notifications_send_when_saving_files',
+        );
         break;
     case 'security':
-        $section_title	= __('Security','cftp_admin');
-        $checkboxes		= array(
-                                'svg_show_as_thumbnail',
-                                'pass_require_upper',
-                                'pass_require_lower',
-                                'pass_require_number',
-                                'pass_require_special',
-                                'recaptcha_enabled',
-                                'authentication_require_email_code',
-                            );
+        $section_title = __('Security', 'cftp_admin');
+        $checkboxes = array(
+            'svg_show_as_thumbnail',
+            'pass_require_upper',
+            'pass_require_lower',
+            'pass_require_number',
+            'pass_require_special',
+            'recaptcha_enabled',
+            'authentication_require_email_code',
+        );
         break;
     case 'branding':
-        $section_title	= __('Branding','cftp_admin');
-        $checkboxes		= array(
-                            );
+        $section_title = __('Branding', 'cftp_admin');
+        $checkboxes = array();
         break;
     case 'external_login':
-        $section_title	= __('External Login','cftp_admin');
-        $checkboxes		= array(
-                            );
+        $section_title = __('External Login', 'cftp_admin');
+        $checkboxes = array();
         break;
     case 'cron':
-        $section_title	= __('Scheduled tasks (cron)','cftp_admin');
-        $checkboxes	= array(
+        $section_title = __('Scheduled tasks (cron)', 'cftp_admin');
+        $checkboxes = array(
             'cron_enable',
             'cron_command_line_only',
             'cron_send_emails',
@@ -90,10 +85,10 @@ switch ( $section ) {
             'cron_delete_orphan_files',
             'cron_email_summary_send',
         );
-    break;
+        break;
     default:
         ps_redirect(BASE_URI . 'options.php?section=general');
-    break;
+        break;
 }
 
 $page_title = $section_title;
@@ -161,7 +156,7 @@ if ($_POST) {
     foreach ($checkboxes as $checkbox) {
         $_POST[$checkbox] = (empty($_POST[$checkbox]) || !isset($_POST[$checkbox])) ? 0 : 1;
     }
-    
+
     // Remove values that should not be saved
     $remove_keys = array(
         'csrf_token',
@@ -187,15 +182,15 @@ if ($_POST) {
 
     // If uploading a logo on the branding page
     if (isset($_FILES['select_logo']) && !empty($_FILES['select_logo'])) {
-        $upload_logo = option_file_upload( $_FILES['select_logo'], 'image', 'logo_filename', 29 );
-        if ($upload_logo['status'] != 'success'){
+        $upload_logo = option_file_upload($_FILES['select_logo'], 'image', 'logo_filename', 29);
+        if ($upload_logo['status'] != 'success') {
             $flash->error($upload_logo['message']);
         }
     }
-    
+
     // If every option is completed, continue
     if ($options_missing > 0) {
-        $flash->error(__('Some fields were not completed. Options could not be saved.','cftp_admin'));
+        $flash->error(__('Some fields were not completed. Options could not be saved.', 'cftp_admin'));
     } else {
         // Convert file types, they are posted as a json string via tagify
         if (!empty($_POST['allowed_file_types'])) {
@@ -203,25 +198,26 @@ if ($_POST) {
             sort($_POST['allowed_file_types']);
             $_POST['allowed_file_types'] = implode(',', $_POST['allowed_file_types']);
         }
-    
+
         // Base URI should always end with /
         if (!empty($_POST['base_uri'])) {
-            if (substr($_POST['base_uri'], -1) != '/') { $_POST['base_uri'] .= '/'; }
+            if (substr($_POST['base_uri'], -1) != '/') {
+                $_POST['base_uri'] .= '/';
+            }
         }
-    
+
         $updated = 0;
         for ($j = 0; $j < $options_total; $j++) {
             $save = save_option($keys[$j], $_POST[$keys[$j]]);
-    
+
             if ($save) {
                 $updated++;
             }
         }
         if ($updated > 0) {
-            $flash->success(__('Options updated successfully.','cftp_admin'));
-        }
-        else {
-            $flash->error(__('There was an error. Please try again.','cftp_admin'));
+            $flash->success(__('Options updated successfully.', 'cftp_admin'));
+        } else {
+            $flash->error(__('There was an error. Please try again.', 'cftp_admin'));
         }
     }
 
@@ -235,7 +231,7 @@ if ($_POST) {
             'section' => $section,
         ],
     ]);
-    
+
     // Redirect so the options are reflected immediately
     ps_redirect(BASE_URI . 'options.php?section=' . html_output($_POST['section']));
 }
@@ -243,8 +239,8 @@ if ($_POST) {
 if ($section == 'security') {
     // If .php files are allowed, set the flag for the warning message
     $allowed_file_types = explode(',', get_option('allowed_file_types'));
-    if ( in_array( 'php', $allowed_file_types ) ) {
-        $flash->warning(__('Warning: php extension is allowed. This is a serious security problem. If you are not sure that you need it, please remove it from the list.','cftp_admin'));
+    if (in_array('php', $allowed_file_types)) {
+        $flash->warning(__('Warning: php extension is allowed. This is a serious security problem. If you are not sure that you need it, please remove it from the list.', 'cftp_admin'));
     }
 }
 
@@ -260,16 +256,16 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                     <input type="hidden" name="section" value="<?php echo $section; ?>">
 
                     <?php
-                        $form_file = FORMS_DIR . DS . 'options' . DS . $section . '.php';
-                        if (file_exists($form_file)) {
-                            include_once $form_file;
-                        }
+                    $form_file = FORMS_DIR . DS . 'options' . DS . $section . '.php';
+                    if (file_exists($form_file)) {
+                        include_once $form_file;
+                    }
                     ?>
 
                     <div class="options_divide"></div>
 
                     <div class="after_form_buttons">
-                        <button type="submit" class="btn btn-wide btn-primary empty"><?php _e('Save options','cftp_admin'); ?></button>
+                        <button type="submit" class="btn btn-wide btn-primary empty"><?php _e('Save options', 'cftp_admin'); ?></button>
                     </div>
                 </form>
             </div>
@@ -277,4 +273,4 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
     </div>
 </div>
 <?php
-    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

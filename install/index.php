@@ -1,9 +1,6 @@
 <?php
 /**
  * Contains the form and the processes used to install ProjectSend.
- *
- * @package		ProjectSend
- * @subpackage	Install
  */
 define( 'IS_INSTALL', true );
 

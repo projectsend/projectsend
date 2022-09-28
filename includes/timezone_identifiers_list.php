@@ -2,9 +2,6 @@
 /**
  * Function created by Alan Reiblein for servers where
  * the original function is not available.
- *
- * @package		ProjectSend
- * @subpackage	Functions
  */
 
 if ( !function_exists('timezone_identifiers_list') ) {

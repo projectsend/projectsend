@@ -1,14 +1,11 @@
 <?php
 /**
  * Define the common functions used on the installer and updates.
- *
- * @package		ProjectSend
- * @subpackage	Functions
  */
 
 function get_latest_version_data()
 {
-    /** Remove "r" from version */
+    // Remove "r" from version
     $current_version = substr(CURRENT_VERSION, 1);
 
     $return = [
@@ -17,9 +14,7 @@ function get_latest_version_data()
         'update_available' => '0',
     ];
 
-    /**
-     * Compare against the online value.
-     */
+    // Compare against the online value.
     $versions = get_json(UPDATES_FEED_URI, '-1 days');
     if (!empty($versions)) {
         $versions = json_decode($versions);
@@ -142,11 +137,11 @@ function import_files_relations()
 	/**
 	 * Prepare the variables to be used on this update
 	 */
-	$files_to_import = array();
-	$get_clients_info = array();
+	$files_to_import = [];
+	$get_clients_info = [];
 	$imported_ok = 0;
 	$imported_error = 0;
-	$unimported_files = array();
+	$unimported_files = [];
 	
 	/**
 	 * Get every file and it's important information from the files database table.

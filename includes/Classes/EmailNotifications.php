@@ -1,8 +1,6 @@
 <?php
 /**
- * @package		ProjectSend
- * @subpackage	Classes
- *
+ * Prepare and send email notifications
  * @todo: completely remake this class. Right now It's just a cleaner port of upload-send-notifications.php
  */
 namespace ProjectSend\Classes;

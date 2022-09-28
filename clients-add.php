@@ -1,17 +1,13 @@
 <?php
 /**
  * Show the form to add a new client.
- *
- * @package		ProjectSend
- * @subpackage	Clients
- *
  */
-$allowed_levels = array(9,8);
+$allowed_levels = array(9, 8);
 require_once 'bootstrap.php';
 
 $active_nav = 'clients';
 
-$page_title = __('Add client','cftp_admin');
+$page_title = __('Add client', 'cftp_admin');
 
 $page_id = 'client_form';
 
@@ -19,10 +15,7 @@ $new_client = new \ProjectSend\Classes\Users();
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
-/**
- * Set checkboxes as 1 to default them to checked when first entering
- * the form
- */
+// Set checkboxes as 1 to default them to checked when first entering the form
 $client_arguments = array(
     'notify_upload' => 1,
     'active' => 1,
@@ -36,7 +29,7 @@ if ($_POST) {
      * and again on the form if validation failed.
      */
     $client_arguments = array(
-        'username'=> $_POST['username'],
+        'username' => $_POST['username'],
         'password' => $_POST['password'],
         'name' => $_POST['name'],
         'email' => $_POST['email'],
@@ -52,12 +45,12 @@ if ($_POST) {
         'type' => 'new_client',
     );
 
-    /** Validate the information from the posted form. */
+    // Validate the information from the posted form.
     $new_client->setType('new_client');
     $new_client->set($client_arguments);
     $create = $new_client->create();
 
-    /** Record the action log */
+    // Record the action log
     $logger = new \ProjectSend\Classes\ActionsLog;
     $record = $logger->addEntry([
         'action' => 3,
@@ -67,8 +60,8 @@ if ($_POST) {
         'affected_account_name' => $new_client->name
     ]);
 
-    $add_to_groups = (!empty( $_POST['groups_request'] ) ) ? $_POST['groups_request'] : '';
-    if ( !empty( $add_to_groups ) ) {
+    $add_to_groups = (!empty($_POST['groups_request'])) ? $_POST['groups_request'] : '';
+    if (!empty($add_to_groups)) {
         array_map('encode_html', $add_to_groups);
         $memberships = new \ProjectSend\Classes\GroupsMemberships;
         $memberships->clientAddToGroups([
@@ -89,14 +82,14 @@ if ($_POST) {
     if (isset($create['email'])) {
         switch ($create['email']) {
             case 2:
-                $flash->success(__('A welcome message was not sent to the new account owner.','cftp_admin'));
-            break;
+                $flash->success(__('A welcome message was not sent to the new account owner.', 'cftp_admin'));
+                break;
             case 1:
-                $flash->success(__('A welcome message with login information was sent to the new account owner.','cftp_admin'));
-            break;
+                $flash->success(__('A welcome message with login information was sent to the new account owner.', 'cftp_admin'));
+                break;
             case 0:
-                $flash->error(__("E-mail notification couldn't be sent.",'cftp_admin'));
-            break;
+                $flash->error(__("E-mail notification couldn't be sent.", 'cftp_admin'));
+                break;
         }
     }
 
@@ -109,15 +102,15 @@ if ($_POST) {
         <div class="white-box">
             <div class="white-box-interior">
                 <?php
-                    // If the form was submitted with errors, show them here.
-                    echo $new_client->getValidationErrors();
+                // If the form was submitted with errors, show them here.
+                echo $new_client->getValidationErrors();
 
-                    $clients_form_type = 'new_client';
-                    include_once FORMS_DIR . DS . 'clients.php';
+                $clients_form_type = 'new_client';
+                include_once FORMS_DIR . DS . 'clients.php';
                 ?>
             </div>
         </div>
     </div>
 </div>
 <?php
-    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

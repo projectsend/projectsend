@@ -1,11 +1,7 @@
 <?php
-
 /**
  * Allows the administrator to customize the emails
  * sent by the system.
- *
- * @package ProjectSend
- * @subpackage Options
  */
 $allowed_levels = array(9);
 require_once 'bootstrap.php';

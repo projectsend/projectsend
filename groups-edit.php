@@ -1,17 +1,13 @@
 <?php
 /**
  * Show the form to edit an existing group.
- *
- * @package		ProjectSend
- * @subpackage	Groups
- *
  */
-$allowed_levels = array(9,8);
+$allowed_levels = array(9, 8);
 require_once 'bootstrap.php';
 
 $active_nav = 'groups';
 
-$page_title = __('Edit group','cftp_admin');
+$page_title = __('Edit group', 'cftp_admin');
 
 $page_id = 'group_form';
 
@@ -42,11 +38,11 @@ if ($_POST) {
      * having to type them again.
      */
     $group_arguments = array(
-        'id'            => $group_id,
-        'name'          => $_POST['name'],
-        'description'   => $_POST['description'],
-        'members'       => (!empty($_POST["members"])) ? $_POST['members'] : null,
-        'public'        => (isset($_POST["public"])) ? 1 : 0,
+        'id' => $group_id,
+        'name' => $_POST['name'],
+        'description' => $_POST['description'],
+        'members' => (!empty($_POST["members"])) ? $_POST['members'] : null,
+        'public' => (isset($_POST["public"])) ? 1 : 0,
     );
 
     /** Validate the information from the posted form. */
@@ -68,15 +64,15 @@ if ($_POST) {
         <div class="white-box">
             <div class="white-box-interior">
                 <?php
-                    // If the form was submitted with errors, show them here.
-                    echo $edit_group->getValidationErrors();
-        
-                    $groups_form_type = 'edit_group';
-                    include_once FORMS_DIR . DS . 'groups.php';
+                // If the form was submitted with errors, show them here.
+                echo $edit_group->getValidationErrors();
+
+                $groups_form_type = 'edit_group';
+                include_once FORMS_DIR . DS . 'groups.php';
                 ?>
             </div>
         </div>
     </div>
 </div>
 <?php
-    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

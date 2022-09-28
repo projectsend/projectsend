@@ -1,11 +1,7 @@
 <?php
-
 /**
  * Common information used on all clients templates.
  * Avoids the need to define all of this when creating a new template.
- *
- * @package		ProjectSend
- * @subpackage	Templates
  */
 global $dbh;
 
@@ -48,7 +44,7 @@ $found_groups = $get_groups->getGroupsByClient([
 /**
  * Define the arrays so they can't be empty
  */
-$found_all_files_array = array();
+$found_all_files_array = [];
 
 /**
  * Get files uploaded by this user

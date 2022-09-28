@@ -34,13 +34,13 @@ class I18n
  * @var Array Loaded text domains and messages
  *
  */
-private static $messages = array();
+private static $messages = [];
 
 /**
  * @var Array Loaded MO files
  *
  */
-private static $moFiles = array();
+private static $moFiles = [];
 
 /**
  * @see ParseFile()
@@ -48,7 +48,7 @@ private static $moFiles = array();
  * @var String Plural function ID to be used
  *
  */
-private static $pluralFunc = array();
+private static $pluralFunc = [];
 
 /**#@-*/
 

@@ -1,20 +1,16 @@
 <?php
 /**
  * Show the form to edit a system user.
- *
- * @package		ProjectSend
- * @subpackage	Users
- *
  */
-$allowed_levels = array(9,8,7);
+$allowed_levels = array(9, 8, 7);
 require_once 'bootstrap.php';
 
 $active_nav = 'users';
 
-/** Create the object */
+// Create the object
 $edit_user = new \ProjectSend\Classes\Users();
 
-/** Check if the id parameter is on the URI. */
+// Check if the id parameter is on the URI.
 if (!isset($_GET['id'])) {
     exit_with_error_code(403);
 }
@@ -24,33 +20,25 @@ if (!user_exists_id($user_id)) {
     exit_with_error_code(403);
 }
 
-/**
- * Get the user information from the database to use on the form.
- */
+// Get the user information from the database to use on the form.
 $edit_user->get($user_id);
 $user_arguments = $edit_user->getProperties();
 
-/**
- * Form type
- */
+// Form type
 if (CURRENT_USER_LEVEL == 7) {
     $user_form_type = 'edit_user_self';
     $ignore_size = true;
-}
-else {
+} else {
     if (CURRENT_USER_USERNAME == $user_arguments['username']) {
         $user_form_type = 'edit_user_self';
         $ignore_size = true;
-    }
-    else {
+    } else {
         $user_form_type = 'edit_user';
         $ignore_size = false;
     }
 }
 
-/**
- * Compare the user editing this account to the on the db.
- */
+// Compare the user editing this account to the on the database.
 if (CURRENT_USER_LEVEL != 9) {
     if (CURRENT_USER_USERNAME != $user_arguments['username']) {
         exit_with_error_code(403);
@@ -87,24 +75,21 @@ if ($_POST) {
         'limit_upload_to' => (isset($_POST["limit_upload_to"])) ? $_POST["limit_upload_to"] : null,
     );
 
-    if ( $ignore_size == false ) {
+    if ($ignore_size == false) {
         $user_arguments['max_file_size'] = (isset($_POST["max_file_size"])) ? $_POST["max_file_size"] : '';
     }
 
-    /**
-     * If the password field send an empty value to prevent notices.
-     */
+    // If the password field send an empty value to prevent notices.
     $user_arguments['password'] = (isset($_POST['password'])) ? $_POST['password'] : '';
 
     /**
      * Edit level only when user is not Uploader (level 7) or when
      * editing other's account (not own).
-     */	
+     */
     $can_edit_level_and_active = true;
     if (CURRENT_USER_LEVEL == 7) {
         $can_edit_level_and_active = false;
-    }
-    else {
+    } else {
         if (CURRENT_USER_USERNAME == $user_arguments['username']) {
             $can_edit_level_and_active = false;
         }
@@ -115,7 +100,7 @@ if ($_POST) {
         $user_arguments['active'] = (isset($_POST["active"])) ? 1 : 0;
     }
 
-    /** Validate the information from the posted form. */
+    // Validate the information from the posted form.
     $edit_user->set($user_arguments);
     $edit_user->setType("existing_user");
     $edit_response = $edit_user->edit();
@@ -129,12 +114,12 @@ if ($_POST) {
     ps_redirect(BASE_URI . 'users-edit.php?id=' . $user_id);
 }
 
-$page_title = __('Edit system user','cftp_admin');
+$page_title = __('Edit system user', 'cftp_admin');
 
 $page_id = 'user_form';
 
 if (CURRENT_USER_USERNAME == $user_arguments['username']) {
-    $page_title = __('My account','cftp_admin');
+    $page_title = __('My account', 'cftp_admin');
 }
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
@@ -144,14 +129,14 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
         <div class="white-box">
             <div class="white-box-interior">
                 <?php
-                    // If the form was submitted with errors, show them here.
-                    echo $edit_user->getValidationErrors();
+                // If the form was submitted with errors, show them here.
+                echo $edit_user->getValidationErrors();
 
-                    include_once FORMS_DIR . DS . 'users.php';
+                include_once FORMS_DIR . DS . 'users.php';
                 ?>
-            </div>		
+            </div>
         </div>
     </div>
 </div>
 <?php
-    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

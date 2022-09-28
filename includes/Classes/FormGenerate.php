@@ -1,9 +1,6 @@
 <?php
 /**
  * Class that generates a form and its fields.
- *
- * @package		ProjectSend
- * @subpackage	Classes
  */
 
 namespace ProjectSend\Classes;
@@ -31,7 +28,7 @@ class FormGenerate {
 
 		$this->password_toggle_wrap = 'input-group-btn password_toggler';		
 		$this->password_toggle_btn	= 'pass_toggler_show';
-		$this->new_password_fields	= array();
+		$this->new_password_fields	= [];
 
 		$this->ignore_field_class	= array(
 											'hidden',
@@ -68,7 +65,7 @@ class FormGenerate {
 		$this->required		= !( empty( $arguments['required'] ) )		? true : false;
 		$this->label 		= !( empty( $arguments['label'] ) )			? $arguments['label'] : null;
 
-		$this->properties	= array();
+		$this->properties	= [];
 		$this->result		= '';
 
 		if ( $element != 'form' ) {
@@ -109,7 +106,7 @@ class FormGenerate {
 			$this->properties['value'] = $this->value;
 		}
 
-		$this->produce = array();
+		$this->produce = [];
 		foreach ( $this->properties as $property => $val ) {
 			if ( !empty( $val ) ) {
 				$this->produce[] = $property . '="' . $val . '"';
@@ -149,7 +146,7 @@ class FormGenerate {
 	 * Generate the options for a select field
 	 */
 	private function generateOption( $value, $name, $selected ) {
-		$this->option_properties = array();
+		$this->option_properties = [];
 
 		$this->option = "\t\t\t" . '<option ';
 		$this->option_properties[] = 'value="' . $value . '"';

@@ -1,13 +1,6 @@
 <?php
 /**
  * Export the log as a CSV file.
- *
- * @package		ProjectSend
- * @subpackage	Log
- *
- */
-/**
- *  Call the required system files
  */
 $allowed_levels = array(9);
 require_once '../bootstrap.php';
@@ -32,7 +25,7 @@ function filter_pipe($input) {
 if ($log_count > 0) {
 	$log_sql->setFetchMode(PDO::FETCH_ASSOC);
 	while ( $log = $log_sql->fetch() ) {
-		$rendered = array();
+		$rendered = [];
 
         $rendered['timestamp'] = format_date($log['timestamp']);
 

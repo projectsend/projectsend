@@ -1,9 +1,6 @@
 <?php
 /**
  * Show the form to reset the password.
- *
- * @package		ProjectSend
- *
  */
 $allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
@@ -19,11 +16,11 @@ $pass_reset = new \ProjectSend\Classes\PasswordReset();
 // Process request
 if ($_POST) {
     $form_type = encode_html($_POST['form_type']);
-    
+
     switch ($form_type) {
         case 'new_request':
             recaptcha2_validate_request();
-            
+
             $get_user = get_user_by('user', 'email', $_POST['email']);
             if ($get_user) {
                 $request = $pass_reset->requestNew($get_user['id']);
@@ -38,7 +35,7 @@ if ($_POST) {
             }
 
             ps_redirect(BASE_URI . 'reset-password.php');
-        break;
+            break;
         case 'new_password':
             $get_user = get_user_by_username($_POST['user']);
             if (!empty($get_user['id'])) {
@@ -54,12 +51,12 @@ if ($_POST) {
             }
 
             exit_with_error_code(403);
-        break;
+            break;
     }
 } else {
     if (!empty($_GET['token']) && !empty($_GET['user'])) {
         $get_user = get_user_by_username($_GET['user']);
-    
+
         $pass_reset->getByTokenAndUserId($_GET['token'], $get_user['id']);
         $validate = $pass_reset->validate();
         if ($validate['status'] == 'error') {
@@ -75,15 +72,15 @@ if ($_POST) {
         <div class="white-box">
             <div class="white-box-interior">
                 <?php
-                    switch ($page_id) {
-                        case 'reset_password_enter_email':
-                        default:
-                            include_once FORMS_DIR . DS . 'reset-password' . DS . 'enter-email.php';
-                            break;
-                        case 'reset_password_enter_new':
-                            include_once FORMS_DIR . DS . 'reset-password' . DS . 'enter-password.php';
-                            break;
-                    }
+                switch ($page_id) {
+                    case 'reset_password_enter_email':
+                    default:
+                        include_once FORMS_DIR . DS . 'reset-password' . DS . 'enter-email.php';
+                        break;
+                    case 'reset_password_enter_new':
+                        include_once FORMS_DIR . DS . 'reset-password' . DS . 'enter-password.php';
+                        break;
+                }
                 ?>
 
                 <div class="login_form_links">
@@ -95,4 +92,4 @@ if ($_POST) {
 </div>
 
 <?php
-    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

@@ -3,9 +3,6 @@
  * Runs databases updates from the admin area, and after the installing process
  * Database update number format is YYYYMMDDXX, where XX is an incremental update
  * number of the day, starting from 01.
- *
- * @package		ProjectSend
- * @subpackage	Updates
  */
 namespace ProjectSend\Classes;
 use \PDO;

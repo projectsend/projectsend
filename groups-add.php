@@ -1,17 +1,13 @@
 <?php
 /**
  * Show the form to add a new group.
- *
- * @package		ProjectSend
- * @subpackage	Groups
- *
  */
-$allowed_levels = array(9,8);
+$allowed_levels = array(9, 8);
 require_once 'bootstrap.php';
 
 $active_nav = 'groups';
 
-$page_title = __('Add clients group','cftp_admin');
+$page_title = __('Add clients group', 'cftp_admin');
 
 $page_id = 'group_form';
 
@@ -27,7 +23,7 @@ if ($_POST) {
     $group_arguments = [
         'name' => $_POST['name'],
         'description' => $_POST['description'],
-        'members' => ( !empty( $_POST['members'] ) ) ? $_POST['members'] : null,
+        'members' => (!empty($_POST['members'])) ? $_POST['members'] : null,
         'public' => (isset($_POST["public"])) ? 1 : 0,
     ];
 
@@ -51,25 +47,16 @@ if ($_POST) {
         <div class="white-box">
             <div class="white-box-interior">
                 <?php
-                    // If the form was submitted with errors, show them here.
-                    echo $group->getValidationErrors();
+                // If the form was submitted with errors, show them here.
+                echo $group->getValidationErrors();
 
-                    if (isset($create)) {
-                        switch ($create['query']) {
-                            case 0:
-                                $msg = __('There was an error. Please try again.','cftp_admin');
-                                echo system_message('danger',$msg);
-                            break;
-                        }
-                    }
-
-                    // Include the form.
-                    $groups_form_type = 'new_group';
-                    include_once FORMS_DIR . DS . 'groups.php';
+                // Include the form.
+                $groups_form_type = 'new_group';
+                include_once FORMS_DIR . DS . 'groups.php';
                 ?>
             </div>
         </div>
     </div>
 </div>
 <?php
-    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

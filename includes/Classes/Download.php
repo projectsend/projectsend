@@ -3,8 +3,6 @@
  * Class that handles actions that do not return any UI.
  * 
  * @todo replace! This functions should go into routes and more specific classes
- *
- * @package		ProjectSend
  */
 namespace ProjectSend\Classes;
 
@@ -47,7 +45,7 @@ class Download
 		if (isset($file_ids)) {
 			// do a permissions check for logged in user
 			if (current_role_in($this->check_level)) {
-				$file_list = array();
+				$file_list = [];
 				foreach($file_ids as $key => $data) {
 					$file_list[] = (int)$data['value']; //file-id must be int
 				}

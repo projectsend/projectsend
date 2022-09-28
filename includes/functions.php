@@ -1,9 +1,6 @@
 <?php
 /**
  * Define the common functions that can be accessed from anywhere.
- *
- * @package		ProjectSend
- * @subpackage	Functions
  */
 
 use enshrined\svgSanitize\Sanitizer;
@@ -243,7 +240,7 @@ function get_available_languages()
     /** Load the language and locales names list */
     require ROOT_DIR . '/includes/language.locales.names.php';
 
-	$langs = array();
+	$langs = [];
 
 	$mo_files = glob(ROOT_DIR.'/lang/*.mo');
 	foreach ($mo_files as $file) {
@@ -277,7 +274,7 @@ function generate_downloads_count( $id = null )
 {
 	global $dbh;
 
-	$data = array();
+	$data = [];
 
 	$sql = "SELECT file_id, COUNT(*) as downloads, SUM( ISNULL(user_id) ) AS anonymous_users, COUNT(DISTINCT user_id) as unique_clients FROM " . TABLE_DOWNLOADS;
 	if ( !empty( $id ) ) {
@@ -948,8 +945,8 @@ function htmlentities_allowed($str, $quoteStyle = ENT_COMPAT, $charset = CHARSET
     /*
 	$allowed_tags = array('i','b','strong','em','p','br','ul','ol','li','u','sup','sub','s');
 
-	$find = array();
-	$replace = array();
+	$find = [];
+	$replace = [];
 
 	foreach ( $allowed_tags as $tag ) {
 		// Opening tags
@@ -1255,7 +1252,7 @@ function file_is_svg($file)
  */
 function make_thumbnail($file, $type = 'thumbnail', $width = THUMBS_MAX_WIDTH, $height = THUMBS_MAX_HEIGHT, $quality = THUMBS_QUALITY)
 {
-    $thumbnail = array();
+    $thumbnail = [];
     
     if ( !file_exists($file) ) {
         $thumbnail_file = 'thumb_unavailable_' . $width . 'x' . $height . '.png';
@@ -1328,7 +1325,7 @@ function make_thumbnail($file, $type = 'thumbnail', $width = THUMBS_MAX_WIDTH, $
  */
 function generate_logo_url()
 {
-	$branding = array();
+	$branding = [];
 	$branding['exists'] = false;
     $logo_filename = get_option('logo_filename');
     // LOGO_FILENAME: filename gotten from the database
@@ -1439,7 +1436,7 @@ function password_notes()
     $pass_notes_output = '';
     global $json_strings;
 
-	$rules_active	= array();
+	$rules_active	= [];
 	$rules			= array(
 							'lower'		=> array(
 												'value'	=> get_option('pass_require_lower'),

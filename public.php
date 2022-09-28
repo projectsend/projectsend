@@ -1,23 +1,19 @@
 <?php
 /**
  * Shows the list of public groups and files
- *
- * @package		ProjectSend
- * @subpackage	Files
- *
  */
 define('IS_PUBLIC_VIEW', true);
 
-$allowed_levels = array(9,8,7,0);
+$allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
 
 // If the option to show this page is not enabled, redirect
-if ( get_option('public_listing_page_enable') != 1 ) {
+if (get_option('public_listing_page_enable') != 1) {
     ps_redirect(BASE_URI . "index.php");
 }
 
 // Check the option to show the page to logged in users only
-if ( get_option('public_listing_logged_only') == 1 ) {
+if (get_option('public_listing_logged_only') == 1) {
     redirect_if_not_logged_in();
 }
 
@@ -38,14 +34,14 @@ if (!empty($_GET['token']) && !empty($_GET['group'])) {
 $page_id = 'public_files_list';
 
 $show_page_title = true;
-$page_title = ($mode == 'files') ? __('Public groups and files','cftp_admin') : sprintf(__('Files in group: %s', 'cftp_admin'), $group_props['name']);
+$page_title = ($mode == 'files') ? __('Public groups and files', 'cftp_admin') : sprintf(__('Files in group: %s', 'cftp_admin'), $group_props['name']);
 
 $dont_redirect_if_logged = 1;
 
 // Pagination
 $per_page = get_option('pagination_results_per_page');
-$pagination_page = ( isset( $_GET["page"] ) ) ? $_GET["page"] : 1;
-$pagination_start = ( $pagination_page - 1 ) * $per_page;
+$pagination_page = (isset($_GET["page"])) ? $_GET["page"] : 1;
+$pagination_start = ($pagination_page - 1) * $per_page;
 $args = [
     'group' => null,
     'pagination' => [
@@ -54,7 +50,9 @@ $args = [
         'per_page' => $per_page, //get_option('pagination_results_per_page')
     ]
 ];
-if (!empty($_GET['group'])) { $args['group_id'] = $_GET['group']; }
+if (!empty($_GET['group'])) {
+    $args['group_id'] = $_GET['group'];
+}
 
 $files = get_public_files($args);
 

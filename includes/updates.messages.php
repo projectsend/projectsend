@@ -1,9 +1,6 @@
 <?php
 /**
  * Show updates status messages.
- *
- * @package		ProjectSend
- * @subpackage	Updates
  */
     if (!empty($db_upgrade)) {
         if (!empty($db_upgrade->getAppliedUpdates())) {

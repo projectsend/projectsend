@@ -1,17 +1,13 @@
 <?php
 /**
  * Show the form to add a new system user.
- *
- * @package		ProjectSend
- * @subpackage	Users
- *
  */
 $allowed_levels = array(9);
 require_once 'bootstrap.php';
 
 $active_nav = 'users';
 
-$page_title = __('Add system user','cftp_admin');
+$page_title = __('Add system user', 'cftp_admin');
 
 $page_id = 'user_form';
 
@@ -19,10 +15,7 @@ $new_user = new \ProjectSend\Classes\Users();
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
-/**
- * Set checkboxes as 1 to default them to checked when first entering
- * the form
- */
+// Set checkboxes as 1 to default them to checked when first entering the form
 $user_arguments = array(
     'active' => 1,
     'notify_account' => 1,
@@ -48,8 +41,8 @@ if ($_POST) {
         'type' => 'new_user',
     );
 
-    /** Validate the information from the posted form. */
-    /** Create the user if validation is correct. */
+    // Validate the information from the posted form
+    // Create the user if validation is correct
     $new_user->setType('new_user');
     $new_user->set($user_arguments);
     $create = $new_user->create();
@@ -74,14 +67,14 @@ if ($_POST) {
     if (isset($create['email'])) {
         switch ($create['email']) {
             case 2:
-                $flash->success(__('A welcome message was not sent to the new account owner.','cftp_admin'));
-            break;
+                $flash->success(__('A welcome message was not sent to the new account owner.', 'cftp_admin'));
+                break;
             case 1:
-                $flash->success(__('A welcome message with login information was sent to the new account owner.','cftp_admin'));
-            break;
+                $flash->success(__('A welcome message with login information was sent to the new account owner.', 'cftp_admin'));
+                break;
             case 0:
-                $flash->error(__("E-mail notification couldn't be sent.",'cftp_admin'));
-            break;
+                $flash->error(__("E-mail notification couldn't be sent.", 'cftp_admin'));
+                break;
         }
     }
 
@@ -93,15 +86,15 @@ if ($_POST) {
         <div class="white-box">
             <div class="white-box-interior">
                 <?php
-                    // If the form was submitted with errors, show them here.
-                    echo $new_user->getValidationErrors();
+                // If the form was submitted with errors, show them here.
+                echo $new_user->getValidationErrors();
 
-                    $user_form_type = 'new_user';
-                    include_once FORMS_DIR . DS . 'users.php';
+                $user_form_type = 'new_user';
+                include_once FORMS_DIR . DS . 'users.php';
                 ?>
             </div>
         </div>
     </div>
 </div>
 <?php
-    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

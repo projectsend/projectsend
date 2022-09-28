@@ -2,10 +2,8 @@
 /**
  * This file generates the main menu for the header on the back-end
  * and also for the default template.
- *
- * @package ProjectSend
  */
-$items = array();
+$items = [];
 
 /**
  * Items for system users

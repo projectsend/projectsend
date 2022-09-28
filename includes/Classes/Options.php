@@ -53,7 +53,7 @@ class Options
 	 */
 	private function getOptions()
 	{
-		$options = array();
+		$options = [];
 		try {
 			$query = $this->dbh->query("SELECT * FROM " . TABLE_OPTIONS);
 			$query->setFetchMode(\PDO::FETCH_ASSOC);

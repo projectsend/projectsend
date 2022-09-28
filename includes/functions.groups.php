@@ -66,10 +66,10 @@ function get_groups($arguments)
     $created_by	= !empty( $arguments['created_by'] ) ? $arguments['created_by'] : '';
     $search		= !empty( $arguments['search'] ) ? $arguments['search'] : '';
 
-    $groups = array();
+    $groups = [];
     $query = "SELECT * FROM " . TABLE_GROUPS;
 
-    $parameters = array();
+    $parameters = [];
     if ( !empty( $group_ids ) ) {
         $parameters[] = "FIND_IN_SET(id, :ids)";
     }

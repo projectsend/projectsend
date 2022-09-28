@@ -1,11 +1,5 @@
 <?php
-/**
- * Contains the form that is used to upload files
- *
- * @package		ProjectSend
- * @subpackage	Files
- *
- */
+// Contains the form that is used to upload files
 ?>
 <form action="files-edit.php" name="upload_form" id="upload_form" method="post" enctype="multipart/form-data">
     <?php addCsrf(); ?>

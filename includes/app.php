@@ -5,9 +5,6 @@
  * This file includes the most basic system options that cannot be
  * changed through the web interface, such as the version number,
  * php directives and the user and password length values.
- *
- * @package ProjectSend
- * @subpackage Core
  */
 session_start();
 
@@ -19,7 +16,7 @@ session_start();
  */
 if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') ) {
     header("Cache-control: private");
-    $_SESSION = array();
+    $_SESSION = [];
     session_destroy();
     session_regenerate_id(true);
 

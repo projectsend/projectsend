@@ -2,9 +2,6 @@
 /**
  * Contains all the functions used to validate the current logged in
  * client or user.
- *
- * @package ProjectSend
- *
  */
 
  function extend_session()

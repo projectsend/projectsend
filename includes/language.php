@@ -33,15 +33,17 @@ if ( isset( $_SESSION['lang'] ) ) {
  * the browser's language (if available)
  */
 else {
-	if ( defined('USE_BROWSER_LANG') ) {
-		switch ( USE_BROWSER_LANG ) {
+    $options_object = new \ProjectSend\Classes\Options;
+    $browser_lang = $options_object->getOption('use_browser_lang');
+	if ( !empty($browser_lang) ) {
+		switch ( $browser_lang ) {
 			case '0':
 			default:
 				break;
 			case '1':
                 if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-                    $browser_lang	= substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
-                    $lang_file		= ROOT_DIR . DS . 'lang' . DS . $browser_lang . '.mo';
+                    $browser_lang = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+                    $lang_file = ROOT_DIR . DS . 'lang' . DS . $browser_lang . '.mo';
                     if ( file_exists( $lang_file ) ) {
                         $lang = $browser_lang;
                     }

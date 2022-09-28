@@ -3,25 +3,33 @@
 
 function option_exists($name)
 {
-    global $options;
-
-    if (!empty($options)) {
-        if (array_key_exists($name, $options->options)) {
-            return true;
-        }
-    }
-
-    return false;
+    global $dbh;
+    $statement = $dbh->prepare("SELECT name FROM " . TABLE_OPTIONS . " WHERE name=:name");
+    $statement->execute([
+        ':name' => $name,
+    ]);
+    return ($statement->rowCount() > 0);
 }
 
-function get_option($name)
+function get_option($name, $escape = null)
 {
-    global $options;
+    global $dbh;
+    $statement = $dbh->prepare("SELECT * FROM " . TABLE_OPTIONS . " WHERE name=:name");
+    $statement->execute([
+        ':name' => $name,
+    ]);
+    if ($statement->rowCount() == 0) {
+        return null;
+    }
 
-    if (!empty($options)) {
-        if (option_exists($name)) {
-            return $options->options[$name];
+    $statement->setFetchMode(PDO::FETCH_ASSOC);
+    while ( $row = $statement->fetch() ) {
+        $value = $row['value'];
+        if ($escape == true) {
+            $value = html_output($value);
         }
+
+        return $value;
     }
 
     return null;
@@ -29,7 +37,6 @@ function get_option($name)
 
 function save_option($name, $value)
 {
-    global $options;
     global $dbh;
 
     if (option_exists($name)) {
@@ -47,8 +54,6 @@ function save_option($name, $value)
             $result = $save->execute();
         }
     }
-
-    $options->options[$name] = $value;
 
     return $result;
 }

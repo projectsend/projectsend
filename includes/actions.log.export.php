@@ -12,10 +12,9 @@ header('Content-Disposition: attachment; filename=data.csv');
 
 $output = fopen('php://output', 'w');
 
-
-$log_query	= "SELECT * FROM " . TABLE_LOG . " ORDER BY id DESC";
-$log_sql	= $dbh->query( $log_query );
-$log_count	= $log_sql->rowCount();
+$log_query = "SELECT * FROM " . TABLE_LOG . " ORDER BY id DESC";
+$log_sql = $dbh->query( $log_query );
+$log_count = $log_sql->rowCount();
 
 function filter_pipe($input) {
 	$output = str_replace('|', '\|', $input);

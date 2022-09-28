@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class that handles all the actions and functions that can be applied to
  * users accounts.
@@ -44,7 +45,7 @@ class Users
 
     // Groups where the client is member
     public $groups;
-    
+
     // @todo implement meta data
     public $meta;
 
@@ -58,7 +59,7 @@ class Users
 
     // Permissions
     private $allowed_actions_roles;
-    
+
     public function __construct($user_id = null)
     {
         global $dbh;
@@ -141,22 +142,22 @@ class Users
      */
     public function set($arguments = [])
     {
-		$this->name = (!empty($arguments['name'])) ? encode_html($arguments['name']) : null;
+        $this->name = (!empty($arguments['name'])) ? encode_html($arguments['name']) : null;
         $this->email = (!empty($arguments['email'])) ? encode_html($arguments['email']) : null;
         $this->username = (!empty($arguments['username'])) ? encode_html($arguments['username']) : null;
-		$this->password = (!empty($arguments['password'])) ? $arguments['password'] : null;
+        $this->password = (!empty($arguments['password'])) ? $arguments['password'] : null;
         $this->role = (!empty($arguments['role'])) ? (int)$arguments['role'] : 0;
         $this->active = (!empty($arguments['active'])) ? (int)$arguments['active'] : 0;
-		$this->notify_account = (!empty($arguments['notify_account'])) ? (int)$arguments['notify_account'] : 0;
+        $this->notify_account = (!empty($arguments['notify_account'])) ? (int)$arguments['notify_account'] : 0;
         $this->max_file_size = (!empty($arguments['max_file_size'])) ? (int)$arguments['max_file_size'] : 0;
         $this->can_upload_public = (!empty($arguments['can_upload_public'])) ? (int)$arguments['can_upload_public'] : 0;
         $this->require_password_change = (!empty($arguments['require_password_change'])) ? $arguments['require_password_change'] : false;
         $this->limit_upload_to = (!empty($arguments['limit_upload_to'])) ? $arguments['limit_upload_to'] : null;
 
         // Specific for clients
-		$this->address = (!empty($arguments['address'])) ? encode_html($arguments['address']) : null;
-		$this->phone = (!empty($arguments['phone'])) ? encode_html($arguments['phone']) : null;
-		$this->contact = (!empty($arguments['contact'])) ? encode_html($arguments['contact']) : null;
+        $this->address = (!empty($arguments['address'])) ? encode_html($arguments['address']) : null;
+        $this->phone = (!empty($arguments['phone'])) ? encode_html($arguments['phone']) : null;
+        $this->contact = (!empty($arguments['contact'])) ? encode_html($arguments['contact']) : null;
         $this->notify_upload = (!empty($arguments['notify_upload'])) ? (int)$arguments['notify_upload'] : 0;
         $this->account_request = (!empty($arguments['account_requested'])) ? (int)$arguments['account_requested'] : 0;
         $this->recaptcha = (!empty($arguments['recaptcha'])) ? $arguments['recaptcha'] : null;
@@ -182,8 +183,8 @@ class Users
         }
 
         $this->exists = true;
-    
-        while ($this->row = $this->statement->fetch() ) {
+
+        while ($this->row = $this->statement->fetch()) {
             $this->name = html_output($this->row['name']);
             $this->email = html_output($this->row['email']);
             $this->username = html_output($this->row['user']);
@@ -216,18 +217,18 @@ class Users
             $this->statement->bindParam(':username', $this->username);
             $this->statement->execute();
 
-            if ( $this->statement->rowCount() > 0) {
+            if ($this->statement->rowCount() > 0) {
                 $this->statement->setFetchMode(PDO::FETCH_ASSOC);
-                while ($this->file = $this->statement->fetch() ) {
+                while ($this->file = $this->statement->fetch()) {
                     $this->files[] = $this->file['id'];
                 }
             }
-    
+
             // Groups
             $groups_object = new \ProjectSend\Classes\GroupsMemberships();
             $this->groups = $groups_object->getGroupsByClient([
-                'client_id'	=> $this->id
-            ]); 
+                'client_id'    => $this->id
+            ]);
 
             $this->validation_type = "existing_user";
         }
@@ -301,7 +302,7 @@ class Users
         if (!$this->isClient()) {
             return true;
         }
-        
+
         return client_can_upload_public($this->id);
     }
 
@@ -314,12 +315,12 @@ class Users
         return true;
     }
 
-	/**
-	 * Validate the information from the form.
-	 */
+    /**
+     * Validate the information from the form.
+     */
     public function validate()
-	{
-		global $json_strings;
+    {
+        global $json_strings;
 
         $validation = new \ProjectSend\Classes\Validation;
         $validate_password = false;
@@ -353,13 +354,13 @@ class Users
         } else if ($this->validation_type == 'existing_user') {
             $validation_items[$this->email]['email_exists'] = ['error' => $json_strings['validation']['email_exists'], 'id_ignore' => $this->id];
 
-			// Changing password is optional.
-			if (!empty($this->password)) {
-				$validate_password = true;
+            // Changing password is optional.
+            if (!empty($this->password)) {
+                $validate_password = true;
             }
         }
 
-		// Password checks
+        // Password checks
         if ($validate_password === true) {
             $validation_items[$this->password] = [
                 'required' => ['error' => $json_strings['validation']['no_pass']],
@@ -371,15 +372,14 @@ class Users
 
         if (!empty($this->recaptcha)) {
             $validation_items[$this->recaptcha]['recaptcha2'] = ['error' => $json_strings['validation']['recaptcha']];
-		}
+        }
 
         $validation->validate_items($validation_items);
 
-		if ($validation->passed()) {
+        if ($validation->passed()) {
             $this->validation_passed = true;
             return true;
-		}
-		else {
+        } else {
             $this->validation_passed = false;
             $this->validation_errors = $validation->list_errors();
         }
@@ -401,16 +401,16 @@ class Users
 
     private function hashPassword($password)
     {
-        $hashed = password_hash($password, PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
+        $hashed = password_hash($password, PASSWORD_DEFAULT, ['cost' => HASH_COST_LOG2]);
         return $hashed;
     }
 
-	/**
-	 * Create a new user.
-	 */
+    /**
+     * Create a new user.
+     */
     public function create()
-	{
-		$state = array(
+    {
+        $state = array(
             'query' => 0,
         );
 
@@ -421,36 +421,37 @@ class Users
 
         $this->password_hashed = $this->hashPassword($this->password);
 
-		if (strlen($this->password_hashed) >= 20) {
-			/** Who is creating the client? */
-			$this->created_by = (defined('CURRENT_USER_USERNAME')) ? CURRENT_USER_USERNAME : null;
+        if (strlen($this->password_hashed) >= 20) {
+            /** Who is creating the client? */
+            $this->created_by = (defined('CURRENT_USER_USERNAME')) ? CURRENT_USER_USERNAME : null;
 
-			/** Insert the client information into the database */
-			$this->timestamp = time();
-			$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_USERS . " (
+            /** Insert the client information into the database */
+            $this->timestamp = time();
+            $this->statement = $this->dbh->prepare(
+                "INSERT INTO " . TABLE_USERS . " (
                     name, user, password, level, address, phone, email, notify, contact, created_by, active, account_requested, max_file_size, can_upload_public
                 )
-			    VALUES (
+                VALUES (
                     :name, :username, :password, :role, :address, :phone, :email, :notify_upload, :contact, :created_by, :active, :request, :max_file_size, :can_upload_public
                 )"
             );
-			$this->statement->bindParam(':name', $this->name);
-			$this->statement->bindParam(':username', $this->username);
+            $this->statement->bindParam(':name', $this->name);
+            $this->statement->bindParam(':username', $this->username);
             $this->statement->bindParam(':password', $this->password_hashed);
             $this->statement->bindParam(':role', $this->role, PDO::PARAM_INT);
-			$this->statement->bindParam(':address', $this->address);
-			$this->statement->bindParam(':phone', $this->phone);
-			$this->statement->bindParam(':email', $this->email);
-			$this->statement->bindParam(':notify_upload', $this->notify_upload, PDO::PARAM_INT);
-			$this->statement->bindParam(':contact', $this->contact);
-			$this->statement->bindParam(':created_by', $this->created_by);
-			$this->statement->bindParam(':active', $this->active, PDO::PARAM_INT);
-			$this->statement->bindParam(':request', $this->account_request, PDO::PARAM_INT);
-			$this->statement->bindParam(':max_file_size', $this->max_file_size, PDO::PARAM_INT);
+            $this->statement->bindParam(':address', $this->address);
+            $this->statement->bindParam(':phone', $this->phone);
+            $this->statement->bindParam(':email', $this->email);
+            $this->statement->bindParam(':notify_upload', $this->notify_upload, PDO::PARAM_INT);
+            $this->statement->bindParam(':contact', $this->contact);
+            $this->statement->bindParam(':created_by', $this->created_by);
+            $this->statement->bindParam(':active', $this->active, PDO::PARAM_INT);
+            $this->statement->bindParam(':request', $this->account_request, PDO::PARAM_INT);
+            $this->statement->bindParam(':max_file_size', $this->max_file_size, PDO::PARAM_INT);
             $this->statement->bindParam(':can_upload_public', $this->can_upload_public, PDO::PARAM_INT);
-			$this->statement->execute();
+            $this->statement->execute();
 
-			if ($this->statement) {
+            if ($this->statement) {
                 $this->id = $this->dbh->lastInsertId();
                 $state['id'] = $this->id;
                 $state['query'] = 1;
@@ -472,31 +473,29 @@ class Users
                         $email_type = "new_user";
                         break;
                 }
-                
-				/** Send account data by email */
-				$this->notify_user = new \ProjectSend\Classes\Emails;
-				if ($this->notify_account == 1) {
-					if ($this->notify_user->send([
-                        'type'		=> $email_type,
-                        'address'	=> $this->email,
-                        'username'	=> $this->username,
-                        'password'	=> $this->password
-                    ])) {
-						$state['email'] = 1;
-					}
-					else {
-						$state['email'] = 0;
-					}
-				}
-				else {
-					$state['email'] = 2;
-				}
-			}
-		}
 
-		return $state;
+                /** Send account data by email */
+                $this->notify_user = new \ProjectSend\Classes\Emails;
+                if ($this->notify_account == 1) {
+                    if ($this->notify_user->send([
+                        'type'        => $email_type,
+                        'address'    => $this->email,
+                        'username'    => $this->username,
+                        'password'    => $this->password
+                    ])) {
+                        $state['email'] = 1;
+                    } else {
+                        $state['email'] = 0;
+                    }
+                } else {
+                    $state['email'] = 2;
+                }
+            }
+        }
+
+        return $state;
     }
-    
+
     public function triggerAfterSelfRegister($arguments = null)
     {
         define('REGISTERING', true);
@@ -515,9 +514,9 @@ class Users
         if (!empty($arguments['groups'])) {
             $request = new \ProjectSend\Classes\GroupsMemberships;
             $request->groupRequestMembership([
-                'client_id'		=> $this->id,
-                'group_ids'		=> $arguments['groups'],
-                'request_by'	=> $this->created_by,
+                'client_id' => $this->id,
+                'group_ids' => $arguments['groups'],
+                'request_by' => $this->created_by,
             ]);
         }
 
@@ -526,28 +525,28 @@ class Users
          */
         $notify_admin = new \ProjectSend\Classes\Emails;
         $email_arguments = array(
-            'type'			=> 'new_client_self',
-            'address'		=> get_option('admin_email_address'),
-            'username'		=> $this->username,
-            'name'			=> $this->name,
+            'type' => 'new_client_self',
+            'address' => get_option('admin_email_address'),
+            'username' => $this->username,
+            'name' => $this->name,
         );
-        if ( !empty( $execute_requests['requests'] ) ) {
+        if (!empty($execute_requests['requests'])) {
             $email_arguments['memberships'] = $execute_requests['requests'];
         }
 
         $notify_admin->send($email_arguments);
     }
 
-	/**
-	 * Edit an existing user.
-	 */
-	public function edit()
-	{
+    /**
+     * Edit an existing user.
+     */
+    public function edit()
+    {
         if (empty($this->id)) {
             return false;
         }
 
-		$state = array(
+        $state = array(
             'query' => 0,
         );
 
@@ -586,9 +585,9 @@ class Users
         if (!empty($this->password)) {
             $this->query .= ", password = :password";
         }
-        
+
         $this->query .= " WHERE id = :id";
-        
+
         $this->statement = $this->dbh->prepare($this->query);
         $this->statement->bindParam(':name', $this->name);
         $this->statement->bindParam(':role', $this->role, PDO::PARAM_INT);
@@ -626,7 +625,7 @@ class Users
                 case 7:
                 case 8:
                 case 9:
-                $log_action_number = 13;
+                    $log_action_number = 13;
                     break;
             }
 
@@ -640,23 +639,23 @@ class Users
             ]);
         }
 
-		return $state;
-	}
+        return $state;
+    }
 
-	/**
-	 * Delete an existing user.
-	 */
-	public function delete()
-	{
+    /**
+     * Delete an existing user.
+     */
+    public function delete()
+    {
         if ($this->id == CURRENT_USER_ID) {
             return false;
         }
 
-		if (isset($this->id)) {
-			/** Do a permissions check */
-			if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-				$this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_USERS . ' WHERE id=:id');
-				$this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
+        if (isset($this->id)) {
+            /** Do a permissions check */
+            if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
+                $this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_USERS . ' WHERE id=:id');
+                $this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
                 $this->sql->execute();
 
                 switch ($this->role) {
@@ -676,19 +675,19 @@ class Users
                     'owner_id' => CURRENT_USER_ID,
                     'affected_account_name' => $this->name,
                 ]);
-                
-                return true;
-			}
-        }
-        
-        return false;
-	}
 
-	/**
-	 * Mark the user as active or inactive.
-	 */
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Mark the user as active or inactive.
+     */
     public function setActiveStatus($change_to)
-	{
+    {
         if ($this->id == CURRENT_USER_ID) {
             return false;
         }
@@ -710,12 +709,12 @@ class Users
                 break;
         }
 
-		if (isset($this->id)) {
-			/** Do a permissions check */
-			if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-				$this->sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active_state WHERE id=:id');
-				$this->sql->bindParam(':active_state', $change_to, PDO::PARAM_INT);
-				$this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
+        if (isset($this->id)) {
+            /** Do a permissions check */
+            if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
+                $this->sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active_state WHERE id=:id');
+                $this->sql->bindParam(':active_state', $change_to, PDO::PARAM_INT);
+                $this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
                 $this->sql->execute();
 
                 /** Record the action log */
@@ -724,20 +723,20 @@ class Users
                     'owner_id' => CURRENT_USER_ID,
                     'affected_account_name' => $this->name,
                 ]);
-                
-                return true;
-			}
-        }
-        
-        return false;
-	}
 
-	/**
-	 * Approve account
-	 */
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Approve account
+     */
     public function accountApprove()
     {
-		if (isset($this->id)) {
+        if (isset($this->id)) {
             /** Do a permissions check */
             if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
                 $this->sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active, account_requested=:requested, account_denied=:denied WHERE id=:id');
@@ -762,7 +761,7 @@ class Users
                     'owner_id' => CURRENT_USER_ID,
                     'affected_account_name' => $this->name,
                 ]);
-                
+
                 return true;
             }
         }
@@ -774,10 +773,10 @@ class Users
     {
         $group_id = get_option('clients_auto_group');
 
-        $autogroup	= new \ProjectSend\Classes\GroupsMemberships;
+        $autogroup = new \ProjectSend\Classes\GroupsMemberships;
         $autogroup->clientAddToGroups([
-            'client_id'	=> $this->id,
-            'group_ids'	=> $group_id,
+            'client_id' => $this->id,
+            'group_ids' => $group_id,
         ]);
     }
 
@@ -786,7 +785,7 @@ class Users
      */
     public function accountDeny()
     {
-		if (isset($this->id)) {
+        if (isset($this->id)) {
             /** Do a permissions check */
             if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
                 $this->sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active, account_requested=:account_requested, account_denied=:account_denied WHERE id=:id');
@@ -802,7 +801,7 @@ class Users
                     'owner_id' => CURRENT_USER_ID,
                     'affected_account_name' => $this->name,
                 ]);
-                
+
                 return true;
             }
         }
@@ -819,23 +818,23 @@ class Users
     private function limitUploadToGet()
     {
         $clients_ids = [];
-        if ( !table_exists( TABLE_USER_LIMIT_UPLOAD_TO ) ) {
+        if (!table_exists(TABLE_USER_LIMIT_UPLOAD_TO)) {
             return $clients_ids;
         }
 
         $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USER_LIMIT_UPLOAD_TO . " WHERE user_id = :user_id");
         $statement->bindParam(':user_id', $this->id, PDO::PARAM_INT);
         $statement->execute();
-        if ( $statement->rowCount() > 0) {
+        if ($statement->rowCount() > 0) {
             $statement->setFetchMode(PDO::FETCH_ASSOC);
-            while( $row = $statement->fetch() ) {
+            while ($row = $statement->fetch()) {
                 $clients_ids[] = $row['client_id'];
             }
         }
 
         $this->limit_upload_to = $clients_ids;
 
-        return $clients_ids;    
+        return $clients_ids;
     }
 
     private function limitUploadToSave($clients_ids = [])
@@ -844,8 +843,7 @@ class Users
             return;
         }
 
-        if (CURRENT_USER_ID == $this->id)
-        {
+        if (CURRENT_USER_ID == $this->id) {
             return;
         }
 
@@ -858,7 +856,7 @@ class Users
                 $delete[] = $client_id;
             }
         }
-        
+
         if (!empty($delete)) {
             $delete = implode(',', $delete);
             $statement = $this->dbh->prepare("DELETE FROM " . TABLE_USER_LIMIT_UPLOAD_TO . " WHERE user_id = :user_id AND FIND_IN_SET(client_id, :delete)");
@@ -918,7 +916,7 @@ class Users
 
         return $validation->passed();
     }
-    
+
     public function setNewPassword($password = null)
     {
         if (empty($this->id)) {

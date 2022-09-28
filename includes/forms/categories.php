@@ -6,13 +6,13 @@
 $show_cancel = false;
 
 switch ( $form_information['type'] ) {
-	case 'create':
-		$submit_value	= __('Create','cftp_admin');
-		break;
-	case 'edit':
-		$submit_value	= __('Save','cftp_admin');
-		$show_cancel	= true;
-		break;
+    case 'create':
+        $submit_value = __('Create','cftp_admin');
+        break;
+    case 'edit':
+        $submit_value = __('Save','cftp_admin');
+        $show_cancel = true;
+        break;
 }
 ?>
 <form action="categories.php" class="form-horizontal" name="process_category" id="process_category" method="post">
@@ -42,9 +42,9 @@ switch ( $form_information['type'] ) {
                 <select name="category_parent" id="category_parent" class="form-control">
                     <option value="0" <?php echo (isset($category_parent) && $category_parent == '0') ? 'selected="selected"' : ''; ?>><?php _e('None','cftp_admin'); ?></option>
                     <?php
-                        $select_categories	= get_categories();
-                        $ignore				= ( $form_information['type'] == 'edit_category' ) ? $editing : 0;
-                        $selected_parent	= ( isset($category_parent) ) ? array( $category_parent ) : array();
+                        $select_categories = get_categories();
+                        $ignore = ( $form_information['type'] == 'edit_category' ) ? $editing : 0;
+                        $selected_parent = ( isset($category_parent) ) ? array( $category_parent ) : array();
                         echo generate_categories_options( $select_categories['arranged'], 0, $selected_parent, 'exclude_and_children', array( $ignore ) );
                     ?>
                 </select>

@@ -2,38 +2,69 @@
     'use strict';
 
     admin.parts.passwordVisibilityToggle = function () {
+        let password_inputs = document.querySelectorAll('.attach_password_toggler')
+        password_inputs.forEach(element => {
+            var id;
+            if (element.hasAttribute('id')) {
+                id = element.id;
+            } else {
+                let random = (Math.random() + 1).toString(36).substring(7);
+                id = 'el_pass_'+random;
+                element.setAttribute('id', id);
+            }
 
-        /**
-         * Adapted from http://jsfiddle.net/Ngtp7/2/
-         */
-        $(function () {
-            $(".password_toggle").each(function (index, input) {
-                var $input = $(input);
-                var $container	= $($input).next('.password_toggle');
-                $(".password_toggler button").click(function () {
-                    var change = "";
-                    var icon = $(this).find('i');
-                    if ($(this).hasClass('pass_toggler_show')) {
-                        $(this).removeClass('pass_toggler_show').addClass('pass_toggler_hide');
-                        $(icon).removeClass('glyphicon glyphicon-eye-open').addClass('glyphicon glyphicon-eye-close');
-                        change = "text";
-                    } else {
-                        $(this).removeClass('pass_toggler_hide').addClass('pass_toggler_show');
-                        $(icon).removeClass('glyphicon glyphicon-eye-close').addClass('glyphicon glyphicon-eye-open');
-                        change = "password";
-                    }
-                    var rep = $("<input type='" + change + "' />")
-                        .attr("id", $input.attr("id"))
-                        .attr("name", $input.attr("name"))
-                        .attr('class', $input.attr('class'))
-                        .attr('maxlength', $input.attr('maxlength'))
-                        .val($input.val())
-                        .insertBefore($input);
-                    $input.remove();
-                    $input = rep;
-                }).insertBefore($container);
-            });
-            return false;
+            let button = document.createElement('button');
+            button.classList.add('btn', 'btn-xs', 'btn-secondary', 'input-group-btn', 'password_toggler');
+            button.setAttribute('type', 'button');
+            button.dataset.targetId = id;
+            button.dataset.status = 'hidden';
+
+            let icon = document.createElement('i');
+            icon.classList.add('fa', 'fa-eye');
+            button.appendChild(icon);
+
+            var copy = element.cloneNode();
+            var wrapper = document.createElement('div');
+            wrapper.classList.add('input-group');
+            wrapper.appendChild(copy);
+            wrapper.appendChild(button);
+
+            element.insertAdjacentElement("afterend", wrapper);
+            element.remove();
+
+            button.addEventListener( 'click', function ( event ) {
+                let id = event.target.dataset.targetId;
+                let target = document.getElementById(id);
+                let me = event.target;
+                let icon = this.querySelector('i');
+                let type;
+                switch (me.dataset.status) {
+                    case 'hidden':
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                        me.dataset.status = 'visible';
+                        type = 'text';
+                    break;
+                    case 'visible':
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                        me.dataset.status = 'hidden';
+                        type = 'password';
+                    break;
+                }
+
+                let new_input = document.createElement('input');
+                new_input.setAttribute('type', type);
+                new_input.setAttribute('id', id);
+                new_input.setAttribute('name', target.name);
+                if (target.hasAttribute('max-length')) {
+                    new_input.maxLength = target.maxLength;
+                }
+                new_input.className = target.className;
+                new_input.value = target.value;
+                target.insertAdjacentElement("beforebegin", new_input);
+                target.remove();
+            }, true);
         });
     };
 })();

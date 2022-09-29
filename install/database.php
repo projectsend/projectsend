@@ -3,7 +3,7 @@
  * Contains the queries that will be used to create the database structure
  * when installing the system.
  */
-function get_install_base_queries() {
+function get_install_base_queries($params = []) {
     $current_version = substr(CURRENT_VERSION, 1);
     $database_version = INITIAL_DATABASE_VERSION;
     $now = date('d-m-Y');
@@ -34,9 +34,7 @@ function get_install_base_queries() {
                             PRIMARY KEY (`id`)
                         ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                         ',
-            'params' => array(),
         ),
-
 
         '1' => array(
                     'table'	=> TABLE_FILES,
@@ -57,7 +55,6 @@ function get_install_base_queries() {
                                     FOREIGN KEY (`user_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE
                                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
-                    'params' => array(),
         ),
 
         '2' =>  array(
@@ -69,7 +66,6 @@ function get_install_base_queries() {
                                     PRIMARY KEY (`id`)
                                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
-                    'params' => array(),
         ),
 
         '3' =>  array(
@@ -85,7 +81,6 @@ function get_install_base_queries() {
                                     PRIMARY KEY (`id`)
                                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
-                    'params' => array(),
         ),
 
         '4' =>  array(
@@ -101,7 +96,6 @@ function get_install_base_queries() {
                                     FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE
                                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
-                    'params' => array(),
         ),
 
         '5' =>  array(
@@ -118,7 +112,6 @@ function get_install_base_queries() {
                                     FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE
                                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
-                    'params' => array(),
         ),
 
         '6' =>  array(
@@ -136,7 +129,6 @@ function get_install_base_queries() {
                                     PRIMARY KEY (`id`)
                                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
-                    'params' => array(),
         ),
 
         '7' =>  array(
@@ -157,7 +149,6 @@ function get_install_base_queries() {
                                     PRIMARY KEY (`id`)
                                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
-                    'params' => array(),
         ),
 
         '8' =>  array(
@@ -176,7 +167,6 @@ function get_install_base_queries() {
                                     PRIMARY KEY (`id`)
                                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
-                    'params' => array(),
         ),
 
         '9' =>  array(
@@ -194,7 +184,6 @@ function get_install_base_queries() {
                                     PRIMARY KEY (`id`)
                                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
-                    'params' => array(),
         ),
 
         '10' =>  array(
@@ -209,7 +198,6 @@ function get_install_base_queries() {
                                     PRIMARY KEY (`id`)
                                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
-                    'params' => array(),
         ),
 
         '11' =>  array(
@@ -227,7 +215,6 @@ function get_install_base_queries() {
                                     PRIMARY KEY (`id`)
                                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
-                    'params' => array(),
         ),
 
         '12' =>  array(
@@ -346,12 +333,12 @@ function get_install_base_queries() {
                                 ('login_ip_blacklist', '')
                                 ",
                     'params' => array(
-                                        ':base_uri'	=> $base_uri,
-                                        ':title'	=> $install_title,
-                                        ':email'	=> $admin_email,
+                                        ':base_uri'	=> $params['base_uri'],
+                                        ':title'	=> $params['install_title'],
+                                        ':email'	=> $params['admin']['email'],
                                         ':version'	=> $current_version,
                                         ':db_version' => $database_version,
-                                        ':from'		=> $install_title,
+                                        ':from'		=> $params['install_title'],
                                         ':now'		=> $now,
                                 ),
         ),
@@ -361,10 +348,10 @@ function get_install_base_queries() {
                         'query'	=> "INSERT INTO ".TABLE_USERS." (id, user, password, name, email, level, active) VALUES
                                     (1, :username, :password, :name, :email, 9, 1)",
                         'params' => array(
-                                        ':username'	=> $admin_username,
-                                        ':password'	=> $admin_pass,
-                                        ':name'		=> $admin_name,
-                                        ':email'	=> $admin_email,
+                                        ':username'	=> $params['admin']['username'],
+                                        ':password'	=> $params['admin']['pass'],
+                                        ':name'		=> $params['admin']['name'],
+                                        ':email'	=> $params['admin']['email'],
                         ),
         ),
 
@@ -381,7 +368,6 @@ function get_install_base_queries() {
                                     PRIMARY KEY (`id`)
                                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
-                    'params' => array(),
         ),
 
         '15' =>  array(
@@ -396,7 +382,6 @@ function get_install_base_queries() {
                                     PRIMARY KEY (`id`)
                                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
-                    'params' => array(),
         ),
         
         '16' => array(
@@ -412,7 +397,6 @@ function get_install_base_queries() {
                 PRIMARY KEY (`id`)
                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
             ',
-            'params' => array(),
         ),
 
         '17' => array(
@@ -425,7 +409,6 @@ function get_install_base_queries() {
                 PRIMARY KEY (`id`)
                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
             ',
-            'params' => array(),
         )
     );
 

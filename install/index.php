@@ -64,7 +64,16 @@ if ($_POST) {
         include_once ROOT_DIR . '/install/database.php';
 
         // Try to execute each query individually
-        $try_queries = try_queries(get_install_base_queries());
+        $try_queries = try_queries(get_install_base_queries([
+            'base_uri' => $base_uri,
+            'install_title' => $install_title,
+            'admin' => [
+                'name' => $admin_name,
+                'username' => $admin_username,
+                'email' => $admin_email,
+                'pass' => $admin_pass,
+            ],
+        ]));
 
         // Continue based on the value returned from the above function
         if ($try_queries == true) {
@@ -149,8 +158,8 @@ if ($_POST) {
 
 include_once '../header-unlogged.php';
 ?>
-<div class="row">
-    <div class="col-12 col-sm-12 col-lg-4 col-lg-offset-4">
+<div class="row justify-content-md-center">
+    <div class="col-12 col-sm-12 col-lg-4">
         <div class="white-box">
             <div class="white-box-interior">
                 <?php
@@ -166,14 +175,14 @@ include_once '../header-unlogged.php';
                         <?php echo sprintf(__("Remember to edit the file %s with your database settings before installing. If the file doesn't exist, you can create it by renaming the dummy file sys.config.sample.php.", 'cftp_admin'), '<em>' . CONFIG_FILE_NAME . '</em>'); ?>
                     </p>
 
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="install_title" class="col-sm-4 control-label"><?php _e('Site name', 'cftp_admin'); ?></label>
                         <div class="col-sm-8">
                             <input type="text" name="install_title" id="install_title" class="form-control required" value="<?php echo (isset($install_title) ? $install_title : ''); ?>" />
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="base_uri" class="col-sm-4 control-label"><?php _e('ProjectSend URI (address)', 'cftp_admin'); ?></label>
                         <div class="col-sm-8">
                             <input type="text" name="base_uri" id="base_uri" class="form-control required" value="<?php echo (isset($base_uri) ? $base_uri : get_current_url()); ?>" />
@@ -185,41 +194,38 @@ include_once '../header-unlogged.php';
                     <h3><?php _e('Default system administrator options', 'cftp_admin'); ?></h3>
                     <p><?php echo sprintf(__("This info will be used to create a default system user, which can't be deleted afterwards. Password should be between %d and %d characters long.", 'cftp_admin'), MIN_PASS_CHARS, MAX_PASS_CHARS); ?></p>
 
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="admin_name" class="col-sm-4 control-label"><?php _e('Full name', 'cftp_admin'); ?></label>
                         <div class="col-sm-8">
                             <input type="text" name="admin_name" id="admin_name" class="form-control required" value="<?php echo (isset($admin_name) ? $admin_name : ''); ?>" />
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="admin_email" class="col-sm-4 control-label"><?php _e('E-mail address', 'cftp_admin'); ?></label>
                         <div class="col-sm-8">
                             <input type="text" name="admin_email" id="admin_email" class="form-control required" value="<?php echo (isset($admin_email) ? $admin_email : ''); ?>" />
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="admin_username" class="col-sm-4 control-label"><?php _e('Log in username', 'cftp_admin'); ?></label>
                         <div class="col-sm-8">
                             <input type="text" name="admin_username" id="admin_username" class="form-control required" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($admin_username) ? $admin_username : ''); ?>" />
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="admin_pass" class="col-sm-4 control-label"><?php _e('Password', 'cftp_admin'); ?></label>
                         <div class="col-sm-8">
                             <div class="input-group">
-                                <input type="password" name="admin_pass" id="admin_pass" class="form-control password_toggle required" maxlength="<?php echo MAX_PASS_CHARS; ?>" />
-                                <div class="input-group-btn password_toggler">
-                                    <button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button>
-                                </div>
+                                <input type="password" name="admin_pass" id="admin_pass" class="form-control attach_password_toggler required" maxlength="<?php echo MAX_PASS_CHARS; ?>" />
                             </div>
                             <button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="admin_pass" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate', 'cftp_admin'); ?></button>
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
                         <div class="inside_form_buttons">
                             <button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Install', 'cftp_admin'); ?></button>
                         </div>

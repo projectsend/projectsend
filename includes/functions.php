@@ -25,12 +25,11 @@ function try_queries($queries = [])
             $statement->execute($params);
             $success++;
         } catch (Exception $e) {
-            //$error_str .= $e . '<br>';
             $failed++;
         }
     }
 
-    return $success == $total-1;
+    return $failed == 0;
 }
 
 function check_server_requirements()
@@ -74,8 +73,8 @@ function check_server_requirements()
         $page_title = __('Error', 'cftp_admin');
         include_once $absParent . '/header-unlogged.php';
 ?>
-        <div class="row">
-            <div class="col-12 col-sm-12 col-lg-4 col-lg-offset-4">
+        <div class="row justify-content-md-center">
+            <div class="col-12 col-sm-12 col-lg-4">
                 <div class="white-box">
                     <div class="white-box-interior">
                         <?php

@@ -1291,9 +1291,9 @@ if (current_role_in($allowed_update)) {
             chmod(ADMIN_UPLOADS_DIR, 0755);
 
             /* Move the logo into the new folder */
-            $old_logo_location = ROOT_DIR . DS . 'img' . DS . 'custom' . DS . 'logo' . DS . LOGO_FILENAME;
+            $old_logo_location = ROOT_DIR . DS . 'img' . DS . 'custom' . DS . 'logo' . DS . get_option('logo_filename');
             if (file_exists($old_logo_location)) {
-                $new_logo_location = ADMIN_UPLOADS_DIR . DS . LOGO_FILENAME;
+                $new_logo_location = ADMIN_UPLOADS_DIR . DS . get_option('logo_filename');
                 rename($old_logo_location, $new_logo_location);
             }
 

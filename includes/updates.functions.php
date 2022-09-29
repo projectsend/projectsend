@@ -104,7 +104,7 @@ function chmod_main_files()
     $errors = [];
     $system_files = array(
         'sys' => ROOT_DIR . '/includes/app.php',
-        'cfg' => ROOT_DIR . '/includes/sys.config.php'
+        'cfg' => CONFIG_FILE
     );
     foreach ($system_files as $sys_file) {
         if (!file_exists($sys_file)) {

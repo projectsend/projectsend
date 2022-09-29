@@ -5,13 +5,14 @@
 
 use enshrined\svgSanitize\Sanitizer;
 
-function try_query($queries)
+function try_queries($queries = [])
 {
     global $dbh;
 
-    if (empty($error_str)) {
-        global $error_str;
-    }
+    $total = count($queries);
+    $success = 0;
+    $failed = 0;
+
     foreach ($queries as $i => $value) {
         try {
             $statement = $dbh->prepare($queries[$i]['query']);
@@ -22,11 +23,14 @@ function try_query($queries)
                 }
             }
             $statement->execute($params);
+            $success++;
         } catch (Exception $e) {
-            $error_str .= $e . '<br>';
+            //$error_str .= $e . '<br>';
+            $failed++;
         }
     }
-    return $statement;
+
+    return $success == $total-1;
 }
 
 function check_server_requirements()
@@ -60,7 +64,7 @@ function check_server_requirements()
     /** mysql */
     global $dbh;
     if (!empty($dbh)) {
-        $version_mysql    = $dbh->query('SELECT version()')->fetchColumn();
+        $version_mysql = $dbh->query('SELECT version()')->fetchColumn();
         if (version_compare($version_mysql, REQUIRED_VERSION_MYSQL, "<")) {
             $error_msg[] = sprintf($version_not_met, 'MySQL', REQUIRED_VERSION_MYSQL);
         }
@@ -71,7 +75,7 @@ function check_server_requirements()
         include_once $absParent . '/header-unlogged.php';
 ?>
         <div class="row">
-            <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
+            <div class="col-12 col-sm-12 col-lg-4 col-lg-offset-4">
                 <div class="white-box">
                     <div class="white-box-interior">
                         <?php
@@ -315,10 +319,12 @@ function table_exists($table)
 {
     global $dbh;
 
+    $result = false;
+
     if (!empty($dbh)) {
         try {
-            $result = $dbh->prepare("SELECT 1 FROM $table LIMIT 1");
-            $result->execute();
+            $statement = $dbh->prepare("SELECT 1 FROM $table LIMIT 1");
+            $result = $statement->execute();
         } catch (Exception $e) {
             return false;
         }
@@ -1309,7 +1315,6 @@ function generate_logo_url()
     $branding = [];
     $branding['exists'] = false;
     $logo_filename = get_option('logo_filename');
-    // LOGO_FILENAME: filename gotten from the database
     if (empty($logo_filename)) {
         $branding['dir'] = ASSETS_IMG_DIR . DS . DEFAULT_LOGO_FILENAME;
         $branding['url'] = ASSETS_IMG_URL . '/' . DEFAULT_LOGO_FILENAME;

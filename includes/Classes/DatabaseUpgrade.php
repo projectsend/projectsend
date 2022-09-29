@@ -25,7 +25,7 @@ class DatabaseUpgrade
         $this->current_version = substr(CURRENT_VERSION, 1);
     
         $this->updates_applied = [];
-        $this->current_database_version = get_option('database_version');
+        $this->current_database_version = (option_exists('database_version')) ? get_option('database_version') : 0;
         $this->sql_mode_dates_status = false;
 
         foreach (glob(UPGRADES_DIR.DS.'*.php') as $file) {

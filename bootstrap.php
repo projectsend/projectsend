@@ -4,6 +4,8 @@
  */
 define('ROOT_DIR', dirname(__FILE__));
 define('DS', DIRECTORY_SEPARATOR);
+define('CONFIG_FILE_NAME', '/includes/sys.config.php');
+define('CONFIG_FILE', ROOT_DIR.CONFIG_FILE_NAME);
 
 // Composer autoload
 require_once ROOT_DIR . '/vendor/autoload.php';
@@ -87,7 +89,6 @@ if (!defined('IS_INSTALL')) {
 require_once ROOT_DIR . '/includes/security/csrf.php';
 
 check_server_requirements();
-
 global $bfchecker;
 $bfchecker = new \ProjectSend\Classes\BruteForceBlock();
 

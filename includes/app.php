@@ -14,11 +14,11 @@ session_start();
  *
  * @see sys.config.sample.php
  */
-if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') ) {
+if ( !file_exists(CONFIG_FILE) ) {
     header("Cache-control: private");
     $_SESSION = [];
-    session_destroy();
     session_regenerate_id(true);
+    session_destroy();
 
     if ( !defined( 'IS_MAKE_CONFIG' ) ) {
         // the following script returns only after the creation of the configuration file
@@ -30,10 +30,10 @@ if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') ) {
         header('Location:install/make-config.php');
         exit;
     }
+} else {
+    // Load custom config file
+    include_once CONFIG_FILE;
 }
-
-// Load custom config file
-include_once ROOT_DIR.'/includes/sys.config.php';
 
 /**
  * Define the system name, and the information that will be used
@@ -68,7 +68,7 @@ define('PROTOCOL', empty($_SERVER['HTTPS'])? 'http' : 'https');
  * DEBUG
  */
 if (!defined("DEBUG")) {
-    define('DEBUG', false);
+    define('DEBUG', true);
 }
 
 /**
@@ -90,7 +90,7 @@ define('CHARSET', 'UTF-8');
  * @link http://www.php.net/manual/en/function.error-reporting.php
  */
 if ( DEBUG === true ) {
-    ini_set('display_errors', 'on');
+    ini_set('display_errors', 'On');
     ini_set('error_reporting', 'E_ALL');
     ini_set('display_startup_errors', 'On');
     error_reporting(E_ALL);

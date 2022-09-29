@@ -13,29 +13,8 @@ require_once ABS_PARENT . '/bootstrap.php';
 $page_id = 'make_config';
 
 /** Config file exists. Do not continue and show the message */
-if ( file_exists( ROOT_DIR.'/includes/sys.config.php' ) ) {
-	$error_msg[] = __('The configuration file already exists.','cftp_admin');
-}
-
-if ( !empty( $error_msg ) ) {
-	include_once ABS_PARENT . '/header-unlogged.php';
-?>
-    <div class="row">
-        <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
-            <div class="white-box">
-                <div class="white-box-interior">
-                    <?php
-                        foreach ( $error_msg as $msg ) {
-                            echo system_message( 'error', $msg );
-                        }
-                    ?>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php
-	include_once ABS_PARENT . '/footer.php';
-	exit;
+if ( file_exists( CONFIG_FILE ) ) {
+	ps_redirect(BASE_URI.'install/config-file-exists.php');
 }
 
 // array of POST variables to check, with associated default value
@@ -112,7 +91,7 @@ $langs = get_available_languages();
 $lang_ok = array_key_exists($post_vars['lang'], $langs);
 
 // check file & folders are writable
-$config_file = ROOT_DIR.'/includes/sys.config.php';
+$config_file = CONFIG_FILE;
 $config_file_writable = is_writable($config_file) || is_writable(dirname($config_file));
 $upload_dir = ROOT_DIR.'/upload';
 $upload_files_dir = ROOT_DIR.'/upload/files';
@@ -183,7 +162,7 @@ function pdo_status_label() {
 include_once ABS_PARENT . '/header-unlogged.php';
 ?>
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
+    <div class="col-12 col-sm-12 col-lg-4 col-lg-offset-4">
         <div class="white-box">
             <div class="white-box-interior">
                 <?php

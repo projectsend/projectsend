@@ -26,6 +26,10 @@ class Options
             return null;
         }
 
+        if (empty($this->dbh)) {
+            return null;
+        }
+
         try {
             $statement = $this->dbh->prepare("SELECT value FROM " . TABLE_OPTIONS . " WHERE name = :option");
             $statement->bindParam(':option', $option);
@@ -42,25 +46,6 @@ class Options
         }
     }
 
-    private function setAllAsConstants()
-    {
-        $statement = $this->dbh->prepare("SELECT name, value FROM " . TABLE_OPTIONS);
-        $statement->execute();
-        $statement->setFetchMode(\PDO::FETCH_ASSOC);
-        while ($row = $statement->fetch()) {
-            if ($row['name'] == 'base_uri') {
-                if (substr($row['value'], -1) !== '/') {
-                    $row['value'] .= '/';
-                }
-            }
-
-            $constant = strtoupper($row['name']);
-            if (!defined($constant)) {
-                define($constant, $row['value']);
-            }
-        }
-    }
-
     /**
      * Makes the options available to the app
      */
@@ -68,14 +53,15 @@ class Options
     {
         if (empty($this->getOption('base_uri'))) {
             define('BASE_URI', '/');
-            return;
         }
 
         define('BASE_URI', $this->getOption('base_uri'));
-        //$this->setAllAsConstants();
 
         // Set the default timezone based on the value of the Timezone select box of the options page
-        date_default_timezone_set($this->getOption('timezone'));
+        $timezone = $this->getOption('timezone');
+        if (!empty($timezone)) {
+            date_default_timezone_set($this->getOption('timezone'));
+        }
 
         // Landing page for public groups and files
         define('PUBLIC_DOWNLOAD_URL', BASE_URI . 'download.php');

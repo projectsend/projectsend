@@ -75,6 +75,10 @@ function render_custom_assets($position = null)
 {
     global $dbh;
 
+    if (!table_exists(TABLE_CUSTOM_ASSETS)) {
+        return null;
+    }
+
     // Get assets
     $params = [];
     $query = "SELECT * FROM " . TABLE_CUSTOM_ASSETS . " WHERE enabled = 1";

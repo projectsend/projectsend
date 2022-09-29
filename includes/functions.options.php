@@ -11,25 +11,35 @@ function option_exists($name)
     return ($statement->rowCount() > 0);
 }
 
-function get_option($name, $escape = null)
+function get_option($name, $escape = false)
 {
     global $dbh;
-    $statement = $dbh->prepare("SELECT * FROM " . TABLE_OPTIONS . " WHERE name=:name");
-    $statement->execute([
-        ':name' => $name,
-    ]);
-    if ($statement->rowCount() == 0) {
+    if (empty($dbh)) {
         return null;
     }
 
-    $statement->setFetchMode(PDO::FETCH_ASSOC);
-    while ( $row = $statement->fetch() ) {
-        $value = $row['value'];
-        if ($escape == true) {
-            $value = html_output($value);
+    try {
+        if (table_exists(TABLE_OPTIONS)) {
+            $statement = $dbh->prepare("SELECT * FROM " . TABLE_OPTIONS . " WHERE name=:name");
+            $statement->execute([
+                ':name' => $name,
+            ]);
+            if ($statement->rowCount() == 0) {
+                return null;
+            }
+        
+            $statement->setFetchMode(PDO::FETCH_ASSOC);
+            while ( $row = $statement->fetch() ) {
+                $value = $row['value'];
+                if ($escape == true) {
+                    $value = html_output($value);
+                }
+        
+                return $value;
+            }
         }
-
-        return $value;
+    } catch (\PDOException $e) {
+        return null;
     }
 
     return null;

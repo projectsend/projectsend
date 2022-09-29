@@ -51,11 +51,8 @@ class Options
      */
     public function setSystemConstants()
     {
-        if (empty($this->getOption('base_uri'))) {
-            define('BASE_URI', '/');
-        }
-
-        define('BASE_URI', $this->getOption('base_uri'));
+        $base_uri = (empty($this->getOption('base_uri'))) ? '/' : $this->getOption('base_uri');
+        define('BASE_URI', $base_uri);
 
         // Set the default timezone based on the value of the Timezone select box of the options page
         $timezone = $this->getOption('timezone');

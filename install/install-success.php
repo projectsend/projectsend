@@ -6,7 +6,7 @@ require_once ABS_PARENT . '/bootstrap.php';
 
 global $dbh;
 
-$page_id = 'installer_installed';
+$page_id = 'installer_success';
 
 include_once '../header-unlogged.php';
 ?>

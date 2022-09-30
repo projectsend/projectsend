@@ -502,7 +502,7 @@ class GroupsMemberships
             $add = [];
             if ( !empty( $group_ids ) ) {
                 foreach ( $group_ids as $key => $group_id ) {
-                    if ( !in_array( $group_id, $on_database ) ) {
+                    if ( !empty($on_database) && !in_array( $group_id, $on_database ) ) {
                         $add[] = $group_id;
                     }
                 }

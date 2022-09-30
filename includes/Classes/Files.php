@@ -878,7 +878,8 @@ class Files
             }
 
             // Categories
-            $this->saveCategories($data['categories']);
+            $categories = (!empty($data['categories'])) ? $data['categories'] : null;
+            $this->saveCategories($categories);
             $this->refresh();
 
             /** Record the action log */
@@ -1163,9 +1164,11 @@ class Files
         }
 
         // Create new relations
-        foreach ($categories as $category_id) {
-            if (!in_array($category_id, $current)) {
-                $this->addToCategory($category_id);
+        if (!empty($categories)) {
+            foreach ($categories as $category_id) {
+                if (!in_array($category_id, $current)) {
+                    $this->addToCategory($category_id);
+                }
             }
         }
     }

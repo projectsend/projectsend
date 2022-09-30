@@ -14,12 +14,11 @@ if ( defined('IS_INSTALL') ) {
     $title = __('Install','cftp_admin') . ' &raquo; ' . SYSTEM_NAME;
 
     $header_vars = array(
-        'html_lang'		=> $lang,
-        'title'			=> $title,
-        'header_title'	=> SYSTEM_NAME . ' ' . __('setup','cftp_admin'),
+        'html_lang' => $lang,
+        'title' => $title,
+        'header_title' => SYSTEM_NAME . ' ' . __('setup','cftp_admin'),
     );
 }
-
 else {
     /**
      * Check if the ProjectSend is installed. Done only on the log in form
@@ -27,11 +26,11 @@ else {
      * is set.
      */
     $header_vars = array(
-        'html_lang'		=> SITE_LANG,
-        'title'			=> $page_title . ' &raquo; ' . html_output(get_option('this_install_title')),
-        'header_title'	=> html_output(get_option('this_install_title')),
+        'html_lang' => SITE_LANG,
+        'title' => $page_title . ' &raquo; ' . html_output(get_option('this_install_title')),
+        'header_title' => html_output(get_option('this_install_title')),
     );
-
+    
     if ( !is_projectsend_installed() ) {
         ps_redirect('install/index.php');
     }
@@ -46,15 +45,14 @@ else {
                 ps_redirect(CLIENT_VIEW_FILE_LIST_URL);
             }
         }
-
-        /** If logged as a system user, go directly to the back-end homepage */
+        
+        // If logged as a system user, go directly to the back-end homepage
         if (defined('CURRENT_USER_LEVEL') && !empty($allowed_levels) && current_role_in($allowed_levels)) {
             ps_redirect(BASE_URI."dashboard.php");
         }
     }
-    /**
-     * Silent updates that are needed even if no user is logged in.
-     */
+
+    // Silent updates that are needed even if no user is logged in.
     require_once INCLUDES_DIR . DS . 'core.update.silent.php';
 }
 
@@ -62,16 +60,16 @@ if ( !isset( $body_class ) ) { $body_class = []; }
 ?>
 <!doctype html>
 <html lang="<?php echo $header_vars['html_lang']; ?>">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <?php meta_noindex(); ?>
-
+    
     <title><?php echo html_output( $header_vars['title'] ); ?></title>
     <?php meta_favicon(); ?>
-
+    
     <?php
         render_assets('js', 'head');
         render_assets('css', 'head');
@@ -81,39 +79,38 @@ if ( !isset( $body_class ) ) { $body_class = []; }
 </head>
 
 <body <?php echo add_body_class( $body_class ); ?> <?php if (!empty($page_id)) { echo add_page_id($page_id); } ?>>
-    <div class="container-custom">
-        <?php include_once LAYOUT_DIR . DS . 'header-top.php'; ?>
+    <?php include_once LAYOUT_DIR . DS . 'header-top.php'; ?>
 
-        <?php
-            render_custom_assets('body_top');
-        ?>
+    <main>
+        <div class="container-fluid">
+            <?php render_custom_assets('body_top'); ?>
 
-        <div class="main_content_unlogged">
-            <div class="container-fluid">
+            <div class="main_content_unlogged">
+                <div class="container-fluid">
 
-                <div class="row">
-                    <div class="col-xs-12 branding_unlogged">
-                        <?php echo get_branding_layout(true); ?>
-                    </div>
-                </div>
-
-                <?php if (isset($show_page_title) && $show_page_title == true) { ?>
                     <div class="row">
-                        <div class="col-xs-12">
-                            <div id="section_title">
-                                <h2><?php echo $page_title; ?></h2>
-                            </div>
+                        <div class="col-12 branding_unlogged">
+                            <?php echo get_branding_layout(true); ?>
                         </div>
                     </div>
-                <?php } ?>
 
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
-                        <?php
-                            // Flash messages
-                            if ($flash->hasMessages()) {
-                                echo $flash;
-                            }
-                        ?>
+                    <?php if (isset($show_page_title) && $show_page_title == true) { ?>
+                        <div class="row">
+                            <div class="col-12">
+                                <div id="section_title">
+                                    <h2><?php echo $page_title; ?></h2>
+                                </div>
+                            </div>
+                        </div>
+                    <?php } ?>
+
+                    <div class="row justify-content-md-center">
+                        <div class="col-12 col-sm-12 col-lg-4">
+                            <?php
+                                // Flash messages
+                                if ($flash->hasMessages()) {
+                                    echo $flash;
+                                }
+                            ?>
+                        </div>
                     </div>
-                </div>

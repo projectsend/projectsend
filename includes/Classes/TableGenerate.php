@@ -276,7 +276,7 @@ class TableGenerate
         if ($pages > 1) {
             $this->output = '<div class="container-fluid">
 								<div class="row">
-									<div class="col-xs-12 text-center">
+									<div class="col-12 text-center">
 										<nav aria-label="' . __('Results navigation', 'cftp_admin') . '">
 											<div class="pagination_wrapper">
 												<ul class="pagination">';
@@ -331,11 +331,11 @@ class TableGenerate
 								</nav>';
 
             $this->output .= '<div class="go_to_page">
-                                <div class="form-group">
+                                <div class="form-group row">
 									<label class="control-label hidden-xs hidden-sm">' . __('Go to:', 'cftp_admin') . '</label>
 									<input type="text" class="form-control" name="page" id="page_number" data-link="' . $this->constructPaginationLink($params['link'], '_pgn_') . '" value="' . $params['current'] . '" />
 								</div>
-								<div class="form-group">
+								<div class="form-group row">
 									<button type="button" class="form-control"><span aria-hidden="true" class="glyphicon glyphicon-ok"></span></button>
                                 </div>
                             </div>';

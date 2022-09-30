@@ -18,24 +18,24 @@ switch ($groups_form_type) {
 <form action="<?php echo html_output($form_action); ?>" name="group_form" id="group_form" method="post" class="form-horizontal">
     <?php addCsrf(); ?>
 
-	<div class="form-group">
+	<div class="form-group row">
 		<label for="name" class="col-sm-4 control-label"><?php _e('Group name','cftp_admin'); ?></label>
 		<div class="col-sm-8">
 			<input type="text" name="name" id="name" class="form-control required" value="<?php echo (isset($group_arguments['name'])) ? html_output(stripslashes($group_arguments['name'])) : ''; ?>" required />
 		</div>
 	</div>
 
-	<div class="form-group">
+	<div class="form-group row">
 		<label for="description" class="col-sm-4 control-label"><?php _e('Description','cftp_admin'); ?></label>
 		<div class="col-sm-8">
 			<textarea name="description" id="description" class="ckeditor form-control"><?php echo (isset($group_arguments['description'])) ? html_output($group_arguments['description']) : ''; ?></textarea>
 		</div>
 	</div>
 
-	<div class="form-group assigns">
+	<div class="form-group row assigns">
 		<label for="members" class="col-sm-4 control-label"><?php _e('Members','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<select multiple="multiple" id="members" class="form-control chosen-select none" name="members[]" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+			<select class="form-select chosen-select none" multiple="multiple" id="members" name="members[]" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
 				<?php
 					$sql = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE level = '0' ORDER BY name ASC");
 					$sql->execute();
@@ -58,13 +58,13 @@ switch ($groups_form_type) {
 				?>
 			</select>
 			<div class="list_mass_members">
-				<a href="#" class="btn btn-default add-all" data-target="members"><?php _e('Add all','cftp_admin'); ?></a>
-				<a href="#" class="btn btn-default remove-all" data-target="members"><?php _e('Remove all','cftp_admin'); ?></a>
+				<a href="#" class="btn btn-pslight add-all" data-target="members"><?php _e('Add all','cftp_admin'); ?></a>
+				<a href="#" class="btn btn-pslight remove-all" data-target="members"><?php _e('Remove all','cftp_admin'); ?></a>
 			</div>
 		</div>
 	</div>
 
-	<div class="form-group">
+	<div class="form-group row">
 		<div class="col-sm-8 col-sm-offset-4">
 			<label for="public">
 				<input type="checkbox" name="public" id="public" <?php echo (isset($group_arguments['public']) && $group_arguments['public'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Public','cftp_admin'); ?>

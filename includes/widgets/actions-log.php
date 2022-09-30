@@ -12,7 +12,7 @@
         <h4><?php _e('Recent activities','cftp_admin'); ?></h4>
         <div class="widget_int">
             <div class="log_change_action">
-                <select name="action" id="widget_actions_log_change" class="form-control">
+                <select class="form-select" name="action" id="widget_actions_log_change">
                     <option value="all"><?php _e('All activities','cftp_admin'); ?></option>
                     <?php
                         $logger = new \ProjectSend\Classes\ActionsLog;

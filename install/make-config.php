@@ -144,11 +144,15 @@ if (isset($_POST['submit-start']) && $ready_to_go) {
 
 global $status_indicator_ok;
 global $status_indicator_error;
-$status_indicator_ok = '<span class="badge badge-success"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></span>';
-$status_indicator_error = '<span class="badge badge-danger"><span class="glyphicon glyphicon-alert" aria-hidden="true"></span></span>';
+$status_indicator_ok = '<h3><span class="badge bg-success"><i class="fa fa-check" aria-hidden="true"></i></span></h3>';
+$status_indicator_error = '<h3><span class="badge bg-danger"><i class="fa fa-times" aria-hidden="true"></i></span></h3>';
 
 function pdo_status_label()
 {
+    if (empty($_POST)) {
+        return null;
+    }
+
     global $pdo_connected;
     global $status_indicator_ok;
     global $status_indicator_error;
@@ -172,8 +176,8 @@ include_once ABS_PARENT . '/header-unlogged.php';
                     <p><?php _e('You need to provide this data for a correct database communication.', 'cftp_admin'); ?></p>
 
                     <div class="form-group row">
-                        <label for="dbdriver" class="col-sm-4 control-label"><?php _e('Select driver', 'cftp_admin'); ?></label>
-                        <div class="col-sm-8">
+                        <label for="dbdriver" class="col-12 col-sm-4 control-label"><?php _e('Select driver', 'cftp_admin'); ?></label>
+                        <div class="col-12 col-sm-6">
                             <div class="radio <?php if (!$pdo_mysql_available) {
                                                     echo 'disabled';
                                                 } ?>">
@@ -201,8 +205,8 @@ include_once ABS_PARENT . '/header-unlogged.php';
                     </div>
 
                     <div class="form-group row">
-                        <label for="dbhost" class="col-sm-4 control-label"><?php _e('Host', 'cftp_admin'); ?></label>
-                        <div class="col-sm-8">
+                        <label for="dbhost" class="col-12 col-sm-4 control-label"><?php _e('Host', 'cftp_admin'); ?></label>
+                        <div class="col-12 col-sm-6">
                             <input type="text" name="dbhost" id="dbhost" <?php echo !$pdo_driver_available ? 'disabled' : ''; ?> class="required form-control" value="<?php echo $post_vars['dbhost']; ?>" />
                         </div>
                         <div class="col-sm-2">
@@ -211,8 +215,8 @@ include_once ABS_PARENT . '/header-unlogged.php';
                     </div>
 
                     <div class="form-group row">
-                        <label for="dbname" class="col-sm-4 control-label"><?php _e('Database name', 'cftp_admin'); ?></label>
-                        <div class="col-sm-8">
+                        <label for="dbname" class="col-12 col-sm-4 control-label"><?php _e('Database name', 'cftp_admin'); ?></label>
+                        <div class="col-12 col-sm-6">
                             <input type="text" name="dbname" id="dbname" <?php echo !$pdo_driver_available ? 'disabled' : ''; ?> class="required form-control" value="<?php echo $post_vars['dbname']; ?>" />
                         </div>
                         <div class="col-sm-2">
@@ -221,8 +225,8 @@ include_once ABS_PARENT . '/header-unlogged.php';
                     </div>
 
                     <div class="form-group row">
-                        <label for="dbuser" class="col-sm-4 control-label"><?php _e('Username', 'cftp_admin'); ?></label>
-                        <div class="col-sm-8">
+                        <label for="dbuser" class="col-12 col-sm-4 control-label"><?php _e('Username', 'cftp_admin'); ?></label>
+                        <div class="col-12 col-sm-6">
                             <input type="text" name="dbuser" id="dbuser" <?php echo !$pdo_driver_available ? 'disabled' : ''; ?> class="required form-control" value="<?php echo $post_vars['dbuser']; ?>" />
                         </div>
                         <div class="col-sm-2">
@@ -231,8 +235,8 @@ include_once ABS_PARENT . '/header-unlogged.php';
                     </div>
 
                     <div class="form-group row">
-                        <label for="dbpassword" class="col-sm-4 control-label"><?php _e('Password', 'cftp_admin'); ?></label>
-                        <div class="col-sm-8">
+                        <label for="dbpassword" class="col-12 col-sm-4 control-label"><?php _e('Password', 'cftp_admin'); ?></label>
+                        <div class="col-12 col-sm-6">
                             <input type="password" name="dbpassword" id="dbpassword" <?php echo !$pdo_driver_available ? 'disabled' : ''; ?> class="required form-control attach_password_toggler" value="<?php echo $post_vars['dbpassword']; ?>" />
                         </div>
                         <div class="col-sm-2">
@@ -241,9 +245,12 @@ include_once ABS_PARENT . '/header-unlogged.php';
                     </div>
 
                     <div class="form-group row">
-                        <label for="dbprefix" class="col-sm-4 control-label"><?php _e('Table prefix', 'cftp_admin'); ?></label>
-                        <div class="col-sm-8">
+                        <label for="dbprefix" class="col-12 col-sm-4 control-label"><?php _e('Table prefix', 'cftp_admin'); ?></label>
+                        <div class="col-12 col-sm-6">
                             <input type="text" name="dbprefix" id="dbprefix" <?php echo !$pdo_driver_available ? 'disabled' : ''; ?> class="required form-control" value="<?php echo $post_vars['dbprefix']; ?>" />
+                            <?php if ($pdo_connected && $table_exists) { ?>
+                                <p class="badge bg-danger"><?php _e('The database is already populated', 'cftp_admin'); ?></p>
+                            <?php } ?>
                         </div>
                         <div class="col-sm-2">
                             <?php
@@ -253,12 +260,6 @@ include_once ABS_PARENT . '/header-unlogged.php';
                                 } else {
                                     echo $status_indicator_error;
                                 }
-
-                                if ($table_exists) {
-                            ?>
-                                    <p class="badge badge-danger"><?php _e('The database is already populated', 'cftp_admin'); ?></p>
-                            <?php
-                                }
                             }
                             ?>
                         </div>
@@ -267,7 +268,7 @@ include_once ABS_PARENT . '/header-unlogged.php';
                     <?php if ($pdo_connected) : ?>
                         <?php if ($table_exists) : ?>
                             <div class="form-group row">
-                                <div class="col-sm-offset-4 col-sm-8">
+                                <div class="col-sm-offset-4 col-12 col-sm-8">
                                     <div class="checkbox">
                                         <label for="dbreuse">
                                             <input type="checkbox" name="dbreuse" id="dbreuse" value="reuse" <?php echo $post_vars['dbreuse'] == 'reuse' ? 'checked' : ''; ?> /> <?php _e('Reuse existing tables', 'cftp_admin'); ?>
@@ -288,8 +289,8 @@ include_once ABS_PARENT . '/header-unlogged.php';
                     <h3><?php _e('Language selection', 'cftp_admin'); ?></h3>
 
                     <div class="form-group row">
-                        <label for="lang" class="col-sm-4 control-label"><?php _e('Language', 'cftp_admin'); ?></label>
-                        <div class="col-sm-8">
+                        <label for="lang" class="col-12 col-sm-4 control-label"><?php _e('Language', 'cftp_admin'); ?></label>
+                        <div class="col-12 col-sm-8">
                             <select class="form-select" name="lang">
                                 <?php foreach ($langs as $filename => $name) : ?>
                                     <option value="<?php echo $filename; ?>" <?php echo $post_vars['lang'] == $filename ? 'selected' : ''; ?>><?php echo $name; ?></option>
@@ -303,8 +304,8 @@ include_once ABS_PARENT . '/header-unlogged.php';
                     <h3><?php _e('Files', 'cftp_admin'); ?></h3>
 
                     <div class="form-group row">
-                        <label for="lang" class="col-sm-4 control-label"><?php _e('Default maximum upload file size', 'cftp_admin'); ?></label>
-                        <div class="col-sm-8">
+                        <label for="lang" class="col-12 col-sm-4 control-label"><?php _e('Default maximum upload file size', 'cftp_admin'); ?></label>
+                        <div class="col-12 col-sm-8">
                             <input type="number" name="maxfilesize" id="maxfilesize" class="required form-control" value="<?php echo (!empty($post_vars['maxfilesize'])) ? $post_vars['maxfilesize'] : '2048'; ?>" />
                             <p class="field_note"><?php _e('Value expressed in MB, where 1GB = 1024', 'cftp_admin'); ?></p>
                         </div>
@@ -335,7 +336,7 @@ include_once ABS_PARENT . '/header-unlogged.php';
                     foreach ($write_checks as $check => $values) {
                     ?>
                         <div class="form-group row">
-                            <label class="col-sm-4 control-label">
+                            <label class="col-12 col-sm-4 control-label">
                                 <?php _e($values['label'], 'cftp_admin'); ?>
                             </label>
                             <div class="col-sm-5">
@@ -398,8 +399,8 @@ include_once ABS_PARENT . '/header-unlogged.php';
                     foreach ($system_info as $data => $values) {
                     ?>
                         <div class="form-group row">
-                            <label for="<?php echo $values['name']; ?>" class="col-sm-4 control-label"><?php _e($values['label'], 'cftp_admin'); ?></label>
-                            <div class="col-sm-8">
+                            <label for="<?php echo $values['name']; ?>" class="col-12 col-sm-4 control-label"><?php _e($values['label'], 'cftp_admin'); ?></label>
+                            <div class="col-12 col-sm-8">
                                 <input type="text" name="<?php echo $values['name']; ?>" id="<?php echo $values['name']; ?>" class="form-control" disabled value="<?php echo $values['value']; ?>" />
                             </div>
                         </div>

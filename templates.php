@@ -32,15 +32,15 @@ if (isset($_GET['activate_template'])) {
 $templates = look_for_templates();
 ?>
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-lg-12">
+    <div class="col-12 col-sm-12 col-lg-12">
         <div class="template_selector">
             <div class="row">
                 <?php
                     foreach ($templates as $template) {
                 ?>
-                    <div class="col-xs-12 col-sm-6 col-md-3">
+                    <div class="col-12 col-sm-6 col-md-3">
                         <div class="template <?php if ($template['location'] == get_option('selected_clients_template')) { echo 'current_template';} ?>">
-                            <div class="col-xs-12">
+                            <div class="col-12">
                                 <div class="images">
                                     <?php
                                     if (!empty($template['cover'])) {
@@ -56,7 +56,7 @@ $templates = look_for_templates();
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xs-12">
+                            <div class="col-12">
                                 <h4>
                                     <?php echo $template['name']; ?>
                                 </h4>
@@ -81,7 +81,7 @@ $templates = look_for_templates();
                                     <?php
                                     if ($template['location'] == get_option('selected_clients_template')) {
                                     ?>
-                                        <a href="#" class="btn btn-default disabled">
+                                        <a href="#" class="btn btn-pslight disabled">
                                             <?php _e('Active', 'cftp_admin'); ?>
                                         </a>
                                     <?php

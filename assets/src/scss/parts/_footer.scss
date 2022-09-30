@@ -1,0 +1,30 @@
+// Footer
+
+#footer {
+    margin:50px 0 10px 0;
+    padding:20px 0;
+    border-top:1px solid #dedede;
+    text-align:center;
+    color:#888;
+
+    a {
+        color:#666;
+    }
+
+    .footer_links {
+        ul {
+            margin: 0 auto 2em;
+            padding: 0;
+
+            li {
+                list-style: none;
+                display: inline-block;
+                margin: 0 5px;
+
+                a {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}

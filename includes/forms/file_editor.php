@@ -43,12 +43,12 @@
                                                         <input type="hidden" name="file[<?php echo $i; ?>][original]" value="<?php echo $file->filename_original; ?>" />
                                                         <input type="hidden" name="file[<?php echo $i; ?>][file]" value="<?php echo $file->filename_on_disk; ?>" />
 
-                                                        <div class="form-group">
+                                                        <div class="form-group row">
                                                             <label><?php _e('Title', 'cftp_admin');?></label>
                                                             <input type="text" name="file[<?php echo $i; ?>][name]" value="<?php echo $file->title; ?>" class="form-control file_title" placeholder="<?php _e('Enter here the required file title.', 'cftp_admin');?>" />
                                                         </div>
 
-                                                        <div class="form-group">
+                                                        <div class="form-group row">
                                                             <label><?php _e('Description', 'cftp_admin');?></label>
                                                             <textarea id="description_<?php echo $file->id; ?>" name="file[<?php echo $i; ?>][description]" class="<?php if ( get_option('files_descriptions_use_ckeditor') == 1 ) { echo 'ckeditor'; } ?> form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php if (!empty($file->description)) { echo $file->description; } ?></textarea>
                                                         </div>
@@ -71,7 +71,7 @@
                                                     ?>
                                                     <h3><?php _e('Expiration date', 'cftp_admin');?></h3>
 
-                                                    <div class="form-group">
+                                                    <div class="form-group row">
                                                         <label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
                                                         <div class="input-group date-container">
                                                             <input type="text" class="date-field form-control datapick-field readonly-not-grayed" readonly id="file_expiry_date_<?php echo $i; ?>" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($file->expiry_date)) ? date('d-m-Y', strtotime($file->expiry_date)) : date('d-m-Y'); ?>" />
@@ -132,7 +132,7 @@
                                                         ?>
                                                         <h3><?php _e('Assignations', 'cftp_admin');?></h3>
                                                         <label><?php _e('Clients', 'cftp_admin');?></label>
-                                                        <select multiple="multiple" id="clients_<?php echo $file->id; ?>" name="file[<?php echo $i; ?>][assignments][clients][]" class="form-control chosen-select assignments_clients none" data-file-id="<?php echo $file->id; ?>" data-type="clients" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+                                                        <select class="form-select chosen-select assignments_clients none" multiple="multiple" id="clients_<?php echo $file->id; ?>" name="file[<?php echo $i; ?>][assignments][clients][]" data-file-id="<?php echo $file->id; ?>" data-type="clients" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
                                                             <?php
                                                                 foreach($clients as $id => $name) {
                                                                 ?>
@@ -154,7 +154,7 @@
                                                         <div class="divider"></div>
 
                                                         <label><?php _e('Groups', 'cftp_admin');?></label>
-                                                        <select multiple="multiple" id="groups_<?php echo $file->id; ?>" name="file[<?php echo $i; ?>][assignments][groups][]" class="form-control chosen-select assignments_groups none" data-file-id="<?php echo $file->id; ?>" data-type="groups" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+                                                        <select class="form-select chosen-select assignments_groups none" multiple="multiple" id="groups_<?php echo $file->id; ?>" name="file[<?php echo $i; ?>][assignments][groups][]" data-file-id="<?php echo $file->id; ?>" data-type="groups" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
                                                             <?php
                                                                 foreach($groups as $id => $name) {
                                                                 ?>
@@ -191,7 +191,7 @@
                                                     <div class="file_data">
                                                         <h3><?php _e('Categories', 'cftp_admin');?></h3>
                                                         <label><?php _e('Add to', 'cftp_admin');?>:</label>
-                                                        <select multiple="multiple" id="categories_<?php echo $file->id; ?>" name="file[<?php echo $i; ?>][categories][]" class="form-control chosen-select none" data-type="categories" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+                                                        <select class="form-select chosen-select none" multiple="multiple" id="categories_<?php echo $file->id; ?>" name="file[<?php echo $i; ?>][categories][]" data-type="categories" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
                                                             <?php
                                                                 echo generate_categories_options( $get_categories['arranged'], 0, $file->categories );
                                                             ?>

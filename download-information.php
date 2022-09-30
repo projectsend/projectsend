@@ -43,13 +43,13 @@ if ($names->rowCount() > 0) {
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <form action="download-information.php" name="groups_list" method="get" class="form-inline">
             <?php form_add_existing_parameters(); ?>
 
             <div class="row">
                 <div class="col-sm-12">
-                    <h3><?php _e('Total downloads', 'cftp_admin'); ?>: <span class="label label-primary"><strong><?php echo $file_stats['total']; ?></strong></span></h3>
+                    <h3><?php _e('Total downloads', 'cftp_admin'); ?>: <span class="badge bg-primary"><strong><?php echo $file_stats['total']; ?></strong></span></h3>
                 </div>
             </div>
             <div class="row">
@@ -135,10 +135,10 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                             'content' => '',
                         ),
                         array(
-                            'content' => __('Unique logged in clients/users', 'cftp_admin') . ': <span class="label label-primary">' . $file_stats['unique_clients'] . '</span>',
+                            'content' => __('Unique logged in clients/users', 'cftp_admin') . ': <span class="badge bg-primary">' . $file_stats['unique_clients'] . '</span>',
                         ),
                         array(
-                            'content' => __('Total public downloads', 'cftp_admin') . ': <span class="label label-primary">' . $file_stats['anonymous_users'] . '</span>',
+                            'content' => __('Total public downloads', 'cftp_admin') . ': <span class="badge bg-primary">' . $file_stats['anonymous_users'] . '</span>',
                         ),
                         array(
                             'content' => '',
@@ -156,8 +156,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                         // Check if it's from a know user or anonymous
                         $anon_yes = __('Yes', 'cftp_admin');
                         $anon_no = __('No', 'cftp_admin');
-                        $label = ($row['anonymous'] == '1') ? $anon_yes : $anon_no;
-                        $class = ($row['anonymous'] == '1') ? 'warning' : 'success';
+                        $badge_label = ($row['anonymous'] == '1') ? $anon_yes : $anon_no;
+                        $badge_class = ($row['anonymous'] == '1') ? 'bg-warning' : 'bg-success';
 
                         // Downloader
                         $downloader_row = null;
@@ -186,7 +186,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                                 'content' => $downloader_row,
                             ),
                             array(
-                                'content' => '<span class="label label-' . $class . '">' . $label . '</span>',
+                                'content' => '<span class="badge ' . $badge_class . '">' . $badge_label . '</span>',
                             ),
                             array(
                                 'content' => html_output($row['remote_ip']),

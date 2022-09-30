@@ -72,7 +72,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
 ?>
 
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-lg-8 col-lg-offset-2">
+    <div class="col-12 col-sm-12 col-lg-8 col-lg-offset-2">
 
         <div class="white-box">
             <div class="white-box-interior">
@@ -81,7 +81,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
                 ?>
                     <div class="text-center">
                         <h2 class="file_title">
-                            <span class="label label-default">
+                            <span class="badge bg-default">
                                 <?php echo $file->filename_original; ?>
                             </span>
                         </h2>

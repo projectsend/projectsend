@@ -87,7 +87,7 @@ if ($_POST) {
 }
 ?>
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <div class="form_actions_limit_results">
             <?php show_search_form('import-orphans.php'); ?>
         </div>

@@ -61,12 +61,12 @@ switch ($error_type) {
 <body class="backend forbidden">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-12">
                 <h2><?php echo $page_title; ?></h2>
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-12">
                 <div class="whiteform whitebox">
                     <?php echo $error_message; ?>
                 </div>

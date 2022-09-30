@@ -68,49 +68,46 @@ switch ($clients_form_type) {
 <form action="<?php echo html_output($form_action); ?>" name="client_form" id="client_form" method="post" class="form-horizontal" data-form-type="<?php echo $clients_form_type; ?>">
     <?php addCsrf(); ?>
 
-    <div class="form-group">
+    <div class="form-group row">
         <label for="name" class="col-sm-4 control-label"><?php _e('Name', 'cftp_admin'); ?></label>
         <div class="col-sm-8">
             <input type="text" name="name" id="name" class="form-control required" value="<?php echo (isset($client_arguments['name'])) ? format_form_value($client_arguments['name']) : ''; ?>" placeholder="<?php echo $name_placeholder; ?>" required />
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group row">
         <label for="username" class="col-sm-4 control-label"><?php _e('Log in username', 'cftp_admin'); ?></label>
         <div class="col-sm-8">
             <input type="text" name="username" id="username" class="form-control <?php if (!$disable_user) { echo 'required'; } ?>" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($client_arguments['username'])) ? format_form_value($client_arguments['username']) : ''; ?>" <?php if ($disable_user) { echo 'readonly'; } ?> placeholder="<?php _e("Must be alphanumeric", 'cftp_admin'); ?>" required />
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group row">
         <label for="password" class="col-sm-4 control-label"><?php _e('Password', 'cftp_admin'); ?></label>
         <div class="col-sm-8">
             <div class="input-group">
-                <input type="password" name="password" id="password" class="form-control password_toggle <?php if ($require_pass) { echo 'required'; } ?>" maxlength="<?php echo MAX_PASS_CHARS; ?>" />
-                <div class="input-group-btn password_toggler">
-                    <button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button>
-                </div>
+                <input type="password" name="password" id="password" class="form-control attach_password_toggler <?php if ($require_pass) { echo 'required'; } ?>" maxlength="<?php echo MAX_PASS_CHARS; ?>" />
             </div>
-            <button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="password" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate', 'cftp_admin'); ?></button>
+            <button type="button" name="generate_password" id="generate_password" class="btn btn-light btn-sm btn_generate_password" data-ref="password" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate', 'cftp_admin'); ?></button>
             <?php echo password_notes(); ?>
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group row">
         <label for="email" class="col-sm-4 control-label"><?php _e('E-mail', 'cftp_admin'); ?></label>
         <div class="col-sm-8">
             <input type="email" name="email" id="email" class="form-control required" value="<?php echo (isset($client_arguments['email'])) ? format_form_value($client_arguments['email']) : ''; ?>" placeholder="<?php _e("Must be valid and unique", 'cftp_admin'); ?>" required />
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group row">
         <label for="address" class="col-sm-4 control-label"><?php _e('Address', 'cftp_admin'); ?></label>
         <div class="col-sm-8">
             <input type="text" name="address" id="address" class="form-control" value="<?php echo (isset($client_arguments['address'])) ? format_form_value($client_arguments['address']) : ''; ?>" />
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group row">
         <label for="phone" class="col-sm-4 control-label"><?php _e('Telephone', 'cftp_admin'); ?></label>
         <div class="col-sm-8">
             <input type="text" name="phone" id="phone" class="form-control" value="<?php echo (isset($client_arguments['phone'])) ? format_form_value($client_arguments['phone']) : ''; ?>" />
@@ -120,14 +117,14 @@ switch ($clients_form_type) {
     <?php
     if ($extra_fields == true) {
     ?>
-        <div class="form-group">
+        <div class="form-group row">
             <label for="contact" class="col-sm-4 control-label"><?php _e('Internal contact name', 'cftp_admin'); ?></label>
             <div class="col-sm-8">
                 <input type="text" name="contact" id="contact" class="form-control" value="<?php echo (isset($client_arguments['contact'])) ? format_form_value($client_arguments['contact']) : ''; ?>" />
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group row">
             <label for="max_file_size" class="col-sm-4 control-label"><?php _e('Max. upload filesize', 'cftp_admin'); ?></label>
             <div class="col-sm-8">
                 <div class="input-group">
@@ -177,10 +174,10 @@ switch ($clients_form_type) {
 
         if (count($sql_groups) > 0) {
         ?>
-            <div class="form-group assigns">
+            <div class="form-group row assigns">
                 <label for="groups_request" class="col-sm-4 control-label"><?php echo $group_label; ?></label>
                 <div class="col-sm-8">
-                    <select multiple="multiple" name="groups_request[]" id="groups-select" class="form-control chosen-select none" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin'); ?>">
+                    <select class="form-select chosen-select none" multiple="multiple" name="groups_request[]" id="groups-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin'); ?>">
                         <?php
                         foreach ($sql_groups as $group) {
                         ?>
@@ -193,8 +190,8 @@ switch ($clients_form_type) {
                     if (!empty($role) && in_array($role, [8, 9])) {
                     ?>
                         <div class="list_mass_members">
-                            <button type="button" class="btn btn-default add-all" data-target="groups-select"><?php _e('Add all', 'cftp_admin'); ?></button>
-                            <button type="button" class="btn btn-default remove-all" data-target="groups-select"><?php _e('Remove all', 'cftp_admin'); ?></button>
+                            <button type="button" class="btn btn-pslight add-all" data-target="groups-select"><?php _e('Add all', 'cftp_admin'); ?></button>
+                            <button type="button" class="btn btn-pslight remove-all" data-target="groups-select"><?php _e('Remove all', 'cftp_admin'); ?></button>
                         </div>
                     <?php
                     }
@@ -207,7 +204,7 @@ switch ($clients_form_type) {
 
     if ($extra_fields == true) {
     ?>
-        <div class="form-group">
+        <div class="form-group row">
             <div class="col-sm-8 col-sm-offset-4">
                 <label for="active">
                     <input type="checkbox" name="active" id="active" <?php echo (isset($client_arguments['active']) && $client_arguments['active'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Active (client can log in)', 'cftp_admin'); ?>
@@ -215,7 +212,7 @@ switch ($clients_form_type) {
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group row">
             <div class="col-sm-8 col-sm-offset-4">
                 <label for="can_upload_public">
                     <input type="checkbox" name="can_upload_public" id="can_upload_public" <?php echo (isset($client_arguments['can_upload_public']) && $client_arguments['can_upload_public'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Can set own files as public', 'cftp_admin'); ?>
@@ -229,7 +226,7 @@ switch ($clients_form_type) {
     }
     ?>
 
-    <div class="form-group">
+    <div class="form-group row">
         <div class="col-sm-8 col-sm-offset-4">
             <label for="notify_upload">
                 <input type="checkbox" name="notify_upload" id="notify_upload" <?php echo (isset($client_arguments['notify_upload']) && $client_arguments['notify_upload'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Notify new uploads by e-mail', 'cftp_admin'); ?>
@@ -240,7 +237,7 @@ switch ($clients_form_type) {
     <?php
     if ($clients_form_type == 'new_client') {
     ?>
-        <div class="form-group">
+        <div class="form-group row">
             <div class="col-sm-8 col-sm-offset-4">
                 <label for="notify_account">
                     <input type="checkbox" name="notify_account" id="notify_account" <?php echo (isset($client_arguments['notify_account']) && $client_arguments['notify_account'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Send welcome email', 'cftp_admin'); ?>
@@ -248,7 +245,7 @@ switch ($clients_form_type) {
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group row">
             <div class="col-sm-8 col-sm-offset-4">
                 <label for="require_password_change">
                     <input type="checkbox" name="require_password_change" id="require_password_change" <?php echo (isset($client_arguments['require_password_change']) && $client_arguments['require_password_change'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Require password change after first login', 'cftp_admin'); ?>

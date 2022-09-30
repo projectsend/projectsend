@@ -29,7 +29,7 @@ define('TEMPLATE_THUMBNAILS_WIDTH', '50');
 define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 ?>
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <div id="wrapper">
             <div id="right_column">
         
@@ -42,8 +42,8 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                         ?>
                                 <form action="" name="files_filters" method="get" class="form-inline form_filters">
                                     <?php form_add_existing_parameters( array('category', 'action') ); ?>
-                                    <div class="form-group group_float">
-                                        <select name="category" id="category" class="txtfield form-control">
+                                    <div class="form-group row group_float">
+                                        <select class="form-select form-control-short" name="category" id="category">
                                             <option value="0"><?php _e('All categories','cftp_admin'); ?></option>
                                             <?php
                                                 $selected_parent = ( isset($category_filter) ) ? array( $category_filter ) : array();
@@ -51,7 +51,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                                             ?>
                                         </select>
                                     </div>
-                                    <button type="submit" id="btn_proceed_filter_files" class="btn btn-sm btn-default"><?php _e('Filter','cftp_admin'); ?></button>
+                                    <button type="submit" id="btn_proceed_filter_files" class="btn btn-sm btn-pslight"><?php _e('Filter','cftp_admin'); ?></button>
                                 </form>
                         <?php
                             }
@@ -64,9 +64,9 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                     <div class="form_actions_right">
                         <div class="form_actions">
                             <div class="form_actions_submit">
-                                <div class="form-group group_float">
+                                <div class="form-group row group_float">
                                     <label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected files actions','cftp_admin'); ?>:</label>
-                                    <select name="action" id="action" class="txtfield form-control">
+                                    <select class="form-select form-control-short" name="action" id="action">
                                         <?php
                                             $actions_options = array(
                                                                     'none'	=> __('Select action','cftp_admin'),
@@ -80,7 +80,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                                         ?>
                                     </select>
                                 </div>
-                                <button type="submit" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed','cftp_admin'); ?></button>
+                                <button type="submit" id="do_action" class="btn btn-sm btn-pslight"><?php _e('Proceed','cftp_admin'); ?></button>
                             </div>
                         </div>
                     </div>
@@ -194,7 +194,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                                 }
                                 
                                 /** Extension */
-                                $extension_cell = '<span class="label label-success label_big">' . $file->extension . '</span>';
+                                $extension_cell = '<span class="badge bg-success label_big">' . $file->extension . '</span>';
 
                                 /** Date */
                                 $date = format_date($file->uploaded_date);
@@ -202,18 +202,18 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                                 /** Expiration */
                                 if ( $file->expires == '1' ) {
                                     if ( $file->expired == false ) {
-                                        $class = 'primary';
+                                        $badge_class = 'bg-primary';
                                     } else {
-                                        $class = 'danger';
+                                        $badge_class = 'bg-danger';
                                     }
                                     
-                                    $value = date( get_option('timeformat'), strtotime( $file->expiry_date ) );
+                                    $badge_label = date( get_option('timeformat'), strtotime( $file->expiry_date ) );
                                 } else {
-                                    $class = 'success';
-                                    $value = __('Never','cftp_template');
+                                    $badge_class = 'bg-success';
+                                    $badge_label = __('Never','cftp_template');
                                 }
                                 
-                                $expiration_cell = '<span class="label label-' . $class . ' label_big">' . $value . '</span>';
+                                $expiration_cell = '<span class="badge ' . $badge_class . ' label_big">' . $badge_label . '</span>';
 
                                 /** Thumbnail */
                                 $preview_cell = '';

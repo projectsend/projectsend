@@ -29,7 +29,7 @@ if (LOADED_LANG != 'en') {
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <?php
         // Count the clients to show a warning message or the form
         $statement = $dbh->query("SELECT id FROM " . TABLE_USERS . " WHERE level = '0'");

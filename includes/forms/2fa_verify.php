@@ -14,7 +14,7 @@
         <p><?php _e('Please enter the code to access your account','cftp_admin'); ?></p>
     </div>
     <fieldset>
-        <div class="form-group">
+        <div class="form-group row">
             <div id="otp_inputs">
                 <?php for ($i = 1; $i <= 6; $i++) { ?>
                     <input class="text-center form-control" type="text" name="n<?php echo $i; ?>" id="n<?php echo $i; ?>" maxlength="1" required />

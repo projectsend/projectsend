@@ -126,8 +126,8 @@ if ($form == '2fa_verify') {
 
 include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 ?>
-<div class="row">
-    <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
+<div class="row justify-content-md-center">
+    <div class="col-12 col-sm-12 col-lg-4">
         <div class="white-box">
             <div class="white-box-interior">
                 <div class="ajax_response">
@@ -141,7 +141,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                     <?php } ?>
                 </ul> */ ?>
                 <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane fade in active" id="local">
+                    <div role="tabpanel" class="tab-pane fade in active show" id="local">
                         <?php
                         include_once FORMS_DIR . DS . $form . '.php';
                         ?>

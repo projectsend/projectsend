@@ -29,17 +29,17 @@ switch ( $form_information['type'] ) {
     <div class="categories_form form-horizontal">
         <h3><?php echo $form_information['title']; ?></h3>
 
-        <div class="form-group">
+        <div class="form-group row">
             <label for="category_name" class="col-sm-4 control-label"><?php _e('Name','cftp_admin'); ?></label>
             <div class="col-sm-8 field_wrapper">
                 <input type="text" name="category_name" id="category_name" class="form-control required" value="<?php echo (isset($category_name)) ? html_output(stripslashes($category_name)) : ''; ?>" required />
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group row">
             <label for="category_parent" class="col-sm-4 control-label"><?php _e('Parent','cftp_admin'); ?></label>
             <div class="col-sm-8">
-                <select name="category_parent" id="category_parent" class="form-control">
+                <select class="form-select" name="category_parent" id="category_parent">
                     <option value="0" <?php echo (isset($category_parent) && $category_parent == '0') ? 'selected="selected"' : ''; ?>><?php _e('None','cftp_admin'); ?></option>
                     <?php
                         $select_categories = get_categories();
@@ -51,7 +51,7 @@ switch ( $form_information['type'] ) {
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group row">
             <label for="category_description" class="col-sm-4 control-label"><?php _e('Description','cftp_admin'); ?></label>
             <div class="col-sm-8">
                 <textarea name="category_description" id="category_description" class="form-control"><?php if ( !empty( $category_description ) ) { echo html_output( $category_description ); } ?></textarea>
@@ -60,7 +60,7 @@ switch ( $form_information['type'] ) {
 
         <div class="inside_form_buttons">
             <?php if ( $show_cancel === true ) { ?>
-                <a href="<?php echo BASE_URI; ?>categories.php" name="cancel" class="btn btn-wide btn-default"><?php _e('Cancel','cftp_admin'); ?></a>
+                <a href="<?php echo BASE_URI; ?>categories.php" name="cancel" class="btn btn-wide btn-pslight"><?php _e('Cancel','cftp_admin'); ?></a>
             <?php } ?>
             <button type="submit" name="btn_process" id="btn_process" class="btn btn-wide btn-primary"><?php echo html_output($submit_value); ?></button>
         </div>

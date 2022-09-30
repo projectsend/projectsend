@@ -14,7 +14,7 @@
             }
 
             let button = document.createElement('button');
-            button.classList.add('btn', 'btn-xs', 'btn-secondary', 'input-group-btn', 'password_toggler');
+            button.classList.add('btn', 'btn-xs', 'btn-light', 'input-group-btn', 'password_toggler');
             button.setAttribute('type', 'button');
             button.dataset.targetId = id;
             button.dataset.status = 'hidden';

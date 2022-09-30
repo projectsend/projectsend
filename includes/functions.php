@@ -1980,7 +1980,7 @@ function recaptcha2_render_widget()
 {
     if (recaptcha2_is_enabled()) {
     ?>
-        <div class="form-group">
+        <div class="form-group row">
             <!-- <label><?php _e('Verification', 'cftp_admin'); ?></label> -->
             <div class="g-recaptcha" data-sitekey="<?php echo get_option('recaptcha_site_key'); ?>"></div>
         </div>

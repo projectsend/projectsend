@@ -372,7 +372,7 @@ foreach ($items as $item) {
 
     if (current_role_in($item['level'])) {
         $current = (!empty($active_nav) && $active_nav == $item['nav']) ? 'current_nav' : '';
-        $badge = (!empty($item['main']['badge'])) ? ' <span class="badge">' . $item['main']['badge'] . '</span>' : '';
+        $badge = (!empty($item['main']['badge'])) ? ' <span class="badge rounded-pill text-bg-dark">' . $item['main']['badge'] . '</span>' : '';
         $icon = (!empty($item['main']['icon'])) ? '<i class="fa fa-' . $item['main']['icon'] . ' fa-fw" aria-hidden="true"></i>' : '';
 
         /** Top level tag */
@@ -388,7 +388,7 @@ foreach ($items as $item) {
              * Submenu
              */
             foreach ($item['sub'] as $subitem) {
-                $badge = (!empty($subitem['badge'])) ? ' <span class="badge">' . $subitem['badge'] . '</span>' : '';
+                $badge = (!empty($subitem['badge'])) ? ' <span class="badge rounded-pill text-bg-dark">' . $subitem['badge'] . '</span>' : '';
                 $icon = (!empty($subitem['icon'])) ? '<i class="fa fa-' . $subitem['icon'] . ' fa-fw" aria-hidden="true"></i>' : '';
                 if (!empty($subitem['divider'])) {
                     $menu_output .= "\t\t<li class='divider'></li>\n";

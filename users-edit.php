@@ -125,7 +125,7 @@ if (CURRENT_USER_USERNAME == $user_arguments['username']) {
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-lg-6">
+    <div class="col-12 col-sm-12 col-lg-6">
         <div class="white-box">
             <div class="white-box-interior">
                 <?php

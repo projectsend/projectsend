@@ -104,15 +104,15 @@ $sql->execute($params);
 $count = $sql->rowCount();
 ?>
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <div class="form_actions_left">
             <div class="form_actions_limit_results">
                 <?php show_search_form('custom-assets.php'); ?>
 
                 <form action="custom-assets.php" name="assets_filters" method="get" class="form-inline">
                     <?php form_add_existing_parameters(array('enabled', 'action')); ?>
-                    <div class="form-group group_float">
-                        <select name="enabled" id="enabled" class="txtfield form-control">
+                    <div class="form-group row group_float">
+                        <select class="form-select form-control-short" name="enabled" id="enabled">
                             <?php
                             $status_options = array(
                                 '2' => __('All statuses', 'cftp_admin'),
@@ -129,7 +129,7 @@ $count = $sql->rowCount();
                             ?>
                         </select>
                     </div>
-                    <button type="submit" id="btn_proceed_filter_assets" class="btn btn-sm btn-default"><?php _e('Filter', 'cftp_admin'); ?></button>
+                    <button type="submit" id="btn_proceed_filter_assets" class="btn btn-sm btn-pslight"><?php _e('Filter', 'cftp_admin'); ?></button>
                 </form>
             </div>
         </div>
@@ -139,9 +139,9 @@ $count = $sql->rowCount();
             <div class="form_actions_right">
                 <div class="form_actions">
                     <div class="form_actions_submit">
-                        <div class="form-group group_float">
+                        <div class="form-group row group_float">
                             <label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected clients actions', 'cftp_admin'); ?>:</label>
-                            <select name="action" id="action" class="txtfield form-control">
+                            <select class="form-select form-control-short" name="action" id="action">
                                 <?php
                                 $actions_options = array(
                                     'none' => __('Select action', 'cftp_admin'),
@@ -157,7 +157,7 @@ $count = $sql->rowCount();
                                 ?>
                             </select>
                         </div>
-                        <button type="submit" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed', 'cftp_admin'); ?></button>
+                        <button type="submit" id="do_action" class="btn btn-sm btn-pslight"><?php _e('Proceed', 'cftp_admin'); ?></button>
                     </div>
                 </div>
             </div>
@@ -165,22 +165,22 @@ $count = $sql->rowCount();
 </div>
 
 <div class="row">
-    <div class="col-xs-12 col-md-6 form_actions_count">
+    <div class="col-12 col-md-6 form_actions_count">
         <div>
             <p><?php echo sprintf(__('Found %d elements', 'cftp_admin'), (int)$count_for_pagination); ?>
         </div>
     </div>
-    <div class="col-xs-12 col-md-6 form_actions_count">
+    <div class="col-12 col-md-6 form_actions_count">
         <div class="text-right">
-            <a href="custom-assets-add.php?language=html" class="btn btn-default btn-sm"><?php _e('New HTML', 'cftp_admin'); ?></a>
-            <a href="custom-assets-add.php?language=css" class="btn btn-default btn-sm"><?php _e('New CSS', 'cftp_admin'); ?></a>
-            <a href="custom-assets-add.php?language=js" class="btn btn-default btn-sm"><?php _e('New JS', 'cftp_admin'); ?></a>
+            <a href="custom-assets-add.php?language=html" class="btn btn-pslight btn-sm"><?php _e('New HTML', 'cftp_admin'); ?></a>
+            <a href="custom-assets-add.php?language=css" class="btn btn-pslight btn-sm"><?php _e('New CSS', 'cftp_admin'); ?></a>
+            <a href="custom-assets-add.php?language=js" class="btn btn-pslight btn-sm"><?php _e('New JS', 'cftp_admin'); ?></a>
         </div>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <?php
         if (!$count) {
             if (isset($no_results_error)) {
@@ -256,7 +256,7 @@ $count = $sql->rowCount();
 
                 /* Get active status */
                 $enabled_label = ($asset->enabled == 0) ? __('Disabled', 'cftp_admin') : __('Enabled', 'cftp_admin');
-                $enabled_class = ($asset->enabled == 0) ? 'danger' : 'success';
+                $enabled_class = ($asset->enabled == 0) ? 'bg-danger' : 'bg-success';
 
                 /**
                  * Add the cells to the row
@@ -270,7 +270,7 @@ $count = $sql->rowCount();
                         'content' => $asset->title,
                     ),
                     array(
-                        'content' => '<span class="label label-' . $enabled_class . '">' . $enabled_label . '</span>',
+                        'content' => '<span class="badge ' . $enabled_class . '">' . $enabled_label . '</span>',
                     ),
                     array(
                         'content' => $asset->language_formatted,

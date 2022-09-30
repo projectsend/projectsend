@@ -1,14 +1,14 @@
 <h3><?php _e('General','cftp_admin'); ?></h3>
 <p><?php _e('Basic information to be shown around the site. The time format and zones values affect how the clients see the dates on their files lists.','cftp_admin'); ?></p>
 
-<div class="form-group">
+<div class="form-group row">
     <label for="this_install_title" class="col-sm-4 control-label"><?php _e('Site name','cftp_admin'); ?></label>
     <div class="col-sm-8">
         <input type="text" name="this_install_title" id="this_install_title" class="form-control" value="<?php echo html_output(get_option('this_install_title')); ?>" required />
     </div>
 </div>
 
-<div class="form-group">
+<div class="form-group row">
     <label for="timezone" class="col-sm-4 control-label"><?php _e('Timezone','cftp_admin'); ?></label>
     <div class="col-sm-8">
         <?php
@@ -21,7 +21,7 @@
     </div>
 </div>
 
-<div class="form-group">
+<div class="form-group row">
     <label for="timeformat" class="col-sm-4 control-label"><?php _e('Time format','cftp_admin'); ?></label>
     <div class="col-sm-8">
         <input type="text" class="form-control" name="timeformat" id="timeformat" value="<?php echo get_option('timeformat'); ?>" required />
@@ -33,7 +33,7 @@
     </div>
 </div>
 
-<div class="form-group">
+<div class="form-group row">
     <div class="col-sm-8 col-sm-offset-4">
         <label for="footer_custom_enable">
             <input type="checkbox" value="1" name="footer_custom_enable" id="footer_custom_enable" class="checkbox_options" <?php echo (get_option('footer_custom_enable') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Use custom footer text",'cftp_admin'); ?>
@@ -41,17 +41,17 @@
     </div>
 </div>
 
-<div class="form-group">
+<div class="form-group row">
     <label for="footer_custom_content" class="col-sm-4 control-label"><?php _e('Footer content','cftp_admin'); ?></label>
     <div class="col-sm-8">
         <input type="text" name="footer_custom_content" id="footer_custom_content" class="form-control" value="<?php echo html_output(get_option('footer_custom_content')); ?>" />
     </div>
 </div>
 
-<div class="form-group">
+<div class="form-group row">
     <label for="pagination_results_per_page" class="col-sm-4 control-label"><?php _e('Pagination results per page','cftp_admin'); ?></label>
     <div class="col-sm-8">
-        <select class="form-control" name="pagination_results_per_page" id="pagination_results_per_page" required>
+        <select class="form-select" name="pagination_results_per_page" id="pagination_results_per_page" required>
             <?php
                 $pagination_amounts = [10, 20, 50, 100];
                 foreach ($pagination_amounts as $pagination_amount) {
@@ -69,7 +69,7 @@
 
 <h3><?php _e('Editor','cftp_admin'); ?></h3>
 
-<div class="form-group">
+<div class="form-group row">
     <div class="col-sm-8 col-sm-offset-4">
         <label for="files_descriptions_use_ckeditor">
             <input type="checkbox" value="1" name="files_descriptions_use_ckeditor" id="files_descriptions_use_ckeditor" class="checkbox_options" <?php echo (get_option('files_descriptions_use_ckeditor') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Use the visual editor on files descriptions",'cftp_admin'); ?>
@@ -81,7 +81,7 @@
 
 <h3><?php _e('Uploads defaults','cftp_admin'); ?></h3>
 
-<div class="form-group">
+<div class="form-group row">
     <div class="col-sm-8 col-sm-offset-4">
         <label for="files_default_expire">
             <input type="checkbox" value="1" name="files_default_expire" id="files_default_expire" class="checkbox_options" <?php echo (get_option('files_default_expire') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Files expire by default",'cftp_admin'); ?>
@@ -93,7 +93,7 @@
     </div>
 </div>
 
-<div class="form-group">
+<div class="form-group row">
     <label for="files_default_expire_days_after" class="col-sm-4 control-label"><?php _e('After these many days:','cftp_admin'); ?></label>
     <div class="col-sm-8">
         <input type="text" name="files_default_expire_days_after" id="files_default_expire_days_after" class="form-control" value="<?php echo html_output(get_option('files_default_expire_days_after')); ?>" />
@@ -104,7 +104,7 @@
 
 <h3><?php _e('Language','cftp_admin'); ?></h3>
 
-<div class="form-group">
+<div class="form-group row">
     <div class="col-sm-8 col-sm-offset-4">
         <label for="use_browser_lang">
             <input type="checkbox" value="1" name="use_browser_lang" id="use_browser_lang" class="checkbox_options" <?php echo (get_option('use_browser_lang') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Detect user browser language",'cftp_admin'); ?>
@@ -116,10 +116,10 @@
 <div class="options_divide"></div>
 
 <h3><?php _e('Downloads','cftp_admin'); ?></h3>
-<div class="form-group">
+<div class="form-group row">
     <label for="download_method" class="col-sm-4 control-label"><?php _e('Download method','cftp_admin'); ?></label>
     <div class="col-sm-8">
-        <select class="form-control" name="download_method" id="download_method" required>
+        <select class="form-select" name="download_method" id="download_method" required>
             <option value="php" <?php echo (get_option('download_method') == 'php') ? 'selected="selected"' : ''; ?>>php</option>
             <option value="apache_xsendfile" <?php echo (get_option('download_method') == 'apache_xsendfile') ? 'selected="selected"' : ''; ?>>XSendFile (apache)</option>
             <option value="nginx_xaccel" <?php echo (get_option('download_method') == 'nginx_xaccel') ? 'selected="selected"' : ''; ?>>X-Accel (nginx)</option>
@@ -146,7 +146,7 @@
 <h3><?php _e('System location','cftp_admin'); ?></h3>
 <p class="text-warning"><?php _e('These options are to be changed only if you are moving the system to another place. Changes here can cause ProjectSend to stop working.','cftp_admin'); ?></p>
 
-<div class="form-group">
+<div class="form-group row">
     <label for="base_uri" class="col-sm-4 control-label"><?php _e('System URI','cftp_admin'); ?></label>
     <div class="col-sm-8">
         <input type="text" class="form-control" name="base_uri" id="base_uri" value="<?php echo BASE_URI; ?>" required />

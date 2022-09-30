@@ -7,20 +7,20 @@
     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>" />
     <input type="hidden" name="do" value="login">
     <fieldset>
-        <div class="form-group">
+        <div class="mb-3">
             <label for="username"><?php _e('Username','cftp_admin'); ?> / <?php _e('E-mail','cftp_admin'); ?></label>
             <input type="text" name="username" id="username" value="<?php if (isset($sysuser_username)) { echo htmlspecialchars($sysuser_username); } ?>" class="form-control" autofocus />
         </div>
 
-        <div class="form-group">
+        <div class="form-group row">
             <label for="password"><?php _e('Password','cftp_admin'); ?></label>
             <input type="password" name="password" id="password" class="form-control" />
         </div>
 
         <?php /*
-        <div class="form-group">
+        <div class="form-group row">
             <label for="language"><?php _e('Language','cftp_admin'); ?></label>
-            <select name="language" id="language" class="form-control">
+            <select class="form-select" name="language" id="language">
                 <?php
                     // scan for language files
                     $available_langs = get_available_languages();

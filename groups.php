@@ -69,7 +69,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <?php
         $params = [];
         $cq = "SELECT id FROM " . TABLE_GROUPS;
@@ -130,9 +130,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
             <div class="form_actions_right">
                 <div class="form_actions">
                     <div class="form_actions_submit">
-                        <div class="form-group group_float">
+                        <div class="form-group row group_float">
                             <label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected groups actions', 'cftp_admin'); ?>:</label>
-                            <select name="action" id="action" class="txtfield form-control">
+                            <select class="form-select form-control-short" name="action" id="action">
                                 <?php
                                 $actions_options = array(
                                     'none' => __('Select action', 'cftp_admin'),
@@ -146,7 +146,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                                 ?>
                             </select>
                         </div>
-                        <button type="submit" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed', 'cftp_admin'); ?></button>
+                        <button type="submit" id="do_action" class="btn btn-sm btn-pslight"><?php _e('Proceed', 'cftp_admin'); ?></button>
                     </div>
                 </div>
             </div>
@@ -258,7 +258,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                         $files_btn = 'btn-primary';
                     } else {
                         $files_link = '#';
-                        $files_btn = 'btn-default disabled';
+                        $files_btn = 'btn-pslight disabled';
                     }
 
                     // Visibility
@@ -269,7 +269,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                             . $pre . ' ' . __('Public', 'cftp_admin') . '
                                 </a>';
                     } else {
-                        $visibility_link = '<a href="javascript:void(0);" class="btn btn-default btn-sm disabled" title="">'
+                        $visibility_link = '<a href="javascript:void(0);" class="btn btn-pslight btn-sm disabled" title="">'
                             . __('Private', 'cftp_admin') . '
                                 </a>';
                     }

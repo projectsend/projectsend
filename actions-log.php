@@ -99,16 +99,16 @@ $sql->execute($params);
 $count = $sql->rowCount();
 ?>
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <div class="form_actions_left">
             <div class="form_actions_limit_results">
                 <?php show_search_form('actions-log.php'); ?>
 
                 <form action="actions-log.php" name="actions_filters" method="get" class="form-inline form_filters">
                     <?php form_add_existing_parameters(array('activity')); ?>
-                    <div class="form-group group_float">
+                    <div class="form-group row group_float">
                         <label for="activity" class="sr-only"><?php _e('Filter activities', 'cftp_admin'); ?></label>
-                        <select name="activity" id="activity" class="form-control">
+                        <select class="form-select" name="activity" id="activity">
                             <option value="all"><?php _e('All activities', 'cftp_admin'); ?></option>
                             <?php
                             $logger = new \ProjectSend\Classes\ActionsLog;
@@ -123,7 +123,7 @@ $count = $sql->rowCount();
                             ?>
                         </select>
                     </div>
-                    <button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default"><?php _e('Filter', 'cftp_admin'); ?></button>
+                    <button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-pslight"><?php _e('Filter', 'cftp_admin'); ?></button>
                 </form>
             </div>
         </div>
@@ -133,9 +133,9 @@ $count = $sql->rowCount();
             <div class="form_actions_right">
                 <div class="form_actions">
                     <div class="form_actions_submit">
-                        <div class="form-group group_float">
+                        <div class="form-group row group_float">
                             <label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Activities actions', 'cftp_admin'); ?>:</label>
-                            <select name="action" id="action" class="form-control">
+                            <select class="form-select" name="action" id="action">
                                 <?php
                                 $actions_options = array(
                                     'none' => __('Select action', 'cftp_admin'),
@@ -151,21 +151,21 @@ $count = $sql->rowCount();
                                 ?>
                             </select>
                         </div>
-                        <button type="submit" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed', 'cftp_admin'); ?></button>
+                        <button type="submit" id="do_action" class="btn btn-sm btn-pslight"><?php _e('Proceed', 'cftp_admin'); ?></button>
                     </div>
                 </div>
             </div>
     </div>
 </div>
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <div class="form_actions_count">
             <p><?php echo sprintf(__('Found %d elements', 'cftp_admin'), (int)$count_for_pagination); ?>
         </div>
     </div>
 </div>
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <?php
         if (!$count) {
             if (isset($no_results_error)) {

@@ -87,8 +87,8 @@ if ($_POST) {
     ps_redirect($redirect_to);
 }
 ?>
-<div class="row">
-    <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
+<div class="row justify-content-md-center">
+    <div class="col-12 col-sm-12 col-lg-4">
         <div class="white-box">
             <div class="white-box-interior">
                 <?php

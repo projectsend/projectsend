@@ -13,7 +13,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 $current_url = get_form_action_with_existing_parameters(basename(__FILE__));
 ?>
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <?php
         // Apply the corresponding action to the selected users.
         if (isset($_POST['action'])) {
@@ -135,8 +135,8 @@ $current_url = get_form_action_with_existing_parameters(basename(__FILE__));
 
                 <form action="users.php" name="users_filters" method="get" class="form-inline">
                     <?php form_add_existing_parameters(array('active', 'role', 'action')); ?>
-                    <div class="form-group group_float">
-                        <select name="role" id="role" class="txtfield form-control">
+                    <div class="form-group row group_float">
+                        <select class="form-select form-control-short" name="role" id="role">
                             <?php
                             $roles_options = array(
                                 'all' => __('All roles', 'cftp_admin'),
@@ -155,8 +155,8 @@ $current_url = get_form_action_with_existing_parameters(basename(__FILE__));
                         </select>
                     </div>
 
-                    <div class="form-group group_float">
-                        <select name="active" id="active" class="txtfield form-control">
+                    <div class="form-group row group_float">
+                        <select class="form-select form-control-short" name="active" id="active">
                             <?php
                             $status_options = array(
                                 '2' => __('All statuses', 'cftp_admin'),
@@ -173,7 +173,7 @@ $current_url = get_form_action_with_existing_parameters(basename(__FILE__));
                             ?>
                         </select>
                     </div>
-                    <button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default"><?php _e('Filter', 'cftp_admin'); ?></button>
+                    <button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-pslight"><?php _e('Filter', 'cftp_admin'); ?></button>
                 </form>
             </div>
         </div>
@@ -183,9 +183,9 @@ $current_url = get_form_action_with_existing_parameters(basename(__FILE__));
             <div class="form_actions_right">
                 <div class="form_actions">
                     <div class="form_actions_submit">
-                        <div class="form-group group_float">
+                        <div class="form-group row group_float">
                             <label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected users actions', 'cftp_admin'); ?>:</label>
-                            <select name="action" id="action" class="txtfield form-control">
+                            <select class="form-select form-control-short" name="action" id="action">
                                 <?php
                                 $actions_options = array(
                                     'none' => __('Select action', 'cftp_admin'),
@@ -201,7 +201,7 @@ $current_url = get_form_action_with_existing_parameters(basename(__FILE__));
                                 ?>
                             </select>
                         </div>
-                        <button type="submit" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed', 'cftp_admin'); ?></button>
+                        <button type="submit" id="do_action" class="btn btn-sm btn-pslight"><?php _e('Proceed', 'cftp_admin'); ?></button>
                     </div>
                 </div>
             </div>
@@ -310,8 +310,8 @@ $current_url = get_form_action_with_existing_parameters(basename(__FILE__));
                     }
 
                     // Get active status
-                    $label = ($user->active == 0) ? __('Inactive', 'cftp_admin') : __('Active', 'cftp_admin');
-                    $class = ($user->active == 0) ? 'danger' : 'success';
+                    $badge_label = ($user->active == 0) ? __('Inactive', 'cftp_admin') : __('Active', 'cftp_admin');
+                    $badge_class = ($user->active == 0) ? 'danger' : 'success';
 
                     // Add the cells to the row
                     // @todo allow deleting first user
@@ -341,7 +341,7 @@ $current_url = get_form_action_with_existing_parameters(basename(__FILE__));
                             'content' => $role_name,
                         ),
                         array(
-                            'content' => '<span class="label label-' . $class . '">' . $label . '</span>',
+                            'content' => '<span class="badge bg-' . $badge_class . '">' . $badge_label . '</span>',
                         ),
                         array(
                             'content' => ($user->max_file_size == '0') ? __('Default', 'cftp_admin') : $user->max_file_size . ' ' . 'MB',

@@ -17,7 +17,7 @@
                 <?php
                     foreach ( $days_buttons as $days ) {
                 ?>
-                        <button class="get_statistics btn btn-sm btn-default <?php if ( $days == $default_days ) { echo 'btn-inverse'; } ?>" data-days="<?php echo $days; ?>">
+                        <button class="get_statistics btn btn-sm btn-pslight <?php if ( $days == $default_days ) { echo 'btn-inverse'; } ?>" data-days="<?php echo $days; ?>">
                             <?php echo sprintf(__('%d days','cftp_admin'), $days); ?>
                         </button>
                 <?php

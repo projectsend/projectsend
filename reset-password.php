@@ -20,7 +20,7 @@ if ($_POST) {
     switch ($form_type) {
         case 'new_request':
             recaptcha2_validate_request();
-
+            
             $get_user = get_user_by('user', 'email', $_POST['email']);
             if ($get_user) {
                 $request = $pass_reset->requestNew($get_user['id']);
@@ -67,8 +67,8 @@ if ($_POST) {
 }
 ?>
 
-<div class="row">
-    <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
+<div class="row justify-content-md-center">
+    <div class="col-12 col-sm-12 col-lg-4">
         <div class="white-box">
             <div class="white-box-interior">
                 <?php

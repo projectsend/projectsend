@@ -10,8 +10,8 @@ $page_id = 'installer_installed';
 
 include_once '../header-unlogged.php';
 ?>
-<div class="row">
-    <div class="col-12 col-sm-12 col-lg-4 col-lg-offset-4">
+<div class="row justify-content-md-center">
+    <div class="col-12 col-sm-12 col-lg-4">
         <div class="white-box">
             <div class="white-box-interior">
                 <h3><?php _e('Already installed','cftp_admin'); ?></h3>

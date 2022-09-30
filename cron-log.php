@@ -44,7 +44,7 @@ if (isset($_POST['action']) && $_POST['action'] != 'none') {
 }
 ?>
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <?php
         $params    = [];
 
@@ -105,9 +105,9 @@ if (isset($_POST['action']) && $_POST['action'] != 'none') {
             <div class="form_actions_right">
                 <div class="form_actions">
                     <div class="form_actions_submit">
-                        <div class="form-group group_float">
+                        <div class="form-group row group_float">
                             <label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Actions', 'cftp_admin'); ?>:</label>
-                            <select name="action" id="action" class="form-control">
+                            <select class="form-select" name="action" id="action">
                                 <?php
                                 $actions_options = array(
                                     'none' => __('Select action', 'cftp_admin'),
@@ -123,7 +123,7 @@ if (isset($_POST['action']) && $_POST['action'] != 'none') {
                                 ?>
                             </select>
                         </div>
-                        <button type="submit" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed', 'cftp_admin'); ?></button>
+                        <button type="submit" id="do_action" class="btn btn-sm btn-pslight"><?php _e('Proceed', 'cftp_admin'); ?></button>
                     </div>
                 </div>
             </div>

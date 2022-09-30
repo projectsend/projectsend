@@ -4,7 +4,7 @@ $ld = 'cftp_template';
 include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 ?>
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <div class="form_actions_left">
             <div class="form_actions_limit_results">
                 <?php show_search_form(); ?>
@@ -18,8 +18,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                         <form action="" name="group_filter" method="get" class="form-inline form_filters">
                             <!-- <input type="hidden" name="token" value="<?php echo htmlentities($_GET['token']); ?>"> -->
                             <?php form_add_existing_parameters( array('group') ); ?>
-                            <div class="form-group group_float">
-                                <select name="group" id="group" class="txtfield form-control">
+                            <div class="form-group row group_float">
+                                <select class="form-select form-control-short" name="group" id="group">
                                     <option value="0"><?php _e('Not in group','cftp_admin'); ?></option>
                                     <optgroup><?php _e('Groups','cftp_admin'); ?></optgroup>
                                     <?php
@@ -31,7 +31,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                                     ?>
                                 </select>
                             </div>
-                            <button type="submit" id="btn_proceed_filter_files" class="btn btn-sm btn-default"><?php _e('Go','cftp_admin'); ?></button>
+                            <button type="submit" id="btn_proceed_filter_files" class="btn btn-sm btn-pslight"><?php _e('Go','cftp_admin'); ?></button>
                         </form>
                 <?php
                     }
@@ -47,7 +47,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 
 <form action="" name="files_list" method="get" class="form-inline batch_actions">
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-12">
             <?php form_add_existing_parameters(); ?>
 
             <div class="form_actions_count">
@@ -59,7 +59,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 
     <?php if ($mode == 'group' && !empty($group_props['description'])) { ?>
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-12">
                 <div class="group_description">
                     <h3><?php _e('About this group','cftp_admin'); ?></h3>
                     <?php echo htmlentities_allowed($group_props['description']); ?>
@@ -69,7 +69,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
     <?php } ?>
 
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-12">
             <?php
                 if ($count == 0) {
                     if (isset($_GET['search'])) {
@@ -148,7 +148,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                         $filetitle = '<strong>' . $file->title . '</strong>';
                         
                         /** Extension */
-                        $extension_cell = '<span class="label label-success label_big">' . $file->extension . '</span>';
+                        $extension_cell = '<span class="badge bg-success label_big">' . $file->extension . '</span>';
 
                         /** Date */
                         $date = format_date($file->uploaded_date);
@@ -156,18 +156,18 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                         /** Expiration */
                         if ( $file->expires == '1' ) {
                             if ( $file->expired == false ) {
-                                $class = 'primary';
+                                $badge_class = 'bg-primary';
                             } else {
-                                $class = 'danger';
+                                $badge_class = 'bg-danger';
                             }
                             
                             $value = date( get_option('timeformat'), strtotime( $file->expiry_date ) );
                         } else {
-                            $class = 'success';
-                            $value = __('Never','cftp_template');
+                            $badge_class = 'bg-success';
+                            $badge_label = __('Never','cftp_template');
                         }
                         
-                        $expiration_cell = '<span class="label label-' . $class . ' label_big">' . $value . '</span>';
+                        $expiration_cell = '<span class="badge ' . $badge_class . ' label_big">' . $badge_label . '</span>';
 
                         /** Thumbnail */
                         $preview_cell = '';
@@ -274,7 +274,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 </form>
 
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <div class="login_form_links">
             <?php
                 if ( !user_is_logged_in() && get_option('clients_can_register') == '1') {

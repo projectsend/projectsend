@@ -94,29 +94,29 @@
             <h5><i class="fa fa-<?php echo $item_data['icon']; ?>"></i> <?php echo $item_data['name']; ?></h5>
 
             <div class="options_column">
-                <div class="form-group">
+                <div class="form-group row">
                     <label for="<?php echo $item_data['fields']['enabled']; ?>" class="col-sm-4 control-label"><?php _e('Enabled','cftp_admin'); ?></label>
                     <div class="col-sm-8">
-                        <select name="<?php echo $item_data['fields']['enabled']; ?>" id="<?php echo $item_data['fields']['enabled']; ?>" class="form-control">
+                        <select class="form-select" name="<?php echo $item_data['fields']['enabled']; ?>" id="<?php echo $item_data['fields']['enabled']; ?>">
                             <option value="true" <?php echo ($enabled == 'true') ? 'selected="selected"' : ''; ?>><?php _e('Yes','cftp_admin'); ?></option>
                             <option value="false" <?php echo (empty($enabled) || $enabled != 'true') ? 'selected="selected"' : ''; ?>><?php _e('No','cftp_admin'); ?></option>
                         </select>
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group row">
                     <label for="<?php echo $item_data['fields']['id']; ?>" class="col-sm-4 control-label"><?php _e('App ID','cftp_admin'); ?></label>
                     <div class="col-sm-8">
                         <input type="text" name="<?php echo $item_data['fields']['id']; ?>" id="<?php echo $item_data['fields']['id']; ?>" class="form-control empty" value="<?php echo html_output(get_option($item_data['fields']['id'])); ?>" />
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group row">
                     <label for="<?php echo $item_data['fields']['secret']; ?>" class="col-sm-4 control-label"><?php _e('App Secret','cftp_admin'); ?></label>
                     <div class="col-sm-8">
                         <input type="text" name="<?php echo $item_data['fields']['secret']; ?>" id="<?php echo $item_data['fields']['secret']; ?>" class="form-control empty" value="<?php echo html_output(get_option($item_data['fields']['secret'])); ?>" />
                     </div>
                 </div>
                 <?php if (!empty($item_data['fields']['tenant'])) { ?>
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label for="<?php echo $item_data['fields']['tenant']; ?>" class="col-sm-4 control-label"><?php _e('App Tenant','cftp_admin'); ?></label>
                         <div class="col-sm-8">
                             <input type="text" name="<?php echo $item_data['fields']['tenant']; ?>" id="<?php echo $item_data['fields']['tenant']; ?>" class="form-control empty" value="<?php echo html_output(get_option($item_data['fields']['tenant'])); ?>" />
@@ -124,7 +124,7 @@
                     </div>
                 <?php } ?>
                 <?php if (!empty($item_data['callback'])) { ?>
-                    <div class="form-group">
+                    <div class="form-group row">
                         <div class="col-sm-4">
                             <?php _e('Callback URI','cftp_admin'); ?>
                         </div>
@@ -135,7 +135,7 @@
                     </div>
                 <?php } ?>
                 <?php if (!empty($item_data['instructions'])) { ?>
-                    <div class="form-group">
+                    <div class="form-group row">
                         <div class="col-sm-8 col-sm-offset-4">
                             <a href="<?php echo $item_data['instructions']; ?>" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
                         </div>
@@ -159,10 +159,10 @@
 <p><?php _e('Please note that the "mail" attribute will be used to identify users', 'cftp_admin'); ?></p>
 
 <div class="options_column">
-    <div class="form-group">
+    <div class="form-group row">
         <label for="ldap_signin_enabled" class="col-sm-4 control-label"><?php _e('Enabled','cftp_admin'); ?></label>
         <div class="col-sm-8">
-            <select name="ldap_signin_enabled" id="ldap_signin_enabled" class="form-control">
+            <select class="form-select" name="ldap_signin_enabled" id="ldap_signin_enabled">
                 <option value="true" <?php echo ($ldap_enabled == 'true') ? 'selected="selected"' : ''; ?>><?php _e('Yes','cftp_admin'); ?></option>
                 <option value="false" <?php echo (empty($ldap_enabled) || $ldap_enabled != 'true') ? 'selected="selected"' : ''; ?>><?php _e('No','cftp_admin'); ?></option>
             </select>
@@ -200,7 +200,7 @@
         );
         foreach ($ldap_fields as $field => $field_data) {
     ?>
-            <div class="form-group">
+            <div class="form-group row">
                 <label for="<?php echo $field_data['name']; ?>" class="col-sm-4 control-label"><?php echo $field_data['label']; ?></label>
                 <div class="col-sm-8">
                     <input type="<?php echo $field_data['type']; ?>" name="<?php echo $field_data['name']; ?>" id="<?php echo $field_data['name']; ?>" class="form-control empty" value="<?php echo html_output(get_option($field_data['name'])); ?>" />
@@ -214,10 +214,10 @@
 
         $ldap_protocol_version = get_option('ldap_protocol_version');
     ?>
-    <div class="form-group">
+    <div class="form-group row">
         <label for="ldap_protocol_version" class="col-sm-4 control-label"><?php _e('Protocol Version','cftp_admin'); ?></label>
         <div class="col-sm-8">
-            <select name="ldap_protocol_version" id="ldap_protocol_version" class="form-control">
+            <select class="form-select" name="ldap_protocol_version" id="ldap_protocol_version">
                 <option value="3" <?php echo (!empty($ldap_protocol_version) && $ldap_protocol_version == '3') ? 'selected="selected"' : ''; ?>><?php _e('3','cftp_admin'); ?></option>
                 <option value="2" <?php echo (!empty($ldap_protocol_version) && $ldap_protocol_version == '2') ? 'selected="selected"' : ''; ?>><?php _e('2','cftp_admin'); ?></option>
             </select>
@@ -231,10 +231,10 @@
     $oidc_enabled = get_option('oidc_signin_enabled');
 ?>
 <div class="options_column">
-    <div class="form-group">
+    <div class="form-group row">
         <label for="oidc_signin_enabled" class="col-sm-4 control-label"><?php _e('Enabled','cftp_admin'); ?></label>
         <div class="col-sm-8">
-            <select name="oidc_signin_enabled" id="oidc_signin_enabled" class="form-control">
+            <select class="form-select" name="oidc_signin_enabled" id="oidc_signin_enabled">
                 <option value="true" <?php echo ($oidc_enabled == 'true') ? 'selected="selected"' : ''; ?>><?php _e('Yes','cftp_admin'); ?></option>
                 <option value="false" <?php echo (empty($oidc_enabled) || $oidc_enabled != 'true') ? 'selected="selected"' : ''; ?>><?php _e('No','cftp_admin'); ?></option>
             </select>
@@ -249,7 +249,7 @@
         );
         foreach ($oidc_fields as $field => $field_data) {
     ?>
-            <div class="form-group">
+            <div class="form-group row">
                 <label for="<?php echo $field_data['name']; ?>" class="col-sm-4 control-label"><?php echo $field_data['label']; ?></label>
                 <div class="col-sm-8">
                     <input type="text" name="<?php echo $field_data['name']; ?>" id="<?php echo $field_data['name']; ?>" class="form-control empty" value="<?php echo html_output(get_option($field_data['name'])); ?>" />

@@ -189,7 +189,7 @@
 
                 var content = `<div class="public_link_modal">
                                     <p>`+title+`</p>
-                                    <div class="form-group">
+                                    <div class="form-group row">
                                         <textarea class="input-large form-control" rows="4" readonly>`+public_url+`</textarea>
                                         <button class="public_link_copy btn btn-primary" data-copy-text="`+public_url+`">
                                             <i class="fa fa-files-o" aria-hidden="true"></i> `+json_strings.translations.click_to_copy+`

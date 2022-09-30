@@ -27,14 +27,14 @@ if ($_POST) {
 }
 ?>
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-lg-6">
+    <div class="col-12 col-sm-12 col-lg-6">
         <div class="white-box">
             <div class="white-box-interior">
                 <form action="unblock-ip.php" name="unblock_ip" method="post" enctype="multipart/form-data" class="form-horizontal">
                     <?php addCsrf(); ?>
                     <input type="hidden" name="section" value="<?php echo $section; ?>">
 
-                    <div class="form-group">
+                    <div class="form-group row">
                         <div class="col-sm-12">
                             <label for="ip"><?php _e('IP address', 'cftp_admin'); ?></label>
                             <input type="text" name="ip" id="ip" class="form-control" value="">

@@ -35,7 +35,7 @@ $categories = [];
 $get_categories = get_categories();
 ?>
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <?php
         if (isset($_POST['save'])) {
             // Edit each file and its assignations
@@ -129,7 +129,7 @@ $get_categories = get_categories();
                     if ($file->public == '1') {
                         $col_public .= '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="file" data-public-url="'.$file->public_url.'" data-title="'.$file->title.'">'.__('Public', 'cftp_admin').'</a>';
                     } else {
-                        $col_public .= '<a href="javascript:void(0);" class="btn btn-default btn-sm disabled" rel="" title="">'.__('Private', 'cftp_admin').'</a>';
+                        $col_public .= '<a href="javascript:void(0);" class="btn btn-pslight btn-sm disabled" rel="" title="">'.__('Private', 'cftp_admin').'</a>';
                     }
 
                     $col_actions = '<a href="files-edit.php?ids='.$file->id.'" class="btn-primary btn btn-sm">

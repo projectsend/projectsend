@@ -14,7 +14,7 @@ $page_title = __('Account requests', 'cftp_admin');
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-12">
         <?php
         if (isset($_GET['action'])) {
             switch ($_GET['action']) {
@@ -190,9 +190,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
             <div class="form_actions_right">
                 <div class="form_actions">
                     <div class="form_actions_submit">
-                        <div class="form-group group_float">
+                        <div class="form-group row group_float">
                             <label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected clients actions', 'cftp_admin'); ?>:</label>
-                            <select name="action" id="action" class="txtfield form-control">
+                            <select class="form-select form-control-short" name="action" id="action">
                                 <?php
                                 $actions_options = array(
                                     'none' => __('Select action', 'cftp_admin'),
@@ -207,7 +207,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                                 ?>
                             </select>
                         </div>
-                        <button type="submit" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed', 'cftp_admin'); ?></button>
+                        <button type="submit" id="do_action" class="btn btn-sm btn-pslight"><?php _e('Proceed', 'cftp_admin'); ?></button>
                     </div>
                 </div>
             </div>
@@ -362,8 +362,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                             //echo '<input type="hidden" name="accounts['.$row['id'].'][requests][]" value="' . $request['id'] . '">';
                         }
 
-                        $membership_select = '<a href="#" class="change_all btn btn-default btn-xs" data-target="' . $client_id . '" data-check="true">' . __('Accept all', 'cftp_admin') . '</a> 
-                                                    <a href="#" class="change_all btn btn-default btn-xs" data-target="' . $client_id . '" data-check="false">' . __('Deny all', 'cftp_admin') . '</a>';
+                        $membership_select = '<a href="#" class="change_all btn btn-pslight btn-xs" data-target="' . $client_id . '" data-check="true">' . __('Accept all', 'cftp_admin') . '</a> 
+                                                    <a href="#" class="change_all btn btn-pslight btn-xs" data-target="' . $client_id . '" data-check="false">' . __('Deny all', 'cftp_admin') . '</a>';
                     }
 
                     // Add the cells to the row

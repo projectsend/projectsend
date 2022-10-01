@@ -489,7 +489,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
             </div>
             <div class="col-6 text-end">
                 <?php if (current_user_can_upload()) { ?>
-                    <a href="upload.php" type="submit" id="do_action" class="btn btn-md btn-pslight"><?php _e('Upload files', 'cftp_admin'); ?></a>
+                    <a href="upload.php" type="submit" id="do_action" class="btn btn-md btn-primary"><i class="fa fa-plus fa-small"></i> <?php _e('Upload files', 'cftp_admin'); ?></a>
                 <?php } ?>
             </div>
         </div>

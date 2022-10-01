@@ -79,7 +79,7 @@ class Download
         if ( count( $files_to_zip ) > 0 ) {
             $zip_file = tempnam(UPLOADS_TEMP_DIR, "zip_");
             $zip = new \ZipArchive();
-            $zip->open($zip_file, ZipArchive::OVERWRITE);
+            $zip->open($zip_file, \ZipArchive::OVERWRITE);
 
             foreach ($files_to_zip as $file_id) {
                 $file = new \ProjectSend\Classes\Files();
@@ -247,9 +247,8 @@ class Download
 	public function downloadPHP($file_location, $save_as)
 	{
 		$path_parts = pathinfo($file_location);
-		$file_name  = $path_parts['basename'];
-		$file_ext   = $path_parts['extension'];
-		
+		$file_name = $path_parts['basename'];
+		$file_ext = (!empty($path_parts['extension'])) ? $path_parts['extension'] : null;
 
 		// make sure the file exists
 		if (is_file($file_location))

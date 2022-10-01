@@ -1,0 +1,294 @@
+// Home widgets
+body.dashboard {
+    .widget {
+        background:white;
+        display:block;
+        width:100%;
+        margin-bottom:30px;
+        border-radius: 8px;
+        box-shadow: $global_box_shadow;
+    
+        .widget_int {
+            padding:15px;
+        }
+    
+        h4 {
+            text-align:left;
+            padding:13px;
+            font-size:16px;
+            margin:0 !important;
+            color:$widget_title_color;
+            background: $widget_title_background;
+            border-bottom:1px solid #dedede;
+            border-radius: 2px 2px 0 0;
+        }
+    
+        &:hover h4 {
+            background: $widget_hover_background;
+        }
+    
+    }
+    
+    // Counters
+    .widget_counters {
+        ul {
+            list-style: none;
+            margin: 0 0 30px;
+            padding: 0;
+            display: flex;
+            gap: 15px;
+    
+            @include bk(xs) {
+                flex-wrap: wrap;
+            }
+    
+            li {
+                flex: 1;
+                background: red;
+                color: white;
+                padding: 20px;
+                position: relative;
+                border-radius: 8px;
+    
+                @include bk(xs) {
+                    flex: 1 0 20%;
+                    margin-bottom: 20px;
+                }
+    
+                &:nth-child(1) { background: #ffac02; }
+                &:nth-child(2) { background: #7ad14c; }
+                &:nth-child(3) { background: #6b6eff; }
+                &:nth-child(4) { background: #e74123; }
+                &:nth-child(5) { background: #03c3ec; }
+    
+                h6 {
+                    font-weight: bold;
+                    font-size: 35px;
+                }
+    
+                h5 {
+                    font-weight: normal;
+                    font-size: 22px;
+                }
+    
+                i {
+                    position: absolute;
+                    right: 20px;
+                    top: 20px;
+                    font-size: 100px;
+                    opacity: .2;
+    
+                    @include bk(xs) {
+                        opacity: .1;
+                    }
+                }
+            }
+        }
+    }
+    
+    // Home LOG widget
+    #widget_actions_log {
+        #log_container {
+            ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+    
+                li {
+                    padding: 7px;
+                    border-bottom: 1px solid #dedede;
+                    display: flex;
+    
+                    &:nth-child(odd) {
+                        background: #f6f6f6;
+                    }
+    
+                    &:hover {
+                        background: #fbf8e9;
+                    }
+    
+                    i {
+                        margin:0 1em;
+                        color: #1ec4a7;
+                        text-align: center;
+                        font-size: 14px;
+                    }
+    
+                    .date {
+                        text-align: right;
+    
+                        span {
+                            display: inline-block;
+                            padding: 3px 0 0 0;
+                            font-weight: bold;
+                            line-height: 1;
+                        }
+                    }
+    
+                    .action {
+                        flex: 2;
+                        word-break: break-all;
+    
+                        .item_part1, .item_part2, .item_part4 {
+                            color: $main_color;
+                            font-weight: bold;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    .activities_log {
+        padding:0;
+    
+        li {
+            padding:7px;
+            border-bottom:1px solid #EFEFEF;
+            overflow:hidden;
+    
+            &:nth-child(odd) {
+                background:#fafafa;
+            }
+    
+            &:last-child {
+                border-bottom:none !important;
+            }
+    
+            .date {
+                font-size:.9em;
+                color:#999;
+            }
+    
+            .log_ico {
+                width:45px;
+                float:left;
+                @include opacity(.1);
+            }
+    
+            &:hover .log_ico {
+                @include opacity(.7);
+            }
+    
+            span {
+                font-weight:bold;
+                color:$main_color;
+            }
+    
+            span.secondary {
+                color:#86AE00;
+            }
+        }
+    }
+    
+    .view_full_log {
+        text-align:right;
+        padding-top:5px;
+        margin-top:5px;
+        border-top:1px solid #EFEFEF;
+    }
+    
+    // Home NEWS widget
+    
+    .home_news {
+        margin:0;
+        padding:0;
+    
+        .date {
+            color:#999;
+            font-size:.9em;
+        }
+    
+        h5 {
+            margin:0 0 3px;
+        }
+    }
+    
+    // Home graphs
+    .stats_change_days {
+        margin-bottom:1.5em;
+        display:inline-block;
+    }
+    
+    .graph_legend {
+        float:none;
+        clear:both;
+        display:block;
+        text-align: left;
+        margin: 0 0 30px;
+        padding: 0;
+    
+        @include bk(md) {
+            display:inline-block;
+            text-align:right;
+            padding-top:5px;
+            margin:0 0 0 auto;
+            float:right;
+        }
+    
+        li {
+            display:inline-block;
+            margin-left:5px;
+            font-size:.9em;
+            padding:4px;
+    
+            &.legend_color {
+                margin: 2px 5px 0 0;
+            }
+        }
+    
+    }
+    
+    .stats_change_data, .log_change_action {
+        margin-bottom:2em;
+    }
+    
+    .widget_system_info {
+        .widget_int h3:first-child {
+            margin-top:0;
+        }
+    
+        dl {
+            margin-bottom:25px;
+        }
+    
+        dt {
+            text-align:left;
+        }
+    
+        dd {
+            word-break: break-all;
+        }
+    }
+    
+    .loading-icon {
+        text-align: center;
+        margin: 30px auto;
+        padding: 0;
+    
+        svg {
+            width: 100px;
+            height: auto;
+        }
+    }
+    
+    // Home statistics tooltip
+    
+    .widget_statistics {
+        #stats_tooltip {
+            position:absolute;
+            display:none;
+            background:black;
+            color:#FFFFFF;
+            padding:5px;
+        }
+    
+        #chart_container canvas {
+            display:block;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+        }
+    }
+
+}    

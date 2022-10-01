@@ -65,8 +65,8 @@
                 }
                 else {
                     var days = $(this).data('days');
-                    $('#widget_statistics button.get_statistics').removeClass('btn-inverse active');
-                    $(this).addClass('btn-inverse active');
+                    $('#widget_statistics button.get_statistics').removeClass('btn-primary active').addClass('btn-pslight');
+                    $(this).addClass('btn-primary active').removeClass('btn-pslight');
                     ajax_widget_statistics(days);
                 }
             });

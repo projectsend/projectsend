@@ -10,18 +10,7 @@
 	padding:4px 20px !important;
 }
 
-.btn-primary {
-	background:$main_color;
-
-	&:hover,
-	&:focus
-	{
-		background:$main_lighten;
-	}
-}
-
 // Other bootstrap styles
-
 .pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
     background: $main_color;
     border-color: $main_color;
@@ -75,8 +64,6 @@ span.label {
 	text-decoration: none;
 	text-align:center;
 	border:1px solid #004380;
-	-moz-border-radius:4px;
-	-webkit-border-radius:4px;
 	border-radius:4px;
 
 	&:hover
@@ -93,10 +80,10 @@ span.label {
 }
 
 .plupload_wrapper {
-    @include box-shadow(3px 3px 5px, #dedede);
     font-family:$font_body;
     font-size:1.15em;
     line-height:1.2em;
+    box-shadow:3px 3px 5px, #dedede;
 }
 
 .plupload_container {

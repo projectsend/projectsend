@@ -26,9 +26,8 @@
     margin:-170px 0 0 -200px;
     background:white;
     color:black;
-
-    @include border-radius(7px);
-    @include box-shadow(0 0 23px, rgba(0, 0, 0, .3));
+    border-radius: 7px;
+    box-shadow: 0 0 23px, rgba(0, 0, 0, .3);
 }
 
 .modal_content {
@@ -60,11 +59,6 @@
     background:-moz-linear-gradient(top , #f5f5f5, #eee)!important;
     background:-webkit-gradient(linear, left top, left bottom, from(#f5f5f5), to(#eee))!important;
     color:#888;
-
-    -webkit-border-top-left-radius: 7px;
-    -webkit-border-top-right-radius: 7px;
-    -moz-border-radius-topleft: 7px;
-    -moz-border-radius-topright: 7px;
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
 

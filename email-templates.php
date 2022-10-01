@@ -149,12 +149,12 @@ if ($_POST) {
                         if (!empty($group['tags'])) {
                         ?>
                             <p><strong><?php _e("The following tags can be used on this e-mails' body.", 'cftp_admin'); ?></strong></p>
-                            <dl class="dl-horizontal" id="email_available_tags">
+                            <dl class="row" id="email_available_tags">
                                 <?php
                                 foreach ($group['tags'] as $tag => $description) {
                                 ?>
-                                    <dt><button type="button" class="btn btn-sm btn-pslight insert_tag" data-tag="<?php echo $tag; ?>" data-target="<?php echo $group['body_textarea']; ?>"><?php echo $tag; ?></button></dt>
-                                    <dd><?php echo $description; ?></dd>
+                                    <dt class="col-6 text-end"><button type="button" class="btn btn-sm btn-pslight insert_tag" data-tag="<?php echo $tag; ?>" data-target="<?php echo $group['body_textarea']; ?>"><?php echo $tag; ?></button></dt>
+                                    <dd class="col-6"><?php echo $description; ?></dd>
                                 <?php
                                 }
                                 ?>

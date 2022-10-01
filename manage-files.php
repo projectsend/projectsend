@@ -356,6 +356,14 @@ if (!$count) {
     }
 }
 
+if (current_user_can_upload()) {
+    $header_button_add = [
+        'url' => 'upload.php',
+        'label' => __('Upload files', 'cftp_admin'),
+    ];
+}
+
+// Header
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 <div class="row">
@@ -368,9 +376,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                 <?php
                     if (CURRENT_USER_LEVEL != '0' && $results_type == 'global') {
                 ?>
-                    <form action="manage-files.php" name="files_filters" method="get" class="row row-cols-lg-auto g-3 align-items-end justify-content-end form_filters">
+                    <form action="manage-files.php" name="files_filters" method="get" class="row row-cols-lg-auto g-3 align-items-end justify-content-end form_filters mt-4 mt-md-0">
                         <?php form_add_existing_parameters(array('hidden', 'action', 'uploader', 'assigned')); ?>
-                        <div class="col-12">
+                        <div class="col-4 col-md-12">
                             <select class="form-select form-control-short" name="uploader" id="uploader">
                                 <?php
                                 foreach ($filter_options_uploader as $val => $text) {
@@ -383,7 +391,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                                 ?>
                             </select>
                         </div>
-                        <div class="col-12">
+                        <div class="col-4 col-md-12">
                             <select class="form-select form-control-short" name="assigned" id="assigned">
                                 <?php
                                 foreach ($filter_options_assigned as $val => $text) {
@@ -396,7 +404,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                                 ?>
                             </select>
                         </div>
-                        <button type="submit"  class="btn btn-md btn-pslight"><?php _e('Filter', 'cftp_admin'); ?></button>
+                        <div class="col-4 col-md-12">
+                            <button type="submit" class="btn btn-md btn-pslight"><?php _e('Filter', 'cftp_admin'); ?></button>
+                        </div>
                     </form>
                 <?php
                 }
@@ -404,7 +414,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                 /** Filters are not available for clients */
                 if (CURRENT_USER_LEVEL != '0' && $results_type != 'global') {
                 ?>
-                    <form action="manage-files.php" name="files_filters" method="get" class="form-inline form_filters">
+                    <form action="manage-files.php" name="files_filters" method="get" class="row row-cols-lg-auto g-3 align-items-end justify-content-end form_filters">
                         <?php form_add_existing_parameters(array('hidden', 'action', 'uploader')); ?>
                         <div class="form-group row group_float">
                             <select class="form-select form-control-short" name="hidden" id="hidden">
@@ -425,7 +435,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                                 ?>
                             </select>
                         </div>
-                        <button type="submit"  class="btn btn-md btn-pslight"><?php _e('Filter', 'cftp_admin'); ?></button>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-md btn-pslight"><?php _e('Filter', 'cftp_admin'); ?></button>
+                        </div>
                     </form>
                 <?php
                 }
@@ -437,20 +449,19 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 <form action="<?php echo $current_url; ?>" name="files_list" method="post" class="batch_actions">
     <?php addCsrf(); ?>
-    <div class="row mt-4">
-        <div class="col-6">
-            <div class="row">
-                <div class="col-12">
-                    <?php
-                    if (isset($search_on)) {
-                    ?>
+    <div class="row mt-4 form_actions_count">
+        <div class="col-12 col-md-6">
+            <p><?php echo sprintf(__('Found %d elements', 'cftp_admin'), (int)$count_for_pagination); ?></p>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="row row-cols-lg-auto g-3 justify-content-end align-content-end">
+                <?php if (isset($search_on)) { ?>
+                    <div class="col-6 col-md-12">
                         <input type="hidden" name="modify_type" id="modify_type" value="<?php echo $search_on; ?>" />
                         <input type="hidden" name="modify_id" id="modify_id" value="<?php echo $this_id; ?>" />
-                    <?php
-                    }
-                    ?>
-                </div>
-                <div class="col-12">
+                    </div>
+                <?php } ?>
+                <div class="col-6 col-md-12">
                     <select class="form-select form-control-short" name="action" id="action">
                             <?php
                             $actions_options = array(
@@ -484,20 +495,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                             ?>
                         </select>
                     </div>
-                    <button type="submit" id="do_action" class="btn btn-md btn-pslight"><?php _e('Proceed', 'cftp_admin'); ?></button>
-                </div>
-            </div>
-            <div class="col-6 text-end">
-                <?php if (current_user_can_upload()) { ?>
-                    <a href="upload.php" type="submit" id="do_action" class="btn btn-md btn-primary"><i class="fa fa-plus fa-small"></i> <?php _e('Upload files', 'cftp_admin'); ?></a>
-                <?php } ?>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-12">
-                <div class="form_actions_count">
-                    <p><?php echo sprintf(__('Found %d elements', 'cftp_admin'), (int)$count_for_pagination); ?></p>
+                    <div class="col-6 col-md-12">
+                        <button type="submit" id="do_action" class="btn btn-md btn-pslight"><?php _e('Proceed', 'cftp_admin'); ?></button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -85,11 +85,18 @@ password_change_required();
                 ?>
 
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-12 col-md-8">
                         <div id="section_title">
                             <h2><?php echo $page_title; ?></h2>
                         </div>
                     </div>
+                    <?php if (!empty($header_button_add)) { ?>
+                        <div class="col-12 col-md-4 text-end">
+                            <a href="<?php echo $header_button_add['url']; ?>" id="header_button_add" class="btn btn-md btn-primary">
+                                <i class="fa fa-plus fa-small"></i> <?php echo $header_button_add['label']; ?>
+                            </a>
+                        </div>
+                    <?php } ?>
                 </div>
 
                 <?php

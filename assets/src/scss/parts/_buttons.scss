@@ -1,7 +1,18 @@
+.btn-primary {
+    background-color: $main_color;
+
+	&:hover,
+	&:focus,
+    &.active
+	{
+		background-color:$main_lighten !important;
+	}
+}
+
 .btn-pslight {
     background-color: #ddd;
 
     &:hover {
-        background-color: #ccc;
+        background-color: #ccc !important;
     }
 }

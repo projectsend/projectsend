@@ -24,7 +24,7 @@ class FormGenerate
         $this->label_class = 'col-sm-4 control-label';
         $this->wrap_class = 'col-sm-8';
         $this->wrap_group = 'input-group';
-        $this->checkbox_wrap = 'col-sm-8 col-sm-offset-4';
+        $this->checkbox_wrap = 'col-sm-8 offset-sm-4';
         $this->field_class = 'form-control';
 
         $this->new_password_fields = [];

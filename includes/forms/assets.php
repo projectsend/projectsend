@@ -39,17 +39,17 @@ switch ($language) {
 	<div class="form-group row">
 		<label for="content" class="col-sm-4 control-label"><?php _e('Content','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-            <?php if (!empty($tags_message[0])) { ?><p class="field_note"><?php echo $tags_message[0]; ?></p><?php } ?>
+            <?php if (!empty($tags_message[0])) { ?><p class="field_note form-text"><?php echo $tags_message[0]; ?></p><?php } ?>
 			<textarea name="content" id="content" class="form-control"><?php echo (isset($asset_arguments['content'])) ? html_output($asset_arguments['content']) : ''; ?></textarea>
             <?php if (!empty($tags_message)) { ?>
-                <?php if (!empty($tags_message[1])) { ?><p class="field_note"><?php echo $tags_message[1]; ?></p><?php } ?>
-                <p class="field_note"><?php echo sprintf(__('Do not add the %s and %s tags, they will be added automatically when the code is rendered', 'cftp_admin'), $tags_message[0], $tags_message[1]); ?></p>
+                <?php if (!empty($tags_message[1])) { ?><p class="field_note form-text"><?php echo $tags_message[1]; ?></p><?php } ?>
+                <p class="field_note form-text"><?php echo sprintf(__('Do not add the %s and %s tags, they will be added automatically when the code is rendered', 'cftp_admin'), $tags_message[0], $tags_message[1]); ?></p>
             <?php } ?>
 		</div>
 	</div>
 
     <div class="form-group row">
-		<div class="col-sm-8 col-sm-offset-4">
+		<div class="col-sm-8 offset-sm-4">
 			<label for="enabled">
 				<input type="checkbox" name="enabled" id="enabled" <?php echo (isset($asset_arguments['enabled']) && $asset_arguments['enabled'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Enabled','cftp_admin'); ?>
 			</label>

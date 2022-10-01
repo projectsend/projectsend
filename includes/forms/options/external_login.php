@@ -136,7 +136,7 @@
                 <?php } ?>
                 <?php if (!empty($item_data['instructions'])) { ?>
                     <div class="form-group row">
-                        <div class="col-sm-8 col-sm-offset-4">
+                        <div class="col-sm-8 offset-sm-4">
                             <a href="<?php echo $item_data['instructions']; ?>" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
                         </div>
                     </div>
@@ -205,7 +205,7 @@
                 <div class="col-sm-8">
                     <input type="<?php echo $field_data['type']; ?>" name="<?php echo $field_data['name']; ?>" id="<?php echo $field_data['name']; ?>" class="form-control empty" value="<?php echo html_output(get_option($field_data['name'])); ?>" />
                     <?php if (!empty($field_data['note'])) { ?>
-                        <p class="field_note"><?php echo $field_data['note']; ?></p>
+                        <p class="field_note form-text"><?php echo $field_data['note']; ?></p>
                     <?php } ?>
                 </div>
             </div>

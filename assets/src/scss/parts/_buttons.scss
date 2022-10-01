@@ -1,3 +1,7 @@
 .btn-pslight {
     background-color: #ddd;
+
+    &:hover {
+        background-color: #ccc;
+    }
 }

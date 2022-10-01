@@ -72,7 +72,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
 ?>
 
 <div class="row">
-    <div class="col-12 col-sm-12 col-lg-8 col-lg-offset-2">
+    <div class="col-12 col-sm-12 col-lg-8 offset-lg-2">
 
         <div class="white-box">
             <div class="white-box-interior">

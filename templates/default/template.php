@@ -65,7 +65,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                         <div class="form_actions">
                             <div class="form_actions_submit">
                                 <div class="form-group row group_float">
-                                    <label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected files actions','cftp_admin'); ?>:</label>
+                                    <label class="control-label hidden-xs hidden-sm"><i class="fa fa-check"></i> <?php _e('Selected files actions','cftp_admin'); ?>:</label>
                                     <select class="form-select form-control-short" name="action" id="action">
                                         <?php
                                             $actions_options = array(

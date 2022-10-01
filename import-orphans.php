@@ -93,7 +93,7 @@ if ($_POST) {
         </div>
 
         <div class="form_actions_count">
-            <p><?php echo sprintf(__('Found %d elements', 'cftp_admin'), (int)count($files)); ?>
+            <p><?php echo sprintf(__('Found %d elements', 'cftp_admin'), (int)count($files)); ?></p>
         </div>
 
         <div class="form_results_filter">

@@ -131,7 +131,7 @@ switch ($clients_form_type) {
                     <input type="text" name="max_file_size" id="max_file_size" class="form-control" value="<?php echo (isset($client_arguments['max_file_size'])) ? format_form_value($client_arguments['max_file_size']) : '0'; ?>" />
                     <span class="input-group-addon">MB</span>
                 </div>
-                <p class="field_note"><?php _e("Set to 0 to use the default system limit", 'cftp_admin'); ?> (<?php echo MAX_FILESIZE; ?> MB)</p>
+                <p class="field_note form-text"><?php _e("Set to 0 to use the default system limit", 'cftp_admin'); ?> (<?php echo MAX_FILESIZE; ?> MB)</p>
             </div>
         </div>
         <?php
@@ -205,7 +205,7 @@ switch ($clients_form_type) {
     if ($extra_fields == true) {
     ?>
         <div class="form-group row">
-            <div class="col-sm-8 col-sm-offset-4">
+            <div class="col-sm-8 offset-sm-4">
                 <label for="active">
                     <input type="checkbox" name="active" id="active" <?php echo (isset($client_arguments['active']) && $client_arguments['active'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Active (client can log in)', 'cftp_admin'); ?>
                 </label>
@@ -213,12 +213,12 @@ switch ($clients_form_type) {
         </div>
 
         <div class="form-group row">
-            <div class="col-sm-8 col-sm-offset-4">
+            <div class="col-sm-8 offset-sm-4">
                 <label for="can_upload_public">
                     <input type="checkbox" name="can_upload_public" id="can_upload_public" <?php echo (isset($client_arguments['can_upload_public']) && $client_arguments['can_upload_public'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Can set own files as public', 'cftp_admin'); ?>
                 </label>
                 <?php if (get_option('clients_can_set_public') != 'allowed') { ?>
-                    <p class="field_note"><?php _e("This has no effect according to your current settings.", 'cftp_admin'); ?> <a href="options.php?section=clients" target="blank"><?php _e("Go to settings", 'cftp_admin'); ?></a></p>
+                    <p class="field_note form-text"><?php _e("This has no effect according to your current settings.", 'cftp_admin'); ?> <a href="options.php?section=clients" target="blank"><?php _e("Go to settings", 'cftp_admin'); ?></a></p>
                 <?php } ?>
             </div>
         </div>
@@ -227,7 +227,7 @@ switch ($clients_form_type) {
     ?>
 
     <div class="form-group row">
-        <div class="col-sm-8 col-sm-offset-4">
+        <div class="col-sm-8 offset-sm-4">
             <label for="notify_upload">
                 <input type="checkbox" name="notify_upload" id="notify_upload" <?php echo (isset($client_arguments['notify_upload']) && $client_arguments['notify_upload'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Notify new uploads by e-mail', 'cftp_admin'); ?>
             </label>
@@ -238,7 +238,7 @@ switch ($clients_form_type) {
     if ($clients_form_type == 'new_client') {
     ?>
         <div class="form-group row">
-            <div class="col-sm-8 col-sm-offset-4">
+            <div class="col-sm-8 offset-sm-4">
                 <label for="notify_account">
                     <input type="checkbox" name="notify_account" id="notify_account" <?php echo (isset($client_arguments['notify_account']) && $client_arguments['notify_account'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Send welcome email', 'cftp_admin'); ?>
                 </label>
@@ -246,7 +246,7 @@ switch ($clients_form_type) {
         </div>
 
         <div class="form-group row">
-            <div class="col-sm-8 col-sm-offset-4">
+            <div class="col-sm-8 offset-sm-4">
                 <label for="require_password_change">
                     <input type="checkbox" name="require_password_change" id="require_password_change" <?php echo (isset($client_arguments['require_password_change']) && $client_arguments['require_password_change'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Require password change after first login', 'cftp_admin'); ?>
                 </label>

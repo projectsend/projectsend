@@ -27,7 +27,7 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="file_number">
-                                        <p><span class="glyphicon glyphicon-saved" aria-hidden="true"></span><?php echo $file->title; ?></p>
+                                        <p><span class="fa fa-file" aria-hidden="true"></span><?php echo $file->title; ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -76,7 +76,7 @@
                                                         <div class="input-group date-container">
                                                             <input type="text" class="date-field form-control datapick-field readonly-not-grayed" readonly id="file_expiry_date_<?php echo $i; ?>" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($file->expiry_date)) ? date('d-m-Y', strtotime($file->expiry_date)) : date('d-m-Y'); ?>" />
                                                             <div class="input-group-addon">
-                                                                <i class="glyphicon glyphicon-time"></i>
+                                                                <i class="fa fa-clock-o"></i>
                                                             </div>
                                                         </div>
                                                     </div>

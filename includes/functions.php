@@ -615,6 +615,23 @@ function client_can_upload_public($client_id)
     return false;
 }
 
+function current_user_can_upload()
+{
+    switch (CURRENT_USER_LEVEL) {
+        case 9:
+        case 8:
+        case 7:
+            return true;
+            break;
+        case 0:
+            return (get_option('clients_can_upload') == '1');
+            break;
+        default:
+            break;
+    }
+
+    return false;
+}
 
 function current_user_can_upload_public()
 {
@@ -629,9 +646,9 @@ function current_user_can_upload_public()
             break;
         default:
             break;
+        }
 
-            return false;
-    }
+    return false;
 }
 
 /**
@@ -1444,7 +1461,7 @@ function password_notes()
     }
 
     if (count($rules_active) > 0) {
-        $pass_notes_output = '<p class="field_note">' . __('The password must contain, at least:', 'cftp_admin') . '</strong><br />';
+        $pass_notes_output = '<p class="field_note form-text">' . __('The password must contain, at least:', 'cftp_admin') . '</strong><br />';
         foreach ($rules_active as $rule => $text) {
             $pass_notes_output .= '- ' . $text . '<br>';
         }

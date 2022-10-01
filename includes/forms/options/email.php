@@ -19,11 +19,11 @@
 <h3><?php _e('System performance','cftp_admin'); ?></h3>
 
 <div class="form-group row">
-    <div class="col-sm-8 col-sm-offset-4">
+    <div class="col-sm-8 offset-sm-4">
         <label for="notifications_send_when_saving_files">
             <input type="checkbox" value="1" name="notifications_send_when_saving_files" id="notifications_send_when_saving_files" <?php echo (get_option('notifications_send_when_saving_files') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Send "New file" email notifications during the file saving process.','cftp_admin'); ?>
         </label>
-        <p class="field_note">
+        <p class="field_note form-text">
             <?php _e('By unchecking this option, notifications are not sent during the file uploading and editing operations which results in much faster page loading and a better user experience.','cftp_admin'); ?><br>
             <strong><?php _e('Warning: only disable this setting if you have a cron job that takes care of sending the notifications.','cftp_admin'); ?></strong>
         </p>
@@ -35,7 +35,7 @@
 <h3><?php _e('Send copies','cftp_admin'); ?></h3>
 
 <div class="form-group row">
-    <div class="col-sm-8 col-sm-offset-4">
+    <div class="col-sm-8 offset-sm-4">
         <label for="mail_copy_user_upload">
             <input type="checkbox" value="1" name="mail_copy_user_upload" id="mail_copy_user_upload" <?php echo (get_option('mail_copy_user_upload') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('When a system user uploads files','cftp_admin'); ?>
         </label>
@@ -43,7 +43,7 @@
 </div>
 
 <div class="form-group row">
-    <div class="col-sm-8 col-sm-offset-4">
+    <div class="col-sm-8 offset-sm-4">
         <label for="mail_copy_client_upload">
             <input type="checkbox" value="1" name="mail_copy_client_upload" id="mail_copy_client_upload" <?php echo (get_option('mail_copy_client_upload') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('When a client uploads files','cftp_admin'); ?>
         </label>
@@ -55,7 +55,7 @@
 </div>
 
 <div class="form-group row">
-    <div class="col-sm-8 col-sm-offset-4">
+    <div class="col-sm-8 offset-sm-4">
         <label for="mail_copy_main_user">
             <input type="checkbox" value="1" name="mail_copy_main_user" class="mail_copy_main_user" <?php echo (get_option('mail_copy_main_user') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Address supplied above (on "From")','cftp_admin'); ?>
         </label>
@@ -66,7 +66,7 @@
     <label for="mail_copy_addresses" class="col-sm-4 control-label"><?php _e('Also to this addresses','cftp_admin'); ?></label>
     <div class="col-sm-8">
         <input type="text" name="mail_copy_addresses" id="mail_copy_addresses" class="mail_data form-control" value="<?php echo html_output(get_option('mail_copy_addresses')); ?>" />
-        <p class="field_note"><?php _e('Separate e-mail addresses with a comma.','cftp_admin'); ?></p>
+        <p class="field_note form-text"><?php _e('Separate e-mail addresses with a comma.','cftp_admin'); ?></p>
     </div>
 </div>
 
@@ -78,7 +78,7 @@
     <label for="notifications_max_tries" class="col-sm-4 control-label"><?php _e('Maximum sending attempts','cftp_admin'); ?></label>
     <div class="col-sm-8">
         <input type="number" name="notifications_max_tries" id="notifications_max_tries" class="form-control" value="<?php echo get_option('notifications_max_tries'); ?>" min="1" max="10" step="1" required />
-        <p class="field_note"><?php _e('Define how many times the system will attempt to send each notification.','cftp_admin'); ?></p>
+        <p class="field_note form-text"><?php _e('Define how many times the system will attempt to send each notification.','cftp_admin'); ?></p>
     </div>
 </div>
 
@@ -86,7 +86,7 @@
     <label for="notifications_max_days" class="col-sm-4 control-label"><?php _e('Days before expiring','cftp_admin'); ?></label>
     <div class="col-sm-8">
         <input type="number" name="notifications_max_days" id="notifications_max_days" class="form-control" value="<?php echo get_option('notifications_max_days'); ?>" min="0" max="365" step="1" required />
-        <p class="field_note"><?php _e('Notifications older than this will not be sent.','cftp_admin'); ?><br /><strong><?php _e('Set to 0 to disable.','cftp_admin'); ?></strong></p>
+        <p class="field_note form-text"><?php _e('Notifications older than this will not be sent.','cftp_admin'); ?><br /><strong><?php _e('Set to 0 to disable.','cftp_admin'); ?></strong></p>
     </div>
 </div>
 
@@ -94,7 +94,7 @@
     <label for="notifications_max_emails_at_once" class="col-sm-4 control-label"><?php _e('Max. emails to send at once','cftp_admin'); ?></label>
     <div class="col-sm-8">
         <input type="number" name="notifications_max_emails_at_once" id="notifications_max_emails_at_once" class="form-control" value="<?php echo get_option('notifications_max_emails_at_once'); ?>" min="0" max="10000" step="1" required />
-        <p class="field_note"><?php _e('Sending too many emails at once can lead to issues. If you set up a notifications cron job, you can set this to a convenient, safe amount of emails to attempt to send per run (ie: 20).','cftp_admin'); ?><br /><strong><?php _e('Set to 0 to disable.','cftp_admin'); ?></strong></p>
+        <p class="field_note form-text"><?php _e('Sending too many emails at once can lead to issues. If you set up a notifications cron job, you can set this to a convenient, safe amount of emails to attempt to send per run (ie: 20).','cftp_admin'); ?><br /><strong><?php _e('Set to 0 to disable.','cftp_admin'); ?></strong></p>
     </div>
 </div>
 
@@ -169,7 +169,7 @@
 <h3><?php _e('SSL options','cftp_admin'); ?></h3>
 
 <div class="form-group row">
-    <div class="col-sm-8 col-sm-offset-4">
+    <div class="col-sm-8 offset-sm-4">
         <label for="mail_ssl_verify_peer">
             <input type="checkbox" value="1" name="mail_ssl_verify_peer" class="mail_ssl_verify_peer" <?php echo (get_option('mail_ssl_verify_peer') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Verify peer','cftp_admin'); ?>
         </label>
@@ -177,7 +177,7 @@
 </div>
 
 <div class="form-group row">
-    <div class="col-sm-8 col-sm-offset-4">
+    <div class="col-sm-8 offset-sm-4">
         <label for="mail_ssl_verify_peer_name">
             <input type="checkbox" value="1" name="mail_ssl_verify_peer_name" class="mail_ssl_verify_peer_name" <?php echo (get_option('mail_ssl_verify_peer_name') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Verify peer name','cftp_admin'); ?>
         </label>
@@ -185,7 +185,7 @@
 </div>
 
 <div class="form-group row">
-    <div class="col-sm-8 col-sm-offset-4">
+    <div class="col-sm-8 offset-sm-4">
         <label for="mail_ssl_allow_self_signed">
             <input type="checkbox" value="1" name="mail_ssl_allow_self_signed" class="mail_ssl_allow_self_signed" <?php echo (get_option('mail_ssl_allow_self_signed') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Allow self signed','cftp_admin'); ?>
         </label>

@@ -336,7 +336,7 @@ class TableGenerate
 									<input type="text" class="form-control" name="page" id="page_number" data-link="' . $this->constructPaginationLink($params['link'], '_pgn_') . '" value="' . $params['current'] . '" />
 								</div>
 								<div class="form-group row">
-									<button type="button" class="form-control"><span aria-hidden="true" class="glyphicon glyphicon-ok"></span></button>
+									<button type="button" class="form-control"><i aria-hidden="true" class="fa fa-check"></i></button>
                                 </div>
                             </div>';
 

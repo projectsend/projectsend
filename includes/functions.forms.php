@@ -7,12 +7,14 @@
 function show_search_form( $action = '' )
 {
 ?>
-	<form action="<?php echo $action; ?>" name="form_search" method="get" class="form-inline">
+	<form action="<?php echo $action; ?>" name="form_search" method="get" class="row row-cols-lg-auto g-3 align-items-center">
 		<?php form_add_existing_parameters( array('search', 'action') ); ?>
-		<div class="form-group row group_float">
+        <div class="col-12">
 			<input type="text" name="search" id="search" value="<?php if(isset($_GET['search']) && !empty($_GET['search'])) { echo html_output($_GET['search']); } ?>" class="form-control-short form_actions_search_box form-control" />
 		</div>
-		<button type="submit" id="btn_proceed_search" class="btn btn-sm btn-pslight"><?php _e('Search','cftp_admin'); ?></button>
+        <div class="col-12">
+    		<button type="submit" id="btn_proceed_search" class="btn btn-md btn-pslight"><?php _e('Search','cftp_admin'); ?></button>
+        </div>
 	</form>
 <?php
 }

@@ -81,7 +81,7 @@ if ($_POST) {
                             <div class="col-sm-12">
                                 <label for="email_header_text"><?php _e('Header', 'cftp_admin'); ?></label>
                                 <textarea name="email_header_text" id="email_header_text" class="form-control textarea_high"><?php echo get_option('email_header_text'); ?></textarea>
-                                <p class="field_note"><?php _e('You can use HTML tags here.', 'cftp_admin'); ?></p>
+                                <p class="field_note form-text"><?php _e('You can use HTML tags here.', 'cftp_admin'); ?></p>
                             </div>
                         </div>
 
@@ -95,7 +95,7 @@ if ($_POST) {
                             <div class="col-sm-12">
                                 <label for="email_footer_text"><?php _e('Footer', 'cftp_admin'); ?></label>
                                 <textarea name="email_footer_text" id="email_footer_text" class="form-control textarea_high"><?php echo get_option('email_footer_text'); ?></textarea>
-                                <p class="field_note"><?php _e('You can use HTML tags here.', 'cftp_admin'); ?></p>
+                                <p class="field_note form-text"><?php _e('You can use HTML tags here.', 'cftp_admin'); ?></p>
                             </div>
                         </div>
 
@@ -141,7 +141,7 @@ if ($_POST) {
                             <div class="col-sm-12">
                                 <label for="<?php echo $group['body_textarea']; ?>"><?php _e('Template text', 'cftp_admin'); ?></label>
                                 <textarea name="<?php echo $group['body_textarea']; ?>" id="<?php echo $group['body_textarea']; ?>" class="form-control textarea_high textarea_tags"><?php echo $group['body_text']; ?></textarea>
-                                <p class="field_note"><?php _e('You can use HTML tags here.', 'cftp_admin'); ?></p>
+                                <p class="field_note form-text"><?php _e('You can use HTML tags here.', 'cftp_admin'); ?></p>
                             </div>
                         </div>
 

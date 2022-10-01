@@ -94,7 +94,7 @@ switch ($user_form_type) {
 						<input type="text" name="max_file_size" id="max_file_size" class="form-control" value="<?php echo (isset($user_arguments['max_file_size'])) ? format_form_value($user_arguments['max_file_size']) : '0'; ?>" />
 						<span class="input-group-addon">MB</span>
 					</div>
-					<p class="field_note"><?php _e("Set to 0 to use the default system limit",'cftp_admin'); ?> (<?php echo MAX_FILESIZE; ?> MB)</p>
+					<p class="field_note form-text"><?php _e("Set to 0 to use the default system limit",'cftp_admin'); ?> (<?php echo MAX_FILESIZE; ?> MB)</p>
 				</div>
 			</div>
 
@@ -124,13 +124,13 @@ switch ($user_form_type) {
                             }
                         ?>
                     </select>
-                    <p class="field_note"><?php _e('Leave empty to allow access to all clients','cftp_admin'); ?></p>
-                    <p class="field_note"><?php _e('Important: at the moment limiting to specific users also limits uploading to groups that these clients are members of.','cftp_admin'); ?></p>
+                    <p class="field_note form-text"><?php _e('Leave empty to allow access to all clients','cftp_admin'); ?></p>
+                    <p class="field_note form-text"><?php _e('Important: at the moment limiting to specific users also limits uploading to groups that these clients are members of.','cftp_admin'); ?></p>
                 </div>
             </div>
 
 			<div class="form-group row">
-				<div class="col-sm-8 col-sm-offset-4">
+				<div class="col-sm-8 offset-sm-4">
 					<label for="active">
 						<input type="checkbox" name="active" id="active" <?php echo (isset($user_arguments['active']) && $user_arguments['active'] == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Active (user can log in)','cftp_admin'); ?>
 					</label>
@@ -140,9 +140,8 @@ switch ($user_form_type) {
 			<?php
 				if ( $user_form_type == 'new_user' ) {
 			?>
-
 					<div class="form-group row">
-						<div class="col-sm-8 col-sm-offset-4">
+						<div class="col-sm-8 offset-sm-4">
 							<label for="notify_account">
 								<input type="checkbox" name="notify_account" id="notify_account" <?php echo (isset($user_arguments['notify_account']) && $user_arguments['notify_account'] == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Send welcome email','cftp_admin'); ?>
 							</label>
@@ -150,7 +149,7 @@ switch ($user_form_type) {
 					</div>
 
                     <div class="form-group row">
-                        <div class="col-sm-8 col-sm-offset-4">
+                        <div class="col-sm-8 offset-sm-4">
                             <label for="require_password_change">
                                 <input type="checkbox" name="require_password_change" id="require_password_change" <?php echo (isset($user_arguments['require_password_change']) && $user_arguments['require_password_change'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Require password change after first login','cftp_admin'); ?>
                             </label>

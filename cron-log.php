@@ -106,7 +106,7 @@ if (isset($_POST['action']) && $_POST['action'] != 'none') {
                 <div class="form_actions">
                     <div class="form_actions_submit">
                         <div class="form-group row group_float">
-                            <label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Actions', 'cftp_admin'); ?>:</label>
+                            <label class="control-label hidden-xs hidden-sm"><i class="fa fa-check"></i> <?php _e('Actions', 'cftp_admin'); ?>:</label>
                             <select class="form-select" name="action" id="action">
                                 <?php
                                 $actions_options = array(
@@ -130,7 +130,7 @@ if (isset($_POST['action']) && $_POST['action'] != 'none') {
             <div class="clear"></div>
 
             <div class="form_actions_count">
-                <p><?php echo sprintf(__('Found %d elements', 'cftp_admin'), (int)$count_for_pagination); ?>
+                <p><?php echo sprintf(__('Found %d elements', 'cftp_admin'), (int)$count_for_pagination); ?></p>
             </div>
 
             <div class="clear"></div>

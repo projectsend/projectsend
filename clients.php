@@ -130,7 +130,7 @@ if (isset($_POST['action'])) {
                             ?>
                         </select>
                     </div>
-                    <button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-pslight"><?php _e('Filter', 'cftp_admin'); ?></button>
+                    <button type="submit"  class="btn btn-sm btn-pslight"><?php _e('Filter', 'cftp_admin'); ?></button>
                 </form>
             </div>
         </div>
@@ -141,7 +141,7 @@ if (isset($_POST['action'])) {
                 <div class="form_actions">
                     <div class="form_actions_submit">
                         <div class="form-group row group_float">
-                            <label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected clients actions', 'cftp_admin'); ?>:</label>
+                            <label class="control-label hidden-xs hidden-sm"><i class="fa fa-check"></i> <?php _e('Selected clients actions', 'cftp_admin'); ?>:</label>
                             <select class="form-select form-control-short" name="action" id="action">
                                 <?php
                                 $actions_options = array(
@@ -165,7 +165,7 @@ if (isset($_POST['action'])) {
             <div class="clear"></div>
 
             <div class="form_actions_count">
-                <p><?php echo sprintf(__('Found %d elements', 'cftp_admin'), (int)$count_for_pagination); ?>
+                <p><?php echo sprintf(__('Found %d elements', 'cftp_admin'), (int)$count_for_pagination); ?></p>
             </div>
 
             <div class="clear"></div>

@@ -268,7 +268,7 @@ include_once ABS_PARENT . '/header-unlogged.php';
                     <?php if ($pdo_connected) : ?>
                         <?php if ($table_exists) : ?>
                             <div class="form-group row">
-                                <div class="col-sm-offset-4 col-12 col-sm-8">
+                                <div class="offset-sm-4 col-12 col-sm-8">
                                     <div class="checkbox">
                                         <label for="dbreuse">
                                             <input type="checkbox" name="dbreuse" id="dbreuse" value="reuse" <?php echo $post_vars['dbreuse'] == 'reuse' ? 'checked' : ''; ?> /> <?php _e('Reuse existing tables', 'cftp_admin'); ?>
@@ -307,7 +307,7 @@ include_once ABS_PARENT . '/header-unlogged.php';
                         <label for="lang" class="col-12 col-sm-4 control-label"><?php _e('Default maximum upload file size', 'cftp_admin'); ?></label>
                         <div class="col-12 col-sm-8">
                             <input type="number" name="maxfilesize" id="maxfilesize" class="required form-control" value="<?php echo (!empty($post_vars['maxfilesize'])) ? $post_vars['maxfilesize'] : '2048'; ?>" />
-                            <p class="field_note"><?php _e('Value expressed in MB, where 1GB = 1024', 'cftp_admin'); ?></p>
+                            <p class="field_note form-text"><?php _e('Value expressed in MB, where 1GB = 1024', 'cftp_admin'); ?></p>
                         </div>
                     </div>
 

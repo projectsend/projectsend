@@ -2,7 +2,7 @@
  * Very simple custom modal dialog
  */
 $.fn.psendmodal = function() {
-	var modal_structure = `<div class="modal_overlay"></div>
+	var modal_structure = `<div class="modal_psend_overlay"></div>
 							<div class="modal_psend">
 								<div class="modal_title">
 									<span>&nbsp;</span>
@@ -15,12 +15,12 @@ $.fn.psendmodal = function() {
 	show_modal();
 
 	function show_modal() {
-		$('.modal_overlay').stop(true, true).fadeIn();
+		$('.modal_psend_overlay').stop(true, true).fadeIn();
 		$('.modal_psend').stop(true, true).fadeIn();
 	}
 
 	window.remove_modal = function() {
-		$('.modal_overlay').stop(true, true).fadeOut(500, function() { $(this).remove(); });
+		$('.modal_psend_overlay').stop(true, true).fadeOut(500, function() { $(this).remove(); });
 		$('.modal_psend').stop(true, true).fadeOut(500, function() { $(this).remove(); });
 		return false;
 	}
@@ -30,7 +30,7 @@ $.fn.psendmodal = function() {
 		remove_modal();
 	});
 
-	$(".modal_overlay").click(function(e) {
+	$(".modal_psend_overlay").click(function(e) {
 		e.preventDefault();
 		remove_modal();
 	});

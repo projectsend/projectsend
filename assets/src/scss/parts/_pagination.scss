@@ -8,16 +8,16 @@
     .pagination > .active > span:focus,
     .pagination > .active > span:hover
     {
-        background: $main_color;
-        border-color: $main_color;
+        background: var(--main_color);
+        border-color: var(--main_color);
         color: white;
     }
 
     a {
-        color: $main_color;
+        color: var(--main_color);
 
         &:hover {
-            color: $main_color;
+            color: var(--main_color);
         }
     }
 

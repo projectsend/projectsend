@@ -1,320 +1,36 @@
-@import "partials/variables";
-@import "partials/mixins";
-@import "partials/footable";
-@import "partials/chosen";
-@import "partials/tagsinput";
-@import "partials/override";
-@import "partials/side_modal";
-@import "partials/codemirror";
-@import "partials/password_toggler";
+@import "abstracts/variables";
+@import "abstracts/mixins";
+@import "abstracts/animations";
 
-// Backend and default theme shared styles
-p {
-    margin-bottom:1.2em;
-    line-height:1.5em;
-}
+@import "base/base";
+@import "base/headings";
 
-a img {
-    border:none;
-}
+@import "vendors-extensions/footable";
+@import "vendors-extensions/bootstrap";
+@import "vendors-extensions/chosen";
+@import "vendors-extensions/tagify";
+@import "vendors-extensions/codemirror";
+@import "vendors-extensions/plupload";
+@import "vendors-extensions/toastr";
+@import "vendors-extensions/datepicker";
 
-.external_link:before {
-    content: "\f08e";
-    font: normal normal normal 14px/1 FontAwesome;
-    margin-right:3px;
-    line-height:1px;
-    color:black;
-}
+@import "components/side_modal";
+@import "components/password_toggler";
+@import "components/preview_modal";
+@import "components/modal_psend";
 
-.clear { clear:both; }
+@import "layout/footer";
+@import "layout/top-bar";
+@import "layout/main-menu";
 
-html,
-body
-{
-    background:$body_background;
-    color:$main_text;
-    //font-family:$font_body;
-    font-size:.95rem;
-    line-height:1.2rem;
-    height:100%;
-    position:relative;
-    padding:0;
-    margin:0;
-}
-
-body {
-    padding-top: 4.5rem;
-}
-
-.none {
-    display: none;
-}
-
-a {
-    color: $main_color;
-    text-decoration:none;
-
-    &:hover,
-    &:focus,
-    &:active
-    {
-        color: $main_lighten;
-        text-decoration:none;
-    }
-}
-
-.clear {
-    clear:both;
-}
-
-// Backend only styles
-
-.backend {
-    .system_msg {
-        padding:10px;
-        background:#FFFBE4;
-        border-bottom:1px solid #CCCCCC;
-        margin-bottom: 20px;
-
-        p {
-            margin:0;
-        }
-    }
-
-    // Header
-    .branding_unlogged {
-        text-align:center;
-        margin:20px auto;
-
-        img, svg {
-            height:auto;
-            width:100%;
-            max-width:250px;
-        }
-    }
-
-    #install_form {
-        margin-top:30px;
-    }
-
-    #install_extra {
-        margin-top:30px;
-        font-weight:bold;
-        font-size:11px;
-        color:#0099CC;
-    }
-
-    // Main white content boxes
-
-    .white-box {
-        background-color:white;
-        box-shadow: $global_box_shadow;
-        border-radius: 8px;
-
-        .white-box-interior {
-            padding:15px;
-        }
-    }
-
-    // File management
-
-    .file_status_visible, .account_status_active {
-        color:#639822!important;
-        font-weight:bold;
-    }
-
-    .file_status_hidden, .account_status_inactive {
-        color:#D24244!important;
-        font-weight:bold;
-    }
-
-
-    // VALIDATION
-    .form-group {
-        margin-bottom: 1rem;
-
-        label.error {
-            font-size:.85rem;
-            color:#B94A48;
-            background:#F2DEDE;
-            margin:0;
-            padding:.5rem;
-            border:1px solid #EED3D7;
-            position:relative;
-            display: block;
-            border-radius: 0 0 3px 3px;
-        }
-    }
-
-    .readonly-not-grayed {
-        background-color: white !important;
-    }
-
-    // Misc
-
-    .button_label {
-        display:none;
-    }
-
-    .td_checkbox {
-        width:50px;
-    }
-
-    #uploaded_files_tbl {
-        margin-bottom:70px;
-    }
-
-    th.select_buttons {
-        width:220px;
-    }
-
-    .membership_toggle {
-        margin-right:10px;
-    }
-
-    .membership_toggle .toggle-group { transition: left 0.1s; -webkit-transition: left 0.1s; }
-}
-
-// Messages
-
-form .alert {
-    margin-top:2em;
-}
-
-// Forms
-
-.required {
-    background:url(#{$img_path}/req-text.png) no-repeat right -2px;
-    padding-right: 50px;
-}
-
-.btn_generate_password {
-    margin-top:5px;
-}
-
-// 2FA
-#otp_request_new_container {
-    text-align: center;
-    border: 1px solid #dedede;
-    padding: 10px;
-    margin-top: 20px;
-
-    h4 {
-        padding: 0;
-        margin: 0 0 10px;
-    }
-}
-
-.form_actions_right {
-    display:block;
-    float:right;
-}
-
-
-.form_actions,
-.form_actions_limit_results
-{
-    padding:0;
-    margin-bottom:5px;
-}
-
-.form_actions_count {
-    text-align:left;
-    margin-top: 1rem;
-    padding-top:1rem;
-    font-size:1.2em;
-    overflow:hidden;
-    border-top:1px dotted #ccc;
-}
-
-.form_actions {
-    .form_actions_submit select {
-        width:140px;
-    }
-
-    .form_actions_submit select.large_select {
-        width:320px !important;
-    }
-}
-
-.form_actions_submit label {
-    font-size:14px;
-    margin-right:15px;
-    font-weight:normal;
-}
-
-// Buttons
-
-.after_form_buttons {
-    margin-top:50px;
-    text-align:center;
-}
-
-.inside_form_buttons {
-    margin-top:25px;
-    text-align:center;
-    display: block;
-}
-
-.alert .alert-title {
-    padding-bottom:0;
-    margin-bottom:8px;
-    border:none;
-    font-weight:bold;
-    font-size:17px;
-}
-
-// Files list view (File Manager)
-
-.file_name {
-    font-weight:bold;
-
-    a {
-        text-decoration:underline;
-    }
-}
-
-.thumbnail {
-    padding: 0;
-    margin-bottom: 0;
-    border-radius: 0;
-}
-
-.public_link_copy {
-    padding:5px;
-    margin:10px 0 10px auto !important;
-}
+@import "pages/options";
+@import "pages/public_download";
 
 // Misc
-.format_url {
-    word-break:break-all;
-}
-
-#browser_encrypt_data {
-    margin-top: 2rem;
-
-    #keys_list {
-        background-color: mediumturquoise;
-
-        #keys {
-            list-style: none;
-        }
-    }
-}
-
 @import "parts/login";
-@import "parts/modal";
-@import "parts/top-bar";
-@import "parts/main-menu";
-@import "parts/footer";
-@import "parts/headings";
-@import "parts/buttons";
 @import "parts/dashboard_widgets";
 @import "parts/pagination";
 @import "parts/donations_message";
 @import "parts/update_message";
-@import "parts/options";
-@import "parts/public";
-@import "parts/preview_modal";
 @import "parts/file_editor";
 @import "parts/form_results_filter";

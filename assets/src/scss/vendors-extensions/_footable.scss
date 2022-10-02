@@ -22,7 +22,7 @@
     background: #ffffff;
     margin:10px auto 15px;
     border-radius: 8px;
-    box-shadow: $global_box_shadow;
+    box-shadow: var(--global_box_shadow);
 }
 
 .footable > tfoot > tr > td {
@@ -60,11 +60,11 @@
 .footable > thead > tr > th.footable-sorted-asc,
 .footable > thead > tr > th.footable-sorted-desc
 {
-    background-color: $side_menu_selected_parent_bg !important;
-    color:$side_menu_selected_parent_color !important;
+    background-color: var(--side_menu_selected_parent_bg) !important;
+    color:var(--side_menu_selected_parent_color) !important;
 }
 .footable-sorted a, .footable-sorted-asc a, .footable-sorted-desc a {
-    color:$side_menu_selected_parent_color !important;
+    color:var(--side_menu_selected_parent_color) !important;
 }
 .footable > thead > tr > th.footable-first-column, .footable > thead > tr > td.footable-first-column {
     border-left: none;

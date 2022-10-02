@@ -1,0 +1,50 @@
+.bg-primary {
+    background-color: var(--main_color) !important;
+}
+
+.btn-primary {
+    background-color: var(--main_color);
+
+	&:hover,
+	&:focus,
+    &.active
+	{
+		background-color:var(--main_lighten) !important;
+	}
+}
+
+.btn-pslight {
+    background-color: #ddd;
+
+    &:hover {
+        background-color: #ccc !important;
+    }
+}
+
+.btn {
+	white-space: normal;
+}
+
+.btn-wide {
+	padding:4px 20px !important;
+}
+
+.form-horizontal .control-label {
+	text-align: left;
+}
+
+label input[type="checkbox"] {
+	cursor: pointer;
+}
+
+.checkbox label {
+	line-height:20px;
+}
+
+span.label {
+	font-size:12px;
+}
+
+.text-warning {
+	color:#c9302c;
+}

@@ -79,11 +79,9 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
                 <?php
                 if ($can_view) {
                 ?>
-                    <div class="text-center">
+                    <div class="text-center p-5">
                         <h2 class="file_title">
-                            <span class="badge bg-default">
-                                <?php echo $file->filename_original; ?>
-                            </span>
+                            <?php echo $file->filename_original; ?>
                         </h2>
                         <h3><?php echo $file->title; ?></h3>
 

@@ -5,7 +5,7 @@
     }
 
     &.navbar {
-        background:$top_bar_background;
+        background:var(--top_bar_background);
 
         .nav {
             > li {
@@ -21,7 +21,7 @@
     
                     &:hover, &:focus {
                         color:#fff;
-                        background:$top_bar_hover;
+                        background:var(--top_bar_hover);
                     }
     
                     &.toggle_main_menu {

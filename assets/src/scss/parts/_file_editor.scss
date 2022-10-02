@@ -54,7 +54,7 @@
 }
 
 .file_number {
-    font-family:$font_heading;
+    font-family:var(--font_heading);
     position:relative;
     word-break:break-all;
     margin:0;

@@ -6,7 +6,7 @@ body.dashboard {
         width:100%;
         margin-bottom:30px;
         border-radius: 8px;
-        box-shadow: $global_box_shadow;
+        box-shadow: var(--global_box_shadow);
     
         .widget_int {
             padding:15px;
@@ -17,14 +17,14 @@ body.dashboard {
             padding:13px;
             font-size:16px;
             margin:0 !important;
-            color:$widget_title_color;
-            background: $widget_title_background;
+            color:var(--widget_title_color);
+            background: var(--widget_title_background);
             border-bottom:1px solid #dedede;
             border-radius: 2px 2px 0 0;
         }
     
         &:hover h4 {
-            background: $widget_hover_background;
+            background: var(--widget_hover_background);
         }
     
     }
@@ -130,7 +130,7 @@ body.dashboard {
                         word-break: break-all;
     
                         .item_part1, .item_part2, .item_part4 {
-                            color: $main_color;
+                            color: var(--main_color);
                             font-weight: bold;
                         }
                     }
@@ -172,7 +172,7 @@ body.dashboard {
     
             span {
                 font-weight:bold;
-                color:$main_color;
+                color:var(--main_color);
             }
     
             span.secondary {

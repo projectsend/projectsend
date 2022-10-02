@@ -1,0 +1,52 @@
+:root {
+    --body_background: #f5f5f9;
+    --top_bar_background: #0d0f14;
+    --top_bar_hover: #232835;
+    --main_color: #4c2ab6;
+    --main_lighten: lighten(var(--main_color), 7%);
+    --main_darken: darken(var(--main_color), 7%);
+    --main_text: #666;
+    --padding_top_main: 60px;
+    --global_box_shadow: 0 .125rem .375rem 0 rgba(161,172,184,.12);
+    
+    // Side menu    
+    --side_menu_width: 220px;
+    --side_menu_width_contracted: 45px;
+
+    // Side menu colors
+    --side_menu_background: #fff;
+    --side_menu_color: #3f3f47;
+    --side_menu_sub_color: #3f3f47;
+    --side_menu_sub_hover: #333339;
+    --side_menu_separator_border: none;
+    --side_menu_selected_parent_bg: #e7e0ff;
+    --side_menu_selected_parent_color: #696cff;
+    --side_menu_selected_subitems_background: #f2f2f2;
+    --side_menu_current_subitem_bg: #f5f5f9;
+    --side_menu_current_subitem_bg_hover: #e4e4ff;
+    
+    // Contracted side menu
+    --side_menu_contracted_color: #222;
+    
+    // Widgets
+    --widget_title_color: #42454a;
+    --widget_title_background: #fff;
+    --widget_hover_background: #f0f0f0;
+    
+    // Fonts
+    --font_body: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font_heading:var(--font_body);
+}
+
+/** Paths */
+$img_path: "../img";
+
+/** Brands */
+$brands_colors: (
+  google: #db4437,
+  facebook: #3c5a99,
+  twitter: #1da1f2,
+  windowslive: #f25022,
+  yahoo: #410093,
+  openid: #f7931e,
+);

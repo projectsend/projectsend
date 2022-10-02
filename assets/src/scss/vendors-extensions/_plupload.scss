@@ -1,36 +1,3 @@
-// This file includes pieces that overrides some of the dependencies default styles
-
-// Bootstrap Main button colors
-
-.btn {
-	white-space: normal;
-}
-
-.btn-wide {
-	padding:4px 20px !important;
-}
-
-.form-horizontal .control-label {
-	text-align: left;
-}
-
-label input[type="checkbox"] {
-	cursor: pointer;
-}
-
-.checkbox label {
-	line-height:20px;
-}
-
-span.label {
-	font-size:12px;
-}
-
-.text-warning {
-	color:#c9302c;
-}
-
-
 // Plupload
 
 .plupload_header {
@@ -49,10 +16,10 @@ span.label {
 
 .plupload_button {
 	color:white;
-	background:$main_color;
+	background:var(--main_color);
 	margin-right: 4px;
 	padding:4px 30px;
-	font-family:$font_body;
+	font-family:var(--font_body);
 	font-size:14px;
 	line-height:20px;
 	text-decoration: none;
@@ -63,7 +30,7 @@ span.label {
 	&:hover
 	{
 		color:white;
-		background:$main_lighten;
+		background:var(--main_lighten);
     }
     
     &:focus,
@@ -74,7 +41,7 @@ span.label {
 }
 
 .plupload_wrapper {
-    font-family:$font_body;
+    font-family:var(--font_body);
     font-size:1.15em;
     line-height:1.2em;
     box-shadow:3px 3px 5px, #dedede;
@@ -90,15 +57,4 @@ a.plupload_start {
 
 .message_uploading {
 	display:none;
-}
-
-// Datepicker
-
-.datapick-field {
-	cursor:pointer !important;
-}
-
-// Toastr
-#toast-container > div {
-    opacity:1;
 }

@@ -1,0 +1,17 @@
+// Public download page
+body.download {
+    .file_title {
+        span {
+            font-size: 20px;
+        }
+    }
+
+    .description {
+        font-size: 15px;
+        line-height: 20px;
+    }
+
+    .actions {
+        margin-top: 20px;
+    }
+}

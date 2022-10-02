@@ -106,7 +106,7 @@ body.options {
             position:relative;
 
             &.current_template {
-                border:5px solid $main_color;
+                border:5px solid var(--main_color);
             }
 
             h4 {

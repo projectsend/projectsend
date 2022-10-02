@@ -156,7 +156,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
             <?php addCsrf(); ?>
             <input type="hidden" name="denied" value="<?php echo (isset($_GET['denied']) && is_numeric($_GET['denied'])) ? $_GET['denied'] : 0; ?>" />
 
-            <?php form_add_existing_parameters(); ?>
+            <?php echo form_add_existing_parameters(); ?>
             <div class="form_actions_right">
                 <div class="form_actions">
                     <div class="form_actions_submit">

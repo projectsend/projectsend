@@ -134,7 +134,7 @@ $current_url = get_form_action_with_existing_parameters(basename(__FILE__));
                 <?php show_search_form('users.php'); ?>
 
                 <form action="users.php" name="users_filters" method="get" class="form-inline">
-                    <?php form_add_existing_parameters(array('active', 'role', 'action')); ?>
+                    <?php echo form_add_existing_parameters(array('active', 'role', 'action')); ?>
                     <div class="form-group row group_float">
                         <select class="form-select form-control-short" name="role" id="role">
                             <?php

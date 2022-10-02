@@ -110,7 +110,7 @@ $count = $sql->rowCount();
                 <?php show_search_form('custom-assets.php'); ?>
 
                 <form action="custom-assets.php" name="assets_filters" method="get" class="form-inline">
-                    <?php form_add_existing_parameters(array('enabled', 'action')); ?>
+                    <?php echo form_add_existing_parameters(array('enabled', 'action')); ?>
                     <div class="form-group row group_float">
                         <select class="form-select form-control-short" name="enabled" id="enabled">
                             <?php

@@ -105,7 +105,7 @@ $count = $sql->rowCount();
                 <?php show_search_form('actions-log.php'); ?>
 
                 <form action="actions-log.php" name="actions_filters" method="get" class="form-inline form_filters">
-                    <?php form_add_existing_parameters(array('activity')); ?>
+                    <?php echo form_add_existing_parameters(array('activity')); ?>
                     <div class="form-group row group_float">
                         <label for="activity" class="sr-only"><?php _e('Filter activities', 'cftp_admin'); ?></label>
                         <select class="form-select" name="activity" id="activity">

@@ -45,7 +45,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 <div class="row">
     <div class="col-12">
         <form action="download-information.php" name="groups_list" method="get" class="form-inline">
-            <?php form_add_existing_parameters(); ?>
+            <?php echo form_add_existing_parameters(); ?>
 
             <div class="row">
                 <div class="col-sm-12">

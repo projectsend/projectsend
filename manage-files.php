@@ -377,7 +377,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                     if (CURRENT_USER_LEVEL != '0' && $results_type == 'global') {
                 ?>
                     <form action="manage-files.php" name="files_filters" method="get" class="row row-cols-lg-auto g-3 align-items-end justify-content-end form_filters mt-4 mt-md-0">
-                        <?php form_add_existing_parameters(array('hidden', 'action', 'uploader', 'assigned')); ?>
+                        <?php echo form_add_existing_parameters(array('hidden', 'action', 'uploader', 'assigned')); ?>
                         <div class="col-4 col-md-12">
                             <select class="form-select form-control-short" name="uploader" id="uploader">
                                 <?php
@@ -415,7 +415,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                 if (CURRENT_USER_LEVEL != '0' && $results_type != 'global') {
                 ?>
                     <form action="manage-files.php" name="files_filters" method="get" class="row row-cols-lg-auto g-3 align-items-end justify-content-end form_filters">
-                        <?php form_add_existing_parameters(array('hidden', 'action', 'uploader')); ?>
+                        <?php echo form_add_existing_parameters(array('hidden', 'action', 'uploader')); ?>
                         <div class="form-group row group_float">
                             <select class="form-select form-control-short" name="hidden" id="hidden">
                                 <?php

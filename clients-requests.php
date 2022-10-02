@@ -186,7 +186,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
         <form action="<?php echo $this_page; ?>" name="clients_list" method="post" class="form-inline batch_actions">
             <?php addCsrf(); ?>
 
-            <?php form_add_existing_parameters(); ?>
+            <?php echo form_add_existing_parameters(); ?>
             <div class="form_actions_right">
                 <div class="form_actions">
                     <div class="form_actions_submit">

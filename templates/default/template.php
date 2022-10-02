@@ -41,7 +41,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                             if ( !empty( $cat_ids ) ) {
                         ?>
                                 <form action="" name="files_filters" method="get" class="form-inline form_filters">
-                                    <?php form_add_existing_parameters( array('category', 'action') ); ?>
+                                    <?php echo form_add_existing_parameters( array('category', 'action') ); ?>
                                     <div class="form-group row group_float">
                                         <select class="form-select form-control-short" name="category" id="category">
                                             <option value="0"><?php _e('All categories','cftp_admin'); ?></option>
@@ -60,7 +60,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                 </div>
             
                 <form action="" name="files_list" method="get" class="form-inline batch_actions">
-                    <?php form_add_existing_parameters(); ?>
+                    <?php echo form_add_existing_parameters(); ?>
                     <div class="form_actions_right">
                         <div class="form_actions">
                             <div class="form_actions_submit">

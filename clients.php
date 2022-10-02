@@ -111,7 +111,7 @@ if (isset($_POST['action'])) {
                 <?php show_search_form('clients.php'); ?>
 
                 <form action="clients.php" name="clients_filters" method="get" class="form-inline">
-                    <?php form_add_existing_parameters(array('active', 'action')); ?>
+                    <?php echo form_add_existing_parameters(array('active', 'action')); ?>
                     <div class="form-group row group_float">
                         <select class="form-select form-control-short" name="active" id="active">
                             <?php

@@ -8,7 +8,7 @@ function show_search_form( $action = '' )
 {
 ?>
 	<form action="<?php echo $action; ?>" name="form_search" method="get" class="row row-cols-lg-auto g-3 align-items-center">
-		<?php form_add_existing_parameters( array('search', 'action') ); ?>
+		<?php echo form_add_existing_parameters( array('search', 'action') ); ?>
         <div class="col-6 col-md-12">
 			<input type="text" name="search" id="search" value="<?php if(isset($_GET['search']) && !empty($_GET['search'])) { echo html_output($_GET['search']); } ?>" class="form-control-short form_actions_search_box form-control" />
 		</div>
@@ -30,6 +30,7 @@ function form_add_existing_parameters( $ignore = [] )
 	// Remove this parameters so they only exist when the action is done
 	$remove = array('action', 'batch', 'status');
 
+    $return = '';
 	if ( !empty( $_GET ) ) {
 		foreach ( $_GET as $param => $value ) {
 			// Remove status and actions
@@ -37,10 +38,12 @@ function form_add_existing_parameters( $ignore = [] )
 				unset( $_GET[$param] );
 			}
 			if ( !is_array( $value ) && !in_array( $param, $ignore ) ) {
-				echo '<input type="hidden" name="' . htmlentities($param) . '" value="' . html_output($value) . '">';
+				$return .= '<input type="hidden" name="' . htmlentities($param) . '" value="' . html_output($value) . '">';
 			}
 		}
 	}
+
+    return $return;
 }
 
 /**

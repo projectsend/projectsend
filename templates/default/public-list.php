@@ -17,7 +17,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                 ?>
                         <form action="" name="group_filter" method="get" class="form-inline form_filters">
                             <!-- <input type="hidden" name="token" value="<?php echo htmlentities($_GET['token']); ?>"> -->
-                            <?php form_add_existing_parameters( array('group') ); ?>
+                            <?php echo form_add_existing_parameters( array('group') ); ?>
                             <div class="form-group row group_float">
                                 <select class="form-select form-control-short" name="group" id="group">
                                     <option value="0"><?php _e('Not in group','cftp_admin'); ?></option>
@@ -48,7 +48,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 <form action="" name="files_list" method="get" class="form-inline batch_actions">
     <div class="row">
         <div class="col-12">
-            <?php form_add_existing_parameters(); ?>
+            <?php echo form_add_existing_parameters(); ?>
 
             <div class="form_actions_count">
                 <?php $count = $files['pagination']['total']; ?>

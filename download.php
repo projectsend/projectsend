@@ -8,12 +8,6 @@
 $allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
 
-$page_title = __('File information', 'cftp_admin');
-
-$dont_redirect_if_logged = 1;
-
-include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
-
 if (!empty($_GET['token']) && !empty($_GET['id'])) {
     $token = htmlentities($_GET['token']);
     $file_id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
@@ -69,6 +63,12 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
 } else {
     exit_with_error_code(403);
 }
+
+$page_title = __('File information', 'cftp_admin');
+$page_title = $file->title;
+$dont_redirect_if_logged = 1;
+
+include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 ?>
 
 <div class="row">

@@ -52,33 +52,24 @@ body {
 
 a {
     color: $main_color;
+    text-decoration:none;
 
     &:hover,
     &:focus,
     &:active
     {
         color: $main_lighten;
+        text-decoration:none;
     }
+}
+
+.clear {
+    clear:both;
 }
 
 // Backend only styles
 
 .backend {
-    a {
-        text-decoration:none;
-
-        &:hover,
-        &:focus
-        {
-            text-decoration:none;
-        }
-    }
-
-    .clear {
-        clear:both;
-    }
-
-
     .system_msg {
         padding:10px;
         background:#FFFBE4;
@@ -159,55 +150,6 @@ a {
         background-color: white !important;
     }
 
-    .field_error {
-        border:1px solid #B94A48 !important;
-    }
-
-    .field_error_msg {
-        position:relative;
-
-        ul {
-            font-size:.95em;
-            color:#B94A48;
-            background:#F2DEDE;
-            margin:0;
-            padding:10px;
-            border:1px solid #EED3D7;
-            position:relative;
-            border-radius: 3px;
-
-            li {
-                padding:3px 0;
-
-                &:last-child {
-                    border-bottom:none;
-                }
-            }
-        }
-
-        &:after,
-        &:before
-        {
-            bottom: 100%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute; pointer-events: none;
-        }
-
-        &:after {
-            border-color: rgba(45, 237, 14, 0); border-bottom-color:#F2DEDE; border-width: 10px; right: 5%; margin-left: -10px;
-        }
-
-        &:before {
-            border-color: rgba(238, 211, 215, 0); border-bottom-color:#EED3D7; border-width: 11px; right: 5%; margin-left: -11px;
-        }
-
-        .options_box & {
-            margin-left:44%;
-        }
-
-        .error_no_margin & {
-            margin-left:0;
-        }
-    }
-
     // Misc
 
     .button_label {
@@ -233,15 +175,7 @@ a {
     .membership_toggle .toggle-group { transition: left 0.1s; -webkit-transition: left 0.1s; }
 }
 
-.dashboard_contents {
-    padding-top:10px;
-}
-
 // Messages
-
-#login_error {
-    margin:0 auto 20px auto;
-}
 
 form .alert {
     margin-top:2em;

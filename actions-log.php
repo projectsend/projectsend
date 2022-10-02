@@ -271,10 +271,9 @@ $count = $sql->rowCount();
 
         echo $table->render();
 
-        /**
-         * PAGINATION
-         */
-        echo $table->pagination([
+        // PAGINATION
+        $pagination = new \ProjectSend\Classes\PaginationLayout;
+        echo $pagination->make([
             'link' => 'actions-log.php',
             'current' => $pagination_page,
             'item_count' => $count_for_pagination,

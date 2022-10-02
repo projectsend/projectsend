@@ -362,7 +362,8 @@ $current_url = get_form_action_with_existing_parameters(basename(__FILE__));
                 echo $table->render();
 
                 // PAGINATION
-                echo $table->pagination([
+                $pagination = new \ProjectSend\Classes\PaginationLayout;
+                echo $pagination->make([
                     'link' => 'users.php',
                     'current' => $pagination_page,
                     'item_count' => $count_for_pagination,

@@ -321,7 +321,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                 echo $table->render();
 
                 // PAGINATION
-                echo $table->pagination([
+                $pagination = new \ProjectSend\Classes\PaginationLayout;
+                echo $pagination->make([
                     'link' => 'groups.php',
                     'current' => $pagination_page,
                     'item_count' => $count_for_pagination,

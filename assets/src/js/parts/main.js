@@ -109,15 +109,15 @@
                 $('.footable').footable().find('> tbody > tr:not(.footable-row-detail):nth-child(even)').addClass('odd');
             }
             
-            /** Pagination */
-            $(".go_to_page").on("click", "button", function() {
-                var _page = $('.go_to_page #page_number').data('link');
-                var _page_no = parseInt($('.go_to_page #page_number').val());
-                if (typeof _page_no == 'number'){
-                    _page = _page.replace('_pgn_', _page_no);
-                }
-                window.location.href = _page;
-            });
+            // /** Pagination */
+            // $(".go_to_page").on("click", "button", function() {
+            //     var _page = $('.go_to_page #page_number').data('link');
+            //     var _page_no = parseInt($('.go_to_page #page_number').val());
+            //     if (typeof _page_no == 'number'){
+            //         _page = _page.replace('_pgn_', _page_no);
+            //     }
+            //     window.location.href = _page;
+            // });
 
             /** Password generator */
             var hdl = new Jen(true);

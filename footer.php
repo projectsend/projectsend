@@ -1,6 +1,5 @@
-                </div> <!-- container-fluid -->
-
-                <?php render_footer_text(); ?>
+                    <?php render_footer_text(); ?>
+                </div> <!-- main-content -->
             </div> <!-- container-fluid -->
         </main>
         <?php

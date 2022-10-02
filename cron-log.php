@@ -214,8 +214,9 @@ if (isset($_POST['action']) && $_POST['action'] != 'none') {
             echo $table->render();
 
             // PAGINATION
-            echo $table->pagination([
-                'link' => 'cron-log.php',
+            $pagination = new \ProjectSend\Classes\PaginationLayout;
+            echo $pagination->make([
+            'link' => 'cron-log.php',
                 'current' => $pagination_page,
                 'item_count' => $count_for_pagination,
             ]);

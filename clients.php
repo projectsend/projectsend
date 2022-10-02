@@ -386,7 +386,8 @@ if (isset($_POST['action'])) {
                 echo $table->render();
 
                 // PAGINATION
-                echo $table->pagination([
+                $pagination = new \ProjectSend\Classes\PaginationLayout;
+                echo $pagination->make([
                     'link' => 'clients.php',
                     'current' => $pagination_page,
                     'item_count' => $count_for_pagination,

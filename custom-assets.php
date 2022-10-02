@@ -297,8 +297,9 @@ $count = $sql->rowCount();
             echo $table->render();
 
             // PAGINATION
-            echo $table->pagination([
-                'link' => 'custom-assets.php',
+            $pagination = new \ProjectSend\Classes\PaginationLayout;
+            echo $pagination->make([
+            'link' => 'custom-assets.php',
                 'current' => $pagination_page,
                 'item_count' => $count_for_pagination,
             ]);

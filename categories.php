@@ -306,7 +306,8 @@ if (isset($_POST['btn_process'])) {
             echo $table->render();
 
             // PAGINATION
-            echo $table->pagination([
+            $pagination = new \ProjectSend\Classes\PaginationLayout;
+            echo $pagination->make([
                 'link' => basename($_SERVER['SCRIPT_FILENAME']),
                 'current' => $params['page'],
                 'item_count' => $get_categories['count'],

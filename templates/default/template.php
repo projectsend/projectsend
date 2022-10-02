@@ -301,10 +301,9 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 
                             echo $table->render();
 
-                            /**
-                             * PAGINATION
-                             */
-                            echo $table->pagination([
+                            // PAGINATION
+                            $pagination = new \ProjectSend\Classes\PaginationLayout;
+                            echo $pagination->make([
                                 'link' => 'my_files/index.php',
                                 'current' => $pagination_page,
                                 'item_count' => $count_for_pagination,

@@ -258,10 +258,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 
                     echo $table->render();
 
-                    /**
-                     * PAGINATION
-                     */
-                    echo $table->pagination([
+                    // PAGINATION
+                    $pagination = new \ProjectSend\Classes\PaginationLayout;
+                    echo $pagination->make([
                         'link' => 'public.php',
                         'current' => $pagination_page,
                         'item_count' => $files['pagination']['total'],

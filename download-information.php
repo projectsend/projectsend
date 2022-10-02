@@ -206,8 +206,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                     echo $table->render();
 
                     // PAGINATION
-                    echo $table->pagination([
-                        'link' => 'download-information.php',
+                    $pagination = new \ProjectSend\Classes\PaginationLayout;
+                    echo $pagination->make([
+                            'link' => 'download-information.php',
                         'current' => $pagination_page,
                         'item_count' => $count_for_pagination,
                     ]);

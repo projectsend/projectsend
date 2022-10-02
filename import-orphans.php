@@ -112,7 +112,7 @@ if ($_POST) {
             );
             foreach ($filters as $type => $filter) {
             ?>
-                <a href="<?php echo $filter['link']; ?>" class="<?php echo $current_filter == $type ? 'filter_current' : 'filter_option' ?>"><?php echo $filter['title']; ?> (<?php echo $filter['count']; ?>)</a>
+                <a href="<?php echo $filter['link']; ?>" class="<?php echo $search_type == $type ? 'filter_current' : 'filter_option' ?>"><?php echo $filter['title']; ?> (<?php echo $filter['count']; ?>)</a>
             <?php
             }
             ?>

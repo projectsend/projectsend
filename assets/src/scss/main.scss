@@ -125,20 +125,6 @@ a {
         }
     }
 
-    // Categories
-
-    .categories_form {
-        padding:20px;
-        background:white;
-        margin-bottom:40px;
-        border:1px solid #ccc;
-        border-radius: 2px;
-
-        h3 {
-            margin:0 0 30px;
-        }
-    }
-
     // File management
 
     .file_status_visible, .account_status_active {
@@ -222,116 +208,6 @@ a {
         }
     }
 
-    // Edit file information on UPLOAD
-
-    .file_editor {
-        padding-top:15px;
-        margin-bottom:40px;
-    }
-
-    .edit_files {
-
-        .edit_files_blocks {
-            background:white;
-            border:1px solid #ccc;
-            border-radius: 2px;
-            box-shadow: 3px 3px 5px, #dedede;
-            padding:30px 15px;
-
-            &:hover {
-                border:1px solid #888;
-                box-shadow: 3px 3px 5px, #ccc;
-            }
-        }
-
-        .file_data {
-            h3 {
-                padding-top:0;
-                margin-top:0;
-            }
-
-            @include bk(xs) {
-                background:white;
-                margin-bottom:25px;
-            }
-        }
-
-        textarea {
-            height:10em!important;
-        }
-
-        .column {
-            padding:0 25px;
-            margin-bottom: 50px;
-
-            @include bk(md) {
-                margin-bottom: 0;
-            }
-
-            &:last-child {
-                border:none;
-            }
-        }
-
-        .divider {
-            margin:40px auto;
-        }
-    }
-
-    .file_number {
-        font-family:$font_heading;
-        position:relative;
-        word-break:break-all;
-        margin:0;
-        padding:10px;
-        background:#232835;
-        color:white;
-        font-size:18px;
-        display:inline-block;
-        border-radius: 5px 5px 0 0;
-
-        p {
-            padding:0 15px;
-            margin:0;
-            display:inline-block;
-            word-wrap:break-word;
-
-            span {
-                display:inline-block;
-                color:#888;
-                margin:0 15px 0 0;
-            }
-        }
-    }
-
-    .list_mass_members {
-        margin:10px 0 30px;
-        padding:0;
-
-        a {
-            margin-right:5px;
-
-            &:last-child {
-                margin-right:0;
-            }
-        }
-    }
-
-    // Recreate the dark, inverted button from Bootstrap 2
-
-    .btn-inverse,
-    .btn-inverse:focus
-    {
-        background:#333;
-        color:white;
-        border-color:#333;
-    }
-
-    .btn-inverse:hover {
-        color:white;
-        background:#555;
-    }
-
     // Misc
 
     .button_label {
@@ -355,26 +231,6 @@ a {
     }
 
     .membership_toggle .toggle-group { transition: left 0.1s; -webkit-transition: left 0.1s; }
-
-    .form_results_filter {
-        margin-bottom:20px;
-
-        a {
-            text-decoration:underline;
-            display:inline-block;
-            padding-right:5px;
-            margin-right:5px;
-            border-right:1px solid #dedede;
-
-            &:last-child {
-                border-right:none;
-            }
-
-            &.filter_option {
-                color:#c3c3ca;
-            }
-        }
-    }
 }
 
 .dashboard_contents {
@@ -387,55 +243,19 @@ a {
     margin:0 auto 20px auto;
 }
 
-#donations_message {
-    a {
-        text-decoration:underline;
-    }
-
-    h3 {
-        border:none;
-    }
-}
-
 form .alert {
     margin-top:2em;
 }
 
 // Forms
 
-.form_fields li label {
-    display:inline-block;
-    width:40%;
-}
-
-.textarea_label {
-    vertical-align:top;
-}
-
-.form_submit_li {
-    margin-top:25px;
-    text-align:center;
-}
-
 .required {
     background:url(#{$img_path}/req-text.png) no-repeat right -2px;
     padding-right: 50px;
 }
 
-li .password_toggle {
-    width:257px !important;
-}
-
-li .required.password_toggle {
-    width:214px !important;
-}
-
 .btn_generate_password {
     margin-top:5px;
-}
-
-#add_group_form_description {
-    height:150px;
 }
 
 // 2FA
@@ -451,34 +271,11 @@ li .required.password_toggle {
     }
 }
 
-// Files actions
-
-// .form_actions_left {
-//     display:block;
-//     float:left;
-
-//     form {
-//         display:inline-block;
-//     }
-
-//     input[type="text"] {
-//         font-size:13px;
-//         height:30px;
-//         line-height:30px;
-//     }
-// }
-
 .form_actions_right {
     display:block;
     float:right;
 }
 
-// .form_actions_left select,
-// .form_actions_right select
-// {
-//     height:30px;
-//     font-size:13px;
-// }
 
 .form_actions,
 .form_actions_limit_results
@@ -506,16 +303,6 @@ li .required.password_toggle {
     }
 }
 
-// .form_actions_limit_results {
-//     .form-control-short {
-//         width:140px;
-//     }
-
-//     .form_actions_search_box {
-//         width:80px !important;
-//     }
-// }
-
 .form_actions_submit label {
     font-size:14px;
     margin-right:15px;
@@ -523,11 +310,6 @@ li .required.password_toggle {
 }
 
 // Buttons
-
-.close-popover {
-    text-align:center;
-    margin:15px auto;
-}
 
 .after_form_buttons {
     margin-top:50px;
@@ -570,70 +352,8 @@ li .required.password_toggle {
 }
 
 // Misc
-.forbidden {
-    h2 {
-        margin-top:40px;
-    }
-}
-
 .format_url {
     word-break:break-all;
-}
-
-// Public download page
-body.download {
-    .file_title {
-        span {
-            font-size: 20px;
-        }
-    }
-
-    .description {
-        font-size: 15px;
-        line-height: 20px;
-    }
-
-    .actions {
-        margin-top: 20px;
-    }
-}
-
-// Misc Mobile only styles
-
-@include bk(xs) {
-    .main_title {
-        text-align:center;
-        margin-bottom:20px;
-    }
-
-    #header #account {
-        text-align:center;
-
-        span {
-            display:block;
-            margin-bottom:8px;
-        }
-    }
-
-    .form_filters {
-        display:block;
-        clear:both;
-    }
-
-   .form_filters select {
-      max-width: 300px;
-   }
-
-//    .form_actions_left,
-//     .form_actions_right
-//     {
-//       float: none;
-//    }
-
-    .group_float {
-        float:left;
-        margin-right:5px;
-    }
 }
 
 #browser_encrypt_data {
@@ -662,3 +382,5 @@ body.download {
 @import "parts/options";
 @import "parts/public";
 @import "parts/preview_modal";
+@import "parts/file_editor";
+@import "parts/form_results_filter";

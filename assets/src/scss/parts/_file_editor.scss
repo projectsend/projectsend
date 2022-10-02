@@ -1,0 +1,93 @@
+// Edit file information on UPLOAD
+
+.file_editor {
+    padding-top:15px;
+    margin-bottom:40px;
+}
+
+.edit_files {
+    .edit_files_blocks {
+        background:white;
+        border:1px solid #ccc;
+        border-radius: 2px;
+        box-shadow: 3px 3px 5px, #dedede;
+        padding:30px 15px;
+
+        &:hover {
+            border:1px solid #888;
+            box-shadow: 3px 3px 5px, #ccc;
+        }
+    }
+
+    .file_data {
+        h3 {
+            padding-top:0;
+            margin-top:0;
+        }
+
+        @include bk(xs) {
+            background:white;
+            margin-bottom:25px;
+        }
+    }
+
+    textarea {
+        height:10em!important;
+    }
+
+    .column {
+        padding:0 25px;
+        margin-bottom: 50px;
+
+        @include bk(md) {
+            margin-bottom: 0;
+        }
+
+        &:last-child {
+            border:none;
+        }
+    }
+
+    .divider {
+        margin:40px auto;
+    }
+}
+
+.file_number {
+    font-family:$font_heading;
+    position:relative;
+    word-break:break-all;
+    margin:0;
+    padding:10px;
+    background:#232835;
+    color:white;
+    font-size:18px;
+    display:inline-block;
+    border-radius: 5px 5px 0 0;
+
+    p {
+        padding:0 15px;
+        margin:0;
+        display:inline-block;
+        word-wrap:break-word;
+
+        span {
+            display:inline-block;
+            color:#888;
+            margin:0 15px 0 0;
+        }
+    }
+}
+
+.list_mass_members {
+    margin:10px 0 30px;
+    padding:0;
+
+    a {
+        margin-right:5px;
+
+        &:last-child {
+            margin-right:0;
+        }
+    }
+}

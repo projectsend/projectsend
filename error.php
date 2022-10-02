@@ -58,11 +58,11 @@ switch ($error_type) {
     ?>
 </head>
 
-<body class="backend forbidden">
+<body class="backend error_page">
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <h2><?php echo $page_title; ?></h2>
+                <h2 class="mt-4 mb-4"><?php echo $page_title; ?></h2>
             </div>
         </div>
         <div class="row">

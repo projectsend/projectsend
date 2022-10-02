@@ -19,7 +19,7 @@ class PaginationLayout {
                     </div>
                     <div class="col-12 col-md-6 text-end">
                         <div class="go_to_page">
-                            <form method="get" action="{goto_action}" class="row row-cols-lg-auto g-3 align-items-center">
+                            <form method="get" action="{goto_action}" class="row row-cols-lg-auto g-3 align-items-center justify-content-end">
                                 <label class="control-label hidden-xs hidden-sm">' . __('Go to page:', 'cftp_admin') . '</label>
                                 <div class="col-12">
                                     <input type="text" class="form-control" name="page" id="page_number" value="{current_page}" />

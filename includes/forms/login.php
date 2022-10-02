@@ -12,7 +12,7 @@
             <input type="text" name="username" id="username" value="<?php if (isset($sysuser_username)) { echo htmlspecialchars($sysuser_username); } ?>" class="form-control" autofocus />
         </div>
 
-        <div class="form-group row">
+        <div class="mb-3">
             <label for="password"><?php _e('Password','cftp_admin'); ?></label>
             <input type="password" name="password" id="password" class="form-control" />
         </div>

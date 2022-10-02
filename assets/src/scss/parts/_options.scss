@@ -1,0 +1,162 @@
+// OPTIONS page
+body.options {
+    // Branding
+    #current_logo {
+        margin:20px auto;
+        text-align:center;
+        padding:20px 0 0;
+        overflow:hidden;
+    
+        @include bk(xs) {
+            text-align:center;
+        }
+    }
+    
+    #current_logo_img {
+        padding:20px 0;
+    
+        img, svg {
+            height:auto;
+            width:100%;
+            max-width:300px;
+        }
+    }
+    
+    #form_upload_logo {
+        padding:30px 0 10px;
+        border-top:1px dotted #CCCCCC;
+    }
+
+    // Global
+    .field_note {
+        margin:4px 0 15px 0;
+        font-size:.9rem;
+        line-height: 1.2rem;
+        padding-left:6px;
+        font-weight:300;
+        border-left:3px solid #eee;
+
+        a {
+            color:#0094bb;
+            text-decoration:underline;
+        }
+
+        .box-reset-password & {
+            margin-left:0;
+        }
+    }
+
+    optgroup {
+        padding:1em;
+        border:dotted #999;
+        border-width:1px 0 0 0;
+    }
+    
+    input[type="number"].number_small {
+        width: 80px;
+    }
+
+    .checkbox_options {
+        width:auto !important;
+    }
+
+    .options_divide {
+        clear:both;
+        overflow:hidden;
+        margin:25px 0;
+    }
+
+    .options_column {
+        overflow:hidden;
+    }
+
+    .textarea_medium {
+        min-height:150px;
+    }
+
+    .textarea_high {
+        min-height:200px;
+    }
+
+        .options_col_left {
+            width:47%;
+            float:left;
+        }
+
+        .options_col_right {
+            width:47%;
+            float:right;
+        }
+
+    .preview_button {
+        margin-top:25px;
+        text-align:center;
+
+        button {
+            margin-bottom:10px;
+        }
+    }
+
+    .template_selector {
+        .template {
+            margin-bottom:40px;
+            padding:15px 0;
+            background:white;
+            overflow:hidden;
+            position:relative;
+
+            &.current_template {
+                border:5px solid $main_color;
+            }
+
+            h4 {
+                font-size:1.5em;
+                color:black;
+                margin-top:25px;
+            }
+
+            .info {
+
+                h5 {
+                    margin:20px 0 10px;
+                    font-size:1.2em;
+                }
+            }
+
+            .images {
+                position:relative;
+
+                img {
+                    width:100%;
+                    height:auto;
+                }
+
+                .screenshot {
+                    display:block;
+                }
+
+                .cover {
+                    @include opacity(0);
+                    position:absolute;
+                    width:100%;
+                    left:0;
+                    top:0;
+                    height:100%;
+                    transition:.3s all linear;
+                }
+            }
+
+            &:hover {
+                .images {
+                    .cover {
+                        @include opacity(1);
+                    }
+                }
+            }
+
+            .buttons {
+                text-align:right;
+            }
+        }
+    }
+}    

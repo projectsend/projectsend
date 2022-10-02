@@ -1,0 +1,34 @@
+// Public files and groups listing
+.public {
+    .intro {
+        margin-bottom: 20px;
+    }
+
+    .listing {
+        ul {
+            margin:0;
+            padding: 0;
+
+            li {
+                padding: 8px 0;
+                border-bottom: 1px solid #dedede;
+
+                &:last-child {
+                    border: none;
+                }
+
+                &.file:hover {
+                    background: #f0f0f0;
+                }
+
+                i {
+                    margin-right: .5em;
+                }
+
+                ul {
+                    padding-left: 2em;
+                }
+            }
+        }
+    }
+}

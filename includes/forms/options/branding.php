@@ -19,7 +19,7 @@
         ?>
         <img src="<?php echo $img_src; ?>">
     </div>
-    <p class="preview_logo_note">
+    <p class="mt-3 text-info">
         <?php _e('This preview uses a maximum width of 300px.','cftp_admin'); ?>
     </p>
     <?php if (!empty(get_option('logo_filename'))) { ?>

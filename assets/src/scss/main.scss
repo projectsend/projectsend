@@ -14,7 +14,9 @@ p {
     line-height:1.5em;
 }
 
-a img {	border:none; }
+a img {
+    border:none;
+}
 
 .external_link:before {
     content: "\f08e";
@@ -44,16 +46,19 @@ body {
     padding-top: 4.5rem;
 }
 
-body.login {
-    height:auto;
-}
-
 .none {
     display: none;
 }
 
 a {
     color: $main_color;
+
+    &:hover,
+    &:focus,
+    &:active
+    {
+        color: $main_lighten;
+    }
 }
 
 // Backend only styles
@@ -73,50 +78,6 @@ a {
         clear:both;
     }
 
-    h1, h2, h3, h4, h5, h6 {
-        font-weight:normal;
-        font-family: $font_heading;
-    }
-
-        h1 {
-            color:white;
-            font-size:32px;
-            line-height:32px;
-            margin:15px 0;
-        }
-
-        h2 {
-            color:#333333;
-            font-size:27px;
-            line-height:29px;
-            margin:0 0 35px;
-            letter-spacing:-1px;
-        }
-
-        h3 {
-            font-size:17px;
-            line-height:19px;
-            padding:0;
-            font-weight:900 !important;
-            margin-bottom:20px;
-            text-transform:uppercase;
-        }
-
-        h4 {
-            font-size:13px;
-            margin-bottom:20px;
-            line-height:18px;
-        }
-        
-        h5 {
-            font-size:17px;
-            margin-bottom:20px;
-            line-height:18px;
-            
-            i {
-                margin-right: 8px;
-            }
-        }
 
     .system_msg {
         padding:10px;
@@ -129,75 +90,7 @@ a {
         }
     }
 
-    #main {
-        padding:30px;
-    }
-
-    // Update available message bar
-
-    .update_msg {
-        .buttons {
-            padding:0 0 0 25px;
-            display:inline-block;
-            margin-top:3px;
-        }
-
-        ul {
-            text-align:right;
-
-            li {
-                display:inline-block;
-                margin:0;
-                font-size:0;
-            }
-
-            .update_icon {
-                display:inline-block;
-                background:black;
-                color:white;
-                text-align:center;
-                padding:4px;
-                font-size:20px;
-                margin:0 2px;
-                border-radius: 50%;
-            }
-
-            .update_icon_status_0 {
-                @include opacity(.4);
-            }
-        }
-
-    }
-
-    &.default-template .update_msg {
-        display:none !important;
-    }
-
-    #donations_message {
-        background:#0094bb ;
-        color:#fff;
-        border-radius: 2px;
-        margin:0 0 20px;
-        padding:30px;
-        font-size:1.1em;
-
-        h3 {
-            margin-top:0;
-            font-size:1.5em;
-        }
-
-        p {
-            margin-bottom:0;
-        }
-
-        a {
-            color:white;
-            font-weight:bold;
-        }
-    }
-
     // Header
-
     .branding_unlogged {
         text-align:center;
         margin:20px auto;
@@ -206,26 +99,6 @@ a {
             height:auto;
             width:100%;
             max-width:250px;
-        }
-    }
-
-    #login_logo {
-        margin:15px auto;
-        text-align:center;
-    }
-
-    .header_unlogged {
-        clear:both;
-
-        .navbar-header {
-            display:block;
-            width:100%;
-            padding:0;
-
-            span {
-                display:block;
-                width:100%;
-            }
         }
     }
 
@@ -240,18 +113,7 @@ a {
         color:#0099CC;
     }
 
-    #install_inside {
-        width:400px;
-        margin:20px auto 0;
-    }
-
     // Main white content boxes
-
-    .whitebox {
-        background-color:white;
-        border:1px solid #ccc;
-        border-radius: 2px;
-    }
 
     .white-box {
         background-color:white;
@@ -261,20 +123,6 @@ a {
         .white-box-interior {
             padding:15px;
         }
-    }
-
-    .whiteform {
-        margin:0;
-        text-align:left;
-        padding:20px;
-
-        td {
-            height:25px;
-        }
-    }
-
-    .whitebox_text {
-        padding-top:25px;
     }
 
     // Categories
@@ -465,178 +313,6 @@ a {
 
             &:last-child {
                 margin-right:0;
-            }
-        }
-    }
-
-    // Branding
-
-    #current_logo_h2 {
-        margin:30px 0 10px;
-    }
-
-    #current_logo {
-        margin:20px auto;
-        text-align:center;
-        padding:20px 0 0;
-        overflow:hidden;
-
-        @include bk(xs) {
-            text-align:center;
-        }
-    }
-
-    #current_logo_img {
-        padding:20px 0;
-
-        img, svg {
-            height:auto;
-            width:100%;
-            max-width:300px;
-        }
-    }
-
-    .preview_logo_note {
-        font-size:.9em;
-        margin-top:30px;
-        color:#888;
-    }
-
-    #form_upload_logo {
-        padding:30px 0 10px;
-        border-top:1px dotted #CCCCCC;
-    }
-
-    // OPTIONS page
-
-    .field_note {
-        margin:4px 0 15px 0;
-        font-size:.9rem;
-        line-height: 1.2rem;
-        padding-left:6px;
-        font-weight:300;
-        border-left:3px solid #eee;
-
-        a {
-            color:#0094bb;
-            text-decoration:underline;
-        }
-
-        .box-reset-password & {
-            margin-left:0;
-        }
-    }
-
-    optgroup {
-        padding:1em;
-        border:dotted #999;
-        border-width:1px 0 0 0;
-    }
-    
-    input[type="number"].number_small {
-        width: 80px;
-    }
-
-    .checkbox_options {
-        width:auto !important;
-    }
-
-    .options_divide {
-        clear:both;
-        overflow:hidden;
-        margin:25px 0;
-    }
-
-    .options_column {
-        overflow:hidden;
-    }
-
-    .textarea_medium {
-        min-height:150px;
-    }
-
-    .textarea_high {
-        min-height:200px;
-    }
-
-        .options_col_left {
-            width:47%;
-            float:left;
-        }
-
-        .options_col_right {
-            width:47%;
-            float:right;
-        }
-
-    .preview_button {
-        margin-top:25px;
-        text-align:center;
-
-        button {
-            margin-bottom:10px;
-        }
-    }
-
-    .template_selector {
-        .template {
-            margin-bottom:40px;
-            padding:15px 0;
-            background:white;
-            overflow:hidden;
-            position:relative;
-
-            &.current_template {
-                border:5px solid $main_color;
-            }
-
-            h4 {
-                font-size:1.5em;
-                color:black;
-                margin-top:25px;
-            }
-
-            .info {
-
-                h5 {
-                    margin:20px 0 10px;
-                    font-size:1.2em;
-                }
-            }
-
-            .images {
-                position:relative;
-
-                img {
-                    width:100%;
-                    height:auto;
-                }
-
-                .screenshot {
-                    display:block;
-                }
-
-                .cover {
-                    @include opacity(0);
-                    position:absolute;
-                    width:100%;
-                    left:0;
-                    top:0;
-                    height:100%;
-                    transition:.3s all linear;
-                }
-            }
-
-            &:hover {
-                .images {
-                    .cover {
-                        @include opacity(1);
-                    }
-                }
-            }
-
-            .buttons {
-                text-align:right;
             }
         }
     }
@@ -864,10 +540,6 @@ li .required.password_toggle {
     display: block;
 }
 
-.whitebox .alert-info {
-    margin-top:25px;
-}
-
 .alert .alert-title {
     padding-bottom:0;
     margin-bottom:8px;
@@ -904,15 +576,6 @@ li .required.password_toggle {
     }
 }
 
-.pagination_wrapper {
-    margin:2em auto;
-}
-
-.go_to_page #page_number {
-    width:3.5rem !important;
-    text-align:center;
-}
-
 .format_url {
     word-break:break-all;
 }
@@ -932,61 +595,6 @@ body.download {
 
     .actions {
         margin-top: 20px;
-    }
-}
-
-// Public files and groups listing
-.public {
-    .intro {
-        margin-bottom: 20px;
-    }
-
-    .listing {
-        ul {
-            margin:0;
-            padding: 0;
-
-            li {
-                padding: 8px 0;
-                border-bottom: 1px solid #dedede;
-
-                &:last-child {
-                    border: none;
-                }
-
-                &.file:hover {
-                    background: #f0f0f0;
-                }
-
-                i {
-                    margin-right: .5em;
-                }
-
-                ul {
-                    padding-left: 2em;
-                }
-            }
-        }
-    }
-}
-
-// Preview modal
-#previewModal {
-    .modal-header {
-        .modal-title {
-            display: inline-block;
-            margin-bottom: 0;
-        }
-    }
-
-    .modal-body {
-        audio {
-            width: 100%;
-        }
-    }
-
-    .embed-responsive {
-        background: black;
     }
 }
 
@@ -1045,5 +653,12 @@ body.download {
 @import "parts/top-bar";
 @import "parts/main-menu";
 @import "parts/footer";
+@import "parts/headings";
 @import "parts/buttons";
 @import "parts/dashboard_widgets";
+@import "parts/pagination";
+@import "parts/donations_message";
+@import "parts/update_message";
+@import "parts/options";
+@import "parts/public";
+@import "parts/preview_modal";

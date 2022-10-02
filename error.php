@@ -67,8 +67,10 @@ switch ($error_type) {
         </div>
         <div class="row">
             <div class="col-12">
-                <div class="whiteform whitebox">
-                    <?php echo $error_message; ?>
+                <div class="white-box">
+                    <div class="white-box-interior">
+                        <?php echo $error_message; ?>
+                    </div>
                 </div>
             </div>
         </div>

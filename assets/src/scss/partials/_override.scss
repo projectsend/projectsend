@@ -10,12 +10,6 @@
 	padding:4px 20px !important;
 }
 
-// Other bootstrap styles
-.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
-    background: $main_color;
-    border-color: $main_color;
-}
-
 .form-horizontal .control-label {
 	text-align: left;
 }

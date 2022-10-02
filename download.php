@@ -82,8 +82,11 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                     <div class="text-center p-5">
                         <h2 class="file_title">
                             <?php echo $file->filename_original; ?>
-                        </h2>
-                        <h3><?php echo $file->title; ?></h3>
+
+                            <?php if ($file->filename_original != $file->title) { ?>
+                                <h3><?php echo $file->title; ?></h3>
+                            <?php } ?>
+                        </h2>    
 
                         <div class="description">
                             <?php echo $file->description; ?>

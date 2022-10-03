@@ -96,5 +96,6 @@ class Options
         define('PAGE_STATUS_CODE_URL', BASE_URI . 'error.php');
         define('PAGE_STATUS_CODE_403', PAGE_STATUS_CODE_URL . '?e=403');
         define('PAGE_STATUS_CODE_404', PAGE_STATUS_CODE_URL . '?e=404');
+        define('PAGE_STATUS_CODE_REQUIREMENTS', PAGE_STATUS_CODE_URL . '?e=requirements');
     }
 }

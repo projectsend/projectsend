@@ -32,63 +32,49 @@ function try_queries($queries = [])
     return $failed == 0;
 }
 
-function check_server_requirements()
+function get_server_requirements_errors()
 {
-    $absParent = dirname(dirname(__FILE__));
-    $error_msg = [];
+    $errors_found = [];
 
-    /**
-     * Check for PDO extensions
-     */
+    // Check for PDO extensions
     $pdo_available_drivers = PDO::getAvailableDrivers();
     if (empty($pdo_available_drivers)) {
-        $error_msg[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
+        $errors_found[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
     } else {
         if ((DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND')) {
-            $error_msg[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
+            $errors_found[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
         }
         if ((DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers)) {
-            $error_msg[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
+            $errors_found[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
         }
     }
 
-    /** Version requirements */
+    // Version requirements
     $version_not_met =  __('%s minimum version not met. Please upgrade to at least version %s', 'cftp_admin');
 
-    /** php */
+    // php
     if (version_compare(phpversion(), REQUIRED_VERSION_PHP, "<")) {
-        $error_msg[] = sprintf($version_not_met, 'php', REQUIRED_VERSION_PHP);
+        $errors_found[] = sprintf($version_not_met, 'php', REQUIRED_VERSION_PHP);
     }
 
-    /** mysql */
+    // mysql
     global $dbh;
     if (!empty($dbh)) {
         $version_mysql = $dbh->query('SELECT version()')->fetchColumn();
         if (version_compare($version_mysql, REQUIRED_VERSION_MYSQL, "<")) {
-            $error_msg[] = sprintf($version_not_met, 'MySQL', REQUIRED_VERSION_MYSQL);
+            $errors_found[] = sprintf($version_not_met, 'MySQL', REQUIRED_VERSION_MYSQL);
         }
     }
 
-    if (!empty($error_msg)) {
-        $page_title = __('Error', 'cftp_admin');
-        include_once $absParent . '/header-unlogged.php';
-?>
-        <div class="row justify-content-md-center">
-            <div class="col-12 col-sm-12 col-lg-4">
-                <div class="white-box">
-                    <div class="white-box-interior">
-                        <?php
-                        foreach ($error_msg as $msg) {
-                            echo system_message('error', $msg);
-                        }
-                        ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-    <?php
-        include_once $absParent . '/footer.php';
-        exit;
+    return $errors_found;
+}
+
+function check_server_requirements()
+{
+    $errors = get_server_requirements_errors();
+
+    if (!empty($errors)) {
+        ps_redirect(PAGE_STATUS_CODE_REQUIREMENTS);
     }
 }
 

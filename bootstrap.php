@@ -88,7 +88,10 @@ if (!defined('IS_INSTALL')) {
 // Security
 require_once ROOT_DIR . '/includes/security/csrf.php';
 
-check_server_requirements();
+if (!defined('IS_ERROR_PAGE')) {
+    check_server_requirements();
+}
+
 global $bfchecker;
 $bfchecker = new \ProjectSend\Classes\BruteForceBlock();
 

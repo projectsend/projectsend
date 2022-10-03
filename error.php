@@ -36,6 +36,15 @@ switch ($error_type) {
         $error_message = (Session::has('database_connection_error')) ? Session::get('database_connection_error') : __("Can not connect to database", 'cftp_admin');
         Session::remove('database_connection_error');
         break;
+    case 'requirements':
+        http_response_code(403);
+        $page_title = __('Requirements error', 'cftp_admin');
+        $error_message = '';
+        $errors = get_server_requirements_errors();
+        foreach ($errors as $error) {
+            $error_message .= $error . '<br>';
+        }
+        break;
 }
 ?>
 <!doctype html>

@@ -7,8 +7,9 @@
 
 	&:hover,
 	&:focus,
-    &.active
+    &:active
 	{
+        color: white;
 		background-color:var(--main_lighten) !important;
 	}
 }

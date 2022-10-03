@@ -26,12 +26,14 @@ let assetsCss = [
     'node_modules/toastr/build/toastr.min.css',
     'vendor/moxiecode/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css',
     'node_modules/codemirror-minified/lib/codemirror.css',
+    'node_modules/sweetalert2/dist/sweetalert2.min.css',
 ];
 
 let assetsJs = [
     'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
     'node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
     'node_modules/bootstrap-toggle/js/bootstrap-toggle.min.js',
+    'node_modules/sweetalert2/dist/sweetalert2.all.js',
     'node_modules/chosen-js/chosen.jquery.min.js',
     'node_modules/footable/dist/footable.min.js',
     'node_modules/node-jen/jen.js',

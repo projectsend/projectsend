@@ -35,32 +35,70 @@
 
                         if (action == 'log_download') {
                             e.preventDefault();
-                            $(document).psendmodal();
+
+                            let modal_content = `<p class="loading-icon">
+                                <img src="`+json_strings.uri.assets_img+`/loading.svg" alt="Loading" /></p>
+                                <p class="lead">`+json_strings.translations.download_wait+`</p>
+                            `;
+
                             Cookies.set('log_download_started', 0, { expires: 100 });
                             setTimeout(check_log_download_cookie, 1000);
 
-                            $('.modal_content').html(`<p class="loading-icon">
-                                                        <img src="`+json_strings.uri.assets_img+`/loading.svg" alt="Loading" /></p>
-                                                        <p class="lead text-center text-info">`+json_strings.translations.download_wait+`</p>
-                                                    `);
-                            $('.modal_content').append('<iframe src="'+json_strings.uri.base+'includes/actions.log.export.php?format=csv"></iframe>');
-
-                            return false;
+                            Swal.fire({
+                                title: '',
+                                html: modal_content,
+                                showCloseButton: false,
+                                showCancelButton: false,
+                                showConfirmButton: false,
+                                showClass: {
+                                    popup: 'animate__animated animated__fast animate__fadeInUp'
+                                },
+                                hideClass: {
+                                    popup: 'animate__animated animated__fast animate__fadeOutDown'
+                                },
+                                didOpen: function () {
+                                    var url = json_strings.uri.base+'includes/actions.log.export.php?format=csv';
+                                    let iframe = document.createElement('iframe');
+                                    let swalcontainer = document.getElementById('swal2-html-container')
+                                    swalcontainer.appendChild(iframe);
+                                    iframe.setAttribute('src', url);
+                                }
+                            }).then((result) => {
+                            });
                         }
 
                         if (action == 'cron_log_download') {
                             e.preventDefault();
-                            $(document).psendmodal();
+
+                            let modal_content = `<p class="loading-icon">
+                                <img src="`+json_strings.uri.assets_img+`/loading.svg" alt="Loading" /></p>
+                                <p class="lead">`+json_strings.translations.download_wait+`</p>
+                            `;
+
                             Cookies.set('log_download_started', 0, { expires: 100 });
                             setTimeout(check_log_download_cookie, 1000);
 
-                            $('.modal_content').html(`<p class="loading-icon">
-                                                        <img src="`+json_strings.uri.assets_img+`/loading.svg" alt="Loading" /></p>
-                                                        <p class="lead text-center text-info">`+json_strings.translations.download_wait+`</p>
-                                                    `);
-                            $('.modal_content').append('<iframe src="'+json_strings.uri.base+'includes/cron.log.export.php?format=csv"></iframe>');
-
-                            return false;
+                            Swal.fire({
+                                title: '',
+                                html: modal_content,
+                                showCloseButton: false,
+                                showCancelButton: false,
+                                showConfirmButton: false,
+                                showClass: {
+                                    popup: 'animate__animated animated__fast animate__fadeInUp'
+                                },
+                                hideClass: {
+                                    popup: 'animate__animated animated__fast animate__fadeOutDown'
+                                },
+                                didOpen: function () {
+                                    var url = json_strings.uri.base+'includes/cron.log.export.php?format=csv';
+                                    let iframe = document.createElement('iframe');
+                                    let swalcontainer = document.getElementById('swal2-html-container')
+                                    swalcontainer.appendChild(iframe);
+                                    iframe.setAttribute('src', url);
+                                }
+                            }).then((result) => {
+                            });
                         }
 
                         // Manage files actions
@@ -71,29 +109,46 @@
                             }
                         }
 
-                        // Templates
+                        // Download multiple files as zip
                         if (action == 'zip') {
                             e.preventDefault();
                             var checkboxes = $("td>input:checkbox:checked").serializeArray();
                             if (checkboxes.length > 0) {
-                                $(document).psendmodal();
-    
+                                let modal_content = `<p class="loading-icon"><img src="`+json_strings.uri.assets_img+`/loading.svg" alt="Loading" /></p>
+                                    <p class="lead">`+json_strings.translations.download_wait+`</p>
+                                    <p class="">`+json_strings.translations.download_long_wait+`</p>
+                                `;
+
                                 Cookies.set('download_started', 0, { expires: 100 });
                                 setTimeout(check_download_cookie, 1000);
-                                $('.modal_content').html(`<p class="loading-icon"><img src="`+json_strings.uri.assets_img+`/loading.svg" alt="Loading" /></p>
-                                                            <p class="lead text-center text-info">`+json_strings.translations.download_wait+`</p>
-                                                            <p class="text-center text-info">`+json_strings.translations.download_long_wait+`</p>
-                                                        `);
-                                $.ajax({
-                                    method: 'GET',
-                                    url: json_strings.uri.base + 'process.php',
-                                    data: { do:"return_files_ids", files:checkboxes }
-                                }).done( function(rsp) {
-                                    var url = json_strings.uri.base + 'process.php?do=download_zip&files=' + rsp;
-                                    $('.modal_content').append("<iframe id='modal_zip'></iframe>");
-                                    $('#modal_zip').attr('src', url);
+
+                                Swal.fire({
+                                    title: '',
+                                    html: modal_content,
+                                    showCloseButton: false,
+                                    showCancelButton: false,
+                                    showConfirmButton: false,
+                                    showClass: {
+                                        popup: 'animate__animated animated__fast animate__fadeInUp'
+                                    },
+                                    hideClass: {
+                                        popup: 'animate__animated animated__fast animate__fadeOutDown'
+                                    },
+                                    didOpen: function () {
+                                        $.ajax({
+                                            method: 'GET',
+                                            url: json_strings.uri.base + 'process.php',
+                                            data: { do:"return_files_ids", files:checkboxes }
+                                        }).done( function(rsp) {
+                                            var url = json_strings.uri.base + 'process.php?do=download_zip&files=' + rsp;
+                                            let iframe = document.createElement('iframe');
+                                            let swalcontainer = document.getElementById('swal2-html-container')
+                                            swalcontainer.appendChild(iframe);
+                                            iframe.setAttribute('src', url);
+                                        });
+                                    }
+                                }).then((result) => {
                                 });
-                                return false;
                             }
                         }
                 }

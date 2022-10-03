@@ -109,16 +109,6 @@
                 $('.footable').footable().find('> tbody > tr:not(.footable-row-detail):nth-child(even)').addClass('odd');
             }
             
-            // /** Pagination */
-            // $(".go_to_page").on("click", "button", function() {
-            //     var _page = $('.go_to_page #page_number').data('link');
-            //     var _page_no = parseInt($('.go_to_page #page_number').val());
-            //     if (typeof _page_no == 'number'){
-            //         _page = _page.replace('_pgn_', _page_no);
-            //     }
-            //     window.location.href = _page;
-            // });
-
             /** Password generator */
             var hdl = new Jen(true);
             hdl.hardening(true);
@@ -173,33 +163,43 @@
              * Modal: show a public file's URL
              */
             $('body').on('click', '.public_link', function(e) {
-                $(document).psendmodal();
                 var type = $(this).data('type');
-                var title = $(this).data('title');
+                var file_title = $(this).data('title');
                 var public_url = $(this).data('public-url');
 
                 if ( type == 'group' ) {
-                    var link_base = json_strings.uri.public_group + '?';
                     var note_text = json_strings.translations.public_group_note;
                 }
                 else if ( type == 'file' ) {
-                    var link_base = json_strings.uri.public_download + '?';
                     var note_text = json_strings.translations.public_file_note;
                 }
 
-                var content = `<div class="public_link_modal">
-                                    <p>`+title+`</p>
-                                    <div class="form-group row">
-                                        <textarea class="input-large form-control" rows="4" readonly>`+public_url+`</textarea>
-                                        <button class="public_link_copy btn btn-primary" data-copy-text="`+public_url+`">
-                                            <i class="fa fa-files-o" aria-hidden="true"></i> `+json_strings.translations.click_to_copy+`
-                                        </button>
-                                    </div>
-                                    <p class="note">` + note_text + `</p>
-                                </div>`;
-                var title 	= json_strings.translations.public_url;
-                $('.modal_title span').html(title);
-                $('.modal_content').html(content);
+                var modal_content = `
+                <div class="public_link_modal">
+                    <p>`+file_title+`</p>
+                    <div class="">
+                        <textarea class="input-large form-control" rows="4" readonly>`+public_url+`</textarea>
+                        <button class="public_link_copy btn btn-primary" data-copy-text="`+public_url+`">
+                            <i class="fa fa-files-o" aria-hidden="true"></i> `+json_strings.translations.click_to_copy+`
+                        </button>
+                    </div>
+                    <p class="note">` + note_text + `</p>
+                </div>`;
+
+                Swal.fire({
+                    title: json_strings.translations.public_url,
+                    html: modal_content,
+                    showCloseButton: false,
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    showClass: {
+                        popup: 'animate__animated animated__fast animate__fadeInUp'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animated__fast animate__fadeOutDown'
+                    }
+                }).then((result) => {
+                });
             });
             
             // Edit file + upload form

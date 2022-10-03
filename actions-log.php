@@ -9,7 +9,6 @@ $active_nav = 'tools';
 
 $page_title = __('Recent activities log', 'cftp_admin');
 
-include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 $current_url = get_form_action_with_existing_parameters(basename(__FILE__));
 
 // Apply the corresponding action to the selected users.
@@ -97,16 +96,34 @@ $params[':limit_number'] = get_option('pagination_results_per_page');
 
 $sql->execute($params);
 $count = $sql->rowCount();
+
+if (!$count) {
+    if (isset($no_results_error)) {
+        switch ($no_results_error) {
+            case 'search':
+                $flash->error(__('Your search keywords returned no results.', 'cftp_admin'));
+                break;
+            case 'filter':
+                $flash->error(__('The filters you selected returned no results.', 'cftp_admin'));
+            break;
+        }
+    } else {
+        $flash->error(__('There are no activities recorded.', 'cftp_admin'));
+    }
+}
+
+include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 <div class="row">
     <div class="col-12">
-        <div class="form_actions_left">
-            <div class="form_actions_limit_results">
+        <div class="row">
+            <div class="col-12 col-md-6">
                 <?php show_search_form('actions-log.php'); ?>
-
-                <form action="actions-log.php" name="actions_filters" method="get" class="form-inline form_filters">
+            </div>
+            <div class="col-12 col-md-6">
+                <form action="actions-log.php" name="actions_filters" method="get" class="row row-cols-lg-auto g-3 align-items-end justify-content-end form_filters mt-4 mt-md-0">
                     <?php echo form_add_existing_parameters(array('activity')); ?>
-                    <div class="form-group row group_float">
+                    <div class="col-4 col-md-12">
                         <label for="activity" class="sr-only"><?php _e('Filter activities', 'cftp_admin'); ?></label>
                         <select class="form-select" name="activity" id="activity">
                             <option value="all"><?php _e('All activities', 'cftp_admin'); ?></option>
@@ -123,165 +140,160 @@ $count = $sql->rowCount();
                             ?>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-sm btn-pslight"><?php _e('Filter', 'cftp_admin'); ?></button>
+                    <div class="col-4 col-md-12">
+                        <button type="submit" class="btn btn-md btn-pslight"><?php _e('Filter', 'cftp_admin'); ?></button>
+                    </div>
                 </form>
             </div>
         </div>
-
-        <form action="<?php echo $current_url; ?>" name="actions_list" method="post" class="form-inline batch_actions">
-            <?php addCsrf(); ?>
-            <div class="form_actions_right">
-                <div class="form_actions">
-                    <div class="form_actions_submit">
-                        <div class="form-group row group_float">
-                            <label class="control-label hidden-xs hidden-sm"><i class="fa fa-check"></i> <?php _e('Activities actions', 'cftp_admin'); ?>:</label>
-                            <select class="form-select" name="action" id="action">
-                                <?php
-                                $actions_options = array(
-                                    'none' => __('Select action', 'cftp_admin'),
-                                    'log_download' => __('Download as csv', 'cftp_admin'),
-                                    'delete' => __('Delete selected', 'cftp_admin'),
-                                    'log_clear' => __('Clear entire log', 'cftp_admin'),
-                                );
-                                foreach ($actions_options as $val => $text) {
-                                ?>
-                                    <option value="<?php echo $val; ?>"><?php echo $text; ?></option>
-                                <?php
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <button type="submit" id="do_action" class="btn btn-sm btn-pslight"><?php _e('Proceed', 'cftp_admin'); ?></button>
-                    </div>
-                </div>
-            </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-12">
-        <div class="form_actions_count">
+
+<form action="<?php echo $current_url; ?>" name="actions_list" method="post" class="form-inline batch_actions">
+    <?php addCsrf(); ?>
+    <div class="row mt-4 form_actions_count">
+        <div class="col-12 col-md-6">
             <p><?php echo sprintf(__('Found %d elements', 'cftp_admin'), (int)$count_for_pagination); ?></p>
         </div>
+        <div class="col-12 col-md-6">
+            <div class="row row-cols-lg-auto g-3 justify-content-end align-content-end">
+                <div class="col-6 col-md-12">
+                    <select class="form-select" name="action" id="action">
+                        <?php
+                        $actions_options = array(
+                            'none' => __('Select action', 'cftp_admin'),
+                            'log_download' => __('Download as csv', 'cftp_admin'),
+                            'delete' => __('Delete selected', 'cftp_admin'),
+                            'log_clear' => __('Clear entire log', 'cftp_admin'),
+                        );
+                        foreach ($actions_options as $val => $text) {
+                        ?>
+                            <option value="<?php echo $val; ?>"><?php echo $text; ?></option>
+                        <?php
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="col-6 col-md-12">
+                    <button type="submit" id="do_action" class="btn btn-md btn-pslight"><?php _e('Proceed', 'cftp_admin'); ?></button>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+
+    <div class="row">
+        <div class="col-12">
+            <?php
+            if ($count > 0) {
+                // Generate the table using the class.
+                $table_attributes = array(
+                    'id' => 'activities_tbl',
+                    'class' => 'footable table',
+                );
+                $table = new \ProjectSend\Classes\TableGenerate($table_attributes);
+
+                $thead_columns = array(
+                    array(
+                        'select_all' => true,
+                        'attributes' => array(
+                            'class' => array('td_checkbox'),
+                        ),
+                    ),
+                    array(
+                        'sortable' => true,
+                        'sort_url' => 'timestamp',
+                        'sort_default' => true,
+                        'content' => __('Date', 'cftp_admin'),
+                    ),
+                    array(
+                        'sortable' => true,
+                        'sort_url' => 'owner_id',
+                        'content' => __('Author', 'cftp_admin'),
+                    ),
+                    array(
+                        'sortable' => true,
+                        'sort_url' => 'action',
+                        'content' => __('Activity', 'cftp_admin'),
+                        'hide' => 'phone',
+                    ),
+                    array(
+                        'content' => '',
+                        'hide' => 'phone',
+                    ),
+                    array(
+                        'content' => '',
+                        'hide' => 'phone',
+                    ),
+                    array(
+                        'content' => '',
+                        'hide' => 'phone',
+                    ),
+                );
+                $table->thead($thead_columns);
+
+                $sql->setFetchMode(PDO::FETCH_ASSOC);
+                while ($log = $sql->fetch()) {
+
+                    $this_action = format_action_log_record($log);
+
+                    $date = format_date($log['timestamp']);
+
+                    $table->addRow();
+
+                    $tbody_cells = array(
+                        array(
+                            'checkbox' => true,
+                            'value' => $log["id"],
+                        ),
+                        array(
+                            'content' => $date,
+                        ),
+                        array(
+                            'content' => (!empty($this_action["part1"])) ? html_output($this_action["part1"]) : '',
+                        ),
+                        array(
+                            'content' => html_output($this_action["action"]),
+                        ),
+                        array(
+                            'content' => (!empty($this_action["part2"])) ? html_output($this_action["part2"]) : '',
+                        ),
+                        array(
+                            'content' => (!empty($this_action["part3"])) ? html_output($this_action["part3"]) : '',
+                        ),
+                        array(
+                            'content' => (!empty($this_action["part4"])) ? html_output($this_action["part4"]) : '',
+                        ),
+                    );
+
+                    foreach ($tbody_cells as $cell) {
+                        $table->addCell($cell);
+                    }
+
+                    $table->end_row();
+                }
+
+                echo $table->render();
+            }
+        ?>
+        </div>
+    </div>
+</form>
+
 <div class="row">
     <div class="col-12">
         <?php
-        if (!$count) {
-            if (isset($no_results_error)) {
-                switch ($no_results_error) {
-                    case 'filter':
-                        $no_results_message = __('The filters you selected returned no results.', 'cftp_admin');
-                        break;
-                }
-            } else {
-                $no_results_message = __('There are no activities recorded.', 'cftp_admin');
+            if (!empty($table)) {
+                // PAGINATION
+                $pagination = new \ProjectSend\Classes\PaginationLayout;
+                echo $pagination->make([
+                    'link' => 'actions-log.php',
+                    'current' => $pagination_page,
+                    'item_count' => $count_for_pagination,
+                ]);
             }
-            echo system_message('danger', $no_results_message);
-        }
-
-        /**
-         * Generate the table using the class.
-         */
-        $table_attributes = array(
-            'id' => 'activities_tbl',
-            'class' => 'footable table',
-        );
-        $table = new \ProjectSend\Classes\TableGenerate($table_attributes);
-
-        $thead_columns = array(
-            array(
-                'select_all' => true,
-                'attributes' => array(
-                    'class' => array('td_checkbox'),
-                ),
-            ),
-            array(
-                'sortable' => true,
-                'sort_url' => 'timestamp',
-                'sort_default' => true,
-                'content' => __('Date', 'cftp_admin'),
-            ),
-            array(
-                'sortable' => true,
-                'sort_url' => 'owner_id',
-                'content' => __('Author', 'cftp_admin'),
-            ),
-            array(
-                'sortable' => true,
-                'sort_url' => 'action',
-                'content' => __('Activity', 'cftp_admin'),
-                'hide' => 'phone',
-            ),
-            array(
-                'content' => '',
-                'hide' => 'phone',
-            ),
-            array(
-                'content' => '',
-                'hide' => 'phone',
-            ),
-            array(
-                'content' => '',
-                'hide' => 'phone',
-            ),
-        );
-        $table->thead($thead_columns);
-
-        $sql->setFetchMode(PDO::FETCH_ASSOC);
-        while ($log = $sql->fetch()) {
-
-            $this_action = format_action_log_record($log);
-
-            $date = format_date($log['timestamp']);
-
-            $table->addRow();
-
-            $tbody_cells = array(
-                array(
-                    'checkbox' => true,
-                    'value' => $log["id"],
-                ),
-                array(
-                    'content' => $date,
-                ),
-                array(
-                    'content' => (!empty($this_action["part1"])) ? html_output($this_action["part1"]) : '',
-                ),
-                array(
-                    'content' => html_output($this_action["action"]),
-                ),
-                array(
-                    'content' => (!empty($this_action["part2"])) ? html_output($this_action["part2"]) : '',
-                ),
-                array(
-                    'content' => (!empty($this_action["part3"])) ? html_output($this_action["part3"]) : '',
-                ),
-                array(
-                    'content' => (!empty($this_action["part4"])) ? html_output($this_action["part4"]) : '',
-                ),
-            );
-
-            foreach ($tbody_cells as $cell) {
-                $table->addCell($cell);
-            }
-
-            $table->end_row();
-        }
-
-        echo $table->render();
-
-        // PAGINATION
-        $pagination = new \ProjectSend\Classes\PaginationLayout;
-        echo $pagination->make([
-            'link' => 'actions-log.php',
-            'current' => $pagination_page,
-            'item_count' => $count_for_pagination,
-        ]);
         ?>
-        </form>
-
     </div>
 </div>
+
 <?php
 include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

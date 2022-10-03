@@ -156,28 +156,30 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
             <p><?php echo sprintf(__('Found %d elements', 'cftp_admin'), (int)$count_for_pagination); ?></p>
         </div>
         <div class="col-12 col-md-6">
-            <div class="row row-cols-lg-auto g-3 justify-content-end align-content-end">
-                <div class="col-6 col-md-12">
-                    <select class="form-select" name="action" id="action">
-                        <?php
-                        $actions_options = array(
-                            'none' => __('Select action', 'cftp_admin'),
-                            'log_download' => __('Download as csv', 'cftp_admin'),
-                            'delete' => __('Delete selected', 'cftp_admin'),
-                            'log_clear' => __('Clear entire log', 'cftp_admin'),
-                        );
-                        foreach ($actions_options as $val => $text) {
-                        ?>
-                            <option value="<?php echo $val; ?>"><?php echo $text; ?></option>
-                        <?php
-                        }
-                        ?>
-                    </select>
+            <?php if ($count > 0) { ?>
+                <div class="row row-cols-lg-auto g-3 justify-content-end align-content-end">
+                    <div class="col-6 col-md-12">
+                        <select class="form-select" name="action" id="action">
+                            <?php
+                            $actions_options = array(
+                                'none' => __('Select action', 'cftp_admin'),
+                                'log_download' => __('Download as csv', 'cftp_admin'),
+                                'delete' => __('Delete selected', 'cftp_admin'),
+                                'log_clear' => __('Clear entire log', 'cftp_admin'),
+                            );
+                            foreach ($actions_options as $val => $text) {
+                            ?>
+                                <option value="<?php echo $val; ?>"><?php echo $text; ?></option>
+                            <?php
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-6 col-md-12">
+                        <button type="submit" id="do_action" class="btn btn-md btn-pslight"><?php _e('Proceed', 'cftp_admin'); ?></button>
+                    </div>
                 </div>
-                <div class="col-6 col-md-12">
-                    <button type="submit" id="do_action" class="btn btn-md btn-pslight"><?php _e('Proceed', 'cftp_admin'); ?></button>
-                </div>
-            </div>
+            <?php } ?>
         </div>
     </div>
 

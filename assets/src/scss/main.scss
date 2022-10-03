@@ -2,9 +2,6 @@
 @import "abstracts/mixins";
 @import "abstracts/animations";
 
-@import "base/base";
-@import "base/headings";
-
 @import "vendors-extensions/footable";
 @import "vendors-extensions/bootstrap";
 @import "vendors-extensions/chosen";
@@ -13,6 +10,10 @@
 @import "vendors-extensions/plupload";
 @import "vendors-extensions/toastr";
 @import "vendors-extensions/datepicker";
+
+@import "base/base";
+@import "base/headings";
+@import "base/forms";
 
 @import "components/side_modal";
 @import "components/password_toggler";
@@ -24,6 +25,7 @@
 
 @import "pages/options";
 @import "pages/public_download";
+@import "pages/template";
 
 // Misc
 @import "parts/login";

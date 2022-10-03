@@ -1,0 +1,69 @@
+// Global
+.field_note {
+    margin:4px 0 15px 0;
+    font-size:.9rem;
+    line-height: 1.2rem;
+    padding-left:6px;
+    font-weight:300;
+    border-left:3px solid #eee;
+
+    a {
+        color:#0094bb;
+        text-decoration:underline;
+    }
+
+    .box-reset-password & {
+        margin-left:0;
+    }
+}
+
+optgroup {
+    padding:1em;
+    border:dotted #999;
+    border-width:1px 0 0 0;
+}
+
+input[type="number"].number_small {
+    width: 80px;
+}
+
+.checkbox_options {
+    width:auto !important;
+}
+
+.options_divide {
+    clear:both;
+    overflow:hidden;
+    margin:25px 0;
+}
+
+.options_column {
+    overflow:hidden;
+}
+
+textarea.textarea_medium {
+    min-height:150px;
+}
+
+textarea.textarea_high {
+    min-height:200px;
+}
+
+    .options_col_left {
+        width:47%;
+        float:left;
+    }
+
+    .options_col_right {
+        width:47%;
+        float:right;
+    }
+
+.preview_button {
+    margin-top:25px;
+    text-align:center;
+
+    button {
+        margin-bottom:10px;
+    }
+}

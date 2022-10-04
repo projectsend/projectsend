@@ -249,6 +249,9 @@ class Download
 		$path_parts = pathinfo($file_location);
 		$file_name = $path_parts['basename'];
 		$file_ext = (!empty($path_parts['extension'])) ? $path_parts['extension'] : null;
+        ini_set('display_errors', 'Off');
+        ini_set('error_reporting', '0');
+        ini_set('display_startup_errors', 'Off');
 
 		// make sure the file exists
 		if (is_file($file_location))
@@ -287,12 +290,13 @@ class Download
 				}
 
 				//figure out download piece from range (if set)
-				list($seek_start, $seek_end) = explode('-', $range, 2);
+                list($seek_start, $seek_end) = explode('-', $range, 2);
 
-				//set start and end based on range (if set), else set defaults
-				//also check for invalid ranges.
-				$seek_end   = (empty($seek_end)) ? ($file_size - 1) : min(abs(intval($seek_end)),($file_size - 1));
-				$seek_start = (empty($seek_start) || $seek_end < abs(intval($seek_start))) ? 0 : max(abs(intval($seek_start)),0);
+                //set start and end based on range (if set), else set defaults
+                //also check for invalid ranges.
+                $seek_end = (empty($seek_end)) ? ($file_size - 1) : min(abs(intval($seek_end)),($file_size - 1));
+                $seek_start = (empty($seek_start) || $seek_end < abs(intval($seek_start))) ? 0 : max(abs(intval($seek_start)),0);
+
 			 
 				//Only send partial content header if downloading a piece of the file (IE workaround)
 				if ($seek_start > 0 || $seek_end < ($file_size - 1))
@@ -302,7 +306,7 @@ class Download
 					header('Content-Length: '.($seek_end - $seek_start + 1));
 				}
 				else
-				  header("Content-Length: $file_size");
+				    header("Content-Length: $file_size");
 
 				header('Accept-Ranges: bytes');
 			

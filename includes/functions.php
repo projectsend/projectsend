@@ -1804,7 +1804,7 @@ function record_new_download($user_id = CURRENT_USER_ID, $file_id = null)
 
     // Anonymous download
     $ip = get_client_ip();
-    $host = $_SERVER['REMOTE_HOST'];
+    $host = (!empty($_SERVER['REMOTE_HOST'])) ? $_SERVER['REMOTE_HOST'] : null;
     switch (get_option('privacy_record_downloads_ip_address')) {
         default:
         case 'all':

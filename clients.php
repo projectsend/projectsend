@@ -8,7 +8,6 @@ require_once 'bootstrap.php';
 $active_nav = 'clients';
 
 $page_title = __('Clients Administration', 'cftp_admin');
-include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 $current_url = get_form_action_with_existing_parameters(basename(__FILE__));
 
@@ -55,142 +54,120 @@ if (isset($_POST['action'])) {
 
     ps_redirect($current_url);
 }
+
+// Query the clients
+$params = [];
+
+$cq = "SELECT id FROM " . TABLE_USERS . " WHERE level='0' AND account_requested='0'";
+
+// Add the search terms
+if (isset($_GET['search']) && !empty($_GET['search'])) {
+    $cq .= " AND (name LIKE :name OR user LIKE :user OR address LIKE :address OR phone LIKE :phone OR email LIKE :email OR contact LIKE :contact)";
+    $no_results_error = 'search';
+
+    $search_terms = '%' . $_GET['search'] . '%';
+    $params[':name'] = $search_terms;
+    $params[':user'] = $search_terms;
+    $params[':address'] = $search_terms;
+    $params[':phone'] = $search_terms;
+    $params[':email'] = $search_terms;
+    $params[':contact'] = $search_terms;
+}
+
+// Add the active filter
+if (isset($_GET['active']) && $_GET['active'] != '2') {
+    $cq .= " AND active = :active";
+    $no_results_error = 'filter';
+
+    $params[':active'] = (int)$_GET['active'];
+}
+
+// Add the order
+$cq .= sql_add_order(TABLE_USERS, 'id', 'desc');
+
+// Pre-query to count the total results
+$count_sql = $dbh->prepare($cq);
+$count_sql->execute($params);
+$count_for_pagination = $count_sql->rowCount();
+
+// Repeat the query but this time, limited by pagination
+$cq .= " LIMIT :limit_start, :limit_number";
+$sql = $dbh->prepare($cq);
+
+$pagination_page = (isset($_GET["page"])) ? $_GET["page"] : 1;
+$pagination_start = ($pagination_page - 1) * get_option('pagination_results_per_page');
+$params[':limit_start'] = $pagination_start;
+$params[':limit_number'] = get_option('pagination_results_per_page');
+
+$sql->execute($params);
+$count = $sql->rowCount();
+
+// Flash errors
+if (!$count) {
+    if (isset($no_results_error)) {
+        switch ($no_results_error) {
+            case 'search':
+                $flash->error(__('Your search keywords returned no results.', 'cftp_admin'));
+                break;
+            case 'filter':
+                $flash->error(__('The filters you selected returned no results.', 'cftp_admin'));
+            break;
+        }
+    } else {
+        $flash->error(__('There are no clients yet.', 'cftp_admin'));
+    }
+}
+
+// Header buttons
+$header_action_buttons = [
+    [
+        'url' => 'clients-add.php',
+        'label' => __('Create new', 'cftp_admin'),
+    ],
+];
+
+// Search + filters bar data
+$search_form_action = 'clients.php';
+$filters_form = [
+    'action' => $current_url,
+    'items' => [
+        'active' => [
+            'current' => (isset($_GET['active'])) ? $_GET['active'] : null,
+            'placeholder' => [
+                'value' => '2',
+                'label' => __('All statuses', 'cftp_admin')
+            ],
+            'options' => [
+                '1' => __('Active', 'cftp_admin'),
+                '0' => __('Inactive', 'cftp_admin'),
+            ],
+        ]
+    ]
+];
+
+// Results count and form actions 
+$elements_found_count = $count_for_pagination;
+$bulk_actions_items = [
+    'none' => __('Select action', 'cftp_admin'),
+    'activate' => __('Activate', 'cftp_admin'),
+    'deactivate' => __('Deactivate', 'cftp_admin'),
+    'delete' => __('Delete', 'cftp_admin'),
+];
+
+// Include layout files
+include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+
+include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
 ?>
-<div class="row">
-    <div class="col-12">
-        <?php
-        // Query the clients
-        $params = [];
+<form action="<?php echo $current_url; ?>" name="clients_list" method="post" class="form-inline batch_actions">
+    <?php addCsrf(); ?>
+    <?php include_once LAYOUT_DIR . DS . 'form-counts-actions.php'; ?>
 
-        $cq = "SELECT id FROM " . TABLE_USERS . " WHERE level='0' AND account_requested='0'";
-
-        // Add the search terms
-        if (isset($_GET['search']) && !empty($_GET['search'])) {
-            $cq .= " AND (name LIKE :name OR user LIKE :user OR address LIKE :address OR phone LIKE :phone OR email LIKE :email OR contact LIKE :contact)";
-            $no_results_error = 'search';
-
-            $search_terms = '%' . $_GET['search'] . '%';
-            $params[':name'] = $search_terms;
-            $params[':user'] = $search_terms;
-            $params[':address'] = $search_terms;
-            $params[':phone'] = $search_terms;
-            $params[':email'] = $search_terms;
-            $params[':contact'] = $search_terms;
-        }
-
-        // Add the active filter
-        if (isset($_GET['active']) && $_GET['active'] != '2') {
-            $cq .= " AND active = :active";
-            $no_results_error = 'filter';
-
-            $params[':active'] = (int)$_GET['active'];
-        }
-
-        // Add the order
-        $cq .= sql_add_order(TABLE_USERS, 'id', 'desc');
-
-        // Pre-query to count the total results
-        $count_sql = $dbh->prepare($cq);
-        $count_sql->execute($params);
-        $count_for_pagination = $count_sql->rowCount();
-
-        // Repeat the query but this time, limited by pagination
-        $cq .= " LIMIT :limit_start, :limit_number";
-        $sql = $dbh->prepare($cq);
-
-        $pagination_page = (isset($_GET["page"])) ? $_GET["page"] : 1;
-        $pagination_start = ($pagination_page - 1) * get_option('pagination_results_per_page');
-        $params[':limit_start'] = $pagination_start;
-        $params[':limit_number'] = get_option('pagination_results_per_page');
-
-        $sql->execute($params);
-        $count = $sql->rowCount();
-        ?>
-        <div class="form_actions_left">
-            <div class="form_actions_limit_results">
-                <?php show_search_form('clients.php'); ?>
-
-                <form action="clients.php" name="clients_filters" method="get" class="form-inline">
-                    <?php echo form_add_existing_parameters(array('active', 'action')); ?>
-                    <div class="form-group row group_float">
-                        <select class="form-select form-control-short" name="active" id="active">
-                            <?php
-                            $status_options = array(
-                                '2' => __('All statuses', 'cftp_admin'),
-                                '1' => __('Active', 'cftp_admin'),
-                                '0' => __('Inactive', 'cftp_admin'),
-                            );
-                            foreach ($status_options as $val => $text) {
-                            ?>
-                                <option value="<?php echo $val; ?>" <?php if (isset($_GET['active']) && $_GET['active'] == $val) { echo 'selected="selected"';} ?>>
-                                    <?php echo $text; ?>
-                                </option>
-                            <?php
-                            }
-                            ?>
-                        </select>
-                    </div>
-                    <button type="submit"  class="btn btn-sm btn-pslight"><?php _e('Filter', 'cftp_admin'); ?></button>
-                </form>
-            </div>
-        </div>
-
-        <form action="<?php echo $current_url; ?>" name="clients_list" method="post" class="form-inline batch_actions">
-            <?php addCsrf(); ?>
-            <div class="form_actions_right">
-                <div class="form_actions">
-                    <div class="form_actions_submit">
-                        <div class="form-group row group_float">
-                            <label class="control-label hidden-xs hidden-sm"><i class="fa fa-check"></i> <?php _e('Selected clients actions', 'cftp_admin'); ?>:</label>
-                            <select class="form-select form-control-short" name="action" id="action">
-                                <?php
-                                $actions_options = array(
-                                    'none' => __('Select action', 'cftp_admin'),
-                                    'activate' => __('Activate', 'cftp_admin'),
-                                    'deactivate' => __('Deactivate', 'cftp_admin'),
-                                    'delete' => __('Delete', 'cftp_admin'),
-                                );
-                                foreach ($actions_options as $val => $text) {
-                                ?>
-                                    <option value="<?php echo $val; ?>"><?php echo $text; ?></option>
-                                <?php
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <button type="submit" id="do_action" class="btn btn-sm btn-pslight"><?php _e('Proceed', 'cftp_admin'); ?></button>
-                    </div>
-                </div>
-            </div>
-            <div class="clear"></div>
-
-            <div class="form_actions_count">
-                <p><?php echo sprintf(__('Found %d elements', 'cftp_admin'), (int)$count_for_pagination); ?></p>
-            </div>
-
-            <div class="clear"></div>
-
+    <div class="row">
+        <div class="col-12">
             <?php
-            if (!$count) {
-                if (isset($no_results_error)) {
-                    switch ($no_results_error) {
-                        case 'search':
-                            $no_results_message = __('Your search keywords returned no results.', 'cftp_admin');
-                            break;
-                        case 'filter':
-                            $no_results_message = __('The filters you selected returned no results.', 'cftp_admin');
-                            break;
-                    }
-                } else {
-                    $no_results_message = __('There are no clients at the moment', 'cftp_admin');
-                }
-                echo system_message('danger', $no_results_message);
-            }
-
             if ($count > 0) {
-                /**
-                 * Generate the table using the class.
-                 */
+                // Generate the table using the class.
                 $table_attributes = array(
                     'id' => 'clients_tbl',
                     'class' => 'footable table',
@@ -384,7 +361,16 @@ if (isset($_POST['action'])) {
                 }
 
                 echo $table->render();
-
+            }
+        ?>
+        </div>
+    </div>
+</form>
+   
+<div class="row">
+    <div class="col-12">
+        <?php
+            if (!empty($table)) {
                 // PAGINATION
                 $pagination = new \ProjectSend\Classes\PaginationLayout;
                 echo $pagination->make([
@@ -393,10 +379,10 @@ if (isset($_POST['action'])) {
                     'item_count' => $count_for_pagination,
                 ]);
             }
-            ?>
-        </form>
+        ?>
     </div>
 </div>
-</div>
+    
 <?php
 include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+    

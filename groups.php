@@ -187,9 +187,7 @@ $bulk_actions_items = [
 // Include layout files
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
-if ($count > 0) {
-    include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
-}
+include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
 ?>
 
 <form action="<?php echo $current_url; ?>" name="groups_list" method="post" class="form-inline batch_actions">

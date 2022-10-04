@@ -93,49 +93,28 @@ if (!$count) {
     $flash->error(__('There are no executions recorded.', 'cftp_admin'));
 }
 
+// Search + filters bar data
+$search_form_action = 'cron-log.php';
+$filters_form = [];
+
+// Results count and form actions 
+$elements_found_count = $count_for_pagination;
+$bulk_actions_items = [
+    'none' => __('Select action', 'cftp_admin'),
+    'cron_log_download' => __('Download as csv', 'cftp_admin'),
+    'delete' => __('Delete selected', 'cftp_admin'),
+    'log_clear' => __('Clear entire log', 'cftp_admin'),
+];
+
+// Include layout files
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+
+include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
 ?>
-<div class="row">
-    <div class="col-12">
-        <div class="col-12 col-md-6">
-            <?php show_search_form('cron-log.php'); ?>
-        </div>
-    </div>
-</div>
 
 <form action="<?php echo $current_url; ?>" name="actions_list" method="post" class="form-inline batch_actions">
     <?php addCsrf(); ?>
-    <div class="row mt-4 form_actions_count">
-        <div class="col-12 col-md-6">
-            <p><?php echo sprintf(__('Found %d elements', 'cftp_admin'), (int)$count_for_pagination); ?></p>
-        </div>
-        <div class="col-12 col-md-6">
-            <?php if ($count > 0) { ?>
-                <div class="row row-cols-lg-auto g-3 justify-content-end align-content-end">
-                    <div class="col-6 col-md-12">
-                        <select class="form-select" name="action" id="action">
-                            <?php
-                            $actions_options = array(
-                                'none' => __('Select action', 'cftp_admin'),
-                                'cron_log_download' => __('Download as csv', 'cftp_admin'),
-                                'delete' => __('Delete selected', 'cftp_admin'),
-                                'log_clear' => __('Clear entire log', 'cftp_admin'),
-                            );
-                            foreach ($actions_options as $val => $text) {
-                            ?>
-                                <option value="<?php echo $val; ?>"><?php echo $text; ?></option>
-                            <?php
-                            }
-                            ?>
-                        </select>
-                    </div>
-                    <div class="col-6 col-md-12">
-                        <button type="submit" id="do_action" class="btn btn-md btn-pslight"><?php _e('Proceed', 'cftp_admin'); ?></button>
-                    </div>
-                </div>
-            <?php } ?>
-        </div>
-    </div>
+    <?php include_once LAYOUT_DIR . DS . 'form-counts-actions.php'; ?>
 
     <div class="row">
         <div class="col-12">

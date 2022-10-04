@@ -19,6 +19,64 @@ function show_search_form( $action = '' )
 <?php
 }
 
+function show_filters_form($arguments)
+{
+    if (empty($arguments)) {
+        return;
+    }
+
+    $ignore = (!empty($arguments['ignore_form_parameters'])) ? $arguments['ignore_form_parameters'] : array_keys($arguments['items']);
+?>
+    <form action="<?php echo $arguments['action']; ?>" name="actions_filters" method="get" class="row row-cols-lg-auto g-3 align-items-end justify-content-end form_filters mt-4 mt-md-0">
+        <?php echo form_add_existing_parameters($ignore); ?>
+        <?php foreach ($arguments['items'] as $name => $data) { ?>
+            <div class="col-4 col-md-12">
+                <select class="form-select" name="<?php echo $name; ?>" id="<?php echo $name; ?>">
+                    <?php
+                        if (!empty($data['placeholder'])) {
+                    ?>
+                            <option value="<?php echo $data['placeholder']['value']; ?>"><?php echo $data['placeholder']['label']; ?></option>
+                    <?php
+                        }
+
+                        foreach ($data['options'] as $value => $name) {
+                    ?>
+                            <option value="<?php echo $value; ?>" <?php if (isset($data['current']) && $data['current'] == $value) { echo 'selected="selected"'; } ?>>
+                                <?php echo $name; ?>
+                            </option>
+                    <?php
+                        }
+                    ?>
+                </select>
+            </div>
+        <?php } ?>
+        <div class="col-4 col-md-12">
+            <button type="submit" class="btn btn-md btn-pslight"><?php _e('Filter', 'cftp_admin'); ?></button>
+        </div>
+    </form>
+<?php
+}
+
+function show_actions_form($actions)
+{
+?>
+    <div class="col-6 col-md-12">
+        <select class="form-select" name="action" id="action">
+            <?php
+                foreach ($actions as $value => $label) {
+            ?>
+                    <option value="<?php echo $value; ?>"><?php echo $label; ?></option>
+            <?php
+                }
+            ?>
+        </select>
+    </div>
+    <div class="col-6 col-md-12">
+        <button type="submit" id="do_action" class="btn btn-md btn-pslight"><?php _e('Proceed', 'cftp_admin'); ?></button>
+    </div>
+<?php
+}
+
 /**
  * Add any existing $_GET parameters as hidden fields on a form
  */

@@ -356,151 +356,87 @@ if (!$count) {
     }
 }
 
+// Header buttons
 if (current_user_can_upload()) {
-    $header_button_add = [
-        'url' => 'upload.php',
-        'label' => __('Upload files', 'cftp_admin'),
+    $header_action_buttons = [
+        [
+            'url' => 'upload.php',
+            'label' => __('Upload files', 'cftp_admin'),
+        ],
     ];
 }
 
-// Header
+// Search + filters bar data
+$search_form_action = 'manage-files.php';
+if (CURRENT_USER_LEVEL != '0') {
+    $filters_form = [
+        'action' => $current_url,
+        'ignore_form_parameters' => ['hidden', 'action', 'uploader', 'assigned'],
+    ];
+    // Filters are not available for clients
+    if ($results_type == 'global') {
+        $filters_form['items'] = [
+            'uploader' => [
+                'current' => (isset($_GET['uploader'])) ? $_GET['uploader'] : null,
+                'options' => $filter_options_uploader,
+            ],
+            'assigned' => [
+                'current' => (isset($_GET['assigned'])) ? $_GET['assigned'] : null,
+                'options' => $filter_options_assigned,
+            ],
+        ];
+    } else {
+        // Filters available when results are only those of a group or client
+        $filters_form['items'] = [
+            'hidden' => [
+                'current' => (isset($_GET['hidden'])) ? $_GET['hidden'] : null,
+                'options' => [
+                    '2' => __('All statuses', 'cftp_admin'),
+                    '0' => __('Visible', 'cftp_admin'),
+                    '1' => __('Hidden', 'cftp_admin'),
+                ],
+            ],
+        ];
+    }
+}
+
+// Results count and form actions 
+$elements_found_count = $count_for_pagination;
+$bulk_actions_items = [
+    'none' => __('Select action', 'cftp_admin'),
+    'edit' => __('Edit', 'cftp_admin'),
+];
+if (CURRENT_USER_LEVEL != '0') {
+    $bulk_actions_items['zip'] = __('Download zipped', 'cftp_admin');
+    if (!isset($search_on)) {
+        $bulk_actions_items['hide_everyone'] = __('Set to hidden from everyone already assigned', 'cftp_admin');
+        $bulk_actions_items['show_everyone'] = __('Set to visible to everyone already assigned', 'cftp_admin');
+    }
+}
+if (CURRENT_USER_LEVEL != '0' && isset($search_on)) {
+    $bulk_actions_items['hide'] = __('Set to hidden', 'cftp_admin');
+    $bulk_actions_items['show'] = __('Set to visible', 'cftp_admin');
+    $bulk_actions_items['unassign'] = __('Unassign', 'cftp_admin');
+} else {
+    if (CURRENT_USER_LEVEL != '0' || (CURRENT_USER_LEVEL == '0' && get_option('clients_can_delete_own_files') == '1'))
+        $bulk_actions_items['delete'] = __('Delete', 'cftp_admin');
+}
+
+
+// Include layout files
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+
+include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
 ?>
-<div class="row">
-    <div class="col-12">
-        <div class="row">
-            <div class="col-12 col-md-6">
-                <?php show_search_form('manage-files.php'); ?>
-            </div>
-            <div class="col-12 col-md-6">
-                <?php
-                    if (CURRENT_USER_LEVEL != '0' && $results_type == 'global') {
-                ?>
-                    <form action="manage-files.php" name="files_filters" method="get" class="row row-cols-lg-auto g-3 align-items-end justify-content-end form_filters mt-4 mt-md-0">
-                        <?php echo form_add_existing_parameters(array('hidden', 'action', 'uploader', 'assigned')); ?>
-                        <div class="col-4 col-md-12">
-                            <select class="form-select form-control-short" name="uploader" id="uploader">
-                                <?php
-                                foreach ($filter_options_uploader as $val => $text) {
-                                ?>
-                                    <option value="<?php echo $val; ?>" <?php if (isset($_GET['uploader']) && $_GET['uploader'] == $val) { echo 'selected="selected"';} ?>>
-                                        <?php echo $text; ?>
-                                    </option>
-                                <?php
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="col-4 col-md-12">
-                            <select class="form-select form-control-short" name="assigned" id="assigned">
-                                <?php
-                                foreach ($filter_options_assigned as $val => $text) {
-                                ?>
-                                    <option value="<?php echo $val; ?>" <?php if (isset($_GET['assigned']) && $_GET['assigned'] == $val) { echo 'selected="selected"'; } ?>>
-                                        <?php echo $text; ?>
-                                    </option>
-                                <?php
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="col-4 col-md-12">
-                            <button type="submit" class="btn btn-md btn-pslight"><?php _e('Filter', 'cftp_admin'); ?></button>
-                        </div>
-                    </form>
-                <?php
-                }
-    
-                /** Filters are not available for clients */
-                if (CURRENT_USER_LEVEL != '0' && $results_type != 'global') {
-                ?>
-                    <form action="manage-files.php" name="files_filters" method="get" class="row row-cols-lg-auto g-3 align-items-end justify-content-end form_filters">
-                        <?php echo form_add_existing_parameters(array('hidden', 'action', 'uploader')); ?>
-                        <div class="form-group row group_float">
-                            <select class="form-select form-control-short" name="hidden" id="hidden">
-                                <?php
-                                $status_options = array(
-                                    '2' => __('All statuses', 'cftp_admin'),
-                                    '0' => __('Visible', 'cftp_admin'),
-                                    '1' => __('Hidden', 'cftp_admin'),
-                                );
-    
-                                foreach ($status_options as $val => $text) {
-                                ?>
-                                    <option value="<?php echo $val; ?>" <?php if (isset($_GET['hidden']) && $_GET['hidden'] == $val) { echo 'selected="selected"'; } ?>>
-                                        <?php echo $text; ?>
-                                    </option>
-                                <?php
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-md btn-pslight"><?php _e('Filter', 'cftp_admin'); ?></button>
-                        </div>
-                    </form>
-                <?php
-                }
-                ?>
-            </div>
-        </div>
-    </div>
-</div>
 
 <form action="<?php echo $current_url; ?>" name="files_list" method="post" class="batch_actions">
     <?php addCsrf(); ?>
-    <div class="row mt-4 form_actions_count">
-        <div class="col-12 col-md-6">
-            <p><?php echo sprintf(__('Found %d elements', 'cftp_admin'), (int)$count_for_pagination); ?></p>
-        </div>
-        <div class="col-12 col-md-6">
-            <div class="row row-cols-lg-auto g-3 justify-content-end align-content-end">
-                <?php if (isset($search_on)) { ?>
-                    <div class="col-6 col-md-12">
-                        <input type="hidden" name="modify_type" id="modify_type" value="<?php echo $search_on; ?>" />
-                        <input type="hidden" name="modify_id" id="modify_id" value="<?php echo $this_id; ?>" />
-                    </div>
-                <?php } ?>
-                <div class="col-6 col-md-12">
-                    <select class="form-select form-control-short" name="action" id="action">
-                            <?php
-                            $actions_options = array(
-                                'none' => __('Select action', 'cftp_admin'),
-                                'edit' => __('Edit', 'cftp_admin'),
-                            );
+    <?php include_once LAYOUT_DIR . DS . 'form-counts-actions.php'; ?>
 
-                            if (CURRENT_USER_LEVEL != '0') {
-                                $actions_options['zip'] = __('Download zipped', 'cftp_admin');
-                                if (!isset($search_on)) {
-                                    $actions_options['hide_everyone'] = __('Set to hidden from everyone already assigned', 'cftp_admin');
-                                    $actions_options['show_everyone'] = __('Set to visible to everyone already assigned', 'cftp_admin');
-                                }
-                            }
-
-                            /** Options only available when viewing a client/group files list */
-                            if (CURRENT_USER_LEVEL != '0' && isset($search_on)) {
-                                $actions_options['hide'] = __('Set to hidden', 'cftp_admin');
-                                $actions_options['show'] = __('Set to visible', 'cftp_admin');
-                                $actions_options['unassign'] = __('Unassign', 'cftp_admin');
-                            } else {
-                                if (CURRENT_USER_LEVEL != '0' || (CURRENT_USER_LEVEL == '0' && get_option('clients_can_delete_own_files') == '1'))
-                                    $actions_options['delete'] = __('Delete', 'cftp_admin');
-                            }
-
-                            foreach ($actions_options as $val => $text) {
-                            ?>
-                                <option value="<?php echo $val; ?>"><?php echo $text; ?></option>
-                            <?php
-                            }
-                            ?>
-                        </select>
-                </div>
-                <div class="col-6 col-md-12">
-                    <button type="submit" id="do_action" class="btn btn-md btn-pslight"><?php _e('Proceed', 'cftp_admin'); ?></button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <?php if (isset($search_on)) { ?>
+        <input type="hidden" name="modify_type" id="modify_type" value="<?php echo $search_on; ?>" />
+        <input type="hidden" name="modify_id" id="modify_id" value="<?php echo $this_id; ?>" />
+    <?php } ?>
 
     <div class="row">
         <div class="col-12">

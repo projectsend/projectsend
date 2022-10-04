@@ -112,76 +112,42 @@ if (!$count) {
     }
 }
 
+// Search + filters bar data
+$search_form_action = 'actions-log.php';
+$logger = new \ProjectSend\Classes\ActionsLog;
+$activities = $logger->getActivitiesReferences();
+$filters_form = [
+    'action' => 'actions-log.php',
+    'items' => [
+        'activity' => [
+            'current' => (isset($_GET['activity'])) ? $_GET['activity'] : null,
+            'placeholder' => [
+                'value' => 'all',
+                'label' => __('All activities', 'cftp_admin')
+            ],
+            'options' => $activities,
+        ]
+    ]
+];
+
+// Results count and form actions 
+$elements_found_count = $count_for_pagination;
+$bulk_actions_items = [
+    'none' => __('Select action', 'cftp_admin'),
+    'log_download' => __('Download as csv', 'cftp_admin'),
+    'delete' => __('Delete selected', 'cftp_admin'),
+    'log_clear' => __('Clear entire log', 'cftp_admin'),
+];
+
+// Include layout files
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+
+include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
 ?>
-<div class="row">
-    <div class="col-12">
-        <div class="row">
-            <div class="col-12 col-md-6">
-                <?php show_search_form('actions-log.php'); ?>
-            </div>
-            <div class="col-12 col-md-6">
-                <form action="actions-log.php" name="actions_filters" method="get" class="row row-cols-lg-auto g-3 align-items-end justify-content-end form_filters mt-4 mt-md-0">
-                    <?php echo form_add_existing_parameters(array('activity')); ?>
-                    <div class="col-4 col-md-12">
-                        <label for="activity" class="sr-only"><?php _e('Filter activities', 'cftp_admin'); ?></label>
-                        <select class="form-select" name="activity" id="activity">
-                            <option value="all"><?php _e('All activities', 'cftp_admin'); ?></option>
-                            <?php
-                            $logger = new \ProjectSend\Classes\ActionsLog;
-                            $activities_references = $logger->getActivitiesReferences();
-                            foreach ($activities_references as $action_number => $name) {
-                            ?>
-                                <option value="<?php echo $action_number; ?>" <?php if (isset($_GET['activity']) && $_GET['activity'] == $action_number) { echo 'selected="selected"'; } ?>>
-                                    <?php echo $name; ?>
-                                </option>
-                            <?php
-                            }
-                            ?>
-                        </select>
-                    </div>
-                    <div class="col-4 col-md-12">
-                        <button type="submit" class="btn btn-md btn-pslight"><?php _e('Filter', 'cftp_admin'); ?></button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 <form action="<?php echo $current_url; ?>" name="actions_list" method="post" class="form-inline batch_actions">
     <?php addCsrf(); ?>
-    <div class="row mt-4 form_actions_count">
-        <div class="col-12 col-md-6">
-            <p><?php echo sprintf(__('Found %d elements', 'cftp_admin'), (int)$count_for_pagination); ?></p>
-        </div>
-        <div class="col-12 col-md-6">
-            <?php if ($count > 0) { ?>
-                <div class="row row-cols-lg-auto g-3 justify-content-end align-content-end">
-                    <div class="col-6 col-md-12">
-                        <select class="form-select" name="action" id="action">
-                            <?php
-                            $actions_options = array(
-                                'none' => __('Select action', 'cftp_admin'),
-                                'log_download' => __('Download as csv', 'cftp_admin'),
-                                'delete' => __('Delete selected', 'cftp_admin'),
-                                'log_clear' => __('Clear entire log', 'cftp_admin'),
-                            );
-                            foreach ($actions_options as $val => $text) {
-                            ?>
-                                <option value="<?php echo $val; ?>"><?php echo $text; ?></option>
-                            <?php
-                            }
-                            ?>
-                        </select>
-                    </div>
-                    <div class="col-6 col-md-12">
-                        <button type="submit" id="do_action" class="btn btn-md btn-pslight"><?php _e('Proceed', 'cftp_admin'); ?></button>
-                    </div>
-                </div>
-            <?php } ?>
-        </div>
-    </div>
+    <?php include_once LAYOUT_DIR . DS . 'form-counts-actions.php'; ?>
 
     <div class="row">
         <div class="col-12">

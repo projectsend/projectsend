@@ -17,6 +17,10 @@
     }
 }
 
+.form-control[readonly] {
+    background-color: #e9ecef;
+}
+
 optgroup {
     padding:1em;
     border:dotted #999;

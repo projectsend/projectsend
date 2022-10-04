@@ -3,7 +3,7 @@
 
     admin.parts.downloadCookieHandler = function () {
         $(document).ready(function() {
-                /**
+            /**
              * CLOSE THE ZIP DOWNLOAD MODAL
              * Solution to close the modal. Suggested by remez, based on
              * https://stackoverflow.com/questions/29532788/how-to-display-a-loading-animation-while-file-is-generated-for-download

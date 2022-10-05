@@ -13,20 +13,6 @@ $page_id = 'clients_accounts_requests';
 $page_title = __('Account requests', 'cftp_admin');
 
 // Apply the corresponding action to the selected accounts.
-if (isset($_GET['action'])) {
-    switch ($_GET['action']) {
-        case 'apply':
-            $flash->success(__('The selected actions were applied.', 'cftp_admin'));
-            break;
-        case 'delete':
-            $flash->success(__('The selected clients were deleted.', 'cftp_admin'));
-            break;
-    }
-
-    ps_redirect($this_page);
-}
-
-// Apply the corresponding action to the selected clients.
 if (!empty($_POST)) {
     // Continue only if 1 or more clients were selected.
     if (!empty($_POST['accounts'])) {
@@ -98,6 +84,7 @@ if (!empty($_POST)) {
                         'memberships' => $processed_requests,
                     ]);
                 }
+                $flash->success(__('The selected clients were deleted.', 'cftp_admin'));
                 break;
             case 'delete':
                 foreach ($selected_clients as $client) {
@@ -105,16 +92,16 @@ if (!empty($_POST)) {
                     $this_client->setId($client['id']);
                     $delete_client = $this_client->delete();
                 }
+                $flash->success(__('The selected clients were deleted.', 'cftp_admin'));
                 break;
             default:
                 break;
         }
 
         // Redirect after processing
-        $action_redirect = html_output($_POST['action']);
-        $location = BASE_URI . 'clients-requests.php?action=' . $action_redirect;
+        $location = BASE_URI . 'clients-requests.php';
         if (!empty($_POST['denied']) && $_POST['denied'] == 1) {
-            $location .= '&denied=1';
+            $location .= '?denied=1';
         }
         ps_redirect($location);
     } else {

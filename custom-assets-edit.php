@@ -6,12 +6,12 @@
 $allowed_levels = array(9);
 require_once 'bootstrap.php';
 
-$asset = new \ProjectSend\Classes\CustomAsset();
 $asset_id = (int)$_GET['id'];
 if (!is_integer($asset_id)) {
     exit_with_error_code(403);
 }
 
+$asset = new \ProjectSend\Classes\CustomAsset();
 $load_asset = $asset->get($asset_id);
 if (!$load_asset) {
     exit_with_error_code(403);

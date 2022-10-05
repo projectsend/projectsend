@@ -32,8 +32,8 @@ function redirect_if_not_logged_in()
         $redirect = true;
     } else {
         if (isset($_SESSION['user_id'])) {
-            $user = new \ProjectSend\Classes\Users();
-            if (!$user->get($_SESSION['user_id'])) {
+            $user = new \ProjectSend\Classes\Users($_SESSION['user_id']);
+            if (!$user->userExists()) {
                 $redirect = true;
             }
         }
@@ -49,8 +49,8 @@ function redirect_if_not_logged_in()
 function user_is_logged_in()
 {
     if (isset($_SESSION['user_id'])) {
-        $user = new \ProjectSend\Classes\Users();
-        if ($user->get($_SESSION['user_id'])) {
+        $user = new \ProjectSend\Classes\Users($_SESSION['user_id']);
+        if ($user->userExists()) {
             return true;
         }
     }
@@ -73,8 +73,7 @@ function redirect_if_role_not_allowed($allowed_levels = null) {
 		 * $allowed_levels in defined on each page before the inclusion of header.php
         */
         if (user_is_logged_in()) {
-            $user = new \ProjectSend\Classes\Users();
-            $user->get($_SESSION['user_id']);
+            $user = new \ProjectSend\Classes\Users($_SESSION['user_id']);
             $user_data = $user->getProperties();
 
             if (isset($user_data['role']) && in_array($user_data['role'], $allowed_levels)) {
@@ -97,8 +96,7 @@ function redirect_if_role_not_allowed($allowed_levels = null) {
 function password_change_required()
 {
     global $flash;
-    $session_user = new \ProjectSend\Classes\Users;
-    $session_user->get(CURRENT_USER_ID);
+    $session_user = new \ProjectSend\Classes\Users(CURRENT_USER_ID);
 
     if ($session_user->requiresPasswordChange()) {
         $url = (CURRENT_USER_LEVEL == 0) ? 'clients-edit.php' : 'users-edit.php';
@@ -113,8 +111,7 @@ function password_change_required()
 
 function user_can_upload_any_file_type($user_id = CURRENT_USER_ID)
 {
-    $user = new \ProjectSend\Classes\Users;
-    $user->get($user_id);
+    $user = new \ProjectSend\Classes\Users($user_id);
     $properties = $user->getProperties();
 
     if (!empty(get_option('file_types_limit_to'))) {
@@ -143,8 +140,7 @@ function current_user_can_view_files_list()
         return true;
     }
 
-    $user = new \ProjectSend\Classes\Users();
-    $user->get(CURRENT_USER_ID);
+    $user = new \ProjectSend\Classes\Users(CURRENT_USER_ID);
     $props = $user->getProperties();
 
     if ( $props['active'] == '0' ) {

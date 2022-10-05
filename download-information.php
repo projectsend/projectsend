@@ -86,11 +86,10 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                     $sql->execute($params);
 
                     // Generate the table using the class.
-                    $table_attributes = array(
+                    $table = new \ProjectSend\Classes\Layout\Table([
                         'id' => 'download_info_tbl',
                         'class' => 'footable table',
-                    );
-                    $table = new \ProjectSend\Classes\TableGenerate($table_attributes);
+                    ]);
 
                     $thead_columns = array(
                         array(
@@ -162,8 +161,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                         // Downloader
                         $downloader_row = null;
                         if (!empty($row['user_id'])) {
-                            $user = new \ProjectSend\Classes\Users;
-                            $user->get($row['user_id']);
+                            $user = new \ProjectSend\Classes\Users($row['user_id']);
                             if ($user->exists) {
                                 if ($user->isClient()) {
                                     $link = BASE_URI . 'clients-edit.php?id=' . $user->id;
@@ -206,7 +204,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                     echo $table->render();
 
                     // PAGINATION
-                    $pagination = new \ProjectSend\Classes\PaginationLayout;
+                    $pagination = new \ProjectSend\Classes\Layout\Pagination;
                     echo $pagination->make([
                             'link' => 'download-information.php',
                         'current' => $pagination_page,

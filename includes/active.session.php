@@ -22,8 +22,7 @@ extend_session(); // update last activity time stamp
  * Global information on the current account to use across the system.
  */
 if (!empty($_SESSION['user_id'])) {
-    $session_user = new \ProjectSend\Classes\Users;
-    $session_user->get($_SESSION['user_id']);
+    $session_user = new \ProjectSend\Classes\Users($_SESSION['user_id']);
     if ($session_user->userExists()) {
         /**
          * Automatic log out if account is deactivated while session is on.

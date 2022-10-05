@@ -197,11 +197,10 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
             <?php
             if ($count > 0) {
                 // Generate the table using the class.
-                $table_attributes = array(
+                $table = new \ProjectSend\Classes\Layout\Table([
                     'id' => 'groups_tbl',
                     'class' => 'footable table',
-                );
-                $table = new \ProjectSend\Classes\TableGenerate($table_attributes);
+                ]);
 
                 $thead_columns = array(
                     array(
@@ -261,8 +260,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                 while ($row = $sql->fetch()) {
                     $table->addRow();
 
-                    $group = new \ProjectSend\Classes\Groups();
-                    $group->get($row["id"]);
+                    $group = new \ProjectSend\Classes\Groups($row["id"]);
 
                     // Button class for the manage files link
                     if (!empty($group->files)) {
@@ -341,7 +339,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
         <?php
             if (!empty($table)) {
                 // PAGINATION
-                $pagination = new \ProjectSend\Classes\PaginationLayout;
+                $pagination = new \ProjectSend\Classes\Layout\Pagination;
                 echo $pagination->make([
                     'link' => 'groups.php',
                     'current' => $pagination_page,

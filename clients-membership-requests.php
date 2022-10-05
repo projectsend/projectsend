@@ -240,11 +240,10 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                 $get_requests = $get_requests->getMembershipRequests($arguments);
 
                 // Generate the table using the class.
-                $table_attributes = array(
+                $table = new \ProjectSend\Classes\Layout\Table([
                     'id' => 'clients_tbl',
                     'class' => 'footable table',
-                );
-                $table = new \ProjectSend\Classes\TableGenerate($table_attributes);
+                ]);
 
                 $thead_columns = array(
                     array(
@@ -355,7 +354,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                 echo $table->render();
 
                 // PAGINATION
-                $pagination = new \ProjectSend\Classes\PaginationLayout;
+                $pagination = new \ProjectSend\Classes\Layout\Pagination;
                 echo $pagination->make([
                     'link' => $this_page,
                     'current' => $pagination_page,

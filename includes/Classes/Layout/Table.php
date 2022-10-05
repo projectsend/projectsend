@@ -3,9 +3,9 @@
  * Class that generates a table element.
  */
 
-namespace ProjectSend\Classes;
+namespace ProjectSend\Classes\Layout;
 
-class TableGenerate
+class Table
 {
     function __construct($attributes)
     {

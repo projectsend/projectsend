@@ -28,8 +28,7 @@ if (isset($_POST['action'])) {
                 switch ($_POST['action']) {
                     case 'delete':
                         foreach ($selected_categories as $category_id) {
-                            $category = new \ProjectSend\Classes\Categories();
-                            $category->get($category_id);
+                            $category = new \ProjectSend\Classes\Categories($category_id);
                             $delete_category = $category->delete();
                         }
 
@@ -160,11 +159,10 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                     if ($get_categories['count'] > 0) {
 
                         // Generate the table using the class.
-                        $table_attributes = array(
+                        $table = new \ProjectSend\Classes\Layout\Table([
                             'id' => 'categories_tbl',
                             'class' => 'footable table',
-                        );
-                        $table = new \ProjectSend\Classes\TableGenerate($table_attributes);
+                        ]);
 
                         $thead_columns = array(
                             array(
@@ -297,7 +295,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                 <?php
                     if ($get_categories['count'] > 0) {
                         // PAGINATION
-                        $pagination = new \ProjectSend\Classes\PaginationLayout;
+                        $pagination = new \ProjectSend\Classes\Layout\Pagination;
                         echo $pagination->make([
                             'link' => basename($_SERVER['SCRIPT_FILENAME']),
                             'current' => $params['page'],

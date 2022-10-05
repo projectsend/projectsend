@@ -5,8 +5,7 @@
         <?php
             $i = 1;
 
-            $me = new \ProjectSend\Classes\Users();
-            $me->get(CURRENT_USER_ID);
+            $me = new \ProjectSend\Classes\Users(CURRENT_USER_ID);
             if ($me->shouldLimitUploadTo() && !empty($me->limit_upload_to)) {
                 $clients = file_editor_get_clients_by_ids($me->limit_upload_to);
                 $groups = file_editor_get_groups_by_members($me->limit_upload_to);
@@ -18,8 +17,7 @@
 
             foreach ($editable as $file_id) {
                 clearstatcache();
-                $file = new ProjectSend\Classes\Files;
-                $file->get($file_id);
+                $file = new ProjectSend\Classes\Files($file_id);
                 if ($file->recordExists()) {
                     if ($file->existsOnDisk()) {
             ?>

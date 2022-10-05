@@ -21,8 +21,8 @@ if (isset($_POST['action'])) {
         switch ($_POST['action']) {
             case 'activate':
                 foreach ($selected_users as $work_user) {
-                    $this_user = new \ProjectSend\Classes\Users();
-                    if ($this_user->get($work_user)) {
+                    $this_user = new \ProjectSend\Classes\Users($work_user);
+                    if ($this_user->userExists()) {
                         $hide_user = $this_user->setActiveStatus(1);
                     }
                 }
@@ -33,8 +33,8 @@ if (isset($_POST['action'])) {
                 foreach ($selected_users as $work_user) {
                     // A user should not be able to deactivate himself
                     if ($work_user != CURRENT_USER_ID) {
-                        $this_user = new \ProjectSend\Classes\Users;
-                        if ($this_user->get($work_user)) {
+                        $this_user = new \ProjectSend\Classes\Users($work_user);
+                        if ($this_user->userExists()) {
                             $hide_user = $this_user->setActiveStatus(0);
                         }
                         $affected_users++;
@@ -51,8 +51,8 @@ if (isset($_POST['action'])) {
                 foreach ($selected_users as $work_user) {
                     // A user should not be able to delete himself
                     if ($work_user != CURRENT_USER_ID) {
-                        $this_user = new \ProjectSend\Classes\Users();
-                        if ($this_user->get($work_user)) {
+                        $this_user = new \ProjectSend\Classes\Users($work_user);
+                        if ($this_user->userExists()) {
                             $delete_user = $this_user->delete();
                             $affected_users++;
                         }
@@ -202,11 +202,10 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
     <?php
         if ($count > 0) {
             // Generate the table using the class.
-            $table_attributes = array(
+            $table = new \ProjectSend\Classes\Layout\Table([
                 'id' => 'users_tbl',
                 'class' => 'footable table',
-            );
-            $table = new \ProjectSend\Classes\TableGenerate($table_attributes);
+            ]);
 
             $thead_columns = array(
                 array(
@@ -267,8 +266,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
             while ($row = $sql->fetch()) {
                 $table->addRow();
 
-                $user = new \ProjectSend\Classes\Users();
-                $user->get($row["id"]);
+                $user = new \ProjectSend\Classes\Users($row["id"]);
 
                 // Role name
                 switch ($user->role) {
@@ -345,7 +343,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
         <?php
             if (!empty($table)) {
                 // PAGINATION
-                $pagination = new \ProjectSend\Classes\PaginationLayout;
+                $pagination = new \ProjectSend\Classes\Layout\Pagination;
                 echo $pagination->make([
                     'link' => 'users.php',
                     'current' => $pagination_page,

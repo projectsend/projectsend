@@ -19,8 +19,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
     $can_download = false;
     $can_view = false; // Can only view information about the file, not download it
 
-    $file = new \ProjectSend\Classes\Files;
-    $file->get($file_id);
+    $file = new \ProjectSend\Classes\Files($file_id);
 
     if ($file->public_token != $token || $file->expired == true) {
         exit_with_error_code(403);

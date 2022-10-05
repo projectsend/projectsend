@@ -27,8 +27,7 @@ $window_title = __('Gallery','cftp_template_gallery');
  * Filter files by type, only save images.
 */
 foreach ($available_files as $file_id) {
-    $file = new \ProjectSend\Classes\Files();
-    $file->get($file_id);
+    $file = new \ProjectSend\Classes\Files($file_id);
     if ($file->isImage()) {
 		$img_files[] = $file;
 	}

@@ -7,9 +7,6 @@ require_once 'bootstrap.php';
 
 $active_nav = 'clients';
 
-// Create the object
-$edit_client = new \ProjectSend\Classes\Users();
-
 // Check if the id parameter is on the URI.
 if (!isset($_GET['id'])) {
     exit_with_error_code(403);
@@ -20,7 +17,9 @@ if (!client_exists_id($client_id)) {
     exit_with_error_code(403);
 }
 
-$edit_client->get($client_id);
+// Create the object
+$edit_client = new \ProjectSend\Classes\Users($client_id);
+
 $client_arguments = $edit_client->getProperties();
 
 // Get groups where this client is member

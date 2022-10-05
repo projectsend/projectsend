@@ -1,7 +1,7 @@
 <?php
-namespace ProjectSend\Classes;
+namespace ProjectSend\Classes\Layout;
 
-class PaginationLayout {
+class Pagination {
     private $template;
 
     public function __construct()

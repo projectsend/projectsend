@@ -46,8 +46,7 @@ if ($_POST) {
 
             $login = json_decode($auth->authenticate($_POST['username'], $_POST['password']));
             if ($login->status == 'success') {
-                $user = new \ProjectSend\Classes\Users;
-                $user->get($login->user_id);
+                $user = new \ProjectSend\Classes\Users($login->user_id);
 
                 ps_redirect($login->location);
             } else {
@@ -74,8 +73,7 @@ if ($_POST) {
 
             $login = json_decode($auth->validate2faRequest($_POST['token'], (int)$code));
             if ($login->status == 'success') {
-                $user = new \ProjectSend\Classes\Users;
-                $user->get($login->user_id);
+                $user = new \ProjectSend\Classes\Users($login->user_id);
                 ps_redirect($login->location);
             } else {
                 $flash->error($auth->getError());

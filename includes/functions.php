@@ -1861,8 +1861,7 @@ function user_can_download_file($user_id = CURRENT_USER_ID, $file_id = null)
     }
 
     // Get the file
-    $file = new \ProjectSend\Classes\Files();
-    $file->get($file_id);
+    $file = new \ProjectSend\Classes\Files($file_id);
 
     // Get groups
     $get_groups = new \ProjectSend\Classes\GroupsMemberships();

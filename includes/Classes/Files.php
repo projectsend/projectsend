@@ -921,8 +921,7 @@ class Files
 
         // Clean new ids based on user permissions
         if (CURRENT_USER_LEVEL == 7) {
-            $get_user = new \ProjectSend\Classes\Users();
-            $get_user->get(CURRENT_USER_ID);
+            $get_user = new \ProjectSend\Classes\Users(CURRENT_USER_ID);
             if (!empty($get_user->limit_upload_to)) {
                 // If client ID is not allowed, remove from array
                 foreach ($new_values['clients'] as $key => $client_id) {
@@ -981,8 +980,7 @@ class Files
 
         // Response
         foreach ($added_groups as $group_id) {
-            $group = new \ProjectSend\Classes\Groups();
-            $group->get($group_id);
+            $group = new \ProjectSend\Classes\Groups($group_id);
             if (!empty($group->members)) {
                 foreach ($group->members as $user_id) {
                     if (!in_array($user_id, $added_clients)) {
@@ -1052,15 +1050,13 @@ class Files
             case 'client':
                 $column = 'client_id';
                 $log_action_number = 25;
-                $client = new \ProjectSend\Classes\Users;
-                $client->get($to_id);
+                $client = new \ProjectSend\Classes\Users($to_id);
                 $log_name = $client->name;
                 break;
             case 'group':
                 $column = 'group_id';
                 $log_action_number = 26;
-                $group = new \ProjectSend\Classes\Groups;
-                $group->get($to_id);
+                $group = new \ProjectSend\Classes\Groups($to_id);
                 $log_name = $group->name;
                 break;
             default:
@@ -1101,15 +1097,13 @@ class Files
             case 'client':
                 $column = 'client_id';
                 $log_action_number = 10;
-                $client = new \ProjectSend\Classes\Users;
-                $client->get($from_id);
+                $client = new \ProjectSend\Classes\Users($from_id);
                 $log_name = $client->name;
                 break;
             case 'group':
                 $column = 'group_id';
                 $log_action_number = 11;
-                $group = new \ProjectSend\Classes\Groups;
-                $group->get($from_id);
+                $group = new \ProjectSend\Classes\Groups($from_id);
                 $log_name = $group->name;
                 break;
             default:

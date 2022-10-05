@@ -28,8 +28,7 @@ class Download
             exit_with_error_code(403);
         }
 
-        $file = new \ProjectSend\Classes\Files();
-        $file->get($file_id);
+        $file = new \ProjectSend\Classes\Files($file_id);
         record_new_download(CURRENT_USER_ID, $file->id);
         $this->downloadFile($file->filename_on_disk, $file->filename_unfiltered, $file->id);
     }
@@ -82,8 +81,7 @@ class Download
             $zip->open($zip_file, \ZipArchive::OVERWRITE);
 
             foreach ($files_to_zip as $file_id) {
-                $file = new \ProjectSend\Classes\Files();
-                $file->get($file_id);
+                $file = new \ProjectSend\Classes\Files($file_id);
                 if (!$file->existsOnDisk()) {
                     continue;
                 }
@@ -168,8 +166,7 @@ class Download
             
             $save_file_as = UPLOADED_FILES_DIR . DS . $save_as;
 
-            $file = new Files;
-            $file->get($file_id);
+            $file = new \ProjectSend\Classes\Files($file_id);
             $alias=$this->getAlias($file);
             $this->serveFile($file_location, $save_file_as, $alias);
             exit;

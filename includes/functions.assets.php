@@ -108,8 +108,7 @@ function render_custom_assets($position = null)
     $assets->setFetchMode(PDO::FETCH_ASSOC);
     if ($count > 0) {
         while ( $row = $assets->fetch() ) {
-            $asset = new \ProjectSend\Classes\CustomAsset;
-            $asset->get($row["id"]);
+            $asset = new \ProjectSend\Classes\CustomAsset($row["id"]);
             $properties = $asset->getProperties();
             if ($properties['language'] == 'css') { echo '<style>'; }
             if ($properties['language'] == 'js') { echo '<script>'; }

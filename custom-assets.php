@@ -176,11 +176,10 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
             <?php
             if ($count > 0) {
                 // Generate the table using the class.
-                $table_attributes = array(
+                $table = new \ProjectSend\Classes\Layout\Table([
                     'id' => 'assets_tbl',
                     'class' => 'footable table',
-                );
-                $table = new \ProjectSend\Classes\TableGenerate($table_attributes);
+                ]);
 
                 $thead_columns = array(
                     array(
@@ -225,8 +224,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                 while ($row = $sql->fetch()) {
                     $table->addRow();
 
-                    $asset = new \ProjectSend\Classes\CustomAsset;
-                    $asset->get($row["id"]);
+                    $asset = new \ProjectSend\Classes\CustomAsset($row["id"]);
 
                     /* Get active status */
                     $enabled_label = ($asset->enabled == 0) ? __('Disabled', 'cftp_admin') : __('Enabled', 'cftp_admin');
@@ -280,7 +278,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
         <?php
             if (!empty($table)) {
                 // PAGINATION
-                $pagination = new \ProjectSend\Classes\PaginationLayout;
+                $pagination = new \ProjectSend\Classes\Layout\Pagination;
                 echo $pagination->make([
                     'link' => 'custom-assets.php',
                     'current' => $pagination_page,

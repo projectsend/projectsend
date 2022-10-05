@@ -26,8 +26,7 @@ if (!empty($_GET['token']) && !empty($_GET['group'])) {
     if (!can_view_public_group($_GET['group'], $_GET['token'])) {
         ps_redirect(BASE_URI . "index.php");
     }
-    $current_group = new \ProjectSend\Classes\Groups();
-    $current_group->get($_GET['group']);
+    $current_group = new \ProjectSend\Classes\Groups($_GET['group']);
     $group_props = $current_group->getProperties();
 }
 

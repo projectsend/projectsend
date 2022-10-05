@@ -168,11 +168,10 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
             <?php
             if ($count > 0) {
                 // Generate the table using the class.
-                $table_attributes = array(
+                $table = new \ProjectSend\Classes\Layout\Table([
                     'id' => 'clients_tbl',
                     'class' => 'footable table',
-                );
-                $table = new \ProjectSend\Classes\TableGenerate($table_attributes);
+                ]);
 
                 $thead_columns = array(
                     array(
@@ -251,8 +250,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                 while ($row = $sql->fetch()) {
                     $table->addRow();
 
-                    $client = new \ProjectSend\Classes\Users;
-                    $client->get($row["id"]);
+                    $client = new \ProjectSend\Classes\Users($row["id"]);
 
                     $count_groups = count($client->groups);
 
@@ -372,7 +370,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
         <?php
             if (!empty($table)) {
                 // PAGINATION
-                $pagination = new \ProjectSend\Classes\PaginationLayout;
+                $pagination = new \ProjectSend\Classes\Layout\Pagination;
                 echo $pagination->make([
                     'link' => 'clients.php',
                     'current' => $pagination_page,

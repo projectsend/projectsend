@@ -136,8 +136,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 				<div class="photo_list">
                 <?php
 					foreach ($available_files as $file_id) {
-                        $file = new \ProjectSend\Classes\Files();
-                        $file->get($file_id);
+                        $file = new \ProjectSend\Classes\Files($file_id);
 				?>
 						<div class="photo <?php if ($file->expired == true) { echo 'expired'; } ?>">
 							<div class="photo_int">

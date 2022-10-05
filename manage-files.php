@@ -99,8 +99,7 @@ if (isset($_POST['action'])) {
                  * account is the client.
                  */
                 foreach ($selected_files as $file_id) {
-                    $file = new \ProjectSend\Classes\Files;
-                    $file->get($file_id);
+                    $file = new \ProjectSend\Classes\Files($file_id);
                     $file->hide($results_type, $_POST['modify_id']);
                 }
 
@@ -108,8 +107,7 @@ if (isset($_POST['action'])) {
                 break;
             case 'show':
                 foreach ($selected_files as $file_id) {
-                    $file = new \ProjectSend\Classes\Files;
-                    $file->get($file_id);
+                    $file = new \ProjectSend\Classes\Files($file_id);
                     $file->show($results_type, $_POST['modify_id']);
                 }
 
@@ -117,8 +115,7 @@ if (isset($_POST['action'])) {
                 break;
             case 'hide_everyone':
                 foreach ($selected_files as $file_id) {
-                    $file = new \ProjectSend\Classes\Files;
-                    $file->get($file_id);
+                    $file = new \ProjectSend\Classes\Files($file_id);
                     $file->hideFromEveryone();
                 }
 
@@ -126,8 +123,7 @@ if (isset($_POST['action'])) {
                 break;
             case 'show_everyone':
                 foreach ($selected_files as $file_id) {
-                    $file = new \ProjectSend\Classes\Files;
-                    $file->get($file_id);
+                    $file = new \ProjectSend\Classes\Files($file_id);
                     $file->showToEveryone();
                 }
 
@@ -136,8 +132,7 @@ if (isset($_POST['action'])) {
             case 'unassign':
                 // Remove the file from this client or group only.
                 foreach ($selected_files as $file_id) {
-                    $file = new \ProjectSend\Classes\Files;
-                    $file->get($file_id);
+                    $file = new \ProjectSend\Classes\Files($file_id);
                     $file->removeAssignment($results_type, $_POST['modify_id']);
                 }
 
@@ -150,8 +145,7 @@ if (isset($_POST['action'])) {
                 );
                 foreach ($selected_files as $index => $file_id) {
                     if (!empty($file_id)) {
-                        $file = new \ProjectSend\Classes\Files;
-                        $file->get($file_id);
+                        $file = new \ProjectSend\Classes\Files($file_id);
                         if ($file->deleteFiles()) {
                             $delete_results['success']++;
                         } else {
@@ -443,11 +437,10 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
             <?php
                 if ($count_for_pagination > 0) {
                     // Generate the table using the class.
-                    $table_attributes = array(
+                    $table = new \ProjectSend\Classes\Layout\Table([
                         'id' => 'files_tbl',
                         'class' => 'footable table',
-                    );
-                    $table = new \ProjectSend\Classes\TableGenerate($table_attributes);
+                    ]);
 
                     /**
                      * Set the conditions to true or false once here to
@@ -552,8 +545,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                     $sql->setFetchMode(PDO::FETCH_ASSOC);
                     while ($row = $sql->fetch()) {
                         $table->addRow();
-                        $file = new \ProjectSend\Classes\Files();
-                        $file->get($row['id']);
+                        $file = new \ProjectSend\Classes\Files($row['id']);
 
                         // Visibility is only available when filtering by client or group.
                         $assignations = get_file_assignations($file->id);
@@ -739,7 +731,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
         <?php
             if (!empty($table)) {
                 // PAGINATION
-                $pagination = new \ProjectSend\Classes\PaginationLayout;
+                $pagination = new \ProjectSend\Classes\Layout\Pagination;
                 echo $pagination->make([
                     'link' => 'manage-files.php',
                     'current' => $pagination_page,

@@ -127,7 +127,7 @@ if ($get_categories['count'] == 0) {
                 break;
         }
     } else {
-        $flash->error(__('There are no categories yet.', 'cftp_admin'));
+        $flash->warning(__('There are no categories yet.', 'cftp_admin'));
     }
 }
 

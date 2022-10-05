@@ -346,7 +346,7 @@ if (!$count) {
                 break;
         }
     } else {
-        $flash->error(__('There are no files.', 'cftp_admin'));
+        $flash->warning(__('There are no files.', 'cftp_admin'));
     }
 }
 

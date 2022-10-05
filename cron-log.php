@@ -90,7 +90,7 @@ $sql->execute($params);
 $count = $sql->rowCount();
 
 if (!$count) {
-    $flash->error(__('There are no executions recorded.', 'cftp_admin'));
+    $flash->warning(__('There are no executions recorded.', 'cftp_admin'));
 }
 
 // Search + filters bar data

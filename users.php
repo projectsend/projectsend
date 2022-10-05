@@ -137,7 +137,7 @@ if (!$count) {
             break;
         }
     } else {
-        $flash->error(__('There are no users yet.', 'cftp_admin'));
+        $flash->warning(__('There are no users yet.', 'cftp_admin'));
     }
 }
 

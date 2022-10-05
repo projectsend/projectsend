@@ -111,7 +111,7 @@ if (!$count) {
             break;
         }
     } else {
-        $flash->error(__('There are no assets yet.', 'cftp_admin'));
+        $flash->warning(__('There are no assets yet.', 'cftp_admin'));
     }
 }
 

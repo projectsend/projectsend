@@ -137,7 +137,7 @@ if (!$count) {
                 break;
         }
     } else {
-        $flash->error(__('There are no requests at the moment', 'cftp_admin'));
+        $flash->warning(__('There are no requests at the moment', 'cftp_admin'));
     }
 }
 

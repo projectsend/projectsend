@@ -806,8 +806,18 @@ function render_json_variables()
  */
 function message_no_clients()
 {
-    $msg = '<strong>' . __('Important:', 'cftp_admin') . '</strong> ' . __('There are no clients or groups at the moment. You can still upload files and assign them later.', 'cftp_admin');
-    echo system_message('warning', $msg);
+    global $dbh;
+    // Count the clients to show a warning message or the form
+    $statement = $dbh->query("SELECT id FROM " . TABLE_USERS . " WHERE level = '0'");
+    $count_clients = $statement->rowCount();
+    $statement = $dbh->query("SELECT id FROM " . TABLE_GROUPS);
+    $count_groups = $statement->rowCount();
+
+    if ((!$count_clients or $count_clients < 1) && (!$count_groups or $count_groups < 1)) {
+        global $flash;
+        $msg = '<strong>' . __('Important:', 'cftp_admin') . '</strong> ' . __('There are no clients or groups at the moment. You can still upload files and assign them later.', 'cftp_admin');
+        $flash->warning($msg);
+    }
 }
 
 
@@ -1918,6 +1928,37 @@ function count_groups_requests_for_existing_clients()
 
     return $count;
 }
+
+function count_memberships_requests_denied()
+{
+    global $dbh;
+
+    $sql_requests = $dbh->prepare("SELECT DISTINCT id FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='1'");
+    $sql_requests->execute();
+   
+    return $sql_requests->rowCount();
+}
+
+function count_account_requests()
+{
+    global $dbh;
+
+    $sql_requests = $dbh->prepare("SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE account_requested='1' AND account_denied='0'");
+    $sql_requests->execute();
+
+    return $sql_requests->rowCount();
+}
+
+function count_account_requests_denied()
+{
+    global $dbh;
+
+    $sql_requests = $dbh->prepare("SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE account_requested='1' AND account_denied='1'");
+    $sql_requests->execute();
+
+    return $sql_requests->rowCount();
+}
+
 
 // Function to get the client ip address
 function get_client_ip()

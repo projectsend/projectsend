@@ -12,6 +12,135 @@ $page_title = __('Membership requests', 'cftp_admin');
 
 $page_id = 'clients_memberships_requests';
 
+// Apply the corresponding action to the selected clients.
+if (!empty($_POST)) {
+    // Continue only if 1 or more clients were selected
+    if (!empty($_POST['accounts'])) {
+        $selected_clients = $_POST['accounts'];
+
+        $selected_clients_ids = [];
+        foreach ($selected_clients as $id => $data) {
+            $selected_clients_ids[] = $id;
+        }
+        $clients_to_get = implode(',', array_map('intval', array_unique($selected_clients_ids)));
+
+        switch ($_POST['action']) {
+            case 'apply':
+                foreach ($selected_clients as $client) {
+                    $process_memberships    = new \ProjectSend\Classes\GroupsMemberships;
+
+                    // Process memberships requests
+                    if (empty($client['groups'])) {
+                        $client['groups'] = [];
+                    }
+
+                    $memberships_arguments = array(
+                        'client_id' => $client['id'],
+                        'approve' => $client['groups'],
+                    );
+
+                    $process_requests = $process_memberships->clientProcessMemberships($memberships_arguments, true);
+                }
+                exit;
+                break;
+            case 'delete':
+                foreach ($selected_clients as $client) {
+                    $process_memberships = new \ProjectSend\Classes\GroupsMemberships;
+
+                    $memberships_arguments = array(
+                        'client_id' => $client['id'],
+                        'type' => (!empty($_POST['denied']) && $_POST['denied'] == 1) ? 'denied' : 'new',
+                    );
+
+                    $delete_requests = $process_memberships->clientDeleteRequests($memberships_arguments);
+                }
+                break;
+            default:
+                break;
+        }
+
+        // Redirect after processing
+        $action_redirect = html_output($_POST['action']);
+        $location = BASE_URI . $this_page . '?action=' . $action_redirect;
+        if (!empty($_POST['denied']) && $_POST['denied'] == 1) {
+            $location .= '&denied=1';
+        }
+        ps_redirect($location);
+    } else {
+        $flash->danger(__('Please select at least one client.', 'cftp_admin'));
+    }
+}
+
+// Make a list of active client accounts to include those only on from the membership requests query
+$include_user_ids = [];
+$statement = $dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE level='0' AND active='1' AND account_denied='0'");
+$statement->execute();
+if ($statement->rowCount() > 0) {
+    $statement->setFetchMode(PDO::FETCH_ASSOC);
+    while ($row = $statement->fetch()) {
+        $include_user_ids[] = $row['id'];
+    }
+}
+
+// Continue
+$params = [];
+
+$cq = "SELECT `client_id`, COUNT(`group_id`) as `amount`, GROUP_CONCAT(`group_id` SEPARATOR ',') AS `groups` FROM " . TABLE_MEMBERS_REQUESTS;
+
+if (isset($_GET['denied']) && !empty($_GET['denied'])) {
+    $cq .= " WHERE denied='1'";
+    $current_filter = 'denied'; // Which link to highlight
+    $found_count = count_memberships_requests_denied();
+} else {
+    $cq .= " WHERE denied='0'";
+    $current_filter = 'new';
+    $found_count = count_groups_requests_for_existing_clients();
+}
+
+if (!empty($include_user_ids)) {
+    $cq .= " AND FIND_IN_SET(`client_id`, :include)";
+    $params[':include'] = implode(',', $include_user_ids);
+}
+
+$cq .= " GROUP BY client_id";
+// Pre-query to count the total results
+$count_sql = $dbh->prepare($cq);
+$count_sql->execute($params);
+$count_for_pagination = ($count_sql->rowCount());
+
+/**
+ * Add the order.
+ * Defaults to order by: name, order: ASC
+ */
+$cq .= sql_add_order(TABLE_USERS, 'client_id', 'asc');
+
+// Repeat the query but this time, limited by pagination
+$cq .= " LIMIT :limit_start, :limit_number";
+$sql = $dbh->prepare($cq);
+
+$pagination_page = (isset($_GET["page"])) ? $_GET["page"] : 1;
+$pagination_start = ($pagination_page - 1) * get_option('pagination_results_per_page');
+$params[':limit_start'] = $pagination_start;
+$params[':limit_number'] = get_option('pagination_results_per_page');
+
+$sql->execute($params);
+$count = $sql->rowCount();
+
+if (!$count) {
+    if (isset($no_results_error)) {
+        switch ($no_results_error) {
+            case 'search':
+                $flash->error(__('Your search keywords returned no results.', 'cftp_admin'));
+                break;
+            case 'filter':
+                $flash->error(__('The filters you selected returned no results.', 'cftp_admin'));
+                break;
+        }
+    } else {
+        $flash->error(__('There are no requests at the moment', 'cftp_admin'));
+    }
+}
+
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 <div class="row">
@@ -30,122 +159,6 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
             }
         }
 
-        /**
-         * Apply the corresponding action to the selected clients.
-         */
-        if (!empty($_POST)) {
-            /** Continue only if 1 or more clients were selected. */
-            if (!empty($_POST['accounts'])) {
-                $selected_clients = $_POST['accounts'];
-
-                $selected_clients_ids = [];
-                foreach ($selected_clients as $id => $data) {
-                    $selected_clients_ids[] = $id;
-                }
-                $clients_to_get = implode(',', array_map('intval', array_unique($selected_clients_ids)));
-
-                switch ($_POST['action']) {
-                    case 'apply':
-                        foreach ($selected_clients as $client) {
-                            $process_memberships    = new \ProjectSend\Classes\GroupsMemberships;
-
-                            /** Process memberships requests */
-                            if (empty($client['groups'])) {
-                                $client['groups'] = [];
-                            }
-
-                            $memberships_arguments = array(
-                                'client_id' => $client['id'],
-                                'approve' => $client['groups'],
-                            );
-
-                            $process_requests = $process_memberships->clientProcessMemberships($memberships_arguments, true);
-                        }
-                        exit;
-                        break;
-                    case 'delete':
-                        foreach ($selected_clients as $client) {
-                            $process_memberships = new \ProjectSend\Classes\GroupsMemberships;
-
-                            $memberships_arguments = array(
-                                'client_id' => $client['id'],
-                                'type' => (!empty($_POST['denied']) && $_POST['denied'] == 1) ? 'denied' : 'new',
-                            );
-
-                            $delete_requests = $process_memberships->clientDeleteRequests($memberships_arguments);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-
-                /** Redirect after processing */
-                $action_redirect = html_output($_POST['action']);
-                $location = BASE_URI . $this_page . '?action=' . $action_redirect;
-                if (!empty($_POST['denied']) && $_POST['denied'] == 1) {
-                    $location .= '&denied=1';
-                }
-                ps_redirect($location);
-            } else {
-                $msg = __('Please select at least one client.', 'cftp_admin');
-                echo system_message('danger', $msg);
-            }
-        }
-
-        // Make a list of active client accounts to include those only on from the membership requests query
-        $include_user_ids = [];
-        $statement = $dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE level='0' AND active='1' AND account_denied='0'");
-        $statement->execute();
-        if ($statement->rowCount() > 0) {
-            $statement->setFetchMode(PDO::FETCH_ASSOC);
-            while ($row = $statement->fetch()) {
-                $include_user_ids[] = $row['id'];
-            }
-        }
-
-        // Continue
-        $params = [];
-
-        $cq = "SELECT `client_id`, COUNT(`group_id`) as `amount`, GROUP_CONCAT(`group_id` SEPARATOR ',') AS `groups` FROM " . TABLE_MEMBERS_REQUESTS;
-
-        if (isset($_GET['denied']) && !empty($_GET['denied'])) {
-            $cq .= " WHERE denied='1'";
-            $current_filter = 'denied'; // Which link to highlight
-            $found_count = COUNT_MEMBERSHIP_DENIED;
-        } else {
-            $cq .= " WHERE denied='0'";
-            $current_filter = 'new';
-            $found_count = COUNT_MEMBERSHIP_REQUESTS;
-        }
-
-        if (!empty($include_user_ids)) {
-            $cq .= " AND FIND_IN_SET(`client_id`, :include)";
-            $params[':include'] = implode(',', $include_user_ids);
-        }
-
-        $cq .= " GROUP BY client_id";
-        // Pre-query to count the total results
-        $count_sql = $dbh->prepare($cq);
-        $count_sql->execute($params);
-        $count_for_pagination = ($count_sql->rowCount());
-
-        /**
-         * Add the order.
-         * Defaults to order by: name, order: ASC
-         */
-        $cq .= sql_add_order(TABLE_USERS, 'client_id', 'asc');
-
-        // Repeat the query but this time, limited by pagination
-        $cq .= " LIMIT :limit_start, :limit_number";
-        $sql = $dbh->prepare($cq);
-
-        $pagination_page = (isset($_GET["page"])) ? $_GET["page"] : 1;
-        $pagination_start = ($pagination_page - 1) * get_option('pagination_results_per_page');
-        $params[':limit_start'] = $pagination_start;
-        $params[':limit_number'] = get_option('pagination_results_per_page');
-
-        $sql->execute($params);
-        $count = $sql->rowCount();
         ?>
         <div class="form_actions_left">
             <div class="form_actions_limit_results">
@@ -193,12 +206,12 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                     'new' => array(
                         'title' => __('New requests', 'cftp_admin'),
                         'link' => $this_page,
-                        'count' => COUNT_MEMBERSHIP_REQUESTS,
+                        'count' => count_groups_requests_for_existing_clients(),
                     ),
                     'denied' => array(
                         'title' => __('Denied requests', 'cftp_admin'),
                         'link' => $this_page . '?denied=1',
-                        'count' => COUNT_MEMBERSHIP_DENIED,
+                        'count' => count_memberships_requests_denied(),
                     ),
                 );
                 foreach ($filters as $type => $filter) {
@@ -212,21 +225,6 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
             <div class="clear"></div>
 
             <?php
-            if (!$count) {
-                if (isset($no_results_error)) {
-                    switch ($no_results_error) {
-                        case 'search':
-                            $no_results_message = __('Your search keywords returned no results.', 'cftp_admin');
-                            break;
-                        case 'filter':
-                            $no_results_message = __('The filters you selected returned no results.', 'cftp_admin');
-                            break;
-                    }
-                } else {
-                    $no_results_message = __('There are no requests at the moment', 'cftp_admin');
-                }
-                echo system_message('danger', $no_results_message);
-            }
 
             if ($count > 0) {
                 $all_groups = get_groups([]);

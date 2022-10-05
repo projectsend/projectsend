@@ -26,28 +26,15 @@ if (LOADED_LANG != 'en') {
     }
 }
 
+message_no_clients();
+
+$msg = __('Click on Add files to select all the files that you want to upload, and then click continue. On the next step, you will be able to set a name and description for each uploaded file. Remember that the maximum allowed file size (in mb.) is ', 'cftp_admin') . ' <strong>' . UPLOAD_MAX_FILESIZE . '</strong>';
+$flash->info($msg);
+
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 <div class="row">
     <div class="col-12">
-        <?php
-        // Count the clients to show a warning message or the form
-        $statement = $dbh->query("SELECT id FROM " . TABLE_USERS . " WHERE level = '0'");
-        $count_clients = $statement->rowCount();
-        $statement = $dbh->query("SELECT id FROM " . TABLE_GROUPS);
-        $count_groups = $statement->rowCount();
-
-        if ((!$count_clients or $count_clients < 1) && (!$count_groups or $count_groups < 1)) {
-            message_no_clients();
-        }
-        ?>
-        <p>
-            <?php
-                $msg = __('Click on Add files to select all the files that you want to upload, and then click continue. On the next step, you will be able to set a name and description for each uploaded file. Remember that the maximum allowed file size (in mb.) is ', 'cftp_admin') . ' <strong>' . UPLOAD_MAX_FILESIZE . '</strong>';
-                echo system_message('info', $msg);
-            ?>
-        </p>
-
         <script type="text/javascript">
             $(function() {
                 $("#uploader").pluploadQueue({

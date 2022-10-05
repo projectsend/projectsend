@@ -12,11 +12,8 @@ $page_title = __('Custom HTML/CSS/JS', 'cftp_admin');
 
 $current_url = get_form_action_with_existing_parameters(basename(__FILE__));
 
-/**
- * Apply the corresponding action to the selected clients.
- */
+// Apply the corresponding bulk action
 if (isset($_POST['action'])) {
-    /** Continue only if 1 or more clients were selected. */
     if (!empty($_POST['batch'])) {
         $custom_assets = $_POST['batch'];
 
@@ -58,6 +55,7 @@ if (isset($_POST['action'])) {
 
     ps_redirect($current_url);
 }
+
 $params = [];
 $cq = "SELECT id FROM " . TABLE_CUSTOM_ASSETS;
 $next_clause = ' WHERE';

@@ -222,12 +222,12 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                     'new' => array(
                         'title' => __('New account requests', 'cftp_admin'),
                         'link' => $this_page,
-                        'count' => COUNT_CLIENTS_REQUESTS,
+                        'count' => count_account_requests(),
                     ),
                     'denied' => array(
                         'title' => __('Denied accounts', 'cftp_admin'),
                         'link' => $this_page . '?denied=1',
-                        'count' => COUNT_CLIENTS_DENIED,
+                        'count' => count_account_requests_denied(),
                     ),
                 );
                 foreach ($filters as $type => $filter) {

@@ -17,16 +17,65 @@ $page_title = __('Find orphan files', 'cftp_admin');
 
 $page_id = 'import_orphans';
 
-include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+/**
+ * Apply the corresponding action to the selected clients.
+ */
+if (isset($_POST['action'])) {
+    /** Continue only if 1 or more clients were selected. */
+    if (!empty($_POST['files'])) {
+        $custom_assets = $_POST['files'];
 
-// Count clients to show an error message, or the form
-$statement        = $dbh->query("SELECT id FROM " . TABLE_USERS . " WHERE level = '0'");
-$count_clients    = $statement->rowCount();
-$statement        = $dbh->query("SELECT id FROM " . TABLE_GROUPS);
-$count_groups    = $statement->rowCount();
+        switch ($_POST['action']) {
+            case 'import':
+                $added = [];
 
-if ((!$count_clients or $count_clients < 1) && (!$count_groups or $count_groups < 1)) {
-    message_no_clients();
+                if (!empty($_POST['files'])) {
+                    foreach ($_POST['files'] as $filename) {
+                        $filename_path = UPLOADED_FILES_DIR . DS . $filename;
+                        if (!file_exists($filename_path) || !file_is_allowed($filename)) {
+                            continue;
+                        }
+            
+                        $file = new \ProjectSend\Classes\Files;
+                        $file->moveToUploadDirectory($filename_path);
+                        $file->setDefaults();
+                        $file->addToDatabase();
+            
+                        // Add it to the array of editable files
+                        $added[] = $file->getId();
+                    }
+                }
+            
+                if (!empty($added)) {
+                    $flash->success(__('The selected files were imported successfully.', 'cftp_admin'));
+                    ps_redirect(BASE_URI . 'files-edit.php?ids=' . implode(',', $added));
+                }
+            
+                break;
+            case 'delete':
+                $selected = count($_POST['files']);
+                $deleted = 0;
+                foreach ($_POST['files'] as $filename) {
+                    $filename_path = UPLOADED_FILES_DIR . DS . $filename;
+                    $delete = delete_file_from_disk($filename_path);
+                    if ($delete) { $deleted++; }
+                }
+
+                if ($deleted > 0) {
+                    if ($deleted == $selected) {
+                        $flash->success(__('The selected files were deleted.', 'cftp_admin'));
+                    } else {
+                        $flash->warning(__('Not all of the selected files where were deleted.', 'cftp_admin'));
+                    }
+                }
+
+                break;
+        }
+    } else {
+        $flash->error(__('Please select at least one file.', 'cftp_admin'));
+    }
+
+    ps_redirect($current_url);
 }
 
 $orphan_files = new \ProjectSend\Classes\OrphanFiles;
@@ -56,93 +105,95 @@ switch ($search_type) {
         break;
 }
 
-// Import selected files and redirect to editor
-if ($_POST) {
-    $added = [];
+$count = count($files);
 
-    if (!empty($_POST['files'])) {
-        foreach ($_POST['files'] as $filename) {
-            $filename_path = UPLOADED_FILES_DIR . DS . $filename;
-            if (!file_exists($filename_path)) {
-                continue;
-            }
-
-            if (!file_is_allowed($filename)) {
-                continue;
-            }
-
-            $file = new \ProjectSend\Classes\Files;
-            $file->moveToUploadDirectory($filename_path);
-            $file->setDefaults();
-            $file->addToDatabase();
-
-            // Add it to the array of editable files
-            $added[] = $file->getId();
+// Flash errors
+if (!$count) {
+    if (isset($no_results_error)) {
+        switch ($no_results_error) {
+            case 'search':
+                $flash->error(__('Your search keywords returned no results.', 'cftp_admin'));
+                break;
         }
-    }
-
-    if (!empty($added)) {
-        ps_redirect(BASE_URI . 'files-edit.php?ids=' . implode(',', $added));
+    } else {
+        $no_results_message = __('There are no files available to add right now.', 'cftp_admin');
+        $no_results_message .= __('To use this feature you need to upload your files via FTP to the folder', 'cftp_admin');
+        $no_results_message .= ' <span class="format_url"><strong>' . html_output(UPLOADED_FILES_DIR) . '</strong></span>.';
+        $flash->error($no_results_message);
     }
 }
+
+// Header buttons
+if (current_user_can_upload()) {
+    $header_action_buttons = [
+        [
+            'url' => 'upload.php',
+            'label' => __('Upload files', 'cftp_admin'),
+        ],
+    ];
+}
+
+// Search + filters bar data
+$search_form_action = 'import-orphans.php';
+$filters_form = [];
+
+// Results count and form actions 
+$elements_found_count = $count;
+$bulk_actions_items = [
+    'none' => __('Select action', 'cftp_admin'),
+    'delete' => __('Delete', 'cftp_admin'),
+];
+if ($can_import) {
+    $bulk_actions_items['import'] = __('Import', 'cftp_admin');
+}
+
+// Filters as links
+$filters_links = [
+    'allowed' => [
+        'title' => __('Allowed', 'cftp_admin'),
+        'link' => $this_page . '?allowed_type=allowed',
+        'count' => count($orphans['allowed']),
+    ],
+    'not_allowed' => [
+        'title' => __('Not allowed', 'cftp_admin'),
+        'link' => $this_page . '?allowed_type=not_allowed',
+        'count' => count($orphans['not_allowed']),
+    ],
+];
+
+message_no_clients();
+
+if (isset($files) && count($files) > 0) {
+    if (!user_can_upload_any_file_type(CURRENT_USER_ID) && $settings['allowed_type'] != 'not_allowed') {
+        $settings['only_allowed'] = true;
+        $flash->warning(__('This list only shows the files that are allowed according to your security settings. If the file type you need to add is not listed here, add the extension to the "Allowed file extensions" box on the options page.', 'cftp_admin'));
+        $flash->success(__('The following files can be imported', 'cftp_admin'));
+    }
+}
+
+include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+
+include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
 ?>
-<div class="row">
-    <div class="col-12">
-        <div class="form_actions_limit_results">
-            <?php show_search_form('import-orphans.php'); ?>
-        </div>
 
-        <div class="form_actions_count">
-            <p><?php echo sprintf(__('Found %d elements', 'cftp_admin'), (int)count($files)); ?></p>
-        </div>
-
-        <div class="form_results_filter">
-            <?php
-            $filters = array(
-                'allowed' => array(
-                    'title' => __('Allowed', 'cftp_admin'),
-                    'link' => $this_page . '?allowed_type=allowed',
-                    'count' => count($orphans['allowed']),
-                ),
-                'not_allowed' => array(
-                    'title' => __('Not allowed', 'cftp_admin'),
-                    'link' => $this_page . '?allowed_type=not_allowed',
-                    'count' => count($orphans['not_allowed']),
-                ),
-            );
-            foreach ($filters as $type => $filter) {
-            ?>
-                <a href="<?php echo $filter['link']; ?>" class="<?php echo $search_type == $type ? 'filter_current' : 'filter_option' ?>"><?php echo $filter['title']; ?> (<?php echo $filter['count']; ?>)</a>
-            <?php
-            }
-            ?>
-        </div>
-
-        <div class="clear"></div>
-
-        <form action="import-orphans.php" name="import_orphans" id="import_orphans" method="post" enctype="multipart/form-data">
+<form action="import-orphans.php" name="import_orphans" id="import_orphans" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-12">
             <?php addCsrf(); ?>
+            <?php include_once LAYOUT_DIR . DS . 'form-counts-actions.php'; ?>
 
             <?php
             // Generate the list of files if there is at least 1 available and allowed.
             if (isset($files) && count($files) > 0) {
-                if (!user_can_upload_any_file_type(CURRENT_USER_ID) && $settings['allowed_type'] != 'not_allowed') {
-                    $settings['only_allowed'] = true;
-                    echo system_message('warning', __('This list only shows the files that are allowed according to your security settings. If the file type you need to add is not listed here, add the extension to the "Allowed file extensions" box on the options page.', 'cftp_admin'));
-                    echo system_message('success', __('The following files can be imported', 'cftp_admin'));
-                }
-
-                $table_attributes = array(
+                $table = new \ProjectSend\Classes\Layout\Table([
                     'id' => 'import_orphans_table',
                     'class' => 'footable table',
                     'data-page-size' => FOOTABLE_PAGING_NUMBER,
-                );
-                $table = new \ProjectSend\Classes\TableGenerate($table_attributes);
+                ]);
 
                 $thead_columns = array(
                     array(
                         'select_all' => true,
-                        'condition' => $can_import,
                         'attributes' => array(
                             'class' => array('td_checkbox'),
                             'data-sortable' => 'false',
@@ -170,20 +221,22 @@ if ($_POST) {
                     ),
                     array(
                         'content' => __('Actions', 'cftp_admin'),
-                        'condition' => $can_import,
                     ),
                 );
                 $table->thead($thead_columns);
 
                 foreach ($files as $file) {
                     $table->addRow();
-                    /**
-                     * Add the cells to the row
-                     */
+                    // Add the cells to the row
+                     
+                    $action_buttons = '';
+                    if ($can_import) {
+                        $action_buttons .= '<button type="button" name="file_edit" data-name="' . html_output($file['name']) . '" class="btn btn-primary btn-sm btn-edit-file"><i class="fa fa-pencil"></i><span class="button_label">' . __('Import', 'cftp_admin') . '</span></button>' . "\n";
+                    }
+
                     $tbody_cells = array(
                         array(
                             'content' => '<input type="checkbox" name="files[]" class="batch_checkbox select_file_checkbox" value="' . html_output($file['name']) . '" />',
-                            'condition' => $can_import,
                         ),
                         array(
                             'content' => html_output($file['name']),
@@ -202,8 +255,7 @@ if ($_POST) {
                         ),
                         array(
                             'actions' => true,
-                            'condition' => $can_import,
-                            'content' => '<button type="button" name="file_edit" data-name="' . html_output($file['name']) . '" class="btn btn-primary btn-sm btn-edit-file"><i class="fa fa-pencil"></i><span class="button_label">' . __('Import', 'cftp_admin') . '</span></button>' . "\n"
+                            'content' => $action_buttons,
                         ),
                     );
 
@@ -215,6 +267,7 @@ if ($_POST) {
                 }
 
                 echo $table->render();
+
                 if ($can_import) {
             ?>
                     <nav aria-label="<?php _e('Results navigation', 'cftp_admin'); ?>">
@@ -222,28 +275,8 @@ if ($_POST) {
                             <ul class="pagination hide-if-no-paging"></ul>
                         </div>
                     </nav>
-                    <div class="after_form_buttons">
-                        <button type="submit" class="btn btn-wide btn-primary" id="upload-continue"><?php _e('Import selected files', 'cftp_admin'); ?></button>
-                    </div>
             <?php
                 }
-            }
-
-            // No files found
-            else {
-                if (isset($no_results_error)) {
-                    switch ($no_results_error) {
-                        case 'search':
-                            $no_results_message = __('Your search keywords returned no results.', 'cftp_admin');
-                            break;
-                    }
-                } else {
-                    $no_results_message = __('There are no files available to add right now.', 'cftp_admin');
-                    $no_results_message .= __('To use this feature you need to upload your files via FTP to the folder', 'cftp_admin');
-                    $no_results_message .= ' <span class="format_url"><strong>' . html_output(UPLOADED_FILES_DIR) . '</strong></span>.';
-                }
-
-                echo system_message('danger', $no_results_message);
             }
             ?>
         </form>

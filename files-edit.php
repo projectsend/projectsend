@@ -13,8 +13,6 @@ $page_title = __('Edit files', 'cftp_admin');
 
 $page_id = 'file_editor';
 
-include_once ADMIN_VIEWS_DIR . DS . 'header.php';
-
 define('CAN_INCLUDE_FILES', true);
 
 // Editable
@@ -33,53 +31,62 @@ $saved_files = [];
 // Fill the categories array that will be used on the form
 $categories = [];
 $get_categories = get_categories();
+
+if (isset($_POST['save'])) {
+    // Edit each file and its assignations
+    foreach ($_POST['file'] as $file) {
+        $object = new \ProjectSend\Classes\Files($file['id']);
+        if ($object->recordExists()) {
+            if ($object->save($file) != false) {
+                $saved_files[] = $file['id'];
+            }
+        }
+    }
+
+    // Send the notifications
+    if (get_option('notifications_send_when_saving_files') == '1') {
+        $notifications = new \ProjectSend\Classes\EmailNotifications();
+        $notifications->sendNotifications();
+        if (!empty($notifications->getNotificationsSent())) {
+            $flash->success(__('E-mail notifications have been sent.', 'cftp_admin'));
+        }
+        if (!empty($notifications->getNotificationsFailed())) {
+            $flash->error(__("One or more notifications couldn't be sent.", 'cftp_admin'));
+        }
+        if (!empty($notifications->getNotificationsInactiveAccounts())) {
+            if (CURRENT_USER_LEVEL == 0) {
+                /**
+                 * Clients do not need to know about the status of the
+                 * creator's account. Show the ok message instead.
+                 */
+                $flash->success(__('E-mail notifications have been sent.', 'cftp_admin'));
+            } else {
+                $flash->warning(__('E-mail notifications for inactive clients were not sent.', 'cftp_admin'));
+            }
+        }
+    } else {
+        $flash->warning(__('E-mail notifications were not sent according to your settings. Make sure you have a cron job enabled if you need to send them.', 'cftp_admin'));
+    }
+
+    // Redirect
+    $saved = implode(',', $saved_files);
+
+    $flash->success(__('Files saved successfully', 'cftp_admin'));
+    ps_redirect('files-edit.php?ids=' . $saved . '&saved=true');
+}
+
+// Message
+if (!empty($editable) && !isset($_GET['saved'])) {
+    if (CURRENT_USER_LEVEL != 0) {
+        $flash->info(__('You can skip assigning if you want. The files are retained and you may add them to clients or groups later.', 'cftp_admin'));
+    }
+}
+
+include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 <div class="row">
     <div class="col-12">
         <?php
-        if (isset($_POST['save'])) {
-            // Edit each file and its assignations
-            foreach ($_POST['file'] as $file) {
-                $object = new \ProjectSend\Classes\Files($file['id']);
-                if ($object->recordExists()) {
-                    if ($object->save($file) != false) {
-                        $saved_files[] = $file['id'];
-                    }
-                }
-            }
-
-            // Send the notifications
-            if (get_option('notifications_send_when_saving_files') == '1') {
-                $notifications = new \ProjectSend\Classes\EmailNotifications();
-                $notifications->sendNotifications();
-                if (!empty($notifications->getNotificationsSent())) {
-                    $flash->success(__('E-mail notifications have been sent.', 'cftp_admin'));
-                }
-                if (!empty($notifications->getNotificationsFailed())) {
-                    $flash->error(__("One or more notifications couldn't be sent.", 'cftp_admin'));
-                }
-                if (!empty($notifications->getNotificationsInactiveAccounts())) {
-                    if (CURRENT_USER_LEVEL == 0) {
-                        /**
-                         * Clients do not need to know about the status of the
-                         * creator's account. Show the ok message instead.
-                         */
-                        $flash->success(__('E-mail notifications have been sent.', 'cftp_admin'));
-                    } else {
-                        $flash->warning(__('E-mail notifications for inactive clients were not sent.', 'cftp_admin'));
-                    }
-                }
-            } else {
-                $flash->warning(__('E-mail notifications were not sent according to your settings. Make sure you have a cron job enabled if you need to send them.', 'cftp_admin'));
-            }
-
-            // Redirect
-            $saved = implode(',', $saved_files);
-
-            $flash->success(__('Files saved successfully', 'cftp_admin'));
-            ps_redirect('files-edit.php?ids=' . $saved . '&saved=true');
-        }
-
         // Saved files
         $saved_files = [];
         if (!empty($_GET['saved'])) {
@@ -122,11 +129,10 @@ $get_categories = get_categories();
                 if ($file->recordExists()) {
                     $table->addRow();
 
-                    $col_public = '';
                     if ($file->public == '1') {
-                        $col_public .= '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="file" data-public-url="'.$file->public_url.'" data-title="'.$file->title.'">'.__('Public', 'cftp_admin').'</a>';
+                        $col_public = '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="file" data-public-url="'.$file->public_url.'" data-title="'.$file->title.'">'.__('Public', 'cftp_admin').'</a>';
                     } else {
-                        $col_public .= '<a href="javascript:void(0);" class="btn btn-pslight btn-sm disabled" rel="" title="">'.__('Private', 'cftp_admin').'</a>';
+                        $col_public = '<a href="javascript:void(0);" class="btn btn-pslight btn-sm disabled" rel="" title="">'.__('Private', 'cftp_admin').'</a>';
                     }
 
                     $col_actions = '<a href="files-edit.php?ids='.$file->id.'" class="btn-primary btn btn-sm">
@@ -137,7 +143,6 @@ $get_categories = get_categories();
                     if (CURRENT_USER_LEVEL == 0) {
                         $col_actions .= ' <a href="<?php echo CLIENT_VIEW_FILE_LIST_URL; ?>" class="btn-primary btn btn-sm">'.__('View my files', 'cftp_admin').'</a>';
                     }
-
 
                     // Add the cells to the row
                     $tbody_cells = array(
@@ -174,11 +179,6 @@ $get_categories = get_categories();
         } else {
             // Generate the table of files ready to be edited
             if (!empty($editable)) {
-                if (CURRENT_USER_LEVEL != 0) {
-                    $msg = __('You can skip assigning if you want. The files are retained and you may add them to clients or groups later.', 'cftp_admin');
-                    echo system_message('info', $msg);
-                }
-
                 include_once FORMS_DIR . DS . 'file_editor.php';
             }
         }

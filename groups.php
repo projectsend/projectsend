@@ -334,21 +334,17 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
     </div>
 </form>
     
-<div class="row">
-    <div class="col-12">
-        <?php
-            if (!empty($table)) {
-                // PAGINATION
-                $pagination = new \ProjectSend\Classes\Layout\Pagination;
-                echo $pagination->make([
-                    'link' => 'groups.php',
-                    'current' => $pagination_page,
-                    'item_count' => $count_for_pagination,
-                ]);
-            }
-        ?>
-    </div>
-</div>
+<?php
+    if (!empty($table)) {
+        // PAGINATION
+        $pagination = new \ProjectSend\Classes\Layout\Pagination;
+        echo $pagination->make([
+            'link' => 'groups.php',
+            'current' => $pagination_page,
+            'item_count' => $count_for_pagination,
+        ]);
+    }
+?>
 
 <?php
 include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

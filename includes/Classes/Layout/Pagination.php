@@ -7,28 +7,30 @@ class Pagination {
     public function __construct()
     {
         $this->template = '
-        <div class="pagination_wrapper">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12 col-md-6 text-center">
-                        <nav aria-label="' . __('Results navigation', 'cftp_admin') . '">
-                            <ul class="pagination">
-                                {pages}
-                            </ul>
-                        </nav>
-                    </div>
-                    <div class="col-12 col-md-6 text-end">
-                        <div class="go_to_page">
-                            <form method="get" action="{goto_action}" class="row row-cols-lg-auto g-3 align-items-center justify-content-end">
-                                <label class="control-label hidden-xs hidden-sm">' . __('Go to page:', 'cftp_admin') . '</label>
-                                <div class="col-12">
-                                    <input type="text" class="form-control" name="page" id="page_number" value="{current_page}" />
-                                    '.form_add_existing_parameters(['action']).'
-                                </div>
-                                <div class="col-12">
-                                    <button type="submit" class="form-control"><i aria-hidden="true" class="fa fa-check"></i></button>
-                                </div>
-                            </form>
+        <div class="row">
+            <div class="col-12">
+                <div class="pagination_wrapper">
+                    <div class="row">
+                        <div class="col-12 col-md-6 text-center">
+                            <nav aria-label="' . __('Results navigation', 'cftp_admin') . '">
+                                <ul class="pagination">
+                                    {pages}
+                                </ul>
+                            </nav>
+                        </div>
+                        <div class="col-12 col-md-6 text-end">
+                            <div class="go_to_page">
+                                <form method="get" action="{goto_action}" class="row row-cols-lg-auto g-3 align-items-center justify-content-end">
+                                    <label class="control-label hidden-xs hidden-sm">' . __('Go to page:', 'cftp_admin') . '</label>
+                                    <div class="col-12">
+                                        <input type="text" class="form-control" name="page" id="page_number" value="{current_page}" />
+                                        '.form_add_existing_parameters(['action']).'
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="form-control"><i aria-hidden="true" class="fa fa-check"></i></button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>

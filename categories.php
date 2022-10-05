@@ -290,21 +290,17 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
             </div>
         </form>
 
-        <div class="row">
-            <div class="col-12">
-                <?php
-                    if ($get_categories['count'] > 0) {
-                        // PAGINATION
-                        $pagination = new \ProjectSend\Classes\Layout\Pagination;
-                        echo $pagination->make([
-                            'link' => basename($_SERVER['SCRIPT_FILENAME']),
-                            'current' => $params['page'],
-                            'item_count' => $get_categories['count'],
-                        ]);
-                    }
-                    ?>
-            </div>
-        </div>
+        <?php
+            if ($get_categories['count'] > 0) {
+                // PAGINATION
+                $pagination = new \ProjectSend\Classes\Layout\Pagination;
+                echo $pagination->make([
+                    'link' => basename($_SERVER['SCRIPT_FILENAME']),
+                    'current' => $params['page'],
+                    'item_count' => $get_categories['count'],
+                ]);
+            }
+        ?>
     </div>
     <div class="col-12 col-sm-12 col-md-4">
         <?php include_once FORMS_DIR . DS . 'categories.php'; ?>

@@ -84,7 +84,7 @@ if (!empty($_POST)) {
                         'memberships' => $processed_requests,
                     ]);
                 }
-                $flash->success(__('The selected clients were deleted.', 'cftp_admin'));
+                $flash->success(__('The selected actions were applied.', 'cftp_admin'));
                 break;
             case 'delete':
                 foreach ($selected_clients as $client) {

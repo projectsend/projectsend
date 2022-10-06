@@ -385,6 +385,7 @@ class GroupsMemberships
                 /** Insert into memberships */
                 $statement = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
                                                     ." VALUES (:added_by, :client_id, :group_id)");
+                $statement->bindValue(':added_by', CURRENT_USER_USERNAME);
                 $statement->bindValue(':client_id', $client_id, PDO::PARAM_INT);
                 $statement->bindValue(':group_id', $request, PDO::PARAM_INT);
                 $statement->execute();
@@ -423,7 +424,7 @@ class GroupsMemberships
         if ($email) {
             $notify_client = new \ProjectSend\Classes\Emails;
             $send = $notify_client->send([
-                'type' => 'client_memberships_process',
+                'type' => 'client_edited',
                 'username' => $client['username'],
                 'name' => $client['name'],
                 'address' => $client['email'],

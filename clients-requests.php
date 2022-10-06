@@ -15,6 +15,8 @@ $page_title = __('Account requests', 'cftp_admin');
 // Apply the corresponding action to the selected accounts.
 if (!empty($_POST)) {
     // Continue only if 1 or more clients were selected.
+    $location = BASE_URI . 'clients-requests.php';
+
     if (!empty($_POST['accounts'])) {
         $selected_clients = $_POST['accounts'];
 
@@ -99,15 +101,14 @@ if (!empty($_POST)) {
         }
 
         // Redirect after processing
-        $location = BASE_URI . 'clients-requests.php';
         if (!empty($_POST['denied']) && $_POST['denied'] == 1) {
             $location .= '?denied=1';
         }
-        ps_redirect($location);
     } else {
-        $msg = __('Please select at least one client.', 'cftp_admin');
-        echo system_message('danger', $msg);
+        $flash->error(__('Please select at least one client.', 'cftp_admin'));
     }
+
+    ps_redirect($location);
 }
 
 // Query the clients

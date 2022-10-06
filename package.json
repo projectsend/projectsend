@@ -24,6 +24,7 @@
         "node-jen": "1.1.0",
         "prop-types": "^15.8.1",
         "select2": "^4.1.0-rc.0",
+        "select2-bootstrap-5-theme": "^1.3.0",
         "sjcl": "^1.0.8",
         "sprintf-js": "1.1.2",
         "sweetalert2": "^11.4.37",

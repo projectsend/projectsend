@@ -5,7 +5,8 @@
 
         $(document).ready(function(){
             $('.select2').select2({
-                width: '100%'
+                width: '100%',
+                theme: "bootstrap-5",
             });
 
             $('.add-all').on('click', function() {

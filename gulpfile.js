@@ -20,6 +20,7 @@ let assetsCss = [
     'node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css',
     'node_modules/bootstrap-toggle/css/bootstrap-toggle.min.css',
     'node_modules/select2/dist/css/select2.min.css',
+    'node_modules/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css',
     'node_modules/footable/css/footable.core.min.css',
     'node_modules/@yaireo/tagify/dist/tagify.css',
     'node_modules/chart.js/dist/Chart.min.css',

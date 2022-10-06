@@ -119,7 +119,11 @@ if ($_POST) {
     }
 
     if ($edit_response['query'] == 1) {
-        $flash->success(__('Client saved successfully'));
+        if ($client_id == CURRENT_USER_ID) {
+            $flash->success(__('Profile edited successfully'));
+        } else {
+            $flash->success(__('Client saved successfully'));
+        }
     } else {
         $flash->error(__('There was an error saving to the database'));
     }

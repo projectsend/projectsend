@@ -2,13 +2,17 @@
     'use strict';
 
     $(document).ready(function() {
-        admin.parts.bulkActions();
         admin.parts.main();
+        admin.parts.misc();
+        admin.parts.mainMenuSidebar();
+        admin.parts.bulkActions();
         admin.parts.jqueryValidationCustomMethods();
         admin.parts.passwordVisibilityToggle();
         admin.parts.loadCKEditor();
         admin.parts.downloadCookieHandler();
         admin.parts.select2();
+        admin.parts.publicLinksPopup();
+        admin.parts.generatePassword();
 
         // Switch pages
         switch ($("body").data("page-id")) {

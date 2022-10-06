@@ -21,35 +21,6 @@
                 });
             });
 
-
-            $('.copy-all').on('click', function() {
-                if ( confirm( json_strings.translations.upload_form.copy_selection ) ) {
-                    var target = $(this).data('target');
-                    var type = $(this).data('type');
-                    var selector = $('#'+target);
-                    var val;
-    
-                    var selected = new Array();
-                    $(selector).find('option:selected').each(function() {
-                        selected.push($(this).val().toString());
-                    });
-
-                    $('.select2[data-type="'+type+'"]').not(selector).each(function() {
-                        $(this).find('option').each(function() {
-                            val = $(this).val().toString();
-                            if (selected.includes(val)) {
-                                $(this).prop('selected', 'selected');
-                            } else {
-                                $(this).removeAttr('selected');
-                            }
-                        });
-                        $(this).trigger('change');
-                    });
-                }
-
-                return false;
-            });
-
             function copySettingsToCheckboxes(el, to, question)
             {
                 if ( confirm( question ) ) {
@@ -58,6 +29,15 @@
                         $(this).prop('checked', from_element.checked);
                     });
                 }
+            }
+
+            /** File editor */
+            if ( $.isFunction($.fn.datepicker) ) {
+                $('.date-container .date-field').datepicker({
+                    format : 'dd-mm-yyyy',
+                    autoclose : true,
+                    todayHighlight : true
+                });
             }
 
             $('.copy-expiration-settings').on('click', function() {
@@ -69,7 +49,6 @@
                     console.log(date);
                     $('.date-field').datepicker('update', date);
                 });
-
             });
 
             $('.copy-public-settings').on('click', function() {

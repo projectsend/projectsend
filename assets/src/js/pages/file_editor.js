@@ -34,7 +34,7 @@
                         selected.push($(this).val().toString());
                     });
 
-                    $('.chosen-select[data-type="'+type+'"]').not(selector).each(function() {
+                    $('.select2[data-type="'+type+'"]').not(selector).each(function() {
                         $(this).find('option').each(function() {
                             val = $(this).val().toString();
                             if (selected.includes(val)) {
@@ -43,7 +43,7 @@
                                 $(this).removeAttr('selected');
                             }
                         });
-                        $(this).trigger('chosen:updated');
+                        $(this).trigger('change');
                     });
                 }
 

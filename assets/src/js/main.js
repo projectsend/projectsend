@@ -8,6 +8,7 @@
         admin.parts.passwordVisibilityToggle();
         admin.parts.loadCKEditor();
         admin.parts.downloadCookieHandler();
+        admin.parts.select2();
 
         // Switch pages
         switch ($("body").data("page-id")) {

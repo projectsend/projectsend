@@ -101,7 +101,7 @@ switch ($user_form_type) {
             <div class="form-group row <?php echo $limit_field_class; ?>" id="limit_upload_to_container">
                 <label for="limit_upload_to" class="col-sm-4 control-label"><?php _e('Limit account to this clients only','cftp_admin'); ?></label>
                 <div class="col-sm-8">
-                    <select class="form-select chosen-select none" multiple="multiple" id="limit_upload_to" name="limit_upload_to[]" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+                    <select class="form-select select2 none" multiple="multiple" id="limit_upload_to" name="limit_upload_to[]" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
                         <?php
                             $sql = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE level = '0' ORDER BY name ASC");
                             $sql->execute();

@@ -48,7 +48,7 @@
 
                                                         <div class="form-group row">
                                                             <label><?php _e('Description', 'cftp_admin');?></label>
-                                                            <textarea id="description_<?php echo $file->id; ?>" name="file[<?php echo $i; ?>][description]" class="<?php if ( get_option('files_descriptions_use_ckeditor') == 1 ) { echo 'ckeditor'; } ?> form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php if (!empty($file->description)) { echo $file->description; } ?></textarea>
+                                                            <textarea id="description_<?php echo $file->id; ?>" name="file[<?php echo $i; ?>][description]" class="<?php if ( get_option('files_descriptions_use_ckeditor') == 1 ) { echo 'ckeditor'; } ?> form-control textarea_description" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php if (!empty($file->description)) { echo $file->description; } ?></textarea>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -130,7 +130,7 @@
                                                         ?>
                                                         <h3><?php _e('Assignations', 'cftp_admin');?></h3>
                                                         <label><?php _e('Clients', 'cftp_admin');?></label>
-                                                        <select class="form-select chosen-select assignments_clients none" multiple="multiple" id="clients_<?php echo $file->id; ?>" name="file[<?php echo $i; ?>][assignments][clients][]" data-file-id="<?php echo $file->id; ?>" data-type="clients" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+                                                        <select class="form-select select2 assignments_clients none" multiple="multiple" id="clients_<?php echo $file->id; ?>" name="file[<?php echo $i; ?>][assignments][clients][]" data-file-id="<?php echo $file->id; ?>" data-type="clients" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
                                                             <?php
                                                                 foreach($clients as $id => $name) {
                                                                 ?>
@@ -152,7 +152,7 @@
                                                         <div class="divider"></div>
 
                                                         <label><?php _e('Groups', 'cftp_admin');?></label>
-                                                        <select class="form-select chosen-select assignments_groups none" multiple="multiple" id="groups_<?php echo $file->id; ?>" name="file[<?php echo $i; ?>][assignments][groups][]" data-file-id="<?php echo $file->id; ?>" data-type="groups" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+                                                        <select class="form-select select2 assignments_groups none" multiple="multiple" id="groups_<?php echo $file->id; ?>" name="file[<?php echo $i; ?>][assignments][groups][]" data-file-id="<?php echo $file->id; ?>" data-type="groups" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
                                                             <?php
                                                                 foreach($groups as $id => $name) {
                                                                 ?>
@@ -189,7 +189,7 @@
                                                     <div class="file_data">
                                                         <h3><?php _e('Categories', 'cftp_admin');?></h3>
                                                         <label><?php _e('Add to', 'cftp_admin');?>:</label>
-                                                        <select class="form-select chosen-select none" multiple="multiple" id="categories_<?php echo $file->id; ?>" name="file[<?php echo $i; ?>][categories][]" data-type="categories" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+                                                        <select class="form-select select2 none" multiple="multiple" id="categories_<?php echo $file->id; ?>" name="file[<?php echo $i; ?>][categories][]" data-type="categories" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
                                                             <?php
                                                                 echo generate_categories_options( $get_categories['arranged'], 0, $file->categories );
                                                             ?>

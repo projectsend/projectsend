@@ -19,12 +19,6 @@
                 $(this).closest('.message').transition('fade');
             });
         
-            window.resizeChosen = function() {
-                $(".chosen-container").each(function() {
-                    $(this).attr('style', 'width: 100%');
-                });
-            }
-            
             window.prepare_sidebar = function() {
                 var window_width = jQuery(window).width();
                 if ( window_width < 769 ) {
@@ -39,8 +33,6 @@
 
             /** Main side menu */
             prepare_sidebar();
-
-            resizeChosen();
 
             $('.main_menu > li.has_dropdown .nav_top_level').click(function(e) {
                 e.preventDefault();
@@ -134,22 +126,17 @@
                 var target = $(this).data('target');
                 var selector = $('#'+target);
                 $(selector).hide();
-                //var selector = $(this).previous('.select_' + type);
                 $(selector).find('option').each(function() {
                     $(this).prop('selected', true);
                 });
-                $(selector).trigger('chosen:updated');
+                $(selector).trigger('change');
                 return false;
             });
 
             $('.remove-all').on('click', function() {
                 var target = $(this).data('target');
                 var selector = $('#'+target);
-                //var selector = $(this).previous('.select_' + type);
-                $(selector).find('option').each(function() {
-                    $(this).prop('selected', false);
-                });
-                $(selector).trigger('chosen:updated');
+                selector.val(null).trigger('change');
                 return false;
             });
 
@@ -201,15 +188,6 @@
                 }).then((result) => {
                 });
             });
-            
-            // Edit file + upload form
-            if ( $.isFunction($.fn.chosen) ) {
-                $('.chosen-select').chosen({
-                    no_results_text	: json_strings.translations.no_results,
-                    width			: "100%",
-                    search_contains	: true
-                });
-            }
         });
 
         /**
@@ -223,8 +201,6 @@
          */
         jQuery(window).resize(function($) {
             prepare_sidebar();
-
-            resizeChosen();
         });
     };
 })();

@@ -19,7 +19,7 @@ let assetsCss = [
     'node_modules/font-awesome/css/font-awesome.min.css',
     'node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css',
     'node_modules/bootstrap-toggle/css/bootstrap-toggle.min.css',
-    'node_modules/chosen-js/chosen.min.css',
+    'node_modules/select2/dist/css/select2.min.css',
     'node_modules/footable/css/footable.core.min.css',
     'node_modules/@yaireo/tagify/dist/tagify.css',
     'node_modules/chart.js/dist/Chart.min.css',
@@ -34,7 +34,7 @@ let assetsJs = [
     'node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
     'node_modules/bootstrap-toggle/js/bootstrap-toggle.min.js',
     'node_modules/sweetalert2/dist/sweetalert2.all.js',
-    'node_modules/chosen-js/chosen.jquery.min.js',
+    'node_modules/select2/dist/js/select2.min.js',
     'node_modules/footable/dist/footable.min.js',
     'node_modules/node-jen/jen.js',
     'node_modules/@yaireo/tagify/dist/tagify.min.js',
@@ -98,8 +98,6 @@ gulp.task('copy', (done) => {
         .pipe(gulp.dest(dest + 'fonts/'));
     gulp.src('node_modules/footable/css/fonts/*.*')
         .pipe(gulp.dest(dest + 'fonts/'));
-    gulp.src('node_modules/chosen-js/*.png')
-        .pipe(gulp.dest(dest + 'img/'));
     gulp.src('node_modules/jquery/dist/jquery.min.js')
         .pipe(gulp.dest(dest + 'lib/jquery/'));
     gulp.src('node_modules/jquery-migrate/dist/jquery-migrate.min.js')

@@ -177,7 +177,7 @@ switch ($clients_form_type) {
             <div class="form-group row assigns">
                 <label for="groups_request" class="col-sm-4 control-label"><?php echo $group_label; ?></label>
                 <div class="col-sm-8">
-                    <select class="form-select chosen-select none" multiple="multiple" name="groups_request[]" id="groups-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin'); ?>">
+                    <select class="form-select select2 none" multiple="multiple" name="groups_request[]" id="groups-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin'); ?>">
                         <?php
                         foreach ($sql_groups as $group) {
                         ?>

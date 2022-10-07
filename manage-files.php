@@ -668,7 +668,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                                 'attributes' => array(
                                     'class' => array('file_name'),
                                 ),
-                                'content' => '<a href="' . $file->download_link . '" target="_blank">' . $file->title . '</a>',
+                                'content' => '<a href="' . $file->download_link . '" target="_blank">' . $file->title . '</a><br><small>'.$file->filename_original.'</small>',
                             ),
                             array(
                                 'content' => $file->description,

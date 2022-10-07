@@ -259,6 +259,10 @@ form .alert {
 .file_name {
     font-weight:bold;
 
+    small {
+        font-weight: 400;
+    }
+
     a {
         text-decoration:underline;
     }

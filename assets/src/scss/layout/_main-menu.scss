@@ -88,12 +88,14 @@
 
                     .submenu_label {
                         position: relative;
+                        display: flex;
+                        align-items: center;
+                        align-content: center;
 
                         &:before {
                             position: absolute;
                             content: '';
                             left: -1rem;
-                            transform: translateY(50%);
                             width: 5px;
                             height: 5px;
                             background-color: #b4b4b4;

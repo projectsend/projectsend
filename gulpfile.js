@@ -49,7 +49,7 @@ let assetsJs = [
     'node_modules/toastr/build/toastr.min.js',
     'node_modules/codemirror-minified/lib/codemirror.js',
     'vendor/moxiecode/plupload/js/plupload.full.min.js',
-    'vendor/moxiecode/plupload/js/jquery.plupload.queue/jquery.plupload.queue.min.js'
+    'vendor/moxiecode/plupload/js/jquery.plupload.queue/jquery.plupload.queue.min.js',
 ];
 
 let appJs = [

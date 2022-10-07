@@ -25,6 +25,10 @@ function show_filters_form($arguments)
         return;
     }
 
+    if (empty($arguments['items'])) {
+        return;
+    }
+
     $ignore = (!empty($arguments['ignore_form_parameters'])) ? $arguments['ignore_form_parameters'] : array_keys($arguments['items']);
 ?>
     <form action="<?php echo $arguments['action']; ?>" name="actions_filters" method="get" class="row row-cols-lg-auto g-3 align-items-end justify-content-end form_filters mt-4 mt-md-0">

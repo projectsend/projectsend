@@ -189,6 +189,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                             } else {
                                 $filetitle = $file_title_content;
                             }
+                            $filetitle .= '<br><small>'.$file->filename_original.'</small>';
 
                             /** Extension */
                             $extension_cell = '<span class="badge bg-success label_big">' . $file->extension . '</span>';

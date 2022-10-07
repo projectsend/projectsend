@@ -82,6 +82,25 @@ if (!empty($editable) && !isset($_GET['saved'])) {
     }
 }
 
+if (count($editable) > 1) {
+    // Header buttons
+    $header_action_buttons = [
+        [
+            'url' => '#',
+            'id' => 'files_collapse_all',
+            'icon' => 'fa fa-chevron-right',
+            'label' => __('Collapse all', 'cftp_admin'),
+        ],
+        [
+            'url' => '#',
+            'id' => 'files_expand_all',
+            'icon' => 'fa fa-chevron-down',
+            'label' => __('Expand all', 'cftp_admin'),
+        ],
+    ];
+}
+
+// Include layout files
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 <div class="row">

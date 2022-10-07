@@ -14,27 +14,26 @@
                 $groups = file_editor_get_all_groups();
             }
 
-
             foreach ($editable as $file_id) {
                 clearstatcache();
                 $file = new ProjectSend\Classes\Files($file_id);
                 if ($file->recordExists()) {
                     if ($file->existsOnDisk()) {
             ?>
-                        <div class="file_editor <?php if ($i%2) { echo 'f_e_odd'; } ?>">
+                        <div class="file_editor_wrapper">
                             <div class="row">
                                 <div class="col-12">
-                                    <button type="button" class="btn btn-md btn-secondary toggle_file_editor">
-                                        <i class="fa fa-chevron-right" aria-hidden="true"></i>
-                                    </button>
                                     <div class="file_title">
-                                        <p><?php echo $file->title; ?></p>
+                                        <button type="button" class="btn btn-md btn-secondary toggle_file_editor">
+                                            <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                                        </button>
+                                        <p><?php echo $file->filename_original; ?></p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row edit_files">
+                            <div class="row file_editor">
                                 <div class="col-12">
-                                    <div class="row edit_files_blocks">
+                                    <div class="row file_editor_blocks">
                                         <div class="col column">
                                             <div class="file_data">
                                                 <h3><?php _e('File information', 'cftp_admin');?></h3>

@@ -1,85 +1,98 @@
-// Edit file information on UPLOAD
-
-.file_editor {
+.file_editor_wrapper {
     padding-top:15px;
     margin-bottom:40px;
-}
 
-.edit_files {
     .file_title {
         font-family:var(--font_heading);
         position:relative;
-        word-break:break-all;
         margin:0;
-        padding:10px;
+        padding:0;
         color: var(--main_color);
         font-size:18px;
-        display:inline-block;
-        border-radius: 5px 5px 0 0;
-    
+        display:flex;
+        align-items: center;
+        
         p {
             padding:0 15px;
             margin:0;
             display:inline-block;
-            word-wrap:break-word;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 50%;
+            overflow: hidden;
+        }
+
+        button {
+            transform: rotate(0);
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            align-content: center;
         }
     }
 
-    .edit_files_blocks {
-        background:white;
-        border:1px solid #ccc;
-        padding:30px 15px;
-        box-shadow: var(--global_box_shadow);
-        border-radius: 8px;
+    &.collapsed {
+        margin-bottom: 20px;
+        opacity: .5;
 
-        .white-box-interior {
-            padding:15px;
+        .file_title {
+            button {
+                transform: rotate(90deg);
+            }
+        }
+
+        .file_editor {
+            height: 0;
+            overflow: hidden;
         }
     }
 
-    .file_data {
-        h3 {
-            padding-top:0;
-            margin-top:0;
-        }
-
-        @include bk(xs) {
+    .file_editor {
+        .file_editor_blocks {
             background:white;
-            margin-bottom:25px;
+            border:1px solid #ccc;
+            padding:30px 15px;
+            box-shadow: var(--global_box_shadow);
+            border-radius: 8px;
+    
+            .white-box-interior {
+                padding:15px;
+            }
         }
-    }
-
-    .textarea_description {
-        min-height: 10rem;
-    }
-
-    .column {
-        padding:0 25px;
-        margin-bottom: 50px;
-
-        @include bk(md) {
-            margin-bottom: 0;
+    
+        .file_data {
+            h3 {
+                padding-top:0;
+                margin-top:0;
+            }
+    
+            @include bk(xs) {
+                background:white;
+                margin-bottom:25px;
+            }
         }
-
-        &:last-child {
-            border:none;
+    
+        .textarea_description {
+            min-height: 10rem;
         }
-    }
-
-    .divider {
-        margin:40px auto;
-    }
-}
-
-.select_control_buttons {
-    margin:10px 0 30px;
-    padding:0;
-
-    a {
-        margin-right:5px;
-
-        &:last-child {
-            margin-right:0;
+    
+        .column {
+            padding:0 25px;
+            margin-bottom: 50px;
+    
+            @include bk(md) {
+                margin-bottom: 0;
+            }
+    
+            &:last-child {
+                border:none;
+            }
+        }
+    
+        .divider {
+            margin:40px auto;
         }
     }
 }

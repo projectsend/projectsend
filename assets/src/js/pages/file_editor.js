@@ -4,6 +4,16 @@
     admin.pages.fileEditor = function () {
 
         $(document).ready(function(){
+            // Datepicker
+            if ( $.isFunction($.fn.datepicker) ) {
+                $('.date-container .date-field').datepicker({
+                    format : 'dd-mm-yyyy',
+                    autoclose : true,
+                    todayHighlight : true
+                });
+            }
+
+            // Validation
             var validator = $("#files").validate({
                 errorPlacement: function(error, element) {
                     error.appendTo(element.parent('div'));
@@ -21,6 +31,7 @@
                 });
             });
 
+            // Copy settings to other files
             function copySettingsToCheckboxes(el, to, question)
             {
                 if ( confirm( question ) ) {
@@ -29,15 +40,6 @@
                         $(this).prop('checked', from_element.checked);
                     });
                 }
-            }
-
-            /** File editor */
-            if ( $.isFunction($.fn.datepicker) ) {
-                $('.date-container .date-field').datepicker({
-                    format : 'dd-mm-yyyy',
-                    autoclose : true,
-                    todayHighlight : true
-                });
             }
 
             $('.copy-expiration-settings').on('click', function() {
@@ -58,6 +60,30 @@
             $('.copy-hidden-settings').on('click', function() {
                 copySettingsToCheckboxes($(this), '.checkbox_setting_hidden', json_strings.translations.upload_form.copy_hidden);
             });
+
+            // Collapse - expand single item
+            $('.toggle_file_editor').on('click', function(e) {
+                let wrapper = $(this).parents('.file_editor_wrapper');
+                wrapper.toggleClass('collapsed');
+            });
+
+            // Collapse all
+            document.getElementById('files_collapse_all').addEventListener('click', function(e) {
+                let wrappers = document.querySelectorAll('.file_editor_wrapper');
+                wrappers.forEach(wrapper => {
+                    wrapper.classList.add('collapsed');
+                });
+                    
+            })
+
+            // Expand all
+            document.getElementById('files_expand_all').addEventListener('click', function(e) {
+                let wrappers = document.querySelectorAll('.file_editor_wrapper');
+                wrappers.forEach(wrapper => {
+                    wrapper.classList.remove('collapsed');
+                });
+                    
+            })
         });
     };
 })();

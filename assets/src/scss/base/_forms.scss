@@ -71,3 +71,16 @@ textarea.textarea_high {
         margin-bottom:10px;
     }
 }
+
+.select_control_buttons {
+    margin:10px 0 30px;
+    padding:0;
+
+    a {
+        margin-right:5px;
+
+        &:last-child {
+            margin-right:0;
+        }
+    }
+}

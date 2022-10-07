@@ -354,6 +354,14 @@ foreach ($items as $item) {
                     $menu_output .= "\t\t<li class='divider'></li>\n";
                 } else {
                     $sub_active = ($subitem['link'] == $current_filename['path']) ? 'current_page' : '';
+
+                    if (isset($_GET['section'])) {
+                        parse_str(parse_url($subitem['link'], PHP_URL_QUERY), $subitem_query);
+                        if (isset($subitem_query['section'])) {
+                            if ($subitem_query['section'] == $_GET['section']) { $sub_active = 'current_page'; }
+                        }
+                    }
+
                     $format = "\t\t<li class='%s'>\n\t\t\t<a href='%s'>%s<span class='submenu_label'>%s%s</span></a>\n\t\t</li>\n";
                     $menu_output .= sprintf($format, $sub_active, BASE_URI . $subitem['link'], $icon, $subitem['label'], $badge);
                 }

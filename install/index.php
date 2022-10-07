@@ -165,7 +165,7 @@ include_once '../header-unlogged.php';
                 <?php
                 // If the form was submitted with errors, show them here
                 if (isset($validation)) {
-                    $validation->list_errors();
+                    echo $validation->list_errors();
                 }
                 ?>
                 <form action="index.php" name="install_form" id="install_form" method="post" class="form-horizontal">

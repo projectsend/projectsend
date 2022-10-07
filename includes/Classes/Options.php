@@ -46,12 +46,33 @@ class Options
         }
     }
 
+    private function getCurrentUrl()
+    {
+        $pageURL = 'http';
+        if (!empty($_SERVER['HTTPS'])) {
+            if ($_SERVER['HTTPS'] == 'on') {
+                $pageURL .= "s";
+            }
+        }
+        $pageURL .= "://";
+        $pageURL .= $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
+
+        $extension = substr($pageURL, -4);
+        if ($extension == '.php') {
+            $pageURL = substr($pageURL, 0, -17);
+            return $pageURL;
+        } else {
+            $pageURL = substr($pageURL, 0, -8);
+            return $pageURL;
+        }
+    }
+
     /**
      * Makes the options available to the app
      */
     public function setSystemConstants()
     {
-        $base_uri = (empty($this->getOption('base_uri'))) ? '/' : $this->getOption('base_uri');
+        $base_uri = (empty($this->getOption('base_uri'))) ? $this->getCurrentUrl() : $this->getOption('base_uri');
         define('BASE_URI', $base_uri);
 
         // Set the default timezone based on the value of the Timezone select box of the options page

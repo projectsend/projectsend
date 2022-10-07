@@ -57,7 +57,7 @@ switch ($groups_form_type) {
 					}
 				?>
 			</select>
-			<div class="list_mass_members">
+			<div class="select_control_buttons">
 				<a href="#" class="btn btn-pslight add-all" data-target="members"><?php _e('Add all','cftp_admin'); ?></a>
 				<a href="#" class="btn btn-pslight remove-all" data-target="members"><?php _e('Remove all','cftp_admin'); ?></a>
 			</div>

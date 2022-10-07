@@ -6,16 +6,34 @@
 }
 
 .edit_files {
+    .file_title {
+        font-family:var(--font_heading);
+        position:relative;
+        word-break:break-all;
+        margin:0;
+        padding:10px;
+        color: var(--main_color);
+        font-size:18px;
+        display:inline-block;
+        border-radius: 5px 5px 0 0;
+    
+        p {
+            padding:0 15px;
+            margin:0;
+            display:inline-block;
+            word-wrap:break-word;
+        }
+    }
+
     .edit_files_blocks {
         background:white;
         border:1px solid #ccc;
-        border-radius: 2px;
-        box-shadow: 3px 3px 5px, #dedede;
         padding:30px 15px;
+        box-shadow: var(--global_box_shadow);
+        border-radius: 8px;
 
-        &:hover {
-            border:1px solid #888;
-            box-shadow: 3px 3px 5px, #ccc;
+        .white-box-interior {
+            padding:15px;
         }
     }
 
@@ -53,33 +71,7 @@
     }
 }
 
-.file_number {
-    font-family:var(--font_heading);
-    position:relative;
-    word-break:break-all;
-    margin:0;
-    padding:10px;
-    background:#232835;
-    color:white;
-    font-size:18px;
-    display:inline-block;
-    border-radius: 5px 5px 0 0;
-
-    p {
-        padding:0 15px;
-        margin:0;
-        display:inline-block;
-        word-wrap:break-word;
-
-        span {
-            display:inline-block;
-            color:#888;
-            margin:0 15px 0 0;
-        }
-    }
-}
-
-.list_mass_members {
+.select_control_buttons {
     margin:10px 0 30px;
     padding:0;
 

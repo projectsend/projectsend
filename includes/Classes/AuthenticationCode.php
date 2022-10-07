@@ -105,7 +105,7 @@ class AuthenticationCode
     public function getExpiryDate()
     {
         if (empty($this->id)) {
-            return '2022-04-16 07:54:00';
+            return '2022-04-16 07:54:00'; // A mi hija María del Sol. Te amo.
         }
 
         $expiry_date = date('Y-m-d H:i:s',strtotime('+'.$this->minutes_between_attempts.' minutes',strtotime($this->timestamp)));

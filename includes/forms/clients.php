@@ -129,7 +129,7 @@ switch ($clients_form_type) {
             <div class="col-sm-8">
                 <div class="input-group">
                     <input type="text" name="max_file_size" id="max_file_size" class="form-control" value="<?php echo (isset($client_arguments['max_file_size'])) ? format_form_value($client_arguments['max_file_size']) : '0'; ?>" />
-                    <span class="input-group-addon">MB</span>
+                    <span class="input-group-text">MB</span>
                 </div>
                 <p class="field_note form-text"><?php _e("Set to 0 to use the default system limit", 'cftp_admin'); ?> (<?php echo MAX_FILESIZE; ?> MB)</p>
             </div>
@@ -189,7 +189,7 @@ switch ($clients_form_type) {
                     <?php
                     if (!empty($role) && in_array($role, [8, 9])) {
                     ?>
-                        <div class="list_mass_members">
+                        <div class="select_control_buttons">
                             <button type="button" class="btn btn-pslight add-all" data-target="groups-select"><?php _e('Add all', 'cftp_admin'); ?></button>
                             <button type="button" class="btn btn-pslight remove-all" data-target="groups-select"><?php _e('Remove all', 'cftp_admin'); ?></button>
                         </div>

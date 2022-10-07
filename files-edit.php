@@ -160,7 +160,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
                     // Show the "My files" button only to clients
                     if (CURRENT_USER_LEVEL == 0) {
-                        $col_actions .= ' <a href="<?php echo CLIENT_VIEW_FILE_LIST_URL; ?>" class="btn-primary btn btn-sm">'.__('View my files', 'cftp_admin').'</a>';
+                        $col_actions .= ' <a href="'. CLIENT_VIEW_FILE_LIST_URL .'" class="btn-primary btn btn-sm">'.__('View my files', 'cftp_admin').'</a>';
                     }
 
                     // Add the cells to the row

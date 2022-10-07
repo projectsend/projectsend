@@ -16,13 +16,12 @@ function try_queries($queries = [])
     foreach ($queries as $i => $value) {
         try {
             $statement = $dbh->prepare($queries[$i]['query']);
-            $params = $queries[$i]['params'];
-            if (!empty($params)) {
-                foreach ($params as $name => $value) {
+            if (!empty($queries[$i]['params'])) {
+                foreach ($queries[$i]['params'] as $name => $value) {
                     $statement->bindValue($name, $value);
                 }
             }
-            $statement->execute($params);
+            $statement->execute($queries[$i]['params']);
             $success++;
         } catch (Exception $e) {
             $failed++;

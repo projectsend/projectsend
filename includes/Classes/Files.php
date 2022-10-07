@@ -878,7 +878,7 @@ class Files
             }
 
             // Categories
-            $categories = (!empty($data['categories'])) ? $data['categories'] : null;
+            $categories = (!empty($data['categories'])) ? $data['categories'] : [];
             $this->saveCategories($categories);
             $this->refresh();
 
@@ -1134,7 +1134,7 @@ class Files
         return false;
     }
 
-    public function saveCategories($categories = null)
+    public function saveCategories($categories = [])
     {
         $allowed = array(9,8,7);
         if (!current_role_in($allowed)) {
@@ -1151,9 +1151,11 @@ class Files
         $create = [];
 
         // Remove each item that is current but not on the new values
-        foreach ($current as $category_id) {
-            if (!in_array($category_id, $categories)) {
-                $this->removeFromCategory($category_id);
+        if (!empty($current)) {
+            foreach ($current as $category_id) {
+                if (!in_array($category_id, $categories)) {
+                    $this->removeFromCategory($category_id);
+                }
             }
         }
 

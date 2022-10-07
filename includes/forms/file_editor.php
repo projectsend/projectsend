@@ -33,20 +33,20 @@
                             </div>
                             <div class="row file_editor">
                                 <div class="col-12">
-                                    <div class="row file_editor_blocks">
-                                        <div class="col column">
+                                    <div class="row gx-5">
+                                        <div class="col">
                                             <div class="file_data">
                                                 <h3><?php _e('File information', 'cftp_admin');?></h3>
                                                 <input type="hidden" name="file[<?php echo $i; ?>][id]" value="<?php echo $file->id; ?>" />
                                                 <input type="hidden" name="file[<?php echo $i; ?>][original]" value="<?php echo $file->filename_original; ?>" />
                                                 <input type="hidden" name="file[<?php echo $i; ?>][file]" value="<?php echo $file->filename_on_disk; ?>" />
 
-                                                <div class="form-group row">
+                                                <div class="form-group">
                                                     <label><?php _e('Title', 'cftp_admin');?></label>
                                                     <input type="text" name="file[<?php echo $i; ?>][name]" value="<?php echo $file->title; ?>" class="form-control" placeholder="<?php _e('Enter here the required file title.', 'cftp_admin');?>" />
                                                 </div>
 
-                                                <div class="form-group row">
+                                                <div class="form-group">
                                                     <label><?php _e('Description', 'cftp_admin');?></label>
                                                     <textarea id="description_<?php echo $file->id; ?>" name="file[<?php echo $i; ?>][description]" class="<?php if ( get_option('files_descriptions_use_ckeditor') == 1 ) { echo 'ckeditor'; } ?> form-control textarea_description" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php if (!empty($file->description)) { echo $file->description; } ?></textarea>
                                                 </div>
@@ -57,11 +57,11 @@
                                             // The following options are available to users or client if clients_can_set_expiration_date set
                                             if (CURRENT_USER_LEVEL != 0 || get_option('clients_can_set_expiration_date') == '1' ) {
                                         ?>
-                                                <div class="col column_even column">
+                                                <div class="col">
                                                     <div class="file_data">
                                                         <h3><?php _e('Expiration date', 'cftp_admin');?></h3>
 
-                                                        <div class="form-group row">
+                                                        <div class="form-group">
                                                             <label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
                                                             <div class="input-group date-container">
                                                                 <input type="text" class="date-field form-control datapick-field readonly-not-grayed" readonly id="file_expiry_date_<?php echo $i; ?>" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($file->expiry_date)) ? date('d-m-Y', strtotime($file->expiry_date)) : date('d-m-Y'); ?>" />
@@ -81,28 +81,27 @@
                                                             // The following options are available to users only
                                                             if (CURRENT_USER_LEVEL != 0 || current_user_can_upload_public()) {
                                                         ?>
+                                                                <div class="divider"></div>
 
-                                                        <div class="divider"></div>
+                                                                <h3><?php _e('Public downloading', 'cftp_admin');?></h3>
 
-                                                        <h3><?php _e('Public downloading', 'cftp_admin');?></h3>
-
-                                                        <div class="checkbox">
-                                                            <label for="pub_checkbox_<?php echo $i; ?>">
-                                                                <input type="checkbox" class="checkbox_setting_public" id="pub_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][public]" value="1" <?php if ($file->public) { ?>checked="checked"<?php } ?>/> <?php _e('Allow public downloading of this file.', 'cftp_admin');?>
-                                                            </label>
-                                                        </div>
-                                                    <?php
-                                                        }
-                                                    ?>
+                                                                <div class="checkbox">
+                                                                    <label for="pub_checkbox_<?php echo $i; ?>">
+                                                                        <input type="checkbox" class="checkbox_setting_public" id="pub_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][public]" value="1" <?php if ($file->public) { ?>checked="checked"<?php } ?>/> <?php _e('Allow public downloading of this file.', 'cftp_admin');?>
+                                                                    </label>
+                                                                </div>
+                                                        <?php
+                                                            }
+                                                        ?>
+                                                    </div>
                                                 </div>
-                                            </div>
                                         <?php
                                             }
 
                                             // Only show the CLIENTS select field if the current uploader is a system user, and not a client.
                                             if (CURRENT_USER_LEVEL != 0) {
                                         ?>
-                                                <div class="col assigns column">
+                                                <div class="col assigns">
                                                     <div class="file_data">
                                                         <h3><?php _e('Assignations', 'cftp_admin');?></h3>
                                                         <label><?php _e('Clients', 'cftp_admin');?></label>
@@ -155,7 +154,7 @@
 
                                             if (CURRENT_USER_LEVEL != 0) {
                                         ?>
-                                                <div class="col categories column">
+                                                <div class="col categories">
                                                     <div class="file_data">
                                                         <h3><?php _e('Categories', 'cftp_admin');?></h3>
                                                         <label><?php _e('Add to', 'cftp_admin');?>:</label>
@@ -169,102 +168,103 @@
                                                             <button type="button" class="btn btn-sm btn-primary remove-all" data-target="categories_<?php echo $file->id; ?>"><?php _e('Remove all','cftp_admin'); ?></button>
                                                         </div>
                                                     </div>
-
-                                                    <?php
-                                                        // Copy settings buttons
-                                                        $copy_buttons = [];
-                                                        if (CURRENT_USER_LEVEL != 0) {
-                                                            if (count($editable) > 1) {
-                                                                // Expiration
-                                                                if (CURRENT_USER_LEVEL != 0 || get_option('clients_can_set_expiration_date') == '1' ) {
-                                                                    $copy_buttons['expiration'] = [
-                                                                        'label' => __('Expiration settings','cftp_admin'),
-                                                                        'class' => 'copy-expiration-settings',
-                                                                        'data' => [
-                                                                            'copy-from' => 'exp_checkbox_'.$i,
-                                                                            'copy-date-from' => 'file_expiry_date_'.$i,
-                                                                        ],
-                                                                    ];
-                                                                }
-                                                                // Public checkbox
-                                                                if (CURRENT_USER_LEVEL != 0 || current_user_can_upload_public()) {
-                                                                    $copy_buttons['public'] = [
-                                                                        'label' => __('Public settings','cftp_admin'),
-                                                                        'class' => 'copy-public-settings',
-                                                                        'data' => [
-                                                                            'copy-from' => 'pub_checkbox_'.$i,
-                                                                        ],
-                                                                    ];
-                                                                }
-
-                                                                if (CURRENT_USER_LEVEL != 0) {
-                                                                    // Selected clients
-                                                                    $copy_buttons['clients'] = [
-                                                                        'label' => __('Clients','cftp_admin'),
-                                                                        'class' => 'copy-all',
-                                                                        'data' => [
-                                                                            'type' => 'clients',
-                                                                            'target' => 'clients_'.$file->id,
-                                                                        ],
-                                                                    ];
-
-                                                                    // Selected groups
-                                                                    $copy_buttons['groups'] = [
-                                                                        'label' => __('Groups','cftp_admin'),
-                                                                        'class' => 'copy-all',
-                                                                        'data' => [
-                                                                            'type' => 'groups',
-                                                                            'target' => 'groups_'.$file->id,
-                                                                        ],
-                                                                    ];
-
-                                                                    // Hidden status
-                                                                    $copy_buttons['hidden'] = [
-                                                                        'label' => __('Hidden status','cftp_admin'),
-                                                                        'class' => 'copy-hidden-settings',
-                                                                        'data' => [
-                                                                            'copy-from' => 'hid_checkbox_'.$i,
-                                                                        ],
-                                                                    ];
-
-                                                                    // Categories
-                                                                    $copy_buttons['categories'] = [
-                                                                        'label' => __('Categories','cftp_admin'),
-                                                                        'class' => 'copy-all',
-                                                                        'data' => [
-                                                                            'type' => 'categories',
-                                                                            'target' => 'categories_'.$file->id,
-                                                                        ],
-                                                                    ];
-                                                                }
-                                                    ?>
-                                                    <?php
-                                                                if (count($copy_buttons) > 0) {
-                                                    ?>
-                                                                    <h3><?php _e('Apply to all other files','cftp_admin'); ?></h3>
-                                                    <?php
-                                                                    foreach ($copy_buttons as $id => $button) {
-                                                    ?>
-                                                                        <button type="button" class="btn btn-sm btn-pslight mb-2 <?php echo $button['class']; ?>"
-                                                                            <?php
-                                                                                foreach ($button['data'] as $key => $value) {
-                                                                                    echo ' data-'.$key.'="'.$value.'"';
-                                                                                }
-                                                                            ?>
-                                                                        >
-                                                                            <?php echo $button['label']; ?>
-                                                                        </button>
-                                                    <?php
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    ?>
                                                 </div>
                                         <?php
                                             }
                                         ?>
                                     </div>
+
+                                    <?php
+                                        // Copy settings buttons
+                                        $copy_buttons = [];
+                                        if (count($editable) > 1) {
+                                            // Expiration
+                                            if (CURRENT_USER_LEVEL != 0 || get_option('clients_can_set_expiration_date') == '1' ) {
+                                                $copy_buttons['expiration'] = [
+                                                    'label' => __('Expiration settings','cftp_admin'),
+                                                    'class' => 'copy-expiration-settings',
+                                                    'data' => [
+                                                        'copy-from' => 'exp_checkbox_'.$i,
+                                                        'copy-date-from' => 'file_expiry_date_'.$i,
+                                                    ],
+                                                ];
+                                            }
+                                            // Public checkbox
+                                            if (CURRENT_USER_LEVEL != 0 || current_user_can_upload_public()) {
+                                                $copy_buttons['public'] = [
+                                                    'label' => __('Public settings','cftp_admin'),
+                                                    'class' => 'copy-public-settings',
+                                                    'data' => [
+                                                        'copy-from' => 'pub_checkbox_'.$i,
+                                                    ],
+                                                ];
+                                            }
+
+                                            if (CURRENT_USER_LEVEL != 0) {
+                                                // Selected clients
+                                                $copy_buttons['clients'] = [
+                                                    'label' => __('Selected clients','cftp_admin'),
+                                                    'class' => 'copy-all',
+                                                    'data' => [
+                                                        'type' => 'clients',
+                                                        'target' => 'clients_'.$file->id,
+                                                    ],
+                                                ];
+
+                                                // Selected groups
+                                                $copy_buttons['groups'] = [
+                                                    'label' => __('Selected groups','cftp_admin'),
+                                                    'class' => 'copy-all',
+                                                    'data' => [
+                                                        'type' => 'groups',
+                                                        'target' => 'groups_'.$file->id,
+                                                    ],
+                                                ];
+
+                                                // Hidden status
+                                                $copy_buttons['hidden'] = [
+                                                    'label' => __('Hidden status','cftp_admin'),
+                                                    'class' => 'copy-hidden-settings',
+                                                    'data' => [
+                                                        'copy-from' => 'hid_checkbox_'.$i,
+                                                    ],
+                                                ];
+
+                                                // Categories
+                                                $copy_buttons['categories'] = [
+                                                    'label' => __('Selected categories','cftp_admin'),
+                                                    'class' => 'copy-all',
+                                                    'data' => [
+                                                        'type' => 'categories',
+                                                        'target' => 'categories_'.$file->id,
+                                                    ],
+                                                ];
+                                            }
+
+                                            if (count($copy_buttons) > 0) {
+                                    ?>
+                                                <footer>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <h3><?php _e('Apply to all files','cftp_admin'); ?></h3>
+                                                            <?php foreach ($copy_buttons as $id => $button) { ?>
+                                                                <button type="button" class="btn btn-sm btn-pslight mb-2 <?php echo $button['class']; ?>"
+                                                                    <?php
+                                                                        foreach ($button['data'] as $key => $value) {
+                                                                            echo ' data-'.$key.'="'.$value.'"';
+                                                                        }
+                                                                    ?>
+                                                                >
+                                                                    <?php echo $button['label']; ?>
+                                                                </button>
+                                                            <?php } ?>
+                                                        </div>
+                                                    </div>
+                                                </footer>
+                                    <?php
+                                            }
+                                        }
+                                    ?>
                                 </div>
                             </div>
                         </div>

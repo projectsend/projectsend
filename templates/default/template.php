@@ -23,10 +23,27 @@ $page_id = 'default_template';
 
 $body_class = array('template', 'default-template', 'hide_title');
 
-include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+// Flash errors
+if (!$count) {
+    if (isset($no_results_error)) {
+        switch ($no_results_error) {
+            case 'search':
+                $flash->error(__('Your search keywords returned no results.', 'cftp_admin'));
+                break;
+            case 'filter':
+                $flash->error(__('The filters you selected returned no results.', 'cftp_admin'));
+                break;
+        }
+    } else {
+        $flash->warning(__('There are no files available.', 'cftp_admin'));
+    }
+}
+
 
 define('TEMPLATE_THUMBNAILS_WIDTH', '50');
 define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
+
+include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 <div class="row">
     <div class="col-12">
@@ -95,20 +112,6 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                     <div class="right_clear"></div>
 
                     <?php
-                    if (!isset($count_for_pagination)) {
-                        if (isset($no_results_error)) {
-                            switch ($no_results_error) {
-                                case 'search':
-                                    $no_results_message = __('Your search keywords returned no results.', 'cftp_admin');
-                                    break;
-                            }
-                        } else {
-                            $no_results_message = __('There are no files available.', 'cftp_template');
-                        }
-                        echo system_message('danger', $no_results_message);
-                    }
-
-
                     if (isset($count) && $count > 0) {
                         // Generate the table using the class.
                         $table = new \ProjectSend\Classes\Layout\Table([

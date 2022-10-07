@@ -92,7 +92,7 @@ switch ($user_form_type) {
 				<div class="col-sm-8">
 					<div class="input-group">
 						<input type="text" name="max_file_size" id="max_file_size" class="form-control" value="<?php echo (isset($user_arguments['max_file_size'])) ? format_form_value($user_arguments['max_file_size']) : '0'; ?>" />
-						<span class="input-group-addon">MB</span>
+						<span class="input-group-text">MB</span>
 					</div>
 					<p class="field_note form-text"><?php _e("Set to 0 to use the default system limit",'cftp_admin'); ?> (<?php echo MAX_FILESIZE; ?> MB)</p>
 				</div>

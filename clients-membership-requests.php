@@ -270,8 +270,8 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                                     </div>';
                             }
 
-                            $membership_select = '<a href="#" class="change_all btn btn-pslight btn-xs" data-target="' . $client_id . '" data-check="true">' . __('Accept all', 'cftp_admin') . '</a> ';
-                            $membership_select .= '<a href="#" class="change_all btn btn-pslight btn-xs" data-target="' . $client_id . '" data-check="false">' . __('Deny all', 'cftp_admin') . '</a>';
+                            $membership_select = '<a href="#" class="change_all btn btn-pslight btn-sm" data-target="' . $client_id . '" data-check="true">' . __('Accept all', 'cftp_admin') . '</a> ';
+                            $membership_select .= '<a href="#" class="change_all btn btn-pslight btn-sm" data-target="' . $client_id . '" data-check="false">' . __('Deny all', 'cftp_admin') . '</a>';
                         }
 
                         // Add the cells to the row

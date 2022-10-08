@@ -31,6 +31,12 @@
             $('button').on('click', function() {
                 $(this).blur();
             });
+
+            $('.copy_text').on('click', function(e) {
+                let target_id = $(this).data('target');
+                let target = document.getElementById(target_id);
+                copyTextToClipboard(target.innerHTML);
+            });
         });
     };
 })();

@@ -59,9 +59,7 @@
             <input type="checkbox" value="1" name="public_listing_page_enable" id="public_listing_page_enable" class="checkbox_options" <?php echo (get_option('public_listing_page_enable') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Enable page','cftp_admin'); ?>
         </label>
         <p class="field_note form-text"><?php _e('The url for the listings page is','cftp_admin'); ?><br>
-        <a href="<?php echo PUBLIC_LANDING_URI; ?>" target="_blank">
-            <?php echo PUBLIC_LANDING_URI; ?>
-        </a></p>
+        <a href="<?php echo PUBLIC_LANDING_URI; ?>" target="_blank" id="public_landing_uri"><?php echo PUBLIC_LANDING_URI; ?></a> <i class="fa fa-copy copy_text" data-target="public_landing_uri"></i></p>
     </div>
 </div>
 

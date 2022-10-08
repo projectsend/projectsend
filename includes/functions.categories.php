@@ -246,17 +246,33 @@ function arrange_categories(array &$elements, $parent = 0, $depth = 0)
     return $branch;
 }
 
-
-function generate_categories_options($categories, $parent = 0, $selected = [], $filter_type = '', $filter_values = array(0))
+function render_categories_options(&$categories = [], $arguments = [])
 {
     $return = '';
+    if (empty($categories)) {
+        return $return;
+    }
+
+    $arguments['selected'] = to_array_if_not($arguments['selected']);
+    foreach ($categories as $id => $category) {
+        $depth = ($category['depth'] > 0) ? str_repeat('&mdash;', $category['depth']) . ' ' : false;
+        $selected = (!empty($arguments['selected']) && in_array($id, $arguments['selected'])) ? 'selected="selected"' : '';
+        $return .= '<option '.$selected.' value="'.$id.'">'.$depth . $category['name'].'</option>';
+        if (!empty($category['children'])) {
+            $return .= render_categories_options($category['children'], $arguments);
+        }
+    }
+
+    return $return;
+}
+
+function generate_categories_options(&$categories, $parent = 0, $selected = [], $filter_type = '', $filter_values = [0])
+{
+    $return = [];
 
     if (!empty($categories)) {
         foreach ($categories as $category) {
-            $depth = ($category['depth'] > 0) ? str_repeat('&#160;&#160;&#160;&#160;', $category['depth']) : false;
-            //$depth_style = " style='padding-left:" . $category['depth'] . "em;'";
-
-            $is_selected = (in_array($category['id'], $selected)) ? " selected='selected'" : '';
+            $is_selected = (in_array($category['id'], $selected)) ? true : false;
 
             $add_children = true;
             $add_to_results = true;
@@ -274,21 +290,31 @@ function generate_categories_options($categories, $parent = 0, $selected = [], $
                     case 'exclude_and_children':
                         if (in_array($category['id'], $filter_values)) {
                             $add_to_results = false;
-                            $add_children    = false;
+                            $add_children = false;
                         }
                         break;
                 }
             }
 
             if ($add_to_results === true) {
-                $format = "<option value='%s'%s>%s%s</option>\n";
-                $return .= sprintf($format, $category['id'], $is_selected, $depth, html_output($category['name']));
+                $return[$category['id']] = [
+                    'value' => $category['id'],
+                    'selected' => $is_selected,
+                    'depth' => $category['depth'],
+                    'children' => [],
+                    'name' => html_output($category['name']),
+                ];
             }
 
             if ($add_children === true) {
                 $children = $category['children'];
                 if (!empty($children)) {
-                    $return .= generate_categories_options($children, $category['parent'], $selected, $filter_type, $filter_values);
+                    $return[$category['id']]['children'] = generate_categories_options($children,
+                        $category['parent'],
+                        $selected,
+                        $filter_type,
+                        $filter_values
+                    );
                 }
             }
         }

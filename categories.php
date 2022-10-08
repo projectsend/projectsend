@@ -75,6 +75,7 @@ $form_information = array(
 );
 
 // Loading the form in EDIT mode
+$category_parent = null;
 if ((isset($_GET['form']) && $_GET['form'] == 'edit') or !empty($_POST['editing_id'])) {
     $action = 'edit';
     $editing = !empty($_POST['editing_id']) ? $_POST['editing_id'] : $_GET['id'];

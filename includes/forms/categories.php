@@ -14,17 +14,18 @@ switch ( $form_information['type'] ) {
         $show_cancel = true;
         break;
 }
+
+$select_categories = get_categories();
+$selected_parent = (isset($category_parent)) ? [$category_parent] : [];
+$ignore = ($form_information['type'] == 'edit_category') ? $editing : 0;
+$generate_categories_options = generate_categories_options( $select_categories['arranged'], 0, $selected_parent, 'exclude_and_children', [$ignore] );
 ?>
 <form action="categories.php" class="form-horizontal" name="process_category" id="process_category" method="post">
     <input type="hidden" name="processing" id="processing" value="1">
     <?php addCsrf(); ?>
-    <?php
-        if ( !empty( $action ) && $action == 'edit' ) {
-    ?>
-            <input type="hidden" name="editing_id" id="editing_id" value="<?php echo $editing; ?>">
-    <?php
-        }
-    ?>
+    <?php if ( !empty( $action ) && $action == 'edit' ) { ?>
+        <input type="hidden" name="editing_id" id="editing_id" value="<?php echo $editing; ?>">
+    <?php } ?>
 
     <div class="white-box">
         <div class="white-box-interior">
@@ -42,12 +43,7 @@ switch ( $form_information['type'] ) {
                 <div class="col-sm-8">
                     <select class="form-select" name="category_parent" id="category_parent">
                         <option value="0" <?php echo (isset($category_parent) && $category_parent == '0') ? 'selected="selected"' : ''; ?>><?php _e('None','cftp_admin'); ?></option>
-                        <?php
-                            $select_categories = get_categories();
-                            $ignore = ( $form_information['type'] == 'edit_category' ) ? $editing : 0;
-                            $selected_parent = ( isset($category_parent) ) ? array( $category_parent ) : array();
-                            echo generate_categories_options( $select_categories['arranged'], 0, $selected_parent, 'exclude_and_children', array( $ignore ) );
-                        ?>
+                        <?php echo render_categories_options($generate_categories_options, ['selected' => $category_parent, 'ignore' => $ignore]); ?>
                     </select>
                 </div>
             </div>

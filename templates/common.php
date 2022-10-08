@@ -118,10 +118,10 @@ if (!empty($cat_ids)) {
  * With the categories generated, keep only the files
  * that are assigned to the selected one.
  */
-if (!empty($category_filter) && $category_filter != '0') {
+if (isset($filter_by_category) && $filter_by_category != '0') {
     $filtered_file_ids = [];
     foreach ($files_keep as $keep_file_id => $keep_cat_ids) {
-        if (in_array($category_filter, $keep_cat_ids)) {
+        if (in_array($filter_by_category, $keep_cat_ids)) {
             $filtered_file_ids[] = $keep_file_id;
         }
     }

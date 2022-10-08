@@ -153,15 +153,14 @@
                                             }
 
                                             if (CURRENT_USER_LEVEL != 0) {
+                                                $generate_categories_options = generate_categories_options( $get_categories['arranged'], 0, $file->categories);
                                         ?>
                                                 <div class="col categories">
                                                     <div class="file_data">
                                                         <h3><?php _e('Categories', 'cftp_admin');?></h3>
                                                         <label><?php _e('Add to', 'cftp_admin');?>:</label>
                                                         <select class="form-select select2 none" multiple="multiple" id="categories_<?php echo $file->id; ?>" name="file[<?php echo $i; ?>][categories][]" data-type="categories" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
-                                                            <?php
-                                                                echo generate_categories_options( $get_categories['arranged'], 0, $file->categories );
-                                                            ?>
+                                                            <?php echo render_categories_options($generate_categories_options, ['selected' => $file->categories, 'ignore' => $ignore]); ?>
                                                         </select>
                                                         <div class="select_control_buttons">
                                                             <button type="button" class="btn btn-sm btn-primary add-all" data-target="categories_<?php echo $file->id; ?>"><?php _e('Add all','cftp_admin'); ?></button>

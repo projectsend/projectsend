@@ -116,10 +116,7 @@ if (!$count) {
                 break;
         }
     } else {
-        $no_results_message = __('There are no files available to add right now.', 'cftp_admin');
-        $no_results_message .= __('To use this feature you need to upload your files via FTP to the folder', 'cftp_admin');
-        $no_results_message .= ' <span class="format_url"><strong>' . html_output(UPLOADED_FILES_DIR) . '</strong></span>.';
-        $flash->error($no_results_message);
+        $flash->error(sprintf(__('There are no files available to add right now. To use this feature you need to upload your files via FTP to the folder %s.', 'cftp_admin'), '<span class="format_url"><strong>' . html_output(UPLOADED_FILES_DIR) . '</strong></span>'));
     }
 }
 

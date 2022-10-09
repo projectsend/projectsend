@@ -258,7 +258,7 @@ function get_available_languages()
  * - Unique logged in clients downloads
  * - Total count
  */
-function generate_downloads_count($id = null)
+function get_downloads_information($id = null)
 {
     global $dbh;
 
@@ -279,6 +279,15 @@ function generate_downloads_count($id = null)
 
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
+
+    if (!empty($id)) {
+        $data[$id] = array(
+            'file_id' => $id,
+            'total' => 0,
+            'unique_clients' => 0,
+            'anonymous_users' => 0,
+        );
+    }
 
     while ($row = $statement->fetch()) {
         $data[$row['file_id']] = array(

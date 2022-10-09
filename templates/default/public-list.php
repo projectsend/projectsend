@@ -131,6 +131,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
 
                     /** File title */
                     $filetitle = '<strong>' . $file->title . '</strong>';
+                    $filetitle .= '<br><small>'.$file->filename_original.'</small>';
 
                     /** Extension */
                     $extension_cell = '<span class="badge bg-success label_big">' . $file->extension . '</span>';

@@ -17,6 +17,8 @@ if (get_option('public_listing_logged_only') == 1) {
     redirect_if_not_logged_in();
 }
 
+$current_url = get_form_action_with_existing_parameters(basename(__FILE__));
+
 $mode = 'files';
 
 // If viewing a particular group, make sure it's public

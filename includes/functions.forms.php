@@ -30,9 +30,21 @@ function show_filters_form($arguments)
     }
 
     $ignore = (!empty($arguments['ignore_form_parameters'])) ? $arguments['ignore_form_parameters'] : array_keys($arguments['items']);
+    if (!empty($arguments['hidden_inputs'])) {
+        $ignore = array_merge($ignore, array_keys($arguments['hidden_inputs']));
+    }
 ?>
     <form action="<?php echo $arguments['action']; ?>" name="actions_filters" method="get" class="row row-cols-lg-auto g-3 align-items-end justify-content-end form_filters mt-4 mt-md-0">
         <?php echo form_add_existing_parameters($ignore); ?>
+        <?php
+            if (!empty($arguments['hidden_inputs'])) {
+                foreach ($arguments['hidden_inputs'] as $name => $value) {
+        ?>
+                    <input type="hidden" name="<?php echo $name; ?>" value="<?php echo $value; ?>">
+        <?php
+                }
+            }
+        ?>
         <?php foreach ($arguments['items'] as $name => $data) { ?>
             <div class="col-4 col-md-12">
                 <select class="form-select" name="<?php echo $name; ?>" id="<?php echo $name; ?>">
@@ -43,9 +55,23 @@ function show_filters_form($arguments)
                     <?php
                         }
 
-                        foreach ($data['options'] as $value => $name) {
+                        foreach ($data['options'] as $value => $option) {
+                            if (is_array($option)) {
+                                $name = $option['name'];
+                            } else {
+                                $name = $option;
+                            }
                     ?>
-                            <option value="<?php echo $value; ?>" <?php if (isset($data['current']) && $data['current'] == $value) { echo 'selected="selected"'; } ?>>
+                            <option
+                                value="<?php echo $value; ?>" <?php if (isset($data['current']) && $data['current'] == $value) { echo 'selected="selected"'; } ?>
+                                <?php
+                                    if (is_array($option) && !empty($option['attributes'])) {
+                                        foreach ($option['attributes'] as $attribute => $attr_value) {
+                                            echo ' '.$attribute.'="'.$attr_value.'"';
+                                        }
+                                    }
+                                ?>
+                            >
                                 <?php echo $name; ?>
                             </option>
                     <?php

@@ -1,63 +1,61 @@
 <?php
 $ld = 'cftp_template';
 
+$count = $files['pagination']['total'];
+
+if ($count == 0) {
+    if (isset($_GET['search'])) {
+        $flash->error(__('Your search keywords returned no results.', 'cftp_admin'));
+    } else {
+        $flash->error(__('There are no files available.', 'cftp_admin'));
+    }
+}
+
+$groups = get_groups([
+    'public' => true,
+]);
+
+// Search + filters bar data
+$search_form_action = 'public.php';
+$groups_select_options = [];
+foreach ($groups as $group) {
+    $groups_select_options[$group['id']] = [
+        'name' => $group['name'],
+        'attributes' => [
+            'data-token' => $group['public_token'],
+        ],
+    ];
+}
+
+$filters_form = [
+    'action' => $current_url,
+    'items' => [
+        'group' => [
+            'current' => (isset($_GET['group'])) ? $_GET['group'] : null,
+            'placeholder' => [
+                'value' => '0',
+                'label' => __('Not in group', 'cftp_admin')
+            ],
+            'options' => $groups_select_options,
+        ]
+    ],
+    'hidden_inputs' => [
+        'token' => (isset($_GET['token'])) ? htmlentities($_GET['token']) : '',
+    ],
+];
+
+// Results count and form actions 
+$elements_found_count = $count;
+$bulk_actions_items = [];
+
+// Include layout files
+$flash_size = 'full';
 include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
+
+include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
 ?>
-<div class="row">
-    <div class="col-12">
-        <div class="form_actions_left">
-            <div class="form_actions_limit_results">
-                <?php show_search_form(); ?>
-
-                <?php
-                $groups = get_groups([
-                    'public' => true,
-                ]);
-                if (!empty($groups)) {
-                ?>
-                    <form action="" name="group_filter" method="get" class="form-inline form_filters">
-                        <!-- <input type="hidden" name="token" value="<?php echo htmlentities($_GET['token']); ?>"> -->
-                        <?php echo form_add_existing_parameters(array('group')); ?>
-                        <div class="form-group row group_float">
-                            <select class="form-select form-control-short" name="group" id="group">
-                                <option value="0"><?php _e('Not in group', 'cftp_admin'); ?></option>
-                                <optgroup><?php _e('Groups', 'cftp_admin'); ?></optgroup>
-                                <?php
-                                foreach ($groups as $group) {
-                                ?>
-                                    <option value="<?php echo $group['id']; ?>" data-token="<?php echo $group['public_token']; ?>" <?php if (isset($_GET['group']) && (int)$_GET['group'] == $group['id']) {
-                                                                                                                                        echo 'selected';
-                                                                                                                                    } ?>><?php echo $group['name']; ?></option>
-                                <?php
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <button type="submit" id="btn_proceed_filter_files" class="btn btn-sm btn-pslight"><?php _e('Go', 'cftp_admin'); ?></button>
-                    </form>
-                <?php
-                }
-                ?>
-            </div>
-        </div>
-        <div class="form_actions_right">
-        </div>
-
-        <div class="right_clear"></div><br />
-    </div>
-</div>
-
 <form action="" name="files_list" method="get" class="form-inline batch_actions">
-    <div class="row">
-        <div class="col-12">
-            <?php echo form_add_existing_parameters(); ?>
-
-            <div class="form_actions_count">
-                <?php $count = $files['pagination']['total']; ?>
-                <p><?php echo sprintf(__('Found %d elements', 'cftp_admin'), (int)$count); ?></p>
-            </div>
-        </div>
-    </div>
+    <?php include_once LAYOUT_DIR . DS . 'form-counts-actions.php'; ?>
 
     <?php if ($mode == 'group' && !empty($group_props['description'])) { ?>
         <div class="row">
@@ -73,16 +71,6 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
     <div class="row">
         <div class="col-12">
             <?php
-            if ($count == 0) {
-                if (isset($_GET['search'])) {
-                    $no_results_message = __('Your search keywords returned no results.', 'cftp_admin');
-                } else {
-                    $no_results_message = __('There are no files available.', 'cftp_template');
-                }
-                echo system_message('danger', $no_results_message);
-            }
-
-
             if ($count > 0) {
                 // Generate the table using the class.
                 $table = new \ProjectSend\Classes\Layout\Table([

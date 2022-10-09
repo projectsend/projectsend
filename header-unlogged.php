@@ -57,6 +57,8 @@ else {
 }
 
 if ( !isset( $body_class ) ) { $body_class = []; }
+
+$flash_col = (isset($flash_size) && $flash_size == 'full') ? 'col-12' : 'col-12 col-sm-12 col-lg-4';
 ?>
 <!doctype html>
 <html lang="<?php echo $header_vars['html_lang']; ?>">
@@ -83,10 +85,8 @@ if ( !isset( $body_class ) ) { $body_class = []; }
 
     <main>
         <div class="container-fluid">
-            <?php render_custom_assets('body_top'); ?>
-
             <div class="main_content_unlogged">
-                <div class="container-fluid">
+                <?php render_custom_assets('body_top'); ?>
 
                     <div class="row">
                         <div class="col-12 branding_unlogged">
@@ -105,7 +105,7 @@ if ( !isset( $body_class ) ) { $body_class = []; }
                     <?php } ?>
 
                     <div class="row justify-content-md-center">
-                        <div class="col-12 col-sm-12 col-lg-4">
+                        <div class="<?php echo $flash_col; ?>">
                             <?php
                                 // Flash messages
                                 if ($flash->hasMessages()) {

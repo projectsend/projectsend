@@ -39,7 +39,7 @@ if (!empty($_GET['group'])) {
 $page_id = 'public_files_list';
 
 $show_page_title = true;
-$page_title = ($mode == 'files') ? __('Public groups and files', 'cftp_admin') : sprintf(__('Files in group: %s', 'cftp_admin'), $group_props['name']);
+$page_title = ($mode == 'files') ? __('Public files (not assigned to any group)', 'cftp_admin') : sprintf(__('Files in group: %s', 'cftp_admin'), $group_props['name']);
 
 $dont_redirect_if_logged = 1;
 

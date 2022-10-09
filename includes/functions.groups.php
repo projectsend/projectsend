@@ -201,3 +201,34 @@ function get_groups_assigned_files($groups_ids = [])
 
     return $return;
 }
+
+function count_public_files_in_group($group_id = null)
+{
+    if (!$group_id) {
+        return 0;
+    }
+
+    global $dbh;
+    $query = "SELECT DISTINCT id FROM " . TABLE_FILES_RELATIONS . " WHERE group_id=:group_id";
+    $sql = $dbh->prepare($query);
+    $sql->bindParam(':group_id', $group_id);
+    $sql->execute();
+    $sql->setFetchMode(PDO::FETCH_ASSOC);
+    return $sql->rowCount();
+}
+
+function count_public_files_not_in_groups()
+{
+    $args = [
+        'group' => null,
+        'pagination' => [
+            'page' => 1,
+            'start' => 0,
+            'per_page' => -1, //get_option('pagination_results_per_page')
+        ]
+    ];
+    
+    $files = get_public_files($args);
+
+    return count($files);
+}

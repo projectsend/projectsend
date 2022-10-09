@@ -20,7 +20,7 @@ $search_form_action = 'public.php';
 $groups_select_options = [];
 foreach ($groups as $group) {
     $groups_select_options[$group['id']] = [
-        'name' => $group['name'],
+        'name' => $group['name'] .' ('.count_public_files_in_group($group['id']).')',
         'attributes' => [
             'data-token' => $group['public_token'],
         ],
@@ -34,7 +34,7 @@ $filters_form = [
             'current' => (isset($_GET['group'])) ? $_GET['group'] : null,
             'placeholder' => [
                 'value' => '0',
-                'label' => __('Not in group', 'cftp_admin')
+                'label' => __('Not in any group', 'cftp_admin') .' ('.count_public_files_not_in_groups().')',
             ],
             'options' => $groups_select_options,
         ]

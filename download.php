@@ -8,6 +8,8 @@
 $allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
 
+$page_id = 'public_download';
+
 if (!empty($_GET['token']) && !empty($_GET['id'])) {
     $token = htmlentities($_GET['token']);
     $file_id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
@@ -85,7 +87,32 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                             <?php if ($file->filename_original != $file->title) { ?>
                                 <h3><?php echo $file->title; ?></h3>
                             <?php } ?>
-                        </h2>    
+                        </h2>
+                        
+                        <?php if (get_option('public_listing_enable_preview') == 1) { ?>
+                            <div class="preview">
+                                <?php
+                                    // Preview
+                                    if (file_is_image($file->full_path)) {
+                                        $thumbnail = make_thumbnail($file->full_path, null, 250, 250);
+                                        if (!empty($thumbnail['thumbnail']['url'])) {
+                                ?>
+                                            <a href="<?php echo $file->public_url . '&download'; ?>" class="get-preview">
+                                                <img src="<?php echo $thumbnail['thumbnail']['url']; ?>" class="thumbnail" />
+                                            </a>
+                                <?php
+                                        }
+                                    } else {
+                                        if ($file->embeddable) {
+                                ?>
+                                            <button class="btn btn-warning btn-sm btn-wide get-preview" data-url="<?php echo BASE_URI; ?>process.php?do=get_preview&file_id=<?php echo $file->id; ?>"><?php _e('Preview', 'cftp_admin'); ?></button>
+                                <?php
+                                        }
+                                        
+                                    }
+                                ?>
+                            </div>
+                        <?php } ?>
 
                         <div class="description">
                             <?php echo $file->description; ?>

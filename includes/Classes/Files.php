@@ -301,10 +301,10 @@ class Files
             // Record request
             $this->logger->addEntry([
                 'action' => 41,
-                'owner_id' => CURRENT_USER_ID,
+                'owner_id' => defined('CURRENT_USER_ID') ? CURRENT_USER_ID : 0,
                 'affected_file' => $this->id,
                 'affected_file_name' => $this->filename_on_disk,
-                'affected_account' => CURRENT_USER_ID,
+                'affected_account' => defined('CURRENT_USER_ID') ? CURRENT_USER_ID : 0,
                 'file_title_column' => true
             ]);
 

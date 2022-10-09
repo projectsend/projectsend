@@ -12,11 +12,10 @@ global $logger;
 
 extend_session();
 
-$public = ['login', 'social_login', 'login_ldap', 'logout', 'change_language'];
-if (!empty($_GET['do']) && !in_array($_GET['do'], $public)) {
-    redirect_if_not_logged_in();
-    redirect_if_role_not_allowed($allowed_levels);
+if (!isset($_GET['do'])) {
+    exit_with_error_code(403);
 }
+
 switch ($_GET['do']) {
     case 'social_login':
         if (Session::has('SOCIAL_LOGIN_NETWORK')) {
@@ -62,10 +61,14 @@ switch ($_GET['do']) {
         $download->download($_GET['id']);
         break;
     case 'return_files_ids':
+        redirect_if_not_logged_in();
+        redirect_if_role_not_allowed($allowed_levels);    
         $download = new Download;
         $download->returnFilesIds($_GET['files']);
         break;
     case 'download_zip':
+        redirect_if_not_logged_in();
+        redirect_if_role_not_allowed($allowed_levels);    
         $download = new Download;
         $download->downloadZip($_GET['files']);
         break;

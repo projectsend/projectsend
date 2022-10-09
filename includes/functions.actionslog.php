@@ -324,6 +324,7 @@ function format_action_log_record($params)
 			break;
         case 41:
             $part1 = $owner_user;
+            if (empty($owner_id)) { $owner_user = __('An anonymous user','cftp_admin'); }
             $action_text = __('requested a preview for the file','cftp_admin');
             $part2 = $affected_file_name;
             $formatted = sprintf(__('%s requested a preview for the file %s','cftp_admin'), $owner_user, $affected_file_name);

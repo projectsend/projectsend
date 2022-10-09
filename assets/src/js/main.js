@@ -80,6 +80,9 @@
                 admin.parts.filePreviewModal();
                 admin.pages.publicFilesList();
                 break;
+            case 'public_download':
+                admin.parts.filePreviewModal();
+                break;
             default:
                 // do nothing
                 break;

@@ -130,7 +130,7 @@
                         </div>
                         <div class="col-sm-8">
                             <?php /*<span class="format_url"><?php echo BASE_URI . 'login-callback.php?service='.$network; ?></span>*/ ?>
-                            <span class="format_url"><?php echo BASE_URI . 'login-callback.php'; ?></span>
+                            <span class="format_url" id="callback_<?php echo $network; ?>"><?php echo BASE_URI . 'login-callback.php'; ?></span>  <i class="fa fa-copy copy_text" data-target="callback_<?php echo $network; ?>"></i>
                         </div>
                     </div>
                 <?php } ?>

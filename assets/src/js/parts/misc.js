@@ -35,7 +35,15 @@
             $('.copy_text').on('click', function(e) {
                 let target_id = $(this).data('target');
                 let target = document.getElementById(target_id);
-                copyTextToClipboard(target.innerHTML);
+                var element_type = target.tagName.toLowerCase();
+                switch (element_type) {
+                    case 'input':
+                        copyTextToClipboard(target.value);
+                    break;
+                    default:
+                        copyTextToClipboard(target.innerHTML);
+                    break;
+                }
             });
         });
     };

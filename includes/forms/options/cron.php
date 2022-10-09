@@ -8,7 +8,7 @@
 
         <p class="field_note form-text"><?php _e("Sample command to execute the cron job every 5 minutes. You may need to adjust the frequency and paths to match your server's settings.",'cftp_admin'); ?><br>
         <?php _e("The >/dev/null part will discard the result and prevent you from getting a email from your OS after each run.",'cftp_admin'); ?>
-            <input type="text" class="form-control" readonly href="<?php echo CRON_COMMAND_EXAMPLE; ?>" value="<?php echo CRON_COMMAND_EXAMPLE; ?>">
+            <input type="text" class="form-control" readonly value="<?php echo CRON_COMMAND_EXAMPLE; ?>" id="cron_command_example"> <i class="fa fa-copy copy_text" data-target="cron_command_example"></i>
         </p>
     </div>
 </div>
@@ -22,7 +22,7 @@
         <p class="field_note form-text"><?php _e("It's recommended to keep this checked to prevent unathorized executions of the tasks by accessing the URL directly.",'cftp_admin'); ?></p>
 
         <p class="field_note form-text"><?php _e('If you disable this option, use the following URL to run your cron job via HTTP request:','cftp_admin'); ?><br>
-            <input type="text" class="form-control" readonly href="<?php echo CRON_URL; ?>" value="<?php echo CRON_URL; ?>">
+            <input type="text" class="form-control" readonly value="<?php echo CRON_URL; ?>" id="cron_command"> <i class="fa fa-copy copy_text" data-target="cron_command"></i>
         </p>
     </div>
 </div>

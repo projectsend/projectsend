@@ -230,5 +230,5 @@ function count_public_files_not_in_groups()
     
     $files = get_public_files($args);
 
-    return count($files);
+    return $files['pagination']['total'];
 }

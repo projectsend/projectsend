@@ -7,9 +7,6 @@ require_once 'bootstrap.php';
 
 $active_nav = 'clients';
 
-// Create the object
-$edit_client = new \ProjectSend\Classes\Users();
-
 // Check if the id parameter is on the URI.
 if (!isset($_GET['id'])) {
     exit_with_error_code(403);
@@ -20,7 +17,9 @@ if (!client_exists_id($client_id)) {
     exit_with_error_code(403);
 }
 
-$edit_client->get($client_id);
+// Create the object
+$edit_client = new \ProjectSend\Classes\Users($client_id);
+
 $client_arguments = $edit_client->getProperties();
 
 // Get groups where this client is member
@@ -120,7 +119,11 @@ if ($_POST) {
     }
 
     if ($edit_response['query'] == 1) {
-        $flash->success(__('Client saved successfully'));
+        if ($client_id == CURRENT_USER_ID) {
+            $flash->success(__('Profile edited successfully'));
+        } else {
+            $flash->success(__('Client saved successfully'));
+        }
     } else {
         $flash->error(__('There was an error saving to the database'));
     }
@@ -138,7 +141,7 @@ $page_id = 'client_form';
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-lg-6">
+    <div class="col-12 col-sm-12 col-lg-6">
         <div class="white-box">
             <div class="white-box-interior">
                 <?php

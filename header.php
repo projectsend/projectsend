@@ -69,12 +69,12 @@ password_change_required();
 </head>
 
 <body <?php echo add_body_class( $body_class ); ?> <?php if (!empty($page_id)) { echo add_page_id($page_id); } ?>>
-    <div class="container-custom">
-        <?php include_once LAYOUT_DIR . DS . 'header-top.php'; ?>
-        <?php include_once LAYOUT_DIR . DS . 'main-menu.php'; ?>
+    <?php include_once LAYOUT_DIR . DS . 'header-top.php'; ?>
+    <?php include_once LAYOUT_DIR . DS . 'main-menu.php'; ?>
 
-        <div class="main_content">
-            <div class="container-fluid">
+    <main>
+        <div class="container-fluid">
+            <div class="main_content">
                 <?php
                     render_custom_assets('body_top');
 
@@ -85,10 +85,24 @@ password_change_required();
                 ?>
 
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-6">
                         <div id="section_title">
                             <h2><?php echo $page_title; ?></h2>
                         </div>
+                    </div>
+                    <div class="col-6 text-end">
+                        <?php
+                            if (!empty($header_action_buttons)) {
+                                foreach ($header_action_buttons as $header_button) {
+                                    $icon = (!empty($header_button['icon'])) ? $header_button['icon'] : 'fa fa-plus';
+                        ?>
+                                    <a href="<?php echo $header_button['url']; ?>" class="btn btn-sm btn-primary" <?php if (!empty($header_button['id'])) { echo 'id="'.$header_button['id'].'"'; } ?>>
+                                        <i class="<?php echo $icon; ?> fa-small"></i> <?php echo $header_button['label']; ?>
+                                    </a>
+                        <?php
+                                }
+                            }
+                        ?>
                     </div>
                 </div>
 

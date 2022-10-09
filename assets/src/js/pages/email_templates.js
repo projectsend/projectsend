@@ -59,7 +59,9 @@
                 const el = document.querySelector('button[data-tag="'+tag+'"]');
                 if (!element.value.includes(tag)) {
                     el.classList.add('btn-warning');
+                    el.classList.remove('btn-pslight');
                 } else {
+                    el.classList.add('btn-pslight');
                     el.classList.remove('btn-warning');
                 }
             });

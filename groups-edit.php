@@ -13,9 +13,6 @@ $page_id = 'group_form';
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
-/** Create the object */
-$edit_group = new \ProjectSend\Classes\Groups();
-
 /** Check if the id parameter is on the URI. */
 if (!isset($_GET['id'])) {
     exit_with_error_code(403);
@@ -26,7 +23,8 @@ if (!group_exists_id($group_id)) {
     exit_with_error_code(403);
 }
 
-$edit_group->get($group_id);
+/** Create the object */
+$edit_group = new \ProjectSend\Classes\Groups($group_id);
 $group_arguments = $edit_group->getProperties();
 
 if ($_POST) {
@@ -60,7 +58,7 @@ if ($_POST) {
 }
 ?>
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-lg-6">
+    <div class="col-12 col-sm-12 col-lg-6">
         <div class="white-box">
             <div class="white-box-interior">
                 <?php

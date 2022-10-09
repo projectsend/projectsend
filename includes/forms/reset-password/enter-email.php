@@ -3,7 +3,7 @@
     <fieldset>
         <input type="hidden" name="form_type" id="form_type" value="new_request" />
 
-        <div class="form-group">
+        <div class="mb-3">
             <label for="email"><?php _e('E-mail','cftp_admin'); ?></label>
             <input type="email" name="email" id="email" class="form-control" required />
         </div>

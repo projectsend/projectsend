@@ -7,9 +7,6 @@ require_once 'bootstrap.php';
 
 $active_nav = 'users';
 
-// Create the object
-$edit_user = new \ProjectSend\Classes\Users();
-
 // Check if the id parameter is on the URI.
 if (!isset($_GET['id'])) {
     exit_with_error_code(403);
@@ -20,8 +17,8 @@ if (!user_exists_id($user_id)) {
     exit_with_error_code(403);
 }
 
-// Get the user information from the database to use on the form.
-$edit_user->get($user_id);
+// Create the object
+$edit_user = new \ProjectSend\Classes\Users($user_id);
 $user_arguments = $edit_user->getProperties();
 
 // Form type
@@ -125,7 +122,7 @@ if (CURRENT_USER_USERNAME == $user_arguments['username']) {
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-lg-6">
+    <div class="col-12 col-sm-12 col-lg-6">
         <div class="white-box">
             <div class="white-box-interior">
                 <?php

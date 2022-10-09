@@ -1,8 +1,7 @@
-                </div> <!-- container-fluid -->
-
-                <?php render_footer_text(); ?>
-            </div> <!-- main_content -->
-        </div> <!-- container-custom -->
+                    <?php render_footer_text(); ?>
+                </div> <!-- main-content -->
+            </div> <!-- container-fluid -->
+        </main>
         <?php
             render_json_variables();
             

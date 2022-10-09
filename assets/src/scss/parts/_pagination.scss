@@ -1,0 +1,28 @@
+.pagination_wrapper {
+    margin:2em auto;
+
+    .pagination > .active > a,
+    .pagination > .active > a:focus,
+    .pagination > .active > a:hover,
+    .pagination > .active > span,
+    .pagination > .active > span:focus,
+    .pagination > .active > span:hover
+    {
+        background: var(--main_color);
+        border-color: var(--main_color);
+        color: white;
+    }
+
+    a {
+        color: var(--main_color);
+
+        &:hover {
+            color: var(--main_color);
+        }
+    }
+
+    .go_to_page #page_number {
+        width:3.5rem !important;
+        text-align:center;
+    }
+}

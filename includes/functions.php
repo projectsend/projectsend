@@ -16,13 +16,12 @@ function try_queries($queries = [])
     foreach ($queries as $i => $value) {
         try {
             $statement = $dbh->prepare($queries[$i]['query']);
-            $params = $queries[$i]['params'];
-            if (!empty($params)) {
-                foreach ($params as $name => $value) {
+            if (!empty($queries[$i]['params'])) {
+                foreach ($queries[$i]['params'] as $name => $value) {
                     $statement->bindValue($name, $value);
                 }
             }
-            $statement->execute($params);
+            $statement->execute($queries[$i]['params']);
             $success++;
         } catch (Exception $e) {
             $failed++;
@@ -32,63 +31,49 @@ function try_queries($queries = [])
     return $failed == 0;
 }
 
-function check_server_requirements()
+function get_server_requirements_errors()
 {
-    $absParent = dirname(dirname(__FILE__));
-    $error_msg = [];
+    $errors_found = [];
 
-    /**
-     * Check for PDO extensions
-     */
+    // Check for PDO extensions
     $pdo_available_drivers = PDO::getAvailableDrivers();
     if (empty($pdo_available_drivers)) {
-        $error_msg[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
+        $errors_found[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
     } else {
         if ((DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND')) {
-            $error_msg[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
+            $errors_found[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
         }
         if ((DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers)) {
-            $error_msg[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
+            $errors_found[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
         }
     }
 
-    /** Version requirements */
+    // Version requirements
     $version_not_met =  __('%s minimum version not met. Please upgrade to at least version %s', 'cftp_admin');
 
-    /** php */
+    // php
     if (version_compare(phpversion(), REQUIRED_VERSION_PHP, "<")) {
-        $error_msg[] = sprintf($version_not_met, 'php', REQUIRED_VERSION_PHP);
+        $errors_found[] = sprintf($version_not_met, 'php', REQUIRED_VERSION_PHP);
     }
 
-    /** mysql */
+    // mysql
     global $dbh;
     if (!empty($dbh)) {
         $version_mysql = $dbh->query('SELECT version()')->fetchColumn();
         if (version_compare($version_mysql, REQUIRED_VERSION_MYSQL, "<")) {
-            $error_msg[] = sprintf($version_not_met, 'MySQL', REQUIRED_VERSION_MYSQL);
+            $errors_found[] = sprintf($version_not_met, 'MySQL', REQUIRED_VERSION_MYSQL);
         }
     }
 
-    if (!empty($error_msg)) {
-        $page_title = __('Error', 'cftp_admin');
-        include_once $absParent . '/header-unlogged.php';
-?>
-        <div class="row justify-content-md-center">
-            <div class="col-12 col-sm-12 col-lg-4">
-                <div class="white-box">
-                    <div class="white-box-interior">
-                        <?php
-                        foreach ($error_msg as $msg) {
-                            echo system_message('error', $msg);
-                        }
-                        ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-    <?php
-        include_once $absParent . '/footer.php';
-        exit;
+    return $errors_found;
+}
+
+function check_server_requirements()
+{
+    $errors = get_server_requirements_errors();
+
+    if (!empty($errors)) {
+        ps_redirect(PAGE_STATUS_CODE_REQUIREMENTS);
     }
 }
 
@@ -273,7 +258,7 @@ function get_available_languages()
  * - Unique logged in clients downloads
  * - Total count
  */
-function generate_downloads_count($id = null)
+function get_downloads_information($id = null)
 {
     global $dbh;
 
@@ -294,6 +279,15 @@ function generate_downloads_count($id = null)
 
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
+
+    if (!empty($id)) {
+        $data[$id] = array(
+            'file_id' => $id,
+            'total' => 0,
+            'unique_clients' => 0,
+            'anonymous_users' => 0,
+        );
+    }
 
     while ($row = $statement->fetch()) {
         $data[$row['file_id']] = array(
@@ -615,6 +609,23 @@ function client_can_upload_public($client_id)
     return false;
 }
 
+function current_user_can_upload()
+{
+    switch (CURRENT_USER_LEVEL) {
+        case 9:
+        case 8:
+        case 7:
+            return true;
+            break;
+        case 0:
+            return (get_option('clients_can_upload') == '1');
+            break;
+        default:
+            break;
+    }
+
+    return false;
+}
 
 function current_user_can_upload_public()
 {
@@ -629,9 +640,9 @@ function current_user_can_upload_public()
             break;
         default:
             break;
+        }
 
-            return false;
-    }
+    return false;
 }
 
 /**
@@ -803,8 +814,18 @@ function render_json_variables()
  */
 function message_no_clients()
 {
-    $msg = '<strong>' . __('Important:', 'cftp_admin') . '</strong> ' . __('There are no clients or groups at the moment. You can still upload files and assign them later.', 'cftp_admin');
-    echo system_message('warning', $msg);
+    global $dbh;
+    // Count the clients to show a warning message or the form
+    $statement = $dbh->query("SELECT id FROM " . TABLE_USERS . " WHERE level = '0'");
+    $count_clients = $statement->rowCount();
+    $statement = $dbh->query("SELECT id FROM " . TABLE_GROUPS);
+    $count_groups = $statement->rowCount();
+
+    if ((!$count_clients or $count_clients < 1) && (!$count_groups or $count_groups < 1)) {
+        global $flash;
+        $msg = '<strong>' . __('Important:', 'cftp_admin') . '</strong> ' . __('There are no clients or groups at the moment. You can still upload files and assign them later.', 'cftp_admin');
+        $flash->warning($msg);
+    }
 }
 
 
@@ -1444,7 +1465,7 @@ function password_notes()
     }
 
     if (count($rules_active) > 0) {
-        $pass_notes_output = '<p class="field_note">' . __('The password must contain, at least:', 'cftp_admin') . '</strong><br />';
+        $pass_notes_output = '<p class="field_note form-text">' . __('The password must contain, at least:', 'cftp_admin') . '</strong><br />';
         foreach ($rules_active as $rule => $text) {
             $pass_notes_output .= '- ' . $text . '<br>';
         }
@@ -1801,7 +1822,7 @@ function record_new_download($user_id = CURRENT_USER_ID, $file_id = null)
 
     // Anonymous download
     $ip = get_client_ip();
-    $host = $_SERVER['REMOTE_HOST'];
+    $host = (!empty($_SERVER['REMOTE_HOST'])) ? $_SERVER['REMOTE_HOST'] : null;
     switch (get_option('privacy_record_downloads_ip_address')) {
         default:
         case 'all':
@@ -1858,8 +1879,7 @@ function user_can_download_file($user_id = CURRENT_USER_ID, $file_id = null)
     }
 
     // Get the file
-    $file = new \ProjectSend\Classes\Files();
-    $file->get($file_id);
+    $file = new \ProjectSend\Classes\Files($file_id);
 
     // Get groups
     $get_groups = new \ProjectSend\Classes\GroupsMemberships();
@@ -1916,6 +1936,37 @@ function count_groups_requests_for_existing_clients()
 
     return $count;
 }
+
+function count_memberships_requests_denied()
+{
+    global $dbh;
+
+    $sql_requests = $dbh->prepare("SELECT DISTINCT id FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='1'");
+    $sql_requests->execute();
+   
+    return $sql_requests->rowCount();
+}
+
+function count_account_requests()
+{
+    global $dbh;
+
+    $sql_requests = $dbh->prepare("SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE account_requested='1' AND account_denied='0'");
+    $sql_requests->execute();
+
+    return $sql_requests->rowCount();
+}
+
+function count_account_requests_denied()
+{
+    global $dbh;
+
+    $sql_requests = $dbh->prepare("SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE account_requested='1' AND account_denied='1'");
+    $sql_requests->execute();
+
+    return $sql_requests->rowCount();
+}
+
 
 // Function to get the client ip address
 function get_client_ip()
@@ -1980,7 +2031,7 @@ function recaptcha2_render_widget()
 {
     if (recaptcha2_is_enabled()) {
     ?>
-        <div class="form-group">
+        <div class="form-group row">
             <!-- <label><?php _e('Verification', 'cftp_admin'); ?></label> -->
             <div class="g-recaptcha" data-sitekey="<?php echo get_option('recaptcha_site_key'); ?>"></div>
         </div>

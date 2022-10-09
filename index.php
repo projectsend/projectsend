@@ -46,8 +46,7 @@ if ($_POST) {
 
             $login = json_decode($auth->authenticate($_POST['username'], $_POST['password']));
             if ($login->status == 'success') {
-                $user = new \ProjectSend\Classes\Users;
-                $user->get($login->user_id);
+                $user = new \ProjectSend\Classes\Users($login->user_id);
 
                 ps_redirect($login->location);
             } else {
@@ -74,8 +73,7 @@ if ($_POST) {
 
             $login = json_decode($auth->validate2faRequest($_POST['token'], (int)$code));
             if ($login->status == 'success') {
-                $user = new \ProjectSend\Classes\Users;
-                $user->get($login->user_id);
+                $user = new \ProjectSend\Classes\Users($login->user_id);
                 ps_redirect($login->location);
             } else {
                 $flash->error($auth->getError());
@@ -126,8 +124,8 @@ if ($form == '2fa_verify') {
 
 include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 ?>
-<div class="row">
-    <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
+<div class="row justify-content-md-center">
+    <div class="col-12 col-sm-12 col-lg-4">
         <div class="white-box">
             <div class="white-box-interior">
                 <div class="ajax_response">
@@ -141,7 +139,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                     <?php } ?>
                 </ul> */ ?>
                 <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane fade in active" id="local">
+                    <div role="tabpanel" class="tab-pane fade in active show" id="local">
                         <?php
                         include_once FORMS_DIR . DS . $form . '.php';
                         ?>

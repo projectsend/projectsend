@@ -116,9 +116,6 @@ body {
 			&:focus
 			{
 				background:white;
-				-moz-border-radius:4px;
-				-o-border-radius:4px;
-				-webkit-border-radius:4px;
 				border-radius:4px;
 				color:#333;
 				text-decoration:none;
@@ -140,9 +137,6 @@ body {
 
         &:hover {
             background:white;
-            -moz-border-radius:4px;
-            -o-border-radius:4px;
-            -webkit-border-radius:4px;
             border-radius:4px;
             color:#333;
         }
@@ -181,11 +175,7 @@ header {
 		padding:10px;
 		border:1px solid #333333;
 		vertical-align:top;
-		-moz-border-radius:7px;
-		-webkit-border-radius:7px;
-		-o-border-radius:7px;
 		border-radius:7px;
-		-moz-box-shadow:0 1px 4px #111;
         box-shadow:0 1px 4px #111;
         
         h5 {

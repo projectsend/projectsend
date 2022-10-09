@@ -36,6 +36,15 @@ switch ($error_type) {
         $error_message = (Session::has('database_connection_error')) ? Session::get('database_connection_error') : __("Can not connect to database", 'cftp_admin');
         Session::remove('database_connection_error');
         break;
+    case 'requirements':
+        http_response_code(403);
+        $page_title = __('Requirements error', 'cftp_admin');
+        $error_message = '';
+        $errors = get_server_requirements_errors();
+        foreach ($errors as $error) {
+            $error_message .= $error . '<br>';
+        }
+        break;
 }
 ?>
 <!doctype html>
@@ -58,17 +67,19 @@ switch ($error_type) {
     ?>
 </head>
 
-<body class="backend forbidden">
+<body class="backend error_page">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                <h2><?php echo $page_title; ?></h2>
+            <div class="col-12">
+                <h2 class="mt-4 mb-4"><?php echo $page_title; ?></h2>
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-12">
-                <div class="whiteform whitebox">
-                    <?php echo $error_message; ?>
+            <div class="col-12">
+                <div class="white-box">
+                    <div class="white-box-interior">
+                        <?php echo $error_message; ?>
+                    </div>
                 </div>
             </div>
         </div>

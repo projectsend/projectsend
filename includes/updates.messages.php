@@ -47,7 +47,7 @@
                                 <strong><?php _e('Update available!', 'cftp_admin'); ?></strong> <?php echo sprintf( __('ProjectSend %s has been released', 'cftp_admin'), $update_data->latest_version); ?>
                             </div>
                             <div class="col-sm-4 text-right">
-                                <a href="<?php echo $update_data->url; ?>" class="btn btn-default btn-xs" target="_blank"><?php _e('Download', 'cftp_admin');?></a> <a href="<?php echo $update_data->chlog; ?>" target="_blank" class="btn btn-default btn-xs"><?php _e('Changelog', 'cftp_admin');?></a>
+                                <a href="<?php echo $update_data->url; ?>" class="btn btn-pslight btn-sm" target="_blank"><?php _e('Download', 'cftp_admin');?></a> <a href="<?php echo $update_data->chlog; ?>" target="_blank" class="btn btn-pslight btn-sm"><?php _e('Changelog', 'cftp_admin');?></a>
                             </div>
                         </div>
                     </div>

@@ -8,12 +8,6 @@
 $allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
 
-$page_title = __('File information', 'cftp_admin');
-
-$dont_redirect_if_logged = 1;
-
-include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
-
 if (!empty($_GET['token']) && !empty($_GET['id'])) {
     $token = htmlentities($_GET['token']);
     $file_id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
@@ -25,8 +19,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
     $can_download = false;
     $can_view = false; // Can only view information about the file, not download it
 
-    $file = new \ProjectSend\Classes\Files;
-    $file->get($file_id);
+    $file = new \ProjectSend\Classes\Files($file_id);
 
     if ($file->public_token != $token || $file->expired == true) {
         exit_with_error_code(403);
@@ -69,23 +62,30 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
 } else {
     exit_with_error_code(403);
 }
+
+$page_title = __('File information', 'cftp_admin');
+$page_title = $file->title;
+$dont_redirect_if_logged = 1;
+
+include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 ?>
 
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-lg-8 col-lg-offset-2">
+    <div class="col-12 col-sm-12 col-lg-8 offset-lg-2">
 
         <div class="white-box">
             <div class="white-box-interior">
                 <?php
                 if ($can_view) {
                 ?>
-                    <div class="text-center">
+                    <div class="text-center p-5">
                         <h2 class="file_title">
-                            <span class="label label-default">
-                                <?php echo $file->filename_original; ?>
-                            </span>
-                        </h2>
-                        <h3><?php echo $file->title; ?></h3>
+                            <?php echo $file->filename_original; ?>
+
+                            <?php if ($file->filename_original != $file->title) { ?>
+                                <h3><?php echo $file->title; ?></h3>
+                            <?php } ?>
+                        </h2>    
 
                         <div class="description">
                             <?php echo $file->description; ?>

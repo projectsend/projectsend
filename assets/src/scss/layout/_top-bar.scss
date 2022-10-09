@@ -1,0 +1,107 @@
+// Topmost header
+#header {
+    a {
+        transition:.2s all ease-in-out;
+    }
+
+    &.navbar {
+        background:var(--top_bar_background);
+
+        .nav {
+            > li {
+                margin:0;
+                font-size:.9rem;
+    
+                > a {
+                    color:#f0f0f0;
+                    // line-height:33px;
+                    padding:3px 10px;
+                    border-left:1px solid #474b58;
+                    margin:0;
+    
+                    &:hover, &:focus {
+                        color:#fff;
+                        background:var(--top_bar_hover);
+                    }
+    
+                    &.toggle_main_menu {
+                        font-size:2em;
+                        margin-top:3px;
+                        border-left:none;
+                        padding: 0;
+    
+                        span {
+                            display:none;
+                        }
+    
+                        &:hover,
+                        &:focus
+                        {
+                            background:none;
+                        }
+                    }
+                }
+            }
+
+            .open > a, .nav .open > a:focus, .nav .open > a:hover {
+                background: #333;
+            }
+        }
+
+        .nav_account > li {
+            display:inline-block;
+
+            > a {
+                color:#f0f0f0;
+            }
+
+            i {
+                display: inline-block;
+            }
+
+            span {                
+                @include bk(xs) {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    .navbar-brand {
+        height:40px;
+        line-height:10px;
+        color:#f0f0f0;
+
+        &:hover,
+        &:active,
+        &:focus
+        {
+            text-decoration:none;
+        }
+
+        svg {
+            fill:#777;
+            display: inline-block;
+            margin:0 10px 0 20px;
+            width:20px;
+            height:auto;
+
+            &:hover {
+                fill:#fff;
+            }
+
+            @include bk(xs) {
+                display: none;
+            }
+        }
+    }
+
+    #header_welcome {
+        margin-right:10px;
+        color:#ccc;
+
+        @include bk(xs) {
+            display: none;
+        }
+    }
+}

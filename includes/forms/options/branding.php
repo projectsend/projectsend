@@ -19,18 +19,18 @@
         ?>
         <img src="<?php echo $img_src; ?>">
     </div>
-    <p class="preview_logo_note">
+    <p class="mt-3 text-info">
         <?php _e('This preview uses a maximum width of 300px.','cftp_admin'); ?>
     </p>
     <?php if (!empty(get_option('logo_filename'))) { ?>
         <div class="form-grup">
-            <a class="btn btn-default confirm_generic" href="<?php echo BASE_URI . 'options.php?section=branding&clear=logo'; ?>"><?php _e('Delete current logo'); ?></a>
+            <a class="btn btn-pslight confirm_generic" href="<?php echo BASE_URI . 'options.php?section=branding&clear=logo'; ?>"><?php _e('Delete current logo'); ?></a>
         </div>
     <?php } ?>
 </div>
 
 <div id="form_upload_logo">
-    <div class="form-group">
+    <div class="form-group row">
         <label class="col-sm-4 control-label"><?php _e('Select image to upload','cftp_admin'); ?></label>
         <div class="col-sm-8">
             <input type="file" name="select_logo" class="empty" accept=".jpg, .jpeg, .jpe, .gif, .png" />

@@ -11,17 +11,15 @@ $page_title = __('Groups administration', 'cftp_admin');
 
 $current_url = get_form_action_with_existing_parameters(basename(__FILE__));
 
-/**
- * Used when viewing groups a certain client belongs to.
- */
+// Used when viewing groups a certain client belongs to
 if (!empty($_GET['member'])) {
     $member = get_client_by_id($_GET['member']);
-    /** Add the name of the client to the page's title. */
-    if ($member) {
+    // Add the name of the client to the page's title
+    if ($member != false) {
         $page_title = __('Groups where', 'cftp_admin') . ' ' . html_entity_decode($member['name']) . ' ' . __('is member', 'cftp_admin');
         $member_exists = 1;
 
-        /** Get groups where this client is member */
+        // Get groups where this client is member
         $get_groups = new \ProjectSend\Classes\GroupsMemberships();
         $get_arguments = array(
             'client_id' => $member['id'],
@@ -32,7 +30,7 @@ if (!empty($_GET['member'])) {
             $found_groups = '';
         }
     } else {
-        $no_results_error = 'client_not_exists';
+        exit_with_error_code(403);
     }
 }
 
@@ -65,130 +63,146 @@ if (isset($_POST['action']) && $_POST['action'] != 'none') {
     ps_redirect($current_url);
 }
 
+// Check if there are public groups but page is disabled
+$public_groups = get_groups([
+    'public' => true,
+]);
+if (count($public_groups) > 0) {
+    if (get_option('public_listing_page_enable') != 1) {
+        $msg = '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> ' . __('There are public groups, but the public page is disabled.');
+        $msg .= ' <a href="' . BASE_URI . 'options.php?section=privacy" class="underline">' . __('Go to privacy options', 'cftp_admin') . '</a>';
+        $flash->info($msg);
+    }
+}
+
+// Query groups
+$params = [];
+$cq = "SELECT id FROM " . TABLE_GROUPS;
+
+// Add the search terms
+if (isset($_GET['search']) && !empty($_GET['search'])) {
+    $cq .= " WHERE (name LIKE :name OR description LIKE :description)";
+    $next_clause = ' AND';
+    $no_results_error = 'search';
+
+    $search_terms = '%' . $_GET['search'] . '%';
+    $params[':name'] = $search_terms;
+    $params[':description'] = $search_terms;
+} else {
+    $next_clause = ' WHERE';
+}
+
+// Add the member
+if (isset($found_groups)) {
+    if ($found_groups != '') {
+        $cq .= $next_clause . " FIND_IN_SET(id, :groups)";
+        $params[':groups'] = $found_groups;
+    } else {
+        $cq .= $next_clause . " id = NULL";
+    }
+    $no_results_error = 'is_not_member';
+}
+
+// Add the active filter
+if (isset($_GET['public']) && $_GET['public'] != '2') {
+    $cq .= $next_clause . " public = :public";
+    $no_results_error = 'filter';
+
+    $params[':public'] = (int)$_GET['public'];
+}
+
+// Add the order
+$cq .= sql_add_order(TABLE_GROUPS, 'id', 'desc');
+
+// Pre-query to count the total results
+$count_sql = $dbh->prepare($cq);
+$count_sql->execute($params);
+$count_for_pagination = $count_sql->rowCount();
+
+// Repeat the query but this time, limited by pagination
+$cq .= " LIMIT :limit_start, :limit_number";
+$sql = $dbh->prepare($cq);
+
+$pagination_page = (isset($_GET["page"])) ? $_GET["page"] : 1;
+$pagination_start = ($pagination_page - 1) * get_option('pagination_results_per_page');
+$params[':limit_start'] = $pagination_start;
+$params[':limit_number'] = get_option('pagination_results_per_page');
+
+$sql->execute($params);
+$count = $sql->rowCount();
+
+// Flash errors
+if (!$count) {
+    if (isset($no_results_error)) {
+        switch ($no_results_error) {
+            case 'search':
+                $flash->error(__('Your search keywords returned no results.', 'cftp_admin'));
+                break;
+            case 'filter':
+                $flash->error(__('The filters you selected returned no results.', 'cftp_admin'));
+                break;
+            case 'is_not_member':
+                $flash->error(__('There are no groups where this client is member.', 'cftp_admin'));
+                break;
+        }
+    } else {
+        $flash->warning(__('There are no groups created yet.', 'cftp_admin'));
+    }
+}
+
+// Header buttons
+$header_action_buttons = [
+    [
+        'url' => 'groups-add.php',
+        'label' => __('Create new', 'cftp_admin'),
+    ],
+];
+
+// Search + filters bar data
+$search_form_action = 'groups.php';
+$filters_form = [
+    'action' => $current_url,
+    'items' => [
+        'public' => [
+            'current' => (isset($_GET['public'])) ? $_GET['public'] : null,
+            'placeholder' => [
+                'value' => '2',
+                'label' => __('Visibility', 'cftp_admin')
+            ],
+            'options' => [
+                '1' => __('Public', 'cftp_admin'),
+                '0' => __('Private', 'cftp_admin'),
+            ],
+        ]
+    ]
+];
+
+// Results count and form actions 
+$elements_found_count = $count_for_pagination;
+$bulk_actions_items = [
+    'none' => __('Select action', 'cftp_admin'),
+    'delete' => __('Delete', 'cftp_admin'),
+];
+
+// Include layout files
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+
+include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
 ?>
 
-<div class="row">
-    <div class="col-xs-12">
-        <?php
-        $params = [];
-        $cq = "SELECT id FROM " . TABLE_GROUPS;
-
-        // Add the search terms
-        if (isset($_GET['search']) && !empty($_GET['search'])) {
-            $cq .= " WHERE (name LIKE :name OR description LIKE :description)";
-            $next_clause = ' AND';
-            $no_results_error = 'search';
-
-            $search_terms            = '%' . $_GET['search'] . '%';
-            $params[':name']        = $search_terms;
-            $params[':description']    = $search_terms;
-        } else {
-            $next_clause = ' WHERE';
-        }
-
-        // Add the member
-        if (isset($found_groups)) {
-            if ($found_groups != '') {
-                $cq .= $next_clause . " FIND_IN_SET(id, :groups)";
-                $params[':groups'] = $found_groups;
-            } else {
-                $cq .= $next_clause . " id = NULL";
-            }
-            $no_results_error = 'is_not_member';
-        }
-
-        // Add the order
-        $cq .= sql_add_order(TABLE_GROUPS, 'id', 'desc');
-
-        // Pre-query to count the total results
-        $count_sql = $dbh->prepare($cq);
-        $count_sql->execute($params);
-        $count_for_pagination = $count_sql->rowCount();
-
-        // Repeat the query but this time, limited by pagination
-        $cq .= " LIMIT :limit_start, :limit_number";
-        $sql = $dbh->prepare($cq);
-
-        $pagination_page = (isset($_GET["page"])) ? $_GET["page"] : 1;
-        $pagination_start = ($pagination_page - 1) * get_option('pagination_results_per_page');
-        $params[':limit_start'] = $pagination_start;
-        $params[':limit_number'] = get_option('pagination_results_per_page');
-
-        $sql->execute($params);
-        $count = $sql->rowCount();
-        ?>
-
-        <div class="form_actions_left">
-            <div class="form_actions_limit_results">
-                <?php show_search_form('groups.php'); ?>
-            </div>
-        </div>
-
-        <form action="<?php echo $current_url; ?>" name="groups_list" method="post" class="form-inline batch_actions">
+<form action="<?php echo $current_url; ?>" name="groups_list" method="post" class="form-inline batch_actions">
+    <div class="row">
+        <div class="col-12">
             <?php addCsrf(); ?>
-            <div class="form_actions_right">
-                <div class="form_actions">
-                    <div class="form_actions_submit">
-                        <div class="form-group group_float">
-                            <label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected groups actions', 'cftp_admin'); ?>:</label>
-                            <select name="action" id="action" class="txtfield form-control">
-                                <?php
-                                $actions_options = array(
-                                    'none' => __('Select action', 'cftp_admin'),
-                                    'delete' => __('Delete', 'cftp_admin'),
-                                );
-                                foreach ($actions_options as $val => $text) {
-                                ?>
-                                    <option value="<?php echo $val; ?>"><?php echo $text; ?></option>
-                                <?php
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <button type="submit" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed', 'cftp_admin'); ?></button>
-                    </div>
-                </div>
-            </div>
-            <div class="clear"></div>
-
-            <div class="form_actions_count">
-                <p><?php echo sprintf(__('Found %d elements', 'cftp_admin'), (int)$count_for_pagination); ?>
-            </div>
-
-            <div class="clear"></div>
+            <?php include_once LAYOUT_DIR . DS . 'form-counts-actions.php'; ?>
 
             <?php
-            if (!$count) {
-                if (isset($no_results_error)) {
-                    switch ($no_results_error) {
-                        case 'search':
-                            $no_results_message = __('Your search keywords returned no results.', 'cftp_admin');
-                            break;
-                        case 'filter':
-                            $no_results_message = __('The filters you selected returned no results.', 'cftp_admin');
-                            break;
-                        case 'client_not_exists':
-                            $no_results_message = __('The client does not exist.', 'cftp_admin');
-                            break;
-                        case 'is_not_member':
-                            $no_results_message = __('There are no groups where this client is member.', 'cftp_admin');
-                            break;
-                    }
-                } else {
-                    $no_results_message = __('There are no groups created yet.', 'cftp_admin');
-                }
-                echo system_message('danger', $no_results_message);
-            }
-
-
             if ($count > 0) {
                 // Generate the table using the class.
-                $table_attributes = array(
+                $table = new \ProjectSend\Classes\Layout\Table([
                     'id' => 'groups_tbl',
                     'class' => 'footable table',
-                );
-                $table = new \ProjectSend\Classes\TableGenerate($table_attributes);
+                ]);
 
                 $thead_columns = array(
                     array(
@@ -245,12 +259,10 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                 $table->thead($thead_columns);
 
                 $sql->setFetchMode(PDO::FETCH_ASSOC);
-                $public_groups = 0;
                 while ($row = $sql->fetch()) {
                     $table->addRow();
 
-                    $group = new \ProjectSend\Classes\Groups();
-                    $group->get($row["id"]);
+                    $group = new \ProjectSend\Classes\Groups($row["id"]);
 
                     // Button class for the manage files link
                     if (!empty($group->files)) {
@@ -258,18 +270,17 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                         $files_btn = 'btn-primary';
                     } else {
                         $files_link = '#';
-                        $files_btn = 'btn-default disabled';
+                        $files_btn = 'btn-pslight disabled';
                     }
 
                     // Visibility
                     if ($group->public == '1') {
-                        $public_groups++;
                         $pre = (get_option('public_listing_page_enable') != 1) ? '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>' : null;
                         $visibility_link = '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-title="' . $group->name . '" data-type="group" data-public-url="' . $group->public_url . '">'
                             . $pre . ' ' . __('Public', 'cftp_admin') . '
                                 </a>';
                     } else {
-                        $visibility_link = '<a href="javascript:void(0);" class="btn btn-default btn-sm disabled" title="">'
+                        $visibility_link = '<a href="javascript:void(0);" class="btn btn-pslight btn-sm disabled" title="">'
                             . __('Private', 'cftp_admin') . '
                                 </a>';
                     }
@@ -319,27 +330,23 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                 }
 
                 echo $table->render();
-
-                // PAGINATION
-                echo $table->pagination([
-                    'link' => 'groups.php',
-                    'current' => $pagination_page,
-                    'item_count' => $count_for_pagination,
-                ]);
             }
-            ?>
-        </form>
-
-        <?php
-        if ($public_groups > 0) {
-            if (get_option('public_listing_page_enable') != 1) {
-                $msg = '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> ' . __('There are public groups, but the public page is disabled so the public links will not show anything.');
-                $msg .= ' <a href="' . BASE_URI . 'options.php?section=privacy" class="underline">' . __('Go to privacy options', 'cftp_admin') . '</a>';
-                echo system_message('danger', $msg);
-            }
-        }
         ?>
+        </div>
     </div>
-</div>
+</form>
+    
+<?php
+    if (!empty($table)) {
+        // PAGINATION
+        $pagination = new \ProjectSend\Classes\Layout\Pagination;
+        echo $pagination->make([
+            'link' => 'groups.php',
+            'current' => $pagination_page,
+            'item_count' => $count_for_pagination,
+        ]);
+    }
+?>
+
 <?php
 include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

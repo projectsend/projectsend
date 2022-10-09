@@ -1,0 +1,29 @@
+// OPTIONS page
+body.options {
+    // Branding
+    #current_logo {
+        margin:20px auto;
+        text-align:center;
+        padding:20px 0 0;
+        overflow:hidden;
+    
+        @include bk(xs) {
+            text-align:center;
+        }
+    }
+    
+    #current_logo_img {
+        padding:20px 0;
+    
+        img, svg {
+            height:auto;
+            width:100%;
+            max-width:300px;
+        }
+    }
+    
+    #form_upload_logo {
+        padding:30px 0 10px;
+        border-top:1px dotted #CCCCCC;
+    }
+}    

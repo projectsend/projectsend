@@ -96,8 +96,7 @@ class EmailNotifications
 
             // Add the file data to the global array
             if (!array_key_exists($row['file_id'], $this->files_data)) {
-                $file = new \ProjectSend\Classes\Files();
-                $file->get($row['file_id']);
+                $file = new \ProjectSend\Classes\Files($row['file_id']);
                 $this->files_data[$file->id] = array(
                     'id'=> $file->id,
                     'filename' => $file->filename_original,

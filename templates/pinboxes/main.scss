@@ -129,8 +129,6 @@ p.welcome {
 				font-weight:bold;
 				border-left:1px solid $border_color;
 				transition: all 0.4s ease-out;
-				-moz-transition: all 0.4s ease-out;
-				-webkit-transition: all 0.4s ease-out;
 
 				i {
 					margin-right:8px;
@@ -186,12 +184,8 @@ p.welcome {
 		margin:4px 25px 25px 0;
 		border:1px solid $border_color;
 		border-top:4px solid $border_color;
-
 		transition: border-color 0.5s ease-out;
-		-moz-transition: border-color 0.5s ease-out;
-		-webkit-transition: border-color 0.5s ease-out;
-
-		@include border-radius(6px);
+		border-radius: 6px;
 	}
 	
 	.photo:hover {
@@ -219,8 +213,6 @@ p.welcome {
 		color:white;
 		background:$highlight;
 		transition: all 0.5s ease-out;
-		-moz-transition: all 0.5s ease-out;
-		-webkit-transition: all 0.5s ease-out;
 	}
 	
 		.photo_list .photo:hover .ext_prev a {
@@ -239,7 +231,7 @@ p.welcome {
 	background:$bg_data;
 	padding:10px;
 	word-wrap:break-word;
-	@include border-radius(0 0 6px 6px);
+	border-radius: 0 0 6px 6px;
 }
 
 	.photo_list .photo:hover .img_data {
@@ -292,8 +284,6 @@ p.welcome {
 	margin-top:-3px;
 	border-bottom:1px solid $border_color;
 	transition: all 0.3s ease-out;
-	-moz-transition: all 0.3s ease-out;
-	-webkit-transition: all 0.3s ease-out;
 }
 
 #search_text:focus {
@@ -320,11 +310,7 @@ p.welcome {
 	display:inline-block;
 	cursor:pointer;
 	transition: all 0.3s ease-out;
-	-moz-transition: all 0.3s ease-out;
-	-webkit-transition: all 0.3s ease-out;
-
-	@include border-radius(5px);
-
+	border-radius: 5px;
 	box-shadow:0 1px 0 rgba(255, 255, 255, 0.3) inset, 0 0 0 1px rgba(255, 255, 255, 0.1) inset, 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 

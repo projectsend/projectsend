@@ -68,7 +68,7 @@ define('PROTOCOL', empty($_SERVER['HTTPS'])? 'http' : 'https');
  * DEBUG
  */
 if (!defined("DEBUG")) {
-    define('DEBUG', true);
+    define('DEBUG', false);
 }
 
 /**

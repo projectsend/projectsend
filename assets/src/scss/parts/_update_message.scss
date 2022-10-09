@@ -1,0 +1,39 @@
+// Update available message bar
+
+.update_msg {
+    .buttons {
+        padding:0 0 0 25px;
+        display:inline-block;
+        margin-top:3px;
+    }
+
+    ul {
+        text-align:right;
+
+        li {
+            display:inline-block;
+            margin:0;
+            font-size:0;
+        }
+
+        .update_icon {
+            display:inline-block;
+            background:black;
+            color:white;
+            text-align:center;
+            padding:4px;
+            font-size:20px;
+            margin:0 2px;
+            border-radius: 50%;
+        }
+
+        .update_icon_status_0 {
+            @include opacity(.4);
+        }
+    }
+
+}
+
+.default-template .update_msg {
+    display:none !important;
+}

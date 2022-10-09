@@ -19,16 +19,14 @@ class FormGenerate
         $this->output = '';
         $this->contents = '';
 
-        $this->group_class = 'form-group';
+        $this->group_class = 'form-group row';
         $this->checkbox_group_class = 'checkbox';
         $this->label_class = 'col-sm-4 control-label';
         $this->wrap_class = 'col-sm-8';
         $this->wrap_group = 'input-group';
-        $this->checkbox_wrap = 'col-sm-8 col-sm-offset-4';
+        $this->checkbox_wrap = 'col-sm-8 offset-sm-4';
         $this->field_class = 'form-control';
 
-        $this->password_toggle_wrap = 'input-group-btn password_toggler';
-        $this->password_toggle_btn = 'pass_toggler_show';
         $this->new_password_fields = [];
 
         $this->ignore_field_class = array(
@@ -58,7 +56,6 @@ class FormGenerate
      */
     private function generateElementTag($element, $close_tag, $type, $add_type, $arguments)
     {
-
         $this->attributes = !(empty($arguments['attributes'])) ? $arguments['attributes'] : null;
         $this->value = !(empty($arguments['value'])) ? $arguments['value'] : null;
         $this->content = !(empty($arguments['content'])) ? $arguments['content'] : null;
@@ -67,6 +64,10 @@ class FormGenerate
         $this->selected = !(empty($arguments['selected'])) ? $arguments['selected'] : null;
         $this->required = !(empty($arguments['required'])) ? true : false;
         $this->label = !(empty($arguments['label'])) ? $arguments['label'] : null;
+
+        if ($type == 'password') {
+            $this->attributes['class'][] = 'attach_password_toggler';
+        }
 
         $this->properties = [];
         $this->result = '';
@@ -185,7 +186,7 @@ class FormGenerate
             'content' => 'Generate',
             'attributes' => array(
                 'name' => 'generate_password',
-                'class' => 'btn btn-default btn-sm btn_generate_password',
+                'class' => 'btn btn-light btn-sm btn_generate_password',
                 'data-ref' => $field_name,
                 'data-min' => MIN_PASS_CHARS,
                 'data-max' => MAX_PASS_CHARS,
@@ -265,9 +266,6 @@ class FormGenerate
                     if ($type == 'password') {
                         $this->layout .= "\t\t" . '<div class="' . $this->wrap_group . '">' . "\n";
                         $this->layout .= "\t\t" . $this->field;
-                        $this->layout .= "\t\t\t" . '<div class="' . $this->password_toggle_wrap . '">' . "\n";
-                        $this->layout .= "\t\t\t\t" . '<button type="button" class="btn ' . $this->password_toggle_btn . '"><i class="glyphicon glyphicon-eye-open"></i></button>' . "\n";
-                        $this->layout .= "\t\t\t" . '</div>' . "\n";
                         if (function_exists('password_notes')) {
                             $this->layout .= password_notes();
                         }

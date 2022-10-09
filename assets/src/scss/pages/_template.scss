@@ -1,0 +1,62 @@
+.template_selector {
+    .template {
+        margin-bottom:40px;
+        padding:15px;
+        background:white;
+        overflow:hidden;
+        position:relative;
+
+        &.current_template {
+            border:5px solid var(--main_color);
+        }
+
+        h4 {
+            font-size:1.5em;
+            color:black;
+            margin-top:25px;
+        }
+
+        .info {
+
+            h5 {
+                margin:20px 0 10px;
+                font-size:1.2em;
+            }
+        }
+
+        .images {
+            position:relative;
+
+            img {
+                width:100%;
+                height:auto;
+            }
+
+            .screenshot {
+                display:block;
+            }
+
+            .cover {
+                @include opacity(0);
+                position:absolute;
+                width:100%;
+                left:0;
+                top:0;
+                height:100%;
+                transition:.3s all linear;
+            }
+        }
+
+        &:hover {
+            .images {
+                .cover {
+                    @include opacity(1);
+                }
+            }
+        }
+
+        .buttons {
+            text-align:right;
+        }
+    }
+}

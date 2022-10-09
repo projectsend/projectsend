@@ -29,37 +29,37 @@ switch ($language) {
     <?php addCsrf(); ?>
     <input type="hidden" name="language" id="asset_language" value="<?php echo $language; ?>">
 
-	<div class="form-group">
+	<div class="form-group row">
 		<label for="title" class="col-sm-4 control-label"><?php _e('Title','cftp_admin'); ?></label>
 		<div class="col-sm-8">
 			<input type="text" name="title" id="title" class="form-control required" value="<?php echo (isset($asset_arguments['title'])) ? html_output(stripslashes($asset_arguments['title'])) : ''; ?>" required />
 		</div>
 	</div>
 
-	<div class="form-group">
+	<div class="form-group row">
 		<label for="content" class="col-sm-4 control-label"><?php _e('Content','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-            <?php if (!empty($tags_message[0])) { ?><p class="field_note"><?php echo $tags_message[0]; ?></p><?php } ?>
+            <?php if (!empty($tags_message[0])) { ?><p class="field_note form-text"><?php echo $tags_message[0]; ?></p><?php } ?>
 			<textarea name="content" id="content" class="form-control"><?php echo (isset($asset_arguments['content'])) ? html_output($asset_arguments['content']) : ''; ?></textarea>
             <?php if (!empty($tags_message)) { ?>
-                <?php if (!empty($tags_message[1])) { ?><p class="field_note"><?php echo $tags_message[1]; ?></p><?php } ?>
-                <p class="field_note"><?php echo sprintf(__('Do not add the %s and %s tags, they will be added automatically when the code is rendered', 'cftp_admin'), $tags_message[0], $tags_message[1]); ?></p>
+                <?php if (!empty($tags_message[1])) { ?><p class="field_note form-text"><?php echo $tags_message[1]; ?></p><?php } ?>
+                <p class="field_note form-text"><?php echo sprintf(__('Do not add the %s and %s tags, they will be added automatically when the code is rendered', 'cftp_admin'), $tags_message[0], $tags_message[1]); ?></p>
             <?php } ?>
 		</div>
 	</div>
 
-    <div class="form-group">
-		<div class="col-sm-8 col-sm-offset-4">
+    <div class="form-group row">
+		<div class="col-sm-8 offset-sm-4">
 			<label for="enabled">
 				<input type="checkbox" name="enabled" id="enabled" <?php echo (isset($asset_arguments['enabled']) && $asset_arguments['enabled'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Enabled','cftp_admin'); ?>
 			</label>
 		</div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group row">
         <label for="location" class="col-sm-4 control-label"><?php _e('Location','cftp_admin'); ?></label>
         <div class="col-sm-8">
-            <select name="location" id="location" class="form-control" required>
+            <select class="form-select" name="location" id="location" required>
                 <?php
                     foreach ( get_asset_locations() as $location => $formatted ) {
                 ?>
@@ -71,10 +71,10 @@ switch ($language) {
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group row">
         <label for="position" class="col-sm-4 control-label"><?php _e('Position','cftp_admin'); ?></label>
         <div class="col-sm-8">
-            <select name="position" id="position" class="form-control" required>
+            <select class="form-select" name="position" id="position" required>
                 <?php
                     foreach ( get_asset_positions() as $position => $formatted ) {
                 ?>

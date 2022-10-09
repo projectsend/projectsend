@@ -1,0 +1,26 @@
+// Public download page
+body.download {
+    .file_title {
+        margin-bottom: 2rem;
+
+        h3 {
+            font-size: 1.5rem;
+            margin: 0;
+            padding: 0;
+        }
+    }
+
+    .description {
+        font-size: 1.2rem;
+        line-height: 1.4rem;
+    }
+
+    .size {
+        margin-top: 2rem;
+        font-size: 1.2rem;
+    }
+
+    .actions {
+        margin-top: 20px;
+    }
+}

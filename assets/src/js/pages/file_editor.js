@@ -4,6 +4,16 @@
     admin.pages.fileEditor = function () {
 
         $(document).ready(function(){
+            // Datepicker
+            if ( $.isFunction($.fn.datepicker) ) {
+                $('.date-container .date-field').datepicker({
+                    format : 'dd-mm-yyyy',
+                    autoclose : true,
+                    todayHighlight : true
+                });
+            }
+
+            // Validation
             var validator = $("#files").validate({
                 errorPlacement: function(error, element) {
                     error.appendTo(element.parent('div'));
@@ -21,35 +31,7 @@
                 });
             });
 
-
-            $('.copy-all').on('click', function() {
-                if ( confirm( json_strings.translations.upload_form.copy_selection ) ) {
-                    var target = $(this).data('target');
-                    var type = $(this).data('type');
-                    var selector = $('#'+target);
-                    var val;
-    
-                    var selected = new Array();
-                    $(selector).find('option:selected').each(function() {
-                        selected.push($(this).val().toString());
-                    });
-
-                    $('.chosen-select[data-type="'+type+'"]').not(selector).each(function() {
-                        $(this).find('option').each(function() {
-                            val = $(this).val().toString();
-                            if (selected.includes(val)) {
-                                $(this).prop('selected', 'selected');
-                            } else {
-                                $(this).removeAttr('selected');
-                            }
-                        });
-                        $(this).trigger('chosen:updated');
-                    });
-                }
-
-                return false;
-            });
-
+            // Copy settings to other files
             function copySettingsToCheckboxes(el, to, question)
             {
                 if ( confirm( question ) ) {
@@ -69,7 +51,6 @@
                     console.log(date);
                     $('.date-field').datepicker('update', date);
                 });
-
             });
 
             $('.copy-public-settings').on('click', function() {
@@ -79,6 +60,30 @@
             $('.copy-hidden-settings').on('click', function() {
                 copySettingsToCheckboxes($(this), '.checkbox_setting_hidden', json_strings.translations.upload_form.copy_hidden);
             });
+
+            // Collapse - expand single item
+            $('.toggle_file_editor').on('click', function(e) {
+                let wrapper = $(this).parents('.file_editor_wrapper');
+                wrapper.toggleClass('collapsed');
+            });
+
+            // Collapse all
+            document.getElementById('files_collapse_all').addEventListener('click', function(e) {
+                let wrappers = document.querySelectorAll('.file_editor_wrapper');
+                wrappers.forEach(wrapper => {
+                    wrapper.classList.add('collapsed');
+                });
+                    
+            })
+
+            // Expand all
+            document.getElementById('files_expand_all').addEventListener('click', function(e) {
+                let wrappers = document.querySelectorAll('.file_editor_wrapper');
+                wrappers.forEach(wrapper => {
+                    wrapper.classList.remove('collapsed');
+                });
+                    
+            })
         });
     };
 })();

@@ -168,8 +168,7 @@ class Cron
             ];
 
             foreach ($files as $file_id => $file_name) {
-                $file = new \ProjectSend\Classes\Files();
-                $file->get($file_id);
+                $file = new \ProjectSend\Classes\Files($file_id);
                 if ($file->isExpired()) {
                     $results['elements']['found']['items'][] = $file_name;
                     if ($file->deleteFiles()) {

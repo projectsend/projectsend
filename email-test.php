@@ -23,7 +23,7 @@ if ($_POST) {
 }
 ?>
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-lg-6">
+    <div class="col-12 col-sm-12 col-lg-6">
         <div class="white-box">
             <div class="white-box-interior">
                 <form action="email-test.php" name="email_test" method="post" enctype="multipart/form-data" class="form-horizontal">
@@ -31,7 +31,7 @@ if ($_POST) {
                     <input type="hidden" name="section" value="<?php echo $section; ?>">
 
                     <?php if ($_POST) { ?>
-                        <div class="form-group">
+                        <div class="form-group row">
                             <div class="col-sm-12">
                                 <label for="result"><?php _e('Result', 'cftp_admin'); ?></label>
                                 <textarea name="result" id="result" class="form-control textarea_high" readonly><?php echo $email->getDebugResult(); ?></textarea>
@@ -39,14 +39,14 @@ if ($_POST) {
                         </div>
                     <?php } ?>
 
-                    <div class="form-group">
+                    <div class="form-group row">
                         <div class="col-sm-12">
                             <label for="to"><?php _e('Send to:', 'cftp_admin'); ?></label>
                             <input type="text" name="to" id="to" class="form-control" value="<?php echo CURRENT_USER_EMAIL; ?>">
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group row">
                         <div class="col-sm-12">
                             <label for="message"><?php _e('Message', 'cftp_admin'); ?></label>
                             <textarea name="message" id="message" class="form-control textarea_high"></textarea>

@@ -22,9 +22,6 @@
 	padding:50px 0;
 	background-color:white;
 	border-top:5px solid #407FB6;
-
-	-moz-box-shadow:3px 3px 5px #dedede;
-	-webkit-box-shadow:3px 3px 5px #dedede;
 	box-shadow:3px 3px 5px #dedede;
 }
 
@@ -35,8 +32,6 @@
 	padding:4px 0 7px;
 	border-top:1px solid #555;
 	border-bottom:7px solid #CCCCCC;
-	-moz-box-shadow:0 5px 5px #E1E1E1;
-	-webkit-box-shadow:0 5px 5px #E1E1E1;
 	box-shadow:0 5px 5px #E1E1E1;
 }
 
@@ -71,6 +66,6 @@ table.tablesorter tbody td {
 	max-height:150px;
 }
 
-.txtfield {
+.form-control-short {
 	width:160px !important;
 }

@@ -15,9 +15,7 @@ $ld = 'cftp_template_gallery'; // specify the language domain for this template
 
 define('TEMPLATE_RESULTS_PER_PAGE', -1);
 
-if ( !empty( $_GET['category'] ) ) {
-	$category_filter = $_GET['category'];
-}
+$filter_by_category = isset($_GET['category']) ? $_GET['category'] : null;
 
 include_once ROOT_DIR.'/templates/common.php'; // include the required functions for every template
 
@@ -27,8 +25,7 @@ $window_title = __('Gallery','cftp_template_gallery');
  * Filter files by type, only save images.
 */
 foreach ($available_files as $file_id) {
-    $file = new \ProjectSend\Classes\Files();
-    $file->get($file_id);
+    $file = new \ProjectSend\Classes\Files($file_id);
     if ($file->isImage()) {
 		$img_files[] = $file;
 	}

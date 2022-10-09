@@ -73,8 +73,7 @@ class Auth
         }
         
         $props =  $auth_code->getProperties();
-        $user = new \ProjectSend\Classes\Users;
-        $user->get($props['user_id']);
+        $user = new \ProjectSend\Classes\Users($props['user_id']);
             
         if ($user->isActive()) {
             $this->user = $user;
@@ -110,8 +109,7 @@ class Auth
 			/** If the username was found on the users table */
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
 			while ( $row = $statement->fetch() ) {
-                $user = new \ProjectSend\Classes\Users;
-                $user->get($row['id']);
+                $user = new \ProjectSend\Classes\Users($row['id']);
                 $this->user = $user;
             }
 
@@ -220,8 +218,7 @@ class Auth
 		if ($count_user > 0) {
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
 			while ( $row = $statement->fetch() ) {
-                $user = new \ProjectSend\Classes\Users;
-                $user->get($row['id']);
+                $user = new \ProjectSend\Classes\Users($row['id']);
                 $this->user = $user;
 
 				if ($user->isActive()) {

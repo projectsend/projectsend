@@ -28,8 +28,7 @@ class Download
             exit_with_error_code(403);
         }
 
-        $file = new \ProjectSend\Classes\Files();
-        $file->get($file_id);
+        $file = new \ProjectSend\Classes\Files($file_id);
         record_new_download(CURRENT_USER_ID, $file->id);
         $this->downloadFile($file->filename_on_disk, $file->filename_unfiltered, $file->id);
     }
@@ -79,11 +78,10 @@ class Download
         if ( count( $files_to_zip ) > 0 ) {
             $zip_file = tempnam(UPLOADS_TEMP_DIR, "zip_");
             $zip = new \ZipArchive();
-            $zip->open($zip_file, ZipArchive::OVERWRITE);
+            $zip->open($zip_file, \ZipArchive::OVERWRITE);
 
             foreach ($files_to_zip as $file_id) {
-                $file = new \ProjectSend\Classes\Files();
-                $file->get($file_id);
+                $file = new \ProjectSend\Classes\Files($file_id);
                 if (!$file->existsOnDisk()) {
                     continue;
                 }
@@ -168,8 +166,7 @@ class Download
             
             $save_file_as = UPLOADED_FILES_DIR . DS . $save_as;
 
-            $file = new Files;
-            $file->get($file_id);
+            $file = new \ProjectSend\Classes\Files($file_id);
             $alias=$this->getAlias($file);
             $this->serveFile($file_location, $save_file_as, $alias);
             exit;
@@ -247,9 +244,11 @@ class Download
 	public function downloadPHP($file_location, $save_as)
 	{
 		$path_parts = pathinfo($file_location);
-		$file_name  = $path_parts['basename'];
-		$file_ext   = $path_parts['extension'];
-		
+		$file_name = $path_parts['basename'];
+		$file_ext = (!empty($path_parts['extension'])) ? $path_parts['extension'] : null;
+        ini_set('display_errors', 'Off');
+        ini_set('error_reporting', '0');
+        ini_set('display_startup_errors', 'Off');
 
 		// make sure the file exists
 		if (is_file($file_location))
@@ -288,12 +287,13 @@ class Download
 				}
 
 				//figure out download piece from range (if set)
-				list($seek_start, $seek_end) = explode('-', $range, 2);
+                list($seek_start, $seek_end) = explode('-', $range, 2);
 
-				//set start and end based on range (if set), else set defaults
-				//also check for invalid ranges.
-				$seek_end   = (empty($seek_end)) ? ($file_size - 1) : min(abs(intval($seek_end)),($file_size - 1));
-				$seek_start = (empty($seek_start) || $seek_end < abs(intval($seek_start))) ? 0 : max(abs(intval($seek_start)),0);
+                //set start and end based on range (if set), else set defaults
+                //also check for invalid ranges.
+                $seek_end = (empty($seek_end)) ? ($file_size - 1) : min(abs(intval($seek_end)),($file_size - 1));
+                $seek_start = (empty($seek_start) || $seek_end < abs(intval($seek_start))) ? 0 : max(abs(intval($seek_start)),0);
+
 			 
 				//Only send partial content header if downloading a piece of the file (IE workaround)
 				if ($seek_start > 0 || $seek_end < ($file_size - 1))
@@ -303,7 +303,7 @@ class Download
 					header('Content-Length: '.($seek_end - $seek_start + 1));
 				}
 				else
-				  header("Content-Length: $file_size");
+				    header("Content-Length: $file_size");
 
 				header('Accept-Ranges: bytes');
 			

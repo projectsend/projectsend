@@ -9,46 +9,6 @@ $items = [];
  * Items for system users
  */
 if (current_role_in(array(9, 8, 7))) {
-
-    /** Count inactive CLIENTS */
-    /*
-    $sql_inactive = $dbh->prepare( "SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE active = '0' AND level = '0' AND account_requested='0'" );
-    $sql_inactive->execute();
-    define('COUNT_CLIENTS_INACTIVE', $sql_inactive->rowCount());
-    */
-
-    /**
-     * Count new groups MEMBERSHIP requests only from active clients
-     * to make sure they are from not new accounts (since those are
-     * shown in the Account Request menu item)
-     */
-    define('COUNT_MEMBERSHIP_REQUESTS', count_groups_requests_for_existing_clients());
-
-    /** Count ALREADY DENIED groups MEMBERSHIP requests */
-    $sql_requests = $dbh->prepare("SELECT DISTINCT id FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='1'");
-    $sql_requests->execute();
-    define('COUNT_MEMBERSHIP_DENIED', $sql_requests->rowCount());
-
-    /** Count new CLIENTS account requests */
-    $sql_requests = $dbh->prepare("SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE account_requested='1' AND account_denied='0'");
-    $sql_requests->execute();
-    define('COUNT_CLIENTS_REQUESTS', $sql_requests->rowCount());
-
-    /**
-     * Count ALREADY DENIED account requests
-     * Used on the manage requests page
-     */
-    $sql_requests = $dbh->prepare("SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE account_requested='1' AND account_denied='1'");
-    $sql_requests->execute();
-    define('COUNT_CLIENTS_DENIED', $sql_requests->rowCount());
-
-    /** Count inactive USERS */
-    /*
-    $sql_inactive = $dbh->prepare( "SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE active = '0' AND level != '0'" );
-    $sql_inactive->execute();
-    define('COUNT_USERS_INACTIVE', $sql_inactive->rowCount());
-    */
-
     $items['dashboard'] = array(
         'nav' => 'dashboard',
         'level' => array(9, 8, 7),
@@ -100,7 +60,7 @@ if (current_role_in(array(9, 8, 7))) {
         'main' => array(
             'label' => __('Clients', 'cftp_admin'),
             'icon' => 'address-card',
-            'badge' => COUNT_CLIENTS_REQUESTS,
+            'badge' => count_account_requests(),
         ),
         'sub' => array(
             array(
@@ -118,7 +78,7 @@ if (current_role_in(array(9, 8, 7))) {
             array(
                 'label' => __('Account requests', 'cftp_admin'),
                 'link' => 'clients-requests.php',
-                'badge' => COUNT_CLIENTS_REQUESTS,
+                'badge' => count_account_requests(),
             ),
         ),
     );
@@ -129,7 +89,7 @@ if (current_role_in(array(9, 8, 7))) {
         'main' => array(
             'label' => __('Clients groups', 'cftp_admin'),
             'icon' => 'th-large',
-            'badge' => COUNT_MEMBERSHIP_REQUESTS,
+            'badge' => count_groups_requests_for_existing_clients(),
         ),
         'sub' => array(
             array(
@@ -146,7 +106,7 @@ if (current_role_in(array(9, 8, 7))) {
             array(
                 'label' => __('Membership requests', 'cftp_admin'),
                 'link' => 'clients-membership-requests.php',
-                'badge' => COUNT_MEMBERSHIP_REQUESTS,
+                'badge' => count_groups_requests_for_existing_clients(),
             ),
         ),
     );
@@ -372,7 +332,7 @@ foreach ($items as $item) {
 
     if (current_role_in($item['level'])) {
         $current = (!empty($active_nav) && $active_nav == $item['nav']) ? 'current_nav' : '';
-        $badge = (!empty($item['main']['badge'])) ? ' <span class="badge">' . $item['main']['badge'] . '</span>' : '';
+        $badge = (!empty($item['main']['badge'])) ? ' <span class="badge rounded-pill text-bg-dark">' . $item['main']['badge'] . '</span>' : '';
         $icon = (!empty($item['main']['icon'])) ? '<i class="fa fa-' . $item['main']['icon'] . ' fa-fw" aria-hidden="true"></i>' : '';
 
         /** Top level tag */
@@ -388,12 +348,20 @@ foreach ($items as $item) {
              * Submenu
              */
             foreach ($item['sub'] as $subitem) {
-                $badge = (!empty($subitem['badge'])) ? ' <span class="badge">' . $subitem['badge'] . '</span>' : '';
+                $badge = (!empty($subitem['badge'])) ? ' <span class="badge rounded-pill text-bg-dark">' . $subitem['badge'] . '</span>' : '';
                 $icon = (!empty($subitem['icon'])) ? '<i class="fa fa-' . $subitem['icon'] . ' fa-fw" aria-hidden="true"></i>' : '';
                 if (!empty($subitem['divider'])) {
                     $menu_output .= "\t\t<li class='divider'></li>\n";
                 } else {
                     $sub_active = ($subitem['link'] == $current_filename['path']) ? 'current_page' : '';
+
+                    if (isset($_GET['section'])) {
+                        parse_str(parse_url($subitem['link'], PHP_URL_QUERY), $subitem_query);
+                        if (isset($subitem_query['section'])) {
+                            if ($subitem_query['section'] == $_GET['section']) { $sub_active = 'current_page'; }
+                        }
+                    }
+
                     $format = "\t\t<li class='%s'>\n\t\t\t<a href='%s'>%s<span class='submenu_label'>%s%s</span></a>\n\t\t</li>\n";
                     $menu_output .= sprintf($format, $sub_active, BASE_URI . $subitem['link'], $icon, $subitem['label'], $badge);
                 }

@@ -53,7 +53,7 @@ if ($_POST) {
 }
 ?>
 <div class="row">
-    <div class="col-xs-12 col-sm-12 col-lg-6">
+    <div class="col-12 col-sm-12 col-lg-6">
         <div class="white-box">
             <div class="white-box-interior">
                 <form action="email-templates.php" id="form_email_template" name="templatesform" method="post" enctype="multipart/form-data" class="form-horizontal">
@@ -69,7 +69,7 @@ if ($_POST) {
 
                         <div class="options_divide"></div>
 
-                        <div class="form-group">
+                        <div class="form-group row">
                             <div class="col-sm-12">
                                 <label for="email_header_footer_customize">
                                     <input type="checkbox" value="1" id="email_header_footer_customize" name="email_header_footer_customize" <?php echo (get_option('email_header_footer_customize') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Use custom header / footer', 'cftp_admin'); ?>
@@ -77,30 +77,30 @@ if ($_POST) {
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group row">
                             <div class="col-sm-12">
                                 <label for="email_header_text"><?php _e('Header', 'cftp_admin'); ?></label>
                                 <textarea name="email_header_text" id="email_header_text" class="form-control textarea_high"><?php echo get_option('email_header_text'); ?></textarea>
-                                <p class="field_note"><?php _e('You can use HTML tags here.', 'cftp_admin'); ?></p>
+                                <p class="field_note form-text"><?php _e('You can use HTML tags here.', 'cftp_admin'); ?></p>
                             </div>
                         </div>
 
                         <div class="preview_button">
-                            <button type="button" class="btn btn-default load_default" data-textarea="email_header_text" data-file="<?php echo EMAIL_TEMPLATE_HEADER; ?>"><?php _e('Replace with default', 'cftp_admin'); ?></button>
+                            <button type="button" class="btn btn-pslight load_default" data-textarea="email_header_text" data-file="<?php echo EMAIL_TEMPLATE_HEADER; ?>"><?php _e('Replace with default', 'cftp_admin'); ?></button>
                         </div>
 
                         <hr />
 
-                        <div class="form-group">
+                        <div class="form-group row">
                             <div class="col-sm-12">
                                 <label for="email_footer_text"><?php _e('Footer', 'cftp_admin'); ?></label>
                                 <textarea name="email_footer_text" id="email_footer_text" class="form-control textarea_high"><?php echo get_option('email_footer_text'); ?></textarea>
-                                <p class="field_note"><?php _e('You can use HTML tags here.', 'cftp_admin'); ?></p>
+                                <p class="field_note form-text"><?php _e('You can use HTML tags here.', 'cftp_admin'); ?></p>
                             </div>
                         </div>
 
                         <div class="preview_button">
-                            <button type="button" class="btn btn-default load_default" data-textarea="email_footer_text" data-file="<?php echo EMAIL_TEMPLATE_FOOTER; ?>"><?php _e('Replace with default', 'cftp_admin'); ?></button>
+                            <button type="button" class="btn btn-pslight load_default" data-textarea="email_footer_text" data-file="<?php echo EMAIL_TEMPLATE_FOOTER; ?>"><?php _e('Replace with default', 'cftp_admin'); ?></button>
                         </div>
                     <?php
                     }
@@ -113,7 +113,7 @@ if ($_POST) {
 
                         <div class="options_divide"></div>
 
-                        <div class="form-group">
+                        <div class="form-group row">
                             <div class="col-sm-12">
                                 <label for="<?php echo $group['subject_checkbox']; ?>">
                                     <input type="checkbox" value="1" name="<?php echo $group['subject_checkbox']; ?>" id="<?php echo $group['subject_checkbox']; ?>" class="checkbox_options" <?php echo ($group['subject_check'] == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Use custom subject', 'cftp_admin'); ?>
@@ -121,7 +121,7 @@ if ($_POST) {
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group row">
                             <div class="col-sm-12">
                                 <input type="text" name="<?php echo $group['subject']; ?>" id="<?php echo $group['subject']; ?>" class="form-control" placeholder="<?php _e('Add your custom subject', 'cftp_admin'); ?>" value="<?php echo $group['subject_text']; ?>" />
                             </div>
@@ -129,7 +129,7 @@ if ($_POST) {
 
                         <div class="options_divide"></div>
 
-                        <div class="form-group">
+                        <div class="form-group row">
                             <div class="col-sm-12">
                                 <label for="<?php echo $group['body_checkbox']; ?>">
                                     <input type="checkbox" value="1" name="<?php echo $group['body_checkbox']; ?>" id="<?php echo $group['body_checkbox']; ?>" class="checkbox_options" <?php echo ($group['body_check'] == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Use custom template', 'cftp_admin'); ?>
@@ -137,11 +137,11 @@ if ($_POST) {
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group row">
                             <div class="col-sm-12">
                                 <label for="<?php echo $group['body_textarea']; ?>"><?php _e('Template text', 'cftp_admin'); ?></label>
                                 <textarea name="<?php echo $group['body_textarea']; ?>" id="<?php echo $group['body_textarea']; ?>" class="form-control textarea_high textarea_tags"><?php echo $group['body_text']; ?></textarea>
-                                <p class="field_note"><?php _e('You can use HTML tags here.', 'cftp_admin'); ?></p>
+                                <p class="field_note form-text"><?php _e('You can use HTML tags here.', 'cftp_admin'); ?></p>
                             </div>
                         </div>
 
@@ -149,12 +149,12 @@ if ($_POST) {
                         if (!empty($group['tags'])) {
                         ?>
                             <p><strong><?php _e("The following tags can be used on this e-mails' body.", 'cftp_admin'); ?></strong></p>
-                            <dl class="dl-horizontal" id="email_available_tags">
+                            <dl class="row" id="email_available_tags">
                                 <?php
                                 foreach ($group['tags'] as $tag => $description) {
                                 ?>
-                                    <dt><button type="button" class="btn btn-sm btn-default insert_tag" data-tag="<?php echo $tag; ?>" data-target="<?php echo $group['body_textarea']; ?>"><?php echo $tag; ?></button></dt>
-                                    <dd><?php echo $description; ?></dd>
+                                    <dt class="col-6 text-end"><button type="button" class="btn btn-sm btn-pslight insert_tag" data-tag="<?php echo $tag; ?>" data-target="<?php echo $group['body_textarea']; ?>"><?php echo $tag; ?></button></dt>
+                                    <dd class="col-6"><?php echo $description; ?></dd>
                                 <?php
                                 }
                                 ?>
@@ -165,7 +165,7 @@ if ($_POST) {
 
                         <hr />
                         <div class="preview_button">
-                            <button type="button" class="btn btn-default load_default" data-textarea="<?php echo $group['body_textarea']; ?>" data-file="<?php echo $group['default_text']; ?>"><?php _e('Replace with default', 'cftp_admin'); ?></button>
+                            <button type="button" class="btn btn-pslight load_default" data-textarea="<?php echo $group['body_textarea']; ?>" data-file="<?php echo $group['default_text']; ?>"><?php _e('Replace with default', 'cftp_admin'); ?></button>
                             <button type="button" data-preview="<?php echo $section; ?>" class="btn btn-wide btn-primary preview"><?php _e('Preview this template', 'cftp_admin'); ?></button>
                             <?php
                             $message = __("Before trying this function, please save your changes to see them reflected on the preview.", 'cftp_admin');

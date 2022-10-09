@@ -48,8 +48,7 @@ switch ($_GET['do']) {
     case 'get_preview':
         $return = [];
         if (!empty($_GET['file_id'])) {
-            $file = new \ProjectSend\Classes\Files;
-            $file->get($_GET['file_id']);
+            $file = new \ProjectSend\Classes\Files($_GET['file_id']);
             if ($file->existsOnDisk() && $file->embeddable) {
                 $return = json_decode($file->getEmbedData());
             }

@@ -1,0 +1,60 @@
+// Plupload
+
+.plupload_header {
+	display: none;
+}
+
+.plupload_filelist_header,
+.plupload_filelist_footer
+{
+	background: #e2e5e9;
+}
+
+.plupload_filelist_footer {
+	height:auto;
+}
+
+.plupload_button {
+	color:white;
+	background:var(--main_color);
+	margin-right: 4px;
+	padding:4px 30px;
+	font-family:var(--font_body);
+	font-size:14px;
+	line-height:20px;
+	text-decoration: none;
+	text-align:center;
+	border:1px solid #004380;
+	border-radius:4px;
+
+	&:hover
+	{
+		color:white;
+		background:var(--main_lighten);
+    }
+    
+    &:focus,
+    &:active
+    {
+        color: white;
+    }
+}
+
+.plupload_wrapper {
+    font-family:var(--font_body);
+    font-size:1.15em;
+    line-height:1.2em;
+    box-shadow:3px 3px 5px, #dedede;
+}
+
+.plupload_container {
+	padding:1px;
+}
+
+a.plupload_start {
+	display:none;
+}
+
+.message_uploading {
+	display:none;
+}

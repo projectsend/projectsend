@@ -385,6 +385,7 @@ class GroupsMemberships
                 /** Insert into memberships */
                 $statement = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
                                                     ." VALUES (:added_by, :client_id, :group_id)");
+                $statement->bindValue(':added_by', CURRENT_USER_USERNAME);
                 $statement->bindValue(':client_id', $client_id, PDO::PARAM_INT);
                 $statement->bindValue(':group_id', $request, PDO::PARAM_INT);
                 $statement->execute();
@@ -423,7 +424,7 @@ class GroupsMemberships
         if ($email) {
             $notify_client = new \ProjectSend\Classes\Emails;
             $send = $notify_client->send([
-                'type' => 'client_memberships_process',
+                'type' => 'client_edited',
                 'username' => $client['username'],
                 'name' => $client['name'],
                 'address' => $client['email'],
@@ -473,12 +474,9 @@ class GroupsMemberships
             $get_requests = $this->getMembershipRequests([
                 'client_id' => $client_id,
             ]);
-            $on_database = $get_requests[$client_id]['group_ids'];
+            $on_database = (!empty($get_requests[$client_id]['group_ids'])) ? $get_requests[$client_id]['group_ids'] : [];
 
-            /**
-             * On database but not on array:
-             * delete it from requests table
-             */
+            // On database but not on array: delete it from requests table
             $remove = [];
             if ( !empty( $on_database ) ) {
                 foreach ( $on_database as $key => $group_id ) {
@@ -495,19 +493,16 @@ class GroupsMemberships
                 }
             }
 
-            /**
-             * On array but not on database:
-             * add the request
-             */
+            // On array but not on database: add the request
             $add = [];
             if ( !empty( $group_ids ) ) {
                 foreach ( $group_ids as $key => $group_id ) {
-                    if ( !empty($on_database) && !in_array( $group_id, $on_database ) ) {
+                    if ( !in_array( $group_id, $on_database ) ) {
                         $add[] = $group_id;
                     }
                 }
                 if ( !empty( $add ) ) {
-                    $process_add = $this->groupRequestMembership([
+                    $this->groupRequestMembership([
                         'client_id' => $client_id,
                         'group_ids' => $add,
                         'request_by' => $request_by,
@@ -515,14 +510,12 @@ class GroupsMemberships
                 }
             }
 
-            /**
-             * Prepare and send an email to administrator(s) if there is at least one request
-             */
+            // Prepare and send an email to administrator(s) if there is at least one request
             if ( !empty( $group_ids ) ) {
                 $client_info = get_client_by_id($client_id);
                 $notify_admin = new \ProjectSend\Classes\Emails;
 
-                $send = $notify_admin->send([
+                $notify_admin->send([
                     'type' => 'client_edited',
                     'address' => get_option('admin_email_address'),
                     'username' => $client_info['username'],

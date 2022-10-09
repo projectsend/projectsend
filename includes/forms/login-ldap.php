@@ -2,19 +2,19 @@
     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>" />
     <input type="hidden" name="do" value="login_ldap">
     <fieldset>
-        <div class="form-group">
+        <div class="form-group row">
             <label for="ldap_email"><?php _e('E-mail','cftp_admin'); ?></label>
             <input type="text" name="ldap_email" id="ldap_email" value="<?php if (isset($ldap_email)) { echo htmlspecialchars($ldap_email); } ?>" class="form-control" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group row">
             <label for="ldap_password"><?php _e('Password','cftp_admin'); ?></label>
             <input type="password" name="ldap_password" id="ldap_password" class="form-control" />
         </div>
 
-        <div class="form-group">
+        <div class="form-group row">
             <label for="language"><?php _e('Language','cftp_admin'); ?></label>
-            <select name="language" class="form-control">
+            <select class="form-select" name="language">
                 <?php
                     // scan for language files
                     $available_langs = get_available_languages();

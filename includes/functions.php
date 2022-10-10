@@ -594,6 +594,12 @@ function get_user_by_username($user)
     }
 }
 
+function current_user_can($permission, $params = [])
+{
+    global $permissions;
+    return $permissions->can($permission);
+}
+
 function client_can_upload_public($client_id)
 {
     switch (get_option('clients_can_set_public')) {
@@ -935,6 +941,19 @@ function pa($array)
 function pax($array)
 {
     print_array($array);
+    exit;
+}
+
+function va($array)
+{
+    echo '<pre>';
+    var_dump($array);
+    echo '</pre>';
+}
+
+function vax($array)
+{
+    va($array);
     exit;
 }
 

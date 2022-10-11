@@ -6,7 +6,7 @@ namespace ProjectSend\Classes;
 
 use \PDO;
 
-class ActionsLog
+class ActionsLog extends Base
 {
 
     private $action;
@@ -17,13 +17,9 @@ class ActionsLog
     private $affected_file_name;
     private $affected_account_name;
 
-    private $dbh;
-
     public function __construct()
     {
-        global $dbh;
-
-        $this->dbh = $dbh;
+        parent::__construct();
     }
 
     public function getActivitiesReferences()
@@ -89,8 +85,6 @@ class ActionsLog
      */
     function addEntry($arguments)
     {
-        global $dbh;
-
         /** Define the account information */
         $default_user = (defined('CURRENT_USER_USERNAME')) ? CURRENT_USER_USERNAME : null;
         $this->action = $arguments['action'];
@@ -162,7 +156,7 @@ class ActionsLog
 
         $lq .= ")";
 
-        $this->sql_query = $dbh->prepare($lq);
+        $this->sql_query = $this->dbh->prepare($lq);
         $this->sql_query->execute($params);
     }
 }

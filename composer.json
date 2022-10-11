@@ -19,6 +19,19 @@
         },
         "classmap": ["includes"],
 		"files": [
+            "includes/helpers/functions.php",
+            "includes/helpers/functions.actionslog.php",
+            "includes/helpers/functions.assets.php",
+            "includes/helpers/functions.categories.php",
+            "includes/helpers/functions.forms.php",
+            "includes/helpers/functions.groups.php",
+            "includes/helpers/functions.i18n.php",
+            "includes/helpers/functions.options.php",
+            "includes/helpers/functions.public.php",
+            "includes/helpers/functions.session.permissions.php",
+            "includes/helpers/functions.templates.php",
+            "includes/helpers/functions.usermeta.php",
+            "includes/helpers/functions.updates.php"
 		]
 	},
 	"require": {
@@ -29,6 +42,11 @@
         "paragonie/random_compat": "^2.0",
         "phpmailer/phpmailer": "~6.1",
 		"tamtamchik/simple-flash": "^2.0",
-		"hybridauth/hybridauth": "^3.0"
+		"hybridauth/hybridauth": "^3.0",
+		"monolog/monolog": "^2.8",
+		"php-di/php-di": "^6.4",
+		"league/route": "^5.1",
+		"laminas/laminas-diactoros": "^2.17",
+		"laminas/laminas-httphandlerrunner": "^2.2"
 	}
 }

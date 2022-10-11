@@ -11,7 +11,7 @@ if (!is_numeric($_GET['days'])) {
     exit;
 }
 
-global $dbh;
+$dbh = get_dbh();
 
 $first_day = new DateTime();
 $sub = ((int)$_GET['days']-1)*(-1). ' days';

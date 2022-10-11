@@ -33,7 +33,7 @@ class Groups
 
     public function __construct($group_id = null)
     {
-        global $dbh;
+        $dbh = get_dbh();
 
         $this->dbh = $dbh;
         $this->logger = new \ProjectSend\Classes\ActionsLog;

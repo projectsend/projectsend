@@ -2,7 +2,7 @@
 function upgrade_2022092301()
 {
     if ( !table_exists( TABLE_AUTHENTICATION_CODES ) ) {
-        global $dbh;
+        $dbh = get_dbh();
         $query = "
         CREATE TABLE IF NOT EXISTS `".TABLE_AUTHENTICATION_CODES."` (
             `id` int(11) NOT NULL AUTO_INCREMENT,

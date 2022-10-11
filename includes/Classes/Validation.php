@@ -14,7 +14,7 @@ class Validation
     private $errors = [];
 
     public function __construct() {
-        global $dbh;
+        $dbh = get_dbh();
         $this->dbh = $dbh;
         $this->allowed_upper = range('A','Z');
         $this->allowed_lower = range('a','z');

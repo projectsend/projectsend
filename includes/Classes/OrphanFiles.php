@@ -19,7 +19,7 @@ class OrphanFiles
 
     public function __construct()
     {
-        global $dbh;
+        $dbh = get_dbh();
 
         $this->dbh = $dbh;
         $this->logger = new \ProjectSend\Classes\ActionsLog;

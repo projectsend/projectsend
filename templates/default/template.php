@@ -80,7 +80,7 @@ $bulk_actions_items = [
 ];
 
 // Include layout files
-include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+include_once VIEWS_PARTS_DIR.DS.'header.php';
 
 include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
 ?>

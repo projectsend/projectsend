@@ -62,7 +62,7 @@ class Users
 
     public function __construct($user_id = null)
     {
-        global $dbh;
+        $dbh = get_dbh();
 
         $this->dbh = $dbh;
         $this->logger = new \ProjectSend\Classes\ActionsLog;

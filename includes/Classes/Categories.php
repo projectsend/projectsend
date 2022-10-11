@@ -26,7 +26,7 @@ class Categories
 
     public function __construct($category_id = null)
     {
-        global $dbh;
+        $dbh = get_dbh();
 
         $this->dbh = $dbh;
         $this->logger = new \ProjectSend\Classes\ActionsLog;

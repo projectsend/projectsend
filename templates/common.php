@@ -3,7 +3,7 @@
  * Common information used on all clients templates.
  * Avoids the need to define all of this when creating a new template.
  */
-global $dbh;
+$dbh = get_dbh();
 
 /**
  * Since the header.php file is shared between the back-end and the

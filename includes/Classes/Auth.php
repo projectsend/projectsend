@@ -6,28 +6,17 @@ namespace ProjectSend\Classes;
 use \PDO;
 use ProjectSend\Classes\Session as Session;
 
-class Auth
+class Auth extends Base
 {
-    private $dbh;
-    private $logger;
     private $error_message;
-    private $bfchecker;
     private $error_strings;
     public $user;
 
-    public function __construct(PDO $dbh = null)
+    public function __construct()
     {
-        if (empty($dbh)) {
-            global $dbh;
-        }
+        parent::__construct();
 
-        global $bfchecker;
-
-        $this->dbh = $dbh;
-        $this->logger = new \ProjectSend\Classes\ActionsLog;
-        $this->bfchecker = $bfchecker;
-
-        global $json_strings;
+        $json_strings = get_container_item('global_text_strings')->get();
         $this->error_strings = $json_strings['login']['errors'];
     }
 

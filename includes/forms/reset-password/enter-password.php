@@ -2,7 +2,7 @@
     <input type="hidden" name="token" value="<?php echo html_output($_GET['token']); ?>">
     <input type="hidden" name="user" value="<?php echo html_output($_GET['user']); ?>">
 
-    <?php addCsrf(); ?>
+    <?php \ProjectSend\Classes\Csrf::addCsrf(); ?>
     <fieldset>
         <input type="hidden" name="form_type" id="form_type" value="new_password" />
 

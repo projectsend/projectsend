@@ -14,8 +14,7 @@ use \PDO;
  *
  */
 //brute force block
-class BruteForceBlock {
-    private $dbh;
+class BruteForceBlock extends Base {
     private $auto_clear;
     private $default_throttle_settings;
     private $time_frame_minutes;
@@ -24,9 +23,8 @@ class BruteForceBlock {
     
     public function __construct()
     {
-        global $dbh;
+        parent::__construct();
 
-        $this->dbh = $dbh;
         $this->auto_clear = true;
 
         // array of throttle settings. # failed_attempts => response (delay in seconds)

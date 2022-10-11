@@ -16,7 +16,7 @@ class Cron
     {
         $this->runPreChecks();
 
-        global $dbh;
+        $dbh = get_dbh();
         $this->dbh = $dbh;
 
         $this->results = [];

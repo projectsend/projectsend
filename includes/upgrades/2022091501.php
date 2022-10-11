@@ -2,7 +2,7 @@
 function upgrade_2022091501()
 {
     if ( !table_exists( TABLE_USER_LIMIT_UPLOAD_TO ) ) {
-        global $dbh;
+        $dbh = get_dbh();
         $query = "
         CREATE TABLE IF NOT EXISTS `".TABLE_USER_LIMIT_UPLOAD_TO."` (
             `id` int(11) NOT NULL AUTO_INCREMENT,

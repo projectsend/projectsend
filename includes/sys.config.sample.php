@@ -43,6 +43,12 @@ define('DB_USER', 'username');
 /** Database password */
 define('DB_PASSWORD', 'password');
 
+/** Database port (3306 generally) */
+define('DB_PORT', '3306');
+
+/** Charset */
+define('DB_CHARSET', 'utf8');
+
 /**
  * Prefix for the tables. Set to something other than tbl_ for increased
  * security onr in case you want more than 1 installations on the same database.

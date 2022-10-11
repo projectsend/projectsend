@@ -6,14 +6,13 @@
 
 namespace ProjectSend\Classes;
 
-class Options
+class Options extends Base
 {
     private $dbh;
 
     function __construct()
     {
-        global $dbh;
-        $this->dbh = $dbh;
+        parent::__construct();
     }
 
     /**
@@ -113,7 +112,6 @@ class Options
         define('CLIENT_VIEW_FILE_LIST_URL', BASE_URI . CLIENT_VIEW_FILE_LIST_URL_PATH);
 
         // Set a page for each status code
-        define('STATUS_PAGES_DIR', ADMIN_VIEWS_DIR . DS . 'http_status_pages');
         define('PAGE_STATUS_CODE_URL', BASE_URI . 'error.php');
         define('PAGE_STATUS_CODE_403', PAGE_STATUS_CODE_URL . '?e=403');
         define('PAGE_STATUS_CODE_404', PAGE_STATUS_CODE_URL . '?e=404');

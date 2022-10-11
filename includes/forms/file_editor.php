@@ -1,5 +1,5 @@
 <form action="files-edit.php?ids=<?php echo html_output($_GET['ids']); ?>" name="files" id="files" method="post" enctype="multipart/form-data">
-    <?php addCsrf(); ?>
+    <?php \ProjectSend\Classes\Csrf::addCsrf(); ?>
 
     <div class="container-fluid">
         <?php

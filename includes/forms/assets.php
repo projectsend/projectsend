@@ -26,7 +26,7 @@ switch ($language) {
 ?>
 
 <form action="<?php echo html_output($form_action); ?>" name="asset_form" id="asset_form" method="post" class="form-horizontal">
-    <?php addCsrf(); ?>
+    <?php \ProjectSend\Classes\Csrf::addCsrf(); ?>
     <input type="hidden" name="language" id="asset_language" value="<?php echo $language; ?>">
 
 	<div class="form-group row">

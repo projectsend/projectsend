@@ -50,7 +50,7 @@ $bulk_actions_items = [];
 
 // Include layout files
 $flash_size = 'full';
-include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
+include_once VIEWS_PARTS_DIR.DS.'header-unlogged.php';
 
 include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
 ?>
@@ -273,4 +273,4 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
 </div>
 
 <?php
-include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+include_once VIEWS_PARTS_DIR.DS.'footer.php';

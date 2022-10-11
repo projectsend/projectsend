@@ -5,7 +5,7 @@ if (!defined('CURRENT_USER_LEVEL') or CURRENT_USER_LEVEL != 9) {
     ps_redirect(BASE_URI);
 }
 
-global $dbh;
+$dbh = get_dbh();
 $log_query = "SELECT * FROM " . TABLE_LOG;
 if (isset($_GET['action']) && is_numeric($_GET['action'])) {
     $log_query .= " WHERE action = :action";

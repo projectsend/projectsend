@@ -12,7 +12,7 @@ class FormGenerate
 
     function __construct()
     {
-        global $dbh;
+        $dbh = get_dbh();
         $this->dbh = $dbh;
 
         $this->close = "</form>\n";

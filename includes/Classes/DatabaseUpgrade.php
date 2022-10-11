@@ -19,7 +19,7 @@ class DatabaseUpgrade
 
     public function __construct()
     {
-        global $dbh;
+        $dbh = get_dbh();
         $this->dbh = $dbh;
 
         $this->current_version = substr(CURRENT_VERSION, 1);

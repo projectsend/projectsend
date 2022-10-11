@@ -22,7 +22,7 @@ $generate_categories_options = generate_categories_options( $select_categories['
 ?>
 <form action="categories.php" class="form-horizontal" name="process_category" id="process_category" method="post">
     <input type="hidden" name="processing" id="processing" value="1">
-    <?php addCsrf(); ?>
+    <?php \ProjectSend\Classes\Csrf::addCsrf(); ?>
     <?php if ( !empty( $action ) && $action == 'edit' ) { ?>
         <input type="hidden" name="editing_id" id="editing_id" value="<?php echo $editing; ?>">
     <?php } ?>

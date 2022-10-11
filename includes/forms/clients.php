@@ -66,7 +66,7 @@ switch ($clients_form_type) {
 ?>
 
 <form action="<?php echo html_output($form_action); ?>" name="client_form" id="client_form" method="post" class="form-horizontal" data-form-type="<?php echo $clients_form_type; ?>">
-    <?php addCsrf(); ?>
+    <?php \ProjectSend\Classes\Csrf::addCsrf(); ?>
 
     <div class="form-group row">
         <label for="name" class="col-sm-4 control-label"><?php _e('Name', 'cftp_admin'); ?></label>

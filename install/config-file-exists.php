@@ -4,7 +4,7 @@ define( 'ABS_PARENT', dirname( dirname(__FILE__) ) );
 
 require_once ABS_PARENT . '/bootstrap.php';
 
-global $dbh;
+$dbh = get_dbh();
 
 $page_id = 'installer_installed';
 

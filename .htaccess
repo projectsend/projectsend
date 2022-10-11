@@ -1,3 +1,7 @@
-<IfModule mod_rewrite.c>
-    RewriteEngine Off
-</IfModule>
+# <IfModule mod_rewrite.c>
+#     RewriteEngine Off
+# </IfModule>
+
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule . index.php [L]

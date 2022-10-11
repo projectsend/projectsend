@@ -2,7 +2,7 @@
 $page_title = __('File information', 'cftp_admin');
 $page_title = $file->title;
 
-include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
+include_once VIEWS_PARTS_DIR.DS.'header-unlogged.php';
 ?>
 
 <div class="row">
@@ -76,4 +76,4 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 </div>
 
 <?php
-include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+include_once VIEWS_PARTS_DIR.DS.'footer.php';

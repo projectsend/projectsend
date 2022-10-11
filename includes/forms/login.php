@@ -56,7 +56,7 @@
 </form>
 
 <div class="login_form_links">
-    <p id="reset_pass_link"><?php _e("Forgot your password?",'cftp_admin'); ?> <a href="<?php echo BASE_URI; ?>reset-password.php"><?php _e('Set up a new one.','cftp_admin'); ?></a></p>
+    <p id="reset_pass_link"><?php _e("Forgot your password?",'cftp_admin'); ?> <a href="<?php echo get_route_for('resetPassword'); ?>"><?php _e('Set up a new one.','cftp_admin'); ?></a></p>
     <?php
         if (get_option('clients_can_register') == '1') {
     ?>

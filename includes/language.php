@@ -16,7 +16,6 @@ if ( !defined( 'SITE_LANG' ) ) {
 	define( 'SITE_LANG', 'en' );
 }
 $lang = SITE_LANG;
-$default_domain = 'cftp_admin';
 
 /**
  * If a user selected a language on the log in form, use it

@@ -2,7 +2,7 @@
 // Contains the form that is used to upload files
 ?>
 <form action="files-edit.php" name="upload_form" id="upload_form" method="post" enctype="multipart/form-data">
-    <?php addCsrf(); ?>
+    <?php \ProjectSend\Classes\Csrf::addCsrf(); ?>
     <input type="hidden" name="uploaded_files" id="uploaded_files" value="" />
     <input type="hidden" name="editor_type" value="new_files" />
     

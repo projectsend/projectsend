@@ -459,11 +459,6 @@ class Auth
         header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
         header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 
-        /** Check for a complete installation */
-        if (!is_projectsend_installed()) {
-            ps_redirect('install/index.php');
-        }
-
         if ( session_expired() && user_is_logged_in()) {
             force_logout();
         }

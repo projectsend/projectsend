@@ -2,10 +2,12 @@
 namespace ProjectSend;
 
 use \Laminas\Diactoros\ServerRequestFactory;
+use \League\Route\Router;
 use \Tamtamchik\SimpleFlash\Flash;
 use \ProjectSend\Classes\Locale;
 use \ProjectSend\Classes\BruteForceBlock;
 use \ProjectSend\Classes\ActionsLog;
+use \ProjectSend\Classes\Install;
 use \ProjectSend\Classes\GobalTextStrings;
 use \ProjectSend\Classes\Auth;
 use \ProjectSend\Classes\AssetsLoader;
@@ -20,8 +22,8 @@ class Application {
     {
         $this->setUpContainer();
         $this->addRouter();
-        $this->loadPersonalConfigFile();
         $this->loadSystemConstants();
+        $this->loadPersonalConfigFile();
         $this->addDatabase();
 
         $check_requirements = new \ProjectSend\Classes\ServerRequirements($this->container->get('db'));
@@ -42,39 +44,14 @@ class Application {
             $_SERVER, $_GET, $_POST, $_COOKIE, $_FILES
         );
 
-        $router = new \League\Route\Router;
+        $router = new Router;
         require_once ROOT_DIR . '/includes/routes.php';
         $this->container->set('router', $router);
     }
 
     private function loadPersonalConfigFile()
     {
-        /**
-         * Check if the personal configuration file exists
-         * Otherwise will start a configuration page
-         *
-         * @see sys.config.sample.php
-         */
-        if ( !file_exists(CONFIG_FILE) ) {
-            header("Cache-control: private");
-            $_SESSION = [];
-            session_regenerate_id(true);
-            session_destroy();
-
-            if ( !defined( 'IS_MAKE_CONFIG' ) ) {
-                // the following script returns only after the creation of the configuration file
-                if ( defined('IS_INSTALL') ) {
-                    header('Location:make-config.php');
-                    exit;
-                }
-
-                header('Location:install/make-config.php');
-                exit;
-            }
-        } else {
-            // Load custom config file
-            include_once CONFIG_FILE;
-        }
+        $this->container->set('install', new Install($this->container->get('router')));
     }
 
     private function loadSystemConstants()
@@ -95,6 +72,8 @@ class Application {
                 'charset' => DB_CHARSET,
             ]));
         }
+
+        $this->container->get('install')->AddDatabase($this->container->get('db'));
     }
 
     public function setUpOptions()
@@ -121,7 +100,7 @@ class Application {
         $this->container->set('assets_loader', new AssetsLoader);
         $this->container->set('permissions', new Permissions);
         $this->container->set('csrf', new Csrf);
-        $this->container->set('hybridauth', new Hybridauth);
+        $this->container->set('hybridauth', new Hybridauth($this->container->get('options')));
     }
 
     public function getContainer()

@@ -290,11 +290,8 @@ function get_downloads_information($id = null)
  * @return bool TRUE if table exists, FALSE if no table found.
  * by esbite on http://stackoverflow.com/questions/1717495/check-if-a-database-table-exists-using-php-pdo
  */
-function table_exists($table)
+function table_exists($dbh, $table)
 {
-    $dbh = get_dbh();
-    pax($dbh);
-
     $result = false;
 
     if (!empty($dbh)) {

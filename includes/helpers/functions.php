@@ -62,52 +62,6 @@ function try_queries($queries = [])
     return $failed == 0;
 }
 
-function get_server_requirements_errors()
-{
-    $errors_found = [];
-
-    // Check for PDO extensions
-    $pdo_available_drivers = PDO::getAvailableDrivers();
-    if (empty($pdo_available_drivers)) {
-        $errors_found[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
-    } else {
-        if ((DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND')) {
-            $errors_found[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
-        }
-        if ((DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers)) {
-            $errors_found[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
-        }
-    }
-
-    // Version requirements
-    $version_not_met =  __('%s minimum version not met. Please upgrade to at least version %s', 'cftp_admin');
-
-    // php
-    if (version_compare(phpversion(), REQUIRED_VERSION_PHP, "<")) {
-        $errors_found[] = sprintf($version_not_met, 'php', REQUIRED_VERSION_PHP);
-    }
-
-    // mysql
-    $dbh = get_dbh();
-    if (!empty($dbh)) {
-        $version_mysql = $dbh->query('SELECT version()')->fetchColumn();
-        if (version_compare($version_mysql, REQUIRED_VERSION_MYSQL, "<")) {
-            $errors_found[] = sprintf($version_not_met, 'MySQL', REQUIRED_VERSION_MYSQL);
-        }
-    }
-
-    return $errors_found;
-}
-
-function check_server_requirements()
-{
-    $errors = get_server_requirements_errors();
-
-    if (!empty($errors)) {
-        ps_redirect(PAGE_STATUS_CODE_REQUIREMENTS);
-    }
-}
-
 /**
  * Check if ProjectSend is installed by trying to find the main users table.
  * If it is missing, the installation is invalid.
@@ -339,6 +293,7 @@ function get_downloads_information($id = null)
 function table_exists($table)
 {
     $dbh = get_dbh();
+    pax($dbh);
 
     $result = false;
 

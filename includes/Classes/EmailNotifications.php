@@ -6,7 +6,7 @@
 namespace ProjectSend\Classes;
 use \PDO;
 
-class EmailNotifications
+class EmailNotifications extends Base
 {
     private $notifications_sent;
     private $notifications_failed;
@@ -17,12 +17,9 @@ class EmailNotifications
     private $files_data;
     private $creators;
 
-    private $dbh;
-
     public function __construct()
     {
-        $dbh = get_dbh();
-        $this->dbh = $dbh;
+        parent::__construct();
 
         $this->notifications_sent = [];
         $this->notifications_failed = [];

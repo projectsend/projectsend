@@ -20,8 +20,7 @@ class RoutesDispatcher
             (new SapiEmitter)->emit($response);
         } catch (\League\Route\Http\Exception\NotFoundException $e) {
             $route = get_route_for('error');
-            pax($route);
-            ps_redirect(BASE_URI.'error/404');
+            ps_redirect(BASE_URI.$route);
         }
     }
 }

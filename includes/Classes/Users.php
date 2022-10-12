@@ -11,11 +11,8 @@ use \ProjectSend\Classes\Validation;
 use \ProjectSend\Classes\GroupsMemberships;
 use \PDO;
 
-class Users
+class Users extends Base
 {
-    private $dbh;
-    private $logger;
-
     private $validation_type;
     private $validation_passed;
     private $validation_errors;
@@ -62,10 +59,7 @@ class Users
 
     public function __construct($user_id = null)
     {
-        $dbh = get_dbh();
-
-        $this->dbh = $dbh;
-        $this->logger = new \ProjectSend\Classes\ActionsLog;
+        parent::__construct();
 
         $this->role = 0; // by default, create "client" role
 

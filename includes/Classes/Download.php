@@ -9,17 +9,11 @@ namespace ProjectSend\Classes;
 use \PDO;
 use \ZipArchive;
 
-class Download
+class Download extends Base
 {
-    private $dbh;
-    private $logger;
-
     public function __construct()
     {
-        $dbh = get_dbh();
-
-        $this->dbh = $dbh;
-        $this->logger = new \ProjectSend\Classes\ActionsLog;
+        parent::__construct();
     }
 
     public function download($file_id)

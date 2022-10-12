@@ -8,14 +8,13 @@
 
 namespace ProjectSend\Classes;
 
-class Validation
+class Validation extends Base
 {
-    private $dbh;
     private $errors = [];
 
     public function __construct() {
-        $dbh = get_dbh();
-        $this->dbh = $dbh;
+        parent::__construct();
+
         $this->allowed_upper = range('A','Z');
         $this->allowed_lower = range('a','z');
         $this->allowed_numbers = array('0','1','2','3','4','5','6','7','8','9');

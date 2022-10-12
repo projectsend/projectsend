@@ -6,13 +6,11 @@
 
 namespace ProjectSend\Classes;
 
-class Options extends Base
+class Options
 {
-    private $dbh;
-
-    function __construct()
+    function __construct(Database $database)
     {
-        parent::__construct();
+        $this->dbh = $database->getPdo();
     }
 
     /**

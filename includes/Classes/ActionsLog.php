@@ -6,7 +6,7 @@ namespace ProjectSend\Classes;
 
 use \PDO;
 
-class ActionsLog extends Base
+class ActionsLog
 {
 
     private $action;
@@ -17,9 +17,9 @@ class ActionsLog extends Base
     private $affected_file_name;
     private $affected_account_name;
 
-    public function __construct()
+    public function __construct(Database $database)
     {
-        parent::__construct();
+        $this->dbh = $database->getPdo();
     }
 
     public function getActivitiesReferences()

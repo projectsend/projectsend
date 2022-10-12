@@ -14,16 +14,17 @@ use \PDO;
  *
  */
 //brute force block
-class BruteForceBlock extends Base {
+class BruteForceBlock {
+
     private $auto_clear;
     private $default_throttle_settings;
     private $time_frame_minutes;
     private $ip_whitelist;
     private $ip_blacklist;
     
-    public function __construct()
+    public function __construct(Database $database, Options $options)
     {
-        parent::__construct();
+        $this->dbh = $database->getPdo();
 
         $this->auto_clear = true;
 
@@ -41,8 +42,8 @@ class BruteForceBlock extends Base {
         //time frame to use when retrieving the number of recent failed logins from database
         $this->time_frame_minutes = 10;
 
-        $this->ip_whitelist = $this->makeIpList(get_option('ip_whitelist'));
-        $this->ip_blacklist = $this->makeIpList(get_option('ip_blacklist'));
+        $this->ip_whitelist = $this->makeIpList($options->getOption('ip_whitelist'));
+        $this->ip_blacklist = $this->makeIpList($options->getOption('ip_blacklist'));
     }
 
     public function getThrottleSettings()
@@ -147,6 +148,7 @@ class BruteForceBlock extends Base {
 		$latest_failed_logins = null;
 		$row = null;
 		$latest_failed_attempt_datetime = null;
+        pax($this);
 		try{
 			$stmt = $this->dbh->query('SELECT MAX(attempted_at) AS attempted_at FROM '.TABLE_LOGINS_FAILED.'');
 			$latest_failed_logins = $stmt->rowCount();

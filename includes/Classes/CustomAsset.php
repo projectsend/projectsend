@@ -9,11 +9,8 @@ namespace ProjectSend\Classes;
 use \ProjectSend\Classes\Validation;
 use \PDO;
 
-class CustomAsset
+class CustomAsset extends Base
 {
-    private $dbh;
-    private $logger;
-
     public $id;
     public $title;
     public $content;
@@ -32,10 +29,7 @@ class CustomAsset
 
     public function __construct($asset_id = null)
     {
-        $dbh = get_dbh();
-
-        $this->dbh = $dbh;
-        $this->logger = new \ProjectSend\Classes\ActionsLog;
+        parent::__construct();
 
         $this->allowed_actions_roles = [9];
 

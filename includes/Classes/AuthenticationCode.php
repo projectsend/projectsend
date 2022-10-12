@@ -2,11 +2,8 @@
 namespace ProjectSend\Classes;
 use \PDO;
 
-class AuthenticationCode
+class AuthenticationCode extends Base
 {
-    private $dbh;
-    private $logger;
-
     public $id;
     public $user_id;
     public $token;
@@ -19,10 +16,7 @@ class AuthenticationCode
 
     public function __construct($record_id = null)
     {
-        $dbh = get_dbh();
-
-        $this->dbh = $dbh;
-        $this->logger = new \ProjectSend\Classes\ActionsLog;
+        parent::__construct();
 
         $this->minutes_between_attempts = 5;
 

@@ -8,21 +8,14 @@ namespace ProjectSend\Classes;
 use \ProjectSend\Classes\Validation;
 use \PDO;
 
-class OrphanFiles
+class OrphanFiles extends Base
 {
     private $allowed_files;
     private $not_allowed_files;
 
-
-    private $dbh;
-    private $logger;
-
     public function __construct()
     {
-        $dbh = get_dbh();
-
-        $this->dbh = $dbh;
-        $this->logger = new \ProjectSend\Classes\ActionsLog;
+        parent::__construct();
 
         $this->allowed_files = [];
         $this->not_allowed_files = [];

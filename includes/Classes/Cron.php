@@ -6,18 +6,16 @@ namespace ProjectSend\Classes;
 
 use \PDO;
 
-class Cron
+class Cron extends Base
 {
     private $results;
     private $results_formatted;
-    private $dbh;
 
     public function __construct()
     {
-        $this->runPreChecks();
+        parent::__construct();
 
-        $dbh = get_dbh();
-        $this->dbh = $dbh;
+        $this->runPreChecks();
 
         $this->results = [];
         $this->results_formatted = '';

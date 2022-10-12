@@ -2,17 +2,11 @@
 namespace ProjectSend\Classes;
 use \PDO;
 
-class PasswordReset
+class PasswordReset extends Base
 {
-    private $dbh;
-    private $logger;
-
     public function __construct($record_id = null)
     {
-        $dbh = get_dbh();
-        $this->dbh = $dbh;
-
-        $this->logger = new \ProjectSend\Classes\ActionsLog;
+        parent::__construct();
 
         if (!empty($record_id)) {
             $this->getById($record_id);

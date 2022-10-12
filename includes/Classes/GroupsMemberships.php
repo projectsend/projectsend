@@ -7,17 +7,11 @@
 namespace ProjectSend\Classes;
 use \PDO;
 
-class GroupsMemberships
+class GroupsMemberships extends Base
 {
-    private $dbh;
-    private $logger;
-
     public function __construct()
     {
-        $dbh = get_dbh();
-
-        $this->dbh = $dbh;
-        $this->logger = new \ProjectSend\Classes\ActionsLog;
+        parent::__construct();
     }
 
     function groupAddMembers($arguments)

@@ -6,18 +6,19 @@ namespace ProjectSend\Classes;
 use \PDO;
 use ProjectSend\Classes\Session as Session;
 
-class Auth extends Base
+class Auth
 {
     private $error_message;
     private $error_strings;
     public $user;
 
-    public function __construct()
+    public function __construct(Database $database, GobalTextStrings $global_text_strings)
     {
-        parent::__construct();
+        $this->dbh = $database->getPdo();
 
-        $json_strings = get_container_item('global_text_strings')->get();
+        $json_strings = $global_text_strings->get();
         $this->error_strings = $json_strings['login']['errors'];
+        $this->setUpCurrentUser();
     }
 
     public function setLanguage($language = null)
@@ -39,8 +40,7 @@ class Auth extends Base
         session_regenerate_id(true);
 
         // Record the action log
-        $logger = new \ProjectSend\Classes\ActionsLog;
-        $logger->addEntry([
+        $this->logger->addEntry([
             'action' => 1,
             'owner_id' => $user->id,
             'owner_user' => $user->username,
@@ -304,8 +304,6 @@ class Auth extends Base
 
     public function loginLdap($email, $password, $language)
     {
-        global $logger;
-        
         if ( !$email || !$password ) {
             $return = [
                 'status' => 'error',
@@ -449,5 +447,62 @@ class Auth extends Base
 		// if ( isset( $_GET['timeout'] ) ) {
         //     $error_code = 'timeout';
         // }
+    }
+
+    private function setUpCurrentUser()
+    {
+        /**
+         * Define the information about the current logged in user or client
+         * used on the different validations across the system.
+         */
+        ob_start();
+        header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+        header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
+
+        /** Check for a complete installation */
+        if (!is_projectsend_installed()) {
+            ps_redirect('install/index.php');
+        }
+
+        if ( session_expired() && user_is_logged_in()) {
+            force_logout();
+        }
+
+        extend_session(); // update last activity time stamp
+
+        /**
+         * Global information on the current account to use across the system.
+         */
+        if (!empty($_SESSION['user_id'])) {
+            $session_user = new \ProjectSend\Classes\Users($_SESSION['user_id']);
+            if ($session_user->userExists()) {
+                /**
+                 * Automatic log out if account is deactivated while session is on.
+                 */
+                if (!$session_user->isActive()) {
+                    force_logout();
+                }
+            
+                /**
+                 * Save all the data on different constants
+                 */
+                define('CURRENT_USER_ID', $session_user->id);
+                define('CURRENT_USER_USERNAME', $session_user->username);
+                define('CURRENT_USER_NAME', $session_user->name);
+                define('CURRENT_USER_EMAIL', $session_user->email);
+                define('CURRENT_USER_LEVEL', $session_user->role);
+                define('CURRENT_USER_TYPE', $session_user->account_type);
+            
+                // Check if account has a custom value for upload max file size
+                if ( $session_user->max_file_size == 0 || empty( $session_user->max_file_size ) ) {
+                    define('UPLOAD_MAX_FILESIZE', (int)MAX_FILESIZE);
+                }
+                else {
+                    define('UPLOAD_MAX_FILESIZE', (int)$session_user->max_file_size);
+                }
+            } else {
+                force_logout();
+            }
+        }
     }
 }

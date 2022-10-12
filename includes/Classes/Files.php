@@ -8,7 +8,7 @@ namespace ProjectSend\Classes;
 use \ProjectSend\Classes\Validation;
 use \PDO;
 
-class Files
+class Files extends Base
 {
     public $id;
     public $user_id;
@@ -44,10 +44,7 @@ class Files
 
     public function __construct($file_id = null)
     {
-        $dbh = get_dbh();
-
-        $this->dbh = $dbh;
-        $this->logger = new \ProjectSend\Classes\ActionsLog;
+        parent::__construct();
 
         $this->location = UPLOADED_FILES_DIR;
 

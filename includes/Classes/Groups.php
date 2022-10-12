@@ -9,11 +9,8 @@ namespace ProjectSend\Classes;
 use \ProjectSend\Classes\Validation;
 use \PDO;
 
-class Groups
+class Groups extends Base
 {
-    private $dbh;
-    private $logger;
-
     public $id;
     public $name;
     public $description;
@@ -33,10 +30,7 @@ class Groups
 
     public function __construct($group_id = null)
     {
-        $dbh = get_dbh();
-
-        $this->dbh = $dbh;
-        $this->logger = new \ProjectSend\Classes\ActionsLog;
+        parent::__construct();
 
         $this->allowed_actions_roles = [9, 8];
 

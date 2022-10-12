@@ -7,11 +7,8 @@
 namespace ProjectSend\Classes;
 use \PDO;
 
-class Categories
+class Categories extends Base
 {
-    private $dbh;
-    private $logger;
-
     private $id;
     private $name;
     private $parent;
@@ -26,10 +23,7 @@ class Categories
 
     public function __construct($category_id = null)
     {
-        $dbh = get_dbh();
-
-        $this->dbh = $dbh;
-        $this->logger = new \ProjectSend\Classes\ActionsLog;
+        parent::__construct();
 
         $this->allowed_actions_roles = [9, 8, 7];
 
@@ -187,10 +181,10 @@ class Categories
 
             /** Record the action log */
             $this->logger->addEntry([
-                'action'				=> 34,
-                'owner_id'				=> CURRENT_USER_ID,
-                'affected_account'		=> $this->id,
-                'affected_account_name'	=> $this->name
+                'action' => 34,
+                'owner_id' => CURRENT_USER_ID,
+                'affected_account' => $this->id,
+                'affected_account_name' => $this->name
             ]);
 
             return [
@@ -207,25 +201,26 @@ class Categories
 
     private function checkParentValidation()
     {
-      if($this->id == $this->parent)
-        return false;
-      else{
-          //Check if the parent is not a child of the current category id
-          $category_parent_query = "select id, parent from ".TABLE_CATEGORIES;
-          $category_parent_query_statment = $this->dbh->prepare($category_parent_query);
-          $category_parent_query_statment->execute();
+        if ($this->id == $this->parent) {
+            return false;
+        } else{
+            //Check if the parent is not a child of the current category id
+            $category_parent_query = "select id, parent from ".TABLE_CATEGORIES;
+            $category_parent_query_statment = $this->dbh->prepare($category_parent_query);
+            $category_parent_query_statment->execute();
 
-          $array_category_parent = $category_parent_query_statment->fetchAll(PDO::FETCH_KEY_PAIR);
+            $array_category_parent = $category_parent_query_statment->fetchAll(PDO::FETCH_KEY_PAIR);
 
-          $point = $this->parent;
-          while($array_category_parent[$point]!=null){
+            $point = $this->parent;
+            while($array_category_parent[$point]!=null){
             if($array_category_parent[$point]==$this->id)
-              return false;
+                return false;
             $point = $point->parent;
-          }
+            }
 
-      }
-      return true;
+        }
+
+        return true;
     }
 
 	/**

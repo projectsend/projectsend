@@ -31,7 +31,8 @@
             "includes/helpers/functions.session.permissions.php",
             "includes/helpers/functions.templates.php",
             "includes/helpers/functions.usermeta.php",
-            "includes/helpers/functions.updates.php"
+            "includes/helpers/functions.updates.php",
+            "includes/helpers/timezone_identifiers_list.php"
 		]
 	},
 	"require": {

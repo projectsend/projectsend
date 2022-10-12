@@ -7,20 +7,18 @@
 namespace ProjectSend\Classes;
 use \PDO;
 
-class DatabaseUpgrade
+class DatabaseUpgrade extends Base
 {
     private $updates_applied;
     private $current_database_version;
     private $current_version;
-    private $dbh;
     private $sql_mode_dates_status;
     private $upgrades;
     private $last_upgrade;
 
     public function __construct()
     {
-        $dbh = get_dbh();
-        $this->dbh = $dbh;
+        parent::__construct();
 
         $this->current_version = substr(CURRENT_VERSION, 1);
     
@@ -53,15 +51,13 @@ class DatabaseUpgrade
 
 		/** Record the action log */
         $user_id = (defined('IS_INSTALL')) ? 1 : CURRENT_USER_ID;
-        $logger = new \ProjectSend\Classes\ActionsLog;
-        $logger->addEntry([
+        $this->logger->addEntry([
             'action' => 49,
             'owner_id' => $user_id,
             'details' => [
                 'database_version' => $this->last_upgrade,
             ],
         ]);
-        unset($logger);
     }
 
     public function upgradeDatabase($requires_system_user = false)

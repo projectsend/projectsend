@@ -60,6 +60,11 @@ switch ($_GET['do']) {
         $download = new Download;
         $download->download($_GET['id']);
         break;
+    case 'dismiss_upgraded_notice':
+        redirect_if_not_logged_in();
+        redirect_if_role_not_allowed([9,8,7]);
+        save_option('show_upgrade_success_message', 'false');
+        ps_redirect(BASE_URI.'dashboard.php');
     case 'return_files_ids':
         redirect_if_not_logged_in();
         redirect_if_role_not_allowed($allowed_levels);    

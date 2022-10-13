@@ -1,24 +1,22 @@
 #donations_message {
-    background:#0094bb ;
-    color:#fff;
+    background:#e7e0ff;
     border-radius: 2px;
-    margin:0 0 20px;
+    margin:0 0 3rem;
     padding:30px;
     font-size:1.1em;
-
+    border-radius: 10px;
+    box-shadow: var(--global-box-shadow);
+    color: black;
+    
     h3 {
-        margin-top:0;
-        font-size:1.5em;
+        margin: 3rem 0 1.5rem 0;
+        font-size:1.75em;
         border:none;
+        text-transform: none;
     }
-
-    p {
-        margin-bottom:0;
-    }
-
-    a {
-        color:white;
-        font-weight:bold;
-        text-decoration:underline;
+    
+    #db_upgraded {
+        color: var(--main_color);
+        font-weight: bold;
     }
 }

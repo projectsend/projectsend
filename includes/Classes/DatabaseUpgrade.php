@@ -62,6 +62,8 @@ class DatabaseUpgrade
             ],
         ]);
         unset($logger);
+
+        save_option('show_upgrade_success_message', 'true');
     }
 
     public function upgradeDatabase($requires_system_user = false)

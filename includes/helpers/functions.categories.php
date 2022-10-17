@@ -10,13 +10,13 @@ function get_category($id)
     $return = '';
 
     $file_count = 0;
-    $statement = $dbh->prepare("SELECT COUNT(file_id) as count FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE cat_id = :cat_id GROUP BY cat_id");
+    $statement = $dbh->prepare("SELECT COUNT(file_id) as count FROM " . get_table('categories_relations') . " WHERE cat_id = :cat_id GROUP BY cat_id");
     $statement->bindParam(':cat_id', $id, PDO::PARAM_INT);
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
     $file_count = $statement->rowCount();
 
-    $statement = $dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES . " WHERE id = :id");
+    $statement = $dbh->prepare("SELECT * FROM " . get_table('categories') . " WHERE id = :id");
     $statement->bindParam(':id', $id, PDO::PARAM_INT);
     $statement->execute();
     if ($statement->rowCount() > 0) {
@@ -58,7 +58,7 @@ function get_categories($params = [])
      * Avoids doing this individually later if needed.
      */
     $files_count = [];
-    $statement = $dbh->prepare("SELECT cat_id, COUNT(file_id) as count FROM " . TABLE_CATEGORIES_RELATIONS . " GROUP BY cat_id");
+    $statement = $dbh->prepare("SELECT cat_id, COUNT(file_id) as count FROM " . get_table('categories_relations') . " GROUP BY cat_id");
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
     while ($row = $statement->fetch()) {
@@ -89,7 +89,7 @@ function get_categories($params = [])
     );
 
     /** Begin construction of the SQL sentence */
-    $sql = "SELECT * FROM " . TABLE_CATEGORIES;
+    $sql = "SELECT * FROM " . get_table('categories');
 
     /** Add the search terms */
     if (isset($params['search']) && !empty($params['search'])) {
@@ -192,7 +192,7 @@ function add_missing_to_tree($categories, $files_count)
 
     foreach ($categories as $category) {
         if (!empty($category['parent']) && !array_key_exists($category['parent'], $categories)) {
-            $query = "SELECT * FROM " . TABLE_CATEGORIES . " WHERE id=:id";
+            $query = "SELECT * FROM " . get_table('categories') . " WHERE id=:id";
             $statement = $dbh->prepare($query);
             $statement->bindParam(':id', $category['parent'], PDO::PARAM_INT);
             $statement->execute();

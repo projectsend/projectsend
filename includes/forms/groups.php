@@ -37,7 +37,7 @@ switch ($groups_form_type) {
 		<div class="col-sm-8">
 			<select class="select2 none" multiple="multiple" id="members" name="members[]" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
 				<?php
-					$sql = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE level = '0' ORDER BY name ASC");
+					$sql = $dbh->prepare("SELECT * FROM " . get_table('users') . " WHERE level = '0' ORDER BY name ASC");
 					$sql->execute();
 					$sql->setFetchMode(PDO::FETCH_ASSOC);
 					while ( $row = $sql->fetch() ) {

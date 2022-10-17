@@ -56,7 +56,7 @@ class EmailNotifications extends Base
 
         // Get notifications
         $params = [];
-        $query = "SELECT * FROM " . TABLE_NOTIFICATIONS . " WHERE sent_status = '0' AND times_failed < :times";
+        $query = "SELECT * FROM " . get_table('notifications') . " WHERE sent_status = '0' AND times_failed < :times";
         $params[':times'] = get_option('notifications_max_tries');
 
         // In case we manually want to send specific notifications
@@ -297,7 +297,7 @@ class EmailNotifications extends Base
     {
         if (!empty($notifications) && count($notifications) > 0) {
             $notifications = implode(',',array_unique($notifications));
-            $statement = $this->dbh->prepare("UPDATE " . TABLE_NOTIFICATIONS . " SET sent_status = '1' WHERE FIND_IN_SET(id, :sent)");
+            $statement = $this->dbh->prepare("UPDATE " . get_table('notifications') . " SET sent_status = '1' WHERE FIND_IN_SET(id, :sent)");
             $statement->bindParam(':sent', $notifications);
             $statement->execute();
         }
@@ -311,7 +311,7 @@ class EmailNotifications extends Base
     {
         if (!empty($notifications) && count($notifications) > 0) {
             $notifications = implode(',',array_unique($notifications));
-            $statement = $this->dbh->prepare("UPDATE " . TABLE_NOTIFICATIONS . " SET sent_status = '0', times_failed = times_failed + 1 WHERE FIND_IN_SET(id, :failed)");
+            $statement = $this->dbh->prepare("UPDATE " . get_table('notifications') . " SET sent_status = '0', times_failed = times_failed + 1 WHERE FIND_IN_SET(id, :failed)");
             $statement->bindParam(':failed', $notifications);
             $statement->execute();
         }
@@ -326,7 +326,7 @@ class EmailNotifications extends Base
     {
         if (!empty($notifications) && count($notifications) > 0) {
             $notifications = implode(',',array_unique($notifications));
-            $statement = $this->dbh->prepare("UPDATE " . TABLE_NOTIFICATIONS . " SET sent_status = '3' WHERE FIND_IN_SET(id, :inactive)");
+            $statement = $this->dbh->prepare("UPDATE " . get_table('notifications') . " SET sent_status = '3' WHERE FIND_IN_SET(id, :inactive)");
             $statement->bindParam(':inactive', $notifications);
             $statement->execute();
         }

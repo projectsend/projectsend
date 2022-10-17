@@ -72,7 +72,7 @@ class Categories extends Base
     {
         $this->id = $id;
 
-        $this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES . " WHERE id=:id");
+        $this->statement = $this->dbh->prepare("SELECT * FROM " . get_table('categories') . " WHERE id=:id");
         $this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $this->statement->execute();
         $this->statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -159,7 +159,7 @@ class Categories extends Base
         $this->created_by = CURRENT_USER_USERNAME;
 
         /** Insert the category information into the database */
-        $this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_CATEGORIES . " (name,parent,description,created_by)"
+        $this->statement = $this->dbh->prepare("INSERT INTO " . get_table('categories') . " (name,parent,description,created_by)"
                                             ."VALUES (:name, :parent, :description, :created_by)");
         $this->statement->bindParam(':name', $this->name);
 
@@ -205,7 +205,7 @@ class Categories extends Base
             return false;
         } else{
             //Check if the parent is not a child of the current category id
-            $category_parent_query = "select id, parent from ".TABLE_CATEGORIES;
+            $category_parent_query = "select id, parent from ".get_table('categories');
             $category_parent_query_statment = $this->dbh->prepare($category_parent_query);
             $category_parent_query_statment->execute();
 
@@ -246,7 +246,7 @@ class Categories extends Base
         if($this->parent == '0' || $this->checkParentValidation() )
           $query_update_parent = "parent = :parent,";
 
-        $this->edit_category_query = "UPDATE " . TABLE_CATEGORIES . " SET
+        $this->edit_category_query = "UPDATE " . get_table('categories') . " SET
                                     name = :name,
                                     ".$query_update_parent."
                                     description = :description
@@ -299,7 +299,7 @@ class Categories extends Base
 
         /** Do a permissions check */
         if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-            $this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_CATEGORIES . ' WHERE id=:id');
+            $this->sql = $this->dbh->prepare('DELETE FROM ' . get_table('categories') . ' WHERE id=:id');
             $this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
             $this->sql->execute();
 

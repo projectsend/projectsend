@@ -76,7 +76,7 @@ if (count($public_groups) > 0) {
 
 // Query groups
 $params = [];
-$cq = "SELECT id FROM " . TABLE_GROUPS;
+$cq = "SELECT id FROM " . get_table('groups');
 
 // Add the search terms
 if (isset($_GET['search']) && !empty($_GET['search'])) {
@@ -111,7 +111,7 @@ if (isset($_GET['public']) && $_GET['public'] != '2') {
 }
 
 // Add the order
-$cq .= sql_add_order(TABLE_GROUPS, 'id', 'desc');
+$cq .= sql_add_order(get_table('groups'), 'id', 'desc');
 
 // Pre-query to count the total results
 $count_sql = $dbh->prepare($cq);

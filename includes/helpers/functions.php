@@ -69,7 +69,7 @@ function try_queries($queries = [])
 function is_projectsend_installed()
 {
     $tables_need = array(
-        TABLE_USERS
+        get_table('users')
     );
 
     $tables_missing = 0;
@@ -88,7 +88,7 @@ function is_projectsend_installed()
 function is_unique_username($string)
 {
     $dbh = get_dbh();
-    $statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user = :user");
+    $statement = $dbh->prepare("SELECT * FROM " . get_table('users') . " WHERE user = :user");
     $statement->execute(array(':user'    => $string));
     if ($statement->rowCount() > 0) {
         return false;
@@ -246,7 +246,7 @@ function get_downloads_information($id = null)
 
     $data = [];
 
-    $sql = "SELECT file_id, COUNT(*) as downloads, SUM( ISNULL(user_id) ) AS anonymous_users, COUNT(DISTINCT user_id) as unique_clients FROM " . TABLE_DOWNLOADS;
+    $sql = "SELECT file_id, COUNT(*) as downloads, SUM( ISNULL(user_id) ) AS anonymous_users, COUNT(DISTINCT user_id) as unique_clients FROM " . get_table('downloads');
     if (!empty($id)) {
         $sql .= ' WHERE file_id = :id';
     }
@@ -290,9 +290,10 @@ function get_downloads_information($id = null)
  * @return bool TRUE if table exists, FALSE if no table found.
  * by esbite on http://stackoverflow.com/questions/1717495/check-if-a-database-table-exists-using-php-pdo
  */
-function table_exists($dbh, $table)
+function table_exists($table)
 {
     $result = false;
+    $dbh = get_dbh();
 
     if (!empty($dbh)) {
         try {
@@ -316,7 +317,7 @@ function table_exists($dbh, $table)
 function download_information_exists($id)
 {
     $dbh = get_dbh();
-    $statement = $dbh->prepare("SELECT id FROM " . TABLE_DOWNLOADS . " WHERE file_id = :id");
+    $statement = $dbh->prepare("SELECT id FROM " . get_table('downloads') . " WHERE file_id = :id");
     $statement->bindParam(':id', $id, PDO::PARAM_INT);
     $statement->execute();
     if ($statement->rowCount() > 0) {
@@ -336,7 +337,7 @@ function download_information_exists($id)
 function client_exists_id($id)
 {
     $dbh = get_dbh();
-    $statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
+    $statement = $dbh->prepare("SELECT * FROM " . get_table('users') . " WHERE id=:id");
     $statement->bindParam(':id', $id, PDO::PARAM_INT);
     $statement->execute();
     if ($statement->rowCount() > 0) {
@@ -355,7 +356,7 @@ function client_exists_id($id)
 function user_exists_id($id)
 {
     $dbh = get_dbh();
-    $statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
+    $statement = $dbh->prepare("SELECT * FROM " . get_table('users') . " WHERE id=:id");
     $statement->bindParam(':id', $id, PDO::PARAM_INT);
     $statement->execute();
     if ($statement->rowCount() > 0) {
@@ -375,7 +376,7 @@ function get_client_by_id($client)
 {
     $dbh = get_dbh();
 
-    $statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
+    $statement = $dbh->prepare("SELECT * FROM " . get_table('users') . " WHERE id=:id");
     $statement->bindParam(':id', $client, PDO::PARAM_INT);
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -412,7 +413,7 @@ function get_client_by_id($client)
 function username_exists($username)
 {
     $dbh = get_dbh();
-    $statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user = :user");
+    $statement = $dbh->prepare("SELECT * FROM " . get_table('users') . " WHERE user = :user");
     $statement->execute([
         ':user' => $username,
     ]);
@@ -450,7 +451,7 @@ function get_client_by_username($client)
 {
     $dbh = get_dbh();
 
-    $statement = $dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE user=:username");
+    $statement = $dbh->prepare("SELECT id FROM " . get_table('users') . " WHERE user=:username");
     $statement->bindParam(':username', $client);
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -485,7 +486,7 @@ function get_user_by($user_type, $field, $value)
     ];
 
     if (in_array($field, $acceptable_fields)) {
-        $statement = $dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE `$field`=:value");
+        $statement = $dbh->prepare("SELECT id FROM " . get_table('users') . " WHERE `$field`=:value");
         $statement->bindParam(':value', $value);
         $statement->execute();
 
@@ -517,7 +518,7 @@ function get_user_by_id($id)
 {
     $dbh = get_dbh();
 
-    $statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
+    $statement = $dbh->prepare("SELECT * FROM " . get_table('users') . " WHERE id=:id");
     $statement->bindParam(':id', $id, PDO::PARAM_INT);
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -551,7 +552,7 @@ function get_user_by_username($user)
 {
     $dbh = get_dbh();
 
-    $statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:user");
+    $statement = $dbh->prepare("SELECT * FROM " . get_table('users') . " WHERE user=:user");
     $statement->execute(
         array(
             ':user' => $user
@@ -640,7 +641,7 @@ function current_user_can_upload_public()
 function get_file_by_id($id)
 {
     $dbh = get_dbh();
-    $statement = $dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE id=:id");
+    $statement = $dbh->prepare("SELECT * FROM " . get_table('files') . " WHERE id=:id");
     $statement->bindParam(':id', $id, PDO::PARAM_INT);
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -678,7 +679,7 @@ function get_file_by_id($id)
 function get_file_by_filename($filename)
 {
     $dbh = get_dbh();
-    $statement = $dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE url=:filename");
+    $statement = $dbh->prepare("SELECT * FROM " . get_table('files') . " WHERE url=:filename");
     $statement->execute(
         array(
             ':filename' => $filename
@@ -712,7 +713,7 @@ function get_file_assignations($file_id)
 
     $dbh = get_dbh();
 
-    $statement = $dbh->prepare("SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id");
+    $statement = $dbh->prepare("SELECT * FROM " . get_table('files_relations') . " WHERE file_id = :file_id");
     $statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -802,9 +803,9 @@ function message_no_clients()
 {
     $dbh = get_dbh();
     // Count the clients to show a warning message or the form
-    $statement = $dbh->query("SELECT id FROM " . TABLE_USERS . " WHERE level = '0'");
+    $statement = $dbh->query("SELECT id FROM " . get_table('users') . " WHERE level = '0'");
     $count_clients = $statement->rowCount();
-    $statement = $dbh->query("SELECT id FROM " . TABLE_GROUPS);
+    $statement = $dbh->query("SELECT id FROM " . get_table('groups'));
     $count_groups = $statement->rowCount();
 
     if ((!$count_clients or $count_clients < 1) && (!$count_groups or $count_groups < 1)) {
@@ -1691,7 +1692,7 @@ function file_editor_get_all_clients()
     //$users = [];
     $clients = [];
 
-    $statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . " WHERE level='0' AND account_requested='0' ORDER BY name ASC");
+    $statement = $dbh->prepare("SELECT id, name, level FROM " . get_table('users') . " WHERE level='0' AND account_requested='0' ORDER BY name ASC");
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
     while ($row = $statement->fetch()) {
@@ -1711,7 +1712,7 @@ function file_editor_get_clients_by_ids($clients_ids = [])
 
     $clients = [];
     $clients_ids = implode(',', $clients_ids);
-    $statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . " WHERE level='0' AND account_requested='0' AND FIND_IN_SET(id, :clients_ids) ORDER BY name ASC");
+    $statement = $dbh->prepare("SELECT id, name, level FROM " . get_table('users') . " WHERE level='0' AND account_requested='0' AND FIND_IN_SET(id, :clients_ids) ORDER BY name ASC");
     $statement->bindParam(':clients_ids', $clients_ids);
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -1728,7 +1729,7 @@ function file_editor_get_all_groups()
 
     /** Fill the groups array that will be used on the form */
     $groups = [];
-    $statement = $dbh->prepare("SELECT id, name FROM " . TABLE_GROUPS . " ORDER BY name ASC");
+    $statement = $dbh->prepare("SELECT id, name FROM " . get_table('groups') . " ORDER BY name ASC");
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
     while ($row = $statement->fetch()) {
@@ -1748,7 +1749,7 @@ function file_editor_get_groups_by_members($clients_ids = [])
 
     $groups_find_in = [];
     $clients_ids = implode(',', $clients_ids);
-    $statement = $dbh->prepare("SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE FIND_IN_SET(client_id, :clients_ids)");
+    $statement = $dbh->prepare("SELECT DISTINCT group_id FROM " . get_table('members') . " WHERE FIND_IN_SET(client_id, :clients_ids)");
     $statement->bindParam(':clients_ids', $clients_ids);
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -1763,7 +1764,7 @@ function file_editor_get_groups_by_members($clients_ids = [])
     /** Fill the groups array that will be used on the form */
     $groups = [];
     $groups_find_in = implode(',', $groups_find_in);
-    $statement = $dbh->prepare("SELECT id, name FROM " . TABLE_GROUPS . " WHERE FIND_IN_SET(id, :groups_ids) ORDER BY name ASC");
+    $statement = $dbh->prepare("SELECT id, name FROM " . get_table('groups') . " WHERE FIND_IN_SET(id, :groups_ids) ORDER BY name ASC");
     $statement->bindParam(':groups_ids', $groups_find_in);
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -1835,14 +1836,14 @@ function record_new_download($user_id = CURRENT_USER_ID, $file_id = null)
     }
 
     if ($user_id == 0) {
-        $statement = $dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (file_id, remote_ip, remote_host, anonymous) VALUES (:file_id, :remote_ip, :remote_host, :anonymous)");
+        $statement = $dbh->prepare("INSERT INTO " . get_table('downloads') . " (file_id, remote_ip, remote_host, anonymous) VALUES (:file_id, :remote_ip, :remote_host, :anonymous)");
         $statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
         $statement->bindParam(':remote_ip', $ip);
         $statement->bindParam(':remote_host', $host);
         $statement->bindValue(':anonymous', 1, PDO::PARAM_INT);
         $statement->execute();
     } else {
-        $statement = $dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (user_id , file_id, remote_ip, remote_host) VALUES (:user_id, :file_id, :remote_ip, :remote_host)");
+        $statement = $dbh->prepare("INSERT INTO " . get_table('downloads') . " (user_id , file_id, remote_ip, remote_host) VALUES (:user_id, :file_id, :remote_ip, :remote_host)");
         $statement->bindValue(':user_id', $user_id, PDO::PARAM_INT);
         $statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
         $statement->bindParam(':remote_ip', $ip);
@@ -1887,7 +1888,7 @@ function user_can_download_file($user_id = CURRENT_USER_ID, $file_id = null)
         return true;
     } else {
         if ($file->expires == '0' || $file->expired == false) {
-            $statement = $dbh->prepare("SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE (client_id = :client_id OR FIND_IN_SET(group_id, :groups)) AND file_id = :file_id AND hidden = '0'");
+            $statement = $dbh->prepare("SELECT * FROM " . get_table('files_relations') . " WHERE (client_id = :client_id OR FIND_IN_SET(group_id, :groups)) AND file_id = :file_id AND hidden = '0'");
             $statement->bindValue(':client_id', $user_id, PDO::PARAM_INT);
             $statement->bindParam(':groups', $found_groups);
             $statement->bindParam(':file_id', $file->id, PDO::PARAM_INT);
@@ -1911,7 +1912,7 @@ function count_groups_requests_for_existing_clients()
     $ignore_user_ids = [];
 
     // First, get accounts requests. This will give us the ids of the clients that we need to ignore later
-    $statement = $dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE level='0' AND active='1' AND account_denied='0'");
+    $statement = $dbh->prepare("SELECT id FROM " . get_table('users') . " WHERE level='0' AND active='1' AND account_denied='0'");
     $statement->execute();
     if ($statement->rowCount() > 0) {
         $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -1923,7 +1924,7 @@ function count_groups_requests_for_existing_clients()
     if (!empty($ignore_user_ids)) {
         $ignore_user_ids = implode(',', $ignore_user_ids);
 
-        $statement = $dbh->prepare("SELECT id FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='0' AND FIND_IN_SET(client_id, :ignore)");
+        $statement = $dbh->prepare("SELECT id FROM " . get_table('members_requests') . " WHERE denied='0' AND FIND_IN_SET(client_id, :ignore)");
         $statement->bindParam(':ignore', $ignore_user_ids);
         $statement->execute();
         $count = $statement->rowCount();
@@ -1936,7 +1937,7 @@ function count_memberships_requests_denied()
 {
     $dbh = get_dbh();
 
-    $sql_requests = $dbh->prepare("SELECT DISTINCT id FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='1'");
+    $sql_requests = $dbh->prepare("SELECT DISTINCT id FROM " . get_table('members_requests') . " WHERE denied='1'");
     $sql_requests->execute();
    
     return $sql_requests->rowCount();
@@ -1946,7 +1947,7 @@ function count_account_requests()
 {
     $dbh = get_dbh();
 
-    $sql_requests = $dbh->prepare("SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE account_requested='1' AND account_denied='0'");
+    $sql_requests = $dbh->prepare("SELECT DISTINCT user FROM " . get_table('users') . " WHERE account_requested='1' AND account_denied='0'");
     $sql_requests->execute();
 
     return $sql_requests->rowCount();
@@ -1956,7 +1957,7 @@ function count_account_requests_denied()
 {
     $dbh = get_dbh();
 
-    $sql_requests = $dbh->prepare("SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE account_requested='1' AND account_denied='1'");
+    $sql_requests = $dbh->prepare("SELECT DISTINCT user FROM " . get_table('users') . " WHERE account_requested='1' AND account_denied='1'");
     $sql_requests->execute();
 
     return $sql_requests->rowCount();

@@ -82,9 +82,11 @@ if ($pdo_driver_available) {
 $table_exists = true;
 if ($pdo_connected) {
     $availableTables = $pdo->query("SHOW TABLES")->fetchAll(\PDO::FETCH_COLUMN);
+    $test_tables = [get_table('users')];
     foreach ($all_system_tables as $name) {
-        $prefixed = $post_vars['dbprefix'] . $name;
-        if (!in_array($prefixed, $availableTables)) {
+        if (!in_array($name, $test_tables)) {
+        // $prefixed = $post_vars['dbprefix'] . $name;
+        // if (!in_array($prefixed, $availableTables)) {
             $table_exists = false;
             break;
         }

@@ -30,13 +30,13 @@ $page_title .= ': ' . $file->filename_original;
 
 if ($downloads['total'] > 0) {
     $params = [];
-    $cq = "SELECT * FROM " . TABLE_DOWNLOADS . " WHERE file_id = :id";
+    $cq = "SELECT * FROM " . get_table('downloads') . " WHERE file_id = :id";
     
     /**
      * Add the order.
      * Defaults to order by: name, order: ASC
      */
-    $cq .= sql_add_order(TABLE_GROUPS, 'timestamp', 'desc');
+    $cq .= sql_add_order(get_table('groups'), 'timestamp', 'desc');
     
     $statement = $dbh->prepare($cq);
     
@@ -62,7 +62,7 @@ if ($downloads['total'] > 0) {
     // Make a list of users names
     $users_names = [];
     $dbh = get_dbh();
-    $names = $dbh->prepare("SELECT id, name FROM " . TABLE_USERS);
+    $names = $dbh->prepare("SELECT id, name FROM " . get_table('users'));
     $names->execute();
     if ($names->rowCount() > 0) {
         $names->setFetchMode(PDO::FETCH_ASSOC);

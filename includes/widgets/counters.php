@@ -5,22 +5,22 @@
     }
 
     /** Get the data to show on the bars graphic */
-    $statement = $dbh->query("SELECT distinct id FROM " . TABLE_FILES );
+    $statement = $dbh->query("SELECT distinct id FROM " . get_table('files') );
     $total_files = $statement->rowCount();
 
-    $statement = $dbh->query("SELECT distinct id FROM " . TABLE_USERS . " WHERE level = '0'");
+    $statement = $dbh->query("SELECT distinct id FROM " . get_table('users') . " WHERE level = '0'");
     $total_clients = $statement->rowCount();
 
-    $statement = $dbh->query("SELECT distinct id FROM " . TABLE_GROUPS);
+    $statement = $dbh->query("SELECT distinct id FROM " . get_table('groups'));
     $total_groups = $statement->rowCount();
 
-    $statement = $dbh->query("SELECT distinct id FROM " . TABLE_USERS . " WHERE level != '0'");
+    $statement = $dbh->query("SELECT distinct id FROM " . get_table('users') . " WHERE level != '0'");
     $total_users = $statement->rowCount();
 
-    $statement = $dbh->query("SELECT distinct id FROM " . TABLE_CATEGORIES);
+    $statement = $dbh->query("SELECT distinct id FROM " . get_table('categories'));
     $total_categories = $statement->rowCount();
 
-    $statement = $dbh->query("SELECT distinct id FROM " . TABLE_DOWNLOADS);
+    $statement = $dbh->query("SELECT distinct id FROM " . get_table('downloads'));
     $total_downloads = $statement->rowCount();
 ?>
     <div class="row">

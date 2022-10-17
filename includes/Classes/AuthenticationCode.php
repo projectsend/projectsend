@@ -69,7 +69,7 @@ class AuthenticationCode extends Base
         $token = generate_random_string(32);
         $code = mt_rand(100000,999999);
         $used = 0;
-        $statement = $this->dbh->prepare("INSERT INTO " . TABLE_AUTHENTICATION_CODES . " (user_id, token, code, used)"
+        $statement = $this->dbh->prepare("INSERT INTO " . get_table('authentication_codes') . " (user_id, token, code, used)"
         ."VALUES (:user_id, :token, :code, :used)");
         $statement->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         $statement->bindParam(':token', $token);
@@ -125,7 +125,7 @@ class AuthenticationCode extends Base
             return false;
         }
 
-        $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_AUTHENTICATION_CODES . " WHERE token=:token");
+        $statement = $this->dbh->prepare("SELECT * FROM " . get_table('authentication_codes') . " WHERE token=:token");
 		$statement->execute([
             ':token' => $token,
         ]);
@@ -145,7 +145,7 @@ class AuthenticationCode extends Base
             return false;
         }
 
-        $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_AUTHENTICATION_CODES . " WHERE token=:token AND code=:code");
+        $statement = $this->dbh->prepare("SELECT * FROM " . get_table('authentication_codes') . " WHERE token=:token AND code=:code");
 		$statement->execute([
             ':token' => $token,
             ':code' => (int)$code,
@@ -171,7 +171,7 @@ class AuthenticationCode extends Base
 
     public function getById($id)
     {
-        $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_AUTHENTICATION_CODES . " WHERE id=:id");
+        $statement = $this->dbh->prepare("SELECT * FROM " . get_table('authentication_codes') . " WHERE id=:id");
 		$statement->execute([
             ':id' => (int)$id,
         ]);
@@ -239,14 +239,14 @@ class AuthenticationCode extends Base
             return;
         }
 
-        $query = $this->dbh->prepare("UPDATE " . TABLE_AUTHENTICATION_CODES . " SET used = 1, used_timestamp=NOW() WHERE id = :id");
+        $query = $this->dbh->prepare("UPDATE " . get_table('authentication_codes') . " SET used = 1, used_timestamp=NOW() WHERE id = :id");
         $query->bindParam(':id', $this->id, PDO::PARAM_INT);
         $query->execute();
     }
 
     public function canRequestNewCode($user_id)
     {
-        $query = "SELECT * FROM " . TABLE_AUTHENTICATION_CODES . " WHERE user_id=:user_id AND used=:used AND timestamp > DATE_SUB(NOW(), INTERVAL ".$this->minutes_between_attempts." MINUTE)";
+        $query = "SELECT * FROM " . get_table('authentication_codes') . " WHERE user_id=:user_id AND used=:used AND timestamp > DATE_SUB(NOW(), INTERVAL ".$this->minutes_between_attempts." MINUTE)";
         $statement = $this->dbh->prepare($query);
 		$statement->execute([
             ':used' => 0,
@@ -264,7 +264,7 @@ class AuthenticationCode extends Base
 
     public function whenCanRequestNewCode($user_id)
     {
-        $query = "SELECT * FROM " . TABLE_AUTHENTICATION_CODES . " WHERE user_id=:user_id AND timestamp > DATE_SUB(NOW(), INTERVAL ".$this->minutes_between_attempts." MINUTE)";
+        $query = "SELECT * FROM " . get_table('authentication_codes') . " WHERE user_id=:user_id AND timestamp > DATE_SUB(NOW(), INTERVAL ".$this->minutes_between_attempts." MINUTE)";
         $statement = $this->dbh->prepare($query);
 		$statement->execute([
             ':user_id' => $user_id,

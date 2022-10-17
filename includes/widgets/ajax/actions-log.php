@@ -6,7 +6,7 @@ if (!defined('CURRENT_USER_LEVEL') or CURRENT_USER_LEVEL != 9) {
 }
 
 $dbh = get_dbh();
-$log_query = "SELECT * FROM " . TABLE_LOG;
+$log_query = "SELECT * FROM " . get_table('actions_log');
 if (isset($_GET['action']) && is_numeric($_GET['action'])) {
     $log_query .= " WHERE action = :action";
     $params[':action'] = $_GET['action'];

@@ -8,7 +8,7 @@
 function group_exists_id($id)
 {
     $dbh = get_dbh();
-    $statement = $dbh->prepare("SELECT * FROM " . TABLE_GROUPS . " WHERE id=:id");
+    $statement = $dbh->prepare("SELECT * FROM " . get_table('groups') . " WHERE id=:id");
     $statement->bindParam(':id', $id, PDO::PARAM_INT);
     $statement->execute();
     if ($statement->rowCount() > 0) {
@@ -26,7 +26,7 @@ function group_exists_id($id)
 function get_group_by_id($id)
 {
     $dbh = get_dbh();
-    $statement = $dbh->prepare("SELECT * FROM " . TABLE_GROUPS . " WHERE id=:id");
+    $statement = $dbh->prepare("SELECT * FROM " . get_table('groups') . " WHERE id=:id");
     $statement->bindParam(':id', $id, PDO::PARAM_INT);
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -65,7 +65,7 @@ function get_groups($arguments)
     $search = !empty($arguments['search']) ? $arguments['search'] : '';
 
     $groups = [];
-    $query = "SELECT * FROM " . TABLE_GROUPS;
+    $query = "SELECT * FROM " . get_table('groups');
 
     $parameters = [];
     if (!empty($group_ids)) {
@@ -165,7 +165,7 @@ function get_group_assigned_files($group_id)
     $dbh = get_dbh();
 
     $files_ids = [];
-    $query = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE group_id = :group_id";
+    $query = "SELECT * FROM " . get_table('files_relations') . " WHERE group_id = :group_id";
     $sql = $dbh->prepare($query);
     $sql->bindParam(':group_id', $group_id);
     $sql->execute();
@@ -190,7 +190,7 @@ function get_groups_assigned_files($groups_ids = [])
         $groups_ids = implode(',', $groups_ids);
     }
 
-    $query = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE FIND_IN_SET(group_id, :groups_ids)";
+    $query = "SELECT * FROM " . get_table('files_relations') . " WHERE FIND_IN_SET(group_id, :groups_ids)";
     $sql = $dbh->prepare($query);
     $sql->bindParam(':groups_ids', $groups_ids);
     $sql->execute();
@@ -209,7 +209,7 @@ function count_public_files_in_group($group_id = null)
     }
 
     $dbh = get_dbh();
-    $query = "SELECT DISTINCT id FROM " . TABLE_FILES_RELATIONS . " WHERE group_id=:group_id";
+    $query = "SELECT DISTINCT id FROM " . get_table('files_relations') . " WHERE group_id=:group_id";
     $sql = $dbh->prepare($query);
     $sql->bindParam(':group_id', $group_id);
     $sql->execute();

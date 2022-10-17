@@ -32,12 +32,12 @@ class SystemConstants
          * Current version.
          * Updated only when releasing a new downloadable complete version.
          */
-        define('CURRENT_VERSION', 'r1424');
+        define('CURRENT_VERSION', 'r1584');
         
         /**
          * Required software versions
          */
-        define('REQUIRED_VERSION_PHP', '7.1');
+        define('REQUIRED_VERSION_PHP', '7.4');
         define('REQUIRED_VERSION_MYSQL', '5.0');
         
         /**
@@ -103,64 +103,6 @@ class SystemConstants
         if (!defined('DB_DRIVER')) { define('DB_DRIVER', 'mysql'); }
         if (!defined('DB_PORT')) { define('DB_PORT', '3306'); }
         if (!defined('DB_CHARSET')) { define('DB_CHARSET', 'utf8'); }
-        
-        define('INITIAL_DATABASE_VERSION', '2022040101');
-        
-        /**
-         * Define the tables names
-         */
-        if (!defined('TABLES_PREFIX')) {
-            define('TABLES_PREFIX', 'tbl_');
-        }
-        define('TABLE_FILES', TABLES_PREFIX . 'files');
-        define('TABLE_FILES_RELATIONS', TABLES_PREFIX . 'files_relations');
-        define('TABLE_DOWNLOADS', TABLES_PREFIX . 'downloads');
-        define('TABLE_NOTIFICATIONS', TABLES_PREFIX . 'notifications');
-        define('TABLE_OPTIONS', TABLES_PREFIX . 'options');
-        define('TABLE_USERS', TABLES_PREFIX . 'users');
-        define('TABLE_USER_META', TABLES_PREFIX . 'user_meta');
-        define('TABLE_GROUPS', TABLES_PREFIX . 'groups');
-        define('TABLE_MEMBERS', TABLES_PREFIX . 'members');
-        define('TABLE_MEMBERS_REQUESTS', TABLES_PREFIX . 'members_requests');
-        define('TABLE_FOLDERS', TABLES_PREFIX . 'folders');
-        define('TABLE_CATEGORIES', TABLES_PREFIX . 'categories');
-        define('TABLE_CATEGORIES_RELATIONS', TABLES_PREFIX . 'categories_relations');
-        define('TABLE_LOG', TABLES_PREFIX . 'actions_log');
-        define('TABLE_PASSWORD_RESET', TABLES_PREFIX . 'password_reset');
-        define('TABLE_LOGINS_FAILED', TABLES_PREFIX . 'logins_failed');
-        define('TABLE_CRON_LOG', TABLES_PREFIX . 'cron_log');
-        define('TABLE_CUSTOM_ASSETS', TABLES_PREFIX . 'custom_assets');
-        define('TABLE_USER_LIMIT_UPLOAD_TO', TABLES_PREFIX . 'user_limit_upload_to');
-        define('TABLE_AUTHENTICATION_CODES', TABLES_PREFIX . 'authentication_codes');
-        
-        $original_basic_tables = array(
-            TABLE_FILES,
-            TABLE_OPTIONS,
-            TABLE_USERS
-        );
-        
-        $all_system_tables = array(
-            'files',
-            'files_relations',
-            'downloads',
-            'notifications',
-            'options',
-            'users',
-            'groups',
-            'members',
-            'members_requests',
-            'folders',
-            'categories',
-            'categories_relations',
-            'actions_log',
-            'password_reset',
-            'user_meta',
-            'logins_failed',
-            'cron_log',
-            'custom_assets',
-            'user_limit_upload_to',
-            'authentication_codes',
-        );
         
         /**
          * This values affect both validation methods (client and server side)

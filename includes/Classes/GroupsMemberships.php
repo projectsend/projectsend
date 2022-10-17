@@ -27,7 +27,7 @@ class GroupsMemberships extends Base
         );
 
         foreach ( $client_ids as $client_id ) {
-            $statement = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id) VALUES (:admin, :id, :group)");
+            $statement = $this->dbh->prepare("INSERT INTO " . get_table('members') . " (added_by,client_id,group_id) VALUES (:admin, :id, :group)");
             $statement->bindParam(':admin', $added_by);
             $statement->bindParam(':id', $client_id, PDO::PARAM_INT);
             $statement->bindParam(':group', $group_id, PDO::PARAM_INT);
@@ -58,7 +58,7 @@ class GroupsMemberships extends Base
         );
 
         foreach ( $client_ids as $client_id ) {
-            $statement = $this->dbh->prepare("DELETE FROM " . TABLE_MEMBERS . " WHERE client_id = :client AND group_id = :group");
+            $statement = $this->dbh->prepare("DELETE FROM " . get_table('members') . " WHERE client_id = :client AND group_id = :group");
             $statement->bindParam(':client', $client_id, PDO::PARAM_INT);
             $statement->bindParam(':group_id', $group_id, PDO::PARAM_INT);
             $status = $statement->execute();
@@ -82,7 +82,7 @@ class GroupsMemberships extends Base
         $return_type = !empty( $arguments['return'] ) ? $arguments['return'] : 'array';
 
         $found_groups = [];
-        $statement = $this->dbh->prepare("SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE client_id=:id");
+        $statement = $this->dbh->prepare("SELECT DISTINCT group_id FROM " . get_table('members') . " WHERE client_id=:id");
         $statement->bindParam(':id', $client_id, PDO::PARAM_INT);
         $statement->execute();
         $count_groups = $statement->rowCount();
@@ -120,7 +120,7 @@ class GroupsMemberships extends Base
             ];
     
             foreach ( $group_ids as $group_id ) {
-                $statement = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id) VALUES (:admin, :id, :group)");
+                $statement = $this->dbh->prepare("INSERT INTO " . get_table('members') . " (added_by,client_id,group_id) VALUES (:admin, :id, :group)");
                 $statement->bindParam(':admin', $added_by);
                 $statement->bindParam(':id', $client_id, PDO::PARAM_INT);
                 $statement->bindParam(':group', $group_id, PDO::PARAM_INT);
@@ -154,7 +154,7 @@ class GroupsMemberships extends Base
             ];
 
             $found_groups = [];
-            $sql_groups = $this->dbh->prepare("SELECT DISTINCT group_id FROM " . TABLE_MEMBERS . " WHERE client_id=:id");
+            $sql_groups = $this->dbh->prepare("SELECT DISTINCT group_id FROM " . get_table('members') . " WHERE client_id=:id");
             $sql_groups->bindParam(':id', $client_id, PDO::PARAM_INT);
             $sql_groups->execute();
             $count_groups = $sql_groups->rowCount();
@@ -174,7 +174,7 @@ class GroupsMemberships extends Base
 
             if ( !empty( $remove_groups) ) {
                 $delete_ids = implode( ',', $remove_groups );
-                $statement = $this->dbh->prepare("DELETE FROM " . TABLE_MEMBERS . " WHERE client_id=:client_id AND FIND_IN_SET(group_id, :delete)");
+                $statement = $this->dbh->prepare("DELETE FROM " . get_table('members') . " WHERE client_id=:client_id AND FIND_IN_SET(group_id, :delete)");
                 $statement->bindParam(':client_id', $client_id, PDO::PARAM_INT);
                 $statement->bindParam(':delete', $delete_ids);
                 $statement->execute();
@@ -201,7 +201,7 @@ class GroupsMemberships extends Base
     {
         $client_id = !empty( $arguments['client_id'] ) ? $arguments['client_id'] : '';
         $denied = !empty( $arguments['denied'] ) ? $arguments['denied'] : 0;
-        $requests_query = "SELECT * FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied=:denied";
+        $requests_query = "SELECT * FROM " . get_table('members_requests') . " WHERE denied=:denied";
         if ( !empty( $client_id ) ) {
             $requests_query	.= " AND client_id=:client_id";
         }
@@ -305,7 +305,7 @@ class GroupsMemberships extends Base
                             }
                         }
     
-                        $statement = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS_REQUESTS . " (requested_by,client_id,group_id)"
+                        $statement = $this->dbh->prepare("INSERT INTO " . get_table('members_requests') . " (requested_by,client_id,group_id)"
                                                             ." VALUES (:username, :id, :group)");
                         $statement->bindParam(':username', $request_by);
                         $statement->bindParam(':id', $client_id, PDO::PARAM_INT);
@@ -363,7 +363,7 @@ class GroupsMemberships extends Base
         
         /** Deny all */
         if ( !empty( $deny_all ) && $deny_all == true ) {
-            $sql = $this->dbh->prepare('UPDATE ' . TABLE_MEMBERS_REQUESTS . ' SET denied=:denied WHERE client_id=:client_id');
+            $sql = $this->dbh->prepare('UPDATE ' . get_table('members_requests') . ' SET denied=:denied WHERE client_id=:client_id');
             $sql->bindValue(':denied', 1, PDO::PARAM_INT);
             $sql->bindValue(':client_id', $client_id, PDO::PARAM_INT);
             $status = $sql->execute();
@@ -377,7 +377,7 @@ class GroupsMemberships extends Base
             $requests_to_remove = [];
             if ( in_array( $request, $approve ) ) {
                 /** Insert into memberships */
-                $statement = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
+                $statement = $this->dbh->prepare("INSERT INTO " . get_table('members') . " (added_by,client_id,group_id)"
                                                     ." VALUES (:added_by, :client_id, :group_id)");
                 $statement->bindValue(':added_by', CURRENT_USER_USERNAME);
                 $statement->bindValue(':client_id', $client_id, PDO::PARAM_INT);
@@ -389,7 +389,7 @@ class GroupsMemberships extends Base
             }
             else {
                 /** Mark as denied */
-                $sql = $this->dbh->prepare('UPDATE ' . TABLE_MEMBERS_REQUESTS . ' SET denied=:denied WHERE client_id=:client_id AND group_id=:group_id');
+                $sql = $this->dbh->prepare('UPDATE ' . get_table('members_requests') . ' SET denied=:denied WHERE client_id=:client_id AND group_id=:group_id');
                 $sql->bindValue(':denied', 1, PDO::PARAM_INT);
                 $sql->bindValue(':client_id', $client_id, PDO::PARAM_INT);
                 $sql->bindValue(':group_id', $request, PDO::PARAM_INT);
@@ -400,7 +400,7 @@ class GroupsMemberships extends Base
         
         if ( !empty( $requests_to_remove ) ) {
             $delete_ids = implode( ',', $requests_to_remove );
-            $statement = $this->dbh->prepare("DELETE FROM " . TABLE_MEMBERS_REQUESTS . " WHERE client_id=:client_id AND FIND_IN_SET(group_id, :delete)");
+            $statement = $this->dbh->prepare("DELETE FROM " . get_table('members_requests') . " WHERE client_id=:client_id AND FIND_IN_SET(group_id, :delete)");
             $statement->bindParam(':client_id', $client_id, PDO::PARAM_INT);
             $statement->bindParam(':delete', $delete_ids);
             $statement->execute();
@@ -439,7 +439,7 @@ class GroupsMemberships extends Base
         $type = ( !empty( $arguments['type'] ) && $arguments['type'] == 'denied' ) ? 1 : 0;
 
         if ( !empty( $client_id ) ) {
-            $statement = $this->dbh->prepare("DELETE FROM " . TABLE_MEMBERS_REQUESTS . " WHERE client_id=:client_id AND denied=:denied");
+            $statement = $this->dbh->prepare("DELETE FROM " . get_table('members_requests') . " WHERE client_id=:client_id AND denied=:denied");
             $statement->bindParam(':client_id', $client_id, PDO::PARAM_INT);
             $statement->bindParam(':denied', $type, PDO::PARAM_INT);
             $statement->execute();
@@ -480,7 +480,7 @@ class GroupsMemberships extends Base
                 }
                 if ( !empty( $remove ) ) {
                     $delete_ids = implode( ',', $remove );
-                    $statement = $this->dbh->prepare("DELETE FROM " . TABLE_MEMBERS_REQUESTS . " WHERE client_id=:client_id AND FIND_IN_SET(group_id, :remove)");
+                    $statement = $this->dbh->prepare("DELETE FROM " . get_table('members_requests') . " WHERE client_id=:client_id AND FIND_IN_SET(group_id, :remove)");
                     $statement->bindParam(':client_id', $client_id, PDO::PARAM_INT);
                     $statement->bindParam(':remove', $delete_ids);
                     $statement->execute();

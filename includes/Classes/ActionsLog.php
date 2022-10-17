@@ -113,7 +113,7 @@ class ActionsLog
         }
 
         /** Insert the client information into the database */
-        $lq = "INSERT INTO " . TABLE_LOG . " (action,owner_id,owner_user,details";
+        $lq = "INSERT INTO " . get_table('actions_log') . " (action,owner_id,owner_user,details";
 
         if (!empty($this->affected_file)) {
             $lq .= ",affected_file";

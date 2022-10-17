@@ -132,7 +132,7 @@ class Files extends Base
     {
         $this->id = $id;
 
-        $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE id=:id");
+        $statement = $this->dbh->prepare("SELECT * FROM " . get_table('files') . " WHERE id=:id");
         $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $statement->execute();
         $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -186,7 +186,7 @@ class Files extends Base
         $this->assignments_clients = [];
         $this->assignments_groups = [];
 
-        $statement = $this->dbh->prepare("SELECT file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :id");
+        $statement = $this->dbh->prepare("SELECT file_id, client_id, group_id FROM " . get_table('files_relations') . " WHERE file_id = :id");
         $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $statement->execute();
         if ($statement->rowCount() > 0) {
@@ -203,7 +203,7 @@ class Files extends Base
 
     public function getCurrentCategories()
     {
-        $statement = $this->dbh->prepare("SELECT cat_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE file_id = :id");
+        $statement = $this->dbh->prepare("SELECT cat_id FROM " . get_table('categories_relations') . " WHERE file_id = :id");
         $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $statement->execute();
         if ($statement->rowCount() > 0) {
@@ -554,7 +554,7 @@ class Files extends Base
 
         /** Do a permissions check */
         if (isset($this->check_level) && current_role_in($this->check_level)) {
-            $sql = "UPDATE " . TABLE_FILES_RELATIONS . " SET hidden=:hidden WHERE file_id = :file_id AND " . $column . " = :entity_id";
+            $sql = "UPDATE " . get_table('files_relations') . " SET hidden=:hidden WHERE file_id = :file_id AND " . $column . " = :entity_id";
             $statement = $this->dbh->prepare($sql);
             $statement->bindParam(':hidden', $status, PDO::PARAM_INT);
             $statement->bindParam(':file_id', $this->id, PDO::PARAM_INT);
@@ -588,7 +588,7 @@ class Files extends Base
 
         /** Do a permissions check */
         if (isset($this->check_level) && current_role_in($this->check_level)) {
-            $statement = $this->dbh->prepare("UPDATE " . TABLE_FILES_RELATIONS . " SET hidden='1' WHERE file_id = :file_id");
+            $statement = $this->dbh->prepare("UPDATE " . get_table('files_relations') . " SET hidden='1' WHERE file_id = :file_id");
             $statement->bindParam(':file_id', $this->id, PDO::PARAM_INT);
             $statement->execute();
 
@@ -618,7 +618,7 @@ class Files extends Base
 
         /** Do a permissions check */
         if (isset($this->check_level) && current_role_in($this->check_level)) {
-            $statement = $this->dbh->prepare("UPDATE " . TABLE_FILES_RELATIONS . " SET hidden='0' WHERE file_id = :file_id");
+            $statement = $this->dbh->prepare("UPDATE " . get_table('files_relations') . " SET hidden='0' WHERE file_id = :file_id");
             $statement->bindParam(':file_id', $this->id, PDO::PARAM_INT);
             $statement->execute();
 
@@ -698,7 +698,7 @@ class Files extends Base
 
             // Delete the reference to the file on the database only if file is deleted from disk
             if ($delete) {
-                $sql = $this->dbh->prepare("DELETE FROM " . TABLE_FILES . " WHERE id = :file_id");
+                $sql = $this->dbh->prepare("DELETE FROM " . get_table('files') . " WHERE id = :file_id");
                 $sql->bindParam(':file_id', $this->id, PDO::PARAM_INT);
                 $sql->execute();
 
@@ -749,7 +749,7 @@ class Files extends Base
 		$this->hidden = 0;
         $this->public_token = generate_random_string(32);
 		
-        $statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (user_id, url, original_url, filename, description, uploader, expires, expiry_date, public_allow, public_token)"
+        $statement = $this->dbh->prepare("INSERT INTO " . get_table('files') . " (user_id, url, original_url, filename, description, uploader, expires, expiry_date, public_allow, public_token)"
                                         ."VALUES (:user_id, :url, :original_url, :title, :description, :uploader, :expires, :expiry_date, :public, :public_token)");
         $statement->bindParam(':user_id', $this->uploader_id, PDO::PARAM_INT);
         $statement->bindParam(':url', $this->filename_on_disk);
@@ -844,7 +844,7 @@ class Files extends Base
         }
 
         $is_public = (is_null($this->is_public) ? 0 : $this->is_public);
-        $statement = $this->dbh->prepare("UPDATE " . TABLE_FILES . " SET
+        $statement = $this->dbh->prepare("UPDATE " . get_table('files') . " SET
             filename = :title,
             description = :description,
             expires = :expires,
@@ -1009,7 +1009,7 @@ class Files extends Base
 
         foreach ($user_ids as $user_id) {
             // See if there's a pending notification already.
-            $statement = $this->dbh->prepare("SELECT id FROM " . TABLE_NOTIFICATIONS . " WHERE file_id = :file_id AND client_id = :client_id AND upload_type = :type AND sent_status = '0' AND times_failed <= :times_failed");
+            $statement = $this->dbh->prepare("SELECT id FROM " . get_table('notifications') . " WHERE file_id = :file_id AND client_id = :client_id AND upload_type = :type AND sent_status = '0' AND times_failed <= :times_failed");
             $statement->bindParam(':file_id', $this->id, PDO::PARAM_INT);
             $statement->bindParam(':type', $notification_type, PDO::PARAM_INT);
             $statement->bindParam(':client_id', $user_id, PDO::PARAM_INT);
@@ -1018,7 +1018,7 @@ class Files extends Base
             $found = $statement->rowCount();
 
             if ($found < 1) {
-                $statement = $this->dbh->prepare("INSERT INTO " . TABLE_NOTIFICATIONS . " (file_id, client_id, upload_type, sent_status, times_failed)
+                $statement = $this->dbh->prepare("INSERT INTO " . get_table('notifications') . " (file_id, client_id, upload_type, sent_status, times_failed)
                 VALUES (:file_id, :client_id, :type, '0', '0')");
                 $statement->bindParam(':file_id', $this->id, PDO::PARAM_INT);
                 $statement->bindParam(':client_id', $user_id, PDO::PARAM_INT);
@@ -1061,7 +1061,7 @@ class Files extends Base
                 return false;
         }
 
-        $statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES_RELATIONS . " (file_id, $column, hidden)"
+        $statement = $this->dbh->prepare("INSERT INTO " . get_table('files_relations') . " (file_id, $column, hidden)"
                                                 ."VALUES (:file_id, :assignment, :hidden)");
         $statement->bindParam(':file_id', $this->id, PDO::PARAM_INT);
         $statement->bindParam(':assignment', $to_id);
@@ -1108,7 +1108,7 @@ class Files extends Base
                 return false;
         }
 
-        $sql = "DELETE FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id AND " . $column . " = :from_id";
+        $sql = "DELETE FROM " . get_table('files_relations') . " WHERE file_id = :file_id AND " . $column . " = :from_id";
         $statement = $this->dbh->prepare($sql);
         $statement->bindParam(':file_id', $this->id, PDO::PARAM_INT);
         $statement->bindParam(':from_id', $from_id, PDO::PARAM_INT);
@@ -1168,7 +1168,7 @@ class Files extends Base
 
     private function removeFromCategory($category_id)
     {
-        $sql = "DELETE FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE file_id = :file_id AND cat_id = :category_id";
+        $sql = "DELETE FROM " . get_table('categories_relations') . " WHERE file_id = :file_id AND cat_id = :category_id";
         $statement = $this->dbh->prepare($sql);
         $statement->bindParam(':file_id', $this->id, PDO::PARAM_INT);
         $statement->bindParam(':category_id', $category_id, PDO::PARAM_INT);
@@ -1177,7 +1177,7 @@ class Files extends Base
 
     private function addToCategory($category_id)
     {
-        $statement = $this->dbh->prepare("INSERT INTO " . TABLE_CATEGORIES_RELATIONS . " (file_id, cat_id)"
+        $statement = $this->dbh->prepare("INSERT INTO " . get_table('categories_relations') . " (file_id, cat_id)"
                                                 ."VALUES (:file_id, :category_id)");
         $statement->bindParam(':file_id', $this->id, PDO::PARAM_INT);
         $statement->bindParam(':category_id', $category_id, PDO::PARAM_INT);

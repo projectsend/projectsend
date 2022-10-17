@@ -75,7 +75,7 @@ if (isset($_POST['action'])) {
 // Query the users
 $params = [];
 
-$cq = "SELECT id FROM " . TABLE_USERS . " WHERE level != '0'";
+$cq = "SELECT id FROM " . get_table('users') . " WHERE level != '0'";
 
 // Add the search terms
 if (isset($_GET['search']) && !empty($_GET['search'])) {
@@ -105,7 +105,7 @@ if (isset($_GET['active']) && $_GET['active'] != '2') {
 }
 
 // Add the order.
-$cq .= sql_add_order(TABLE_USERS, 'id', 'desc');
+$cq .= sql_add_order(get_table('users'), 'id', 'desc');
 
 // Pre-query to count the total results
 $count_sql = $dbh->prepare($cq);

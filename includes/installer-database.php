@@ -12,8 +12,8 @@ function get_install_base_queries($params = []) {
 
     $install_queries = array(
         '0' =>  array(
-            'table'	=> TABLE_USERS,
-            'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_USERS.'` (
+            'table'	=> get_table('users'),
+            'query'	=> 'CREATE TABLE IF NOT EXISTS `'.get_table('users').'` (
                             `id` int(11) NOT NULL AUTO_INCREMENT,
                             `user` varchar('.MAX_USER_CHARS.') NOT NULL,
                             `password` varchar('.MAX_PASS_CHARS.') NOT NULL,
@@ -37,8 +37,8 @@ function get_install_base_queries($params = []) {
         ),
 
         '1' => array(
-                    'table'	=> TABLE_FILES,
-                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_FILES.'` (
+                    'table'	=> get_table('files'),
+                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.get_table('files').'` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,
                                     `user_id` int(11) DEFAULT NULL,
                                     `url` text NOT NULL,
@@ -52,14 +52,14 @@ function get_install_base_queries($params = []) {
                                     `public_token` varchar(32) NULL,
                                     `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
                                     PRIMARY KEY (`id`),
-                                    FOREIGN KEY (`user_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+                                    FOREIGN KEY (`user_id`) REFERENCES '.get_table('users').'(`id`) ON DELETE CASCADE ON UPDATE CASCADE
                                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
         ),
 
         '2' =>  array(
-                    'table'	=> TABLE_OPTIONS,
-                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_OPTIONS.'` (
+                    'table'	=> get_table('options'),
+                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.get_table('options').'` (
                                     `id` int(10) NOT NULL AUTO_INCREMENT,
                                     `name` varchar(50) COLLATE utf8_general_ci NOT NULL,
                                     `value` text COLLATE utf8_general_ci NULL,
@@ -69,8 +69,8 @@ function get_install_base_queries($params = []) {
         ),
 
         '3' =>  array(
-                    'table'	=> TABLE_GROUPS,
-                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_GROUPS.'` (
+                    'table'	=> get_table('groups'),
+                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.get_table('groups').'` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,
                                     `name` varchar(32) NOT NULL,
                                     `description` text NULL,
@@ -84,23 +84,23 @@ function get_install_base_queries($params = []) {
         ),
 
         '4' =>  array(
-                    'table'	=> TABLE_MEMBERS,
-                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_MEMBERS.'` (
+                    'table'	=> get_table('members'),
+                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.get_table('members').'` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,
                                     `added_by` varchar(32) DEFAULT NULL,
                                     `client_id` int(11) NOT NULL,
                                     `group_id` int(11) NOT NULL,
                                     `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
                                     PRIMARY KEY (`id`),
-                                    FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-                                    FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+                                    FOREIGN KEY (`client_id`) REFERENCES '.get_table('users').'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                    FOREIGN KEY (`group_id`) REFERENCES '.get_table('groups').'(`id`) ON DELETE CASCADE ON UPDATE CASCADE
                                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
         ),
 
         '5' =>  array(
-                    'table'	=> TABLE_MEMBERS_REQUESTS,
-                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_MEMBERS_REQUESTS.'` (
+                    'table'	=> get_table('members_requests'),
+                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.get_table('members_requests').'` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,
                                     `requested_by` varchar(32) NOT NULL,
                                     `client_id` int(11) NOT NULL,
@@ -108,32 +108,32 @@ function get_install_base_queries($params = []) {
                                     `denied` int(1) NOT NULL DEFAULT \'0\',
                                     `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
                                     PRIMARY KEY (`id`),
-                                    FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-                                    FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+                                    FOREIGN KEY (`client_id`) REFERENCES '.get_table('users').'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                    FOREIGN KEY (`group_id`) REFERENCES '.get_table('groups').'(`id`) ON DELETE CASCADE ON UPDATE CASCADE
                                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
         ),
 
         '6' =>  array(
-                    'table'	=> TABLE_FOLDERS,
-                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_FOLDERS.'` (
+                    'table'	=> get_table('folders'),
+                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.get_table('folders').'` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,
                                     `parent` int(11) DEFAULT NULL,
                                     `name` varchar(32) NOT NULL,
                                     `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
                                     `client_id` int(11) DEFAULT NULL,
                                     `group_id` int(11) DEFAULT NULL,
-                                    FOREIGN KEY (`parent`) REFERENCES '.TABLE_FOLDERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-                                    FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-                                    FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                    FOREIGN KEY (`parent`) REFERENCES '.get_table('folders').'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                    FOREIGN KEY (`client_id`) REFERENCES '.get_table('users').'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                    FOREIGN KEY (`group_id`) REFERENCES '.get_table('groups').'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
                                     PRIMARY KEY (`id`)
                                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
         ),
 
         '7' =>  array(
-                    'table'	=> TABLE_FILES_RELATIONS,
-                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_FILES_RELATIONS.'` (
+                    'table'	=> get_table('files_relations'),
+                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.get_table('files_relations').'` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,
                                     `file_id` int(11) NOT NULL,
                                     `client_id` int(11) DEFAULT NULL,
@@ -142,18 +142,18 @@ function get_install_base_queries($params = []) {
                                     `hidden` int(1) NOT NULL,
                                     `download_count` int(16) NOT NULL DEFAULT \'0\',
                                     `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-                                    FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-                                    FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-                                    FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-                                    FOREIGN KEY (`folder_id`) REFERENCES '.TABLE_FOLDERS.'(`id`) ON UPDATE CASCADE,
+                                    FOREIGN KEY (`file_id`) REFERENCES '.get_table('files').'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                    FOREIGN KEY (`client_id`) REFERENCES '.get_table('users').'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                    FOREIGN KEY (`group_id`) REFERENCES '.get_table('groups').'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                    FOREIGN KEY (`folder_id`) REFERENCES '.get_table('folders').'(`id`) ON UPDATE CASCADE,
                                     PRIMARY KEY (`id`)
                                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
         ),
 
         '8' =>  array(
-                    'table'	=> TABLE_LOG,
-                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_LOG.'` (
+                    'table'	=> get_table('actions_log'),
+                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.get_table('actions_log').'` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,
                                     `action` int(2) NOT NULL,
                                     `owner_id` int(11) NOT NULL,
@@ -170,8 +170,8 @@ function get_install_base_queries($params = []) {
         ),
 
         '9' =>  array(
-                    'table'	=> TABLE_NOTIFICATIONS,
-                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_NOTIFICATIONS.'` (
+                    'table'	=> get_table('notifications'),
+                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.get_table('notifications').'` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,
                                     `file_id` int(11) NOT NULL,
                                     `client_id` int(11) NOT NULL,
@@ -179,30 +179,30 @@ function get_install_base_queries($params = []) {
                                     `sent_status` int(2) NOT NULL,
                                     `times_failed` int(11) NOT NULL,
                                     `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-                                    FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-                                    FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                    FOREIGN KEY (`file_id`) REFERENCES '.get_table('files').'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                    FOREIGN KEY (`client_id`) REFERENCES '.get_table('users').'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
                                     PRIMARY KEY (`id`)
                                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
         ),
 
         '10' =>  array(
-                    'table'	=> TABLE_PASSWORD_RESET,
-                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_PASSWORD_RESET.'` (
+                    'table'	=> get_table('password_reset'),
+                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.get_table('password_reset').'` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,
                                     `user_id` int(11) DEFAULT NULL,
                                     `token` varchar(32) NOT NULL,
                                     `used` int(1) DEFAULT \'0\',
                                     `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-                                    FOREIGN KEY (`user_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                    FOREIGN KEY (`user_id`) REFERENCES '.get_table('users').'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
                                     PRIMARY KEY (`id`)
                                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
         ),
 
         '11' =>  array(
-                    'table'	=> TABLE_DOWNLOADS,
-                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_DOWNLOADS.'` (
+                    'table'	=> get_table('downloads'),
+                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.get_table('downloads').'` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,
                                     `user_id` int(11) DEFAULT NULL,
                                     `file_id` int(11) NOT NULL,
@@ -210,8 +210,8 @@ function get_install_base_queries($params = []) {
                                     `remote_host` text NULL,
                                     `anonymous` tinyint(1) DEFAULT \'0\',
                                     `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-                                    FOREIGN KEY (`user_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-                                    FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                    FOREIGN KEY (`user_id`) REFERENCES '.get_table('users').'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                    FOREIGN KEY (`file_id`) REFERENCES '.get_table('files').'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
                                     PRIMARY KEY (`id`)
                                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
@@ -219,7 +219,7 @@ function get_install_base_queries($params = []) {
 
         '12' =>  array(
                     'table'	=> '',
-                    'query'	=> "INSERT INTO ".TABLE_OPTIONS." (name, value) VALUES
+                    'query'	=> "INSERT INTO ".get_table('options')." (name, value) VALUES
                                 ('base_uri', :base_uri),
                                 ('max_thumbnail_width', '100'),
                                 ('max_thumbnail_height', '100'),
@@ -345,7 +345,7 @@ function get_install_base_queries($params = []) {
 
         '13' =>  array(
                         'table'	=> '',
-                        'query'	=> "INSERT INTO ".TABLE_USERS." (id, user, password, name, email, level, active) VALUES
+                        'query'	=> "INSERT INTO ".get_table('users')." (id, user, password, name, email, level, active) VALUES
                                     (1, :username, :password, :name, :email, 9, 1)",
                         'params' => array(
                                         ':username'	=> $params['admin']['username'],
@@ -356,52 +356,52 @@ function get_install_base_queries($params = []) {
         ),
 
         '14' =>  array(
-                    'table'	=> TABLE_CATEGORIES,
-                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_CATEGORIES.'` (
+                    'table'	=> get_table('categories'),
+                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.get_table('categories').'` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,
                                     `name` varchar(32) NOT NULL,
                                     `parent` int(11) DEFAULT NULL,
                                     `description` text NULL,
                                     `created_by` varchar('.MAX_USER_CHARS.') NULL,
                                     `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-                                    FOREIGN KEY (`parent`) REFERENCES '.TABLE_CATEGORIES.'(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+                                    FOREIGN KEY (`parent`) REFERENCES '.get_table('categories').'(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
                                     PRIMARY KEY (`id`)
                                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
         ),
 
         '15' =>  array(
-                    'table'	=> TABLE_CATEGORIES_RELATIONS,
-                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_CATEGORIES_RELATIONS.'` (
+                    'table'	=> get_table('categories_relations'),
+                    'query'	=> 'CREATE TABLE IF NOT EXISTS `'.get_table('categories_relations').'` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,
                                     `file_id` int(11) NOT NULL,
                                     `cat_id` int(11) NOT NULL,
                                     `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-                                    FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-                                    FOREIGN KEY (`cat_id`) REFERENCES '.TABLE_CATEGORIES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                    FOREIGN KEY (`file_id`) REFERENCES '.get_table('files').'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                                    FOREIGN KEY (`cat_id`) REFERENCES '.get_table('categories').'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
                                     PRIMARY KEY (`id`)
                                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
                                 ',
         ),
         
         '16' => array(
-            'table' => TABLE_USER_META,
-            'query' => 'CREATE TABLE IF NOT EXISTS `'.TABLE_USER_META.'` (
+            'table' => get_table('user_meta'),
+            'query' => 'CREATE TABLE IF NOT EXISTS `'.get_table('user_meta').'` (
                 `id` int(11) NOT NULL AUTO_INCREMENT,
                 `user_id` int(11) DEFAULT NULL,
                 `name` varchar(255) NOT NULL,
                 `value` TEXT NULL,
                 `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
                 `updated_at` TIMESTAMP NULL DEFAULT NULL,
-                FOREIGN KEY (`user_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+                FOREIGN KEY (`user_id`) REFERENCES '.get_table('users').'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
                 PRIMARY KEY (`id`)
                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
             ',
         ),
 
         '17' => array(
-            'table' => TABLE_LOGINS_FAILED,
-            'query' => 'CREATE TABLE IF NOT EXISTS `'.TABLE_LOGINS_FAILED.'` (
+            'table' => get_table('actions_log')INS_FAILED,
+            'query' => 'CREATE TABLE IF NOT EXISTS `'.get_table('actions_log')INS_FAILED.'` (
                 `id` int(11) NOT NULL AUTO_INCREMENT,
                 `ip_address` VARCHAR(60) NOT NULL,
                 `username` VARCHAR(60) NOT NULL,

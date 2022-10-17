@@ -56,7 +56,7 @@ if (isset($_POST['action'])) {
 }
 
 $params = [];
-$cq = "SELECT id FROM " . TABLE_CUSTOM_ASSETS;
+$cq = "SELECT id FROM " . get_table('custom_assets');
 $next_clause = ' WHERE';
 
 // Add the search terms
@@ -80,7 +80,7 @@ if (isset($_GET['enabled']) && $_GET['enabled'] != '2') {
 
 
 // Add the order
-$cq .= sql_add_order(TABLE_CUSTOM_ASSETS, 'id', 'desc');
+$cq .= sql_add_order(get_table('custom_assets'), 'id', 'desc');
 
 // Pre-query to count the total results
 $count_sql = $dbh->prepare($cq);

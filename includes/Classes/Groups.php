@@ -79,7 +79,7 @@ class Groups extends Base
     {
         $this->id = $id;
 
-        $this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_GROUPS . " WHERE id=:id");
+        $this->statement = $this->dbh->prepare("SELECT * FROM " . get_table('groups') . " WHERE id=:id");
         $this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $this->statement->execute();
         $this->statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -99,7 +99,7 @@ class Groups extends Base
         }
 
         /* Get group members IDs */
-        $this->statement = $this->dbh->prepare("SELECT client_id FROM " . TABLE_MEMBERS . " WHERE group_id = :id");
+        $this->statement = $this->dbh->prepare("SELECT client_id FROM " . get_table('members') . " WHERE group_id = :id");
         $this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $this->statement->execute();
         
@@ -111,7 +111,7 @@ class Groups extends Base
         }
 
         /* Get files */
-        $this->statement = $this->dbh->prepare("SELECT group_id, file_id FROM " . TABLE_FILES_RELATIONS . " WHERE group_id = :id");
+        $this->statement = $this->dbh->prepare("SELECT group_id, file_id FROM " . get_table('files_relations') . " WHERE group_id = :id");
         $this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $this->statement->execute();
 
@@ -217,7 +217,7 @@ class Groups extends Base
         /** Define the group information */
         $this->public_token = generate_random_string(32);
 
-        $this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_GROUPS . " (name, description, public, public_token, created_by)"
+        $this->sql_query = $this->dbh->prepare("INSERT INTO " . get_table('groups') . " (name, description, public, public_token, created_by)"
                                                 ." VALUES (:name, :description, :public, :token, :admin)");
         $this->sql_query->bindParam(':name', $this->name);
         $this->sql_query->bindParam(':description', $this->description);
@@ -233,7 +233,7 @@ class Groups extends Base
         /** Create the members records */
         if ( !empty( $this->members ) ) {
             foreach ($this->members as $this->member) {
-                $this->sql_member = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
+                $this->sql_member = $this->dbh->prepare("INSERT INTO " . get_table('members') . " (added_by,client_id,group_id)"
                                                         ." VALUES (:admin, :member, :id)");
                 $this->sql_member->bindParam(':admin', $this->created_by);
                 $this->sql_member->bindParam(':member', $this->member, PDO::PARAM_INT);
@@ -279,7 +279,7 @@ class Groups extends Base
         $this->created_by = CURRENT_USER_USERNAME;
 
 		/** SQL query */
-		$this->sql_query = $this->dbh->prepare( "UPDATE " . TABLE_GROUPS . " SET name = :name, description = :description, public = :public WHERE id = :id" );
+		$this->sql_query = $this->dbh->prepare( "UPDATE " . get_table('groups') . " SET name = :name, description = :description, public = :public WHERE id = :id" );
 		$this->sql_query->bindParam(':name', $this->name);
 		$this->sql_query->bindParam(':description', $this->description);
 		$this->sql_query->bindParam(':public', $this->public, PDO::PARAM_INT);
@@ -287,14 +287,14 @@ class Groups extends Base
 		$this->sql_query->execute();
 
 		/** Clean the members table */
-		$this->sql_clean = $this->dbh->prepare("DELETE FROM " . TABLE_MEMBERS . " WHERE group_id = :id");
+		$this->sql_clean = $this->dbh->prepare("DELETE FROM " . get_table('members') . " WHERE group_id = :id");
 		$this->sql_clean->bindParam(':id', $this->id, PDO::PARAM_INT);
 		$this->sql_clean->execute();
 		
 		/** Create the members records */
 		if (!empty($this->members)) {
 			foreach ($this->members as $this->member) {
-				$this->sql_member = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
+				$this->sql_member = $this->dbh->prepare("INSERT INTO " . get_table('members') . " (added_by,client_id,group_id)"
 														." VALUES (:admin, :member, :id)");
 				$this->sql_member->bindParam(':admin', $this->created_by);
 				$this->sql_member->bindParam(':member', $this->member, PDO::PARAM_INT);
@@ -329,7 +329,7 @@ class Groups extends Base
 
         /** Do a permissions check */
         if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-            $this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_GROUPS . ' WHERE id=:id');
+            $this->sql = $this->dbh->prepare('DELETE FROM ' . get_table('groups') . ' WHERE id=:id');
             $this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
             $this->sql->execute();
         }

@@ -25,6 +25,8 @@ class BruteForceBlock {
     public function __construct(Database $database, Options $options)
     {
         $this->dbh = $database->getPdo();
+        $this->table = $database->getTable('logins_failed');
+        // pax($this->table);
 
         $this->auto_clear = true;
 
@@ -60,7 +62,7 @@ class BruteForceBlock {
             ];
         }
 
-        $search = $this->dbh->prepare("SELECT * FROM " . TABLE_LOGINS_FAILED . " WHERE ip_address=:ip_address");
+        $search = $this->dbh->prepare("SELECT * FROM " . $this->table . " WHERE ip_address=:ip_address");
         $search->bindParam(':ip_address', $ip_address);
         $search->execute();
         $count = $search->rowCount();
@@ -73,7 +75,7 @@ class BruteForceBlock {
         }
 
         try {
-            $statement = $this->dbh->prepare("DELETE FROM " . TABLE_LOGINS_FAILED . " WHERE ip_address=:ip_address");
+            $statement = $this->dbh->prepare("DELETE FROM " . $this->table . " WHERE ip_address=:ip_address");
             $params = array(
                 ':ip_address' => $ip_address,
             );
@@ -112,7 +114,7 @@ class BruteForceBlock {
 		$timestamp = date('Y-m-d H:i:s');
 
         try {
-            $statement = $this->dbh->prepare("INSERT INTO " . TABLE_LOGINS_FAILED . " (ip_address, username, attempted_at)"
+            $statement = $this->dbh->prepare("INSERT INTO " . $this->table . " (ip_address, username, attempted_at)"
                     ."VALUES (:ip_address, :username, :attempted_at)");
             $statement->bindParam(':ip_address', $ip_address);
             $statement->bindParam(':username', $username);
@@ -148,9 +150,8 @@ class BruteForceBlock {
 		$latest_failed_logins = null;
 		$row = null;
 		$latest_failed_attempt_datetime = null;
-        pax($this);
 		try{
-			$stmt = $this->dbh->query('SELECT MAX(attempted_at) AS attempted_at FROM '.TABLE_LOGINS_FAILED.'');
+			$stmt = $this->dbh->query('SELECT MAX(attempted_at) AS attempted_at FROM '.$this->table.'');
 			$latest_failed_logins = $stmt->rowCount();
 			$row = $stmt-> fetch();
 			//get latest attempt's timestamp
@@ -176,7 +177,7 @@ class BruteForceBlock {
 		//attempt to retrieve latest failed login attempts
 		try{
 			//get all failed attempst within time frame
-			$get_number = $this->dbh->query('SELECT * FROM '.TABLE_LOGINS_FAILED.' WHERE attempted_at > DATE_SUB(NOW(), INTERVAL '.$this->time_frame_minutes.' MINUTE)');
+			$get_number = $this->dbh->query('SELECT * FROM '.$this->table.' WHERE attempted_at > DATE_SUB(NOW(), INTERVAL '.$this->time_frame_minutes.' MINUTE)');
 			$number_recent_failed = $get_number->rowCount();
 			//reverse order of settings, for iteration
 			krsort($throttle_settings);
@@ -219,7 +220,7 @@ class BruteForceBlock {
 				try{
 					//get current timestamp
 					$now = date('Y-m-d H:i:s');
-					$stmt = $this->dbh->query('DELETE from '.TABLE_LOGINS_FAILED.' WHERE attempted_at < DATE_SUB(NOW(), INTERVAL '.($this->time_frame_minutes * 2).' MINUTE)');
+					$stmt = $this->dbh->query('DELETE from '.$this->table.' WHERE attempted_at < DATE_SUB(NOW(), INTERVAL '.($this->time_frame_minutes * 2).' MINUTE)');
 					$stmt->execute();
 					
 				} catch(\PDOException $ex){
@@ -242,7 +243,7 @@ class BruteForceBlock {
 	public function clearDatabase(){
 		//attempt to delete all records
 		try{
-			$stmt = $this->dbh->query('DELETE from '.TABLE_LOGINS_FAILED);
+			$stmt = $this->dbh->query('DELETE from '.$this->table);
 			return true;
 		} catch(\PDOException $ex){
 			//return errors

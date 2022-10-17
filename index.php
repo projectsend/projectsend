@@ -12,8 +12,6 @@
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU GPL version 2
  * @package		ProjectSend
  */
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 
 // Start session
 if (!isset($_SESSION)) session_start();
@@ -29,20 +27,16 @@ require_once ROOT_DIR . '/vendor/autoload.php';
 global $app;
 $app = new \ProjectSend\Application;
 
-require_once ROOT_DIR . '/includes/install.constants.php';
+// Replace with middleware
+if (!defined('IS_INSTALL') && !defined('FILE_UPLOADING') && $_POST && !\ProjectSend\Classes\Csrf::validateCsrfToken()) {
+    exit_with_error_code(403);
+}
+
+$app->run();
+
 
 // $dbh = get_dbh();
 // $auth = get_container_item('auth');
 // $flash = get_container_item('flash');
 // $bfchecker = get_container_item('bfchecker');
 // $hybridauth = get_container_item('hybridauth');
-
-// Replace with middleware
-if (!defined('IS_INSTALL') && !defined('FILE_UPLOADING') && $_POST && !\ProjectSend\Classes\Csrf::validateCsrfToken()) {
-    exit_with_error_code(403);
-}
-
-$container = $app->getContainer();
-$router = $container->get('router');
-$response = new \ProjectSend\Classes\RoutesDispatcher($router);
-$response->dispatch($request);

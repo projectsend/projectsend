@@ -39,6 +39,8 @@ class Database
                 exit;
             }
         }
+
+        $this->setUpTables();
     }
 
     public function getPdo()
@@ -54,5 +56,76 @@ class Database
     public function getError()
     {
         return $this->error;
+    }
+
+    public function setUpTables()
+    {
+        $this->prefix = 'tbl_';
+        if (defined('TABLES_PREFIX')) {
+            $this->prefix = TABLES_PREFIX;
+        }
+
+        $this->tables = $this->getTables();
+    }
+
+    public function getTablesPrefix()
+    {
+        return $this->prefix;
+    }
+
+    public function getTables()
+    {
+        return [
+            'files',
+            'files_relations',
+            'downloads',
+            'notifications',
+            'options',
+            'users',
+            'user_meta',
+            'groups',
+            'members',
+            'members_requests',
+            'folders',
+            'categories',
+            'categories_relations',
+            'actions_log',
+            'password_reset',
+            'logins_failed',
+            'cron_log',
+            'custom_assets',
+            'user_limit_upload_to',
+            'authentication_codes',
+        ];
+    }
+
+    public function getTable($table)
+    {
+        if (empty($this->tables)) {
+            $this->setUpTables();
+        }
+
+        if (!in_array($table, $this->tables)) {
+            return null;
+        }
+
+        return $this->prefix . $table;
+    }
+
+    public function tableExists($table)
+    {
+        $result = false;
+
+        if (!empty($this->dbh)) {
+            try {
+                $statement = $this->dbh->prepare("SELECT 1 FROM $table LIMIT 1");
+                $result = $statement->execute();
+            } catch (\Exception $e) {
+                return false;
+            }
+        }
+    
+        // Result is either boolean FALSE (no table found) or PDOStatement Object (table found)
+        return $result !== false;
     }
 }

@@ -71,7 +71,7 @@ if (isset($_GET['category'])) {
 $filter_options_uploader = array(
     '0' => __('Uploader', 'cftp_admin'),
 );
-$sql_uploaders = $dbh->prepare("SELECT uploader FROM " . TABLE_FILES . " GROUP BY uploader");
+$sql_uploaders = $dbh->prepare("SELECT uploader FROM " . get_table('files') . " GROUP BY uploader");
 $sql_uploaders->execute();
 $sql_uploaders->setFetchMode(PDO::FETCH_ASSOC);
 while ($data_uploaders = $sql_uploaders->fetch()) {
@@ -176,7 +176,7 @@ $query_table_files = true;
 
 if (isset($search_on)) {
     $params = [];
-    $rq = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE $search_on = :id";
+    $rq = "SELECT * FROM " . get_table('files_relations') . " WHERE $search_on = :id";
     $params[':id'] = $this_id;
 
     // Add the status filter
@@ -220,7 +220,7 @@ if ($query_table_files === true) {
         $add_user_to_query = "AND user_id = :user_id";
         $params[':user_id'] = $this_id;
     }
-    $cq = "SELECT files.*, ( SELECT COUNT(file_id) FROM " . TABLE_DOWNLOADS . " WHERE " . TABLE_DOWNLOADS . ".file_id=files.id " . $add_user_to_query . ") as download_count FROM " . TABLE_FILES . " files";
+    $cq = "SELECT files.*, ( SELECT COUNT(file_id) FROM " . get_table('downloads') . " WHERE " . get_table('downloads') . ".file_id=files.id " . $add_user_to_query . ") as download_count FROM " . get_table('files') . " files";
 
     if (isset($search_on) && !empty($gotten_files)) {
         $conditions[] = "FIND_IN_SET(id, :files)";
@@ -249,7 +249,7 @@ if ($query_table_files === true) {
     if (isset($_GET['assigned']) && !empty($_GET['assigned'])) {
         if (array_key_exists($_GET['assigned'], $filter_options_assigned)) {
             $assigned_files_id = [];
-            $statement = $dbh->prepare("SELECT DISTINCT file_id FROM " . TABLE_FILES_RELATIONS);
+            $statement = $dbh->prepare("SELECT DISTINCT file_id FROM " . get_table('files_relations'));
             $statement->execute();
             $statement->setFetchMode(PDO::FETCH_ASSOC);
             while ($file_data = $statement->fetch()) {
@@ -278,7 +278,7 @@ if ($query_table_files === true) {
     // Add the category filter
     if (isset($results_type) && $results_type == 'category') {
         $files_id_by_cat = [];
-        $statement = $dbh->prepare("SELECT file_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE cat_id = :cat_id");
+        $statement = $dbh->prepare("SELECT file_id FROM " . get_table('categories_relations') . " WHERE cat_id = :cat_id");
         $statement->bindParam(':cat_id', $this_category['id'], PDO::PARAM_INT);
         $statement->execute();
         $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -306,7 +306,7 @@ if ($query_table_files === true) {
      * Add the order.
      * Defaults to order by: date, order: ASC
      */
-    $cq .= sql_add_order(TABLE_FILES, 'timestamp', 'desc');
+    $cq .= sql_add_order(get_table('files'), 'timestamp', 'desc');
 
     // Pre-query to count the total results
     $count_sql = $dbh->prepare($cq);

@@ -80,7 +80,7 @@ class CustomAsset extends Base
     {
         $this->id = $id;
 
-        $this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_CUSTOM_ASSETS . " WHERE id=:id");
+        $this->statement = $this->dbh->prepare("SELECT * FROM " . get_table('custom_assets') . " WHERE id=:id");
         $this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $this->statement->execute();
         $this->statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -212,7 +212,7 @@ class CustomAsset extends Base
             return $state;
         }
 
-        $this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_CUSTOM_ASSETS . " (title, content, language, location, position, enabled)"
+        $this->sql_query = $this->dbh->prepare("INSERT INTO " . get_table('custom_assets') . " (title, content, language, location, position, enabled)"
                                                 ." VALUES (:title, :content, :language, :location, :position, :enabled)");
         $this->sql_query->bindParam(':title', $this->title);
         $this->sql_query->bindParam(':content', $this->content);
@@ -251,7 +251,7 @@ class CustomAsset extends Base
         }
 
         /** SQL query */
-		$this->sql_query = $this->dbh->prepare( "UPDATE " . TABLE_CUSTOM_ASSETS . " SET title = :title, content = :content, location = :location, position = :position, enabled = :enabled WHERE id = :id" );
+		$this->sql_query = $this->dbh->prepare( "UPDATE " . get_table('custom_assets') . " SET title = :title, content = :content, location = :location, position = :position, enabled = :enabled WHERE id = :id" );
 		$this->sql_query->bindParam(':title', $this->title);
         $this->sql_query->bindParam(':content', $this->content);
         $this->sql_query->bindParam(':location', $this->location);
@@ -300,7 +300,7 @@ class CustomAsset extends Base
 
         /** Do a permissions check */
         if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-            $this->sql = $this->dbh->prepare('UPDATE ' . TABLE_CUSTOM_ASSETS . ' SET enabled=:enabled_state WHERE id=:id');
+            $this->sql = $this->dbh->prepare('UPDATE ' . get_table('custom_assets') . ' SET enabled=:enabled_state WHERE id=:id');
             $this->sql->bindParam(':enabled_state', $change_to, PDO::PARAM_INT);
             $this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
             $this->sql->execute();
@@ -324,7 +324,7 @@ class CustomAsset extends Base
 
         /** Do a permissions check */
         if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-            $this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_CUSTOM_ASSETS . ' WHERE id=:id');
+            $this->sql = $this->dbh->prepare('DELETE FROM ' . get_table('custom_assets') . ' WHERE id=:id');
             $this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
             $this->sql->execute();
         }

@@ -18,7 +18,7 @@ if (isset($_POST['action']) && $_POST['action'] != 'none') {
             $delete_ids = implode(',', $selected_actions);
 
             if (!empty($_POST['batch'])) {
-                $statement = $dbh->prepare("DELETE FROM " . TABLE_LOG . " WHERE FIND_IN_SET(id, :delete)");
+                $statement = $dbh->prepare("DELETE FROM " . get_table('actions_log') . " WHERE FIND_IN_SET(id, :delete)");
                 $params = array(
                     ':delete' => $delete_ids,
                 );
@@ -31,7 +31,7 @@ if (isset($_POST['action']) && $_POST['action'] != 'none') {
             break;
         case 'log_clear':
             $keep = '5,6,7,8,37';
-            $statement = $dbh->prepare("DELETE FROM " . TABLE_LOG . " WHERE NOT ( FIND_IN_SET(action, :keep) ) ");
+            $statement = $dbh->prepare("DELETE FROM " . get_table('actions_log') . " WHERE NOT ( FIND_IN_SET(action, :keep) ) ");
             $params = array(
                 ':keep' => $keep,
             );
@@ -47,7 +47,7 @@ if (isset($_POST['action']) && $_POST['action'] != 'none') {
 $params = [];
 
 // Get the actually requested items
-$cq = "SELECT * FROM " . TABLE_LOG;
+$cq = "SELECT * FROM " . get_table('actions_log');
 
 /** Add the search terms */
 if (isset($_GET['search']) && !empty($_GET['search'])) {
@@ -77,7 +77,7 @@ if (isset($_GET['activity']) && $_GET['activity'] != 'all') {
  * Add the order.
  * Defaults to order by: id, order: DESC
  */
-$cq .= sql_add_order(TABLE_LOG, 'id', 'DESC');
+$cq .= sql_add_order(get_table('actions_log'), 'id', 'DESC');
 
 // Pre-query to count the total results
 $count_sql = $dbh->prepare($cq);

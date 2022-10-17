@@ -72,7 +72,7 @@ if (!empty($_POST)) {
 
 // Make a list of active client accounts to include those only on from the membership requests query
 $include_user_ids = [];
-$statement = $dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE level='0' AND active='1' AND account_denied='0'");
+$statement = $dbh->prepare("SELECT id FROM " . get_table('users') . " WHERE level='0' AND active='1' AND account_denied='0'");
 $statement->execute();
 if ($statement->rowCount() > 0) {
     $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -84,7 +84,7 @@ if ($statement->rowCount() > 0) {
 // Continue
 $params = [];
 
-$cq = "SELECT `client_id`, COUNT(`group_id`) as `amount`, GROUP_CONCAT(`group_id` SEPARATOR ',') AS `groups` FROM " . TABLE_MEMBERS_REQUESTS;
+$cq = "SELECT `client_id`, COUNT(`group_id`) as `amount`, GROUP_CONCAT(`group_id` SEPARATOR ',') AS `groups` FROM " . get_table('members_requests');
 
 if (isset($_GET['denied']) && !empty($_GET['denied'])) {
     $cq .= " WHERE denied='1'";
@@ -111,7 +111,7 @@ $count_for_pagination = ($count_sql->rowCount());
  * Add the order.
  * Defaults to order by: name, order: ASC
  */
-$cq .= sql_add_order(TABLE_USERS, 'client_id', 'asc');
+$cq .= sql_add_order(get_table('users'), 'client_id', 'asc');
 
 // Repeat the query but this time, limited by pagination
 $cq .= " LIMIT :limit_start, :limit_number";

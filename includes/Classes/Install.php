@@ -18,7 +18,9 @@ class Install {
 
     public function addDatabase(Database $database)
     {
+        $this->database = $database;
         $this->dbh = $database->getPdo();
+        $this->users_table = $database->getTable('users');
     }
 
     public function loadPersonalConfigFile()
@@ -48,20 +50,22 @@ class Install {
         }
     }
 
-    private function isInstalled()
+    public function isInstalled()
     {
         $tables_need = array(
-            TABLE_USERS
+            $this->users_table
         );
     
         $tables_missing = 0;
         foreach ($tables_need as $table) {
-            if (!table_exists($this->container->get('db')->getPdo(), $table)) {
+            if (!$this->database->tableExists($table)) {
                 $tables_missing++;
             }
         }
-        if ($tables_missing > 0) {
-            $route = $this->container->get('router')->getNamedRoute('install');
-        }    
+        if ($tables_missing == 0) {
+            return true;
+        }
+
+        return false;
     }
 }

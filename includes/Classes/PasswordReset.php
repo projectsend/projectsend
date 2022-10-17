@@ -29,7 +29,7 @@ class PasswordReset extends Base
 
     public function getById($id)
     {
-        $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_PASSWORD_RESET . " WHERE id=:id");
+        $statement = $this->dbh->prepare("SELECT * FROM " . get_table('password_reset') . " WHERE id=:id");
 		$statement->execute([
             ':id' => (int)$id,
         ]);
@@ -55,7 +55,7 @@ class PasswordReset extends Base
             return false;
         }
 
-        $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_PASSWORD_RESET . " WHERE token = :token AND user_id = :id");
+        $statement = $this->dbh->prepare("SELECT * FROM " . get_table('password_reset') . " WHERE token = :token AND user_id = :id");
         $statement->bindParam(':token', $token);
         $statement->bindParam(':id', $user_id, PDO::PARAM_INT);
         $statement->execute();
@@ -82,7 +82,7 @@ class PasswordReset extends Base
      */
     public function canRequestNew($user_id)
     {
-        $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_PASSWORD_RESET . " WHERE user_id = :id AND used = '0' AND timestamp > NOW() - INTERVAL 1 DAY");
+        $statement = $this->dbh->prepare("SELECT * FROM " . get_table('password_reset') . " WHERE user_id = :id AND used = '0' AND timestamp > NOW() - INTERVAL 1 DAY");
         $statement->bindParam(':id', $user_id, PDO::PARAM_INT);
         $statement->execute();
         $count_requests = $statement->rowCount();
@@ -139,7 +139,7 @@ class PasswordReset extends Base
 
         $token = generate_random_string(32);
 
-        $statement = $this->dbh->prepare("INSERT INTO " . TABLE_PASSWORD_RESET . " (user_id, token) VALUES (:id, :token)");
+        $statement = $this->dbh->prepare("INSERT INTO " . get_table('password_reset') . " (user_id, token) VALUES (:id, :token)");
         $statement->bindParam(':token', $token);
         $statement->bindParam(':id', $user_id, PDO::PARAM_INT);
         $statement->execute();
@@ -167,7 +167,7 @@ class PasswordReset extends Base
             return;
         }
 
-        $query = $this->dbh->prepare("UPDATE " . TABLE_PASSWORD_RESET . " SET used = 1 WHERE id = :id");
+        $query = $this->dbh->prepare("UPDATE " . get_table('password_reset') . " SET used = 1 WHERE id = :id");
         $query->bindParam(':id', $this->id, PDO::PARAM_INT);
         $query->execute();
     }

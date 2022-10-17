@@ -1,10 +1,10 @@
 <?php
 function upgrade_2022092301()
 {
-    if ( !table_exists( TABLE_AUTHENTICATION_CODES ) ) {
+    if ( !table_exists( get_table('authentication_codes') ) ) {
         $dbh = get_dbh();
         $query = "
-        CREATE TABLE IF NOT EXISTS `".TABLE_AUTHENTICATION_CODES."` (
+        CREATE TABLE IF NOT EXISTS `".get_table('authentication_codes')."` (
             `id` int(11) NOT NULL AUTO_INCREMENT,
             `user_id` int(11) NOT NULL,
             `token` varchar(32) NOT NULL,
@@ -13,7 +13,7 @@ function upgrade_2022092301()
             `used_timestamp` TIMESTAMP NULL,
             `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
             PRIMARY KEY (`id`),
-            FOREIGN KEY (`user_id`) REFERENCES ".TABLE_USERS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+            FOREIGN KEY (`user_id`) REFERENCES ".get_table('users')."(`id`) ON DELETE CASCADE ON UPDATE CASCADE
         ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
         ";
         $statement = $dbh->prepare($query);

@@ -89,7 +89,7 @@ class Auth
             return false;
 
 		/** Look up the system users table to see if the entered username exists */
-		$statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:username OR email=:email");
+		$statement = $this->dbh->prepare("SELECT * FROM " . get_table('users') . " WHERE user=:username OR email=:email");
 		$statement->execute([
             ':username' => $username,
             ':email' => $username,
@@ -198,7 +198,7 @@ class Auth
         }
 
 		/** Look up the system users table to see if the entered username exists */
-		$statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:username OR email=:email");
+		$statement = $this->dbh->prepare("SELECT * FROM " . get_table('users') . " WHERE user=:username OR email=:email");
 		$statement->execute([
             ':username'	=> $userProfile->email,
             ':email'	=> $userProfile->email,
@@ -274,7 +274,7 @@ class Auth
                 // Save as metadata
                 $meta_name = 'social_network';
                 $meta_value = json_encode($userProfile);
-                $statement = $this->dbh->prepare("INSERT INTO " . TABLE_USER_META . " (user_id, name, value)"
+                $statement = $this->dbh->prepare("INSERT INTO " . get_table('user_meta') . " (user_id, name, value)"
                                 ."VALUES (:id, :name, :value)");
                 $statement->bindParam(':id', $this->user->id, PDO::PARAM_INT);
                 $statement->bindParam(':name', $meta_name);

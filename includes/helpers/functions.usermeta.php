@@ -11,7 +11,7 @@ function user_meta_exists($user_id = null, $meta_name = null)
         return false;
     }
 
-    $statement = $dbh->prepare( "SELECT id FROM " . TABLE_USER_META . " WHERE user_id=:user_id AND name=:name");
+    $statement = $dbh->prepare( "SELECT id FROM " . get_table('user_meta') . " WHERE user_id=:user_id AND name=:name");
     $statement->bindValue(':user_id', $user_id, PDO::PARAM_INT);
     $statement->bindParam(':name', $meta_name);
     $statement->execute();
@@ -35,7 +35,7 @@ function get_user_meta($user_id = null, $meta_name = null)
         return false;
     }
 
-    $statement = $dbh->prepare( "SELECT * FROM " . TABLE_USER_META . " WHERE user_id=:user_id AND name=:name");
+    $statement = $dbh->prepare( "SELECT * FROM " . get_table('user_meta') . " WHERE user_id=:user_id AND name=:name");
     $statement->bindValue(':user_id', $user_id, PDO::PARAM_INT);
     $statement->bindParam(':name', $meta_name);
     $statement->execute();
@@ -71,7 +71,7 @@ function get_all_user_meta($user_id = null)
     }
 
     $return = [];
-    $statement = $dbh->prepare( "SELECT * FROM " . TABLE_USER_META . " WHERE user_id=:user_id");
+    $statement = $dbh->prepare( "SELECT * FROM " . get_table('user_meta') . " WHERE user_id=:user_id");
     $statement->bindValue(':user_id', $user_id, PDO::PARAM_INT);
     $statement->execute();
     $count = $statement->rowCount();
@@ -116,7 +116,7 @@ function save_user_meta($user_id = null, $meta_name = null, $meta_value = null, 
     if ($update_if_exists == true)
     {
         if (user_meta_exists($user_id, $meta_name)) {
-            $statement = $dbh->prepare( "UPDATE " . TABLE_USER_META . " SET value=:value, updated_at=NOW() WHERE user_id=:user_id AND name=:name" );
+            $statement = $dbh->prepare( "UPDATE " . get_table('user_meta') . " SET value=:value, updated_at=NOW() WHERE user_id=:user_id AND name=:name" );
             $statement->bindValue(':user_id', $user_id, PDO::PARAM_INT);
             $statement->bindValue(':name', $meta_name);
             $statement->bindValue(':value', $meta_value);
@@ -125,7 +125,7 @@ function save_user_meta($user_id = null, $meta_name = null, $meta_value = null, 
         }
     }
 
-    $statement = $dbh->prepare("INSERT INTO " . TABLE_USER_META . " (user_id, name, value) VALUES (:user_id, :name, :value)");
+    $statement = $dbh->prepare("INSERT INTO " . get_table('user_meta') . " (user_id, name, value) VALUES (:user_id, :name, :value)");
     $statement->bindValue(':user_id', $user_id, PDO::PARAM_INT);
     $statement->bindValue(':name', $meta_name);
     $statement->bindValue(':value', $meta_value);
@@ -144,7 +144,7 @@ function delete_user_meta($user_id = null, $meta_name = null)
         return false;
     }
 
-    $statement = $dbh->prepare( "DELETE FROM " . TABLE_USER_META . " WHERE user_id=:user_id AND name=:name");
+    $statement = $dbh->prepare( "DELETE FROM " . get_table('user_meta') . " WHERE user_id=:user_id AND name=:name");
     $statement->bindValue(':user_id', $user_id, PDO::PARAM_INT);
     $statement->bindParam(':name', $meta_name);
 

@@ -32,7 +32,7 @@ function get_public_files($args = [])
     // Start the main query
     $params = [];
 
-    $files_sql = "SELECT * FROM " . TABLE_FILES;
+    $files_sql = "SELECT * FROM " . get_table('files');
 
     // All files or just the public ones?
     $limit_to_public = true;
@@ -76,7 +76,7 @@ function get_public_files($args = [])
     $return['pagination']['total'] = ($count_sql->rowCount());
 
     // Add the order.
-    $files_sql .= sql_add_order( TABLE_FILES, 'id', 'desc' );
+    $files_sql .= sql_add_order( get_table('files'), 'id', 'desc' );
 
     // Repeat the query but this time, limited by pagination
     $files_sql .= " LIMIT :limit_start, :limit_number";

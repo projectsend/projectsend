@@ -1,10 +1,10 @@
 <?php
 function upgrade_2022091101()
 {
-    if ( !table_exists( TABLE_CUSTOM_ASSETS ) ) {
+    if ( !table_exists( get_table('custom_assets') ) ) {
         $dbh = get_dbh();
         $query = "
-        CREATE TABLE IF NOT EXISTS `".TABLE_CUSTOM_ASSETS."` (
+        CREATE TABLE IF NOT EXISTS `".get_table('custom_assets')."` (
             `id` int(11) NOT NULL AUTO_INCREMENT,
             `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
             `title` varchar(500) NOT NULL,

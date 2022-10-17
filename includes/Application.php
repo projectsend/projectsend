@@ -22,14 +22,21 @@ class Application {
     {
         $this->setUpContainer();
         $this->addRouter();
-        $this->loadSystemConstants();
         $this->loadPersonalConfigFile();
+        $this->loadSystemConstants();
         $this->addDatabase();
 
-        $check_requirements = new \ProjectSend\Classes\ServerRequirements($this->container->get('db'));
+        $requirements = new \ProjectSend\Classes\ServerRequirements($this->container->get('db'));
+        $requirements->checkServerRequirementsOrExit();
 
         $this->setUpOptions();
         $this->addDependencies();
+
+        if (!$this->container->get('install')->isInstalled())
+        {
+            $route = $this->container->get('router')->getNamedRoute('install');
+            ps_redirect($route);
+        }
     }
 
     private function setUpContainer()
@@ -40,7 +47,7 @@ class Application {
     private function addRouter()
     {
         // Router
-        $request = ServerRequestFactory::fromGlobals(
+        $this->request = ServerRequestFactory::fromGlobals(
             $_SERVER, $_GET, $_POST, $_COOKIE, $_FILES
         );
 
@@ -101,6 +108,12 @@ class Application {
         $this->container->set('permissions', new Permissions);
         $this->container->set('csrf', new Csrf);
         $this->container->set('hybridauth', new Hybridauth($this->container->get('options')));
+        $this->container->set('dispatcher', new \ProjectSend\Classes\RoutesDispatcher($this->container->get('router')));
+    }
+
+    public function run()
+    {
+        $this->container->get('dispatcher')->dispatch($this->request);
     }
 
     public function getContainer()

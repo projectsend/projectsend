@@ -167,7 +167,7 @@ class Users extends Base
     {
         $this->id = $id;
 
-        $this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
+        $this->statement = $this->dbh->prepare("SELECT * FROM " . get_table('users') . " WHERE id=:id");
         $this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $this->statement->execute();
         $this->statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -207,7 +207,7 @@ class Users extends Base
             $this->can_upload_public = html_output($this->row['can_upload_public']);
 
             // Files
-            $this->statement = $this->dbh->prepare("SELECT DISTINCT id FROM " . TABLE_FILES . " WHERE uploader = :username");
+            $this->statement = $this->dbh->prepare("SELECT DISTINCT id FROM " . get_table('files') . " WHERE uploader = :username");
             $this->statement->bindParam(':username', $this->username);
             $this->statement->execute();
 
@@ -422,7 +422,7 @@ class Users extends Base
             /** Insert the client information into the database */
             $this->timestamp = time();
             $this->statement = $this->dbh->prepare(
-                "INSERT INTO " . TABLE_USERS . " (
+                "INSERT INTO " . get_table('users') . " (
                     name, user, password, level, address, phone, email, notify, contact, created_by, active, account_requested, max_file_size, can_upload_public
                 )
                 VALUES (
@@ -563,7 +563,7 @@ class Users extends Base
         }
 
         /** SQL query */
-        $this->query = "UPDATE " . TABLE_USERS . " SET
+        $this->query = "UPDATE " . get_table('users') . " SET
                                     name = :name,
                                     level = :role,
                                     address = :address,
@@ -648,7 +648,7 @@ class Users extends Base
         if (isset($this->id)) {
             /** Do a permissions check */
             if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-                $this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_USERS . ' WHERE id=:id');
+                $this->sql = $this->dbh->prepare('DELETE FROM ' . get_table('users') . ' WHERE id=:id');
                 $this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
                 $this->sql->execute();
 
@@ -706,7 +706,7 @@ class Users extends Base
         if (isset($this->id)) {
             /** Do a permissions check */
             if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-                $this->sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active_state WHERE id=:id');
+                $this->sql = $this->dbh->prepare('UPDATE ' . get_table('users') . ' SET active=:active_state WHERE id=:id');
                 $this->sql->bindParam(':active_state', $change_to, PDO::PARAM_INT);
                 $this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
                 $this->sql->execute();
@@ -733,7 +733,7 @@ class Users extends Base
         if (isset($this->id)) {
             /** Do a permissions check */
             if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-                $this->sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active, account_requested=:requested, account_denied=:denied WHERE id=:id');
+                $this->sql = $this->dbh->prepare('UPDATE ' . get_table('users') . ' SET active=:active, account_requested=:requested, account_denied=:denied WHERE id=:id');
                 $this->sql->bindValue(':active', 1, PDO::PARAM_INT);
                 $this->sql->bindValue(':requested', 0, PDO::PARAM_INT);
                 $this->sql->bindValue(':denied', 0, PDO::PARAM_INT);
@@ -782,7 +782,7 @@ class Users extends Base
         if (isset($this->id)) {
             /** Do a permissions check */
             if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-                $this->sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active, account_requested=:account_requested, account_denied=:account_denied WHERE id=:id');
+                $this->sql = $this->dbh->prepare('UPDATE ' . get_table('users') . ' SET active=:active, account_requested=:account_requested, account_denied=:account_denied WHERE id=:id');
                 $this->sql->bindValue(':active', 0, PDO::PARAM_INT);
                 $this->sql->bindValue(':account_requested', 1, PDO::PARAM_INT);
                 $this->sql->bindValue(':account_denied', 1, PDO::PARAM_INT);
@@ -812,11 +812,11 @@ class Users extends Base
     private function limitUploadToGet()
     {
         $clients_ids = [];
-        if (!table_exists(TABLE_USER_LIMIT_UPLOAD_TO)) {
+        if (!table_exists(get_table('user_limit_upload_to'))) {
             return $clients_ids;
         }
 
-        $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USER_LIMIT_UPLOAD_TO . " WHERE user_id = :user_id");
+        $statement = $this->dbh->prepare("SELECT * FROM " . get_table('user_limit_upload_to') . " WHERE user_id = :user_id");
         $statement->bindParam(':user_id', $this->id, PDO::PARAM_INT);
         $statement->execute();
         if ($statement->rowCount() > 0) {
@@ -853,7 +853,7 @@ class Users extends Base
 
         if (!empty($delete)) {
             $delete = implode(',', $delete);
-            $statement = $this->dbh->prepare("DELETE FROM " . TABLE_USER_LIMIT_UPLOAD_TO . " WHERE user_id = :user_id AND FIND_IN_SET(client_id, :delete)");
+            $statement = $this->dbh->prepare("DELETE FROM " . get_table('user_limit_upload_to') . " WHERE user_id = :user_id AND FIND_IN_SET(client_id, :delete)");
             $statement->bindParam(':user_id', $this->id);
             $statement->bindParam(':delete', $delete);
             $statement->execute();
@@ -870,7 +870,7 @@ class Users extends Base
         }
 
         foreach ($add as $client_id) {
-            $statement = $this->dbh->prepare("INSERT INTO " . TABLE_USER_LIMIT_UPLOAD_TO . " (user_id, client_id) VALUES (:user_id, :client_id)");
+            $statement = $this->dbh->prepare("INSERT INTO " . get_table('user_limit_upload_to') . " (user_id, client_id) VALUES (:user_id, :client_id)");
             $statement->bindParam(':user_id', $this->id);
             $statement->bindParam(':client_id', $client_id, PDO::PARAM_INT);
             $statement->execute();
@@ -927,7 +927,7 @@ class Users extends Base
 
         $hashed = $this->hashPassword($password);
         if (strlen($hashed) >= 20) {
-            $statement = $this->dbh->prepare("UPDATE " . TABLE_USERS . " SET password = :password WHERE id = :id");
+            $statement = $this->dbh->prepare("UPDATE " . get_table('users') . " SET password = :password WHERE id = :id");
             $statement->bindParam(':password', $hashed);
             $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
             if ($statement->execute()) {

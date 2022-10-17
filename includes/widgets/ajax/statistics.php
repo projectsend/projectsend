@@ -48,7 +48,7 @@ $actions = implode(',', [
     37, // Anonymous download
 ]);
 $statement = $dbh->prepare(
-    "SELECT action, DATE(timestamp) as statsDate, COUNT(*) as total FROM " . TABLE_LOG . " WHERE timestamp >= DATE_SUB( CURDATE(),INTERVAL :max_days DAY) AND action IN (".$actions.") GROUP BY statsDate, action"
+    "SELECT action, DATE(timestamp) as statsDate, COUNT(*) as total FROM " . get_table('actions_log') . " WHERE timestamp >= DATE_SUB( CURDATE(),INTERVAL :max_days DAY) AND action IN (".$actions.") GROUP BY statsDate, action"
 );
 $statement->bindParam(':max_days', $_GET['days']);
 $statement->execute();

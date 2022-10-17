@@ -31,10 +31,10 @@ if (current_role_in($allowed_update)) {
 	 * running all this queries everytime a page is loaded.
 	 * Done on top for convenience.
 	 */
-	$statement = $dbh->prepare("SELECT value FROM " . TABLE_OPTIONS . " WHERE name = 'last_update'");
+	$statement = $dbh->prepare("SELECT value FROM " . get_table('options') . " WHERE name = 'last_update'");
 	$statement->execute();
 	if ( $statement->rowCount() == 0 ) {
-		$dbh->query( "INSERT INTO " . TABLE_OPTIONS . " (name, value) VALUES ('last_update', '264')" );
+		$dbh->query( "INSERT INTO " . get_table('options') . " (name, value) VALUES ('last_update', '264')" );
 		$updates_made++;
 	}
 	else {
@@ -92,9 +92,9 @@ if (current_role_in($allowed_update)) {
 		 * If the "hidden" column on the files table doesn't exist, create it.
 		 */
 		/*
-		$statement = $dbh->query("SELECT hidden FROM " . TABLE_FILES);
+		$statement = $dbh->query("SELECT hidden FROM " . get_table('files'));
 		if ( $statement->rowCount() == 0 ) {
-			$statement = $dbh->query("ALTER TABLE " . TABLE_FILES . " ADD hidden INT(1) NOT NULL");
+			$statement = $dbh->query("ALTER TABLE " . get_table('files') . " ADD hidden INT(1) NOT NULL");
 			$updates_made++;
 		}
 		*/
@@ -106,7 +106,7 @@ if (current_role_in($allowed_update)) {
 		 * will default to the primary admin user's e-mail.
 		 */
 		if ($last_update < 135) {
-			$statement = $dbh->query("SELECT * FROM " . TABLE_USERS . " WHERE id = '1'");
+			$statement = $dbh->query("SELECT * FROM " . get_table('users') . " WHERE id = '1'");
 	
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
 			while ( $row = $statement->fetch() ) {
@@ -195,14 +195,14 @@ if (current_role_in($allowed_update)) {
 		 */
 		if ($last_update < 202) {
 			try {
-				$statement = $dbh->query("SELECT created_by FROM " . TABLE_USERS);
+				$statement = $dbh->query("SELECT created_by FROM " . get_table('users'));
 			} catch( PDOException $e ) {
 				/* Mark existing users as active */
-				$dbh->query("ALTER TABLE " . TABLE_USERS . " ADD address TEXT NULL, ADD phone varchar(32) NULL, ADD notify TINYINT(1) NOT NULL default='0', ADD contact TEXT NULL, ADD created_by varchar(32) NULL, ADD active TINYINT(1) NOT NULL default='1'");
-				$dbh->query("INSERT INTO " . TABLE_USERS
+				$dbh->query("ALTER TABLE " . get_table('users') . " ADD address TEXT NULL, ADD phone varchar(32) NULL, ADD notify TINYINT(1) NOT NULL default='0', ADD contact TEXT NULL, ADD created_by varchar(32) NULL, ADD active TINYINT(1) NOT NULL default='1'");
+				$dbh->query("INSERT INTO " . get_table('users')
 										." (user, password, name, email, timestamp, address, phone, notify, contact, created_by, active, level)"
 										." SELECT client_user, password, name, email, timestamp, address, phone, notify, contact, created_by, active, '0' FROM tbl_clients");
-				$dbh->query("UPDATE " . TABLE_USERS . " SET active = 1");
+				$dbh->query("UPDATE " . get_table('users') . " SET active = 1");
 				$updates_made++;
 			}
 		}
@@ -212,10 +212,10 @@ if (current_role_in($allowed_update)) {
 		 * A new database table was added, that allows the creation of clients groups.
 		 */
 		if ($last_update < 210) {
-			if ( !table_exists( TABLE_GROUPS ) ) {
+			if ( !table_exists( get_table('groups') ) ) {
 				/** Create the GROUPS table */
 				$query = "
-				CREATE TABLE IF NOT EXISTS `".TABLE_GROUPS."` (
+				CREATE TABLE IF NOT EXISTS `".get_table('groups')."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 				  `created_by` varchar(32) NOT NULL,
@@ -251,18 +251,18 @@ if (current_role_in($allowed_update)) {
 		 * Folders are related to clients or groups.
 		 */
 		if ($last_update < 219) {
-			if ( !table_exists( TABLE_FOLDERS ) ) {
+			if ( !table_exists( get_table('folders') ) ) {
 				$query = "
-				CREATE TABLE IF NOT EXISTS `".TABLE_FOLDERS."` (
+				CREATE TABLE IF NOT EXISTS `".get_table('folders')."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `parent` int(11) DEFAULT NULL,
 				  `name` varchar(32) NOT NULL,
 				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 				  `client_id` int(11) DEFAULT NULL,
 				  `group_id` int(11) DEFAULT NULL,
-				  FOREIGN KEY (`parent`) REFERENCES ".TABLE_FOLDERS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-				  FOREIGN KEY (`client_id`) REFERENCES ".TABLE_USERS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-				  FOREIGN KEY (`group_id`) REFERENCES ".TABLE_GROUPS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`parent`) REFERENCES ".get_table('folders')."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`client_id`) REFERENCES ".get_table('users')."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`group_id`) REFERENCES ".get_table('groups')."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 				";
@@ -279,9 +279,9 @@ if (current_role_in($allowed_update)) {
 		 * with clients and groups.
 		 */
 		if ($last_update < 217) {
-			if ( !table_exists( TABLE_FILES_RELATIONS ) ) {
+			if ( !table_exists( get_table('files_relations') ) ) {
 				$query = "
-				CREATE TABLE IF NOT EXISTS `".TABLE_FILES_RELATIONS."` (
+				CREATE TABLE IF NOT EXISTS `".get_table('files_relations')."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 				  `file_id` int(11) NOT NULL,
@@ -290,10 +290,10 @@ if (current_role_in($allowed_update)) {
 				  `folder_id` int(11) DEFAULT NULL,
 				  `hidden` int(1) NOT NULL,
 				  `download_count` int(16) NOT NULL default '0',
-				  FOREIGN KEY (`file_id`) REFERENCES ".TABLE_FILES."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-				  FOREIGN KEY (`client_id`) REFERENCES ".TABLE_USERS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-				  FOREIGN KEY (`group_id`) REFERENCES ".TABLE_GROUPS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-				  FOREIGN KEY (`folder_id`) REFERENCES ".TABLE_FOLDERS."(`id`) ON UPDATE CASCADE,
+				  FOREIGN KEY (`file_id`) REFERENCES ".get_table('files')."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`client_id`) REFERENCES ".get_table('users')."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`group_id`) REFERENCES ".get_table('groups')."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`folder_id`) REFERENCES ".get_table('folders')."(`id`) ON UPDATE CASCADE,
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 				";
@@ -309,9 +309,9 @@ if (current_role_in($allowed_update)) {
 		 * A new database table was added, that stores users and clients actions.
 		 */
 		if ($last_update < 241) {
-			if ( !table_exists( TABLE_LOG ) ) {
+			if ( !table_exists( get_table('actions_log') ) ) {
 				$query = "
-				CREATE TABLE IF NOT EXISTS `".TABLE_LOG."` (
+				CREATE TABLE IF NOT EXISTS `".get_table('actions_log')."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 				  `action` int(2) NOT NULL,
@@ -336,10 +336,10 @@ if (current_role_in($allowed_update)) {
 		 * Set timestamp columns as real timestamp data, instead of INT
 		 */
 		if ($last_update < 266) {
-			$statement = $dbh->query("ALTER TABLE `" . TABLE_USERS . "` ADD COLUMN `timestamp2` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()");
-			$statement = $dbh->query("UPDATE `" . TABLE_USERS . "` SET `timestamp2` = FROM_UNIXTIME(`timestamp`)");
-			$statement = $dbh->query("ALTER TABLE `" . TABLE_USERS . "` DROP COLUMN `timestamp`");
-			$statement = $dbh->query("ALTER TABLE `" . TABLE_USERS . "` CHANGE `timestamp2` `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()");
+			$statement = $dbh->query("ALTER TABLE `" . get_table('users') . "` ADD COLUMN `timestamp2` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()");
+			$statement = $dbh->query("UPDATE `" . get_table('users') . "` SET `timestamp2` = FROM_UNIXTIME(`timestamp`)");
+			$statement = $dbh->query("ALTER TABLE `" . get_table('users') . "` DROP COLUMN `timestamp`");
+			$statement = $dbh->query("ALTER TABLE `" . get_table('users') . "` CHANGE `timestamp2` `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()");
 
 			$updates_made++;
 		}
@@ -351,9 +351,9 @@ if (current_role_in($allowed_update)) {
 		 * used on notifications.
 		 */
 		if ($last_update < 275) {
-			if ( !table_exists( TABLE_NOTIFICATIONS ) ) {
+			if ( !table_exists( get_table('notifications') ) ) {
 				$query = "
-				CREATE TABLE IF NOT EXISTS `".TABLE_NOTIFICATIONS."` (
+				CREATE TABLE IF NOT EXISTS `".get_table('notifications')."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 				  `file_id` int(11) NOT NULL,
@@ -374,10 +374,10 @@ if (current_role_in($allowed_update)) {
 		 * Set timestamp columns as real timestamp data, instead of INT
 		 */
 		if ($last_update < 278) {
-			$statement = $dbh->query("ALTER TABLE `" . TABLE_FILES . "` ADD COLUMN `timestamp2` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()");
-			$statement = $dbh->query("UPDATE `" . TABLE_FILES . "` SET `timestamp2` = FROM_UNIXTIME(`timestamp`)");
-			$statement = $dbh->query("ALTER TABLE `" . TABLE_FILES . "` DROP COLUMN `timestamp`");
-			$statement = $dbh->query("ALTER TABLE `" . TABLE_FILES . "` CHANGE `timestamp2` `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()");
+			$statement = $dbh->query("ALTER TABLE `" . get_table('files') . "` ADD COLUMN `timestamp2` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()");
+			$statement = $dbh->query("UPDATE `" . get_table('files') . "` SET `timestamp2` = FROM_UNIXTIME(`timestamp`)");
+			$statement = $dbh->query("ALTER TABLE `" . get_table('files') . "` DROP COLUMN `timestamp`");
+			$statement = $dbh->query("ALTER TABLE `" . get_table('files') . "` CHANGE `timestamp2` `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()");
 
 			$updates_made++;
 		}
@@ -409,18 +409,18 @@ if (current_role_in($allowed_update)) {
 		 * The Members table wasn't being created on existing installations.
 		 */
 		if ($last_update < 338) {
-			if ( !table_exists( TABLE_MEMBERS ) ) {
+			if ( !table_exists( get_table('members') ) ) {
 				/** Create the MEMBERS table */
 				$query = "
-				CREATE TABLE IF NOT EXISTS `".TABLE_MEMBERS."` (
+				CREATE TABLE IF NOT EXISTS `".get_table('members')."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 				  `added_by` varchar(32) NOT NULL,
 				  `client_id` int(11) NOT NULL,
 				  `group_id` int(11) NOT NULL,
 				  PRIMARY KEY (`id`),
-				  FOREIGN KEY (`client_id`) REFERENCES ".TABLE_USERS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-				  FOREIGN KEY (`group_id`) REFERENCES ".TABLE_GROUPS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+				  FOREIGN KEY (`client_id`) REFERENCES ".get_table('users')."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`group_id`) REFERENCES ".get_table('groups')."(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 				) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 				";
 				$statement = $dbh->prepare($query);
@@ -484,10 +484,10 @@ if (current_role_in($allowed_update)) {
 		 */
 		if ($last_update < 358) {
 			try {
-				$statement = $dbh->query("SELECT sent_status FROM " . TABLE_NOTIFICATIONS);
+				$statement = $dbh->query("SELECT sent_status FROM " . get_table('notifications'));
 			} catch( PDOException $e ) {
-				$statement = $dbh->query("ALTER TABLE " . TABLE_NOTIFICATIONS . " ADD sent_status INT(2) NOT NULL");
-				$statement = $dbh->query("ALTER TABLE " . TABLE_NOTIFICATIONS . " ADD times_failed INT(11) NOT NULL");
+				$statement = $dbh->query("ALTER TABLE " . get_table('notifications') . " ADD sent_status INT(2) NOT NULL");
+				$statement = $dbh->query("ALTER TABLE " . get_table('notifications') . " ADD times_failed INT(11) NOT NULL");
 				$updates_made++;
 			}
 		}
@@ -636,10 +636,10 @@ if (current_role_in($allowed_update)) {
 		 */
 		if ($last_update < 464) {
 			try {
-				$statement = $dbh->query("SELECT expires FROM " . TABLE_FILES);
+				$statement = $dbh->query("SELECT expires FROM " . get_table('files'));
 			} catch( PDOException $e ) {
-				$statement = $dbh->query("ALTER TABLE " . TABLE_FILES . " ADD expires INT(1) NOT NULL default '0'");
-				$statement = $dbh->query("ALTER TABLE " . TABLE_FILES . " ADD expiry_date TIMESTAMP NOT NULL");
+				$statement = $dbh->query("ALTER TABLE " . get_table('files') . " ADD expires INT(1) NOT NULL default '0'");
+				$statement = $dbh->query("ALTER TABLE " . get_table('files') . " ADD expiry_date TIMESTAMP NOT NULL");
 				$updates_made++;
 			}
 
@@ -662,15 +662,15 @@ if (current_role_in($allowed_update)) {
 		 * individual downloads even if the origin is a group.
 		 */
 		if ($last_update < 474 ) {
-			if ( !table_exists( TABLE_DOWNLOADS ) ) {
+			if ( !table_exists( get_table('downloads') ) ) {
 				$query = "
-				CREATE TABLE IF NOT EXISTS `" . TABLE_DOWNLOADS . "` (
+				CREATE TABLE IF NOT EXISTS `" . get_table('downloads') . "` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `user_id` int(11) DEFAULT NULL,
 				  `file_id` int(11) NOT NULL,
 				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-				  FOREIGN KEY (`user_id`) REFERENCES " . TABLE_USERS . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-				  FOREIGN KEY (`file_id`) REFERENCES " . TABLE_FILES . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`user_id`) REFERENCES " . get_table('users') . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`file_id`) REFERENCES " . get_table('files') . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 				";
@@ -689,10 +689,10 @@ if (current_role_in($allowed_update)) {
 		 */
 		if ($last_update < 475) {
 			try {
-				$statement = $dbh->query("SELECT public_allow FROM " . TABLE_FILES);
+				$statement = $dbh->query("SELECT public_allow FROM " . get_table('files'));
 			} catch( PDOException $e ) {
-				$sql1 = $dbh->query("ALTER TABLE " . TABLE_FILES . " ADD public_allow INT(1) NOT NULL default '0'");
-				$sql2 = $dbh->query("ALTER TABLE " . TABLE_FILES . " ADD public_token varchar(32) NULL");
+				$sql1 = $dbh->query("ALTER TABLE " . get_table('files') . " ADD public_allow INT(1) NOT NULL default '0'");
+				$sql2 = $dbh->query("ALTER TABLE " . get_table('files') . " ADD public_token varchar(32) NULL");
 				$updates_made++;
 			}
 		}
@@ -724,10 +724,10 @@ if (current_role_in($allowed_update)) {
 		 * before adding the keys.
 		 */
 		if ($last_update < 490) {
-			$statement = $dbh->query("DELETE FROM " . TABLE_NOTIFICATIONS . " WHERE file_id NOT IN (SELECT id FROM " . TABLE_FILES . ")");
-			$statement = $dbh->query("DELETE FROM " . TABLE_NOTIFICATIONS . " WHERE client_id NOT IN (SELECT id FROM " . TABLE_USERS . ")");
-			$statement = $dbh->query("ALTER TABLE " . TABLE_NOTIFICATIONS . " ADD FOREIGN KEY (`file_id`) REFERENCES " . TABLE_FILES . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
-			$statement = $dbh->query("ALTER TABLE " . TABLE_NOTIFICATIONS . " ADD FOREIGN KEY (`client_id`) REFERENCES " . TABLE_USERS . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
+			$statement = $dbh->query("DELETE FROM " . get_table('notifications') . " WHERE file_id NOT IN (SELECT id FROM " . get_table('files') . ")");
+			$statement = $dbh->query("DELETE FROM " . get_table('notifications') . " WHERE client_id NOT IN (SELECT id FROM " . get_table('users') . ")");
+			$statement = $dbh->query("ALTER TABLE " . get_table('notifications') . " ADD FOREIGN KEY (`file_id`) REFERENCES " . get_table('files') . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
+			$statement = $dbh->query("ALTER TABLE " . get_table('notifications') . " ADD FOREIGN KEY (`client_id`) REFERENCES " . get_table('users') . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
 			$updates_made++;
 		}
 
@@ -737,7 +737,7 @@ if (current_role_in($allowed_update)) {
 		 * Migrate the download count on each client to the new table.
 		 */
 		if ($last_update < 501) {
-			$statement = $dbh->query("SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE client_id IS NOT NULL AND download_count > 0");
+			$statement = $dbh->query("SELECT * FROM " . get_table('files_relations') . " WHERE client_id IS NOT NULL AND download_count > 0");
 			if( $statement->rowCount() > 0 ) {
 				$downloads = $statement->fetchAll(PDO::FETCH_ASSOC);
 				foreach ( $downloads as $key => $row ) {
@@ -746,7 +746,7 @@ if (current_role_in($allowed_update)) {
 					$file_id		= $row['file_id'];
 
 					for ($i = 0; $i < $download_count; $i++) {
-						$statement = $dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (file_id, user_id) VALUES (:file_id, :client_id)");
+						$statement = $dbh->prepare("INSERT INTO " . get_table('downloads') . " (file_id, user_id) VALUES (:file_id, :client_id)");
 						$statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
 						$statement->bindParam(':client_id', $client_id, PDO::PARAM_INT);
 						$statement->execute();
@@ -881,16 +881,16 @@ if (current_role_in($allowed_update)) {
 		 * Files categories.
 		 */
 		if ($last_update < 678) {
-			if ( !table_exists( TABLE_CATEGORIES ) ) {
+			if ( !table_exists( get_table('categories') ) ) {
 				$query = "
-				CREATE TABLE IF NOT EXISTS `".TABLE_CATEGORIES."` (
+				CREATE TABLE IF NOT EXISTS `".get_table('categories')."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `name` varchar(32) NOT NULL,
 				  `parent` int(11) DEFAULT NULL,
 				  `description` text NULL,
 				  `created_by` varchar(".MAX_USER_CHARS.") NULL,
 				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-				  FOREIGN KEY (`parent`) REFERENCES ".TABLE_CATEGORIES."(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+				  FOREIGN KEY (`parent`) REFERENCES ".get_table('categories')."(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 				";
@@ -907,15 +907,15 @@ if (current_role_in($allowed_update)) {
 		 * Relates files categories to files.
 		 */
 		if ($last_update < 680) {
-			if ( !table_exists( TABLE_CATEGORIES_RELATIONS ) ) {
+			if ( !table_exists( get_table('categories_relations') ) ) {
 				$query = "
-				CREATE TABLE IF NOT EXISTS `".TABLE_CATEGORIES_RELATIONS."` (
+				CREATE TABLE IF NOT EXISTS `".get_table('categories_relations')."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 				  `file_id` int(11) NOT NULL,
 				  `cat_id` int(11) NOT NULL,
-				  FOREIGN KEY (`file_id`) REFERENCES ".TABLE_FILES."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-				  FOREIGN KEY (`cat_id`) REFERENCES ".TABLE_CATEGORIES."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`file_id`) REFERENCES ".get_table('files')."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`cat_id`) REFERENCES ".get_table('categories')."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 				";
@@ -954,11 +954,11 @@ if (current_role_in($allowed_update)) {
 		 */
 		if ($last_update < 738) {
 			try {
-				$statement = $dbh->query("SELECT remote_ip FROM " . TABLE_DOWNLOADS);
+				$statement = $dbh->query("SELECT remote_ip FROM " . get_table('downloads'));
 			} catch( PDOException $e ) {
-				$statement = $dbh->query("ALTER TABLE " . TABLE_DOWNLOADS . " ADD remote_ip varchar(45) NULL");
-				$statement = $dbh->query("ALTER TABLE " . TABLE_DOWNLOADS . " ADD remote_host text NULL");
-				$statement = $dbh->query("ALTER TABLE " . TABLE_DOWNLOADS . " ADD anonymous tinyint(1) NULL");
+				$statement = $dbh->query("ALTER TABLE " . get_table('downloads') . " ADD remote_ip varchar(45) NULL");
+				$statement = $dbh->query("ALTER TABLE " . get_table('downloads') . " ADD remote_host text NULL");
+				$statement = $dbh->query("ALTER TABLE " . get_table('downloads') . " ADD anonymous tinyint(1) NULL");
 				$updates_made++;
 			}
 		}
@@ -988,9 +988,9 @@ if (current_role_in($allowed_update)) {
 		 
 		if ($last_update < 835) {
 			try {
-				$statement = $dbh->query("SELECT original_url FROM " . TABLE_FILES);
+				$statement = $dbh->query("SELECT original_url FROM " . get_table('files'));
 			} catch( PDOException $e ) {
-				$sql1 = $dbh->query("ALTER TABLE " . TABLE_FILES . " ADD original_url TEXT NULL AFTER `url`");
+				$sql1 = $dbh->query("ALTER TABLE " . get_table('files') . " ADD original_url TEXT NULL AFTER `url`");
 				$updates_made++;
 			}
 		}
@@ -1004,9 +1004,9 @@ if (current_role_in($allowed_update)) {
 		 
 		if ($last_update < 837) {
 			try {
-				$statement = $dbh->query("SELECT public FROM " . TABLE_GROUPS);
+				$statement = $dbh->query("SELECT public FROM " . get_table('groups'));
 			} catch( PDOException $e ) {
-				$sql1 = $dbh->query("ALTER TABLE " . TABLE_GROUPS . " ADD public tinyint(1) NOT NULL default '0'");
+				$sql1 = $dbh->query("ALTER TABLE " . get_table('groups') . " ADD public tinyint(1) NOT NULL default '0'");
 				$updates_made++;
 			}
 
@@ -1027,18 +1027,18 @@ if (current_role_in($allowed_update)) {
 		 * Add a new table to handle clients requests to groups
 		 */
 		if ($last_update < 840) {
-			if ( !table_exists( TABLE_MEMBERS_REQUESTS ) ) {
+			if ( !table_exists( get_table('members_requests') ) ) {
 				/** Create the MEMBERS table */
 				$query = "
-				CREATE TABLE IF NOT EXISTS `".TABLE_MEMBERS_REQUESTS."` (
+				CREATE TABLE IF NOT EXISTS `".get_table('members_requests')."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 				  `requested_by` varchar(32) NOT NULL,
 				  `client_id` int(11) NOT NULL,
 				  `group_id` int(11) NOT NULL,
 				  PRIMARY KEY (`id`),
-				  FOREIGN KEY (`client_id`) REFERENCES ".TABLE_USERS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-				  FOREIGN KEY (`group_id`) REFERENCES ".TABLE_GROUPS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+				  FOREIGN KEY (`client_id`) REFERENCES ".get_table('users')."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`group_id`) REFERENCES ".get_table('groups')."(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 				) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 				";
 				$statement = $dbh->prepare($query);
@@ -1142,11 +1142,11 @@ if (current_role_in($allowed_update)) {
 		 */
 		if ($last_update < 882) {
 			try {
-				$statement = $dbh->query("SELECT account_requested FROM " . TABLE_USERS);
+				$statement = $dbh->query("SELECT account_requested FROM " . get_table('users'));
 			} catch( PDOException $e ) {
-				$statement = $dbh->query("ALTER TABLE " . TABLE_USERS . " ADD account_requested INT(1) NOT NULL default '0'");
-				$statement = $dbh->query("ALTER TABLE " . TABLE_USERS . " ADD account_denied INT(1) NOT NULL default '0'");
-				$statement = $dbh->query("ALTER TABLE " . TABLE_MEMBERS_REQUESTS . " ADD denied INT(1) NOT NULL default '0'");
+				$statement = $dbh->query("ALTER TABLE " . get_table('users') . " ADD account_requested INT(1) NOT NULL default '0'");
+				$statement = $dbh->query("ALTER TABLE " . get_table('users') . " ADD account_denied INT(1) NOT NULL default '0'");
+				$statement = $dbh->query("ALTER TABLE " . get_table('members_requests') . " ADD denied INT(1) NOT NULL default '0'");
 				$updates_made++;
 			}
 		}
@@ -1157,7 +1157,7 @@ if (current_role_in($allowed_update)) {
 		 * Option to set max upload filesize per user
 		 */
 		if ($last_update < 885) {
-			$statement = $dbh->query("ALTER TABLE `" . TABLE_USERS . "` ADD COLUMN `max_file_size` int(20) NOT NULL DEFAULT '0'");
+			$statement = $dbh->query("ALTER TABLE `" . get_table('users') . "` ADD COLUMN `max_file_size` int(20) NOT NULL DEFAULT '0'");
 			$updates_made++;
 		}
 
@@ -1263,18 +1263,18 @@ if (current_role_in($allowed_update)) {
 		 */
 		if ($last_update < 1006) {
 			try {
-				$statement = $dbh->query("SELECT public_token FROM " . TABLE_GROUPS);
+				$statement = $dbh->query("SELECT public_token FROM " . get_table('groups'));
 			} catch( PDOException $e ) {
-				$statement = $dbh->query("ALTER TABLE " . TABLE_GROUPS . " ADD public_token varchar(32) NULL");
+				$statement = $dbh->query("ALTER TABLE " . get_table('groups') . " ADD public_token varchar(32) NULL");
 				$updates_made++;
 			}
 			
-			$statement = $dbh->prepare("SELECT id FROM " . TABLE_GROUPS);
+			$statement = $dbh->prepare("SELECT id FROM " . get_table('groups'));
 			$statement->execute();
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
 			while( $group = $statement->fetch() ) {
 				$public_token = generate_random_string(32);
-				$statement2 = $dbh->prepare("UPDATE " . TABLE_GROUPS . " SET public_token=:token WHERE id=:id");
+				$statement2 = $dbh->prepare("UPDATE " . get_table('groups') . " SET public_token=:token WHERE id=:id");
 				$statement2->bindParam(':token', $public_token);
 				$statement2->bindParam(':id', $group['id'], PDO::PARAM_INT);
 				$statement2->execute();
@@ -1306,7 +1306,7 @@ if (current_role_in($allowed_update)) {
 		 * Description column for groups should not be required
 		 */
 		if ($last_update < 1105) {
-			$statement = $dbh->query("ALTER TABLE `" . TABLE_GROUPS . "` CHANGE `description` `description` TEXT NULL");
+			$statement = $dbh->query("ALTER TABLE `" . get_table('groups') . "` CHANGE `description` `description` TEXT NULL");
 
 			$updates_made++;
 		}
@@ -1316,7 +1316,7 @@ if (current_role_in($allowed_update)) {
 		 * Set nullable columns
 		 */
 		if ($last_update < 1115) {
-			$statement = $dbh->query("ALTER TABLE `" . TABLE_FILES . "` CHANGE `description` `description` TEXT NULL");
+			$statement = $dbh->query("ALTER TABLE `" . get_table('files') . "` CHANGE `description` `description` TEXT NULL");
 
 			$updates_made++;
 		}
@@ -1326,8 +1326,8 @@ if (current_role_in($allowed_update)) {
 		 * Add foreign keys to files.
 		 */
 		if ($last_update < 1130) {
-            $statement = $dbh->query("ALTER TABLE `" . TABLE_FILES . "` ADD COLUMN `user_id` int(11) DEFAULT NULL AFTER `id`");
-			$statement = $dbh->query("ALTER TABLE " . TABLE_FILES . " ADD CONSTRAINT fk_file_user_id FOREIGN KEY (`user_id`) REFERENCES " . TABLE_USERS . "(`id`) ON DELETE SET NULL ON UPDATE CASCADE");
+            $statement = $dbh->query("ALTER TABLE `" . get_table('files') . "` ADD COLUMN `user_id` int(11) DEFAULT NULL AFTER `id`");
+			$statement = $dbh->query("ALTER TABLE " . get_table('files') . " ADD CONSTRAINT fk_file_user_id FOREIGN KEY (`user_id`) REFERENCES " . get_table('users') . "(`id`) ON DELETE SET NULL ON UPDATE CASCADE");
 			$updates_made++;
 		}
 
@@ -1336,7 +1336,7 @@ if (current_role_in($allowed_update)) {
 		 * Option value could be null
 		 */
 		if ($last_update < 1145) {
-			$statement = $dbh->query("ALTER TABLE `" . TABLE_OPTIONS . "` CHANGE `value` `value` TEXT NULL");
+			$statement = $dbh->query("ALTER TABLE `" . get_table('options') . "` CHANGE `value` `value` TEXT NULL");
 
 			$updates_made++;
 		}
@@ -1346,13 +1346,13 @@ if (current_role_in($allowed_update)) {
 		 * Set nullable columns
 		 */
 		if ($last_update < 1216) {
-			$statement = $dbh->query("ALTER TABLE `" . TABLE_MEMBERS . "` CHANGE `added_by` `added_by` varchar(32) DEFAULT NULL");
+			$statement = $dbh->query("ALTER TABLE `" . get_table('members') . "` CHANGE `added_by` `added_by` varchar(32) DEFAULT NULL");
 			$updates_made++;
 			
-			$statement = $dbh->query("ALTER TABLE " . TABLE_USERS . " MODIFY address TEXT NULL, MODIFY phone varchar(32) NULL, MODIFY notify TINYINT(1) NOT NULL, MODIFY contact TEXT NULL, MODIFY created_by varchar(32) NULL, MODIFY active TINYINT(1) NOT NULL");
+			$statement = $dbh->query("ALTER TABLE " . get_table('users') . " MODIFY address TEXT NULL, MODIFY phone varchar(32) NULL, MODIFY notify TINYINT(1) NOT NULL, MODIFY contact TEXT NULL, MODIFY created_by varchar(32) NULL, MODIFY active TINYINT(1) NOT NULL");
 			$updates_made++;
 			
-			$statement = $dbh->query("ALTER TABLE ".TABLE_FILES_RELATIONS." ALTER COLUMN download_count SET DEFAULT '0'");
+			$statement = $dbh->query("ALTER TABLE ".get_table('files_relations')." ALTER COLUMN download_count SET DEFAULT '0'");
 			$updates_made++;
 		}
 
@@ -1361,7 +1361,7 @@ if (current_role_in($allowed_update)) {
 		 * Add new options for allowing clients to set public files
 		 */
 		if ($last_update < 1325) {
-			$statement = $dbh->query("ALTER TABLE `" . TABLE_USERS . "` ADD COLUMN `can_upload_public` int(20) NOT NULL DEFAULT '0' AFTER `max_file_size`");
+			$statement = $dbh->query("ALTER TABLE `" . get_table('users') . "` ADD COLUMN `can_upload_public` int(20) NOT NULL DEFAULT '0' AFTER `max_file_size`");
 
             $new_database_values = array(
                 'clients_can_set_public' => 'none',
@@ -1374,7 +1374,7 @@ if (current_role_in($allowed_update)) {
 				}
 			}
 			
-            $statement = $dbh->query("UPDATE `" . TABLE_FILES . "` SET original_url = url WHERE original_url IS NULL");
+            $statement = $dbh->query("UPDATE `" . get_table('files') . "` SET original_url = url WHERE original_url IS NULL");
             $updates_made++;
 		}
 
@@ -1384,9 +1384,9 @@ if (current_role_in($allowed_update)) {
 		 * Failed log in attempts are recorded to throttle future requests
 		 */
 		if ($last_update < 1372) {
-			if ( !table_exists( TABLE_LOGINS_FAILED ) ) {
+			if ( !table_exists( get_table('actions_log')INS_FAILED ) ) {
 				$query = "
-				CREATE TABLE IF NOT EXISTS `".TABLE_LOGINS_FAILED."` (
+				CREATE TABLE IF NOT EXISTS `".get_table('actions_log')INS_FAILED."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
                   `ip_address` VARCHAR(60) NOT NULL,
                   `username` VARCHAR(60) NOT NULL,
@@ -1419,7 +1419,7 @@ if (current_role_in($allowed_update)) {
 
 
         /** Update the database */
-		$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :version WHERE name='last_update'");
+		$statement = $dbh->prepare("UPDATE " . get_table('options') . " SET value = :version WHERE name='last_update'");
 		$statement->bindParam(':version', $current_version);
 		$statement->execute();
 

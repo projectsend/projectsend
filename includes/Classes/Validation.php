@@ -165,7 +165,7 @@ class Validation extends Base
 
     private function user_exists($value)
     {
-        $this->statement = $this->dbh->prepare( "SELECT user FROM " . TABLE_USERS . " WHERE user = :user" );
+        $this->statement = $this->dbh->prepare( "SELECT user FROM " . get_table('users') . " WHERE user = :user" );
         $this->statement->execute([
             ':user' => $value,
         ]);
@@ -175,7 +175,7 @@ class Validation extends Base
 
     private function email_exists($value, $data = [])
     {
-        $this->sql_users = "SELECT id, email FROM " . TABLE_USERS . " WHERE email = :email";
+        $this->sql_users = "SELECT id, email FROM " . get_table('users') . " WHERE email = :email";
         $this->params = [
             ':email' => $value
         ];

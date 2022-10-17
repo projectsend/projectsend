@@ -11,6 +11,7 @@ class Options
     function __construct(Database $database)
     {
         $this->dbh = $database->getPdo();
+        $this->table = $database->getTable('options');
     }
 
     /**
@@ -28,12 +29,12 @@ class Options
         }
 
         try {
-            $statement = $this->dbh->prepare("SELECT value FROM " . TABLE_OPTIONS . " WHERE name = :option");
+            $statement = $this->dbh->prepare("SELECT value FROM " . $this->table . " WHERE name = :option");
             $statement->bindParam(':option', $option);
             $statement->execute();
             $results = $statement->fetch();
 
-            $value = $results['value'];
+            $value = (is_bool($results)) ? null : $results['value'];
 
             if ((!empty($value))) {
                 return $value;
@@ -114,5 +115,14 @@ class Options
         define('PAGE_STATUS_CODE_403', PAGE_STATUS_CODE_URL . '?e=403');
         define('PAGE_STATUS_CODE_404', PAGE_STATUS_CODE_URL . '?e=404');
         define('PAGE_STATUS_CODE_REQUIREMENTS', PAGE_STATUS_CODE_URL . '?e=requirements');
+
+                /**
+         * Database connection driver
+         */
+        if (!defined('DB_DRIVER')) { define('DB_DRIVER', 'mysql'); }
+        if (!defined('DB_PORT')) { define('DB_PORT', '3306'); }
+        if (!defined('DB_CHARSET')) { define('DB_CHARSET', 'utf8'); }
+        
+        define('INITIAL_DATABASE_VERSION', '2022040101');
     }
 }

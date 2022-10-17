@@ -57,7 +57,7 @@ if (isset($_POST['action'])) {
 // Query the clients
 $params = [];
 
-$cq = "SELECT id FROM " . TABLE_USERS . " WHERE level='0' AND account_requested='0'";
+$cq = "SELECT id FROM " . get_table('users') . " WHERE level='0' AND account_requested='0'";
 
 // Add the search terms
 if (isset($_GET['search']) && !empty($_GET['search'])) {
@@ -82,7 +82,7 @@ if (isset($_GET['active']) && $_GET['active'] != '2') {
 }
 
 // Add the order
-$cq .= sql_add_order(TABLE_USERS, 'id', 'desc');
+$cq .= sql_add_order(get_table('users'), 'id', 'desc');
 
 // Pre-query to count the total results
 $count_sql = $dbh->prepare($cq);
@@ -258,7 +258,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                     $groups_files = 0;
 
                     $found_groups = ($count_groups > 0) ? implode(',', $client->groups) : '';
-                    $files_query = "SELECT DISTINCT id, file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE client_id=:id";
+                    $files_query = "SELECT DISTINCT id, file_id, client_id, group_id FROM " . get_table('files_relations') . " WHERE client_id=:id";
                     if (!empty($found_groups)) {
                         $files_query .= " OR FIND_IN_SET(group_id, :group_id)";
                     }

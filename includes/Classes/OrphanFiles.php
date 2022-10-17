@@ -38,7 +38,7 @@ class OrphanFiles extends Base
         $db_files = [];
 
         // Make a list of existing files on the database
-        $sql = $this->dbh->query("SELECT original_url, url, id, public_allow FROM " . TABLE_FILES );
+        $sql = $this->dbh->query("SELECT original_url, url, id, public_allow FROM " . get_table('files') );
         $sql->setFetchMode(PDO::FETCH_ASSOC);
         while ($row = $sql->fetch()) {
             $db_files[$row["url"]] = $row["url"];

@@ -143,7 +143,7 @@ class Cron extends Base
 
         $files = [];
         if (get_option('cron_delete_expired_files') == '1') {
-            $statement = $this->dbh->prepare( "SELECT * FROM " . TABLE_FILES . " WHERE expires='1'" );
+            $statement = $this->dbh->prepare( "SELECT * FROM " . get_table('files') . " WHERE expires='1'" );
             $statement->execute();
             $results['elements']['found'] = [
                 'label' => __('Found', 'cftp_admin'),
@@ -294,7 +294,7 @@ class Cron extends Base
             try {
                 $sapi = PHP_SAPI;
                 $results = json_encode($this->formatResultsForDatabase($this->results));
-                $statement = $this->dbh->prepare("INSERT INTO " . TABLE_CRON_LOG . " (sapi, results)"
+                $statement = $this->dbh->prepare("INSERT INTO " . get_table('cron_log') . " (sapi, results)"
                         ."VALUES (:sapi, :results)");
                 $statement->bindParam(':sapi', $sapi);
                 $statement->bindParam(':results', $results);

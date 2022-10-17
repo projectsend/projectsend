@@ -26,7 +26,7 @@ if (!empty($_POST)) {
         $clients_to_get = implode(',', array_map('intval', array_unique($selected_clients_ids)));
 
         // Make a list of users to avoid individual queries.
-        $sql_user = $dbh->prepare("SELECT id, name FROM " . TABLE_USERS . " WHERE FIND_IN_SET(id, :clients)");
+        $sql_user = $dbh->prepare("SELECT id, name FROM " . get_table('users') . " WHERE FIND_IN_SET(id, :clients)");
         $sql_user->bindParam(':clients', $clients_to_get);
         $sql_user->execute();
         $sql_user->setFetchMode(PDO::FETCH_ASSOC);
@@ -113,7 +113,7 @@ if (!empty($_POST)) {
 // Query the clients
 $params = [];
 
-$cq = "SELECT * FROM " . TABLE_USERS . " WHERE level='0' AND account_requested='1'";
+$cq = "SELECT * FROM " . get_table('users') . " WHERE level='0' AND account_requested='1'";
 
 if (isset($_GET['denied']) && !empty($_GET['denied'])) {
     $cq .= " AND account_denied='1'";
@@ -141,7 +141,7 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
  * Add the order.
  * Defaults to order by: name, order: ASC
  */
-$cq .= sql_add_order(TABLE_USERS, 'name', 'asc');
+$cq .= sql_add_order(get_table('users'), 'name', 'asc');
 
 // Pre-query to count the total results
 $count_sql = $dbh->prepare($cq);

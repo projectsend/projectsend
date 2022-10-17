@@ -75,13 +75,13 @@ function render_custom_assets($position = null)
 {
     $dbh = get_dbh();
 
-    if (!table_exists(TABLE_CUSTOM_ASSETS)) {
+    if (!table_exists(get_table('custom_assets'))) {
         return null;
     }
 
     // Get assets
     $params = [];
-    $query = "SELECT * FROM " . TABLE_CUSTOM_ASSETS . " WHERE enabled = 1";
+    $query = "SELECT * FROM " . get_table('custom_assets') . " WHERE enabled = 1";
     switch (get_current_view_type()) {
         case 'public':
         case 'private':

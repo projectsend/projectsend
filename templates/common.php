@@ -49,7 +49,7 @@ $found_all_files_array = [];
 /**
  * Get files uploaded by this user
  */
-$files_query = "SELECT * FROM " . TABLE_FILES . " WHERE user_id=:user_id";
+$files_query = "SELECT * FROM " . get_table('files') . " WHERE user_id=:user_id";
 $files_sql = $dbh->prepare($files_query);
 $files_sql->bindParam(':user_id', $client_info['id'], PDO::PARAM_INT);
 $files_sql->execute();
@@ -62,7 +62,7 @@ while ($row_files = $files_sql->fetch()) {
  * Get files assigned directly to the client
  * Construct the query first.
  */
-$files_query = "SELECT id, file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE (client_id = :id";
+$files_query = "SELECT id, file_id, client_id, group_id FROM " . get_table('files_relations') . " WHERE (client_id = :id";
 if (!empty($found_groups)) {
     $files_query .= " OR FIND_IN_SET(group_id, :groups)";
 }
@@ -97,7 +97,7 @@ $cat_ids = [];
 $file_ids = [];
 $files_keep = [];
 
-$sql_sentence = "SELECT file_id, cat_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE FIND_IN_SET(file_id, :files)";
+$sql_sentence = "SELECT file_id, cat_id FROM " . get_table('categories_relations') . " WHERE FIND_IN_SET(file_id, :files)";
 $sql_client_categories = $dbh->prepare($sql_sentence);
 $sql_client_categories->bindParam(':files', $found_unique_files_ids);
 $sql_client_categories->execute();
@@ -136,7 +136,7 @@ $my_files = [];
 
 if (!empty($found_all_files_array)) {
     $f = 0;
-    $files_query = "SELECT * FROM " . TABLE_FILES . " WHERE FIND_IN_SET(id,:search_ids)";
+    $files_query = "SELECT * FROM " . get_table('files') . " WHERE FIND_IN_SET(id,:search_ids)";
 
     $params = [
         ':search_ids' => $ids_to_search,
@@ -155,7 +155,7 @@ if (!empty($found_all_files_array)) {
      * Add the order.
      * Defaults to order by: timestamp, order: DESC (shows last uploaded files first)
      */
-    $files_query .= sql_add_order(TABLE_FILES, 'timestamp', 'desc');
+    $files_query .= sql_add_order(get_table('files'), 'timestamp', 'desc');
 
     /**
      * Pre-query to count the total results

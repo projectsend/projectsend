@@ -6,8 +6,6 @@ class ServerRequirements extends Base
     public function __construct(\ProjectSend\Classes\Database $database)
     {
         $this->dbh = $database->getPdo();
-
-        $this->check_server_requirements();
     }
 
     private function get_server_requirements_errors()
@@ -19,16 +17,16 @@ class ServerRequirements extends Base
         if (empty($pdo_available_drivers)) {
             $errors_found[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
         } else {
-            if ((DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND')) {
+            if (defined('DB_DRIVER') && (DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND')) {
                 $errors_found[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
             }
-            if ((DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers)) {
+            if (defined('DB_DRIVER') && (DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers)) {
                 $errors_found[] = sprintf(__('Missing required extension: %s', 'cftp_admin'), 'pdo');
             }
         }
 
         // Version requirements
-        $version_not_met =  __('%s minimum version not met. Please upgrade to at least version %s', 'cftp_admin');
+        $version_not_met = __('%s minimum version not met. Please upgrade to at least version %s', 'cftp_admin');
 
         // php
         if (version_compare(phpversion(), REQUIRED_VERSION_PHP, "<")) {
@@ -46,7 +44,7 @@ class ServerRequirements extends Base
         return $errors_found;
     }
 
-    private function check_server_requirements()
+    public function checkServerRequirementsOrExit()
     {
         $errors = $this->get_server_requirements_errors();
 

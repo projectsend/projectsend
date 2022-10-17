@@ -47,12 +47,12 @@ function get_latest_version_data()
 function add_option_if_not_exists($row, $value)
 {
     $dbh = get_dbh();
-    $statement = $dbh->prepare("SELECT * FROM " . TABLE_OPTIONS . " WHERE name = :option");
+    $statement = $dbh->prepare("SELECT * FROM " . get_table('options') . " WHERE name = :option");
     $statement->bindParam(':option', $row);
     $statement->execute();
 
     if ($statement->rowCount() == 0) {
-        $statement = $dbh->prepare("INSERT INTO " . TABLE_OPTIONS . " (name, value) VALUES (:option, :value)");
+        $statement = $dbh->prepare("INSERT INTO " . get_table('options') . " (name, value) VALUES (:option, :value)");
         $statement->bindParam(':option', $row);
         $statement->bindValue(':value', $value);
         $statement->execute();
@@ -146,7 +146,7 @@ function import_files_relations()
     /**
      * Get every file and it's important information from the files database table.
      */
-    $statement = $dbh->prepare("SELECT id, filename, timestamp, client_user, hidden, download_count FROM " . TABLE_FILES . " WHERE client_user != ''");
+    $statement = $dbh->prepare("SELECT id, filename, timestamp, client_user, hidden, download_count FROM " . get_table('files') . " WHERE client_user != ''");
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
     while ($row = $statement->fetch()) {
@@ -166,7 +166,7 @@ function import_files_relations()
      * previous step.
      */
     $users = implode(',', $get_clients_info);
-    $statement = $dbh->prepare("SELECT id, user FROM " . TABLE_USERS . " WHERE FIND_IN_SET(user, :users)");
+    $statement = $dbh->prepare("SELECT id, user FROM " . get_table('users') . " WHERE FIND_IN_SET(user, :users)");
     $statement->bindParam(':users', $users);
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -184,7 +184,7 @@ function import_files_relations()
          * Only continue if the client exists on the database
          */
         if (array_key_exists($this_file['client_id'], $found_users)) {
-            $statement = $dbh->prepare("INSERT INTO " . TABLE_FILES_RELATIONS . " (timestamp, file_id, client_id, hidden, download_count)"
+            $statement = $dbh->prepare("INSERT INTO " . get_table('files_relations') . " (timestamp, file_id, client_id, hidden, download_count)"
                 . " VALUES (:timestamp, :file_id, :client_id, :hidden, :download_count)");
             $statement->bindParam(':timestamp', $this_file['timestamp']);
             $statement->bindParam(':file_id', $this_file['file_id'], PDO::PARAM_INT);
@@ -226,11 +226,11 @@ function reset_update_status()
 {
     $dbh = get_dbh();
 
-    $dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='' WHERE name='version_new_number'");
-    $dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='' WHERE name='version_new_url'");
-    $dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='' WHERE name='version_new_chlog'");
-    $dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='' WHERE name='version_new_security'");
-    $dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='' WHERE name='version_new_features'");
-    $dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='' WHERE name='version_new_important'");
-    $dbh->query("UPDATE " . TABLE_OPTIONS . " SET value ='0' WHERE name='version_new_found'");
+    $dbh->query("UPDATE " . get_table('options') . " SET value ='' WHERE name='version_new_number'");
+    $dbh->query("UPDATE " . get_table('options') . " SET value ='' WHERE name='version_new_url'");
+    $dbh->query("UPDATE " . get_table('options') . " SET value ='' WHERE name='version_new_chlog'");
+    $dbh->query("UPDATE " . get_table('options') . " SET value ='' WHERE name='version_new_security'");
+    $dbh->query("UPDATE " . get_table('options') . " SET value ='' WHERE name='version_new_features'");
+    $dbh->query("UPDATE " . get_table('options') . " SET value ='' WHERE name='version_new_important'");
+    $dbh->query("UPDATE " . get_table('options') . " SET value ='0' WHERE name='version_new_found'");
 }

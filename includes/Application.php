@@ -126,7 +126,7 @@ class Application {
     {
         $this->container->get('router')->middleware(new \ProjectSend\Middleware\ServerRequirements($this->container->get('db'), $this->container->get('router')));
         if (!isset($this->is_make_config_file)) {
-            $this->container->get('router')->middleware(new \ProjectSend\Middleware\IsInstalled($this->container->get('db'), $this->container->get('router'), $this->container->get('options')));
+            $this->container->get('router')->middleware(new \ProjectSend\Middleware\IsInstalled($this->container->get('db'), $this->container->get('router')));
         }
     }
 }

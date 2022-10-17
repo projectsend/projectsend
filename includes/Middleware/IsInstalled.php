@@ -10,23 +10,18 @@ use Laminas\Diactoros\Response\RedirectResponse;
 
 class IsInstalled implements MiddlewareInterface
 {
-    public function __construct(\ProjectSend\Classes\Database $database, \League\Route\Router $router, \ProjectSend\Classes\Options $options)
+    public function __construct(\ProjectSend\Classes\Database $database, \League\Route\Router $router)
     {
-        $this->database = $database;
-        $this->router = $router;
-        $this->options = $options;
-        $this->install = new \ProjectSend\Classes\Install($router);
+        $this->router =  $router;
+        $this->install = new \ProjectSend\Classes\Install($database, $router);
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $install_url = $this->router->getNamedRoute('install')->getPath();
         $current = $request->getUri()->getPath();
-        // Check for base_uri in options table, or check for a table called {prefix}users?
-        // $base_uri = $this->options->getOption('base_uri');
         if ($current != $install_url) {
-            // if (empty($base_uri)) {
-            if (!$this->database->tableExists(get_table('users'))) {
+            if (!$this->install->isInstalled()) {
                 return new RedirectResponse($install_url);
             }
         }

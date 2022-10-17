@@ -8,7 +8,7 @@ class ServerRequirements
         $this->dbh = $database->getPdo();
     }
 
-    private function checkRequirements()
+    public function checkRequirements()
     {
         $errors_found = [];
 
@@ -48,11 +48,11 @@ class ServerRequirements
     {
         $errors = $this->checkRequirements();
 
-        if (!empty($errors)) {
-            return true;
+        if (count($errors) > 0) {
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     public function getErrors()

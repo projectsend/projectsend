@@ -7,7 +7,6 @@ use \Tamtamchik\SimpleFlash\Flash;
 use \ProjectSend\Classes\Locale;
 use \ProjectSend\Classes\BruteForceBlock;
 use \ProjectSend\Classes\ActionsLog;
-use \ProjectSend\Classes\Install;
 use \ProjectSend\Classes\GobalTextStrings;
 use \ProjectSend\Classes\Auth;
 use \ProjectSend\Classes\AssetsLoader;
@@ -22,26 +21,44 @@ class Application {
     {
         $this->setUpContainer();
         $this->addRouter();
-        $this->loadPersonalConfigFile();
         $this->loadSystemConstants();
+        $this->loadConfigFile();
         $this->addDatabase();
-
-        $requirements = new \ProjectSend\Classes\ServerRequirements($this->container->get('db'));
-        $requirements->checkServerRequirementsOrExit();
-
         $this->setUpOptions();
         $this->addDependencies();
+        $this->addGlobalMiddlewares();
+    }
 
-        if (!$this->container->get('install')->isInstalled())
-        {
-            $route = $this->container->get('router')->getNamedRoute('install');
-            ps_redirect($route);
-        }
+    public function run()
+    {
+        $this->container->get('dispatcher')->dispatch($this->request);
     }
 
     private function setUpContainer()
     {
         $this->container = new \DI\Container();
+    }
+
+    private function loadConfigFile()
+    {
+        if ( !file_exists(CONFIG_FILE) ) {
+            $router = $this->container->get('router');
+            
+            header("Cache-control: private");
+            $_SESSION = [];
+            session_regenerate_id(true);
+            session_destroy();
+            
+            $make_config_file_url = $router->getNamedRoute('install_make_config_file')->getPath();
+            $current = $this->request->getUri()->getPath();
+            if ($current != $make_config_file_url) {
+                ps_redirect($make_config_file_url);
+            }
+
+            $this->is_make_config_file = true;
+        } else {
+            require_once CONFIG_FILE;
+        }
     }
 
     private function addRouter()
@@ -56,11 +73,6 @@ class Application {
         $this->container->set('router', $router);
     }
 
-    private function loadPersonalConfigFile()
-    {
-        $this->container->set('install', new Install($this->container->get('router')));
-    }
-
     private function loadSystemConstants()
     {
         $constants = new \ProjectSend\Classes\SystemConstants;
@@ -68,8 +80,10 @@ class Application {
 
     private function addDatabase()
     {
+        $this->container->set('db', null);
+        $config = [];
         if ( defined('DB_NAME') ) {
-            $this->container->set('db', new \ProjectSend\Classes\Database([
+            $config = [
                 'driver' => DB_DRIVER,
                 'host' => DB_HOST,
                 'database' => DB_NAME,
@@ -77,47 +91,42 @@ class Application {
                 'password' => DB_PASSWORD,
                 'port' => DB_PORT,
                 'charset' => DB_CHARSET,
-            ]));
+            ];
         }
 
-        $this->container->get('install')->AddDatabase($this->container->get('db'));
+        $this->container->set('db', new \ProjectSend\Classes\Database($config));
     }
 
     public function setUpOptions()
     {
-        if (!defined('IS_MAKE_CONFIG')) {
-            try {
-                $options = new \ProjectSend\Classes\Options($this->container->get('db'));
-                $options->setSystemConstants();
-                $this->container->set('options', $options);
-            } catch (\Exception $e) {
-                return false;
-            }
-        }
+        $this->container->set('options', new \ProjectSend\Classes\Options($this->container->get('db')));
     }
 
     public function addDependencies()
     {
+        $this->container->set('dispatcher', new \ProjectSend\Classes\RoutesDispatcher($this->container->get('router')));
         $this->container->set('flash', new Flash);
+        $this->container->set('global_text_strings', new GobalTextStrings($this->container->get('router')));
         $this->container->set('bfchecker', new BruteForceBlock($this->container->get('db'), $this->container->get('options')));
         $this->container->set('locale', new Locale($this->container->get('options')));
         $this->container->set('actions_logger', new ActionsLog($this->container->get('db')));
-        $this->container->set('global_text_strings', new GobalTextStrings);
         $this->container->set('auth', new Auth($this->container->get('db'), $this->container->get('global_text_strings')));
         $this->container->set('assets_loader', new AssetsLoader);
         $this->container->set('permissions', new Permissions);
         $this->container->set('csrf', new Csrf);
         $this->container->set('hybridauth', new Hybridauth($this->container->get('options')));
-        $this->container->set('dispatcher', new \ProjectSend\Classes\RoutesDispatcher($this->container->get('router')));
-    }
-
-    public function run()
-    {
-        $this->container->get('dispatcher')->dispatch($this->request);
     }
 
     public function getContainer()
     {
         return $this->container;
+    }
+
+    private function addGlobalMiddlewares()
+    {
+        $this->container->get('router')->middleware(new \ProjectSend\Middleware\ServerRequirements($this->container->get('db'), $this->container->get('router')));
+        if (!isset($this->is_make_config_file)) {
+            $this->container->get('router')->middleware(new \ProjectSend\Middleware\IsInstalled($this->container->get('db'), $this->container->get('router'), $this->container->get('options')));
+        }
     }
 }

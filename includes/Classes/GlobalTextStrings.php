@@ -1,6 +1,8 @@
 <?php
 namespace ProjectSend\Classes;
 
+use League\Route\Router;
+
 /**
  * Defines the language strings that are used on several parts of
  * the system, to avoid repetition.

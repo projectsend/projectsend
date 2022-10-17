@@ -13,4 +13,10 @@ class PagesController extends BaseController
         require_once VIEWS_PUBLIC_DIR.DS.'error.php';
         return $response;
     }
+
+    public function errorRequirements(ServerRequestInterface $request): ResponseInterface
+    {
+        require_once VIEWS_PUBLIC_DIR.DS.'error.php';
+        return $response;
+    }
 }

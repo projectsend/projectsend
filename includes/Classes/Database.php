@@ -14,9 +14,9 @@ class Database
         $this->dbh = null;
         $this->connected = false;
 
-        if (empty($args)) {
-            throw new \Exception(__('Database arguments not set','cftp_admin'), 1);
-        }
+        // if (empty($args)) {
+        //     throw new \Exception(__('Database arguments not set','cftp_admin'), 1);
+        // }
 
         $driver = isset($args['driver']) ? $args['driver'] : 'mysql';
         $host = isset($args['host']) ? $args['host'] : 'localhost';

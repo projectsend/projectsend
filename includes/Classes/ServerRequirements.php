@@ -1,14 +1,14 @@
 <?php
 namespace ProjectSend\Classes;
 
-class ServerRequirements extends Base
+class ServerRequirements
 {
     public function __construct(\ProjectSend\Classes\Database $database)
     {
         $this->dbh = $database->getPdo();
     }
 
-    private function get_server_requirements_errors()
+    private function checkRequirements()
     {
         $errors_found = [];
 
@@ -44,12 +44,19 @@ class ServerRequirements extends Base
         return $errors_found;
     }
 
-    public function checkServerRequirementsOrExit()
+    public function requirementsMet()
     {
-        $errors = $this->get_server_requirements_errors();
+        $errors = $this->checkRequirements();
 
         if (!empty($errors)) {
-            ps_redirect(PAGE_STATUS_CODE_REQUIREMENTS);
+            return true;
         }
+
+        return false;
+    }
+
+    public function getErrors()
+    {
+        return $this->checkRequirements();
     }
 }

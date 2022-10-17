@@ -8,10 +8,11 @@ namespace ProjectSend\Classes;
 
 class Options
 {
-    function __construct(Database $database)
+    function __construct(Database $database = null)
     {
-        $this->dbh = $database->getPdo();
+        $this->dbh = (!empty($database)) ? $database->getPdo() : null;
         $this->table = $database->getTable('options');
+        $this->setSystemConstants();
     }
 
     /**

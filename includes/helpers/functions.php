@@ -31,7 +31,7 @@ function get_route_for($route_name)
 {
     $router = get_container_item('router');
     $route = $router->getNamedRoute($route_name);
-    return $route->getPath();
+    return BASE_URI.$route->getPath();
 }
 
 // Continue regular functions

@@ -37,7 +37,7 @@ class SystemConstants
         /**
          * Required software versions
          */
-        define('REQUIRED_VERSION_PHP', '7.4');
+        define('REQUIRED_VERSION_PHP', '9.4');
         define('REQUIRED_VERSION_MYSQL', '5.0');
         
         /**
@@ -96,13 +96,6 @@ class SystemConstants
          * number.
          */
         define('UPDATES_FEED_URI','https://projectsend.org/serve/versions');
-        
-        /**
-         * Database connection driver
-         */
-        if (!defined('DB_DRIVER')) { define('DB_DRIVER', 'mysql'); }
-        if (!defined('DB_PORT')) { define('DB_PORT', '3306'); }
-        if (!defined('DB_CHARSET')) { define('DB_CHARSET', 'utf8'); }
         
         /**
          * This values affect both validation methods (client and server side)

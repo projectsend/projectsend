@@ -25,7 +25,7 @@ class Database
         $database = isset($args['database']) ? $args['database'] : '';
         $username = isset($args['username']) ? $args['username'] : '';
         $password = isset($args['password']) ? $args['password'] : '';
-        $exit = isset($args['exit']) ? $args['exit'] : true;
+        $exit = isset($args['exit']) ? $args['exit'] : false;
 
         try {
             $this->dbh = new PDO("$driver:host=$host;port=$port;dbname=$database;charset=$charset", $username, $password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));

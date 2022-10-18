@@ -21,9 +21,11 @@ class Application {
     {
         $this->setUpContainer();
         $this->addRouter();
-        $this->loadSystemConstants();
         $this->loadConfigFile();
+        $this->loadSystemConstants();
+        $this->addContainerSettings();
         $this->addDatabase();
+        $this->checkServerRequirements();
         $this->setUpOptions();
         $this->addDependencies();
         $this->addGlobalMiddlewares();
@@ -37,6 +39,26 @@ class Application {
     private function setUpContainer()
     {
         $this->container = new \DI\Container();
+    }
+
+    protected function addContainerSettings()
+    {
+        $db_config = [];
+        if ( defined('DB_NAME') ) {
+            $db_config = [
+                'driver' => DB_DRIVER,
+                'host' => DB_HOST,
+                'database' => DB_NAME,
+                'username' => DB_USER,
+                'password' => DB_PASSWORD,
+                'port' => defined('DB_PORT') ? DB_PORT : 3306,
+                'charset' => defined('DB_CHARSET') ? DB_CHARSET : 'utf8',
+            ];
+        }
+
+        $this->container->set('settings', [
+            'db' => $db_config,
+        ]);
     }
 
     private function loadConfigFile()
@@ -61,6 +83,21 @@ class Application {
         }
     }
 
+    private function checkServerRequirements()
+    {
+        $this->requirements = new \ProjectSend\Classes\ServerRequirements();
+        $error_url = $this->container->get('router')->getNamedRoute('error_requirements')->getPath();
+        $current = $this->request->getUri()->getPath();
+        if (!$this->requirements->requirementsMet() && $current != $error_url) {
+            ps_redirect($error_url);
+        }
+    }
+
+    private function checkDatabaseRequirements()
+    {
+        $this->requirements->addDatabase($this->container->get('db'));
+    }
+
     private function addRouter()
     {
         // Router
@@ -80,21 +117,7 @@ class Application {
 
     private function addDatabase()
     {
-        $this->container->set('db', null);
-        $config = [];
-        if ( defined('DB_NAME') ) {
-            $config = [
-                'driver' => DB_DRIVER,
-                'host' => DB_HOST,
-                'database' => DB_NAME,
-                'username' => DB_USER,
-                'password' => DB_PASSWORD,
-                'port' => DB_PORT,
-                'charset' => DB_CHARSET,
-            ];
-        }
-
-        $this->container->set('db', new \ProjectSend\Classes\Database($config));
+        $this->container->set('db', new \ProjectSend\Classes\Database($this->container->get('settings')['db']));
     }
 
     public function setUpOptions()
@@ -124,7 +147,6 @@ class Application {
 
     private function addGlobalMiddlewares()
     {
-        $this->container->get('router')->middleware(new \ProjectSend\Middleware\ServerRequirements($this->container->get('db'), $this->container->get('router')));
         if (!isset($this->is_make_config_file)) {
             $this->container->get('router')->middleware(new \ProjectSend\Middleware\IsInstalled($this->container->get('db'), $this->container->get('router')));
         }

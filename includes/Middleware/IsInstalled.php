@@ -12,7 +12,7 @@ class IsInstalled implements MiddlewareInterface
 {
     public function __construct(\ProjectSend\Classes\Database $database, \League\Route\Router $router)
     {
-        $this->router =  $router;
+        $this->router = $router;
         $this->install = new \ProjectSend\Classes\Install($database, $router);
     }
 

@@ -117,7 +117,7 @@ class Options
         define('PAGE_STATUS_CODE_404', PAGE_STATUS_CODE_URL . '?e=404');
         define('PAGE_STATUS_CODE_REQUIREMENTS', PAGE_STATUS_CODE_URL . '?e=requirements');
 
-                /**
+        /**
          * Database connection driver
          */
         if (!defined('DB_DRIVER')) { define('DB_DRIVER', 'mysql'); }

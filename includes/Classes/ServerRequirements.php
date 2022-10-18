@@ -3,9 +3,9 @@ namespace ProjectSend\Classes;
 
 class ServerRequirements
 {
-    public function __construct(\ProjectSend\Classes\Database $database)
+    public function __construct(\ProjectSend\Classes\Database $database = null)
     {
-        $this->dbh = $database->getPdo();
+        $this->dbh = (!empty($database)) ? $database->getPdo() : null;
     }
 
     public function checkRequirements()

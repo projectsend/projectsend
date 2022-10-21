@@ -279,16 +279,20 @@ class EmailNotifications
         if (!empty($uploader_username)) {
             $html .= '<li style="font-size:15px; font-weight:bold; margin-bottom:5px;">'.$uploader_username.'</li>';
         }
-
         foreach ($files as $file) {
             $file_data = $this->files_data[$file['file_id']];
             $html .= '<li style="margin-bottom:11px;">';
             $html .= '<p style="font-weight:bold; margin:0 0 5px 0; font-size:14px;">'.$file_data['title'].'<br>('.$file_data['filename'].')</p>';
             if (!empty($file_data['description'])) {
-                $html .= '<p>'.$file_data['description'].'</p>';
+                if (strpos($file_data['description'], '<p>') !== false) {
+                    $html .= $file_data['description'];
+                } else {
+                    $html .= '<p>'.$file_data['description'].'</p>';
+                }
             }
             $html .= '</li>';
         }
+        pax($html);
 
         return $html;
     }

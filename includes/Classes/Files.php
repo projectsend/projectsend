@@ -1011,12 +1011,13 @@ class Files
         }
 
         foreach ($user_ids as $user_id) {
+            $max_tries = get_option('notifications_max_tries');
             // See if there's a pending notification already.
             $statement = $this->dbh->prepare("SELECT id FROM " . TABLE_NOTIFICATIONS . " WHERE file_id = :file_id AND client_id = :client_id AND upload_type = :type AND sent_status = '0' AND times_failed <= :times_failed");
             $statement->bindParam(':file_id', $this->id, PDO::PARAM_INT);
             $statement->bindParam(':type', $notification_type, PDO::PARAM_INT);
             $statement->bindParam(':client_id', $user_id, PDO::PARAM_INT);
-            $statement->bindParam(':times_failed', get_option('notifications_max_tries'), PDO::PARAM_INT);
+            $statement->bindParam(':times_failed', $max_tries, PDO::PARAM_INT);
             $statement->execute();
             $found = $statement->rowCount();
 

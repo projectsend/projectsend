@@ -45,6 +45,9 @@ function get_public_files($args = [])
             $limit_to_public = false;
         }
     } else {
+        if (empty($files_in_groups)) {
+            $files_in_groups = [0];
+        }
         // On the front page, we need files that are NOT assgined to any public group
         $files_sql .= " WHERE NOT FIND_IN_SET(id, :ids)";
         $params[':ids'] = implode(',', $files_in_groups);

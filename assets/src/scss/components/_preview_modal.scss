@@ -16,4 +16,9 @@
     .embed-responsive {
         background: black;
     }
+
+    div.embed-responsive iframe {
+        width: 100%;
+        min-height: 39em;
+    }
 }

@@ -43,7 +43,7 @@ if (!$count) {
 if (current_user_can_upload()) {
     $header_action_buttons = [
         [
-            'url' => 'upload.php',
+            'url' => BASE_URI.'upload.php',
             'label' => __('Upload file', 'cftp_admin'),
         ],
     ];

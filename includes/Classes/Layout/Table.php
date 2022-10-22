@@ -38,6 +38,7 @@ class Table
     {
         $url_parse = parse_url($_SERVER['REQUEST_URI']);
         $url_parts = explode('/', $url_parse['path']);
+        array_shift($url_parts);
 
         if (!empty($_GET)) {
             $new_url_parameters = $_GET;
@@ -64,7 +65,7 @@ class Table
         }
         $query = http_build_query($params);
 
-        $build_url = BASE_URI . end($url_parts) . '?' . $query;
+        $build_url = BASE_URI . implode('/',$url_parts) . '?' . $query;
 
         $sortable_link = '<a href="' . $build_url . '">';
         $sortable_link .= $content;

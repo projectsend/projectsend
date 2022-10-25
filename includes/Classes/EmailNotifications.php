@@ -292,7 +292,6 @@ class EmailNotifications
             }
             $html .= '</li>';
         }
-        pax($html);
 
         return $html;
     }

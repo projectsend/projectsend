@@ -47,12 +47,13 @@ define('DONATIONS_URL','https://www.projectsend.org/donations/');
 define('PATREON_URL','https://www.patreon.com/ignacionelson');
 define('OPENCOLLECTIVE_URL', 'https://opencollective.com/projectsend');
 define('REVIEWS_URL', 'https://www.facebook.com/projectsend/');
+define('TRANSLATIONS_URL', 'https://www.projectsend.org/translations/');
 
 /**
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r1602');
+define('CURRENT_VERSION', 'r1605');
 
 /**
  * Required software versions

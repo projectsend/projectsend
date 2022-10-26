@@ -25,7 +25,7 @@
                 <a href="#" class="dropdown-toggle" id="language_dropdown" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" data-bs-toggle="dropdown" >
                     <i class="fa fa-globe" aria-hidden="true"></i> <span><?php _e('Language', 'cftp_admin'); ?></span> <span class="caret"></span>
                 </a>
-                <ul class="dropdown-menu pull-right" aria-labelledby="language_dropdown">
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="language_dropdown">
                     <?php
                         // scan for language files
                         $available_langs = get_available_languages();
@@ -39,6 +39,12 @@
                     <?php
                         }
                     ?>
+                    <?php if ( user_is_logged_in() && CURRENT_USER_LEVEL != 0) { ?>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="<?php echo TRANSLATIONS_URL; ?>" target="_blank"><?php _e('Get more translations','cftp_admin'); ?></a>
+                        </li>
+                    <?php } ?>
                 </ul>
             </li>
             <?php if ( user_is_logged_in() ) { ?>

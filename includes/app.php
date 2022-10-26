@@ -52,7 +52,7 @@ define('REVIEWS_URL', 'https://www.facebook.com/projectsend/');
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r1600');
+define('CURRENT_VERSION', 'r1602');
 
 /**
  * Required software versions

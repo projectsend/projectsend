@@ -13,6 +13,8 @@ Other featres include auto-expiration of upload, notifications, full logging of 
 
 Main website: [projectsend.org](https://www.projectsend.org)  
 git: [current repository](https://github.com/projectsend/projectsend/)
+Support via Patreon: [Patreon](https://www.patreon.com/ignacionelson)
+Support via Open Collective: [Open Collective](https://opencollective.com/projectsend)
 
 Feel free to participate!
 
@@ -26,9 +28,9 @@ Downloading a development version directly from the repository might give you un
 
 Your server needs to be configured with at least:
 
-* php 7.1 or newer
+* php 7.4 or newer
 * MySQL 5.0 or newer(*)
-* Apache 2.2 or NGINX
+* Apache 2.2 or NGINX (recommended)
 * The following php extensions enabled on php.ini
   * pdo
   * pdo_mysql

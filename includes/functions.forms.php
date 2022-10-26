@@ -188,3 +188,41 @@ function format_form_value( $value )
         return;
     }
 }
+
+// Render links under forms
+function login_form_links($links)
+{
+    if (empty($links)) {
+        return;
+    }
+
+    echo '<div class="login_form_links">';
+    foreach ($links as $link) {
+        switch ($link) {
+            case 'homepage':
+                echo '<p><a href="'.BASE_URI.'">'.__('Go back to the homepage','cftp_admin').'</a></p>';
+                break;
+
+            case 'password_recovery':
+                echo '<p>'.__("Forgot your password?",'cftp_admin').' <a href="'.BASE_URI.'reset-password.php">'.__('Set up a new one.','cftp_admin').'</a></p>';
+            break;
+
+            case 'register':
+                if (get_option('clients_can_register') == '1') {
+                    echo '<p>'.__("Don't have an account yet?",'cftp_admin').' <a href="'.BASE_URI.'register.php">'.__('Register as a new client.','cftp_admin').'</a></p>';
+                } else {
+                    echo '<p>'.__("This server does not allow self registrations.",'cftp_admin').'</p>
+                        <p>'.__("If you need an account, please contact a server administrator.",'cftp_admin').'</p>
+                    ';
+                }
+            break;
+
+            case 'public_page':
+                if (get_option('public_listing_home_show_link') == '1') {
+                    echo '<p><a href="'.BASE_URI.'public.php">'.__('Browse our public files repository','cftp_admin').'</a></p>';
+                }
+            break;
+        }
+    }
+    echo '</div>';
+}

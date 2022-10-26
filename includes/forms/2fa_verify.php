@@ -50,6 +50,4 @@
     </div>
 </form>
 
-<div class="login_form_links">
-    <p><a href="<?php echo BASE_URI; ?>"><?php _e('Go back','cftp_admin'); ?></a></p>
-</div>
+<?php login_form_links(['homepage']); ?>

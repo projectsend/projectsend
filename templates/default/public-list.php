@@ -259,16 +259,14 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
 
 <div class="row">
     <div class="col-12">
-        <div class="login_form_links">
-            <?php
-            if (!user_is_logged_in() && get_option('clients_can_register') == '1') {
-            ?>
-                <p id="register_link"><?php _e("Don't have an account yet?", 'cftp_admin'); ?> <a href="<?php echo BASE_URI; ?>register.php"><?php _e('Register as a new client.', 'cftp_admin'); ?></a></p>
-            <?php
+        <?php
+            $links = [];
+            if (!user_is_logged_in()) {
+                $links[] = 'register';
             }
-            ?>
-            <p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.', 'cftp_admin'); ?></a></p>
-        </div>
+            $links[] = 'homepage';
+            login_form_links($links);
+        ?>
     </div>
 </div>
 

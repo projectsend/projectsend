@@ -55,18 +55,4 @@
     </fieldset>
 </form>
 
-<div class="login_form_links">
-    <p id="reset_pass_link"><?php _e("Forgot your password?",'cftp_admin'); ?> <a href="<?php echo BASE_URI; ?>reset-password.php"><?php _e('Set up a new one.','cftp_admin'); ?></a></p>
-    <?php
-        if (get_option('clients_can_register') == '1') {
-    ?>
-            <p id="register_link"><?php _e("Don't have an account yet?",'cftp_admin'); ?> <a href="<?php echo BASE_URI; ?>register.php"><?php _e('Register as a new client.','cftp_admin'); ?></a></p>
-    <?php
-        } else {
-    ?>
-            <p><?php _e("This server does not allow self registrations.",'cftp_admin'); ?></p>
-            <p><?php _e("If you need an account, please contact a server administrator.",'cftp_admin'); ?></p>
-    <?php
-        }
-    ?>
-</div>
+<?php login_form_links(['register', 'password_recovery', 'public_page']); ?>

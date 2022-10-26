@@ -41,6 +41,7 @@ switch ($section) {
             'public_listing_show_all_files',
             'public_listing_use_download_link',
             'public_listing_enable_preview',
+            'public_listing_home_show_link',
         );
         break;
     case 'email':

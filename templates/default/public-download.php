@@ -69,9 +69,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
             </div>
         </div>
 
-        <div class="login_form_links">
-            <p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.', 'cftp_admin'); ?></a></p>
-        </div>
+        <?php login_form_links(['homepage']); ?>
     </div>
 </div>
 

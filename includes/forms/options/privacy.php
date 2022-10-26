@@ -95,4 +95,12 @@
     </div>
 </div>
 
+<div class="form-group row">
+    <div class="col-sm-8 offset-sm-4">
+        <label for="public_listing_home_show_link">
+            <input type="checkbox" value="1" name="public_listing_home_show_link" id="public_listing_home_show_link" class="checkbox_options" <?php echo (get_option('public_listing_home_show_link') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Show a link to the public page under the log in form','cftp_admin'); ?>
+        </label>
+    </div>
+</div>
+
 <div class="options_divide"></div>

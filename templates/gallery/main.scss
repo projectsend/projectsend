@@ -164,12 +164,18 @@ header {
 .photo_list {
 	overflow:hidden;
 	text-align:center;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    list-style: none;
 
 	li {
+        flex-basis: auto;
         position: relative;
-		display:inline-block;
 		width:280px;
-		height:285px;
+		min-height:285px;
 		background:#000000;
 		margin:0 8px 8px 0;
 		padding:10px;
@@ -208,7 +214,6 @@ header {
     text-decoration:none;
     display: flex;
     text-align: left;
-    margin-bottom: 8px;
 
     .action {
         flex: 1;

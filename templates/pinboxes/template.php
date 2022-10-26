@@ -135,7 +135,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
                 <?php
 					foreach ($available_files as $file_id) {
                         $file = new \ProjectSend\Classes\Files($file_id);
-				?>
+                        ?>
 						<div class="photo <?php if ($file->expired == true) { echo 'expired'; } ?>">
 							<div class="photo_int">
                                 <?php
@@ -174,6 +174,19 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 									<p class="file_size">
 										<?php _e('File size:','pinboxes_template'); ?> <strong><?php echo $file->size_formatted; ?></strong>
 									</p>
+
+                                    <?php
+                                        if ($file->isImage()) {
+                                            $dimensions = $file->getDimensions();
+                                            if (!empty($dimensions['width'])) {
+                                    ?>
+                                                <div class="file_meta">
+                                                    <?php echo $dimensions['width']; ?> x <?php echo $dimensions['height']; ?> px
+                                                </div>
+                                    <?php
+                                            }
+                                        }
+                                    ?>
 
 									<p class="exp_date">
 										<?php

@@ -130,8 +130,17 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                     $table->addRow();
 
                     /** File title */
-                    $filetitle = '<strong>' . $file->title . '</strong>';
-                    $filetitle .= '<br><small>'.$file->filename_original.'</small>';
+                    $title_content = '<strong>' . $file->title . '</strong>';
+                    if ($file->title != $file->filename_original) {
+                        $title_content .= '<br><small>'.$file->filename_original.'</small>';
+                    }
+                    if (file_is_image($file->full_path)) {
+                        $dimensions = $file->getDimensions();
+                        if (!empty($dimensions)) {
+                            $title_content .= '<br><div class="file_meta"><small>'.$dimensions['width'].' x '.$dimensions['height'].' px</small></div>';
+                        }
+                    }
+
 
                     /** Extension */
                     $extension_cell = '<span class="badge bg-success label_big">' . $file->extension . '</span>';
@@ -193,7 +202,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
 
                     $tbody_cells = array(
                         array(
-                            'content' => $filetitle,
+                            'content' => $title_content,
                             'attributes' => array(
                                 'class' => array('file_name'),
                             ),

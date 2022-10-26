@@ -1187,4 +1187,56 @@ class Files
         $statement->bindParam(':category_id', $category_id, PDO::PARAM_INT);
         $statement->execute();
     }
+
+    public function getDimensions()
+    {
+        $image_data = getimagesize($this->full_path);
+        if (empty($image_data)) {
+            return null;
+        }
+
+        return [
+            'width' => $image_data[0],
+            'height' => $image_data[1],
+        ];
+    }
+
+    public function displayExif()
+    {
+        if (!$this->isImage()) {
+            return;
+        }
+
+        $exif = exif_read_data($this->full_path, 0, true);
+        $exif = $exif['IFD0'];
+        if (!empty($exif)) {
+            $exif_display = [
+                [
+                    'label' => 'Model',
+                    'value' => 'Model',
+                ],
+                [
+                    'label' => 'Exposure time',
+                    'value' => 'ExposureTime',
+                ],
+                [
+                    'label' => 'Focal length',
+                    'value' => 'FocalLength',
+                ],
+                [
+                    'label' => 'F number',
+                    'value' => 'FNumber',
+                ],
+                [
+                    'label' => 'ISO speed ratings',
+                    'value' => 'ISOSpeedRatings',
+                ],
+            ];
+            foreach ($exif_display as $item) {
+                if (!empty($exif[$item['value']])) {
+                    echo $item['label'].': ' . $item['value'];
+                }
+            }
+        }
+    }
 }

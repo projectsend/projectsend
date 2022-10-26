@@ -126,10 +126,19 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 					<ul class="photo_list">
 						<?php
 							foreach ($img_files as $file) {
+                                $dimensions = $file->getDimensions();
 						?>
 								<li>
 									<h5><?php echo $file->title; ?></h5>
-									<?php
+                                    <?php if (!empty($dimensions['width'])) { ?>
+                                        <div class="file_meta">
+                                            <small>
+                                                <?php echo $dimensions['width']; ?> x <?php echo $dimensions['height']; ?> px
+                                            </small>
+                                        </div>
+                                    <?php } ?>
+
+                                    <?php
 										if ($file->expired == true) {
 									?>
 											<?php _e('File expired','cftp_template_gallery'); ?>

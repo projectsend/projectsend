@@ -163,11 +163,22 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                     /** File title */
                     $file_title_content = '<strong>' . $file->title . '</strong>';
                     if ($file->expired == false) {
-                        $filetitle = '<a href="' . $file->download_link . '" target="_blank">' . $file_title_content . '</a>';
+                        $title_content = '<a href="' . $file->download_link . '" target="_blank">' . $file_title_content . '</a>';
                     } else {
-                        $filetitle = $file_title_content;
+                        $title_content = $file_title_content;
                     }
-                    $filetitle .= '<br><small>'.$file->filename_original.'</small>';
+                    $title_content = '<a href="' . $file->download_link . '" target="_blank">' . $file->title . '</a>';
+                    if ($file->title != $file->filename_original) {
+                        $title_content .= '<br><small>'.$file->filename_original.'</small>';
+                    }
+                    if (file_is_image($file->full_path)) {
+                        $dimensions = $file->getDimensions();
+                        if (!empty($dimensions)) {
+                            $title_content .= '<br><div class="file_meta"><small>'.$dimensions['width'].' x '.$dimensions['height'].' px</small></div>';
+                        }
+                    }
+
+
 
                     /** Extension */
                     $extension_cell = '<span class="badge bg-success label_big">' . $file->extension . '</span>';
@@ -227,7 +238,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                             'content' => $checkbox,
                         ),
                         array(
-                            'content' => $filetitle,
+                            'content' => $title_content,
                             'attributes' => array(
                                 'class' => array('file_name'),
                             ),

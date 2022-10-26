@@ -53,6 +53,22 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 
                         <div class="size">
                             <?php echo $file->size_formatted; ?>
+                            <?php
+                                if (file_is_image($file->full_path)) {
+                                    $dimensions = $file->getDimensions();
+                                    if (!empty($dimensions)) {
+                            ?>
+                                        <p><?php echo $dimensions['width']; ?> x <?php echo $dimensions['height']; ?> px</p>
+                            <?php
+                                    }
+
+                                    // if (function_exists('exif_read_data')) {
+                                    //     $file->displayExif();
+                                    //     if (get_option('public_download_show_exif_data') == '1') {
+                                    //     }
+                                    // }
+                                }
+                            ?>
                         </div>
 
                         <?php if ($can_download == true) { ?>

@@ -648,6 +648,17 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                             }
                         }
 
+                        $title_content = '<a href="' . $file->download_link . '" target="_blank">' . $file->title . '</a>';
+                        if ($file->title != $file->filename_original) {
+                            $title_content .= '<br><small>'.$file->filename_original.'</small>';
+                        }
+                        if (file_is_image($file->full_path)) {
+                            $dimensions = $file->getDimensions();
+                            if (!empty($dimensions)) {
+                                $title_content .= '<br><div class="file_meta"><small>'.$dimensions['width'].' x '.$dimensions['height'].' px</small></div>';
+                            }
+                        }
+
                         //* Add the cells to the row
                         $tbody_cells = array(
                             array(
@@ -668,7 +679,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                                 'attributes' => array(
                                     'class' => array('file_name'),
                                 ),
-                                'content' => '<a href="' . $file->download_link . '" target="_blank">' . $file->title . '</a><br><small>'.$file->filename_original.'</small>',
+                                'content' => $title_content,
                             ),
                             array(
                                 'content' => $file->description,

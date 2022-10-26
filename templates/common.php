@@ -24,7 +24,7 @@ template_load_translation($this_template_slug);
 
 // Load default template's CSS file
 if (file_exists(ROOT_DIR . DS . "templates" . DS . $this_template_slug . DS . "main.css")) {
-    add_asset('css', 'ps_theme_css', BASE_URI . 'templates/' . $this_template_slug . '/main.css', 'head');
+    add_asset('css', 'ps_theme_css', BASE_URI . 'templates/' . $this_template_slug . '/main.css', get_option('database_version'), 'head');
 }
 
 /**

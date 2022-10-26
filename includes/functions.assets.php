@@ -55,14 +55,14 @@ function format_asset_position_name($name)
 }
 
 
-function add_asset($type, $name, $url, $position = null, $arguments = [])
+function add_asset($type, $name, $url, $version = null, $position = null, $arguments = [])
 {
     if (!in_array($type, ['js', 'css'])) {
         return;
     }
 
     global $assets_loader;
-    $assets_loader->addAsset($type, $name, $url, $position, $arguments);
+    $assets_loader->addAsset($type, $name, $url, $position, $version, $arguments);
 }
 
 function render_assets($type, $location)

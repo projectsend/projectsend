@@ -22,7 +22,7 @@ if (get_option('clients_can_upload') == 1) {
 if (LOADED_LANG != 'en') {
     $plupload_lang_file = 'vendor/moxiecode/plupload/js/i18n/' . LOADED_LANG . '.js';
     if (file_exists(ROOT_DIR . DS . $plupload_lang_file)) {
-        add_asset('js', 'plupload_language', BASE_URI . '/' . $plupload_lang_file, 'footer');
+        add_asset('js', 'plupload_language', BASE_URI . '/' . $plupload_lang_file, '3.1.5', 'footer');
     }
 }
 

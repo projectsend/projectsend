@@ -27,5 +27,16 @@
         &.new_flash {
             animation: .5s newFolder 2;
         }
+
+        &.dragging {
+            background-color: #e8ddba;
+            border-color: #e8ddba;
+        }
+
+        &.drop_ready {
+            background-color: #ccc;
+            border-color: #333;
+            border-style: dashed;
+        }
     }
 }

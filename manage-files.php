@@ -589,7 +589,14 @@ include_once LAYOUT_DIR . DS . 'folders-nav.php';
                     // Files
                     $sql->setFetchMode(PDO::FETCH_ASSOC);
                     while ($row = $sql->fetch()) {
-                        $table->addRow();
+                        $table->addRow([
+                            'attributes' => [
+                                'draggable' => 'true',
+                            ],
+                            'data-attributes' => [
+                                'draggable-type' => 'folder',
+                            ],
+                        ]);
                         $file = new \ProjectSend\Classes\Files($row['id']);
 
                         // Visibility is only available when filtering by client or group.

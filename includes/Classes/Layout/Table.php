@@ -171,14 +171,25 @@ class Table
         $this->contents .= $this->output;
     }
 
-    public function addRow()
+    public function addRow($attributes = [])
     {
         if ($this->current_row == 1) {
             $this->contents .= "<tbody>\n";
         }
 
         $this->row_class = ($this->current_row % 2) ? 'table_row' : 'table_row_alt';
-        $this->contents .= '<tr class="' . $this->row_class . '">' . "\n";
+        $this->contents .= '<tr class="' . $this->row_class . '"';
+        if (!empty($attributes['attributes'])) {
+            foreach ($attributes['attributes'] as $attribute => $value) {
+                $this->contents .= $attribute.'="'.$value.'"';
+            }
+        }
+        if (!empty($attributes['data-attributes'])) {
+            foreach ($attributes['data-attributes'] as $attribute => $value) {
+                $this->contents .= 'data-'.$attribute.'="'.$value.'"';
+            }
+        }
+        $this->contents .= '>' . "\n";
         $this->current_row++;
     }
 

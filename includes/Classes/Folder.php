@@ -12,6 +12,7 @@ class Folder
     protected $name;
     protected $slug;
     protected $parent;
+    protected $user_id;
 
     public function __construct($id = null)
     {
@@ -21,7 +22,7 @@ class Folder
         $this->logger = new \ProjectSend\Classes\ActionsLog;
 
         if (!empty($id)) {
-            $this->get($id);
+            $this->get((int)$id);
         }
     }
 
@@ -82,6 +83,7 @@ class Folder
             $this->name = html_output($this->row['name']);
             $this->slug = html_output($this->row['slug']);
             $this->parent = html_output($this->row['parent']);
+            $this->user_id = html_output($this->row['user_id']);
         }
     }
 
@@ -97,6 +99,7 @@ class Folder
             $this->uuid = uniqid();
             $this->parent = (!empty($this->parent)) ? $this->parent : null;
             $this->slug = $slugify->slugify($this->name);
+            $this->user_id = CURRENT_USER_ID;
     
             $statement = $this->dbh->prepare("INSERT INTO " . TABLE_FOLDERS . " (uuid, name, slug, parent) VALUES (:uuid, :name, :slug, :parent)");
             $statement->bindParam(':uuid', $this->uuid);
@@ -123,6 +126,59 @@ class Folder
             'name' => $this->name,
             'slug' => $this->slug,
             'parent' => $this->parent,
+            'user_id' => $this->user_id,
         ];
+    }
+
+    public function userCanEdit($user_id)
+    {
+        $user = new \ProjectSend\Classes\Users($user_id);
+        if (in_array($user->role, [9,8,7])) {
+            return true;
+        }
+
+        if ($this->user_id == $user_id) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function userCanDelete($user_id)
+    {
+        $user = new \ProjectSend\Classes\Users($user_id);
+        if (in_array($user->role, [9,8,7])) {
+            return true;
+        }
+
+        if ($this->user_id == $user_id) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function setNewParent($user_id, $new_parent_id)
+    {
+        if (empty($this->id)) {
+            return false;
+        }
+
+        if ($this->userCanEdit($user_id)) {
+            if (empty($new_parent_id)) {
+                $new_parent_id = null;
+            } else {
+                $new_parent_id = (int)$new_parent_id;
+            }
+            $statement = $this->dbh->prepare("UPDATE " . TABLE_FOLDERS . " SET parent=:parent_id WHERE id=:id");
+            $statement->bindParam(':id', $this->id);
+            $statement->bindParam(':parent_id', $new_parent_id);
+            if ($statement->execute()) {
+                $this->parent = $new_parent_id;
+                return true;
+            }
+
+            return false;
+        }
     }
 }

@@ -2105,6 +2105,12 @@ function ps_redirect($location, $status = 303)
     exit;
 }
 
+function die_with_error_code($code = 403)
+{
+    http_response_code( $code );
+    exit;
+}
+
 function exit_with_error_code($code = 403)
 {
     switch ($code) {

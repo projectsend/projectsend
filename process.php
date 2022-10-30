@@ -114,6 +114,7 @@ switch ($_GET['do']) {
                 echo json_encode([
                     'status' => 'error',
                 ]);
+                die_with_error_code(500);
             }
             exit;
             break;

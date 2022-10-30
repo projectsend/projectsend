@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    admin.parts.folderCreate = function () {
+    admin.parts.foldersAdmin = function () {
         let btn_create = document.getElementById('btn_header_folder_create');
         btn_create.addEventListener('click', function(e) {
             createFolderModal();
@@ -154,7 +154,29 @@
                         }, true);
                     }
                 }
+
+                // Context menu
+                const context_menu = document.getElementById("folder_context_menu");
+                let folders_items = document.querySelectorAll('.folder');
+
+                for (let i = 0; i < folders_items.length; i++) {
+                    folders_items[i].addEventListener("contextmenu", function(e) {
+                        e.preventDefault();
+                        const { clientX: mouseX, clientY: mouseY } = e;
+                        context_menu.style.top = `${mouseY}px`;
+                        context_menu.style.left = `${mouseX}px`;
+                        context_menu.classList.add("visible");
+                    });
+
+                }
+
+                // Hide menu
+                document.addEventListener("click", (e) => {
+                    if (e.target.offsetParent != context_menu) {
+                        context_menu.classList.remove("visible");
+                    }
+                });
             }
-        }          
+        }
     };
 })();

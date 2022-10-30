@@ -48,3 +48,20 @@
         </div>
     </template>
 </div>
+
+<div id="folder_context_menu" class="context_menu">
+    <ul>
+        <li>
+            <button><i class="fa fa-arrow-right" aria-hidden="true"></i> <?php _e('Navigate','cftp_admin'); ?></button>
+        </li>
+        <li>
+            <button><i class="fa fa-share" aria-hidden="true"></i> <?php _e('Share','cftp_admin'); ?></button>
+        </li>
+        <li>
+            <button><i class="fa fa-pencil" aria-hidden="true"></i> <?php _e('Rename','cftp_admin'); ?></button>
+        </li>
+        <li>
+            <button><i class="fa fa-ban" aria-hidden="true"></i> <?php _e('Delete','cftp_admin'); ?></button>
+        </li>
+    </ul>
+</div>

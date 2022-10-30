@@ -167,6 +167,20 @@
                                                             <button type="button" class="btn btn-sm btn-primary remove-all" data-target="categories_<?php echo $file->id; ?>"><?php _e('Remove all','cftp_admin'); ?></button>
                                                         </div>
                                                     </div>
+
+                                                    <div class="folders">
+                                                        <h3><?php _e('Location', 'cftp_admin');?></h3>
+                                                        <label><?php _e('Store in this folder', 'cftp_admin');?>:</label>
+                                                        <?php
+                                                            $ignore = []; // @todo if client, only show allowed folders
+                                                            $folders = new \ProjectSend\Classes\Folders;
+                                                            $folders_arranged = $folders->getAllArranged();
+                                                        ?>
+                                                        <select class="form-select select2 none" id="folder_<?php echo $file->id; ?>" name="file[<?php echo $i; ?>][folder_id]" data-type="folder" data-placeholder="<?php _e('Optional. Type to search.', 'cftp_admin');?>">
+                                                            <option value=""><?php _e('Root','cftp_admin'); ?></option>
+                                                            <?php echo $folders->renderSelectOptions($folders_arranged, ['selected' => $file->folder_id, 'ignore' => $ignore]); ?>
+                                                        </select>
+                                                    </div>
                                                 </div>
                                         <?php
                                             }
@@ -236,6 +250,16 @@
                                                     'data' => [
                                                         'type' => 'categories',
                                                         'target' => 'categories_'.$file->id,
+                                                    ],
+                                                ];
+
+                                                // Folders
+                                                $copy_buttons['folder'] = [
+                                                    'label' => __('Selected folder','cftp_admin'),
+                                                    'class' => 'copy-all',
+                                                    'data' => [
+                                                        'type' => 'folder',
+                                                        'target' => 'folder_'.$file->id,
                                                     ],
                                                 ];
                                             }

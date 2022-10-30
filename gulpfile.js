@@ -31,6 +31,7 @@ let assetsCss = [
 ];
 
 let assetsJs = [
+    'node_modules/axios/dist/axios.min.js',
     'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
     'node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
     'node_modules/bootstrap-toggle/js/bootstrap-toggle.min.js',

@@ -2162,3 +2162,27 @@ function mask_email($email)
 
     return implode("@", $mail_parts);
 }
+
+function modify_url_with_parameters($url, $parameters_add = [], $parameters_remove = [])
+{
+    $base_url = strtok($url, '?');
+    $parsed = parse_url($url);
+    if (empty($parsed['query'])) {
+        $query = '';
+    } else {
+        $query = $parsed['query'];
+    }
+    parse_str($query, $params);
+    if (!empty($parameters_remove)) {
+        foreach ($parameters_remove as $parameter) {
+            unset($params[$parameter]);
+        }
+    }
+    if (!empty($parameters_add)) {
+        foreach ($parameters_add as $parameter => $value) {
+            $params[$parameter] = $value;
+        }
+    }
+
+    return (!empty($params)) ? $base_url.'?'.http_build_query($params) : $base_url;
+}

@@ -26,6 +26,7 @@ class Files
     public $assignments_clients;
     public $assignments_groups;
     public $categories;
+    public $folder_id;
     public $uploaded_date;
     public $extension;
     public $size;
@@ -111,6 +112,7 @@ class Files
         $this->uploaded_date = (!empty($arguments['uploaded_date'])) ? $arguments['uploaded_date'] : null;
         $this->public = (!empty($arguments['public'])) ? (int)$arguments['public'] : 0;
 		$this->public_token = (!empty($arguments['public_token'])) ? encode_html($arguments['public_token']) : null;
+        $this->folder_id = (!empty($arguments['folder_id'])) ? encode_html($arguments['folder_id']) : null;
 
         // Assignations
 		$this->assignations_groups = !empty( $arguments['assignations_groups'] ) ? to_array_if_not($arguments['assignations_groups']) : null;
@@ -163,6 +165,7 @@ class Files
             $this->public = html_output($row['public_allow']);
             $this->public_token = html_output($row['public_token']);
             $this->public_url = BASE_URI . 'download.php?id=' . $this->id . '&token=' . $this->public_token;
+            $this->folder_id = html_output($row['folder_id']);
         }
 
         $this->setFullPath();
@@ -337,6 +340,7 @@ class Files
                 'groups' => $this->assignments_groups,
             ],
             'categories' => $this->categories,
+            'folder_id' => $this->folder_id,
         ];
 
         return $data;
@@ -830,6 +834,7 @@ class Files
         $this->expires = (isset($data["expires"])) ? $data["expires"] : 0;
         $this->expiry_date = (isset($expiration_str)) ? $expiration_str : $current["expiry_date"];
         $this->is_public = (isset($data["public"])) ? $data["public"] : 0;
+        $this->folder_id = (isset($data["folder_id"])) ? $data["folder_id"] : null;
     
         /**
          * If a client is editing a file, only a few properties can be changed
@@ -852,7 +857,8 @@ class Files
             description = :description,
             expires = :expires,
             expiry_date = :expiry_date,
-            public_allow = :public
+            public_allow = :public,
+            folder_id = :folder_id
             WHERE id = :id
         ");
         $statement->bindParam(':title', $this->name);
@@ -860,6 +866,7 @@ class Files
         $statement->bindParam(':expires', $this->expires, PDO::PARAM_INT);
         $statement->bindParam(':expiry_date', $this->expiry_date);
         $statement->bindParam(':public', $is_public, PDO::PARAM_INT);
+        $statement->bindParam(':folder_id', $this->folder_id);
         $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $statement->execute();
 

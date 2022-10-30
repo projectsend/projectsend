@@ -1,0 +1,43 @@
+.breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: .5rem;
+    margin: 1rem 0;
+    padding-bottom: .5rem;
+    border-bottom: 1px solid #dedede;
+
+    .breadcrumb_item {
+        display: flex;
+        align-items: center;
+        align-content: center;
+        padding: .2rem 0 .2rem .7rem;
+        position: relative;
+
+        a, span {
+            &:before {
+                content: "\f105";
+                font: normal normal normal 14px/1 FontAwesome;            
+                color: black;
+                margin: 0 .75rem 0 0;
+                position: absolute;
+                left: 0;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+        }
+
+        &#breadcrumbs_label {
+            padding-left: 0;
+            text-transform: uppercase;
+            font-size: .8rem;
+            font-weight: bold;
+
+            span {
+                &:before {
+                    display: none;
+                }
+            }
+        }
+    }
+}

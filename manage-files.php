@@ -175,6 +175,26 @@ if (isset($_POST['action'])) {
 // Global form action
 $query_table_files = true;
 
+// Folders
+$current_folder = (isset($_GET['folder_id'])) ? (int)$_GET['folder_id'] : null;
+$folders_arguments = [
+    'parent' => $current_folder
+];
+if (!empty($_GET['search'])) {
+    $folders_arguments['search'] = $_GET['search'];
+}
+// @todo DECIDE WHICH FOLDERS TO GET IF VIEWING FILES BY CLIENT, GROUP OR CATEGORY
+// if ($filter_by_client) {
+//     $folders_arguments['client'] = $_GET['client_id'];
+// }
+// if ($filter_by_group) {
+//     $folders_arguments['group'] = $_GET['group_id'];
+// }
+
+$folders_obj = new \ProjectSend\Classes\Folders;
+$folders = $folders_obj->getFolders($folders_arguments);
+
+// Get files
 if (isset($search_on)) {
     $params = [];
     $rq = "SELECT * FROM " . TABLE_FILES_RELATIONS . " WHERE $search_on = :id";
@@ -244,6 +264,14 @@ if ($query_table_files === true) {
         $no_results_error = 'filter';
 
         $params[':uploader'] = $_GET['uploader'];
+    }
+
+    // Filter by folders
+    if (!empty($current_folder)) {
+        $conditions[] = "folder_id = :folder_id";
+        $params[':folder_id'] = $current_folder;
+    } else {
+        $conditions[] = "folder_id IS NULL";
     }
 
     // Filter by assignations
@@ -354,6 +382,19 @@ if (!$count) {
 if (current_user_can_upload()) {
     $header_action_buttons = [
         [
+            'url' => '#',
+            'label' => __('New folder', 'cftp_admin'),
+            'id' => 'btn_header_folder_create',
+            'data-attributes' => [
+                'modal-title' => __('New folder', 'cftp_admin'),
+                'modal-label' => __('Name', 'cftp_admin'),
+                'modal-title-invalid' => __('Name is not valid', 'cftp_admin'),
+                'parent' => $current_folder,
+                'process-url' => BASE_URI.'process.php?do=folder_create',
+                'folder-url' => BASE_URI.'manage-files.php?folder_id={folder_id}',
+            ],
+        ],
+        [
             'url' => 'upload.php',
             'label' => __('Upload files', 'cftp_admin'),
         ],
@@ -395,7 +436,7 @@ if (CURRENT_USER_LEVEL != '0') {
 }
 
 // Results count and form actions 
-$elements_found_count = $count_for_pagination;
+$elements_found_count = $count_for_pagination;// + count($folders);
 $bulk_actions_items = [
     'none' => __('Select action', 'cftp_admin'),
     'edit' => __('Edit', 'cftp_admin'),
@@ -416,11 +457,14 @@ if (CURRENT_USER_LEVEL != '0' && isset($search_on)) {
         $bulk_actions_items['delete'] = __('Delete', 'cftp_admin');
 }
 
-
 // Include layout files
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
+
+include_once LAYOUT_DIR . DS . 'breadcrumbs.php';
+
+include_once LAYOUT_DIR . DS . 'folders-nav.php';
 ?>
 
 <form action="<?php echo $current_url; ?>" name="files_list" method="post" class="batch_actions">
@@ -464,6 +508,11 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                             'condition' => $conditions['select_all'],
                         ),
                         array(
+                            'sortable' => true,
+                            'sort_url' => 'filename',
+                            'content' => __('Title', 'cftp_admin'),
+                        ),
+                        array(
                             'content' => __('Preview', 'cftp_admin'),
                             'hide' => 'phone,tablet',
                         ),
@@ -475,13 +524,8 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                             'hide' => 'phone',
                         ),
                         array(
-                            'content' => __('Type', 'cftp_admin'),
+                            'content' => __('Ext.', 'cftp_admin'),
                             'hide' => 'phone,tablet',
-                        ),
-                        array(
-                            'sortable' => true,
-                            'sort_url' => 'filename',
-                            'content' => __('Title', 'cftp_admin'),
                         ),
                         array(
                             'sortable' => true,
@@ -542,6 +586,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
 
                     $table->thead($thead_columns);
 
+                    // Files
                     $sql->setFetchMode(PDO::FETCH_ASSOC);
                     while ($row = $sql->fetch()) {
                         $table->addRow();
@@ -667,6 +712,12 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                                 'condition' => $conditions['select_all'],
                             ),
                             array(
+                                'attributes' => array(
+                                    'class' => array('file_name'),
+                                ),
+                                'content' => $title_content,
+                            ),
+                            array(
                                 'content' => $preview_cell,
                             ),
                             array(
@@ -674,12 +725,6 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                             ),
                             array(
                                 'content' => $file->extension,
-                            ),
-                            array(
-                                'attributes' => array(
-                                    'class' => array('file_name'),
-                                ),
-                                'content' => $title_content,
                             ),
                             array(
                                 'content' => $file->description,

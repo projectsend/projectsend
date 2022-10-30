@@ -67,15 +67,36 @@ switch ($_GET['do']) {
         ps_redirect(BASE_URI.'dashboard.php');
     case 'return_files_ids':
         redirect_if_not_logged_in();
-        redirect_if_role_not_allowed($allowed_levels);    
+        redirect_if_role_not_allowed($allowed_levels);
         $download = new Download;
         $download->returnFilesIds($_GET['files']);
         break;
     case 'download_zip':
         redirect_if_not_logged_in();
-        redirect_if_role_not_allowed($allowed_levels);    
+        redirect_if_role_not_allowed($allowed_levels);
         $download = new Download;
         $download->downloadZip($_GET['files']);
+        break;
+    case 'folder_create':
+        redirect_if_not_logged_in();
+        redirect_if_role_not_allowed([9,8,7,0]);
+        header('Content-Type: application/json');
+        $folder = new \ProjectSend\Classes\Folder();
+        $folder->set([
+            'name' => $_POST['folder_name'],
+            'parent' => (!empty($_POST['folder_parent'])) ? (int)$_POST['folder_parent'] : null,
+        ]);
+        if ($folder->create()) {
+            echo json_encode([
+                'status' => 'success',
+                'data' => $folder->getData(),
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error',
+            ]);
+        }
+        exit;
         break;
     default:
         ps_redirect(BASE_URI);

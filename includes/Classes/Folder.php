@@ -170,6 +170,11 @@ class Folder
             } else {
                 $new_parent_id = (int)$new_parent_id;
             }
+
+            if ($new_parent_id == $this->id) {
+                return false;
+            }
+
             $statement = $this->dbh->prepare("UPDATE " . TABLE_FOLDERS . " SET parent=:parent_id WHERE id=:id");
             $statement->bindParam(':id', $this->id);
             $statement->bindParam(':parent_id', $new_parent_id);

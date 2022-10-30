@@ -178,7 +178,11 @@ class Table
         }
 
         $this->row_class = ($this->current_row % 2) ? 'table_row' : 'table_row_alt';
-        $this->contents .= '<tr class="' . $this->row_class . '"';
+        $this->contents .= '<tr class="' . $this->row_class;
+        if (!empty($attributes['class'])) {
+            $this->contents .= ' ' . $attributes['class'] . ' ';
+        }
+        $this->contents .= '"';
         if (!empty($attributes['attributes'])) {
             foreach ($attributes['attributes'] as $attribute => $value) {
                 $this->contents .= $attribute.'="'.$value.'"';

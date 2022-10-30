@@ -1246,4 +1246,30 @@ class Files
             }
         }
     }
+
+    public function moveToFolder($folder_id)
+    {
+        if (!$this->id) {
+            return false;
+        }
+
+        if (!$this->currentUserCanEdit()) {
+            return false;
+        }
+
+        if (empty($folder_id)) {
+            $folder_id = null;
+        } else {
+            $folder_id = (int)$folder_id;
+        }
+        $statement = $this->dbh->prepare("UPDATE " . TABLE_FILES . " SET folder_id=:folder_id WHERE id=:id");
+        $statement->bindParam(':id', $this->id);
+        $statement->bindParam(':folder_id', $folder_id);
+        if ($statement->execute()) {
+            $this->folder_id = $folder_id;
+            return true;
+        }
+
+        return false;
+    }
 }

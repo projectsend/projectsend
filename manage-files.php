@@ -590,11 +590,14 @@ include_once LAYOUT_DIR . DS . 'folders-nav.php';
                     $sql->setFetchMode(PDO::FETCH_ASSOC);
                     while ($row = $sql->fetch()) {
                         $table->addRow([
+                            'class' => 'file_draggable',
                             'attributes' => [
                                 'draggable' => 'true',
                             ],
                             'data-attributes' => [
-                                'draggable-type' => 'folder',
+                                'draggable-type' => 'file',
+                                'file-id' => $row['id'],
+                                'ondrop-url' => BASE_URI.'process.php?do=file_move',
                             ],
                         ]);
                         $file = new \ProjectSend\Classes\Files($row['id']);

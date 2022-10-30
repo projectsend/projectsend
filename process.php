@@ -118,7 +118,27 @@ switch ($_GET['do']) {
             }
             exit;
             break;
-        default:
+        case 'file_move':
+            if (!user_is_logged_in()) {
+                die_with_error_code(500);
+            }
+
+            header('Content-Type: application/json');
+            $file = new \ProjectSend\Classes\Files($_POST['file_id']);
+            $move = $file->moveToFolder($_POST['new_parent_id']); 
+            if ($move) {
+                echo json_encode([
+                    'status' => 'success',
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => 'error',
+                ]);
+                die_with_error_code(500);
+            }
+            exit;
+            break;
+            default:
         ps_redirect(BASE_URI);
         break;
 }

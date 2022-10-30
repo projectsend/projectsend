@@ -63,66 +63,96 @@
             {
                 let draggable_folders = document.querySelectorAll('.folder_draggable');
                 for (let i = 0; i < draggable_folders.length; i++) {
-                    // Start
-                    draggable_folders[i].addEventListener("dragstart", function(e) {
-                        // e.preventDefault();
-                        draggable_folders[i].classList.add("dragging");
-                    }, true);
+                    if (draggable_folders !== null) {
+                        // Start
+                        draggable_folders[i].addEventListener("dragstart", function(e) {
+                            // e.preventDefault();
+                            draggable_folders[i].classList.add("dragging");
+                        }, true);
 
-                    // Stop
-                    draggable_folders[i].addEventListener("dragend", function(e) {
-                        // e.preventDefault();
-                        draggable_folders[i].classList.remove("dragging");
-                    }, true);
+                        // Stop
+                        draggable_folders[i].addEventListener("dragend", function(e) {
+                            // e.preventDefault();
+                            draggable_folders[i].classList.remove("dragging");
+                        }, true);
+                    }
+                }
+
+                let draggable_files = document.querySelectorAll('.file_draggable');
+                if (draggable_files !== null) {
+                    for (let i = 0; i < draggable_files.length; i++) {
+                        // Start
+                        draggable_files[i].addEventListener("dragstart", function(e) {
+                            // e.preventDefault();
+                            draggable_files[i].classList.add("dragging");
+                        }, true);
+    
+                        // Stop
+                        draggable_files[i].addEventListener("dragend", function(e) {
+                            // e.preventDefault();
+                            draggable_files[i].classList.remove("dragging");
+                        }, true);
+                    }
                 }
 
                 let draggable_destinations = document.querySelectorAll('.folder_destination');
-                for (let i = 0; i < draggable_destinations.length; i++) {
-                    // Drag another item over
-                    draggable_destinations[i].addEventListener("dragover", function(e) {
-                        e.preventDefault();
-                        draggable_destinations[i].classList.add("drop_ready");
-                    }, true);
+                if (draggable_destinations !== null) {
+                    for (let i = 0; i < draggable_destinations.length; i++) {
+                        // Drag another item over
+                        draggable_destinations[i].addEventListener("dragover", function(e) {
+                            e.preventDefault();
+                            draggable_destinations[i].classList.add("drop_ready");
+                        }, true);
 
-                    // Stop drag over
-                    draggable_destinations[i].addEventListener("dragleave", function(e) {
-                        // e.preventDefault();
-                        draggable_destinations[i].classList.remove("drop_ready");
-                    }, true);
+                        // Stop drag over
+                        draggable_destinations[i].addEventListener("dragleave", function(e) {
+                            // e.preventDefault();
+                            draggable_destinations[i].classList.remove("drop_ready");
+                        }, true);
 
-                    // Drop an element inside
-                    draggable_destinations[i].addEventListener("drop", function(e) {
-                        e.preventDefault();
-                        draggable_destinations[i].classList.remove("drop_ready");
-                        draggable_destinations[i].classList.add("dropped");
-                        
-                        const dragged_item = folders_nav.querySelector('.dragging');
-                        const destiny = e.currentTarget;
+                        // Drop an element inside
+                        draggable_destinations[i].addEventListener("drop", function(e) {
+                            e.preventDefault();
+                            draggable_destinations[i].classList.remove("drop_ready");
+                            draggable_destinations[i].classList.add("dropped");
+                            
+                            const dragged_item = document.querySelector('.dragging');
+                            const destiny = e.currentTarget;
 
-                        const dragged_type = dragged_item.dataset.draggableType;
+                            const dragged_type = dragged_item.dataset.draggableType;
 
-                        var data = new FormData();
-                        data.append('csrf_token', document.getElementById('csrf_token').value);
-        
-                        switch (dragged_type) {
-                            case 'folder':
-                                data.append('folder_id', dragged_item.dataset.folderId);
-                                data.append('new_parent_id', destiny.dataset.folderId);
-                                dragged_item.classList.add('d-none');
-                                axios.post(destiny.dataset.ondropUrl, data)
-                                .then(function (response) {
-                                    dragged_item.remove();
-                                })
-                                .catch(function (error) {
-                                    dragged_item.classList.remove('d-none');
-                                    // console.log(error);
-                                    // new Toast(error.response.data.error, Toast.TYPE_ERROR, Toast.TIME_NORMAL);
-                                });
-                            break;
-                            case 'file':
-                            break;
-                        }
-                    }, true);
+                            var data = new FormData();
+                            data.append('csrf_token', document.getElementById('csrf_token').value);
+                            data.append('new_parent_id', destiny.dataset.folderId);
+            
+                            switch (dragged_type) {
+                                case 'folder':
+                                    data.append('folder_id', dragged_item.dataset.folderId);
+                                    dragged_item.classList.add('d-none');
+                                    axios.post(destiny.dataset.ondropUrl, data)
+                                    .then(function (response) {
+                                        dragged_item.remove();
+                                    })
+                                    .catch(function (error) {
+                                        dragged_item.classList.remove('d-none');
+                                        // console.log(error);
+                                        // new Toast(error.response.data.error, Toast.TYPE_ERROR, Toast.TIME_NORMAL);
+                                    });
+                                break;
+                                case 'file':
+                                    data.append('file_id', dragged_item.dataset.fileId);
+                                    dragged_item.classList.add('d-none');
+                                    axios.post(dragged_item.dataset.ondropUrl, data)
+                                    .then(function (response) {
+                                        dragged_item.remove();
+                                    })
+                                    .catch(function (error) {
+                                        dragged_item.classList.remove('d-none');
+                                    });
+                                break;
+                            }
+                        }, true);
+                    }
                 }
             }
         }          

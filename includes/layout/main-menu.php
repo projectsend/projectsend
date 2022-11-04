@@ -356,9 +356,12 @@ foreach ($items as $item) {
                     $sub_active = ($subitem['link'] == $current_filename['path']) ? 'current_page' : '';
 
                     if (isset($_GET['section'])) {
-                        parse_str(parse_url($subitem['link'], PHP_URL_QUERY), $subitem_query);
-                        if (isset($subitem_query['section'])) {
-                            if ($subitem_query['section'] == $_GET['section']) { $sub_active = 'current_page'; }
+                        $parse = parse_url($subitem['link'], PHP_URL_QUERY);
+                        if (!empty($parse)) {
+                            parse_str($parse, $subitem_query);
+                            if (isset($subitem_query['section'])) {
+                                if ($subitem_query['section'] == $_GET['section']) { $sub_active = 'current_page'; }
+                            }
                         }
                     }
 

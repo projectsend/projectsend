@@ -57,40 +57,70 @@
         // Drag and drop events
         addFolderDragEvents();
 
+        function foldersDropTargetMake(except)
+        {
+            let draggable_folders = document.querySelectorAll('.folder_draggable');
+            for (let i = 0; i < draggable_folders.length; i++) {
+                if (except != draggable_folders[i]) {
+                    draggable_folders[i].classList.add("drop_target_active");
+                }
+                else {
+                    draggable_folders[i].classList.add("drop_target_is_self");
+                }
+            }
+        }
+
+        function foldersDropTargetRemove()
+        {
+            let draggable_folders = document.querySelectorAll('.folder_draggable');
+            for (let i = 0; i < draggable_folders.length; i++) {
+                draggable_folders[i].classList.remove("drop_target_active");
+                draggable_folders[i].classList.remove("drop_target_is_self");
+                draggable_folders[i].classList.remove("drop_forbidden");
+            }
+        }
+
         function addFolderDragEvents() {
             const folders_nav = document.getElementById('folders_nav');
             if (typeof(folders_nav) != 'undefined' && folders_nav != null)
             {
                 let draggable_folders = document.querySelectorAll('.folder_draggable');
+                let draggable_files = document.querySelectorAll('.file_draggable');
+
+                // Folders
                 for (let i = 0; i < draggable_folders.length; i++) {
                     if (draggable_folders !== null) {
                         // Start
                         draggable_folders[i].addEventListener("dragstart", function(e) {
                             // e.preventDefault();
                             draggable_folders[i].classList.add("dragging");
+                            foldersDropTargetMake(draggable_folders[i]);
                         }, true);
 
                         // Stop
                         draggable_folders[i].addEventListener("dragend", function(e) {
                             // e.preventDefault();
                             draggable_folders[i].classList.remove("dragging");
+                            foldersDropTargetRemove();
                         }, true);
                     }
                 }
 
-                let draggable_files = document.querySelectorAll('.file_draggable');
+                // Files
                 if (draggable_files !== null) {
                     for (let i = 0; i < draggable_files.length; i++) {
                         // Start
                         draggable_files[i].addEventListener("dragstart", function(e) {
                             // e.preventDefault();
                             draggable_files[i].classList.add("dragging");
+                            foldersDropTargetMake();
                         }, true);
     
                         // Stop
                         draggable_files[i].addEventListener("dragend", function(e) {
                             // e.preventDefault();
                             draggable_files[i].classList.remove("dragging");
+                            foldersDropTargetRemove();
                         }, true);
                     }
                 }
@@ -101,18 +131,25 @@
                         // Drag another item over
                         draggable_destinations[i].addEventListener("dragover", function(e) {
                             e.preventDefault();
-                            draggable_destinations[i].classList.add("drop_ready");
+                            const dragged_item = document.querySelector('.dragging');
+                            if (e.currentTarget.dataset.folderId == dragged_item.dataset.folderId) {
+                                draggable_destinations[i].classList.add("drop_forbidden");
+                            } else {
+                                draggable_destinations[i].classList.add("drop_ready");
+                            }
                         }, true);
 
                         // Stop drag over
                         draggable_destinations[i].addEventListener("dragleave", function(e) {
                             // e.preventDefault();
+                            draggable_destinations[i].classList.remove("drop_forbidden");
                             draggable_destinations[i].classList.remove("drop_ready");
                         }, true);
 
                         // Drop an element inside
                         draggable_destinations[i].addEventListener("drop", function(e) {
                             e.preventDefault();
+                            draggable_destinations[i].classList.remove("drop_forbidden");
                             draggable_destinations[i].classList.remove("drop_ready");
                             draggable_destinations[i].classList.add("dropped");
                             
@@ -120,6 +157,9 @@
                             const destiny = e.currentTarget;
 
                             const dragged_type = dragged_item.dataset.draggableType;
+                            if (e.currentTarget.dataset.folderId == dragged_item.dataset.folderId) {
+                                return;
+                            }
 
                             var data = new FormData();
                             data.append('csrf_token', document.getElementById('csrf_token').value);

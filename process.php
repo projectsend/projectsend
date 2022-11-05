@@ -76,71 +76,7 @@ switch ($_GET['do']) {
         redirect_if_role_not_allowed($allowed_levels);
         $download = new Download;
         $download->downloadZip($_GET['files']);
-        break;
-        case 'folder_create':
-            redirect_if_not_logged_in();
-            redirect_if_role_not_allowed([9,8,7,0]);
-            header('Content-Type: application/json');
-            $folder = new \ProjectSend\Classes\Folder();
-            $folder->set([
-                'name' => $_POST['folder_name'],
-                'parent' => (!empty($_POST['folder_parent'])) ? (int)$_POST['folder_parent'] : null,
-            ]);
-            if ($folder->create()) {
-                echo json_encode([
-                    'status' => 'success',
-                    'data' => $folder->getData(),
-                ]);
-            } else {
-                echo json_encode([
-                    'status' => 'error',
-                ]);
-            }
-            exit;
-            break;
-        case 'folder_move':
-            if (!user_is_logged_in()) {
-                die_with_error_code(500);
-            }
-
-            header('Content-Type: application/json');
-            $folder = new \ProjectSend\Classes\Folder($_POST['folder_id']);
-            $move = $folder->setNewParent(CURRENT_USER_ID, $_POST['new_parent_id']); 
-            if ($move) {
-                echo json_encode([
-                    'status' => 'success',
-                ]);
-            } else {
-                echo json_encode([
-                    'status' => 'error',
-                ]);
-                die_with_error_code(500);
-            }
-            exit;
-            break;
-        case 'file_move':
-            if (!user_is_logged_in()) {
-                die_with_error_code(500);
-            }
-
-            header('Content-Type: application/json');
-            $file = new \ProjectSend\Classes\Files($_POST['file_id']);
-            $move = $file->moveToFolder($_POST['new_parent_id']); 
-            if ($move) {
-                echo json_encode([
-                    'status' => 'success',
-                ]);
-            } else {
-                echo json_encode([
-                    'status' => 'error',
-                ]);
-                die_with_error_code(500);
-            }
-            exit;
-            break;
-            default:
-        ps_redirect(BASE_URI);
-        break;
+    break;
 }
 
 exit;

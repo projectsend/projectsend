@@ -1,6 +1,6 @@
 <div id="folders_nav">
     <?php
-        $ondrop_url = BASE_URI.'process.php?do=folder_move';
+        $ondrop_url = AJAX_PROCESS_URL.'?do=folder_move';
         if (!empty($_GET['folder_id'])) {
             $get_parent = new \ProjectSend\Classes\Folder($_GET['folder_id']);
             $parent_data = $get_parent->getData();
@@ -17,7 +17,7 @@
     <?php
         }
 
-            // Folders
+        // Folders
         if (!empty($folders)) {
             $key = array_keys($folders)[0];
 
@@ -52,16 +52,16 @@
 <div id="folder_context_menu" class="context_menu">
     <ul>
         <li>
-            <button><i class="fa fa-arrow-right" aria-hidden="true"></i> <?php _e('Navigate','cftp_admin'); ?></button>
+            <button id="folder_menu__go"><i class="fa fa-arrow-right" aria-hidden="true"></i> <?php _e('Navigate','cftp_admin'); ?></button>
         </li>
         <li>
-            <button><i class="fa fa-share" aria-hidden="true"></i> <?php _e('Share','cftp_admin'); ?></button>
+            <button id="folder_menu__share"><i class="fa fa-share" aria-hidden="true"></i> <?php _e('Share','cftp_admin'); ?></button>
         </li>
         <li>
-            <button><i class="fa fa-pencil" aria-hidden="true"></i> <?php _e('Rename','cftp_admin'); ?></button>
+            <button id="folder_menu__rename"><i class="fa fa-pencil" aria-hidden="true"></i> <?php _e('Rename','cftp_admin'); ?></button>
         </li>
         <li>
-            <button><i class="fa fa-ban" aria-hidden="true"></i> <?php _e('Delete','cftp_admin'); ?></button>
+            <button id="folder_menu__delete"><i class="fa fa-ban" aria-hidden="true"></i> <?php _e('Delete','cftp_admin'); ?></button>
         </li>
     </ul>
 </div>

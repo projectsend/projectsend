@@ -6,7 +6,6 @@
  */
 $allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
-
 $active_nav = 'files';
 
 $page_title = __('Manage files', 'cftp_admin');
@@ -390,7 +389,7 @@ if (current_user_can_upload()) {
                 'modal-label' => __('Name', 'cftp_admin'),
                 'modal-title-invalid' => __('Name is not valid', 'cftp_admin'),
                 'parent' => $current_folder,
-                'process-url' => BASE_URI.'process.php?do=folder_create',
+                'process-url' => AJAX_PROCESS_URL.'?do=folder_create',
                 'folder-url' => BASE_URI.'manage-files.php?folder_id={folder_id}',
             ],
         ],
@@ -597,7 +596,7 @@ include_once LAYOUT_DIR . DS . 'folders-nav.php';
                             'data-attributes' => [
                                 'draggable-type' => 'file',
                                 'file-id' => $row['id'],
-                                'ondrop-url' => BASE_URI.'process.php?do=file_move',
+                                'ondrop-url' => AJAX_PROCESS_URL.'?do=file_move',
                             ],
                         ]);
                         $file = new \ProjectSend\Classes\Files($row['id']);

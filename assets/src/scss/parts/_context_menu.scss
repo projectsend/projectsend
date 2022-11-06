@@ -1,38 +1,23 @@
-.context_menu {
-    position: fixed;
-    z-index: 999999;
-    width: 150px;
+.context-menu-orange-theme {
     background-color: white;
     box-shadow: var(--global_box_shadow);
-    display: none;
 
-    &.visible {
-        display: block;
+    hr {
+        background-color: #eee;
     }
 
-    ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
+    // text color for each item
+    & > *:not(hr) {
+        color: #222;
 
-        li {
-            button {
-                display: block;
-                padding: .75rem 1.5rem .75rem 1rem;
-                border: none;
-                background-color: transparent;
-                width: 100%;
-                text-align: left;
-
-                i {
-                    margin-right: .5rem;
-                }
-
-                &:hover {
-                    background-color: #f0f0f0;
-                    color: var(--main_color);
-                }
-            }
+        &:hover {
+            background: #f0f0f0;
+            color: var(--main_color);
         }
     }
+}
+
+.custom-context-menu-cls {
+    width: 150px;
+    font-family: "Roboto", sans-serif;
 }

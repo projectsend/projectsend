@@ -182,8 +182,26 @@ class Folder
                 $this->parent = $new_parent_id;
                 return true;
             }
+        }
 
+        return false;
+    }
+
+    public function rename($name)
+    {
+        if (empty($this->id)) {
             return false;
         }
+
+        if ($this->userCanEdit(CURRENT_USER_ID)) {
+            $statement = $this->dbh->prepare("UPDATE " . TABLE_FOLDERS . " SET name=:name WHERE id=:id");
+            $statement->bindParam(':id', $this->id);
+            $statement->bindParam(':name', $name);
+            if ($statement->execute()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

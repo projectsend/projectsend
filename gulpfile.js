@@ -49,6 +49,7 @@ let assetsJs = [
     'node_modules/sjcl/sjcl.js',
     'node_modules/toastr/build/toastr.min.js',
     'node_modules/codemirror-minified/lib/codemirror.js',
+    'node_modules/vanilla-context-menu/dist/vanilla-context-menu.js',
     'vendor/moxiecode/plupload/js/plupload.full.min.js',
     'vendor/moxiecode/plupload/js/jquery.plupload.queue/jquery.plupload.queue.min.js',
 ];

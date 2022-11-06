@@ -148,6 +148,7 @@
 
                         // Drop an element inside
                         draggable_destinations[i].addEventListener("drop", function(e) {
+                            let url;
                             e.preventDefault();
                             draggable_destinations[i].classList.remove("drop_forbidden");
                             draggable_destinations[i].classList.remove("drop_ready");
@@ -167,9 +168,10 @@
             
                             switch (dragged_type) {
                                 case 'folder':
+                                    url = document.getElementById('folder_context_menu__links').dataset.urlFolderOndrop;
                                     data.append('folder_id', dragged_item.dataset.folderId);
                                     dragged_item.classList.add('d-none');
-                                    axios.post(destiny.dataset.ondropUrl, data)
+                                    axios.post(url, data)
                                     .then(function (response) {
                                         dragged_item.remove();
                                     })
@@ -180,9 +182,10 @@
                                     });
                                 break;
                                 case 'file':
+                                    url = document.getElementById('folder_context_menu__links').dataset.urlFileOndrop;
                                     data.append('file_id', dragged_item.dataset.fileId);
                                     dragged_item.classList.add('d-none');
-                                    axios.post(dragged_item.dataset.ondropUrl, data)
+                                    axios.post(url, data)
                                     .then(function (response) {
                                         dragged_item.remove();
                                     })
@@ -196,27 +199,106 @@
                 }
 
                 // Context menu
-                const context_menu = document.getElementById("folder_context_menu");
                 let folders_items = document.querySelectorAll('.folder');
-
+                
                 for (let i = 0; i < folders_items.length; i++) {
-                    folders_items[i].addEventListener("contextmenu", function(e) {
-                        e.preventDefault();
-                        const { clientX: mouseX, clientY: mouseY } = e;
-                        context_menu.style.top = `${mouseY}px`;
-                        context_menu.style.left = `${mouseX}px`;
-                        context_menu.classList.add("visible");
+                    const can_edit = folders_items[i].dataset.canEdit;
+                    const can_delete = folders_items[i].dataset.canDelete;
+
+                    let menu_items = [];
+
+                    menu_items.push({
+                        label: 'Navigate',
+                        iconClass: 'fa fa-arrow-right',
+                        callback: async () => {
+                            folderNavigate(folders_items[i]);
+                        }
                     });
+                    menu_items.push('hr');
 
-                }
-
-                // Hide menu
-                document.addEventListener("click", (e) => {
-                    if (e.target.offsetParent != context_menu) {
-                        context_menu.classList.remove("visible");
+                    if (can_edit == 'true') {
+                        menu_items.push({
+                            label: 'Rename',
+                            iconClass: 'fa fa-pencil',
+                            callback: async () => {
+                                folderRename(folders_items[i]);
+                            }
+                        });
+                        menu_items.push('hr');
                     }
+
+                    if (can_delete == 'true') {
+                        menu_items.push({
+                            label: 'Delete',
+                            iconClass: 'fa fa-trash-o',
+                            callback: async () => {
+                                folderDelete(folders_items[i]);
+                            }
+                        });
+                    }
+
+                    new VanillaContextMenu({
+                        scope: folders_items[i],
+                        customThemeClass: 'context-menu-orange-theme',
+                        customClass: 'custom-context-menu-cls',
+                        menuItems: menu_items
+                    });
+                }
+            }
+        }
+
+        function folderNavigate(folder)
+        {
+            window.location = folder.querySelectorAll('a')[0].href;
+        }
+
+        // function folderShare(folder)
+        // {
+        //     const url = document.getElementById('folder_context_menu__links').dataset.urlShare;
+        // }
+
+        async function folderRename(folder)
+        {
+            const url = document.getElementById('folder_context_menu__links').dataset.urlRename;
+            const name_container = folder.querySelectorAll('a span')[0];
+            const previous_name = name_container.innerHTML;
+            const { value: new_name } = await Swal.fire({
+                title: null,
+                input: 'text',
+                inputValue: previous_name,
+                showCancelButton: true,
+                inputAttributes: {
+                    maxlength: 100,
+                    autocapitalize: 'off',
+                    autocorrect: 'off'
+                },
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'Name is not valid'
+                    }
+                }
+            })
+                
+            if (new_name) {
+                var data = new FormData();
+                data.append('csrf_token', document.getElementById('csrf_token').value);
+                data.append('folder_id', folder.dataset.folderId);
+                data.append('name', new_name);
+                name_container.innerHTML = new_name;
+                
+                axios.post(url, data)
+                .then(function (response) {
+                })
+                .catch(function (error) {
+                    name_container.innerHTML = previous_name;
+                    new Toast(error.response.data.error, Toast.TYPE_ERROR, Toast.TIME_NORMAL);
                 });
             }
+        }
+
+        function folderDelete(folder)
+        {
+            const url = document.getElementById('folder_context_menu__links').dataset.urlDelete;
         }
     };
 })();

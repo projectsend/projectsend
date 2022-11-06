@@ -596,7 +596,6 @@ include_once LAYOUT_DIR . DS . 'folders-nav.php';
                             'data-attributes' => [
                                 'draggable-type' => 'file',
                                 'file-id' => $row['id'],
-                                'ondrop-url' => AJAX_PROCESS_URL.'?do=file_move',
                             ],
                         ]);
                         $file = new \ProjectSend\Classes\Files($row['id']);

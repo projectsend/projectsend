@@ -6,7 +6,7 @@
             $parent_data = $get_parent->getData();
             $up_link = modify_url_with_parameters($current_url, ['folder_id' => $parent_data['parent']], ['folder_id']);
     ?>
-                <div class="folder folder_up folder_destination" data-folder-id="<?php echo $parent_data['parent']; ?>" data-ondrop-url="<?php echo $ondrop_url; ?>">
+                <div class="folder folder_up folder_destination" data-folder-id="<?php echo $parent_data['parent']; ?>">
                     <a href="<?php echo $up_link; ?>">
                         <i class="fa fa-folder-o" aria-hidden="true"></i>
                         <span>
@@ -22,14 +22,20 @@
             $key = array_keys($folders)[0];
 
             foreach ($folders as $folder) {
-                $link = modify_url_with_parameters($current_url, ['folder_id' => $folder['id']], ['folder_id']);
+                $folder = new \ProjectSend\Classes\Folder($folder['id']);
+                $folder_data = $folder->getData();
+                $link = modify_url_with_parameters($current_url, ['folder_id' => $folder_data['id']], ['folder_id']);
     ?>
-                <div class="folder folder_draggable folder_destination" data-folder-id="<?php echo $folder['id']; ?>" draggable="true" data-draggable-type="folder" data-ondrop-url="<?php echo $ondrop_url; ?>">
+                <div class="folder folder_draggable folder_destination"
+                    data-folder-id="<?php echo $folder_data['id']; ?>"
+                    draggable="true"
+                    data-draggable-type="folder"
+                    data-can-edit="<?php echo var_export($folder->userCanEdit(CURRENT_USER_ID), true); ?>"
+                    data-can-delete="<?php echo var_export($folder->userCanDelete(CURRENT_USER_ID), true); ?>"
+                >
                     <a href="<?php echo $link; ?>">
                         <i class="fa fa-folder-o" aria-hidden="true"></i>
-                        <span>
-                            <?php echo $folder['name']; ?>
-                        </span>
+                        <span><?php echo $folder->name; ?></span>
                     </a>
                 </div>
     <?php
@@ -38,30 +44,19 @@
     ?>
 
     <template id="new_folder">
-        <div class="folder folder_draggable folder_destination" data-folder-id="" draggable="true" data-draggable-type="folder" data-ondrop-url="<?php echo $ondrop_url; ?>">
+        <div class="folder folder_draggable folder_destination" data-folder-id="" draggable="true" data-draggable-type="folder">
             <a href="{url}">
                 <i class="fa fa-folder-o" aria-hidden="true"></i>
-                <span>
-                    {name}
-                </span>
+                <span>{name}</span>
             </a>
         </div>
     </template>
 </div>
 
-<div id="folder_context_menu" class="context_menu">
-    <ul>
-        <li>
-            <button id="folder_menu__go"><i class="fa fa-arrow-right" aria-hidden="true"></i> <?php _e('Navigate','cftp_admin'); ?></button>
-        </li>
-        <li>
-            <button id="folder_menu__share"><i class="fa fa-share" aria-hidden="true"></i> <?php _e('Share','cftp_admin'); ?></button>
-        </li>
-        <li>
-            <button id="folder_menu__rename"><i class="fa fa-pencil" aria-hidden="true"></i> <?php _e('Rename','cftp_admin'); ?></button>
-        </li>
-        <li>
-            <button id="folder_menu__delete"><i class="fa fa-ban" aria-hidden="true"></i> <?php _e('Delete','cftp_admin'); ?></button>
-        </li>
-    </ul>
-</div>
+<span id="folder_context_menu__links"
+    data-url-share="<?php echo AJAX_PROCESS_URL.'?do=folder_share'; ?>"
+    data-url-rename="<?php echo AJAX_PROCESS_URL.'?do=folder_rename'; ?>"
+    data-url-delete="<?php echo AJAX_PROCESS_URL.'?do=folder_delete'; ?>"
+    data-url-folder-ondrop="<?php echo AJAX_PROCESS_URL.'?do=folder_move'; ?>"
+    data-url-file-ondrop="<?php echo AJAX_PROCESS_URL.'?do=file_move'; ?>"
+></span>

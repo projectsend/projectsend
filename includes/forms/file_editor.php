@@ -255,6 +255,16 @@
                                                         'target' => 'categories_'.$file->id,
                                                     ],
                                                 ];
+
+                                                // Folders
+                                                $copy_buttons['folder'] = [
+                                                    'label' => __('Selected folder','cftp_admin'),
+                                                    'class' => 'copy-all',
+                                                    'data' => [
+                                                        'type' => 'folder',
+                                                        'target' => 'folder_'.$file->id,
+                                                    ],
+                                                ];
                                             }
 
                                             if (count($copy_buttons) > 0) {

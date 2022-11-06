@@ -44,7 +44,7 @@ class Auth
 
         $_SESSION['user_id'] = $user->id;
         $_SESSION['username'] = $user->username;
-        $_SESSION['role'] = $user->role;
+        $_SESSION['role'] = (int)$user->role;
         $_SESSION['account_type'] = $user->account_type;
 
         session_regenerate_id(true);

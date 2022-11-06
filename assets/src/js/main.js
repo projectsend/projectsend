@@ -57,6 +57,7 @@
             case 'default_template':
             case 'manage_files':
                 admin.parts.filePreviewModal();
+                admin.parts.foldersAdmin();
                 break;
             case 'reset_password_enter_email':
                 admin.pages.resetPasswordEnterEmail();

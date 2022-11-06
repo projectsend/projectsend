@@ -190,7 +190,7 @@ class Users
             $this->username = html_output($this->row['user']);
             $this->password = html_output($this->row['password']);
             $this->password_raw = $this->row['password'];
-            $this->role = html_output($this->row['level']);
+            $this->role = html_output(strval($this->row['level']));
             $this->account_type = ($this->role == 0) ? 'client' : 'user';
             $this->active = html_output($this->row['active']);
             $this->max_file_size = html_output($this->row['max_file_size']);
@@ -259,7 +259,7 @@ class Users
             'email' => $this->email,
             'username' => $this->username,
             'password' => $this->password,
-            'role' => $this->role,
+            'role' => (int)$this->role,
             'active' => $this->active,
             'max_file_size' => $this->max_file_size,
             'can_upload_public' => $this->can_upload_public,

@@ -96,7 +96,11 @@ password_change_required();
                                 foreach ($header_action_buttons as $header_button) {
                                     $icon = (!empty($header_button['icon'])) ? $header_button['icon'] : 'fa fa-plus';
                         ?>
-                                    <a href="<?php echo $header_button['url']; ?>" class="btn btn-sm btn-primary" <?php if (!empty($header_button['id'])) { echo 'id="'.$header_button['id'].'"'; } ?>>
+                                    <a href="<?php echo $header_button['url']; ?>" class="btn btn-sm btn-primary" <?php if (!empty($header_button['id'])) { echo 'id="'.$header_button['id'].'"'; } ?>
+                                    <?php if (!empty($header_button['data-attributes'])) { foreach($header_button['data-attributes'] as $data_key => $data_value) { ?>
+                                        data-<?php echo $data_key; ?>="<?php echo $data_value; ?>" 
+                                    <?php } } ?>
+                                    >
                                         <i class="<?php echo $icon; ?> fa-small"></i> <?php echo $header_button['label']; ?>
                                     </a>
                         <?php

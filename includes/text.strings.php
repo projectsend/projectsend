@@ -98,6 +98,7 @@ $json_strings = [
         'valid_chars' => ('` ! " ? $ ? % ^ & * ( ) _ - + = { [ } ] : ; @ ~ # | < , > . ? \' / \ '),
         'complete_all_options' => __('Please complete all the fields.','cftp_admin'),
         'enum_invalid' => __('Type is not valid','cftp_admin'),
+        'numeric' => __('Value %s is not a number','cftp_admin'),
         
         // Validation strings for the length of usernames and passwords
         'length_user' => sprintf(__('Length should be between %d and %d characters long', 'cftp_admin'), MIN_USER_CHARS, MAX_USER_CHARS),

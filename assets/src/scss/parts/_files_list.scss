@@ -1,0 +1,11 @@
+#files_tbl {
+    tr {
+        &.file_draggable {
+            cursor: grab;
+
+            &.dragging {
+                opacity: .3;
+            }
+        }
+    }
+}

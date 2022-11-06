@@ -93,6 +93,10 @@ class Folder
             return false;
         }
 
+        if (!$this->validate()) {
+            return false;
+        }
+
         try {
             $slugify = new Slugify();
     
@@ -164,7 +168,7 @@ class Folder
             return false;
         }
 
-        if ($this->userCanEdit($user_id)) {
+        if ($this->userCanEdit($user_id) && $this->validate()) {
             if (empty($new_parent_id)) {
                 $new_parent_id = null;
             } else {
@@ -175,13 +179,17 @@ class Folder
                 return false;
             }
 
-            $statement = $this->dbh->prepare("UPDATE " . TABLE_FOLDERS . " SET parent=:parent_id WHERE id=:id");
-            $statement->bindParam(':id', $this->id);
-            $statement->bindParam(':parent_id', $new_parent_id);
-            if ($statement->execute()) {
-                $this->parent = $new_parent_id;
-                return true;
+            if ($this->validate()) {
+                $statement = $this->dbh->prepare("UPDATE " . TABLE_FOLDERS . " SET parent=:parent_id WHERE id=:id");
+                $statement->bindParam(':id', $this->id);
+                $statement->bindParam(':parent_id', $new_parent_id);
+                if ($statement->execute()) {
+                    $this->parent = $new_parent_id;
+                    return true;
+                }
             }
+
+            $this->get($this->id);
         }
 
         return false;
@@ -194,15 +202,9 @@ class Folder
         }
 
         if ($this->userCanEdit(CURRENT_USER_ID)) {
-            global $json_strings;
-            $validation = new \ProjectSend\Classes\Validation;
-            $validation->validate_items([
-                $name => [
-                    'required' => ['error' => $json_strings['validation']['no_name']],
-                ],
-            ]);
+            $this->name = $name;
 
-            if ($validation->passed()) {
+            if ($this->validate()) {
                 $statement = $this->dbh->prepare("UPDATE " . TABLE_FOLDERS . " SET name=:name WHERE id=:id");
                 $statement->bindParam(':id', $this->id);
                 $statement->bindParam(':name', $name);
@@ -210,6 +212,40 @@ class Folder
                     return true;
                 }
             }
+        }
+
+        // Refresh data
+        $this->get($this->id);
+
+        return false;
+    }
+
+    private function validate()
+    {
+        global $json_strings;
+
+        $validation = new \ProjectSend\Classes\Validation;
+
+        $validation_items = [
+            $this->name => [
+                'required' => ['error' => $json_strings['validation']['no_name']],
+            ],
+            $this->parent => [
+                'number' => ['error' => sprintf($json_strings['validation']['numeric'], 'parent')],
+            ],
+            $this->user_id => [
+                'number' => ['error' => sprintf($json_strings['validation']['numeric'], 'user_id')],
+            ],
+        ];
+
+        $validation->validate_items($validation_items);
+
+        if ($validation->passed()) {
+            $this->validation_passed = true;
+            return true;
+        } else {
+            $this->validation_passed = false;
+            $this->validation_errors = $validation->list_errors();
         }
 
         return false;

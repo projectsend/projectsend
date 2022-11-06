@@ -194,11 +194,21 @@ class Folder
         }
 
         if ($this->userCanEdit(CURRENT_USER_ID)) {
-            $statement = $this->dbh->prepare("UPDATE " . TABLE_FOLDERS . " SET name=:name WHERE id=:id");
-            $statement->bindParam(':id', $this->id);
-            $statement->bindParam(':name', $name);
-            if ($statement->execute()) {
-                return true;
+            global $json_strings;
+            $validation = new \ProjectSend\Classes\Validation;
+            $validation->validate_items([
+                $name => [
+                    'required' => ['error' => $json_strings['validation']['no_name']],
+                ],
+            ]);
+
+            if ($validation->passed()) {
+                $statement = $this->dbh->prepare("UPDATE " . TABLE_FOLDERS . " SET name=:name WHERE id=:id");
+                $statement->bindParam(':id', $this->id);
+                $statement->bindParam(':name', $name);
+                if ($statement->execute()) {
+                    return true;
+                }
             }
         }
 

@@ -316,9 +316,7 @@ else {
     );
 }
 
-/**
- * Build the menu
- */
+// Build the menu
 $current_filename = parse_url(basename($_SERVER['REQUEST_URI']));
 $menu_output = "
     <div class='main_side_menu'>

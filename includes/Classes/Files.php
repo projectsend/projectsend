@@ -830,6 +830,7 @@ class Files
         $this->expires = (isset($data["expires"])) ? $data["expires"] : 0;
         $this->expiry_date = (isset($expiration_str)) ? $expiration_str : $current["expiry_date"];
         $this->is_public = (isset($data["public"])) ? $data["public"] : 0;
+        $this->folder_id = (isset($data["folder_id"]) && !(empty($data["folder_id"]))) ? $data["folder_id"] : null;
     
         /**
          * If a client is editing a file, only a few properties can be changed
@@ -855,6 +856,7 @@ class Files
             public_allow = :public
             WHERE id = :id
         ");
+
         $statement->bindParam(':title', $this->name);
         $statement->bindParam(':description', $this->description);
         $statement->bindParam(':expires', $this->expires, PDO::PARAM_INT);
@@ -1238,5 +1240,45 @@ class Files
                 }
             }
         }
+    }
+
+    public function moveToFolder($folder_id)
+    {
+        if (!$this->id) {
+            return false;
+        }
+
+        if (!$this->currentUserCanEdit() || !$this->currentClientCanAssignToFolder($folder_id)) {
+            return false;
+        }
+
+        if (empty($folder_id)) {
+            $folder_id = null;
+        } else {
+            $folder_id = (int)$folder_id;
+        }
+        $statement = $this->dbh->prepare("UPDATE " . TABLE_FILES . " SET folder_id=:folder_id WHERE id=:id");
+        $statement->bindParam(':id', $this->id);
+        $statement->bindParam(':folder_id', $folder_id);
+        if ($statement->execute()) {
+            $this->folder_id = $folder_id;
+            return true;
+        }
+
+        return false;
+    }
+
+    public function currentClientCanAssignToFolder($folder_id)
+    {
+        $folder = new \ProjectSend\Classes\Folder($folder_id);
+        if ($folder->user_id == CURRENT_USER_ID) {
+            return true;
+        }
+
+        if ($folder->public == '1' && get_option('clients_can_upload_to_public_folders') == '1') {
+            return true;
+        }
+
+        return false;
     }
 }

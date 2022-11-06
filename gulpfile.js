@@ -31,6 +31,7 @@ let assetsCss = [
 ];
 
 let assetsJs = [
+    'node_modules/axios/dist/axios.min.js',
     'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
     'node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
     'node_modules/bootstrap-toggle/js/bootstrap-toggle.min.js',
@@ -48,6 +49,7 @@ let assetsJs = [
     'node_modules/sjcl/sjcl.js',
     'node_modules/toastr/build/toastr.min.js',
     'node_modules/codemirror-minified/lib/codemirror.js',
+    'node_modules/vanilla-context-menu/dist/vanilla-context-menu.js',
     'vendor/moxiecode/plupload/js/plupload.full.min.js',
     'vendor/moxiecode/plupload/js/jquery.plupload.queue/jquery.plupload.queue.min.js',
 ];

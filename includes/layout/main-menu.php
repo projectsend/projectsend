@@ -279,9 +279,8 @@ if (current_role_in(array(9, 8, 7))) {
         ),
     );
 }
-/**
- * Items for clients
- */
+
+// Items for clients
 else {
     if (get_option('clients_can_upload') == 1) {
         $items['upload'] = array(

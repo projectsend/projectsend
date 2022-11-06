@@ -38,7 +38,7 @@ if (!empty($_SESSION['user_id'])) {
         define('CURRENT_USER_USERNAME', $session_user->username);
         define('CURRENT_USER_NAME', $session_user->name);
         define('CURRENT_USER_EMAIL', $session_user->email);
-        define('CURRENT_USER_LEVEL', $session_user->role);
+        define('CURRENT_USER_LEVEL', intval($session_user->role));
         define('CURRENT_USER_TYPE', $session_user->account_type);
     
         // Check if account has a custom value for upload max file size

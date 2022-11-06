@@ -75,12 +75,14 @@ class AuthenticationCode
         $token = generate_random_string(32);
         $code = mt_rand(100000,999999);
         $used = 0;
-        $statement = $this->dbh->prepare("INSERT INTO " . TABLE_AUTHENTICATION_CODES . " (user_id, token, code, used)"
-        ."VALUES (:user_id, :token, :code, :used)");
+        $statement = $this->dbh->prepare("INSERT INTO " . TABLE_AUTHENTICATION_CODES . " (user_id, token, code, used, timestamp)"
+        ."VALUES (:user_id, :token, :code, :used, :timestamp)");
+        $now = date('Y-m-d H:i:s');
         $statement->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         $statement->bindParam(':token', $token);
         $statement->bindParam(':code', $code);
         $statement->bindParam(':used', $used, PDO::PARAM_INT);
+        $statement->bindParam(':timestamp', $now);
         $statement->execute();
 
         $this->getByTokenAndCode($token, $code);

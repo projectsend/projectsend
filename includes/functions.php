@@ -2106,6 +2106,12 @@ function ps_redirect($location, $status = 303)
     exit;
 }
 
+function die_with_error_code($code = 403)
+{
+    http_response_code( $code );
+    exit;
+}
+
 function exit_with_error_code($code = 403)
 {
     switch ($code) {
@@ -2162,4 +2168,28 @@ function mask_email($email)
     $mail_parts[1] = implode('.', $domain_parts);
 
     return implode("@", $mail_parts);
+}
+
+function modify_url_with_parameters($url, $parameters_add = [], $parameters_remove = [])
+{
+    $base_url = strtok($url, '?');
+    $parsed = parse_url($url);
+    if (empty($parsed['query'])) {
+        $query = '';
+    } else {
+        $query = $parsed['query'];
+    }
+    parse_str($query, $params);
+    if (!empty($parameters_remove)) {
+        foreach ($parameters_remove as $parameter) {
+            unset($params[$parameter]);
+        }
+    }
+    if (!empty($parameters_add)) {
+        foreach ($parameters_add as $parameter => $value) {
+            $params[$parameter] = $value;
+        }
+    }
+
+    return (!empty($params)) ? $base_url.'?'.http_build_query($params) : $base_url;
 }

@@ -15,7 +15,7 @@ function getCsrfToken()
 
 function addCsrf()
 {
-    echo '<input type="hidden" name="csrf_token" value="'.getCsrfToken().'" />';
+    echo '<input type="hidden" name="csrf_token" id="csrf_token" value="'.getCsrfToken().'" />';
 }
 
 /**

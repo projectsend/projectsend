@@ -13,7 +13,7 @@ function format_action_log_record($params)
 	$affected_file_name = $params['affected_file_name'];
 	$affected_account = $params['affected_account'];
     $affected_account_name = html_output($params['affected_account_name']);
-    $details = json_decode($params['details']);
+    $details = (!empty($params['details'])) ? json_decode($params['details']) : null;
     $formatted = null;
 
 	switch ($action) {

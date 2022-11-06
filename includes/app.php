@@ -144,6 +144,8 @@ define('TABLE_GROUPS', TABLES_PREFIX . 'groups');
 define('TABLE_MEMBERS', TABLES_PREFIX . 'members');
 define('TABLE_MEMBERS_REQUESTS', TABLES_PREFIX . 'members_requests');
 define('TABLE_FOLDERS', TABLES_PREFIX . 'folders');
+define('TABLE_FOLDERS_FILES', TABLES_PREFIX . 'folders_files');
+define('TABLE_FOLDERS_RELATIONS', TABLES_PREFIX . 'folders_relations');
 define('TABLE_CATEGORIES', TABLES_PREFIX . 'categories');
 define('TABLE_CATEGORIES_RELATIONS', TABLES_PREFIX . 'categories_relations');
 define('TABLE_LOG', TABLES_PREFIX . 'actions_log');

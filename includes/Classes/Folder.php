@@ -236,8 +236,8 @@ class Folder
             return true;
         }
 
-        if ($this->public == '1' && get_option('clients_can_upload_to_public_folders') == '1') {
-            return true;
+        if ($this->public == '1') {
+            return client_can_assign_to_public_folder(CURRENT_USER_ID);
         }
         
         return false;

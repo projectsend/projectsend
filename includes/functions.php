@@ -615,6 +615,19 @@ function client_can_upload_public($client_id)
     return false;
 }
 
+function client_can_assign_to_public_folder($client_id)
+{
+    if (!client_can_upload_public($client_id)) {
+        return false;
+    }
+
+    if (get_option('clients_can_upload_to_public_folders') == '1') {
+        return true;
+    }
+
+    return false;
+}
+
 function current_user_can_upload()
 {
     switch (CURRENT_USER_LEVEL) {

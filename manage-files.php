@@ -182,6 +182,9 @@ $folders_arguments = [
 if (!empty($_GET['search'])) {
     $folders_arguments['search'] = $_GET['search'];
 }
+if (CURRENT_USER_LEVEL == 0) {
+    $folders_arguments['user_id'] = CURRENT_USER_ID;
+}
 // @todo DECIDE WHICH FOLDERS TO GET IF VIEWING FILES BY CLIENT, GROUP OR CATEGORY
 // if ($filter_by_client) {
 //     $folders_arguments['client'] = $_GET['client_id'];

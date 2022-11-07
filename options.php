@@ -29,6 +29,8 @@ switch ($section) {
             'clients_can_delete_own_files',
             'clients_can_set_expiration_date',
             'clients_new_default_can_set_public',
+            'clients_files_list_include_public',
+            'clients_can_upload_to_public_folders',
         );
         break;
     case 'privacy':

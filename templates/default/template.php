@@ -15,6 +15,8 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 
 $filter_by_category = isset($_GET['category']) ? $_GET['category'] : null;
 
+$current_url = get_form_action_with_existing_parameters('index.php');
+
 include_once ROOT_DIR . '/templates/common.php'; // include the required functions for every template
 
 $window_title = __('File downloads', 'cftp_template');
@@ -83,6 +85,11 @@ $bulk_actions_items = [
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
+
+include_once LAYOUT_DIR . DS . 'breadcrumbs.php';
+
+include_once LAYOUT_DIR . DS . 'folders-nav.php';
+
 ?>
 <form action="" name="files_list" method="get" class="form-inline batch_actions">
     <div class="row">

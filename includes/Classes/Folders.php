@@ -94,7 +94,7 @@ class Folders
         $params = [];
     
         // Parent
-        if (!empty($arguments['parent'])) {
+        if (isset($arguments['parent'])) {
             $query .= " WHERE parent = :parent";
             $params[':parent'] = (int)$arguments['parent'];
         } else {
@@ -102,18 +102,30 @@ class Folders
         }
     
         // Search
-        if (!empty($arguments['search'])) {
+        if (isset($arguments['search'])) {
             $query .= " AND (name LIKE :name OR slug LIKE :slug)";
         
             $search_terms = '%' . $arguments['search'] . '%';
             $params[':name'] = $search_terms;
             $params[':slug'] = $search_terms;
         }
+
+        if (isset($arguments['include_public'])) {
+            if ($arguments['include_public'] == true) {
+                $query .= " AND public=:public";
+                $params[':public'] = '1';    
+            }
+        }
     
-        if (CURRENT_USER_LEVEL == '0') {
-            $query .= " AND (public=:public OR user_id=:user_id)";
+        if (isset($arguments['user_id'])) {
+            $query .= " AND user_id=:user_id";
+            $params[':user_id'] = $arguments['user_id'];
+        }
+        
+        if (isset($arguments['public_or_client']) && $arguments['public_or_client'] == true) {
+            $query .= " AND (public=:public OR user_id=:client_id)";
             $params[':public'] = '1';
-            $params[':user_id'] = CURRENT_USER_ID;
+            $params[':client_id'] = $arguments['client_id'];
         }
     
         $statement = $this->dbh->prepare($query);

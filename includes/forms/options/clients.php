@@ -124,6 +124,16 @@
 </div>
 
 <div class="form-group row">
+    <div class="col-sm-8 offset-sm-4">
+        <label for="clients_can_upload_to_public_folders">
+            <input type="checkbox" value="1" name="clients_can_upload_to_public_folders" id="clients_can_upload_to_public_folders" class="checkbox_options" <?php echo (get_option('clients_can_upload_to_public_folders') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Allow clients to assign files to public folders','cftp_admin'); ?>
+        </label>
+        <p class="field_note form-text"><?php _e("Any file assigned to a public folder automatically becomes public too.",'cftp_admin'); ?></p>
+    </div>
+</div>
+
+
+<div class="form-group row">
     <label for="expired_files_hide" class="col-sm-4 control-label"><?php _e('When a file expires:','cftp_admin'); ?></label>
     <div class="col-sm-8">
         <select class="form-select" name="expired_files_hide" id="expired_files_hide" required>
@@ -131,5 +141,14 @@
             <option value="0" <?php echo (get_option('expired_files_hide') == '0') ? 'selected="selected"' : ''; ?>><?php _e("Show it anyway, but prevent download.",'cftp_admin'); ?></option>
         </select>
         <p class="field_note form-text"><?php _e('This only affects clients. On the admin side, you can still get the files.','cftp_admin'); ?></p>
+    </div>
+</div>
+
+<div class="form-group row">
+    <div class="col-sm-8 offset-sm-4">
+        <label for="clients_files_list_include_public">
+            <input type="checkbox" value="1" name="clients_files_list_include_public" id="clients_files_list_include_public" class="checkbox_options" <?php echo (get_option('clients_files_list_include_public') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Show public files and folders on client's files lists",'cftp_admin'); ?>
+        </label>
+        <p class="field_note form-text"><?php _e("When a client logs in, all public files will also be shown using the selected template, next to the files assigned to their account.",'cftp_admin'); ?></p>
     </div>
 </div>

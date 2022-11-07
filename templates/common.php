@@ -41,6 +41,24 @@ $found_groups = $get_groups->getGroupsByClient([
     'return' => 'list',
 ]);
 
+// Folders
+$current_folder = (isset($_GET['folder_id'])) ? (int)$_GET['folder_id'] : null;
+$folders_arguments = [
+    'parent' => $current_folder,
+];
+if (get_option('clients_files_list_include_public')) {
+    $folders_arguments['public_or_client'] = true;
+    $folders_arguments['client_id'] = $client_info['id'];
+} else {
+    $folders_arguments['user_id'] = $client_info['id'];
+}
+if (!empty($_GET['search'])) {
+    $folders_arguments['search'] = $_GET['search'];
+}
+
+$folders_obj = new \ProjectSend\Classes\Folders;
+$folders = $folders_obj->getFolders($folders_arguments);
+
 /**
  * Define the arrays so they can't be empty
  */
@@ -136,11 +154,19 @@ $my_files = [];
 
 if (!empty($found_all_files_array)) {
     $f = 0;
-    $files_query = "SELECT * FROM " . TABLE_FILES . " WHERE FIND_IN_SET(id,:search_ids)";
+    $files_query = "SELECT * FROM " . TABLE_FILES . " WHERE (FIND_IN_SET(id,:search_ids)";
 
     $params = [
         ':search_ids' => $ids_to_search,
     ];
+
+    // Should it include public files as well?
+    if (get_option('clients_files_list_include_public') == '1') {
+        $files_query .= " OR public_allow = :public";
+        $params[':public'] = '1';
+    }
+
+    $files_query .= ')';
 
     /** Add the search terms */
     if (isset($_GET['search']) && !empty($_GET['search'])) {
@@ -151,12 +177,13 @@ if (!empty($found_all_files_array)) {
         $params[':description'] = '%' . $_GET['search'] . '%';
     }
 
-    // Should it include public files as well?
-    if (get_option('clients_files_list_include_public') == '1') {
-        $files_query .= " OR public_allow = :public";
-        $params[':public'] = '1';
+    // Filter by folders
+    if (!empty($current_folder)) {
+        $files_query .= " AND folder_id = :folder_id";
+        $params[':folder_id'] = (int)$current_folder;
+    } else {
+        $files_query .= " AND folder_id is null";
     }
-
     
     /**
      * Add the order.

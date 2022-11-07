@@ -54,6 +54,24 @@
             }
         }
 
+        &[data-can-assign-file="false"] {
+            &.drop_target_active {
+                background-color: red;
+                border-color: red;
+                border-style: solid;
+                opacity: .5;
+
+                a {
+                    color: #fff;
+                }
+
+                &:hover {
+                    background-color: red !important;
+                    cursor: not-allowed;
+                }
+            }    
+        }
+
         &.drop_target_is_self {
             background-color: #ccc;
             border-color: #ccc;
@@ -67,6 +85,7 @@
             cursor: not-allowed !important;
             background-color: red !important;
             border-color: red;
+            opacity: .5;
 
             a {
                 color: white !important;
@@ -74,7 +93,7 @@
         }
 
         &.drop_ready {
-            background-color: #208537 !important;
+            background-color: #208537;
             border-color: #0f5720;
             border-style: dashed;
 

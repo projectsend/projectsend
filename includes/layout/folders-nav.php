@@ -30,6 +30,7 @@
                     data-draggable-type="folder"
                     data-can-edit="<?php echo var_export($folder->userCanEdit(CURRENT_USER_ID), true); ?>"
                     data-can-delete="<?php echo var_export($folder->userCanDelete(CURRENT_USER_ID), true); ?>"
+                    data-can-assign-file="<?php echo var_export($folder->currentUserCanAssignToFolder(), true); ?>"
                 >
                     <a href="<?php echo $link; ?>">
                         <i class="fa fa-folder-o" aria-hidden="true"></i>

@@ -110,6 +110,11 @@ class Folders
             $params[':slug'] = $search_terms;
         }
     
+        if (CURRENT_USER_LEVEL == '0') {
+            $query .= " AND (public=:public OR user_id=:user_id)";
+            $params[':public'] = '1';
+            $params[':user_id'] = CURRENT_USER_ID;
+        }
     
         $statement = $this->dbh->prepare($query);
         $statement->execute($params);

@@ -1254,21 +1254,34 @@ class Files
             return false;
         }
 
-        if (!$this->currentUserCanEdit() || !$this->currentClientCanAssignToFolder($folder_id)) {
-            return false;
+        if (CURRENT_USER_LEVEL == 0) {
+            if ($folder_id == null) {
+                if (!$this->currentUserCanEdit()) {
+                    return false;
+                }
+            }
+            else {
+                if (!$this->currentClientCanAssignToFolder($folder_id)) {
+                    return false;
+                }
+            }
         }
 
-        if (empty($folder_id)) {
-            $folder_id = null;
+        if (!empty($folder_id)) {
+            $statement = $this->dbh->prepare("UPDATE " . TABLE_FILES . " SET folder_id=:folder_id WHERE id=:id");
+            $statement->bindParam(':id', $this->id);
+            $statement->bindParam(':folder_id', $folder_id);
+            if ($statement->execute()) {
+                $this->folder_id = $folder_id;
+                return true;
+            }
         } else {
-            $folder_id = (int)$folder_id;
-        }
-        $statement = $this->dbh->prepare("UPDATE " . TABLE_FILES . " SET folder_id=:folder_id WHERE id=:id");
-        $statement->bindParam(':id', $this->id);
-        $statement->bindParam(':folder_id', $folder_id);
-        if ($statement->execute()) {
-            $this->folder_id = $folder_id;
-            return true;
+            $statement = $this->dbh->prepare("UPDATE " . TABLE_FILES . " SET folder_id=NULL WHERE id=:id");
+            $statement->bindParam(':id', $this->id);
+            if ($statement->execute()) {
+                $this->folder_id = null;
+                return true;
+            }
         }
 
         return false;
@@ -1276,6 +1289,10 @@ class Files
 
     public function currentClientCanAssignToFolder($folder_id)
     {
+        if (in_array(CURRENT_USER_LEVEL, [9, 8, 7])) {
+            return true;
+        }
+
         $folder = new \ProjectSend\Classes\Folder($folder_id);
         if ($folder->user_id == CURRENT_USER_ID) {
             return true;
@@ -1284,7 +1301,7 @@ class Files
         if ($folder->public == '1' && get_option('clients_can_upload_to_public_folders') == '1') {
             return true;
         }
-
+        
         return false;
     }
 }

@@ -8,10 +8,8 @@
     ?>
                 <div class="folder folder_up folder_destination" data-folder-id="<?php echo $parent_data['parent']; ?>">
                     <a href="<?php echo $up_link; ?>">
-                        <i class="fa fa-folder-o" aria-hidden="true"></i>
-                        <span>
-                            ../
-                        </span>
+                        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                        <span><?php _e('Parent folder','cftp_admin'); ?></span>
                     </a>
                 </div>
     <?php

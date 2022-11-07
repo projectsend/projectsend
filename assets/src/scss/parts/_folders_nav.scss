@@ -10,6 +10,11 @@
         border: 3px solid var(--main_color);
         border-radius: 8px;
         color: white;
+
+        &.folder_up {
+            font-size: .9rem;
+            text-transform: uppercase;
+        }
         
         a {
             display: flex;
@@ -19,7 +24,7 @@
         }
 
         i {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             // color: var(--main_color);
             margin-right: .5rem;
         }

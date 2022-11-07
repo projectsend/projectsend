@@ -142,12 +142,6 @@ if (!empty($found_all_files_array)) {
         ':search_ids' => $ids_to_search,
     ];
 
-    // Should it include public files as well?
-    if (get_option('clients_files_list_include_public') == '1') {
-        $files_query .= " OR public_allow = :public";
-        $params[':public'] = '1';
-    }
-
     /** Add the search terms */
     if (isset($_GET['search']) && !empty($_GET['search'])) {
         $files_query .= " AND (filename LIKE :title OR description LIKE :description)";
@@ -157,6 +151,13 @@ if (!empty($found_all_files_array)) {
         $params[':description'] = '%' . $_GET['search'] . '%';
     }
 
+    // Should it include public files as well?
+    if (get_option('clients_files_list_include_public') == '1') {
+        $files_query .= " OR public_allow = :public";
+        $params[':public'] = '1';
+    }
+
+    
     /**
      * Add the order.
      * Defaults to order by: timestamp, order: DESC (shows last uploaded files first)

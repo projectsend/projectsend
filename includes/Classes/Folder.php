@@ -13,6 +13,7 @@ class Folder
     protected $slug;
     protected $parent;
     protected $user_id;
+    protected $public;
 
     public function __construct($id = null)
     {
@@ -59,6 +60,7 @@ class Folder
     {
 		$this->name = (!empty($arguments['name'])) ? encode_html($arguments['name']) : null;
         $this->parent = (!empty($arguments['parent'])) ? encode_html($arguments['parent']) : null;
+        $this->public = (!empty($arguments['public'])) ? (int)$arguments['public'] : 0;
     }
 
     /**
@@ -84,6 +86,7 @@ class Folder
             $this->slug = html_output($this->row['slug']);
             $this->parent = html_output($this->row['parent']);
             $this->user_id = html_output($this->row['user_id']);
+            $this->public = html_output($this->row['public']);
         }
     }
 
@@ -105,11 +108,13 @@ class Folder
             $this->slug = $slugify->slugify($this->name);
             $this->user_id = CURRENT_USER_ID;
     
-            $statement = $this->dbh->prepare("INSERT INTO " . TABLE_FOLDERS . " (uuid, name, slug, parent) VALUES (:uuid, :name, :slug, :parent)");
+            $statement = $this->dbh->prepare("INSERT INTO " . TABLE_FOLDERS . " (uuid, name, slug, parent, public, user_id) VALUES (:uuid, :name, :slug, :parent, :public, :user_id)");
             $statement->bindParam(':uuid', $this->uuid);
             $statement->bindParam(':name', $this->name);
             $statement->bindParam(':slug', $this->slug);
             $statement->bindParam(':parent', $this->parent);
+            $statement->bindParam(':public', $this->public);
+            $statement->bindParam(':user_id', $this->user_id);
             $statement->execute();
 
             $this->id = $this->dbh->lastInsertId();
@@ -131,6 +136,7 @@ class Folder
             'slug' => $this->slug,
             'parent' => $this->parent,
             'user_id' => $this->user_id,
+            'public' => $this->public,
         ];
     }
 

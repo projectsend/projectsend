@@ -226,6 +226,23 @@ class Folder
         return false;
     }
 
+    public function currentUserCanAssignToFolder()
+    {
+        if (in_array(CURRENT_USER_LEVEL, [9, 8, 7])) {
+            return true;
+        }
+
+        if ($this->user_id == CURRENT_USER_ID) {
+            return true;
+        }
+
+        if ($this->public == '1' && get_option('clients_can_upload_to_public_folders') == '1') {
+            return true;
+        }
+        
+        return false;
+    }
+
     private function validate()
     {
         global $json_strings;

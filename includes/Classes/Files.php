@@ -1261,7 +1261,8 @@ class Files
                 }
             }
             else {
-                if (!$this->currentClientCanAssignToFolder($folder_id)) {
+                $folder = new \ProjectSend\Classes\Folder($folder_id);
+                if (!$folder->currentUserCanAssignToFolder()) {
                     return false;
                 }
             }
@@ -1284,24 +1285,6 @@ class Files
             }
         }
 
-        return false;
-    }
-
-    public function currentClientCanAssignToFolder($folder_id)
-    {
-        if (in_array(CURRENT_USER_LEVEL, [9, 8, 7])) {
-            return true;
-        }
-
-        $folder = new \ProjectSend\Classes\Folder($folder_id);
-        if ($folder->user_id == CURRENT_USER_ID) {
-            return true;
-        }
-
-        if ($folder->public == '1' && get_option('clients_can_upload_to_public_folders') == '1') {
-            return true;
-        }
-        
         return false;
     }
 }

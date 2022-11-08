@@ -154,6 +154,22 @@ class Folder
         return false;
     }
 
+    public function userCanNavigate($user_id)
+    {
+        if ($this->public == 1) {
+            return true;
+        }
+
+        // If top level is public, this is too
+        $hierarchy = $this->getHierarchy();
+        $top_level = $hierarchy[array_key_last($hierarchy)];
+        if ($top_level['public'] == 1) {
+            return true;
+        }
+
+        return $this->userCanEdit($user_id);
+    }
+
     public function userCanDelete($user_id)
     {
         $user = new \ProjectSend\Classes\Users($user_id);
@@ -273,4 +289,38 @@ class Folder
 
         return false;
     }
+
+    function getHierarchy()
+    {
+        return $this->getHierarchyFrom($this->id);
+    }
+
+    function getHierarchyFrom($folder_id = null, array $hierarchy = [])
+    {
+        global $dbh;
+        $folder_id = (int)$folder_id;
+    
+        // HERE!!!! Add current folder
+        $folder = new \ProjectSend\Classes\Folder($folder_id);
+        $hierarchy[] = $folder->getData();
+    
+        // Parents
+        if ($folder_id != null) {
+            $query = "SELECT * FROM " . TABLE_FOLDERS . " WHERE id=:id";
+            $params[':id'] = (int)$folder_id;
+            $statement = $dbh->prepare($query);
+            $statement->execute($params);
+            if ($statement->rowCount() > 0) {
+                $statement->setFetchMode(\PDO::FETCH_ASSOC);
+                while ($row = $statement->fetch()) {
+                    if ($row['parent'] != null) {   
+                        $hierarchy = $this->getHierarchyFrom($row['parent'], $hierarchy);
+                    }
+                }
+            }
+        }
+    
+        return $hierarchy;
+    }
+
 }

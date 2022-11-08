@@ -43,6 +43,14 @@ $found_groups = $get_groups->getGroupsByClient([
 
 // Folders
 $current_folder = (isset($_GET['folder_id'])) ? (int)$_GET['folder_id'] : null;
+// Check permissions for current folder
+if (!empty($current_folder)) {
+    $folder = new \ProjectSend\Classes\Folder($current_folder);
+    if (!$folder->userCanNavigate($client_info['id'])) {
+        exit_with_error_code(403);
+    }
+}
+
 $folders_arguments = [
     'parent' => $current_folder,
 ];

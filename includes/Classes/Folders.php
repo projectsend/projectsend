@@ -14,35 +14,6 @@ class Folders
         $this->logger = new \ProjectSend\Classes\ActionsLog;
     }
 
-    function getFolderHierarchy($folder_id = null, array $hierarchy = [])
-    {
-        global $dbh;
-        $folder_id = (int)$folder_id;
-    
-        // HERE!!!! Add current folder
-        $folder = new \ProjectSend\Classes\Folder($folder_id);
-        $hierarchy[] = $folder->getData();
-    
-        // Parents
-        if ($folder_id != null) {
-            $query = "SELECT * FROM " . TABLE_FOLDERS . " WHERE id=:id";
-            $params[':id'] = (int)$folder_id;
-            $statement = $dbh->prepare($query);
-            $statement->execute($params);
-            if ($statement->rowCount() > 0) {
-                $statement->setFetchMode(\PDO::FETCH_ASSOC);
-                while ($row = $statement->fetch()) {
-                    if ($row['parent'] != null) {   
-                        $hierarchy = $this->getFolderHierarchy($row['parent'], $hierarchy);
-                    }
-                }
-            }
-        }
-    
-        return $hierarchy;
-    }
-    
-    
     function makeFolderBreadcrumbs($from_folder_id, $url = BASE_URI) {
         $base_url = strtok($url, '?');
         $parsed = parse_url($url);
@@ -65,7 +36,8 @@ class Folders
         ];
     
         if (!empty($from_folder_id)) {
-            $nested = $this->getFolderHierarchy($from_folder_id);
+            $folder = new \ProjectSend\Classes\Folder($from_folder_id);
+            $nested = $folder->getHierarchy();
             if (!empty($nested)) {
                 $nested = array_reverse($nested);
     

@@ -128,7 +128,7 @@
         <label for="clients_can_upload_to_public_folders">
             <input type="checkbox" value="1" name="clients_can_upload_to_public_folders" id="clients_can_upload_to_public_folders" class="checkbox_options" <?php echo (get_option('clients_can_upload_to_public_folders') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Allow clients to assign files to public folders','cftp_admin'); ?>
         </label>
-        <p class="field_note form-text"><?php _e("Any file assigned to a public folder automatically becomes public too.",'cftp_admin'); ?></p>
+        <p class="field_note form-text"><?php _e("Any file assigned to a public folder automatically becomes public too.",'cftp_admin'); ?><br><?php _e('Important: depends on the setting to let clients set own files as public.','cftp_admin'); ?></p>
     </div>
 </div>
 

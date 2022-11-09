@@ -39,6 +39,7 @@ Your server needs to be configured with at least:
   * fileinfo
   * gd2
   * xml
+  * zip
 * cURL extension is recommended
 
 (*) If you are using version 8.x or newer, please set the authentication method of your database so it uses the MySQL native password. The default method (caching_sha2_password) will not work. Thanks to user jellevdbos for pointing this out.

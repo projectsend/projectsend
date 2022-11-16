@@ -257,17 +257,14 @@ class Folder
         // reverse, to make sure that a folder that cannot be deleted is no left without parent
         $descendants = array_reverse($descendants);
         foreach ($descendants as $descendant) {
-            // Find and delete files
+            $files_in_folder = [];
             $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE folder_id=:id");
             $statement->bindParam(':id', $descendant['id']);
             $statement->execute();
             if ($statement->rowCount() > 0) {
                 $statement->setFetchMode(\PDO::FETCH_ASSOC);
                 while ($row = $statement->fetch()) {
-                    $file = new \ProjectSend\Classes\Files($row['id']);
-                    if ($file->deleteFiles()) {
-                        $deleted['files'][] = $file->id;
-                    }
+                    $files_in_folder[] = $row['id'];
                 }
             }
 
@@ -282,6 +279,14 @@ class Folder
             }
 
             $deleted['folders'][] = $folder->id;
+
+            // Find and delete files, only if the folder was actually deleted before
+            foreach ($files_in_folder as $file_id) {
+                $file = new \ProjectSend\Classes\Files($file_id);
+                if ($file->deleteFiles()) {
+                    $deleted['files'][] = $file->id;
+                }
+            }
         }
 
         return $deleted;

@@ -2,16 +2,25 @@
     <?php
         $ondrop_url = AJAX_PROCESS_URL.'?do=folder_move';
         if (!empty($_GET['folder_id'])) {
+            $root_link = modify_url_with_parameters($current_url, [], ['folder_id']);
+    ?>
+            <div class="folder folder_root folder_destination" data-folder-id="">
+                <a href="<?php echo $root_link; ?>">
+                    <i class="fa fa-hdd-o" aria-hidden="true"></i>
+                    <span><?php _e('Root','cftp_admin'); ?></span>
+                </a>
+            </div>
+    <?php
             $get_parent = new \ProjectSend\Classes\Folder($_GET['folder_id']);
             $parent_data = $get_parent->getData();
             $up_link = modify_url_with_parameters($current_url, ['folder_id' => $parent_data['parent']], ['folder_id']);
     ?>
-                <div class="folder folder_up folder_destination" data-folder-id="<?php echo $parent_data['parent']; ?>">
-                    <a href="<?php echo $up_link; ?>">
-                        <i class="fa fa-arrow-up" aria-hidden="true"></i>
-                        <span><?php _e('Parent folder','cftp_admin'); ?></span>
-                    </a>
-                </div>
+            <div class="folder folder_up folder_destination" data-folder-id="<?php echo $parent_data['parent']; ?>">
+                <a href="<?php echo $up_link; ?>">
+                    <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                    <span><?php _e('Parent folder','cftp_admin'); ?></span>
+                </a>
+            </div>
     <?php
         }
 

@@ -59,7 +59,7 @@
 
         function foldersDropTargetMake(except)
         {
-            let draggable_folders = document.querySelectorAll('.folder_draggable');
+            let draggable_folders = document.querySelectorAll('.folder_destination');
             for (let i = 0; i < draggable_folders.length; i++) {
                 if (except != draggable_folders[i]) {
                     draggable_folders[i].classList.add("drop_target_active");
@@ -72,7 +72,7 @@
 
         function foldersDropTargetRemove()
         {
-            let draggable_folders = document.querySelectorAll('.folder_draggable');
+            let draggable_folders = document.querySelectorAll('.folder_destination');
             for (let i = 0; i < draggable_folders.length; i++) {
                 draggable_folders[i].classList.remove("drop_target_active");
                 draggable_folders[i].classList.remove("drop_target_is_self");
@@ -84,7 +84,7 @@
             const folders_nav = document.getElementById('folders_nav');
             if (typeof(folders_nav) != 'undefined' && folders_nav != null)
             {
-                let draggable_folders = document.querySelectorAll('.folder_draggable');
+                let draggable_folders = document.querySelectorAll('.folder_destination');
                 let draggable_files = document.querySelectorAll('.file_draggable');
 
                 // Folders

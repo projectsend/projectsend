@@ -11,7 +11,9 @@
         border-radius: 8px;
         color: white;
 
-        &.folder_up {
+        &.folder_up,
+        &.folder_root
+        {
             font-size: .9rem;
             text-transform: uppercase;
         }

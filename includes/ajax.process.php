@@ -101,6 +101,14 @@ switch ($_GET['do']) {
     case 'folder_delete':
         $folder = new \ProjectSend\Classes\Folder($_POST['folder_id']);
         $delete = $folder->delete(); 
+
+        if (!$$delete) {
+            echo json_encode([
+                'status' => 'error',
+            ]);
+            die_with_error_code(500);
+        }
+
         if (in_array($_POST['folder_id'], $delete['folders'])) {
             echo json_encode([
                 'status' => 'success',

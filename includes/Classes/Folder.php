@@ -242,6 +242,58 @@ class Folder
         return false;
     }
 
+    public function delete()
+    {
+        if (!$this->userCanDelete(CURRENT_USER_ID)) {
+            return false;
+        }
+
+        $deleted = [
+            'files' => [],
+            'folder' => [],
+        ];
+
+        $descendants = $this->getAllDescendants($this->id);
+        // reverse, to make sure that a folder that cannot be deleted is no left without parent
+        $descendants = array_reverse($descendants);
+        foreach ($descendants as $descendant) {
+            // Find and delete files
+            $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE folder_id=:id");
+            $statement->bindParam(':id', $descendant['id']);
+            $statement->execute();
+            if ($statement->rowCount() > 0) {
+                $statement->setFetchMode(\PDO::FETCH_ASSOC);
+                while ($row = $statement->fetch()) {
+                    $file = new \ProjectSend\Classes\Files($row['id']);
+                    if ($file->deleteFiles()) {
+                        $deleted['files'][] = $file->id;
+                    }
+                }
+            }
+
+            // Attempt to delete folder
+            $folder = new \ProjectSend\Classes\Folder($descendant['id']);
+            if (!$folder->userCanDelete(CURRENT_USER_ID)) {
+                continue;
+            }
+
+            if (!$folder->deleteFromDatabase()) {
+                continue;
+            }
+
+            $deleted['folders'][] = $folder->id;
+        }
+
+        return $deleted;
+    }
+
+    public function deleteFromDatabase()
+    {
+        $sql = $this->dbh->prepare("DELETE FROM " . TABLE_FOLDERS . " WHERE id = :id");
+        $sql->bindParam(':id', $this->id, PDO::PARAM_INT);
+        return $sql->execute();
+    }
+
     public function currentUserCanAssignToFolder()
     {
         if (in_array(CURRENT_USER_LEVEL, [9, 8, 7])) {
@@ -300,7 +352,7 @@ class Folder
         global $dbh;
         $folder_id = (int)$folder_id;
     
-        // HERE!!!! Add current folder
+        // Add current folder
         $folder = new \ProjectSend\Classes\Folder($folder_id);
         $hierarchy[] = $folder->getData();
     
@@ -323,4 +375,29 @@ class Folder
         return $hierarchy;
     }
 
+    function getAllDescendants($folder_id = null, array $descendants = [])
+    {
+        global $dbh;
+        $folder_id = (int)$folder_id;
+
+        // Add current folder
+        $folder = new \ProjectSend\Classes\Folder($folder_id);
+        $descendants[] = $folder->getData();
+        
+        // Children
+        if ($folder_id != null) {
+            $query = "SELECT * FROM " . TABLE_FOLDERS . " WHERE parent=:id";
+            $params[':id'] = (int)$folder_id;
+            $statement = $dbh->prepare($query);
+            $statement->execute($params);
+            if ($statement->rowCount() > 0) {
+                $statement->setFetchMode(\PDO::FETCH_ASSOC);
+                while ($row = $statement->fetch()) {
+                    $descendants = $this->getAllDescendants($row['id'], $descendants);
+                }
+            }
+        }
+    
+        return $descendants;
+    }
 }

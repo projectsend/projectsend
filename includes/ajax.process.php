@@ -99,6 +99,20 @@ switch ($_GET['do']) {
     break;
 
     case 'folder_delete':
+        $folder = new \ProjectSend\Classes\Folder($_POST['folder_id']);
+        $delete = $folder->delete(); 
+        if (in_array($_POST['folder_id'], $delete['folders'])) {
+            echo json_encode([
+                'status' => 'success',
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error',
+            ]);
+            die_with_error_code(500);
+        }
+
+        exit;
     break;
 
     default:

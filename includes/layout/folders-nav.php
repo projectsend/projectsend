@@ -26,6 +26,7 @@
     ?>
                 <div class="folder folder_draggable folder_destination"
                     data-folder-id="<?php echo $folder_data['id']; ?>"
+                    data-name="<?php echo $folder_data['name']; ?>"
                     draggable="true"
                     data-draggable-type="folder"
                     data-can-edit="<?php echo var_export($folder->userCanEdit(CURRENT_USER_ID), true); ?>"

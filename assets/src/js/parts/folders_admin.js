@@ -288,6 +288,7 @@
                 
                 axios.post(url, data)
                 .then(function (response) {
+                    folder.dataset.name = new_name;
                 })
                 .catch(function (error) {
                     name_container.innerHTML = previous_name;
@@ -299,6 +300,49 @@
         function folderDelete(folder)
         {
             const url = document.getElementById('folder_context_menu__links').dataset.urlDelete;
+            const folder_name = folder.dataset.name;
+            const html = `Delete folder ${folder_name} and all of its contents?`
+
+            Swal.fire({
+                title: 'Delete folder',
+                html: html,
+                showCloseButton: false,
+                showCancelButton: true,
+                showConfirmButton: true,
+                focusCancel: true,
+                cancelButtonText: 'Cancel',
+                confirmButtonText: 'Delete',
+                buttonsStyling: false,
+                reverseButtons: true,
+                customClass: {
+                    cancelButton: 'btn btn-lg btn-secondary',
+                    confirmButton: 'btn btn-lg btn-danger ms-4'
+                },
+                showClass: {
+                    popup: 'animate__animated animated__fast animate__fadeInUp'
+                },
+                hideClass: {
+                    popup: 'animate__animated animated__fast animate__fadeOutDown'
+                }
+            }).then((result) => {
+                if (result.value) {
+                    folder.classList.add('d-none');
+
+                    var data = new FormData();
+                    data.append('csrf_token', document.getElementById('csrf_token').value);
+                    data.append('folder_id', folder.dataset.folderId);
+                    
+                    axios.post(url, data)
+                    .then(function (response) {
+                        folder.remove();
+                    })
+                    .catch(function (error) {
+                        folder.classList.remove('d-none');
+                        new Toast(error.response.data.error, Toast.TYPE_ERROR, Toast.TIME_NORMAL);
+                    });
+                }
+            });
+
         }
     };
 })();

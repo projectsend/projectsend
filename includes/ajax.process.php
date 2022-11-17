@@ -102,7 +102,7 @@ switch ($_GET['do']) {
         $folder = new \ProjectSend\Classes\Folder($_POST['folder_id']);
         $delete = $folder->delete(); 
 
-        if (!$$delete) {
+        if (!$delete) {
             echo json_encode([
                 'status' => 'error',
             ]);

@@ -562,6 +562,8 @@ include_once LAYOUT_DIR . DS . 'folders-nav.php';
                             'condition' => $conditions['can_set_public'],
                         ),
                         array(
+                            'sortable' => true,
+                            'sort_url' => 'expires',
                             'content' => __('Expiry', 'cftp_admin'),
                             'hide' => 'phone',
                             'condition' => $conditions['is_not_client'],

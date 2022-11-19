@@ -268,7 +268,7 @@ include_once ABS_PARENT . '/header-unlogged.php';
                     <?php if ($pdo_connected) : ?>
                         <?php if ($table_exists) : ?>
                             <div class="form-group row">
-                                <div class="offset-sm-4 col-12 col-sm-8">
+                                <div class="offset-sm-4 col-12 col-sm-6">
                                     <div class="checkbox">
                                         <label for="dbreuse">
                                             <input type="checkbox" name="dbreuse" id="dbreuse" value="reuse" <?php echo $post_vars['dbreuse'] == 'reuse' ? 'checked' : ''; ?> /> <?php _e('Reuse existing tables', 'cftp_admin'); ?>

@@ -2206,3 +2206,15 @@ function modify_url_with_parameters($url, $parameters_add = [], $parameters_remo
 
     return (!empty($params)) ? $base_url.'?'.http_build_query($params) : $base_url;
 }
+
+function make_return_to_url($from = null)
+{
+    $return_to = BASE_URI;
+    if (!empty($from)) {
+        $from = basename($_SERVER['REQUEST_URI']);
+        if (strpos($from, '.php') !== false) {
+            $return_to .= $from;
+        }
+    }
+    return urlencode($return_to);
+}

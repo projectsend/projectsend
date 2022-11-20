@@ -29,10 +29,11 @@
                     <?php
                         // scan for language files
                         $available_langs = get_available_languages();
+                        $return_to = make_return_to_url($_SERVER['REQUEST_URI']);
                         foreach ($available_langs as $filename => $lang_name) {
                     ?>
                             <li>
-                                <a class="dropdown-item" href="<?php echo BASE_URI.'process.php?do=change_language&language='.$filename.'&return_to='.BASE_URI.urlencode(basename($_SERVER['REQUEST_URI'])); ?>">
+                                <a class="dropdown-item" href="<?php echo BASE_URI.'process.php?do=change_language&language='.$filename.'&return_to='.$return_to; ?>">
                                     <?php echo $lang_name; ?>
                                 </a>
                             </li>

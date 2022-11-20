@@ -119,6 +119,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
             $table = new \ProjectSend\Classes\Layout\Table([
                 'id' => 'uploaded_files_tbl',
                 'class' => 'footable table',
+                'origin' => basename(__FILE__),
             ]);
 
             $thead_columns = array(

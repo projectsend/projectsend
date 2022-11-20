@@ -12,6 +12,10 @@ class Table
         $this->contents = $this->open($attributes);
 
         $this->current_row = 1;
+
+        if (isset($attributes['origin'])) {
+            $this->origin = $attributes['origin'];
+        }
     }
 
     /**
@@ -65,7 +69,9 @@ class Table
         }
         $query = http_build_query($params);
 
-        $build_url = BASE_URI . implode('/',$url_parts) . '?' . $query;
+        $url = (!empty($this->origin)) ? BASE_URI . $this->origin : BASE_URI;
+
+        $build_url = $url.'?'.$query;
 
         $sortable_link = '<a href="' . $build_url . '">';
         $sortable_link .= $content;

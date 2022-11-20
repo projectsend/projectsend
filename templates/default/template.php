@@ -102,6 +102,7 @@ include_once LAYOUT_DIR . DS . 'folders-nav.php';
                 $table = new \ProjectSend\Classes\Layout\Table([
                     'id' => 'files_list',
                     'class' => 'footable table',
+                    'origin' => CLIENT_VIEW_FILE_LIST_URL_PATH,
                 ]);
 
                 $thead_columns = array(

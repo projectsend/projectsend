@@ -76,6 +76,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                 $table = new \ProjectSend\Classes\Layout\Table([
                     'id' => 'files_list',
                     'class' => 'footable table',
+                    'origin' => basename(__FILE__),
                 ]);
 
                 $thead_columns = array(

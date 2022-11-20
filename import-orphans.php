@@ -186,6 +186,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                     'id' => 'import_orphans_table',
                     'class' => 'footable table',
                     'data-page-size' => FOOTABLE_PAGING_NUMBER,
+                    'origin' => basename(__FILE__),
                 ]);
 
                 $thead_columns = array(

@@ -29,7 +29,7 @@
                     <?php
                         // scan for language files
                         $available_langs = get_available_languages();
-                        $return_to = make_return_to_url($_SERVER['REQUEST_URI']);
+                        $return_to = make_return_to_url($_SERVER['REQUEST_URI'], true);
                         foreach ($available_langs as $filename => $lang_name) {
                     ?>
                             <li>

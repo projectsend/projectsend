@@ -491,6 +491,7 @@ include_once LAYOUT_DIR . DS . 'folders-nav.php';
                     $table = new \ProjectSend\Classes\Layout\Table([
                         'id' => 'files_tbl',
                         'class' => 'footable table',
+                        'origin' => basename(__FILE__),
                     ]);
 
                     /**

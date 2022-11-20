@@ -28,8 +28,10 @@ if (LOADED_LANG != 'en') {
 
 message_no_clients();
 
-$msg = __('Click on Add files to select all the files that you want to upload, and then click continue. On the next step, you will be able to set a name and description for each uploaded file. Remember that the maximum allowed file size (in mb.) is ', 'cftp_admin') . ' <strong>' . UPLOAD_MAX_FILESIZE . '</strong>';
-$flash->info($msg);
+if (defined('UPLOAD_MAX_FILESIZE')) {
+    $msg = __('Click on Add files to select all the files that you want to upload, and then click continue. On the next step, you will be able to set a name and description for each uploaded file. Remember that the maximum allowed file size (in mb.) is ', 'cftp_admin') . ' <strong>' . UPLOAD_MAX_FILESIZE . '</strong>';
+    $flash->info($msg);
+}
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>

@@ -503,6 +503,7 @@ include_once LAYOUT_DIR . DS . 'folders-nav.php';
                         'select_all' => true,
                         'is_not_client' => (CURRENT_USER_LEVEL != '0') ? true : false,
                         'can_set_public' => (CURRENT_USER_LEVEL != '0' || current_user_can_upload_public()) ? true : false,
+                        'can_set_expiration' => (CURRENT_USER_LEVEL != '0' || get_option('clients_can_set_expiration_date') == '1') ? true : false,
                         'total_downloads' => (CURRENT_USER_LEVEL != '0' && !isset($search_on)) ? true : false,
                         'is_search_on' => (isset($search_on)) ? true : false,
                     );
@@ -566,6 +567,12 @@ include_once LAYOUT_DIR . DS . 'folders-nav.php';
                             'sortable' => true,
                             'sort_url' => 'expires',
                             'content' => __('Expiry', 'cftp_admin'),
+                            'hide' => 'phone',
+                            'condition' => $conditions['can_set_expiration'],
+                        ),
+                        array(
+                            'sortable' => false,
+                            'content' => __('Categories', 'cftp_admin'),
                             'hide' => 'phone',
                             'condition' => $conditions['is_not_client'],
                         ),
@@ -699,6 +706,26 @@ include_once LAYOUT_DIR . DS . 'folders-nav.php';
                             }
                         }
 
+                        // Categories
+                        $categories = [];
+                        $categories_list = '';
+                        $statement = $dbh->prepare("SELECT c.name as category_name, c.id as category_id, r.id as rel_id FROM ". TABLE_CATEGORIES_RELATIONS." r INNER JOIN " . TABLE_CATEGORIES . " c on r.cat_id = c.id WHERE file_id = :file_id");
+                        $statement->bindParam(':file_id', $file->id, PDO::PARAM_INT);
+                        $statement->execute();
+                        if ($statement->rowCount() > 0) {
+                            $statement->setFetchMode(PDO::FETCH_ASSOC);
+                            while ($row = $statement->fetch()) {
+                                $categories[] = $row['category_name'];
+                            }
+                        }
+                        if (!empty($categories)) {
+                            $categories_list = '<ul class="ms-3 p-0">';
+                            foreach ($categories as $category) {
+                                $categories_list .= '<li>'.$category.'</li>';
+                            }
+                            $categories_list .= '</ul>';
+                        }
+
                         // Download count and link on the unfiltered files table no specific client or group selected)
                         if (!isset($search_on)) {
                             if (CURRENT_USER_LEVEL != '0') {
@@ -768,6 +795,10 @@ include_once LAYOUT_DIR . DS . 'folders-nav.php';
                             ),
                             array(
                                 'content' => '<a href="javascript:void(0);" class="btn btn-' . $expires_button . ' disabled btn-sm" rel="" title="">' . $expires_label . '</a>',
+                                'condition' => $conditions['can_set_expiration'],
+                            ),
+                            array(
+                                'content' => $categories_list,
                                 'condition' => $conditions['is_not_client'],
                             ),
                             array(

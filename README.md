@@ -47,6 +47,13 @@ Your server needs to be configured with at least:
 If possible, make sure to have php configured with:
 
 * memory_limit set to 128M or more
+* post_max_size set to 128M or more
+
+If files fail to upload, even small ones, try adding these lines to your config file (includes/sys.config.php) at the top.
+
+    @ini_set( 'upload_max_size' , '256M' );
+    @ini_set( 'post_max_size', '256M');
+    @ini_set( 'max_execution_time', '300' );
 
 ## Optional: Improve downloads by using XSendFile
 

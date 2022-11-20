@@ -1279,14 +1279,28 @@ function file_is_audio($full_path)
 function file_is_svg($file)
 {
     if (file_exists($file)) {
-        $svg_sanitizer = new Sanitizer();
-        $source_file = file_get_contents($file);
-        $sanitized_file = $svg_sanitizer->sanitize($source_file);
+        // Check by mime type
+            if (in_array(mime_content_type($file), [
+                'image/svg+xml',
+                'image/svg',
+            ])) {
+                return true;
+            }
     } else {
         return false;
     }
+}
 
-    return $sanitized_file;
+function sanitize_svg($file)
+{
+    try {
+        $svg_sanitizer = new Sanitizer();
+        $source_file = file_get_contents($file);
+        $sanitized_file = $svg_sanitizer->sanitize($source_file);
+        return $sanitized_file;
+    } catch (\Exception $e) {
+        return null;
+    }
 }
 
 /**
@@ -1412,10 +1426,12 @@ function get_branding_layout($return_thumbnail = false)
         $branding_image = ASSETS_IMG_URL . DEFAULT_LOGO_FILENAME;
     }
 
+    $replace = '<img src="' . $branding_image . '" alt="' . html_output(get_option('this_install_title')) . '" />';
+
     if ($branding['type'] == 'raster') {
         $replace = '<img src="' . $branding_image . '" alt="' . html_output(get_option('this_install_title')) . '" />';
     } elseif ($branding['type'] == 'vector') {
-        $replace = file_is_svg($branding['dir']);
+        $replace = sanitize_svg($branding['dir']);
     }
 
     $layout = str_replace('%LOGO%', $replace, $layout);
@@ -1625,7 +1641,7 @@ function option_file_upload($file, $validate_ext = '', $option = '', $action = '
     if (!empty($validate_ext)) {
         switch ($validate_ext) {
             case 'image':
-                $validate_types = "/^\.(jpg|jpeg|gif|png){1}$/i";
+                $validate_types = "/^\.(jpg|jpeg|gif|png|svg){1}$/i";
                 break;
             default:
                 break;

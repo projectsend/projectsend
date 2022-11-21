@@ -141,6 +141,16 @@
     </div>
 </div>
 
+
+<div class="form-group row">
+    <div class="col-sm-8 offset-sm-4">
+        <label for="download_logging_ignore_file_author">
+            <input type="checkbox" value="1" name="download_logging_ignore_file_author" id="download_logging_ignore_file_author" class="checkbox_options" <?php echo (get_option('download_logging_ignore_file_author') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Do not log downloads by the file's uploader",'cftp_admin'); ?>
+            <p class="field_note form-text"><?php _e("When a user or client downloads their own files, do not log the download or add to the downloads count.",'cftp_admin'); ?></p>
+        </label>
+    </div>
+</div>
+
 <div class="options_divide"></div>
 
 <h3><?php _e('System location','cftp_admin'); ?></h3>

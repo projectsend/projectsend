@@ -18,6 +18,7 @@ switch ($section) {
             'files_default_expire',
             'files_descriptions_use_ckeditor',
             'use_browser_lang',
+            'download_logging_ignore_file_author',
         );
         break;
     case 'clients':

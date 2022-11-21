@@ -1896,6 +1896,15 @@ function record_new_download($user_id = CURRENT_USER_ID, $file_id = null)
         $statement->bindValue(':anonymous', 1, PDO::PARAM_INT);
         $statement->execute();
     } else {
+        // Do not log if option is enabled and downloader is the original author
+        if (get_option('download_logging_ignore_file_author') == '1') {
+            $file = new \ProjectSend\Classes\Files($file_id);
+            if ($file->user_id == $user_id) {
+                return;
+            }
+        }
+
+        // Record the download
         $statement = $dbh->prepare("INSERT INTO " . TABLE_DOWNLOADS . " (user_id , file_id, remote_ip, remote_host) VALUES (:user_id, :file_id, :remote_ip, :remote_host)");
         $statement->bindValue(':user_id', $user_id, PDO::PARAM_INT);
         $statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);

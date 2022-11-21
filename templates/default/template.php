@@ -141,7 +141,7 @@ include_once LAYOUT_DIR . DS . 'folders-nav.php';
                         'content' => __('Date', 'cftp_admin'),
                     ),
                     array(
-                        'content' => __('Expiration date', 'cftp_admin'),
+                        'content' => __('Expiry', 'cftp_admin'),
                         'hide' => 'phone',
                     ),
                     array(

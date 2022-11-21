@@ -2029,23 +2029,29 @@ function count_account_requests_denied()
 // Function to get the client ip address
 function get_client_ip()
 {
-    $ipaddress = '';
-    if (!empty($_SERVER['HTTP_CLIENT_IP']))
-        $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
-    else if (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
-        $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-    else if (!empty($_SERVER['HTTP_X_FORWARDED']))
-        $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
-    else if (!empty($_SERVER['HTTP_FORWARDED_FOR']))
-        $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
-    else if (!empty($_SERVER['HTTP_FORWARDED']))
-        $ipaddress = $_SERVER['HTTP_FORWARDED'];
-    else if (!empty($_SERVER['REMOTE_ADDR']))
-        $ipaddress = $_SERVER['REMOTE_ADDR'];
-    else
-        $ipaddress = 'UNKNOWN';
+    // The 'null' value should pass validators
+    $ip = '0.0.0.0';
 
-    return $ipaddress;
+    // Expanded for readability
+    $ipHeaders = array(
+        'HTTP_X_REAL_IP',
+        'X-Forwarded-For',
+        'HTTP_X_FORWARDED_FOR',
+        'HTTP_CLIENT_IP',
+        'HTTP_VIA',
+        'CF-Connecting-IP',
+        'REMOTE_ADDR',
+    );
+    
+    // A bit more concise 
+    foreach($ipHeaders as $header) {
+        if (empty($_SERVER[$header])) continue;
+        $ip = $_SERVER[$header];
+        break;
+    }
+    
+    // Simplified single IP filtering
+    return explode(',', $ip)[0];
 }
 
 function convert_seconds($seconds)

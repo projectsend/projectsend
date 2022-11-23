@@ -24,75 +24,10 @@ It is recommended that you download the latest release from the official website
 
 Downloading a development version directly from the repository might give you unexpected results, such as visible errors, functions that are still not finished, etc.
 
-## Server requirements
+## Documentation
 
-Your server needs to be configured with at least:
-
-* php 7.4 or newer
-* MySQL 5.0 or newer(*)
-* Apache 2.2 or NGINX (recommended)
-* The following php extensions enabled on php.ini
-  * pdo
-  * pdo_mysql
-  * mbstring
-  * gettext
-  * fileinfo
-  * gd2
-  * xml
-  * zip
-* cURL extension is recommended
-
-(*) If you are using version 8.x or newer, please set the authentication method of your database so it uses the MySQL native password. The default method (caching_sha2_password) will not work. Thanks to user jellevdbos for pointing this out.
-
-If possible, make sure to have php configured with:
-
-* memory_limit set to 128M or more
-* post_max_size set to 128M or more
-
-If files fail to upload, even small ones, try adding these lines to your config file (includes/sys.config.php) at the top.
-
-    @ini_set( 'upload_max_size' , '256M' );
-    @ini_set( 'post_max_size', '256M');
-    @ini_set( 'max_execution_time', '300' );
-
-## Optional: Improve downloads by using XSendFile
-
-If you have access to edit your Apache or NGINX modules and configurations, it's recommended that you enable XSendFile so the files are served directly, eliminating php as a middle-man, which can be the cause of slow, interrupted downloads, or corrupted files.
-After enabling the module, make sure to also enable the option in the General options panel of ProjectSend.
-
-A few resources on how to get started:
-
-* [mod_xsendfile for Apache2/Apache2.2](https://tn123.org/mod_xsendfile/)
-* [XSendfile on NGINX wiki](https://www.nginx.com/resources/wiki/start/topics/examples/xsendfile/)
-
-## How to install on your server
-
-Preparations:
-
-1. Download and unzip the lastest version of ProjectSend to a folder of your choice.
-2. Create a new database on your server. Create/assign a user to it.
-
-When those are steps are completed, follow this instructions:
-
-1. Upload ProjectSend to your selected destination folder.
-2. Either:
-    * Rename includes/sys.config.sample.php to sys.config.php and set your database info there.
-    * Skip to next item to generate the file by inputting the data into a form in your browser.
-3. Go to https://your-projectsend-folder/install
-4. Complete the information there and wait for the correct installation message.
-
-Congratulations! ProjectSend is now installed and ready for action!
-You may login with your new username and password.
-
-## How to upgrade to a newer version
-
-1. Download your version of choice from the official project page.
-2. Upload the files via FTP to your server and replace the ones of the older version.
-
-That's it!
-Your personal configuration file (sys.config.php) is never included on the downloadable versions, so it will not be replaced while upgrading.
-When a system user logs in to the system version, a check for database missing data will be made, and if anything is found, it will be updated automatically and a message will appear under the menu one time only.
-Whenever a new version is available, you will be notified in the admin panel via a message shown under the main menu.
+Docs are maintained at https://projectsend.gitbook.io.
+There you will find installation requirements, instructions, tutorials, and troubleshooting information.
 
 ## Developing
 
@@ -122,19 +57,3 @@ ProjectSend is licensed under [GNU GPL v2](http://www.gnu.org/licenses/old-licen
 ## Change log
 
 [Available at the official site](http://www.projectsend.org/change-log/)
-
-## Special thanks
-
-Many thanks to the authors and teams behind the dependencies used by ProjectSend.
-
-Also, thank you to the following people/communities that helped during development, either by giving support, sending code, translations, etc.
-
-* lenamtl
-* Alejandro D'Ambrosio
-* k.flipflip
-* Diego Carreira Vidal
-* Scott Wright
-* mschop
-* Everyone that commented and gave suggestions on the issues and Facebook pages!
-* stackoverflow.com
-* iconfinder.com

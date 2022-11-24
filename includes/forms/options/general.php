@@ -79,6 +79,17 @@
 
 <div class="options_divide"></div>
 
+<h3><?php _e('Uploads','cftp_admin'); ?></h3>
+
+<div class="form-group row">
+    <div class="col-sm-8 offset-sm-4">
+        <label for="uploads_organize_folders_by_date">
+            <input type="checkbox" value="1" name="uploads_organize_folders_by_date" id="uploads_organize_folders_by_date" class="checkbox_options" <?php echo (get_option('uploads_organize_folders_by_date') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Organize uploads in folders based on year and month",'cftp_admin'); ?>
+            <p class="field_note form-text"><?php _e("For new uploads only. Will not affect existing files.",'cftp_admin'); ?></p>
+        </label>
+    </div>
+</div>
+
 <h3><?php _e('Uploads defaults','cftp_admin'); ?></h3>
 
 <div class="form-group row">

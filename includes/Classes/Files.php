@@ -27,6 +27,8 @@ class Files
     public $assignments_groups;
     public $categories;
     public $folder_id;
+    public $disk_folder_year;
+    public $disk_folder_month;
     public $uploaded_date;
     public $extension;
     public $size;
@@ -41,6 +43,7 @@ class Files
     public $embeddable;
     public $embeddable_type;
 
+    private $use_date_folder;
     private $is_filetype_allowed;
 
     public function __construct($file_id = null)
@@ -113,6 +116,8 @@ class Files
         $this->public = (!empty($arguments['public'])) ? (int)$arguments['public'] : 0;
 		$this->public_token = (!empty($arguments['public_token'])) ? encode_html($arguments['public_token']) : null;
         $this->folder_id = (!empty($arguments['folder_id'])) ? encode_html($arguments['folder_id']) : null;
+        $this->disk_folder_year = (isset($this->date_folder_year)) ? (int)$this->date_folder_year : null;
+        $this->disk_folder_month = (isset($this->date_folder_month)) ? (int)$this->date_folder_month : null;
 
         // Assignations
 		$this->assignations_groups = !empty( $arguments['assignations_groups'] ) ? to_array_if_not($arguments['assignations_groups']) : null;
@@ -166,9 +171,11 @@ class Files
             $this->public_token = html_output($row['public_token']);
             $this->public_url = BASE_URI . 'download.php?id=' . $this->id . '&token=' . $this->public_token;
             $this->folder_id = html_output($row['folder_id']);
+            $this->disk_folder_year = html_output($row['disk_folder_year']);
+            $this->disk_folder_month = html_output($row['disk_folder_month']);
         }
 
-        $this->setFullPath();
+        $this->full_path = $this->getFilePath();
         $this->isExpired();
         $this->setExtension();
         $this->getSize();
@@ -359,6 +366,49 @@ class Files
     private function setFullPath()
     {
         $this->full_path = $this->location . DS . $this->filename_on_disk;
+
+        if (get_option('uploads_organize_folders_by_date') == '1') {
+            $use_date_folder = false;
+            $y =  date('Y');
+            $m =  date('m');
+            $year_folder = $this->location . DS .$y;
+            $month_folder = $year_folder.DS.$m;
+            if (!is_dir($year_folder)) {
+                @mkdir($year_folder, 0775, false);
+            }
+
+            if (!is_dir($month_folder)) {
+                @mkdir($month_folder, 0775, false);
+            }
+
+            if (is_dir($month_folder)) {
+                $use_date_folder = true;
+                $this->date_folder_year = $y;
+                $this->date_folder_month = $m;
+            }
+
+            if ($use_date_folder) {
+                $this->full_path = $month_folder . DS . $this->filename_on_disk;
+            }
+        }
+
+        return $this->full_path;
+    }
+
+    private function getFilePath()
+    {
+        $path = UPLOADED_FILES_DIR.DS;
+
+        if (!empty($this->disk_folder_year)) {
+            $path .= $this->disk_folder_year.DS;
+        }
+        if (!empty($this->disk_folder_month)) {
+            $path .= $this->disk_folder_month.DS;
+        }
+
+        $path .= $this->filename_on_disk;
+
+        return $path;
     }
 
     /**
@@ -459,12 +509,12 @@ class Files
 		$this->makehash = sha1($this->username);
 
 		$this->filename_on_disk = time().'-'.$this->makehash.'-'.$safe_filename;
-        $this->path = UPLOADED_FILES_DIR.DS.$this->filename_on_disk;
+        $this->setFullPath();
 
-        if (file_exists($this->path)) {
-            $ext_pos = strrpos($this->path, '.');
-            $path_name = substr($this->path, 0, $ext_pos);
-            $path_ext = substr($this->path, $ext_pos);
+        if (file_exists($this->full_path)) {
+            $ext_pos = strrpos($this->full_path, '.');
+            $path_name = substr($this->full_path, 0, $ext_pos);
+            $path_ext = substr($this->full_path, $ext_pos);
 
             // Disk name
             $disk_ext_pos = strrpos($this->filename_on_disk, '.');
@@ -486,9 +536,9 @@ class Files
         }
 
 		
-		if (rename($temp_name, $this->path)) {
+		if (rename($temp_name, $this->full_path)) {
 
-            @chmod($this->path, 0644);
+            @chmod($this->full_path, 0644);
 
             $return = array(
                 'filename_original' => $this->filename_original,
@@ -701,7 +751,7 @@ class Files
 
         try {
             // Use the id and uri information to delete the file.
-            $delete = delete_file_from_disk(UPLOADED_FILES_DIR . DS . $this->filename_on_disk);
+            $delete = delete_file_from_disk($this->getFilePath());
 
             // Delete the reference to the file on the database only if file is deleted from disk
             if ($delete) {
@@ -755,9 +805,11 @@ class Files
 		$this->uploader_type = CURRENT_USER_TYPE;
 		$this->hidden = 0;
         $this->public_token = generate_random_string(32);
+        $this->disk_folder_year = (isset($this->date_folder_year)) ? (int)$this->date_folder_year : null;
+        $this->disk_folder_month = (isset($this->date_folder_month)) ? (int)$this->date_folder_month : null;
 		
-        $statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (user_id, url, original_url, filename, description, uploader, expires, expiry_date, public_allow, public_token)"
-                                        ."VALUES (:user_id, :url, :original_url, :title, :description, :uploader, :expires, :expiry_date, :public, :public_token)");
+        $statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (user_id, url, original_url, filename, description, uploader, expires, expiry_date, public_allow, public_token, disk_folder_year, disk_folder_month)"
+                                        ."VALUES (:user_id, :url, :original_url, :title, :description, :uploader, :expires, :expiry_date, :public, :public_token, :disk_folder_year, :disk_folder_month)");
         $statement->bindParam(':user_id', $this->uploader_id, PDO::PARAM_INT);
         $statement->bindParam(':url', $this->filename_on_disk);
         $statement->bindParam(':original_url', $this->filename_original);
@@ -768,6 +820,8 @@ class Files
         $statement->bindParam(':expiry_date', $this->expiry_date);
         $statement->bindParam(':public', $this->public, PDO::PARAM_INT);
         $statement->bindParam(':public_token', $this->public_token);
+        $statement->bindParam(':disk_folder_year', $this->disk_folder_year, PDO::PARAM_INT);
+        $statement->bindParam(':disk_folder_month', $this->disk_folder_month, PDO::PARAM_INT);
         $statement->execute();
 
         $this->file_id = $this->dbh->lastInsertId();

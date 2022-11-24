@@ -16,6 +16,7 @@ switch ($section) {
             'xsendfile_enable',
             'footer_custom_enable',
             'files_default_expire',
+            'uploads_organize_folders_by_date',
             'files_descriptions_use_ckeditor',
             'use_browser_lang',
             'download_logging_ignore_file_author',
@@ -247,6 +248,17 @@ if ($section == 'security') {
         $flash->warning(__('Warning: php extension is allowed. This is a serious security problem. If you are not sure that you need it, please remove it from the list.', 'cftp_admin'));
     }
 }
+
+// Test folders
+if ($section == 'general' && get_option('uploads_organize_folders_by_date') == '1') {
+    $test_folder = UPLOADED_FILES_DIR.DS.'temp_folder_'.rand(10000,99999);
+    if (@mkdir($test_folder)) {
+        $flash->error("Warning: could not create a test folder in the uploads directory. Please try setting it's permissions to 775 and reload this page. If the issue persists, please disable the option to organize uploads in date based folders.");
+    } else {
+        @rmdir($test_folder);
+    }
+}
+
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>

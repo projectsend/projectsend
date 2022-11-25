@@ -1012,7 +1012,9 @@ function htmlentities_allowed($str, $quoteStyle = ENT_COMPAT, $charset = CHARSET
 // Remove script and style tags
 function htmlentities_allowed_code_editor($html, $quoteStyle = ENT_COMPAT, $charset = CHARSET, $doubleEncode = false)
 {
-    $html = htmlspecialchars_decode($html, $quoteStyle);
+    if (!empty($html)) {
+        $html = htmlspecialchars_decode($html, $quoteStyle);
+    }
     // $html = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $html);
     // $html = preg_replace('#<style(.*?)>(.*?)</style>#is', '', $html);
 

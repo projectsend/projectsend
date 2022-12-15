@@ -10,10 +10,17 @@ $page_title    = __("Templates", 'cftp_admin');
 $active_nav = 'templates';
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
+$templates = look_for_templates();
+$valid_templates = array_map(function($t) { return $t['location']; }, $templates);
+
 /**
  * Changing the client's template
  */
 if (isset($_GET['activate_template'])) {
+    if (!in_array($_GET['activate_template'], $valid_templates)) {
+        exit_with_error_code(403);
+    }
+
     $save = save_option('selected_clients_template', $_GET['activate_template']);
 
     global $flash;
@@ -28,8 +35,6 @@ if (isset($_GET['activate_template'])) {
 
     ps_redirect(BASE_URI . 'templates.php');
 }
-
-$templates = look_for_templates();
 ?>
 <div class="row">
     <div class="col-12 col-sm-12 col-lg-12">

@@ -255,11 +255,38 @@ function render_categories_options(&$categories = [], $arguments = [])
 
     $arguments['selected'] = to_array_if_not($arguments['selected']);
     foreach ($categories as $id => $category) {
-        $depth = ($category['depth'] > 0) ? str_repeat('&mdash;', $category['depth']) . ' ' : false;
-        $selected = (!empty($arguments['selected']) && in_array($id, $arguments['selected'])) ? 'selected="selected"' : '';
-        $return .= '<option '.$selected.' value="'.$id.'">'.$depth . $category['name'].'</option>';
+        if (!empty($category['name'])) {
+            $depth = ($category['depth'] > 0) ? str_repeat('&mdash;', $category['depth']) . ' ' : false;
+            $selected = (!empty($arguments['selected']) && in_array($id, $arguments['selected'])) ? 'selected="selected"' : '';
+            $return .= '<option '.$selected.' value="'.$id.'">'.$depth . $category['name'].'</option>';
+        }
         if (!empty($category['children'])) {
             $return .= render_categories_options($category['children'], $arguments);
+        }
+    }
+
+    return $return;
+}
+
+function format_categories_options(&$categories = [], $arguments = [])
+{
+    $return = [];
+    if (empty($categories)) {
+        return $return;
+    }
+
+    $arguments['selected'] = (!empty($arguments['selected'])) ? to_array_if_not($arguments['selected']) : null;
+    foreach ($categories as $id => $category) {
+        if (!empty($category['name'])) {
+            $depth = ($category['depth'] > 0) ? str_repeat('&mdash;', $category['depth']) . ' ' : false;
+            $return[] = [
+                'id' => $id,
+                'label' => $depth . $category['name'],
+            ];
+        }
+        if (!empty($category['children'])) {
+            $new = format_categories_options($category['children'], $arguments);
+            $return = array_merge($return, $new);
         }
     }
 

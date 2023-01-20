@@ -57,12 +57,14 @@ $filters_form = [
     'action' => '',
     'items' => [],
 ];
+
 if (!empty($cat_ids)) {
     $selected_parent = (isset($_GET['category'])) ? [$_GET['category']] : [];
     $category_filter = [];
-    $generate_categories_options = generate_categories_options($get_categories['categories'], 0, $selected_parent, 'include', $cat_ids);
-    foreach ($generate_categories_options as $category_id => $category) {
-        $category_filter[$category_id] = $category['name'];
+    $generate_categories_options = generate_categories_options($get_categories['arranged'], 0, $selected_parent, 'include', $cat_ids);
+    $format_categories_options = format_categories_options($generate_categories_options);
+    foreach ($format_categories_options as $key => $category) {
+        $category_filter[$category['id']] = $category['label'];
     }
     $filters_form['items']['category'] = [
         'current' => (isset($_GET['category'])) ? $_GET['category'] : null,

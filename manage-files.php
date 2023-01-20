@@ -714,8 +714,8 @@ include_once LAYOUT_DIR . DS . 'folders-nav.php';
                         $statement->execute();
                         if ($statement->rowCount() > 0) {
                             $statement->setFetchMode(PDO::FETCH_ASSOC);
-                            while ($row = $statement->fetch()) {
-                                $categories[] = $row['category_name'];
+                            while ($crow = $statement->fetch()) {
+                                $categories[] = $crow['category_name'];
                             }
                         }
                         if (!empty($categories)) {

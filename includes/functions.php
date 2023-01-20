@@ -986,6 +986,7 @@ function html_output($str, $flags = ENT_QUOTES, $encoding = CHARSET, $double_enc
  */
 function htmlentities_allowed($str, $quoteStyle = ENT_COMPAT, $charset = CHARSET, $doubleEncode = false)
 {
+    if ($str == null) { return $str; }
     //$description = htmlspecialchars($str, $quoteStyle, $charset, $doubleEncode);
     $string = htmlspecialchars_decode($str, $quoteStyle);
     return strip_tags($string, '<i><b><strong><em><p><br><ul><ol><li><u><sup><sub><s>');
@@ -1248,7 +1249,7 @@ function get_file_type_by_mime($full_path)
 function file_is_image($full_path)
 {
     $mimeType = get_file_type_by_mime($full_path);
-    if (explode('/', $mimeType)[0] == 'image') {
+    if ($mimeType != null && explode('/', $mimeType)[0] == 'image') {
         return true;
     }
 

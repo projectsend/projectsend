@@ -173,6 +173,7 @@ class Files
             $this->folder_id = html_output($row['folder_id']);
             $this->disk_folder_year = html_output($row['disk_folder_year']);
             $this->disk_folder_month = html_output($row['disk_folder_month']);
+            if (is_numeric($this->disk_folder_month) && $this->disk_folder_month < 10) $this->disk_folder_month = '0' . $this->disk_folder_month;
         }
 
         $this->full_path = $this->getFilePath();

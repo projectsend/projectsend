@@ -60,7 +60,7 @@ if ($_POST) {
         $flash->success(__('User created successfully'));
         $redirect_to = BASE_URI . 'users-edit.php?id=' . $create['id'];
     } else {
-        $flash->error(__('There was an error saving to the database'));
+        $flash->error($new_user->getValidationErrors());
         $redirect_to = BASE_URI . 'users-add.php';
     }
 
@@ -87,8 +87,6 @@ if ($_POST) {
             <div class="white-box-interior">
                 <?php
                 // If the form was submitted with errors, show them here.
-                echo $new_user->getValidationErrors();
-
                 $user_form_type = 'new_user';
                 include_once FORMS_DIR . DS . 'users.php';
                 ?>

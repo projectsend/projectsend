@@ -13,6 +13,11 @@ class Validation
     private $dbh;
     private $errors = [];
 
+    protected $allowed_upper;
+    protected $allowed_lower;
+    protected $allowed_numbers;
+    protected $allowed_symbols;
+
     public function __construct() {
         global $dbh;
         $this->dbh = $dbh;
@@ -86,7 +91,7 @@ class Validation
 
     private function alpha_underscores($value)
     {
-        return (preg_match('/[^0-9A-Za-z._]/', $value) != true);
+        return (preg_match('/[^0-9A-Za-z.]/', $value) != true);
     }
 
     private function password($value)
@@ -171,18 +176,18 @@ class Validation
 
     private function user_exists($value)
     {
-        $this->statement = $this->dbh->prepare( "SELECT user FROM " . TABLE_USERS . " WHERE user = :user" );
-        $this->statement->execute([
+        $statement = $this->dbh->prepare( "SELECT user FROM " . TABLE_USERS . " WHERE user = :user" );
+        $statement->execute([
             ':user' => $value,
         ]);
 
-        return ($this->statement->rowCount() == 0);
+        return ($statement->rowCount() == 0);
     }
 
     private function email_exists($value, $data = [])
     {
-        $this->sql_users = "SELECT id, email FROM " . TABLE_USERS . " WHERE email = :email";
-        $this->params = [
+        $query = "SELECT id, email FROM " . TABLE_USERS . " WHERE email = :email";
+        $params = [
             ':email' => $value
         ];
         /**
@@ -191,15 +196,14 @@ class Validation
          * the owner of that e-mail address.
          */
         if (!empty($data['id_ignore'])) {
-            $this->sql_not_this	= " AND id != :id";
-            $this->sql_users .= $this->sql_not_this;
-            $this->params[':id'] = $data['id_ignore'];
+            $query .= " AND id != :id";
+            $params[':id'] = $data['id_ignore'];
         }
 
-        $this->statement = $this->dbh->prepare( $this->sql_users );
-        $this->statement->execute( $this->params );
+        $statement = $this->dbh->prepare( $query );
+        $statement->execute( $params );
 
-        return ($this->statement->rowCount() == 0);
+        return ($statement->rowCount() == 0);
     }
 
     private function recaptcha2($value)
@@ -225,7 +229,7 @@ class Validation
      * If errors were found, concatenate the container div (defined above) and the
      * returned errors.
      */
-    function list_errors()
+    function list_errors($wrapper = true)
     {
         $before_error = '<div class="alert alert-danger alert-block">
                             <a href="#" class="close" data-dismiss="alert">&times;</a>
@@ -233,6 +237,10 @@ class Validation
                             <ol>';
         $after_error = '</ol>
                         </div>';
+        if ($wrapper == false) {
+            $before_error = '<ul>';
+            $after_error = '</ul>';
+        }
 
         if (!empty($this->errors)) {
             $return = $before_error;

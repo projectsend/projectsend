@@ -381,7 +381,7 @@ class Users
             return true;
         } else {
             $this->validation_passed = false;
-            $this->validation_errors = $validation->list_errors();
+            $this->validation_errors = $validation->list_errors(false);
         }
 
         return false;

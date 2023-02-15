@@ -841,7 +841,7 @@ class Users
             return;
         }
 
-        if (CURRENT_USER_ID == $this->id) {
+        if (defined('CURRENT_USER_ID') && CURRENT_USER_ID == $this->id) {
             return;
         }
 

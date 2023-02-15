@@ -84,6 +84,11 @@ class Validation
         return (preg_match('/[^0-9A-Za-z.]/', $value) != true);
     }
 
+    private function alpha_underscores($value)
+    {
+        return (preg_match('/[^0-9A-Za-z._]/', $value) != true);
+    }
+
     private function password($value)
     {
         $allowed_characters = array_merge($this->allowed_numbers,$this->allowed_lower,$this->allowed_upper,$this->allowed_symbols);

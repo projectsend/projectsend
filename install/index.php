@@ -48,7 +48,7 @@ if ($_POST) {
         ],
         $admin_username => [
             'required' => ['error' => $json_strings['validation']['no_user']],
-            'alpha_or_dot' => ['error' => $json_strings['validation']['alpha_user']],
+            'alpha_underscores' => ['error' => $json_strings['validation']['alpha_user']],
             'length' => ['error' => $json_strings['validation']['length_user'], 'min' => MIN_USER_CHARS, 'max' => MAX_USER_CHARS],
 
         ],

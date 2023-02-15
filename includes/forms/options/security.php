@@ -74,7 +74,7 @@
 <div class="form-group row">
     <div class="col-sm-8 offset-sm-4">
         <label for="recaptcha_enabled">
-            <input type="checkbox" value="1" name="recaptcha_enabled" id="recaptcha_enabled" class="checkbox_options" <?php echo (get_option('recaptcha_enabled') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Use reCAPTCHA','cftp_admin'); ?>
+            <input type="checkbox" value="1" name="recaptcha_enabled" id="recaptcha_enabled" class="checkbox_options" <?php echo (get_option('recaptcha_enabled') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Use reCAPTCHA','cftp_admin'); ?> <?php _e('(v2 currently supported)','cftp_admin'); ?>
         </label>
     </div>
 </div>

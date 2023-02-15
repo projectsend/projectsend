@@ -419,14 +419,13 @@ class Users
             return $state;
         }
 
-        $this->password_hashed = $this->hashPassword($this->password);
+        $password_hashed = $this->hashPassword($this->password);
 
-        if (strlen($this->password_hashed) >= 20) {
+        if (strlen($password_hashed) >= 20) {
             /** Who is creating the client? */
             $this->created_by = (defined('CURRENT_USER_USERNAME')) ? CURRENT_USER_USERNAME : null;
 
             /** Insert the client information into the database */
-            $this->timestamp = time();
             $statement = $this->dbh->prepare(
                 "INSERT INTO " . TABLE_USERS . " (
                     name, user, password, level, address, phone, email, notify, contact, created_by, active, account_requested, max_file_size, can_upload_public
@@ -437,7 +436,7 @@ class Users
             );
             $statement->bindParam(':name', $this->name);
             $statement->bindParam(':username', $this->username);
-            $statement->bindParam(':password', $this->password_hashed);
+            $statement->bindParam(':password', $password_hashed);
             $statement->bindParam(':role', $this->role, PDO::PARAM_INT);
             $statement->bindParam(':address', $this->address);
             $statement->bindParam(':phone', $this->phone);
@@ -475,9 +474,9 @@ class Users
                 }
 
                 /** Send account data by email */
-                $this->notify_user = new \ProjectSend\Classes\Emails;
+                $notify_user = new \ProjectSend\Classes\Emails;
                 if ($this->notify_account == 1) {
-                    if ($this->notify_user->send([
+                    if ($notify_user->send([
                         'type'        => $email_type,
                         'address'    => $this->email,
                         'username'    => $this->username,
@@ -569,7 +568,7 @@ class Users
         }
 
         /** SQL query */
-        $this->query = "UPDATE " . TABLE_USERS . " SET
+        $query = "UPDATE " . TABLE_USERS . " SET
                                     name = :name,
                                     level = :role,
                                     address = :address,
@@ -583,12 +582,12 @@ class Users
 
         /** Add the password to the query if it's not the dummy value '' */
         if (!empty($this->password)) {
-            $this->query .= ", password = :password";
+            $query .= ", password = :password";
         }
 
-        $this->query .= " WHERE id = :id";
+        $query .= " WHERE id = :id";
 
-        $statement = $this->dbh->prepare($this->query);
+        $statement = $this->dbh->prepare($query);
         $statement->bindParam(':name', $this->name);
         $statement->bindParam(':role', $this->role, PDO::PARAM_INT);
         $statement->bindParam(':address', $this->address);
@@ -600,8 +599,8 @@ class Users
         $statement->bindParam(':can_upload_public', $this->can_upload_public, PDO::PARAM_INT);
         $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         if (!empty($this->password)) {
-            $this->password_hashed = $this->hashPassword($this->password);
-            $statement->bindParam(':password', $this->password_hashed);
+            $password_hashed = $this->hashPassword($this->password);
+            $statement->bindParam(':password', $password_hashed);
         }
 
         $statement->execute();
@@ -654,9 +653,9 @@ class Users
         if (isset($this->id)) {
             /** Do a permissions check */
             if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-                $this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_USERS . ' WHERE id=:id');
-                $this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
-                $this->sql->execute();
+                $sql = $this->dbh->prepare('DELETE FROM ' . TABLE_USERS . ' WHERE id=:id');
+                $sql->bindParam(':id', $this->id, PDO::PARAM_INT);
+                $sql->execute();
 
                 switch ($this->role) {
                     case 0:
@@ -712,10 +711,10 @@ class Users
         if (isset($this->id)) {
             /** Do a permissions check */
             if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-                $this->sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active_state WHERE id=:id');
-                $this->sql->bindParam(':active_state', $change_to, PDO::PARAM_INT);
-                $this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
-                $this->sql->execute();
+                $sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active_state WHERE id=:id');
+                $sql->bindParam(':active_state', $change_to, PDO::PARAM_INT);
+                $sql->bindParam(':id', $this->id, PDO::PARAM_INT);
+                $sql->execute();
 
                 /** Record the action log */
                 $this->logger->addEntry([
@@ -739,12 +738,12 @@ class Users
         if (isset($this->id)) {
             /** Do a permissions check */
             if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-                $this->sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active, account_requested=:requested, account_denied=:denied WHERE id=:id');
-                $this->sql->bindValue(':active', 1, PDO::PARAM_INT);
-                $this->sql->bindValue(':requested', 0, PDO::PARAM_INT);
-                $this->sql->bindValue(':denied', 0, PDO::PARAM_INT);
-                $this->sql->bindValue(':id', $this->id, PDO::PARAM_INT);
-                $this->status = $this->sql->execute();
+                $sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active, account_requested=:requested, account_denied=:denied WHERE id=:id');
+                $sql->bindValue(':active', 1, PDO::PARAM_INT);
+                $sql->bindValue(':requested', 0, PDO::PARAM_INT);
+                $sql->bindValue(':denied', 0, PDO::PARAM_INT);
+                $sql->bindValue(':id', $this->id, PDO::PARAM_INT);
+                $status = $sql->execute();
 
                 /**
                  * Check if the option to auto-add to a group
@@ -753,7 +752,6 @@ class Users
                 if (get_option('clients_auto_group') != '0') {
                     $this->addToAutoGroup();
                 }
-
 
                 /** Record the action log */
                 $this->logger->addEntry([
@@ -788,12 +786,12 @@ class Users
         if (isset($this->id)) {
             /** Do a permissions check */
             if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-                $this->sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active, account_requested=:account_requested, account_denied=:account_denied WHERE id=:id');
-                $this->sql->bindValue(':active', 0, PDO::PARAM_INT);
-                $this->sql->bindValue(':account_requested', 1, PDO::PARAM_INT);
-                $this->sql->bindValue(':account_denied', 1, PDO::PARAM_INT);
-                $this->sql->bindValue(':id', $this->id, PDO::PARAM_INT);
-                $this->status = $this->sql->execute();
+                $sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active, account_requested=:account_requested, account_denied=:account_denied WHERE id=:id');
+                $sql->bindValue(':active', 0, PDO::PARAM_INT);
+                $sql->bindValue(':account_requested', 1, PDO::PARAM_INT);
+                $sql->bindValue(':account_denied', 1, PDO::PARAM_INT);
+                $sql->bindValue(':id', $this->id, PDO::PARAM_INT);
+                $status = $sql->execute();
 
                 /** Record the action log */
                 $this->logger->addEntry([

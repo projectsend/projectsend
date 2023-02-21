@@ -184,3 +184,12 @@
         <input type="text" class="form-control" name="base_uri" id="base_uri" value="<?php echo BASE_URI; ?>" required />
     </div>
 </div>
+
+<h3><?php _e('Custom download URI','cftp_admin'); ?></h3>
+
+<div class="form-group row">
+    <label for="custom_download_uri" class="col-sm-4 control-label"><?php _e('Custom download URI','cftp_admin'); ?></label>
+    <div class="col-sm-8">
+        <input type="text" class="form-control" name="custom_download_uri" id="custom_download_uri" value="<?php echo get_option('custom_download_uri'); ?>" />
+    </div>
+</div>

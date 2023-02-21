@@ -1,35 +1,40 @@
 {
-	"name": "projectsend/projectsend",
-	"description": "ProjectSend is an open source, clients-oriented, private file sharing web application.",
-	"type": "project",
-	"license": "GPL-3.0-or-later",
-	"homepage": "https://www.projectsend.org/",
-	"support": {
-			"email": "contact@projectsend.org",
-			"issues": "https://github.com/projectsend/projectsend/issues",
-			"source": "https://github.com/projectsend/projectsend/"
-	},
-	"config": {
-		"preferred-install": "dist"
-	},
-	"prefer-stable": true,
-	"autoload": {
-        "psr-4": {
-            "ProjectSend\\": "includes/"
-        },
-        "classmap": ["includes"],
-		"files": [
-		]
-	},
-	"require": {
-        "php": ">=7.0",
-        "claviska/simpleimage": "~3",
-        "enshrined/svg-sanitize": "^0.15.0",
-        "moxiecode/plupload": "3.1.5",
-        "paragonie/random_compat": "^2.0",
-        "phpmailer/phpmailer": "~6.1",
-		"tamtamchik/simple-flash": "^2.0",
-		"hybridauth/hybridauth": "^3.0",
-		"cocur/slugify": "^4.2"
-	}
+  "name": "projectsend/projectsend",
+  "description": "ProjectSend is an open source, clients-oriented, private file sharing web application.",
+  "type": "project",
+  "license": "GPL-3.0-or-later",
+  "homepage": "https://www.projectsend.org/",
+  "support": {
+    "email": "contact@projectsend.org",
+    "issues": "https://github.com/projectsend/projectsend/issues",
+    "source": "https://github.com/projectsend/projectsend/"
+  },
+  "config": {
+    "preferred-install": "dist"
+  },
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "ProjectSend\\": "includes/"
+    },
+    "classmap": [
+      "includes"
+    ],
+    "files": [
+    ]
+  },
+  "require": {
+    "php": ">=7.0",
+    "claviska/simpleimage": "~3",
+    "enshrined/svg-sanitize": "^0.15.0",
+    "moxiecode/plupload": "3.1.5",
+    "paragonie/random_compat": "^2.0",
+    "phpmailer/phpmailer": "~6.1",
+    "tamtamchik/simple-flash": "^2.0",
+    "hybridauth/hybridauth": "^3.0",
+    "cocur/slugify": "^4.2",
+    "ext-pdo": "*",
+    "ext-json": "*",
+    "ext-exif": "*"
+  }
 }

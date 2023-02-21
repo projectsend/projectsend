@@ -41,6 +41,10 @@ if (current_role_in(array(9, 8, 7))) {
                 'link' => 'manage-files.php',
             ),
             array(
+                'label' => __('Manage downloads', 'cftp_admin'),
+                'link' => 'manage-downloads.php',
+            ),
+            array(
                 'label' => __('Find orphan files', 'cftp_admin'),
                 'link' => 'import-orphans.php',
             ),

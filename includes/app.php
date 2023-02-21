@@ -153,6 +153,7 @@ define('TABLE_PASSWORD_RESET', TABLES_PREFIX . 'password_reset');
 define('TABLE_LOGINS_FAILED', TABLES_PREFIX . 'logins_failed');
 define('TABLE_CRON_LOG', TABLES_PREFIX . 'cron_log');
 define('TABLE_CUSTOM_ASSETS', TABLES_PREFIX . 'custom_assets');
+define('TABLE_CUSTOM_DOWNLOADS', TABLES_PREFIX . 'custom_downloads');
 define('TABLE_USER_LIMIT_UPLOAD_TO', TABLES_PREFIX . 'user_limit_upload_to');
 define('TABLE_AUTHENTICATION_CODES', TABLES_PREFIX . 'authentication_codes');
 

@@ -1,4 +1,4 @@
-<form action="files-edit.php?ids=<?php echo html_output($_GET['ids']); ?>" name="files" id="files" method="post" enctype="multipart/form-data">
+<form action="files-edit.php?ids=<?php echo html_output($_GET['ids']); ?><?php if (isset($_GET['confirm'])) { echo "&confirmed=true"; } ?>" name="files" id="files" method="post" enctype="multipart/form-data">
     <?php addCsrf(); ?>
 
     <div class="container-fluid">
@@ -89,6 +89,30 @@
                                                                     <label for="pub_checkbox_<?php echo $i; ?>">
                                                                         <input type="checkbox" class="checkbox_setting_public" id="pub_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][public]" value="1" <?php if ($file->public) { ?>checked="checked"<?php } ?>/> <?php _e('Allow public downloading of this file.', 'cftp_admin');?>
                                                                     </label>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <div class="divider"></div>
+                                                                    <h3><?php _e('Custom downloads', 'cftp_admin');?></h3>
+                                                                    <?php foreach ($file->getCustomDownloads() as $j => $custom_download) {
+                                                                        $trans = __('Enter a custom download link.', 'cftp_admin');
+                                                                        $custom_download_uri = get_option('custom_download_uri');
+                                                                        if (!$custom_download_uri) $custom_download_uri = BASE_URI . 'custom_download.php?link=';
+                                                                        echo <<<EOL
+                                                                            <div class="input-group">
+                                                                                <input type="hidden" value="{$custom_download['link']}" name="file[$i][custom_downloads][$j][id]" />
+                                                                                <input type="text" name="file[$i][custom_downloads][$j][link]"
+                                                                                    id="custom_download_input_$j"
+                                                                                    value="{$custom_download['link']}"
+                                                                                    class="form-control"
+                                                                                    placeholder="$trans" />
+                                                                                <a href="#" class="input-group-text" onclick="navigator.clipboard.writeText('$custom_download_uri' + document.getElementById('custom_download_input_$j').value);">
+                                                                                    <i class="fa fa-copy" style="cursor: pointer"></i>
+                                                                                </a>
+                                                                            </div>
+EOL;
+                                                                    }
+                                                                    ?>
                                                                 </div>
                                                         <?php
                                                             }

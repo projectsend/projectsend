@@ -977,7 +977,7 @@ function vax($array)
 function html_output($str, $flags = ENT_QUOTES, $encoding = CHARSET, $double_encode = false)
 {
     if ($str == null) { return; }
-    return htmlentities($str, $flags, $encoding, $double_encode);
+    return htmlentities($str ?? '', $flags, $encoding, $double_encode);
 }
 
 /**

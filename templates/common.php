@@ -159,6 +159,7 @@ if (isset($filter_by_category) && $filter_by_category != '0') {
 /** Create the files list */
 $available_files = [];
 $my_files = [];
+$count = 0;
 
 if (!empty($found_all_files_array)) {
     $f = 0;

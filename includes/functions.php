@@ -1635,14 +1635,14 @@ function generate_safe_filename($filename)
 /**
  * Simple file upload. Used on normal file fields, eg: logo on branding page
  */
-function option_file_upload($file, $validate_ext = '', $option = '', $action = '')
+function option_file_upload($file, $validate_type = '', $option = '', $action = '')
 {
     global $dbh;
     $continue = true;
 
     /** Validate file extensions */
-    if (!empty($validate_ext)) {
-        switch ($validate_ext) {
+    if (!empty($validate_type)) {
+        switch ($validate_type) {
             case 'image':
                 $validate_types = "/^\.(jpg|jpeg|gif|png|svg){1}$/i";
                 break;
@@ -1658,6 +1658,10 @@ function option_file_upload($file, $validate_ext = '', $option = '', $action = '
          */
         if (!empty($validate_types) && !preg_match($validate_types, strrchr($safe_filename, '.'))) {
             $continue = false;
+        }
+        
+        if (file_is_svg($file['tmp_name'])) {
+            file_put_contents($file['tmp_name'], sanitize_svg($file['tmp_name']));
         }
 
         if ($continue) {

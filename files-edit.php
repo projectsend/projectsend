@@ -32,13 +32,79 @@ $saved_files = [];
 $categories = [];
 $get_categories = get_categories();
 
+function custom_download_exists($link)
+{
+    global $dbh;
+    $statement = $dbh->prepare('SELECT link, file_id FROM ' . TABLE_CUSTOM_DOWNLOADS . ' WHERE link=:link');
+    $statement->bindParam(':link', $link);
+    $statement->execute();
+    return $statement->fetchColumn();
+}
+
+function create_custom_download($link, $file_id, $client_id)
+{
+    global $dbh;
+    if (custom_download_exists($link)) {
+        $statement = $dbh->prepare('UPDATE ' . TABLE_CUSTOM_DOWNLOADS . ' SET file_id=:file_id, client_id=:client_id WHERE link=:link');
+        $statement->bindParam(':link', $link);
+        $statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
+        $statement->bindParam(':client_id', $client_id, PDO::PARAM_INT);
+        $statement->execute();
+        return true;
+    }
+    else {
+        $statement = $dbh->prepare('INSERT INTO ' . TABLE_CUSTOM_DOWNLOADS . ' (link, file_id, client_id) VALUES (:link, :file_id, :client_id)');
+        $statement->bindParam(':link', $link);
+        $statement->bindParam(':file_id', $file_id);
+        $statement->bindParam(':client_id', $client_id, PDO::PARAM_INT);
+        $statement->execute();
+    }
+    return false;
+}
+
 if (isset($_POST['save'])) {
     // Edit each file and its assignations
+    $confirm = false;
     foreach ($_POST['file'] as $file) {
         $object = new \ProjectSend\Classes\Files($file['id']);
         if ($object->recordExists()) {
             if ($object->save($file) != false) {
                 $saved_files[] = $file['id'];
+            }
+        }
+
+        foreach ($file['custom_downloads'] as $custom_download) {
+            global $dbh;
+
+            if (custom_download_exists($custom_download["link"]) && (!isset($_GET['confirmed']) || !$_GET['confirmed'])) {
+                $confirm = true;
+                continue;
+            }
+
+            if ($custom_download['id']) {
+                if ($custom_download['link']) {
+                    if ($custom_download['link'] != $custom_download['id']) {
+                        $statement = $dbh->prepare('UPDATE ' . TABLE_CUSTOM_DOWNLOADS . ' SET file_id=NULL WHERE link=:link');
+                        $statement->bindParam(':link', $custom_download['id']);
+                        $statement->execute();
+                        if (create_custom_download($custom_download['link'], $file['id'], CURRENT_USER_ID)) {
+                            global $flash;
+                            $flash->warning(__('Updated existing custom link to point to this file.', 'cftp_admin'));
+                        }
+                    }
+                }
+                else { // remove file_id from custom download
+                    $statement = $dbh->prepare('UPDATE ' . TABLE_CUSTOM_DOWNLOADS . ' SET file_id=NULL WHERE link=:link');
+                    $statement->bindParam(':link', $custom_download['id']);
+                    $statement->execute();
+                }
+            }
+            else {
+                if ($custom_download['link']) {
+                    if (create_custom_download($custom_download['link'], $file['id'], CURRENT_USER_ID)) {
+                        $flash->warning(__('Updated existing custom link to point to this file.', 'cftp_admin'));
+                    }
+                }
             }
         }
     }
@@ -71,8 +137,17 @@ if (isset($_POST['save'])) {
     // Redirect
     $saved = implode(',', $saved_files);
 
-    $flash->success(__('Files saved successfully', 'cftp_admin'));
-    ps_redirect('files-edit.php?ids=' . $saved . '&saved=true');
+
+    if ($confirm) {
+        global $flash;
+        $flash->success(__('Files saved successfully', 'cftp_admin'));
+        $flash->warning(__('A custom link like this already exists, enter it again to override.', 'cftp_admin'));
+        ps_redirect('files-edit.php?&ids=' . $saved . '&confirm=true');
+    }
+    else {
+        $flash->success(__('Files saved successfully', 'cftp_admin'));
+        ps_redirect('files-edit.php?&ids=' . $saved . '&saved=true');
+    }
 }
 
 // Message

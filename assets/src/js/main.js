@@ -59,6 +59,9 @@
                 admin.parts.filePreviewModal();
                 admin.parts.foldersAdmin();
                 break;
+            case 'manage_downloads':
+                admin.parts.filePreviewModal();
+                break;
             case 'reset_password_enter_email':
                 admin.pages.resetPasswordEnterEmail();
                 break;

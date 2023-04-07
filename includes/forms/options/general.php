@@ -103,6 +103,17 @@
         </p>
     </div>
 </div>
+<div class="form-group row">
+    <div class="col-sm-8 offset-sm-4">
+        <label for="files_default_public">
+            <input type="checkbox" value="1" name="files_default_public" id="files_default_public" class="checkbox_options" <?php echo (get_option('files_default_public') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Files are public by default",'cftp_admin'); ?>
+        </label>
+        <p class="field_note form-text">
+            <?php _e('Users can always set a download to be public. This option just makes the checkbox marked by default in the editor.', 'cftp_admin'); ?>
+            <?php _e('For clients not allowed to set it, this setting will be directly applied to the file.', 'cftp_admin'); ?>
+        </p>
+    </div>
+</div>
 
 <div class="form-group row">
     <label for="files_default_expire_days_after" class="col-sm-4 control-label"><?php _e('After these many days:','cftp_admin'); ?></label>
@@ -171,5 +182,14 @@
     <label for="base_uri" class="col-sm-4 control-label"><?php _e('System URI','cftp_admin'); ?></label>
     <div class="col-sm-8">
         <input type="text" class="form-control" name="base_uri" id="base_uri" value="<?php echo BASE_URI; ?>" required />
+    </div>
+</div>
+
+<h3><?php _e('Custom download URI','cftp_admin'); ?></h3>
+
+<div class="form-group row">
+    <label for="custom_download_uri" class="col-sm-4 control-label"><?php _e('Custom download URI','cftp_admin'); ?></label>
+    <div class="col-sm-8">
+        <input type="text" class="form-control" name="custom_download_uri" id="custom_download_uri" value="<?php echo get_option('custom_download_uri'); ?>" />
     </div>
 </div>

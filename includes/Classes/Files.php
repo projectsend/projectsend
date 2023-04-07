@@ -42,6 +42,7 @@ class Files
     public $mime_type;
     public $embeddable;
     public $embeddable_type;
+    public $custom_downloads = [];
 
     private $use_date_folder;
     private $is_filetype_allowed;
@@ -135,7 +136,7 @@ class Files
     }
 
     /**
-     * Get existing user data from the database
+     * Get existing file data from the database
      * @return bool
      */
     public function get($id)
@@ -173,6 +174,7 @@ class Files
             $this->folder_id = html_output($row['folder_id']);
             $this->disk_folder_year = html_output($row['disk_folder_year']);
             $this->disk_folder_month = html_output($row['disk_folder_month']);
+            if (is_numeric($this->disk_folder_month) && $this->disk_folder_month < 10) $this->disk_folder_month = '0' . $this->disk_folder_month;
         }
 
         $this->full_path = $this->getFilePath();
@@ -187,6 +189,32 @@ class Files
         $this->getCurrentCategories();
 
         return true;
+    }
+
+    public function getCustomDownloads()
+    {
+        if (!empty($this->custom_downloads))
+            return $this->custom_downloads;
+
+        $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_CUSTOM_DOWNLOADS . " WHERE file_id=:file_id");
+        $statement->bindParam(':file_id', $this->id);
+        $statement->execute();
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
+
+        while ($row = $statement->fetch()) {
+            $this->custom_downloads[] = $row;
+        }
+
+        $this->custom_downloads[] = [
+            'link' => null,
+            'client_id' => null,
+            'file_id' => $this->id,
+            'timestamp' => (new \DateTime())->getTimestamp(),
+            'expiry_date' => null,
+            'visit_count' => 0,
+        ];
+
+        return $this->custom_downloads;
     }
 
     public function recordExists()
@@ -791,7 +819,8 @@ class Files
         $this->title = $this->filename_original;
         $this->description = null;
         $this->expires = (!empty($expire)) ? $expire : 0;
-        $this->public = 0;
+        $public = get_option('files_default_public');
+        $this->public = (!empty($public)) ? $public : 0;
         $this->expiry_date = date('Y-m-d', strtotime("+$expire_days days"));
     }
 

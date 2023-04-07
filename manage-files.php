@@ -647,7 +647,7 @@ include_once LAYOUT_DIR . DS . 'folders-nav.php';
                             $thumbnail = make_thumbnail($file->full_path, null, 50, 50);
                             if (!empty($thumbnail['thumbnail']['url'])) {
                                 $preview_cell = '<a href="#" class="get-preview" data-url="' . BASE_URI . 'process.php?do=get_preview&file_id=' . $file->id . '">
-                                            <img src="' . $thumbnail['thumbnail']['url'] . '" class="thumbnail" />
+                                            <img alt="" src="' . $thumbnail['thumbnail']['url'] . '" class="thumbnail" />
                                         </a>';
                             }
                         }
@@ -668,7 +668,7 @@ include_once LAYOUT_DIR . DS . 'folders-nav.php';
                         }
 
                         // Expiration
-                        if ($file->expires == '0') {
+                        if ($file->expires == '0' || !$file->expires) {
                             $expires_button = 'success';
                             $expires_label = __('Does not expire', 'cftp_admin');
                         } else {

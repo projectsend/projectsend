@@ -228,7 +228,7 @@ if ($_POST) {
 
     // Record the action log
     $logger = new \ProjectSend\Classes\ActionsLog;
-    $new_record_action = $logger->addEntry([
+    $logger->addEntry([
         'action' => 47,
         'owner_id' => CURRENT_USER_ID,
         'owner_user' => CURRENT_USER_USERNAME,
@@ -252,10 +252,10 @@ if ($section == 'security') {
 // Test folders
 if ($section == 'general' && get_option('uploads_organize_folders_by_date') == '1') {
     $test_folder = UPLOADED_FILES_DIR.DS.'temp_folder_'.rand(10000,99999);
-    if (@mkdir($test_folder)) {
-        $flash->error("Warning: could not create a test folder in the uploads directory. Please try setting it's permissions to 775 and reload this page. If the issue persists, please disable the option to organize uploads in date based folders.");
-    } else {
+    if (@mkdir($test_folder, 0775)) {
         @rmdir($test_folder);
+    } else {
+        $flash->error("Warning: could not create a test folder in the uploads directory. Please try setting it's permissions to 775 and reload this page. If the issue persists, please disable the option to organize uploads in date based folders.");
     }
 }
 

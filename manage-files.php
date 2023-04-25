@@ -182,7 +182,7 @@ $folders_arguments = [
 if (!empty($_GET['search'])) {
     $folders_arguments['search'] = $_GET['search'];
 }
-if (CURRENT_USER_LEVEL == 0) {
+if (defined('CURRENT_USER_LEVEL') && CURRENT_USER_LEVEL == 0) {
     if (client_can_upload_public(CURRENT_USER_ID)) {
         $folders_arguments['public_or_client'] = true;
         $folders_arguments['client_id'] = CURRENT_USER_ID;
@@ -304,7 +304,7 @@ if ($query_table_files === true) {
      * If the user is an uploader, or a client is editing their files
      * only show files uploaded by that account.
      */
-    if (CURRENT_USER_LEVEL == '7' || CURRENT_USER_LEVEL == '0') {
+    if (defined('CURRENT_USER_LEVEL') && in_array(CURRENT_USER_LEVEL, [0, 7])) {
         $conditions[] = "uploader = :uploader";
         $no_results_error = 'account_level';
 
@@ -410,7 +410,7 @@ if (current_user_can_upload()) {
 
 // Search + filters bar data
 $search_form_action = 'manage-files.php';
-if (CURRENT_USER_LEVEL != '0') {
+if (defined('CURRENT_USER_LEVEL') && CURRENT_USER_LEVEL != '0') {
     $filters_form = [
         'action' => $current_url,
         'ignore_form_parameters' => ['hidden', 'action', 'uploader', 'assigned'],
@@ -448,20 +448,22 @@ $bulk_actions_items = [
     'none' => __('Select action', 'cftp_admin'),
     'edit' => __('Edit', 'cftp_admin'),
 ];
-if (CURRENT_USER_LEVEL != '0') {
+if (defined('CURRENT_USER_LEVEL') && CURRENT_USER_LEVEL != '0') {
     $bulk_actions_items['zip'] = __('Download zipped', 'cftp_admin');
     if (!isset($search_on)) {
         $bulk_actions_items['hide_everyone'] = __('Set to hidden from everyone already assigned', 'cftp_admin');
         $bulk_actions_items['show_everyone'] = __('Set to visible to everyone already assigned', 'cftp_admin');
     }
 }
-if (CURRENT_USER_LEVEL != '0' && isset($search_on)) {
-    $bulk_actions_items['hide'] = __('Set to hidden', 'cftp_admin');
-    $bulk_actions_items['show'] = __('Set to visible', 'cftp_admin');
-    $bulk_actions_items['unassign'] = __('Unassign', 'cftp_admin');
-} else {
-    if (CURRENT_USER_LEVEL != '0' || (CURRENT_USER_LEVEL == '0' && get_option('clients_can_delete_own_files') == '1'))
-        $bulk_actions_items['delete'] = __('Delete', 'cftp_admin');
+if (defined('CURRENT_USER_LEVEL')) {
+    if (CURRENT_USER_LEVEL != '0' && isset($search_on)) {
+        $bulk_actions_items['hide'] = __('Set to hidden', 'cftp_admin');
+        $bulk_actions_items['show'] = __('Set to visible', 'cftp_admin');
+        $bulk_actions_items['unassign'] = __('Unassign', 'cftp_admin');
+    } else {
+        if (CURRENT_USER_LEVEL != '0' || (CURRENT_USER_LEVEL == '0' && get_option('clients_can_delete_own_files') == '1'))
+            $bulk_actions_items['delete'] = __('Delete', 'cftp_admin');
+    }
 }
 
 // Include layout files

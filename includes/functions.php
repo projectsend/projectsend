@@ -630,6 +630,10 @@ function client_can_assign_to_public_folder($client_id)
 
 function current_user_can_upload()
 {
+    if (!defined('CURRENT_USER_LEVEL')) {
+        return false;
+    }
+
     switch (CURRENT_USER_LEVEL) {
         case 9:
         case 8:

@@ -18,6 +18,7 @@ $allowed_levels = array(9, 8, 7);
 if (get_option('clients_can_upload') == 1) {
     $allowed_levels[] = 0;
 }
+log_in_required($allowed_levels);
 
 if (LOADED_LANG != 'en') {
     $plupload_lang_file = 'vendor/moxiecode/plupload/js/i18n/' . LOADED_LANG . '.js';

@@ -4,6 +4,7 @@
  */
 $allowed_levels = array(9);
 require_once 'bootstrap.php';
+log_in_required($allowed_levels);
 
 $section = (!empty($_GET['section'])) ? $_GET['section'] : $_POST['section'];
 
@@ -16,6 +17,7 @@ switch ($section) {
             'xsendfile_enable',
             'footer_custom_enable',
             'files_default_expire',
+            'files_default_public',
             'uploads_organize_folders_by_date',
             'files_descriptions_use_ckeditor',
             'use_browser_lang',
@@ -121,6 +123,7 @@ if ($_POST) {
     /** Values that can be empty */
     $allowed_empty_values = [
         'footer_custom_content',
+        'custom_download_uri',
         'mail_copy_addresses',
         'mail_smtp_host',
         'mail_smtp_port',

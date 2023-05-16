@@ -4,7 +4,16 @@
  * client or user.
  */
 
- function extend_session()
+function log_in_required($allowed_levels)
+{
+    // Check for an active session
+    redirect_if_not_logged_in();
+
+    // Check if the current user has permission to view this page.
+    redirect_if_role_not_allowed($allowed_levels);
+}
+
+function extend_session()
 {
     $_SESSION['last_call'] = time();
 }

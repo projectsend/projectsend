@@ -6,6 +6,7 @@ use ProjectSend\Classes\ActionsLog;
 /** Process an action */
 $allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
+log_in_required($allowed_levels);
 
 global $auth;
 global $logger;

@@ -9,6 +9,7 @@
  */
 $allowed_levels = array(9, 8, 7);
 require_once 'bootstrap.php';
+log_in_required($allowed_levels);
 
 $active_nav = 'files';
 $this_page = 'import-orphans.php';

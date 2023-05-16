@@ -6,6 +6,8 @@
  */
 $allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
+log_in_required($allowed_levels);
+
 $active_nav = 'files';
 
 $page_title = __('Manage files', 'cftp_admin');

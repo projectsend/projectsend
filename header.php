@@ -8,12 +8,6 @@
  */
 if (!defined('VIEW_TYPE')) define('VIEW_TYPE', 'private');
 
-// Check for an active session
-redirect_if_not_logged_in();
-
-// Check if the current user has permission to view this page.
-redirect_if_role_not_allowed($allowed_levels);
-
 global $flash;
 
 /** If no page title is defined, revert to a default one */

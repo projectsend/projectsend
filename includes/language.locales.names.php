@@ -81,6 +81,7 @@ $locales_names = array(
     'zh_Hant_HK' => "Chinese (Traditional Han, Hong Kong SAR China)",
     'zh_Hant_MO' => "Chinese (Traditional Han, Macau SAR China)",
     'zh_Hant_TW' => "Chinese (Traditional Han, Taiwan)",
+    'zh_tw' => "Chinese (Taiwan)",
     'zh' => "Chinese",
     'kw_GB' => "Cornish (United Kingdom)",
     'kw' => "Cornish",

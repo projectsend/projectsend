@@ -398,7 +398,7 @@ class Files
         if (get_option('uploads_organize_folders_by_date') == '1') {
             $use_date_folder = false;
             $y =  date('Y');
-            $m =  date('n');
+            $m =  date('m');
             $year_folder = $this->location . DS .$y;
             $month_folder = $year_folder.DS.$m;
             if (!is_dir($year_folder)) {

@@ -35,6 +35,7 @@
     "cocur/slugify": "^4.2",
     "ext-pdo": "*",
     "ext-json": "*",
-    "ext-exif": "*"
+    "ext-exif": "*",
+    "ext-iconv": "*"
   }
 }

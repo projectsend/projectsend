@@ -1,12 +1,13 @@
 <?php
 
-$allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
 
 $link = htmlentities($_GET['link']);
 if (!$link) {
     exit_with_error_code(400);
 }
+
+$link = urldecode($link);
 
 /**
  * @var PDO $dbh
@@ -30,7 +31,7 @@ while ($row = $statement->fetch()) {
     $visit_count = html_output($row['visit_count']);
 }
 
-if (!is_null($expiry_date) && $expiry_date <= (new DateTime())->getTimestamp()) {
+if ($expiry_date && $expiry_date <= (new DateTime())->getTimestamp()) {
     // link expired
     exit_with_error_code(410);
 }
@@ -46,5 +47,12 @@ $visit_count++;
 $statement->bindParam(':visit_count', $visit_count, PDO::PARAM_INT);
 $statement->bindParam(':link', $link);
 $statement->execute();
+
+if (isset($_GET['img']) && $file->isImage()) {
+    $dir = $file->disk_folder_year ? $file->disk_folder_year . DS . $file->disk_folder_month . DS : '';
+    if (file_exists(UPLOADED_FILES_DIR . DS . $dir . $file->filename_on_disk)) {
+        ps_redirect(BASE_URI . DS . UPLOADED_FILES_URL . $dir . $file->filename_on_disk);
+    }
+}
 
 ps_redirect(BASE_URI . "download.php?id={$file->id}&token={$file->public_token}");

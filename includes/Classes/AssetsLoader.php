@@ -34,11 +34,14 @@ Class AssetsLoader
                 'respondjs' =>['url' => ASSETS_LIB_URL.'/respond.min.js', 'version' => '1.4.2', 'args' => ['condition' => 'lt IE 9']],
             ],
             'footer' => [
-                'recaptcha2' =>['url' => 'https://www.google.com/recaptcha/api.js'],
                 'js_assets' =>['url' => ASSETS_JS_URL . '/assets.js', 'version' => $db_version],
                 'js_app' =>['url' => ASSETS_JS_URL . '/app.js', 'version' => $db_version],
-            ] 
-        ];
+                ] 
+            ];
+
+            if (recaptcha2_is_enabled()) {
+                $this->js_assets['footer']['recaptcha2'] = ['url' => 'https://www.google.com/recaptcha/api.js'];
+            }
     }
 
     private function addCustomFilesAssets()

@@ -5,6 +5,8 @@ class Folders
 {
     protected $folders;
     protected $arranged_folders;
+    protected $dbh;
+    protected $logger;
 
     public function __construct()
     {
@@ -116,18 +118,22 @@ class Folders
     }
 
 
-    function getAllArranged($parent = null, $depth = 0)
+    function getAllArranged($parent = null, $depth = 0, $include = [])
     {
         $data = [];
         $folders = $this->getfolders(['parent' => $parent]);
         if(!empty($folders)){
             foreach ($folders as $folder_id => $folder) {
+                if (!empty($include) && !in_array($folder_id, $include)) {
+                    continue;
+                }
+
                 $depth++;
                 $folder['depth'] = $depth;
                 if ($folder['parent'] == null) {
                     $depth = 0;
                 }
-                $folder['children'] = $this->getAllArranged($folder['id'], $depth);
+                $folder['children'] = $this->getAllArranged($folder['id'], $depth, $include);
                 $data[] = $folder;
             }
         }
@@ -145,7 +151,11 @@ class Folders
         foreach ($folders as $folder) {
             $depth_indicator = ($folder['depth'] > 0) ? str_repeat('&mdash;', $folder['depth']) . ' ' : false;
             $selected = (!empty($arguments['selected']) && $arguments['selected'] == $folder['id']) ? 'selected="selected"' : '';
-            $return .= '<option '.$selected.' value="'.$folder['id'].'">'.$depth_indicator . $folder['name'].'</option>';
+            if (!empty($arguments['ignore']) && in_array($folder['id'], $arguments['ignore'])) {
+                // continue;
+            } else {
+                $return .= '<option '.$selected.' value="'.$folder['id'].'">'.$depth_indicator . $folder['name'].'</option>';
+            }
             if (!empty($folder['children'])) {
                 $return .= $this->renderSelectOptions($folder['children'], $arguments);
             }

@@ -298,15 +298,17 @@ else {
         );
     }
 
-    $items['manage_files'] = array(
-        'nav' => 'manage',
-        'level' => array(9, 8, 7, 0),
-        'main' => array(
-            'label' => __('Manage files', 'cftp_admin'),
-            'link' => 'manage-files.php',
-            'icon' => 'file',
-        ),
-    );
+    if (get_option('clients_can_upload') == 1 || get_option('clients_can_delete_own_files') == 1 || get_option('clients_can_set_expiration_date') == 1 || get_option('clients_can_set_public') == 1) {
+        $items['manage_files'] = array(
+            'nav' => 'manage',
+            'level' => array(9, 8, 7, 0),
+            'main' => array(
+                'label' => __('Manage files', 'cftp_admin'),
+                'link' => 'manage-files.php',
+                'icon' => 'file',
+            ),
+        );
+    }
 
     $items['view_files'] = array(
         'nav' => 'template',

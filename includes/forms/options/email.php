@@ -106,6 +106,12 @@
 <div class="form-group row">
     <label for="mail_system_use" class="col-sm-4 control-label"><?php _e('Mailer','cftp_admin'); ?></label>
     <div class="col-sm-8">
+      <?php if ($_ENV['MAIL_SYSTEM_USE'] || $_ENV['MAIL_SMTP_HOST'])
+        echo '
+            <div class="alert alert-warning" role="alert">
+              Settings overwritten by enviroment variables.
+            </div>';
+      ?>
         <select class="form-select" name="mail_system_use" id="mail_system_use" required>
             <option value="mail" <?php echo (get_option('mail_system_use') == 'mail') ? 'selected="selected"' : ''; ?>>PHP Mail (basic)</option>
             <option value="smtp" <?php echo (get_option('mail_system_use') == 'smtp') ? 'selected="selected"' : ''; ?>>SMTP</option>

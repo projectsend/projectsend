@@ -1074,13 +1074,13 @@ class Emails
                 };
             }
 
-            switch (get_option('mail_system_use')) {
+            switch ($_ENV['MAIL_SYSTEM_USE'] ?? get_option('mail_system_use')) {
                 case 'smtp':
                     $email->IsSMTP();
-                    $email->Host = get_option('mail_smtp_host');
-                    $email->Port = get_option('mail_smtp_port');
-                    $email->Username = get_option('mail_smtp_user');
-                    $email->Password = get_option('mail_smtp_pass');
+                    $email->Host = $_ENV['MAIL_SMTP_HOST'] ?? get_option('mail_smtp_host');
+                    $email->Port = $_ENV['MAIL_SMTP_PORT'] ?? get_option('mail_smtp_port');
+                    $email->Username = $_ENV['MAIL_SMTP_USER'] ?? get_option('mail_smtp_user');
+                    $email->Password = $_ENV['MAIL_SMTP_PASS'] ?? get_option('mail_smtp_pass');
 
                     if (get_option('mail_smtp_auth') != 'none') {
                         $email->SMTPAuth = true;

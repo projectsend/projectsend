@@ -7,6 +7,16 @@ namespace ProjectSend\Classes\Layout;
 
 class Table
 {
+    private $output;
+    private $contents;
+    private $current_row;
+    private $origin;
+    private $row_class;
+    private $attributes;
+    private $content;
+    private $is_checkbox;
+    private $value;
+
     function __construct($attributes)
     {
         $this->contents = $this->open($attributes);

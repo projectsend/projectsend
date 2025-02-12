@@ -1,7 +1,11 @@
 <?php
 
+use ProjectSend\Classes\Layout\Pagination;
+use ProjectSend\Classes\Layout\Table;
+use ProjectSend\Classes\Users;
+
 /**
- * Clients Administration Script.
+ * Show the list of current clients.
  */
 
 // Configuration: Allowed user levels.

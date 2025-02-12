@@ -1,125 +1,126 @@
 <?php
+
+use ProjectSend\Classes\Users;
+
 /**
  * Show the form to edit a system user.
  */
-$allowed_levels = array(9, 8, 7);
+
+// Configuration: Allowed user levels.
+$allowed_levels = [9, 8, 7];
+
 require_once 'bootstrap.php';
+
+// Security: Verify user authentication.
 log_in_required($allowed_levels);
 
+// Template: Active navigation item.
 $active_nav = 'users';
 
-// Check if the id parameter is on the URI.
-if (!isset($_GET['id'])) {
-    exit_with_error_code(403);
+// Security: Validate GET parameter and user existence.
+$user_id = isset($_GET['id']) && ctype_digit($_GET['id']) ? (int)$_GET['id'] : null;
+
+if (!$user_id || !user_exists_id($user_id)) {
+    exit_with_error_code(404);
 }
 
-$user_id = $_GET['id'];
-if (!user_exists_id($user_id)) {
-    exit_with_error_code(403);
-}
-
-// Create the object
-$edit_user = new \ProjectSend\Classes\Users($user_id);
+// Create the user object.
+$edit_user = new Users($user_id);
 $user_arguments = $edit_user->getProperties();
 
-// Form type
-if (CURRENT_USER_LEVEL == 7) {
+// Determine form type based on user level and identity.
+if (CURRENT_USER_LEVEL == 7 || CURRENT_USER_USERNAME == $user_arguments['username']) {
     $user_form_type = 'edit_user_self';
     $ignore_size = true;
 } else {
-    if (CURRENT_USER_USERNAME == $user_arguments['username']) {
-        $user_form_type = 'edit_user_self';
-        $ignore_size = true;
-    } else {
-        $user_form_type = 'edit_user';
-        $ignore_size = false;
-    }
+    $user_form_type = 'edit_user';
+    $ignore_size = false;
 }
 
-// Compare the user editing this account to the on the database.
-if (CURRENT_USER_LEVEL != 9) {
-    if (CURRENT_USER_USERNAME != $user_arguments['username']) {
+// Security: Prevent unauthorized access.
+if (CURRENT_USER_LEVEL != 9 && CURRENT_USER_USERNAME != $user_arguments['username']) {
+    exit_with_error_code(403);
+}
+
+// Handle form submission.
+if ($_POST) {
+    // Security: Validate CSRF token.
+    if (!validateCsrfToken()) {
+        $flash->error(__('Invalid CSRF token.', 'cftp_admin'));
+        ps_redirect(BASE_URI . 'users-edit.php?id=' . $user_id);
+        exit;
+    }
+
+    // Security: Prevent unauthorized edits via POST.
+    if (CURRENT_USER_LEVEL != 9 && $user_id != CURRENT_USER_ID) {
         exit_with_error_code(403);
     }
-}
 
-if ($_POST) {
-    /**
-     * If the user is not an admin, check if the id of the user
-     * that's being edited is the same as the current logged in one.
-     */
-    if (CURRENT_USER_LEVEL != 9) {
-        if ($user_id != CURRENT_USER_ID) {
-            exit_with_error_code(403);
-        }
-    }
-
-    /**
-     * Clean the posted form values to be used on the user actions,
-     * and again on the form if validation failed.
-     * Also, overwrites the values gotten from the database so if
-     * validation failed, the new unsaved values are shown to avoid
-     * having to type them again.
-     */
-    $user_arguments = array(
-        'id' => $user_arguments['id'],
-        'username' => $user_arguments['username'],
-        'name' => $_POST['name'],
-        'email' => $_POST['email'],
-        'role' => $user_arguments['role'],
-        'max_file_size' => $user_arguments['max_file_size'],
-        'active' => $user_arguments['active'],
-        'type' => 'edit_user',
-        'limit_upload_to' => (isset($_POST["limit_upload_to"])) ? $_POST["limit_upload_to"] : null,
-    );
+    // Sanitize and retrieve POST data.
+    $name = isset($_POST['name']) ? sanitizeString($_POST['name']) : '';
+    $email = isset($_POST['email']) ? sanitizeEmail($_POST['email']) : '';
+    $password = $_POST['password'] ?? ''; // Allow empty password
 
     if ($ignore_size == false) {
-        $user_arguments['max_file_size'] = (isset($_POST["max_file_size"])) ? $_POST["max_file_size"] : '';
-    }
-
-    // If the password field send an empty value to prevent notices.
-    $user_arguments['password'] = (isset($_POST['password'])) ? $_POST['password'] : '';
-
-    /**
-     * Edit level only when user is not Uploader (level 7) or when
-     * editing other's account (not own).
-     */
-    $can_edit_level_and_active = true;
-    if (CURRENT_USER_LEVEL == 7) {
-        $can_edit_level_and_active = false;
+        $max_file_size = isset($_POST["max_file_size"]) ? sanitizeString($_POST["max_file_size"]) : '';
     } else {
-        if (CURRENT_USER_USERNAME == $user_arguments['username']) {
-            $can_edit_level_and_active = false;
-        }
+        $max_file_size = $user_arguments['max_file_size'];
     }
+
+    $limit_upload_to = $_POST["limit_upload_to"] ?? null;
+
+    // Determine role and active status based on user level.
+    $role = $user_arguments['role'];
+    $active = $user_arguments['active'];
+
+    $can_edit_level_and_active = !(CURRENT_USER_LEVEL == 7 || CURRENT_USER_USERNAME == $user_arguments['username']);
 
     if ($can_edit_level_and_active === true) {
-        $user_arguments['role'] = (isset($_POST['level'])) ? $_POST['level'] : $user_arguments['role'];
-        $user_arguments['active'] = (isset($_POST["active"])) ? 1 : 0;
+        $role = isset($_POST['level']) ? sanitizeString($_POST['level']) : $user_arguments['role'];
+        $active = isset($_POST["active"]) ? 1 : 0;
     }
 
-    // Validate the information from the posted form.
-    $edit_user->set($user_arguments);
-    $edit_user->setType("existing_user");
-    $edit_response = $edit_user->edit();
+    // Prepare user arguments for update.
+    $user_arguments = [
+        'id' => $user_arguments['id'],
+        'username' => $user_arguments['username'],
+        'name' => $name,
+        'email' => $email,
+        'role' => $role,
+        'max_file_size' => $max_file_size,
+        'active' => $active,
+        'type' => 'edit_user',
+        'password' => $password,
+        'limit_upload_to' => $limit_upload_to,
+    ];
 
-    if ($edit_response['query'] == 1) {
-        $flash->success(__('User saved successfully'));
-    } else {
-        $flash->error(__('There was an error saving to the database'));
+    try {
+        $edit_user->set($user_arguments);
+        $edit_user->setType("existing_user");
+        $edit_response = $edit_user->edit();
+
+        if ($edit_response['query'] == 1) {
+            $flash->success(__('User saved successfully', 'cftp_admin'));
+        } else {
+            $flash->error(__('There was an error saving to the database', 'cftp_admin'));
+        }
+
+    } catch (Exception $e) {
+        $flash->error(__('An error occurred: ', 'cftp_admin') . htmlspecialchars($e->getMessage()));
     }
 
     ps_redirect(BASE_URI . 'users-edit.php?id=' . $user_id);
+    exit;
 }
 
 $page_title = __('Edit system user', 'cftp_admin');
-
-$page_id = 'user_form';
-
 if (CURRENT_USER_USERNAME == $user_arguments['username']) {
     $page_title = __('My account', 'cftp_admin');
 }
 
+$page_id = 'user_form';
+
+// Include layout files
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 <div class="row">
@@ -127,9 +128,10 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
         <div class="white-box">
             <div class="white-box-interior">
                 <?php
-                // If the form was submitted with errors, show them here.
+                // Display validation errors, if any.
                 echo $edit_user->getValidationErrors();
 
+                // Include the user form.
                 include_once FORMS_DIR . DS . 'users.php';
                 ?>
             </div>
@@ -138,3 +140,26 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 </div>
 <?php
 include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+
+/**
+ * Sanitizes a string input.
+ **/
+function sanitizeString(string $string): string
+{
+    $string = trim($string);
+    $string = stripslashes($string);
+    $string = htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+
+    return $string;
+}
+
+/**
+ * Sanitizes an email input.
+ * */
+function sanitizeEmail(string $email): string
+{
+    $email = trim($email);
+    $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+
+    return $email;
+}

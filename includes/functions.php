@@ -1077,7 +1077,7 @@ function get_current_url()
 
 function file_is_allowed($filename)
 {
-    if (!defined(CURRENT_USER_ID)) {
+    if (!defined('CURRENT_USER_ID')) {
         return false;
     }
 

@@ -85,7 +85,7 @@
     <label for="captcha_method" class="col-sm-4 control-label"><?php _e('Captcha method','cftp_admin'); ?></label>
     <div class="col-sm-8">
         <select class="form-select" name="captcha_method" id="captcha_method" required>
-            <option value="" <?php echo (get_option('captcha_method') == null) ? 'selected="selected"' : ''; ?>><?php _e('Do not use captcha','cftp_admin'); ?></option>
+            <option value="none" <?php echo (get_option('captcha_method') == 'none') ? 'selected="selected"' : ''; ?>><?php _e('Do not use captcha','cftp_admin'); ?></option>
             <?php
                 $methods = captcha_get_methods();
                 foreach ($methods as $method => $method_class) {

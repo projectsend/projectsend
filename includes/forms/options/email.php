@@ -163,13 +163,6 @@
 </div>
 
 <div class="form-group row">
-    <label for="mail_smtp_port" class="col-sm-4 control-label"><?php _e('Port','cftp_admin'); ?></label>
-    <div class="col-sm-8">
-        <input type="text" name="mail_smtp_port" id="mail_smtp_port" class="mail_data form-control" value="<?php echo html_output(get_option('mail_smtp_port')); ?>" />
-    </div>
-</div>
-
-<div class="form-group row">
     <label for="mail_smtp_secure" class="col-sm-4 control-label"><?php _e('Connection security','cftp_admin'); ?></label>
     <div class="col-sm-8">
         <select class="form-select" name="mail_smtp_secure" id="mail_smtp_secure" required>
@@ -177,6 +170,13 @@
             <option value="ssl" <?php echo (get_option('mail_smtp_secure') == 'ssl') ? 'selected="selected"' : ''; ?>>SMTPS</option>
             <option value="tls" <?php echo (get_option('mail_smtp_secure') == 'tls') ? 'selected="selected"' : ''; ?>>STARTTLS</option>
         </select>
+    </div>
+</div>
+
+<div class="form-group row">
+    <label for="mail_smtp_port" class="col-sm-4 control-label"><?php _e('Port','cftp_admin'); ?></label>
+    <div class="col-sm-8">
+        <input type="text" name="mail_smtp_port" id="mail_smtp_port" class="mail_data form-control" value="<?php echo html_output(get_option('mail_smtp_port')); ?>" />
     </div>
 </div>
 
@@ -215,3 +215,22 @@
         <?php _e('After saving your options, you can test your configuration here', 'cftp_admin'); ?>
     </a>
 </p>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const authSelect = document.getElementById("mail_smtp_auth");
+    const portInput = document.getElementById("mail_smtp_port");
+
+    const defaults = {
+        "none": "25",   // plain SMTP
+        "ssl": "465",   // implicit TLS
+        "tls": "587"    // STARTTLS
+    };
+
+    authSelect.addEventListener("change", function () {
+        const selected = this.value;
+        if (defaults[selected]) {
+            portInput.value = defaults[selected];
+        }
+    });
+});
+</script>

@@ -1,0 +1,4447 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Álvaro Góis\n"
+"POT-Creation-Date: 2024-08-02 23:28-0300\n"
+"PO-Revision-Date: 2025-10-08 16:56+0100\n"
+"Last-Translator: \n"
+"Language-Team: Álvaro Gois <talk@alvarogois.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.2.2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: assets\n"
+"X-Poedit-SearchPathExcluded-1: includes/Google\n"
+"X-Poedit-SearchPathExcluded-2: templates/default\n"
+"X-Poedit-SearchPathExcluded-3: templates/gallery\n"
+"X-Poedit-SearchPathExcluded-4: templates/pinboxes\n"
+"X-Poedit-SearchPathExcluded-5: node_modules\n"
+"X-Poedit-SearchPathExcluded-6: upload\n"
+"X-Poedit-SearchPathExcluded-7: vendor\n"
+
+#: actions-log.php:11
+msgid "Recent activities log"
+msgstr "Registo de atividades recentes"
+
+#: actions-log.php:29
+msgid "The selected activities were deleted."
+msgstr "As atividades selecionadas foram eliminadas."
+
+#: actions-log.php:31
+msgid "Please select at least one activity."
+msgstr "Selecione pelo menos uma atividade."
+
+#: actions-log.php:42
+msgid "The log was cleared. Only data used for statistics remained. You can delete them manually if you want."
+msgstr "O registo foi apagado. Só ficaram os dados utilizados para as estatísticas. Se pretender, pode eliminá-los manualmente."
+
+#: actions-log.php:105 categories.php:128 clients-membership-requests.php:135
+#: clients-requests.php:170 clients.php:111 custom-assets.php:108
+#: groups.php:140 import-orphans.php:116 manage-downloads.php:224
+#: manage-files.php:373 users.php:134
+msgid "Your search keywords returned no results."
+msgstr "As palavras-chave da sua pesquisa não deram resultados."
+
+#: actions-log.php:108 clients-membership-requests.php:138
+#: clients-requests.php:173 clients.php:114 custom-assets.php:111
+#: groups.php:143 manage-downloads.php:230 manage-files.php:379 users.php:137
+msgid "The filters you selected returned no results."
+msgstr "Os filtros que selecionou não apresentaram resultados."
+
+#: actions-log.php:112
+msgid "There are no activities recorded."
+msgstr "Não há atividades registadas."
+
+#: actions-log.php:127 includes/widgets/actions-log.php:16
+msgid "All activities"
+msgstr "Todas as atividades"
+
+#: actions-log.php:137 categories.php:143 clients-membership-requests.php:167
+#: clients-requests.php:210 clients.php:152 cron-log.php:104
+#: custom-assets.php:157 groups.php:184 import-orphans.php:141
+#: manage-downloads.php:289 manage-files.php:450 users.php:188
+msgid "Select action"
+msgstr "Selecionar ação"
+
+#: actions-log.php:138 cron-log.php:105
+msgid "Download as csv"
+msgstr "Descarregar como csv"
+
+#: actions-log.php:139 cron-log.php:106
+msgid "Delete selected"
+msgstr "Eliminar selecionado"
+
+#: actions-log.php:140 cron-log.php:107
+msgid "Clear entire log"
+msgstr "Limpar todo o registo"
+
+#: actions-log.php:175 cron-log.php:142 download-information.php:101
+msgid "Date"
+msgstr "Data"
+
+#: actions-log.php:180 templates.php:76
+msgid "Author"
+msgstr "Autor"
+
+#: actions-log.php:185
+msgid "Activity"
+msgstr "Atividade"
+
+#: categories.php:12
+msgid "Categories administration"
+msgstr "Categorias administração"
+
+#: categories.php:27
+msgid "Please select at least one category."
+msgstr "Selecione pelo menos uma categoria."
+
+#: categories.php:36
+msgid "The selected categories were deleted."
+msgstr "As categorias selecionadas foram eliminadas."
+
+#: categories.php:72
+msgid "The category was successfully created."
+msgstr "A categoria foi criada com sucesso."
+
+#: categories.php:75
+msgid "Create new category"
+msgstr "Criar nova categoria"
+
+#: categories.php:83
+msgid "The category was successfully edited."
+msgstr "A categoria foi editada com sucesso."
+
+#: categories.php:86
+msgid "Edit category"
+msgstr "Editar categoria"
+
+#: categories.php:132
+msgid "There are no categories yet."
+msgstr "Ainda não existem categorias."
+
+#: categories.php:144 clients.php:155 custom-assets.php:160 groups.php:185
+#: import-orphans.php:142 manage-downloads.php:294 manage-files.php:467
+#: users.php:191
+msgid "Delete"
+msgstr "Eliminar"
+
+#: categories.php:180 includes/forms/categories.php:35
+#: includes/forms/clients.php:72 includes/forms/options/email.php:11
+#: includes/forms/users.php:36 manage-files.php:399
+msgid "Name"
+msgstr "Nome"
+
+#: categories.php:183 clients.php:346 groups.php:238 groups.php:319
+#: includes/forms/options/clients.php:70 includes/layout/main-menu.php:28
+#: includes/widgets/counters.php:32 install/make-config.php:304
+msgid "Files"
+msgstr "Ficheiros"
+
+#: categories.php:186 files-edit.php:206 groups.php:231
+#: includes/forms/categories.php:52 includes/forms/file_editor.php:50
+#: includes/forms/groups.php:29 manage-files.php:546
+msgid "Description"
+msgstr "Descrição"
+
+#: categories.php:190 clients.php:241 groups.php:253
+msgid "View"
+msgstr "Ver"
+
+#: categories.php:194 clients.php:245 custom-assets.php:217 files-edit.php:217
+#: groups.php:257 import-orphans.php:222 manage-downloads.php:393
+#: manage-files.php:603 users.php:261
+msgid "Actions"
+msgstr "Acções"
+
+#: categories.php:264 includes/layout/main-menu.php:40
+#: includes/layout/main-menu.php:305 manage-files.php:13
+msgid "Manage files"
+msgstr "Gerir ficheiros"
+
+#: categories.php:267 clients.php:352 custom-assets.php:258 groups.php:323
+#: manage-downloads.php:290 manage-downloads.php:472 manage-files.php:451
+#: manage-files.php:821 users.php:325
+msgid "Edit"
+msgstr "Editar"
+
+#: clients-add.php:11 includes/forms/clients.php:12
+msgid "Add client"
+msgstr "Adicionar cliente"
+
+#: clients-add.php:76
+msgid "Client created successfully"
+msgstr "Cliente criado com sucesso"
+
+#: clients-add.php:86 users-add.php:71
+msgid "A welcome message was not sent to the new account owner."
+msgstr "Não foi enviada uma mensagem de boas-vindas ao novo proprietário da conta."
+
+#: clients-add.php:89 users-add.php:74
+msgid "A welcome message with login information was sent to the new account owner."
+msgstr "Foi enviada uma mensagem de boas-vindas com informações de início de sessão para o novo proprietário da conta."
+
+#: clients-add.php:92 register.php:82 users-add.php:77
+msgid "E-mail notification couldn't be sent."
+msgstr "Não foi possível enviar a notificação por correio eletrónico."
+
+#: clients-edit.php:124
+msgid "Profile edited successfully"
+msgstr "Perfil editado com sucesso"
+
+#: clients-edit.php:126
+msgid "Client saved successfully"
+msgstr "Cliente guardado com sucesso"
+
+#: clients-edit.php:129 custom-assets-add.php:53 custom-assets-edit.php:54
+#: groups-add.php:39 groups-edit.php:54 register.php:72 users-edit.php:109
+msgid "There was an error saving to the database"
+msgstr "Ocorreu um erro ao guardar na base de dados"
+
+#: clients-edit.php:135
+msgid "Edit client"
+msgstr "Editar cliente"
+
+#: clients-edit.php:137 users-edit.php:120
+msgid "My account"
+msgstr "A minha conta"
+
+#: clients-membership-requests.php:12 clients-membership-requests.php:231
+#: clients-requests.php:273 includes/layout/main-menu.php:111
+msgid "Membership requests"
+msgstr "Pedidos de adesão"
+
+#: clients-membership-requests.php:46 clients-requests.php:90
+msgid "The selected actions were applied."
+msgstr "As acções selecionadas foram aplicadas."
+
+#: clients-membership-requests.php:59
+msgid "The selected requests were deleted."
+msgstr "Os pedidos selecionados foram eliminados."
+
+#: clients-membership-requests.php:70 clients-requests.php:109 clients.php:53
+msgid "Please select at least one client."
+msgstr "Por favor, selecione pelo menos um cliente."
+
+#: clients-membership-requests.php:142
+msgid "There are no requests at the moment"
+msgstr "De momento, não há pedidos"
+
+#: clients-membership-requests.php:153
+msgid "New requests"
+msgstr "Novos pedidos"
+
+#: clients-membership-requests.php:158
+msgid "Denied requests"
+msgstr "Pedidos recusados"
+
+#: clients-membership-requests.php:168 clients-requests.php:211
+msgid "Apply selection"
+msgstr "Aplicar seleção"
+
+#: clients-membership-requests.php:169 clients-requests.php:212
+msgid "Delete requests"
+msgstr "Eliminar pedidos"
+
+#: clients-membership-requests.php:216 clients-requests.php:254 clients.php:195
+#: includes/Classes/Emails.php:166 includes/Classes/Emails.php:341
+#: install/index.php:198 users.php:229
+msgid "Full name"
+msgstr "Nome completo"
+
+#: clients-membership-requests.php:221 clients-requests.php:259 clients.php:200
+#: includes/forms/clients.php:79 includes/forms/users.php:43
+#: install/index.php:212 users.php:234
+msgid "Log in username"
+msgstr "Nome de utilizador de início de sessão"
+
+#: clients-membership-requests.php:227 clients-requests.php:265 clients.php:206
+#: includes/forms/clients.php:97 includes/forms/login-ldap.php:6
+#: includes/forms/login.php:11 includes/forms/reset-password/enter-email.php:7
+#: includes/forms/users.php:61 users.php:240
+msgid "E-mail"
+msgstr "Correio eletrónico"
+
+#: clients-membership-requests.php:275 clients-requests.php:331
+msgid "Accept all"
+msgstr "Aceitar tudo"
+
+#: clients-membership-requests.php:276 clients-requests.php:332
+msgid "Deny all"
+msgstr "Recusar tudo"
+
+#: clients-requests.php:14 includes/layout/main-menu.php:83
+msgid "Account requests"
+msgstr "Pedidos de conta"
+
+#: clients-requests.php:98 clients.php:49
+msgid "The selected clients were deleted."
+msgstr "Os clientes selecionados foram eliminados."
+
+#: clients-requests.php:177
+msgid "There are no requests at the moment."
+msgstr "De momento, não há pedidos."
+
+#: clients-requests.php:185
+msgid "Create client"
+msgstr "Criar cliente"
+
+#: clients-requests.php:196
+msgid "New account requests"
+msgstr "Pedidos de novas contas"
+
+#: clients-requests.php:201
+msgid "Denied accounts"
+msgstr "Contas recusadas"
+
+#: clients-requests.php:269
+msgid "Account"
+msgstr "Conta"
+
+#: clients-requests.php:286 manage-downloads.php:361 manage-files.php:536
+msgid "Added on"
+msgstr "Adicionado em"
+
+#: clients.php:11
+msgid "Clients Administration"
+msgstr "Clientes da administração"
+
+#: clients.php:29
+msgid "The selected clients were marked as active."
+msgstr "Os clientes selecionados foram marcados como activos."
+
+#: clients.php:39
+msgid "The selected clients were marked as inactive."
+msgstr "Os clientes selecionados foram marcados como inactivos."
+
+#: clients.php:118
+msgid "There are no clients yet."
+msgstr "Ainda não existem clientes."
+
+#: clients.php:126 groups.php:158 users.php:149
+msgid "Create new"
+msgstr "Criar novo"
+
+#: clients.php:139 custom-assets.php:144 manage-downloads.php:277
+#: manage-files.php:438 users.php:174
+msgid "All statuses"
+msgstr "Todos os estados"
+
+#: clients.php:142 clients.php:285 templates.php:91 users.php:177 users.php:287
+msgid "Active"
+msgstr "Ativo"
+
+#: clients.php:143 clients.php:285 users.php:178 users.php:287
+msgid "Inactive"
+msgstr "Inativo"
+
+#: clients.php:153 templates.php:97 users.php:189
+msgid "Activate"
+msgstr "Ativar"
+
+#: clients.php:154 users.php:190
+msgid "Deactivate"
+msgstr "Desativar"
+
+#: clients.php:188 groups.php:219 users.php:223
+msgid "Created"
+msgstr "Criado"
+
+#: clients.php:210 includes/forms/options/general.php:82
+msgid "Uploads"
+msgstr "Carregamentos"
+
+#: clients.php:214
+msgid "Files: Direct"
+msgstr "Ficheiros: Diretos"
+
+#: clients.php:218
+msgid "Files: Groups"
+msgstr "Ficheiros: Grupos"
+
+#: clients.php:224 manage-files.php:584 users.php:252
+msgid "Status"
+msgstr "Estado"
+
+#: clients.php:227
+msgid "Groups on"
+msgstr "Grupos em"
+
+#: clients.php:231
+msgid "Notify"
+msgstr "Notificar"
+
+#: clients.php:237 users.php:257
+msgid "Max. upload size"
+msgstr "Tamanho máximo de carregamento"
+
+#: clients.php:339 download-information.php:158
+#: includes/forms/options/external_login.php:101 manage-files.php:661
+msgid "Yes"
+msgstr "Sim"
+
+#: clients.php:339 download-information.php:159
+#: includes/forms/options/external_login.php:102 manage-files.php:661
+msgid "No"
+msgstr "Não"
+
+#: clients.php:342 users.php:321
+msgid "Default"
+msgstr "Predefinição"
+
+#: clients.php:347 includes/forms/clients.php:19 includes/forms/clients.php:31
+#: includes/forms/file_editor.php:153 includes/widgets/counters.php:47
+msgid "Groups"
+msgstr "Grupos"
+
+#: clients.php:348
+msgid "As client"
+msgstr "Como cliente"
+
+#: cron-log.php:11
+msgid "Cron execution log"
+msgstr "Registo de execução do Cron"
+
+#: cron-log.php:29
+msgid "The selected entries were deleted."
+msgstr "As entradas selecionadas foram eliminadas."
+
+#: cron-log.php:31
+msgid "Please select at least one entries."
+msgstr "Selecionar pelo menos uma entrada."
+
+#: cron-log.php:39
+msgid "The log was cleared."
+msgstr "O registo foi apagado."
+
+#: cron-log.php:94
+msgid "There are no executions recorded."
+msgstr "Não há registo de execuções."
+
+#: cron-log.php:147
+msgid "SAPI"
+msgstr "SAPI"
+
+#: cron-log.php:152
+msgid "Results"
+msgstr "Resultados"
+
+#: custom-assets-add.php:19
+#, php-format
+msgid "Add new %s asset"
+msgstr "Adicionar novo ativo %s"
+
+#: custom-assets-add.php:50
+msgid "Asset created successfully"
+msgstr "Ativo criado com sucesso"
+
+#: custom-assets-edit.php:26
+#, php-format
+msgid "Edit %s asset"
+msgstr "Editar o ativo %s"
+
+#: custom-assets-edit.php:52
+msgid "Asset edited successfully"
+msgstr "Ativo editado com sucesso"
+
+#: custom-assets.php:12 includes/layout/main-menu.php:280
+msgid "Custom HTML/CSS/JS"
+msgstr "HTML/CSS/JS personalizados"
+
+#: custom-assets.php:30
+msgid "The selected assets were marked as enabled."
+msgstr "Os activos selecionados foram marcados como activados."
+
+#: custom-assets.php:40
+msgid "The selected assets were marked as disabled."
+msgstr "Os activos selecionados foram marcados como desactivados."
+
+#: custom-assets.php:50
+msgid "The selected assets were deleted."
+msgstr "Os activos selecionados foram eliminados."
+
+#: custom-assets.php:54
+msgid "Please select at least one asset."
+msgstr "Por favor, selecione pelo menos um ativo."
+
+#: custom-assets.php:115
+msgid "There are no assets yet."
+msgstr "Ainda não existem activos."
+
+#: custom-assets.php:123
+msgid "New HTML"
+msgstr "Novo HTML"
+
+#: custom-assets.php:127
+msgid "New CSS"
+msgstr "Novo CSS"
+
+#: custom-assets.php:131
+msgid "New js"
+msgstr "Novos js"
+
+#: custom-assets.php:147 custom-assets.php:199 custom-assets.php:230
+#: includes/forms/assets.php:54 includes/forms/options/external_login.php:98
+msgid "Enabled"
+msgstr "Ativado"
+
+#: custom-assets.php:148 custom-assets.php:230
+msgid "Disabled"
+msgstr "Desativado"
+
+#: custom-assets.php:158
+msgid "Enable"
+msgstr "Ativar"
+
+#: custom-assets.php:159
+msgid "Disable"
+msgstr "Desativar"
+
+#: custom-assets.php:194 files-edit.php:203 includes/forms/assets.php:33
+#: includes/forms/file_editor.php:45 manage-downloads.php:348
+#: manage-files.php:526
+msgid "Title"
+msgstr "Título"
+
+#: custom-assets.php:204 includes/forms/login-ldap.php:16
+#: includes/forms/options/general.php:127 includes/layout/header-top.php:26
+#: install/make-config.php:292
+msgid "Language"
+msgstr "Língua"
+
+#: custom-assets.php:209 includes/forms/assets.php:60
+#: includes/forms/file_editor.php:205
+msgid "Location"
+msgstr "Localização"
+
+#: custom-assets.php:214 includes/forms/assets.php:75
+msgid "Position"
+msgstr "Posição"
+
+#: dashboard.php:9 includes/layout/main-menu.php:16
+msgid "Dashboard"
+msgstr "Painel de controlo"
+
+#: download-information.php:11
+msgid "Download information"
+msgstr "Descarregar informações"
+
+#: download-information.php:28
+msgid "There are no recorded downloads for this file"
+msgstr "Não há downloads gravados para este ficheiro"
+
+#: download-information.php:83 manage-downloads.php:388 manage-files.php:598
+msgid "Total downloads"
+msgstr "Total de transferências"
+
+#: download-information.php:104
+msgid "Time"
+msgstr "Tempo"
+
+#: download-information.php:109 includes/text.strings.php:11
+msgid "Client"
+msgstr "Cliente"
+
+#: download-information.php:114
+msgid "Anonymous"
+msgstr "Anónimo"
+
+#: download-information.php:119
+msgid "Client's IP"
+msgstr "IP do cliente"
+
+#: download-information.php:125
+msgid "Client's hostname"
+msgstr "Nome de anfitrião do cliente"
+
+#: download-information.php:139
+msgid "Unique logged in clients/users"
+msgstr "Clientes/utilizadores únicos com sessão iniciada"
+
+#: download-information.php:142
+msgid "Total public downloads"
+msgstr "Total de descargas públicas"
+
+#: email-preview.php:8 includes/layout/main-menu.php:202
+msgid "E-mail templates"
+msgstr "Modelos de correio eletrónico"
+
+#: email-preview.php:8 manage-downloads.php:354 manage-downloads.php:419
+#: manage-files.php:529 manage-files.php:648
+msgid "Preview"
+msgstr "Pré-visualização"
+
+#: email-templates.php:47 options.php:113 options.php:226 templates.php:29
+msgid "Options updated successfully."
+msgstr "Opções actualizadas com êxito."
+
+#: email-templates.php:49 options.php:228 templates.php:31
+msgid "There was an error. Please try again."
+msgstr "Ocorreu um erro. Por favor, tente novamente."
+
+#: email-templates.php:68
+msgid "Here you set up the header and footer of every email, or use the default ones available with the system. Use this to customize each part and include, for example, your own logo and markup."
+msgstr "Aqui pode configurar o cabeçalho e o rodapé de cada mensagem de correio eletrónico, ou utilizar os predefinidos disponíveis no sistema. Utilize esta opção para personalizar cada parte e incluir, por exemplo, o seu próprio logótipo e marcação."
+
+#: email-templates.php:69
+msgid "Do not forget to also include -and close accordingly- the basic structural HTML tags (DOCTYPE, HTML, HEADER, BODY)."
+msgstr "Não se esqueça de incluir também - e fechar adequadamente - as etiquetas estruturais básicas do HTML (DOCTYPE, HTML, HEADER, BODY)."
+
+#: email-templates.php:76
+msgid "Use custom header / footer"
+msgstr "Utilizar cabeçalho/rodapé personalizado"
+
+#: email-templates.php:83
+msgid "Header"
+msgstr "Cabeçalho"
+
+#: email-templates.php:85 email-templates.php:99 email-templates.php:145
+msgid "You can use HTML tags here."
+msgstr "Pode utilizar etiquetas HTML aqui."
+
+#: email-templates.php:90 email-templates.php:104 email-templates.php:169
+msgid "Replace with default"
+msgstr "Substituir por predefinição"
+
+#: email-templates.php:97
+msgid "Footer"
+msgstr "Rodapé"
+
+#: email-templates.php:120
+msgid "Use custom subject"
+msgstr "Utilizar assunto personalizado"
+
+#: email-templates.php:127
+msgid "Add your custom subject"
+msgstr "Adicione o seu assunto personalizado"
+
+#: email-templates.php:136
+msgid "Use custom template"
+msgstr "Utilizar modelo personalizado"
+
+#: email-templates.php:143
+msgid "Template text"
+msgstr "Texto do modelo"
+
+#: email-templates.php:152
+msgid "The following tags can be used on this e-mails' body."
+msgstr "As seguintes etiquetas podem ser utilizadas no corpo desta mensagem de correio eletrónico."
+
+#: email-templates.php:170
+msgid "Preview this template"
+msgstr "Pré-visualizar este modelo"
+
+#: email-templates.php:172
+msgid "Before trying this function, please save your changes to see them reflected on the preview."
+msgstr "Antes de experimentar esta função, guarde as suas alterações para as ver reflectidas na pré-visualização."
+
+#: email-templates.php:181 options.php:287
+msgid "Save options"
+msgstr "Guardar opções"
+
+#: email-test.php:10 includes/layout/main-menu.php:272
+msgid "Test email configuration"
+msgstr "Testar a configuração do correio eletrónico"
+
+#: email-test.php:37
+msgid "Result"
+msgstr "Resultado"
+
+#: email-test.php:45
+msgid "Send to:"
+msgstr "Enviar para:"
+
+#: email-test.php:52
+msgid "Message"
+msgstr "Mensagem"
+
+#: email-test.php:58
+msgid "Send test email"
+msgstr "Enviar correio eletrónico de teste"
+
+#: error.php:15
+msgid "Access denied"
+msgstr "Acesso negado"
+
+#: error.php:16
+msgid "Your account type doesn't allow you to view this page. Please contact a system administrator if you need to access this function."
+msgstr "O seu tipo de conta não lhe permite ver esta página. Contacte um administrador do sistema se precisar de aceder a esta função."
+
+#: error.php:20
+msgid "Token mismatch"
+msgstr "Incompatibilidade de tokens"
+
+#: error.php:21
+msgid "The security token could not be validated."
+msgstr "O código de segurança não pôde ser validado."
+
+#: error.php:25
+msgid "Error 404"
+msgstr "Erro 404"
+
+#: error.php:26
+msgid "Resource not found."
+msgstr "Recurso não encontrado."
+
+#: error.php:30
+msgid "Error 403"
+msgstr "Erro 403"
+
+#: error.php:31
+msgid "Forbidden."
+msgstr "Proibido."
+
+#: error.php:35
+msgid "Database error"
+msgstr "Erro na base de dados"
+
+#: error.php:36
+msgid "Can not connect to database"
+msgstr "Não é possível ligar à base de dados"
+
+#: error.php:41
+msgid "Requirements error"
+msgstr "Erro de requisitos"
+
+#: files-edit.php:13
+msgid "Edit files"
+msgstr "Editar ficheiros"
+
+#: files-edit.php:93 files-edit.php:106
+msgid "Updated existing custom link to point to this file."
+msgstr "Atualização da ligação personalizada existente para apontar para este ficheiro."
+
+#: files-edit.php:118 files-edit.php:129
+msgid "E-mail notifications have been sent."
+msgstr "As notificações por correio eletrónico foram enviadas."
+
+#: files-edit.php:121
+msgid "One or more notifications couldn't be sent."
+msgstr "Não foi possível enviar uma ou mais notificações."
+
+#: files-edit.php:131
+msgid "E-mail notifications for inactive clients were not sent."
+msgstr "As notificações por correio eletrónico para clientes inactivos não foram enviadas."
+
+#: files-edit.php:135
+msgid "E-mail notifications were not sent according to your settings. Make sure you have a cron job enabled if you need to send them."
+msgstr "As notificações por correio eletrónico não foram enviadas de acordo com as suas definições. Certifique-se de que tem uma tarefa cron activada se precisar de as enviar."
+
+#: files-edit.php:144 files-edit.php:149
+msgid "Files saved successfully"
+msgstr "Ficheiros guardados com sucesso"
+
+#: files-edit.php:145
+msgid "A custom link like this already exists, enter it again to override."
+msgstr "Já existe uma ligação personalizada como esta, introduza-a novamente para a substituir."
+
+#: files-edit.php:157
+msgid "You can skip assigning if you want. The files are retained and you may add them to clients or groups later."
+msgstr "Se pretender, pode saltar a atribuição. Os ficheiros são mantidos e pode adicioná-los a clientes ou grupos mais tarde."
+
+#: files-edit.php:168
+msgid "Collapse all"
+msgstr "Recolher tudo"
+
+#: files-edit.php:174
+msgid "Expand all"
+msgstr "Expandir tudo"
+
+#: files-edit.php:209
+msgid "File Name"
+msgstr "Nome do ficheiro"
+
+#: files-edit.php:212 files-edit.php:229 groups.php:174 groups.php:244
+#: groups.php:282 includes/forms/groups.php:70
+msgid "Public"
+msgstr "Público"
+
+#: files-edit.php:231 groups.php:175 groups.php:286
+msgid "Private"
+msgstr "Privado"
+
+#: files-edit.php:235
+msgid "Edit file"
+msgstr "Editar ficheiro"
+
+#: files-edit.php:240 includes/layout/main-menu.php:315
+msgid "View my files"
+msgstr "Ver os meus ficheiros"
+
+#: groups-add.php:11
+msgid "Add clients group"
+msgstr "Adicionar grupo de clientes"
+
+#: groups-add.php:36
+msgid "Group created successfully"
+msgstr "Grupo criado com sucesso"
+
+#: groups-edit.php:11
+msgid "Edit group"
+msgstr "Editar grupo"
+
+#: groups-edit.php:52
+msgid "Group saved successfully"
+msgstr "Grupo guardado com sucesso"
+
+#: groups.php:11
+msgid "Groups administration"
+msgstr "Administração de grupos"
+
+#: groups.php:20
+msgid "Groups where"
+msgstr "Grupos em que"
+
+#: groups.php:20
+msgid "is member"
+msgstr "é um membro"
+
+#: groups.php:56
+msgid "The selected groups were deleted."
+msgstr "Os grupos selecionados foram eliminados."
+
+#: groups.php:61
+msgid "Please select at least one group."
+msgstr "Selecione pelo menos um grupo."
+
+#: groups.php:73
+msgid "There are public groups, but the public page is disabled."
+msgstr "Existem grupos públicos, mas a página pública está desactivada."
+
+#: groups.php:74 includes/forms/groups.php:75
+msgid "Go to privacy options"
+msgstr "Aceder às opções de privacidade"
+
+#: groups.php:146
+msgid "There are no groups where this client is member."
+msgstr "Não existem grupos em que este cliente seja membro."
+
+#: groups.php:150
+msgid "There are no groups created yet."
+msgstr "Ainda não existem grupos criados."
+
+#: groups.php:171
+msgid "Visibility"
+msgstr "Visibilidade"
+
+#: groups.php:226 includes/forms/groups.php:22
+msgid "Group name"
+msgstr "Nome do grupo"
+
+#: groups.php:235 includes/forms/groups.php:36
+msgid "Members"
+msgstr "Membros"
+
+#: groups.php:249
+msgid "Created by"
+msgstr "Criado por"
+
+#: header-unlogged.php:14 install/index.php:230
+msgid "Install"
+msgstr "Instalar"
+
+#: header-unlogged.php:19
+msgid "setup"
+msgstr "configuração"
+
+#: header.php:14
+msgid "System Administration"
+msgstr "Administração de sistemas"
+
+#: import-orphans.php:17 includes/layout/main-menu.php:48
+msgid "Find orphan files"
+msgstr "Localizar ficheiros órfãos"
+
+#: import-orphans.php:51
+msgid "The selected files were imported successfully."
+msgstr "Os ficheiros selecionados foram importados com êxito."
+
+#: import-orphans.php:67 manage-downloads.php:118 manage-files.php:159
+msgid "The selected files were deleted."
+msgstr "Os ficheiros selecionados foram eliminados."
+
+#: import-orphans.php:69
+msgid "Not all of the selected files where were deleted."
+msgstr "Nem todos os ficheiros selecionados foram eliminados."
+
+#: import-orphans.php:76 manage-downloads.php:133 manage-files.php:170
+msgid "Please select at least one file."
+msgstr "Selecione pelo menos um ficheiro."
+
+#: import-orphans.php:120
+#, php-format
+msgid "There are no files available to add right now. To use this feature you need to upload your files via FTP to the folder %s."
+msgstr "Não existem ficheiros disponíveis para adicionar neste momento. Para utilizar esta funcionalidade, tem de carregar os seus ficheiros através de FTP para a pasta %s."
+
+#: import-orphans.php:129 includes/forms/upload.php:15 manage-files.php:408
+#: upload.php:13
+msgid "Upload files"
+msgstr "Carregar ficheiros"
+
+#: import-orphans.php:145 import-orphans.php:233
+msgid "Import"
+msgstr "Importação"
+
+#: import-orphans.php:151
+msgid "Allowed"
+msgstr "Permitido"
+
+#: import-orphans.php:156
+msgid "Not allowed"
+msgstr "Não autorizado"
+
+#: import-orphans.php:167
+msgid "This list only shows the files that are allowed according to your security settings. If the file type you need to add is not listed here, add the extension to the \"Allowed file extensions\" box on the options page."
+msgstr "Esta lista mostra apenas os ficheiros que são permitidos de acordo com as suas definições de segurança. Se o tipo de ficheiro que pretende adicionar não estiver listado aqui, adicione a extensão à caixa \"Extensões de ficheiros permitidas\" na página de opções."
+
+#: import-orphans.php:168
+msgid "The following files can be imported"
+msgstr "Podem ser importados os seguintes ficheiros"
+
+#: import-orphans.php:202
+msgid "File name"
+msgstr "Nome do ficheiro"
+
+#: import-orphans.php:208
+msgid "File size"
+msgstr "Tamanho do ficheiro"
+
+#: import-orphans.php:215
+msgid "Last modified"
+msgstr "Última modificação"
+
+#: import-orphans.php:272 includes/Classes/Layout/Pagination.php:15
+msgid "Results navigation"
+msgstr "Navegação de resultados"
+
+#: includes/Classes/ActionsLog.php:32
+msgid "Account logs in through the form"
+msgstr "A conta regista-se através do formulário"
+
+#: includes/Classes/ActionsLog.php:34
+msgid "Account (user or client) logs out"
+msgstr "A conta (utilizador ou cliente) termina a sessão"
+
+#: includes/Classes/ActionsLog.php:35
+msgid "A user creates a new user account"
+msgstr "Um utilizador cria uma nova conta de utilizador"
+
+#: includes/Classes/ActionsLog.php:36
+msgid "A user creates a new client account"
+msgstr "Um utilizador cria uma nova conta de cliente"
+
+#: includes/Classes/ActionsLog.php:37
+msgid "A client registers an account for himself"
+msgstr "Um cliente regista uma conta para si próprio"
+
+#: includes/Classes/ActionsLog.php:38
+msgid "A client registers using a social profile"
+msgstr "Um cliente regista-se utilizando um perfil social"
+
+#: includes/Classes/ActionsLog.php:39
+msgid "Account logged in using a social profile"
+msgstr "Conta iniciada com um perfil social"
+
+#: includes/Classes/ActionsLog.php:40
+msgid "A file is uploaded by an user"
+msgstr "Um ficheiro é carregado por um utilizador"
+
+#: includes/Classes/ActionsLog.php:41
+msgid "A file is uploaded by a client"
+msgstr "Um ficheiro é carregado por um cliente"
+
+#: includes/Classes/ActionsLog.php:42
+msgid "A file is downloaded by a user"
+msgstr "Um ficheiro é descarregado por um utilizador"
+
+#: includes/Classes/ActionsLog.php:43
+msgid "A file is downloaded by a client"
+msgstr "Um ficheiro é descarregado por um cliente"
+
+#: includes/Classes/ActionsLog.php:44
+msgid "An anonymous user downloaded a public file"
+msgstr "Um utilizador anónimo descarregou um ficheiro público"
+
+#: includes/Classes/ActionsLog.php:45
+msgid "A zip file was generated"
+msgstr "Foi gerado um ficheiro zip"
+
+#: includes/Classes/ActionsLog.php:46
+msgid "A file has been unassigned from a client"
+msgstr "Um ficheiro não foi atribuído por um cliente"
+
+#: includes/Classes/ActionsLog.php:47
+msgid "A file has been unassigned from a group"
+msgstr "Um ficheiro não foi atribuído a um grupo"
+
+#: includes/Classes/ActionsLog.php:48
+msgid "A file has been deleted"
+msgstr "Um ficheiro foi eliminado"
+
+#: includes/Classes/ActionsLog.php:49
+msgid "A user was edited"
+msgstr "Um utilizador foi editado"
+
+#: includes/Classes/ActionsLog.php:50
+msgid "A client was edited"
+msgstr "Um cliente foi editado"
+
+#: includes/Classes/ActionsLog.php:51
+msgid "A group was edited"
+msgstr "Foi editado um grupo"
+
+#: includes/Classes/ActionsLog.php:52
+msgid "A user was deleted"
+msgstr "Um utilizador foi eliminado"
+
+#: includes/Classes/ActionsLog.php:53
+msgid "A client was deleted"
+msgstr "Um cliente foi eliminado"
+
+#: includes/Classes/ActionsLog.php:54
+msgid "A group was deleted"
+msgstr "Um grupo foi eliminado"
+
+#: includes/Classes/ActionsLog.php:55
+msgid "A user account was marked as active"
+msgstr "Uma conta de utilizador foi marcada como ativa"
+
+#: includes/Classes/ActionsLog.php:56
+msgid "A user account was marked as inactive"
+msgstr "Uma conta de utilizador foi marcada como inativa"
+
+#: includes/Classes/ActionsLog.php:57
+msgid "A client account was marked as active"
+msgstr "Uma conta de cliente foi marcada como ativa"
+
+#: includes/Classes/ActionsLog.php:58
+msgid "A client account was marked as inactive"
+msgstr "Uma conta de cliente foi marcada como inativa"
+
+#: includes/Classes/ActionsLog.php:59
+msgid "A file was marked as hidden"
+msgstr "Um ficheiro foi marcado como oculto"
+
+#: includes/Classes/ActionsLog.php:60
+msgid "A file was marked as visible"
+msgstr "Um ficheiro foi marcado como visível"
+
+#: includes/Classes/ActionsLog.php:61 includes/Classes/ActionsLog.php:62
+msgid "A file was marked as hidden for everyone"
+msgstr "Um ficheiro foi marcado como oculto para todos"
+
+#: includes/Classes/ActionsLog.php:63
+msgid "A user creates a new group"
+msgstr "Um utilizador cria um novo grupo"
+
+#: includes/Classes/ActionsLog.php:64
+msgid "A file is assigned to a client"
+msgstr "Um ficheiro é atribuído a um cliente"
+
+#: includes/Classes/ActionsLog.php:65
+msgid "A file is assigned to a group"
+msgstr "Um ficheiro é atribuído a um grupo"
+
+#: includes/Classes/ActionsLog.php:66
+msgid "The logo on \"Branding\" was changed"
+msgstr "O logótipo em \"Branding\" foi alterado"
+
+#: includes/Classes/ActionsLog.php:67
+msgid "A system user edited a file"
+msgstr "Um utilizador do sistema editou um ficheiro"
+
+#: includes/Classes/ActionsLog.php:68
+msgid "A client edited a file"
+msgstr "Um cliente editou um ficheiro"
+
+#: includes/Classes/ActionsLog.php:69
+msgid "A user created a category"
+msgstr "Um utilizador criou uma categoria"
+
+#: includes/Classes/ActionsLog.php:70
+msgid "A user edited a category"
+msgstr "Um utilizador editou uma categoria"
+
+#: includes/Classes/ActionsLog.php:71
+msgid "A user deleted a category"
+msgstr "Um utilizador eliminou uma categoria"
+
+#: includes/Classes/ActionsLog.php:72
+msgid "A client account request was processed"
+msgstr "Foi processado um pedido de conta de cliente"
+
+#: includes/Classes/ActionsLog.php:73
+msgid "A client's groups membership requests were processed"
+msgstr "Os pedidos de adesão a grupos de um cliente foram processados"
+
+#: includes/Classes/ActionsLog.php:74
+msgid "A file preview request was made"
+msgstr "Foi efectuado um pedido de pré-visualização de um ficheiro"
+
+#: includes/Classes/ActionsLog.php:75
+msgid "ProjectSend has been installed"
+msgstr "O ProjectSend foi instalado"
+
+#: includes/Classes/ActionsLog.php:76
+msgid "ProjectSend was updated"
+msgstr "ProjectSend foi atualizado"
+
+#: includes/Classes/ActionsLog.php:77
+msgid "The database was updated"
+msgstr "A base de dados foi actualizada"
+
+#: includes/Classes/ActionsLog.php:78
+msgid "A client account request was approved"
+msgstr "Foi aprovado um pedido de conta de cliente"
+
+#: includes/Classes/ActionsLog.php:79
+msgid "A client account request was denied"
+msgstr "O pedido de conta de um cliente foi recusado"
+
+#: includes/Classes/ActionsLog.php:80
+msgid "System options were updated"
+msgstr "As opções do sistema foram actualizadas"
+
+#: includes/Classes/ActionsLog.php:81
+msgid "An email template was updated"
+msgstr "Foi atualizado um modelo de correio eletrónico"
+
+#: includes/Classes/Auth.php:323
+msgid "Email and password cannot be empty."
+msgstr "O e-mail e a palavra-passe não podem estar vazios."
+
+#: includes/Classes/Auth.php:342
+#, php-format
+msgid "LDAP connection error: %s"
+msgstr "Erro de ligação LDAP: %s"
+
+#: includes/Classes/Auth.php:380 includes/Classes/Auth.php:390
+msgid "The supplied email or password does not match an existing record."
+msgstr "O e-mail ou a palavra-passe fornecidos não correspondem a um registo existente."
+
+#: includes/Classes/Auth.php:399
+msgid "Error binding to LDAP server."
+msgstr "Erro de ligação ao servidor LDAP."
+
+#: includes/Classes/Auth.php:422
+msgid "Error during log in."
+msgstr "Erro durante o início de sessão."
+
+#: includes/Classes/AuthenticationCode.php:63
+msgid "User ID must not be empty."
+msgstr "O ID de utilizador não pode estar vazio."
+
+#: includes/Classes/BruteForceBlock.php:60
+msgid "IP address must not be empty"
+msgstr "O endereço IP não pode estar vazio"
+
+#: includes/Classes/BruteForceBlock.php:72
+msgid "IP address not found"
+msgstr "Endereço IP não encontrado"
+
+#: includes/Classes/BruteForceBlock.php:85 unblock-ip.php:22
+msgid "IP address successfully unblocked"
+msgstr "Endereço IP desbloqueado com sucesso"
+
+#: includes/Classes/BruteForceBlock.php:143
+msgid "IP address blacklisted"
+msgstr "Endereço IP colocado na lista negra"
+
+#: includes/Classes/Categories.php:160 includes/Classes/Categories.php:246
+msgid "Errors ocurred during validation."
+msgstr "Ocorreram erros durante a validação."
+
+#: includes/Classes/Categories.php:239
+msgid "Category id not set."
+msgstr "O ID da categoria não está definido."
+
+#: includes/Classes/Cron.php:102
+msgid "Send email notifications"
+msgstr "Enviar notificações por correio eletrónico"
+
+#: includes/Classes/Cron.php:111 includes/Classes/Cron.php:151
+#: includes/Classes/Cron.php:202
+msgid "Found"
+msgstr "Encontrado"
+
+#: includes/Classes/Cron.php:121
+msgid "Successfully sent"
+msgstr "Enviado com sucesso"
+
+#: includes/Classes/Cron.php:125 includes/Classes/Cron.php:166
+#: includes/Classes/Cron.php:210
+msgid "Failed"
+msgstr "Falhado"
+
+#: includes/Classes/Cron.php:129
+msgid "Skipped (inactive accounts)"
+msgstr "Ignorado (contas inactivas)"
+
+#: includes/Classes/Cron.php:141 includes/forms/options/cron.php:51
+msgid "Delete expired files"
+msgstr "Eliminar ficheiros expirados"
+
+#: includes/Classes/Cron.php:162 includes/Classes/Cron.php:206
+msgid "Successfully deleted"
+msgstr "Eliminado com sucesso"
+
+#: includes/Classes/Cron.php:190 includes/forms/options/cron.php:60
+msgid "Delete orphan files"
+msgstr "Eliminar ficheiros órfãos"
+
+#: includes/Classes/Cron.php:253
+msgid "Task disabled. Skipping."
+msgstr "Tarefa desactivada. Saltar."
+
+#: includes/Classes/Cron.php:261
+msgid "Total:"
+msgstr "Total:"
+
+#: includes/Classes/Cron.php:287
+msgid "Cron results"
+msgstr "Resultados Cron"
+
+#: includes/Classes/CustomAsset.php:160
+msgid "Language is not valid"
+msgstr "A língua não é válida"
+
+#: includes/Classes/CustomAsset.php:166
+msgid "Location is not valid"
+msgstr "A localização não é válida"
+
+#: includes/Classes/CustomAsset.php:172
+msgid "Position is not valid"
+msgstr "A posição não é válida"
+
+#: includes/Classes/EmailNotifications.php:169
+msgid "No pending notifications found"
+msgstr "Não foram encontradas notificações pendentes"
+
+#: includes/Classes/Emails.php:48
+msgid "The login link (to be used as href on a link tag)"
+msgstr "A ligação de início de sessão (para ser utilizada como href numa etiqueta de ligação)"
+
+#: includes/Classes/Emails.php:54 includes/layout/main-menu.php:207
+msgid "Header / footer"
+msgstr "Cabeçalho / rodapé"
+
+#: includes/Classes/Emails.php:64
+msgid "New files uploaded for you"
+msgstr "Novos ficheiros carregados para si"
+
+#: includes/Classes/Emails.php:65
+msgid "The following files are now available for you to download."
+msgstr "Os seguintes ficheiros estão agora disponíveis para serem descarregados."
+
+#: includes/Classes/Emails.php:66
+msgid "If you prefer not to be notified about new files, please go to My Account and deactivate the notifications checkbox."
+msgstr "Se preferir não ser notificado sobre novos ficheiros, vá a A minha conta e desactive a caixa de verificação das notificações."
+
+#: includes/Classes/Emails.php:67
+msgid "You can access a list of all your files or upload your own"
+msgstr "Pode aceder a uma lista de todos os seus ficheiros ou carregar os seus próprios ficheiros"
+
+#: includes/Classes/Emails.php:68 includes/Classes/Emails.php:100
+msgid "by logging in here"
+msgstr "iniciando sessão aqui"
+
+#: includes/Classes/Emails.php:71 includes/layout/main-menu.php:211
+msgid "New file by user"
+msgstr "Novo ficheiro pelo utilizador"
+
+#: includes/Classes/Emails.php:81
+msgid "This email will be sent to a client whenever a new file has been assigned to their account."
+msgstr "Este e-mail será enviado a um cliente sempre que um novo ficheiro tiver sido atribuído à sua conta."
+
+#: includes/Classes/Emails.php:88 includes/Classes/Emails.php:120
+msgid "Shows the list of files"
+msgstr "Mostra a lista de ficheiros"
+
+#: includes/Classes/Emails.php:97
+msgid "New files uploaded by clients"
+msgstr "Novos ficheiros carregados por clientes"
+
+#: includes/Classes/Emails.php:98
+msgid "New files has been uploaded by the following clients"
+msgstr "Foram carregados novos ficheiros pelos seguintes clientes"
+
+#: includes/Classes/Emails.php:99
+msgid "You can manage these files"
+msgstr "É possível gerir estes ficheiros"
+
+#: includes/Classes/Emails.php:103 includes/layout/main-menu.php:215
+msgid "New file by client"
+msgstr "Novo ficheiro por cliente"
+
+#: includes/Classes/Emails.php:113
+msgid "This email will be sent to the system administrator whenever a client uploads a new file."
+msgstr "Este e-mail será enviado para o administrador do sistema sempre que um cliente carregar um novo ficheiro."
+
+#: includes/Classes/Emails.php:129 includes/Classes/Emails.php:269
+msgid "Welcome to ProjectSend"
+msgstr "Bem-vindo ao ProjectSend"
+
+#: includes/Classes/Emails.php:130
+msgid "A new account was created for you. From now on, you can access the files that have been uploaded under your account using the following credentials:"
+msgstr "Foi criada uma nova conta para si. A partir de agora, pode aceder aos ficheiros que foram carregados na sua conta utilizando as seguintes credenciais:"
+
+#: includes/Classes/Emails.php:131 includes/Classes/Emails.php:210
+msgid "You can log in following this link"
+msgstr "Pode iniciar sessão seguindo esta ligação"
+
+#: includes/Classes/Emails.php:132 includes/Classes/Emails.php:211
+#: includes/Classes/Emails.php:243
+msgid "Please contact the administrator if you need further assistance."
+msgstr "Se necessitar de mais assistência, contacte o administrador."
+
+#: includes/Classes/Emails.php:133 includes/Classes/Emails.php:273
+msgid "Your username"
+msgstr "O seu nome de utilizador"
+
+#: includes/Classes/Emails.php:134 includes/Classes/Emails.php:274
+msgid "Your password"
+msgstr "A sua palavra-passe"
+
+#: includes/Classes/Emails.php:137 includes/layout/main-menu.php:219
+msgid "New client (welcome)"
+msgstr "Novo cliente (bem-vindo)"
+
+#: includes/Classes/Emails.php:147
+msgid "This email will be sent to the new client after an administrator has created their new account. It would be best to include the log in details (username and password)."
+msgstr "Este e-mail será enviado ao novo cliente depois de um administrador ter criado a sua nova conta. É preferível incluir os dados de início de sessão (nome de utilizador e palavra-passe)."
+
+#: includes/Classes/Emails.php:154 includes/Classes/Emails.php:195
+#: includes/Classes/Emails.php:294 includes/Classes/Emails.php:365
+msgid "The new username for this account"
+msgstr "O novo nome de utilizador para esta conta"
+
+#: includes/Classes/Emails.php:155 includes/Classes/Emails.php:295
+msgid "The new password for this account"
+msgstr "A nova palavra-passe para esta conta"
+
+#: includes/Classes/Emails.php:164
+msgid "A new client has registered"
+msgstr "Registou-se um novo cliente"
+
+#: includes/Classes/Emails.php:165
+msgid "A new account was created using the self registration form on your site. Registration information:"
+msgstr "Foi criada uma nova conta utilizando o formulário de auto-registo no seu sítio. Informações de registo:"
+
+#: includes/Classes/Emails.php:167 includes/Classes/Emails.php:309
+#: includes/Classes/Emails.php:342 includes/forms/login.php:11
+#: includes/forms/options/email.php:130 install/make-config.php:228
+msgid "Username"
+msgstr "Nome de utilizador"
+
+#: includes/Classes/Emails.php:168
+msgid "Additionally, the client requests access to the following group(s)"
+msgstr "Além disso, o cliente solicita acesso ao(s) seguinte(s) grupo(s)"
+
+#: includes/Classes/Emails.php:169
+msgid "Auto-approvals of new accounts are currently enabled."
+msgstr "As aprovações automáticas de novas contas estão atualmente activadas."
+
+#: includes/Classes/Emails.php:170
+msgid "You can log in to manually deactivate it."
+msgstr "Pode iniciar sessão para o desativar manualmente."
+
+#: includes/Classes/Emails.php:173 includes/Classes/Emails.php:344
+msgid "Please log in to process the request."
+msgstr "Inicie sessão para processar o pedido."
+
+#: includes/Classes/Emails.php:174
+msgid "Remember, your new client will not be able to log in until an administrator has approved their account."
+msgstr "Lembre-se de que o seu novo cliente não poderá iniciar sessão até que um administrador tenha aprovado a sua conta."
+
+#: includes/Classes/Emails.php:177 includes/layout/main-menu.php:223
+msgid "New client (self-registered)"
+msgstr "Novo cliente (auto-registado)"
+
+#: includes/Classes/Emails.php:187
+msgid "This email will be sent to the system administrator after a new client has created a new account for himself."
+msgstr "Este e-mail será enviado ao administrador do sistema depois de um novo cliente ter criado uma nova conta para si próprio."
+
+#: includes/Classes/Emails.php:194 includes/Classes/Emails.php:364
+msgid "The full name the client registered with"
+msgstr "O nome completo com que o cliente se registou"
+
+#: includes/Classes/Emails.php:197 includes/Classes/Emails.php:367
+msgid "List of groups that the client requests membership to"
+msgstr "Lista de grupos aos quais o cliente pede para pertencer"
+
+#: includes/Classes/Emails.php:205
+msgid "You account has been approved"
+msgstr "A sua conta foi aprovada"
+
+#: includes/Classes/Emails.php:206
+msgid "Your account has been approved."
+msgstr "A sua conta foi aprovada."
+
+#: includes/Classes/Emails.php:207
+msgid "Additionally, your group membership requests have been processed."
+msgstr "Além disso, os seus pedidos de adesão a grupos foram processados."
+
+#: includes/Classes/Emails.php:208
+msgid "Approved requests:"
+msgstr "Pedidos aprovados:"
+
+#: includes/Classes/Emails.php:209
+msgid "Denied requests:"
+msgstr "Pedidos recusados:"
+
+#: includes/Classes/Emails.php:214 includes/layout/main-menu.php:227
+msgid "Approve client account"
+msgstr "Aprovar a conta do cliente"
+
+#: includes/Classes/Emails.php:224
+msgid "This email will be sent to a client that requested an account if it gets approved. Group membership requests are also mentioned on the email, separated by their approval status."
+msgstr "Este e-mail será enviado a um cliente que solicitou uma conta se esta for aprovada. Os pedidos de adesão a grupos também são mencionados no e-mail, separados pelo seu estado de aprovação."
+
+#: includes/Classes/Emails.php:231
+msgid "List of approved group memberships"
+msgstr "Lista de membros de grupos aprovados"
+
+#: includes/Classes/Emails.php:232
+msgid "List of denied group memberships"
+msgstr "Lista de membros de grupos recusados"
+
+#: includes/Classes/Emails.php:241
+msgid "You account has been denied"
+msgstr "A sua conta foi recusada"
+
+#: includes/Classes/Emails.php:242
+msgid "Your account request has been denied."
+msgstr "O seu pedido de conta foi recusado."
+
+#: includes/Classes/Emails.php:246 includes/layout/main-menu.php:231
+msgid "Deny client account"
+msgstr "Recusar a conta do cliente"
+
+#: includes/Classes/Emails.php:256
+msgid "This email will be sent to a client that requested an account if it gets denied. All group membership requests for this account are denied automatically."
+msgstr "Este e-mail será enviado a um cliente que solicitou uma conta se esta for recusada. Todos os pedidos de associação a grupos para esta conta são recusados automaticamente."
+
+#: includes/Classes/Emails.php:270
+msgid "A new account was created for you. From now on, you can access the system administrator using the following credentials:"
+msgstr "Foi criada uma nova conta para si. A partir de agora, pode aceder ao administrador do sistema utilizando as seguintes credenciais:"
+
+#: includes/Classes/Emails.php:271
+msgid "Access the system panel here"
+msgstr "Aceder ao painel de sistema aqui"
+
+#: includes/Classes/Emails.php:272
+msgid "Thank you for using ProjectSend."
+msgstr "Obrigado por utilizar o ProjectSend."
+
+#: includes/Classes/Emails.php:277 includes/layout/main-menu.php:239
+msgid "New user (welcome)"
+msgstr "Novo utilizador (bem-vindo)"
+
+#: includes/Classes/Emails.php:287
+msgid "This email will be sent to the new system user after an administrator has created their new account. It would be best to include the log in details (username and password)."
+msgstr "Este e-mail será enviado ao novo utilizador do sistema depois de um administrador ter criado a sua nova conta. É preferível incluir os dados de início de sessão (nome de utilizador e palavra-passe)."
+
+#: includes/Classes/Emails.php:304
+msgid "Password reset instructions"
+msgstr "Instruções de reposição da palavra-passe"
+
+#: includes/Classes/Emails.php:305
+msgid "A request has been received to reset the password for the following account:"
+msgstr "Foi recebido um pedido para repor a palavra-passe da seguinte conta:"
+
+#: includes/Classes/Emails.php:306
+msgid "To continue, please visit the following link"
+msgstr "Para continuar, visite a seguinte ligação"
+
+#: includes/Classes/Emails.php:307
+msgid "The request is valid only for 24 hours."
+msgstr "O pedido só é válido durante 24 horas."
+
+#: includes/Classes/Emails.php:308
+msgid "If you did not make this request, simply ignore this email."
+msgstr "Se não fez este pedido, ignore esta mensagem de correio eletrónico."
+
+#: includes/Classes/Emails.php:312 includes/layout/main-menu.php:243
+msgid "Password reset"
+msgstr "Redefinição da palavra-passe"
+
+#: includes/Classes/Emails.php:322
+msgid "This email will be sent to a user or client when they try to reset their password."
+msgstr "Este e-mail será enviado a um utilizador ou cliente quando este tentar redefinir a sua palavra-passe."
+
+#: includes/Classes/Emails.php:329
+msgid "The username for this account"
+msgstr "O nome de utilizador para esta conta"
+
+#: includes/Classes/Emails.php:330
+msgid "The text string unique to this request. Must be included somewhere."
+msgstr "A cadeia de texto exclusiva para este pedido. Deve ser incluída algures."
+
+#: includes/Classes/Emails.php:331
+msgid "The link to continue the process (to be used as href on a link tag)"
+msgstr "A ligação para continuar o processo (para ser utilizada como href numa etiqueta de ligação)"
+
+#: includes/Classes/Emails.php:339
+msgid "A client has changed memberships requests"
+msgstr "Um cliente alterou os pedidos de adesão"
+
+#: includes/Classes/Emails.php:340
+msgid "A client on your site has just changed their groups membership requests and needs your approval."
+msgstr "Um cliente do seu sítio acabou de alterar os pedidos de inscrição nos grupos e precisa da sua aprovação."
+
+#: includes/Classes/Emails.php:343
+msgid "The client requests access to the following group(s)"
+msgstr "O cliente solicita acesso ao(s) seguinte(s) grupo(s)"
+
+#: includes/Classes/Emails.php:347 includes/layout/main-menu.php:235
+msgid "Client updated memberships"
+msgstr "Associações actualizadas de clientes"
+
+#: includes/Classes/Emails.php:357
+msgid "This email will be sent to the system administrator when a client edits their account and changes the public groups membership requests."
+msgstr "Este e-mail será enviado ao administrador do sistema quando um cliente editar a sua conta e alterar os pedidos de adesão a grupos públicos."
+
+#: includes/Classes/Emails.php:375
+msgid "Your login verification code"
+msgstr "O seu código de verificação de início de sessão"
+
+#: includes/Classes/Emails.php:376
+msgid "Someone has attempted to log in to your account."
+msgstr "Alguém tentou iniciar sessão na sua conta."
+
+#: includes/Classes/Emails.php:377
+msgid "To continue the process, you need to enter the following code:"
+msgstr "Para continuar o processo, é necessário introduzir o seguinte código:"
+
+#: includes/Classes/Emails.php:381
+msgid "This code will expire on:"
+msgstr "Este código expira em:"
+
+#: includes/Classes/Emails.php:382
+msgid "If you did not initiate the log in process, please change your password as soon as possible."
+msgstr "Se não tiver iniciado o processo de início de sessão, altere a sua palavra-passe o mais rapidamente possível."
+
+#: includes/Classes/Emails.php:385 includes/layout/main-menu.php:247
+msgid "Login authorization code"
+msgstr "Código de autorização de início de sessão"
+
+#: includes/Classes/Emails.php:395
+msgid "If the corresponding option is enabled, this email with a one-time security code will be sent to a user when they attempt to log in."
+msgstr "Se a opção correspondente estiver activada, este e-mail com um código de segurança único será enviado a um utilizador quando este tentar iniciar sessão."
+
+#: includes/Classes/Emails.php:402
+msgid "The 6-digits security code"
+msgstr "O código de segurança de 6 dígitos"
+
+#: includes/Classes/Emails.php:403
+msgid "Geographical location from where the user logged in"
+msgstr "Localização geográfica a partir da qual o utilizador iniciou sessão"
+
+#: includes/Classes/Emails.php:404
+msgid "Device type"
+msgstr "Tipo de dispositivo"
+
+#: includes/Classes/Emails.php:405
+msgid "Browser used to log in"
+msgstr "Navegador utilizado para iniciar sessão"
+
+#: includes/Classes/Emails.php:406
+msgid "Date and time when the code expires"
+msgstr "Data e hora de expiração do código"
+
+#: includes/Classes/Emails.php:582 includes/Classes/Emails.php:843
+msgid "No group requests made"
+msgstr "Não foram efectuados pedidos de grupo"
+
+#: includes/Classes/Emails.php:895
+msgid "Email configuration test"
+msgstr "Teste de configuração de correio eletrónico"
+
+#: includes/Classes/Emails.php:967
+msgid "This is a test message"
+msgstr "Esta é uma mensagem de teste"
+
+#: includes/Classes/Emails.php:982
+#, php-format
+msgid "Sent from %s"
+msgstr "Enviado de %s"
+
+#: includes/Classes/Emails.php:1108
+msgid "This email contains HTML formatting and cannot be displayed right now. Please use an HTML compatible reader."
+msgstr "Esta mensagem de correio eletrónico contém formatação HTML e não pode ser visualizada neste momento. Utilize um leitor compatível com HTML."
+
+#: includes/Classes/Layout/Pagination.php:24
+msgid "Go to page:"
+msgstr "Ir para a página:"
+
+#: includes/Classes/PasswordReset.php:107
+#: includes/Classes/PasswordReset.php:114
+msgid "The request is not valid."
+msgstr "O pedido não é válido."
+
+#: includes/Classes/PasswordReset.php:121
+msgid "This request has already been completed. Please make a new one."
+msgstr "Este pedido já foi efectuado. Por favor, efectue um novo pedido."
+
+#: includes/Classes/PasswordReset.php:128
+msgid "This request has expired. Please make a new one."
+msgstr "Este pedido expirou. Por favor, faça um novo."
+
+#: includes/Classes/PasswordReset.php:142
+msgid "There are 3 unused requests done in less than 24 hs. Please wait until one expires (1 day since made) to make a new one."
+msgstr "Existem 3 pedidos não utilizados efectuados em menos de 24 horas. Aguarde até que um deles expire (1 dia desde que foi efectuado) para fazer um novo."
+
+#: includes/Classes/PasswordReset.php:196
+msgid "Your new password couldn't be set."
+msgstr "Não foi possível definir a sua nova palavra-passe."
+
+#: includes/Classes/PasswordReset.php:204
+msgid "Your new password has been set. You can now log in using it."
+msgstr "A sua nova palavra-passe foi definida. Pode agora iniciar sessão com ela."
+
+#: includes/Classes/PasswordReset.php:210
+msgid "An e-mail with further instructions has been sent. Please check your inbox to proceed."
+msgstr "Foi enviada uma mensagem de correio eletrónico com mais instruções. Por favor, verifique a sua caixa de correio eletrónico para prosseguir."
+
+#: includes/Classes/Validation.php:56
+#, php-format
+msgid "\"<em>%s</em>\" is not valid for validation type <em>%s</em>"
+msgstr "\"<em>%s</em>\" não é válido para o tipo de validação <em>%s</em>"
+
+#: includes/Classes/Validation.php:236 includes/text.strings.php:78
+msgid "The following errors were found"
+msgstr "Foram encontrados os seguintes erros"
+
+#: includes/forms/2fa_verify.php:12
+msgid "Verify login code"
+msgstr "Verificar o código de início de sessão"
+
+#: includes/forms/2fa_verify.php:13
+#, php-format
+msgid "An email with a 6-digit code was sent to your email address at %s"
+msgstr "Foi enviada uma mensagem de correio eletrónico com um código de 6 dígitos para o seu endereço de correio eletrónico em %s"
+
+#: includes/forms/2fa_verify.php:14
+msgid "Please enter the code to access your account"
+msgstr "Introduza o código para aceder à sua conta"
+
+#: includes/forms/2fa_verify.php:28
+msgid "Verify"
+msgstr "Verificar"
+
+#: includes/forms/2fa_verify.php:40
+msgid "Didn't receive the email?"
+msgstr "Não recebeu a mensagem de correio eletrónico?"
+
+#: includes/forms/2fa_verify.php:43
+msgid "Request new code"
+msgstr "Pedir novo código"
+
+#: includes/forms/2fa_verify.php:44
+#, php-format
+msgid "Please wait %s seconds to request a new code"
+msgstr "Aguarde %s segundos para solicitar um novo código"
+
+#: includes/forms/assets.php:8
+msgid "Create asset"
+msgstr "Criar ativo"
+
+#: includes/forms/assets.php:12
+msgid "Save asset"
+msgstr "Guardar o ativo"
+
+#: includes/forms/assets.php:40
+msgid "Content"
+msgstr "Conteúdo"
+
+#: includes/forms/assets.php:46
+#, php-format
+msgid "Do not add the %s and %s tags, they will be added automatically when the code is rendered"
+msgstr "Não adicione as etiquetas %s e %s, elas serão adicionadas automaticamente quando o código for processado"
+
+#: includes/forms/categories.php:10
+msgid "Create"
+msgstr "Criar"
+
+#: includes/forms/categories.php:13 includes/forms/file_editor.php:357
+msgid "Save"
+msgstr "Guardar"
+
+#: includes/forms/categories.php:42
+msgid "Parent"
+msgstr "Parent"
+
+#: includes/forms/categories.php:45 includes/forms/options/clients.php:53
+#: includes/forms/options/clients.php:102 includes/forms/options/email.php:166
+#: manage-files.php:670
+msgid "None"
+msgstr "Nenhum"
+
+#: includes/forms/categories.php:60
+msgid "Cancel"
+msgstr "Cancel"
+
+#: includes/forms/clients.php:5
+msgid "Will be visible on the client's file list"
+msgstr "Será visível na lista de ficheiros do cliente"
+
+#: includes/forms/clients.php:24
+msgid "Save client"
+msgstr "Guardar cliente"
+
+#: includes/forms/clients.php:36
+msgid "Create account"
+msgstr "Criar conta"
+
+#: includes/forms/clients.php:36
+msgid "Request account"
+msgstr "Pedir conta"
+
+#: includes/forms/clients.php:42
+msgid "Your full name"
+msgstr "O seu nome completo"
+
+#: includes/forms/clients.php:46 includes/forms/clients.php:60
+msgid "Request access to groups"
+msgstr "Pedir acesso a grupos"
+
+#: includes/forms/clients.php:51 includes/forms/users.php:26
+msgid "Update account"
+msgstr "Atualizar conta"
+
+#: includes/forms/clients.php:81 includes/forms/users.php:45
+msgid "Must be alphanumeric"
+msgstr "Deve ser alfanumérico"
+
+#: includes/forms/clients.php:86 includes/forms/login-ldap.php:11
+#: includes/forms/login.php:16 includes/forms/options/email.php:137
+#: includes/forms/users.php:50 install/index.php:219
+#: install/make-config.php:238
+msgid "Password"
+msgstr "Palavra-passe"
+
+#: includes/forms/clients.php:91
+#: includes/forms/reset-password/enter-password.php:15
+#: includes/forms/users.php:55 install/index.php:224
+msgid "Generate"
+msgstr "Gerar"
+
+#: includes/forms/clients.php:99 includes/forms/users.php:63
+msgid "Must be valid and unique"
+msgstr "Deve ser válido e único"
+
+#: includes/forms/clients.php:104
+msgid "Address"
+msgstr "Endereço"
+
+#: includes/forms/clients.php:111
+msgid "Telephone"
+msgstr "Telefone"
+
+#: includes/forms/clients.php:121
+msgid "Internal contact name"
+msgstr "Nome do contacto interno"
+
+#: includes/forms/clients.php:128 includes/forms/users.php:91
+msgid "Max. upload filesize"
+msgstr "Tamanho máximo do ficheiro de carregamento"
+
+#: includes/forms/clients.php:134 includes/forms/users.php:97
+msgid "Set to 0 to use the default system limit"
+msgstr "Definir como 0 para utilizar o limite predefinido do sistema"
+
+#: includes/forms/clients.php:180 includes/forms/file_editor.php:135
+#: includes/forms/file_editor.php:154 includes/forms/file_editor.php:191
+#: includes/forms/groups.php:38 includes/forms/users.php:104
+msgid "Select one or more options. Type to search."
+msgstr "Selecione uma ou mais opções. Digite para pesquisar."
+
+#: includes/forms/clients.php:193 includes/forms/file_editor.php:147
+#: includes/forms/file_editor.php:166 includes/forms/file_editor.php:195
+#: includes/forms/groups.php:61
+msgid "Add all"
+msgstr "Adicionar tudo"
+
+#: includes/forms/clients.php:194 includes/forms/file_editor.php:148
+#: includes/forms/file_editor.php:167 includes/forms/file_editor.php:196
+#: includes/forms/groups.php:62
+msgid "Remove all"
+msgstr "Remover tudo"
+
+#: includes/forms/clients.php:210
+msgid "Active (client can log in)"
+msgstr "Ativo (o cliente pode iniciar sessão)"
+
+#: includes/forms/clients.php:218
+msgid "Can set own files as public"
+msgstr "Pode definir os seus próprios ficheiros como públicos"
+
+#: includes/forms/clients.php:221
+msgid "This has no effect according to your current settings."
+msgstr "Isto não tem qualquer efeito de acordo com as suas definições actuais."
+
+#: includes/forms/clients.php:221
+msgid "Go to settings"
+msgstr "Ir para as definições"
+
+#: includes/forms/clients.php:232
+msgid "Notify new uploads by e-mail"
+msgstr "Notificar novos carregamentos por correio eletrónico"
+
+#: includes/forms/clients.php:243 includes/forms/users.php:146
+msgid "Send welcome email"
+msgstr "Enviar correio eletrónico de boas-vindas"
+
+#: includes/forms/clients.php:251 includes/forms/users.php:154
+msgid "Require password change after first login"
+msgstr "Exigir a alteração da palavra-passe após o primeiro início de sessão"
+
+#: includes/forms/clients.php:271 includes/forms/users.php:169
+msgid "This account information will be e-mailed to the address supplied above"
+msgstr "Estas informações sobre a conta serão enviadas por correio eletrónico para o endereço fornecido acima"
+
+#: includes/forms/file_editor.php:39
+msgid "File information"
+msgstr "Informações sobre o ficheiro"
+
+#: includes/forms/file_editor.php:46
+msgid "Enter here the required file title."
+msgstr "Introduzir aqui o título do ficheiro pretendido."
+
+#: includes/forms/file_editor.php:51
+msgid "Optionally, enter here a description for the file."
+msgstr "Opcionalmente, introduza aqui uma descrição para o ficheiro."
+
+#: includes/forms/file_editor.php:62
+msgid "Expiration date"
+msgstr "Data de expiração"
+
+#: includes/forms/file_editor.php:65
+msgid "Select a date"
+msgstr "Selecionar uma data"
+
+#: includes/forms/file_editor.php:76
+msgid "File expires"
+msgstr "O ficheiro expira"
+
+#: includes/forms/file_editor.php:86
+msgid "Public downloading"
+msgstr "Descarregamento público"
+
+#: includes/forms/file_editor.php:90
+msgid "Allow public downloading of this file."
+msgstr "Permitir o descarregamento público deste ficheiro."
+
+#: includes/forms/file_editor.php:96
+msgid "Custom download aliases"
+msgstr "Aliases de download personalizados"
+
+#: includes/forms/file_editor.php:98
+msgid "Enter a custom download link."
+msgstr "Introduza uma ligação de transferência personalizada."
+
+#: includes/forms/file_editor.php:117
+#, php-format
+msgid "Optional: enter an alias to use on the custom download link. Ej: \"my-first-file\" will let you download this file from %s"
+msgstr "Opcional: introduza um pseudónimo a utilizar na ligação de descarregamento personalizada. Ej: \"my-first-file\" permite-lhe descarregar este ficheiro de %s"
+
+#: includes/forms/file_editor.php:133
+msgid "Assignations"
+msgstr "Atribuições"
+
+#: includes/forms/file_editor.php:134 includes/layout/main-menu.php:65
+#: includes/layout/main-menu.php:168 includes/widgets/counters.php:42
+#: options.php:28
+msgid "Clients"
+msgstr "Clientes"
+
+#: includes/forms/file_editor.php:174
+msgid "Hidden (will not send notifications or show into the files list)"
+msgstr "Oculto (não envia notificações nem aparece na lista de ficheiros)"
+
+#: includes/forms/file_editor.php:189 includes/layout/main-menu.php:55
+#: manage-files.php:579
+msgid "Categories"
+msgstr "Categorias"
+
+#: includes/forms/file_editor.php:190
+msgid "Add to"
+msgstr "Adicionar a"
+
+#: includes/forms/file_editor.php:206
+msgid "Store in this folder"
+msgstr "Armazenar nesta pasta"
+
+#: includes/forms/file_editor.php:233
+msgid "Optional. Type to search."
+msgstr "Opcional. Tipo a pesquisar."
+
+#: includes/forms/file_editor.php:234 includes/layout/folders-nav.php:10
+msgid "Root"
+msgstr "Raiz"
+
+#: includes/forms/file_editor.php:248
+msgid "Expiration settings"
+msgstr "Definições de expiração"
+
+#: includes/forms/file_editor.php:259
+msgid "Public settings"
+msgstr "Ambientes públicos"
+
+#: includes/forms/file_editor.php:270
+msgid "Selected clients"
+msgstr "Clientes selecionados"
+
+#: includes/forms/file_editor.php:280
+msgid "Selected groups"
+msgstr "Grupos selecionados"
+
+#: includes/forms/file_editor.php:290
+msgid "Hidden status"
+msgstr "Estado oculto"
+
+#: includes/forms/file_editor.php:299
+msgid "Selected categories"
+msgstr "Categorias selecionadas"
+
+#: includes/forms/file_editor.php:309
+msgid "Selected folder"
+msgstr "Pasta selecionada"
+
+#: includes/forms/file_editor.php:323
+msgid "Apply to all files"
+msgstr "Aplicar a todos os ficheiros"
+
+#: includes/forms/file_editor.php:348
+#, php-format
+msgid "File not found on disk: %s"
+msgstr "Ficheiro não encontrado no disco: %s"
+
+#: includes/forms/groups.php:8
+msgid "Create group"
+msgstr "Criar grupo"
+
+#: includes/forms/groups.php:12
+msgid "Save group"
+msgstr "Guardar grupo"
+
+#: includes/forms/groups.php:71
+msgid "Allows clients to request access to this group in the registration process and when editing their own profile."
+msgstr "Permite que os clientes solicitem acesso a este grupo no processo de registo e ao editarem o seu próprio perfil."
+
+#: includes/forms/groups.php:74
+msgid "The group cannot be made publicly visible while the public page is disabled."
+msgstr "O grupo não pode ser tornado visível publicamente enquanto a página pública estiver desactivada."
+
+#: includes/forms/login-ldap.php:27
+msgid "default"
+msgstr "padrão"
+
+#: includes/forms/options/branding.php:1
+msgid "Current logo"
+msgstr "Logótipo atual"
+
+#: includes/forms/options/branding.php:2
+msgid "Use this page to upload your company logo, or update the currently assigned one. This image will be shown to your clients when they access their file list."
+msgstr "Utilize esta página para carregar o logótipo da sua empresa ou atualizar o logótipo atualmente atribuído. Esta imagem será mostrada aos seus clientes quando acederem à sua lista de ficheiros."
+
+#: includes/forms/options/branding.php:23
+msgid "This preview uses a maximum width of 300px."
+msgstr "Esta pré-visualização utiliza uma largura máxima de 300px."
+
+#: includes/forms/options/branding.php:27
+msgid "Delete current logo"
+msgstr "Eliminar o logótipo atual"
+
+#: includes/forms/options/branding.php:34
+msgid "Select image to upload"
+msgstr "Selecionar a imagem a carregar"
+
+#: includes/forms/options/clients.php:1
+msgid "New registrations"
+msgstr "Novos registos"
+
+#: includes/forms/options/clients.php:2
+msgid "Used only on self-registrations. These options will not apply to clients registered by system administrators."
+msgstr "Utilizado apenas em auto-registos. Estas opções não se aplicam a clientes registados por administradores de sistemas."
+
+#: includes/forms/options/clients.php:7
+msgid "Clients can register themselves"
+msgstr "Os clientes podem registar-se"
+
+#: includes/forms/options/clients.php:15
+msgid "Auto approve new accounts"
+msgstr "Aprovação automática de novas contas"
+
+#: includes/forms/options/clients.php:21
+msgid "Add clients to this group:"
+msgstr "Adicionar clientes a este grupo:"
+
+#: includes/forms/options/clients.php:24
+msgid "None (does not enable this feature)"
+msgstr "Nenhum (não ativa esta funcionalidade)"
+
+#: includes/forms/options/clients.php:43
+msgid "New clients will automatically be assigned to the group you have selected."
+msgstr "Os novos clientes serão automaticamente atribuídos ao grupo que selecionou."
+
+#: includes/forms/options/clients.php:48
+msgid "Groups for which clients can request membership to:"
+msgstr "Grupos para os quais os clientes podem solicitar a adesão:"
+
+#: includes/forms/options/clients.php:54
+msgid "Public groups"
+msgstr "Grupos públicos"
+
+#: includes/forms/options/clients.php:55
+msgid "All groups"
+msgstr "Todos os grupos"
+
+#: includes/forms/options/clients.php:64
+msgid "When a client registers a new account, an option will be presented to request becoming a member of a particular group."
+msgstr "Quando um cliente regista uma nova conta, é-lhe apresentada uma opção para pedir para se tornar membro de um determinado grupo."
+
+#: includes/forms/options/clients.php:75
+msgid "Clients can upload files"
+msgstr "Os clientes podem carregar ficheiros"
+
+#: includes/forms/options/clients.php:83
+msgid "Clients can delete their own uploaded files"
+msgstr "Os clientes podem apagar os seus próprios ficheiros carregados"
+
+#: includes/forms/options/clients.php:91
+msgid "Clients can set expiration Date"
+msgstr "Os clientes podem definir a data de expiração"
+
+#: includes/forms/options/clients.php:97
+msgid "Clients can set own files as public:"
+msgstr "Os clientes podem definir os seus próprios ficheiros como públicos:"
+
+#: includes/forms/options/clients.php:103
+msgid "Allowed ones"
+msgstr "Permitidos"
+
+#: includes/forms/options/clients.php:104
+msgid "All clients"
+msgstr "Todos os clientes"
+
+#: includes/forms/options/clients.php:113
+msgid "If selecting 'allowed ones': please edit each allowed client and set the corresponding permissions."
+msgstr "Se selecionar \"permitidos\": edite cada cliente permitido e defina as permissões correspondentes."
+
+#: includes/forms/options/clients.php:120
+msgid "New self registered clients can upload public files by default."
+msgstr "Os novos clientes auto-registados podem carregar ficheiros públicos por defeito."
+
+#: includes/forms/options/clients.php:122
+msgid "Specific option when selecting 'allowed ones' in the previous option."
+msgstr "Opção específica ao selecionar \"permitidos\" na opção anterior."
+
+#: includes/forms/options/clients.php:129
+msgid "Allow clients to assign files to public folders"
+msgstr "Permitir que os clientes atribuam ficheiros a pastas públicas"
+
+#: includes/forms/options/clients.php:131
+msgid "Any file assigned to a public folder automatically becomes public too."
+msgstr "Qualquer ficheiro atribuído a uma pasta pública torna-se automaticamente público também."
+
+#: includes/forms/options/clients.php:131
+msgid "Important: inherits permission from the setting \"Clients can set own files as public\"."
+msgstr "Importante: herda a permissão da definição \"Os clientes podem definir os seus próprios ficheiros como públicos\"."
+
+#: includes/forms/options/clients.php:137
+msgid "When a file expires:"
+msgstr "Quando um ficheiro expira:"
+
+#: includes/forms/options/clients.php:140
+msgid "Don't show it on the files list"
+msgstr "Não o mostrar na lista de ficheiros"
+
+#: includes/forms/options/clients.php:141
+msgid "Show it anyway, but prevent download."
+msgstr "Mostre-o na mesma, mas evite descarregá-lo."
+
+#: includes/forms/options/clients.php:143
+msgid "This only affects clients. On the admin side, you can still get the files."
+msgstr "Isto só afecta os clientes. No lado do administrador, ainda é possível obter os ficheiros."
+
+#: includes/forms/options/clients.php:150
+msgid "Show public files and folders on client's files lists"
+msgstr "Mostrar ficheiros e pastas públicos nas listas de ficheiros do cliente"
+
+#: includes/forms/options/clients.php:152
+msgid "When a client logs in, all public files will also be shown using the selected template, next to the files assigned to their account."
+msgstr "Quando um cliente inicia sessão, todos os ficheiros públicos também serão mostrados utilizando o modelo selecionado, ao lado dos ficheiros atribuídos à sua conta."
+
+#: includes/forms/options/cron.php:1
+msgid "Tasks settings"
+msgstr "Definições de tarefas"
+
+#: includes/forms/options/cron.php:6
+msgid "Enable schedule tasks"
+msgstr "Ativar tarefas do calendário"
+
+#: includes/forms/options/cron.php:9
+msgid "Sample command to execute the cron job every 5 minutes. You may need to adjust the frequency and paths to match your server's settings."
+msgstr "Exemplo de comando para executar o trabalho cron a cada 5 minutos. Pode ser necessário ajustar a frequência e os caminhos para corresponder às definições do seu servidor."
+
+#: includes/forms/options/cron.php:10
+msgid "The >/dev/null part will discard the result and prevent you from getting a email from your OS after each run."
+msgstr "A parte >/dev/null descartará o resultado e evitará que você receba um e-mail do seu sistema operacional após cada execução."
+
+#: includes/forms/options/cron.php:19
+msgid "Enable cron execution via command line only"
+msgstr "Ativar a execução do cron apenas através da linha de comandos"
+
+#: includes/forms/options/cron.php:22
+msgid "It's recommended to keep this checked to prevent unauthorized executions of the tasks by accessing the URL directly."
+msgstr "Recomenda-se que esta opção seja mantida selecionada para evitar execuções não autorizadas das tarefas, acedendo diretamente ao URL."
+
+#: includes/forms/options/cron.php:24
+msgid "If you disable this option, use the following URL to run your cron job via HTTP request:"
+msgstr "Se desativar esta opção, utilize o seguinte URL para executar o seu trabalho cron através de um pedido HTTP:"
+
+#: includes/forms/options/cron.php:31
+msgid "Cron security key"
+msgstr "Chave de segurança Cron"
+
+#: includes/forms/options/cron.php:34
+msgid "This key must be present in the URL to validate the cron job and execute the required actions."
+msgstr "Esta chave tem de estar presente no URL para validar o trabalho cron e executar as acções necessárias."
+
+#: includes/forms/options/cron.php:41
+msgid "Send pending email notifications"
+msgstr "Enviar notificações por correio eletrónico pendentes"
+
+#: includes/forms/options/cron.php:44
+msgid "Combine this option with the notifications setting \"Max. emails to send at once\" to throttle emails and prevent issues."
+msgstr "Combine esta opção com a definição de notificações \"Máximo de e-mails a enviar de uma só vez\" para limitar os e-mails e evitar problemas."
+
+#: includes/forms/options/cron.php:53
+#, php-format
+msgid "Current date/time according to your settings is %s."
+msgstr "A data/hora atual, de acordo com as suas definições, é %s."
+
+#: includes/forms/options/cron.php:66
+msgid "Orphan files to delete:"
+msgstr "Ficheiros órfãos a eliminar:"
+
+#: includes/forms/options/cron.php:71
+msgid "All orphan files"
+msgstr "Todos os ficheiros órfãos"
+
+#: includes/forms/options/cron.php:72
+msgid "Only files with extensions that are not allowed"
+msgstr "Apenas ficheiros com extensões não permitidas"
+
+#: includes/forms/options/cron.php:94
+msgid "Execution results"
+msgstr "Resultados da execução"
+
+#: includes/forms/options/cron.php:99
+msgid "Save results on database"
+msgstr "Guardar resultados na base de dados"
+
+#: includes/forms/options/cron.php:101
+msgid "Important: each run of the cron job will add a record to the database. Watch the size of the cron log table and clean it if it gets too big."
+msgstr "Importante: cada execução da tarefa cron irá adicionar um registo à base de dados. Observe o tamanho da tabela de registo cron e limpe-a se ficar demasiado grande."
+
+#: includes/forms/options/cron.php:108
+msgid "E-mail results summary after each execution"
+msgstr "Resumo dos resultados por correio eletrónico após cada execução"
+
+#: includes/forms/options/cron.php:114
+msgid "E-mail to send the summary to"
+msgstr "E-mail para onde enviar o resumo"
+
+#: includes/forms/options/cron.php:117
+msgid "Leaving this field empty will send the results to the default \"from\" address."
+msgstr "Se deixar este campo vazio, os resultados serão enviados para o endereço \"from\" predefinido."
+
+#: includes/forms/options/email.php:1
+msgid "\"From\" information"
+msgstr "\"Informação \"De"
+
+#: includes/forms/options/email.php:4 install/index.php:205
+msgid "E-mail address"
+msgstr "Endereço eletrónico"
+
+#: includes/forms/options/email.php:19
+msgid "System performance"
+msgstr "Desempenho do sistema"
+
+#: includes/forms/options/email.php:24
+msgid "Send \"New file\" email notifications during the file saving process."
+msgstr "Enviar notificações por correio eletrónico de \"Novo ficheiro\" durante o processo de gravação de ficheiros."
+
+#: includes/forms/options/email.php:27
+msgid "By unchecking this option, notifications are not sent during the file uploading and editing operations which results in much faster page loading and a better user experience."
+msgstr "Ao desmarcar esta opção, as notificações não são enviadas durante as operações de carregamento e edição de ficheiros, o que resulta num carregamento muito mais rápido da página e numa melhor experiência do utilizador."
+
+#: includes/forms/options/email.php:28
+msgid "Warning: only disable this setting if you have a cron job that takes care of sending the notifications."
+msgstr "Aviso: só desactive esta definição se tiver um trabalho cron que se encarregue de enviar as notificações."
+
+#: includes/forms/options/email.php:35
+msgid "Send copies"
+msgstr "Enviar cópias"
+
+#: includes/forms/options/email.php:40
+msgid "When a system user uploads files"
+msgstr "Quando um utilizador do sistema carrega ficheiros"
+
+#: includes/forms/options/email.php:48
+msgid "When a client uploads files"
+msgstr "Quando um cliente carrega ficheiros"
+
+#: includes/forms/options/email.php:54
+msgid "Define here who will receive copies of this emails. These are sent as BCC so neither recipient will see the other addresses."
+msgstr "Defina aqui quem irá receber cópias destas mensagens de correio eletrónico. Estas são enviadas como BCC, pelo que nenhum dos destinatários verá os outros endereços."
+
+#: includes/forms/options/email.php:60
+msgid "Address supplied above (on \"From\")"
+msgstr "Endereço fornecido acima (em \"De\")"
+
+#: includes/forms/options/email.php:66
+msgid "Also to this addresses"
+msgstr "Também para este endereço"
+
+#: includes/forms/options/email.php:69
+msgid "Separate e-mail addresses with a comma."
+msgstr "Separe os endereços de correio eletrónico com uma vírgula."
+
+#: includes/forms/options/email.php:75
+msgid "Expiration"
+msgstr "Prazo de validade"
+
+#: includes/forms/options/email.php:78
+msgid "Maximum sending attempts"
+msgstr "Máximo de tentativas de envio"
+
+#: includes/forms/options/email.php:81
+msgid "Define how many times the system will attempt to send each notification."
+msgstr "Definir o número de vezes que o sistema tentará enviar cada notificação."
+
+#: includes/forms/options/email.php:86
+msgid "Days before expiring"
+msgstr "Dias antes da expiração"
+
+#: includes/forms/options/email.php:89
+msgid "Notifications older than this will not be sent."
+msgstr "As notificações mais antigas do que isto não serão enviadas."
+
+#: includes/forms/options/email.php:89 includes/forms/options/email.php:97
+msgid "Set to 0 to disable."
+msgstr "Definir como 0 para desativar."
+
+#: includes/forms/options/email.php:94
+msgid "Max. emails to send at once"
+msgstr "Máximo de mensagens de correio eletrónico a enviar de uma só vez"
+
+#: includes/forms/options/email.php:97
+msgid "Sending too many emails at once can lead to issues. If you set up a notifications cron job, you can set this to a convenient, safe amount of emails to attempt to send per run (ie: 20)."
+msgstr "O envio de demasiadas mensagens de correio eletrónico de uma só vez pode causar problemas. Se configurar uma tarefa cron de notificações, pode definir uma quantidade conveniente e segura de e-mails a tentar enviar por execução (por exemplo, 20)."
+
+#: includes/forms/options/email.php:103
+msgid "E-mail sending options"
+msgstr "Opções de envio de correio eletrónico"
+
+#: includes/forms/options/email.php:104
+msgid "Here you can select which mail system will be used when sending the notifications. If you have a valid e-mail account, SMTP is the recommended option."
+msgstr "Aqui pode selecionar o sistema de correio eletrónico que será utilizado para enviar as notificações. Se tiver uma conta de correio eletrónico válida, SMTP é a opção recomendada."
+
+#: includes/forms/options/email.php:107
+msgid "Mailer"
+msgstr "Correio eletrónico"
+
+#: includes/forms/options/email.php:126
+msgid "SMTP & Gmail shared options"
+msgstr "Opções partilhadas SMTP e Gmail"
+
+#: includes/forms/options/email.php:127
+msgid "You need to include your username (usually your e-mail address) and password if you have selected either SMTP or Gmail as your mailer."
+msgstr "Tem de incluir o seu nome de utilizador (normalmente o seu endereço de correio eletrónico) e a sua palavra-passe se tiver selecionado SMTP ou Gmail como correio."
+
+#: includes/forms/options/email.php:145
+msgid "SMTP options"
+msgstr "Opções SMTP"
+
+#: includes/forms/options/email.php:146
+msgid "If you selected SMTP as your mailer, please complete these options."
+msgstr "Se selecionou SMTP como correio, preencha estas opções."
+
+#: includes/forms/options/email.php:149 install/make-config.php:208
+msgid "Host"
+msgstr "Anfitrião"
+
+#: includes/forms/options/email.php:156
+msgid "Port"
+msgstr "Porto"
+
+#: includes/forms/options/email.php:163 includes/forms/options/security.php:104
+msgid "Authentication"
+msgstr "Autenticação"
+
+#: includes/forms/options/email.php:175
+msgid "SSL options"
+msgstr "Opções SSL"
+
+#: includes/forms/options/email.php:180
+msgid "Verify peer"
+msgstr "Verificar o par"
+
+#: includes/forms/options/email.php:188
+msgid "Verify peer name"
+msgstr "Verificar o nome do par"
+
+#: includes/forms/options/email.php:196
+msgid "Allow self signed"
+msgstr "Permitir a auto-assinatura"
+
+#: includes/forms/options/email.php:205
+msgid "After saving your options, you can test your configuration here"
+msgstr "Depois de guardar as suas opções, pode testar a sua configuração aqui"
+
+#: includes/forms/options/external_login.php:4
+msgid "Social Networks"
+msgstr "Redes sociais"
+
+#: includes/forms/options/external_login.php:5
+#, php-format
+msgid "Note: %s requires all accounts to be available locally. When a user connects via a social network or any other external source, a local account will be created with a random password."
+msgstr "Nota: %s exige que todas as contas estejam disponíveis localmente. Quando um utilizador se liga através de uma rede social ou de qualquer outra fonte externa, será criada uma conta local com uma palavra-passe aleatória."
+
+#: includes/forms/options/external_login.php:107
+msgid "App ID"
+msgstr "ID da aplicação"
+
+#: includes/forms/options/external_login.php:113
+msgid "App Secret"
+msgstr "App Secret"
+
+#: includes/forms/options/external_login.php:120
+msgid "App Tenant"
+msgstr "App Inquilino"
+
+#: includes/forms/options/external_login.php:129
+msgid "Callback URI"
+msgstr "URI de chamada de retorno"
+
+#: includes/forms/options/external_login.php:140
+#: includes/forms/options/security.php:98
+msgid "How do I obtain this credentials?"
+msgstr "Como é que obtenho estas credenciais?"
+
+#: includes/forms/options/general.php:1
+msgid "General"
+msgstr "Geral"
+
+#: includes/forms/options/general.php:2
+msgid "Basic information to be shown around the site. The time format and zones values affect how the clients see the dates on their files lists."
+msgstr "Informação básica a ser mostrada no sítio. O formato da hora e os valores dos fusos horários afectam a forma como os clientes vêem as datas nas suas listas de ficheiros."
+
+#: includes/forms/options/general.php:5 install/index.php:179
+msgid "Site name"
+msgstr "Nome do sítio"
+
+#: includes/forms/options/general.php:12
+msgid "Timezone"
+msgstr "Fuso horário"
+
+#: includes/forms/options/general.php:25
+msgid "Time format"
+msgstr "Formato da hora"
+
+#: includes/forms/options/general.php:28
+#, php-format
+msgid "For example, %s will display the current date and time like this: %s"
+msgstr "Por exemplo, %s apresentará a data e a hora actuais desta forma: %s"
+
+#: includes/forms/options/general.php:29
+#, php-format
+msgid "For the full list of available values, visit %s the official PHP Manual %s"
+msgstr "Para obter a lista completa de valores disponíveis, visite %s o manual oficial do PHP %s"
+
+#: includes/forms/options/general.php:30
+msgid "This date will be considered for files expiration."
+msgstr "Esta data será considerada para a expiração dos ficheiros."
+
+#: includes/forms/options/general.php:31
+msgid "You can adjust your timezone if your local date/time does not match your server's settings."
+msgstr "Pode ajustar o seu fuso horário se a sua data/hora local não corresponder às definições do seu servidor."
+
+#: includes/forms/options/general.php:39
+msgid "Use custom footer text"
+msgstr "Utilizar texto de rodapé personalizado"
+
+#: includes/forms/options/general.php:45
+msgid "Footer content"
+msgstr "Conteúdo do rodapé"
+
+#: includes/forms/options/general.php:52
+msgid "Pagination results per page"
+msgstr "Resultados da paginação por página"
+
+#: includes/forms/options/general.php:64
+msgid "Applies to pagination in all administration areas"
+msgstr "Aplica-se à paginação em todas as áreas administrativas"
+
+#: includes/forms/options/general.php:70
+msgid "Editor"
+msgstr "Editor"
+
+#: includes/forms/options/general.php:75
+msgid "Use the visual editor on files descriptions"
+msgstr "Utilizar o editor visual nas descrições dos ficheiros"
+
+#: includes/forms/options/general.php:87
+msgid "Organize uploads in folders based on year and month"
+msgstr "Organizar os carregamentos em pastas com base no ano e no mês"
+
+#: includes/forms/options/general.php:88
+msgid "For new uploads only. Will not affect existing files."
+msgstr "Apenas para novos carregamentos. Não afectará os ficheiros existentes."
+
+#: includes/forms/options/general.php:93
+msgid "Uploads defaults"
+msgstr "Carrega predefinições"
+
+#: includes/forms/options/general.php:98
+msgid "Files expire by default"
+msgstr "Os ficheiros expiram por predefinição"
+
+#: includes/forms/options/general.php:101
+msgid "Users can always set an expiration date for files. This option just makes the checkbox marked by default in the editor."
+msgstr "Os utilizadores podem sempre definir uma data de expiração para os ficheiros. Esta opção apenas torna a caixa de verificação marcada por defeito no editor."
+
+#: includes/forms/options/general.php:102
+#: includes/forms/options/general.php:113
+msgid "For clients not allowed to set it, this setting will be directly applied to the file."
+msgstr "Para os clientes que não têm permissão para a definir, esta definição será aplicada diretamente ao ficheiro."
+
+#: includes/forms/options/general.php:109
+msgid "Files are public by default"
+msgstr "Os ficheiros são públicos por defeito"
+
+#: includes/forms/options/general.php:112
+msgid "Users can always set a download to be public. This option just makes the checkbox marked by default in the editor."
+msgstr "Os utilizadores podem sempre definir uma transferência como pública. Esta opção apenas torna a caixa de verificação marcada por defeito no editor."
+
+#: includes/forms/options/general.php:119
+msgid "After these many days:"
+msgstr "Depois de tantos dias:"
+
+#: includes/forms/options/general.php:132
+msgid "Detect user browser language"
+msgstr "Detetar o idioma do browser do utilizador"
+
+#: includes/forms/options/general.php:133
+msgid "If available, will override the default one from the system configuration file. Affects all users and clients."
+msgstr "Se disponível, substituirá a predefinição do ficheiro de configuração do sistema. Afecta todos os utilizadores e clientes."
+
+#: includes/forms/options/general.php:140 includes/forms/options/privacy.php:22
+#: includes/widgets/counters.php:37
+msgid "Downloads"
+msgstr "Transferências"
+
+#: includes/forms/options/general.php:142
+msgid "Download method"
+msgstr "Método de transferência"
+
+#: includes/forms/options/general.php:150
+msgid "Serving files with php is the default method and does not require any changes to your webserver. However, very large files could download with errors depending on your php configuration."
+msgstr "Servir ficheiros com php é o método predefinido e não requer quaisquer alterações ao seu servidor Web. No entanto, ficheiros muito grandes podem ser descarregados com erros, dependendo da configuração do php."
+
+#: includes/forms/options/general.php:153
+msgid "XSendfile improves downloads by allowing the web server to send the file directly bypassing php and it's limitations. This in an advanced feature that requires you to install and enable a module on your server."
+msgstr "O XSendfile melhora os downloads ao permitir que o servidor web envie o ficheiro diretamente, ignorando o php e as suas limitações. Esta é uma funcionalidade avançada que requer a instalação e ativação de um módulo no seu servidor."
+
+#: includes/forms/options/general.php:154
+msgid "Be aware that if the module is not set up correctly, downloads will trigger but the files will have a length of 0 bytes."
+msgstr "Tenha em atenção que, se o módulo não estiver corretamente configurado, as transferências serão efectuadas mas os ficheiros terão um comprimento de 0 bytes."
+
+#: includes/forms/options/general.php:157
+msgid "X-Accel is a method available in nginx that allows the system to serve files directly, bypassing php and it's limitations. To configure it, you need to edit your server block and add the following code:"
+msgstr "O X-Accel é um método disponível no nginx que permite ao sistema servir ficheiros diretamente, ignorando o php e as suas limitações. Para o configurar, é necessário editar o bloco do seu servidor e adicionar o seguinte código:"
+
+#: includes/forms/options/general.php:170
+msgid "Do not log downloads by the file's uploader"
+msgstr "Não registar as transferências efectuadas pelo carregador do ficheiro"
+
+#: includes/forms/options/general.php:171
+msgid "When a user or client downloads their own files, do not log the download or add to the downloads count."
+msgstr "Quando um utilizador ou cliente transfere os seus próprios ficheiros, não registe a transferência nem a adicione à contagem de transferências."
+
+#: includes/forms/options/general.php:178
+msgid "System location"
+msgstr "Localização do sistema"
+
+#: includes/forms/options/general.php:179
+msgid "These options are to be changed only if you are moving the system to another place. Changes here can cause ProjectSend to stop working."
+msgstr "Estas opções só devem ser alteradas se o sistema for transferido para outro local. As alterações aqui efectuadas podem fazer com que o ProjectSend deixe de funcionar."
+
+#: includes/forms/options/general.php:182
+msgid "System URI"
+msgstr "URI do sistema"
+
+#: includes/forms/options/general.php:188
+msgid "Custom download URI"
+msgstr "URI de download personalizado"
+
+#: includes/forms/options/general.php:191
+msgid "Custom download URI base"
+msgstr "Base URI de download personalizado"
+
+#: includes/forms/options/general.php:195
+#, php-format
+msgid "The default URL base is %s. If you set up a custom domain that acts as shortener set the URL here."
+msgstr "A base URL predefinida é %s. Se configurar um domínio personalizado que actue como encurtador, defina o URL aqui."
+
+#: includes/forms/options/general.php:196
+#, php-format
+msgid "When setting up your vhost, make sure to redirect to %s"
+msgstr "Ao configurar o seu vhost, certifique-se de que redirecciona para %s"
+
+#: includes/forms/options/privacy.php:1 includes/layout/main-menu.php:172
+#: options.php:41
+msgid "Privacy"
+msgstr "Privacidade"
+
+#: includes/forms/options/privacy.php:6
+msgid "Prevent search engines from indexing this site"
+msgstr "Impedir que os motores de busca indexem este sítio"
+
+#: includes/forms/options/privacy.php:14
+msgid "Enable information page for private files"
+msgstr "Ativar a página de informação para ficheiros privados"
+
+#: includes/forms/options/privacy.php:15
+msgid "If enabled, the file information landing page will be available even for files that are not marked as private. Downloading them will stay restricted."
+msgstr "Se estiver activada, a página de destino das informações do ficheiro estará disponível mesmo para ficheiros que não estejam marcados como privados. O seu descarregamento permanecerá restrito."
+
+#: includes/forms/options/privacy.php:25
+msgid "Log IP address and host for:"
+msgstr "Registar o endereço IP e o anfitrião para:"
+
+#: includes/forms/options/privacy.php:30
+msgid "All downloads"
+msgstr "Todas as transferências"
+
+#: includes/forms/options/privacy.php:31
+msgid "Anonymous users only"
+msgstr "Apenas utilizadores anónimos"
+
+#: includes/forms/options/privacy.php:32
+msgid "Never record IP address and host"
+msgstr "Nunca registar o endereço IP e o anfitrião"
+
+#: includes/forms/options/privacy.php:54
+msgid "Public groups and files listings page"
+msgstr "Página de listagem de grupos e ficheiros públicos"
+
+#: includes/forms/options/privacy.php:59
+msgid "Enable page"
+msgstr "Ativar a página"
+
+#: includes/forms/options/privacy.php:61
+msgid "The url for the listings page is"
+msgstr "O URL da página de listagem é"
+
+#: includes/forms/options/privacy.php:69
+msgid "Only for logged in clients"
+msgstr "Apenas para clientes com sessão iniciada"
+
+#: includes/forms/options/privacy.php:77
+msgid "Inside groups show all files, including those that are not marked as public."
+msgstr "Os grupos internos mostram todos os ficheiros, incluindo os que não estão marcados como públicos."
+
+#: includes/forms/options/privacy.php:85
+msgid "On public files, show the download link."
+msgstr "Nos ficheiros públicos, mostrar a ligação de transferência."
+
+#: includes/forms/options/privacy.php:93
+msgid "Enable files previews"
+msgstr "Ativar as pré-visualizações de ficheiros"
+
+#: includes/forms/options/privacy.php:101
+msgid "Show a link to the public page under the log in form"
+msgstr "Mostrar uma ligação para a página pública por baixo do formulário de início de sessão"
+
+#: includes/forms/options/security.php:1
+msgid "Allowed file extensions"
+msgstr "Extensões de ficheiros permitidas"
+
+#: includes/forms/options/security.php:2
+msgid "Be careful when changing this options. They could affect not only the system but the whole server it is installed on."
+msgstr "Tenha cuidado ao alterar estas opções. Elas podem afetar não só o sistema, mas também todo o servidor onde está instalado."
+
+#: includes/forms/options/security.php:3
+msgid "Important"
+msgstr "Important"
+
+#: includes/forms/options/security.php:3
+msgid "Separate allowed file types with a comma."
+msgstr "Separe os tipos de ficheiros permitidos com uma vírgula."
+
+#: includes/forms/options/security.php:6
+msgid "Limit file types uploading to"
+msgstr "Limitar os tipos de ficheiros carregados para"
+
+#: includes/forms/options/security.php:9
+msgid "No one"
+msgstr "Ninguém"
+
+#: includes/forms/options/security.php:10
+msgid "Everyone"
+msgstr "Todos"
+
+#: includes/forms/options/security.php:11
+msgid "Clients only"
+msgstr "Apenas clientes"
+
+#: includes/forms/options/security.php:22
+msgid "SVG files"
+msgstr "Ficheiros SVG"
+
+#: includes/forms/options/security.php:26
+msgid "Show thumbnails for SVG files"
+msgstr "Mostrar miniaturas de ficheiros SVG"
+
+#: includes/forms/options/security.php:34
+msgid "Passwords"
+msgstr "Palavras-passe"
+
+#: includes/forms/options/security.php:35
+msgid "When setting up a password for an account, require at least:"
+msgstr "Ao definir uma palavra-passe para uma conta, exija pelo menos:"
+
+#: includes/forms/options/security.php:71
+msgid "reCAPTCHA"
+msgstr "reCAPTCHA"
+
+#: includes/forms/options/security.php:72
+msgid "Helps prevent SPAM on your login, registration and password forgotten forms."
+msgstr "Ajuda a evitar o SPAM nos seus formulários de início de sessão, registo e esquecimento de palavra-passe."
+
+#: includes/forms/options/security.php:77
+msgid "Use reCAPTCHA"
+msgstr "Utilizar o reCAPTCHA"
+
+#: includes/forms/options/security.php:77
+msgid "(v2 currently supported)"
+msgstr "(v2 atualmente suportada)"
+
+#: includes/forms/options/security.php:83
+msgid "Site key"
+msgstr "Chave do sítio"
+
+#: includes/forms/options/security.php:90
+msgid "Secret key"
+msgstr "Chave secreta"
+
+#: includes/forms/options/security.php:108
+msgid "Enable simple 2 factor authentication"
+msgstr "Ativar a autenticação simples de 2 factores"
+
+#: includes/forms/options/security.php:109
+msgid "If enabled, an email with a one time use verification code will be sent to the user after they enter their credentials."
+msgstr "Se estiver ativado, será enviado um e-mail com um código de verificação de utilização única para o utilizador depois de este introduzir as suas credenciais."
+
+#: includes/forms/options/security.php:116
+msgid "Log in throttle"
+msgstr "Iniciar sessão no acelerador"
+
+#: includes/forms/options/security.php:117
+msgid "Multiple failed log in attempts will increase timeouts for the originating IP address. Helps prevent brute force attacks."
+msgstr "Várias tentativas de início de sessão falhadas aumentarão os tempos limite para o endereço IP de origem. Ajuda a evitar ataques de força bruta."
+
+#: includes/forms/options/security.php:120
+msgid "IP whitelist"
+msgstr "Lista branca de IP"
+
+#: includes/forms/options/security.php:123
+#: includes/forms/options/security.php:131
+msgid "Enter one IP address per line"
+msgstr "Introduzir um endereço IP por linha"
+
+#: includes/forms/options/security.php:128
+msgid "IP blacklist"
+msgstr "Lista negra de IP"
+
+#: includes/forms/reset-password/enter-email.php:11
+msgid "Please enter your account's e-mail address. You will receive a link to continue the process."
+msgstr "Introduza o endereço de correio eletrónico da sua conta. Receberá uma ligação para continuar o processo."
+
+#: includes/forms/reset-password/enter-email.php:16
+msgid "Get a new password"
+msgstr "Obter uma nova palavra-passe"
+
+#: includes/forms/reset-password/enter-password.php:10
+msgid "New password"
+msgstr "Nova palavra-passe"
+
+#: includes/forms/reset-password/enter-password.php:20
+msgid "Please enter your desired new password. After that, you will be able to log in normally."
+msgstr "Introduza a nova palavra-passe pretendida. Depois disso, poderá iniciar sessão normalmente."
+
+#: includes/forms/reset-password/enter-password.php:23
+msgid "Set new password"
+msgstr "Definir nova palavra-passe"
+
+#: includes/forms/upload.php:11
+msgid "Your browser doesn't support HTML5, Flash or Silverlight. Please update your browser or install Adobe Flash or Silverlight to continue."
+msgstr "O seu browser não suporta HTML5, Flash ou Silverlight. Actualize o seu browser ou instale o Adobe Flash ou Silverlight para continuar."
+
+#: includes/forms/upload.php:18
+msgid "Your files are being uploaded! Progress indicators may take a while to update, but work is still being done behind the scenes."
+msgstr "Os seus ficheiros estão a ser carregados! Os indicadores de progresso podem demorar um pouco a ser actualizados, mas o trabalho continua a ser feito nos bastidores."
+
+#: includes/forms/users.php:13
+msgid "Add user"
+msgstr "Adicionar utilizador"
+
+#: includes/forms/users.php:19
+msgid "Save user"
+msgstr "Guardar utilizador"
+
+#: includes/forms/users.php:71 users.php:246
+msgid "Role"
+msgstr "Papel"
+
+#: includes/forms/users.php:102
+msgid "Limit account to this clients only"
+msgstr "Limitar a conta apenas a estes clientes"
+
+#: includes/forms/users.php:127
+msgid "Leave empty to allow access to all clients"
+msgstr "Deixar em branco para permitir o acesso a todos os clientes"
+
+#: includes/forms/users.php:128
+msgid "Important: at the moment limiting to specific users also limits uploading to groups that these clients are members of."
+msgstr "Importante: de momento, a limitação a utilizadores específicos também limita o carregamento para grupos de que esses clientes são membros."
+
+#: includes/forms/users.php:135
+msgid "Active (user can log in)"
+msgstr "Ativo (o utilizador pode iniciar sessão)"
+
+#: includes/functions.actionslog.php:21 includes/functions.actionslog.php:22
+msgid "ProjectSend was installed"
+msgstr "O ProjectSend foi instalado"
+
+#: includes/functions.actionslog.php:27 includes/functions.actionslog.php:207
+msgid "logged in to the system."
+msgstr "com sessão iniciada no sistema."
+
+#: includes/functions.actionslog.php:28 includes/functions.actionslog.php:208
+#, php-format
+msgid "%s logged in to the system"
+msgstr "%s iniciou sessão no sistema"
+
+#: includes/functions.actionslog.php:33
+msgid "created the user account"
+msgstr "criou a conta de utilizador"
+
+#: includes/functions.actionslog.php:35
+#, php-format
+msgid "%s created the user account %s"
+msgstr "%s criou a conta de utilizador %s"
+
+#: includes/functions.actionslog.php:40
+msgid "created the client account "
+msgstr "criada conta de cliente "
+
+#: includes/functions.actionslog.php:42
+#, php-format
+msgid "%s created the client account %s"
+msgstr "%s criou a conta de cliente %s"
+
+#: includes/functions.actionslog.php:47
+msgid "created a client account for themselves."
+msgstr "criaram uma conta de cliente para si próprios."
+
+#: includes/functions.actionslog.php:48
+#, php-format
+msgid "%s registered as a new client"
+msgstr "%s registou-se como um novo cliente"
+
+#: includes/functions.actionslog.php:53
+msgid "(user) uploaded the file"
+msgstr "(utilizador) carregou o ficheiro"
+
+#: includes/functions.actionslog.php:55
+#, php-format
+msgid "%s (user) uploaded the file %s"
+msgstr "%s (utilizador) carregou o ficheiro %s"
+
+#: includes/functions.actionslog.php:60
+msgid "(client) uploaded the file"
+msgstr "(cliente) carregou o ficheiro"
+
+#: includes/functions.actionslog.php:62
+#, php-format
+msgid "%s (client) uploaded the file %s"
+msgstr "%s (cliente) carregou o ficheiro %s"
+
+#: includes/functions.actionslog.php:67
+msgid "(user) downloaded the file"
+msgstr "(utilizador) descarregou o ficheiro"
+
+#: includes/functions.actionslog.php:69
+#, php-format
+msgid "%s (user) downloaded the file %s"
+msgstr "%s (utilizador) descarregou o ficheiro %s"
+
+#: includes/functions.actionslog.php:74
+msgid "(client) downloaded the file"
+msgstr "(cliente) descarregou o ficheiro"
+
+#: includes/functions.actionslog.php:76
+#, php-format
+msgid "%s (client) downloaded the file %s"
+msgstr "%s (cliente) descarregou o ficheiro %s"
+
+#: includes/functions.actionslog.php:81
+msgid "generated a zip file"
+msgstr "gerou um ficheiro zip"
+
+#: includes/functions.actionslog.php:82
+#, php-format
+msgid "%s generated a zip file"
+msgstr "%s gerou um ficheiro zip"
+
+#: includes/functions.actionslog.php:87 includes/functions.actionslog.php:96
+msgid "unassigned the file"
+msgstr "desatribuiu o ficheiro"
+
+#: includes/functions.actionslog.php:89
+msgid "from the client:"
+msgstr "do cliente:"
+
+#: includes/functions.actionslog.php:91
+#, php-format
+msgid "%s unassigned the file %s from the client %s"
+msgstr "%s desatribuiu o ficheiro %s do cliente %s"
+
+#: includes/functions.actionslog.php:98
+msgid "from the group:"
+msgstr "do grupo:"
+
+#: includes/functions.actionslog.php:100
+#, php-format
+msgid "%s unassigned the file %s from the group %s"
+msgstr "%s desatribuiu o ficheiro %s do grupo %s"
+
+#: includes/functions.actionslog.php:105
+msgid "deleted the file"
+msgstr "apagou o ficheiro"
+
+#: includes/functions.actionslog.php:107
+#, php-format
+msgid "%s deleted the file %s"
+msgstr "%s apagou o ficheiro %s"
+
+#: includes/functions.actionslog.php:112
+msgid "edited the user"
+msgstr "editou o utilizador"
+
+#: includes/functions.actionslog.php:114
+#, php-format
+msgid "%s edited the user %s"
+msgstr "%s editou o utilizador %s"
+
+#: includes/functions.actionslog.php:119
+msgid "edited the client"
+msgstr "editou o cliente"
+
+#: includes/functions.actionslog.php:121
+#, php-format
+msgid "%s edited the client %s"
+msgstr "%s editou o cliente %s"
+
+#: includes/functions.actionslog.php:126
+msgid "edited the group"
+msgstr "editou o grupo"
+
+#: includes/functions.actionslog.php:128
+#, php-format
+msgid "%s edited the group %s"
+msgstr "%s editou o grupo %s"
+
+#: includes/functions.actionslog.php:133
+msgid "deleted the user"
+msgstr "eliminou o utilizador"
+
+#: includes/functions.actionslog.php:135
+#, php-format
+msgid "%s deleted the user %s"
+msgstr "%s eliminou o utilizador %s"
+
+#: includes/functions.actionslog.php:140
+msgid "deleted the client"
+msgstr "apagou o cliente"
+
+#: includes/functions.actionslog.php:142
+#, php-format
+msgid "%s deleted the client %s"
+msgstr "%s eliminou o cliente %s"
+
+#: includes/functions.actionslog.php:147
+msgid "deleted the group"
+msgstr "eliminou o grupo"
+
+#: includes/functions.actionslog.php:149
+#, php-format
+msgid "%s deleted the group %s"
+msgstr "%s eliminou o grupo %s"
+
+#: includes/functions.actionslog.php:154
+msgid "activated the client"
+msgstr "activou o cliente"
+
+#: includes/functions.actionslog.php:156
+#, php-format
+msgid "%s activated the client %s"
+msgstr "%s activou o cliente %s"
+
+#: includes/functions.actionslog.php:161
+msgid "deactivated the client"
+msgstr "desactivou o cliente"
+
+#: includes/functions.actionslog.php:163
+#, php-format
+msgid "%s deactivated the client %s"
+msgstr "%s desactivou o cliente %s"
+
+#: includes/functions.actionslog.php:168
+msgid "marked as hidden the file"
+msgstr "marcou como oculto o ficheiro"
+
+#: includes/functions.actionslog.php:170 includes/functions.actionslog.php:193
+msgid "to:"
+msgstr "para:"
+
+#: includes/functions.actionslog.php:172
+#, php-format
+msgid "%s marked as hidden the file %s to %s"
+msgstr "%s marcou como oculto o ficheiro %s para %s"
+
+#: includes/functions.actionslog.php:177
+msgid "marked as hidden for everyone the file"
+msgstr "marcou como oculto para todos o ficheiro"
+
+#: includes/functions.actionslog.php:179
+#, php-format
+msgid "%s marked as hidden for everyone the file %s"
+msgstr "%s marcou como oculto para todos o ficheiro %s"
+
+#: includes/functions.actionslog.php:184
+msgid "marked as visible for everyone the file"
+msgstr "marcou como visível para todos o ficheiro"
+
+#: includes/functions.actionslog.php:186
+#, php-format
+msgid "%s marked as visible for everyone the file %s"
+msgstr "%s marcou como visível para todos o ficheiro %s"
+
+#: includes/functions.actionslog.php:191
+msgid "marked as visible the file"
+msgstr "marcou como visível o ficheiro"
+
+#: includes/functions.actionslog.php:195
+#, php-format
+msgid "%s marked as visible the file %s to %s"
+msgstr "%s marcou como visível o ficheiro %s para %s"
+
+#: includes/functions.actionslog.php:200
+msgid "created the group"
+msgstr "criou o grupo"
+
+#: includes/functions.actionslog.php:202
+#, php-format
+msgid "%s created the group %s"
+msgstr "%s criou o grupo %s"
+
+#: includes/functions.actionslog.php:213 includes/functions.actionslog.php:222
+msgid "assigned the file"
+msgstr "atribuiu o ficheiro"
+
+#: includes/functions.actionslog.php:215
+msgid "to the client:"
+msgstr "para o cliente:"
+
+#: includes/functions.actionslog.php:217
+#, php-format
+msgid "%s assigned the file %s to client %s"
+msgstr "%s atribuiu o ficheiro %s ao cliente %s"
+
+#: includes/functions.actionslog.php:224
+msgid "to the group:"
+msgstr "para o grupo:"
+
+#: includes/functions.actionslog.php:226
+#, php-format
+msgid "%s assigned the file %s to group %s"
+msgstr "%s atribuiu o ficheiro %s ao grupo %s"
+
+#: includes/functions.actionslog.php:231
+msgid "activated the user"
+msgstr "activou o utilizador"
+
+#: includes/functions.actionslog.php:233
+#, php-format
+msgid "%s activated the user %s"
+msgstr "%s activou o utilizador %s"
+
+#: includes/functions.actionslog.php:238
+msgid "deactivated the user"
+msgstr "desactivou o utilizador"
+
+#: includes/functions.actionslog.php:240
+#, php-format
+msgid "%s deactivated the user %s"
+msgstr "%s desactivou o utilizador %s"
+
+#: includes/functions.actionslog.php:245
+msgid "uploaded a new logo on \"Branding\""
+msgstr "carregou um novo logótipo em \"Branding\""
+
+#: includes/functions.actionslog.php:246
+#, php-format
+msgid "%s uploaded a new logo on \"Branding\""
+msgstr "%s carregou um novo logótipo em \"Branding\""
+
+#: includes/functions.actionslog.php:251
+msgid "updated ProjectSend to version"
+msgstr "atualização do ProjectSend para a versão"
+
+#: includes/functions.actionslog.php:253
+#, php-format
+msgid "%s updated ProjectSend to version %s"
+msgstr "%s actualizou o ProjectSend para a versão %s"
+
+#: includes/functions.actionslog.php:258
+msgid "updated the database to version"
+msgstr "actualizou a base de dados para a versão"
+
+#: includes/functions.actionslog.php:260
+#, php-format
+msgid "%s updated the database to version %s"
+msgstr "%s actualizou a base de dados para a versão %s"
+
+#: includes/functions.actionslog.php:265
+msgid "logged out of the system."
+msgstr "sair do sistema."
+
+#: includes/functions.actionslog.php:266
+#, php-format
+msgid "%s logged out of the system"
+msgstr "%s saiu do sistema"
+
+#: includes/functions.actionslog.php:271
+msgid "(user) edited the file"
+msgstr "(utilizador) editou o ficheiro"
+
+#: includes/functions.actionslog.php:273
+#, php-format
+msgid "%s (user) edited the file %s"
+msgstr "%s (utilizador) editou o ficheiro %s"
+
+#: includes/functions.actionslog.php:278
+msgid "(client) edited the file"
+msgstr "(cliente) editou o ficheiro"
+
+#: includes/functions.actionslog.php:280
+#, php-format
+msgid "%s (client) edited the file %s"
+msgstr "%s (cliente) editou o ficheiro %s"
+
+#: includes/functions.actionslog.php:285
+msgid "created the category"
+msgstr "criou a categoria"
+
+#: includes/functions.actionslog.php:287
+#, php-format
+msgid "%s created the category %s"
+msgstr "%s criou a categoria %s"
+
+#: includes/functions.actionslog.php:292
+msgid "edited the category"
+msgstr "editou a categoria"
+
+#: includes/functions.actionslog.php:294
+#, php-format
+msgid "%s edited the category %s"
+msgstr "%s editou a categoria %s"
+
+#: includes/functions.actionslog.php:299
+msgid "deleted the category"
+msgstr "eliminou a categoria"
+
+#: includes/functions.actionslog.php:301
+#, php-format
+msgid "%s deleted the category %s"
+msgstr "%s eliminou a categoria %s"
+
+#: includes/functions.actionslog.php:305 includes/functions.actionslog.php:327
+msgid "An anonymous user"
+msgstr "Um utilizador anónimo"
+
+#: includes/functions.actionslog.php:306
+msgid "downloaded the file"
+msgstr "descarregou o ficheiro"
+
+#: includes/functions.actionslog.php:308
+#, php-format
+msgid "An anonymous user downloaded the file %s"
+msgstr "Um utilizador anónimo descarregou o ficheiro %s"
+
+#: includes/functions.actionslog.php:313
+msgid "processed an account request for"
+msgstr "processou um pedido de conta para"
+
+#: includes/functions.actionslog.php:315
+#, php-format
+msgid "%s processed an account request for %s"
+msgstr "%s processou um pedido de conta para %s"
+
+#: includes/functions.actionslog.php:320
+msgid "processed group memberships requests for"
+msgstr "processou pedidos de adesão de grupos para"
+
+#: includes/functions.actionslog.php:322
+#, php-format
+msgid "%s processed group memberships requests for %s"
+msgstr "%s processou pedidos de afiliação de grupos para %s"
+
+#: includes/functions.actionslog.php:328
+msgid "requested a preview for the file"
+msgstr "solicitou uma pré-visualização para o ficheiro"
+
+#: includes/functions.actionslog.php:330
+#, php-format
+msgid "%s requested a preview for the file %s"
+msgstr "%s pediu uma pré-visualização para o ficheiro %s"
+
+#: includes/functions.actionslog.php:335
+msgid "created an account with a social profile"
+msgstr "criou uma conta com um perfil social"
+
+#: includes/functions.actionslog.php:336
+#, php-format
+msgid "%s created an account with a social profile"
+msgstr "%s criou uma conta com um perfil social"
+
+#: includes/functions.actionslog.php:341
+msgid "logged in with a social profile"
+msgstr "iniciou sessão com um perfil social"
+
+#: includes/functions.actionslog.php:342
+#, php-format
+msgid "%s logged in with a social profile"
+msgstr "%s iniciou sessão com um perfil social"
+
+#: includes/functions.actionslog.php:347
+msgid "approved an account request for"
+msgstr "aprovou um pedido de conta para"
+
+#: includes/functions.actionslog.php:349
+#, php-format
+msgid "%s approved an account request for %s"
+msgstr "%s aprovou um pedido de conta para %s"
+
+#: includes/functions.actionslog.php:354
+msgid "denied an account request for"
+msgstr "recusou um pedido de conta para"
+
+#: includes/functions.actionslog.php:356
+#, php-format
+msgid "%s denied an account request for %s"
+msgstr "%s recusou um pedido de conta para %s"
+
+#: includes/functions.actionslog.php:361
+msgid "updated system options"
+msgstr "opções de sistema actualizadas"
+
+#: includes/functions.actionslog.php:364
+#, php-format
+msgid "%s updated system options: %s"
+msgstr "%s opções de sistema actualizadas: %s"
+
+#: includes/functions.actionslog.php:369
+msgid "updated an email template"
+msgstr "actualizou um modelo de correio eletrónico"
+
+#: includes/functions.actionslog.php:372
+#, php-format
+msgid "%s updated email template: %s"
+msgstr "%s modelo de correio eletrónico atualizado: %s"
+
+#: includes/functions.actionslog.php:379
+msgid "Created an asset"
+msgstr "Criou um ativo"
+
+#: includes/functions.actionslog.php:380
+#, php-format
+msgid "%s created the asset \"%s\" (%s)"
+msgstr "%s criou o ativo \"%s\" (%s)"
+
+#: includes/functions.actionslog.php:385
+msgid "Edited an asset"
+msgstr "Editar um ativo"
+
+#: includes/functions.actionslog.php:386
+#, php-format
+msgid "%s edited the asset \"%s\" (%s)"
+msgstr "%s editou o ativo \"%s\" (%s)"
+
+#: includes/functions.actionslog.php:391
+msgid "Deleted an asset"
+msgstr "Eliminação de um ativo"
+
+#: includes/functions.actionslog.php:392
+#, php-format
+msgid "%s deleted the asset \"%s\" (%s)"
+msgstr "%s eliminou o ativo \"%s\" (%s)"
+
+#: includes/functions.actionslog.php:397
+msgid "Enabled an asset"
+msgstr "Ativar um ativo"
+
+#: includes/functions.actionslog.php:398
+#, php-format
+msgid "%s enabled the asset \"%s\" (%s)"
+msgstr "%s activou o ativo \"%s\" (%s)"
+
+#: includes/functions.actionslog.php:403
+msgid "Disabled an asset"
+msgstr "Desativação de um ativo"
+
+#: includes/functions.actionslog.php:404
+#, php-format
+msgid "%s disabled the asset \"%s\" (%s)"
+msgstr "%s desactivou o ativo \"%s\" (%s)"
+
+#: includes/functions.assets.php:5
+msgid "CSS"
+msgstr "CSS"
+
+#: includes/functions.assets.php:6
+msgid "JavaScript"
+msgstr "JavaScript"
+
+#: includes/functions.assets.php:7
+msgid "HTML"
+msgstr "HTML"
+
+#: includes/functions.assets.php:14
+msgid "Public pages"
+msgstr "Páginas públicas"
+
+#: includes/functions.assets.php:15
+msgid "Administration pages"
+msgstr "Páginas de administração"
+
+#: includes/functions.assets.php:16
+msgid "Files list template"
+msgstr "Modelo de lista de ficheiros"
+
+#: includes/functions.assets.php:17
+msgid "All locations"
+msgstr "Todos os locais"
+
+#: includes/functions.assets.php:18
+msgid "All except files template"
+msgstr "Todos exceto ficheiros modelo"
+
+#: includes/functions.assets.php:25
+msgid "In <head>"
+msgstr "Em <head>"
+
+#: includes/functions.assets.php:26
+msgid "After <body>"
+msgstr "Depois de <body>"
+
+#: includes/functions.assets.php:27
+msgid "Before </body>"
+msgstr "Antes </body>"
+
+#: includes/functions.forms.php:16
+msgid "Search"
+msgstr "Pesquisar"
+
+#: includes/functions.forms.php:84
+msgid "Filter"
+msgstr "Filtros"
+
+#: includes/functions.forms.php:105
+msgid "Proceed"
+msgstr "Prosseguir"
+
+#: includes/functions.forms.php:203
+msgid "Go back to the homepage"
+msgstr "Voltar à página inicial"
+
+#: includes/functions.forms.php:207
+msgid "Forgot your password?"
+msgstr "Esqueceu-se da sua palavra-passe?"
+
+#: includes/functions.forms.php:207
+msgid "Set up a new one."
+msgstr "Criar um novo."
+
+#: includes/functions.forms.php:212
+msgid "Don't have an account yet?"
+msgstr "Ainda não tem uma conta?"
+
+#: includes/functions.forms.php:212
+msgid "Register as a new client."
+msgstr "Registar como novo cliente."
+
+#: includes/functions.forms.php:214
+msgid "This server does not allow self registrations."
+msgstr "Este servidor não permite auto-registos."
+
+#: includes/functions.forms.php:215
+msgid "If you need an account, please contact a server administrator."
+msgstr "Se precisar de uma conta, contacte um administrador do servidor."
+
+#: includes/functions.forms.php:222
+msgid "Browse our public files repository"
+msgstr "Navegar no nosso repositório público de ficheiros"
+
+#: includes/functions.php:41 includes/functions.php:44
+#: includes/functions.php:47
+#, php-format
+msgid "Missing required extension: %s"
+msgstr "Extensão necessária em falta: %s"
+
+#: includes/functions.php:52
+#, php-format
+msgid "%s minimum version not met. Please upgrade to at least version %s"
+msgstr "A versão mínima de %s não foi atingida. Actualize para, pelo menos, a versão %s"
+
+#: includes/functions.php:206
+msgid "An unexpected error has occurred"
+msgstr "Ocorreu um erro inesperado"
+
+#: includes/functions.php:207
+msgid "Could not generate a random password"
+msgstr "Não foi possível gerar uma palavra-passe aleatória"
+
+#: includes/functions.php:802
+msgid "Provided by"
+msgstr "Fornecido por"
+
+#: includes/functions.php:803
+msgid "version"
+msgstr "versão"
+
+#: includes/functions.php:805
+msgid "Free software"
+msgstr "Software gratuito"
+
+#: includes/functions.php:849
+msgid "Important:"
+msgstr "Important:"
+
+#: includes/functions.php:849
+msgid "There are no clients or groups at the moment. You can still upload files and assign them later."
+msgstr "De momento, não existem clientes ou grupos. Ainda é possível carregar ficheiros e atribuí-los mais tarde."
+
+#: includes/functions.php:1519
+msgid "The password must contain, at least:"
+msgstr "A palavra-passe deve conter, no mínimo:"
+
+#: includes/functions.php:1689
+msgid "The file could not be moved to the corresponding folder."
+msgstr "O ficheiro não pôde ser movido para a pasta correspondente."
+
+#: includes/functions.php:1690
+msgid "This is most likely a permissions issue. If that's the case, it can be corrected via FTP by setting the chmod value of the"
+msgstr "O mais provável é que seja um problema de permissões. Se for esse o caso, pode ser corrigido através de FTP definindo o valor chmod do ficheiro"
+
+#: includes/functions.php:1692
+msgid "directory to 755, or 777 as a last resource."
+msgstr "para 755, ou 777 como último recurso."
+
+#: includes/functions.php:1693
+msgid "If this doesn't solve the issue, try giving the same values to the directories above that one until it works."
+msgstr "Se isto não resolver o problema, tente dar os mesmos valores aos diretórios acima desse até que funcione."
+
+#: includes/functions.php:1703
+msgid "The file you selected is not an allowed format."
+msgstr "O ficheiro que selecionou não é um formato permitido."
+
+#: includes/functions.php:1710
+msgid "There was an error uploading the file. Please try again."
+msgstr "Ocorreu um erro ao carregar o ficheiro. Por favor, tente novamente."
+
+#: includes/functions.php:2105
+msgid "Verification"
+msgstr "Verificação"
+
+#: includes/functions.session.permissions.php:118
+msgid "Password change is required for your account"
+msgstr "É necessário alterar a palavra-passe da sua conta"
+
+#: includes/header-messages.php:8
+msgid "System Notice:"
+msgstr "Aviso de sistema:"
+
+#: includes/header-messages.php:8
+msgid "You are using a development version. Some features may be unfinished or not working correctly."
+msgstr "Está a utilizar uma versão de desenvolvimento. Algumas funcionalidades podem estar inacabadas ou não funcionar corretamente."
+
+#: includes/header-messages.php:34 includes/header-messages.php:58
+msgid "Warning:"
+msgstr "Aviso:"
+
+#: includes/header-messages.php:34
+msgid "The following directories do not exist or have write permissions errors."
+msgstr "Os seguintes diretórios não existem ou têm erros de permissões de escrita."
+
+#: includes/header-messages.php:35
+msgid "File uploading or other important functions might not work."
+msgstr "O carregamento de ficheiros ou outras funções importantes podem não funcionar."
+
+#: includes/header-messages.php:58
+#, php-format
+msgid "One or more temporary zip files could not be deleted. Files older than %s hours are generally considered safe to delete."
+msgstr "Um ou mais ficheiros zip temporários não puderam ser eliminados. Os ficheiros com mais de %s horas são geralmente considerados seguros para eliminação."
+
+#: includes/header-messages.php:59
+#, php-format
+msgid "To make space on your disk, you can manually delete old files from %s"
+msgstr "Para ganhar espaço no disco, pode eliminar manualmente ficheiros antigos de %s"
+
+#: includes/layout/breadcrumbs.php:3
+msgid "Navigation"
+msgstr "Navegação"
+
+#: includes/layout/folders-nav.php:21
+msgid "Parent folder"
+msgstr "Pasta dos pais"
+
+#: includes/layout/form-counts-actions.php:3
+#, php-format
+msgid "Found %d elements"
+msgstr "Encontrados %d elementos"
+
+#: includes/layout/header-top.php:6
+msgid "Toggle menu"
+msgstr "Alternar menu"
+
+#: includes/layout/header-top.php:46
+msgid "Get more translations"
+msgstr "Obter mais traduções"
+
+#: includes/layout/header-top.php:54
+msgid "My Account"
+msgstr "A minha conta"
+
+#: includes/layout/header-top.php:57
+msgid "Logout"
+msgstr "Terminar sessão"
+
+#: includes/layout/main-menu.php:33 includes/layout/main-menu.php:294
+msgid "Upload"
+msgstr "Carregar"
+
+#: includes/layout/main-menu.php:44 manage-downloads.php:13
+msgid "Manage downloads"
+msgstr "Gerir transferências"
+
+#: includes/layout/main-menu.php:71 includes/layout/main-menu.php:100
+#: includes/layout/main-menu.php:127
+msgid "Add new"
+msgstr "Adicionar novo"
+
+#: includes/layout/main-menu.php:75
+msgid "Manage clients"
+msgstr "Gerir clientes"
+
+#: includes/layout/main-menu.php:94
+msgid "Clients groups"
+msgstr "Grupos de clientes"
+
+#: includes/layout/main-menu.php:104
+msgid "Manage groups"
+msgstr "Gerir grupos"
+
+#: includes/layout/main-menu.php:122 includes/widgets/counters.php:52
+msgid "System Users"
+msgstr "Utilizadores do sistema"
+
+#: includes/layout/main-menu.php:131
+msgid "Manage system users"
+msgstr "Gerir os utilizadores do sistema"
+
+#: includes/layout/main-menu.php:144 includes/layout/main-menu.php:149
+#: templates.php:9
+msgid "Templates"
+msgstr "Modelos"
+
+#: includes/layout/main-menu.php:159
+msgid "Options"
+msgstr "Opções"
+
+#: includes/layout/main-menu.php:164 options.php:15
+msgid "General options"
+msgstr "Opções gerais"
+
+#: includes/layout/main-menu.php:176 options.php:54
+msgid "E-mail notifications"
+msgstr "Notificações por correio eletrónico"
+
+#: includes/layout/main-menu.php:180 options.php:66
+msgid "Security"
+msgstr "Segurança"
+
+#: includes/layout/main-menu.php:184 options.php:78
+msgid "Branding"
+msgstr "Marca"
+
+#: includes/layout/main-menu.php:188 options.php:82
+msgid "External Login"
+msgstr "Início de sessão externo"
+
+#: includes/layout/main-menu.php:192 options.php:86
+msgid "Scheduled tasks (cron)"
+msgstr "Tarefas agendadas (cron)"
+
+#: includes/layout/main-menu.php:259
+msgid "Tools"
+msgstr "Ferramentas"
+
+#: includes/layout/main-menu.php:264
+msgid "Actions log"
+msgstr "Registo de acções"
+
+#: includes/layout/main-menu.php:268
+msgid "Cron log"
+msgstr "Registo Cron"
+
+#: includes/layout/main-menu.php:276 unblock-ip.php:9 unblock-ip.php:46
+msgid "Unblock IP"
+msgstr "Desbloquear IP"
+
+#: includes/text.strings.php:8
+msgid "System Administrator"
+msgstr "Administrador do sistema"
+
+#: includes/text.strings.php:9
+msgid "Account Manager"
+msgstr "Gestor de contas"
+
+#: includes/text.strings.php:10 manage-files.php:74 manage-files.php:554
+msgid "Uploader"
+msgstr "Carregador"
+
+#: includes/text.strings.php:24 index.php:24 install/config-file-exists.php:20
+#: install/install-success.php:22
+msgid "Log in"
+msgstr "Iniciar sessão"
+
+#: includes/text.strings.php:25
+msgid "Logging in"
+msgstr "Iniciar sessão"
+
+#: includes/text.strings.php:26
+msgid "Redirecting"
+msgstr "Redireccionamento"
+
+#: includes/text.strings.php:28
+msgid "The supplied credentials are not valid."
+msgstr "As credenciais fornecidas não são válidas."
+
+#: includes/text.strings.php:29
+msgid "The supplied username doesn't exist."
+msgstr "O nome de utilizador fornecido não existe."
+
+#: includes/text.strings.php:30
+msgid "The supplied password is incorrect."
+msgstr "A palavra-passe fornecida está incorrecta."
+
+#: includes/text.strings.php:31
+msgid "This account is not active."
+msgstr "Esta conta não está ativa."
+
+#: includes/text.strings.php:32
+msgid "If you just registered, please wait until a system administrator approves your account."
+msgstr "Se acabou de se registar, aguarde até que um administrador do sistema aprove a sua conta."
+
+#: includes/text.strings.php:33
+msgid "Client self registration is not allowed. If you need an account, please contact a system administrator."
+msgstr "O auto-registo do cliente não é permitido. Se precisar de uma conta, contacte um administrador do sistema."
+
+#: includes/text.strings.php:34
+msgid "Session timed out. Please log in again."
+msgstr "A sessão expirou. Por favor, inicie sessão novamente."
+
+#: includes/text.strings.php:36
+msgid "Code is not valid"
+msgstr "O código não é válido"
+
+#: includes/text.strings.php:37
+msgid "Code has already been used"
+msgstr "O código já foi utilizado"
+
+#: includes/text.strings.php:38
+msgid "Code expired"
+msgstr "Código expirado"
+
+#: includes/text.strings.php:39
+#, php-format
+msgid "You have pending codes to verify. Please wait until %s to request a new one."
+msgstr "Tem códigos pendentes para verificar. Aguarde até %s para solicitar um novo código."
+
+#: includes/text.strings.php:44
+msgid "Content could not be loaded"
+msgstr "Não foi possível carregar o conteúdo"
+
+#: includes/text.strings.php:45
+msgid "Send this URL to someone to view the allowed group contents according to your privacy settings."
+msgstr "Envie este URL a alguém para ver os conteúdos de grupo permitidos de acordo com as suas definições de privacidade."
+
+#: includes/text.strings.php:46
+msgid "Send this URL to someone to download the file without registering or logging in."
+msgstr "Envie este URL a alguém para descarregar o ficheiro sem se registar ou iniciar sessão."
+
+#: includes/text.strings.php:47
+msgid "Click the URL to select it and copy"
+msgstr "Clique no URL para o selecionar e copiar"
+
+#: includes/text.strings.php:48
+msgid "Click to copy"
+msgstr "Clique para copiar"
+
+#: includes/text.strings.php:49
+msgid "Successfully copied to clipboard"
+msgstr "Copiado com sucesso para a área de transferência"
+
+#: includes/text.strings.php:50
+msgid "Content could not be copied to clipboard"
+msgstr "Não foi possível copiar o conteúdo para a área de transferência"
+
+#: includes/text.strings.php:51
+msgid "Public URL"
+msgstr "URL público"
+
+#: includes/text.strings.php:52
+msgid "Please select at least one item to proceed."
+msgstr "Selecione pelo menos um item para prosseguir."
+
+#: includes/text.strings.php:53
+#, php-format
+msgid "You are about to delete %d items. Are you sure you want to continue?"
+msgstr "Está prestes a eliminar %d itens. Tem a certeza de que pretende continuar?"
+
+#: includes/text.strings.php:54
+msgid "You are about to delete all activities from the log. Only those used for statistics will remain. Are you sure you want to continue?"
+msgstr "Está prestes a eliminar todas as atividades do registo. Apenas as atividades utilizadas para as estatísticas serão mantidas. Tem a certeza de que pretende continuar?"
+
+#: includes/text.strings.php:55
+msgid "Please wait while your download is prepared."
+msgstr "Aguarde enquanto a transferência é preparada."
+
+#: includes/text.strings.php:56
+msgid "This operation could take a few minutes, depending on the size of the files."
+msgstr "Esta operação pode demorar alguns minutos, dependendo do tamanho dos ficheiros."
+
+#: includes/text.strings.php:57
+#, php-format
+msgid "You are about to unassign %d files from this account. Are you sure you want to continue?"
+msgstr "Está prestes a anular a atribuição de %d ficheiros desta conta. Tem a certeza de que pretende continuar?"
+
+#: includes/text.strings.php:58
+msgid "No results were found."
+msgstr "Não foram encontrados resultados."
+
+#: includes/text.strings.php:60
+msgid "Please confirm: replace the custom template text with the default one?"
+msgstr "Confirme: substituir o texto do modelo personalizado pelo texto predefinido?"
+
+#: includes/text.strings.php:61
+msgid "Error: the content could not be loaded"
+msgstr "Erro: o conteúdo não pôde ser carregado"
+
+#: includes/text.strings.php:64
+msgid "You must select at least one file to upload."
+msgstr "É necessário selecionar pelo menos um ficheiro para carregar."
+
+#: includes/text.strings.php:65
+msgid "Are you sure? Files currently being uploaded will be discarded if you leave this page."
+msgstr "Tem a certeza? Os ficheiros que estão a ser carregados serão eliminados se sair desta página."
+
+#: includes/text.strings.php:66
+msgid "Copy selection to all files?"
+msgstr "Copiar seleção para todos os ficheiros?"
+
+#: includes/text.strings.php:67
+msgid "Copy expiration settings to all files?"
+msgstr "Copiar as definições de expiração para todos os ficheiros?"
+
+#: includes/text.strings.php:68
+msgid "Copy public settings to all files?"
+msgstr "Copiar definições públicas para todos os ficheiros?"
+
+#: includes/text.strings.php:69
+msgid "Copy setting to all files?"
+msgstr "Copiar a definição para todos os ficheiros?"
+
+#: includes/text.strings.php:70
+msgid "Some of your files uploaded correctly, but others could not be uploaded."
+msgstr "Alguns dos seus ficheiros foram carregados corretamente, mas outros não puderam ser carregados."
+
+#: includes/text.strings.php:71
+msgid "Go to the file editor"
+msgstr "Ir para o editor de ficheiros"
+
+#: includes/text.strings.php:73
+msgid "Confirm this action?"
+msgstr "Confirmar esta ação?"
+
+#: includes/text.strings.php:74
+msgid "Failed to load file preview"
+msgstr "Falha ao carregar a pré-visualização do ficheiro"
+
+#: includes/text.strings.php:75
+msgid "Failed to load resource"
+msgstr "Falha no carregamento do recurso"
+
+#: includes/text.strings.php:79
+#, php-format
+msgid "Validation \"%s\" failed for field \"%s\""
+msgstr "A validação \"%s\" falhou para o campo \"%s\""
+
+#: includes/text.strings.php:80
+msgid "reCAPTCHA verification failed"
+msgstr "A verificação reCAPTCHA falhou"
+
+#: includes/text.strings.php:81
+msgid "Name was not completed"
+msgstr "O nome não foi preenchido"
+
+#: includes/text.strings.php:82
+msgid "No client was selected"
+msgstr "Não foi selecionado nenhum cliente"
+
+#: includes/text.strings.php:83
+msgid "Username was not completed"
+msgstr "O nome de utilizador não foi preenchido"
+
+#: includes/text.strings.php:84
+msgid "Password was not completed"
+msgstr "A palavra-passe não foi preenchida"
+
+#: includes/text.strings.php:85
+msgid "Password verification was not completed"
+msgstr "A verificação da palavra-passe não foi concluída"
+
+#: includes/text.strings.php:86
+msgid "E-mail was not completed"
+msgstr "O correio eletrónico não foi completado"
+
+#: includes/text.strings.php:87
+msgid "Title was not completed"
+msgstr "O título não foi completado"
+
+#: includes/text.strings.php:88
+msgid "E-mail address is not valid"
+msgstr "O endereço de correio eletrónico não é válido"
+
+#: includes/text.strings.php:89
+msgid "Username must be alphanumeric and may contain dot or underscores (a-z, A-Z, 0-9, _ and . allowed)"
+msgstr "O nome de utilizador deve ser alfanumérico e pode conter pontos ou sublinhados (são permitidos a-z, A-Z, 0-9, _ e .)"
+
+#: includes/text.strings.php:90
+msgid "Password must be alphanumeric (a-z,A-Z,0-9 allowed)"
+msgstr "A palavra-passe deve ser alfanumérica (são permitidos a-z, A-Z, 0-9)"
+
+#: includes/text.strings.php:91
+msgid "Passwords do not match"
+msgstr "As palavras-passe não coincidem"
+
+#: includes/text.strings.php:92
+msgid "Password does not meet the required characters rules"
+msgstr "A palavra-passe não cumpre as regras de caracteres exigidas"
+
+#: includes/text.strings.php:93
+msgid "File size value must be a whole number"
+msgstr "O valor do tamanho do ficheiro deve ser um número inteiro"
+
+#: includes/text.strings.php:94
+msgid "User role was not specified"
+msgstr "A função do utilizador não foi especificada"
+
+#: includes/text.strings.php:95
+msgid "An account with this username already exists."
+msgstr "Já existe uma conta com este nome de utilizador."
+
+#: includes/text.strings.php:96
+msgid "An account with this e-mail address already exists."
+msgstr "Já existe uma conta com este endereço de correio eletrónico."
+
+#: includes/text.strings.php:97
+msgid "Your password can only contain letters, numbers and the following characters:"
+msgstr "A sua palavra-passe só pode conter letras, números e os seguintes caracteres:"
+
+#: includes/text.strings.php:99
+msgid "Please complete all the fields."
+msgstr "Preencher todos os campos."
+
+#: includes/text.strings.php:100
+msgid "Type is not valid"
+msgstr "O tipo não é válido"
+
+#: includes/text.strings.php:101
+#, php-format
+msgid "Value %s is not a number"
+msgstr "O valor %s não é um número"
+
+#: includes/text.strings.php:104 includes/text.strings.php:105
+#, php-format
+msgid "Length should be between %d and %d characters long"
+msgstr "O comprimento deve situar-se entre %d e %d caracteres"
+
+#: includes/text.strings.php:108
+msgid "1 uppercase character"
+msgstr "1 carácter maiúsculo"
+
+#: includes/text.strings.php:109
+msgid "1 lowercase character"
+msgstr "1 carácter minúsculo"
+
+#: includes/text.strings.php:110
+msgid "1 number"
+msgstr "1 número"
+
+#: includes/text.strings.php:111
+msgid "1 special character"
+msgstr "1 carácter especial"
+
+#: includes/text.strings.php:114
+msgid "Sitename was not completed."
+msgstr "O nome do sítio não foi completado."
+
+#: includes/text.strings.php:115
+msgid "ProjectSend URI was not completed."
+msgstr "ProjectSend URI não foi concluído."
+
+#: includes/updates.functions.php:74
+#, php-format
+msgid "A safe chmod value of 755 could not be set for directory: %s"
+msgstr "Não foi possível definir um valor chmod seguro de 755 para o diretório: %s"
+
+#: includes/updates.functions.php:82 includes/updates.functions.php:116
+#, php-format
+msgid "A safe chmod value of 644 could not be set for file: %s"
+msgstr "Não foi possível definir um valor chmod seguro de 644 para o ficheiro: %s"
+
+#: includes/updates.functions.php:89
+msgid "Please correct the following errors to make sure that ProjectSend can send notifications emails."
+msgstr "Corrija os seguintes erros para garantir que o ProjectSend pode enviar mensagens de correio eletrónico de notificações."
+
+#: includes/updates.functions.php:111
+#, php-format
+msgid "System file does not exist: %s"
+msgstr "O ficheiro de sistema não existe: %s"
+
+#: includes/updates.functions.php:212
+msgid "This version changes the way files-to-clients relationships are stored on the database making it possible to assign a file to multiple clients. However some files did not update successfully. The following files may need to be reassigned to their clients by using the \"Find orphan files\" tool:"
+msgstr "Esta versão altera a forma como as relações entre ficheiros e clientes são armazenadas na base de dados, tornando possível atribuir um ficheiro a vários clientes. No entanto, alguns ficheiros não foram actualizados com êxito. Os seguintes ficheiros podem ter de ser reatribuídos aos seus clientes utilizando a ferramenta \"Encontrar ficheiros órfãos\":"
+
+#: includes/updates.messages.php:17
+msgid "The database was updated to support this version of the software."
+msgstr "A base de dados foi actualizada para suportar esta versão do software."
+
+#: includes/updates.messages.php:17
+msgid "View change log"
+msgstr "Ver registo de alterações"
+
+#: includes/updates.messages.php:18
+msgid "Do you want to support ProjectSend?"
+msgstr "Deseja apoiar o ProjectSend?"
+
+#: includes/updates.messages.php:19
+msgid "Please remember that this tool is free software."
+msgstr "Lembre-se de que esta ferramenta é um software gratuito."
+
+#: includes/updates.messages.php:20
+msgid "It is made with love during the hard-to-find free time of mainly one developer."
+msgstr "É feito com amor durante o tempo livre difícil de encontrar de um único programador."
+
+#: includes/updates.messages.php:21
+msgid "With as little as <strong>$2 per month</strong> you can help the project stay active and updated."
+msgstr "Com apenas <strong>$2 por mês</strong> pode ajudar o projeto a manter-se ativo e atualizado."
+
+#: includes/updates.messages.php:23
+msgid "Please consider making a donation to support further development."
+msgstr "Considere fazer um donativo para apoiar o desenvolvimento."
+
+#: includes/updates.messages.php:25
+msgid "Thank you!"
+msgstr "Obrigado!"
+
+#: includes/updates.messages.php:26
+msgid "How to collaborate"
+msgstr "Como colaborar"
+
+#: includes/updates.messages.php:28
+msgid "Monthly (Patreon)"
+msgstr "Mensal (Patreon)"
+
+#: includes/updates.messages.php:29
+msgid "One time or monthly (Open Collective)"
+msgstr "Uma vez ou mensalmente (Coletivo Aberto)"
+
+#: includes/updates.messages.php:30
+msgid "Leave a review"
+msgstr "Deixar um comentário"
+
+#: includes/updates.messages.php:31
+msgid "Send a message"
+msgstr "Enviar uma mensagem"
+
+#: includes/updates.messages.php:32
+msgid "Dismiss message"
+msgstr "Ignorar mensagem"
+
+#: includes/updates.messages.php:49
+msgid "Update available!"
+msgstr "Atualização disponível!"
+
+#: includes/updates.messages.php:49
+#, php-format
+msgid "ProjectSend %s has been released"
+msgstr "ProjectSend %s foi lançado"
+
+#: includes/updates.messages.php:52 manage-files.php:665
+msgid "Download"
+msgstr "Descarregar"
+
+#: includes/updates.messages.php:52
+msgid "Changelog"
+msgstr "Registo de alterações"
+
+#: includes/widgets/actions-log.php:12
+msgid "Recent activities"
+msgstr "Atividades recentes"
+
+#: includes/widgets/actions-log.php:35
+msgid "View all"
+msgstr "Ver tudo"
+
+#: includes/widgets/ajax/statistics.php:78
+msgid "Uploads by users"
+msgstr "Uploads por utilizadores"
+
+#: includes/widgets/ajax/statistics.php:84
+msgid "Uploads by clients"
+msgstr "Carregamentos por clientes"
+
+#: includes/widgets/ajax/statistics.php:90
+msgid "Downloads by known users"
+msgstr "Transferências por utilizadores conhecidos"
+
+#: includes/widgets/ajax/statistics.php:96
+msgid "Public Downloads"
+msgstr "Transferências públicas"
+
+#: includes/widgets/news.php:12
+msgid "ProjectSend news"
+msgstr "Notícias do ProjectSend"
+
+#: includes/widgets/statistics.php:14
+msgid "Statistics"
+msgstr "Estatísticas"
+
+#: includes/widgets/statistics.php:22
+#, php-format
+msgid "%d days"
+msgstr "%d dias"
+
+#: includes/widgets/system-information.php:12 install/make-config.php:359
+msgid "System information"
+msgstr "Informações sobre o sistema"
+
+#: includes/widgets/system-information.php:14
+msgid "Software"
+msgstr "Software"
+
+#: includes/widgets/system-information.php:16
+#: includes/widgets/system-information.php:57
+msgid "Version"
+msgstr "Versão"
+
+#: includes/widgets/system-information.php:22
+msgid "New version available"
+msgstr "Nova versão disponível"
+
+#: includes/widgets/system-information.php:27
+msgid "Default upload max. size"
+msgstr "Tamanho máximo de carregamento predefinido"
+
+#: includes/widgets/system-information.php:30
+msgid "Template"
+msgstr "Modelo"
+
+#: includes/widgets/system-information.php:31
+msgid "Change"
+msgstr "Alterar"
+
+#: includes/widgets/system-information.php:34
+msgid "System"
+msgstr "Sistema"
+
+#: includes/widgets/system-information.php:36
+msgid "Server"
+msgstr "Servidor"
+
+#: includes/widgets/system-information.php:39
+msgid "PHP version"
+msgstr "Versão PHP"
+
+#: includes/widgets/system-information.php:42
+msgid "Memory limit"
+msgstr "Limite de memória"
+
+#: includes/widgets/system-information.php:45
+msgid "Max execution time"
+msgstr "Tempo máximo de execução"
+
+#: includes/widgets/system-information.php:48
+msgid "Post max size"
+msgstr "Tamanho máximo da mensagem"
+
+#: includes/widgets/system-information.php:52
+msgid "Database"
+msgstr "Base de dados"
+
+#: includes/widgets/system-information.php:54
+msgid "Driver"
+msgstr "Condutor"
+
+#: index.php:58
+#, php-format
+msgid "Please wait %s seconds before attempting to log in again."
+msgstr "Aguarde %s segundos antes de tentar iniciar sessão novamente."
+
+#: index.php:60
+msgid "Warning: You are about to reach the failed attempts limit, which will completely block your access for a few minutes."
+msgstr "Aviso: Está prestes a atingir o limite de tentativas falhadas, o que bloqueará completamente o seu acesso durante alguns minutos."
+
+#: install/already-installed.php:17
+msgid "Already installed"
+msgstr "Já instalado"
+
+#: install/already-installed.php:18
+msgid "It seems that ProjectSend is already installed here."
+msgstr "Parece que o ProjectSend já está instalado aqui."
+
+#: install/already-installed.php:19
+msgid "If you want to reinstall, please delete the system tables from the database and come back to the installation form."
+msgstr "Se pretender reinstalar, elimine as tabelas de sistema da base de dados e volte ao formulário de instalação."
+
+#: install/already-installed.php:22
+msgid "Go back"
+msgstr "Voltar atrás"
+
+#: install/config-file-exists.php:17
+msgid "The configuration file already exists."
+msgstr "O ficheiro de configuração já existe."
+
+#: install/index.php:120
+msgid "Database installation was successful, but errors were encountered."
+msgstr "A instalação da base de dados foi bem sucedida, mas foram encontrados erros."
+
+#: install/index.php:135
+msgid "The following directories could not be created:"
+msgstr "Os seguintes diretórios não puderam ser criados:"
+
+#: install/index.php:142
+msgid "The following directories could not be chmodded to 755:"
+msgstr "Os seguintes diretórios não puderam ser codificados com chmod para 755:"
+
+#: install/index.php:153
+msgid "There was an error writing to the database."
+msgstr "Ocorreu um erro ao escrever na base de dados."
+
+#: install/index.php:173
+msgid "Basic system options"
+msgstr "Opções básicas do sistema"
+
+#: install/index.php:174
+msgid "You need to provide this data for a correct system installation. The site name will be visible in the system panel, and the client's lists."
+msgstr "É necessário fornecer estes dados para uma instalação correta do sistema. O nome do sítio será visível no painel do sistema e nas listas de clientes."
+
+#: install/index.php:175
+#, php-format
+msgid "Remember to edit the file %s with your database settings before installing. If the file doesn't exist, you can create it by renaming the dummy file sys.config.sample.php."
+msgstr "Lembre-se de editar o ficheiro %s com as definições da sua base de dados antes de instalar. Se o ficheiro não existir, pode criá-lo renomeando o ficheiro fictício sys.config.sample.php."
+
+#: install/index.php:186
+msgid "ProjectSend URI (address)"
+msgstr "ProjectSend URI (endereço)"
+
+#: install/index.php:194
+msgid "Default system administrator options"
+msgstr "Opções predefinidas do administrador do sistema"
+
+#: install/index.php:195
+#, php-format
+msgid "This info will be used to create a default system user, which can't be deleted afterwards. Password should be between %d and %d characters long."
+msgstr "Esta informação será utilizada para criar um utilizador de sistema predefinido, que não pode ser eliminado posteriormente. A palavra-passe deve ter um comprimento entre %d e %d caracteres."
+
+#: install/index.php:235
+msgid "After installing the system, you can go to the options page to set your timezone, preferred date display format and thumbnails parameters, besides being able to change the site options provided here."
+msgstr "Depois de instalar o sistema, pode aceder à página de opções para definir o seu fuso horário, o formato de apresentação da data preferido e os parâmetros das miniaturas, para além de poder alterar as opções do sítio aqui fornecidas."
+
+#: install/install-success.php:17
+msgid "Congratulations!"
+msgstr "Parabéns!"
+
+#: install/install-success.php:18
+msgid "Everything is up and running."
+msgstr "Está tudo a funcionar."
+
+#: install/install-success.php:19
+msgid "You may proceed to log in with your newly created username and password."
+msgstr "Pode continuar a iniciar sessão com o seu nome de utilizador e palavra-passe recém-criados."
+
+#: install/make-config.php:140
+msgid "Successfully wrote the config file."
+msgstr "Escreveu com sucesso o ficheiro de configuração."
+
+#: install/make-config.php:175
+msgid "Database configuration"
+msgstr "Configuração da base de dados"
+
+#: install/make-config.php:176
+msgid "You need to provide this data for a correct database communication."
+msgstr "É necessário fornecer estes dados para uma comunicação correta com a base de dados."
+
+#: install/make-config.php:179
+msgid "Select driver"
+msgstr "Selecionar o condutor"
+
+#: install/make-config.php:187 install/make-config.php:197
+msgid "(not available)"
+msgstr "(não disponível)"
+
+#: install/make-config.php:218
+msgid "Database name"
+msgstr "Nome da base de dados"
+
+#: install/make-config.php:248
+msgid "Table prefix"
+msgstr "Prefixo do quadro"
+
+#: install/make-config.php:252
+msgid "The database is already populated"
+msgstr "A base de dados já está preenchida"
+
+#: install/make-config.php:274
+msgid "Reuse existing tables"
+msgstr "Reutilizar tabelas existentes"
+
+#: install/make-config.php:289
+msgid "Language selection"
+msgstr "Seleção da língua"
+
+#: install/make-config.php:307
+msgid "Default maximum upload file size"
+msgstr "Tamanho máximo predefinido do ficheiro de carregamento"
+
+#: install/make-config.php:310
+msgid "Value expressed in MB, where 1GB = 1024"
+msgstr "Valor expresso em MB, em que 1GB = 1024"
+
+#: install/make-config.php:316
+msgid "Folders"
+msgstr "Pastas"
+
+#: install/make-config.php:347
+msgid "Writable"
+msgstr "Escrita"
+
+#: install/make-config.php:349
+msgid "Not writable"
+msgstr "Não gravável"
+
+#: install/make-config.php:413 install/make-config.php:416
+msgid "Check again"
+msgstr "Verificar novamente"
+
+#: install/make-config.php:414
+msgid "Write config file"
+msgstr "Escrever ficheiro de configuração"
+
+#: install/make-config.php:416
+msgid "Check"
+msgstr "Verificar"
+
+#: manage-downloads.php:41 manage-files.php:41
+msgid "for client"
+msgstr "para o cliente"
+
+#: manage-downloads.php:49
+msgid "client_id"
+msgstr "id_cliente"
+
+#: manage-downloads.php:67 manage-files.php:54
+msgid "for group"
+msgstr "para o grupo"
+
+#: manage-downloads.php:91
+msgid "The selected links were disabled."
+msgstr "As ligações selecionadas foram desactivadas."
+
+#: manage-downloads.php:99
+msgid "The selected links were enabled."
+msgstr "As ligações selecionadas foram activadas."
+
+#: manage-downloads.php:121 manage-files.php:162
+msgid "Some files could not be deleted."
+msgstr "Alguns ficheiros não puderam ser eliminados."
+
+#: manage-downloads.php:227 manage-files.php:376
+msgid "There are no files assigned to this category."
+msgstr "Não existem ficheiros atribuídos a esta categoria."
+
+#: manage-downloads.php:233 manage-files.php:382
+msgid "You have not uploaded any files yet."
+msgstr "Ainda não carregou nenhum ficheiro."
+
+#: manage-downloads.php:237 manage-files.php:386
+msgid "There are no files."
+msgstr "Não existem ficheiros."
+
+#: manage-downloads.php:243 manage-downloads.php:367
+msgid "Creator"
+msgstr "Criador"
+
+#: manage-downloads.php:278 manage-files.php:439 manage-files.php:695
+msgid "Visible"
+msgstr "Visível"
+
+#: manage-downloads.php:279 manage-files.php:440 manage-files.php:695
+msgid "Hidden"
+msgstr "Oculto"
+
+#: manage-downloads.php:351
+msgid "File"
+msgstr "Ficheiro"
+
+#: manage-downloads.php:374 manage-files.php:573
+msgid "Expiry"
+msgstr "Prazo de validade"
+
+#: manage-downloads.php:381 manage-files.php:591
+msgid "Download count"
+msgstr "Contagem de descarregamento"
+
+#: manage-downloads.php:434 manage-files.php:677
+msgid "Does not expire"
+msgstr "Não expira"
+
+#: manage-downloads.php:438
+msgid "File is not public"
+msgstr "O ficheiro não é público"
+
+#: manage-downloads.php:445 manage-files.php:683
+msgid "Expired on"
+msgstr "Expirado em"
+
+#: manage-downloads.php:448 manage-files.php:686
+msgid "Expires on"
+msgstr "Expira em"
+
+#: manage-files.php:67
+msgid "on category"
+msgstr "na categoria"
+
+#: manage-files.php:84
+msgid "All files"
+msgstr "Todos os ficheiros"
+
+#: manage-files.php:85 manage-files.php:559
+msgid "Assigned"
+msgstr "Atribuído"
+
+#: manage-files.php:86
+msgid "Not assigned"
+msgstr "Não atribuído"
+
+#: manage-files.php:107 manage-files.php:123
+msgid "The selected files were marked as hidden."
+msgstr "Os ficheiros selecionados foram marcados como ocultos."
+
+#: manage-files.php:115 manage-files.php:131
+msgid "The selected files were marked as visible."
+msgstr "Os ficheiros selecionados foram marcados como visíveis."
+
+#: manage-files.php:140
+msgid "The selected files were successfully unassigned."
+msgstr "Os ficheiros selecionados foram desatribuídos com sucesso."
+
+#: manage-files.php:395 manage-files.php:398
+msgid "New folder"
+msgstr "Nova pasta"
+
+#: manage-files.php:400
+msgid "Name is not valid"
+msgstr "O nome não é válido"
+
+#: manage-files.php:454
+msgid "Download zipped"
+msgstr "Descarregar zipado"
+
+#: manage-files.php:456
+msgid "Set to hidden from everyone already assigned"
+msgstr "Definir como oculto para todas as pessoas já atribuídas"
+
+#: manage-files.php:457
+msgid "Set to visible to everyone already assigned"
+msgstr "Definir como visível para todas as pessoas já atribuídas"
+
+#: manage-files.php:462
+msgid "Set to hidden"
+msgstr "Definir como oculto"
+
+#: manage-files.php:463
+msgid "Set to visible"
+msgstr "Definir como visível"
+
+#: manage-files.php:464
+msgid "Unassign"
+msgstr "Anular a atribuição"
+
+#: manage-files.php:540
+msgid "Ext."
+msgstr "Ext."
+
+#: manage-files.php:549
+msgid "Size"
+msgstr "Tamanho"
+
+#: manage-files.php:566
+msgid "Public permissions"
+msgstr "Autorizações públicas"
+
+#: manage-files.php:668
+msgid "View information"
+msgstr "Ver informações"
+
+#: manage-files.php:700
+msgid "times"
+msgstr "tempos"
+
+#: manage-files.php:742
+msgid "downloads"
+msgstr "descarregamentos"
+
+#: options.php:201
+msgid "Some fields were not completed. Options could not be saved."
+msgstr "Alguns campos não foram preenchidos. Não foi possível guardar as opções."
+
+#: options.php:251
+msgid "Warning: php extension is allowed. This is a serious security problem. If you are not sure that you need it, please remove it from the list."
+msgstr "Aviso: a extensão php é permitida. Este é um grave problema de segurança. Se não tiver a certeza de que precisa dela, retire-a da lista."
+
+#: public.php:42
+msgid "Public files (not assigned to any group)"
+msgstr "Ficheiros públicos (não atribuídos a nenhum grupo)"
+
+#: public.php:42
+#, php-format
+msgid "Files in group: %s"
+msgstr "Ficheiros no grupo: %s"
+
+#: register.php:8
+msgid "Register new account"
+msgstr "Registar uma nova conta"
+
+#: register.php:63
+msgid "Account created successfully"
+msgstr "Conta criada com sucesso"
+
+#: register.php:64
+msgid "Please remember that an administrator needs to approve your account before you can log in."
+msgstr "Lembre-se de que é necessário que um administrador aprove a sua conta para que possa iniciar sessão."
+
+#: register.php:68
+msgid "Thank you for registering. Your account has been activated."
+msgstr "Obrigado por se registar. A sua conta foi activada."
+
+#: register.php:79
+msgid "An e-mail notification with login information was sent to the specified address."
+msgstr "Foi enviada uma notificação por correio eletrónico com informações de início de sessão para o endereço especificado."
+
+#: reset-password.php:8
+msgid "Lost password"
+msgstr "Palavra-passe perdida"
+
+#: unblock-ip.php:40
+msgid "IP address"
+msgstr "Endereço IP"
+
+#: upload.php:33
+msgid "Click on Add files to select all the files that you want to upload, and then click continue. On the next step, you will be able to set a name and description for each uploaded file. Remember that the maximum allowed file size (in mb.) is "
+msgstr "Clique em Adicionar ficheiros para selecionar todos os ficheiros que pretende carregar e, em seguida, clique em continuar. No passo seguinte, poderá definir um nome e uma descrição para cada ficheiro carregado. Lembre-se que o tamanho máximo permitido para os ficheiros (em mb.) é "
+
+#: users-add.php:11
+msgid "Add system user"
+msgstr "Adicionar utilizador do sistema"
+
+#: users-add.php:61
+msgid "User created successfully"
+msgstr "Utilizador criado com sucesso"
+
+#: users-edit.php:107
+msgid "User saved successfully"
+msgstr "Utilizador guardado com sucesso"
+
+#: users-edit.php:115
+msgid "Edit system user"
+msgstr "Editar utilizador do sistema"
+
+#: users.php:11
+msgid "Users administration"
+msgstr "Administração de utilizadores"
+
+#: users.php:31
+msgid "The selected users were marked as active."
+msgstr "Os utilizadores selecionados foram marcados como activos."
+
+#: users.php:43
+msgid "You cannot deactivate your own account."
+msgstr "Não é possível desativar a sua própria conta."
+
+#: users.php:48
+msgid "The selected users were marked as inactive."
+msgstr "Os utilizadores selecionados foram marcados como inactivos."
+
+#: users.php:61
+msgid "You cannot delete your own account."
+msgstr "Não é possível apagar a sua própria conta."
+
+#: users.php:66
+msgid "The selected users were deleted."
+msgstr "Os utilizadores selecionados foram eliminados."
+
+#: users.php:71
+msgid "Please select at least one user."
+msgstr "Selecione pelo menos um utilizador."
+
+#: users.php:141
+msgid "There are no users yet."
+msgstr "Ainda não existem utilizadores."
+
+#: users.php:162
+msgid "All roles"
+msgstr "Todos os papéis"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Álvaro Góis\n"
 "POT-Creation-Date: 2024-08-02 23:28-0300\n"
-"PO-Revision-Date: 2025-10-08 16:56+0100\n"
+"PO-Revision-Date: 2025-10-08 18:24+0100\n"
 "Last-Translator: \n"
 "Language-Team: Álvaro Gois <talk@alvarogois.com>\n"
 "Language: pt_PT\n"
@@ -1673,7 +1673,7 @@ msgstr "Guardar"
 
 #: includes/forms/categories.php:42
 msgid "Parent"
-msgstr "Parent"
+msgstr "Principal"
 
 #: includes/forms/categories.php:45 includes/forms/options/clients.php:53
 #: includes/forms/options/clients.php:102 includes/forms/options/email.php:166
@@ -3424,7 +3424,7 @@ msgstr "Navegação"
 
 #: includes/layout/folders-nav.php:21
 msgid "Parent folder"
-msgstr "Pasta dos pais"
+msgstr "Pasta principal"
 
 #: includes/layout/form-counts-actions.php:3
 #, php-format

@@ -48,22 +48,22 @@
 
 | Feature | ProjectSend | Nextcloud | WeTransfer | Dropbox |
 |---|:---:|:---:|:---:|:---:|
-| Self-hosted | Yes | Yes | No | No |
-| Open source | Yes (GPL v2) | Yes (AGPL) | No | No |
-| Dedicated client accounts | Yes | Partial | No | No |
-| Client groups | Yes | No | No | No |
-| Auto-expiring files | Yes | Yes | Yes (Pro) | No |
-| Clients can upload back | Yes | Yes | No | Yes |
-| Download limits | Yes | No | No | No |
-| Encryption at rest | Yes | Yes | Yes | Yes |
-| Client portal themes | Yes | No | No | No |
-| Two-factor authentication | Yes | Yes | Yes | Yes |
-| 70+ languages | Yes | Yes | Partial | Partial |
-| S3 / object storage | Yes | Yes | N/A | N/A |
-| Runs on shared hosting | Yes | No | N/A | N/A |
-| Setup complexity | Low | Medium | N/A | N/A |
-| One-time cost | Free | Free | From $10/mo | From $10/mo |
-| Data ownership | Full | Full | None | None |
+| Self-hosted | :white_check_mark: | :white_check_mark: | :x: | :x: |
+| Open source | :white_check_mark: GPL v2 | :white_check_mark: AGPL | :x: | :x: |
+| Dedicated client accounts | :white_check_mark: | :warning: Partial | :x: | :x: |
+| Client groups | :white_check_mark: | :x: | :x: | :x: |
+| Auto-expiring files | :white_check_mark: | :white_check_mark: | :warning: Pro only | :x: |
+| Clients can upload back | :white_check_mark: | :white_check_mark: | :x: | :white_check_mark: |
+| Download limits | :white_check_mark: | :x: | :x: | :x: |
+| Encryption at rest | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Client portal themes | :white_check_mark: | :x: | :x: | :x: |
+| Two-factor authentication | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| 70+ languages | :white_check_mark: | :white_check_mark: | :warning: Partial | :warning: Partial |
+| S3 / object storage | :white_check_mark: | :white_check_mark: | — | — |
+| Runs on shared hosting | :white_check_mark: | :x: | — | — |
+| Setup complexity | :white_check_mark: Low | :warning: Medium | — | — |
+| One-time cost | :white_check_mark: Free | :white_check_mark: Free | From $10/mo | From $10/mo |
+| Data ownership | :white_check_mark: Full | :white_check_mark: Full | :x: None | :x: None |
 
 ## Who Uses ProjectSend
 

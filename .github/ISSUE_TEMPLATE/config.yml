@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions & Support
+    url: https://github.com/projectsend/projectsend/discussions
+    about: Please ask questions and get help in GitHub Discussions instead of opening an issue.
+  - name: Documentation
+    url: https://docs.projectsend.org
+    about: Check the documentation for installation guides, tutorials, and troubleshooting.

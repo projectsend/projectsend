@@ -12,12 +12,22 @@ class AutoUpdate
     private $backup_dir;
     private $update_file;
     private $errors = [];
+    private $requires_php;
 
     public function __construct()
     {
         $this->temp_dir = ROOT_DIR . DS . 'upload' . DS . 'temp';
         $this->backup_dir = $this->temp_dir . DS . 'backup_' . time();
         $this->update_file = $this->temp_dir . DS . 'projectsend_update.zip';
+    }
+
+    /**
+     * Set the minimum PHP version required by the target release
+     * @param string $version PHP version string (e.g. "8.2")
+     */
+    public function setRequiredPhpVersion($version)
+    {
+        $this->requires_php = $version;
     }
 
     /**
@@ -28,6 +38,25 @@ class AutoUpdate
     {
         $requirements = [];
         $all_pass = true;
+
+        // Check PHP version meets the requirement for the new version
+        $required_php = REQUIRED_VERSION_PHP;
+
+        // If the update feed provides a requires_php field, use that instead
+        // This allows the server to specify the minimum PHP version for the target release
+        if (!empty($this->requires_php)) {
+            $required_php = $this->requires_php;
+        }
+
+        $php_ok = version_compare(phpversion(), $required_php, '>=');
+        $requirements[] = [
+            'name' => __('PHP version', 'cftp_admin'),
+            'status' => $php_ok,
+            'message' => $php_ok
+                ? sprintf(__('Current PHP version (%s) meets the minimum requirement (%s)', 'cftp_admin'), phpversion(), $required_php)
+                : sprintf(__('PHP %s or higher is required. Your server is running PHP %s. Please upgrade PHP before updating.', 'cftp_admin'), $required_php, phpversion())
+        ];
+        if (!$php_ok) $all_pass = false;
 
         // Check if root directory is writable
         $root_writable = is_writable(ROOT_DIR);

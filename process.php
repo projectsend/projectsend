@@ -314,6 +314,13 @@ switch ($_GET['do']) {
         }
 
         $updater = new \ProjectSend\Classes\AutoUpdate();
+
+        // Pass the target version's PHP requirement if available from the update feed
+        $update_data = json_decode(get_latest_version_data());
+        if (!empty($update_data->requires_php)) {
+            $updater->setRequiredPhpVersion($update_data->requires_php);
+        }
+
         echo json_encode($updater->checkSystemRequirements());
         break;
 

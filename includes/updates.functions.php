@@ -35,6 +35,7 @@ function get_latest_version_data()
                 'url' => !empty($latest->download_direct->zip) ? $latest->download_direct->zip : $latest->download,
                 'chlog' => $latest->changelog,
                 'sha256' => !empty($latest->hash->sha256) ? $latest->hash->sha256 : null,
+                'requires_php' => !empty($latest->requires_php) ? $latest->requires_php : null,
                 'diff' => [
                     'security' => $latest->diff->security,
                     'features' => $latest->diff->features,

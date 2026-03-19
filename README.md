@@ -88,7 +88,7 @@ Freelancers, agencies, photographers, accountants, lawyers, architects, NGOs, sc
 
 ## Quick Start
 
-**Requirements:** PHP 8.0+, MySQL 5.7+ / MariaDB 10.3+, Apache or Nginx
+**Requirements:** PHP 8.2+, MySQL 5.7+ / MariaDB 10.3+, Apache or Nginx
 
 1. Download the [latest release](https://github.com/projectsend/projectsend/releases/latest)
 2. Upload files to your web server

@@ -191,6 +191,16 @@ class AutoUpdate
                 throw new \Exception(__('Invalid download URL', 'cftp_admin'));
             }
 
+            // Only allow downloads from official ProjectSend domains
+            $allowed_hosts = ['projectsend.org', 'www.projectsend.org'];
+            $parsed = parse_url($url);
+            if (empty($parsed['host']) || !in_array(strtolower($parsed['host']), $allowed_hosts)) {
+                throw new \Exception(__('Download URL must be from the official ProjectSend server', 'cftp_admin'));
+            }
+            if (empty($parsed['scheme']) || strtolower($parsed['scheme']) !== 'https') {
+                throw new \Exception(__('Download URL must use HTTPS', 'cftp_admin'));
+            }
+
             // Create temp directory if it doesn't exist
             if (!is_dir($this->temp_dir)) {
                 if (!mkdir($this->temp_dir, 0755, true)) {

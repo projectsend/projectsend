@@ -1296,27 +1296,14 @@ function html_output($str, $flags = ENT_QUOTES, $encoding = CHARSET, $double_enc
 function htmlentities_allowed($str, $quoteStyle = ENT_COMPAT, $charset = CHARSET, $doubleEncode = false)
 {
     if ($str == null) { return $str; }
-    //$description = htmlspecialchars($str, $quoteStyle, $charset, $doubleEncode);
     $string = htmlspecialchars_decode($str, $quoteStyle);
-    return strip_tags($string, '<i><b><strong><em><p><br><ul><ol><li><u><sup><sub><s>');
-        /*
-    $allowed_tags = array('i','b','strong','em','p','br','ul','ol','li','u','sup','sub','s');
+    $string = strip_tags($string, '<i><b><strong><em><p><br><ul><ol><li><u><sup><sub><s>');
 
-    $find = [];
-    $replace = [];
+    // Strip all attributes from allowed tags to prevent XSS via event handlers
+    // (e.g. onfocus, onmouseover, onclick). Only bare tags are permitted.
+    $string = preg_replace('/<(\w+)\s+[^>]*>/i', '<$1>', $string);
 
-    foreach ( $allowed_tags as $tag ) {
-        // Opening tags
-        $find[] = '&lt;' . $tag . '&gt;';
-        $replace[] = '<' . $tag . '>';
-        // Closing tags
-        $find[] = '&lt;/' . $tag . '&gt;';
-        $replace[] = '</' . $tag . '>';
-    }
-
-    $description = str_replace($find, $replace, $description);
-    return $description
-    */;
+    return $string;
 }
 
 // Remove script and style tags

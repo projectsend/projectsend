@@ -6,6 +6,14 @@
  * changed through the web interface, such as the version number,
  * php directives and the user and password length values.
  */
+$is_https_for_cookie = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+
+session_set_cookie_params([
+    'httponly' => true,
+    'secure' => $is_https_for_cookie,
+    'samesite' => 'Lax',
+]);
 session_start();
 
 /**

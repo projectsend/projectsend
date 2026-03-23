@@ -12,7 +12,7 @@ class AutoUpdate
     private $backup_dir;
     private $update_file;
     private $errors = [];
-    private $requires_php;
+    private ?string $requires_php = null;
 
     public function __construct()
     {
@@ -25,7 +25,7 @@ class AutoUpdate
      * Set the minimum PHP version required by the target release
      * @param string $version PHP version string (e.g. "8.2")
      */
-    public function setRequiredPhpVersion($version)
+    public function setRequiredPhpVersion(string $version): void
     {
         $this->requires_php = $version;
     }

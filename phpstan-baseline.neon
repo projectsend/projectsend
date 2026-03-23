@@ -2011,6 +2011,16 @@ parameters:
 			path: includes/Classes/EmailNotifications.php
 
 		-
+			message: "#^Result of && is always false\\.$#"
+			count: 1
+			path: includes/Classes/Encryption.php
+
+		-
+			message: "#^Strict comparison using \\!\\=\\= between '' and '' will always evaluate to false\\.$#"
+			count: 1
+			path: includes/Classes/Encryption.php
+
+		-
 			message: "#^Access to an undefined property ProjectSend\\\\Classes\\\\Emails\\:\\:\\$client_id\\.$#"
 			count: 1
 			path: includes/Classes/Emails.php

@@ -27,12 +27,12 @@ class Encryption
     private function getMasterKey()
     {
         // Check if master key exists in config
-        if (defined('ENCRYPTION_MASTER_KEY') && !empty(ENCRYPTION_MASTER_KEY)) {
+        if (defined('ENCRYPTION_MASTER_KEY') && ENCRYPTION_MASTER_KEY !== '') {
             return base64_decode(ENCRYPTION_MASTER_KEY);
         }
 
         // For backward compatibility, generate from existing secret if available
-        if (defined('HASH_SALT') && !empty(HASH_SALT)) {
+        if (defined('HASH_SALT') && HASH_SALT !== '') {
             // Derive a 256-bit key from the existing hash salt
             return hash_pbkdf2('sha256', HASH_SALT, 'projectsend-encryption', 10000, 32, true);
         }

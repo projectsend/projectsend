@@ -2017,7 +2017,7 @@ parameters:
 
 		-
 			message: "#^Constant BASE_URI not found\\.$#"
-			count: 10
+			count: 11
 			path: includes/Classes/Emails.php
 
 		-

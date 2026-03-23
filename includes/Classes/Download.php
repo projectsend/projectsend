@@ -218,7 +218,7 @@ class Download
     /**
      * Decrypt file key if file is encrypted
      *
-     * @param object $file File object
+     * @param Files $file File object
      * @return string|false Binary file key or false if not encrypted or decryption fails
      */
     private function getDecryptedFileKey($file)

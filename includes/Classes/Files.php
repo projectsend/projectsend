@@ -47,14 +47,14 @@ class Files
     public $external_path; // path/key in external storage
     public $bucket_name; // bucket/container name
     public $integration_id; // foreign key to tbl_integrations
-    public $encrypted; // 1 if file is encrypted, 0 otherwise
-    public $encryption_key_encrypted; // encrypted file key (base64)
-    public $encryption_iv; // IV for key encryption (base64)
-    public $encryption_algorithm; // encryption algorithm used
-    public $encryption_file_iv; // IV for file encryption (base64)
-    public $download_limit_enabled; // 1 if download limits are enabled, 0 otherwise
-    public $download_limit_type; // 'per_user' or 'total'
-    public $download_limit_count; // maximum number of downloads allowed
+    public ?int $encrypted = null; // 1 if file is encrypted, 0 otherwise
+    public ?string $encryption_key_encrypted = null; // encrypted file key (base64)
+    public ?string $encryption_iv = null; // IV for key encryption (base64)
+    public ?string $encryption_algorithm = null; // encryption algorithm used
+    public ?string $encryption_file_iv = null; // IV for file encryption (base64)
+    public ?int $download_limit_enabled = null; // 1 if download limits are enabled, 0 otherwise
+    public ?string $download_limit_type = null; // 'per_user' or 'total'
+    public ?int $download_limit_count = null; // maximum number of downloads allowed
     private $dbh;
     private $logger;
     private $external_storage;

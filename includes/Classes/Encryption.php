@@ -10,9 +10,9 @@ namespace ProjectSend\Classes;
 
 class Encryption
 {
-    private $master_key;
-    private $algorithm = 'aes-256-gcm';
-    private $chunk_size = 8192; // 8KB chunks for streaming
+    private string $master_key;
+    private string $algorithm = 'aes-256-gcm';
+    private int $chunk_size = 8192; // 8KB chunks for streaming
 
     public function __construct()
     {
@@ -56,7 +56,7 @@ class Encryption
      * Encrypt a file key with the master key
      *
      * @param string $file_key Binary file key to encrypt
-     * @return array ['encrypted_key' => string, 'iv' => string] Base64 encoded
+     * @return array<string, mixed> ['encrypted_key' => string, 'iv' => string] Base64 encoded
      */
     public function encryptFileKey($file_key)
     {
@@ -124,7 +124,7 @@ class Encryption
      * @param string $input_path Path to plaintext file
      * @param string $output_path Path to write encrypted file
      * @param string $file_key Binary encryption key
-     * @return array ['success' => bool, 'iv' => string, 'tag' => string, 'error' => string]
+     * @return array<string, mixed> ['success' => bool, 'iv' => string, 'tag' => string, 'error' => string]
      */
     public function encryptFile($input_path, $output_path, $file_key)
     {
@@ -306,7 +306,7 @@ class Encryption
      * @param string $encrypted_path Path to encrypted file
      * @param string $output_path Path to write decrypted file
      * @param string $file_key Binary encryption key
-     * @return array ['success' => bool, 'error' => string]
+     * @return array<string, mixed> ['success' => bool, 'error' => string]
      */
     public function decryptFileToPath($encrypted_path, $output_path, $file_key)
     {

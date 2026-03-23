@@ -62,7 +62,7 @@ class Auth
         ]);
     }
 
-    public function validate2faRequest($token, $code, $remember_me = false)
+    public function validate2faRequest($token, $code, bool $remember_me = false)
     {
         $auth_code = new \ProjectSend\Classes\AuthenticationCode();
         $validate = json_decode($auth_code->validateRequest($token, $code));

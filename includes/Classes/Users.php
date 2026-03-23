@@ -34,7 +34,7 @@ class Users
     public $active;
     public $notify_account;
     public $max_file_size;
-    public $max_disk_quota;
+    public ?int $max_disk_quota;
     public $can_upload_public;
     public $created_by;
     public $created_date;

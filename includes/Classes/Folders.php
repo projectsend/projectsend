@@ -250,8 +250,11 @@ class Folders
     /**
      * Get all folder IDs accessible to a client, including ancestor folders.
      * Used internally to support parent-filtered queries without recursive CTEs.
+     *
+     * @param array<string, mixed> $arguments
+     * @return array<int>
      */
-    private function getAccessibleFolderIds($arguments)
+    private function getAccessibleFolderIds(array $arguments): array
     {
         // Get directly accessible folders (without parent filter, without parent resolution)
         $saved_folders = $this->folders;

@@ -13,10 +13,11 @@ class CustomAsset
 {
     private $dbh;
     private $logger;
-    private $statement;
-    private $row;
-    private $sql_query;
-    private $sql;
+    private ?\PDOStatement $statement;
+    /** @var array<string, mixed>|null */
+    private ?array $row;
+    private ?\PDOStatement $sql_query;
+    private ?\PDOStatement $sql;
 
     public $id;
     public $title;

@@ -14,8 +14,8 @@ class S3Storage extends ExternalStorage
     private $region;
     private $access_key;
     private $secret_key;
-    private $endpoint;
-    private $use_path_style;
+    private ?string $endpoint;
+    private bool $use_path_style;
 
     /**
      * Constructor

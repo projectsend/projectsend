@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "542ca83168df7b1ec37e6dbdf7611a58",
+    "content-hash": "61de724c261747fe8d3025be35ebb604",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -1595,8 +1595,8 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/a7630bb5311a41d13a2364634c78c5f4da250d53",
-                "reference": "a7630bb5311a41d13a2364634c78c5f4da250d53",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/git1",
+                "reference": "git1",
                 "shasum": ""
             },
             "require": {
@@ -1650,7 +1650,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.1",
+        "php": ">=8.2",
         "ext-pdo": "*",
         "ext-json": "*",
         "ext-exif": "*"

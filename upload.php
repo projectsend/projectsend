@@ -131,9 +131,13 @@ if (!$quota_unlimited) {
                             }
                         },
                         BeforeUpload: function(up, file) {
+                            up.settings.multipart_params = up.settings.multipart_params || {};
+
+                            // Pass the CSRF token with each chunk
+                            up.settings.multipart_params.csrf_token = $('#csrf_token').val();
+
                             // Pass the storage selection with each file upload
                             var selectedStorage = $('#selected_storage').val();
-                            up.settings.multipart_params = up.settings.multipart_params || {};
                             up.settings.multipart_params.storage_selection = selectedStorage;
 
                             // Pass the encryption setting with each file upload

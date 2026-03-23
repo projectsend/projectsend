@@ -1,6 +1,4 @@
 <?php
-define('FILE_UPLOADING', true);
-
 /**
  *  Call the required system files
  */
@@ -25,7 +23,7 @@ function dieWithError($message = null, $code = 400)
         'error' => [
             'code' => $code,
             'message' => $message,
-            'filename' => $_REQUEST["name"]
+            'filename' => $_POST["name"]
         ]
     ];
 
@@ -62,9 +60,9 @@ $maxFileAge = 5 * 3600; // Temp file age in seconds
 // usleep(5000);
 
 // Get parameters
-$chunk = isset($_REQUEST["chunk"]) ? intval($_REQUEST["chunk"]) : 0;
-$chunks = isset($_REQUEST["chunks"]) ? intval($_REQUEST["chunks"]) : 0;
-$fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
+$chunk = isset($_POST["chunk"]) ? intval($_POST["chunk"]) : 0;
+$chunks = isset($_POST["chunks"]) ? intval($_POST["chunks"]) : 0;
+$fileName = isset($_POST["name"]) ? $_POST["name"] : '';
 
 // Validate file has an acceptable extension
 if (!file_is_allowed($fileName)) {
@@ -161,11 +159,11 @@ if (!$chunks || $chunk == $chunks - 1) {
 	rename("{$filePath}.part", $filePath);
 
     // Get storage selection from request or use default
-    $storage_selection = isset($_REQUEST['storage_selection']) ? $_REQUEST['storage_selection'] : get_option('default_upload_storage', 'local');
+    $storage_selection = isset($_POST['storage_selection']) ? $_POST['storage_selection'] : get_option('default_upload_storage', 'local');
 
     // Check if encryption is requested
     $encrypt_file = false;
-    if (isset($_REQUEST['encrypt_file']) && $_REQUEST['encrypt_file'] === '1') {
+    if (isset($_POST['encrypt_file']) && $_POST['encrypt_file'] === '1') {
         $encrypt_file = true;
     } elseif (\ProjectSend\Classes\Encryption::isRequired()) {
         // Encryption is required globally

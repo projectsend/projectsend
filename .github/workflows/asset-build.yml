@@ -24,7 +24,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: ['16.x', '18.x', '20.x']
+        node-version: ['18.x', '20.x', '22.x']
 
     steps:
     - name: Checkout code
@@ -33,7 +33,7 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.1'
+        php-version: '8.2'
         extensions: pdo, json
         coverage: none
 
@@ -91,7 +91,7 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.1'
+        php-version: '8.2'
         extensions: pdo, json
         coverage: none
 
@@ -126,7 +126,7 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.1'
+        php-version: '8.2'
         extensions: pdo, json
         coverage: none
 

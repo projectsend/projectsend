@@ -4,6 +4,7 @@ use ProjectSend\Classes\Download;
 use ProjectSend\Classes\ActionsLog;
 
 /** Process an action */
+$allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
 
 // Actions that don't require login

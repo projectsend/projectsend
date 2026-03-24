@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://www.projectsend.org/projectsend-logo-new.png" alt="ProjectSend logo" />
+  <img src="https://www.projectsend.org/projectsend-logo-white.png" alt="ProjectSend logo" />
 </p>
 
 <h3 align="center">The self-hosted client portal for file sharing</h3>

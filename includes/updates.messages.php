@@ -14,8 +14,29 @@
         <div class="row">
             <div class="col-sm-12">
                 <div id="donations_message">
-                    <p id="db_upgraded"><i class="fa fa-info-circle"></i> <?php _e('The database was updated to support this version of the software.', 'cftp_admin'); ?> <a href="https://www.projectsend.org/change-log/" class="text-decoration-underline" target="_blank"><?php _e('View change log','cftp_admin'); ?></a></p>
-                    <h3><strong><?php _e('Do you want to support ProjectSend?', 'cftp_admin');?></strong></h3>
+                    <p id="db_upgraded"><i class="fa fa-info-circle"></i> <?php _e('The database was updated to support this version of the software.', 'cftp_admin'); ?></p>
+                    <p class="changelog-trigger-wrap">
+                        <a href="#" class="changelog-trigger fs-5" data-version="<?php echo html_output(CURRENT_VERSION); ?>"><?php echo sprintf(__("See what's new in %s", 'cftp_admin'), '<strong>' . html_output(CURRENT_VERSION) . '</strong>'); ?> <i class="fa fa-arrow-right"></i></a>
+                    </p>
+
+                    <!-- Changelog modal -->
+                    <div class="modal fade" id="changelogModal" tabindex="-1" aria-labelledby="changelogModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="changelogModalLabel"><?php _e("What's new", 'cftp_admin'); ?></h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?php _e('Close', 'cftp_admin'); ?>"></button>
+                                </div>
+                                <div class="modal-body" id="changelogModalBody">
+                                    <div class="changelog-loading text-center py-4"><i class="fa fa-spinner fa-spin fa-2x"></i></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?php _e('Close', 'cftp_admin'); ?></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3><strong>❤️ <?php _e('ProjectSend needs your help!', 'cftp_admin');?></strong></h3>
                     <p><?php _e('Please remember that this tool is free software.', 'cftp_admin'); ?></p>
                     <p><?php _e('It is made with love during the hard-to-find free time of mainly one developer.','cftp_admin'); ?></p>
                     <p><?php _e('With as little as <strong>$2 per month</strong> you can help the project stay active and updated.','cftp_admin'); ?></p>

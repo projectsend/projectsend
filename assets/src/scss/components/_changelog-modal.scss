@@ -1,0 +1,27 @@
+// Changelog modal
+
+.changelog-trigger-wrap {
+    margin-top: 0.25rem;
+}
+
+.changelog-trigger {
+    color: var(--main_color);
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+
+    .fa {
+        font-size: 0.85em;
+    }
+}
+
+.changelog-content {
+    h1 { font-size: 1.4rem; color: var(--text-primary); margin-bottom: 1rem; }
+    h2 { font-size: 1.1rem; color: var(--text-primary); margin-top: 1.5rem; margin-bottom: 0.5rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.3rem; }
+    ul { padding-left: 1.25rem; }
+    li { margin-bottom: 0.35rem; line-height: 1.5; }
+    strong { color: var(--text-primary); }
+    p { margin-bottom: 0.75rem; }
+}

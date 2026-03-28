@@ -13,6 +13,7 @@
         admin.parts.select2();
         admin.parts.publicLinksPopup();
         admin.parts.generatePassword();
+        admin.parts.changelogModal();
 
         // Switch pages
         switch ($("body").data("page-id")) {

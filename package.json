@@ -28,6 +28,7 @@
         "select2-bootstrap-5-theme": "^1.3.0",
         "sjcl": "^1.0.8",
         "sprintf-js": "1.1.2",
+        "marked": "^4.0.12",
         "sweetalert2": "^11.6.14",
         "toastr": "^2.1.4",
         "vanilla-context-menu": "^1.3.0"

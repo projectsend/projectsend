@@ -82,6 +82,13 @@
                                 <i class="fa fa-user-circle" aria-hidden="true"></i> <?php _e('My Account', 'cftp_admin'); ?>
                             </a>
                         </li>
+                        <?php if ((bool)get_option('two_factor_allow_totp', null, '1')) { ?>
+                        <li>
+                            <a class="dropdown-item" href="<?php echo BASE_URI; ?>totp-setup.php">
+                                <i class="fa fa-shield" aria-hidden="true"></i> <?php _e('Two-Factor Auth', 'cftp_admin'); ?>
+                            </a>
+                        </li>
+                        <?php } ?>
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <a class="dropdown-item" href="<?php echo BASE_URI; ?>process.php?do=logout">

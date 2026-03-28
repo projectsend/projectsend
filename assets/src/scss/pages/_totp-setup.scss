@@ -1,0 +1,102 @@
+// TOTP Setup Page Styles
+
+.totp-setup {
+    .totp-qr-container {
+        text-align: center;
+        margin: 1.5rem 0;
+        padding: 1rem;
+        background: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 0.5rem;
+
+        img,
+        svg {
+            max-width: 250px;
+            max-height: 250px;
+            width: 250px;
+            height: 250px;
+        }
+    }
+
+    .totp-secret-display {
+        margin: 1.5rem 0;
+    }
+
+    .totp-secret-key {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+        padding: 0.75rem;
+
+        code {
+            font-size: 1.1rem;
+            letter-spacing: 0.15em;
+            word-break: break-all;
+            flex: 1;
+        }
+    }
+
+    .totp-code-input {
+        max-width: 200px;
+        font-size: 1.5rem;
+        text-align: center;
+        letter-spacing: 0.3em;
+    }
+
+    .totp-backup-codes {
+        margin: 1.5rem 0;
+    }
+
+    .backup-codes-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+
+    .backup-code {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+        padding: 0.5rem 0.75rem;
+        text-align: center;
+
+        code {
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+        }
+    }
+
+    .totp-backup-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin: 1rem 0;
+    }
+}
+
+// TOTP login verification page
+#totp_backup_section {
+    margin-top: 1.5rem;
+    text-align: center;
+
+    .toggle-backup-link {
+        font-size: 0.9rem;
+        color: #6c757d;
+        text-decoration: none;
+
+        &:hover {
+            color: #495057;
+            text-decoration: underline;
+        }
+    }
+
+    .backup-code-form {
+        margin-top: 1rem;
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+    }
+}

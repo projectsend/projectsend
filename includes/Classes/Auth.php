@@ -74,10 +74,10 @@ class Auth
                 'message' => $this->getError(),
             ]);
         }
-        
+
         $props =  $auth_code->getProperties();
         $user = new \ProjectSend\Classes\Users($props['user_id']);
-            
+
         if ($user->isActive()) {
             $this->user = $user;
             $this->login($user);
@@ -96,7 +96,116 @@ class Auth
                 'user_id' => $user->id,
                 'location' => $user->isClient() ? CLIENT_VIEW_FILE_LIST_URL : BASE_URI."dashboard.php",
             ];
-            
+
+            return json_encode($results);
+        }
+
+        return json_encode([
+            'status' => 'error',
+            'message' => $this->error_strings['2fa']['invalid'],
+        ]);
+    }
+
+    /**
+     * Validate a TOTP code or backup code during login
+     */
+    public function validateTotpRequest($token, $code, bool $remember_me = false)
+    {
+        global $json_strings;
+
+        // Look up token to get user_id
+        $auth_code = new \ProjectSend\Classes\AuthenticationCode();
+        if (!$auth_code->getByToken($token)) {
+            $this->setError($json_strings['login']['errors']['2fa']['invalid']);
+            return json_encode([
+                'status' => 'error',
+                'message' => $this->getError(),
+            ]);
+        }
+
+        $props = $auth_code->getProperties();
+
+        // Check if token was already used
+        if ($props['used'] != '0') {
+            $this->setError($json_strings['login']['errors']['2fa']['used']);
+            return json_encode([
+                'status' => 'error',
+                'message' => $this->getError(),
+            ]);
+        }
+
+        // Check expiry (TOTP tokens expire after 5 minutes like email codes)
+        if ($auth_code->codeExpired()) {
+            $this->setError($json_strings['login']['errors']['2fa']['expired']);
+            return json_encode([
+                'status' => 'error',
+                'message' => $this->getError(),
+            ]);
+        }
+
+        $user_id = $props['user_id'];
+        $totp = new \ProjectSend\Classes\Totp();
+        $secret = $totp->getUserSecret($user_id);
+
+        if (!$secret) {
+            $this->setError($json_strings['login']['errors']['2fa']['invalid']);
+            return json_encode([
+                'status' => 'error',
+                'message' => $this->getError(),
+            ]);
+        }
+
+        $valid = false;
+        $is_backup = false;
+
+        // Try TOTP code first
+        if ($totp->verifyCode($secret, $code)) {
+            $valid = true;
+        }
+
+        // If TOTP fails, try backup code
+        if (!$valid && $totp->validateBackupCode($user_id, $code)) {
+            $valid = true;
+            $is_backup = true;
+        }
+
+        if (!$valid) {
+            $this->setError($json_strings['login']['errors']['2fa']['totp_invalid']);
+            return json_encode([
+                'status' => 'error',
+                'message' => $this->getError(),
+            ]);
+        }
+
+        // Mark the token as used
+        $auth_code->markAsUsed();
+
+        $user = new \ProjectSend\Classes\Users($user_id);
+        if ($user->isActive()) {
+            $this->user = $user;
+            $this->login($user);
+
+            // Handle remember me
+            if ($remember_me && get_option('remember_me_enabled', null, '1')) {
+                $rememberMe = new \ProjectSend\Classes\RememberMe();
+                $rmToken = $rememberMe->generateToken();
+                if ($rememberMe->storeToken($user->id, $rmToken)) {
+                    $rememberMe->setCookie($rmToken);
+                }
+            }
+
+            $results = [
+                'status' => 'success',
+                'user_id' => $user->id,
+                'location' => $user->isClient() ? CLIENT_VIEW_FILE_LIST_URL : BASE_URI . "dashboard.php",
+            ];
+
+            if ($is_backup) {
+                $remaining = $totp->getRemainingBackupCodesCount($user_id);
+                $results['backup_code_used'] = true;
+                $results['remaining_backup_codes'] = $remaining;
+            }
+
             return json_encode($results);
         }
 
@@ -128,7 +237,33 @@ class Auth
 			if (password_verify($password, $user->getRawPassword())) {
 				if ($user->isActive()) {
                     $new2fa = new \ProjectSend\Classes\AuthenticationCode();
-                    if ($new2fa->requires2fa()) {
+                    if ($new2fa->requires2fa($user->id)) {
+                        $method = $new2fa->get2faMethod($user->id);
+
+                        if ($method === 'totp') {
+                            // User has TOTP configured - create token and redirect to TOTP form
+                            $request2fa = json_decode($new2fa->createTotpToken($user->id));
+                            if ($request2fa->status == 'success') {
+                                $results = [
+                                    'status' => 'success',
+                                    'user_id' => $user->id,
+                                    'location' => BASE_URI."index.php?form=2fa_verify_totp&remember_me=". (int)$remember_me ."&token=".$request2fa->token,
+                                ];
+                            } else {
+                                $this->setError($request2fa->message);
+                                $results = [
+                                    'status' => 'error',
+                                    'message' => $request2fa->message,
+                                    'location' => BASE_URI,
+                                ];
+                            }
+                            return json_encode($results);
+                        } elseif ($method === 'totp_setup_required') {
+                            // 2FA is required but user needs to set up TOTP first
+                            // For now, fall through to email-based 2FA as fallback
+                        }
+
+                        // Email-based 2FA (default)
                         $request2fa = json_decode($new2fa->requestNewCode($user->id));
                         if ($request2fa->status == 'success') {
                             $results = [
@@ -137,14 +272,24 @@ class Auth
                                 'location' => BASE_URI."index.php?form=2fa_verify&remember_me=". (int)$remember_me ."&token=".$request2fa->token,
                             ];
                         } else {
-                            $this->setError($request2fa->message);
-                            $results = [
-                                'status' => 'error',
-                                'message' => $request2fa->message,
-                                'location' => BASE_URI,
-                            ];
+                            // Throttled: a pending code already exists. Find it and redirect to the form.
+                            $pending = $new2fa->getLatestPendingToken($user->id);
+                            if ($pending) {
+                                $results = [
+                                    'status' => 'success',
+                                    'user_id' => $user->id,
+                                    'location' => BASE_URI."index.php?form=2fa_verify&remember_me=". (int)$remember_me ."&token=".$pending,
+                                ];
+                            } else {
+                                $this->setError($request2fa->message);
+                                $results = [
+                                    'status' => 'error',
+                                    'message' => $request2fa->message,
+                                    'location' => BASE_URI,
+                                ];
+                            }
                         }
-                        
+
                         return json_encode($results);
                     }
 
@@ -422,23 +567,55 @@ class Auth
                             if ($user->isActive()) {
                                 // Check for 2FA requirement
                                 $new2fa = new \ProjectSend\Classes\AuthenticationCode();
-                                if ($new2fa->requires2fa()) {
+                                if ($new2fa->requires2fa($user->id)) {
+                                    $method = $new2fa->get2faMethod($user->id);
+
+                                    if ($method === 'totp') {
+                                        $request2fa = json_decode($new2fa->createTotpToken($user->id));
+                                        if ($request2fa->status == 'success') {
+                                            $results = [
+                                                'status' => 'success',
+                                                'user_id' => $user->id,
+                                                'location' => BASE_URI."index.php?form=2fa_verify_totp&remember_me=". (int)$remember_me ."&token=".$request2fa->token,
+                                            ];
+                                        } else {
+                                            $this->setError($request2fa->message);
+                                            $results = [
+                                                'status' => 'error',
+                                                'message' => $request2fa->message,
+                                                'location' => BASE_URI,
+                                            ];
+                                        }
+                                        return json_encode($results);
+                                    }
+
+                                    // Email-based 2FA (default)
                                     $request2fa = json_decode($new2fa->requestNewCode($user->id));
                                     if ($request2fa->status == 'success') {
                                         $results = [
                                             'status' => 'success',
                                             'user_id' => $user->id,
-                                            'location' => BASE_URI."index.php?form=2fa_verify&token=".$request2fa->token,
+                                            'location' => BASE_URI."index.php?form=2fa_verify&remember_me=". (int)$remember_me ."&token=".$request2fa->token,
                                         ];
                                     } else {
-                                        $this->setError($request2fa->message);
-                                        $results = [
-                                            'status' => 'error',
-                                            'message' => $request2fa->message,
-                                            'location' => BASE_URI,
-                                        ];
+                                        // Throttled: find pending token and redirect to form
+                                        $pending = $new2fa->getLatestPendingToken($user->id);
+                                        if ($pending) {
+                                            $results = [
+                                                'status' => 'success',
+                                                'user_id' => $user->id,
+                                                'location' => BASE_URI."index.php?form=2fa_verify&remember_me=". (int)$remember_me ."&token=".$pending,
+                                            ];
+                                        } else {
+                                            $this->setError($request2fa->message);
+                                            $results = [
+                                                'status' => 'error',
+                                                'message' => $request2fa->message,
+                                                'location' => BASE_URI,
+                                            ];
+                                        }
                                     }
-                                    
+
                                     return json_encode($results);
                                 }
                                 

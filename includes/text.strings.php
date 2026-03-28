@@ -36,7 +36,10 @@ $json_strings = [
                 'invalid' => __('Code is not valid','cftp_admin'),
                 'used' => __('Code has already been used','cftp_admin'),
                 'expired' => __('Code expired','cftp_admin'),
-                'throttle' => __('You have pending codes to verify. Please wait until %s to request a new one.','cftp_admin')
+                'throttle' => __('You have pending codes to verify. Please wait until %s to request a new one.','cftp_admin'),
+                'totp_invalid' => __('The code is not valid. Please try again.','cftp_admin'),
+                'backup_invalid' => __('Invalid backup code.','cftp_admin'),
+                'backup_used' => __('This backup code has already been used.','cftp_admin'),
             ]
         ],
     ],

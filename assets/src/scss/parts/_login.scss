@@ -31,7 +31,8 @@
     }
 }
 
-form#verify_2fa {
+form#verify_2fa,
+form#verify_2fa_totp {
     .form_info {
         h2 {
             text-align: center;

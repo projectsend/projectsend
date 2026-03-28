@@ -71,7 +71,9 @@ switch ($section) {
             'pass_require_number',
             'pass_require_special',
             'recaptcha_enabled',
-            'authentication_require_email_code',
+            'two_factor_required',
+            'two_factor_allow_email',
+            'two_factor_allow_totp',
             'remember_me_enabled',
         );
         break;
@@ -251,6 +253,14 @@ if ($_POST) {
         if (!defined('ENCRYPTION_MASTER_KEY') || empty(ENCRYPTION_MASTER_KEY)) {
             $flash->error(__('Cannot enable encryption: ENCRYPTION_MASTER_KEY is not configured in sys.config.php. Please add this constant to your configuration file before enabling encryption.', 'cftp_admin'));
             ps_redirect(BASE_URI . 'options.php?section=encryption');
+        }
+    }
+
+    // Validate 2FA settings - cannot require 2FA with no methods allowed
+    if ($section == 'security' && !empty($_POST['two_factor_required'])) {
+        if (empty($_POST['two_factor_allow_email']) && empty($_POST['two_factor_allow_totp'])) {
+            $flash->error(__('Cannot require two-factor authentication when both email and authenticator app methods are disabled. Please enable at least one method.', 'cftp_admin'));
+            ps_redirect(BASE_URI . 'options.php?section=security');
         }
     }
 

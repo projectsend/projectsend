@@ -111,6 +111,27 @@ if ($_POST) {
                 ps_redirect(BASE_URI);
             }
             break;
+        case '2fa_verify_totp':
+            recaptcha2_validate_request();
+            $remember_me = !empty($_POST['remember_me']) && $_POST['remember_me'] === '1';
+
+            if (!empty($_POST['is_backup_code']) && !empty($_POST['backup_code'])) {
+                // Backup code submission
+                $code = trim($_POST['backup_code']);
+            } else {
+                // Regular TOTP code
+                $code = $_POST['n1'] . $_POST['n2'] . $_POST['n3'] . $_POST['n4'] . $_POST['n5'] . $_POST['n6'];
+            }
+
+            $login = json_decode($auth->validateTotpRequest($_POST['token'], $code, $remember_me));
+            if ($login->status == 'success') {
+                $user = new \ProjectSend\Classes\Users($login->user_id);
+                ps_redirect($login->location);
+            } else {
+                $flash->error($auth->getError());
+                ps_redirect(BASE_URI . "index.php?form=2fa_verify_totp&remember_me=" . (int)$remember_me . "&token=" . $_POST['token']);
+            }
+            break;
     }
 }
 
@@ -121,7 +142,7 @@ $login_types = array(
     'ldap' => get_option('ldap_signin_enabled'),
 );
 
-$valid_forms = ['login', '2fa_verify'];
+$valid_forms = ['login', '2fa_verify', '2fa_verify_totp'];
 $form = (isset($_GET['form']) && in_array($_GET['form'], $valid_forms)) ? $_GET['form'] : 'login';
 
 if ($form == '2fa_verify') {
@@ -134,6 +155,14 @@ if ($form == '2fa_verify') {
     $props = $request->getProperties();
     $user = get_user_by_id($props['user_id']);
     $masked_email = mask_email($user['email']);
+}
+
+if ($form == '2fa_verify_totp') {
+    $request = new \ProjectSend\Classes\AuthenticationCode();
+    $get_request = $request->getByToken($_GET['token']);
+    if ($get_request == false) {
+        exit_with_error_code(403);
+    }
 }
 
 include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';

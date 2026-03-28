@@ -240,13 +240,26 @@ $form_sections = [
     ],
 
     [
-        'title' => __('Authentication', 'cftp_admin'),
+        'title' => __('Two-factor authentication', 'cftp_admin'),
+        'description' => __('Configure two-factor authentication methods available to users.', 'cftp_admin'),
         'fields' => [
             [
                 'type' => 'checkbox',
-                'name' => 'authentication_require_email_code',
-                'label' => __('Enable simple 2 factor authentication', 'cftp_admin'),
-                'note' => __('If enabled, an email with a one time use verification code will be sent to the user after they enter their credentials.', 'cftp_admin')
+                'name' => 'two_factor_required',
+                'label' => __('Require 2FA for all users', 'cftp_admin'),
+                'note' => __('When enabled, all users must verify with a second factor after entering their credentials. If a user has not configured an authenticator app, an email code will be used as fallback.', 'cftp_admin')
+            ],
+            [
+                'type' => 'checkbox',
+                'name' => 'two_factor_allow_email',
+                'label' => __('Allow email-based codes', 'cftp_admin'),
+                'note' => __('Send a one-time verification code via email.', 'cftp_admin')
+            ],
+            [
+                'type' => 'checkbox',
+                'name' => 'two_factor_allow_totp',
+                'label' => __('Allow authenticator apps (TOTP)', 'cftp_admin'),
+                'note' => __('Allow users to set up apps like Google Authenticator, Authy, or 1Password for verification codes.', 'cftp_admin')
             ]
         ]
     ],

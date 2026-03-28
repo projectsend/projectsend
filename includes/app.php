@@ -190,6 +190,7 @@ define('TABLE_ROLE_PERMISSIONS', TABLES_PREFIX . 'role_permissions');
 define('TABLE_INTEGRATIONS', TABLES_PREFIX . 'integrations');
 define('TABLE_CUSTOM_FIELDS', TABLES_PREFIX . 'custom_fields');
 define('TABLE_CUSTOM_FIELD_VALUES', TABLES_PREFIX . 'custom_field_values');
+define('TABLE_TOTP_BACKUP_CODES', TABLES_PREFIX . 'totp_backup_codes');
 
 $original_basic_tables = array(
     TABLE_FILES,

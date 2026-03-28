@@ -36,7 +36,9 @@
     "aws/aws-sdk-php": "^3.0",
     "ext-pdo": "*",
     "ext-json": "*",
-    "ext-exif": "*"
+    "ext-exif": "*",
+    "spomky-labs/otphp": "^11.4",
+    "chillerlan/php-qrcode": "^6.0"
   },
   "require-dev": {
     "phpstan/phpstan": "^1.10"

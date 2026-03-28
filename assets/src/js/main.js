@@ -106,6 +106,9 @@
             case 'integration_form':
                 admin.pages.integration_form();
                 break;
+            case 'totp_setup':
+                admin.pages.totpSetup();
+                break;
             default:
                 // do nothing
                 break;

@@ -33,6 +33,7 @@
 @import "layout/top-bar";
 @import "layout/main-menu";
 
+@import "pages/error-page";
 @import "pages/options";
 @import "pages/public_download";
 @import "pages/template";
@@ -40,6 +41,7 @@
 @import "pages/custom-fields";
 @import "pages/upload";
 @import "pages/file-editor-tabs";
+@import "pages/totp-setup";
 
 // Misc
 @import "parts/login";

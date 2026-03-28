@@ -2732,12 +2732,21 @@ function die_with_error_code($code = 403)
 function exit_with_error_code($code = 403)
 {
     switch ($code) {
-        default:
-        case 403:
-            $url = PAGE_STATUS_CODE_403;
+        case 400:
+            $url = PAGE_STATUS_CODE_400;
             break;
         case 404:
             $url = PAGE_STATUS_CODE_404;
+            break;
+        case 410:
+            $url = PAGE_STATUS_CODE_410;
+            break;
+        case 500:
+            $url = PAGE_STATUS_CODE_500;
+            break;
+        default:
+        case 403:
+            $url = PAGE_STATUS_CODE_403;
             break;
     }
 

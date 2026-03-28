@@ -125,8 +125,15 @@ npm ci --silent
 npx gulp build
 
 echo -e "${GREEN}Step 4: Updating version number${NC}"
-# Update CURRENT_VERSION in app.php
+# Update CURRENT_VERSION in the release copy
 sed -i "s/define('CURRENT_VERSION', 'r[0-9]\+');/define('CURRENT_VERSION', '${VERSION}');/g" includes/app.php
+# Also update the source repo and commit so git tag lands on the right commit
+sed -i "s/define('CURRENT_VERSION', 'r[0-9]\+');/define('CURRENT_VERSION', '${VERSION}');/g" "$SOURCE_DIR/includes/app.php"
+cd "$SOURCE_DIR"
+git add includes/app.php
+git commit -m "Bump version to ${VERSION}"
+git push
+cd "$RELEASE_DIR"
 echo "Updated version to: ${VERSION}"
 
 echo -e "${GREEN}Step 5: Cleaning cache${NC}"

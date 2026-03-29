@@ -118,7 +118,7 @@ cp -r "$SOURCE_DIR" "$RELEASE_DIR"
 cd "$RELEASE_DIR"
 
 echo -e "${GREEN}Step 2: Installing production dependencies${NC}"
-composer install --no-dev --optimize-autoloader --no-interaction
+composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs
 
 echo -e "${GREEN}Step 3: Building production assets${NC}"
 npm ci --silent

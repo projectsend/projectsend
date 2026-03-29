@@ -61,7 +61,7 @@ define('TRANSLATIONS_URL', 'https://www.projectsend.org/translations/');
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r2022');
+define('CURRENT_VERSION', 'r2024');
 
 /**
  * Required software versions

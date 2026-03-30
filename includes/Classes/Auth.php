@@ -658,13 +658,10 @@ class Auth
                         } else {
                             // User doesn't exist - create new user if LDAP user creation is enabled
                             if (get_option('ldap_auto_create_users', null, 'true') == 'true') {
-                                error_log("LDAP Login Debug - Auto-create users is enabled");
                                 $new_user = new \ProjectSend\Classes\Users();
                                 $create_result = $new_user->createFromLdap($ldap_attributes, $email);
-                                error_log("LDAP Login Debug - Create result: " . json_encode($create_result));
-                                
+
                                 if (!empty($create_result['id'])) {
-                                    error_log("LDAP Login Debug - User created successfully with ID: " . $create_result['id']);
                                     // Get the created user and login
                                     $user = new \ProjectSend\Classes\Users($create_result['id']);
                                     $this->user = $user;

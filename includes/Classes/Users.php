@@ -19,6 +19,7 @@ class Users
     private $validation_type;
     private $validation_passed;
     private $validation_errors;
+    private $is_ldap_creation = false;
 
     public $exists;
 
@@ -516,15 +517,20 @@ class Users
         if ($this->isClient()) {
             // Allow self-registration if not logged in and clients_can_register is enabled
             $is_self_registration = ($this->validation_type == 'new_client' && !user_is_logged_in() && get_option('clients_can_register') == '1');
+            // Allow LDAP auto-creation of client accounts
+            $is_ldap_client_creation = ($this->is_ldap_creation && !user_is_logged_in() && get_option('ldap_auto_create_users', null, 'true') == 'true');
 
-            if (!$is_self_registration && !\current_user_can('create_clients')) {
+            if (!$is_self_registration && !$is_ldap_client_creation && !\current_user_can('create_clients')) {
                 return [
                     'status' => 'error',
                     'message' => __('You do not have permission to create clients.', 'cftp_admin')
                 ];
             }
         } else {
-            if (!\current_user_can('create_users')) {
+            // Allow LDAP auto-creation if not logged in and LDAP auto-create is enabled
+            $is_ldap_auto_creation = ($this->is_ldap_creation && !user_is_logged_in() && get_option('ldap_auto_create_users', null, 'true') == 'true');
+
+            if (!$is_ldap_auto_creation && !\current_user_can('create_users')) {
                 return [
                     'status' => 'error',
                     'message' => __('You do not have permission to create users.', 'cftp_admin')
@@ -1167,18 +1173,11 @@ class Users
         }
 
         // Get default role for LDAP users
-        $client_role_id = \ProjectSend\Classes\Roles::getClientRoleId(); // Get the actual client role ID
-        $default_role = get_option('ldap_default_role', null, $client_role_id); // Default to client role
-        error_log("LDAP Create User Debug - Default role: " . $default_role);
-        error_log("LDAP Create User Debug - Default role type: " . gettype($default_role));
-        error_log("LDAP Create User Debug - Client role ID: " . $client_role_id);
-        error_log("LDAP Create User Debug - Name: " . $name);
-        error_log("LDAP Create User Debug - Username: " . $username);
-        error_log("LDAP Create User Debug - Email: " . $email);
+        $client_role_id = \ProjectSend\Classes\Roles::getClientRoleId();
+        $default_role = get_option('ldap_default_role', null, $client_role_id);
 
         // Set user properties
-        $this->setType('new_client'); // This can be overridden by role
-        error_log("LDAP Create User Debug - About to set level to: " . $default_role);
+        $this->setType('new_client');
         $this->set([
             'username' => $username, // This sets $this->username for validation
             'password' => $password,
@@ -1198,24 +1197,11 @@ class Users
             'type' => ($default_role == $client_role_id) ? 'new_client' : 'new_user',
         ]);
 
-        // Create the user
-        error_log("LDAP Create User Debug - About to call create()");
-        
-        // Check if the user data is valid before creating
-        error_log("LDAP Create User Debug - User data prepared for creation");
-        
+        // Create the user, bypassing permission check for LDAP auto-creation
+        $this->is_ldap_creation = true;
         $result = $this->create();
-        error_log("LDAP Create User Debug - Create result: " . json_encode($result));
-        
-        // Check for validation errors
-        if (empty($result) || empty($result['id'])) {
-            error_log("LDAP Create User Debug - User creation failed, checking validation errors");
-            $validation_errors = $this->getValidationErrors();
-            error_log("LDAP Create User Debug - Validation errors: " . json_encode($validation_errors));
-        }
-        
+
         if (!empty($result['id'])) {
-            error_log("LDAP Create User Debug - User created successfully with ID: " . $result['id']);
             // Store LDAP metadata
             $this->storeLdapMetadata($result['id'], $ldap_attributes);
             

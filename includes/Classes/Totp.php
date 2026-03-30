@@ -29,7 +29,40 @@ class Totp
             return hash_pbkdf2('sha256', HASH_SALT, 'projectsend-totp', 10000, 32, true);
         }
 
-        throw new \Exception('No encryption key available for TOTP secret storage');
+        // Auto-generate and persist the key for installations that were upgraded
+        // from versions that didn't include ENCRYPTION_MASTER_KEY in the config
+        $generated_key = $this->generateAndPersistEncryptionKey();
+        if ($generated_key !== null) {
+            return $generated_key;
+        }
+
+        throw new \Exception('No encryption key available for TOTP secret storage. Please add ENCRYPTION_MASTER_KEY to your sys.config.php file.');
+    }
+
+    /**
+     * Generate a new ENCRYPTION_MASTER_KEY and append it to sys.config.php
+     * This handles upgrades from older versions that didn't have this constant.
+     */
+    private function generateAndPersistEncryptionKey()
+    {
+        $config_file = CONFIG_FILE;
+        if (!file_exists($config_file) || !is_writable($config_file)) {
+            return null;
+        }
+
+        $key_bytes = random_bytes(32);
+        $key_base64 = base64_encode($key_bytes);
+
+        $config_addition = "\n/** Auto-generated encryption key */\ndefine('ENCRYPTION_MASTER_KEY', '" . $key_base64 . "');\n";
+
+        if (file_put_contents($config_file, $config_addition, FILE_APPEND | LOCK_EX) === false) {
+            return null;
+        }
+
+        // Define the constant for the current request
+        define('ENCRYPTION_MASTER_KEY', $key_base64);
+
+        return $key_bytes;
     }
 
     /**

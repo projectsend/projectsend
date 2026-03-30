@@ -13,7 +13,7 @@ class RememberMe
     private $token_length = 32; // 32 bytes = 256 bits
     private $cookie_name = 'ps_remember_token';
     
-    public function __construct(PDO $dbh = null)
+    public function __construct(?PDO $dbh = null)
     {
         if (empty($dbh)) {
             global $dbh;

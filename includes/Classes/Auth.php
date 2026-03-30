@@ -15,7 +15,7 @@ class Auth
     private $error_strings;
     public $user;
 
-    public function __construct(PDO $dbh = null)
+    public function __construct(?PDO $dbh = null)
     {
         if (empty($dbh)) {
             global $dbh;

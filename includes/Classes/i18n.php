@@ -255,9 +255,8 @@ class I18n
             }
         }
 
-        self::$pluralFunc = self::GetPluralFunc(
-                self::$messages[$domain][''][1][0]
-            );
+        $moHeader = isset(self::$messages[$domain][''][1][0]) ? self::$messages[$domain][''][1][0] : '';
+        self::$pluralFunc = self::GetPluralFunc($moHeader);
 
         return
             isset(self::$messages[$domain])
@@ -276,6 +275,7 @@ class I18n
     private static function GetPluralFunc($moHeader)
     {
         if (
+            !empty($moHeader) &&
             preg_match(
                 '/plural-forms: (.*?)$/i',
                 $moHeader,

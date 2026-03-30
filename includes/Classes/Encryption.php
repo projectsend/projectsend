@@ -37,9 +37,41 @@ class Encryption
             return hash_pbkdf2('sha256', HASH_SALT, 'projectsend-encryption', 10000, 32, true);
         }
 
-        // Fallback: generate a new key (should not happen in production)
-        error_log('WARNING: No encryption master key configured. Using temporary key.');
+        // Auto-generate and persist the key for installations upgraded from older versions
+        $generated_key = $this->generateAndPersistEncryptionKey();
+        if ($generated_key !== null) {
+            return $generated_key;
+        }
+
+        // Last resort fallback - key won't persist across requests
+        error_log('WARNING: No encryption master key configured and could not write to config. Using temporary key.');
         return random_bytes(32);
+    }
+
+    /**
+     * Generate a new ENCRYPTION_MASTER_KEY and append it to sys.config.php
+     */
+    private function generateAndPersistEncryptionKey()
+    {
+        $config_file = CONFIG_FILE;
+        if (!file_exists($config_file) || !is_writable($config_file)) {
+            return null;
+        }
+
+        $key_bytes = random_bytes(32);
+        $key_base64 = base64_encode($key_bytes);
+
+        $config_addition = "\n/** Auto-generated encryption key */\ndefine('ENCRYPTION_MASTER_KEY', '" . $key_base64 . "');\n";
+
+        if (file_put_contents($config_file, $config_addition, FILE_APPEND | LOCK_EX) === false) {
+            return null;
+        }
+
+        if (!defined('ENCRYPTION_MASTER_KEY')) {
+            define('ENCRYPTION_MASTER_KEY', $key_base64);
+        }
+
+        return $key_bytes;
     }
 
     /**

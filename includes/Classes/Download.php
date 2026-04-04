@@ -200,6 +200,7 @@ class Download
                         default:
                         case 'php':
                         case 'apache_xsendfile':
+                        case 'litespeed':
                             $alias = null;
                         break;
                         case 'nginx_xaccel':
@@ -285,6 +286,7 @@ class Download
             default:
             case 'php':
             case 'apache_xsendfile':
+            case 'litespeed':
                 return null;
             case 'nginx_xaccel':
                 return $file->download_link_xaccel;
@@ -399,8 +401,8 @@ class Download
         fseek($fp, $seek_start);
 
         while (!feof($fp)) {
-            print(@fread($fp, 1024 * 8));
-            ob_flush();
+            echo @fread($fp, 1024 * 2048);
+            if (ob_get_level()) ob_flush();
             flush();
             if (connection_status() != 0) {
                 @fclose($fp);
@@ -444,15 +446,16 @@ class Download
 					$this->downloadPHP($file_location, $save_as, $file_key);
                 break;
                 case 'apache_xsendfile':
+                case 'litespeed':
                 case 'nginx_xaccel':
-                    // For XSendFile and X-Accel, we need to decrypt to a temp file first if encrypted
+                    // For XSendFile, LiteSpeed, and X-Accel, we need to decrypt to a temp file first if encrypted
                     if ($file_key) {
                         $temp_file = tempnam(UPLOADS_TEMP_DIR, 'ps_decrypt_');
                         $encryption = new \ProjectSend\Classes\Encryption();
                         $decrypt_result = $encryption->decryptFileToPath($file_location, $temp_file, $file_key);
 
                         if (!$decrypt_result['success']) {
-                            error_log('Failed to decrypt file for XSendFile/X-Accel: ' . $decrypt_result['error']);
+                            error_log('Failed to decrypt file for XSendFile/X-Accel/LiteSpeed: ' . $decrypt_result['error']);
                             exit_with_error_code(500);
                         }
 
@@ -469,6 +472,10 @@ class Download
 
                     if (get_option('download_method') == 'apache_xsendfile') {
                         header("X-Sendfile: $file_location");
+                        header('Content-Type: application/octet-stream');
+                        header('Content-Disposition: attachment; filename='.basename($save_as));
+                    } elseif (get_option('download_method') == 'litespeed') {
+                        header("X-LiteSpeed-Location: $file_location");
                         header('Content-Type: application/octet-stream');
                         header('Content-Disposition: attachment; filename='.basename($save_as));
                     } else {
@@ -602,8 +609,8 @@ class Download
 				
 				while(!feof($file)) 
 				{
-					print(@fread($file, 1024*8));
-					ob_flush();
+					echo @fread($file, 1024 * 2048);
+					if (ob_get_level()) ob_flush();
 					flush();
 					if (connection_status()!=0) 
 					{

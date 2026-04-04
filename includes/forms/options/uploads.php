@@ -109,6 +109,7 @@ $form_sections = [
                                 <option value="php" <?php echo (get_option('download_method') == 'php') ? 'selected="selected"' : ''; ?>>php</option>
                                 <option value="apache_xsendfile" <?php echo (get_option('download_method') == 'apache_xsendfile') ? 'selected="selected"' : ''; ?>>XSendFile (apache)</option>
                                 <option value="nginx_xaccel" <?php echo (get_option('download_method') == 'nginx_xaccel') ? 'selected="selected"' : ''; ?>>X-Accel (nginx)</option>
+                                <option value="litespeed" <?php echo (get_option('download_method') == 'litespeed') ? 'selected="selected"' : ''; ?>>X-LiteSpeed-Location (LiteSpeed)</option>
                             </select>
                             <div class="method_note none" data-method="php">
                                 <p class="field_note form-text"><?php _e("Serving files with php is the default method and does not require any changes to your webserver. However, very large files could download with errors depending on your php configuration.", 'cftp_admin'); ?></p>
@@ -116,6 +117,10 @@ $form_sections = [
                             <div class="method_note none" data-method="apache_xsendfile">
                                 <p class="field_note form-text"><?php _e("XSendfile improves downloads by allowing the web server to send the file directly bypassing php and it's limitations. This in an advanced feature that requires you to install and enable a module on your server.", 'cftp_admin'); ?></p>
                                 <p class="field_note form-text"><?php _e("Be aware that if the module is not set up correctly, downloads will trigger but the files will have a length of 0 bytes.", 'cftp_admin'); ?></p>
+                            </div>
+                            <div class="method_note none" data-method="litespeed">
+                                <p class="field_note form-text"><?php _e("LiteSpeed's internal redirect allows the web server to serve files directly, bypassing PHP and its limitations. This is similar to Apache's XSendFile but uses the X-LiteSpeed-Location header.", 'cftp_admin'); ?></p>
+                                <p class="field_note form-text"><?php _e("This method works out of the box on LiteSpeed/OpenLiteSpeed servers. Make sure that the upload directory is accessible by LiteSpeed.", 'cftp_admin'); ?></p>
                             </div>
                             <div class="method_note none" data-method="nginx_xaccel">
                                 <p class="field_note form-text"><?php _e("X-Accel is a method available in nginx that allows the system to serve files directly, bypassing php and it's limitations. To configure it, you need to edit your server block and add the following code:", 'cftp_admin'); ?></p>

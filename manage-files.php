@@ -213,6 +213,8 @@ if (current_role_in(['Client'])) {
     } else {
         $folders_arguments['user_id'] = CURRENT_USER_ID;
     }
+} elseif (current_role_in(['Uploader'])) {
+    $folders_arguments['user_id'] = CURRENT_USER_ID;
 }
 // @todo DECIDE WHICH FOLDERS TO GET IF VIEWING FILES BY CLIENT, GROUP OR CATEGORY
 // if ($filter_by_client) {

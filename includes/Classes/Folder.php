@@ -111,7 +111,7 @@ class Folder
             $this->parent = (!empty($this->parent)) ? $this->parent : null;
             $this->slug = $slugify->slugify($this->name);
             $this->user_id = CURRENT_USER_ID;
-            $public = 1;
+            $public = 0;
     
             $statement = $this->dbh->prepare("INSERT INTO " . TABLE_FOLDERS . " (uuid, name, slug, parent, public, user_id) VALUES (:uuid, :name, :slug, :parent, :public, :user_id)");
             $statement->bindParam(':uuid', $this->uuid);
@@ -146,7 +146,7 @@ class Folder
     public function userCanEdit($user_id)
     {
         $user = new \ProjectSend\Classes\Users($user_id);
-        if (in_array($user->role, ['System Administrator', 'Account Manager', 'Uploader'])) {
+        if (in_array($user->role, ['System Administrator', 'Account Manager'])) {
             return true;
         }
 
@@ -176,7 +176,7 @@ class Folder
     public function userCanDelete($user_id)
     {
         $user = new \ProjectSend\Classes\Users($user_id);
-        if (in_array($user->role, ['System Administrator', 'Account Manager', 'Uploader'])) {
+        if (in_array($user->role, ['System Administrator', 'Account Manager'])) {
             return true;
         }
 

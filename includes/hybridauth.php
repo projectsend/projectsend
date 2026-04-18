@@ -34,7 +34,13 @@
                 "enabled" => get_option('microsoftgraph_signin_enabled'),
                 "keys" => array("id" => get_option("microsoftgraph_client_id"), "secret" => get_option("microsoftgraph_client_secret")),
                 "tenant" => get_option('microsoftgraph_client_tenant')
-            )
+            ),
+            "GenericOidc" => array(
+                "enabled" => get_option('oidc_signin_enabled'),
+                "issuer_url" => get_option('oidc_issuer_url'),
+                "keys" => array("id" => get_option("oidc_client_id"), "secret" => get_option("oidc_client_secret")),
+                "adapter" => \ProjectSend\Classes\Hybridauth\GenericOidc::class,
+            ),
         ),
         // debug_mode possible values
         // - "error" log only error messages

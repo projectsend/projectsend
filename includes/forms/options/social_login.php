@@ -184,6 +184,73 @@ $form_sections = [
         ]
     ],
     [
+        'title' => __('Generic OIDC / SSO', 'cftp_admin'),
+        'description' => __('Connect any OpenID Connect-compatible identity provider such as Keycloak, Authentik, Authelia, or Okta. Use your provider\'s issuer URL (the value of the "iss" claim).', 'cftp_admin'),
+        'fields' => [
+            [
+                'type' => 'custom',
+                'name' => 'oidc_settings',
+                'render_callback' => function($field) {
+                    $callback_url = BASE_URI . 'login-callback.php';
+                    ?>
+                    <div class="options_column">
+                        <h5><i class="fa fa-lock"></i> <?php _e('OpenID Connect', 'cftp_admin'); ?></h5>
+
+                        <div class="form-group row">
+                            <label for="oidc_signin_enabled" class="col-sm-4 control-label"><?php _e('Enabled', 'cftp_admin'); ?></label>
+                            <div class="col-sm-8">
+                                <select class="form-select" name="oidc_signin_enabled" id="oidc_signin_enabled">
+                                    <option value="false" <?php echo (get_option('oidc_signin_enabled') != 'true') ? 'selected="selected"' : ''; ?>><?php _e('No', 'cftp_admin'); ?></option>
+                                    <option value="true" <?php echo (get_option('oidc_signin_enabled') == 'true') ? 'selected="selected"' : ''; ?>><?php _e('Yes', 'cftp_admin'); ?></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="oidc_display_name" class="col-sm-4 control-label"><?php _e('Button Label', 'cftp_admin'); ?></label>
+                            <div class="col-sm-8">
+                                <input type="text" name="oidc_display_name" id="oidc_display_name" class="form-control" value="<?php echo htmlspecialchars(get_option('oidc_display_name', null, 'SSO / OIDC'), ENT_QUOTES, 'UTF-8'); ?>" />
+                                <small class="form-text text-muted"><?php _e('Label shown on the login page button', 'cftp_admin'); ?></small>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="oidc_issuer_url" class="col-sm-4 control-label"><?php _e('Issuer URL', 'cftp_admin'); ?></label>
+                            <div class="col-sm-8">
+                                <input type="url" name="oidc_issuer_url" id="oidc_issuer_url" class="form-control" value="<?php echo htmlspecialchars(get_option('oidc_issuer_url'), ENT_QUOTES, 'UTF-8'); ?>" placeholder="https://auth.example.com/realms/myrealm" />
+                                <small class="form-text text-muted"><?php _e('The OIDC issuer base URL. A discovery document must be available at {issuer}/.well-known/openid-configuration', 'cftp_admin'); ?></small>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="oidc_client_id" class="col-sm-4 control-label"><?php _e('Client ID', 'cftp_admin'); ?></label>
+                            <div class="col-sm-8">
+                                <input type="text" name="oidc_client_id" id="oidc_client_id" class="form-control" value="<?php echo htmlspecialchars(get_option('oidc_client_id'), ENT_QUOTES, 'UTF-8'); ?>" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="oidc_client_secret" class="col-sm-4 control-label"><?php _e('Client Secret', 'cftp_admin'); ?></label>
+                            <div class="col-sm-8">
+                                <input type="password" name="oidc_client_secret" id="oidc_client_secret" class="form-control" value="<?php echo htmlspecialchars(get_option('oidc_client_secret'), ENT_QUOTES, 'UTF-8'); ?>" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-4 control-label"><?php _e('Callback URL', 'cftp_admin'); ?></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" value="<?php echo $callback_url; ?>" readonly />
+                                <small class="form-text text-muted"><?php _e('Register this as the redirect URI in your identity provider', 'cftp_admin'); ?></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="options_divide"></div>
+                    <?php
+                }
+            ]
+        ]
+    ],
+    [
         'title' => __('Additional Settings', 'cftp_admin'),
         'description' => __('Configure general behavior for social login users.', 'cftp_admin'),
         'html_before' => '<div class="options_column">',

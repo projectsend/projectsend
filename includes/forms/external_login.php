@@ -39,10 +39,23 @@
                     <span class="fa-stack fa-lg">
                         <i class="fa fa-circle fa-stack-2x"></i>
                         <i class="fa fa-<?php echo $data['icon']; ?> fa-stack-1x fa-inverse"></i>
-                    </span>    
+                    </span>
                 </a>
     <?php
             }
+        }
+
+        if (get_option('oidc_signin_enabled') == 'true') {
+            $oidc_label = get_option('oidc_display_name', null, 'SSO / OIDC');
+    ?>
+            <a href="process.php?do=social_login&provider=GenericOidc" name="<?php echo htmlspecialchars($oidc_label, ENT_QUOTES, 'UTF-8'); ?>" class="button_oidc">
+                <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle fa-stack-2x"></i>
+                    <i class="fa fa-lock fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="oidc-label"><?php echo htmlspecialchars($oidc_label, ENT_QUOTES, 'UTF-8'); ?></span>
+            </a>
+    <?php
         }
     ?>
 </div>

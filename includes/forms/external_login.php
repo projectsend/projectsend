@@ -13,8 +13,8 @@
                 'enabled' => get_option('linkedin_signin_enabled'),
                 'icon' => 'linkedin',
             ),
-            'twitter' => array(
-                'enabled' => get_option('twitter_signin_enabled'),
+            'x' => array(
+                'enabled' => get_option('x_signin_enabled'),
                 'icon' => 'twitter',
             ),
             'windowslive' => array(

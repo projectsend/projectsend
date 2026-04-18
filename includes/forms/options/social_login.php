@@ -49,15 +49,16 @@ $form_sections = [
                             'callback' => true,
                             'instructions' => LINK_DOC_LINKEDIN_LOGIN,
                         ],
-                        'twitter' => [
-                            'name' => 'Twitter',
+                        'x' => [
+                            'name' => 'X (formerly Twitter)',
                             'icon' => 'twitter',
                             'fields' => [
-                                'enabled' => 'twitter_signin_enabled',
-                                'id' => 'twitter_client_id',
-                                'secret' => 'twitter_client_secret',
+                                'enabled' => 'x_signin_enabled',
+                                'id' => 'x_client_id',
+                                'secret' => 'x_client_secret',
                             ],
                             'callback' => true,
+                            'note' => __('Requires OAuth2 credentials from developer.twitter.com — existing Twitter (OAuth1) keys will not work.', 'cftp_admin'),
                         ],
                         'windowslive' => [
                             'name' => 'Windows Live',
@@ -159,6 +160,16 @@ $form_sections = [
                                         <a href="<?php echo $item['instructions']; ?>" target="_blank" class="btn btn-sm btn-outline-secondary">
                                             <i class="fa fa-external-link"></i> <?php _e('Setup Instructions','cftp_admin'); ?>
                                         </a>
+                                    </div>
+                                </div>
+                            <?php } ?>
+
+                            <?php if (isset($item['note'])) { ?>
+                                <div class="form-group row">
+                                    <div class="col-sm-12">
+                                        <div class="alert alert-warning py-2 mb-0">
+                                            <i class="fa fa-exclamation-triangle"></i> <?php echo $item['note']; ?>
+                                        </div>
                                     </div>
                                 </div>
                             <?php } ?>

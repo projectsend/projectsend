@@ -368,7 +368,7 @@ class Auth
         }
 
         // Validate provider is in our supported list
-        $supported_providers = ['google', 'facebook', 'linkedin', 'twitter', 'windowslive', 'yahoo', 'openid', 'microsoftgraph'];
+        $supported_providers = ['google', 'facebook', 'linkedin', 'x', 'windowslive', 'yahoo', 'microsoftgraph'];
         if (!in_array(strtolower($provider), $supported_providers)) {
             exit_with_error_code(404);
         }

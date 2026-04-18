@@ -332,6 +332,39 @@ function password_change_required()
     }
 }
 
+// Requires TOTP setup?
+function totp_setup_required()
+{
+    global $flash;
+
+    if (!defined('CURRENT_USER_ID')) {
+        return;
+    }
+
+    if (!(bool)get_option('two_factor_required', null, '0')) {
+        return;
+    }
+
+    if (!(bool)get_option('two_factor_allow_totp', null, '1')) {
+        return;
+    }
+
+    $totp = new \ProjectSend\Classes\Totp();
+    if ($totp->isEnabledForUser(CURRENT_USER_ID)) {
+        return;
+    }
+
+    // Allow TOTP setup page and process.php (handles logout)
+    $current_page = basename($_SERVER["SCRIPT_FILENAME"]);
+    $allowed_pages = ['totp-setup.php', 'process.php'];
+    if (in_array($current_page, $allowed_pages)) {
+        return;
+    }
+
+    $flash->warning(__('Two-factor authentication is required for your account. Please set up an authenticator app before continuing.', 'cftp_admin'));
+    ps_redirect(BASE_URI . 'totp-setup.php');
+}
+
 function user_can_upload_any_file_type($user_id = null)
 {
     // Use CURRENT_USER_ID if no user_id provided and constant is defined

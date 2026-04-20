@@ -1,0 +1,10 @@
+.toggle-group {
+    .toggle-handle {
+        background-color: var(--color-white);
+
+        // // Light purple background in dark mode
+        // [data-theme="dark"] & {
+        //     background-color: var(--text-link);
+        // }
+    }
+}

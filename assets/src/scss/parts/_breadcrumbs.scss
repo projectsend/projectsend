@@ -18,7 +18,7 @@
             &:before {
                 content: "\f105";
                 font: normal normal normal 14px/1 FontAwesome;            
-                color: black;
+                color: var(--text-primary);
                 margin: 0 .75rem 0 0;
                 position: absolute;
                 left: 0;

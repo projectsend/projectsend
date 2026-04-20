@@ -7,6 +7,16 @@ namespace ProjectSend\Classes\Layout;
 
 class Table
 {
+    private $output;
+    private $contents;
+    private $current_row;
+    private $origin;
+    private $row_class;
+    private $attributes;
+    private $content;
+    private $is_checkbox;
+    private $value;
+
     function __construct($attributes)
     {
         $this->contents = $this->open($attributes);
@@ -206,6 +216,11 @@ class Table
     public function addCell($attributes)
     {
         $continue = (!isset($attributes['condition']) || !empty($attributes['condition'])) ? true : false;
+
+        // Skip cell if hide_from_table is set
+        if (!empty($attributes['hide_from_table'])) {
+            return;
+        }
 
         if ($continue == true) {
             $this->attributes = (!empty($attributes['attributes'])) ? $attributes['attributes'] : array();

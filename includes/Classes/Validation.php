@@ -8,6 +8,8 @@
 
 namespace ProjectSend\Classes;
 
+use ProjectSend\Classes\CaptchaManager;
+
 class Validation
 {
     private $dbh;
@@ -91,7 +93,7 @@ class Validation
 
     private function alpha_underscores($value)
     {
-        return (preg_match('/[^0-9A-Za-z.]/', $value) != true);
+        return (preg_match('/[^0-9A-Za-z._]/', $value) != true);
     }
 
     private function password($value)
@@ -209,6 +211,22 @@ class Validation
     private function recaptcha2($value)
     {
         return (strstr($value, "true"));
+    }
+
+    private function captcha($value)
+    {
+        // Generic captcha validation using CaptchaManager
+        $manager = CaptchaManager::getInstance();
+        if (!$manager->isEnabled()) {
+            return true; // Pass validation if captcha is not enabled
+        }
+        
+        $captcha = $manager->getCaptchaInstance();
+        if ($captcha) {
+            return $captcha->check($value);
+        }
+        
+        return false;
     }
 
     private function in_enum($value, $data = ['valid_values' => []])

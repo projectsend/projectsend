@@ -7,6 +7,7 @@
     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>" />
     <input type="hidden" name="do" value="2fa_verify">
     <input type="hidden" name="token" value="<?php echo htmlentities($_GET['token']); ?>">
+    <input type="hidden" name="remember_me" value="<?php echo (int)$_GET['remember_me']; ?>">
 
     <div class="form_info">
         <h2><?php _e('Verify login code','cftp_admin'); ?></h2>
@@ -35,6 +36,7 @@
     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>" />
     <input type="hidden" name="do" value="2fa_request_another">
     <input type="hidden" name="token" value="<?php echo htmlentities($_GET['token']); ?>">
+    <input type="hidden" name="remember_me" value="<?php echo (int)$_GET['remember_me']; ?>">
 
     <div id="otp_request_new_container">
         <h4><?php echo __("Didn't receive the email?",'cftp_admin'); ?></h4>

@@ -8,7 +8,7 @@
                 // CKEditor
                 ClassicEditor
                     .create( document.querySelector( '.ckeditor' ), {
-                        removePlugins: [ 'Heading', 'Link' ],
+                        removePlugins: [ 'Heading', 'CKFinder', 'Link' ],
                         toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ]
                     })
                     .then( editor => {

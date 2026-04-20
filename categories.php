@@ -3,8 +3,15 @@
  * Allows to hide, show or delete the files assigned to the
  * selected client.
  */
-$allowed_levels = array(9, 8, 7);
 require_once 'bootstrap.php';
+redirect_if_not_logged_in();
+
+// Check for category management permissions
+if (!current_user_can('create_categories') &&
+    !current_user_can('edit_categories') &&
+    !current_user_can('delete_categories')) {
+    exit_with_error_code(403);
+}
 
 $active_nav = 'files';
 
@@ -27,12 +34,36 @@ if (isset($_POST['action'])) {
             } else {
                 switch ($_POST['action']) {
                     case 'delete':
+                        $deleted_count = 0;
+                        $no_permission_count = 0;
+                        $errors = [];
+
                         foreach ($selected_categories as $category_id) {
                             $category = new \ProjectSend\Classes\Categories($category_id);
-                            $delete_category = $category->delete();
+                            $result = $category->delete();
+
+                            if ($result['status'] === 'success') {
+                                $deleted_count++;
+                            } else {
+                                if (strpos($result['message'], 'permission') !== false) {
+                                    $no_permission_count++;
+                                } else {
+                                    $errors[] = $result['message'];
+                                }
+                            }
                         }
 
-                        $flash->success(__('The selected categories were deleted.', 'cftp_admin'));
+                        if ($deleted_count > 0) {
+                            $flash->success(sprintf(__('%d categories were deleted.', 'cftp_admin'), $deleted_count));
+                        }
+                        if ($no_permission_count > 0) {
+                            $flash->warning(sprintf(__('You do not have permission to delete %d categories.', 'cftp_admin'), $no_permission_count));
+                        }
+                        if (!empty($errors)) {
+                            foreach ($errors as $error) {
+                                $flash->error($error);
+                            }
+                        }
                         break;
                 }
             }
@@ -79,6 +110,14 @@ $category_parent = null;
 if ((isset($_GET['form']) && $_GET['form'] == 'edit') or !empty($_POST['editing_id'])) {
     $action = 'edit';
     $editing = !empty($_POST['editing_id']) ? $_POST['editing_id'] : $_GET['id'];
+
+    // Check if user can edit this category before showing the form
+    $category_check = new \ProjectSend\Classes\Categories($editing);
+    if (!$category_check->canUserEdit()) {
+        $flash->error(__('You do not have permission to edit this category.', 'cftp_admin'));
+        ps_redirect(BASE_URI . 'categories.php');
+    }
+
     $success_message = __('The category was successfully edited.', 'cftp_admin');
     $form_information = array(
         'type' => 'edit',
@@ -107,6 +146,15 @@ if (isset($_POST['btn_process'])) {
 
     $category_object->set($arguments);
     $method = $form_information['type'];
+
+    // Check permissions before editing
+    if ($method == 'edit') {
+        if (!$category_object->canUserEdit()) {
+            $flash->error(__('You do not have permission to edit this category.', 'cftp_admin'));
+            ps_redirect(BASE_URI . 'categories.php');
+        }
+    }
+
     $process = $category_object->{$method}($arguments);
 
     if ($process['status'] == 'success') {
@@ -136,12 +184,15 @@ if ($get_categories['count'] == 0) {
 // Search + filters bar data
 $search_form_action = 'categories.php';
 
-// Results count and form actions 
+// Results count and form actions
 $elements_found_count = $get_categories['count'];
 $bulk_actions_items = [
     'none' => __('Select action', 'cftp_admin'),
-    'delete' => __('Delete', 'cftp_admin'),
 ];
+// Only show delete if user can delete (either has delete_categories or create_categories for own)
+if (current_user_can('delete_categories') || current_user_can('create_categories')) {
+    $bulk_actions_items['delete'] = __('Delete', 'cftp_admin');
+}
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
@@ -242,6 +293,10 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
 
                                         $count_format = '<span class="badge ' . $class . '">' . $total . '</span>';
 
+                                        // Check if user can edit this category
+                                        $category_obj = new \ProjectSend\Classes\Categories($category["id"]);
+                                        $can_edit = $category_obj->canUserEdit();
+
                                         $tbody_cells = array(
                                             array(
                                                 'checkbox' => true,
@@ -263,7 +318,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                                                 'content' => '<a href="' . $files_link . '" class="btn btn-sm ' . $files_button . '">' . __('Manage files', 'cftp_admin') . '</a>',
                                             ),
                                             array(
-                                                'content' => '<a href="categories.php?form=edit&id=' . $category["id"] . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit', 'cftp_admin') . '</span></a>'
+                                                'content' => $can_edit ? '<a href="categories.php?form=edit&id=' . $category["id"] . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit', 'cftp_admin') . '</span></a>' : ''
                                             ),
                                         );
                                         foreach ($tbody_cells as $cell) {

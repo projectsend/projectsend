@@ -7,14 +7,15 @@ global $dbh;
 
 /**
  * Since the header.php file is shared between the back-end and the
- * templates, it's necessary to define the allowed levels, or else
- * the files list will not be available.
+ * templates, it's necessary to check if the user can view files.
  */
-$allowed_levels = array(9, 8, 7, 0);
 
 if (!current_user_can_view_files_list()) {
     ps_redirect(BASE_URI);
 }
+
+// Redirect if TOTP setup is required
+totp_setup_required();
 
 $this_template_slug = get_option('selected_clients_template');
 $this_template_url = BASE_URI . 'templates/' . $this_template_slug . '/';
@@ -40,32 +41,6 @@ $found_groups = $get_groups->getGroupsByClient([
     'client_id' => $client_info['id'],
     'return' => 'list',
 ]);
-
-// Folders
-$current_folder = (isset($_GET['folder_id'])) ? (int)$_GET['folder_id'] : null;
-// Check permissions for current folder
-if (!empty($current_folder)) {
-    $folder = new \ProjectSend\Classes\Folder($current_folder);
-    if (!$folder->userCanNavigate($client_info['id'])) {
-        exit_with_error_code(403);
-    }
-}
-
-$folders_arguments = [
-    'parent' => $current_folder,
-];
-if (get_option('clients_files_list_include_public')) {
-    $folders_arguments['public_or_client'] = true;
-    $folders_arguments['client_id'] = $client_info['id'];
-} else {
-    $folders_arguments['user_id'] = $client_info['id'];
-}
-if (!empty($_GET['search'])) {
-    $folders_arguments['search'] = $_GET['search'];
-}
-
-$folders_obj = new \ProjectSend\Classes\Folders;
-$folders = $folders_obj->getFolders($folders_arguments);
 
 /**
  * Define the arrays so they can't be empty
@@ -115,6 +90,44 @@ while ($row_files = $files_sql->fetch()) {
 
 $found_unique_files_ids = implode(',', array_unique($found_all_files_array));
 
+// Folders
+$temp_files_query = "SELECT * FROM " . TABLE_FILES . " WHERE (FIND_IN_SET(id,:search_ids));";
+$files_folders = $dbh->prepare($temp_files_query);
+$files_folders->execute([':search_ids' => $found_unique_files_ids]);
+$folder_id_in = [];
+while ($f = $files_sql->fetch()) {
+    if (!empty($f['folder_id'])) {
+        $folder_id_in[] = $f['folder_id'];
+    }
+}
+
+$current_folder = (isset($_GET['folder_id'])) ? (int)$_GET['folder_id'] : null;
+// Check permissions for current folder
+if (!empty($current_folder)) {
+    $folder = new \ProjectSend\Classes\Folder($current_folder);
+    if (!$folder->userCanNavigate($client_info['id'])) {
+        exit_with_error_code(403);
+    }
+}
+
+$folders_arguments = [
+    'parent' => $current_folder,
+];
+if (get_option('clients_files_list_include_public')) {
+    $folders_arguments['public_or_client'] = true;
+    $folders_arguments['client_id'] = $client_info['id'];
+} else {
+    $folders_arguments['user_id'] = $client_info['id'];
+}
+if (!empty($_GET['search'])) {
+    $folders_arguments['search'] = $_GET['search'];
+}
+$folders_arguments['id_in'] = $folder_id_in;
+//pax($folders_arguments);
+
+$folders_obj = new \ProjectSend\Classes\Folders;
+$folders = $folders_obj->getFolders($folders_arguments);
+
 /**
  * Make an array of the categories containing the
  * files found for this account.
@@ -144,7 +157,7 @@ if (!empty($cat_ids)) {
  * With the categories generated, keep only the files
  * that are assigned to the selected one.
  */
-if (isset($filter_by_category) && $filter_by_category != '0') {
+if (isset($filter_by_category) && $filter_by_category != '0' && $filter_by_category !== '' && $filter_by_category !== null) {
     $filtered_file_ids = [];
     foreach ($files_keep as $keep_file_id => $keep_cat_ids) {
         if (in_array($filter_by_category, $keep_cat_ids)) {
@@ -171,8 +184,10 @@ if (!empty($found_all_files_array)) {
 
     // Should it include public files as well?
     if (get_option('clients_files_list_include_public') == '1') {
-        $files_query .= " OR public_allow = :public";
-        $params[':public'] = '1';
+        if (!isset($_GET['category'])) {
+            $files_query .= " OR public_allow = :public";
+            $params[':public'] = '1';
+        }
     }
 
     $files_query .= ')';
@@ -186,12 +201,14 @@ if (!empty($found_all_files_array)) {
         $params[':description'] = '%' . $_GET['search'] . '%';
     }
 
-    // Filter by folders
-    if (!empty($current_folder)) {
-        $files_query .= " AND folder_id = :folder_id";
-        $params[':folder_id'] = (int)$current_folder;
-    } else {
-        $files_query .= " AND folder_id is null";
+    // Filter by folders (skip if doing global search)
+    if (!isset($_GET['global_search'])) {
+        if (!empty($current_folder)) {
+            $files_query .= " AND folder_id = :folder_id";
+            $params[':folder_id'] = (int)$current_folder;
+        } else {
+            $files_query .= " AND folder_id is null";
+        }
     }
     
     /**
@@ -263,6 +280,7 @@ if (!empty($found_all_files_array)) {
 
             // Leaving this here in case a  custom template is using this array
             $pathinfo = pathinfo($data['url']);
+
             $my_files[$f] = [
                 //'origin' => $origin,
                 'id' => $data['id'],

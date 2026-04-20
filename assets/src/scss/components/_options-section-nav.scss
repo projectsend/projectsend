@@ -1,0 +1,36 @@
+// Options Section Navigation Pills
+// Used in options.php to navigate between form sections
+
+.options-section-nav {
+    position: sticky;
+    top: 90px;
+
+    .nav-pills {
+        flex-direction: column;
+
+        .nav-item {
+            width: 100%;
+        }
+
+        .nav-link {
+            color: var(--side_menu_selected_parent_color);
+            background-color: transparent;
+            border-radius: 0.375rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            transition: background-color 0.15s ease-in-out;
+            text-align: left;
+            width: 100%;
+            margin-bottom: 0.25rem;
+
+            &:hover {
+                background-color: rgba(231, 224, 255, 0.5);
+            }
+
+            &.active {
+                background-color: #e7e0ff;
+                color: var(--side_menu_selected_parent_color);
+            }
+        }
+    }
+}

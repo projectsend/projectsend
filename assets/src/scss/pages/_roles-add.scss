@@ -1,0 +1,14 @@
+// Roles Add Page Styles
+
+.permission-category-create {
+    border-left: 3px solid #e9ecef;
+    padding-left: 1rem;
+}
+
+.permission-checkbox-create:checked + .form-check-label {
+    color: #0d6efd;
+}
+
+.category-toggle-create {
+    font-size: 0.75rem;
+}

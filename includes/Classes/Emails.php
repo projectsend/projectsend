@@ -14,6 +14,25 @@ class Emails
     private $header;
     private $footer;
     private $email_successful;
+    private $email_body;
+    private $groups_list;
+    private $username;
+    private$password;
+    private $name;
+    private $token;
+    private $memberships;
+    private $add_bcc_to;
+    private $mail_info;
+    private $try_bcc;
+    private $add_bcc;
+    private $files_list;
+    private $get_groups;
+    private $type;
+    private $preview;
+    private $method;
+    private $addresses;
+    private $set_bcc;
+    private $debug_result;
 
     function __construct()
     {
@@ -25,6 +44,7 @@ class Emails
     {
         return [
             'header_footer',
+            'template_selection',
             'new_files_by_user',
             'new_files_by_client',
             'new_client',
@@ -55,6 +75,14 @@ class Emails
                     'checkboxes' => [
                         'email_header_footer_customize',
                     ],
+                    'items' => [],
+                ];
+                break;
+            case 'template_selection':
+                $strings = [];
+                $options = [
+                    'title' => __('E-mail Themes', 'cftp_admin'),
+                    'checkboxes' => [],
                     'items' => [],
                 ];
                 break;
@@ -1046,6 +1074,23 @@ class Emails
         );
 
         /**
+         * Replace template variables in custom header/footer
+         */
+        $template_placeholders = [
+            '{{SYSTEM_NAME}}' => get_option('this_install_title'),
+            '{{SYSTEM_URI}}' => BASE_URI,
+            '{{CURRENT_YEAR}}' => date('Y'),
+        ];
+        if (!empty($this->mail_info['subject'])) {
+            $template_placeholders['{{EMAIL_TITLE}}'] = $this->mail_info['subject'];
+        }
+        $this->mail_info['body'] = str_replace(
+            array_keys($template_placeholders),
+            array_values($template_placeholders),
+            $this->mail_info['body']
+        );
+
+        /**
          * If we are generating a preview, just return the html content
          */
         if ($this->preview == true) {
@@ -1074,19 +1119,21 @@ class Emails
                 };
             }
 
-            switch (get_option('mail_system_use')) {
+            switch ($_ENV['MAIL_SYSTEM_USE'] ?? get_option('mail_system_use')) {
                 case 'smtp':
                     $email->IsSMTP();
-                    $email->Host = get_option('mail_smtp_host');
-                    $email->Port = get_option('mail_smtp_port');
-                    $email->Username = get_option('mail_smtp_user');
-                    $email->Password = get_option('mail_smtp_pass');
+                    $email->Host = $_ENV['MAIL_SMTP_HOST'] ?? get_option('mail_smtp_host');
+                    $email->Port = $_ENV['MAIL_SMTP_PORT'] ?? get_option('mail_smtp_port');
+                    $email->Username = $_ENV['MAIL_SMTP_USER'] ?? get_option('mail_smtp_user');
+                    $email->Password = $_ENV['MAIL_SMTP_PASS'] ?? get_option('mail_smtp_pass');
 
                     if (get_option('mail_smtp_auth') != 'none') {
                         $email->SMTPAuth = true;
-                        $email->SMTPSecure = get_option('mail_smtp_auth');
                     } else {
                         $email->SMTPAuth = false;
+                    }
+                    if (get_option('mail_smtp_secure') != 'none') {
+                        $email->SMTPSecure = get_option('mail_smtp_secure');
                     }
                     break;
                 case 'gmail':
@@ -1153,5 +1200,97 @@ class Emails
             $this->email_successful = $send;
             return $send;
         }
+    }
+
+    /**
+     * Get available email templates
+     */
+    public function getAvailableTemplates()
+    {
+        $template_file = EMAIL_TEMPLATES_DIR . DS . 'templates' . DS . 'template_metadata.php';
+        if (file_exists($template_file)) {
+            return include $template_file;
+        }
+        return [];
+    }
+
+    /**
+     * Get template data by ID
+     */
+    public function getTemplateData($template_id)
+    {
+        $templates = $this->getAvailableTemplates();
+        return isset($templates[$template_id]) ? $templates[$template_id] : null;
+    }
+
+    /**
+     * Get template content (header or footer)
+     */
+    public function getTemplateContent($template_id, $type = 'header')
+    {
+        $template_data = $this->getTemplateData($template_id);
+        if (!$template_data) {
+            return false;
+        }
+
+        $file_key = $type . '_file';
+        if (!isset($template_data[$file_key])) {
+            return false;
+        }
+
+        $template_file = EMAIL_TEMPLATES_DIR . DS . 'templates' . DS . $template_data[$file_key];
+        if (file_exists($template_file)) {
+            return file_get_contents($template_file);
+        }
+
+        return false;
+    }
+
+    /**
+     * Preview template with sample content
+     */
+    public function previewTemplate($template_id, $sample_content = null)
+    {
+        $header = $this->getTemplateContent($template_id, 'header');
+        $footer = $this->getTemplateContent($template_id, 'footer');
+
+        if (!$header || !$footer) {
+            return false;
+        }
+
+        // Default sample content if none provided
+        if (!$sample_content) {
+            $sample_content = '
+                <h2>Sample Email Content</h2>
+                <p>This is a preview of how your email template will look with content. This sample demonstrates the typography, spacing, and overall design of the template.</p>
+                <p>You can customize the header and footer sections, and all emails sent by the system will use this template structure.</p>
+                <a href="#" class="button">Sample Button</a>
+                <p>Additional paragraph text to show the layout and spacing between elements.</p>
+            ';
+        }
+
+        // Replace template variables with sample data
+        $replacements = [
+            '{{SYSTEM_NAME}}' => get_option('this_install_title'),
+            '{{SYSTEM_URI}}' => BASE_URI,
+            '{{EMAIL_TITLE}}' => 'Sample Email - ' . get_option('this_install_title'),
+            '{{CURRENT_YEAR}}' => date('Y'),
+        ];
+
+        $full_content = $header . $sample_content . $footer;
+
+        foreach ($replacements as $placeholder => $value) {
+            $full_content = str_replace($placeholder, $value, $full_content);
+        }
+
+        return $full_content;
+    }
+
+    /**
+     * Check if templates section should be shown
+     */
+    public function templatesEnabled()
+    {
+        return true; // For now, always enabled
     }
 }

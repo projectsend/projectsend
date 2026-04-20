@@ -7,6 +7,8 @@ use \PDO;
 
 class Folder
 {
+    protected $dbh;
+    protected $logger;
     protected $id;
     protected $uuid;
     protected $name;
@@ -14,6 +16,8 @@ class Folder
     protected $parent;
     protected $user_id;
     protected $public;
+    protected $validation_passed;
+    protected $validation_errors;
 
     public function __construct($id = null)
     {
@@ -71,22 +75,22 @@ class Folder
     {
         $this->id = $id;
 
-        $this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_FOLDERS . " WHERE id=:id");
-        $this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
-        $this->statement->execute();
-        $this->statement->setFetchMode(PDO::FETCH_ASSOC);
+        $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_FOLDERS . " WHERE id=:id");
+        $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
+        $statement->execute();
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
 
-        if ($this->statement->rowCount() == 0) {
+        if ($statement->rowCount() == 0) {
             return false;
         }
     
-        while ($this->row = $this->statement->fetch() ) {
-            $this->uuid = html_output($this->row['uuid']);
-            $this->name = html_output($this->row['name']);
-            $this->slug = html_output($this->row['slug']);
-            $this->parent = html_output($this->row['parent']);
-            $this->user_id = html_output($this->row['user_id']);
-            $this->public = html_output($this->row['public']);
+        while ($row = $statement->fetch() ) {
+            $this->uuid = html_output($row['uuid']);
+            $this->name = html_output($row['name']);
+            $this->slug = html_output($row['slug']);
+            $this->parent = html_output($row['parent']);
+            $this->user_id = html_output($row['user_id']);
+            $this->public = html_output($row['public']);
         }
     }
 
@@ -107,13 +111,14 @@ class Folder
             $this->parent = (!empty($this->parent)) ? $this->parent : null;
             $this->slug = $slugify->slugify($this->name);
             $this->user_id = CURRENT_USER_ID;
+            $public = 1;
     
             $statement = $this->dbh->prepare("INSERT INTO " . TABLE_FOLDERS . " (uuid, name, slug, parent, public, user_id) VALUES (:uuid, :name, :slug, :parent, :public, :user_id)");
             $statement->bindParam(':uuid', $this->uuid);
             $statement->bindParam(':name', $this->name);
             $statement->bindParam(':slug', $this->slug);
             $statement->bindParam(':parent', $this->parent);
-            $statement->bindParam(':public', $this->public);
+            $statement->bindParam(':public', $public);
             $statement->bindParam(':user_id', $this->user_id);
             $statement->execute();
 
@@ -123,8 +128,6 @@ class Folder
         } catch (\Exception $e) {
             return false;
         }
-
-        return false;
     }
 
     public function getData()
@@ -143,7 +146,7 @@ class Folder
     public function userCanEdit($user_id)
     {
         $user = new \ProjectSend\Classes\Users($user_id);
-        if (in_array($user->role, [9,8,7])) {
+        if (in_array($user->role, ['System Administrator', 'Account Manager', 'Uploader'])) {
             return true;
         }
 
@@ -173,7 +176,7 @@ class Folder
     public function userCanDelete($user_id)
     {
         $user = new \ProjectSend\Classes\Users($user_id);
-        if (in_array($user->role, [9,8,7])) {
+        if (in_array($user->role, ['System Administrator', 'Account Manager', 'Uploader'])) {
             return true;
         }
 
@@ -283,7 +286,8 @@ class Folder
             // Find and delete files, only if the folder was actually deleted before
             foreach ($files_in_folder as $file_id) {
                 $file = new \ProjectSend\Classes\Files($file_id);
-                if ($file->deleteFiles()) {
+                $result = $file->deleteFiles();
+                if ($result['status'] === 'success') {
                     $deleted['files'][] = $file->id;
                 }
             }
@@ -301,7 +305,7 @@ class Folder
 
     public function currentUserCanAssignToFolder()
     {
-        if (in_array(CURRENT_USER_LEVEL, [9, 8, 7])) {
+        if (current_user_can('edit_files')) {
             return true;
         }
 
@@ -354,18 +358,17 @@ class Folder
 
     function getHierarchyFrom($folder_id = null, array $hierarchy = [])
     {
-        global $dbh;
         $folder_id = (int)$folder_id;
-    
+
         // Add current folder
         $folder = new \ProjectSend\Classes\Folder($folder_id);
         $hierarchy[] = $folder->getData();
-    
+
         // Parents
         if ($folder_id != null) {
             $query = "SELECT * FROM " . TABLE_FOLDERS . " WHERE id=:id";
             $params[':id'] = (int)$folder_id;
-            $statement = $dbh->prepare($query);
+            $statement = $this->dbh->prepare($query);
             $statement->execute($params);
             if ($statement->rowCount() > 0) {
                 $statement->setFetchMode(\PDO::FETCH_ASSOC);
@@ -382,18 +385,17 @@ class Folder
 
     function getAllDescendants($folder_id = null, array $descendants = [])
     {
-        global $dbh;
         $folder_id = (int)$folder_id;
 
         // Add current folder
         $folder = new \ProjectSend\Classes\Folder($folder_id);
         $descendants[] = $folder->getData();
-        
+
         // Children
         if ($folder_id != null) {
             $query = "SELECT * FROM " . TABLE_FOLDERS . " WHERE parent=:id";
             $params[':id'] = (int)$folder_id;
-            $statement = $dbh->prepare($query);
+            $statement = $this->dbh->prepare($query);
             $statement->execute($params);
             if ($statement->rowCount() > 0) {
                 $statement->setFetchMode(\PDO::FETCH_ASSOC);

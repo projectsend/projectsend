@@ -1,0 +1,86 @@
+name: PHP Static Analysis
+
+on:
+  push:
+    branches: [ develop, master, main ]
+    paths:
+      - '**.php'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'phpstan.neon'
+      - 'phpstan-baseline.neon'
+      - '.github/workflows/php-static-analysis.yml'
+  pull_request:
+    branches: [ develop, master, main ]
+    paths:
+      - '**.php'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'phpstan.neon'
+      - 'phpstan-baseline.neon'
+
+jobs:
+  phpstan:
+    name: PHPStan Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: pdo, pdo_mysql, json, exif, gd
+        coverage: none
+
+    - name: Validate composer.json
+      run: composer validate --strict
+
+    - name: Get Composer Cache Directory
+      id: composer-cache
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+    - name: Cache Composer dependencies
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-interaction
+
+    - name: Run PHPStan
+      run: vendor/bin/phpstan analyse --error-format=github
+
+    - name: Check for new errors (no baseline)
+      if: github.event_name == 'pull_request'
+      run: |
+        echo "Checking for new errors not in baseline..."
+        vendor/bin/phpstan analyse --error-format=table || echo "::warning::New PHPStan errors detected. Consider fixing them before merging."
+      continue-on-error: true
+
+  php-syntax:
+    name: PHP Syntax Check
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version: ['8.2', '8.3', '8.4']
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        coverage: none
+
+    - name: Check PHP syntax
+      run: |
+        find . -type f -name '*.php' ! -path './vendor/*' ! -path './node_modules/*' -print0 | \
+        xargs -0 -n1 -P4 php -l

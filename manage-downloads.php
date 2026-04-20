@@ -4,9 +4,10 @@
  * Allows to hide, show or delete the files assigned to the
  * selected client.
  */
-$allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
-log_in_required($allowed_levels);
+// Any logged-in user can access this page
+// The content will be filtered based on edit_others_files permission
+redirect_if_not_logged_in();
 
 $active_nav = 'files';
 
@@ -105,6 +106,16 @@ if (isset($_POST['action'])) {
                 );
                 foreach ($selected_files as $index => $file_id) {
                     if (!empty($file_id)) {
+                        if (!current_user_can('edit_others_files')) {
+                            // Verify the user owns the file before deleting
+                            $ownership_check = $dbh->prepare('SELECT cd.id FROM ' . TABLE_CUSTOM_DOWNLOADS . ' cd INNER JOIN ' . TABLE_FILES . ' f ON cd.file_id = f.id WHERE cd.link = :link AND f.user_id = :uploader_id');
+                            $ownership_check->execute(['link' => $file_id, 'uploader_id' => CURRENT_USER_ID]);
+                            if (!$ownership_check->fetch()) {
+                                $delete_results['errors']++;
+                                continue;
+                            }
+                        }
+
                         $deletesql = $dbh->prepare('DELETE FROM ' . TABLE_CUSTOM_DOWNLOADS . ' WHERE link=:link');
                         $deletesql->execute(['link' => $file_id]);
                         $delete_results['success']++;
@@ -153,11 +164,11 @@ if ($query_table_files === true) {
         $add_user_to_query = "AND user_id = :user_id";
         $params[':user_id'] = $this_id;
     }
-    $cq = "SELECT * FROM " . TABLE_CUSTOM_DOWNLOADS . "";
+    $cq = "SELECT * FROM " . TABLE_CUSTOM_DOWNLOADS . " cd";
 
     // Add the search terms
     if (isset($_GET['search']) && !empty($_GET['search'])) {
-        $conditions[] = "(link LIKE :search)";
+        $conditions[] = "(cd.link LIKE :search)";
         $no_results_error = 'search';
 
         $search_terms = '%' . $_GET['search'] . '%';
@@ -166,21 +177,22 @@ if ($query_table_files === true) {
 
     // Filter by client_id
     if (isset($_GET['client_id']) && !empty($_GET['client_id'])) {
-        $conditions[] = "client_id = :client_id";
+        $conditions[] = "cd.client_id = :client_id";
         $no_results_error = 'filter';
 
         $params[':client_id'] = $_GET['client_id'];
     }
 
     /**
-     * If the user is an client_id, or a client is editing their files
-     * only show files uploaded by that account.
+     * If the user doesn't have edit_others_files permission,
+     * only show downloads of files they uploaded themselves
      */
-    if (CURRENT_USER_LEVEL == '7' || CURRENT_USER_LEVEL == '0') {
-        $conditions[] = "client_id = :client_id";
+    if (!current_user_can('edit_others_files')) {
+        // Join with files table to get the uploader
+        $conditions[] = "cd.file_id IN (SELECT id FROM " . TABLE_FILES . " WHERE user_id = :uploader_id)";
         $no_results_error = 'account_level';
 
-        $params[':client_id'] = CURRENT_USER_USERNAME;
+        $params[':uploader_id'] = CURRENT_USER_ID;
     }
 
     // Build the final query
@@ -230,7 +242,7 @@ if (!$count) {
                 $flash->error(__('The filters you selected returned no results.', 'cftp_admin'));
                 break;
             case 'account_level':
-                $flash->error(__('You have not uploaded any files yet.', 'cftp_admin'));
+                $flash->info(__('You can only see downloads for files you uploaded. No downloads found for your files.', 'cftp_admin'));
                 break;
         }
     } else {
@@ -255,7 +267,7 @@ while ($data_uploaders = $sql_uploaders->fetch()) {
 
 // Search + filters bar data
 $search_form_action = 'manage-downloads.php';
-if (CURRENT_USER_LEVEL != '0') {
+if (!current_role_in(['Client'])) {
     $filters_form = [
         'action' => $current_url,
         'ignore_form_parameters' => ['hidden', 'action', 'client_id'],
@@ -290,7 +302,7 @@ $bulk_actions_items = [
     'edit' => __('Edit', 'cftp_admin'),
 ];
 
-if (CURRENT_USER_LEVEL != '0' || (CURRENT_USER_LEVEL == '0' && get_option('clients_can_delete_own_files') == '1'))
+if (!current_role_in(['Client']) || (current_role_in(['Client']) && current_user_can('delete_files')))
     $bulk_actions_items['delete'] = __('Delete', 'cftp_admin');
 
 // Include layout files
@@ -327,10 +339,10 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                      */
                     $conditions = array(
                         'select_all' => true,
-                        'is_not_client' => (CURRENT_USER_LEVEL != '0') ? true : false,
-                        'can_set_public' => (CURRENT_USER_LEVEL != '0' || current_user_can_upload_public()) ? true : false,
-                        'can_set_expiration' => (CURRENT_USER_LEVEL != '0' || get_option('clients_can_set_expiration_date') == '1') ? true : false,
-                        'total_downloads' => (CURRENT_USER_LEVEL != '0' && !isset($search_on)) ? true : false,
+                        'is_not_client' => !current_role_in(['Client']),
+                        'can_set_public' => (!current_role_in(['Client']) || current_user_can_upload_public()),
+                        'can_set_expiration' => (!current_role_in(['Client']) || get_option('clients_can_set_expiration_date') == '1'),
+                        'total_downloads' => (!current_role_in(['Client']) && !isset($search_on)),
                         'is_search_on' => (isset($search_on)) ? true : false,
                     );
 
@@ -364,9 +376,14 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                         array(
                             'sortable' => true,
                             'sort_url' => 'client_id',
-                            'content' => __('Creator', 'cftp_admin'),
+                            'content' => __('Link creator', 'cftp_admin'),
                             'hide' => 'phone,tablet',
                             'condition' => $conditions['is_not_client'],
+                        ),
+                        array(
+                            'content' => __('File uploader', 'cftp_admin'),
+                            'hide' => 'phone,tablet',
+                            'condition' => current_user_can('edit_others_files'),
                         ),
                         array(
                             'sortable' => true,
@@ -451,10 +468,10 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                         }
 
                         $custom_download_uri = get_option('custom_download_uri');
-                        if (!$custom_download_uri) $custom_download_uri = 'custom_downloads.php?link=';
-                        $custom_download_link = $custom_download_uri . $custom_download->link;
+                        if (!$custom_download_uri) $custom_download_uri = 'custom-download.php?link=';
+                        $custom_download_link = $custom_download_uri . html_output($custom_download->link);
 
-                        $title_content = '<a href="' . $custom_download_link . '" target="_blank">' . $custom_download->link . '</a>';
+                        $title_content = '<a href="' . html_output($custom_download_link) . '" target="_blank">' . html_output($custom_download->link) . '</a>';
                         if (file_is_image($file->full_path)) {
                             $dimensions = $file->getDimensions();
                             if (!empty($dimensions)) {
@@ -462,11 +479,20 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                             }
                         }
 
-                        $user = '';
+                        // Get link creator
+                        $link_creator = '';
                         if ($custom_download->client_id) {
                             $usersql = $dbh->prepare('SELECT name FROM ' . TABLE_USERS . ' WHERE id=:client_id');
                             $usersql->execute(['client_id' => $custom_download->client_id]);
-                            $user = $usersql->fetchColumn();
+                            $link_creator = $usersql->fetchColumn();
+                        }
+
+                        // Get file uploader (if user has permission to see it)
+                        $file_uploader = '';
+                        if (current_user_can('edit_others_files') && $file->user_id) {
+                            $uploadersql = $dbh->prepare('SELECT name FROM ' . TABLE_USERS . ' WHERE id=:user_id');
+                            $uploadersql->execute(['user_id' => $file->user_id]);
+                            $file_uploader = $uploadersql->fetchColumn();
                         }
 
                         $file_edit_button = '<a href="files-edit.php?ids=' . $file->id . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit', 'cftp_admin') . '</span></a>';
@@ -502,8 +528,12 @@ EOL;
                                 'content' => format_date($custom_download->timestamp),
                             ),
                             array(
-                                'content' => $user,
+                                'content' => $link_creator,
                                 'condition' => $conditions['is_not_client'],
+                            ),
+                            array(
+                                'content' => $file_uploader,
+                                'condition' => current_user_can('edit_others_files'),
                             ),
                             array(
                                 'content' => '<a href="javascript:void(0);" class="btn btn-' . $expires_button . ' disabled btn-sm" rel="" title="">' . $expires_label . '</a>',

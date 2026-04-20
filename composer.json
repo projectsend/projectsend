@@ -24,18 +24,28 @@
     ]
   },
   "require": {
-    "php": ">=7.0",
+    "php": ">=8.2",
     "claviska/simpleimage": "~3",
-    "enshrined/svg-sanitize": "^0.15.0",
-    "moxiecode/plupload": "3.1.5",
+    "enshrined/svg-sanitize": "^0.22.0",
+    "moxiecode/plupload": "^3.1.5",
     "paragonie/random_compat": "^2.0",
     "phpmailer/phpmailer": "~6.1",
     "tamtamchik/simple-flash": "^2.0",
-    "hybridauth/hybridauth": "^3.0",
+    "hybridauth/hybridauth": "^3.13",
     "cocur/slugify": "^4.2",
+    "aws/aws-sdk-php": "^3.0",
     "ext-pdo": "*",
     "ext-json": "*",
     "ext-exif": "*",
-    "ext-iconv": "*"
+    "ext-iconv": "*",
+    "spomky-labs/otphp": "^11.4",
+    "chillerlan/php-qrcode": "^6.0"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^1.10"
+  },
+  "scripts": {
+    "phpstan": "phpstan analyse",
+    "phpstan-baseline": "phpstan analyse --generate-baseline"
   }
 }

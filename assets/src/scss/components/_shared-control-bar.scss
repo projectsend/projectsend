@@ -1,0 +1,179 @@
+// Shared Control Bar Component
+// Used above both table and card views for consistent UI
+
+.shared-control-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    gap: 16px;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .control-bar-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        @media (max-width: 768px) {
+            justify-content: center;
+        }
+
+        .select-all-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-medium);
+            color: var(--text-primary);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            &:hover {
+                background: var(--bg-hover);
+                border-color: var(--border-dark);
+            }
+
+            &.active {
+                background: var(--color-primary);
+                color: var(--text-inverse);
+                border-color: var(--color-primary);
+            }
+
+            i {
+                font-size: 1rem;
+            }
+        }
+
+        .sort-dropdown,
+        .per-page-dropdown {
+            .dropdown-toggle {
+                border: 1px solid var(--border-medium);
+                background: var(--bg-card);
+                color: var(--text-primary);
+                font-size: 1rem;
+                padding: 10px 16px;
+                border-radius: 8px;
+                min-width: 160px;
+
+                &:hover {
+                    background: var(--bg-hover);
+                    border-color: var(--border-dark);
+                }
+
+                i {
+                    margin-right: 8px;
+                }
+            }
+
+            .dropdown-menu {
+                border-radius: 8px;
+                border: 1px solid var(--border-medium);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+                .dropdown-item {
+                    padding: 8px 16px;
+                    color: var(--text-primary);
+
+                    &:hover {
+                        background: var(--bg-hover);
+                        color: var(--text-primary);
+                    }
+
+                    &.active {
+                        background: var(--color-primary);
+                        color: white;
+                        font-weight: 500;
+
+                        i {
+                            margin-left: 8px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .control-bar-right {
+        display: flex;
+        align-items: center;
+
+        @media (max-width: 768px) {
+            justify-content: center;
+        }
+
+        .view-toggle {
+            .view-toggle-buttons {
+                .view-toggle-btn {
+                    border: 1px solid var(--border-medium);
+                    background: var(--bg-card);
+                    color: var(--text-primary);
+                    padding: 10px 16px;
+                    font-size: 1rem;
+                    transition: all 0.2s ease;
+
+                    &:hover {
+                        background: var(--bg-hover);
+                        border-color: var(--border-dark);
+                    }
+
+                    &.btn-primary {
+                        background: var(--color-primary);
+                        color: var(--text-inverse);
+                        border-color: var(--color-primary);
+                    }
+
+                    &.btn-outline-secondary {
+                        background: var(--bg-card);
+                        color: var(--text-primary);
+                        border-color: var(--border-medium);
+                    }
+
+                    i {
+                        margin-right: 6px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Dark theme adjustments
+[data-theme="dark"] {
+    .shared-control-bar {
+        .control-bar-left {
+            .select-all-btn {
+                &.active {
+                    color: #fff !important;
+                }
+            }
+
+            .sort-dropdown {
+                .dropdown-menu {
+                    background: var(--bg-card);
+                    border-color: var(--border-medium);
+
+                    .dropdown-item {
+                        color: var(--text-primary);
+
+                        &:hover {
+                            background: var(--bg-hover);
+                            color: var(--text-primary);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

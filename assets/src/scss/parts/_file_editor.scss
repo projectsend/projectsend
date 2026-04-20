@@ -62,33 +62,30 @@
     }
 
     .file_editor {
-        background:white;
-        padding:30px 10px 10px;
-        box-shadow: var(--global_box_shadow);
-        border-radius: 8px;
+        // Note: .file_editor is now a Bootstrap row, styles moved to .ps-card
 
         .file_data {
             h3 {
                 padding-top:0;
                 margin-top:0;
             }
-    
+
             @include bk(xs) {
-                background:white;
+                background:var(--bg-card);
                 margin-bottom:25px;
             }
         }
-    
+
         .textarea_description {
             min-height: 10rem;
         }
-    
+
         .divider {
             margin:40px auto;
         }
 
         footer {
-            border-top: 1px solid #dedede;
+            border-top: 1px solid var(--border-light);
             padding-top: 1rem;
             margin-top: 1rem;
 
@@ -97,5 +94,212 @@
                 padding: 0;
             }
         }
+    }
+}
+
+// Bulk Actions Panel
+.bulk-actions-panel {
+    position: sticky;
+    bottom: 20px;
+    background: #fff;
+    border: 2px solid var(--color-primary);
+    border-radius: 8px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+    margin: 2rem 0 2rem auto;
+    width: 50%;
+    z-index: 100;
+    transition: all 0.3s ease;
+
+    &.collapsed {
+        .bulk-actions-content {
+            display: none;
+        }
+
+        .bulk-actions-header button i {
+            transform: rotate(180deg);
+        }
+    }
+
+    .bulk-actions-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        background: var(--color-primary);
+        border-radius: 6px 6px 0 0;
+        cursor: pointer;
+
+        h3 {
+            margin: 0;
+            padding: 0;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            i {
+                font-size: 1.2rem;
+            }
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #fff;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.3);
+            }
+
+            i {
+                transition: transform 0.3s ease;
+            }
+        }
+    }
+
+    .bulk-actions-content {
+        padding: 1.5rem;
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+
+    .bulk-actions-divider {
+        text-align: center;
+        margin: 1.5rem 0;
+        padding: 0.5rem 0;
+        color: #6c757d;
+        font-weight: 500;
+        font-size: 0.9rem;
+        position: relative;
+
+        &::before,
+        &::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: #dee2e6;
+        }
+
+        &::before {
+            left: 0;
+        }
+
+        &::after {
+            right: 0;
+        }
+    }
+
+    .bulk-action-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        transition: background 0.2s ease;
+
+        &:hover {
+            background: #e9ecef;
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    .bulk-action-label {
+        flex: 0 0 180px;
+        font-weight: 600;
+        color: #495057;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding-top: 0.5rem;
+
+        i {
+            color: var(--color-primary);
+            font-size: 1.1rem;
+        }
+    }
+
+    .bulk-action-controls {
+        flex: 1;
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        align-items: center;
+
+        select.form-select {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        button {
+            white-space: nowrap;
+        }
+    }
+
+    // Responsive adjustments
+    @media (max-width: 1400px) {
+        width: 70%;
+    }
+
+    @media (max-width: 992px) {
+        width: 90%;
+
+        .bulk-action-row {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .bulk-action-label {
+            flex: none;
+            padding-top: 0;
+        }
+
+        .bulk-action-controls {
+            select.form-select {
+                min-width: 100%;
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        width: 100%;
+        bottom: 20px;
+        margin: 1rem 0;
+
+        .bulk-actions-header {
+            padding: 0.75rem 1rem;
+
+            h3 {
+                font-size: 1rem;
+            }
+        }
+
+        .bulk-actions-content {
+            padding: 1rem;
+        }
+
+        .bulk-action-row {
+            padding: 0.75rem;
+        }
+    }
+}
+
+// Make save button bigger on file editor
+#files + .after_form_buttons {
+    button#upload-continue {
+        font-size: 1.25rem;
+        padding: 1rem 3rem;
+        font-weight: 600;
     }
 }

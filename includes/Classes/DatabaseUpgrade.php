@@ -25,7 +25,7 @@ class DatabaseUpgrade
         $this->current_version = substr(CURRENT_VERSION, 1);
     
         $this->updates_applied = [];
-        $this->current_database_version = (option_exists('database_version')) ? get_option('database_version') : 0;
+        $this->current_database_version = (table_exists(TABLE_OPTIONS) && option_exists('database_version')) ? get_option('database_version') : 0;
         $this->sql_mode_dates_status = false;
 
         foreach (glob(UPGRADES_DIR.DS.'*.php') as $file) {
@@ -51,17 +51,20 @@ class DatabaseUpgrade
         $statement->execute();
         $this->sql_mode_dates_status = false;
 
-		/** Record the action log */
-        $user_id = (defined('IS_INSTALL')) ? 1 : CURRENT_USER_ID;
-        $logger = new \ProjectSend\Classes\ActionsLog;
-        $logger->addEntry([
-            'action' => 49,
-            'owner_id' => $user_id,
-            'details' => [
-                'database_version' => $this->last_upgrade,
-            ],
-        ]);
-        unset($logger);
+		/** Record the action log - only if we have a user context */
+        // During silent upgrades (bootstrap), CURRENT_USER_ID may not be defined
+        if (defined('IS_INSTALL') || defined('CURRENT_USER_ID')) {
+            $user_id = (defined('IS_INSTALL')) ? 1 : CURRENT_USER_ID;
+            $logger = new \ProjectSend\Classes\ActionsLog;
+            $logger->addEntry([
+                'action' => 49,
+                'owner_id' => $user_id,
+                'details' => [
+                    'database_version' => $this->last_upgrade,
+                ],
+            ]);
+            unset($logger);
+        }
 
         save_option('show_upgrade_success_message', 'true');
     }
@@ -69,7 +72,7 @@ class DatabaseUpgrade
     public function upgradeDatabase($requires_system_user = false)
     {
         if ($requires_system_user) {
-            $allowed_update = array(9,8,7);
+            $allowed_update = ['System Administrator', 'Account Manager', 'Uploader'];
             if (!current_role_in($allowed_update)) {
                 return false;
             }

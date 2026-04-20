@@ -1,32 +1,225 @@
 // Home widgets
 body.dashboard {
     .widget {
-        background:white;
+        background:var(--bg-card);
         display:block;
         width:100%;
         margin-bottom:30px;
         border-radius: 8px;
-        box-shadow: var(--global_box_shadow);
+        box-shadow: var(--shadow-md);
     
         .widget_int {
             padding:15px;
         }
     
-        h4 {
-            text-align:left;
-            padding:13px;
-            font-size:16px;
-            margin:0 !important;
-            color:var(--widget_title_color);
+        .widget-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 13px;
             background: var(--widget_title_background);
-            border-bottom:1px solid #dedede;
+            border-bottom: 1px solid var(--border-light);
+            border-radius: 2px 2px 0 0;
+            transition: background-color 0.2s ease;
+
+            &:hover {
+                background: var(--widget_hover_background);
+            }
+
+            .widget-title {
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+                user-select: none;
+                flex: 1;
+                color: var(--widget_title_color);
+                font-size: 16px;
+                font-weight: normal;
+
+                .widget-title-text {
+                    margin: 0;
+                    font-size: 16px;
+                    font-weight: normal;
+                }
+            }
+
+            .widget-controls {
+                display: flex;
+                gap: 4px;
+
+                .widget-control-btn {
+                    background: transparent;
+                    border: 1px solid var(--border-medium);
+                    color: var(--text-secondary);
+                    padding: 4px 6px;
+                    border-radius: 4px;
+                    font-size: 12px;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    line-height: 1;
+
+                    &:hover {
+                        background: var(--bg-hover);
+                        color: var(--text-primary);
+                        border-color: var(--border-dark);
+                    }
+
+                    &:active {
+                        transform: scale(0.95);
+                    }
+
+                    i {
+                        font-size: 12px;
+                    }
+                }
+            }
+        }
+
+        // Legacy h4 fallback (in case some widgets don't get converted)
+        h4 {
+            text-align: left;
+            padding: 13px;
+            font-size: 16px;
+            margin: 0 !important;
+            color: var(--widget_title_color);
+            background: var(--widget_title_background);
+            border-bottom: 1px solid var(--border-light);
             border-radius: 2px 2px 0 0;
         }
-    
+
         &:hover h4 {
             background: var(--widget_hover_background);
         }
-    
+
+        &.widget-collapsed {
+            .widget-header {
+                border-bottom: none;
+                border-radius: 8px;
+            }
+
+            .widget_int {
+                display: none;
+            }
+        }
+
+        // Widget table styling
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+            font-size: 0.9rem;
+
+            th, td {
+                padding: 8px 10px;
+                text-align: left;
+                border-bottom: 1px solid var(--border-light);
+                vertical-align: middle;
+            }
+
+            th {
+                background-color: var(--bg-hover);
+                font-weight: 600;
+                color: var(--text-secondary);
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border-bottom: 2px solid var(--border-medium);
+            }
+
+            tbody tr {
+                transition: background-color 0.2s ease;
+
+                &:hover {
+                    background-color: var(--bg-hover);
+                }
+
+                &:last-child td {
+                    border-bottom: none;
+                }
+            }
+
+            td {
+                .badge {
+                    font-size: 0.75rem;
+                    padding: 3px 6px;
+                }
+
+                small {
+                    color: var(--text-muted);
+                    font-size: 0.8rem;
+                }
+
+                .btn {
+                    font-size: 0.8rem;
+                    padding: 4px 8px;
+                }
+            }
+        }
+
+        // List styling within widgets (except news widget)
+        ul.list-unstyled {
+            li {
+                padding: 6px 0;
+                border-bottom: 1px solid var(--border-light);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                &:last-child {
+                    border-bottom: none;
+                }
+
+                i {
+                    margin-right: 8px;
+                    width: 16px;
+                    text-align: center;
+                }
+
+                strong {
+                    color: var(--text-primary);
+                }
+            }
+        }
+
+        // Exception for news widget - no flex on ul/li
+        &#widget_projectsend_news {
+            ul {
+                li {
+                    display: block;
+                    align-items: initial;
+                    justify-content: initial;
+                }
+            }
+        }
+
+        // Progress bars in widgets
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+            background-color: var(--bg-hover);
+            overflow: hidden;
+
+            .progress-bar {
+                border-radius: 4px;
+                transition: width 0.3s ease;
+            }
+        }
+
+        // Charts and activity bars
+        .upload-activity-chart,
+        .hourly-activity-chart {
+            .bg-info,
+            .bg-primary,
+            .bg-warning {
+                border-radius: 2px;
+                transition: opacity 0.2s ease;
+
+                &:hover {
+                    opacity: 0.8;
+                }
+            }
+        }
+
     }
     
     // Counters
@@ -44,8 +237,8 @@ body.dashboard {
     
             li {
                 flex: 1;
-                background: red;
-                color: white;
+                background: var(--color-error);
+                color: var(--text-inverse);
                 padding: 20px;
                 position: relative;
                 border-radius: 8px;
@@ -60,6 +253,7 @@ body.dashboard {
                 &:nth-child(3) { background: #6b6eff; }
                 &:nth-child(4) { background: #e74123; }
                 &:nth-child(5) { background: #03c3ec; }
+                &:nth-child(6) { background: #9c27b0; }
     
                 h6 {
                     font-weight: bold;
@@ -96,20 +290,20 @@ body.dashboard {
     
                 li {
                     padding: 7px;
-                    border-bottom: 1px solid #dedede;
+                    border-bottom: 1px solid var(--border-light);
                     display: flex;
-    
+
                     &:nth-child(odd) {
-                        background: #f6f6f6;
+                        background: var(--bg-hover);
                     }
-    
+
                     &:hover {
-                        background: #fbf8e9;
+                        background: var(--bg-selected);
                     }
     
                     i {
                         margin:0 1em;
-                        color: #1ec4a7;
+                        color: var(--color-success);
                         text-align: center;
                         font-size: 14px;
                     }
@@ -130,7 +324,7 @@ body.dashboard {
                         word-break: break-all;
     
                         .item_part1, .item_part2, .item_part4 {
-                            color: var(--main_color);
+                            color: var(--color-primary);
                             font-weight: bold;
                         }
                     }
@@ -144,11 +338,11 @@ body.dashboard {
     
         li {
             padding:7px;
-            border-bottom:1px solid #EFEFEF;
+            border-bottom:1px solid var(--border-light);
             overflow:hidden;
     
             &:nth-child(odd) {
-                background:#fafafa;
+                background:var(--bg-hover);
             }
     
             &:last-child {
@@ -157,7 +351,7 @@ body.dashboard {
     
             .date {
                 font-size:.9em;
-                color:#999;
+                color:var(--text-muted);
             }
     
             .log_ico {
@@ -176,7 +370,7 @@ body.dashboard {
             }
     
             span.secondary {
-                color:#86AE00;
+                color:var(--color-success);
             }
         }
     }
@@ -185,7 +379,7 @@ body.dashboard {
         text-align:right;
         padding-top:5px;
         margin-top:5px;
-        border-top:1px solid #EFEFEF;
+        border-top:1px solid var(--border-light);
     }
     
     // Home NEWS widget
@@ -195,7 +389,7 @@ body.dashboard {
         padding:0;
     
         .date {
-            color:#999;
+            color:var(--text-muted);
             font-size:.9em;
         }
     
@@ -278,8 +472,8 @@ body.dashboard {
         #stats_tooltip {
             position:absolute;
             display:none;
-            background:black;
-            color:#FFFFFF;
+            background:var(--bg-dark);
+            color:var(--text-inverse);
             padding:5px;
         }
     
@@ -291,4 +485,113 @@ body.dashboard {
         }
     }
 
-}    
+}
+
+// Dashboard widgets container for draggable layout
+.dashboard-widgets-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .widget-container {
+        position: relative;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+        // Default size: 2 columns for most widgets
+        grid-column: span 2;
+
+        @media (max-width: 1200px) {
+            grid-column: span 1;
+        }
+
+        &.dragging {
+            transform: rotate(2deg);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            opacity: 0.9;
+        }
+
+        &.drag-over {
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(76, 42, 182, 0.3);
+        }
+
+        .widget {
+            cursor: grab;
+
+            &:active {
+                cursor: grabbing;
+            }
+
+            h4.widget-collapsible {
+                cursor: grab;
+
+                &:active {
+                    cursor: grabbing;
+                }
+            }
+        }
+    }
+}
+
+// Special handling for news and actions log widgets (1 column)
+.widget-container[data-widget="news"],
+.widget-container[data-widget="actions-log"] {
+    grid-column: span 1;
+}
+
+// Special handling for actions log widget (taller)
+.widget-container[data-widget="actions-log"] {
+    @media (min-width: 769px) {
+        grid-row: span 2;
+    }
+}
+
+// Widget width classes for user-adjustable sizing
+.widget-container {
+    &.widget-width-1 {
+        grid-column: span 1;
+    }
+
+    &.widget-width-2 {
+        grid-column: span 2;
+
+        @media (max-width: 1200px) {
+            grid-column: span 1;
+        }
+    }
+
+    &.widget-width-3 {
+        grid-column: span 3;
+
+        @media (max-width: 1600px) {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 1200px) {
+            grid-column: span 1;
+        }
+    }
+
+    &.widget-width-4 {
+        grid-column: span 4;
+
+        @media (max-width: 1600px) {
+            grid-column: span 3;
+        }
+
+        @media (max-width: 1200px) {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 768px) {
+            grid-column: span 1;
+        }
+    }
+}

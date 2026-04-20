@@ -39,7 +39,7 @@
 
     a {
         color:var(--side_menu_color);
-        font-size:1.1em;
+        font-size:1em;
     }
 
     > li {
@@ -80,6 +80,11 @@
             > li {
                 position:relative;
                 border-radius: 8px;
+
+                &.divider {
+                    margin: 10px 0;
+                    border-bottom: 1px solid var(--border-medium);
+                }
 
                 a {
                     display: flex;
@@ -174,7 +179,7 @@
                 border-top:none;
                 padding:0;
                 display:none;
-                border:1px solid #f0f0f0;
+                border:1px solid var(--border-medium);
 
                 > li {
                     position:relative;

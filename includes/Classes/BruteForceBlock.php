@@ -90,8 +90,6 @@ class BruteForceBlock {
                 'message' => $e->getMessage(),
             ];
         }
-
-        return false;
     }
 
     private function makeIpList($list = null)

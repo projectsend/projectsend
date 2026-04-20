@@ -1,0 +1,19 @@
+// Upload page styles
+
+#upload-sidebar {
+    @media (min-width: 992px) {
+        position: sticky;
+        top: 90px;
+    }
+
+    .ps-card {
+        h4 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-text {
+            font-size: 0.875rem;
+        }
+    }
+}

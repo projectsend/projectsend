@@ -17,6 +17,17 @@
             <input type="password" name="password" id="password" class="form-control" />
         </div>
 
+        <?php if (get_option('remember_me_enabled', null, '1')) { ?>
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" name="remember_me" id="remember_me" class="form-check-input" value="1" />
+                <label for="remember_me" class="form-check-label">
+                    <i class="fa fa-shield-alt me-1"></i><?php _e('Remember me for 30 days','cftp_admin'); ?>
+                </label>
+            </div>
+        </div>
+        <?php } ?>
+
         <?php /*
         <div class="form-group row">
             <label for="language"><?php _e('Language','cftp_admin'); ?></label>

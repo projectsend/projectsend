@@ -1,41 +1,165 @@
 :root {
-    --body_background: #f5f5f9;
-    --top_bar_background: #0d0f14;
-    --top_bar_hover: #232835;
-    --main_color: #4c2ab6;
-    --main_lighten: #633dd3;
-    --main_darken: #3f1f9c;
-    --main_text: #666;
+    // Base color palette
+    --color-primary: #4c2ab6;
+    --color-primary-light: #633dd3;
+    --color-primary-dark: #3f1f9c;
+    --color-primary-hover: #6c4ee0;
+
+    // Semantic colors
+    --color-success: #28a745;
+    --color-success-light: #d4edda;
+    --color-success-dark: #155724;
+    --color-warning: #ffc107;
+    --color-warning-light: #fff3cd;
+    --color-warning-dark: #856404;
+    --color-error: #dc3545;
+    --color-error-light: #f8d7da;
+    --color-error-dark: #721c24;
+    --color-info: #17a2b8;
+    --color-info-light: #d1ecf1;
+    --color-info-dark: #0c5460;
+
+    // Neutral colors
+    --color-white: #ffffff;
+    --color-black: #000000;
+    --color-gray-50: #f8f9fa;
+    --color-gray-100: #f1f3f4;
+    --color-gray-200: #e9ecef;
+    --color-gray-300: #dee2e6;
+    --color-gray-400: #ced4da;
+    --color-gray-500: #adb5bd;
+    --color-gray-600: #6c757d;
+    --color-gray-700: #495057;
+    --color-gray-800: #343a40;
+    --color-gray-900: #212529;
+
+    // Text colors
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --text-muted: #999999;
+    --text-inverse: #ffffff;
+    --text-link: var(--color-primary);
+    --text-link-hover: var(--color-primary-light);
+
+    // Background colors
+    --bg-body: #f5f5f9;
+    --bg-card: #ffffff;
+    --bg-overlay: rgba(0, 0, 0, 0.3);
+    --bg-hover: #f8f9fa;
+    --bg-selected: #e7e0ff;
+
+    // Border colors
+    --border-light: #e9ecef;
+    --border-medium: #dee2e6;
+    --border-dark: #ced4da;
+    --border-focus: var(--color-primary);
+
+    // Shadow colors
+    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --shadow-md: 0 0.125rem 0.375rem rgba(161, 172, 184, 0.12);
+    --shadow-lg: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    --shadow-focus: 0 0 0 0.2rem rgba(76, 42, 182, 0.25);
+
+    // Legacy variables (mapped to new system)
+    --body_background: var(--bg-body);
+    --main_color: var(--color-primary);
+    --main_lighten: var(--color-primary-light);
+    --main_darken: var(--color-primary-dark);
+    --main_text: var(--text-secondary);
+    --global_box_shadow: var(--shadow-md);
+
+    // Layout
     --padding_top_main: 60px;
-    --global_box_shadow: 0 .125rem .375rem 0 rgba(161,172,184,.12);
-    
-    // Side menu    
+
+    // Side menu dimensions
     --side_menu_width: 220px;
     --side_menu_width_contracted: 45px;
 
     // Side menu colors
-    --side_menu_background: #fff;
-    --side_menu_color: #3f3f47;
-    --side_menu_sub_color: #3f3f47;
-    --side_menu_sub_hover: #333339;
-    --side_menu_separator_border: none;
-    --side_menu_selected_parent_bg: #e7e0ff;
-    --side_menu_selected_parent_color: #696cff;
-    --side_menu_selected_subitems_background: #f2f2f2;
-    --side_menu_current_subitem_bg: #f5f5f9;
+    --side_menu_background: var(--bg-card);
+    --side_menu_color: var(--text-primary);
+    --side_menu_sub_color: var(--text-primary);
+    --side_menu_sub_hover: var(--text-secondary);
+    --side_menu_separator_border: var(--border-light);
+    --side_menu_selected_parent_bg: var(--bg-selected);
+    --side_menu_selected_parent_color: var(--color-primary);
+    --side_menu_selected_subitems_background: var(--bg-hover);
+    --side_menu_current_subitem_bg: var(--bg-body);
     --side_menu_current_subitem_bg_hover: #e4e4ff;
-    
+
+    // Top bar colors
+    --top_bar_background: #0d0f14;
+    --top_bar_hover: #232835;
+    --top_bar_text: #f0f0f0;
+    --top_bar_text_hover: #ffffff;
+
     // Contracted side menu
-    --side_menu_contracted_color: #222;
-    
+    --side_menu_contracted_color: var(--text-primary);
+
     // Widgets
-    --widget_title_color: #42454a;
-    --widget_title_background: #fff;
-    --widget_hover_background: #f0f0f0;
-    
+    --widget_title_color: var(--text-primary);
+    --widget_title_background: var(--bg-card);
+    --widget_hover_background: var(--bg-hover);
+
     // Fonts
     --font_body: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    --font_heading:var(--font_body);
+    --font_heading: var(--font_body);
+}
+
+// Dark theme variables
+[data-theme="dark"] {
+    // Text colors for dark theme
+    --text-primary: #e9ecef;
+    --text-secondary: #adb5bd;
+    --text-muted: #6c757d;
+    --text-inverse: #212529;
+    --text-link: #a855f7;
+    --text-link-hover: #c084fc;
+
+    // Background colors for dark theme
+    --bg-body: #1a1d21;
+    --bg-card: #2d3748;
+    --bg-hover: #374151;
+    --bg-selected: #4c1d95;
+    --bg-overlay: rgba(0, 0, 0, 0.6);
+
+    // Border colors for dark theme
+    --border-light: #4a5568;
+    --border-medium: #5a6570;
+    --border-dark: #6c757d;
+
+    // Shadow colors for dark theme
+    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 0.125rem 0.375rem rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+
+    // Semantic colors for dark theme (lighter variants)
+    --color-success-light: #1f3625;
+    --color-warning-light: #3d2914;
+    --color-error-light: #2d1b1f;
+    --color-info-light: #1b2832;
+
+    // Side menu colors for dark theme
+    --side_menu_background: var(--bg-card);
+    --side_menu_color: var(--text-primary);
+    --side_menu_sub_color: var(--text-secondary);
+    --side_menu_sub_hover: var(--text-primary);
+    --side_menu_separator_border: var(--border-light);
+    --side_menu_selected_parent_bg: var(--bg-selected);
+    --side_menu_selected_parent_color: var(--text-inverse);
+    --side_menu_current_subitem_bg: var(--bg-body);
+    --side_menu_current_subitem_bg_hover: #4c1d95;
+
+    // Top bar colors for dark theme
+    --top_bar_background: #111827;
+    --top_bar_hover: #374151;
+    --top_bar_text: #d1d5db;
+    --top_bar_text_hover: #f9fafb;
+
+    // Widget colors for dark theme
+    --widget_title_color: var(--text-primary);
+    --widget_title_background: var(--bg-card);
+    --widget_hover_background: var(--bg-hover);
 }
 
 /** Paths */

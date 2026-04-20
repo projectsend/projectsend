@@ -3,8 +3,8 @@
  * Custom HTML/CSS/JS assets administration.
  *
  */
-$allowed_levels = array(9);
 require_once 'bootstrap.php';
+check_access_enhanced(['create_assets', 'edit_assets', 'delete_assets'], 'any');
 
 $active_nav = 'tools';
 
@@ -19,34 +19,82 @@ if (isset($_POST['action'])) {
 
         switch ($_POST['action']) {
             case 'enable':
+                $enabled_count = 0;
+                $no_permission_count = 0;
                 foreach ($custom_assets as $asset_id) {
                     $asset = new \ProjectSend\Classes\CustomAsset();
                     if ($asset->get($asset_id)) {
-                        $enable = $asset->enable();
+                        if ($asset->canUserEdit()) {
+                            $enable = $asset->enable();
+                            $enabled_count++;
+                        } else {
+                            $no_permission_count++;
+                        }
                     }
                 }
 
-                $flash->success(__('The selected assets were marked as enabled.', 'cftp_admin'));
+                if ($enabled_count > 0) {
+                    $flash->success(sprintf(__('%d assets were marked as enabled.', 'cftp_admin'), $enabled_count));
+                }
+                if ($no_permission_count > 0) {
+                    $flash->warning(sprintf(__('You do not have permission to edit %d assets.', 'cftp_admin'), $no_permission_count));
+                }
                 break;
             case 'disable':
+                $disabled_count = 0;
+                $no_permission_count = 0;
                 foreach ($custom_assets as $asset_id) {
                     $asset = new \ProjectSend\Classes\CustomAsset();
                     if ($asset->get($asset_id)) {
-                        $disable = $asset->disable();
+                        if ($asset->canUserEdit()) {
+                            $disable = $asset->disable();
+                            $disabled_count++;
+                        } else {
+                            $no_permission_count++;
+                        }
                     }
                 }
 
-                $flash->success(__('The selected assets were marked as disabled.', 'cftp_admin'));
+                if ($disabled_count > 0) {
+                    $flash->success(sprintf(__('%d assets were marked as disabled.', 'cftp_admin'), $disabled_count));
+                }
+                if ($no_permission_count > 0) {
+                    $flash->warning(sprintf(__('You do not have permission to edit %d assets.', 'cftp_admin'), $no_permission_count));
+                }
                 break;
             case 'delete':
+                $deleted_count = 0;
+                $no_permission_count = 0;
+                $errors = [];
+
                 foreach ($custom_assets as $asset_id) {
                     $asset = new \ProjectSend\Classes\CustomAsset();
                     if ($asset->get($asset_id)) {
-                        $delete = $asset->delete();
+                        $result = $asset->delete();
+
+                        if ($result['status'] === 'success') {
+                            $deleted_count++;
+                        } else {
+                            if (strpos($result['message'], 'permission') !== false) {
+                                $no_permission_count++;
+                            } else {
+                                $errors[] = $result['message'];
+                            }
+                        }
                     }
                 }
 
-                $flash->success(__('The selected assets were deleted.', 'cftp_admin'));
+                if ($deleted_count > 0) {
+                    $flash->success(sprintf(__('%d assets were deleted.', 'cftp_admin'), $deleted_count));
+                }
+                if ($no_permission_count > 0) {
+                    $flash->warning(sprintf(__('You do not have permission to delete %d assets.', 'cftp_admin'), $no_permission_count));
+                }
+                if (!empty($errors)) {
+                    foreach ($errors as $error) {
+                        $flash->error($error);
+                    }
+                }
                 break;
         }
     } else {
@@ -116,20 +164,23 @@ if (!$count) {
 }
 
 // Header buttons
-$header_action_buttons = [
-    [
-        'url' => 'custom-assets-add.php?language=html',
-        'label' => __('New HTML', 'cftp_admin'),
-    ],
-    [
-        'url' => 'custom-assets-add.php?language=css',
-        'label' => __('New CSS', 'cftp_admin'),
-    ],
-    [
-        'url' => 'custom-assets-add.php?language=js',
-        'label' => __('New js', 'cftp_admin'),
-    ],
-];
+$header_action_buttons = [];
+if (current_user_can('create_assets')) {
+    $header_action_buttons = [
+        [
+            'url' => 'custom-assets-add.php?language=html',
+            'label' => __('New HTML', 'cftp_admin'),
+        ],
+        [
+            'url' => 'custom-assets-add.php?language=css',
+            'label' => __('New CSS', 'cftp_admin'),
+        ],
+        [
+            'url' => 'custom-assets-add.php?language=js',
+            'label' => __('New js', 'cftp_admin'),
+        ],
+    ];
+}
 
 // Search + filters bar data
 $search_form_action = 'custom-assets.php';
@@ -150,14 +201,18 @@ $filters_form = [
     ]
 ];
 
-// Results count and form actions 
+// Results count and form actions
 $elements_found_count = $count_for_pagination;
 $bulk_actions_items = [
     'none' => __('Select action', 'cftp_admin'),
-    'enable' => __('Enable', 'cftp_admin'),
-    'disable' => __('Disable', 'cftp_admin'),
-    'delete' => __('Delete', 'cftp_admin'),
 ];
+if (current_user_can('edit_assets')) {
+    $bulk_actions_items['enable'] = __('Enable', 'cftp_admin');
+    $bulk_actions_items['disable'] = __('Disable', 'cftp_admin');
+}
+if (current_user_can('delete_assets')) {
+    $bulk_actions_items['delete'] = __('Delete', 'cftp_admin');
+}
 
 // Include layout files
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
@@ -254,7 +309,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                         ),
                         array(
                             'actions' => true,
-                            'content' =>  '<a href="custom-assets-edit.php?id=' . $asset->id . '" class="btn btn-sm btn-danger">' . __("Edit", "cftp_admin") . '</a>' . "\n",
+                            'content' =>  ($asset->canUserEdit() ? '<a href="custom-assets-edit.php?id=' . $asset->id . '" class="btn btn-sm btn-danger">' . __("Edit", "cftp_admin") . '</a>' : '') . "\n",
                         ),
                     );
 

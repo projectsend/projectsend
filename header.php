@@ -34,13 +34,16 @@ $db_upgrade->upgradeDatabase(false);
  * Call the database update file to see if any change is needed,
  * but only if logged in as a system user.
  */
-$core_update_allowed = array(9,8,7);
+$core_update_allowed = ['System Administrator', 'Account Manager', 'Uploader'];
 if (current_role_in($core_update_allowed)) {
     require_once INCLUDES_DIR . DS . 'core.update.php';
 }
 
 // Redirect if password needs to be changed
 password_change_required();
+
+// Redirect if TOTP setup is required
+totp_setup_required();
 ?>
 <!doctype html>
 <html lang="<?php echo SITE_LANG; ?>">
@@ -89,8 +92,9 @@ password_change_required();
                             if (!empty($header_action_buttons)) {
                                 foreach ($header_action_buttons as $header_button) {
                                     $icon = (!empty($header_button['icon'])) ? $header_button['icon'] : 'fa fa-plus';
+                                    $header_button_type = (isset($header_button['type'])) ? $header_button['type'] : 'primary';
                         ?>
-                                    <a href="<?php echo $header_button['url']; ?>" class="btn btn-sm btn-primary" <?php if (!empty($header_button['id'])) { echo 'id="'.$header_button['id'].'"'; } ?>
+                                    <a href="<?php echo $header_button['url']; ?>" class="btn btn-sm btn-<?php echo $header_button_type; ?>" <?php if (!empty($header_button['id'])) { echo 'id="'.$header_button['id'].'"'; } ?>
                                     <?php if (!empty($header_button['data-attributes'])) { foreach($header_button['data-attributes'] as $data_key => $data_value) { ?>
                                         data-<?php echo $data_key; ?>="<?php echo $data_value; ?>" 
                                     <?php } } ?>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{EMAIL_TITLE}}</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Georgia, "Times New Roman", Times, serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background-color: #ecf0f1;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border: 1px solid #bdc3c7;
+        }
+        .header {
+            background-color: #2c3e50;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 4px solid #3498db;
+        }
+        .header h1 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .header .tagline {
+            margin: 15px 0 0 0;
+            color: #bdc3c7;
+            font-size: 14px;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .content {
+            padding: 40px;
+            background-color: #ffffff;
+        }
+        .content h2 {
+            color: #2c3e50;
+            font-size: 26px;
+            font-weight: bold;
+            margin: 0 0 25px 0;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .content p {
+            color: #34495e;
+            font-size: 16px;
+            line-height: 1.8;
+            margin: 0 0 20px 0;
+            text-align: justify;
+        }
+        .button {
+            display: inline-block;
+            padding: 15px 40px;
+            background-color: #3498db;
+            color: #ffffff;
+            text-decoration: none;
+            border: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 25px 0;
+            font-size: 14px;
+        }
+        .button:hover {
+            background-color: #2980b9;
+        }
+        .divider {
+            height: 2px;
+            background-color: #bdc3c7;
+            margin: 30px 0;
+        }
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                width: 100% !important;
+            }
+            .header, .content {
+                padding: 20px !important;
+            }
+            .header h1 {
+                font-size: 24px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>{{SYSTEM_NAME}}</h1>
+            <p class="tagline">Professional Document Management</p>
+        </div>
+        <div class="content">

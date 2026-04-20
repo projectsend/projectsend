@@ -3,9 +3,11 @@
 
     admin.parts.foldersAdmin = function () {
         let btn_create = document.getElementById('btn_header_folder_create');
-        btn_create.addEventListener('click', function(e) {
-            createFolderModal();
-        });
+        if (btn_create != null && btn_create != 'undefined') {
+            btn_create.addEventListener('click', function(e) {
+                createFolderModal();
+            });
+        }
 
         async function createFolderModal()
         {
@@ -26,7 +28,7 @@
                     }
                 }
             })
-              
+
             if (folder_name) {
                 var data = new FormData();
                 data.append('csrf_token', document.getElementById('csrf_token').value);
@@ -246,6 +248,23 @@
                 }
             }
         }
+
+        document.addEventListener('click',function(e) {
+            let clickedFolder = e.target.closest('.folder_open_context_menu');
+            if (clickedFolder) {
+                var evt = new MouseEvent('contextmenu', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window,
+                    buttons: 2,
+                    clientX: clickedFolder.getBoundingClientRect().x,
+                    clientY: clickedFolder.getBoundingClientRect().y
+                });
+                clickedFolder.dispatchEvent(evt);
+            }
+        });
+        
+
 
         function folderNavigate(folder)
         {

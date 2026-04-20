@@ -5,13 +5,13 @@
     padding: .5rem;
 
     tag > div {
-		border: 1px solid #bcd8f3;
-		background: #e5f1fc;
-        color: #666;
+		border: 1px solid var(--border-medium);
+		background: var(--bg-hover);
+        color: var(--text-primary);
         font-size: .95rem;
     }
 		
     x {
-        color: #666;
+        color: var(--text-secondary);
     }
 }

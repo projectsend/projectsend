@@ -1,25 +1,25 @@
 .bg-primary {
-    background-color: var(--main_color) !important;
+    background-color: var(--color-primary) !important;
 }
 
 .btn-primary {
-    background-color: var(--main_color);
-    border-color: var(--main_color);
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
 
 	&:hover,
 	&:focus,
     &:active
 	{
-        color: white;
-		background-color:var(--main_lighten) !important;
+        color: var(--text-inverse);
+		background-color: var(--color-primary-light) !important;
 	}
 }
 
 .btn-pslight {
-    background-color: #ddd;
+    background-color: var(--color-gray-300);
 
     &:hover {
-        background-color: #ccc !important;
+        background-color: var(--color-gray-400) !important;
     }
 }
 
@@ -48,5 +48,752 @@ span.label {
 }
 
 .text-warning {
-	color:#cc800e !important;
+	color: var(--color-warning-dark) !important;
+}
+
+// Form controls dark mode support
+.form-control,
+.form-select,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+input[type="search"],
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+select,
+textarea {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    border-color: var(--border-medium);
+
+    &:focus {
+        background-color: var(--bg-card);
+        color: var(--text-primary);
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 0.2rem rgba(76, 42, 182, 0.25);
+    }
+
+    &:disabled,
+    &[readonly] {
+        background-color: var(--bg-muted);
+        color: var(--text-muted);
+    }
+
+    &::placeholder {
+        color: var(--text-secondary);
+        opacity: 1;
+    }
+}
+
+// Select options
+option {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+}
+
+// Custom select
+.custom-select {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    border-color: var(--border-medium);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e");
+
+    &:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 0.2rem rgba(76, 42, 182, 0.25);
+    }
+}
+
+// Input groups
+.input-group-text {
+    background-color: var(--bg-muted);
+    color: var(--text-primary);
+    border-color: var(--border-medium);
+}
+
+// Custom checkbox and radio
+.custom-control-label::before {
+    background-color: var(--bg-card);
+    border-color: var(--border-medium);
+}
+
+.custom-control-input:checked ~ .custom-control-label::before {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+// Form validation states
+.is-invalid {
+    border-color: var(--color-error) !important;
+}
+
+.invalid-feedback {
+    color: var(--color-error);
+}
+
+// Select2 Bootstrap 5 Theme Dark Mode Overrides
+.select2-container--bootstrap-5 {
+    .select2-selection {
+        background-color: var(--bg-card) !important;
+        border-color: var(--border-medium) !important;
+        color: var(--text-primary) !important;
+    }
+
+    .select2-selection--single {
+        .select2-selection__rendered {
+            color: var(--text-primary) !important;
+        }
+
+        .select2-selection__placeholder {
+            color: var(--text-secondary) !important;
+        }
+
+        .select2-selection__arrow b {
+            border-color: var(--text-secondary) transparent transparent transparent !important;
+        }
+    }
+
+    .select2-selection--multiple {
+        .select2-selection__choice {
+            background-color: var(--bg-hover) !important;
+            border-color: var(--border-medium) !important;
+            color: var(--text-primary) !important;
+
+            .select2-selection__choice__remove {
+                color: var(--text-secondary) !important;
+
+                &:hover {
+                    color: var(--color-error) !important;
+                }
+            }
+        }
+
+        .select2-search--inline {
+            .select2-search__field {
+                background-color: transparent !important;
+                color: var(--text-primary) !important;
+
+                &::placeholder {
+                    color: var(--text-secondary) !important;
+                }
+            }
+        }
+    }
+
+    &.select2-container--focus .select2-selection,
+    &.select2-container--open .select2-selection {
+        border-color: var(--color-primary) !important;
+        box-shadow: 0 0 0 0.2rem rgba(76, 42, 182, 0.25) !important;
+    }
+
+    &.select2-container--disabled .select2-selection {
+        background-color: var(--bg-muted) !important;
+        color: var(--text-muted) !important;
+    }
+}
+
+// Select2 Dropdown
+.select2-dropdown {
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-medium) !important;
+    color: var(--text-primary) !important;
+
+    .select2-search--dropdown {
+        .select2-search__field {
+            background-color: var(--bg-card) !important;
+            border-color: var(--border-medium) !important;
+            color: var(--text-primary) !important;
+
+            &::placeholder {
+                color: var(--text-secondary) !important;
+            }
+
+            &:focus {
+                border-color: var(--color-primary) !important;
+                box-shadow: 0 0 0 0.2rem rgba(76, 42, 182, 0.25) !important;
+            }
+        }
+    }
+
+    .select2-results__options {
+        .select2-results__option {
+            color: var(--text-primary) !important;
+
+            &[aria-selected="true"] {
+                background-color: var(--bg-selected) !important;
+                color: var(--text-primary) !important;
+            }
+
+            &--highlighted {
+                background-color: var(--color-primary) !important;
+                color: var(--text-inverse) !important;
+            }
+
+            &[data-select2-id] {
+                background-color: var(--bg-card) !important;
+            }
+
+            .select2-results__group {
+                color: var(--text-secondary) !important;
+                background-color: var(--bg-muted) !important;
+            }
+        }
+    }
+
+    .select2-results__message {
+        color: var(--text-secondary) !important;
+    }
+}
+
+// Select2 Clear button
+.select2-selection__clear {
+    color: var(--text-secondary) !important;
+
+    &:hover {
+        color: var(--color-error) !important;
+    }
+}
+
+// CKEditor Dark Mode Overrides
+.ck.ck-editor {
+    .ck-editor__main {
+        .ck-content {
+            background-color: var(--bg-card) !important;
+            color: var(--text-primary) !important;
+            border-color: var(--border-medium) !important;
+        }
+    }
+
+    .ck-toolbar {
+        background-color: var(--bg-muted) !important;
+        border-color: var(--border-medium) !important;
+
+        .ck-button {
+            color: var(--text-primary) !important;
+
+            &:hover {
+                background-color: var(--bg-hover) !important;
+            }
+
+            &.ck-on {
+                background-color: var(--color-primary) !important;
+                color: var(--text-inverse) !important;
+            }
+
+            &:focus {
+                box-shadow: 0 0 0 2px var(--color-primary) !important;
+            }
+        }
+
+        .ck-dropdown__button {
+            color: var(--text-primary) !important;
+
+            &:hover {
+                background-color: var(--bg-hover) !important;
+            }
+        }
+
+        .ck-toolbar__separator {
+            background-color: var(--border-medium) !important;
+        }
+    }
+
+    .ck-dropdown__panel {
+        background-color: var(--bg-card) !important;
+        border-color: var(--border-medium) !important;
+
+        .ck-list__item {
+            .ck-button {
+                color: var(--text-primary) !important;
+
+                &:hover {
+                    background-color: var(--bg-hover) !important;
+                }
+
+                &.ck-on {
+                    background-color: var(--color-primary) !important;
+                    color: var(--text-inverse) !important;
+                }
+            }
+        }
+    }
+
+    .ck-balloon-panel {
+        background-color: var(--bg-card) !important;
+        border-color: var(--border-medium) !important;
+        box-shadow: var(--shadow-lg) !important;
+
+        &.ck-balloon-panel_arrow_n:after,
+        &.ck-balloon-panel_arrow_s:after {
+            border-bottom-color: var(--bg-card) !important;
+            border-top-color: var(--bg-card) !important;
+        }
+
+        .ck-toolbar {
+            background-color: transparent !important;
+            border: none !important;
+        }
+    }
+
+    // CKEditor input fields
+    .ck-input {
+        background-color: var(--bg-card) !important;
+        color: var(--text-primary) !important;
+        border-color: var(--border-medium) !important;
+
+        &:focus {
+            border-color: var(--color-primary) !important;
+            box-shadow: 0 0 0 2px rgba(76, 42, 182, 0.25) !important;
+        }
+    }
+
+    // CKEditor labels
+    .ck-label {
+        color: var(--text-primary) !important;
+    }
+
+    // CKEditor forms
+    .ck-form__header {
+        background-color: var(--bg-muted) !important;
+        border-color: var(--border-medium) !important;
+    }
+
+    .ck-form__row {
+        background-color: var(--bg-card) !important;
+    }
+
+    // CKEditor button groups
+    .ck-button-dropdown {
+        .ck-button {
+            color: var(--text-primary) !important;
+
+            &:hover {
+                background-color: var(--bg-hover) !important;
+            }
+        }
+    }
+
+    // CKEditor table
+    .ck-widget.table {
+        .ck-widget__selection-handle {
+            background-color: var(--color-primary) !important;
+        }
+    }
+
+    // CKEditor media embed
+    .ck-media__wrapper {
+        background-color: var(--bg-card) !important;
+    }
+
+    // CKEditor link decorators
+    .ck-link_selected {
+        background-color: var(--bg-selected) !important;
+    }
+
+    // CKEditor find and replace
+    .ck-find-and-replace-form {
+        background-color: var(--bg-card) !important;
+        border-color: var(--border-medium) !important;
+
+        .ck-results {
+            color: var(--text-muted) !important;
+        }
+    }
+
+    // CKEditor special characters
+    .ck-special-characters-grid {
+        .ck-button {
+            color: var(--text-primary) !important;
+            border-color: var(--border-light) !important;
+
+            &:hover {
+                background-color: var(--bg-hover) !important;
+            }
+        }
+    }
+
+    // CKEditor color picker
+    .ck-color-grid {
+        .ck-color-grid__tile {
+            border-color: var(--border-medium) !important;
+        }
+    }
+
+    // CKEditor mentions
+    .ck-mentions {
+        background-color: var(--bg-card) !important;
+        border-color: var(--border-medium) !important;
+
+        .ck-list__item {
+            color: var(--text-primary) !important;
+
+            &.ck-list__item_active {
+                background-color: var(--bg-selected) !important;
+            }
+        }
+    }
+
+    // CKEditor autocomplete
+    .ck-autocomplete {
+        background-color: var(--bg-card) !important;
+        border-color: var(--border-medium) !important;
+    }
+
+    // CKEditor source editing
+    .ck-source-editing-area {
+        .ck-editor__editable {
+            background-color: var(--bg-card) !important;
+            color: var(--text-primary) !important;
+        }
+    }
+
+    // CKEditor word count
+    .ck-word-count {
+        background-color: var(--bg-muted) !important;
+        color: var(--text-secondary) !important;
+        border-color: var(--border-medium) !important;
+    }
+
+    // CKEditor placeholders and empty state
+    .ck-placeholder::before,
+    .ck-content .ck-placeholder::before {
+        color: var(--text-secondary) !important;
+        opacity: 1 !important;
+    }
+
+    .ck-content[data-placeholder]::before {
+        color: var(--text-secondary) !important;
+        opacity: 1 !important;
+    }
+}
+
+// CKEditor standalone elements
+.ck-content {
+    background-color: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+
+    blockquote {
+        border-left-color: var(--border-medium) !important;
+        background-color: var(--bg-muted) !important;
+    }
+
+    pre {
+        background-color: var(--bg-muted) !important;
+        color: var(--text-primary) !important;
+        border-color: var(--border-medium) !important;
+    }
+
+    code {
+        background-color: var(--bg-muted) !important;
+        color: var(--text-primary) !important;
+    }
+
+    table {
+        border-color: var(--border-medium) !important;
+
+        td, th {
+            border-color: var(--border-medium) !important;
+        }
+
+        th {
+            background-color: var(--bg-muted) !important;
+        }
+    }
+
+    hr {
+        background-color: var(--border-medium) !important;
+    }
+}
+
+// Links styling for dark mode
+a {
+    color: var(--text-link);
+
+    &:hover,
+    &:focus {
+        color: var(--text-link-hover);
+    }
+}
+
+// Dark mode specific overrides with better specificity
+[data-theme="dark"] {
+    // Main menu current page/nav items
+    .main_side_menu .main_menu > li.current_page > a,
+    .main_side_menu .main_menu > li.current_nav > a {
+        color: #ffffff;
+    }
+
+    // Folders nav text
+    #folders_nav .folder a {
+        color: #ffffff;
+    }
+
+    // Regular links in main content - light purple/lilac for better contrast
+    .main_content a:not(.btn):not(.badge):not(.nav-link),
+    .ps-card a:not(.btn):not(.badge),
+    .ps-card-body a:not(.btn):not(.badge),
+    p a:not(.btn):not(.badge),
+    .content a:not(.btn):not(.badge) {
+        color: #c084fc;
+
+        &:hover,
+        &:focus {
+            color: #ddd6fe;
+        }
+    }
+
+    // Bootstrap pagination
+    .page-link {
+        background-color: var(--bg-card);
+        border-color: var(--border-medium);
+        color: var(--text-primary);
+
+        &:hover {
+            background-color: var(--bg-hover);
+            border-color: var(--border-medium);
+            color: var(--text-primary);
+        }
+
+        &:focus {
+            background-color: var(--bg-hover);
+            border-color: var(--color-primary);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 0.2rem rgba(76, 42, 182, 0.25);
+        }
+    }
+
+    .page-item.active .page-link {
+        background-color: var(--color-primary);
+        border-color: var(--color-primary);
+        color: var(--text-inverse);
+    }
+
+    .page-item.disabled .page-link {
+        background-color: var(--bg-muted);
+        border-color: var(--border-light);
+        color: var(--text-muted);
+    }
+
+    // Format selector count text
+    .format-selector .format-count {
+        color: var(--text-secondary);
+    }
+
+    // Context menu hover text
+    .context-menu-orange-theme > :not(hr):hover {
+        color: var(--text-primary);
+    }
+
+    // Bootstrap dropdown menu
+    .dropdown-menu {
+        background-color: var(--bg-card);
+        border-color: var(--border-medium);
+        color: var(--text-primary);
+
+        .dropdown-item {
+            color: var(--text-primary);
+
+            &:hover,
+            &:focus {
+                background-color: var(--bg-hover);
+                color: var(--text-primary);
+            }
+
+            &:active {
+                background-color: var(--color-primary);
+                color: var(--text-inverse);
+            }
+
+            &.disabled,
+            &:disabled {
+                color: var(--text-muted);
+            }
+        }
+
+        .dropdown-header {
+            color: var(--text-secondary);
+        }
+
+        .dropdown-divider {
+            border-color: var(--border-light);
+        }
+    }
+
+    // Chart.js text contrast for widget_statistics
+    .widget_statistics {
+        canvas {
+            filter: none; // Ensure no filters interfere
+        }
+    }
+
+    // Chart.js global text styling for dark mode
+    .chartjs-render-monitor {
+        // This will be handled by Chart.js configuration in JavaScript
+        // but we can add fallback CSS for any text elements
+    }
+
+    // Bootstrap alerts for dark mode
+    .alert {
+        border-color: var(--border-medium);
+
+        &.alert-info {
+            background-color: var(--color-info-light);
+            color: var(--text-primary);
+            border-color: var(--color-info);
+        }
+
+        &.alert-success {
+            background-color: var(--color-success-light);
+            color: var(--text-primary);
+            border-color: var(--color-success);
+        }
+
+        &.alert-warning {
+            background-color: var(--color-warning-light);
+            color: var(--text-primary);
+            border-color: var(--color-warning);
+        }
+
+        &.alert-danger {
+            background-color: var(--color-error-light);
+            color: var(--text-primary);
+            border-color: var(--color-error);
+        }
+
+        &.alert-primary {
+            background-color: rgba(76, 42, 182, 0.1);
+            color: var(--text-primary);
+            border-color: var(--color-primary);
+        }
+
+        &.alert-secondary {
+            background-color: var(--bg-muted);
+            color: var(--text-primary);
+            border-color: var(--border-medium);
+        }
+
+        &.alert-light {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+            border-color: var(--border-light);
+        }
+
+        &.alert-dark {
+            background-color: var(--bg-card);
+            color: var(--text-primary);
+            border-color: var(--border-dark);
+        }
+    }
+
+    // Table cell borders for dark mode
+    table {
+        td, th {
+            border-bottom-color: var(--border-medium);
+            border-top-color: var(--border-medium);
+            border-left-color: var(--border-medium);
+            border-right-color: var(--border-medium);
+        }
+    }
+
+    .table {
+        td, th {
+            border-bottom-color: var(--border-medium);
+            border-top-color: var(--border-medium);
+        }
+
+        &.table-bordered {
+            td, th {
+                border-color: var(--border-medium);
+            }
+        }
+
+        &.table-striped {
+            tbody tr:nth-of-type(odd) {
+                background-color: var(--bg-hover);
+            }
+        }
+
+        &.table-hover {
+            tbody tr:hover {
+                background-color: var(--bg-selected);
+            }
+        }
+    }
+
+    // Fix btn-outline-secondary for dark mode
+    .btn-outline-secondary {
+        color: var(--text-secondary);
+        border-color: var(--text-secondary);
+
+        &:hover,
+        &:focus,
+        &:active,
+        &.active {
+            background-color: var(--text-secondary);
+            border-color: var(--text-secondary);
+            color: var(--bg-card);
+        }
+
+        &:focus {
+            box-shadow: 0 0 0 0.2rem rgba(173, 181, 189, 0.5);
+        }
+
+        &:disabled,
+        &.disabled {
+            color: var(--text-muted);
+            border-color: var(--text-muted);
+            background-color: transparent;
+        }
+    }
+
+    // Contracted menu current page/nav icons
+    .menu_contracted .main_menu > li.current_page > a > i,
+    .menu_contracted .main_menu > li.current_nav > a > i {
+        color: #ffffff;
+    }
+
+    // Dashboard widget counters dark mode
+    body.dashboard .widget_counters ul li {
+        color: #ffffff;
+
+        &:nth-child(1) { background: #996600; } // Much darker orange
+        &:nth-child(2) { background: #336619; } // Much darker green
+        &:nth-child(3) { background: #333399; } // Much darker blue
+        &:nth-child(4) { background: #7a1f11; } // Much darker red
+        &:nth-child(5) { background: #015c73; } // Much darker cyan
+
+        h6, h5 {
+            color: #ffffff;
+        }
+    }
+
+    // Form control focus states - ensure light border in dark mode
+    .form-control:focus,
+    .form-select:focus,
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    input[type="number"]:focus,
+    input[type="tel"]:focus,
+    input[type="url"]:focus,
+    input[type="search"]:focus,
+    input[type="date"]:focus,
+    input[type="time"]:focus,
+    input[type="datetime-local"]:focus,
+    select:focus,
+    textarea:focus {
+        border-color: #c084fc !important; // Light purple for better contrast in dark mode
+        box-shadow: 0 0 0 0.2rem rgba(192, 132, 252, 0.25) !important;
+    }
+
+    // Select2 focus states - ensure light border in dark mode
+    .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+    .select2-container--bootstrap-5.select2-container--open .select2-selection {
+        border-color: #c084fc !important; // Light purple for better contrast in dark mode
+        box-shadow: 0 0 0 0.2rem rgba(192, 132, 252, 0.25) !important;
+    }
 }

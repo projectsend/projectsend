@@ -2,9 +2,7 @@
 /**
  * Show the form to edit an existing group.
  */
-$allowed_levels = array(9, 8);
 require_once 'bootstrap.php';
-log_in_required($allowed_levels);
 
 $active_nav = 'groups';
 
@@ -26,6 +24,12 @@ if (!group_exists_id($group_id)) {
 
 /** Create the object */
 $edit_group = new \ProjectSend\Classes\Groups($group_id);
+
+/** Check if user can edit this group */
+if (!$edit_group->canUserEdit()) {
+    exit_with_error_code(403);
+}
+
 $group_arguments = $edit_group->getProperties();
 
 if ($_POST) {
@@ -48,10 +52,10 @@ if ($_POST) {
     $edit_group->set($group_arguments);
     $edit_response = $edit_group->edit();
 
-    if ($edit_response['query'] == 1) {
-        $flash->success(__('Group saved successfully'));
+    if ($edit_response['status'] === 'success') {
+        $flash->success($edit_response['message']);
     } else {
-        $flash->error(__('There was an error saving to the database'));
+        $flash->error($edit_response['message']);
     }
 
     $location = BASE_URI . 'groups-edit.php?id=' . $group_id;

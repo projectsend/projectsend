@@ -1,7 +1,7 @@
 <?php
 require_once '../../../bootstrap.php';
 
-if (!defined('CURRENT_USER_LEVEL') or CURRENT_USER_LEVEL != 9) {
+if (!current_user_can('view_actions_log')) {
     ps_redirect(BASE_URI);
 }
 

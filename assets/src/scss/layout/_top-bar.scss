@@ -13,14 +13,14 @@
                 font-size:.9rem;
     
                 > a {
-                    color:#f0f0f0;
+                    color:var(--top_bar_text);
                     // line-height:33px;
                     padding:3px 10px;
-                    border-left:1px solid #474b58;
+                    border-left:1px solid var(--border-dark);
                     margin:0;
-    
+
                     &:hover, &:focus {
-                        color:#fff;
+                        color:var(--top_bar_text_hover);
                         background:var(--top_bar_hover);
                     }
     
@@ -44,24 +44,101 @@
             }
 
             .open > a, .nav .open > a:focus, .nav .open > a:hover {
-                background: #333;
+                background: var(--color-gray-800);
             }
         }
 
-        .nav_account > li {
-            display:inline-block;
+        .nav_account {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-right: 8px;
 
-            > a {
-                color:#f0f0f0;
-            }
+            > li {
+                display: flex;
+                align-items: center;
 
-            i {
-                display: inline-block;
-            }
+                > a {
+                    color: var(--top_bar_text);
+                    padding: 0;
+                    border-radius: 0;
+                    border-left: none;
+                    transition: all 0.2s ease;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-size: 0.9rem;
+                    background: none;
 
-            span {                
-                @include bk(xs) {
-                    display: none;
+                    &:hover,
+                    &:focus {
+                        background: none;
+                        text-decoration: none;
+                        color: var(--top_bar_text_hover);
+                    }
+                }
+
+                i {
+                    display: inline-block;
+                    font-size: 24px;
+                }
+
+                span {
+                    @include bk(md) {
+                        display: none;
+                    }
+                }
+
+                &.dropdown {
+                    .dropdown-toggle {
+                        &::after {
+                            display: none; // Hide default Bootstrap caret
+                        }
+                    }
+
+                    .dropdown-menu {
+                        min-width: 200px;
+                        border-radius: 10px;
+                        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+                        border: 1px solid var(--border-medium);
+                        background: var(--bg-card);
+                        margin-top: 8px;
+                        padding: 8px;
+
+                        .dropdown-item {
+                            padding: 10px 12px;
+                            color: var(--text-primary);
+                            display: flex;
+                            align-items: center;
+                            gap: 12px;
+                            font-size: 0.9rem;
+                            border-radius: 6px;
+                            margin: 0;
+                            border: none;
+
+                            &:hover,
+                            &:focus {
+                                background: var(--bg-hover);
+                                color: var(--text-primary);
+                            }
+
+                            &:active {
+                                background: var(--bg-hover);
+                                color: var(--text-primary);
+                            }
+
+                            i {
+                                width: 18px;
+                                text-align: center;
+                                font-size: 14px;
+                            }
+                        }
+
+                        .dropdown-divider {
+                            margin: 8px 0;
+                            border-color: var(--border-light);
+                        }
+                    }
                 }
             }
         }
@@ -70,7 +147,7 @@
     .navbar-brand {
         height:40px;
         line-height:10px;
-        color:#f0f0f0;
+        color:var(--top_bar_text);
 
         &:hover,
         &:active,
@@ -80,14 +157,14 @@
         }
 
         svg {
-            fill:#777;
+            fill:var(--text-muted);
             display: inline-block;
             margin:0 10px 0 20px;
             width:20px;
             height:auto;
 
             &:hover {
-                fill:#fff;
+                fill:var(--top_bar_text_hover);
             }
 
             @include bk(xs) {
@@ -98,10 +175,115 @@
 
     #header_welcome {
         margin-right:10px;
-        color:#ccc;
+        color:var(--text-muted);
 
         @include bk(xs) {
             display: none;
         }
+    }
+
+    // Theme toggle button
+    .theme-toggle {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: auto;
+        height: auto;
+        border-radius: 0;
+        transition: all 0.2s ease;
+        padding: 0;
+        background: none;
+
+        &:hover {
+            background: none;
+        }
+
+        i {
+            transition: all 0.2s ease;
+            font-size: 24px;
+        }
+
+        .theme-icon-dark {
+            display: block;
+        }
+
+        .theme-icon-light {
+            display: none;
+        }
+
+        @include bk(xs) {
+            span:not(.sr-only) {
+                display: none;
+            }
+        }
+    }
+
+    // Dark theme icon states
+    [data-theme="dark"] {
+        .theme-toggle {
+            .theme-icon-dark {
+                display: none;
+            }
+
+            .theme-icon-light {
+                display: block;
+            }
+        }
+    }
+
+    // User dropdown with avatar
+    .user-dropdown {
+        .user-trigger {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0;
+            border-radius: 0;
+            transition: all 0.2s ease;
+            background: none;
+
+            &:hover,
+            &:focus {
+                background: none;
+                text-decoration: none;
+            }
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-name {
+            color: var(--top_bar_text);
+            font-size: 0.9rem;
+            font-weight: 500;
+            white-space: nowrap;
+
+            @include bk(md) {
+                display: none;
+            }
+        }
+
+        i.fa-caret-down {
+            color: var(--top_bar_text);
+            font-size: 12px;
+            opacity: 0.7;
+
+            @include bk(md) {
+                display: none;
+            }
+        }
+
     }
 }

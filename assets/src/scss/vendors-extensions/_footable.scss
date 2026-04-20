@@ -18,11 +18,11 @@
     border-collapse: separate;
     border-spacing: 0;
     font-size: 1em;
-    color: #444444;
-    background: #ffffff;
+    color: var(--text-primary);
+    background: var(--bg-card);
     margin:10px auto 15px;
     border-radius: 8px;
-    box-shadow: var(--global_box_shadow);
+    box-shadow: var(--shadow-md);
 }
 
 .footable > tfoot > tr > td {
@@ -42,7 +42,7 @@
     font-size: .7rem;
     text-transform: uppercase;
     vertical-align: middle;
-    color: #444444;
+    color: var(--text-primary);
     padding-top: .9rem;
     padding-bottom: .9rem;
 }
@@ -50,7 +50,7 @@
 .footable > thead > tr > td a
 {
     display:inline-block;
-    color:#222;
+    color: var(--text-primary);
     text-decoration:none;
 }
 .footable > thead > tr > th.footable-sorted-asc > span.footable-sort-indicator:before {
@@ -60,17 +60,57 @@
 .footable > thead > tr > th.footable-sorted-asc,
 .footable > thead > tr > th.footable-sorted-desc
 {
-    background-color: var(--side_menu_selected_parent_bg) !important;
-    color:var(--side_menu_selected_parent_color) !important;
+    background-color: var(--color-primary);
+    color: var(--text-inverse);
 }
 .footable-sorted a, .footable-sorted-asc a, .footable-sorted-desc a {
-    color:var(--side_menu_selected_parent_color) !important;
+    color: var(--text-inverse);
+}
+
+// Light mode: ensure active thead cells with sorting have white text
+.footable > thead > tr > th.active.footable-sorted,
+.footable > thead > tr > th.active.footable-sorted-asc,
+.footable > thead > tr > th.active.footable-sorted-desc {
+    background-color: var(--color-primary);
+    color: #ffffff !important;
+}
+
+.footable > thead > tr > th.active.footable-sorted a,
+.footable > thead > tr > th.active.footable-sorted-asc a,
+.footable > thead > tr > th.active.footable-sorted-desc a {
+    color: #ffffff !important;
+}
+
+// Dark mode specific footable overrides
+[data-theme="dark"] {
+    .footable > thead > tr > th.footable-sorted,
+    .footable > thead > tr > th.footable-sorted-asc,
+    .footable > thead > tr > th.footable-sorted-desc {
+        background-color: var(--color-primary);
+        color: #ffffff;
+    }
+
+    .footable > thead > tr > th.footable-sorted a,
+    .footable > thead > tr > th.footable-sorted-asc a,
+    .footable > thead > tr > th.footable-sorted-desc a {
+        color: #ffffff;
+    }
+
+    .footable > thead > tr > th,
+    .footable > thead > tr > td {
+        color: #e9ecef;
+    }
+
+    .footable > thead > tr > th a,
+    .footable > thead > tr > td a {
+        color: #e9ecef;
+    }
 }
 .footable > thead > tr > th.footable-first-column, .footable > thead > tr > td.footable-first-column {
     border-left: none;
 }
 .footable.breakpoint > tbody > tr.footable-row-detail {
-    background: #fff;
+    background: var(--bg-card);
 }
 .footable-row-detail-inner {
     width:100%;
@@ -81,13 +121,21 @@
 }
 .footable-row-detail-name, .footable-row-detail-value {
     padding:5px 0;
-    border-bottom:1px solid #dedede;
+    border-bottom:1px solid var(--border-light);
 }
 .footable > tbody img {
     vertical-align: middle;
 }
+
+// Resize thumbnails in table view to 50x50
+.footable > tbody img.thumbnail {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+}
 .footable > tbody > tr:hover > td {
-    background: #fbf8e9 !important;
+    background: var(--bg-hover) !important;
 }
 .footable > tbody > tr > td {
     padding: 7px 4px;
@@ -106,7 +154,7 @@
     padding: 0;
     border-radius: 6px;
     box-shadow: none;
-    background-color: #ffffff;
+    background-color: var(--bg-card);
 }
 .footable .pagination > ul > li {
     display: inline;
@@ -116,7 +164,7 @@
     padding: 4px 12px;
     line-height: 20px;
     text-decoration: none;
-    border: 1px solid #cccccc;
+    border: 1px solid var(--border-medium);
     border-left-width: 0;
 }
 .footable .pagination > ul > li:first-child > a, .footable .pagination > ul > li:first-child > span {
@@ -129,16 +177,16 @@
     border-bottom-right-radius: 4px;
 }
 .footable .pagination > ul > li > a:hover, .footable .pagination > ul > li > a:focus, .footable .pagination > ul > .active > a, .footable .pagination > ul > .active > span {
-    background-color: #eeeeee;
+    background-color: var(--bg-hover);
 }
 .footable .pagination > ul > .active > a, .footable .pagination > ul > .active > span {
-    color: #444444;
+    color: var(--text-primary);
     cursor: default;
 }
 .footable .pagination > ul > .disabled > span, .footable .pagination > ul > .disabled > a, .footable .pagination > ul > .disabled > a:hover, .footable .pagination > ul > .disabled > a:focus {
-    color: #cccccc;
+    color: var(--text-muted);
     cursor: default;
-    background-color: #ebf3fc;
+    background-color: var(--bg-hover);
 }
 .footable .pagination.pagination-centered {
     text-align: center;
@@ -147,5 +195,5 @@
     text-align: center;
 }
 .footable-odd {
-    background-color: #f7f7f7;
+    background-color: var(--bg-hover);
 }

@@ -1,154 +1,139 @@
-<h3><?php _e('New registrations','cftp_admin'); ?></h3>
-<p><?php _e('Used only on self-registrations. These options will not apply to clients registered by system administrators.','cftp_admin'); ?></p>
+<?php
+/**
+ * Clients options form configuration
+ * Refactored to use array-based configuration - matches original exactly
+ */
 
-<div class="form-group row">
-    <div class="col-sm-8 offset-sm-4">
-        <label for="clients_can_register">
-            <input type="checkbox" value="1" name="clients_can_register" id="clients_can_register" class="checkbox_options" <?php echo (get_option('clients_can_register') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Clients can register themselves','cftp_admin'); ?>
-        </label>
-    </div>
-</div>
+// Define the form sections and fields
+$form_sections = [
+    [
+        'title' => __('New registrations', 'cftp_admin'),
+        'description' => __('Used only on self-registrations. These options will not apply to clients registered by system administrators.', 'cftp_admin'),
+        'fields' => [
+            [
+                'type' => 'checkbox',
+                'name' => 'clients_can_register',
+                'label' => __('Clients can register themselves', 'cftp_admin')
+            ],
+            [
+                'type' => 'checkbox',
+                'name' => 'clients_auto_approve',
+                'label' => __('Auto approve new accounts', 'cftp_admin')
+            ],
+            [
+                'type' => 'custom',
+                'name' => 'clients_auto_group',
+                'render_callback' => function($field) {
+                    ?>
+                    <div class="form-group row">
+                        <label for="clients_auto_group" class="col-sm-4 control-label"><?php _e('Add clients to this group:','cftp_admin'); ?></label>
+                        <div class="col-sm-8">
+                            <select class="form-select" name="clients_auto_group" id="clients_auto_group" required>
+                                <option value="0"><?php _e('None (does not enable this feature)','cftp_admin'); ?></option>
+                                <?php
+                                    /** Fill the groups array that will be used on the form */
+                                    $groups = get_groups([]);
 
-<div class="form-group row">
-    <div class="col-sm-8 offset-sm-4">
-        <label for="clients_auto_approve">
-            <input type="checkbox" value="1" name="clients_auto_approve" id="clients_auto_approve" class="checkbox_options" <?php echo (get_option('clients_auto_approve') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Auto approve new accounts','cftp_admin'); ?>
-        </label>
-    </div>
-</div>
-
-<div class="form-group row">
-    <label for="clients_auto_group" class="col-sm-4 control-label"><?php _e('Add clients to this group:','cftp_admin'); ?></label>
-    <div class="col-sm-8">
-        <select class="form-select" name="clients_auto_group" id="clients_auto_group" required>
-            <option value="0"><?php _e('None (does not enable this feature)','cftp_admin'); ?></option>
-            <?php
-                /** Fill the groups array that will be used on the form */
-                $groups = get_groups([]);
-
-                foreach ( $groups as $group ) {
-            ?>
-                    <option value="<?php echo filter_var($group["id"], FILTER_VALIDATE_INT); ?>"
-                        <?php
-                            if (get_option('clients_auto_group') == $group["id"]) {
-                                echo 'selected="selected"';
-                            }
-                        ?>
-                        ><?php echo html_output($group["name"]); ?>
-                    </option>
-            <?php
+                                    foreach ( $groups as $group ) {
+                                ?>
+                                        <option value="<?php echo filter_var($group["id"], FILTER_VALIDATE_INT); ?>"
+                                            <?php
+                                                if (get_option('clients_auto_group') == $group["id"]) {
+                                                    echo 'selected="selected"';
+                                                }
+                                            ?>
+                                            ><?php echo html_output($group["name"]); ?>
+                                        </option>
+                                <?php
+                                    }
+                                ?>
+                            </select>
+                            <p class="field_note form-text"><?php _e('New clients will automatically be assigned to the group you have selected.','cftp_admin'); ?></p>
+                        </div>
+                    </div>
+                    <?php
                 }
-            ?>
-        </select>
-        <p class="field_note form-text"><?php _e('New clients will automatically be assigned to the group you have selected.','cftp_admin'); ?></p>
-    </div>
-</div>
+            ],
+            [
+                'type' => 'select',
+                'name' => 'clients_can_select_group',
+                'label' => __('Groups for which clients can request membership to:', 'cftp_admin'),
+                'options' => [
+                    'none' => __("None", 'cftp_admin'),
+                    'public' => __("Public groups", 'cftp_admin'),
+                    'all' => __("All groups", 'cftp_admin')
+                ],
+                'required' => true,
+                'note' => __('When a client registers a new account, an option will be presented to request becoming a member of a particular group.', 'cftp_admin')
+            ]
+        ]
+    ],
 
-<div class="form-group row">
-    <label for="clients_can_select_group" class="col-sm-4 control-label"><?php _e('Groups for which clients can request membership to:','cftp_admin'); ?></label>
-    <div class="col-sm-8">
-        <select class="form-select" name="clients_can_select_group" id="clients_can_select_group" required>
-            <?php
-                $pub_groups_options = array(
-                                            'none'		=> __("None",'cftp_admin'),
-                                            'public'	=> __("Public groups",'cftp_admin'),
-                                            'all'		=> __("All groups",'cftp_admin'),
-                                        );
-                foreach ( $pub_groups_options as $value => $label ) {
-            ?>
-                    <option value="<?php echo $value; ?>" <?php if (get_option('clients_can_select_group') == $value) { echo 'selected="selected"'; } ?>><?php echo $label; ?></option>
-            <?php
+    [
+        'title' => __('Files', 'cftp_admin'),
+        'fields' => [
+            [
+                'type' => 'number',
+                'name' => 'clients_default_disk_quota',
+                'label' => __('Default disk quota for new clients', 'cftp_admin'),
+                'default' => '0',
+                'note' => __('Applied to new client accounts. Set to 0 for unlimited disk space. Value in MB.', 'cftp_admin'),
+                'suffix' => 'MB'
+            ],
+            [
+                'type' => 'custom',
+                'name' => 'client_permissions_notice',
+                'render_callback' => function($field) {
+                    ?>
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="alert alert-info d-flex align-items-start">
+                                <div class="me-3">
+                                    <i class="fa fa-info-circle fa-2x text-info"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="alert-heading mb-2"><?php _e('Client Permissions Moved', 'cftp_admin'); ?></h6>
+                                    <p class="mb-2">
+                                        <?php _e('File-related permissions for clients are now managed through the role-based permission system for better organization and control.', 'cftp_admin'); ?>
+                                    </p>
+                                    <a href="role-permissions.php?role=<?php
+                                        global $dbh;
+                                        $query = "SELECT id FROM " . TABLE_ROLES . " WHERE name = 'Client'";
+                                        $statement = $dbh->prepare($query);
+                                        $statement->execute();
+                                        echo $statement->fetchColumn();
+                                    ?>" class="btn btn-info btn-sm">
+                                        <i class="fa fa-cog"></i> <?php _e('Configure Client Permissions', 'cftp_admin'); ?>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
                 }
-            ?>
-        </select>
-        <p class="field_note form-text"><?php _e('When a client registers a new account, an option will be presented to request becoming a member of a particular group.','cftp_admin'); ?></p>
-    </div>
-</div>
+            ],
+            [
+                'type' => 'select',
+                'name' => 'expired_files_hide',
+                'label' => __('When a file expires:', 'cftp_admin'),
+                'options' => [
+                    '1' => __("Don't show it on the files list", 'cftp_admin'),
+                    '0' => __("Show it anyway, but prevent download.", 'cftp_admin')
+                ],
+                'required' => true,
+                'default' => '1',
+                'note' => __('This only affects clients. On the admin side, you can still get the files.', 'cftp_admin')
+            ],
+            [
+                'type' => 'checkbox',
+                'name' => 'clients_files_list_include_public',
+                'label' => __("Show public files and folders on client's files lists", 'cftp_admin'),
+                'note' => __("When a client logs in, all public files will also be shown using the selected template, next to the files assigned to their account.", 'cftp_admin')
+            ]
+        ],
+        'divider' => false // No divider at the end
+    ]
+];
 
-<div class="options_divide"></div>
-
-<h3><?php _e('Files','cftp_admin'); ?></h3>
-
-<div class="form-group row">
-    <div class="col-sm-8 offset-sm-4">
-        <label for="clients_can_upload">
-            <input type="checkbox" value="1" name="clients_can_upload" id="clients_can_upload" class="checkbox_options" <?php echo (get_option('clients_can_upload') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Clients can upload files','cftp_admin'); ?>
-        </label>
-    </div>
-</div>
-
-<div class="form-group row">
-    <div class="col-sm-8 offset-sm-4">
-        <label for="clients_can_delete_own_files">
-            <input type="checkbox" value="1" name="clients_can_delete_own_files" id="clients_can_delete_own_files" class="checkbox_options" <?php echo (get_option('clients_can_delete_own_files') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Clients can delete their own uploaded files','cftp_admin'); ?>
-        </label>
-    </div>
-</div>
-
-<div class="form-group row">
-    <div class="col-sm-8 offset-sm-4">
-        <label for="clients_can_set_expiration_date">
-            <input type="checkbox" value="1" name="clients_can_set_expiration_date" id="clients_can_set_expiration_date" class="checkbox_options" <?php echo (get_option('clients_can_set_expiration_date') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Clients can set expiration Date','cftp_admin'); ?>
-        </label>
-    </div>
-</div>
-
-<div class="form-group row">
-    <label for="clients_can_select_group" class="col-sm-4 control-label"><?php _e('Clients can set own files as public:','cftp_admin'); ?></label>
-    <div class="col-sm-8">
-        <select class="form-select" name="clients_can_set_public" id="clients_can_set_public" required>
-            <?php
-                $pub_clients_files_options = array(
-                    'none' => __("None",'cftp_admin'),
-                    'allowed' => __("Allowed ones",'cftp_admin'),
-                    'all' => __("All clients",'cftp_admin'),
-                );
-                foreach ( $pub_clients_files_options as $value => $label ) {
-            ?>
-                    <option value="<?php echo $value; ?>" <?php if (get_option('clients_can_set_public') == $value) { echo 'selected="selected"'; } ?>><?php echo $label; ?></option>
-            <?php
-                }
-            ?>
-        </select>
-        <p class="field_note form-text"><?php _e("If selecting 'allowed ones': please edit each allowed client and set the corresponding permissions.",'cftp_admin'); ?></p>
-    </div>
-</div>
-
-<div class="form-group row">
-    <div class="col-sm-8 offset-sm-4">
-        <label for="clients_new_default_can_set_public">
-            <input type="checkbox" value="1" name="clients_new_default_can_set_public" id="clients_new_default_can_set_public" class="checkbox_options" <?php echo (get_option('clients_new_default_can_set_public') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('New self registered clients can upload public files by default.','cftp_admin'); ?>
-        </label>
-        <p class="field_note form-text"><?php _e("Specific option when selecting 'allowed ones' in the previous option.",'cftp_admin'); ?></p>
-    </div>
-</div>
-
-<div class="form-group row">
-    <div class="col-sm-8 offset-sm-4">
-        <label for="clients_can_upload_to_public_folders">
-            <input type="checkbox" value="1" name="clients_can_upload_to_public_folders" id="clients_can_upload_to_public_folders" class="checkbox_options" <?php echo (get_option('clients_can_upload_to_public_folders') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Allow clients to assign files to public folders','cftp_admin'); ?>
-        </label>
-        <p class="field_note form-text"><?php _e("Any file assigned to a public folder automatically becomes public too.",'cftp_admin'); ?><br><?php _e('Important: inherits permission from the setting "Clients can set own files as public".','cftp_admin'); ?></p>
-    </div>
-</div>
-
-
-<div class="form-group row">
-    <label for="expired_files_hide" class="col-sm-4 control-label"><?php _e('When a file expires:','cftp_admin'); ?></label>
-    <div class="col-sm-8">
-        <select class="form-select" name="expired_files_hide" id="expired_files_hide" required>
-            <option value="1" <?php echo (get_option('expired_files_hide') == '1') ? 'selected="selected"' : ''; ?>><?php _e("Don't show it on the files list",'cftp_admin'); ?></option>
-            <option value="0" <?php echo (get_option('expired_files_hide') == '0') ? 'selected="selected"' : ''; ?>><?php _e("Show it anyway, but prevent download.",'cftp_admin'); ?></option>
-        </select>
-        <p class="field_note form-text"><?php _e('This only affects clients. On the admin side, you can still get the files.','cftp_admin'); ?></p>
-    </div>
-</div>
-
-<div class="form-group row">
-    <div class="col-sm-8 offset-sm-4">
-        <label for="clients_files_list_include_public">
-            <input type="checkbox" value="1" name="clients_files_list_include_public" id="clients_files_list_include_public" class="checkbox_options" <?php echo (get_option('clients_files_list_include_public') == 1) ? 'checked="checked"' : ''; ?> /> <?php _e("Show public files and folders on client's files lists",'cftp_admin'); ?>
-        </label>
-        <p class="field_note form-text"><?php _e("When a client logs in, all public files will also be shown using the selected template, next to the files assigned to their account.",'cftp_admin'); ?></p>
-    </div>
-</div>
+// Render the form sections
+render_options_form_sections($form_sections);

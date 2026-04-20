@@ -3,12 +3,12 @@
 #footer {
     margin:50px 0 10px 0;
     padding:20px 0;
-    border-top:1px solid #dedede;
+    border-top:1px solid var(--border-medium);
     text-align:center;
-    color:#888;
+    color:var(--text-secondary);
 
     a {
-        color:#666;
+        color:var(--text-secondary);
     }
 
     .footer_links {

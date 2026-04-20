@@ -65,6 +65,23 @@ function extract_template_info($template_directory)
         $template_info['cover']	= $cover_url;
     }
 
+    // Check for template features
+    if ($folder === 'default') {
+        $template_info['features'] = [
+            'client_files' => true,
+            'public_files' => true,
+            'download_page' => true,
+            'has_settings' => false,
+        ];
+    } else {
+        $template_info['features'] = [
+            'client_files' => file_exists($template_directory . DS . 'template.php'),
+            'public_files' => file_exists($template_directory . DS . 'public.php'),
+            'download_page' => file_exists($template_directory . DS . 'public-download.php'),
+            'has_settings' => file_exists($template_directory . DS . 'settings.php'),
+        ];
+    }
+
     return $template_info;
 }
 
@@ -147,19 +164,69 @@ function check_template_integrity($folder)
 }
 
 /**
- * Prepare the current files template and show it
+ * Get appropriate FontAwesome icon class for file type
  *
- * @return void
+ * @param string $extension
+ * @return string
  */
-function set_up_template()
+function get_file_type_icon($extension)
 {
-    // Load values from the config file
-
-    // If config file doesn't exist, set default values
-
-    // Include the common functions
-
-    // Include the main template file
+    $iconMap = [
+        // Documents
+        'pdf' => 'fas fa-file-pdf',
+        'doc' => 'fas fa-file-word',
+        'docx' => 'fas fa-file-word',
+        'xls' => 'fas fa-file-excel',
+        'xlsx' => 'fas fa-file-excel',
+        'ppt' => 'fas fa-file-powerpoint',
+        'pptx' => 'fas fa-file-powerpoint',
+        'txt' => 'fas fa-file-text',
+        'rtf' => 'fas fa-file-text',
+        
+        // Images
+        'jpg' => 'fas fa-file-image',
+        'jpeg' => 'fas fa-file-image',
+        'png' => 'fas fa-file-image',
+        'gif' => 'fas fa-file-image',
+        'bmp' => 'fas fa-file-image',
+        'svg' => 'fas fa-file-image',
+        'webp' => 'fas fa-file-image',
+        
+        // Audio
+        'mp3' => 'fas fa-file-audio',
+        'wav' => 'fas fa-file-audio',
+        'flac' => 'fas fa-file-audio',
+        'aac' => 'fas fa-file-audio',
+        'ogg' => 'fas fa-file-audio',
+        
+        // Video
+        'mp4' => 'fas fa-file-video',
+        'avi' => 'fas fa-file-video',
+        'mov' => 'fas fa-file-video',
+        'wmv' => 'fas fa-file-video',
+        'flv' => 'fas fa-file-video',
+        'webm' => 'fas fa-file-video',
+        
+        // Archives
+        'zip' => 'fas fa-file-archive',
+        'rar' => 'fas fa-file-archive',
+        '7z' => 'fas fa-file-archive',
+        'tar' => 'fas fa-file-archive',
+        'gz' => 'fas fa-file-archive',
+        
+        // Code
+        'html' => 'fas fa-file-code',
+        'css' => 'fas fa-file-code',
+        'js' => 'fas fa-file-code',
+        'php' => 'fas fa-file-code',
+        'py' => 'fas fa-file-code',
+        'java' => 'fas fa-file-code',
+        'cpp' => 'fas fa-file-code',
+        'c' => 'fas fa-file-code',
+        'sql' => 'fas fa-file-code'
+    ];
+    
+    return $iconMap[strtolower($extension)] ?? 'fas fa-file';
 }
 
 function template_load_translation($template)
@@ -194,4 +261,79 @@ function get_default_template_path()
 {
     $path = ROOT_DIR.DS.'templates'.DS.'default'.DS;
     return $path;
+}
+
+function get_public_template_file_location()
+{
+    // Check for complete template override first (public.php)
+    $template_public_file = get_selected_template_path() . 'public.php';
+    if (file_exists($template_public_file)) {
+        return $template_public_file;
+    }
+    
+    // Fallback to content-only template (public-list.php)
+    return get_template_file_location('public-list.php');
+}
+
+/**
+ * Get Material Design icon for file type (Google Drive template)
+ */
+function get_material_file_icon($extension)
+{
+    $iconMap = [
+        // Documents
+        'pdf' => 'picture_as_pdf',
+        'doc' => 'description',
+        'docx' => 'description',
+        'xls' => 'grid_on',
+        'xlsx' => 'grid_on',
+        'ppt' => 'slideshow',
+        'pptx' => 'slideshow',
+        'txt' => 'description',
+        'rtf' => 'description',
+        
+        // Images
+        'jpg' => 'image',
+        'jpeg' => 'image',
+        'png' => 'image',
+        'gif' => 'image',
+        'bmp' => 'image',
+        'svg' => 'image',
+        'webp' => 'image',
+        
+        // Audio
+        'mp3' => 'audiotrack',
+        'wav' => 'audiotrack',
+        'flac' => 'audiotrack',
+        'aac' => 'audiotrack',
+        'ogg' => 'audiotrack',
+        
+        // Video
+        'mp4' => 'movie',
+        'avi' => 'movie',
+        'mov' => 'movie',
+        'wmv' => 'movie',
+        'flv' => 'movie',
+        'webm' => 'movie',
+        
+        // Archives
+        'zip' => 'archive',
+        'rar' => 'archive',
+        '7z' => 'archive',
+        'tar' => 'archive',
+        'gz' => 'archive',
+        
+        // Code
+        'html' => 'code',
+        'css' => 'code',
+        'js' => 'code',
+        'php' => 'code',
+        'py' => 'code',
+        'java' => 'code',
+        'cpp' => 'code',
+        'c' => 'code',
+        'sql' => 'code'
+    ];
+    
+    return $iconMap[strtolower($extension)] ?? 'insert_drive_file';
 }

@@ -2,8 +2,8 @@
 /**
  * Show the list of activities logged.
  */
-$allowed_levels = array(9);
 require_once 'bootstrap.php';
+check_access_enhanced(['view_actions_log']);
 
 $active_nav = 'tools';
 
@@ -157,7 +157,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                 $table = new \ProjectSend\Classes\Layout\Table([
                     'id' => 'activities_tbl',
                     'class' => 'footable table',
-                    'origin' => __FILE__,
+                    'origin' => basename(__FILE__),
                 ]);
 
                 $thead_columns = array(

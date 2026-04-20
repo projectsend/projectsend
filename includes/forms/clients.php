@@ -134,6 +134,17 @@ switch ($clients_form_type) {
                 <p class="field_note form-text"><?php _e("Set to 0 to use the default system limit", 'cftp_admin'); ?> (<?php echo MAX_FILESIZE; ?> MB)</p>
             </div>
         </div>
+
+        <div class="form-group row">
+            <label for="max_disk_quota" class="col-sm-4 control-label"><?php _e('Max. disk quota', 'cftp_admin'); ?></label>
+            <div class="col-sm-8">
+                <div class="input-group">
+                    <input type="text" name="max_disk_quota" id="max_disk_quota" class="form-control" value="<?php echo (isset($client_arguments['max_disk_quota'])) ? format_form_value($client_arguments['max_disk_quota']) : get_option('clients_default_disk_quota', null, '0'); ?>" />
+                    <span class="input-group-text">MB</span>
+                </div>
+                <p class="field_note form-text"><?php _e("Set to 0 for unlimited disk space", 'cftp_admin'); ?></p>
+            </div>
+        </div>
         <?php
     }
 
@@ -145,8 +156,7 @@ switch ($clients_form_type) {
         $arguments = [];
 
         /** Groups to search on based on the current user level */
-        $role = (defined('CURRENT_USER_LEVEL')) ? CURRENT_USER_LEVEL : null;
-        if (!empty($role) && in_array($role, [8, 9])) {
+        if (current_role_in(['Account Manager', 'System Administrator'])) {
             /** An admin or client manager is creating a client account */
         } else {
             /** Someone is registering an account for himself */
@@ -187,7 +197,7 @@ switch ($clients_form_type) {
                         ?>
                     </select>
                     <?php
-                    if (!empty($role) && in_array($role, [8, 9])) {
+                    if (current_role_in(['Account Manager', 'System Administrator'])) {
                     ?>
                         <div class="select_control_buttons">
                             <button type="button" class="btn btn-pslight add-all" data-target="groups-select"><?php _e('Add all', 'cftp_admin'); ?></button>
@@ -217,8 +227,12 @@ switch ($clients_form_type) {
                 <label for="can_upload_public">
                     <input type="checkbox" name="can_upload_public" id="can_upload_public" <?php echo (isset($client_arguments['can_upload_public']) && $client_arguments['can_upload_public'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Can set own files as public', 'cftp_admin'); ?>
                 </label>
-                <?php if (get_option('clients_can_set_public') != 'allowed') { ?>
-                    <p class="field_note form-text"><?php _e("This has no effect according to your current settings.", 'cftp_admin'); ?> <a href="options.php?section=clients" target="blank"><?php _e("Go to settings", 'cftp_admin'); ?></a></p>
+                <?php
+                // Check if client role has upload_public permission
+                $client_role = new \ProjectSend\Classes\Roles(\ProjectSend\Classes\Roles::getClientRoleId());
+                if (!$client_role->hasPermission('upload_public')) {
+                ?>
+                    <p class="field_note form-text"><?php _e("This has no effect according to your current settings.", 'cftp_admin'); ?> <a href="role-permissions.php?role=<?php echo \ProjectSend\Classes\Roles::getClientRoleId(); ?>" target="blank"><?php _e("Go to settings", 'cftp_admin'); ?></a></p>
                 <?php } ?>
             </div>
         </div>
@@ -254,6 +268,27 @@ switch ($clients_form_type) {
         </div>
     <?php
     }
+    ?>
+
+    <?php
+    // Render custom fields
+    $custom_field_type = 'client';
+    $custom_form_type = 'full';
+
+    // Determine form type for custom fields
+    if ($clients_form_type == 'new_client_self') {
+        $custom_form_type = 'registration';
+    } elseif ($clients_form_type == 'edit_client_self') {
+        $custom_form_type = 'self';
+    }
+
+    // Get user ID for existing values
+    $custom_user_id = null;
+    if (isset($client_id)) {
+        $custom_user_id = $client_id;
+    }
+
+    echo render_custom_fields($custom_field_type, $custom_user_id, $custom_form_type);
     ?>
 
     <?php

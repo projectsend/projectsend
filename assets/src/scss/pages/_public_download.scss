@@ -13,6 +13,11 @@ body.download {
     .description {
         font-size: 1.2rem;
         line-height: 1.4rem;
+
+        ul, ol {
+            list-style-position: inside;
+            padding-left: 0;
+        }
     }
 
     .size {

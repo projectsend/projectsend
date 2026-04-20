@@ -9,7 +9,10 @@
         background-color: var(--main_color);
         border: 3px solid var(--main_color);
         border-radius: 8px;
-        color: white;
+        color: var(--text-inverse);
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
         &.folder_up,
         &.folder_root
@@ -21,7 +24,7 @@
         a {
             display: flex;
             align-items: center;
-            color: white;
+            color: var(--text-inverse);
             padding: 1rem;
         }
 
@@ -58,8 +61,8 @@
 
         &[data-can-assign-file="false"] {
             &.drop_target_active {
-                background-color: red;
-                border-color: red;
+                background-color: var(--color-error);
+                border-color: var(--color-error);
                 border-style: solid;
                 opacity: .5;
 
@@ -68,7 +71,7 @@
                 }
 
                 &:hover {
-                    background-color: red !important;
+                    background-color: var(--color-error) !important;
                     cursor: not-allowed;
                 }
             }    
@@ -85,12 +88,12 @@
 
         &.drop_forbidden {
             cursor: not-allowed !important;
-            background-color: red !important;
-            border-color: red;
+            background-color: var(--color-error) !important;
+            border-color: var(--color-error);
             opacity: .5;
 
             a {
-                color: white !important;
+                color: var(--text-inverse) !important;
             }
         }
 
@@ -100,8 +103,27 @@
             border-style: dashed;
 
             a {
-                color: white !important;
+                color: var(--text-inverse) !important;
             }
         }
-}
+
+        .folder_open_context_menu {
+            cursor: pointer;
+
+            i {
+                opacity: .5;
+                padding: 0 5px;
+            }
+
+            &:hover,
+            &:active,
+            &:focus
+            {
+                i {
+                    opacity: 1;
+                    color: var(--text-secondary);
+                }
+            }
+        }
+    }
 }

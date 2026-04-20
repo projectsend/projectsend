@@ -22,6 +22,14 @@ class GroupsMemberships
 
     function groupAddMembers($arguments)
     {
+        // Check permissions
+        if (!\current_user_can('manage_groups')) {
+            return [
+                'status' => 'error',
+                'message' => __('You do not have permission to manage group memberships.', 'cftp_admin')
+            ];
+        }
+
         $client_ids	= is_array( $arguments['client_id'] ) ? $arguments['client_id'] : array( $arguments['client_id'] );
         $group_id = $arguments['group_id'];
         $added_by = $arguments['added_by'];
@@ -54,6 +62,14 @@ class GroupsMemberships
 
     function groupRemoveMembers($arguments)
     {
+        // Check permissions
+        if (!\current_user_can('manage_groups')) {
+            return [
+                'status' => 'error',
+                'message' => __('You do not have permission to manage group memberships.', 'cftp_admin')
+            ];
+        }
+
         $client_ids	= is_array( $arguments['client_id'] ) ? $arguments['client_id'] : array( $arguments['client_id'] );
         $group_id = $arguments['group_id'];
 
@@ -118,7 +134,7 @@ class GroupsMemberships
         $group_ids = is_array( $arguments['group_ids'] ) ? $arguments['group_ids'] : array( $arguments['group_ids'] );
         $added_by = $arguments['added_by'];
         
-        if ( defined('REGISTERING') or (defined('CURRENT_USER_LEVEL') && in_array( CURRENT_USER_LEVEL, array(9,8) )) ) {
+        if ( defined('REGISTERING') or current_user_can('manage_groups') ) {
             $results = [
                 'added' => 0,
                 'queue' => count( $group_ids ),
@@ -152,7 +168,7 @@ class GroupsMemberships
         $group_ids = is_array( $arguments['group_ids'] ) ? $arguments['group_ids'] : array( $arguments['group_ids'] );
         $added_by = $arguments['added_by'];
 
-        if ( in_array( CURRENT_USER_LEVEL, array(9,8) ) ) {
+        if ( current_user_can('manage_groups') ) {
             $results = [
                 'added' => 0,
                 'queue' => count( $group_ids ),
@@ -245,7 +261,7 @@ class GroupsMemberships
     
     function groupRequestMembership($arguments)
     {
-        if ( (defined('CURRENT_USER_LEVEL') && in_array( CURRENT_USER_LEVEL, array(9,8) )) || ( defined('REGISTERING') ) || ( defined('EDITING_SELF_ACCOUNT') ) ) {
+        if ( current_user_can('manage_groups') || ( defined('REGISTERING') ) || ( defined('EDITING_SELF_ACCOUNT') ) ) {
             if (get_option('clients_can_select_group') == 'public' || get_option('clients_can_select_group') == 'all') {
                 $client_id = $arguments['client_id'];
                 $group_ids = is_array( $arguments['group_ids'] ) ? $arguments['group_ids'] : array( $arguments['group_ids'] );

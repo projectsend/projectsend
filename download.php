@@ -5,7 +5,6 @@
 
  use ProjectSend\Classes\Download;
 
-$allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
 
 $page_id = 'public_download';

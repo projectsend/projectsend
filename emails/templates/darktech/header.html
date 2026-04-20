@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{EMAIL_TITLE}}</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Ubuntu", "Cantarell", sans-serif;
+            line-height: 1.6;
+            color: #e4e6ea;
+            background-color: #1a1d21;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #242831;
+            border: 1px solid #2f3349;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+        .header {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            padding: 40px 30px;
+            text-align: center;
+            border-bottom: 2px solid #4a5568;
+            position: relative;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 50%, #00d2ff 100%);
+            background-size: 200% 100%;
+            animation: techGlow 3s ease-in-out infinite alternate;
+        }
+        @keyframes techGlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        .header h1 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .header .tagline {
+            margin: 15px 0 0 0;
+            color: #a0aec0;
+            font-size: 14px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .tech-pattern {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            opacity: 0.1;
+            background-image:
+                radial-gradient(circle at 20% 20%, #00d2ff 2px, transparent 2px),
+                radial-gradient(circle at 80% 80%, #3a7bd5 2px, transparent 2px);
+            background-size: 20px 20px;
+        }
+        .content {
+            padding: 40px 30px;
+            background-color: #242831;
+        }
+        .content h2 {
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 500;
+            margin: 0 0 20px 0;
+            border-left: 4px solid #00d2ff;
+            padding-left: 20px;
+        }
+        .content p {
+            color: #cbd5e0;
+            font-size: 16px;
+            line-height: 1.7;
+            margin: 0 0 20px 0;
+        }
+        .button {
+            display: inline-block;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            margin: 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3);
+        }
+        .button:hover {
+            background: linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%);
+            box-shadow: 0 6px 20px rgba(0, 210, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        .tech-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, #4a5568 50%, transparent 100%);
+            margin: 30px 0;
+            position: relative;
+        }
+        .tech-divider::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: #00d2ff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.6);
+        }
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                width: 100% !important;
+                margin: 0 !important;
+            }
+            .header, .content {
+                padding: 20px !important;
+            }
+            .header h1 {
+                font-size: 24px !important;
+            }
+            .tech-pattern {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="tech-pattern"></div>
+            <h1>{{SYSTEM_NAME}}</h1>
+            <p class="tagline">Advanced File Management System</p>
+        </div>
+        <div class="content">

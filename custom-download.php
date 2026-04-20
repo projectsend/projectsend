@@ -55,4 +55,5 @@ if (isset($_GET['img']) && $file->isImage()) {
     }
 }
 
-ps_redirect(BASE_URI . "download.php?id={$file->id}&token={$file->public_token}");
+$location = BASE_URI . "download.php?id={$file->id}&token={$file->public_token}";
+ps_redirect($location);

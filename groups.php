@@ -2,9 +2,8 @@
 /**
  * Show the list of current groups.
  */
-$allowed_levels = array(9, 8);
 require_once 'bootstrap.php';
-log_in_required($allowed_levels);
+check_access_enhanced(['manage_groups', 'create_groups', 'edit_groups', 'delete_groups'], 'any');
 
 $active_nav = 'groups';
 
@@ -43,17 +42,36 @@ if (isset($_POST['action']) && $_POST['action'] != 'none') {
         switch ($_POST['action']) {
             case 'delete':
                 $deleted_groups = 0;
+                $no_permission_count = 0;
+                $errors = [];
 
                 foreach ($selected_groups as $group) {
                     $this_group = new \ProjectSend\Classes\Groups;
                     if ($this_group->get($group)) {
-                        $delete_user = $this_group->delete();
-                        $deleted_groups++;
+                        $result = $this_group->delete();
+
+                        if ($result['status'] === 'success') {
+                            $deleted_groups++;
+                        } else {
+                            if (strpos($result['message'], 'permission') !== false) {
+                                $no_permission_count++;
+                            } else {
+                                $errors[] = $result['message'];
+                            }
+                        }
                     }
                 }
 
                 if ($deleted_groups > 0) {
-                    $flash->success(__('The selected groups were deleted.', 'cftp_admin'));
+                    $flash->success(sprintf(__('%d groups were deleted.', 'cftp_admin'), $deleted_groups));
+                }
+                if ($no_permission_count > 0) {
+                    $flash->warning(sprintf(__('You do not have permission to delete %d groups.', 'cftp_admin'), $no_permission_count));
+                }
+                if (!empty($errors)) {
+                    foreach ($errors as $error) {
+                        $flash->error($error);
+                    }
                 }
                 break;
         }
@@ -152,12 +170,15 @@ if (!$count) {
 }
 
 // Header buttons
-$header_action_buttons = [
-    [
-        'url' => 'groups-add.php',
-        'label' => __('Create new', 'cftp_admin'),
-    ],
-];
+$header_action_buttons = [];
+if (current_user_can('create_groups')) {
+    $header_action_buttons = [
+        [
+            'url' => 'groups-add.php',
+            'label' => __('Create new', 'cftp_admin'),
+        ],
+    ];
+}
 
 // Search + filters bar data
 $search_form_action = 'groups.php';
@@ -178,12 +199,14 @@ $filters_form = [
     ]
 ];
 
-// Results count and form actions 
+// Results count and form actions
 $elements_found_count = $count_for_pagination;
 $bulk_actions_items = [
     'none' => __('Select action', 'cftp_admin'),
-    'delete' => __('Delete', 'cftp_admin'),
 ];
+if (current_user_can('delete_groups') || current_user_can('create_groups')) {
+    $bulk_actions_items['delete'] = __('Delete', 'cftp_admin');
+}
 
 // Include layout files
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
@@ -320,7 +343,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                         ),
                         array(
                             'actions' => true,
-                            'content' => '<a href="groups-edit.php?id=' . $group->id . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit', 'cftp_admin') . '</span></a>' . "\n"
+                            'content' => ($group->canUserEdit() ? '<a href="groups-edit.php?id=' . $group->id . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit', 'cftp_admin') . '</span></a>' : '') . "\n"
                         ),
                     );
 

@@ -18,6 +18,9 @@ if ( session_expired() && user_is_logged_in()) {
 
 extend_session(); // update last activity time stamp
 
+// Clean up expired remember me tokens periodically
+cleanup_expired_remember_tokens();
+
 /**
  * Global information on the current account to use across the system.
  */
@@ -40,7 +43,7 @@ if (!empty($_SESSION['user_id'])) {
         define('CURRENT_USER_EMAIL', $session_user->email);
         define('CURRENT_USER_LEVEL', intval($session_user->role));
         define('CURRENT_USER_TYPE', $session_user->account_type);
-    
+
         // Check if account has a custom value for upload max file size
         if ( $session_user->max_file_size == 0 || empty( $session_user->max_file_size ) ) {
             define('UPLOAD_MAX_FILESIZE', (int)MAX_FILESIZE);
@@ -48,6 +51,10 @@ if (!empty($_SESSION['user_id'])) {
         else {
             define('UPLOAD_MAX_FILESIZE', (int)$session_user->max_file_size);
         }
+
+        // Define disk quota constants
+        define('CURRENT_USER_DISK_QUOTA', (int)$session_user->max_disk_quota);
+        define('CURRENT_USER_DISK_USAGE', get_user_disk_usage(CURRENT_USER_ID));
     } else {
         force_logout();
     }

@@ -1,0 +1,151 @@
+name: Asset Build Check
+
+on:
+  push:
+    branches: [ develop, master, main ]
+    paths:
+      - 'assets/src/**'
+      - 'gulpfile.js'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/asset-build.yml'
+  pull_request:
+    branches: [ develop, master, main ]
+    paths:
+      - 'assets/src/**'
+      - 'gulpfile.js'
+      - 'package.json'
+      - 'package-lock.json'
+
+jobs:
+  build:
+    name: Build Assets
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: ['18.x', '20.x', '22.x']
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: pdo, json
+        coverage: none
+
+    - name: Install Composer dependencies
+      run: composer install --prefer-dist --no-progress --no-interaction --ignore-platform-req=ext-gd
+
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Install npm dependencies
+      run: npm ci
+
+    - name: Verify Gulp installation
+      run: npx gulp --version
+
+    - name: Build SCSS assets
+      run: npx gulp sass
+
+    - name: Build JavaScript assets
+      run: npx gulp javascript
+
+    - name: Build all assets
+      run: npx gulp build
+
+    - name: Check for uncommitted build files
+      if: github.event_name == 'pull_request'
+      run: |
+        if [[ -n $(git status --porcelain assets/css/ assets/js/) ]]; then
+          echo "::error::Built assets differ from committed files. Please run 'npx gulp build' and commit the changes."
+          git status --porcelain assets/css/ assets/js/
+          exit 1
+        fi
+
+    - name: Upload built assets
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: built-assets-${{ matrix.node-version }}
+        path: |
+          assets/css/
+          assets/js/
+        retention-days: 7
+
+  lint-scss:
+    name: Lint SCSS
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: pdo, json
+        coverage: none
+
+    - name: Install Composer dependencies
+      run: composer install --prefer-dist --no-progress --no-interaction --ignore-platform-req=ext-gd
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+
+    - name: Install npm dependencies
+      run: npm ci
+
+    - name: Check SCSS syntax
+      run: |
+        echo "Checking SCSS files for syntax errors..."
+        npx gulp sass --silent || {
+          echo "::error::SCSS compilation failed. Check your syntax in assets/src/scss/";
+          exit 1;
+        }
+
+  lint-js:
+    name: Lint JavaScript
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: pdo, json
+        coverage: none
+
+    - name: Install Composer dependencies
+      run: composer install --prefer-dist --no-progress --no-interaction --ignore-platform-req=ext-gd
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+
+    - name: Install npm dependencies
+      run: npm ci
+
+    - name: Check JavaScript syntax
+      run: |
+        echo "Checking JavaScript files for syntax errors..."
+        npx gulp javascript --silent || {
+          echo "::error::JavaScript compilation failed. Check your syntax in assets/src/js/";
+          exit 1;
+        }

@@ -1,0 +1,225 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ProjectSend theme: Modern Cards\n"
+"POT-Creation-Date: 2025-09-16 12:00+0000\n"
+"PO-Revision-Date: 2025-09-16 12:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: ProjectSend <contact@projectsend.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: ProjectSend\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: _e;__\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: template.php:22
+msgid "File downloads"
+msgstr "File downloads"
+
+#: template.php:60
+msgid "Available Files"
+msgstr "Available Files"
+
+#: template.php:62
+#, php-format
+msgid "%d files found"
+msgstr "%d files found"
+
+#: template.php:70
+msgid "Upload Files"
+msgstr "Upload Files"
+
+#: template.php:76
+msgid "Logout"
+msgstr "Logout"
+
+#: template.php:87
+msgid "Card View"
+msgstr "Card View"
+
+#: template.php:90
+msgid "List View"
+msgstr "List View"
+
+#: template.php:229
+msgid "Preview"
+msgstr "Preview"
+
+#: template.php:236
+msgid "Download"
+msgstr "Download"
+
+#: template.php:239
+msgid "File Expired"
+msgstr "File Expired"
+
+#: template.php:248
+msgid "Expired"
+msgstr "Expired"
+
+#: template.php:250
+msgid "Expires"
+msgstr "Expires"
+
+#: template.php:276
+msgid "No files available"
+msgstr "No files available"
+
+#: template.php:277
+msgid "There are currently no files to display."
+msgstr "There are currently no files to display."
+
+#: template.php:280
+msgid "Upload Your First File"
+msgstr "Upload Your First File"
+
+#: template.php:62
+msgid "files"
+msgstr "files"
+
+#: template.php:62
+msgid "file"
+msgstr "file"
+
+#: template.php:87
+msgid "Switch to card view"
+msgstr "Switch to card view"
+
+#: template.php:90
+msgid "Switch to list view"
+msgstr "Switch to list view"
+
+#: template.php:115
+msgid "Select file"
+msgstr "Select file"
+
+#: template.php:145
+msgid "File type"
+msgstr "File type"
+
+#: template.php:160
+msgid "View full size image"
+msgstr "View full size image"
+
+#: template.php:170
+msgid "File title"
+msgstr "File title"
+
+#: template.php:175
+msgid "Original filename"
+msgstr "Original filename"
+
+#: template.php:180
+msgid "File description"
+msgstr "File description"
+
+#: template.php:186
+msgid "Upload date"
+msgstr "Upload date"
+
+#: template.php:190
+msgid "File size"
+msgstr "File size"
+
+#: template.php:195
+msgid "Image dimensions"
+msgstr "Image dimensions"
+
+#: template.php:205
+msgid "Expiration date"
+msgstr "Expiration date"
+
+#: template.php:236
+msgid "Download file"
+msgstr "Download file"
+
+#: template.php:239
+msgid "This file has expired and cannot be downloaded"
+msgstr "This file has expired and cannot be downloaded"
+
+#: template.php:242
+msgid "Preview file"
+msgstr "Preview file"
+
+#: template.php:250
+msgid "on"
+msgstr "on"
+
+#: template.php:276
+msgid "Empty folder"
+msgstr "Empty folder"
+
+#: template.php:277
+msgid "This folder contains no files at the moment."
+msgstr "This folder contains no files at the moment."
+
+#: template.php:280
+msgid "Go back"
+msgstr "Go back"
+
+#: js/template.js:120
+msgid "Loading preview..."
+msgstr "Loading preview..."
+
+#: js/template.js:135
+msgid "Failed to load preview"
+msgstr "Failed to load preview"
+
+#: js/template.js:285
+msgid "Please select files to download"
+msgstr "Please select files to download"
+
+#: js/template.js:295
+msgid "Downloading selected files..."
+msgstr "Downloading selected files..."
+
+#: js/template.js:310
+msgid "Download completed"
+msgstr "Download completed"
+
+#: js/template.js:315
+msgid "Download failed"
+msgstr "Download failed"
+
+#: js/template.js:325
+msgid "Search files..."
+msgstr "Search files..."
+
+#: js/template.js:330
+msgid "No results found"
+msgstr "No results found"
+
+#: js/template.js:335
+msgid "Clear search"
+msgstr "Clear search"
+
+#: template.php:139
+msgid "files selected"
+msgstr "files selected"
+
+#: template.php:141
+msgid "Clear"
+msgstr "Clear"
+
+#: template.php:144
+msgid "Download Selected"
+msgstr "Download Selected"
+
+#: template.php:162
+msgid "Folders"
+msgstr "Folders"
+
+#: template.php:181
+msgid "Folder"
+msgstr "Folder"
+
+#: template.php:110
+msgid "My Files"
+msgstr "My Files"
+
+#: template.php:124
+msgid "Manage Files"
+msgstr "Manage Files"

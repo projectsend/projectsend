@@ -43,6 +43,23 @@ class Files
     public $embeddable;
     public $embeddable_type;
     public $custom_downloads = [];
+    public $storage_type; // 'local', 's3', 'gcs', 'azure'
+    public $external_path; // path/key in external storage
+    public $bucket_name; // bucket/container name
+    public $integration_id; // foreign key to tbl_integrations
+    public ?int $encrypted = null; // 1 if file is encrypted, 0 otherwise
+    public ?string $encryption_key_encrypted = null; // encrypted file key (base64)
+    public ?string $encryption_iv = null; // IV for key encryption (base64)
+    public ?string $encryption_algorithm = null; // encryption algorithm used
+    public ?string $encryption_file_iv = null; // IV for file encryption (base64)
+    public ?int $download_limit_enabled = null; // 1 if download limits are enabled, 0 otherwise
+    public ?string $download_limit_type = null; // 'per_user' or 'total'
+    public ?int $download_limit_count = null; // maximum number of downloads allowed
+    private $dbh;
+    private $logger;
+    private $external_storage;
+    private $date_folder_year;
+    private $date_folder_month;
 
     private $use_date_folder;
     private $is_filetype_allowed;
@@ -64,6 +81,25 @@ class Files
         $this->categories = [];
 
         $this->embeddable = false;
+
+        // Initialize external storage properties
+        $this->storage_type = 'local';
+        $this->external_path = null;
+        $this->bucket_name = null;
+        $this->integration_id = null;
+        $this->external_storage = null;
+
+        // Initialize encryption properties
+        $this->encrypted = 0;
+        $this->encryption_key_encrypted = null;
+        $this->encryption_iv = null;
+        $this->encryption_algorithm = 'aes-256-gcm';
+        $this->encryption_file_iv = null;
+
+        // Initialize download limit properties
+        $this->download_limit_enabled = 0;
+        $this->download_limit_type = 'total';
+        $this->download_limit_count = 0;
 
         if (!empty($file_id)) {
             $this->get($file_id);
@@ -96,9 +132,61 @@ class Files
         return false;
     }
 
+    /**
+     * Check if the file exists (local or external storage)
+     */
+    public function exists()
+    {
+        // For external files, check if they exist in external storage
+        if ($this->storage_type !== 'local' && !empty($this->integration_id)) {
+            $integrations_handler = new \ProjectSend\Classes\Integrations();
+            $integration = $integrations_handler->getById($this->integration_id);
+
+            if ($integration) {
+                $storage = $integrations_handler->createStorageInstance($integration);
+                if ($storage && !empty($this->external_path)) {
+                    return $storage->fileExists($this->external_path);
+                }
+            }
+            return false;
+        }
+
+        // For local files, check the filesystem
+        return !empty($this->full_path) && file_exists($this->full_path);
+    }
+
     public function currentUserCanEdit()
     {
         return user_can_edit_file(CURRENT_USER_ID, $this->id);
+    }
+
+    /**
+     * Check if a user can edit this file
+     * @param int $user_id User ID to check (defaults to current user)
+     * @return bool
+     */
+    public function canUserEdit($user_id = null)
+    {
+        if ($user_id === null) {
+            if (defined('CURRENT_USER_ID')) {
+                $user_id = \CURRENT_USER_ID;
+            } else {
+                return false; // No user logged in
+            }
+        }
+
+        // User can edit if they have the edit_files permission (can edit all files)
+        if (\current_user_can('edit_files')) {
+            return true;
+        }
+
+        // User can edit their own files if they have upload permission
+        if (\current_user_can('upload') && $this->user_id == $user_id) {
+            return true;
+        }
+
+        // Use the existing permission check function
+        return user_can_edit_file($user_id, $this->id);
     }
 
     /**
@@ -107,7 +195,7 @@ class Files
     public function set($arguments = [])
     {
 		$this->title = (!empty($arguments['title'])) ? encode_html($arguments['title']) : null;
-        $this->description = (!empty($arguments['description'])) ? encode_html($arguments['description']) : null;
+        $this->description = (!empty($arguments['description'])) ? sanitize_description($arguments['description']) : null;
         $this->uploaded_by = (!empty($arguments['uploaded_by'])) ? encode_html($arguments['uploaded_by']) : null;
         $this->filename_on_disk = (!empty($arguments['filename'])) ? $arguments['filename'] : null;
         $this->filename_original = (!empty($arguments['filename_original'])) ? (int)$arguments['filename_original'] : 0;
@@ -121,10 +209,15 @@ class Files
         $this->disk_folder_month = (isset($this->date_folder_month)) ? (int)$this->date_folder_month : null;
 
         // Assignations
-		$this->assignations_groups = !empty( $arguments['assignations_groups'] ) ? to_array_if_not($arguments['assignations_groups']) : null;
-		$this->assignations_clients = !empty( $arguments['assignations_clients'] ) ? to_array_if_not($arguments['assignations_clients']) : null;
+		$this->assignments_groups = !empty( $arguments['assignations_groups'] ) ? to_array_if_not($arguments['assignations_groups']) : null;
+		$this->assignments_clients = !empty( $arguments['assignations_clients'] ) ? to_array_if_not($arguments['assignations_clients']) : null;
 
         $this->categories = !empty( $arguments['categories'] ) ? to_array_if_not($arguments['categories']) : null;
+
+        // Download limits
+        $this->download_limit_enabled = (!empty($arguments['download_limit_enabled'])) ? (int)$arguments['download_limit_enabled'] : 0;
+        $this->download_limit_type = (!empty($arguments['download_limit_type'])) ? $arguments['download_limit_type'] : 'total';
+        $this->download_limit_count = (!empty($arguments['download_limit_count'])) ? (int)$arguments['download_limit_count'] : 0;
 
         $this->setFullPath();
         $this->setExtension();
@@ -175,6 +268,30 @@ class Files
             $this->disk_folder_year = html_output($row['disk_folder_year']);
             $this->disk_folder_month = html_output($row['disk_folder_month']);
             if (is_numeric($this->disk_folder_month) && $this->disk_folder_month < 10) $this->disk_folder_month = '0' . $this->disk_folder_month;
+
+            // Load size from database if available
+            if (isset($row['size']) && is_numeric($row['size']) && $row['size'] > 0) {
+                $this->size = $row['size'];
+                $this->size_formatted = format_file_size($this->size);
+            }
+
+            // Load external storage properties
+            $this->storage_type = html_output($row['storage_type'] ?? 'local');
+            $this->external_path = html_output($row['external_path'] ?? null);
+            $this->bucket_name = html_output($row['bucket_name'] ?? null);
+            $this->integration_id = html_output($row['integration_id'] ?? null);
+
+            // Load encryption properties
+            $this->encrypted = isset($row['encrypted']) ? (int)$row['encrypted'] : 0;
+            $this->encryption_key_encrypted = $row['encryption_key_encrypted'] ?? null;
+            $this->encryption_iv = $row['encryption_iv'] ?? null;
+            $this->encryption_algorithm = $row['encryption_algorithm'] ?? 'aes-256-gcm';
+            $this->encryption_file_iv = $row['encryption_file_iv'] ?? null;
+
+            // Load download limit properties
+            $this->download_limit_enabled = isset($row['download_limit_enabled']) ? (int)$row['download_limit_enabled'] : 0;
+            $this->download_limit_type = $row['download_limit_type'] ?? 'total';
+            $this->download_limit_count = isset($row['download_limit_count']) ? (int)$row['download_limit_count'] : 0;
         }
 
         $this->full_path = $this->getFilePath();
@@ -189,6 +306,30 @@ class Files
         $this->getCurrentCategories();
 
         return true;
+    }
+
+    /**
+     * Get file by filename (URL column)
+     * Searches for a file by its filename_on_disk (url column) and populates the object
+     *
+     * @param string $filename The filename to search for
+     * @return bool True if file found and loaded, false otherwise
+     */
+    public function getByFilename($filename)
+    {
+        $statement = $this->dbh->prepare("SELECT id FROM " . TABLE_FILES . " WHERE url = :filename");
+        $statement->execute([':filename' => $filename]);
+
+        if ($statement->rowCount() > 0) {
+            $row = $statement->fetch();
+            $file_id = $row['id'];
+
+            if (!empty($file_id)) {
+                return $this->get($file_id);
+            }
+        }
+
+        return false;
     }
 
     public function getCustomDownloads()
@@ -324,11 +465,15 @@ class Files
     public function getEmbedData()
     {
         if ($this->embeddable) {
-            $file_url = str_replace(ROOT_DIR, BASE_URI, $this->full_path);
-
+            // Use authenticated endpoint for non-image files to enforce permissions on every request
+            // This prevents direct URL sharing that bypasses permission checks
             if ($this->isImage()) {
-                $file_url = make_thumbnail( $this->full_path, 'proportional', 500 )['thumbnail']['url'];
+                $file_url = make_thumbnail($this->full_path, 'proportional', 500)['thumbnail']['url'];
+            } else {
+                // PDFs, videos, audio - use serve_file endpoint
+                $file_url = BASE_URI . 'process.php?do=serve_file&id=' . $this->id;
             }
+
             $return = [
                 'name' => $this->filename_original,
                 'file_url' => $file_url,
@@ -336,15 +481,18 @@ class Files
                 'mime_type' => $this->mime_type,
             ];
 
-            // Record request
-            $this->logger->addEntry([
-                'action' => 41,
-                'owner_id' => defined('CURRENT_USER_ID') ? CURRENT_USER_ID : 0,
-                'affected_file' => $this->id,
-                'affected_file_name' => $this->filename_on_disk,
-                'affected_account' => defined('CURRENT_USER_ID') ? CURRENT_USER_ID : 0,
-                'file_title_column' => true
-            ]);
+            // Note: Action logging is now done in the serve_file endpoint for non-images
+            // to log each actual access, not just when embed data is requested
+            if ($this->isImage()) {
+                $this->logger->addEntry([
+                    'action' => 41,
+                    'owner_id' => defined('CURRENT_USER_ID') ? CURRENT_USER_ID : 0,
+                    'affected_file' => $this->id,
+                    'affected_file_name' => $this->filename_on_disk,
+                    'affected_account' => defined('CURRENT_USER_ID') ? CURRENT_USER_ID : 0,
+                    'file_title_column' => true
+                ]);
+            }
 
             return json_encode($return);
         }
@@ -377,6 +525,64 @@ class Files
             'categories' => $this->categories,
             'folder_id' => $this->folder_id,
         ];
+
+        return $data;
+    }
+
+    /**
+     * Get public file data suitable for API responses
+     * 
+     * @return array
+     */
+    public function getPublicData()
+    {
+        // Base file data
+        $data = [
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'filename_original' => $this->filename_original,
+            'extension' => $this->extension,
+            'size' => $this->size,
+            'size_formatted' => $this->size_formatted,
+            'uploaded_date' => date(get_option('timeformat'), strtotime($this->uploaded_date)),
+            'expires' => $this->expires,
+            'expired' => (bool)$this->expired,
+            'download_link' => $this->download_link,
+            'is_image' => $this->isImage(),
+            'mime_type' => $this->mime_type
+        ];
+
+        // Add expiry date if file expires
+        if ($this->expires && $this->expiry_date) {
+            $data['expiry_date'] = date(get_option('timeformat'), strtotime($this->expiry_date));
+        }
+
+        // Add thumbnail for images
+        if ($this->isImage() && !$this->expired && !empty($this->full_path)) {
+            $thumbnail = make_thumbnail($this->full_path, null, 200, 200);
+            if ($thumbnail && isset($thumbnail['thumbnail']['url'])) {
+                $data['thumbnail'] = $thumbnail['thumbnail']['url'];
+            }
+        }
+
+        // Add image metadata if it's an image
+        if ($this->isImage() && !empty($this->full_path) && file_exists($this->full_path)) {
+            $image_info = getimagesize($this->full_path);
+            if ($image_info) {
+                $data['image_info'] = [
+                    'width' => $image_info[0],
+                    'height' => $image_info[1],
+                    'dimensions_formatted' => $image_info[0] . ' × ' . $image_info[1],
+                    'type' => image_type_to_mime_type($image_info[2]),
+                    'bits' => isset($image_info['bits']) ? $image_info['bits'] : null,
+                    'channels' => isset($image_info['channels']) ? $image_info['channels'] : null,
+                ];
+            }
+        }
+
+        // Add material icon for file type
+        $data['icon'] = get_material_file_icon($this->extension);
 
         return $data;
     }
@@ -446,7 +652,8 @@ class Files
      */
     public function getSize()
     {
-        if ($this->filename_on_disk)
+        // Only calculate size from file system if not already loaded from database
+        if (empty($this->size) && $this->filename_on_disk)
         {
             if ( file_exists( $this->full_path ) ) {
                 $this->size = get_real_size($this->full_path);
@@ -468,6 +675,27 @@ class Files
     {
         if ( file_exists( $this->full_path ) ) {
             return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if file exists in storage (local or external)
+     * For external storage files, they don't exist on local disk but are editable
+     */
+    public function existsInStorage()
+    {
+        // For local storage, check if file exists on disk
+        if ($this->storage_type === 'local' || empty($this->storage_type)) {
+            return $this->existsOnDisk();
+        }
+
+        // For external storage files, they should be editable even if not on local disk
+        // The file exists if it has valid external storage properties
+        if (!empty($this->storage_type) && $this->storage_type !== 'local') {
+            // File exists in external storage if it has an external path or integration
+            return (!empty($this->external_path) || !empty($this->integration_id));
         }
 
         return false;
@@ -503,7 +731,7 @@ class Files
 	 * Original name: formatURL
 	 * John Magnolia / svick on StackOverflow
 	 *
-	 * @param string $unformatted
+	 * @param string $original_filename
 	 * @return string
 	 * @link http://stackoverflow.com/questions/2668854/sanitizing-strings-to-make-them-url-and-filename-safe
 	 */
@@ -568,6 +796,11 @@ class Files
 
             @chmod($this->full_path, 0644);
 
+            // Get file size after moving
+            if (file_exists($this->full_path)) {
+                $this->size = get_real_size($this->full_path);
+            }
+
             $return = array(
                 'filename_original' => $this->filename_original,
                 'filename_disk' => $this->filename_on_disk,
@@ -597,13 +830,14 @@ class Files
     /**
      * Makes the change on the database to hide or show a file
      *
-     * @param [type] Group or client, changes the column on the query
-     * @param [type] ID of the group or client
+     * @param int $status Hide or show status (0 or 1)
+     * @param string $to_type Group or client, changes the column on the query
+     * @param int $to_id ID of the group or client
      * @return void
      */
 	private function changeHiddenStatus($status, $to_type, $to_id)
 	{
-        $this->check_level = array(9,8,7);
+        $this->check_level = ['System Administrator', 'Account Manager', 'Uploader'];
         
         if (empty($this->id)) {
             return false;
@@ -618,7 +852,6 @@ class Files
                 break;
             default:
                 throw new \Exception('Invalid status code');
-                return false;
         }
 
         switch ($to_type) {
@@ -634,7 +867,6 @@ class Files
                 break;
             default:
                 throw new \Exception('Invalid modify type');
-                return false;
         }
 
         /** Do a permissions check */
@@ -665,7 +897,7 @@ class Files
 
 	public function hideFromEveryone()
 	{
-        $this->check_level = array(9,8,7);
+        $this->check_level = ['System Administrator', 'Account Manager', 'Uploader'];
 
         if (empty($this->id)) {
             return false;
@@ -695,7 +927,7 @@ class Files
 
 	public function showToEveryone()
 	{
-        $this->check_level = array(9,8,7);
+        $this->check_level = ['System Administrator', 'Account Manager', 'Uploader'];
 
         if (empty($this->id)) {
             return false;
@@ -729,12 +961,9 @@ class Files
             return true;
         }
 
-        if (!defined('CURRENT_USER_LEVEL')) {
-            return false;
-        }
-
-        if (CURRENT_USER_LEVEL == '0') {
-            if (get_option('clients_can_delete_own_files') == '1') {
+        // Clients with delete_files permission can delete their own files
+        if (current_role_in(['Client'])) {
+            if (current_user_can('delete_files')) {
                 if ($this->uploaded_by == CURRENT_USER_USERNAME) {
                     return true;
                 }
@@ -744,14 +973,15 @@ class Files
             }
         }
         
-        // Uploaders can only delete their own files
-        if ( CURRENT_USER_LEVEL == '7' ) {
+        // Users with delete_files permission can delete their own files
+        if ( current_user_can('delete_files') ) {
             if ( $this->uploaded_by == CURRENT_USER_USERNAME ) {
                 return true;
             }
         }
 
-        if (current_role_in(array(9,8))) {
+        // Users with delete_others_files permission can delete any files
+        if (current_user_can('delete_others_files')) {
             return true;
         }
 
@@ -766,7 +996,10 @@ class Files
     function deleteFiles()
 	{
         if (!$this->currentUserCanDeleteFile()) {
-            return false;
+            return [
+                'status' => 'error',
+                'message' => __('You do not have permission to delete this file.', 'cftp_admin')
+            ];
         }
 
         /*
@@ -803,12 +1036,16 @@ class Files
                 }    
             }
 
-            return true;
+            return [
+                'status' => 'success',
+                'message' => __('File deleted successfully.', 'cftp_admin')
+            ];
         } catch (\Exception $e) {
-            return false;
+            return [
+                'status' => 'error',
+                'message' => __('Failed to delete file.', 'cftp_admin')
+            ];
         }
-
-        return false;
     }
     
     public function setDefaults()
@@ -825,10 +1062,70 @@ class Files
     }
 
     /**
+     * Set up external file properties for import from external storage
+     * This is used instead of moveToUploadDirectory for files already in external storage
+     */
+    public function setExternalFileProperties($file_key, $metadata, $integration_id, $storage_type)
+    {
+        $this->uid = CURRENT_USER_ID;
+        $this->username = CURRENT_USER_USERNAME;
+        $this->makehash = sha1($this->username);
+
+        // Extract filename from key
+        $this->filename_original = basename($file_key);
+
+        // For external files, we use the external key as the "disk filename"
+        $this->filename_on_disk = $file_key;
+
+        // Set external storage properties
+        $this->storage_type = $storage_type;
+        $this->external_path = $file_key;
+        $this->integration_id = $integration_id;
+
+        // Set file properties from metadata
+        $this->size = $metadata['size'] ?? 0;
+
+        // Set mime type if available
+        if (isset($metadata['content_type'])) {
+            $this->mime_type = $metadata['content_type'];
+        }
+
+        // Don't set full_path for external files as they don't exist locally
+        $this->full_path = null;
+
+        return [
+            'filename_original' => $this->filename_original,
+            'filename_disk' => $this->filename_on_disk,
+        ];
+    }
+
+    /**
 	 * Called after correctly moving the file to the final location.
 	 */
 	public function addToDatabase()
 	{
+        // Check permissions
+        if (!\current_user_can('upload')) {
+            return [
+                'status' => 'error',
+                'message' => __('You do not have permission to upload files.', 'cftp_admin')
+            ];
+        }
+
+        // Check disk quota
+        $quota_check = user_can_upload_file(CURRENT_USER_ID, $this->size);
+        if (!$quota_check['allowed']) {
+            // Delete the file from disk since quota exceeded
+            if (file_exists($this->full_path)) {
+                unlink($this->full_path);
+            }
+
+            return [
+                'status' => 'error',
+                'message' => $quota_check['message']
+            ];
+        }
+
 		$this->uploader = CURRENT_USER_USERNAME;
 		$this->uploader_id = CURRENT_USER_ID;
 		$this->uploader_type = CURRENT_USER_TYPE;
@@ -837,20 +1134,34 @@ class Files
         $this->disk_folder_year = (isset($this->date_folder_year)) ? (int)$this->date_folder_year : null;
         $this->disk_folder_month = (isset($this->date_folder_month)) ? (int)$this->date_folder_month : null;
 		
-        $statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (user_id, url, original_url, filename, description, uploader, expires, expiry_date, public_allow, public_token, disk_folder_year, disk_folder_month)"
-                                        ."VALUES (:user_id, :url, :original_url, :title, :description, :uploader, :expires, :expiry_date, :public, :public_token, :disk_folder_year, :disk_folder_month)");
+        $statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (user_id, url, original_url, size, filename, description, uploader, expires, expiry_date, public_allow, public_token, folder_id, disk_folder_year, disk_folder_month, storage_type, external_path, bucket_name, integration_id, encrypted, encryption_key_encrypted, encryption_iv, encryption_algorithm, encryption_file_iv, download_limit_enabled, download_limit_type, download_limit_count)"
+                                        ."VALUES (:user_id, :url, :original_url, :size, :filename, :description, :uploader, :expires, :expiry_date, :public, :public_token, :folder_id, :disk_folder_year, :disk_folder_month, :storage_type, :external_path, :bucket_name, :integration_id, :encrypted, :encryption_key_encrypted, :encryption_iv, :encryption_algorithm, :encryption_file_iv, :download_limit_enabled, :download_limit_type, :download_limit_count)");
         $statement->bindParam(':user_id', $this->uploader_id, PDO::PARAM_INT);
         $statement->bindParam(':url', $this->filename_on_disk);
         $statement->bindParam(':original_url', $this->filename_original);
-        $statement->bindParam(':title', $this->title);
+        $statement->bindParam(':size', $this->size, PDO::PARAM_INT);
+        $statement->bindParam(':filename', $this->filename_original);
         $statement->bindParam(':description', $this->description);
         $statement->bindParam(':uploader', $this->uploader);
         $statement->bindParam(':expires', $this->expires, PDO::PARAM_INT);
         $statement->bindParam(':expiry_date', $this->expiry_date);
         $statement->bindParam(':public', $this->public, PDO::PARAM_INT);
         $statement->bindParam(':public_token', $this->public_token);
+        $statement->bindParam(':folder_id', $this->folder_id, PDO::PARAM_INT);
         $statement->bindParam(':disk_folder_year', $this->disk_folder_year, PDO::PARAM_INT);
         $statement->bindParam(':disk_folder_month', $this->disk_folder_month, PDO::PARAM_INT);
+        $statement->bindParam(':storage_type', $this->storage_type);
+        $statement->bindParam(':external_path', $this->external_path);
+        $statement->bindParam(':bucket_name', $this->bucket_name);
+        $statement->bindParam(':integration_id', $this->integration_id, PDO::PARAM_INT);
+        $statement->bindParam(':encrypted', $this->encrypted, PDO::PARAM_INT);
+        $statement->bindParam(':encryption_key_encrypted', $this->encryption_key_encrypted);
+        $statement->bindParam(':encryption_iv', $this->encryption_iv);
+        $statement->bindParam(':encryption_algorithm', $this->encryption_algorithm);
+        $statement->bindParam(':encryption_file_iv', $this->encryption_file_iv);
+        $statement->bindParam(':download_limit_enabled', $this->download_limit_enabled, PDO::PARAM_INT);
+        $statement->bindParam(':download_limit_type', $this->download_limit_type);
+        $statement->bindParam(':download_limit_count', $this->download_limit_count, PDO::PARAM_INT);
         $statement->execute();
 
         $this->file_id = $this->dbh->lastInsertId();
@@ -912,22 +1223,37 @@ class Files
         }
 
         // Set data
-        $this->name = $data["name"];
-        $this->description = $data["description"];
+        $this->name = encode_html($data["name"]);
+        $this->description = sanitize_description($data["description"]);
         $this->expires = (isset($data["expires"])) ? $data["expires"] : 0;
         $this->expiry_date = (isset($expiration_str)) ? $expiration_str : $current["expiry_date"];
         $this->is_public = (isset($data["public"])) ? $data["public"] : 0;
         $this->folder_id = (isset($data["folder_id"]) && !(empty($data["folder_id"]))) ? $data["folder_id"] : null;
-    
+
+        // Download limits
+        $this->download_limit_enabled = (isset($data["download_limit_enabled"])) ? (int)$data["download_limit_enabled"] : 0;
+        $this->download_limit_type = (isset($data["download_limit_type"])) ? $data["download_limit_type"] : 'total';
+        $this->download_limit_count = (isset($data["download_limit_count"])) ? (int)$data["download_limit_count"] : 0;
+
         /**
-         * If a client is editing a file, only a few properties can be changed
+         * Restrict file properties based on user permissions
          */
-        if ( CURRENT_USER_LEVEL == 0 ) {
-            if (get_option('clients_can_set_expiration_date') != '1') {
-                $this->expires = $current["expires"];
-                $this->expiry_date = $current["expiry_date"];
-            }
-            $this->is_public = current_user_can_upload_public() ? $data['public'] : $current["public"];
+        // Check expiration permissions
+        if (!current_user_can('set_file_expiration_date')) {
+            $this->expires = (int)$current["expires"];
+            $this->expiry_date = $current["expiry_date"];
+        }
+
+        // Check public download permissions
+        if (!current_user_can('upload_public')) {
+            $this->is_public = $current["public"];
+        }
+
+        // Check download limit permissions
+        if (!current_user_can('limit_downloads')) {
+            $this->download_limit_enabled = (int)$current["download_limit_enabled"];
+            $this->download_limit_type = $current["download_limit_type"];
+            $this->download_limit_count = (int)$current["download_limit_count"];
         }
 
         if (empty($this->name)) {
@@ -935,25 +1261,42 @@ class Files
         }
 
         $is_public = (is_null($this->is_public) ? 0 : $this->is_public);
+        // Handle expires value (integer field)
+        $expires = (!empty($this->expires)) ? $this->expires : 0;
+
+        // Handle expiry_date
+        if (empty($this->expiry_date)) {
+            // If expiry_date is not set, use current date + 1 year
+            $expiry_date = date('Y-m-d H:i:s', strtotime('+1 year'));
+        } else {
+            // Use the provided expiry_date
+            $expiry_date = $this->expiry_date;
+        }
+
         $statement = $this->dbh->prepare("UPDATE " . TABLE_FILES . " SET
             filename = :title,
             description = :description,
             expires = :expires,
             expiry_date = :expiry_date,
             public_allow = :public,
-            folder_id = :folder_id
+            folder_id = :folder_id,
+            download_limit_enabled = :download_limit_enabled,
+            download_limit_type = :download_limit_type,
+            download_limit_count = :download_limit_count
             WHERE id = :id
         ");
 
         $statement->bindParam(':title', $this->name);
         $statement->bindParam(':description', $this->description);
-        $statement->bindParam(':expires', $this->expires, PDO::PARAM_INT);
-        $statement->bindParam(':expiry_date', $this->expiry_date);
+        $statement->bindParam(':expires', $expires, PDO::PARAM_INT);  // Using our new $expires variable
+        $statement->bindParam(':expiry_date', $expiry_date);
         $statement->bindParam(':public', $is_public, PDO::PARAM_INT);
         $statement->bindParam(':folder_id', $this->folder_id);
+        $statement->bindParam(':download_limit_enabled', $this->download_limit_enabled, PDO::PARAM_INT);
+        $statement->bindParam(':download_limit_type', $this->download_limit_type);
+        $statement->bindParam(':download_limit_count', $this->download_limit_count, PDO::PARAM_INT);
         $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $statement->execute();
-
         $hidden = (!empty($data['hidden']) && is_numeric($data['hidden'])) ? $data['hidden'] : 0;
 
 		if (!empty($statement)) {
@@ -961,11 +1304,13 @@ class Files
             $assignments = (!empty($data['assignments'])) ? $data['assignments'] : null;
             $assignments = $this->saveAssignments($assignments, $hidden);
 
-            // Create notifications if uploaded by client, or if file is not set as hidden
-            if (CURRENT_USER_LEVEL == 0 || $hidden == 0) {
-                $notification_type = (CURRENT_USER_LEVEL == 0) ? 0 : 1;
-                $users = (CURRENT_USER_LEVEL == 0) ? [CURRENT_USER_ID] : $assignments['added']['clients'];
-                $this->createNotifications($users, $notification_type);
+            // Create notifications only for newly added assignments
+            if (!empty($assignments['added']['clients'])) {
+                if (current_role_in(['Client']) || $hidden == 0) {
+                    $notification_type = current_role_in(['Client']) ? 0 : 1;
+                    $users = current_role_in(['Client']) ? [CURRENT_USER_ID] : $assignments['added']['clients'];
+                    $this->createNotifications($users, $notification_type);
+                }
             }
 
             // Categories
@@ -993,11 +1338,52 @@ class Files
 		return false;
 	}
 
+    /**
+     * Edit an existing file.
+     * @return array Result with status and message
+     */
+    public function edit($data)
+    {
+        if (empty($this->id)) {
+            return [
+                'status' => 'error',
+                'message' => __('File ID is required for editing.', 'cftp_admin')
+            ];
+        }
+
+        // Check permissions
+        $current_user_id = defined('CURRENT_USER_ID') ? \CURRENT_USER_ID : null;
+        $can_edit = \current_user_can('edit_files') ||
+                   (\current_user_can('upload') && $current_user_id && $this->user_id == $current_user_id) ||
+                   user_can_edit_file($current_user_id, $this->id);
+
+        if (!$can_edit) {
+            return [
+                'status' => 'error',
+                'message' => __('You do not have permission to edit this file.', 'cftp_admin')
+            ];
+        }
+
+        // Use the existing save method
+        $result = $this->save($data);
+
+        if ($result) {
+            return [
+                'status' => 'success',
+                'message' => __('File updated successfully.', 'cftp_admin')
+            ];
+        }
+
+        return [
+            'status' => 'error',
+            'message' => __('Failed to update file.', 'cftp_admin')
+        ];
+    }
+
     // Assign
     public function saveAssignments($new_values, $hidden = 0)
     {
-        $allowed = array(9,8,7);
-        if (!current_role_in($allowed)) {
+        if (!current_user_can('edit_files')) {
             return false;
         }
 
@@ -1007,13 +1393,17 @@ class Files
 
         $hidden = (int)$hidden;
 
-        if (empty($new_values['clients'])) { $new_values['clients'] = []; } 
-        if (empty($new_values['groups'])) { $new_values['groups'] = []; } 
+        if (empty($new_values['clients'])) { $new_values['clients'] = []; }
+        if (empty($new_values['groups'])) { $new_values['groups'] = []; }
 
-        // Clean new ids based on user permissions
-        if (CURRENT_USER_LEVEL == 7) {
-            $get_user = new \ProjectSend\Classes\Users(CURRENT_USER_ID);
-            if (!empty($get_user->limit_upload_to)) {
+        // If user doesn't have permission to manage groups, preserve existing group assignments
+        if (!current_user_can('manage_groups')) {
+            $new_values['groups'] = $this->assignments_groups;
+        } 
+
+        // Clean new ids based on user permissions for limited users
+        $get_user = new \ProjectSend\Classes\Users(CURRENT_USER_ID);
+        if (!empty($get_user->limit_upload_to)) {
                 // If client ID is not allowed, remove from array
                 foreach ($new_values['clients'] as $key => $client_id) {
                     if (!in_array($client_id, $get_user->limit_upload_to)) {
@@ -1028,7 +1418,6 @@ class Files
                     }
                 }
             }
-        }
 
         // Get current assignments from database to compare with new values
         $current = [
@@ -1125,8 +1514,7 @@ class Files
 
     public function addAssignment($type = null, $to_id = 0, $hidden = 0)
     {
-        $allowed = array(9,8,7);
-        if (!current_role_in($allowed)) {
+        if (!current_user_can('edit_files')) {
             return false;
         }
         
@@ -1153,7 +1541,6 @@ class Files
                 break;
             default:
                 throw new \Exception('Invalid type');
-                return false;
         }
 
         $statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES_RELATIONS . " (file_id, $column, hidden)"
@@ -1176,8 +1563,7 @@ class Files
 
     public function removeAssignment($from_type, $from_id)
 	{
-        $allowed = array(9,8,7);
-        if (!current_role_in($allowed)) {
+        if (!current_user_can('edit_files')) {
             return false;
         }
         
@@ -1200,7 +1586,6 @@ class Files
                 break;
             default:
                 throw new \Exception('Invalid modify type');
-                return false;
         }
 
         $sql = "DELETE FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id AND " . $column . " = :from_id";
@@ -1228,8 +1613,7 @@ class Files
 
     public function saveCategories($categories = [])
     {
-        $allowed = array(9,8,7);
-        if (!current_role_in($allowed)) {
+        if (!current_user_can('set_file_categories')) {
             return false;
         }
         
@@ -1298,7 +1682,7 @@ class Files
             return;
         }
 
-        $exif = exif_read_data($this->full_path, 0, true);
+        $exif = exif_read_data($this->full_path, null, true);
         $exif = $exif['IFD0'];
         if (!empty($exif)) {
             $exif_display = [
@@ -1337,7 +1721,7 @@ class Files
             return false;
         }
 
-        if (CURRENT_USER_LEVEL == 0) {
+        if (current_role_in(['Client'])) {
             if ($folder_id == null) {
                 if (!$this->currentUserCanEdit()) {
                     return false;
@@ -1369,5 +1753,417 @@ class Files
         }
 
         return false;
+    }
+
+    /**
+     * External Storage Methods
+     */
+
+    /**
+     * Check if file uses external storage
+     *
+     * @return bool
+     */
+    public function isExternal()
+    {
+        return $this->storage_type !== 'local';
+    }
+
+    /**
+     * Get external storage instance
+     *
+     * @return ExternalStorage|null
+     */
+    public function getExternalStorage()
+    {
+        if ($this->external_storage !== null) {
+            return $this->external_storage;
+        }
+
+        if (!$this->isExternal() || !$this->integration_id) {
+            return null;
+        }
+
+        $integrations = new \ProjectSend\Classes\Integrations();
+        $integration = $integrations->getById($this->integration_id);
+
+        if (!$integration) {
+            return null;
+        }
+
+        $this->external_storage = $integrations->createStorageInstance($integration);
+        return $this->external_storage;
+    }
+
+    /**
+     * Upload file to external storage
+     *
+     * @param string $local_file_path Local file path
+     * @param int $integration_id Integration ID
+     * @param string $remote_path Optional custom remote path
+     * @return array Upload result
+     */
+    public function uploadToExternal($local_file_path, $integration_id, $remote_path = null)
+    {
+        $integrations = new \ProjectSend\Classes\Integrations();
+        $integration = $integrations->getById($integration_id);
+
+        if (!$integration) {
+            return [
+                'success' => false,
+                'message' => __('Integration not found.', 'cftp_admin')
+            ];
+        }
+
+        $storage = $integrations->createStorageInstance($integration);
+        if (!$storage) {
+            return [
+                'success' => false,
+                'message' => __('Failed to initialize storage.', 'cftp_admin')
+            ];
+        }
+
+        // Generate remote path if not provided
+        if (!$remote_path) {
+            $remote_path = $storage->generateFileKey($this->filename_original ?: $this->filename_on_disk);
+        }
+
+        // Prepare metadata
+        $metadata = [
+            'original_filename' => $this->filename_original,
+            'uploaded_by' => $this->uploaded_by,
+            'file_id' => $this->id
+        ];
+
+        $result = $storage->uploadFile($local_file_path, $remote_path, $metadata);
+
+        if ($result['success']) {
+            // Update file record with external storage information
+            $this->updateExternalStorageInfo($integration_id, $remote_path, $integration['type']);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Download file from external storage to local path
+     *
+     * @param string $local_path Local destination path
+     * @return array Download result
+     */
+    public function downloadFromExternal($local_path)
+    {
+        if (!$this->isExternal()) {
+            return [
+                'success' => false,
+                'message' => __('File is not stored externally.', 'cftp_admin')
+            ];
+        }
+
+        $storage = $this->getExternalStorage();
+        if (!$storage) {
+            return [
+                'success' => false,
+                'message' => __('External storage not available.', 'cftp_admin')
+            ];
+        }
+
+        return $storage->downloadFile($this->external_path, $local_path);
+    }
+
+    /**
+     * Get presigned URL for direct external access
+     *
+     * @param int $expires_in Expiration in seconds
+     * @return string|false Presigned URL or false on error
+     */
+    public function getExternalPresignedUrl($expires_in = 3600)
+    {
+        if (!$this->isExternal()) {
+            return false;
+        }
+
+        $storage = $this->getExternalStorage();
+        if (!$storage) {
+            return false;
+        }
+
+        return $storage->getPresignedUrl($this->external_path, $expires_in);
+    }
+
+    /**
+     * Delete file from external storage
+     *
+     * @return array Delete result
+     */
+    public function deleteFromExternal()
+    {
+        if (!$this->isExternal()) {
+            return [
+                'success' => false,
+                'message' => __('File is not stored externally.', 'cftp_admin')
+            ];
+        }
+
+        $storage = $this->getExternalStorage();
+        if (!$storage) {
+            return [
+                'success' => false,
+                'message' => __('External storage not available.', 'cftp_admin')
+            ];
+        }
+
+        return $storage->deleteFile($this->external_path);
+    }
+
+    /**
+     * Update external storage information in database
+     *
+     * @param int $integration_id Integration ID
+     * @param string $external_path External file path
+     * @param string $storage_type Storage type
+     * @param string $bucket_name Optional bucket name
+     * @return bool Success status
+     */
+    public function updateExternalStorageInfo($integration_id, $external_path, $storage_type, $bucket_name = null)
+    {
+        if (!$this->id) {
+            return false;
+        }
+
+        try {
+            $query = "UPDATE " . TABLE_FILES . "
+                      SET storage_type = :storage_type,
+                          external_path = :external_path,
+                          bucket_name = :bucket_name,
+                          integration_id = :integration_id
+                      WHERE id = :id";
+
+            $statement = $this->dbh->prepare($query);
+            $statement->bindParam(':storage_type', $storage_type, \PDO::PARAM_STR);
+            $statement->bindParam(':external_path', $external_path, \PDO::PARAM_STR);
+            $statement->bindParam(':bucket_name', $bucket_name, \PDO::PARAM_STR);
+            $statement->bindParam(':integration_id', $integration_id, \PDO::PARAM_INT);
+            $statement->bindParam(':id', $this->id, \PDO::PARAM_INT);
+
+            $result = $statement->execute();
+
+            if ($result) {
+                // Update object properties
+                $this->storage_type = $storage_type;
+                $this->external_path = $external_path;
+                $this->bucket_name = $bucket_name;
+                $this->integration_id = $integration_id;
+            }
+
+            return $result;
+
+        } catch (\PDOException $e) {
+            error_log('Failed to update external storage info: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Move file from external storage back to local storage
+     *
+     * @return array Migration result
+     */
+    public function moveToLocal()
+    {
+        if (!$this->isExternal()) {
+            return [
+                'success' => false,
+                'message' => __('File is already stored locally.', 'cftp_admin')
+            ];
+        }
+
+        // Download file to local storage
+        $local_path = $this->getFilePath();
+        $download_result = $this->downloadFromExternal($local_path);
+
+        if (!$download_result['success']) {
+            return $download_result;
+        }
+
+        // Update database to mark as local storage
+        $update_result = $this->updateExternalStorageInfo(null, null, 'local', null);
+
+        if ($update_result) {
+            return [
+                'success' => true,
+                'message' => __('File moved to local storage successfully.', 'cftp_admin')
+            ];
+        } else {
+            // Clean up downloaded file if database update failed
+            if (file_exists($local_path)) {
+                unlink($local_path);
+            }
+            return [
+                'success' => false,
+                'message' => __('Failed to update file record.', 'cftp_admin')
+            ];
+        }
+    }
+
+    /**
+     * Override getFilePath to handle external storage
+     *
+     * @return string File path (local or external)
+     */
+    public function getExternalFilePath()
+    {
+        if ($this->isExternal()) {
+            return $this->external_path;
+        }
+
+        return $this->getFilePath();
+    }
+
+    /**
+     * Check if external file exists
+     *
+     * @return bool
+     */
+    public function externalFileExists()
+    {
+        if (!$this->isExternal()) {
+            return false;
+        }
+
+        $storage = $this->getExternalStorage();
+        if (!$storage) {
+            return false;
+        }
+
+        return $storage->fileExists($this->external_path);
+    }
+
+    /**
+     * Get external file metadata
+     *
+     * @return array|false File metadata or false on error
+     */
+    public function getExternalFileMetadata()
+    {
+        if (!$this->isExternal()) {
+            return false;
+        }
+
+        $storage = $this->getExternalStorage();
+        if (!$storage) {
+            return false;
+        }
+
+        return $storage->getFileMetadata($this->external_path);
+    }
+
+    /**
+     * Upload file directly to external storage (bypass local temp storage)
+     *
+     * @param string $temp_file_path Temporary file path from plupload
+     * @param int $integration_id Integration ID for external storage
+     * @param string $original_filename Original filename
+     * @return array Result with success/error status
+     */
+    public function uploadToExternalStorage($temp_file_path, $integration_id, $original_filename)
+    {
+        // Get integration details
+        $integrations_handler = new \ProjectSend\Classes\Integrations();
+        $integration = $integrations_handler->getById($integration_id);
+
+        if (!$integration) {
+            return [
+                'success' => false,
+                'message' => __('Integration not found', 'cftp_admin')
+            ];
+        }
+
+        // Create storage instance
+        $storage = $integrations_handler->createStorageInstance($integration);
+        if (!$storage) {
+            return [
+                'success' => false,
+                'message' => __('Failed to initialize storage connection', 'cftp_admin')
+            ];
+        }
+
+        // Generate safe filename and external path
+        $safe_filename = $this->generateSafeFilename($temp_file_path);
+        $this->uid = CURRENT_USER_ID;
+        $this->username = CURRENT_USER_USERNAME;
+        $this->makehash = sha1($this->username);
+
+        // Create unique external path
+        $external_key = time() . '-' . $this->makehash . '-' . $safe_filename;
+
+        // Add folder structure if using date organization
+        if (get_option('uploads_organize_folders_by_date') == 1) {
+            $current_date = date('Y/m');
+            $external_key = $current_date . '/' . $external_key;
+        }
+
+        // Get file metadata
+        $file_size = file_exists($temp_file_path) ? filesize($temp_file_path) : 0;
+        $metadata = [
+            'uploaded_by' => $this->username,
+            'upload_date' => date('Y-m-d H:i:s')
+        ];
+
+        // Upload to external storage
+        $upload_result = $storage->uploadFile($temp_file_path, $external_key, $metadata);
+
+        if (!$upload_result['success']) {
+            return $upload_result;
+        }
+
+        // Set file properties for external storage
+        $this->filename_original = $original_filename;
+        $this->filename_on_disk = $external_key;
+        $this->storage_type = $integration['type'];
+        $this->external_path = $external_key;
+        $this->integration_id = $integration_id;
+        $this->bucket_name = $storage->getBucketName();
+        $this->size = $file_size;
+
+        // Clean up temp file
+        if (file_exists($temp_file_path)) {
+            unlink($temp_file_path);
+        }
+
+        return [
+            'success' => true,
+            'filename_original' => $this->filename_original,
+            'filename_disk' => $this->filename_on_disk,
+            'external_path' => $this->external_path
+        ];
+    }
+
+    /**
+     * Route file to appropriate storage based on selection
+     *
+     * @param string $temp_file_path Temporary file path
+     * @param string $storage_selection Storage selection ('local' or integration ID)
+     * @param string $original_filename Original filename
+     * @return array Result with success/error status
+     */
+    public function routeToStorage($temp_file_path, $storage_selection, $original_filename)
+    {
+        $this->filename_original = $original_filename;
+
+        // Route to local storage
+        if ($storage_selection === 'local') {
+            return $this->moveToUploadDirectory($temp_file_path);
+        }
+
+        // Route to external storage
+        if (is_numeric($storage_selection)) {
+            return $this->uploadToExternalStorage($temp_file_path, (int)$storage_selection, $original_filename);
+        }
+
+        return [
+            'success' => false,
+            'message' => __('Invalid storage selection', 'cftp_admin')
+        ];
     }
 }

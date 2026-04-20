@@ -6,6 +6,11 @@ class PasswordReset
 {
     private $dbh;
     private $logger;
+    private $id;
+    private $user_id;
+    private $token;
+    private $used;
+    private $timestamp;
 
     public function __construct($record_id = null)
     {

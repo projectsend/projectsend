@@ -1,0 +1,561 @@
+/* Dark Cards Template Custom Styles */
+
+/* Custom max-width for 1440px */
+.max-w-content {
+    max-width: 1440px;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1a1a24;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, #8b5cf6, #f97316);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(45deg, #7c3aed, #ea580c);
+}
+
+/* File card animations */
+.file-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.file-card:hover {
+    transform: translateY(-2px);
+}
+
+/* File selection states */
+.file-card.selected {
+    border-color: #8b5cf6 !important;
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(249, 115, 22, 0.1) 100%);
+}
+
+.file-card.selected .selection-indicator {
+    opacity: 1 !important;
+    background: linear-gradient(45deg, #8b5cf6, #f97316);
+    border-color: transparent !important;
+}
+
+.file-card.selected .selection-indicator .material-icons {
+    opacity: 1 !important;
+}
+
+/* FAB animation */
+#zip-download-fab {
+    animation: slideInFromBottom 0.3s ease-out;
+}
+
+@keyframes slideInFromBottom {
+    0% {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Hover effects for gradients */
+.bg-gradient-card:hover {
+    background: linear-gradient(135deg, #252538 0%, #1a1a24 50%, #252538 100%);
+}
+
+/* Focus states for accessibility */
+.file-card:focus {
+    outline: 2px solid #8b5cf6;
+    outline-offset: 2px;
+}
+
+/* Loading states */
+.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.2), transparent);
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+/* Search input enhancements */
+input[type="text"]:focus {
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+/* Breadcrumb hover effects */
+nav a:hover {
+    text-decoration: underline;
+    text-decoration-color: #a78bfa;
+}
+
+/* Card hover glow effect */
+.file-card:hover > div,
+.group:hover > div {
+    box-shadow: 0 10px 25px rgba(139, 92, 246, 0.15);
+}
+
+/* Selection count badge pulse */
+#selection-count {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .file-card {
+        margin-bottom: 1rem;
+    }
+    
+    #zip-download-fab {
+        bottom: 1rem;
+        right: 1rem;
+    }
+    
+    .max-w-7xl {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+/* Dark theme specific enhancements */
+.dark {
+    color-scheme: dark;
+}
+
+/* Header backdrop blur */
+header {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Branding logo styling */
+.branding-logo {
+    display: flex;
+    align-items: center;
+    max-height: 2.5rem; /* 40px */
+}
+
+.branding-logo img,
+.branding-logo svg {
+    max-height: 2.5rem; /* 40px */
+    width: auto;
+    height: auto;
+    filter: brightness(1.1) contrast(1.1);
+}
+
+/* Dark theme logo adjustments */
+.dark .branding-logo img {
+    filter: brightness(1.2) contrast(1.1) saturate(1.1);
+}
+
+/* Ensure logo doesn't get too large */
+.branding-logo img[src*=".svg"],
+.branding-logo svg {
+    max-width: 200px;
+}
+
+/* Folder and file icon gradients */
+.material-icons {
+    background: linear-gradient(45deg, currentColor, currentColor);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+/* Empty state styling */
+.empty-state {
+    background: radial-gradient(circle at center, rgba(139, 92, 246, 0.05) 0%, transparent 70%);
+}
+
+/* Pagination Styling */
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination-wrapper .pagination {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.pagination-wrapper .pagination li {
+    list-style: none;
+}
+
+.pagination-wrapper .pagination a,
+.pagination-wrapper .pagination span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    padding: 0.5rem;
+    background: #1a1a24;
+    border: 1px solid #252538;
+    color: #cbd5e1;
+    text-decoration: none;
+    border-radius: 0.75rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.pagination-wrapper .pagination a:hover {
+    background: linear-gradient(45deg, #8b5cf6, #f97316);
+    color: white;
+    border-color: transparent;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.pagination-wrapper .pagination .current {
+    background: linear-gradient(45deg, #8b5cf6, #f97316) !important;
+    color: white !important;
+    border-color: transparent !important;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+}
+
+.pagination-wrapper .pagination .current:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.5);
+}
+
+.pagination-wrapper .pagination .disabled span {
+    background: #0a0a0f;
+    color: #64748b;
+    border-color: #1a1a24;
+    cursor: not-allowed;
+}
+
+.pagination-wrapper .pagination .disabled span:hover {
+    background: #0a0a0f;
+    color: #64748b;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Hide pagination form controls */
+.pagination-wrapper .go_to_page {
+    display: none;
+}
+
+/* Pagination navigation text */
+.pagination-wrapper .pagination li:first-child a,
+.pagination-wrapper .pagination li:last-child a {
+    min-width: auto;
+    padding: 0.5rem 1rem;
+}
+
+/* Filter Bar Styling */
+.filter-bar select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+    appearance: none;
+}
+
+.filter-bar select:focus {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%238b5cf6' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+}
+
+/* Custom select styling for dark theme */
+.filter-bar select option {
+    background: #1a1a24;
+    color: #f8fafc;
+    padding: 0.5rem;
+}
+
+/* Filter input styling */
+.filter-bar input[type="text"] {
+    background-color: #1a1a24;
+    border-color: #252538;
+}
+
+.filter-bar input[type="text"]:focus {
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+/* Filter button hover effects */
+.filter-bar button:hover {
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+/* Breadcrumbs Navigation - Dark Cards Style */
+.breadcrumbs {
+    background: linear-gradient(135deg, #1a1a24 0%, #252538 100%);
+    border: 1px solid #252538;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.breadcrumbs .breadcrumb_item {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.875rem;
+    margin-right: 0.5rem;
+    font-weight: 500;
+}
+
+.breadcrumbs .breadcrumb_item:last-child {
+    margin-right: 0;
+}
+
+.breadcrumbs .breadcrumb_item::after {
+    content: "chevron_right";
+    font-family: 'Material Icons';
+    margin: 0 0.5rem;
+    color: #64748b;
+    font-size: 1rem;
+}
+
+.breadcrumbs .breadcrumb_item:last-child::after {
+    display: none;
+}
+
+.breadcrumbs .breadcrumb_item a {
+    color: #a78bfa;
+    text-decoration: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.breadcrumbs .breadcrumb_item a:hover {
+    background: linear-gradient(45deg, #8b5cf6, #f97316);
+    color: white;
+    border-color: transparent;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.breadcrumbs .breadcrumb_item span {
+    color: #cbd5e1;
+    font-weight: 600;
+}
+
+.breadcrumbs #breadcrumbs_label {
+    font-weight: 700;
+    color: #f8fafc;
+    margin-right: 1rem;
+    font-size: 1rem;
+}
+
+/* Folders Navigation - Dark Cards Style */
+#folders_nav {
+    background: linear-gradient(135deg, #1a1a24 0%, #252538 100%);
+    border: 1px solid #252538;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+#folders_nav .folder {
+    display: inline-block;
+    margin: 0.5rem;
+}
+
+#folders_nav .folder a {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.25rem;
+    background: #1a1a24;
+    border: 1px solid #252538;
+    border-radius: 0.75rem;
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 140px;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+}
+
+#folders_nav .folder a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+#folders_nav .folder a:hover::before {
+    left: 100%;
+}
+
+#folders_nav .folder a:hover {
+    background: linear-gradient(135deg, #252538 0%, #1a1a24 100%);
+    border-color: #8b5cf6;
+    color: #a78bfa;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.2);
+}
+
+#folders_nav .folder .material-icons {
+    margin-right: 0.75rem;
+    font-size: 1.25rem;
+    background: linear-gradient(45deg, #8b5cf6, #f97316);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+#folders_nav .folder span {
+    font-weight: 600;
+    position: relative;
+    z-index: 1;
+}
+
+/* Special folder types */
+#folders_nav .folder_root a {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+    border-color: #3b82f6;
+    color: #60a5fa;
+}
+
+#folders_nav .folder_root a:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.1) 100%);
+    border-color: #2563eb;
+    color: #93c5fd;
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+}
+
+#folders_nav .folder_up a {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%);
+    border-color: #22c55e;
+    color: #4ade80;
+}
+
+#folders_nav .folder_up a:hover {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(34, 197, 94, 0.1) 100%);
+    border-color: #16a34a;
+    color: #86efac;
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+}
+
+/* Responsive folders navigation */
+@media (max-width: 768px) {
+    #folders_nav .folder {
+        width: 100%;
+        margin: 0.25rem 0;
+    }
+    
+    #folders_nav .folder a {
+        width: 100%;
+        justify-content: flex-start;
+        min-width: auto;
+    }
+}
+
+/* Line clamp utilities for dark cards template */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Enhanced file card hover effects for public template */
+.file-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
+}
+
+/* Public template specific enhancements */
+.empty-state {
+    background: radial-gradient(circle at center, rgba(139, 92, 246, 0.05) 0%, transparent 70%);
+    border-radius: 2rem;
+    padding: 3rem;
+}
+
+/* Public access badge animation */
+.bg-gradient-purple-orange {
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Group card enhancements */
+.group:hover .material-icons {
+    background: linear-gradient(45deg, #a78bfa, #fb923c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+}

@@ -20,7 +20,13 @@ switch ($user_form_type) {
 		$form_action = 'users-edit.php?id='.$user_id;
 		$require_pass = false;
 		$extra_fields = true;
-        if ($user_arguments['role'] == '7') $limit_field_class = '';
+        if (isset($user_arguments['role_id'])) {
+            // Check if this is an Uploader role (historically level 7)
+            $user_role = new \ProjectSend\Classes\Roles($user_arguments['role_id']);
+            if ($user_role->exists() && $user_role->name === 'Uploader') {
+                $limit_field_class = '';
+            }
+        }
 		break;
 	case 'edit_user_self':
 		$submit_value = __('Update account','cftp_admin');
@@ -68,22 +74,34 @@ switch ($user_form_type) {
 			if ($extra_fields == true) {
 		?>
 			<div class="form-group row">
-				<label for="level" class="col-sm-4 control-label"><?php _e('Role','cftp_admin'); ?></label>
+				<label for="role_id" class="col-sm-4 control-label"><?php _e('Role','cftp_admin'); ?></label>
 				<div class="col-sm-8">
-					<select class="form-select" name="level" id="level" required>
+					<select class="form-select" name="role_id" id="role_id" required>
                         <?php
-                            $roles = [
-                                '9' => USER_ROLE_LVL_9,
-                                '8' => USER_ROLE_LVL_8,
-                                '7' => USER_ROLE_LVL_7,
-                            ];
-                            foreach ( $roles as $role_level => $role_name ) {
+                            // Get available roles from database for system users (exclude client role)
+                            $roles_query = "SELECT id, name, description, is_system_role
+                                          FROM " . TABLE_ROLES . "
+                                          WHERE active = 1 AND name != 'Client'
+                                          ORDER BY id ASC";
+                            $roles_stmt = $dbh->prepare($roles_query);
+                            $roles_stmt->execute();
+
+                            while ($role = $roles_stmt->fetch(PDO::FETCH_ASSOC)) {
                         ?>
-						        <option value="<?php echo $role_level; ?>" <?php echo (isset($user_arguments['role']) && $user_arguments['role'] == $role_level) ? 'selected="selected"' : ''; ?>><?php echo $role_name; ?></option>
+						        <option value="<?php echo $role['id']; ?>"
+                                        <?php echo (isset($user_arguments['role_id']) && $user_arguments['role_id'] == $role['id']) ? 'selected="selected"' : ''; ?>>
+                                    <?php echo html_output($role['name']); ?>
+                                    <?php if ($role['is_system_role']): ?>
+                                        <span class="text-muted">(<?php _e('System Role', 'cftp_admin'); ?>)</span>
+                                    <?php endif; ?>
+                                </option>
                         <?php
                             }
                         ?>
 					</select>
+                    <small class="form-text text-muted">
+                        <?php _e('Select the role that determines what this user can do in the system', 'cftp_admin'); ?>
+                    </small>
 				</div>
 			</div>
 
@@ -98,12 +116,23 @@ switch ($user_form_type) {
 				</div>
 			</div>
 
+			<div class="form-group row">
+				<label for="max_disk_quota" class="col-sm-4 control-label"><?php _e('Max. disk quota','cftp_admin'); ?></label>
+				<div class="col-sm-8">
+					<div class="input-group">
+						<input type="text" name="max_disk_quota" id="max_disk_quota" class="form-control" value="<?php echo (isset($user_arguments['max_disk_quota'])) ? format_form_value($user_arguments['max_disk_quota']) : '0'; ?>" />
+						<span class="input-group-text">MB</span>
+					</div>
+					<p class="field_note form-text"><?php _e("Set to 0 for unlimited disk space",'cftp_admin'); ?></p>
+				</div>
+			</div>
+
             <div class="form-group row <?php echo $limit_field_class; ?>" id="limit_upload_to_container">
                 <label for="limit_upload_to" class="col-sm-4 control-label"><?php _e('Limit account to this clients only','cftp_admin'); ?></label>
                 <div class="col-sm-8">
                     <select class="form-select select2 none" multiple="multiple" id="limit_upload_to" name="limit_upload_to[]" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
                         <?php
-                            $sql = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE level = '0' ORDER BY name ASC");
+                            $sql = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE role_id = (SELECT id FROM " . TABLE_ROLES . " WHERE name = 'Client') ORDER BY name ASC");
                             $sql->execute();
                             $sql->setFetchMode(PDO::FETCH_ASSOC);
                             while ( $row = $sql->fetch() ) {
@@ -159,6 +188,20 @@ switch ($user_form_type) {
 				}
 			}
 		?>
+
+    <?php
+    // Render custom fields for users
+    $custom_field_type = 'user';
+    $custom_form_type = ($user_form_type == 'edit_user_self') ? 'self' : 'full';
+
+    // Get user ID for existing values
+    $custom_user_id = null;
+    if (isset($user_id)) {
+        $custom_user_id = $user_id;
+    }
+
+    echo render_custom_fields($custom_field_type, $custom_user_id, $custom_form_type);
+    ?>
 
 	<div class="inside_form_buttons">
 		<button type="submit" class="btn btn-wide btn-primary"><?php echo $submit_value; ?></button>

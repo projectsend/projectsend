@@ -10,7 +10,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title"></h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">×</button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                         </div>
@@ -37,7 +37,7 @@
                         case 'video':
                             content = `
                                 <div class="embed-responsive embed-responsive-16by9">
-                                    <video controls>
+                                    <video controls class="w-100">
                                         <source src="`+obj.file_url+`" format="`+obj.mime_type+`">
                                     </video>
                                 </div>`;

@@ -3,8 +3,7 @@
         require_once '../../bootstrap.php';
     }
 
-    $allowed_news = array(9,8,7);
-    if (!in_array(CURRENT_USER_LEVEL,$allowed_news)) {
+    if (!current_user_can('view_statistics')) {
         exit;
     }
     $days_buttons = array(15, 30, 60);

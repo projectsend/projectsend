@@ -1,7 +1,6 @@
 const gulp         = require('gulp');
 const autoprefixer = require('gulp-autoprefixer');
-const babel        = require('gulp-babel');
-// const cleanCSS     = require('gulp-clean-css');
+const cleanCSS     = require('gulp-clean-css');
 const concat       = require('gulp-concat');
 const rename       = require('gulp-rename');
 // const sass         = require('gulp-sass');
@@ -23,7 +22,6 @@ let assetsCss = [
     'node_modules/select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css',
     'node_modules/footable/css/footable.core.min.css',
     'node_modules/@yaireo/tagify/dist/tagify.css',
-    'node_modules/chart.js/dist/Chart.min.css',
     'node_modules/toastr/build/toastr.min.css',
     'vendor/moxiecode/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css',
     'node_modules/codemirror-minified/lib/codemirror.css',
@@ -44,18 +42,19 @@ let assetsJs = [
     'node_modules/js-cookie/src/js.cookie.js',
     'node_modules/jquery-validation/dist/jquery.validate.min.js',
     'node_modules/sprintf-js/dist/sprintf.min.js',
-    'node_modules/chart.js/dist/Chart.bundle.min.js',
-    'node_modules/chart.js/dist/Chart.min.js',
+    'node_modules/chart.js/dist/chart.umd.min.js',
     'node_modules/sjcl/sjcl.js',
     'node_modules/toastr/build/toastr.min.js',
     'node_modules/codemirror-minified/lib/codemirror.js',
     'node_modules/vanilla-context-menu/dist/vanilla-context-menu.js',
+    'node_modules/marked/lib/marked.umd.js',
     'vendor/moxiecode/plupload/js/plupload.full.min.js',
     'vendor/moxiecode/plupload/js/jquery.plupload.queue/jquery.plupload.queue.min.js',
 ];
 
 let appJs = [
     'assets/src/js/obj.js',
+    'assets/src/js/components/*.js',
     'assets/src/js/main.js',
     'assets/src/js/helpers.js',
     'assets/src/js/pages/*.js',
@@ -64,49 +63,68 @@ let appJs = [
 
 let dest = 'assets/';
 
-gulp.task('sass', (done) => {
-    gulp.src(sassFiles)
+gulp.task('sass-main', () => {
+    return gulp.src(sassFiles)
         .pipe(sourcemaps.init())
         .pipe(sass())
         .pipe(concat('main.css'))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(dest + 'css/'));
-    gulp.src(assetsCss)
+});
+
+gulp.task('sass-assets', () => {
+    return gulp.src(assetsCss)
         .pipe(sourcemaps.init())
         .pipe(sass())
         .pipe(concat('assets.css'))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(dest + 'css/'));
-    done();
 });
 
-gulp.task('javascript', (done) => {
-    gulp.src(appJs)
+gulp.task('sass', gulp.parallel(['sass-main', 'sass-assets']));
+
+gulp.task('js-app', () => {
+    return gulp.src(appJs)
         .pipe(sourcemaps.init())
         .pipe(concat('app.js'))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(dest + 'js/'));
-    gulp.src(assetsJs)
+});
+
+gulp.task('js-assets', () => {
+    return gulp.src(assetsJs)
         .pipe(sourcemaps.init())
         .pipe(concat('assets.js'))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(dest + 'js/'));
-    done();
 });
 
-gulp.task('copy', (done) => {
-    gulp.src('node_modules/bootstrap/fonts/*.*')
+gulp.task('javascript', gulp.parallel(['js-app', 'js-assets']));
+
+gulp.task('copy-fonts', () => {
+    return gulp.src([
+            'node_modules/font-awesome/fonts/*.*',
+            'node_modules/footable/css/fonts/*.*'
+        ], { encoding: false })
         .pipe(gulp.dest(dest + 'fonts/'));
-    gulp.src('node_modules/font-awesome/fonts/*.*')
-        .pipe(gulp.dest(dest + 'fonts/'));
-    gulp.src('node_modules/footable/css/fonts/*.*')
-        .pipe(gulp.dest(dest + 'fonts/'));
-    gulp.src('node_modules/jquery/dist/jquery.min.js')
-        .pipe(gulp.dest(dest + 'lib/jquery/'));
-    gulp.src('node_modules/jquery-migrate/dist/jquery-migrate.min.js')
-        .pipe(gulp.dest(dest + 'lib/jquery-migrate/'));
-    done();
 });
+
+gulp.task('copy-lib', () => {
+    return gulp.src('node_modules/jquery/dist/jquery.min.js')
+        .pipe(gulp.dest(dest + 'lib/jquery/'));
+});
+
+gulp.task('copy-lib-migrate', () => {
+    return gulp.src('node_modules/jquery-migrate/dist/jquery-migrate.min.js')
+        .pipe(gulp.dest(dest + 'lib/jquery-migrate/'));
+});
+
+gulp.task('copy-lib-codemirror', () => {
+    return gulp.src('node_modules/codemirror-minified/**/*', { encoding: false })
+        .pipe(gulp.dest(dest + 'lib/codemirror/'));
+});
+
+gulp.task('copy', gulp.parallel(['copy-fonts', 'copy-lib', 'copy-lib-migrate', 'copy-lib-codemirror']));
 
 gulp.task('minify-css', function () {
     return gulp.src(dest + 'css/*.css')

@@ -1,0 +1,588 @@
+/* 
+ * RETRO 90s TEMPLATE CSS
+ * Welcome to the World Wide Web!
+ * Best viewed in Netscape Navigator 4.0+
+ */
+
+/* Reset some modern defaults */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 60px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    background-color: #c0c0c0;
+    background-image: url('images/bg-pattern.gif');
+    background-repeat: repeat;
+    color: #000000;
+    line-height: 1.3;
+}
+
+/* Classic 90s link styles */
+a:link {
+    color: #0000ff;
+    text-decoration: underline;
+}
+
+a:visited {
+    color: #800080;
+    text-decoration: underline;
+}
+
+a:hover {
+    color: #ff0000;
+    text-decoration: underline;
+    background-color: #ffffcc;
+}
+
+a:active {
+    color: #ff0000;
+    text-decoration: underline;
+}
+
+/* Form elements with 90s styling */
+input[type="text"], input[type="search"], select {
+    border: 2px inset #c0c0c0;
+    background-color: #ffffff;
+    color: #000000;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    padding: 4px;
+}
+
+input[type="submit"], input[type="button"] {
+    border: 2px outset #c0c0c0;
+    background-color: #c0c0c0;
+    color: #000000;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    padding: 4px 12px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover, input[type="button"]:hover {
+    background-color: #e0e0e0;
+}
+
+input[type="submit"]:active, input[type="button"]:active {
+    border: 2px inset #c0c0c0;
+    background-color: #a0a0a0;
+}
+
+input[type="checkbox"] {
+    width: 13px;
+    height: 13px;
+}
+
+/* Table styling - the backbone of 90s web design */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+td {
+    vertical-align: top;
+}
+
+/* Special 90s effects */
+blink {
+    animation: blink 1s linear infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+marquee {
+    display: block;
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Simulate marquee effect for modern browsers */
+marquee font {
+    display: inline-block;
+    animation: marquee 15s linear infinite;
+}
+
+@keyframes marquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+/* 90s Button Images */
+img[alt="Download"] {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+img[alt="Preview"] {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+img[alt="Upload Files"] {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+/* Classic scrollbar styling (WebKit browsers) */
+::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+}
+
+::-webkit-scrollbar-track {
+    background: #c0c0c0;
+    border: 1px inset #c0c0c0;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #808080;
+    border: 1px outset #808080;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #606060;
+}
+
+::-webkit-scrollbar-corner {
+    background: #c0c0c0;
+}
+
+/* Logo sizing */
+img {
+    max-width: 150px;
+    height: auto;
+}
+
+/* Typography - Classic web fonts */
+font[face="Arial, sans-serif"] {
+    font-family: Arial, sans-serif;
+}
+
+font[size="1"] { font-size: 12px; }
+font[size="2"] { font-size: 14px; }
+font[size="3"] { font-size: 16px; }
+font[size="4"] { font-size: 20px; }
+font[size="5"] { font-size: 28px; }
+font[size="6"] { font-size: 36px; }
+font[size="7"] { font-size: 52px; }
+
+/* Header background with pattern */
+table[bgcolor="#008080"]:first-of-type {
+    background-image: url('images/pattern.jpeg');
+    background-repeat: repeat;
+    background-position: center;
+    background-size: auto;
+}
+
+/* Classic color combinations */
+font[color="#ffffff"] { color: #ffffff; }
+font[color="#ffff00"] { color: #ffff00; }
+font[color="#00ffff"] { color: #00ffff; }
+font[color="#ff0000"] { color: #ff0000; }
+font[color="#00ff00"] { color: #00ff00; }
+font[color="#0000ff"] { color: #0000ff; }
+font[color="#ff00ff"] { color: #ff00ff; }
+font[color="#666666"] { color: #666666; }
+font[color="#ff6600"] { color: #ff6600; }
+
+/* 90s Table Cell Colors */
+td[bgcolor="#008080"] { background-color: #008080; }
+td[bgcolor="#c0c0c0"] { background-color: #c0c0c0; }
+td[bgcolor="#000080"] { background-color: #000080; }
+td[bgcolor="#808080"] { background-color: #808080; }
+td[bgcolor="#e0e0e0"] { background-color: #e0e0e0; }
+td[bgcolor="#f0f0f0"] { background-color: #f0f0f0; }
+td[bgcolor="#ffff00"] { background-color: #ffff00; }
+td[bgcolor="#ffffff"] { background-color: #ffffff; }
+td[bgcolor="#ffcccc"] { background-color: #ffcccc; }
+
+table[bgcolor="#008080"] { background-color: #008080; }
+table[bgcolor="#c0c0c0"] { background-color: #c0c0c0; }
+
+/* Hover effects for table rows - more subtle */
+tr:hover td {
+    cursor: pointer;
+}
+
+/* Only add hover effect to file rows, not header rows */
+tr:hover td[bgcolor="#e0e0e0"],
+tr:hover td[bgcolor="#f0f0f0"] {
+    background-color: #f0f0ff !important;
+}
+
+/* Keep header rows unchanged on hover */
+tr:hover td[bgcolor="#000080"],
+tr:hover td[bgcolor="#808080"] {
+    background-color: inherit !important;
+    cursor: default;
+}
+
+/* Retro borders and 3D effects */
+.retro-border-in {
+    border: 2px inset #c0c0c0;
+}
+
+.retro-border-out {
+    border: 2px outset #c0c0c0;
+}
+
+.retro-border-raised {
+    border-top: 1px solid #ffffff;
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #808080;
+    border-bottom: 1px solid #808080;
+}
+
+.retro-border-sunken {
+    border-top: 1px solid #808080;
+    border-left: 1px solid #808080;
+    border-right: 1px solid #ffffff;
+    border-bottom: 1px solid #ffffff;
+}
+
+/* Pagination styling (90s style) */
+.pagination {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    margin: 20px 0;
+    display: block;
+    clear: both;
+}
+
+.pagination ul {
+    display: inline-block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.pagination li {
+    display: inline-block;
+    margin: 2px;
+}
+
+.pagination a,
+.pagination span {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 0;
+    border: 2px outset #c0c0c0;
+    background-color: #c0c0c0;
+    color: #000000;
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    min-width: 20px;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.pagination a:hover {
+    background-color: #e0e0e0;
+    color: #000000;
+    text-decoration: none;
+    border: 2px outset #e0e0e0;
+}
+
+.pagination a:active {
+    border: 2px inset #c0c0c0;
+    background-color: #a0a0a0;
+}
+
+.pagination .current,
+.pagination .page-item.active a,
+.pagination .page-item.active span {
+    border: 2px inset #c0c0c0;
+    background-color: #808080;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.pagination .disabled span {
+    border: 2px outset #f0f0f0;
+    background-color: #f0f0f0;
+    color: #999999;
+}
+
+/* Alternative pagination styles for different structures */
+nav[aria-label="pagination"] ul {
+    display: inline-block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav[aria-label="pagination"] li {
+    display: inline-block;
+    margin: 2px;
+}
+
+nav[aria-label="pagination"] a,
+nav[aria-label="pagination"] span {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 0;
+    border: 2px outset #c0c0c0;
+    background-color: #c0c0c0;
+    color: #000000;
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    min-width: 20px;
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* Modal 90s styling */
+#previewModal {
+    font-family: Arial, sans-serif;
+    cursor: pointer; /* Indicate that background is clickable */
+}
+
+#previewModalContent {
+    cursor: default; /* Reset cursor for content area */
+    min-width: 600px;
+    max-width: 95vw;
+    min-height: 80vh;
+}
+
+#previewModal iframe {
+    width: 100%;
+    height: 70vh;
+    min-height: 600px;
+    border: 1px inset #c0c0c0;
+}
+
+#previewModal img {
+    max-width: 100%;
+    height: auto;
+    border: 1px inset #c0c0c0;
+}
+
+#previewContent {
+    max-height: 70vh;
+    overflow: auto;
+}
+
+#previewModal video {
+    width: 100%;
+    max-width: 500px;
+    border: 1px inset #c0c0c0;
+}
+
+#previewModal audio {
+    width: 100%;
+    border: 1px inset #c0c0c0;
+}
+
+/* Responsive adjustments (but keep the 90s feel) */
+@media screen and (max-width: 640px) {
+    body {
+        padding: 8px;
+        font-size: 13px;
+    }
+    
+    table {
+        font-size: 12px;
+    }
+    
+    font[size="1"] { font-size: 11px; }
+    font[size="2"] { font-size: 13px; }
+    font[size="3"] { font-size: 15px; }
+    font[size="4"] { font-size: 18px; }
+    font[size="5"] { font-size: 24px; }
+    
+    marquee {
+        height: 25px;
+        line-height: 25px;
+    }
+    
+    td {
+        padding: 2px !important;
+    }
+    
+    img[alt="Download"],
+    img[alt="Preview"] {
+        width: 40px;
+        height: 16px;
+    }
+    
+    /* Folder buttons responsive - fewer per row on mobile */
+    .retro-button.folder-button {
+        font-size: 10px;
+        min-width: 60px;
+        max-width: 80px;
+        padding: 2px 4px;
+    }
+    
+    #previewModal table {
+        margin-top: 10px;
+        margin-left: 5px;
+        margin-right: 5px;
+        min-width: 95%;
+    }
+
+    #previewModal iframe {
+        height: 60vh;
+        min-height: 400px;
+    }
+}
+
+/* Hide elements that don't work well on mobile */
+@media screen and (max-width: 480px) {
+    marquee {
+        display: none;
+    }
+    
+    blink {
+        animation: none;
+    }
+    
+    td[width] {
+        width: auto !important;
+    }
+}
+
+/* Accessibility improvements while maintaining 90s aesthetic */
+@media (prefers-reduced-motion: reduce) {
+    blink {
+        animation: none;
+    }
+    
+    marquee font {
+        animation: none;
+        transform: none;
+    }
+}
+
+/* Print styles (because people printed web pages in the 90s!) */
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+    
+    table {
+        border-collapse: collapse;
+    }
+    
+    td {
+        border: 1px solid black;
+        padding: 2px;
+    }
+    
+    marquee,
+    blink {
+        display: none;
+    }
+    
+    a:link,
+    a:visited {
+        color: black;
+        text-decoration: underline;
+    }
+}
+
+/* Custom cursor for the full 90s experience */
+body {
+    cursor: default;
+}
+
+a {
+    cursor: pointer;
+}
+
+input[type="submit"],
+input[type="button"] {
+    cursor: pointer;
+}
+
+/* Retro button styling */
+.retro-button {
+    display: inline-block;
+    padding: 4px 8px;
+    margin: 2px;
+    border: 2px outset #c0c0c0;
+    background-color: #c0c0c0;
+    color: #000000;
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    min-width: 50px;
+    white-space: nowrap;
+}
+
+.retro-button:hover {
+    background-color: #e0e0e0;
+    color: #000000;
+    text-decoration: none;
+}
+
+.retro-button:active {
+    border: 2px inset #c0c0c0;
+    background-color: #a0a0a0;
+}
+
+.retro-button.big-button {
+    padding: 6px 16px;
+    font-size: 14px;
+    min-width: 140px;
+    border: 3px outset #c0c0c0;
+}
+
+.retro-button.big-button:hover {
+    background-color: #ffff00;
+    animation: retro-glow 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes retro-glow {
+    0% { background-color: #ffff00; }
+    100% { background-color: #ffff88; }
+}
+
+/* Folder button styling (more compact for 5 per row) */
+.retro-button.folder-button {
+    padding: 4px 6px;
+    font-size: 11px;
+    min-width: 80px;
+    max-width: 120px;
+    height: auto;
+    border: 2px outset #c0c0c0;
+    word-wrap: break-word;
+    white-space: normal;
+    line-height: 1.2;
+}
+
+/* Loading animation (90s style) */
+.retro-loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-image: url('data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wjRLl3EkAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIuj');
+    background-repeat: no-repeat;
+    animation: retro-spin 1s linear infinite;
+}
+
+@keyframes retro-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

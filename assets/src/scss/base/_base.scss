@@ -13,7 +13,7 @@ a img {
     font: normal normal normal 14px/1 FontAwesome;
     margin-right:3px;
     line-height:1px;
-    color:black;
+    color:var(--text-primary);
 }
 
 .clear { clear:both; }
@@ -62,8 +62,8 @@ a {
 .backend {
     .system_msg {
         padding:10px;
-        background:#FFFBE4;
-        border-bottom:1px solid #CCCCCC;
+        background:var(--color-warning-light);
+        border-bottom:1px solid var(--border-medium);
         margin-bottom: 20px;
 
         p {
@@ -91,14 +91,25 @@ a {
         margin-top:30px;
         font-weight:bold;
         font-size:11px;
-        color:#0099CC;
+        color:var(--color-info);
     }
 
-    // Main white content boxes
+    // Main content cards
 
+    .ps-card {
+        background-color:var(--bg-card);
+        box-shadow: var(--shadow-md);
+        border-radius: 8px;
+
+        .ps-card-body {
+            padding:15px;
+        }
+    }
+
+    // Legacy support - will be removed in future version
     .white-box {
-        background-color:white;
-        box-shadow: var(--global_box_shadow);
+        background-color:var(--bg-card);
+        box-shadow: var(--shadow-md);
         border-radius: 8px;
 
         .white-box-interior {
@@ -125,11 +136,11 @@ a {
 
         label.error {
             font-size:.85rem;
-            color:#B94A48;
-            background:#F2DEDE;
+            color:var(--color-error);
+            background:var(--color-error-light);
             margin:0;
             padding:.5rem;
-            border:1px solid #EED3D7;
+            border:1px solid var(--color-error-light);
             position:relative;
             display: block;
             border-radius: 0 0 3px 3px;
@@ -137,7 +148,7 @@ a {
     }
 
     .readonly-not-grayed {
-        background-color: white !important;
+        background-color: var(--bg-card) !important;
     }
 
     // Misc
@@ -173,9 +184,17 @@ form .alert {
 
 // Forms
 
+// Style for required field indicators
+.required-indicator {
+    color: var(--color-error, #dc3545);
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-left: 3px;
+}
+
+// Remove old background image approach
 .required {
-    background:url(#{$img_path}/req-text.png) no-repeat right -2px;
-    padding-right: 50px;
+    // No background image needed anymore
 }
 
 .btn_generate_password {
@@ -185,7 +204,7 @@ form .alert {
 // 2FA
 #otp_request_new_container {
     text-align: center;
-    border: 1px solid #dedede;
+    border: 1px solid var(--border-medium);
     padding: 10px;
     margin-top: 20px;
 
@@ -214,7 +233,7 @@ form .alert {
     padding-top:1rem;
     font-size:1.2em;
     overflow:hidden;
-    border-top:1px dotted #ccc;
+    border-top:1px dotted var(--border-light);
 }
 
 .form_actions {
@@ -277,6 +296,18 @@ form .alert {
 .public_link_copy {
     padding:5px;
     margin:10px 0 10px auto !important;
+}
+
+// Public link modal styles
+.public_link_modal {
+    textarea {
+        color: var(--text-primary) !important;
+        background: var(--bg-card);
+
+        &:read-only {
+            background: var(--bg-hover);
+        }
+    }
 }
 
 // Misc

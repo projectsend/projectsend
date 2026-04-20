@@ -45,8 +45,16 @@ require_once ROOT_DIR . '/includes/functions.assets.php';
 // Options functions
 require_once ROOT_DIR . '/includes/functions.options.php';
 
-// Require the updates functions
+// Require the updates functions (needed by migrations)
 require_once ROOT_DIR . '/includes/updates.functions.php';
+
+// CRITICAL: Run database upgrades BEFORE loading sessions/permissions
+// This must happen AFTER options functions are loaded (need option_exists())
+// but BEFORE active.session.php and Permissions class instantiation
+if (!defined('IS_INSTALL') && !defined('IS_ERROR_PAGE')) {
+    $db_upgrade = new \ProjectSend\Classes\DatabaseUpgrade;
+    $db_upgrade->upgradeDatabase(false);
+}
 
 // Contains the session and cookies validation functions
 require_once ROOT_DIR . '/includes/functions.session.permissions.php';
@@ -56,6 +64,9 @@ require_once ROOT_DIR . '/includes/functions.templates.php';
 
 // User Meta functions
 require_once ROOT_DIR . '/includes/functions.usermeta.php';
+
+// Custom fields functions
+require_once ROOT_DIR . '/includes/functions.custom-fields.php';
 
 // Contains the current session information
 if (!defined('IS_INSTALL')) {
@@ -74,11 +85,17 @@ require_once ROOT_DIR . '/includes/functions.categories.php';
 // Search, filters and actions forms
 require_once ROOT_DIR . '/includes/functions.forms.php';
 
+// Options forms helper functions
+require_once ROOT_DIR . '/includes/functions.forms.options.php';
+
 // Search, filters and actions forms
 require_once ROOT_DIR . '/includes/functions.groups.php';
 
 // Public files display functins
 require_once ROOT_DIR . '/includes/functions.public.php';
+
+// Theme settings functions
+require_once ROOT_DIR . '/includes/functions.theme-settings.php';
 
 // Social login
 if (!defined('IS_INSTALL')) {
@@ -102,5 +119,8 @@ global $assets_loader;
 $assets_loader = new \ProjectSend\Classes\AssetsLoader();
 
 global $permissions;
-$user_id = (user_is_logged_in()) ? CURRENT_USER_ID : null;
+$user_id = (user_is_logged_in() && defined('CURRENT_USER_ID')) ? CURRENT_USER_ID : null;
 $permissions = new \ProjectSend\Classes\Permissions($user_id);
+
+// Ensure all core permissions exist in database (auto-creation)
+\ProjectSend\Classes\Permissions::ensureCorePermissionsExist();

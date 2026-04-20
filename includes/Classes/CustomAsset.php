@@ -13,6 +13,11 @@ class CustomAsset
 {
     private $dbh;
     private $logger;
+    private ?\PDOStatement $statement;
+    /** @var array<string, mixed>|null */
+    private ?array $row;
+    private ?\PDOStatement $sql_query;
+    private ?\PDOStatement $sql;
 
     public $id;
     public $title;
@@ -23,6 +28,7 @@ class CustomAsset
     public $position;
     public $enabled;
     public $created_date;
+    public $created_by;
 
     private $validation_passed;
     private $validation_errors;
@@ -103,6 +109,7 @@ class CustomAsset
             $this->position = html_output($this->row['position']);
             $this->enabled = html_output($this->row['enabled']);
             $this->created_date = html_output($this->row['timestamp']);
+            $this->created_by = $this->row['created_by'];
             $this->language_formatted = format_asset_language_name($this->language);
             return true;
         }
@@ -125,6 +132,7 @@ class CustomAsset
             'position' => $this->position,
             'enabled' => $this->enabled,
             'created_date' => $this->created_date,
+            'created_by' => $this->created_by,
         ];
 
         return $return;
@@ -209,51 +217,81 @@ class CustomAsset
 	 */
 	public function create()
 	{
-        $state = array(
-            'query' => 0,
-        );
-
-        if (!$this->validate()) {
-            $state = [];
-            return $state;
+        // Check permissions
+        if (!\current_user_can('create_assets')) {
+            return [
+                'status' => 'error',
+                'message' => __('You do not have permission to create assets.', 'cftp_admin')
+            ];
         }
 
-        $this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_CUSTOM_ASSETS . " (title, content, language, location, position, enabled)"
-                                                ." VALUES (:title, :content, :language, :location, :position, :enabled)");
+        if (!$this->validate()) {
+            return [
+                'status' => 'error',
+                'message' => __('Validation errors occurred.', 'cftp_admin')
+            ];
+        }
+
+        $this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_CUSTOM_ASSETS . " (title, content, language, location, position, enabled, created_by)"
+                                                ." VALUES (:title, :content, :language, :location, :position, :enabled, :created_by)");
         $this->sql_query->bindParam(':title', $this->title);
         $this->sql_query->bindParam(':content', $this->content);
         $this->sql_query->bindParam(':language', $this->language);
         $this->sql_query->bindParam(':location', $this->location);
         $this->sql_query->bindParam(':position', $this->position);
         $this->sql_query->bindParam(':enabled', $this->enabled, PDO::PARAM_INT);
+        $current_user_id = defined('CURRENT_USER_ID') ? \CURRENT_USER_ID : 1;
+        $this->sql_query->bindParam(':created_by', $current_user_id, PDO::PARAM_INT);
         $this->sql_query->execute();
 
         $this->id = $this->dbh->lastInsertId();
-        $state['id'] = $this->id;
 
         if ($this->sql_query) {
-            $state['query'] = 1;
-
             $record = $this->logAction(50);
+
+            return [
+                'status' => 'success',
+                'id' => $this->id,
+                'message' => __('Asset created successfully.', 'cftp_admin')
+            ];
         }
 
-		return $state;
+		return [
+            'status' => 'error',
+            'message' => __('Failed to create asset.', 'cftp_admin')
+        ];
 	}
 
 	/**
-	 * Edit an existing group.
+	 * Edit an existing custom asset.
+	 * @return array Result with status and message
 	 */
 	public function edit()
 	{
         if (empty($this->id)) {
-            return false;
+            return [
+                'status' => 'error',
+                'message' => __('Asset ID is required for editing.', 'cftp_admin')
+            ];
         }
 
-        $state = [];
+        // Check permissions
+        $current_user_id = defined('CURRENT_USER_ID') ? \CURRENT_USER_ID : null;
+        $can_edit = \current_user_can('edit_assets') ||
+                   (\current_user_can('create_assets') && $current_user_id && $this->created_by == $current_user_id);
+
+        if (!$can_edit) {
+            return [
+                'status' => 'error',
+                'message' => __('You do not have permission to edit this asset.', 'cftp_admin')
+            ];
+        }
 
         if (!$this->validate()) {
-            $state = [];
-            return $state;
+            return [
+                'status' => 'error',
+                'message' => __('Validation errors occurred.', 'cftp_admin')
+            ];
         }
 
         /** SQL query */
@@ -267,12 +305,17 @@ class CustomAsset
 		$this->sql_query->execute();
 
 		if ($this->sql_query) {
-			$state['query'] = 1;
-
             $record = $this->logAction(51);
+            return [
+                'status' => 'success',
+                'message' => __('Asset updated successfully.', 'cftp_admin')
+            ];
         }
-        
-		return $state;
+
+		return [
+            'status' => 'error',
+            'message' => __('Failed to update asset.', 'cftp_admin')
+        ];
 	}
 
     public function enable()
@@ -301,7 +344,6 @@ class CustomAsset
                 break;
             default:
                 return false;
-                break;
         }
 
         /** Do a permissions check */
@@ -319,25 +361,70 @@ class CustomAsset
         return false;
 	}
 
+    /**
+     * Check if a user can edit this asset
+     * @param int $user_id User ID to check (defaults to current user)
+     * @return bool
+     */
+    public function canUserEdit($user_id = null)
+    {
+        if ($user_id === null) {
+            if (defined('CURRENT_USER_ID')) {
+                $user_id = \CURRENT_USER_ID;
+            } else {
+                return false; // No user logged in
+            }
+        }
+
+        // User can edit if they have the edit_assets permission (can edit all assets)
+        if (\current_user_can('edit_assets')) {
+            return true;
+        }
+
+        // User can edit their own assets if they have create_assets permission
+        if (\current_user_can('create_assets') && $this->created_by == $user_id) {
+            return true;
+        }
+
+        return false;
+    }
+
 	/**
-	 * Delete an existing group.
+	 * Delete an existing custom asset.
+	 * @return array Result with status and message
 	 */
 	public function delete()
 	{
         if (empty($this->id)) {
-            return false;
+            return [
+                'status' => 'error',
+                'message' => __('Asset ID is required for deletion.', 'cftp_admin')
+            ];
         }
 
-        /** Do a permissions check */
-        if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-            $this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_CUSTOM_ASSETS . ' WHERE id=:id');
-            $this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
-            $this->sql->execute();
+        // Check permissions
+        $current_user_id = defined('CURRENT_USER_ID') ? \CURRENT_USER_ID : null;
+        $can_delete = \current_user_can('delete_assets') ||
+                     (\current_user_can('create_assets') && $current_user_id && $this->created_by == $current_user_id);
+
+        if (!$can_delete) {
+            return [
+                'status' => 'error',
+                'message' => __('You do not have permission to delete this asset.', 'cftp_admin')
+            ];
         }
-        
+
+        // Delete the asset from database
+        $this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_CUSTOM_ASSETS . ' WHERE id=:id');
+        $this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
+        $this->sql->execute();
+
         $record = $this->logAction(52);
 
-        return true;
+        return [
+            'status' => 'success',
+            'message' => __('Asset deleted successfully.', 'cftp_admin')
+        ];
     }
 
     /** Record the action log */
@@ -345,7 +432,7 @@ class CustomAsset
     {
         $this->logger->addEntry([
             'action' => $number,
-            'owner_id' => CURRENT_USER_ID,
+            'owner_id' => defined('CURRENT_USER_ID') ? \CURRENT_USER_ID : 1,
             'details' => json_encode([
                 'title' => $this->title,
                 'language' => $this->language

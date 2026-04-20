@@ -8,7 +8,7 @@
  * one time only.
  */
 
-$allowed_update = array(9,8,7);
+$allowed_update = ['System Administrator', 'Account Manager', 'Uploader'];
 if (current_role_in($allowed_update)) {
 	
     $statement = $dbh->prepare("SET SQL_MODE='ALLOW_INVALID_DATES';");

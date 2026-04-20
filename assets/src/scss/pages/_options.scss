@@ -6,24 +6,250 @@ body.options {
         text-align:center;
         padding:20px 0 0;
         overflow:hidden;
-    
+
         @include bk(xs) {
             text-align:center;
         }
     }
-    
+
     #current_logo_img {
         padding:20px 0;
-    
+
         img, svg {
             height:auto;
             width:100%;
             max-width:300px;
         }
     }
-    
+
     #form_upload_logo {
         padding:30px 0 10px;
         border-top:1px dotted #CCCCCC;
+    }
+
+    // Branding section redesign
+    .branding-cards {
+        margin-top: 20px;
+    }
+
+    .branding-card {
+        border: 1px solid #e3e6f0;
+        border-radius: 0.35rem;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        transition: all 0.3s;
+
+        &:hover {
+            box-shadow: 0 0.25rem 2rem 0 rgba(58, 59, 69, 0.2);
+        }
+
+        .card-header {
+            border-bottom: 1px solid #e3e6f0;
+        }
+    }
+
+    .branding-preview {
+        text-align: center;
+        min-height: 150px;
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .preview-container {
+        display: inline-block;
+        padding: 15px;
+        background: var(--bg-card);
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .logo-preview .preview-image {
+        max-width: 200px;
+        max-height: 100px;
+        height: auto;
+        border-radius: 4px;
+        display: block;
+        background: var(--bg-card);
+        opacity: 1;
+        visibility: visible;
+        position: relative;
+        z-index: 1;
+
+        // SVG specific styling
+        &[src$=".svg"] {
+            width: 200px;
+            height: 100px;
+            object-fit: contain;
+            min-width: 150px;
+            min-height: 50px;
+        }
+    }
+
+    .favicon-preview .preview-image.favicon-size {
+        width: 32px;
+        height: 32px;
+        object-fit: contain;
+    }
+
+    .no-favicon-placeholder {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f1f1f1;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    .file-upload-container {
+        margin-top: 15px;
+    }
+
+    .file-upload-label {
+        display: block;
+        cursor: pointer;
+        margin-bottom: 0;
+    }
+
+    .file-upload-area {
+        border: 2px dashed #4e73df;
+        border-radius: 0.35rem;
+        padding: 20px;
+        text-align: center;
+        background: linear-gradient(135deg, #ffffff, #f8f9fc);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+
+        &:hover {
+            border-color: #2e59d9;
+            background: linear-gradient(135deg, #f8f9fc, #eef2f7);
+            transform: translateY(-1px);
+
+            &:before {
+                opacity: 1;
+                animation: shimmer 1.5s ease-in-out;
+            }
+        }
+
+        &:before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(78, 115, 223, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+            opacity: 0;
+        }
+
+        i {
+            font-size: 2rem;
+            display: block;
+        }
+
+        p {
+            color: #5a5c69;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        small {
+            position: relative;
+            z-index: 1;
+        }
+    }
+
+    @keyframes shimmer {
+        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    .file-upload-input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+        overflow: hidden;
+    }
+
+    .preview-note {
+        margin-top: 8px;
+        font-style: italic;
+    }
+
+    .preview-image.preview-selected {
+        border: 3px solid #28a745;
+        box-shadow: 0 0 15px rgba(40, 167, 69, 0.3);
+    }
+
+    .alert-warning {
+        background-color: #fff3cd;
+        border-color: #ffeaa7;
+        color: #856404;
+        border-radius: 0.35rem;
+        padding: 10px 15px;
+        font-size: 0.875rem;
+    }
+
+    // Responsive adjustments
+    @include bk(xs) {
+        .branding-cards .col-lg-6 {
+            margin-bottom: 20px;
+        }
+
+        .file-upload-area {
+            padding: 15px;
+
+            i {
+                font-size: 1.5rem;
+            }
+        }
+    }
+
+    // Dark mode compatibility
+    .dark-mode & {
+        .branding-card {
+            background-color: #2d3748;
+            border-color: #4a5568;
+
+            .card-header {
+                background: linear-gradient(45deg, #2d3748, #4a5568);
+                color: #e2e8f0;
+            }
+        }
+
+        .branding-preview {
+            background: #1a202c;
+            border-color: #4a5568;
+        }
+
+        .preview-container {
+            background: #2d3748;
+        }
+
+        .file-upload-area {
+            background: linear-gradient(135deg, #2d3748, #1a202c);
+            border-color: #4e73df;
+
+            &:hover {
+                background: linear-gradient(135deg, #1a202c, #2d3748);
+            }
+
+            p {
+                color: #e2e8f0;
+            }
+        }
+
+        .alert-warning {
+            background-color: #332701;
+            border-color: #533f03;
+            color: #ffc107;
+        }
     }
 }    

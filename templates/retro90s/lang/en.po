@@ -1,0 +1,28 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ProjectSend theme: Retro 90s\n"
+"POT-Creation-Date: 2025-01-16 12:00+0000\n"
+"PO-Revision-Date: 2025-01-16 12:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: ProjectSend <contact@projectsend.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: ProjectSend\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: _e;__\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: template.php:30
+msgid "File downloads"
+msgstr "File downloads"
+
+#: template.php:240
+msgid "There are currently no files to display."
+msgstr "There are currently no files to display."
+
+#: template.php:245
+msgid "Upload Your First File"
+msgstr "Upload Your First File"

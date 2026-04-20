@@ -3,8 +3,8 @@
  * Show the form to add a new asset.
  *
  */
-$allowed_levels = array(9);
 require_once 'bootstrap.php';
+check_access_enhanced(['create_assets']);
 
 $asset = new \ProjectSend\Classes\CustomAsset();
 
@@ -41,15 +41,11 @@ if ($_POST) {
     $asset->set($asset_arguments);
     $create = $asset->create();
 
-    if (!empty($new_response['id'])) {
-        $redirect_to = BASE_URI . 'custom-assets-edit.php?id=' . $new_response['id'];
-    }
-
-    if (!empty($create['id'])) {
-        $flash->success(__('Asset created successfully'));
+    if ($create['status'] === 'success') {
+        $flash->success($create['message']);
         $redirect_to = BASE_URI . 'custom-assets-edit.php?id=' . $create['id'];
     } else {
-        $flash->error(__('There was an error saving to the database'));
+        $flash->error($create['message']);
         $redirect_to = BASE_URI . 'custom-assets-add.php';
     }
 

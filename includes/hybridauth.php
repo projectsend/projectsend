@@ -18,9 +18,9 @@
                 "keys" => array("id" => get_option("linkedin_client_id"), "secret" => get_option("linkedin_client_secret")),
                 "fields" => array(),
             ),
-            "Twitter" => array(
-                "enabled" => get_option('twitter_signin_enabled'),
-                "keys" => array("id" => get_option("twitter_client_id"), "secret" => get_option("twitter_client_secret")),
+            "X" => array(
+                "enabled" => get_option('x_signin_enabled'),
+                "keys" => array("id" => get_option("x_client_id"), "secret" => get_option("x_client_secret")),
             ),
             "WindowsLive" => array(
                 "enabled" => get_option('windowslive_signin_enabled'),
@@ -30,14 +30,17 @@
                 "enabled" => get_option('yahoo_signin_enabled'),
                 "keys" => array("id" => get_option("yahoo_client_id"), "secret" => get_option("yahoo_client_secret")),
             ),
-            "OpenID" => array(
-                "enabled" => get_option('oidc_signin_enabled'),
-            ),
             "MicrosoftGraph" => array(
                 "enabled" => get_option('microsoftgraph_signin_enabled'),
                 "keys" => array("id" => get_option("microsoftgraph_client_id"), "secret" => get_option("microsoftgraph_client_secret")),
                 "tenant" => get_option('microsoftgraph_client_tenant')
-            )
+            ),
+            "GenericOidc" => array(
+                "enabled" => get_option('oidc_signin_enabled'),
+                "issuer_url" => get_option('oidc_issuer_url'),
+                "keys" => array("id" => get_option("oidc_client_id"), "secret" => get_option("oidc_client_secret")),
+                "adapter" => \ProjectSend\Classes\Hybridauth\GenericOidc::class,
+            ),
         ),
         // debug_mode possible values
         // - "error" log only error messages

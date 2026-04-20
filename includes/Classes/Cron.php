@@ -118,7 +118,7 @@ class Cron
 
             $notifications->sendNotifications();
             $results['elements']['sent'] = [
-                'label' => __('Succesfully sent', 'cftp_admin'),
+                'label' => __('Successfully sent', 'cftp_admin'),
                 'items' => $notifications->getNotificationsSent()
             ];
             $results['elements']['failed'] = [
@@ -159,7 +159,7 @@ class Cron
             }
 
             $results['elements']['success'] = [
-                'label' => __('Succesfully deleted', 'cftp_admin'),
+                'label' => __('Successfully deleted', 'cftp_admin'),
                 'items' => []
             ];
             $results['elements']['failed'] = [
@@ -171,7 +171,8 @@ class Cron
                 $file = new \ProjectSend\Classes\Files($file_id);
                 if ($file->isExpired()) {
                     $results['elements']['found']['items'][] = $file_name;
-                    if ($file->deleteFiles()) {
+                    $result = $file->deleteFiles();
+                    if ($result['status'] === 'success') {
                         $results['elements']['success']['items'][] = $file_name;
                     } else {
                         $results['elements']['failed']['items'][] = $file_name;
@@ -203,7 +204,7 @@ class Cron
                     'items' => []
                 ],
                 'success' => [
-                    'label' => __('Succesfully deleted', 'cftp_admin'),
+                    'label' => __('Successfully deleted', 'cftp_admin'),
                     'items' => []
                 ],
                 'failed' => [

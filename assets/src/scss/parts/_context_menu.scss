@@ -1,17 +1,17 @@
 .context-menu-orange-theme {
-    background-color: white;
+    background-color: var(--bg-card);
     box-shadow: var(--global_box_shadow);
 
     hr {
-        background-color: #eee;
+        background-color: var(--border-light);
     }
 
     // text color for each item
     & > *:not(hr) {
-        color: #222;
+        color: var(--text-primary);
 
         &:hover {
-            background: #f0f0f0;
+            background: var(--bg-hover);
             color: var(--main_color);
         }
     }

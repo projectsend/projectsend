@@ -19,12 +19,12 @@
                 $(this).closest('.message').transition('fade');
             });
 
-            // Common for all tables
+            // Common for all tables and card lists
             $("#select_all").click(function(){
                 var status = $(this).prop("checked");
                 /** Uncheck all first in case you used pagination */
-                $("tr td input[type=checkbox].batch_checkbox").prop("checked",false);
-                $("tr:visible td input[type=checkbox].batch_checkbox").prop("checked",status);
+                $("input[type=checkbox].batch_checkbox").prop("checked",false);
+                $("input[type=checkbox].batch_checkbox:visible").prop("checked",status);
             });
 
             // Loose focus after clicking buttons

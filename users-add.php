@@ -2,9 +2,8 @@
 /**
  * Show the form to add a new system user.
  */
-$allowed_levels = array(9);
 require_once 'bootstrap.php';
-log_in_required($allowed_levels);
+check_access_enhanced(['create_users']);
 
 $active_nav = 'users';
 
@@ -33,8 +32,9 @@ if ($_POST) {
         'password' => $_POST['password'],
         'name' => $_POST['name'],
         'email' => $_POST['email'],
-        'role' => $_POST['level'],
+        'role' => $_POST['role_id'],
         'max_file_size' => (isset($_POST["max_file_size"])) ? $_POST['max_file_size'] : '',
+        'max_disk_quota' => (isset($_POST["max_disk_quota"])) ? $_POST['max_disk_quota'] : '',
         'notify_account' => (isset($_POST["notify_account"])) ? 1 : 0,
         'active' => (isset($_POST["active"])) ? 1 : 0,
         'require_password_change' => (isset($_POST["require_password_change"])) ? true : false,
@@ -42,13 +42,23 @@ if ($_POST) {
         'type' => 'new_user',
     );
 
+    // Process custom fields
+    $custom_field_data = [];
+    foreach ($_POST as $key => $value) {
+        if (strpos($key, 'custom_field_') === 0) {
+            $field_id = str_replace('custom_field_', '', $key);
+            $custom_field_data[$field_id] = $value;
+        }
+    }
+
     // Validate the information from the posted form
     // Create the user if validation is correct
     $new_user->setType('new_user');
     $new_user->set($user_arguments);
+    $new_user->custom_field_data = $custom_field_data;
     $create = $new_user->create();
 
-    if (!empty($create['id'])) {
+    if ($create['status'] === 'success') {
         $logger = new \ProjectSend\Classes\ActionsLog;
         $record = $logger->addEntry([
             'action' => 2,
@@ -58,10 +68,10 @@ if ($_POST) {
             'affected_account_name' => $new_user->name
         ]);
 
-        $flash->success(__('User created successfully'));
+        $flash->success($create['message']);
         $redirect_to = BASE_URI . 'users-edit.php?id=' . $create['id'];
     } else {
-        $flash->error($new_user->getValidationErrors());
+        $flash->error($create['message']);
         $redirect_to = BASE_URI . 'users-add.php';
     }
 

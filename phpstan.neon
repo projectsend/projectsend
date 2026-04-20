@@ -1,0 +1,21 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 6
+    paths:
+        - includes/Classes/
+    excludePaths:
+        - vendor/
+        - node_modules/
+        - upload/
+        - install/
+        - cache/
+        - my_files/
+    scanDirectories:
+        - includes/
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        # Common legacy PHP patterns that are hard to fix immediately
+        - '#Variable \$.*might not be defined#'
+        - '#Undefined variable: \$.*#'

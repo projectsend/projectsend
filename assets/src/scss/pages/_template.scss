@@ -2,7 +2,7 @@
     .template {
         margin-bottom:40px;
         padding:15px;
-        background:white;
+        background:var(--bg-card);
         overflow:hidden;
         position:relative;
 
@@ -12,7 +12,7 @@
 
         h4 {
             font-size:1.5em;
-            color:black;
+            color:var(--text-primary);
             margin-top:25px;
         }
 
@@ -21,6 +21,22 @@
             h5 {
                 margin:20px 0 10px;
                 font-size:1.2em;
+            }
+
+            // Template features badges
+            .template-features {
+                margin: 15px 0;
+                padding-top: 10px;
+                border-top: 1px solid #e0e0e0;
+
+                h5 {
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: #666;
+                    margin-bottom: 10px;
+                }
+
+                // Feature badges styles moved to components/_feature_badges.scss
             }
         }
 
@@ -44,16 +60,17 @@
                 top:0;
                 height:100%;
                 transition:.3s all linear;
+                display: none;
             }
         }
 
-        &:hover {
-            .images {
-                .cover {
-                    @include opacity(1);
-                }
-            }
-        }
+        // &:hover {
+        //     .images {
+        //         .cover {
+        //             @include opacity(1);
+        //         }
+        //     }
+        // }
 
         .buttons {
             text-align:right;

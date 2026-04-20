@@ -15,14 +15,12 @@ class OrphanFiles
 
 
     private $dbh;
-    private $logger;
 
     public function __construct()
     {
         global $dbh;
 
         $this->dbh = $dbh;
-        $this->logger = new \ProjectSend\Classes\ActionsLog;
 
         $this->allowed_files = [];
         $this->not_allowed_files = [];

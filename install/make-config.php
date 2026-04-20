@@ -24,6 +24,7 @@ $post_vars = array(
     'dbuser' => 'root',
     'dbpassword' => 'root',
     'dbhost' => 'localhost',
+    'dbport' => '3306',
     'dbprefix' => 'tbl_',
     'dbreuse' => 'no',
     'lang' => 'en',
@@ -58,7 +59,7 @@ if (!$pdo_mysql_available && $pdo_mssql_available) {
  * This function can take a few seconds to respond
  */
 if ($pdo_driver_available) {
-    $dsn = $post_vars['dbdriver'] . ':host=' . $post_vars['dbhost'] . ';dbname=' . $post_vars['dbname'];
+    $dsn = $post_vars['dbdriver'] . ':host=' . $post_vars['dbhost'] . ';port=' . $post_vars['dbport'] . ';dbname=' . $post_vars['dbname'];
     try {
         $pdo = new PDO($dsn, $post_vars['dbuser'], $post_vars['dbpassword'], array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
         $pdo_connected = true;
@@ -112,25 +113,32 @@ $ready_to_go = $pdo_connected && (!$table_exists || $reuse_tables) && $lang_ok &
 // if the user requested to write the config file AND we can proceed, we try to write the new configuration
 if (isset($_POST['submit-start']) && $ready_to_go) {
     $template = file_get_contents(ROOT_DIR . '/includes/sys.config.sample.php');
+    // Generate a secure encryption master key for this installation
+    $encryption_master_key = base64_encode(random_bytes(32));
+
     $template_search = array(
         "'mysql'",
         "'database'",
         "'localhost'",
+        "'3306'",
         "'username'",
         "'password'",
         "'tbl_'",
         "'en'",
-        "2048"
+        "2048",
+        "define('ENCRYPTION_MASTER_KEY', '');",
     );
     $template_replace = array(
         "'" . $post_vars['dbdriver'] . "'",
         "'" . $post_vars['dbname'] . "'",
         "'" . $post_vars['dbhost'] . "'",
+        "'" . $post_vars['dbport'] . "'",
         "'" . $post_vars['dbuser'] . "'",
         "'" . $post_vars['dbpassword'] . "'",
         "'" . $post_vars['dbprefix'] . "'",
         "'" . $post_vars['lang'] . "'",
         "'" . $post_vars['maxfilesize'] . "'",
+        "define('ENCRYPTION_MASTER_KEY', '" . $encryption_master_key . "');",
     );
     $template = str_replace($template_search, $template_replace, $template);
 
@@ -208,6 +216,16 @@ include_once ABS_PARENT . '/header-unlogged.php';
                         <label for="dbhost" class="col-12 col-sm-4 control-label"><?php _e('Host', 'cftp_admin'); ?></label>
                         <div class="col-12 col-sm-6">
                             <input type="text" name="dbhost" id="dbhost" <?php echo !$pdo_driver_available ? 'disabled' : ''; ?> class="required form-control" value="<?php echo $post_vars['dbhost']; ?>" />
+                        </div>
+                        <div class="col-sm-2">
+                            <?php pdo_status_label(); ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="dbport" class="col-12 col-sm-4 control-label"><?php _e('Port', 'cftp_admin'); ?></label>
+                        <div class="col-12 col-sm-6">
+                            <input type="number" name="dbport" id="dbport" <?php echo !$pdo_driver_available ? 'disabled' : ''; ?> class="required form-control" value="<?php echo $post_vars['dbport']; ?>" />
                         </div>
                         <div class="col-sm-2">
                             <?php pdo_status_label(); ?>

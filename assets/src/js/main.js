@@ -13,6 +13,7 @@
         admin.parts.select2();
         admin.parts.publicLinksPopup();
         admin.parts.generatePassword();
+        admin.parts.changelogModal();
 
         // Switch pages
         switch ($("body").data("page-id")) {
@@ -23,6 +24,7 @@
                 admin.pages.loginForm();
                 admin.pages.loginLdapForm();
                 admin.parts.login2faInputs();
+                admin.parts.loginTabs();
                 break;
             case 'dashboard':
                 admin.pages.dashboard();
@@ -86,6 +88,27 @@
                 break;
             case 'public_download':
                 admin.parts.filePreviewModal();
+                break;
+            case 'thumbnails_regenerate':
+                admin.pages.thumbnailsRegenerate();
+                break;
+            case 'roles':
+                admin.pages.roles();
+                break;
+            case 'role_permissions':
+                admin.pages.rolePermissions();
+                break;
+            case 'updates':
+                admin.pages.updates();
+                break;
+            case 'import_external':
+                admin.pages.import_external();
+                break;
+            case 'integration_form':
+                admin.pages.integration_form();
+                break;
+            case 'totp_setup':
+                admin.pages.totpSetup();
                 break;
             default:
                 // do nothing

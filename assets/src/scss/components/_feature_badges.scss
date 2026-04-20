@@ -1,0 +1,69 @@
+// Feature badges component
+// Used in themes.php for displaying template features
+
+.feature-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+
+    .feature-badge {
+        padding: 4px 10px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: opacity 0.2s;
+
+        .icon {
+            font-size: 13px;
+        }
+
+        &.active {
+            background-color: #28a745 !important;
+            color: var(--text-inverse) !important;
+        }
+
+        &.inactive {
+            background-color: #dee2e6 !important;
+            color: #6c757d !important;
+            opacity: 0.7;
+        }
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+}
+
+// Single feature badge (can be used outside of .feature-badges container)
+.feature-badge {
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: opacity 0.2s;
+
+    .icon {
+        font-size: 13px;
+    }
+
+    &.active {
+        background-color: #28a745 !important;
+        color: var(--text-inverse) !important;
+    }
+
+    &.inactive {
+        background-color: #dee2e6 !important;
+        color: #6c757d !important;
+        opacity: 0.7;
+    }
+
+    &:hover {
+        opacity: 1;
+    }
+}

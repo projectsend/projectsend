@@ -1,3 +1,5 @@
+.ignore
+
 # Dependencies directories
 vendor
 node_modules
@@ -9,6 +11,7 @@ assets/dist
 assets/css
 assets/fonts
 assets/js
+assets/lib/codemirror
 
 # Cache
 cache/*
@@ -74,5 +77,15 @@ Thumbs.db
 # Test results
 test-results
 
+# Reports
+reports/
+
 # Misc
 .idea/
+*.md
+!README.md
+!SECURITY.md
+!assets/changelogs/*.md
+
+# Documentation drafts
+docs_temp/

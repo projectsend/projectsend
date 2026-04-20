@@ -2,9 +2,8 @@
 /**
  * Show the form to add a new group.
  */
-$allowed_levels = array(9, 8);
 require_once 'bootstrap.php';
-log_in_required($allowed_levels);
+check_access_enhanced(['create_groups']);
 
 $active_nav = 'groups';
 
@@ -32,11 +31,11 @@ if ($_POST) {
     $group->set($group_arguments);
     $create = $group->create();
 
-    if (!empty($create['id'])) {
-        $flash->success(__('Group created successfully'));
+    if ($create['status'] === 'success') {
+        $flash->success($create['message']);
         $redirect_to = BASE_URI . 'groups-edit.php?id=' . $create['id'];
     } else {
-        $flash->error(__('There was an error saving to the database'));
+        $flash->error($create['message']);
         $redirect_to = BASE_URI . 'groups-add.php';
     }
 

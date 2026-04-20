@@ -3,7 +3,6 @@
  * Show the form to add a new asset.
  *
  */
-$allowed_levels = array(9);
 require_once 'bootstrap.php';
 
 $asset_id = (int)$_GET['id'];
@@ -14,6 +13,11 @@ if (!is_integer($asset_id)) {
 $asset = new \ProjectSend\Classes\CustomAsset();
 $load_asset = $asset->get($asset_id);
 if (!$load_asset) {
+    exit_with_error_code(403);
+}
+
+// Check if user can edit this asset
+if (!$asset->canUserEdit()) {
     exit_with_error_code(403);
 }
 
@@ -47,10 +51,10 @@ if ($_POST) {
     $asset->set($asset_arguments);
     $edit_response = $asset->edit();
 
-    if ($edit_response['query'] == 1) {
-        $flash->success(__('Asset edited successfully'));
+    if ($edit_response['status'] === 'success') {
+        $flash->success($edit_response['message']);
     } else {
-        $flash->error(__('There was an error saving to the database'));
+        $flash->error($edit_response['message']);
     }
 
     ps_redirect(BASE_URI . 'custom-assets-edit.php?id=' . $asset_id);

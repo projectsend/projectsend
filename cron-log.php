@@ -2,8 +2,8 @@
 /**
  * Show the list of activities logged.
  */
-$allowed_levels = array(9);
 require_once 'bootstrap.php';
+check_access_enhanced(['edit_settings']);
 
 $active_nav = 'tools';
 

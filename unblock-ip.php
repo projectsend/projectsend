@@ -2,9 +2,8 @@
 /**
  * Unblock an IP from the failed logins table
  */
-$allowed_levels = array(9);
 require_once 'bootstrap.php';
-log_in_required($allowed_levels);
+check_access_enhanced(['unblock_ip']);
 
 $page_title = __('Unblock IP', 'cftp_admin');
 
@@ -19,7 +18,7 @@ if ($_POST) {
     global $bfchecker;
     $unblock = $bfchecker->unblockIp($_POST['ip']);
     if ($unblock['status'] == 'success') {
-        $flash->success(__('IP address succesfully unblocked', 'cftp_admin'));
+        $flash->success(__('IP address successfully unblocked', 'cftp_admin'));
     } else {
         $flash->error($unblock['message']);
     }

@@ -2,9 +2,33 @@
 /**
  * Show the form to edit a system user.
  */
-$allowed_levels = array(9, 8, 7);
+
+
 require_once 'bootstrap.php';
-log_in_required($allowed_levels);
+redirect_if_not_logged_in();
+
+// Ensure user is properly logged in and constants are defined
+if (!defined('CURRENT_USER_ID') || !CURRENT_USER_ID) {
+    ps_redirect(BASE_URI . 'index.php');
+    exit;
+}
+
+// Users can always edit their own account
+// Otherwise need edit_users permission
+$user_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$can_edit = false;
+
+if ($user_id == CURRENT_USER_ID) {
+    // Editing own account
+    $can_edit = current_user_can('edit_self_account');
+} else {
+    // Editing another user's account
+    $can_edit = current_user_can('edit_users');
+}
+
+if (!$can_edit) {
+    exit_with_error_code(403);
+}
 
 $active_nav = 'users';
 
@@ -13,7 +37,7 @@ if (!isset($_GET['id'])) {
     exit_with_error_code(403);
 }
 
-$user_id = $_GET['id'];
+$user_id = (int)$_GET['id'];
 if (!user_exists_id($user_id)) {
     exit_with_error_code(403);
 }
@@ -22,8 +46,9 @@ if (!user_exists_id($user_id)) {
 $edit_user = new \ProjectSend\Classes\Users($user_id);
 $user_arguments = $edit_user->getProperties();
 
+
 // Form type
-if (CURRENT_USER_LEVEL == 7) {
+if (current_role_in(['Uploader'])) {
     $user_form_type = 'edit_user_self';
     $ignore_size = true;
 } else {
@@ -36,22 +61,36 @@ if (CURRENT_USER_LEVEL == 7) {
     }
 }
 
-// Compare the user editing this account to the on the database.
-if (CURRENT_USER_LEVEL != 9) {
-    if (CURRENT_USER_USERNAME != $user_arguments['username']) {
-        exit_with_error_code(403);
-    }
+// Additional permission check - using consistent permission system
+$can_edit_this_user = false;
+if ($user_arguments['id'] == CURRENT_USER_ID) {
+    // Editing own account
+    $can_edit_this_user = current_user_can('edit_self_account');
+} else {
+    // Editing another user's account
+    $can_edit_this_user = current_user_can('edit_users');
+}
+
+if (!$can_edit_this_user) {
+    exit_with_error_code(403);
 }
 
 if ($_POST) {
+
     /**
-     * If the user is not an admin, check if the id of the user
-     * that's being edited is the same as the current logged in one.
+     * Check if user can edit this account using the same logic as the initial permission check
      */
-    if (CURRENT_USER_LEVEL != 9) {
-        if ($user_id != CURRENT_USER_ID) {
-            exit_with_error_code(403);
-        }
+    $can_edit_in_post = false;
+    if ($user_id == CURRENT_USER_ID) {
+        // Editing own account
+        $can_edit_in_post = current_user_can('edit_self_account');
+    } else {
+        // Editing another user's account
+        $can_edit_in_post = current_user_can('edit_users');
+    }
+
+    if (!$can_edit_in_post) {
+        exit_with_error_code(403);
     }
 
     /**
@@ -66,8 +105,9 @@ if ($_POST) {
         'username' => $user_arguments['username'],
         'name' => $_POST['name'],
         'email' => $_POST['email'],
-        'role' => $user_arguments['role'],
+        'role_id' => $user_arguments['role_id'],
         'max_file_size' => $user_arguments['max_file_size'],
+        'max_disk_quota' => $user_arguments['max_disk_quota'],
         'active' => $user_arguments['active'],
         'type' => 'edit_user',
         'limit_upload_to' => (isset($_POST["limit_upload_to"])) ? $_POST["limit_upload_to"] : null,
@@ -75,6 +115,7 @@ if ($_POST) {
 
     if ($ignore_size == false) {
         $user_arguments['max_file_size'] = (isset($_POST["max_file_size"])) ? $_POST["max_file_size"] : '';
+        $user_arguments['max_disk_quota'] = (isset($_POST["max_disk_quota"])) ? $_POST["max_disk_quota"] : '';
     }
 
     // If the password field send an empty value to prevent notices.
@@ -85,7 +126,7 @@ if ($_POST) {
      * editing other's account (not own).
      */
     $can_edit_level_and_active = true;
-    if (CURRENT_USER_LEVEL == 7) {
+    if (current_role_in(['Uploader'])) {
         $can_edit_level_and_active = false;
     } else {
         if (CURRENT_USER_USERNAME == $user_arguments['username']) {
@@ -94,22 +135,36 @@ if ($_POST) {
     }
 
     if ($can_edit_level_and_active === true) {
-        $user_arguments['role'] = (isset($_POST['level'])) ? $_POST['level'] : $user_arguments['role'];
+        $user_arguments['role_id'] = (isset($_POST['role_id'])) ? $_POST['role_id'] : $user_arguments['role_id'];
         $user_arguments['active'] = (isset($_POST["active"])) ? 1 : 0;
+    }
+
+
+    // Process custom fields
+    $custom_field_data = [];
+    foreach ($_POST as $key => $value) {
+        if (strpos($key, 'custom_field_') === 0) {
+            $field_id = str_replace('custom_field_', '', $key);
+            $custom_field_data[$field_id] = $value;
+        }
     }
 
     // Validate the information from the posted form.
     $edit_user->set($user_arguments);
     $edit_user->setType("existing_user");
+    $edit_user->custom_field_data = $custom_field_data;
     $edit_response = $edit_user->edit();
 
-    if ($edit_response['query'] == 1) {
-        $flash->success(__('User saved successfully'));
+
+    if ($edit_response['status'] === 'success') {
+        $flash->success($edit_response['message']);
     } else {
-        $flash->error(__('There was an error saving to the database'));
+        $flash->error($edit_response['message']);
     }
 
-    ps_redirect(BASE_URI . 'users-edit.php?id=' . $user_id);
+    // Ensure we're redirecting to the correct user ID from the original request
+    $redirect_user_id = isset($_GET['id']) ? (int)$_GET['id'] : $user_id;
+    ps_redirect(BASE_URI . 'users-edit.php?id=' . $redirect_user_id);
 }
 
 $page_title = __('Edit system user', 'cftp_admin');
@@ -120,7 +175,13 @@ if (CURRENT_USER_USERNAME == $user_arguments['username']) {
     $page_title = __('My account', 'cftp_admin');
 }
 
+// Preserve the user_id before header inclusion (header might overwrite it)
+$edit_user_id = $user_id;
+
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+
+// Restore the user_id after header inclusion
+$user_id = $edit_user_id;
 ?>
 <div class="row">
     <div class="col-12 col-sm-12 col-lg-6">

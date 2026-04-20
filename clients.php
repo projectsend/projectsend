@@ -2,8 +2,8 @@
 /**
  * Show the list of current clients.
  */
-$allowed_levels = array(9, 8);
 require_once 'bootstrap.php';
+check_access_enhanced(['manage_clients', 'create_clients', 'edit_clients', 'delete_clients'], 'any');
 
 $active_nav = 'clients';
 
@@ -38,14 +38,38 @@ if (isset($_POST['action'])) {
                 $flash->success(__('The selected clients were marked as inactive.', 'cftp_admin'));
                 break;
             case 'delete':
+                $deleted_count = 0;
+                $no_permission_count = 0;
+                $errors = [];
+
                 foreach ($selected_clients as $work_client) {
                     $this_client = new \ProjectSend\Classes\Users();
                     if ($this_client->get($work_client)) {
-                        $delete_user = $this_client->delete();
+                        $result = $this_client->delete();
+
+                        if ($result['status'] === 'success') {
+                            $deleted_count++;
+                        } else {
+                            if (strpos($result['message'], 'permission') !== false) {
+                                $no_permission_count++;
+                            } else {
+                                $errors[] = $result['message'];
+                            }
+                        }
                     }
                 }
 
-                $flash->success(__('The selected clients were deleted.', 'cftp_admin'));
+                if ($deleted_count > 0) {
+                    $flash->success(sprintf(__('%d clients were deleted.', 'cftp_admin'), $deleted_count));
+                }
+                if ($no_permission_count > 0) {
+                    $flash->warning(sprintf(__('You do not have permission to delete %d clients.', 'cftp_admin'), $no_permission_count));
+                }
+                if (!empty($errors)) {
+                    foreach ($errors as $error) {
+                        $flash->error($error);
+                    }
+                }
                 break;
         }
     } else {
@@ -58,7 +82,7 @@ if (isset($_POST['action'])) {
 // Query the clients
 $params = [];
 
-$cq = "SELECT id FROM " . TABLE_USERS . " WHERE level='0' AND account_requested='0'";
+$cq = "SELECT id FROM " . TABLE_USERS . " WHERE role_id = (SELECT id FROM " . TABLE_ROLES . " WHERE name = 'Client') AND account_requested='0'";
 
 // Add the search terms
 if (isset($_GET['search']) && !empty($_GET['search'])) {
@@ -119,12 +143,15 @@ if (!$count) {
 }
 
 // Header buttons
-$header_action_buttons = [
-    [
-        'url' => 'clients-add.php',
-        'label' => __('Create new', 'cftp_admin'),
-    ],
-];
+$header_action_buttons = [];
+if (current_user_can('create_clients') || current_user_can('manage_clients')) {
+    $header_action_buttons = [
+        [
+            'url' => 'clients-add.php',
+            'label' => __('Create new', 'cftp_admin'),
+        ],
+    ];
+}
 
 // Search + filters bar data
 $search_form_action = 'clients.php';
@@ -149,10 +176,14 @@ $filters_form = [
 $elements_found_count = $count_for_pagination;
 $bulk_actions_items = [
     'none' => __('Select action', 'cftp_admin'),
-    'activate' => __('Activate', 'cftp_admin'),
-    'deactivate' => __('Deactivate', 'cftp_admin'),
-    'delete' => __('Delete', 'cftp_admin'),
 ];
+if (current_user_can('manage_clients') || current_user_can('edit_clients')) {
+    $bulk_actions_items['activate'] = __('Activate', 'cftp_admin');
+    $bulk_actions_items['deactivate'] = __('Deactivate', 'cftp_admin');
+}
+if (current_user_can('manage_clients') || current_user_can('delete_clients')) {
+    $bulk_actions_items['delete'] = __('Delete', 'cftp_admin');
+}
 
 // Include layout files
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
@@ -234,6 +265,12 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                         'sortable' => true,
                         'sort_url' => 'max_file_size',
                         'content' => __('Max. upload size', 'cftp_admin'),
+                        'hide' => 'phone',
+                    ),
+                    array(
+                        'sortable' => true,
+                        'sort_url' => 'max_disk_quota',
+                        'content' => __('Disk quota', 'cftp_admin'),
                         'hide' => 'phone',
                     ),
                     array(
@@ -338,7 +375,10 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                             'content' => ($client->notify_upload == '1') ? __('Yes', 'cftp_admin') : __('No', 'cftp_admin'),
                         ),
                         array(
-                            'content' => ($client->max_file_size == '0') ? __('Default', 'cftp_admin') : $client->max_file_size . ' ' . 'MB',
+                            'content' => (empty($client->max_file_size) || $client->max_file_size == 0) ? '<span class="badge bg-success-subtle text-success">' . __('No limit', 'cftp_admin') . '</span>' : '<span class="badge bg-warning-subtle text-warning">' . $client->max_file_size . ' MB</span>',
+                        ),
+                        array(
+                            'content' => (empty($client->max_disk_quota) || $client->max_disk_quota == 0) ? '<span class="badge bg-success-subtle text-success">' . __('No limit', 'cftp_admin') . '</span>' : '<span class="badge bg-warning-subtle text-warning">' . $client->max_disk_quota . ' MB</span>',
                         ),
                         array(
                             'actions' => true,
@@ -348,7 +388,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                         ),
                         array(
                             'actions' => true,
-                            'content' =>  '<a href="clients-edit.php?id=' . $client->id . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit', 'cftp_admin') . '</span></a>' . "\n"
+                            'content' =>  ((current_user_can('manage_clients') || current_user_can('edit_clients') || (current_user_can('create_clients') && $client->created_by == CURRENT_USER_USERNAME)) ? '<a href="clients-edit.php?id=' . $client->id . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit', 'cftp_admin') . '</span></a>' : '') . "\n"
                         ),
                     );
 

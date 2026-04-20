@@ -1,0 +1,18 @@
+// Role Permissions Page Styles
+
+.permission-category {
+    border-left: 3px solid #e9ecef;
+    padding-left: 1rem;
+}
+
+.form-check-label {
+    cursor: pointer;
+}
+
+.form-check-input:checked + .form-check-label {
+    color: #0d6efd;
+}
+
+.category-toggle {
+    font-size: 0.75rem;
+}

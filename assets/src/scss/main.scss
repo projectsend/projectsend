@@ -10,22 +10,39 @@
 @import "vendors-extensions/plupload";
 @import "vendors-extensions/toastr";
 @import "vendors-extensions/datepicker";
+@import "vendors-extensions/ckeditor";
 
 @import "base/base";
 @import "base/headings";
 @import "base/forms";
 
+@import "components/bootstrap-toggle";
 @import "components/side_modal";
 @import "components/password_toggler";
 @import "components/preview_modal";
+@import "components/format_selector";
+@import "components/email_template_gallery";
+@import "components/feature_badges";
+@import "components/card-list";
+@import "components/view-toggle";
+@import "components/file-info-panel";
+@import "components/shared-control-bar";
+@import "components/options-section-nav";
+@import "components/changelog-modal";
 
 @import "layout/footer";
 @import "layout/top-bar";
 @import "layout/main-menu";
 
+@import "pages/error-page";
 @import "pages/options";
 @import "pages/public_download";
 @import "pages/template";
+@import "pages/updates";
+@import "pages/custom-fields";
+@import "pages/upload";
+@import "pages/file-editor-tabs";
+@import "pages/totp-setup";
 
 // Misc
 @import "parts/login";

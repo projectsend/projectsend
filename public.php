@@ -4,7 +4,6 @@
  */
 define('IS_PUBLIC_VIEW', true);
 
-$allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
 
 // If the option to show this page is not enabled, redirect
@@ -61,4 +60,4 @@ if (!empty($_GET['group'])) {
 
 $files = get_public_files($args);
 
-require get_template_file_location('public-list.php');
+require get_public_template_file_location();

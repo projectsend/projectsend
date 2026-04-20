@@ -7,7 +7,7 @@
 .plupload_filelist_header,
 .plupload_filelist_footer
 {
-	background: #e2e5e9;
+	background: var(--bg-muted);
 }
 
 .plupload_filelist_footer {
@@ -15,7 +15,7 @@
 }
 
 .plupload_button {
-	color:white;
+	color:var(--text-inverse);
 	background:var(--main_color);
 	margin-right: 4px;
 	padding:4px 30px;
@@ -24,19 +24,19 @@
 	line-height:20px;
 	text-decoration: none;
 	text-align:center;
-	border:1px solid #004380;
+	border:1px solid var(--color-primary-dark);
 	border-radius:4px;
 
 	&:hover
 	{
-		color:white;
+		color:var(--text-inverse);
 		background:var(--main_lighten);
     }
     
     &:focus,
     &:active
     {
-        color: white;
+        color: var(--text-inverse);
     }
 }
 
@@ -44,7 +44,7 @@
     font-family:var(--font_body);
     font-size:1.15em;
     line-height:1.2em;
-    box-shadow:3px 3px 5px, #dedede;
+    box-shadow: var(--shadow-md);
 }
 
 .plupload_container {
@@ -57,4 +57,61 @@ a.plupload_start {
 
 .message_uploading {
 	display:none;
+}
+
+// Light mode styling for plupload
+li.plupload_droptext,
+.plupload_filelist_header,
+.plupload_filelist_footer {
+    background-color: #ffffff !important;
+}
+
+// Dark mode overrides for plupload
+[data-theme="dark"] {
+    .plupload_scroll .plupload_filelist {
+        background-color: var(--bg-card);
+        color: var(--text-primary);
+    }
+
+    .plupload_filelist li {
+        background-color: var(--bg-card);
+        color: var(--text-primary);
+        border-color: var(--border-light);
+
+        &:nth-child(odd) {
+            background-color: var(--bg-hover);
+        }
+
+        &:hover {
+            background-color: var(--bg-selected);
+        }
+    }
+
+    .plupload_file_name {
+        color: var(--text-primary);
+    }
+
+    .plupload_file_size,
+    .plupload_file_status {
+        color: var(--text-secondary);
+    }
+
+    .plupload_progress {
+        background-color: var(--bg-muted);
+
+        .plupload_progress_container {
+            background-color: var(--color-primary);
+        }
+    }
+
+    .plupload_wrapper {
+        background-color: var(--bg-card);
+        color: var(--text-primary);
+    }
+
+    li.plupload_droptext,
+    .plupload_filelist_header,
+    .plupload_filelist_footer {
+        background-color: var(--bg-card) !important;
+    }
 }

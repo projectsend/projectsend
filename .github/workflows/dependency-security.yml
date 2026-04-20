@@ -1,0 +1,147 @@
+name: Dependency Security
+
+on:
+  push:
+    branches: [ develop, master, main ]
+    paths:
+      - 'composer.json'
+      - 'composer.lock'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/dependency-security.yml'
+  pull_request:
+    branches: [ develop, master, main ]
+    paths:
+      - 'composer.json'
+      - 'composer.lock'
+      - 'package.json'
+      - 'package-lock.json'
+  schedule:
+    # Run weekly on Monday at 9:00 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+jobs:
+  composer-security:
+    name: PHP Dependency Security
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: pdo, pdo_mysql, json, exif
+        coverage: none
+
+    - name: Install Composer dependencies
+      run: composer install --prefer-dist --no-progress --no-interaction
+
+    - name: Check for security vulnerabilities
+      uses: symfonycorp/security-checker-action@v5
+      with:
+        lock: composer.lock
+
+    - name: Run Composer audit
+      run: composer audit --format=plain || echo "::warning::Composer security issues detected"
+      continue-on-error: true
+
+    - name: Check outdated dependencies
+      if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+      run: |
+        echo "### Outdated PHP Dependencies" >> $GITHUB_STEP_SUMMARY
+        composer outdated --direct --format=json | jq -r '.installed[] | "- \(.name): \(.version) → \(.latest)"' >> $GITHUB_STEP_SUMMARY || echo "All dependencies up to date" >> $GITHUB_STEP_SUMMARY
+
+  npm-security:
+    name: Node.js Dependency Security
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+
+    - name: Install npm dependencies
+      run: npm ci
+
+    - name: Run npm audit
+      run: |
+        npm audit --audit-level=high || {
+          echo "::warning::npm security vulnerabilities detected at high or critical level";
+          npm audit --json > npm-audit.json;
+          exit 1;
+        }
+      continue-on-error: true
+
+    - name: Upload npm audit results
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: npm-audit-report
+        path: npm-audit.json
+        retention-days: 30
+
+    - name: Check for outdated npm packages
+      if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+      run: |
+        echo "### Outdated Node.js Dependencies" >> $GITHUB_STEP_SUMMARY
+        npm outdated --json | jq -r 'to_entries[] | "- \(.key): \(.value.current) → \(.value.latest)"' >> $GITHUB_STEP_SUMMARY || echo "All dependencies up to date" >> $GITHUB_STEP_SUMMARY
+
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Dependency Review
+      uses: actions/dependency-review-action@v4
+      with:
+        fail-on-severity: high
+        comment-summary-in-pr: true
+
+  license-compliance:
+    name: License Compliance Check
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        coverage: none
+
+    - name: Install Composer dependencies
+      run: composer install --prefer-dist --no-progress --no-interaction
+
+    - name: Check PHP package licenses
+      run: |
+        echo "### PHP Package Licenses" >> $GITHUB_STEP_SUMMARY
+        composer licenses --format=json | jq -r '.dependencies[] | "- \(.name): \(.license // ["Unknown"] | join(", "))"' >> $GITHUB_STEP_SUMMARY
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+
+    - name: Install npm dependencies
+      run: npm ci
+
+    - name: Check npm package licenses
+      run: |
+        echo "### Node.js Package Licenses" >> $GITHUB_STEP_SUMMARY
+        npm list --json --depth=0 | jq -r '.dependencies | to_entries[] | "- \(.key): \(.value.license // "Unknown")"' >> $GITHUB_STEP_SUMMARY

@@ -2,9 +2,8 @@
 /**
  * Show the list of current users.
  */
-$allowed_levels = array(9);
 require_once 'bootstrap.php';
-log_in_required($allowed_levels);
+check_access_enhanced(['edit_users']);
 
 $active_nav = 'users';
 
@@ -49,21 +48,42 @@ if (isset($_POST['action'])) {
                 }
             break;
             case 'delete':
+                $deleted_count = 0;
+                $no_permission_count = 0;
+                $errors = [];
+
                 foreach ($selected_users as $work_user) {
                     // A user should not be able to delete himself
                     if ($work_user != CURRENT_USER_ID) {
                         $this_user = new \ProjectSend\Classes\Users($work_user);
                         if ($this_user->userExists()) {
-                            $delete_user = $this_user->delete();
-                            $affected_users++;
+                            $result = $this_user->delete();
+
+                            if ($result['status'] === 'success') {
+                                $deleted_count++;
+                            } else {
+                                if (strpos($result['message'], 'permission') !== false) {
+                                    $no_permission_count++;
+                                } else {
+                                    $errors[] = $result['message'];
+                                }
+                            }
                         }
                     } else {
                         $flash->error(__('You cannot delete your own account.', 'cftp_admin'));
                     }
                 }
 
-                if ($affected_users > 0) {
-                    $flash->success(__('The selected users were deleted.', 'cftp_admin'));
+                if ($deleted_count > 0) {
+                    $flash->success(sprintf(__('%d users were deleted.', 'cftp_admin'), $deleted_count));
+                }
+                if ($no_permission_count > 0) {
+                    $flash->warning(sprintf(__('You do not have permission to delete %d users.', 'cftp_admin'), $no_permission_count));
+                }
+                if (!empty($errors)) {
+                    foreach ($errors as $error) {
+                        $flash->error($error);
+                    }
                 }
             break;
         }
@@ -77,7 +97,7 @@ if (isset($_POST['action'])) {
 // Query the users
 $params = [];
 
-$cq = "SELECT id FROM " . TABLE_USERS . " WHERE level != '0'";
+$cq = "SELECT id FROM " . TABLE_USERS . " WHERE role_id != (SELECT id FROM " . TABLE_ROLES . " WHERE name = 'Client')";
 
 // Add the search terms
 if (isset($_GET['search']) && !empty($_GET['search'])) {
@@ -92,10 +112,10 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
 
 // Add the role filter
 if (isset($_GET['role']) && $_GET['role'] != 'all') {
-    $cq .= " AND level=:level";
+    $cq .= " AND role_id=:role_id";
     $no_results_error = 'filter';
 
-    $params[':level'] = $_GET['role'];
+    $params[':role_id'] = $_GET['role'];
 }
 
 // Add the active filter
@@ -143,12 +163,15 @@ if (!$count) {
 }
 
 // Header buttons
-$header_action_buttons = [
-    [
-        'url' => 'users-add.php',
-        'label' => __('Create new', 'cftp_admin'),
-    ],
-];
+$header_action_buttons = [];
+if (current_user_can('create_users')) {
+    $header_action_buttons = [
+        [
+            'url' => 'users-add.php',
+            'label' => __('Create new', 'cftp_admin'),
+        ],
+    ];
+}
 
 // Search + filters bar data
 $search_form_action = 'users.php';
@@ -161,11 +184,9 @@ $filters_form = [
                 'value' => 'all',
                 'label' => __('All roles', 'cftp_admin')
             ],
-            'options' => [
-                '9' => USER_ROLE_LVL_9,
-                '8' => USER_ROLE_LVL_8,
-                '7' => USER_ROLE_LVL_7,
-            ],
+            'options' => array_column(array_map(function($role) {
+                return [$role['id'], $role['name']];
+            }, get_available_roles_for_assignment(false)), 1, 0), // Get roles from database (exclude clients)
         ],
         'active' => [
             'current' => (isset($_GET['active'])) ? $_GET['active'] : null,
@@ -182,14 +203,18 @@ $filters_form = [
 ];
 
 
-// Results count and form actions 
+// Results count and form actions
 $elements_found_count = $count_for_pagination;
 $bulk_actions_items = [
     'none' => __('Select action', 'cftp_admin'),
-    'activate' => __('Activate', 'cftp_admin'),
-    'deactivate' => __('Deactivate', 'cftp_admin'),
-    'delete' => __('Delete', 'cftp_admin'),
 ];
+if (current_user_can('edit_users')) {
+    $bulk_actions_items['activate'] = __('Activate', 'cftp_admin');
+    $bulk_actions_items['deactivate'] = __('Deactivate', 'cftp_admin');
+}
+if (current_user_can('delete_users')) {
+    $bulk_actions_items['delete'] = __('Delete', 'cftp_admin');
+}
 
 // Include layout files
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
@@ -200,6 +225,8 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
     <?php addCsrf(); ?>
     <?php include_once LAYOUT_DIR . DS . 'form-counts-actions.php'; ?>
 
+    <div class="row">
+    <div class="col-12">
     <?php
         if ($count > 0) {
             // Generate the table using the class.
@@ -258,6 +285,12 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                     'hide' => 'phone',
                 ),
                 array(
+                    'sortable' => true,
+                    'sort_url' => 'max_disk_quota',
+                    'content' => __('Disk quota', 'cftp_admin'),
+                    'hide' => 'phone',
+                ),
+                array(
                     'content' => __('Actions', 'cftp_admin'),
                     'hide' => 'phone',
                 ),
@@ -270,18 +303,8 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
 
                 $user = new \ProjectSend\Classes\Users($row["id"]);
 
-                // Role name
-                switch ($user->role) {
-                    case '9':
-                        $role_name = USER_ROLE_LVL_9;
-                        break;
-                    case '8':
-                        $role_name = USER_ROLE_LVL_8;
-                        break;
-                    case '7':
-                        $role_name = USER_ROLE_LVL_7;
-                        break;
-                }
+                // Get role name from database
+                $role_name = $user->getRoleName();
 
                 // Get active status
                 $badge_label = ($user->active == 0) ? __('Inactive', 'cftp_admin') : __('Active', 'cftp_admin');
@@ -318,11 +341,14 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                         'content' => '<span class="badge bg-' . $badge_class . '">' . $badge_label . '</span>',
                     ),
                     array(
-                        'content' => ($user->max_file_size == '0') ? __('Default', 'cftp_admin') : $user->max_file_size . ' ' . 'MB',
+                        'content' => (empty($user->max_file_size) || $user->max_file_size == 0) ? '<span class="badge bg-success-subtle text-success">' . __('No limit', 'cftp_admin') . '</span>' : '<span class="badge bg-warning-subtle text-warning">' . $user->max_file_size . ' MB</span>',
+                    ),
+                    array(
+                        'content' => (empty($user->max_disk_quota) || $user->max_disk_quota == 0) ? '<span class="badge bg-success-subtle text-success">' . __('No limit', 'cftp_admin') . '</span>' : '<span class="badge bg-warning-subtle text-warning">' . $user->max_disk_quota . ' MB</span>',
                     ),
                     array(
                         'actions' => true,
-                        'content' =>  '<a href="users-edit.php?id=' . $user->id . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit', 'cftp_admin') . '</span></a>' . "\n"
+                        'content' =>  (current_user_can('edit_users') ? '<a href="users-edit.php?id=' . $user->id . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit', 'cftp_admin') . '</span></a>' : '') . "\n"
                     ),
                 );
 

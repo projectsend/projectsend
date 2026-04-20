@@ -114,3 +114,7 @@ function replaceAll(str,mapObj){
         return mapObj[matched.toLowerCase()];
     });
 }
+
+function elementExists(element) {
+    return (element != null && element != 'undefined');
+}

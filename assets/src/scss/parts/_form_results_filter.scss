@@ -6,14 +6,14 @@
         display:inline-block;
         padding-right:5px;
         margin-right:5px;
-        border-right:1px solid #dedede;
+        border-right:1px solid var(--border-medium);
 
         &:last-child {
             border-right:none;
         }
 
         &.filter_option {
-            color:#c3c3ca;
+            color:var(--text-muted);
         }
     }
 }

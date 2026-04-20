@@ -3,7 +3,7 @@ require_once '../../../bootstrap.php';
 
 header("Content-type: application/json");
 
-if (!defined('CURRENT_USER_LEVEL') or !in_array(CURRENT_USER_LEVEL, array(9,8,7))) {
+if (!current_user_can('view_statistics')) {
     ps_redirect(BASE_URI);
 }
 

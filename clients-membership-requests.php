@@ -2,8 +2,8 @@
 /**
  * Show the list of current clients.
  */
-$allowed_levels = array(9, 8);
 require_once 'bootstrap.php';
+check_access_enhanced(['approve_groups_memberships_requests']);
 
 $active_nav = 'groups';
 $this_page = 'clients-membership-requests.php';
@@ -73,7 +73,7 @@ if (!empty($_POST)) {
 
 // Make a list of active client accounts to include those only on from the membership requests query
 $include_user_ids = [];
-$statement = $dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE level='0' AND active='1' AND account_denied='0'");
+$statement = $dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE role_id = (SELECT id FROM " . TABLE_ROLES . " WHERE name = 'Client') AND active='1' AND account_denied='0'");
 $statement->execute();
 if ($statement->rowCount() > 0) {
     $statement->setFetchMode(PDO::FETCH_ASSOC);

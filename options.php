@@ -2,9 +2,8 @@
 /**
  * Options page and form.
  */
-$allowed_levels = array(9);
 require_once 'bootstrap.php';
-log_in_required($allowed_levels);
+check_access_enhanced(['edit_settings']);
 
 $section = (!empty($_GET['section'])) ? $_GET['section'] : $_POST['section'];
 
@@ -16,11 +15,16 @@ switch ($section) {
         $checkboxes = array(
             'xsendfile_enable',
             'footer_custom_enable',
-            'files_default_expire',
-            'files_default_public',
+            'use_browser_lang',
+        );
+        break;
+    case 'uploads':
+        $section_title = __('Uploads', 'cftp_admin');
+        $checkboxes = array(
             'uploads_organize_folders_by_date',
             'files_descriptions_use_ckeditor',
-            'use_browser_lang',
+            'files_default_expire',
+            'files_default_public',
             'download_logging_ignore_file_author',
         );
         break;
@@ -29,12 +33,7 @@ switch ($section) {
         $checkboxes = array(
             'clients_can_register',
             'clients_auto_approve',
-            'clients_can_upload',
-            'clients_can_delete_own_files',
-            'clients_can_set_expiration_date',
-            'clients_new_default_can_set_public',
             'clients_files_list_include_public',
-            'clients_can_upload_to_public_folders',
         );
         break;
     case 'privacy':
@@ -65,13 +64,24 @@ switch ($section) {
     case 'security':
         $section_title = __('Security', 'cftp_admin');
         $checkboxes = array(
+            'prevent_updates_check',
             'svg_show_as_thumbnail',
             'pass_require_upper',
             'pass_require_lower',
             'pass_require_number',
             'pass_require_special',
             'recaptcha_enabled',
-            'authentication_require_email_code',
+            'two_factor_required',
+            'two_factor_allow_email',
+            'two_factor_allow_totp',
+            'remember_me_enabled',
+        );
+        break;
+    case 'encryption':
+        $section_title = __('File Encryption', 'cftp_admin');
+        $checkboxes = array(
+            'files_encryption_enabled',
+            'files_encryption_required',
         );
         break;
     case 'branding':
@@ -82,6 +92,14 @@ switch ($section) {
         $section_title = __('External Login', 'cftp_admin');
         $checkboxes = array();
         break;
+    case 'ldap':
+        $section_title = __('LDAP Authentication', 'cftp_admin');
+        $checkboxes = array();
+        break;
+    case 'social_login':
+        $section_title = __('Social Networks Login', 'cftp_admin');
+        $checkboxes = array();
+        break;
     case 'cron':
         $section_title = __('Scheduled tasks (cron)', 'cftp_admin');
         $checkboxes = array(
@@ -90,6 +108,7 @@ switch ($section) {
             'cron_send_emails',
             'cron_delete_expired_files',
             'cron_delete_orphan_files',
+            'cron_save_log_database',
             'cron_email_summary_send',
         );
         break;
@@ -114,6 +133,13 @@ if ($section == 'branding' && !empty($_GET['clear']) && $_GET['clear'] == 'logo'
     ps_redirect(BASE_URI . 'options.php?section=branding');
 }
 
+// Clear favicon
+if ($section == 'branding' && !empty($_GET['clear']) && $_GET['clear'] == 'favicon') {
+    save_option('favicon_filename', null);
+    $flash->success(__('Options updated successfully.', 'cftp_admin'));
+    ps_redirect(BASE_URI . 'options.php?section=branding');
+}
+
 /** Form sent */
 if ($_POST) {
     /**
@@ -131,6 +157,14 @@ if ($_POST) {
         'mail_smtp_pass',
         'recaptcha_site_key',
         'recaptcha_secret_key',
+        'recaptcha_v3_site_key',
+        'recaptcha_v3_secret_key',
+        'recaptcha_v3_score_threshold',
+        'cloudflare_turnstile_site_key',
+        'cloudflare_turnstile_secret_key',
+        'captcha_method',
+        'remember_me_duration_days',
+        'remember_me_max_tokens_per_user',
         'google_client_id',
         'google_client_secret',
         'facebook_client_id',
@@ -156,6 +190,16 @@ if ($_POST) {
         'ldap_admin_user',
         'ldap_admin_password',
         'ldap_search_base',
+        'ldap_username_attribute',
+        'ldap_search_filter',
+        'ldap_email_attribute',
+        'ldap_name_attribute',
+        'ldap_account_suffix',
+        'ldap_use_tls',
+        'ldap_default_role',
+        'ldap_auto_create_users',
+        'social_login_auto_enable',
+        'social_login_default_role',
         'ip_whitelist',
         'ip_blacklist',
         'cron_email_summary_address_to',
@@ -182,7 +226,7 @@ if ($_POST) {
     // Check if all the options are filled.
     for ($i = 0; $i < $options_total; $i++) {
         if (!in_array($keys[$i], $allowed_empty_values)) {
-            if (empty($_POST[$keys[$i]]) && $_POST[$keys[$i]] != '0') {
+            if (empty($_POST[$keys[$i]]) && $_POST[$keys[$i]] !== '0' && $_POST[$keys[$i]] !== 0) {
                 $options_missing++;
             }
         }
@@ -193,6 +237,30 @@ if ($_POST) {
         $upload_logo = option_file_upload($_FILES['select_logo'], 'image', 'logo_filename', 29);
         if ($upload_logo['status'] != 'success') {
             $flash->error($upload_logo['message']);
+        }
+    }
+
+    // If uploading a favicon on the branding page
+    if (isset($_FILES['select_favicon']) && !empty($_FILES['select_favicon']['name'])) {
+        $upload_favicon = option_file_upload($_FILES['select_favicon'], 'image', 'favicon_filename', 30);
+        if ($upload_favicon['status'] != 'success') {
+            $flash->error($upload_favicon['message']);
+        }
+    }
+
+    // Validate encryption settings - cannot enable without master key configured
+    if ($section == 'encryption' && !empty($_POST['files_encryption_enabled'])) {
+        if (!defined('ENCRYPTION_MASTER_KEY') || empty(ENCRYPTION_MASTER_KEY)) {
+            $flash->error(__('Cannot enable encryption: ENCRYPTION_MASTER_KEY is not configured in sys.config.php. Please add this constant to your configuration file before enabling encryption.', 'cftp_admin'));
+            ps_redirect(BASE_URI . 'options.php?section=encryption');
+        }
+    }
+
+    // Validate 2FA settings - cannot require 2FA with no methods allowed
+    if ($section == 'security' && !empty($_POST['two_factor_required'])) {
+        if (empty($_POST['two_factor_allow_email']) && empty($_POST['two_factor_allow_totp'])) {
+            $flash->error(__('Cannot require two-factor authentication when both email and authenticator app methods are disabled. Please enable at least one method.', 'cftp_admin'));
+            ps_redirect(BASE_URI . 'options.php?section=security');
         }
     }
 
@@ -264,20 +332,59 @@ if ($section == 'general' && get_option('uploads_organize_folders_by_date') == '
 
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+
+// Load form sections to get navigation data
+$form_file = FORMS_DIR . DS . 'options' . DS . $section . '.php';
+$form_sections_for_nav = [];
+if (file_exists($form_file)) {
+    // Include the file and capture output to prevent double rendering
+    ob_start();
+    include_once $form_file;
+    ob_end_clean();
+
+    // Check if $form_sections was defined in the included file
+    if (isset($form_sections)) {
+        $form_sections_for_nav = $form_sections;
+    }
+}
 ?>
 <div class="row">
-    <div class="col-12 col-sm-12 col-lg-6">
-        <div class="white-box">
-            <div class="white-box-interior">
+    <?php if (!empty($form_sections_for_nav)): ?>
+    <!-- Sticky vertical navigation (hidden on mobile) -->
+    <div class="col-lg-2 d-none d-lg-block">
+        <?php render_options_section_navigation($form_sections_for_nav); ?>
+    </div>
+    <?php endif; ?>
+
+    <!-- Main content area -->
+    <div class="col-12 col-lg-7">
+        <div class="ps-card">
+            <div class="ps-card-body">
 
                 <form action="options.php" name="options" id="options" method="post" enctype="multipart/form-data" class="form-horizontal">
                     <?php addCsrf(); ?>
                     <input type="hidden" name="section" value="<?php echo $section; ?>">
 
                     <?php
-                    $form_file = FORMS_DIR . DS . 'options' . DS . $section . '.php';
-                    if (file_exists($form_file)) {
-                        include_once $form_file;
+                    // Check if sections have actual fields or are just navigation stubs
+                    $has_fields = false;
+                    if (!empty($form_sections_for_nav)) {
+                        foreach ($form_sections_for_nav as $section) {
+                            if (!empty($section['fields'])) {
+                                $has_fields = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Render the form sections if using the new array-based system with fields
+                    if ($has_fields) {
+                        render_options_form_sections($form_sections_for_nav, false); // false = don't render nav inline
+                    } else {
+                        // Include the form file directly for legacy forms or navigation-only stubs
+                        if (file_exists($form_file)) {
+                            include $form_file;
+                        }
                     }
                     ?>
 

@@ -8,7 +8,7 @@
 
         $(document).ready(function(e) {
             $(".batch_actions").on('submit', function(e) {
-                var checks = $("td>input:checkbox").serializeArray();
+                var checks = $("input[name='batch[]']").serializeArray();
                 var action = $('#action').val();
                 if (action != 'none') {
                         // Generic actions
@@ -112,7 +112,7 @@
                         // Download multiple files as zip
                         if (action == 'zip') {
                             e.preventDefault();
-                            var checkboxes = $("td>input:checkbox:checked").serializeArray();
+                            var checkboxes = $("input[name='batch[]']:checked").serializeArray();
                             if (checkboxes.length > 0) {
                                 let modal_content = `<p class="loading-icon"><img src="`+json_strings.uri.assets_img+`/loading.svg" alt="Loading" /></p>
                                     <p class="lead">`+json_strings.translations.download_wait+`</p>

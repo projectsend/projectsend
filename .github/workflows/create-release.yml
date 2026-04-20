@@ -1,0 +1,219 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+      - 'r*'
+
+jobs:
+  build-release:
+    name: Build and Create Release
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo, pdo_mysql, json, mbstring, openssl, zip
+          coverage: none
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Get tag name
+        id: get_tag
+        run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Install production Composer dependencies
+        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build production assets
+        run: npx gulp build
+
+      - name: Update version number in app.php
+        run: |
+          # Extract version from tag (remove 'v' or 'r' prefix)
+          VERSION="${{ steps.get_tag.outputs.TAG }}"
+          echo "Updating version to: ${VERSION}"
+          sed -i "s/define('CURRENT_VERSION', 'r[0-9]\+');/define('CURRENT_VERSION', '${VERSION}');/g" includes/app.php
+          echo "Version updated successfully"
+
+      - name: Prepare release directory
+        run: |
+          # Create release structure in current directory
+          echo "Removing development files..."
+
+          # Remove Git directories
+          rm -rf .git .github
+
+          # Remove hidden development directories
+          rm -rf .claude .ignore .vscode .idea
+
+          # Remove development documentation (keep only README.md and SECURITY.md in root)
+          find . -maxdepth 1 -type f -name "*.md" ! -name "README.md" ! -name "SECURITY.md" -delete
+
+          # Remove development .md files from subdirectories
+          find . -type f \( \
+              -name "*_PLAN.md" \
+              -o -name "*_GUIDE.md" \
+              -o -name "*_IMPLEMENTATION.md" \
+              -o -name "ROADMAP.md" \
+              -o -name "WHATS_NEW.md" \
+              -o -name "CLAUDE.md" \
+              -o -name "PHPSTAN.md" \
+          \) -delete
+
+          # Remove PHPStan files
+          rm -f phpstan.neon phpstan-baseline.neon phpstan-bootstrap.php
+
+          # Remove development directories
+          rm -rf docs_temp results reports
+
+          # Remove build scripts
+          rm -f make-release.sh gulpfile.js package.json package-lock.json
+
+          # Clean cache
+          rm -rf cache/*
+          mkdir -p cache
+          touch cache/.gitkeep
+
+          # Remove configuration file
+          rm -f includes/sys.config.php
+
+      - name: Clean upload directories
+        run: |
+          # Function to clean a directory keeping only specific files
+          clean_upload_dir() {
+            local dir=$1
+            shift
+            local keep_files=("$@")
+
+            cd "$dir"
+
+            # Create temp directory and copy files to keep
+            mkdir -p ../tmp
+            for file in "${keep_files[@]}"; do
+              if [ -f "$file" ]; then
+                cp "$file" ../tmp/
+              fi
+            done
+
+            # Remove all files
+            rm -rf ./*
+
+            # Restore kept files
+            mv ../tmp/* .
+            rmdir ../tmp
+
+            cd - > /dev/null
+          }
+
+          # Clean each upload directory
+          clean_upload_dir "upload/temp" "index.php" ".htaccess" "web.config"
+          clean_upload_dir "upload/admin" "index.php"
+          clean_upload_dir "upload/files" "index.php" ".htaccess" "web.config"
+          clean_upload_dir "upload/thumbnails" "index.php"
+          clean_upload_dir "upload/branding" "index.php"
+
+      - name: Create release archive
+        run: |
+          # Create zip with all files at root level (flat structure)
+          zip -r -q projectsend-${{ steps.get_tag.outputs.TAG }}.zip * -x "*.git*"
+
+          echo "Archive created: projectsend-${{ steps.get_tag.outputs.TAG }}.zip"
+          ls -lh projectsend-${{ steps.get_tag.outputs.TAG }}.zip
+
+      - name: Generate SHA256 hash
+        id: hash
+        run: |
+          SHA256=$(sha256sum projectsend-${{ steps.get_tag.outputs.TAG }}.zip | cut -d' ' -f1)
+          echo "SHA256=${SHA256}" >> $GITHUB_OUTPUT
+          echo "SHA256 Hash: ${SHA256}"
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG="${{ steps.get_tag.outputs.TAG }}"
+          # Remove 'v' or 'r' prefix if present
+          VERSION=${TAG#[vr]}
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Create release notes
+        id: release_notes
+        run: |
+          cat > release_notes.md << 'EOF'
+          ## ProjectSend ${{ steps.get_tag.outputs.TAG }}
+
+          ### Installation
+
+          Download `projectsend-${{ steps.get_tag.outputs.TAG }}.zip` below.
+
+          ### Verification
+
+          **SHA256 Hash:** `${{ steps.hash.outputs.SHA256 }}`
+
+          Verify the download:
+          ```bash
+          sha256sum projectsend-${{ steps.get_tag.outputs.TAG }}.zip
+          ```
+
+          ### What's Changed
+
+          - See [CHANGELOG.md](https://github.com/projectsend/projectsend/blob/develop/CHANGELOG.md) for detailed changes
+
+          ### System Requirements
+
+          - PHP 8.0 or higher
+          - MySQL 5.7+ or MariaDB 10.2+
+          - Web server (Apache, Nginx, etc.)
+
+          ### Upgrade Instructions
+
+          For existing installations, use the built-in auto-update feature from your ProjectSend dashboard, or follow the [manual upgrade guide](https://www.projectsend.org/documentation/).
+
+          ---
+
+          **Full Changelog**: https://github.com/projectsend/projectsend/compare/previous-tag...${{ steps.get_tag.outputs.TAG }}
+          EOF
+
+          cat release_notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ProjectSend ${{ steps.get_tag.outputs.TAG }}
+          body_path: release_notes.md
+          files: |
+            projectsend-${{ steps.get_tag.outputs.TAG }}.zip
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Release Summary
+        run: |
+          echo "✓ Release created successfully!"
+          echo "================================"
+          echo "Tag: ${{ steps.get_tag.outputs.TAG }}"
+          echo "Version: ${{ steps.version.outputs.VERSION }}"
+          echo "File: projectsend-${{ steps.get_tag.outputs.TAG }}.zip"
+          echo "Size: $(du -h projectsend-${{ steps.get_tag.outputs.TAG }}.zip | cut -f1)"
+          echo "SHA256: ${{ steps.hash.outputs.SHA256 }}"
+          echo ""
+          echo "Release URL: https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_tag.outputs.TAG }}"

@@ -2,8 +2,8 @@
 /**
  * Show the form to add a new client.
  */
-$allowed_levels = array(9, 8);
 require_once 'bootstrap.php';
+check_access_enhanced(['create_clients', 'manage_clients'], 'any');
 
 $active_nav = 'clients';
 
@@ -33,10 +33,12 @@ if ($_POST) {
         'password' => $_POST['password'],
         'name' => $_POST['name'],
         'email' => $_POST['email'],
+        'role_id' => \ProjectSend\Classes\Roles::getClientRoleId(),
         'address' => (isset($_POST["address"])) ? $_POST['address'] : '',
         'phone' => (isset($_POST["phone"])) ? $_POST['phone'] : '',
         'contact' => (isset($_POST["contact"])) ? $_POST['contact'] : '',
         'max_file_size' => (isset($_POST["max_file_size"])) ? $_POST['max_file_size'] : '',
+        'max_disk_quota' => (isset($_POST["max_disk_quota"])) ? $_POST['max_disk_quota'] : '',
         'notify_upload' => (isset($_POST["notify_upload"])) ? 1 : 0,
         'notify_account' => (isset($_POST["notify_account"])) ? 1 : 0,
         'active' => (isset($_POST["active"])) ? 1 : 0,
@@ -45,9 +47,19 @@ if ($_POST) {
         'type' => 'new_client',
     );
 
+    // Process custom fields
+    $custom_field_data = [];
+    foreach ($_POST as $key => $value) {
+        if (strpos($key, 'custom_field_') === 0) {
+            $field_id = str_replace('custom_field_', '', $key);
+            $custom_field_data[$field_id] = $value;
+        }
+    }
+
     // Validate the information from the posted form.
     $new_client->setType('new_client');
     $new_client->set($client_arguments);
+    $new_client->custom_field_data = $custom_field_data;
     $create = $new_client->create();
 
     // Record the action log
@@ -71,29 +83,27 @@ if ($_POST) {
         ]);
     }
 
-    if (!empty($create['id'])) {
-        $flash->success(__('Client created successfully'));
-        $redirect_to = BASE_URI . 'clients-edit.php?id=' . $create['id'];
-    } else {
-        $flash->error($new_client->getValidationErrors());
-        $redirect_to = BASE_URI . 'clients-add.php';
-    }
+    if ($create['status'] === 'success') {
+        $flash->success($create['message']);
 
-    if (isset($create['email'])) {
-        switch ($create['email']) {
-            case 2:
-                $flash->success(__('A welcome message was not sent to the new account owner.', 'cftp_admin'));
-                break;
-            case 1:
-                $flash->success(__('A welcome message with login information was sent to the new account owner.', 'cftp_admin'));
-                break;
-            case 0:
-                $flash->error(__("E-mail notification couldn't be sent.", 'cftp_admin'));
-                break;
+        if (isset($create['email'])) {
+            switch ($create['email']) {
+                case 2:
+                    $flash->success(__('A welcome message was not sent to the new account owner.', 'cftp_admin'));
+                    break;
+                case 1:
+                    $flash->success(__('A welcome message with login information was sent to the new account owner.', 'cftp_admin'));
+                    break;
+                case 0:
+                    $flash->error(__("E-mail notification couldn't be sent.", 'cftp_admin'));
+                    break;
+            }
         }
-    }
 
-    ps_redirect($redirect_to);
+        ps_redirect(BASE_URI . 'clients-edit.php?id=' . $create['id']);
+    } else {
+        // Don't redirect on error - let the page continue to render with form values intact
+    }
 }
 ?>
 
@@ -102,6 +112,11 @@ if ($_POST) {
         <div class="white-box">
             <div class="white-box-interior">
                 <?php
+                // Display validation errors if form submission failed
+                if (!empty($create['errors'])) {
+                    echo $create['errors'];
+                }
+
                 // If the form was submitted with errors, show them here.
                 $clients_form_type = 'new_client';
                 include_once FORMS_DIR . DS . 'clients.php';

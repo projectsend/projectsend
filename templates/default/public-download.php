@@ -18,7 +18,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                             <?php echo $file->filename_original; ?>
 
                             <?php if ($file->filename_original != $file->title) { ?>
-                                <h3><?php echo $file->title; ?></h3>
+                                <h3><?php echo html_output($file->title); ?></h3>
                             <?php } ?>
                         </h2>
                         
@@ -48,7 +48,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
                         <?php } ?>
 
                         <div class="description">
-                            <?php echo $file->description; ?>
+                            <?php echo format_description($file->description); ?>
                         </div>
 
                         <div class="size">

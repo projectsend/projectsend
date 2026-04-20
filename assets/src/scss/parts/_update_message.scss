@@ -18,8 +18,8 @@
 
         .update_icon {
             display:inline-block;
-            background:black;
-            color:white;
+            background:var(--bg-dark);
+            color:var(--text-inverse);
             text-align:center;
             padding:4px;
             font-size:20px;

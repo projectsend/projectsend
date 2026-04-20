@@ -4,9 +4,8 @@
  */
 define('IS_FILE_EDITOR', true);
 
-$allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
-log_in_required($allowed_levels);
+check_access_enhanced(['edit_files']);
 
 $active_nav = 'files';
 
@@ -42,12 +41,67 @@ function custom_download_exists($link)
     return $statement->fetchColumn();
 }
 
+/**
+ * Validate and sanitize custom download link
+ * @param string $link The custom download link to validate
+ * @return array Status and sanitized link or error message
+ */
+function validate_custom_download_link($link)
+{
+    // Remove any HTML tags and decode entities
+    $link = strip_tags($link);
+    $link = html_entity_decode($link, ENT_QUOTES, 'UTF-8');
+
+    // Trim whitespace
+    $link = trim($link);
+
+    // Check length (1-255 characters)
+    if (empty($link)) {
+        return ['valid' => false, 'message' => __('Custom download link cannot be empty', 'cftp_admin')];
+    }
+
+    if (strlen($link) > 255) {
+        return ['valid' => false, 'message' => __('Custom download link too long (max 255 characters)', 'cftp_admin')];
+    }
+
+    // Only allow alphanumeric characters, hyphens, underscores, and dots
+    if (!preg_match('/^[a-zA-Z0-9._-]+$/', $link)) {
+        return ['valid' => false, 'message' => __('Custom download link can only contain letters, numbers, dots, hyphens and underscores', 'cftp_admin')];
+    }
+
+    // Additional security: reject common XSS patterns
+    $dangerous_patterns = [
+        'javascript:', 'data:', 'vbscript:', 'onload', 'onerror',
+        '<script', '</script', '&lt;script', '&lt;/script'
+    ];
+
+    $link_lower = strtolower($link);
+    foreach ($dangerous_patterns as $pattern) {
+        if (strpos($link_lower, strtolower($pattern)) !== false) {
+            return ['valid' => false, 'message' => __('Custom download link contains invalid characters', 'cftp_admin')];
+        }
+    }
+
+    return ['valid' => true, 'link' => $link];
+}
+
 function create_custom_download($link, $file_id, $client_id)
 {
     global $dbh;
-    if (custom_download_exists($link)) {
+
+    // Validate and sanitize the link
+    $validation = validate_custom_download_link($link);
+    if (!$validation['valid']) {
+        global $flash;
+        $flash->error($validation['message']);
+        return false;
+    }
+
+    $sanitized_link = $validation['link'];
+
+    if (custom_download_exists($sanitized_link)) {
         $statement = $dbh->prepare('UPDATE ' . TABLE_CUSTOM_DOWNLOADS . ' SET file_id=:file_id, client_id=:client_id WHERE link=:link');
-        $statement->bindParam(':link', $link);
+        $statement->bindParam(':link', $sanitized_link);
         $statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
         $statement->bindParam(':client_id', $client_id, PDO::PARAM_INT);
         $statement->execute();
@@ -55,12 +109,12 @@ function create_custom_download($link, $file_id, $client_id)
     }
     else {
         $statement = $dbh->prepare('INSERT INTO ' . TABLE_CUSTOM_DOWNLOADS . ' (link, file_id, client_id) VALUES (:link, :file_id, :client_id)');
-        $statement->bindParam(':link', $link);
+        $statement->bindParam(':link', $sanitized_link);
         $statement->bindParam(':file_id', $file_id);
         $statement->bindParam(':client_id', $client_id, PDO::PARAM_INT);
         $statement->execute();
     }
-    return false;
+    return true;
 }
 
 if (isset($_POST['save'])) {
@@ -121,7 +175,7 @@ if (isset($_POST['save'])) {
             $flash->error(__("One or more notifications couldn't be sent.", 'cftp_admin'));
         }
         if (!empty($notifications->getNotificationsInactiveAccounts())) {
-            if (CURRENT_USER_LEVEL == 0) {
+            if (current_role_in(['Client'])) {
                 /**
                  * Clients do not need to know about the status of the
                  * creator's account. Show the ok message instead.
@@ -153,28 +207,28 @@ if (isset($_POST['save'])) {
 
 // Message
 if (!empty($editable) && !isset($_GET['saved'])) {
-    if (CURRENT_USER_LEVEL != 0) {
-        $flash->info(__('You can skip assigning if you want. The files are retained and you may add them to clients or groups later.', 'cftp_admin'));
+    if (!current_role_in(['Client'])) {
+        //$flash->info(__('You can skip assigning if you want. The files are retained and you may add them to clients or groups later.', 'cftp_admin'));
     }
 }
 
-if (count($editable) > 1) {
-    // Header buttons
-    $header_action_buttons = [
-        [
-            'url' => '#',
-            'id' => 'files_collapse_all',
-            'icon' => 'fa fa-chevron-right',
-            'label' => __('Collapse all', 'cftp_admin'),
-        ],
-        [
-            'url' => '#',
-            'id' => 'files_expand_all',
-            'icon' => 'fa fa-chevron-down',
-            'label' => __('Expand all', 'cftp_admin'),
-        ],
-    ];
-}
+// if (count($editable) > 1) {
+//     // Header buttons
+//     $header_action_buttons = [
+//         [
+//             'url' => '#',
+//             'id' => 'files_collapse_all',
+//             'icon' => 'fa fa-chevron-right',
+//             'label' => __('Collapse all', 'cftp_admin'),
+//         ],
+//         [
+//             'url' => '#',
+//             'id' => 'files_expand_all',
+//             'icon' => 'fa fa-chevron-down',
+//             'label' => __('Expand all', 'cftp_admin'),
+//         ],
+//     ];
+// }
 
 // Include layout files
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
@@ -210,7 +264,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                 ),
                 array(
                     'content' => __('Public', 'cftp_admin'),
-                    'condition' => (CURRENT_USER_LEVEL != 0 || current_user_can_upload_public()),
+                    'condition' => (!current_role_in(['Client']) || current_user_can('upload_public')),
                     'hide' => 'phone',
                 ),
                 array(
@@ -236,7 +290,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                     </a>';
 
                     // Show the "My files" button only to clients
-                    if (CURRENT_USER_LEVEL == 0) {
+                    if (current_role_in(['Client'])) {
                         $col_actions .= ' <a href="'. CLIENT_VIEW_FILE_LIST_URL .'" class="btn-primary btn btn-sm">'.__('View my files', 'cftp_admin').'</a>';
                     }
 
@@ -253,7 +307,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                         ),
                         array(
                             'content' => $col_public,
-                            'condition' => (CURRENT_USER_LEVEL != 0 || current_user_can_upload_public()),
+                            'condition' => (!current_role_in(['Client']) || current_user_can('upload_public')),
                             'attributes' => array(
                                 'class' => array('col_visibility'),
                             ),
@@ -276,6 +330,13 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
             // Generate the table of files ready to be edited
             if (!empty($editable)) {
                 include_once FORMS_DIR . DS . 'file_editor.php';
+            } else {
+                // No files can be edited - show error message
+                echo '<div class="alert alert-warning">';
+                echo '<h4>' . __('No files available for editing', 'cftp_admin') . '</h4>';
+                echo '<p>' . __('You do not have permission to edit the requested files, or the files do not exist.', 'cftp_admin') . '</p>';
+                echo '<a href="manage-files.php" class="btn btn-primary">' . __('Back to Files', 'cftp_admin') . '</a>';
+                echo '</div>';
             }
         }
         ?>

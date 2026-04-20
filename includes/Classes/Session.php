@@ -6,14 +6,15 @@ class Session
     /**
      * Create a session
      *
-     * @param [type] $name
-     * @param [type] $value
-     * @return void
+     * @param string $name
+     * @param mixed $value
+     * @return mixed
      */
     public static function add($name, $value)
     {
         if ($name != '' && !empty($name) && $value != '' && !empty($value)) {
-            return $_SESSION[$name] = $value;
+            $_SESSION[$name] = $value;
+            return $value;
         }
 
         throw new \Exception('Name and value are required');
@@ -22,18 +23,18 @@ class Session
     /**
      * Get value from session
      *
-     * @param [type] $name
-     * @return void
+     * @param string $name
+     * @return mixed
      */
     public static function get($name)
     {
-        return $_SESSION[$name];
+        return $_SESSION[$name] ?? null;
     }
 
     /**
      * Check if session exists
      *
-     * @param [type] $name
+     * @param string $name
      * @return boolean
      */
     public static function has($name)
@@ -48,7 +49,7 @@ class Session
     /**
      * Remove session
      *
-     * @param [type] $name
+     * @param string $name
      * @return void
      */
     public static function remove($name)
@@ -62,8 +63,8 @@ class Session
     /**
      * Flash a message and unset old session value
      *
-     * @param [type] $name
-     * @param [type] $value
+     * @param string $name
+     * @param mixed $value
      * @return mixed|null
      */
     public static function flash($name, $value = null)

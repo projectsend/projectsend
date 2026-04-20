@@ -17,12 +17,9 @@ class Categories
     private $parent;
     private $description;
     private $created_date;
+    public $created_by;
 
-    private $validation_passed;
     private $validation_errors;
-
-    // Permissions
-    private $allowed_actions_roles;
 
     public function __construct($category_id = null)
     {
@@ -31,7 +28,6 @@ class Categories
         $this->dbh = $dbh;
         $this->logger = new \ProjectSend\Classes\ActionsLog;
 
-        $this->allowed_actions_roles = [9, 8, 7];
 
         if (!empty($category_id)) {
             $this->get($category_id);
@@ -78,19 +74,20 @@ class Categories
     {
         $this->id = $id;
 
-        $this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES . " WHERE id=:id");
-        $this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
-        $this->statement->execute();
-        $this->statement->setFetchMode(PDO::FETCH_ASSOC);
+        $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES . " WHERE id=:id");
+        $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
+        $statement->execute();
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
 
-        if ($this->statement->rowCount() == 0) {
+        if ($statement->rowCount() == 0) {
             return false;
         }
 
-        while ($this->row = $this->statement->fetch() ) {
-            $this->name = html_output($this->row['name']);
-            $this->parent = html_output($this->row['parent']);
-            $this->description = html_output($this->row['description']);
+        while ($row = $statement->fetch() ) {
+            $this->name = html_output($row['name']);
+            $this->parent = html_output($row['parent']);
+            $this->description = html_output($row['description']);
+            $this->created_by = $row['created_by'];
         }
 
         return true;
@@ -126,11 +123,9 @@ class Categories
         ]);
 
         if ($validation->passed()) {
-            $this->validation_passed = true;
             return true;
 		}
 		else {
-            $this->validation_passed = false;
             $this->validation_errors = $validation->list_errors();
         }
 
@@ -154,6 +149,14 @@ class Categories
 	 */
 	function create()
 	{
+        // Check permissions
+        if (!\current_user_can('create_categories')) {
+            return [
+                'status' => 'error',
+                'message' => __('You do not have permission to create categories.', 'cftp_admin')
+            ];
+        }
+
         if (!$this->validate()) {
             return [
                 'status' => 'error',
@@ -162,33 +165,33 @@ class Categories
         }
 
         /** Who is creating the category? */
-        $this->created_by = CURRENT_USER_USERNAME;
+        $this->created_by = defined('CURRENT_USER_USERNAME') ? \CURRENT_USER_USERNAME : 'system';
 
         /** Insert the category information into the database */
-        $this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_CATEGORIES . " (name,parent,description,created_by)"
+        $statement = $this->dbh->prepare("INSERT INTO " . TABLE_CATEGORIES . " (name,parent,description,created_by)"
                                             ."VALUES (:name, :parent, :description, :created_by)");
-        $this->statement->bindParam(':name', $this->name);
+        $statement->bindParam(':name', $this->name);
 
         if (empty($this->parent)) {
             $this->parent = 0;
-            $this->statement->bindValue(':parent', $this->parent, PDO::PARAM_NULL);
+            $statement->bindValue(':parent', $this->parent, PDO::PARAM_NULL);
         }
         else {
-            $this->statement->bindValue(':parent', $this->parent, PDO::PARAM_INT);
+            $statement->bindValue(':parent', $this->parent, PDO::PARAM_INT);
         }
 
-        $this->statement->bindParam(':description', $this->description);
-        $this->statement->bindParam(':created_by', $this->created_by);
+        $statement->bindParam(':description', $this->description);
+        $statement->bindParam(':created_by', $this->created_by);
 
-        $this->statement->execute();
+        $statement->execute();
 
-        if ($this->statement) {
+        if ($statement) {
             $this->id = $this->dbh->lastInsertId();
 
             /** Record the action log */
             $this->logger->addEntry([
                 'action'				=> 34,
-                'owner_id'				=> CURRENT_USER_ID,
+                'owner_id'				=> defined('CURRENT_USER_ID') ? \CURRENT_USER_ID : 1,
                 'affected_account'		=> $this->id,
                 'affected_account_name'	=> $this->name
             ]);
@@ -228,8 +231,36 @@ class Categories
       return true;
     }
 
+    /**
+     * Check if a user can edit this category
+     * @param string $username Username to check (defaults to current user)
+     * @return bool
+     */
+    public function canUserEdit($username = null)
+    {
+        if ($username === null) {
+            if (defined('CURRENT_USER_USERNAME')) {
+                $username = \CURRENT_USER_USERNAME;
+            } else {
+                return false; // No user logged in
+            }
+        }
+
+        // User can edit if they have edit_categories permission (can edit all categories)
+        if (\current_user_can('edit_categories')) {
+            return true;
+        }
+
+        // User can edit their own categories if they have create_categories permission
+        if (\current_user_can('create_categories') && $this->created_by == $username) {
+            return true;
+        }
+
+        return false;
+    }
+
 	/**
-	 * Edit an existing user.
+	 * Edit an existing category.
 	 */
     public function edit()
     {
@@ -237,6 +268,18 @@ class Categories
             return [
                 'status' => 'error',
                 'message' => __('Category id not set.'),
+            ];
+        }
+
+        // Check permissions
+        $current_username = defined('CURRENT_USER_USERNAME') ? \CURRENT_USER_USERNAME : null;
+        $can_edit = \current_user_can('edit_categories') ||
+                   (\current_user_can('create_categories') && $this->created_by == $current_username);
+
+        if (!$can_edit) {
+            return [
+                'status' => 'error',
+                'message' => __('You do not have permission to edit this category.', 'cftp_admin')
             ];
         }
 
@@ -251,33 +294,33 @@ class Categories
         if($this->parent == '0' || $this->checkParentValidation() )
           $query_update_parent = "parent = :parent,";
 
-        $this->edit_category_query = "UPDATE " . TABLE_CATEGORIES . " SET
+        $edit_category_query = "UPDATE " . TABLE_CATEGORIES . " SET
                                     name = :name,
                                     ".$query_update_parent."
                                     description = :description
                                     WHERE id = :id
                                     ";
 
-        $this->statement = $this->dbh->prepare( $this->edit_category_query );
-        $this->statement->bindParam(':name', $this->name);
+        $statement = $this->dbh->prepare( $edit_category_query );
+        $statement->bindParam(':name', $this->name);
         if ( $this->parent == '0' ) {
             $this->parent == null;
-            $this->statement->bindValue(':parent', $this->parent, PDO::PARAM_NULL);
+            $statement->bindValue(':parent', $this->parent, PDO::PARAM_NULL);
         }
         else
           if($query_update_parent!=""){
-            $this->statement->bindValue(':parent', $this->parent, PDO::PARAM_INT);
+            $statement->bindValue(':parent', $this->parent, PDO::PARAM_INT);
           }
-        $this->statement->bindParam(':description', $this->description);
-        $this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
+        $statement->bindParam(':description', $this->description);
+        $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
 
-        $this->statement->execute();
+        $statement->execute();
 
-        if ($this->statement) {
+        if ($statement) {
             // Record the action log
             $this->logger->addEntry([
                 'action'				=> 35,
-                'owner_id'				=> CURRENT_USER_ID,
+                'owner_id'				=> defined('CURRENT_USER_ID') ? \CURRENT_USER_ID : 1,
                 'affected_account'		=> $this->id,
                 'affected_account_name'	=> $this->name
             ]);
@@ -296,27 +339,44 @@ class Categories
 
 	/**
 	 * Delete an existing category.
+	 * @return array Result with status and message
 	 */
-	function delete() {
+	public function delete() {
         if (empty($this->id)) {
-            return false;
+            return [
+                'status' => 'error',
+                'message' => __('Category ID is required for deletion.', 'cftp_admin')
+            ];
         }
 
-        /** Do a permissions check */
-        if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-            $this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_CATEGORIES . ' WHERE id=:id');
-            $this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
-            $this->sql->execute();
+        // Check permissions
+        $current_username = defined('CURRENT_USER_USERNAME') ? \CURRENT_USER_USERNAME : null;
+        $can_delete = \current_user_can('delete_categories') ||
+                     (\current_user_can('create_categories') && $this->created_by == $current_username);
 
-            /** Record the action log */
-            $this->logger->addEntry([
-                'action' => 36,
-                'owner_id' => CURRENT_USER_ID,
-                'affected_account_name' => $this->name,
-            ]);
+        if (!$can_delete) {
+            return [
+                'status' => 'error',
+                'message' => __('You do not have permission to delete this category.', 'cftp_admin')
+            ];
         }
 
-        return true;
+        // Delete the category from database
+        $sql = $this->dbh->prepare('DELETE FROM ' . TABLE_CATEGORIES . ' WHERE id=:id');
+        $sql->bindParam(':id', $this->id, PDO::PARAM_INT);
+        $sql->execute();
+
+        /** Record the action log */
+        $this->logger->addEntry([
+            'action' => 36,
+            'owner_id' => defined('CURRENT_USER_ID') ? \CURRENT_USER_ID : 1,
+            'affected_account_name' => $this->name,
+        ]);
+
+        return [
+            'status' => 'success',
+            'message' => __('Category deleted successfully.', 'cftp_admin')
+        ];
 	}
 
 }

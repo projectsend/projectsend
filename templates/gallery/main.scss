@@ -17,6 +17,7 @@ body {
 	font-size:0.9em;
 	line-height:1.2em;
 	background:#222 url(img/bg.jpg) no-repeat top center fixed;
+    background-size: cover;
 	height:100%;
 }
 
@@ -145,6 +146,7 @@ body {
 
 #content {
 	margin:10px auto;
+    padding: 0 20px;
 }
 
 header {
@@ -364,4 +366,88 @@ header {
 label:hover:before {
     border: 1px solid #444!important;
     background: #333;
+}
+
+
+/** Folders */
+.breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: .5rem;
+    margin: 0 0 1rem 0;
+    padding-bottom: .5rem;
+    border-bottom: 1px solid #dedede;
+
+    .breadcrumb_item {
+        display: flex;
+        align-items: center;
+        align-content: center;
+        padding: .2rem 0 .2rem .7rem;
+        position: relative;
+
+        a, span {
+            &:before {
+                content: "\f105";
+                font: normal normal normal 14px/1 FontAwesome;            
+                color: black;
+                margin: 0 .75rem 0 0;
+                position: absolute;
+                left: 0;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+        }
+
+        &#breadcrumbs_label {
+            padding-left: 0;
+            text-transform: uppercase;
+            font-size: .8rem;
+            font-weight: bold;
+
+            span {
+                &:before {
+                    display: none;
+                }
+            }
+        }
+    }
+}
+
+#folders_nav {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+
+    .folder {
+        background-color: #4049b9;
+        border-radius: 0px;
+        color: white;
+
+        &.folder_up,
+        &.folder_root {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        a {
+            display: flex;
+            align-items: center;
+            color: white;
+            padding: 1rem;
+        }
+
+        i {
+            font-size: 1.25rem;
+            // color: #4049b9;
+            margin-right: 0.5rem;
+        }
+
+        .folder_open_context_menu {
+            display: none;
+        }
+    }
 }

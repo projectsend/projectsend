@@ -4,14 +4,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-    color:white;
+    color:var(--text-inverse);
     font-size:32px;
     line-height:32px;
     margin:15px 0;
 }
 
 h2 {
-    color:#333333;
+    color:var(--text-primary);
     font-size:27px;
     line-height:29px;
     margin:0 0 35px;

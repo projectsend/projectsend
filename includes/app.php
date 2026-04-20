@@ -6,6 +6,14 @@
  * changed through the web interface, such as the version number,
  * php directives and the user and password length values.
  */
+$is_https_for_cookie = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+
+session_set_cookie_params([
+    'httponly' => true,
+    'secure' => $is_https_for_cookie,
+    'samesite' => 'Lax',
+]);
 session_start();
 
 /**
@@ -53,12 +61,12 @@ define('TRANSLATIONS_URL', 'https://www.projectsend.org/translations/');
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r1605');
+define('CURRENT_VERSION', 'r2029');
 
 /**
  * Required software versions
  */
-define('REQUIRED_VERSION_PHP', '7.1');
+define('REQUIRED_VERSION_PHP', '8.2');
 define('REQUIRED_VERSION_MYSQL', '5.0');
 
 /**
@@ -66,7 +74,11 @@ define('REQUIRED_VERSION_MYSQL', '5.0');
  * Contribution by Scott Wright on
  * http://code.google.com/p/clients-oriented-ftp/issues/detail?id=230
  */
-define('PROTOCOL', empty($_SERVER['HTTPS'])? 'http' : 'https');
+$is_https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+    || (!empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on')
+    || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
+define('PROTOCOL', $is_https ? 'https' : 'http');
 
 /**
  * DEBUG
@@ -114,9 +126,23 @@ define('NEWS_FEED_URI','https://www.projectsend.org/serve/news');
 
 /**
  * Define the Feed from where to take the latest version
- * number.
+ * number based on the configured update channel.
  */
-define('UPDATES_FEED_URI','https://projectsend.org/serve/versions');
+// Set default update channel if not defined (for older installations)
+if (!defined('UPDATE_CHANNEL')) {
+    define('UPDATE_CHANNEL', 'stable');
+}
+
+// Set the update feed URI based on the channel
+switch (UPDATE_CHANNEL) {
+    case 'beta':
+        define('UPDATES_FEED_URI', 'https://projectsend.org/serve/versions?channel=beta');
+        break;
+    case 'stable':
+    default:
+        define('UPDATES_FEED_URI', 'https://projectsend.org/serve/versions');
+        break;
+}
 
 /**
  * Database connection driver
@@ -138,6 +164,7 @@ define('TABLE_FILES_RELATIONS', TABLES_PREFIX . 'files_relations');
 define('TABLE_DOWNLOADS', TABLES_PREFIX . 'downloads');
 define('TABLE_NOTIFICATIONS', TABLES_PREFIX . 'notifications');
 define('TABLE_OPTIONS', TABLES_PREFIX . 'options');
+define('TABLE_THEME_SETTINGS', TABLES_PREFIX . 'theme_settings');
 define('TABLE_USERS', TABLES_PREFIX . 'users');
 define('TABLE_USER_META', TABLES_PREFIX . 'user_meta');
 define('TABLE_GROUPS', TABLES_PREFIX . 'groups');
@@ -156,6 +183,14 @@ define('TABLE_CUSTOM_ASSETS', TABLES_PREFIX . 'custom_assets');
 define('TABLE_CUSTOM_DOWNLOADS', TABLES_PREFIX . 'custom_downloads');
 define('TABLE_USER_LIMIT_UPLOAD_TO', TABLES_PREFIX . 'user_limit_upload_to');
 define('TABLE_AUTHENTICATION_CODES', TABLES_PREFIX . 'authentication_codes');
+define('TABLE_REMEMBER_TOKENS', TABLES_PREFIX . 'remember_tokens');
+define('TABLE_ROLES', TABLES_PREFIX . 'roles');
+define('TABLE_PERMISSIONS', TABLES_PREFIX . 'permissions');
+define('TABLE_ROLE_PERMISSIONS', TABLES_PREFIX . 'role_permissions');
+define('TABLE_INTEGRATIONS', TABLES_PREFIX . 'integrations');
+define('TABLE_CUSTOM_FIELDS', TABLES_PREFIX . 'custom_fields');
+define('TABLE_CUSTOM_FIELD_VALUES', TABLES_PREFIX . 'custom_field_values');
+define('TABLE_TOTP_BACKUP_CODES', TABLES_PREFIX . 'totp_backup_codes');
 
 $original_basic_tables = array(
     TABLE_FILES,
@@ -184,6 +219,8 @@ $all_system_tables = array(
     'custom_assets',
     'user_limit_upload_to',
     'authentication_codes',
+    'custom_fields',
+    'custom_field_values',
 );
 
 /**
@@ -291,6 +328,7 @@ define('FOOTABLE_PAGING_NUMBER_LOG', '15');
  * External links
  */
 define('LINK_DOC_RECAPTCHA', 'https://developers.google.com/recaptcha/intro');
+define('LINK_DOC_TURNSTILE', 'https://www.cloudflare.com/application-services/products/turnstile/');
 define('LINK_DOC_GOOGLE_SIGN_IN', 'https://developers.google.com/identity/protocols/OpenIDConnect');
 define('LINK_DOC_FACEBOOK_LOGIN', 'https://developers.facebook.com/docs/facebook-login/');
 define('LINK_DOC_LINKEDIN_LOGIN', 'https://www.linkedin.com/developers/');

@@ -2,8 +2,8 @@
 /**
  * Show the form to edit an existing client.
  */
-$allowed_levels = array(9, 8, 0);
 require_once 'bootstrap.php';
+check_access_enhanced(['manage_clients', 'edit_clients', 'create_clients', 'edit_self_account'], 'any');
 
 $active_nav = 'clients';
 
@@ -34,7 +34,7 @@ $get_arguments['denied'] = 0;
 $found_requests = $get_groups->getMembershipRequests($get_arguments);
 
 // Form type
-if (CURRENT_USER_LEVEL != 0) {
+if (!current_role_in(['Client'])) {
     $clients_form_type = 'edit_client';
     $ignore_size = false;
 } else {
@@ -44,7 +44,7 @@ if (CURRENT_USER_LEVEL != 0) {
 }
 
 // Compare the client editing this account to the on the db.
-if (CURRENT_USER_LEVEL == 0) {
+if (current_role_in(['Client'])) {
     if (isset($client_arguments) && CURRENT_USER_USERNAME != $client_arguments['username']) {
         exit_with_error_code(403);
     }
@@ -55,7 +55,7 @@ if ($_POST) {
      * If the user is not an admin, check if the id of the client
      * that's being edited is the same as the current logged in one.
      */
-    if (CURRENT_USER_LEVEL == 0 || CURRENT_USER_LEVEL == 7) {
+    if (current_role_in(['Client', 'Uploader'])) {
         if ($client_id != CURRENT_USER_ID) {
             exit_with_error_code(403);
         }
@@ -71,7 +71,7 @@ if ($_POST) {
     $client_arguments = array(
         'id' => $client_id,
         'username' => $_POST['username'],
-        'role' => 0,
+        'role_id' => \ProjectSend\Classes\Roles::getClientRoleId(), // Always set client role for client editing
         'name' => $_POST['name'],
         'email' => $_POST['email'],
         'address' => (isset($_POST["address"])) ? $_POST['address'] : null,
@@ -79,6 +79,7 @@ if ($_POST) {
         'contact' => (isset($_POST["contact"])) ? $_POST['contact'] : null,
         'notify_upload' => (isset($_POST["notify_upload"])) ? 1 : 0,
         'max_file_size' => $client_arguments['max_file_size'],
+        'max_disk_quota' => $client_arguments['max_disk_quota'],
         'can_upload_public' => $client_arguments['can_upload_public'],
         'active' => $client_arguments['active'],
         'type' => 'edit_client',
@@ -86,9 +87,10 @@ if ($_POST) {
 
     if ($ignore_size == false) {
         $client_arguments['max_file_size'] = (isset($_POST["max_file_size"])) ? $_POST["max_file_size"] : null;
+        $client_arguments['max_disk_quota'] = (isset($_POST["max_disk_quota"])) ? $_POST["max_disk_quota"] : null;
     }
 
-    if (CURRENT_USER_LEVEL != 0) {
+    if (!current_role_in(['Client'])) {
         $client_arguments['can_upload_public'] = (isset($_POST["can_upload_public"])) ? 1 : 0;
         $client_arguments['active'] = (isset($_POST["active"])) ? 1 : 0;
     }
@@ -99,9 +101,19 @@ if ($_POST) {
      */
     $client_arguments['password'] = (isset($_POST['password'])) ? $_POST['password'] : null;
 
+    // Process custom fields
+    $custom_field_data = [];
+    foreach ($_POST as $key => $value) {
+        if (strpos($key, 'custom_field_') === 0) {
+            $field_id = str_replace('custom_field_', '', $key);
+            $custom_field_data[$field_id] = $value;
+        }
+    }
+
     /** Validate the information from the posted form. */
     $edit_client->set($client_arguments);
     $edit_client->setType("existing_client");
+    $edit_client->custom_field_data = $custom_field_data;
     $edit_response = $edit_client->edit();
 
     $edit_groups = (!empty($_POST['groups_request'])) ? $_POST['groups_request'] : array();
@@ -112,20 +124,25 @@ if ($_POST) {
         'request_by' => CURRENT_USER_USERNAME,
     ];
 
-    if (in_array(CURRENT_USER_LEVEL, [8, 9])) {
+    if (current_role_in(['Account Manager', 'System Administrator'])) {
         $memberships->clientEditGroups($arguments);
     } else {
         $memberships->updateMembershipRequests($arguments);
     }
 
-    if ($edit_response['query'] == 1) {
+    if ($edit_response['status'] === 'success') {
         if ($client_id == CURRENT_USER_ID) {
             $flash->success(__('Profile edited successfully'));
         } else {
-            $flash->success(__('Client saved successfully'));
+            $flash->success($edit_response['message']);
         }
     } else {
-        $flash->error(__('There was an error saving to the database'));
+        // Store detailed validation errors in session if available
+        if (!empty($edit_response['errors'])) {
+            $_SESSION['client_edit_errors'] = $edit_response['errors'];
+        } else {
+            $flash->error($edit_response['message']);
+        }
     }
 
     ps_redirect(BASE_URI . 'clients-edit.php?id=' . $client_id);
@@ -145,8 +162,14 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
         <div class="white-box">
             <div class="white-box-interior">
                 <?php
-                // If the form was submitted with errors, show them here.
-                echo $edit_client->getValidationErrors();
+                // Display validation errors from session if available (after failed submission)
+                if (isset($_SESSION['client_edit_errors'])) {
+                    echo $_SESSION['client_edit_errors'];
+                    unset($_SESSION['client_edit_errors']);
+                } else {
+                    // Show any errors from current object (for backward compatibility)
+                    echo $edit_client->getValidationErrors();
+                }
 
                 include_once FORMS_DIR . DS . 'clients.php';
                 ?>

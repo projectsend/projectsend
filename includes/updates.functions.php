@@ -3,6 +3,11 @@
  * Define the common functions used on the installer and updates.
  */
 
+function should_check_for_updates()
+{
+    return (get_option('prevent_updates_check') != 1);
+}
+
 function get_latest_version_data()
 {
     // Remove "r" from version
@@ -27,8 +32,10 @@ function get_latest_version_data()
             $return = [
                 'local_version' => $current_version,
                 'update_available' => '1',
-                'url' => $latest->download,
+                'url' => !empty($latest->download_direct->zip) ? $latest->download_direct->zip : $latest->download,
                 'chlog' => $latest->changelog,
+                'sha256' => !empty($latest->hash->sha256) ? $latest->hash->sha256 : null,
+                'requires_php' => !empty($latest->requires_php) ? $latest->requires_php : null,
                 'diff' => [
                     'security' => $latest->diff->security,
                     'features' => $latest->diff->features,

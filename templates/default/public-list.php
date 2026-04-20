@@ -215,7 +215,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                             ),
                         ),
                         array(
-                            'content' => $file->description,
+                            'content' => format_description($file->description),
                             'attributes' => array(
                                 'class' => array('description'),
                             ),

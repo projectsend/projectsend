@@ -16,6 +16,7 @@ class ActionsLog
     private $affected_account;
     private $affected_file_name;
     private $affected_account_name;
+    private $details;
 
     private $dbh;
 
@@ -28,7 +29,7 @@ class ActionsLog
 
     public function getActivitiesReferences()
     {
-        $this->activities_references = array(
+        $activities_references = array(
             1    => __('Account logs in through the form', 'cftp_admin'),
             //24	=> __('Account logs in through cookies','cftp_admin'),
             31    => __('Account (user or client) logs out', 'cftp_admin'),
@@ -81,7 +82,7 @@ class ActionsLog
             48    => __('An email template was updated', 'cftp_admin'),
         );
 
-        return $this->activities_references;
+        return $activities_references;
     }
 
     /**
@@ -89,7 +90,6 @@ class ActionsLog
      */
     function addEntry($arguments)
     {
-        global $dbh;
 
         /** Define the account information */
         $default_user = (defined('CURRENT_USER_USERNAME')) ? CURRENT_USER_USERNAME : null;
@@ -110,8 +110,10 @@ class ActionsLog
 
         /** Get the title of the file on downloads */
         if (!empty($arguments['file_title_column'])) {
-            $file = get_file_by_filename($this->affected_file_name);
-            $this->affected_file_name = $file['title'];
+            $file_object = new \ProjectSend\Classes\Files();
+            if ($file_object->getByFilename($this->affected_file_name)) {
+                $this->affected_file_name = $file_object->title; // XSS-protected via __get
+            }
         }
 
         if (is_array($this->details)) {
@@ -162,7 +164,7 @@ class ActionsLog
 
         $lq .= ")";
 
-        $this->sql_query = $dbh->prepare($lq);
-        $this->sql_query->execute($params);
+        $statement = $this->dbh->prepare($lq);
+        $statement->execute($params);
     }
 }

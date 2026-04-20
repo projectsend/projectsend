@@ -37,6 +37,9 @@ define('DB_NAME', 'database');
 /** Database host (in most cases it's localhost) */
 define('DB_HOST', 'localhost');
 
+/** Database port (for mysql: 3306, for mssql 1443) */
+define('DB_PORT', '3306');
+
 /** Database username (must be assigned to the database) */
 define('DB_USER', 'username');
 
@@ -87,3 +90,30 @@ define('EMAIL_ENCODING', 'utf-8');
  * - Changes the error_reporting php value
  */
 define('DEBUG', false);
+
+/**
+ * Update channel configuration
+ * Defines which update channel to use for checking new versions.
+ *
+ * Possible values:
+ * - 'stable': Official stable releases (recommended)
+ * - 'beta': Beta versions with latest features (may contain bugs)
+ *
+ * Default: 'stable'
+ */
+define('UPDATE_CHANNEL', 'stable');
+
+/**
+ * Encryption Master Key
+ * Used to encrypt file-specific encryption keys when file encryption is enabled.
+ *
+ * IMPORTANT:
+ * - This key is automatically generated during installation
+ * - DO NOT change this value after encrypting files, or they will become unreadable
+ * - Keep a secure backup of this key
+ * - The value must be a base64-encoded 32-byte (256-bit) key
+ *
+ * If not defined, the system will attempt to use a key from the database,
+ * or generate a temporary one (not recommended for production).
+ */
+define('ENCRYPTION_MASTER_KEY', '');

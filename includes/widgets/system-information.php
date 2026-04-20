@@ -3,12 +3,11 @@
 		require_once '../../bootstrap.php';
     }
     
-    $allowed_news = array(9);
-    if (!in_array(CURRENT_USER_LEVEL,$allowed_news)) {
+    if (!current_user_can('view_system_info')) {
         exit;
     }
 ?>
-<div class="widget widget_system_info">
+<div class="widget widget_system_info" id="widget_system_info">
 	<h4><?php _e('System information','cftp_admin'); ?></h4>
 	<div class="widget_int">
 		<h3><?php _e('Software','cftp_admin'); ?></h3>
@@ -16,11 +15,13 @@
 			<dt class="col-6 text-end"><?php _e('Version','cftp_admin'); ?></dt>
 			<dd class="col-6">
 				<?php echo CURRENT_VERSION; ?> <?php
-                    $update_data = get_latest_version_data();
-                    $update_data = json_decode($update_data);
-                    if ($update_data->update_available == '1') {
-						echo ' - <strong>'; _e('New version available','cftp_admin'); echo ':</strong> <a href="'. $update_data->url . '">' . $update_data->latest_version . '</a>';
-					}
+                    if (should_check_for_updates()) {
+                        $update_data = get_latest_version_data();
+                        $update_data = json_decode($update_data);
+                        if ($update_data->update_available == '1') {
+                            echo ' - <strong>'; _e('New version available','cftp_admin'); echo ':</strong> <a href="'. $update_data->url . '">' . $update_data->latest_version . '</a>';
+                        }
+                    }
 				?>
 			</dd>
 
@@ -28,13 +29,18 @@
 			<dd class="col-6"><?php echo MAX_FILESIZE; ?> mb.</dd>
 
 			<dt class="col-6 text-end"><?php _e('Template','cftp_admin'); ?></dt>
-			<dd class="col-6"><?php echo ucfirst(get_option('selected_clients_template')); ?> <a href="<?php echo BASE_URI; ?>templates.php">[<?php _e('Change','cftp_admin'); ?>]</a></dd>
+			<dd class="col-6">
+				<?php echo ucfirst(get_option('selected_clients_template')); ?>
+				<?php if (current_user_can('change_template')) { ?>
+					<a href="<?php echo BASE_URI; ?>themes.php">[<?php _e('Change','cftp_admin'); ?>]</a>
+				<?php } ?>
+			</dd>
 		</dl>
 
 		<h3><?php _e('System','cftp_admin'); ?></h3>
 		<dl class="row">
 			<dt class="col-6 text-end"><?php _e('Server','cftp_admin'); ?></dt>
-			<dd class="col-6"><?php echo $_SERVER["SERVER_SOFTWARE"]; ?>
+			<dd class="col-6"><?php echo html_output($_SERVER["SERVER_SOFTWARE"]); ?></dd>
 
 			<dt class="col-6 text-end"><?php _e('PHP version','cftp_admin'); ?></dt>
 			<dd class="col-6"><?php echo PHP_VERSION; ?></dd>

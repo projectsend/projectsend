@@ -48,13 +48,7 @@ class Options
 
     private function getCurrentUrl()
     {
-        $pageURL = 'http';
-        if (!empty($_SERVER['HTTPS'])) {
-            if ($_SERVER['HTTPS'] == 'on') {
-                $pageURL .= "s";
-            }
-        }
-        $pageURL .= "://";
+        $pageURL = (defined('PROTOCOL')) ? PROTOCOL . '://' : 'http://';
         $pageURL .= $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
 
         $extension = substr($pageURL, -4);
@@ -87,7 +81,7 @@ class Options
         define('PUBLIC_GROUP_URL', BASE_URI . 'public.php');
 
         // Cron
-        define('CRON_COMMAND_EXAMPLE', '* /5 * * * /usr/bin/php ' . ROOT_DIR . '/cron.php key=' . $this->getOption('cron_key') . '  >/dev/null');
+        define('CRON_COMMAND_EXAMPLE', '*/5 * * * * /usr/bin/php ' . ROOT_DIR . '/cron.php key=' . $this->getOption('cron_key') . '  >/dev/null');
         define('CRON_URL', BASE_URI . 'cron.php?key=' . $this->getOption('cron_key'));
 
         // URLs
@@ -118,8 +112,11 @@ class Options
         // Set a page for each status code
         define('STATUS_PAGES_DIR', ADMIN_VIEWS_DIR . DS . 'http_status_pages');
         define('PAGE_STATUS_CODE_URL', BASE_URI . 'error.php');
+        define('PAGE_STATUS_CODE_400', PAGE_STATUS_CODE_URL . '?e=400');
         define('PAGE_STATUS_CODE_403', PAGE_STATUS_CODE_URL . '?e=403');
         define('PAGE_STATUS_CODE_404', PAGE_STATUS_CODE_URL . '?e=404');
+        define('PAGE_STATUS_CODE_410', PAGE_STATUS_CODE_URL . '?e=410');
+        define('PAGE_STATUS_CODE_500', PAGE_STATUS_CODE_URL . '?e=500');
         define('PAGE_STATUS_CODE_REQUIREMENTS', PAGE_STATUS_CODE_URL . '?e=requirements');
     }
 }

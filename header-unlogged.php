@@ -40,14 +40,12 @@ else {
      * So even logged in users can access it.
      */
     if (!isset($dont_redirect_if_logged)) {
-        if (defined('CURRENT_USER_LEVEL')) {
-            if (CURRENT_USER_LEVEL == 0) {
-                ps_redirect(CLIENT_VIEW_FILE_LIST_URL);
-            }
+        if (current_role_in(['Client'])) {
+            ps_redirect(CLIENT_VIEW_FILE_LIST_URL);
         }
-        
+
         // If logged as a system user, go directly to the back-end homepage
-        if (defined('CURRENT_USER_LEVEL') && !empty($allowed_levels) && current_role_in($allowed_levels)) {
+        if (!empty($allowed_levels) && current_role_in($allowed_levels)) {
             ps_redirect(BASE_URI."dashboard.php");
         }
     }

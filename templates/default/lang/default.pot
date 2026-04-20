@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend theme: Default\n"
-"POT-Creation-Date: 2022-10-13 18:49-0300\n"
+"POT-Creation-Date: 2024-11-12 20:40-0300\n"
 "PO-Revision-Date: 2016-09-14 15:42-0300\n"
 "Last-Translator: \n"
 "Language-Team: ProjectSend <contact@projectsend.org>\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.1.1\n"
+"X-Generator: Poedit 3.5\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: _e;__\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -20,24 +20,20 @@ msgstr ""
 msgid "File information"
 msgstr ""
 
-#: public-download.php:41 public-list.php:115 public-list.php:171
-#: template.php:140 template.php:207
+#: public-download.php:41 public-list.php:116 public-list.php:181
+#: template.php:150 template.php:228
 msgid "Preview"
 msgstr ""
 
-#: public-download.php:61
+#: public-download.php:77
 msgid "Download file"
 msgstr ""
 
-#: public-download.php:73 public-list.php:270
-msgid "Go back to the homepage."
-msgstr ""
-
-#: public-list.php:8 template.php:31
+#: public-list.php:8 template.php:33
 msgid "Your search keywords returned no results."
 msgstr ""
 
-#: public-list.php:10 template.php:38
+#: public-list.php:10 template.php:40
 msgid "There are no files available."
 msgstr ""
 
@@ -49,74 +45,66 @@ msgstr ""
 msgid "About this group"
 msgstr ""
 
-#: public-list.php:85 template.php:110
+#: public-list.php:86 template.php:120
 msgid "Title"
 msgstr ""
 
-#: public-list.php:88 template.php:113
+#: public-list.php:89 template.php:123
 msgid "Type"
 msgstr ""
 
-#: public-list.php:94 template.php:119
+#: public-list.php:95 template.php:129
 msgid "Description"
 msgstr ""
 
-#: public-list.php:101 template.php:126
+#: public-list.php:102 template.php:136
 msgid "Size"
 msgstr ""
 
-#: public-list.php:108 template.php:133
+#: public-list.php:109 template.php:143
 msgid "Date"
 msgstr ""
 
-#: public-list.php:111 template.php:136
-msgid "Expiration date"
+#: public-list.php:112 template.php:146
+msgid "Expiry"
 msgstr ""
 
-#: public-list.php:120 public-list.php:183 template.php:144 template.php:219
+#: public-list.php:121 public-list.php:193 template.php:154 template.php:240
 msgid "Download"
 msgstr ""
 
-#: public-list.php:153 template.php:189
+#: public-list.php:163 template.php:210
 msgid "Never"
 msgstr ""
 
-#: public-list.php:180 template.php:216
+#: public-list.php:190 template.php:237
 msgid "File expired"
 msgstr ""
 
-#: public-list.php:190
+#: public-list.php:200
 msgid "Direct link"
 msgstr ""
 
-#: public-list.php:266
-msgid "Don't have an account yet?"
-msgstr ""
-
-#: public-list.php:266
-msgid "Register as a new client."
-msgstr ""
-
-#: template.php:20
+#: template.php:22
 msgid "File downloads"
 msgstr ""
 
-#: template.php:34
+#: template.php:36
 msgid "The filters you selected returned no results."
 msgstr ""
 
-#: template.php:47
+#: template.php:49
 msgid "Upload file"
 msgstr ""
 
-#: template.php:69
+#: template.php:73
 msgid "All categories"
 msgstr ""
 
-#: template.php:78
+#: template.php:82
 msgid "Select action"
 msgstr ""
 
-#: template.php:79
+#: template.php:83
 msgid "Download zipped"
 msgstr ""

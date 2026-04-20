@@ -82,5 +82,29 @@
                 const last = document.getElementById('n6').focus();
             }
         }
+
+        // Toggle backup code form on TOTP verification page
+        var toggleBackupLink = document.getElementById('toggle_backup_code');
+        if (toggleBackupLink) {
+            toggleBackupLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                var backupForm = document.querySelector('.backup-code-form');
+                var totpForm = document.getElementById('verify_2fa_totp');
+                var backupSection = document.getElementById('totp_backup_section');
+                if (backupForm) {
+                    var showingBackup = backupForm.style.display === 'none';
+                    backupForm.style.display = showingBackup ? 'block' : 'none';
+                    if (totpForm) {
+                        totpForm.style.display = showingBackup ? 'none' : 'block';
+                    }
+                    // Update link text
+                    if (showingBackup) {
+                        toggleBackupLink.textContent = toggleBackupLink.dataset.textTotp || 'Use authenticator code instead';
+                    } else {
+                        toggleBackupLink.textContent = toggleBackupLink.dataset.textBackup || 'Lost your device? Use a backup code';
+                    }
+                }
+            });
+        }
     }
 })();

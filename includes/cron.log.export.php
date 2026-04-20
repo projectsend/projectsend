@@ -2,9 +2,8 @@
 /**
  * Export the log as a CSV file.
  */
-$allowed_levels = array(9);
 require_once '../bootstrap.php';
-log_in_required($allowed_levels);
+check_access_enhanced(['edit_settings']);
 
 header('Content-Type: text/csv; charset=utf-8');
 header('Content-Disposition: attachment; filename=cron-log.csv');

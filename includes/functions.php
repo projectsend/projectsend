@@ -4,6 +4,10 @@
  */
 
 use enshrined\svgSanitize\Sanitizer;
+use ProjectSend\Classes\Captcha\CloudflareTurnstile;
+use ProjectSend\Classes\Captcha\RecaptchaV2;
+use ProjectSend\Classes\Captcha\RecaptchaV3;
+use ProjectSend\Classes\CaptchaManager;
 
 function try_queries($queries = [])
 {
@@ -410,7 +414,7 @@ function get_client_by_id($client)
                 'phone' => html_output($row['phone']),
                 'email' => html_output($row['email']),
                 'notify_upload' => html_output($row['notify']),
-                'level' => html_output($row['level']),
+                'role_id' => html_output($row['role_id']),
                 'active' => html_output($row['active']),
                 'max_file_size' => html_output($row['max_file_size']),
                 'can_upload_public' => html_output($row['can_upload_public']),
@@ -537,7 +541,7 @@ function get_user_by_id($id)
 {
     global $dbh;
 
-    $statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
+    $statement = $dbh->prepare("SELECT u.*, r.name as role_name FROM " . TABLE_USERS . " u LEFT JOIN " . TABLE_ROLES . " r ON u.role_id = r.id WHERE u.id=:id");
     $statement->bindParam(':id', $id, PDO::PARAM_INT);
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -548,7 +552,8 @@ function get_user_by_id($id)
             'username' => html_output($row['user']),
             'name' => html_output($row['name']),
             'email' => html_output($row['email']),
-            'level' => html_output($row['level']),
+            'role_id' => html_output($row['role_id']),
+            'role_name' => html_output($row['role_name']),
             'active' => html_output($row['active']),
             'max_file_size' => html_output($row['max_file_size']),
             'created_date' => html_output($row['timestamp']),
@@ -597,22 +602,354 @@ function get_user_by_username($user)
 function current_user_can($permission, $params = [])
 {
     global $permissions;
+
+    // Check if permissions object exists
+    if (!isset($permissions) || !is_object($permissions)) {
+        return false;
+    }
+
     return $permissions->can($permission);
 }
 
-function client_can_upload_public($client_id)
+/**
+ * Get all available permissions from the system (database-driven)
+ * @return array
+ */
+function get_available_permissions()
 {
-    switch (get_option('clients_can_set_public')) {
-        case 'all':
-            return true;
-            break;
-        case 'allowed':
-            $client = get_client_by_id($client_id);
-            return (bool)$client['can_upload_public'];
-            break;
+    return \ProjectSend\Classes\Permissions::getAllPermissionsFromDatabase();
+}
+
+/**
+ * Get permissions for a specific role
+ * @param int $role
+ * @return array
+ */
+function get_permissions_for_role($role)
+{
+    return \ProjectSend\Classes\Permissions::getPermissionsForRole($role);
+}
+
+/**
+ * Get permission categories
+ * @return array
+ */
+function get_permission_categories()
+{
+    return \ProjectSend\Classes\Permissions::getPermissionCategories();
+}
+
+/**
+ * Get permissions grouped by category
+ * @return array
+ */
+function get_permissions_grouped_by_category()
+{
+    return \ProjectSend\Classes\Permissions::getPermissionsGroupedByCategory();
+}
+
+/**
+ * Check if a permission exists
+ * @param string $permission
+ * @return bool
+ */
+function permission_exists($permission)
+{
+    return \ProjectSend\Classes\Permissions::permissionExists($permission);
+}
+
+/**
+ * Ensure a specific permission exists, create if missing
+ * @param string $permission_key
+ * @param string $name
+ * @param string $description
+ * @param string $category
+ * @return bool
+ */
+function ensure_permission_exists($permission_key, $name, $description = '', $category = 'general')
+{
+    if (permission_exists($permission_key)) {
+        return true;
     }
 
-    return false;
+    // Permission doesn't exist, create it
+    if (!table_exists(TABLE_PERMISSIONS)) {
+        return false;
+    }
+
+    global $dbh;
+
+    try {
+        $sql = "INSERT INTO " . TABLE_PERMISSIONS . "
+                (permission_key, name, description, category, is_system_permission, active)
+                VALUES (:permission_key, :name, :description, :category, 0, 1)";
+
+        $statement = $dbh->prepare($sql);
+        $result = $statement->execute([
+            'permission_key' => $permission_key,
+            'name' => $name,
+            'description' => $description,
+            'category' => $category
+        ]);
+
+        if ($result) {
+            error_log("ProjectSend: Auto-created permission: $permission_key");
+        }
+
+        return $result;
+    } catch (Exception $e) {
+        error_log("ProjectSend: Failed to auto-create permission $permission_key: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Get all system user role levels (non-client roles)
+ * Used for access control on pages that should be accessible to all system users
+ * @return array
+ */
+function get_all_system_user_roles()
+{
+    global $dbh;
+
+    // Default system roles
+    $roles = ['System Administrator', 'Account Manager', 'Uploader'];
+
+    if (table_exists(TABLE_ROLES)) {
+        // Get all active non-client roles from database
+        $sql = "SELECT name FROM " . TABLE_ROLES . "
+                WHERE active = 1 AND name != 'Client'
+                ORDER BY id ASC";
+
+        try {
+            $statement = $dbh->prepare($sql);
+            $statement->execute();
+
+            $roles = [];
+            while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+                $roles[] = $row['name'];
+            }
+        } catch (Exception $e) {
+            error_log("ProjectSend: Error getting system user roles: " . $e->getMessage());
+            // Fallback to default roles
+            $roles = ['System Administrator', 'Account Manager', 'Uploader'];
+        }
+    }
+
+    return $roles;
+}
+
+/**
+ * Get admin role levels (roles with user management permissions)
+ * These are roles that can create/edit/delete users and clients
+ * @return array
+ */
+function get_admin_roles()
+{
+    global $dbh;
+
+    // Default admin roles
+    $roles = ['System Administrator', 'Account Manager'];
+
+    if (table_exists(TABLE_ROLES) && table_exists(TABLE_ROLE_PERMISSIONS)) {
+        // Get all roles with user management permissions
+        $sql = "SELECT DISTINCT r.name
+                FROM " . TABLE_ROLES . " r
+                INNER JOIN " . TABLE_ROLE_PERMISSIONS . " rp ON r.id = rp.role_id
+                WHERE r.active = 1
+                AND r.name != 'Client'
+                AND rp.granted = 1
+                AND rp.permission IN ('create_clients', 'edit_clients', 'create_users', 'manage_clients', 'manage_users')
+                ORDER BY r.id ASC";
+
+        try {
+            $statement = $dbh->prepare($sql);
+            $statement->execute();
+
+            $roles = [];
+            while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+                $roles[] = $row['name'];
+            }
+        } catch (Exception $e) {
+            error_log("ProjectSend: Error getting admin roles: " . $e->getMessage());
+            // Fallback to default roles
+            $roles = ['System Administrator', 'Account Manager'];
+        }
+    }
+
+    return $roles;
+}
+
+/**
+ * Get role data for a specific user
+ * @param int $user_id
+ * @return array|null
+ */
+function get_user_role($user_id)
+{
+    $user = new \ProjectSend\Classes\Users($user_id);
+    return $user->exists ? $user->getRoleData() : null;
+}
+
+/**
+ * Get available roles that can be assigned to users
+ * @param bool $include_clients Include client role (level 0)
+ * @return array
+ */
+function get_available_roles_for_assignment($include_clients = false)
+{
+    global $dbh;
+
+    if (!table_exists(TABLE_ROLES)) {
+        // Fallback to hardcoded roles during migration
+        $roles = [
+            ['id' => 1, 'name' => __('System Administrator', 'cftp_admin'), 'is_system_role' => 1],
+            ['id' => 2, 'name' => __('Account Manager', 'cftp_admin'), 'is_system_role' => 1],
+            ['id' => 3, 'name' => __('Uploader', 'cftp_admin'), 'is_system_role' => 1],
+        ];
+
+        if ($include_clients) {
+            $roles[] = ['id' => 4, 'name' => __('Client', 'cftp_admin'), 'is_system_role' => 1];
+        }
+
+        return $roles;
+    }
+
+    $where_clause = $include_clients ? "" : "WHERE name != 'Client'";
+    $sql = "SELECT id, name, description, is_system_role, active
+            FROM " . TABLE_ROLES . "
+            $where_clause
+            ORDER BY id ASC";
+
+    $statement = $dbh->prepare($sql);
+    $statement->execute();
+
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+/**
+ * Get user's permissions through their role
+ * @param int $user_id
+ * @return array
+ */
+function get_user_permissions_from_role($user_id)
+{
+    $user = new \ProjectSend\Classes\Users($user_id);
+    if (!$user->exists) {
+        return [];
+    }
+
+    return \ProjectSend\Classes\Permissions::getPermissionsForRole($user->role_id);
+}
+
+/**
+ * Get metadata for a specific permission
+ * @param string $permission
+ * @return array|null
+ */
+function get_permission_data($permission)
+{
+    return \ProjectSend\Classes\Permissions::getPermissionData($permission);
+}
+
+/**
+ * Get all roles from database
+ * @param bool $active_only
+ * @return array
+ */
+function get_all_roles($active_only = true)
+{
+    return \ProjectSend\Classes\Roles::getAllRoles($active_only);
+}
+
+/**
+ * Get role data by level
+ * @param int $role_level
+ * @return array|null
+ */
+function get_role_by_level($role_level)
+{
+    return \ProjectSend\Classes\Roles::getRoleByLevel($role_level);
+}
+
+/**
+ * Get role permissions from database
+ * @param int $role_level
+ * @return array
+ */
+function get_role_permissions($role_level)
+{
+    return \ProjectSend\Classes\Roles::getRolePermissions($role_level);
+}
+
+/**
+ * Check if custom roles are enabled
+ * @return bool
+ */
+function custom_roles_enabled()
+{
+    return get_option('enable_custom_roles', null, '1') == '1';
+}
+
+/**
+ * Get available role levels for new roles
+ * @return array
+ */
+function get_available_role_levels()
+{
+    return \ProjectSend\Classes\Roles::getAvailableRoleLevels();
+}
+
+/**
+ * Check if current user is client
+ * @return bool
+ */
+function current_user_is_client()
+{
+    if (!defined('CURRENT_USER_ID')) {
+        return false;
+    }
+
+    try {
+        $user = new \ProjectSend\Classes\Users(CURRENT_USER_ID);
+        return $user->isClient();
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
+/**
+ * Check if current user is admin
+ * @return bool
+ */
+function current_user_is_admin()
+{
+    if (!defined('CURRENT_USER_ID')) {
+        return false;
+    }
+
+    try {
+        $user = new \ProjectSend\Classes\Users(CURRENT_USER_ID);
+        $role_data = $user->getRoleData();
+        return $role_data && in_array($role_data['name'], ['Account Manager', 'System Administrator']);
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
+
+function client_can_upload_public($client_id)
+{
+    // First check: Client role must have upload_public permission
+    $client_role = new \ProjectSend\Classes\Roles(\ProjectSend\Classes\Roles::getClientRoleId());
+    if (!$client_role->hasPermission('upload_public')) {
+        return false;
+    }
+
+    // Second check: Individual client must have can_upload_public enabled in their profile
+    $client = get_client_by_id($client_id);
+    return (bool)$client['can_upload_public'];
 }
 
 function client_can_assign_to_public_folder($client_id)
@@ -621,121 +958,66 @@ function client_can_assign_to_public_folder($client_id)
         return false;
     }
 
-    if (get_option('clients_can_upload_to_public_folders') == '1') {
-        return true;
-    }
-
-    return false;
+    // Check if client role has upload_to_public_folders permission
+    $client_role = new \ProjectSend\Classes\Roles(\ProjectSend\Classes\Roles::getClientRoleId());
+    return $client_role->hasPermission('upload_to_public_folders');
 }
 
 function current_user_can_upload()
 {
-    if (!defined('CURRENT_USER_LEVEL')) {
+    if (!defined('CURRENT_USER_ID')) {
         return false;
     }
 
-    switch (CURRENT_USER_LEVEL) {
-        case 9:
-        case 8:
-        case 7:
-            return true;
-            break;
-        case 0:
-            return (get_option('clients_can_upload') == '1');
-            break;
-        default:
-            break;
+    try {
+        $user = new \ProjectSend\Classes\Users(CURRENT_USER_ID);
+        if ($user->isClient()) {
+            // Check if client role has upload permission
+            $client_role = new \ProjectSend\Classes\Roles(\ProjectSend\Classes\Roles::getClientRoleId());
+            return $client_role->hasPermission('upload');
+        } else {
+            // For system users, check their role's upload permission
+            return current_user_can('upload');
+        }
+    } catch (Exception $e) {
+        return false;
     }
-
-    return false;
 }
 
 function current_user_can_upload_public()
 {
-    switch (CURRENT_USER_LEVEL) {
-        case 9:
-        case 8:
-        case 7:
-            return true;
-            break;
-        case 0:
+    if (!defined('CURRENT_USER_ID')) {
+        return false;
+    }
+
+    try {
+        $user = new \ProjectSend\Classes\Users(CURRENT_USER_ID);
+        if ($user->isClient()) {
             return client_can_upload_public(CURRENT_USER_ID);
-            break;
-        default:
-            break;
-        }
-
-    return false;
-}
-
-/**
- * Get all the file information knowing only the id
- * Used on the Download information page.
- *
- * @return array
- */
-function get_file_by_id($id)
-{
-    global $dbh;
-    $statement = $dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE id=:id");
-    $statement->bindParam(':id', $id, PDO::PARAM_INT);
-    $statement->execute();
-    $statement->setFetchMode(PDO::FETCH_ASSOC);
-
-    while ($row = $statement->fetch()) {
-        $information = array(
-            'id' => html_output($row['id']),
-            'user_id' => html_output($row['user_id']),
-            'title' => html_output($row['filename']),
-            'original_url' => html_output($row['original_url']),
-            'url' => html_output($row['url']),
-            'description' => html_output($row['description']),
-            'uploaded_date' => html_output($row['timestamp']),
-            'uploaded_by' => html_output($row['uploader']),
-            'expires' => html_output($row['expires']),
-            'expiry_date' => html_output($row['expiry_date']),
-            'public' => html_output($row['public_allow']),
-            'public_token' => html_output($row['public_token']),
-        );
-
-        if (!empty($information)) {
-            return $information;
         } else {
-            return false;
+            // For system users, check their role's upload_public permission
+            return current_user_can('upload_public');
         }
+    } catch (Exception $e) {
+        return false;
     }
 }
 
 /**
- * Get all the file information knowing only the id
- * Used on the Download information page.
- *
- * @return array
+ * Helper functions for role and permission checking
+ * Uses new role-name and permission-based system
  */
-function get_file_by_filename($filename)
+
+/**
+ * Check if the current user is a system user (any role except client)
+ */
+function current_user_is_system_user()
 {
-    global $dbh;
-    $statement = $dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE url=:filename");
-    $statement->execute(
-        array(
-            ':filename' => $filename
-        )
-    );
-
-    if ($statement->rowCount() > 0) {
-        while ($row = $statement->fetch()) {
-            $found_id = $row['id'];
-            if (!empty($found_id)) {
-                $information = get_file_by_id($found_id);
-                return $information;
-            } else {
-                return false;
-            }
-        }
-    }
-
-    return false;
+    return current_role_in(['System Administrator', 'Account Manager', 'Uploader']);
 }
+
+
+
 
 function get_file_assignations($file_id)
 {
@@ -839,7 +1121,7 @@ function message_no_clients()
 {
     global $dbh;
     // Count the clients to show a warning message or the form
-    $statement = $dbh->query("SELECT id FROM " . TABLE_USERS . " WHERE level = '0'");
+    $statement = $dbh->query("SELECT id FROM " . TABLE_USERS . " WHERE role_id = (SELECT id FROM " . TABLE_ROLES . " WHERE name = 'Client')");
     $count_clients = $statement->rowCount();
     $statement = $dbh->query("SELECT id FROM " . TABLE_GROUPS);
     $count_groups = $statement->rowCount();
@@ -902,17 +1184,37 @@ function system_message($type, $message, $div_id = '')
 /**
  * Function used across the system to determine if the current logged in
  * account has permission to do something.
- *
+ * UPDATED: Now supports both role names AND legacy numeric levels.
  */
-function current_role_in($levels)
+function current_role_in($roles)
 {
-    if (!is_array($levels)) {
-        $levels = array($levels);
+    if (!defined('CURRENT_USER_ID')) {
+        return false;
     }
 
-    if (isset($_SESSION['role']) && (in_array($_SESSION['role'], $levels))) {
-        return true;
-    } else {
+    if (!is_array($roles)) {
+        $roles = array($roles);
+    }
+
+    try {
+        $user = new \ProjectSend\Classes\Users(CURRENT_USER_ID);
+        $role_data = $user->getRoleData();
+
+        if (!$role_data) {
+            return false;
+        }
+
+        $current_role_name = $role_data['name'];
+
+        // Check for role name matches only (no more numeric level support)
+        foreach ($roles as $role) {
+            if ($current_role_name === $role) {
+                return true;
+            }
+        }
+
+        return false;
+    } catch (Exception $e) {
         return false;
     }
 }
@@ -924,14 +1226,17 @@ function current_role_in($levels)
  *
  * @todo Validate the returned value against the one stored on the database
  */
-function get_current_user_level()
+function get_current_user_role()
 {
-    $level = 0;
-    if (isset($_SESSION['role'])) {
-        $level = $_SESSION['role'];
+    $role = 'Client';
+    if (isset($_SESSION['role_id'])) {
+        $role_data = \ProjectSend\Classes\Roles::getRoleById($_SESSION['role_id']);
+        if ($role_data) {
+            $role = $role_data['name'];
+        }
     }
 
-    return $level;
+    return $role;
 }
 
 /**
@@ -991,27 +1296,14 @@ function html_output($str, $flags = ENT_QUOTES, $encoding = CHARSET, $double_enc
 function htmlentities_allowed($str, $quoteStyle = ENT_COMPAT, $charset = CHARSET, $doubleEncode = false)
 {
     if ($str == null) { return $str; }
-    //$description = htmlspecialchars($str, $quoteStyle, $charset, $doubleEncode);
     $string = htmlspecialchars_decode($str, $quoteStyle);
-    return strip_tags($string, '<i><b><strong><em><p><br><ul><ol><li><u><sup><sub><s>');
-        /*
-    $allowed_tags = array('i','b','strong','em','p','br','ul','ol','li','u','sup','sub','s');
+    $string = strip_tags($string, '<i><b><strong><em><p><br><ul><ol><li><u><sup><sub><s>');
 
-    $find = [];
-    $replace = [];
+    // Strip all attributes from allowed tags to prevent XSS via event handlers
+    // (e.g. onfocus, onmouseover, onclick). Only bare tags are permitted.
+    $string = preg_replace('/<(\w+)\s+[^>]*>/i', '<$1>', $string);
 
-    foreach ( $allowed_tags as $tag ) {
-        // Opening tags
-        $find[] = '&lt;' . $tag . '&gt;';
-        $replace[] = '<' . $tag . '>';
-        // Closing tags
-        $find[] = '&lt;/' . $tag . '&gt;';
-        $replace[] = '</' . $tag . '>';
-    }
-
-    $description = str_replace($find, $replace, $description);
-    return $description
-    */;
+    return $string;
 }
 
 // Remove script and style tags
@@ -1036,6 +1328,44 @@ function encode_html($str)
     $str = nl2br($str);
     //$str = addslashes($str);
     return $str;
+}
+
+/**
+ * Sanitize HTML description content.
+ * When CKEditor is enabled, the input is already HTML with tags like <p>, <ul>, etc.
+ * We strip dangerous tags but preserve safe formatting tags.
+ * When CKEditor is disabled, we treat the input as plain text and encode it.
+ */
+function sanitize_description($str)
+{
+    if (empty($str)) {
+        return '';
+    }
+
+    if (get_option('files_descriptions_use_ckeditor') == '1') {
+        return strip_tags($str, '<i><b><strong><em><p><br><ul><ol><li><u><sup><sub><s><a><h1><h2><h3><h4><h5><h6><blockquote><pre><code>');
+    }
+
+    return encode_html($str);
+}
+
+/**
+ * Format a description for display.
+ * If the description already contains block-level HTML (from CKEditor),
+ * return it as-is. Otherwise apply nl2br() for plain text descriptions.
+ */
+function format_description($str)
+{
+    if (preg_match('/<(p|ul|ol|blockquote|h[1-6])\b/i', $str)) {
+        $html = htmlentities_allowed($str);
+        // Clean up stray <br> tags between block elements left by the old
+        // encode_html() bug that applied nl2br() to CKEditor HTML content
+        $html = preg_replace('#(</(p|ul|ol|li|blockquote|h[1-6])>)\s*<br\s*/?\s*>#i', '$1', $html);
+        return $html;
+    }
+    // Plain text descriptions already have <br> tags from nl2br() during save.
+    // Use htmlentities_allowed() to preserve them while escaping dangerous content.
+    return htmlentities_allowed($str);
 }
 
 
@@ -1077,6 +1407,10 @@ function get_current_url()
 
 function file_is_allowed($filename)
 {
+    if (!defined('CURRENT_USER_ID')) {
+        return false;
+    }
+
     if (true == user_can_upload_any_file_type(CURRENT_USER_ID)) {
         return true;
     }
@@ -1098,7 +1432,7 @@ function format_file_size($file)
 {
     if ($file < 1024) {
         /** No digits so put a ? much better than just seeing Byte */
-        $formatted = (ctype_digit($file)) ? $file . ' Byte' :  ' ? ';
+        $formatted = (ctype_digit((string)$file)) ? $file . ' Byte' :  ' ? ';
     } elseif ($file < 1048576) {
         $formatted = round($file / 1024, 2) . ' KB';
     } elseif ($file < 1073741824) {
@@ -1118,6 +1452,89 @@ function format_file_size($file)
     }
 
     return $formatted;
+}
+
+/**
+ * Get total disk usage for a user (sum of all their uploaded files)
+ *
+ * @param int $user_id The user ID
+ * @return int Total disk usage in bytes
+ */
+function get_user_disk_usage($user_id)
+{
+    global $dbh;
+
+    $query = "SELECT SUM(size) as total_size FROM " . TABLE_FILES . " WHERE user_id = :user_id";
+    $statement = $dbh->prepare($query);
+    $statement->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+    $statement->execute();
+    $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+    return (int)($result['total_size'] ?? 0);
+}
+
+/**
+ * Check if user can upload a file based on their disk quota
+ *
+ * @param int $user_id The user ID
+ * @param int $file_size Size of the file to upload in bytes
+ * @return array Array with 'allowed' (bool) and 'message' (string)
+ */
+function user_can_upload_file($user_id, $file_size)
+{
+    global $dbh;
+
+    // Get user's disk quota
+    $query = "SELECT max_disk_quota FROM " . TABLE_USERS . " WHERE id = :user_id";
+    $statement = $dbh->prepare($query);
+    $statement->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+    $statement->execute();
+    $user = $statement->fetch(PDO::FETCH_ASSOC);
+
+    if (!$user) {
+        return [
+            'allowed' => false,
+            'message' => __('User not found', 'cftp_admin')
+        ];
+    }
+
+    $max_disk_quota = (int)$user['max_disk_quota'];
+
+    // 0 means unlimited
+    if ($max_disk_quota == 0) {
+        return [
+            'allowed' => true,
+            'message' => ''
+        ];
+    }
+
+    // Convert quota from MB to bytes
+    $quota_bytes = $max_disk_quota * 1048576;
+
+    // Get current usage
+    $current_usage = get_user_disk_usage($user_id);
+
+    // Check if adding this file would exceed quota
+    if (($current_usage + $file_size) > $quota_bytes) {
+        $quota_formatted = format_file_size($quota_bytes);
+        $usage_formatted = format_file_size($current_usage);
+        $remaining_formatted = format_file_size($quota_bytes - $current_usage);
+
+        return [
+            'allowed' => false,
+            'message' => sprintf(
+                __('Disk quota exceeded. Your quota: %s, Current usage: %s, Available: %s', 'cftp_admin'),
+                $quota_formatted,
+                $usage_formatted,
+                $remaining_formatted
+            )
+        ];
+    }
+
+    return [
+        'allowed' => true,
+        'message' => ''
+    ];
 }
 
 
@@ -1231,17 +1648,12 @@ function make_excerpt($string, $length, $break = "...")
  */
 function generate_random_string($length = 10)
 {
-    $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    $rnd_result = '';
-    for ($i = 0; $i < $length; $i++) {
-        $rnd_result .= $characters[rand(0, strlen($characters) - 1)];
-    }
-    return $rnd_result;
+    return substr(bin2hex(random_bytes($length)), 0, $length);
 }
 
 function get_file_type_by_mime($full_path)
 {
-    if (!file_exists($full_path)) {
+    if (empty($full_path) || !file_exists($full_path)) {
         return null;
     }
 
@@ -1325,6 +1737,7 @@ function make_thumbnail($file, $type = 'thumbnail', $width = THUMBS_MAX_WIDTH, $
         $thumbnail['thumbnail']['url'] = THUMBNAILS_FILES_URL . '/' . $thumbnail_file;
 
         $file = ASSETS_IMG_DIR . DS . '/thumbnail-unavailable.png'; // Reset to make thumbnail
+        $mime_type = 'image/png'; // Set mime type for unavailable thumbnail
     } else {
         if (file_is_image($file)) {
             if (file_is_svg($file)) {
@@ -1348,6 +1761,9 @@ function make_thumbnail($file, $type = 'thumbnail', $width = THUMBS_MAX_WIDTH, $
             $thumbnail['original']['url'] = $file;
             $thumbnail['thumbnail']['location'] = THUMBNAILS_FILES_DIR . DS . $thumbnail_file;
             $thumbnail['thumbnail']['url'] = THUMBNAILS_FILES_URL . '/' . $thumbnail_file;
+        } else {
+            // File exists but is not an image - cannot create thumbnail
+            return $thumbnail;
         }
     }
 
@@ -1477,6 +1893,20 @@ function meta_noindex()
  */
 function meta_favicon()
 {
+    $custom_favicon = get_option('favicon_filename');
+
+    if (!empty($custom_favicon)) {
+        // Use custom favicon
+        $favicon_path = ADMIN_UPLOADS_DIR . DS . $custom_favicon;
+        if (file_exists($favicon_path)) {
+            $favicon_url = ADMIN_UPLOADS_URI . $custom_favicon;
+            echo '<link rel="icon" href="' . $favicon_url . '">';
+            echo '<link rel="shortcut icon" href="' . $favicon_url . '">';
+            return;
+        }
+    }
+
+    // Use default favicon set
     $favicon_location = BASE_URI . 'assets/img/favicon/';
     echo '<link rel="apple-touch-icon" sizes="180x180" href="' . $favicon_location . 'apple-touch-icon.png">';
     echo '<link rel="icon" type="image/png" sizes="32x32" href="' . $favicon_location . 'favicon-32x32.png">';
@@ -1552,9 +1982,10 @@ function add_body_class($custom = '')
     if (user_is_logged_in()) {
         $classes[] = 'logged-in';
 
-        $logged_type = CURRENT_USER_LEVEL == '0' ? 'client' : 'admin';
-
-        $classes[] = 'logged-as-' . $logged_type;
+        if (defined('CURRENT_USER_ID')) {
+            $logged_type = current_user_is_client() ? 'client' : 'admin';
+            $classes[] = 'logged-as-' . $logged_type;
+        }
     }
 
     if (!empty($custom) && is_array($custom)) {
@@ -1756,7 +2187,7 @@ function file_editor_get_all_clients()
     //$users = [];
     $clients = [];
 
-    $statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . " WHERE level='0' AND account_requested='0' ORDER BY name ASC");
+    $statement = $dbh->prepare("SELECT id, name, role_id FROM " . TABLE_USERS . " WHERE role_id = (SELECT id FROM " . TABLE_ROLES . " WHERE name = 'Client') AND account_requested='0' ORDER BY name ASC");
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
     while ($row = $statement->fetch()) {
@@ -1776,7 +2207,7 @@ function file_editor_get_clients_by_ids($clients_ids = [])
 
     $clients = [];
     $clients_ids = implode(',', $clients_ids);
-    $statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . " WHERE level='0' AND account_requested='0' AND FIND_IN_SET(id, :clients_ids) ORDER BY name ASC");
+    $statement = $dbh->prepare("SELECT id, name, role_id FROM " . TABLE_USERS . " WHERE role_id = (SELECT id FROM " . TABLE_ROLES . " WHERE name = 'Client') AND account_requested='0' AND FIND_IN_SET(id, :clients_ids) ORDER BY name ASC");
     $statement->bindParam(':clients_ids', $clients_ids);
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -1847,21 +2278,51 @@ function user_can_edit_file($user_id = null, $file_id = null)
 
     $user = get_user_by_id($user_id);
 
-    if (in_array($user['level'], [9, 8])) {
-        return true;
-        // Special case for uploader?
-        // } elseif ($user['level'] == 7) {
-        //     return true;
-    } else {
-        $file = get_file_by_id($file_id);
+    // Use Files class to get file data
+    try {
+        $file_object = new \ProjectSend\Classes\Files($file_id);
+        if (!$file_object->recordExists()) {
+            return false;
+        }
+    } catch (Exception $e) {
+        return false;
+    }
 
+    if (!$user) {
+        return false;
+    }
+
+    // Get user's role permissions
+    $role_permissions = get_role_permissions($user['role_id']);
+
+    // Check if user has permission to edit others' files
+    if (in_array('edit_others_files', $role_permissions)) {
+        return true;
+    }
+
+    // Check if user has permission to edit files and this is their own file
+    if (in_array('edit_files', $role_permissions)) {
         // Pre-update when column didn't exist
-        if ($file['user_id'] == null) {
-            if ($user['username'] == $file['uploaded_by']) {
+        if ($file_object->user_id == null) {
+            if ($user['username'] === $file_object->uploaded_by) {
                 return true;
             }
         }
-        if ($user['id'] == $file['user_id']) {
+
+        if ((string)$user['id'] === (string)$file_object->user_id) {
+            return true;
+        }
+    }
+
+    // Users with upload permission can edit their own uploaded files
+    if (in_array('upload', $role_permissions)) {
+        // Check if this user uploaded the file
+        if ((string)$file_object->user_id === (string)$user['id']) {
+            return true;
+        }
+
+        // Legacy check for when user_id column didn't exist
+        if ($file_object->user_id == null && $user['username'] === $file_object->uploaded_by) {
             return true;
         }
     }
@@ -1869,15 +2330,107 @@ function user_can_edit_file($user_id = null, $file_id = null)
     return false;
 }
 
-function record_new_download($user_id = CURRENT_USER_ID, $file_id = null)
+/**
+ * Check if a file download limit has been reached
+ *
+ * @param int $file_id The file ID
+ * @param int $user_id The user ID (0 for anonymous)
+ * @return array ['allowed' => bool, 'message' => string]
+ */
+function check_download_limit($file_id, $user_id = null)
 {
     global $dbh;
+
+    if ($user_id === null && defined('CURRENT_USER_ID')) {
+        $user_id = CURRENT_USER_ID;
+    }
+
+    // Get file download limit settings
+    $file = new \ProjectSend\Classes\Files($file_id);
+
+    // If limits are not enabled, allow download
+    if (!$file->download_limit_enabled || $file->download_limit_count <= 0) {
+        return ['allowed' => true, 'message' => ''];
+    }
+
+    // If the downloader is the file uploader, bypass limit check
+    if ($user_id > 0 && $file->user_id == $user_id) {
+        return ['allowed' => true, 'message' => ''];
+    }
+
+    // Check limit based on type
+    if ($file->download_limit_type == 'per_user') {
+        // Per-user limit
+        if ($user_id == 0) {
+            // Anonymous downloads: check by IP in last 24 hours to prevent abuse
+            $ip = get_client_ip();
+            $query = "SELECT COUNT(*) as count FROM " . TABLE_DOWNLOADS . "
+                      WHERE file_id = :file_id
+                      AND remote_ip = :ip
+                      AND anonymous = 1
+                      AND timestamp >= DATE_SUB(NOW(), INTERVAL 24 HOUR)";
+            $statement = $dbh->prepare($query);
+            $statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
+            $statement->bindParam(':ip', $ip);
+        } else {
+            // Logged in user
+            $query = "SELECT COUNT(*) as count FROM " . TABLE_DOWNLOADS . "
+                      WHERE file_id = :file_id AND user_id = :user_id";
+            $statement = $dbh->prepare($query);
+            $statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
+            $statement->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        }
+        $statement->execute();
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        $current_downloads = $result['count'];
+
+        if ($current_downloads >= $file->download_limit_count) {
+            return [
+                'allowed' => false,
+                'message' => __('You have reached your download limit for this file.', 'cftp_admin')
+            ];
+        }
+    } else {
+        // Total downloads limit
+        $query = "SELECT COUNT(*) as count FROM " . TABLE_DOWNLOADS . " WHERE file_id = :file_id";
+        $statement = $dbh->prepare($query);
+        $statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
+        $statement->execute();
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        $current_downloads = $result['count'];
+
+        if ($current_downloads >= $file->download_limit_count) {
+            return [
+                'allowed' => false,
+                'message' => __('This file has reached its download limit.', 'cftp_admin')
+            ];
+        }
+    }
+
+    return ['allowed' => true, 'message' => ''];
+}
+
+function record_new_download($user_id = null, $file_id = null)
+{
+    global $dbh;
+
+    // Use CURRENT_USER_ID if no user_id provided and constant is defined
+    if ($user_id === null && defined('CURRENT_USER_ID')) {
+        $user_id = CURRENT_USER_ID;
+    }
+
     if (empty($file_id)) {
         return false;
     }
 
     if (!is_numeric($user_id) || !is_numeric($file_id)) {
         return false;
+    }
+
+    // Check download limits before recording
+    $limit_check = check_download_limit($file_id, $user_id);
+    if (!$limit_check['allowed']) {
+        return ['allowed' => false, 'message' => $limit_check['message']];
     }
 
     // Anonymous download
@@ -1911,7 +2464,7 @@ function record_new_download($user_id = CURRENT_USER_ID, $file_id = null)
         if (get_option('download_logging_ignore_file_author') == '1') {
             $file = new \ProjectSend\Classes\Files($file_id);
             if ($file->user_id == $user_id) {
-                return;
+                return ['allowed' => true, 'message' => ''];
             }
         }
 
@@ -1925,15 +2478,21 @@ function record_new_download($user_id = CURRENT_USER_ID, $file_id = null)
     }
 
     if (!empty($statement)) {
-        return true;
+        return ['allowed' => true, 'message' => ''];
     }
 
     return false;
 }
 
-function user_can_download_file($user_id = CURRENT_USER_ID, $file_id = null)
+function user_can_download_file($user_id = null, $file_id = null)
 {
     global $dbh;
+
+    // Use CURRENT_USER_ID if no user_id provided and constant is defined
+    if ($user_id === null && defined('CURRENT_USER_ID')) {
+        $user_id = CURRENT_USER_ID;
+    }
+
     if (empty($file_id)) {
         return false;
     }
@@ -1943,7 +2502,7 @@ function user_can_download_file($user_id = CURRENT_USER_ID, $file_id = null)
     }
 
 
-    if (CURRENT_USER_LEVEL != 0) {
+    if (defined('CURRENT_USER_ID') && !current_user_is_client()) {
         return true;
     }
 
@@ -1985,7 +2544,7 @@ function count_groups_requests_for_existing_clients()
     $ignore_user_ids = [];
 
     // First, get accounts requests. This will give us the ids of the clients that we need to ignore later
-    $statement = $dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE level='0' AND active='1' AND account_denied='0'");
+    $statement = $dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE role_id = (SELECT id FROM " . TABLE_ROLES . " WHERE name = 'Client') AND active='1' AND account_denied='0'");
     $statement->execute();
     if ($statement->rowCount() > 0) {
         $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -2089,69 +2648,72 @@ function sanitize_filename_for_download($file_name)
     return $file_name;
 }
 
+function captcha_get_methods()
+{
+    $manager = CaptchaManager::getInstance();
+    return $manager->getAvailableMethods();
+}
+
+function captcha_maybe_get_request()
+{
+    $manager = CaptchaManager::getInstance();
+    return $manager->getRequest();
+}
+
 function recaptcha2_is_enabled()
 {
-    if (
-        get_option('recaptcha_enabled') == 1 &&
-        !empty(get_option('recaptcha_site_key')) &&
-        !empty(get_option('recaptcha_secret_key'))
-    ) {
-        return true;
-    }
-
-    return false;
+    // Legacy function - now uses new captcha system
+    // Checks if reCAPTCHA v2 is specifically selected and enabled
+    $manager = CaptchaManager::getInstance();
+    return (get_option('captcha_method') == 'recaptchav2' && $manager->isEnabled());
 }
 
 function recaptcha2_render_widget()
 {
-    if (recaptcha2_is_enabled()) {
-    ?>
-        <div class="form-group row">
-            <!-- <label><?php _e('Verification', 'cftp_admin'); ?></label> -->
-            <div class="g-recaptcha" data-sitekey="<?php echo get_option('recaptcha_site_key'); ?>"></div>
-        </div>
-<?php
-    }
+    // Legacy function - now uses new captcha system
+    $manager = CaptchaManager::getInstance();
+    echo $manager->renderWidget();
 }
 
 function recaptcha2_get_request()
 {
-    $recaptcha_request = null;
-
-    if (recaptcha2_is_enabled()) {
-        $recaptcha_user_ip        = $_SERVER["REMOTE_ADDR"];
-        $recaptcha_response        = $_POST['g-recaptcha-response'];
-        $recaptcha_secret_key    = get_option('recaptcha_secret_key');
-        $recaptcha_request        = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptcha_secret_key}&response={$recaptcha_response}&remoteip={$recaptcha_user_ip}");
-    }
-
-    return $recaptcha_request;
+    // Legacy function - now uses new captcha system
+    $manager = CaptchaManager::getInstance();
+    return $manager->getRequest();
 }
 
 function recaptcha2_validate_request($redirect = true)
 {
-    $validation_passed = false;
+    // Legacy function - now uses new captcha system
+    $manager = CaptchaManager::getInstance();
+    return $manager->validateRequest($redirect);
+}
 
-    if (recaptcha2_is_enabled()) {
-        $validation = new \ProjectSend\Classes\Validation;
-        $validation->validate_items([
-            recaptcha2_get_request() => [
-                'recaptcha2' => [],
-            ],
-        ]);
+/**
+ * New captcha functions - use these instead of recaptcha2_* functions
+ */
+function captcha_is_enabled()
+{
+    $manager = CaptchaManager::getInstance();
+    return $manager->isEnabled();
+}
 
-        if ($validation->passed()) {
-            $validation_passed = true;
-        }
-    } else {
-        $validation_passed = true;
-    }
+function captcha_render_widget()
+{
+    $manager = CaptchaManager::getInstance();
+    echo $manager->renderWidget();
+}
 
-    if ($redirect && !$validation_passed) {
-        exit_with_error_code(403);
-    }
+function captcha_validate_request($redirect = true)
+{
+    $manager = CaptchaManager::getInstance();
+    return $manager->validateRequest($redirect);
+}
 
-    return $validation_passed;
+function captcha_get_script_url()
+{
+    $manager = CaptchaManager::getInstance();
+    return $manager->getScriptUrl();
 }
 
 function ps_redirect($location, $status = 303)
@@ -2170,12 +2732,21 @@ function die_with_error_code($code = 403)
 function exit_with_error_code($code = 403)
 {
     switch ($code) {
-        default:
-        case 403:
-            $url = PAGE_STATUS_CODE_403;
+        case 400:
+            $url = PAGE_STATUS_CODE_400;
             break;
         case 404:
             $url = PAGE_STATUS_CODE_404;
+            break;
+        case 410:
+            $url = PAGE_STATUS_CODE_410;
+            break;
+        case 500:
+            $url = PAGE_STATUS_CODE_500;
+            break;
+        default:
+        case 403:
+            $url = PAGE_STATUS_CODE_403;
             break;
     }
 
@@ -2264,4 +2835,267 @@ function make_return_to_url($from = null, $encode = false)
     }
 
     return $return_to;
+}
+
+function count_user_uploads($user_id)
+{
+    global $dbh;
+    $files_query = "SELECT * FROM " . TABLE_FILES . " WHERE user_id=:user_id";
+    $files_sql = $dbh->prepare($files_query);
+    $files_sql->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+    $files_sql->execute();
+    return $files_sql->rowCount();
+}
+
+/**
+ * Count uploaded files with optional format filtering and date range
+ * @param array $formats Optional array of file extensions to filter by
+ * @param string $start_date Optional start date (YYYY-MM-DD format)
+ * @param string $end_date Optional end date (YYYY-MM-DD format)
+ * @return array Array with total count and per-format breakdown
+ */
+function count_uploaded_files($formats = null, $start_date = null, $end_date = null)
+{
+    global $dbh;
+    
+    $result = [
+        'total' => 0,
+        'by_format' => []
+    ];
+    
+    // Base query
+    $query = "SELECT url FROM " . TABLE_FILES . " WHERE 1=1";
+    $params = [];
+    
+    // Add date range filtering if provided
+    if (!empty($start_date)) {
+        $query .= " AND timestamp >= :start_date";
+        $params[':start_date'] = $start_date . ' 00:00:00';
+    }
+    
+    if (!empty($end_date)) {
+        $query .= " AND timestamp <= :end_date";
+        $params[':end_date'] = $end_date . ' 23:59:59';
+    }
+    
+    $files_sql = $dbh->prepare($query);
+    $files_sql->execute($params);
+    
+    $total_count = 0;
+    $format_counts = [];
+    
+    while ($row = $files_sql->fetch(PDO::FETCH_ASSOC)) {
+        $filename = $row['url'];
+        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        
+        // If formats filter is provided, only count matching extensions
+        if ($formats === null || in_array($extension, array_map('strtolower', $formats))) {
+            $total_count++;
+            
+            if (!isset($format_counts[$extension])) {
+                $format_counts[$extension] = 0;
+            }
+            $format_counts[$extension]++;
+        }
+    }
+    
+    $result['total'] = $total_count;
+    $result['by_format'] = $format_counts;
+    
+    return $result;
+}
+
+function get_files_for_thumbnail_regeneration($formats = null, $start_date = null, $end_date = null, $limit = 10, $offset = 0) {
+    global $dbh;
+    
+    $result = [
+        'files' => [],
+        'total' => 0,
+        'has_more' => false
+    ];
+    
+    // Build WHERE conditions for format filtering
+    $where_conditions = ['1=1'];
+    $params = [];
+    
+    // Add date range filtering if provided
+    if (!empty($start_date)) {
+        $where_conditions[] = "timestamp >= :start_date";
+        $params[':start_date'] = $start_date . ' 00:00:00';
+    }
+    
+    if (!empty($end_date)) {
+        $where_conditions[] = "timestamp <= :end_date";
+        $params[':end_date'] = $end_date . ' 23:59:59';
+    }
+    
+    // Add format filtering if provided
+    if ($formats !== null && !empty($formats)) {
+        $format_conditions = [];
+        foreach ($formats as $index => $format) {
+            $param_name = ':format_' . $index;
+            $format_conditions[] = "LOWER(SUBSTRING_INDEX(url, '.', -1)) = " . $param_name;
+            $params[$param_name] = strtolower($format);
+        }
+        $where_conditions[] = '(' . implode(' OR ', $format_conditions) . ')';
+    }
+    
+    $where_clause = implode(' AND ', $where_conditions);
+    
+    // Get total count of matching files
+    $count_query = "SELECT COUNT(*) as total FROM " . TABLE_FILES . " WHERE " . $where_clause;
+    $count_sql = $dbh->prepare($count_query);
+    $count_sql->execute($params);
+    $total_matching_files = $count_sql->fetch(PDO::FETCH_ASSOC)['total'];
+    
+    // Get files for this batch
+    $query = "SELECT id, url, original_url FROM " . TABLE_FILES . " WHERE " . $where_clause . " ORDER BY id ASC LIMIT :limit OFFSET :offset";
+    $params[':limit'] = $limit;
+    $params[':offset'] = $offset;
+    
+    $files_sql = $dbh->prepare($query);
+    
+    // Bind parameters with correct types
+    foreach ($params as $key => $value) {
+        if ($key === ':limit' || $key === ':offset') {
+            $files_sql->bindValue($key, $value, PDO::PARAM_INT);
+        } else {
+            $files_sql->bindValue($key, $value, PDO::PARAM_STR);
+        }
+    }
+    
+    $files_sql->execute();
+    
+    $files = [];
+    
+    while ($row = $files_sql->fetch(PDO::FETCH_ASSOC)) {
+        $filename = $row['url'];
+        $original_filename = !empty($row['original_url']) ? $row['original_url'] : $row['url'];
+        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        
+        $files[] = [
+            'id' => $row['id'],
+            'filename' => $filename,
+            'original_filename' => $original_filename,
+            'extension' => $extension
+        ];
+    }
+    
+    $result['files'] = $files;
+    $result['total'] = $total_matching_files;
+    $result['has_more'] = ($offset + $limit) < $total_matching_files;
+    
+    return $result;
+}
+
+function regenerate_single_thumbnail($file_id, $width, $height) {
+    global $dbh;
+    
+    // Get file info
+    $file_sql = $dbh->prepare("SELECT url, original_url FROM " . TABLE_FILES . " WHERE id = :id");
+    $file_sql->execute([':id' => $file_id]);
+    $file_data = $file_sql->fetch(PDO::FETCH_ASSOC);
+    
+    if (!$file_data) {
+        return [
+            'success' => false, 
+            'error' => 'File not found',
+            'file_id' => $file_id,
+            'filename' => 'Unknown file'
+        ];
+    }
+    
+    $filename = $file_data['url'];
+    $original_filename = !empty($file_data['original_url']) ? $file_data['original_url'] : $file_data['url'];
+    $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+    
+    // Check if it's a supported image format
+    $supported_formats = ['png', 'jpg', 'jpeg', 'gif'];
+    if (!in_array($extension, $supported_formats)) {
+        return [
+            'success' => false, 
+            'error' => 'Unsupported format',
+            'file_id' => $file_id,
+            'filename' => $original_filename
+        ];
+    }
+    
+    // Define file paths
+    $original_file = UPLOADED_FILES_DIR . DS . $filename;
+    $thumbnail_file = THUMBNAILS_FILES_DIR . DS . $filename;
+    
+    // Check if original file exists
+    if (!file_exists($original_file)) {
+        return [
+            'success' => false, 
+            'error' => 'Original file not found',
+            'file_id' => $file_id,
+            'filename' => $original_filename
+        ];
+    }
+    
+    try {
+        // Use existing make_thumbnail function with correct parameters
+        $result = make_thumbnail($original_file, 'thumbnail', $width, $height);
+        
+        // Check if thumbnail was created successfully
+        if (isset($result['thumbnail']['location'])) {
+            $thumbnail_path = $result['thumbnail']['location'];
+            
+            // Verify thumbnail file exists and has content
+            if (file_exists($thumbnail_path)) {
+                $file_size = filesize($thumbnail_path);
+                if ($file_size > 0) {
+                    return [
+                        'success' => true, 
+                        'file_id' => $file_id,
+                        'filename' => $original_filename,
+                        'thumbnail_path' => $thumbnail_path,
+                        'thumbnail_size' => $file_size
+                    ];
+                } else {
+                    $error_message = 'Thumbnail file was created but is empty (0 bytes)';
+                }
+            } else {
+                $error_message = 'Thumbnail file was not created at expected location: ' . $thumbnail_path;
+            }
+        } else {
+            $error_message = 'No thumbnail location returned from make_thumbnail function';
+        }
+        
+        // Add any additional error from make_thumbnail
+        if (isset($result['error'])) {
+            $error_message = (isset($error_message) ? $error_message . ' | ' : '') . 'make_thumbnail error: ' . $result['error'];
+        }
+        
+        return [
+            'success' => false, 
+            'error' => $error_message,
+            'file_id' => $file_id,
+            'filename' => $original_filename
+        ];
+    } catch (Exception $e) {
+        return [
+            'success' => false, 
+            'error' => 'Exception: ' . $e->getMessage(),
+            'file_id' => $file_id,
+            'filename' => $original_filename
+        ];
+    }
+}
+
+/**
+ * Get the appropriate profile edit link for current user
+ * Based on user level (client vs admin/user)
+ *
+ * @return string
+ */
+function client_get_profile_link()
+{
+    if (!defined('CURRENT_USER_ID')) {
+        return BASE_URI;
+    }
+
+    $my_account_link = current_user_is_client() ? 'clients-edit.php' : 'users-edit.php';
+    return BASE_URI . $my_account_link . '?id=' . CURRENT_USER_ID;
 }

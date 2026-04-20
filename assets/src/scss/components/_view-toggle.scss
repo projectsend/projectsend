@@ -1,0 +1,36 @@
+// View Toggle Component
+// Global styles for the view toggle buttons that appear on listing pages
+
+.view-toggle {
+    .view-toggle-buttons {
+        .view-toggle-btn {
+            border: 1px solid var(--border-medium);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            padding: 10px 16px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+
+            &:hover {
+                background: var(--bg-hover);
+                border-color: var(--border-dark);
+            }
+
+            &.btn-primary {
+                background: var(--color-primary);
+                color: var(--text-inverse);
+                border-color: var(--color-primary);
+            }
+
+            &.btn-outline-secondary {
+                background: var(--bg-card);
+                color: var(--text-primary);
+                border-color: var(--border-medium);
+            }
+
+            i {
+                margin-right: 6px;
+            }
+        }
+    }
+}

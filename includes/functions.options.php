@@ -11,11 +11,11 @@ function option_exists($name)
     return ($statement->rowCount() > 0);
 }
 
-function get_option($name, $escape = false)
+function get_option($name, $escape = false, $default = null)
 {
     global $dbh;
     if (empty($dbh)) {
-        return null;
+        return $default;
     }
 
     try {
@@ -25,7 +25,7 @@ function get_option($name, $escape = false)
                 ':name' => $name,
             ]);
             if ($statement->rowCount() == 0) {
-                return null;
+                return $default;
             }
         
             $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -39,10 +39,10 @@ function get_option($name, $escape = false)
             }
         }
     } catch (\PDOException $e) {
-        return null;
+        return $default;
     }
 
-    return null;
+    return $default;
 }
 
 function save_option($name, $value)

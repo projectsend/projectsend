@@ -35,8 +35,8 @@ $date_range_sql->execute();
 $date_range = $date_range_sql->fetch(PDO::FETCH_ASSOC);
 
 // Handle date filter from GET parameters
-$filter_start_date = isset($_GET['start_date']) ? $_GET['start_date'] : null;
-$filter_end_date = isset($_GET['end_date']) ? $_GET['end_date'] : null;
+$filter_start_date = isset($_GET['start_date']) ? htmlspecialchars($_GET['start_date'], ENT_QUOTES, 'UTF-8') : null;
+$filter_end_date = isset($_GET['end_date']) ? htmlspecialchars($_GET['end_date'], ENT_QUOTES, 'UTF-8') : null;
 
 // Re-calculate statistics with filtered dates if provided
 if ($filter_start_date || $filter_end_date) {

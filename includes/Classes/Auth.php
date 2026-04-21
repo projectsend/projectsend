@@ -259,8 +259,24 @@ class Auth
                             }
                             return json_encode($results);
                         } elseif ($method === 'totp_setup_required') {
-                            // 2FA is required but user needs to set up TOTP first
-                            // For now, fall through to email-based 2FA as fallback
+                            // TOTP is required but user hasn't set it up yet
+                            // Log them in and let the middleware redirect to TOTP setup
+                            $this->login($user);
+
+                            if ($remember_me && get_option('remember_me_enabled', null, '1')) {
+                                $rememberMe = new \ProjectSend\Classes\RememberMe();
+                                $token = $rememberMe->generateToken();
+                                if ($rememberMe->storeToken($user->id, $token)) {
+                                    $rememberMe->setCookie($token);
+                                }
+                            }
+
+                            $results = [
+                                'status' => 'success',
+                                'user_id' => $user->id,
+                                'location' => BASE_URI . 'totp-setup.php',
+                            ];
+                            return json_encode($results);
                         }
 
                         // Email-based 2FA (default)
@@ -352,7 +368,7 @@ class Auth
         }
 
         // Validate provider is in our supported list
-        $supported_providers = ['google', 'facebook', 'linkedin', 'twitter', 'windowslive', 'yahoo', 'openid', 'microsoftgraph'];
+        $supported_providers = ['google', 'facebook', 'linkedin', 'x', 'windowslive', 'yahoo', 'microsoftgraph', 'genericoidc'];
         if (!in_array(strtolower($provider), $supported_providers)) {
             exit_with_error_code(404);
         }

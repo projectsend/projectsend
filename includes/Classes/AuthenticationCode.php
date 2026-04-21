@@ -64,8 +64,14 @@ class AuthenticationCode
             return true;
         }
 
-        // Legacy compatibility
-        return (bool)get_option('authentication_require_email_code');
+        // Legacy compatibility - only applies before upgrade_2026032701 has run,
+        // because that upgrade copies this value to two_factor_required. Once the
+        // new option exists in the DB, ignore the old one (it may be stale '1').
+        if (!option_exists('two_factor_required')) {
+            return (bool)get_option('authentication_require_email_code');
+        }
+
+        return false;
     }
 
     /**

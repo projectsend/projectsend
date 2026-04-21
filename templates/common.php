@@ -14,6 +14,9 @@ if (!current_user_can_view_files_list()) {
     ps_redirect(BASE_URI);
 }
 
+// Redirect if TOTP setup is required
+totp_setup_required();
+
 $this_template_slug = get_option('selected_clients_template');
 $this_template_url = BASE_URI . 'templates/' . $this_template_slug . '/';
 

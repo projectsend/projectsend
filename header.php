@@ -41,6 +41,9 @@ if (current_role_in($core_update_allowed)) {
 
 // Redirect if password needs to be changed
 password_change_required();
+
+// Redirect if TOTP setup is required
+totp_setup_required();
 ?>
 <!doctype html>
 <html lang="<?php echo SITE_LANG; ?>">

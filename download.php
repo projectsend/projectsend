@@ -41,7 +41,16 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
 
     if ($can_download == true) {
         if (isset($_GET['download'])) {
-            record_new_download(0, $file->id);
+            $download_result = record_new_download(0, $file->id);
+
+            // Check if download limit was reached
+            if (is_array($download_result) && !$download_result['allowed']) {
+                header("HTTP/1.0 403 Forbidden");
+                header("Content-Type: text/html; charset=UTF-8");
+                $msg = $download_result['message'];
+                echo system_message('danger', $msg);
+                exit;
+            }
 
             /** Record the action log */
             $logger = new \ProjectSend\Classes\ActionsLog;

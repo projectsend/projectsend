@@ -10,7 +10,7 @@
     "dependencies": {
         "@ckeditor/ckeditor5-build-classic": "^44.3.0",
         "@yaireo/tagify": "4.12.0",
-        "axios": "^1.15.0",
+        "axios": "^1.15.2",
         "bootstrap": "5.2.1",
         "bootstrap-datepicker": "1.9.0",
         "bootstrap-toggle": "2.2.2",

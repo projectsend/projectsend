@@ -1538,56 +1538,13 @@ function user_can_upload_file($user_id, $file_size)
 }
 
 
-/**
- * Since filesize() was giving trouble with files larger
- * than 2gb, I looked for a solution and found this great
- * function by Alessandro Marinuzzi from www.alecos.it on
- * http://stackoverflow.com/questions/5501451/php-x86-how-
- * to-get-filesize-of-2gb-file-without-external-program
- *
- * I changed the name of the function and split it in 2,
- * because I do not want to display it directly.
- */
 function get_real_size($file)
 {
     clearstatcache();
     $ff = filesize($file);
-
-    if (isEnabled('shell_exec')) {
-        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
-            if (class_exists("COM")) {
-                $fsobj = new COM('Scripting.FileSystemObject');
-                $f = $fsobj->GetFile(realpath($file));
-                $ff = $f->Size;
-            } else {
-                $ff = trim(exec("for %F in (\"" . escapeshellarg($file) . "\") do @echo %~zF"));
-            }
-        } elseif (PHP_OS == 'Darwin') {
-            $ff = trim(shell_exec("stat -L -f %z " . escapeshellarg($file)));
-        } elseif (PHP_OS == 'FreeBSD') {
-            $ff = trim(shell_exec("stat -L -f%z " . escapeshellarg($file)));
-        } elseif ((PHP_OS == 'Linux') || (PHP_OS == 'Unix') || (PHP_OS == 'SunOS')) {
-            $ff = trim(shell_exec("stat -L -c%s " . escapeshellarg($file)));
-        }
-    }
-
-    /** Fix for 0kb downloads by AlanReiblein */
-    if (!ctype_digit($ff)) {
-        /* returned value not a number so try filesize() */
-        $ff = filesize($file);
-    }
-
-    return $ff;
+    return ($ff !== false) ? $ff : 0;
 }
 
-/**
- * function isEnabled()
- * From https://stackoverflow.com/questions/21581560/php-how-to-know-if-server-allows-shell-exec
- */
-function isEnabled(string $func)
-{
-    return is_callable($func) && false === stripos(ini_get('disable_functions'), $func);
-}
 
 /**
  * Delete just one file.
@@ -2599,29 +2556,30 @@ function count_account_requests_denied()
 // Function to get the client ip address
 function get_client_ip()
 {
-    // The 'null' value should pass validators
-    $ip = '0.0.0.0';
+    // REMOTE_ADDR is the only header that cannot be spoofed by the client.
+    // Proxy headers (X-Forwarded-For, etc.) are checked only as a fallback
+    // for environments that are known to sit behind a trusted reverse proxy.
+    // Without a verified trusted-proxy list they must not be used for security
+    // decisions such as brute-force IP blocking.
+    if (!empty($_SERVER['REMOTE_ADDR'])) {
+        return $_SERVER['REMOTE_ADDR'];
+    }
 
-    // Expanded for readability
-    $ipHeaders = array(
+    // Fallback for CLI or non-standard SAPI environments only
+    $ipHeaders = [
         'HTTP_X_REAL_IP',
-        'X-Forwarded-For',
         'HTTP_X_FORWARDED_FOR',
         'HTTP_CLIENT_IP',
         'HTTP_VIA',
         'CF-Connecting-IP',
-        'REMOTE_ADDR',
-    );
-    
-    // A bit more concise 
-    foreach($ipHeaders as $header) {
+    ];
+
+    foreach ($ipHeaders as $header) {
         if (empty($_SERVER[$header])) continue;
-        $ip = $_SERVER[$header];
-        break;
+        return explode(',', $_SERVER[$header])[0];
     }
-    
-    // Simplified single IP filtering
-    return explode(',', $ip)[0];
+
+    return '0.0.0.0';
 }
 
 function convert_seconds($seconds)
@@ -2639,9 +2597,9 @@ function sanitize_filename_for_download($file_name)
 {
     $file_name = str_replace(
         [
-            '"', "'", ' ', ','
+            "\r", "\n", '"', "'", ' ', ','
         ],
-        '_',
+        ['', '', '_', '_', '_', '_'],
         $file_name
     );
 

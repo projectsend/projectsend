@@ -176,7 +176,8 @@ class BruteForceBlock {
 		//attempt to retrieve latest failed login attempts
 		try{
 			//get all failed attempst within time frame
-			$get_number = $this->dbh->query('SELECT * FROM '.TABLE_LOGINS_FAILED.' WHERE attempted_at > DATE_SUB(NOW(), INTERVAL '.$this->time_frame_minutes.' MINUTE)');
+			$minutes = (int)$this->time_frame_minutes;
+			$get_number = $this->dbh->query("SELECT * FROM ".TABLE_LOGINS_FAILED." WHERE attempted_at > DATE_SUB(NOW(), INTERVAL $minutes MINUTE)");
 			$number_recent_failed = $get_number->rowCount();
 			//reverse order of settings, for iteration
 			krsort($throttle_settings);
@@ -219,7 +220,8 @@ class BruteForceBlock {
 				try{
 					//get current timestamp
 					$now = date('Y-m-d H:i:s');
-					$stmt = $this->dbh->query('DELETE from '.TABLE_LOGINS_FAILED.' WHERE attempted_at < DATE_SUB(NOW(), INTERVAL '.($this->time_frame_minutes * 2).' MINUTE)');
+					$delete_minutes = (int)($this->time_frame_minutes * 2);
+					$stmt = $this->dbh->query("DELETE from ".TABLE_LOGINS_FAILED." WHERE attempted_at < DATE_SUB(NOW(), INTERVAL $delete_minutes MINUTE)");
 					$stmt->execute();
 					
 				} catch(\PDOException $ex){

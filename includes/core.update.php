@@ -132,20 +132,6 @@ if (current_role_in($allowed_update)) {
 		 * client as active (1).
 		 */
 		if ($last_update < 183) {
-         /*
-        DEPRECATED
-		table tbl_clients doesn't exist anymore
-
-			$q = $database->query("SELECT active FROM tbl_clients");
-			if (!$q) {
-				mysql_query("ALTER TABLE tbl_clients ADD active tinyint(1) NOT NULL");
-				$sql = $database->query('SELECT * FROM tbl_clients');
-				while($row = mysql_fetch_array($sql)) {
-					$database->query('UPDATE tbl_clients SET active = 1');
-				}
-				$updates_made++;
-			}
-		*/		
 			/**
 			 * Add the "users can register" value to the options table.
 			 * Defaults to 0, since this is a new feature.

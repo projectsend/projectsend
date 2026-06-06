@@ -133,7 +133,7 @@ let sideModal = class {
 
     setTitle(title)
     {
-        this.titleEl.innerHTML = title;
+        this.titleEl.textContent = title;
     }
 
     setContent(content)

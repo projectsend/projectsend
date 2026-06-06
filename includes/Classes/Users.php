@@ -548,7 +548,8 @@ class Users
 
         $password_hashed = $this->hashPassword($this->password);
 
-        if (strlen($password_hashed) >= 20) {
+        $hash_info = $password_hashed ? password_get_info($password_hashed) : null;
+        if ($hash_info && $hash_info['algo'] !== null && $hash_info['algo'] !== 0) {
             /** Who is creating the client? */
             $this->created_by = (defined('CURRENT_USER_USERNAME')) ? CURRENT_USER_USERNAME : null;
 

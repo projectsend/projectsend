@@ -118,16 +118,13 @@ class RememberMe
         $current_user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
         
         if ($stored_user_agent && $stored_user_agent !== $current_user_agent) {
-            // Log suspicious activity
             $this->logger->addEntry([
                 'action' => 25, // Suspicious login attempt
                 'owner_id' => $result['user_id'],
                 'details' => 'Remember me token used with different user agent'
             ]);
-            
-            // Optionally revoke token on user agent mismatch
-            // $this->revokeToken($token);
-            // return false;
+            $this->revokeToken($token);
+            return false;
         }
         
         // Update last used timestamp

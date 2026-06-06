@@ -87,8 +87,9 @@ class Download
             $presigned_url = $storage->getPresignedUrl($file->external_path, 3600);
             if ($presigned_url) {
                 // Set headers to force download with correct filename
+                $safe_filename = str_replace(["\r", "\n"], '', $file->filename_original);
                 header('Content-Type: application/octet-stream');
-                header('Content-Disposition: attachment; filename="' . $file->filename_original . '"');
+                header('Content-Disposition: attachment; filename="' . $safe_filename . '"');
                 header('Location: ' . $presigned_url);
                 exit;
             }
@@ -330,10 +331,11 @@ class Download
             try {
                 $encryption = new \ProjectSend\Classes\Encryption();
 
+                $safe_filename = str_replace(["\r", "\n"], '', $file->filename_original);
                 header("Pragma: public");
                 header("Expires: -1");
                 header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0");
-                header('Content-Disposition: inline; filename="' . $file->filename_original . '"');
+                header('Content-Disposition: inline; filename="' . $safe_filename . '"');
                 header('Content-Type: ' . $mime_type);
                 header('Accept-Ranges: none');
 
@@ -362,10 +364,11 @@ class Download
             exit_with_error_code(500);
         }
 
+        $safe_filename = str_replace(["\r", "\n"], '', $file->filename_original);
         header("Pragma: public");
         header("Expires: -1");
         header("Cache-Control: public, must-revalidate, post-check=0, pre-check=0");
-        header('Content-Disposition: inline; filename="' . $file->filename_original . '"');
+        header('Content-Disposition: inline; filename="' . $safe_filename . '"');
         header('Content-Type: ' . $mime_type);
 
         // Handle range requests for video/audio seeking

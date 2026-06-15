@@ -194,30 +194,30 @@ class Files
      */
     public function set($arguments = [])
     {
-        $this->title = (!empty($arguments['title'])) ? encode_html($arguments['title']) : null;
+		$this->title = (!empty($arguments['title'])) ? encode_html($arguments['title']) : null;
         $this->description = (!empty($arguments['description'])) ? sanitize_description($arguments['description']) : null;
         $this->uploaded_by = (!empty($arguments['uploaded_by'])) ? encode_html($arguments['uploaded_by']) : null;
         $this->filename_on_disk = (!empty($arguments['filename'])) ? $arguments['filename'] : null;
-        $this->filename_original = (!empty($arguments['filename_original'])) ? (int) $arguments['filename_original'] : 0;
-        $this->expires = (!empty($arguments['expires'])) ? (int) $arguments['expires'] : 0;
+        $this->filename_original = (!empty($arguments['filename_original'])) ? (int)$arguments['filename_original'] : 0;
+        $this->expires = (!empty($arguments['expires'])) ? (int)$arguments['expires'] : 0;
         $this->expiry_date = (!empty($arguments['expiry_date'])) ? $arguments['expiry_date'] : null;
         $this->uploaded_date = (!empty($arguments['uploaded_date'])) ? $arguments['uploaded_date'] : null;
-        $this->public = (!empty($arguments['public'])) ? (int) $arguments['public'] : 0;
-        $this->public_token = (!empty($arguments['public_token'])) ? encode_html($arguments['public_token']) : null;
+        $this->public = (!empty($arguments['public'])) ? (int)$arguments['public'] : 0;
+		$this->public_token = (!empty($arguments['public_token'])) ? encode_html($arguments['public_token']) : null;
         $this->folder_id = (!empty($arguments['folder_id'])) ? encode_html($arguments['folder_id']) : null;
-        $this->disk_folder_year = (isset($this->date_folder_year)) ? (int) $this->date_folder_year : null;
-        $this->disk_folder_month = (isset($this->date_folder_month)) ? (int) $this->date_folder_month : null;
+        $this->disk_folder_year = (isset($this->date_folder_year)) ? (int)$this->date_folder_year : null;
+        $this->disk_folder_month = (isset($this->date_folder_month)) ? (int)$this->date_folder_month : null;
 
         // Assignations
-        $this->assignments_groups = !empty($arguments['assignations_groups']) ? to_array_if_not($arguments['assignations_groups']) : null;
-        $this->assignments_clients = !empty($arguments['assignations_clients']) ? to_array_if_not($arguments['assignations_clients']) : null;
+		$this->assignments_groups = !empty( $arguments['assignations_groups'] ) ? to_array_if_not($arguments['assignations_groups']) : null;
+		$this->assignments_clients = !empty( $arguments['assignations_clients'] ) ? to_array_if_not($arguments['assignations_clients']) : null;
 
-        $this->categories = !empty($arguments['categories']) ? to_array_if_not($arguments['categories']) : null;
+        $this->categories = !empty( $arguments['categories'] ) ? to_array_if_not($arguments['categories']) : null;
 
         // Download limits
-        $this->download_limit_enabled = (!empty($arguments['download_limit_enabled'])) ? (int) $arguments['download_limit_enabled'] : 0;
+        $this->download_limit_enabled = (!empty($arguments['download_limit_enabled'])) ? (int)$arguments['download_limit_enabled'] : 0;
         $this->download_limit_type = (!empty($arguments['download_limit_type'])) ? $arguments['download_limit_type'] : 'total';
-        $this->download_limit_count = (!empty($arguments['download_limit_count'])) ? (int) $arguments['download_limit_count'] : 0;
+        $this->download_limit_count = (!empty($arguments['download_limit_count'])) ? (int)$arguments['download_limit_count'] : 0;
 
         $this->setFullPath();
         $this->setExtension();
@@ -246,15 +246,15 @@ class Files
         }
 
         $this->record_exists = true;
-
-        while ($row = $statement->fetch()) {
+    
+        while ($row = $statement->fetch() ) {
             $this->id = html_output($row['id']);
             $this->user_id = html_output($row['user_id']);
             $this->title = html_output($row['filename']);
             $this->description = htmlentities_allowed($row['description']);
             $this->uploaded_by = html_output($row['uploader']);
             $this->filename_on_disk = html_output($row['url']);
-            $this->filename_original = (!empty($row['original_url'])) ? html_output($row['original_url']) : html_output($row['url']);
+            $this->filename_original = (!empty( $row['original_url'] ) ) ? html_output($row['original_url']) : html_output($row['url']);
             $this->filename_unfiltered = $row['original_url'];
             $this->download_link = make_download_link(array('id' => $this->id));
             $this->download_link_xaccel = "";
@@ -267,8 +267,7 @@ class Files
             $this->folder_id = html_output($row['folder_id']);
             $this->disk_folder_year = html_output($row['disk_folder_year']);
             $this->disk_folder_month = html_output($row['disk_folder_month']);
-            if (is_numeric($this->disk_folder_month) && $this->disk_folder_month < 10)
-                $this->disk_folder_month = '0' . $this->disk_folder_month;
+            if (is_numeric($this->disk_folder_month) && $this->disk_folder_month < 10) $this->disk_folder_month = '0' . $this->disk_folder_month;
 
             // Load size from database if available
             if (isset($row['size']) && is_numeric($row['size']) && $row['size'] > 0) {
@@ -283,16 +282,16 @@ class Files
             $this->integration_id = html_output($row['integration_id'] ?? null);
 
             // Load encryption properties
-            $this->encrypted = isset($row['encrypted']) ? (int) $row['encrypted'] : 0;
+            $this->encrypted = isset($row['encrypted']) ? (int)$row['encrypted'] : 0;
             $this->encryption_key_encrypted = $row['encryption_key_encrypted'] ?? null;
             $this->encryption_iv = $row['encryption_iv'] ?? null;
             $this->encryption_algorithm = $row['encryption_algorithm'] ?? 'aes-256-gcm';
             $this->encryption_file_iv = $row['encryption_file_iv'] ?? null;
 
             // Load download limit properties
-            $this->download_limit_enabled = isset($row['download_limit_enabled']) ? (int) $row['download_limit_enabled'] : 0;
+            $this->download_limit_enabled = isset($row['download_limit_enabled']) ? (int)$row['download_limit_enabled'] : 0;
             $this->download_limit_type = $row['download_limit_type'] ?? 'total';
-            $this->download_limit_count = isset($row['download_limit_count']) ? (int) $row['download_limit_count'] : 0;
+            $this->download_limit_count = isset($row['download_limit_count']) ? (int)$row['download_limit_count'] : 0;
         }
 
         $this->full_path = $this->getFilePath();
@@ -374,10 +373,11 @@ class Files
         $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $statement->execute();
         if ($statement->rowCount() > 0) {
-            while ($row = $statement->fetch()) {
+            while ( $row = $statement->fetch() ) {
                 if (!empty($row['client_id'])) {
                     $this->assignments_clients[] = $row['client_id'];
-                } elseif (!empty($row['group_id'])) {
+                }
+                elseif (!empty($row['group_id'])) {
                     $this->assignments_groups[] = $row['group_id'];
                 }
             }
@@ -390,7 +390,7 @@ class Files
         $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $statement->execute();
         if ($statement->rowCount() > 0) {
-            while ($row = $statement->fetch()) {
+            while ( $row = $statement->fetch() ) {
                 $this->categories[] = $row['cat_id'];
             }
         }
@@ -514,7 +514,7 @@ class Files
             'extension' => $this->extension,
             'expires' => $this->expires,
             'expiry_date' => $this->expiry_date,
-            'expired' => (bool) $this->expired,
+            'expired' => (bool)$this->expired,
             'uploaded_date' => $this->uploaded_date,
             'public' => $this->public,
             'public_token' => $this->public_token,
@@ -548,7 +548,7 @@ class Files
             'size_formatted' => $this->size_formatted,
             'uploaded_date' => date(get_option('timeformat'), strtotime($this->uploaded_date)),
             'expires' => $this->expires,
-            'expired' => (bool) $this->expired,
+            'expired' => (bool)$this->expired,
             'download_link' => $this->download_link,
             'is_image' => $this->isImage(),
             'mime_type' => $this->mime_type
@@ -604,10 +604,10 @@ class Files
 
         if (get_option('uploads_organize_folders_by_date') == '1') {
             $use_date_folder = false;
-            $y = date('Y');
-            $m = date('m');
-            $year_folder = $this->location . DS . $y;
-            $month_folder = $year_folder . DS . $m;
+            $y =  date('Y');
+            $m =  date('m');
+            $year_folder = $this->location . DS .$y;
+            $month_folder = $year_folder.DS.$m;
             if (!is_dir($year_folder)) {
                 @mkdir($year_folder, 0775, false);
             }
@@ -663,11 +663,13 @@ class Files
     public function getSize()
     {
         // Only calculate size from file system if not already loaded from database
-        if (empty($this->size) && $this->filename_on_disk) {
-            if (file_exists($this->full_path)) {
+        if (empty($this->size) && $this->filename_on_disk)
+        {
+            if ( file_exists( $this->full_path ) ) {
                 $this->size = get_real_size($this->full_path);
                 $this->size_formatted = format_file_size($this->size);
-            } else {
+            }
+            else {
                 $this->size = '0';
                 $this->size_formatted = '-';
             }
@@ -681,7 +683,7 @@ class Files
 
     public function existsOnDisk()
     {
-        if (file_exists($this->full_path)) {
+        if ( file_exists( $this->full_path ) ) {
             return true;
         }
 
@@ -724,55 +726,55 @@ class Files
     }
 
     /**
-     * Check if the file extension is among the allowed ones, that are defined on
-     * the options page.
-     */
-    public function isFiletypeAllowed()
-    {
+	 * Check if the file extension is among the allowed ones, that are defined on
+	 * the options page.
+	 */
+	public function isFiletypeAllowed()
+	{
         $this->is_filetype_allowed = file_is_allowed($this->filename_on_disk);
 
         return $this->is_filetype_allowed;
-    }
+	}
 
-    /**
-     * Convert a string into a url safe address.
-     * Original name: formatURL
-     * John Magnolia / svick on StackOverflow
-     *
-     * @param string $original_filename
-     * @return string
-     * @link http://stackoverflow.com/questions/2668854/sanitizing-strings-to-make-them-url-and-filename-safe
-     */
+	/**
+	 * Convert a string into a url safe address.
+	 * Original name: formatURL
+	 * John Magnolia / svick on StackOverflow
+	 *
+	 * @param string $original_filename
+	 * @return string
+	 * @link http://stackoverflow.com/questions/2668854/sanitizing-strings-to-make-them-url-and-filename-safe
+	 */
     public function generateSafeFilename($original_filename)
     {
         if (empty($original_filename)) {
             return false;
         }
-
-        $original_filename = basename(trim($original_filename));
+        
+		$original_filename = basename(trim($original_filename));
         $filename = generate_safe_filename($original_filename);
-
+        
         // Set the properties
         $this->filename_original = $original_filename;
         $this->filename_on_disk = $filename;
 
         return $this->filename_on_disk;
-    }
-
+	}
+	
     /**
-     * Used to copy a file from the temporary folder (the default location where it's put
-     * after uploading it) to the final folder.
-     * If successful, the original file is then deleted.
-     */
-    public function moveToUploadDirectory($temp_name)
-    {
+	 * Used to copy a file from the temporary folder (the default location where it's put
+	 * after uploading it) to the final folder.
+	 * If successful, the original file is then deleted.
+	 */
+	public function moveToUploadDirectory($temp_name)
+	{
         $safe_filename = $this->generateSafeFilename($temp_name);
 
-        $this->uid = CURRENT_USER_ID;
-        $this->username = CURRENT_USER_USERNAME;
-        $this->makehash = sha1($this->username);
+		$this->uid = CURRENT_USER_ID;
+		$this->username = CURRENT_USER_USERNAME;
+		$this->makehash = sha1($this->username);
 
-        $this->filename_on_disk = time() . '-' . $this->makehash . '-' . $safe_filename;
+		$this->filename_on_disk = time().'-'.$this->makehash.'-'.$safe_filename;
         $this->setFullPath();
 
         if (file_exists($this->full_path)) {
@@ -789,18 +791,18 @@ class Files
             $original_ext_pos = strrpos($this->filename_original, '.');
             $original_name = substr($this->filename_original, 0, $original_ext_pos);
             $original_ext = substr($this->filename_original, $original_ext_pos);
-
+            
             $count = 1;
             while (file_exists($path_name . '_' . $count . $path_ext))
                 $count++;
-
+            
             $this->filename_on_disk = $disk_name . '_' . $count . $disk_ext;
             $this->filename_original = $original_name . '_' . $count . $original_ext;
             $this->path = $path_name . '_' . $count . $path_ext;
         }
 
-
-        if (rename($temp_name, $this->full_path)) {
+		
+		if (rename($temp_name, $this->full_path)) {
 
             @chmod($this->full_path, 0644);
 
@@ -815,24 +817,23 @@ class Files
             );
 
             return $return;
-        } else {
-            return false;
-        }
-    }
+		}
+		else {
+			return false;
+		}
+	}
 
     /**
      * Makes the file as hidden to a client or group
      */
-    public function hide($to_type, $to_id)
-    {
+	public function hide($to_type, $to_id) {
         $this->changeHiddenStatus(1, $to_type, $to_id);
     }
 
     /**
      * Makes the file as visible to a client or group
      */
-    public function show($to_type, $to_id)
-    {
+	public function show($to_type, $to_id) {
         $this->changeHiddenStatus(0, $to_type, $to_id);
     }
 
@@ -844,10 +845,10 @@ class Files
      * @param int $to_id ID of the group or client
      * @return void
      */
-    private function changeHiddenStatus($status, $to_type, $to_id)
-    {
+	private function changeHiddenStatus($status, $to_type, $to_id)
+	{
         $this->check_level = ['System Administrator', 'Account Manager', 'Uploader'];
-
+        
         if (empty($this->id)) {
             return false;
         }
@@ -902,10 +903,10 @@ class Files
         }
 
         return false;
-    }
+	}
 
-    public function hideFromEveryone()
-    {
+	public function hideFromEveryone()
+	{
         $this->check_level = ['System Administrator', 'Account Manager', 'Uploader'];
 
         if (empty($this->id)) {
@@ -932,10 +933,10 @@ class Files
         }
 
         return false;
-    }
+	}
 
-    public function showToEveryone()
-    {
+	public function showToEveryone()
+	{
         $this->check_level = ['System Administrator', 'Account Manager', 'Uploader'];
 
         if (empty($this->id)) {
@@ -962,7 +963,7 @@ class Files
         }
 
         return false;
-    }
+	}
 
     private function currentUserCanDeleteFile()
     {
@@ -981,10 +982,10 @@ class Files
                 }
             }
         }
-
+        
         // Users with delete_files permission can delete their own files
-        if (current_user_can('delete_files')) {
-            if ($this->uploaded_by == CURRENT_USER_USERNAME) {
+        if ( current_user_can('delete_files') ) {
+            if ( $this->uploaded_by == CURRENT_USER_USERNAME ) {
                 return true;
             }
         }
@@ -1003,7 +1004,7 @@ class Files
      * @return bool
      */
     function deleteFiles()
-    {
+	{
         if (!$this->currentUserCanDeleteFile()) {
             return [
                 'status' => 'error',
@@ -1012,12 +1013,12 @@ class Files
         }
 
         /*
-         * Thumbnails should be deleted too.
-         * Start by making a pattern with the file name, a shorter version of what's
-         * used on make_thumbnail.
-         */
+        * Thumbnails should be deleted too.
+        * Start by making a pattern with the file name, a shorter version of what's
+        * used on make_thumbnail.
+        */
         $this->thumbnails_pattern = 'thumb_' . md5($this->filename_on_disk);
-        $this->find_thumbnails = glob(THUMBNAILS_FILES_DIR . DS . $this->thumbnails_pattern . '*.*');
+        $this->find_thumbnails = glob( THUMBNAILS_FILES_DIR . DS . $this->thumbnails_pattern . '*.*' );
 
         try {
             // Use the id and uri information to delete the file.
@@ -1030,7 +1031,7 @@ class Files
                 $sql->execute();
 
                 // Delete the thumbnails
-                foreach ($this->find_thumbnails as $this->thumbnail) {
+                foreach ( $this->find_thumbnails as $this->thumbnail ) {
                     $delete = delete_file_from_disk($this->thumbnail);
                 }
 
@@ -1042,7 +1043,7 @@ class Files
                         'affected_file' => $this->id,
                         'affected_file_name' => $this->title
                     ]);
-                }
+                }    
             }
 
             return [
@@ -1056,7 +1057,7 @@ class Files
             ];
         }
     }
-
+    
     public function setDefaults()
     {
         $expire = get_option('files_default_expire');
@@ -1109,10 +1110,10 @@ class Files
     }
 
     /**
-     * Called after correctly moving the file to the final location.
-     */
-    public function addToDatabase()
-    {
+	 * Called after correctly moving the file to the final location.
+	 */
+	public function addToDatabase()
+	{
         // Check permissions
         if (!\current_user_can('upload')) {
             return [
@@ -1135,16 +1136,16 @@ class Files
             ];
         }
 
-        $this->uploader = CURRENT_USER_USERNAME;
-        $this->uploader_id = CURRENT_USER_ID;
-        $this->uploader_type = CURRENT_USER_TYPE;
-        $this->hidden = 0;
+		$this->uploader = CURRENT_USER_USERNAME;
+		$this->uploader_id = CURRENT_USER_ID;
+		$this->uploader_type = CURRENT_USER_TYPE;
+		$this->hidden = 0;
         $this->public_token = generate_random_string(32);
-        $this->disk_folder_year = (isset($this->date_folder_year)) ? (int) $this->date_folder_year : null;
-        $this->disk_folder_month = (isset($this->date_folder_month)) ? (int) $this->date_folder_month : null;
-
+        $this->disk_folder_year = (isset($this->date_folder_year)) ? (int)$this->date_folder_year : null;
+        $this->disk_folder_month = (isset($this->date_folder_month)) ? (int)$this->date_folder_month : null;
+		
         $statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (user_id, url, original_url, size, filename, description, uploader, expires, expiry_date, public_allow, public_token, folder_id, disk_folder_year, disk_folder_month, storage_type, external_path, bucket_name, integration_id, encrypted, encryption_key_encrypted, encryption_iv, encryption_algorithm, encryption_file_iv, download_limit_enabled, download_limit_type, download_limit_count)"
-            . "VALUES (:user_id, :url, :original_url, :size, :filename, :description, :uploader, :expires, :expiry_date, :public, :public_token, :folder_id, :disk_folder_year, :disk_folder_month, :storage_type, :external_path, :bucket_name, :integration_id, :encrypted, :encryption_key_encrypted, :encryption_iv, :encryption_algorithm, :encryption_file_iv, :download_limit_enabled, :download_limit_type, :download_limit_count)");
+                                        ."VALUES (:user_id, :url, :original_url, :size, :filename, :description, :uploader, :expires, :expiry_date, :public, :public_token, :folder_id, :disk_folder_year, :disk_folder_month, :storage_type, :external_path, :bucket_name, :integration_id, :encrypted, :encryption_key_encrypted, :encryption_iv, :encryption_algorithm, :encryption_file_iv, :download_limit_enabled, :download_limit_type, :download_limit_count)");
         $statement->bindParam(':user_id', $this->uploader_id, PDO::PARAM_INT);
         $statement->bindParam(':url', $this->filename_on_disk);
         $statement->bindParam(':original_url', $this->filename_original);
@@ -1177,11 +1178,12 @@ class Files
         $this->id = $this->file_id;
         $this->record_exists = true;
 
-        if (!empty($this->file_id)) {
+		if (!empty($this->file_id)) {
             /** Record the action log */
             if ($this->uploader_type == 'user') {
                 $this->action_type = 5;
-            } elseif ($this->uploader_type == 'client') {
+            }
+            elseif ($this->uploader_type == 'client') {
                 $this->action_type = 6;
             }
             $this->logger->addEntry([
@@ -1197,19 +1199,19 @@ class Files
                 'id' => $this->file_id,
                 'public_token' => $this->public_token,
             ];
-        }
-
-        return [
+		}
+		
+		return [
             'status' => 'error',
             'message' => null,
         ];
-    }
+	}
 
     /**
-     * Update file information
-     */
-    public function save($data)
-    {
+	 * Update file information
+	 */
+	public function save($data)
+	{
         if (empty($data)) {
             return false;
         }
@@ -1239,16 +1241,16 @@ class Files
         $this->folder_id = (isset($data["folder_id"]) && !(empty($data["folder_id"]))) ? $data["folder_id"] : null;
 
         // Download limits
-        $this->download_limit_enabled = (isset($data["download_limit_enabled"])) ? (int) $data["download_limit_enabled"] : 0;
+        $this->download_limit_enabled = (isset($data["download_limit_enabled"])) ? (int)$data["download_limit_enabled"] : 0;
         $this->download_limit_type = (isset($data["download_limit_type"])) ? $data["download_limit_type"] : 'total';
-        $this->download_limit_count = (isset($data["download_limit_count"])) ? (int) $data["download_limit_count"] : 0;
+        $this->download_limit_count = (isset($data["download_limit_count"])) ? (int)$data["download_limit_count"] : 0;
 
         /**
          * Restrict file properties based on user permissions
          */
         // Check expiration permissions
         if (!current_user_can('set_file_expiration_date')) {
-            $this->expires = (int) $current["expires"];
+            $this->expires = (int)$current["expires"];
             $this->expiry_date = $current["expiry_date"];
         }
 
@@ -1259,9 +1261,9 @@ class Files
 
         // Check download limit permissions
         if (!current_user_can('limit_downloads')) {
-            $this->download_limit_enabled = (int) $current["download_limit_enabled"];
+            $this->download_limit_enabled = (int)$current["download_limit_enabled"];
             $this->download_limit_type = $current["download_limit_type"];
-            $this->download_limit_count = (int) $current["download_limit_count"];
+            $this->download_limit_count = (int)$current["download_limit_count"];
         }
 
         if (empty($this->name)) {
@@ -1307,7 +1309,7 @@ class Files
         $statement->execute();
         $hidden = (!empty($data['hidden']) && is_numeric($data['hidden'])) ? $data['hidden'] : 0;
 
-        if (!empty($statement)) {
+		if (!empty($statement)) {
             // Update assignments
             $assignments = (!empty($data['assignments'])) ? $data['assignments'] : null;
             $assignments = $this->saveAssignments($assignments, $hidden);
@@ -1329,7 +1331,8 @@ class Files
             /** Record the action log */
             if (CURRENT_USER_TYPE == 'user') {
                 $action_type = 32;
-            } elseif (CURRENT_USER_TYPE == 'client') {
+            }
+            elseif (CURRENT_USER_TYPE == 'client') {
                 $action_type = 33;
             }
             $this->logger->addEntry([
@@ -1340,10 +1343,10 @@ class Files
             ]);
 
             return true;
-        }
-
-        return false;
-    }
+		}
+		
+		return false;
+	}
 
     /**
      * Edit an existing file.
@@ -1361,8 +1364,8 @@ class Files
         // Check permissions
         $current_user_id = defined('CURRENT_USER_ID') ? \CURRENT_USER_ID : null;
         $can_edit = \current_user_can('edit_files') ||
-            (\current_user_can('upload') && $current_user_id && $this->user_id == $current_user_id) ||
-            user_can_edit_file($current_user_id, $this->id);
+                   (\current_user_can('upload') && $current_user_id && $this->user_id == $current_user_id) ||
+                   user_can_edit_file($current_user_id, $this->id);
 
         if (!$can_edit) {
             return [
@@ -1398,37 +1401,33 @@ class Files
             return false;
         }
 
-        $hidden = (int) $hidden;
+        $hidden = (int)$hidden;
 
-        if (empty($new_values['clients'])) {
-            $new_values['clients'] = [];
-        }
-        if (empty($new_values['groups'])) {
-            $new_values['groups'] = [];
-        }
+        if (empty($new_values['clients'])) { $new_values['clients'] = []; }
+        if (empty($new_values['groups'])) { $new_values['groups'] = []; }
 
         // If user doesn't have permission to manage groups, preserve existing group assignments
         if (!current_user_can('manage_groups')) {
             $new_values['groups'] = $this->assignments_groups;
-        }
+        } 
 
         // Clean new ids based on user permissions for limited users
         $get_user = new \ProjectSend\Classes\Users(CURRENT_USER_ID);
         if (!empty($get_user->limit_upload_to)) {
-            // If client ID is not allowed, remove from array
-            foreach ($new_values['clients'] as $key => $client_id) {
-                if (!in_array($client_id, $get_user->limit_upload_to)) {
-                    unset($new_values['clients'][$key]);
+                // If client ID is not allowed, remove from array
+                foreach ($new_values['clients'] as $key => $client_id) {
+                    if (!in_array($client_id, $get_user->limit_upload_to)) {
+                        unset($new_values['clients'][$key]);
+                    }
+                }
+                // Do the same for groups. First get allowed groups
+                $allowed_groups = array_keys(file_editor_get_groups_by_members($get_user->limit_upload_to));
+                foreach ($new_values['groups'] as $key => $group_id) {
+                    if (!in_array($group_id, $allowed_groups)) {
+                        unset($new_values['groups'][$key]);
+                    }
                 }
             }
-            // Do the same for groups. First get allowed groups
-            $allowed_groups = array_keys(file_editor_get_groups_by_members($get_user->limit_upload_to));
-            foreach ($new_values['groups'] as $key => $group_id) {
-                if (!in_array($group_id, $allowed_groups)) {
-                    unset($new_values['groups'][$key]);
-                }
-            }
-        }
 
         // Get current assignments from database to compare with new values
         $current = [
@@ -1528,7 +1527,7 @@ class Files
         if (!current_user_can('edit_files')) {
             return false;
         }
-
+        
         if (empty($this->id)) {
             return false;
         }
@@ -1555,7 +1554,7 @@ class Files
         }
 
         $statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES_RELATIONS . " (file_id, $column, hidden)"
-            . "VALUES (:file_id, :assignment, :hidden)");
+                                                ."VALUES (:file_id, :assignment, :hidden)");
         $statement->bindParam(':file_id', $this->id, PDO::PARAM_INT);
         $statement->bindParam(':assignment', $to_id);
         $statement->bindParam(':hidden', $hidden, PDO::PARAM_INT);
@@ -1573,11 +1572,11 @@ class Files
     }
 
     public function removeAssignment($from_type, $from_id)
-    {
+	{
         if (!current_user_can('edit_files')) {
             return false;
         }
-
+        
         if (empty($this->id)) {
             return false;
         }
@@ -1627,7 +1626,7 @@ class Files
         if (!current_user_can('set_file_categories')) {
             return false;
         }
-
+        
         if (empty($this->id)) {
             return false;
         }
@@ -1668,7 +1667,7 @@ class Files
     private function addToCategory($category_id)
     {
         $statement = $this->dbh->prepare("INSERT INTO " . TABLE_CATEGORIES_RELATIONS . " (file_id, cat_id)"
-            . "VALUES (:file_id, :category_id)");
+                                                ."VALUES (:file_id, :category_id)");
         $statement->bindParam(':file_id', $this->id, PDO::PARAM_INT);
         $statement->bindParam(':category_id', $category_id, PDO::PARAM_INT);
         $statement->execute();
@@ -1720,7 +1719,7 @@ class Files
             ];
             foreach ($exif_display as $item) {
                 if (!empty($exif[$item['value']])) {
-                    echo $item['label'] . ': ' . $item['value'];
+                    echo $item['label'].': ' . $item['value'];
                 }
             }
         }
@@ -1737,7 +1736,8 @@ class Files
                 if (!$this->currentUserCanEdit()) {
                     return false;
                 }
-            } else {
+            }
+            else {
                 $folder = new \ProjectSend\Classes\Folder($folder_id);
                 if (!$folder->currentUserCanAssignToFolder()) {
                     return false;
@@ -2168,7 +2168,7 @@ class Files
 
         // Route to external storage
         if (is_numeric($storage_selection)) {
-            return $this->uploadToExternalStorage($temp_file_path, (int) $storage_selection, $original_filename);
+            return $this->uploadToExternalStorage($temp_file_path, (int)$storage_selection, $original_filename);
         }
 
         return [

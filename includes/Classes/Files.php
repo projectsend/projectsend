@@ -257,7 +257,6 @@ class Files
             $this->filename_original = (!empty( $row['original_url'] ) ) ? html_output($row['original_url']) : html_output($row['url']);
             $this->filename_unfiltered = $row['original_url'];
             $this->download_link = make_download_link(array('id' => $this->id));
-            $this->download_link_xaccel = XACCEL_FILES_URL.'/files/'.$this->filename_on_disk;
             $this->expires = html_output($row['expires']);
             $this->expiry_date = html_output($row['expiry_date']);
             $this->uploaded_date = html_output($row['timestamp']);
@@ -295,6 +294,7 @@ class Files
         }
 
         $this->full_path = $this->getFilePath();
+        $this->download_link_xaccel = $this->getXAccelPath();
         $this->isExpired();
         $this->setExtension();
         $this->getSize();
@@ -629,20 +629,29 @@ class Files
         return $this->full_path;
     }
 
-    private function getFilePath()
+    private function getStorageFolderPath($separator = DS)
     {
-        $path = UPLOADED_FILES_DIR.DS;
+        $path = '';
 
         if (!empty($this->disk_folder_year)) {
-            $path .= $this->disk_folder_year.DS;
-        }
-        if (!empty($this->disk_folder_month)) {
-            $path .= $this->disk_folder_month.DS;
+            $path .= $this->disk_folder_year . $separator;
         }
 
-        $path .= $this->filename_on_disk;
+        if (!empty($this->disk_folder_month)) {
+            $path .= $this->disk_folder_month . $separator;
+        }
 
         return $path;
+    }
+
+    private function getFilePath()
+    {
+        return UPLOADED_FILES_DIR . DS . $this->getStorageFolderPath(DS) . $this->filename_on_disk;
+    }
+
+    private function getXAccelPath()
+    {
+        return XACCEL_FILES_URL . DS . 'files' . DS . $this->getStorageFolderPath(DS) . $this->filename_on_disk;
     }
 
     /**

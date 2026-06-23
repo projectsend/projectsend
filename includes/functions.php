@@ -2502,7 +2502,7 @@ function user_can_download_file($user_id = null, $file_id = null)
     }
 
 
-    if (defined('CURRENT_USER_ID') && !current_user_is_client()) {
+    if (defined('CURRENT_USER_ID') && current_user_can('edit_others_files')) {
         return true;
     }
 

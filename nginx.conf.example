@@ -1,0 +1,82 @@
+server {
+    listen 80;
+    server_name your-domain.com;
+    root /var/www/html/projectsend;
+    index index.php;
+
+    client_max_body_size 2048M;
+
+    # =========================================================================
+    # Security: block direct access to sensitive directories
+    # Apache deployments handle these via .htaccess, but Nginx ignores
+    # .htaccess files — these blocks are required for Nginx deployments.
+    # =========================================================================
+
+    # Block direct access to uploaded files — downloads must go through
+    # download.php or process.php?do=serve_file, which enforce auth/permissions.
+    location /upload/files/ {
+        deny all;
+    }
+
+    # Block direct access to temp upload directory
+    location /upload/temp/ {
+        deny all;
+    }
+
+    # Block direct access to application internals
+    location /includes/ {
+        deny all;
+    }
+    location /vendor/ {
+        deny all;
+    }
+    location /cache/ {
+        deny all;
+    }
+
+    # Block access to hidden files (.htaccess, .git, etc.)
+    location ~ /\. {
+        deny all;
+    }
+
+    # =========================================================================
+    # X-Accel-Redirect support (optional — high-performance file serving)
+    # Enable in admin: Options > Uploads > Download method > X-Accel (nginx)
+    # The internal location must match the XACCEL_FILES_URL constant (/serve-file).
+    # =========================================================================
+    location /serve-file {
+        internal;
+        alias /var/www/html/projectsend/upload/;
+    }
+
+    # =========================================================================
+    # PHP handling
+    # =========================================================================
+
+    # Prevent PHP execution inside upload directories
+    location ~ ^/upload/.*\.php$ {
+        deny all;
+    }
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+        fastcgi_read_timeout 600;
+        fastcgi_buffers 16 16k;
+        fastcgi_buffer_size 32k;
+    }
+
+    # Static asset caching
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+        try_files $uri =404;
+    }
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}

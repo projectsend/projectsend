@@ -121,6 +121,8 @@ function upgrade_2025092004()
             // Drop role_level column and update primary key
             try {
                 $alter_sql = "ALTER TABLE " . TABLE_ROLE_PERMISSIONS . "
+                             ADD UNIQUE KEY (id),
+                             DROP KEY role_permission,
                              DROP COLUMN role_level,
                              DROP PRIMARY KEY,
                              ADD PRIMARY KEY (role_id, permission)";

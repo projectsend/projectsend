@@ -28,6 +28,7 @@ $page_id = 'role_permissions';
 // Define Client role editable permissions
 $client_editable_permissions = [
     'upload',
+    'create_own_folders',
     'delete_files',
     'set_file_expiration_date',
     'upload_public',

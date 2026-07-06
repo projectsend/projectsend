@@ -433,26 +433,30 @@ if (!$count) {
 }
 
 // Header buttons
-if (current_user_can_upload()) {
-    $header_action_buttons = [
-        [
-            'url' => '#',
-            'label' => __('New folder', 'cftp_admin'),
-            'id' => 'btn_header_folder_create',
-            'data-attributes' => [
-                'modal-title' => __('New folder', 'cftp_admin'),
-                'modal-label' => __('Name', 'cftp_admin'),
-                'modal-title-invalid' => __('Name is not valid', 'cftp_admin'),
-                'parent' => $current_folder,
-                'process-url' => AJAX_PROCESS_URL.'?do=folder_create',
-                'folder-url' => BASE_URI.'manage-files.php?folder_id={folder_id}',
-            ],
-        ],
-        [
-            'url' => 'upload.php',
-            'label' => __('Upload files', 'cftp_admin'),
+$header_action_buttons = [];
+if (current_user_can('create_own_folders')) {
+    $header_action_buttons[] = [
+        'url' => '#',
+        'label' => __('New folder', 'cftp_admin'),
+        'id' => 'btn_header_folder_create',
+        'data-attributes' => [
+            'modal-title' => __('New folder', 'cftp_admin'),
+            'modal-label' => __('Name', 'cftp_admin'),
+            'modal-title-invalid' => __('Name is not valid', 'cftp_admin'),
+            'parent' => $current_folder,
+            'process-url' => AJAX_PROCESS_URL.'?do=folder_create',
+            'folder-url' => BASE_URI.'manage-files.php?folder_id={folder_id}',
         ],
     ];
+}
+if (current_user_can_upload()) {
+    $header_action_buttons[] = [
+        'url' => 'upload.php',
+        'label' => __('Upload files', 'cftp_admin'),
+    ];
+}
+if (empty($header_action_buttons)) {
+    unset($header_action_buttons);
 }
 
 // Search + filters bar data

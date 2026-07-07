@@ -98,6 +98,22 @@ ProjectSend is also available on **Softaculous** and **Installatron** for one-cl
 
 Full installation guide: [docs.projectsend.org](https://docs.projectsend.org)
 
+### Nginx Configuration (required)
+
+**If you are using Nginx**, you must add location blocks to block direct access to the upload directory. Apache deployments use `.htaccess` for this automatically, but Nginx ignores `.htaccess` files — without the proper config, uploaded files would be publicly accessible regardless of their permission settings.
+
+A ready-to-use template is included: [`nginx.conf.example`](nginx.conf.example)
+
+The critical block is:
+
+```nginx
+location /upload/files/ {
+    deny all;
+}
+```
+
+See the example file for the complete recommended configuration including PHP-FPM, X-Accel-Redirect support, and all other required security blocks.
+
 ## Demo
 
 Try ProjectSend without installing: [www.projectsend.org/demo](https://www.projectsend.org/demo/)

@@ -22,8 +22,8 @@ $custom_fields_handler = new \ProjectSend\Classes\CustomFields();
 global $flash;
 
 // Delete custom field
-if (isset($_GET['action']) && $_GET['action'] == 'delete' && !empty($_GET['id'])) {
-    $field_id = (int)$_GET['id'];
+if (isset($_POST['action']) && $_POST['action'] == 'delete' && !empty($_POST['id'])) {
+    $field_id = (int)$_POST['id'];
     $field = new \ProjectSend\Classes\CustomFields($field_id);
 
     if ($field->fieldExists()) {
@@ -42,8 +42,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && !empty($_GET['id'])
 }
 
 // Toggle field active status
-if (isset($_GET['action']) && $_GET['action'] == 'toggle' && !empty($_GET['id'])) {
-    $field_id = (int)$_GET['id'];
+if (isset($_POST['action']) && $_POST['action'] == 'toggle' && !empty($_POST['id'])) {
+    $field_id = (int)$_POST['id'];
     $field = new \ProjectSend\Classes\CustomFields($field_id);
 
     if ($field->fieldExists()) {
@@ -190,19 +190,21 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
                 // Actions column
                 $action_buttons = '';
+                $csrf = getCsrfToken();
+                $fld_id = (int)$field['id'];
 
                 // Edit button
-                $action_buttons .= '<a href="custom-fields-edit.php?id=' . $field['id'] . '" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i><span class="button_label">' . __('Edit', 'cftp_admin') . '</span></a>' . "\n";
+                $action_buttons .= '<a href="custom-fields-edit.php?id=' . $fld_id . '" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i><span class="button_label">' . __('Edit', 'cftp_admin') . '</span></a>' . "\n";
 
                 // Toggle active/inactive button
                 if ($field['active']) {
-                    $action_buttons .= '<a href="custom-fields.php?action=toggle&id=' . $field['id'] . '" class="btn btn-pslight btn-sm"><i class="fa fa-pause"></i><span class="button_label">' . __('Disable', 'cftp_admin') . '</span></a>' . "\n";
+                    $action_buttons .= '<form method="post" action="custom-fields.php" class="d-inline"><input type="hidden" name="action" value="toggle"><input type="hidden" name="id" value="' . $fld_id . '"><input type="hidden" name="csrf_token" value="' . $csrf . '"><button type="submit" class="btn btn-pslight btn-sm"><i class="fa fa-pause"></i><span class="button_label">' . __('Disable', 'cftp_admin') . '</span></button></form>' . "\n";
                 } else {
-                    $action_buttons .= '<a href="custom-fields.php?action=toggle&id=' . $field['id'] . '" class="btn btn-success btn-sm"><i class="fa fa-play"></i><span class="button_label">' . __('Enable', 'cftp_admin') . '</span></a>' . "\n";
+                    $action_buttons .= '<form method="post" action="custom-fields.php" class="d-inline"><input type="hidden" name="action" value="toggle"><input type="hidden" name="id" value="' . $fld_id . '"><input type="hidden" name="csrf_token" value="' . $csrf . '"><button type="submit" class="btn btn-success btn-sm"><i class="fa fa-play"></i><span class="button_label">' . __('Enable', 'cftp_admin') . '</span></button></form>' . "\n";
                 }
 
                 // Delete button
-                $action_buttons .= '<a href="custom-fields.php?action=delete&id=' . $field['id'] . '" class="btn btn-danger btn-sm delete-confirm"><i class="fa fa-trash"></i><span class="button_label">' . __('Delete', 'cftp_admin') . '</span></a>' . "\n";
+                $action_buttons .= '<form method="post" action="custom-fields.php" class="d-inline"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="' . $fld_id . '"><input type="hidden" name="csrf_token" value="' . $csrf . '"><button type="submit" class="btn btn-danger btn-sm delete-confirm"><i class="fa fa-trash"></i><span class="button_label">' . __('Delete', 'cftp_admin') . '</span></button></form>' . "\n";
 
                 // Define all cells using the proper structure
                 $tbody_cells = [

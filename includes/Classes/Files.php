@@ -771,9 +771,8 @@ class Files
 
 		$this->uid = CURRENT_USER_ID;
 		$this->username = CURRENT_USER_USERNAME;
-		$this->makehash = sha1($this->username);
 
-		$this->filename_on_disk = time().'-'.$this->makehash.'-'.$safe_filename;
+		$this->filename_on_disk = time() . '-' . bin2hex(random_bytes(8)) . '-' . $safe_filename;
         $this->setFullPath();
 
         if (file_exists($this->full_path)) {
@@ -1078,7 +1077,6 @@ class Files
     {
         $this->uid = CURRENT_USER_ID;
         $this->username = CURRENT_USER_USERNAME;
-        $this->makehash = sha1($this->username);
 
         // Extract filename from key
         $this->filename_original = basename($file_key);
@@ -2101,10 +2099,9 @@ class Files
         $safe_filename = $this->generateSafeFilename($temp_file_path);
         $this->uid = CURRENT_USER_ID;
         $this->username = CURRENT_USER_USERNAME;
-        $this->makehash = sha1($this->username);
 
         // Create unique external path
-        $external_key = time() . '-' . $this->makehash . '-' . $safe_filename;
+        $external_key = time() . '-' . bin2hex(random_bytes(8)) . '-' . $safe_filename;
 
         // Add folder structure if using date organization
         if (get_option('uploads_organize_folders_by_date') == 1) {

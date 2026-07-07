@@ -50,7 +50,10 @@
                         <a class="btn btn-lg btn-primary" role="button" href="<?php echo OPENCOLLECTIVE_URL; ?>" target="_blank"><?php _e('One time or monthly (Open Collective)','cftp_admin'); ?></a>
                         <a class="btn btn-lg btn-warning" role="button" href="<?php echo REVIEWS_URL; ?>" target="_blank"><?php _e('Leave a review','cftp_admin'); ?></a>
                         <!-- <a class="btn btn-lg btn-primary" role="button" href="mailto:contact@projectsend.org" target="_blank"><?php _e('Send a message','cftp_admin'); ?></a> -->
-                        <a class="btn btn-md btn-default" role="button" href="<?php echo BASE_URI; ?>process.php?do=dismiss_upgraded_notice&return_to=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>"><?php _e('Dismiss message','cftp_admin'); ?></a>
+                        <form method="post" action="<?php echo BASE_URI; ?>process.php?do=dismiss_upgraded_notice&return_to=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>" class="d-inline">
+                                            <?php addCsrf(); ?>
+                                            <button type="submit" class="btn btn-md btn-default"><?php _e('Dismiss message','cftp_admin'); ?></button>
+                                        </form>
                     </div>
                 </div>
             </div>

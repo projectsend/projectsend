@@ -22,8 +22,8 @@ $available_types = \ProjectSend\Classes\Integrations::getAvailableTypes(true);
 global $flash;
 
 // Delete integration
-if (isset($_GET['action']) && $_GET['action'] == 'delete' && !empty($_GET['id'])) {
-    $integration_id = (int)$_GET['id'];
+if (isset($_POST['action']) && $_POST['action'] == 'delete' && !empty($_POST['id'])) {
+    $integration_id = (int)$_POST['id'];
     $result = $integrations_handler->delete($integration_id);
 
     if ($result['status'] == 'success') {
@@ -36,8 +36,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && !empty($_GET['id'])
 }
 
 // Toggle integration active status
-if (isset($_GET['action']) && $_GET['action'] == 'toggle' && !empty($_GET['id'])) {
-    $integration_id = (int)$_GET['id'];
+if (isset($_POST['action']) && $_POST['action'] == 'toggle' && !empty($_POST['id'])) {
+    $integration_id = (int)$_POST['id'];
     $integration = $integrations_handler->getById($integration_id);
 
     if ($integration) {
@@ -56,8 +56,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'toggle' && !empty($_GET['id'])
 }
 
 // Test connection
-if (isset($_GET['action']) && $_GET['action'] == 'test' && !empty($_GET['id'])) {
-    $integration_id = (int)$_GET['id'];
+if (isset($_POST['action']) && $_POST['action'] == 'test' && !empty($_POST['id'])) {
+    $integration_id = (int)$_POST['id'];
     $test_result = $integrations_handler->testIntegration($integration_id);
 
     if ($test_result['success']) {
@@ -183,24 +183,27 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                 // Actions column
                 $action_buttons = '';
 
+                $csrf = getCsrfToken();
+                $int_id = (int)$integration['id'];
+
                 // Test Connection button (only for non-coming-soon types)
                 if (!isset($type_config['coming_soon']) || !$type_config['coming_soon']) {
-                    $action_buttons .= '<a href="integrations.php?action=test&id=' . $integration['id'] . '" class="btn btn-pslight btn-sm"><i class="fa fa-plug"></i><span class="button_label">' . __('Test', 'cftp_admin') . '</span></a>' . "\n";
+                    $action_buttons .= '<form method="post" action="integrations.php" class="d-inline"><input type="hidden" name="action" value="test"><input type="hidden" name="id" value="' . $int_id . '"><input type="hidden" name="csrf_token" value="' . $csrf . '"><button type="submit" class="btn btn-pslight btn-sm"><i class="fa fa-plug"></i><span class="button_label">' . __('Test', 'cftp_admin') . '</span></button></form>' . "\n";
                 }
 
                 // Edit button
-                $action_buttons .= '<a href="integrations-edit.php?id=' . $integration['id'] . '" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i><span class="button_label">' . __('Edit', 'cftp_admin') . '</span></a>' . "\n";
+                $action_buttons .= '<a href="integrations-edit.php?id=' . $int_id . '" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i><span class="button_label">' . __('Edit', 'cftp_admin') . '</span></a>' . "\n";
 
                 // Toggle active/inactive button
                 if ($integration['active']) {
-                    $action_buttons .= '<a href="integrations.php?action=toggle&id=' . $integration['id'] . '" class="btn btn-pslight btn-sm"><i class="fa fa-pause"></i><span class="button_label">' . __('Disable', 'cftp_admin') . '</span></a>' . "\n";
+                    $action_buttons .= '<form method="post" action="integrations.php" class="d-inline"><input type="hidden" name="action" value="toggle"><input type="hidden" name="id" value="' . $int_id . '"><input type="hidden" name="csrf_token" value="' . $csrf . '"><button type="submit" class="btn btn-pslight btn-sm"><i class="fa fa-pause"></i><span class="button_label">' . __('Disable', 'cftp_admin') . '</span></button></form>' . "\n";
                 } else {
-                    $action_buttons .= '<a href="integrations.php?action=toggle&id=' . $integration['id'] . '" class="btn btn-success btn-sm"><i class="fa fa-play"></i><span class="button_label">' . __('Enable', 'cftp_admin') . '</span></a>' . "\n";
+                    $action_buttons .= '<form method="post" action="integrations.php" class="d-inline"><input type="hidden" name="action" value="toggle"><input type="hidden" name="id" value="' . $int_id . '"><input type="hidden" name="csrf_token" value="' . $csrf . '"><button type="submit" class="btn btn-success btn-sm"><i class="fa fa-play"></i><span class="button_label">' . __('Enable', 'cftp_admin') . '</span></button></form>' . "\n";
                 }
 
                 // Delete button (only if no files are using this integration)
                 if ($file_count == 0) {
-                    $action_buttons .= '<a href="integrations.php?action=delete&id=' . $integration['id'] . '" class="btn btn-danger btn-sm" onclick="return confirm(\'' . __('Are you sure you want to delete this integration?', 'cftp_admin') . '\')"><i class="fa fa-trash"></i><span class="button_label">' . __('Delete', 'cftp_admin') . '</span></a>' . "\n";
+                    $action_buttons .= '<form method="post" action="integrations.php" class="d-inline"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="' . $int_id . '"><input type="hidden" name="csrf_token" value="' . $csrf . '"><button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'' . __('Are you sure you want to delete this integration?', 'cftp_admin') . '\')"><i class="fa fa-trash"></i><span class="button_label">' . __('Delete', 'cftp_admin') . '</span></button></form>' . "\n";
                 }
 
                 // Create cells array with proper format

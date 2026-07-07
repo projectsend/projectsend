@@ -16,12 +16,12 @@ $valid_templates = array_map(function($t) { return $t['location']; }, $templates
 /**
  * Changing the client's template
  */
-if (isset($_GET['activate_template'])) {
-    if (!in_array($_GET['activate_template'], $valid_templates)) {
+if (isset($_POST['activate_template'])) {
+    if (!in_array($_POST['activate_template'], $valid_templates)) {
         exit_with_error_code(403);
     }
 
-    $save = save_option('selected_clients_template', $_GET['activate_template']);
+    $save = save_option('selected_clients_template', $_POST['activate_template']);
 
     global $flash;
     if ($save) {
@@ -129,9 +129,11 @@ if (isset($_GET['activate_template'])) {
                                     <?php
                                     } else {
                                     ?>
-                                        <a href="themes.php?activate_template=<?php echo $template['location']; ?>" class="btn btn-primary">
-                                            <?php _e('Activate', 'cftp_admin'); ?>
-                                        </a>
+                                        <form method="post" action="themes.php" class="d-inline">
+                                            <?php addCsrf(); ?>
+                                            <input type="hidden" name="activate_template" value="<?php echo html_output($template['location']); ?>">
+                                            <button type="submit" class="btn btn-primary"><?php _e('Activate', 'cftp_admin'); ?></button>
+                                        </form>
                                     <?php
                                     }
                                     ?>

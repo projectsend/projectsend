@@ -102,6 +102,7 @@ class EmailNotifications
                     'filename' => $file->filename_original,
                     'title' => $file->title,
                     'description' => $file->description,
+                    'folder_id' => $file->folder_id,
                 );
             }
 
@@ -270,7 +271,8 @@ class EmailNotifications
     }
 
     /**
-     * Make the list of files for the default ul container
+     * Make the list of files for the default ul container,
+     * grouped by folder with hierarchy paths and trimmed descriptions.
      */
     private function makeFilesListHtml($files, $uploader_username = null)
     {
@@ -279,18 +281,48 @@ class EmailNotifications
         if (!empty($uploader_username)) {
             $html .= '<li style="font-size:15px; font-weight:bold; margin-bottom:5px;">'.$uploader_username.'</li>';
         }
+
+        // Group files by folder_id
+        $grouped = [];
         foreach ($files as $file) {
             $file_data = $this->files_data[$file['file_id']];
-            $html .= '<li style="margin-bottom:11px;">';
-            $html .= '<p style="font-weight:bold; margin:0 0 5px 0; font-size:14px;">'.$file_data['title'].'<br>('.$file_data['filename'].')</p>';
-            if (!empty($file_data['description'])) {
-                if (strpos($file_data['description'], '<p>') !== false) {
-                    $html .= $file_data['description'];
-                } else {
-                    $html .= '<p>'.$file_data['description'].'</p>';
-                }
+            $folder_id = $file_data['folder_id'];
+            $key = ($folder_id !== null) ? (int)$folder_id : 'no_folder';
+            if (!isset($grouped[$key])) {
+                $grouped[$key] = [];
             }
-            $html .= '</li>';
+            $grouped[$key][] = $file_data;
+        }
+
+        foreach ($grouped as $folder_id => $folder_files) {
+            // Build folder header — show "Root" for files without a folder
+            if ($folder_id === 'no_folder') {
+                $html .= '<li style="font-size:14px; font-weight:bold; margin:10px 0 4px 0; color:#555;">&#128193; '.__('Root', 'cftp_admin').'</li>';
+            } else {
+                $folder = new \ProjectSend\Classes\Folder($folder_id);
+                $hierarchy = $folder->getHierarchy();
+                // getHierarchy returns [current, parent, grandparent, ...] — reverse for root-first
+                $hierarchy = array_reverse($hierarchy);
+                $path_parts = array_map(function($f) { return $f['name']; }, $hierarchy);
+                $path = implode(' &rarr; ', $path_parts);
+                $html .= '<li style="font-size:14px; font-weight:bold; margin:10px 0 4px 0; color:#555;">&#128193; '.$path.'</li>';
+            }
+
+            foreach ($folder_files as $file_data) {
+                $html .= '<li style="margin-bottom:8px; padding-left:12px;">';
+                $html .= '<p style="font-weight:bold; margin:0 0 2px 0; font-size:13px;">'.$file_data['title'].'<br>('.$file_data['filename'].')</p>';
+
+                // Trim description to ~96 chars, stripping HTML
+                if (!empty($file_data['description'])) {
+                    $desc = strip_tags($file_data['description']);
+                    $desc = trim($desc);
+                    if (strlen($desc) > 96) {
+                        $desc = substr($desc, 0, 93) . '...';
+                    }
+                    $html .= '<p style="margin:0; font-size:12px; color:#666;">'.$desc.'</p>';
+                }
+                $html .= '</li>';
+            }
         }
 
         return $html;

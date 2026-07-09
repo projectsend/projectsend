@@ -231,6 +231,7 @@ function get_file_type_icon($extension)
 
 function template_load_translation($template)
 {
+    global $ld;
     $lang = (isset($_SESSION['lang'])) ? $_SESSION['lang'] : SITE_LANG;
     if(!isset($ld)) { $ld = 'cftp_admin'; }
     $mo_file = ROOT_DIR.DS."templates".DS.$template.DS."lang".DS."{$lang}.mo";

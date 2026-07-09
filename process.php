@@ -8,7 +8,7 @@ $allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
 
 // Actions that don't require login
-$public_actions = ['get_public_file_info', 'social_login'];
+$public_actions = ['get_public_file_info', 'social_login', 'change_language'];
 if (!isset($_GET['do']) || !in_array($_GET['do'], $public_actions)) {
     redirect_if_not_logged_in();
 }

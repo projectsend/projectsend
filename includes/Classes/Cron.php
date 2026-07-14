@@ -193,7 +193,7 @@ class Cron
             'elements' => [],
         ];
 
-        if (get_option('cron_delete_expired_files') == '1') {
+        if (get_option('cron_delete_orphan_files') == '1') {
             $files = [];
             $object = new \ProjectSend\Classes\OrphanFiles;
             $orphan_files = $object->getFiles();
@@ -238,7 +238,7 @@ class Cron
             }
         }
 
-        $this->results['delete_expired_files'] = $results;
+        $this->results['delete_orphan_files'] = $results;
         $this->formatResultsForDisplay($results);
     }
 

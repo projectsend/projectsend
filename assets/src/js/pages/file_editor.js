@@ -352,21 +352,21 @@
             });
 
             // Collapse all
-            document.getElementById('files_collapse_all').addEventListener('click', function(e) {
+            document.getElementById('files_collapse_all')?.addEventListener('click', function(e) {
                 let wrappers = document.querySelectorAll('.file_editor_wrapper');
                 wrappers.forEach(wrapper => {
                     wrapper.classList.add('collapsed');
                 });
-                    
+
             })
 
             // Expand all
-            document.getElementById('files_expand_all').addEventListener('click', function(e) {
+            document.getElementById('files_expand_all')?.addEventListener('click', function(e) {
                 let wrappers = document.querySelectorAll('.file_editor_wrapper');
                 wrappers.forEach(wrapper => {
                     wrapper.classList.remove('collapsed');
                 });
-                    
+
             })
         });
 

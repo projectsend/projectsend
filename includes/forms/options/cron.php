@@ -53,7 +53,7 @@ $form_sections = [
             [
                 'type' => 'text',
                 'name' => 'cron_key',
-                'label' => __('Cron securiy key', 'cftp_admin'),
+                'label' => __('Cron security key', 'cftp_admin'),
                 'note' => __('This key must be present in the URL to validate the cron job and execute the required actions.', 'cftp_admin')
             ],
             [

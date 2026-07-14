@@ -4307,7 +4307,7 @@ msgid ""
 msgstr ""
 
 #: includes/forms/options/cron.php:56
-msgid "Cron securiy key"
+msgid "Cron security key"
 msgstr ""
 
 #: includes/forms/options/cron.php:57

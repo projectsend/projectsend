@@ -19,6 +19,10 @@ header('Content-Type: application/json');
 
 switch ($_GET['do']) {
     case 'folder_create':
+        if (!current_user_can('create_own_folders')) {
+            die_with_error_code(403);
+        }
+
         $folder = new \ProjectSend\Classes\Folder();
         $folder->set([
             'name' => $_POST['folder_name'],

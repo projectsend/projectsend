@@ -30,6 +30,11 @@ class Permissions {
                 'label' => __('Upload files', 'cftp_admin'),
                 'description' => __('Allow user to upload new files', 'cftp_admin')
             ],
+            'create_own_folders' => [
+                'category' => 'files',
+                'label' => __('Create own folders', 'cftp_admin'),
+                'description' => __('Allow user to create folders for organizing their own files', 'cftp_admin')
+            ],
             'edit_files' => [
                 'category' => 'files',
                 'label' => __('Edit own files', 'cftp_admin'),

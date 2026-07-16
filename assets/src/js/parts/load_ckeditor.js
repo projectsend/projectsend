@@ -8,6 +8,7 @@
                 // CKEditor
                 ClassicEditor
                     .create( document.querySelector( '.ckeditor' ), {
+                        licenseKey: 'GPL',
                         removePlugins: [ 'Heading', 'CKFinder', 'Link' ],
                         toolbar: [ 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote' ]
                     })

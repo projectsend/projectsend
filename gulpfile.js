@@ -124,7 +124,12 @@ gulp.task('copy-lib-codemirror', () => {
         .pipe(gulp.dest(dest + 'lib/codemirror/'));
 });
 
-gulp.task('copy', gulp.parallel(['copy-fonts', 'copy-lib', 'copy-lib-migrate', 'copy-lib-codemirror']));
+gulp.task('copy-lib-ckeditor', () => {
+    return gulp.src('node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js', { encoding: false })
+        .pipe(gulp.dest(dest + 'lib/ckeditor5/'));
+});
+
+gulp.task('copy', gulp.parallel(['copy-fonts', 'copy-lib', 'copy-lib-migrate', 'copy-lib-codemirror', 'copy-lib-ckeditor']));
 
 gulp.task('minify-css', function () {
     return gulp.src(dest + 'css/*.css')

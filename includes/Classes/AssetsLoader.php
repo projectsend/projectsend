@@ -29,7 +29,7 @@ Class AssetsLoader
             'head' => [
                 'jquery' => ['url' => ASSETS_LIB_URL.'/jquery/jquery.min.js', 'version' => '3.6.1'],
                 'jquery-migrate' =>['url' => ASSETS_LIB_URL.'/jquery-migrate/jquery-migrate.min.js', 'version' => '3.0.1'],
-                'ckeditor5' =>['url' => BASE_URI.'/node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js', 'version' => '23.1.0'],
+                'ckeditor5' =>['url' => ASSETS_LIB_URL.'/ckeditor5/ckeditor.js', 'version' => '44.3.0'],
                 'html5shiv' =>['url' => ASSETS_LIB_URL.'/html5shiv.min.js', 'version' => '3.7.3', 'args' => ['condition' => 'lt IE 9']],
                 'respondjs' =>['url' => ASSETS_LIB_URL.'/respond.min.js', 'version' => '1.4.2', 'args' => ['condition' => 'lt IE 9']],
             ],

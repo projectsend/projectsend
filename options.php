@@ -108,6 +108,7 @@ switch ($section) {
             'cron_send_emails',
             'cron_delete_expired_files',
             'cron_delete_orphan_files',
+            'cron_delete_decrypt_temp_files',
             'cron_save_log_database',
             'cron_email_summary_send',
         );

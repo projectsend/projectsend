@@ -81,6 +81,8 @@ class Cron
 
         $this->runTaskDeleteOrphanFiles();
 
+        $this->runTaskDeleteDecryptedTempFiles();
+
         $this->emailResults();
 
         $this->saveResultsToDatabase();
@@ -239,6 +241,49 @@ class Cron
         }
 
         $this->results['delete_orphan_files'] = $results;
+        $this->formatResultsForDisplay($results);
+    }
+
+    private function runTaskDeleteDecryptedTempFiles()
+    {
+        $results = [
+            'title' => __('Delete temporary decrypted files', 'cftp_admin'),
+            'enabled' => get_option('cron_delete_decrypt_temp_files'),
+            'elements' => [],
+        ];
+
+        if (get_option('cron_delete_decrypt_temp_files') == '1') {
+            $results['elements'] = [
+                'found' => [
+                    'label' => __('Found', 'cftp_admin'),
+                    'items' => []
+                ],
+                'success' => [
+                    'label' => __('Successfully deleted', 'cftp_admin'),
+                    'items' => []
+                ],
+                'failed' => [
+                    'label' => __('Failed', 'cftp_admin'),
+                    'items' => []
+                ],
+            ];
+
+            $decrypt_files = glob(UPLOADS_TEMP_DIR.'/ps_decrypt_*');
+            if (!empty($decrypt_files)) {
+                foreach ($decrypt_files as $file) {
+                    if (is_file($file) and time() - filemtime($file) > DECRYPT_TMP_EXPIRATION_TIME) {
+                        $results['elements']['found']['items'][] = basename($file);
+                        if (@unlink($file)) {
+                            $results['elements']['success']['items'][] = basename($file);
+                        } else {
+                            $results['elements']['failed']['items'][] = basename($file);
+                        }
+                    }
+                }
+            }
+        }
+
+        $this->results['delete_decrypted_temp_files'] = $results;
         $this->formatResultsForDisplay($results);
     }
 

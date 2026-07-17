@@ -92,6 +92,12 @@ $form_sections = [
                     'not_allowed' => __('Only files with extensions that are not allowed', 'cftp_admin')
                 ],
                 'required' => true
+            ],
+            [
+                'type' => 'checkbox',
+                'name' => 'cron_delete_decrypt_temp_files',
+                'label' => __('Delete temporary decrypted files', 'cftp_admin'),
+                'note' => sprintf(__('Removes leftover decrypted copies of encrypted files created for X-Accel/XSendFile/LiteSpeed downloads, once they are older than %s minutes. If this is disabled, they are instead cleaned up on every admin page load.', 'cftp_admin'), convert_seconds(DECRYPT_TMP_EXPIRATION_TIME)['minutes'])
             ]
         ]
     ],

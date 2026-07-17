@@ -462,12 +462,10 @@ class Download
                         $file_location = $temp_file;
                         // Update X-Accel path to point to the decrypted temp file
                         $xaccel = XACCEL_FILES_URL . '/temp/' . basename($temp_file);
-                        // Note: temp file will be deleted after download by register_shutdown_function
-                        register_shutdown_function(function() use ($temp_file) {
-                            if (file_exists($temp_file)) {
-                                unlink($temp_file);
-                            }
-                        });
+                        // Note: the temp file is intentionally not deleted here. The web server
+                        // (Nginx/Apache/LiteSpeed) reads it after this PHP request has finished,
+                        // so deleting it now would race the server's own open() of the file.
+                        // It is cleaned up later by the age-based sweep in header-messages.php.
                     }
 
                     if (get_option('download_method') == 'apache_xsendfile') {

@@ -74,3 +74,24 @@ if (!empty($zip_files)) {
         echo system_message('danger', $msg);
     }
 }
+
+// Delete old decrypted temp files (used for X-Accel/XSendFile/LiteSpeed downloads of encrypted files)
+$decrypt_files = glob(UPLOADS_TEMP_DIR.'/ps_decrypt_*');
+if (!empty($decrypt_files)) {
+    $found = 0;
+    $deleted = 0;
+    foreach ($decrypt_files as $file) {
+        if(is_file($file) and time()-filemtime($file) > DECRYPT_TMP_EXPIRATION_TIME) {
+            $found++;
+            if (@unlink($file)) {
+                $deleted++;
+            }
+        }
+    }
+
+    if ($deleted < $found && current_role_in(['System Administrator', 'Account Manager', 'Uploader'])) {
+        $msg = '<p><strong>'.__('Warning:', 'cftp_admin').'</strong>' . ' ' . sprintf(__('One or more temporary decrypted files could not be deleted. Files older than %s minutes are generally considered safe to delete.', 'cftp_admin'), convert_seconds(DECRYPT_TMP_EXPIRATION_TIME)['minutes']);
+        $msg .= '<p>'.sprintf(__('To make space on your disk, you can manually delete old files from %s', 'cftp_admin'), UPLOADS_TEMP_DIR).'</p>';
+        echo system_message('danger', $msg);
+    }
+}

@@ -313,6 +313,9 @@ define('HASH_PORTABLE', false);
 /** ZIP files */
 define('ZIP_TMP_EXPIRATION_TIME', 172800); // Delete zip files from the temp folder older than this value (in seconds)
 
+/** Decrypted temp files (used for X-Accel/XSendFile/LiteSpeed downloads of encrypted files) */
+define('DECRYPT_TMP_EXPIRATION_TIME', 300); // Delete decrypted temp files from the temp folder older than this value (in seconds)
+
 /** cURL timeout */
 define('CURL_TIMEOUT_SECONDS', 5);
 

@@ -88,7 +88,9 @@ $flash_col = (isset($flash_size) && $flash_size == 'full') ? 'col-12' : 'col-12 
 
                     <div class="row">
                         <div class="col-12 branding_unlogged">
+                            <a href="https://monroeand.co" target="_blank">
                             <?php echo get_branding_layout(true); ?>
+                            </a>
                         </div>
                     </div>
 

@@ -157,7 +157,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                             $badge_class = 'bg-danger';
                         }
 
-                        $value = date(get_option('timeformat'), strtotime($file->expiry_date));
+                        $badge_label = date(get_option('timeformat'), strtotime($file->expiry_date));
                     } else {
                         $badge_class = 'bg-success';
                         $badge_label = __('Never', 'cftp_template');
@@ -195,7 +195,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
 
                     $download_cell = '';
                     if (get_option('public_listing_use_download_link') == 1 && $file->isPublic()) {
-                        $download_cell = '<a href="' . $file->download_link . '" class="' . $download_btn_class . '" target="_blank">' . $download_text . '</a>';
+                        $download_cell = '<a href="' . $file->public_url . '&download' . '" class="' . $download_btn_class . '" target="_blank">' . $download_text . '</a>';
                         if ($file->expired != true) {
                             $download_cell .= ' ' . '<a href="' . $file->public_url . '" class="' . $download_btn_class . '" target="_blank">' . __('Direct link') . '</a>';
                         }

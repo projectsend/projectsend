@@ -27,7 +27,7 @@ foreach ($groups as $group) {
     ];
 }
 
-$filters_form = [
+/*$filters_form = [
     'action' => $current_url,
     'items' => [
         'group' => [
@@ -42,7 +42,7 @@ $filters_form = [
     'hidden_inputs' => [
         'token' => (isset($_GET['token'])) ? htmlentities($_GET['token']) : '',
     ],
-];
+];*/
 
 // Results count and form actions 
 $elements_found_count = $count;
@@ -197,7 +197,7 @@ include_once LAYOUT_DIR . DS . 'search-filters-bar.php';
                     if (get_option('public_listing_use_download_link') == 1 && $file->isPublic()) {
                         $download_cell = '<a href="' . $file->public_url . '&download' . '" class="' . $download_btn_class . '" target="_blank">' . $download_text . '</a>';
                         if ($file->expired != true) {
-                            $download_cell .= ' ' . '<a href="' . $file->public_url . '" class="' . $download_btn_class . '" target="_blank">' . __('Direct link') . '</a>';
+                            $download_cell .= ' ' . '<a href="' . $file->public_url . '" class="' . $download_btn_class . '" target="_blank">' . __('Share link') . '</a>';
                         }
                     }
 

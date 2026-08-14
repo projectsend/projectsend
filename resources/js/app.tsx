@@ -1,6 +1,6 @@
 import '../css/app.css';
 
-import { createInertiaApp } from '@inertiajs/react';
+import { createInertiaApp, router } from '@inertiajs/react';
 import axios from 'axios';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
@@ -19,7 +19,23 @@ declare global {
 // every write 419s the moment a neighbour answers a request.
 axios.defaults.xsrfCookieName = xsrfCookieName();
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+/**
+ * The suffix on every browser tab title.
+ *
+ * Read from the shared props — the site name an administrator set — and
+ * never from `import.meta.env`. Vite resolves those at build time, and the
+ * published release ships `public/build/` already compiled, so whatever a
+ * build machine happened to have is frozen for every install downstream and
+ * no setting can move it afterwards. That is how 2.0.0 came to tell every
+ * visitor its tabs were "Laravel".
+ */
+let appName = 'ProjectSend';
+
+const siteName = (page: { props: Record<string, unknown> }): string | null => {
+    const name = page.props.name;
+
+    return typeof name === 'string' && name !== '' ? name : null;
+};
 
 // Pages shipped by packages, re-keyed to look exactly like a host page
 // (`./pages/<name>.tsx`) so resolvePageComponent finds them the same
@@ -43,6 +59,10 @@ createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => resolvePageComponent(`./pages/${name}.tsx`, { ...packagePages, ...import.meta.glob('./pages/**/*.tsx') }),
     setup({ el, App, props }) {
+        // Before the first render, so the title callback below already has
+        // it when the initial page produces its <Head>.
+        appName = siteName(props.initialPage) ?? appName;
+
         const root = createRoot(el);
 
         root.render(<App {...props} />);
@@ -50,6 +70,13 @@ createInertiaApp({
     progress: {
         color: '#4B5563',
     },
+});
+
+// Renaming the site is a settings save like any other, so the new name
+// arrives on the very next visit — without this the tabs would keep the
+// old one until someone reloaded the page.
+router.on('navigate', (event) => {
+    appName = siteName(event.detail.page) ?? appName;
 });
 
 // This will set light / dark mode on load...

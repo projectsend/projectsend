@@ -62,9 +62,23 @@ function projectsend_preflight_failure(string $root): ?array
     $envFile = $root.'/.env';
     $hasEnvFile = is_file($envFile);
 
+    // A .env that is there but unreadable looks exactly like one that was
+    // never created — is_file() is false either way, since it has to follow
+    // the link and stat the target — and the two need opposite advice.
+    // Reported from the official Docker image, where .env is a symlink into
+    // storage/: the image left /var/www/html world-writable and owned by a
+    // uid that no longer existed, so the kernel's fs.protected_symlinks
+    // refused to let the php-fpm worker follow it. Every request said "no
+    // .env file was found" while `docker exec ... cat .env`, as root, printed
+    // it back perfectly — which is the most misleading pair of facts this
+    // guard could possibly hand somebody.
+    $unreadableEnv = $hasEnvFile ? ! is_readable($envFile) : is_link($envFile);
+
     // Fall back to a cheap read of just APP_KEY from the file — we are not
-    // going to boot Dotenv or parse the whole thing for one value.
-    if ($appKey === null && $hasEnvFile) {
+    // going to boot Dotenv or parse the whole thing for one value. Skipped
+    // when the file cannot be read, or file() emits a PHP warning into the
+    // page this guard exists to keep clean.
+    if ($appKey === null && $hasEnvFile && ! $unreadableEnv) {
         foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [] as $line) {
             if (preg_match('/^\s*(?:export\s+)?APP_KEY\s*=\s*(.*)$/', $line, $m) === 1) {
                 // Strip the surrounding quotes Dotenv would also strip.
@@ -77,6 +91,18 @@ function projectsend_preflight_failure(string $root): ?array
 
     if ($appKey !== null && $appKey !== '') {
         return null;
+    }
+
+    if ($unreadableEnv) {
+        return [
+            'ProjectSend cannot read its configuration',
+            'A <code>.env</code> is in place, but the user PHP runs as cannot read it — or, if it '
+                .'is a symlink, cannot follow it. Note that <code>root</code> is exempt from both '
+                .'checks, so reading the file over <code>docker exec</code> or <code>sudo</code> '
+                .'proves nothing here.',
+            "Compare who owns the file with who PHP runs as, and check the directory holding it:\n\n"
+                ."ls -ln .env\nstat -c '%n %U %a' . .env",
+        ];
     }
 
     if (! $hasEnvFile) {

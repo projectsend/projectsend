@@ -40,7 +40,15 @@ if [ ! -f storage/.env ]; then
     cp .env.example storage/.env
     chown www-data:www-data storage/.env
 fi
+#
+# The symlink is owned by the runtime user, not by root who creates it:
+# fs.protected_symlinks lets a process follow a symlink in a world-writable
+# sticky directory only when it owns the link (or the directory). The image
+# no longer leaves /var/www/html in that state, so this is the second lock
+# on the same door — cheap, and it is what keeps the failure from coming
+# back silently if that directory's mode ever drifts.
 [ -L .env ] || ln -sf storage/.env .env
+chown -h www-data:www-data .env
 
 if [ -z "$APP_KEY" ] && ! grep -q '^APP_KEY=base64:' storage/.env; then
     echo "projectsend: generating APP_KEY (first boot, persisted to the storage volume)"

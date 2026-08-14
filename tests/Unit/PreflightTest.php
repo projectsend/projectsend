@@ -68,6 +68,34 @@ it('fails when a .env exists with no APP_KEY line at all', function (): void {
     expect(projectsend_preflight_failure(preflightFixture(null, true)))->not->toBeNull();
 });
 
+it('says so when .env is a symlink it cannot follow, rather than that none exists', function (): void {
+    // The official image symlinks .env into storage/. When that link cannot
+    // be followed — a missing target, or a directory whose permissions stop
+    // the web server user traversing it — every stat says "no such file",
+    // and "copy .env.example" is then exactly the wrong thing to be told.
+    $dir = preflightFixture(null, false);
+    symlink($dir.'/storage/.env', $dir.'/.env');
+
+    $failure = projectsend_preflight_failure($dir);
+
+    expect($failure)->not->toBeNull()
+        ->and($failure[0])->toBe('ProjectSend cannot read its configuration')
+        ->and($failure[1])->toContain('cannot read it')
+        ->and(projectsend_preflight_command($failure[2]))->toContain('ls -ln .env')
+        ->and(projectsend_preflight_command($failure[2]))->not->toContain('cp .env.example');
+});
+
+it('says so when .env exists but its permissions deny the reader', function (): void {
+    $dir = preflightFixture('base64:'.base64_encode(random_bytes(32)), true);
+    chmod($dir.'/.env', 0000);
+    clearstatcache();
+
+    $failure = projectsend_preflight_failure($dir);
+
+    expect($failure)->not->toBeNull()
+        ->and($failure[0])->toBe('ProjectSend cannot read its configuration');
+})->skip(fn (): bool => function_exists('posix_geteuid') && posix_geteuid() === 0, 'root can read anything, so the mode says nothing');
+
 it('reads a quoted APP_KEY the way Dotenv would', function (): void {
     $dir = preflightFixture('"base64:'.base64_encode(random_bytes(32)).'"', true);
 

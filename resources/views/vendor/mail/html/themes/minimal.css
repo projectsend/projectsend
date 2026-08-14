@@ -1,0 +1,293 @@
+/* Base */
+
+body,
+body *:not(html):not(style):not(br):not(tr):not(code) {
+    box-sizing: border-box;
+    font-family: Helvetica, Arial, sans-serif;
+    position: relative;
+}
+
+body {
+    -webkit-text-size-adjust: none;
+    background-color: #ffffff;
+    color: #374151;
+    height: 100%;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+    width: 100% !important;
+}
+
+p,
+ul,
+ol,
+blockquote {
+    line-height: 1.5;
+    text-align: start;
+}
+
+a {
+    color: #4338ca;
+}
+
+a img {
+    border: none;
+}
+
+/* Typography */
+
+h1 {
+    color: #111827;
+    font-size: 17px;
+    font-weight: 600;
+    margin-top: 0;
+    text-align: start;
+}
+
+h2 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-top: 0;
+    text-align: start;
+}
+
+h3 {
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 0;
+    text-align: left;
+}
+
+p {
+    font-size: 15px;
+    line-height: 1.6em;
+    margin-top: 0;
+    text-align: left;
+}
+
+p.sub {
+    font-size: 12px;
+}
+
+img {
+    max-width: 100%;
+}
+
+/* Layout — no gray page background or card chrome, edge to edge white */
+
+.wrapper {
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 100%;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.content {
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+/* Header — a small uppercase label instead of a large bold wordmark */
+
+.header {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.header a {
+    color: #111827;
+    text-decoration: none;
+}
+
+.header-label {
+    color: #6b7280;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* Logo */
+
+.logo {
+    height: 32px;
+    margin-top: 0;
+    margin-bottom: 6px;
+    max-height: 32px;
+    width: auto;
+}
+
+/* Body — flat, no card border/shadow */
+
+.body {
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 100%;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.inner-body {
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 570px;
+    background-color: #ffffff;
+    border: none;
+    box-shadow: none;
+    margin: 0 auto;
+    padding: 0;
+    width: 570px;
+}
+
+.inner-body a {
+    word-break: break-all;
+}
+
+/* Subcopy */
+
+.subcopy {
+    border-top: 1px solid #e5e7eb;
+    margin-top: 20px;
+    padding-top: 20px;
+}
+
+.subcopy p {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* Footer — a thin divider, muted, no boxed background */
+
+.footer {
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 570px;
+    border-top: 1px solid #e5e7eb;
+    margin: 24px auto 0;
+    padding-top: 16px;
+    text-align: center;
+    width: 570px;
+}
+
+.footer p {
+    color: #9ca3af;
+    font-size: 11px;
+    text-align: center;
+}
+
+.footer a {
+    color: #9ca3af;
+    text-decoration: underline;
+}
+
+/* Tables */
+
+.table table {
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 100%;
+    margin: 24px auto;
+    width: 100%;
+}
+
+.table th {
+    border-bottom: 1px solid #e5e7eb;
+    margin: 0;
+    padding-bottom: 8px;
+}
+
+.table td {
+    color: #374151;
+    font-size: 14px;
+    line-height: 18px;
+    margin: 0;
+    padding: 10px 0;
+}
+
+.content-cell {
+    max-width: 100vw;
+    padding: 28px;
+}
+
+/* Buttons — a single flat accent, no beveled border-as-padding trick */
+
+.action {
+    -premailer-cellpadding: 0;
+    -premailer-cellspacing: 0;
+    -premailer-width: 100%;
+    margin: 24px auto;
+    padding: 0;
+    text-align: center;
+    width: 100%;
+    float: unset;
+}
+
+.button {
+    -webkit-text-size-adjust: none;
+    border-radius: 3px;
+    color: #fff;
+    display: inline-block;
+    overflow: hidden;
+    padding: 10px 20px;
+    text-decoration: none;
+}
+
+.button-blue,
+.button-primary {
+    background-color: #4338ca;
+    border: none;
+}
+
+.button-green,
+.button-success {
+    background-color: #15803d;
+    border: none;
+}
+
+.button-red,
+.button-error {
+    background-color: #b91c1c;
+    border: none;
+}
+
+/* Panels */
+
+.panel {
+    border-left: #4338ca solid 3px;
+    margin: 18px 0;
+}
+
+.panel-content {
+    background-color: #f9fafb;
+    color: #374151;
+    padding: 14px;
+}
+
+.panel-content p {
+    color: #374151;
+}
+
+.panel-item {
+    padding: 0;
+}
+
+.panel-item p:last-of-type {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+/* Utilities */
+
+.break-all {
+    word-break: break-all;
+}

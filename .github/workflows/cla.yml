@@ -1,0 +1,61 @@
+# Gates pull requests on CLA signature using contributor-assistant/github-action.
+# Signatures are stored as a JSON file in a separate private repo — do NOT store
+# them in this public repo, they contain contributor emails.
+#
+# Setup before enabling:
+#   1. Create a private repo, e.g. projectsend/cla-signatures
+#   2. Create a PAT with 'repo' scope that can write to it
+#   3. Add it as a secret named PERSONAL_ACCESS_TOKEN in this repository
+#
+# The two github.com/projectsend/projectsend URLs below are shown to
+# contributors when the bot asks them to sign. They must point at a repo an
+# outside contributor can actually read.
+
+name: CLA Assistant
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_target:
+    types: [opened, closed, synchronize]
+
+permissions:
+  actions: write
+  contents: read
+  pull-requests: write
+  statuses: write
+
+jobs:
+  cla:
+    runs-on: ubuntu-latest
+    steps:
+      - name: CLA check
+        if: (github.event.comment.body == 'recheck' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request_target'
+        uses: contributor-assistant/github-action@v2.6.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        with:
+          path-to-signatures: 'signatures/version1/cla.json'
+          path-to-document: 'https://github.com/projectsend/projectsend/blob/main/CLA-INDIVIDUAL.md'
+          branch: 'main'
+          remote-organization-name: 'projectsend'
+          remote-repository-name: 'cla-signatures'
+
+          allowlist: dependabot[bot],renovate[bot],*[bot]
+
+          custom-notsigned-prcomment: |
+            Thanks for the pull request!
+
+            Before we can merge it, we need you to sign the Contributor License Agreement.
+            It's a one-time thing and takes about a minute — you keep the copyright in your
+            contribution, and it lets the project offer commercial licenses that fund
+            development of the free version. The reasoning is written out in
+            [CONTRIBUTING.md](https://github.com/projectsend/projectsend/blob/main/CONTRIBUTING.md#licensing-and-the-contributor-license-agreement).
+
+            Please read the **[CLA]($pathToCLADocument)**, then post exactly this as a comment
+            on this pull request:
+
+          custom-pr-sign-comment: 'I have read the CLA Document and I hereby sign the CLA'
+          custom-allsigned-prcomment: 'CLA signed — thanks. A maintainer will review this shortly.'
+          lock-pullrequest-aftermerge: false

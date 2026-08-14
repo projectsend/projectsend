@@ -1,0 +1,94 @@
+import { type BreadcrumbItem, type SharedData } from '@/types';
+import { Head, usePage } from '@inertiajs/react';
+
+import Heading from '@/components/heading';
+import ProjectSendLogo from '@/components/projectsend-logo';
+import { useTranslation } from '@/hooks/use-translation';
+import AppLayout from '@/layouts/app-layout';
+
+interface Environment {
+    version: string;
+    edition: string;
+    php: string;
+    laravel: string;
+    database: string;
+}
+
+interface AboutProps {
+    license: string;
+    /** Null for anyone the dashboard's System widget would also hide it from. */
+    environment: Environment | null;
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+    return (
+        <div className="flex justify-between gap-4 py-2">
+            <dt className="text-muted-foreground">{label}</dt>
+            <dd className="text-right break-all">{value}</dd>
+        </div>
+    );
+}
+
+export default function About({ license, environment }: AboutProps) {
+    const { t } = useTranslation();
+    const { version, edition, links } = usePage<SharedData>().props;
+
+    const breadcrumbs: BreadcrumbItem[] = [{ title: t('About'), href: '/system/about' }];
+
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title={t('About')} />
+
+            <div className="px-4 py-6">
+                <Heading title={t('About')} description={t('The release this installation is running, and where it comes from.')} />
+
+                <div className="max-w-xl space-y-8">
+                    <div className="flex items-center gap-4">
+                        <ProjectSendLogo className="text-foreground h-12 w-auto" />
+                        <div>
+                            <p className="text-lg font-medium">ProjectSend</p>
+                            <p className="text-muted-foreground text-sm">
+                                {t('Version :version', { version })} · <span className="capitalize">{edition}</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <p className="text-muted-foreground text-sm">
+                        {t(
+                            'ProjectSend is free, open source software for sending files to your clients. It is released under the :license, which means you are free to use, study, change and share it.',
+                            { license },
+                        )}
+                    </p>
+
+                    <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
+                        <a href={links.website} target="_blank" rel="noreferrer" className="underline hover:no-underline">
+                            {t('Website')}
+                        </a>
+                        <a href={links.source} target="_blank" rel="noreferrer" className="underline hover:no-underline">
+                            {t('Source code')}
+                        </a>
+                        <a href={links.open_collective} target="_blank" rel="noreferrer" className="underline hover:no-underline">
+                            {t('Support the project')}
+                        </a>
+                    </div>
+
+                    {environment && (
+                        <div>
+                            <h2 className="mb-1 text-sm font-medium">{t('Environment')}</h2>
+                            <p className="text-muted-foreground mb-2 text-sm">
+                                {t('Worth including when you report a problem.')}
+                            </p>
+                            <dl className="divide-y text-sm">
+                                <Row label={t('Version')} value={environment.version} />
+                                <Row label={t('Edition')} value={environment.edition} />
+                                <Row label="PHP" value={environment.php} />
+                                <Row label="Laravel" value={environment.laravel} />
+                                <Row label={t('Database')} value={environment.database} />
+                            </dl>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </AppLayout>
+    );
+}

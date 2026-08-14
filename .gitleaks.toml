@@ -1,0 +1,43 @@
+# Secret scanning config.
+#
+#   docker run --rm -v "$PWD:/repo" -w /repo zricethezav/gitleaks:latest \
+#       detect --source /repo --log-opts="--all" --redact --no-banner
+#
+# `--log-opts="--all"` is the part that matters: it scans every commit on
+# every ref, not just the working tree. Publishing a repository makes its
+# entire history world-readable, so a credential that was committed once and
+# removed the next day is still exposed — and still needs rotating, not just
+# deleting.
+#
+# Run this before publishing anything, and treat any new finding as real
+# until proven otherwise.
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "curl-auth-header"
+
+  [rules.allowlist]
+  description = """
+  The API guide documents authentication, so every example carries an
+  Authorization header. All of them are placeholders — YOUR_TOKEN, or the
+  psend_xxxx shape used to show what a real token looks like. Scanned and
+  confirmed clean 2026-08-09 across 347 commits.
+
+  This allowlist is deliberately narrow: it excuses the two placeholder
+  spellings in one file, not the rule, so a real token pasted into that same
+  guide would still be caught.
+
+  matchCondition = "AND" is what makes that true and must not be removed.
+  Gitleaks ORs allowlist conditions by default, so without it the `paths`
+  entry alone excuses every Authorization header in the file — including a
+  real one. Verified both ways: the placeholders pass, and an injected
+  token-shaped string is still reported.
+  """
+  matchCondition = "AND"
+  paths = ['''docs/api-guide\.md''']
+  regexes = [
+    '''Bearer YOUR_TOKEN''',
+    '''Bearer \d+\|psend_x+''',
+  ]

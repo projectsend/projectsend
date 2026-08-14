@@ -1,0 +1,109 @@
+<?php
+
+declare(strict_types=1);
+
+use App\Models\User;
+use App\Modules\Identity\Permissions\SystemRole;
+use App\Modules\Identity\UserType;
+use App\Modules\Platform\Capabilities\Edition;
+use Inertia\Testing\AssertableInertia;
+
+beforeEach(function () {
+    $this->admin = User::factory()->create();
+});
+
+test('the index lists clients only — staff never appear', function () {
+    User::factory()->client()->create(['name' => 'A Client']);
+    User::factory()->role(SystemRole::Uploader)->create(['name' => 'A Staffer']);
+
+    $this->actingAs($this->admin)->get('/clients')->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->component('clients/index')
+            ->has('clients', 1)
+            ->where('clients.0.name', 'A Client'),
+    );
+});
+
+test('a staff-created client is active with the Client role', function () {
+    $response = $this->actingAs($this->admin)->post('/clients', [
+        'name' => 'Handmade Client',
+        'email' => 'made@example.com',
+        'password' => 'super-secret-password',
+        'password_confirmation' => 'super-secret-password',
+    ]);
+
+    $client = User::query()->where('email', 'made@example.com')->sole();
+    $response->assertRedirect(route('clients.edit', $client));
+    expect($client->type)->toBe(UserType::Client)
+        ->and($client->active)->toBeTrue()
+        ->and($client->role?->name)->toBe('Client');
+});
+
+test('staff accounts are unreachable through client screens', function () {
+    $staffer = User::factory()->role(SystemRole::Uploader)->create();
+
+    $this->actingAs($this->admin);
+    $this->get("/clients/{$staffer->id}")->assertNotFound();
+    $this->patch("/clients/{$staffer->id}", [])->assertNotFound();
+    $this->delete("/clients/{$staffer->id}")->assertNotFound();
+});
+
+test('activating a pending client through the edit screen clears the request flag', function () {
+    $pending = User::factory()->pendingClient()->create();
+
+    $this->actingAs($this->admin)->patch("/clients/{$pending->id}", [
+        'name' => $pending->name,
+        'email' => $pending->email,
+        'active' => true,
+    ])->assertRedirect();
+
+    $pending->refresh();
+    expect($pending->active)->toBeTrue()
+        ->and($pending->account_requested)->toBeFalse();
+});
+
+test('an account manager can manage clients but an uploader cannot', function () {
+    // Account Manager holds create/edit/delete_clients + approve_account_requests.
+    $manager = User::factory()->role(SystemRole::AccountManager)->create();
+    $this->actingAs($manager);
+    $this->get('/account-requests')->assertOk();
+
+    // manage_clients is NOT in the Account Manager default set (v1 parity):
+    // the list needs it, so the index is refused while the queue works.
+    $this->get('/clients')->assertForbidden();
+
+    $uploader = User::factory()->role(SystemRole::Uploader)->create();
+    $this->actingAs($uploader);
+    $this->get('/clients')->assertForbidden();
+    $this->get('/account-requests')->assertForbidden();
+});
+
+test('client management exists in the cloud edition too', function () {
+    config()->set('projectsend.edition', Edition::Cloud);
+
+    $this->actingAs($this->admin)->get('/clients')->assertOk();
+    $this->actingAs($this->admin)->get('/account-requests')->assertOk();
+});
+
+test('staff can update client settings and they take effect', function () {
+    $this->actingAs($this->admin);
+
+    $this->get('/system/settings/clients')->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->component('system/settings/clients')
+            ->where('clients_can_register', false),
+    );
+
+    $this->patch('/system/settings/clients', [
+        'clients_can_register' => true,
+        'clients_auto_approve' => false,
+        'clients_auto_group' => 0,
+        'clients_can_select_group' => 'none',
+        'clients_membership_deny_cooldown_days' => 30,
+        'default_client_storage_quota_mb' => 0,
+    ])->assertRedirect()->assertSessionDoesntHaveErrors();
+
+    Auth::logout();
+    $this->flushSession();
+    $this->get('/register')->assertOk();
+});

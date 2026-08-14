@@ -1,0 +1,23 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 8
+    paths:
+        - app
+
+    # These two are the host's side of the optional community-modules
+    # Custom Assets integration. That package is never a Composer dependency
+    # of this repo (Cloud must never require it; CI drops private packages
+    # entirely too), so its classes are unresolvable here by design — both
+    # files guard every use behind class_exists()/an event binding that only
+    # fires when the package is installed. See each one's docblock.
+    ignoreErrors:
+        -
+            message: '#ProjectSend\\CommunityModules\\#'
+            path: app/Modules/Audit/Listeners/LogCustomAssetActivity.php
+            reportUnmatched: false
+        -
+            message: '#ProjectSend\\CommunityModules\\#'
+            path: app/Modules/Platform/CustomAssets/CustomAssetsBridge.php
+            reportUnmatched: false

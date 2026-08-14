@@ -1,0 +1,361 @@
+@import 'tailwindcss';
+
+@plugin 'tailwindcss-animate';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+
+/*
+ * Companion packages under packages/ (e.g. packages/cloud-modules) live
+ * under a gitignored directory, which Tailwind v4's default content
+ * detection skips entirely — without this, any utility class used only in
+ * a package page (never duplicated in core) silently never gets generated.
+ */
+@source '../../packages/*/resources/js/**/*.tsx';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+    --font-sans:
+        'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --radius-lg: var(--radius);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-sm: calc(var(--radius) - 4px);
+
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+
+    --color-success: var(--success);
+    --color-success-foreground: var(--success-foreground);
+
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+
+    --color-sidebar: var(--sidebar-background);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+}
+
+:root {
+    --background: hsl(0, 0%, 100%);
+    --foreground: hsl(0, 0%, 3.9%);
+    --card: hsl(0, 0%, 100%);
+    --card-foreground: hsl(0, 0%, 3.9%);
+    --popover: hsl(0, 0%, 100%);
+    --popover-foreground: hsl(0, 0%, 3.9%);
+    --primary: #4c2ab6; /* ProjectSend brand */
+    --primary-foreground: hsl(0, 0%, 98%);
+    --secondary: hsl(0, 0%, 96.1%);
+    --secondary-foreground: hsl(0, 0%, 9%);
+    --muted: hsl(0, 0%, 96.1%);
+    --muted-foreground: hsl(0, 0%, 45.1%);
+    --accent: hsl(255, 60%, 96%);
+    --accent-foreground: hsl(255, 50%, 30%);
+    --destructive: hsl(0, 84.2%, 60.2%);
+    --destructive-foreground: hsl(0, 0%, 98%);
+    --success: hsl(142, 71%, 45%);
+    --success-foreground: hsl(0, 0%, 98%);
+    --border: hsl(0, 0%, 92.8%);
+    --input: hsl(0, 0%, 89.8%);
+    --ring: #4c2ab6;
+    --chart-1: hsl(12, 76%, 61%);
+    --chart-2: hsl(173, 58%, 39%);
+    --chart-3: hsl(197, 37%, 24%);
+    --chart-4: hsl(43, 74%, 66%);
+    --chart-5: hsl(27, 87%, 67%);
+    --radius: 0.5rem;
+    --sidebar-background: hsl(0, 0%, 98%);
+    --sidebar-foreground: hsl(240, 5.3%, 30%);
+    --sidebar-primary: #4c2ab6;
+    --sidebar-primary-foreground: hsl(0, 0%, 98%);
+    --sidebar-accent: hsl(0, 0%, 94%);
+    --sidebar-accent-foreground: hsl(0, 0%, 30%);
+    --sidebar-border: hsl(0, 0%, 91%);
+    --sidebar-ring: #4c2ab6;
+}
+
+.dark {
+    --background: hsl(0, 0%, 9%);
+    --foreground: hsl(0, 0%, 98%);
+    --card: hsl(0, 0%, 12%);
+    --card-foreground: hsl(0, 0%, 98%);
+    --popover: hsl(0, 0%, 12%);
+    --popover-foreground: hsl(0, 0%, 98%);
+    --primary: hsl(255, 70%, 62%); /* ProjectSend brand, lightened for dark surfaces */
+    --primary-foreground: hsl(0, 0%, 98%);
+    --secondary: hsl(0, 0%, 17%);
+    --secondary-foreground: hsl(0, 0%, 98%);
+    --muted: hsl(0, 0%, 14%);
+    --muted-foreground: hsl(0, 0%, 65%);
+    --accent: hsl(255, 25%, 18%);
+    --accent-foreground: hsl(255, 60%, 92%);
+    --destructive: hsl(0, 84%, 60%);
+    --destructive-foreground: hsl(0, 0%, 98%);
+    --success: hsl(142, 65%, 42%);
+    --success-foreground: hsl(0, 0%, 98%);
+    --border: hsl(0, 0%, 18%);
+    --input: hsl(0, 0%, 18%);
+    --ring: hsl(255, 70%, 62%);
+    --chart-1: hsl(220, 70%, 50%);
+    --chart-2: hsl(160, 60%, 45%);
+    --chart-3: hsl(30, 80%, 55%);
+    --chart-4: hsl(280, 65%, 60%);
+    --chart-5: hsl(340, 75%, 55%);
+    --sidebar-background: hsl(0, 0%, 7%);
+    --sidebar-foreground: hsl(0, 0%, 80%);
+    --sidebar-primary: hsl(255, 70%, 62%);
+    --sidebar-primary-foreground: hsl(0, 0%, 98%);
+    --sidebar-accent: hsl(0, 0%, 18%);
+    --sidebar-accent-foreground: hsl(240, 4.8%, 95.9%);
+    --sidebar-border: hsl(0, 0%, 18%);
+    --sidebar-ring: hsl(255, 70%, 62%);
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
+/*
+ * Uppy Dashboard: align with the app's design system. The theme
+ * (light/dark) is passed from React in sync with the app's toggle;
+ * these overrides handle typography, radius, and brand colors — our
+ * CSS variables flip with the theme automatically.
+ */
+.uppy-Dashboard-inner {
+    font-family: var(--font-sans);
+    border-radius: var(--radius-lg);
+    border-color: var(--border);
+}
+
+.uppy-Dashboard-AddFiles {
+    border-radius: calc(var(--radius-lg) - 4px);
+}
+
+.uppy-Dashboard-AddFiles-title {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.uppy-Dashboard-browse {
+    color: var(--primary);
+    font-weight: 500;
+}
+
+.uppy-Dashboard-browse:hover,
+.uppy-Dashboard-browse:focus {
+    border-bottom-color: var(--primary);
+}
+
+.uppy-DashboardContent-bar {
+    font-size: 0.875rem;
+}
+
+.uppy-DashboardContent-back,
+.uppy-DashboardContent-addMore {
+    color: var(--primary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+}
+
+.uppy-DashboardContent-back:hover,
+.uppy-DashboardContent-addMore:hover {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+}
+
+.uppy-DashboardContent-addMore svg {
+    width: 14px;
+    height: 14px;
+}
+
+.uppy-StatusBar-actionBtn--upload,
+.uppy-c-btn-primary {
+    background-color: var(--primary);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.uppy-StatusBar-actionBtn--upload:hover,
+.uppy-c-btn-primary:hover {
+    background-color: color-mix(in srgb, var(--primary) 85%, black);
+}
+
+.uppy-Dashboard-note,
+.uppy-StatusBar-statusPrimary,
+.uppy-StatusBar-statusSecondary {
+    font-size: 0.8125rem;
+}
+
+[data-uppy-theme='dark'] .uppy-Dashboard-inner {
+    background-color: var(--card);
+}
+
+/*
+ * The API guide, rendered from docs/api-guide.md by ApiDocsController.
+ * No typography plugin is installed, and adding one for a single page
+ * would be a lot of CSS for one screen — these are the handful of element
+ * styles that markdown actually produces, scoped so they cannot leak into
+ * the rest of the app.
+ */
+.api-guide h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-block: 2rem 0.75rem;
+}
+
+.api-guide h2 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-block: 2rem 0.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.api-guide h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-block: 1.25rem 0.375rem;
+}
+
+.api-guide p,
+.api-guide ul,
+.api-guide ol {
+    margin-block: 0.75rem;
+    line-height: 1.65;
+}
+
+.api-guide ul,
+.api-guide ol {
+    padding-inline-start: 1.5rem;
+}
+
+.api-guide ul {
+    list-style: disc;
+}
+
+.api-guide ol {
+    list-style: decimal;
+}
+
+.api-guide li {
+    margin-block: 0.25rem;
+}
+
+.api-guide a {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
+.api-guide code {
+    background-color: var(--muted);
+    border-radius: 0.25rem;
+    padding: 0.1rem 0.3rem;
+    font-size: 0.8125rem;
+}
+
+.api-guide pre {
+    background-color: var(--muted);
+    border-radius: 0.375rem;
+    padding: 0.875rem 1rem;
+    overflow-x: auto;
+    margin-block: 0.875rem;
+}
+
+.api-guide pre code {
+    background: none;
+    padding: 0;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+}
+
+.api-guide table {
+    width: 100%;
+    margin-block: 1rem;
+    font-size: 0.875rem;
+    border-collapse: collapse;
+}
+
+.api-guide th,
+.api-guide td {
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    vertical-align: top;
+}
+
+.api-guide th {
+    background-color: color-mix(in srgb, var(--muted) 60%, transparent);
+    font-weight: 600;
+}
+
+.api-guide blockquote {
+    border-inline-start: 3px solid var(--border);
+    padding-inline-start: 1rem;
+    margin-block: 1rem;
+    color: var(--muted-foreground);
+}
+
+.api-guide hr {
+    border: 0;
+    border-top: 1px solid var(--border);
+    margin-block: 2rem;
+}

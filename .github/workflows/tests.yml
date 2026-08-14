@@ -1,0 +1,91 @@
+name: tests
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+  pull_request:
+    branches:
+      - develop
+      - main
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    # This job has no MySQL/db service — it's SQLite-only (see
+    # phpunit.xml) — but .env.example's DB_CONNECTION=mysql/DB_HOST=db is
+    # for the local docker-compose stack. Bare artisan calls that run
+    # outside phpunit.xml's env (composer's package:discover,
+    # key:generate) would otherwise try to reach a "db" host that
+    # doesn't exist here. Same story for CACHE_STORE: every process
+    # boot reads a mail-config cache entry (PlatformServiceProvider::
+    # boot() -> MailConfigApplier::apply()), which needs a store that
+    # works without a migrated schema this early.
+    env:
+      CACHE_STORE: array
+      DB_CONNECTION: sqlite
+      # config/database.php's sqlite connection reuses DB_DATABASE for
+      # the file path — .env.example's DB_DATABASE=projectsend (the
+      # MySQL database name) would otherwise make sqlite look for a
+      # file literally named "projectsend".
+      DB_DATABASE: database/database.sqlite
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          tools: composer:v2
+          coverage: xdebug
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      # community-modules is the community edition's companion package,
+      # resolved from its public GitHub repository (the vcs entry in
+      # composer.json). A plain clone installs it with no local packages/
+      # checkout — cloud-modules is not required at all. COMPOSER_AUTH just
+      # hands composer the runner's token so the GitHub API calls it makes
+      # to fetch the package are not subject to the anonymous rate limit.
+
+      # composer install's post-autoload-dump script boots the app
+      # (package:discover), which needs the sqlite file to already exist
+      # even before .env is copied — config/database.php defaults to it.
+      - name: Create SQLite Database
+        run: touch database/database.sqlite
+
+      - name: Install PHP Dependencies
+        env:
+          COMPOSER_AUTH: '{"github-oauth":{"github.com":"${{ secrets.GITHUB_TOKEN }}"}}'
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Install Node Dependencies
+        run: npm ci
+
+      # tsconfig.json maps the "ziggy-js" import to vendor/tightenco/ziggy,
+      # so this needs PHP deps installed first.
+      - name: Typecheck Frontend
+        run: npm run types
+
+      - name: Build Assets
+        run: npm run build
+
+      - name: Copy Environment File
+        run: cp .env.example .env
+
+      - name: Generate Application Key
+        run: php artisan key:generate
+
+      - name: Static Analysis
+        run: ./vendor/bin/phpstan analyse --no-progress
+
+      - name: Tests
+        run: ./vendor/bin/pest

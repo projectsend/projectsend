@@ -1,0 +1,41 @@
+.DS_Store
+.env
+.env.backup
+.env.production
+.phpactor.json
+.phpunit.result.cache
+/.fleet
+/.idea
+/.nova
+/.phpunit.cache
+/.vscode
+/.zed
+/bootstrap/ssr
+/node_modules
+/packages
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+/vendor
+auth.json
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+/.release-build
+/compose.override.yaml
+/compose.override.yml
+
+# ── Maintainer-only working files ──
+# Planning notes, local tooling and development fixtures are kept outside
+# this repository, so these paths are ignored here rather than published.
+# If docs/ looks sparser than you expect, that is why. The two entries
+# below the ignore are application data the app reads at runtime and are
+# part of the repository.
+/.claude
+/scripts/refresh-sim.sh
+/database/seeders/DevDataSeeder.php
+/docs/*.md
+!/docs/api-guide.md

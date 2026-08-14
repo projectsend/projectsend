@@ -1,0 +1,101 @@
+# A complete ProjectSend install using the official image.
+#
+#   1. Edit the passwords and APP_URL below.
+#   2. docker compose -f compose.example.yaml up -d
+#   3. Open APP_URL. If you set ADMIN_EMAIL/ADMIN_PASSWORD the first
+#      administrator already exists; otherwise the setup screen prompts.
+#
+# This is the file the Docker Hub description points at, so it is written
+# for someone who has never seen the project before.
+
+name: projectsend
+
+services:
+  app:
+    image: projectsend/projectsend:2
+    restart: unless-stopped
+    ports:
+      # Put a TLS-terminating proxy in front of this in any real install.
+      # ProjectSend issues download links and password-reset emails using
+      # APP_URL, so that value — not this port — is what users must reach.
+      - "8080:80"
+    environment:
+      APP_URL: https://files.example.com
+      APP_ENV: production
+      APP_DEBUG: "false"
+
+      # Generated on first boot and kept on the storage volume. Set it
+      # explicitly if you manage secrets elsewhere — but never change it on
+      # a running install: it decrypts existing data.
+      # APP_KEY: base64:...
+
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_DATABASE: projectsend
+      DB_USERNAME: projectsend
+      DB_PASSWORD: change-me-database
+
+      REDIS_HOST: redis
+      CACHE_STORE: redis
+      SESSION_DRIVER: redis
+      QUEUE_CONNECTION: redis
+
+      # Mail is easier to configure from System → Settings → Email once you
+      # are logged in — it has a "send test" button. These are the fallback
+      # until then.
+      MAIL_MAILER: smtp
+      MAIL_HOST: smtp.example.com
+      MAIL_PORT: "587"
+      MAIL_USERNAME: ""
+      MAIL_PASSWORD: ""
+      MAIL_FROM_ADDRESS: files@example.com
+
+      # Required whenever anything sits between your visitors and this
+      # container — which includes the reverse proxy you should be running.
+      # Without it every visitor appears to come from the proxy: the login
+      # rate limiter treats all of your users as one attacker, and the
+      # download log records the proxy's address.
+      TRUSTED_PROXIES: "*"
+
+      # Optional: creates the first administrator so you skip the setup
+      # screen. Ignored once any user exists.
+      ADMIN_NAME: Administrator
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: change-me-admin
+    volumes:
+      # Every uploaded file lives here, along with the generated APP_KEY.
+      # This is the volume to back up; losing it loses the data.
+      - storage:/var/www/html/storage
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: projectsend
+      MYSQL_USER: projectsend
+      MYSQL_PASSWORD: change-me-database
+      MYSQL_ROOT_PASSWORD: change-me-root
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      # The app waits for this before migrating, so a slow first start is
+      # normal rather than a failure.
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+
+volumes:
+  storage:
+  db-data:
+  redis-data:

@@ -66,6 +66,25 @@ RUN delgroup www-data 2>/dev/null || true \
     && addgroup -g 1000 www-data \
     && adduser -D -H -u 1000 -G www-data www-data
 
+# nginx must run as that same user, and the alpine package does not: it
+# ships `user nginx;` (uid 100) in its own nginx.conf. The two identities
+# have to match because php-fpm hands nginx files to serve — protected
+# downloads and thumbnails go out by X-Accel-Redirect — and the
+# application creates directories on demand at Flysystem's private mode,
+# 0700. Traversing one of those means *being* its owner; there are no
+# group or other bits to fall back on, so a differently-owned nginx worker
+# answers 403 on the first thumbnail it is asked for.
+#
+# Changing the directive is only half of it. /var/lib/nginx and its tmp/
+# come from the package owned by the old user, and a worker cannot reach
+# the temp directories underneath a parent it may not traverse — nginx
+# recreates the leaves at boot as the new user, so they look right while
+# every request nginx buffers to disk (every upload chunk, which is what
+# client_max_body_size is set high for) fails with a bare 500 that never
+# reaches php-fpm.
+RUN sed -i 's/^user nginx;/user www-data;/' /etc/nginx/nginx.conf \
+    && chown -R www-data:www-data /var/lib/nginx
+
 COPY docker/production/php.ini        /usr/local/etc/php/conf.d/projectsend.ini
 COPY docker/production/www-pool.conf  /usr/local/etc/php-fpm.d/zz-www-pool.conf
 COPY docker/production/nginx.conf     /etc/nginx/http.d/default.conf

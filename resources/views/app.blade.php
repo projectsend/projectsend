@@ -16,7 +16,12 @@
             <meta name="generator" content="ProjectSend">
         @endif
 
-        <title inertia>{{ config('app.name', 'ProjectSend') }}</title>
+        {{-- The same name app.tsx suffixes every page title with, from the
+             same place: the site name in the shared props. Taking it from
+             APP_NAME instead would show one name in the tab until Inertia
+             hydrates and a different one after, on any installation whose
+             administrator renamed the site. --}}
+        <title inertia>{{ $page['props']['name'] ?? config('app.name', 'ProjectSend') }}</title>
 
         {{-- Which cookie holds this installation's CSRF token. Named after
              the installation rather than the framework, so a neighbouring

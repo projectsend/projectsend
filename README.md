@@ -89,6 +89,9 @@ take them with it.
 updating and troubleshooting. You do not need Composer or npm on the server; the zip ships ready to
 run.
 
+**Already running it?** **[UPDATE.md](UPDATE.md)** is how you move to a new version — one command
+on Docker, a short sequence on your own server, and what to check afterwards either way.
+
 ## Coming from ProjectSend Legacy?
 
 The previous generation of ProjectSend lives on at

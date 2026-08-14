@@ -80,10 +80,24 @@ WORKDIR /var/www/html
 COPY --chown=www-data:www-data app/ /var/www/html/
 
 # storage/ and bootstrap/cache must be writable by the runtime user.
+#
+# /var/www/html itself needs re-owning as well, and it is easy to miss: COPY
+# --chown re-owns what it copies *into* the directory, never the directory,
+# so it keeps what the base image gave it — uid 82 (the www-data this image
+# replaced above) and mode 1777, which php:*-fpm sets so that an image can
+# run as an arbitrary user. Left that way, the directory is world-writable,
+# sticky, and owned by nobody the container knows about, and the kernel's
+# fs.protected_symlinks (on by default on Ubuntu, Debian and most current
+# distributions) then refuses to let the php-fpm worker follow the .env
+# symlink the entrypoint puts there. Root is exempt, so `docker exec ... cat
+# .env` reads it back perfectly while every real request 503s with
+# "ProjectSend is not configured yet".
 RUN mkdir -p storage/app/files storage/framework/cache storage/framework/sessions \
              storage/framework/views storage/logs bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R u+rwX storage bootstrap/cache \
+    && chown www-data:www-data /var/www/html \
+    && chmod 755 /var/www/html \
     && mkdir -p /run/nginx
 
 # The whole of storage/, not just storage/app/files. Uploaded files are the

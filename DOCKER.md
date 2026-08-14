@@ -231,6 +231,10 @@ The app container migrates the database itself on boot and verifies its referenc
 no separate migration step. Take a database dump first anyway — migrations move forwards, not
 backwards, and the one time you skip it will be the time you want it.
 
+If you run the published image rather than building your own, it is `docker compose pull` followed
+by `docker compose up -d`. Either way, **[UPDATE.md](UPDATE.md)** has the whole procedure: what the
+container does on its way up, how to tell it worked, and what to do when it does not.
+
 ---
 
 ## Moving to another server

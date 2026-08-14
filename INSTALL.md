@@ -412,6 +412,10 @@ all of the speed anyway; `config:cache` was always the smallest win of the four.
 
 ## Updating to a new version
 
+The short version, for a server installed the way this document describes.
+**[UPDATE.md](UPDATE.md)** is the full procedure — backups, both Docker paths, how to check it
+worked, and how to go back.
+
 1. **Back up first** — the database, the `.env` file, and `storage/app/files/`. Every time.
 2. Put the site in maintenance mode: `sudo -u www-data php artisan down`
 3. Unpack the new zip over the install directory. Keep your `.env` and your `storage/` folder —
@@ -425,7 +429,16 @@ all of the speed anyway; `config:cache` was always the smallest win of the four.
    sudo -u www-data php artisan queue:restart
    ```
 
-5. Bring it back: `sudo -u www-data php artisan up`
+5. **Reload PHP-FPM**: `sudo systemctl reload php8.4-fpm`
+
+   Not optional, and the step people skip. With OPcache set the way production guides recommend
+   (`opcache.validate_timestamps=0`), PHP never re-reads a file it has already compiled: the
+   database ends up on the new version while every visitor is still served the old code, and
+   `php artisan` reports the new version the whole time you are trying to work out why.
+
+6. If you use the optional caches from [Making it faster](#making-it-faster), re-run them —
+   step 4 cleared them.
+7. Bring it back: `sudo -u www-data php artisan up`
 
 `projectsend:ensure-roles` teaches the built-in roles about any permissions the new version added.
 It never touches permissions you have customised yourself.

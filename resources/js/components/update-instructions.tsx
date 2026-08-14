@@ -61,6 +61,7 @@ export function UpdateInstructions({
                     'php artisan projectsend:ensure-roles',
                     'php artisan optimize:clear',
                     'php artisan queue:restart',
+                    '# reload PHP-FPM, or OPcache keeps serving the old code',
                     'php artisan up',
                 ].join('\n')}
             </code>

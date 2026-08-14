@@ -70,9 +70,13 @@ if [ "$1" = "supervisord" ] || [ "$1" = "/usr/bin/supervisord" ]; then
         sleep 1
     done
 
-    su-exec www-data php artisan migrate --force
-    su-exec www-data php artisan storage:link --force
-    su-exec www-data php artisan projectsend:ensure-roles
+    # One command, shared with update.sh and with the dev image: migrate,
+    # ensure the roles, relink storage, clear the compiled caches, restart
+    # the workers, record the version applied. See UpdateInstallation for
+    # why the order is what it is, and why maintenance mode is not part of
+    # it (`artisan down` would write its flag onto this container's
+    # persisted storage volume and outlive the container that wrote it).
+    su-exec www-data php artisan projectsend:update
 
     # Unattended provisioning: create the first administrator from the
     # environment. Without these, the web setup screen prompts instead.
@@ -82,10 +86,6 @@ if [ "$1" = "supervisord" ] || [ "$1" = "/usr/bin/supervisord" ]; then
             --email="$ADMIN_EMAIL" \
             --password="$ADMIN_PASSWORD"
     fi
-
-    # Cheap and safe to repeat; keeps a restarted container from serving
-    # stale compiled views after an image upgrade.
-    su-exec www-data php artisan view:clear
 fi
 
 exec "$@"

@@ -23,6 +23,7 @@ use App\Modules\Platform\Theming\Console\GenerateThemePreviewDataCommand;
 use App\Modules\Platform\Theming\EmailThemeRegistry;
 use App\Modules\Platform\Theming\PublicThemeRegistry;
 use App\Modules\Platform\Updates\Console\CheckForUpdatesCommand;
+use App\Modules\Platform\Updates\Console\UpdateCommand;
 use Illuminate\Console\Events\ScheduledTaskFailed;
 use Illuminate\Console\Events\ScheduledTaskFinished;
 use Illuminate\Notifications\Channels\MailChannel;
@@ -71,6 +72,7 @@ class PlatformServiceProvider extends ServiceProvider
             $this->commands([
                 GenerateThemePreviewDataCommand::class,
                 CheckForUpdatesCommand::class,
+                UpdateCommand::class,
                 FetchNewsCommand::class,
                 DisableCaptchaCommand::class,
                 TestCaptchaCommand::class,

@@ -227,8 +227,9 @@ git pull                       # or unpack the new release over the directory
 docker compose up -d --build
 ```
 
-The app container migrates the database itself on boot and verifies its reference data, so there is
-no separate migration step. Take a database dump first anyway — migrations move forwards, not
+The app container runs `php artisan projectsend:update` itself on boot — the same command a
+manual install runs — so it migrates the database and verifies its reference data with no separate
+step. Take a database dump first anyway — migrations move forwards, not
 backwards, and the one time you skip it will be the time you want it.
 
 If you run the published image rather than building your own, it is `docker compose pull` followed

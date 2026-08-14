@@ -52,7 +52,7 @@ per-seat pricing. It runs on your server, and the files stay there.
 ## Screenshots
 
 <p align="center">
-  <img src=".github/screenshots/dashboard.png" alt="The dashboard, showing counters for files, clients and groups alongside largest files, recent activity and system information" width="900">
+  <img src=".github/screenshots/dashboard.png" alt="The dashboard: counters for files, clients and groups, a month of uploads and downloads as a line chart, the clients using the most storage against their quotas, recent activity, the largest files, system information and API usage" width="900">
 </p>
 <p align="center"><em>The dashboard — what is in the installation, and what has been happening in it.</em></p>
 

@@ -4056,12 +4056,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/projectsend/community-modules.git",
-                "reference": "6f37aebd6b12f5a3411a33ea0823991529641955"
+                "reference": "26d9ca875f7bc3e1e2deefce884822005301f020"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/projectsend/community-modules/zipball/6f37aebd6b12f5a3411a33ea0823991529641955",
-                "reference": "6f37aebd6b12f5a3411a33ea0823991529641955",
+                "url": "https://api.github.com/repos/projectsend/community-modules/zipball/26d9ca875f7bc3e1e2deefce884822005301f020",
+                "reference": "26d9ca875f7bc3e1e2deefce884822005301f020",
                 "shasum": ""
             },
             "require": {
@@ -4101,7 +4101,7 @@
                 "source": "https://github.com/projectsend/community-modules/tree/main",
                 "issues": "https://github.com/projectsend/community-modules/issues"
             },
-            "time": "2026-08-13T13:55:16+00:00"
+            "time": "2026-08-14T04:49:40+00:00"
         },
         {
             "name": "psr/clock",

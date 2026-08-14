@@ -14,14 +14,15 @@ export type InstallKind = 'container' | 'manual';
  * have, for a stack they are not using, at the exact moment they were trying
  * to do the right thing.
  *
- * `compact` is for the dashboard card, a narrow column beside other widgets:
- * the manual sequence is seven lines and would swamp it, so there it points
- * at the dialog, which has the room. `codeClassName` exists for the same
- * caller — its code sits inside a warning alert and has to match it.
+ * `compact` is for the dashboard card, a narrow column beside other widgets.
+ * `codeClassName` exists for the same caller — its code sits inside a warning
+ * alert and has to match it.
  *
- * The full manual sequence is deliberately the whole thing, backup included.
- * It is the order INSTALL.md gives, and the step people skip is the one that
- * matters: migrations move forwards, not backwards.
+ * This used to print the whole nine-command sequence, which was a third copy
+ * of something that also lived in INSTALL.md and UPDATE.md and had already
+ * drifted from both. It is now one script, and the reason it can be is that
+ * projectsend:update owns every part of an update that does not need root —
+ * see UpdateInstallation.
  */
 export function UpdateInstructions({
     kind,
@@ -45,27 +46,25 @@ export function UpdateInstructions({
     if (compact) {
         return (
             <p className="text-muted-foreground">
-                {t('To update, follow the steps in INSTALL.md — back up first, then unpack the release and run the migrations.')}
+                {t('To update, run sudo ./update.sh in the install directory — it asks before it downloads or changes anything.')}
             </p>
         );
     }
 
     return (
         <>
-            <p className="text-muted-foreground mb-1">{t('To update, back up your database and files, then:')}</p>
+            <p className="text-muted-foreground mb-1">{t('To update, run this in the install directory:')}</p>
             <code className={cn('block rounded px-2 py-1.5 whitespace-pre-wrap', codeClassName ?? 'bg-muted')}>
                 {[
-                    'php artisan down',
-                    '# unpack the new release over this directory, keeping .env and storage/',
-                    'php artisan migrate --force',
-                    'php artisan projectsend:ensure-roles',
-                    'php artisan optimize:clear',
-                    'php artisan queue:restart',
-                    '# reload PHP-FPM, or OPcache keeps serving the old code',
-                    'php artisan up',
+                    'cd /var/www/projectsend',
+                    'sudo ./update.sh',
                 ].join('\n')}
             </code>
-            <p className="text-muted-foreground mt-1 text-xs">{t('Run these as the user your web server runs as. INSTALL.md has the full procedure.')}</p>
+            <p className="text-muted-foreground mt-1 text-xs">
+                {t(
+                    'It asks before checking for a release, before downloading one, and before touching your installation — and verifies the checksum of what it downloads. UPDATE.md has the full procedure.',
+                )}
+            </p>
         </>
     );
 }

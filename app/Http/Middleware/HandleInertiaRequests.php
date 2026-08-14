@@ -20,6 +20,7 @@ use App\Modules\Platform\Localization\TimezoneRegistry;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use App\Modules\Platform\Updates\LatestReleaseInfo;
+use App\Modules\Platform\Updates\RunningCodeState;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -96,6 +97,7 @@ class HandleInertiaRequests extends Middleware
             'password_policy' => app(PasswordPolicy::class)->descriptor(),
             'pending' => $this->pendingCounts($request),
             'update_notice' => $this->updateNotice($request),
+            'code_notice' => $this->codeNotice($request),
             'locale' => app()->getLocale(),
             // The clock this viewer reads dates by, and whether it is a
             // choice or a fallback. The frontend needs both: the first to
@@ -215,6 +217,28 @@ class HandleInertiaRequests extends Middleware
         return $release === null
             ? null
             : [...$release, 'install_kind' => app(Installation::class)->kind()->value];
+    }
+
+    /**
+     * Whether this process is running the code the installation was last
+     * updated to — see RunningCodeState for the failure it catches.
+     *
+     * Gated on view_system_info rather than manage_updates: the latter is
+     * edition-gated (Capability::SystemUpdates), and a server executing
+     * code that does not match its own database is not a feature anyone
+     * buys, it is a fact about the machine.
+     *
+     * @return array{reason: string, applied: string, running: string, applied_at: string, install_kind: string}|null
+     */
+    protected function codeNotice(Request $request): ?array
+    {
+        $user = $request->user();
+
+        if ($user === null || ! app(PermissionChecker::class)->allows($user, Permission::ViewSystemInfo)) {
+            return null;
+        }
+
+        return app(RunningCodeState::class)->current();
     }
 
     /**

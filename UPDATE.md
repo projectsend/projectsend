@@ -18,7 +18,7 @@ Which path you are on decides the rest:
 |---|---|---|
 | The official Docker image (`projectsend/projectsend`) | Pull a new image, recreate the container | None — the container migrates itself |
 | Docker Compose built from source (DOCKER.md) | New code, rebuild the image | None — same entrypoint |
-| A release zip on your own server (INSTALL.md) | Replace the files, run five commands | All of them, including a PHP-FPM reload |
+| A release zip on your own server (INSTALL.md) | Download the zip, run one script | `sudo ./update.sh`, and answer three questions |
 
 ProjectSend also tells you which of these you are on: the **System** card on the dashboard prints
 the update instructions for *this* server, and the notice that appears when a new version is
@@ -91,11 +91,11 @@ The entrypoint runs before the web server accepts a single request, in this orde
    every existing session invalid and every encrypted column unreadable.
 2. Waits up to 60 seconds for the database to accept connections, so a slow-starting database is a
    pause rather than a crash loop.
-3. Runs `php artisan migrate --force`.
-4. Runs `php artisan storage:link` and `php artisan projectsend:ensure-roles` — the latter teaches
-   the built-in roles about any permission the new version added, without touching roles you have
-   customised.
-5. Clears compiled views, then starts php-fpm, nginx, the queue worker and the scheduler.
+3. Runs `php artisan projectsend:update` — the same command a manual install runs, and the only
+   definition of what an update does. It migrates the database, restores any built-in role a new
+   version added a permission to (without touching roles you customised), relinks storage, clears
+   the compiled caches and records the version it applied.
+4. Starts php-fpm, nginx, the queue worker and the scheduler.
 
 The queue worker and scheduler run inside that same container, so they are replaced with it and
 never keep running old code.
@@ -128,107 +128,84 @@ a half-updated site serving traffic: nginx is not started until the entrypoint f
 
 ## Updating a manual installation
 
-This is the path with steps you have to perform, and one of them — the PHP-FPM reload — is easy to
-miss and hard to diagnose. The order below matters.
+```sh
+cd /var/www/projectsend
+sudo ./update.sh
+```
 
-Run everything as the user your web server runs as (`www-data` in INSTALL.md's examples).
+That is the whole procedure. It asks three questions — whether to check GitHub for a newer release,
+whether to download it (verifying the checksum published beside it), and whether you have a backup —
+then does the rest. If you would rather fetch the zip yourself, hand it over instead:
 
-### 1. Take the site down
+```sh
+sudo ./update.sh --zip ~/projectsend-2.1.0.zip
+```
+
+`./update.sh --check` reports what is installed and what is available, changes nothing, and does not
+need root.
+
+### What it does, in order
+
+1. Refuses to run inside a container, where updating means pulling a new image.
+2. Works out who your web server runs as, from the owner of `public/index.php`.
+3. Reads the version out of the zip and refuses to go backwards — migrations only move forwards —
+   unless you pass `--force`. The *same* version is accepted, and is how you restore files that were
+   modified or lost.
+4. Takes a database dump, if you asked for one (`--backup`).
+5. Puts the site into maintenance mode, and guarantees it comes back out: if anything fails, or you
+   interrupt it, the site is brought back up before the script exits.
+6. Unpacks the release over your installation, leaving `.env`, `storage/` and `public/storage`
+   alone, and replacing `vendor/` and `public/build/` wholesale rather than merging them.
+7. Runs `php artisan projectsend:update`, which migrates the database, restores the built-in roles,
+   relinks storage, clears the compiled caches, rebuilds the optional ones **if you were using
+   them**, and records the version it applied.
+8. Reloads PHP-FPM and restarts the queue worker.
+9. Brings the site back up and tells you what is running.
+
+### Useful options
+
+| Option | What for |
+|---|---|
+| `--zip <path>` | Apply a zip you downloaded yourself. |
+| `--backup` | Dump the database first, to `/var/backups/projectsend` (`--backup-dir` to change). |
+| `--check` | Report versions and stop. No root needed. |
+| `--user`, `--php-fpm`, `--worker` | Override what it detected. |
+| `--no-restart` | Leave systemd alone. You must then reload PHP-FPM yourself. |
+| `-y`, `--yes` | Unattended. Requires `--backup` or `--i-have-a-backup`. |
+| `--force` | Apply an older release. Read the sentence about migrations again first. |
+
+### Doing it by hand
+
+The script is not magic, and there is no harm in running the steps yourself:
 
 ```sh
 cd /var/www/projectsend
 sudo -u www-data php artisan down
-```
-
-Visitors get a maintenance page instead of a half-updated application.
-
-### 2. Replace the files
-
-The release zip is flat — its contents unpack straight into the install directory, with no wrapper
-folder. It contains no `.env`, no uploads, and no `public/storage` symlink, so unpacking it cannot
-take yours with it.
-
-```sh
-cd /tmp
-unzip projectsend-2.0.1.zip -d projectsend-new
-sudo cp -a projectsend-new/. /var/www/projectsend/
-sudo chown -R www-data:www-data /var/www/projectsend
-```
-
-**A cleaner alternative, if you can:** unpack the new release into a directory of its own, copy your
-`.env` and `storage/` across, and swap the two directories. Copying over an existing install leaves
-behind any file the new version deleted; swapping directories does not, and rolling back is renaming
-one directory instead of restoring an archive.
-
-Either way, `storage/` and `.env` are yours and must survive. Everything else in the tree comes from
-the zip.
-
-### 3. Run the updates
-
-```sh
-sudo -u www-data php artisan migrate --force
-sudo -u www-data php artisan projectsend:ensure-roles
-sudo -u www-data php artisan optimize:clear
-sudo -u www-data php artisan queue:restart
-```
-
-`projectsend:ensure-roles` gives the built-in roles any permission the new version added. It never
-touches a permission you changed yourself.
-
-`queue:restart` asks the background worker to finish its current job and exit; whatever supervises
-it (systemd, supervisor) starts a fresh one on the new code. The cron entry that drives the
-scheduler needs nothing — it starts a new process every minute anyway.
-
-### 4. Reload PHP-FPM
-
-```sh
-sudo systemctl reload php8.4-fpm
-```
-
-**Do not skip this.** If your server has OPcache configured the way production guides recommend
-(`opcache.validate_timestamps=0`, which is also what our own Docker image uses), PHP does not
-re-read a file it has already compiled. Replacing the files changes nothing for the running site: the
-database is on the new version and the web server is still executing the old code. `php artisan`
-shows you the new version from the command line while every visitor gets the old one, which is a
-miserable thing to debug.
-
-If you have never touched your OPcache settings, the reload is harmless — do it anyway rather than
-finding out which kind of server you have during an update.
-
-### 5. Put the caches back, if you use them
-
-`optimize:clear` in step 3 cleared the optional caches from INSTALL.md's *Making it faster*
-section. If you had run them, run them again now:
-
-```sh
-sudo -u www-data php artisan route:cache
-sudo -u www-data php artisan view:cache
-sudo -u www-data php artisan event:cache
-```
-
-Still **not** `config:cache` — see [INSTALL.md](INSTALL.md#one-command-to-skip-configcache) for why
-that one stays off on this application.
-
-### 6. Bring it back
-
-```sh
+# unpack the release over this directory, keeping .env and storage/
+sudo chown -R www-data:www-data .
+sudo -u www-data php artisan projectsend:update
+sudo systemctl reload php8.4-fpm        # not optional — see below
+sudo systemctl restart projectsend-worker
 sudo -u www-data php artisan up
 ```
 
-### 7. Check it worked
+**The reload is the step that matters.** With OPcache configured the way production guides recommend
+(`opcache.validate_timestamps=0`, which our own Docker image uses), PHP does not re-read a file it
+has already compiled. Replacing the files changes nothing for the running site: the database ends up
+on the new version and the web server keeps serving the old code, while `php artisan` reports the
+new version the whole time you are trying to work out why.
 
-- The dashboard's **System** card shows the new version. If it still shows the old one, step 4 did
-  not happen — reload PHP-FPM and reload the page.
-- **System → Settings → Scheduler** shows tasks running and no new failures.
-- Download a file. It is the one path that goes through nginx, PHP and your storage at once.
+If it happens anyway, ProjectSend now says so: staff see a banner naming the version being served,
+the version that was installed, and the command that fixes it.
 
 ---
 
 ## When it goes wrong
 
 **The site shows the old version after updating.**
-Stale OPcache — step 4. `php artisan` reading the new version while the browser reads the old one is
-this exact symptom.
+Stale OPcache — reload PHP-FPM. `php artisan` reporting the new version while the browser reads the
+old one is this exact symptom, and staff now see a banner saying so, naming both versions and the
+command that fixes it. `sudo ./update.sh` does the reload for you unless you passed `--no-restart`.
 
 **500 errors on every page, right after an update.**
 Usually compiled caches from the previous version. `php artisan optimize:clear`, then reload
@@ -253,6 +230,9 @@ same requirement as [INSTALL.md](INSTALL.md) step 4.
 
 1. Restore the code: the previous image tag (Docker), or the previous directory or zip (manual).
 2. Restore the database dump you took before starting.
+3. On a manual install, run `sudo -u www-data php artisan projectsend:update` afterwards, so the
+   installation agrees with the code you restored. (A container does this itself on boot.) Until it
+   runs, staff see the banner described above — which is correct: the database is ahead of the code.
 
 Restore both, not one. A newer database against older code is the one combination nothing in this
 application expects, because migrations only ever move forwards.

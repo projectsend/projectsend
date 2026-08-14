@@ -23,9 +23,10 @@ chown -R www-data:www-data storage/app/uploads-tmp storage/framework storage/log
 # First-boot bootstrap runs only for the FPM service (the worker execs
 # straight through) and only when the app is actually installed.
 if [ "$1" = "php-fpm" ] && [ -f vendor/autoload.php ]; then
-    su-exec www-data php artisan migrate --force
-    su-exec www-data php artisan storage:link --force
-    su-exec www-data php artisan projectsend:ensure-roles
+    # The same command the official image and update.sh run — migrate,
+    # roles, storage link, compiled caches, workers. See
+    # UpdateInstallation; there is deliberately only one definition of it.
+    su-exec www-data php artisan projectsend:update
 
     # Unattended provisioning: create the first administrator from the
     # environment. Without these, the web setup screen prompts instead.

@@ -382,8 +382,8 @@ sudo -u www-data php artisan view:cache
 sudo -u www-data php artisan event:cache
 ```
 
-Re-run them after every update. If you change your mind, `php artisan optimize:clear` undoes all
-three.
+You only run these once: `projectsend:update` notices they are in place and rebuilds them for you
+after every update. If you change your mind, `php artisan optimize:clear` undoes all three.
 
 #### One command to skip: `config:cache`
 
@@ -405,43 +405,34 @@ of the person who actually downloaded the file. Both are the kind of thing you d
 later, from a complaint.
 
 If you have already run it — or ran `php artisan optimize`, which includes it — `php artisan
-config:clear` puts things back immediately. The three commands above are safe and give you nearly
+config:clear` puts things back immediately, and every update clears it too, saying why. The three commands above are safe and give you nearly
 all of the speed anyway; `config:cache` was always the smallest win of the four.
 
 ---
 
 ## Updating to a new version
 
-The short version, for a server installed the way this document describes.
-**[UPDATE.md](UPDATE.md)** is the full procedure — backups, both Docker paths, how to check it
-worked, and how to go back.
+```sh
+cd /var/www/projectsend
+sudo ./update.sh
+```
 
-1. **Back up first** — the database, the `.env` file, and `storage/app/files/`. Every time.
-2. Put the site in maintenance mode: `sudo -u www-data php artisan down`
-3. Unpack the new zip over the install directory. Keep your `.env` and your `storage/` folder —
-   the zip does not contain either, but check your unzip tool is not helpfully deleting things.
-4. Run the updates:
+The script ships with every release, in this directory. It asks whether to check GitHub for a newer
+version, whether to download it (checking the published checksum), and whether you have a backup —
+then takes the site down, unpacks the release, migrates the database, rebuilds whichever caches you
+were using, reloads PHP-FPM, restarts the worker and brings the site back up. Your `.env`, your
+uploads and your `public/storage` link are never touched.
 
-   ```sh
-   sudo -u www-data php artisan migrate --force
-   sudo -u www-data php artisan projectsend:ensure-roles
-   sudo -u www-data php artisan optimize:clear
-   sudo -u www-data php artisan queue:restart
-   ```
+`sudo ./update.sh --zip ~/projectsend-2.1.0.zip` applies a zip you downloaded yourself, and
+`./update.sh --check` just reports what is available.
 
-5. **Reload PHP-FPM**: `sudo systemctl reload php8.4-fpm`
+**[UPDATE.md](UPDATE.md)** is the full reference: what it does in order, every option, the same
+steps done by hand, how to check it worked, and how to go back. Read it before your first update —
+particularly the part about reloading PHP-FPM, which is the step that decides whether an update
+takes effect at all.
 
-   Not optional, and the step people skip. With OPcache set the way production guides recommend
-   (`opcache.validate_timestamps=0`), PHP never re-reads a file it has already compiled: the
-   database ends up on the new version while every visitor is still served the old code, and
-   `php artisan` reports the new version the whole time you are trying to work out why.
-
-6. If you use the optional caches from [Making it faster](#making-it-faster), re-run them —
-   step 4 cleared them.
-7. Bring it back: `sudo -u www-data php artisan up`
-
-`projectsend:ensure-roles` teaches the built-in roles about any permissions the new version added.
-It never touches permissions you have customised yourself.
+Back up first, every time. The script can dump the database for you (`--backup`), but your uploaded
+files in `storage/app/files/` are yours to look after.
 
 ---
 

@@ -121,7 +121,7 @@ export default function SystemSettings({
                             </div>
                             <p className="text-muted-foreground text-sm">
                                 {t(
-                                    "Periodically checks projectsend.org's public repository for a newer release and shows a notice on the dashboard. Nothing is ever downloaded or applied automatically.",
+                                    "Periodically checks projectsend.org's public repository for a newer release and shows a notice on the dashboard. Nothing is ever downloaded or applied automatically — updating is always something you run, and the update script asks before each step.",
                                 )}
                             </p>
                         </div>

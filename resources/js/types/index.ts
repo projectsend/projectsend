@@ -107,6 +107,21 @@ export interface SharedData {
         /** Decides which upgrade instructions the dialog prints. */
         install_kind: InstallKind;
     } | null;
+    /**
+     * Set when the code this process is running is not the code the
+     * installation was last updated to — see RunningCodeState. Almost
+     * always a PHP-FPM that was never reloaded after an update, which is
+     * otherwise completely silent.
+     */
+    code_notice: {
+        reason: 'stale_code' | 'pending_update';
+        /** What the last update applied. */
+        applied: string;
+        /** What this process compiled. */
+        running: string;
+        applied_at: string;
+        install_kind: InstallKind;
+    } | null;
     locale: string;
     /**
      * The IANA zone this viewer reads dates in — their own preference, or

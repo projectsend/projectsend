@@ -232,6 +232,22 @@ enum Setting: string
     case LatestReleaseUrl = 'latest_release_url';
     case LatestReleasePublishedAt = 'latest_release_published_at';
 
+    // The version `projectsend:update` last brought this database in line
+    // with — written by that command only, never by a settings form.
+    //
+    // Its whole purpose is to be compared against config('projectsend.version')
+    // as read by the *web* process, which is not the same number when a
+    // manual install replaced its files and never reloaded PHP-FPM: OPcache
+    // keeps serving the code it compiled before the update, silently, while
+    // artisan reports the new version to the person trying to work out why.
+    // See RunningCodeState.
+    //
+    // Written downwards as well as upwards, because the command runs on
+    // every container boot and on every update.sh run — including the ones
+    // that go backwards.
+    case AppliedVersion = 'applied_version';
+    case AppliedVersionAt = 'applied_version_at';
+
     // Cached result of the last dashboard news feed fetch — never written
     // directly by a settings form, only by FetchNewsCommand. Both editions
     // see this (unlike CheckForUpdates above, which is Community-only);
@@ -280,6 +296,8 @@ enum Setting: string
             self::LatestReleaseNotes,
             self::LatestReleaseUrl,
             self::LatestReleasePublishedAt,
+            self::AppliedVersion,
+            self::AppliedVersionAt,
             self::NewsLastFetchedAt,
             self::CaptchaProvider,
             self::CaptchaKeySource,
@@ -402,6 +420,11 @@ enum Setting: string
             self::LatestReleaseNotes => '',
             self::LatestReleaseUrl => '',
             self::LatestReleasePublishedAt => '',
+            // Empty means no update has ever been applied through the
+            // command — a fresh install, or one that predates it. Never a
+            // notice, in either direction.
+            self::AppliedVersion => '',
+            self::AppliedVersionAt => '',
             self::NewsLastFetchedAt => '',
 
             self::NewsItems => [],

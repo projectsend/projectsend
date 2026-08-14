@@ -208,7 +208,18 @@ class ChunkedUploadsController extends Controller
             }
         }
 
-        return response('', 200, ['ETag' => '"'.$etag.'"']);
+        return response('', 200, [
+            'ETag' => '"'.$etag.'"',
+            // Stated rather than left to Symfony, whose default for an
+            // empty body is text/html. A CDN that rewrites HTML — as
+            // Cloudflare's Email Obfuscation and Automatic HTTPS Rewrites
+            // do — drops the origin's ETag from an HTML response, since a
+            // rewritten body would no longer match it. Nothing on this side
+            // would notice (LocalPartStore keeps its own record of every
+            // part), but the client never learns the part landed, so the
+            // upload stalls at 100% with no error anywhere.
+            'Content-Type' => 'application/octet-stream',
+        ]);
     }
 
     /**

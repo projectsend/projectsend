@@ -564,7 +564,16 @@ If you know what you are doing, re-run with --force."
     rm -f "$INSTALL_DIR"/bootstrap/cache/*.php
     cp -a "$TMP_DIR"/. "$INSTALL_DIR"/
 
-    chown -R "$WEB_USER:$WEB_GROUP" "$INSTALL_DIR"
+    # Symlinks are skipped on purpose. A symlink's own ownership decides
+    # nothing — access is governed by whatever it points at — and some
+    # filesystems refuse to change it at all: a bind mount from a host
+    # (public/storage on a developer's box is where this turned up), an NFS
+    # export with root_squash. Aborting an update over a cosmetic detail on
+    # a link is not a trade worth making, so they are left alone rather than
+    # tolerated by ignoring errors that might have mattered.
+    find "$INSTALL_DIR" \! -type l -exec chown "$WEB_USER:$WEB_GROUP" {} + \
+        || warn "Some files could not be given to $WEB_USER. Check ownership under $INSTALL_DIR before trusting this install."
+
     chmod -R u+rwX "$INSTALL_DIR/storage" "$INSTALL_DIR/bootstrap/cache"
 
     say "Bringing the installation in line with the new code"

@@ -65,20 +65,31 @@ export default function WhatsNew({ version, previousVersion, justUpdated, releas
                     </div>
 
                     {/* The invitation, above the notes on purpose: it is the
-                        part with a person on the other end of it. */}
-                    <div className="bg-muted/40 flex flex-col items-center gap-4 rounded-lg border p-6 text-center">
-                        <MessagesSquare className="text-muted-foreground size-8" strokeWidth={1.5} />
+                        part with a person on the other end of it.
+
+                        Carried on `accent` rather than `muted` so it reads as
+                        the featured thing on the page. That token is the
+                        brand colour at surface strength and already has a
+                        dark-mode counterpart, so this stays legible in both
+                        without a single hardcoded purple — and follows the
+                        palette on an installation whose branding replaces
+                        ours. */}
+                    <div className="bg-accent border-primary/20 flex flex-col items-center gap-4 rounded-lg border p-6 text-center">
+                        <MessagesSquare className="text-primary size-8" strokeWidth={1.5} />
 
                         <div className="space-y-1">
-                            <p className="font-medium">{t('Come and say hello')}</p>
-                            <p className="text-muted-foreground text-sm">
+                            <p className="text-accent-foreground font-medium">{t('Come and say hello')}</p>
+                            <p className="text-accent-foreground/80 text-sm">
                                 {t(
                                     'ProjectSend has a Discord: release news, help when something is not behaving, and other people running the same software. We are in it too.',
                                 )}
                             </p>
                         </div>
 
-                        <Button asChild variant="outline">
+                        {/* Solid rather than outline: an outline button's
+                            hover state is this very background colour, so on
+                            this card it would disappear under the cursor. */}
+                        <Button asChild>
                             <a href={links.discord} target="_blank" rel="noreferrer">
                                 {t('Join the Discord')}
                             </a>
@@ -95,8 +106,11 @@ export default function WhatsNew({ version, previousVersion, justUpdated, releas
                         </div>
                     )}
 
+                    {/* Outline, so the invitation above is the one filled
+                        button on the page. Leaving is not the thing being
+                        encouraged here. */}
                     <div className="flex justify-center">
-                        <Button asChild>
+                        <Button asChild variant="outline">
                             <Link href={route('dashboard')}>
                                 {t('Continue to the dashboard')}
                                 <ArrowRight className="size-4" />

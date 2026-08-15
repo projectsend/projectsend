@@ -478,6 +478,21 @@ report the problem on the settings screen instead. If you are stuck anyway, add
 `php artisan projectsend:captcha-off`. Your keys are kept either way. To check a key without
 locking anything, `php artisan projectsend:captcha-test` asks the provider directly.
 
+**Links and redirects drop the port number** (you are served on `:8080`, and the site sends you to
+port 80).
+Recent Debian and Ubuntu nginx packages set `HTTP_HOST` to `$host` in `/etc/nginx/fastcgi_params`,
+deliberately — it stops a client-supplied `Host` header reaching the application — and `$host`
+carries no port. On 80 or 443 that changes nothing. On any other port, every absolute URL the
+application builds loses it. Add this to the `location ~ \.php$` block, **after** `include
+fastcgi_params;`:
+
+```nginx
+fastcgi_param HTTP_HOST $http_host;
+```
+
+On nginx 1.30 and later the safer form is `$host$is_request_port$request_port`. Either way this only
+applies to a non-standard port; behind a TLS proxy on 443 you do not need it.
+
 **Emails and links point at `localhost` or the wrong domain.**
 `APP_URL` in `.env`. Fix it and run `php artisan optimize:clear`.
 

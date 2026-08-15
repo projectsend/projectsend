@@ -19,6 +19,7 @@ use App\Modules\Platform\Http\Controllers\CaptchaSettingsController;
 use App\Modules\Platform\Http\Controllers\EmailSettingsController;
 use App\Modules\Platform\Http\Controllers\EmailTemplatesController;
 use App\Modules\Platform\Http\Controllers\ExternalStorageSettingsController;
+use App\Modules\Platform\Http\Controllers\GettingStartedController;
 use App\Modules\Platform\Http\Controllers\LanguageSettingsController;
 use App\Modules\Platform\Http\Controllers\PrivacySettingsController;
 use App\Modules\Platform\Http\Controllers\PublicListingSettingsController;
@@ -110,6 +111,14 @@ Route::middleware('auth')->group(function () {
     // footer links every staff member here regardless of what they may
     // edit.
     Route::middleware('staff')->get('system/about', AboutController::class)->name('system.about');
+
+    // Where a new installation's administrator is sent on their first
+    // visit, and a page any staff member can come back to. `staff` alone:
+    // it is a list of links to screens they can already reach, and
+    // QuickStart filters it to the ones they may actually use.
+    Route::middleware('staff')
+        ->get('system/getting-started', GettingStartedController::class)
+        ->name('system.getting-started');
 
     // Where an administrator is sent after an update, and a page anyone
     // who may read About's environment block can revisit afterwards. The

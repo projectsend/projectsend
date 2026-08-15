@@ -259,6 +259,16 @@ enum Setting: string
     case UpdateWelcomeFrom = 'update_welcome_from';
     case UpdateWelcomeTo = 'update_welcome_to';
 
+    // This installation has just been installed and its administrator has
+    // not been shown the getting-started page yet.
+    //
+    // Raised where the first administrator is created — the setup screen
+    // and the provisioning command both — and cleared when the page is
+    // read. False by default, which is what keeps an installation that
+    // updates into this feature from being congratulated on an
+    // installation it completed a year ago.
+    case GettingStartedPending = 'getting_started_pending';
+
     // Cached result of the last dashboard news feed fetch — never written
     // directly by a settings form, only by FetchNewsCommand. Both editions
     // see this (unlike CheckForUpdates above, which is Community-only);
@@ -330,7 +340,8 @@ enum Setting: string
             self::CaptchaOnRegistration,
             self::CaptchaOnPasswordReset,
             self::CaptchaOnPublicComments,
-            self::PasswordRejectBreached => SettingType::Boolean,
+            self::PasswordRejectBreached,
+            self::GettingStartedPending => SettingType::Boolean,
 
             self::ClientsAutoGroup,
             self::ClientsMembershipDenyCooldownDays,
@@ -440,6 +451,10 @@ enum Setting: string
             self::AppliedVersionAt => '',
             self::UpdateWelcomeFrom => '',
             self::UpdateWelcomeTo => '',
+            // False, so that an installation which updates into this
+            // feature is not welcomed to an installation it finished a
+            // year ago. Only creating the first administrator raises it.
+            self::GettingStartedPending => false,
             self::NewsLastFetchedAt => '',
 
             self::NewsItems => [],

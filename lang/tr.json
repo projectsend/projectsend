@@ -1790,5 +1790,16 @@
     "To update, run this in the install directory:": "Güncellemek için kurulum dizininde şunu çalıştırın:",
     "Version :running is installed, but the update has not been run": ":running sürümü kurulu, ancak güncelleme çalıştırılmadı",
     "Updated ProjectSend to :to, from :from": "ProjectSend'i :from sürümünden :to sürümüne güncelledi",
-    "ProjectSend was updated to a new version": "ProjectSend yeni bir sürüme güncellendi"
+    "ProjectSend was updated to a new version": "ProjectSend yeni bir sürüme güncellendi",
+    "Come and say hello": "Gelin merhaba deyin",
+    "Continue to the dashboard": "Panele devam edin",
+    "Discord": "Discord",
+    "Join the Discord": "Discord'a katılın",
+    "ProjectSend :version": "ProjectSend :version",
+    "ProjectSend has a Discord: release news, help when something is not behaving, and other people running the same software. We are in it too.": "ProjectSend'in bir Discord'u var: sürüm haberleri, bir şey beklendiği gibi çalışmadığında yardım ve aynı yazılımı kullanan diğer insanlar. Biz de oradayız.",
+    "ProjectSend is now on :version": "ProjectSend artık :version sürümünde",
+    "The update finished, and everything came back up. Thank you for keeping it current.": "Güncelleme tamamlandı ve her şey yeniden çalışıyor. Güncel tuttuğunuz için teşekkürler.",
+    "The update from :previous finished, and everything came back up. Thank you for keeping it current.": ":previous sürümünden yapılan güncelleme tamamlandı ve her şey yeniden çalışıyor. Güncel tuttuğunuz için teşekkürler.",
+    "What's new": "Yenilikler",
+    "What each release brought to this installation.": "Her sürümün bu kuruluma neler getirdiği."
 }

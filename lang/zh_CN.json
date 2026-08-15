@@ -1790,5 +1790,16 @@
     "To update, run this in the install directory:": "如需更新，请在安装目录中执行：",
     "Version :running is installed, but the update has not been run": ":running 版本已安装，但尚未运行更新",
     "Updated ProjectSend to :to, from :from": "将 ProjectSend 从 :from 更新到 :to",
-    "ProjectSend was updated to a new version": "ProjectSend 已更新到新版本"
+    "ProjectSend was updated to a new version": "ProjectSend 已更新到新版本",
+    "Come and say hello": "来打个招呼吧",
+    "Continue to the dashboard": "前往仪表板",
+    "Discord": "Discord",
+    "Join the Discord": "加入 Discord",
+    "ProjectSend :version": "ProjectSend :version",
+    "ProjectSend has a Discord: release news, help when something is not behaving, and other people running the same software. We are in it too.": "ProjectSend 有一个 Discord：版本动态、遇到异常时的帮助，以及其他运行同款软件的用户。我们也在其中。",
+    "ProjectSend is now on :version": "ProjectSend 已升级到 :version",
+    "The update finished, and everything came back up. Thank you for keeping it current.": "更新已完成，一切恢复正常。感谢你保持它的更新。",
+    "The update from :previous finished, and everything came back up. Thank you for keeping it current.": "从版本 :previous 的更新已完成，一切恢复正常。感谢你保持它的更新。",
+    "What's new": "新增内容",
+    "What each release brought to this installation.": "每个版本为这个安装带来了什么。"
 }

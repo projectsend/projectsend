@@ -54,9 +54,90 @@ function projectsend_preflight_env(string $key): ?string
  * either null (configured — hand back to Laravel) or a [title, reason, fix]
  * triple describing what to do. No output, no exit — so it is testable.
  *
+ * The order of the three questions is deliberate and not alphabetical:
+ * missing dependencies come first because the fix the configuration branch
+ * prints — `php artisan key:generate` — cannot itself run without the
+ * autoloader, so reporting the key first would earn somebody a second and
+ * more confusing error. Assets come last because a missing key is the more
+ * fundamental problem of the two.
+ *
  * @return array{0: string, 1: string, 2: string}|null
  */
 function projectsend_preflight_failure(string $root): ?array
+{
+    return projectsend_preflight_dependencies_failure($root)
+        ?? projectsend_preflight_configuration_failure($root)
+        ?? projectsend_preflight_assets_failure($root);
+}
+
+/**
+ * Composer has never run here.
+ *
+ * Only reachable from source: a release zip ships vendored, which is the
+ * whole reason INSTALL.md can promise you need neither Composer nor npm on
+ * the server. On a `git clone`, public/index.php requires this file's
+ * absence into a bare fatal on the very next line — no page, no log entry,
+ * nothing to search for. Reported as exactly that by somebody following the
+ * README's old quickstart (#1627).
+ *
+ * @return array{0: string, 1: string, 2: string}|null
+ */
+function projectsend_preflight_dependencies_failure(string $root): ?array
+{
+    if (is_file($root.'/vendor/autoload.php')) {
+        return null;
+    }
+
+    return [
+        'ProjectSend is not installed yet',
+        'The PHP dependencies are missing — there is no <code>vendor/autoload.php</code>. A release '
+            .'zip ships with them already in place; a <code>git clone</code> does not, and installs '
+            .'them as its first step.',
+        "Install the dependencies:
+
+composer install
+
+"
+            .'On the development Docker stack: docker compose exec app composer install',
+    ];
+}
+
+/**
+ * The frontend has never been built.
+ *
+ * `public/hot` counts as built: laravel-vite-plugin writes it while
+ * `npm run dev` is running, and every asset is then served by that dev
+ * server rather than out of public/build. Stopping a developer who has a dev
+ * server running would make this guard worse than the exception it replaces.
+ *
+ * @return array{0: string, 1: string, 2: string}|null
+ */
+function projectsend_preflight_assets_failure(string $root): ?array
+{
+    if (is_file($root.'/public/build/manifest.json') || is_file($root.'/public/hot')) {
+        return null;
+    }
+
+    return [
+        'ProjectSend is not built yet',
+        'The frontend has not been compiled — there is no '
+            .'<code>public/build/manifest.json</code>. A release zip ships it already built; a '
+            .'<code>git clone</code> does not. Without it every page fails while rendering, which '
+            .'is a stack trace rather than an answer.',
+        "Build the frontend:
+
+npm ci
+npm run build",
+    ];
+}
+
+/**
+ * Whether this installation has been configured at all — the original and
+ * most common first-run failure, kept exactly as it was.
+ *
+ * @return array{0: string, 1: string, 2: string}|null
+ */
+function projectsend_preflight_configuration_failure(string $root): ?array
 {
     $appKey = projectsend_preflight_env('APP_KEY');
     $envFile = $root.'/.env';

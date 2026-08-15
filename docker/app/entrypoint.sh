@@ -20,6 +20,23 @@ mkdir -p storage/app/files storage/app/private storage/app/public storage/app/up
 chown www-data:www-data storage storage/app storage/app/files storage/app/private storage/app/public
 chown -R www-data:www-data storage/app/uploads-tmp storage/framework storage/logs bootstrap/cache
 
+# The worker and the scheduler exec straight into artisan, which cannot run
+# without the autoloader — so on a fresh clone, before `composer install`,
+# both died instantly and `restart: unless-stopped` brought them back to die
+# again, once a second, forever. The log that was filling up is the same one
+# somebody needs to read to find out what to do (#1627).
+#
+# Exit rather than wait: this container has nothing useful to do until the
+# dependencies exist, and compose will keep retrying — but slowly enough to
+# leave the log readable, and it recovers on its own the moment they appear.
+if [ "$1" != "php-fpm" ] && [ ! -f vendor/autoload.php ]; then
+    echo "projectsend: the PHP dependencies are not installed — there is no vendor/autoload.php." >&2
+    echo "projectsend: run 'docker compose exec app composer install' (see CONTRIBUTING.md)." >&2
+    sleep 15
+
+    exit 1
+fi
+
 # First-boot bootstrap runs only for the FPM service (the worker execs
 # straight through) and only when the app is actually installed.
 if [ "$1" = "php-fpm" ] && [ -f vendor/autoload.php ]; then

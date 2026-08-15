@@ -74,6 +74,11 @@ services:
     volumes:
       - .:/var/www/html
       - ../packages:/var/www/packages
+    # Same reason the worker has one, plus a second: on a fresh clone this
+    # exits until `composer install` has run, and without a restart policy it
+    # then stays exited — scheduled work silently never happens, on the one
+    # setup where nobody would think to check.
+    restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy

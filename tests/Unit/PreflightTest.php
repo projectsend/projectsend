@@ -9,8 +9,13 @@ require_once __DIR__.'/../../bootstrap/preflight.php';
 /**
  * A fixture directory, optionally with a .env whose APP_KEY line is $appKey
  * (null = no APP_KEY line at all; '' = present but empty).
+ *
+ * $installed and $built are the two things a release zip ships and a `git
+ * clone` does not — vendored dependencies and a compiled frontend. They are
+ * present by default so that the configuration cases below test only the
+ * thing they name, and each has its own test further down.
  */
-function preflightFixture(?string $appKey, bool $withEnvFile): string
+function preflightFixture(?string $appKey, bool $withEnvFile, bool $installed = true, bool $built = true): string
 {
     $dir = sys_get_temp_dir().'/preflight-'.bin2hex(random_bytes(6));
     mkdir($dir);
@@ -22,6 +27,16 @@ function preflightFixture(?string $appKey, bool $withEnvFile): string
         }
         $lines[] = 'DB_CONNECTION=mysql';
         file_put_contents($dir.'/.env', implode("\n", $lines)."\n");
+    }
+
+    if ($installed) {
+        mkdir($dir.'/vendor');
+        file_put_contents($dir.'/vendor/autoload.php', '<?php');
+    }
+
+    if ($built) {
+        mkdir($dir.'/public/build', 0777, true);
+        file_put_contents($dir.'/public/build/manifest.json', '{}');
     }
 
     return $dir;
@@ -107,4 +122,55 @@ it('lets the real environment override an empty .env key', function (): void {
     putenv('APP_KEY=base64:'.base64_encode(random_bytes(32)));
 
     expect(projectsend_preflight_failure(preflightFixture('', true)))->toBeNull();
+});
+
+// Only reachable from source — a release zip ships vendored. public/index.php
+// requires the autoloader on the line after this guard, so without the check
+// this state is a bare fatal with an empty log (#1627).
+it('fails when Composer has never run', function (): void {
+    $failure = projectsend_preflight_failure(
+        preflightFixture('base64:'.base64_encode(random_bytes(32)), true, installed: false)
+    );
+
+    expect($failure)->not->toBeNull()
+        ->and($failure[0])->toBe('ProjectSend is not installed yet')
+        ->and(projectsend_preflight_command($failure[2]))->toContain('composer install');
+});
+
+// The fix the .env branch prints is `php artisan key:generate`, which cannot
+// run without the autoloader — so telling somebody about the key first would
+// hand them a second, more confusing error.
+it('reports missing dependencies before a missing .env', function (): void {
+    $failure = projectsend_preflight_failure(preflightFixture(null, false, installed: false));
+
+    expect($failure[0])->toBe('ProjectSend is not installed yet');
+});
+
+it('fails when the frontend has never been built', function (): void {
+    $failure = projectsend_preflight_failure(
+        preflightFixture('base64:'.base64_encode(random_bytes(32)), true, built: false)
+    );
+
+    expect($failure)->not->toBeNull()
+        ->and($failure[0])->toBe('ProjectSend is not built yet')
+        ->and(projectsend_preflight_command($failure[2]))->toContain('npm run build');
+});
+
+// laravel-vite-plugin writes public/hot while `npm run dev` runs, and the dev
+// server serves the assets. Blocking a developer mid-session would make this
+// guard worse than the exception it replaces.
+it('treats a running vite dev server as built', function (): void {
+    $dir = preflightFixture('base64:'.base64_encode(random_bytes(32)), true, built: false);
+    mkdir($dir.'/public');
+    file_put_contents($dir.'/public/hot', 'http://localhost:5173');
+
+    expect(projectsend_preflight_failure($dir))->toBeNull();
+});
+
+// A key is the more fundamental problem of the two, and its message is the
+// one that has to survive.
+it('reports a missing APP_KEY before unbuilt assets', function (): void {
+    $failure = projectsend_preflight_failure(preflightFixture('', true, built: false));
+
+    expect($failure[0])->toBe('ProjectSend is not configured yet');
 });

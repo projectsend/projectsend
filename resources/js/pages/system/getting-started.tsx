@@ -3,6 +3,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import { ArrowRight, Boxes, Check, Clock, Contact, MailOpen, Palette, Send, Upload, Users, type LucideIcon } from 'lucide-react';
 
 import DiscordInvitation from '@/components/discord-invitation';
+import MadeInArgentina from '@/components/made-in-argentina';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
@@ -84,13 +85,17 @@ export default function GettingStarted({ items, justInstalled }: GettingStartedP
                         it. */}
                     <DiscordInvitation />
 
-                    <div className="flex justify-center">
-                        <Button asChild variant="outline">
-                            <Link href={route('dashboard')}>
-                                {t('Continue to the dashboard')}
-                                <ArrowRight className="size-4" />
-                            </Link>
-                        </Button>
+                    <div className="space-y-6">
+                        <div className="flex justify-center">
+                            <Button asChild variant="outline">
+                                <Link href={route('dashboard')}>
+                                    {t('Continue to the dashboard')}
+                                    <ArrowRight className="size-4" />
+                                </Link>
+                            </Button>
+                        </div>
+
+                        <MadeInArgentina />
                     </div>
                 </div>
             </div>

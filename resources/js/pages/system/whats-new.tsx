@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/react';
 import { ArrowRight, CircleCheck } from 'lucide-react';
 
 import DiscordInvitation from '@/components/discord-invitation';
+import MadeInArgentina from '@/components/made-in-argentina';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
@@ -86,16 +87,20 @@ export default function WhatsNew({ version, previousVersion, justUpdated, releas
                         </div>
                     )}
 
-                    {/* Outline, so the invitation above is the one filled
-                        button on the page. Leaving is not the thing being
-                        encouraged here. */}
-                    <div className="flex justify-center">
-                        <Button asChild variant="outline">
-                            <Link href={route('dashboard')}>
-                                {t('Continue to the dashboard')}
-                                <ArrowRight className="size-4" />
-                            </Link>
-                        </Button>
+                    <div className="space-y-6">
+                        {/* Outline, so the invitation above is the one filled
+                            button on the page. Leaving is not the thing being
+                            encouraged here. */}
+                        <div className="flex justify-center">
+                            <Button asChild variant="outline">
+                                <Link href={route('dashboard')}>
+                                    {t('Continue to the dashboard')}
+                                    <ArrowRight className="size-4" />
+                                </Link>
+                            </Button>
+                        </div>
+
+                        <MadeInArgentina />
                     </div>
                 </div>
             </div>

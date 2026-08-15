@@ -192,9 +192,13 @@ class UpdateInstallation
 
         try {
             $this->activity->logSystem(Action::ApplicationUpdated, [
-                // Empty whenever the previous version predates this command
-                // — which every installation hits exactly once.
-                'from' => $from !== '' ? $from : 'an unrecorded version',
+                // The previous version is unknown exactly once per
+                // installation: the first update after adopting this command.
+                // A dash rather than a sentence, because context values are
+                // substituted into the template verbatim and never
+                // translated — an English phrase here would sit inside an
+                // otherwise Japanese or Polish row forever.
+                'from' => $from !== '' ? $from : '—',
                 'to' => $to,
             ]);
         } catch (Throwable $exception) {

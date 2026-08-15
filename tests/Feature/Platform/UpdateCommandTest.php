@@ -224,7 +224,9 @@ test('an update from a version that was never recorded is still logged', functio
 
     $entry = ActivityLog::query()->where('action', Action::ApplicationUpdated)->sole();
 
-    expect($entry->context['from'])->toBe('an unrecorded version')
+    // A dash, not a sentence: context values are substituted verbatim and
+    // never translated, so anything English here would outlive the locale.
+    expect($entry->context['from'])->toBe('—')
         ->and($entry->context['to'])->toBe(config('projectsend.version'));
 });
 

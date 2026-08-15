@@ -24,6 +24,7 @@ set -euo pipefail
 
 REPO_API="https://api.github.com/repos/projectsend/projectsend/releases/latest"
 RELEASES_PAGE="https://github.com/projectsend/projectsend/releases"
+DISCORD_URL="https://discord.gg/VT9n6cyvXT"
 
 ZIP=""
 CHECK_ONLY=0
@@ -632,6 +633,25 @@ Then reload PHP-FPM, and bring the site back with: php artisan up"
     say "ProjectSend $NEW_VERSION is installed and running."
     [[ -n "${BACKUP_TAKEN:-}" ]] && note "Database dump: $BACKUP_TAKEN"
     note "Check the dashboard's System card, then System -> Settings -> Scheduler, then download a file."
+
+    invitation
+}
+
+# The last thing on the screen, and the only moment in this script where
+# nothing is at stake: an update that just worked is a better time to
+# mention the community than an install, where somebody is mid-task.
+#
+# Printed, not asked. The answer to "would you like to join?" is a browser,
+# and this runs over SSH on a server that has none — so a y/n whose only
+# outcome is printing the URL anyway would be a keystroke charged for
+# nothing. It would also be answered "yes" by --yes, on behalf of a cron
+# job that cannot join anything.
+invitation() {
+    echo
+    say "Come and say hello"
+    note "ProjectSend has a Discord: release news, help when something is not"
+    note "behaving, and other people running the same software. We are in it too."
+    note "$DISCORD_URL"
 }
 
 main "$@"

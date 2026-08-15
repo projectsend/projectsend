@@ -10,6 +10,7 @@ use App\Modules\Audit\ActivityLogger;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Identity\UserType;
+use App\Modules\Platform\Onboarding\InstallationWelcome;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Console\Command;
@@ -71,6 +72,12 @@ class CreateAdminCommand extends Command
         if ($settings->get(Setting::AdminNotificationEmails) === []) {
             $settings->set(Setting::AdminNotificationEmails, [$user->email]);
         }
+
+        // Unattended provisioning skips the setup screen entirely, so this
+        // is the only place that can record "somebody just installed this"
+        // for a container that came up from environment variables. They
+        // still deserve showing around on their first visit.
+        app(InstallationWelcome::class)->raise();
 
         $this->info("Administrator {$user->email} created.");
 

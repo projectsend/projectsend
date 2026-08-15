@@ -73,6 +73,9 @@ export default function About({ license, environment }: AboutProps) {
                         <a href={links.discord} target="_blank" rel="noreferrer" className="underline hover:no-underline">
                             {t('Discord')}
                         </a>
+                        <Link href={route('system.getting-started')} className="underline hover:no-underline">
+                            {t('Getting started')}
+                        </Link>
                         {/* Same gate as the environment block below, which is
                             why it rides on the same prop: the page it links to
                             answers the question this one starts. */}

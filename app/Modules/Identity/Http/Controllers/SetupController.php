@@ -11,6 +11,7 @@ use App\Modules\Audit\ActivityLogger;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Identity\UserType;
+use App\Modules\Platform\Onboarding\InstallationWelcome;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Http\RedirectResponse;
@@ -28,6 +29,7 @@ class SetupController extends Controller
     public function __construct(
         private readonly Settings $settings,
         private readonly ActivityLogger $activity,
+        private readonly InstallationWelcome $welcome,
     ) {}
 
     public function show(): Response|RedirectResponse
@@ -71,6 +73,11 @@ class SetupController extends Controller
         if ($this->settings->get(Setting::AdminNotificationEmails) === []) {
             $this->settings->set(Setting::AdminNotificationEmails, [$admin->email]);
         }
+
+        // They will be shown around the first time they sign in — which is
+        // the next thing that happens, since setup deliberately does not
+        // log anybody in.
+        $this->welcome->raise();
 
         // Deliberately no auto-login: the new administrator proves their
         // credentials at the login form, which also confirms they work.

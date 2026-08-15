@@ -83,7 +83,11 @@ function ThemeCard({
 
 export default function ThemingSettings({ theme, email_theme, themes, email_themes }: ThemingSettingsProps) {
     const { t } = useTranslation();
-    const [tab, setTab] = useState<Tab>('pages');
+    // ?tab=email opens on the email themes, so something elsewhere can link
+    // at one of these two halves rather than at the page and a sentence
+    // asking the reader to find the right tab. Anything unrecognised falls
+    // back to the pages tab rather than rendering nothing.
+    const [tab, setTab] = useState<Tab>(new URLSearchParams(window.location.search).get('tab') === 'email' ? 'email' : 'pages');
     const [activatingKey, setActivatingKey] = useState<string | null>(null);
     const [previewing, setPreviewing] = useState<ThemeOption | null>(null);
 

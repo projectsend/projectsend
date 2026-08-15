@@ -275,7 +275,10 @@ edits the nginx config for you.
 
 Open your site in a browser. Because no account exists yet, every address takes you to the setup
 screen, which asks for a site name and the name, email and password of the first administrator.
-Fill it in, and you are done — sign in and start adding clients.
+Fill it in, and you are done. The first time you sign in, ProjectSend opens on a short list of the
+things worth doing first — adding a client, uploading a file, choosing how your file lists and your
+email look — each one linking straight to the screen that does it. It appears once; afterwards it
+lives at **About → Getting started**.
 
 If you would rather not do it in the browser (or you are scripting the install), the same thing
 from the command line:

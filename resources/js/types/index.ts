@@ -75,6 +75,7 @@ export interface SharedData {
         website: string;
         source: string;
         open_collective: string;
+        discord: string;
     };
     /**
      * Whether this installation names ProjectSend to its clients and

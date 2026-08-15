@@ -1,5 +1,5 @@
 import { type BreadcrumbItem, type SharedData } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 
 import Heading from '@/components/heading';
 import ProjectSendLogo from '@/components/projectsend-logo';
@@ -70,6 +70,17 @@ export default function About({ license, environment }: AboutProps) {
                         <a href={links.open_collective} target="_blank" rel="noreferrer" className="underline hover:no-underline">
                             {t('Support the project')}
                         </a>
+                        <a href={links.discord} target="_blank" rel="noreferrer" className="underline hover:no-underline">
+                            {t('Discord')}
+                        </a>
+                        {/* Same gate as the environment block below, which is
+                            why it rides on the same prop: the page it links to
+                            answers the question this one starts. */}
+                        {environment && (
+                            <Link href={route('system.whats-new')} className="underline hover:no-underline">
+                                {t("What's new")}
+                            </Link>
+                        )}
                     </div>
 
                     {environment && (

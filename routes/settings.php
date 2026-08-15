@@ -25,6 +25,7 @@ use App\Modules\Platform\Http\Controllers\PublicListingSettingsController;
 use App\Modules\Platform\Http\Controllers\SchedulerMonitoringController;
 use App\Modules\Platform\Http\Controllers\SystemSettingsController;
 use App\Modules\Platform\Http\Controllers\ThemingSettingsController;
+use App\Modules\Platform\Http\Controllers\WhatsNewController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
@@ -109,6 +110,14 @@ Route::middleware('auth')->group(function () {
     // footer links every staff member here regardless of what they may
     // edit.
     Route::middleware('staff')->get('system/about', AboutController::class)->name('system.about');
+
+    // Where an administrator is sent after an update, and a page anyone
+    // who may read About's environment block can revisit afterwards. The
+    // capability keeps it off managed installations, where nobody signed
+    // in here performed the update it thanks them for.
+    Route::middleware(['staff', 'capability:system.updates', 'can:view_system_info'])
+        ->get('system/whats-new', WhatsNewController::class)
+        ->name('system.whats-new');
 
     // System-wide configuration — deliberately outside the account
     // settings section; it lives under its own sidebar entry, one route

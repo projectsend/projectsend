@@ -87,6 +87,10 @@ return [
         // available at github.com/projectsend/legacy.
         'source' => 'https://github.com/projectsend/projectsend',
         'open_collective' => 'https://opencollective.com/projectsend',
+        // Kept identical to the invitation update.sh prints when an update
+        // finishes — the two are the same offer, made in the terminal and
+        // then again on the screen the administrator lands on.
+        'discord' => 'https://discord.gg/VT9n6cyvXT',
     ],
 
 ];

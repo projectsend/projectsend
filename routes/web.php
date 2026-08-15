@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\RedirectToWhatsNew;
 use App\Modules\Api\Http\Controllers\ApiDashboardController;
 use App\Modules\Api\Http\Controllers\ApiDocsController;
 use App\Modules\Audit\Http\Controllers\ActivityLogController;
@@ -73,7 +74,11 @@ Route::get('s/{token}', [PublicShareController::class, 'show'])->middleware('thr
 Route::get('s/{token}/download', [PublicShareController::class, 'download'])->middleware('throttle:30,1,share-link')->name('share.download');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('dashboard', DashboardController::class)->name('dashboard');
+    // The welcome middleware sits here and nowhere else — see the class
+    // for why the dashboard is the right and only place to intercept.
+    Route::get('dashboard', DashboardController::class)
+        ->middleware(RedirectToWhatsNew::class)
+        ->name('dashboard');
     Route::put('dashboard/widgets', [DashboardWidgetPreferencesController::class, 'update'])->name('dashboard.widgets.update');
 
     // Every account (staff or client) has their own notifications —

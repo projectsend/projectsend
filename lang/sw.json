@@ -1790,5 +1790,16 @@
     "To update, run this in the install directory:": "Ili kusasisha, endesha hii katika saraka ya usakinishaji:",
     "Version :running is installed, but the update has not been run": "Toleo :running limesakinishwa, lakini usasishaji haujaendeshwa",
     "Updated ProjectSend to :to, from :from": "Amesasisha ProjectSend hadi :to, kutoka :from",
-    "ProjectSend was updated to a new version": "ProjectSend imesasishwa hadi toleo jipya"
+    "ProjectSend was updated to a new version": "ProjectSend imesasishwa hadi toleo jipya",
+    "Come and say hello": "Karibu useme habari",
+    "Continue to the dashboard": "Endelea kwenye dashibodi",
+    "Discord": "Discord",
+    "Join the Discord": "Jiunge na Discord",
+    "ProjectSend :version": "ProjectSend :version",
+    "ProjectSend has a Discord: release news, help when something is not behaving, and other people running the same software. We are in it too.": "ProjectSend ina Discord: habari za matoleo, msaada pale kitu kinapokwenda kombo, na watu wengine wanaotumia programu hiyo hiyo. Sisi pia tupo humo.",
+    "ProjectSend is now on :version": "ProjectSend sasa iko kwenye toleo :version",
+    "The update finished, and everything came back up. Thank you for keeping it current.": "Sasisho limekamilika na kila kitu kimerudi kufanya kazi. Asante kwa kuiweka ikiwa mpya.",
+    "The update from :previous finished, and everything came back up. Thank you for keeping it current.": "Sasisho kutoka toleo :previous limekamilika na kila kitu kimerudi kufanya kazi. Asante kwa kuiweka ikiwa mpya.",
+    "What's new": "Mapya",
+    "What each release brought to this installation.": "Kile kila toleo kimeleta kwenye usakinishaji huu."
 }

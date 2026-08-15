@@ -1790,5 +1790,16 @@
     "To update, run this in the install directory:": "Untuk memperbarui, jalankan ini di direktori instalasi:",
     "Version :running is installed, but the update has not been run": "Versi :running terpasang, tetapi pembaruan belum dijalankan",
     "Updated ProjectSend to :to, from :from": "Memperbarui ProjectSend ke :to, dari :from",
-    "ProjectSend was updated to a new version": "ProjectSend telah diperbarui ke versi baru"
+    "ProjectSend was updated to a new version": "ProjectSend telah diperbarui ke versi baru",
+    "Come and say hello": "Mampir dan sapa kami",
+    "Continue to the dashboard": "Lanjutkan ke dasbor",
+    "Discord": "Discord",
+    "Join the Discord": "Gabung ke Discord",
+    "ProjectSend :version": "ProjectSend :version",
+    "ProjectSend has a Discord: release news, help when something is not behaving, and other people running the same software. We are in it too.": "ProjectSend punya Discord: kabar rilis, bantuan saat ada yang tidak beres, dan orang lain yang menjalankan perangkat lunak yang sama. Kami juga ada di sana.",
+    "ProjectSend is now on :version": "ProjectSend kini di versi :version",
+    "The update finished, and everything came back up. Thank you for keeping it current.": "Pembaruan selesai dan semuanya kembali berjalan. Terima kasih sudah menjaganya tetap mutakhir.",
+    "The update from :previous finished, and everything came back up. Thank you for keeping it current.": "Pembaruan dari versi :previous selesai dan semuanya kembali berjalan. Terima kasih sudah menjaganya tetap mutakhir.",
+    "What's new": "Yang baru",
+    "What each release brought to this installation.": "Apa yang dibawa setiap rilis ke instalasi ini."
 }

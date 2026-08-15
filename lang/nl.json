@@ -1790,5 +1790,16 @@
     "To update, run this in the install directory:": "Voer dit uit in de installatiemap om bij te werken:",
     "Version :running is installed, but the update has not been run": "Versie :running is geïnstalleerd, maar de update is niet uitgevoerd",
     "Updated ProjectSend to :to, from :from": "Heeft ProjectSend bijgewerkt naar :to, vanaf :from",
-    "ProjectSend was updated to a new version": "ProjectSend is bijgewerkt naar een nieuwe versie"
+    "ProjectSend was updated to a new version": "ProjectSend is bijgewerkt naar een nieuwe versie",
+    "Come and say hello": "Kom even hallo zeggen",
+    "Continue to the dashboard": "Verder naar het overzicht",
+    "Discord": "Discord",
+    "Join the Discord": "Word lid van de Discord",
+    "ProjectSend :version": "ProjectSend :version",
+    "ProjectSend has a Discord: release news, help when something is not behaving, and other people running the same software. We are in it too.": "ProjectSend heeft een Discord: nieuws over releases, hulp als iets zich vreemd gedraagt, en andere mensen die dezelfde software draaien. Wij zitten er ook.",
+    "ProjectSend is now on :version": "ProjectSend draait nu op versie :version",
+    "The update finished, and everything came back up. Thank you for keeping it current.": "De update is klaar en alles draait weer. Bedankt dat je het bijhoudt.",
+    "The update from :previous finished, and everything came back up. Thank you for keeping it current.": "De update vanaf versie :previous is klaar en alles draait weer. Bedankt dat je het bijhoudt.",
+    "What's new": "Wat is er nieuw",
+    "What each release brought to this installation.": "Wat elke release deze installatie heeft gebracht."
 }

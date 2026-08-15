@@ -1790,5 +1790,16 @@
     "To update, run this in the install directory:": "Chcete-li aktualizovat, spusťte v adresáři instalace toto:",
     "Version :running is installed, but the update has not been run": "Verze :running je nainstalovaná, ale aktualizace nebyla spuštěna",
     "Updated ProjectSend to :to, from :from": "Aktualizoval(a) ProjectSend na :to z verze :from",
-    "ProjectSend was updated to a new version": "ProjectSend byl aktualizován na novou verzi"
+    "ProjectSend was updated to a new version": "ProjectSend byl aktualizován na novou verzi",
+    "Come and say hello": "Přijďte se pozdravit",
+    "Continue to the dashboard": "Pokračovat na přehled",
+    "Discord": "Discord",
+    "Join the Discord": "Připojit se na Discord",
+    "ProjectSend :version": "ProjectSend :version",
+    "ProjectSend has a Discord: release news, help when something is not behaving, and other people running the same software. We are in it too.": "ProjectSend má Discord: novinky o vydáních, pomoc, když se něco chová divně, a další lidé, kteří provozují stejný software. Jsme tam taky.",
+    "ProjectSend is now on :version": "ProjectSend je nyní ve verzi :version",
+    "The update finished, and everything came back up. Thank you for keeping it current.": "Aktualizace proběhla a vše je zase v provozu. Děkujeme, že ji udržujete aktuální.",
+    "The update from :previous finished, and everything came back up. Thank you for keeping it current.": "Aktualizace z verze :previous proběhla a vše je zase v provozu. Děkujeme, že ji udržujete aktuální.",
+    "What's new": "Novinky",
+    "What each release brought to this installation.": "Co jednotlivá vydání přinesla této instalaci."
 }

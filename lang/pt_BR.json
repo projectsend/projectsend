@@ -1790,5 +1790,16 @@
     "To update, run this in the install directory:": "Para atualizar, rode isto no diretório de instalação:",
     "Version :running is installed, but the update has not been run": "A versão :running está instalada, mas a atualização não foi executada",
     "Updated ProjectSend to :to, from :from": "Atualizou o ProjectSend para :to, a partir de :from",
-    "ProjectSend was updated to a new version": "O ProjectSend foi atualizado para uma nova versão"
+    "ProjectSend was updated to a new version": "O ProjectSend foi atualizado para uma nova versão",
+    "Come and say hello": "Venha dizer olá",
+    "Continue to the dashboard": "Continuar para o painel",
+    "Discord": "Discord",
+    "Join the Discord": "Entrar no Discord",
+    "ProjectSend :version": "ProjectSend :version",
+    "ProjectSend has a Discord: release news, help when something is not behaving, and other people running the same software. We are in it too.": "O ProjectSend tem um Discord: novidades de cada versão, ajuda quando algo não está se comportando como deveria e outras pessoas que usam o mesmo software. Nós também estamos lá.",
+    "ProjectSend is now on :version": "O ProjectSend agora está na versão :version",
+    "The update finished, and everything came back up. Thank you for keeping it current.": "A atualização terminou e tudo voltou a funcionar. Obrigado por manter tudo em dia.",
+    "The update from :previous finished, and everything came back up. Thank you for keeping it current.": "A atualização a partir da versão :previous terminou e tudo voltou a funcionar. Obrigado por manter tudo em dia.",
+    "What's new": "Novidades",
+    "What each release brought to this installation.": "O que cada versão trouxe para esta instalação."
 }

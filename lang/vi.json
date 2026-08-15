@@ -1790,5 +1790,16 @@
     "To update, run this in the install directory:": "Để cập nhật, hãy chạy lệnh này trong thư mục cài đặt:",
     "Version :running is installed, but the update has not been run": "Phiên bản :running đã được cài, nhưng chưa chạy cập nhật",
     "Updated ProjectSend to :to, from :from": "Đã cập nhật ProjectSend lên :to, từ :from",
-    "ProjectSend was updated to a new version": "ProjectSend đã được cập nhật lên phiên bản mới"
+    "ProjectSend was updated to a new version": "ProjectSend đã được cập nhật lên phiên bản mới",
+    "Come and say hello": "Ghé qua chào một tiếng",
+    "Continue to the dashboard": "Tiếp tục đến bảng điều khiển",
+    "Discord": "Discord",
+    "Join the Discord": "Tham gia Discord",
+    "ProjectSend :version": "ProjectSend :version",
+    "ProjectSend has a Discord: release news, help when something is not behaving, and other people running the same software. We are in it too.": "ProjectSend có một Discord: tin tức về các bản phát hành, trợ giúp khi có gì đó chạy không đúng, và những người khác đang dùng cùng phần mềm. Chúng tôi cũng ở đó.",
+    "ProjectSend is now on :version": "ProjectSend hiện đang chạy phiên bản :version",
+    "The update finished, and everything came back up. Thank you for keeping it current.": "Bản cập nhật đã hoàn tất và mọi thứ đã hoạt động trở lại. Cảm ơn bạn đã giữ cho nó luôn mới.",
+    "The update from :previous finished, and everything came back up. Thank you for keeping it current.": "Bản cập nhật từ phiên bản :previous đã hoàn tất và mọi thứ đã hoạt động trở lại. Cảm ơn bạn đã giữ cho nó luôn mới.",
+    "What's new": "Có gì mới",
+    "What each release brought to this installation.": "Mỗi bản phát hành đã mang lại gì cho bản cài đặt này."
 }

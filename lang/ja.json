@@ -1790,5 +1790,16 @@
     "To update, run this in the install directory:": "更新するには、インストールディレクトリで次を実行してください:",
     "Version :running is installed, but the update has not been run": "バージョン :running がインストールされていますが、更新は実行されていません",
     "Updated ProjectSend to :to, from :from": "ProjectSend を :from から :to に更新しました",
-    "ProjectSend was updated to a new version": "ProjectSend が新しいバージョンに更新されました"
+    "ProjectSend was updated to a new version": "ProjectSend が新しいバージョンに更新されました",
+    "Come and say hello": "気軽に声をかけてください",
+    "Continue to the dashboard": "ダッシュボードへ進む",
+    "Discord": "Discord",
+    "Join the Discord": "Discord に参加する",
+    "ProjectSend :version": "ProjectSend :version",
+    "ProjectSend has a Discord: release news, help when something is not behaving, and other people running the same software. We are in it too.": "ProjectSend には Discord があります。リリースの最新情報、うまく動かないときのサポート、そして同じソフトウェアを使っている人たち。私たちもそこにいます。",
+    "ProjectSend is now on :version": "ProjectSend は :version になりました",
+    "The update finished, and everything came back up. Thank you for keeping it current.": "更新が完了し、すべて元どおり動作しています。最新の状態を保っていただきありがとうございます。",
+    "The update from :previous finished, and everything came back up. Thank you for keeping it current.": "バージョン :previous からの更新が完了し、すべて元どおり動作しています。最新の状態を保っていただきありがとうございます。",
+    "What's new": "新着情報",
+    "What each release brought to this installation.": "各リリースがこのインストールにもたらしたもの。"
 }

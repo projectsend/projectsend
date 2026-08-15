@@ -1790,5 +1790,16 @@
     "To update, run this in the install directory:": "Чтобы обновить, выполните это в каталоге установки:",
     "Version :running is installed, but the update has not been run": "Версия :running установлена, но обновление не выполнено",
     "Updated ProjectSend to :to, from :from": "Обновил(а) ProjectSend до :to с :from",
-    "ProjectSend was updated to a new version": "ProjectSend обновлён до новой версии"
+    "ProjectSend was updated to a new version": "ProjectSend обновлён до новой версии",
+    "Come and say hello": "Заходите поздороваться",
+    "Continue to the dashboard": "Перейти к панели",
+    "Discord": "Discord",
+    "Join the Discord": "Присоединиться к Discord",
+    "ProjectSend :version": "ProjectSend :version",
+    "ProjectSend has a Discord: release news, help when something is not behaving, and other people running the same software. We are in it too.": "У ProjectSend есть Discord: новости о выпусках, помощь, когда что-то ведёт себя не так, и другие люди, использующие то же ПО. Мы тоже там.",
+    "ProjectSend is now on :version": "ProjectSend теперь версии :version",
+    "The update finished, and everything came back up. Thank you for keeping it current.": "Обновление завершено, всё снова работает. Спасибо, что поддерживаете актуальную версию.",
+    "The update from :previous finished, and everything came back up. Thank you for keeping it current.": "Обновление с версии :previous завершено, всё снова работает. Спасибо, что поддерживаете актуальную версию.",
+    "What's new": "Что нового",
+    "What each release brought to this installation.": "Что каждый выпуск принёс этой установке."
 }

@@ -1790,5 +1790,16 @@
     "To update, run this in the install directory:": "Per actualitzar, executa això al directori d'instal·lació:",
     "Version :running is installed, but the update has not been run": "La versió :running està instal·lada, però l'actualització no s'ha executat",
     "Updated ProjectSend to :to, from :from": "Ha actualitzat el ProjectSend a :to, des de :from",
-    "ProjectSend was updated to a new version": "S'ha actualitzat el ProjectSend a una versió nova"
+    "ProjectSend was updated to a new version": "S'ha actualitzat el ProjectSend a una versió nova",
+    "Come and say hello": "Vine a saludar-nos",
+    "Continue to the dashboard": "Continua al tauler",
+    "Discord": "Discord",
+    "Join the Discord": "Uneix-te al Discord",
+    "ProjectSend :version": "ProjectSend :version",
+    "ProjectSend has a Discord: release news, help when something is not behaving, and other people running the same software. We are in it too.": "El ProjectSend té un Discord: novetats de cada versió, ajuda quan alguna cosa no va com hauria i altres persones que fan servir el mateix programari. Nosaltres també hi som.",
+    "ProjectSend is now on :version": "El ProjectSend ara està a la versió :version",
+    "The update finished, and everything came back up. Thank you for keeping it current.": "L'actualització ha acabat i tot ha tornat a funcionar. Gràcies per mantenir-lo al dia.",
+    "The update from :previous finished, and everything came back up. Thank you for keeping it current.": "L'actualització des de la versió :previous ha acabat i tot ha tornat a funcionar. Gràcies per mantenir-lo al dia.",
+    "What's new": "Novetats",
+    "What each release brought to this installation.": "Què ha aportat cada versió a aquesta instal·lació."
 }

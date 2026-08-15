@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Modules\Audit\Action;
+use App\Modules\Audit\ActivityLog;
 use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Platform\Settings\Setting;
@@ -27,6 +29,9 @@ class RecordingUpdate extends UpdateInstallation
     /** @var array{route: bool, event: bool, config: bool} */
     public array $warm = ['route' => false, 'event' => false, 'config' => false];
 
+    /** The test database is always migrated, so this cannot be observed for real. */
+    public bool $existingInstall = true;
+
     protected function artisan(string $command, array $parameters = [], ?OutputStyle $output = null): int
     {
         $this->calls[] = $command;
@@ -37,6 +42,11 @@ class RecordingUpdate extends UpdateInstallation
     protected function warmCaches(): array
     {
         return $this->warm;
+    }
+
+    protected function hasRunMigrationsBefore(): bool
+    {
+        return $this->existingInstall;
     }
 }
 
@@ -50,6 +60,7 @@ function recordingUpdate(array $warm = [], array $exitCodes = []): RecordingUpda
         app(Illuminate\Contracts\Foundation\Application::class),
         app(App\Modules\Identity\Permissions\EnsureSystemRoles::class),
         app(Settings::class),
+        app(App\Modules\Audit\ActivityLogger::class),
     );
 
     $fake->warm = [...$fake->warm, ...$warm];
@@ -174,4 +185,58 @@ test('both container entrypoints run the command rather than their own sequence'
             ->and($contents)->not->toContain('projectsend:ensure-roles')
             ->and($contents)->not->toContain('migrate --force');
     }
+});
+
+// An update is exactly the kind of thing the activity log exists for: it is
+// the one place an administrator looks to find out what changed on this
+// installation and when.
+test('it writes the update to the activity log, naming both versions', function () {
+    app(Settings::class)->set(Setting::AppliedVersion, '2.0.0');
+    config()->set('projectsend.version', '2.1.0');
+
+    $this->artisan('projectsend:update')->assertSuccessful();
+
+    $entry = ActivityLog::query()->where('action', Action::ApplicationUpdated)->sole();
+
+    expect($entry->context['from'])->toBe('2.0.0')
+        ->and($entry->context['to'])->toBe('2.1.0')
+        // Nobody's account did this — a scheduled boot or a shell did.
+        ->and($entry->actor_id)->toBeNull();
+});
+
+// The container entrypoint runs this on every start. One log entry per
+// restart would bury everything else in it.
+test('re-running on the same version logs nothing', function () {
+    app(Settings::class)->set(Setting::AppliedVersion, config('projectsend.version'));
+
+    $this->artisan('projectsend:update')->assertSuccessful();
+    $this->artisan('projectsend:update')->assertSuccessful();
+
+    expect(ActivityLog::query()->where('action', Action::ApplicationUpdated)->count())->toBe(0);
+});
+
+// The first update of any installation older than this command finds no
+// recorded version — and that update is precisely the one worth logging.
+test('an update from a version that was never recorded is still logged', function () {
+    expect(app(Settings::class)->get(Setting::AppliedVersion))->toBe('');
+
+    $this->artisan('projectsend:update')->assertSuccessful();
+
+    $entry = ActivityLog::query()->where('action', Action::ApplicationUpdated)->sole();
+
+    expect($entry->context['from'])->toBe('an unrecorded version')
+        ->and($entry->context['to'])->toBe(config('projectsend.version'));
+});
+
+// A first boot is an installation, not an update — SetupCompleted already
+// records that, and the container runs this before anybody has installed
+// anything.
+test('a fresh installation logs no update', function () {
+    $fake = recordingUpdate();
+    $fake->existingInstall = false;
+
+    $this->artisan('projectsend:update')->assertSuccessful();
+
+    expect(ActivityLog::query()->where('action', Action::ApplicationUpdated)->count())->toBe(0)
+        ->and(app(Settings::class)->get(Setting::AppliedVersion))->toBe(config('projectsend.version'));
 });

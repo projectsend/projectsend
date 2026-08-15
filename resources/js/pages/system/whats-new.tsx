@@ -1,7 +1,8 @@
-import { type BreadcrumbItem, type SharedData } from '@/types';
-import { Head, Link, usePage } from '@inertiajs/react';
-import { ArrowRight, CircleCheck, MessagesSquare } from 'lucide-react';
+import { type BreadcrumbItem } from '@/types';
+import { Head, Link } from '@inertiajs/react';
+import { ArrowRight, CircleCheck } from 'lucide-react';
 
+import DiscordInvitation from '@/components/discord-invitation';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
@@ -36,7 +37,6 @@ interface WhatsNewProps {
 
 export default function WhatsNew({ version, previousVersion, justUpdated, releases }: WhatsNewProps) {
     const { t } = useTranslation();
-    const { links } = usePage<SharedData>().props;
 
     const breadcrumbs: BreadcrumbItem[] = [{ title: t("What's new"), href: '/system/whats-new' }];
 
@@ -50,51 +50,31 @@ export default function WhatsNew({ version, previousVersion, justUpdated, releas
                         <CircleCheck className="text-primary mx-auto size-12" strokeWidth={1.5} />
 
                         <h1 className="text-2xl font-semibold tracking-tight">
-                            {justUpdated ? t('ProjectSend is now on :version', { version }) : t('ProjectSend :version', { version })}
+                            {justUpdated ? t('Thank you for updating ProjectSend') : t('ProjectSend :version', { version })}
                         </h1>
 
+                        {/* Warm while it is a greeting, plain once it is a
+                            reference: somebody who opened this from a link
+                            months later is looking something up, and being
+                            thanked again would be noise. */}
                         <p className="text-muted-foreground text-sm">
                             {justUpdated
                                 ? previousVersion !== ''
-                                    ? t('The update from :previous finished, and everything came back up. Thank you for keeping it current.', {
-                                          previous: previousVersion,
-                                      })
-                                    : t('The update finished, and everything came back up. Thank you for keeping it current.')
+                                    ? t(
+                                          'You are now on :version, up from :previous, and everything came back up. Thank you for continuing to trust ProjectSend with your file sharing.',
+                                          { version, previous: previousVersion },
+                                      )
+                                    : t(
+                                          'You are now on :version, and everything came back up. Thank you for continuing to trust ProjectSend with your file sharing.',
+                                          { version },
+                                      )
                                 : t('What each release brought to this installation.')}
                         </p>
                     </div>
 
                     {/* The invitation, above the notes on purpose: it is the
-                        part with a person on the other end of it.
-
-                        Carried on `accent` rather than `muted` so it reads as
-                        the featured thing on the page. That token is the
-                        brand colour at surface strength and already has a
-                        dark-mode counterpart, so this stays legible in both
-                        without a single hardcoded purple — and follows the
-                        palette on an installation whose branding replaces
-                        ours. */}
-                    <div className="bg-accent border-primary/20 flex flex-col items-center gap-4 rounded-lg border p-6 text-center">
-                        <MessagesSquare className="text-primary size-8" strokeWidth={1.5} />
-
-                        <div className="space-y-1">
-                            <p className="text-accent-foreground font-medium">{t('Come and say hello')}</p>
-                            <p className="text-accent-foreground/80 text-sm">
-                                {t(
-                                    'ProjectSend has a Discord: release news, help when something is not behaving, and other people running the same software. We are in it too.',
-                                )}
-                            </p>
-                        </div>
-
-                        {/* Solid rather than outline: an outline button's
-                            hover state is this very background colour, so on
-                            this card it would disappear under the cursor. */}
-                        <Button asChild>
-                            <a href={links.discord} target="_blank" rel="noreferrer">
-                                {t('Join the Discord')}
-                            </a>
-                        </Button>
-                    </div>
+                        part with a person on the other end of it. */}
+                    <DiscordInvitation />
 
                     {releases.length > 0 && (
                         <div className="space-y-8">

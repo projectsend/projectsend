@@ -25,11 +25,23 @@ use App\Modules\Platform\Capabilities\CapabilityRegistry;
  * else does all three. A getting-started list that opens with three tasks
  * you are not allowed to perform teaches the reader to ignore it.
  *
+ * Each step also says whether it is **essential**, because they are not
+ * equally urgent and a list that pretends otherwise is a list nobody
+ * reads twice. Essential means the installation does not really work
+ * without it — including the one whose absence is silent: nothing tells
+ * you that password resets are going nowhere until somebody needs one.
+ * It is a fact about the task rather than about the layout, which is why
+ * it is decided here and not in the page.
+ *
  * The two tasks that can be answered from the database are answered:
- * "create your first client" and "upload a file" tick themselves. Nothing
+ * "add your first client" and "upload a file" tick themselves. Nothing
  * else is checkable without guessing — a theme that was never changed is
  * indistinguishable from one that was chosen deliberately — and a tick
  * that means "we assume so" is worse than no tick at all.
+ *
+ * Descriptions are one short line each. This is a list to be scanned on
+ * the first day, by somebody who wants to get on with it; the screen at
+ * the other end of the link explains itself.
  */
 class QuickStart
 {
@@ -39,7 +51,7 @@ class QuickStart
     ) {}
 
     /**
-     * @return list<array{key: string, title: string, description: string, href: string, done: bool}>
+     * @return list<array{key: string, title: string, description: string, href: string, essential: bool, done: bool}>
      */
     public function forUser(User $user): array
     {
@@ -49,8 +61,9 @@ class QuickStart
             $items[] = [
                 'key' => 'client',
                 'title' => __('Add your first client'),
-                'description' => __('A client is somebody you send files to. They get their own account and see only what you share with them.'),
+                'description' => __('The people you send files to.'),
                 'href' => route('clients.create', absolute: false),
+                'essential' => true,
                 'done' => $this->hasAClient(),
             ];
         }
@@ -59,8 +72,9 @@ class QuickStart
             $items[] = [
                 'key' => 'upload',
                 'title' => __('Upload a file'),
-                'description' => __('Drop a file in and choose who it goes to. Uploads resume by themselves if the connection drops.'),
+                'description' => __('Drop one in and choose who gets it.'),
                 'href' => route('files.create', absolute: false),
+                'essential' => true,
                 'done' => $this->hasAFile(),
             ];
         }
@@ -68,9 +82,10 @@ class QuickStart
         if ($this->permissions->allows($user, Permission::CreateGroups)) {
             $items[] = [
                 'key' => 'group',
-                'title' => __('Group the clients who get the same things'),
-                'description' => __('Share with a group once instead of with six people individually, and anyone added later gets it too.'),
+                'title' => __('Group your clients'),
+                'description' => __('Share once instead of six times.'),
                 'href' => route('groups.create', absolute: false),
+                'essential' => false,
                 'done' => false,
             ];
         }
@@ -79,16 +94,18 @@ class QuickStart
             $items[] = [
                 'key' => 'theme',
                 'title' => __('Choose how your file lists look'),
-                'description' => __('Four layouts for the pages your clients and visitors see. Each one previews before you switch.'),
+                'description' => __('Four layouts for the client-facing pages.'),
                 'href' => route('system-settings.theming.edit', absolute: false),
+                'essential' => false,
                 'done' => false,
             ];
 
             $items[] = [
                 'key' => 'email-theme',
                 'title' => __('Choose how your email looks'),
-                'description' => __('Four themes for the messages ProjectSend sends, previewed on a real message rather than a mock-up.'),
+                'description' => __('Previewed on a real message.'),
                 'href' => route('system-settings.theming.edit', ['tab' => 'email'], absolute: false),
+                'essential' => false,
                 'done' => false,
             ];
         }
@@ -99,9 +116,10 @@ class QuickStart
             && $this->capabilities->has(Capability::EmailTransportConfigure)) {
             $items[] = [
                 'key' => 'email',
-                'title' => __('Point ProjectSend at your mail server'),
-                'description' => __('Notifications, password resets and share links all arrive by email, so this is worth doing before your first client does.'),
+                'title' => __('Set up your mail server'),
+                'description' => __('Resets and share links go out through it.'),
                 'href' => route('system-settings.email.edit', absolute: false),
+                'essential' => true,
                 'done' => false,
             ];
         }
@@ -113,8 +131,9 @@ class QuickStart
             $items[] = [
                 'key' => 'team',
                 'title' => __('Add the rest of your team'),
-                'description' => __('Staff accounts with roles, so people get exactly the part of this they need and nothing else.'),
+                'description' => __('Staff accounts, each scoped by its role.'),
                 'href' => route('users.create', absolute: false),
+                'essential' => false,
                 'done' => false,
             ];
         }
@@ -126,8 +145,9 @@ class QuickStart
             $items[] = [
                 'key' => 'scheduler',
                 'title' => __('Check the scheduler is running'),
-                'description' => __('Expiring files, cleanups and queued email all depend on it. This screen tells you whether it has run.'),
+                'description' => __('Expiring files and queued email need it.'),
                 'href' => route('system-settings.scheduler.index', absolute: false),
+                'essential' => true,
                 'done' => false,
             ];
         }

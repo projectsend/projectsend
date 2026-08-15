@@ -191,6 +191,23 @@ test('the client and upload steps tick themselves', function () {
     );
 });
 
+// Not every step is equally urgent, and a list that pretends otherwise is
+// a list nobody reads twice. The mail server is the one whose absence is
+// silent — nothing announces that password resets are going nowhere.
+test('it marks which steps the installation does not work without', function () {
+    $items = [];
+
+    $this->actingAs($this->admin)->get('/system/getting-started')->assertInertia(function (AssertableInertia $page) use (&$items) {
+        $items = collect($page->toArray()['props']['items'])->keyBy('key');
+    });
+
+    expect($items['email']['essential'])->toBeTrue()
+        ->and($items['client']['essential'])->toBeTrue()
+        ->and($items['scheduler']['essential'])->toBeTrue()
+        ->and($items['email-theme']['essential'])->toBeFalse()
+        ->and($items['team']['essential'])->toBeFalse();
+});
+
 // The email-theme link has to land on the email tab, not on the page with
 // a sentence asking the reader to find it.
 test('the email theme step deep-links to its own tab', function () {

@@ -248,6 +248,17 @@ enum Setting: string
     case AppliedVersion = 'applied_version';
     case AppliedVersionAt = 'applied_version_at';
 
+    // An update finished and the administrator has not been shown what it
+    // brought yet — the two versions it moved between, so the page can
+    // name every release in the gap rather than only the newest.
+    //
+    // Written by UpdateInstallation, and only for a genuine update of an
+    // existing installation: a fresh install has nothing to catch up on,
+    // and a container that reboots has not updated anything. Cleared when
+    // the page is read. Both empty means nothing is waiting.
+    case UpdateWelcomeFrom = 'update_welcome_from';
+    case UpdateWelcomeTo = 'update_welcome_to';
+
     // Cached result of the last dashboard news feed fetch — never written
     // directly by a settings form, only by FetchNewsCommand. Both editions
     // see this (unlike CheckForUpdates above, which is Community-only);
@@ -298,6 +309,8 @@ enum Setting: string
             self::LatestReleasePublishedAt,
             self::AppliedVersion,
             self::AppliedVersionAt,
+            self::UpdateWelcomeFrom,
+            self::UpdateWelcomeTo,
             self::NewsLastFetchedAt,
             self::CaptchaProvider,
             self::CaptchaKeySource,
@@ -425,6 +438,8 @@ enum Setting: string
             // notice, in either direction.
             self::AppliedVersion => '',
             self::AppliedVersionAt => '',
+            self::UpdateWelcomeFrom => '',
+            self::UpdateWelcomeTo => '',
             self::NewsLastFetchedAt => '',
 
             self::NewsItems => [],

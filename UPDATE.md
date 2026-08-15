@@ -107,6 +107,11 @@ docker compose logs app | grep -A5 "Running migrations"
 docker compose ps            # the app container should reach "healthy"
 ```
 
+The first time the administrator opens ProjectSend after an update, they land on a page naming the
+version now running and what the release brought, read from `CHANGELOG.md` inside the release
+itself. It appears once, for the account that administers the installation; afterwards it stays
+reachable from **About**, under the version line.
+
 Then open the dashboard: the **System** card's *Version* line is the version now running, and the
 "a new version is available" notice disappears on its own once the running version has caught up —
 it compares against what is installed on every page load, so there is nothing to clear.

@@ -155,10 +155,26 @@ class UpdateInstallation
         $this->settings->set(Setting::AppliedVersion, $running);
         $this->settings->set(Setting::AppliedVersionAt, now()->toIso8601String());
 
-        $warning = $this->recordTheUpdate($existingInstall, $result['from'], $running);
+        // Everything that happens only when this run actually moved the
+        // installation somewhere new. Both entrypoints run this command on
+        // every boot, so "somewhere new" is the narrow case, not the
+        // common one.
+        if ($existingInstall && $result['from'] !== $running) {
+            $warning = $this->recordTheUpdate($result['from'], $running);
 
-        if ($warning !== null) {
-            $result['warnings'][] = $warning;
+            if ($warning !== null) {
+                $result['warnings'][] = $warning;
+            }
+
+            // Forwards only. Going back is a version change worth recording
+            // above, but somebody who has just restored an older release is
+            // dealing with a problem, and "thank you for keeping this
+            // current" is the wrong thing to greet them with. An unknown
+            // previous version counts as forwards: it is the first update
+            // of an installation older than this feature.
+            if ($result['from'] === '' || version_compare($running, $result['from'], '>')) {
+                $this->raiseTheWelcome($result['from'], $running);
+            }
         }
 
         // Last, and after every cache operation above — see the class
@@ -171,25 +187,44 @@ class UpdateInstallation
     }
 
     /**
+     * Leave the marker the administrator's welcome page consumes: an
+     * update landed, and this is the ground it covered.
+     *
+     * Both versions rather than just the new one, because an installation
+     * that skipped releases — anybody who updates twice a year — should be
+     * shown every release in the gap and not only the newest.
+     *
+     * Swallows failure for the reason the activity log below does: an
+     * update that worked must not report failure because of a greeting.
+     */
+    private function raiseTheWelcome(string $from, string $to): void
+    {
+        try {
+            $this->settings->set(Setting::UpdateWelcomeFrom, $from);
+            $this->settings->set(Setting::UpdateWelcomeTo, $to);
+        } catch (Throwable) {
+            // Nothing worth telling anyone: the update itself is complete,
+            // and the only casualty is a page nobody has seen yet.
+        }
+    }
+
+    /**
      * Put the update in the activity log — the one place an administrator
      * looks to answer "what changed on this installation, and when".
      *
-     * Only a genuine version change is recorded. The container entrypoint
-     * runs this on every boot, so logging unconditionally would bury the
-     * log under an entry per restart; and a fresh installation is an
-     * install, not an update, which SetupCompleted already covers.
+     * Only reached for a genuine version change (see the caller). The
+     * container entrypoint runs this on every boot, so logging
+     * unconditionally would bury the log under an entry per restart; and a
+     * fresh installation is an install, not an update, which SetupCompleted
+     * already covers.
      *
      * "Fresh" is decided by whether migrations had ever run before this
      * one, rather than by whether a version was recorded: the first update
      * of any installation older than this command finds no recorded
      * version, and that update is exactly the one worth logging.
      */
-    private function recordTheUpdate(bool $existingInstall, string $from, string $to): ?string
+    private function recordTheUpdate(string $from, string $to): ?string
     {
-        if (! $existingInstall || $from === $to) {
-            return null;
-        }
-
         try {
             $this->activity->logSystem(Action::ApplicationUpdated, [
                 // The previous version is unknown exactly once per

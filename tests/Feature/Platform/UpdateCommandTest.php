@@ -242,3 +242,47 @@ test('a fresh installation logs no update', function () {
     expect(ActivityLog::query()->where('action', Action::ApplicationUpdated)->count())->toBe(0)
         ->and(app(Settings::class)->get(Setting::AppliedVersion))->toBe(config('projectsend.version'));
 });
+
+// The marker the administrator's welcome page consumes. It carries both
+// versions so that page can name every release in the gap, which matters
+// for anybody who updates twice a year rather than every release.
+test('it raises the welcome marker, naming the ground the update covered', function () {
+    app(Settings::class)->set(Setting::AppliedVersion, '2.0.0');
+    config()->set('projectsend.version', '2.1.0');
+
+    $this->artisan('projectsend:update')->assertSuccessful();
+
+    expect(app(Settings::class)->get(Setting::UpdateWelcomeFrom))->toBe('2.0.0')
+        ->and(app(Settings::class)->get(Setting::UpdateWelcomeTo))->toBe('2.1.0');
+});
+
+// Same reasoning as the activity log above: every container boot runs this
+// command, and greeting somebody for a restart would train them to dismiss
+// the page without reading it.
+test('re-running on the same version raises no welcome', function () {
+    app(Settings::class)->set(Setting::AppliedVersion, config('projectsend.version'));
+
+    $this->artisan('projectsend:update')->assertSuccessful();
+
+    expect(app(Settings::class)->get(Setting::UpdateWelcomeTo))->toBe('');
+});
+
+test('a fresh installation raises no welcome', function () {
+    $fake = recordingUpdate();
+    $fake->existingInstall = false;
+
+    $this->artisan('projectsend:update')->assertSuccessful();
+
+    expect(app(Settings::class)->get(Setting::UpdateWelcomeTo))->toBe('');
+});
+
+// Restoring an older release is a version change and is logged as one, but
+// the person doing it is dealing with a problem, not celebrating.
+test('a rollback raises no welcome', function () {
+    app(Settings::class)->set(Setting::AppliedVersion, '99.0.0');
+
+    $this->artisan('projectsend:update')->assertSuccessful();
+
+    expect(app(Settings::class)->get(Setting::UpdateWelcomeTo))->toBe('')
+        ->and(ActivityLog::query()->where('action', Action::ApplicationUpdated)->count())->toBe(1);
+});

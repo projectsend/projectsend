@@ -139,6 +139,31 @@ class StaffAccounts
     }
 
     /**
+     * The installation's principal administrator: the oldest active one.
+     *
+     * "Oldest" is the account created first, which on any installation
+     * that went through setup is the person who set it up — and on one
+     * imported from v1, the first administrator that import created.
+     * There is no *flag* for this because the application deliberately has
+     * no owner concept: administrators are equal in authority, and
+     * inventing a superior one to hold this would be a real change to the
+     * permission model in exchange for a greeting.
+     *
+     * Active, so that a founder who has since left the company does not
+     * silently swallow anything addressed here; it moves to the next
+     * administrator instead.
+     */
+    public function mainAdministrator(): ?User
+    {
+        return User::query()
+            ->where('type', UserType::Staff)
+            ->where('active', true)
+            ->whereHas('role', fn ($query) => $query->where('is_administrator', true))
+            ->orderBy('id')
+            ->first();
+    }
+
+    /**
      * How many staff are active administrators right now — used to flag
      * the sole one in the UI so its delete/demote/deactivate controls
      * can be disabled before the server-side guard ever has to fire.

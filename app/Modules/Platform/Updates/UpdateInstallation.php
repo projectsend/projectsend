@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace App\Modules\Platform\Updates;
 
+use App\Modules\Audit\Action;
+use App\Modules\Audit\ActivityLogger;
 use App\Modules\Identity\Permissions\EnsureSystemRoles;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Console\OutputStyle;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Throwable;
 
 /**
@@ -54,6 +58,7 @@ class UpdateInstallation
         private readonly Application $app,
         private readonly EnsureSystemRoles $roles,
         private readonly Settings $settings,
+        private readonly ActivityLogger $activity,
     ) {}
 
     /**
@@ -80,6 +85,12 @@ class UpdateInstallation
             'warnings' => [],
             'ok' => false,
         ];
+
+        // Asked before migrating, because afterwards there is no way to tell
+        // a fresh installation from an existing one — and the difference
+        // decides whether this run is an update worth logging or the first
+        // boot of a brand new install.
+        $existingInstall = $this->hasRunMigrationsBefore();
 
         // Caught rather than left to surface as a stack trace: the most
         // likely failure here is a database that is unreachable or refusing
@@ -144,6 +155,12 @@ class UpdateInstallation
         $this->settings->set(Setting::AppliedVersion, $running);
         $this->settings->set(Setting::AppliedVersionAt, now()->toIso8601String());
 
+        $warning = $this->recordTheUpdate($existingInstall, $result['from'], $running);
+
+        if ($warning !== null) {
+            $result['warnings'][] = $warning;
+        }
+
         // Last, and after every cache operation above — see the class
         // docblock. A worker only learns to exit by reading this signal.
         $this->artisan('queue:restart', [], $output);
@@ -151,6 +168,56 @@ class UpdateInstallation
         $result['ok'] = true;
 
         return $result;
+    }
+
+    /**
+     * Put the update in the activity log — the one place an administrator
+     * looks to answer "what changed on this installation, and when".
+     *
+     * Only a genuine version change is recorded. The container entrypoint
+     * runs this on every boot, so logging unconditionally would bury the
+     * log under an entry per restart; and a fresh installation is an
+     * install, not an update, which SetupCompleted already covers.
+     *
+     * "Fresh" is decided by whether migrations had ever run before this
+     * one, rather than by whether a version was recorded: the first update
+     * of any installation older than this command finds no recorded
+     * version, and that update is exactly the one worth logging.
+     */
+    private function recordTheUpdate(bool $existingInstall, string $from, string $to): ?string
+    {
+        if (! $existingInstall || $from === $to) {
+            return null;
+        }
+
+        try {
+            $this->activity->logSystem(Action::ApplicationUpdated, [
+                // Empty whenever the previous version predates this command
+                // — which every installation hits exactly once.
+                'from' => $from !== '' ? $from : 'an unrecorded version',
+                'to' => $to,
+            ]);
+        } catch (Throwable $exception) {
+            // An update that worked must not report failure because its own
+            // paperwork did.
+            return 'The update could not be written to the activity log: '.$exception->getMessage();
+        }
+
+        return null;
+    }
+
+    /**
+     * Whether this database has been migrated before — i.e. whether there
+     * was an installation here at all before this run.
+     */
+    protected function hasRunMigrationsBefore(): bool
+    {
+        try {
+            return Schema::hasTable('migrations') && DB::table('migrations')->exists();
+        } catch (Throwable) {
+            // No database yet is not an existing installation.
+            return false;
+        }
     }
 
     /**

@@ -15,6 +15,7 @@ enum Action: string
     // Platform / lifecycle (v1 action 0: "ProjectSend has been installed")
     case SetupCompleted = 'setup.completed';
     case SettingsUpdated = 'settings.updated';
+    case ApplicationUpdated = 'application.updated';
 
     // Identity
     case Login = 'auth.login';
@@ -142,6 +143,7 @@ enum Action: string
     {
         return match ($this) {
             self::SetupCompleted => 'Installed ProjectSend',
+            self::ApplicationUpdated => 'Updated ProjectSend to :to, from :from',
             self::SettingsUpdated => 'Updated the system settings (:section)',
             self::Login => 'Logged in',
             self::Logout => 'Logged out',
@@ -242,6 +244,7 @@ enum Action: string
     {
         return match ($this) {
             self::SetupCompleted => 'ProjectSend was installed',
+            self::ApplicationUpdated => 'ProjectSend was updated to a new version',
             self::SettingsUpdated => 'System settings were updated',
             self::Login => 'Logged in',
             self::Logout => 'Logged out',

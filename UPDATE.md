@@ -80,7 +80,14 @@ Same idea, one extra step because the image is yours to build:
 docker compose down          # no -v, ever: -v deletes your data volumes
 git pull                     # or unpack the new release over the directory
 docker compose up -d --build
+docker compose exec app composer install    # if composer.lock moved
+npm ci && npm run build                     # if package-lock.json or the frontend moved
 ```
+
+The last two lines are what a source checkout has that an image does not: its dependencies and its
+compiled frontend live outside git, so a release that changed either leaves them stale. If a page
+comes back saying ProjectSend is "not installed yet" or "not built yet", it is naming which of the
+two you skipped.
 
 ### What the container does on the way up
 

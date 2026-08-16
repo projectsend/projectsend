@@ -5,5 +5,5 @@
 {{ $slot }}
 @if ($mail_attribution ?? true)
 
-{{ __('Powered by ProjectSend') }}: {{ config('projectsend.links.website') }}
+{{ __('Powered by ProjectSend') }}: {{ app(App\Modules\Platform\OfficialLinks::class)->website() }}
 @endif

@@ -80,8 +80,15 @@ return [
     |--------------------------------------------------------------------------
     */
 
+    // Read through App\Modules\Platform\OfficialLinks rather than
+    // directly: which of the two front doors "website" means, and whether
+    // the donation link is offered at all, both depend on the edition.
     'links' => [
         'website' => 'https://www.projectsend.org/',
+        // The hosted service's own front door. A managed installation
+        // links here instead — including from the "Powered by" line on
+        // client-facing pages and outgoing email.
+        'website_cloud' => 'https://www.projectsend.cloud/',
         // Where this code lives, and the same repository
         // CheckForUpdatesCommand asks for the latest release. v1 remains
         // available at github.com/projectsend/legacy.

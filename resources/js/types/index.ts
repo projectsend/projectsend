@@ -72,10 +72,12 @@ export interface SharedData {
     edition: Edition;
     version: string;
     links: {
+        /** projectsend.org, or projectsend.cloud on a managed installation. */
         website: string;
         source: string;
-        open_collective: string;
         discord: string;
+        /** Absent on a managed installation — those customers already pay. */
+        open_collective?: string;
     };
     /**
      * Whether this installation names ProjectSend to its clients and

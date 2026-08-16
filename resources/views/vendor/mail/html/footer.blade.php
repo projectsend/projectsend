@@ -19,7 +19,8 @@
 <td class="content-cell" align="center">
 {{ Illuminate\Mail\Markdown::parse($slot) }}
 @if ($mail_attribution ?? true)
-<p><a href="{{ config('projectsend.links.website') }}">{{ __('Powered by ProjectSend') }}</a></p>
+{{-- Each edition has its own front door, so this is resolved rather than read straight out of config — see OfficialLinks. --}}
+<p><a href="{{ app(App\Modules\Platform\OfficialLinks::class)->website() }}">{{ __('Powered by ProjectSend') }}</a></p>
 @endif
 </td>
 </tr>

@@ -17,6 +17,7 @@ use App\Modules\Platform\Captcha\Captcha;
 use App\Modules\Platform\Installation\Installation;
 use App\Modules\Platform\Localization\LocaleRegistry;
 use App\Modules\Platform\Localization\TimezoneRegistry;
+use App\Modules\Platform\OfficialLinks;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use App\Modules\Platform\Updates\LatestReleaseInfo;
@@ -72,7 +73,10 @@ class HandleInertiaRequests extends Middleware
             'edition' => $capabilities->edition()->value,
             'noindex' => app(Settings::class)->get(Setting::DiscourageSearchIndexing),
             'version' => config('projectsend.version'),
-            'links' => config('projectsend.links'),
+            // Resolved rather than handed over raw: each edition has its
+            // own front door, and a managed installation offers no
+            // donation link at all. See OfficialLinks.
+            'links' => app(OfficialLinks::class)->toArray(),
             // Whether the client- and visitor-facing surfaces name
             // ProjectSend. True everywhere unless a package answers
             // otherwise — see ResolvingAttribution. Staff surfaces

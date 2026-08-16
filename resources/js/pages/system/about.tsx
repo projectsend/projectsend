@@ -67,9 +67,13 @@ export default function About({ license, environment }: AboutProps) {
                         <a href={links.source} target="_blank" rel="noreferrer" className="underline hover:no-underline">
                             {t('Source code')}
                         </a>
-                        <a href={links.open_collective} target="_blank" rel="noreferrer" className="underline hover:no-underline">
-                            {t('Support the project')}
-                        </a>
+                        {/* Absent on a managed installation, where the reader
+                            is already paying for this — see OfficialLinks. */}
+                        {links.open_collective && (
+                            <a href={links.open_collective} target="_blank" rel="noreferrer" className="underline hover:no-underline">
+                                {t('Support the project')}
+                            </a>
+                        )}
                         <a href={links.discord} target="_blank" rel="noreferrer" className="underline hover:no-underline">
                             {t('Discord')}
                         </a>

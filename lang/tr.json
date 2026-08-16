@@ -1822,5 +1822,7 @@
     "The short version of what to do on a new installation. Nothing here expires.": "Yeni bir kurulumda yapılacakların kısa hâli. Bunların hiçbiri zaman aşımına uğramaz.",
     "You are now on :version, and everything came back up. Thank you for continuing to trust ProjectSend with your file sharing.": "Artık :version sürümündesiniz ve her şey yeniden çalışıyor. Dosya paylaşımınız için ProjectSend'e güvenmeye devam ettiğiniz için teşekkürler.",
     "You are now on :version, up from :previous, and everything came back up. Thank you for continuing to trust ProjectSend with your file sharing.": "Artık :version sürümündesiniz, :previous sürümünden geldiniz ve her şey yeniden çalışıyor. Dosya paylaşımınız için ProjectSend'e güvenmeye devam ettiğiniz için teşekkürler.",
-    "You are running version :version, and it is yours to keep. Here is what is worth doing first.": ":version sürümünü kullanıyorsunuz ve o sizin. İlk yapmaya değecek şeyler burada."
+    "You are running version :version, and it is yours to keep. Here is what is worth doing first.": ":version sürümünü kullanıyorsunuz ve o sizin. İlk yapmaya değecek şeyler burada.",
+    "Thank you for choosing ProjectSend": "ProjectSend'i seçtiğiniz için teşekkürler",
+    "Your site is ready, and keeping it running is our job. Here is what is worth doing first.": "Siteniz hazır, çalışır durumda tutmak da bizim işimiz. İlk yapmaya değecek şeyler burada."
 }

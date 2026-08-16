@@ -1822,5 +1822,7 @@
     "The short version of what to do on a new installation. Nothing here expires.": "新しいインストールでやることの要点です。期限はありません。",
     "You are now on :version, and everything came back up. Thank you for continuing to trust ProjectSend with your file sharing.": "現在 :version です。すべて元どおり動作しています。これからも ProjectSend にファイル共有をお任せいただきありがとうございます。",
     "You are now on :version, up from :previous, and everything came back up. Thank you for continuing to trust ProjectSend with your file sharing.": ":previous から :version になりました。すべて元どおり動作しています。これからも ProjectSend にファイル共有をお任せいただきありがとうございます。",
-    "You are running version :version, and it is yours to keep. Here is what is worth doing first.": "バージョン :version を使っています。まず何をするとよいかをまとめました。"
+    "You are running version :version, and it is yours to keep. Here is what is worth doing first.": "バージョン :version を使っています。まず何をするとよいかをまとめました。",
+    "Thank you for choosing ProjectSend": "ProjectSend をお選びいただきありがとうございます",
+    "Your site is ready, and keeping it running is our job. Here is what is worth doing first.": "サイトの準備が整いました。運用は私たちにお任せください。まず何をするとよいかをまとめました。"
 }

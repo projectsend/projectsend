@@ -1822,5 +1822,7 @@
     "The short version of what to do on a new installation. Nothing here expires.": "De korte versie van wat je op een nieuwe installatie doet. Niets hiervan verloopt.",
     "You are now on :version, and everything came back up. Thank you for continuing to trust ProjectSend with your file sharing.": "Je draait nu op :version en alles draait weer. Bedankt dat je je bestandsdeling aan ProjectSend blijft toevertrouwen.",
     "You are now on :version, up from :previous, and everything came back up. Thank you for continuing to trust ProjectSend with your file sharing.": "Je draait nu op :version, vanaf :previous, en alles draait weer. Bedankt dat je je bestandsdeling aan ProjectSend blijft toevertrouwen.",
-    "You are running version :version, and it is yours to keep. Here is what is worth doing first.": "Je draait versie :version, en die is van jou. Dit is wat je het eerst wilt doen."
+    "You are running version :version, and it is yours to keep. Here is what is worth doing first.": "Je draait versie :version, en die is van jou. Dit is wat je het eerst wilt doen.",
+    "Thank you for choosing ProjectSend": "Bedankt dat je voor ProjectSend hebt gekozen",
+    "Your site is ready, and keeping it running is our job. Here is what is worth doing first.": "Je site is klaar, en hem draaiende houden is onze taak. Dit is wat je het eerst wilt doen."
 }

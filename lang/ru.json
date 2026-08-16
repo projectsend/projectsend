@@ -1822,5 +1822,7 @@
     "The short version of what to do on a new installation. Nothing here expires.": "Коротко о том, что стоит сделать на новой установке. Ничего из этого не устаревает.",
     "You are now on :version, and everything came back up. Thank you for continuing to trust ProjectSend with your file sharing.": "Теперь у вас :version, и всё снова работает. Спасибо, что продолжаете доверять обмен файлами ProjectSend.",
     "You are now on :version, up from :previous, and everything came back up. Thank you for continuing to trust ProjectSend with your file sharing.": "Теперь у вас :version вместо :previous, и всё снова работает. Спасибо, что продолжаете доверять обмен файлами ProjectSend.",
-    "You are running version :version, and it is yours to keep. Here is what is worth doing first.": "Вы используете версию :version, и она ваша. Вот что стоит сделать в первую очередь."
+    "You are running version :version, and it is yours to keep. Here is what is worth doing first.": "Вы используете версию :version, и она ваша. Вот что стоит сделать в первую очередь.",
+    "Thank you for choosing ProjectSend": "Спасибо, что выбрали ProjectSend",
+    "Your site is ready, and keeping it running is our job. Here is what is worth doing first.": "Ваш сайт готов, а поддерживать его работу — наша забота. Вот что стоит сделать в первую очередь."
 }

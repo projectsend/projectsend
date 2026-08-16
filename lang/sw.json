@@ -1822,5 +1822,7 @@
     "The short version of what to do on a new installation. Nothing here expires.": "Muhtasari wa cha kufanya kwenye usakinishaji mpya. Hakuna kinachoisha muda hapa.",
     "You are now on :version, and everything came back up. Thank you for continuing to trust ProjectSend with your file sharing.": "Sasa uko kwenye :version na kila kitu kimerudi kufanya kazi. Asante kwa kuendelea kuamini ProjectSend kwa kushiriki mafaili yako.",
     "You are now on :version, up from :previous, and everything came back up. Thank you for continuing to trust ProjectSend with your file sharing.": "Sasa uko kwenye :version, kutoka :previous, na kila kitu kimerudi kufanya kazi. Asante kwa kuendelea kuamini ProjectSend kwa kushiriki mafaili yako.",
-    "You are running version :version, and it is yours to keep. Here is what is worth doing first.": "Unatumia toleo :version, na ni lako. Haya ndiyo yanayofaa kufanywa kwanza."
+    "You are running version :version, and it is yours to keep. Here is what is worth doing first.": "Unatumia toleo :version, na ni lako. Haya ndiyo yanayofaa kufanywa kwanza.",
+    "Thank you for choosing ProjectSend": "Asante kwa kuchagua ProjectSend",
+    "Your site is ready, and keeping it running is our job. Here is what is worth doing first.": "Tovuti yako iko tayari, na kuiendesha ni kazi yetu. Haya ndiyo yanayofaa kufanywa kwanza."
 }

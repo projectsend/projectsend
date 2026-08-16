@@ -1822,5 +1822,7 @@
     "The short version of what to do on a new installation. Nothing here expires.": "A versão curta do que fazer em uma instalação nova. Nada disso expira.",
     "You are now on :version, and everything came back up. Thank you for continuing to trust ProjectSend with your file sharing.": "Você está na :version agora e tudo voltou a funcionar. Obrigado por continuar confiando seus arquivos ao ProjectSend.",
     "You are now on :version, up from :previous, and everything came back up. Thank you for continuing to trust ProjectSend with your file sharing.": "Você está na :version agora, vindo da :previous, e tudo voltou a funcionar. Obrigado por continuar confiando seus arquivos ao ProjectSend.",
-    "You are running version :version, and it is yours to keep. Here is what is worth doing first.": "Você está usando a versão :version, e ela é sua. Veja o que vale a pena fazer primeiro."
+    "You are running version :version, and it is yours to keep. Here is what is worth doing first.": "Você está usando a versão :version, e ela é sua. Veja o que vale a pena fazer primeiro.",
+    "Thank you for choosing ProjectSend": "Obrigado por escolher o ProjectSend",
+    "Your site is ready, and keeping it running is our job. Here is what is worth doing first.": "Seu site está pronto, e mantê-lo funcionando é trabalho nosso. Veja o que vale a pena fazer primeiro."
 }

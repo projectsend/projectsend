@@ -132,13 +132,26 @@ export default function SystemSettings({
 
                 <p className="text-muted-foreground/70 mt-10 text-xs">
                     ProjectSend {version} ·{' '}
+                    {/* The host, not a hardcoded "projectsend.org": each
+                        edition has its own front door and this line used to
+                        name the wrong one on the hosted service. */}
                     <a href={links.website} target="_blank" rel="noreferrer" className="hover:text-muted-foreground underline">
-                        projectsend.org
-                    </a>{' '}
-                    ·{' '}
-                    <a href={links.open_collective} target="_blank" rel="noreferrer" className="hover:text-muted-foreground underline">
-                        {t('Support the project')}
+                        {new URL(links.website).host.replace(/^www\./, '')}
                     </a>
+                    {links.open_collective && (
+                        <>
+                            {' '}
+                            ·{' '}
+                            <a
+                                href={links.open_collective}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="hover:text-muted-foreground underline"
+                            >
+                                {t('Support the project')}
+                            </a>
+                        </>
+                    )}
                 </p>
             </div>
         </AppLayout>

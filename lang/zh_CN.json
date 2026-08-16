@@ -1822,5 +1822,7 @@
     "The short version of what to do on a new installation. Nothing here expires.": "新安装该做什么的精简版。这些都不会过期。",
     "You are now on :version, and everything came back up. Thank you for continuing to trust ProjectSend with your file sharing.": "你现在使用的是 :version，一切都已恢复正常。感谢你继续把文件分享交给 ProjectSend。",
     "You are now on :version, up from :previous, and everything came back up. Thank you for continuing to trust ProjectSend with your file sharing.": "你现在使用的是 :version，从 :previous 升级而来，一切都已恢复正常。感谢你继续把文件分享交给 ProjectSend。",
-    "You are running version :version, and it is yours to keep. Here is what is worth doing first.": "你正在使用版本 :version，它属于你。以下是值得先做的事。"
+    "You are running version :version, and it is yours to keep. Here is what is worth doing first.": "你正在使用版本 :version，它属于你。以下是值得先做的事。",
+    "Thank you for choosing ProjectSend": "感谢你选择 ProjectSend",
+    "Your site is ready, and keeping it running is our job. Here is what is worth doing first.": "你的站点已就绪，运行维护交给我们。以下是值得先做的事。"
 }

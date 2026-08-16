@@ -249,6 +249,18 @@ class HandleInertiaRequests extends Middleware
      * App strings use English text as the translation key, so "en" ships no
      * messages — the key itself is the fallback.
      *
+     * Asked of the framework's own loader rather than read out of
+     * lang/{locale}.json directly, so that a package which registers its
+     * catalogue with loadJsonTranslationsFrom() reaches the frontend too.
+     * Reading the file worked for as long as every translatable string
+     * belonged to this repository; the companion packages own screens of
+     * their own, and theirs were rendering in English in every language
+     * because their catalogue never got this far.
+     *
+     * Precedence comes from the loader and is the useful way round: an
+     * installation's own lang/{locale}.json is merged last and therefore
+     * wins, so a package string can be overridden locally.
+     *
      * @return array<string, string>
      */
     protected function translations(string $locale): array
@@ -257,13 +269,7 @@ class HandleInertiaRequests extends Middleware
             return [];
         }
 
-        $path = lang_path("{$locale}.json");
-
-        if (! is_file($path)) {
-            return [];
-        }
-
         /** @var array<string, string> */
-        return json_decode((string) file_get_contents($path), true, flags: JSON_THROW_ON_ERROR);
+        return app('translator')->getLoader()->load($locale, '*', '*');
     }
 }

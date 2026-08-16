@@ -1822,5 +1822,7 @@
     "The short version of what to do on a new installation. Nothing here expires.": "La versió curta del que cal fer en una instal·lació nova. Res d'això caduca.",
     "You are now on :version, and everything came back up. Thank you for continuing to trust ProjectSend with your file sharing.": "Ara estàs a la :version i tot ha tornat a funcionar. Gràcies per continuar confiant en el ProjectSend per compartir els teus fitxers.",
     "You are now on :version, up from :previous, and everything came back up. Thank you for continuing to trust ProjectSend with your file sharing.": "Ara estàs a la :version, des de la :previous, i tot ha tornat a funcionar. Gràcies per continuar confiant en el ProjectSend per compartir els teus fitxers.",
-    "You are running version :version, and it is yours to keep. Here is what is worth doing first.": "Estàs fent servir la versió :version, i és teva. Això és el que convé fer primer."
+    "You are running version :version, and it is yours to keep. Here is what is worth doing first.": "Estàs fent servir la versió :version, i és teva. Això és el que convé fer primer.",
+    "Thank you for choosing ProjectSend": "Gràcies per triar el ProjectSend",
+    "Your site is ready, and keeping it running is our job. Here is what is worth doing first.": "El teu lloc està a punt, i mantenir-lo en marxa és feina nostra. Això és el que convé fer primer."
 }

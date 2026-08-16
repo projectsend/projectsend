@@ -44,7 +44,14 @@ const ICONS: Record<string, LucideIcon> = {
 
 export default function GettingStarted({ items, justInstalled }: GettingStartedProps) {
     const { t } = useTranslation();
-    const { version } = usePage<SharedData>().props;
+    const { version, edition } = usePage<SharedData>().props;
+
+    // Nobody on a managed installation installed anything, and the version
+    // they are running is not theirs to keep or to change — it is looked
+    // after for them. Thanking them for installing it would be thanking
+    // them for somebody else's work, on the one screen whose whole job is
+    // to sound like a person wrote it.
+    const managed = edition === 'cloud';
 
     const breadcrumbs: BreadcrumbItem[] = [{ title: t('Getting started'), href: '/system/getting-started' }];
 
@@ -56,14 +63,20 @@ export default function GettingStarted({ items, justInstalled }: GettingStartedP
                 <div className="mx-auto max-w-3xl space-y-8">
                     <div className="space-y-2 text-center">
                         <h1 className="text-2xl font-semibold tracking-tight">
-                            {justInstalled ? t('Thank you for installing ProjectSend') : t('Getting started')}
+                            {justInstalled
+                                ? managed
+                                    ? t('Thank you for choosing ProjectSend')
+                                    : t('Thank you for installing ProjectSend')
+                                : t('Getting started')}
                         </h1>
 
                         <p className="text-muted-foreground text-sm">
                             {justInstalled
-                                ? t('You are running version :version, and it is yours to keep. Here is what is worth doing first.', {
-                                      version,
-                                  })
+                                ? managed
+                                    ? t('Your site is ready, and keeping it running is our job. Here is what is worth doing first.')
+                                    : t('You are running version :version, and it is yours to keep. Here is what is worth doing first.', {
+                                          version,
+                                      })
                                 : t('The short version of what to do on a new installation. Nothing here expires.')}
                         </p>
                     </div>

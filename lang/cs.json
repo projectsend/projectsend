@@ -1822,5 +1822,7 @@
     "The short version of what to do on a new installation. Nothing here expires.": "Krátká verze toho, co udělat na nové instalaci. Nic z toho nevyprší.",
     "You are now on :version, and everything came back up. Thank you for continuing to trust ProjectSend with your file sharing.": "Nyní máte :version a vše je zase v provozu. Děkujeme, že své soubory nadále svěřujete ProjectSendu.",
     "You are now on :version, up from :previous, and everything came back up. Thank you for continuing to trust ProjectSend with your file sharing.": "Nyní máte :version, z :previous, a vše je zase v provozu. Děkujeme, že své soubory nadále svěřujete ProjectSendu.",
-    "You are running version :version, and it is yours to keep. Here is what is worth doing first.": "Používáte verzi :version a je vaše. Tohle se vyplatí udělat jako první."
+    "You are running version :version, and it is yours to keep. Here is what is worth doing first.": "Používáte verzi :version a je vaše. Tohle se vyplatí udělat jako první.",
+    "Thank you for choosing ProjectSend": "Děkujeme, že jste si vybrali ProjectSend",
+    "Your site is ready, and keeping it running is our job. Here is what is worth doing first.": "Váš web je připravený a jeho provoz je na nás. Tohle se vyplatí udělat jako první."
 }

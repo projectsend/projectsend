@@ -11,6 +11,7 @@ use App\Modules\Identity\Permissions\PermissionChecker;
 use App\Modules\Identity\UserType;
 use App\Modules\Platform\Capabilities\Capability;
 use App\Modules\Platform\Capabilities\CapabilityRegistry;
+use App\Modules\Platform\Scheduling\ScheduledTaskRun;
 
 /**
  * The short list of things worth doing on a brand-new installation, in
@@ -33,11 +34,12 @@ use App\Modules\Platform\Capabilities\CapabilityRegistry;
  * It is a fact about the task rather than about the layout, which is why
  * it is decided here and not in the page.
  *
- * The two tasks that can be answered from the database are answered:
- * "add your first client" and "upload a file" tick themselves. Nothing
- * else is checkable without guessing — a theme that was never changed is
- * indistinguishable from one that was chosen deliberately — and a tick
- * that means "we assume so" is worse than no tick at all.
+ * The tasks that can be answered from the database are answered: "add
+ * your first client", "upload a file" and "check the scheduler" tick
+ * themselves. Nothing else is checkable without guessing — a theme that
+ * was never changed is indistinguishable from one that was chosen
+ * deliberately — and a tick that means "we assume so" is worse than no
+ * tick at all.
  *
  * Descriptions are one short line each. This is a list to be scanned on
  * the first day, by somebody who wants to get on with it; the screen at
@@ -148,7 +150,7 @@ class QuickStart
                 'description' => __('Expiring files and queued email need it.'),
                 'href' => route('system-settings.scheduler.index', absolute: false),
                 'essential' => true,
-                'done' => false,
+                'done' => $this->schedulerHasRun(),
             ];
         }
 
@@ -163,5 +165,21 @@ class QuickStart
     private function hasAFile(): bool
     {
         return File::query()->exists();
+    }
+
+    /**
+     * The scheduler step is the one essential task nobody could ever
+     * complete: it was hardcoded unticked even though the screen it links
+     * to already answers the question from these rows.
+     *
+     * A row exists once the scheduler has run here at all — which is
+     * precisely what the step asks. Its status does not come into it: a
+     * task that ran and failed still proves cron reaches this
+     * installation, and the Scheduler screen is where that failure is
+     * read.
+     */
+    private function schedulerHasRun(): bool
+    {
+        return ScheduledTaskRun::query()->exists();
     }
 }

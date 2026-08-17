@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Modules\Platform\Attribution\Attribution;
 use App\Modules\Platform\Attribution\Events\ResolvingAttribution;
 use App\Modules\Platform\Capabilities\Edition;
+use App\Modules\Platform\Settings\Setting;
+use App\Modules\Platform\Settings\Settings;
 use Illuminate\Support\Facades\Event;
 use Inertia\Testing\AssertableInertia;
 
@@ -90,4 +92,39 @@ test('the generator meta names ProjectSend without its version', function () {
     // The version is deliberately absent: this tag is served to anyone
     // who asks, and it would tell a scanner which advisories apply.
     $response->assertDontSee('content="ProjectSend '.config('projectsend.version').'"', false);
+});
+
+test('about names the version this installation was last updated to, and when', function () {
+    config()->set('projectsend.edition', Edition::Community);
+    $settings = app(Settings::class);
+    $settings->set(Setting::AppliedVersion, '2.1.0');
+    $settings->set(Setting::AppliedVersionAt, '2026-08-17T10:00:00+00:00');
+
+    $this->actingAs($this->admin)->get('/system/about')->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->where('updated.version', '2.1.0')
+            ->where('updated.at', '2026-08-17T10:00:00+00:00'),
+    );
+});
+
+test('an installation that has never been updated says nothing rather than guessing', function () {
+    config()->set('projectsend.edition', Edition::Community);
+    $settings = app(Settings::class);
+    $settings->set(Setting::AppliedVersion, '');
+    $settings->set(Setting::AppliedVersionAt, '');
+
+    $this->actingAs($this->admin)->get('/system/about')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('updated', null),
+    );
+});
+
+test('the last-update line is hidden from anyone the environment block is hidden from', function () {
+    config()->set('projectsend.edition', Edition::Cloud);
+    $settings = app(Settings::class);
+    $settings->set(Setting::AppliedVersion, '2.1.0');
+    $settings->set(Setting::AppliedVersionAt, '2026-08-17T10:00:00+00:00');
+
+    $this->actingAs($this->admin)->get('/system/about')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('environment', null)->where('updated', null),
+    );
 });

@@ -9,6 +9,7 @@ use App\Modules\Platform\Scheduling\ScheduledTaskRun;
 use App\Modules\Platform\Scheduling\TaskRunStatus;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
@@ -44,7 +45,7 @@ test('the scheduler page lists every known command, flagging ones that have neve
     ]);
 
     $response = $this->actingAs($this->admin)->get('/system/settings/scheduler');
-    $response->assertInertia(fn (AssertableInertia $page) => $page->component('system/settings/scheduler')->has('tasks', 7));
+    $response->assertInertia(fn (AssertableInertia $page) => $page->component('system/settings/scheduler')->has('tasks', 10));
 
     $tasks = collect(schedulerPageProps($response)['tasks'])->keyBy('command');
     expect($tasks->get('projectsend:purge-expired-files')['status'])->toBe('success')
@@ -203,4 +204,21 @@ test('a check that has never run has nothing to report', function () {
     $tasks = collect(schedulerPageProps($response)['tasks'])->keyBy('command');
 
     expect($tasks->get('projectsend:check-for-updates')['detail'])->toBeNull();
+});
+
+// The list on the screen and the schedule are two hand-maintained lists of
+// the same thing, and they had already drifted once: the API request log
+// purge ran nightly without ever appearing here, so a failure of it was
+// invisible on the screen built to make failures visible.
+test('every scheduled command appears on the screen', function () {
+    $scheduled = collect(app(Schedule::class)->events())
+        ->map(fn ($event): string => (string) Str::of((string) $event->command)->match('/projectsend:[\w-]+/'))
+        ->filter()
+        ->sort()
+        ->values();
+
+    $response = $this->actingAs($this->admin)->get('/system/settings/scheduler');
+    $listed = collect(schedulerPageProps($response)['tasks'])->pluck('command')->sort()->values();
+
+    expect($listed->all())->toBe($scheduled->all());
 });

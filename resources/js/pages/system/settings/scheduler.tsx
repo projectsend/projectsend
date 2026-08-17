@@ -1,12 +1,17 @@
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
+import { type FormEventHandler } from 'react';
 
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import Heading from '@/components/heading';
 import HeadingSmall from '@/components/heading-small';
+import InputError from '@/components/input-error';
 import { Pagination, type PaginationMeta } from '@/components/pagination';
+import { SaveButton } from '@/components/save-button';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useFormatDate } from '@/hooks/use-format-date';
 import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
@@ -39,6 +44,8 @@ interface SchedulerSettingsProps {
     failed_pagination: PaginationMeta;
     failed_total: number;
     pending_jobs_count: number;
+    /** Days each self-growing table is kept for. 0 means indefinitely. */
+    retention: { failed_jobs: number; notifications: number };
 }
 
 export default function SchedulerSettings({
@@ -48,9 +55,22 @@ export default function SchedulerSettings({
     failed_pagination,
     failed_total,
     pending_jobs_count,
+    retention,
 }: SchedulerSettingsProps) {
     const { t } = useTranslation();
     const { dateTime } = useFormatDate();
+
+    // Strings rather than numbers: an emptied number input is '', and
+    // coercing that to 0 mid-typing would silently mean "keep everything".
+    const { data, setData, patch, processing, errors, recentlySuccessful } = useForm({
+        failed_jobs: String(retention.failed_jobs),
+        notifications: String(retention.notifications),
+    });
+
+    const saveRetention: FormEventHandler = (event) => {
+        event.preventDefault();
+        patch(route('system-settings.scheduler.retention'), { preserveScroll: true });
+    };
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: t('Settings'), href: '/system/settings' },
@@ -141,6 +161,57 @@ export default function SchedulerSettings({
                             </tbody>
                         </table>
                     </div>
+                )}
+
+                {tab === 'tasks' && (
+                    <form onSubmit={saveRetention} className="max-w-xl space-y-4">
+                        <HeadingSmall
+                            title={t('Housekeeping')}
+                            description={t('Two things pile up on their own. These are the windows the daily purges above work to.')}
+                        />
+
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            <div className="grid gap-1.5">
+                                <Label htmlFor="failed_jobs_retention">{t('Keep failed jobs for')}</Label>
+                                <div className="flex items-center gap-2">
+                                    <Input
+                                        id="failed_jobs_retention"
+                                        type="number"
+                                        min={0}
+                                        max={3650}
+                                        value={data.failed_jobs}
+                                        onChange={(event) => setData('failed_jobs', event.target.value)}
+                                        className="w-28"
+                                    />
+                                    <span className="text-muted-foreground text-sm">{t('days')}</span>
+                                </div>
+                                <InputError message={errors.failed_jobs} />
+                            </div>
+
+                            <div className="grid gap-1.5">
+                                <Label htmlFor="notifications_retention">{t('Keep read notifications for')}</Label>
+                                <div className="flex items-center gap-2">
+                                    <Input
+                                        id="notifications_retention"
+                                        type="number"
+                                        min={0}
+                                        max={3650}
+                                        value={data.notifications}
+                                        onChange={(event) => setData('notifications', event.target.value)}
+                                        className="w-28"
+                                    />
+                                    <span className="text-muted-foreground text-sm">{t('days')}</span>
+                                </div>
+                                <InputError message={errors.notifications} />
+                            </div>
+                        </div>
+
+                        <p className="text-muted-foreground text-sm">
+                            {t('0 keeps everything. Unread notifications are never deleted, however old they are.')}
+                        </p>
+
+                        <SaveButton processing={processing} recentlySuccessful={recentlySuccessful} />
+                    </form>
                 )}
 
                 {tab === 'failed' && (

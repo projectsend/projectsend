@@ -16,3 +16,5 @@ Schedule::command('projectsend:fetch-news')->daily();
 Schedule::command('projectsend:purge-expired-files')->daily();
 Schedule::command('projectsend:purge-orphan-files')->daily();
 Schedule::command('projectsend:purge-api-request-logs')->daily();
+Schedule::command('projectsend:purge-failed-jobs')->daily();
+Schedule::command('projectsend:purge-notifications')->daily();

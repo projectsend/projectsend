@@ -203,6 +203,7 @@ Route::middleware('auth')->group(function () {
             Route::post('system/settings/scheduler/failed-jobs/{uuid}/retry', [SchedulerMonitoringController::class, 'retryFailedJob'])->name('system-settings.scheduler.retry');
             Route::delete('system/settings/scheduler/failed-jobs/{uuid}', [SchedulerMonitoringController::class, 'destroyFailedJob'])->name('system-settings.scheduler.destroy');
             Route::delete('system/settings/scheduler/failed-jobs', [SchedulerMonitoringController::class, 'destroyAllFailedJobs'])->name('system-settings.scheduler.destroy-all');
+            Route::patch('system/settings/scheduler/retention', [SchedulerMonitoringController::class, 'updateRetention'])->name('system-settings.scheduler.retention');
         });
     });
 

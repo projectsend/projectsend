@@ -45,6 +45,9 @@ class SchedulerMonitoringController extends Controller
         'projectsend:fetch-news' => 'Fetch dashboard news',
         'projectsend:purge-expired-files' => 'Purge expired files',
         'projectsend:purge-orphan-files' => 'Purge orphan files',
+        'projectsend:purge-api-request-logs' => 'Purge API request logs',
+        'projectsend:purge-failed-jobs' => 'Purge failed jobs',
+        'projectsend:purge-notifications' => 'Purge read notifications',
     ];
 
     private const FAILED_PER_PAGE = 20;
@@ -117,7 +120,34 @@ class SchedulerMonitoringController extends Controller
             'failed_pagination' => Pagination::meta($paginator),
             'failed_total' => $failed->count(),
             'pending_jobs_count' => DB::table('jobs')->count(),
+            'retention' => [
+                'failed_jobs' => (int) $this->settings->get(Setting::FailedJobRetentionDays),
+                'notifications' => (int) $this->settings->get(Setting::NotificationRetentionDays),
+            ],
         ]);
+    }
+
+    /**
+     * How long the two tables that grow on their own are kept.
+     *
+     * They live on this screen because this is where their purges are
+     * listed: the window and the job that honours it are one idea, and an
+     * administrator who has just seen "Purge failed jobs · never run" is
+     * the person asking how long anything is kept.
+     */
+    public function updateRetention(Request $request): RedirectResponse
+    {
+        // Ten years is not a policy, it is a guard against a typo becoming
+        // a number nobody notices. 0 is the real "keep everything".
+        $validated = $request->validate([
+            'failed_jobs' => ['required', 'integer', 'min:0', 'max:3650'],
+            'notifications' => ['required', 'integer', 'min:0', 'max:3650'],
+        ]);
+
+        $this->settings->set(Setting::FailedJobRetentionDays, $validated['failed_jobs']);
+        $this->settings->set(Setting::NotificationRetentionDays, $validated['notifications']);
+
+        return back()->with('success', __('Retention updated.'));
     }
 
     public function retryFailedJob(string $uuid): RedirectResponse

@@ -12,6 +12,8 @@ use App\Modules\Platform\Capabilities\CapabilityRegistry;
 use App\Modules\Platform\Localization\TimezoneRegistry;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use App\Modules\Platform\Updates\CheckForUpdates;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -25,6 +27,13 @@ use Inertia\Response;
  */
 class SystemSettingsController extends Controller
 {
+    /**
+     * How long an answer from the release feed is treated as still true.
+     * Short enough that "check now" means now, long enough that a room
+     * full of administrators cannot spend the server's whole allowance.
+     */
+    private const CHECK_COOLDOWN_MINUTES = 5;
+
     public function __construct(
         private readonly Settings $settings,
         private readonly ActivityLogger $activity,
@@ -53,7 +62,61 @@ class SystemSettingsController extends Controller
             'viewer_timezone' => $request->user()?->timezone,
             'can_manage_updates' => $canManageUpdates,
             'check_for_updates' => $canManageUpdates ? $this->settings->get(Setting::CheckForUpdates) : null,
+            'last_checked_at' => $canManageUpdates ? $this->lastCheckedAt()?->toIso8601String() : null,
+            'check_result' => $request->session()->get('update_check_result'),
         ]);
+    }
+
+    /**
+     * Ask the release feed now, rather than waiting for tonight's run.
+     *
+     * Deliberately not gated on Setting::CheckForUpdates: that switches
+     * off the unattended daily call, which is not the same as refusing to
+     * answer a question somebody has just asked out loud.
+     */
+    public function checkForUpdates(Request $request, CheckForUpdates $check): RedirectResponse
+    {
+        $canManageUpdates = $this->capabilities->has(Capability::SystemUpdates)
+            && $request->user()?->can('manage_updates') === true;
+
+        abort_unless($canManageUpdates, 403);
+
+        // A second throttle, and not a redundant one. The route's bucket is
+        // per user; GitHub's unauthenticated rate limit is per server
+        // address, so two administrators each within their own allowance
+        // can still exhaust the installation's. This one is the whole
+        // installation's, and it costs no new setting — the timestamp it
+        // reads is the one every check already writes.
+        $lastCheckedAt = $this->lastCheckedAt();
+
+        if ($lastCheckedAt !== null && $lastCheckedAt->gt(now()->subMinutes(self::CHECK_COOLDOWN_MINUTES))) {
+            return back()->with('update_check_result', [
+                'ok' => true,
+                'message' => __('Checked a moment ago, so this is the answer from then.'),
+            ]);
+        }
+
+        $result = $check->run();
+
+        return back()->with('update_check_result', [
+            'ok' => $result['ok'],
+            'message' => $result['message'],
+        ]);
+    }
+
+    private function lastCheckedAt(): ?CarbonImmutable
+    {
+        $value = $this->settings->get(Setting::LatestVersionCheckedAt);
+
+        if (! is_string($value) || $value === '') {
+            return null;
+        }
+
+        try {
+            return CarbonImmutable::parse($value);
+        } catch (\Throwable) {
+            return null;
+        }
     }
 
     public function update(Request $request): RedirectResponse

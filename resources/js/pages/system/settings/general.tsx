@@ -1,14 +1,17 @@
 import { type BreadcrumbItem, type SharedData } from '@/types';
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
+import { FormEventHandler, useState } from 'react';
 
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { SaveButton } from '@/components/save-button';
+import { TestResultAlert } from '@/components/test-result-alert';
 import { TimezonePicker, type TimezoneOption } from '@/components/timezone-picker';
+import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useFormatDate } from '@/hooks/use-format-date';
 import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
 
@@ -20,6 +23,10 @@ interface SystemSettingsProps {
     viewer_timezone: string | null;
     can_manage_updates: boolean;
     check_for_updates: boolean | null;
+    /** When the release feed was last asked, by anybody. Null until it has been. */
+    last_checked_at: string | null;
+    /** The answer to a "check now" press, for the one render after it. */
+    check_result: { ok: boolean; message: string } | null;
 }
 
 export default function SystemSettings({
@@ -29,9 +36,25 @@ export default function SystemSettings({
     viewer_timezone,
     can_manage_updates,
     check_for_updates,
+    last_checked_at,
+    check_result,
 }: SystemSettingsProps) {
     const { t } = useTranslation();
+    const { dateTime } = useFormatDate();
     const { version, links } = usePage<SharedData>().props;
+    const [checking, setChecking] = useState(false);
+
+    const checkNow = () => {
+        router.post(
+            route('system-settings.check-for-updates'),
+            {},
+            {
+                preserveScroll: true,
+                onStart: () => setChecking(true),
+                onFinish: () => setChecking(false),
+            },
+        );
+    };
 
     // Matched against the offered list so the note names the zone the way
     // the picker does, rather than printing a raw identifier.
@@ -124,6 +147,23 @@ export default function SystemSettings({
                                     "Periodically checks projectsend.org's public repository for a newer release and shows a notice on the dashboard. Nothing is ever downloaded or applied automatically — updating is always something you run, and the update script asks before each step.",
                                 )}
                             </p>
+
+                            {/* Outside the form on purpose: this asks a
+                                question rather than saving anything, and
+                                pressing it should not depend on — or
+                                discard — unsaved edits above it. */}
+                            <div className="mt-1 flex flex-wrap items-center gap-3">
+                                <Button type="button" variant="outline" onClick={checkNow} disabled={checking}>
+                                    {checking ? t('Checking…') : t('Check now')}
+                                </Button>
+                                {last_checked_at && (
+                                    <span className="text-muted-foreground text-sm">
+                                        {t('Last checked :date', { date: dateTime(last_checked_at) })}
+                                    </span>
+                                )}
+                            </div>
+
+                            {check_result && <TestResultAlert ok={check_result.ok}>{check_result.message}</TestResultAlert>}
                         </div>
                     )}
 

@@ -16,6 +16,8 @@ interface ScheduledTask {
     label: string;
     status: 'success' | 'failed' | null;
     message: string | null;
+    /** What the task found, for the tasks that find something. Never set on a failure. */
+    detail: string | null;
     duration_ms: number | null;
     ran_at: string | null;
 }
@@ -130,7 +132,10 @@ export default function SchedulerSettings({
                                         <td className="text-muted-foreground px-4 py-2.5 whitespace-nowrap">
                                             {task.duration_ms !== null ? `${task.duration_ms} ms` : '—'}
                                         </td>
-                                        <td className="text-muted-foreground max-w-xs px-4 py-2.5 break-words">{task.message ?? '—'}</td>
+                                        {/* A failure's own message wins: what the
+                                            last successful run found is not the
+                                            answer to why this one broke. */}
+                                        <td className="text-muted-foreground max-w-xs px-4 py-2.5 break-words">{task.message ?? task.detail ?? '—'}</td>
                                     </tr>
                                 ))}
                             </tbody>

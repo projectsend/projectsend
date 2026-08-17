@@ -6,6 +6,9 @@ namespace App\Modules\Platform\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Platform\Scheduling\ScheduledTaskRun;
+use App\Modules\Platform\Settings\Setting;
+use App\Modules\Platform\Settings\Settings;
+use App\Modules\Platform\Updates\LatestReleaseInfo;
 use App\Support\Pagination;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -48,13 +51,16 @@ class SchedulerMonitoringController extends Controller
 
     public function __construct(
         private readonly FailedJobProviderInterface $failer,
+        private readonly LatestReleaseInfo $latestRelease,
+        private readonly Settings $settings,
     ) {}
 
     public function index(Request $request): Response|RedirectResponse
     {
         $runs = ScheduledTaskRun::query()->get()->keyBy('command');
+        $details = $this->details();
 
-        $tasks = collect(self::KNOWN_COMMANDS)->map(function (string $label, string $command) use ($runs): array {
+        $tasks = collect(self::KNOWN_COMMANDS)->map(function (string $label, string $command) use ($runs, $details): array {
             $run = $runs->get($command);
 
             return [
@@ -62,6 +68,7 @@ class SchedulerMonitoringController extends Controller
                 'label' => $label,
                 'status' => $run?->status->value,
                 'message' => $run?->message,
+                'detail' => $details[$command] ?? null,
                 'duration_ms' => $run?->duration_ms,
                 'ran_at' => $run?->ran_at?->toIso8601String(),
             ];
@@ -136,5 +143,33 @@ class SchedulerMonitoringController extends Controller
         $this->failer->flush();
 
         return back()->with('success', __('All failed jobs deleted.'));
+    }
+
+    /**
+     * What a task actually found, for the tasks that find something.
+     *
+     * The run rows answer "did it work"; they cannot answer "and what did
+     * it say", because Laravel's ScheduledTaskFinished event fires after
+     * the command returns and carries no output — which is why a
+     * successful check for updates has always shown an empty Message.
+     * Joined here at render time instead, from what the command itself
+     * wrote to the settings, so the line stays true whether the daily job
+     * or somebody pressing the button did the work.
+     *
+     * @return array<string, string>
+     */
+    private function details(): array
+    {
+        $release = $this->latestRelease->current();
+        $checkedAt = $this->settings->get(Setting::LatestVersionCheckedAt);
+        $everChecked = is_string($checkedAt) && $checkedAt !== '';
+
+        $updates = match (true) {
+            $release !== null => (string) __(':version is available', ['version' => $release['version']]),
+            $everChecked => (string) __('Up to date'),
+            default => null,
+        };
+
+        return array_filter(['projectsend:check-for-updates' => $updates]);
     }
 }

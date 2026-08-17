@@ -7,6 +7,8 @@ use App\Modules\Identity\Models\Role;
 use App\Modules\Platform\Capabilities\Edition;
 use App\Modules\Platform\Scheduling\ScheduledTaskRun;
 use App\Modules\Platform\Scheduling\TaskRunStatus;
+use App\Modules\Platform\Settings\Setting;
+use App\Modules\Platform\Settings\Settings;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
@@ -166,4 +168,39 @@ test('staff without edit_settings cannot access the scheduler page', function ()
     $staffer = User::factory()->create(['role_id' => $role->id]);
 
     $this->actingAs($staffer)->get('/system/settings/scheduler')->assertForbidden();
+});
+
+test('the update check reports what it found, not just that it ran', function () {
+    config()->set('projectsend.version', '2.0.0');
+    $settings = app(Settings::class);
+    $settings->set(Setting::LatestVersionCheckedAt, now()->toIso8601String());
+    $settings->set(Setting::LatestKnownVersion, '2.5.0');
+
+    $response = $this->actingAs($this->admin)->get('/system/settings/scheduler');
+    $tasks = collect(schedulerPageProps($response)['tasks'])->keyBy('command');
+
+    expect($tasks->get('projectsend:check-for-updates')['detail'])->toContain('2.5.0');
+});
+
+test('a check that found nothing newer says so', function () {
+    config()->set('projectsend.version', '2.0.0');
+    $settings = app(Settings::class);
+    $settings->set(Setting::LatestVersionCheckedAt, now()->toIso8601String());
+    $settings->set(Setting::LatestKnownVersion, '2.0.0');
+
+    $response = $this->actingAs($this->admin)->get('/system/settings/scheduler');
+    $tasks = collect(schedulerPageProps($response)['tasks'])->keyBy('command');
+
+    expect($tasks->get('projectsend:check-for-updates')['detail'])->toBe('Up to date');
+});
+
+test('a check that has never run has nothing to report', function () {
+    $settings = app(Settings::class);
+    $settings->set(Setting::LatestVersionCheckedAt, '');
+    $settings->set(Setting::LatestKnownVersion, '');
+
+    $response = $this->actingAs($this->admin)->get('/system/settings/scheduler');
+    $tasks = collect(schedulerPageProps($response)['tasks'])->keyBy('command');
+
+    expect($tasks->get('projectsend:check-for-updates')['detail'])->toBeNull();
 });

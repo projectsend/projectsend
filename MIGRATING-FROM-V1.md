@@ -105,18 +105,42 @@ On the **new** install:
 ```sh
 composer require projectsend/v1-migration-tool
 php artisan migrate    # creates the tool's two tables
-npm run build          # so its screen enters the frontend bundle
 ```
 
-In Docker, prefix each with `docker compose exec app` (except `npm run build`, which runs on the
-host).
+What comes after that depends on how ProjectSend got onto the machine, and so does whether you get
+the tool's screen.
 
-Then open **`/system/migrate`** on your new install, signed in as a staff user with the *Edit
-settings* permission. There is no sidebar link — a one-time tool does not earn a permanent slot in
-the navigation of an install that will use it once.
+### If you installed from a release zip
 
-Everything below can also be done entirely from the command line; the equivalent commands are
-listed at each step.
+That is the whole installation — there is no `npm run build` to run. The zip ships its assets
+already compiled and deliberately without the toolchain that compiled them, so there is no
+`package.json` to build from.
+
+One consequence is worth knowing before you go looking for it: **`/system/migrate` is not available
+on a zip install.** A package's screens enter the frontend bundle when that bundle is built, which
+for a zip is when the release was built — necessarily before this package was on your install.
+
+Nothing is missing from the migration itself. Every step below lists the command that does it, the
+commands do everything the screen does, and on a zip install they are the interface rather than a
+fallback. Start with [Step 2](#step-2--pick-your-route) and follow the commands.
+
+### If you are running from a git checkout
+
+Including the Docker stack in this repository. Build the frontend so the screen appears:
+
+```sh
+npm run build
+```
+
+In Docker, prefix the two commands above with `docker compose exec app`; `npm run build` runs on
+the host, where the toolchain is.
+
+Then open **`/system/migrate`**, signed in as a staff user with the *Edit settings* permission.
+There is no sidebar link — a one-time tool does not earn a permanent slot in the navigation of an
+install that will use it once.
+
+Everything the screen does can also be done entirely from the command line; the equivalent commands
+are listed at each step.
 
 ---
 
@@ -142,7 +166,8 @@ Point the tool at your Legacy install directory. It reads the database credentia
 php artisan projectsend:migrate:preflight --v1-path=/var/www/projectsend-legacy
 ```
 
-On the screen, choose **Direct**, enter the same path, and pick how to move file bytes:
+If you have the screen, choose **Direct** and enter the same path. Either way, pick how to move
+file bytes:
 
 | `--files=` | What it does |
 |---|---|
@@ -159,8 +184,13 @@ If ProjectSend runs in Docker, the Legacy directory has to be visible **inside t
 ## Step 3b — Bundle (different machines)
 
 Run one dependency-free PHP file on the Legacy box; it produces a portable directory you bring
-over. Download it from `/system/migrate` (there is a link on the screen) or take it from the
-package at `bin/projectsend-v1-export.php`.
+over. Take it from the package, which is where it lives on every install:
+
+```sh
+vendor/projectsend/v1-migration-tool/bin/projectsend-v1-export.php
+```
+
+If you have the screen, `/system/migrate` offers it as a download instead.
 
 On the **Legacy** server:
 
@@ -198,8 +228,9 @@ rsync -a legacy-server:/var/www/projectsend/upload/files/ /tmp/ps-export/files/
 The import finds them there. If you would rather have everything in one object, export with
 `--files=copy` instead — convenient, and it doubles the disk you need on the Legacy box.
 
-Then copy the bundle to the new server, choose **Bundle** on the screen and give it the path (again,
-the path *inside* the app container if you are using Docker):
+Then copy the bundle to the new server and give it the path — on the screen, choose **Bundle**;
+otherwise pass it directly. Either way it is the path *inside* the app container if you are using
+Docker:
 
 ```sh
 php artisan projectsend:migrate:preflight --bundle=/srv/ps-export

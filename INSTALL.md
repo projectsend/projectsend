@@ -5,7 +5,7 @@ published with each release.
 
 If you can run Docker, use Docker instead — it is one command, and everything on this page
 (PHP extensions, the web server, the background worker, the scheduled tasks) is already wired up
-for you. See [the Docker instructions](README.md#development), and
+for you. See [the Docker instructions](README.md#getting-started), and
 [DOCKER.md](DOCKER.md) for keeping your database and uploads outside the containers. Come back here
 if Docker is not an option on your hosting.
 

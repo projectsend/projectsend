@@ -8,7 +8,7 @@ data with it.
 
 Read this before you put real files in ProjectSend, not after.
 
-> Getting started with Docker in the first place is covered in [README](README.md#development).
+> Getting started with Docker in the first place is covered in [README](README.md#getting-started).
 > Installing without Docker, on a plain PHP server, is [INSTALL.md](INSTALL.md).
 
 ---

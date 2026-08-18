@@ -68,17 +68,17 @@ per-seat pricing. It runs on your server, and the files stay there.
 
 ## Getting started
 
-**With Docker** — the quickest path, and the one we recommend.
+**With Docker** — the quickest path, and the one we recommend. Nothing to build: the published
+image ships with its dependencies and its frontend already compiled.
 
 ```sh
-git clone https://github.com/projectsend/projectsend.git
-cd projectsend
-cp .env.example .env          # set PROJECTSEND_EDITION=community
-docker compose up -d
+curl -O https://raw.githubusercontent.com/projectsend/projectsend/main/docker/production/compose.example.yaml
+# edit the passwords and APP_URL in it, then:
+docker compose -f compose.example.yaml up -d
 ```
 
-The app is at `http://localhost:8090`, and the first thing it shows you is a setup screen that
-creates your administrator account.
+Open `APP_URL` and the first thing you see is a setup screen that creates your administrator
+account — or set `ADMIN_EMAIL` and `ADMIN_PASSWORD` in the file first and it is created for you.
 
 Before you put real files in it, read **[DOCKER.md](DOCKER.md)** — where your database and uploads
 actually live, how to move them onto paths you chose, and how to back them up so an upgrade can't
@@ -90,7 +90,12 @@ updating and troubleshooting. You do not need Composer or npm on the server; the
 run.
 
 **Already running it?** **[UPDATE.md](UPDATE.md)** is how you move to a new version — one command
-on Docker, a short sequence on your own server, and what to check afterwards either way.
+on Docker, one script on your own server, and what to check afterwards either way.
+
+**Want to work on ProjectSend itself?** Cloning the repository gets you a development copy, not an
+installation: the dependencies and the compiled frontend are deliberately not in git, so a clone
+needs Composer and npm before it runs. **[CONTRIBUTING.md](CONTRIBUTING.md)** has the sequence, and
+it is short.
 
 ## Coming from ProjectSend Legacy?
 

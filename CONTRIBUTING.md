@@ -22,8 +22,10 @@ arrive without prior discussion are hard to review and often need rework.
 
 ## Setting up for development
 
-The quickest way to a running copy is Docker — the steps that install ProjectSend are also the
-steps that set it up for development. From a fresh clone:
+A clone is a development copy, not an installation: `vendor/` and `public/build/` are deliberately
+not in git, so nothing runs until Composer and npm have filled them. That is what these steps do,
+and it is why the published Docker image — which ships both, already built — is what the README
+sends users to instead. From a fresh clone:
 
 ```sh
 cp .env.example .env
@@ -49,6 +51,12 @@ A few things worth knowing:
   `docker compose --profile dev up -d adminer`.
 - On later boots the container migrates automatically. The manual `migrate` above is only needed on
   the first install, before `vendor/` exists.
+- Until `composer install` has run, the `worker` and `scheduler` containers have no application to
+  run and exit with a message saying so; they pick themselves up once it has. If a page answers
+  "ProjectSend is not installed yet" or "not built yet", it is naming the step that is missing.
+- Two checkouts of this repository share one Compose project name, so `docker compose up` in the
+  second one takes over the first one's containers. Pass `-p some-other-name` when you want them
+  side by side.
 
 **Staff and clients are different things.** Staff — "system users" — administer the installation and
 upload files. Clients are the people files are shared with. There is no staff registration page:

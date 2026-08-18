@@ -35,20 +35,34 @@ class SchedulerMonitoringController extends Controller
      * in sync with 7 already-scattered `protected $signature` values
      * either way.
      *
-     * @var array<string, string>
+     * A method rather than a const because the labels are prose and a
+     * const cannot call __(). Held as data under a key, they were
+     * invisible to the translation scan — which only sees literals inside
+     * __() — so this screen listed ten English rows in the middle of an
+     * otherwise translated page, and nothing reported it as missing.
+     *
+     * The keys are the command names, and they are what everything else
+     * matches on: the run history, the detail map, the frontend, and the
+     * test asserting this list and the schedule are the same list. Only
+     * the values here are language.
+     *
+     * @return array<string, string>
      */
-    private const KNOWN_COMMANDS = [
-        'projectsend:purge-erasures' => 'Purge erased accounts',
-        'projectsend:purge-stale-uploads' => 'Purge stale chunked uploads',
-        'projectsend:purge-zip-downloads' => 'Purge zip downloads',
-        'projectsend:check-for-updates' => 'Check for updates',
-        'projectsend:fetch-news' => 'Fetch dashboard news',
-        'projectsend:purge-expired-files' => 'Purge expired files',
-        'projectsend:purge-orphan-files' => 'Purge orphan files',
-        'projectsend:purge-api-request-logs' => 'Purge API request logs',
-        'projectsend:purge-failed-jobs' => 'Purge failed jobs',
-        'projectsend:purge-notifications' => 'Purge read notifications',
-    ];
+    private function knownCommands(): array
+    {
+        return [
+            'projectsend:purge-erasures' => (string) __('Purge erased accounts'),
+            'projectsend:purge-stale-uploads' => (string) __('Purge stale chunked uploads'),
+            'projectsend:purge-zip-downloads' => (string) __('Purge zip downloads'),
+            'projectsend:check-for-updates' => (string) __('Check for updates'),
+            'projectsend:fetch-news' => (string) __('Fetch dashboard news'),
+            'projectsend:purge-expired-files' => (string) __('Purge expired files'),
+            'projectsend:purge-orphan-files' => (string) __('Purge orphan files'),
+            'projectsend:purge-api-request-logs' => (string) __('Purge API request logs'),
+            'projectsend:purge-failed-jobs' => (string) __('Purge failed jobs'),
+            'projectsend:purge-notifications' => (string) __('Purge read notifications'),
+        ];
+    }
 
     private const FAILED_PER_PAGE = 20;
 
@@ -63,7 +77,7 @@ class SchedulerMonitoringController extends Controller
         $runs = ScheduledTaskRun::query()->get()->keyBy('command');
         $details = $this->details();
 
-        $tasks = collect(self::KNOWN_COMMANDS)->map(function (string $label, string $command) use ($runs, $details): array {
+        $tasks = collect($this->knownCommands())->map(function (string $label, string $command) use ($runs, $details): array {
             $run = $runs->get($command);
 
             return [

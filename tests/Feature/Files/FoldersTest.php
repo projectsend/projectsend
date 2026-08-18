@@ -197,6 +197,26 @@ test('folder ownership splits own from others for edit and delete', function () 
     $this->delete("/folders/{$others->id}")->assertForbidden();
 });
 
+// Issue #1645, end to end through the screen the report came from: a deleted
+// folder used to keep its public URL, so the name could never be used again
+// and the error named a row the interface will not show.
+test('a deleted folder gives its name and its public URL back', function () {
+    $this->actingAs($this->admin);
+
+    $this->post('/folders', ['name' => 'Quarterly', 'public' => true, 'slug' => 'quarterly'])
+        ->assertRedirect()->assertSessionHasNoErrors();
+
+    $first = Folder::query()->where('name', 'Quarterly')->sole();
+    $this->delete("/folders/{$first->id}")->assertRedirect();
+
+    $this->post('/folders', ['name' => 'Quarterly', 'public' => true, 'slug' => 'quarterly'])
+        ->assertRedirect()->assertSessionHasNoErrors();
+
+    $second = Folder::query()->where('name', 'Quarterly')->sole();
+    expect($second->id)->not->toBe($first->id)
+        ->and($second->slug)->toBe('quarterly');
+});
+
 test('creating folders requires create_own_folders', function () {
     // Account Manager lacks create_own_folders in the v1 default set.
     $manager = User::factory()->role(SystemRole::AccountManager)->create();

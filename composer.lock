@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cfcaf0c1e3208e2f96b6879bb0eaf3a7",
+    "content-hash": "8aeea042b113838ea5a2a2dcfb0965c5",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -4052,7 +4052,7 @@
         },
         {
             "name": "projectsend/community-modules",
-            "version": "dev-main",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/projectsend/community-modules.git",
@@ -4074,7 +4074,6 @@
                 "orchestra/testbench": "^10.0",
                 "pestphp/pest": "^3.8"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -4088,18 +4087,14 @@
                     "ProjectSend\\CommunityModules\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "ProjectSend\\CommunityModules\\Tests\\": "tests/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "GPL-2.0-or-later"
             ],
             "description": "Community-exclusive feature modules for ProjectSend — free software, never part of the hosted Cloud edition.",
             "support": {
-                "source": "https://github.com/projectsend/community-modules/tree/main",
-                "issues": "https://github.com/projectsend/community-modules/issues"
+                "issues": "https://github.com/projectsend/community-modules/issues",
+                "source": "https://github.com/projectsend/community-modules/tree/v1.0.0"
             },
             "time": "2026-08-16T18:45:51+00:00"
         },

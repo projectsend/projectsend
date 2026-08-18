@@ -13,19 +13,80 @@ Anything under **Upgrade notes** is something you have to do, not something we d
 This section collects changes as they land; the release process turns it into a numbered entry when
 a version is cut.
 
+## 2.1.0 — 18 August 2026
+
+Updating, mostly. ProjectSend now tells you when there is a new version, ends an update somewhere
+rather than just stopping, and — on a server you run yourself — reduces the whole procedure to one
+command that asks before each step. This is also the first release published as an official Docker
+image.
+
+### Added
+
+- **Ask for an update the moment you want to know.** ProjectSend checks once a day on its own,
+  which is no help to somebody who has just read that a release fixes the thing biting them. There
+  is now a **Check now** button, and it says what it found rather than only that it ran.
+- **Updating ends somewhere.** The first time an administrator opens ProjectSend after an update,
+  they land on a page saying which version they are now on and what came with it — and pointing at
+  ProjectSend's Discord, which is where release news and help actually live.
+- **A first run that shows you around.** A brand-new installation greets its administrator once,
+  with a short list of the things worth doing before real files go in. Steps tick themselves off as
+  you do them.
+- **About says when this installation was last updated**, and to which version. It is the answer to
+  "when did this change?", asked after something looks different or by whoever inherited the server.
+- **The database stops quietly filling up with things nobody reads.** Permanently failed emails and
+  already-read notifications both grew forever. Both now have a retention window you set under
+  **Housekeeping** on the Scheduler screen, with a nightly purge that honours it — thirty days and
+  ninety by default, and `0` to keep everything. Unread notifications are never deleted, whatever
+  their age.
+- **The update is in the activity log**, filterable like everything else. Until now the biggest
+  change that can happen to an installation was the one thing its history did not record.
+- **One command to update, and it asks first.** *(Self-hosted)* `sudo ./update.sh` is the whole
+  procedure: it offers to back up, verifies what it downloaded, and stops rather than guessing. Its
+  useful options — take the backup for me, just tell me what would happen — are one click away on
+  the update screen, and **[UPDATE.md](UPDATE.md)** documents the whole thing.
+
+### Changed
+
+- **The browser tab takes its name from your site**, not from the build, and from the moment the
+  page starts drawing rather than once it has loaded.
+- **Each edition points at its own home**, and hosted customers are no longer asked to donate to
+  something they already pay for.
+- **The Scheduler screen names its tasks in your language.** Ten of them were English on an
+  otherwise translated page.
+
 ### Fixed
 
-- **A deleted folder no longer takes its name with it.** Deleting a folder, file or group left the
-  name reserved for good: creating another one with that name failed with *"The slug has already
-  been taken"*, naming a conflict with a row the interface will not show you, and there was no way
-  to release it from any screen. Deleting now hands the name back. Names already held by things you
-  deleted earlier are released when you update. ([#1645](https://github.com/projectsend/projectsend/issues/1645))
-- **The Legacy migration tool installs with the command the guide gives you.** `composer require
-  projectsend/v1-migration-tool` failed with *Could not find a matching version of package*,
-  because nothing told Composer where to find the tool. It is now published, so the documented
-  command works as written on any installation, new or existing, with nothing to add to your
-  `composer.json`. The tool also has real version numbers now instead of tracking its development
-  branch, so an installation can say which version of it ran.
+- **A deleted folder, file or group no longer takes its name with it.** Deleting any of the three
+  left the name reserved for good: creating another with that name failed with *"The slug has already been
+  taken"*, naming a conflict with a row the interface will not show you, and there was no way to
+  release it. Deleting now hands the name back, and names held by things you deleted earlier are
+  released when you update.
+  ([#1645](https://github.com/projectsend/projectsend/issues/1645))
+- **The Legacy migration tool installs with the command the guide gives you.** It is published now,
+  so `composer require projectsend/v1-migration-tool` works as written on any installation, with
+  nothing to add to your `composer.json`. The guide also says plainly what a zip or Docker install
+  can and cannot do — see the upgrade notes.
+- **A non-standard port no longer disappears from links** in email and on public pages.
+- **An update no longer stops over a symlink's ownership**, and the official image runs nginx as the
+  user php-fpm writes as.
+- **Translations shipped by a package now reach the screen that wrote them.**
+
+### Upgrade notes
+
+- **Nothing is required beyond the usual update.** No new configuration, no new permissions to
+  grant. The one database change runs itself.
+- **There is now an official Docker image**, `projectsend/projectsend`. If you have been building
+  from a clone, you can switch to it: it ships with its dependencies and frontend already compiled,
+  so it needs neither Composer nor Node. `compose.example.yaml` in `docker/production/` is a
+  working starting point.
+- **Migrating from ProjectSend Legacy?** Read the first step of
+  **[MIGRATING-FROM-V1.md](MIGRATING-FROM-V1.md)** before you start. It now differs by how you
+  installed: a release zip and the official Docker image have no `/system/migrate` screen, because
+  the frontend they ship was built before the tool existed, and the `projectsend:migrate:*` commands
+  are the whole interface there. Nothing about the migration itself is missing.
+- **Reporting a security issue** now has a front door: the **Report a vulnerability** button on the
+  repository's Security tab, or `contact@projectsend.org`. See
+  [SECURITY.md](SECURITY.md).
 
 ## 2.0.0 — 2026-08-14
 

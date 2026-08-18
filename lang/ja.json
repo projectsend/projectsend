@@ -1823,5 +1823,14 @@
     "Version :version is available. You are running :current.": "バージョン :version が利用可能です。現在は :current を使用しています。",
     "You are up to date, running version :current.": "最新の状態です。バージョン :current を使用しています。",
     "days": "日",
-    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help ですべてのオプションを確認でき、UPDATE.md では手作業を含む手順全体を説明しています。"
+    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help ですべてのオプションを確認でき、UPDATE.md では手作業を含む手順全体を説明しています。",
+    "Fetch dashboard news": "ダッシュボードのお知らせを取得",
+    "Purge API request logs": "API リクエストログを削除",
+    "Purge erased accounts": "消去済みアカウントを削除",
+    "Purge expired files": "期限切れファイルを削除",
+    "Purge failed jobs": "失敗したジョブを削除",
+    "Purge orphan files": "孤立ファイルを削除",
+    "Purge read notifications": "既読の通知を削除",
+    "Purge stale chunked uploads": "中断された分割アップロードを削除",
+    "Purge zip downloads": "ZIP ダウンロードを削除"
 }

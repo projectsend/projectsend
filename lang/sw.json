@@ -1823,5 +1823,14 @@
     "Version :version is available. You are running :current.": "Toleo :version linapatikana. Unatumia :current.",
     "You are up to date, running version :current.": "Uko na toleo jipya zaidi :current.",
     "days": "siku",
-    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help huorodhesha kila chaguo, na UPDATE.md hupitia utaratibu mzima, ikiwemo kuufanya kwa mkono."
+    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help huorodhesha kila chaguo, na UPDATE.md hupitia utaratibu mzima, ikiwemo kuufanya kwa mkono.",
+    "Fetch dashboard news": "Leta habari za dashibodi",
+    "Purge API request logs": "Safisha kumbukumbu za maombi ya API",
+    "Purge erased accounts": "Safisha akaunti zilizofutwa kabisa",
+    "Purge expired files": "Safisha mafaili yaliyoisha muda",
+    "Purge failed jobs": "Safisha kazi zilizoshindwa",
+    "Purge orphan files": "Safisha mafaili yatima",
+    "Purge read notifications": "Safisha arifa zilizosomwa",
+    "Purge stale chunked uploads": "Safisha upakiaji wa vipande ulioachwa",
+    "Purge zip downloads": "Safisha vipakuliwa vya ZIP"
 }

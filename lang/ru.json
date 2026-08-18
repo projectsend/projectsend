@@ -1823,5 +1823,14 @@
     "Version :version is available. You are running :current.": "Доступна версия :version. У вас :current.",
     "You are up to date, running version :current.": "У вас актуальная версия :current.",
     "days": "дней",
-    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help выводит все параметры, а UPDATE.md описывает всю процедуру, включая ручную."
+    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help выводит все параметры, а UPDATE.md описывает всю процедуру, включая ручную.",
+    "Fetch dashboard news": "Получить новости для панели",
+    "Purge API request logs": "Очистить журнал запросов API",
+    "Purge erased accounts": "Очистить стёртые учётные записи",
+    "Purge expired files": "Очистить файлы с истёкшим сроком",
+    "Purge failed jobs": "Очистить неудавшиеся задачи",
+    "Purge orphan files": "Очистить осиротевшие файлы",
+    "Purge read notifications": "Очистить прочитанные уведомления",
+    "Purge stale chunked uploads": "Очистить брошенные частичные загрузки",
+    "Purge zip downloads": "Очистить ZIP-архивы для скачивания"
 }

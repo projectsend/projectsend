@@ -1823,5 +1823,14 @@
     "Version :version is available. You are running :current.": "La versión :version está disponible. Estás usando la :current.",
     "You are up to date, running version :current.": "Estás al día, con la versión :current.",
     "days": "días",
-    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help enumera todas las opciones, y UPDATE.md explica todo el procedimiento, incluido hacerlo a mano."
+    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help enumera todas las opciones, y UPDATE.md explica todo el procedimiento, incluido hacerlo a mano.",
+    "Fetch dashboard news": "Obtener noticias del panel",
+    "Purge API request logs": "Purgar el registro de peticiones de API",
+    "Purge erased accounts": "Purgar cuentas borradas",
+    "Purge expired files": "Purgar archivos caducados",
+    "Purge failed jobs": "Purgar trabajos fallidos",
+    "Purge orphan files": "Purgar archivos huérfanos",
+    "Purge read notifications": "Purgar notificaciones leídas",
+    "Purge stale chunked uploads": "Purgar subidas por partes abandonadas",
+    "Purge zip downloads": "Purgar descargas ZIP"
 }

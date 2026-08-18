@@ -1823,5 +1823,14 @@
     "Version :version is available. You are running :current.": "版本 :version 可用。你当前使用的是 :current。",
     "You are up to date, running version :current.": "你已是最新版本 :current。",
     "days": "天",
-    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help 会列出所有选项，UPDATE.md 则说明整个流程，包括手动操作。"
+    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help 会列出所有选项，UPDATE.md 则说明整个流程，包括手动操作。",
+    "Fetch dashboard news": "获取仪表板动态",
+    "Purge API request logs": "清理 API 请求日志",
+    "Purge erased accounts": "清理已抹除的账户",
+    "Purge expired files": "清理过期文件",
+    "Purge failed jobs": "清理失败的任务",
+    "Purge orphan files": "清理孤立文件",
+    "Purge read notifications": "清理已读通知",
+    "Purge stale chunked uploads": "清理中断的分块上传",
+    "Purge zip downloads": "清理 ZIP 下载"
 }

@@ -1823,5 +1823,14 @@
     "Version :version is available. You are running :current.": ":version sürümü mevcut. Sen :current sürümünü kullanıyorsun.",
     "You are up to date, running version :current.": "Güncelsin, :current sürümünü kullanıyorsun.",
     "days": "gün",
-    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help tüm seçenekleri listeler, UPDATE.md ise elle yapmak da dahil olmak üzere tüm prosedürü anlatır."
+    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help tüm seçenekleri listeler, UPDATE.md ise elle yapmak da dahil olmak üzere tüm prosedürü anlatır.",
+    "Fetch dashboard news": "Panoya haberleri getir",
+    "Purge API request logs": "API istek günlüğünü temizle",
+    "Purge erased accounts": "Silinmiş hesapları temizle",
+    "Purge expired files": "Süresi dolmuş dosyaları temizle",
+    "Purge failed jobs": "Başarısız işleri temizle",
+    "Purge orphan files": "Sahipsiz dosyaları temizle",
+    "Purge read notifications": "Okunmuş bildirimleri temizle",
+    "Purge stale chunked uploads": "Yarım kalmış parçalı yüklemeleri temizle",
+    "Purge zip downloads": "ZIP indirmelerini temizle"
 }

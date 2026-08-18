@@ -1823,5 +1823,14 @@
     "Version :version is available. You are running :current.": "Phiên bản :version đã có. Bạn đang dùng :current.",
     "You are up to date, running version :current.": "Bạn đang dùng phiên bản mới nhất :current.",
     "days": "ngày",
-    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help liệt kê mọi tùy chọn, còn UPDATE.md hướng dẫn toàn bộ quy trình, kể cả làm thủ công."
+    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help liệt kê mọi tùy chọn, còn UPDATE.md hướng dẫn toàn bộ quy trình, kể cả làm thủ công.",
+    "Fetch dashboard news": "Lấy tin tức cho bảng điều khiển",
+    "Purge API request logs": "Dọn nhật ký yêu cầu API",
+    "Purge erased accounts": "Dọn các tài khoản đã xóa hẳn",
+    "Purge expired files": "Dọn các tệp đã hết hạn",
+    "Purge failed jobs": "Dọn các tác vụ thất bại",
+    "Purge orphan files": "Dọn các tệp mồ côi",
+    "Purge read notifications": "Dọn các thông báo đã đọc",
+    "Purge stale chunked uploads": "Dọn các lần tải lên theo phần bị bỏ dở",
+    "Purge zip downloads": "Dọn các tệp ZIP đã tải xuống"
 }

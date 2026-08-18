@@ -1823,5 +1823,14 @@
     "Version :version is available. You are running :current.": "Versie :version is beschikbaar. Je gebruikt :current.",
     "You are up to date, running version :current.": "Je bent up-to-date, met versie :current.",
     "days": "dagen",
-    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help toont elke optie, en UPDATE.md loopt de hele procedure door, ook handmatig."
+    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help toont elke optie, en UPDATE.md loopt de hele procedure door, ook handmatig.",
+    "Fetch dashboard news": "Nieuws voor het dashboard ophalen",
+    "Purge API request logs": "API-aanvraaglogboek opschonen",
+    "Purge erased accounts": "Gewiste accounts opschonen",
+    "Purge expired files": "Verlopen bestanden opschonen",
+    "Purge failed jobs": "Mislukte taken opschonen",
+    "Purge orphan files": "Verweesde bestanden opschonen",
+    "Purge read notifications": "Gelezen meldingen opschonen",
+    "Purge stale chunked uploads": "Afgebroken deel-uploads opschonen",
+    "Purge zip downloads": "ZIP-downloads opschonen"
 }

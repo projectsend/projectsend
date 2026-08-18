@@ -1823,5 +1823,14 @@
     "Version :version is available. You are running :current.": "Je k dispozici verze :version. Používáš :current.",
     "You are up to date, running version :current.": "Máš aktuální verzi :current.",
     "days": "dní",
-    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help vypíše všechny volby a UPDATE.md provede celým postupem, včetně ručního."
+    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help vypíše všechny volby a UPDATE.md provede celým postupem, včetně ručního.",
+    "Fetch dashboard news": "Načíst novinky na nástěnku",
+    "Purge API request logs": "Vyčistit protokol požadavků API",
+    "Purge erased accounts": "Vyčistit smazané účty",
+    "Purge expired files": "Vyčistit soubory s vypršelou platností",
+    "Purge failed jobs": "Vyčistit neúspěšné úlohy",
+    "Purge orphan files": "Vyčistit osiřelé soubory",
+    "Purge read notifications": "Vyčistit přečtená upozornění",
+    "Purge stale chunked uploads": "Vyčistit opuštěná dílčí nahrávání",
+    "Purge zip downloads": "Vyčistit stažené ZIP archivy"
 }

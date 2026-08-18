@@ -1823,5 +1823,14 @@
     "Version :version is available. You are running :current.": "La versió :version està disponible. Estàs fent servir la :current.",
     "You are up to date, running version :current.": "Estàs al dia, amb la versió :current.",
     "days": "dies",
-    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help llista totes les opcions, i UPDATE.md explica tot el procediment, incloent-hi fer-ho a mà."
+    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help llista totes les opcions, i UPDATE.md explica tot el procediment, incloent-hi fer-ho a mà.",
+    "Fetch dashboard news": "Obtén novetats del tauler",
+    "Purge API request logs": "Purga el registre de peticions d'API",
+    "Purge erased accounts": "Purga els comptes esborrats",
+    "Purge expired files": "Purga els fitxers caducats",
+    "Purge failed jobs": "Purga les tasques fallides",
+    "Purge orphan files": "Purga els fitxers orfes",
+    "Purge read notifications": "Purga les notificacions llegides",
+    "Purge stale chunked uploads": "Purga les pujades per parts abandonades",
+    "Purge zip downloads": "Purga les descàrregues ZIP"
 }

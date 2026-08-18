@@ -1823,5 +1823,14 @@
     "Version :version is available. You are running :current.": "Versi :version tersedia. Anda menggunakan :current.",
     "You are up to date, running version :current.": "Anda sudah menggunakan versi terbaru :current.",
     "days": "hari",
-    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help menampilkan semua opsi, dan UPDATE.md menjelaskan seluruh prosedurnya, termasuk melakukannya secara manual."
+    "sudo ./update.sh --help lists every option, and UPDATE.md walks through the whole procedure, including doing it by hand.": "sudo ./update.sh --help menampilkan semua opsi, dan UPDATE.md menjelaskan seluruh prosedurnya, termasuk melakukannya secara manual.",
+    "Fetch dashboard news": "Ambil kabar terbaru untuk dasbor",
+    "Purge API request logs": "Bersihkan log permintaan API",
+    "Purge erased accounts": "Bersihkan akun yang telah dihapus permanen",
+    "Purge expired files": "Bersihkan berkas kedaluwarsa",
+    "Purge failed jobs": "Bersihkan tugas yang gagal",
+    "Purge orphan files": "Bersihkan berkas yatim",
+    "Purge read notifications": "Bersihkan notifikasi yang sudah dibaca",
+    "Purge stale chunked uploads": "Bersihkan unggahan bertahap yang terbengkalai",
+    "Purge zip downloads": "Bersihkan unduhan ZIP"
 }

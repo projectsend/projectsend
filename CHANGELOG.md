@@ -21,12 +21,11 @@ a version is cut.
   to release it from any screen. Deleting now hands the name back. Names already held by things you
   deleted earlier are released when you update. ([#1645](https://github.com/projectsend/projectsend/issues/1645))
 - **The Legacy migration tool installs with the command the guide gives you.** `composer require
-  projectsend/v1-migration-tool` failed with *Could not find a matching version of package* on a
-  fresh installation, because the tool is not published on Packagist and nothing told Composer
-  where to find it. ProjectSend now ships that pointer, so the documented command works as
-  written. If you are upgrading rather than installing fresh and still see the error, add the
-  entry shown in the first step of [MIGRATING-FROM-V1.md](MIGRATING-FROM-V1.md) to your
-  `composer.json` and run the command again.
+  projectsend/v1-migration-tool` failed with *Could not find a matching version of package*,
+  because nothing told Composer where to find the tool. It is now published, so the documented
+  command works as written on any installation, new or existing, with nothing to add to your
+  `composer.json`. The tool also has real version numbers now instead of tracking its development
+  branch, so an installation can say which version of it ran.
 
 ## 2.0.0 — 2026-08-14
 

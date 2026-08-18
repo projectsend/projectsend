@@ -12,10 +12,6 @@
         {
             "type": "vcs",
             "url": "https://github.com/projectsend/community-modules"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/projectsend/v1-migration-tool"
         }
     ],
     "require": {

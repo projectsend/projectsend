@@ -100,17 +100,16 @@ The tool reports each of these before it starts and names every affected row. It
 
 ## Step 1 — Install the tool
 
-On the **new** install:
+Everything here happens on the **new** install. How the tool gets there — and whether you get its
+screen — depends on how ProjectSend itself got onto the machine, so find yours below and use that
+section on its own.
+
+### If you installed from a release zip
 
 ```sh
 composer require projectsend/v1-migration-tool
 php artisan migrate    # creates the tool's two tables
 ```
-
-What comes after that depends on how ProjectSend got onto the machine, and so does whether you get
-the tool's screen.
-
-### If you installed from a release zip
 
 That is the whole installation — there is no `npm run build` to run. The zip ships its assets
 already compiled and deliberately without the toolchain that compiled them, so there is no
@@ -124,16 +123,44 @@ Nothing is missing from the migration itself. Every step below lists the command
 commands do everything the screen does, and on a zip install they are the interface rather than a
 fallback. Start with [Step 2](#step-2--pick-your-route) and follow the commands.
 
-### If you are running from a git checkout
+### If you are running the official Docker image
 
-Including the Docker stack in this repository. Build the frontend so the screen appears:
+The image carries no Composer. It ships the application already built and has no use for one, so
+fetch it for the length of the migration and use it in place:
 
 ```sh
-npm run build
+docker compose exec -u www-data app \
+    php -r 'copy("https://getcomposer.org/composer.phar", "/tmp/composer.phar");'
+docker compose exec -u www-data app \
+    php /tmp/composer.phar require projectsend/v1-migration-tool --update-no-dev
+docker compose exec -u www-data app php artisan migrate
 ```
 
-In Docker, prefix the two commands above with `docker compose exec app`; `npm run build` runs on
-the host, where the toolchain is.
+`-u www-data` is not decoration: `exec` lands as root, and a root-owned `vendor/` is a problem the
+application runs into later rather than now. `--update-no-dev` keeps the test tooling that the lock
+file knows about out of a production install.
+
+That install lives in the container's writable layer, so it lasts until the container is replaced —
+a `docker compose pull`, or any change to your compose file, takes it with it. For a migration you
+finish in one sitting that is fine, and if it does go, install it again: the run's progress and its
+id map are in the database, not in the package.
+
+There is no `/system/migrate` screen here either, for the same reason as a zip install. The commands
+are the interface — start with [Step 2](#step-2--pick-your-route).
+
+### If you are running from a git checkout
+
+Including the Docker stack in this repository, which builds the application from source rather than
+pulling the published image.
+
+```sh
+composer require projectsend/v1-migration-tool
+php artisan migrate    # creates the tool's two tables
+npm run build          # so the tool's screen enters the frontend bundle
+```
+
+In Docker, prefix the first two with `docker compose exec app`; `npm run build` runs on the host,
+where the toolchain is.
 
 Then open **`/system/migrate`**, signed in as a staff user with the *Edit settings* permission.
 There is no sidebar link — a one-time tool does not earn a permanent slot in the navigation of an
@@ -188,6 +215,13 @@ over. Take it from the package, which is where it lives on every install:
 
 ```sh
 vendor/projectsend/v1-migration-tool/bin/projectsend-v1-export.php
+```
+
+In Docker, copy it out of the container first:
+
+```sh
+docker compose cp \
+    app:/var/www/html/vendor/projectsend/v1-migration-tool/bin/projectsend-v1-export.php .
 ```
 
 If you have the screen, `/system/migrate` offers it as a download instead.

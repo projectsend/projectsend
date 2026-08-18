@@ -13,6 +13,16 @@ Anything under **Upgrade notes** is something you have to do, not something we d
 This section collects changes as they land; the release process turns it into a numbered entry when
 a version is cut.
 
+### Fixed
+
+- **The Legacy migration tool installs with the command the guide gives you.** `composer require
+  projectsend/v1-migration-tool` failed with *Could not find a matching version of package* on a
+  fresh installation, because the tool is not published on Packagist and nothing told Composer
+  where to find it. ProjectSend now ships that pointer, so the documented command works as
+  written. If you are upgrading rather than installing fresh and still see the error, add the
+  entry shown in the first step of [MIGRATING-FROM-V1.md](MIGRATING-FROM-V1.md) to your
+  `composer.json` and run the command again.
+
 ## 2.0.0 — 2026-08-14
 
 ProjectSend, rebuilt from the ground up. This is a new application rather than an update to the one

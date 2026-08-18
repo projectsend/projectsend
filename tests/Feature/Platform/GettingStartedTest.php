@@ -5,6 +5,8 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Platform\Capabilities\Edition;
+use App\Modules\Platform\Scheduling\ScheduledTaskRun;
+use App\Modules\Platform\Scheduling\TaskRunStatus;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Inertia\Testing\AssertableInertia;
@@ -220,4 +222,51 @@ test('the email theme step deep-links to its own tab', function () {
     $emailTheme = collect($items)->firstWhere('key', 'email-theme');
 
     expect($emailTheme['href'])->toContain('tab=email');
+});
+
+// The one essential step that could never be completed: it was hardcoded
+// unticked, while the screen it links to was already answering the
+// question from these very rows.
+test('the scheduler step ticks itself once the scheduler has run here', function () {
+    $items = [];
+
+    $this->actingAs($this->admin)->get('/system/getting-started')->assertInertia(function (AssertableInertia $page) use (&$items) {
+        $items = collect($page->toArray()['props']['items'])->keyBy('key');
+    });
+
+    expect($items['scheduler']['done'])->toBeFalse();
+
+    ScheduledTaskRun::query()->create([
+        'command' => 'projectsend:purge-expired-files',
+        'status' => TaskRunStatus::Success,
+        'message' => null,
+        'duration_ms' => 12,
+        'ran_at' => now(),
+    ]);
+
+    $this->actingAs($this->admin)->get('/system/getting-started')->assertInertia(function (AssertableInertia $page) use (&$items) {
+        $items = collect($page->toArray()['props']['items'])->keyBy('key');
+    });
+
+    expect($items['scheduler']['done'])->toBeTrue();
+});
+
+// A run that failed still proves cron reaches this installation, which is
+// what the step asks. Why it failed is the Scheduler screen's job.
+test('a failed run still counts as the scheduler running', function () {
+    ScheduledTaskRun::query()->create([
+        'command' => 'projectsend:fetch-news',
+        'status' => TaskRunStatus::Failed,
+        'message' => 'Scheduled command failed with exit code [1].',
+        'duration_ms' => null,
+        'ran_at' => now(),
+    ]);
+
+    $items = [];
+
+    $this->actingAs($this->admin)->get('/system/getting-started')->assertInertia(function (AssertableInertia $page) use (&$items) {
+        $items = collect($page->toArray()['props']['items'])->keyBy('key');
+    });
+
+    expect($items['scheduler']['done'])->toBeTrue();
 });

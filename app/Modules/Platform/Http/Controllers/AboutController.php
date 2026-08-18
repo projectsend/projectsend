@@ -7,6 +7,8 @@ namespace App\Modules\Platform\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Platform\Capabilities\Capability;
 use App\Modules\Platform\Capabilities\CapabilityRegistry;
+use App\Modules\Platform\Settings\Setting;
+use App\Modules\Platform\Settings\Settings;
 use App\Modules\Platform\System\SystemEnvironment;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -32,6 +34,7 @@ class AboutController extends Controller
     public function __construct(
         private readonly CapabilityRegistry $capabilities,
         private readonly SystemEnvironment $environment,
+        private readonly Settings $settings,
     ) {}
 
     public function __invoke(Request $request): Response
@@ -45,6 +48,35 @@ class AboutController extends Controller
         return Inertia::render('system/about', [
             'license' => 'GNU General Public License v2',
             'environment' => $canSeeEnvironment ? $this->environment->toArray() : null,
+            'updated' => $canSeeEnvironment ? $this->lastUpdate() : null,
         ]);
+    }
+
+    /**
+     * When `projectsend:update` last brought this installation to a new
+     * version.
+     *
+     * Both values are written by that command alone, and RunningCodeState
+     * has until now been their only reader — which means the fact was
+     * recorded and then only ever mentioned when something was *wrong*.
+     * On a healthy installation nothing said when it was last updated,
+     * which is the ordinary question of the two.
+     *
+     * Null on anything that has never been updated through the command: a
+     * fresh install, or one older than the command itself. There is no
+     * honest date to show there, and "unknown" is noise.
+     *
+     * @return array{version: string, at: string}|null
+     */
+    private function lastUpdate(): ?array
+    {
+        $version = $this->settings->get(Setting::AppliedVersion);
+        $at = $this->settings->get(Setting::AppliedVersionAt);
+
+        if (! is_string($version) || $version === '' || ! is_string($at) || $at === '') {
+            return null;
+        }
+
+        return ['version' => $version, 'at' => $at];
     }
 }

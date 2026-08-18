@@ -135,6 +135,14 @@ Route::middleware('auth')->group(function () {
         Route::redirect('system/settings', '/system/settings/general');
         Route::get('system/settings/general', [SystemSettingsController::class, 'edit'])->name('system-settings.edit');
         Route::patch('system/settings/general', [SystemSettingsController::class, 'update'])->name('system-settings.update');
+        // Its own throttle bucket, like every other action route here: a
+        // bare `throttle:5,1` is keyed on the domain and the address, so
+        // it would share one allowance with everything else that omits a
+        // name. The controller enforces manage_updates and the edition,
+        // and applies an installation-wide cooldown of its own.
+        Route::post('system/settings/check-for-updates', [SystemSettingsController::class, 'checkForUpdates'])
+            ->middleware('throttle:5,1,check-for-updates-now')
+            ->name('system-settings.check-for-updates');
         Route::get('system/settings/security', [SecuritySettingsController::class, 'edit'])->name('system-settings.security.edit');
         Route::patch('system/settings/security', [SecuritySettingsController::class, 'update'])->name('system-settings.security.update');
         Route::get('system/settings/clients', [ClientSettingsController::class, 'edit'])->name('system-settings.clients.edit');
@@ -195,6 +203,7 @@ Route::middleware('auth')->group(function () {
             Route::post('system/settings/scheduler/failed-jobs/{uuid}/retry', [SchedulerMonitoringController::class, 'retryFailedJob'])->name('system-settings.scheduler.retry');
             Route::delete('system/settings/scheduler/failed-jobs/{uuid}', [SchedulerMonitoringController::class, 'destroyFailedJob'])->name('system-settings.scheduler.destroy');
             Route::delete('system/settings/scheduler/failed-jobs', [SchedulerMonitoringController::class, 'destroyAllFailedJobs'])->name('system-settings.scheduler.destroy-all');
+            Route::patch('system/settings/scheduler/retention', [SchedulerMonitoringController::class, 'updateRetention'])->name('system-settings.scheduler.retention');
         });
     });
 

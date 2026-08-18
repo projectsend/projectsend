@@ -110,6 +110,18 @@ enum Setting: string
     // the api_request_logs migration for why the two are separate.
     case ApiRequestLogRetentionDays = 'api_request_log_retention_days';
 
+    // How long a permanently failed queue job is kept, and how long a
+    // notification somebody has already read is kept. Both tables grow
+    // with use and neither ever shrank on its own: the failed-jobs list
+    // waited for somebody to press "Delete all failed", and nothing at
+    // all pruned notifications. An installation nobody tends should not
+    // pay for that with its database.
+    //
+    // 0 means keep indefinitely in both cases, the same explicit choice
+    // ApiRequestLogRetentionDays offers.
+    case FailedJobRetentionDays = 'failed_job_retention_days';
+    case NotificationRetentionDays = 'notification_retention_days';
+
     // How many days a self-deleted account is retained (soft-deleted)
     // before PurgeErasuresCommand permanently erases it. Consumed by
     // ProfileController.
@@ -350,6 +362,8 @@ enum Setting: string
             self::AccountErasureGraceDays,
             self::AccountErasureReassignTo,
             self::ApiRequestLogRetentionDays,
+            self::FailedJobRetentionDays,
+            self::NotificationRetentionDays,
             self::ExpiredFilesDeleteAfterDays,
             self::CommentsEditWindowMinutes,
             self::OrphanFilesDeleteAfterDays,
@@ -411,6 +425,8 @@ enum Setting: string
             self::AccountErasureGraceDays => 30,
             self::AccountErasureReassignTo => 0,
             self::ApiRequestLogRetentionDays => 30,
+            self::FailedJobRetentionDays => 30,
+            self::NotificationRetentionDays => 90,
             self::ExpiredFilesDeleteAfterDays => 30,
             self::OrphanFilesDeleteAfterDays => 30,
             self::CommentsEditWindowMinutes => 15,

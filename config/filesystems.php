@@ -39,10 +39,14 @@ return [
             'throw' => false,
         ],
 
+        // Laravel's stock private disk. Nothing in this application writes
+        // to it, and `serve` is off because the framework's /storage route
+        // would otherwise hand out whatever ended up there — a door with
+        // nothing behind it today is still a door.
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),
-            'serve' => true,
+            'serve' => false,
             'throw' => false,
         ],
 

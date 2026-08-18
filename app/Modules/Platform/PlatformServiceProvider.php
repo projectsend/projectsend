@@ -22,6 +22,7 @@ use App\Modules\Platform\Settings\Settings;
 use App\Modules\Platform\Theming\Console\GenerateThemePreviewDataCommand;
 use App\Modules\Platform\Theming\EmailThemeRegistry;
 use App\Modules\Platform\Theming\PublicThemeRegistry;
+use App\Modules\Platform\Scheduling\Console\PurgeFailedJobsCommand;
 use App\Modules\Platform\Updates\Console\CheckForUpdatesCommand;
 use App\Modules\Platform\Updates\Console\UpdateCommand;
 use Illuminate\Console\Events\ScheduledTaskFailed;
@@ -76,6 +77,7 @@ class PlatformServiceProvider extends ServiceProvider
                 FetchNewsCommand::class,
                 DisableCaptchaCommand::class,
                 TestCaptchaCommand::class,
+                PurgeFailedJobsCommand::class,
             ]);
         }
     }

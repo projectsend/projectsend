@@ -41,7 +41,10 @@ export default [
         // Maintainer tooling scripts (*.cjs) are plain Node, not app
         // source — they don't run in the browser and use Node globals
         // (require, process, __dirname) the app's ruleset forbids.
-        ignores: ['vendor', 'node_modules', 'public', 'bootstrap/ssr', 'tailwind.config.js', '.claude', 'packages'],
+        // `.release-build` is where build-release.sh assembles a zip: a full
+        // copy of the app plus vendored, minified JS. It is gitignored, so
+        // linting it only ever means `--fix` rewriting artifacts nobody reads.
+        ignores: ['vendor', 'node_modules', 'public', 'bootstrap/ssr', 'tailwind.config.js', '.claude', 'packages', '.release-build'],
     },
     prettier, // Turn off all rules that might conflict with Prettier
 ];

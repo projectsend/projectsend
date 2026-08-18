@@ -3,6 +3,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 
 import Heading from '@/components/heading';
 import ProjectSendLogo from '@/components/projectsend-logo';
+import { useFormatDate } from '@/hooks/use-format-date';
 import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
 
@@ -14,10 +15,17 @@ interface Environment {
     database: string;
 }
 
+interface LastUpdate {
+    version: string;
+    at: string;
+}
+
 interface AboutProps {
     license: string;
     /** Null for anyone the dashboard's System widget would also hide it from. */
     environment: Environment | null;
+    /** Null on an installation that has never been updated through the command. */
+    updated: LastUpdate | null;
 }
 
 function Row({ label, value }: { label: string; value: string }) {
@@ -29,8 +37,9 @@ function Row({ label, value }: { label: string; value: string }) {
     );
 }
 
-export default function About({ license, environment }: AboutProps) {
+export default function About({ license, environment, updated }: AboutProps) {
     const { t } = useTranslation();
+    const { dateTime } = useFormatDate();
     const { version, edition, links } = usePage<SharedData>().props;
 
     const breadcrumbs: BreadcrumbItem[] = [{ title: t('About'), href: '/system/about' }];
@@ -98,6 +107,10 @@ export default function About({ license, environment }: AboutProps) {
                             </p>
                             <dl className="divide-y text-sm">
                                 <Row label={t('Version')} value={environment.version} />
+                                {/* Absent until this installation has been
+                                    updated at least once through the command —
+                                    a fresh install has no update to date. */}
+                                {updated && <Row label={t('Updated')} value={t(':version on :date', { version: updated.version, date: dateTime(updated.at) })} />}
                                 <Row label={t('Edition')} value={environment.edition} />
                                 <Row label="PHP" value={environment.php} />
                                 <Row label="Laravel" value={environment.laravel} />

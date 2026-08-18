@@ -1,3 +1,4 @@
+import { UpdateOptionsDialog } from '@/components/update-options-dialog';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
 
@@ -45,9 +46,10 @@ export function UpdateInstructions({
 
     if (compact) {
         return (
-            <p className="text-muted-foreground">
-                {t('To update, run sudo ./update.sh in the install directory — it asks before it downloads or changes anything.')}
-            </p>
+            <div className="text-muted-foreground space-y-1">
+                <p>{t('To update, run sudo ./update.sh in the install directory — it asks before it downloads or changes anything.')}</p>
+                <UpdateOptionsDialog />
+            </div>
         );
     }
 
@@ -65,6 +67,9 @@ export function UpdateInstructions({
                     'It asks before checking for a release, before downloading one, and before touching your installation — and verifies the checksum of what it downloads. UPDATE.md has the full procedure.',
                 )}
             </p>
+            <div className="mt-1">
+                <UpdateOptionsDialog />
+            </div>
         </>
     );
 }

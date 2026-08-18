@@ -18,6 +18,12 @@ class NotificationsServiceProvider extends ServiceProvider
         $this->app->singleton(NotificationTypeRegistry::class);
         $this->app->singleton(Notifier::class);
         $this->app->singleton(NotificationPreferences::class);
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                Console\PurgeNotificationsCommand::class,
+            ]);
+        }
     }
 
     public function boot(): void

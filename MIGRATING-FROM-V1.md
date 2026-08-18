@@ -111,14 +111,18 @@ npm run build          # so its screen enters the frontend bundle
 In Docker, prefix each with `docker compose exec app` (except `npm run build`, which runs on the
 host).
 
-> While the repository is private, `composer require` needs to be told where to find it — add a
-> `vcs` entry to your `composer.json` `repositories` and give Composer credentials for the repo:
+> **If `composer require` answers `Could not find a matching version of package
+> projectsend/v1-migration-tool`,** your install predates the entry that tells Composer where the
+> tool lives. Add it to the `repositories` array in your `composer.json` — top level, alongside
+> `require`, not inside it — and run the command again:
 >
 > ```json
 > "repositories": [
 >     { "type": "vcs", "url": "https://github.com/projectsend/v1-migration-tool" }
 > ]
 > ```
+>
+> The repository is public, so Composer needs no credentials or token for it.
 
 Then open **`/system/migrate`** on your new install, signed in as a staff user with the *Edit
 settings* permission. There is no sidebar link — a one-time tool does not earn a permanent slot in
@@ -304,6 +308,10 @@ composer remove projectsend/v1-migration-tool
 `--drop` throws away the Legacy → ProjectSend id map. **Keep it** if you may ever want to redirect
 old `download.php?id=…` links, because it is the only thing that can resolve them. Removing the
 package without `--drop` leaves the two tables behind harmlessly.
+
+Leave the `repositories` entry in `composer.json` alone. It ships with ProjectSend, it costs
+nothing while nothing requires the package, and removing it is what makes a second attempt fail to
+find the tool.
 
 ---
 

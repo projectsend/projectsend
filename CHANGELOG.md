@@ -15,6 +15,11 @@ a version is cut.
 
 ### Fixed
 
+- **A deleted folder no longer takes its name with it.** Deleting a folder, file or group left the
+  name reserved for good: creating another one with that name failed with *"The slug has already
+  been taken"*, naming a conflict with a row the interface will not show you, and there was no way
+  to release it from any screen. Deleting now hands the name back. Names already held by things you
+  deleted earlier are released when you update. ([#1645](https://github.com/projectsend/projectsend/issues/1645))
 - **The Legacy migration tool installs with the command the guide gives you.** `composer require
   projectsend/v1-migration-tool` failed with *Could not find a matching version of package* on a
   fresh installation, because the tool is not published on Packagist and nothing told Composer

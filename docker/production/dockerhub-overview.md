@@ -1,3 +1,12 @@
+[![ProjectSend](https://raw.githubusercontent.com/projectsend/projectsend/main/public/apple-touch-icon.png)](https://github.com/projectsend/projectsend)
+
+[![Release](https://img.shields.io/github/v/release/projectsend/projectsend?color=3b5bdb&label=release)](https://github.com/projectsend/projectsend/releases "what is in each release, and the downloadable zip")
+[![Docker pulls](https://img.shields.io/docker/pulls/projectsend/projectsend?color=0b7285)](https://hub.docker.com/r/projectsend/projectsend/tags "every published tag")
+[![Image size](https://img.shields.io/docker/image-size/projectsend/projectsend/latest?color=0b7285&label=image)](https://hub.docker.com/r/projectsend/projectsend/tags "compressed size of the latest tag")
+[![GitHub stars](https://img.shields.io/github/stars/projectsend/projectsend?color=3b5bdb)](https://github.com/projectsend/projectsend "source, issues and full documentation")
+[![Discord](https://img.shields.io/badge/Discord-join-5865F2?logo=discord&logoColor=white)](https://discord.gg/VT9n6cyvXT "release news, and help when something is not behaving")
+[![License](https://img.shields.io/badge/license-GPLv2%2B-3b5bdb)](https://github.com/projectsend/projectsend/blob/main/LICENSE "free software, and commercial licences for those who need them")
+
 # ProjectSend
 
 **Share files with your clients, from your own server.**

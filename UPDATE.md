@@ -1,8 +1,8 @@
 # Updating ProjectSend
 
 How to move an existing installation to a newer version, for both ways of running it. If you are
-installing for the first time, you want [INSTALL.md](INSTALL.md) (or [DOCKER.md](DOCKER.md))
-instead.
+installing for the first time, you want [Getting started](README.md#getting-started) for Docker or
+[INSTALL.md](INSTALL.md) for your own server instead.
 
 Two rules hold everywhere in this document:
 
@@ -17,7 +17,7 @@ Which path you are on decides the rest:
 | How you installed | What updating means | Manual steps |
 |---|---|---|
 | The official Docker image (`projectsend/projectsend`) | Pull a new image, recreate the container | None — the container migrates itself |
-| Docker Compose built from source (DOCKER.md) | New code, rebuild the image | None — same entrypoint |
+| Docker Compose built from a clone (CONTRIBUTING.md) | New code, rebuild the image | None — same entrypoint |
 | A release zip on your own server (INSTALL.md) | Download the zip, run one script | `sudo ./update.sh`, and answer three questions |
 
 ProjectSend also tells you which of these you are on: the **System** card on the dashboard prints

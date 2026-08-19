@@ -8,20 +8,37 @@ data with it.
 
 Read this before you put real files in ProjectSend, not after.
 
-> Getting started with Docker in the first place is covered in [README](README.md#getting-started).
+> **This page is about the official image**, `projectsend/projectsend`, started from the
+> `compose.example.yaml` in [Getting started](README.md#getting-started). That is the supported way
+> to run it.
+>
+> A **clone of this repository is a development copy, not an installation** — it builds from source,
+> bind-mounts the working tree, and ships nothing pre-built. If that is what you are running, its
+> setup and its data layout are [CONTRIBUTING.md](CONTRIBUTING.md), not this page.
+>
 > Installing without Docker, on a plain PHP server, is [INSTALL.md](INSTALL.md).
 
 ---
 
-## The three things that matter
+## The two things that matter
 
-Everything ProjectSend cannot regenerate lives in exactly three places:
+Everything ProjectSend cannot regenerate lives in exactly two Docker volumes:
 
 | What | Where it is by default | Losing it means |
 |---|---|---|
-| **The database** | A Docker *named volume*, `projectsend_db-data` | Everything except the files themselves: accounts, groups, permissions, share links, comments, the activity log |
-| **Uploaded files** | `storage/app/files/` in the project directory | The files your clients downloaded — gone |
-| **`.env`** | The project directory | `APP_KEY`, without which saved SMTP and LDAP passwords cannot be decrypted |
+| **The database** | The volume mounted at `/var/lib/mysql` — `projectsend_db-data` | Everything except the files themselves: accounts, groups, permissions, share links, comments, the activity log |
+| **Uploaded files, and `APP_KEY`** | The volume mounted at `/var/www/html/storage` — `projectsend_storage` | The files your clients downloaded, and the key that decrypts saved SMTP and LDAP passwords |
+
+The second one is the one people get wrong, because it is two things in one place. The container
+generates `.env` on first boot and keeps it *on the storage volume*, at `storage/.env`, symlinked
+into place — precisely so `APP_KEY` survives the container being replaced. A key that changes
+between restarts signs everybody out and makes every encrypted column permanently unreadable, and
+nothing errors when it happens. Back up the volume and you have both halves; back up only
+`storage/app/files/` and you have the files without the key.
+
+(If you set `APP_KEY` in the environment instead, Laravel reads it from there and it wins. That is
+the right move when you already manage secrets somewhere else — but then it is *that* system's
+backup you are relying on.)
 
 You do not have to work out which of these you have from memory. **The dashboard's System panel
 reports where your uploaded files actually live** — a host directory, a Docker volume (named), or
@@ -36,14 +53,14 @@ Two things you may be surprised to find you do **not** need to protect:
   everyone out and drops any not-yet-sent emails or half-built zips. Annoying; not data loss.
 - **Parts of `storage/app/files/`** are derived, not precious: `zips/` (built downloads, deleted
   automatically after a day), `thumbnails/` and `previews/` (rebuilt on demand the next time
-  somebody looks at a file). They sit in the same directory as the real uploads, so the simplest
-  thing is to back up all of it and not think about which is which.
+  somebody looks at a file). They sit inside the volume you are backing up anyway, so the simplest
+  thing is to take all of it and not think about which is which.
 
 ## The good news, and the one command to fear
 
-Named volumes are already outside the container lifecycle. `docker compose down`,
-`docker compose up --build`, deleting and recreating every container — none of those touch
-`projectsend_db-data`. Upgrading does not lose your database, and never did.
+Named volumes are already outside the container lifecycle. `docker compose pull`,
+`docker compose down`, deleting and recreating every container — none of those touch
+`projectsend_db-data` or `projectsend_storage`. Upgrading does not lose your data, and never did.
 
 The command that *does* destroy it is:
 
@@ -52,65 +69,81 @@ docker compose down -v        # ← the -v deletes the named volumes
 ```
 
 That flag exists to clean up a development machine. On a real installation it deletes your entire
-database in about a second, with no confirmation. The same goes for `docker volume prune` and
-`docker system prune --volumes` when the stack happens to be down.
+database and every uploaded file in about a second, with no confirmation. The same goes for
+`docker volume prune` and `docker system prune --volumes` when the stack happens to be down.
 
-So the actual problem with the default setup is not fragility, it is **invisibility**: your
-database is somewhere under `/var/lib/docker/volumes/`, which means most people never back it up
-and would not know where to look. The rest of this page fixes that.
+So the actual problem with the default setup is not fragility, it is **invisibility**: your data is
+somewhere under `/var/lib/docker/volumes/`, which means most people never back it up and would not
+know where to look. The rest of this page fixes that.
+
+---
+
+## Surviving a reboot
+
+Every service needs a restart policy, or the Docker daemon will not start it again when the host
+comes back:
+
+```yaml
+services:
+  app:
+    restart: unless-stopped
+  db:
+    restart: unless-stopped
+  redis:
+    restart: unless-stopped
+```
+
+`compose.example.yaml` already has this on all three. It is worth checking if you wrote your own
+compose file, because the failure is silent and delayed: the stack works perfectly until the first
+reboot or power cut, and then the site is simply down with no error anywhere. `depends_on` does not
+cover this — it applies to `docker compose up`, not to containers the daemon brings back at boot.
+
+```sh
+docker compose ps -a          # after a reboot, everything should be Up, not Exited (0)
+```
 
 ---
 
 ## Putting the data where you chose
 
-Bind-mount both to real paths on the host, so your data sits somewhere you picked, somewhere you
-can see in `ls`, and somewhere your existing backup tool already knows about.
+Bind-mount both volumes to real paths on the host, so your data sits somewhere you picked, somewhere
+you can see in `ls`, and somewhere your existing backup tool already knows about.
 
 ### 1. Make the directories
 
 ```sh
-sudo mkdir -p /srv/projectsend/files /srv/projectsend/mysql
-
-# The app containers run as uid 1000 by default (the WWWUSER build argument).
-# If you set WWWUSER to something else in .env, use that instead.
-sudo chown -R 1000:1000 /srv/projectsend/files
+sudo mkdir -p /srv/projectsend/storage /srv/projectsend/mysql
 ```
 
-Leave `/srv/projectsend/mysql` owned by root — the MySQL image sets its own ownership the first
-time it starts.
+No `chown` needed for either. The ProjectSend container recreates the directory tree it needs on
+every boot and sets its own ownership (uid 1000), precisely because a bind-mounted host directory
+arrives empty where a named volume arrives seeded from the image. The MySQL image does the same for
+its own directory the first time it starts.
 
-### 2. Create `compose.override.yaml`
+### 2. Point the compose file at them
 
-Next to `compose.yaml`. Docker Compose reads this file automatically and merges it on top, so you
-never edit the tracked `compose.yaml` and nothing you write here is lost on the next update.
+`compose.example.yaml` is yours — you downloaded and edited it — so change the volumes in place
+rather than layering an override on top:
 
 ```yaml
 services:
-  # All four app containers must see the same files directory. Missing one of
-  # them is the classic mistake: uploads land in one place and downloads are
-  # served from another, so every download 404s. `web` is the one people
-  # forget — nginx serves the bytes itself, from
-  # /var/www/html/storage/app/files/, so it needs the mount just as much as
-  # the container that wrote them.
   app:
     volumes:
-      - /srv/projectsend/files:/var/www/html/storage/app/files
-  web:
-    volumes:
-      - /srv/projectsend/files:/var/www/html/storage/app/files
-  worker:
-    volumes:
-      - /srv/projectsend/files:/var/www/html/storage/app/files
-  scheduler:
-    volumes:
-      - /srv/projectsend/files:/var/www/html/storage/app/files
+      # Was: storage:/var/www/html/storage
+      - /srv/projectsend/storage:/var/www/html/storage
 
   db:
     volumes:
+      # Was: db-data:/var/lib/mysql
       - /srv/projectsend/mysql:/var/lib/mysql
 ```
 
-Check the result before applying it — this prints the fully merged configuration:
+Mount the whole `storage` directory, not `storage/app/files` inside it. Uploads are only half of
+what lives there — `storage/.env` holds `APP_KEY`, and mounting one level too deep leaves the key
+back inside the container where the next `docker compose down` takes it.
+
+Then drop `storage:` and `db-data:` from the `volumes:` block at the bottom, if nothing else uses
+them, and check the result before applying it — this prints the fully merged configuration:
 
 ```sh
 docker compose config
@@ -127,25 +160,22 @@ that restores into a corrupt table.
 docker compose down          # no -v
 ```
 
-Files, which are already on the host inside the project directory:
+A throwaway container is the tidy way to reach inside a named volume:
 
 ```sh
-sudo rsync -a storage/app/files/ /srv/projectsend/files/
-sudo chown -R 1000:1000 /srv/projectsend/files
-```
+docker run --rm \
+    -v projectsend_storage:/from \
+    -v /srv/projectsend/storage:/to \
+    alpine sh -c 'cd /from && cp -a . /to'
 
-The database, which is in the named volume. A throwaway container is the tidy way to reach inside
-one:
-
-```sh
 docker run --rm \
     -v projectsend_db-data:/from \
     -v /srv/projectsend/mysql:/to \
     alpine sh -c 'cd /from && cp -a . /to'
 ```
 
-(`projectsend_db-data` is the volume's real name — the `db-data` from `compose.yaml` prefixed with
-the project name. `docker volume ls` will confirm it.)
+(Those are the volumes' real names — the `storage` and `db-data` from your compose file, prefixed
+with the project name. `docker volume ls` will confirm them.)
 
 ### 4. Start, and check
 
@@ -155,14 +185,22 @@ docker compose up -d
 
 Then prove it worked rather than assuming: log in and check the dashboard's System panel — **Files
 stored on** should now read *Host directory*, and the Docker-volume warning should be gone. Then
-open a file, **download it**, and upload a new one; confirm the new upload appears in
-`/srv/projectsend/files/` on the host. A download that returns nothing means one of the four
-containers is missing the mount from step 2.
+open a file, **download it**, and upload a new one; confirm the new upload appears under
+`/srv/projectsend/storage/app/files/` on the host.
 
-Once you are satisfied, and not before, you can reclaim the old volume:
+Confirm the key came across too, since that is the half nothing on screen will tell you about:
 
 ```sh
-docker volume rm projectsend_db-data
+grep '^APP_KEY=' /srv/projectsend/storage/.env
+```
+
+If that is empty or missing while your database has saved SMTP or LDAP credentials, stop and go
+back — the container will generate a *new* key and those passwords become unreadable.
+
+Once you are satisfied, and not before, you can reclaim the old volumes:
+
+```sh
+docker volume rm projectsend_storage projectsend_db-data
 ```
 
 ---
@@ -178,37 +216,41 @@ copy of a live data directory is not a snapshot — it is a set of files capture
 different moments, and it may restore into something subtly broken. Use a dump:
 
 ```sh
-docker compose exec -T db \
-    mysqldump -u root -p"${DB_ROOT_PASSWORD:-root}" \
+docker compose exec -T db sh -c \
+    'mysqldump -u root -p"$MYSQL_ROOT_PASSWORD" \
         --single-transaction --routines --triggers \
-        projectsend > projectsend-$(date +%F).sql
+        projectsend' > projectsend-$(date +%F).sql
 ```
 
 `--single-transaction` is what makes this safe on a running database: the dump sees one consistent
-moment in time without locking anybody out.
+moment in time without locking anybody out. Reading the password from the container's own
+environment keeps it off your shell history and off the process list on the host.
 
-### The files
+### The files, and the key
 
 ```sh
-rsync -a /srv/projectsend/files/ /your/backup/location/files/
+rsync -a /srv/projectsend/storage/ /your/backup/location/storage/
 ```
 
-Ordinary files, no special handling. Restoring means copying them back and fixing ownership
-(`chown -R 1000:1000`).
+Ordinary files, no special handling — and taking the whole directory is what picks up `.env` with
+`APP_KEY` in it. That file is a few hundred bytes and it is the difference between a perfect backup
+and one where the SMTP and LDAP passwords in your database are undecryptable.
 
-### `.env`
+If you kept the named volume instead of bind-mounting, the same content comes out through a
+throwaway container:
 
-Copy it somewhere safe, once, and again whenever you change it. It is a few hundred bytes and it
-holds `APP_KEY` — lose that and the SMTP and LDAP passwords stored in your database become
-undecryptable, even though the rest of the backup is perfect.
+```sh
+docker run --rm -v projectsend_storage:/from -v "$PWD":/to \
+    alpine tar czf /to/projectsend-storage-$(date +%F).tar.gz -C /from .
+```
 
 ### Restoring
 
 ```sh
 docker compose up -d db
-docker compose exec -T db mysql -u root -p"${DB_ROOT_PASSWORD:-root}" projectsend < projectsend-2026-08-08.sql
-sudo rsync -a /your/backup/location/files/ /srv/projectsend/files/
-sudo chown -R 1000:1000 /srv/projectsend/files
+docker compose exec -T db sh -c \
+    'mysql -u root -p"$MYSQL_ROOT_PASSWORD" projectsend' < projectsend-2026-08-08.sql
+sudo rsync -a /your/backup/location/storage/ /srv/projectsend/storage/
 docker compose up -d
 ```
 
@@ -222,19 +264,17 @@ restored is a hypothesis, not a backup.
 With the data outside the containers, an upgrade touches only the containers:
 
 ```sh
-docker compose down            # again: no -v
-git pull                       # or unpack the new release over the directory
-docker compose up -d --build
+docker compose pull
+docker compose up -d
 ```
 
-The app container runs `php artisan projectsend:update` itself on boot — the same command a
-manual install runs — so it migrates the database and verifies its reference data with no separate
-step. Take a database dump first anyway — migrations move forwards, not
-backwards, and the one time you skip it will be the time you want it.
+That is the whole procedure. The container runs `php artisan projectsend:update` itself on boot —
+the same command a manual install runs — so it migrates the database and verifies its reference data
+with no separate step. Take a database dump first anyway: migrations move forwards, not backwards,
+and the one time you skip it will be the time you want it.
 
-If you run the published image rather than building your own, it is `docker compose pull` followed
-by `docker compose up -d`. Either way, **[UPDATE.md](UPDATE.md)** has the whole procedure: what the
-container does on its way up, how to tell it worked, and what to do when it does not.
+**[UPDATE.md](UPDATE.md)** has the rest: what the container does on its way up, how to tell it
+worked, and what to do when it does not.
 
 ---
 
@@ -243,10 +283,14 @@ container does on its way up, how to tell it worked, and what to do when it does
 This is the payoff for everything above, and it is worth doing once deliberately so you know it
 works:
 
-1. Dump the database and copy `/srv/projectsend/`, `.env` and the dump to the new machine.
-2. Install Docker, put the project directory in place, restore both as described under
+1. Dump the database, and copy `/srv/projectsend/` (or the storage tarball) and the dump to the new
+   machine.
+2. Install Docker, put your `compose.yaml` in place, restore both as described under
    [Restoring](#restoring).
-3. Point DNS at the new machine, and update `APP_URL` in `.env` if the address changed.
+3. Point DNS at the new machine, and update `APP_URL` in your compose file if the address changed.
 
-No export tool, no vendor involvement, nothing that only works while the old machine is alive.
-That is the property worth protecting, and the reason this page exists.
+Bring `APP_KEY` across with the storage directory — a fresh key on the new machine leaves the site
+working and the saved mail and LDAP passwords silently broken.
+
+No export tool, no vendor involvement, nothing that only works while the old machine is alive. That
+is the property worth protecting, and the reason this page exists.

@@ -176,21 +176,14 @@ instead of the real one. `*` is correct when nothing but your proxy can reach th
 
 ## Data and backups
 
-Everything that must outlive the container is on one volume:
+Two things must outlive the container: **your MySQL database**, and the volume mounted at
+**`/var/www/html/storage`**. Uploaded files live on that volume, and so does the generated `.env`
+holding `APP_KEY` — losing the key makes the SMTP and LDAP passwords stored in your database
+undecryptable even if the rest of the backup is perfect.
 
-```
-/var/www/html/storage
-```
-
-Uploaded files live there, and so does the generated `.env` holding `APP_KEY`. **Back up that
-volume and your MySQL database.** Losing `APP_KEY` makes the SMTP and LDAP passwords stored in your
-database undecryptable even if the rest of the backup is perfect.
-
-To keep the data on paths you chose rather than in a named volume, bind-mount a host directory —
-the container recreates the directory tree it needs at boot.
-
-A backup nobody has ever restored is a hypothesis, not a backup. Test one, once, on a machine that
-is not your live one.
+**[DOCKER.md](https://github.com/projectsend/projectsend/blob/main/DOCKER.md) is the guide**: how
+to move both onto host paths you chose, the backup and restore commands, and how to move the whole
+installation to another server. Read it before you put real files in ProjectSend, not after.
 
 ---
 

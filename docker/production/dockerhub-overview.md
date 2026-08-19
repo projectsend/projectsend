@@ -20,6 +20,11 @@ per-seat pricing. It runs on your server, and the files stay there.
 
 This is the official image for the Community edition — free software under the GPL v2 or later.
 
+![The dashboard: counters for files, clients and groups, the clients using the most storage against their quotas, a month of uploads and downloads as a line chart, and recent activity](https://raw.githubusercontent.com/projectsend/projectsend/main/.github/screenshots/dashboard.png)
+
+*The dashboard — what is in the installation, and what has been happening in it. More screenshots
+are in the [README](https://github.com/projectsend/projectsend#screenshots).*
+
 ---
 
 ## Quick start

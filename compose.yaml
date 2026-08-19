@@ -21,6 +21,12 @@ services:
       ADMIN_NAME: ${ADMIN_NAME:-}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+    # The whole default stack declares one, so it comes back after a reboot
+    # or a Docker restart instead of half of it coming back — the confusing
+    # state, where the queue runs and the site is down (#1658). The dev-only
+    # profile services below deliberately do not: you bring those up for a
+    # session, not for the life of the machine.
+    restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
@@ -39,6 +45,7 @@ services:
     volumes:
       - .:/var/www/html
       - ./docker/web/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped
     depends_on:
       - app
 
@@ -95,6 +102,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
     volumes:
       - db-data:/var/lib/mysql
+    restart: unless-stopped
     ports:
       # Loopback only: this forward exists for host-side DB GUIs, not for
       # the network. Without the prefix Docker publishes on 0.0.0.0 and
@@ -109,6 +117,7 @@ services:
 
   redis:
     image: redis:7-alpine
+    restart: unless-stopped
     volumes:
       - redis-data:/data
 

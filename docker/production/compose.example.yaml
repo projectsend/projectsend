@@ -2,8 +2,7 @@
 #
 #   1. Edit the passwords and APP_URL below.
 #   2. docker compose -f compose.example.yaml up -d
-#   3. Open APP_URL. If you set ADMIN_EMAIL/ADMIN_PASSWORD the first
-#      administrator already exists; otherwise the setup screen prompts.
+#   3. Open APP_URL — the setup screen creates your administrator account.
 #
 # This is the file the Docker Hub description points at, so it is written
 # for someone who has never seen the project before.
@@ -58,11 +57,13 @@ services:
       # download log records the proxy's address.
       TRUSTED_PROXIES: "*"
 
-      # Optional: creates the first administrator so you skip the setup
-      # screen. Ignored once any user exists.
-      ADMIN_NAME: Administrator
-      ADMIN_EMAIL: admin@example.com
-      ADMIN_PASSWORD: change-me-admin
+      # Optional: uncomment these — with a password of your own — to create
+      # the first administrator unattended and skip the setup screen. Left
+      # commented, the setup screen creates it instead. Ignored once any
+      # user exists.
+      # ADMIN_NAME: Administrator
+      # ADMIN_EMAIL: admin@example.com
+      # ADMIN_PASSWORD: change-me-admin
     volumes:
       # Every uploaded file lives here, along with the generated APP_KEY.
       # This is the volume to back up; losing it loses the data.

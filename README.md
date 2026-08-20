@@ -78,7 +78,8 @@ docker compose -f compose.example.yaml up -d
 ```
 
 Open `APP_URL` and the first thing you see is a setup screen that creates your administrator
-account — or set `ADMIN_EMAIL` and `ADMIN_PASSWORD` in the file first and it is created for you.
+account — or uncomment `ADMIN_EMAIL` and `ADMIN_PASSWORD` in the file first, with a password of
+your own, and it is created for you.
 
 Before you put real files in it, read **[DOCKER.md](DOCKER.md)** — where your database and uploads
 actually live, how to move them onto paths you chose, and how to back them up so an upgrade can't

@@ -60,11 +60,13 @@ services:
       # container — including the reverse proxy you should be running.
       TRUSTED_PROXIES: "*"
 
-      # Optional: creates the first administrator so you skip the setup
-      # screen. Ignored once any user exists.
-      ADMIN_NAME: Administrator
-      ADMIN_EMAIL: admin@example.com
-      ADMIN_PASSWORD: change-me-admin
+      # Optional: uncomment these — with a password of your own — to create
+      # the first administrator unattended and skip the setup screen. Left
+      # commented, the setup screen creates it instead. Ignored once any
+      # user exists.
+      # ADMIN_NAME: Administrator
+      # ADMIN_EMAIL: admin@example.com
+      # ADMIN_PASSWORD: change-me-admin
     volumes:
       # Every uploaded file lives here, along with the generated APP_KEY.
       - storage:/var/www/html/storage
@@ -100,8 +102,9 @@ volumes:
   redis-data:
 ```
 
-Then open `APP_URL`. If you set `ADMIN_EMAIL` and `ADMIN_PASSWORD` the first administrator already
-exists; otherwise the setup screen creates one.
+Then open `APP_URL` — the setup screen creates your administrator account. Uncomment
+`ADMIN_EMAIL` and `ADMIN_PASSWORD` above, with a password of your own, to create it unattended
+instead.
 
 The first start is slower than later ones: the container waits for MySQL to accept connections
 before it migrates the database. That wait is normal, not a failure.

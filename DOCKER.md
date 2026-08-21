@@ -104,6 +104,88 @@ docker compose ps -a          # after a reboot, everything should be Up, not Exi
 
 ---
 
+## Behind a reverse proxy
+
+Almost nobody exposes the container directly: there is a proxy in front terminating TLS — Nginx
+Proxy Manager, Traefik, Caddy, or an nginx vhost you wrote. Two things are worth setting before you
+go looking for a bug that isn't there.
+
+### Tell ProjectSend the proxy is there
+
+```yaml
+environment:
+  TRUSTED_PROXIES: "*"
+```
+
+Without it every visitor appears to come from the proxy. The login rate limiter then treats all of
+your users as one attacker, and the download log records the proxy's address instead of the
+person's. `compose.example.yaml` already sets this.
+
+What it does **not** affect is whether a request succeeds at all. `TRUSTED_PROXIES` only changes how
+the application reads `X-Forwarded-*` headers on a request that already arrived, so getting it wrong
+gives you wrong client IPs, wrong generated links, or a redirect loop — never a `502`. A 502 means
+your proxy could not get a usable response out of the container, which is a different problem with a
+different fix.
+
+### Give the proxy header headroom
+
+If you are running a version before this one, some pages — the dashboard and the file list first —
+can send a response header block larger than the 4 KB single page nginx buffers headers into by
+default, and the proxy answers `502 Bad Gateway`. Because it depends on the page, it looks like an
+intermittent fault rather than a setting: the login screen loads, and then the application does not.
+The proxy's own error log names it exactly:
+
+```
+upstream sent too big header while reading response header from upstream
+```
+
+ProjectSend no longer sends headers that large. On an older version, or behind any proxy holding a
+default that tight, raise them:
+
+```nginx
+proxy_buffer_size       32k;
+proxy_buffers           8 32k;
+proxy_busy_buffers_size 64k;
+```
+
+In Nginx Proxy Manager that goes in the **Advanced** tab of the proxy host. Traefik and Caddy have
+their own spellings; the idea is the same.
+
+### When something does go wrong, read the container's log
+
+The app container logs everything — nginx, PHP-FPM, the queue worker and the scheduler — to Docker:
+
+```sh
+docker compose logs -f app
+docker compose logs --since 30m app | grep -iE "error|upstream|502"
+```
+
+nginx's line is the one that matters for a proxy problem, because it says which side failed.
+`connect() failed` or `upstream timed out` means the request reached the container and PHP was the
+problem. **Nothing at all**, while your proxy reports a 502, means the request never arrived — look
+at the proxy, the network between them, and the published port, not at ProjectSend.
+
+The container also answers a cheap health endpoint that touches neither the database nor Redis, which
+is the quickest way to separate "the app is down" from "the proxy cannot reach the app". Run both
+during an outage, from the same machine:
+
+```sh
+curl -s -o /dev/null -w '%{http_code}\n' http://<host-ip>:8080/up   # straight at the container
+curl -s -o /dev/null -w '%{http_code}\n' https://files.example.com/up
+```
+
+Docker records the same check every 30 seconds, so there is a history to read after the fact:
+
+```sh
+docker inspect --format 'restarts={{.RestartCount}} oom={{.State.OOMKilled}} health={{.State.Health.Status}}' $(docker compose ps -q app)
+```
+
+A non-zero `restarts`, or `oom=true`, means the container is dying and coming back rather than
+misbehaving — check memory. `compose.example.yaml` sets no limits, and MySQL, Redis and up to ten
+PHP-FPM workers add up on a small VPS.
+
+---
+
 ## Putting the data where you chose
 
 Bind-mount both volumes to real paths on the host, so your data sits somewhere you picked, somewhere

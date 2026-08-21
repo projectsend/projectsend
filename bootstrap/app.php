@@ -17,7 +17,6 @@ use App\Modules\Platform\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Http\Request;
 use Illuminate\Session\Middleware\AuthenticateSession;
 
@@ -56,7 +55,17 @@ return Application::configure(basePath: dirname(__DIR__))
             EnforceTwoFactor::class,
             SetLocale::class,
             HandleInertiaRequests::class,
-            AddLinkHeadersForPreloadedAssets::class,
+            // Deliberately NOT here: AddLinkHeadersForPreloadedAssets. It
+            // copies every Vite preload into a `Link:` response header,
+            // and the head of the document already carries the identical
+            // tags — twenty of them on the login page, more on a heavier
+            // one. The copy is what a browser never reads and a proxy has
+            // to buffer: it pushed /files past 6 KB of headers, where the
+            // 4 KB proxy_buffer_size that nginx, and therefore Nginx Proxy
+            // Manager, defaults to answers 502. Some pages fit and some do
+            // not, so it reads as an intermittent fault rather than a
+            // header that is always too big (#1664). Nothing is lost but
+            // 103 Early Hints, which this application does not send.
         ]);
 
         // The API group gets none of the web stack above — no session, no

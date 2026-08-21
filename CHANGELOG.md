@@ -37,6 +37,27 @@ a version is cut.
   ([#1663](https://github.com/projectsend/projectsend/issues/1663), reported by
   [@denkfabrik-li](https://github.com/denkfabrik-li))
 
+- **502 Bad Gateway behind a reverse proxy.** Every page carried a `Link:` header listing its
+  frontend assets, duplicating tags the page already had in its `<head>` — twenty of them on the
+  login screen, more on a heavier page. nginx buffers a response's headers into a single block that
+  defaults to 4 KB, so the file list, at over 6 KB of headers, was refused with `upstream sent too
+  big header` and the proxy answered 502. Which pages went over depended on how many assets they
+  loaded, so it looked like an intermittent fault: the login screen appeared, and then the
+  application did not. The duplicate header is gone — the same pages now send under 1.3 KB — and no
+  browser loses anything, because the tags it actually reads were always in the document. The
+  install guide gained the proxy buffer settings for anyone on an older version or behind a proxy
+  holding a tighter default.
+  ([#1664](https://github.com/projectsend/projectsend/issues/1664), reported by
+  [@denkfabrik-li](https://github.com/denkfabrik-li))
+
+- **`docker logs` now shows the web server's log.** The container runs nginx, PHP-FPM, the queue
+  worker and the scheduler, and all of them reported to Docker except the one you need when a
+  request fails: nginx opened the log files named in its own configuration and wrote to them inside
+  the container, where nothing looks. The effect was that a proxy problem produced no logs on either
+  side — the reason for every 502 and every 403 existed, in a file nobody knew to open. Both its
+  access and error logs now go to the container's output, and the Docker guide has a section on
+  running behind a reverse proxy that says which side a given message points at.
+
 ## 2.1.0 — 18 August 2026
 
 Updating, mostly. ProjectSend now tells you when there is a new version, ends an update somewhere

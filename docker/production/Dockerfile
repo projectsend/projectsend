@@ -85,6 +85,19 @@ RUN delgroup www-data 2>/dev/null || true \
 RUN sed -i 's/^user nginx;/user www-data;/' /etc/nginx/nginx.conf \
     && chown -R www-data:www-data /var/lib/nginx
 
+# nginx is the one process here that does not log where supervisord can
+# see it. supervisord captures what a program writes to its own stdout,
+# but nginx opens the files named in the package's nginx.conf the moment
+# it reads its config, so its access and error logs went to
+# /var/log/nginx/ inside the container — invisible to `docker logs`, which
+# is the only place anybody looks. That is where the reason for every 502
+# and every 403 was being written, so a reverse-proxy problem presented as
+# no logs at all on either side. Point both at the container's own
+# streams, which is what the rest of this image already does.
+RUN sed -i -e 's#^error_log .*#error_log /dev/stderr warn;#' \
+           -e 's#^\(\s*\)access_log .*#\1access_log /dev/stdout main;#' \
+           /etc/nginx/nginx.conf
+
 COPY docker/production/php.ini        /usr/local/etc/php/conf.d/projectsend.ini
 COPY docker/production/www-pool.conf  /usr/local/etc/php-fpm.d/zz-www-pool.conf
 COPY docker/production/nginx.conf     /etc/nginx/http.d/default.conf

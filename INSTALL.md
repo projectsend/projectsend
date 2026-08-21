@@ -68,7 +68,22 @@ instruction PHP just gave. There is no setting to change; the header names simpl
 Two ways out, if nginx really is impossible on your hosting:
 
 - Put nginx in front of Apache as a reverse proxy, serving `/protected-files/` itself. This works
-  but is more moving parts than just using nginx.
+  but is more moving parts than just using nginx. Give the proxy some header headroom while you are
+  there — the same headroom the reference configuration in Step 6 gives PHP-FPM, in the directives a
+  proxy uses instead:
+
+  ```nginx
+  proxy_buffer_size       32k;
+  proxy_buffers           8 32k;
+  proxy_busy_buffers_size 64k;
+  ```
+
+  nginx buffers a response's headers into a single block that defaults to one memory page — 4 KB on
+  most systems — and answers `502 Bad Gateway` with `upstream sent too big header` when they do not
+  fit. The page that goes over is not always the same one, so it presents as an intermittent fault
+  rather than as a misconfiguration. This applies to any proxy in front of ProjectSend, not just
+  this one: Nginx Proxy Manager, Traefik and a hand-written nginx vhost all ship the same default.
+  ([#1664](https://github.com/projectsend/projectsend/issues/1664))
 - Store your files in S3-compatible object storage instead (see
   [Storing files somewhere other than this server](#storing-files-somewhere-other-than-this-server)).
   Files kept there are never on your server's disk, so downloads become a signed, expiring redirect

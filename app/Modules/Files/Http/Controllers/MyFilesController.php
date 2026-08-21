@@ -260,6 +260,13 @@ class MyFilesController extends Controller
             'can_upload' => $client->can('upload'),
             'can_upload_here' => Folder::uploadableBy($client, $current),
             'can_create_folders' => $client->can('create_own_folders'),
+            // Whether a row is clickable to look at rather than only to
+            // take. Per page rather than per file: the mime type decides
+            // which files can be previewed and every theme already knows
+            // how to read one, so all this has to carry is whether the
+            // installation offers it here at all. See
+            // FileThumbnailController::preview, which re-checks it.
+            'preview_enabled' => $this->settings->get(Setting::ClientsCanPreviewFiles),
         ]);
     }
 

@@ -4,6 +4,7 @@ import { Archive, Folder as FolderIcon, Globe, Upload } from 'lucide-react';
 import { CommentsShellDrive } from '@/components/comments/shells/comments-shell-drive';
 import { DownloadAction } from '@/components/download-action';
 import { FilePreviewDialog } from '@/components/file-preview-dialog';
+import { PreviewAction } from '@/components/preview-action';
 import { CategoryBadges } from '@/components/files/category-badges';
 import { VersionBadge } from '@/components/files/version-badge';
 import Heading from '@/components/heading';
@@ -47,6 +48,7 @@ export default function MyFilesDrive(props: MyFilesFolderManagementProps) {
         can_upload_here,
         can_create_folders,
         comments_enabled,
+        preview_enabled,
     } = props;
     const {
         zip,
@@ -197,13 +199,18 @@ export default function MyFilesDrive(props: MyFilesFolderManagementProps) {
                                     aria-label={t('Select :name', { name: file.name })}
                                 />
                                 <div className="flex min-w-0 flex-1 items-center gap-4">
-                                    {isThumbnailable(file.mime_type) ? (
-                                        <FilePreviewDialog fileId={file.id} fileName={file.original_name} className="shrink-0">
+                                    <FilePreviewDialog
+                                        previewUrl={preview_enabled ? route('files.preview', file.id) : null}
+                                        mimeType={file.mime_type}
+                                        fileName={file.original_name}
+                                        className="shrink-0"
+                                    >
+                                        {isThumbnailable(file.mime_type) ? (
                                             <img src={route('files.thumbnail', file.id)} alt="" className="size-9 rounded object-cover" />
-                                        </FilePreviewDialog>
-                                    ) : (
-                                        <Icon className={`size-6 shrink-0 ${color}`} strokeWidth={1.5} />
-                                    )}
+                                        ) : (
+                                            <Icon className={`size-6 shrink-0 ${color}`} strokeWidth={1.5} />
+                                        )}
+                                    </FilePreviewDialog>
                                     <div className="min-w-0">
                                         <div className="flex items-center gap-1.5">
                                             <p className="truncate text-sm font-medium text-neutral-800 dark:text-neutral-200">{file.name}</p>
@@ -222,15 +229,30 @@ export default function MyFilesDrive(props: MyFilesFolderManagementProps) {
                                     </div>
                                 </div>
                                 <span className="w-20 text-right text-sm text-neutral-500">{formatBytes(file.size)}</span>
+                                {/* Fixed-width slots, so the icons form a
+                                    column down the list instead of sliding
+                                    about with each row's comment count. */}
                                 {comments_enabled && (
-                                    <CommentsShellDrive
-                                        fileId={file.id}
-                                        defaultOpen={deepLinkedComments === file.id}
-                                        fileName={file.name}
-                                        count={file.comments_count}
-                                        unread={file.unread_comments_count}
-                                    />
+                                    <div className="flex w-9 shrink-0 justify-center">
+                                        <CommentsShellDrive
+                                            fileId={file.id}
+                                            defaultOpen={deepLinkedComments === file.id}
+                                            fileName={file.name}
+                                            count={file.comments_count}
+                                            unread={file.unread_comments_count}
+                                        />
+                                    </div>
                                 )}
+                                <PreviewAction
+                                    previewUrl={preview_enabled ? route('files.preview', file.id) : null}
+                                    mimeType={file.mime_type}
+                                    fileName={file.original_name}
+                                    variant="ghost"
+                                    size="sm"
+                                    className="w-9"
+                                    iconClassName="size-4 text-blue-600"
+                                    iconOnly
+                                />
                                 <DownloadAction
                                     href={route('files.download', file.id)}
                                     limit={file.download_limit}

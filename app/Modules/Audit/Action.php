@@ -54,6 +54,7 @@ enum Action: string
     case ShareLinkRevoked = 'share_link.revoked';
     case ShareLinkDownloaded = 'share_link.downloaded';
     case PublicFileDownloaded = 'public_file.downloaded';
+    case PublicFilePreviewed = 'public_file.previewed';
     case FolderCreated = 'folder.created';
     case FolderRenamed = 'folder.renamed';
     case FolderMoved = 'folder.moved';
@@ -180,6 +181,7 @@ enum Action: string
             self::ShareLinkRevoked => 'Revoked a public link for the file ":subject"',
             self::ShareLinkDownloaded => 'Downloaded the file ":subject" via a public link',
             self::PublicFileDownloaded => 'Downloaded the file ":subject" via the public group listing',
+            self::PublicFilePreviewed => 'Previewed the file ":subject" via the public group listing',
             self::FolderCreated => 'Created the folder ":subject"',
             self::FolderRenamed => 'Renamed the folder ":subject"',
             self::FolderMoved => 'Moved the folder ":subject"',
@@ -278,6 +280,7 @@ enum Action: string
             self::ShareLinkRevoked => 'A public link was revoked',
             self::ShareLinkDownloaded => 'A file was downloaded via a public link',
             self::PublicFileDownloaded => 'A file was downloaded via the public group listing',
+            self::PublicFilePreviewed => 'A file was previewed via the public group listing',
             self::FolderCreated => 'A folder was created',
             self::FolderRenamed => 'A folder was renamed',
             self::FolderMoved => 'A folder was moved',

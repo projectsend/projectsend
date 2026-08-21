@@ -19,6 +19,7 @@ interface ClientSettingsProps {
     clients_can_select_group: string;
     clients_membership_deny_cooldown_days: number;
     default_client_storage_quota_mb: number;
+    clients_can_preview_files: boolean;
     groups: { id: number; name: string }[];
 }
 
@@ -29,6 +30,7 @@ export default function ClientSettings({
     clients_can_select_group,
     clients_membership_deny_cooldown_days,
     default_client_storage_quota_mb,
+    clients_can_preview_files,
     groups,
 }: ClientSettingsProps) {
     const { t } = useTranslation();
@@ -45,6 +47,7 @@ export default function ClientSettings({
         clients_can_select_group: clients_can_select_group,
         clients_membership_deny_cooldown_days: String(clients_membership_deny_cooldown_days),
         default_client_storage_quota_mb: String(default_client_storage_quota_mb),
+        clients_can_preview_files: clients_can_preview_files,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -171,6 +174,25 @@ export default function ClientSettings({
                         </p>
                         <InputError message={errors.default_client_storage_quota_mb} />
                     </div>
+
+                    <div className="flex items-start gap-2">
+                        <Checkbox
+                            id="clients_can_preview_files"
+                            checked={data.clients_can_preview_files}
+                            onCheckedChange={(checked) => setData('clients_can_preview_files', checked === true)}
+                        />
+                        <div className="grid gap-1">
+                            <Label htmlFor="clients_can_preview_files" className="font-normal">
+                                {t('Clients can preview files')}
+                            </Label>
+                            <p className="text-muted-foreground text-sm">
+                                {t(
+                                    'Lets clients open an image, video, audio file or PDF in the portal instead of only downloading it. Turn it off to make downloading the only way to see a file. Staff can always preview.',
+                                )}
+                            </p>
+                        </div>
+                    </div>
+                    <InputError message={errors.clients_can_preview_files} />
 
                     <SaveButton processing={processing} recentlySuccessful={recentlySuccessful} />
                 </form>

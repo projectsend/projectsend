@@ -101,6 +101,7 @@ test('staff can update client settings and they take effect', function () {
         'clients_can_select_group' => 'none',
         'clients_membership_deny_cooldown_days' => 30,
         'default_client_storage_quota_mb' => 0,
+        'clients_can_preview_files' => true,
     ])->assertRedirect()->assertSessionDoesntHaveErrors();
 
     Auth::logout();

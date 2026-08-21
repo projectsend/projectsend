@@ -12,6 +12,7 @@ import { ConfirmDialog } from '@/components/confirm-dialog';
 import { DetailsPanel, DetailsTarget } from '@/components/details-panel';
 import { DragChip, DragData, DropZone, useFolderDrop, useRowDrag } from '@/components/file-dnd';
 import { FilePreviewDialog } from '@/components/file-preview-dialog';
+import { PreviewAction } from '@/components/preview-action';
 import { VersionBadge, type VersionLinks } from '@/components/files/version-badge';
 import Heading from '@/components/heading';
 import { FilterField, ListToolbar } from '@/components/list-toolbar';
@@ -33,6 +34,7 @@ import { useZipDownload } from '@/hooks/use-zip-download';
 import AppLayout from '@/layouts/app-layout';
 import { categoryColor } from '@/lib/category-colors';
 import { formatBytes } from '@/lib/format-bytes';
+import { isPreviewable } from '@/lib/previews';
 import { isThumbnailable } from '@/lib/thumbnails';
 import { slugify } from '@/lib/utils';
 
@@ -689,13 +691,18 @@ function FileRow({
             </td>
             <td className="px-4 py-2.5">
                 <div className="flex items-start gap-2">
-                    {isThumbnailable(row.mime_type) ? (
-                        <FilePreviewDialog fileId={row.id} fileName={row.original_name} className="shrink-0">
+                    <FilePreviewDialog
+                        previewUrl={route('files.preview', row.id)}
+                        mimeType={row.mime_type}
+                        fileName={row.original_name}
+                        className="shrink-0"
+                    >
+                        {isThumbnailable(row.mime_type) ? (
                             <img src={route('files.thumbnail', row.id)} alt="" className="size-10 rounded border object-cover" draggable={false} />
-                        </FilePreviewDialog>
-                    ) : (
-                        <FileIcon className="text-muted-foreground mt-0.5 size-10 shrink-0" strokeWidth={1.25} />
-                    )}
+                        ) : (
+                            <FileIcon className="text-muted-foreground mt-0.5 size-10 shrink-0" strokeWidth={1.25} />
+                        )}
+                    </FilePreviewDialog>
                     <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
                             <Link href={route('files.edit', row.id)} draggable={false} className="font-medium">
@@ -765,6 +772,14 @@ function FileRow({
                             </a>
                         </Button>
                     )}
+                    <PreviewAction
+                        previewUrl={route('files.preview', row.id)}
+                        mimeType={row.mime_type}
+                        fileName={row.original_name}
+                        variant="ghost"
+                        size="sm"
+                        iconOnly
+                    />
                     <DownloadAction href={route('files.download', row.id)} limit={row.download_limit} variant="ghost" size="sm" iconOnly />
                     <Button variant="outline" size="sm" asChild>
                         <Link href={route('files.edit', row.id)}>{row.can_update ? t('Edit') : t('View')}</Link>
@@ -904,14 +919,25 @@ function FileCard({
                 className="bg-background/80 absolute top-3 left-3 z-10"
             />
 
-            {isThumbnailable(row.mime_type) ? (
-                <FilePreviewDialog fileId={row.id} fileName={row.original_name} className="bg-muted block aspect-square w-full overflow-hidden">
-                    <img
-                        src={route('files.thumbnail', row.id)}
-                        alt=""
-                        draggable={false}
-                        className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                    />
+            {isPreviewable(row.mime_type) ? (
+                <FilePreviewDialog
+                    previewUrl={route('files.preview', row.id)}
+                    mimeType={row.mime_type}
+                    fileName={row.original_name}
+                    className="bg-muted block aspect-square w-full overflow-hidden"
+                >
+                    {isThumbnailable(row.mime_type) ? (
+                        <img
+                            src={route('files.thumbnail', row.id)}
+                            alt=""
+                            draggable={false}
+                            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                        />
+                    ) : (
+                        <div className="flex h-full w-full items-center justify-center">
+                            <FileIcon className="text-muted-foreground size-10" strokeWidth={1.25} />
+                        </div>
+                    )}
                 </FilePreviewDialog>
             ) : (
                 <div className="bg-muted flex aspect-square items-center justify-center">
@@ -969,6 +995,14 @@ function FileCard({
                             </a>
                         </Button>
                     )}
+                    <PreviewAction
+                        previewUrl={route('files.preview', row.id)}
+                        mimeType={row.mime_type}
+                        fileName={row.original_name}
+                        variant="ghost"
+                        size="sm"
+                        iconOnly
+                    />
                     <DownloadAction href={route('files.download', row.id)} limit={row.download_limit} variant="ghost" size="sm" iconOnly />
                     {row.can_delete && (
                         <ConfirmDialog

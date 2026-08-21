@@ -1,6 +1,6 @@
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
-import { Check, Copy, Download, Loader2, X } from 'lucide-react';
+import { Check, Copy, Download, File as FileIcon, Loader2, X } from 'lucide-react';
 import { FormEventHandler, useEffect, useState } from 'react';
 
 import { CommentThread } from '@/components/comments/comment-thread';
@@ -25,6 +25,7 @@ import AppLayout from '@/layouts/app-layout';
 import { activityActorLabel } from '@/lib/activity-actor';
 import { categoryColor } from '@/lib/category-colors';
 import { formatBytes } from '@/lib/format-bytes';
+import { isPreviewable } from '@/lib/previews';
 import { isThumbnailable } from '@/lib/thumbnails';
 import { slugify } from '@/lib/utils';
 
@@ -277,9 +278,20 @@ export default function FilesEdit({
             <div className="px-4 py-6">
                 <div className="flex items-start justify-between">
                     <div className="flex items-start gap-4">
-                        {isThumbnailable(file.mime_type) && (
-                            <FilePreviewDialog fileId={file.id} fileName={file.original_name} className="shrink-0">
-                                <img src={route('files.thumbnail', file.id)} alt="" className="size-16 rounded border object-cover" />
+                        {isPreviewable(file.mime_type) && (
+                            <FilePreviewDialog
+                                previewUrl={route('files.preview', file.id)}
+                                mimeType={file.mime_type}
+                                fileName={file.original_name}
+                                className="shrink-0"
+                            >
+                                {isThumbnailable(file.mime_type) ? (
+                                    <img src={route('files.thumbnail', file.id)} alt="" className="size-16 rounded border object-cover" />
+                                ) : (
+                                    <span className="bg-muted flex size-16 items-center justify-center rounded border">
+                                        <FileIcon className="text-muted-foreground size-8" strokeWidth={1.25} />
+                                    </span>
+                                )}
                             </FilePreviewDialog>
                         )}
                         <Heading

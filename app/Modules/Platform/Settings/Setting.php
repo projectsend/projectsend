@@ -30,6 +30,14 @@ enum Setting: string
     // Days a denied membership request blocks re-requesting (0 = none).
     case ClientsMembershipDenyCooldownDays = 'clients_membership_deny_cooldown_days';
 
+    // Whether the client portal offers inline preview at all — the whole
+    // affordance, images included, not just the media types. Staff are
+    // never gated by it: it exists so an installation can decide that a
+    // client either downloads a file or does not get it, without taking
+    // the tool away from the people who administer the library. See
+    // PreviewKind and FileThumbnailController::preview.
+    case ClientsCanPreviewFiles = 'clients_can_preview_files';
+
     // Maximum upload size in MB (0 = unlimited).
     case MaxFileSizeMb = 'max_file_size_mb';
 
@@ -168,6 +176,12 @@ enum Setting: string
     // v1 parity: the public_listing_* feature, rescoped to v2's
     // group/file public flags instead of tokens. See PublicGroupsController.
     case PublicListingEnabled = 'public_listing_enabled';
+
+    // The same switch as ClientsCanPreviewFiles, for the anonymous side:
+    // whether a public file page offers to show the file as well as hand
+    // it over. v1 parity: public_listing_enable_preview. See
+    // PublicGroupsController::preview.
+    case PublicListingPreviewEnabled = 'public_listing_preview_enabled';
 
     // The configurable base URL segment for the public listing (e.g.
     // "public" -> /public, /public/{group-slug}). Consumed by
@@ -343,6 +357,8 @@ enum Setting: string
             self::EmailNotificationsEnabled,
             self::DiscourageSearchIndexing,
             self::PublicListingEnabled,
+            self::ClientsCanPreviewFiles,
+            self::PublicListingPreviewEnabled,
             self::CheckForUpdates,
             self::ExpiredFilesAutoDeleteEnabled,
             self::PublicCommentsEnabled,
@@ -410,6 +426,11 @@ enum Setting: string
 
             self::CheckForUpdates,
             self::CommentsGuestModeration,
+            // On, so that an installation updating into these switches
+            // keeps the preview it already had rather than losing it to a
+            // setting nobody has seen yet.
+            self::ClientsCanPreviewFiles,
+            self::PublicListingPreviewEnabled,
             // On by default, but only ever consulted once a provider is
             // configured — so a fresh install is not protecting forms it
             // has no keys for.

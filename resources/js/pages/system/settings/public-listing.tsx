@@ -16,9 +16,14 @@ import AppLayout from '@/layouts/app-layout';
 interface PublicListingSettingsProps {
     public_listing_enabled: boolean;
     public_listing_slug: string;
+    public_listing_preview_enabled: boolean;
 }
 
-export default function PublicListingSettings({ public_listing_enabled, public_listing_slug }: PublicListingSettingsProps) {
+export default function PublicListingSettings({
+    public_listing_enabled,
+    public_listing_slug,
+    public_listing_preview_enabled,
+}: PublicListingSettingsProps) {
     const { t } = useTranslation();
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -29,6 +34,7 @@ export default function PublicListingSettings({ public_listing_enabled, public_l
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
         public_listing_enabled: public_listing_enabled,
         public_listing_slug: public_listing_slug,
+        public_listing_preview_enabled: public_listing_preview_enabled,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -115,6 +121,31 @@ export default function PublicListingSettings({ public_listing_enabled, public_l
                             )}
                         </div>
                     )}
+
+                    {/* Outside the directory switch above on purpose: a public
+                        group's page works whether or not the directory is
+                        enabled, so its preview has to be configurable
+                        independently of it. */}
+                    <div className="grid gap-2">
+                        <div className="flex items-start gap-2">
+                            <Checkbox
+                                id="public_listing_preview_enabled"
+                                checked={data.public_listing_preview_enabled}
+                                onCheckedChange={(checked) => setData('public_listing_preview_enabled', checked === true)}
+                            />
+                            <div className="grid gap-1">
+                                <Label htmlFor="public_listing_preview_enabled" className="font-normal">
+                                    {t('Let visitors preview public files')}
+                                </Label>
+                                <p className="text-muted-foreground text-sm">
+                                    {t(
+                                        'Anyone with the link can open an image, video, audio file or PDF in the browser instead of downloading it. Turn it off to make downloading the only way to see a public file.',
+                                    )}
+                                </p>
+                            </div>
+                        </div>
+                        <InputError message={errors.public_listing_preview_enabled} />
+                    </div>
 
                     <SaveButton processing={processing} recentlySuccessful={recentlySuccessful} />
                 </form>

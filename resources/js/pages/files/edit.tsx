@@ -1,7 +1,7 @@
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
-import { Check, Copy, Download, X } from 'lucide-react';
-import { FormEventHandler, useState } from 'react';
+import { Check, Copy, Download, Loader2, X } from 'lucide-react';
+import { FormEventHandler, useEffect, useState } from 'react';
 
 import { CommentThread } from '@/components/comments/comment-thread';
 import { ConfirmDialog } from '@/components/confirm-dialog';
@@ -22,6 +22,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useFormatDate } from '@/hooks/use-format-date';
 import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
+import { activityActorLabel } from '@/lib/activity-actor';
 import { categoryColor } from '@/lib/category-colors';
 import { formatBytes } from '@/lib/format-bytes';
 import { isThumbnailable } from '@/lib/thumbnails';
@@ -47,7 +48,19 @@ interface CategoryTag {
     color: string;
 }
 
-type Tab = 'general' | 'sharing' | 'links' | 'versions' | 'comments';
+type Tab = 'general' | 'sharing' | 'links' | 'versions' | 'comments' | 'activity';
+
+/** One line of this file's history, as /files/{id}/activity presents it. */
+interface ActivityEntry {
+    id: number;
+    created_at: string;
+    actor_name: string | null;
+    actor_type: string | null;
+    /** Separates an unauthenticated visitor from the scheduler; both have no actor. */
+    origin: string;
+    template: string;
+    replacements: Record<string, string>;
+}
 
 interface FilesEditProps {
     file: {
@@ -84,6 +97,7 @@ interface FilesEditProps {
     can_update: boolean;
     can_delete: boolean;
     can_manage_public: boolean;
+    can_view_activity: boolean;
     can_set_commentable: boolean;
     comments_enabled: boolean;
     assigned_clients: Named[];
@@ -109,6 +123,7 @@ export default function FilesEdit({
     can_update,
     can_delete,
     can_manage_public,
+    can_view_activity,
     can_set_commentable,
     comments_enabled,
     assigned_clients,
@@ -121,7 +136,7 @@ export default function FilesEdit({
     can_limit_downloads,
 }: FilesEditProps) {
     const { t } = useTranslation();
-    const { date } = useFormatDate();
+    const { date, dateTime } = useFormatDate();
     const pageErrors = usePage().props.errors as Record<string, string>;
     // A comment notification and the activity log both land here, so honour
     // ?tab=comments. Somebody who may read the file but not edit it gets the
@@ -130,8 +145,13 @@ export default function FilesEdit({
         const requested = new URLSearchParams(window.location.search).get('tab');
 
         if (requested === 'comments' && comments_enabled) return 'comments';
+        if (requested === 'activity' && can_view_activity) return 'activity';
 
-        return can_update ? 'general' : 'comments';
+        if (can_update) return 'general';
+
+        // Whatever is left: somebody who may read the file but not edit it
+        // has at most these two, and Comments is the one they came for.
+        return comments_enabled ? 'comments' : 'activity';
     });
     const [target, setTarget] = useState('');
     const [shareExpiresAt, setShareExpiresAt] = useState('');
@@ -145,6 +165,25 @@ export default function FilesEdit({
     // (an already-populated slug counts as touched so we never clobber a
     // deliberate value).
     const [slugTouched, setSlugTouched] = useState(file.slug !== '');
+    // The file's own history, fetched from the same endpoint the library's
+    // details panel reads — the most recent 20 entries plus how many there
+    // are in total, so the link below can say what "all" amounts to. Null
+    // until the tab has been opened: a page that nobody opens the tab on
+    // should not pay for the query.
+    const [activity, setActivity] = useState<ActivityEntry[] | null>(null);
+    const [activityTotal, setActivityTotal] = useState(0);
+
+    useEffect(() => {
+        if (tab !== 'activity' || activity !== null || !can_view_activity) return;
+
+        fetch(route('files.activity', file.id), { headers: { Accept: 'application/json' }, credentials: 'same-origin' })
+            .then((r) => r.json())
+            .then((d) => {
+                setActivity(d.entries);
+                setActivityTotal(d.total);
+            });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [tab]);
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: t('All files'), href: '/files' },
@@ -278,12 +317,13 @@ export default function FilesEdit({
                     </div>
                 </div>
 
-                {(can_update || comments_enabled) && (
+                {(can_update || comments_enabled || can_view_activity) && (
                     <nav className="mt-6 flex gap-1 border-b">
                         {[
                             ...(can_update ? (['general', 'sharing', 'links'] as Tab[]) : []),
                             ...(can_set_version ? (['versions'] as Tab[]) : []),
                             ...(comments_enabled ? (['comments'] as Tab[]) : []),
+                            ...(can_view_activity ? (['activity'] as Tab[]) : []),
                         ]
                             .filter((tabKey) => tabKey !== 'links' || can_manage_public)
                             .map((tabKey) => (
@@ -300,14 +340,50 @@ export default function FilesEdit({
                                             ? t('Public')
                                             : tabKey === 'versions'
                                               ? t('Versions')
-                                              : t('Comments')}
+                                              : tabKey === 'comments'
+                                                ? t('Comments')
+                                                : t('Activity')}
                                 </button>
                             ))}
                     </nav>
                 )}
 
                 <div className="mt-6">
-                    {tab === 'comments' ? (
+                    {tab === 'activity' ? (
+                        <div className="max-w-2xl">
+                            {activity === null ? (
+                                <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                                    <Loader2 className="size-4 animate-spin" /> {t('Loading…')}
+                                </div>
+                            ) : activity.length === 0 ? (
+                                <p className="text-muted-foreground text-sm">{t('No activity recorded yet.')}</p>
+                            ) : (
+                                <div className="divide-y rounded-md border">
+                                    {activity.map((entry) => (
+                                        <div key={entry.id} className="flex items-baseline justify-between gap-4 px-4 py-3 text-sm">
+                                            <p>
+                                                <span className="font-medium">{t(activityActorLabel(entry).key)}</span>{' '}
+                                                <span className="text-muted-foreground">{t(entry.template, entry.replacements)}</span>
+                                            </p>
+                                            <p className="text-muted-foreground shrink-0 text-xs">{dateTime(entry.created_at)}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                            {/* Offered whenever there is any history at all, the
+                                same as the library's details panel: the full
+                                page is filterable and paged, not merely longer. */}
+                            {activityTotal > 0 && (
+                                <div className="mt-3">
+                                    <Button variant="link" size="sm" className="px-0" asChild>
+                                        <a href={route('files.activity.history', file.id)}>
+                                            {t('View full history (:count)', { count: activityTotal })}
+                                        </a>
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+                    ) : tab === 'comments' ? (
                         // The same thread the library's slide-over renders —
                         // one component, so the two can never disagree about
                         // what a comment looks like or who may write one.

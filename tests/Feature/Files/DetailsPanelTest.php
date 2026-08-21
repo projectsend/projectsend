@@ -15,6 +15,7 @@ use App\Modules\Identity\Models\RolePermission;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Http\UploadedFile;
+use Inertia\Testing\AssertableInertia;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -235,4 +236,28 @@ test('a file with no limit says so rather than reporting a zero', function () {
         ->assertJsonPath('download_limit', null)
         ->assertJsonPath('expires_at', null)
         ->assertJsonPath('expired', false);
+});
+
+test("the file's own page carries an activity tab, behind the same permission", function () {
+    $this->actingAs($this->admin)->post('/files', [
+        'file' => UploadedFile::fake()->create('a.pdf', 10, 'application/pdf'), 'name' => '', 'description' => '',
+    ]);
+    $file = File::query()->sole();
+
+    $this->actingAs($this->admin)->get("/files/{$file->id}")->assertOk()->assertInertia(
+        fn (AssertableInertia $page) => $page->component('files/edit')->where('can_view_activity', true),
+    );
+
+    // The uploader of *this* file, but with no view_actions_log: the page
+    // still loads, without the tab that would show the log.
+    $role = Role::query()->create(['name' => 'No Log']);
+    foreach (['upload', 'edit_own_files'] as $permission) {
+        RolePermission::query()->create(['role_id' => $role->id, 'permission' => $permission]);
+    }
+    $noLog = User::factory()->create(['role_id' => $role->id]);
+    $file->update(['uploaded_by' => $noLog->id]);
+
+    $this->actingAs($noLog)->get("/files/{$file->id}")->assertOk()->assertInertia(
+        fn (AssertableInertia $page) => $page->component('files/edit')->where('can_view_activity', false),
+    );
 });

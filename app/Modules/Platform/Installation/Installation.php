@@ -42,7 +42,13 @@ class Installation
      */
     protected function inContainer(): bool
     {
-        // Docker writes the first; Podman writes the second.
-        return file_exists('/.dockerenv') || file_exists('/run/.containerenv');
+        // Docker writes the first; Podman writes the second. The probes are
+        // suppressed because under open_basedir (common on shared hosting)
+        // file_exists() on a path outside the allowed list raises a warning
+        // instead of returning false - and the framework escalates that
+        // warning into an exception. An unreadable answer means "not a
+        // container": a host restrictive enough for open_basedir is never
+        // the Docker install.
+        return @file_exists('/.dockerenv') || @file_exists('/run/.containerenv');
     }
 }

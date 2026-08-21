@@ -18,11 +18,19 @@ use App\Modules\Platform\Settings\Settings;
  */
 class NoticeInstallation extends Installation
 {
-    public function __construct(private readonly bool $container) {}
+    public function __construct(
+        private readonly bool $container,
+        private readonly bool $source = false,
+    ) {}
 
     protected function inContainer(): bool
     {
         return $this->container;
+    }
+
+    protected function builtFromSource(): bool
+    {
+        return $this->source;
     }
 }
 
@@ -107,14 +115,15 @@ test('it is not gated on the edition', function () {
     expect(noticeFor($this->admin))->not->toBeNull();
 });
 
-test('it names the command this kind of installation can actually run', function (bool $container, string $expected) {
-    app()->instance(Installation::class, new NoticeInstallation($container));
+test('it names the command this kind of installation can actually run', function (bool $container, bool $source, string $expected) {
+    app()->instance(Installation::class, new NoticeInstallation($container, $source));
     applied('2.2.0');
 
     expect(noticeFor($this->admin)['install_kind'])->toBe($expected);
 })->with([
-    'a container' => [true, InstallationKind::Container->value],
-    'a server somebody administers' => [false, InstallationKind::Manual->value],
+    'a container from the published image' => [true, false, InstallationKind::Container->value],
+    'a container built from a checkout' => [true, true, InstallationKind::ContainerSource->value],
+    'a server somebody administers' => [false, false, InstallationKind::Manual->value],
 ]);
 
 // The rollback story, asserted end to end: whatever the marker said, the

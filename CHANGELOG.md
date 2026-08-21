@@ -15,6 +15,17 @@ a version is cut.
 
 ### Fixed
 
+- **An installation that builds its own containers is no longer told to pull.** ProjectSend prints
+  the update instructions for the way you installed it, and it had two answers where it needed
+  three: anything running in a container was handed `docker compose pull && docker compose up -d`,
+  including the Compose stack that builds from a checkout of the repository. There is no image
+  behind those containers to pull, so both commands ran, reported success and changed nothing — and
+  the dashboard went on offering the same release. Those installations are now recognised and given
+  `git pull && docker compose up -d --build` instead, with the two extra steps a checkout needs when
+  a release moves its dependencies or its frontend.
+  ([#1661](https://github.com/projectsend/projectsend/issues/1661), reported by
+  [@mueller7382](https://github.com/mueller7382))
+
 - **The dashboard no longer fails on shared hosting.** To decide which update instructions to print,
   ProjectSend asks whether it is running inside a container by looking for a file in the root of the
   filesystem. On shared hosting PHP is usually confined to your own directory, and looking outside it
@@ -23,7 +34,8 @@ a version is cut.
   it always was: a server that keeps PHP inside a single directory is not our container image, and
   gets the manual update instructions, which is correct for shared hosting anyway. Nothing to change
   on your side, and no setting you would have been able to change if there were.
-  ([#1663](https://github.com/projectsend/projectsend/issues/1663))
+  ([#1663](https://github.com/projectsend/projectsend/issues/1663), reported by
+  [@denkfabrik-li](https://github.com/denkfabrik-li))
 
 ## 2.1.0 — 18 August 2026
 

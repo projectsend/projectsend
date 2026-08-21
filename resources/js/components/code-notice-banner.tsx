@@ -2,6 +2,7 @@ import { usePage } from '@inertiajs/react';
 import { AlertTriangle } from 'lucide-react';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { isContainerInstall } from '@/components/update-instructions';
 import { useTranslation } from '@/hooks/use-translation';
 import { type SharedData } from '@/types';
 
@@ -27,7 +28,10 @@ export function CodeNoticeBanner() {
         return null;
     }
 
-    const container = notice.install_kind === 'container';
+    // Both container kinds answer this the same way: what fixes it is
+    // recreating the container, whether its image came from a registry or
+    // from a build on this machine.
+    const container = isContainerInstall(notice.install_kind);
 
     // Stated as a fact first, cause second. A deliberate rollback lands
     // here too, and telling somebody to reload PHP-FPM when they meant to

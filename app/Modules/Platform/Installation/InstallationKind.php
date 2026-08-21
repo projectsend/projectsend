@@ -11,8 +11,16 @@ namespace App\Modules\Platform\Installation;
  */
 enum InstallationKind: string
 {
-    /** Runs from an image: upgrading is pulling a new one. */
+    /** Runs from the published image: upgrading is pulling a new one. */
     case Container = 'container';
+
+    /**
+     * Runs from a container the operator builds themselves, out of a
+     * checkout of the repository: upgrading is new code first, then a
+     * rebuild. Pulling does nothing here — there is no published image
+     * behind these containers to pull.
+     */
+    case ContainerSource = 'container-source';
 
     /** Runs from files on a server someone administers: upgrading is INSTALL.md's sequence. */
     case Manual = 'manual';

@@ -15,6 +15,21 @@ a version is cut.
 
 ### Fixed
 
+- **Downloads on a host where the web server is not PHP's user.** A download is not served by PHP:
+  PHP checks permissions and then hands the web server the path to stream. Where the two run as
+  different users — cPanel and Plesk commonly arrange it that way — the web server could not open
+  the file, because uploads are written readable only by the account that wrote them. The rest of
+  the site gave no sign of it: uploading worked, the library listed everything, and only downloads
+  failed, in the browser as `ERR_INVALID_RESPONSE`. Setting `FILES_WEB_SERVER_READABLE=true` now
+  writes uploads so the web server can read them. It is opt-in, and deliberately so — the modes it
+  uses are readable by every account on the machine, which is the wrong trade on a server where the
+  web server and PHP are the same user, as they are in the Docker image and on most servers people
+  set up themselves. The install guide has the full procedure, including the one thing no
+  application setting can fix: a PHP-FPM pool with a restrictive umask, which caps new directories
+  no matter what ProjectSend asks for.
+  ([#1668](https://github.com/projectsend/projectsend/issues/1668), reported by
+  [@denkfabrik-li](https://github.com/denkfabrik-li))
+
 - **An installation that builds its own containers is no longer told to pull.** ProjectSend prints
   the update instructions for the way you installed it, and it had two answers where it needed
   three: anything running in a container was handed `docker compose pull && docker compose up -d`,

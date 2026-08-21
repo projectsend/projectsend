@@ -197,6 +197,66 @@ sudo chown -R www-data:www-data /var/www/projectsend
 sudo chmod -R 775 /var/www/projectsend/storage /var/www/projectsend/bootstrap/cache
 ```
 
+### If your web server and PHP-FPM are different users
+
+Check before you go further, because the symptom is misleading:
+
+```sh
+ps -o user= -C nginx | sort -u          # the web server's user
+ps -o user= -C php-fpm | sort -u        # PHP's user
+```
+
+Most servers you set up yourself run both as `www-data` and there is nothing to do here. Managed
+panels often do not — cPanel and Plesk commonly give each site its own PHP user while nginx runs as
+its own. If the two differ, add this to your `.env`:
+
+```dotenv
+FILES_WEB_SERVER_READABLE=true
+```
+
+Uploaded files are written `0600` inside `0700` directories, readable only by the user that wrote
+them. That is deliberate, and on a same-user server it is the safer setting. But a download is not
+served by PHP: PHP checks permissions and then hands the web server the path with `X-Accel-Redirect`
+(see [Why nginx](#why-nginx)), so the web server has to open a file PHP owns. When it cannot, **the
+whole site works and only downloads fail** — the browser reports `ERR_INVALID_RESPONSE` and the
+nginx error log says:
+
+```
+open() ".../storage/app/files/..." failed (13: Permission denied)
+```
+
+The setting relaxes new uploads to `0644`/`0755`. Be aware of what that means on a shared machine:
+those modes are readable by *every* account on the server, not only by the web server. The files stay
+off the web — the `internal` directive in Step 6 sees to that — but they are no longer private from
+your neighbours, so leave this off unless you need it.
+
+Files already on disk keep the permissions they were written with, so fix those once:
+
+```sh
+sudo find /var/www/projectsend/storage/app/files -type d -exec chmod 755 {} +
+sudo find /var/www/projectsend/storage/app/files -type f -exec chmod 644 {} +
+```
+
+**Then check that new uploads keep it.** Upload a file and look at the directory it landed in:
+
+```sh
+ls -ld /var/www/projectsend/storage/app/files/*/*
+```
+
+If it is `drwxr-xr-x` you are done. If it is still `drwx------`, your PHP-FPM pool runs with a
+restrictive umask, and no application setting can beat it: ProjectSend asks for `0755`, but the
+directory is created by `mkdir()`, and `mkdir()` masks whatever mode it is given with the umask of
+the process. (Files are unaffected — they are set explicitly after being written, so they are `0644`
+either way.) Fix it in the pool configuration, not here:
+
+```ini
+; /etc/php/8.4/fpm/pool.d/your-pool.conf  — the path varies by panel
+php_admin_value[umask] = 0022
+```
+
+Some panels expose this as a "umask" field instead. Restart PHP-FPM afterwards, then re-run the
+`chmod` above for anything uploaded in the meantime.
+
 ## Step 5 — Prepare the application
 
 Three commands. Run them from the install directory, as the web server's user, so that everything

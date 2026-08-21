@@ -37,6 +37,38 @@ return [
             'root' => storage_path('app/files'),
             'serve' => false,
             'throw' => false,
+
+            // A download is not served by PHP. PHP authorizes it and
+            // hands the web server the path with X-Accel-Redirect, so the
+            // web server has to open a file PHP wrote. Where the two are
+            // different users — cPanel and Plesk commonly do this — it
+            // cannot: uploads land 0600 inside a 0700 directory, and
+            // traversing 0700 means *being* its owner. Everything else on
+            // the site keeps working, which is what makes it hard to
+            // place (#1668).
+            //
+            // FILES_WEB_SERVER_READABLE relaxes both to 0644/0755. Opt-in,
+            // because it is strictly weaker: those modes are readable by
+            // every account on the machine, and on a single-user host they
+            // buy nothing. The files stay off the web either way — nginx
+            // only reaches them through an `internal` location.
+            //
+            // The two halves are enforced differently, and only one of
+            // them is absolute. `visibility` makes Flysystem chmod each
+            // file after writing it, so 0644 holds whatever the umask is.
+            // Directories get no chmod — they are created by mkdir(), and
+            // mkdir() masks its mode argument with the process umask — so
+            // 0755 here is a ceiling, not a guarantee. A pool running at
+            // umask 0077 still produces 0700 and still cannot be
+            // traversed; INSTALL.md covers fixing that, because it cannot
+            // be fixed from this file.
+            // Spread rather than two ternaries so that leaving the flag
+            // off is not merely equivalent to the old configuration but
+            // literally it — no install that does not need this sees its
+            // file modes change.
+            ...(env('FILES_WEB_SERVER_READABLE', false)
+                ? ['visibility' => 'public', 'permissions' => ['dir' => ['private' => 0755]]]
+                : []),
         ],
 
         // Laravel's stock private disk. Nothing in this application writes

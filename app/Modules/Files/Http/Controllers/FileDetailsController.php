@@ -47,19 +47,19 @@ class FileDetailsController extends Controller
      * somebody following a public link and a visitor to a public group
      * listing are recorded separately, on purpose, because *how* a file
      * left matters. But nobody reading a file's history wants to ask the
-     * question three times, so these offer it once — and are still only
-     * shown when the file's own log has more than one of the members.
+     * question three times, so this offers it once — and only when the
+     * file's own log holds more than one of the members, since otherwise
+     * it would filter to exactly what its single member already offers.
      *
-     * @var array<string, array{label: string, actions: list<Action>}>
+     * Previewing has one action today, so it needs no group; give it one
+     * here if a second way to preview a file is ever recorded separately.
+     *
+     * @var array<string, array{label: string, actions: non-empty-list<Action>}>
      */
     private const ACTION_GROUPS = [
         'downloads' => [
             'label' => 'All downloads',
             'actions' => [Action::FileDownloaded, Action::ShareLinkDownloaded, Action::PublicFileDownloaded],
-        ],
-        'previews' => [
-            'label' => 'All previews',
-            'actions' => [Action::FilePreviewed, Action::PublicFilePreviewed],
         ],
     ];
 

@@ -232,9 +232,24 @@ test('the file activity history filters by action, and offers only the actions t
         ->and($byKey['downloads']['count'])->toBe(3)
         ->and($byKey['file.downloaded']['count'])->toBe(2);
 
-    // A single preview action means no "All previews" group: it would
-    // filter to exactly what its one member already offers.
-    expect($byKey->has('previews'))->toBeFalse();
+    // A file whose log holds only one flavour of download gets no group:
+    // it would filter to exactly what its single member already offers.
+    $simple = uploadImageFile($this->admin, 'simple.jpg');
+    ActivityLog::create([
+        'action' => Action::FileDownloaded,
+        'subject_type' => $simple->getMorphClass(),
+        'subject_id' => $simple->id,
+        'subject_name' => $simple->name,
+        'actor_id' => $this->admin->id,
+        'actor_name' => $this->admin->name,
+        'actor_type' => 'staff',
+        'created_at' => now(),
+    ]);
+
+    $simpleOptions = $this->actingAs($this->admin)->get("/files/{$simple->id}/activity/history")
+        ->viewData('page')['props']['action_options'];
+
+    expect(collect($simpleOptions)->pluck('key')->all())->toEqualCanonicalizing(['file.uploaded', 'file.downloaded']);
 
     // The group covers all three download flavours, one of them anonymous.
     $this->actingAs($this->admin)->get("/files/{$file->id}/activity/history?action=downloads")->assertInertia(

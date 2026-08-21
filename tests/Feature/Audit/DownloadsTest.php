@@ -178,3 +178,69 @@ test('a client-scoped viewer does see entries for their own clients and their ow
         // permission alone, so it never points at a 403.
         ->and($rows->firstWhere('file_name', 'quarterly-report')['file_url'])->not->toBeNull();
 });
+
+test('the installation-wide download history filters by file, by account and by date', function () {
+    $report = uploadImageFile($this->admin, 'quarterly-report.jpg');
+    $photo = uploadImageFile($this->admin, 'holiday-photo.jpg');
+    $client = User::factory()->client()->create(['name' => 'Acme Design']);
+
+    $log = function ($file, ?User $actor, string $when) {
+        ActivityLog::create([
+            'action' => $actor === null ? Action::ShareLinkDownloaded : Action::FileDownloaded,
+            'subject_type' => $file->getMorphClass(),
+            'subject_id' => $file->id,
+            'subject_name' => $file->name,
+            'actor_id' => $actor?->id,
+            'actor_name' => $actor?->name,
+            'actor_type' => $actor === null ? null : 'client',
+            'created_at' => $when,
+        ]);
+    };
+
+    $log($report, $client, '2026-08-10 09:00:00');
+    $log($report, $this->admin, '2026-08-12 09:00:00');
+    $log($photo, $client, '2026-08-14 09:00:00');
+    // Anonymous: no account name to match, so the user filter can never
+    // return it — which is what the column already says on screen.
+    $log($photo, null, '2026-08-16 09:00:00');
+
+    $entries = fn (string $query) => $this->actingAs($this->admin)->get("/downloads{$query}")->assertOk();
+
+    $entries('?file=report')->assertInertia(
+        fn (AssertableInertia $page) => $page->has('entries', 2)->where('filters.file', 'report'),
+    );
+
+    $entries('?user=Acme')->assertInertia(
+        fn (AssertableInertia $page) => $page->has('entries', 2)->where('entries.0.actor_name', 'Acme Design'),
+    );
+
+    // Both filters at once narrow to the one row that satisfies each.
+    $entries('?file=report&user=Acme')->assertInertia(fn (AssertableInertia $page) => $page->has('entries', 1));
+
+    $entries('?from=2026-08-13')->assertInertia(fn (AssertableInertia $page) => $page->has('entries', 2));
+    $entries('?to=2026-08-11')->assertInertia(fn (AssertableInertia $page) => $page->has('entries', 1));
+    $entries('?from=2026-08-11&to=2026-08-15')->assertInertia(fn (AssertableInertia $page) => $page->has('entries', 2));
+
+    // A range that ends before it starts is rejected rather than silently
+    // returning nothing.
+    $this->actingAs($this->admin)->get('/downloads?from=2026-08-15&to=2026-08-11')->assertSessionHasErrors('to');
+});
+
+test('a client-scoped viewer cannot widen the download history with a filter', function () {
+    $secret = uploadImageFile($this->admin, 'board-minutes-confidential.jpg');
+    $this->actingAs($this->admin)->get("/files/{$secret->id}/download")->assertOk();
+
+    $manager = User::factory()->role(SystemRole::ClientManager)->create();
+    $manager->assignedClients()->sync([]);
+
+    // Out of this viewer's library scope, so it stays invisible however
+    // precisely it is searched for: the filters narrow the scoped query,
+    // they do not replace it.
+    $this->actingAs($manager)->get('/downloads?file=board-minutes')->assertInertia(
+        fn (AssertableInertia $page) => $page->has('entries', 0),
+    );
+
+    $this->actingAs($this->admin)->get('/downloads?file=board-minutes')->assertInertia(
+        fn (AssertableInertia $page) => $page->has('entries', 1),
+    );
+});

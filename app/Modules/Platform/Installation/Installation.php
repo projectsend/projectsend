@@ -5,35 +5,56 @@ declare(strict_types=1);
 namespace App\Modules\Platform\Installation;
 
 /**
- * Whether this installation runs from a container image or from files on a
- * server somebody administers directly.
+ * Whether this installation runs from a container image, from a container
+ * the operator builds themselves, or from files on a server somebody
+ * administers directly.
  *
  * It exists because the application tells administrators how to upgrade, and
- * the two answers have nothing in common. A container is replaced —
- * `docker compose pull && docker compose up -d`, with the entrypoint running
- * the migrations on the way up. A manual install is a sequence somebody
- * performs by hand: back up, take the site down, unpack the release over the
- * directory, migrate, refresh the caches, bring it back (INSTALL.md).
+ * the three answers have nothing in common. A published container is
+ * replaced — `docker compose pull && docker compose up -d`, with the
+ * entrypoint running the migrations on the way up. A container built from a
+ * checkout has to be given new code and rebuilt. A manual install is a
+ * sequence somebody performs by hand: back up, take the site down, unpack
+ * the release over the directory, migrate, refresh the caches, bring it back
+ * (INSTALL.md).
  *
- * Printing the container command to someone who installed from a zip is
- * worse than printing nothing: it names a tool they do not have, for a stack
- * they are not running, at the exact moment they are trying to do the right
- * thing. That was the behaviour before this class existed — the command was
- * a hardcoded string in two React components, written when Docker was the
- * only supported path.
+ * Printing the wrong one of those is worse than printing nothing. For a
+ * manual install the container command names a tool they do not have, for a
+ * stack they are not running, at the exact moment they are trying to do the
+ * right thing — that was the behaviour before this class existed, when the
+ * command was a hardcoded string in two React components. For a stack built
+ * from a checkout it is worse still, because the command runs: `pull` skips
+ * services that have no image to pull and `up -d` then finds every container
+ * already current, so the update reports success and changes nothing, and
+ * the dashboard goes on offering the same release forever (#1661).
  *
- * The detection is the presence of the file a container runtime leaves in
- * the root filesystem. It is a deliberately conservative signal: something
- * exotic enough to run neither Docker nor Podman is reported as a manual
- * install, which is the safer wrong answer of the two — the manual
- * instructions are steps a person follows and check for themselves, while
- * the container command is one they would paste.
+ * Two signals, in order:
+ *
+ *   1. The published image sets PROJECTSEND_IMAGE. A positive marker set at
+ *      build time is the only one a bind mount can neither forge nor hide.
+ *   2. Failing that — images published before that variable existed — a
+ *      working tree in the install directory. The image is built from an
+ *      unpacked release artifact and has none; the Compose stack in the
+ *      repository bind-mounts the repository itself.
+ *
+ * Being in a container at all is the presence of the file a container
+ * runtime leaves in the root filesystem. It is a deliberately conservative
+ * signal: something exotic enough to run neither Docker nor Podman is
+ * reported as a manual install, which is the safer wrong answer of the
+ * three — the manual instructions are steps a person follows and checks for
+ * themselves, while the container commands are ones they would paste.
  */
 class Installation
 {
     public function kind(): InstallationKind
     {
-        return $this->inContainer() ? InstallationKind::Container : InstallationKind::Manual;
+        if (! $this->inContainer()) {
+            return InstallationKind::Manual;
+        }
+
+        return $this->builtFromSource()
+            ? InstallationKind::ContainerSource
+            : InstallationKind::Container;
     }
 
     /**
@@ -53,5 +74,23 @@ class Installation
         // right answer anyway: a host that restricts PHP to a vhost
         // directory is not the container image.
         return @file_exists('/.dockerenv') || @file_exists('/run/.containerenv');
+    }
+
+    /**
+     * Protected for the same reason as inContainer(), and answered the same
+     * way in tests.
+     */
+    protected function builtFromSource(): bool
+    {
+        // getenv() rather than env(): once the configuration is cached,
+        // env() outside a config file returns null, and the answer would
+        // silently flip on the installs most likely to have cached it.
+        if (getenv('PROJECTSEND_IMAGE') === '1') {
+            return false;
+        }
+
+        // A worktree checkout writes .git as a file rather than a
+        // directory, so ask whether it exists, not what it is.
+        return file_exists(base_path('.git'));
     }
 }

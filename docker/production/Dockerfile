@@ -126,6 +126,14 @@ RUN mkdir -p storage/app/files storage/framework/cache storage/framework/session
 # session and makes every encrypted column unreadable.
 VOLUME ["/var/www/html/storage"]
 
+# How the application knows it is this image and not a container somebody
+# built from a checkout — the two upgrade completely differently, and it is
+# the application that prints the instructions. See Installation. It has to
+# be set here rather than inferred at runtime: an operator who bind-mounts
+# over /var/www/html can hide any file the image ships as its evidence, and
+# an environment variable survives that.
+ENV PROJECTSEND_IMAGE=1
+
 EXPOSE 80
 
 # Laravel's health route (bootstrap/app.php: health: '/up'). Hitting it

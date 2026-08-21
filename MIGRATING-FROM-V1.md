@@ -178,9 +178,11 @@ are listed at each step.
 | Legacy and ProjectSend are on the **same machine** | [**Direct**](#step-3a--direct-same-machine) |
 | Legacy is on **another server**, or on hosting you cannot reach from the new box | [**Bundle**](#step-3b--bundle-different-machines) |
 
-Direct is faster and simpler, and on a single filesystem it does not copy your files at all — it
-hardlinks them, so 400 GB migrates in seconds and both installs point at the same bytes until you
-decide otherwise. Use it if you can.
+Direct is faster and simpler. It copies your files by default, and it can also *hardlink* them
+instead when you ask it to — on a single filesystem that writes no bytes at all, so 400 GB migrates
+in seconds and both installs point at the same bytes until you decide otherwise. Either way your
+Legacy install is left intact. Use Direct if you can; [Step 3a](#step-3a--direct-same-machine) has
+the strategies.
 
 ---
 

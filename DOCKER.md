@@ -149,9 +149,16 @@ them, and check the result before applying it — this prints the fully merged c
 docker compose config
 ```
 
-### 3. Move the data you already have
+### 3. Move an existing install's data onto the new paths
 
-**Skip this on a brand-new installation.** There is nothing to move; go straight to step 4.
+This step is only for an install that has **already been running** on the named volumes and is now
+moving to the host paths you just chose. It moves ProjectSend's own storage and database, nothing
+else.
+
+**Skip it on a brand-new installation** — there is nothing to move; go straight to step 4. That
+includes an install you are about to migrate ProjectSend Legacy (v1) into: those files and that
+database come across later, through the migration tool, and the new install has to be empty when
+they do. See [MIGRATING-FROM-V1.md](MIGRATING-FROM-V1.md).
 
 Stop everything first. Copying a database out from under a running MySQL is how you get a backup
 that restores into a corrupt table.

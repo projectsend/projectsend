@@ -1,6 +1,6 @@
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
-import { Check, Copy, Download, File as FileIcon, Loader2, X } from 'lucide-react';
+import { Check, Copy, Download, Eye, File as FileIcon, Loader2, X } from 'lucide-react';
 import { FormEventHandler, useEffect, useState } from 'react';
 
 import { CommentThread } from '@/components/comments/comment-thread';
@@ -49,7 +49,7 @@ interface CategoryTag {
     color: string;
 }
 
-type Tab = 'general' | 'sharing' | 'links' | 'versions' | 'comments' | 'activity';
+type Tab = 'general' | 'sharing' | 'links' | 'versions' | 'comments' | 'access' | 'activity';
 
 /** One line of this file's history, as /files/{id}/activity presents it. */
 interface ActivityEntry {
@@ -61,6 +61,21 @@ interface ActivityEntry {
     origin: string;
     template: string;
     replacements: Record<string, string>;
+}
+
+/** One download or preview of this file, as /files/{id}/access presents it. */
+interface AccessEntry extends ActivityEntry {
+    /** Null wherever the privacy settings say not to record an address. */
+    ip_address: string | null;
+}
+
+interface Access {
+    entries: AccessEntry[];
+    downloads_total: number;
+    previews_total: number;
+    /** The file's own history, pre-filtered — the server owns which filter value that is. */
+    downloads_url: string;
+    previews_url: string;
 }
 
 interface FilesEditProps {
@@ -173,6 +188,19 @@ export default function FilesEdit({
     // should not pay for the query.
     const [activity, setActivity] = useState<ActivityEntry[] | null>(null);
     const [activityTotal, setActivityTotal] = useState(0);
+
+    // "Did they ever actually get it?" — the same twenty-entry shape as
+    // the Activity tab, narrowed to the two actions that answer it.
+    const [access, setAccess] = useState<Access | null>(null);
+
+    useEffect(() => {
+        if (tab !== 'access' || access !== null || !can_view_activity) return;
+
+        fetch(route('files.access', file.id), { headers: { Accept: 'application/json' }, credentials: 'same-origin' })
+            .then((r) => r.json())
+            .then(setAccess);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [tab]);
 
     useEffect(() => {
         if (tab !== 'activity' || activity !== null || !can_view_activity) return;
@@ -330,19 +358,19 @@ export default function FilesEdit({
                 </div>
 
                 {(can_update || comments_enabled || can_view_activity) && (
-                    <nav className="mt-6 flex gap-1 border-b">
+                    <nav className="mt-6 flex gap-1 overflow-x-auto border-b">
                         {[
                             ...(can_update ? (['general', 'sharing', 'links'] as Tab[]) : []),
                             ...(can_set_version ? (['versions'] as Tab[]) : []),
                             ...(comments_enabled ? (['comments'] as Tab[]) : []),
-                            ...(can_view_activity ? (['activity'] as Tab[]) : []),
+                            ...(can_view_activity ? (['access', 'activity'] as Tab[]) : []),
                         ]
                             .filter((tabKey) => tabKey !== 'links' || can_manage_public)
                             .map((tabKey) => (
                                 <button
                                     key={tabKey}
                                     onClick={() => setTab(tabKey)}
-                                    className={`border-b-2 px-3 py-2 text-sm ${tab === tabKey ? 'border-primary text-foreground font-medium' : 'text-muted-foreground border-transparent'}`}
+                                    className={`border-b-2 px-3 py-2 text-sm whitespace-nowrap ${tab === tabKey ? 'border-primary text-foreground font-medium' : 'text-muted-foreground border-transparent'}`}
                                 >
                                     {tabKey === 'general'
                                         ? t('General')
@@ -354,14 +382,74 @@ export default function FilesEdit({
                                               ? t('Versions')
                                               : tabKey === 'comments'
                                                 ? t('Comments')
-                                                : t('Activity')}
+                                                : tabKey === 'access'
+                                                  ? t('Downloads & previews')
+                                                  : t('Activity')}
                                 </button>
                             ))}
                     </nav>
                 )}
 
                 <div className="mt-6">
-                    {tab === 'activity' ? (
+                    {tab === 'access' ? (
+                        <div className="max-w-2xl">
+                            {access === null ? (
+                                <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                                    <Loader2 className="size-4 animate-spin" /> {t('Loading…')}
+                                </div>
+                            ) : access.entries.length === 0 ? (
+                                <p className="text-muted-foreground text-sm">{t('Nobody has downloaded or previewed this file yet.')}</p>
+                            ) : (
+                                <>
+                                    <p className="text-muted-foreground mb-3 text-sm">
+                                        {t('Downloads: :count', { count: access.downloads_total })}
+                                        {' · '}
+                                        {t('Previews: :count', { count: access.previews_total })}
+                                    </p>
+
+                                    <div className="divide-y rounded-md border">
+                                        {access.entries.map((entry) => (
+                                            <div key={entry.id} className="flex items-baseline justify-between gap-4 px-4 py-3 text-sm">
+                                                <p>
+                                                    <span className="font-medium">{t(activityActorLabel(entry).key)}</span>{' '}
+                                                    <span className="text-muted-foreground">{t(entry.template, entry.replacements)}</span>
+                                                </p>
+                                                <p className="text-muted-foreground shrink-0 text-right text-xs">
+                                                    {dateTime(entry.created_at)}
+                                                    {entry.ip_address !== null && <span className="block font-mono">{entry.ip_address}</span>}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </>
+                            )}
+
+                            {/* Each button is the same history page the Activity
+                                tab links to, arriving with one question already
+                                asked. Offered only where there is something to
+                                read: a filter over nothing is a dead end. */}
+                            {access !== null && (access.downloads_total > 0 || access.previews_total > 0) && (
+                                <div className="mt-4 flex flex-wrap gap-2">
+                                    {access.downloads_total > 0 && (
+                                        <Button variant="outline" size="sm" asChild>
+                                            <a href={access.downloads_url}>
+                                                <Download className="size-4" />
+                                                {t('View all downloads (:count)', { count: access.downloads_total })}
+                                            </a>
+                                        </Button>
+                                    )}
+                                    {access.previews_total > 0 && (
+                                        <Button variant="outline" size="sm" asChild>
+                                            <a href={access.previews_url}>
+                                                <Eye className="size-4" />
+                                                {t('View all previews (:count)', { count: access.previews_total })}
+                                            </a>
+                                        </Button>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    ) : tab === 'activity' ? (
                         <div className="max-w-2xl">
                             {activity === null ? (
                                 <div className="text-muted-foreground flex items-center gap-2 text-sm">

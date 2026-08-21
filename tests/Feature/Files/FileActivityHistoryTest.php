@@ -277,3 +277,106 @@ test('the file activity history filters by action, and offers only the actions t
     );
     $this->actingAs($this->admin)->get("/files/{$file->id}/activity/history?action=nonsense")->assertSessionHasErrors('action');
 });
+
+test('the access endpoint answers who downloaded and who previewed the file', function () {
+    $file = uploadImageFile($this->admin);
+    $client = User::factory()->client()->create(['name' => 'Acme Design']);
+
+    $log = function (Action $action, ?User $actor = null, ?string $ip = null) use ($file): void {
+        ActivityLog::create([
+            'action' => $action,
+            'subject_type' => $file->getMorphClass(),
+            'subject_id' => $file->id,
+            'subject_name' => $file->name,
+            'actor_id' => $actor?->id,
+            'actor_name' => $actor?->name,
+            'actor_type' => $actor === null ? null : 'client',
+            'ip_address' => $ip,
+            'created_at' => now(),
+        ]);
+    };
+
+    $log(Action::FileDownloaded, $client, '10.0.0.1');
+    $log(Action::ShareLinkDownloaded, null, '10.0.0.2');
+    $log(Action::PublicFileDownloaded);
+    $log(Action::FilePreviewed, $client);
+    // Neither a download nor a preview: this tab is not the activity log.
+    $log(Action::FileUpdated, $this->admin);
+
+    $response = $this->actingAs($this->admin)->getJson("/files/{$file->id}/access")->assertOk();
+
+    expect($response->json('downloads_total'))->toBe(3)
+        ->and($response->json('previews_total'))->toBe(1)
+        // Four rows, not five: the edit entry (and the upload) are excluded.
+        ->and($response->json('entries'))->toHaveCount(4)
+        ->and($response->json('entries.0.template'))->toBe('Previewed the file ":subject"')
+        ->and($response->json('entries.0.actor_name'))->toBe('Acme Design')
+        ->and($response->json('entries.3.ip_address'))->toBe('10.0.0.1');
+
+    // The buttons carry the filter the history page understands: a group
+    // for downloads, the action itself for previews (which have no group
+    // while only one action records them).
+    expect($response->json('downloads_url'))->toBe("/files/{$file->id}/activity/history?action=downloads")
+        ->and($response->json('previews_url'))->toBe("/files/{$file->id}/activity/history?action=file.previewed");
+
+    // Following either one lands on a history page filtered to just that.
+    $this->actingAs($this->admin)->get($response->json('downloads_url'))->assertInertia(
+        fn (AssertableInertia $page) => $page->component('activity/subject')->has('entries', 3),
+    );
+    $this->actingAs($this->admin)->get($response->json('previews_url'))->assertInertia(
+        fn (AssertableInertia $page) => $page->has('entries', 1),
+    );
+});
+
+test('the access endpoint is capped at 20 rows and honours the activity-log permission', function () {
+    $file = uploadImageFile($this->admin);
+
+    for ($i = 0; $i < 24; $i++) {
+        ActivityLog::create([
+            'action' => Action::FileDownloaded,
+            'subject_type' => $file->getMorphClass(),
+            'subject_id' => $file->id,
+            'subject_name' => $file->name,
+            'actor_id' => $this->admin->id,
+            'actor_name' => $this->admin->name,
+            'actor_type' => 'staff',
+            'created_at' => now(),
+        ]);
+    }
+
+    $response = $this->actingAs($this->admin)->getJson("/files/{$file->id}/access")->assertOk();
+    expect($response->json('entries'))->toHaveCount(20)
+        ->and($response->json('downloads_total'))->toBe(24);
+
+    $role = Role::query()->create(['name' => 'No Access Log', 'is_administrator' => false, 'is_system' => false]);
+    RolePermission::query()->insert([['role_id' => $role->id, 'permission' => 'upload']]);
+    $restricted = User::factory()->create(['role_id' => $role->id]);
+
+    $this->actingAs($restricted)->getJson("/files/{$file->id}/access")->assertForbidden();
+});
+
+test('a filter arrived at from a button stays visible in the dropdown at a count of zero', function () {
+    $file = uploadImageFile($this->admin);
+    ActivityLog::create([
+        'action' => Action::FileDownloaded,
+        'subject_type' => $file->getMorphClass(),
+        'subject_id' => $file->id,
+        'subject_name' => $file->name,
+        'actor_id' => $this->admin->id,
+        'actor_name' => $this->admin->name,
+        'actor_type' => 'staff',
+        'created_at' => now(),
+    ]);
+
+    // One download flavour, so the group would normally be left out — but
+    // the "View all downloads" button links straight to it, and a select
+    // whose value is missing from its own options renders blank.
+    $options = $this->actingAs($this->admin)->get("/files/{$file->id}/activity/history?action=downloads")
+        ->viewData('page')['props']['action_options'];
+    expect(collect($options)->firstWhere('key', 'downloads'))->not->toBeNull();
+
+    // Same for a single action the file has never seen.
+    $options = $this->actingAs($this->admin)->get("/files/{$file->id}/activity/history?action=file.previewed")
+        ->viewData('page')['props']['action_options'];
+    expect(collect($options)->firstWhere('key', 'file.previewed'))->toMatchArray(['count' => 0]);
+});

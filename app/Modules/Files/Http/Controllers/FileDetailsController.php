@@ -41,25 +41,37 @@ class FileDetailsController extends Controller
     private const DOWNLOADS_SUMMARY_LIMIT = 500;
 
     /**
+     * How a file leaves: three actions, because *how* it left matters —
+     * a signed-in recipient, somebody following a public link, and a
+     * visitor to a public group listing are all recorded separately.
+     *
+     * @var non-empty-list<Action>
+     */
+    private const DOWNLOAD_ACTIONS = [Action::FileDownloaded, Action::ShareLinkDownloaded, Action::PublicFileDownloaded];
+
+    /**
+     * Looking at a file without taking it. One action today; if a second
+     * way to preview is ever recorded separately, add it here and give
+     * previews an ACTION_GROUPS entry the way downloads has one.
+     *
+     * @var non-empty-list<Action>
+     */
+    private const PREVIEW_ACTIONS = [Action::FilePreviewed];
+
+    /**
      * Filters that stand for a question rather than for one logged action.
      *
-     * "Who downloaded this file?" is not one action: a signed-in recipient,
-     * somebody following a public link and a visitor to a public group
-     * listing are recorded separately, on purpose, because *how* a file
-     * left matters. But nobody reading a file's history wants to ask the
-     * question three times, so this offers it once — and only when the
-     * file's own log holds more than one of the members, since otherwise
-     * it would filter to exactly what its single member already offers.
-     *
-     * Previewing has one action today, so it needs no group; give it one
-     * here if a second way to preview a file is ever recorded separately.
+     * Nobody reading a file's history wants to ask "who downloaded this?"
+     * three times, so this offers it once — and only when the file's own
+     * log holds more than one of the members, since otherwise it would
+     * filter to exactly what its single member already offers.
      *
      * @var array<string, array{label: string, actions: non-empty-list<Action>}>
      */
     private const ACTION_GROUPS = [
         'downloads' => [
             'label' => 'All downloads',
-            'actions' => [Action::FileDownloaded, Action::ShareLinkDownloaded, Action::PublicFileDownloaded],
+            'actions' => self::DOWNLOAD_ACTIONS,
         ],
     ];
 
@@ -167,6 +179,65 @@ class FileDetailsController extends Controller
     }
 
     /**
+     * Who has actually had this file: its downloads and previews, newest
+     * first, with a count of each.
+     *
+     * A narrower question than activity() and a much more frequent one —
+     * "did they ever actually get it?" — which the full log answers only
+     * by being read past everything else that has happened to the file.
+     */
+    public function access(Request $request, File $file): JsonResponse
+    {
+        $viewer = $request->user();
+        assert($viewer !== null);
+        Gate::forUser($viewer)->authorize('view', $file);
+        abort_unless($viewer->can('view_actions_log'), 403);
+
+        $base = fn (): Builder => ActivityLog::query()
+            ->where('subject_type', $file->getMorphClass())
+            ->where('subject_id', $file->id);
+
+        $entries = $base()
+            ->whereIn('action', [...self::DOWNLOAD_ACTIONS, ...self::PREVIEW_ACTIONS])
+            ->orderByDesc('created_at')->orderByDesc('id')
+            ->limit(20)->get()
+            ->map(fn (ActivityLog $entry): array => [
+                // The sentence the presenter builds already says which of
+                // the two this was ("Downloaded the file …"), so nothing
+                // here has to label the row a second time.
+                ...$this->presenter->present($entry),
+                // Subject to the privacy setting that decides whether an
+                // address is recorded at all, so it is often null.
+                'ip_address' => $entry->ip_address,
+            ]);
+
+        return response()->json([
+            'entries' => $entries,
+            'downloads_total' => $base()->whereIn('action', self::DOWNLOAD_ACTIONS)->count(),
+            'previews_total' => $base()->whereIn('action', self::PREVIEW_ACTIONS)->count(),
+            // Built here rather than in the page: which filter value stands
+            // for "every download" is a fact about the log's vocabulary,
+            // and a group key only exists while the group does.
+            'downloads_url' => $this->historyUrl($file, 'downloads', self::DOWNLOAD_ACTIONS),
+            'previews_url' => $this->historyUrl($file, 'previews', self::PREVIEW_ACTIONS),
+        ]);
+    }
+
+    /**
+     * The file's history, pre-filtered to one question: by the group when
+     * one covers these actions, and by the action itself when the group
+     * would have a single member and therefore does not exist.
+     *
+     * @param  non-empty-list<Action>  $actions
+     */
+    private function historyUrl(File $file, string $groupKey, array $actions): string
+    {
+        $filter = isset(self::ACTION_GROUPS[$groupKey]) ? $groupKey : $actions[0]->value;
+
+        return route('files.activity.history', $file, false).'?action='.$filter;
+    }
+
+    /**
      * Full, paginated activity history for a file — the "View full
      * history" destination linked from the details panel's Activity tab,
      * which only shows the most recent 20 entries.
@@ -211,7 +282,7 @@ class FileDetailsController extends Controller
         $query = ActivityLog::query()
             ->where('subject_type', $file->getMorphClass())
             ->where('subject_id', $file->id)
-            ->whereIn('action', [Action::FileDownloaded, Action::ShareLinkDownloaded, Action::PublicFileDownloaded]);
+            ->whereIn('action', self::DOWNLOAD_ACTIONS);
 
         $total = (clone $query)->count();
 
@@ -386,7 +457,7 @@ class FileDetailsController extends Controller
                 'total' => $entries->total(),
             ],
             'filters' => $filters,
-            'action_options' => $this->actionOptions($morphClass, $subjectId),
+            'action_options' => $this->actionOptions($morphClass, $subjectId, $filters['action']),
             'subject_name' => $subjectName,
             'back_url' => $backUrl,
             'route_name' => $routeName,
@@ -405,7 +476,7 @@ class FileDetailsController extends Controller
      *
      * @return list<array{key: string, label: string, count: int}>
      */
-    private function actionOptions(string $morphClass, int $subjectId): array
+    private function actionOptions(string $morphClass, int $subjectId, ?string $active): array
     {
         /** @var array<string, int> $counts */
         $counts = ActivityLog::query()
@@ -423,8 +494,11 @@ class FileDetailsController extends Controller
             $present = array_filter($group['actions'], fn (Action $action): bool => isset($counts[$action->value]));
 
             // One member present means the group would filter to exactly
-            // what its member already offers, under a vaguer name.
-            if (count($present) < 2) {
+            // what its member already offers, under a vaguer name — unless
+            // this *is* what is currently being filtered on (the file
+            // page's "View all downloads" button links straight to it), in
+            // which case the dropdown has to be able to show its own value.
+            if (count($present) < 2 && $active !== $key) {
                 continue;
             }
 
@@ -438,14 +512,17 @@ class FileDetailsController extends Controller
         // Enum order, not count order, so the list does not rearrange
         // itself under the reader every time the file is downloaded.
         foreach (Action::cases() as $action) {
-            if (! isset($counts[$action->value])) {
+            // Same reason as the group above: a filter arrived at from a
+            // link stays visible in the dropdown even at a count of zero,
+            // rather than leaving it blank over an empty table.
+            if (! isset($counts[$action->value]) && $active !== $action->value) {
                 continue;
             }
 
             $options[] = [
                 'key' => $action->value,
                 'label' => $action->description(),
-                'count' => $counts[$action->value],
+                'count' => $counts[$action->value] ?? 0,
             ];
         }
 

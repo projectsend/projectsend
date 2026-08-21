@@ -125,6 +125,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('files/{file}/details', [FileDetailsController::class, 'show'])->middleware('staff')->name('files.details');
     Route::get('files/{file}/activity', [FileDetailsController::class, 'activity'])->middleware('staff')->name('files.activity');
     Route::get('files/{file}/activity/history', [FileDetailsController::class, 'activityHistory'])->middleware('staff')->name('files.activity.history');
+    Route::get('files/{file}/access', [FileDetailsController::class, 'access'])->middleware('staff')->name('files.access');
     Route::get('files/{file}/downloads', [FileDetailsController::class, 'downloads'])->middleware('staff')->name('files.downloads');
     Route::get('files/{file}/downloads/history', [FileDetailsController::class, 'downloadsHistory'])->middleware('staff')->name('files.downloads.history');
     // Must be registered before files/{file} below, or "bulk-edit" would be

@@ -43,6 +43,15 @@ class Installation
     protected function inContainer(): bool
     {
         // Docker writes the first; Podman writes the second.
-        return file_exists('/.dockerenv') || file_exists('/run/.containerenv');
+        //
+        // Suppressed, and it has to stay that way. Shared hosting sets
+        // open_basedir to the webspace, and probing a path outside it is a
+        // warning rather than a false — which the framework's error handler
+        // turns into an exception, so the one call that asks which install
+        // this is took the whole dashboard down with it (#1663). Under `@`
+        // the warning is filtered and the probe answers false, which is the
+        // right answer anyway: a host that restricts PHP to a vhost
+        // directory is not the container image.
+        return @file_exists('/.dockerenv') || @file_exists('/run/.containerenv');
     }
 }

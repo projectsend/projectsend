@@ -13,6 +13,18 @@ Anything under **Upgrade notes** is something you have to do, not something we d
 This section collects changes as they land; the release process turns it into a numbered entry when
 a version is cut.
 
+### Fixed
+
+- **The dashboard no longer fails on shared hosting.** To decide which update instructions to print,
+  ProjectSend asks whether it is running inside a container by looking for a file in the root of the
+  filesystem. On shared hosting PHP is usually confined to your own directory, and looking outside it
+  is treated as an error rather than as a "no" — so the one page that asks the question, the
+  dashboard, returned a 500 while every other page worked. It now takes the restriction as the answer
+  it always was: a server that keeps PHP inside a single directory is not our container image, and
+  gets the manual update instructions, which is correct for shared hosting anyway. Nothing to change
+  on your side, and no setting you would have been able to change if there were.
+  ([#1663](https://github.com/projectsend/projectsend/issues/1663))
+
 ## 2.1.0 — 18 August 2026
 
 Updating, mostly. ProjectSend now tells you when there is a new version, ends an update somewhere

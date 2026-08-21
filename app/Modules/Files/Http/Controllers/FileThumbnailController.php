@@ -8,15 +8,20 @@ use App\Http\Controllers\Controller;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Access\DownloadAllowance;
+use App\Modules\Files\Delivery\InlineFileResponse;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Preview\PreviewKind;
 use App\Modules\Files\Thumbnails\Events\ResolvingImageRendering;
 use App\Modules\Files\Thumbnails\ImageAudience;
 use App\Modules\Files\Thumbnails\ImageRendition;
 use App\Modules\Files\Thumbnails\ThumbnailGenerator;
+use App\Modules\Platform\Settings\Setting;
+use App\Modules\Platform\Settings\Settings;
 use App\Support\ContentDisposition;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -32,17 +37,25 @@ use Illuminate\Support\Facades\Storage;
  * file's contents — a real, audit-worthy action, just not a "download."
  *
  * SECURITY: both methods serve bytes inline, from this app's own origin,
- * with the File's stored mime type — so both are restricted to
+ * with the File's stored mime type, so both are restricted to an
+ * allowlist — but not the same one, because they are asking different
+ * questions. `thumbnail()` is bounded by
  * ThumbnailGenerator::SUPPORTED_MIME_TYPES, the raster formats this app
- * renders itself. That list is the allowlist; nothing else is ever served
- * inline. Do NOT widen it to text/html, image/svg+xml, or anything else a
- * browser executes script from, and do not reach for the upload
- * allowed-extensions setting as a substitute: that setting matches on the
- * *extension*, while mime_type is detected from the *bytes*
- * (ChunkedUploadsController::complete), so a .txt holding HTML is stored
- * as text/html and would render as a page here. Serving a file inline as
- * a type the browser executes is same-origin script execution with the
- * viewer's session.
+ * decodes and re-encodes itself, since a thumbnail *is* a rendition.
+ * `preview()` is bounded by PreviewKind, which additionally admits the
+ * video, audio and PDF types a browser plays natively and this app never
+ * touches. PreviewKind's docblock carries the rule in full; the short
+ * version is that neither list may ever grow a type a browser executes
+ * script from, and neither may be derived from the upload
+ * allowed-extensions setting, which matches on the *extension* while
+ * mime_type is detected from the *bytes*
+ * (ChunkedUploadsController::complete).
+ *
+ * Serving media inline is also why `preview()` logs at most one
+ * Action::FilePreviewed per viewer per file per five minutes: a `<video>`
+ * seeking through a recording issues a long tail of Range requests
+ * against this same URL, and one row each would bury the log under a
+ * single deliberate act.
  *
  * Renditions always cache on the local "files" disk regardless of where
  * the source file lives — they're a derived artifact, not the original,
@@ -60,6 +73,8 @@ class FileThumbnailController extends Controller
         private readonly ThumbnailGenerator $thumbnails,
         private readonly ActivityLogger $activity,
         private readonly DownloadAllowance $allowance,
+        private readonly InlineFileResponse $inline,
+        private readonly Settings $settings,
     ) {}
 
     public function thumbnail(Request $request, File $file): Response
@@ -82,66 +97,92 @@ class FileThumbnailController extends Controller
     /**
      * A file opened to be looked at.
      *
-     * A preview is not the file — it is a rendered view of it, which is
-     * why it may be decorated at all. But rendering one is expensive
-     * (decoding and re-encoding a full-size photograph) where serving the
-     * stored bytes is nearly free, so core only pays that cost when a
-     * listener says this particular viewer must be served a rendering:
-     * ResolvingImageRendering asks, and defaults to no. On an
+     * For an image, a preview is not the file — it is a rendered view of
+     * it, which is why it may be decorated at all. But rendering one is
+     * expensive (decoding and re-encoding a full-size photograph) where
+     * serving the stored bytes is nearly free, so core only pays that
+     * cost when a listener says this particular viewer must be served a
+     * rendering: ResolvingImageRendering asks, and defaults to no. On an
      * installation that watermarks, a client gets a bounded, watermarked
      * render and staff get the original; on one that does not, everyone
      * gets exactly what this endpoint has always returned.
+     *
+     * For video, audio and PDF there is no rendering to resolve — this
+     * app cannot decode any of them, so it has no rendition to cache, no
+     * watermark to stamp, and nothing to ask about. Those go straight to
+     * the bytes.
      */
     public function preview(Request $request, File $file): Response|RedirectResponse
     {
         Gate::authorize('view', $file);
 
-        // Only types this app renders itself may be served inline; anything
-        // else is a download, not a preview. See the class docblock — the
-        // stored mime type is sniffed from the bytes, so an allowed
+        // The inline allowlist. See the class docblock and PreviewKind —
+        // the stored mime type is sniffed from the bytes, so an allowed
         // extension is not evidence of a safe-to-render payload.
-        abort_unless(ThumbnailGenerator::supports($file->mime_type), 404);
+        $kind = PreviewKind::forMime($file->mime_type);
+
+        abort_if($kind === null, 404);
+
+        // Staff are never gated: this switch exists so an installation can
+        // decide what its *clients* may do with a file short of taking it.
+        // 404 rather than 403 because with the setting off the endpoint is
+        // not a thing that exists for this viewer.
+        abort_if(
+            $request->user()?->isStaff() !== true && ! $this->settings->get(Setting::ClientsCanPreviewFiles),
+            404,
+        );
 
         // A preview is not counted as a download, but it is refused once
         // the download limit is spent — because unless a listener asks
-        // for a rendering (nothing does by default), the branches below
-        // serve the *original bytes* at full size. Without this a cap
-        // would be one URL away from meaningless for every image on the
-        // install. thumbnail() needs no such guard: a 300px rendition is
-        // not the file.
+        // for a rendering (nothing does by default, and nothing ever does
+        // for media), the branches below serve the *original bytes* at
+        // full size. Without this a cap would be one URL away from
+        // meaningless for every previewable file on the install.
+        // thumbnail() needs no such guard: a 300px rendition is not the
+        // file.
         abort_unless($this->allowance->allows($file, $request->user()), 403);
 
-        $this->activity->log(Action::FilePreviewed, subject: $file);
+        $this->logPreview($file, $request);
 
-        $audience = ImageAudience::forViewer($request->user());
+        if ($kind === PreviewKind::Image) {
+            $audience = ImageAudience::forViewer($request->user());
 
-        $decision = new ResolvingImageRendering($audience, ImageRendition::Preview, $file->mime_type);
-        Event::dispatch($decision);
+            $decision = new ResolvingImageRendering($audience, ImageRendition::Preview, $file->mime_type);
+            Event::dispatch($decision);
 
-        if ($decision->required) {
-            $path = $this->render($file, $audience, ImageRendition::Preview);
+            if ($decision->required) {
+                $path = $this->render($file, $audience, ImageRendition::Preview);
 
-            abort_if($path === null, 404);
+                abort_if($path === null, 404);
 
-            return $this->serve($file, $path);
+                return $this->serve($file, $path);
+            }
         }
 
-        if ($file->disk !== 'files') {
-            $url = Storage::disk($file->disk)->temporaryUrl(
-                $file->path,
-                now()->addHour(),
-                ['ResponseContentDisposition' => ContentDisposition::inline($file->original_name)],
-            );
+        return $this->inline->make($file);
+    }
 
-            return redirect()->away($url);
+    /**
+     * One log row per viewer per file per five minutes.
+     *
+     * Watching a video is a single deliberate act that the browser turns
+     * into dozens of Range requests against this route, and each one
+     * arrives here indistinguishable from someone clicking preview again.
+     * Cache::add is the whole mechanism: it writes only if the key is
+     * absent, so the first request through the window logs and the rest
+     * are silent, without a read-then-write race between two of them.
+     *
+     * Keyed by viewer, so one client's playback never suppresses another
+     * person's preview of the same file. Anonymous viewers do not reach
+     * this route at all — see PublicGroupsController::preview.
+     */
+    private function logPreview(File $file, Request $request): void
+    {
+        $key = 'file-preview-logged:'.$file->id.':'.($request->user()->id ?? 'guest');
+
+        if (Cache::add($key, true, now()->addMinutes(5))) {
+            $this->activity->log(Action::FilePreviewed, subject: $file);
         }
-
-        return response('', 200, [
-            'X-Accel-Redirect' => '/protected-files/'.$file->path,
-            'Content-Type' => $file->mime_type,
-            'Content-Disposition' => ContentDisposition::inline($file->original_name),
-            'Content-Length' => (string) $file->size,
-        ]);
     }
 
     /**

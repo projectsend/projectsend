@@ -5,6 +5,7 @@ import { Archive, File as FileIcon, Folder as FolderIcon, Globe, Upload } from '
 import { CommentsShellDefault } from '@/components/comments/shells/comments-shell-default';
 import { DownloadAction } from '@/components/download-action';
 import { FilePreviewDialog } from '@/components/file-preview-dialog';
+import { PreviewAction } from '@/components/preview-action';
 import { CategoryBadges } from '@/components/files/category-badges';
 import { VersionBadge } from '@/components/files/version-badge';
 import Heading from '@/components/heading';
@@ -26,6 +27,7 @@ import { useTranslation } from '@/hooks/use-translation';
 import { useViewMode } from '@/hooks/use-view-mode';
 import AppLayout from '@/layouts/app-layout';
 import { formatBytes } from '@/lib/format-bytes';
+import { isPreviewable } from '@/lib/previews';
 import { isThumbnailable } from '@/lib/thumbnails';
 import { type MyFilesFolderManagementProps } from '@/types/portal';
 
@@ -42,6 +44,7 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
         can_upload_here,
         can_create_folders,
         comments_enabled,
+        preview_enabled,
     } = props;
 
     const { t } = useTranslation();
@@ -164,20 +167,31 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                         ))}
 
                         {files.map((file) => (
-                            <div key={`file-${file.id}`} className="bg-card flex items-center justify-between gap-4 rounded-lg border px-4 py-3">
-                                <div className="flex min-w-0 items-center gap-3">
+                            <div key={`file-${file.id}`} className="bg-card flex items-center gap-4 rounded-lg border px-4 py-3">
+                                {/* flex-1, not justify-between: with three
+                                    children the middle one lands wherever
+                                    the name block happens to end, so the
+                                    comment icon sat at a different place on
+                                    every row. The name takes the slack and
+                                    the actions are one group at the end. */}
+                                <div className="flex min-w-0 flex-1 items-center gap-3">
                                     <Checkbox
                                         checked={selectedFileIds.has(file.id)}
                                         onCheckedChange={() => toggleFile(file.id)}
                                         aria-label={t('Select :name', { name: file.name })}
                                     />
-                                    {isThumbnailable(file.mime_type) ? (
-                                        <FilePreviewDialog fileId={file.id} fileName={file.original_name} className="shrink-0">
+                                    <FilePreviewDialog
+                                        previewUrl={preview_enabled ? route('files.preview', file.id) : null}
+                                        mimeType={file.mime_type}
+                                        fileName={file.original_name}
+                                        className="shrink-0"
+                                    >
+                                        {isThumbnailable(file.mime_type) ? (
                                             <img src={route('files.thumbnail', file.id)} alt="" className="size-10 rounded border object-cover" />
-                                        </FilePreviewDialog>
-                                    ) : (
-                                        <FileIcon className="text-muted-foreground size-10 shrink-0" strokeWidth={1.25} />
-                                    )}
+                                        ) : (
+                                            <FileIcon className="text-muted-foreground size-10 shrink-0" strokeWidth={1.25} />
+                                        )}
+                                    </FilePreviewDialog>
                                     <div className="min-w-0">
                                         <div className="flex items-center gap-1.5">
                                             <p className="truncate text-sm font-medium">{file.name}</p>
@@ -195,16 +209,30 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                         <CategoryBadges categories={file.categories} className="mt-1" />
                                     </div>
                                 </div>
-                                {comments_enabled && (
-                                    <CommentsShellDefault
-                                        fileId={file.id}
-                                        defaultOpen={deepLinkedComments === file.id}
-                                        fileName={file.name}
-                                        count={file.comments_count}
-                                        unread={file.unread_comments_count}
+                                {/* One actions group, right-aligned: icons in
+                                    fixed-width slots so they form a column
+                                    down the list, then the buttons. */}
+                                <div className="flex shrink-0 items-center gap-2">
+                                    {comments_enabled && (
+                                        <div className="flex w-10 shrink-0 justify-center">
+                                            <CommentsShellDefault
+                                                fileId={file.id}
+                                                defaultOpen={deepLinkedComments === file.id}
+                                                fileName={file.name}
+                                                count={file.comments_count}
+                                                unread={file.unread_comments_count}
+                                            />
+                                        </div>
+                                    )}
+                                    <PreviewAction
+                                        previewUrl={preview_enabled ? route('files.preview', file.id) : null}
+                                        mimeType={file.mime_type}
+                                        fileName={file.original_name}
+                                        variant="ghost"
+                                        size="sm"
                                     />
-                                )}
-                                <DownloadAction href={route('files.download', file.id)} limit={file.download_limit} variant="outline" size="sm" />
+                                    <DownloadAction href={route('files.download', file.id)} limit={file.download_limit} variant="outline" size="sm" />
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -253,18 +281,33 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                     className="bg-background/80 absolute top-3 left-3 z-10"
                                 />
 
-                                {isThumbnailable(file.mime_type) ? (
+                                {preview_enabled && isPreviewable(file.mime_type) ? (
                                     <FilePreviewDialog
-                                        fileId={file.id}
+                                        previewUrl={route('files.preview', file.id)}
+                                        mimeType={file.mime_type}
                                         fileName={file.original_name}
                                         className="bg-muted block aspect-square w-full overflow-hidden"
                                     >
+                                        {isThumbnailable(file.mime_type) ? (
+                                            <img
+                                                src={route('files.thumbnail', file.id)}
+                                                alt=""
+                                                className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                                            />
+                                        ) : (
+                                            <div className="flex h-full w-full items-center justify-center">
+                                                <FileIcon className="text-muted-foreground size-10" strokeWidth={1.25} />
+                                            </div>
+                                        )}
+                                    </FilePreviewDialog>
+                                ) : isThumbnailable(file.mime_type) ? (
+                                    <div className="bg-muted aspect-square w-full overflow-hidden">
                                         <img
                                             src={route('files.thumbnail', file.id)}
                                             alt=""
                                             className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                                         />
-                                    </FilePreviewDialog>
+                                    </div>
                                 ) : (
                                     <div className="bg-muted flex aspect-square items-center justify-center">
                                         <FileIcon className="text-muted-foreground size-10" strokeWidth={1.25} />
@@ -288,22 +331,32 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                         </p>
                                         <CategoryBadges categories={file.categories} className="mt-1" />
                                     </div>
-                                    {comments_enabled && (
-                                        <CommentsShellDefault
-                                            fileId={file.id}
-                                            defaultOpen={deepLinkedComments === file.id}
-                                            fileName={file.name}
-                                            count={file.comments_count}
-                                            unread={file.unread_comments_count}
+                                    <div className="flex shrink-0 items-center">
+                                        {comments_enabled && (
+                                            <CommentsShellDefault
+                                                fileId={file.id}
+                                                defaultOpen={deepLinkedComments === file.id}
+                                                fileName={file.name}
+                                                count={file.comments_count}
+                                                unread={file.unread_comments_count}
+                                            />
+                                        )}
+                                        <PreviewAction
+                                            previewUrl={preview_enabled ? route('files.preview', file.id) : null}
+                                            mimeType={file.mime_type}
+                                            fileName={file.original_name}
+                                            variant="ghost"
+                                            size="sm"
+                                            iconOnly
                                         />
-                                    )}
-                                    <DownloadAction
-                                        href={route('files.download', file.id)}
-                                        limit={file.download_limit}
-                                        variant="ghost"
-                                        size="sm"
-                                        iconOnly
-                                    />
+                                        <DownloadAction
+                                            href={route('files.download', file.id)}
+                                            limit={file.download_limit}
+                                            variant="ghost"
+                                            size="sm"
+                                            iconOnly
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         ))}

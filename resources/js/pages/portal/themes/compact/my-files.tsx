@@ -4,6 +4,7 @@ import { Archive, File as FileIcon, Folder as FolderIcon, Globe, Upload } from '
 import { CommentsShellCompact } from '@/components/comments/shells/comments-shell-compact';
 import { DownloadAction } from '@/components/download-action';
 import { FilePreviewDialog } from '@/components/file-preview-dialog';
+import { PreviewAction } from '@/components/preview-action';
 import { CategoryBadges } from '@/components/files/category-badges';
 import { VersionBadge } from '@/components/files/version-badge';
 import Heading from '@/components/heading';
@@ -46,6 +47,7 @@ export default function MyFilesCompact(props: MyFilesFolderManagementProps) {
         can_upload_here,
         can_create_folders,
         comments_enabled,
+        preview_enabled,
     } = props;
     const {
         zip,
@@ -191,17 +193,22 @@ export default function MyFilesCompact(props: MyFilesFolderManagementProps) {
                                     </td>
                                     <td className="px-2 py-1">
                                         <div className="flex items-start gap-1.5">
-                                            {isThumbnailable(file.mime_type) ? (
-                                                <FilePreviewDialog fileId={file.id} fileName={file.original_name} className="shrink-0">
+                                            <FilePreviewDialog
+                                                previewUrl={preview_enabled ? route('files.preview', file.id) : null}
+                                                mimeType={file.mime_type}
+                                                fileName={file.original_name}
+                                                className="shrink-0"
+                                            >
+                                                {isThumbnailable(file.mime_type) ? (
                                                     <img
                                                         src={route('files.thumbnail', file.id)}
                                                         alt=""
                                                         className="size-5 border border-neutral-300 object-cover dark:border-neutral-700"
                                                     />
-                                                </FilePreviewDialog>
-                                            ) : (
-                                                <FileIcon className="mt-0.5 size-3.5 shrink-0 text-neutral-400" strokeWidth={1.5} />
-                                            )}
+                                                ) : (
+                                                    <FileIcon className="mt-0.5 size-3.5 shrink-0 text-neutral-400" strokeWidth={1.5} />
+                                                )}
+                                            </FilePreviewDialog>
                                             <div className="min-w-0">
                                                 <div className="flex items-center gap-1.5">
                                                     <p className="truncate font-medium">{file.name}</p>
@@ -231,6 +238,16 @@ export default function MyFilesCompact(props: MyFilesFolderManagementProps) {
                                                     unread={file.unread_comments_count}
                                                 />
                                             )}
+                                            <PreviewAction
+                                                previewUrl={preview_enabled ? route('files.preview', file.id) : null}
+                                                mimeType={file.mime_type}
+                                                fileName={file.original_name}
+                                                variant="ghost"
+                                                size="sm"
+                                                className="size-6 p-0"
+                                                iconClassName="size-3.5"
+                                                iconOnly
+                                            />
                                             <DownloadAction
                                                 href={route('files.download', file.id)}
                                                 limit={file.download_limit}

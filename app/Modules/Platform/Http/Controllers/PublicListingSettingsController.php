@@ -34,6 +34,7 @@ class PublicListingSettingsController extends Controller
         return Inertia::render('system/settings/public-listing', [
             'public_listing_enabled' => $this->settings->get(Setting::PublicListingEnabled),
             'public_listing_slug' => $this->settings->get(Setting::PublicListingSlug),
+            'public_listing_preview_enabled' => $this->settings->get(Setting::PublicListingPreviewEnabled),
         ]);
     }
 
@@ -42,10 +43,12 @@ class PublicListingSettingsController extends Controller
         $validated = $request->validate([
             'public_listing_enabled' => ['required', 'boolean'],
             'public_listing_slug' => ['required', 'string', 'max:255', 'regex:/^[a-z0-9]+(-[a-z0-9]+)*$/'],
+            'public_listing_preview_enabled' => ['required', 'boolean'],
         ]);
 
         $this->settings->set(Setting::PublicListingEnabled, $validated['public_listing_enabled']);
         $this->settings->set(Setting::PublicListingSlug, $validated['public_listing_slug']);
+        $this->settings->set(Setting::PublicListingPreviewEnabled, $validated['public_listing_preview_enabled']);
 
         $this->activity->log(Action::SettingsUpdated, context: ['section' => 'public_listing']);
 

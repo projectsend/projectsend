@@ -4,6 +4,7 @@ import { Archive, File as FileIcon, Folder as FolderIcon, Globe, Upload } from '
 import { CommentsShellGallery } from '@/components/comments/shells/comments-shell-gallery';
 import { DownloadAction } from '@/components/download-action';
 import { FilePreviewDialog } from '@/components/file-preview-dialog';
+import { PreviewAction } from '@/components/preview-action';
 import { CategoryBadges } from '@/components/files/category-badges';
 import { VersionBadge } from '@/components/files/version-badge';
 import Heading from '@/components/heading';
@@ -22,6 +23,7 @@ import { useFormatDate } from '@/hooks/use-format-date';
 import { usePortalFiles } from '@/hooks/use-portal-files';
 import { useTranslation } from '@/hooks/use-translation';
 import { formatBytes } from '@/lib/format-bytes';
+import { isPreviewable } from '@/lib/previews';
 import { isThumbnailable } from '@/lib/thumbnails';
 import { type MyFilesFolderManagementProps } from '@/types/portal';
 
@@ -47,6 +49,7 @@ export default function MyFilesGallery(props: MyFilesFolderManagementProps) {
         can_upload_here,
         can_create_folders,
         comments_enabled,
+        preview_enabled,
     } = props;
     const {
         zip,
@@ -180,26 +183,41 @@ export default function MyFilesGallery(props: MyFilesFolderManagementProps) {
                                 badge truncates it to nothing. */}
                             <VersionBadge version={file.version} variant="gallery" className="absolute top-3 right-3 z-10" />
 
-                            {isThumbnailable(file.mime_type) ? (
+                            {preview_enabled && isPreviewable(file.mime_type) ? (
                                 <FilePreviewDialog
-                                    fileId={file.id}
+                                    previewUrl={route('files.preview', file.id)}
+                                    mimeType={file.mime_type}
                                     fileName={file.original_name}
-                                    className="bg-muted block aspect-square overflow-hidden"
+                                    className="bg-muted block aspect-square w-full overflow-hidden"
                                 >
+                                    {isThumbnailable(file.mime_type) ? (
+                                        <img
+                                            src={route('files.thumbnail', file.id)}
+                                            alt=""
+                                            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                                        />
+                                    ) : (
+                                        <div className="flex h-full w-full items-center justify-center">
+                                            <FileIcon className="text-muted-foreground size-10" strokeWidth={1.25} />
+                                        </div>
+                                    )}
+                                </FilePreviewDialog>
+                            ) : isThumbnailable(file.mime_type) ? (
+                                <div className="bg-muted aspect-square overflow-hidden">
                                     <img
                                         src={route('files.thumbnail', file.id)}
                                         alt=""
                                         className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                                     />
-                                </FilePreviewDialog>
+                                </div>
                             ) : (
                                 <div className="bg-muted flex aspect-square items-center justify-center">
                                     <FileIcon className="text-muted-foreground size-10" strokeWidth={1.25} />
                                 </div>
                             )}
 
-                            <div className="flex items-center justify-between gap-2 p-3">
-                                <div className="min-w-0">
+                            <div className="flex items-center gap-2 p-3">
+                                <div className="min-w-0 flex-1">
                                     <div className="flex items-center gap-1.5">
                                         <p className="truncate text-sm font-medium">{file.name}</p>
                                         {file.public && (
@@ -214,22 +232,32 @@ export default function MyFilesGallery(props: MyFilesFolderManagementProps) {
                                     </p>
                                     <CategoryBadges categories={file.categories} className="mt-1" />
                                 </div>
-                                {comments_enabled && (
-                                    <CommentsShellGallery
-                                        fileId={file.id}
-                                        defaultOpen={deepLinkedComments === file.id}
-                                        fileName={file.name}
-                                        count={file.comments_count}
-                                        unread={file.unread_comments_count}
+                                <div className="flex shrink-0 items-center">
+                                    {comments_enabled && (
+                                        <CommentsShellGallery
+                                            fileId={file.id}
+                                            defaultOpen={deepLinkedComments === file.id}
+                                            fileName={file.name}
+                                            count={file.comments_count}
+                                            unread={file.unread_comments_count}
+                                        />
+                                    )}
+                                    <PreviewAction
+                                        previewUrl={preview_enabled ? route('files.preview', file.id) : null}
+                                        mimeType={file.mime_type}
+                                        fileName={file.original_name}
+                                        variant="ghost"
+                                        size="sm"
+                                        iconOnly
                                     />
-                                )}
-                                <DownloadAction
-                                    href={route('files.download', file.id)}
-                                    limit={file.download_limit}
-                                    variant="ghost"
-                                    size="sm"
-                                    iconOnly
-                                />
+                                    <DownloadAction
+                                        href={route('files.download', file.id)}
+                                        limit={file.download_limit}
+                                        variant="ghost"
+                                        size="sm"
+                                        iconOnly
+                                    />
+                                </div>
                             </div>
                         </div>
                     ))}

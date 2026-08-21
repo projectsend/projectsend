@@ -358,6 +358,11 @@ Route::post('{publicSlug}/files/{file:slug}/comments', [PublicFileCommentsContro
 // on this list, which is why the number is high. It is still a hard ceiling
 // against scraping the whole listing.
 Route::get('{publicSlug}/files/{file:slug}/thumbnail', [PublicGroupsController::class, 'thumbnail'])->middleware('throttle:240,1,public-thumbnail')->name('public.thumbnail')->fallback();
+// High for the same shape of reason as thumbnails, arrived at differently:
+// one <video> playing is a long tail of Range requests against this single
+// URL, and a viewer who scrubs a recording generates them faster than a
+// download ever would. Its own bucket, like every route in this block.
+Route::get('{publicSlug}/files/{file:slug}/preview', [PublicGroupsController::class, 'preview'])->middleware('throttle:240,1,public-preview')->name('public.preview')->fallback();
 Route::get('{publicSlug}/files/{file:slug}/download', [PublicGroupsController::class, 'download'])->middleware('throttle:30,1,public-download')->name('public.download')->fallback();
 // Must be registered before the generic {groupSlug} catch-all below, or
 // "folders" would be swallowed as a group slug value first.

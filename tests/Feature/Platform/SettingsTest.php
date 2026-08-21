@@ -164,6 +164,7 @@ test('staff can enable the public listing and configure its base URL segment', f
     $this->patch('/system/settings/public-listing', [
         'public_listing_enabled' => true,
         'public_listing_slug' => 'shared',
+        'public_listing_preview_enabled' => true,
     ])->assertRedirect();
 
     expect(app(Settings::class)->get(Setting::PublicListingEnabled))->toBeTrue()

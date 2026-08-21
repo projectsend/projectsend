@@ -1,12 +1,15 @@
 import { Head } from '@inertiajs/react';
+import { File as FileIcon } from 'lucide-react';
 
 import { CommentsShellCompact } from '@/components/comments/shells/comments-shell-compact';
 import { DownloadAction } from '@/components/download-action';
+import { PreviewAction } from '@/components/preview-action';
 import { CategoryBadges, type CategoryTag } from '@/components/files/category-badges';
 import { type VersionLinks } from '@/components/files/version-badge';
 import { VersionNotice } from '@/components/files/version-notice';
 import PublicLayoutCompact from '@/layouts/public-layout-compact';
 import { formatBytes } from '@/lib/format-bytes';
+import { FilePreviewDialog } from '@/components/file-preview-dialog';
 import { isThumbnailable } from '@/lib/thumbnails';
 import { type DownloadLimit } from '@/types/portal';
 
@@ -22,6 +25,12 @@ interface PublicFileShowProps {
         categories: CategoryTag[];
     };
     thumbnail_url: string | null;
+    /**
+     * Null unless this visitor is actually offered a preview — the
+     * server has already weighed the setting, the file's type and its
+     * download limit, so a theme never re-derives any of them.
+     */
+    preview_url: string | null;
     download_url: string;
     download_limit: DownloadLimit;
     comments_enabled: boolean;
@@ -31,6 +40,7 @@ interface PublicFileShowProps {
 export default function PublicFileShowCompact({
     file,
     thumbnail_url,
+    preview_url,
     download_url,
     download_limit,
     comments_enabled,
@@ -42,8 +52,21 @@ export default function PublicFileShowCompact({
             <Head title={file.name} />
 
             <div className="flex items-start gap-4 rounded-md border p-4">
-                {thumbnail_url && isThumbnailable(file.mime_type) && (
-                    <img src={thumbnail_url} alt="" className="size-24 shrink-0 rounded border object-cover" />
+                {((thumbnail_url && isThumbnailable(file.mime_type)) || preview_url) && (
+                    <FilePreviewDialog
+                        previewUrl={preview_url}
+                        mimeType={file.mime_type}
+                        fileName={file.original_name}
+                        className="shrink-0"
+                    >
+                        {thumbnail_url && isThumbnailable(file.mime_type) ? (
+                            <img src={thumbnail_url} alt="" className="size-24 rounded border object-cover" />
+                        ) : (
+                            <span className="bg-muted flex size-24 items-center justify-center rounded border">
+                                <FileIcon className="text-muted-foreground size-10" strokeWidth={1.25} />
+                            </span>
+                        )}
+                    </FilePreviewDialog>
                 )}
 
                 <div className="min-w-0 flex-1 space-y-2">
@@ -53,7 +76,16 @@ export default function PublicFileShowCompact({
 
                     <VersionNotice version={file.version} className="w-full" />
 
-                    <DownloadAction href={download_url} limit={download_limit} size="sm" />
+                    <div className="flex items-center gap-2">
+                        <PreviewAction
+                            previewUrl={preview_url}
+                            mimeType={file.mime_type}
+                            fileName={file.original_name}
+                            variant="outline"
+                            size="sm"
+                        />
+                        <DownloadAction href={download_url} limit={download_limit} size="sm" />
+                    </div>
                 </div>
             </div>
 

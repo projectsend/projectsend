@@ -32,6 +32,7 @@ class ClientSettingsController extends Controller
             'clients_can_select_group' => $this->settings->get(Setting::ClientsCanSelectGroup),
             'clients_membership_deny_cooldown_days' => $this->settings->get(Setting::ClientsMembershipDenyCooldownDays),
             'default_client_storage_quota_mb' => (int) $this->settings->get(Setting::DefaultClientStorageQuotaMb),
+            'clients_can_preview_files' => $this->settings->get(Setting::ClientsCanPreviewFiles),
             'groups' => Group::query()->orderBy('name')->get()
                 ->map(fn (Group $group): array => ['id' => $group->id, 'name' => $group->name])
                 ->all(),
@@ -47,6 +48,7 @@ class ClientSettingsController extends Controller
             'clients_can_select_group' => ['required', Rule::in(['none', 'public'])],
             'clients_membership_deny_cooldown_days' => ['required', 'integer', 'min:0', 'max:365'],
             'default_client_storage_quota_mb' => ['required', 'integer', 'min:0'],
+            'clients_can_preview_files' => ['required', 'boolean'],
         ]);
 
         $this->settings->set(Setting::ClientsCanRegister, $validated['clients_can_register']);
@@ -55,6 +57,7 @@ class ClientSettingsController extends Controller
         $this->settings->set(Setting::ClientsCanSelectGroup, $validated['clients_can_select_group']);
         $this->settings->set(Setting::ClientsMembershipDenyCooldownDays, (int) $validated['clients_membership_deny_cooldown_days']);
         $this->settings->set(Setting::DefaultClientStorageQuotaMb, (int) $validated['default_client_storage_quota_mb']);
+        $this->settings->set(Setting::ClientsCanPreviewFiles, $validated['clients_can_preview_files']);
 
         $this->activity->log(Action::SettingsUpdated, context: ['section' => 'clients']);
 

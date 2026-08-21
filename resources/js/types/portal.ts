@@ -88,6 +88,15 @@ export interface MyFilesProps {
      * a conversation the settings have turned off.
      */
     comments_enabled: boolean;
+    /**
+     * Whether this install lets clients look at a file as well as take it
+     * (Setting::ClientsCanPreviewFiles). Per page, not per file: which
+     * types can be shown is decided from the row's mime type by
+     * previewKind(), so all a theme needs from the server is whether the
+     * affordance is offered here at all. With it false a row is exactly
+     * what it was before preview existed — a name and a download.
+     */
+    preview_enabled: boolean;
 }
 
 /**

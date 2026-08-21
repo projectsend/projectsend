@@ -213,6 +213,29 @@ test('core asks whether a preview must be rendered, and defaults to no', functio
     expect($asked)->toBe([[ImageAudience::External, ImageRendition::Preview, false]]);
 });
 
+// The trap this closes: the watermark listener decides on audience
+// alone, so if a PDF or a video reached the resolving hook it would come
+// back "render this" — and ThumbnailGenerator has no rendition for
+// either, which would 404 every non-image preview on a watermarking
+// installation. Core never asks about a type it cannot render.
+test('core does not ask about rendering a file it could never render', function () {
+    $client = User::factory()->client()->create();
+    $file = uploadDocumentFile($this->admin);
+    shareFileWith($file, $client);
+
+    $asked = [];
+    Event::listen(ResolvingImageRendering::class, function (ResolvingImageRendering $event) use (&$asked): void {
+        $asked[] = $event->mimeType;
+        $event->required = true;
+    });
+
+    $this->actingAs($client)->get("/files/{$file->id}/preview")
+        ->assertOk()
+        ->assertHeader('X-Accel-Redirect', '/protected-files/'.$file->path);
+
+    expect($asked)->toBe([]);
+});
+
 // A preview is a rendered view of a file, not the file — so a listener
 // that intends to decorate it (the watermark) can have it rendered, and
 // what the client then sees is the decorated copy rather than the

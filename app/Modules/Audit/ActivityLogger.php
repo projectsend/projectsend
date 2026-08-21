@@ -93,7 +93,7 @@ class ActivityLogger
 
     private function shouldRecordIp(Action $action, ?User $actor): bool
     {
-        if (! in_array($action, [Action::FileDownloaded, Action::FilePreviewed, Action::ShareLinkDownloaded, Action::PublicFileDownloaded], true)) {
+        if (! in_array($action, [Action::FileDownloaded, Action::FilePreviewed, Action::ShareLinkDownloaded, Action::PublicFileDownloaded, Action::PublicFilePreviewed], true)) {
             return true;
         }
 

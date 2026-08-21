@@ -70,8 +70,26 @@ test('the preview endpoint serves the original file inline and logs a preview, n
     expect($entry->actor_id)->toBe($this->admin->id);
 });
 
-test('a non-renderable file 404s when a preview is requested', function () {
+// A PDF has no thumbnail (nothing here decodes one) but does have a
+// preview, which is the whole reason the two allowlists are separate.
+test('a file with no thumbnail can still be previewed', function () {
     $file = uploadPdfFile($this->admin);
+
+    $this->actingAs($this->admin)->get("/files/{$file->id}/preview")
+        ->assertOk()
+        ->assertHeader('Content-Type', 'application/pdf')
+        ->assertHeader('X-Accel-Redirect', '/protected-files/'.$file->path);
+});
+
+test('a file of a type no browser plays 404s when a preview is requested', function () {
+    $file = File::factory()->create([
+        'uploaded_by' => $this->admin->id,
+        'name' => 'archive',
+        'original_name' => 'archive.zip',
+        'path' => '2026/08/'.Str::uuid()->toString().'.zip',
+        'mime_type' => 'application/zip',
+        'size' => 64,
+    ]);
 
     $this->actingAs($this->admin)->get("/files/{$file->id}/preview")->assertNotFound();
 });

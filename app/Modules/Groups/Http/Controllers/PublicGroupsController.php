@@ -9,9 +9,11 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Comments\CommentingRules;
 use App\Modules\Files\Access\DownloadAllowance;
+use App\Modules\Files\Delivery\InlineFileResponse;
 use App\Modules\Files\Models\Category;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
+use App\Modules\Files\Preview\PreviewKind;
 use App\Modules\Files\Thumbnails\ImageAudience;
 use App\Modules\Files\Thumbnails\ImageRendition;
 use App\Modules\Files\Thumbnails\ThumbnailGenerator;
@@ -79,6 +81,7 @@ class PublicGroupsController extends Controller
         private readonly PublicThemeRegistry $themes,
         private readonly CapabilityRegistry $capabilities,
         private readonly CommentingRules $commenting,
+        private readonly InlineFileResponse $inline,
     ) {}
 
     public function index(Request $request, string $publicSlug): InertiaResponse|RedirectResponse
@@ -208,6 +211,13 @@ class PublicGroupsController extends Controller
             'thumbnail_url' => ThumbnailGenerator::supports($file->mime_type)
                 ? route('public.thumbnail', [$publicSlug, $file->slug])
                 : null,
+            // Null whenever preview is unavailable, for any of the three
+            // reasons — switched off, wrong type, or the download limit
+            // spent — so a theme has one thing to check and the setting
+            // itself never ships to a visitor's browser. preview() below
+            // re-checks all three: this decides what to offer, not what
+            // is allowed.
+            'preview_url' => $this->previewUrlFor($file, $publicSlug),
             'download_url' => route('public.download', [$publicSlug, $file->slug]),
             // Same decided shape the listings send, so a theme's single
             // file page disables its button for the same reason a row
@@ -249,6 +259,58 @@ class PublicGroupsController extends Controller
             'Content-Type' => $file->mime_type,
             'Content-Disposition' => ContentDisposition::inline($file->original_name),
         ]);
+    }
+
+    /**
+     * The anonymous twin of FileThumbnailController::preview: a public
+     * file shown rather than handed over.
+     *
+     * Nothing is rendered or cached here — an anonymous viewer only ever
+     * previews the stored bytes. The watermark hook that decorates a
+     * client's image preview has no equivalent on this route, for the
+     * same reason thumbnail() hardcodes ImageAudience::External: there is
+     * no viewer to tell apart.
+     */
+    public function preview(string $publicSlug, File $file): Response|RedirectResponse
+    {
+        $this->guardSlug($publicSlug);
+
+        abort_unless($file->isEffectivelyPublic() && ! $file->isExpired(), 404);
+        abort_unless($this->settings->get(Setting::PublicListingPreviewEnabled) === true, 404);
+        abort_if(PreviewKind::forMime($file->mime_type) === null, 404);
+
+        // 403 rather than 404 for the same reason download() does it, and
+        // it is the same allowance being read: preview serves the whole
+        // file, so a spent cap has to close this door too or it closes
+        // nothing.
+        abort_unless($this->allowance->allows($file, null), 403);
+
+        $this->activity->log(Action::PublicFilePreviewed, subject: $file);
+
+        return $this->inline->make($file);
+    }
+
+    /**
+     * What showFile() offers, which is not the same question as what
+     * preview() permits — this one also declines to advertise a preview
+     * whose download limit is already spent, so a visitor is not given a
+     * button that can only answer 403.
+     */
+    private function previewUrlFor(File $file, string $publicSlug): ?string
+    {
+        if ($this->settings->get(Setting::PublicListingPreviewEnabled) !== true) {
+            return null;
+        }
+
+        if (PreviewKind::forMime($file->mime_type) === null) {
+            return null;
+        }
+
+        if (! $this->allowance->allows($file, null)) {
+            return null;
+        }
+
+        return route('public.preview', [$publicSlug, $file->slug]);
     }
 
     public function download(string $publicSlug, File $file): Response

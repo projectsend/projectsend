@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Files\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
 use App\Modules\Audit\ActivityPresenter;
@@ -18,10 +19,15 @@ use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Models\ShareLink;
 use App\Modules\Files\Versions\FileVersionLinks;
+use App\Modules\Platform\Localization\LocalDay;
+use App\Modules\Platform\Localization\TimezoneRegistry;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -34,6 +40,29 @@ class FileDetailsController extends Controller
     /** Raw rows considered when grouping downloads() by actor — see that method's docblock. */
     private const DOWNLOADS_SUMMARY_LIMIT = 500;
 
+    /**
+     * Filters that stand for a question rather than for one logged action.
+     *
+     * "Who downloaded this file?" is not one action: a signed-in recipient,
+     * somebody following a public link and a visitor to a public group
+     * listing are recorded separately, on purpose, because *how* a file
+     * left matters. But nobody reading a file's history wants to ask the
+     * question three times, so this offers it once — and only when the
+     * file's own log holds more than one of the members, since otherwise
+     * it would filter to exactly what its single member already offers.
+     *
+     * Previewing has one action today, so it needs no group; give it one
+     * here if a second way to preview a file is ever recorded separately.
+     *
+     * @var array<string, array{label: string, actions: non-empty-list<Action>}>
+     */
+    private const ACTION_GROUPS = [
+        'downloads' => [
+            'label' => 'All downloads',
+            'actions' => [Action::FileDownloaded, Action::ShareLinkDownloaded, Action::PublicFileDownloaded],
+        ],
+    ];
+
     public function __construct(
         private readonly ActivityPresenter $presenter,
         private readonly DownloadPresenter $downloadPresenter,
@@ -41,6 +70,7 @@ class FileDetailsController extends Controller
         private readonly CommentingRules $commenting,
         private readonly FileVersionLinks $versionLinks,
         private readonly DownloadAllowance $allowance,
+        private readonly TimezoneRegistry $timezones,
     ) {}
 
     public function show(Request $request, File $file): JsonResponse
@@ -148,7 +178,15 @@ class FileDetailsController extends Controller
         Gate::forUser($viewer)->authorize('view', $file);
         abort_unless($viewer->can('view_actions_log'), 403);
 
-        return $this->renderHistory($file->getMorphClass(), $file->id, $file->name, route('files.edit', $file, false));
+        return $this->renderHistory(
+            $request,
+            $file->getMorphClass(),
+            $file->id,
+            $file->name,
+            route('files.edit', $file, false).'?tab=activity',
+            'files.activity.history',
+            ['file' => $file->id],
+        );
     }
 
     /**
@@ -304,15 +342,35 @@ class FileDetailsController extends Controller
         Gate::forUser($viewer)->authorize('view', $folder);
         abort_unless($viewer->can('view_actions_log'), 403);
 
-        return $this->renderHistory($folder->getMorphClass(), $folder->id, $folder->name, route('files.index', ['folder' => $folder->id], false));
+        return $this->renderHistory(
+            $request,
+            $folder->getMorphClass(),
+            $folder->id,
+            $folder->name,
+            route('files.index', ['folder' => $folder->id], false),
+            'folders.activity.history',
+            ['folder' => $folder->id],
+        );
     }
 
-    private function renderHistory(string $morphClass, int $subjectId, string $subjectName, string $backUrl): Response
-    {
-        $entries = ActivityLog::query()
-            ->where('subject_type', $morphClass)
-            ->where('subject_id', $subjectId)
-            ->orderByDesc('created_at')->orderByDesc('id')
+    /**
+     * @param  array<string, mixed>  $routeParams
+     */
+    private function renderHistory(
+        Request $request,
+        string $morphClass,
+        int $subjectId,
+        string $subjectName,
+        string $backUrl,
+        string $routeName,
+        array $routeParams,
+    ): Response {
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        $filters = $this->validatedHistoryFilters($request);
+
+        $entries = $this->historyQuery($morphClass, $subjectId, $filters, $viewer)
             ->paginate(25)
             ->withQueryString();
 
@@ -327,8 +385,129 @@ class FileDetailsController extends Controller
                 'next' => $entries->nextPageUrl(),
                 'total' => $entries->total(),
             ],
+            'filters' => $filters,
+            'action_options' => $this->actionOptions($morphClass, $subjectId),
             'subject_name' => $subjectName,
             'back_url' => $backUrl,
+            'route_name' => $routeName,
+            'route_params' => $routeParams,
         ]);
+    }
+
+    /**
+     * The actions this subject's history actually contains, with how many
+     * times each happened.
+     *
+     * Built from the log rather than from `Action::cases()`: the enum has
+     * over eighty members and all but a handful can never appear against a
+     * file, so offering them all would be a dropdown you scroll past the
+     * answer in. What is here is what happened.
+     *
+     * @return list<array{key: string, label: string, count: int}>
+     */
+    private function actionOptions(string $morphClass, int $subjectId): array
+    {
+        /** @var array<string, int> $counts */
+        $counts = ActivityLog::query()
+            ->where('subject_type', $morphClass)
+            ->where('subject_id', $subjectId)
+            ->selectRaw('action, count(*) as total')
+            ->groupBy('action')
+            ->pluck('total', 'action')
+            ->map(fn ($total): int => (int) $total)
+            ->all();
+
+        $options = [];
+
+        foreach (self::ACTION_GROUPS as $key => $group) {
+            $present = array_filter($group['actions'], fn (Action $action): bool => isset($counts[$action->value]));
+
+            // One member present means the group would filter to exactly
+            // what its member already offers, under a vaguer name.
+            if (count($present) < 2) {
+                continue;
+            }
+
+            $options[] = [
+                'key' => $key,
+                'label' => $group['label'],
+                'count' => array_sum(array_map(fn (Action $action): int => $counts[$action->value], $present)),
+            ];
+        }
+
+        // Enum order, not count order, so the list does not rearrange
+        // itself under the reader every time the file is downloaded.
+        foreach (Action::cases() as $action) {
+            if (! isset($counts[$action->value])) {
+                continue;
+            }
+
+            $options[] = [
+                'key' => $action->value,
+                'label' => $action->description(),
+                'count' => $counts[$action->value],
+            ];
+        }
+
+        return $options;
+    }
+
+    /**
+     * @return array{action: ?string, actor: ?string, from: ?string, to: ?string}
+     */
+    private function validatedHistoryFilters(Request $request): array
+    {
+        $validated = $request->validate([
+            'action' => ['nullable', Rule::in([
+                ...array_keys(self::ACTION_GROUPS),
+                ...array_column(Action::cases(), 'value'),
+            ])],
+            'actor' => ['nullable', 'string', 'max:255'],
+            'from' => ['nullable', 'date'],
+            'to' => ['nullable', 'date', 'after_or_equal:from'],
+        ]);
+
+        return [
+            'action' => $validated['action'] ?? null,
+            'actor' => $validated['actor'] ?? null,
+            'from' => $validated['from'] ?? null,
+            'to' => $validated['to'] ?? null,
+        ];
+    }
+
+    /**
+     * @param  array{action: ?string, actor: ?string, from: ?string, to: ?string}  $filters
+     * @return Builder<ActivityLog>
+     */
+    private function historyQuery(string $morphClass, int $subjectId, array $filters, User $viewer): Builder
+    {
+        $timezone = $this->timezones->resolve($viewer);
+
+        return ActivityLog::query()
+            ->where('subject_type', $morphClass)
+            ->where('subject_id', $subjectId)
+            ->when($filters['action'], function (Builder $query, string $action): void {
+                $group = self::ACTION_GROUPS[$action] ?? null;
+
+                $group === null
+                    ? $query->where('action', $action)
+                    : $query->whereIn('action', array_map(fn (Action $member): string => $member->value, $group['actions']));
+            })
+            // Matched on the name snapshotted onto the entry, the same as
+            // the main log: an account deleted since is still findable by
+            // the name it acted under, which is the whole point of the
+            // snapshot.
+            ->when($filters['actor'], fn (Builder $query, string $actor) => $query->where('actor_name', 'like', "%{$actor}%"))
+            // The reader's own calendar day, not the UTC one — see LocalDay.
+            ->when(
+                $filters['from'] !== null ? LocalDay::start($filters['from'], $timezone) : null,
+                fn (Builder $query, Carbon $from) => $query->where('created_at', '>=', $from),
+            )
+            ->when(
+                $filters['to'] !== null ? LocalDay::end($filters['to'], $timezone) : null,
+                fn (Builder $query, Carbon $to) => $query->where('created_at', '<=', $to),
+            )
+            ->orderByDesc('created_at')
+            ->orderByDesc('id');
     }
 }

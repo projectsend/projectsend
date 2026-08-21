@@ -197,3 +197,83 @@ test('the details panel downloads summary is bounded but reports the true total'
         ->and($response->json('downloaders'))->toHaveCount(1)
         ->and($response->json('downloaders.0.count'))->toBe(500);
 });
+
+test('the file activity history filters by action, and offers only the actions that happened', function () {
+    $file = uploadImageFile($this->admin);
+    $client = User::factory()->client()->create(['name' => 'Downloading Client']);
+
+    $log = function (Action $action, ?User $actor = null) use ($file): void {
+        ActivityLog::create([
+            'action' => $action,
+            'subject_type' => $file->getMorphClass(),
+            'subject_id' => $file->id,
+            'subject_name' => $file->name,
+            'actor_id' => $actor?->id,
+            'actor_name' => $actor?->name,
+            'actor_type' => $actor === null ? null : 'client',
+            'created_at' => now(),
+        ]);
+    };
+
+    $log(Action::FileDownloaded, $client);
+    $log(Action::FileDownloaded, $client);
+    $log(Action::ShareLinkDownloaded);
+    $log(Action::FilePreviewed, $client);
+
+    $options = $this->actingAs($this->admin)->get("/files/{$file->id}/activity/history")
+        ->assertInertia(fn (AssertableInertia $page) => $page->component('activity/subject'))
+        ->viewData('page')['props']['action_options'];
+
+    $byKey = collect($options)->keyBy('key');
+
+    // The upload happened; the eighty-odd actions that cannot apply to a
+    // file are not offered at all.
+    expect($byKey->keys()->all())->toEqualCanonicalizing(['downloads', 'file.uploaded', 'file.downloaded', 'file.previewed', 'share_link.downloaded'])
+        ->and($byKey['downloads']['count'])->toBe(3)
+        ->and($byKey['file.downloaded']['count'])->toBe(2);
+
+    // A file whose log holds only one flavour of download gets no group:
+    // it would filter to exactly what its single member already offers.
+    $simple = uploadImageFile($this->admin, 'simple.jpg');
+    ActivityLog::create([
+        'action' => Action::FileDownloaded,
+        'subject_type' => $simple->getMorphClass(),
+        'subject_id' => $simple->id,
+        'subject_name' => $simple->name,
+        'actor_id' => $this->admin->id,
+        'actor_name' => $this->admin->name,
+        'actor_type' => 'staff',
+        'created_at' => now(),
+    ]);
+
+    $simpleOptions = $this->actingAs($this->admin)->get("/files/{$simple->id}/activity/history")
+        ->viewData('page')['props']['action_options'];
+
+    expect(collect($simpleOptions)->pluck('key')->all())->toEqualCanonicalizing(['file.uploaded', 'file.downloaded']);
+
+    // The group covers all three download flavours, one of them anonymous.
+    $this->actingAs($this->admin)->get("/files/{$file->id}/activity/history?action=downloads")->assertInertia(
+        fn (AssertableInertia $page) => $page->has('entries', 3)->where('filters.action', 'downloads'),
+    );
+
+    $this->actingAs($this->admin)->get("/files/{$file->id}/activity/history?action=file.previewed")->assertInertia(
+        fn (AssertableInertia $page) => $page->has('entries', 1)->where('entries.0.actor_name', 'Downloading Client'),
+    );
+
+    // Narrowing by who acted, and by day, works the same as the main log.
+    $this->actingAs($this->admin)->get("/files/{$file->id}/activity/history?actor=Downloading")->assertInertia(
+        fn (AssertableInertia $page) => $page->has('entries', 3),
+    );
+
+    $this->actingAs($this->admin)->get("/files/{$file->id}/activity/history?from=".now()->addDay()->toDateString())->assertInertia(
+        fn (AssertableInertia $page) => $page->has('entries', 0),
+    );
+
+    // An action that exists but never touched this file filters to nothing
+    // rather than erroring; a value that is neither action nor group is
+    // rejected outright.
+    $this->actingAs($this->admin)->get("/files/{$file->id}/activity/history?action=user.created")->assertInertia(
+        fn (AssertableInertia $page) => $page->has('entries', 0),
+    );
+    $this->actingAs($this->admin)->get("/files/{$file->id}/activity/history?action=nonsense")->assertSessionHasErrors('action');
+});

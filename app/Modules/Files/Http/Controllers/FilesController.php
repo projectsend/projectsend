@@ -206,6 +206,11 @@ class FilesController extends Controller
             'can_update' => Gate::forUser($viewer)->allows('update', $file),
             'can_delete' => Gate::forUser($viewer)->allows('delete', $file),
             'can_manage_public' => $viewer->can('upload_public'),
+            // Whether this page offers its Activity tab. The file's own
+            // page is where somebody lands from a link, a search or a
+            // notification, so "what happened to this file" has to be
+            // answerable here and not only from the library's list.
+            'can_view_activity' => $viewer->can('view_actions_log'),
             // The per-file switch only does anything while the comment
             // scope is `selected`; under every other value the page hides
             // it rather than offer a control with no current effect.

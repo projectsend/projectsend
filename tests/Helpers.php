@@ -209,3 +209,39 @@ function activateExternalStorage(): void
     ])->save();
     app(ExternalStorageConfigApplier::class)->flush();
 }
+
+/**
+ * A public file row, with no bytes behind it — enough for any listing or
+ * permission assertion that never opens the file.
+ */
+function publicListingFile(array $overrides = []): File
+{
+    return File::factory()->create(array_merge([
+        'uploaded_by' => User::factory()->create()->id,
+        'name' => 'Report',
+        'original_name' => 'report.pdf',
+        'path' => '2026/08/'.Str::uuid()->toString().'.pdf',
+        'mime_type' => 'application/pdf',
+        'size' => 2048,
+        'public' => true,
+    ], $overrides));
+}
+
+/**
+ * A real, thumbnailable public image on the faked "files" disk — unlike
+ * publicListingFile()'s bare PDF row, this one has actual bytes GD can
+ * decode, needed to exercise the thumbnail-generation path.
+ */
+function publicListingImageFile(User $uploader): File
+{
+    test()->actingAs($uploader)->post('/files', [
+        'file' => UploadedFile::fake()->image('photo.jpg', 200, 100),
+        'name' => '',
+        'description' => '',
+    ]);
+
+    $file = File::query()->latest('id')->firstOrFail();
+    $file->update(['public' => true]);
+
+    return $file;
+}

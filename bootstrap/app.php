@@ -32,17 +32,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // Unset = trust nothing, which is correct for the shipped topology
-        // (nginx talks to PHP-FPM directly and passes the real REMOTE_ADDR).
-        // Behind anything else — a load balancer, Cloudflare, the hosted
-        // Cloud ingress — this MUST name the proxy, or every client appears
-        // to come from it: per-IP throttles collapse into one shared bucket
-        // and the download IP log records the proxy instead of the client.
-        $proxies = env('TRUSTED_PROXIES');
-
-        if (is_string($proxies) && $proxies !== '') {
-            $middleware->trustProxies(at: $proxies === '*' ? '*' : explode(',', $proxies));
-        }
+        // Trusted proxies are configured in config/trustedproxy.php, NOT
+        // here. This closure runs when the HTTP kernel is resolved, which is
+        // before the dotenv bootstrapper has read .env, so env() returns null
+        // here for anything that is not already a real environment variable —
+        // silently, and only on web requests (artisan bootstraps in the other
+        // order, so a CLI check reports the setting as working). The framework's
+        // TrustProxies middleware is in the global stack either way and falls
+        // back to that config key on its own.
 
         $middleware->web(append: [
             // Binds every session to the password hash it was created under,

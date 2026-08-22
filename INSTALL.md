@@ -463,28 +463,16 @@ sudo -u www-data php artisan event:cache
 You only run these once: `projectsend:update` notices they are in place and rebuilds them for you
 after every update. If you change your mind, `php artisan optimize:clear` undoes all three.
 
-#### One command to skip: `config:cache`
+#### `config:cache` and your `.env`
 
-Every Laravel deployment guide on the internet lists `php artisan config:cache` alongside those
-three, and `php artisan optimize` runs it for you. **Don't** — not on this application.
+Every Laravel deployment guide also lists `php artisan config:cache`, and `php artisan optimize`
+runs it for you. It is safe here, with one thing to remember.
 
-Here is why. Caching the configuration writes every resolved setting into one PHP file, and from
-then on the framework stops reading your `.env` at all, on the entirely reasonable grounds that
-everything in it has already been baked in. That holds for settings read the normal way, through
-`config()`. ProjectSend reads one value earlier than that — `TRUSTED_PROXIES`, which has to be
-known before the middleware stack is assembled, so it is read straight from the environment. Cache
-the config and that read returns nothing.
-
-Nothing breaks loudly. The site comes up, you log in, everything looks fine. But if there is a
-proxy or CDN in front of the server, ProjectSend goes back to believing every visitor is the proxy:
-the login rate limiter now counts all of your users as one attacker and locks the whole site out
-after five wrong passwords, and every row in the download log records the proxy's address instead
-of the person who actually downloaded the file. Both are the kind of thing you discover weeks
-later, from a complaint.
-
-If you have already run it — or ran `php artisan optimize`, which includes it — `php artisan
-config:clear` puts things back immediately, and every update clears it too, saying why. The three commands above are safe and give you nearly
-all of the speed anyway; `config:cache` was always the smallest win of the four.
+Caching the configuration writes every resolved setting into one PHP file, and from then on the
+framework stops reading your `.env` at all — everything in it has already been baked in. So
+**re-run `php artisan config:cache` every time you edit `.env`**, or the edit does nothing and you
+are left staring at a setting that is plainly there and plainly ignored. `php artisan config:clear`
+goes back to reading `.env` directly, and every update clears it too, saying why.
 
 ---
 
@@ -577,13 +565,22 @@ applies to a non-standard port; behind a TLS proxy on 443 you do not need it.
 **A change I made in `.env` has no effect.**
 Run `php artisan optimize:clear`, then restart PHP-FPM and the worker. Both hold the old values
 until they are restarted. If it *still* has no effect, someone has run `php artisan config:cache`
-(or `optimize`) on this install — see [One command to skip](#one-command-to-skip-configcache).
+(or `optimize`) on this install — re-run it to pick the new value up, or `php artisan config:clear`
+to go back to reading `.env` directly.
 
 **Everyone is locked out of the login form at once, or the download log shows the same IP for
 every download.**
 ProjectSend is seeing your proxy or CDN instead of your visitors. Set `TRUSTED_PROXIES` in `.env`
-(step 3) — and make sure `config:cache` has not been run, which stops that value from being read
-at all. Same section as above.
+(step 3) and restart PHP-FPM.
+
+**Behind a reverse proxy: 419 "page expired" when you log in or save a form, or you land back on
+the login screen at random.**
+`TRUSTED_PROXIES` again (step 3). Without it ProjectSend never learns the proxy terminated TLS, so
+it builds its links and redirects with `http://` while the browser is on `https://`, and marks the
+session cookie as non-secure. The browser then declines to send that cookie back, the session
+arrives empty, and the write fails with a 419 that reads as an expired session. Make sure your
+proxy passes the original `Host` header through as well — `proxy_set_header Host $host;` in nginx,
+`passHostHeader=true` in Traefik (its default).
 
 Still stuck? Ask in the [community forum](https://www.projectsend.org/) or open an issue on
 [GitHub](https://github.com/projectsend/projectsend/issues), and include the last few lines of

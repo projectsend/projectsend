@@ -121,11 +121,18 @@ Without it every visitor appears to come from the proxy. The login rate limiter 
 your users as one attacker, and the download log records the proxy's address instead of the
 person's. `compose.example.yaml` already sets this.
 
-What it does **not** affect is whether a request succeeds at all. `TRUSTED_PROXIES` only changes how
-the application reads `X-Forwarded-*` headers on a request that already arrived, so getting it wrong
-gives you wrong client IPs, wrong generated links, or a redirect loop — never a `502`. A 502 means
-your proxy could not get a usable response out of the container, which is a different problem with a
-different fix.
+Leaving it unset does not cause a `502` — that means your proxy could not get a usable response out
+of the container at all, which is a different problem with a different fix. It does cause a **419
+"page expired"**. Without it the application never learns the proxy terminated TLS, so it builds
+its links and redirects with `http://` while the browser is on `https://`, and marks the session
+cookie as non-secure. The browser declines to send that cookie back to what it now reads as a
+different, less secure origin, the session arrives empty, and the first thing you submit — usually
+the create-your-admin-account form — is rejected as a stale token. After that you get returned to
+the login screen at random, because each redirect leaves and re-enters over the wrong scheme.
+
+Your proxy also has to pass the original `Host` header through, or the links come out naming the
+container instead of your domain. Most do by default: `passHostHeader=true` in Traefik,
+`proxy_set_header Host $host;` in nginx.
 
 ### Give the proxy header headroom
 

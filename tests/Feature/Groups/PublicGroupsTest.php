@@ -11,10 +11,8 @@ use App\Modules\Files\Models\Folder;
 use App\Modules\Groups\Models\Group;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
 
 /**
@@ -25,38 +23,6 @@ function publicPageProps(TestResponse $response): array
     $page = json_decode(json_encode($response->viewData('page')), true);
 
     return $page['props'];
-}
-
-function publicListingFile(array $overrides = []): File
-{
-    return File::factory()->create(array_merge([
-        'uploaded_by' => User::factory()->create()->id,
-        'name' => 'Report',
-        'original_name' => 'report.pdf',
-        'path' => '2026/08/'.Str::uuid()->toString().'.pdf',
-        'mime_type' => 'application/pdf',
-        'size' => 2048,
-        'public' => true,
-    ], $overrides));
-}
-
-/**
- * A real, thumbnailable public image on the faked "files" disk — unlike
- * publicListingFile()'s bare PDF row, this one has actual bytes GD can
- * decode, needed to exercise the thumbnail-generation path.
- */
-function publicListingImageFile(User $uploader): File
-{
-    test()->actingAs($uploader)->post('/files', [
-        'file' => UploadedFile::fake()->image('photo.jpg', 200, 100),
-        'name' => '',
-        'description' => '',
-    ]);
-
-    $file = File::query()->latest('id')->firstOrFail();
-    $file->update(['public' => true]);
-
-    return $file;
 }
 
 beforeEach(function () {

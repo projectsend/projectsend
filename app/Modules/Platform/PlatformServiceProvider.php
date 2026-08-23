@@ -13,8 +13,11 @@ use App\Modules\Platform\Captcha\Console\DisableCaptchaCommand;
 use App\Modules\Platform\Captcha\Console\TestCaptchaCommand;
 use App\Modules\Platform\Localization\LocaleRegistry;
 use App\Modules\Platform\Localization\TimezoneRegistry;
+use App\Modules\Platform\Mail\Console\RefreshMailOAuthTokensCommand;
+use App\Modules\Platform\Mail\MicrosoftGraphTransport;
 use App\Modules\Platform\News\Console\FetchNewsCommand;
 use App\Modules\Platform\Notifications\ThemedMailChannel;
+use App\Modules\Platform\Scheduling\Console\PurgeFailedJobsCommand;
 use App\Modules\Platform\Scheduling\RecordsScheduledTaskRuns;
 use App\Modules\Platform\Settings\ExternalStorageConfigApplier;
 use App\Modules\Platform\Settings\MailConfigApplier;
@@ -22,13 +25,13 @@ use App\Modules\Platform\Settings\Settings;
 use App\Modules\Platform\Theming\Console\GenerateThemePreviewDataCommand;
 use App\Modules\Platform\Theming\EmailThemeRegistry;
 use App\Modules\Platform\Theming\PublicThemeRegistry;
-use App\Modules\Platform\Scheduling\Console\PurgeFailedJobsCommand;
 use App\Modules\Platform\Updates\Console\CheckForUpdatesCommand;
 use App\Modules\Platform\Updates\Console\UpdateCommand;
 use Illuminate\Console\Events\ScheduledTaskFailed;
 use Illuminate\Console\Events\ScheduledTaskFinished;
 use Illuminate\Notifications\Channels\MailChannel;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\ServiceProvider;
 
 class PlatformServiceProvider extends ServiceProvider
@@ -78,12 +81,18 @@ class PlatformServiceProvider extends ServiceProvider
                 DisableCaptchaCommand::class,
                 TestCaptchaCommand::class,
                 PurgeFailedJobsCommand::class,
+                RefreshMailOAuthTokensCommand::class,
             ]);
         }
     }
 
     public function boot(): void
     {
+        // Registered before apply() below can select it as the default
+        // mailer. The closure resolves lazily on first send, so booting
+        // never pays for a transport nobody uses.
+        Mail::extend('microsoft-graph', fn (): MicrosoftGraphTransport => $this->app->make(MicrosoftGraphTransport::class));
+
         // Every process boot (a web request, or a freshly (re)started
         // queue worker) picks up the admin-configured mail provider, if
         // any — a no-op until the Email settings page is actually saved.
@@ -115,6 +124,17 @@ class PlatformServiceProvider extends ServiceProvider
             label: 'A new ProjectSend version is available',
             template: 'ProjectSend :latestVersion is available (you have :currentVersion)',
             url: fn (array $data) => route('dashboard'),
+        ));
+
+        // In-app only, like update_available — deliberately not mail:
+        // this fires precisely when outgoing mail is broken, so an email
+        // companion would either vanish into the dead transport or (on
+        // the scheduled check) fail the very job reporting the problem.
+        $this->app->make(NotificationTypeRegistry::class)->register(new NotificationTypeDefinition(
+            key: 'mail_oauth_connection_broken',
+            label: 'The connected mailbox can no longer send email',
+            template: 'The :provider mailbox connection (:account) stopped working and needs to be reconnected',
+            url: fn (array $data) => route('system-settings.email.edit'),
         ));
 
         // Core's free themes — available in every edition, gated by

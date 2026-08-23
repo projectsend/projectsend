@@ -45,7 +45,7 @@ test('the scheduler page lists every known command, flagging ones that have neve
     ]);
 
     $response = $this->actingAs($this->admin)->get('/system/settings/scheduler');
-    $response->assertInertia(fn (AssertableInertia $page) => $page->component('system/settings/scheduler')->has('tasks', 10));
+    $response->assertInertia(fn (AssertableInertia $page) => $page->component('system/settings/scheduler')->has('tasks', 11));
 
     $tasks = collect(schedulerPageProps($response)['tasks'])->keyBy('command');
     expect($tasks->get('projectsend:purge-expired-files')['status'])->toBe('success')

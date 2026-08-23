@@ -16,6 +16,7 @@ use App\Modules\Identity\Http\Controllers\TwoFactorEnrollmentController;
 use App\Modules\Notifications\Http\Controllers\NotificationPreferencesController;
 use App\Modules\Platform\Http\Controllers\AboutController;
 use App\Modules\Platform\Http\Controllers\CaptchaSettingsController;
+use App\Modules\Platform\Http\Controllers\EmailOAuthController;
 use App\Modules\Platform\Http\Controllers\EmailSettingsController;
 use App\Modules\Platform\Http\Controllers\EmailTemplatesController;
 use App\Modules\Platform\Http\Controllers\ExternalStorageSettingsController;
@@ -156,6 +157,18 @@ Route::middleware('auth')->group(function () {
         Route::get('system/settings/email', [EmailSettingsController::class, 'edit'])->name('system-settings.email.edit');
         Route::patch('system/settings/email', [EmailSettingsController::class, 'update'])->name('system-settings.email.update');
         Route::post('system/settings/email/test', [EmailSettingsController::class, 'sendTest'])->name('system-settings.email.test');
+        // The OAuth mailbox behind the Microsoft 365 provider. Its own
+        // throttle buckets like every action route here; the callback is
+        // a GET because it is the provider redirecting the admin's
+        // browser back, session and all.
+        Route::post('system/settings/email/oauth/connect', [EmailOAuthController::class, 'connect'])
+            ->middleware('throttle:20,1,mail-oauth-connect')
+            ->name('system-settings.email.oauth.connect');
+        Route::get('system/settings/email/oauth/callback', [EmailOAuthController::class, 'callback'])
+            ->middleware('throttle:20,1,mail-oauth-callback')
+            ->name('system-settings.email.oauth.callback');
+        Route::delete('system/settings/email/oauth', [EmailOAuthController::class, 'disconnect'])
+            ->name('system-settings.email.oauth.disconnect');
         // Deliberately outside any capability: group. LDAP is an
         // administrator's setting, available in every edition, not an
         // edition difference.

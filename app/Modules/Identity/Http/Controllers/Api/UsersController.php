@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Modules\Api\Support\PollingQuery;
 use App\Modules\Files\DeletedAccountContent;
 use App\Modules\Identity\AccountContentDeletion;
+use App\Modules\Identity\Erasure\AvailableEmailRule;
 use App\Modules\Identity\Http\Resources\Api\StaffUserResource;
 use App\Modules\Identity\StaffAccounts;
 use App\Modules\Identity\TwoFactor\TwoFactorAdministration;
@@ -118,7 +119,7 @@ class UsersController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', new AvailableEmailRule],
             'role_id' => ['required', 'integer', Rule::in($this->accounts->assignableRoleIds($actor))],
             // No `confirmed`: repeating a password defends against a human
             // mistyping into a form, and an API caller has no second field

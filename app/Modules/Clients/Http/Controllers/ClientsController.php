@@ -16,6 +16,8 @@ use App\Modules\Clients\Notifications\ClientAccountEditedNotification;
 use App\Modules\Clients\Notifications\ClientWelcomeNotification;
 use App\Modules\Files\DeletedAccountContent;
 use App\Modules\Identity\AccountContentDeletion;
+use App\Modules\Identity\Erasure\AvailableEmailRule;
+use App\Modules\Identity\Erasure\ErasureSchedule;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Identity\TwoFactor\TwoFactorAdministration;
@@ -44,6 +46,7 @@ class ClientsController extends Controller
         private readonly ClientStorageUsage $storageUsage,
         private readonly DeletedAccountContent $accountContent,
         private readonly AccountContentDeletion $accountDeletion,
+        private readonly ErasureSchedule $erasure,
     ) {}
 
     public function index(Request $request): Response
@@ -100,7 +103,7 @@ class ClientsController extends Controller
     {
         $validated = $request->validate(array_merge([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', new AvailableEmailRule],
             'password' => ['required', 'confirmed', Password::defaults()],
             'storage_quota_mb' => ['nullable', 'integer', 'min:0'],
         ], $this->customFieldRules()));
@@ -235,6 +238,7 @@ class ClientsController extends Controller
         $validated = $this->accountDeletion->validate($request, $client);
 
         $name = $client->name;
+        $this->erasure->apply($client);
         $client->delete();
 
         $this->activity->log(Action::UserDeleted, context: ['name' => $name]);

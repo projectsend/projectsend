@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Modules\Api\Auth\ApiTokens;
 use App\Modules\Files\DeletedAccountContent;
 use App\Modules\Identity\AccountContentDeletion;
+use App\Modules\Identity\Erasure\AvailableEmailRule;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\StaffAccounts;
 use App\Modules\Identity\TwoFactor\TwoFactorAdministration;
@@ -112,7 +113,7 @@ class UsersController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', new AvailableEmailRule],
             'role_id' => ['required', 'integer', Rule::in($this->accounts->assignableRoleIds($this->actor()))],
             'password' => ['required', 'confirmed', Password::defaults()],
             'assigned_clients' => ['array'],

@@ -69,7 +69,7 @@ export default function EmailSettings({
     test_result,
 }: EmailSettingsProps) {
     const { t } = useTranslation();
-    const { auth } = usePage<SharedData>().props;
+    const { auth, links } = usePage<SharedData>().props;
     const canConfigureTransport = useCapability('email.transport.configure');
     const tabs: Tab[] = canConfigureTransport ? ['general', 'sending', 'test'] : ['general'];
     const [tab, setTab] = useState<Tab>('general');
@@ -314,7 +314,15 @@ export default function EmailSettings({
                                     <p className="text-muted-foreground text-sm">
                                         {t(
                                             'Sends through the provider’s API as a mailbox you connect below — no password or app password. Register an application with the provider, enter its credentials here, save, then connect the mailbox.',
-                                        )}
+                                        )}{' '}
+                                        <a
+                                            href={`${links.source}/blob/main/docs/email-oauth.md`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="underline hover:no-underline"
+                                        >
+                                            {t('Step-by-step setup guide')}
+                                        </a>
                                     </p>
 
                                     <div className="grid gap-2">

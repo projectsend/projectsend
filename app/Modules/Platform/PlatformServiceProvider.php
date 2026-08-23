@@ -14,6 +14,7 @@ use App\Modules\Platform\Captcha\Console\TestCaptchaCommand;
 use App\Modules\Platform\Localization\LocaleRegistry;
 use App\Modules\Platform\Localization\TimezoneRegistry;
 use App\Modules\Platform\Mail\Console\RefreshMailOAuthTokensCommand;
+use App\Modules\Platform\Mail\GmailTransport;
 use App\Modules\Platform\Mail\MicrosoftGraphTransport;
 use App\Modules\Platform\News\Console\FetchNewsCommand;
 use App\Modules\Platform\Notifications\ThemedMailChannel;
@@ -88,10 +89,11 @@ class PlatformServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Registered before apply() below can select it as the default
-        // mailer. The closure resolves lazily on first send, so booting
+        // Registered before apply() below can select one as the default
+        // mailer. The closures resolve lazily on first send, so booting
         // never pays for a transport nobody uses.
         Mail::extend('microsoft-graph', fn (): MicrosoftGraphTransport => $this->app->make(MicrosoftGraphTransport::class));
+        Mail::extend('gmail-api', fn (): GmailTransport => $this->app->make(GmailTransport::class));
 
         // Every process boot (a web request, or a freshly (re)started
         // queue worker) picks up the admin-configured mail provider, if

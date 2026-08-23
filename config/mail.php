@@ -70,12 +70,16 @@ return [
             'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
         ],
 
-        // Custom transport (registered in PlatformServiceProvider); its
-        // credentials live in the mail_oauth_connections row, not here —
-        // selected as the default by MailConfigApplier when the admin has
-        // connected a Microsoft 365 mailbox.
+        // Custom transports (registered in PlatformServiceProvider); their
+        // credentials live in the mail_oauth_connections rows, not here —
+        // MailConfigApplier selects one as the default when the admin has
+        // connected the matching mailbox.
         'microsoft-graph' => [
             'transport' => 'microsoft-graph',
+        ],
+
+        'gmail-api' => [
+            'transport' => 'gmail-api',
         ],
 
         'log' => [

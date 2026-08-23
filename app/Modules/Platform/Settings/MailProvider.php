@@ -25,6 +25,7 @@ enum MailProvider: string
     case Postmark = 'postmark';
     case AmazonSes = 'ses';
     case Microsoft365 = 'microsoft365';
+    case Gmail = 'gmail';
 
     public function label(): string
     {
@@ -35,13 +36,14 @@ enum MailProvider: string
             self::Postmark => 'Postmark',
             self::AmazonSes => 'Amazon SES',
             self::Microsoft365 => 'Microsoft 365 (OAuth)',
+            self::Gmail => 'Google / Gmail (OAuth)',
         };
     }
 
     public function defaultHost(): ?string
     {
         return match ($this) {
-            self::Custom, self::Microsoft365 => null,
+            self::Custom, self::Microsoft365, self::Gmail => null,
             self::SendGrid => 'smtp.sendgrid.net',
             self::Mailgun => 'smtp.mailgun.org',
             self::Postmark => 'smtp.postmarkapp.com',
@@ -52,7 +54,7 @@ enum MailProvider: string
     public function defaultPort(): ?int
     {
         return match ($this) {
-            self::Custom, self::Microsoft365 => null,
+            self::Custom, self::Microsoft365, self::Gmail => null,
             self::SendGrid, self::Mailgun, self::Postmark, self::AmazonSes => 587,
         };
     }
@@ -64,7 +66,7 @@ enum MailProvider: string
      */
     public function isOAuth(): bool
     {
-        return $this === self::Microsoft365;
+        return $this === self::Microsoft365 || $this === self::Gmail;
     }
 
     /**
@@ -75,6 +77,7 @@ enum MailProvider: string
     {
         return match ($this) {
             self::Microsoft365 => 'microsoft-graph',
+            self::Gmail => 'gmail-api',
             default => null,
         };
     }

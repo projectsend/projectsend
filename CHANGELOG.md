@@ -15,6 +15,14 @@ a version is cut.
 
 ### Fixed
 
+- **Downloads and thumbnails for installations using external storage.** Two places assumed every
+  file sat on the server's own disk, which stopped being true the moment S3-compatible storage was
+  switched on. A share link to a file held in a bucket produced a broken download, and a public
+  listing could not draw a thumbnail for one at all — while the same file downloaded and previewed
+  correctly everywhere else, which made it look like the share link or the listing was at fault
+  rather than where the file lived. Both now read the file from wherever it actually is. Nothing
+  changes for installations keeping files on local disk, which is most of them.
+
 - **One confirmation message instead of two.** Saving a new client, system user or role showed the
   same green "Client created." twice, stacked. So did deleting one. It was only ever cosmetic —
   nothing happened twice — but it read as though something had, which is the last thing a

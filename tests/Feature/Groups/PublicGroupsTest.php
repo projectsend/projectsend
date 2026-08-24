@@ -310,6 +310,33 @@ test('the public thumbnail route generates and serves a thumbnail for a public i
     $this->get(route('public.thumbnail', ['public', $privateImage->slug]))->assertNotFound();
 });
 
+test('a public thumbnail renders from external storage rather than a local path that does not exist', function () {
+    // The bug this covers: this route read its *source* through
+    // Storage::disk('files')->path(), which for an externally stored file
+    // is a path nothing ever wrote. The rendition is still cached locally
+    // — only the source moves. FileThumbnailController already handled
+    // this; the public twin did not.
+    Storage::fake('files_external');
+
+    $staff = User::factory()->create();
+    $image = publicListingImageFile($staff);
+
+    // Restage the bytes where an install with external storage configured
+    // would have put them, and remove the local copy so a local path
+    // cannot accidentally satisfy the request.
+    Storage::disk('files_external')->put($image->path, Storage::disk('files')->get($image->path));
+    Storage::disk('files')->delete($image->path);
+    $image->update(['disk' => 'files_external']);
+
+    auth()->logout();
+
+    $this->get(route('public.thumbnail', ['public', $image->slug]))
+        ->assertOk()
+        ->assertHeader('Content-Type', 'image/jpeg');
+
+    expect(Storage::disk('files')->exists("thumbnails/external/{$image->id}.jpg"))->toBeTrue();
+});
+
 test('existing literal routes are unaffected by the new catch-all public routes', function () {
     $this->actingAs(User::factory()->create())->get('/dashboard')->assertOk();
     $this->actingAs(User::factory()->create())->get('/files')->assertOk();

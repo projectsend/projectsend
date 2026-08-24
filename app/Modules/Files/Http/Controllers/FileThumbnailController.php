@@ -8,12 +8,13 @@ use App\Http\Controllers\Controller;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Access\DownloadAllowance;
-use App\Modules\Files\Delivery\InlineFileResponse;
+use App\Modules\Files\Delivery\StoredFileResponse;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Preview\PreviewKind;
 use App\Modules\Files\Thumbnails\Events\ResolvingImageRendering;
 use App\Modules\Files\Thumbnails\ImageAudience;
 use App\Modules\Files\Thumbnails\ImageRendition;
+use App\Modules\Files\Thumbnails\LocalSourceFile;
 use App\Modules\Files\Thumbnails\ThumbnailGenerator;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
@@ -73,7 +74,8 @@ class FileThumbnailController extends Controller
         private readonly ThumbnailGenerator $thumbnails,
         private readonly ActivityLogger $activity,
         private readonly DownloadAllowance $allowance,
-        private readonly InlineFileResponse $inline,
+        private readonly StoredFileResponse $bytes,
+        private readonly LocalSourceFile $source,
         private readonly Settings $settings,
     ) {}
 
@@ -159,7 +161,7 @@ class FileThumbnailController extends Controller
             }
         }
 
-        return $this->inline->make($file);
+        return $this->bytes->inline($file);
     }
 
     /**
@@ -205,15 +207,14 @@ class FileThumbnailController extends Controller
         }
 
         $disk->makeDirectory(dirname($path));
-        $sourcePath = $this->localSourcePathFor($file);
 
-        try {
-            $this->thumbnails->generate($sourcePath, $disk->path($path), $file->mime_type, $audience, $rendition);
-        } finally {
-            if ($file->disk !== 'files') {
-                @unlink($sourcePath);
-            }
-        }
+        $this->source->use($file, fn (string $sourcePath) => $this->thumbnails->generate(
+            $sourcePath,
+            $disk->path($path),
+            $file->mime_type,
+            $audience,
+            $rendition,
+        ));
 
         return $path;
     }
@@ -225,39 +226,5 @@ class FileThumbnailController extends Controller
             'Content-Type' => $file->mime_type,
             'Content-Disposition' => ContentDisposition::inline($file->original_name),
         ]);
-    }
-
-    /**
-     * A local-disk file's real path (fast path). Anything else is
-     * stream-copied to a temp file first — the caller unlinks it once
-     * rendering is done.
-     */
-    private function localSourcePathFor(File $file): string
-    {
-        if ($file->disk === 'files') {
-            return Storage::disk('files')->path($file->path);
-        }
-
-        $tempPath = tempnam(sys_get_temp_dir(), 'thumb-src-');
-
-        if ($tempPath === false) {
-            throw new \RuntimeException('Could not create a temp file for '.$file->original_name);
-        }
-
-        $stream = Storage::disk($file->disk)->readStream($file->path);
-        $out = fopen($tempPath, 'wb');
-
-        if ($stream === null || $out === false) {
-            throw new \RuntimeException('Could not read '.$file->original_name.' from its storage disk.');
-        }
-
-        stream_copy_to_stream($stream, $out);
-        fclose($out);
-
-        if (is_resource($stream)) {
-            fclose($stream);
-        }
-
-        return $tempPath;
     }
 }

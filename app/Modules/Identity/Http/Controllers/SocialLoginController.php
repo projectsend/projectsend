@@ -15,7 +15,8 @@ use App\Modules\Identity\Social\SocialProvider;
 use App\Modules\Identity\Social\SocialSettings;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirectResponse;
+use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -57,13 +58,13 @@ class SocialLoginController extends Controller
     }
 
     /** Begin a sign-in. */
-    public function redirect(Request $request, string $provider): SymfonyRedirectResponse|RedirectResponse
+    public function redirect(Request $request, string $provider): Response
     {
         return $this->begin($request, $provider, 'login');
     }
 
     /** Begin connecting a provider to the signed-in account. */
-    public function connect(Request $request, string $provider): SymfonyRedirectResponse|RedirectResponse
+    public function connect(Request $request, string $provider): Response
     {
         return $this->begin($request, $provider, 'link');
     }
@@ -130,7 +131,7 @@ class SocialLoginController extends Controller
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
-    private function begin(Request $request, string $provider, string $intent): SymfonyRedirectResponse|RedirectResponse
+    private function begin(Request $request, string $provider, string $intent): Response
     {
         $case = $this->provider($provider);
         $settings = SocialSettings::for($case);
@@ -142,7 +143,13 @@ class SocialLoginController extends Controller
 
         $request->session()->put([self::INTENT => $intent, self::PROVIDER => $case->value]);
 
-        return $this->gateway()->redirect($settings);
+        // Inertia::location(), not the redirect itself. Connecting starts
+        // as an Inertia XHR from the settings screen, and an XHR follows a
+        // 302 to the provider cross-origin, where CORS kills it before the
+        // person ever leaves the page. The 409 + X-Inertia-Location pair
+        // makes the client navigate top-level instead; a plain browser
+        // request — the login flow — passes through unchanged.
+        return Inertia::location($this->gateway()->redirect($settings));
     }
 
     private function completeLink(Request $request, SocialSettings $settings, SocialIdentity $identity): RedirectResponse

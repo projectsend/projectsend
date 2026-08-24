@@ -88,6 +88,35 @@ test('reconnecting a different account at the same provider replaces the link', 
 
 /*
 |--------------------------------------------------------------------------
+| Starting the exchange
+|--------------------------------------------------------------------------
+|
+| Connecting starts as an Inertia XHR, and an XHR cannot follow a 302 to
+| the provider: the browser refuses the cross-origin hop and nobody goes
+| anywhere. Inertia's 409 + X-Inertia-Location pair is what turns the
+| same answer into a real top-level navigation.
+|
+*/
+
+test('connecting from the settings screen navigates the browser, not the XHR', function () {
+    test()->swap(SocialGateway::class, new FakeSocialGateway);
+
+    $this->actingAs($this->staff)
+        ->post(route('connected-accounts.connect', ['provider' => 'google']), [], ['X-Inertia' => 'true'])
+        ->assertStatus(409)
+        ->assertHeader('X-Inertia-Location', 'https://provider.test/authorize');
+});
+
+test('a plain request is still given the provider redirect itself', function () {
+    test()->swap(SocialGateway::class, new FakeSocialGateway);
+
+    $this->actingAs($this->staff)
+        ->post(route('connected-accounts.connect', ['provider' => 'google']))
+        ->assertRedirect('https://provider.test/authorize');
+});
+
+/*
+|--------------------------------------------------------------------------
 | Disconnecting
 |--------------------------------------------------------------------------
 */

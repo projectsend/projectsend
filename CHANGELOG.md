@@ -30,6 +30,13 @@ a version is cut.
 
 ### Fixed
 
+- **An upload that cannot be stored now fails instead of disappearing.** When files are kept in
+  object storage and the storage backend refuses a write — an expired key, a bucket that has been
+  renamed or removed, a permission that changed underneath you — the upload used to report success
+  and record the file anyway. The entry appeared in the file list, and the download it promised was
+  never going to work, because the bytes had gone nowhere. The upload now stops and says so, and no
+  file is recorded. Installations keeping files on local disk were never affected.
+
 - **Downloads and thumbnails for installations using external storage.** Two places assumed every
   file sat on the server's own disk, which stopped being true the moment S3-compatible storage was
   switched on. A share link to a file held in a bucket produced a broken download, and a public

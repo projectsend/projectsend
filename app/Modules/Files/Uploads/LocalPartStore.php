@@ -203,10 +203,24 @@ class LocalPartStore
         Event::dispatch($diskEvent);
         $disk = $diskEvent->disk;
 
-        Storage::disk($disk)->writeStream($targetPath, $readStream);
+        $written = Storage::disk($disk)->writeStream($targetPath, $readStream);
 
         if (is_resource($readStream)) {
             fclose($readStream);
+        }
+
+        // The disks are configured with 'throw' => false, so a refused
+        // write is a `false` return rather than an exception — and the
+        // caller goes on to record a File row for bytes that were never
+        // stored. Losing an upload silently is worse than failing it, and
+        // this is the only place that can tell the difference: a real
+        // instance of it was a GCS bucket rejecting the adapter's ACL,
+        // which looked exactly like a successful upload.
+        if ($written === false) {
+            throw new RuntimeException(
+                'Could not write the assembled upload to the "'.$disk.'" disk. '
+                .'Check the storage backend is reachable and its credentials are still valid.'
+            );
         }
 
         $this->abort($session);

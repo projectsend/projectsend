@@ -11,12 +11,13 @@ use Illuminate\Support\Facades\Storage;
 use League\Flysystem\Config;
 use League\Flysystem\Filesystem;
 use League\Flysystem\GoogleCloudStorage\GoogleCloudStorageAdapter;
+use League\Flysystem\GoogleCloudStorage\UniformBucketLevelAccessVisibility;
 
 /**
  * The `gcs` filesystem driver, which Laravel does not ship.
  *
- * Two things here are not boilerplate, and both are the kind of thing
- * that fails quietly rather than loudly.
+ * Three things here are not boilerplate, and all of them are the kind
+ * that fail quietly rather than loudly.
  *
  * **Laravel will not find the adapter's own method.** FilesystemAdapter
  * ::temporaryUrl() looks for a method named `getTemporaryUrl` on the
@@ -26,6 +27,12 @@ use League\Flysystem\GoogleCloudStorage\GoogleCloudStorageAdapter;
  * method `temporaryUrl`. The names do not meet, so without the
  * buildTemporaryUrlsUsing() below every download and every preview of a
  * GCS-stored file is a 500.
+ *
+ * **The default visibility handler cannot write to a correctly
+ * configured bucket.** See the constructor argument below: it attaches a
+ * legacy ACL to every object, and uniform bucket-level access — which the
+ * setup instructions require — rejects the write outright. Combined with
+ * `'throw' => false` on the disk, that failure was completely silent.
  *
  * **The two SDKs spell the signing options differently.** The callers —
  * StoredFileResponse, and anything else that hands options to
@@ -72,6 +79,21 @@ class GoogleCloudStorageDriver
         $adapter = new GoogleCloudStorageAdapter(
             $client->bucket((string) ($config['bucket'] ?? '')),
             (string) ($config['prefix'] ?? ''),
+            // Never write a per-object ACL. The adapter's default handler
+            // attaches one to every object, and a bucket with uniform
+            // bucket-level access turned on rejects the whole write:
+            // "Cannot insert legacy ACL for an object when uniform
+            // bucket-level access is enabled". Uniform access is what the
+            // setup instructions ask for and what Google recommends, so
+            // the default handler fails on a correctly configured bucket.
+            //
+            // Nothing is lost by never setting one. Every object this
+            // application stores is private and every read of it is a
+            // signed URL, so per-object visibility has nothing to say
+            // here — and on a bucket *without* uniform access, an object
+            // written with no ACL simply inherits the bucket's defaults,
+            // which is the same answer.
+            new UniformBucketLevelAccessVisibility,
         );
 
         $disk = new FilesystemAdapter(new Filesystem($adapter), $adapter, $config);

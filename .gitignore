@@ -39,3 +39,8 @@ yarn-error.log
 /database/seeders/DevDataSeeder.php
 /docs/*.md
 !/docs/api-guide.md
+
+# ── Local-only dev TLS ──
+# mkcert certificates and the nginx config that terminates HTTPS on the
+# dev `web` container. Machine-specific, and one of them is a private key.
+/docker/web/local/

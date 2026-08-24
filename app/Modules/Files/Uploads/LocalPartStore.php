@@ -7,6 +7,7 @@ namespace App\Modules\Files\Uploads;
 use App\Modules\Files\Storage\ResolvingUploadDisk;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\File as FileSystem;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use RuntimeException;
@@ -217,6 +218,20 @@ class LocalPartStore
         // instance of it was a GCS bucket rejecting the adapter's ACL,
         // which looked exactly like a successful upload.
         if ($written === false) {
+            // The reason is lost by the time it gets here — 'throw' => false
+            // means Flysystem swallowed the exception rather than passing it
+            // on — so log what was attempted. Which bucket it was is the
+            // difference between reading this as "my credentials expired"
+            // and "I typed the wrong bucket name", and only the log can say
+            // it: the message below is shown to whoever was uploading, which
+            // includes clients, and a bucket name is not theirs to see.
+            Log::error('Upload could not be written to storage.', [
+                'disk' => $disk,
+                'bucket' => config('filesystems.disks.'.$disk.'.bucket'),
+                'driver' => config('filesystems.disks.'.$disk.'.driver'),
+                'path' => $targetPath,
+            ]);
+
             throw new RuntimeException(
                 'Could not write the assembled upload to the "'.$disk.'" disk. '
                 .'Check the storage backend is reachable and its credentials are still valid.'

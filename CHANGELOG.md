@@ -15,6 +15,14 @@ a version is cut.
 
 ### Fixed
 
+- **One confirmation message instead of two.** Saving a new client, system user or role showed the
+  same green "Client created." twice, stacked. So did deleting one. It was only ever cosmetic —
+  nothing happened twice — but it read as though something had, which is the last thing a
+  confirmation should do. Saves that stay on the same screen, such as the email settings, were never
+  affected.
+  ([#1675](https://github.com/projectsend/projectsend/issues/1675), reported and diagnosed by
+  [@denkfabrik-li](https://github.com/denkfabrik-li))
+
 - **Connecting a provider to an account that already has one.** Signing in with Google, Microsoft or
   a custom provider worked, but attaching one to an existing account did not: the **Connect** button
   on Settings → Connected accounts appeared to do nothing at all. The button asks the server in the

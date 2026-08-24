@@ -19,6 +19,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Session\Middleware\AuthenticateSession;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -112,5 +113,22 @@ return Application::configure(basePath: dirname(__DIR__))
             return $problems->shouldHandle($request)
                 ? $problems->render($request, $e)
                 : null;
+        });
+
+        // A redirect born in exception handling — the guest redirect after
+        // an expired login, above all — never travels back through the
+        // middleware stack, so Inertia's usual 302→303 upgrade cannot reach
+        // it. Browsers follow a 302 by replaying the request method on the
+        // redirect target (only POST is downgraded to GET), so a PUT that
+        // should land on the login page replays as PUT /login and dies with
+        // a 405 that hides the real "please sign in again". 303 makes the
+        // follow-up a GET, which is the only sensible thing after a write.
+        $exceptions->respond(function (SymfonyResponse $response, Throwable $e, Request $request) {
+            if ($response->getStatusCode() === SymfonyResponse::HTTP_FOUND
+                && in_array($request->method(), ['PUT', 'PATCH', 'DELETE'], true)) {
+                $response->setStatusCode(SymfonyResponse::HTTP_SEE_OTHER);
+            }
+
+            return $response;
         });
     })->create();

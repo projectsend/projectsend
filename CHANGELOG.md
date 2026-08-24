@@ -13,6 +13,21 @@ Anything under **Upgrade notes** is something you have to do, not something we d
 This section collects changes as they land; the release process turns it into a numbered entry when
 a version is cut.
 
+### Added
+
+- **Google Cloud Storage as a storage backend.** External storage used to mean S3 and nothing else.
+  The Storage settings screen now asks which provider you are using first, and offers Google Cloud
+  Storage alongside the S3-compatible option: choose it, paste a service account key with read and
+  write access to your bucket, and new uploads go there. The key is stored encrypted and never shown
+  again, and **Test connection** checks it can actually reach the bucket before you switch anything
+  over — using a probe that works with a least-privilege key, rather than one that needs permission
+  to read the bucket's own settings. Downloads and previews are handed to the visitor as a
+  short-lived signed link, exactly as they already were for S3.
+
+  Nothing changes for an existing installation. Configurations saved before this release are S3, are
+  still S3, and are not asked to say so. Files already stored stay where they are — the setting
+  applies to new uploads, and there is still no migration between backends.
+
 ### Fixed
 
 - **Downloads and thumbnails for installations using external storage.** Two places assumed every

@@ -5,13 +5,33 @@ on:
     branches:
       - develop
       - main
+    paths:
+      # Only the frontend is actually checked here, so only the frontend
+      # needs to trigger it.
+      - 'resources/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'eslint.config.js'
+      - '.prettierrc*'
+      - 'tsconfig.json'
+      - '.github/workflows/lint.yml'
   pull_request:
     branches:
       - develop
       - main
+    paths:
+      - 'resources/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'eslint.config.js'
+      - '.prettierrc*'
+      - 'tsconfig.json'
+      - '.github/workflows/lint.yml'
 
-permissions:
-  contents: write
+# A second push supersedes the first.
+concurrency:
+  group: linter-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   quality:
@@ -19,32 +39,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: actions/setup-node@v4
         with:
-          php-version: '8.4'
+          node-version: '22'
+          cache: 'npm'
 
-      # community-modules resolves from its public GitHub repository (the vcs
-      # entry in composer.json); cloud-modules is not required. COMPOSER_AUTH
-      # just lifts the anonymous GitHub API rate limit for the fetch.
       - name: Install Dependencies
-        env:
-          COMPOSER_AUTH: '{"github-oauth":{"github.com":"${{ secrets.GITHUB_TOKEN }}"}}'
-        run: |
-          composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-          npm install
+        run: npm ci
 
-      - name: Run Pint
-        run: vendor/bin/pint
-
-      - name: Format Frontend
-        run: npm run format
-
+      # `eslint .` rather than `npm run lint`, which is `eslint . --fix`:
+      # a formatter that rewrites the checkout and throws the result away
+      # cannot fail a build, so it was never a gate. This one is.
       - name: Lint Frontend
-        run: npm run lint
+        run: npx eslint .
 
-      # - name: Commit Changes
-      #   uses: stefanzweifel/git-auto-commit-action@v5
-      #   with:
-      #     commit_message: fix code style
-      #     commit_options: '--no-verify'
+# Two steps used to live here and were removed on 2026-08-23, because
+# neither could ever fail:
+#
+#   - `vendor/bin/pint`, without `--test` and with the auto-commit step
+#     commented out. It reformatted the runner's checkout, exited 0 and
+#     threw the result away — 150 seconds of this job's 195, gating
+#     nothing. Reinstating it as a real gate means `pint --test`, which
+#     today reports around a hundred pre-existing failures; the honest
+#     order is a formatting sweep first, then the flag.
+#
+#   - `npm run format`, which is `prettier --write`, for the same reason.
+#     `prettier --check` currently reports 44 files, so the same applies:
+#     sweep, then switch. `npm run format:check` is the command.
+#
+# Dropping them also let the PHP toolchain go: nothing left here needs it.

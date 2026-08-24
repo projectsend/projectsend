@@ -19,14 +19,6 @@ beforeEach(function () {
     $this->admin = User::factory()->create();
 });
 
-/** An id_token whose payload names the connected mailbox — signature irrelevant, it is never verified. */
-function fakeIdToken(string $email = 'portal@example.test'): string
-{
-    $encode = fn (array $claims): string => rtrim(strtr(base64_encode((string) json_encode($claims)), '+/', '-_'), '=');
-
-    return $encode(['alg' => 'none']).'.'.$encode(['preferred_username' => $email]).'.sig';
-}
-
 /** A token endpoint success, as Microsoft shapes it. */
 function fakeTokenResponse(array $overrides = []): array
 {

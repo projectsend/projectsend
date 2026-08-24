@@ -21,13 +21,17 @@ test('community edition has the self-management capabilities and no cloud exclus
         ->and($registry->has(Capability::SystemUpdates))->toBeTrue()
         ->and($registry->has(Capability::SchedulerMonitoring))->toBeTrue()
         ->and($registry->has(Capability::CustomAssets))->toBeTrue()
-        ->and($registry->has(Capability::Branding))->toBeFalse();
+        ->and($registry->has(Capability::Branding))->toBeFalse()
+        // The counterpart of StorageConfigure above: a self-hosted install
+        // configures its own bucket and is never handed one.
+        ->and($registry->has(Capability::StorageManaged))->toBeFalse();
 });
 
 test('cloud edition has cloud exclusives and none of the community-only capabilities', function () {
     $registry = new CapabilityRegistry(Edition::Cloud);
 
     expect($registry->has(Capability::Branding))->toBeTrue()
+        ->and($registry->has(Capability::StorageManaged))->toBeTrue()
         ->and($registry->has(Capability::UsersManage))->toBeFalse()
         ->and($registry->has(Capability::StorageConfigure))->toBeFalse()
         ->and($registry->has(Capability::EmailTransportConfigure))->toBeFalse()
@@ -39,5 +43,5 @@ test('cloud edition has cloud exclusives and none of the community-only capabili
 test('enabledKeys returns the string keys of enabled capabilities', function () {
     $registry = new CapabilityRegistry(Edition::Cloud);
 
-    expect($registry->enabledKeys())->toBe(['branding.customize', 'captcha.managed_keys']);
+    expect($registry->enabledKeys())->toBe(['branding.customize', 'storage.managed', 'captcha.managed_keys']);
 });

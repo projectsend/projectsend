@@ -15,6 +15,17 @@ a version is cut.
 
 ### Fixed
 
+- **Connecting a provider to an account that already has one.** Signing in with Google, Microsoft or
+  a custom provider worked, but attaching one to an existing account did not: the **Connect** button
+  on Settings → Connected accounts appeared to do nothing at all. The button asks the server in the
+  background, and the server answered by redirecting to the provider — a redirect a browser will not
+  follow out of a background request to another site. The page sat there with no consent screen and
+  no error to explain it, so the only reading available was that the button was dead. The server now
+  tells the browser to go to the provider itself, and the flow starts as it should. Signing in from
+  the login page was never affected, and neither is it now.
+  ([#1676](https://github.com/projectsend/projectsend/pull/1676), found and fixed by
+  [@denkfabrik-li](https://github.com/denkfabrik-li))
+
 - **Downloads on a host where the web server is not PHP's user.** A download is not served by PHP:
   PHP checks permissions and then hands the web server the path to stream. Where the two run as
   different users — cPanel and Plesk commonly arrange it that way — the web server could not open

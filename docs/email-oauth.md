@@ -14,7 +14,7 @@ available for everything else.
 
 ## How it works
 
-Go to **Settings → Email → Sending** and pick **Microsoft 365 (OAuth)** or
+Go to **Settings → Email → Outgoing email** and pick **Microsoft 365 (OAuth)** or
 **Google / Gmail (OAuth)** as the provider. Instead of host and password, the form asks for an
 *app registration* — a client ID and secret you create once with the vendor (steps below) — and
 then offers **Connect mailbox**: a normal "sign in with Microsoft/Google" screen where you log
@@ -74,7 +74,7 @@ permission is granted on the consent screen when you connect.
 
 ### Connect
 
-1. **Settings → Email → Sending** → provider **Microsoft 365 (OAuth)**.
+1. **Settings → Email → Outgoing email** → provider **Microsoft 365 (OAuth)**.
 2. Enter the client ID and secret; fill the **Directory (tenant) ID** according to the account
    type above (empty means "any account", a GUID pins your tenant, `consumers` for personal-only
    apps). **Save.**
@@ -118,7 +118,7 @@ permission is granted on the consent screen when you connect.
 
 ### Connect
 
-1. **Settings → Email → Sending** → provider **Google / Gmail (OAuth)** → enter client ID and
+1. **Settings → Email → Outgoing email** → provider **Google / Gmail (OAuth)** → enter client ID and
    secret → **Save**.
 2. **Connect mailbox** → sign in with the Google account. While the app is unverified, Google
    shows a "Google hasn't verified this app" warning — *Advanced → continue* is expected here.

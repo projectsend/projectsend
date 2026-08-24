@@ -186,7 +186,7 @@ export default function EmailSettings({
                                 onClick={() => setTab(tabKey)}
                                 className={`border-b-2 px-3 py-2 text-sm ${tab === tabKey ? 'border-primary text-foreground font-medium' : 'text-muted-foreground border-transparent'}`}
                             >
-                                {tabKey === 'general' ? t('General') : tabKey === 'sending' ? t('Sending') : t('Test')}
+                                {tabKey === 'general' ? t('General') : tabKey === 'sending' ? t('Outgoing email') : t('Test')}
                             </button>
                         ))}
                     </nav>

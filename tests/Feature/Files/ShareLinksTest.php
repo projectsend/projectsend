@@ -10,6 +10,7 @@ use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\ShareLink;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Models\RolePermission;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Testing\AssertableInertia;
 
@@ -162,6 +163,40 @@ test('the public show and download routes work with no authenticated user at all
     expect($link->refresh()->downloads_count)->toBe(1)
         ->and($entry->actor_id)->toBeNull()
         ->and($entry->actor_name)->toBeNull();
+});
+
+test('a share link to an externally stored file hands out a presigned url, not an nginx path', function () {
+    // The bug this covers: this route used to answer every download with
+    // X-Accel-Redirect regardless of the file's disk, so a share link to a
+    // file on external storage pointed nginx at a path that does not exist
+    // on its filesystem. Every other download path already got this right.
+    Storage::fake('files_external');
+    Storage::disk('files_external')->buildTemporaryUrlsUsing(
+        fn (string $path, $expiration, array $options) => 'https://storage.example.test/'.$path.'?disposition='.urlencode($options['ResponseContentDisposition'] ?? '')
+    );
+
+    $file = shareTestFile($this->admin);
+    $file->update(['disk' => 'files_external']);
+
+    $link = ShareLink::query()->create([
+        'shareable_type' => $file->getMorphClass(),
+        'shareable_id' => $file->id,
+        'token' => Str::random(32),
+    ]);
+
+    $response = $this->get("/s/{$link->token}/download");
+
+    $response->assertRedirect();
+    $response->assertHeaderMissing('X-Accel-Redirect');
+
+    $target = $response->headers->get('Location');
+    expect($target)->toStartWith('https://storage.example.test/'.$file->path)
+        // The filename has to survive into the signed URL, or the download
+        // arrives named after the storage key.
+        ->and(urldecode((string) $target))->toContain('attachment; filename="report.pdf"');
+
+    // The link's counter still moves for an external file.
+    expect($link->refresh()->downloads_count)->toBe(1);
 });
 
 test('an unknown token shows a not-found state instead of a 404', function () {

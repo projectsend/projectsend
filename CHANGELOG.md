@@ -13,7 +13,37 @@ Anything under **Upgrade notes** is something you have to do, not something we d
 This section collects changes as they land; the release process turns it into a numbered entry when
 a version is cut.
 
+### Added
+
+- **Google Cloud Storage as a storage backend.** External storage used to mean S3 and nothing else.
+  The Storage settings screen now asks which provider you are using first, and offers Google Cloud
+  Storage alongside the S3-compatible option: choose it, paste a service account key with read and
+  write access to your bucket, and new uploads go there. The key is stored encrypted and never shown
+  again, and **Test connection** checks it can actually reach the bucket before you switch anything
+  over — using a probe that works with a least-privilege key, rather than one that needs permission
+  to read the bucket's own settings. Downloads and previews are handed to the visitor as a
+  short-lived signed link, exactly as they already were for S3.
+
+  Nothing changes for an existing installation. Configurations saved before this release are S3, are
+  still S3, and are not asked to say so. Files already stored stay where they are — the setting
+  applies to new uploads, and there is still no migration between backends.
+
 ### Fixed
+
+- **An upload that cannot be stored now fails instead of disappearing.** When files are kept in
+  object storage and the storage backend refuses a write — an expired key, a bucket that has been
+  renamed or removed, a permission that changed underneath you — the upload used to report success
+  and record the file anyway. The entry appeared in the file list, and the download it promised was
+  never going to work, because the bytes had gone nowhere. The upload now stops and says so, and no
+  file is recorded. Installations keeping files on local disk were never affected.
+
+- **Downloads and thumbnails for installations using external storage.** Two places assumed every
+  file sat on the server's own disk, which stopped being true the moment S3-compatible storage was
+  switched on. A share link to a file held in a bucket produced a broken download, and a public
+  listing could not draw a thumbnail for one at all — while the same file downloaded and previewed
+  correctly everywhere else, which made it look like the share link or the listing was at fault
+  rather than where the file lived. Both now read the file from wherever it actually is. Nothing
+  changes for installations keeping files on local disk, which is most of them.
 
 - **One confirmation message instead of two.** Saving a new client, system user or role showed the
   same green "Client created." twice, stacked. So did deleting one. It was only ever cosmetic —

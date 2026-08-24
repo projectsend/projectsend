@@ -44,7 +44,7 @@ class ExternalStorageConfigApplier
     // Bumped on any shape change to the resolved array below — a stale
     // rememberForever value under an old key would otherwise crash every
     // boot with "Undefined array key" (apply() calls resolve() unconditionally).
-    private const CACHE_KEY = 'platform.external_storage_settings.v1';
+    private const CACHE_KEY = 'platform.external_storage_settings.v2';
 
     public function __construct(
         private readonly CapabilityRegistry $capabilities,
@@ -57,17 +57,60 @@ class ExternalStorageConfigApplier
         }
 
         $resolved = $this->resolve();
+        $provider = StorageProvider::from($resolved['provider']);
 
+        // The driver is part of what gets overwritten, not a constant:
+        // config/filesystems.php ships the disk as an inert 's3' stub, and
+        // this is the only thing that ever makes it anything else.
+        Config::set('filesystems.disks.files_external.driver', $provider->driver());
+        Config::set('filesystems.disks.files_external.bucket', $resolved['bucket']);
+
+        match ($provider) {
+            StorageProvider::S3 => $this->applyS3($resolved),
+            StorageProvider::Gcs => $this->applyGcs($resolved),
+        };
+
+        if ($resolved['root'] !== null) {
+            // Two names for one idea, because the two adapters disagree:
+            // Laravel's S3 driver reads 'root', Flysystem's GCS adapter is
+            // constructed with a 'prefix'. Setting both keeps the settings
+            // screen able to speak of one "folder inside the bucket".
+            Config::set('filesystems.disks.files_external.root', $resolved['root']);
+            Config::set('filesystems.disks.files_external.prefix', $resolved['root']);
+        }
+    }
+
+    /**
+     * @param  array<string, mixed>  $resolved
+     */
+    private function applyS3(array $resolved): void
+    {
         Config::set('filesystems.disks.files_external.key', $resolved['key']);
         Config::set('filesystems.disks.files_external.secret', $resolved['secret']);
         Config::set('filesystems.disks.files_external.region', $resolved['region']);
-        Config::set('filesystems.disks.files_external.bucket', $resolved['bucket']);
         Config::set('filesystems.disks.files_external.endpoint', $resolved['endpoint']);
         Config::set('filesystems.disks.files_external.use_path_style_endpoint', $resolved['use_path_style']);
+    }
 
-        if ($resolved['root'] !== null) {
-            Config::set('filesystems.disks.files_external.root', $resolved['root']);
-        }
+    /**
+     * @param  array<string, mixed>  $resolved
+     */
+    private function applyGcs(array $resolved): void
+    {
+        // Decoded here rather than stored decoded: the column holds the
+        // key file verbatim, exactly as Google issued it, so that what an
+        // administrator pasted is what can be handed back to them and
+        // compared against the console.
+        $keyFile = json_decode((string) $resolved['key_file'], true);
+
+        Config::set('filesystems.disks.files_external.key_file', is_array($keyFile) ? $keyFile : null);
+
+        // Left over from the S3 stub in config/filesystems.php, and
+        // meaningless to the GCS adapter — cleared rather than left
+        // sitting there looking like configuration.
+        Config::set('filesystems.disks.files_external.key', null);
+        Config::set('filesystems.disks.files_external.secret', null);
+        Config::set('filesystems.disks.files_external.endpoint', null);
     }
 
     public function flush(): void
@@ -99,13 +142,15 @@ class ExternalStorageConfigApplier
      * filled in and active, nothing more. Callers AND the capability check
      * live and uncached — see class docblock.
      *
-     * @return array{configured: bool, key: string|null, secret: string|null, region: string|null, bucket: string|null, endpoint: string|null, use_path_style: bool, root: string|null}
+     * @return array{configured: bool, provider: string, key: string|null, secret: string|null, key_file: string|null, region: string|null, bucket: string|null, endpoint: string|null, use_path_style: bool, root: string|null}
      */
     private function resolve(): array
     {
         $blank = [
             'configured' => false,
-            'key' => null, 'secret' => null, 'region' => null, 'bucket' => null,
+            'provider' => StorageProvider::S3->value,
+            'key' => null, 'secret' => null, 'key_file' => null,
+            'region' => null, 'bucket' => null,
             'endpoint' => null, 'use_path_style' => false, 'root' => null,
         ];
 
@@ -126,8 +171,10 @@ class ExternalStorageConfigApplier
 
             return [
                 'configured' => true,
+                'provider' => $settings->provider->value,
                 'key' => $settings->key,
                 'secret' => $settings->secret,
+                'key_file' => $settings->key_file,
                 'region' => $settings->region,
                 'bucket' => $settings->bucket,
                 'endpoint' => $settings->endpoint,

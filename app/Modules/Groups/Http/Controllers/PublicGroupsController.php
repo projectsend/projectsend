@@ -9,13 +9,14 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Comments\CommentingRules;
 use App\Modules\Files\Access\DownloadAllowance;
-use App\Modules\Files\Delivery\InlineFileResponse;
+use App\Modules\Files\Delivery\StoredFileResponse;
 use App\Modules\Files\Models\Category;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Preview\PreviewKind;
 use App\Modules\Files\Thumbnails\ImageAudience;
 use App\Modules\Files\Thumbnails\ImageRendition;
+use App\Modules\Files\Thumbnails\LocalSourceFile;
 use App\Modules\Files\Thumbnails\ThumbnailGenerator;
 use App\Modules\Files\Versions\FileVersionLinks;
 use App\Modules\Groups\Http\Controllers\Concerns\InteractsWithPublicListing;
@@ -81,7 +82,8 @@ class PublicGroupsController extends Controller
         private readonly PublicThemeRegistry $themes,
         private readonly CapabilityRegistry $capabilities,
         private readonly CommentingRules $commenting,
-        private readonly InlineFileResponse $inline,
+        private readonly StoredFileResponse $bytes,
+        private readonly LocalSourceFile $source,
     ) {}
 
     public function index(Request $request, string $publicSlug): InertiaResponse|RedirectResponse
@@ -251,7 +253,18 @@ class PublicGroupsController extends Controller
 
         if (! $disk->exists($thumbnailPath)) {
             $disk->makeDirectory(dirname($thumbnailPath));
-            $this->thumbnails->generate($disk->path($file->path), $disk->path($thumbnailPath), $file->mime_type, ImageAudience::External, ImageRendition::Thumbnail);
+
+            // Never $disk->path($file->path): the rendition is cached on
+            // the local disk, but the *source* lives on whichever disk the
+            // file was uploaded to, and a local path for an externally
+            // stored file is a path that does not exist.
+            $this->source->use($file, fn (string $sourcePath) => $this->thumbnails->generate(
+                $sourcePath,
+                $disk->path($thumbnailPath),
+                $file->mime_type,
+                ImageAudience::External,
+                ImageRendition::Thumbnail,
+            ));
         }
 
         return response('', 200, [
@@ -287,7 +300,7 @@ class PublicGroupsController extends Controller
 
         $this->activity->log(Action::PublicFilePreviewed, subject: $file);
 
-        return $this->inline->make($file);
+        return $this->bytes->inline($file);
     }
 
     /**

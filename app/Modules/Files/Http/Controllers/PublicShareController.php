@@ -8,10 +8,10 @@ use App\Http\Controllers\Controller;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Access\DownloadAllowance;
+use App\Modules\Files\Delivery\StoredFileResponse;
 use App\Modules\Files\Models\Category;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\ShareLink;
-use App\Support\ContentDisposition;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Inertia\Inertia;
@@ -28,6 +28,7 @@ class PublicShareController extends Controller
     public function __construct(
         private readonly ActivityLogger $activity,
         private readonly DownloadAllowance $allowance,
+        private readonly StoredFileResponse $bytes,
     ) {}
 
     public function show(string $token): InertiaResponse
@@ -101,11 +102,6 @@ class PublicShareController extends Controller
 
         $this->activity->log(Action::ShareLinkDownloaded, subject: $file);
 
-        return response('', 200, [
-            'X-Accel-Redirect' => '/protected-files/'.$file->path,
-            'Content-Type' => $file->mime_type,
-            'Content-Disposition' => ContentDisposition::attachment($file->original_name),
-            'Content-Length' => (string) $file->size,
-        ]);
+        return $this->bytes->attachment($file);
     }
 }

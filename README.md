@@ -47,7 +47,7 @@ per-seat pricing. It runs on your server, and the files stay there.
 - 16 languages
 - A REST API with scoped tokens and generated OpenAPI docs
 - Privacy controls, including GDPR-grade account erasure with a grace period
-- Local disk or S3-compatible storage
+- Local disk, S3-compatible storage, or Google Cloud Storage
 
 ## Screenshots
 

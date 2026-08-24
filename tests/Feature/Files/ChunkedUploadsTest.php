@@ -251,3 +251,33 @@ test('a part within the size limit is still accepted', function () {
 
     expect($this->actingAs($user)->getJson("/uploads/{$session}/parts")->json())->toHaveCount(1);
 });
+
+test('a storage backend that refuses the write fails the upload instead of recording a phantom file', function () {
+    // Found against a real GCS bucket, not in a test: the disks are
+    // configured with 'throw' => false, so a refused write returns false
+    // rather than raising. The assembled bytes were dropped, the upload
+    // reported success, and a File row was created pointing at an object
+    // that had never been stored — an upload that silently disappears is
+    // worse than one that fails.
+    $this->actingAs($this->admin);
+    $sessionId = createSession(11, 'assembled.txt');
+
+    putPart($sessionId, 1, 'hello-');
+    putPart($sessionId, 2, 'world');
+
+    $refusing = Mockery::mock(Illuminate\Contracts\Filesystem\Filesystem::class);
+    $refusing->shouldReceive('writeStream')->once()->andReturnFalse();
+    Storage::set('files', $refusing);
+
+    $before = File::query()->count();
+
+    // The controller turns a RuntimeException from the assemble step into
+    // a validation error on `parts`, so the person uploading is told what
+    // went wrong instead of meeting a 500.
+    $this->postJson("/uploads/{$sessionId}/complete")
+        ->assertStatus(422)
+        ->assertJsonPath('errors.parts.0', fn (string $message): bool => str_contains($message, 'Could not write the assembled upload'));
+
+    // The point of the whole test: no row for bytes that were never stored.
+    expect(File::query()->count())->toBe($before);
+});

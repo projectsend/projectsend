@@ -30,6 +30,21 @@ a version is cut.
 
 ### Fixed
 
+- **Sessions no longer break behind a reverse proxy.** Signing in, or submitting the first-run setup
+  form, could answer with a page-filling error instead — most visibly for anyone running behind
+  Traefik, Nginx Proxy Manager or Caddy. `TRUSTED_PROXIES` was being read too early in the boot
+  sequence to be seen at all, so the setting had never had any effect on a web request. Without it
+  ProjectSend believed every visitor was arriving from the proxy over plain HTTP, built its links and
+  cookies accordingly, and rejected the form that came back as though it had come from somewhere
+  else. Docker installations that set the value as an environment variable were unaffected the whole
+  time; manual installs, where the guide tells you to put it in `.env`, were not — which is why this
+  looked so inconsistent. **Upgrade note:** if you run behind a proxy, set `TRUSTED_PROXIES` and do
+  not run `config:cache`, which stops `.env` being read at all. Both are covered in INSTALL.md.
+  ([#1672](https://github.com/projectsend/projectsend/issues/1672), reported by
+  [@mstewart14](https://github.com/mstewart14); fixed by
+  [@elibrachas](https://github.com/elibrachas) in
+  [#1674](https://github.com/projectsend/projectsend/pull/1674))
+
 - **Saving something after your session has expired now takes you to the login page.** Instead of
   being told to sign in again, you got an unexplained error — the dashboard's widget settings and
   several settings screens were the usual places to meet it. The cause was a detail of how browsers

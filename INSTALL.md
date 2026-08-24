@@ -84,7 +84,7 @@ Two ways out, if nginx really is impossible on your hosting:
   rather than as a misconfiguration. This applies to any proxy in front of ProjectSend, not just
   this one: Nginx Proxy Manager, Traefik and a hand-written nginx vhost all ship the same default.
   ([#1664](https://github.com/projectsend/projectsend/issues/1664))
-- Store your files in S3-compatible object storage instead (see
+- Store your files in object storage instead — S3-compatible or Google Cloud Storage (see
   [Storing files somewhere other than this server](#storing-files-somewhere-other-than-this-server)).
   Files kept there are never on your server's disk, so downloads become a signed, expiring redirect
   to the storage provider and the web server is not involved at all. This is a genuine, supported
@@ -447,8 +447,20 @@ the worker afterwards.
 ### Storing files somewhere other than this server
 
 Out of the box, uploads live in `storage/app/files/` on this machine. You can point ProjectSend at
-S3-compatible object storage instead from **System → Settings → Storage** — useful when the files
-outgrow the server's disk.
+object storage instead from **System → Settings → Storage** — useful when the files outgrow the
+server's disk.
+
+Two backends are offered. **S3-compatible** covers AWS S3 and everything speaking that API: MinIO,
+Backblaze B2, Wasabi, DigitalOcean Spaces. Leave the endpoint blank for AWS itself, or set it to the
+service's own address and turn on path-style addressing, which most of them need. **Google Cloud
+Storage** takes a service account key with read and write access to the bucket, pasted in as the JSON
+file Google issues; it is stored encrypted and never shown again.
+
+Whichever you choose, use **Test connection** before switching uploads over — it checks the
+credentials actually reach the bucket, rather than leaving you to find out at the first upload.
+
+The setting applies to new uploads. Files already on local disk stay there and keep working, and
+there is no migration between backends.
 
 ### Making it faster
 

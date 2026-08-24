@@ -7,6 +7,7 @@ namespace App\Modules\Identity\Http\Middleware;
 use App\Modules\Identity\TwoFactor\TwoFactorEnforcement;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use App\Support\WriteSafeRedirect;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,6 +49,6 @@ class EnforceTwoFactor
             return $next($request);
         }
 
-        return redirect()->route('two-factor.show')->with('two_factor_enforced_notice', true);
+        return WriteSafeRedirect::apply($request, redirect()->route('two-factor.show')->with('two_factor_enforced_notice', true));
     }
 }

@@ -30,6 +30,19 @@ a version is cut.
 
 ### Fixed
 
+- **Saving something after your session has expired now takes you to the login page.** Instead of
+  being told to sign in again, you got an unexplained error — the dashboard's widget settings and
+  several settings screens were the usual places to meet it. The cause was a detail of how browsers
+  follow redirects: they repeat the original request at the new address, so "save this" became "save
+  this to the login page", which the login page has no idea what to do with. It now answers in a way
+  that sends the browser to read the page rather than repeat the save. The same thing could happen to
+  an account that was deactivated while someone was working in it, or one being asked to set up
+  two-factor authentication, and both are fixed with it.
+  ([#1673](https://github.com/projectsend/projectsend/issues/1673), reported by
+  [@mstewart14](https://github.com/mstewart14); found, diagnosed and fixed by
+  [@denkfabrik-li](https://github.com/denkfabrik-li) in
+  [#1680](https://github.com/projectsend/projectsend/pull/1680))
+
 - **An upload that cannot be stored now fails instead of disappearing.** When files are kept in
   object storage and the storage backend refuses a write — an expired key, a bucket that has been
   renamed or removed, a permission that changed underneath you — the upload used to report success

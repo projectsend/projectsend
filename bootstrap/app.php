@@ -14,6 +14,7 @@ use App\Modules\Identity\Http\Middleware\EnsureSetupIsComplete;
 use App\Modules\Identity\Http\Middleware\EnsureStaff;
 use App\Modules\Platform\Http\Middleware\EnsureCapability;
 use App\Modules\Platform\Http\Middleware\SetLocale;
+use App\Support\WriteSafeRedirect;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -118,17 +119,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // A redirect born in exception handling — the guest redirect after
         // an expired login, above all — never travels back through the
         // middleware stack, so Inertia's usual 302→303 upgrade cannot reach
-        // it. Browsers follow a 302 by replaying the request method on the
-        // redirect target (only POST is downgraded to GET), so a PUT that
-        // should land on the login page replays as PUT /login and dies with
-        // a 405 that hides the real "please sign in again". 303 makes the
-        // follow-up a GET, which is the only sensible thing after a write.
-        $exceptions->respond(function (SymfonyResponse $response, Throwable $e, Request $request) {
-            if ($response->getStatusCode() === SymfonyResponse::HTTP_FOUND
-                && in_array($request->method(), ['PUT', 'PATCH', 'DELETE'], true)) {
-                $response->setStatusCode(SymfonyResponse::HTTP_SEE_OTHER);
-            }
-
-            return $response;
-        });
+        // it. WriteSafeRedirect explains why that matters and holds the
+        // rule; the same three middleware that answer before Inertia's is
+        // reached apply it too.
+        $exceptions->respond(
+            fn (SymfonyResponse $response, Throwable $e, Request $request): SymfonyResponse => WriteSafeRedirect::apply($request, $response)
+        );
     })->create();

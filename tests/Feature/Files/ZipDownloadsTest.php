@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Files\Jobs\BuildZipDownloadJob;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Models\ZipDownload;
@@ -237,6 +238,117 @@ test('the purge command removes zip downloads and files older than 24 hours', fu
         ->and(ZipDownload::query()->find($new->id))->not->toBeNull()
         ->and(Storage::disk('files')->exists('zips/old.zip'))->toBeFalse()
         ->and(Storage::disk('files')->exists('zips/new.zip'))->toBeTrue();
+});
+
+// The store guard rejects an empty selection, but a file selected and then
+// removed before the queued job runs leaves nothing to add. libzip writes
+// no file at all for a zero-entry archive, so a "ready" row would point the
+// download controller at a path that does not exist.
+test('a build with no available files is marked failed rather than ready over an empty archive', function () {
+    $file = zipUploadFile($this->admin, 'gone.pdf');
+
+    $zipDownload = ZipDownload::query()->create([
+        'requested_by' => $this->admin->id,
+        'status' => ZipDownload::STATUS_PENDING,
+        'file_ids' => [$file->id],
+        'folder_ids' => [],
+    ]);
+
+    // Gone from the requester's view by the time the job builds the archive.
+    $file->delete();
+
+    (new BuildZipDownloadJob($zipDownload->id))->handle();
+
+    $zipDownload->refresh();
+
+    expect($zipDownload->status)->toBe(ZipDownload::STATUS_FAILED)
+        ->and($zipDownload->path)->toBeNull()
+        ->and(Storage::disk('files')->exists("zips/{$zipDownload->id}.zip"))->toBeFalse();
+});
+
+// ZipArchive reads each source only at close(); if the bytes vanish in
+// between (a staff delete triggers FileDiskCleanup at once) close() returns
+// false. The row must fail rather than go ready over an archive that was
+// never actually written to disk.
+test('a source file deleted after it was queued fails the build instead of serving a broken archive', function () {
+    $file = zipUploadFile($this->admin, 'vanishing.pdf');
+
+    $zipDownload = ZipDownload::query()->create([
+        'requested_by' => $this->admin->id,
+        'status' => ZipDownload::STATUS_PENDING,
+        'file_ids' => [$file->id],
+        'folder_ids' => [],
+    ]);
+
+    // The row stays visible, but its bytes are gone before the build closes.
+    Storage::disk('files')->delete($file->path);
+
+    (new BuildZipDownloadJob($zipDownload->id))->handle();
+
+    $zipDownload->refresh();
+
+    expect($zipDownload->status)->toBe(ZipDownload::STATUS_FAILED)
+        ->and($zipDownload->path)->toBeNull()
+        ->and(Storage::disk('files')->exists("zips/{$zipDownload->id}.zip"))->toBeFalse();
+});
+
+// A build that blows the worker timeout is killed mid-run: handle()'s own
+// catch never executes, so without this hook the row would poll as pending
+// forever and the frontend would never stop.
+test('the failed hook fails a still-pending row when the worker gives up on the job', function () {
+    $zipDownload = ZipDownload::query()->create([
+        'requested_by' => $this->admin->id,
+        'status' => ZipDownload::STATUS_PENDING,
+    ]);
+
+    (new BuildZipDownloadJob($zipDownload->id))->failed(new RuntimeException('timed out'));
+
+    $zipDownload->refresh();
+
+    expect($zipDownload->status)->toBe(ZipDownload::STATUS_FAILED)
+        ->and($zipDownload->error)->not->toBeNull();
+});
+
+// A late failure signal (a retry racing a build that already finished) must
+// not overwrite a row that already delivered a ready archive.
+test('the failed hook leaves a row that already finished alone', function () {
+    $zipDownload = ZipDownload::query()->create([
+        'requested_by' => $this->admin->id,
+        'status' => ZipDownload::STATUS_READY,
+        'path' => 'zips/whatever.zip',
+    ]);
+
+    (new BuildZipDownloadJob($zipDownload->id))->failed(new RuntimeException('too late'));
+
+    expect($zipDownload->refresh()->status)->toBe(ZipDownload::STATUS_READY);
+});
+
+test('the build job runs once and allows enough time for a large archive', function () {
+    $job = new BuildZipDownloadJob(1);
+
+    expect($job->tries)->toBe(1)
+        ->and($job->timeout)->toBeGreaterThan(60);
+});
+
+// A build killed before it finished (worker timeout, full disk) leaves a
+// partial archive — and libzip's temp file beside it — on disk but never
+// writes a path back to the row. Purge keys off the row id so it clears
+// them anyway.
+test('the purge command removes leftover archives even when the row never recorded a path', function () {
+    $row = ZipDownload::query()->create([
+        'requested_by' => $this->admin->id,
+        'status' => ZipDownload::STATUS_FAILED,
+    ]);
+    $row->forceFill(['created_at' => now()->subDays(2)])->save();
+
+    Storage::disk('files')->put("zips/{$row->id}.zip", 'partial');
+    Storage::disk('files')->put("zips/{$row->id}.zip.tmp0a1b2c", 'libzip temp');
+
+    $this->artisan('projectsend:purge-zip-downloads')->assertSuccessful();
+
+    expect(ZipDownload::query()->find($row->id))->toBeNull()
+        ->and(Storage::disk('files')->exists("zips/{$row->id}.zip"))->toBeFalse()
+        ->and(Storage::disk('files')->exists("zips/{$row->id}.zip.tmp0a1b2c"))->toBeFalse();
 });
 
 // original_name is uploader-chosen and validated only for length, so it

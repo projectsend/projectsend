@@ -40,6 +40,24 @@ class BuildZipDownloadJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    /**
+     * A zip build is not usefully retryable — a source file that went
+     * missing mid-build, or an allowance spent while the job waited, makes
+     * a second attempt no likelier to succeed — so a failure is recorded
+     * once and surfaced to the requester rather than silently retried.
+     */
+    public int $tries = 1;
+
+    /**
+     * Building the archive is the whole job, and a large selection (up to
+     * ZipDownloadsController::MAX_FILES sources, some stream-copied from a
+     * remote disk) runs well past the queue worker's default 60s timeout.
+     * Without room the worker kills the process mid-build before the catch
+     * can run, stranding the row as PENDING forever; failed() is the
+     * backstop for when the kill lands anyway.
+     */
+    public int $timeout = 3600;
+
     public function __construct(
         private readonly int $zipDownloadId,
     ) {}
@@ -112,10 +130,36 @@ class BuildZipDownloadJob implements ShouldQueue
                 $totalSize += $this->addFolder($zip, $folder, $requester, $usedNames, $tempFiles, $visible, $skipped, $added);
             }
 
-            $zip->close();
+            // ZipArchive defers every write to close(): a source file
+            // deleted after its addFile() (a concurrent staff delete runs
+            // FileDiskCleanup at once) or a full disk only surfaces here,
+            // as a false return. Its low-level warning is silenced (as with
+            // the @unlink cleanup below) so the return value is the signal
+            // we act on, deterministically, rather than an exception whose
+            // firing depends on the error_reporting level. An archive that
+            // ended up with no entries is the same kind of non-result —
+            // libzip writes no file for one at all, even though close()
+            // still returns true. Either way there is nothing to serve, so
+            // the row must not be marked ready over a missing or empty
+            // archive: the download controller would X-Accel a file that
+            // isn't there.
+            $written = @$zip->close();
 
             foreach ($tempFiles as $tempFile) {
                 @unlink($tempFile);
+            }
+
+            if ($written !== true || $added === 0) {
+                Storage::disk('files')->delete($relativePath);
+
+                $zipDownload->update([
+                    'status' => ZipDownload::STATUS_FAILED,
+                    'error' => $added === 0
+                        ? 'None of the selected files were available to add to the archive.'
+                        : 'The zip archive could not be written.',
+                ]);
+
+                return;
             }
 
             $zipDownload->update([
@@ -135,6 +179,27 @@ class BuildZipDownloadJob implements ShouldQueue
                 'error' => $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * Runs when the queue gives up on the job — most importantly when the
+     * worker kills it for exceeding $timeout, which skips handle()'s own
+     * catch and would otherwise leave the row PENDING forever, polled by
+     * the frontend with no end. Only a row still pending is touched: a
+     * build that already resolved itself (ready or failed) is left alone.
+     */
+    public function failed(?Throwable $exception): void
+    {
+        $zipDownload = ZipDownload::query()->find($this->zipDownloadId);
+
+        if ($zipDownload === null || $zipDownload->status !== ZipDownload::STATUS_PENDING) {
+            return;
+        }
+
+        $zipDownload->update([
+            'status' => ZipDownload::STATUS_FAILED,
+            'error' => 'The zip archive could not be built.',
+        ]);
     }
 
     /**

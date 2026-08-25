@@ -208,46 +208,44 @@ export function AppSidebar() {
     }
 
     if (can('edit_settings') || can('edit_email_templates') || canCustomizeBranding) {
-        const settingsItems = [];
+        const settings = can('edit_settings');
 
-        if (can('edit_settings')) {
-            settingsItems.push(
-                { title: t('General'), url: '/system/settings/general' },
-                { title: t('Security'), url: '/system/settings/security' },
-                { title: t('Clients'), url: '/system/settings/clients' },
-                { title: t('Uploads'), url: '/system/settings/uploads' },
-                { title: t('File retention'), url: '/system/settings/file-retention' },
-                { title: t('Comments'), url: '/system/settings/comments' },
-                { title: t('Email'), url: '/system/settings/email' },
-                { title: t('LDAP'), url: '/system/settings/ldap' },
-                { title: t('Social login'), url: '/system/settings/social-login' },
-                { title: t('CAPTCHA'), url: '/system/settings/captcha' },
-                { title: t('Privacy'), url: '/system/settings/privacy' },
-                { title: t('Public listing'), url: '/system/settings/public-listing' },
-                { title: t('Theming'), url: '/system/settings/theming' },
-                { title: t('Languages'), url: '/system/settings/languages' },
-            );
+        // One ordered list grouped by subject, each entry carrying its own
+        // condition. The conditional entries used to be pushed on at the end
+        // regardless of what they were about, which is why Storage sat under
+        // Languages and Email templates sat nowhere near Email.
+        const settingsItems = [
+            // The installation itself, and how it looks.
+            { title: t('General'), url: '/system/settings/general', when: settings },
+            { title: t('Languages'), url: '/system/settings/languages', when: settings },
+            { title: t('Theming'), url: '/system/settings/theming', when: settings },
+            { title: t('Branding'), url: '/system/settings/branding', when: canCustomizeBranding },
 
-            if (capabilities.includes('storage.configure')) {
-                settingsItems.push({ title: t('Storage'), url: '/system/settings/storage' });
-            }
+            // Who gets an account, and how they prove who they are.
+            { title: t('Clients'), url: '/system/settings/clients', when: settings },
+            { title: t('Security'), url: '/system/settings/security', when: settings },
+            { title: t('LDAP'), url: '/system/settings/ldap', when: settings },
+            { title: t('Social login'), url: '/system/settings/social-login', when: settings },
+            { title: t('CAPTCHA'), url: '/system/settings/captcha', when: settings },
 
-            if (capabilities.includes('scheduler.monitoring')) {
-                settingsItems.push({ title: t('Scheduler'), url: '/system/settings/scheduler' });
-            }
-        }
+            // Files: where they land, how long they stay, who can see them.
+            { title: t('Uploads'), url: '/system/settings/uploads', when: settings },
+            { title: t('Storage'), url: '/system/settings/storage', when: settings && capabilities.includes('storage.configure') },
+            { title: t('File retention'), url: '/system/settings/file-retention', when: settings },
+            { title: t('Comments'), url: '/system/settings/comments', when: settings },
+            { title: t('Public listing'), url: '/system/settings/public-listing', when: settings },
+            { title: t('Privacy'), url: '/system/settings/privacy', when: settings },
 
-        if (can('edit_email_templates')) {
-            settingsItems.push({ title: t('Email templates'), url: '/system/settings/email-templates' });
-        }
+            // Outgoing mail: the transport, then what it says.
+            { title: t('Email'), url: '/system/settings/email', when: settings },
+            { title: t('Email templates'), url: '/system/settings/email-templates', when: can('edit_email_templates') },
 
-        if (canCustomizeBranding) {
-            settingsItems.push({ title: t('Branding'), url: '/system/settings/branding' });
-        }
-
-        if (can('edit_settings')) {
-            settingsItems.push({ title: t('About'), url: '/system/about' });
-        }
+            // Housekeeping.
+            { title: t('Scheduler'), url: '/system/settings/scheduler', when: settings && capabilities.includes('scheduler.monitoring') },
+            { title: t('About'), url: '/system/about', when: settings },
+        ]
+            .filter((item) => item.when)
+            .map(({ title, url }) => ({ title, url }));
 
         adminItems.push({
             title: t('Settings'),

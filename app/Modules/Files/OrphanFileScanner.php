@@ -6,6 +6,7 @@ namespace App\Modules\Files;
 
 use App\Models\User;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Thumbnails\ImageRendition;
 use App\Modules\Files\Uploads\UploadExtensionPolicy;
 use App\Modules\Platform\Settings\ExternalStorageConfigApplier;
 use App\Modules\Platform\Settings\ExternalStorageSettings;
@@ -20,13 +21,6 @@ use Illuminate\Support\Facades\Storage;
  */
 class OrphanFileScanner
 {
-    // Derived artifacts written by FileThumbnailController and
-    // BuildZipDownloadJob respectively — never orphaned uploads, so
-    // never candidates regardless of what's in the files table.
-    // Thumbnails are always local; zips would be too if that job ever
-    // ran against 'files_external', so the exclusion applies per-disk.
-    private const EXCLUDED_PREFIXES = ['thumbnails/', 'zips/'];
-
     public function __construct(
         private readonly UploadExtensionPolicy $extensionPolicy,
         private readonly ExternalStorageConfigApplier $externalStorage,
@@ -160,9 +154,32 @@ class OrphanFileScanner
         ));
     }
 
+    /**
+     * Path prefixes that are derived artifacts, never orphaned uploads, so
+     * never candidates regardless of what's in the files table: every image
+     * rendition's cache directory (taken from ImageRendition so a new
+     * rendition can't be forgotten here — previews used to be) plus the
+     * download-bundle job's 'zips'. Thumbnails and previews are always local;
+     * zips would be too if that job ever ran against 'files_external', so the
+     * exclusion applies per-disk.
+     *
+     * @return list<string>
+     */
+    private function excludedPrefixes(): array
+    {
+        $prefixes = array_map(
+            static fn (ImageRendition $rendition): string => $rendition->directory().'/',
+            ImageRendition::cases(),
+        );
+
+        $prefixes[] = 'zips/';
+
+        return $prefixes;
+    }
+
     private function isExcluded(string $path): bool
     {
-        foreach (self::EXCLUDED_PREFIXES as $prefix) {
+        foreach ($this->excludedPrefixes() as $prefix) {
             if (str_starts_with($path, $prefix)) {
                 return true;
             }

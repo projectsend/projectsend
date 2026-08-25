@@ -130,7 +130,17 @@ class ClientsController extends Controller
             $client->notify(new ClientWelcomeNotification);
         }
 
-        return redirect()->route('clients.edit', $client)->with('success', __('Client created.'));
+        // A role can hold create_clients without edit_clients, and the edit
+        // page this used to land on unconditionally answers such a role
+        // with a 403 — after the client was created, logged and welcomed.
+        // Fall back to the create form: it shares this route's own gate, so
+        // it is reachable by exactly whoever just created the record, and
+        // the success toast shows there.
+        $target = $request->user()?->can('edit_clients')
+            ? redirect()->route('clients.edit', $client)
+            : redirect()->route('clients.create');
+
+        return $target->with('success', __('Client created.'));
     }
 
     public function edit(User $client): Response

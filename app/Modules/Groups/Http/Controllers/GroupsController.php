@@ -92,7 +92,12 @@ class GroupsController extends Controller
             $this->activity->log(Action::GroupMadePublic, subject: $group, context: ['slug' => $group->slug]);
         }
 
-        return redirect()->route('groups.edit', $group)->with('success', __('Group created.'));
+        // Same create-without-edit rule as ClientsController::store().
+        $target = $request->user()?->can('edit_groups')
+            ? redirect()->route('groups.edit', $group)
+            : redirect()->route('groups.create');
+
+        return $target->with('success', __('Group created.'));
     }
 
     public function edit(Group $group): Response

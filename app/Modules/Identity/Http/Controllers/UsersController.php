@@ -126,7 +126,12 @@ class UsersController extends Controller
             'password' => $validated['password'],
         ], $validated['assigned_clients'] ?? []);
 
-        return redirect()->route('users.edit', $user)->with('success', __('User created.'));
+        // Same create-without-edit rule as ClientsController::store().
+        $target = $this->actor()->can('edit_users')
+            ? redirect()->route('users.edit', $user)
+            : redirect()->route('users.create');
+
+        return $target->with('success', __('User created.'));
     }
 
     public function edit(User $user): Response

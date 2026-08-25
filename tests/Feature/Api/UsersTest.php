@@ -388,6 +388,22 @@ test('deleting an account with no content needs no body, and is audited', functi
     expect($entry->context['name'])->toBe('Departing');
 });
 
+test('a failure while disposing of a deleted account\'s content rolls the deletion back', function () {
+    $user = User::factory()->role(SystemRole::Uploader)->create();
+
+    failAccountContentDisposal();
+
+    $this->withToken($this->token)->deleteJson("/api/v1/users/{$user->id}", [
+        'content_action' => 'reassign',
+        'reassign_to_id' => $this->admin->id,
+    ])->assertStatus(500);
+
+    // The soft-delete shares a transaction with the content step, so its
+    // failure leaves the account intact rather than deleted-but-orphaning.
+    expect(User::query()->whereKey($user->id)->exists())->toBeTrue()
+        ->and(ActivityLog::query()->where('action', Action::UserDeleted)->exists())->toBeFalse();
+});
+
 /*
 |--------------------------------------------------------------------------
 | Token abilities

@@ -196,6 +196,22 @@ test('reassign moves the content to the named account', function () {
     expect(File::query()->find($file->id)?->uploaded_by)->toBe($this->admin->id);
 });
 
+test('a failure while disposing of a deleted client\'s content rolls the deletion back', function () {
+    $client = User::factory()->client()->create();
+
+    failAccountContentDisposal();
+
+    $this->withToken($this->token)->deleteJson("/api/v1/clients/{$client->id}", [
+        'content_action' => 'reassign',
+        'reassign_to_id' => $this->admin->id,
+    ])->assertStatus(500);
+
+    // The soft-delete shares a transaction with the content step, so its
+    // failure leaves the client intact rather than deleted-but-orphaning.
+    expect(User::query()->whereKey($client->id)->exists())->toBeTrue()
+        ->and(ActivityLog::query()->where('action', Action::UserDeleted)->exists())->toBeFalse();
+});
+
 test('show reports what a delete would have to decide about', function () {
     $client = User::factory()->client()->create();
     File::factory()->count(2)->create(['uploaded_by' => $client->id]);

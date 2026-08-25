@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use App\Modules\Files\DeletedAccountContent;
 use App\Modules\Files\Folders\FolderService;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\FileAssignment;
@@ -257,4 +258,27 @@ function fakeIdToken(string $email = 'portal@example.test'): string
     $encode = fn (array $claims): string => rtrim(strtr(base64_encode((string) json_encode($claims)), '+/', '-_'), '=');
 
     return $encode(['alg' => 'none']).'.'.$encode(['preferred_username' => $email]).'.sig';
+}
+
+/**
+ * Bind a DeletedAccountContent double that reports content to dispose of (so
+ * a delete demands a choice) and then throws while carrying that choice out.
+ * Lets the account-deletion tests prove the destroy() controllers roll their
+ * soft-delete back when the content step fails, rather than stranding a
+ * deleted account whose files still point at it.
+ */
+function failAccountContentDisposal(): void
+{
+    app()->instance(DeletedAccountContent::class, new class extends DeletedAccountContent
+    {
+        public function summarize(User $user): array
+        {
+            return ['files' => 1, 'folders' => 0];
+        }
+
+        public function reassignTo(User $from, User $to): array
+        {
+            throw new RuntimeException('content reassignment failed');
+        }
+    });
 }

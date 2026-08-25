@@ -13,7 +13,84 @@ Anything under **Upgrade notes** is something you have to do, not something we d
 This section collects changes as they land; the release process turns it into a numbered entry when
 a version is cut.
 
+### Added
+
+- **Google Cloud Storage as a storage backend.** External storage used to mean S3 and nothing else.
+  The Storage settings screen now asks which provider you are using first, and offers Google Cloud
+  Storage alongside the S3-compatible option: choose it, paste a service account key with read and
+  write access to your bucket, and new uploads go there. The key is stored encrypted and never shown
+  again, and **Test connection** checks it can actually reach the bucket before you switch anything
+  over — using a probe that works with a least-privilege key, rather than one that needs permission
+  to read the bucket's own settings. Downloads and previews are handed to the visitor as a
+  short-lived signed link, exactly as they already were for S3.
+
+  Nothing changes for an existing installation. Configurations saved before this release are S3, are
+  still S3, and are not asked to say so. Files already stored stay where they are — the setting
+  applies to new uploads, and there is still no migration between backends.
+
 ### Fixed
+
+- **Sessions no longer break behind a reverse proxy.** Signing in, or submitting the first-run setup
+  form, could answer with a page-filling error instead — most visibly for anyone running behind
+  Traefik, Nginx Proxy Manager or Caddy. `TRUSTED_PROXIES` was being read too early in the boot
+  sequence to be seen at all, so the setting had never had any effect on a web request. Without it
+  ProjectSend believed every visitor was arriving from the proxy over plain HTTP, built its links and
+  cookies accordingly, and rejected the form that came back as though it had come from somewhere
+  else. Docker installations that set the value as an environment variable were unaffected the whole
+  time; manual installs, where the guide tells you to put it in `.env`, were not — which is why this
+  looked so inconsistent. **Upgrade note:** if you run behind a proxy, set `TRUSTED_PROXIES` and do
+  not run `config:cache`, which stops `.env` being read at all. Both are covered in INSTALL.md.
+  ([#1672](https://github.com/projectsend/projectsend/issues/1672), reported by
+  [@mstewart14](https://github.com/mstewart14); fixed by
+  [@elibrachas](https://github.com/elibrachas) in
+  [#1674](https://github.com/projectsend/projectsend/pull/1674))
+
+- **Saving something after your session has expired now takes you to the login page.** Instead of
+  being told to sign in again, you got an unexplained error — the dashboard's widget settings and
+  several settings screens were the usual places to meet it. The cause was a detail of how browsers
+  follow redirects: they repeat the original request at the new address, so "save this" became "save
+  this to the login page", which the login page has no idea what to do with. It now answers in a way
+  that sends the browser to read the page rather than repeat the save. The same thing could happen to
+  an account that was deactivated while someone was working in it, or one being asked to set up
+  two-factor authentication, and both are fixed with it.
+  ([#1673](https://github.com/projectsend/projectsend/issues/1673), reported by
+  [@mstewart14](https://github.com/mstewart14); found, diagnosed and fixed by
+  [@denkfabrik-li](https://github.com/denkfabrik-li) in
+  [#1680](https://github.com/projectsend/projectsend/pull/1680))
+
+- **An upload that cannot be stored now fails instead of disappearing.** When files are kept in
+  object storage and the storage backend refuses a write — an expired key, a bucket that has been
+  renamed or removed, a permission that changed underneath you — the upload used to report success
+  and record the file anyway. The entry appeared in the file list, and the download it promised was
+  never going to work, because the bytes had gone nowhere. The upload now stops and says so, and no
+  file is recorded. Installations keeping files on local disk were never affected.
+
+- **Downloads and thumbnails for installations using external storage.** Two places assumed every
+  file sat on the server's own disk, which stopped being true the moment S3-compatible storage was
+  switched on. A share link to a file held in a bucket produced a broken download, and a public
+  listing could not draw a thumbnail for one at all — while the same file downloaded and previewed
+  correctly everywhere else, which made it look like the share link or the listing was at fault
+  rather than where the file lived. Both now read the file from wherever it actually is. Nothing
+  changes for installations keeping files on local disk, which is most of them.
+
+- **One confirmation message instead of two.** Saving a new client, system user or role showed the
+  same green "Client created." twice, stacked. So did deleting one. It was only ever cosmetic —
+  nothing happened twice — but it read as though something had, which is the last thing a
+  confirmation should do. Saves that stay on the same screen, such as the email settings, were never
+  affected.
+  ([#1675](https://github.com/projectsend/projectsend/issues/1675), reported and diagnosed by
+  [@denkfabrik-li](https://github.com/denkfabrik-li))
+
+- **Connecting a provider to an account that already has one.** Signing in with Google, Microsoft or
+  a custom provider worked, but attaching one to an existing account did not: the **Connect** button
+  on Settings → Connected accounts appeared to do nothing at all. The button asks the server in the
+  background, and the server answered by redirecting to the provider — a redirect a browser will not
+  follow out of a background request to another site. The page sat there with no consent screen and
+  no error to explain it, so the only reading available was that the button was dead. The server now
+  tells the browser to go to the provider itself, and the flow starts as it should. Signing in from
+  the login page was never affected, and neither is it now.
+  ([#1676](https://github.com/projectsend/projectsend/pull/1676), found and fixed by
+  [@denkfabrik-li](https://github.com/denkfabrik-li))
 
 - **Downloads on a host where the web server is not PHP's user.** A download is not served by PHP:
   PHP checks permissions and then hands the web server the path to stream. Where the two run as

@@ -43,6 +43,15 @@ enum Capability: string
     // package (github.com/projectsend/cloud-modules), never in this repo.
     case Branding = 'branding.customize';
 
+    // Cloud-only — the storage backend is ours, supplied by the
+    // environment when the instance is provisioned and not the customer's
+    // to see or change. The counterpart of StorageConfigure above rather
+    // than a contradiction of it: one edition configures its own bucket,
+    // the other is given one. Behaviour lives in the private
+    // projectsend/cloud-modules package; without it this capability is
+    // simply inert and files stay on local disk.
+    case StorageManaged = 'storage.managed';
+
     // Cloud-only — managed installations supply CAPTCHA keys centrally, so
     // protection is on before anybody finds the settings screen. The
     // feature itself is in both editions and behind no capability: this
@@ -64,6 +73,7 @@ enum Capability: string
             self::CustomAssets => [Edition::Community],
 
             self::Branding,
+            self::StorageManaged,
             self::CaptchaManagedKeys => [Edition::Cloud],
         };
     }

@@ -6,6 +6,7 @@ namespace App\Modules\Identity\Http\Middleware;
 
 use App\Models\User;
 use App\Modules\Identity\UserType;
+use App\Support\WriteSafeRedirect;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,6 +29,6 @@ class EnsureSetupIsComplete
             return $next($request);
         }
 
-        return redirect()->route('setup');
+        return WriteSafeRedirect::apply($request, redirect()->route('setup'));
     }
 }

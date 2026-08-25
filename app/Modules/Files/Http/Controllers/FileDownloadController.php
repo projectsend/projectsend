@@ -8,28 +8,26 @@ use App\Http\Controllers\Controller;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Access\DownloadAllowance;
+use App\Modules\Files\Delivery\StoredFileResponse;
 use App\Modules\Files\Models\File;
-use App\Support\ContentDisposition;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Storage;
 
 /**
- * Authorized downloads without the bytes ever traversing PHP: for a file
- * on the local disk, the app checks the policy and answers with
- * X-Accel-Redirect; nginx streams the file from the protected location
- * (brief §3). The cloud edition swaps this for presigned URLs behind the
- * same route. A file on the community-only external storage disk already
- * gets exactly that — a presigned URL redirect — since nginx has no way
- * to serve bytes it doesn't have on disk.
+ * Authorized downloads without the bytes ever traversing PHP: the app
+ * checks the policy, and StoredFileResponse answers with either an
+ * X-Accel-Redirect for nginx to stream from the protected location
+ * (brief §3) or a presigned URL when the file lives on external storage,
+ * since nginx has no way to serve bytes it doesn't have on disk.
  */
 class FileDownloadController extends Controller
 {
     public function __construct(
         private readonly ActivityLogger $activity,
         private readonly DownloadAllowance $allowance,
+        private readonly StoredFileResponse $bytes,
     ) {}
 
     public function __invoke(Request $request, File $file): Response|RedirectResponse
@@ -44,21 +42,6 @@ class FileDownloadController extends Controller
 
         $this->activity->log(Action::FileDownloaded, subject: $file);
 
-        if ($file->disk !== 'files') {
-            $url = Storage::disk($file->disk)->temporaryUrl(
-                $file->path,
-                now()->addHour(),
-                ['ResponseContentDisposition' => ContentDisposition::attachment($file->original_name)],
-            );
-
-            return redirect()->away($url);
-        }
-
-        return response('', 200, [
-            'X-Accel-Redirect' => '/protected-files/'.$file->path,
-            'Content-Type' => $file->mime_type,
-            'Content-Disposition' => ContentDisposition::attachment($file->original_name),
-            'Content-Length' => (string) $file->size,
-        ]);
+        return $this->bytes->attachment($file);
     }
 }

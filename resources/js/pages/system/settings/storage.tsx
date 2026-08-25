@@ -9,14 +9,17 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
 
 interface StorageSettingsProps {
     active: boolean;
+    provider: string;
     access_key: string;
     has_secret: boolean;
+    has_key_file: boolean;
     bucket: string;
     region: string;
     endpoint: string;
@@ -29,8 +32,10 @@ const FORM_ID = 'storage-settings-form';
 
 export default function StorageSettings({
     active,
+    provider,
     access_key,
     has_secret,
+    has_key_file,
     bucket,
     region,
     endpoint,
@@ -48,8 +53,10 @@ export default function StorageSettings({
 
     const { data, setData, patch, processing, recentlySuccessful, errors } = useForm({
         active: active,
+        provider: provider,
         access_key: access_key,
         secret: '',
+        key_file: '',
         bucket: bucket,
         region: region,
         endpoint: endpoint,
@@ -57,11 +64,16 @@ export default function StorageSettings({
         root: root,
     });
 
+    const isGcs = data.provider === 'gcs';
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         patch(route('system-settings.storage.update'), {
             preserveScroll: true,
-            onSuccess: () => setData('secret', ''),
+            onSuccess: () => {
+                setData('secret', '');
+                setData('key_file', '');
+            },
         });
     };
 
@@ -70,8 +82,10 @@ export default function StorageSettings({
         router.post(
             route('system-settings.storage.test'),
             {
+                provider: data.provider,
                 access_key: data.access_key,
                 secret: data.secret,
+                key_file: data.key_file,
                 bucket: data.bucket,
                 region: data.region,
                 endpoint: data.endpoint,
@@ -89,7 +103,7 @@ export default function StorageSettings({
                 <Heading
                     title={t('Storage settings')}
                     description={t(
-                        'Connect an external S3-compatible bucket (AWS S3, MinIO, or another S3-compatible service) as the storage backend for new uploads.',
+                        'Connect an external bucket — S3-compatible (AWS S3, MinIO, Backblaze) or Google Cloud Storage — as the storage backend for new uploads.',
                     )}
                 />
 
@@ -111,24 +125,58 @@ export default function StorageSettings({
                         </div>
                     </div>
 
-                    <div className="flex gap-4">
-                        <div className="grid flex-1 gap-2">
-                            <Label htmlFor="storage_access_key">{t('Access key')}</Label>
-                            <Input id="storage_access_key" value={data.access_key} onChange={(e) => setData('access_key', e.target.value)} />
-                            <InputError message={errors.access_key} />
-                        </div>
-                        <div className="grid flex-1 gap-2">
-                            <Label htmlFor="storage_secret">{t('Secret key')}</Label>
-                            <Input
-                                id="storage_secret"
-                                type="password"
-                                placeholder={has_secret ? t('Unchanged') : ''}
-                                value={data.secret}
-                                onChange={(e) => setData('secret', e.target.value)}
-                            />
-                            <InputError message={errors.secret} />
-                        </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="storage_provider">{t('Provider')}</Label>
+                        <Select value={data.provider} onValueChange={(value) => setData('provider', value)}>
+                            <SelectTrigger id="storage_provider" className="w-64">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="s3">{t('S3-compatible')}</SelectItem>
+                                <SelectItem value="gcs">{t('Google Cloud Storage')}</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <InputError message={errors.provider} />
                     </div>
+
+                    {isGcs ? (
+                        <div className="grid gap-2">
+                            <Label htmlFor="storage_key_file">{t('Service account key')}</Label>
+                            <p className="text-muted-foreground text-sm">
+                                {t(
+                                    'Paste the JSON key file for a service account with object read and write access to the bucket. It is stored encrypted and never shown again.',
+                                )}
+                            </p>
+                            <Textarea
+                                id="storage_key_file"
+                                rows={6}
+                                className="font-mono text-xs"
+                                placeholder={has_key_file ? t('Unchanged') : '{ "type": "service_account", ... }'}
+                                value={data.key_file}
+                                onChange={(e) => setData('key_file', e.target.value)}
+                            />
+                            <InputError message={errors.key_file} />
+                        </div>
+                    ) : (
+                        <div className="flex gap-4">
+                            <div className="grid flex-1 gap-2">
+                                <Label htmlFor="storage_access_key">{t('Access key')}</Label>
+                                <Input id="storage_access_key" value={data.access_key} onChange={(e) => setData('access_key', e.target.value)} />
+                                <InputError message={errors.access_key} />
+                            </div>
+                            <div className="grid flex-1 gap-2">
+                                <Label htmlFor="storage_secret">{t('Secret key')}</Label>
+                                <Input
+                                    id="storage_secret"
+                                    type="password"
+                                    placeholder={has_secret ? t('Unchanged') : ''}
+                                    value={data.secret}
+                                    onChange={(e) => setData('secret', e.target.value)}
+                                />
+                                <InputError message={errors.secret} />
+                            </div>
+                        </div>
+                    )}
 
                     <div className="flex gap-4">
                         <div className="grid flex-1 gap-2">
@@ -136,42 +184,48 @@ export default function StorageSettings({
                             <Input id="storage_bucket" value={data.bucket} onChange={(e) => setData('bucket', e.target.value)} />
                             <InputError message={errors.bucket} />
                         </div>
-                        <div className="grid flex-1 gap-2">
-                            <Label htmlFor="storage_region">{t('Region')}</Label>
-                            <Input id="storage_region" value={data.region} onChange={(e) => setData('region', e.target.value)} />
-                            <InputError message={errors.region} />
-                        </div>
+                        {!isGcs && (
+                            <div className="grid flex-1 gap-2">
+                                <Label htmlFor="storage_region">{t('Region')}</Label>
+                                <Input id="storage_region" value={data.region} onChange={(e) => setData('region', e.target.value)} />
+                                <InputError message={errors.region} />
+                            </div>
+                        )}
                     </div>
 
-                    <div className="grid gap-2">
-                        <Label htmlFor="storage_endpoint">{t('Custom endpoint')}</Label>
-                        <p className="text-muted-foreground text-sm">
-                            {t('Leave blank for AWS S3. Set this to use an S3-compatible service such as MinIO or Backblaze.')}
-                        </p>
-                        <Input
-                            id="storage_endpoint"
-                            value={data.endpoint}
-                            onChange={(e) => setData('endpoint', e.target.value)}
-                            placeholder="https://s3.example.com"
-                        />
-                        <InputError message={errors.endpoint} />
-                    </div>
+                    {!isGcs && (
+                        <>
+                            <div className="grid gap-2">
+                                <Label htmlFor="storage_endpoint">{t('Custom endpoint')}</Label>
+                                <p className="text-muted-foreground text-sm">
+                                    {t('Leave blank for AWS S3. Set this to use an S3-compatible service such as MinIO or Backblaze.')}
+                                </p>
+                                <Input
+                                    id="storage_endpoint"
+                                    value={data.endpoint}
+                                    onChange={(e) => setData('endpoint', e.target.value)}
+                                    placeholder="https://s3.example.com"
+                                />
+                                <InputError message={errors.endpoint} />
+                            </div>
 
-                    <div className="flex items-start gap-2">
-                        <Checkbox
-                            id="use_path_style"
-                            checked={data.use_path_style}
-                            onCheckedChange={(checked) => setData('use_path_style', checked === true)}
-                        />
-                        <div className="grid gap-1">
-                            <Label htmlFor="use_path_style" className="font-normal">
-                                {t('Use path-style addressing')}
-                            </Label>
-                            <p className="text-muted-foreground text-sm">
-                                {t('Required by most S3-compatible services (MinIO, etc). Leave off for AWS S3.')}
-                            </p>
-                        </div>
-                    </div>
+                            <div className="flex items-start gap-2">
+                                <Checkbox
+                                    id="use_path_style"
+                                    checked={data.use_path_style}
+                                    onCheckedChange={(checked) => setData('use_path_style', checked === true)}
+                                />
+                                <div className="grid gap-1">
+                                    <Label htmlFor="use_path_style" className="font-normal">
+                                        {t('Use path-style addressing')}
+                                    </Label>
+                                    <p className="text-muted-foreground text-sm">
+                                        {t('Required by most S3-compatible services (MinIO, etc). Leave off for AWS S3.')}
+                                    </p>
+                                </div>
+                            </div>
+                        </>
+                    )}
 
                     <div className="grid gap-2">
                         <Label htmlFor="storage_root">{t('Path prefix')}</Label>

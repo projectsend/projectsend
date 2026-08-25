@@ -14,11 +14,13 @@ use App\Modules\Identity\Http\Middleware\EnsureSetupIsComplete;
 use App\Modules\Identity\Http\Middleware\EnsureStaff;
 use App\Modules\Platform\Http\Middleware\EnsureCapability;
 use App\Modules\Platform\Http\Middleware\SetLocale;
+use App\Support\WriteSafeRedirect;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Session\Middleware\AuthenticateSession;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -113,4 +115,14 @@ return Application::configure(basePath: dirname(__DIR__))
                 ? $problems->render($request, $e)
                 : null;
         });
+
+        // A redirect born in exception handling — the guest redirect after
+        // an expired login, above all — never travels back through the
+        // middleware stack, so Inertia's usual 302→303 upgrade cannot reach
+        // it. WriteSafeRedirect explains why that matters and holds the
+        // rule; the same three middleware that answer before Inertia's is
+        // reached apply it too.
+        $exceptions->respond(
+            fn (SymfonyResponse $response, Throwable $e, Request $request): SymfonyResponse => WriteSafeRedirect::apply($request, $response)
+        );
     })->create();

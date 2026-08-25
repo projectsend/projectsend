@@ -5,10 +5,50 @@ on:
     branches:
       - develop
       - main
+    paths-ignore:
+      # Files no code reads and no test covers. Deliberately NOT listed:
+      # CHANGELOG.md, which ReleaseNotes parses and ReleaseNotesTest
+      # covers, and docs/, whose only two tracked files are served by
+      # ApiDocsController and OpenApiController. A malformed edit to
+      # either is exactly the thing that must not skip the suite.
+      #
+      # Repeated verbatim under pull_request: GitHub Actions does not
+      # support YAML anchors.
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'SECURITY.md'
+      - 'LICENSING.md'
+      - 'CLA-ENTITY.md'
+      - 'CLA-INDIVIDUAL.md'
+      - 'INSTALL.md'
+      - 'UPDATE.md'
+      - 'DOCKER.md'
+      - 'MIGRATING-FROM-V1.md'
+      - 'docker/production/dockerhub-overview.md'
+      - '.github/screenshots/**'
   pull_request:
     branches:
       - develop
       - main
+    paths-ignore:
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'SECURITY.md'
+      - 'LICENSING.md'
+      - 'CLA-ENTITY.md'
+      - 'CLA-INDIVIDUAL.md'
+      - 'INSTALL.md'
+      - 'UPDATE.md'
+      - 'DOCKER.md'
+      - 'MIGRATING-FROM-V1.md'
+      - 'docker/production/dockerhub-overview.md'
+      - '.github/screenshots/**'
+
+# A second push supersedes the first: there is no value in finishing a run
+# for a commit nobody will look at again.
+concurrency:
+  group: tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   ci:
@@ -87,5 +127,17 @@ jobs:
       - name: Static Analysis
         run: ./vendor/bin/phpstan analyse --no-progress
 
+      # `--parallel` rather than a shorter suite. One process took 191s of
+      # this job's 4m30s; the same 1763 tests across the runner's cores
+      # take about a third of that, with nothing skipped. paratest is
+      # already a dev dependency (via Pest), so this needs no new install.
+      #
+      # `:memory:` explicitly: parallel testing gives each process its own
+      # database, and an in-memory one per process is what the suite is
+      # verified against locally. The job-level DB_DATABASE above is a file
+      # path, which parallel workers would have to create and migrate
+      # individually — a difference in behaviour with nothing to gain.
       - name: Tests
-        run: ./vendor/bin/pest
+        run: ./vendor/bin/pest --parallel
+        env:
+          DB_DATABASE: ':memory:'

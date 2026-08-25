@@ -23,6 +23,7 @@ use App\Modules\Platform\Scheduling\RecordsScheduledTaskRuns;
 use App\Modules\Platform\Settings\ExternalStorageConfigApplier;
 use App\Modules\Platform\Settings\MailConfigApplier;
 use App\Modules\Platform\Settings\Settings;
+use App\Modules\Platform\Storage\GoogleCloudStorageDriver;
 use App\Modules\Platform\Theming\Console\GenerateThemePreviewDataCommand;
 use App\Modules\Platform\Theming\EmailThemeRegistry;
 use App\Modules\Platform\Theming\PublicThemeRegistry;
@@ -99,6 +100,13 @@ class PlatformServiceProvider extends ServiceProvider
         // queue worker) picks up the admin-configured mail provider, if
         // any — a no-op until the Email settings page is actually saved.
         $this->app->make(MailConfigApplier::class)->apply();
+
+        // Laravel ships no 'gcs' driver, so the disk config the applier
+        // is about to write would resolve to nothing without this. Cheap
+        // and inert on an install that never selects it: extend() only
+        // records a factory, and nothing calls it until something asks
+        // for a disk whose driver is 'gcs'.
+        $this->app->make(GoogleCloudStorageDriver::class)->register();
 
         // Same idea for the admin-configured external storage backend —
         // a no-op until the Storage settings page is actually saved. The

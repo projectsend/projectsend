@@ -20,6 +20,7 @@
         "laravel/socialite": "^5.29",
         "laravel/tinker": "^2.10.1",
         "league/flysystem-aws-s3-v3": "^3.29",
+        "league/flysystem-google-cloud-storage": "^3.34",
         "pragmarx/google2fa": "^9.0",
         "projectsend/community-modules": "^1.0",
         "stevebauman/purify": "^6.3",

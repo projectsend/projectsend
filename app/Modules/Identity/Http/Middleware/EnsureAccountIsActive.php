@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Identity\Http\Middleware;
 
+use App\Support\WriteSafeRedirect;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,9 +26,9 @@ class EnsureAccountIsActive
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            return redirect()->route('login')->withErrors([
+            return WriteSafeRedirect::apply($request, redirect()->route('login')->withErrors([
                 'email' => __('Your account has been deactivated.'),
-            ]);
+            ]));
         }
 
         return $next($request);

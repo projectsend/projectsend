@@ -18,6 +18,7 @@ use App\Modules\Files\Uploads\StoreUploadedFile;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use App\Support\ContentDisposition;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -200,9 +201,50 @@ class ZipDownloadsController extends Controller
      */
     private function logContainedDownloads(ZipDownload $zipDownload, User $requester): void
     {
-        // Same per-file filter the job used to decide what actually went
-        // into the archive, so the log records what was really downloaded
-        // rather than everything that happened to sit in the folder.
+        foreach ($this->containedFiles($zipDownload, $requester) as $file) {
+            $this->activity->log(Action::FileDownloaded, subject: $file);
+        }
+    }
+
+    /**
+     * The files this archive actually holds.
+     *
+     * The job records them as it writes them, so this describes a
+     * delivery rather than a selection. Resolving the folders again here
+     * would answer a different question — what the selection means *now*
+     * — and the two drift the moment a folder changes between the build
+     * and the fetch: a file added afterwards was counted as downloaded
+     * without ever being in the archive, and one moved out of the folder
+     * was handed over without being counted.
+     *
+     * Deliberately not filtered by what the requester may see today
+     * either. The bytes are in the archive already; a file that has since
+     * expired or left their scope is still being given to them, and a
+     * count that quietly dropped it would understate what was taken.
+     *
+     * @return Collection<int, File>
+     */
+    private function containedFiles(ZipDownload $zipDownload, User $requester): Collection
+    {
+        $contained = $zipDownload->contained_file_ids;
+
+        if ($contained === null) {
+            return $this->resolveSelection($zipDownload, $requester);
+        }
+
+        return File::query()->whereIn('id', $contained)->get();
+    }
+
+    /**
+     * What an archive built before the job recorded its contents is taken
+     * to hold: the selection, resolved again, which is how this worked
+     * throughout. Only reachable for rows written by an older release,
+     * and PurgeZipDownloadsCommand removes those within a day.
+     *
+     * @return Collection<int, File>
+     */
+    private function resolveSelection(ZipDownload $zipDownload, User $requester): Collection
+    {
         $visible = $this->viewable->for($requester);
         $fileIds = collect($zipDownload->file_ids);
 
@@ -220,9 +262,7 @@ class ZipDownloadsController extends Controller
         // further past it.
         $skipped = collect($zipDownload->skipped_files ?? [])->pluck('id')->all();
 
-        foreach ((clone $visible)->whereIn('id', $fileIds->unique())->whereNotIn('id', $skipped)->get() as $file) {
-            $this->activity->log(Action::FileDownloaded, subject: $file);
-        }
+        return (clone $visible)->whereIn('id', $fileIds->unique())->whereNotIn('id', $skipped)->get();
     }
 
     private function filenameFor(ZipDownload $zipDownload): string

@@ -39,6 +39,7 @@ yarn-error.log
 /database/seeders/DevDataSeeder.php
 /docs/*.md
 !/docs/api-guide.md
+!/docs/email-oauth.md
 
 # ── Local-only dev TLS ──
 # mkcert certificates and the nginx config that terminates HTTPS on the

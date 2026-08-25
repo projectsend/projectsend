@@ -245,3 +245,16 @@ function publicListingImageFile(User $uploader): File
 
     return $file;
 }
+
+/**
+ * An id_token whose payload names a mailbox the OAuth mail flow connects
+ * as — signature irrelevant, it is never verified. Shared between the
+ * Microsoft and Gmail OAuth mail tests, which run in separate processes
+ * under --parallel.
+ */
+function fakeIdToken(string $email = 'portal@example.test'): string
+{
+    $encode = fn (array $claims): string => rtrim(strtr(base64_encode((string) json_encode($claims)), '+/', '-_'), '=');
+
+    return $encode(['alg' => 'none']).'.'.$encode(['preferred_username' => $email]).'.sig';
+}

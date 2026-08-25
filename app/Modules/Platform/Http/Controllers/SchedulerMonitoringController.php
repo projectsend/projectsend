@@ -61,6 +61,7 @@ class SchedulerMonitoringController extends Controller
             'projectsend:purge-api-request-logs' => (string) __('Purge API request logs'),
             'projectsend:purge-failed-jobs' => (string) __('Purge failed jobs'),
             'projectsend:purge-notifications' => (string) __('Purge read notifications'),
+            'projectsend:refresh-mail-oauth-tokens' => (string) __('Refresh mail OAuth tokens'),
         ];
     }
 

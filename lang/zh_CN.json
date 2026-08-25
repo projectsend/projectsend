@@ -896,6 +896,7 @@
     "This permanently removes every failed job from the list without retrying any of them. This cannot be undone.": "这将从列表中永久删除所有失败的任务，且不会重试其中任何一个。此操作无法撤销。",
     "This role is assigned to accounts and cannot be deleted.": "此角色已分配给账户，无法删除。",
     "This role only sees files and folders belonging to these clients, plus its own uploads.": "此角色只能看到以下客户的文件和文件夹，以及自己上传的内容。",
+    "This upload is already being finalised.": "此次上传已在完成处理中。",
     "This upload would exceed your storage quota of :quota MB.": "此次上传会超出你 :quota MB 的存储配额。",
     "Tip: drag files and folders onto a folder or a breadcrumb to move them.": "提示：把文件和文件夹拖到某个文件夹或面包屑导航上即可移动。",
     "Title": "标题",

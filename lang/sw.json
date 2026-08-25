@@ -896,6 +896,7 @@
     "This permanently removes every failed job from the list without retrying any of them. This cannot be undone.": "Hii huondoa kabisa kila kazi iliyoshindwa kwenye orodha bila kujaribu tena hata moja. Haiwezi kutenduliwa.",
     "This role is assigned to accounts and cannot be deleted.": "Jukumu hili limegawiwa kwa akaunti kadhaa, hivyo haliwezi kufutwa.",
     "This role only sees files and folders belonging to these clients, plus its own uploads.": "Jukumu hili huona tu mafaili na folda za wateja hawa, pamoja na yale lililoyapakia lenyewe.",
+    "This upload is already being finalised.": "Upakiaji huu tayari unakamilishwa.",
     "This upload would exceed your storage quota of :quota MB.": "Upakiaji huu ungezidi kiasi chako cha hifadhi cha MB :quota.",
     "Tip: drag files and folders onto a folder or a breadcrumb to move them.": "Dokezo: buruta mafaili na folda hadi kwenye folda au njia ya urambazaji ili kuvihamisha.",
     "Title": "Kichwa",

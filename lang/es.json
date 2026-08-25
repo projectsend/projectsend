@@ -896,6 +896,7 @@
     "This permanently removes every failed job from the list without retrying any of them. This cannot be undone.": "Esto elimina permanentemente todos los trabajos fallidos de la lista sin reintentar ninguno. No se puede deshacer.",
     "This role is assigned to accounts and cannot be deleted.": "Este rol está asignado a cuentas y no se puede eliminar.",
     "This role only sees files and folders belonging to these clients, plus its own uploads.": "Este rol solo ve los archivos y carpetas de estos clientes, además de sus propias subidas.",
+    "This upload is already being finalised.": "Esta subida ya se está finalizando.",
     "This upload would exceed your storage quota of :quota MB.": "Esta subida superaría tu cuota de almacenamiento de :quota MB.",
     "Tip: drag files and folders onto a folder or a breadcrumb to move them.": "Consejo: arrastra archivos y carpetas sobre una carpeta o una miga de pan para moverlos.",
     "Title": "Título",

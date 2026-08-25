@@ -896,6 +896,7 @@
     "This permanently removes every failed job from the list without retrying any of them. This cannot be undone.": "Dit verwijdert alle mislukte taken definitief uit de lijst zonder er ook maar één opnieuw te proberen. Dit kan niet ongedaan worden gemaakt.",
     "This role is assigned to accounts and cannot be deleted.": "Deze rol is aan accounts toegewezen en kan niet worden verwijderd.",
     "This role only sees files and folders belonging to these clients, plus its own uploads.": "Deze rol ziet alleen bestanden en mappen van deze klanten, plus de eigen uploads.",
+    "This upload is already being finalised.": "Deze upload wordt al afgerond.",
     "This upload would exceed your storage quota of :quota MB.": "Deze upload zou je opslagquotum van :quota MB overschrijden.",
     "Tip: drag files and folders onto a folder or a breadcrumb to move them.": "Tip: sleep bestanden en mappen op een map of op het kruimelpad om ze te verplaatsen.",
     "Title": "Titel",

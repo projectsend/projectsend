@@ -896,6 +896,7 @@
     "This permanently removes every failed job from the list without retrying any of them. This cannot be undone.": "Ini menghapus permanen semua tugas yang gagal dari daftar tanpa mencoba ulang satu pun. Tindakan ini tidak dapat dibatalkan.",
     "This role is assigned to accounts and cannot be deleted.": "Peran ini sedang dipakai oleh sejumlah akun sehingga tidak bisa dihapus.",
     "This role only sees files and folders belonging to these clients, plus its own uploads.": "Peran ini hanya melihat berkas dan folder milik klien berikut, ditambah unggahannya sendiri.",
+    "This upload is already being finalised.": "Unggahan ini sedang diselesaikan.",
     "This upload would exceed your storage quota of :quota MB.": "Unggahan ini akan melampaui kuota penyimpanan Anda sebesar :quota MB.",
     "Tip: drag files and folders onto a folder or a breadcrumb to move them.": "Tips: seret berkas dan folder ke sebuah folder atau ke jalur navigasi untuk memindahkannya.",
     "Title": "Judul",

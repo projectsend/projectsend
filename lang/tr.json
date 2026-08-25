@@ -896,6 +896,7 @@
     "This permanently removes every failed job from the list without retrying any of them. This cannot be undone.": "Bu, listedeki tüm başarısız işleri hiçbirini yeniden denemeden kalıcı olarak siler. Geri alınamaz.",
     "This role is assigned to accounts and cannot be deleted.": "Bu rol hesaplara atanmış durumda ve silinemez.",
     "This role only sees files and folders belonging to these clients, plus its own uploads.": "Bu rol yalnızca bu müşterilerin dosya ve klasörlerini, bir de kendi yüklediklerini görür.",
+    "This upload is already being finalised.": "Bu yükleme zaten tamamlanıyor.",
     "This upload would exceed your storage quota of :quota MB.": "Bu yükleme, :quota MB'lik depolama kotanızı aşardı.",
     "Tip: drag files and folders onto a folder or a breadcrumb to move them.": "İpucu: dosya ve klasörleri taşımak için bir klasörün ya da yol izinin üzerine sürükleyin.",
     "Title": "Başlık",

@@ -896,6 +896,7 @@
     "This permanently removes every failed job from the list without retrying any of them. This cannot be undone.": "Безвозвратно удаляет из списка все неудавшиеся задачи, не повторяя ни одну из них. Отменить это действие нельзя.",
     "This role is assigned to accounts and cannot be deleted.": "Эта роль назначена учётным записям, поэтому удалить её нельзя.",
     "This role only sees files and folders belonging to these clients, plus its own uploads.": "Эта роль видит только файлы и папки указанных клиентов, а также собственные загрузки.",
+    "This upload is already being finalised.": "Эта загрузка уже завершается.",
     "This upload would exceed your storage quota of :quota MB.": "Эта загрузка превысила бы вашу квоту хранилища в :quota МБ.",
     "Tip: drag files and folders onto a folder or a breadcrumb to move them.": "Подсказка: чтобы переместить файлы и папки, перетащите их на папку или на строку навигации.",
     "Title": "Заголовок",

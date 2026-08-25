@@ -29,6 +29,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -240,6 +241,33 @@ class ChunkedUploadsController extends Controller
         $user = $request->user();
         assert($user !== null);
 
+        // Serialise completion per session: two concurrent completes (an Uppy
+        // retry, a double submit, a lost-connection resend) would otherwise
+        // both assemble into the one target file and create two File rows.
+        // The lock's TTL releases the claim if a completion dies mid-flight,
+        // so a later retry still works.
+        $lock = Cache::lock('upload-complete:'.$session->id, 120);
+
+        if (! $lock->get()) {
+            throw ValidationException::withMessages([
+                'parts' => __('This upload is already being finalised.'),
+            ]);
+        }
+
+        try {
+            return $this->finalise($session, $user);
+        } finally {
+            $lock->release();
+        }
+    }
+
+    /**
+     * Assemble a session's received parts into a stored File. Runs under
+     * complete()'s per-session lock, so it is the single writer to the
+     * session's target path and the only creator of its File row.
+     */
+    private function finalise(UploadSession $session, User $user): JsonResponse
+    {
         $extension = strtolower(pathinfo($session->original_name, PATHINFO_EXTENSION));
         $targetPath = now()->format('Y/m').'/'.Str::uuid()->toString().($extension !== '' ? '.'.$extension : '');
 

@@ -157,3 +157,38 @@ test('an IP address is never handed to an integration', function () {
 
     expect($response->json('data.0'))->not->toHaveKey('ip_address');
 });
+
+test('a deletion is an event here, even though the deleted thing stops appearing', function () {
+    // Polling a list cannot see a deletion: the row simply stops being
+    // returned, and absence is not a timestamp you can walk to. The log
+    // records the moment instead, so the one thing polling could never
+    // do is exactly what this endpoint adds.
+    $file = File::factory()->create(['uploaded_by' => $this->staff->id]);
+
+    $token = activityToken($this->staff, [
+        Permission::ViewActionsLog->value,
+        Permission::Upload->value,
+        Permission::DeleteFiles->value,
+        Permission::DeleteOthersFiles->value,
+    ]);
+
+    $this->withToken($token)->deleteJson("/api/v1/files/{$file->id}")->assertSuccessful();
+
+    // Gone from the list it used to be in...
+    $this->withToken($token)
+        ->getJson('/api/v1/files')
+        ->assertOk()
+        ->assertJsonMissing(['id' => $file->id]);
+
+    // ...and present here, with the moment it happened.
+    $activity = $this->withToken($token)
+        ->getJson('/api/v1/activity?action[]='.Action::FileDeleted->value)
+        ->assertOk();
+
+    // The subject is null, not the file: by the time the entry is written
+    // the row is gone, so what it was called is snapshotted into context
+    // instead. A caller reacting to a deletion reads context.name.
+    expect($activity->json('data.0.action'))->toBe('file.deleted')
+        ->and($activity->json('data.0.subject'))->toBeNull()
+        ->and($activity->json('data.0.context.name'))->toBe($file->name);
+});

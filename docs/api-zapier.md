@@ -289,13 +289,17 @@ give the token only the permissions the Zap needs, and revoke it the day the Zap
 If you do set an expiry, put a reminder in your calendar for a week before. When the day comes,
 create a new token and paste it into the Zap; you do not need to rebuild anything.
 
-### Deletions cannot start a Zap
+### Reacting to a deletion
 
-Zapier finds out about things by asking for a list. A deleted file simply stops appearing in that
-list, and there is no way to tell that apart from it never having been there.
+"When a file is deleted" works, but only through the activity feed:
+`…/api/v1/activity?action[]=file.deleted`.
 
-So "when a file is deleted" cannot be a trigger. This will change when ProjectSend gains webhooks,
-which are planned but not built.
+It cannot work any other way. Zapier finds out about things by asking for a list, and a deleted file
+simply stops appearing in one — there is no way to tell that apart from it never having been there.
+The activity feed records the moment instead.
+
+One thing to know when you build it: a deletion has no `subject`, because the file is already gone
+when the entry is written. The name is in `context.name`.
 
 ### There is a limit on how often you can call
 

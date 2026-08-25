@@ -239,9 +239,16 @@ the whole installation's.
 on purpose: handing a client's IP to an automation tool is a privacy question nobody asked to have
 answered for them.
 
-Two things this still cannot tell you. **Deletions** — a deleted row stops appearing, and nothing
-marks the moment; that is what webhooks would be for. And anything the log does not record, which
-is deliberately less than everything.
+**Deletions work here too**, which is the one thing polling a list can never do. A deleted file
+stops being returned by `/files` and nothing marks the moment it went; the log records it as an
+event like any other, so `?action[]=file.deleted` tells you.
+
+One shape to know for those: a deletion entry has **no subject**. By the time it is written the row
+is gone, so what the thing was called is snapshotted into `context.name` instead. Read that rather
+than `subject.name` when you are reacting to something being removed.
+
+What this still cannot tell you is anything the log does not record, which is deliberately less than
+everything.
 
 ---
 

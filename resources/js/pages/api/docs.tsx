@@ -15,7 +15,7 @@ interface Endpoint {
     abilities: string[];
 }
 
-type Doc = 'guide' | 'zapier';
+type Tab = 'guide' | 'zapier' | 'endpoints';
 
 interface Props {
     guide_html: string;
@@ -35,7 +35,7 @@ const METHOD_TONE: Record<string, string> = {
 
 export default function ApiDocs({ guide_html, zapier_html, endpoints, spec_url, version }: Props) {
     const { t } = useTranslation();
-    const [doc, setDoc] = useState<Doc>('guide');
+    const [tab, setTab] = useState<Tab>('guide');
 
     const breadcrumbs: BreadcrumbItem[] = [{ title: t('API'), href: '/api/docs' }];
 
@@ -59,8 +59,32 @@ export default function ApiDocs({ guide_html, zapier_html, endpoints, spec_url, 
                     </div>
                 </div>
 
-                <section className="mb-10">
-                    <h2 className="mb-3 text-base font-semibold">{t('Endpoints')}</h2>
+                {/*
+                 * Three views of the same API, one at a time. The endpoint
+                 * table is generated from the committed OpenAPI document;
+                 * the other two are markdown files that ship with the
+                 * application, converted server-side with HTML input
+                 * escaped — see ApiDocsController.
+                 *
+                 * The guide and the Zapier page are separate because they
+                 * are for different readers: one is writing code against
+                 * the API, the other is filling in a form in Zapier and
+                 * will read nothing else.
+                 */}
+                <div className="mt-6 mb-6 flex gap-1 border-b">
+                    {(['guide', 'zapier', 'endpoints'] as const).map((key) => (
+                        <button
+                            key={key}
+                            type="button"
+                            onClick={() => setTab(key)}
+                            className={`border-b-2 px-3 py-2 text-sm ${tab === key ? 'border-primary text-foreground font-medium' : 'text-muted-foreground border-transparent'}`}
+                        >
+                            {key === 'guide' ? t('Guide') : key === 'zapier' ? t('Zapier') : t('Endpoints')}
+                        </button>
+                    ))}
+                </div>
+
+                {tab === 'endpoints' && (
                     <div className="overflow-x-auto rounded-md border">
                         <table className="w-full text-sm">
                             <thead className="bg-muted/50">
@@ -87,35 +111,11 @@ export default function ApiDocs({ guide_html, zapier_html, endpoints, spec_url, 
                             </tbody>
                         </table>
                     </div>
-                </section>
+                )}
 
-                {/*
-                 * Both are rendered server-side from files that ship with
-                 * the application — see ApiDocsController, which converts
-                 * them with HTML input escaped.
-                 *
-                 * Two documents rather than one long page because they are
-                 * for two different readers: the guide for someone writing
-                 * code against the API, the Zapier page for someone wiring
-                 * up a Zap who will read nothing else.
-                 */}
-                <div className="mb-4 flex gap-1 border-b">
-                    {(['guide', 'zapier'] as const).map((key) => (
-                        <button
-                            key={key}
-                            type="button"
-                            onClick={() => setDoc(key)}
-                            className={`border-b-2 px-3 py-2 text-sm ${doc === key ? 'border-primary text-foreground font-medium' : 'text-muted-foreground border-transparent'}`}
-                        >
-                            {key === 'guide' ? t('Guide') : t('Zapier')}
-                        </button>
-                    ))}
-                </div>
-
-                <section
-                    className="api-guide max-w-3xl"
-                    dangerouslySetInnerHTML={{ __html: doc === 'guide' ? guide_html : zapier_html }}
-                />
+                {tab !== 'endpoints' && (
+                    <section className="api-guide max-w-3xl" dangerouslySetInnerHTML={{ __html: tab === 'guide' ? guide_html : zapier_html }} />
+                )}
             </div>
         </AppLayout>
     );

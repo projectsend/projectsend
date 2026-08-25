@@ -297,6 +297,19 @@ class StaffAccounts
      * Soft-delete the account and record it. Returns the name, which the
      * caller needs afterwards for the content-reassignment step — by then
      * the model is trashed and reading it back is needless ceremony.
+     *
+     * **This is only half of deleting somebody.** What happens to the
+     * files and folders they own is the other half, and it lives in
+     * AccountContentDeletion: validate() to make the caller choose
+     * between cascading and reassigning, apply() to carry it out. A
+     * caller that stops here leaves their content pointing at an account
+     * that no longer exists.
+     *
+     * The trap is that it looks like it works. validate() returns an
+     * empty array when the account owns nothing, so an account with no
+     * files deletes perfectly through this method alone — and keeps
+     * doing so until somebody deletes a colleague who had actually done
+     * some work. Both existing callers pair the two; a new one must too.
      */
     public function delete(User $user): string
     {

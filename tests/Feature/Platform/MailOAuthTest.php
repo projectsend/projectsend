@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Modules\Notifications\InAppNotification;
 use App\Modules\Platform\Capabilities\Edition;
+use App\Modules\Platform\Mail\MailOAuthBrokers;
 use App\Modules\Platform\Mail\MailOAuthConnection;
 use App\Modules\Platform\Settings\MailConfigApplier;
 use App\Modules\Platform\Settings\MailProvider;
@@ -358,6 +359,50 @@ test('a Graph refusal surfaces as a send failure, not a silent success', functio
     expect(fn () => Mail::mailer('microsoft-graph')->raw('Hello', function ($message) {
         $message->to('client@example.com')->subject('Refused');
     }))->toThrow(TransportException::class, 'Not allowed to send as this user');
+});
+
+test('a second sender waits for the refresh in flight instead of spending the rotated token', function () {
+    // Both providers hand back a new refresh token every time and retire
+    // the old one, so a refresh token is good for exactly one use. Without
+    // the lock, two senders that both find an expired access token would
+    // both POST the same refresh token; the loser gets invalid_grant, which
+    // is indistinguishable from a revoked grant and would wrongly mark the
+    // connection broken. The winner's stored token is what the other one
+    // should end up sending with.
+    Http::fake([
+        'login.microsoftonline.com/*' => Http::response(fakeTokenResponse([
+            'access_token' => 'access-token-2',
+            'refresh_token' => 'refresh-token-2',
+        ])),
+    ]);
+
+    $connection = connectMicrosoftMailbox();
+    $connection->fill(['token_expires_at' => now()->subMinute()])->save();
+
+    $broker = app(MailOAuthBrokers::class)->for(MailProvider::Microsoft365);
+
+    // Two separate model instances, exactly as two queue workers would each
+    // have read the row for themselves a moment before it was rotated.
+    $first = $broker->freshAccessToken(MailOAuthConnection::for(MailProvider::Microsoft365));
+    $second = $broker->freshAccessToken(MailOAuthConnection::for(MailProvider::Microsoft365));
+
+    expect($first)->toBe('access-token-2')
+        ->and($second)->toBe('access-token-2');
+
+    // One refresh between them, not two — the second re-read the row under
+    // the lock and found a token it could just use.
+    $refreshes = 0;
+    Http::assertSent(function ($request) use (&$refreshes): bool {
+        if (str_contains($request->url(), '/token') && $request['grant_type'] === 'refresh_token') {
+            $refreshes++;
+        }
+
+        return true;
+    });
+
+    expect($refreshes)->toBe(1);
+
+    expect(MailOAuthConnection::for(MailProvider::Microsoft365)->last_error)->toBeNull();
 });
 
 test('the scheduled refresh keeps a healthy connection fresh', function () {

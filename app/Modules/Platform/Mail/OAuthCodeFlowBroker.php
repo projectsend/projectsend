@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Modules\Platform\Mail;
 
+use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Http\Client\Response;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 /**
@@ -84,16 +86,64 @@ abstract class OAuthCodeFlowBroker implements MailOAuthBroker
 
     public function freshAccessToken(MailOAuthConnection $connection): string
     {
+        if ($this->stillUsable($connection)) {
+            return (string) $connection->access_token;
+        }
+
+        // Both providers rotate the refresh token as they hand out a new
+        // access token, so a refresh token is good for exactly one use.
+        // Two queue workers reaching an expired token at the same moment —
+        // or a worker racing the nightly refresh command — means the slower
+        // one spends a token the faster one has already replaced. The
+        // provider answers that with invalid_grant, which is the same thing
+        // it says about a genuinely revoked grant: last_error gets written,
+        // the settings page turns red, and every admin is told to go and
+        // re-consent a connection that was never broken.
+        //
+        // So refresh one at a time per connection, and make whoever waited
+        // re-read the row instead of trusting the copy it walked in with: by
+        // the time the lock is theirs, the winner has already stored a token
+        // they can just use.
+        $lock = Cache::lock('mail-oauth-refresh:'.$connection->provider->value, 30);
+
+        try {
+            $lock->block(15);
+        } catch (LockTimeoutException) {
+            // Fifteen seconds means something is wrong with the lock rather
+            // than with the provider. Racing is a false alarm; not sending is
+            // a lost message. Take the race.
+            $this->refresh($connection);
+
+            return (string) $connection->access_token;
+        }
+
+        try {
+            // Eloquent's refresh(), re-reading the row — not this class's,
+            // which is the thing the lock exists to serialise.
+            $connection->refresh();
+
+            if ($this->stillUsable($connection)) {
+                return (string) $connection->access_token;
+            }
+
+            $this->refresh($connection);
+
+            return (string) $connection->access_token;
+        } finally {
+            $lock->release();
+        }
+    }
+
+    /** Whether the stored access token has enough life left to send with. */
+    private function stillUsable(MailOAuthConnection $connection): bool
+    {
         $token = $connection->access_token;
         $expiresAt = $connection->token_expires_at;
 
-        if (is_string($token) && $token !== '' && $expiresAt !== null && $expiresAt->gt(now()->addSeconds(self::EXPIRY_MARGIN_SECONDS))) {
-            return $token;
-        }
-
-        $this->refresh($connection);
-
-        return (string) $connection->access_token;
+        return is_string($token)
+            && $token !== ''
+            && $expiresAt !== null
+            && $expiresAt->gt(now()->addSeconds(self::EXPIRY_MARGIN_SECONDS));
     }
 
     private function storeTokens(MailOAuthConnection $connection, Response $response): void

@@ -108,9 +108,15 @@ export default function EmailSettings({
     // Connecting sends the browser to the provider with whatever is in
     // the database — a registration typed into the form but not yet
     // saved would silently not be the one used, so the button waits.
+    //
+    // The dropdown itself counts as part of that. The flow starts against
+    // the *saved* provider, so on an installation with both vendors
+    // registered, switching without saving and pressing Connect would open
+    // the other one's consent screen while this page says otherwise.
     const oauthDirty =
-        connection !== undefined &&
-        (data.client_id !== connection.client_id || data.client_secret !== '' || data.tenant_id !== connection.tenant_id);
+        data.provider !== mail_provider.provider ||
+        (connection !== undefined &&
+            (data.client_id !== connection.client_id || data.client_secret !== '' || data.tenant_id !== connection.tenant_id));
     const canConnect = connection !== undefined && connection.client_id !== '' && connection.has_client_secret && !oauthDirty;
 
     const addRecipient = () => {

@@ -70,9 +70,9 @@ class CommentModerationController extends Controller
     {
         $viewer = $request->user();
         assert($viewer !== null);
-        Gate::forUser($viewer)->authorize('moderate', FileComment::class);
-        // Moderation rights are not a way around the library boundary.
-        abort_unless($this->library->allowsFile($viewer, $comment->file), 403);
+        // Moderation rights are not a way around the library boundary; the
+        // policy weighs the comment's file, so name the comment.
+        Gate::authorize('moderate', $comment);
 
         $this->comments->approve($comment, $viewer);
 

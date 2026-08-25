@@ -9,6 +9,10 @@ This page shows how to set that up. It assumes you have used Zapier before. If y
 short version is that a "Zap" is one rule made of a **trigger** (what starts it) and one or more
 **actions** (what it does).
 
+**One thing to check first:** everything here uses **Webhooks by Zapier**, which Zapier includes
+only from its Professional plan upwards. On Zapier's free plan you will not be able to add those
+steps. Nothing below works around that — it is Zapier's limit, not ours.
+
 Everything here also works with Make, n8n, Pipedream, Power Automate and anything else that can call
 an HTTP endpoint. See the last section.
 
@@ -234,16 +238,19 @@ a password reset link, or send them one yourself in a third step.
 
 ## Things to know before you rely on it
 
-### Your token will expire
+### Decide about expiry before you build
 
-Every token has an expiry date, and the longest you can set is one year. There is no way for Zapier
-to renew it on its own.
+Tokens expire by default — 90 days to start with, up to a year. Zapier cannot renew one on its own,
+so when it expires the Zap stops. Zapier shows errors, but nobody gets a phone call, and the usual
+first symptom is somebody noticing weeks later that something stopped happening.
 
-When it expires, the Zap stops working. Zapier will show errors, but nobody gets a phone call about
-it, and the usual first symptom is someone noticing that something stopped happening weeks ago.
+There is a **Never expires** option on the token screen, which avoids that entirely. It is off by
+default on purpose: a token nobody ever rotates is a password nobody ever changes. For an
+integration that has to keep running unattended it is usually the right choice — pick it knowingly,
+give the token only the permissions the Zap needs, and revoke it the day the Zap goes away.
 
-Put a reminder in your calendar for a week before the expiry date. When the day comes, create a new
-token and paste it into the Zap. You do not need to rebuild anything.
+If you do set an expiry, put a reminder in your calendar for a week before. When the day comes,
+create a new token and paste it into the Zap; you do not need to rebuild anything.
 
 ### Deletions cannot start a Zap
 

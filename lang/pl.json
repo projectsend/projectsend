@@ -1879,5 +1879,7 @@
     "The connected mailbox can no longer send email": "Połączona skrzynka nie może już wysyłać poczty",
     "The connection stopped working and needs to be reconnected": "Połączenie przestało działać i trzeba je nawiązać ponownie",
     "The mailbox was not connected: :reason": "Nie połączono skrzynki: :reason",
-    "The selected mail provider does not use a connected mailbox.": "Wybrany dostawca poczty nie korzysta z połączonej skrzynki."
+    "The selected mail provider does not use a connected mailbox.": "Wybrany dostawca poczty nie korzysta z połączonej skrzynki.",
+    "Guide": "Przewodnik",
+    "Zapier": "Zapier"
 }

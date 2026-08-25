@@ -1879,5 +1879,7 @@
     "The connected mailbox can no longer send email": "Подключённый ящик больше не может отправлять почту",
     "The connection stopped working and needs to be reconnected": "Подключение перестало работать, требуется подключить заново",
     "The mailbox was not connected: :reason": "Ящик не подключён: :reason",
-    "The selected mail provider does not use a connected mailbox.": "Выбранный почтовый поставщик не использует подключённый ящик."
+    "The selected mail provider does not use a connected mailbox.": "Выбранный почтовый поставщик не использует подключённый ящик.",
+    "Guide": "Руководство",
+    "Zapier": "Zapier"
 }

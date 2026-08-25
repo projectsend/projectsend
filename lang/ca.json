@@ -1879,5 +1879,7 @@
     "The connected mailbox can no longer send email": "La bústia connectada ja no pot enviar correu",
     "The connection stopped working and needs to be reconnected": "La connexió ha deixat de funcionar i cal tornar-la a connectar",
     "The mailbox was not connected: :reason": "No s'ha connectat la bústia: :reason",
-    "The selected mail provider does not use a connected mailbox.": "El proveïdor de correu seleccionat no fa servir cap bústia connectada."
+    "The selected mail provider does not use a connected mailbox.": "El proveïdor de correu seleccionat no fa servir cap bústia connectada.",
+    "Guide": "Guia",
+    "Zapier": "Zapier"
 }

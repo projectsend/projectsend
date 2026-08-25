@@ -40,6 +40,7 @@ yarn-error.log
 /docs/*.md
 !/docs/api-guide.md
 !/docs/email-oauth.md
+!/docs/api-zapier.md
 
 # ── Local-only dev TLS ──
 # mkcert certificates and the nginx config that terminates HTTPS on the

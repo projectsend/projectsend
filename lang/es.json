@@ -1879,5 +1879,7 @@
     "The connected mailbox can no longer send email": "El buzón conectado ya no puede enviar correo",
     "The connection stopped working and needs to be reconnected": "La conexión dejó de funcionar y hay que volver a conectarla",
     "The mailbox was not connected: :reason": "No se conectó el buzón: :reason",
-    "The selected mail provider does not use a connected mailbox.": "El proveedor de correo seleccionado no usa un buzón conectado."
+    "The selected mail provider does not use a connected mailbox.": "El proveedor de correo seleccionado no usa un buzón conectado.",
+    "Guide": "Guía",
+    "Zapier": "Zapier"
 }

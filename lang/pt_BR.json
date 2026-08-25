@@ -1879,5 +1879,7 @@
     "The connected mailbox can no longer send email": "A caixa conectada não consegue mais enviar e-mails",
     "The connection stopped working and needs to be reconnected": "A conexão parou de funcionar e precisa ser refeita",
     "The mailbox was not connected: :reason": "A caixa não foi conectada: :reason",
-    "The selected mail provider does not use a connected mailbox.": "O provedor de e-mail selecionado não usa uma caixa conectada."
+    "The selected mail provider does not use a connected mailbox.": "O provedor de e-mail selecionado não usa uma caixa conectada.",
+    "Guide": "Guia",
+    "Zapier": "Zapier"
 }

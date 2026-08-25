@@ -1879,5 +1879,7 @@
     "The connected mailbox can no longer send email": "Připojená schránka už nemůže odesílat e-maily",
     "The connection stopped working and needs to be reconnected": "Připojení přestalo fungovat a je potřeba je obnovit",
     "The mailbox was not connected: :reason": "Schránka nebyla připojena: :reason",
-    "The selected mail provider does not use a connected mailbox.": "Vybraný poskytovatel pošty nepoužívá připojenou schránku."
+    "The selected mail provider does not use a connected mailbox.": "Vybraný poskytovatel pošty nepoužívá připojenou schránku.",
+    "Guide": "Průvodce",
+    "Zapier": "Zapier"
 }

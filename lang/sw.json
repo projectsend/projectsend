@@ -1879,5 +1879,7 @@
     "The connected mailbox can no longer send email": "Sanduku la barua lililounganishwa haliwezi tena kutuma barua pepe",
     "The connection stopped working and needs to be reconnected": "Muunganisho umeacha kufanya kazi na unahitaji kuunganishwa upya",
     "The mailbox was not connected: :reason": "Sanduku la barua halikuunganishwa: :reason",
-    "The selected mail provider does not use a connected mailbox.": "Mtoa huduma wa barua pepe uliochaguliwa hatumii sanduku la barua lililounganishwa."
+    "The selected mail provider does not use a connected mailbox.": "Mtoa huduma wa barua pepe uliochaguliwa hatumii sanduku la barua lililounganishwa.",
+    "Guide": "Mwongozo",
+    "Zapier": "Zapier"
 }

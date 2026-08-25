@@ -1879,5 +1879,7 @@
     "The connected mailbox can no longer send email": "Kotak surat yang terhubung tidak bisa lagi mengirim email",
     "The connection stopped working and needs to be reconnected": "Koneksi berhenti bekerja dan perlu dihubungkan ulang",
     "The mailbox was not connected: :reason": "Kotak surat tidak terhubung: :reason",
-    "The selected mail provider does not use a connected mailbox.": "Penyedia email yang dipilih tidak menggunakan kotak surat terhubung."
+    "The selected mail provider does not use a connected mailbox.": "Penyedia email yang dipilih tidak menggunakan kotak surat terhubung.",
+    "Guide": "Panduan",
+    "Zapier": "Zapier"
 }

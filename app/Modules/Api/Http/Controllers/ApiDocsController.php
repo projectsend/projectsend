@@ -16,12 +16,12 @@ use League\CommonMark\MarkdownConverter;
 /**
  * The API reference, inside the admin UI.
  *
- * Rendered from the two files that are already the source of truth — the
- * committed OpenAPI document and docs/api-guide.md — rather than embedding
- * a third-party documentation UI. An iframe or a CDN-hosted renderer would
- * mean a page that ignores the app's theme, breaks its links, and goes
- * blank on an install with no outbound internet access, which self-hosted
- * installations regularly are.
+ * Rendered from the files that are already the source of truth — the
+ * committed OpenAPI document, docs/api-guide.md and docs/api-zapier.md —
+ * rather than embedding a third-party documentation UI. An iframe or a
+ * CDN-hosted renderer would mean a page that ignores the app's theme,
+ * breaks its links, and goes blank on an install with no outbound internet
+ * access, which self-hosted installations regularly are.
  *
  * The markdown is converted server-side with league/commonmark, already a
  * framework dependency, so no JavaScript renderer joins the bundle.
@@ -31,7 +31,11 @@ class ApiDocsController extends Controller
     public function __invoke(Request $request): Response
     {
         return Inertia::render('api/docs', [
-            'guide_html' => $this->guideHtml(),
+            'guide_html' => $this->markdown('docs/api-guide.md'),
+            // A second page rather than a section of the guide: the guide
+            // is written for someone building against the API, this is
+            // written for someone wiring up a Zap and reading nothing else.
+            'zapier_html' => $this->markdown('docs/api-zapier.md'),
             'endpoints' => $this->endpoints(),
             'spec_url' => route('api.openapi'),
             'version' => $this->spec()['info']['version'] ?? null,
@@ -96,16 +100,20 @@ class ApiDocsController extends Controller
         return $position === false ? '' : substr($description, $position);
     }
 
-    private function guideHtml(): string
+    /**
+     * @param  string  $file  repository-relative path to a markdown file
+     *                        shipped with the application
+     */
+    private function markdown(string $file): string
     {
-        $path = base_path('docs/api-guide.md');
+        $path = base_path($file);
 
         if (! is_file($path)) {
             return '';
         }
 
-        // A deliberately small extension set. The guide is a file shipped
-        // with the application, not user input — but rendering it with the
+        // A deliberately small extension set. These are files shipped with
+        // the application, not user input — but rendering them with the
         // narrowest converter that does the job keeps it that way even if
         // someone later points this at something less trustworthy.
         $environment = new Environment([

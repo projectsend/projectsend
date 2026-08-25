@@ -1879,5 +1879,7 @@
     "The connected mailbox can no longer send email": "已连接的邮箱无法再发送邮件",
     "The connection stopped working and needs to be reconnected": "该连接已失效，需要重新连接",
     "The mailbox was not connected: :reason": "邮箱未连接：:reason",
-    "The selected mail provider does not use a connected mailbox.": "所选的邮件服务商不使用已连接的邮箱。"
+    "The selected mail provider does not use a connected mailbox.": "所选的邮件服务商不使用已连接的邮箱。",
+    "Guide": "指南",
+    "Zapier": "Zapier"
 }

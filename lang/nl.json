@@ -1879,5 +1879,7 @@
     "The connected mailbox can no longer send email": "De verbonden mailbox kan geen e-mail meer versturen",
     "The connection stopped working and needs to be reconnected": "De verbinding werkt niet meer en moet opnieuw worden gemaakt",
     "The mailbox was not connected: :reason": "De mailbox is niet verbonden: :reason",
-    "The selected mail provider does not use a connected mailbox.": "De gekozen e-mailprovider gebruikt geen verbonden mailbox."
+    "The selected mail provider does not use a connected mailbox.": "De gekozen e-mailprovider gebruikt geen verbonden mailbox.",
+    "Guide": "Handleiding",
+    "Zapier": "Zapier"
 }

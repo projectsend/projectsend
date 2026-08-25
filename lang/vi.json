@@ -1879,5 +1879,7 @@
     "The connected mailbox can no longer send email": "Hộp thư đã kết nối không còn gửi được email",
     "The connection stopped working and needs to be reconnected": "Kết nối đã ngừng hoạt động và cần được thiết lập lại",
     "The mailbox was not connected: :reason": "Hộp thư chưa được kết nối: :reason",
-    "The selected mail provider does not use a connected mailbox.": "Nhà cung cấp email đã chọn không dùng hộp thư kết nối."
+    "The selected mail provider does not use a connected mailbox.": "Nhà cung cấp email đã chọn không dùng hộp thư kết nối.",
+    "Guide": "Hướng dẫn",
+    "Zapier": "Zapier"
 }

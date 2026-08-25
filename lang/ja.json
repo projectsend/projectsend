@@ -1879,5 +1879,7 @@
     "The connected mailbox can no longer send email": "接続中のメールボックスからメールを送信できなくなりました",
     "The connection stopped working and needs to be reconnected": "接続が使えなくなりました。接続し直す必要があります",
     "The mailbox was not connected: :reason": "メールボックスを接続できませんでした: :reason",
-    "The selected mail provider does not use a connected mailbox.": "選択したメールプロバイダーは接続済みメールボックスを使用しません。"
+    "The selected mail provider does not use a connected mailbox.": "選択したメールプロバイダーは接続済みメールボックスを使用しません。",
+    "Guide": "ガイド",
+    "Zapier": "Zapier"
 }

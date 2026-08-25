@@ -1879,5 +1879,7 @@
     "The connected mailbox can no longer send email": "Das verbundene Postfach kann keine E-Mails mehr versenden",
     "The connection stopped working and needs to be reconnected": "Die Verbindung funktioniert nicht mehr und muss neu hergestellt werden",
     "The mailbox was not connected: :reason": "Das Postfach wurde nicht verbunden: :reason",
-    "The selected mail provider does not use a connected mailbox.": "Der ausgewählte E-Mail-Anbieter verwendet kein verbundenes Postfach."
+    "The selected mail provider does not use a connected mailbox.": "Der ausgewählte E-Mail-Anbieter verwendet kein verbundenes Postfach.",
+    "Guide": "Anleitung",
+    "Zapier": "Zapier"
 }

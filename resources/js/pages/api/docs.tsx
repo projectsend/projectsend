@@ -1,4 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
+import { useState } from 'react';
 
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
@@ -14,8 +15,11 @@ interface Endpoint {
     abilities: string[];
 }
 
+type Doc = 'guide' | 'zapier';
+
 interface Props {
     guide_html: string;
+    zapier_html: string;
     endpoints: Endpoint[];
     spec_url: string;
     version: string | null;
@@ -29,8 +33,9 @@ const METHOD_TONE: Record<string, string> = {
     DELETE: 'text-red-700 dark:text-red-400',
 };
 
-export default function ApiDocs({ guide_html, endpoints, spec_url, version }: Props) {
+export default function ApiDocs({ guide_html, zapier_html, endpoints, spec_url, version }: Props) {
     const { t } = useTranslation();
+    const [doc, setDoc] = useState<Doc>('guide');
 
     const breadcrumbs: BreadcrumbItem[] = [{ title: t('API'), href: '/api/docs' }];
 
@@ -85,11 +90,32 @@ export default function ApiDocs({ guide_html, endpoints, spec_url, version }: Pr
                 </section>
 
                 {/*
-                 * Rendered server-side from docs/api-guide.md, a file that
-                 * ships with the application — see ApiDocsController, which
-                 * converts it with HTML input escaped.
+                 * Both are rendered server-side from files that ship with
+                 * the application — see ApiDocsController, which converts
+                 * them with HTML input escaped.
+                 *
+                 * Two documents rather than one long page because they are
+                 * for two different readers: the guide for someone writing
+                 * code against the API, the Zapier page for someone wiring
+                 * up a Zap who will read nothing else.
                  */}
-                <section className="api-guide max-w-3xl" dangerouslySetInnerHTML={{ __html: guide_html }} />
+                <div className="mb-4 flex gap-1 border-b">
+                    {(['guide', 'zapier'] as const).map((key) => (
+                        <button
+                            key={key}
+                            type="button"
+                            onClick={() => setDoc(key)}
+                            className={`border-b-2 px-3 py-2 text-sm ${doc === key ? 'border-primary text-foreground font-medium' : 'text-muted-foreground border-transparent'}`}
+                        >
+                            {key === 'guide' ? t('Guide') : t('Zapier')}
+                        </button>
+                    ))}
+                </div>
+
+                <section
+                    className="api-guide max-w-3xl"
+                    dangerouslySetInnerHTML={{ __html: doc === 'guide' ? guide_html : zapier_html }}
+                />
             </div>
         </AppLayout>
     );

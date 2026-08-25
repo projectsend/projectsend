@@ -1879,5 +1879,7 @@
     "The connected mailbox can no longer send email": "Bağlı posta kutusu artık e-posta gönderemiyor",
     "The connection stopped working and needs to be reconnected": "Bağlantı çalışmayı durdurdu ve yeniden kurulması gerekiyor",
     "The mailbox was not connected: :reason": "Posta kutusu bağlanmadı: :reason",
-    "The selected mail provider does not use a connected mailbox.": "Seçilen posta sağlayıcısı bağlı bir posta kutusu kullanmıyor."
+    "The selected mail provider does not use a connected mailbox.": "Seçilen posta sağlayıcısı bağlı bir posta kutusu kullanmıyor.",
+    "Guide": "Kılavuz",
+    "Zapier": "Zapier"
 }

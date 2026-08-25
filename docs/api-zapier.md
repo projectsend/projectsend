@@ -86,10 +86,21 @@ which is exactly what Zapier needs to tell new things from old ones.
 
 | What you want to know | URL |
 |---|---|
-| A file was added | `https://your-install.example.com/api/v1/files` |
-| A client account was created | `https://your-install.example.com/api/v1/clients` |
-| A comment is waiting for approval | `https://your-install.example.com/api/v1/comments/pending` |
-| A group was created | `https://your-install.example.com/api/v1/groups` |
+| **A file was shared with a client** | `…/api/v1/activity?action[]=file.assigned` |
+| **A client downloaded a file** | `…/api/v1/activity?action[]=file.downloaded` |
+| **Somebody left a comment** | `…/api/v1/activity?action[]=comment.posted` |
+| Anything at all happened | `…/api/v1/activity` |
+| A file was added | `…/api/v1/files` |
+| A client account was created | `…/api/v1/clients` |
+| A comment is waiting for approval | `…/api/v1/comments/pending` |
+| A group was created | `…/api/v1/groups` |
+
+The first three are the ones people usually want, and they only work through
+`/api/v1/activity`. Sharing a file writes an assignment and leaves the file itself untouched, so
+polling the file list will never show you a share; downloads are recorded in the activity log and
+nowhere else. Repeat `action[]` to watch for more than one kind of thing at once.
+
+Watching activity needs a token with **view activity log** ticked.
 
 In the Zapier step, set:
 
@@ -99,6 +110,28 @@ In the Zapier step, set:
 - **Key**: `data` — this tells Zapier where the list of items is inside the response
 
 ### What comes back
+
+From `/api/v1/activity`:
+
+```json
+{
+  "data": [
+    {
+      "id": 1284,
+      "action": "file.assigned",
+      "created_at": "2026-08-25T09:14:02+00:00",
+      "actor": { "id": 3, "name": "Dana", "type": "staff" },
+      "subject": { "type": "file", "id": 128, "name": "October invoice" },
+      "context": { "target": "Acme Ltd" }
+    }
+  ]
+}
+```
+
+So a Slack message can read *"Dana shared October invoice with Acme Ltd"* using `actor.name`,
+`subject.name` and `context.target`.
+
+From `/api/v1/files`:
 
 ```json
 {
@@ -208,14 +241,18 @@ Only clients can be group members. Passing a staff account is refused.
 
 ## Three complete examples
 
-### 1. Tell the team in Slack when a file arrives
+### 1. Tell the team in Slack when a client downloads something
 
-- **Trigger**: Webhooks by Zapier → Retrieve Poll → `GET /api/v1/files`
+- **Trigger**: Webhooks by Zapier → Retrieve Poll →
+  `GET /api/v1/activity?action[]=file.downloaded`
 - **Action**: Slack → Send Channel Message
 
-In the Slack message, use the `name` and `size` fields from the trigger. Something like:
+Use the fields from the trigger:
 
-> New file in ProjectSend: **{{name}}** ({{size}} bytes)
+> **{{actor__name}}** downloaded **{{subject__name}}**
+
+This is the one people ask for most, and it is only possible through the activity feed — a download
+leaves no trace on the file itself.
 
 ### 2. Turn a form submission into a client account
 

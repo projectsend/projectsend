@@ -192,6 +192,59 @@ deletions, that is what webhooks will be for; they are not built yet.
 
 ---
 
+## Reacting to things that happen
+
+Every list above answers "what is there now". `GET /api/v1/activity` answers "what happened", which
+is what an automation tool actually needs — and for two of the most useful events it is the only
+place to look.
+
+```bash
+curl -H "Authorization: Bearer YOUR_TOKEN" \
+  "https://your-install.example.com/api/v1/activity?action[]=file.assigned"
+```
+
+```json
+{
+  "data": [
+    {
+      "id": 1284,
+      "action": "file.assigned",
+      "created_at": "2026-08-25T09:14:02+00:00",
+      "actor": { "id": 3, "name": "Dana", "type": "staff" },
+      "origin": "ui",
+      "subject": { "type": "file", "id": 128, "name": "October invoice" },
+      "context": { "target": "Acme Ltd" }
+    }
+  ]
+}
+```
+
+**Sharing a file leaves no mark on the file.** It writes an assignment, and the file's own
+`updated_at` does not move — so polling `/files?updated_since=` will never show you a share, no
+matter how often you ask. The same goes for downloads, which are recorded here and nowhere else.
+
+Repeat `action` for more than one: `?action[]=file.assigned&action[]=file.downloaded`. An action
+this installation has never heard of is a `422` rather than being quietly dropped, because ignoring
+it would hand back the whole log to a caller who asked for one slice. `subject_type` narrows to one
+kind of thing — `file`, `folder`, `user`, `group`, `category`, `role`.
+
+Polling works as it does everywhere else. Entries are never edited, so `updated_since` walks the
+moment each was recorded; the two mean the same thing on a log that is only ever appended to.
+
+Needs `view_actions_log`, the same permission the activity screen uses, and the same scoping: a
+staff member limited to their assigned clients sees their own library and their own actions, never
+the whole installation's.
+
+**No IP addresses.** Some entries record one, and the activity screen shows it. It is left out here
+on purpose: handing a client's IP to an automation tool is a privacy question nobody asked to have
+answered for them.
+
+Two things this still cannot tell you. **Deletions** — a deleted row stops appearing, and nothing
+marks the moment; that is what webhooks would be for. And anything the log does not record, which
+is deliberately less than everything.
+
+---
+
 ## Uploading
 
 Two ways, and the right one depends on the file.

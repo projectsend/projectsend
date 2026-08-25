@@ -6,6 +6,7 @@ use App\Modules\Api\Events\ApiModule;
 use App\Modules\Api\Events\RegisteringApiModules;
 use App\Modules\Api\Http\Controllers\CurrentTokenController;
 use App\Modules\Api\Http\Controllers\MeController;
+use App\Modules\Audit\Http\Controllers\Api\ActivityController;
 use App\Modules\Api\Http\Controllers\OpenApiController;
 use App\Modules\Clients\Http\Controllers\Api\ClientsController;
 use App\Modules\Comments\Http\Controllers\Api\CommentModerationController;
@@ -273,6 +274,27 @@ Route::middleware(['auth:sanctum', 'api-active', 'staff-token'])->group(function
         Route::delete('groups/{group}/members/{member}', [GroupMembersController::class, 'destroy'])
             ->name('api.groups.members.destroy');
     });
+
+    /*
+    |----------------------------------------------------------------------
+    | Activity
+    |----------------------------------------------------------------------
+    |
+    | The one endpoint that answers "what happened", rather than "what is
+    | there now". An integration reacting to events has nothing else to
+    | poll: sharing a file writes an assignment row and leaves the file
+    | untouched, and a download is only ever recorded here, so neither is
+    | visible from any other list.
+    |
+    | `view_actions_log` is the same permission the activity screen uses,
+    | and ActivityLogScope narrows the rows the same way it does there —
+    | a staff member limited to their assigned clients must not read the
+    | whole installation's log through a token when the screen would not
+    | show it to them.
+    |
+    */
+    Route::get('activity', [ActivityController::class, 'index'])
+        ->middleware('token-can:view_actions_log')->name('api.activity.index');
 
     /*
     |----------------------------------------------------------------------

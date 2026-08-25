@@ -29,6 +29,13 @@ use Illuminate\Support\Carbon;
  * one forever. The cost is re-seeing the boundary row, which a client
  * de-duplicates by id — the safe direction of the trade.
  *
+ * Some tables have no `updated_at` because their rows are never edited —
+ * the activity log is one. They pass their own column instead. The
+ * *parameter* stays `updated_since` for every endpoint even so: the
+ * shape being learned once is worth more than a second name that would
+ * behave identically, since on an append-only table the two timestamps
+ * are the same thing.
+ *
  * Known limitation, documented rather than papered over: polling cannot
  * observe deletions. A soft-deleted row simply stops appearing. Webhooks
  * are the fix, and are deliberately a later phase.
@@ -39,9 +46,11 @@ class PollingQuery
      * @template TModel of Model
      *
      * @param  Builder<TModel>  $query
+     * @param  string  $column  the timestamp to walk, for a table whose
+     *                          rows are appended rather than edited
      * @return CursorPaginator<int, TModel>
      */
-    public function paginate(Request $request, Builder $query, string $table): CursorPaginator
+    public function paginate(Request $request, Builder $query, string $table, string $column = 'updated_at'): CursorPaginator
     {
         $since = $request->query('updated_since');
 
@@ -53,11 +62,11 @@ class PollingQuery
             // a polling client would see an empty result forever instead of
             // an error. Carbon also normalises the offset into the app's
             // timezone, so a caller in any timezone gets the same rows.
-            $query->where("{$table}.updated_at", '>=', Carbon::parse($since)->timezone(config('app.timezone')))
-                ->orderBy("{$table}.updated_at")
+            $query->where("{$table}.{$column}", '>=', Carbon::parse($since)->timezone(config('app.timezone')))
+                ->orderBy("{$table}.{$column}")
                 ->orderBy("{$table}.id");
         } else {
-            $query->orderByDesc("{$table}.updated_at")
+            $query->orderByDesc("{$table}.{$column}")
                 ->orderByDesc("{$table}.id");
         }
 

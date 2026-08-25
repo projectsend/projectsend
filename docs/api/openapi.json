@@ -16,6 +16,175 @@
         }
     ],
     "paths": {
+        "/activity": {
+            "get": {
+                "operationId": "activity.index",
+                "description": "Filter by `action` \u2014 repeat the parameter for more than one, as\n`?action[]=file.assigned&action[]=file.downloaded`. `subject_type`\nnarrows to one kind of thing (`file`, `user`, `group`, \u2026).\n\nEntries are never edited, so `updated_since` walks the moment each\none was recorded. Everything else about polling is the shape every\nlist endpoint here shares.\n\nScoped to what the caller may read: a staff member limited to their\nassigned clients sees entries about their own library and their own\nactions, never the whole installation's.\n\nRequires a token with the ability: `view_actions_log`.",
+                "summary": "List activity, newest first",
+                "tags": [
+                    "Activity"
+                ],
+                "parameters": [
+                    {
+                        "name": "updated_since",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ],
+                            "minimum": 1,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "cursor",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "action[]",
+                        "in": "query",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/Action"
+                            }
+                        }
+                    },
+                    {
+                        "name": "subject_type",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "maxLength": 64
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "created_at, not updated_at: the log is appended to and never\nedited, and has no updated_at column to walk.\n\n\n\nPaginated set of `ActivityResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ActivityResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "next_cursor": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "The \"cursor\" that points to the next set of items."
+                                                },
+                                                "prev_cursor": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "The \"cursor\" that points to the previous set of items."
+                                                }
+                                            },
+                                            "required": [
+                                                "path",
+                                                "per_page",
+                                                "next_cursor",
+                                                "prev_cursor"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/uploads": {
             "post": {
                 "operationId": "uploads.store",
@@ -3308,6 +3477,206 @@
             }
         },
         "schemas": {
+            "Action": {
+                "type": "string",
+                "description": "Every action the activity log can record \u2014 v2's replacement for v1's ~45 numbered action types in ActionsLog. Modules add their own cases (file.uploaded, group.created, \u2026) as they land; the string values are stable identifiers stored in the database.\n",
+                "enum": [
+                    "setup.completed",
+                    "settings.updated",
+                    "application.updated",
+                    "auth.login",
+                    "auth.logout",
+                    "user.created",
+                    "user.updated",
+                    "user.deleted",
+                    "user.activated",
+                    "user.deactivated",
+                    "account.erased",
+                    "account_content.cascade_deleted",
+                    "account_content.reassigned",
+                    "account.converted_to_client",
+                    "account.converted_to_staff",
+                    "client.self_registered",
+                    "ldap.client_provisioned",
+                    "social.client_provisioned",
+                    "social.account_linked",
+                    "social.account_unlinked",
+                    "client.approved",
+                    "client.denied",
+                    "file.uploaded",
+                    "file.updated",
+                    "file.deleted",
+                    "file.downloaded",
+                    "file.previewed",
+                    "file.assigned",
+                    "file.unassigned",
+                    "file.version_linked",
+                    "file.version_unlinked",
+                    "share_link.created",
+                    "share_link.revoked",
+                    "share_link.downloaded",
+                    "public_file.downloaded",
+                    "public_file.previewed",
+                    "folder.created",
+                    "folder.renamed",
+                    "folder.moved",
+                    "folder.deleted",
+                    "folder.shared",
+                    "folder.unshared",
+                    "file.made_public",
+                    "file.made_private",
+                    "folder.made_public",
+                    "folder.made_private",
+                    "upload.aborted",
+                    "file.imported",
+                    "orphan_file.deleted",
+                    "orphan_file.auto_deleted",
+                    "file.expired_deleted",
+                    "group.membership_left",
+                    "group.membership_requested",
+                    "group.membership_approved",
+                    "group.membership_denied",
+                    "group.created",
+                    "group.updated",
+                    "group.deleted",
+                    "group.made_public",
+                    "group.made_private",
+                    "group.member_added",
+                    "group.member_removed",
+                    "role.created",
+                    "role.updated",
+                    "role.deleted",
+                    "category.created",
+                    "category.renamed",
+                    "category.deleted",
+                    "client_custom_field.created",
+                    "client_custom_field.updated",
+                    "client_custom_field.deleted",
+                    "profile.updated",
+                    "password.updated",
+                    "two_factor.enabled",
+                    "two_factor.disabled",
+                    "two_factor.recovery_codes_regenerated",
+                    "two_factor.reset",
+                    "api_token.created",
+                    "api_token.updated",
+                    "api_token.revoked",
+                    "custom_asset.created",
+                    "custom_asset.updated",
+                    "custom_asset.deleted",
+                    "custom_asset.enabled",
+                    "custom_asset.disabled",
+                    "comment.posted",
+                    "comment.posted_by_visitor",
+                    "comment.edited",
+                    "comment.deleted",
+                    "comment.approved"
+                ],
+                "title": "Action"
+            },
+            "ActivityResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "action": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "actor": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "description": "Snapshots, not joins. The actor may since have been deleted,\nand the entry still has to say who it was.",
+                        "properties": {
+                            "id": {
+                                "type": [
+                                    "integer",
+                                    "null"
+                                ]
+                            },
+                            "name": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "type": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "origin": {
+                        "type": "string",
+                        "description": "How it arrived: a person in the browser, an integration, a\nvisitor with no account, or the installation itself."
+                    },
+                    "subject": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "type": {
+                                "anyOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "string",
+                                        "enum": [
+                                            "other"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "id": {
+                                "type": [
+                                    "integer",
+                                    "null"
+                                ]
+                            },
+                            "name": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "type",
+                            "id",
+                            "name"
+                        ]
+                    },
+                    "context": {
+                        "type": "array",
+                        "description": "Whatever the action recorded beyond its subject \u2014 who a file\nwas shared with, how many files a cascade removed. Shape\nvaries by action and is documented per action rather than\nhere.",
+                        "items": {}
+                    }
+                },
+                "required": [
+                    "id",
+                    "action",
+                    "created_at",
+                    "actor",
+                    "origin",
+                    "subject",
+                    "context"
+                ],
+                "title": "ActivityResource"
+            },
             "ClientResource": {
                 "type": "object",
                 "properties": {

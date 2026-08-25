@@ -59,6 +59,15 @@ enum Capability: string
     // inside a self-hosted package.
     case CaptchaManagedKeys = 'captcha.managed_keys';
 
+    // Cloud-only — letting an AI assistant act on this installation on
+    // somebody's behalf. Code lives in the private
+    // projectsend/cloud-modules package; without it this capability is
+    // inert, which is the point: the edition boundary here is which
+    // package is installed, not a flag an installation can set. Present
+    // in this enum even so, because a package cannot extend a closed one
+    // — core has to publish the key before anything can gate on it.
+    case AiConnector = 'ai.connector';
+
     /**
      * @return list<Edition>
      */
@@ -74,7 +83,8 @@ enum Capability: string
 
             self::Branding,
             self::StorageManaged,
-            self::CaptchaManagedKeys => [Edition::Cloud],
+            self::CaptchaManagedKeys,
+            self::AiConnector => [Edition::Cloud],
         };
     }
 

@@ -1881,5 +1881,6 @@
     "The mailbox was not connected: :reason": "Kotak surat tidak terhubung: :reason",
     "The selected mail provider does not use a connected mailbox.": "Penyedia email yang dipilih tidak menggunakan kotak surat terhubung.",
     "Guide": "Panduan",
-    "Zapier": "Zapier"
+    "Zapier": "Zapier",
+    "AI assistant": "Asisten AI"
 }

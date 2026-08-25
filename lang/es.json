@@ -1881,5 +1881,6 @@
     "The mailbox was not connected: :reason": "No se conectó el buzón: :reason",
     "The selected mail provider does not use a connected mailbox.": "El proveedor de correo seleccionado no usa un buzón conectado.",
     "Guide": "Guía",
-    "Zapier": "Zapier"
+    "Zapier": "Zapier",
+    "AI assistant": "Asistente de IA"
 }

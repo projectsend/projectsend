@@ -1881,5 +1881,6 @@
     "The mailbox was not connected: :reason": "Schránka nebyla připojena: :reason",
     "The selected mail provider does not use a connected mailbox.": "Vybraný poskytovatel pošty nepoužívá připojenou schránku.",
     "Guide": "Průvodce",
-    "Zapier": "Zapier"
+    "Zapier": "Zapier",
+    "AI assistant": "Asistent AI"
 }

@@ -1881,5 +1881,6 @@
     "The mailbox was not connected: :reason": "Hộp thư chưa được kết nối: :reason",
     "The selected mail provider does not use a connected mailbox.": "Nhà cung cấp email đã chọn không dùng hộp thư kết nối.",
     "Guide": "Hướng dẫn",
-    "Zapier": "Zapier"
+    "Zapier": "Zapier",
+    "AI assistant": "Trợ lý AI"
 }

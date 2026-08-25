@@ -1881,5 +1881,6 @@
     "The mailbox was not connected: :reason": "De mailbox is niet verbonden: :reason",
     "The selected mail provider does not use a connected mailbox.": "De gekozen e-mailprovider gebruikt geen verbonden mailbox.",
     "Guide": "Handleiding",
-    "Zapier": "Zapier"
+    "Zapier": "Zapier",
+    "AI assistant": "AI-assistent"
 }

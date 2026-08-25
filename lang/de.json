@@ -1881,5 +1881,6 @@
     "The mailbox was not connected: :reason": "Das Postfach wurde nicht verbunden: :reason",
     "The selected mail provider does not use a connected mailbox.": "Der ausgewählte E-Mail-Anbieter verwendet kein verbundenes Postfach.",
     "Guide": "Anleitung",
-    "Zapier": "Zapier"
+    "Zapier": "Zapier",
+    "AI assistant": "KI-Assistent"
 }

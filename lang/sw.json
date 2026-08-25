@@ -1881,5 +1881,6 @@
     "The mailbox was not connected: :reason": "Sanduku la barua halikuunganishwa: :reason",
     "The selected mail provider does not use a connected mailbox.": "Mtoa huduma wa barua pepe uliochaguliwa hatumii sanduku la barua lililounganishwa.",
     "Guide": "Mwongozo",
-    "Zapier": "Zapier"
+    "Zapier": "Zapier",
+    "AI assistant": "Msaidizi wa AI"
 }

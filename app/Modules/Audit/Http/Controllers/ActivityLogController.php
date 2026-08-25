@@ -76,10 +76,19 @@ class ActivityLogController extends Controller
                 'key' => $action->value,
                 'description' => $action->description(),
             ], Action::cases()),
-            'origins' => array_map(fn (ActivityOrigin $origin): array => [
-                'key' => $origin->value,
-                'label' => $origin->label(),
-            ], ActivityOrigin::cases()),
+            // Every origin this installation could actually produce.
+            // Offering a filter that can only ever return nothing would
+            // be dangling a feature this edition does not have, which is
+            // the one thing the edition boundary is meant not to do.
+            'origins' => collect(ActivityOrigin::cases())
+                ->reject(fn (ActivityOrigin $origin): bool => $origin === ActivityOrigin::Mcp
+                    && ! $this->capabilities->has(Capability::AiConnector))
+                ->map(fn (ActivityOrigin $origin): array => [
+                    'key' => $origin->value,
+                    'label' => $origin->label(),
+                ])
+                ->values()
+                ->all(),
         ]);
     }
 

@@ -39,6 +39,18 @@ enum ActivityOrigin: string
     case System = 'system';
 
     /**
+     * An AI assistant acting for a signed-in person, through a connector
+     * they authorised — the code that can produce this ships in
+     * projectsend/cloud-modules and nowhere else.
+     *
+     * The person stays the actor: they authorised it, and an audit trail
+     * that named the assistant instead would lose the only fact that
+     * matters when something unexpected shows up. What the connector was
+     * called goes beside the entry, the way an API token's name does.
+     */
+    case Mcp = 'mcp';
+
+    /**
      * English label — also the translation key.
      */
     public function label(): string
@@ -48,6 +60,7 @@ enum ActivityOrigin: string
             self::Api => 'API',
             self::Public => 'Not signed in',
             self::System => 'System',
+            self::Mcp => 'AI assistant',
         };
     }
 }

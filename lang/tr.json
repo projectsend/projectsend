@@ -1881,5 +1881,6 @@
     "The mailbox was not connected: :reason": "Posta kutusu bağlanmadı: :reason",
     "The selected mail provider does not use a connected mailbox.": "Seçilen posta sağlayıcısı bağlı bir posta kutusu kullanmıyor.",
     "Guide": "Kılavuz",
-    "Zapier": "Zapier"
+    "Zapier": "Zapier",
+    "AI assistant": "Yapay zekâ asistanı"
 }

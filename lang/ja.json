@@ -1881,5 +1881,6 @@
     "The mailbox was not connected: :reason": "メールボックスを接続できませんでした: :reason",
     "The selected mail provider does not use a connected mailbox.": "選択したメールプロバイダーは接続済みメールボックスを使用しません。",
     "Guide": "ガイド",
-    "Zapier": "Zapier"
+    "Zapier": "Zapier",
+    "AI assistant": "AI アシスタント"
 }

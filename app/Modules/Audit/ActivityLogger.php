@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Modules\Audit;
 
 use App\Models\User;
+use App\Modules\Audit\Events\ResolvingActivityOrigin;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
 
 class ActivityLogger
 {
@@ -35,16 +37,20 @@ class ActivityLogger
         // gaps. Reading the current request's credential is the same kind of
         // implicit lookup this class already does for the actor and the IP.
         $token = $user?->currentAccessToken();
+        [$origin, $credentialName] = $this->originFor($user, $token);
 
         ActivityLog::query()->create([
             'actor_id' => $user?->getKey(),
             'actor_name' => $user?->name,
             'actor_type' => $user?->type->value,
-            'origin' => $this->originFor($user, $token),
+            'origin' => $origin,
+            // Only ever a personal access token's id — the column means a
+            // row in that table, and a credential that is not one leaves
+            // it null and identifies itself by name alone.
             'api_token_id' => $token?->getKey(),
             // Snapshotted beside the id for the same reason actor_name is:
             // a revoked token must not leave its entries pointing at nothing.
-            'api_token_name' => $token?->getAttribute('name'),
+            'api_token_name' => $credentialName,
             'action' => $action,
             'subject_type' => $subject?->getMorphClass(),
             'subject_id' => $subject?->getKey(),
@@ -77,18 +83,34 @@ class ActivityLogger
      * untestable — the failure mode being that it looks right in
      * production and nothing proves it. A console command and a queued job
      * have no route; a request does.
+     *
+     * @return array{ActivityOrigin, ?string} the origin, and what to
+     *                                        record the credential as —
+     *                                        null when there is no
+     *                                        credential to name
      */
-    private function originFor(?User $actor, mixed $token): ActivityOrigin
+    private function originFor(?User $actor, mixed $token): array
     {
         if ($token !== null) {
-            return ActivityOrigin::Api;
+            $name = $token->getAttribute('name');
+
+            return [ActivityOrigin::Api, is_string($name) ? $name : null];
         }
 
-        if ($actor !== null) {
-            return ActivityOrigin::Ui;
+        if ($actor === null) {
+            return [request()->route() === null ? ActivityOrigin::System : ActivityOrigin::Public, null];
         }
 
-        return request()->route() === null ? ActivityOrigin::System : ActivityOrigin::Public;
+        // An actor and no personal access token has always meant a browser
+        // session, and for a long time nothing else could authenticate a
+        // request. Ask before assuming it: a credential core does not know
+        // about would otherwise be recorded as a person clicking, which is
+        // the one thing this column exists not to get wrong. Nothing
+        // listens on a stock installation, so the answer stays Ui.
+        $asking = new ResolvingActivityOrigin($actor);
+        Event::dispatch($asking);
+
+        return [$asking->origin ?? ActivityOrigin::Ui, $asking->credentialName];
     }
 
     private function shouldRecordIp(Action $action, ?User $actor): bool

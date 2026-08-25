@@ -43,5 +43,5 @@ test('cloud edition has cloud exclusives and none of the community-only capabili
 test('enabledKeys returns the string keys of enabled capabilities', function () {
     $registry = new CapabilityRegistry(Edition::Cloud);
 
-    expect($registry->enabledKeys())->toBe(['branding.customize', 'storage.managed', 'captcha.managed_keys']);
+    expect($registry->enabledKeys())->toBe(['branding.customize', 'storage.managed', 'captcha.managed_keys', 'ai.connector']);
 });

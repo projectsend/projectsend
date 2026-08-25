@@ -1881,5 +1881,6 @@
     "The mailbox was not connected: :reason": "邮箱未连接：:reason",
     "The selected mail provider does not use a connected mailbox.": "所选的邮件服务商不使用已连接的邮箱。",
     "Guide": "指南",
-    "Zapier": "Zapier"
+    "Zapier": "Zapier",
+    "AI assistant": "AI 助手"
 }

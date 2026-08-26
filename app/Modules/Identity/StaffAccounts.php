@@ -45,8 +45,17 @@ class StaffAccounts
      * permission into every permission and makes the rest of the matrix
      * decorative.
      *
-     * An administrator holds every permission by construction, so this is
-     * always true for them and the admin experience is unchanged.
+     * A role's `client_scoped` flag is part of that authority, and the
+     * larger part: a role without it reaches the whole library, while a
+     * client-scoped actor reaches only the clients assigned to them. So
+     * one may not hand out a role that is not client-scoped -- to a
+     * colleague, to a new account, or to themselves, which is the case
+     * that matters, since the role picker is how an account changes role
+     * and an account may edit its own.
+     *
+     * An administrator holds every permission by construction and is
+     * never client-scoped, so this is always true for them and the admin
+     * experience is unchanged.
      */
     public function mayGrant(User $actor, Role $role): bool
     {
@@ -55,6 +64,10 @@ class StaffAccounts
         }
 
         if ($role->is_administrator) {
+            return false;
+        }
+
+        if ($actor->isClientScoped() && ! $role->client_scoped) {
             return false;
         }
 

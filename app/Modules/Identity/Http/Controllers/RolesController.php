@@ -89,9 +89,12 @@ class RolesController extends Controller
 
         $this->guardGrantablePermissions($request, $validated['permissions'] ?? []);
 
+        $clientScoped = $request->boolean('client_scoped');
+        $this->guardScopeRemoval($request, removesScope: ! $clientScoped);
+
         $role = Role::query()->create([
             'name' => $validated['name'],
-            'client_scoped' => $validated['client_scoped'] ?? false,
+            'client_scoped' => $clientScoped,
         ]);
 
         $this->syncPermissions($role, $validated['permissions'] ?? []);
@@ -135,9 +138,12 @@ class RolesController extends Controller
         // Built-in roles have fixed names and a fixed scope flag; only their
         // permission set is editable. Custom roles can change name + scope.
         if (! $role->is_system) {
+            $clientScoped = $request->boolean('client_scoped');
+            $this->guardScopeRemoval($request, removesScope: $role->client_scoped && ! $clientScoped);
+
             $role->update([
                 'name' => $validated['name'],
-                'client_scoped' => $validated['client_scoped'] ?? false,
+                'client_scoped' => $clientScoped,
             ]);
         }
 
@@ -210,6 +216,46 @@ class RolesController extends Controller
                 ]),
             ]);
         }
+    }
+
+    /**
+     * The same rule for the other half of what a role carries.
+     *
+     * `client_scoped` decides how much of the library the role reaches,
+     * which makes it authority in exactly the sense the docblock above
+     * describes -- and the larger part of it, since it is what stands
+     * between a limited staff member and every file on the installation.
+     * Both writers of the flag went through nothing at all, so
+     * `manage_users` alone was enough to mint a role without the limit,
+     * or to lift it off the actor's own, and then to hold it.
+     *
+     * Phrased as "removes the limit" rather than "is not limited", so
+     * that only what this request actually changes is checked -- the same
+     * reasoning that has guardGrantablePermissions look at the diff.
+     * Editing an already-unlimited role's permissions is not this actor
+     * lifting a limit, and StaffAccounts::mayGrant is what stops them
+     * holding the result either way.
+     *
+     * Callers resolve the flag with Request::boolean() and hand the same
+     * value to this guard and to the write, deliberately. The `boolean`
+     * validation rule accepts "0" and 0 as well as false but does not
+     * cast, so reading the validated array and comparing it strictly
+     * would let a request through here that the model's `boolean` cast
+     * then stores as false anyway -- the guard and the write disagreeing
+     * about one value is exactly the shape this guard exists to prevent.
+     */
+    private function guardScopeRemoval(Request $request, bool $removesScope): void
+    {
+        $actor = $request->user();
+        assert($actor !== null);
+
+        if (! $removesScope || ! $actor->isClientScoped()) {
+            return;
+        }
+
+        throw ValidationException::withMessages([
+            'client_scoped' => __('Your own role is limited to the clients assigned to you, so a role you create or edit cannot drop that limit.'),
+        ]);
     }
 
     /**

@@ -122,15 +122,23 @@ class MyFilesController extends Controller
 
             // Subfolders: at root, every visible folder whose parent isn't
             // itself visible (top of each shared subtree, or a client-owned
-            // folder with no visible parent); inside a folder, its direct
-            // children.
+            // folder with no visible parent); inside a folder, the visible
+            // ones among its direct children.
+            //
+            // Both branches narrow to $visibleIds. Being handed a folder is
+            // not permission to read the names of everything filed inside
+            // it: a client-created folder is visible through created_by,
+            // which says nothing about a subfolder staff later put there.
             if ($current === null) {
                 $folders = Folder::query()
                     ->whereIn('id', $visibleIds)
                     ->where(fn ($q) => $q->whereNull('parent_id')->orWhereNotIn('parent_id', $visibleIds))
                     ->orderBy('name');
             } else {
-                $folders = Folder::query()->where('parent_id', $current->id)->orderBy('name');
+                $folders = Folder::query()
+                    ->whereIn('id', $visibleIds)
+                    ->where('parent_id', $current->id)
+                    ->orderBy('name');
             }
 
             // Files: inside a folder, that folder's files; at root, only

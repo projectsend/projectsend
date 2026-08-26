@@ -316,6 +316,69 @@ detect_services() {
     return 0
 }
 
+# The worker unit predates the zips queue, and a worker that is not
+# watching it finishes no zip downloads while cheerfully sending every
+# email — with nothing in any log to say why. That is the worst shape a
+# regression can take, so the updater repairs the unit rather than
+# leaving a note in a changelog nobody reads on a server.
+#
+# Only the case that is unambiguous: a command with no --queue at all,
+# which consumes `default` and nothing else. A unit that already names
+# queues is somebody's deliberate arrangement — possibly with a second
+# worker for zips — so that one is described, not rewritten.
+ensure_worker_watches_zips() {
+    [[ "${SYSTEMD:-0}" == "1" && -n "${WORKER_SERVICE:-}" ]] || return 0
+
+    local unit_file exec_line
+    unit_file="$(systemctl show -p FragmentPath --value "$WORKER_SERVICE" 2>/dev/null || true)"
+
+    [[ -n "$unit_file" && -w "$unit_file" ]] || return 0
+
+    exec_line="$(sed -n 's/^ExecStart=//p' "$unit_file" | head -n 1)"
+
+    case "$exec_line" in
+        *queue:work*) ;;
+        *) return 0 ;;
+    esac
+
+    if [[ "$exec_line" == *"--queue="* ]]; then
+        case "$exec_line" in
+            *zips*) return 0 ;;
+            *)
+                warn "$WORKER_SERVICE names its own queues and does not include 'zips'."
+                warn "Zip downloads will never finish unless some worker watches that queue."
+                warn "Add 'zips' to its --queue list, or run a second worker with --queue=zips."
+                return 0
+                ;;
+        esac
+    fi
+
+    say "Your background worker predates the zips queue"
+    note "Building a zip download runs on its own queue now. $WORKER_SERVICE watches"
+    note "'default' only, so zips would never finish and nothing would say why."
+    note "Change:  queue:work  ->  queue:work --queue=default,zips"
+
+    if ! ask "Update $unit_file? [Y/n]" "y"; then
+        warn "Left alone. Zip downloads will not finish until a worker watches the zips queue."
+
+        return 0
+    fi
+
+    cp -p "$unit_file" "$unit_file.projectsend-bak" 2>/dev/null || true
+
+    # Anchored on the literal command so a unit with other arguments keeps
+    # them, and matched once: a Type=notify unit can carry several
+    # ExecStart lines and only the first is this worker.
+    if sed -i '0,/^ExecStart=/{s|\(^ExecStart=.*queue:work\)|\1 --queue=default,zips|}' "$unit_file"; then
+        systemctl daemon-reload || warn "Could not reload systemd. Run: systemctl daemon-reload"
+        note "Updated. A copy of the old unit is at $unit_file.projectsend-bak"
+    else
+        warn "Could not edit $unit_file. Add --queue=default,zips to its ExecStart line yourself."
+    fi
+
+    return 0
+}
+
 env_value() {
     local raw
     raw="$(first_line "$(sed -n "s/^$1=//p" "$INSTALL_DIR/.env" 2>/dev/null || true)")"
@@ -612,6 +675,10 @@ Then reload PHP-FPM, and bring the site back with: php artisan up"
             || warn "Could not reload $FPM_SERVICE. Do it yourself, or PHP keeps serving the old code."
 
         if [[ -n "${WORKER_SERVICE:-}" ]]; then
+            # Before the restart, so the worker comes back on the command
+            # it is going to keep rather than needing a second bounce.
+            ensure_worker_watches_zips
+
             say "Restarting $WORKER_SERVICE"
             systemctl restart "$WORKER_SERVICE" || warn "Could not restart $WORKER_SERVICE."
         fi

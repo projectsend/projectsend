@@ -41,12 +41,13 @@ a version is cut.
   email behind it. Zip building now has a queue of its own, and the Docker images run a second
   background worker for it.
 
-  **Upgrade note, manual installs only:** your background worker has to be told about the new queue,
-  or zips will never finish and nothing will say why. Edit
-  `/etc/systemd/system/projectsend-worker.service` so the `ExecStart` line reads
-  `queue:work --queue=default,zips …`, then `sudo systemctl daemon-reload && sudo systemctl restart
-  projectsend-worker`. Docker installations need no change. See INSTALL.md for the two-worker setup
-  if you would rather keep the two kinds of work apart.
+  **Manual installs:** your background worker has to be told about the new queue, or zips will never
+  finish and nothing will say why. `update.sh` spots this and offers to fix the worker service for
+  you, keeping a copy of the old one — so for most people there is nothing to do but say yes. If you
+  update by hand, or your worker already names its own queues (the updater will say so rather than
+  edit a deliberate arrangement), add `zips` to its `--queue` list and reload systemd. Docker
+  installations need no change. See INSTALL.md for the two-worker setup if you would rather keep the
+  two kinds of work apart.
 
 ### Fixed
 

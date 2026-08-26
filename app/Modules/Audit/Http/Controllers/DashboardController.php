@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Modules\Api\ApiUsage;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Audit\ActivityPresenter;
 use App\Modules\Audit\DashboardWidgetPreferences;
 use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Files\Models\File;
@@ -50,6 +51,7 @@ class DashboardController extends Controller
         private readonly Installation $installation,
         private readonly TimezoneRegistry $timezones,
         private readonly SystemEnvironment $environment,
+        private readonly ActivityPresenter $presenter,
     ) {}
 
     public function __invoke(Request $request): Response
@@ -398,26 +400,17 @@ class DashboardController extends Controller
      */
     private function recentActivity(): array
     {
+        // Presented through the shared ActivityPresenter, not rebuilt inline —
+        // the same sentence-ready shape the activity page and detail panels
+        // use. Rebuilding it here once dropped `origin`, which is the only
+        // thing that tells an actorless "Anonymous" entry from a "System" one.
         return ActivityLog::query()
             ->orderByDesc('created_at')
             ->orderByDesc('id')
             ->limit(8)
             ->get()
-            ->map(fn (ActivityLog $entry): array => [
-                'id' => $entry->id,
-                'created_at' => $entry->created_at->toIso8601String(),
-                'actor_name' => $entry->actor_name,
-                'actor_type' => $entry->actor_type,
-                'template' => $entry->action->template(),
-                'replacements' => [
-                    'subject' => $entry->subject_name
-                        ?? ($entry->subject_id !== null ? __('(deleted account)') : ''),
-                    ...collect($entry->context ?? [])
-                        ->filter(fn ($value): bool => is_scalar($value))
-                        ->map(fn ($value): string => (string) $value)
-                        ->all(),
-                ],
-            ])->all();
+            ->map(fn (ActivityLog $entry): array => $this->presenter->present($entry))
+            ->all();
     }
 
     /**

@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Audit\ActivityOrigin;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\ShareLink;
 use App\Modules\Groups\Models\Group;
@@ -314,4 +315,24 @@ test('clients get the portal dashboard with their own numbers', function () {
     );
 
     expect((string) $response->getContent())->not->toContain('Hidden');
+});
+
+test('the recent-activity widget carries origin so an actorless entry is not mislabelled', function () {
+    // An anonymous entry (a public/share-link download) and a system entry
+    // are both actor_name null; only `origin` separates "Anonymous" from
+    // "System" on the frontend. The dashboard used to rebuild the row inline
+    // and drop it, so every actorless entry showed as "System".
+    ActivityLog::query()->create([
+        'actor_id' => null, 'actor_name' => null, 'actor_type' => null,
+        'origin' => ActivityOrigin::Public,
+        'action' => Action::PublicFileDownloaded,
+        'subject_name' => 'report.pdf', 'created_at' => now(),
+    ]);
+
+    $this->actingAs($this->admin)->get('/dashboard')->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->has('recent', 1)
+            ->where('recent.0.origin', 'public')
+            ->where('recent.0.actor_name', null),
+    );
 });

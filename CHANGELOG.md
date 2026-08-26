@@ -236,6 +236,15 @@ a version is cut.
   the rest of the library already did. Installation-wide totals stay installation-wide: a count
   carries no names. Nothing changes for an administrator or any unrestricted role.
 
+- **Notification settings accept only the switches they offer.** Saving your notification
+  preferences would store a row for any name a request happened to carry, including ones nothing in
+  ProjectSend can send. Such a row was never read again and could not be seen or removed from the
+  screen, so the table quietly collected entries nobody could reach. The form now checks what comes
+  back against the same list it offered, so the two cannot drift apart. Nothing reachable from the
+  screen changes — it only ever sends back switches it was given.
+  (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
+  [#1689](https://github.com/projectsend/projectsend/pull/1689))
+
 ## 2.1.0 — 18 August 2026
 
 Updating, mostly. ProjectSend now tells you when there is a new version, ends an update somewhere

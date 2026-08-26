@@ -15,6 +15,17 @@ use App\Modules\Platform\Settings\Settings;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\TestResponse;
 
+/**
+ * Where this worker's parts live. Not storage_path('app/uploads-tmp')
+ * directly: each parallel worker gets its own root (see Tests\TestCase),
+ * because session ids restart at 1 in every worker's database and the
+ * cleanup below would otherwise delete the others' parts mid-test.
+ */
+function partsRoot(): string
+{
+    return (string) config('projectsend.uploads.parts_path');
+}
+
 function grantChunkedUploadPermission(User $user): void
 {
     RolePermission::query()->firstOrCreate(['role_id' => $user->role_id, 'permission' => Permission::Upload->value]);
@@ -26,7 +37,7 @@ beforeEach(function () {
 });
 
 afterEach(function () {
-    Illuminate\Support\Facades\File::deleteDirectory(storage_path('app/uploads-tmp'));
+    Illuminate\Support\Facades\File::deleteDirectory(partsRoot());
 });
 
 function createSession(int $size = 1024, string $filename = 'big.zip'): string
@@ -103,7 +114,7 @@ test('complete assembles parts in order into a verified File record', function (
         ->and($file->checksum)->toBe(hash('sha256', 'hello-world'))
         ->and(Storage::disk('files')->get($file->path))->toBe('hello-world')
         ->and(UploadSession::query()->find($sessionId))->toBeNull()
-        ->and(is_dir(storage_path('app/uploads-tmp/'.$sessionId)))->toBeFalse()
+        ->and(is_dir(partsRoot().'/'.$sessionId))->toBeFalse()
         ->and(ActivityLog::query()->where('action', Action::FileUploaded)->where('subject_name', 'assembled')->exists())->toBeTrue();
 });
 
@@ -192,7 +203,7 @@ test('abort deletes parts and the purge command clears only stale sessions', fun
     $aborted = createSession();
     putPart($aborted, 1, 'data');
     $this->deleteJson("/uploads/{$aborted}")->assertNoContent();
-    expect(is_dir(storage_path('app/uploads-tmp/'.$aborted)))->toBeFalse()
+    expect(is_dir(partsRoot().'/'.$aborted))->toBeFalse()
         ->and(UploadSession::query()->find($aborted))->toBeNull();
 
     $fresh = createSession(100, 'fresh.zip');
@@ -331,4 +342,22 @@ test('a folder that survives the upload still receives the file', function () {
     $fileId = $this->postJson("/uploads/{$session}/complete")->assertOk()->json('file_id');
 
     expect(File::query()->whereKey($fileId)->value('folder_id'))->toBe($folder->id);
+});
+
+// The isolation itself cannot be observed from inside one test, but the
+// mechanism it rests on can: parts go where the configured root says, so
+// giving each worker its own root actually holds them apart.
+test('parts are written under the configured root', function () {
+    $this->actingAs($this->admin);
+
+    $custom = storage_path('app/uploads-tmp/somewhere-else');
+    config(['projectsend.uploads.parts_path' => $custom]);
+
+    $sessionId = createSession(1024);
+    putPart($sessionId, 1, 'hello')->assertOk();
+
+    expect(is_file($custom.'/'.$sessionId.'/1.part'))->toBeTrue()
+        ->and(is_dir(storage_path('app/uploads-tmp/'.$sessionId)))->toBeFalse();
+
+    Illuminate\Support\Facades\File::deleteDirectory($custom);
 });

@@ -255,7 +255,26 @@ class LocalPartStore
 
     private function directory(UploadSession $session): string
     {
-        return storage_path('app/uploads-tmp/'.$session->id);
+        return $this->root().'/'.$session->id;
+    }
+
+    /**
+     * Where part files live while a transfer is in progress.
+     *
+     * Configurable only so the test suite can hold it apart per parallel
+     * worker. This is a real directory rather than a faked disk, and each
+     * worker's database restarts session ids at 1, so two workers writing
+     * parts land in the same place — and ChunkedUploadsTest's afterEach
+     * deletes the whole tree, for everybody. Unset, which is every
+     * installation, the path is what it has always been.
+     */
+    private function root(): string
+    {
+        $configured = config('projectsend.uploads.parts_path');
+
+        return is_string($configured) && $configured !== ''
+            ? rtrim($configured, '/')
+            : storage_path('app/uploads-tmp');
     }
 
     private function partPath(UploadSession $session, int $partNumber): string

@@ -21,6 +21,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Uploads
+    |--------------------------------------------------------------------------
+    |
+    | Where a chunked upload's parts wait while the transfer is running,
+    | before they are assembled onto the storage disk. Leave this unset:
+    | it exists so the test suite can give each parallel worker its own
+    | directory, since parts are real files on a real path rather than a
+    | faked disk, and session ids restart at 1 in every worker's database.
+    |
+    */
+
+    'uploads' => [
+        'parts_path' => env('UPLOAD_PARTS_PATH'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Chunked upload part size (MB)
     |--------------------------------------------------------------------------
     |

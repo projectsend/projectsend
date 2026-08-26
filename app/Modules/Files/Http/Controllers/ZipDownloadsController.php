@@ -15,12 +15,15 @@ use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Models\ZipDownload;
 use App\Modules\Files\Uploads\StoreUploadedFile;
+use App\Modules\Platform\Settings\Setting;
+use App\Modules\Platform\Settings\Settings;
 use App\Support\ContentDisposition;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Number;
 
 /**
  * A folder's "Download as zip" button and the file listing's multi-select
@@ -40,12 +43,29 @@ class ZipDownloadsController extends Controller
         private readonly ActivityLogger $activity,
         private readonly ViewableFileScope $viewable,
         private readonly DownloadAllowance $allowance,
+        private readonly Settings $settings,
     ) {}
 
     public function store(Request $request): JsonResponse
     {
         $user = $request->user();
         assert($user !== null);
+
+        // One build at a time per requester. A zip holds the queue worker
+        // for as long as it takes to write, and everything else — every
+        // notification email — waits behind it, so a queue of them from
+        // one person is everyone else's outage. An hour old is treated as
+        // abandoned rather than in progress: BuildZipDownloadJob::failed()
+        // resolves a row the worker gave up on, but a worker killed hard
+        // enough never runs it, and nobody should be locked out forever by
+        // a row nothing will ever finish.
+        $inFlight = ZipDownload::query()
+            ->where('requested_by', $user->id)
+            ->where('status', ZipDownload::STATUS_PENDING)
+            ->where('created_at', '>', now()->subHour())
+            ->exists();
+
+        abort_if($inFlight, 429, __('A zip download is already being prepared. Wait for that one to finish before starting another.'));
 
         $validated = $request->validate([
             'file_ids' => ['array'],
@@ -98,8 +118,31 @@ class ZipDownloadsController extends Controller
             fn (Folder $folder): int => (clone $visible)->whereIn('folder_id', $folder->subtreeFolderIds())->count(),
         );
 
+        // Measured the same way, and deliberately without the allowance
+        // filter the loose-file branch applies: a folder's total can only
+        // come out at or above what the archive will really weigh, and an
+        // over-estimate is the safe direction for a cap.
+        $totalSize = (int) $files->sum('size') + (int) $folders->sum(
+            fn (Folder $folder): int => (int) (clone $visible)->whereIn('folder_id', $folder->subtreeFolderIds())->sum('size'),
+        );
+
         abort_if($fileCount === 0, 422, __('The selected folders are empty.'));
         abort_if($fileCount > self::MAX_FILES, 422, __('Too many files selected. Choose a smaller selection and try again.'));
+
+        // Bytes, not file count, are what a build costs — worker time, the
+        // temp copies a remote disk needs, and the archive on disk. The
+        // message names both numbers because "too big" without them leaves
+        // someone guessing how much to deselect.
+        $maxBytes = (int) $this->settings->get(Setting::MaxZipDownloadSizeMb) * 1024 * 1024;
+
+        abort_if(
+            $maxBytes > 0 && $totalSize > $maxBytes,
+            422,
+            __('That selection is :size. Zip downloads are limited to :limit — select fewer files and try again.', [
+                'size' => Number::fileSize($totalSize, precision: 1),
+                'limit' => Number::fileSize($maxBytes),
+            ]),
+        );
 
         $zipDownload = ZipDownload::query()->create([
             'requested_by' => $user->id,

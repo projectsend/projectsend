@@ -28,6 +28,14 @@ a version is cut.
   still S3, and are not asked to say so. Files already stored stay where they are — the setting
   applies to new uploads, and there is still no migration between backends.
 
+- **A maximum size for zip downloads.** A new Settings → Downloads screen sets the largest selection
+  anyone can ask for as a single zip — 2 GB out of the box, any figure you like, or 0 for no limit.
+  Building an archive costs disk space and occupies the background worker for as long as it takes to
+  write, so one person asking for a whole library at once used to hold up every notification email
+  behind it. Ask for more than the limit and you are told how large your selection is and what the
+  ceiling is, rather than simply refused; each person can have one archive being prepared at a time,
+  for the same reason.
+
 ### Fixed
 
 - **Sessions no longer break behind a reverse proxy.** Signing in, or submitting the first-run setup
@@ -149,6 +157,19 @@ a version is cut.
   side — the reason for every 502 and every 403 existed, in a file nobody knew to open. Both its
   access and error logs now go to the container's output, and the Docker guide has a section on
   running behind a reverse proxy that says which side a given message points at.
+
+- **A zip download is never offered over an archive that was not written.** Archives are built in the
+  background, and the writing all happens at the very end — so a source file deleted while the build
+  waited its turn, or a disk that filled up, produced no archive at all while the download was still
+  marked ready. Clicking it then failed with an unexplained error. The same went for a selection
+  whose files had all become unavailable: an archive with nothing in it is not written to disk
+  either. Both now fail the build and say why. Large archives were affected differently: a build
+  taking longer than a minute was killed by the queue worker and the download simply spun forever,
+  waiting for something that had already stopped. Builds now get the time they need, a build the
+  queue gives up on reports itself as failed, and the partial files an interrupted build leaves
+  behind are cleaned up rather than sitting on disk unnoticed.
+  (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
+  [#1687](https://github.com/projectsend/projectsend/pull/1687))
 
 ## 2.1.0 — 18 August 2026
 

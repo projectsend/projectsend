@@ -4,6 +4,7 @@ use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Modules\Clients\Http\Controllers\ClientSettingsController;
 use App\Modules\Comments\Http\Controllers\CommentSettingsController;
+use App\Modules\Files\Http\Controllers\DownloadSettingsController;
 use App\Modules\Files\Http\Controllers\FileRetentionSettingsController;
 use App\Modules\Files\Http\Controllers\UploadSettingsController;
 use App\Modules\Identity\Http\Controllers\ApiTokensController;
@@ -150,6 +151,8 @@ Route::middleware('auth')->group(function () {
         Route::patch('system/settings/clients', [ClientSettingsController::class, 'update'])->name('system-settings.clients.update');
         Route::get('system/settings/uploads', [UploadSettingsController::class, 'edit'])->name('system-settings.uploads.edit');
         Route::patch('system/settings/uploads', [UploadSettingsController::class, 'update'])->name('system-settings.uploads.update');
+        Route::get('system/settings/downloads', [DownloadSettingsController::class, 'edit'])->name('system-settings.downloads.edit');
+        Route::patch('system/settings/downloads', [DownloadSettingsController::class, 'update'])->name('system-settings.downloads.update');
         Route::get('system/settings/file-retention', [FileRetentionSettingsController::class, 'edit'])->name('system-settings.file-retention.edit');
         Route::patch('system/settings/file-retention', [FileRetentionSettingsController::class, 'update'])->name('system-settings.file-retention.update');
         Route::get('system/settings/comments', [CommentSettingsController::class, 'edit'])->name('system-settings.comments.edit');

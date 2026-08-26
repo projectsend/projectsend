@@ -7,6 +7,7 @@ namespace App\Modules\Files\Console;
 use App\Modules\Files\Models\ZipDownload;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
+use League\Flysystem\UnableToRetrieveMetadata;
 
 class PurgeZipDownloadsCommand extends Command
 {
@@ -40,8 +41,58 @@ class PurgeZipDownloadsCommand extends Command
             $zipDownload->delete();
         }
 
-        $this->info("Purged {$stale->count()} stale zip download(s).");
+        $swept = $this->sweepUnreferenced();
+
+        $this->info("Purged {$stale->count()} stale zip download(s) and {$swept} unreferenced file(s).");
 
         return self::SUCCESS;
+    }
+
+    /**
+     * Rows are what the loop above cleans by, so a file whose row is gone
+     * is invisible to it — and a row can vanish without its files:
+     * zip_downloads.requested_by cascades on delete, so removing a user
+     * takes their rows with it and leaves every archive they built behind.
+     * Anything already stranded that way before this command learned to
+     * look is in the same position.
+     *
+     * OrphanFileScanner skips zips/ on purpose — this command owns that
+     * directory, so closing the gap belongs here.
+     */
+    private function sweepUnreferenced(): int
+    {
+        $disk = Storage::disk('files');
+        $cutoff = now()->subDay()->getTimestamp();
+        $live = array_flip(ZipDownload::query()->pluck('id')->all());
+        $unreferenced = [];
+
+        foreach ($disk->files('zips') as $path) {
+            // Both an archive (12.zip) and libzip's temp beside it
+            // (12.zip.aB3xY9) lead with the row id they belong to.
+            $id = explode('.', basename($path))[0];
+
+            if (ctype_digit($id) && isset($live[(int) $id])) {
+                continue;
+            }
+
+            try {
+                // A day's grace before deleting something no row explains.
+                // Nothing here should outlive its row by design, so the
+                // wait costs nothing — and it means a file another process
+                // has only just put there is never taken out from under it.
+                if ($disk->lastModified($path) >= $cutoff) {
+                    continue;
+                }
+            } catch (UnableToRetrieveMetadata) {
+                // Gone between listing the directory and asking about it.
+                continue;
+            }
+
+            $unreferenced[] = $path;
+        }
+
+        $disk->delete($unreferenced);
+
+        return count($unreferenced);
     }
 }

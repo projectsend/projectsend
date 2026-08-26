@@ -9,6 +9,8 @@ use App\Modules\Files\Jobs\BuildZipDownloadJob;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Models\ZipDownload;
+use App\Modules\Platform\Settings\Setting;
+use App\Modules\Platform\Settings\Settings;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
@@ -19,6 +21,11 @@ use Illuminate\Support\Facades\Storage;
 beforeEach(function () {
     Storage::fake('files');
     $this->admin = User::factory()->create();
+
+    // Settings are cached across tests (Cache::rememberForever survives
+    // the per-test DB rollback), so the cap every test below builds on is
+    // set rather than assumed — and reset here for the tests that lower it.
+    app(Settings::class)->set(Setting::MaxZipDownloadSizeMb, 2048);
 });
 
 function zipUploadFile(User $as, string $name, ?int $folderId = null): File
@@ -349,6 +356,164 @@ test('the purge command removes leftover archives even when the row never record
     expect(ZipDownload::query()->find($row->id))->toBeNull()
         ->and(Storage::disk('files')->exists("zips/{$row->id}.zip"))->toBeFalse()
         ->and(Storage::disk('files')->exists("zips/{$row->id}.zip.tmp0a1b2c"))->toBeFalse();
+});
+
+// The cap is on bytes, not on file count: bytes are what the build
+// actually costs — worker time, temp copies from a remote disk, and the
+// archive itself. The message names both numbers so the person who asked
+// knows how much to deselect.
+test('a selection larger than the zip download limit is rejected, and says how large it was', function () {
+    app(Settings::class)->set(Setting::MaxZipDownloadSizeMb, 1);
+
+    $file = zipUploadFile($this->admin, 'huge.pdf');
+    $file->update(['size' => 5 * 1024 * 1024]);
+
+    $response = $this->actingAs($this->admin)
+        ->postJson('/zip-downloads', ['file_ids' => [$file->id]])
+        ->assertStatus(422);
+
+    expect($response->json('message'))->toContain('5.0 MB')->toContain('1 MB')
+        ->and(ZipDownload::query()->count())->toBe(0);
+});
+
+test('a zip download limit of zero means no limit', function () {
+    app(Settings::class)->set(Setting::MaxZipDownloadSizeMb, 0);
+
+    $file = zipUploadFile($this->admin, 'huge.pdf');
+    $file->update(['size' => 50 * 1024 * 1024]);
+
+    $this->actingAs($this->admin)
+        ->postJson('/zip-downloads', ['file_ids' => [$file->id]])
+        ->assertOk();
+});
+
+// The controller checks what was asked for; the job checks again, because
+// the selection is re-derived at build time and a folder can grow while
+// the job waits in the queue.
+test('a selection that grew past the limit after it was queued fails the build', function () {
+    app(Settings::class)->set(Setting::MaxZipDownloadSizeMb, 1);
+
+    $file = zipUploadFile($this->admin, 'grown.pdf');
+
+    $zipDownload = ZipDownload::query()->create([
+        'requested_by' => $this->admin->id,
+        'status' => ZipDownload::STATUS_PENDING,
+        'file_ids' => [$file->id],
+        'folder_ids' => [],
+    ]);
+
+    $file->update(['size' => 5 * 1024 * 1024]);
+
+    (new BuildZipDownloadJob($zipDownload->id))->handle();
+
+    $zipDownload->refresh();
+
+    expect($zipDownload->status)->toBe(ZipDownload::STATUS_FAILED)
+        ->and($zipDownload->path)->toBeNull()
+        ->and(Storage::disk('files')->exists("zips/{$zipDownload->id}.zip"))->toBeFalse();
+});
+
+// A zip holds the single queue worker for as long as it takes to write,
+// and every notification email waits behind it.
+test('a build already in progress blocks a second request from the same person', function () {
+    ZipDownload::query()->create([
+        'requested_by' => $this->admin->id,
+        'status' => ZipDownload::STATUS_PENDING,
+    ]);
+
+    $file = zipUploadFile($this->admin, 'later.pdf');
+
+    $this->actingAs($this->admin)
+        ->postJson('/zip-downloads', ['file_ids' => [$file->id]])
+        ->assertStatus(429);
+});
+
+test('one person\'s build in progress does not block anybody else', function () {
+    $other = User::factory()->create();
+
+    ZipDownload::query()->create([
+        'requested_by' => $other->id,
+        'status' => ZipDownload::STATUS_PENDING,
+    ]);
+
+    $file = zipUploadFile($this->admin, 'mine.pdf');
+
+    $this->actingAs($this->admin)
+        ->postJson('/zip-downloads', ['file_ids' => [$file->id]])
+        ->assertOk();
+});
+
+// failed() resolves a row the queue gave up on, but a worker killed hard
+// enough never runs it. Nobody should be locked out forever by a row that
+// nothing is ever going to finish.
+test('an abandoned pending build stops blocking after an hour', function () {
+    $stale = ZipDownload::query()->create([
+        'requested_by' => $this->admin->id,
+        'status' => ZipDownload::STATUS_PENDING,
+    ]);
+    $stale->forceFill(['created_at' => now()->subHours(2)])->save();
+
+    $file = zipUploadFile($this->admin, 'again.pdf');
+
+    $this->actingAs($this->admin)
+        ->postJson('/zip-downloads', ['file_ids' => [$file->id]])
+        ->assertOk();
+});
+
+// "Nothing left to send" and "you have already had these as often as you
+// were meant to" are different answers, and the list of what was left out
+// belongs on the row either way.
+test('a build where every file had already hit its download limit says so, and lists them', function () {
+    // Uploaded by somebody else: the uploader is exempt from their own
+    // file's limit, so the requester has to be a different person for the
+    // allowance to mean anything.
+    $file = zipUploadFile(User::factory()->create(), 'spent.pdf');
+    $file->update(['download_limit' => 1]);
+
+    ActivityLog::query()->create([
+        'actor_id' => $this->admin->id,
+        'actor_name' => $this->admin->name,
+        'actor_type' => $this->admin->type->value,
+        'action' => Action::FileDownloaded,
+        'subject_type' => $file->getMorphClass(),
+        'subject_id' => $file->id,
+        'created_at' => now(),
+    ]);
+
+    $zipDownload = ZipDownload::query()->create([
+        'requested_by' => $this->admin->id,
+        'status' => ZipDownload::STATUS_PENDING,
+        'file_ids' => [$file->id],
+        'folder_ids' => [],
+    ]);
+
+    (new BuildZipDownloadJob($zipDownload->id))->handle();
+
+    $zipDownload->refresh();
+
+    expect($zipDownload->status)->toBe(ZipDownload::STATUS_FAILED)
+        ->and($zipDownload->error)->toContain('download limit')
+        ->and($zipDownload->skipped_files)->toHaveCount(1)
+        ->and($zipDownload->skipped_files[0]['id'])->toBe($file->id);
+});
+
+// zip_downloads.requested_by cascades on delete, so removing a user takes
+// their rows with it and leaves every archive they built behind — nothing
+// keyed on rows can ever see those again.
+test('the purge command removes an archive whose row no longer exists', function () {
+    $this->admin; // setup complete
+
+    Storage::disk('files')->put('zips/4242.zip', 'stranded');
+    touch(Storage::disk('files')->path('zips/4242.zip'), now()->subDays(2)->getTimestamp());
+
+    // Younger than the grace period: this one could still belong to a
+    // build that is running right now.
+    Storage::disk('files')->put('zips/4243.zip', 'just built');
+
+    $this->artisan('projectsend:purge-zip-downloads')->assertSuccessful();
+
+    expect(Storage::disk('files')->exists('zips/4242.zip'))->toBeFalse()
+        ->and(Storage::disk('files')->exists('zips/4243.zip'))->toBeTrue();
 });
 
 // original_name is uploader-chosen and validated only for length, so it

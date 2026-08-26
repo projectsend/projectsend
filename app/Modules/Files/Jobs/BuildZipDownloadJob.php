@@ -10,6 +10,8 @@ use App\Modules\Files\Access\ViewableFileScope;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Models\ZipDownload;
+use App\Modules\Platform\Settings\Setting;
+use App\Modules\Platform\Settings\Settings;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,6 +19,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 use ZipArchive;
@@ -130,6 +133,27 @@ class BuildZipDownloadJob implements ShouldQueue
                 $totalSize += $this->addFolder($zip, $folder, $requester, $usedNames, $tempFiles, $visible, $skipped, $added);
             }
 
+            // Re-checked here, not only in ZipDownloadsController: the
+            // selection is re-derived at build time, so a folder that grew
+            // while the job sat in the queue could otherwise fill the disk
+            // with an archive nobody is allowed to ask for. unchangeAll()
+            // drops every pending entry, so close() writes nothing rather
+            // than writing an archive we would delete a line later.
+            $maxBytes = (int) app(Settings::class)->get(Setting::MaxZipDownloadSizeMb) * 1024 * 1024;
+
+            if ($maxBytes > 0 && $totalSize > $maxBytes) {
+                $zip->unchangeAll();
+                @$zip->close();
+
+                foreach ($tempFiles as $tempFile) {
+                    @unlink($tempFile);
+                }
+
+                $this->fail($zipDownload, $relativePath, 'The selection grew past the maximum zip download size before the archive could be built.', $skipped);
+
+                return;
+            }
+
             // ZipArchive defers every write to close(): a source file
             // deleted after its addFile() (a concurrent staff delete runs
             // FileDiskCleanup at once) or a full disk only surfaces here,
@@ -150,14 +174,29 @@ class BuildZipDownloadJob implements ShouldQueue
             }
 
             if ($written !== true || $added === 0) {
-                Storage::disk('files')->delete($relativePath);
+                if ($written !== true) {
+                    // What the requester sees stays generic: a libzip
+                    // string means nothing to them and can name a server
+                    // path. An operator needs the opposite — "disk full"
+                    // and "the source file vanished" are different
+                    // problems — so the reason goes to the log instead.
+                    Log::error('A zip download could not be written.', [
+                        'zip_download_id' => $zipDownload->id,
+                        'reason' => $zip->getStatusString(),
+                    ]);
+                }
 
-                $zipDownload->update([
-                    'status' => ZipDownload::STATUS_FAILED,
-                    'error' => $added === 0
-                        ? 'None of the selected files were available to add to the archive.'
-                        : 'The zip archive could not be written.',
-                ]);
+                // Nothing written is told apart from nothing added, and
+                // "every file had already been downloaded as often as it
+                // was meant to be" from "there was nothing left to send".
+                // They are different problems for the person who asked,
+                // and fail() carries the skipped list either way, so
+                // "which files?" stays answerable from the row.
+                $this->fail($zipDownload, $relativePath, match (true) {
+                    $written !== true => 'The zip archive could not be written.',
+                    $skipped !== [] => 'Every selected file had already reached its download limit.',
+                    default => 'None of the selected files were available to add to the archive.',
+                }, $skipped);
 
                 return;
             }
@@ -179,6 +218,24 @@ class BuildZipDownloadJob implements ShouldQueue
                 'error' => $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * One way out for every build that cannot produce an archive: drop
+     * whatever landed on disk, and leave the row saying what happened and
+     * what was left out.
+     *
+     * @param  list<array{id: int, name: string}>  $skipped
+     */
+    private function fail(ZipDownload $zipDownload, string $relativePath, string $message, array $skipped): void
+    {
+        Storage::disk('files')->delete($relativePath);
+
+        $zipDownload->update([
+            'status' => ZipDownload::STATUS_FAILED,
+            'error' => $message,
+            'skipped_files' => $skipped === [] ? null : $skipped,
+        ]);
     }
 
     /**

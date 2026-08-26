@@ -14,6 +14,7 @@ use App\Modules\Clients\Models\ClientCustomField;
 use App\Modules\Clients\Models\ClientCustomFieldValue;
 use App\Modules\Clients\Notifications\ClientAccountEditedNotification;
 use App\Modules\Clients\Notifications\ClientWelcomeNotification;
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\DeletedAccountContent;
 use App\Modules\Identity\AccountContentDeletion;
 use App\Modules\Identity\Models\Role;
@@ -44,6 +45,7 @@ class ClientsController extends Controller
         private readonly ClientStorageUsage $storageUsage,
         private readonly DeletedAccountContent $accountContent,
         private readonly AccountContentDeletion $accountDeletion,
+        private readonly StaffLibraryScope $scope,
     ) {}
 
     public function index(Request $request): Response
@@ -135,7 +137,7 @@ class ClientsController extends Controller
 
     public function edit(User $client): Response
     {
-        abort_unless($client->isClient(), 404);
+        $this->guardTarget($client);
 
         return Inertia::render('clients/edit', [
             'client' => [
@@ -160,7 +162,7 @@ class ClientsController extends Controller
 
     public function update(Request $request, User $client): RedirectResponse
     {
-        abort_unless($client->isClient(), 404);
+        $this->guardTarget($client);
 
         $validated = $request->validate(array_merge([
             'name' => ['required', 'string', 'max:255'],
@@ -221,7 +223,7 @@ class ClientsController extends Controller
      */
     public function destroyTwoFactor(User $client, TwoFactorAdministration $twoFactor): RedirectResponse
     {
-        abort_unless($client->isClient(), 404);
+        $this->guardTarget($client);
 
         $twoFactor->reset($client);
 
@@ -230,7 +232,7 @@ class ClientsController extends Controller
 
     public function destroy(Request $request, User $client): RedirectResponse
     {
-        abort_unless($client->isClient(), 404);
+        $this->guardTarget($client);
 
         $validated = $this->accountDeletion->validate($request, $client);
 
@@ -242,6 +244,37 @@ class ClientsController extends Controller
         $this->accountDeletion->apply($validated, $client, $name);
 
         return redirect()->route('clients.index')->with('success', __('Client deleted.'));
+    }
+
+    /**
+     * Every route that binds a client keeps `can:edit_clients` (or
+     * `can:delete_clients`) in front of it, and a permission is not a
+     * boundary: a client-scoped staff member holds it for the clients
+     * assigned to them and it used to let them through for anybody's.
+     *
+     * clients/{client}/files says the rule out loud one line away in
+     * routes/web.php, on the same bound object under the same permission
+     * — "a client-scoped staff member may only browse this for clients
+     * assigned to them" — and the staff-account routes apply their own
+     * version through StaffAccounts::guardTarget. These did neither, and
+     * update() sets email, password and active.
+     *
+     * 404 rather than 403, like the isClient() check it absorbs and like
+     * clients/{client}/files: a client outside this staff member's reach
+     * should not be distinguishable from one that is not there.
+     */
+    private function guardTarget(User $client): void
+    {
+        abort_unless($client->isClient(), 404);
+        abort_unless($this->scope->canAssignClient($this->actor(), $client), 404);
+    }
+
+    private function actor(): User
+    {
+        $actor = auth()->user();
+        assert($actor instanceof User);
+
+        return $actor;
     }
 
     /**

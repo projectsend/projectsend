@@ -16,6 +16,7 @@ use App\Modules\Clients\Models\ClientCustomField;
 use App\Modules\Clients\Models\ClientCustomFieldValue;
 use App\Modules\Clients\Notifications\ClientAccountEditedNotification;
 use App\Modules\Clients\Notifications\ClientWelcomeNotification;
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\DeletedAccountContent;
 use App\Modules\Identity\AccountContentDeletion;
 use App\Modules\Identity\Models\Role;
@@ -36,10 +37,10 @@ use Illuminate\Validation\Rules\Password;
  * Client accounts over the API.
  *
  * Clients are `users` rows with type = client, so every response here goes
- * through ClientResource's allowlist rather than the model. `abort_unless
- * ($client->isClient(), 404)` on each single-client route mirrors the web
- * controller: a staff account is not addressable through this surface even
- * by id.
+ * through ClientResource's allowlist rather than the model. guardTarget()
+ * on each single-client route mirrors the web controller: a staff account
+ * is not addressable through this surface even by id, and a client outside
+ * the caller's own reach is not either.
  *
  * Validation rules, custom-field handling and the deletion flow are the
  * web controller's, reused or mirrored field for field — a client created
@@ -54,6 +55,7 @@ class ClientsController extends Controller
         private readonly ClientStorageUsage $storageUsage,
         private readonly DeletedAccountContent $accountContent,
         private readonly AccountContentDeletion $accountDeletion,
+        private readonly StaffLibraryScope $scope,
     ) {}
 
     public function index(Request $request): AnonymousResourceCollection
@@ -79,9 +81,9 @@ class ClientsController extends Controller
         return ClientResource::collection($this->polling->paginate($request, $query, 'users'));
     }
 
-    public function show(User $client): ClientResource
+    public function show(Request $request, User $client): ClientResource
     {
-        abort_unless($client->isClient(), 404);
+        $this->guardTarget($request, $client);
 
         return $this->resourceFor($client);
     }
@@ -133,7 +135,7 @@ class ClientsController extends Controller
 
     public function update(Request $request, User $client): ClientResource
     {
-        abort_unless($client->isClient(), 404);
+        $this->guardTarget($request, $client);
 
         $validated = $request->validate([
             'name' => ['sometimes', 'string', 'max:255'],
@@ -203,9 +205,9 @@ class ClientsController extends Controller
      * in the activity log against the caller. Answers 204 whether or not a
      * second factor was actually in force.
      */
-    public function destroyTwoFactor(User $client, TwoFactorAdministration $twoFactor): JsonResponse
+    public function destroyTwoFactor(Request $request, User $client, TwoFactorAdministration $twoFactor): JsonResponse
     {
-        abort_unless($client->isClient(), 404);
+        $this->guardTarget($request, $client);
 
         $twoFactor->reset($client);
 
@@ -230,7 +232,7 @@ class ClientsController extends Controller
      */
     public function destroy(Request $request, User $client): JsonResponse
     {
-        abort_unless($client->isClient(), 404);
+        $this->guardTarget($request, $client);
 
         $validated = $this->accountDeletion->validate($request, $client);
 
@@ -242,6 +244,26 @@ class ClientsController extends Controller
         $this->accountDeletion->apply($validated, $client, $name);
 
         return response()->json(status: 204);
+    }
+
+    /**
+     * The API twin of the web controller's guard, and for the same reason:
+     * `edit_clients` is a permission, not a boundary. A token acts as its
+     * owner, so a client-scoped staff member's token reaches exactly the
+     * clients they do — the clients assigned to them — and no others.
+     *
+     * 404 rather than 403, like the isClient() check it absorbs: a client
+     * outside this token owner's reach should not be distinguishable from
+     * one that is not there.
+     */
+    private function guardTarget(Request $request, User $client): void
+    {
+        abort_unless($client->isClient(), 404);
+
+        $actor = $request->user();
+        assert($actor instanceof User);
+
+        abort_unless($this->scope->canAssignClient($actor, $client), 404);
     }
 
     private function resourceFor(User $client): ClientResource

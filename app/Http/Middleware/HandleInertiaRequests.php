@@ -145,10 +145,14 @@ class HandleInertiaRequests extends Middleware
         }
 
         if ($checker->allows($user, Permission::ApproveGroupsMembershipsRequests)) {
+            // Narrowed like the queue it badges, and by the same scope —
+            // a client-scoped staff member is not shown a number they
+            // cannot act on. Same rule the comments badge below states.
             $counts['membership_requests'] = MembershipRequest::query()
                 ->pending()
                 ->whereHas('user')
                 ->whereHas('group')
+                ->approvableBy($user)
                 ->count();
         }
 

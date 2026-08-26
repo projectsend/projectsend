@@ -255,6 +255,16 @@ a version is cut.
   (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
   [#1704](https://github.com/projectsend/projectsend/pull/1704))
 
+- **A file can no longer be filed into a folder that has been deleted.** Deleting a folder deletes
+  everything inside it, so a file that lands in one afterwards sits somewhere that was already
+  emptied — reachable by link and in search, but missing from the folder listing its uploader would
+  look in. Uploading or moving a file into a deleted folder now says so instead, and picks up the
+  case where a folder is deleted while a large upload is still transferring: the finished file lands
+  at the top level rather than being thrown away, since the transfer had already happened. The
+  message says the folder no longer exists rather than that the value was invalid.
+  (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
+  [#1703](https://github.com/projectsend/projectsend/pull/1703))
+
 ## 2.1.0 — 18 August 2026
 
 Updating, mostly. ProjectSend now tells you when there is a new version, ends an update somewhere

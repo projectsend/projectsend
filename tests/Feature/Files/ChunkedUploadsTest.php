@@ -281,3 +281,54 @@ test('a storage backend that refuses the write fails the upload instead of recor
     // The point of the whole test: no row for bytes that were never stored.
     expect(File::query()->count())->toBe($before);
 });
+
+// A chunked upload is two requests, and store()'s rule only ever sees the
+// first one. Delete the folder while the bytes are in flight and the
+// session still names it -- the version of this that nobody can ask for
+// in a single request.
+test('a folder deleted mid-upload does not swallow the finished file', function () {
+    $folder = app(\App\Modules\Files\Folders\FolderService::class)->create('Doomed', null);
+
+    $this->actingAs($this->admin);
+
+    $session = $this->postJson('/uploads', [
+        'filename' => 'report.pdf',
+        'size' => 11,
+        'type' => 'application/pdf',
+        'folder_id' => $folder->id,
+    ])->assertOk()->json('uploadId');
+
+    putPart($session, 1, 'hello world')->assertOk();
+
+    // Somebody empties the folder while the transfer is running. Deleting
+    // a folder deletes every file in its subtree, so anything filed into
+    // it afterwards sits inside a folder that was already emptied.
+    app(\App\Modules\Files\Folders\FolderService::class)->delete($folder);
+
+    $fileId = $this->postJson("/uploads/{$session}/complete")->assertOk()->json('file_id');
+
+    // The bytes are kept -- they are already uploaded, and discarding
+    // somebody's finished transfer over a folder that vanished under them
+    // is the harsher surprise. They land at the root, where the uploader
+    // can see them and move them.
+    expect(File::query()->whereKey($fileId)->value('folder_id'))->toBeNull();
+});
+
+test('a folder that survives the upload still receives the file', function () {
+    $folder = app(\App\Modules\Files\Folders\FolderService::class)->create('Fine', null);
+
+    $this->actingAs($this->admin);
+
+    $session = $this->postJson('/uploads', [
+        'filename' => 'report.pdf',
+        'size' => 11,
+        'type' => 'application/pdf',
+        'folder_id' => $folder->id,
+    ])->assertOk()->json('uploadId');
+
+    putPart($session, 1, 'hello world')->assertOk();
+
+    $fileId = $this->postJson("/uploads/{$session}/complete")->assertOk()->json('file_id');
+
+    expect(File::query()->whereKey($fileId)->value('folder_id'))->toBe($folder->id);
+});

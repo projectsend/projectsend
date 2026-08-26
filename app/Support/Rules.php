@@ -6,6 +6,7 @@ namespace App\Support;
 
 use App\Modules\Platform\Captcha\Captcha;
 use App\Modules\Platform\Captcha\CaptchaForm;
+use App\Modules\Files\Folders\FolderExistsRule;
 use App\Modules\Platform\Captcha\CaptchaRule;
 use App\Modules\Platform\Localization\TimezoneRegistry;
 use Illuminate\Validation\Rule;
@@ -77,11 +78,14 @@ class Rules
      * Presence is the caller's business, as with slug() above: spread it
      * behind `sometimes` where a PATCH may omit the field.
      *
+     * A rule object rather than a conditional `exists`, so the refusal can
+     * say why — see FolderExistsRule.
+     *
      * @return array<int, mixed>
      */
     public static function folderId(): array
     {
-        return ['nullable', 'integer', Rule::exists('folders', 'id')->whereNull('deleted_at')];
+        return ['nullable', 'integer', new FolderExistsRule];
     }
 
     /**

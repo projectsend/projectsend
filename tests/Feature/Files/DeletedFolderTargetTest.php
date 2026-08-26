@@ -139,3 +139,20 @@ test('the root is still the root', function () {
 
     expect(File::query()->where('original_name', 'root.txt')->value('folder_id'))->toBeNull();
 });
+
+// The refusal has to say why: "The selected folder id is invalid" tells
+// somebody nothing when the answer is that the folder has been deleted.
+test('the refusal explains itself', function () {
+    $folder = app(FolderService::class)->create('Gone', null);
+    app(FolderService::class)->delete($folder);
+
+    $this->actingAs($this->admin)
+        ->postJson('/uploads', [
+            'filename' => 'report.pdf',
+            'size' => 11,
+            'type' => 'application/pdf',
+            'folder_id' => $folder->id,
+        ])
+        ->assertStatus(422)
+        ->assertJsonPath('errors.folder_id.0', 'That folder no longer exists. Pick another one and try again.');
+});

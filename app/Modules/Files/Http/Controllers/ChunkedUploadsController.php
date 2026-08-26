@@ -273,6 +273,23 @@ class ChunkedUploadsController extends Controller
         // the previewer's browser. Detect the real mime type from the assembled bytes.
         $mimeType = Storage::disk($assembled['disk'])->mimeType($assembled['path']) ?: 'application/octet-stream';
 
+        // Re-resolved rather than taken from the session. A chunked
+        // upload is two requests, and store()'s rule only ever sees the
+        // first: delete the folder while the bytes are in flight and the
+        // recorded id names a folder whose own deletion already removed
+        // every file in it. Filing into it would recreate exactly the
+        // state Rules::folderId() exists to prevent.
+        //
+        // The root, rather than a refusal, because the two moments cost
+        // different things. At store() nothing has been sent, so refusing
+        // is free and honest. Here the bytes are already uploaded, and
+        // throwing away somebody's finished transfer over a folder that
+        // vanished underneath them is the harsher of the two surprises —
+        // the file lands somewhere they can see it and move it.
+        $folderId = $session->folder_id !== null && Folder::query()->whereKey($session->folder_id)->exists()
+            ? $session->folder_id
+            : null;
+
         $file = $this->storeFile->create(
             uploader: $user,
             originalName: $session->original_name,
@@ -281,7 +298,7 @@ class ChunkedUploadsController extends Controller
             size: $assembled['size'],
             checksum: $assembled['checksum'],
             description: $session->description,
-            folderId: $session->folder_id,
+            folderId: $folderId,
             disk: $assembled['disk'],
         );
 

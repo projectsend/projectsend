@@ -212,7 +212,11 @@ export default function Dashboard({
             case 'expired_files':
                 return (
                     expired_files && (
-                        <WidgetBox id={key} title={title}>
+                        // Retitled rather than relabelled in WIDGET_LABELS:
+                        // the same widget means different things to the two
+                        // viewers, and only the server knows which one this
+                        // is.
+                        <WidgetBox id={key} title={expired_files.scoped ? t('Your expired files') : title}>
                             <ExpiredFilesWidget expiredFiles={expired_files} />
                         </WidgetBox>
                     )

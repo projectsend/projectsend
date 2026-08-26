@@ -13,6 +13,8 @@ export interface ExpiredFile {
 export interface ExpiredFilesSummary {
     count: number;
     files: ExpiredFile[];
+    /** True when the viewer's role limits them to their own clients, in which case this lists only their own uploads. */
+    scoped: boolean;
     auto_delete_enabled: boolean;
     next_run_at: string;
 }
@@ -31,8 +33,16 @@ export function ExpiredFilesWidget({ expiredFiles }: { expiredFiles: ExpiredFile
                 <p className="text-muted-foreground text-xs">{t('Next cleanup :date', { date: dateTime(expiredFiles.next_run_at) })}</p>
             )}
 
+            {/* A warning about what is due to be deleted has to say what it
+                covers. A limited role sees only its own uploads here, and
+                would otherwise read an empty list as "nothing to worry
+                about" on behalf of files it cannot see. */}
+            {expiredFiles.scoped && <p className="text-muted-foreground text-xs">{t('Files you uploaded. Your clients\u2019 files are not listed here.')}</p>}
+
             {expiredFiles.count === 0 ? (
-                <p className="text-muted-foreground text-sm">{t('No expired files.')}</p>
+                <p className="text-muted-foreground text-sm">
+                    {expiredFiles.scoped ? t('None of your uploads have expired.') : t('No expired files.')}
+                </p>
             ) : (
                 <div className="space-y-2">
                     {expiredFiles.files.map((file) => (

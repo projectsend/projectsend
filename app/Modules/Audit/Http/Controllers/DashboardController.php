@@ -407,10 +407,11 @@ class DashboardController extends Controller
             // File::scopeVisibleToClient ends in notExpired(), so an
             // expired file belonging to one of their clients is not in
             // their library, and only their own expired uploads reach
-            // this list. Safe, and under-inclusive — telling them about
-            // a client's file that auto-delete is about to take would
-            // need a library query that keeps expired rows, which is a
-            // boundary to decide rather than to invent here.
+            // this list. Rather than widen the boundary — which would
+            // mean a library query that keeps expired rows, and
+            // scopeVisibleToClient is the single source of truth for
+            // client file access — the widget says what it is showing.
+            // `scoped` is how it knows to.
             'count' => $this->library->files($viewer)->expired()->count(),
             'files' => array_values($this->library->files($viewer)->expired()->orderBy('expires_at')->limit(10)
                 ->get(['id', 'name', 'expires_at'])
@@ -420,6 +421,10 @@ class DashboardController extends Controller
                     'expires_at' => $file->expires_at?->toIso8601String(),
                     'edit_url' => $canFiles ? route('files.edit', $file->id, false) : null,
                 ])->all()),
+            // Whether this list is "everything expired" or "everything of
+            // yours that expired" — a widget whose whole job is warning
+            // about what is due to be deleted has to say which it means.
+            'scoped' => $viewer->isClientScoped(),
             'auto_delete_enabled' => (bool) $this->settings->get(Setting::ExpiredFilesAutoDeleteEnabled),
             // Schedule::command('projectsend:purge-expired-files')->daily()
             // runs at 00:00 — always "tonight" from whenever this loads.

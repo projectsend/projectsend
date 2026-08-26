@@ -239,6 +239,12 @@ a version is cut.
   (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
   [#1705](https://github.com/projectsend/projectsend/pull/1705))
 
+- **The dashboard's expired-files list says whose files it is showing.** For a staff role limited to
+  its own clients it lists that person's own uploads, since an expired file is already out of reach
+  of the clients it was shared with. It now says so — "Your expired files", and a line explaining
+  what is not in the list — rather than presenting a short list as though it were the whole picture.
+  A warning about what is due to be deleted is worth nothing if it is quietly narrower than it looks.
+
 - **A limited staff role no longer reaches every client record, or every file name on the
   dashboard.** Two more places where holding a permission was treated as holding a boundary. The
   clients screen listed every client on the installation by name and email, and a role limited to

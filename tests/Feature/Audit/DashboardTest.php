@@ -446,7 +446,11 @@ test('the statistics widgets name only files inside the viewer scope', function 
             ->where('expired_files.files.0.name', 'My Own Expired')
             // The count has to agree with the list, or the number
             // describes files the list is not allowed to name.
-            ->where('expired_files.count', 1),
+            ->where('expired_files.count', 1)
+            // And the widget has to say which list it is: a warning about
+            // what is due to be deleted, showing only the viewer's own
+            // uploads, reads as "nothing to worry about" otherwise.
+            ->where('expired_files.scoped', true),
     );
 });
 
@@ -461,6 +465,9 @@ test('an unscoped viewer still sees the whole installation in those widgets', fu
     $this->actingAs($this->admin)->get('/dashboard')->assertInertia(
         fn (AssertableInertia $page) => $page
             ->where('largest_files.0.name', 'Anything')
-            ->where('expired_files.count', 1),
+            ->where('expired_files.count', 1)
+            // Unscoped: the widget keeps its plain title and its plain
+            // meaning, everything expired on the installation.
+            ->where('expired_files.scoped', false),
     );
 });

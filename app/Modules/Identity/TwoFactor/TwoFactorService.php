@@ -14,6 +14,7 @@ use BaconQrCode\Renderer\RendererStyle\Fill;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use PragmaRX\Google2FA\Google2FA;
 
@@ -112,20 +113,45 @@ class TwoFactorService
 
     /**
      * Consume a recovery code; each code works exactly once.
+     *
+     * Read the list, filter it, write the whole list back is not once.
+     * Two requests that both read before either writes each store their
+     * own filtered copy, and the second write puts back the code the
+     * first removed -- so a spent code is available again, and the same
+     * code offered twice is accepted twice. Neither lets in anybody who
+     * was not already holding a code, which is why this is a promise not
+     * being kept rather than a door standing open. The promise is the
+     * sentence above, and it is the reason recovery codes are printed
+     * out and crossed off.
+     *
+     * Decide from the row as it stands, read back under a lock inside
+     * the transaction that writes it -- the same shape
+     * SendNotificationDigest uses to claim the rows it is about to
+     * delete. The lock is what makes it atomic against a request
+     * arriving at the same moment; the re-read is what makes the
+     * decision right, and it is the half that can be demonstrated in a
+     * test, since SQLite ignores lockForUpdate.
+     *
+     * The caller's own instance is what gets saved, so it does not walk
+     * away holding a list the database no longer has.
      */
     public function consumeRecoveryCode(User $user, string $code): bool
     {
-        /** @var list<string>|null $codes */
-        $codes = $user->two_factor_recovery_codes;
+        return DB::transaction(function () use ($user, $code): bool {
+            $locked = User::query()->whereKey($user->getKey())->lockForUpdate()->first();
 
-        if ($codes === null || ! in_array($code, $codes, true)) {
-            return false;
-        }
+            /** @var list<string>|null $codes */
+            $codes = $locked?->two_factor_recovery_codes;
 
-        $user->forceFill([
-            'two_factor_recovery_codes' => array_values(array_diff($codes, [$code])),
-        ])->save();
+            if ($codes === null || ! in_array($code, $codes, true)) {
+                return false;
+            }
 
-        return true;
+            $user->forceFill([
+                'two_factor_recovery_codes' => array_values(array_diff($codes, [$code])),
+            ])->save();
+
+            return true;
+        });
     }
 }

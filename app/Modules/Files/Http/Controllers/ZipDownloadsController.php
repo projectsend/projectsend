@@ -181,8 +181,7 @@ class ZipDownloadsController extends Controller
         // Only the first time. Re-fetching one prepared archive is the
         // same delivery, not a fresh download of everything inside it.
         if ($zipDownload->delivered_at === null) {
-            $this->logContainedDownloads($zipDownload, $user);
-            $zipDownload->forceFill(['delivered_at' => now()])->save();
+            $this->deliverOnce($zipDownload, $user);
         }
 
         $size = Storage::disk('files')->size($path);
@@ -196,43 +195,69 @@ class ZipDownloadsController extends Controller
     }
 
     /**
-     * Every file actually bundled gets a FileDownloaded entry — otherwise
-     * a file's download history/count would silently miss zip downloads.
+     * Hand the archive over, once: refuse it if anything inside is out of
+     * allowance, otherwise count everything it holds as downloaded.
+     *
+     * This is the only point that spends a download limit, which is why
+     * it also has to be the point that enforces it. Building an archive
+     * takes nothing, so ordering the same limited file into any number of
+     * archives passes every check on the way — store() and the job both
+     * look at an allowance nothing has drawn on yet — and collecting them
+     * all afterwards would hand over more copies than the limit allows.
+     *
+     * One refused file refuses the whole delivery, because nothing can be
+     * taken out of a finished archive without building it again. Ordering
+     * the same selection afresh is the way through: the build leaves the
+     * spent file out and names it in skipped_files.
+     *
+     * An archive from before the job recorded its contents is handed over
+     * the way it always was, without this check. Its contents can only be
+     * guessed at by resolving the selection again, and guessing is exactly
+     * what must not decide a refusal: the same reconstruction both refuses
+     * over files the archive does not hold and misses files it does. Those
+     * rows stop existing within a day or two of an upgrade, and until then
+     * they behave as they did before this change rather than worse.
      */
-    private function logContainedDownloads(ZipDownload $zipDownload, User $requester): void
+    private function deliverOnce(ZipDownload $zipDownload, User $requester): void
     {
-        foreach ($this->containedFiles($zipDownload, $requester) as $file) {
+        $recorded = $zipDownload->contained_file_ids;
+
+        // What the job wrote down, read back as it stands — deliberately
+        // not filtered by what the requester may see today. The bytes are
+        // in the archive already, so a file that has since expired or left
+        // their scope is still being given to them, and a count that
+        // quietly dropped it would understate what was taken.
+        $contained = $recorded === null
+            ? $this->resolveSelection($zipDownload, $requester)
+            : File::query()->whereIn('id', $recorded)->get();
+
+        abort_if(
+            $recorded !== null
+                && $contained->contains(fn (File $file): bool => ! $this->allowance->allows($file, $requester)),
+            403,
+            __('Those files have reached their download limit.'),
+        );
+
+        // Atomic, so two fetches arriving together are still one delivery:
+        // only the request that actually moves delivered_at logs anything.
+        // Same reasoning as the conditional increment guarding a share
+        // link's max_downloads in PublicShareController. The other request
+        // still receives the archive — that is the re-fetch rule above.
+        $claimed = ZipDownload::query()
+            ->whereKey($zipDownload->id)
+            ->whereNull('delivered_at')
+            ->update(['delivered_at' => now()]);
+
+        if ($claimed === 0) {
+            return;
+        }
+
+        // Every file actually bundled gets a FileDownloaded entry —
+        // otherwise a file's download history/count would silently miss
+        // zip downloads.
+        foreach ($contained as $file) {
             $this->activity->log(Action::FileDownloaded, subject: $file);
         }
-    }
-
-    /**
-     * The files this archive actually holds.
-     *
-     * The job records them as it writes them, so this describes a
-     * delivery rather than a selection. Resolving the folders again here
-     * would answer a different question — what the selection means *now*
-     * — and the two drift the moment a folder changes between the build
-     * and the fetch: a file added afterwards was counted as downloaded
-     * without ever being in the archive, and one moved out of the folder
-     * was handed over without being counted.
-     *
-     * Deliberately not filtered by what the requester may see today
-     * either. The bytes are in the archive already; a file that has since
-     * expired or left their scope is still being given to them, and a
-     * count that quietly dropped it would understate what was taken.
-     *
-     * @return Collection<int, File>
-     */
-    private function containedFiles(ZipDownload $zipDownload, User $requester): Collection
-    {
-        $contained = $zipDownload->contained_file_ids;
-
-        if ($contained === null) {
-            return $this->resolveSelection($zipDownload, $requester);
-        }
-
-        return File::query()->whereIn('id', $contained)->get();
     }
 
     /**

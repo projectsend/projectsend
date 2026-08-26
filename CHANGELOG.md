@@ -191,6 +191,16 @@ a version is cut.
   the permission this widget needs, so any installation using it was affected. Both screens now
   answer the same way. Nothing changes for an administrator or any unrestricted role.
 
+- **Cached previews are no longer mistaken for stray files.** The tool that finds files sitting on
+  disk with no database record knew to ignore cached thumbnails, but had never been told about the
+  larger previews added alongside them. So every cached preview was listed as an unclaimed file:
+  offered for import on the orphan-files screen, and deleted by the daily cleanup once past its
+  grace period. Importing one also created a file entry pointing at a path the preview cache owns,
+  which then vanished the next time that cache was cleared. The list of what counts as a generated
+  copy is now derived from the copies themselves, so a new kind cannot be left off it again.
+  (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
+  [#1683](https://github.com/projectsend/projectsend/pull/1683))
+
 ## 2.1.0 — 18 August 2026
 
 Updating, mostly. ProjectSend now tells you when there is a new version, ends an update somewhere

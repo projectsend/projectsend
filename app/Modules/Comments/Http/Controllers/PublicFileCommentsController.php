@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Comments\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Modules\Comments\CommentingRules;
 use App\Modules\Comments\CommentPresenter;
 use App\Modules\Comments\CommentVisibility;
@@ -17,6 +18,7 @@ use App\Modules\Platform\Settings\Settings;
 use App\Support\Rules;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 /**
  * Comments on a publicly-listed file, for visitors who are not logged in.
@@ -46,7 +48,7 @@ class PublicFileCommentsController extends Controller
     {
         $this->guard($publicSlug, $file);
 
-        return response()->json($this->presenter->thread($request->user(), $file));
+        return response()->json($this->thread($request->user(), $file));
     }
 
     public function store(Request $request, string $publicSlug, File $file): JsonResponse
@@ -86,7 +88,31 @@ class PublicFileCommentsController extends Controller
             $this->guests->remember($comment->id);
         }
 
-        return response()->json($this->presenter->thread($viewer, $file), 201);
+        return response()->json($this->thread($viewer, $file), 201);
+    }
+
+    /**
+     * The thread as this endpoint may serve it.
+     *
+     * guard() establishes the guest half of VisibleCommentScope's
+     * precondition — the file is reachable without logging in — and that
+     * is the whole of it for a visitor. It says nothing about an account,
+     * and handing a signed-in viewer to the authenticated reading anyway
+     * is what let any staff account read a public file's StaffOnly notes
+     * and any client account read the messages addressed to that file's
+     * clients. The file's own gate decides which reading applies; the one
+     * it does not admit still reads what a visitor reads plus their own
+     * comments, which is what this endpoint has always promised them.
+     *
+     * @return array<string, mixed>
+     */
+    private function thread(?User $viewer, File $file): array
+    {
+        return $this->presenter->thread(
+            $viewer,
+            $file,
+            viewerMaySeeFile: $viewer !== null && Gate::forUser($viewer)->allows('view', $file),
+        );
     }
 
     /**

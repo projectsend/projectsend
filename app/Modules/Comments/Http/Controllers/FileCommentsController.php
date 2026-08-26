@@ -77,7 +77,7 @@ class FileCommentsController extends Controller
 
         $this->comments->edit($comment, $validated['body']);
 
-        return response()->json($this->payload($viewer, $comment->file));
+        return response()->json($this->payloadAfterChange($viewer, $comment->file));
     }
 
     public function destroy(Request $request, FileComment $comment): JsonResponse
@@ -90,15 +90,40 @@ class FileCommentsController extends Controller
 
         $this->comments->remove($comment);
 
-        return response()->json($this->payload($viewer, $file));
+        return response()->json($this->payloadAfterChange($viewer, $file));
     }
 
     /**
+     * The thread for the two routes that bind a file, after their own
+     * `view` authorization has passed.
+     *
      * @return array<string, mixed>
      */
     private function payload(User $viewer, File $file): array
     {
         return $this->presenter->thread($viewer, $file);
+    }
+
+    /**
+     * The thread that goes back with a change to one comment.
+     *
+     * update() and destroy() bind a comment rather than a file, so nothing
+     * in the request has established that this viewer may read the file's
+     * conversation — only that this one comment is theirs to change.
+     * Somebody who commented through the public listing is exactly that
+     * person, and refusing them on their own edit would be wrong, so the
+     * reading they get back is the one the file's own gate allows them:
+     * the public page's, if that is how they arrived.
+     *
+     * @return array<string, mixed>
+     */
+    private function payloadAfterChange(User $viewer, File $file): array
+    {
+        return $this->presenter->thread(
+            $viewer,
+            $file,
+            viewerMaySeeFile: Gate::forUser($viewer)->allows('view', $file),
+        );
     }
 
     /**

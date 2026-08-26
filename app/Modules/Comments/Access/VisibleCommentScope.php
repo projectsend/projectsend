@@ -69,6 +69,50 @@ class VisibleCommentScope
     }
 
     /**
+     * The thread as somebody reading the public listing sees it: what a
+     * visitor is shown, plus their own comments if they happen to be
+     * signed in.
+     *
+     * for() above is the authenticated reading, and it assumes what the
+     * top of this class demands — that the caller established the viewer
+     * may see the *file*. The public listing establishes only the other
+     * half of that, namely that the file is reachable without logging in,
+     * which is the whole of it for a visitor and not nearly enough for an
+     * account: for() hands any staff member the file's StaffOnly notes and
+     * any client the messages addressed to all clients on it.
+     *
+     * So a signed-in reader is answered as a visitor is, widened by their
+     * own writing — which is what "being logged in should not show you
+     * less than a stranger sees, and their own comments should be theirs
+     * to edit" asks for and all it asks for. A reader the file's own gate
+     * would admit is not narrowed at all; the caller sends them through
+     * for() instead.
+     *
+     * The held-comment rule is not restated here — hideUnapproved() is the
+     * same one for()'s readings get, so a comment waiting for a moderator
+     * stays exactly as visible, or invisible, as it was.
+     *
+     * @return Builder<FileComment>
+     */
+    public function forPublicReader(?User $viewer, File $file): Builder
+    {
+        $query = FileComment::query()->where('file_id', $file->id);
+
+        if ($viewer === null) {
+            return $this->applyVisibility($query, null, $file->isEffectivelyPublic());
+        }
+
+        $this->hideUnapproved($query, $viewer);
+
+        return $query->where(fn (Builder $outer) => $outer
+            ->where('author_id', $viewer->id)
+            ->when(
+                $file->isEffectivelyPublic(),
+                fn (Builder $stranger) => $stranger->orWhere('visibility', CommentVisibility::Everyone),
+            ));
+    }
+
+    /**
      * Every comment this staff member may read, across their whole library
      * — the management screen's query, rather than one file's thread.
      *
@@ -172,24 +216,39 @@ class VisibleCommentScope
     }
 
     /**
+     * A comment awaiting moderation exists only for those who can act on
+     * it — and for whoever wrote it, who would otherwise watch their own
+     * comment vanish on posting and conclude it had failed. A visitor is
+     * recognised by their session (see GuestCommentIdentity); that is weak
+     * on purpose, and only ever widens what somebody sees of their own
+     * writing.
+     *
+     * Its own method because forPublicReader() answers a different
+     * audience question and the same held-comment one, and a rule this
+     * sharp stated twice is a rule that drifts.
+     *
+     * @param  Builder<FileComment>  $query
+     */
+    private function hideUnapproved(Builder $query, ?User $viewer): void
+    {
+        if ($viewer !== null && $viewer->can('moderate_comments')) {
+            return;
+        }
+
+        $ownPending = $viewer === null ? $this->guests->ownCommentIds() : [];
+
+        $query->where(fn (Builder $visible) => $visible
+            ->whereNotNull('approved_at')
+            ->when($ownPending !== [], fn (Builder $mine) => $mine->orWhereIn('id', $ownPending)));
+    }
+
+    /**
      * @param  Builder<FileComment>  $query
      * @return Builder<FileComment>
      */
     private function applyVisibility(Builder $query, ?User $viewer, bool $isPublic): Builder
     {
-        // A comment awaiting moderation exists only for those who can act
-        // on it — and for whoever wrote it, who would otherwise watch their
-        // own comment vanish on posting and conclude it had failed. A
-        // visitor is recognised by their session (see GuestCommentIdentity);
-        // that is weak on purpose, and only ever widens what somebody sees
-        // of their own writing.
-        if ($viewer === null || ! $viewer->can('moderate_comments')) {
-            $ownPending = $viewer === null ? $this->guests->ownCommentIds() : [];
-
-            $query->where(fn (Builder $visible) => $visible
-                ->whereNotNull('approved_at')
-                ->when($ownPending !== [], fn (Builder $mine) => $mine->orWhereIn('id', $ownPending)));
-        }
+        $this->hideUnapproved($query, $viewer);
 
         if ($viewer === null) {
             // Publicness is re-derived here on every read rather than

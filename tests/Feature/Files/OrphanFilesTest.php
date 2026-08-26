@@ -44,6 +44,8 @@ function orphanDelete(array $items): TestResponse
 test('scanning excludes derived-artifact prefixes and anything already claimed by a file row, including soft-deleted ones', function () {
     makeOrphanFile('2026/07/orphan.pdf');
     makeOrphanFile('thumbnails/2026/07/some.jpg');
+    makeOrphanFile('previews/2026/07/some.jpg');
+    makeOrphanFile('previews/external/some.jpg');
     makeOrphanFile('zips/some.zip');
 
     $adopted = makeAdoptedFile($this->admin, '2026/07/adopted.pdf');

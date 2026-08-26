@@ -174,7 +174,7 @@ class FilesController extends Controller
             'file' => ['required', 'file'],
             'name' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
-            'folder_id' => ['nullable', 'integer', 'exists:folders,id'],
+            'folder_id' => Rules::folderId(),
         ]);
 
         /** @var UploadedFile $upload */
@@ -275,7 +275,7 @@ class FilesController extends Controller
         $validated = $request->validate([
             'name' => ['sometimes', 'string', 'max:255'],
             'description' => ['sometimes', 'nullable', 'string', 'max:2000'],
-            'folder_id' => ['sometimes', 'nullable', 'integer', 'exists:folders,id'],
+            'folder_id' => ['sometimes', ...Rules::folderId()],
             'public' => ['sometimes', 'boolean'],
             'commentable' => ['sometimes', 'boolean'],
             'slug' => Rules::slug('files', $file->id),

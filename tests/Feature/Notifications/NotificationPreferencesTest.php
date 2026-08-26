@@ -59,6 +59,46 @@ test('updating preferences via the settings page persists a row per type', funct
     expect($row->email_enabled)->toBeFalse();
 });
 
+test('a preference for a type nothing has registered is refused', function () {
+    $client = User::factory()->client()->create();
+
+    $this->actingAs($client)->put('/settings/notifications', [
+        'preferences' => [
+            ['type' => 'not.a.real.type', 'email_enabled' => false],
+        ],
+    ])->assertInvalid(['preferences.0.type']);
+
+    expect(NotificationPreference::query()->where('user_id', $client->id)->exists())->toBeFalse();
+});
+
+test('a preference for a registered type that cannot email is refused', function () {
+    $client = User::factory()->client()->create();
+
+    // A real key, but one the screen never offers a toggle for — a row for
+    // it could never change what anybody receives.
+    $this->actingAs($client)->put('/settings/notifications', [
+        'preferences' => [
+            ['type' => 'client_uploaded', 'email_enabled' => true],
+        ],
+    ])->assertInvalid(['preferences.0.type']);
+
+    expect(NotificationPreference::query()->where('user_id', $client->id)->exists())->toBeFalse();
+});
+
+test('one bad key rejects the whole submission, leaving no half-applied state', function () {
+    $client = User::factory()->client()->create();
+
+    $this->actingAs($client)->put('/settings/notifications', [
+        'preferences' => [
+            ['type' => 'group.membership_approved', 'email_enabled' => false],
+            ['type' => 'not.a.real.type', 'email_enabled' => false],
+        ],
+    ])->assertInvalid(['preferences.1.type']);
+
+    // Validation runs before the loop, so the good row is not written either.
+    expect(NotificationPreference::query()->where('user_id', $client->id)->exists())->toBeFalse();
+});
+
 test('the master switch off suppresses email regardless of an explicit per-user opt-in', function () {
     Notification::fake();
     app(Settings::class)->set(Setting::EmailNotificationsEnabled, false);

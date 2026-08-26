@@ -100,6 +100,17 @@ class MembershipRequestsController extends Controller
 
     public function deny(Request $request, MembershipRequest $membershipRequest): RedirectResponse
     {
+        // The half of approve()'s guard that applies here. A request that
+        // has already been denied is not a decision left to make, and
+        // taking it again re-stamps denied_at -- which is what the
+        // client's re-request cooldown counts from, so the same request
+        // repeated keeps a client out of a group indefinitely -- while
+        // writing a second log entry and sending a second "your request
+        // was declined" mail for one decision. The queue only ever lists
+        // pending requests, so this is not reachable through the screen;
+        // it is reachable by asking for the route directly.
+        abort_unless($membershipRequest->status === MembershipRequest::STATUS_PENDING, 404);
+
         $group = $membershipRequest->group;
         $client = $membershipRequest->user;
 

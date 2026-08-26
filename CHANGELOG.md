@@ -215,6 +215,17 @@ a version is cut.
   (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
   [#1701](https://github.com/projectsend/projectsend/pull/1701))
 
+- **Declining a group membership request now happens once.** Approving a request that had already
+  been decided was refused; declining one was not, and declining is not a repeatable act. Each
+  repeat re-dated the decision — which is what the client's waiting period before asking again
+  counts from — so the same stale request, sent again, could keep somebody out of a group
+  indefinitely without anyone deciding anything. It also wrote a second entry in the activity log
+  and sent the client a second "your request was declined" email for one decision. The queue only
+  ever lists requests still waiting, so nothing on screen offered this. Both actions now behave the
+  same way.
+  (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
+  [#1705](https://github.com/projectsend/projectsend/pull/1705))
+
 ## 2.1.0 — 18 August 2026
 
 Updating, mostly. ProjectSend now tells you when there is a new version, ends an update somewhere

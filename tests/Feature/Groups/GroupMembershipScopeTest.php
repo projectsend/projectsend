@@ -245,3 +245,80 @@ test('a folder shared with a group counts as reach too', function () {
 
     expect($bare->members()->count())->toBe(0);
 });
+
+// An assignment row outlives the file it points at — nothing clears them
+// on delete — and a trashed file can never appear in files(). Asking
+// "is anything outside my library" from the live row rather than counting
+// assignment rows is what keeps a group usable after somebody deletes a
+// file that was once shared with it.
+test('a group is not locked shut by a file that has since been deleted', function () {
+    $group = Group::query()->create(['name' => 'Newsletter', 'slug' => 'newsletter', 'public' => false]);
+    $group->members()->syncWithoutDetaching([$this->mine->id]);
+
+    // Shared with the group, and reachable by this rep because their own
+    // client is a member — so the group is theirs to manage.
+    $file = uploadNamedFile($this->admin, 'seasonal-offer');
+    shareFileWithGroup($file, $group);
+
+    $second = User::factory()->client()->create(['name' => 'Also Mine']);
+    $this->rep->assignedClients()->attach($second->id);
+
+    $this->actingAs($this->rep)
+        ->post("/groups/{$group->id}/members", ['user_id' => $second->id])
+        ->assertRedirect();
+
+    // The uploader deletes it. The assignment row stays behind.
+    $file->delete();
+
+    $third = User::factory()->client()->create(['name' => 'Mine Too']);
+    $this->rep->assignedClients()->attach($third->id);
+
+    $this->actingAs($this->rep)
+        ->post("/groups/{$group->id}/members", ['user_id' => $third->id])
+        ->assertRedirect();
+
+    expect($group->members()->count())->toBe(3);
+
+    // And taking somebody out again still works, which the count form
+    // also blocked.
+    $this->actingAs($this->rep)
+        ->delete("/groups/{$group->id}/members/{$third->id}")
+        ->assertRedirect();
+
+    expect($group->members()->count())->toBe(2);
+});
+
+test('a deleted folder assignment does not lock a group either', function () {
+    $group = Group::query()->create(['name' => 'Bulletin', 'slug' => 'bulletin', 'public' => false]);
+    $group->members()->syncWithoutDetaching([$this->mine->id]);
+
+    $folder = app(FolderService::class)->create('Seasonal', null);
+    FolderAssignment::query()->create([
+        'folder_id' => $folder->id,
+        'assignable_type' => $group->getMorphClass(),
+        'assignable_id' => $group->id,
+    ]);
+
+    $folder->delete();
+
+    $second = User::factory()->client()->create(['name' => 'Second']);
+    $this->rep->assignedClients()->attach($second->id);
+
+    $this->actingAs($this->rep)
+        ->post("/groups/{$group->id}/members", ['user_id' => $second->id])
+        ->assertRedirect();
+
+    expect($group->members()->count())->toBe(2);
+});
+
+// The half that must not soften: a live file outside the library is still
+// reach, deleted siblings or not.
+test('a deleted file does not excuse a live one that is still out of reach', function () {
+    $dead = uploadNamedFile($this->admin, 'was-shared');
+    shareFileWithGroup($dead, $this->strangerGroup);
+    $dead->delete();
+
+    $this->actingAs($this->rep)
+        ->post("/groups/{$this->strangerGroup->id}/members", ['user_id' => $this->mine->id])
+        ->assertForbidden();
+});

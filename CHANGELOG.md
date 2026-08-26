@@ -201,6 +201,20 @@ a version is cut.
   (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
   [#1683](https://github.com/projectsend/projectsend/pull/1683))
 
+- **Group membership now respects a limited role's boundary.** A staff role can be limited to its
+  own assigned clients. Adding somebody to a group, or taking them out, checked only that the person
+  held the "edit groups" permission — not that the group was any of their business. Because joining a
+  group hands the new member everything shared with it, someone with a limited role could put one of
+  their own clients into any group on the installation and, through that client, reach files they
+  had been refused a moment earlier. Approving or denying a membership request was the same write
+  through a second door, and the requests screen listed every pending request by name and email,
+  including clients outside the viewer's roster. All of it is now held to the same boundary the rest
+  of the library uses, and the sidebar count agrees with the screen behind it. No role that ships
+  with ProjectSend combines the two permissions this needed, so reaching it took a custom role.
+  Nothing changes for an administrator or any unrestricted role.
+  (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
+  [#1701](https://github.com/projectsend/projectsend/pull/1701))
+
 ## 2.1.0 — 18 August 2026
 
 Updating, mostly. ProjectSend now tells you when there is a new version, ends an update somewhere

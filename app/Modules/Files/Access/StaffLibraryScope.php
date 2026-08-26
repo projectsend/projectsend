@@ -219,6 +219,18 @@ class StaffLibraryScope
      * Whether everything shared with this group is already inside the
      * user's library — files assigned to it, and the folders whose
      * subtrees it can browse.
+     *
+     * Asked as "is anything shared with this group outside my library",
+     * rather than by counting assignment rows against library rows. An
+     * assignment outlives the thing it points at: nothing clears these
+     * rows when a file or folder is deleted, and a deleted one can never
+     * appear in files()/folders(), which exclude trashed rows. Counting
+     * therefore never balanced again, and the group became permanently
+     * unmanageable for a scoped staff member — including for their own
+     * clients, and including removing somebody. Starting from the live
+     * row rather than from the assignment ignores the dead ones by
+     * construction, which is also the right answer: a deleted file is
+     * not reach, because nobody can reach it.
      */
     private function groupReachesNoFurther(User $user, Group $group): bool
     {
@@ -228,19 +240,24 @@ class StaffLibraryScope
 
         $morph = $group->getMorphClass();
 
-        $fileIds = FileAssignment::query()
-            ->where('assignable_type', $morph)->where('assignable_id', $group->id)
-            ->pluck('file_id')->unique();
+        $assignedFiles = FileAssignment::query()->select('file_id')
+            ->where('assignable_type', $morph)->where('assignable_id', $group->id);
 
-        if ($fileIds->isNotEmpty() && $this->files($user)->whereIn('id', $fileIds)->count() !== $fileIds->count()) {
+        $outside = File::query()
+            ->whereIn('id', $assignedFiles)
+            ->whereNotIn('id', $this->files($user)->select('id'))
+            ->exists();
+
+        if ($outside) {
             return false;
         }
 
-        $folderIds = FolderAssignment::query()
-            ->where('assignable_type', $morph)->where('assignable_id', $group->id)
-            ->pluck('folder_id')->unique();
+        $assignedFolders = FolderAssignment::query()->select('folder_id')
+            ->where('assignable_type', $morph)->where('assignable_id', $group->id);
 
-        return $folderIds->isEmpty()
-            || $this->folders($user)->whereIn('id', $folderIds)->count() === $folderIds->count();
+        return ! Folder::query()
+            ->whereIn('id', $assignedFolders)
+            ->whereNotIn('id', $this->folders($user)->select('id'))
+            ->exists();
     }
 }

@@ -7,6 +7,7 @@ use App\Modules\Files\Models\File;
 use App\Modules\Files\Thumbnails\ImageAudience;
 use App\Modules\Files\Thumbnails\ImageRendition;
 use App\Modules\Files\Thumbnails\ThumbnailGenerator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -82,6 +83,48 @@ test('a file stored on the external disk is deleted from that disk, not the loca
     $this->actingAs($this->admin)->delete("/files/{$file->id}")->assertRedirect();
 
     Storage::disk('files_external')->assertMissing($file->path);
+});
+
+// The row comes back on a rollback; the bytes have to still be under it.
+// Nothing restores them, so this is the one failure in the whole cleanup
+// path that cannot be repaired afterwards.
+test('a transaction that rolls back leaves the bytes where they were', function () {
+    $file = makeStoredFile();
+
+    try {
+        DB::transaction(function () use ($file): void {
+            $file->delete();
+
+            throw new RuntimeException('something later in the transaction failed');
+        });
+    } catch (RuntimeException) {
+        // The point of the test is what survives it.
+    }
+
+    expect(File::query()->find($file->id))->not->toBeNull();
+    Storage::disk('files')->assertExists($file->path);
+});
+
+// The shape an account deletion has: content disposal runs in its own
+// transaction, nested as a savepoint inside the caller's, and the write
+// that fails afterwards belongs to the caller.
+test('an outer rollback leaves the bytes even after the inner transaction committed', function () {
+    $file = makeStoredFile();
+
+    try {
+        DB::transaction(function () use ($file): void {
+            DB::transaction(function () use ($file): void {
+                $file->delete();
+            });
+
+            throw new RuntimeException('the account write after it failed');
+        });
+    } catch (RuntimeException) {
+        // Same.
+    }
+
+    expect(File::query()->find($file->id))->not->toBeNull();
+    Storage::disk('files')->assertExists($file->path);
 });
 
 test('a storage failure while cleaning up disk bytes never blocks the file from being deleted', function () {

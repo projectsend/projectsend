@@ -171,6 +171,18 @@ a version is cut.
   (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
   [#1687](https://github.com/projectsend/projectsend/pull/1687))
 
+- **Comment moderation now stops at the same boundary everything else does.** A staff role can be
+  limited to its own assigned clients, and everything in the library respects that — listings,
+  downloads, file details, and the moderation queue itself. Deleting or approving a single comment
+  did not. Someone with a client-limited role who also held the comment moderation permission could
+  remove any comment on the installation by its id, including conversations belonging to clients
+  they were not assigned to, on files they could not open. No role that ships with ProjectSend
+  combines those two things, so this needed a custom role to reach; if you have built one, it is
+  worth updating for. The boundary now lives in the rule itself rather than being restated by each
+  screen, which is how the gap opened in the first place.
+  (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
+  [#1698](https://github.com/projectsend/projectsend/pull/1698))
+
 ## 2.1.0 — 18 August 2026
 
 Updating, mostly. ProjectSend now tells you when there is a new version, ends an update somewhere

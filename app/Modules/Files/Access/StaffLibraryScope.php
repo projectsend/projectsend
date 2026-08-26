@@ -27,9 +27,36 @@ use Illuminate\Database\Eloquent\Builder;
 class StaffLibraryScope
 {
     /**
+     * Built queries, by user id. Building one is not free: it walks the
+     * assigned clients and File::scopeVisibleToClient runs four immediate
+     * lookups for each of them, none of which depend on the query being
+     * built. Callers ask over and over — the policies ask once per row on
+     * a listing, and Gate resolves a fresh policy for every check — so the
+     * same handful of lookups were being repeated per row.
+     *
+     * A clone goes back rather than the query itself, since every caller
+     * adds to it. Registered with the container as `scoped`, so the memo
+     * lasts a request and is dropped between queue jobs.
+     *
+     * @var array<int, Builder<File>>
+     */
+    private array $files = [];
+
+    /** @var array<int, Builder<Folder>> */
+    private array $folders = [];
+
+    /**
      * @return Builder<File>
      */
     public function files(User $user): Builder
+    {
+        return clone ($this->files[$user->id] ??= $this->buildFiles($user));
+    }
+
+    /**
+     * @return Builder<File>
+     */
+    private function buildFiles(User $user): Builder
     {
         $query = File::query();
 
@@ -53,6 +80,14 @@ class StaffLibraryScope
      * @return Builder<Folder>
      */
     public function folders(User $user): Builder
+    {
+        return clone ($this->folders[$user->id] ??= $this->buildFolders($user));
+    }
+
+    /**
+     * @return Builder<Folder>
+     */
+    private function buildFolders(User $user): Builder
     {
         $query = Folder::query();
 

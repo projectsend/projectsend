@@ -9,8 +9,10 @@ use App\Models\User;
 use App\Modules\Api\ApiUsage;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Audit\ActivityLogScope;
 use App\Modules\Audit\DashboardWidgetPreferences;
 use App\Modules\Clients\ClientStorageUsage;
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Models\File;
 use App\Modules\Groups\Models\Group;
 use App\Modules\Identity\UserType;
@@ -50,6 +52,8 @@ class DashboardController extends Controller
         private readonly Installation $installation,
         private readonly TimezoneRegistry $timezones,
         private readonly SystemEnvironment $environment,
+        private readonly StaffLibraryScope $library,
+        private readonly ActivityLogScope $activityScope,
     ) {}
 
     public function __invoke(Request $request): Response
@@ -81,10 +85,10 @@ class DashboardController extends Controller
                 ? ['preset' => $preset, 'from' => $from->toDateString(), 'to' => $to->toDateString()]
                 : null,
             'top_clients_by_storage' => $canStatistics && $prefs->isEnabled($user, 'top_clients_by_storage')
-                ? $this->topClientsByStorage()
+                ? $this->topClientsByStorage($user)
                 : null,
             'largest_files' => $canStatistics && $prefs->isEnabled($user, 'largest_files') ? $this->largestFiles($user) : null,
-            'recent' => $canActionsLog && $prefs->isEnabled($user, 'recent') ? $this->recentActivity() : null,
+            'recent' => $canActionsLog && $prefs->isEnabled($user, 'recent') ? $this->recentActivity($user) : null,
             'system' => $canSystem && $prefs->isEnabled($user, 'system') ? $this->systemInfo() : null,
             // Both editions — informational content, not an update action,
             // so no Capability check alongside the permission (unlike
@@ -274,13 +278,26 @@ class DashboardController extends Controller
      * ClientStorageUsage::quotaMb()) so the widget reads the same way
      * the client-facing usage box does.
      *
+     * "Clients" means the viewer's own, for a client-scoped one: the
+     * roster assigned to them, which is the same set ActivityLogScope
+     * lets them read log entries about. Unscoped staff get every client,
+     * as before.
+     *
      * @return list<array{id: int, name: string, used_bytes: int, quota_mb: int}>
      */
-    private function topClientsByStorage(): array
+    private function topClientsByStorage(User $viewer): array
     {
-        $rows = File::query()
+        $clientIds = $this->library->assignableClientIds($viewer);
+
+        $query = File::query()
             ->select('uploaded_by', DB::raw('SUM(size) as total_bytes'))
-            ->whereHas('uploader', fn ($query) => $query->where('type', UserType::Client))
+            ->whereHas('uploader', fn ($query) => $query->where('type', UserType::Client));
+
+        if ($clientIds !== null) {
+            $query->whereIn('uploaded_by', $clientIds);
+        }
+
+        $rows = $query
             ->groupBy('uploaded_by')
             ->orderByDesc('total_bytes')
             ->limit(5)
@@ -313,16 +330,21 @@ class DashboardController extends Controller
     }
 
     /**
-     * The 10 largest individual files on the installation, regardless of
+     * The 10 largest files in the viewer's library, regardless of
      * uploader — catches a single space hog that per-client aggregates
      * (topClientsByStorage()) can't surface on their own.
      *
-     * Edit/download/uploader links are coarse-gated on the viewer's own
-     * permissions only (same level of precision ActivityLogController's
-     * own link resolver uses) — not a per-file StaffLibraryScope check,
-     * so a client-scoped staff member could still see a link here that
-     * 403s if clicked. Accepted, matching existing precedent, rather
-     * than adding per-row scope checks to a 10-row dashboard widget.
+     * "Their library" is StaffLibraryScope, the same set the file
+     * listings show them: the whole installation for unscoped staff, own
+     * uploads plus assigned clients' content for a client-scoped one. A
+     * widget is a listing like any other, and this one named files by
+     * name and size.
+     *
+     * Edit/download/uploader links stay coarse-gated on the viewer's own
+     * permissions (same level of precision ActivityLogController's own
+     * link resolver uses). With the rows scoped, the links can no longer
+     * point at a file the viewer would get a 403 on — only at one they
+     * lack the permission for.
      *
      * @return list<array{id: int, name: string, size: int, uploader_name: ?string, created_at: string, edit_url: ?string, download_url: ?string, uploader_edit_url: ?string}>
      */
@@ -338,7 +360,7 @@ class DashboardController extends Controller
         $staffModule = $this->capabilities->has(Capability::UsersManage) && $viewer->can('manage_users');
         $canStaffUsers = $staffModule && $viewer->can('edit_users');
 
-        return array_values(File::query()
+        return array_values($this->library->files($viewer)
             ->with('uploader:id,name,type')
             ->orderByDesc('size')
             ->limit(10)
@@ -376,9 +398,16 @@ class DashboardController extends Controller
         // Same coarse gate largestFiles() uses for its edit links.
         $canFiles = $viewer->can('upload') || $viewer->can('edit_files') || $viewer->can('edit_others_files');
 
+        // Built once and cloned per use. StaffLibraryScope::files() runs a
+        // handful of queries per assigned client while it assembles, so the
+        // count and the rows are worth sharing one build; and cloning both
+        // sides rather than reusing one keeps the source query unmutated, so
+        // the order the array happens to be evaluated in cannot matter.
+        $expired = $this->library->files($viewer)->expired();
+
         return [
-            'count' => File::query()->expired()->count(),
-            'files' => array_values(File::query()->expired()->orderBy('expires_at')->limit(10)
+            'count' => (clone $expired)->count(),
+            'files' => array_values((clone $expired)->orderBy('expires_at')->limit(10)
                 ->get(['id', 'name', 'expires_at'])
                 ->map(fn (File $file): array => [
                     'id' => $file->id,
@@ -394,11 +423,21 @@ class DashboardController extends Controller
     }
 
     /**
+     * The viewer's eight most recent readable log entries.
+     *
+     * Through ActivityLogScope, like the activity page, the CSV export,
+     * the downloads report and the API — this was the fifth reader and
+     * the only one that skipped it. An entry carries the subject's name,
+     * so an unscoped one here handed a client-scoped viewer the names of
+     * files and accounts the rest of the application answers 403 or 404
+     * about; that scope's own docblock spells out why, and names the
+     * Client Manager system role as the configuration it applies to.
+     *
      * @return array<int, array<string, mixed>>
      */
-    private function recentActivity(): array
+    private function recentActivity(User $viewer): array
     {
-        return ActivityLog::query()
+        return $this->activityScope->apply(ActivityLog::query(), $viewer)
             ->orderByDesc('created_at')
             ->orderByDesc('id')
             ->limit(8)

@@ -245,6 +245,16 @@ a version is cut.
   (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
   [#1689](https://github.com/projectsend/projectsend/pull/1689))
 
+- **A two-factor recovery code is now spent exactly once.** Using a code removed it from your list
+  by rewriting the whole list, so two sign-in attempts arriving at the same moment could each save
+  their own copy and put back the code the other had just spent. Nobody could get in who was not
+  already holding a valid code, but a code you had crossed off a printed sheet — or watched somebody
+  type — could quietly start working again, which is the one thing recovery codes promise not to do.
+  The code is now removed from the record as it stands at that moment, under a lock, so a second
+  attempt cannot undo the first.
+  (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
+  [#1704](https://github.com/projectsend/projectsend/pull/1704))
+
 ## 2.1.0 — 18 August 2026
 
 Updating, mostly. ProjectSend now tells you when there is a new version, ends an update somewhere

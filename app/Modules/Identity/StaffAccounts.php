@@ -7,6 +7,7 @@ namespace App\Modules\Identity;
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Permissions\PermissionChecker;
 use App\Modules\Identity\Permissions\SystemRole;
@@ -34,6 +35,7 @@ class StaffAccounts
     public function __construct(
         private readonly ActivityLogger $activity,
         private readonly PermissionChecker $permissions,
+        private readonly StaffLibraryScope $library,
     ) {}
 
     /**
@@ -88,6 +90,39 @@ class StaffAccounts
     public function assignableRoleIds(User $actor): array
     {
         return array_values($this->assignableRoles($actor)->map(fn (Role $role): int => $role->id)->all());
+    }
+
+    /**
+     * Client ids this actor may put on a staff account's roster — the same
+     * rule as mayGrant(), applied to reach instead of to authority.
+     *
+     * An assigned client is not a label: it is everything that client can
+     * see, handed to whoever holds it. So a client-scoped actor may hand
+     * out the clients they hold and no others — including to themselves,
+     * which is the case that matters, since guardTarget() lets anybody
+     * edit their own account and `assigned_clients` was never checked
+     * against the actor at all. Without this a scoped staff member with
+     * `edit_users` could PATCH their own id with every client id on the
+     * installation and read the whole library from then on.
+     *
+     * An unrestricted actor gets the full roster back rather than null, so
+     * every caller can validate against one list instead of composing a
+     * conditional rule. That list is already client-typed, which is why it
+     * replaces the `exists:users,id where type = client` rule rather than
+     * joining it.
+     *
+     * @return list<int>
+     */
+    public function assignableClientIds(User $actor): array
+    {
+        $ids = $this->library->assignableClientIds($actor);
+
+        if ($ids !== null) {
+            return $ids;
+        }
+
+        return array_values(User::query()->where('type', UserType::Client)
+            ->pluck('id')->map(fn ($id): int => (int) $id)->all());
     }
 
     /**

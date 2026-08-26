@@ -125,7 +125,11 @@ class UsersController extends Controller
             // to mistype. Password::defaults() still applies.
             'password' => ['required', Password::defaults()],
             'assigned_clients' => ['array'],
-            'assigned_clients.*' => ['integer', Rule::exists('users', 'id')->where('type', UserType::Client->value)],
+            // Only clients you can reach yourself: an unrestricted account may
+            // assign any client, a client-scoped one only the clients already
+            // assigned to it. Assigning a client hands over everything that
+            // client can see, so it follows the same rule as role_id above.
+            'assigned_clients.*' => ['integer', Rule::in($this->accounts->assignableClientIds($actor))],
         ]);
 
         $user = $this->accounts->create([
@@ -163,7 +167,11 @@ class UsersController extends Controller
             'active' => ['sometimes', 'boolean'],
             'password' => ['sometimes', 'nullable', Password::defaults()],
             'assigned_clients' => ['sometimes', 'array'],
-            'assigned_clients.*' => ['integer', Rule::exists('users', 'id')->where('type', UserType::Client->value)],
+            // Only clients you can reach yourself: an unrestricted account may
+            // assign any client, a client-scoped one only the clients already
+            // assigned to it. Assigning a client hands over everything that
+            // client can see, so it follows the same rule as role_id above.
+            'assigned_clients.*' => ['integer', Rule::in($this->accounts->assignableClientIds($actor))],
         ]);
 
         // The same refusal the web screen makes, and for the same reason:

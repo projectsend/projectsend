@@ -120,7 +120,9 @@ class AccountConversionController extends Controller
                     'is_system' => $role->is_system,
                     'client_scoped' => $role->client_scoped,
                 ])->all(),
-            'clients' => User::query()->where('type', UserType::Client)->orderBy('name')->get()
+            // Narrowed like `roles` beside it: the picker offers what this
+            // actor may hand out, which is what store() will accept.
+            'clients' => User::query()->whereIn('id', $this->accounts->assignableClientIds($actor))->orderBy('name')->get()
                 ->map(fn (User $client): array => ['id' => $client->id, 'name' => $client->name])
                 ->values()->all(),
         ]);
@@ -152,7 +154,8 @@ class AccountConversionController extends Controller
             'assigned_clients' => ['array'],
             'assigned_clients.*' => [
                 'integer',
-                Rule::exists('users', 'id')->where('type', UserType::Client->value),
+                // Reach, not a label: see StaffAccounts::assignableClientIds.
+                Rule::in($this->accounts->assignableClientIds($actor)),
                 Rule::notIn([$user->id]),
             ],
             // Required only for an account whose credential lives in the

@@ -6,7 +6,9 @@ namespace App\Modules\Files\Access;
 
 use App\Models\User;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Models\FileAssignment;
 use App\Modules\Files\Models\Folder;
+use App\Modules\Files\Models\FolderAssignment;
 use App\Modules\Groups\Models\Group;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -179,5 +181,66 @@ class StaffLibraryScope
         $ids = $this->assignableGroupIds($user);
 
         return $ids === null || in_array($group->id, $ids, true);
+    }
+
+    /**
+     * Whether a staff member may put a client into a group, or take one
+     * out again.
+     *
+     * Not canAssignGroup(): that answers "may I share with this group",
+     * and it answers it *from* the membership — a group counts as the
+     * user's because one of their clients is in it. Deciding membership
+     * with a predicate derived from membership means whoever may edit
+     * the list also decides what the list entitles them to, which is not
+     * a boundary at all. It is also the wrong answer here in the other
+     * direction: a group nobody has joined yet belongs to nobody, so a
+     * scoped staff member could never put the first member into a group
+     * they had just created.
+     *
+     * The question membership actually asks is about reach. Joining a
+     * group hands the new member everything shared with it, and — when
+     * that member is one of the actor's own clients — hands the actor
+     * the same content back through File::scopeVisibleToClient, which is
+     * what StaffLibraryScope::files() is built on. So both sides have to
+     * hold: the client must be one this staff member holds, and the
+     * group must not already reach beyond their library. A group with
+     * nothing shared with it passes trivially, which is what keeps a
+     * newly created one usable.
+     *
+     * Unscoped staff are unaffected — both halves are true for them by
+     * construction.
+     */
+    public function allowsGroupMembership(User $user, Group $group, User $client): bool
+    {
+        return $this->canAssignClient($user, $client) && $this->groupReachesNoFurther($user, $group);
+    }
+
+    /**
+     * Whether everything shared with this group is already inside the
+     * user's library — files assigned to it, and the folders whose
+     * subtrees it can browse.
+     */
+    private function groupReachesNoFurther(User $user, Group $group): bool
+    {
+        if (! $user->isClientScoped()) {
+            return true;
+        }
+
+        $morph = $group->getMorphClass();
+
+        $fileIds = FileAssignment::query()
+            ->where('assignable_type', $morph)->where('assignable_id', $group->id)
+            ->pluck('file_id')->unique();
+
+        if ($fileIds->isNotEmpty() && $this->files($user)->whereIn('id', $fileIds)->count() !== $fileIds->count()) {
+            return false;
+        }
+
+        $folderIds = FolderAssignment::query()
+            ->where('assignable_type', $morph)->where('assignable_id', $group->id)
+            ->pluck('folder_id')->unique();
+
+        return $folderIds->isEmpty()
+            || $this->folders($user)->whereIn('id', $folderIds)->count() === $folderIds->count();
     }
 }

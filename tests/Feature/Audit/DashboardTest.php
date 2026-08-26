@@ -396,3 +396,71 @@ test('an unscoped viewer still sees the whole installation in the widget', funct
         fn (AssertableInertia $page) => $page->has('recent', 1)->where('recent.0.replacements.subject', 'Anything'),
     );
 });
+
+// The shipped Client Manager role is client-scoped and holds
+// view_statistics, so these three widgets are the default configuration,
+// not a custom one. A file's name is the part that leaks: "Q3 delinquent
+// accounts" says plenty without ever being downloadable.
+test('the statistics widgets name only files inside the viewer scope', function () {
+    $role = Role::query()->create(['name' => 'Scoped stats', 'client_scoped' => true]);
+    RolePermission::query()->insert([
+        ['role_id' => $role->id, 'permission' => 'view_statistics'],
+        ['role_id' => $role->id, 'permission' => 'upload'],
+    ]);
+
+    $scoped = User::factory()->create(['role_id' => $role->id]);
+    $client = User::factory()->client()->create();
+    $scoped->assignedClients()->attach($client->id);
+
+    $mine = File::factory()->create([
+        'uploaded_by' => $this->admin->id,
+        'name' => 'Statement',
+        'size' => 10_000,
+    ]);
+    shareFileWith($mine, $client);
+
+    // Expired files reach a scoped viewer only through their own uploads:
+    // File::scopeVisibleToClient ends in notExpired(), so an expired file
+    // belonging to one of their clients is not in their library at all.
+    $ownExpired = File::factory()->create([
+        'uploaded_by' => $scoped->id,
+        'name' => 'My Own Expired',
+        'size' => 1_000,
+        'expires_at' => now()->subDay(),
+    ]);
+
+    // Bigger, sooner-expired, and none of this viewer's business.
+    File::factory()->create([
+        'uploaded_by' => $this->admin->id,
+        'name' => 'Q3 delinquent accounts',
+        'size' => 99_000_000,
+        'expires_at' => now()->subDays(5),
+    ]);
+
+    $this->actingAs($scoped)->get('/dashboard')->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->has('largest_files', 2)
+            ->where('largest_files.0.name', 'Statement')
+            ->where('largest_files.1.name', 'My Own Expired')
+            ->has('expired_files.files', 1)
+            ->where('expired_files.files.0.name', 'My Own Expired')
+            // The count has to agree with the list, or the number
+            // describes files the list is not allowed to name.
+            ->where('expired_files.count', 1),
+    );
+});
+
+test('an unscoped viewer still sees the whole installation in those widgets', function () {
+    File::factory()->create([
+        'uploaded_by' => $this->admin->id,
+        'name' => 'Anything',
+        'size' => 5_000,
+        'expires_at' => now()->subDay(),
+    ]);
+
+    $this->actingAs($this->admin)->get('/dashboard')->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->where('largest_files.0.name', 'Anything')
+            ->where('expired_files.count', 1),
+    );
+});

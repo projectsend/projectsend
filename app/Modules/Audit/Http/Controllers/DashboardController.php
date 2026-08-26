@@ -13,6 +13,7 @@ use App\Modules\Audit\ActivityLogScope;
 use App\Modules\Audit\ActivityPresenter;
 use App\Modules\Audit\DashboardWidgetPreferences;
 use App\Modules\Clients\ClientStorageUsage;
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Models\File;
 use App\Modules\Groups\Models\Group;
 use App\Modules\Identity\UserType;
@@ -54,6 +55,7 @@ class DashboardController extends Controller
         private readonly SystemEnvironment $environment,
         private readonly ActivityPresenter $presenter,
         private readonly ActivityLogScope $scope,
+        private readonly StaffLibraryScope $library,
     ) {}
 
     public function __invoke(Request $request): Response
@@ -85,7 +87,7 @@ class DashboardController extends Controller
                 ? ['preset' => $preset, 'from' => $from->toDateString(), 'to' => $to->toDateString()]
                 : null,
             'top_clients_by_storage' => $canStatistics && $prefs->isEnabled($user, 'top_clients_by_storage')
-                ? $this->topClientsByStorage()
+                ? $this->topClientsByStorage($user)
                 : null,
             'largest_files' => $canStatistics && $prefs->isEnabled($user, 'largest_files') ? $this->largestFiles($user) : null,
             'recent' => $canActionsLog && $prefs->isEnabled($user, 'recent') ? $this->recentActivity($user) : null,
@@ -210,6 +212,12 @@ class DashboardController extends Controller
      */
     private function counters(): array
     {
+        // Deliberately installation-wide, unlike the three widgets below.
+        // A total carries no names — "417 files" tells a scoped viewer
+        // nothing about whose they are — and the same reasoning leaves
+        // transferSeries() alone. If that ever stops being the line, both
+        // move together.
+
         return [
             'files' => File::query()->count(),
             'files_bytes' => (int) File::query()->sum('size'),
@@ -280,9 +288,12 @@ class DashboardController extends Controller
      *
      * @return list<array{id: int, name: string, used_bytes: int, quota_mb: int}>
      */
-    private function topClientsByStorage(): array
+    private function topClientsByStorage(User $viewer): array
     {
-        $rows = File::query()
+        // Scoped like the other two: this one names clients rather than
+        // files, which is the same thing MembershipRequest::approvableBy
+        // and ActivityLogScope exist to keep inside a viewer's roster.
+        $rows = $this->library->files($viewer)
             ->select('uploaded_by', DB::raw('SUM(size) as total_bytes'))
             ->whereHas('uploader', fn ($query) => $query->where('type', UserType::Client))
             ->groupBy('uploaded_by')
@@ -342,7 +353,14 @@ class DashboardController extends Controller
         $staffModule = $this->capabilities->has(Capability::UsersManage) && $viewer->can('manage_users');
         $canStaffUsers = $staffModule && $viewer->can('edit_users');
 
-        return array_values(File::query()
+        // Narrowed to the viewer's library, not just its links. The
+        // note above is about a link that 403s; a row that should not be
+        // here at all is a different problem, and the file's *name* is
+        // the part that leaks — "Q3 delinquent accounts" says plenty
+        // without being downloadable. Scoping the query costs one call:
+        // StaffLibraryScope builds a scoped user's query once per
+        // request, so this is not a per-row check.
+        return array_values($this->library->files($viewer)
             ->with('uploader:id,name,type')
             ->orderByDesc('size')
             ->limit(10)
@@ -381,8 +399,20 @@ class DashboardController extends Controller
         $canFiles = $viewer->can('upload') || $viewer->can('edit_files') || $viewer->can('edit_others_files');
 
         return [
-            'count' => File::query()->expired()->count(),
-            'files' => array_values(File::query()->expired()->orderBy('expires_at')->limit(10)
+            // Both the count and the list read the viewer's library, so
+            // the number cannot describe files the list is not allowed to
+            // name. Same reason largestFiles() is scoped.
+            //
+            // Narrower than it looks for a client-scoped viewer:
+            // File::scopeVisibleToClient ends in notExpired(), so an
+            // expired file belonging to one of their clients is not in
+            // their library, and only their own expired uploads reach
+            // this list. Safe, and under-inclusive — telling them about
+            // a client's file that auto-delete is about to take would
+            // need a library query that keeps expired rows, which is a
+            // boundary to decide rather than to invent here.
+            'count' => $this->library->files($viewer)->expired()->count(),
+            'files' => array_values($this->library->files($viewer)->expired()->orderBy('expires_at')->limit(10)
                 ->get(['id', 'name', 'expires_at'])
                 ->map(fn (File $file): array => [
                     'id' => $file->id,

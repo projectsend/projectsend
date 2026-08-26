@@ -141,17 +141,28 @@ class ClientsController extends Controller
         return redirect()->route('clients.edit', $client)->with('success', __('Client created.'));
     }
 
-    public function edit(Request $request, User $client): Response
+    /**
+     * The one question every route binding a client has to ask.
+     *
+     * A permission is not a boundary: `edit_clients` says this staff
+     * member manages clients, not that they manage *this* one — the same
+     * rule ClientFilesController::index applies one route over. 404
+     * rather than 403, so a client outside the roster is not
+     * distinguishable from one that is not there.
+     */
+    private function guardTarget(Request $request, User $client): void
     {
         abort_unless($client->isClient(), 404);
 
         $viewer = $request->user();
         assert($viewer !== null);
 
-        // A permission is not a boundary: `edit_clients` says this staff
-        // member manages clients, not that they manage *this* one. The
-        // same rule ClientFilesController::index applies one route over.
         abort_unless($this->scope->canAssignClient($viewer, $client), 404);
+    }
+
+    public function edit(Request $request, User $client): Response
+    {
+        $this->guardTarget($request, $client);
 
 
         return Inertia::render('clients/edit', [
@@ -177,15 +188,7 @@ class ClientsController extends Controller
 
     public function update(Request $request, User $client): RedirectResponse
     {
-        abort_unless($client->isClient(), 404);
-
-        $viewer = $request->user();
-        assert($viewer !== null);
-
-        // A permission is not a boundary: `edit_clients` says this staff
-        // member manages clients, not that they manage *this* one. The
-        // same rule ClientFilesController::index applies one route over.
-        abort_unless($this->scope->canAssignClient($viewer, $client), 404);
+        $this->guardTarget($request, $client);
 
 
         $validated = $request->validate(array_merge([
@@ -247,15 +250,7 @@ class ClientsController extends Controller
      */
     public function destroyTwoFactor(Request $request, User $client, TwoFactorAdministration $twoFactor): RedirectResponse
     {
-        abort_unless($client->isClient(), 404);
-
-        $viewer = $request->user();
-        assert($viewer !== null);
-
-        // A permission is not a boundary: `edit_clients` says this staff
-        // member manages clients, not that they manage *this* one. The
-        // same rule ClientFilesController::index applies one route over.
-        abort_unless($this->scope->canAssignClient($viewer, $client), 404);
+        $this->guardTarget($request, $client);
 
 
         $twoFactor->reset($client);
@@ -265,15 +260,7 @@ class ClientsController extends Controller
 
     public function destroy(Request $request, User $client): RedirectResponse
     {
-        abort_unless($client->isClient(), 404);
-
-        $viewer = $request->user();
-        assert($viewer !== null);
-
-        // A permission is not a boundary: `edit_clients` says this staff
-        // member manages clients, not that they manage *this* one. The
-        // same rule ClientFilesController::index applies one route over.
-        abort_unless($this->scope->canAssignClient($viewer, $client), 404);
+        $this->guardTarget($request, $client);
 
 
         $validated = $this->accountDeletion->validate($request, $client);

@@ -471,3 +471,41 @@ test('an unscoped viewer still sees the whole installation in those widgets', fu
             ->where('expired_files.scoped', false),
     );
 });
+
+// The top-clients widget names clients, so the roster is the question,
+// not the library. A stranger's upload can sit inside a scoped viewer's
+// library — shared with a group one of their own clients is in — which
+// put the stranger's name on the widget while the file itself was
+// legitimately visible.
+test('the top-clients widget names only clients on the viewer roster', function () {
+    $role = Role::query()->create(['name' => 'Scoped stats roster', 'client_scoped' => true]);
+    RolePermission::query()->insert([
+        ['role_id' => $role->id, 'permission' => 'view_statistics'],
+        ['role_id' => $role->id, 'permission' => 'upload'],
+    ]);
+
+    $viewer = User::factory()->create(['role_id' => $role->id]);
+    $mine = User::factory()->client()->create(['name' => 'My Own Client']);
+    $viewer->assignedClients()->attach($mine->id);
+
+    $stranger = User::factory()->client()->create(['name' => 'Stranger Client Ltd']);
+
+    // Both clients are in one group, and the stranger's upload is shared
+    // with it — so my client may legitimately read the file, and the
+    // file is legitimately inside my library.
+    $group = Group::query()->create(['name' => 'Shared', 'slug' => 'shared-stats', 'public' => false]);
+    $group->members()->syncWithoutDetaching([$mine->id, $stranger->id]);
+
+    $file = File::factory()->create(['uploaded_by' => $stranger->id, 'name' => 'Theirs', 'size' => 5_000_000]);
+    shareFileWithGroup($file, $group);
+
+    // Something of my own client's, so the widget is not empty for the
+    // wrong reason.
+    File::factory()->create(['uploaded_by' => $mine->id, 'name' => 'Ours', 'size' => 1_000]);
+
+    $this->actingAs($viewer)->get('/dashboard')->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->has('top_clients_by_storage', 1)
+            ->where('top_clients_by_storage.0.name', 'My Own Client'),
+    );
+});

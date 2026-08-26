@@ -86,17 +86,24 @@ class ClientsController extends Controller
         return ClientResource::collection($this->polling->paginate($request, $query, 'users'));
     }
 
-    public function show(Request $request, User $client): ClientResource
+    /**
+     * Mirrors the web controller's guard, as every API twin here does:
+     * the token's `edit_clients` says its owner manages clients, not
+     * that they manage *this* one.
+     */
+    private function guardTarget(Request $request, User $client): void
     {
         abort_unless($client->isClient(), 404);
 
         $viewer = $request->user();
         assert($viewer !== null);
 
-        // A permission is not a boundary: the token's `edit_clients`
-        // says its owner manages clients, not that they manage *this*
-        // one. Mirrors the web controller, as every API twin here does.
         abort_unless($this->scope->canAssignClient($viewer, $client), 404);
+    }
+
+    public function show(Request $request, User $client): ClientResource
+    {
+        $this->guardTarget($request, $client);
 
 
         return $this->resourceFor($client);
@@ -149,15 +156,7 @@ class ClientsController extends Controller
 
     public function update(Request $request, User $client): ClientResource
     {
-        abort_unless($client->isClient(), 404);
-
-        $viewer = $request->user();
-        assert($viewer !== null);
-
-        // A permission is not a boundary: the token's `edit_clients`
-        // says its owner manages clients, not that they manage *this*
-        // one. Mirrors the web controller, as every API twin here does.
-        abort_unless($this->scope->canAssignClient($viewer, $client), 404);
+        $this->guardTarget($request, $client);
 
 
         $validated = $request->validate([
@@ -230,15 +229,7 @@ class ClientsController extends Controller
      */
     public function destroyTwoFactor(Request $request, User $client, TwoFactorAdministration $twoFactor): JsonResponse
     {
-        abort_unless($client->isClient(), 404);
-
-        $viewer = $request->user();
-        assert($viewer !== null);
-
-        // A permission is not a boundary: the token's `edit_clients`
-        // says its owner manages clients, not that they manage *this*
-        // one. Mirrors the web controller, as every API twin here does.
-        abort_unless($this->scope->canAssignClient($viewer, $client), 404);
+        $this->guardTarget($request, $client);
 
 
         $twoFactor->reset($client);
@@ -264,15 +255,7 @@ class ClientsController extends Controller
      */
     public function destroy(Request $request, User $client): JsonResponse
     {
-        abort_unless($client->isClient(), 404);
-
-        $viewer = $request->user();
-        assert($viewer !== null);
-
-        // A permission is not a boundary: the token's `edit_clients`
-        // says its owner manages clients, not that they manage *this*
-        // one. Mirrors the web controller, as every API twin here does.
-        abort_unless($this->scope->canAssignClient($viewer, $client), 404);
+        $this->guardTarget($request, $client);
 
 
         $validated = $this->accountDeletion->validate($request, $client);

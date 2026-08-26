@@ -27,6 +27,7 @@ use App\Modules\Platform\Settings\Settings;
 use App\Modules\Platform\Storage\StorageDurability;
 use App\Modules\Platform\System\SystemEnvironment;
 use App\Modules\Platform\Updates\LatestReleaseInfo;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -290,12 +291,19 @@ class DashboardController extends Controller
      */
     private function topClientsByStorage(User $viewer): array
     {
-        // Scoped like the other two: this one names clients rather than
-        // files, which is the same thing MembershipRequest::approvableBy
-        // and ActivityLogScope exist to keep inside a viewer's roster.
-        $rows = $this->library->files($viewer)
+        // Narrowed by roster, not by library. This widget names *clients*,
+        // and files() is the wrong lens for that: a stranger client's
+        // upload can be inside a scoped viewer's library — shared with a
+        // group one of their own clients is in — which put the stranger's
+        // name on the widget. Measured: a client called "Stranger Client
+        // Ltd", on nobody's roster, ranked on a scoped dashboard.
+        // assignableClientIds is the question actually being asked.
+        $clientIds = $this->library->assignableClientIds($viewer);
+
+        $rows = File::query()
             ->select('uploaded_by', DB::raw('SUM(size) as total_bytes'))
             ->whereHas('uploader', fn ($query) => $query->where('type', UserType::Client))
+            ->when($clientIds !== null, fn (Builder $query) => $query->whereIn('uploaded_by', $clientIds))
             ->groupBy('uploaded_by')
             ->orderByDesc('total_bytes')
             ->limit(5)

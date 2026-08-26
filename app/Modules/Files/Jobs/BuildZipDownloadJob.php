@@ -63,7 +63,20 @@ class BuildZipDownloadJob implements ShouldQueue
 
     public function __construct(
         private readonly int $zipDownloadId,
-    ) {}
+    ) {
+        // Its own queue, because $timeout is an hour and every shipped
+        // topology runs one worker: on the default queue a single large
+        // build holds up every notification email behind it. Set in the
+        // constructor rather than at the dispatch site so a second caller
+        // cannot forget it.
+        //
+        // A worker has to be listening. The images run a second one; a
+        // manual install whose worker command still says plain
+        // `queue:work` consumes `default` only, so INSTALL.md documents
+        // `--queue=default,zips` for the single-worker case — see the
+        // upgrade note in CHANGELOG.md.
+        $this->onQueue('zips');
+    }
 
     public function handle(): void
     {

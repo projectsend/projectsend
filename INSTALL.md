@@ -384,7 +384,7 @@ User=www-data
 Group=www-data
 Restart=always
 WorkingDirectory=/var/www/projectsend
-ExecStart=/usr/bin/php artisan queue:work --tries=3 --backoff=3
+ExecStart=/usr/bin/php artisan queue:work --queue=default,zips --tries=3 --backoff=3
 
 [Install]
 WantedBy=multi-user.target
@@ -395,6 +395,15 @@ Then:
 ```sh
 sudo systemctl enable --now projectsend-worker
 ```
+
+`--queue=default,zips` matters. Building a zip runs on its own queue, so a worker that is not told
+to watch `zips` will send email happily and never finish a single zip download — with nothing in any
+log to say why. One worker watching both is fine for most installations; ordinary work is taken
+first, and a large zip simply holds the worker while it runs.
+
+If zip downloads are heavily used and you would rather they never delayed email, run a second unit
+with `--queue=zips` and narrow the first one to `--queue=default`. That is what the Docker images
+do.
 
 **Without this, no email is ever sent** and zip downloads never finish. `Restart=always` matters
 too: saving your email settings restarts the worker so it picks up the new values, and it needs to

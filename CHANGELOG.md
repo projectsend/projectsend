@@ -36,6 +36,18 @@ a version is cut.
   ceiling is, rather than simply refused; each person can have one archive being prepared at a time,
   for the same reason.
 
+- **Zip downloads no longer hold up your email.** Preparing a large archive can take a while, and it
+  used to run on the same queue as everything else — so one big zip could delay every notification
+  email behind it. Zip building now has a queue of its own, and the Docker images run a second
+  background worker for it.
+
+  **Upgrade note, manual installs only:** your background worker has to be told about the new queue,
+  or zips will never finish and nothing will say why. Edit
+  `/etc/systemd/system/projectsend-worker.service` so the `ExecStart` line reads
+  `queue:work --queue=default,zips …`, then `sudo systemctl daemon-reload && sudo systemctl restart
+  projectsend-worker`. Docker installations need no change. See INSTALL.md for the two-worker setup
+  if you would rather keep the two kinds of work apart.
+
 ### Fixed
 
 - **Sessions no longer break behind a reverse proxy.** Signing in, or submitting the first-run setup

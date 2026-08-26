@@ -56,13 +56,34 @@ services:
       args:
         WWWUSER: ${WWWUSER:-1000}
         WWWGROUP: ${WWWGROUP:-1000}
-    command: php artisan queue:work --tries=3 --backoff=3
+    command: php artisan queue:work --queue=default --tries=3 --backoff=3
     volumes:
       - .:/var/www/html
       - ../packages:/var/www/packages
     # Required so `queue:restart` (triggered when mail provider settings
     # are saved) actually brings the worker back instead of leaving the
     # queue dead until someone runs `docker compose up -d` by hand.
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  # Zip builds get their own worker: BuildZipDownloadJob allows itself an
+  # hour, and on a shared queue one large archive holds up every
+  # notification email behind it.
+  worker-zips:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+      args:
+        WWWUSER: ${WWWUSER:-1000}
+        WWWGROUP: ${WWWGROUP:-1000}
+    command: php artisan queue:work --queue=zips --tries=1
+    volumes:
+      - .:/var/www/html
+      - ../packages:/var/www/packages
     restart: unless-stopped
     depends_on:
       db:

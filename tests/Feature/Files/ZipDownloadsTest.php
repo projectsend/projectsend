@@ -12,6 +12,7 @@ use App\Modules\Files\Models\ZipDownload;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 
 // QUEUE_CONNECTION=sync in phpunit.xml — BuildZipDownloadJob runs
@@ -539,4 +540,21 @@ test('a traversing filename cannot escape the archive as a zip entry', function 
     expect($segments)->toHaveCount(2)
         ->and($segments)->not->toContain('..')
         ->and($names[0])->toStartWith('Reports/');
+});
+
+// Its own queue, so one hour-long build cannot hold up every notification
+// email behind it. Both shipped topologies run a worker for it; a manual
+// install is told to watch `default,zips` (INSTALL.md, and the upgrade
+// note in CHANGELOG.md), because a worker that is not listening finishes
+// no zips and says nothing about why.
+test('a zip build is queued away from ordinary work', function () {
+    Queue::fake();
+
+    $file = zipUploadFile($this->admin, 'a.pdf');
+
+    $this->actingAs($this->admin)
+        ->postJson('/zip-downloads', ['file_ids' => [$file->id]])
+        ->assertOk();
+
+    Queue::assertPushed(BuildZipDownloadJob::class, fn (BuildZipDownloadJob $job): bool => $job->queue === 'zips');
 });

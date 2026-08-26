@@ -24,6 +24,7 @@ use App\Modules\Identity\UserType;
 use App\Modules\Notifications\Notifier;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use App\Support\Rules;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -71,7 +72,7 @@ class ChunkedUploadsController extends Controller
             'size' => ['required', 'integer', 'min:1'],
             'type' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
-            'folder_id' => ['nullable', 'integer', 'exists:folders,id'],
+            'folder_id' => Rules::folderId(),
             'previous_file_id' => ['nullable', 'integer'],
         ]);
 

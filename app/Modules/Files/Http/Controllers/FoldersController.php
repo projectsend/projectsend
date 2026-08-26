@@ -305,7 +305,7 @@ class FoldersController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'parent_id' => ['nullable', 'integer', 'exists:folders,id'],
+            'parent_id' => Rules::folderId(),
             'public' => ['sometimes', 'boolean'],
             'slug' => Rules::slug('folders'),
             'allow_client_uploads' => ['sometimes', 'boolean'],
@@ -389,7 +389,7 @@ class FoldersController extends Controller
         Gate::authorize('update', $folder);
 
         $validated = $request->validate([
-            'parent_id' => ['nullable', 'integer', 'exists:folders,id'],
+            'parent_id' => Rules::folderId(),
         ]);
 
         $newParent = $this->resolveParent($request->user(), $validated['parent_id'] ?? null);

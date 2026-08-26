@@ -76,7 +76,7 @@ class FilesController extends Controller
             'file' => ['required', 'file', 'max:102400'],
             'name' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
-            'folder_id' => ['nullable', 'integer', 'exists:folders,id'],
+            'folder_id' => Rules::folderId(),
         ]);
 
         /** @var UploadedFile $upload */
@@ -242,7 +242,7 @@ class FilesController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
-            'folder_id' => ['nullable', 'integer', 'exists:folders,id'],
+            'folder_id' => Rules::folderId(),
             'public' => ['sometimes', 'boolean'],
             'commentable' => ['sometimes', 'boolean'],
             // The slug only matters (and is only shown) once a file is
@@ -327,7 +327,7 @@ class FilesController extends Controller
         Gate::authorize('update', $file);
 
         $validated = $request->validate([
-            'folder_id' => ['nullable', 'integer', 'exists:folders,id'],
+            'folder_id' => Rules::folderId(),
         ]);
 
         $folderId = $validated['folder_id'] ?? null;
@@ -363,7 +363,7 @@ class FilesController extends Controller
             'file_ids.*' => ['integer', 'distinct'],
 
             'folder_action' => ['required', Rule::in(['no_change', 'move'])],
-            'folder_id' => ['nullable', 'integer', 'exists:folders,id'],
+            'folder_id' => Rules::folderId(),
 
             'description_action' => ['required', Rule::in(['no_change', 'set'])],
             'description' => ['nullable', 'string', 'max:2000'],

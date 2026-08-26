@@ -336,3 +336,63 @@ test('the recent-activity widget carries origin so an actorless entry is not mis
             ->where('recent.0.actor_name', null),
     );
 });
+
+test('the recent-activity widget shows a scoped viewer only what their own log would', function () {
+    // view_actions_log is not the whole answer for a client-scoped viewer:
+    // an entry carries the subject's name, so an unscoped widget reads out
+    // the name of every file in the installation to somebody who gets a
+    // 403 on the files themselves. The Client Manager role ships with the
+    // permission, so this is the default configuration, not an exotic one.
+    $role = Role::query()->create(['name' => 'Scoped log reader', 'client_scoped' => true]);
+    RolePermission::query()->insert([
+        ['role_id' => $role->id, 'permission' => 'view_actions_log'],
+        ['role_id' => $role->id, 'permission' => 'upload'],
+    ]);
+
+    $scoped = User::factory()->create(['role_id' => $role->id]);
+    $client = User::factory()->client()->create();
+    $scoped->assignedClients()->attach($client->id);
+
+    $theirs = File::factory()->create(['uploaded_by' => $this->admin->id, 'name' => 'Q3 delinquent accounts']);
+
+    $mine = File::factory()->create(['uploaded_by' => $this->admin->id, 'name' => 'Statement']);
+    shareFileWith($mine, $client);
+
+    foreach ([$theirs, $mine] as $file) {
+        ActivityLog::query()->create([
+            'actor_id' => $this->admin->id,
+            'actor_name' => $this->admin->name,
+            'actor_type' => $this->admin->type->value,
+            'action' => Action::FileUploaded,
+            'subject_type' => $file->getMorphClass(),
+            'subject_id' => $file->id,
+            'subject_name' => $file->name,
+            'created_at' => now(),
+        ]);
+    }
+
+    $this->actingAs($scoped)->get('/dashboard')->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->has('recent', 1)
+            ->where('recent.0.replacements.subject', 'Statement'),
+    );
+});
+
+test('an unscoped viewer still sees the whole installation in the widget', function () {
+    $file = File::factory()->create(['uploaded_by' => $this->admin->id, 'name' => 'Anything']);
+
+    ActivityLog::query()->create([
+        'actor_id' => $this->admin->id,
+        'actor_name' => $this->admin->name,
+        'actor_type' => $this->admin->type->value,
+        'action' => Action::FileUploaded,
+        'subject_type' => $file->getMorphClass(),
+        'subject_id' => $file->id,
+        'subject_name' => 'Anything',
+        'created_at' => now(),
+    ]);
+
+    $this->actingAs($this->admin)->get('/dashboard')->assertInertia(
+        fn (AssertableInertia $page) => $page->has('recent', 1)->where('recent.0.replacements.subject', 'Anything'),
+    );
+});

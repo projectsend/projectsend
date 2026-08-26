@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Modules\Api\ApiUsage;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Audit\ActivityLogScope;
 use App\Modules\Audit\ActivityPresenter;
 use App\Modules\Audit\DashboardWidgetPreferences;
 use App\Modules\Clients\ClientStorageUsage;
@@ -52,6 +53,7 @@ class DashboardController extends Controller
         private readonly TimezoneRegistry $timezones,
         private readonly SystemEnvironment $environment,
         private readonly ActivityPresenter $presenter,
+        private readonly ActivityLogScope $scope,
     ) {}
 
     public function __invoke(Request $request): Response
@@ -86,7 +88,7 @@ class DashboardController extends Controller
                 ? $this->topClientsByStorage()
                 : null,
             'largest_files' => $canStatistics && $prefs->isEnabled($user, 'largest_files') ? $this->largestFiles($user) : null,
-            'recent' => $canActionsLog && $prefs->isEnabled($user, 'recent') ? $this->recentActivity() : null,
+            'recent' => $canActionsLog && $prefs->isEnabled($user, 'recent') ? $this->recentActivity($user) : null,
             'system' => $canSystem && $prefs->isEnabled($user, 'system') ? $this->systemInfo() : null,
             // Both editions — informational content, not an update action,
             // so no Capability check alongside the permission (unlike
@@ -398,13 +400,21 @@ class DashboardController extends Controller
     /**
      * @return array<int, array<string, mixed>>
      */
-    private function recentActivity(): array
+    private function recentActivity(User $viewer): array
     {
+        // Narrowed through ActivityLogScope, exactly as the activity page and
+        // the download history are. `view_actions_log` is not the whole
+        // answer for a client-scoped viewer: a log entry carries the
+        // subject's name, so an unscoped one reads out the name of every
+        // file in the installation and who touched it, to somebody who gets
+        // a 403 on the files themselves. The Client Manager role ships with
+        // the permission, so this is the default configuration.
+        //
         // Presented through the shared ActivityPresenter, not rebuilt inline —
         // the same sentence-ready shape the activity page and detail panels
         // use. Rebuilding it here once dropped `origin`, which is the only
         // thing that tells an actorless "Anonymous" entry from a "System" one.
-        return ActivityLog::query()
+        return $this->scope->apply(ActivityLog::query(), $viewer)
             ->orderByDesc('created_at')
             ->orderByDesc('id')
             ->limit(8)

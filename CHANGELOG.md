@@ -183,6 +183,14 @@ a version is cut.
   (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
   [#1698](https://github.com/projectsend/projectsend/pull/1698))
 
+- **The dashboard's recent activity now respects a limited role's boundary.** A staff role can be
+  limited to its own assigned clients, and the activity page has always honoured that — showing only
+  entries about files, folders and clients in that person's scope. The dashboard's Recent activity
+  widget did not: it listed the eight most recent entries from the whole installation, file names
+  and all, to someone who would be refused the files themselves. The Client Manager role ships with
+  the permission this widget needs, so any installation using it was affected. Both screens now
+  answer the same way. Nothing changes for an administrator or any unrestricted role.
+
 ## 2.1.0 — 18 August 2026
 
 Updating, mostly. ProjectSend now tells you when there is a new version, ends an update somewhere

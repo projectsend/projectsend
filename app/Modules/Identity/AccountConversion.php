@@ -7,6 +7,7 @@ namespace App\Modules\Identity;
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Permissions\SystemRole;
 use Illuminate\Support\Facades\DB;
@@ -36,6 +37,7 @@ class AccountConversion
     public function __construct(
         private readonly StaffAccounts $accounts,
         private readonly ActivityLogger $activity,
+        private readonly StaffLibraryScope $library,
     ) {}
 
     /**
@@ -84,11 +86,25 @@ class AccountConversion
     {
         $this->guardSelf($actor, $target);
 
-        // No guardTarget here — see guardToClient(). What actually limits
-        // a promotion is the role being granted, and that is enforced by
-        // the caller validating role_id against
-        // StaffAccounts::assignableRoleIds(): nobody hands out authority
-        // they do not hold.
+        // No guardTarget here — see guardToClient(). It asks "could the
+        // actor have granted the target's role", which is meaningless of
+        // a client; what limits a promotion is the role being *granted*,
+        // and the caller enforces that by validating role_id against
+        // StaffAccounts::assignableRoleIds().
+        //
+        // That answers the question about the role. It does not answer
+        // the one about the target, and the target here is a client
+        // account: the same object every other route that binds one
+        // holds to the actor's own roster. A promotion is the most
+        // far-reaching thing that can be done to a client — it takes
+        // their portal access away, makes their assignments inert, and
+        // leaves them holding staff permissions the actor chose — so
+        // reaching one outside that roster through this door and no
+        // other is not a rule, it is a gap. 404 rather than 403, like
+        // the clients routes and like the isClient() check the caller
+        // makes on the way in: a client this staff member may not manage
+        // should not be distinguishable from one that is not there.
+        abort_unless($this->library->canAssignClient($actor, $target), 404);
 
         // An account request is not an account yet. Approving one is a
         // deliberate decision with its own screen and its own audit entry;

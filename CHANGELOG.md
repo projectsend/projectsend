@@ -226,6 +226,16 @@ a version is cut.
   (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
   [#1705](https://github.com/projectsend/projectsend/pull/1705))
 
+- **A limited staff role no longer reaches every client record, or every file name on the
+  dashboard.** Two more places where holding a permission was treated as holding a boundary. The
+  clients screen listed every client on the installation by name and email, and a role limited to
+  its own assigned clients could open, rename, or delete any of them — the same through the API.
+  Separately, the dashboard's largest-files, expired-files and top-clients widgets named files and
+  clients from across the whole installation, which mattered more because the Client Manager role
+  that ships with ProjectSend holds the permission those widgets need. Both now use the same rule
+  the rest of the library already did. Installation-wide totals stay installation-wide: a count
+  carries no names. Nothing changes for an administrator or any unrestricted role.
+
 ## 2.1.0 — 18 August 2026
 
 Updating, mostly. ProjectSend now tells you when there is a new version, ends an update somewhere

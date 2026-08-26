@@ -10,6 +10,7 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Clients\ClientCustomFieldType;
 use App\Modules\Clients\ClientStorageUsage;
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Clients\Models\ClientCustomField;
 use App\Modules\Clients\Models\ClientCustomFieldValue;
 use App\Modules\Clients\Notifications\ClientAccountEditedNotification;
@@ -44,6 +45,7 @@ class ClientsController extends Controller
         private readonly ClientStorageUsage $storageUsage,
         private readonly DeletedAccountContent $accountContent,
         private readonly AccountContentDeletion $accountDeletion,
+        private readonly StaffLibraryScope $scope,
     ) {}
 
     public function index(Request $request): Response
@@ -58,8 +60,14 @@ class ClientsController extends Controller
             'status' => $validated['status'] ?? null,
         ];
 
-        $clients = User::query()
-            ->where('type', UserType::Client)
+        // Narrowed by the same rule the buttons on each row are guarded
+        // with. A client-scoped staff member is not shown the name and
+        // email of somebody they can reach nothing of — the same thing
+        // MembershipRequest::approvableBy does for its queue.
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        $clients = $this->scope->clients($viewer)
             ->when($filters['search'], fn (Builder $query, string $search) => $query->where(fn (Builder $q) => $q
                 ->where('name', 'like', "%{$search}%")
                 ->orWhere('email', 'like', "%{$search}%")))
@@ -133,9 +141,18 @@ class ClientsController extends Controller
         return redirect()->route('clients.edit', $client)->with('success', __('Client created.'));
     }
 
-    public function edit(User $client): Response
+    public function edit(Request $request, User $client): Response
     {
         abort_unless($client->isClient(), 404);
+
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        // A permission is not a boundary: `edit_clients` says this staff
+        // member manages clients, not that they manage *this* one. The
+        // same rule ClientFilesController::index applies one route over.
+        abort_unless($this->scope->canAssignClient($viewer, $client), 404);
+
 
         return Inertia::render('clients/edit', [
             'client' => [
@@ -161,6 +178,15 @@ class ClientsController extends Controller
     public function update(Request $request, User $client): RedirectResponse
     {
         abort_unless($client->isClient(), 404);
+
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        // A permission is not a boundary: `edit_clients` says this staff
+        // member manages clients, not that they manage *this* one. The
+        // same rule ClientFilesController::index applies one route over.
+        abort_unless($this->scope->canAssignClient($viewer, $client), 404);
+
 
         $validated = $request->validate(array_merge([
             'name' => ['required', 'string', 'max:255'],
@@ -219,9 +245,18 @@ class ClientsController extends Controller
      * Remove this account's second factor, for the client who has lost
      * their authenticator and their recovery codes.
      */
-    public function destroyTwoFactor(User $client, TwoFactorAdministration $twoFactor): RedirectResponse
+    public function destroyTwoFactor(Request $request, User $client, TwoFactorAdministration $twoFactor): RedirectResponse
     {
         abort_unless($client->isClient(), 404);
+
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        // A permission is not a boundary: `edit_clients` says this staff
+        // member manages clients, not that they manage *this* one. The
+        // same rule ClientFilesController::index applies one route over.
+        abort_unless($this->scope->canAssignClient($viewer, $client), 404);
+
 
         $twoFactor->reset($client);
 
@@ -231,6 +266,15 @@ class ClientsController extends Controller
     public function destroy(Request $request, User $client): RedirectResponse
     {
         abort_unless($client->isClient(), 404);
+
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        // A permission is not a boundary: `edit_clients` says this staff
+        // member manages clients, not that they manage *this* one. The
+        // same rule ClientFilesController::index applies one route over.
+        abort_unless($this->scope->canAssignClient($viewer, $client), 404);
+
 
         $validated = $this->accountDeletion->validate($request, $client);
 

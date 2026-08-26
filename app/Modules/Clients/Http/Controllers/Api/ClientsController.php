@@ -11,6 +11,7 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Clients\ClientCustomFieldType;
 use App\Modules\Clients\ClientStorageUsage;
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Clients\Http\Resources\Api\ClientResource;
 use App\Modules\Clients\Models\ClientCustomField;
 use App\Modules\Clients\Models\ClientCustomFieldValue;
@@ -54,6 +55,7 @@ class ClientsController extends Controller
         private readonly ClientStorageUsage $storageUsage,
         private readonly DeletedAccountContent $accountContent,
         private readonly AccountContentDeletion $accountDeletion,
+        private readonly StaffLibraryScope $scope,
     ) {}
 
     public function index(Request $request): AnonymousResourceCollection
@@ -63,7 +65,12 @@ class ClientsController extends Controller
             'status' => ['nullable', Rule::in(['active', 'inactive'])],
         ]);
 
-        $query = User::query()->where('type', UserType::Client);
+        // Narrowed the same way the web listing is, and by the same
+        // rule the object routes below are guarded with.
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        $query = $this->scope->clients($viewer);
 
         if (($filters['search'] ?? null) !== null) {
             $search = $filters['search'];
@@ -79,9 +86,18 @@ class ClientsController extends Controller
         return ClientResource::collection($this->polling->paginate($request, $query, 'users'));
     }
 
-    public function show(User $client): ClientResource
+    public function show(Request $request, User $client): ClientResource
     {
         abort_unless($client->isClient(), 404);
+
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        // A permission is not a boundary: the token's `edit_clients`
+        // says its owner manages clients, not that they manage *this*
+        // one. Mirrors the web controller, as every API twin here does.
+        abort_unless($this->scope->canAssignClient($viewer, $client), 404);
+
 
         return $this->resourceFor($client);
     }
@@ -134,6 +150,15 @@ class ClientsController extends Controller
     public function update(Request $request, User $client): ClientResource
     {
         abort_unless($client->isClient(), 404);
+
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        // A permission is not a boundary: the token's `edit_clients`
+        // says its owner manages clients, not that they manage *this*
+        // one. Mirrors the web controller, as every API twin here does.
+        abort_unless($this->scope->canAssignClient($viewer, $client), 404);
+
 
         $validated = $request->validate([
             'name' => ['sometimes', 'string', 'max:255'],
@@ -203,9 +228,18 @@ class ClientsController extends Controller
      * in the activity log against the caller. Answers 204 whether or not a
      * second factor was actually in force.
      */
-    public function destroyTwoFactor(User $client, TwoFactorAdministration $twoFactor): JsonResponse
+    public function destroyTwoFactor(Request $request, User $client, TwoFactorAdministration $twoFactor): JsonResponse
     {
         abort_unless($client->isClient(), 404);
+
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        // A permission is not a boundary: the token's `edit_clients`
+        // says its owner manages clients, not that they manage *this*
+        // one. Mirrors the web controller, as every API twin here does.
+        abort_unless($this->scope->canAssignClient($viewer, $client), 404);
+
 
         $twoFactor->reset($client);
 
@@ -231,6 +265,15 @@ class ClientsController extends Controller
     public function destroy(Request $request, User $client): JsonResponse
     {
         abort_unless($client->isClient(), 404);
+
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        // A permission is not a boundary: the token's `edit_clients`
+        // says its owner manages clients, not that they manage *this*
+        // one. Mirrors the web controller, as every API twin here does.
+        abort_unless($this->scope->canAssignClient($viewer, $client), 404);
+
 
         $validated = $this->accountDeletion->validate($request, $client);
 

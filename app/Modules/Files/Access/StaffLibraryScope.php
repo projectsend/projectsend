@@ -10,6 +10,7 @@ use App\Modules\Files\Models\FileAssignment;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Models\FolderAssignment;
 use App\Modules\Groups\Models\Group;
+use App\Modules\Identity\UserType;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -174,6 +175,25 @@ class StaffLibraryScope
         $ids = $this->assignableClientIds($user);
 
         return $ids === null || in_array($client->id, $ids, true);
+    }
+
+    /**
+     * Every client this staff member may act on, as a query.
+     *
+     * The listing half of canAssignClient(), so a screen narrows by the
+     * same rule its buttons are guarded with rather than restating it —
+     * which is how ClientsController came to list every client on the
+     * installation, name and email, to a viewer who could reach nothing
+     * of theirs. An unscoped user gets the whole roster, unchanged.
+     *
+     * @return Builder<User>
+     */
+    public function clients(User $user): Builder
+    {
+        $query = User::query()->where('type', UserType::Client);
+        $ids = $this->assignableClientIds($user);
+
+        return $ids === null ? $query : $query->whereIn('id', $ids);
     }
 
     public function canAssignGroup(User $user, Group $group): bool

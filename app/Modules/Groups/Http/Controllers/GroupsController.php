@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Groups\Models\Group;
 use App\Modules\Identity\UserType;
 use App\Support\Pagination;
@@ -25,6 +26,7 @@ class GroupsController extends Controller
     public function __construct(
         private readonly ActivityLogger $activity,
         private readonly PublicUrl $publicUrl,
+        private readonly StaffLibraryScope $scope,
     ) {}
 
     public function index(Request $request): Response
@@ -126,6 +128,19 @@ class GroupsController extends Controller
 
     public function update(Request $request, Group $group): RedirectResponse
     {
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        // A group whose reach extends past this staff member's library is
+        // not theirs to change. #1701 drew this line for membership; the
+        // object itself needs it for the same reason and more sharply —
+        // an assignment to a group is how its members reach a file, so
+        // deleting one revokes that access for every member, including
+        // clients outside this person's roster. Measured before this
+        // guard: a scoped role deleted a stranger's group and the
+        // stranger's client stopped seeing the file it carried.
+        abort_unless($this->scope->allowsGroupChange($viewer, $group), 404);
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             // The slug only matters (and is only shown) once a group is
@@ -154,8 +169,21 @@ class GroupsController extends Controller
         return back()->with('success', __('Group updated.'));
     }
 
-    public function destroy(Group $group): RedirectResponse
+    public function destroy(Request $request, Group $group): RedirectResponse
     {
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        // A group whose reach extends past this staff member's library is
+        // not theirs to change. #1701 drew this line for membership; the
+        // object itself needs it for the same reason and more sharply —
+        // an assignment to a group is how its members reach a file, so
+        // deleting one revokes that access for every member, including
+        // clients outside this person's roster. Measured before this
+        // guard: a scoped role deleted a stranger's group and the
+        // stranger's client stopped seeing the file it carried.
+        abort_unless($this->scope->allowsGroupChange($viewer, $group), 404);
+
         $name = $group->name;
         $group->delete();
 

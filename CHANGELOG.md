@@ -265,6 +265,14 @@ a version is cut.
   (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
   [#1703](https://github.com/projectsend/projectsend/pull/1703))
 
+- **A limited staff role can no longer rename or delete a group it has no part in.** Group
+  membership was already held to that boundary; the group itself was not, which was the sharper half
+  — sharing a file with a group is how its members reach that file, so deleting the group takes the
+  access away from every one of them, including clients outside the person's own list. A role
+  limited to its own clients can still manage any group that shares nothing beyond what it can
+  already see, so a group it created, or one holding its own clients, stays fully editable. Nothing
+  changes for an administrator or any unrestricted role.
+
 ## 2.1.0 — 18 August 2026
 
 Updating, mostly. ProjectSend now tells you when there is a new version, ends an update somewhere

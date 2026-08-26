@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Folders\FolderService;
+use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\FolderAssignment;
 use App\Modules\Groups\Models\Group;
 use App\Modules\Groups\Models\MembershipRequest;
@@ -12,6 +13,7 @@ use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Models\RolePermission;
 use App\Modules\Identity\Permissions\Permission;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Str;
 use Inertia\Testing\AssertableInertia;
 
@@ -321,4 +323,100 @@ test('a deleted file does not excuse a live one that is still out of reach', fun
     $this->actingAs($this->rep)
         ->post("/groups/{$this->strangerGroup->id}/members", ['user_id' => $this->mine->id])
         ->assertForbidden();
+});
+
+
+/**
+ * The rep role ships without delete_groups, and these cases are about the
+ * boundary rather than the permission: grant it so the route lets the
+ * request through and the guard is what answers.
+ */
+function grantGroupDeletion(User $rep): void
+{
+    RolePermission::query()->firstOrCreate([
+        'role_id' => $rep->role_id,
+        'permission' => Permission::DeleteGroups->value,
+    ]);
+}
+
+// #1701 drew the line for membership and left the group object
+// installation-wide. Deleting one is the sharper end of the same
+// question: an assignment to a group is how its members reach a file, so
+// removing the group takes that access away from every member — measured
+// before this guard, a scoped role deleted a stranger's group and the
+// stranger's client stopped seeing the file it carried.
+test('a scoped staff member cannot rename or delete a group out of their reach', function () {
+    grantGroupDeletion($this->rep);
+
+    $this->actingAs($this->rep)
+        ->patch("/groups/{$this->strangerGroup->id}", [
+            'name' => 'Renamed By Somebody Else',
+            'slug' => 'theirs',
+            'description' => null,
+            'public' => false,
+        ])
+        ->assertNotFound();
+
+    $this->actingAs($this->rep)
+        ->delete("/groups/{$this->strangerGroup->id}")
+        ->assertNotFound();
+
+    expect($this->strangerGroup->fresh()->name)->toBe('Theirs')
+        ->and(Group::query()->whereKey($this->strangerGroup->id)->exists())->toBeTrue();
+});
+
+test('deleting a stranger group would have cost its members their access', function () {
+    grantGroupDeletion($this->rep);
+
+    $stranger = $this->strangerGroup->members()->first();
+
+    expect(File::query()->visibleToClient($stranger)->whereKey($this->secret->id)->exists())->toBeTrue();
+
+    $this->actingAs($this->rep)->delete("/groups/{$this->strangerGroup->id}")->assertNotFound();
+
+    // Still theirs to read, because the group is still there.
+    expect(File::query()->visibleToClient($stranger)->whereKey($this->secret->id)->exists())->toBeTrue();
+});
+
+test('the API refuses the same two', function () {
+    grantGroupDeletion($this->rep);
+
+    Sanctum::actingAs($this->rep, ['edit_groups', 'delete_groups']);
+
+    $this->patchJson("/api/v1/groups/{$this->strangerGroup->id}", ['name' => 'Nope'])->assertNotFound();
+    $this->deleteJson("/api/v1/groups/{$this->strangerGroup->id}")->assertNotFound();
+
+    expect(Group::query()->whereKey($this->strangerGroup->id)->exists())->toBeTrue();
+});
+
+test('a group inside their reach stays theirs to rename and delete', function () {
+    grantGroupDeletion($this->rep);
+
+    $mine = Group::query()->create(['name' => 'Mine', 'slug' => 'mine', 'public' => false]);
+    $mine->members()->syncWithoutDetaching([$this->mine->id]);
+
+    $this->actingAs($this->rep)
+        ->patch("/groups/{$mine->id}", ['name' => 'Mine, Renamed', 'slug' => 'mine', 'description' => null, 'public' => false])
+        ->assertRedirect();
+
+    expect($mine->fresh()->name)->toBe('Mine, Renamed');
+
+    $this->actingAs($this->rep)->delete("/groups/{$mine->id}")->assertRedirect();
+
+    expect(Group::query()->whereKey($mine->id)->exists())->toBeFalse();
+});
+
+test('an unscoped administrator manages every group exactly as before', function () {
+    $this->actingAs($this->admin)
+        ->patch("/groups/{$this->strangerGroup->id}", [
+            'name' => 'Renamed By An Admin',
+            'slug' => 'theirs',
+            'description' => null,
+            'public' => false,
+        ])
+        ->assertRedirect();
+
+    $this->actingAs($this->admin)->delete("/groups/{$this->strangerGroup->id}")->assertRedirect();
+
+    expect(Group::query()->whereKey($this->strangerGroup->id)->exists())->toBeFalse();
 });

@@ -236,6 +236,23 @@ class StaffLibraryScope
     }
 
     /**
+     * Whether this staff member may change a group itself — rename it,
+     * make it public, delete it.
+     *
+     * The reach half of allowsGroupMembership, on its own because there
+     * is no client in the question. Deleting a group is the destructive
+     * end of it: an assignment to a group is how its members reach a
+     * file, so removing the group takes that access away from every one
+     * of them. A staff member who may not add somebody to a group out of
+     * their reach should not be able to delete it out from under the
+     * people already in it.
+     */
+    public function allowsGroupChange(User $user, Group $group): bool
+    {
+        return $this->groupReachesNoFurther($user, $group);
+    }
+
+    /**
      * Whether everything shared with this group is already inside the
      * user's library — files assigned to it, and the folders whose
      * subtrees it can browse.

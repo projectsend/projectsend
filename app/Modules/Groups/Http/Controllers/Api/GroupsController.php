@@ -9,6 +9,7 @@ use App\Modules\Api\Support\PollingQuery;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Groups\Http\Resources\Api\GroupResource;
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Groups\Models\Group;
 use App\Support\Rules;
 use Illuminate\Database\Eloquent\Builder;
@@ -29,6 +30,7 @@ class GroupsController extends Controller
     public function __construct(
         private readonly PollingQuery $polling,
         private readonly ActivityLogger $activity,
+        private readonly StaffLibraryScope $scope,
     ) {}
 
     public function index(Request $request): AnonymousResourceCollection
@@ -83,6 +85,14 @@ class GroupsController extends Controller
 
     public function update(Request $request, Group $group): GroupResource
     {
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        // Mirrors the web controller: a group reaching past this token
+        // owner's library is not theirs to change, and deleting one
+        // revokes its members' access to everything assigned to it.
+        abort_unless($this->scope->allowsGroupChange($viewer, $group), 404);
+
         $validated = $request->validate([
             'name' => ['sometimes', 'string', 'max:255'],
             'slug' => Rules::slug('groups', $group->id),
@@ -108,8 +118,16 @@ class GroupsController extends Controller
         return new GroupResource($group->refresh()->loadCount('members'));
     }
 
-    public function destroy(Group $group): JsonResponse
+    public function destroy(Request $request, Group $group): JsonResponse
     {
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        // Mirrors the web controller: a group reaching past this token
+        // owner's library is not theirs to change, and deleting one
+        // revokes its members' access to everything assigned to it.
+        abort_unless($this->scope->allowsGroupChange($viewer, $group), 404);
+
         $name = $group->name;
         $group->delete();
 
